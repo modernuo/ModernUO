@@ -64,11 +64,9 @@ namespace Server.Engines.Quests.Samurai
 					// You have just gained some <a href="?ForceTopic45">Karma</a> for killing a Cursed Soul.
 					return 1063040;
 				}
-				else
-				{
-					// You have just gained some <a href="?ForceTopic45">Karma</a> for killing a Young Ronin.
-					return 1063041;
-				}
+
+				// You have just gained some <a href="?ForceTopic45">Karma</a> for killing a Young Ronin.
+				return 1063041;
 			}
 		}
 
@@ -119,9 +117,8 @@ namespace Server.Engines.Quests.Samurai
 					 */
 					return 1063045;
 				}
-				else
-				{
-					/* It is good that you rid the land of those dishonorable Samurai.
+
+				/* It is good that you rid the land of those dishonorable Samurai.
 					 * Perhaps they will learn a greater lesson in death.<BR><BR>
 					 *
 					 * I have placed a reward in your pack.<BR><BR>
@@ -129,8 +126,7 @@ namespace Server.Engines.Quests.Samurai
 					 * The second trial will test your courage. You only have to follow
 					 * the yellow path to see what awaits you.
 					 */
-					return 1063046;
-				}
+				return 1063046;
 			}
 		}
 
@@ -201,9 +197,8 @@ namespace Server.Engines.Quests.Samurai
 					 */
 					return 1063060;
 				}
-				else
-				{
-					/* Fear remains in your eyes but you have learned that not all is
+
+				/* Fear remains in your eyes but you have learned that not all is
 					 * what it appears to be. <BR><BR>
 					 *
 					 * You must have known the dragon would slay you instantly.
@@ -217,8 +212,7 @@ namespace Server.Engines.Quests.Samurai
 					 *
 					 * The next trial will test your benevolence. You only have to walk the blue path.
 					 */
-					return 1063059;
-				}
+				return 1063059;
 			}
 		}
 
@@ -313,9 +307,8 @@ namespace Server.Engines.Quests.Samurai
 					 */
 					return 1063071;
 				}
-				else
-				{
-					/* You showed respect by helping another out while allowing the gypsy
+
+				/* You showed respect by helping another out while allowing the gypsy
 					 * what little dignity she has left. <BR><BR>
 					 *
 					 * Now she will be able to feed herself and gain enough energy to walk
@@ -330,8 +323,7 @@ namespace Server.Engines.Quests.Samurai
 					 * prove yourself again. <BR><BR>Please retrieve my katana from the
 					 * treasure room and return it to me.
 					 */
-					return 1063070;
-				}
+				return 1063070;
 			}
 		}
 
@@ -412,9 +404,8 @@ namespace Server.Engines.Quests.Samurai
 					 */
 					return 1063077;
 				}
-				else
-				{
-					/* Thank you for returning this sword to me and leaving the remaining
+
+				/* Thank you for returning this sword to me and leaving the remaining
 					 * treasure alone. <BR><BR>
 					 *
 					 * Your training is nearly complete. Before you have your final trial,
@@ -422,8 +413,7 @@ namespace Server.Engines.Quests.Samurai
 					 *
 					 * Go into the Altar Room and light a candle for them. Afterwards, return to me.
 					 */
-					return 1063076;
-				}
+				return 1063076;
 			}
 		}
 

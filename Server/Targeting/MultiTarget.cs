@@ -55,8 +55,7 @@ namespace Server.Targeting
 		{
 			if ( ns.HighSeas )
 				return new MultiTargetReqHS( this );
-			else
-				return new MultiTargetReq( this );
+			return new MultiTargetReq( this );
 		}
 	}
 }

@@ -153,8 +153,7 @@ namespace Server
 			{
 				if ( (m_Flags & TileFlag.Bridge) != 0 )
 					return m_Height / 2;
-				else
-					return m_Height;
+				return m_Height;
 			}
 		}
 	}

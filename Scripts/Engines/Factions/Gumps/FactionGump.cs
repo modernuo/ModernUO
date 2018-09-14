@@ -21,11 +21,9 @@ namespace Server.Factions
 				index = offset / ButtonTypes;
 				return true;
 			}
-			else
-			{
-				type = index = 0;
-				return false;
-			}
+
+			type = index = 0;
+			return false;
 		}
 
 		public static bool Exists( Mobile mob )

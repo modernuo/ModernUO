@@ -6,7 +6,7 @@ namespace Server.Factions
 
 		public override void OnTownChanged()
 		{
-			AssignName( Town == null ? null : Town.Definition.StrongholdMonolithName );
+			AssignName( Town?.Definition.StrongholdMonolithName );
 		}
 
 		public StrongholdMonolith() : this( null, null )

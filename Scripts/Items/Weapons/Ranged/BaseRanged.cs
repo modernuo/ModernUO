@@ -91,12 +91,10 @@ namespace Server.Items
 
 				return GetDelay( attacker );
 			}
-			else
-			{
-				attacker.RevealingAction();
 
-				return TimeSpan.FromSeconds( 0.25 );
-			}
+			attacker.RevealingAction();
+
+			return TimeSpan.FromSeconds( 0.25 );
 		}
 
 		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus = 1)

@@ -19,10 +19,8 @@ namespace Server.Engines.Mahjong
 			{
 				return m_SubCommandDelegates[cmd];
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		public static void Initialize()

@@ -68,12 +68,13 @@ namespace Server.Commands
 						e.Mobile.SendMessage( "That is either an invalid command name or one that does not support this modifier: {0}.", commandString );
 						return;
 					}
-					else if ( e.Mobile.AccessLevel < command.AccessLevel )
+
+					if ( e.Mobile.AccessLevel < command.AccessLevel )
 					{
 						e.Mobile.SendMessage( "You do not have access to that command: {0}.", commandString );
 						return;
 					}
-					else if ( !command.ValidateArgs( m_Scope, eventArgs[i] ) )
+					if ( !command.ValidateArgs( m_Scope, eventArgs[i] ) )
 					{
 						return;
 					}
@@ -157,12 +158,13 @@ namespace Server.Commands
 				from.SendMessage( "You must select the batch command scope." );
 				return false;
 			}
-			else if ( m_Condition.Length > 0 && !m_Scope.SupportsConditionals )
+
+			if ( m_Condition.Length > 0 && !m_Scope.SupportsConditionals )
 			{
 				from.SendMessage( "This command scope does not support conditionals." );
 				return false;
 			}
-			else if ( m_Condition.Length > 0 && !Utility.InsensitiveStartsWith( m_Condition, "where" ) )
+			if ( m_Condition.Length > 0 && !Utility.InsensitiveStartsWith( m_Condition, "where" ) )
 			{
 				from.SendMessage( "The condition field must start with \"where\"." );
 				return false;

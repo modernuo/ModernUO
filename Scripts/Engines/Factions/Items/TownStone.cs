@@ -14,7 +14,7 @@ namespace Server.Factions
 			{
 				m_Town = value;
 
-				AssignName( m_Town == null ? null : m_Town.Definition.TownStoneName );
+				AssignName( m_Town?.Definition.TownStoneName );
 			}
 		}
 

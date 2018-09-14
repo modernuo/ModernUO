@@ -592,7 +592,7 @@ namespace Server.Mobiles
 			{
 				if ( m_Paragon == value )
 					return;
-				else if ( value )
+				if ( value )
 					Paragon.Convert( this );
 				else
 					Paragon.UnConvert( this );
@@ -2822,10 +2822,8 @@ namespace Server.Mobiles
 						return -GetDistanceToSqrt( m ); // returns closest mobile
 				}
 			}
-			else
-			{
-				return double.MinValue;
-			}
+
+			return double.MinValue;
 		}
 
 		// Turn, - for left, + for right

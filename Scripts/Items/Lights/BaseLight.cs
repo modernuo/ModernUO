@@ -59,8 +59,8 @@ namespace Server.Items
 				{
 					return m_End - DateTime.UtcNow;
 				}
-				else
-					return m_Duration;
+
+				return m_Duration;
 			}
 
 			set => m_Duration = value;

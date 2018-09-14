@@ -147,9 +147,8 @@ namespace Server.Gumps
 			if ( m_LocalizedTooltip > 0 )
 				return
 					$"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int) m_Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}{{ tooltip {m_LocalizedTooltip} }}";
-			else
-				return
-					$"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int) m_Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}";
+			return
+				$"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int) m_Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}";
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "buttontileart" );

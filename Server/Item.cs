@@ -2694,10 +2694,9 @@ namespace Server
 		protected virtual Packet GetWorldPacketFor( NetState state ) {
 			if ( state.HighSeas )
 				return WorldPacketHS;
-			else if ( state.StygianAbyss )
+			if ( state.StygianAbyss )
 				return WorldPacketSA;
-			else
-				return WorldPacket;
+			return WorldPacket;
 		}
 
 		public virtual bool IsVirtualItem => false;
@@ -2871,10 +2870,8 @@ namespace Server
 					{
 						break;
 					}
-					else
-					{
-						p = item.m_Parent;
-					}
+
+					p = item.m_Parent;
 				}
 
 				return p;
@@ -4079,8 +4076,7 @@ namespace Server
 
 			if ( root == null )
 				return m_Location;
-			else
-				return root.Location;
+			return root.Location;
 
 			//return root == null ? m_Location : new Point3D( (IPoint3D) root );
 		}

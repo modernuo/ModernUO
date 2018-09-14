@@ -92,7 +92,7 @@ namespace Server
 			AppendCompilerOption(ref sb, "/d:NEWPARENT");
 #endif
 
-			return (sb == null ? null : sb.ToString());
+			return sb?.ToString();
 		}
 
 		private static void AppendCompilerOption( ref StringBuilder sb, string define )

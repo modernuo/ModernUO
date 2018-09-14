@@ -310,45 +310,43 @@ namespace Server.Factions
 
 				return active;
 			}
-			else
+
+			Map map = m_Mobile.Map;
+
+			if ( map != null )
 			{
-				Map map = m_Mobile.Map;
+				Mobile active = null, inactive = null;
+				double actPrio = 0.0, inactPrio = 0.0;
 
-				if ( map != null )
+				Mobile comb = m_Mobile.Combatant;
+
+				if ( comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && CanDispel( comb ) )
 				{
-					Mobile active = null, inactive = null;
-					double actPrio = 0.0, inactPrio = 0.0;
+					active = inactive = comb;
+					actPrio = inactPrio = m_Mobile.GetDistanceToSqrt( comb );
+				}
 
-					Mobile comb = m_Mobile.Combatant;
-
-					if ( comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && CanDispel( comb ) )
+				foreach ( Mobile m in m_Mobile.GetMobilesInRange( 12 ) )
+				{
+					if ( m != m_Mobile && CanDispel( m ) )
 					{
-						active = inactive = comb;
-						actPrio = inactPrio = m_Mobile.GetDistanceToSqrt( comb );
-					}
+						double prio = m_Mobile.GetDistanceToSqrt( m );
 
-					foreach ( Mobile m in m_Mobile.GetMobilesInRange( 12 ) )
-					{
-						if ( m != m_Mobile && CanDispel( m ) )
+						if ( !activeOnly && (inactive == null || prio < inactPrio) )
 						{
-							double prio = m_Mobile.GetDistanceToSqrt( m );
+							inactive = m;
+							inactPrio = prio;
+						}
 
-							if ( !activeOnly && (inactive == null || prio < inactPrio) )
-							{
-								inactive = m;
-								inactPrio = prio;
-							}
-
-							if ( (m_Mobile.Combatant == m || m.Combatant == m_Mobile) && (active == null || prio < actPrio) )
-							{
-								active = m;
-								actPrio = prio;
-							}
+						if ( (m_Mobile.Combatant == m || m.Combatant == m_Mobile) && (active == null || prio < actPrio) )
+						{
+							active = m;
+							actPrio = prio;
 						}
 					}
-
-					return active != null ? active : inactive;
 				}
+
+				return active ?? inactive;
 			}
 
 			return null;
@@ -473,7 +471,7 @@ namespace Server.Factions
 			{
 				Target targ = m_Guard.Target;
 
-				Mobile toHarm = ( dispelTarget == null ? combatant : dispelTarget );
+				Mobile toHarm = dispelTarget ?? combatant;
 
 				if ( (targ.Flags & TargetFlags.Harmful) != 0 && toHarm != null )
 				{

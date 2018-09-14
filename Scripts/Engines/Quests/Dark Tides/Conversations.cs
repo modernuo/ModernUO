@@ -178,14 +178,12 @@ namespace Server.Engines.Quests.Necro
 					 */
 					return 1062058;
 				}
-				else // from well of tears
-				{
-					/* You have arrived at the well, but no longer have the scroll
+
+				/* You have arrived at the well, but no longer have the scroll
 					 * of calling.  Use Mardoth's teleporter to return to the
 					 * Crystal Cave and fetch another scroll from the box.
 					 */
-					return 1060129;
-				}
+				return 1060129;
 			}
 		}
 

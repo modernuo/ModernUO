@@ -104,7 +104,7 @@ namespace Server.Items
 
 			Spellbook book = Find( from, -1, type );
 
-			book?.DisplayTo( @from );
+			book?.DisplayTo( from );
 		}
 
 		private static void EventSink_CastSpellRequest( CastSpellRequestEventArgs e )
@@ -150,17 +150,17 @@ namespace Server.Items
 		{
 			if ( spellID >= 0 && spellID < 64 )
 				return SpellbookType.Regular;
-			else if ( spellID >= 100 && spellID < 117 )
+			if ( spellID >= 100 && spellID < 117 )
 				return SpellbookType.Necromancer;
-			else if ( spellID >= 200 && spellID < 210 )
+			if ( spellID >= 200 && spellID < 210 )
 				return SpellbookType.Paladin;
-			else if ( spellID >= 400 && spellID < 406 )
+			if ( spellID >= 400 && spellID < 406 )
 				return SpellbookType.Samurai;
-			else if ( spellID >= 500 && spellID < 508 )
+			if ( spellID >= 500 && spellID < 508 )
 				return SpellbookType.Ninja;
-			else if ( spellID >= 600 && spellID < 617 )
+			if ( spellID >= 600 && spellID < 617 )
 				return SpellbookType.Arcanist;
-			else if ( spellID >= 677 && spellID < 693 )
+			if ( spellID >= 677 && spellID < 693 )
 				return SpellbookType.Mystic;
 
 			return SpellbookType.Invalid;
@@ -333,7 +333,8 @@ namespace Server.Items
 			{
 				return false;
 			}
-			else if ( !from.CanBeginAction( typeof( BaseWeapon ) ) )
+
+			if ( !from.CanBeginAction( typeof( BaseWeapon ) ) )
 			{
 				return false;
 			}

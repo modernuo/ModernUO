@@ -68,7 +68,7 @@ namespace Server.Commands
 
 				if ( aStatic && !bStatic )
 					return -1;
-				else if ( !aStatic && bStatic )
+				if ( !aStatic && bStatic )
 					return 1;
 
 				int v = 0;
@@ -115,7 +115,7 @@ namespace Server.Commands
 			{
 				if ( ctor != null )
 					return ctor.IsStatic;
-				else if ( method != null )
+				if ( method != null )
 					return method.IsStatic;
 
 				if ( prop != null )
@@ -133,12 +133,11 @@ namespace Server.Commands
 			{
 				if ( ctor != null )
 					return ctor.DeclaringType.Name;
-				else if ( prop != null )
+				if ( prop != null )
 					return prop.Name;
-				else if ( method != null )
+				if ( method != null )
 					return method.Name;
-				else
-					return "";
+				return "";
 			}
 		}
 
@@ -148,9 +147,9 @@ namespace Server.Commands
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
 				return x.TypeName.CompareTo( y.TypeName );
@@ -2465,7 +2464,7 @@ namespace Server.Commands
 			for( int i = 0; i < ReplaceChars.Length; ++i ) { sb.Replace( ReplaceChars[i], '-' ); }
 
 			if ( anonymousType ) return "(Anonymous-Type)"+sb.ToString();
-			else return sb.ToString();
+			return sb.ToString();
 		}
 
 		public static string AliasForName( string name )

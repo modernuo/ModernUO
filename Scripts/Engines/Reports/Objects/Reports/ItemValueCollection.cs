@@ -142,15 +142,13 @@ namespace Server.Engines.Reports
             {
                 get
                 {
-                    if (((_index == -1) 
+	                if (((_index == -1) 
                                 || (_index >= _collection.Count)))
                     {
                         throw new System.IndexOutOfRangeException("Enumerator not started.");
                     }
-                    else
-                    {
-                        return _currentElement;
-                    }
+
+	                return _currentElement;
                 }
             }
             
@@ -161,15 +159,13 @@ namespace Server.Engines.Reports
             {
                 get
                 {
-                    if (((_index == -1) 
+	                if (((_index == -1) 
                                 || (_index >= _collection.Count)))
                     {
                         throw new System.IndexOutOfRangeException("Enumerator not started.");
                     }
-                    else
-                    {
-                        return _currentElement;
-                    }
+
+	                return _currentElement;
                 }
             }
             

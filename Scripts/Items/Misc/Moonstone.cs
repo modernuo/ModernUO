@@ -147,7 +147,8 @@ namespace Server.Items
 							Stop();
 							return;
 						}
-						else if ( !m_TargetMap.CanFit( m_Location, 16 ) )
+
+						if ( !m_TargetMap.CanFit( m_Location, 16 ) )
 						{
 							m_Stone.Movable = true;
 							m_Caster.AddToBackpack( m_Stone );

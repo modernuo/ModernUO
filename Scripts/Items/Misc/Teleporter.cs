@@ -160,12 +160,13 @@ namespace Server.Items
 			{
 				return false;
 			}
-			else if (m_CriminalCheck && m.Criminal)
+
+			if (m_CriminalCheck && m.Criminal)
 			{
 				m.SendLocalizedMessage(1005561, "", 0x22); // Thou'rt a criminal and cannot escape so easily.
 				return false;
 			}
-			else if (m_CombatCheck && SpellHelper.CheckCombat(m))
+			if (m_CombatCheck && SpellHelper.CheckCombat(m))
 			{
 				m.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
 				return false;
@@ -617,7 +618,8 @@ namespace Server.Items
 				int h = (int)Math.Round(ts.TotalHours);
 				return $"{h} hour{((h == 1) ? "" : "s")}";
 			}
-			else if (ts.TotalMinutes >= 1)
+
+			if (ts.TotalMinutes >= 1)
 			{
 				int m = (int)Math.Round(ts.TotalMinutes);
 				return $"{m} minute{((m == 1) ? "" : "s")}";
@@ -653,10 +655,8 @@ namespace Server.Items
 
 					return;
 				}
-				else
-				{
-					info.Timer.Stop();
-				}
+
+				info.Timer.Stop();
 			}
 
 			if (m_StartMessage != null)

@@ -50,10 +50,11 @@ namespace Server.Mobiles
 			double random = Utility.RandomDouble();
 			if ( 0.05 >= random )
 				return CreateArtifact( UniqueList );
-			else if ( 0.15 >= random )
+			if ( 0.15 >= random )
 				return CreateArtifact( SharedList );
-			else if ( 0.30 >= random )
+			if ( 0.30 >= random )
 				return CreateArtifact( DecorativeList );
+
 			return null;
 		}
 
@@ -169,15 +170,13 @@ namespace Server.Mobiles
 					m.AddToBackpack( ps );
 			}
 
-			if ( m is PlayerMobile )
+			if ( m is PlayerMobile pm )
 			{
-				PlayerMobile pm = (PlayerMobile)m;
-
 				for( int j = 0; j < pm.JusticeProtectors.Count; ++j )
 				{
 					Mobile prot = pm.JusticeProtectors[j];
 
-					if ( prot.Map != m.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( m, prot ) )
+					if ( prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( pm, prot ) )
 						continue;
 
 					int chance = 0;

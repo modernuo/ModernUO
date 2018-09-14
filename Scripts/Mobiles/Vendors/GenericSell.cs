@@ -97,8 +97,7 @@ namespace Server.Mobiles
 		{
 			if ( item.Name != null )
 				return item.Name;
-			else
-				return item.LabelNumber.ToString();
+			return item.LabelNumber.ToString();
 		}
 
 		public bool IsSellable( Item item )

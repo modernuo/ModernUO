@@ -61,26 +61,24 @@ namespace Server.Items
 				m.SendLocalizedMessage( 1005561, "", 0x22 ); // Thou'rt a criminal and cannot escape so easily.
 				return false;
 			}
-			else if ( SpellHelper.CheckCombat( m ) )
+
+			if ( SpellHelper.CheckCombat( m ) )
 			{
 				m.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
 				return false;
 			}
-			else if ( m.Spell != null )
+			if ( m.Spell != null )
 			{
 				m.SendLocalizedMessage( 1049616 ); // You are too busy to do that at the moment.
 				return false;
 			}
-			else
-			{
-				m.CloseGump( typeof( MoongateGump ) );
-				m.SendGump( new MoongateGump( m, this ) );
+			m.CloseGump( typeof( MoongateGump ) );
+			m.SendGump( new MoongateGump( m, this ) );
 
-				if ( !m.Hidden || m.AccessLevel == AccessLevel.Player )
-					Effects.PlaySound( m.Location, m.Map, 0x20E );
+			if ( !m.Hidden || m.AccessLevel == AccessLevel.Player )
+				Effects.PlaySound( m.Location, m.Map, 0x20E );
 
-				return true;
-			}
+			return true;
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -366,7 +364,7 @@ namespace Server.Items
 		{
 			if ( info.ButtonID == 0 ) // Cancel
 				return;
-			else if ( m_Mobile.Deleted || m_Moongate.Deleted || m_Mobile.Map == null )
+			if ( m_Mobile.Deleted || m_Moongate.Deleted || m_Mobile.Map == null )
 				return;
 
 			int[] switches = info.Switches;

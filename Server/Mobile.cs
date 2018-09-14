@@ -599,24 +599,21 @@ namespace Server
 		{
 			if ( m_HitsRegenRate == null )
 				return m_DefaultHitsRate;
-			else
-				return m_HitsRegenRate( m );
+			return m_HitsRegenRate( m );
 		}
 
 		public static TimeSpan GetStamRegenRate( Mobile m )
 		{
 			if ( m_StamRegenRate == null )
 				return m_DefaultStamRate;
-			else
-				return m_StamRegenRate( m );
+			return m_StamRegenRate( m );
 		}
 
 		public static TimeSpan GetManaRegenRate( Mobile m )
 		{
 			if ( m_ManaRegenRate == null )
 				return m_DefaultManaRate;
-			else
-				return m_ManaRegenRate( m );
+			return m_ManaRegenRate( m );
 		}
 
 		#endregion
@@ -1396,7 +1393,9 @@ namespace Server
 				_actions.Add( toLock );
 
 				return true;
-			} else if ( !_actions.Contains( toLock ) ) {
+			}
+
+			if ( !_actions.Contains( toLock ) ) {
 				_actions.Add( toLock );
 
 				return true;
@@ -3180,7 +3179,7 @@ namespace Server
 			{
 				if ( !shoved.Alive || !Alive || shoved.IsDeadBondedPet || IsDeadBondedPet )
 					return true;
-				else if ( shoved.m_Hidden && shoved.m_AccessLevel > AccessLevel.Player )
+				if ( shoved.m_Hidden && shoved.m_AccessLevel > AccessLevel.Player )
 					return true;
 
 				if ( !m_Pushing )
@@ -3810,14 +3809,12 @@ namespace Server
 			{
 				return m_BaseSoundID + 4;
 			}
-			else if ( m_Body.IsHuman )
+
+			if ( m_Body.IsHuman )
 			{
 				return Utility.Random( m_Female ? 0x314 : 0x423, m_Female ? 4 : 5 );
 			}
-			else
-			{
-				return -1;
-			}
+			return -1;
 		}
 
 		#endregion
@@ -6313,7 +6310,8 @@ namespace Server
 			return null;
 		}
 
-		public bool CloseGump( Type type ) {
+		public bool CloseGump( Type type )
+		{
 			if ( m_NetState != null ) {
 				Gump gump = FindGump( type );
 
@@ -6326,9 +6324,9 @@ namespace Server
 				}
 
 				return true;
-			} else {
-				return false;
 			}
+
+			return false;
 		}
 
 		[Obsolete( "Use CloseGump( Type ) instead." )]
@@ -6356,9 +6354,9 @@ namespace Server
 				}
 
 				return true;
-			} else {
-				return false;
 			}
+
+			return false;
 		}
 
 		[Obsolete( "Use CloseAllGumps() instead.", false )]
@@ -6383,11 +6381,12 @@ namespace Server
 			if ( m_NetState != null ) {
 				g.SendTo( m_NetState );
 				return true;
-			} else if ( throwOnOffline ) {
-				throw new MobileNotConnectedException( this, "Gump could not be sent." );
-			} else {
-				return false;
 			}
+
+			if ( throwOnOffline ) {
+				throw new MobileNotConnectedException( this, "Gump could not be sent." );
+			}
+			return false;
 		}
 
 		public bool SendMenu( IMenu m ) {
@@ -6398,11 +6397,12 @@ namespace Server
 			if ( m_NetState != null ) {
 				m.SendTo( m_NetState );
 				return true;
-			} else if ( throwOnOffline ) {
-				throw new MobileNotConnectedException( this, "Menu could not be sent." );
-			} else {
-				return false;
 			}
+
+			if ( throwOnOffline ) {
+				throw new MobileNotConnectedException( this, "Menu could not be sent." );
+			}
+			return false;
 		}
 
 		#endregion
@@ -8296,8 +8296,7 @@ namespace Server
 						return Map.Internal.DefaultRegion;
 					else
 						return Map.DefaultRegion;
-				else
-					return m_Region;
+				return m_Region;
 			}
 		}
 
@@ -9924,10 +9923,8 @@ namespace Server
 
 				return false;
 			}
-			else
-			{
-				return true;
-			}
+
+			return true;
 		}
 
 		#region Overhead messages
@@ -10530,16 +10527,14 @@ namespace Server
 		{
 			if ( m_SkillCheckLocationHandler == null )
 				return false;
-			else
-				return m_SkillCheckLocationHandler( this, skill, minSkill, maxSkill );
+			return m_SkillCheckLocationHandler( this, skill, minSkill, maxSkill );
 		}
 
 		public bool CheckSkill( SkillName skill, double chance )
 		{
 			if ( m_SkillCheckDirectLocationHandler == null )
 				return false;
-			else
-				return m_SkillCheckDirectLocationHandler( this, skill, chance );
+			return m_SkillCheckDirectLocationHandler( this, skill, chance );
 		}
 
 		public bool CheckTargetSkill( SkillName skill, object target, double minSkill, double maxSkill )

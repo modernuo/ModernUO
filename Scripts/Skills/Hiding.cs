@@ -90,23 +90,21 @@ namespace Server.SkillHandlers
 
 				return TimeSpan.FromSeconds( 1.0 );
 			}
-			else 
+
+			if ( ok )
 			{
-				if ( ok )
-				{
-					m.Hidden = true;
-					m.Warmode = false;
-					m.LocalOverheadMessage( MessageType.Regular, 0x1F4, 501240 ); // You have hidden yourself well.
-				}
-				else
-				{
-					m.RevealingAction();
-
-					m.LocalOverheadMessage( MessageType.Regular, 0x22, 501241 ); // You can't seem to hide here.
-				}
-
-				return TimeSpan.FromSeconds( 10.0 );
+				m.Hidden = true;
+				m.Warmode = false;
+				m.LocalOverheadMessage( MessageType.Regular, 0x1F4, 501240 ); // You have hidden yourself well.
 			}
+			else
+			{
+				m.RevealingAction();
+
+				m.LocalOverheadMessage( MessageType.Regular, 0x22, 501241 ); // You can't seem to hide here.
+			}
+
+			return TimeSpan.FromSeconds( 10.0 );
 		}
 	}
 }

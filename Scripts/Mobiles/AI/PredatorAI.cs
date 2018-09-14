@@ -59,10 +59,8 @@ namespace Server.Mobiles
 					Action = ActionType.Wander;
 					return true;
 				}
-				else
-				{
-					m_Mobile.DebugSay( "I should be closer to {0}", combatant.Name );
-				}
+
+				m_Mobile.DebugSay( "I should be closer to {0}", combatant.Name );
 			}
 
 			return true;

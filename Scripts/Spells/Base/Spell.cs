@@ -112,10 +112,8 @@ namespace Server.Spells
 			{
 				return GetNewAosDamage( bonus, dice, sides, (Caster.Player && singleTarget.Player), GetDamageScalar( singleTarget ) );
 			}
-			else
-			{
-				return GetNewAosDamage( bonus, dice, sides, false );
-			}
+
+			return GetNewAosDamage( bonus, dice, sides, false );
 		}
 
 		public virtual int GetNewAosDamage( int bonus, int dice, int sides, bool playerVsPlayer )
@@ -483,7 +481,8 @@ namespace Server.Spells
 			{
 				return false;
 			}
-			else if ( m_Scroll is BaseWand && m_Caster.Spell != null && m_Caster.Spell.IsCasting )
+
+			if ( m_Scroll is BaseWand && m_Caster.Spell != null && m_Caster.Spell.IsCasting )
 			{
 				m_Caster.SendLocalizedMessage( 502643 ); // You can not cast a spell while frozen.
 			}
@@ -562,10 +561,8 @@ namespace Server.Spells
 
 					return true;
 				}
-				else
-				{
-					return false;
-				}
+
+				return false;
 			}
 			else
 			{
@@ -820,15 +817,13 @@ namespace Server.Spells
 				m_Caster.SendLocalizedMessage( 501857 ); // This spell won't work on that!
 				return false;
 			}
-			else if ( Caster.CanBeBeneficial( target, true, allowDead ) && CheckSequence() )
+
+			if ( Caster.CanBeBeneficial( target, true, allowDead ) && CheckSequence() )
 			{
 				Caster.DoBeneficial( target );
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 
 		public bool CheckHSequence( Mobile target )
@@ -838,15 +833,13 @@ namespace Server.Spells
 				m_Caster.SendLocalizedMessage( 501857 ); // This spell won't work on that!
 				return false;
 			}
-			else if ( Caster.CanBeHarmful( target ) && CheckSequence() )
+
+			if ( Caster.CanBeHarmful( target ) && CheckSequence() )
 			{
 				Caster.DoHarmful( target );
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 
 		private class AnimTimer : Timer
@@ -898,7 +891,8 @@ namespace Server.Spells
 				{
 					return;
 				}
-				else if ( m_Spell.m_State == SpellState.Casting && m_Spell.m_Caster.Spell == m_Spell )
+
+				if ( m_Spell.m_State == SpellState.Casting && m_Spell.m_Caster.Spell == m_Spell )
 				{
 					m_Spell.m_State = SpellState.Sequencing;
 					m_Spell.m_CastTimer = null;

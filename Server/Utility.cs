@@ -68,7 +68,7 @@ namespace Server
 		{
 			if ( str == null )
 				return null;
-			else if ( str.Length == 0 )
+			if ( str.Length == 0 )
 				return string.Empty;
 
 			return string.Intern( str );
@@ -683,30 +683,24 @@ namespace Server
 			{
 				if ( dx > 0 )
 					return Direction.East;
-				else
-					return Direction.West;
+				return Direction.West;
 			}
-			else if ( ady >= adx * 3 )
+
+			if ( ady >= adx * 3 )
 			{
 				if ( dy > 0 )
 					return Direction.South;
-				else
-					return Direction.North;
+				return Direction.North;
 			}
-			else if ( dx > 0 )
+			if ( dx > 0 )
 			{
 				if ( dy > 0 )
 					return Direction.Down;
-				else
-					return Direction.Right;
+				return Direction.Right;
 			}
-			else
-			{
-				if ( dy > 0 )
-					return Direction.Left;
-				else
-					return Direction.Up;
-			}
+			if ( dy > 0 )
+				return Direction.Left;
+			return Direction.Up;
 		}
 
 		/* Should probably be rewritten to use an ITile interface
@@ -776,10 +770,8 @@ namespace Server
 
 				return array.GetValue( index );
 			}
-			else
-			{
-				return emptyValue;
-			}
+
+			return emptyValue;
 		}
 
 		#region Random
@@ -825,11 +817,12 @@ namespace Server
 		{
 			if ( count == 0 ) {
 				return from;
-			} else if ( count > 0 ) {
-				return from + RandomImpl.Next(count);
-			} else {
-				return from - RandomImpl.Next(-count);
 			}
+
+			if ( count > 0 ) {
+				return from + RandomImpl.Next(count);
+			}
+			return from - RandomImpl.Next(-count);
 		}
 
 		public static int Random( int count )
@@ -968,10 +961,9 @@ namespace Server
 		{
 			if ( hue < 2 )
 				return 2;
-			else if ( hue > 1001 )
+			if ( hue > 1001 )
 				return 1001;
-			else
-				return hue;
+			return hue;
 		}
 
 		/// <summary>
@@ -998,10 +990,9 @@ namespace Server
 		{
 			if ( hue < 1002 )
 				return 1002;
-			else if ( hue > 1058 )
+			if ( hue > 1058 )
 				return 1058;
-			else
-				return hue;
+			return hue;
 		}
 
 		//[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
@@ -1015,10 +1006,9 @@ namespace Server
 		{
 			if ( hue < 1102 )
 				return 1102;
-			else if ( hue > 1149 )
+			if ( hue > 1149 )
 				return 1149;
-			else
-				return hue;
+			return hue;
 		}
 
 		//[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]

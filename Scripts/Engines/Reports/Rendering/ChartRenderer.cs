@@ -60,11 +60,9 @@ namespace Server.Engines.Reports
 			{
 				return _color[index];
 			}
-			else
-			{
-				return _color[(index+2)%_colorLimit];
-				//throw new Exception("Color Limit is " + _colorLimit);
-			}
+
+			return _color[(index+2)%_colorLimit];
+			//throw new Exception("Color Limit is " + _colorLimit);
 		}
 	}
 }

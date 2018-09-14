@@ -35,7 +35,8 @@ namespace Server.Spells.Chivalry
 				Caster.SendLocalizedMessage( 1060173, RequiredTithing.ToString() ); // You must have at least ~1_TITHE_REQUIREMENT~ Tithing Points to use this ability,
 				return false;
 			}
-			else if ( Caster.Mana < mana )
+
+			if ( Caster.Mana < mana )
 			{
 				Caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
 				return false;
@@ -58,7 +59,8 @@ namespace Server.Spells.Chivalry
 				Caster.SendLocalizedMessage( 1060173, RequiredTithing.ToString() ); // You must have at least ~1_TITHE_REQUIREMENT~ Tithing Points to use this ability,
 				return false;
 			}
-			else if ( Caster.Mana < mana )
+
+			if ( Caster.Mana < mana )
 			{
 				Caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
 				return false;

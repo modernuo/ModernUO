@@ -161,7 +161,7 @@ namespace Server.Items
 		{
 			if ( ItemID >= 0x995 && ItemID <= 0x999 )
 				return ItemID;
-			else if ( ItemID == 0x9CA )
+			if ( ItemID == 0x9CA )
 				return ItemID;
 
 			return 0x995;
@@ -648,12 +648,11 @@ namespace Server.Items
 
 			if ( perc <= 0 )
 				return 1042975; // It's empty.
-			else if ( perc <= 33 )
+			if ( perc <= 33 )
 				return 1042974; // It's nearly empty.
-			else if ( perc <= 66 )
+			if ( perc <= 66 )
 				return 1042973; // It's half full.
-			else
-				return 1042972; // It's full.
+			return 1042972; // It's full.
 		}
 
 		public override void GetProperties( ObjectPropertyList list )

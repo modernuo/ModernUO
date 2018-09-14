@@ -107,7 +107,8 @@ namespace Server.Engines.Harvest
 				OnBadHarvestTarget( from, tool, toHarvest );
 				return;
 			}
-			else if ( !def.Validate( tileID ) )
+
+			if ( !def.Validate( tileID ) )
 			{
 				OnBadHarvestTarget( from, tool, toHarvest );
 				return;
@@ -115,9 +116,9 @@ namespace Server.Engines.Harvest
 
 			if ( !CheckRange( from, tool, def, map, loc, true ) )
 				return;
-			else if ( !CheckResources( from, tool, def, map, loc, true ) )
+			if ( !CheckResources( from, tool, def, map, loc, true ) )
 				return;
-			else if ( !CheckHarvest( from, tool, def, toHarvest ) )
+			if ( !CheckHarvest( from, tool, def, toHarvest ) )
 				return;
 
 			if ( SpecialHarvest( from, tool, def, map, loc ) )
@@ -341,23 +342,24 @@ namespace Server.Engines.Harvest
 				OnBadHarvestTarget( from, tool, toHarvest );
 				return false;
 			}
-			else if ( !def.Validate( tileID ) )
+
+			if ( !def.Validate( tileID ) )
 			{
 				from.EndAction( locked );
 				OnBadHarvestTarget( from, tool, toHarvest );
 				return false;
 			}
-			else if ( !CheckRange( from, tool, def, map, loc, true ) )
+			if ( !CheckRange( from, tool, def, map, loc, true ) )
 			{
 				from.EndAction( locked );
 				return false;
 			}
-			else if ( !CheckResources( from, tool, def, map, loc, true ) )
+			if ( !CheckResources( from, tool, def, map, loc, true ) )
 			{
 				from.EndAction( locked );
 				return false;
 			}
-			else if ( !CheckHarvest( from, tool, def, toHarvest ) )
+			if ( !CheckHarvest( from, tool, def, toHarvest ) )
 			{
 				from.EndAction( locked );
 				return false;
@@ -424,9 +426,9 @@ namespace Server.Engines.Harvest
 
 			if ( !CheckRange( from, tool, def, map, loc, false ) )
 				return;
-			else if ( !CheckResources( from, tool, def, map, loc, false ) )
+			if ( !CheckResources( from, tool, def, map, loc, false ) )
 				return;
-			else if ( !CheckHarvest( from, tool, def, toHarvest ) )
+			if ( !CheckHarvest( from, tool, def, toHarvest ) )
 				return;
 
 			object toLock = GetLock( from, tool, def, toHarvest );

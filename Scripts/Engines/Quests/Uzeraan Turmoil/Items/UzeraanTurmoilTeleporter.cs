@@ -23,22 +23,23 @@ namespace Server.Engines.Quests.Haven
 					map = Map.Trammel;
 					return true;
 				}
-				else if ( qs.IsObjectiveInProgress( typeof( FindDryadObjective ) )
-					|| UzeraanTurmoilQuest.HasLostFertileDirt( player ) )
+
+				if ( qs.IsObjectiveInProgress( typeof( FindDryadObjective ) )
+				     || UzeraanTurmoilQuest.HasLostFertileDirt( player ) )
 				{
 					loc = new Point3D( 3557, 2690, 2 );
 					map = Map.Trammel;
 					return true;
 				}
-				else if ( player.Profession != 5 // paladin
-					&& ( qs.IsObjectiveInProgress( typeof( GetDaemonBoneObjective ) )
-					|| UzeraanTurmoilQuest.HasLostDaemonBone( player ) ) )
+				if ( player.Profession != 5 // paladin
+				     && ( qs.IsObjectiveInProgress( typeof( GetDaemonBoneObjective ) )
+				          || UzeraanTurmoilQuest.HasLostDaemonBone( player ) ) )
 				{
 					loc = new Point3D( 3422, 2653, 48 );
 					map = Map.Trammel;
 					return true;
 				}
-				else if ( qs.IsObjectiveInProgress( typeof( CashBankCheckObjective ) ) )
+				if ( qs.IsObjectiveInProgress( typeof( CashBankCheckObjective ) ) )
 				{
 					loc = new Point3D( 3624, 2610, 0 );
 					map = Map.Trammel;

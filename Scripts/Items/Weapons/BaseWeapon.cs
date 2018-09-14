@@ -364,7 +364,7 @@ namespace Server.Items
 
 				if ( Core.ML )
 					return MlSpeed;
-				else if ( Core.AOS )
+				if ( Core.AOS )
 					return AosSpeed;
 
 				return OldSpeed;
@@ -540,7 +540,8 @@ namespace Server.Items
 				m.SendLocalizedMessage( 500214 ); // You already have something in both hands.
 				return true;
 			}
-			else if ( Layer == Layer.OneHanded && layer == Layer.TwoHanded && !(item is BaseShield) && !(item is BaseEquipableLight) )
+
+			if ( Layer == Layer.OneHanded && layer == Layer.TwoHanded && !(item is BaseShield) && !(item is BaseEquipableLight) )
 			{
 				m.SendLocalizedMessage( 500215 ); // You can only wield one weapon at a time.
 				return true;
@@ -1525,7 +1526,7 @@ namespace Server.Items
 
 			damageGiven = AOS.Damage( defender, attacker, damage, ignoreArmor, phys, fire, cold, pois, nrgy, chaos, direct, false, this is BaseRanged, false );
 
-			double propertyBonus = ( move == null ) ? 1.0 : move.GetPropertyBonus( attacker );
+			double propertyBonus = move?.GetPropertyBonus( attacker ) ?? 1.0;
 
 			if ( Core.AOS )
 			{
@@ -1866,7 +1867,8 @@ namespace Server.Items
 				{
 					continue;
 				}
-				else if ( scalar < 1.0 )
+
+				if ( scalar < 1.0 )
 				{
 					damage *= ( 11 - from.GetDistanceToSqrt( m ) ) / 10;
 				}

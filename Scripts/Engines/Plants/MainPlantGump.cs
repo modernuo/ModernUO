@@ -381,10 +381,8 @@ namespace Server.Engines.Plants
 
 					return;
 				}
-				else
-				{
-					m_Plant.LabelTo( from, message );
-				}
+
+				m_Plant.LabelTo( from, message );
 			}
 
 			from.SendGump( new MainPlantGump( m_Plant ) );

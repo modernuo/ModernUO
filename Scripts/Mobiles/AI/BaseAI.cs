@@ -117,7 +117,7 @@ namespace Server.Mobiles
 
 					if (!isOwner && !isFriend)
 						return;
-					else if (isFriend && m_Order != OrderType.Follow && m_Order != OrderType.Stay && m_Order != OrderType.Stop)
+					if (isFriend && m_Order != OrderType.Follow && m_Order != OrderType.Stay && m_Order != OrderType.Stop)
 						return;
 
 					switch (m_Order)
@@ -141,8 +141,7 @@ namespace Server.Mobiles
 							{
 								if (m_Mobile.Summoned)
 									goto default;
-								else
-									m_From.SendGump(new Gumps.ConfirmReleaseGump(m_From, m_Mobile));
+								m_From.SendGump(new Gumps.ConfirmReleaseGump(m_From, m_Mobile));
 
 								break;
 							}
@@ -203,7 +202,7 @@ namespace Server.Mobiles
 
 			if (!isOwner && !isFriend)
 				return;
-			else if (isFriend && order != OrderType.Follow && order != OrderType.Stay && order != OrderType.Stop)
+			if (isFriend && order != OrderType.Follow && order != OrderType.Stay && order != OrderType.Stop)
 				return;
 
 			if (from.Target == null)
@@ -947,10 +946,8 @@ namespace Server.Mobiles
 				Action = ActionType.Guard;
 				return true;
 			}
-			else
-			{
-				m_Mobile.DebugSay("I am fleeing!");
-			}
+
+			m_Mobile.DebugSay("I am fleeing!");
 
 			return true;
 		}
@@ -1353,7 +1350,7 @@ namespace Server.Mobiles
 							/* ~1_NAME~ has granted you the ability to give orders to their pet ~2_PET_NAME~.
 							 * This creature will now consider you as a friend.
 							 */
-							to.SendLocalizedMessage(1043246, $"{@from.Name}\t{m_Mobile.Name}");
+							to.SendLocalizedMessage(1043246, $"{from.Name}\t{m_Mobile.Name}");
 
 							m_Mobile.AddPetFriend(to);
 
@@ -1393,7 +1390,7 @@ namespace Server.Mobiles
 				/* ~1_NAME~ has no longer granted you the ability to give orders to their pet ~2_PET_NAME~.
 				 * This creature will no longer consider you as a friend.
 				 */
-				to.SendLocalizedMessage(1070952, $"{@from.Name}\t{m_Mobile.Name}");
+				to.SendLocalizedMessage(1070952, $"{from.Name}\t{m_Mobile.Name}");
 
 				m_Mobile.RemovePetFriend(to);
 			}
@@ -1679,7 +1676,7 @@ namespace Server.Mobiles
 				}
 				else if (accepted && !m_Creature.CanBeControlledBy(to))
 				{
-					string args = $"{to.Name}\t{@from.Name}\t ";
+					string args = $"{to.Name}\t{from.Name}\t ";
 
 					from.SendLocalizedMessage(1043248, args); // The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
 					to.SendLocalizedMessage(1043249, args); // The pet will not accept you as a master because it does not trust you.~3_BLANK~
@@ -1688,7 +1685,7 @@ namespace Server.Mobiles
 				}
 				else if (accepted && !m_Creature.CanBeControlledBy(from))
 				{
-					string args = $"{to.Name}\t{@from.Name}\t ";
+					string args = $"{to.Name}\t{from.Name}\t ";
 
 					from.SendLocalizedMessage(1043250, args); // The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
 					to.SendLocalizedMessage(1043251, args); // The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
@@ -1739,7 +1736,7 @@ namespace Server.Mobiles
 
 						m_Creature.PlaySound(m_Creature.GetIdleSound());
 
-						string args = $"{@from.Name}\t{m_Creature.Name}\t{to.Name}";
+						string args = $"{from.Name}\t{m_Creature.Name}\t{to.Name}";
 
 						from.SendLocalizedMessage(1043253, args); // You have transferred your pet to ~3_GETTER~.
 						to.SendLocalizedMessage(1043252, args); // ~1_NAME~ has transferred the allegiance of ~2_PET_NAME~ to you.
@@ -1773,14 +1770,14 @@ namespace Server.Mobiles
 				}
 				else if (!m_Mobile.CanBeControlledBy(to))
 				{
-					string args = $"{to.Name}\t{@from.Name}\t ";
+					string args = $"{to.Name}\t{from.Name}\t ";
 
 					from.SendLocalizedMessage(1043248, args); // The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
 					to.SendLocalizedMessage(1043249, args); // The pet will not accept you as a master because it does not trust you.~3_BLANK~
 				}
 				else if (!m_Mobile.CanBeControlledBy(from))
 				{
-					string args = $"{to.Name}\t{@from.Name}\t ";
+					string args = $"{to.Name}\t{from.Name}\t ";
 
 					from.SendLocalizedMessage(1043250, args); // The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
 					to.SendLocalizedMessage(1043251, args); // The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
@@ -2410,7 +2407,8 @@ namespace Server.Mobiles
 				m_Mobile.FocusMob = m_Mobile.BardTarget;
 				return (m_Mobile.FocusMob != null);
 			}
-			else if (m_Mobile.Controlled)
+
+			if (m_Mobile.Controlled)
 			{
 				if (m_Mobile.ControlTarget == null || m_Mobile.ControlTarget.Deleted || m_Mobile.ControlTarget.Hidden || !m_Mobile.ControlTarget.Alive || m_Mobile.ControlTarget.IsDeadBondedPet || !m_Mobile.InRange(m_Mobile.ControlTarget, m_Mobile.RangePerception * 2))
 				{

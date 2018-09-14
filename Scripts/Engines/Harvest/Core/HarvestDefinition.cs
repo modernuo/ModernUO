@@ -225,15 +225,13 @@ namespace Server.Engines.Harvest
 
 				return contains;
 			}
-			else
-			{
-				int dist = -1;
 
-				for ( int i = 0; dist < 0 && i < m_Tiles.Length; ++i )
-					dist = ( m_Tiles[i] - tileID );
+			int dist = -1;
 
-				return ( dist == 0 );
-			}
+			for ( int i = 0; dist < 0 && i < m_Tiles.Length; ++i )
+				dist = ( m_Tiles[i] - tileID );
+
+			return ( dist == 0 );
 		}
 	}
 }

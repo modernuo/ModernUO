@@ -89,7 +89,7 @@ namespace Server.SkillHandlers
 				else if ( toSteal is Sigil )
 				{
 					PlayerState pl = PlayerState.Find( m_Thief );
-					Faction faction = ( pl == null ? null : pl.Faction );
+					Faction faction = pl?.Faction;
 
 					Sigil sig = (Sigil) toSteal;
 

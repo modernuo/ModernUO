@@ -117,8 +117,7 @@ namespace Server.Regions
 			{
 				if ( Map == Map.Ilshenar || Map == Map.Malas )
 					return typeof( ArcherGuard );
-				else
-					return typeof( WarriorGuard );
+				return typeof( WarriorGuard );
 			}
 		}
 
@@ -280,7 +279,7 @@ namespace Server.Regions
 
 						foreach ( Mobile v in m.GetMobilesInRange( 8 ) )
 						{
-							if ( !v.Player && v != m  && !IsGuardCandidate( v ) && ((v is BaseCreature)? ((BaseCreature)v).IsHumanInTown() : (v.Body.IsHuman && v.Region.IsPartOf( this ))) )
+							if ( !v.Player && v != m  && !IsGuardCandidate( v ) && ((v as BaseCreature)?.IsHumanInTown() ?? (v.Body.IsHuman && v.Region.IsPartOf( this ))) )
 							{
 								double dist = m.GetDistanceToSqrt( v );
 

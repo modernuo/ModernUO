@@ -22,25 +22,26 @@ namespace Server.Engines.Quests.Necro
 					qs.AddConversation( new RadarConversation() );
 					return true;
 				}
-				else if ( qs.IsObjectiveInProgress( typeof( FindCrystalCaveObjective ) ) )
+
+				if ( qs.IsObjectiveInProgress( typeof( FindCrystalCaveObjective ) ) )
 				{
 					loc = new Point3D( 1194, 521, -90 );
 					map = Map.Malas;
 					return true;
 				}
-				else if ( qs.IsObjectiveInProgress( typeof( FindCityOfLightObjective ) ) )
+				if ( qs.IsObjectiveInProgress( typeof( FindCityOfLightObjective ) ) )
 				{
 					loc = new Point3D( 1091, 519, -90 );
 					map = Map.Malas;
 					return true;
 				}
-				else if ( qs.IsObjectiveInProgress( typeof( ReturnToCrystalCaveObjective ) ) )
+				if ( qs.IsObjectiveInProgress( typeof( ReturnToCrystalCaveObjective ) ) )
 				{
 					loc = new Point3D( 1194, 521, -90 );
 					map = Map.Malas;
 					return true;
 				}
-				else if ( DarkTidesQuest.HasLostCallingScroll( player ) )
+				if ( DarkTidesQuest.HasLostCallingScroll( player ) )
 				{
 					loc = new Point3D( 1194, 521, -90 );
 					map = Map.Malas;

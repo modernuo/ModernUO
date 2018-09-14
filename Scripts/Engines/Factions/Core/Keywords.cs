@@ -143,7 +143,7 @@ namespace Server.Factions
 					{
 						Faction faction = Faction.Find( from );
 
-						faction?.BeginHonorLeadership( @from );
+						faction?.BeginHonorLeadership( from );
 
 						break;
 					}

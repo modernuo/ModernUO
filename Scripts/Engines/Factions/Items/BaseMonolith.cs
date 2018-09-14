@@ -47,7 +47,7 @@ namespace Server.Factions
 			set
 			{
 				m_Faction = value;
-				Hue = ( m_Faction == null ? 0 : m_Faction.Definition.HuePrimary );
+				Hue = m_Faction?.Definition.HuePrimary ?? 0;
 			}
 		}
 

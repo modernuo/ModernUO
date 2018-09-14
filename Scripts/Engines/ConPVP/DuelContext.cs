@@ -851,7 +851,7 @@ namespace Server.Engines.ConPVP
 			}
 
 			if ( hasWinner )
-				return winner == null ? (Participant) m_Participants[0] : winner;
+				return winner ?? (Participant) m_Participants[0];
 
 			return null;
 		}
@@ -1851,11 +1851,11 @@ namespace Server.Engines.ConPVP
 					pack.DropItem( item );
 
 					if ( item is BaseWeapon )
-						mob.SendLocalizedMessage( 1062001, item.Name == null ? "#" + item.LabelNumber.ToString() : item.Name ); // You can no longer wield your ~1_WEAPON~
+						mob.SendLocalizedMessage( 1062001, item.Name ?? "#" + item.LabelNumber.ToString() ); // You can no longer wield your ~1_WEAPON~
 					else if ( item is BaseArmor && !(item is BaseShield) )
-						mob.SendLocalizedMessage( 1062002, item.Name == null ? "#" + item.LabelNumber.ToString() : item.Name ); // You can no longer wear your ~1_ARMOR~
+						mob.SendLocalizedMessage( 1062002, item.Name ?? "#" + item.LabelNumber.ToString() ); // You can no longer wear your ~1_ARMOR~
 					else
-						mob.SendLocalizedMessage( 1062003, item.Name == null ? "#" + item.LabelNumber.ToString() : item.Name ); // You can no longer equip your ~1_SHIELD~
+						mob.SendLocalizedMessage( 1062003, item.Name ?? "#" + item.LabelNumber.ToString() ); // You can no longer equip your ~1_SHIELD~
 				}
 			}
 
@@ -2080,7 +2080,7 @@ namespace Server.Engines.ConPVP
 
 					if ( entry.Mobile == mob )
 						return entry;
-					else if ( entry.Expired )
+					if ( entry.Expired )
 						m_Entries.RemoveAt( i-- );
 				}
 
@@ -2105,11 +2105,9 @@ namespace Server.Engines.ConPVP
 
 					return false;
 				}
-				else
-				{
-					m.SendLocalizedMessage( 1049383 ); // The teleporter doesn't seem to work for you.
-					return true;
-				}
+
+				m.SendLocalizedMessage( 1049383 ); // The teleporter doesn't seem to work for you.
+				return true;
 			}
 
 			public ExitTeleporter( Serial serial ) : base( serial )
@@ -2319,8 +2317,7 @@ namespace Server.Engines.ConPVP
 					{
 						if ( m_Tournament == null )
 							return $"{dp.Mobile.Name} is dead";
-						else
-							dp.Mobile.Resurrect();
+						dp.Mobile.Resurrect();
 					}
 
 					if ( m_Tournament == null && CheckCombat( dp.Mobile ) )

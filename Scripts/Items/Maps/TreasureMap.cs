@@ -802,13 +802,12 @@ namespace Server.Items
 				{
 					if ( m_Level == 6 )
 						return 1063453;
-					else
-						return 1041516 + m_Level;
+					return 1041516 + m_Level;
 				}
-				else if ( m_Level == 6 )
+
+				if ( m_Level == 6 )
 					return 1063452;
-				else
-					return 1041510 + m_Level;
+				return 1041510 + m_Level;
 			}
 		}
 

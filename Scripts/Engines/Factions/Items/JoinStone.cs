@@ -15,8 +15,8 @@ namespace Server.Factions
 			{
 				m_Faction = value;
 
-				Hue = ( m_Faction == null ? 0 : m_Faction.Definition.HueJoin );
-				AssignName( m_Faction == null ? null : m_Faction.Definition.SignupName );
+				Hue = m_Faction?.Definition.HueJoin ?? 0;
+				AssignName( m_Faction?.Definition.SignupName );
 			}
 		}
 

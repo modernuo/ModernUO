@@ -157,16 +157,15 @@ namespace Server.Misc
 
 			if ( Utility.IPMatch( "192.168.*", ip ) )
 				return true;
-			else if ( Utility.IPMatch( "10.*", ip ) )
+			if ( Utility.IPMatch( "10.*", ip ) )
 				return true;
-			else if ( Utility.IPMatch( "172.16-31.*", ip ) )
+			if ( Utility.IPMatch( "172.16-31.*", ip ) )
 				return true;
-			else if ( Utility.IPMatch( "169.254.*", ip ) )
+			if ( Utility.IPMatch( "169.254.*", ip ) )
 				return true;
-			else if ( Utility.IPMatch( "100.64-127.*", ip ) )
+			if ( Utility.IPMatch( "100.64-127.*", ip ) )
 				return true;
-			else
-				return false;
+			return false;
 		}
 
 		private static IPAddress FindPublicAddress()

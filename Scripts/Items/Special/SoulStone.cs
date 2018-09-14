@@ -162,52 +162,53 @@ namespace Server.Items
 			{
 				return false;
 			}
-			else if ( from.Map != Map || !from.InRange( GetWorldLocation(), 2 ) )
+
+			if ( from.Map != Map || !from.InRange( GetWorldLocation(), 2 ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 				return false;
 			}
-			else if ( Account != null && ( !(from.Account is Account) || from.Account.Username != Account ) )
+			if ( Account != null && ( !(from.Account is Account) || from.Account.Username != Account ) )
 			{
 				from.SendLocalizedMessage( 1070714 ); // This is an Account Bound Soulstone, and your character is not bound to it.  You cannot use this Soulstone.
 				return false;
 			}
-			else if ( CheckCombat( from, TimeSpan.FromMinutes( 2.0 ) ) )
+			if ( CheckCombat( from, TimeSpan.FromMinutes( 2.0 ) ) )
 			{
 				from.SendLocalizedMessage( 1070727 ); // You must wait two minutes after engaging in combat before you can use a Soulstone.
 				return false;
 			}
-			else if ( from.Criminal )
+			if ( from.Criminal )
 			{
 				from.SendLocalizedMessage( 1070728 ); // You must wait two minutes after committing a criminal act before you can use a Soulstone.
 				return false;
 			}
-			else if ( from.Region.GetLogoutDelay( from ) > TimeSpan.Zero )
+			if ( from.Region.GetLogoutDelay( from ) > TimeSpan.Zero )
 			{
 				from.SendLocalizedMessage( 1070729 ); // In order to use your Soulstone, you must be in a safe log-out location.
 				return false;
 			}
-			else if ( !from.Alive )
+			if ( !from.Alive )
 			{
 				from.SendLocalizedMessage( 1070730 ); // You may not use a Soulstone while your character is dead.
 				return false;
 			}
-			else if ( Factions.Sigil.ExistsOn( from ) )
+			if ( Factions.Sigil.ExistsOn( from ) )
 			{
 				from.SendLocalizedMessage( 1070731 ); // You may not use a Soulstone while your character has a faction town sigil.
 				return false;
 			}
-			else if ( from.Spell != null && from.Spell.IsCasting )
+			if ( from.Spell != null && from.Spell.IsCasting )
 			{
 				from.SendLocalizedMessage( 1070733 ); // You may not use a Soulstone while your character is casting a spell.
 				return false;
 			}
-			else if ( from.Poisoned )
+			if ( from.Poisoned )
 			{
 				from.SendLocalizedMessage( 1070734 ); // You may not use a Soulstone while your character is poisoned.
 				return false;
 			}
-			else if ( from.Paralyzed )
+			if ( from.Paralyzed )
 			{
 				from.SendLocalizedMessage( 1070735 ); // You may not use a Soulstone while your character is paralyzed.
 				return false;
@@ -221,10 +222,7 @@ namespace Server.Items
 			}
 			#endregion
 
-			else
-			{
-				return true;
-			}
+			return true;
 		}
 
 		public override void OnDoubleClick( Mobile from )

@@ -116,12 +116,11 @@ namespace Server.Engines.Plants
 
 				if ( perc < 33 )
 					return PlantHealth.Dying;
-				else if ( perc < 66 )
+				if ( perc < 66 )
 					return PlantHealth.Wilted;
-				else if ( perc < 100 )
+				if ( perc < 100 )
 					return PlantHealth.Healthy;
-				else
-					return PlantHealth.Vibrant;
+				return PlantHealth.Vibrant;
 			}
 		}
 
@@ -261,8 +260,7 @@ namespace Server.Engines.Plants
 			{
 				if ( m_Pollinated )
 					return m_SeedType;
-				else
-					return m_Plant.PlantType;
+				return m_Plant.PlantType;
 			}
 			set => m_SeedType = value;
 		}
@@ -273,8 +271,7 @@ namespace Server.Engines.Plants
 			{
 				if ( m_Pollinated )
 					return m_SeedHue;
-				else
-					return m_Plant.PlantHue;
+				return m_Plant.PlantHue;
 			}
 			set => m_SeedHue = value;
 		}
@@ -346,12 +343,11 @@ namespace Server.Engines.Plants
 		{
 			if ( Water <= 1 )
 				return 1060826; // hard
-			else if ( Water <= 2 )
+			if ( Water <= 2 )
 				return 1060827; // soft
-			else if ( Water <= 3 )
+			if ( Water <= 3 )
 				return 1060828; // squishy
-			else
-				return 1060829; // sopping wet
+			return 1060829; // sopping wet
 		}
 
 		public int GetLocalizedHealth()

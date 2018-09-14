@@ -251,8 +251,7 @@ namespace Server.Items
 
 			if ( ItemID == m_NorthID )
 				return BaseAddon.IsWall( p.X, p.Y - 1, p.Z, map ); // North wall
-			else
-				return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // West wall
+			return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // West wall
 		}
 
 		public override void Serialize( GenericWriter writer )

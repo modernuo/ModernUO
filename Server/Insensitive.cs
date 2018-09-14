@@ -37,7 +37,7 @@ namespace Server
 		{
 			if ( a == null && b == null )
 				return true;
-			else if ( a == null || b == null || a.Length != b.Length )
+			if ( a == null || b == null || a.Length != b.Length )
 				return false;
 
 			return ( m_Comparer.Compare( a, b ) == 0 );

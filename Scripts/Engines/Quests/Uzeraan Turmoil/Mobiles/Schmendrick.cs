@@ -97,12 +97,10 @@ namespace Server.Engines.Quests.Haven
 					from.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
 					return false;
 				}
-				else
-				{
-					dropped.Consume();
-					from.SendLocalizedMessage( 1049346 ); // Schmendrick scribbles on the scroll for a few moments and hands you the finished product.
-					return dropped.Deleted;
-				}
+
+				dropped.Consume();
+				from.SendLocalizedMessage( 1049346 ); // Schmendrick scribbles on the scroll for a few moments and hands you the finished product.
+				return dropped.Deleted;
 			}
 
 			return base.OnDragDrop( from, dropped );

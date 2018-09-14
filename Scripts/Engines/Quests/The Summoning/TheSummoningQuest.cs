@@ -65,10 +65,9 @@ namespace Server.Engines.Quests.Doom
 
 			if ( fame < 1500 )
 				return Utility.Dice( 2, 5, -1 );
-			else if ( fame < 20000 )
+			if ( fame < 20000 )
 				return Utility.Dice( 2, 4, 8 );
-			else
-				return 50;
+			return 50;
 		}
 
 		public TheSummoningQuest( Victoria victoria, PlayerMobile from ) : base( from )

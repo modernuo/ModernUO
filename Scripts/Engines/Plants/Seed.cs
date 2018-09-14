@@ -109,25 +109,19 @@ namespace Server.Engines.Plants
 					args = $"#{title}\t#{typeInfo.Name}";
 					return typeInfo.GetSeedLabel( hueInfo );
 				}
-				else
-				{
-					args = $"#{title}";
-					return hueInfo.IsBright() ? 1060839 : 1060838; // [bright] ~1_val~ seed
-				}
+
+				args = $"#{title}";
+				return hueInfo.IsBright() ? 1060839 : 1060838; // [bright] ~1_val~ seed
 			}
-			else
+
+			if ( m_ShowType )
 			{
-				if ( m_ShowType )
-				{
-					args = $"{Amount}\t#{title}\t#{typeInfo.Name}";
-					return typeInfo.GetSeedLabelPlural( hueInfo );
-				}
-				else
-				{
-					args = $"{Amount}\t#{title}";
-					return hueInfo.IsBright() ? 1113491 : 1113490; // ~1_amount~ [bright] ~2_val~ seeds
-				}
+				args = $"{Amount}\t#{title}\t#{typeInfo.Name}";
+				return typeInfo.GetSeedLabelPlural( hueInfo );
 			}
+
+			args = $"{Amount}\t#{title}";
+			return hueInfo.IsBright() ? 1113491 : 1113490; // ~1_amount~ [bright] ~2_val~ seeds
 		}
 
 		public override void AddNameProperty( ObjectPropertyList list )

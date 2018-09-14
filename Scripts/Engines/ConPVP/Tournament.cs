@@ -601,7 +601,7 @@ namespace Server.Engines.ConPVP
 					case TournamentStage.Inactive:
 					{
 						m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
-							0x35, false, "The tournament is closed.", @from.NetState );
+							0x35, false, "The tournament is closed.", from.NetState );
 
 						break;
 					}
@@ -610,7 +610,7 @@ namespace Server.Engines.ConPVP
 						if ( m_Players.Count != tourny.PlayersPerParticipant )
 						{
 							m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
-								0x35, false, "You have not yet chosen your team.", @from.NetState );
+								0x35, false, "You have not yet chosen your team.", from.NetState );
 
 							m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 							break;
@@ -818,7 +818,7 @@ namespace Server.Engines.ConPVP
 
 					m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
 						0x59, false,
-						$"As you command m'{(@from.Female ? "Lady" : "Lord")}. I've given your offer to {mob.Name}.", from.NetState );
+						$"As you command m'{(from.Female ? "Lady" : "Lord")}. I've given your offer to {mob.Name}.", from.NetState );
 				}
 			}
 		}
@@ -961,7 +961,7 @@ namespace Server.Engines.ConPVP
 			AddBorderedText( 22, 22, 294, 20, Center( sb.ToString() ), LabelColor32, BlackColor32 );
 
 			AddBorderedText( 22, 50, 294, 40,
-				$"You have been asked to partner with {@from.Name} in a tournament. Do you accept?",
+				$"You have been asked to partner with {from.Name} in a tournament. Do you accept?",
 				0xB0C868, BlackColor32 );
 
 			AddImageTiled( 32, 88, 264, 1, 9107 );
@@ -1157,7 +1157,7 @@ namespace Server.Engines.ConPVP
 							0x59, false, $"{mob.Name} has accepted your offer of partnership.", from.NetState );
 
 						m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-							0x59, false, $"You have accepted the partnership with {@from.Name}.", mob.NetState );
+							0x59, false, $"You have accepted the partnership with {from.Name}.", mob.NetState );
 					}
 				}
 			}
@@ -1174,7 +1174,7 @@ namespace Server.Engines.ConPVP
 						0x22, false, $"{mob.Name} has declined your offer of partnership.", from.NetState );
 
 					m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-						0x22, false, $"You have declined the partnership with {@from.Name}.", mob.NetState );
+						0x22, false, $"You have declined the partnership with {from.Name}.", mob.NetState );
 				}
 			}
 		}
@@ -3133,8 +3133,8 @@ namespace Server.Engines.ConPVP
 						$"Guild: {(mob.Guild == null ? "None" : mob.Guild.Name + " [" + mob.Guild.Abbreviation + "]")}", false, false );
 					AddHtml( 25, 93, 250, 20, $"Rank: {(entry == null ? "N/A" : LadderGump.Rank(entry.Index + 1))}", false, false );
 					AddHtml( 25, 113, 250, 20, $"Level: {(entry == null ? 0 : Ladder.GetLevel(entry.Experience))}", false, false );
-					AddHtml( 25, 133, 250, 20, $"Wins: {(entry == null ? 0 : entry.Wins):N0}", false, false );
-					AddHtml( 25, 153, 250, 20, $"Losses: {(entry == null ? 0 : entry.Losses):N0}", false, false );
+					AddHtml( 25, 133, 250, 20, $"Wins: {entry?.Wins ?? 0:N0}", false, false );
+					AddHtml( 25, 153, 250, 20, $"Losses: {entry?.Losses ?? 0:N0}", false, false );
 
 					break;
 				}

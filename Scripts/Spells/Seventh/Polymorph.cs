@@ -43,22 +43,23 @@ namespace Server.Spells.Seventh
 				Caster.SendLocalizedMessage( 1010521 ); // You cannot polymorph while you have a Town Sigil
 				return false;
 			}
-			else if ( TransformationSpellHelper.UnderTransformation( Caster ) )
+
+			if ( TransformationSpellHelper.UnderTransformation( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1061633 ); // You cannot polymorph while in that form.
 				return false;
 			}
-			else if ( DisguiseTimers.IsDisguised( Caster ) )
+			if ( DisguiseTimers.IsDisguised( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 502167 ); // You cannot polymorph while disguised.
 				return false;
 			}
-			else if ( Caster.BodyMod == 183 || Caster.BodyMod == 184 )
+			if ( Caster.BodyMod == 183 || Caster.BodyMod == 184 )
 			{
 				Caster.SendLocalizedMessage( 1042512 ); // You cannot polymorph while wearing body paint
 				return false;
 			}
-			else if ( !Caster.CanBeginAction( typeof( PolymorphSpell ) ) )
+			if ( !Caster.CanBeginAction( typeof( PolymorphSpell ) ) )
 			{
 				if ( Core.ML )
 					EndPolymorph( Caster );
@@ -66,7 +67,7 @@ namespace Server.Spells.Seventh
 					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 				return false;
 			}
-			else if ( m_NewBody == 0 )
+			if ( m_NewBody == 0 )
 			{
 				Gump gump;
 				if ( Core.SE )

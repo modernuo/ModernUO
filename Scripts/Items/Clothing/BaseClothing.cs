@@ -191,7 +191,8 @@ namespace Server.Items
 
 					return false;
 				}
-				else if ( !AllowMaleWearer && !from.Female )
+
+				if ( !AllowMaleWearer && !from.Female )
 				{
 					if ( AllowFemaleWearer )
 						from.SendLocalizedMessage( 1010388 ); // Only females can wear this.
@@ -200,7 +201,7 @@ namespace Server.Items
 
 					return false;
 				}
-				else if ( !AllowFemaleWearer && from.Female )
+				if ( !AllowFemaleWearer && from.Female )
 				{
 					if ( AllowMaleWearer )
 						from.SendLocalizedMessage( 1063343 ); // Only males can wear this.
@@ -209,16 +210,13 @@ namespace Server.Items
 
 					return false;
 				}
-				else
-				{
-					int strBonus = ComputeStatBonus( StatType.Str );
-					int strReq = ComputeStatReq( StatType.Str );
+				int strBonus = ComputeStatBonus( StatType.Str );
+				int strReq = ComputeStatReq( StatType.Str );
 
-					if ( from.Str < strReq || (from.Str + strBonus) < 1 )
-					{
-						from.SendLocalizedMessage( 500213 ); // You are not strong enough to equip that.
-						return false;
-					}
+				if ( from.Str < strReq || (from.Str + strBonus) < 1 )
+				{
+					from.SendLocalizedMessage( 500213 ); // You are not strong enough to equip that.
+					return false;
 				}
 			}
 
@@ -249,10 +247,9 @@ namespace Server.Items
 		{
 			if ( type == StatType.Str )
 				return BaseStrBonus + Attributes.BonusStr;
-			else if ( type == StatType.Dex )
+			if ( type == StatType.Dex )
 				return BaseDexBonus + Attributes.BonusDex;
-			else
-				return BaseIntBonus + Attributes.BonusInt;
+			return BaseIntBonus + Attributes.BonusInt;
 		}
 
 		public virtual void AddStatBonuses( Mobile parent )
@@ -912,7 +909,7 @@ namespace Server.Items
 		{
 			if ( Deleted )
 				return false;
-			else if ( RootParent is Mobile && from != RootParent )
+			if ( RootParent is Mobile && from != RootParent )
 				return false;
 
 			Hue = sender.DyedHue;

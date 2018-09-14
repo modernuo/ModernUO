@@ -935,7 +935,7 @@ namespace Server.Mobiles
 
 			AddHtml( 250, 95, 500, 20, "Change this tip message", false, false );
 			AddHtml( 100, 190, 50, 20, "Message", false, false );
-			AddHtml( 100, 210, 450, 40, m_Barkeeper.TipMessage == null ? "No current message" : m_Barkeeper.TipMessage, true, false );
+			AddHtml( 100, 210, 450, 40, m_Barkeeper.TipMessage ?? "No current message", true, false );
 
 			AddButton( 60, 210, 4005, 4007, GetButtonID( 3, 0 ), GumpButtonType.Reply, 0 );
 
@@ -951,7 +951,7 @@ namespace Server.Mobiles
 
 			AddHtml( 250, 95, 500, 20, "Remove this tip message", false, false );
 			AddHtml( 100, 190, 50, 20, "Message", false, false );
-			AddHtml( 100, 210, 450, 40, m_Barkeeper.TipMessage == null ? "No current message" : m_Barkeeper.TipMessage, true, false );
+			AddHtml( 100, 210, 450, 40, m_Barkeeper.TipMessage ?? "No current message", true, false );
 
 			AddButton( 60, 210, 4005, 4007, GetButtonID( 4, 0 ), GumpButtonType.Reply, 0 );
 

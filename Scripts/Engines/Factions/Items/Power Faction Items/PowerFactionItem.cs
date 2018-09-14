@@ -73,7 +73,8 @@ namespace Server {
 
 						weight = Utility.Random( weight );
 
-						foreach ( WeightedItem item in _items ) {
+						foreach ( WeightedItem item in _items )
+						{
 							if ( weight < item.Weight ) {
 								Item obj = item.Construct();
 
@@ -95,9 +96,9 @@ namespace Server {
 								}
 
 								break;
-							} else {
-								weight -= item.Weight;
 							}
+
+							weight -= item.Weight;
 						}
 					}
 				}

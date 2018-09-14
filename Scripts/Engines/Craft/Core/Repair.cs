@@ -49,7 +49,7 @@ namespace Server.Engines.Craft
 			private int GetWeakenChance( Mobile mob, SkillName skill, int curHits, int maxHits )
 			{
 				// 40% - (1% per hp lost) - (1% per 10 craft skill)
-				return (40 + (maxHits - curHits)) - (int)(((m_Deed != null)? m_Deed.SkillLevel : mob.Skills[skill].Value) / 10);
+				return (40 + (maxHits - curHits)) - (int)((m_Deed?.SkillLevel ?? mob.Skills[skill].Value) / 10);
 			}
 
 			private bool CheckWeaken( Mobile mob, SkillName skill, int curHits, int maxHits )
@@ -75,17 +75,15 @@ namespace Server.Engines.Craft
 
 					if ( value < minSkill )
 						return false; // Too difficult
-					else if ( value >= maxSkill )
+					if ( value >= maxSkill )
 						return true; // No challenge
 
 					double chance = (value - minSkill) / (maxSkill - minSkill);
 
 					return (chance >= Utility.RandomDouble());
 				}
-				else
-				{
-					return mob.CheckSkill( skill, difficulty - 25.0, difficulty + 25.0 );
-				}
+
+				return mob.CheckSkill( skill, difficulty - 25.0, difficulty + 25.0 );
 			}
 
 			private bool CheckDeed( Mobile from )
@@ -126,39 +124,41 @@ namespace Server.Engines.Craft
 						|| ( weapon is ButcherKnife )
 						|| ( weapon is SkinningKnife );
 				}
-				else if ( m_CraftSystem is DefCarpentry )
+
+				if ( m_CraftSystem is DefCarpentry )
 				{
 					return ( weapon is Club )
-						|| ( weapon is BlackStaff )
-						|| ( weapon is MagicWand )
-					#region Temporary
-					// TODO: Make these items craftable
-						|| ( weapon is WildStaff );
+					       || ( weapon is BlackStaff )
+					       || ( weapon is MagicWand )
+					       #region Temporary
+					       // TODO: Make these items craftable
+					       || ( weapon is WildStaff );
 					#endregion
 				}
-				else if ( m_CraftSystem is DefBlacksmithy )
+				if ( m_CraftSystem is DefBlacksmithy )
 				{
 					return ( weapon is Pitchfork )
-					#region Temporary
-					// TODO: Make these items craftable
-						|| ( weapon is RadiantScimitar )
-						|| ( weapon is WarCleaver )
-						|| ( weapon is ElvenSpellblade )
-						|| ( weapon is AssassinSpike )
-						|| ( weapon is Leafblade )
-						|| ( weapon is RuneBlade )
-						|| ( weapon is ElvenMachete )
-						|| ( weapon is OrnateAxe )
-						|| ( weapon is DiamondMace );
+					       #region Temporary
+					       // TODO: Make these items craftable
+					       || ( weapon is RadiantScimitar )
+					       || ( weapon is WarCleaver )
+					       || ( weapon is ElvenSpellblade )
+					       || ( weapon is AssassinSpike )
+					       || ( weapon is Leafblade )
+					       || ( weapon is RuneBlade )
+					       || ( weapon is ElvenMachete )
+					       || ( weapon is OrnateAxe )
+					       || ( weapon is DiamondMace );
 					#endregion
 				}
 				#region Temporary
 				// TODO: Make these items craftable
-				else if ( m_CraftSystem is DefBowFletching )
+				if ( m_CraftSystem is DefBowFletching )
 				{
 					return ( weapon is ElvenCompositeLongbow )
-						|| ( weapon is MagicalShortbow );
+					       || ( weapon is MagicalShortbow );
 				}
+
 				#endregion
 
 				return false;
@@ -184,23 +184,25 @@ namespace Server.Engines.Craft
 						|| ( armor is HidePants )
 						|| ( armor is HidePauldrons );
 				}
-				else if ( m_CraftSystem is DefCarpentry )
+
+				if ( m_CraftSystem is DefCarpentry )
 				{
 					return ( armor is WingedHelm )
-						|| ( armor is RavenHelm )
-						|| ( armor is VultureHelm )
-						|| ( armor is WoodlandArms )
-						|| ( armor is WoodlandChest )
-						|| ( armor is WoodlandGloves )
-						|| ( armor is WoodlandGorget )
-						|| ( armor is WoodlandLegs );
+					       || ( armor is RavenHelm )
+					       || ( armor is VultureHelm )
+					       || ( armor is WoodlandArms )
+					       || ( armor is WoodlandChest )
+					       || ( armor is WoodlandGloves )
+					       || ( armor is WoodlandGorget )
+					       || ( armor is WoodlandLegs );
 				}
-				else if ( m_CraftSystem is DefBlacksmithy )
+				if ( m_CraftSystem is DefBlacksmithy )
 				{
 					return ( armor is Circlet )
-						|| ( armor is RoyalCirclet )
-						|| ( armor is GemmedCirclet );
+					       || ( armor is RoyalCirclet )
+					       || ( armor is GemmedCirclet );
 				}
+
 				#endregion
 
 				return false;

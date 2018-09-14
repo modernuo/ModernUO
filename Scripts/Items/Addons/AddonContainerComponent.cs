@@ -60,7 +60,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			m_Addon?.OnComponentUsed( this, @from );
+			m_Addon?.OnComponentUsed( this, from );
 		}
 
 		public override void OnLocationChange( Point3D old )
@@ -71,7 +71,7 @@ namespace Server.Items
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
 		{
-			m_Addon?.GetContextMenuEntries( @from, list );
+			m_Addon?.GetContextMenuEntries( from, list );
 		}
 
 		public override void OnMapChange()

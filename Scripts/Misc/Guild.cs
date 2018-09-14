@@ -361,7 +361,7 @@ namespace Server.Guilds
 		{
 			PlayerMobile pm = from as PlayerMobile;
 
-			AllianceChat( from, (pm == null) ? 0x3B2 : pm.AllianceMessageHue, text );
+			AllianceChat( from, pm?.AllianceMessageHue ?? 0x3B2, text );
 		}
 		#endregion
 
@@ -519,16 +519,16 @@ namespace Server.Guilds
 				{
 					if ( m_Kills > w.m_Kills )
 						return WarStatus.Win;
-					else if ( m_Kills < w.m_Kills )
+					if ( m_Kills < w.m_Kills )
 						return WarStatus.Lose;
-					else
-						return WarStatus.Draw;
+					return WarStatus.Draw;
 				}
-				else if ( m_MaxKills > 0 )
+
+				if ( m_MaxKills > 0 )
 				{
 					if ( m_Kills >= m_MaxKills )
 						return WarStatus.Win;
-					else if ( w.m_Kills >= w.MaxKills )
+					if ( w.m_Kills >= w.MaxKills )
 						return WarStatus.Lose;
 				}
 

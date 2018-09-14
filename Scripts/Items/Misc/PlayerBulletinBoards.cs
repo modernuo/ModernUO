@@ -224,17 +224,18 @@ namespace Server.Items
 					from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
 					return;
 				}
-				else if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
+
+				if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
 				{
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 					return;
 				}
-				else if ( !CheckAccess( house, from ) )
+				if ( !CheckAccess( house, from ) )
 				{
 					from.SendLocalizedMessage( 1062398 ); // You are not allowed to post to this bulletin board.
 					return;
 				}
-				else if ( m_Greeting && !house.IsOwner( from ) )
+				if ( m_Greeting && !house.IsOwner( from ) )
 				{
 					return;
 				}
@@ -299,12 +300,13 @@ namespace Server.Items
 					from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
 					return;
 				}
-				else if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
+
+				if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
 				{
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 					return;
 				}
-				else if ( !CheckAccess( house, from ) )
+				if ( !CheckAccess( house, from ) )
 				{
 					from.SendLocalizedMessage( 1062398 ); // You are not allowed to post to this bulletin board.
 					return;
@@ -405,12 +407,13 @@ namespace Server.Items
 				from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
 				return;
 			}
-			else if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
+
+			if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 				return;
 			}
-			else if ( !BasePlayerBB.CheckAccess( house, from ) )
+			if ( !BasePlayerBB.CheckAccess( house, from ) )
 			{
 				from.SendLocalizedMessage( 1062398 ); // You are not allowed to post to this bulletin board.
 				return;
@@ -604,7 +607,7 @@ namespace Server.Items
 				AddHtml( 255, 180, 150, 20, message.Time.ToString( "yyyy-MM-dd HH:mm:ss" ), false, false );
 
 				Mobile poster = message.Poster;
-				string name = ( poster == null ? null : poster.Name );
+				string name = poster?.Name;
 
 				if ( name == null || (name = name.Trim()).Length == 0 )
 					name = "Someone";

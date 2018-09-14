@@ -50,8 +50,7 @@ namespace Server.Items
 
 				if ( m != null )
 					return ( ( m.Skills[SkillName.Parry].Value * ar ) / 200.0 ) + 1.0;
-				else
-					return ar;
+				return ar;
 			}
 		}
 

@@ -218,9 +218,6 @@ namespace Server.Engines.ConPVP
 						AddBorderedText( 235 + 15, 105 + ( i * 75 ), 250, 20, pl.Player.Name, 0xFFC000, BlackColor32 );
 				}
 			}
-			else
-			{
-			}
 
 			AddButton( 314, height - 42, 247, 248, 1, GumpButtonType.Reply, 0 );
 		}
@@ -449,7 +446,7 @@ namespace Server.Engines.ConPVP
 				else if ( passTeam == useTeam && passTo.PlaceInBackpack( this ) )
 				{
 					passTo.LocalOverheadMessage( MessageType.Regular, 0x59, false,
-						$"{@from.Name} has passed you the cookies!");
+						$"{from.Name} has passed you the cookies!");
 				}
 				else
 				{
@@ -496,7 +493,7 @@ namespace Server.Engines.ConPVP
 			Mobile mob = FindOwner( parent );
 
 			if ( mob != null )
-				mob.SolidHueOverride = ( m_TeamInfo == null ? -1 : m_TeamInfo.Game.GetColor( mob ) );
+				mob.SolidHueOverride = m_TeamInfo?.Game.GetColor( mob ) ?? -1;
 		}
 
 		public CTFFlag( Serial serial )

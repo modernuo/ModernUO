@@ -172,9 +172,9 @@ namespace Server.Items
 			{
 				if ( keg.Type == PotionEffect.ExplosionLesser )
 					return 5;
-				else if ( keg.Type == PotionEffect.Explosion )
+				if ( keg.Type == PotionEffect.Explosion )
 					return 10;
-				else if ( keg.Type == PotionEffect.ExplosionGreater )
+				if ( keg.Type == PotionEffect.ExplosionGreater )
 					return 15;
 			}
 

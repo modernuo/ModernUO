@@ -75,8 +75,7 @@ namespace Server.Engines.Quests.Collector
 			int index = Utility.Random( m_Names.Length );
 			if ( m_Names[index] == null )
 				return from.Name;
-			else
-				return m_Names[index];
+			return m_Names[index];
 		}
 
 		private const int m_Partial = 2;

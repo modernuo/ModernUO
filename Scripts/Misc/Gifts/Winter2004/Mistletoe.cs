@@ -31,8 +31,7 @@ namespace Server.Items
 
 			if ( ItemID == 0x2375 )
 				return BaseAddon.IsWall( p.X, p.Y - 1, p.Z, map ); // North wall
-			else
-				return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // West wall
+			return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // West wall
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -108,16 +107,12 @@ namespace Server.Items
 					Hue = sender.DyedHue;
 					return true;
 				}
-				else
-				{
-					from.SendLocalizedMessage( 500295 ); // You are too far away to do that.
-					return false;
-				}
-			}
-			else
-			{
+
+				from.SendLocalizedMessage( 500295 ); // You are too far away to do that.
 				return false;
 			}
+
+			return false;
 		}
 
 		private class MistletoeAddonGump : Gump

@@ -32,15 +32,11 @@ namespace Server
 				{
 					return new DualSaveStrategy(); // return new DynamicSaveStrategy(); (4.0 or return new ParallelSaveStrategy(processorCount); (2.0)
 				}
-				else
-				{
-					return new DualSaveStrategy();
-				}
+
+				return new DualSaveStrategy();
 			}
-			else
-			{
-				return new StandardSaveStrategy();
-			}
+
+			return new StandardSaveStrategy();
 		}
 
 		public abstract string Name { get; }

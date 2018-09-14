@@ -358,7 +358,7 @@ namespace Server.Items
 			if ( !Active )
 				return;
 
-			string text = $"{@from.Name} says {message}";
+			string text = $"{from.Name} says {message}";
 
 			if ( RootParent is Mobile mobile )
 			{

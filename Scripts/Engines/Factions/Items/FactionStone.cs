@@ -15,7 +15,7 @@ namespace Server.Factions
 			{
 				m_Faction = value;
 
-				AssignName( m_Faction == null ? null : m_Faction.Definition.FactionStoneName );
+				AssignName( m_Faction?.Definition.FactionStoneName );
 			}
 		}
 

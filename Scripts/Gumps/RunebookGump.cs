@@ -19,13 +19,13 @@ namespace Server.Gumps
 		{
 			if ( map == Map.Trammel )
 				return 10;
-			else if ( map == Map.Felucca )
+			if ( map == Map.Felucca )
 				return 81;
-			else if ( map == Map.Ilshenar )
+			if ( map == Map.Ilshenar )
 				return 1102;
-			else if ( map == Map.Malas )
+			if ( map == Map.Malas )
 				return 1102;
-			else if ( map == Map.Tokuno )
+			if ( map == Map.Tokuno )
 				return 1154;
 
 			return 0;

@@ -71,8 +71,8 @@ namespace Server.Items
 					scissors.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071897 ); // You carefully cut into the organ.
 					return true;
 				}
-				else
-					scissors.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071898 ); // You have already cut this organ open.
+
+				scissors.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071898 ); // You have already cut this organ open.
 			}
 
 			return false;
@@ -378,7 +378,8 @@ namespace Server.Items
 				AddComponent( new PlagueBeastBlood(), 47, 72 );
 				return true;
 			}
-			else if ( c.IsGland )
+
+			if ( c.IsGland )
 			{
 				m_Gland = null;
 				return true;

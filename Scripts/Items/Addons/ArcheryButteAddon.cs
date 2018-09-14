@@ -165,7 +165,8 @@ namespace Server.Items
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500598 ); // You are too far away from the archery butte to get an accurate shot.
 				return;
 			}
-			else if ( from.InRange( worldLoc, 4 ) )
+
+			if ( from.InRange( worldLoc, 4 ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500599 ); // You are too close to the target.
 				return;
@@ -250,7 +251,7 @@ namespace Server.Items
 			if ( split )
 			{
 				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010027 + area,
-					$"{@from.Name}\t{(isArrow ? "arrow" : "bolt")}");
+					$"{from.Name}\t{(isArrow ? "arrow" : "bolt")}");
 			}
 			else
 			{

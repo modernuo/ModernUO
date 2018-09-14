@@ -110,8 +110,7 @@ namespace Server.Items
 			{
 				if ( ItemID == 0x3062 )
 					return new AquariumEastDeed();
-				else
-					return new AquariumNorthDeed();
+				return new AquariumNorthDeed();
 			}
 		}
 
@@ -167,7 +166,7 @@ namespace Server.Items
 		{
 			if ( from == null || from.Deleted )
 				return false;
-			else if ( from.AccessLevel >= AccessLevel.GameMaster )
+			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
 
 			BaseHouse house = BaseHouse.FindHouseAt( this );
@@ -822,7 +821,7 @@ namespace Server.Items
 
 			if ( IsFull || m_LiveCreatures >= MaxLiveCreatures || fish.Dead )
 			{
-				@from?.SendLocalizedMessage( 1073633 ); // The aquarium can not hold the creature.
+				from?.SendLocalizedMessage( 1073633 ); // The aquarium can not hold the creature.
 
 				return false;
 			}
@@ -832,7 +831,7 @@ namespace Server.Items
 
 			m_LiveCreatures += 1;
 
-			@from?.SendLocalizedMessage( 1073632, $"#{fish.LabelNumber}"); // You add the following creature to your aquarium: ~1_FISH~
+			from?.SendLocalizedMessage( 1073632, $"#{fish.LabelNumber}"); // You add the following creature to your aquarium: ~1_FISH~
 
 			InvalidateProperties();
 			return true;
@@ -874,7 +873,7 @@ namespace Server.Items
 		#region Static members
 		public static FishBowl GetEmptyBowl( Mobile from )
 		{
-			if ( @from?.Backpack == null )
+			if ( from?.Backpack == null )
 				return null;
 
 			Item[] items = from.Backpack.FindItemsByType( typeof( FishBowl ) );

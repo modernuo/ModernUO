@@ -16,7 +16,7 @@ namespace Server.Commands.Generic
 		{
 			RangeCommandImplementor impl = RangeCommandImplementor.Instance;
 
-			impl?.Process( 18, @from, command, args );
+			impl?.Process( 18, from, command, args );
 		}
 	}
 }

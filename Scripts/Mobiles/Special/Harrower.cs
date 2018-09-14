@@ -291,15 +291,13 @@ namespace Server.Mobiles
 				m.SendLocalizedMessage( 1049524 ); // You have received a scroll of power!
 				m.AddToBackpack( new StatCapScroll( 225 + level ) );
 
-				if ( m is PlayerMobile )
+				if ( m is PlayerMobile pm )
 				{
-					PlayerMobile pm = (PlayerMobile)m;
-
 					for ( int j = 0; j < pm.JusticeProtectors.Count; ++j )
 					{
-						Mobile prot = (Mobile)pm.JusticeProtectors[j];
+						Mobile prot = pm.JusticeProtectors[j];
 
-						if ( prot.Map != m.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( m, prot ) )
+						if ( prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion( pm, prot ) )
 							continue;
 
 						int chance = 0;
@@ -377,11 +375,9 @@ namespace Server.Mobiles
 
 				return base.OnBeforeDeath();
 			}
-			else
-			{
-				Morph();
-				return false;
-			}
+
+			Morph();
+			return false;
 		}
 
 		Dictionary<Mobile, int> m_DamageEntries;
@@ -414,7 +410,7 @@ namespace Server.Mobiles
 			else
 				m_DamageEntries.Add( from, amount );
 
-			from.SendMessage($"Total Damage: {m_DamageEntries[@from]}");
+			from.SendMessage($"Total Damage: {m_DamageEntries[from]}");
 		}
 
 		public void AwardArtifact( Item artifact )
@@ -476,10 +472,11 @@ namespace Server.Mobiles
 			double random = Utility.RandomDouble();
 			if ( 0.05 >= random )
 				return CreateArtifact( UniqueList );
-			else if ( 0.15 >= random )
+			if ( 0.15 >= random )
 				return CreateArtifact( SharedList );
-			else if ( 0.30 >= random )
+			if ( 0.30 >= random )
 				return CreateArtifact( DecorativeList );
+
 			return null;
 		}
 
@@ -560,15 +557,13 @@ namespace Server.Mobiles
 							to = new Point3D( x, y, m_Owner.Z );
 							break;
 						}
-						else
-						{
-							int z = map.GetAverageZ( x, y );
 
-							if ( map.CanSpawnMobile( x, y, z ) )
-							{
-								to = new Point3D( x, y, z );
-								break;
-							}
+						int z = map.GetAverageZ( x, y );
+
+						if ( map.CanSpawnMobile( x, y, z ) )
+						{
+							to = new Point3D( x, y, z );
+							break;
 						}
 					}
 

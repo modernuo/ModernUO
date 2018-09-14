@@ -72,7 +72,7 @@ namespace Server.Engines.BulkOrders
 		{
 			if ( material >= BulkMaterialType.DullCopper && material <= BulkMaterialType.Valorite )
 				return 1045142 + (int)(material - BulkMaterialType.DullCopper);
-			else if ( material >= BulkMaterialType.Spined && material <= BulkMaterialType.Barbed )
+			if ( material >= BulkMaterialType.Spined && material <= BulkMaterialType.Barbed )
 				return 1049348 + (int)(material - BulkMaterialType.Spined);
 
 			return 0;

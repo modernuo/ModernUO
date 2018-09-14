@@ -11,8 +11,7 @@ namespace Server.Items
 			{
 				if ( ItemID == 0x9FB )
 					return 0x9FD;
-				else
-					return 0xA02;
+				return 0xA02;
 			}
 		}
 		
@@ -22,8 +21,7 @@ namespace Server.Items
 			{
 				if ( ItemID == 0x9FD )
 					return 0x9FB;
-				else
-					return 0xA00;
+				return 0xA00;
 			}
 		}
 		

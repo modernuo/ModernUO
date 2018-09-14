@@ -778,10 +778,8 @@ namespace Server.Engines.ConPVP
 
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 	}
 
@@ -1158,9 +1156,6 @@ namespace Server.Engines.ConPVP
 						AddBorderedText( 235 + 15, 105 + ( i * 75 ), 250, 20, pl.Player.Name, 0xFFC000, BlackColor32 );
 				}
 			}
-			else
-			{
-			}
 
 			AddButton( 314, height - 42, 247, 248, 1, GumpButtonType.Reply, 0 );
 		}
@@ -1402,8 +1397,7 @@ namespace Server.Engines.ConPVP
 		{
 			if ( m_Name != null )
 				return $"({Name}) ...";
-			else
-				return "...";
+			return "...";
 		}
 	}
 

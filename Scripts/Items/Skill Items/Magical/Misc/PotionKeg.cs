@@ -191,10 +191,6 @@ namespace Server.Items
 							pot.Delete();
 						}
 					}
-					else
-					{
-						// TODO: Target a bottle
-					}
 				}
 				else
 				{

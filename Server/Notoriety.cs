@@ -67,7 +67,7 @@ namespace Server
 
 		public static int Compute( Mobile source, Mobile target )
 		{
-			return m_Handler == null ? CanBeAttacked : m_Handler( source, target );
+			return m_Handler?.Invoke( source, target ) ?? CanBeAttacked;
 		}
 	}
 }

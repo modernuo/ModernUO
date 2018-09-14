@@ -22,9 +22,9 @@ namespace Server.Guilds
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
 				return Insensitive.Compare( x.Name, y.Name );
@@ -43,9 +43,9 @@ namespace Server.Guilds
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
 				NetState aState = x.NetState;
@@ -53,12 +53,11 @@ namespace Server.Guilds
 
 				if ( aState == null && bState == null )
 					return x.LastOnline.CompareTo( y.LastOnline );
-				else if ( aState == null )
+				if ( aState == null )
 					return -1;
-				else if ( bState == null )
+				if ( bState == null )
 					return 1;
-				else
-					return 0;
+				return 0;
 			}
 		}
 		private class TitleComparer : IComparer<PlayerMobile>
@@ -73,9 +72,9 @@ namespace Server.Guilds
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
 				return Insensitive.Compare( x.GuildTitle, y.GuildTitle );
@@ -94,9 +93,9 @@ namespace Server.Guilds
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
 				return x.GuildRank.Rank.CompareTo( y.GuildRank.Rank );
@@ -151,7 +150,7 @@ namespace Server.Guilds
 			defs[0] = name;
 			defs[1] = pm.GuildRank.Name;
 			defs[2] = (pm.NetState != null) ? new TextDefinition( 1063015 ): new TextDefinition( pm.LastOnline.ToString( "yyyy-MM-dd" ) );
-			defs[3] = (pm.GuildTitle == null) ? "" : pm.GuildTitle;
+			defs[3] = pm.GuildTitle ?? "";
 
 			return defs;
 		}
@@ -203,8 +202,8 @@ namespace Server.Guilds
 			PlayerState guildState = PlayerState.Find( g.Leader );
 			PlayerState targetState = PlayerState.Find( targ );
 
-			Faction guildFaction = ( guildState == null ? null : guildState.Faction );
-			Faction targetFaction = ( targetState == null ? null : targetState.Faction );
+			Faction guildFaction = guildState?.Faction;
+			Faction targetFaction = targetState?.Faction;
 
 			if ( pm == null || !IsMember( pm, guild ) || !pm.GuildRank.GetFlag( RankFlags.CanInvitePlayer ) )
 			{

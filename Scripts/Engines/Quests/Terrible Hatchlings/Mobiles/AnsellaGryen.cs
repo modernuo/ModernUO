@@ -38,8 +38,7 @@ namespace Server.Engines.Quests.Zento
 		{
 			if ( m.Quest == null )
 				return 3;
-			else
-				return -1;
+			return -1;
 		}
 
 		public override void OnTalk( PlayerMobile player, bool contextMenu )

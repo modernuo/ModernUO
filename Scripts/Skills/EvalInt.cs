@@ -72,15 +72,15 @@ namespace Server.SkillHandlers
 
 						if ( from.Skills[SkillName.EvalInt].Base >= 76.0 )
 							targ.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 1038202 + mnMod, from.NetState ); // That being is at [10,20,...] percent mental strength.
-					} 
-					else 
+					}
+					else
 					{
 						targ.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 1038166 + (body / 11), from.NetState ); // You cannot judge his/her/its mental abilities.
 					}
 				}
 				else
 				{
-					(targeted as Item)?.SendLocalizedMessageTo( @from, 500908, "" ); // It looks smarter than a rock, but dumber than a piece of wood.
+					(targeted as Item)?.SendLocalizedMessageTo( from, 500908, "" ); // It looks smarter than a rock, but dumber than a piece of wood.
 				}
 			}
 		}

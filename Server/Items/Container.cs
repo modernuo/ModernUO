@@ -151,7 +151,7 @@ namespace Server.Items
 
 		public override void OnSnoop( Mobile from )
 		{
-			m_SnoopHandler?.Invoke( this, @from );
+			m_SnoopHandler?.Invoke( this, from );
 		}
 
 		public override bool CheckLift( Mobile from, Item item, ref LRReason reject )
@@ -373,7 +373,7 @@ namespace Server.Items
 		{
 			if ( types.Length != amounts.Length )
 				throw new ArgumentException();
-			else if ( grouper == null )
+			if ( grouper == null )
 				throw new ArgumentNullException();
 
 			Item[][][] items = new Item[types.Length][][];
@@ -472,7 +472,7 @@ namespace Server.Items
 		{
 			if ( types.Length != amounts.Length )
 				throw new ArgumentException();
-			else if ( grouper == null )
+			if ( grouper == null )
 				throw new ArgumentNullException();
 
 			Item[][][] items = new Item[types.Length][][];
@@ -1082,7 +1082,8 @@ namespace Server.Items
 					{
 						return item;
 					}
-					else if ( recurse && item is Container )
+
+					if ( recurse && item is Container )
 					{
 						Item check = RecurseFindItemByType( item, type, recurse );
 
@@ -1119,7 +1120,8 @@ namespace Server.Items
 					{
 						return item;
 					}
-					else if ( recurse && item is Container )
+
+					if ( recurse && item is Container )
 					{
 						Item check = RecurseFindItemByType( item, types, recurse );
 
@@ -1464,10 +1466,8 @@ namespace Server.Items
 
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		public virtual bool TryDropItem( Mobile from, Item dropped, bool sendFullMessage )
@@ -1873,8 +1873,7 @@ namespace Server.Items
 
 			if ( data != null )
 				return data;
-			else
-				return m_Default;
+			return m_Default;
 		}
 
 		private int m_GumpID;

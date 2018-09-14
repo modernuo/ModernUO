@@ -43,7 +43,8 @@ namespace Server.Items
 				{
 					return false;
 				}
-				else if ( a != b )
+
+				if ( a != b )
 				{
 					for ( int j = 0; j < a.Length; ++j )
 					{

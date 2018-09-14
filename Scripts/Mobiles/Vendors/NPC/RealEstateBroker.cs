@@ -82,17 +82,13 @@ namespace Server.Mobiles
 						deed.Delete();
 						return true;
 					}
-					else
-					{
-						PublicOverheadMessage( MessageType.Regular, 0x3B2, 500390 ); // Your bank box is full.
-						return false;
-					}
-				}
-				else
-				{
-					PublicOverheadMessage( MessageType.Regular, 0x3B2, 500607 ); // I'm not interested in that.
+
+					PublicOverheadMessage( MessageType.Regular, 0x3B2, 500390 ); // Your bank box is full.
 					return false;
 				}
+
+				PublicOverheadMessage( MessageType.Regular, 0x3B2, 500607 ); // I'm not interested in that.
+				return false;
 			}
 
 			return base.OnDragDrop (from, dropped);

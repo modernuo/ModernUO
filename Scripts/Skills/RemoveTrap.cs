@@ -58,7 +58,7 @@ namespace Server.SkillHandlers
 					}
 
 					from.PlaySound( 0x241 );
-					
+
 					if ( from.CheckTargetSkill( SkillName.RemoveTrap, targ, targ.TrapPower, targ.TrapPower + 30 ) )
 					{
 						targ.TrapPower = 0;
@@ -76,7 +76,7 @@ namespace Server.SkillHandlers
 					BaseFactionTrap trap = (BaseFactionTrap) targeted;
 					Faction faction = Faction.Find( from );
 
-					FactionTrapRemovalKit kit = ( from.Backpack == null ? null : from.Backpack.FindItemByType( typeof( FactionTrapRemovalKit ) ) as FactionTrapRemovalKit );
+					FactionTrapRemovalKit kit = @from.Backpack?.FindItemByType( typeof( FactionTrapRemovalKit ) ) as FactionTrapRemovalKit;
 
 					bool isOwner = ( trap.Placer == from || ( trap.Faction != null && trap.Faction.IsCommander( from ) ) );
 
@@ -114,7 +114,7 @@ namespace Server.SkillHandlers
 						}
 
 						if ( !isOwner )
-							kit?.ConsumeCharge( @from );
+							kit?.ConsumeCharge( from );
 					}
 				}
 				else

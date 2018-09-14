@@ -53,8 +53,7 @@ namespace Server.Mobiles
 		{
 			if ( Utility.RandomBool() )
 				return WeaponAbility.ParalyzingBlow;
-			else
-				return WeaponAbility.BleedAttack;
+			return WeaponAbility.BleedAttack;
 		}
 
 		public override bool GivesMLMinorArtifact => true;

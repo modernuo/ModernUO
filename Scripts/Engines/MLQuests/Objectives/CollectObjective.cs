@@ -65,8 +65,7 @@ namespace Server.Engines.MLQuests.Objectives
 		{
 			if ( label < 1078872 )
 				return ( label - 1020000 );
-			else
-				return ( label - 1078872 );
+			return ( label - 1078872 );
 		}
 
 		public override void WriteToGump( Gump g, ref int y )

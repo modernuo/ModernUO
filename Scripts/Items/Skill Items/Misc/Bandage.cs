@@ -205,16 +205,14 @@ namespace Server.Items
 		{
 			if ( !m.Player && (m.Body.IsMonster || m.Body.IsAnimal) )
 				return SkillName.Veterinary;
-			else
-				return SkillName.Healing;
+			return SkillName.Healing;
 		}
 
 		public static SkillName GetSecondarySkill( Mobile m )
 		{
 			if ( !m.Player && (m.Body.IsMonster || m.Body.IsAnimal) )
 				return SkillName.AnimalLore;
-			else
-				return SkillName.Anatomy;
+			return SkillName.Anatomy;
 		}
 
 		public void EndHeal()

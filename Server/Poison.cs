@@ -47,10 +47,10 @@ namespace Server
 
             for ( int i = 0; i < m_Poisons.Count; i++ )
             {
-                if ( reg.Level == m_Poisons[i].Level )
+	            if ( reg.Level == m_Poisons[i].Level )
                     throw new Exception( "A poison with that level already exists." );
-                else if ( regName == m_Poisons[i].Name.ToLower() )
-                    throw new Exception( "A poison with that name already exists." );
+	            if ( regName == m_Poisons[i].Name.ToLower() )
+		            throw new Exception( "A poison with that name already exists." );
             }
 
             m_Poisons.Add( reg );

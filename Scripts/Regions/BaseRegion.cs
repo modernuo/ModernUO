@@ -472,10 +472,9 @@ namespace Server.Regions
 		{
 			if ( Name != null )
 				return Name;
-			else if ( RuneName != null )
+			if ( RuneName != null )
 				return RuneName;
-			else
-				return GetType().Name;
+			return GetType().Name;
 		}
 
 		public BaseRegion( string name, Map map, int priority, params Rectangle2D[] area ) : base( name, map, priority, area )

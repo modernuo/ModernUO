@@ -37,7 +37,7 @@ namespace Server.Items
 
 			if ( v < 16 )
 				return 16;
-			else if ( v > 24 )
+			if ( v > 24 )
 				return 24;
 
 			return v;

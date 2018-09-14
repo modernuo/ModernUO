@@ -153,7 +153,7 @@ namespace Server.Items
 			}
 			else
 			{
-				@from?.SendLocalizedMessage( 502079 ); // The instrument played its last tune.
+				from?.SendLocalizedMessage( 502079 ); // The instrument played its last tune.
 
 				Delete();
 			}
@@ -186,7 +186,7 @@ namespace Server.Items
 
 			if ( instrument != null )
 			{
-				callback?.Invoke( @from, instrument );
+				callback?.Invoke( from, instrument );
 			}
 			else
 			{

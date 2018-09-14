@@ -113,8 +113,7 @@ namespace Server.Mobiles
 			{
 				if ( m_Running && m_Timer != null && m_Timer.Running )
 					return m_End - DateTime.UtcNow;
-				else
-					return TimeSpan.FromSeconds( 0 );
+				return TimeSpan.FromSeconds( 0 );
 			}
 			set
 			{
@@ -388,15 +387,11 @@ namespace Server.Mobiles
 
 					if ( thisProp == null )
 						return null;
-					else
-					{
-						CPA attr = Properties.GetCPA( thisProp );
+					CPA attr = Properties.GetCPA( thisProp );
 
-						if ( attr == null || AccessLevel.Developer < attr.WriteLevel || !thisProp.CanWrite || attr.ReadOnly )
-							return null;
-						else
-							realProps[i] = thisProp;
-					}
+					if ( attr == null || AccessLevel.Developer < attr.WriteLevel || !thisProp.CanWrite || attr.ReadOnly )
+						return null;
+					realProps[i] = thisProp;
 				}
 			}
 
@@ -407,11 +402,8 @@ namespace Server.Mobiles
 		{
 			if ( index >= 0 && index < m_Entries.Count )
 				return Spawn( m_Entries[index], out flags );
-			else
-			{
-				flags = EntryFlags.InvalidEntry;
-				return false;
-			}
+			flags = EntryFlags.InvalidEntry;
+			return false;
 		}
 
 		public bool Spawn( SpawnerEntry entry, out EntryFlags flags )
@@ -606,7 +598,7 @@ namespace Server.Mobiles
 				{
 					if ( IsValidWater( map, x, y, Z ) )
 						return new Point3D( x, y, Z );
-					else if ( IsValidWater( map, x, y, mapZ ) )
+					if ( IsValidWater( map, x, y, mapZ ) )
 						return new Point3D( x, y, mapZ );
 				}
 
@@ -614,7 +606,7 @@ namespace Server.Mobiles
 				{
 					if ( map.CanSpawnMobile( x, y, Z ) )
 						return new Point3D( x, y, Z );
-					else if ( map.CanSpawnMobile( x, y, mapZ ) )
+					if ( map.CanSpawnMobile( x, y, mapZ ) )
 						return new Point3D( x, y, mapZ );
 				}
 			}

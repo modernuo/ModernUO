@@ -70,8 +70,7 @@ namespace Server.Engines.Plants
 		{
 			if (m_Table.TryGetValue( plantHue, out PlantHueInfo info ))
 				return info;
-			else
-				return m_Table[PlantHue.Plain];
+			return m_Table[PlantHue.Plain];
 		}
 
 		public static PlantHue RandomFirstGeneration()

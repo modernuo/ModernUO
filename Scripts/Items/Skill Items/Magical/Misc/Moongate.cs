@@ -98,7 +98,7 @@ namespace Server.Items
 
 		public virtual void UseGate( Mobile m )
 		{
-			ClientFlags flags = m.NetState == null ? ClientFlags.None : m.NetState.Flags;
+			ClientFlags flags = m.NetState?.Flags ?? ClientFlags.None;
 
 			if ( Factions.Sigil.ExistsOn( m ) )
 			{

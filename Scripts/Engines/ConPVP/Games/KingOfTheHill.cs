@@ -83,10 +83,9 @@ namespace Server.Engines.ConPVP
         {
             get
             {
-                if (m_KingTimer != null)
+	            if (m_KingTimer != null)
                     return m_KingTimer.Captures;
-                else
-                    return 0;
+	            return 0;
             }
         }
 
@@ -136,17 +135,15 @@ namespace Server.Engines.ConPVP
 
         public override bool OnMoveOff(Mobile m)
         {
-            if (base.OnMoveOff(m))
+	        if (base.OnMoveOff(m))
             {
                 if (m_King == m)
                     DeKingify();
 
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+	        return false;
         }
 
         public virtual void OnKingDied(Mobile king, KHTeamInfo kingTeam, Mobile killer, KHTeamInfo killerTeam)
@@ -725,10 +722,9 @@ namespace Server.Engines.ConPVP
 
         public override string ToString()
         {
-            if (m_Name != null)
+	        if (m_Name != null)
                 return $"({Name}) ...";
-            else
-                return "...";
+	        return "...";
         }
     }
 

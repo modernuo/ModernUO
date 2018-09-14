@@ -206,7 +206,8 @@ namespace Server.Engines.Harvest
 				from.SendLocalizedMessage( 501864 ); // You can't mine while riding.
 				return false;
 			}
-			else if ( from.IsBodyMod && !from.Body.IsHuman )
+
+			if ( from.IsBodyMod && !from.Body.IsHuman )
 			{
 				from.SendLocalizedMessage( 501865 ); // You can't mine while polymorphed.
 				return false;

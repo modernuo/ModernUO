@@ -113,26 +113,27 @@ namespace Server.Commands
 							failReason = $"Property '{propertyName}' not found.";
 							return null;
 						}
-						else if ( (access & PropertyAccess.Read) != 0 && from.AccessLevel < attr.ReadLevel )
+
+						if ( (access & PropertyAccess.Read) != 0 && from.AccessLevel < attr.ReadLevel )
 						{
 							failReason =
 								$"You must be at least {Mobile.GetAccessLevelName(attr.ReadLevel)} to get the property '{propertyName}'.";
 
 							return null;
 						}
-						else if ( (access & PropertyAccess.Write) != 0 && from.AccessLevel < attr.WriteLevel )
+						if ( (access & PropertyAccess.Write) != 0 && from.AccessLevel < attr.WriteLevel )
 						{
 							failReason =
 								$"You must be at least {Mobile.GetAccessLevelName(attr.WriteLevel)} to set the property '{propertyName}'.";
 
 							return null;
 						}
-						else if ( (access & PropertyAccess.Read) != 0 && !p.CanRead )
+						if ( (access & PropertyAccess.Read) != 0 && !p.CanRead )
 						{
 							failReason = $"Property '{propertyName}' is write only.";
 							return null;
 						}
-						else if ( (access & PropertyAccess.Write) != 0 && (!p.CanWrite || attr.ReadOnly) && isFinal )
+						if ( (access & PropertyAccess.Write) != 0 && (!p.CanWrite || attr.ReadOnly) && isFinal )
 						{
 							failReason = $"Property '{propertyName}' is read only.";
 							return null;

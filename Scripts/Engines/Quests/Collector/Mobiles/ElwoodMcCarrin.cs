@@ -217,11 +217,9 @@ namespace Server.Engines.Quests.Collector
 			{
 				return true;
 			}
-			else
-			{
-				bag.Delete();
-				return false;
-			}
+
+			bag.Delete();
+			return false;
 		}
 
 		public override void Serialize( GenericWriter writer )

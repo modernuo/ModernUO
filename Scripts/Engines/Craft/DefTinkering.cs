@@ -40,9 +40,9 @@ namespace Server.Engines.Craft
 		{
 			if ( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
 				return 1044038; // You have worn out your tool!
-			else if ( !BaseTool.CheckAccessible( tool, from ) )
+			if ( !BaseTool.CheckAccessible( tool, from ) )
 				return 1044263; // The tool must be on your person to use.
-			else if ( itemType != null && ( itemType.IsSubclassOf( typeof( BaseFactionTrapDeed ) ) || itemType == typeof( FactionTrapRemovalKit ) ) && Faction.Find( from ) == null )
+			if ( itemType != null && ( itemType.IsSubclassOf( typeof( BaseFactionTrapDeed ) ) || itemType == typeof( FactionTrapRemovalKit ) ) && Faction.Find( from ) == null )
 				return 1044573; // You have to be in a faction to do that.
 
 			return 0;
@@ -91,20 +91,16 @@ namespace Server.Engines.Craft
 			{
 				if ( lostMaterial )
 					return 1044043; // You failed to create the item, and some of your materials are lost.
-				else
-					return 1044157; // You failed to create the item, but no materials were lost.
+				return 1044157; // You failed to create the item, but no materials were lost.
 			}
-			else
-			{
-				if ( quality == 0 )
-					return 502785; // You were barely able to make this item.  It's quality is below average.
-				else if ( makersMark && quality == 2 )
-					return 1044156; // You create an exceptional quality item and affix your maker's mark.
-				else if ( quality == 2 )
-					return 1044155; // You create an exceptional quality item.
-				else
-					return 1044154; // You create the item.
-			}
+
+			if ( quality == 0 )
+				return 502785; // You were barely able to make this item.  It's quality is below average.
+			if ( makersMark && quality == 2 )
+				return 1044156; // You create an exceptional quality item and affix your maker's mark.
+			if ( quality == 2 )
+				return 1044155; // You create an exceptional quality item.
+			return 1044154; // You create the item.
 		}
 
 		public override bool ConsumeOnFailure( Mobile from, Type resourceType, CraftItem craftItem )
@@ -417,11 +413,9 @@ namespace Server.Engines.Craft
 			{
 				return false;
 			}
-			else
-			{
-				m_Container = container;
-				return true;
-			}
+
+			m_Container = container;
+			return true;
 		}
 
 		public override void EndCraftAction()

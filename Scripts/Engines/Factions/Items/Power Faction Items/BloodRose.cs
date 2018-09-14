@@ -30,11 +30,11 @@ namespace Server {
 				from.AddStatMod( new StatMod( StatType.All, "blood-rose", amount, TimeSpan.FromMinutes( time ) ) );
 
 				return true;
-			} else {
-				from.SendLocalizedMessage( 1062927 ); // You have eaten one of these recently and eating another would provide no benefit.
-
-				return false;
 			}
+
+			from.SendLocalizedMessage( 1062927 ); // You have eaten one of these recently and eating another would provide no benefit.
+
+			return false;
 		}
 
 		public override void Serialize( GenericWriter writer ) {

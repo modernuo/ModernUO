@@ -368,10 +368,9 @@ namespace Server.Items
 		{
 			if ( type == StatType.Str )
 				return StrBonus + Attributes.BonusStr;
-			else if ( type == StatType.Dex )
+			if ( type == StatType.Dex )
 				return DexBonus + Attributes.BonusDex;
-			else
-				return IntBonus + Attributes.BonusInt;
+			return IntBonus + Attributes.BonusInt;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
@@ -1141,7 +1140,8 @@ namespace Server.Items
 
 					return false;
 				}
-				else if ( !AllowMaleWearer && !from.Female )
+
+				if ( !AllowMaleWearer && !from.Female )
 				{
 					if ( AllowFemaleWearer )
 						from.SendLocalizedMessage( 1010388 ); // Only females can wear this.
@@ -1150,7 +1150,7 @@ namespace Server.Items
 
 					return false;
 				}
-				else if ( !AllowFemaleWearer && from.Female )
+				if ( !AllowFemaleWearer && from.Female )
 				{
 					if ( AllowMaleWearer )
 						from.SendLocalizedMessage( 1063343 ); // Only males can wear this.
@@ -1159,27 +1159,25 @@ namespace Server.Items
 
 					return false;
 				}
-				else
-				{
-					int strBonus = ComputeStatBonus( StatType.Str ), strReq = ComputeStatReq( StatType.Str );
-					int dexBonus = ComputeStatBonus( StatType.Dex ), dexReq = ComputeStatReq( StatType.Dex );
-					int intBonus = ComputeStatBonus( StatType.Int ), intReq = ComputeStatReq( StatType.Int );
+				int strBonus = ComputeStatBonus( StatType.Str ), strReq = ComputeStatReq( StatType.Str );
+				int dexBonus = ComputeStatBonus( StatType.Dex ), dexReq = ComputeStatReq( StatType.Dex );
+				int intBonus = ComputeStatBonus( StatType.Int ), intReq = ComputeStatReq( StatType.Int );
 
-					if ( from.Dex < dexReq || (from.Dex + dexBonus) < 1 )
-					{
-						from.SendLocalizedMessage( 502077 ); // You do not have enough dexterity to equip this item.
-						return false;
-					}
-					else if ( from.Str < strReq || (from.Str + strBonus) < 1 )
-					{
-						from.SendLocalizedMessage( 500213 ); // You are not strong enough to equip that.
-						return false;
-					}
-					else if ( from.Int < intReq || (from.Int + intBonus) < 1 )
-					{
-						from.SendMessage( "You are not smart enough to equip that." );
-						return false;
-					}
+				if ( from.Dex < dexReq || (from.Dex + dexBonus) < 1 )
+				{
+					from.SendLocalizedMessage( 502077 ); // You do not have enough dexterity to equip this item.
+					return false;
+				}
+
+				if ( from.Str < strReq || (from.Str + strBonus) < 1 )
+				{
+					from.SendLocalizedMessage( 500213 ); // You are not strong enough to equip that.
+					return false;
+				}
+				if ( from.Int < intReq || (from.Int + intBonus) < 1 )
+				{
+					from.SendMessage( "You are not smart enough to equip that." );
+					return false;
 				}
 			}
 

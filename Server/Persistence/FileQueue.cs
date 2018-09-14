@@ -87,9 +87,12 @@ namespace Server {
 		public FileQueue( int concurrentWrites, FileCommitCallback callback ) {
 			if ( concurrentWrites < 1 ) {
 				throw new ArgumentOutOfRangeException( "concurrentWrites" );
-			} else if ( bufferSize < 1 ) {
+			}
+
+			if ( bufferSize < 1 ) {
 				throw new ArgumentOutOfRangeException( "bufferSize" );
-			} else if ( callback == null ) {
+			}
+			if ( callback == null ) {
 				throw new ArgumentNullException( "callback" );
 			}
 
@@ -194,11 +197,15 @@ namespace Server {
 		public void Enqueue( byte[] buffer, int offset, int size ) {
 			if ( buffer == null ) {
 				throw new ArgumentNullException( "buffer" );
-			} else if ( offset < 0 ) {
+			}
+
+			if ( offset < 0 ) {
 				throw new ArgumentOutOfRangeException( "offset" );
-			} else if ( size < 0 ) {
+			}
+			if ( size < 0 ) {
 				throw new ArgumentOutOfRangeException( "size" );
-			} else if ( ( buffer.Length - offset ) < size ) {
+			}
+			if ( ( buffer.Length - offset ) < size ) {
 				throw new ArgumentException();
 			}
 

@@ -112,11 +112,9 @@ namespace Server.Items
 
 				return allow;
 			}
-			else
-			{
-				from.SendLocalizedMessage( 1075209 ); // Only bandages may be dropped into the fountain.
-				return false;
-			}
+
+			from.SendLocalizedMessage( 1075209 ); // Only bandages may be dropped into the fountain.
+			return false;
 		}
 
 		public override bool OnDragDropInto( Mobile from, Item item, Point3D p )
@@ -130,11 +128,9 @@ namespace Server.Items
 
 				return allow;
 			}
-			else
-			{
-				from.SendLocalizedMessage( 1075209 ); // Only bandages may be dropped into the fountain.
-				return false;
-			}
+
+			from.SendLocalizedMessage( 1075209 ); // Only bandages may be dropped into the fountain.
+			return false;
 		}
 
 		public override void AddNameProperties( ObjectPropertyList list )

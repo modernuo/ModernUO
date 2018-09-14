@@ -53,8 +53,8 @@ namespace Server.Gumps
 								PlayerState guildState = PlayerState.Find( m_Guild.Leader );
 								PlayerState targetState = PlayerState.Find( m );
 
-								Faction guildFaction = ( guildState == null ? null : guildState.Faction );
-								Faction targetFaction = ( targetState == null ? null : targetState.Faction );
+								Faction guildFaction = guildState?.Faction;
+								Faction targetFaction = targetState?.Faction;
 
 								if ( guildFaction != targetFaction )
 								{
@@ -67,7 +67,8 @@ namespace Server.Gumps
 
 									break;
 								}
-								else if ( targetState != null && targetState.IsLeaving )
+
+								if ( targetState != null && targetState.IsLeaving )
 								{
 									// OSI does this quite strangely, so we'll just do it this way
 									m_Mobile.SendMessage( "That person is quitting their faction and so you may not recruit them." );

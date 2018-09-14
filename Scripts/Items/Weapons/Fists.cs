@@ -56,8 +56,7 @@ namespace Server.Items
 
 			if ( wresValue > incrValue )
 				return wresValue;
-			else
-				return incrValue;
+			return incrValue;
 		}
 
 		private void CheckPreAOSMoves( Mobile attacker, Mobile defender )

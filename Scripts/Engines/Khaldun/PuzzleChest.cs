@@ -256,10 +256,8 @@ namespace Server.Items
 
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		public PuzzleChestSolutionAndTime GetLastGuess( Mobile m )

@@ -153,7 +153,8 @@ namespace Server.Engines.ConPVP
 					ie.Refresh();
 					return;
 				}
-				else if ( ie.Expired )
+
+				if ( ie.Expired )
 				{
 					list.RemoveAt( i-- );
 				}

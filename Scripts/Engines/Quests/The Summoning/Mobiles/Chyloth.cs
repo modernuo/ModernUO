@@ -139,16 +139,14 @@ namespace Server.Engines.Quests.Doom
 					foundLoc = true;
 					break;
 				}
-				else
-				{
-					int z = map.GetAverageZ( x, y );
 
-					if ( map.CanSpawnMobile( x, y, z ) )
-					{
-						dragon.MoveToWorld( new Point3D( x, y, z ), map );
-						foundLoc = true;
-						break;
-					}
+				int z = map.GetAverageZ( x, y );
+
+				if ( map.CanSpawnMobile( x, y, z ) )
+				{
+					dragon.MoveToWorld( new Point3D( x, y, z ), map );
+					foundLoc = true;
+					break;
 				}
 			}
 

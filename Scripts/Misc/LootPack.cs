@@ -594,18 +594,15 @@ namespace Server
 
 			if ( 50 > rnd )
 				return 1;
-			else
-				rnd -= 50;
+			rnd -= 50;
 
 			if ( 25 > rnd )
 				return 2;
-			else
-				rnd -= 25;
+			rnd -= 25;
 
 			if ( 14 > rnd )
 				return 3;
-			else
-				rnd -= 14;
+			rnd -= 14;
 
 			if ( 8 > rnd )
 				return 4;

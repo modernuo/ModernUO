@@ -113,8 +113,7 @@ namespace Server.Engines.Plants
 
 			if ( index >= 0 && index < m_Table.Length )
 				return m_Table[index];
-			else
-				return m_Table[0];
+			return m_Table[0];
 		}
 
 		public static PlantType RandomFirstGeneration()
@@ -206,20 +205,19 @@ namespace Server.Engines.Plants
 
 			if ( rand < 0.5 / exp4 )
 				return PlantType.CommonGreenBonsai;
-			else if ( rand < 1.0 / exp4 )
+			if ( rand < 1.0 / exp4 )
 				return PlantType.CommonPinkBonsai;
-			else if ( rand < (k1 * 0.5 + 1.0) / exp4 )
+			if ( rand < (k1 * 0.5 + 1.0) / exp4 )
 				return PlantType.UncommonGreenBonsai;
-			else if ( rand < exp1 / exp4 )
+			if ( rand < exp1 / exp4 )
 				return PlantType.UncommonPinkBonsai;
-			else if ( rand < (k2 * 0.5 + exp1) / exp4 )
+			if ( rand < (k2 * 0.5 + exp1) / exp4 )
 				return PlantType.RareGreenBonsai;
-			else if ( rand < exp2 / exp4 )
+			if ( rand < exp2 / exp4 )
 				return PlantType.RarePinkBonsai;
-			else if ( rand < exp3 / exp4 )
+			if ( rand < exp3 / exp4 )
 				return PlantType.ExceptionalBonsai;
-			else
-				return PlantType.ExoticBonsai;
+			return PlantType.ExoticBonsai;
 		}
 
 		public static bool IsCrossable( PlantType plantType )
@@ -237,8 +235,7 @@ namespace Server.Engines.Plants
 
 			if ( firstIndex + 1 == secondIndex || firstIndex == secondIndex + 1 )
 				return Utility.RandomBool() ? first : second;
-			else
-				return (PlantType)( (firstIndex + secondIndex) / 2 );
+			return (PlantType)( (firstIndex + secondIndex) / 2 );
 		}
 
 		public static bool CanReproduce( PlantType plantType )
@@ -261,8 +258,7 @@ namespace Server.Engines.Plants
 
 			if ( m_ContainsPlant )
 				return hueInfo.IsBright() ? 1060832 : 1060831; // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~
-			else
-				return hueInfo.IsBright() ? 1061887 : 1061888; // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~ ~6_val~
+			return hueInfo.IsBright() ? 1061887 : 1061888; // a ~1_val~ of ~2_val~ dirt with a ~3_val~ [bright] ~4_val~ ~5_val~ ~6_val~
 		}
 
 		public int GetPlantLabelFullGrown( PlantHueInfo hueInfo )
@@ -272,8 +268,7 @@ namespace Server.Engines.Plants
 
 			if ( m_ContainsPlant )
 				return hueInfo.IsBright() ? 1061891 : 1061889; // a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~
-			else
-				return hueInfo.IsBright() ? 1061892 : 1061890; // a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~ plant
+			return hueInfo.IsBright() ? 1061892 : 1061890; // a ~1_HEALTH~ [bright] ~2_COLOR~ ~3_NAME~ plant
 		}
 
 		public int GetPlantLabelDecorative( PlantHueInfo hueInfo )

@@ -376,7 +376,7 @@ namespace Server.Engines.MLQuests
 
 				if ( entry.Failed )
 					return; // Note: OSI sends no gump at all for failed quests, they have to be cancelled in the quest overview
-				else if ( entry.ClaimReward )
+				if ( entry.ClaimReward )
 					entry.SendRewardOffer();
 				else if ( entry.IsCompleted() )
 					entry.SendReportBackGump();

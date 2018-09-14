@@ -64,7 +64,8 @@ namespace Server.Engines.Quests.Haven
 					 */
 					return 1049088;
 				}
-				else if ( System.From.Profession == 2 ) // magician
+
+				if ( System.From.Profession == 2 ) // magician
 				{
 					/* <I>Uzeraan greets you as you approach...</I><BR><BR>
 					 *
@@ -95,9 +96,7 @@ namespace Server.Engines.Quests.Haven
 					 */
 					return 1049386;
 				}
-				else
-				{
-					/* <I>Uzeraan nods at you with approval and begins to speak...</I><BR><BR>
+/* <I>Uzeraan nods at you with approval and begins to speak...</I><BR><BR>
 					 *
 					 * Now that you are ready, let me give you your first task.<BR><BR>
 					 *
@@ -120,8 +119,7 @@ namespace Server.Engines.Quests.Haven
 					 *
 					 * Good luck young Paladin!
 					 */
-					return 1060388;
-				}
+				return 1060388;
 			}
 		}
 
@@ -180,9 +178,8 @@ namespace Server.Engines.Quests.Haven
 					 */
 					return 1049387;
 				}
-				else
-				{
-					/* <I>You give your report to Uzeraan and after a while,
+
+				/* <I>You give your report to Uzeraan and after a while,
 					 * he begins to speak...</I><BR><BR>
 					 *
 					 * Your report is grim, but all hope is not lost!  It has become apparent
@@ -208,8 +205,7 @@ namespace Server.Engines.Quests.Haven
 					 * and <a href="?ForceTopic76">Healing</a> <a href="?ForceTopic74">potions</a>
 					 * to help you out along the way.  Good luck.
 					 */
-					return 1049119;
-				}
+				return 1049119;
 			}
 		}
 
@@ -265,9 +261,8 @@ namespace Server.Engines.Quests.Haven
 					 */
 					return 1060749;
 				}
-				else
-				{
-					/* <I>Schmendrick barely pays you any attention as you approach him.  His
+
+				/* <I>Schmendrick barely pays you any attention as you approach him.  His
 					 * mind seems to be occupied with something else.  You explain to him that
 					 * you came for the scroll of power and after a long while he begins to speak,
 					 * but apparently still not giving you his full attention...</I><BR><BR>
@@ -284,8 +279,7 @@ namespace Server.Engines.Quests.Haven
 					 * <I>Schmendrick goes back to his work and you seem to completely fade from his
 					 * awareness...
 					 */
-					return 1049322;
-				}
+				return 1049322;
 			}
 		}
 
@@ -370,9 +364,8 @@ namespace Server.Engines.Quests.Haven
 					 */
 					return 1049388;
 				}
-				else
-				{
-					/* <I>Uzeraan takes the dirt from you and smiles...<BR><BR></I>
+
+				/* <I>Uzeraan takes the dirt from you and smiles...<BR><BR></I>
 					 *
 					 * Wonderful!  I knew I could count on you.  As a token of my appreciation
 					 * I've given you a bag with some bandages as well as some healing potions.
@@ -392,8 +385,7 @@ namespace Server.Engines.Quests.Haven
 					 *
 					 * Good luck!
 					 */
-					return 1049329;
-				}
+				return 1049329;
 			}
 		}
 
@@ -440,9 +432,8 @@ namespace Server.Engines.Quests.Haven
 						+ "<BR>"
 						+ "Return here when you have found a <I>Daemon Bone</I>.";
 				}
-				else
-				{
-					/* <I>You hand Uzeraan the Vial of Blood, which he hastily accepts...</I><BR><BR>
+
+				/* <I>You hand Uzeraan the Vial of Blood, which he hastily accepts...</I><BR><BR>
 					 *
 					 * Excellent work!  Only one reagent remains and the spell is complete!
 					 * The final requirement is a <I>Daemon Bone</I>, which will not be as easily
@@ -459,8 +450,7 @@ namespace Server.Engines.Quests.Haven
 					 *
 					 * Return here when you have found a <I>Daemon Bone</I>.
 					 */
-					return 1049333;
-				}
+				return 1049333;
 			}
 		}
 
@@ -479,8 +469,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				if ( System.From.Profession == 5 ) // paladin
 					return m_InfoPaladin;
-				else
-					return m_Info;
+				return m_Info;
 			}
 		}
 
@@ -550,9 +539,8 @@ namespace Server.Engines.Quests.Haven
 					 */
 					return 1049377;
 				}
-				else
-				{
-					/* You've lost the scroll?  Argh!  I will have to try and re-construct
+
+				/* You've lost the scroll?  Argh!  I will have to try and re-construct
 					 * the scroll from memory.  Bring me a blank scroll, which you can
 					 * <a href = "?ForceTopic33">purchase from the mage shop</a> just
 					 * <a href = "?ForceTopic13">East</a> of Uzeraan's mansion in Haven.<BR><BR>
@@ -561,8 +549,7 @@ namespace Server.Engines.Quests.Haven
 					 *
 					 * When you return, be sure to hand me the scroll (drag and drop).
 					 */
-					return 1049345;
-				}
+				return 1049345;
 			}
 		}
 
@@ -609,9 +596,8 @@ namespace Server.Engines.Quests.Haven
 					 */
 					return 1049374;
 				}
-				else
-				{
-					/* You've lost the dirt I gave you?<BR><BR>
+
+				/* You've lost the dirt I gave you?<BR><BR>
 					 *
 					 * My, my, my... What ever shall we do now?<BR><BR>
 					 *
@@ -628,8 +614,7 @@ namespace Server.Engines.Quests.Haven
 					 *
 					 * Good luck.<BR><BR>
 					 */
-					return 1049359;
-				}
+				return 1049359;
 			}
 		}
 

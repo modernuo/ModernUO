@@ -818,8 +818,7 @@ namespace Server.Items
 
 				if (num > 14)
 					return new TalismanAttribute(m_Summons[num], m_SummonLabels[num], 10);
-				else
-					return new TalismanAttribute(m_Summons[num], m_SummonLabels[num]);
+				return new TalismanAttribute(m_Summons[num], m_SummonLabels[num]);
 			}
 
 			return new TalismanAttribute();

@@ -34,7 +34,7 @@ namespace Server.Misc
 		{
 			if ( m.Guild == null )
 				return GuildStatus.None;
-			else if ( ((Guild)m.Guild).Enemies.Count == 0 && m.Guild.Type == GuildType.Regular )
+			if ( ((Guild)m.Guild).Enemies.Count == 0 && m.Guild.Type == GuildType.Regular )
 				return GuildStatus.Peaceful;
 
 			return GuildStatus.Waring;

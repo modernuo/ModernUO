@@ -231,7 +231,7 @@ namespace Server.Items
 
 		protected override void OnTarget( Mobile from, object o )
 		{
-			if ( !@from.CheckAlive() || @from.Backpack?.FindItemByType( typeof( HousePlacementTool ) ) == null  )
+			if ( !from.CheckAlive() || from.Backpack?.FindItemByType( typeof( HousePlacementTool ) ) == null  )
 				return;
 
 			IPoint3D ip = o as IPoint3D;
@@ -260,7 +260,7 @@ namespace Server.Items
 
 		protected override void OnTargetFinish( Mobile from )
 		{
-			if ( !@from.CheckAlive() || @from.Backpack?.FindItemByType( typeof( HousePlacementTool ) ) == null  )
+			if ( !from.CheckAlive() || from.Backpack?.FindItemByType( typeof( HousePlacementTool ) ) == null  )
 				return;
 
 			if ( !m_Placed )
@@ -332,7 +332,7 @@ namespace Server.Items
 
 		public void PlacementWarning_Callback( Mobile from, bool okay, object state )
 		{
-			if ( !@from.CheckAlive() || @from.Backpack?.FindItemByType( typeof( HousePlacementTool ) ) == null  )
+			if ( !from.CheckAlive() || from.Backpack?.FindItemByType( typeof( HousePlacementTool ) ) == null  )
 				return;
 
 			PreviewHouse prevHouse = (PreviewHouse)state;
@@ -447,7 +447,7 @@ namespace Server.Items
 
 		public bool OnPlacement( Mobile from, Point3D p )
 		{
-			if ( !@from.CheckAlive() || @from.Backpack?.FindItemByType( typeof( HousePlacementTool ) ) == null  )
+			if ( !from.CheckAlive() || from.Backpack?.FindItemByType( typeof( HousePlacementTool ) ) == null  )
 				return false;
 
 			ArrayList toMove;
@@ -569,7 +569,8 @@ namespace Server.Items
 			{
 				return ((HousePlacementEntry)obj);
 			}
-			else if ( obj is ArrayList )
+
+			if ( obj is ArrayList )
 			{
 				ArrayList list = (ArrayList)obj;
 

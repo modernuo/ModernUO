@@ -101,7 +101,9 @@ namespace Server.Misc
 
 				return (id >= 168 && id <= 171)
 					|| (id >= 310 && id <= 311);
-			} else if ( surface is StaticTile ) {
+			}
+
+			if ( surface is StaticTile ) {
 				int id = ((StaticTile)surface).ID;
 
 				return (id >= 0x1796 && id <= 0x17B2);

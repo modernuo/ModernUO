@@ -969,8 +969,7 @@ namespace Server
 		{
 			if ( ReadByte() != 0 )
 				return m_File.ReadString();
-			else
-				return null;
+			return null;
 		}
 
 		public override DateTime ReadDeltaTime()
@@ -980,11 +979,15 @@ namespace Server
 
 			if ( ticks > 0 && (ticks+now) < 0 )
 				return DateTime.MaxValue;
-			else if ( ticks < 0 && (ticks+now) < 0 )
+			if ( ticks < 0 && (ticks+now) < 0 )
 				return DateTime.MinValue;
 
 			try { return new DateTime( now+ticks ); }
-			catch { if ( ticks > 0 ) return DateTime.MaxValue; else return DateTime.MinValue; }
+			catch
+			{
+				if ( ticks > 0 ) return DateTime.MaxValue;
+				return DateTime.MinValue;
+			}
 		}
 
 		public override IPAddress ReadIPAddress()
@@ -1121,8 +1124,7 @@ namespace Server
 			IEntity entity = World.FindEntity( serial );
 			if ( entity == null )
 				return new Entity( serial, new Point3D( 0, 0, 0 ), Map.Internal );
-			else
-				return entity;
+			return entity;
 		}
 
 		public override Item ReadItem()
@@ -1171,9 +1173,9 @@ namespace Server
 				}
 
 				return list;
-			} else {
-				return new ArrayList();
 			}
+
+			return new ArrayList();
 		}
 
 		public override ArrayList ReadMobileList()
@@ -1192,9 +1194,9 @@ namespace Server
 				}
 
 				return list;
-			} else {
-				return new ArrayList();
 			}
+
+			return new ArrayList();
 		}
 
 		public override ArrayList ReadGuildList()
@@ -1213,9 +1215,9 @@ namespace Server
 				}
 
 				return list;
-			} else {
-				return new ArrayList();
 			}
+
+			return new ArrayList();
 		}
 
 		public override List<Item> ReadStrongItemList()

@@ -308,7 +308,8 @@ namespace Server.Commands.Generic
 				m_From.SendGump( new InterfaceGump( m_From, m_Columns, m_List, m_Page, m_Item ) );
 				return;
 			}
-			else if ( !BaseCommand.IsAccessible( m_From, m_Item ) )
+
+			if ( !BaseCommand.IsAccessible( m_From, m_Item ) )
 			{
 				m_From.SendMessage( "That is no longer accessible." );
 				m_From.SendGump( new InterfaceGump( m_From, m_Columns, m_List, m_Page, m_Item ) );
@@ -469,7 +470,8 @@ namespace Server.Commands.Generic
 				m_From.SendGump( new InterfaceGump( m_From, m_Columns, m_List, m_Page, m_Mobile ) );
 				return;
 			}
-			else if ( !BaseCommand.IsAccessible( m_From, m_Mobile ) )
+
+			if ( !BaseCommand.IsAccessible( m_From, m_Mobile ) )
 			{
 				m_From.SendMessage( "That is no longer accessible." );
 				m_From.SendGump( new InterfaceGump( m_From, m_Columns, m_List, m_Page, m_Mobile ) );

@@ -46,8 +46,7 @@ namespace Server.Engines.Quests.Naturalist
 		{
 			if ( id >= 0 && id < m_Areas.Length )
 				return m_Areas[id];
-			else
-				return null;
+			return null;
 		}
 
 		private bool m_Special;

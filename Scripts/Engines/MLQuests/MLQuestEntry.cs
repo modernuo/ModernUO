@@ -36,7 +36,7 @@ namespace Server.Engines.MLQuests
 			m_Quest = quest;
 
 			m_Quester = quester;
-			m_QuesterType = ( quester == null ) ? null : quester.GetType();
+			m_QuesterType = quester?.GetType();
 			m_Player = player;
 
 			m_Accepted = DateTime.UtcNow;
@@ -91,7 +91,7 @@ namespace Server.Engines.MLQuests
 			set
 			{
 				m_Quester = value;
-				m_QuesterType = ( value == null ) ? null : value.GetType();
+				m_QuesterType = value?.GetType();
 			}
 		}
 
@@ -156,7 +156,7 @@ namespace Server.Engines.MLQuests
 
 				if ( complete && !requiresAll )
 					return true;
-				else if ( !complete && requiresAll )
+				if ( !complete && requiresAll )
 					return false;
 			}
 
@@ -369,7 +369,7 @@ namespace Server.Engines.MLQuests
 
 				foreach ( Item rewardItem in rewards )
 				{
-					string rewardName = ( rewardItem.Name != null ) ? rewardItem.Name : string.Concat( "#", rewardItem.LabelNumber );
+					string rewardName = rewardItem.Name ?? string.Concat( "#", rewardItem.LabelNumber );
 
 					if ( rewardItem.Stackable )
 						m_Player.SendLocalizedMessage( 1115917, string.Concat( rewardItem.Amount, "\t", rewardName ) ); // You receive a reward: ~1_QUANTITY~ ~2_ITEM~

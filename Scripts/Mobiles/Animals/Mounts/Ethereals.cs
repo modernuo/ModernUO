@@ -118,37 +118,38 @@ namespace Server.Mobiles
 				from.SayTo( from, 1010095 ); // This must be on your person to use.
 				return false;
 			}
-			else if ( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
+
+			if ( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
 			{
 				// CheckIsUsableBy sends the message
 				return false;
 			}
-			else if ( !BaseMount.CheckMountAllowed( from ) )
+			if ( !BaseMount.CheckMountAllowed( from ) )
 			{
 				// CheckMountAllowed sends the message
 				return false;
 			}
-			else if ( from.Mounted )
+			if ( from.Mounted )
 			{
 				from.SendLocalizedMessage( 1005583 ); // Please dismount first.
 				return false;
 			}
-			else if ( from.IsBodyMod && !from.Body.IsHuman )
+			if ( from.IsBodyMod && !from.Body.IsHuman )
 			{
 				from.SendLocalizedMessage( 1061628 ); // You can't do that while polymorphed.
 				return false;
 			}
-			else if ( from.HasTrade )
+			if ( from.HasTrade )
 			{
 				from.SendLocalizedMessage( 1042317, "", 0x41 ); // You may not ride at this time
 				return false;
 			}
-			else if ( ( from.Followers + FollowerSlots ) > from.FollowersMax )
+			if ( ( from.Followers + FollowerSlots ) > from.FollowersMax )
 			{
 				from.SendLocalizedMessage( 1049679 ); // You have too many followers to summon your mount.
 				return false;
 			}
-			else if ( !Multis.DesignContext.Check( from ) )
+			if ( !Multis.DesignContext.Check( from ) )
 			{
 				// Check sends the message
 				return false;

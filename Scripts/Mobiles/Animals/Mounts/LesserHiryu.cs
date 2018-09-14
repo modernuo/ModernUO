@@ -30,13 +30,13 @@ namespace Server.Mobiles
 
 			if ( rand <= 0 )
 				return 0x8258;
-			else if ( rand <= 1 )
+			if ( rand <= 1 )
 				return 0x88AB;
-			else if ( rand <= 6 )
+			if ( rand <= 6 )
 				return 0x87D4;
-			else if ( rand <= 16 )
+			if ( rand <= 16 )
 				return 0x8163;
-			else if ( rand <= 26 )
+			if ( rand <= 26 )
 				return 0x8295;
 
 

@@ -33,7 +33,7 @@ namespace Server.Items
 		public void Roll( Mobile from )
 		{
 			PublicOverheadMessage( MessageType.Regular, 0, false,
-				$"*{@from.Name} rolls {Utility.Random(1, 6)}, {Utility.Random(1, 6)}*");
+				$"*{from.Name} rolls {Utility.Random(1, 6)}, {Utility.Random(1, 6)}*");
 		}
 
 		public override void Serialize( GenericWriter writer )

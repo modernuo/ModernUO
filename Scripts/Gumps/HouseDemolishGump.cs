@@ -59,7 +59,8 @@ namespace Server.Gumps
 					{
 						return;
 					}
-					else if ( !Guilds.Guild.NewGuildSystem && m_House.FindGuildstone() != null )
+
+					if ( !Guilds.Guild.NewGuildSystem && m_House.FindGuildstone() != null )
 					{
 						m_Mobile.SendLocalizedMessage( 501389 ); // You cannot redeed a house with a guildstone inside.
 						return;
@@ -69,17 +70,17 @@ namespace Server.Gumps
 						m_Mobile.SendLocalizedMessage( 503236 ); // You need to collect your vendor's belongings before moving.
 						return;
 					}*/
-					else if ( m_House.HasRentedVendors && m_House.VendorInventories.Count > 0 )
+					if ( m_House.HasRentedVendors && m_House.VendorInventories.Count > 0 )
 					{
 						m_Mobile.SendLocalizedMessage( 1062679 ); // You cannot do that that while you still have contract vendors or unclaimed contract vendor inventory in your house.
 						return;
 					}
-					else if ( m_House.HasRentedVendors )
+					if ( m_House.HasRentedVendors )
 					{
 						m_Mobile.SendLocalizedMessage( 1062680 ); // You cannot do that that while you still have contract vendors in your house.
 						return;
 					}
-					else if ( m_House.VendorInventories.Count > 0 )
+					if ( m_House.VendorInventories.Count > 0 )
 					{
 						m_Mobile.SendLocalizedMessage( 1062681 ); // You cannot do that that while you still have unclaimed contract vendor inventory in your house.
 						return;

@@ -19,7 +19,7 @@ namespace Server.Gumps
 		{
 			if ( GuildGump.BadLeader( m_Leader, m_Guild ) )
 				return;
-			else if ( m_Target.Deleted || !m_Guild.IsMember( m_Target ) )
+			if ( m_Target.Deleted || !m_Guild.IsMember( m_Target ) )
 				return;
 
 			GuildGump.EnsureClosed( m_Leader );
@@ -30,7 +30,7 @@ namespace Server.Gumps
 		{
 			if ( GuildGump.BadLeader( m_Leader, m_Guild ) )
 				return;
-			else if ( m_Target.Deleted || !m_Guild.IsMember( m_Target ) )
+			if ( m_Target.Deleted || !m_Guild.IsMember( m_Target ) )
 				return;
 
 			text = text.Trim();

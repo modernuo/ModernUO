@@ -46,7 +46,7 @@ namespace Server.Items
 
 		public override void AddNameProperty(ObjectPropertyList list)
 		{
-			list.Add(m_LabelNumber, $"{((m_To != null) ? m_To : Unsigned)}\t{((m_From != null) ? m_From : Unsigned)}");
+			list.Add(m_LabelNumber, $"{m_To ?? Unsigned}\t{m_From ?? Unsigned}");
 		}
 
 		public override void OnSingleClick( Mobile from )
@@ -54,7 +54,7 @@ namespace Server.Items
 			base.OnSingleClick( from );
 
 			LabelTo( from, m_LabelNumber,
-				$"{((m_To != null) ? m_To : Unsigned)}\t{((m_From != null) ? m_From : Unsigned)}");
+				$"{m_To ?? Unsigned}\t{m_From ?? Unsigned}");
 		}
 
 		public override void OnDoubleClick(Mobile from)

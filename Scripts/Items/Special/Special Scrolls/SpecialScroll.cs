@@ -60,8 +60,7 @@ namespace Server.Items
 
 			if ( index >= 0 && index < table.Length )
 				return table[index].Name.ToLower();
-			else
-				return "???";
+			return "???";
 		}
 
 		public virtual bool CanUse( Mobile from )

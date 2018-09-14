@@ -119,10 +119,8 @@ namespace Server.Engines.Quests.Haven
 						default: return 5;
 					}
 				}
-				else
-				{
-					return 5;
-				}
+
+				return 5;
 			}
 		}
 
@@ -132,8 +130,7 @@ namespace Server.Engines.Quests.Haven
 			{
 				if ( m_Step == KillHordeMinionsStep.LearnKarma && HasBeenRead )
 					return true;
-				else
-					return base.Completed;
+				return base.Completed;
 			}
 		}
 
@@ -414,14 +411,12 @@ namespace Server.Engines.Quests.Haven
 					 */
 					return 1060755;
 				}
-				else
-				{
-					/* Use Uzeraan's teleporter to get to the Haunted graveyard.<BR><BR>
+
+				/* Use Uzeraan's teleporter to get to the Haunted graveyard.<BR><BR>
 					 *
 					 * Slay the undead until you find a <I>Daemon Bone</I>.
 					 */
-					return 1049362;
-				}
+				return 1049362;
 			}
 		}
 

@@ -246,30 +246,24 @@ namespace Server.Engines.Craft
 				message = "You lack the required hit points to make that.";
 				return false;
 			}
-			else
-			{
-				consumHits = consume;
-			}
+
+			consumHits = consume;
 
 			if ( Mana > 0 && from.Mana < Mana )
 			{
 				message = "You lack the required mana to make that.";
 				return false;
 			}
-			else
-			{
-				consumMana = consume;
-			}
+
+			consumMana = consume;
 
 			if ( Stam > 0 && from.Stam < Stam )
 			{
 				message = "You lack the required stamina to make that.";
 				return false;
 			}
-			else
-			{
-				consumStam = consume;
-			}
+
+			consumStam = consume;
 
 			if ( consumMana )
 				from.Mana -= Mana;
@@ -786,7 +780,7 @@ namespace Server.Engines.Craft
 
 				return true;
 			}
-			else
+
 			{
 				CraftRes res = m_arCraftRes.GetAt( index );
 

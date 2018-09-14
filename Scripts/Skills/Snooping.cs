@@ -64,7 +64,7 @@ namespace Server.SkillHandlers
 
 					if ( map != null )
 					{
-						string message = $"You notice {@from.Name} attempting to peek into {root.Name}'s belongings.";
+						string message = $"You notice {from.Name} attempting to peek into {root.Name}'s belongings.";
 
 						IPooledEnumerable<NetState> eable = map.GetClientsInRange( from.Location, 8 );
 
@@ -91,7 +91,7 @@ namespace Server.SkillHandlers
 				else
 				{
 					from.SendLocalizedMessage( 500210 ); // You failed to peek into the container.
-					
+
 					if ( from.Skills[SkillName.Hiding].Value / 2 < Utility.Random( 100 ) )
 						from.RevealingAction();
 				}

@@ -29,10 +29,9 @@ namespace Server.Factions
 		{
 			if ( Amount <= 1 )
 				return 0x2E4;
-			else if ( Amount <= 5 )
+			if ( Amount <= 5 )
 				return 0x2E5;
-			else
-				return 0x2E6;
+			return 0x2E6;
 		}
 
 		public override void Serialize( GenericWriter writer )

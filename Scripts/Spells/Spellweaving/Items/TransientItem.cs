@@ -38,7 +38,7 @@ namespace Server.Items
 
 		public virtual void Expire( Mobile parent )
 		{
-			parent?.SendLocalizedMessage( 1072515, (Name == null ? $"#{LabelNumber}" : Name) ); // The ~1_name~ expired...
+			parent?.SendLocalizedMessage( 1072515, Name ?? $"#{LabelNumber}" ); // The ~1_name~ expired...
 
 			Effects.PlaySound( GetWorldLocation(), Map, 0x201 );
 
@@ -48,7 +48,7 @@ namespace Server.Items
 		public virtual void SendTimeRemainingMessage( Mobile to )
 		{
 			to.SendLocalizedMessage( 1072516,
-				$"{(Name == null ? $"#{LabelNumber}" : Name)}\t{(int) m_LifeSpan.TotalSeconds}"); // ~1_name~ will expire in ~2_val~ seconds!
+				$"{Name ?? $"#{LabelNumber}"}\t{(int) m_LifeSpan.TotalSeconds}"); // ~1_name~ will expire in ~2_val~ seconds!
 		}
 
 		public override void OnDelete()

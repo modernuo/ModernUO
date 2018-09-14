@@ -119,55 +119,53 @@ namespace Server.Engines.MyRunUO
 
 								return;
 							}
-							else
+
+							try
+							{
+								connected = true;
+								connection = new OdbcConnection( m_ConnectionString );
+								connection.Open();
+								command = connection.CreateCommand();
+
+								if ( Config.UseTransactions )
+								{
+									transact = connection.BeginTransaction();
+									command.Transaction = transact;
+								}
+							}
+							catch ( Exception e )
 							{
 								try
 								{
-									connected = true;
-									connection = new OdbcConnection( m_ConnectionString );
-									connection.Open();
-									command = connection.CreateCommand();
-
-									if ( Config.UseTransactions )
-									{
-										transact = connection.BeginTransaction();
-										command.Transaction = transact;
-									}
+									transact?.Rollback();
 								}
-								catch ( Exception e )
+								catch{}
+
+								try
 								{
-									try
-									{
-										transact?.Rollback();
-									}
-									catch{}
-
-									try
-									{
-										connection?.Close();
-									}
-									catch{}
-
-									try
-									{
-										connection?.Dispose();
-									}
-									catch{}
-
-									try
-									{
-										command?.Dispose();
-									}
-									catch{}
-
-									try{ m_Sync.Close(); }
-									catch{}
-
-									Console.WriteLine( "MyRunUO: Unable to connect to the database" );
-									Console.WriteLine( e );
-									m_HasCompleted = true;
-									return;
+									connection?.Close();
 								}
+								catch{}
+
+								try
+								{
+									connection?.Dispose();
+								}
+								catch{}
+
+								try
+								{
+									command?.Dispose();
+								}
+								catch{}
+
+								try{ m_Sync.Close(); }
+								catch{}
+
+								Console.WriteLine( "MyRunUO: Unable to connect to the database" );
+								Console.WriteLine( e );
+								m_HasCompleted = true;
+								return;
 							}
 						}
 						else if ( obj is string s )

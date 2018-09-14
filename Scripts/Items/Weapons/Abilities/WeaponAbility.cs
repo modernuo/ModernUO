@@ -45,7 +45,7 @@ namespace Server.Items
 
 			if ( weapon != null && weapon.PrimaryAbility == this )
 				return 70.0;
-			else if ( weapon != null && weapon.SecondaryAbility == this )
+			if ( weapon != null && weapon.SecondaryAbility == this )
 				return 90.0;
 
 			return 200.0;

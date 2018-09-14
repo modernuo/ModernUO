@@ -117,7 +117,8 @@ namespace Server.Multis
 			{
 				return;
 			}
-			else if ( !IsChildOf( from.Backpack ) )
+
+			if ( !IsChildOf( from.Backpack ) )
 			{
 				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
 			}

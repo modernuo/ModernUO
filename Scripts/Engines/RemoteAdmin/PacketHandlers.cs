@@ -36,11 +36,9 @@ namespace Server.RemoteAdmin
 				Console.WriteLine( "ADMIN: Invalid packet 0x{0:X2} from {1}, disconnecting", command, state );
 				return false;
 			}
-			else
-			{
-				m_Handlers[command]( state, pvSrc );
-				return true;
-			}
+
+			m_Handlers[command]( state, pvSrc );
+			return true;
 		}
 
 		private static void ServerInfoRequest( NetState state, PacketReader pvSrc )
@@ -58,10 +56,8 @@ namespace Server.RemoteAdmin
 				state.Send( new MessageBoxMessage( "Invalid search term.\nThe IP sent was not valid.", "Invalid IP" ) );
 				return;
 			}
-			else
-			{
-				term = term.ToUpper();
-			}
+
+			term = term.ToUpper();
 
 			ArrayList list = new ArrayList();
 
@@ -161,8 +157,8 @@ namespace Server.RemoteAdmin
 			{
 				bool CreatedAccount = false;
 				bool UpdatedPass = false;
-				bool oldbanned = a == null ? false : a.Banned;
-				AccessLevel oldAcessLevel = a == null ? 0 : a.AccessLevel;
+				bool oldbanned = a?.Banned ?? false;
+				AccessLevel oldAcessLevel = a?.AccessLevel ?? 0;
 
 				if ( a == null )
 				{

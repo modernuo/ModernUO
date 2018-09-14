@@ -127,7 +127,7 @@ namespace Server {
 
 			public BaseGuild Guild => m_Guild;
 
-			public Serial Serial => m_Guild == null ? 0 : m_Guild.Id;
+			public Serial Serial => m_Guild?.Id ?? 0;
 
 			public int TypeID => 0;
 
@@ -151,7 +151,7 @@ namespace Server {
 
 			public Item Item => m_Item;
 
-			public Serial Serial => m_Item == null ? Serial.MinusOne : m_Item.Serial;
+			public Serial Serial => m_Item?.Serial ?? Serial.MinusOne;
 
 			public int TypeID => m_TypeID;
 
@@ -179,7 +179,7 @@ namespace Server {
 
 			public Mobile Mobile => m_Mobile;
 
-			public Serial Serial => m_Mobile == null ? Serial.MinusOne : m_Mobile.Serial;
+			public Serial Serial => m_Mobile?.Serial ?? Serial.MinusOne;
 
 			public int TypeID => m_TypeID;
 
@@ -728,7 +728,7 @@ namespace Server {
 		public static IEntity FindEntity( Serial serial ) {
 			if ( serial.IsItem )
 				return FindItem( serial );
-			else if ( serial.IsMobile )
+			if ( serial.IsMobile )
 				return FindMobile( serial );
 
 			return null;

@@ -38,11 +38,8 @@ namespace Server.Items
 			{
 				if ( from.Mounted )
 					return true;
-				else
-				{
-					from.SendLocalizedMessage( 1070770 ); // You can only execute this attack while mounted!
-					ClearCurrentAbility( from );
-				}
+				from.SendLocalizedMessage( 1070770 ); // You can only execute this attack while mounted!
+				ClearCurrentAbility( from );
 			}
 
 			return false;

@@ -648,7 +648,9 @@ namespace Server.Multis
 		{
 			if ( !m.CheckAlive() ) {
 				return;
-			} else if ( SpellHelper.CheckCombat( m ) ) {
+			}
+
+			if ( SpellHelper.CheckCombat( m ) ) {
 				m.SendLocalizedMessage( 1005564, "", 0x22 ); // Wouldst thou flee during the heat of battle??
 				return;
 			}
@@ -1063,8 +1065,7 @@ namespace Server.Multis
 
 				if ( mcl.Width >= 14 || mcl.Height >= 14 )
 					return 4;
-				else
-					return 3;
+				return 3;
 			}
 		}
 
@@ -1121,7 +1122,7 @@ namespace Server.Multis
 
 			if ( !roof && ( TileData.ItemTable[itemID].Flags & TileFlag.Roof ) != 0 )
 				return false;
-			else if ( roof && ( TileData.ItemTable[itemID].Flags & TileFlag.Roof ) == 0 )
+			if ( roof && ( TileData.ItemTable[itemID].Flags & TileFlag.Roof ) == 0 )
 				return false;
 
 			return Verification.IsItemValid( itemID );
@@ -1853,62 +1854,62 @@ namespace Server.Multis
 		{
 			if ( itemID >= 0x675 && itemID < 0x6F5 )
 				return true;
-			else if ( itemID >= 0x314 && itemID < 0x364 )
+			if ( itemID >= 0x314 && itemID < 0x364 )
 				return true;
-			else if ( itemID >= 0x824 && itemID < 0x834 )
+			if ( itemID >= 0x824 && itemID < 0x834 )
 				return true;
-			else if ( itemID >= 0x839 && itemID < 0x849 )
+			if ( itemID >= 0x839 && itemID < 0x849 )
 				return true;
-			else if ( itemID >= 0x84C && itemID < 0x85C )
+			if ( itemID >= 0x84C && itemID < 0x85C )
 				return true;
-			else if ( itemID >= 0x866 && itemID < 0x876 )
+			if ( itemID >= 0x866 && itemID < 0x876 )
 				return true;
-			else if ( itemID >= 0x0E8 && itemID < 0x0F8 )
+			if ( itemID >= 0x0E8 && itemID < 0x0F8 )
 				return true;
-			else if ( itemID >= 0x1FED && itemID < 0x1FFD )
+			if ( itemID >= 0x1FED && itemID < 0x1FFD )
 				return true;
-			else if ( itemID >= 0x181D && itemID < 0x1829 )
+			if ( itemID >= 0x181D && itemID < 0x1829 )
 				return true;
-			else if ( itemID >= 0x241F && itemID < 0x2421 )
+			if ( itemID >= 0x241F && itemID < 0x2421 )
 				return true;
-			else if ( itemID >= 0x2423 && itemID < 0x2425 )
+			if ( itemID >= 0x2423 && itemID < 0x2425 )
 				return true;
-			else if ( itemID >= 0x2A05 && itemID < 0x2A1D )
+			if ( itemID >= 0x2A05 && itemID < 0x2A1D )
 				return true;
-			else if ( itemID >= 0x319C && itemID < 0x31B0 )
+			if ( itemID >= 0x319C && itemID < 0x31B0 )
 				return true;
 			// ML doors
-			else if ( itemID == 0x2D46 ||itemID == 0x2D48 || itemID == 0x2FE2 || itemID == 0x2FE4 )
+			if ( itemID == 0x2D46 ||itemID == 0x2D48 || itemID == 0x2FE2 || itemID == 0x2FE4 )
 				return true;
-			else if ( itemID >= 0x2D63 && itemID < 0x2D70 )
+			if ( itemID >= 0x2D63 && itemID < 0x2D70 )
 				return true;
-			else if ( itemID >= 0x319C && itemID < 0x31AF )
+			if ( itemID >= 0x319C && itemID < 0x31AF )
 				return true;
-			else if ( itemID >= 0x367B && itemID < 0x369B )
+			if ( itemID >= 0x367B && itemID < 0x369B )
 				return true;
 			// SA doors
-			else if ( itemID >= 0x409B && itemID < 0x40A3 )
+			if ( itemID >= 0x409B && itemID < 0x40A3 )
 				return true;
-			else if ( itemID >= 0x410C && itemID < 0x4114 )
+			if ( itemID >= 0x410C && itemID < 0x4114 )
 				return true;
-			else if ( itemID >= 0x41C2 && itemID < 0x41CA )
+			if ( itemID >= 0x41C2 && itemID < 0x41CA )
 				return true;
-			else if ( itemID >= 0x41CF && itemID < 0x41D7 )
+			if ( itemID >= 0x41CF && itemID < 0x41D7 )
 				return true;
-			else if ( itemID >= 0x436E && itemID < 0x437E )
+			if ( itemID >= 0x436E && itemID < 0x437E )
 				return true;
-			else if ( itemID >= 0x46DD && itemID < 0x46E5 )
+			if ( itemID >= 0x46DD && itemID < 0x46E5 )
 				return true;
-			else if ( itemID >= 0x4D22 && itemID < 0x4D2A )
+			if ( itemID >= 0x4D22 && itemID < 0x4D2A )
 				return true;
-			else if ( itemID >= 0x50C8 && itemID < 0x50D8 )
+			if ( itemID >= 0x50C8 && itemID < 0x50D8 )
 				return true;
-			else if ( itemID >= 0x5142 && itemID < 0x514A )
+			if ( itemID >= 0x5142 && itemID < 0x514A )
 				return true;
 			// TOL doors
-			else if ( itemID >= 0x9AD7 && itemID < 0x9AE7 )
+			if ( itemID >= 0x9AD7 && itemID < 0x9AE7 )
 				return true;
-			else if ( itemID >= 0x9B3C && itemID < 0x9B4C )
+			if ( itemID >= 0x9B3C && itemID < 0x9B4C )
 				return true;
 
 			return false;

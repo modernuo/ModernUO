@@ -46,17 +46,18 @@ namespace Server.Spells.Mysticism
 				Caster.SendLocalizedMessage( 1061632 ); // You can't do that while carrying the sigil.
 				return false;
 			}
-			else if ( !Caster.CanBeginAction( typeof( PolymorphSpell ) ) )
+
+			if ( !Caster.CanBeginAction( typeof( PolymorphSpell ) ) )
 			{
 				Caster.SendLocalizedMessage( 1061628 ); // You can't do that while polymorphed.
 				return false;
 			}
-			else if ( Ninjitsu.AnimalForm.UnderTransformation( Caster ) )
+			if ( Ninjitsu.AnimalForm.UnderTransformation( Caster ) )
 			{
 				Caster.SendLocalizedMessage( 1063218 ); // You cannot use that ability in this form.
 				return false;
 			}
-			else if ( Caster.Flying )
+			if ( Caster.Flying )
 			{
 				Caster.SendLocalizedMessage( 1113415 ); // You cannot use this ability while flying.
 				return false;

@@ -183,10 +183,9 @@ namespace Server.Engines.Help
 		{
 			if ( type == PageType.VerbalHarassment )
 				return "Verbal Harassment";
-			else if ( type == PageType.PhysicalHarassment )
+			if ( type == PageType.PhysicalHarassment )
 				return "Physical Harassment";
-			else
-				return type.ToString();
+			return type.ToString();
 		}
 
 		public static void OnHandlerChanged( Mobile old, Mobile value, PageEntry entry )

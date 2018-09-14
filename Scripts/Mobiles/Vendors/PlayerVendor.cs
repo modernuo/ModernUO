@@ -568,21 +568,19 @@ namespace Server.Mobiles
 				{
 					return ChargePerRealWorldDay / 12;
 				}
-				else
+
+				long total = 0;
+				foreach ( VendorItem vi in m_SellItems.Values )
 				{
-					long total = 0;
-					foreach ( VendorItem vi in m_SellItems.Values )
-					{
-						total += vi.Price;
-					}
-
-					total -= 500;
-
-					if ( total < 0 )
-						total = 0;
-
-					return (int)( 20 + (total / 500) );
+					total += vi.Price;
 				}
+
+				total -= 500;
+
+				if ( total < 0 )
+					total = 0;
+
+				return (int)( 20 + (total / 500) );
 			}
 		}
 
@@ -600,10 +598,8 @@ namespace Server.Mobiles
 
 					return (int)( 60 + (total / 500) * 3 );
 				}
-				else
-				{
-					return ChargePerDay * 12;
-				}
+
+				return ChargePerDay * 12;
 			}
 		}
 
@@ -616,10 +612,8 @@ namespace Server.Mobiles
 			{
 				return House.IsOwner( m );
 			}
-			else
-			{
-				return m == Owner;
-			}
+
+			return m == Owner;
 		}
 
 		protected List<Item> GetItems()
@@ -883,49 +877,39 @@ namespace Server.Mobiles
 
 						return true;
 					}
-					else
-					{
-						from.SendLocalizedMessage( 1062493 ); // Your vendor has sufficient funds for operation and cannot accept this gold.
 
-						return false;
-					}
+					from.SendLocalizedMessage( 1062493 ); // Your vendor has sufficient funds for operation and cannot accept this gold.
+
+					return false;
 				}
-				else
+
+				if ( BankAccount < 1000000 )
 				{
-					if ( BankAccount < 1000000 )
-					{
-						SayTo( from, 503210 ); // I'll take that to fund my services.
+					SayTo( from, 503210 ); // I'll take that to fund my services.
 
-						BankAccount += item.Amount;
-						item.Delete();
-
-						return true;
-					}
-					else
-					{
-						from.SendLocalizedMessage( 1062493 ); // Your vendor has sufficient funds for operation and cannot accept this gold.
-
-						return false;
-					}
-				}
-			}
-			else
-			{
-				bool newItem = ( GetVendorItem( item ) == null );
-
-				if ( Backpack != null && Backpack.TryDropItem( from, item, false ) )
-				{
-					if ( newItem )
-						OnItemGiven( from, item );
+					BankAccount += item.Amount;
+					item.Delete();
 
 					return true;
 				}
-				else
-				{
-					SayTo( from, 503211 ); // I can't carry any more.
-					return false;
-				}
+
+				from.SendLocalizedMessage( 1062493 ); // Your vendor has sufficient funds for operation and cannot accept this gold.
+
+				return false;
 			}
+
+			bool newItem = ( GetVendorItem( item ) == null );
+
+			if ( Backpack != null && Backpack.TryDropItem( from, item, false ) )
+			{
+				if ( newItem )
+					OnItemGiven( from, item );
+
+				return true;
+			}
+
+			SayTo( from, 503211 ); // I can't carry any more.
+			return false;
 		}
 
 		public override bool CheckNonlocalDrop( Mobile from, Item item, Item target )
@@ -940,11 +924,9 @@ namespace Server.Mobiles
 
 				return true;
 			}
-			else
-			{
-				SayTo( from, 503209 ); // I can only take item from the shop owner.
-				return false;
-			}
+
+			SayTo( from, 503209 ); // I can only take item from the shop owner.
+			return false;
 		}
 
 		private void NonLocalDropCallback( object state )
@@ -990,13 +972,12 @@ namespace Server.Mobiles
 				{
 					return true;
 				}
-				else
-				{
-					SayTo( from, 503223 ); // If you'd like to purchase an item, just ask.
-					return false;
-				}
+
+				SayTo( from, 503223 ); // If you'd like to purchase an item, just ask.
+				return false;
 			}
-			else if ( BaseHouse.NewVendorSystem && IsOwner( from ) )
+
+			if ( BaseHouse.NewVendorSystem && IsOwner( from ) )
 			{
 				return true;
 			}
@@ -1359,8 +1340,7 @@ namespace Server.Mobiles
 			{
 				if ( BaseHouse.NewVendorSystem )
 					return TimeSpan.FromDays( 1.0 );
-				else
-					return TimeSpan.FromMinutes( Clock.MinutesPerUODay );
+				return TimeSpan.FromMinutes( Clock.MinutesPerUODay );
 			}
 
 			private PlayerVendor m_Vendor;

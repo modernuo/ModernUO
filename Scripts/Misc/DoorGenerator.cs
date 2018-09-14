@@ -392,7 +392,7 @@ namespace Server
 
 				if ( delta < 0 )
 					return false;
-				else if ( delta == 0 )
+				if ( delta == 0 )
 					return true;
 			}
 

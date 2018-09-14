@@ -176,7 +176,7 @@ namespace Server.Regions
 			{
 				HouseFoundation foundation = m_House as HouseFoundation;
 
-				if ( foundation?.Customizer != null && foundation.Customizer != @from && m_House.IsInside( newLocation, 16 ) )
+				if ( foundation?.Customizer != null && foundation.Customizer != from && m_House.IsInside( newLocation, 16 ) )
 					return false;
 			}
 
@@ -198,8 +198,7 @@ namespace Server.Regions
 		{
 			if ( (m_House.IsLockedDown( item ) || m_House.IsSecure( item )) && m_House.IsInside( item ) )
 				return false;
-			else
-				return base.OnDecay(item );
+			return base.OnDecay(item );
 		}
 
 		public static TimeSpan CombatHeatDelay = TimeSpan.FromSeconds( 30.0 );
@@ -263,7 +262,7 @@ namespace Server.Regions
 
 			if ( !m_House.IsInside( from ) || !m_House.IsActive )
 				return;
-			else if ( e.HasKeyword( 0x33 ) ) // remove thyself
+			if ( e.HasKeyword( 0x33 ) ) // remove thyself
 			{
 				if ( isFriend )
 				{

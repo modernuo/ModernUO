@@ -157,7 +157,8 @@ namespace Server.Items
 
 				return false;
 			}
-			else if ( checkItems )
+
+			if ( checkItems )
 				return false;
 
 			Item ammo = Ammo;

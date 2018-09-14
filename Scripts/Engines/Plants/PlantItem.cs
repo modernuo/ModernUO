@@ -208,12 +208,11 @@ namespace Server.Engines.Plants
 		{
 			if ( m_PlantStatus >= PlantStatus.Plant )
 				return 1060812; // plant
-			else if ( m_PlantStatus >= PlantStatus.Sapling )
+			if ( m_PlantStatus >= PlantStatus.Sapling )
 				return 1023305; // sapling
-			else if ( m_PlantStatus >= PlantStatus.Seed )
+			if ( m_PlantStatus >= PlantStatus.Seed )
 				return 1060810; // seed
-			else
-				return 1026951; // dirt
+			return 1026951; // dirt
 		}
 
 		public int GetLocalizedContainerType()
@@ -508,11 +507,9 @@ namespace Server.Engines.Plants
 				message = 1053065; // The plant is already soaked with this type of potion!
 				return false;
 			}
-			else
-			{
-				message = 1053067; // You pour the potion over the plant.
-				return true;
-			}
+
+			message = 1053067; // You pour the potion over the plant.
+			return true;
 		}
 
 		public override void Serialize( GenericWriter writer )

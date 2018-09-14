@@ -32,15 +32,13 @@ namespace Server.Regions
 					{
 						return SpawnMobile.Get( type );
 					}
-					else if ( typeof( Item ).IsAssignableFrom( type ) )
+
+					if ( typeof( Item ).IsAssignableFrom( type ) )
 					{
 						return SpawnItem.Get( type );
 					}
-					else
-					{
-						Console.WriteLine( "Invalid type '{0}' in a SpawnDefinition", type.FullName );
-						return null;
-					}
+					Console.WriteLine( "Invalid type '{0}' in a SpawnDefinition", type.FullName );
+					return null;
 				}
 				case "group":
 				{
@@ -55,10 +53,8 @@ namespace Server.Regions
 						Console.WriteLine( "Could not find group '{0}' in a SpawnDefinition", group );
 						return null;
 					}
-					else
-					{
-						return def;
-					}
+
+					return def;
 				}
 				case "treasureChest":
 				{

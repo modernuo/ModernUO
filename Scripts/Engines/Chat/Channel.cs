@@ -121,34 +121,32 @@ namespace Server.Engines.Chat
 				user.SendMessage( 46, m_Name ); // You are already in the conference '%1'.
 				return true;
 			}
-			else if ( IsBanned( user ) )
+
+			if ( IsBanned( user ) )
 			{
 				user.SendMessage( 64 ); // You have been banned from this conference.
 				return false;
 			}
-			else if ( !ValidatePassword( password ) )
+			if ( !ValidatePassword( password ) )
 			{
 				user.SendMessage( 34 ); // That is not the correct password.
 				return false;
-			} 
-			else
-			{
-				user.CurrentChannel?.RemoveUser( user ); // Remove them from their current channel first
-
-				ChatSystem.SendCommandTo( user.Mobile, ChatCommand.JoinedChannel, m_Name );
-
-				SendCommand( ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
-
-				m_Users.Add( user );
-				user.CurrentChannel = this;
-				
-				if ( user.Mobile.AccessLevel >= AccessLevel.GameMaster || (!m_AlwaysAvailable && m_Users.Count == 1) )
-					AddModerator( user );
-
-				SendUsersTo( user );
-
-				return true;
 			}
+			user.CurrentChannel?.RemoveUser( user ); // Remove them from their current channel first
+
+			ChatSystem.SendCommandTo( user.Mobile, ChatCommand.JoinedChannel, m_Name );
+
+			SendCommand( ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
+
+			m_Users.Add( user );
+			user.CurrentChannel = this;
+				
+			if ( user.Mobile.AccessLevel >= AccessLevel.GameMaster || (!m_AlwaysAvailable && m_Users.Count == 1) )
+				AddModerator( user );
+
+			SendUsersTo( user );
+
+			return true;
 		}
 
 		public void RemoveUser( ChatUser user ) 

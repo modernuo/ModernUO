@@ -128,10 +128,10 @@ namespace Server.Factions
 			AddHtml( 120, 100, 150, 20, from.Name, false, false );
 
 			AddHtmlLocalized( 20, 130, 100, 20, 1018064, false, false ); // score :
-			AddHtml( 120, 130, 100, 20, (pl != null ? pl.KillPoints : 0).ToString(), false, false );
+			AddHtml( 120, 130, 100, 20, (pl?.KillPoints ?? 0).ToString(), false, false );
 
 			AddHtmlLocalized( 20, 160, 100, 20, 1011446, false, false ); // Rank :
-			AddHtml( 120, 160, 100, 20, (pl != null ? pl.Rank.Rank : 0).ToString(), false, false );
+			AddHtml( 120, 160, 100, 20, (pl?.Rank.Rank ?? 0).ToString(), false, false );
 
 			AddHtmlLocalized( 55, 250, 100, 20, 1011447, false, false ); // BACK
 			AddButton( 20, 250, 4005, 4007, 0, GumpButtonType.Page, 1 );

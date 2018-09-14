@@ -93,7 +93,8 @@ namespace Server.Mobiles
 			{
 				return;
 			}
-			else if (Flying)
+
+			if (Flying)
 			{
 				Freeze(TimeSpan.FromSeconds(1));
 				Animate(61, 10, 1, true, false, 0);
@@ -232,8 +233,7 @@ namespace Server.Mobiles
 			{
 				if ( AccessLevel >= AccessLevel.GameMaster )
 					return Guilds.RankDefinition.Leader;
-				else
-					return m_GuildRank;
+				return m_GuildRank;
 			}
 			set => m_GuildRank = value;
 		}
@@ -880,7 +880,7 @@ namespace Server.Mobiles
 			{
 				string notice;
 
-				if ( !(@from.Account is Account acct) || !acct.HasAccess( from.NetState ) )
+				if ( !(from.Account is Account acct) || !acct.HasAccess( from.NetState ) )
 				{
 					if ( from.AccessLevel == AccessLevel.Player )
 						notice = "The server is currently under lockdown. No players are allowed to log in at this time.";
@@ -902,7 +902,7 @@ namespace Server.Mobiles
 				return;
 			}
 
-			if ( @from is PlayerMobile mobile )
+			if ( from is PlayerMobile mobile )
 				mobile.ClaimAutoStabledPets();
 		}
 
@@ -2526,10 +2526,10 @@ namespace Server.Mobiles
 
 			WeightOverloading.FatigueOnDamage( this, amount );
 
-			m_ReceivedHonorContext?.OnTargetDamaged( @from, amount );
-			m_SentHonorContext?.OnSourceDamaged( @from, amount );
+			m_ReceivedHonorContext?.OnTargetDamaged( from, amount );
+			m_SentHonorContext?.OnSourceDamaged( from, amount );
 
-			if ( willKill && @from is PlayerMobile mobile )
+			if ( willKill && from is PlayerMobile mobile )
 				Timer.DelayCall( TimeSpan.FromSeconds( 10 ), mobile.RecoverAmmo );
 
 			base.OnDamage( amount, from, willKill );
@@ -2857,18 +2857,16 @@ namespace Server.Mobiles
 			{
 				return true;
 			}
-			else
-			{
-				for (int i = 0; i < m_StuckMenuUses.Length; ++i)
-				{
-					if ((DateTime.UtcNow - m_StuckMenuUses[i]) > TimeSpan.FromDays(1.0))
-					{
-						return true;
-					}
-				}
 
-				return false;
+			for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+			{
+				if ((DateTime.UtcNow - m_StuckMenuUses[i]) > TimeSpan.FromDays(1.0))
+				{
+					return true;
+				}
 			}
+
+			return false;
 		}
 
 		public void UsedStuckMenu()
@@ -3218,8 +3216,7 @@ namespace Server.Mobiles
 				++count.Count;
 				if ( count.Count <= SkillCheck.Allowance )
 					return true;
-				else
-					return false;
+				return false;
 			}
 
 			tbl[obj] = count = new CountAndTimeStamp();
@@ -3716,8 +3713,7 @@ namespace Server.Mobiles
 			{
 				if ( NetState != null )
 					return m_GameTime + (DateTime.UtcNow - m_SessionStart);
-				else
-					return m_GameTime;
+				return m_GameTime;
 			}
 		}
 
@@ -4388,7 +4384,7 @@ namespace Server.Mobiles
 			if ( Region is BaseRegion region && !region.YoungProtected )
 				return false;
 
-			if ( @from is BaseCreature creature && creature.IgnoreYoungProtection )
+			if ( from is BaseCreature creature && creature.IgnoreYoungProtection )
 				return false;
 
 			if ( Quest != null && Quest.IgnoreYoungProtection( from ) )

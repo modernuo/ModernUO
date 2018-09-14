@@ -26,20 +26,16 @@ namespace Server.Engines.Quests
 				{
 					return true;
 				}
-				else if ( !(from is PlayerMobile) || CanDrop( (PlayerMobile)from ) )
+
+				if ( !(from is PlayerMobile) || CanDrop( (PlayerMobile)from ) )
 				{
 					return true;
 				}
-				else
-				{
-					from.SendLocalizedMessage( 1049343 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
-					return false;
-				}
+				from.SendLocalizedMessage( 1049343 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
+				return false;
 			}
-			else
-			{
-				return ret;
-			}
+
+			return ret;
 		}
 
 		public override bool DropToMobile( Mobile from, Mobile target, Point3D p )
@@ -52,20 +48,16 @@ namespace Server.Engines.Quests
 				{
 					return true;
 				}
-				else if ( !(from is PlayerMobile) || CanDrop( (PlayerMobile)from ) )
+
+				if ( !(from is PlayerMobile) || CanDrop( (PlayerMobile)from ) )
 				{
 					return true;
 				}
-				else
-				{
-					from.SendLocalizedMessage( 1049344 ); // You decide against trading the item.  You still need it for your quest.
-					return false;
-				}
+				from.SendLocalizedMessage( 1049344 ); // You decide against trading the item.  You still need it for your quest.
+				return false;
 			}
-			else
-			{
-				return ret;
-			}
+
+			return ret;
 		}
 
 		public override bool DropToItem( Mobile from, Item target, Point3D p )
@@ -78,15 +70,13 @@ namespace Server.Engines.Quests
 				{
 					return true;
 				}
-				else if ( !(from is PlayerMobile) || CanDrop( (PlayerMobile)from ) )
+
+				if ( !(from is PlayerMobile) || CanDrop( (PlayerMobile)from ) )
 				{
 					return true;
 				}
-				else
-				{
-					from.SendLocalizedMessage( 1049343 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
-					return false;
-				}
+				from.SendLocalizedMessage( 1049343 ); // You can only drop quest items into the top-most level of your backpack while you still need them for your quest.
+				return false;
 			}
 			return ret;
 		}

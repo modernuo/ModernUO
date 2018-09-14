@@ -74,8 +74,7 @@ namespace Server.Items
 
 					if ( id < 0x4000 )
 						return 1020000 + id;
-					else
-						return 1078872 + id;
+					return 1078872 + id;
 				}
 
 				return base.LabelNumber;
@@ -129,16 +128,14 @@ namespace Server.Items
 		{
 			if ( m.Map == Map )
 				return Contains( m.X, m.Y );
-			else
-				return false;
+			return false;
 		}
 
 		public bool Contains( Item item )
 		{
 			if ( item.Map == Map )
 				return Contains( item.X, item.Y );
-			else
-				return false;
+			return false;
 		}
 
 		public override void Serialize( GenericWriter writer )

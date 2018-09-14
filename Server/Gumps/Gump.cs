@@ -314,12 +314,10 @@ namespace Server.Gumps
 			{
 				return indexOf;
 			}
-			else
-			{
-				Invalidate();
-				m_Strings.Add( value );
-				return m_Strings.Count - 1;
-			}
+
+			Invalidate();
+			m_Strings.Add( value );
+			return m_Strings.Count - 1;
 		}
 
 		public void SendTo( NetState state )

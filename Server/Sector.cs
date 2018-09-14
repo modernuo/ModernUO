@@ -97,7 +97,7 @@ namespace Server {
 
 		private void Replace<T>( ref List<T> list, T oldValue, T newValue ) {
 			if ( oldValue != null && newValue != null ) {
-				int index = ( list != null ? list.IndexOf( oldValue ) : -1 );
+				int index = list?.IndexOf( oldValue ) ?? -1;
 
 				if ( index >= 0 ) {
 					list[index] = newValue;

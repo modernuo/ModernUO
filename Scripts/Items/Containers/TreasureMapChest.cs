@@ -300,10 +300,8 @@ namespace Server.Items
 				LockPick( from );
 				return false;
 			}
-			else
-			{
-				return base.CheckLocked( from );
-			}
+
+			return base.CheckLocked( from );
 		}
 
 		private List<Item> m_Lifted = new List<Item>();

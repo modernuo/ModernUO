@@ -219,33 +219,30 @@ namespace Server.Commands
 				{
 					return Enum.Parse( type, value, true );
 				}
-				else if ( IsType( type ) )
+
+				if ( IsType( type ) )
 				{
 					return ScriptCompiler.FindTypeByName( value );
 				}
-				else if ( IsParsable( type ) )
+				if ( IsParsable( type ) )
 				{
 					return ParseParsable( type, value );
 				}
-				else
+				object obj = value;
+
+				if ( value != null && value.StartsWith( "0x" ) )
 				{
-					object obj = value;
+					if ( IsSignedNumeric( type ) )
+						obj = Convert.ToInt64( value.Substring( 2 ), 16 );
+					else if ( IsUnsignedNumeric( type ) )
+						obj = Convert.ToUInt64( value.Substring( 2 ), 16 );
 
-					if ( value != null && value.StartsWith( "0x" ) )
-					{
-						if ( IsSignedNumeric( type ) )
-							obj = Convert.ToInt64( value.Substring( 2 ), 16 );
-						else if ( IsUnsignedNumeric( type ) )
-							obj = Convert.ToUInt64( value.Substring( 2 ), 16 );
-
-						obj = Convert.ToInt32( value.Substring( 2 ), 16 );
-					}
-
-					if ( obj == null && !type.IsValueType )
-						return null;
-					else
-						return Convert.ChangeType( obj, type );
+					obj = Convert.ToInt32( value.Substring( 2 ), 16 );
 				}
+
+				if ( obj == null && !type.IsValueType )
+					return null;
+				return Convert.ChangeType( obj, type );
 			}
 			catch
 			{

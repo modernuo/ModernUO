@@ -66,15 +66,13 @@ namespace Server.Items
 				Delete();
 				return false;
 			}
-			else if ( !IsChildOf( m_Board ) )
+
+			if ( !IsChildOf( m_Board ) )
 			{
 				m_Board.DropItem( this );
 				return false;
 			}
-			else
-			{
-				return true;
-			}
+			return true;
 		}
 
 		public override bool CanTarget => false;

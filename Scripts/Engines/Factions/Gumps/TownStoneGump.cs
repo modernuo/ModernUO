@@ -118,7 +118,8 @@ namespace Server.Factions
 				from.SendLocalizedMessage( 1010339 ); // You no longer control this city
 				return;
 			}
-			else if ( m_Town.Sheriff != null )
+
+			if ( m_Town.Sheriff != null )
 			{
 				from.SendLocalizedMessage( 1010342 ); // You must fire your Sheriff before you can elect a new one
 			}

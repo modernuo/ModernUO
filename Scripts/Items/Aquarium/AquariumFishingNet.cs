@@ -38,24 +38,20 @@ namespace Server.Items
 					Delete();
 					return;
 				}
-				else
+
+				if ( from.PlaceInBackpack( fish ) )
 				{
-					if ( from.PlaceInBackpack( fish ) )
-					{
-						from.PlaySound( 0x5A2 );
-						from.SendLocalizedMessage( 1074490 ); // A live creature flops around in your pack before running out of air.
+					from.PlaySound( 0x5A2 );
+					from.SendLocalizedMessage( 1074490 ); // A live creature flops around in your pack before running out of air.
 
-						fish.Kill();
-						Delete();
-						return;
-					}
-					else
-					{
-						fish.Delete();
-
-						from.SendLocalizedMessage( 1074488 ); // You could not hold the creature.
-					}
+					fish.Kill();
+					Delete();
+					return;
 				}
+
+				fish.Delete();
+
+				from.SendLocalizedMessage( 1074488 ); // You could not hold the creature.
 			}
 
 			InUse = false;

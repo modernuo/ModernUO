@@ -104,8 +104,7 @@ namespace Server.Items
 
 			if ( FacingSouth )
 				return BaseAddon.IsWall( p.X, p.Y - 1, p.Z, map ); // north wall
-			else
-				return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // west wall
+			return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // west wall
 		}
 	}
 

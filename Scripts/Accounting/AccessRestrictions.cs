@@ -24,7 +24,8 @@ namespace Server
 					e.AllowConnection = false;
 					return;
 				}
-				else if ( IPLimiter.SocketBlock && !IPLimiter.Verify( ip ) )
+
+				if ( IPLimiter.SocketBlock && !IPLimiter.Verify( ip ) )
 				{
 					Console.WriteLine( "Client: {0}: Past IP limit threshold", ip );
 

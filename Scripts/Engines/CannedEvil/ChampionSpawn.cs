@@ -666,7 +666,7 @@ namespace Server.Engines.CannedEvil
 					return new Point3D( x, y, z );
 
 				/* try @ platform Z if map z fails */
-				else if ( Map.CanSpawnMobile( new Point2D( x, y ), m_Platform.Location.Z ) )
+				if ( Map.CanSpawnMobile( new Point2D( x, y ), m_Platform.Location.Z ) )
 					return new Point3D( x, y, m_Platform.Location.Z );
 			}
 
@@ -683,9 +683,9 @@ namespace Server.Engines.CannedEvil
 
 			if ( level <= Level1 )
 				return 0;
-			else if ( level <= Level2 )
+			if ( level <= Level2 )
 				return 1;
-			else if ( level <= Level3 )
+			if ( level <= Level3 )
 				return 2;
 
 			return 3;

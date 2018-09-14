@@ -29,9 +29,9 @@ namespace Server.Guilds
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
 				return Insensitive.Compare( x.Name, y.Name );
@@ -56,9 +56,9 @@ namespace Server.Guilds
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
 				GuildCompareStatus aStatus = GuildCompareStatus.Peace;
@@ -90,9 +90,9 @@ namespace Server.Guilds
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
 				return Insensitive.Compare( x.Abbreviation, y.Abbreviation );

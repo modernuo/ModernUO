@@ -163,10 +163,10 @@ namespace Server.Items
 
 			SaveFlags flags = SaveFlags.None;
 
-			if ( m_Title != ( content == null ? null : content.Title ) )
+			if ( m_Title != content?.Title )
 				flags |= SaveFlags.Title;
 
-			if ( m_Author != ( content == null ? null : content.Author ) )
+			if ( m_Author != content?.Author )
 				flags |= SaveFlags.Author;
 
 			if ( m_Writable )
@@ -489,8 +489,8 @@ namespace Server.Items
 	{
 		public BookHeader( Mobile from, BaseBook book ) : base ( 0xD4 )
 		{
-			string title = book.Title == null ? "" : book.Title;
-			string author = book.Author == null ? "" : book.Author;
+			string title = book.Title ?? "";
+			string author = book.Author ?? "";
 
 			byte[] titleBuffer = Utility.UTF8.GetBytes( title );
 			byte[] authorBuffer = Utility.UTF8.GetBytes( author );

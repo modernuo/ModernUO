@@ -33,7 +33,8 @@ namespace Server.Items
 				from.SendMessage( "You must have at least 60.0 skill in tinkering to construct a golem." );
 				return;
 			}
-			else if ( (from.Followers + 4) > from.FollowersMax )
+
+			if ( (from.Followers + 4) > from.FollowersMax )
 			{
 				from.SendLocalizedMessage( 1049607 ); // You have too many followers to control that creature.
 				return;

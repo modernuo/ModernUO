@@ -151,7 +151,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			m_Addon?.OnComponentUsed( this, @from );
+			m_Addon?.OnComponentUsed( this, from );
 		}
 
 		public void OnChop( Mobile from )

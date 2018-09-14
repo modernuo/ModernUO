@@ -26,8 +26,8 @@ namespace Server.Items
 					scissors.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071899 ); // You begin cutting through the vein.
 					return true;
 				}
-				else
-					scissors.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071900 ); // // This vein has already been cut.
+
+				scissors.PublicOverheadMessage( MessageType.Regular, 0x3B2, 1071900 ); // // This vein has already been cut.
 			}
 
 			return false;

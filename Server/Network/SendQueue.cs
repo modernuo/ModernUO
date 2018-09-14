@@ -148,15 +148,19 @@ namespace Server.Network {
 		public Gram Enqueue( byte[] buffer, int offset, int length ) {
 			if ( buffer == null ) {
 				throw new ArgumentNullException( "buffer" );
-			} else if ( !(offset >= 0 && offset < buffer.Length) ) {
+			}
+
+			if ( !(offset >= 0 && offset < buffer.Length) ) {
 				throw new ArgumentOutOfRangeException( "offset", offset, "Offset must be greater than or equal to zero and less than the size of the buffer." );
-			} else if ( length < 0 || length > buffer.Length ) {
+			}
+			if ( length < 0 || length > buffer.Length ) {
 				throw new ArgumentOutOfRangeException( "length", length, "Length cannot be less than zero or greater than the size of the buffer." );
-			} else if ( ( buffer.Length - offset ) < length ) {
+			}
+			if ( ( buffer.Length - offset ) < length ) {
 				throw new ArgumentException( "Offset and length do not point to a valid segment within the buffer." );
 			}
 
-			int existingBytes = ( _pending.Count * m_CoalesceBufferSize ) + ( _buffered == null ? 0 : _buffered.Length );
+			int existingBytes = ( _pending.Count * m_CoalesceBufferSize ) + (_buffered?.Length ?? 0);
 
 			if ( ( existingBytes + length ) > PendingCap ) {
 				throw new CapacityExceededException();

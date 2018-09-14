@@ -11,8 +11,7 @@ namespace Server.Items
 			{
 				if ( ItemID == 0xA05 )
 					return 0xA07;
-				else
-					return 0xA0C;
+				return 0xA0C;
 			}
 		}
 		
@@ -22,8 +21,7 @@ namespace Server.Items
 			{
 				if ( ItemID == 0xA07 )
 					return 0xA05;
-				else
-					return 0xA0A;
+				return 0xA0A;
 			}
 		}
 		

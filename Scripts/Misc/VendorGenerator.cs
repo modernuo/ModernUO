@@ -459,7 +459,7 @@ namespace Server
 
 			if ( (landFlags & TileFlag.Impassable) != 0 && topZ > z && (z + 16) > lowZ )
 				return false;
-			else if ( (landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored )
+			if ( (landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored )
 				hasSurface = true;
 
 			StaticTile[] staticTiles = map.Tiles.GetStaticTiles( x, y );
@@ -478,7 +478,7 @@ namespace Server
 
 				if ( (surface || impassable) && (staticTiles[i].Z + id.CalcHeight) > z && (z + 16) > staticTiles[i].Z )
 					return false;
-				else if ( surface && !impassable && z == (staticTiles[i].Z + id.CalcHeight) )
+				if ( surface && !impassable && z == (staticTiles[i].Z + id.CalcHeight) )
 					hasSurface = true;
 			}
 
@@ -497,7 +497,7 @@ namespace Server
 
 					if ( (surface || impassable) && (item.Z + id.CalcHeight) > z && (z + 16) > item.Z )
 						return false;
-					else if ( surface && !impassable && z == (item.Z + id.CalcHeight) )
+					if ( surface && !impassable && z == (item.Z + id.CalcHeight) )
 						hasSurface = true;
 				}
 			}

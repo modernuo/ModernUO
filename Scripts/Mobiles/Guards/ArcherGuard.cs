@@ -249,7 +249,8 @@ namespace Server.Mobiles
 					Stop();
 					return;
 				}
-				else if ( m_Owner.Weapon is Fists )
+
+				if ( m_Owner.Weapon is Fists )
 				{
 					m_Owner.Kill();
 					Stop();

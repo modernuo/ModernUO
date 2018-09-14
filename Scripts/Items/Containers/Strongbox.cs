@@ -83,8 +83,7 @@ namespace Server.Items
 			{
 				if ( m_House != null && m_Owner != null && !m_Owner.Deleted )
 					return !m_House.IsCoOwner( m_Owner );
-				else
-					return true;
+				return true;
 			}
 		}
 

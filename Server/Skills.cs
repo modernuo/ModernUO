@@ -847,9 +847,9 @@ namespace Server
 		{
 			if ( !from.CheckAlive() )
 				return false;
-			else if ( !from.Region.OnSkillUse( from, skillID ) )
+			if ( !from.Region.OnSkillUse( from, skillID ) )
 				return false;
-			else if ( !from.AllowSkillUse( (SkillName)skillID ) )
+			if ( !from.AllowSkillUse( (SkillName)skillID ) )
 				return false;
 
 			if ( skillID >= 0 && skillID < SkillInfo.Table.Length )
@@ -866,10 +866,8 @@ namespace Server
 
 						return true;
 					}
-					else
-					{
-						from.SendSkillMessage();
-					}
+
+					from.SendSkillMessage();
 				}
 				else
 				{

@@ -206,12 +206,9 @@ namespace Server.Network
 		{
 			if ( packetID >= 0 && packetID < 0x100 )
 				return m_ExtendedHandlersLow[packetID];
-			else
-			{
-				PacketHandler handler;
-				m_ExtendedHandlersHigh.TryGetValue( packetID, out handler );
-				return handler;
-			}
+			PacketHandler handler;
+			m_ExtendedHandlersHigh.TryGetValue( packetID, out handler );
+			return handler;
 		}
 
 		public static void RemoveExtendedHandler( int packetID )
@@ -234,12 +231,9 @@ namespace Server.Network
 		{
 			if ( packetID >= 0 && packetID < 0x100 )
 				return m_EncodedHandlersLow[packetID];
-			else
-			{
-				EncodedPacketHandler handler;
-				m_EncodedHandlersHigh.TryGetValue( packetID, out handler );
-				return handler;
-			}
+			EncodedPacketHandler handler;
+			m_EncodedHandlersHigh.TryGetValue( packetID, out handler );
+			return handler;
 		}
 
 		public static void RemoveEncodedHandler( int packetID )
@@ -410,7 +404,8 @@ namespace Server.Network
 			{
 				return;
 			}
-			else if ( vendor.Deleted || !Utility.RangeCheck( vendor.Location, state.Mobile.Location, 10 ) )
+
+			if ( vendor.Deleted || !Utility.RangeCheck( vendor.Location, state.Mobile.Location, 10 ) )
 			{
 				state.Send( new EndVendorBuy( vendor ) );
 				return;
@@ -451,7 +446,8 @@ namespace Server.Network
 			{
 				return;
 			}
-			else if ( vendor.Deleted || !Utility.RangeCheck( vendor.Location, state.Mobile.Location, 10 ) )
+
+			if ( vendor.Deleted || !Utility.RangeCheck( vendor.Location, state.Mobile.Location, 10 ) )
 			{
 				state.Send( new EndVendorSell( vendor ) );
 				return;
@@ -723,10 +719,8 @@ namespace Server.Network
 				state.Dispose();
 				return false;
 			}
-			else
-			{
-				return true;
-			}
+
+			return true;
 		}
 
 		public static void TextCommand( NetState state, PacketReader pvSrc )
@@ -1601,7 +1595,7 @@ namespace Server.Network
 			bool rightClick = pvSrc.ReadBoolean();
 			Mobile from = state.Mobile;
 
-			@from?.QuestArrow?.OnClick( rightClick );
+			from?.QuestArrow?.OnClick( rightClick );
 		}
 
 		public static void ExtendedCommand( NetState state, PacketReader pvSrc )
@@ -2543,7 +2537,8 @@ namespace Server.Network
 				state.Dispose();
 				return;
 			}
-			else if ( state.m_AuthID == 0 && authID != state.m_Seed )
+
+			if ( state.m_AuthID == 0 && authID != state.m_Seed )
 			{
 				Console.WriteLine( "Login: {0}: Invalid client detected, disconnecting", state );
 				state.Dispose();

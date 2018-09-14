@@ -179,10 +179,8 @@ namespace Server.Items
 						{
 							return true;
 						}
-						else
-						{
-							from.SendLocalizedMessage(weapon.NoFreeHandMessage);
-						}
+
+						from.SendLocalizedMessage(weapon.NoFreeHandMessage);
 					}
 					else
 					{

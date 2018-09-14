@@ -6,8 +6,7 @@ namespace Server.Engines.Mahjong
 		{
 			if ( direction == MahjongPieceDirection.Up || direction == MahjongPieceDirection.Down )
 				return new MahjongPieceDim( position, 40, 20 );
-			else
-				return new MahjongPieceDim( position, 20, 40 );
+			return new MahjongPieceDim( position, 20, 40 );
 		}
 
 		private MahjongGame m_Game;

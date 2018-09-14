@@ -382,14 +382,12 @@ namespace Server.Engines.Quests.Necro
 					 */
 					return 1060131;
 				}
-				else
-				{
-					/* Although you were slain by the cowardly paladin,
+
+				/* Although you were slain by the cowardly paladin,
 					 * you managed to complete the rite of calling as
 					 * instructed. Return to Mardoth.
 					 */
-					return 1060132;
-				}
+				return 1060132;
 			}
 		}
 

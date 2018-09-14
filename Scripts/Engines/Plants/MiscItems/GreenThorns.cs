@@ -331,7 +331,8 @@ namespace Server.Items
 					item.MoveToWorld( new Point3D( x, y, Location.Z ), Map );
 					return true;
 				}
-				else if ( Map.CanFit( x, y, z, 1 ) )
+
+				if ( Map.CanFit( x, y, z, 1 ) )
 				{
 					item.MoveToWorld( new Point3D( x, y, z ), Map );
 					return true;
@@ -355,7 +356,8 @@ namespace Server.Items
 					creature.Combatant = From;
 					return true;
 				}
-				else if ( Map.CanSpawnMobile( x, y, z ) )
+
+				if ( Map.CanSpawnMobile( x, y, z ) )
 				{
 					creature.MoveToWorld( new Point3D( x, y, z ), Map );
 					creature.Combatant = From;

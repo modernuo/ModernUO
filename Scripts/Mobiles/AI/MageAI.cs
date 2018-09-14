@@ -30,8 +30,7 @@ namespace Server.Mobiles
 
 			if ( ProcessTarget() )
 				return true;
-			else
-				return base.Think();
+			return base.Think();
 		}
 
 		public virtual bool SmartAI => ( m_Mobile is BaseVendor || m_Mobile is BaseEscortable || m_Mobile is Changeling );
@@ -547,14 +546,12 @@ namespace Server.Mobiles
 			{
 				return TimeSpan.FromSeconds( m_Mobile.ActiveSpeed );
 			}
-			else
-			{
-				double del = ScaleBySkill( 3.0, SkillName.Magery );
-				double min = 6.0 - ( del * 0.75 );
-				double max = 6.0 - ( del * 1.25 );
 
-				return TimeSpan.FromSeconds( min + ( ( max - min ) * Utility.RandomDouble() ) );
-			}
+			double del = ScaleBySkill( 3.0, SkillName.Magery );
+			double min = 6.0 - ( del * 0.75 );
+			double max = 6.0 - ( del * 1.25 );
+
+			return TimeSpan.FromSeconds( min + ( ( max - min ) * Utility.RandomDouble() ) );
 		}
 
 		private Mobile m_LastTarget;
@@ -864,45 +861,43 @@ namespace Server.Mobiles
 
 				return active;
 			}
-			else
+
+			Map map = m_Mobile.Map;
+
+			if ( map != null )
 			{
-				Map map = m_Mobile.Map;
+				Mobile active = null, inactive = null;
+				double actPrio = 0.0, inactPrio = 0.0;
 
-				if ( map != null )
+				Mobile comb = m_Mobile.Combatant;
+
+				if ( comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && CanDispel( comb ) )
 				{
-					Mobile active = null, inactive = null;
-					double actPrio = 0.0, inactPrio = 0.0;
+					active = inactive = comb;
+					actPrio = inactPrio = m_Mobile.GetDistanceToSqrt( comb );
+				}
 
-					Mobile comb = m_Mobile.Combatant;
-
-					if ( comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && CanDispel( comb ) )
+				foreach( Mobile m in m_Mobile.GetMobilesInRange( Core.ML ? 10 : 12 ) )
+				{
+					if ( m != m_Mobile && CanDispel( m ) )
 					{
-						active = inactive = comb;
-						actPrio = inactPrio = m_Mobile.GetDistanceToSqrt( comb );
-					}
+						double prio = m_Mobile.GetDistanceToSqrt( m );
 
-					foreach( Mobile m in m_Mobile.GetMobilesInRange( Core.ML ? 10 : 12 ) )
-					{
-						if ( m != m_Mobile && CanDispel( m ) )
+						if ( !activeOnly && ( inactive == null || prio < inactPrio ) )
 						{
-							double prio = m_Mobile.GetDistanceToSqrt( m );
+							inactive = m;
+							inactPrio = prio;
+						}
 
-							if ( !activeOnly && ( inactive == null || prio < inactPrio ) )
-							{
-								inactive = m;
-								inactPrio = prio;
-							}
-
-							if ( ( m_Mobile.Combatant == m || m.Combatant == m_Mobile ) && ( active == null || prio < actPrio ) )
-							{
-								active = m;
-								actPrio = prio;
-							}
+						if ( ( m_Mobile.Combatant == m || m.Combatant == m_Mobile ) && ( active == null || prio < actPrio ) )
+						{
+							active = m;
+							actPrio = prio;
 						}
 					}
-
-					return active != null ? active : inactive;
 				}
+
+				return active ?? inactive;
 			}
 
 			return null;

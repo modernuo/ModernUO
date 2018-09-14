@@ -92,10 +92,9 @@ namespace Server.Gumps
 
 				if ( x.AccessLevel > y.AccessLevel )
 					return -1;
-				else if ( x.AccessLevel < y.AccessLevel )
+				if ( x.AccessLevel < y.AccessLevel )
 					return 1;
-				else
-					return Insensitive.Compare( x.Name, y.Name );
+				return Insensitive.Compare( x.Name, y.Name );
 			}
 		}
 
@@ -232,7 +231,7 @@ namespace Server.Gumps
 				{
 					if ( m.Kills >= 5 )
 						return 0x21;
-					else if ( m.Criminal )
+					if ( m.Criminal )
 						return 0x3B1;
 
 					return 0x58;

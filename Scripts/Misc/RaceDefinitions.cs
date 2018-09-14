@@ -94,10 +94,9 @@ namespace Server.Misc
 			{
 				if ( hue < 1002 )
 					return 1002;
-				else if ( hue > 1058 )
+				if ( hue > 1058 )
 					return 1058;
-				else
-					return hue;
+				return hue;
 			}
 
 			public override int RandomSkinHue()
@@ -109,10 +108,9 @@ namespace Server.Misc
 			{
 				if ( hue < 1102 )
 					return 1102;
-				else if ( hue > 1149 )
+				if ( hue > 1149 )
 					return 1149;
-				else
-					return hue;
+				return hue;
 			}
 
 			public override int RandomHairHue()
@@ -226,63 +224,56 @@ namespace Server.Misc
 
             public override bool ValidateHair(bool female, int itemID)
             {
-                if (female == false)
+	            if (female == false)
                 {
                     return itemID >= 0x4258 && itemID <= 0x425F;
                 }
-                else
-                {
-                    return ((itemID == 0x4261 || itemID == 0x4262) || (itemID >= 0x4273 && itemID <= 0x4275) || (itemID == 0x42B0 || itemID == 0x42B1) || (itemID == 0x42AA || itemID == 0x42AB));
-                }
+
+	            return ((itemID == 0x4261 || itemID == 0x4262) || (itemID >= 0x4273 && itemID <= 0x4275) || (itemID == 0x42B0 || itemID == 0x42B1) || (itemID == 0x42AA || itemID == 0x42AB));
             }
 
             public override int RandomHair(bool female)
             {
                 if (Utility.Random(9) == 0)
                     return 0;
-                else if (!female)
-                    return 0x4258 + Utility.Random(8);
-                else
-                {
-                    switch (Utility.Random(9))
-                    {
-                        case 0:
-                            return 0x4261;
-                        case 1:
-                            return 0x4262;
-                        case 2:
-                            return 0x4273;
-                        case 3:
-                            return 0x4274;
-                        case 4:
-                            return 0x4275;
-                        case 5:
-                            return 0x42B0;
-                        case 6:
-                            return 0x42B1;
-                        case 7:
-                            return 0x42AA;
-                        case 8:
-                            return 0x42AB;
-                    }
-                    return 0;
-                }
+	            if (!female)
+		            return 0x4258 + Utility.Random(8);
+	            switch (Utility.Random(9))
+	            {
+		            case 0:
+			            return 0x4261;
+		            case 1:
+			            return 0x4262;
+		            case 2:
+			            return 0x4273;
+		            case 3:
+			            return 0x4274;
+		            case 4:
+			            return 0x4275;
+		            case 5:
+			            return 0x42B0;
+		            case 6:
+			            return 0x42B1;
+		            case 7:
+			            return 0x42AA;
+		            case 8:
+			            return 0x42AB;
+	            }
+	            return 0;
             }
 
             public override bool ValidateFacialHair(bool female, int itemID)
             {
-                if (female)
+	            if (female)
                     return false;
-                else
-                    return itemID >= 0x42AD && itemID <= 0x42B0;
+	            return itemID >= 0x42AD && itemID <= 0x42B0;
             }
 
             public override int RandomFacialHair(bool female)
             {
-                if (female)
+	            if (female)
                     return 0;
-                else
-                    return Utility.RandomList(0, 0x42AD, 0x42AE, 0x42AF, 0x42B0);
+	            return Utility.RandomList(0, 0x42AD, 0x42AE, 0x42AF, 0x42B0);
             }
 
             // Todo Finish body hues

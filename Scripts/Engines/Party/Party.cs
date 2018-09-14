@@ -129,7 +129,7 @@ namespace Server.Engines.PartySystem
 			Mobile from = e.Mobile;
 			Party p = Get( from );
 
-			p?.Remove( @from );
+			p?.Remove( from );
 
 			from.Party = null;
 		}

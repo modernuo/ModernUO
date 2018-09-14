@@ -601,7 +601,7 @@ namespace Server.Items
 			writer.WriteDeltaTime( m_TimeOfDeath );
 
 			List<KeyValuePair<Item, Point3D>> list = ( m_RestoreTable == null ? null : new List<KeyValuePair<Item, Point3D>>( m_RestoreTable ) );
-			int count = ( list == null ? 0 : list.Count );
+			int count = list?.Count ?? 0;
 
 			writer.Write( count );
 
@@ -971,7 +971,8 @@ namespace Server.Items
 
 				return false;
 			}
-			else if ( IsCriminalAction( from ) )
+
+			if ( IsCriminalAction( from ) )
 			{
 				if ( m_Owner == null || !m_Owner.Player )
 					from.SendLocalizedMessage( 1005036 ); // Looting this monster corpse will be a criminal act!

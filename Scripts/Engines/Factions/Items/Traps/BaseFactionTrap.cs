@@ -93,7 +93,7 @@ namespace Server.Factions
 						if ( from.Alive )
 							m_Placer.SendMessage( "You have earned {0} silver pieces because {1} fell for your trap.", silverGiven, from.Name );
 						else
-							m_Placer.SendLocalizedMessage( 1042736, $"{silverGiven} silver\t{@from.Name}"); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
+							m_Placer.SendLocalizedMessage( 1042736, $"{silverGiven} silver\t{from.Name}"); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
 					}
 
 					victimState.OnGivenSilverTo( m_Placer );

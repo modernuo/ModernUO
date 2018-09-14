@@ -30,12 +30,13 @@ namespace Server.Spells.Fifth
 				Caster.SendLocalizedMessage( 1010445 ); // You cannot incognito if you have a sigil
 				return false;
 			}
-			else if ( !Caster.CanBeginAction( typeof( IncognitoSpell ) ) )
+
+			if ( !Caster.CanBeginAction( typeof( IncognitoSpell ) ) )
 			{
 				Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 				return false;
 			}
-			else if ( Caster.BodyMod == 183 || Caster.BodyMod == 184 )
+			if ( Caster.BodyMod == 183 || Caster.BodyMod == 184 )
 			{
 				Caster.SendLocalizedMessage( 1042402 ); // You cannot use incognito while wearing body paint
 				return false;

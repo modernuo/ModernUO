@@ -45,8 +45,8 @@ namespace Server.Commands
 
 					return;
 				}
-				else
-					e.Mobile.SendMessage($"Command '{arg}' not found!");
+
+				e.Mobile.SendMessage($"Command '{arg}' not found!");
 			}
 
 			e.Mobile.SendGump( new CommandListGump( 0, e.Mobile, null ) );

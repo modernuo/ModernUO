@@ -15,8 +15,8 @@ namespace Server.Factions
 			{
 				m_Faction = value;
 
-				Body = ( m_Faction == null ? 0xE2 : m_Faction.Definition.WarHorseBody );
-				ItemID = ( m_Faction == null ? 0x3EA0 : m_Faction.Definition.WarHorseItem );
+				Body = m_Faction?.Definition.WarHorseBody ?? 0xE2;
+				ItemID = m_Faction?.Definition.WarHorseItem ?? 0x3EA0;
 			}
 		}
 

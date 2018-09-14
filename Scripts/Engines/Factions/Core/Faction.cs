@@ -1014,7 +1014,7 @@ namespace Server.Factions
 
 			if ( pack != null )
 			{
-				Container killerPack = ( killer == null ? null : killer.Backpack );
+				Container killerPack = killer?.Backpack;
 				Item[] sigils = pack.FindItemsByType( typeof( Sigil ) );
 
 				for ( int i = 0; i < sigils.Length; ++i )

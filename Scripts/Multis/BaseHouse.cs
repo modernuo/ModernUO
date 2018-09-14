@@ -209,15 +209,15 @@ namespace Server.Multis
 
 			if ( percent >= 1000 ) // 100.0%
 				return ( HasRentedVendors || VendorInventories.Count > 0 ) ? DecayLevel.DemolitionPending : DecayLevel.Collapsed;
-			else if ( percent >= 950 ) // 95.0% - 99.9%
+			if ( percent >= 950 ) // 95.0% - 99.9%
 				return DecayLevel.IDOC;
-			else if ( percent >= 750 ) // 75.0% - 94.9%
+			if ( percent >= 750 ) // 75.0% - 94.9%
 				return DecayLevel.Greatly;
-			else if ( percent >= 500 ) // 50.0% - 74.9%
+			if ( percent >= 500 ) // 50.0% - 74.9%
 				return DecayLevel.Fairly;
-			else if ( percent >= 250 ) // 25.0% - 49.9%
+			if ( percent >= 250 ) // 25.0% - 49.9%
 				return DecayLevel.Somewhat;
-			else if ( percent >= 005 ) // 00.5% - 24.9%
+			if ( percent >= 005 ) // 00.5% - 24.9%
 				return DecayLevel.Slightly;
 
 			return DecayLevel.LikeNew;
@@ -1108,37 +1108,37 @@ namespace Server.Multis
 
 			if ( !IsLockedDown( item ) )
 				return true;
-			else if ( from.AccessLevel >= AccessLevel.GameMaster )
+			if ( from.AccessLevel >= AccessLevel.GameMaster )
 				return true;
-			else if ( item is Runebook )
+			if ( item is Runebook )
 				return true;
-			else if ( item is ISecurable )
+			if ( item is ISecurable )
 				return HasSecureAccess( from, ((ISecurable)item).Level );
-			else if ( item is Container )
+			if ( item is Container )
 				return IsCoOwner( from );
-			else if ( item.Stackable )
+			if ( item.Stackable )
 				return true;
-			else if ( item is BaseLight )
+			if ( item is BaseLight )
 				return IsFriend( from );
-			else if ( item is PotionKeg )
+			if ( item is PotionKeg )
 				return IsFriend( from );
-			else if ( item is BaseBoard )
+			if ( item is BaseBoard )
 				return true;
-			else if ( item is Dices )
+			if ( item is Dices )
 				return true;
-			else if ( item is RecallRune )
+			if ( item is RecallRune )
 				return true;
-			else if ( item is TreasureMap )
+			if ( item is TreasureMap )
 				return true;
-			else if ( item is Clock )
+			if ( item is Clock )
 				return true;
-			else if ( item is BaseInstrument )
+			if ( item is BaseInstrument )
 				return true;
-			else if ( item is Dyes || item is DyeTub )
+			if ( item is Dyes || item is DyeTub )
 				return true;
-			else if ( item is VendorRentalContract )
+			if ( item is VendorRentalContract )
 				return true;
-			else if ( item is RewardBrazier )
+			if ( item is RewardBrazier )
 				return true;
 
 			return false;
@@ -1473,8 +1473,7 @@ namespace Server.Multis
 		{
 			if ( wood )
 				return new DarkWoodHouseDoor( facing );
-			else
-				return new MetalHouseDoor( facing );
+			return new MetalHouseDoor( facing );
 		}
 
 		public void AddDoor( BaseDoor door, int xoff, int yoff, int zoff )
@@ -1663,7 +1662,7 @@ namespace Server.Multis
 
 				houseName = ( m_House == null ? "an unnamed house" : m_House.Sign.GetName() );
 
-				Mobile houseOwner = ( m_House == null ? null : m_House.Owner );
+				Mobile houseOwner = m_House?.Owner;
 
 				if ( houseOwner == null )
 					owner = "nobody";
@@ -1709,7 +1708,7 @@ namespace Server.Multis
 			{
 				if ( !base.AllowSecureTrade( from, to, newOwner, accepted ) )
 					return false;
-				else if ( !accepted )
+				if ( !accepted )
 					return true;
 
 				if ( Deleted || m_House == null || m_House.Deleted || !m_House.IsOwner( from ) || !from.CheckAlive() || !to.CheckAlive() )
@@ -1758,7 +1757,7 @@ namespace Server.Multis
 		{
 			bool isValid = true;
 			Item sign = m_Sign;
-			Point3D p = ( sign == null ? Point3D.Zero : sign.GetWorldLocation() );
+			Point3D p = sign?.GetWorldLocation() ?? Point3D.Zero;
 
 			if ( from.Map != Map || to.Map != Map )
 				isValid = false;
@@ -2945,7 +2944,7 @@ namespace Server.Multis
 
 						if ( info.Item.Deleted )
 							continue;
-						else if ( info.Item is StrongBox )
+						if ( info.Item is StrongBox )
 							count += 1;
 						else
 							count += 125;
@@ -2970,7 +2969,7 @@ namespace Server.Multis
 
 						if ( info.Item.Deleted )
 							continue;
-						else if ( !(info.Item is StrongBox) )
+						if ( !(info.Item is StrongBox) )
 							count += 1;
 					}
 				}

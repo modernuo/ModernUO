@@ -144,9 +144,9 @@ namespace Server.SkillHandlers
 			{
 				if ( x == null && y == null )
 					return 0;
-				else if ( x == null )
+				if ( x == null )
 					return -1;
-				else if ( y == null )
+				if ( y == null )
 					return 1;
 
 				return m_From.GetDistanceToSqrt( x ).CompareTo( m_From.GetDistanceToSqrt( y ) );
@@ -378,7 +378,8 @@ namespace Server.SkillHandlers
 				Stop();
 				return;
 			}
-			else if ( m_From.NetState == null || m_From.Deleted || m_Target.Deleted || m_From.Map != m_Target.Map || !m_From.InRange( m_Target, m_Range ) || ( m_Target.Hidden && m_Target.AccessLevel > m_From.AccessLevel ) )
+
+			if ( m_From.NetState == null || m_From.Deleted || m_Target.Deleted || m_From.Map != m_Target.Map || !m_From.InRange( m_Target, m_Range ) || ( m_Target.Hidden && m_Target.AccessLevel > m_From.AccessLevel ) )
 			{
 				m_Arrow.Stop();
 				Stop();

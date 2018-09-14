@@ -378,10 +378,9 @@ namespace Server
 		{
 			if ( Core.ML )
 				return Construct( m_NewWandTypes ) as BaseWand;
-			else if ( Core.AOS )
+			if ( Core.AOS )
 				return Construct( m_WandTypes, m_NewWandTypes ) as BaseWand;
-			else
-				return Construct( m_OldWandTypes, m_WandTypes, m_NewWandTypes ) as BaseWand;
+			return Construct( m_OldWandTypes, m_WandTypes, m_NewWandTypes ) as BaseWand;
 		}
 
 		public static BaseClothing RandomClothing()

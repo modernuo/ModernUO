@@ -544,8 +544,7 @@ namespace Server.Gumps
 
 			if ( attrs.Length > 0 )
 				return attrs[0] as CPA;
-			else
-				return null;
+			return null;
 		}
 
 		private ArrayList GetGroups( Type objectType, PropertyInfo[] props )
@@ -600,7 +599,8 @@ namespace Server.Gumps
 			{
 				return s;
 			}
-			else if ( t == typeof( byte ) || t == typeof( sbyte ) || t == typeof( short ) || t == typeof( ushort ) || t == typeof( int ) || t == typeof( uint ) || t == typeof( long ) || t == typeof( ulong ) )
+
+			if ( t == typeof( byte ) || t == typeof( sbyte ) || t == typeof( short ) || t == typeof( ushort ) || t == typeof( int ) || t == typeof( uint ) || t == typeof( long ) || t == typeof( ulong ) )
 			{
 				if ( s.StartsWith( "0x" ) )
 				{
@@ -608,21 +608,17 @@ namespace Server.Gumps
 					{
 						return Convert.ChangeType( Convert.ToUInt64( s.Substring( 2 ), 16 ), t );
 					}
-					else
-					{
-						return Convert.ChangeType( Convert.ToInt64( s.Substring( 2 ), 16 ), t );
-					}
+
+					return Convert.ChangeType( Convert.ToInt64( s.Substring( 2 ), 16 ), t );
 				}
-				else
-				{
-					return Convert.ChangeType( s, t );
-				}
+
+				return Convert.ChangeType( s, t );
 			}
-			else if ( t == typeof( double ) || t == typeof( float ) )
+			if ( t == typeof( double ) || t == typeof( float ) )
 			{
 				return Convert.ChangeType( s, t );
 			}
-			else if ( t.IsDefined( typeof( ParsableAttribute ), false ) )
+			if ( t.IsDefined( typeof( ParsableAttribute ), false ) )
 			{
 				MethodInfo parseMethod = t.GetMethod( "Parse", new[]{ typeof( string ) } );
 

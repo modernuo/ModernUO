@@ -30,7 +30,8 @@ namespace Server.Spells.First
 				Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
 				return false;
 			}
-			else if ( !Caster.CanBeginAction( typeof( DefensiveSpell ) ) )
+
+			if ( !Caster.CanBeginAction( typeof( DefensiveSpell ) ) )
 			{
 				Caster.SendLocalizedMessage( 1005385 ); // The spell will not adhere to you at this time.
 				return false;

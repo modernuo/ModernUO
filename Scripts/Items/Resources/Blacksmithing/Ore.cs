@@ -69,12 +69,11 @@ namespace Server.Items
 
 			if ( rand < 0.12 )
 				return 0x19B7;
-			else if ( rand < 0.18 )
+			if ( rand < 0.18 )
 				return 0x19B8;
-			else if ( rand < 0.25 )
+			if ( rand < 0.25 )
 				return 0x19BA;
-			else
-				return 0x19B9;
+			return 0x19B9;
 		}
 
 		public BaseOre( CraftResource resource ) : this( resource, 1 )

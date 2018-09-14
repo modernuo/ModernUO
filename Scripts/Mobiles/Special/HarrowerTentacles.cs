@@ -176,10 +176,8 @@ namespace Server.Mobiles
 					if ( m == m_Owner || m == m_Owner.Harrower || !m_Owner.CanBeHarmful( m ) )
 						continue;
 
-					if ( m is BaseCreature )
+					if ( m is BaseCreature bc )
 					{
-						BaseCreature bc = m as BaseCreature;
-
 						if ( bc.Controlled || bc.Summoned )
 							m_ToDrain.Add( m );
 					}

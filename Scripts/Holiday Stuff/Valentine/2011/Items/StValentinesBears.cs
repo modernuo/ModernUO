@@ -12,8 +12,7 @@ namespace Server.Items
 			{
 				if ( m_Owner != null )
 					return $"{m_Owner}'s St. Valentine Bear";
-				else
-					return "St. Valentine Bear";
+				return "St. Valentine Bear";
 			}
 		}
 
@@ -194,9 +193,10 @@ namespace Server.Items
 					from.SendMessage( "Lines cannot be left blank." );
 					return;
 				}
-				else if ( line1.Length > 25
-					|| line2.Length > 25
-					|| line3.Length > 25 )
+
+				if ( line1.Length > 25
+				     || line2.Length > 25
+				     || line3.Length > 25 )
 				{
 					from.SendMessage( "Lines may not exceed 25 characters." );
 					return;
@@ -216,7 +216,7 @@ namespace Server.Items
 			{
 				TextRelay tr = info.GetTextEntry( idx );
 
-				return ( tr == null ) ? null : tr.Text;
+				return tr?.Text;
 			}
 		}
 	}

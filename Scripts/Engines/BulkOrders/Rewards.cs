@@ -77,7 +77,7 @@ namespace Server.Engines.BulkOrders
 		{
 			if ( m_Items.Length == 0 )
 				return null;
-			else if ( m_Items.Length == 1 )
+			if ( m_Items.Length == 1 )
 				return m_Items[0];
 
 			int totalWeight = 0;
@@ -203,9 +203,9 @@ namespace Server.Engines.BulkOrders
 		{
 			if ( type == 1 )
 				return new LeatherGlovesOfMining( 1 );
-			else if ( type == 3 )
+			if ( type == 3 )
 				return new StuddedGlovesOfMining( 3 );
-			else if ( type == 5 )
+			if ( type == 5 )
 				return new RingmailGlovesOfMining( 5 );
 
 			throw new InvalidOperationException();

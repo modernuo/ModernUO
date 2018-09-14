@@ -60,8 +60,7 @@ namespace Server.Engines.Quests.Collector
 			int index = (int)image;
 			if ( index >= 0 && index < m_Table.Length )
 				return m_Table[index];
-			else
-				return m_Table[0];
+			return m_Table[0];
 		}
 
 		public static ImageType[] RandomList( int count )

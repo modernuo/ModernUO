@@ -92,11 +92,9 @@ namespace Server.Mobiles
 
 					return true;
 				}
-				else
-				{
-					if ( m_Mobile.Debug )
-						m_Mobile.DebugSay( "I should be closer to {0}", combatant.Name );
-				}
+
+				if ( m_Mobile.Debug )
+					m_Mobile.DebugSay( "I should be closer to {0}", combatant.Name );
 			}
 
 			if ( !m_Mobile.Controlled && !m_Mobile.Summoned && m_Mobile.CanFlee )

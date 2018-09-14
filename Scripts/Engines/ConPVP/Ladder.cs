@@ -88,9 +88,9 @@ namespace Server.Engines.ConPVP
 		{
 			if ( xp >= 22500 )
 				return 50;
-			else if ( xp >= 2500 )
+			if ( xp >= 2500 )
 				return (10 + ((xp - 2500) / 500));
-			else if ( xp < 0 )
+			if ( xp < 0 )
 				xp = 0;
 
 			return m_ShortLevels[xp / 100];

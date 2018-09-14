@@ -40,12 +40,13 @@ namespace Server.Mobiles
 				SayTo( pm, 502089 ); // You cannot be a member of the Thieves' Guild while you are Young.
 				return false;
 			}
-			else if ( pm.Kills > 0 )
+
+			if ( pm.Kills > 0 )
 			{
 				SayTo( pm, 501050 ); // This guild is for cunning thieves, not oafish cutthroats.
 				return false;
 			}
-			else if ( pm.Skills[SkillName.Stealing].Base < 60.0 )
+			if ( pm.Skills[SkillName.Stealing].Base < 60.0 )
 			{
 				SayTo( pm, 501051 ); // You must be at least a journeyman pickpocket to join this elite organization.
 				return false;

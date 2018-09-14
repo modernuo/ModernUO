@@ -630,7 +630,7 @@ namespace Server.Items
 		{
 			CraftResourceInfo info = GetInfo( resource );
 
-			return ( info == null ? 0 : info.Number );
+			return info?.Number ?? 0;
 		}
 
 		/// <summary>
@@ -640,7 +640,7 @@ namespace Server.Items
 		{
 			CraftResourceInfo info = GetInfo( resource );
 
-			return ( info == null ? 0 : info.Hue );
+			return info?.Hue ?? 0;
 		}
 
 		/// <summary>
@@ -660,30 +660,30 @@ namespace Server.Items
 		{
 			if ( info.Name.IndexOf( "Spined" ) >= 0 )
 				return CraftResource.SpinedLeather;
-			else if ( info.Name.IndexOf( "Horned" ) >= 0 )
+			if ( info.Name.IndexOf( "Horned" ) >= 0 )
 				return CraftResource.HornedLeather;
-			else if ( info.Name.IndexOf( "Barbed" ) >= 0 )
+			if ( info.Name.IndexOf( "Barbed" ) >= 0 )
 				return CraftResource.BarbedLeather;
-			else if ( info.Name.IndexOf( "Leather" ) >= 0 )
+			if ( info.Name.IndexOf( "Leather" ) >= 0 )
 				return CraftResource.RegularLeather;
 
 			if ( info.Level == 0 )
 				return CraftResource.Iron;
-			else if ( info.Level == 1 )
+			if ( info.Level == 1 )
 				return CraftResource.DullCopper;
-			else if ( info.Level == 2 )
+			if ( info.Level == 2 )
 				return CraftResource.ShadowIron;
-			else if ( info.Level == 3 )
+			if ( info.Level == 3 )
 				return CraftResource.Copper;
-			else if ( info.Level == 4 )
+			if ( info.Level == 4 )
 				return CraftResource.Bronze;
-			else if ( info.Level == 5 )
+			if ( info.Level == 5 )
 				return CraftResource.Gold;
-			else if ( info.Level == 6 )
+			if ( info.Level == 6 )
 				return CraftResource.Agapite;
-			else if ( info.Level == 7 )
+			if ( info.Level == 7 )
 				return CraftResource.Verite;
-			else if ( info.Level == 8 )
+			if ( info.Level == 8 )
 				return CraftResource.Valorite;
 
 			return CraftResource.None;
@@ -699,11 +699,11 @@ namespace Server.Items
 			{
 				if ( info.Level == 0 )
 					return CraftResource.RegularLeather;
-				else if ( info.Level == 1 )
+				if ( info.Level == 1 )
 					return CraftResource.SpinedLeather;
-				else if ( info.Level == 2 )
+				if ( info.Level == 2 )
 					return CraftResource.HornedLeather;
-				else if ( info.Level == 3 )
+				if ( info.Level == 3 )
 					return CraftResource.BarbedLeather;
 
 				return CraftResource.None;

@@ -261,13 +261,11 @@ namespace Server.Mobiles
 
 				return true;
 			}
-			else
-			{
-				by.SendLocalizedMessage( 500720 ); // You don't have enough room in your backpack!
-				deed.Delete();
 
-				return false;
-			}
+			@by.SendLocalizedMessage( 500720 ); // You don't have enough room in your backpack!
+			deed.Delete();
+
+			return false;
 		}
 
 		public void Restore( CharacterStatue from )

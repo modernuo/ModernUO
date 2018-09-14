@@ -194,7 +194,7 @@ namespace Server
 		}
 
 		public bool IsDefault => m_Map.DefaultRegion == this;
-		public virtual MusicName DefaultMusic => m_Parent != null ? m_Parent.Music : MusicName.Invalid;
+		public virtual MusicName DefaultMusic => m_Parent?.Music ?? MusicName.Invalid;
 
 		public Region( string name, Map map, int priority, params Rectangle2D[] area ) : this( name, map, priority, ConvertTo3D( area ) )
 		{
@@ -526,8 +526,7 @@ namespace Server
 		{
 			if ( m_Name != null )
 				return m_Name;
-			else
-				return GetType().Name;
+			return GetType().Name;
 		}
 
 
@@ -790,10 +789,9 @@ namespace Server
 		{
 			if ( m_Parent != null )
 				return m_Parent.GetLogoutDelay( m );
-			else if ( m.AccessLevel > AccessLevel.Player )
+			if ( m.AccessLevel > AccessLevel.Player )
 				return m_StaffLogoutDelay;
-			else
-				return m_DefaultLogoutDelay;
+			return m_DefaultLogoutDelay;
 		}
 
 
@@ -833,8 +831,8 @@ namespace Server
 
 			while ( oldR != newR )
 			{
-				int oldRChild = ( oldR != null ? oldR.ChildLevel : -1 );
-				int newRChild = ( newR != null ? newR.ChildLevel : -1 );
+				int oldRChild = oldR?.ChildLevel ?? -1;
+				int newRChild = newR?.ChildLevel ?? -1;
 
 				if ( oldRChild >= newRChild )
 				{
@@ -992,17 +990,15 @@ namespace Server
 
 				return null;
 			}
-			else if ( xml.HasAttribute( attribute ) )
+
+			if ( xml.HasAttribute( attribute ) )
 			{
 				return xml.GetAttribute( attribute );
 			}
-			else
-			{
-				if ( mandatory )
-					Console.WriteLine( "Missing attribute '{0}' in element '{1}'", attribute, xml.Name );
+			if ( mandatory )
+				Console.WriteLine( "Missing attribute '{0}' in element '{1}'", attribute, xml.Name );
 
-				return null;
-			}
+			return null;
 		}
 
 		public static bool ReadString( XmlElement xml, string attribute, ref string value )
@@ -1142,11 +1138,9 @@ namespace Server
 				value = tempVal;
 				return true;
 			}
-			else
-			{
-				Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", type, attribute, xml.Name );
-				return false;
-			}
+
+			Console.WriteLine( "Could not parse {0} enum attribute '{1}' in element '{2}'", type, attribute, xml.Name );
+			return false;
 		}
 
 		public static bool ReadMap( XmlElement xml, string attribute, ref Map value )

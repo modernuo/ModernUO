@@ -210,7 +210,7 @@ namespace Server.Spells
 		{
 			if ( offset > 0 )
 				return AddStatBonus( m, m, type, offset, duration );
-			else if ( offset < 0 )
+			if ( offset < 0 )
 				return AddStatCurse( m, m, type, -offset, duration );
 
 			return true;
@@ -233,7 +233,8 @@ namespace Server.Spells
 				target.AddStatMod( new StatMod( type, name, mod.Offset + offset, duration ) );
 				return true;
 			}
-			else if ( mod == null || mod.Offset < offset )
+
+			if ( mod == null || mod.Offset < offset )
 			{
 				target.AddStatMod( new StatMod( type, name, offset, duration ) );
 				return true;
@@ -259,7 +260,8 @@ namespace Server.Spells
 				target.AddStatMod( new StatMod( type, name, mod.Offset + offset, duration ) );
 				return true;
 			}
-			else if ( mod == null || mod.Offset > offset )
+
+			if ( mod == null || mod.Offset > offset )
 			{
 				target.AddStatMod( new StatMod( type, name, offset, duration ) );
 				return true;
@@ -545,15 +547,13 @@ namespace Server.Spells
 					p = new Point3D( x, y, p.Z );
 					return true;
 				}
-				else
-				{
-					int z = map.GetAverageZ( x, y );
 
-					if ( map.CanSpawnMobile( x, y, z ) )
-					{
-						p = new Point3D( x, y, z );
-						return true;
-					}
+				int z = map.GetAverageZ( x, y );
+
+				if ( map.CanSpawnMobile( x, y, z ) )
+				{
+					p = new Point3D( x, y, z );
+					return true;
 				}
 			}
 
@@ -981,9 +981,9 @@ namespace Server.Spells
 
 			if ( delay == TimeSpan.Zero )
 			{
-				(@from as BaseCreature)?.AlterSpellDamageTo( target, ref iDamage );
+				(from as BaseCreature)?.AlterSpellDamageTo( target, ref iDamage );
 
-				(target as BaseCreature)?.AlterSpellDamageFrom( @from, ref iDamage );
+				(target as BaseCreature)?.AlterSpellDamageFrom( from, ref iDamage );
 
 				target.Damage( iDamage, from );
 			}
@@ -1036,9 +1036,9 @@ namespace Server.Spells
 
 			if ( delay == TimeSpan.Zero )
 			{
-				(@from as BaseCreature)?.AlterSpellDamageTo( target, ref iDamage );
+				(from as BaseCreature)?.AlterSpellDamageTo( target, ref iDamage );
 
-				(target as BaseCreature)?.AlterSpellDamageFrom( @from, ref iDamage );
+				(target as BaseCreature)?.AlterSpellDamageFrom( from, ref iDamage );
 
 				WeightOverloading.DFA = dfa;
 
@@ -1257,12 +1257,13 @@ namespace Server.Spells
 				caster.SendLocalizedMessage( 1061632 ); // You can't do that while carrying the sigil.
 				return false;
 			}
-			else if ( !caster.CanBeginAction( typeof( PolymorphSpell ) ) )
+
+			if ( !caster.CanBeginAction( typeof( PolymorphSpell ) ) )
 			{
 				caster.SendLocalizedMessage( 1061628 ); // You can't do that while polymorphed.
 				return false;
 			}
-			else if ( AnimalForm.UnderTransformation( caster ) )
+			if ( AnimalForm.UnderTransformation( caster ) )
 			{
 				caster.SendLocalizedMessage( 1061091 ); // You cannot cast that spell in this form.
 				return false;

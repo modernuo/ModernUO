@@ -22,7 +22,7 @@ namespace Server.Items
 				{
 					from.MoveToWorld( new Point3D( 5922, 2024, 0 ), map );
 					PublicOverheadMessage( MessageType.Regular, 0x3B2, true,
-						$"* {@from.Name} dives into the hole and disappears!*");
+						$"* {from.Name} dives into the hole and disappears!*");
 				}
 			}
 			else

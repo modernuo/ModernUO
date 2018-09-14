@@ -59,7 +59,8 @@ namespace Server.Factions
 					ps.IsActive = false;
 					continue;
 				}
-				else if ( ps.KillPoints > 0 )
+
+				if ( ps.KillPoints > 0 )
 				{
 					int atrophy = ( ps.KillPoints + 9 ) / 10;
 					ps.KillPoints -= atrophy;

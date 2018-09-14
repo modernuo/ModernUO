@@ -649,7 +649,8 @@ namespace Server.Multis
 
 				return;
 			}
-			else if ( !from.Alive )
+
+			if ( !from.Alive )
 			{
 				m_TillerMan?.Say( 502582 ); // You appear to be dead.
 
@@ -765,7 +766,8 @@ namespace Server.Multis
 
 				return;
 			}
-			else if ( !e.Mobile.Alive )
+
+			if ( !e.Mobile.Alive )
 			{
 				m_TillerMan?.Say( 502582 ); // You appear to be dead.
 
@@ -819,7 +821,8 @@ namespace Server.Multis
 
 				return;
 			}
-			else if ( !m.Alive )
+
+			if ( !m.Alive )
 			{
 				m_TillerMan?.Say( 502582 ); // You appear to be dead.
 
@@ -940,21 +943,22 @@ namespace Server.Multis
 
 				return false;
 			}
-			else if ( MapItem == null || MapItem.Deleted )
+
+			if ( MapItem == null || MapItem.Deleted )
 			{
 				if ( message )
 					TillerMan?.Say( 502513 ); // I have seen no map, sir.
 
 				return false;
 			}
-			else if ( Map != MapItem.Map || !Contains( MapItem.GetWorldLocation() ) )
+			if ( Map != MapItem.Map || !Contains( MapItem.GetWorldLocation() ) )
 			{
 				if ( message )
 					TillerMan?.Say( 502514 ); // The map is too far away from me, sir.
 
 				return false;
 			}
-			else if ( ( Map != Map.Trammel && Map != Map.Felucca ) || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count )
+			if ( ( Map != Map.Trammel && Map != Map.Felucca ) || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count )
 			{
 				if ( message )
 					TillerMan?.Say( 1042551 ); // I don't see that navpoint, sir.
@@ -1055,24 +1059,22 @@ namespace Server.Multis
 
 				return false;
 			}
-			else
+
+			if ( m_MoveTimer != null && Order != BoatOrder.Move )
 			{
-				if ( m_MoveTimer != null && Order != BoatOrder.Move )
-				{
-					m_MoveTimer.Stop();
-					m_MoveTimer = null;
-				}
-
-				m_TurnTimer?.Stop();
-
-				m_TurnTimer = new TurnTimer( this, offset );
-				m_TurnTimer.Start();
-
-				if ( message )
-					TillerMan?.Say( 501429 ); // Aye aye sir.
-
-				return true;
+				m_MoveTimer.Stop();
+				m_MoveTimer = null;
 			}
+
+			m_TurnTimer?.Stop();
+
+			m_TurnTimer = new TurnTimer( this, offset );
+			m_TurnTimer.Start();
+
+			if ( message )
+				TillerMan?.Say( 501429 ); // Aye aye sir.
+
+			return true;
 		}
 
 		public bool Turn( int offset, bool message )
@@ -1093,17 +1095,15 @@ namespace Server.Multis
 
 				return false;
 			}
-			else if ( SetFacing( (Direction)(((int)m_Facing + offset) & 0x7) ) )
+
+			if ( SetFacing( (Direction)(((int)m_Facing + offset) & 0x7) ) )
 			{
 				return true;
 			}
-			else
-			{
-				if ( message )
-					m_TillerMan.Say( 501423 ); // Ar, can't turn sir.
+			if ( message )
+				m_TillerMan.Say( 501423 ); // Ar, can't turn sir.
 
-				return false;
-			}
+			return false;
 		}
 
 		private class TurnTimer : Timer
@@ -1239,7 +1239,7 @@ namespace Server.Multis
 
 				if ( x >= 0 && x < newComponents.Width && y >= 0 && y < newComponents.Height && newComponents.Tiles[x][y].Length == 0 )
 					continue;
-				else if ( Contains( item ) )
+				if ( Contains( item ) )
 					continue;
 
 				eable.Free();
@@ -1303,10 +1303,9 @@ namespace Server.Multis
 		{
 			if ( m == Map.Ilshenar )
 				return m_IlshWrap;
-			else if ( m == Map.Tokuno )
+			if ( m == Map.Tokuno )
 				return m_TokunoWrap;
-			else
-				return m_BritWrap;
+			return m_BritWrap;
 		}
 
 		public Direction GetMovementFor( int x, int y, out int maxSpeed )
@@ -1390,20 +1389,18 @@ namespace Server.Multis
 
 						return false;
 					}
-					else
-					{
-						NextNavPoint = -1;
 
-						if ( message && Order == BoatOrder.Course )
-							TillerMan?.Say( 502515 ); // The course is completed, sir.
+					NextNavPoint = -1;
 
-						return false;
-					}
+					if ( message && Order == BoatOrder.Course )
+						TillerMan?.Say( 502515 ); // The course is completed, sir.
+
+					return false;
 				}
 
 				if ( dir == Left || dir == BackwardLeft || dir == Backward )
 					return Turn( -2, true );
-				else if ( dir == Right || dir == BackwardRight )
+				if ( dir == Right || dir == BackwardRight )
 					return Turn( 2, true );
 
 				speed = Math.Min( Speed, maxSpeed );

@@ -44,21 +44,19 @@ namespace Server.Engines.ConPVP
 				from.SendMessage( 0x22, "You have recently been in combat with another player and cannot use this moongate." );
 				return false;
 			}
-			else if ( from.Spell != null )
+
+			if ( from.Spell != null )
 			{
 				from.SendLocalizedMessage( 1049616 ); // You are too busy to do that at the moment.
 				return false;
 			}
-			else
-			{
-				from.CloseGump( typeof( ArenaGump ) );
-				from.SendGump( new ArenaGump( from, this ) );
+			from.CloseGump( typeof( ArenaGump ) );
+			from.SendGump( new ArenaGump( from, this ) );
 
-				if ( !from.Hidden || from.AccessLevel == AccessLevel.Player )
-					Effects.PlaySound( from.Location, from.Map, 0x20E );
+			if ( !from.Hidden || from.AccessLevel == AccessLevel.Player )
+				Effects.PlaySound( from.Location, from.Map, 0x20E );
 
-				return true;
-			}
+			return true;
 		}
 
 		public override void OnDoubleClick( Mobile from )

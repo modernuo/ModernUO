@@ -35,8 +35,7 @@ namespace Server.Engines.Mahjong
 		{
 			if ( index < 0 || index >= m_Players.Length )
 				return null;
-			else
-				return m_Players[index];
+			return m_Players[index];
 		}
 
 		public int GetPlayerIndex( Mobile mobile )
@@ -53,16 +52,14 @@ namespace Server.Engines.Mahjong
 		{
 			if ( Dealer != mobile )
 				return false;
-			else
-				return m_InGame[m_DealerPosition];
+			return m_InGame[m_DealerPosition];
 		}
 
 		public bool IsInGamePlayer( int index )
 		{
 			if ( index < 0 || index >= m_Players.Length || m_Players[index] == null )
 				return false;
-			else
-				return m_InGame[index];
+			return m_InGame[index];
 		}
 
 		public bool IsInGamePlayer( Mobile mobile )
@@ -81,16 +78,14 @@ namespace Server.Engines.Mahjong
 		{
 			if ( index < 0 || index >= m_Scores.Length )
 				return 0;
-			else
-				return m_Scores[index];
+			return m_Scores[index];
 		}
 
 		public bool IsPublic( int index )
 		{
 			if ( index < 0 || index >= m_PublicHand.Length )
 				return false;
-			else
-				return m_PublicHand[index];
+			return m_PublicHand[index];
 		}
 
 		public void SetPublic( int index, bool value )
@@ -264,10 +259,8 @@ namespace Server.Engines.Mahjong
 
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		private void AddPlayer( Mobile player, int index, bool sendJoinGame )
@@ -378,7 +371,7 @@ namespace Server.Engines.Mahjong
 				to.Send( new MahjongPlayersInfo( m_Game, to ) );
 			}
 
-			SendLocalizedMessage( 1062774, $"{@from.Name}\t{to.Name}\t{amount}"); // ~1_giver~ gives ~2_receiver~ ~3_number~ points.
+			SendLocalizedMessage( 1062774, $"{from.Name}\t{to.Name}\t{amount}"); // ~1_giver~ gives ~2_receiver~ ~3_number~ points.
 		}
 
 		public void OpenSeat( int index )

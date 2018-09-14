@@ -152,10 +152,8 @@ namespace Server.Gumps
 				{
 					if ( m.Kills >= 5 )
 						return 0x21;
-					else if ( m.Criminal )
-						return 0x3B1;
 
-					return 0x58;
+					return m.Criminal ? 0x3B1 : 0x58;
 				}
 			}
 		}
@@ -318,14 +316,7 @@ namespace Server.Gumps
 						for ( int i = 0; i < pools.Count; ++i )
 						{
 							BufferPool pool = pools[i];
-							string name;
-							int freeCount;
-							int initialCapacity;
-							int currentCapacity;
-							int bufferSize;
-							int misses;
-
-							pool.GetInfo( out name, out freeCount, out initialCapacity, out currentCapacity, out bufferSize, out misses );
+							pool.GetInfo( out string name, out int freeCount, out int initialCapacity, out int currentCapacity, out int bufferSize, out int misses );
 
 							if ( sb.Length > 0 )
 								sb.Append( "<br><br>" );
@@ -549,10 +540,8 @@ namespace Server.Gumps
 
 						if ( m == null )
 						{
-							if ( RemoteAdmin.AdminNetwork.IsAuth( ns ) )
-								AddLabelCropped( 12, offset, 81, 20, LabelHue, "(remote admin)" );
-							else
-								AddLabelCropped( 12, offset, 81, 20, LabelHue, "(logging in)" );
+							AddLabelCropped(12, offset, 81, 20, LabelHue,
+								RemoteAdmin.AdminNetwork.IsAuth(ns) ? "(remote admin)" : "(logging in)");
 						}
 						else
 						{
@@ -1978,7 +1967,7 @@ namespace Server.Gumps
 							}
 							else
 							{
-								from.SendGump( new AdminGump( from, AdminGumpPage.Clients, 0, results, notice == null ? (results.Count == 0 ? "Nothing matched your search terms." : null) : notice, null ) );
+								from.SendGump( new AdminGump( from, AdminGumpPage.Clients, 0, results, notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null), null ) );
 							}
 
 							break;
@@ -2052,7 +2041,7 @@ namespace Server.Gumps
 								}
 							}
 
-							from.SendGump( new AdminGump( from, dispAccount != null ? AdminGumpPage.AccountDetails_Information : m_PageType, m_ListPage, m_List, notice, dispAccount != null ? dispAccount : m_State ) );
+							from.SendGump( new AdminGump( from, dispAccount != null ? AdminGumpPage.AccountDetails_Information : m_PageType, m_ListPage, m_List, notice, dispAccount ?? m_State ) );
 							break;
 						}
 						case 7:
@@ -2084,7 +2073,7 @@ namespace Server.Gumps
 							if ( results.Count == 1 )
 								from.SendGump( new AdminGump( from, AdminGumpPage.AccountDetails_Information, 0, null, "One match found.", results[0] ) );
 							else
-								from.SendGump( new AdminGump( from, AdminGumpPage.Accounts, 0, results, notice == null ? (results.Count == 0 ? "Nothing matched your search terms." : null) : notice, new ArrayList() ) );
+								from.SendGump( new AdminGump( from, AdminGumpPage.Accounts, 0, results, notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null), new ArrayList() ) );
 
 							break;
 						}
@@ -2507,14 +2496,14 @@ namespace Server.Gumps
 								from.SendGump( new AdminGump( from, AdminGumpPage.Firewall, 0, results,
 									$"Search results for : {match}", m_State ) );
 							else
-								from.SendGump( new AdminGump( from, m_PageType, m_ListPage, m_List, notice == null ? "Nothing matched your search terms."  : notice, m_State ) );
+								from.SendGump( new AdminGump( from, m_PageType, m_ListPage, m_List, notice ?? "Nothing matched your search terms.", m_State ) );
 
 							break;
 						}
 						case 1:
 						{
 							TextRelay relay = info.GetTextEntry( 0 );
-							string text = ( relay == null ? null : relay.Text.Trim() );
+							string text = relay?.Text.Trim();
 
 							if ( text == null || text.Length == 0 )
 							{

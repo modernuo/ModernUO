@@ -362,7 +362,7 @@ namespace Server.Items
 		{
 			int x = m_Bounds.X + m_Bounds.Width / 2;
 			int y = m_Bounds.Y + m_Bounds.Height / 2;
-			int z = ( m_Facet == null ) ? 0 : m_Facet.GetAverageZ( x, y );
+			int z = m_Facet?.GetAverageZ( x, y ) ?? 0;
 
 			return new Point3D( x, y, z );
 		}
@@ -379,8 +379,7 @@ namespace Server.Items
 		{
 			if ( m_TicketPrice == 0 )
 				return "FREE";
-			else
-				return $"{m_TicketPrice} gold";
+			return $"{m_TicketPrice} gold";
 		}
 
 		public override void GetProperties( ObjectPropertyList list )

@@ -36,7 +36,7 @@ namespace Server.Spells.Spellweaving
 
 		public static ArcaneFocus FindArcaneFocus( Mobile from )
 		{
-			if ( @from?.Backpack == null )
+			if ( from?.Backpack == null )
 				return null;
 
 			if ( from.Holding is ArcaneFocus )
@@ -87,7 +87,8 @@ namespace Server.Spells.Spellweaving
 				caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
 				return false;
 			}
-			else if ( caster.Skills[CastSkill].Value < RequiredSkill )
+
+			if ( caster.Skills[CastSkill].Value < RequiredSkill )
 			{
 				caster.SendLocalizedMessage( 1063013, $"{RequiredSkill.ToString("F1")}\t{"#1044114"}"); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
 				return false;

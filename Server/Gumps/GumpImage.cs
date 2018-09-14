@@ -69,8 +69,7 @@ namespace Server.Gumps
 		{
 			if ( m_Hue == 0 )
 				return $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}";
-			else
-				return $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
+			return $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
 		}
 
 		private static byte[] m_LayoutName = Gump.StringToBuffer( "gumppic" );

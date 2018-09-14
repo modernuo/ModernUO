@@ -48,7 +48,7 @@ namespace Server.Mobiles
 
 		public static bool IsInsideKhaldun( Mobile from )
 		{
-			return @from?.Region != null && @from.Region.IsPartOf( "Khaldun" );
+			return from?.Region != null && from.Region.IsPartOf( "Khaldun" );
 		}
 
 		private Mobile m_Target;

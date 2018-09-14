@@ -449,7 +449,7 @@ namespace Server.Network
 		public DeathAnimation( Mobile killed, Item corpse ) : base( 0xAF, 13 )
 		{
 			m_Stream.Write( (int) killed.Serial );
-			m_Stream.Write( (int) (corpse == null ? Serial.Zero : corpse.Serial) );
+			m_Stream.Write( (int) (corpse?.Serial ?? Serial.Zero) );
 			m_Stream.Write( (int) 0 ) ;
 		}
 	}
@@ -591,7 +591,7 @@ namespace Server.Network
 	{
 		public ChangeCombatant( Mobile combatant ) : base( 0xAA, 5 )
 		{
-			m_Stream.Write( combatant != null ? combatant.Serial : Serial.Zero );
+			m_Stream.Write( combatant?.Serial ?? Serial.Zero );
 		}
 	}
 
@@ -904,7 +904,7 @@ namespace Server.Network
 
 			IEntity target = menu.Target as IEntity;
 
-			m_Stream.Write( (int) ( target == null ? Serial.MinusOne : target.Serial ) );
+			m_Stream.Write( (int) (target?.Serial ?? Serial.MinusOne) );
 
 			m_Stream.Write( (byte) length );
 
@@ -953,7 +953,7 @@ namespace Server.Network
 
 			IEntity target = menu.Target as IEntity;
 
-			m_Stream.Write( (int) ( target == null ? Serial.MinusOne : target.Serial ) );
+			m_Stream.Write( (int) (target?.Serial ?? Serial.MinusOne) );
 
 			m_Stream.Write( (byte) length );
 
@@ -2746,7 +2746,7 @@ namespace Server.Network
 			EnsureCapacity( 6 );
 
 			m_Stream.Write( (short) 0x08 );
-			m_Stream.Write( (byte) (m.Map == null ? 0 : m.Map.MapID) );
+			m_Stream.Write( (byte) (m.Map?.MapID ?? 0) );
 		}
 	}
 
@@ -2782,10 +2782,8 @@ namespace Server.Network
 
 				return p;
 			}
-			else
-			{
-				return new SeasonChange( season, playSound );
-			}
+
+			return new SeasonChange( season, playSound );
 		}
 
 		public SeasonChange( int season ) : this( season, true )
@@ -3338,10 +3336,9 @@ namespace Server.Network
 		{
 			if (ns.NewMobileIncoming)
 				return new MobileIncoming(beholder, beheld);
-			else if (ns.StygianAbyss)
+			if (ns.StygianAbyss)
 				return new MobileIncomingSA(beholder, beheld);
-			else
-				return new MobileIncomingOld(beholder, beheld);
+			return new MobileIncomingOld(beholder, beheld);
 		}
 
 		private static ThreadLocal<int[]> m_DupedLayersTL = new ThreadLocal<int[]>(() => {return new int[256];});
@@ -3842,8 +3839,8 @@ namespace Server.Network
 
 			m_Stream.Write( (short) 0 );
 			m_Stream.Write( (short) 0 );
-			m_Stream.Write( (short) (map==null?6144:map.Width) );
-			m_Stream.Write( (short) (map==null?4096:map.Height) );
+			m_Stream.Write( (short) (map?.Width ?? 6144) );
+			m_Stream.Write( (short) (map?.Height ?? 4096) );
 
 			m_Stream.Fill();
 		}

@@ -54,9 +54,8 @@ namespace Server.Engines.Quests.Matriarch
 					 */
 					return 1054083;
 				}
-				else
-				{
-					/* <I>The Solen Matriarch smiles happily as she eats the seed you offered.</I><BR><BR>
+
+				/* <I>The Solen Matriarch smiles happily as she eats the seed you offered.</I><BR><BR>
 					 *
 					 * I think you for that seed. I was quite delicious. So full of flavor.<BR><BR>
 					 *
@@ -79,8 +78,7 @@ namespace Server.Engines.Quests.Matriarch
 					 *
 					 * Will you accept my offer?
 					 */
-					return 1054082;
-				}
+				return 1054082;
 			}
 		}
 
@@ -128,8 +126,7 @@ namespace Server.Engines.Quests.Matriarch
 		{
 			if ( redSolen )
 				return player.SolenFriendship == SolenFriendship.Red;
-			else
-				return player.SolenFriendship == SolenFriendship.Black;
+			return player.SolenFriendship == SolenFriendship.Black;
 		}
 
 		public static bool GiveRewardTo( PlayerMobile player )
@@ -141,11 +138,9 @@ namespace Server.Engines.Quests.Matriarch
 				player.SendLocalizedMessage( 1054076 ); // You have been given some gold.
 				return true;
 			}
-			else
-			{
-				gold.Delete();
-				return false;
-			}
+
+			gold.Delete();
+			return false;
 		}
 	}
 }

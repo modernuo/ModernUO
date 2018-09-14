@@ -272,7 +272,7 @@ namespace Server.Engines.Events
 				Body = from.Body;
 
 				m_From = from;
-				Name = $"{@from.Name}\'s Naughty Twin";
+				Name = $"{from.Name}\'s Naughty Twin";
 
 				Timer.DelayCall<Mobile>( TrickOrTreat.OneSecond, Utility.RandomBool() ? StealCandy : new TimerStateCallback<Mobile>( ToGate ), m_From );
 			}

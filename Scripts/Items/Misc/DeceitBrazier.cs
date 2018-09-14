@@ -163,7 +163,7 @@ namespace Server.Items
 
 				if ( Map.CanSpawnMobile( new Point2D( x, y ), Z ) )
 					return new Point3D( x, y, Z );
-				else if ( Map.CanSpawnMobile( new Point2D( x, y ), z ) )
+				if ( Map.CanSpawnMobile( new Point2D( x, y ), z ) )
 					return new Point3D( x, y, z );
 			}
 

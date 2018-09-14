@@ -278,7 +278,9 @@ namespace Server.Network {
 
 				if ( from.Mobile == m_Mobile && to.Mobile == m ) {
 					return from.Container;
-				} else if ( from.Mobile == m && to.Mobile == m_Mobile ) {
+				}
+
+				if ( from.Mobile == m && to.Mobile == m_Mobile ) {
 					return to.Container;
 				}
 			}
@@ -507,7 +509,7 @@ namespace Server.Network {
 				}
 
 				PacketSendProfile prof = null;
-				
+
 				if (Core.Profiling) prof = PacketSendProfile.Acquire(p.GetType());
 
 				prof?.Start();
@@ -611,7 +613,9 @@ namespace Server.Network {
 			if ( e.SocketError != SocketError.Success || byteCount <= 0 ) {
 				Dispose( false );
 				return;
-			} else if ( m_Disposing ) {
+			}
+
+			if ( m_Disposing ) {
 				return;
 			}
 
@@ -641,7 +645,7 @@ namespace Server.Network {
 
 					if ( result )
 						Send_Process( m_SendEventArgs );
-				} while ( result ); 
+				} while ( result );
 			} catch ( Exception ex ) {
 				TraceException( ex );
 				Dispose( false );
@@ -931,8 +935,7 @@ namespace Server.Network {
 		{
 			if ( ContainerGridLines )
 				return PacketHandlers.Get6017Handler( packetID );
-			else
-				return PacketHandlers.GetHandler( packetID );
+			return PacketHandlers.GetHandler( packetID );
 		}
 
 		public static void FlushAll() {

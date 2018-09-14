@@ -99,9 +99,9 @@ namespace Server.Items
 
 			if ( Type == StoneFaceTrapType.NorthWestWall )
 				return BaseAddon.IsWall( p.X, p.Y - 1, p.Z, map ) && BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // north and west wall
-			else if ( Type == StoneFaceTrapType.NorthWall )
+			if ( Type == StoneFaceTrapType.NorthWall )
 				return BaseAddon.IsWall( p.X, p.Y - 1, p.Z, map ); // north wall
-			else if ( Type == StoneFaceTrapType.WestWall )
+			if ( Type == StoneFaceTrapType.WestWall )
 				return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // west wall
 
 			return false;

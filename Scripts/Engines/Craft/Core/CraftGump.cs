@@ -152,7 +152,7 @@ namespace Server.Engines.Craft
 				string nameString = craftSystem.CraftSubRes2.NameString;
 				int nameNumber = craftSystem.CraftSubRes2.NameNumber;
 
-				int resIndex = ( context == null ? -1 : context.LastResourceIndex2 );
+				int resIndex = context?.LastResourceIndex2 ?? -1;
 
                 Type resourceType = craftSystem.CraftSubRes2.ResType;
 
@@ -481,7 +481,7 @@ namespace Server.Engines.Craft
 				{
 					if ( m_Page == CraftPage.PickResource && index >= 0 && index < system.CraftSubRes.Count )
 					{
-						int groupIndex = ( context == null ? -1 : context.LastGroupIndex );
+						int groupIndex = context?.LastGroupIndex ?? -1;
 
 						CraftSubRes res = system.CraftSubRes.GetAt( index );
 
@@ -499,7 +499,7 @@ namespace Server.Engines.Craft
 					}
 					else if ( m_Page == CraftPage.PickResource2 && index >= 0 && index < system.CraftSubRes2.Count )
 					{
-						int groupIndex = ( context == null ? -1 : context.LastGroupIndex );
+						int groupIndex = context?.LastGroupIndex ?? -1;
 
 						CraftSubRes res = system.CraftSubRes2.GetAt( index );
 

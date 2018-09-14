@@ -90,8 +90,7 @@ namespace Server
 			{
 				if ( m_BodyID >= 0 && m_BodyID < m_Types.Length )
 					return m_Types[m_BodyID];
-				else
-					return BodyType.Empty;
+				return BodyType.Empty;
 			}
 		}
 

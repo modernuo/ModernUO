@@ -139,7 +139,9 @@ namespace Server.Network
 				// 0xEF	= 239 =	multicast IP, so this should never appear in a normal seed.	 So	this is	backwards compatible with older	clients.
 				ns.Seeded = true;
 				return true;
-			} else if (buffer.Length >= 4) {
+			}
+
+			if (buffer.Length >= 4) {
 				byte[] m_Peek = new byte[4];
 
 				buffer.Dequeue(m_Peek, 0, 4);
@@ -155,9 +157,8 @@ namespace Server.Network
 				ns.m_Seed = seed;
 				ns.Seeded = true;
 				return true;
-			} else {
-				return false;
 			}
+			return false;
 		}
 
 		private bool CheckEncrypted(NetState ns, int packetID) {
@@ -216,12 +217,15 @@ namespace Server.Network
 					}
 
 					if ( length >= packetLength ) {
-						if (handler.Ingame) {
+						if (handler.Ingame)
+						{
 							if (ns.Mobile == null ) {
 								Console.WriteLine( "Client: {0}: Sent ingame packet (0x{1:X2}) before having been attached to a mobile", ns, packetID );
 								ns.Dispose();
 								break;
-							} else if (ns.Mobile.Deleted) {
+							}
+
+							if (ns.Mobile.Deleted) {
 								ns.Dispose();
 								break;
 							}

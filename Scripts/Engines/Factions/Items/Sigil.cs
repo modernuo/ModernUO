@@ -103,7 +103,7 @@ namespace Server.Factions
 
 		public void Update()
 		{
-			ItemID = ( m_Town == null ? 0x1869 : m_Town.Definition.SigilID );
+			ItemID = m_Town?.Definition.SigilID ?? 0x1869;
 
 			if ( m_Town == null )
 				AssignName( null );

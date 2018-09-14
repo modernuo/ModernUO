@@ -67,7 +67,7 @@ namespace Server.Items
 				m_Boat.BeginRename( from );
 			else
 			{
-				m_Boat?.BeginDryDock( @from );
+				m_Boat?.BeginDryDock( from );
 			}
 		}
 

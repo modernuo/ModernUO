@@ -90,7 +90,7 @@ namespace Server.Misc
 
 			if ( value < minSkill )
 				return false; // Too difficult
-			else if ( value >= maxSkill )
+			if ( value >= maxSkill )
 				return true; // No challenge
 
 			double chance = (value - minSkill) / (maxSkill - minSkill);
@@ -108,7 +108,7 @@ namespace Server.Misc
 
 			if ( chance < 0.0 )
 				return false; // Too difficult
-			else if ( chance >= 1.0 )
+			if ( chance >= 1.0 )
 				return true; // No challenge
 
 			Point2D loc = new Point2D( from.Location.X / LocationSize, from.Location.Y / LocationSize );
