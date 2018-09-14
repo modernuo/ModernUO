@@ -75,13 +75,10 @@ namespace Server.Engines.ConPVP
 			{
 				Ladder ladder = Ladder.Instance;
 
-				if ( ladder != null )
-				{
-					LadderEntry entry = ladder.Find( m );
+				LadderEntry entry = ladder?.Find( m );
 
-					if ( entry != null && Ladder.GetLevel( entry.Experience ) < tourny.LevelRequirement )
-						return;
-				}
+				if ( entry != null && Ladder.GetLevel( entry.Experience ) < tourny.LevelRequirement )
+					return;
 
 				if ( tourny.IsFactionRestricted && Faction.Find( m ) == null )
 				{
@@ -603,9 +600,8 @@ namespace Server.Engines.ConPVP
 					}
 					case TournamentStage.Inactive:
 					{
-						if ( m_Registrar != null )
-							m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-								0x35, false, "The tournament is closed.", from.NetState );
+						m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+							0x35, false, "The tournament is closed.", @from.NetState );
 
 						break;
 					}
@@ -613,11 +609,8 @@ namespace Server.Engines.ConPVP
 					{
 						if ( m_Players.Count != tourny.PlayersPerParticipant )
 						{
-							if ( m_Registrar != null )
-							{
-								m_Registrar.PrivateOverheadMessage( MessageType.Regular,
-									0x35, false, "You have not yet chosen your team.", from.NetState );
-							}
+							m_Registrar?.PrivateOverheadMessage( MessageType.Regular,
+								0x35, false, "You have not yet chosen your team.", @from.NetState );
 
 							m_From.SendGump( new ConfirmSignupGump( m_From, m_Registrar, m_Tournament, m_Players ) );
 							break;
@@ -2253,8 +2246,7 @@ namespace Server.Engines.ConPVP
 		{
 			object[] states = (object[])state;
 
-			if ( states[0] != null )
-				((Mobile)states[0]).PublicOverheadMessage( MessageType.Regular, 0x35, false, (string)states[1] );
+			((Mobile) states[0])?.PublicOverheadMessage( MessageType.Regular, 0x35, false, (string)states[1] );
 		}
 	}
 

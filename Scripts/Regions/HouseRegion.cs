@@ -109,11 +109,11 @@ namespace Server.Regions
 				m.Location = m_House.BanLocation;
 				m.SendLocalizedMessage( 1061637 ); // You are not allowed to access this.
 			}
-			else if ( m_House is HouseFoundation )
+			else
 			{
-				HouseFoundation foundation = (HouseFoundation)m_House;
+				HouseFoundation foundation = m_House as HouseFoundation;
 
-				if ( foundation.Customizer != null && foundation.Customizer != m && m_House.IsInside( m ) )
+				if ( foundation?.Customizer != null && foundation.Customizer != m && m_House.IsInside( m ) )
 					m.Location = m_House.BanLocation;
 			}
 
@@ -172,11 +172,11 @@ namespace Server.Regions
 				from.SendLocalizedMessage( 1061637 ); // You are not allowed to access this.
 				return false;
 			}
-			else if ( m_House is HouseFoundation )
+			else
 			{
-				HouseFoundation foundation = (HouseFoundation)m_House;
+				HouseFoundation foundation = m_House as HouseFoundation;
 
-				if ( foundation.Customizer != null && foundation.Customizer != from && m_House.IsInside( newLocation, 16 ) )
+				if ( foundation?.Customizer != null && foundation.Customizer != @from && m_House.IsInside( newLocation, 16 ) )
 					return false;
 			}
 

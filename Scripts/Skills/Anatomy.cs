@@ -76,9 +76,9 @@ namespace Server.SkillHandlers
 						targ.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 1042666, from.NetState ); // You can not quite get a sense of their physical characteristics.
 					}
 				}
-				else if ( targeted is Item )
+				else
 				{
-					((Item)targeted).SendLocalizedMessageTo( from, 500323, "" ); // Only living things have anatomies!
+					(targeted as Item)?.SendLocalizedMessageTo( @from, 500323, "" ); // Only living things have anatomies!
 				}
 			}
 		}

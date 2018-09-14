@@ -160,11 +160,9 @@ namespace Server.Mobiles
 			get => m_House;
 			set
 			{
-				if ( m_House != null )
-					m_House.PlayerBarkeepers.Remove( this );
+				m_House?.PlayerBarkeepers.Remove( this );
 
-				if ( value != null )
-					value.PlayerBarkeepers.Add( this );
+				value?.PlayerBarkeepers.Add( this );
 
 				m_House = value;
 			}
@@ -200,8 +198,7 @@ namespace Server.Mobiles
 
 			Container pack = Backpack;
 
-			if ( pack != null )
-				pack.Delete();
+			pack?.Delete();
 		}
 
 		public override void InitBody()
@@ -215,8 +212,7 @@ namespace Server.Mobiles
 
 			Container pack = Backpack;
 
-			if ( pack != null )
-				pack.Delete();
+			pack?.Delete();
 		}
 
 		public PlayerBarkeeper( Mobile owner, BaseHouse house ) : base( "the barkeeper" )
@@ -246,8 +242,7 @@ namespace Server.Mobiles
 
 			if ( index < 0 || index >= tce.Lines.Length )
 			{
-				if ( m_NewsTimer != null )
-					m_NewsTimer.Stop();
+				m_NewsTimer?.Stop();
 
 				m_NewsTimer = null;
 			}
@@ -304,10 +299,7 @@ namespace Server.Mobiles
 				{
 					BarkeeperRumor rumor = m_Rumors[i];
 
-					if ( rumor == null )
-						continue;
-
-					string keyword = rumor.Keyword;
+					string keyword = rumor?.Keyword;
 
 					if ( keyword == null || (keyword = keyword.Trim()).Length == 0 )
 						continue;

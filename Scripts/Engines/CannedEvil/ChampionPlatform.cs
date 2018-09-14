@@ -46,8 +46,7 @@ namespace Server.Engines.CannedEvil
 		{
 			base.OnAfterDelete();
 
-			if ( m_Spawn != null )
-				m_Spawn.Delete();
+			m_Spawn?.Delete();
 		}
 
 		public ChampionPlatform( Serial serial ) : base( serial )

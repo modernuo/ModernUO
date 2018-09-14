@@ -61,8 +61,7 @@ namespace Server.Spells.Ninjitsu
 				if ( info.m_Steps > 0 )
 					damageBonus = attacker.Skills[SkillName.Ninjitsu].Fixed / 150;
 
-				if ( info.m_Timer != null )
-					info.m_Timer.Stop();
+				info.m_Timer?.Stop();
 
 				m_Table.Remove( defender );
 			}
@@ -160,8 +159,7 @@ namespace Server.Spells.Ninjitsu
 			else
 				AOS.Damage( info.m_Target, info.m_Attacker, damage, true, 100, 0, 0, 0, 0, 0, 0, false, false, true ); // Damage is physical.
 
-			if ( info.m_Timer != null )
-				info.m_Timer.Stop();
+			info.m_Timer?.Stop();
 
 			m_Table.Remove( info.m_Target );
 		}

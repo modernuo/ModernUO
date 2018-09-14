@@ -159,8 +159,7 @@ namespace Server.Items
 		{
 			base.OnAfterDelete();
 
-			if ( m_Item != null )
-				m_Item.Delete();
+			m_Item?.Delete();
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -212,8 +211,7 @@ namespace Server.Items
 			{
 				base.OnAfterDelete();
 
-				if ( m_Item != null )
-					m_Item.Delete();
+				m_Item?.Delete();
 			}
 
 			public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
@@ -327,8 +325,7 @@ namespace Server.Items
 		{
 			base.OnAfterDelete();
 
-			if ( m_Item != null )
-				m_Item.Delete();
+			m_Item?.Delete();
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -382,8 +379,7 @@ namespace Server.Items
 			{
 				base.OnAfterDelete();
 
-				if ( m_Item != null )
-					m_Item.Delete();
+				m_Item?.Delete();
 			}
 
 			public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement

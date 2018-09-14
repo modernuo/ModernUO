@@ -87,8 +87,7 @@ namespace Server.Mobiles
 			if ( mount != null )
 				mount.Rider = null;
 
-			if ( mount is Mobile )
-				((Mobile)mount).Delete();
+			(mount as Mobile)?.Delete();
 
 			return base.OnBeforeDeath();
 		}

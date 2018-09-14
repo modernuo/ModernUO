@@ -157,8 +157,7 @@ namespace Server.Items
 
 		public void StopTimer()
 		{
-			if ( m_RelockTimer != null )
-				m_RelockTimer.Stop();
+			m_RelockTimer?.Stop();
 
 			m_RelockTimer = null;
 		}

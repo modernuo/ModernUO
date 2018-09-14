@@ -198,8 +198,7 @@ namespace Server.Misc
 
 			List<Weather> list = GetWeatherList( facet );
 
-			if ( list != null )
-				list.Add( this );
+			list?.Add( this );
 
 			Timer.DelayCall( TimeSpan.FromSeconds( (0.2+(Utility.RandomDouble()*0.8)) * interval.TotalSeconds ), interval, new TimerCallback( OnTick ) );
 		}

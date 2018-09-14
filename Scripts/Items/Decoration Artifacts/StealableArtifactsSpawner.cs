@@ -240,10 +240,7 @@ namespace Server.Items
 
 		public static StealableInstance GetStealableInstance( Item item )
 		{
-			if ( Instance == null )
-				return null;
-
-			return (StealableInstance) Instance.m_Table[item];
+			return (StealableInstance) Instance?.m_Table[item];
 		}
 
 
@@ -341,8 +338,7 @@ namespace Server.Items
 
 			foreach ( StealableInstance si in m_Artifacts )
 			{
-				if ( si.Item != null )
-					si.Item.Delete();
+				si.Item?.Delete();
 			}
 
 			m_Instance = null;

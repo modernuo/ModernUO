@@ -124,11 +124,9 @@ namespace Server.Multis
 		{
 			base.OnAfterDelete();
 
-			if ( m_SignHanger != null )
-				m_SignHanger.Delete();
+			m_SignHanger?.Delete();
 
-			if ( m_Signpost != null )
-				m_Signpost.Delete();
+			m_Signpost?.Delete();
 
 			if ( m_Fixtures == null )
 				return;
@@ -137,8 +135,7 @@ namespace Server.Multis
 			{
 				Item item = m_Fixtures[i];
 
-				if ( item != null )
-					item.Delete();
+				item?.Delete();
 			}
 
 			m_Fixtures.Clear();
@@ -152,11 +149,9 @@ namespace Server.Multis
 			int y = Location.Y - oldLocation.Y;
 			int z = Location.Z - oldLocation.Z;
 
-			if ( m_SignHanger != null )
-				m_SignHanger.MoveToWorld( new Point3D( m_SignHanger.X + x, m_SignHanger.Y + y, m_SignHanger.Z + z ), Map );
+			m_SignHanger?.MoveToWorld( new Point3D( m_SignHanger.X + x, m_SignHanger.Y + y, m_SignHanger.Z + z ), Map );
 
-			if ( m_Signpost != null )
-				m_Signpost.MoveToWorld( new Point3D( m_Signpost.X + x, m_Signpost.Y + y, m_Signpost.Z + z ), Map );
+			m_Signpost?.MoveToWorld( new Point3D( m_Signpost.X + x, m_Signpost.Y + y, m_Signpost.Z + z ), Map );
 
 			if ( m_Fixtures == null )
 				return;
@@ -589,8 +584,7 @@ namespace Server.Multis
 
 			if ( CheckWall( mcl, x, y ) )
 			{
-				if ( m_Signpost != null )
-					m_Signpost.Delete();
+				m_Signpost?.Delete();
 
 				m_Signpost = null;
 			}
@@ -1696,8 +1690,7 @@ namespace Server.Multis
 				if ( m_PacketCache == value )
 					return;
 
-				if ( m_PacketCache != null )
-					m_PacketCache.Release();
+				m_PacketCache?.Release();
 
 				m_PacketCache = value;
 			}
@@ -1788,8 +1781,7 @@ namespace Server.Multis
 			{
 				m_Revision = ++m_Foundation.LastRevision;
 
-				if ( m_PacketCache != null )
-					m_PacketCache.Release();
+				m_PacketCache?.Release();
 
 				m_PacketCache = null;
 			}
@@ -1797,8 +1789,7 @@ namespace Server.Multis
 
 		public void SendGeneralInfoTo( NetState state )
 		{
-			if ( state != null )
-				state.Send( new DesignStateGeneral( m_Foundation, this ) );
+			state?.Send( new DesignStateGeneral( m_Foundation, this ) );
 		}
 
 		public void SendDetailedInfoTo( NetState state )
@@ -2095,14 +2086,11 @@ namespace Server.Multis
 				item.SendInfoTo( state );
 			}
 
-			if ( context.Foundation.Signpost != null )
-				context.Foundation.Signpost.SendInfoTo( state );
+			context.Foundation.Signpost?.SendInfoTo( state );
 
-			if ( context.Foundation.SignHanger != null )
-				context.Foundation.SignHanger.SendInfoTo( state );
+			context.Foundation.SignHanger?.SendInfoTo( state );
 
-			if ( context.Foundation.Sign != null )
-				context.Foundation.Sign.SendInfoTo( state );
+			context.Foundation.Sign?.SendInfoTo( state );
 		}
 	}
 

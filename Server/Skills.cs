@@ -251,8 +251,7 @@ namespace Server
 
 					Mobile m = m_Owner.Owner;
 
-					if ( m != null )
-						m.OnSkillChange( SkillName, (double)oldBase / 10 );
+					m?.OnSkillChange( SkillName, (double)oldBase / 10 );
 				}
 			}
 		}
@@ -1021,8 +1020,7 @@ namespace Server
 
 			NetState ns = m_Owner.NetState;
 
-			if ( ns != null )
-				ns.Send( new SkillChange( skill ) );
+			ns?.Send( new SkillChange( skill ) );
 		}
 
 		public IEnumerator<Skill> GetEnumerator()

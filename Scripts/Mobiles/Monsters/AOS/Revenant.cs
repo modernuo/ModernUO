@@ -138,8 +138,7 @@ namespace Server.Mobiles
 			{
 				Target targ = Target;
 
-				if ( targ != null )
-					targ.Invoke( this, this );
+				targ?.Invoke( this, this );
 			}
 
 			Combatant = m_Target;

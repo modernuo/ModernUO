@@ -101,10 +101,7 @@ namespace Server.Gumps
 
 					Gump parent = Parent;
 
-					if ( parent != null )
-					{
-						parent.Invalidate();
-					}
+					parent?.Invalidate();
 				}
 			}
 		}

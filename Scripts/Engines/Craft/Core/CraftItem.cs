@@ -780,8 +780,9 @@ namespace Server.Engines.Craft
 			if ( index == -1 )
 			{
 				if ( consumeType != ConsumeType.None )
-					if ( consumeExtra != null )
-						consumeExtra.Delete();
+				{
+					consumeExtra?.Delete();
+				}
 
 				return true;
 			}
@@ -948,8 +949,7 @@ namespace Server.Engines.Craft
 									{
 										CraftContext context = craftSystem.GetContext( from );
 
-										if ( context != null )
-											context.OnMade( this );
+										context?.OnMade( this );
 
 										int iMin = craftSystem.MinCraftEffect;
 										int iMax = (craftSystem.MaxCraftEffect - iMin) + 1;
@@ -1286,8 +1286,7 @@ namespace Server.Engines.Craft
 						try{ cc = Activator.CreateInstance( m_CraftItem.ItemType, new object[] { m_From, m_CraftItem, m_CraftSystem, m_TypeRes, m_Tool, quality } ) as CustomCraft; }
 						catch{}
 
-						if ( cc != null )
-							cc.EndCraftAction();
+						cc?.EndCraftAction();
 
 						return;
 					}

@@ -48,8 +48,7 @@ namespace Server.Items
 			else
 				ItemID = 0x1B1C;
 
-			if ( Owner != null )
-				Owner.PlaySound( 0x199 );
+			Owner?.PlaySound( 0x199 );
 
 			if ( Organ is PlagueBeastRubbleOrgan organ )
 				organ.OnVeinCut( from, this );

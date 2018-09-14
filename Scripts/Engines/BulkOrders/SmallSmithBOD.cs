@@ -52,13 +52,10 @@ namespace Server.Engines.BulkOrders
 				{
 					RewardItem rewardItem = rewardGroup.AcquireItem();
 
-					if ( rewardItem != null )
-					{
-						Item item = rewardItem.Construct();
+					Item item = rewardItem?.Construct();
 
-						if ( item != null )
-							list.Add( item );
-					}
+					if ( item != null )
+						list.Add( item );
 				}
 			}
 

@@ -2518,8 +2518,7 @@ namespace Server.Mobiles
 			{
 				BandageContext c = BandageContext.GetContext( this );
 
-				if ( c != null )
-					c.Slip();
+				c?.Slip();
 			}
 
 			if ( Confidence.IsRegenerating( this ) )

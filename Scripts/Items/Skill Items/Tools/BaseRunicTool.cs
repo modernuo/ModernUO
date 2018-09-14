@@ -239,10 +239,7 @@ namespace Server.Items
 		{
 			CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
 
-			if ( resInfo == null )
-				return;
-
-			CraftAttributeInfo attrs = resInfo.AttributeInfo;
+			CraftAttributeInfo attrs = resInfo?.AttributeInfo;
 
 			if ( attrs == null )
 				return;
@@ -438,10 +435,7 @@ namespace Server.Items
 		{
 			CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
 
-			if ( resInfo == null )
-				return;
-
-			CraftAttributeInfo attrs = resInfo.AttributeInfo;
+			CraftAttributeInfo attrs = resInfo?.AttributeInfo;
 
 			if ( attrs == null )
 				return;

@@ -303,8 +303,7 @@ namespace Server.Mobiles
 
 		public override void OnAfterDelete()
 		{
-			if (m_DeleteTimer != null)
-				m_DeleteTimer.Stop();
+			m_DeleteTimer?.Stop();
 
 			m_DeleteTimer = null;
 
@@ -408,8 +407,7 @@ namespace Server.Mobiles
 
 		public virtual void BeginDelete()
 		{
-			if (m_DeleteTimer != null)
-				m_DeleteTimer.Stop();
+			m_DeleteTimer?.Stop();
 
 			m_DeleteTime = DateTime.UtcNow + DeleteTime;
 

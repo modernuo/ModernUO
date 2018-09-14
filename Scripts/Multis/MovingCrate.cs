@@ -72,9 +72,9 @@ namespace Server.Multis
 			// 2. Try to drop the item into an existing container
 			foreach ( Item item in Items )
 			{
-				if ( item is PackingBox )
+				if ( item is PackingBox packingBox )
 				{
-					Container box = (Container) item;
+					Container box = packingBox;
 					List<Item> subItems = box.Items;
 
 					if ( subItems.Count < MaxItemsPerSubcontainer )
@@ -216,8 +216,7 @@ namespace Server.Multis
 			if ( House != null && House.MovingCrate == this )
 				House.MovingCrate = null;
 
-			if ( m_InternalizeTimer != null )
-				m_InternalizeTimer.Stop();
+			m_InternalizeTimer?.Stop();
 		}
 
 		public override void Serialize( GenericWriter writer )

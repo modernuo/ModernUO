@@ -64,8 +64,7 @@ namespace Server.Spells.Sixth
 				m_Defender = defender;
 				m_Target = target;
 
-				if ( m_Spell != null )
-					m_Spell.StartDelayedDamageContext( attacker, this );
+				m_Spell?.StartDelayedDamageContext( attacker, this );
 
 				Priority = TimerPriority.FiftyMS;
 			}
@@ -99,8 +98,7 @@ namespace Server.Spells.Sixth
 
 					SpellHelper.Damage( m_Spell, m_Target, damage, 0, 100, 0, 0, 0 );
 
-					if ( m_Spell != null )
-						m_Spell.RemoveDelayedDamageContext( m_Attacker );
+					m_Spell?.RemoveDelayedDamageContext( m_Attacker );
 				}
 			}
 		}

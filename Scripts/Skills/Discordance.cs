@@ -117,8 +117,7 @@ namespace Server.SkillHandlers
 
 			if ( ends && info.m_Ending && info.m_EndTime < DateTime.UtcNow )
 			{
-				if ( info.m_Timer != null )
-					info.m_Timer.Stop();
+				info.m_Timer?.Stop();
 
 				info.Clear();
 				m_Table.Remove( targ );

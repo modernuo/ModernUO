@@ -460,9 +460,9 @@ namespace Server.Engines.Reports
 			}
 			finally
 			{
-				if (brsFont != null) brsFont.Dispose();
-				if (valFont != null) valFont.Dispose();
-				if (sfFormat != null) sfFormat.Dispose();
+				brsFont?.Dispose();
+				valFont?.Dispose();
+				sfFormat?.Dispose();
 			}
 		}
 
@@ -536,11 +536,11 @@ namespace Server.Engines.Reports
 			}
 			finally
 			{
-				if (lblFont != null) lblFont.Dispose();
-				if (brs != null) brs.Dispose();
-				if (lblFormat != null) lblFormat.Dispose();
-				if (pen != null) pen.Dispose();
-				if (sfVLabel != null) sfVLabel.Dispose();
+				lblFont?.Dispose();
+				brs?.Dispose();
+				lblFormat?.Dispose();
+				pen?.Dispose();
+				sfVLabel?.Dispose();
 			}
 		}
 
@@ -571,10 +571,10 @@ namespace Server.Engines.Reports
 			}
 			finally
 			{
-				if (lblFont != null) lblFont.Dispose();
-				if (brs != null) brs.Dispose();
-				if (lblFormat != null) lblFormat.Dispose();
-				if (pen != null) pen.Dispose();
+				lblFont?.Dispose();
+				brs?.Dispose();
+				lblFormat?.Dispose();
+				pen?.Dispose();
 			}
 		}
 
@@ -642,10 +642,10 @@ namespace Server.Engines.Reports
 			}
 			finally
 			{
-				if (lblFont != null) lblFont.Dispose();
-				if (brs != null) brs.Dispose();
-				if (lblFormat != null) lblFormat.Dispose();
-				if (pen != null) pen.Dispose();
+				lblFont?.Dispose();
+				brs?.Dispose();
+				lblFormat?.Dispose();
+				pen?.Dispose();
 			}
 		}
 
@@ -698,10 +698,10 @@ namespace Server.Engines.Reports
 			}
 			finally
 			{
-				if (lblFont != null) lblFont.Dispose();
-				if (brs != null) brs.Dispose();
-				if (lblFormat != null) lblFormat.Dispose();
-				if (pen != null) pen.Dispose();
+				lblFont?.Dispose();
+				brs?.Dispose();
+				lblFormat?.Dispose();
+				pen?.Dispose();
 			}
 		}
 
@@ -805,9 +805,9 @@ namespace Server.Engines.Reports
 			}
 			finally
 			{
-				if (graph != null) graph.Dispose();
-				if (bmp != null) bmp.Dispose();
-				if (font != null) font.Dispose();
+				graph?.Dispose();
+				bmp?.Dispose();
+				font?.Dispose();
 			}
 		}
 

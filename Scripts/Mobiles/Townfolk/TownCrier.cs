@@ -384,8 +384,7 @@ namespace Server.Mobiles
 
 			if ( m_Entries == null && GlobalTownCrierEntryList.Instance.IsEmpty )
 			{
-				if ( m_AutoShoutTimer != null )
-					m_AutoShoutTimer.Stop();
+				m_AutoShoutTimer?.Stop();
 
 				m_AutoShoutTimer = null;
 			}
@@ -397,8 +396,7 @@ namespace Server.Mobiles
 
 			if ( tce == null )
 			{
-				if ( m_AutoShoutTimer != null )
-					m_AutoShoutTimer.Stop();
+				m_AutoShoutTimer?.Stop();
 
 				m_AutoShoutTimer = null;
 			}
@@ -418,8 +416,7 @@ namespace Server.Mobiles
 
 			if ( index < 0 || index >= tce.Lines.Length )
 			{
-				if ( m_NewsTimer != null )
-					m_NewsTimer.Stop();
+				m_NewsTimer?.Stop();
 
 				m_NewsTimer = null;
 			}

@@ -90,8 +90,7 @@ namespace Server.Spells.Spellweaving
 
 			protected override void OnTargetFinish( Mobile from )
 			{
-				if ( m_Owner != null )
-					m_Owner.FinishSequence();
+				m_Owner?.FinishSequence();
 			}
 		}
 

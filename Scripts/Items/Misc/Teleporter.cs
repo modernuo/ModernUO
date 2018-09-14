@@ -862,8 +862,7 @@ namespace Server.Items
 
 		public override bool OnMoveOver(Mobile m)
 		{
-			if (m_Teleporter != null)
-				m_Teleporter.StopTimer(m);
+			m_Teleporter?.StopTimer(m);
 
 			return true;
 		}

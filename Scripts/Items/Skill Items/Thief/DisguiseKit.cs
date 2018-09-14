@@ -309,8 +309,7 @@ namespace Server.Items
 		{
 			m_Timers.TryGetValue( m, out Timer t );
 
-			if ( t != null )
-				t.Start();
+			t?.Start();
 		}
 
 		public static bool IsDisguised( Mobile m )

@@ -146,10 +146,7 @@ namespace Server.Engines.Doom
 			NukeItemList( m_Statues );
 			NukeItemList( m_Levers );
 
-			if ( m_LampRoom != null )
-			{
-				m_LampRoom.Unregister();
-			}
+			m_LampRoom?.Unregister();
 			if ( m_Tiles != null )
 			{
 				foreach( Region region in m_Tiles )
@@ -181,12 +178,9 @@ namespace Server.Engines.Doom
 		{
 			LeverPuzzleRegion region = (LeverPuzzleRegion)m_Tiles[index];
 
-			if ( region != null )
+			if ( region?.Occupant != null && region.Occupant.Alive )
 			{
-				if ( region.Occupant != null && region.Occupant.Alive )
-				{
-					return (PlayerMobile)region.Occupant;
-				}
+				return (PlayerMobile)region.Occupant;
 			}
 			return null;
 		}

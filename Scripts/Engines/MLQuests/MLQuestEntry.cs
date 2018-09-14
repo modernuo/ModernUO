@@ -63,8 +63,7 @@ namespace Server.Engines.MLQuests
 
 		private void Register()
 		{
-			if ( m_Quest?.Instances != null )
-				m_Quest.Instances.Add( this );
+			m_Quest?.Instances?.Add( this );
 
 			if ( m_Player != null )
 				PlayerContext.QuestInstances.Add( this );
@@ -72,8 +71,7 @@ namespace Server.Engines.MLQuests
 
 		private void Unregister()
 		{
-			if ( m_Quest?.Instances != null )
-				m_Quest.Instances.Remove( this );
+			m_Quest?.Instances?.Remove( this );
 
 			if ( m_Player != null )
 				PlayerContext.QuestInstances.Remove( this );
@@ -255,8 +253,7 @@ namespace Server.Engines.MLQuests
 				{
 					MLQuest nextQuest = MLQuestSystem.FindQuest( nextQuestType );
 
-					if ( nextQuest != null )
-						nextQuest.SendOffer( m_Quester, m_Player );
+					nextQuest?.SendOffer( m_Quester, m_Player );
 				}
 			}
 			else
@@ -514,8 +511,7 @@ namespace Server.Engines.MLQuests
 			for ( int i = 0; i < objectives; ++i )
 				BaseObjectiveInstance.Deserialize( reader, version, ( instance != null && i < instance.Objectives.Length ) ? instance.Objectives[i] : null );
 
-			if ( instance != null )
-				instance.Slice();
+			instance?.Slice();
 
 			return instance;
 		}

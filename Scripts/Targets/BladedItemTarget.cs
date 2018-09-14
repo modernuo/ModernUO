@@ -52,20 +52,17 @@ namespace Server.Targets
 					{
 						PlayerMobile player = from as PlayerMobile;
 
-						if ( player != null )
+						QuestSystem qs = player?.Quest;
+
+						if ( qs is WitchApprenticeQuest )
 						{
-							QuestSystem qs = player.Quest;
+							FindIngredientObjective obj = qs.FindObjective( typeof( FindIngredientObjective ) ) as FindIngredientObjective;
 
-							if ( qs is WitchApprenticeQuest )
+							if ( obj != null && !obj.Completed && obj.Ingredient == Ingredient.RedMushrooms )
 							{
-								FindIngredientObjective obj = qs.FindObjective( typeof( FindIngredientObjective ) ) as FindIngredientObjective;
-
-								if ( obj != null && !obj.Completed && obj.Ingredient == Ingredient.RedMushrooms )
-								{
-									player.SendLocalizedMessage( 1055036 ); // You slice a red cap mushroom from its stem.
-									obj.Complete();
-									return;
-								}
+								player.SendLocalizedMessage( 1055036 ); // You slice a red cap mushroom from its stem.
+								obj.Complete();
+								return;
 							}
 						}
 					}

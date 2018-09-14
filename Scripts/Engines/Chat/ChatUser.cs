@@ -190,8 +190,7 @@ namespace Server.Engines.Chat
 			{
 				ChatSystem.SendCommandTo( user.Mobile, ChatCommand.CloseChatWindow );
 
-				if ( user.m_Channel != null )
-					user.m_Channel.RemoveUser( user );
+				user.m_Channel?.RemoveUser( user );
 
 				m_Users.Remove( user );
 				m_Table.Remove( user.m_Mobile );

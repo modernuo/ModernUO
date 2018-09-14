@@ -131,10 +131,7 @@ namespace Server
 
 		public static implicit operator string( TextDefinition m )
 		{
-			if ( m == null )
-				return null;
-
-			return m.m_String;
+			return m?.m_String;
 		}
 
 		public static void AddHtmlText( Gump g, int x, int y, int width, int height, TextDefinition def, bool back, bool scroll, int numberColor, int stringColor )

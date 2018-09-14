@@ -139,10 +139,7 @@ namespace Server.Items
 			{
 				BaseHouse house = BaseHouse.FindHouseAt( this );
 
-				if ( house != null )
-				{
-					house.VendorRentalContracts.Remove( this );
-				}
+				house?.VendorRentalContracts.Remove( this );
 			}
 		}
 

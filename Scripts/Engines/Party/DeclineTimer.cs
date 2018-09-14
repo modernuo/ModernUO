@@ -13,8 +13,7 @@ namespace Server.Engines.PartySystem
 		{
 			DeclineTimer t = (DeclineTimer)m_Table[m];
 
-			if ( t != null )
-				t.Stop();
+			t?.Stop();
 
 			m_Table[m] = t = new DeclineTimer( m, leader );
 			t.Start();

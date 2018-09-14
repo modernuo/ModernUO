@@ -153,8 +153,7 @@ namespace Server.Items
 			}
 			else
 			{
-				if ( from != null )
-					from.SendLocalizedMessage( 502079 ); // The instrument played its last tune.
+				@from?.SendLocalizedMessage( 502079 ); // The instrument played its last tune.
 
 				Delete();
 			}
@@ -187,8 +186,7 @@ namespace Server.Items
 
 			if ( instrument != null )
 			{
-				if ( callback != null )
-					callback( from, instrument );
+				callback?.Invoke( @from, instrument );
 			}
 			else
 			{
@@ -233,10 +231,7 @@ namespace Server.Items
 
 		public static int GetPoisonLevel( BaseCreature bc )
 		{
-			if ( bc == null )
-				return 0;
-
-			Poison p = bc.HitPoison;
+			Poison p = bc?.HitPoison;
 
 			if ( p == null )
 				return 0;

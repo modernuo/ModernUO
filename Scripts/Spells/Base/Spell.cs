@@ -96,8 +96,7 @@ namespace Server.Spells
 
 		public void HarmfulSpell( Mobile m )
 		{
-			if ( m is BaseCreature )
-				((BaseCreature)m).OnHarmfulSpell( m_Caster );
+			(m as BaseCreature)?.OnHarmfulSpell( m_Caster );
 		}
 
 		public Spell( Mobile caster, Item scroll, SpellInfo info )
@@ -311,11 +310,9 @@ namespace Server.Spells
 					scalar *= 2.0; // Double magery damage to monsters/animals if not AOS
 			}
 
-			if ( target is BaseCreature )
-				((BaseCreature)target).AlterDamageScalarFrom( m_Caster, ref scalar );
+			(target as BaseCreature)?.AlterDamageScalarFrom( m_Caster, ref scalar );
 
-			if ( m_Caster is BaseCreature )
-				((BaseCreature)m_Caster).AlterDamageScalarTo( target, ref scalar );
+			(m_Caster as BaseCreature)?.AlterDamageScalarTo( target, ref scalar );
 
 			if ( Core.SE )
 				scalar *= GetSlayerDamageScalar( target );
@@ -417,11 +414,9 @@ namespace Server.Spells
 
 				OnDisturb( type, true );
 
-				if ( m_CastTimer != null )
-					m_CastTimer.Stop();
+				m_CastTimer?.Stop();
 
-				if ( m_AnimTimer != null )
-					m_AnimTimer.Stop();
+				m_AnimTimer?.Stop();
 
 				if ( Core.AOS && m_Caster.Player && type == DisturbType.Hurt )
 					DoHurtFizzle();
@@ -908,8 +903,7 @@ namespace Server.Spells
 					m_Spell.m_State = SpellState.Sequencing;
 					m_Spell.m_CastTimer = null;
 					m_Spell.m_Caster.OnSpellCast( m_Spell );
-					if ( m_Spell.m_Caster.Region != null )
-						m_Spell.m_Caster.Region.OnSpellCast( m_Spell.m_Caster, m_Spell );
+					m_Spell.m_Caster.Region?.OnSpellCast( m_Spell.m_Caster, m_Spell );
 					m_Spell.m_Caster.NextSpellTime = Core.TickCount + (int)m_Spell.GetCastRecovery().TotalMilliseconds; // Spell.NextSpellDelay;
 
 					Target originalTarget = m_Spell.m_Caster.Target;

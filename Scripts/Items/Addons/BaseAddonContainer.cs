@@ -96,8 +96,7 @@ namespace Server.Items
 		{
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if ( house != null )
-				house.Addons.Remove( this );
+			house?.Addons.Remove( this );
 
 			base.OnDelete();
 		}

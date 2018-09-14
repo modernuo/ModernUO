@@ -151,8 +151,7 @@ namespace Server.Engines.Doom
 					ClearTraps();
 					DestroyRegion();
 
-					if ( m_Timer != null )
-						m_Timer.Stop();
+					m_Timer?.Stop();
 
 					m_Timer = null;
 				}
@@ -194,8 +193,7 @@ namespace Server.Engines.Doom
 
 		public virtual void DestroyRegion()
 		{
-			if ( m_Region != null )
-				m_Region.Unregister();
+			m_Region?.Unregister();
 
 			m_Region = null;
 		}

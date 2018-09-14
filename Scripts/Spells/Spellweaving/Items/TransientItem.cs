@@ -38,8 +38,7 @@ namespace Server.Items
 
 		public virtual void Expire( Mobile parent )
 		{
-			if ( parent != null )
-				parent.SendLocalizedMessage( 1072515, (Name == null ? $"#{LabelNumber}" : Name) ); // The ~1_name~ expired...
+			parent?.SendLocalizedMessage( 1072515, (Name == null ? $"#{LabelNumber}" : Name) ); // The ~1_name~ expired...
 
 			Effects.PlaySound( GetWorldLocation(), Map, 0x201 );
 

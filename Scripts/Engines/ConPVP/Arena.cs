@@ -228,13 +228,11 @@ namespace Server.Engines.ConPVP
 			get => m_Tournament;
 			set
 			{
-				if ( m_Tournament != null )
-					m_Tournament.Tournament.Arenas.Remove( this );
+				m_Tournament?.Tournament.Arenas.Remove( this );
 
 				m_Tournament = value;
 
-				if ( m_Tournament != null )
-					m_Tournament.Tournament.Arenas.Add( this );
+				m_Tournament?.Tournament.Arenas.Add( this );
 			}
 		}
 
@@ -263,8 +261,7 @@ namespace Server.Engines.ConPVP
 				if ( m_Teleporter != null )
 					m_Teleporter.Map = value;
 
-				if ( m_Region != null )
-					m_Region.Unregister();
+				m_Region?.Unregister();
 
 				if ( m_Zone.Start != Point2D.Zero && m_Zone.End != Point2D.Zero && m_Facet != null )
 					m_Region = new SafeZone( m_Zone, m_Outside, m_Facet, m_IsGuarded );
@@ -306,15 +303,13 @@ namespace Server.Engines.ConPVP
 
 				if ( m_Zone.Start != Point2D.Zero && m_Zone.End != Point2D.Zero && m_Facet != null )
 				{
-					if ( m_Region != null )
-						m_Region.Unregister();
+					m_Region?.Unregister();
 
 					m_Region = new SafeZone( m_Zone, m_Outside, m_Facet, m_IsGuarded );
 				}
 				else
 				{
-					if ( m_Region != null )
-						m_Region.Unregister();
+					m_Region?.Unregister();
 
 					m_Region = null;
 				}
@@ -380,10 +375,9 @@ namespace Server.Engines.ConPVP
 		{
 			 Active = false;
 
-			 if ( m_Region != null )
-				 m_Region.Unregister();
+			m_Region?.Unregister();
 
-			 m_Region = null;
+			m_Region = null;
 		}
 
 		public override string ToString()
@@ -589,8 +583,7 @@ namespace Server.Engines.ConPVP
 
 		private void AttachToTournament_Sandbox()
 		{
-			if ( m_Tournament != null )
-				m_Tournament.Tournament.Arenas.Add( this );
+			m_Tournament?.Tournament.Arenas.Add( this );
 		}
 
 		[CommandProperty( AccessLevel.Administrator, AccessLevel.Administrator )]

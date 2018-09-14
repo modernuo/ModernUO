@@ -95,8 +95,7 @@ namespace Server.Mobiles
 			if ( !base.OnBeforeDeath() )
 				return false;
 
-			if ( Backpack != null )
-				Backpack.Destroy();
+			Backpack?.Destroy();
 
 			if ( Utility.Random( 3 ) == 0 )
 			{

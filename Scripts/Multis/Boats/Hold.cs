@@ -62,21 +62,18 @@ namespace Server.Items
 
 		public override void OnAfterDelete()
 		{
-			if ( m_Boat != null )
-				m_Boat.Delete();
+			m_Boat?.Delete();
 		}
 
 		public override void OnDoubleClick( Mobile from )
 		{
 			if ( m_Boat == null || !m_Boat.Contains( from ) )
 			{
-				if ( m_Boat.TillerMan != null )
-					m_Boat.TillerMan.Say( 502490 ); // You must be on the ship to open the hold.
+				m_Boat.TillerMan?.Say( 502490 ); // You must be on the ship to open the hold.
 			}
 			else if ( m_Boat.IsMoving )
 			{
-				if ( m_Boat.TillerMan != null )
-					m_Boat.TillerMan.Say( 502491 ); // I can not open the hold while the ship is moving.
+				m_Boat.TillerMan?.Say( 502491 ); // I can not open the hold while the ship is moving.
 			}
 			else
 			{

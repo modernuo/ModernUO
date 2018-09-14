@@ -257,10 +257,7 @@ namespace Server.Misc
 						{
 							Mobile mob = acc[i];
 
-							if ( mob == null )
-								continue;
-
-							string lang = mob.Language;
+							string lang = mob?.Language;
 
 							if ( lang != null )
 							{

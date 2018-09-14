@@ -250,8 +250,7 @@ namespace Server.Mobiles
 		{
 			if ( m_Running )
 			{
-				if ( m_Timer != null )
-					m_Timer.Stop();
+				m_Timer?.Stop();
 				m_Running = false;
 			}
 		}
@@ -714,8 +713,7 @@ namespace Server.Mobiles
 			{
 				ISpawnable e = entry.Spawned[i];
 				entry.Spawned.RemoveAt( i );
-				if ( e != null )
-					e.Delete();
+				e?.Delete();
 			}
 
 			m_Entries.Remove( entry );
@@ -734,8 +732,7 @@ namespace Server.Mobiles
 			{
 				m_Spawned.TryGetValue( spawn, out SpawnerEntry entry );
 
-				if ( entry != null )
-					entry.Spawned.Remove( spawn );
+				entry?.Spawned.Remove( spawn );
 
 				m_Spawned.Remove( spawn );
 			}
@@ -798,8 +795,9 @@ namespace Server.Mobiles
 			Defrag();
 
 			foreach( ISpawnable e in m_Spawned.Keys )
-				if ( e != null )
-					e.MoveToWorld( Location, Map );
+			{
+				e?.MoveToWorld( Location, Map );
+			}
 		}
 
 		public override void OnDelete()

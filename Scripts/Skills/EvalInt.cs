@@ -78,9 +78,9 @@ namespace Server.SkillHandlers
 						targ.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 1038166 + (body / 11), from.NetState ); // You cannot judge his/her/its mental abilities.
 					}
 				}
-				else if ( targeted is Item )
+				else
 				{
-					((Item)targeted).SendLocalizedMessageTo( from, 500908, "" ); // It looks smarter than a rock, but dumber than a piece of wood.
+					(targeted as Item)?.SendLocalizedMessageTo( @from, 500908, "" ); // It looks smarter than a rock, but dumber than a piece of wood.
 				}
 			}
 		}

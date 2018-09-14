@@ -75,8 +75,7 @@ namespace Server.Engines.CannedEvil
 			{
 				Effects.SendBoltEffect( brazier );
 
-				if ( brazier.Skull != null )
-					brazier.Skull.Delete();
+				brazier.Skull?.Delete();
 			}
 		}
 

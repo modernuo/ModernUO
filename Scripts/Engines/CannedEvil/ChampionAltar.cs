@@ -15,8 +15,7 @@ namespace Server.Engines.CannedEvil
 		{
 			base.OnAfterDelete();
 
-			if ( m_Spawn != null )
-				m_Spawn.Delete();
+			m_Spawn?.Delete();
 		}
 
 		public ChampionAltar( Serial serial ) : base( serial )

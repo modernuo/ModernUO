@@ -59,8 +59,7 @@ namespace Server.Engines.Quests.Naturalist
 		{
 			base.Accept();
 
-			if ( m_Naturalist != null )
-				m_Naturalist.PlaySound( 0x431 );
+			m_Naturalist?.PlaySound( 0x431 );
 
 			AddConversation( new AcceptConversation() );
 		}

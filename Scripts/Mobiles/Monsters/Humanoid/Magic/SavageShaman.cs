@@ -231,8 +231,7 @@ namespace Server.Mobiles
 
 							DoHarmful( m );
 
-							if ( m.Spell != null )
-								m.Spell.OnCasterHurt();
+							m.Spell?.OnCasterHurt();
 
 							m.Paralyzed = false;
 

@@ -58,8 +58,7 @@ namespace Server.Spells.Fourth
 
 				SpellHelper.CheckReflect( (int)Circle, Caster, ref m );
 
-				if ( m.Spell != null )
-					m.Spell.OnCasterHurt();
+				m.Spell?.OnCasterHurt();
 
 				m.Paralyzed = false;
 

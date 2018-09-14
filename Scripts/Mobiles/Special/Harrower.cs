@@ -372,8 +372,7 @@ namespace Server.Mobiles
 					RegisterDamageTo( this );
 					AwardArtifact( GetArtifact() );
 
-					if ( m_GateItem != null )
-						m_GateItem.Delete();
+					m_GateItem?.Delete();
 				}
 
 				return base.OnBeforeDeath();

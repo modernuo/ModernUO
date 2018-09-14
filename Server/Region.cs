@@ -562,8 +562,7 @@ namespace Server
 
 		public virtual void MakeGuard( Mobile focus )
 		{
-			if ( m_Parent != null )
-				m_Parent.MakeGuard( focus );
+			m_Parent?.MakeGuard( focus );
 		}
 
 		public virtual Type GetResource( Type type )
@@ -584,26 +583,22 @@ namespace Server
 
 		public virtual void OnAggressed( Mobile aggressor, Mobile aggressed, bool criminal )
 		{
-			if ( m_Parent != null )
-				m_Parent.OnAggressed( aggressor, aggressed, criminal );
+			m_Parent?.OnAggressed( aggressor, aggressed, criminal );
 		}
 
 		public virtual void OnDidHarmful( Mobile harmer, Mobile harmed )
 		{
-			if ( m_Parent != null )
-				m_Parent.OnDidHarmful( harmer, harmed );
+			m_Parent?.OnDidHarmful( harmer, harmed );
 		}
 
 		public virtual void OnGotHarmful( Mobile harmer, Mobile harmed )
 		{
-			if ( m_Parent != null )
-				m_Parent.OnGotHarmful( harmer, harmed );
+			m_Parent?.OnGotHarmful( harmer, harmed );
 		}
 
 		public virtual void OnLocationChanged( Mobile m, Point3D oldLocation )
 		{
-			if ( m_Parent != null )
-				m_Parent.OnLocationChanged( m, oldLocation );
+			m_Parent?.OnLocationChanged( m, oldLocation );
 		}
 
 		public virtual bool OnTarget( Mobile m, Target t, object o )
@@ -686,26 +681,22 @@ namespace Server
 
 		public virtual void OnBeneficialAction( Mobile helper, Mobile target )
 		{
-			if ( m_Parent != null )
-				m_Parent.OnBeneficialAction( helper, target );
+			m_Parent?.OnBeneficialAction( helper, target );
 		}
 
 		public virtual void OnGotBeneficialAction( Mobile helper, Mobile target )
 		{
-			if ( m_Parent != null )
-				m_Parent.OnGotBeneficialAction( helper, target );
+			m_Parent?.OnGotBeneficialAction( helper, target );
 		}
 
 		public virtual void SpellDamageScalar( Mobile caster, Mobile target, ref double damage )
 		{
-			if ( m_Parent != null )
-				m_Parent.SpellDamageScalar( caster, target, ref damage );
+			m_Parent?.SpellDamageScalar( caster, target, ref damage );
 		}
 
 		public virtual void OnSpeech( SpeechEventArgs args )
 		{
-			if ( m_Parent != null )
-				m_Parent.OnSpeech( args );
+			m_Parent?.OnSpeech( args );
 		}
 
 		public virtual bool OnSkillUse( Mobile m, int Skill )
@@ -726,8 +717,7 @@ namespace Server
 
 		public virtual void OnSpellCast( Mobile m, ISpell s )
 		{
-			if ( m_Parent != null )
-				m_Parent.OnSpellCast( m, s );
+			m_Parent?.OnSpellCast( m, s );
 		}
 
 		public virtual bool OnResurrect( Mobile m )
@@ -748,8 +738,7 @@ namespace Server
 
 		public virtual void OnDeath( Mobile m )
 		{
-			if ( m_Parent != null )
-				m_Parent.OnDeath( m );
+			m_Parent?.OnDeath( m );
 		}
 
 		public virtual bool OnDamage( Mobile m, ref int Damage )
@@ -794,8 +783,7 @@ namespace Server
 
 		public virtual void AlterLightLevel( Mobile m, ref int global, ref int personal )
 		{
-			if ( m_Parent != null )
-				m_Parent.AlterLightLevel( m, ref global, ref personal );
+			m_Parent?.AlterLightLevel( m, ref global, ref personal );
 		}
 
 		public virtual TimeSpan GetLogoutDelay( Mobile m )

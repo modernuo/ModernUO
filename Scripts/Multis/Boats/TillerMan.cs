@@ -65,8 +65,10 @@ namespace Server.Items
 		{
 			if ( m_Boat != null && m_Boat.Contains( from ) )
 				m_Boat.BeginRename( from );
-			else if ( m_Boat != null )
-				m_Boat.BeginDryDock( from );
+			else
+			{
+				m_Boat?.BeginDryDock( @from );
+			}
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
@@ -81,8 +83,7 @@ namespace Server.Items
 
 		public override void OnAfterDelete()
 		{
-			if ( m_Boat != null )
-				m_Boat.Delete();
+			m_Boat?.Delete();
 		}
 
 		public override void Serialize( GenericWriter writer )

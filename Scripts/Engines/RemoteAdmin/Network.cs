@@ -263,20 +263,17 @@ namespace Server.RemoteAdmin
 
 		public override void Write( char ch )
 		{
-			if ( m_OnChar != null )
-				m_OnChar( ch );
+			m_OnChar?.Invoke( ch );
 		}
 
 		public override void Write( string str )
 		{
-			if ( m_OnStr != null )
-				m_OnStr( str );
+			m_OnStr?.Invoke( str );
 		}
 
 		public override void WriteLine( string line )
 		{
-			if ( m_OnLine != null )
-				m_OnLine( line );
+			m_OnLine?.Invoke( line );
 		}
 
 		public override Encoding Encoding => Encoding.ASCII;

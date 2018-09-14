@@ -118,8 +118,7 @@ namespace Server.Spells.Sixth
 			{
 				base.OnAfterDelete();
 
-				if ( m_Timer != null )
-					m_Timer.Stop();
+				m_Timer?.Stop();
 			}
 
 			public InternalItem( Serial serial ) : base( serial )
@@ -188,8 +187,7 @@ namespace Server.Spells.Sixth
 					m.PlaySound( 0x204 );
 					m.FixedEffect( 0x376A, 10, 16 );
 
-					if ( m is BaseCreature )
-						((BaseCreature) m).OnHarmfulSpell( m_Caster );
+					(m as BaseCreature)?.OnHarmfulSpell( m_Caster );
 				}
 
 				return true;

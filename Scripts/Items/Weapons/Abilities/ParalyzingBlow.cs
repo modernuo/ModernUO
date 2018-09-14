@@ -96,8 +96,7 @@ namespace Server.Items
 		{
 			Timer t = (Timer)m_Table[m];
 
-			if ( t != null )
-				t.Stop();
+			t?.Stop();
 
 			t = new InternalTimer( m, duration );
 			m_Table[m] = t;
@@ -109,8 +108,7 @@ namespace Server.Items
 		{
 			Timer t = (Timer)m_Table[m];
 
-			if ( t != null )
-				t.Stop();
+			t?.Stop();
 
 			m_Table.Remove( m );
 		}

@@ -470,8 +470,7 @@ namespace Server.Items
 				Stop();
 				m_From.EndAction( typeof( TreasureMap ) );
 
-				if ( m_Chest != null )
-					m_Chest.Delete();
+				m_Chest?.Delete();
 
 				if ( m_Dirt1 != null )
 				{

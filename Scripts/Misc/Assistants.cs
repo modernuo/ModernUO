@@ -110,8 +110,8 @@ namespace Server.Misc
 					if (Settings.KickOnFailure)
 						m.Send(new BeginHandshake());
 
-					if (m_Dictionary.TryGetValue(m, out Timer t) && t != null)
-						t.Stop();
+					if (m_Dictionary.TryGetValue(m, out Timer t))
+						t?.Stop();
 
 					m_Dictionary[m] = t = Timer.DelayCall(Settings.HandshakeTimeout, OnHandshakeTimeout_Callback, m);
 					t.Start();

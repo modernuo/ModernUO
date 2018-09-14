@@ -68,8 +68,7 @@ namespace Server.Items
 		{
 			base.OnDelete();
 
-			if ( m_Spurt != null )
-				m_Spurt.Delete();
+			m_Spurt?.Delete();
 		}
 
 		public virtual void Refresh()
@@ -93,8 +92,7 @@ namespace Server.Items
 
 			if ( !foundPlayer )
 			{
-				if ( m_Spurt != null )
-					m_Spurt.Delete();
+				m_Spurt?.Delete();
 
 				m_Spurt = null;
 			}
@@ -167,8 +165,7 @@ namespace Server.Items
 				{
 					Item item = reader.ReadItem();
 
-					if ( item != null )
-						item.Delete();
+					item?.Delete();
 
 					CheckTimer();
 

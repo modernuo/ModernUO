@@ -149,8 +149,10 @@ namespace Server.Engines.ConPVP
 				MoveToWorld( mob.Location, mob.Map );
 			else if ( killer != null && !killer.Deleted )
 				MoveToWorld( killer.Location, killer.Map );
-			else if ( m_Game != null )
-				m_Game.ReturnBomb();
+			else
+			{
+				m_Game?.ReturnBomb();
+			}
 		}
 
 		public override bool OnMoveOver( Mobile m )
@@ -1564,8 +1566,7 @@ namespace Server.Engines.ConPVP
 
 		public void Alert( string text )
 		{
-			if ( m_Context.m_Tournament != null )
-				m_Context.m_Tournament.Alert( text );
+			m_Context.m_Tournament?.Alert( text );
 
 			for ( int i = 0; i < m_Context.Participants.Count; ++i )
 			{
@@ -1734,8 +1735,7 @@ namespace Server.Engines.ConPVP
 			for ( int i = 0; i < m_Context.Participants.Count; ++i )
 				ApplyHues( m_Context.Participants[i] as Participant, m_Controller.TeamInfo[i % m_Controller.TeamInfo.Length].Color );
 
-			if ( m_FinishTimer != null )
-				m_FinishTimer.Stop();
+			m_FinishTimer?.Stop();
 
 			m_Bomb = new BRBomb( this );
 			ReturnBomb();

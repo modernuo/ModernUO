@@ -334,8 +334,7 @@ namespace Server.Engines.ConPVP
 
 		private void StopCountdown()
 		{
-			if ( m_ReturnTimer != null )
-				m_ReturnTimer.Stop();
+			m_ReturnTimer?.Stop();
 
 			m_ReturnTimer = null;
 		}
@@ -364,8 +363,7 @@ namespace Server.Engines.ConPVP
 				case 2:
 				case 1:
 				{
-					if ( owner != null )
-						owner.SendMessage( 0x26, "You have {0} {1} to capture the cookies!", m_ReturnCount, m_ReturnCount == 1 ? "second" : "seconds" );
+					owner?.SendMessage( 0x26, "You have {0} {1} to capture the cookies!", m_ReturnCount, m_ReturnCount == 1 ? "second" : "seconds" );
 
 					break;
 				}
@@ -380,8 +378,7 @@ namespace Server.Engines.ConPVP
 
 					SendHome();
 
-					if ( m_TeamInfo?.Game != null )
-						m_TeamInfo.Game.Alert( "The {0} cookies have been returned.", m_TeamInfo.Name );
+					m_TeamInfo?.Game?.Alert( "The {0} cookies have been returned.", m_TeamInfo.Name );
 
 					return;
 				}
@@ -908,8 +905,7 @@ namespace Server.Engines.ConPVP
 
 		public void Alert( string text )
 		{
-			if ( m_Context.m_Tournament != null )
-				m_Context.m_Tournament.Alert( text );
+			m_Context.m_Tournament?.Alert( text );
 
 			for ( int i = 0; i < m_Context.Participants.Count; ++i )
 			{
@@ -1112,8 +1108,7 @@ namespace Server.Engines.ConPVP
 			for ( int i = 0; i < m_Context.Participants.Count; ++i )
 				ApplyHues( m_Context.Participants[i] as Participant, m_Controller.TeamInfo[i % 8].Color );
 
-			if ( m_FinishTimer != null )
-				m_FinishTimer.Stop();
+			m_FinishTimer?.Stop();
 
 			m_FinishTimer = Timer.DelayCall( m_Controller.Duration, new TimerCallback( Finish_Callback ) );
 		}
@@ -1304,8 +1299,7 @@ namespace Server.Engines.ConPVP
 			for ( int i = 0; i < m_Context.Participants.Count; ++i )
 				ApplyHues( m_Context.Participants[i] as Participant, -1 );
 
-			if ( m_FinishTimer != null )
-				m_FinishTimer.Stop();
+			m_FinishTimer?.Stop();
 
 			m_FinishTimer = null;
 		}

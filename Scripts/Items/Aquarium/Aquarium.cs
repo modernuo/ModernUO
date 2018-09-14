@@ -822,8 +822,7 @@ namespace Server.Items
 
 			if ( IsFull || m_LiveCreatures >= MaxLiveCreatures || fish.Dead )
 			{
-				if ( from != null )
-					from.SendLocalizedMessage( 1073633 ); // The aquarium can not hold the creature.
+				@from?.SendLocalizedMessage( 1073633 ); // The aquarium can not hold the creature.
 
 				return false;
 			}
@@ -833,8 +832,7 @@ namespace Server.Items
 
 			m_LiveCreatures += 1;
 
-			if ( from != null )
-				from.SendLocalizedMessage( 1073632, $"#{fish.LabelNumber}"); // You add the following creature to your aquarium: ~1_FISH~
+			@from?.SendLocalizedMessage( 1073632, $"#{fish.LabelNumber}"); // You add the following creature to your aquarium: ~1_FISH~
 
 			InvalidateProperties();
 			return true;

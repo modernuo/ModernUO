@@ -83,8 +83,7 @@ namespace Server.Engines.Quests.Collector
 
 					if ( obj != null && !obj.Completed )
 					{
-						if ( player.Backpack != null )
-							player.Backpack.ConsumeUpTo( typeof( EnchantedPaints ), 1 );
+						player.Backpack?.ConsumeUpTo( typeof( EnchantedPaints ), 1 );
 
 						obj.Complete();
 					}

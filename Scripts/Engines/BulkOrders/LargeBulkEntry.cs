@@ -13,7 +13,9 @@ namespace Server.Engines.BulkOrders
 			set => m_Owner = value;
 		}
 		public int Amount{ get => m_Amount;
-			set{ m_Amount = value; if ( m_Owner != null ) m_Owner.InvalidateProperties(); } }
+			set{ m_Amount = value;
+				m_Owner?.InvalidateProperties();
+			} }
 		public SmallBulkEntry Details => m_Details;
 
 		public static SmallBulkEntry[] LargeRing => GetEntries( "Blacksmith", "largering" );

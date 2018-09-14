@@ -113,8 +113,8 @@ namespace Server.SkillHandlers
 							from.SendLocalizedMessage( 502372 ); // You fail to disarm the trap... but you don't set it off
 						}
 
-						if ( !isOwner && kit != null )
-							kit.ConsumeCharge( from );
+						if ( !isOwner )
+							kit?.ConsumeCharge( @from );
 					}
 				}
 				else

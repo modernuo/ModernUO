@@ -90,8 +90,7 @@ namespace Server.Spells.Ninjitsu
 
 			if ( info != null )
 			{
-				if ( info.m_Timer != null )
-					info.m_Timer.Stop();
+				info.m_Timer?.Stop();
 
 				m_Table.Remove( info.m_Mobile );
 			}
@@ -134,8 +133,7 @@ namespace Server.Spells.Ninjitsu
 		{
 			KiAttackInfo info = (KiAttackInfo)state;
 
-			if ( info.m_Timer != null )
-				info.m_Timer.Stop();
+			info.m_Timer?.Stop();
 
 			ClearCurrentMove( info.m_Mobile );
 			info.m_Mobile.SendLocalizedMessage( 1063102 ); // You failed to complete your Ki Attack in time.

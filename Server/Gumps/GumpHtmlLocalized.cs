@@ -104,8 +104,7 @@ namespace Server.Gumps
 				{
 					m_Type = value;
 
-					if ( Parent != null )
-						Parent.Invalidate();
+					Parent?.Invalidate();
 				}
 			}
 		}

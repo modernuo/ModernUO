@@ -641,8 +641,8 @@ namespace Server.Engines.ConPVP
 				{
 					loser.Broadcast( 0x22, null, loser.Players.Length == 1 ? "{0} has lost the duel." : "{0} and {1} team have lost the duel.", loser.Players.Length == 1 ? "You have lost the duel." : "Your team has lost the duel." );
 
-					if ( m_Tournament != null && loser.TournyPart != null )
-						loser.TournyPart.LostMatch( m_Match );
+					if ( m_Tournament != null )
+						loser.TournyPart?.LostMatch( m_Match );
 				}
 
 				for ( int j = 0; j < loser.Players.Length; ++j )
@@ -671,8 +671,7 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			if ( m_EventGame != null )
-				m_EventGame.OnStop();
+			m_EventGame?.OnStop();
 
 			Timer.DelayCall( TimeSpan.FromSeconds( 9.0 ), new TimerCallback( UnregisterRematch ) );
 		}
@@ -739,8 +738,7 @@ namespace Server.Engines.ConPVP
 
 			m_Registered = false;
 
-			if ( m_Arena != null )
-				m_Arena.Evict();
+			m_Arena?.Evict();
 
 			StopSDTimers();
 
@@ -868,8 +866,7 @@ namespace Server.Engines.ConPVP
 
 		public void StopCountdown()
 		{
-			if ( m_Countdown != null )
-				m_Countdown.Stop();
+			m_Countdown?.Stop();
 
 			m_Countdown = null;
 		}
@@ -883,8 +880,7 @@ namespace Server.Engines.ConPVP
 
 			if ( count==0 )
 			{
-				if ( m_Countdown != null )
-					m_Countdown.Stop();
+				m_Countdown?.Stop();
 
 				m_Countdown=null;
 			}
@@ -909,26 +905,22 @@ namespace Server.Engines.ConPVP
 
 		public void StopSDTimers()
 		{
-			if ( m_SDWarnTimer != null )
-				m_SDWarnTimer.Stop();
+			m_SDWarnTimer?.Stop();
 
 			m_SDWarnTimer = null;
 
-			if ( m_SDActivateTimer != null )
-				m_SDActivateTimer.Stop();
+			m_SDActivateTimer?.Stop();
 
 			m_SDActivateTimer = null;
 		}
 
 		public void StartSuddenDeath( TimeSpan timeUntilActive )
 		{
-			if ( m_SDWarnTimer != null )
-				m_SDWarnTimer.Stop();
+			m_SDWarnTimer?.Stop();
 
 			m_SDWarnTimer = Timer.DelayCall( TimeSpan.FromMinutes( timeUntilActive.TotalMinutes * 0.9 ), new TimerCallback( WarnSuddenDeath ) );
 
-			if ( m_SDActivateTimer != null )
-				m_SDActivateTimer.Stop();
+			m_SDActivateTimer?.Stop();
 
 			m_SDActivateTimer = Timer.DelayCall( timeUntilActive, new TimerCallback( ActivateSuddenDeath ) );
 		}
@@ -952,11 +944,9 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			if ( m_Tournament != null )
-				m_Tournament.Alert( m_Arena, "Sudden death will be active soon!" );
+			m_Tournament?.Alert( m_Arena, "Sudden death will be active soon!" );
 
-			if ( m_SDWarnTimer != null )
-				m_SDWarnTimer.Stop();
+			m_SDWarnTimer?.Stop();
 
 			m_SDWarnTimer = null;
 		}
@@ -985,21 +975,18 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			if ( m_Tournament != null )
-				m_Tournament.Alert( m_Arena, "Sudden death has been activated!" );
+			m_Tournament?.Alert( m_Arena, "Sudden death has been activated!" );
 
 			m_IsSuddenDeath = true;
 
-			if ( m_SDActivateTimer != null )
-				m_SDActivateTimer.Stop();
+			m_SDActivateTimer?.Stop();
 
 			m_SDActivateTimer = null;
 		}
 
 		public void BeginAutoTie()
 		{
-			if ( m_AutoTieTimer != null )
-				m_AutoTieTimer.Stop();
+			m_AutoTieTimer?.Stop();
 
 			TimeSpan ts = ( m_Tournament == null || m_Tournament.TournyType == TournyType.Standard )
 				? AutoTieDelay
@@ -1010,8 +997,7 @@ namespace Server.Engines.ConPVP
 
 		public void EndAutoTie()
 		{
-			if ( m_AutoTieTimer != null )
-				m_AutoTieTimer.Stop();
+			m_AutoTieTimer?.Stop();
 
 			m_AutoTieTimer = null;
 		}
@@ -1066,8 +1052,7 @@ namespace Server.Engines.ConPVP
 				}
 			}
 
-			if ( m_Tournament != null )
-				m_Tournament.HandleTie( m_Arena, m_Match, remaining );
+			m_Tournament?.HandleTie( m_Arena, m_Match, remaining );
 
 			Timer.DelayCall( TimeSpan.FromSeconds( 10.0 ), new TimerCallback( Unregister ) );
 		}
@@ -2297,10 +2282,7 @@ namespace Server.Engines.ConPVP
 				{
 					DuelPlayer pl = p.Players[j];
 
-					if ( pl == null )
-						continue;
-
-					Mobile mob = pl.Mobile;
+					Mobile mob = pl?.Mobile;
 
 					if ( mob != null )
 					{
@@ -2390,8 +2372,7 @@ namespace Server.Engines.ConPVP
 						{
 							DuelPlayer dp = p.Players[j];
 
-							if ( dp != null )
-								dp.Mobile.SendMessage( "The duel could not be started because {0}.", error );
+							dp?.Mobile.SendMessage( "The duel could not be started because {0}.", error );
 						}
 					}
 
@@ -2432,8 +2413,7 @@ namespace Server.Engines.ConPVP
 						{
 							DuelPlayer dp = p.Players[j];
 
-							if ( dp != null )
-								dp.Mobile.SendMessage( "The duel could not be started because there are no arenas. If you want to stop waiting for a free arena, yield the duel." );
+							dp?.Mobile.SendMessage( "The duel could not be started because there are no arenas. If you want to stop waiting for a free arena, yield the duel." );
 						}
 					}
 
@@ -2491,8 +2471,7 @@ namespace Server.Engines.ConPVP
 						arena.MoveInside( p.Players, i );
 					}
 
-					if ( m_EventGame != null )
-						m_EventGame.OnStart();
+					m_EventGame?.OnStart();
 
 					StartCountdown( 10, new CountdownCallback( SendBeginGump ) );
 
@@ -2508,8 +2487,7 @@ namespace Server.Engines.ConPVP
 						{
 							DuelPlayer dp = p.Players[j];
 
-							if ( dp != null )
-								dp.Mobile.SendMessage( "The duel could not be started because all arenas are full. If you want to stop waiting for a free arena, yield the duel." );
+							dp?.Mobile.SendMessage( "The duel could not be started because all arenas are full. If you want to stop waiting for a free arena, yield the duel." );
 						}
 					}
 
@@ -2561,16 +2539,14 @@ namespace Server.Engines.ConPVP
 
 		public static void CloseAndSendGump( NetState ns, Gump g, params Type[] types )
 		{
-			if ( ns != null ) {
-				Mobile mob = ns.Mobile;
+			Mobile mob = ns?.Mobile;
 
-				if ( mob != null ) {
-					foreach ( Type type in types ) {
-						mob.CloseGump( type );
-					}
-
-					mob.SendGump( g );
+			if ( mob != null ) {
+				foreach ( Type type in types ) {
+					mob.CloseGump( type );
 				}
+
+				mob.SendGump( g );
 			}
 
 			/*if ( ns == null )

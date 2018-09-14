@@ -48,8 +48,7 @@ namespace Server.Mobiles
 
 			Container pack = Backpack;
 
-			if ( pack != null )
-				pack.Delete();
+			pack?.Delete();
 
 			pack = new StrongBackpack();
 			pack.Movable = false;

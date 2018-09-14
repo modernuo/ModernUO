@@ -104,8 +104,7 @@ namespace Server.Items
 
 			Spellbook book = Find( from, -1, type );
 
-			if ( book != null )
-				book.DisplayTo( from );
+			book?.DisplayTo( @from );
 		}
 
 		private static void EventSink_CastSpellRequest( CastSpellRequestEventArgs e )

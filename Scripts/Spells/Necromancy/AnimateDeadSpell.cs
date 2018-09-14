@@ -153,32 +153,26 @@ namespace Server.Spells.Necromancy
 		{
 			MaabusCoffinComponent comp = obj as MaabusCoffinComponent;
 
-			if ( comp != null )
+			MaabusCoffin addon = comp?.Addon as MaabusCoffin;
+
+			if ( addon != null )
 			{
-				MaabusCoffin addon = comp.Addon as MaabusCoffin;
+				PlayerMobile pm = Caster as PlayerMobile;
 
-				if ( addon != null )
+				QuestSystem qs = pm?.Quest;
+
+				if ( qs is DarkTidesQuest )
 				{
-					PlayerMobile pm = Caster as PlayerMobile;
+					QuestObjective objective = qs.FindObjective( typeof( AnimateMaabusCorpseObjective ) );
 
-					if ( pm != null )
+					if ( objective != null && !objective.Completed )
 					{
-						QuestSystem qs = pm.Quest;
-
-						if ( qs is DarkTidesQuest )
-						{
-							QuestObjective objective = qs.FindObjective( typeof( AnimateMaabusCorpseObjective ) );
-
-							if ( objective != null && !objective.Completed )
-							{
-								addon.Awake( Caster );
-								objective.Complete();
-							}
-						}
+						addon.Awake( Caster );
+						objective.Complete();
 					}
-
-					return;
 				}
+
+				return;
 			}
 
 			Corpse c = obj as Corpse;

@@ -924,8 +924,7 @@ namespace Server.Spells
 
 				bool reflect = (target.MagicDamageAbsorb >= 0);
 
-				if ( target is BaseCreature )
-					((BaseCreature)target).CheckReflect( caster, ref reflect );
+				(target as BaseCreature)?.CheckReflect( caster, ref reflect );
 
 				if ( target.MagicDamageAbsorb <= 0 )
 				{
@@ -982,11 +981,9 @@ namespace Server.Spells
 
 			if ( delay == TimeSpan.Zero )
 			{
-				if ( from is BaseCreature )
-					((BaseCreature)from).AlterSpellDamageTo( target, ref iDamage );
+				(@from as BaseCreature)?.AlterSpellDamageTo( target, ref iDamage );
 
-				if ( target is BaseCreature )
-					((BaseCreature)target).AlterSpellDamageFrom( from, ref iDamage );
+				(target as BaseCreature)?.AlterSpellDamageFrom( @from, ref iDamage );
 
 				target.Damage( iDamage, from );
 			}
@@ -1039,11 +1036,9 @@ namespace Server.Spells
 
 			if ( delay == TimeSpan.Zero )
 			{
-				if ( from is BaseCreature )
-					((BaseCreature)from).AlterSpellDamageTo( target, ref iDamage );
+				(@from as BaseCreature)?.AlterSpellDamageTo( target, ref iDamage );
 
-				if ( target is BaseCreature )
-					((BaseCreature)target).AlterSpellDamageFrom( from, ref iDamage );
+				(target as BaseCreature)?.AlterSpellDamageFrom( @from, ref iDamage );
 
 				WeightOverloading.DFA = dfa;
 
@@ -1126,15 +1121,12 @@ namespace Server.Spells
 
 			protected override void OnTick()
 			{
-				if ( m_From is BaseCreature )
-					((BaseCreature)m_From).AlterSpellDamageTo( m_Target, ref m_Damage );
+				(m_From as BaseCreature)?.AlterSpellDamageTo( m_Target, ref m_Damage );
 
-				if ( m_Target is BaseCreature )
-					((BaseCreature)m_Target).AlterSpellDamageFrom( m_From, ref m_Damage );
+				(m_Target as BaseCreature)?.AlterSpellDamageFrom( m_From, ref m_Damage );
 
 				m_Target.Damage( m_Damage );
-				if ( m_Spell != null )
-					m_Spell.RemoveDelayedDamageContext( m_Target );
+				m_Spell?.RemoveDelayedDamageContext( m_Target );
 			}
 		}
 
@@ -1192,8 +1184,7 @@ namespace Server.Spells
 					c.OnDamagedBySpell( m_From );
 				}
 
-				if ( m_Spell != null )
-					m_Spell.RemoveDelayedDamageContext( m_Target );
+				m_Spell?.RemoveDelayedDamageContext( m_Target );
 
 			}
 		}

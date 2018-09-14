@@ -54,9 +54,7 @@ namespace Server {
 			if ( FileOperations.AreSynchronous ) {
 				fileStream.Write( chunk.Buffer, chunk.Offset, chunk.Size );
 
-				if ( metrics != null ) {
-					metrics.OnFileWritten( chunk.Size );
-				}
+				metrics?.OnFileWritten( chunk.Size );
 
 				chunk.Commit();
 			} else {
@@ -73,9 +71,7 @@ namespace Server {
 
 			fileStream.EndWrite( asyncResult );
 
-			if ( metrics != null ) {
-				metrics.OnFileWritten( chunk.Size );
-			}
+			metrics?.OnFileWritten( chunk.Size );
 
 			chunk.Commit();
 		}

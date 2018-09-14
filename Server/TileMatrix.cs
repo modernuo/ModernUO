@@ -516,14 +516,14 @@ namespace Server
 		{
 			if ( m_MapIndex != null )
 				m_MapIndex.Close();
-			else if ( m_Map != null )
-				m_Map.Close();
+			else
+			{
+				m_Map?.Close();
+			}
 
-			if ( m_Statics != null )
-				m_Statics.Close();
+			m_Statics?.Close();
 
-			if ( m_IndexReader != null )
-				m_IndexReader.Close();
+			m_IndexReader?.Close();
 		}
 	}
 

@@ -98,8 +98,7 @@ namespace Server.Items
 		{
 			m_Opened = true;
 
-			if ( Owner != null )
-				Owner.PlaySound( 0x50 );
+			Owner?.PlaySound( 0x50 );
 		}
 
 		public PlagueBeastOrgan( Serial serial ) : base( serial )
@@ -145,8 +144,7 @@ namespace Server.Items
 		{
 			ItemID = 0x1249;
 
-			if ( Owner != null )
-				Owner.PlaySound( 0x187 );
+			Owner?.PlaySound( 0x187 );
 
 			AddComponent( new PlagueBeastComponent( 0x1D0D, 0x0 ), 22, 3 );
 			AddComponent( new PlagueBeastComponent( 0x1D12, 0x0 ), 15, 18 );
@@ -398,8 +396,7 @@ namespace Server.Items
 				from.SendAsciiMessage( 0x3B2, "* You place the healthy gland inside the organ sac *" );
 				item.Movable = false;
 
-				if ( Owner != null )
-					Owner.PlaySound( 0x20 );
+				Owner?.PlaySound( 0x20 );
 
 				return true;
 			}

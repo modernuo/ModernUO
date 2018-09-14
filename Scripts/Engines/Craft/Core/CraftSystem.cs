@@ -77,8 +77,7 @@ namespace Server.Engines.Craft
 		{
 			CraftContext c = GetContext( m );
 
-			if ( c != null )
-				c.OnMade( item );
+			c?.OnMade( item );
 		}
 
 		public bool Resmelt

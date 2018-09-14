@@ -172,13 +172,9 @@ namespace Server.Factions
 
 		public void PrivateOverheadLocalizedMessage( Mobile to, int number, int hue, string name, string args )
 		{
-			if ( to == null )
-				return;
+			NetState ns = to?.NetState;
 
-			NetState ns = to.NetState;
-
-			if ( ns != null )
-				ns.Send( new MessageLocalized( Serial, ItemID, MessageType.Regular, hue, 3, number, name, args ) );
+			ns?.Send( new MessageLocalized( Serial, ItemID, MessageType.Regular, hue, 3, number, name, args ) );
 		}
 
 		public BaseFactionTrap( Faction f, Mobile m, int itemID ) : base( itemID )
@@ -212,16 +208,14 @@ namespace Server.Factions
 
 		public virtual void BeginConceal()
 		{
-			if ( m_Concealing != null )
-				m_Concealing.Stop();
+			m_Concealing?.Stop();
 
 			m_Concealing = Timer.DelayCall( ConcealPeriod, new TimerCallback( Conceal ) );
 		}
 
 		public virtual void Conceal()
 		{
-			if ( m_Concealing != null )
-				m_Concealing.Stop();
+			m_Concealing?.Stop();
 
 			m_Concealing = null;
 

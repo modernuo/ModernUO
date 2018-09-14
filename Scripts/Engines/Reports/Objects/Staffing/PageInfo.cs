@@ -40,13 +40,11 @@ namespace Server.Engines.Reports
 
 				lock ( StaffHistory.RenderLock )
 				{
-					if ( m_Resolver != null )
-						m_Resolver.Unregister( this );
+					m_Resolver?.Unregister( this );
 
 					m_Resolver = value;
 
-					if ( m_Resolver != null )
-						m_Resolver.Register( this );
+					m_Resolver?.Register( this );
 				}
 			}
 		}
@@ -61,13 +59,11 @@ namespace Server.Engines.Reports
 
 				lock ( StaffHistory.RenderLock )
 				{
-					if ( m_Sender != null )
-						m_Sender.Unregister( this );
+					m_Sender?.Unregister( this );
 
 					m_Sender = value;
 
-					if ( m_Sender != null )
-						m_Sender.Register( this );
+					m_Sender?.Register( this );
 				}
 			}
 		}

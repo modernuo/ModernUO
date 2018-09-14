@@ -79,8 +79,7 @@ namespace Server.Mobiles
 
 		public override bool OnBeforeDeath()
 		{
-			if ( Backpack != null )
-				Backpack.Destroy();
+			Backpack?.Destroy();
 
 			Effects.SendLocationEffect( Location, Map, 0x376A, 10, 1 );
 			return true;

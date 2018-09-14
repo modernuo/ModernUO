@@ -136,16 +136,28 @@ namespace Server.Engines.MyRunUO
 								}
 								catch ( Exception e )
 								{
-									try{ if ( transact != null ) transact.Rollback(); }
+									try
+									{
+										transact?.Rollback();
+									}
 									catch{}
 
-									try{ if ( connection != null ) connection.Close(); }
+									try
+									{
+										connection?.Close();
+									}
 									catch{}
 
-									try{ if ( connection != null ) connection.Dispose(); }
+									try
+									{
+										connection?.Dispose();
+									}
 									catch{}
 
-									try{ if ( command != null ) command.Dispose(); }
+									try
+									{
+										command?.Dispose();
+									}
 									catch{}
 
 									try{ m_Sync.Close(); }

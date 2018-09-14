@@ -515,8 +515,7 @@ namespace Server.Mobiles
 					{
 						ChangeHairstyleEntry entry = m_Entries[index];
 
-						if ( m_From is PlayerMobile )
-							((PlayerMobile)m_From).SetHairMods( -1, -1 );
+						(m_From as PlayerMobile)?.SetHairMods( -1, -1 );
 
 						int hairID = m_From.HairItemID;
 						int facialHairID = m_From.FacialHairItemID;

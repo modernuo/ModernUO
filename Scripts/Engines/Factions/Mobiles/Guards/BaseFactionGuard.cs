@@ -39,8 +39,7 @@ namespace Server.Factions
 
 		public void Unregister()
 		{
-			if ( m_Town != null )
-				m_Town.UnregisterGuard( this );
+			m_Town?.UnregisterGuard( this );
 		}
 
 		public abstract GuardAI GuardAI{ get; }

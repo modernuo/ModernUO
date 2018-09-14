@@ -110,7 +110,9 @@ namespace Server.Multis
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string ShipName{ get => m_ShipName;
-			set{ m_ShipName = value; if ( m_TillerMan != null ) m_TillerMan.InvalidateProperties(); } }
+			set{ m_ShipName = value;
+				m_TillerMan?.InvalidateProperties();
+			} }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public BoatOrder Order{ get => m_Order;
@@ -129,7 +131,9 @@ namespace Server.Multis
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime TimeOfDecay{ get => m_DecayTime;
-			set{ m_DecayTime = value; if ( m_TillerMan != null ) m_TillerMan.InvalidateProperties(); } }
+			set{ m_DecayTime = value;
+				m_TillerMan?.InvalidateProperties();
+			} }
 
 		public int Status
 		{
@@ -366,23 +370,17 @@ namespace Server.Multis
 
 		public override void OnAfterDelete()
 		{
-			if ( m_TillerMan != null )
-				m_TillerMan.Delete();
+			m_TillerMan?.Delete();
 
-			if ( m_Hold != null )
-				m_Hold.Delete();
+			m_Hold?.Delete();
 
-			if ( m_PPlank != null )
-				m_PPlank.Delete();
+			m_PPlank?.Delete();
 
-			if ( m_SPlank != null )
-				m_SPlank.Delete();
+			m_SPlank?.Delete();
 
-			if ( m_TurnTimer != null )
-				m_TurnTimer.Stop();
+			m_TurnTimer?.Stop();
 
-			if ( m_MoveTimer != null )
-				m_MoveTimer.Stop();
+			m_MoveTimer?.Stop();
 
 			m_Instances.Remove( this );
 		}
@@ -490,8 +488,7 @@ namespace Server.Multis
 		{
 			m_DecayTime = DateTime.UtcNow + BoatDecayDelay;
 
-			if ( m_TillerMan != null )
-				m_TillerMan.InvalidateProperties();
+			m_TillerMan?.InvalidateProperties();
 		}
 
 		private class DecayTimer : Timer
@@ -517,8 +514,7 @@ namespace Server.Multis
 				{
 					m_Boat.Location = new Point3D( m_Boat.X, m_Boat.Y, m_Boat.Z - 1 );
 
-					if ( m_Boat.TillerMan != null )
-						m_Boat.TillerMan.Say( 1007168 + m_Count );
+					m_Boat.TillerMan?.Say( 1007168 + m_Count );
 
 					++m_Count;
 				}
@@ -549,8 +545,8 @@ namespace Server.Multis
 
 			if ( m_Anchored )
 			{
-				if ( message && m_TillerMan != null )
-					m_TillerMan.Say( 501445 ); // Ar, the anchor was already dropped sir.
+				if ( message )
+					m_TillerMan?.Say( 501445 ); // Ar, the anchor was already dropped sir.
 
 				return false;
 			}
@@ -559,8 +555,8 @@ namespace Server.Multis
 
 			m_Anchored = true;
 
-			if ( message && m_TillerMan != null )
-				m_TillerMan.Say( 501444 ); // Ar, anchor dropped sir.
+			if ( message )
+				m_TillerMan?.Say( 501444 ); // Ar, anchor dropped sir.
 
 			return true;
 		}
@@ -572,16 +568,16 @@ namespace Server.Multis
 
 			if ( !m_Anchored )
 			{
-				if ( message && m_TillerMan != null )
-					m_TillerMan.Say( 501447 ); // Ar, the anchor has not been dropped sir.
+				if ( message )
+					m_TillerMan?.Say( 501447 ); // Ar, the anchor has not been dropped sir.
 
 				return false;
 			}
 
 			m_Anchored = false;
 
-			if ( message && m_TillerMan != null )
-				m_TillerMan.Say( 501446 ); // Ar, anchor raised sir.
+			if ( message )
+				m_TillerMan?.Say( 501446 ); // Ar, anchor raised sir.
 
 			return true;
 		}
@@ -598,8 +594,7 @@ namespace Server.Multis
 
 			if ( StartMove( dir, speed, clientSpeed, interval, false, true ) )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 501429 ); // Aye aye sir.
+				m_TillerMan?.Say( 501429 ); // Aye aye sir.
 
 				return true;
 			}
@@ -618,8 +613,7 @@ namespace Server.Multis
 
 			if ( StartMove( dir, speed, 0x1, interval, true, true ) )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 501429 ); // Aye aye sir.
+				m_TillerMan?.Say( 501429 ); // Aye aye sir.
 
 				return true;
 			}
@@ -634,14 +628,12 @@ namespace Server.Multis
 
 			if ( from.AccessLevel < AccessLevel.GameMaster && from != m_Owner )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( Utility.Random( 1042876, 4 ) ); // Arr, don't do that! | Arr, leave me alone! | Arr, watch what thour'rt doing, matey! | Arr! Do that again and I’ll throw ye overhead!
+				m_TillerMan?.Say( Utility.Random( 1042876, 4 ) ); // Arr, don't do that! | Arr, leave me alone! | Arr, watch what thour'rt doing, matey! | Arr! Do that again and I’ll throw ye overhead!
 
 				return;
 			}
 
-			if ( m_TillerMan != null )
-				m_TillerMan.Say( 502580 ); // What dost thou wish to name thy ship?
+			m_TillerMan?.Say( 502580 ); // What dost thou wish to name thy ship?
 
 			from.Prompt = new RenameBoatPrompt( this );
 		}
@@ -653,15 +645,13 @@ namespace Server.Multis
 
 			if ( from.AccessLevel < AccessLevel.GameMaster && from != m_Owner )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
+				m_TillerMan?.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
 
 				return;
 			}
 			else if ( !from.Alive )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 502582 ); // You appear to be dead.
+				m_TillerMan?.Say( 502582 ); // You appear to be dead.
 
 				return;
 			}
@@ -771,15 +761,13 @@ namespace Server.Multis
 
 			if ( e.Mobile.AccessLevel < AccessLevel.GameMaster && e.Mobile != m_Owner )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
+				m_TillerMan?.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
 
 				return;
 			}
 			else if ( !e.Mobile.Alive )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 502582 ); // You appear to be dead.
+				m_TillerMan?.Say( 502582 ); // You appear to be dead.
 
 				return;
 			}
@@ -805,8 +793,7 @@ namespace Server.Multis
 
 			if ( m_ShipName == newName )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 502531 ); // Yes, sir.
+				m_TillerMan?.Say( 502531 ); // Yes, sir.
 
 				return;
 			}
@@ -815,8 +802,10 @@ namespace Server.Multis
 
 			if ( m_TillerMan != null && m_ShipName != null )
 				m_TillerMan.Say( 1042885, m_ShipName ); // This ship is now called the ~1_NEW_SHIP_NAME~.
-			else if ( m_TillerMan != null )
-				m_TillerMan.Say( 502534 ); // This ship now has no name.
+			else
+			{
+				m_TillerMan?.Say( 502534 ); // This ship now has no name.
+			}
 		}
 
 		public void RemoveName( Mobile m )
@@ -826,31 +815,27 @@ namespace Server.Multis
 
 			if ( m.AccessLevel < AccessLevel.GameMaster && m != m_Owner )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
+				m_TillerMan?.Say( 1042880 ); // Arr! Only the owner of the ship may change its name!
 
 				return;
 			}
 			else if ( !m.Alive )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 502582 ); // You appear to be dead.
+				m_TillerMan?.Say( 502582 ); // You appear to be dead.
 
 				return;
 			}
 
 			if ( m_ShipName == null )
 			{
-				if ( m_TillerMan != null )
-					m_TillerMan.Say( 502526 ); // Ar, this ship has no name.
+				m_TillerMan?.Say( 502526 ); // Ar, this ship has no name.
 
 				return;
 			}
 
 			ShipName = null;
 
-			if ( m_TillerMan != null )
-				m_TillerMan.Say( 502534 ); // This ship now has no name.
+			m_TillerMan?.Say( 502534 ); // This ship now has no name.
 		}
 
 		public void GiveName( Mobile m )
@@ -882,13 +867,11 @@ namespace Server.Multis
 
 			if ( map is BlankMap )
 			{
-				if ( TillerMan != null )
-					TillerMan.Say( 502575 ); // Ar, that is not a map, tis but a blank piece of paper!
+				TillerMan?.Say( 502575 ); // Ar, that is not a map, tis but a blank piece of paper!
 			}
 			else if ( map.Pins.Count == 0 )
 			{
-				if ( TillerMan != null )
-					TillerMan.Say( 502576 ); // Arrrr, this map has no course on it!
+				TillerMan?.Say( 502576 ); // Arrrr, this map has no course on it!
 			}
 			else
 			{
@@ -897,8 +880,7 @@ namespace Server.Multis
 				MapItem = map;
 				NextNavPoint = -1;
 
-				if ( TillerMan != null )
-					TillerMan.Say( 502577 ); // A map!
+				TillerMan?.Say( 502577 ); // A map!
 			}
 		}
 
@@ -936,8 +918,8 @@ namespace Server.Multis
 
 			if ( number == -1 )
 			{
-				if ( message && TillerMan != null )
-					TillerMan.Say( 1042551 ); // I don't see that navpoint, sir.
+				if ( message )
+					TillerMan?.Say( 1042551 ); // I don't see that navpoint, sir.
 
 				return false;
 			}
@@ -953,29 +935,29 @@ namespace Server.Multis
 
 			if ( Anchored )
 			{
-				if ( message && TillerMan != null )
-					TillerMan.Say( 501419 ); // Ar, the anchor is down sir!
+				if ( message )
+					TillerMan?.Say( 501419 ); // Ar, the anchor is down sir!
 
 				return false;
 			}
 			else if ( MapItem == null || MapItem.Deleted )
 			{
-				if ( message && TillerMan != null )
-					TillerMan.Say( 502513 ); // I have seen no map, sir.
+				if ( message )
+					TillerMan?.Say( 502513 ); // I have seen no map, sir.
 
 				return false;
 			}
 			else if ( Map != MapItem.Map || !Contains( MapItem.GetWorldLocation() ) )
 			{
-				if ( message && TillerMan != null )
-					TillerMan.Say( 502514 ); // The map is too far away from me, sir.
+				if ( message )
+					TillerMan?.Say( 502514 ); // The map is too far away from me, sir.
 
 				return false;
 			}
 			else if ( ( Map != Map.Trammel && Map != Map.Felucca ) || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count )
 			{
-				if ( message && TillerMan != null )
-					TillerMan.Say( 1042551 ); // I don't see that navpoint, sir.
+				if ( message )
+					TillerMan?.Say( 1042551 ); // I don't see that navpoint, sir.
 
 				return false;
 			}
@@ -983,14 +965,13 @@ namespace Server.Multis
 			Speed = FastSpeed;
 			Order = single ? BoatOrder.Single : BoatOrder.Course;
 
-			if ( m_MoveTimer != null )
-				m_MoveTimer.Stop();
+			m_MoveTimer?.Stop();
 
 			m_MoveTimer = new MoveTimer( this, FastInterval, false );
 			m_MoveTimer.Start();
 
-			if ( message && TillerMan != null )
-				TillerMan.Say( 501429 ); // Aye aye sir.
+			if ( message )
+				TillerMan?.Say( 501429 ); // Aye aye sir.
 
 			return true;
 		}
@@ -1082,14 +1063,13 @@ namespace Server.Multis
 					m_MoveTimer = null;
 				}
 
-				if ( m_TurnTimer != null )
-					m_TurnTimer.Stop();
+				m_TurnTimer?.Stop();
 
 				m_TurnTimer = new TurnTimer( this, offset );
 				m_TurnTimer.Start();
 
-				if ( message && TillerMan != null )
-					TillerMan.Say( 501429 ); // Aye aye sir.
+				if ( message )
+					TillerMan?.Say( 501429 ); // Aye aye sir.
 
 				return true;
 			}
@@ -1153,8 +1133,8 @@ namespace Server.Multis
 
 			if ( m_Anchored )
 			{
-				if ( message && m_TillerMan != null )
-					m_TillerMan.Say( 501419 ); // Ar, the anchor is down sir!
+				if ( message )
+					m_TillerMan?.Say( 501419 ); // Ar, the anchor is down sir!
 
 				return false;
 			}
@@ -1164,8 +1144,7 @@ namespace Server.Multis
 			m_ClientSpeed = clientSpeed;
 			m_Order = BoatOrder.Move;
 
-			if ( m_MoveTimer != null )
-				m_MoveTimer.Stop();
+			m_MoveTimer?.Stop();
 
 			m_MoveTimer = new MoveTimer( this, interval, single );
 			m_MoveTimer.Start();
@@ -1180,8 +1159,8 @@ namespace Server.Multis
 
 			if ( m_MoveTimer == null )
 			{
-				if ( message && m_TillerMan != null )
-					m_TillerMan.Say( 501443 ); // Er, the ship is not moving sir.
+				if ( message )
+					m_TillerMan?.Say( 501443 ); // Er, the ship is not moving sir.
 
 				return false;
 			}
@@ -1192,8 +1171,8 @@ namespace Server.Multis
 			m_MoveTimer.Stop();
 			m_MoveTimer = null;
 
-			if ( message && m_TillerMan != null )
-				m_TillerMan.Say( 501429 ); // Aye aye sir.
+			if ( message )
+				m_TillerMan?.Say( 501429 ); // Aye aye sir.
 
 			return true;
 		}
@@ -1363,22 +1342,22 @@ namespace Server.Multis
 			}
 			else if ( MapItem == null || MapItem.Deleted )
 			{
-				if ( message && TillerMan != null )
-					TillerMan.Say( 502513 ); // I have seen no map, sir.
+				if ( message )
+					TillerMan?.Say( 502513 ); // I have seen no map, sir.
 
 				return false;
 			}
 			else if ( Map != MapItem.Map || !Contains( MapItem.GetWorldLocation() ) )
 			{
-				if ( message && TillerMan != null )
-					TillerMan.Say( 502514 ); // The map is too far away from me, sir.
+				if ( message )
+					TillerMan?.Say( 502514 ); // The map is too far away from me, sir.
 
 				return false;
 			}
 			else if ( ( Map != Map.Trammel && Map != Map.Felucca ) || NextNavPoint < 0 || NextNavPoint >= MapItem.Pins.Count )
 			{
-				if ( message && TillerMan != null )
-					TillerMan.Say( 1042551 ); // I don't see that navpoint, sir.
+				if ( message )
+					TillerMan?.Say( 1042551 ); // I don't see that navpoint, sir.
 
 				return false;
 			}
@@ -1394,8 +1373,8 @@ namespace Server.Multis
 
 				if ( maxSpeed == 0 )
 				{
-					if ( message && Order == BoatOrder.Single && TillerMan != null )
-						TillerMan.Say( 1042874, (NextNavPoint + 1).ToString() ); // We have arrived at nav point ~1_POINT_NUM~ , sir.
+					if ( message && Order == BoatOrder.Single )
+						TillerMan?.Say( 1042874, (NextNavPoint + 1).ToString() ); // We have arrived at nav point ~1_POINT_NUM~ , sir.
 
 					if ( NextNavPoint + 1 < MapItem.Pins.Count )
 					{
@@ -1403,8 +1382,8 @@ namespace Server.Multis
 
 						if ( Order == BoatOrder.Course )
 						{
-							if ( message && TillerMan != null )
-								TillerMan.Say( 1042875, (NextNavPoint + 1).ToString() ); // Heading to nav point ~1_POINT_NUM~, sir.
+							if ( message )
+								TillerMan?.Say( 1042875, (NextNavPoint + 1).ToString() ); // Heading to nav point ~1_POINT_NUM~, sir.
 
 							return true;
 						}
@@ -1415,8 +1394,8 @@ namespace Server.Multis
 					{
 						NextNavPoint = -1;
 
-						if ( message && Order == BoatOrder.Course && TillerMan != null )
-							TillerMan.Say( 502515 ); // The course is completed, sir.
+						if ( message && Order == BoatOrder.Course )
+							TillerMan?.Say( 502515 ); // The course is completed, sir.
 
 						return false;
 					}
@@ -1443,8 +1422,8 @@ namespace Server.Multis
 
 			if ( m_Anchored )
 			{
-				if ( message && m_TillerMan != null )
-					m_TillerMan.Say( 501419 ); // Ar, the anchor is down sir!
+				if ( message )
+					m_TillerMan?.Say( 501419 ); // Ar, the anchor is down sir!
 
 				return false;
 			}
@@ -1459,8 +1438,8 @@ namespace Server.Multis
 				{
 					if ( i == 1 )
 					{
-						if ( message && m_TillerMan != null )
-							m_TillerMan.Say( 501424 ); // Ar, we've stopped sir.
+						if ( message )
+							m_TillerMan?.Say( 501424 ); // Ar, we've stopped sir.
 
 						return false;
 					}
@@ -1498,8 +1477,8 @@ namespace Server.Multis
 					{
 						if ( !CanFit( new Point3D( newX + (j * rx), newY + (j * ry), Z ), Map, ItemID ) )
 						{
-							if ( message && m_TillerMan != null )
-								m_TillerMan.Say( 501424 ); // Ar, we've stopped sir.
+							if ( message )
+								m_TillerMan?.Say( 501424 ); // Ar, we've stopped sir.
 
 							return false;
 						}
@@ -1658,17 +1637,13 @@ namespace Server.Multis
 
 			m_Facing = facing;
 
-			if ( m_TillerMan != null )
-				m_TillerMan.SetFacing( facing );
+			m_TillerMan?.SetFacing( facing );
 
-			if ( m_Hold != null )
-				m_Hold.SetFacing( facing );
+			m_Hold?.SetFacing( facing );
 
-			if ( m_PPlank != null )
-				m_PPlank.SetFacing( facing );
+			m_PPlank?.SetFacing( facing );
 
-			if ( m_SPlank != null )
-				m_SPlank.SetFacing( facing );
+			m_SPlank?.SetFacing( facing );
 
 			List<IEntity> toMove = GetMovingEntities();
 

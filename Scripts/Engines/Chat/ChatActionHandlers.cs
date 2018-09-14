@@ -175,8 +175,7 @@ namespace Server.Engines.Chat
 				}
 			}
 
-			if ( password != null )
-				password = password.Trim();
+			password = password?.Trim();
 
 			if ( password != null && password.Length == 0 )
 				password = null;
@@ -213,8 +212,7 @@ namespace Server.Engines.Chat
 				name = param;
 			}
 
-			if ( password != null )
-				password = password.Trim();
+			password = password?.Trim();
 
 			if ( password != null && password.Length == 0 )
 				password = null;

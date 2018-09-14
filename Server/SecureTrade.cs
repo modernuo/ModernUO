@@ -185,17 +185,11 @@ namespace Server
 
 			var ns = m_From.Mobile.NetState;
 
-			if (ns != null)
-			{
-				ns.RemoveTrade(this);
-			}
+			ns?.RemoveTrade(this);
 
 			ns = m_To.Mobile.NetState;
 
-			if (ns != null)
-			{
-				ns.RemoveTrade(this);
-			}
+			ns?.RemoveTrade(this);
 
 			Timer.DelayCall(m_From.Dispose);
 			Timer.DelayCall(m_To.Dispose);

@@ -176,9 +176,7 @@ namespace Server {
 		private void Save( Item item, BinaryMemoryWriter writer ) {
 			int length = writer.CommitTo( itemData, itemIndex, item.m_TypeRef, item.Serial );
 
-			if ( metrics != null ) {
-				metrics.OnItemSaved( length );
-			}
+			metrics?.OnItemSaved( length );
 
 			if (item.Decays && item.Parent == null && item.Map != Map.Internal && DateTime.UtcNow > (item.LastMoved + item.DecayTime))
 			{
@@ -189,17 +187,13 @@ namespace Server {
 		private void Save( Mobile mob, BinaryMemoryWriter writer ) {
 			int length = writer.CommitTo( mobileData, mobileIndex, mob.m_TypeRef, mob.Serial );
 
-			if ( metrics != null ) {
-				metrics.OnMobileSaved( length );
-			}
+			metrics?.OnMobileSaved( length );
 		}
 
 		private void Save( BaseGuild guild, BinaryMemoryWriter writer ) {
 			int length = writer.CommitTo( guildData, guildIndex, 0, guild.Id );
 
-			if ( metrics != null ) {
-				metrics.OnGuildSaved( length );
-			}
+			metrics?.OnGuildSaved( length );
 		}
 
 		private bool Enqueue( ISerializable value ) {

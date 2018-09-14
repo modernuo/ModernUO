@@ -88,9 +88,7 @@ namespace Server {
 
 				m.Serialize( bin );
 
-				if ( metrics != null ) {
-					metrics.OnMobileSaved( ( int ) ( bin.Position - start ) );
-				}
+				metrics?.OnMobileSaved( ( int ) ( bin.Position - start ) );
 
 				idx.Write( ( int ) ( bin.Position - start ) );
 
@@ -144,9 +142,7 @@ namespace Server {
 
 				item.Serialize( bin );
 
-				if ( metrics != null ) {
-					metrics.OnItemSaved( ( int ) ( bin.Position - start ) );
-				}
+				metrics?.OnItemSaved( ( int ) ( bin.Position - start ) );
 
 				idx.Write( ( int ) ( bin.Position - start ) );
 
@@ -186,9 +182,7 @@ namespace Server {
 
 				guild.Serialize( bin );
 
-				if ( metrics != null ) {
-					metrics.OnGuildSaved( ( int ) ( bin.Position - start ) );
-				}
+				metrics?.OnGuildSaved( ( int ) ( bin.Position - start ) );
 
 				idx.Write( ( int ) ( bin.Position - start ) );
 			}

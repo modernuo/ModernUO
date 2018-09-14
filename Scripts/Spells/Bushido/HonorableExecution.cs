@@ -35,8 +35,7 @@ namespace Server.Spells.Bushido
 			{
 				info.Clear();
 
-				if ( info.m_Timer != null )
-					info.m_Timer.Stop();
+				info.m_Timer?.Stop();
 			}
 
 			if ( !defender.Alive )
@@ -110,8 +109,7 @@ namespace Server.Spells.Bushido
 
 			info.Clear();
 
-			if ( info.m_Timer != null )
-				info.m_Timer.Stop();
+			info.m_Timer?.Stop();
 
 			m_Table.Remove( target );
 		}

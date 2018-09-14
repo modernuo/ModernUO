@@ -92,8 +92,7 @@ namespace Server.Items
 
 		public override void OnLocationChange( Point3D old )
 		{
-			if ( m_Fire != null )
-				m_Fire.MoveToWorld( new Point3D( X, Y, Z + ItemData.Height ), Map );
+			m_Fire?.MoveToWorld( new Point3D( X, Y, Z + ItemData.Height ), Map );
 		}
 
 		public override void GetProperties( ObjectPropertyList list )

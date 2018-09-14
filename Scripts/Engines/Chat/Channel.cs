@@ -133,8 +133,7 @@ namespace Server.Engines.Chat
 			} 
 			else
 			{
-				if ( user.CurrentChannel != null )
-					user.CurrentChannel.RemoveUser( user ); // Remove them from their current channel first
+				user.CurrentChannel?.RemoveUser( user ); // Remove them from their current channel first
 
 				ChatSystem.SendCommandTo( user.Mobile, ChatCommand.JoinedChannel, m_Name );
 
@@ -226,8 +225,8 @@ namespace Server.Engines.Chat
 				SendMessage( 44, user.Username ) ; // %1 has been kicked out of the conference.
 			}
 
-			if ( wasBanned && moderator != null )
-				moderator.SendMessage( 62, user.Username ); // You are banning %1 from this conference.
+			if ( wasBanned )
+				moderator?.SendMessage( 62, user.Username ); // You are banning %1 from this conference.
 		}
 
 		public bool VoiceRestricted

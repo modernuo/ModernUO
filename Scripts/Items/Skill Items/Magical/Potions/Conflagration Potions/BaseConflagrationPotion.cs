@@ -206,8 +206,7 @@ namespace Server.Items
 			{
 				base.OnAfterDelete();
 
-				if ( m_Timer != null )
-					m_Timer.Stop();
+				m_Timer?.Stop();
 			}
 
 			public InternalItem( Serial serial ) : base( serial )
@@ -316,8 +315,7 @@ namespace Server.Items
 
 						if ( (m.Z + 16) > m_Item.Z && (m_Item.Z + 12) > m.Z && (!Core.AOS || m != from) && SpellHelper.ValidIndirectTarget( from, m ) && from.CanBeHarmful( m, false ) )
 						{
-							if ( from != null )
-								from.DoHarmful( m );
+							@from?.DoHarmful( m );
 
 							AOS.Damage( m, from, m_Item.GetDamage(), 0, 100, 0, 0, 0 );
 							m.PlaySound( 0x208 );

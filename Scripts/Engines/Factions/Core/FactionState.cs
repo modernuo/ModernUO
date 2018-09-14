@@ -105,8 +105,7 @@ namespace Server.Factions
 			get => m_Commander;
 			set
 			{
-				if ( m_Commander != null )
-					m_Commander.InvalidateProperties();
+				m_Commander?.InvalidateProperties();
 
 				m_Commander = value;
 

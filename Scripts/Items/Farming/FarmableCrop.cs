@@ -35,8 +35,7 @@ namespace Server.Items
 
 			Item spawn = GetCropObject();
 
-			if ( spawn != null )
-				spawn.MoveToWorld( loc, map );
+			spawn?.MoveToWorld( loc, map );
 
 			m_Picked = true;
 

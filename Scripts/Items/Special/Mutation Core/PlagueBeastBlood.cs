@@ -47,17 +47,14 @@ namespace Server.Items
 
 				ItemID = 0x1765;
 
-				if ( Owner != null )
-				{
-					Container pack = Owner.Backpack;
+				Container pack = Owner?.Backpack;
 
-					if ( pack != null )
+				if ( pack != null )
+				{
+					for ( int i = 0; i < pack.Items.Count; i++ )
 					{
-						for ( int i = 0; i < pack.Items.Count; i++ )
-						{
-							if ( pack.Items[ i ] is PlagueBeastMainOrgan main && main.Complete )
-								main.FinishOpening( from );
-						}
+						if ( pack.Items[ i ] is PlagueBeastMainOrgan main && main.Complete )
+							main.FinishOpening( @from );
 					}
 				}
 
@@ -74,8 +71,7 @@ namespace Server.Items
 			if ( Patched )
 				return;
 
-			if ( Owner != null )
-				Owner.PlaySound( 0x25 );
+			Owner?.PlaySound( 0x25 );
 
 			if ( ItemID == 0x122A )
 			{

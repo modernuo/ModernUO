@@ -261,8 +261,7 @@ namespace Server.Regions
 
 				if ( Spawning )
 				{
-					if ( m_SpawnTimer != null )
-						m_SpawnTimer.Stop();
+					m_SpawnTimer?.Stop();
 
 					TimeSpan delay = m_NextSpawn - DateTime.UtcNow;
 					m_SpawnTimer = Timer.DelayCall( delay > TimeSpan.Zero ? delay : TimeSpan.Zero, new TimerCallback( TimerCallback ) );

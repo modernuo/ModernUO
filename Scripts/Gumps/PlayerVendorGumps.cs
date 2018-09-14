@@ -568,8 +568,7 @@ namespace Server.Gumps
 					{
 						Item item = m_Vendor.FindItemOnLayer( Categories[cat].Layer );
 
-						if ( item != null )
-							item.Delete();
+						item?.Delete();
 
 						List<Item> items = m_Vendor.Items;
 
@@ -585,8 +584,7 @@ namespace Server.Gumps
 							}
 						}
 
-						if ( item != null )
-							item.Delete();
+						item?.Delete();
 
 						if ( Categories[cat].Layer == Layer.FacialHair )
 						{
@@ -706,8 +704,7 @@ namespace Server.Gumps
 									}
 								}
 
-								if ( item != null )
-									item.Delete();
+								item?.Delete();
 							}
 
 							from.SendGump( new PlayerVendorCustomizeGump( m_Vendor, from ) );

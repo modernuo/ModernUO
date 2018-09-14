@@ -35,8 +35,7 @@ namespace Server.Spells.Chivalry
 
 				Timer t = (Timer)m_Table[Caster];
 
-				if ( t != null )
-					t.Stop();
+				t?.Stop();
 
 				double delay = (double)ComputePowerValue( 1 ) / 60;
 

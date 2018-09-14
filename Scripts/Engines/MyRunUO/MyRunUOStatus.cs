@@ -66,8 +66,7 @@ namespace Server.Engines.MyRunUO
 				Console.WriteLine( e );
 			}
 
-			if ( m_Command != null )
-				m_Command.Enqueue( null );
+			m_Command?.Enqueue( null );
 		}
 	}
 }

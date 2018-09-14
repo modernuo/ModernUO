@@ -257,8 +257,7 @@ namespace Server.Mobiles
 				deed.StatueType = m_Type;
 				deed.IsRewardItem = m_IsRewardItem;
 
-				if ( m_Plinth != null )
-					m_Plinth.Delete();
+				m_Plinth?.Delete();
 
 				return true;
 			}
@@ -332,8 +331,7 @@ namespace Server.Mobiles
 			for ( int i = Items.Count - 1; i >= 0; i -- )
 				Items[ i ].Hue = Hue;
 
-			if ( m_Plinth != null )
-				m_Plinth.InvalidateHue();
+			m_Plinth?.InvalidateHue();
 		}
 
 		private int m_Animation;
@@ -526,8 +524,7 @@ namespace Server.Mobiles
 		{
 			base.OnDelete();
 
-			if ( m_Statue != null )
-				m_Statue.Delete();
+			m_Statue?.Delete();
 		}
 
 		public override void Serialize( GenericWriter writer )

@@ -39,8 +39,7 @@ namespace Server.Items
 			{
 				SendLocalizedMessageTo( from, 1010442 ); // The item will be deleted in three minutes
 
-				if ( m_Timer != null )
-					m_Timer.Stop();
+				m_Timer?.Stop();
 
 				m_Timer = Timer.DelayCall( TimeSpan.FromMinutes( 3 ), new TimerCallback( Empty ) );
 			}
@@ -62,8 +61,7 @@ namespace Server.Items
 			{
 				SendLocalizedMessageTo( from, 1010442 ); // The item will be deleted in three minutes
 
-				if ( m_Timer != null )
-					m_Timer.Stop();
+				m_Timer?.Stop();
 
 				m_Timer = Timer.DelayCall( TimeSpan.FromMinutes( 3 ), new TimerCallback( Empty ) );
 			}

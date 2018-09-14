@@ -151,8 +151,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( m_Addon != null )
-				m_Addon.OnComponentUsed( this, from );
+			m_Addon?.OnComponentUsed( this, @from );
 		}
 
 		public void OnChop( Mobile from )
@@ -179,8 +178,7 @@ namespace Server.Items
 		{
 			base.OnAfterDelete();
 
-			if ( m_Addon != null )
-				m_Addon.Delete();
+			m_Addon?.Delete();
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -207,8 +205,7 @@ namespace Server.Items
 					m_Addon = reader.ReadItem() as BaseAddon;
 					m_Offset = reader.ReadPoint3D();
 
-					if ( m_Addon != null )
-						m_Addon.OnComponentLoaded( this );
+					m_Addon?.OnComponentLoaded( this );
 
 					ApplyLightTo( this );
 

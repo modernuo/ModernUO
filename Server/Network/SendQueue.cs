@@ -87,8 +87,7 @@ namespace Server.Network {
 				BufferPool old = m_UnusedBuffers;
 
 				lock (old) {
-					if ( m_UnusedBuffers != null )
-						m_UnusedBuffers.Free();
+					m_UnusedBuffers?.Free();
 
 					m_CoalesceBufferSize = value;
 					m_UnusedBuffers = new BufferPool( "Coalesced", 2048, m_CoalesceBufferSize );

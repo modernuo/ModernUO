@@ -620,13 +620,10 @@ namespace Server.Items
 
 			CraftResourceInfo info = CraftResources.GetInfo( m_Resource );
 
-			if ( info != null )
-			{
-				CraftAttributeInfo attrInfo = info.AttributeInfo;
+			CraftAttributeInfo attrInfo = info?.AttributeInfo;
 
-				if ( attrInfo != null )
-					v += attrInfo.ArmorLowerRequirements;
-			}
+			if ( attrInfo != null )
+				v += attrInfo.ArmorLowerRequirements;
 
 			if ( v > 100 )
 				v = 100;
@@ -1382,10 +1379,7 @@ namespace Server.Items
 		{
 			CraftResourceInfo resInfo = CraftResources.GetInfo( m_Resource );
 
-			if ( resInfo == null )
-				return 0;
-
-			CraftAttributeInfo attrInfo = resInfo.AttributeInfo;
+			CraftAttributeInfo attrInfo = resInfo?.AttributeInfo;
 
 			if ( attrInfo == null )
 				return 0;

@@ -558,8 +558,7 @@ namespace Server.Items
 			if ( RequiredRace == Race.Elf )
 				list.Add( 1075086 ); // Elves Only
 
-			if ( m_AosSkillBonuses != null )
-				m_AosSkillBonuses.GetProperties( list );
+			m_AosSkillBonuses?.GetProperties( list );
 
 			int prop;
 

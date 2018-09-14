@@ -61,8 +61,7 @@ namespace Server.Spells.Ninjitsu
 			{
 				info = (SurpriseAttackInfo)m_Table[defender];
 
-				if ( info.m_Timer != null )
-					info.m_Timer.Stop();
+				info.m_Timer?.Stop();
 
 				m_Table.Remove( defender );
 			}
@@ -119,8 +118,7 @@ namespace Server.Spells.Ninjitsu
 		{
 			SurpriseAttackInfo info = (SurpriseAttackInfo)state;
 
-			if ( info.m_Timer != null )
-				info.m_Timer.Stop();
+			info.m_Timer?.Stop();
 
 			info.m_Target.SendLocalizedMessage( 1063131 ); // Your defenses have returned to normal.
 

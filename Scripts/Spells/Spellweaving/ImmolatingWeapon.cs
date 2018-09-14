@@ -94,8 +94,7 @@ namespace Server.Spells.Spellweaving
 		{
 			if (m_WeaponDamageTable.TryGetValue( weapon, out ImmolatingWeaponEntry entry ))
 			{
-				if ( entry.m_Caster != null )
-					entry.m_Caster.PlaySound( 0x27 );
+				entry.m_Caster?.PlaySound( 0x27 );
 
 				entry.m_Timer.Stop();
 

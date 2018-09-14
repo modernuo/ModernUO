@@ -69,8 +69,7 @@ namespace Server.Spells.Chivalry
 
 				Timer t = (Timer)m_Table[weapon];
 
-				if ( t != null )
-					t.Stop();
+				t?.Stop();
 
 				weapon.Consecrated = true;
 

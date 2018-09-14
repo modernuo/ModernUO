@@ -25,8 +25,7 @@ namespace Server
 					NetState ns = NetState.Instances[i];
 					Mobile m = ns.Mobile;
 
-					if ( m != null )
-						m.CheckLightLevels( false );
+					m?.CheckLightLevels( false );
 				}
 			}
 		}
@@ -113,8 +112,7 @@ namespace Server
 					NetState ns = NetState.Instances[i];
 					Mobile m = ns.Mobile;
 
-					if ( m != null )
-						m.CheckLightLevels( false );
+					m?.CheckLightLevels( false );
 				}
 			}
 		}

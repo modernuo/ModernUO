@@ -58,14 +58,12 @@ namespace Server.Spells.Necromancy
 				 */
 
 				ExpireTimer timer = (ExpireTimer)m_Table[m];
-				if ( timer != null )
-				timer.DoExpire();
+				timer?.DoExpire();
 
 				m_OathTable[Caster] = Caster;
 				m_OathTable[m] = Caster;
 
-				 if ( m.Spell != null )
-					m.Spell.OnCasterHurt();
+				m.Spell?.OnCasterHurt();
 
 				Caster.PlaySound( 0x175 );
 

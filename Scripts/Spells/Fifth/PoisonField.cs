@@ -114,8 +114,7 @@ namespace Server.Spells.Fifth
 			{
 				base.OnAfterDelete();
 
-				if ( m_Timer != null )
-					m_Timer.Stop();
+				m_Timer?.Stop();
 			}
 
 			public InternalItem( Serial serial ) : base( serial )
@@ -187,8 +186,7 @@ namespace Server.Spells.Fifth
 					if ( SpellHelper.CanRevealCaster( m ) )
 						m_Caster.RevealingAction();
 
-				if ( m is BaseCreature )
-					( (BaseCreature) m ).OnHarmfulSpell( m_Caster );
+				(m as BaseCreature)?.OnHarmfulSpell( m_Caster );
 			}
 
 			public override bool OnMoveOver( Mobile m )

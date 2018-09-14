@@ -75,8 +75,7 @@ namespace Server.Mobiles
 				{
 					Spell spell = CheckCastHealingSpell();
 
-					if ( spell != null )
-						spell.Cast();
+					spell?.Cast();
 				}
 			}
 
@@ -183,8 +182,7 @@ namespace Server.Mobiles
 		{
 			if ( !m_Mobile.DisallowAllMoves && ( SmartAI ? Utility.Random( 4 ) == 0 : ScaleBySkill( TeleportChance, SkillName.Magery ) > Utility.RandomDouble() ) )
 			{
-				if ( m_Mobile.Target != null )
-					m_Mobile.Target.Cancel( m_Mobile, TargetCancelType.Canceled );
+				m_Mobile.Target?.Cancel( m_Mobile, TargetCancelType.Canceled );
 
 				new TeleportSpell( m_Mobile, null ).Cast();
 
@@ -705,8 +703,7 @@ namespace Server.Mobiles
 					RunTo( c );
 				}
 
-				if ( spell != null )
-					spell.Cast();
+				spell?.Cast();
 
 				m_NextCastTime = Core.TickCount + (int)GetDelay(spell).TotalMilliseconds;
 			}
@@ -762,8 +759,7 @@ namespace Server.Mobiles
 
 					Spell spell = CheckCastHealingSpell();
 
-					if ( spell != null )
-						spell.Cast();
+					spell?.Cast();
 				}
 
 				base.DoActionGuard();

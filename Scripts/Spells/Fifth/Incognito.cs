@@ -171,8 +171,7 @@ namespace Server.Spells.Fifth
 			{
 				if ( !m_Owner.CanBeginAction( typeof( IncognitoSpell ) ) )
 				{
-					if ( m_Owner is PlayerMobile )
-						((PlayerMobile)m_Owner).SetHairMods( -1, -1 );
+					(m_Owner as PlayerMobile)?.SetHairMods( -1, -1 );
 
 					m_Owner.BodyMod = 0;
 					m_Owner.HueMod = -1;

@@ -38,8 +38,7 @@ namespace Server.Spells.First
 
 				SpellHelper.AddStatCurse( Caster, m, StatType.Dex );
 
-				if ( m.Spell != null )
-					m.Spell.OnCasterHurt();
+				m.Spell?.OnCasterHurt();
 
 				m.Paralyzed = false;
 

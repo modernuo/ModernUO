@@ -15,8 +15,7 @@ namespace Server.Factions
 		{
 			PlayerState pl = (PlayerState)state;
 
-			if ( pl != null )
-				pl.Mobile.PublicOverheadMessage( MessageType.Regular, pl.Mobile.SpeechHue, true, pl.KillPoints.ToString( "N0" ) ); // NOTE: Added 'N0'
+			pl?.Mobile.PublicOverheadMessage( MessageType.Regular, pl.Mobile.SpeechHue, true, pl.KillPoints.ToString( "N0" ) ); // NOTE: Added 'N0'
 		}
 
 		private static void EventSink_Speech( SpeechEventArgs e )
@@ -144,8 +143,7 @@ namespace Server.Factions
 					{
 						Faction faction = Faction.Find( from );
 
-						if ( faction != null )
-							faction.BeginHonorLeadership( from );
+						faction?.BeginHonorLeadership( @from );
 
 						break;
 					}

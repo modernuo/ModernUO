@@ -3118,8 +3118,7 @@ namespace Server.Network
 
 				int min = 0, max = 0;
 
-				if ( weapon != null )
-					weapon.GetStatusDamage( m, out min, out max );
+				weapon?.GetStatusDamage( m, out min, out max );
 
 				m_Stream.Write( (short) min ); // Damage min
 				m_Stream.Write( (short) max ); // Damage max
@@ -3220,8 +3219,7 @@ namespace Server.Network
 
 					int min = 0, max = 0;
 
-					if ( weapon != null )
-						weapon.GetStatusDamage( beheld, out min, out max );
+					weapon?.GetStatusDamage( beheld, out min, out max );
 
 					m_Stream.Write( (short) min ); // Damage min
 					m_Stream.Write( (short) max ); // Damage max
@@ -4477,48 +4475,42 @@ namespace Server.Network
 
 		public static void Release( ref ObjectPropertyList p )
 		{
-			if ( p != null )
-				p.Release();
+			p?.Release();
 
 			p = null;
 		}
 
 		public static void Release( ref RemoveItem p )
 		{
-			if ( p != null )
-				p.Release();
+			p?.Release();
 
 			p = null;
 		}
 
 		public static void Release( ref RemoveMobile p )
 		{
-			if ( p != null )
-				p.Release();
+			p?.Release();
 
 			p = null;
 		}
 
 		public static void Release( ref OPLInfo p )
 		{
-			if ( p != null )
-				p.Release();
+			p?.Release();
 
 			p = null;
 		}
 
 		public static void Release( ref Packet p )
 		{
-			if ( p != null )
-				p.Release();
+			p?.Release();
 
 			p = null;
 		}
 
 		public static void Release( Packet p )
 		{
-			if ( p != null )
-				p.Release();
+			p?.Release();
 		}
 
 		public void SetStatic()

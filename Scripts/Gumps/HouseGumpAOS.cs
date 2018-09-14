@@ -617,8 +617,7 @@ namespace Server.Gumps
 
 			if ( okay && house.IsOwner( from ) )
 			{
-				if ( house.CoOwners != null )
-					house.CoOwners.Clear();
+				house.CoOwners?.Clear();
 
 				from.SendLocalizedMessage( 501333 ); // All co-owners have been removed from this house.
 			}
@@ -635,8 +634,7 @@ namespace Server.Gumps
 
 			if ( okay && house.IsCoOwner( from ) )
 			{
-				if ( house.Friends != null )
-					house.Friends.Clear();
+				house.Friends?.Clear();
 
 				from.SendLocalizedMessage( 501332 ); // All friends have been removed from this house.
 			}
@@ -653,8 +651,7 @@ namespace Server.Gumps
 
 			if ( okay && house.IsFriend( from ) )
 			{
-				if ( house.Bans != null )
-					house.Bans.Clear();
+				house.Bans?.Clear();
 
 				from.SendLocalizedMessage( 1060754 ); // All bans for this house have been lifted.
 			}
@@ -673,8 +670,7 @@ namespace Server.Gumps
 			{
 				ArrayList list = new ArrayList( house.Access );
 
-				if ( house.Access != null )
-					house.Access.Clear();
+				house.Access?.Clear();
 
 				for ( int i = 0; i < list.Count; ++i )
 				{

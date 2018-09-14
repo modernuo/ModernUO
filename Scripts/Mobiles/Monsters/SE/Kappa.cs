@@ -110,8 +110,7 @@ namespace Server.Mobiles
 		{
 			Timer t = (Timer)m_Table[m];
 
-			if ( t != null )
-				t.Stop();
+			t?.Stop();
 
 			t = new InternalTimer( from, m );
 			m_Table[m] = t;
@@ -136,8 +135,7 @@ namespace Server.Mobiles
 		{
 			Timer t = (Timer)m_Table[m];
 
-			if ( t != null )
-				t.Stop();
+			t?.Stop();
 
 			m_Table.Remove( m );
 

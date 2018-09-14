@@ -181,8 +181,7 @@ namespace Server.Spells.Bushido
 		{
 			Timer t = (Timer)m_Table[m];
 
-			if ( t != null )
-				t.Stop();
+			t?.Stop();
 
 			t = new InternalTimer( m, GetEvadeDuration( m ) );
 
@@ -195,8 +194,7 @@ namespace Server.Spells.Bushido
 		{
 			Timer t = (Timer)m_Table[m];
 
-			if ( t != null )
-				t.Stop();
+			t?.Stop();
 
 			m_Table.Remove( m );
 

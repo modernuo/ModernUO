@@ -114,20 +114,17 @@ namespace Server.Engines.Quests.Samurai
 				if ( obj != null && !obj.Completed )
 				{
 					Container pack = player.Backpack;
-					if ( pack != null )
+					Item katana = pack?.FindItemByType( typeof( HaochisKatana ) );
+					if ( katana != null )
 					{
-						Item katana = pack.FindItemByType( typeof( HaochisKatana ) );
-						if ( katana != null )
-						{
-							katana.Delete();
-							obj.Complete();
+						katana.Delete();
+						obj.Complete();
 
-							obj = qs.FindObjective( typeof( FifthTrialIntroObjective ) );
-							if ( obj != null && ((FifthTrialIntroObjective)obj).StolenTreasure )
-								qs.AddConversation( new SixthTrialIntroConversation( true ) );
-							else
-								qs.AddConversation( new SixthTrialIntroConversation( false ) );
-						}
+						obj = qs.FindObjective( typeof( FifthTrialIntroObjective ) );
+						if ( obj != null && ((FifthTrialIntroObjective)obj).StolenTreasure )
+							qs.AddConversation( new SixthTrialIntroConversation( true ) );
+						else
+							qs.AddConversation( new SixthTrialIntroConversation( false ) );
 					}
 
 					return;

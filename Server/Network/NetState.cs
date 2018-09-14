@@ -349,22 +349,19 @@ namespace Server.Network {
 			}
 		}
 
-		public void RemoveMenu( IMenu menu ) {
-			if ( m_Menus != null ) {
-				m_Menus.Remove( menu );
-			}
+		public void RemoveMenu( IMenu menu )
+		{
+			m_Menus?.Remove( menu );
 		}
 
-		public void RemoveMenu( int index ) {
-			if ( m_Menus != null ) {
-				m_Menus.RemoveAt( index );
-			}
+		public void RemoveMenu( int index )
+		{
+			m_Menus?.RemoveAt( index );
 		}
 
-		public void ClearMenus() {
-			if ( m_Menus != null ) {
-				m_Menus.Clear();
-			}
+		public void ClearMenus()
+		{
+			m_Menus?.Clear();
 		}
 
 		public void AddHuePicker( HuePicker huePicker ) {
@@ -380,22 +377,19 @@ namespace Server.Network {
 			}
 		}
 
-		public void RemoveHuePicker( HuePicker huePicker ) {
-			if ( m_HuePickers != null ) {
-				m_HuePickers.Remove( huePicker );
-			}
+		public void RemoveHuePicker( HuePicker huePicker )
+		{
+			m_HuePickers?.Remove( huePicker );
 		}
 
-		public void RemoveHuePicker( int index ) {
-			if ( m_HuePickers != null ) {
-				m_HuePickers.RemoveAt( index );
-			}
+		public void RemoveHuePicker( int index )
+		{
+			m_HuePickers?.RemoveAt( index );
 		}
 
-		public void ClearHuePickers() {
-			if ( m_HuePickers != null ) {
-				m_HuePickers.Clear();
-			}
+		public void ClearHuePickers()
+		{
+			m_HuePickers?.Clear();
 		}
 
 		public void AddGump( Gump gump ) {
@@ -411,22 +405,19 @@ namespace Server.Network {
 			}
 		}
 
-		public void RemoveGump( Gump gump ) {
-			if ( m_Gumps != null ) {
-				m_Gumps.Remove( gump );
-			}
+		public void RemoveGump( Gump gump )
+		{
+			m_Gumps?.Remove( gump );
 		}
 
-		public void RemoveGump( int index ) {
-			if ( m_Gumps != null ) {
-				m_Gumps.RemoveAt( index );
-			}
+		public void RemoveGump( int index )
+		{
+			m_Gumps?.RemoveAt( index );
 		}
 
-		public void ClearGumps() {
-			if ( m_Gumps != null ) {
-				m_Gumps.Clear();
-			}
+		public void ClearGumps()
+		{
+			m_Gumps?.Clear();
 		}
 
 		public void LaunchBrowser( string url ) {
@@ -494,10 +485,7 @@ namespace Server.Network {
 
 			m_ConnectedOn = DateTime.UtcNow;
 
-			if ( m_CreatedCallback != null )
-			{
-				m_CreatedCallback( this );
-			}
+			m_CreatedCallback?.Invoke( this );
 		}
 
 		private bool _sending;
@@ -522,13 +510,9 @@ namespace Server.Network {
 				
 				if (Core.Profiling) prof = PacketSendProfile.Acquire(p.GetType());
 
-				if ( prof != null ) {
-					prof.Start();
-				}
+				prof?.Start();
 
-				if ( m_Encoder != null ) {
-					m_Encoder.EncodeOutgoingPacket( this, ref buffer, ref length );
-				}
+				m_Encoder?.EncodeOutgoingPacket( this, ref buffer, ref length );
 
 				try {
 					SendQueue.Gram gram;
@@ -560,9 +544,7 @@ namespace Server.Network {
 
 				p.OnSend();
 
-				if ( prof != null ) {
-					prof.Finish( length );
-				}
+				prof?.Finish( length );
 			} else {
 				Console.WriteLine( "Client: {0}: null buffer send, disconnecting...", this );
 				using ( StreamWriter op = new StreamWriter( "null_send.log", true ) )
@@ -637,8 +619,7 @@ namespace Server.Network {
 
 			byte[] buffer = m_RecvBuffer;
 
-			if ( m_Encoder != null )
-				m_Encoder.DecodeIncomingPacket( this, ref buffer, ref byteCount );
+			m_Encoder?.DecodeIncomingPacket( this, ref buffer, ref byteCount );
 
 			lock ( m_Buffer )
 				m_Buffer.Enqueue( buffer, 0, byteCount );

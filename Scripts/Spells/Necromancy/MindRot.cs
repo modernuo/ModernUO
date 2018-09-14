@@ -44,8 +44,7 @@ namespace Server.Spells.Necromancy
 				 * The effect lasts for ((Spirit Speak skill level - target's Resist Magic skill level) / 50 ) + 20 seconds.
 				 */
 
-				 if ( m.Spell != null )
-					m.Spell.OnCasterHurt();
+				m.Spell?.OnCasterHurt();
 
 				m.PlaySound( 0x1FB );
 				m.PlaySound( 0x258 );

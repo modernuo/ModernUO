@@ -702,10 +702,7 @@ namespace Server.Movement
 
 			public static void ClearMoveCache(ref List<Item> cache, bool free)
 			{
-				if (cache != null)
-				{
-					cache.Clear();
-				}
+				cache?.Clear();
 
 				if (!free)
 				{

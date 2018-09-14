@@ -60,13 +60,11 @@ namespace Server.Targeting
 		{
 			NetState ns = m.NetState;
 
-			if ( ns != null )
-				ns.Send( CancelTarget.Instance );
+			ns?.Send( CancelTarget.Instance );
 
 			Target targ = m.Target;
 
-			if ( targ != null )
-				targ.OnTargetCancel( m, TargetCancelType.Canceled );
+			targ?.OnTargetCancel( m, TargetCancelType.Canceled );
 		}
 
 		private Timer m_TimeoutTimer;
@@ -75,8 +73,7 @@ namespace Server.Targeting
 		{
 			m_TimeoutTime = DateTime.UtcNow + delay;
 
-			if ( m_TimeoutTimer != null )
-				m_TimeoutTimer.Stop();
+			m_TimeoutTimer?.Stop();
 
 			m_TimeoutTimer = new TimeoutTimer( this, from, delay );
 			m_TimeoutTimer.Start();
@@ -84,8 +81,7 @@ namespace Server.Targeting
 
 		public void CancelTimeout()
 		{
-			if ( m_TimeoutTimer != null )
-				m_TimeoutTimer.Stop();
+			m_TimeoutTimer?.Stop();
 
 			m_TimeoutTimer = null;
 		}

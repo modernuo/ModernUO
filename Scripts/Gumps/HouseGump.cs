@@ -516,8 +516,7 @@ namespace Server.Gumps
 				{
 					if ( isOwner )
 					{
-						if ( m_House.CoOwners != null )
-							m_House.CoOwners.Clear();
+						m_House.CoOwners?.Clear();
 
 						from.SendLocalizedMessage( 501333 ); // All co-owners have been removed from this house.
 					}
@@ -571,8 +570,7 @@ namespace Server.Gumps
 				{
 					if ( isCoOwner )
 					{
-						if ( m_House.Friends != null )
-							m_House.Friends.Clear();
+						m_House.Friends?.Clear();
 
 						from.SendLocalizedMessage( 501332 ); // All friends have been removed from this house.
 					}

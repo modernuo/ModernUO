@@ -663,10 +663,7 @@ namespace Server
 			{
 				CompactInfo info = LookupCompactInfo();
 
-				if ( info != null )
-					return info.m_HeldBy;
-
-				return null;
+				return info?.m_HeldBy;
 			}
 			set
 			{
@@ -4490,10 +4487,7 @@ namespace Server
 			{
 				CompactInfo info = LookupCompactInfo();
 
-				if ( info != null )
-					return info.m_BlessedFor;
-
-				return null;
+				return info?.m_BlessedFor;
 			}
 			set
 			{

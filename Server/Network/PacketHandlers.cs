@@ -1098,8 +1098,7 @@ namespace Server.Network
 		{
 			Skill s = state.Mobile.Skills[pvSrc.ReadInt16()];
 
-			if ( s != null )
-				s.SetLockNoRelay( (SkillLock)pvSrc.ReadByte() );
+			s?.SetLockNoRelay( (SkillLock)pvSrc.ReadByte() );
 		}
 
 		public static void HelpRequest( NetState state, PacketReader pvSrc )
@@ -1127,9 +1126,7 @@ namespace Server.Network
 			{
 				TargetProfile prof = TargetProfile.Acquire( t.GetType() );
 
-				if ( prof != null ) {
-					prof.Start();
-				}
+				prof?.Start();
 
 				try {
 					if ( x == -1 && y == -1 && !serial.IsValid )
@@ -1208,10 +1205,9 @@ namespace Server.Network
 
 						t.Invoke( from, toTarget );
 					}
-				} finally {
-					if ( prof != null ) {
-						prof.Finish();
-					}
+				} finally
+				{
+					prof?.Finish();
 				}
 			}
 		}
@@ -1291,15 +1287,11 @@ namespace Server.Network
 
 					GumpProfile prof = GumpProfile.Acquire( gump.GetType() );
 
-					if ( prof != null ) {
-						prof.Start();
-					}
+					prof?.Start();
 
 					gump.OnResponse( state, new RelayInfo( buttonID, switches, textEntries ) );
 
-					if ( prof != null ) {
-						prof.Finish();
-					}
+					prof?.Finish();
 
 					return;
 				}
@@ -1609,8 +1601,7 @@ namespace Server.Network
 			bool rightClick = pvSrc.ReadBoolean();
 			Mobile from = state.Mobile;
 
-			if ( @from?.QuestArrow != null )
-				from.QuestArrow.OnClick( rightClick );
+			@from?.QuestArrow?.OnClick( rightClick );
 		}
 
 		public static void ExtendedCommand( NetState state, PacketReader pvSrc )

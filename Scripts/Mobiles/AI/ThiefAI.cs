@@ -68,8 +68,7 @@ namespace Server.Mobiles
 				{
 					m_Mobile.DebugSay( "Trying to steal from combatant." );
 					m_Mobile.UseSkill( SkillName.Stealing );
-					if ( m_Mobile.Target != null )
-						m_Mobile.Target.Invoke( m_Mobile, m_toDisarm );
+					m_Mobile.Target?.Invoke( m_Mobile, m_toDisarm );
 				}
 				else if (m_toDisarm == null && Core.TickCount - m_Mobile.NextSkillTime >= 0)
 				{
@@ -82,24 +81,21 @@ namespace Server.Mobiles
 						{
 							m_Mobile.DebugSay( "Trying to steal from combatant." );
 							m_Mobile.UseSkill( SkillName.Stealing );
-							if ( m_Mobile.Target != null )
-								m_Mobile.Target.Invoke( m_Mobile, steala );
+							m_Mobile.Target?.Invoke( m_Mobile, steala );
 						}
 						Item stealb = cpack.FindItemByType( typeof ( Nightshade ) );
 						if ( stealb != null ) 
 						{
 							m_Mobile.DebugSay( "Trying to steal from combatant." );
 							m_Mobile.UseSkill( SkillName.Stealing );
-							if ( m_Mobile.Target != null )
-								m_Mobile.Target.Invoke( m_Mobile, stealb );
+							m_Mobile.Target?.Invoke( m_Mobile, stealb );
 						}
 						Item stealc = cpack.FindItemByType( typeof ( BlackPearl ) );
 						if ( stealc != null ) 
 						{
 							m_Mobile.DebugSay( "Trying to steal from combatant." );
 							m_Mobile.UseSkill( SkillName.Stealing );
-							if ( m_Mobile.Target != null )
-								m_Mobile.Target.Invoke( m_Mobile, stealc );
+							m_Mobile.Target?.Invoke( m_Mobile, stealc );
 						}
 
 						Item steald = cpack.FindItemByType( typeof ( MandrakeRoot ) );
@@ -107,8 +103,7 @@ namespace Server.Mobiles
 						{
 							m_Mobile.DebugSay( "Trying to steal from combatant." );
 							m_Mobile.UseSkill( SkillName.Stealing );
-							if ( m_Mobile.Target != null )
-								m_Mobile.Target.Invoke( m_Mobile, steald );
+							m_Mobile.Target?.Invoke( m_Mobile, steald );
 						}
 						else if ( steala == null && stealb == null && stealc == null && steald == null )
 						{

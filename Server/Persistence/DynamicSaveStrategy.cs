@@ -131,10 +131,7 @@ namespace Server
 						_decayBag.Add(item);
 					}
 
-					if (_metrics != null)
-					{
-						_metrics.OnItemSaved(size);
-					}
+					_metrics?.OnItemSaved(size);
 
 					return writer;
 				},
@@ -169,10 +166,7 @@ namespace Server
 
 					writer.QueueForIndex(mobile, size);
 
-					if (_metrics != null)
-					{
-						_metrics.OnMobileSaved(size);
-					}
+					_metrics?.OnMobileSaved(size);
 
 					return writer;
 				},
@@ -207,10 +201,7 @@ namespace Server
 
 					writer.QueueForIndex(guild, size);
 
-					if (_metrics != null)
-					{
-						_metrics.OnGuildSaved(size);
-					}
+					_metrics?.OnGuildSaved(size);
 
 					return writer;
 				},

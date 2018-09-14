@@ -50,8 +50,7 @@ namespace Server.Spells.Necromancy
 				 * for a target at 20% Stamina the damage multiplier is 2.6
 				 */
 
-				 if ( m.Spell != null )
-					m.Spell.OnCasterHurt();
+				m.Spell?.OnCasterHurt();
 
 				m.PlaySound( 0x22F );
 				m.FixedParticles( 0x36CB, 1, 9, 9911, 67, 5, EffectLayer.Head );

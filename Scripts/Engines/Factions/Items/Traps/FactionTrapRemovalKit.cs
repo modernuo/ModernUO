@@ -28,8 +28,7 @@ namespace Server.Factions
 			{
 				Delete();
 
-				if ( consumer != null )
-					consumer.SendLocalizedMessage( 1042531 ); // You have used all of the parts in your trap removal kit.
+				consumer?.SendLocalizedMessage( 1042531 ); // You have used all of the parts in your trap removal kit.
 			}
 		}
 

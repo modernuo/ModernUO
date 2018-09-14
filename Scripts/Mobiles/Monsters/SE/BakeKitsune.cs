@@ -146,8 +146,7 @@ namespace Server.Mobiles
 		{
 			Item item = FindItemOnLayer( layer );
 
-			if ( item != null )
-				item.Delete();
+			item?.Delete();
 		}
 		#endregion
 

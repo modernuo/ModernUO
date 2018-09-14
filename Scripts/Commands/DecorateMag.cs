@@ -1015,8 +1015,7 @@ namespace Server.Commands
 				}
 			}
 
-			if ( item != null )
-				item.Delete();
+			item?.Delete();
 
 			return count;
 		}

@@ -35,8 +35,7 @@ namespace Server.Misc
 				{
 					NetState ns = from.NetState;
 
-					if ( ns != null )
-						ns.Dispose();
+					ns?.Dispose();
 
 					return false;
 				}

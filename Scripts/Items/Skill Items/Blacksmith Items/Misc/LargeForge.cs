@@ -39,10 +39,8 @@ namespace Server.Items
 		{
 			base.OnAfterDelete();
 
-			if ( m_Item != null )
-				m_Item.Delete();
-			if ( m_Item2 != null )
-				m_Item2.Delete();
+			m_Item?.Delete();
+			m_Item2?.Delete();
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -97,8 +95,7 @@ namespace Server.Items
 			{
 				base.OnAfterDelete();
 
-				if ( m_Item != null )
-					m_Item.Delete();
+				m_Item?.Delete();
 			}
 
 			public override void Serialize( GenericWriter writer )
@@ -152,8 +149,7 @@ namespace Server.Items
 			{
 				base.OnAfterDelete();
 
-				if ( m_Item != null )
-					m_Item.Delete();
+				m_Item?.Delete();
 			}
 
 			public override void Serialize( GenericWriter writer )
@@ -215,10 +211,8 @@ namespace Server.Items
 		{
 			base.OnAfterDelete();
 
-			if ( m_Item != null )
-				m_Item.Delete();
-			if ( m_Item2 != null )
-				m_Item2.Delete();
+			m_Item?.Delete();
+			m_Item2?.Delete();
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -273,8 +267,7 @@ namespace Server.Items
 			{
 				base.OnAfterDelete();
 
-				if ( m_Item != null )
-					m_Item.Delete();
+				m_Item?.Delete();
 			}
 
 			public override void Serialize( GenericWriter writer )
@@ -328,8 +321,7 @@ namespace Server.Items
 			{
 				base.OnAfterDelete();
 
-				if ( m_Item != null )
-					m_Item.Delete();
+				m_Item?.Delete();
 			}
 
 			public override void Serialize( GenericWriter writer )

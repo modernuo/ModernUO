@@ -83,8 +83,7 @@ namespace Server.Mobiles
 			Items.Clear();
 			Gold = 0;
 
-			if ( House != null )
-				House.VendorInventories.Remove( this );
+			House?.VendorInventories.Remove( this );
 
 			m_ExpireTimer.Stop();
 		}

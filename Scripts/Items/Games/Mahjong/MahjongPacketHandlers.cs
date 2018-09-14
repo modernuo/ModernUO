@@ -47,8 +47,7 @@ namespace Server.Engines.Mahjong
 		{
 			MahjongGame game = World.FindItem( pvSrc.ReadInt32() ) as MahjongGame;
 
-			if ( game != null )
-				game.Players.CheckPlayers();
+			game?.Players.CheckPlayers();
 
 			pvSrc.ReadByte();
 

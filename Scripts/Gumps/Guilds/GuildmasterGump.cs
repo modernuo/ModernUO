@@ -168,8 +168,7 @@ namespace Server.Gumps
 					{
 						GuildTeleporter item = new GuildTeleporter( m_Guild.Guildstone );
 
-						if ( m_Guild.Teleporter != null )
-							m_Guild.Teleporter.Delete();
+						m_Guild.Teleporter?.Delete();
 
 						m_Mobile.SendLocalizedMessage( 501133 ); // Use the teleporting object placed in your backpack to move this guildstone.
 

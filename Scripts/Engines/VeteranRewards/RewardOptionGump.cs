@@ -22,8 +22,7 @@ namespace Server.Gumps
 		{
 			m_Option = option;
 
-			if ( m_Option != null )
-				m_Option.GetOptions( m_Options );
+			m_Option?.GetOptions( m_Options );
 
 			AddPage( 0 );
 

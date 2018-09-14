@@ -542,8 +542,7 @@ namespace Server.Engines.ConPVP
 
 		public void Alert( string text )
 		{
-			if ( m_Context.m_Tournament != null )
-				m_Context.m_Tournament.Alert( text );
+			m_Context.m_Tournament?.Alert( text );
 
 			for ( int i = 0; i < m_Context.Participants.Count; ++i )
 			{

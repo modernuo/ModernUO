@@ -193,10 +193,7 @@ namespace Server.Mobiles
 
 			PlayerVendor pv = RootParent as PlayerVendor;
 
-			if ( pv == null )
-				return;
-
-			VendorItem vi = pv.GetVendorItem( item );
+			VendorItem vi = pv?.GetVendorItem( item );
 
 			if ( vi == null )
 				return;
@@ -215,10 +212,7 @@ namespace Server.Mobiles
 
 			PlayerVendor pv = RootParent as PlayerVendor;
 
-			if ( pv == null )
-				return;
-
-			VendorItem vi = pv.GetVendorItem( item );
+			VendorItem vi = pv?.GetVendorItem( item );
 
 			if ( vi?.Description != null && vi.Description.Length > 0 )
 				list.Add( 1043305, vi.Description ); // <br>Seller's Description:<br>"~1_DESC~"
@@ -558,11 +552,9 @@ namespace Server.Mobiles
 			get => m_House;
 			set
 			{
-				if ( m_House != null )
-					m_House.PlayerVendors.Remove( this );
+				m_House?.PlayerVendors.Remove( this );
 
-				if ( value != null )
-					value.PlayerVendors.Add( this );
+				value?.PlayerVendors.Add( this );
 
 				m_House = value;
 			}
@@ -753,8 +745,7 @@ namespace Server.Mobiles
 
 			House = null;
 
-			if ( Placeholder != null )
-				Placeholder.Delete();
+			Placeholder?.Delete();
 		}
 
 		public override bool IsSnoop( Mobile from )
@@ -1234,8 +1225,7 @@ namespace Server.Mobiles
 
 		public void Return()
 		{
-			if ( Placeholder != null )
-				Placeholder.Delete();
+			Placeholder?.Delete();
 		}
 
 		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )

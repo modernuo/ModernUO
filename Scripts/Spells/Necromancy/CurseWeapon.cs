@@ -52,8 +52,7 @@ namespace Server.Spells.Necromancy
 
 				Timer t = (Timer)m_Table[weapon];
 
-				if ( t != null )
-					t.Stop();
+				t?.Stop();
 
 				weapon.Cursed = true;
 

@@ -127,8 +127,7 @@ namespace Server.Spells.Fourth
 			{
 				base.OnAfterDelete();
 
-				if ( m_Timer != null )
-					m_Timer.Stop();
+				m_Timer?.Stop();
 			}
 
 			public FireFieldItem( Serial serial ) : base( serial )
@@ -201,8 +200,7 @@ namespace Server.Spells.Fourth
 					AOS.Damage( m, m_Caster, damage, 0, 100, 0, 0, 0 );
 					m.PlaySound( 0x208 );
 
-					if ( m is BaseCreature )
-						((BaseCreature) m).OnHarmfulSpell( m_Caster );
+					(m as BaseCreature)?.OnHarmfulSpell( m_Caster );
 				}
 
 				return true;
@@ -281,8 +279,7 @@ namespace Server.Spells.Fourth
 								AOS.Damage( m, caster, damage, 0, 100, 0, 0, 0 );
 								m.PlaySound( 0x208 );
 
-								if ( m is BaseCreature )
-									((BaseCreature) m).OnHarmfulSpell( caster );
+								(m as BaseCreature)?.OnHarmfulSpell( caster );
 							}
 						}
 					}

@@ -52,8 +52,7 @@ namespace Server.Multis
 			if ( Deleted )
 				return;
 
-			if ( m_DecayTimer != null )
-				m_DecayTimer.Stop();
+			m_DecayTimer?.Stop();
 
 			if ( setDecayTime )
 				m_DecayTime = DateTime.UtcNow + DecayDelay;

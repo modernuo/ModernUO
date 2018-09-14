@@ -578,8 +578,7 @@ namespace Server.Engines.MLQuests
 		{
 			MLQuestContext context = GetContext( pm );
 
-			if ( context != null )
-				context.HandleDeath();
+			context?.HandleDeath();
 		}
 
 		public static void HandleDeletion( PlayerMobile pm )

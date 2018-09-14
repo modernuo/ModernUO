@@ -368,8 +368,7 @@ namespace Server.Items
 
 		public void BeginDecay( TimeSpan delay )
 		{
-			if ( m_DecayTimer != null )
-				m_DecayTimer.Stop();
+			m_DecayTimer?.Stop();
 
 			m_DecayTime = DateTime.UtcNow + delay;
 
@@ -379,8 +378,7 @@ namespace Server.Items
 
 		public override void OnAfterDelete()
 		{
-			if ( m_DecayTimer != null )
-				m_DecayTimer.Stop();
+			m_DecayTimer?.Stop();
 
 			m_DecayTimer = null;
 		}

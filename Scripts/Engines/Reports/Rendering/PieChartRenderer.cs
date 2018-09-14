@@ -183,8 +183,7 @@ namespace Server.Engines.Reports
 					}
 					finally
 					{
-						if (brs !=null)
-							brs.Dispose();
+						brs?.Dispose();
 					}
 				}
 
@@ -198,8 +197,7 @@ namespace Server.Engines.Reports
 					}
 					finally
 					{
-						if (brs !=null)
-							brs.Dispose();
+						brs?.Dispose();
 					}
 				}
 			
@@ -224,11 +222,11 @@ namespace Server.Engines.Reports
 			}
 			finally
 			{
-				if (sf != null)	sf.Dispose();
-				if (grp != null) grp.Dispose();
-				if (sfp != null) sfp.Dispose();
-				if (fnt != null) fnt.Dispose();
-				if (pen != null) pen.Dispose();
+				sf?.Dispose();
+				grp?.Dispose();
+				sfp?.Dispose();
+				fnt?.Dispose();
+				pen?.Dispose();
 			}
 			return bmp;
 		}

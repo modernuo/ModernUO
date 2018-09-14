@@ -230,8 +230,7 @@ namespace Server.Mobiles
 
 				from.Stabled.Remove( pet );
 
-				if ( from is PlayerMobile )
-					((PlayerMobile)from).AutoStabled.Remove( pet );
+				(@from as PlayerMobile)?.AutoStabled.Remove( pet );
 			}
 			else
 			{
@@ -374,8 +373,7 @@ namespace Server.Mobiles
 
 					from.Stabled.RemoveAt( i );
 
-					if ( from is PlayerMobile )
-						((PlayerMobile)from).AutoStabled.Remove( pet );
+					(@from as PlayerMobile)?.AutoStabled.Remove( pet );
 
 					--i;
 

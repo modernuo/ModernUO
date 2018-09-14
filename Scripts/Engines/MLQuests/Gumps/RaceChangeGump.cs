@@ -54,8 +54,7 @@ namespace Server.Engines.MLQuests.Gumps
 			{
 				case 0: // Cancel
 				{
-					if ( m_Owner != null )
-						m_Owner.OnCancel( m_From );
+					m_Owner?.OnCancel( m_From );
 
 					break;
 				}

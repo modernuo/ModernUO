@@ -222,10 +222,7 @@ namespace Server.Mobiles
 
 			else if ( !Combat( this ))
 			{
-				if ( AIObject != null )
-				{
-					AIObject.MoveTo( SummonMaster, false , 5 );
-				}
+				AIObject?.MoveTo( SummonMaster, false , 5 );
 			}
 
 			/*

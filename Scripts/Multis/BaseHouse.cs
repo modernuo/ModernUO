@@ -235,8 +235,7 @@ namespace Server.Multis
 			if ( DynamicDecay.Enabled )
 				ResetDynamicDecay();
 
-			if ( m_Sign != null )
-				m_Sign.InvalidateProperties();
+			m_Sign?.InvalidateProperties();
 
 			return ( oldLevel > DecayLevel.LikeNew );
 		}
@@ -542,8 +541,7 @@ namespace Server.Multis
 		{
 			RelocatedEntities.Clear();
 
-			if ( MovingCrate != null )
-				MovingCrate.Hide();
+			MovingCrate?.Hide();
 
 			if ( m_Trash != null )
 			{
@@ -676,8 +674,7 @@ namespace Server.Multis
 		{
 			List<IEntity> list = new List<IEntity>();
 
-			if ( MovingCrate != null )
-				MovingCrate.Hide();
+			MovingCrate?.Hide();
 
 			if ( m_Trash != null && m_Trash.Map != Map.Internal )
 				list.Add( m_Trash );
@@ -1293,8 +1290,7 @@ namespace Server.Multis
 
 		public virtual void UpdateRegion()
 		{
-			if ( m_Region != null )
-				m_Region.Unregister();
+			m_Region?.Unregister();
 
 			if ( Map != null )
 			{
@@ -1917,8 +1913,7 @@ namespace Server.Multis
 				SetLockdown( item, false );
 				//TidyItemList( m_LockDowns );
 
-				if ( item is RewardBrazier )
-					((RewardBrazier) item).TurnOff();
+				(item as RewardBrazier)?.TurnOff();
 			}
 			else if ( IsSecure( item ) )
 			{
@@ -2824,8 +2819,7 @@ namespace Server.Multis
 					m_Owner.Delta( MobileDelta.Noto );
 				}
 
-				if ( m_Sign != null )
-					m_Sign.InvalidateProperties();
+				m_Sign?.InvalidateProperties();
 			}
 		}
 
@@ -2849,8 +2843,7 @@ namespace Server.Multis
 					if ( !m_Public ) // Privatizing the house, change to brass sign
 						ChangeSignType( 0xBD2 );
 
-					if ( m_Sign != null )
-						m_Sign.InvalidateProperties();
+					m_Sign?.InvalidateProperties();
 				}
 			}
 		}
@@ -3073,11 +3066,9 @@ namespace Server.Multis
 				m_Region = null;
 			}
 
-			if ( m_Sign != null )
-				m_Sign.Delete();
+			m_Sign?.Delete();
 
-			if ( m_Trash != null )
-				m_Trash.Delete();
+			m_Trash?.Delete();
 
 			if ( m_Doors != null )
 			{
@@ -3085,8 +3076,7 @@ namespace Server.Multis
 				{
 					Item item = (Item)m_Doors[i];
 
-					if ( item != null )
-						item.Delete();
+					item?.Delete();
 				}
 
 				m_Doors.Clear();
@@ -3199,8 +3189,7 @@ namespace Server.Multis
 			foreach ( VendorInventory inventory in inventories )
 				inventory.Delete();
 
-			if ( MovingCrate != null )
-				MovingCrate.Delete();
+			MovingCrate?.Delete();
 
 			KillVendors();
 

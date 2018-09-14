@@ -128,10 +128,7 @@ namespace Server.Mobiles
 		{
 			get
 			{
-				if ( House != null )
-					return House.Owner;
-
-				return null;
+				return House?.Owner;
 			}
 		}
 

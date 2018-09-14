@@ -67,9 +67,8 @@ namespace Server.Engines.ConPVP
             {
                 if (m_Game != value)
                 {
-                    if (m_KingTimer != null)
-                        m_KingTimer.Stop();
-                    m_Game = value;
+	                m_KingTimer?.Stop();
+	                m_Game = value;
                     m_King = null;
                 }
             }
@@ -171,10 +170,9 @@ namespace Server.Engines.ConPVP
         {
             PublicOverheadMessage(MessageType.Regular, 0x0481, false, "Free!");
 
-            if (m_KingTimer != null)
-                m_KingTimer.Stop();
+	        m_KingTimer?.Stop();
 
-            m_King = null;
+	        m_King = null;
         }
 
         private void ReKingify(Mobile m)
@@ -308,11 +306,9 @@ namespace Server.Engines.ConPVP
             {
                 if (m_Controller != value)
                 {
-                    if (m_Controller != null)
-                        m_Controller.RemoveBoard(this);
-                    m_Controller = value;
-                    if (m_Controller != null)
-                        m_Controller.AddBoard(this);
+	                m_Controller?.RemoveBoard(this);
+	                m_Controller = value;
+	                m_Controller?.AddBoard(this);
                 }
             }
         }
@@ -930,10 +926,9 @@ namespace Server.Engines.ConPVP
 
         public void Alert(string text)
         {
-            if (m_Context.m_Tournament != null)
-                m_Context.m_Tournament.Alert(text);
+	        m_Context.m_Tournament?.Alert(text);
 
-            for (int i = 0; i < m_Context.Participants.Count; ++i)
+	        for (int i = 0; i < m_Context.Participants.Count; ++i)
             {
                 Participant p = m_Context.Participants[i] as Participant;
 
@@ -1097,10 +1092,9 @@ namespace Server.Engines.ConPVP
             for (int i = 0; i < m_Context.Participants.Count; ++i)
                 ApplyHues(m_Context.Participants[i] as Participant, m_Controller.TeamInfo[i % m_Controller.TeamInfo.Length].Color);
 
-            if (m_FinishTimer != null)
-                m_FinishTimer.Stop();
+	        m_FinishTimer?.Stop();
 
-            for (int i = 0; i < m_Controller.Hills.Length; i++)
+	        for (int i = 0; i < m_Controller.Hills.Length; i++)
             {
                 if (m_Controller.Hills[i] != null)
                     m_Controller.Hills[i].Game = this;

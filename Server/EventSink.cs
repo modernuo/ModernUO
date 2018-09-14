@@ -940,260 +940,217 @@ namespace Server
 
 		public static void InvokeClientVersionReceived( ClientVersionReceivedArgs e )
 		{
-			if ( ClientVersionReceived != null )
-				ClientVersionReceived( e );
+			ClientVersionReceived?.Invoke( e );
 		}
 
 		public static void InvokeServerStarted()
 		{
-			if ( ServerStarted != null )
-				ServerStarted();
+			ServerStarted?.Invoke();
 		}
 
 		public static void InvokeCreateGuild( CreateGuildEventArgs e )
 		{
-			if ( CreateGuild != null )
-				CreateGuild( e );
+			CreateGuild?.Invoke( e );
 		}
 
 		public static void InvokeSetAbility( SetAbilityEventArgs e )
 		{
-			if ( SetAbility != null )
-				SetAbility( e );
+			SetAbility?.Invoke( e );
 		}
 
 		public static void InvokeGuildGumpRequest( GuildGumpRequestArgs e )
 		{
-			if ( GuildGumpRequest != null )
-				GuildGumpRequest( e );
+			GuildGumpRequest?.Invoke( e );
 		}
 
 		public static void InvokeQuestGumpRequest( QuestGumpRequestArgs e )
 		{
-			if ( QuestGumpRequest != null )
-				QuestGumpRequest( e );
+			QuestGumpRequest?.Invoke( e );
 		}
 
 		public static void InvokeFastWalk( FastWalkEventArgs e )
 		{
-			if ( FastWalk != null )
-				FastWalk( e );
+			FastWalk?.Invoke( e );
 		}
 
 		public static void InvokeDeleteRequest( DeleteRequestEventArgs e )
 		{
-			if ( DeleteRequest != null )
-				DeleteRequest( e );
+			DeleteRequest?.Invoke( e );
 		}
 
 		public static void InvokeGameLogin( GameLoginEventArgs e )
 		{
-			if ( GameLogin != null )
-				GameLogin( e );
+			GameLogin?.Invoke( e );
 		}
 
 		public static void InvokeCommand( CommandEventArgs e )
 		{
-			if ( Command != null )
-				Command( e );
+			Command?.Invoke( e );
 		}
 
 		public static void InvokeAggressiveAction( AggressiveActionEventArgs e )
 		{
-			if ( AggressiveAction != null )
-				AggressiveAction( e );
+			AggressiveAction?.Invoke( e );
 		}
 
 		public static void InvokeProfileRequest( ProfileRequestEventArgs e )
 		{
-			if ( ProfileRequest != null )
-				ProfileRequest( e );
+			ProfileRequest?.Invoke( e );
 		}
 
 		public static void InvokeChangeProfileRequest( ChangeProfileRequestEventArgs e )
 		{
-			if ( ChangeProfileRequest != null )
-				ChangeProfileRequest( e );
+			ChangeProfileRequest?.Invoke( e );
 		}
 
 		public static void InvokePaperdollRequest( PaperdollRequestEventArgs e )
 		{
-			if ( PaperdollRequest != null )
-				PaperdollRequest( e );
+			PaperdollRequest?.Invoke( e );
 		}
 
 		public static void InvokeAccountLogin( AccountLoginEventArgs e )
 		{
-			if ( AccountLogin != null )
-				AccountLogin( e );
+			AccountLogin?.Invoke( e );
 		}
 
 		public static void InvokeChatRequest( ChatRequestEventArgs e )
 		{
-			if ( ChatRequest != null )
-				ChatRequest( e );
+			ChatRequest?.Invoke( e );
 		}
 
 		public static void InvokeVirtueItemRequest( VirtueItemRequestEventArgs e )
 		{
-			if ( VirtueItemRequest != null )
-				VirtueItemRequest( e );
+			VirtueItemRequest?.Invoke( e );
 		}
 
 		public static void InvokeVirtueGumpRequest( VirtueGumpRequestEventArgs e )
 		{
-			if ( VirtueGumpRequest != null )
-				VirtueGumpRequest( e );
+			VirtueGumpRequest?.Invoke( e );
 		}
 
 		public static void InvokeVirtueMacroRequest( VirtueMacroRequestEventArgs e )
 		{
-			if ( VirtueMacroRequest != null )
-				VirtueMacroRequest( e );
+			VirtueMacroRequest?.Invoke( e );
 		}
 
 		public static void InvokePlayerDeath( PlayerDeathEventArgs e )
 		{
-			if ( PlayerDeath != null )
-				PlayerDeath( e );
+			PlayerDeath?.Invoke( e );
 		}
 
 		public static void InvokeRenameRequest( RenameRequestEventArgs e )
 		{
-			if ( RenameRequest != null )
-				RenameRequest( e );
+			RenameRequest?.Invoke( e );
 		}
 
 		public static void InvokeLogout( LogoutEventArgs e )
 		{
-			if ( Logout != null )
-				Logout( e );
+			Logout?.Invoke( e );
 		}
 
 		public static void InvokeSocketConnect( SocketConnectEventArgs e )
 		{
-			if ( SocketConnect != null )
-				SocketConnect( e );
+			SocketConnect?.Invoke( e );
 		}
 
 		public static void InvokeConnected( ConnectedEventArgs e )
 		{
-			if ( Connected != null )
-				Connected( e );
+			Connected?.Invoke( e );
 		}
 
 		public static void InvokeDisconnected( DisconnectedEventArgs e )
 		{
-			if ( Disconnected != null )
-				Disconnected( e );
+			Disconnected?.Invoke( e );
 		}
 
 		public static void InvokeAnimateRequest( AnimateRequestEventArgs e )
 		{
-			if ( AnimateRequest != null )
-				AnimateRequest( e );
+			AnimateRequest?.Invoke( e );
 		}
 
 		public static void InvokeCastSpellRequest( CastSpellRequestEventArgs e )
 		{
-			if ( CastSpellRequest != null )
-				CastSpellRequest( e );
+			CastSpellRequest?.Invoke( e );
 		}
 
 		public static void InvokeBandageTargetRequest( BandageTargetRequestEventArgs e )
 		{
-			if ( BandageTargetRequest != null )
-				BandageTargetRequest( e );
+			BandageTargetRequest?.Invoke( e );
 		}
 
 		public static void InvokeOpenSpellbookRequest( OpenSpellbookRequestEventArgs e )
 		{
-			if ( OpenSpellbookRequest != null )
-				OpenSpellbookRequest( e );
+			OpenSpellbookRequest?.Invoke( e );
 		}
 
 		public static void InvokeDisarmRequest( DisarmRequestEventArgs e )
 		{
-			if ( DisarmRequest != null )
-				DisarmRequest( e );
+			DisarmRequest?.Invoke( e );
 		}
 
 		public static void InvokeStunRequest( StunRequestEventArgs e )
 		{
-			if ( StunRequest != null )
-				StunRequest( e );
+			StunRequest?.Invoke( e );
 		}
 
 		public static void InvokeHelpRequest( HelpRequestEventArgs e )
 		{
-			if ( HelpRequest != null )
-				HelpRequest( e );
+			HelpRequest?.Invoke( e );
 		}
 
 		public static void InvokeShutdown( ShutdownEventArgs e )
 		{
-			if ( Shutdown != null )
-				Shutdown( e );
+			Shutdown?.Invoke( e );
 		}
 
 		public static void InvokeCrashed( CrashedEventArgs e )
 		{
-			if ( Crashed != null )
-				Crashed( e );
+			Crashed?.Invoke( e );
 		}
 
 		public static void InvokeHungerChanged( HungerChangedEventArgs e )
 		{
-			if ( HungerChanged != null )
-				HungerChanged( e );
+			HungerChanged?.Invoke( e );
 		}
 
 		public static void InvokeMovement( MovementEventArgs e )
 		{
-			if ( Movement != null )
-				Movement( e );
+			Movement?.Invoke( e );
 		}
 
 		public static void InvokeServerList( ServerListEventArgs e )
 		{
-			if ( ServerList != null )
-				ServerList( e );
+			ServerList?.Invoke( e );
 		}
 
 		public static void InvokeLogin( LoginEventArgs e )
 		{
-			if ( Login != null )
-				Login( e );
+			Login?.Invoke( e );
 		}
 
 		public static void InvokeSpeech( SpeechEventArgs e )
 		{
-			if ( Speech != null )
-				Speech( e );
+			Speech?.Invoke( e );
 		}
 
 		public static void InvokeCharacterCreated( CharacterCreatedEventArgs e )
 		{
-			if ( CharacterCreated != null )
-				CharacterCreated( e );
+			CharacterCreated?.Invoke( e );
 		}
 
 		public static void InvokeOpenDoorMacroUsed( OpenDoorMacroEventArgs e )
 		{
-			if ( OpenDoorMacroUsed != null )
-				OpenDoorMacroUsed( e );
+			OpenDoorMacroUsed?.Invoke( e );
 		}
 
 		public static void InvokeWorldLoad()
 		{
-			if ( WorldLoad != null )
-				WorldLoad();
+			WorldLoad?.Invoke();
 		}
 
 		public static void InvokeWorldSave( WorldSaveEventArgs e )
 		{
-			if ( WorldSave != null )
-				WorldSave( e );
+			WorldSave?.Invoke( e );
 		}
 
 		public static void Reset()

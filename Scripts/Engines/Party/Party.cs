@@ -129,18 +129,14 @@ namespace Server.Engines.PartySystem
 			Mobile from = e.Mobile;
 			Party p = Get( from );
 
-			if ( p != null )
-				p.Remove( from );
+			p?.Remove( @from );
 
 			from.Party = null;
 		}
 
 		public static Party Get( Mobile m )
 		{
-			if ( m == null )
-				return null;
-
-			return m.Party as Party;
+			return m?.Party as Party;
 		}
 
 		public Party( Mobile leader )
