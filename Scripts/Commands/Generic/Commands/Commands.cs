@@ -1108,7 +1108,7 @@ namespace Server.Commands.Generic
       }
 
       foreach (BaseHouse house in BaseHouse.AllHouses)
-        if (house.IsSecure(item) || house.IsLockedDown(item))
+        if (house.HasSecureItem(item) || house.HasLockedDownItem(item))
         {
           e.Mobile.SendGump(new PropertiesGump(e.Mobile, house));
           return;

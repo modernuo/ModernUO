@@ -1105,21 +1105,21 @@ namespace Server.Multis
     {
       BaseHouse house = FindHouseAt(item);
 
-      return house != null && house.IsLockedDown(item);
+      return house != null && house.HasLockedDownItem(item);
     }
 
     public static bool CheckSecured(Item item)
     {
       BaseHouse house = FindHouseAt(item);
 
-      return house != null && house.IsSecure(item);
+      return house != null && house.HasSecureItem(item);
     }
 
     public static bool CheckLockedDownOrSecured(Item item)
     {
       BaseHouse house = FindHouseAt(item);
 
-      return house != null && (house.IsSecure(item) || house.IsLockedDown(item));
+      return house != null && (house.HasSecureItem(item) || house.HasLockedDownItem(item));
     }
 
     public static List<BaseHouse> GetHouses(Mobile m)
@@ -1151,7 +1151,7 @@ namespace Server.Multis
       if (house == null || !house.IsAosRules)
         return true;
 
-      if (house.IsSecure(cont) && !house.CheckAosStorage(1 + item.TotalItems + plusItems))
+      if (house.HasSecureItem(cont) && !house.CheckAosStorage(1 + item.TotalItems + plusItems))
       {
         if (message)
           m.SendLocalizedMessage(1061839); // This action would exceed the secure storage limit of the house.
@@ -1181,7 +1181,7 @@ namespace Server.Multis
         case SecureAccessResult.Inaccessible: return false;
       }
 
-      if (house.IsLockedDown(item))
+      if (house.HasLockedDownItem(item))
         return house.IsCoOwner(m) && item is Container;
 
       return true;
@@ -1248,7 +1248,7 @@ namespace Server.Multis
         case SecureAccessResult.Inaccessible: return false;
       }
 
-      if (!IsLockedDown(item))
+      if (!HasLockedDownItem(item))
         return true;
       if (from.AccessLevel >= AccessLevel.GameMaster)
         return true;
@@ -1662,7 +1662,7 @@ namespace Server.Multis
       if (!IsCoOwner(m) || !IsActive)
         return false;
 
-      if (item is BaseAddonContainer || item.Movable && !IsSecure(item))
+      if (item is BaseAddonContainer || item.Movable && !HasSecureItem(item))
       {
         int amt = 1 + item.TotalItems;
 
@@ -1681,11 +1681,11 @@ namespace Server.Multis
         {
           m.SendLocalizedMessage(1005377); //You cannot lock that down
         }
-        else if (IsSecure(rootItem))
+        else if (HasSecureItem(rootItem))
         {
           m.SendLocalizedMessage(501737); // You need not lock down items in a secure container.
         }
-        else if (parentItem != null && !IsLockedDown(parentItem))
+        else if (parentItem != null && !HasLockedDownItem(parentItem))
         {
           m.SendLocalizedMessage(501736); // You must lockdown the container first!
         }
@@ -1879,7 +1879,7 @@ namespace Server.Multis
       if (!IsCoOwner(m) || !IsActive)
         return;
 
-      if (IsLockedDown(item))
+      if (HasLockedDownItem(item))
       {
         item.PublicOverheadMessage(MessageType.Label, 0x3B2, 501657); //[no longer locked down]
         SetLockdown(item, false);
@@ -1887,7 +1887,7 @@ namespace Server.Multis
 
         (item as RewardBrazier)?.TurnOff();
       }
-      else if (IsSecure(item))
+      else if (HasSecureItem(item))
       {
         ReleaseSecure(m, item);
       }
@@ -1906,7 +1906,7 @@ namespace Server.Multis
       {
         m.SendLocalizedMessage(1005525); // That is not in your house
       }
-      else if (IsLockedDown(item))
+      else if (HasLockedDownItem(item))
       {
         m.SendLocalizedMessage(1010550); // This is already locked down and cannot be secured.
       }
@@ -3117,7 +3117,7 @@ namespace Server.Multis
       return false;
     }
 
-    public bool IsLockedDown(Item check)
+    public bool HasLockedDownItem(Item check)
     {
       if (check == null)
         return false;
@@ -3128,7 +3128,7 @@ namespace Server.Multis
       return LockDowns.Contains(check) || VendorRentalContracts.Contains(check);
     }
 
-    public bool IsSecure(Item item)
+    public bool HasSecureItem(Item item)
     {
       if (item == null)
         return false;
@@ -3772,7 +3772,7 @@ namespace Server.Multis
           isOwned = house is HouseFoundation && ((HouseFoundation)house).IsFixture(item);
 
         if (!isOwned)
-          isOwned = house.IsLockedDown(item);
+          isOwned = house.HasLockedDownItem(item);
 
         if (isOwned)
           sec = (ISecurable)item;

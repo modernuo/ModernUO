@@ -90,7 +90,7 @@ namespace Server.Engines.Quests.Necro
         if (qs.IsObjectiveInProgress(typeof(FindMardothAboutKronusObjective)) ||
             qs.IsObjectiveInProgress(typeof(FindWellOfTearsObjective)) ||
             qs.IsObjectiveInProgress(typeof(UseCallingScrollObjective)))
-          return from.Backpack?.FindItemByType(typeof(KronusScroll)) == null;
+          return from.Backpack?.FindItemByType<KronusScroll>() == null;
 
       return false;
     }

@@ -152,30 +152,19 @@ namespace Server.Engines.MLQuests.Items
       if (!base.CanTeleport(m))
         return false;
 
-      if (m_TicketType != null)
+      if (m_TicketType == null)
+        return true;
+      
+      Container pack = m.Backpack;
+      Item ticket = pack?.FindItemByType(m_TicketType, false) ?? m.Items.Find(item => m_TicketType.IsInstanceOfType(item));
+
+      if (ticket == null)
       {
-        Item ticket = null;
-        Container pack = m.Backpack;
-
-        if (pack != null)
-          ticket = pack.FindItemByType(m_TicketType, false); // Check (top level) backpack
-
-        if (ticket == null)
-          foreach (Item item in m.Items) // Check paperdoll
-            if (m_TicketType.IsInstanceOfType(item))
-            {
-              ticket = item;
-              break;
-            }
-
-        if (ticket == null)
-        {
-          TextDefinition.SendMessageTo(m, Message);
-          return false;
-        }
-
-        (ticket as ITicket)?.OnTicketUsed(m);
+        TextDefinition.SendMessageTo(m, Message);
+        return false;
       }
+
+      (ticket as ITicket)?.OnTicketUsed(m);
 
       return true;
     }

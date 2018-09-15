@@ -71,13 +71,10 @@ namespace Server.SkillHandlers
             from.SendLocalizedMessage(502372); // You fail to disarm the trap... but you don't set it off
           }
         }
-        else if (targeted is BaseFactionTrap)
+        else if (targeted is BaseFactionTrap trap)
         {
-          BaseFactionTrap trap = (BaseFactionTrap)targeted;
           Faction faction = Faction.Find(from);
-
-          FactionTrapRemovalKit kit =
-            from.Backpack?.FindItemByType(typeof(FactionTrapRemovalKit)) as FactionTrapRemovalKit;
+          FactionTrapRemovalKit kit = from.Backpack?.FindItemByType<FactionTrapRemovalKit>();
 
           bool isOwner = trap.Placer == from || trap.Faction != null && trap.Faction.IsCommander(from);
 
@@ -121,12 +118,12 @@ namespace Server.SkillHandlers
             }
 
             if (!isOwner)
-              kit?.ConsumeCharge(from);
+              kit.ConsumeCharge(from);
           }
         }
         else
         {
-          from.SendLocalizedMessage(502373); // That does'nt appear to be trapped
+          from.SendLocalizedMessage(502373); // That doesn't appear to be trapped
         }
       }
     }

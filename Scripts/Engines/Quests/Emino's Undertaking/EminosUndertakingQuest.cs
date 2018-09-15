@@ -106,7 +106,7 @@ namespace Server.Engines.Quests.Ninja
 
       if (qs is EminosUndertakingQuest)
         if (qs.IsObjectiveInProgress(typeof(GiveZoelNoteObjective)))
-          return from.Backpack?.FindItemByType(typeof(NoteForZoel)) == null;
+          return from.Backpack?.FindItemByType<NoteForZoel>() == null;
 
       return false;
     }
@@ -120,7 +120,7 @@ namespace Server.Engines.Quests.Ninja
 
       if (qs is EminosUndertakingQuest)
         if (qs.IsObjectiveInProgress(typeof(GiveEminoSwordObjective)))
-          return from.Backpack?.FindItemByType(typeof(EminosKatana)) == null;
+          return from.Backpack?.FindItemByType<EminosKatana>() == null;
 
       return false;
     }

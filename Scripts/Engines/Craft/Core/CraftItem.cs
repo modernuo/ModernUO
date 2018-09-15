@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Commands;
 using Server.Factions;
 using Server.Items;
@@ -337,7 +338,7 @@ namespace Server.Engines.Craft
 
       for (int i = 0; i < types.Length; ++i)
       {
-        items[i] = cont.FindItemsByType(types[i], true);
+        items[i] = cont.FindItemsByType(types[i]);
 
         for (int j = 0; j < items[i].Length; ++j)
           if (!(items[i][j] is IHasQuantity hq))
@@ -405,7 +406,7 @@ namespace Server.Engines.Craft
 
     public int GetQuantity(Container cont, Type[] types)
     {
-      Item[] items = cont.FindItemsByType(types, true);
+      Item[] items = cont.FindItemsByType(types);
 
       int amount = 0;
 
@@ -530,24 +531,12 @@ namespace Server.Engines.Craft
       else
         maxAmount = -1;
 
-      Item consumeExtra = null;
+      RecallRune consumeExtra = null;
 
       if (NameNumber == 1041267)
       {
         // Runebooks are a special case, they need a blank recall rune
-
-        List<RecallRune> runes = ourPack.FindItemsByType<RecallRune>();
-
-        for (int i = 0; i < runes.Count; ++i)
-        {
-          RecallRune rune = runes[i];
-
-          if (rune != null && !rune.Marked)
-          {
-            consumeExtra = rune;
-            break;
-          }
-        }
+        consumeExtra = ourPack.FindItemsByType<RecallRune>().Find(rune => !rune.Marked);
 
         if (consumeExtra == null)
         {
@@ -556,7 +545,7 @@ namespace Server.Engines.Craft
         }
       }
 
-      int index = 0;
+      int index;
 
       // Consume ALL
       if (consumeType == ConsumeType.All)
@@ -621,7 +610,8 @@ namespace Server.Engines.Craft
 
       if (index == -1)
       {
-        if (consumeType != ConsumeType.None) consumeExtra?.Delete();
+        if (consumeType != ConsumeType.None)
+          consumeExtra?.Delete();
 
         return true;
       }

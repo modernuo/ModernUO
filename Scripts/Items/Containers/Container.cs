@@ -64,10 +64,10 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house?.IsLockedDown(this) == true)
+      if (house?.HasLockedDownItem(this) == true)
       {
         if (dropped is VendorRentalContract || dropped is Container container &&
-            container.FindItemByType(typeof(VendorRentalContract)) != null)
+            container.FindItemByType<VendorRentalContract>() != null)
         {
           from.SendLocalizedMessage(1062492); // You cannot place a rental contract in a locked down container.
           return false;
@@ -99,10 +99,10 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house?.IsLockedDown(this) == true)
+      if (house?.HasLockedDownItem(this) == true)
       {
         if (item is VendorRentalContract || item is Container container &&
-            container.FindItemByType(typeof(VendorRentalContract)) != null)
+            container.FindItemByType<VendorRentalContract>() != null)
         {
           from.SendLocalizedMessage(1062492); // You cannot place a rental contract in a locked down container.
           return false;

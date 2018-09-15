@@ -48,7 +48,8 @@ namespace Server.Mobiles
         List<BankCheck> checks = bank.FindItemsByType<BankCheck>();
 
         balance += gold.Aggregate(0L, (c, t) => c + t.Amount);
-        if (balance >= int.MaxValue) return int.MaxValue;
+        if (balance >= int.MaxValue)
+          return int.MaxValue;
         balance += checks.Aggregate(0L, (c, t) => c + t.Worth);
       }
 
@@ -94,8 +95,7 @@ namespace Server.Mobiles
       // If for whatever reason the TOL checks fail, we should still try old methods for withdrawing currency.
       if (AccountGold.Enabled && from.Account != null && from.Account.WithdrawGold(amount)) return true;
 
-      Item[] gold, checks;
-      int balance = GetBalance(from, out gold, out checks);
+      int balance = GetBalance(from, out Item[] gold, out Item[] checks);
 
       if (balance < amount) return false;
 
@@ -278,11 +278,9 @@ namespace Server.Mobiles
 
               if (split.Length >= 2)
               {
-                int amount;
-
                 Container pack = e.Mobile.Backpack;
 
-                if (!int.TryParse(split[1], out amount))
+                if (!int.TryParse(split[1], out int amount))
                   break;
 
                 if (!Core.ML && amount > 5000 || Core.ML && amount > 60000)
@@ -363,9 +361,7 @@ namespace Server.Mobiles
 
               if (split.Length >= 2)
               {
-                int amount;
-
-                if (!int.TryParse(split[1], out amount))
+                if (!int.TryParse(split[1], out int amount))
                   break;
 
                 if (amount < 5000)

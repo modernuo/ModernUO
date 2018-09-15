@@ -82,7 +82,7 @@ namespace Server.Commands.Generic
         size = i;
       }
 
-      parsed.Sort(delegate(BaseExtension a, BaseExtension b) { return a.Order - b.Order; });
+      parsed.Sort((a, b) => a.Order - b.Order);
 
       AssemblyEmitter emitter = null;
 

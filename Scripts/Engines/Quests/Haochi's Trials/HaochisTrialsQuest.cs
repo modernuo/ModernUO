@@ -109,7 +109,7 @@ namespace Server.Engines.Quests.Samurai
 
       if (qs is HaochisTrialsQuest)
         if (qs.IsObjectiveInProgress(typeof(FifthTrialReturnObjective)))
-          return from.Backpack?.FindItemByType(typeof(HaochisKatana)) == null;
+          return from.Backpack?.FindItemByType<HaochisKatana>() == null;
 
       return false;
     }

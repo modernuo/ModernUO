@@ -38,8 +38,8 @@ namespace Server.Spells.Spellweaving
       if (from?.Backpack == null)
         return null;
 
-      if (from.Holding is ArcaneFocus)
-        return (ArcaneFocus)from.Holding;
+      if (from.Holding is ArcaneFocus focus)
+        return focus;
 
       return from.Backpack.FindItemByType<ArcaneFocus>();
     }

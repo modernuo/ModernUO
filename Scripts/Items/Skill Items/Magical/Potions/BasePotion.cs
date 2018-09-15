@@ -91,8 +91,9 @@ namespace Server.Items
           {
             PotionKeg keg = kegs[i];
 
-            if (keg == null)
-              continue;
+            // Should never happen
+//            if (keg == null)
+//              continue;
 
             if (keg.Held <= 0 || keg.Held >= 100)
               continue;

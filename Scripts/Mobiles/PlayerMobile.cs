@@ -1778,9 +1778,7 @@ namespace Server.Mobiles
 
       if (Core.AOS && Backpack != null && !Backpack.Deleted)
       {
-        List<Item> ilist = Backpack.FindItemsByType<Item>(FindItems_Callback);
-
-        for (int i = 0; i < ilist.Count; i++) Backpack.AddItem(ilist[i]);
+        Backpack.FindItemsByType<Item>(FindItems_Callback).ForEach(item => Backpack.AddItem(item));
       }
 
       EquipSnapshot = new List<Item>(Items);
@@ -1813,53 +1811,52 @@ namespace Server.Mobiles
 
     private bool CheckInsuranceOnDeath(Item item)
     {
-      if (InsuranceEnabled && item.Insured)
+      if (!InsuranceEnabled || !item.Insured)
+        return false;
+
+      #region Dueling
+
+      if (m_DuelPlayer != null && DuelContext != null && DuelContext.Registered && DuelContext.Started &&
+          !m_DuelPlayer.Eliminated)
+        return true;
+
+      #endregion
+
+      if (AutoRenewInsurance)
       {
-        #region Dueling
+        int cost = GetInsuranceCost(item);
 
-        if (m_DuelPlayer != null && DuelContext != null && DuelContext.Registered && DuelContext.Started &&
-            !m_DuelPlayer.Eliminated)
-          return true;
+        if (m_InsuranceAward != null)
+          cost /= 2;
 
-        #endregion
-
-        if (AutoRenewInsurance)
+        if (Banker.Withdraw(this, cost))
         {
-          int cost = GetInsuranceCost(item);
-
-          if (m_InsuranceAward != null)
-            cost /= 2;
-
-          if (Banker.Withdraw(this, cost))
-          {
-            m_InsuranceCost += cost;
-            item.PaidInsurance = true;
-            SendLocalizedMessage(1060398,
-              cost.ToString()); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-          }
-          else
-          {
-            SendLocalizedMessage(1061079, "", 0x23); // You lack the funds to purchase the insurance
-            item.PaidInsurance = false;
-            item.Insured = false;
-            m_NonAutoreinsuredItems++;
-          }
+          m_InsuranceCost += cost;
+          item.PaidInsurance = true;
+          SendLocalizedMessage(1060398,
+            cost.ToString()); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
         }
         else
         {
+          SendLocalizedMessage(1061079, "", 0x23); // You lack the funds to purchase the insurance
           item.PaidInsurance = false;
           item.Insured = false;
+          m_NonAutoreinsuredItems++;
         }
-
-        if (m_InsuranceAward != null)
-          if (Banker.Deposit(m_InsuranceAward, 300))
-            if (m_InsuranceAward is PlayerMobile mobile)
-              mobile.m_InsuranceBonus += 300;
-
-        return true;
+      }
+      else
+      {
+        item.PaidInsurance = false;
+        item.Insured = false;
       }
 
-      return false;
+      if (m_InsuranceAward != null)
+        if (Banker.Deposit(m_InsuranceAward, 300))
+          if (m_InsuranceAward is PlayerMobile mobile)
+            mobile.m_InsuranceBonus += 300;
+
+      return true;
+
     }
 
     public override DeathMoveResult GetParentMoveResultFor(Item item)
@@ -2014,7 +2011,8 @@ namespace Server.Mobiles
           if (!buff.RetainThroughDeath)
             list.Add(buff);
 
-        for (int i = 0; i < list.Count; i++) RemoveBuff(list[i]);
+        for (int i = 0; i < list.Count; i++)
+          RemoveBuff(list[i]);
       }
     }
 
@@ -2129,7 +2127,7 @@ namespace Server.Mobiles
         {
           Type type = talisman.Protection.Type;
 
-          if (type.IsAssignableFrom(from.GetType()))
+          if (type.IsInstanceOfType(from))
             amount = (int)(amount * (1 - (double)talisman.Protection.Amount / 100));
         }
 
@@ -3532,7 +3530,7 @@ namespace Server.Mobiles
       Container pack = Backpack;
 
       if (pack != null)
-        items.AddRange(pack.FindItemsByType<Item>(true, DisplayInItemInsuranceGump));
+        items.AddRange(pack.FindItemsByType<Item>(DisplayInItemInsuranceGump));
 
       // TODO: Investigate item sorting
 

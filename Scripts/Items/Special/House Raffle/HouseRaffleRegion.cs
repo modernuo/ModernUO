@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Spells.Sixth;
 using Server.Targeting;
@@ -41,13 +42,7 @@ namespace Server.Regions
 
     private bool ContainsDeed(Container cont)
     {
-      List<HouseRaffleDeed> deeds = cont.FindItemsByType<HouseRaffleDeed>();
-
-      for (int i = 0; i < deeds.Count; ++i)
-        if (deeds[i] == m_Stone.Deed)
-          return true;
-
-      return false;
+      return cont.FindItemsByType<HouseRaffleDeed>().Any(deed => deed == m_Stone.Deed);
     }
 
     public override bool OnTarget(Mobile m, Target t, object o)

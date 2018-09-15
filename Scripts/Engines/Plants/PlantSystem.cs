@@ -413,25 +413,17 @@ namespace Server.Engines.Plants
     {
       Mobile from = args.Mobile;
 
-      if (from.Backpack != null)
+      from.Backpack?.FindItemsByType<PlantItem>().ForEach(plant =>
       {
-        List<PlantItem> plants = from.Backpack.FindItemsByType<PlantItem>();
+        if (plant.IsGrowable)
+          plant.PlantSystem.DoGrowthCheck();
+      });
 
-        foreach (PlantItem plant in plants)
-          if (plant.IsGrowable)
-            plant.PlantSystem.DoGrowthCheck();
-      }
-
-      BankBox bank = from.FindBankNoCreate();
-
-      if (bank != null)
+      from.FindBankNoCreate()?.FindItemsByType<PlantItem>().ForEach(plant =>
       {
-        List<PlantItem> plants = bank.FindItemsByType<PlantItem>();
-
-        foreach (PlantItem plant in plants)
-          if (plant.IsGrowable)
-            plant.PlantSystem.DoGrowthCheck();
-      }
+        if (plant.IsGrowable)
+          plant.PlantSystem.DoGrowthCheck();
+      });
     }
 
     public static void GrowAll()
@@ -443,7 +435,7 @@ namespace Server.Engines.Plants
       {
         PlantItem plant = (PlantItem)plants[i];
 
-        if (plant.IsGrowable && plant.RootParent as Mobile == null && now >= plant.PlantSystem.NextGrowth)
+        if (plant.IsGrowable && !(plant.RootParent is Mobile) && now >= plant.PlantSystem.NextGrowth)
           plant.PlantSystem.DoGrowthCheck();
       }
     }

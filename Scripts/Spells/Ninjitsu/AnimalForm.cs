@@ -569,7 +569,7 @@ namespace Server.Spells.Ninjitsu
           {
             if (m_Mobile.Hits < m_Mobile.HitsMax && m_Mobile.Backpack != null)
             {
-              Bandage b = m_Mobile.Backpack.FindItemByType(typeof(Bandage)) as Bandage;
+              Bandage b = m_Mobile.Backpack.FindItemByType<Bandage>();
 
               if (b != null)
               {

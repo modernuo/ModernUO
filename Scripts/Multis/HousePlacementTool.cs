@@ -87,7 +87,7 @@ namespace Server.Items
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (!m_From.CheckAlive() || m_From.Backpack?.FindItemByType(typeof(HousePlacementTool)) == null)
+      if (!m_From.CheckAlive() || m_From.Backpack?.FindItemByType<HousePlacementTool>() == null)
         return;
 
       switch (info.ButtonID)
@@ -194,7 +194,7 @@ namespace Server.Items
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (!m_From.CheckAlive() || m_From.Backpack?.FindItemByType(typeof(HousePlacementTool)) == null)
+      if (!m_From.CheckAlive() || m_From.Backpack?.FindItemByType<HousePlacementTool>() == null)
         return;
 
       int index = info.ButtonID - 1;
@@ -231,7 +231,7 @@ namespace Server.Items
 
     protected override void OnTarget(Mobile from, object o)
     {
-      if (!from.CheckAlive() || from.Backpack?.FindItemByType(typeof(HousePlacementTool)) == null)
+      if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
         return;
 
       IPoint3D ip = o as IPoint3D;
@@ -262,7 +262,7 @@ namespace Server.Items
 
     protected override void OnTargetFinish(Mobile from)
     {
-      if (!from.CheckAlive() || from.Backpack?.FindItemByType(typeof(HousePlacementTool)) == null)
+      if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
         return;
 
       if (!m_Placed)
@@ -580,7 +580,7 @@ namespace Server.Items
 
     public void PlacementWarning_Callback(Mobile from, bool okay, object state)
     {
-      if (!from.CheckAlive() || from.Backpack?.FindItemByType(typeof(HousePlacementTool)) == null)
+      if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
         return;
 
       PreviewHouse prevHouse = (PreviewHouse)state;
@@ -700,12 +700,11 @@ namespace Server.Items
 
     public bool OnPlacement(Mobile from, Point3D p)
     {
-      if (!from.CheckAlive() || from.Backpack?.FindItemByType(typeof(HousePlacementTool)) == null)
+      if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
         return false;
 
-      ArrayList toMove;
       Point3D center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out toMove);
+      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out ArrayList toMove);
 
       switch (res)
       {

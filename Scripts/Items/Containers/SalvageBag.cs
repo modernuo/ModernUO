@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.Craft;
 using Server.Network;
@@ -174,14 +175,7 @@ namespace Server.Items
 
     private void SalvageIngots(Mobile from)
     {
-      Item[] tools = from.Backpack.FindItemsByType(typeof(BaseTool));
-
-      bool ToolFound = false;
-      foreach (Item tool in tools)
-        if (tool is BaseTool baseTool && baseTool.CraftSystem == DefBlacksmithy.CraftSystem)
-          ToolFound = true;
-
-      if (!ToolFound)
+      if (from.Backpack.FindItemsByType<BaseTool>().All(tool => tool.CraftSystem != DefBlacksmithy.CraftSystem))
       {
         from.SendLocalizedMessage(1079822); // You need a blacksmithing tool in order to salvage ingots.
         return;
@@ -229,7 +223,9 @@ namespace Server.Items
 
     private void SalvageCloth(Mobile from)
     {
-      if (!(from.Backpack.FindItemByType(typeof(Scissors)) is Scissors scissors))
+      Scissors scissors = from.Backpack.FindItemByType<Scissors>();
+      
+      if (scissors == null)
       {
         from.SendLocalizedMessage(1079823); // You need scissors in order to salvage cloth.
         return;
@@ -257,11 +253,16 @@ namespace Server.Items
 
       from.SendLocalizedMessage(1079974,
         $"{salvaged}\t{salvaged + notSalvaged}"); // Salvaged: ~1_COUNT~/~2_NUM~ tailored items
+      
+      Item[] items = FindItemsByType(new[]{
+        typeof(Leather), typeof(Cloth), typeof(SpinedLeather), typeof(HornedLeather), typeof(BarbedLeather),
+        typeof(Bandage), typeof(Bone)
+      });
 
-      foreach (Item i in FindItemsByType(typeof(Item), true))
-        if (i is Leather || i is Cloth || i is SpinedLeather || i is HornedLeather || i is BarbedLeather ||
-            i is Bandage || i is Bone)
-          from.AddToBackpack(i);
+      for (int i = 0; i < items.Length; i++)
+      {
+        from.AddToBackpack(items[i]);
+      }     
     }
 
     private void SalvageAll(Mobile from)

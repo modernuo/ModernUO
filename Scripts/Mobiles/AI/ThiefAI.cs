@@ -81,7 +81,7 @@ namespace Server.Mobiles
 
           if (cpack != null)
           {
-            Item steala = cpack.FindItemByType(typeof(Bandage));
+            Item steala = cpack.FindItemByType<Bandage>();
             if (steala != null)
             {
               m_Mobile.DebugSay("Trying to steal from combatant.");
@@ -89,7 +89,7 @@ namespace Server.Mobiles
               m_Mobile.Target?.Invoke(m_Mobile, steala);
             }
 
-            Item stealb = cpack.FindItemByType(typeof(Nightshade));
+            Item stealb = cpack.FindItemByType<Nightshade>();
             if (stealb != null)
             {
               m_Mobile.DebugSay("Trying to steal from combatant.");
@@ -97,7 +97,7 @@ namespace Server.Mobiles
               m_Mobile.Target?.Invoke(m_Mobile, stealb);
             }
 
-            Item stealc = cpack.FindItemByType(typeof(BlackPearl));
+            Item stealc = cpack.FindItemByType<BlackPearl>();
             if (stealc != null)
             {
               m_Mobile.DebugSay("Trying to steal from combatant.");
@@ -105,14 +105,14 @@ namespace Server.Mobiles
               m_Mobile.Target?.Invoke(m_Mobile, stealc);
             }
 
-            Item steald = cpack.FindItemByType(typeof(MandrakeRoot));
+            Item steald = cpack.FindItemByType<MandrakeRoot>();
             if (steald != null)
             {
               m_Mobile.DebugSay("Trying to steal from combatant.");
               m_Mobile.UseSkill(SkillName.Stealing);
               m_Mobile.Target?.Invoke(m_Mobile, steald);
             }
-            else if (steala == null && stealb == null && stealc == null && steald == null)
+            else if (steala == null && stealb == null && stealc == null)
             {
               m_Mobile.DebugSay("I am going to flee from {0}", combatant.Name);
 

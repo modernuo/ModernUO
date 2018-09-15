@@ -157,7 +157,7 @@ namespace Server.Items
         {
           if (from.Backpack != null)
           {
-            PotionKeg keg = from.Backpack.FindItemByType(typeof(PotionKeg)) as PotionKeg;
+            PotionKeg keg = from.Backpack.FindItemByType<PotionKeg>();
 
             if (Validate(keg) > 0)
               from.SendGump(new InternalGump(this, keg));
@@ -175,17 +175,20 @@ namespace Server.Items
 
     public int Validate(PotionKeg keg)
     {
-      if (keg != null && !keg.Deleted && keg.Held == 100)
+      if (keg == null || keg.Deleted || keg.Held != 100)
+        return 0;
+      
+      switch (keg.Type)
       {
-        if (keg.Type == PotionEffect.ExplosionLesser)
+        case PotionEffect.ExplosionLesser:
           return 5;
-        if (keg.Type == PotionEffect.Explosion)
+        case PotionEffect.Explosion:
           return 10;
-        if (keg.Type == PotionEffect.ExplosionGreater)
+        case PotionEffect.ExplosionGreater:
           return 15;
+        default:
+          return 0;
       }
-
-      return 0;
     }
 
     public void Fill(Mobile from, PotionKeg keg)

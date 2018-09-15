@@ -212,7 +212,7 @@ namespace Server.Items
           {
             from.SendLocalizedMessage(1042270); // That is not in your house.
           }
-          else if (!house.IsLockedDown(item) && !house.IsSecure(item) && !isDecorableComponent)
+          else if (!house.HasLockedDownItem(item) && !house.HasSecureItem(item) && !isDecorableComponent)
           {
             if (item is AddonComponent && m_Decorator.Command == DecorateCommand.Up)
               from.SendLocalizedMessage(1042274); // You cannot raise it up any higher.

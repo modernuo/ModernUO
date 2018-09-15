@@ -965,22 +965,17 @@ namespace Server.Engines.ConPVP
 
       bool hadFlag = false;
 
-      Item[] flags = corpse.FindItemsByType(typeof(CTFFlag), false);
-
-      for (int i = 0; i < flags.Length; ++i)
-        (flags[i] as CTFFlag).DropTo(mob, killer);
-
-      hadFlag = hadFlag || flags.Length > 0;
-
-      if (mob.Backpack != null)
+      corpse.FindItemsByType<CTFFlag>(false).ForEach(flag =>
       {
-        flags = mob.Backpack.FindItemsByType(typeof(CTFFlag), false);
+        hadFlag = true;
+        flag.DropTo(mob, killer);
+      });
 
-        for (int i = 0; i < flags.Length; ++i)
-          (flags[i] as CTFFlag).DropTo(mob, killer);
-
-        hadFlag = hadFlag || flags.Length > 0;
-      }
+      mob.Backpack?.FindItemsByType<CTFFlag>(false).ForEach(flag =>
+      {
+        hadFlag = true;
+        flag.DropTo(mob, killer);
+      });
 
       if (killer != null && killer.Player)
       {

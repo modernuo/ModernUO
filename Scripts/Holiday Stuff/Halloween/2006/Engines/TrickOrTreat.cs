@@ -273,12 +273,7 @@ namespace Server.Engines.Events
         { typeof(WrappedCandy), typeof(Lollipops), typeof(NougatSwirl), typeof(Taffy), typeof(JellyBeans) };
 
       if (TrickOrTreat.CheckMobile(target))
-        for (int i = 0; i < types.Length; i++)
-        {
-          Item item = target.Backpack.FindItemByType(types[i]);
-
-          if (item != null) return item;
-        }
+        return target.Backpack.FindItemByType(types);
 
       return null;
     }

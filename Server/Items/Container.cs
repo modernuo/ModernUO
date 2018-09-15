@@ -1292,7 +1292,7 @@ namespace Server.Items
           }
           else if (recurse && item is Container)
           {
-            RecurseConsumeUpTo(item, type, amount, recurse, ref consumed, toDelete);
+            RecurseConsumeUpTo(item, type, amount, true, ref consumed, toDelete);
           }
         }
       }
@@ -1459,12 +1459,7 @@ namespace Server.Items
       return best;
     }
 
-    public int GetAmount(Type type)
-    {
-      return GetAmount(type, true);
-    }
-
-    public int GetAmount(Type type, bool recurse)
+    public int GetAmount(Type type, bool recurse = true)
     {
       Item[] items = FindItemsByType(type, recurse);
 
@@ -1476,12 +1471,7 @@ namespace Server.Items
       return amount;
     }
 
-    public int GetAmount(Type[] types)
-    {
-      return GetAmount(types, true);
-    }
-
-    public int GetAmount(Type[] types, bool recurse)
+    public int GetAmount(Type[] types, bool recurse = true)
     {
       Item[] items = FindItemsByType(types, recurse);
 
@@ -1509,29 +1499,24 @@ namespace Server.Items
 
     private static void RecurseFindItemsByType(Item current, Type type, bool recurse, List<Item> list)
     {
-      if (current != null && current.Items.Count > 0)
+      if (current == null || current.Items.Count == 0)
+        return;
+      
+      List<Item> items = current.Items;
+
+      for (int i = 0; i < items.Count; ++i)
       {
-        List<Item> items = current.Items;
+        Item item = items[i];
 
-        for (int i = 0; i < items.Count; ++i)
-        {
-          Item item = items[i];
+        if (type.IsInstanceOfType(item))
+          list.Add(item);
 
-          if (type.IsAssignableFrom(item.GetType())) // item.GetType().IsAssignableFrom( type ) )
-            list.Add(item);
-
-          if (recurse && item is Container)
-            RecurseFindItemsByType(item, type, recurse, list);
-        }
+        if (recurse && item is Container)
+          RecurseFindItemsByType(item, type, true, list);
       }
     }
 
-    public Item[] FindItemsByType(Type[] types)
-    {
-      return FindItemsByType(types, true);
-    }
-
-    public Item[] FindItemsByType(Type[] types, bool recurse)
+    public Item[] FindItemsByType(Type[] types, bool recurse = true)
     {
       if (m_FindItemsList.Count > 0)
         m_FindItemsList.Clear();
@@ -1543,87 +1528,78 @@ namespace Server.Items
 
     private static void RecurseFindItemsByType(Item current, Type[] types, bool recurse, List<Item> list)
     {
-      if (current != null && current.Items.Count > 0)
+      if (current == null || current.Items.Count == 0)
+        return;
+      
+      List<Item> items = current.Items;
+
+      for (int i = 0; i < items.Count; ++i)
       {
-        List<Item> items = current.Items;
+        Item item = items[i];
 
-        for (int i = 0; i < items.Count; ++i)
-        {
-          Item item = items[i];
+        if (InTypeList(item, types))
+          list.Add(item);
 
-          if (InTypeList(item, types))
-            list.Add(item);
-
-          if (recurse && item is Container)
-            RecurseFindItemsByType(item, types, recurse, list);
-        }
+        if (recurse && item is Container)
+          RecurseFindItemsByType(item, types, true, list);
       }
     }
 
-    public Item FindItemByType(Type type)
-    {
-      return FindItemByType(type, true);
-    }
-
-    public Item FindItemByType(Type type, bool recurse)
+    public Item FindItemByType(Type type, bool recurse = true)
     {
       return RecurseFindItemByType(this, type, recurse);
     }
 
     private static Item RecurseFindItemByType(Item current, Type type, bool recurse)
     {
-      if (current != null && current.Items.Count > 0)
+      if (current == null || current.Items.Count == 0)
+        return null;
+      
+      List<Item> list = current.Items;
+
+      for (int i = 0; i < list.Count; ++i)
       {
-        List<Item> list = current.Items;
+        Item item = list[i];
 
-        for (int i = 0; i < list.Count; ++i)
+        if (type.IsInstanceOfType(item))
+          return item;
+
+        if (recurse && item is Container)
         {
-          Item item = list[i];
+          Item check = RecurseFindItemByType(item, type, true);
 
-          if (type.IsAssignableFrom(item.GetType())) return item;
-
-          if (recurse && item is Container)
-          {
-            Item check = RecurseFindItemByType(item, type, recurse);
-
-            if (check != null)
-              return check;
-          }
+          if (check != null)
+            return check;
         }
       }
 
       return null;
     }
 
-    public Item FindItemByType(Type[] types)
-    {
-      return FindItemByType(types, true);
-    }
-
-    public Item FindItemByType(Type[] types, bool recurse)
+    public Item FindItemByType(Type[] types, bool recurse = true)
     {
       return RecurseFindItemByType(this, types, recurse);
     }
 
     private static Item RecurseFindItemByType(Item current, Type[] types, bool recurse)
     {
-      if (current != null && current.Items.Count > 0)
+      if (current == null || current.Items.Count <= 0)
+        return null;
+      
+      List<Item> list = current.Items;
+
+      for (int i = 0; i < list.Count; ++i)
       {
-        List<Item> list = current.Items;
+        Item item = list[i];
 
-        for (int i = 0; i < list.Count; ++i)
+        if (InTypeList(item, types)) return item;
+
+        if (recurse && item is Container)
         {
-          Item item = list[i];
+          Item check = RecurseFindItemByType(item, types, true);
 
-          if (InTypeList(item, types)) return item;
-
-          if (recurse && item is Container)
-          {
-            Item check = RecurseFindItemByType(item, types, recurse);
-
-            if (check != null)
-              return check;
-          }
+          if (check != null)
+            return check;
         }
       }
 
@@ -1634,109 +1610,74 @@ namespace Server.Items
 
     #region Generic FindItem[s] by Type
 
-    public List<T> FindItemsByType<T>() where T : Item
-    {
-      return FindItemsByType<T>(true, null);
-    }
-
-    public List<T> FindItemsByType<T>(bool recurse) where T : Item
-    {
-      return FindItemsByType<T>(recurse, null);
-    }
-
     public List<T> FindItemsByType<T>(Predicate<T> predicate) where T : Item
     {
       return FindItemsByType(true, predicate);
     }
 
-    public List<T> FindItemsByType<T>(bool recurse, Predicate<T> predicate) where T : Item
+    public List<T> FindItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
-      if (m_FindItemsList.Count > 0)
-        m_FindItemsList.Clear();
-
       List<T> list = new List<T>();
-
       RecurseFindItemsByType(this, recurse, list, predicate);
-
+      
       return list;
     }
 
     private static void RecurseFindItemsByType<T>(Item current, bool recurse, List<T> list, Predicate<T> predicate)
       where T : Item
     {
-      if (current != null && current.Items.Count > 0)
+      if (current == null || current.Items.Count == 0)
+        return;
+      
+      List<Item> items = current.Items;
+
+      for (int i = 0; i < items.Count; ++i)
       {
-        List<Item> items = current.Items;
+        Item item = items[i];
 
-        for (int i = 0; i < items.Count; ++i)
+        if (item is T typedItem)
         {
-          Item item = items[i];
-
-          if (typeof(T).IsAssignableFrom(item.GetType()))
-          {
-            T typedItem = (T)item;
-
-            if (predicate == null || predicate(typedItem))
-              list.Add(typedItem);
-          }
-
-          if (recurse && item is Container)
-            RecurseFindItemsByType(item, recurse, list, predicate);
+          if (predicate?.Invoke(typedItem) == true)
+            list.Add(typedItem);
         }
+
+        if (recurse && item is Container)
+          RecurseFindItemsByType(item, true, list, predicate);
       }
     }
 
-    public T FindItemByType<T>() where T : Item
-    {
-      return FindItemByType<T>(true);
-    }
-
-
-    public T FindItemByType<T>(Predicate<T> predicate) where T : Item
-    {
-      return FindItemByType(true, predicate);
-    }
-
-    public T FindItemByType<T>(bool recurse) where T : Item
-    {
-      return FindItemByType<T>(recurse, null);
-    }
-
-    public T FindItemByType<T>(bool recurse, Predicate<T> predicate) where T : Item
+    public T FindItemByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
       return RecurseFindItemByType(this, recurse, predicate);
     }
 
     private static T RecurseFindItemByType<T>(Item current, bool recurse, Predicate<T> predicate) where T : Item
     {
-      if (current != null && current.Items.Count > 0)
+      if (current == null || current.Items.Count == 0)
+        return null;
+      
+      List<Item> list = current.Items;
+
+      for (int i = 0; i < list.Count; ++i)
       {
-        List<Item> list = current.Items;
+        Item item = list[i];
 
-        for (int i = 0; i < list.Count; ++i)
+        if (item is T typedItem)
         {
-          Item item = list[i];
+          if (predicate?.Invoke(typedItem) == true)
+            return typedItem;
+        }
+        else if (recurse && item is Container)
+        {
+          T check = RecurseFindItemByType(item, true, predicate);
 
-          if (typeof(T).IsAssignableFrom(item.GetType()))
-          {
-            T typedItem = (T)item;
-
-            if (predicate == null || predicate(typedItem))
-              return typedItem;
-          }
-          else if (recurse && item is Container)
-          {
-            T check = RecurseFindItemByType(item, recurse, predicate);
-
-            if (check != null)
-              return check;
-          }
+          if (check != null)
+            return check;
         }
       }
 
       return null;
     }
-
     #endregion
   }
 

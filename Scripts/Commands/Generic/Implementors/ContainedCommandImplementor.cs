@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Targeting;
 
@@ -39,42 +41,36 @@ namespace Server.Commands.Generic
       if (command.ObjectTypes == ObjectTypes.Mobiles)
         return; // sanity check
 
-      if (!(targeted is Container))
+      if (!(targeted is Container cont))
+      {
         from.SendMessage("That is not a container.");
-      else
-        try
+        return;
+      }
+      
+      try
+      {
+        Extensions ext = Extensions.Parse(from, ref args);
+
+        if (!CheckObjectTypes(from, command, ext, out bool items, out bool _))
+          return;
+
+        if (!items)
         {
-          Extensions ext = Extensions.Parse(from, ref args);
-
-          bool items, mobiles;
-
-          if (!CheckObjectTypes(from, command, ext, out items, out mobiles))
-            return;
-
-          if (!items)
-          {
-            from.SendMessage("This command only works on items.");
-            return;
-          }
-
-          Container cont = (Container)targeted;
-
-          Item[] found = cont.FindItemsByType(typeof(Item), true);
-
-          ArrayList list = new ArrayList();
-
-          for (int i = 0; i < found.Length; ++i)
-            if (ext.IsValid(found[i]))
-              list.Add(found[i]);
-
-          ext.Filter(list);
-
-          RunCommand(from, list, command, args);
+          from.SendMessage("This command only works on items.");
+          return;
         }
-        catch (Exception e)
-        {
-          from.SendMessage(e.Message);
-        }
+
+        List<Item> list = cont.FindItemsByType<Item>().Where(item => ext.IsValid(item)).ToList();
+
+        // TODO: Is there a way to avoid using ArrayList?
+        ext.Filter(new ArrayList(list));
+
+        RunCommand(from, list, command, args);
+      }
+      catch (Exception e)
+      {
+        from.SendMessage(e.Message);
+      }
     }
   }
 }

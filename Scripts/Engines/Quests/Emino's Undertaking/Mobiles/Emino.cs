@@ -147,7 +147,7 @@ namespace Server.Engines.Quests.Ninja
                     Item katana = null;
 
                     if (player.Backpack != null)
-                      katana = player.Backpack.FindItemByType(typeof(EminosKatana));
+                      katana = player.Backpack.FindItemByType<EminosKatana>();
 
                     if (katana != null)
                     {

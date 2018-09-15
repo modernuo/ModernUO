@@ -697,7 +697,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(this);
 
-        if (house == null || !house.IsLockedDown(this))
+        if (house == null || !house.HasLockedDownItem(this))
         {
           if (message)
             from.SendLocalizedMessage(502946, "", 0x59); // That belongs to someone else.

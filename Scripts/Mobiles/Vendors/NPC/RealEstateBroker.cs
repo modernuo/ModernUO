@@ -41,9 +41,7 @@ namespace Server.Mobiles
         {
           m_NextCheckPack = DateTime.UtcNow + TimeSpan.FromSeconds(2.0);
 
-          Item deed = pack.FindItemByType(typeof(HouseDeed), false);
-
-          if (deed != null)
+          if (pack.FindItemByType<HouseDeed>(false) != null)
           {
             // If you have a deed, I can appraise it or buy it from you...
             PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500605, m.NetState);

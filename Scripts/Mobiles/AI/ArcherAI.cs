@@ -68,7 +68,7 @@ namespace Server.Mobiles
       // When we have no ammo, we flee
       Container pack = m_Mobile.Backpack;
 
-      if (pack?.FindItemByType(typeof(Arrow)) == null)
+      if (pack?.FindItemByType<Arrow>() == null)
       {
         Action = ActionType.Flee;
         return true;

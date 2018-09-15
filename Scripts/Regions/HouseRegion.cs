@@ -189,7 +189,7 @@ namespace Server.Regions
 
     public override bool OnDecay(Item item)
     {
-      if ((House.IsLockedDown(item) || House.IsSecure(item)) && House.IsInside(item))
+      if ((House.HasLockedDownItem(item) || House.HasSecureItem(item)) && House.IsInside(item))
         return false;
       return base.OnDecay(item);
     }
@@ -387,9 +387,9 @@ namespace Server.Regions
       {
         Item item = (Item)o;
 
-        if (House.IsLockedDown(item))
+        if (House.HasLockedDownItem(item))
           item.LabelTo(from, 501643); // [locked down]
-        else if (House.IsSecure(item))
+        else if (House.HasSecureItem(item))
           item.LabelTo(from, 501644); // [locked down & secure]
       }
 

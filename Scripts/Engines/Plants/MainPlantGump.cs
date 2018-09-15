@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Items;
 using Server.Network;
@@ -310,29 +311,19 @@ namespace Server.Engines.Plants
         }
         case 6: // Water
         {
-          Item[] item = from.Backpack.FindItemsByType(typeof(BaseBeverage));
+          BaseBeverage bev = from.Backpack.FindItemsByType<BaseBeverage>().Find(beverage =>
+            beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water);
 
-          bool foundUsableWater = false;
-
-          if (item != null && item.Length > 0)
-            for (int i = 0; i < item.Length; ++i)
-            {
-              BaseBeverage beverage = (BaseBeverage)item[i];
-
-              if (!beverage.IsEmpty && beverage.Pourable && beverage.Content == BeverageType.Water)
-              {
-                foundUsableWater = true;
-                m_Plant.Pour(from, beverage);
-                break;
-              }
-            }
-
-          if (!foundUsableWater)
+          if (bev == null)
           {
             from.Target = new PlantPourTarget(m_Plant);
             from.SendLocalizedMessage(1060808,
               "#" + m_Plant
                 .GetLocalizedPlantStatus()); // Target the container you wish to use to water the ~1_val~.
+          }
+          else
+          {
+            m_Plant.Pour(from, bev);
           }
 
           from.SendGump(new MainPlantGump(m_Plant));

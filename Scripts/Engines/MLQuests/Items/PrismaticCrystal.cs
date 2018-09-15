@@ -28,7 +28,7 @@ namespace Server.Items
       if (pm.InRange(GetWorldLocation(), 2))
       {
         if (MLQuestSystem.GetContext(pm)?.IsDoingQuest(typeof(UnfadingMemoriesPartOne)) == true &&
-            pm.Backpack.FindItemByType(typeof(PrismaticAmber), false) == null)
+            pm.Backpack.FindItemByType<PrismaticAmber>(false) == null)
         {
           Item amber = new PrismaticAmber();
 

@@ -117,7 +117,7 @@ namespace Server.Engines.Quests.Haven
 
       if (qs is UzeraanTurmoilQuest)
         if (qs.IsObjectiveInProgress(typeof(ReturnScrollOfPowerObjective)))
-          return from.Backpack?.FindItemByType(typeof(SchmendrickScrollOfPower)) == null;
+          return from.Backpack?.FindItemByType<SchmendrickScrollOfPower>() == null;
 
       return false;
     }
@@ -131,7 +131,7 @@ namespace Server.Engines.Quests.Haven
 
       if (qs is UzeraanTurmoilQuest)
         if (qs.IsObjectiveInProgress(typeof(ReturnFertileDirtObjective)))
-          return from.Backpack?.FindItemByType(typeof(QuestFertileDirt)) == null;
+          return from.Backpack?.FindItemByType<QuestFertileDirt>() == null;
 
       return false;
     }
@@ -145,7 +145,7 @@ namespace Server.Engines.Quests.Haven
 
       if (qs is UzeraanTurmoilQuest)
         if (qs.IsObjectiveInProgress(typeof(ReturnDaemonBloodObjective)))
-          return from.Backpack?.FindItemByType(typeof(QuestDaemonBlood)) == null;
+          return from.Backpack?.FindItemByType<QuestDaemonBlood>() == null;
 
       return false;
     }
@@ -159,7 +159,7 @@ namespace Server.Engines.Quests.Haven
 
       if (qs is UzeraanTurmoilQuest)
         if (qs.IsObjectiveInProgress(typeof(ReturnDaemonBoneObjective)))
-          return from.Backpack?.FindItemByType(typeof(QuestDaemonBone)) == null;
+          return from.Backpack?.FindItemByType<QuestDaemonBone>() == null;
 
       return false;
     }

@@ -337,15 +337,9 @@ namespace Server.Factions
 
       int killPoints = pl.KillPoints;
 
-      if (mob.Backpack != null)
-      {
-        //Ordinarily, through normal faction removal, this will never find any sigils.
-        //Only with a leave delay less than the ReturnPeriod or a Faction Kick/Ban, will this ever do anything
-        Item[] sigils = mob.Backpack.FindItemsByType(typeof(Sigil));
-
-        for (int i = 0; i < sigils.Length; ++i)
-          ((Sigil)sigils[i]).ReturnHome();
-      }
+      //Ordinarily, through normal faction removal, this will never find any sigils.
+      //Only with a leave delay less than the ReturnPeriod or a Faction Kick/Ban, will this ever do anything
+      mob.Backpack?.FindItemsByType<Sigil>().ForEach(sigil => sigil.ReturnHome());
 
       if (pl.RankIndex != -1)
       {
@@ -936,43 +930,32 @@ namespace Server.Factions
         killer = victim.FindMostRecentDamager(true);
 
       PlayerState killerState = PlayerState.Find(killer);
-
-      Container pack = victim.Backpack;
-
-      if (pack != null)
+      Container killerPack = killer?.Backpack;
+      victim.Backpack?.FindItemsByType<Sigil>().ForEach(sigil =>
       {
-        Container killerPack = killer?.Backpack;
-        Item[] sigils = pack.FindItemsByType(typeof(Sigil));
-
-        for (int i = 0; i < sigils.Length; ++i)
+        if (killerState == null || killerPack == null)
         {
-          Sigil sigil = (Sigil)sigils[i];
-
-          if (killerState != null && killerPack != null)
-          {
-            if (killer.GetDistanceToSqrt(victim) > 64)
-            {
-              sigil.ReturnHome();
-              killer.SendLocalizedMessage(1042230); // The sigil has gone back to its home location.
-            }
-            else if (Sigil.ExistsOn(killer))
-            {
-              sigil.ReturnHome();
-              killer.SendLocalizedMessage(
-                1010258); // The sigil has gone back to its home location because you already have a sigil.
-            }
-            else if (!killerPack.TryDropItem(killer, sigil, false))
-            {
-              sigil.ReturnHome();
-              killer.SendLocalizedMessage(1010259); // The sigil has gone home because your backpack is full.
-            }
-          }
-          else
-          {
-            sigil.ReturnHome();
-          }
+          sigil.ReturnHome();
+          return;
         }
-      }
+
+        if (killer.GetDistanceToSqrt(victim) > 64)
+        {
+          sigil.ReturnHome();
+          killer.SendLocalizedMessage(1042230); // The sigil has gone back to its home location.
+        }
+        else if (Sigil.ExistsOn(killer))
+        {
+          sigil.ReturnHome();
+          killer.SendLocalizedMessage(
+            1010258); // The sigil has gone back to its home location because you already have a sigil.
+        }
+        else if (!killerPack.TryDropItem(killer, sigil, false))
+        {
+          sigil.ReturnHome();
+          killer.SendLocalizedMessage(1010259); // The sigil has gone home because your backpack is full.
+        }
+      });
 
       if (killerState == null)
         return;
@@ -1072,9 +1055,7 @@ namespace Server.Factions
               if (1 > Utility.Random(3))
                 killerState.IsActive = true;
 
-              int silver = 0;
-
-              silver = killerState.Faction.AwardSilver(killer, award * 40);
+              int silver = killerState.Faction.AwardSilver(killer, award * 40);
 
               if (silver > 0)
                 killer.SendLocalizedMessage(1042736,
@@ -1129,17 +1110,7 @@ namespace Server.Factions
 
     private static void EventSink_Logout(LogoutEventArgs e)
     {
-      Mobile mob = e.Mobile;
-
-      Container pack = mob.Backpack;
-
-      if (pack == null)
-        return;
-
-      Item[] sigils = pack.FindItemsByType(typeof(Sigil));
-
-      for (int i = 0; i < sigils.Length; ++i)
-        ((Sigil)sigils[i]).ReturnHome();
+      e.Mobile.Backpack?.FindItemsByType<Sigil>().ForEach(sigil => sigil.ReturnHome());
     }
 
     private static void EventSink_Login(LoginEventArgs e)
@@ -1166,17 +1137,7 @@ namespace Server.Factions
       return null;
     }
 
-    public static Faction Find(Mobile mob)
-    {
-      return Find(mob, false, false);
-    }
-
-    public static Faction Find(Mobile mob, bool inherit)
-    {
-      return Find(mob, inherit, false);
-    }
-
-    public static Faction Find(Mobile mob, bool inherit, bool creatureAllegiances)
+    public static Faction Find(Mobile mob, bool inherit = false, bool creatureAllegiances = false)
     {
       PlayerState pl = PlayerState.Find(mob);
 
@@ -1186,9 +1147,9 @@ namespace Server.Factions
       if (inherit && mob is BaseCreature bc)
       {
         if (bc.Controlled)
-          return Find(bc.ControlMaster, false);
+          return Find(bc.ControlMaster);
         if (bc.Summoned)
-          return Find(bc.SummonMaster, false);
+          return Find(bc.SummonMaster);
         if (creatureAllegiances && bc is BaseFactionGuard guard)
           return guard.Faction;
         if (creatureAllegiances)

@@ -84,9 +84,7 @@ namespace Server.Items
         }
         else
         {
-          Item diamond = from.Backpack.FindItemByType(typeof(BlueDiamond));
-
-          if (diamond != null)
+          if (from.Backpack.FindItemByType<BlueDiamond>() != null)
             from.SendGump(new ConfirmGump(this, null));
           else
             from.SendLocalizedMessage(
@@ -130,71 +128,71 @@ namespace Server.Items
 
     public virtual void Recharge(Mobile from, Mobile guildmaster)
     {
-      if (from.Backpack != null)
-      {
-        Item diamond = from.Backpack.FindItemByType(typeof(BlueDiamond));
+      if (from.Backpack == null)
+        return;
+      
+      BlueDiamond diamond = from.Backpack.FindItemByType<BlueDiamond>();
 
-        if (guildmaster != null)
+      if (guildmaster != null)
+      {
+        if (m_UsesRemaining <= 0)
         {
-          if (m_UsesRemaining <= 0)
+          if (diamond != null && Banker.Withdraw(from, 100000))
           {
-            if (diamond != null && Banker.Withdraw(from, 100000))
-            {
-              diamond.Consume();
-              UsesRemaining = 10;
-              guildmaster.Say(1076165); // Your weapon engraver should be good as new!
-            }
-            else
-            {
-              guildmaster.Say(
-                1076167); // You need a 100,000 gold and a blue diamond to recharge the weapon engraver.
-            }
+            diamond.Consume();
+            UsesRemaining = 10;
+            guildmaster.Say(1076165); // Your weapon engraver should be good as new!
           }
           else
           {
             guildmaster.Say(
-              1076164); // I can only help with this if you are carrying an engraving tool that needs repair.
+              1076167); // You need a 100,000 gold and a blue diamond to recharge the weapon engraver.
           }
         }
         else
         {
-          if (from.Skills.Tinkering.Value == 0)
-          {
-            from.SendLocalizedMessage(
-              1076179); // Since you have no tinkering skill, you will need to find an NPC tinkerer to repair this for you.
-          }
-          else if (from.Skills.Tinkering.Value < 75.0)
-          {
-            from.SendLocalizedMessage(
-              1076178); // Your tinkering skill is too low to fix this yourself.  An NPC tinkerer can help you repair this for a fee.
-          }
-          else if (diamond != null)
-          {
-            diamond.Consume();
+          guildmaster.Say(
+            1076164); // I can only help with this if you are carrying an engraving tool that needs repair.
+        }
+      }
+      else
+      {
+        if (from.Skills.Tinkering.Value == 0)
+        {
+          from.SendLocalizedMessage(
+            1076179); // Since you have no tinkering skill, you will need to find an NPC tinkerer to repair this for you.
+        }
+        else if (from.Skills.Tinkering.Value < 75.0)
+        {
+          from.SendLocalizedMessage(
+            1076178); // Your tinkering skill is too low to fix this yourself.  An NPC tinkerer can help you repair this for a fee.
+        }
+        else if (diamond != null)
+        {
+          diamond.Consume();
 
-            if (Utility.RandomDouble() < from.Skills.Tinkering.Value / 100)
-            {
-              UsesRemaining = 10;
-              from.SendLocalizedMessage(1076165); // Your weapon engraver should be good as new! ?????
-            }
-            else
-            {
-              from.SendLocalizedMessage(
-                1076175); // You cracked the diamond attempting to fix the weapon engraver.
-            }
+          if (Utility.RandomDouble() < from.Skills.Tinkering.Value / 100)
+          {
+            UsesRemaining = 10;
+            from.SendLocalizedMessage(1076165); // Your weapon engraver should be good as new! ?????
           }
           else
           {
             from.SendLocalizedMessage(
-              1076166); // You do not have a blue diamond needed to recharge the engraving tool.
+              1076175); // You cracked the diamond attempting to fix the weapon engraver.
           }
+        }
+        else
+        {
+          from.SendLocalizedMessage(
+            1076166); // You do not have a blue diamond needed to recharge the engraving tool.
         }
       }
     }
 
     public static WeaponEngravingTool Find(Mobile from)
     {
-      return from.Backpack?.FindItemByType(typeof(WeaponEngravingTool)) as WeaponEngravingTool;
+      return from.Backpack?.FindItemByType<WeaponEngravingTool>();
     }
 
     private class TargetWeapon : Target

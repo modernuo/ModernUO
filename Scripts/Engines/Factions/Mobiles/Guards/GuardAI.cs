@@ -168,25 +168,16 @@ namespace Server.Factions
 
     public bool EquipWeapon()
     {
-      Container pack = m_Guard.Backpack;
-
-      Item weapon = pack?.FindItemByType(typeof(BaseWeapon));
-
-      if (weapon == null)
-        return false;
-
-      return m_Guard.EquipItem(weapon);
+      Item weapon = m_Guard.Backpack?.FindItemByType<BaseWeapon>();
+      
+      return weapon != null && m_Guard.EquipItem(weapon);
     }
 
     public bool StartBandage()
     {
       m_Bandage = null;
 
-      Container pack = m_Guard.Backpack;
-
-      Item bandage = pack?.FindItemByType(typeof(Bandage));
-
-      if (bandage == null)
+      if (m_Guard.Backpack?.FindItemByType<Bandage>() == null)
         return false;
 
       m_Bandage = BandageContext.BeginHeal(m_Guard, m_Guard);

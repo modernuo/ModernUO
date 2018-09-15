@@ -304,12 +304,7 @@ namespace Server.Commands
       return "The properties have been decreased.";
     }
 
-    private static string InternalGetValue(object o, PropertyInfo p)
-    {
-      return InternalGetValue(o, p, null);
-    }
-
-    private static string InternalGetValue(object o, PropertyInfo p, PropertyInfo[] chain)
+    private static string InternalGetValue(object o, PropertyInfo p, PropertyInfo[] chain = null)
     {
       Type type = p.PropertyType;
 

@@ -924,9 +924,7 @@ namespace Server.Engines.ConPVP
       else
         Hue = 0x84C;
 
-      if (m.Backpack.FindItemByType(typeof(BRBomb), true) is BRBomb b)
-        b.CheckScore(this, m, 7);
-
+      m.Backpack.FindItemByType<BRBomb>()?.CheckScore(this, m, 7);
       return true;
     }
   }
@@ -1487,12 +1485,7 @@ namespace Server.Engines.ConPVP
       if (mob?.Backpack == null || GetTeamInfo(mob) == null)
         return false;
 
-      Item bomb = mob.Backpack.FindItemByType(typeof(BRBomb), true);
-
-      if (bomb != null)
-        return true;
-
-      return false;
+      return mob.Backpack.FindItemByType<BRBomb>() != null;
     }
 
     public void ReturnBomb()
@@ -1606,22 +1599,17 @@ namespace Server.Engines.ConPVP
 
       bool hadBomb = false;
 
-      Item[] bombs = corpse.FindItemsByType(typeof(BRBomb), false);
-
-      for (int i = 0; i < bombs.Length; ++i)
-        (bombs[i] as BRBomb)?.DropTo(mob, killer);
-
-      hadBomb = bombs.Length > 0;
-
-      if (mob.Backpack != null)
+      corpse.FindItemsByType<BRBomb>(false).ForEach(bomb =>
       {
-        bombs = mob.Backpack.FindItemsByType(typeof(BRBomb), false);
+        hadBomb = true;
+        bomb.DropTo(mob, killer);
+      });
 
-        for (int i = 0; i < bombs.Length; ++i)
-          (bombs[i] as BRBomb)?.DropTo(mob, killer);
-
-        hadBomb = hadBomb || bombs.Length > 0;
-      }
+      mob.Backpack?.FindItemsByType<BRBomb>(false).ForEach(bomb =>
+      {
+        hadBomb = true;
+        bomb.DropTo(mob, killer);
+      });
 
       if (killer != null && killer.Player)
       {

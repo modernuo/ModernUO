@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.Harvest;
 using Server.Mobiles;
@@ -301,13 +302,7 @@ namespace Server.Items
       if (m.Backpack == null)
         return false;
 
-      List<BaseHarvestTool> items = m.Backpack.FindItemsByType<BaseHarvestTool>();
-
-      foreach (BaseHarvestTool tool in items)
-        if (tool.HarvestSystem == Mining.System)
-          return true;
-
-      return false;
+      return m.Backpack.FindItemsByType<BaseHarvestTool>().Any(tool => tool.HarvestSystem == Mining.System);
     }
 
     public void OnBeginDig(Mobile from)

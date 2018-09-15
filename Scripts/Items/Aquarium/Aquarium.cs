@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Multis;
 using Server.Network;
@@ -503,11 +504,12 @@ namespace Server.Items
     private void RecountLiveCreatures()
     {
       LiveCreatures = 0;
-      List<BaseFish> fish = FindItemsByType<BaseFish>();
 
-      foreach (BaseFish f in fish)
-        if (!f.Dead)
+      FindItemsByType<BaseFish>().ForEach(fish =>
+      {
+        if (!fish.Dead)
           ++LiveCreatures;
+      });
     }
 
     public void Validate()
@@ -895,21 +897,7 @@ namespace Server.Items
 
     public static FishBowl GetEmptyBowl(Mobile from)
     {
-      if (from?.Backpack == null)
-        return null;
-
-      Item[] items = from.Backpack.FindItemsByType(typeof(FishBowl));
-
-      for (int i = 0; i < items.Length; i++)
-        if (items[i] is FishBowl)
-        {
-          FishBowl bowl = (FishBowl)items[i];
-
-          if (bowl.Empty)
-            return bowl;
-        }
-
-      return null;
+      return from?.Backpack?.FindItemsByType<FishBowl>().Find(bowl => bowl.Empty);
     }
 
     private static Type[] m_Decorations =
