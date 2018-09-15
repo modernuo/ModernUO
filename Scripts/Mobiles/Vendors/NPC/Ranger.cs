@@ -1,54 +1,56 @@
 using System.Collections.Generic;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Ranger : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+  public class Ranger : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public Ranger() : base( "the ranger" )
-		{
-			SetSkill( SkillName.Camping, 55.0, 78.0 );
-			SetSkill( SkillName.DetectHidden, 65.0, 88.0 );
-			SetSkill( SkillName.Hiding, 45.0, 68.0 );
-			SetSkill( SkillName.Archery, 65.0, 88.0 );
-			SetSkill( SkillName.Tracking, 65.0, 88.0 );
-			SetSkill( SkillName.Veterinary, 60.0, 83.0 );
-		}
+    [Constructible]
+    public Ranger() : base("the ranger")
+    {
+      SetSkill(SkillName.Camping, 55.0, 78.0);
+      SetSkill(SkillName.DetectHidden, 65.0, 88.0);
+      SetSkill(SkillName.Hiding, 45.0, 68.0);
+      SetSkill(SkillName.Archery, 65.0, 88.0);
+      SetSkill(SkillName.Tracking, 65.0, 88.0);
+      SetSkill(SkillName.Veterinary, 60.0, 83.0);
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBRanger() );
-		}
+    public Ranger(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-			AddItem( new Items.Shirt( Utility.RandomNeutralHue() ) );
-			AddItem( new Items.LongPants( Utility.RandomNeutralHue() ) );
-			AddItem( new Items.Bow() );
-			AddItem( new Items.ThighBoots( Utility.RandomNeutralHue() ) );
-		}
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBRanger());
+    }
 
-		public Ranger( Serial serial ) : base( serial )
-		{
-		}
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      AddItem(new Shirt(Utility.RandomNeutralHue()));
+      AddItem(new LongPants(Utility.RandomNeutralHue()));
+      AddItem(new Bow());
+      AddItem(new ThighBoots(Utility.RandomNeutralHue()));
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

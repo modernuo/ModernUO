@@ -2,79 +2,99 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Zombie : BaseCreature
-	{
-		public override string CorpseName => "a rotting corpse";
-		public override string DefaultName => "a zombie";
+  public class Zombie : BaseCreature
+  {
+    [Constructible]
+    public Zombie() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 3;
+      BaseSoundID = 471;
 
-		[Constructible]
-		public Zombie() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 3;
-			BaseSoundID = 471;
+      SetStr(46, 70);
+      SetDex(31, 50);
+      SetInt(26, 40);
 
-			SetStr( 46, 70 );
-			SetDex( 31, 50 );
-			SetInt( 26, 40 );
+      SetHits(28, 42);
 
-			SetHits( 28, 42 );
+      SetDamage(3, 7);
 
-			SetDamage( 3, 7 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetResistance(ResistanceType.Physical, 15, 20);
+      SetResistance(ResistanceType.Cold, 20, 30);
+      SetResistance(ResistanceType.Poison, 5, 10);
 
-			SetResistance( ResistanceType.Physical, 15, 20 );
-			SetResistance( ResistanceType.Cold, 20, 30 );
-			SetResistance( ResistanceType.Poison, 5, 10 );
+      SetSkill(SkillName.MagicResist, 15.1, 40.0);
+      SetSkill(SkillName.Tactics, 35.1, 50.0);
+      SetSkill(SkillName.Wrestling, 35.1, 50.0);
 
-			SetSkill( SkillName.MagicResist, 15.1, 40.0 );
-			SetSkill( SkillName.Tactics, 35.1, 50.0 );
-			SetSkill( SkillName.Wrestling, 35.1, 50.0 );
+      Fame = 600;
+      Karma = -600;
 
-			Fame = 600;
-			Karma = -600;
+      VirtualArmor = 18;
 
-			VirtualArmor = 18;
+      switch (Utility.Random(10))
+      {
+        case 0:
+          PackItem(new LeftArm());
+          break;
+        case 1:
+          PackItem(new RightArm());
+          break;
+        case 2:
+          PackItem(new Torso());
+          break;
+        case 3:
+          PackItem(new Bone());
+          break;
+        case 4:
+          PackItem(new RibCage());
+          break;
+        case 5:
+          PackItem(new RibCage());
+          break;
+        case 6:
+          PackItem(new BonePile());
+          break;
+        case 7:
+          PackItem(new BonePile());
+          break;
+        case 8:
+          PackItem(new BonePile());
+          break;
+        case 9:
+          PackItem(new BonePile());
+          break;
+      }
+    }
 
-			switch ( Utility.Random( 10 ))
-			{
-				case 0: PackItem( new LeftArm() ); break;
-				case 1: PackItem( new RightArm() ); break;
-				case 2: PackItem( new Torso() ); break;
-				case 3: PackItem( new Bone() ); break;
-				case 4: PackItem( new RibCage() ); break;
-				case 5: PackItem( new RibCage() ); break;
-				case 6: PackItem( new BonePile() ); break;
-				case 7: PackItem( new BonePile() ); break;
-				case 8: PackItem( new BonePile() ); break;
-				case 9: PackItem( new BonePile() ); break;
-			}
-		}
+    public Zombie(Serial serial) : base(serial)
+    {
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Meager );
-		}
+    public override string CorpseName => "a rotting corpse";
+    public override string DefaultName => "a zombie";
 
-		public override bool BleedImmune => true;
-		public override Poison PoisonImmune => Poison.Regular;
+    public override bool BleedImmune => true;
+    public override Poison PoisonImmune => Poison.Regular;
 
-		public Zombie( Serial serial ) : base( serial )
-		{
-		}
+    public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
-		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Meager);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

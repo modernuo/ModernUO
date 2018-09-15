@@ -1,30 +1,30 @@
 namespace Server.Items
 {
-	[FlippableAttribute(0xec6, 0xec7)]
-	public class Dressform : Item
-	{
-		[Constructible]
-		public Dressform() : base(0xec6)
-		{
-			Weight = 10;
-		}
+  [Flippable(0xec6, 0xec7)]
+  public class Dressform : Item
+  {
+    [Constructible]
+    public Dressform() : base(0xec6)
+    {
+      Weight = 10;
+    }
 
-		public Dressform(Serial serial) : base(serial)
-		{
-		}
+    public Dressform(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write((int) 0);
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

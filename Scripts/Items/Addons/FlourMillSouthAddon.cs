@@ -1,197 +1,201 @@
 using System;
-using Server.Network;
 using System.Collections.Generic;
+using Server.Network;
 
 namespace Server.Items
 {
-	public class FlourMillSouthAddon : BaseAddon, IFlourMill
-	{
-		public override BaseAddonDeed Deed => new FlourMillSouthDeed();
-		private int m_Flour;
-		private Timer m_Timer;
+  public class FlourMillSouthAddon : BaseAddon, IFlourMill
+  {
+    private static int[][] m_StageTable =
+    {
+      new[] { 0x192C, 0x192D, 0x1931 },
+      new[] { 0x192E, 0x192F, 0x1932 },
+      new[] { 0x1930, 0x1930, 0x1934 }
+    };
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int MaxFlour => 2;
+    private int m_Flour;
+    private Timer m_Timer;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int CurFlour
-		{
-			get => m_Flour;
-			set{ m_Flour = Math.Max( 0, Math.Min( value, MaxFlour ) ); UpdateStage(); }
-		}
+    [Constructible]
+    public FlourMillSouthAddon()
+    {
+      AddComponent(new AddonComponent(0x192C), 0, -1, 0);
+      AddComponent(new AddonComponent(0x192E), 0, 0, 0);
+      AddComponent(new AddonComponent(0x1930), 0, 1, 0);
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool HasFlour => ( m_Flour > 0 );
+    public FlourMillSouthAddon(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsFull => ( m_Flour >= MaxFlour );
+    public override BaseAddonDeed Deed => new FlourMillSouthDeed();
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsWorking => ( m_Timer != null );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool HasFlour => m_Flour > 0;
 
-		public void StartWorking( Mobile from )
-		{
-			if ( IsWorking )
-				return;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsFull => m_Flour >= MaxFlour;
 
-			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerStateCallback( FinishWorking_Callback ), from );
-			UpdateStage();
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsWorking => m_Timer != null;
 
-		private void FinishWorking_Callback( object state )
-		{
-			if ( m_Timer != null )
-			{
-				m_Timer.Stop();
-				m_Timer = null;
-			}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int MaxFlour => 2;
 
-			if ( state is Mobile from && !from.Deleted && !Deleted && IsFull )
-			{
-				SackFlour flour = new SackFlour();
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int CurFlour
+    {
+      get => m_Flour;
+      set
+      {
+        m_Flour = Math.Max(0, Math.Min(value, MaxFlour));
+        UpdateStage();
+      }
+    }
 
-				flour.ItemID = ( Utility.RandomBool() ? 4153 : 4165 );
+    public void StartWorking(Mobile from)
+    {
+      if (IsWorking)
+        return;
 
-				if ( from.PlaceInBackpack( flour ) )
-				{
-					m_Flour = 0;
-				}
-				else
-				{
-					flour.Delete();
-					from.SendLocalizedMessage( 500998 ); // There is not enough room in your backpack!  You stop grinding.
-				}
-			}
+      m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerStateCallback(FinishWorking_Callback), from);
+      UpdateStage();
+    }
 
-			UpdateStage();
-		}
+    private void FinishWorking_Callback(object state)
+    {
+      if (m_Timer != null)
+      {
+        m_Timer.Stop();
+        m_Timer = null;
+      }
 
-		private static int[][] m_StageTable = {
-				new[]{ 0x192C, 0x192D, 0x1931 },
-				new[]{ 0x192E, 0x192F, 0x1932 },
-				new[]{ 0x1930, 0x1930, 0x1934 }
-			};
+      if (state is Mobile from && !from.Deleted && !Deleted && IsFull)
+      {
+        SackFlour flour = new SackFlour();
 
-		private int[] FindItemTable( int itemID )
-		{
-			for ( int i = 0; i < m_StageTable.Length; ++i )
-			{
-				int[] itemTable = m_StageTable[i];
+        flour.ItemID = Utility.RandomBool() ? 4153 : 4165;
 
-				for ( int j = 0; j < itemTable.Length; ++j )
-				{
-					if ( itemTable[j] == itemID )
-						return itemTable;
-				}
-			}
+        if (from.PlaceInBackpack(flour))
+        {
+          m_Flour = 0;
+        }
+        else
+        {
+          flour.Delete();
+          from.SendLocalizedMessage(500998); // There is not enough room in your backpack!  You stop grinding.
+        }
+      }
 
-			return null;
-		}
+      UpdateStage();
+    }
 
-		public void UpdateStage()
-		{
-			if ( IsWorking )
-				UpdateStage( FlourMillStage.Working );
-			else if ( HasFlour )
-				UpdateStage( FlourMillStage.Filled );
-			else
-				UpdateStage( FlourMillStage.Empty );
-		}
+    private int[] FindItemTable(int itemID)
+    {
+      for (int i = 0; i < m_StageTable.Length; ++i)
+      {
+        int[] itemTable = m_StageTable[i];
 
-		public void UpdateStage( FlourMillStage stage )
-		{
-			List<AddonComponent> components = Components;
+        for (int j = 0; j < itemTable.Length; ++j)
+          if (itemTable[j] == itemID)
+            return itemTable;
+      }
 
-			int[][] stageTable = m_StageTable;
+      return null;
+    }
 
-			for ( int i = 0; i < components.Count; ++i )
-			{
-				if ( !(components[i] is AddonComponent component) )
-					continue;
+    public void UpdateStage()
+    {
+      if (IsWorking)
+        UpdateStage(FlourMillStage.Working);
+      else if (HasFlour)
+        UpdateStage(FlourMillStage.Filled);
+      else
+        UpdateStage(FlourMillStage.Empty);
+    }
 
-				int[] itemTable = FindItemTable( component.ItemID );
+    public void UpdateStage(FlourMillStage stage)
+    {
+      List<AddonComponent> components = Components;
 
-				if ( itemTable != null )
-					component.ItemID = itemTable[(int)stage];
-			}
-		}
+      int[][] stageTable = m_StageTable;
 
-		public override void OnComponentUsed( AddonComponent c, Mobile from )
-		{
-			if ( !from.InRange( GetWorldLocation(), 4 ) || !from.InLOS( this ) )
-				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
-			else if ( !IsFull )
-				from.SendLocalizedMessage( 500997 ); // You need more wheat to make a sack of flour.
-			else
-				StartWorking( from );
-		}
+      for (int i = 0; i < components.Count; ++i)
+      {
+        if (!(components[i] is AddonComponent component))
+          continue;
 
-		[Constructible]
-		public FlourMillSouthAddon()
-		{
-			AddComponent( new AddonComponent( 0x192C ), 0,-1, 0 );
-			AddComponent( new AddonComponent( 0x192E ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x1930 ), 0, 1, 0 );
-		}
+        int[] itemTable = FindItemTable(component.ItemID);
 
-		public FlourMillSouthAddon( Serial serial ) : base( serial )
-		{
-		}
+        if (itemTable != null)
+          component.ItemID = itemTable[(int)stage];
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void OnComponentUsed(AddonComponent c, Mobile from)
+    {
+      if (!from.InRange(GetWorldLocation(), 4) || !from.InLOS(this))
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+      else if (!IsFull)
+        from.SendLocalizedMessage(500997); // You need more wheat to make a sack of flour.
+      else
+        StartWorking(from);
+    }
 
-			writer.Write( (int) 1 ); // version
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) m_Flour );
-		}
+      writer.Write(1); // version
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(m_Flour);
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			switch ( version )
-			{
-				case 1:
-				{
-					m_Flour = reader.ReadInt();
-					break;
-				}
-			}
+      int version = reader.ReadInt();
 
-			UpdateStage();
-		}
-	}
+      switch (version)
+      {
+        case 1:
+        {
+          m_Flour = reader.ReadInt();
+          break;
+        }
+      }
 
-	public class FlourMillSouthDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new FlourMillSouthAddon();
-		public override int LabelNumber => 1044348; // flour mill (south)
+      UpdateStage();
+    }
+  }
 
-		[Constructible]
-		public FlourMillSouthDeed()
-		{
-		}
+  public class FlourMillSouthDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public FlourMillSouthDeed()
+    {
+    }
 
-		public FlourMillSouthDeed( Serial serial ) : base( serial )
-		{
-		}
+    public FlourMillSouthDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override BaseAddon Addon => new FlourMillSouthAddon();
+    public override int LabelNumber => 1044348; // flour mill (south)
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

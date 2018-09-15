@@ -1,151 +1,186 @@
 using System;
-using Server.Mobiles;
-using Server.Factions;
 using System.IO;
+using Server.Factions;
+using Server.Mobiles;
+using Server.Network;
 
-namespace Server {
-	public abstract class PowerFactionItem : Item {
-		public abstract bool Use( Mobile mob );
+namespace Server
+{
+  public abstract class PowerFactionItem : Item
+  {
+    private static WeightedItem[] _items =
+    {
+      new WeightedItem(30, typeof(GemOfEmpowerment)),
+      new WeightedItem(25, typeof(BloodRose)),
+      new WeightedItem(20, typeof(ClarityPotion)),
+      new WeightedItem(15, typeof(UrnOfAscension)),
+      new WeightedItem(10, typeof(StormsEye))
+    };
 
-		private sealed class DestructionTimer : Timer {
-			private Mobile _mobile;
+    public PowerFactionItem(int itemId)
+      : base(itemId)
+    {
+    }
 
-			private bool _screamed;
+    public PowerFactionItem(Serial serial)
+      : base(serial)
+    {
+    }
 
-			public DestructionTimer( Mobile mob )
-				: base( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 0.1 ), 10 ) {
-				_mobile = mob;
-			}
+    public abstract bool Use(Mobile mob);
 
-			protected override void OnTick() {
-				if ( _mobile.Alive ) {
-					if ( !_screamed ) {
-						_screamed = true;
+    public static void CheckSpawn(Mobile killer, Mobile victim)
+    {
+      if (killer != null && victim != null)
+      {
+        PlayerState ps = PlayerState.Find(victim);
 
-						_mobile.PlaySound( _mobile.Female ? 814 : 1088 );
-						_mobile.PublicOverheadMessage( Network.MessageType.Regular, 2118, false, "Aaaaah!" );
-					}
+        if (ps != null)
+        {
+          int chance = ps.Rank.Rank;
 
-					_mobile.Damage( Utility.Dice( 2, 6, 0 ) );
-				}
-			}
-		}
+          if (chance > Utility.Random(100))
+          {
+            int weight = 0;
 
-		private sealed class WeightedItem {
-			public int Weight { get; }
+            foreach (WeightedItem item in _items) weight += item.Weight;
 
-			public Type Type { get; }
+            weight = Utility.Random(weight);
 
-			public WeightedItem( int weight, Type type ) {
-				Weight = weight;
-				Type = type;
-			}
+            foreach (WeightedItem item in _items)
+            {
+              if (weight < item.Weight)
+              {
+                Item obj = item.Construct();
 
-			public Item Construct() {
-				return Activator.CreateInstance( Type ) as Item;
-			}
-		}
+                if (obj != null)
+                {
+                  killer.AddToBackpack(obj);
 
-		private static WeightedItem[] _items = {
-			new WeightedItem( 30, typeof( GemOfEmpowerment ) ),
-			new WeightedItem( 25, typeof( BloodRose ) ),
-			new WeightedItem( 20, typeof( ClarityPotion ) ),
-			new WeightedItem( 15, typeof( UrnOfAscension ) ),
-			new WeightedItem( 10, typeof( StormsEye ) )
-		};
+                  killer.SendSound(1470);
+                  killer.LocalOverheadMessage(
+                    MessageType.Regular, 2119, false,
+                    "You notice a strange item on the corpse, and decide to pick it up."
+                  );
 
-		public static void CheckSpawn( Mobile killer, Mobile victim ) {
-			if ( killer != null && victim != null ) {
-				PlayerState ps = PlayerState.Find( victim );
+                  try
+                  {
+                    using (StreamWriter op = new StreamWriter("faction-power-items.log", true))
+                    {
+                      op.WriteLine("{0}\t{1}\t{2}\t{3}", DateTime.UtcNow, killer, victim, obj);
+                    }
+                  }
+                  catch
+                  {
+                  }
+                }
 
-				if ( ps != null ) {
-					int chance = ps.Rank.Rank;
+                break;
+              }
 
-					if ( chance > Utility.Random( 100 ) ) {
-						int weight = 0;
+              weight -= item.Weight;
+            }
+          }
+        }
+      }
+    }
 
-						foreach ( WeightedItem item in _items ) {
-							weight += item.Weight;
-						}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+      }
+      else if (from is PlayerMobile mobile && mobile.DuelContext != null)
+      {
+        mobile.SendMessage("You can't use that.");
+      }
+      else if (Faction.Find(from) == null)
+      {
+        from.LocalOverheadMessage(MessageType.Regular, 2119, false,
+          "The object vanishes from your hands as you touch it.");
 
-						weight = Utility.Random( weight );
+        Timer.DelayCall(TimeSpan.FromSeconds(1.0),
+          delegate
+          {
+            from.LocalOverheadMessage(MessageType.Regular, 2118, false,
+              "You feel a strange tingling sensation throughout your body.");
+          });
 
-						foreach ( WeightedItem item in _items )
-						{
-							if ( weight < item.Weight ) {
-								Item obj = item.Construct();
+        Timer.DelayCall(TimeSpan.FromSeconds(4.0),
+          delegate { from.LocalOverheadMessage(MessageType.Regular, 2118, false, "Your skin begins to burn."); });
 
-								if ( obj != null ) {
-									killer.AddToBackpack( obj );
+        new DestructionTimer(from).Start();
+        Delete();
 
-									killer.SendSound( 1470 );
-									killer.LocalOverheadMessage(
-										Network.MessageType.Regular, 2119, false,
-										"You notice a strange item on the corpse, and decide to pick it up."
-									);
+        //from.SendMessage( "You must be in a faction to use this item." );
+      }
+      else if (Use(from))
+      {
+        from.RevealingAction();
+        Consume();
+      }
+    }
 
-									try {
-										using ( StreamWriter op = new StreamWriter( "faction-power-items.log", true ) ) {
-											op.WriteLine( "{0}\t{1}\t{2}\t{3}", DateTime.UtcNow, killer, victim, obj );
-										}
-									} catch {
-									}
-								}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-								break;
-							}
+      writer.WriteEncodedInt(0); // version
+    }
 
-							weight -= item.Weight;
-						}
-					}
-				}
-			}
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void OnDoubleClick( Mobile from ) {
-			if ( !IsChildOf( from.Backpack ) ) {
-				from.SendLocalizedMessage( 1042038 ); // You must have the object in your backpack to use it.
-			} else if ( from is PlayerMobile mobile && mobile.DuelContext != null ) {
-				mobile.SendMessage( "You can't use that." );
-			} else if ( Faction.Find( from ) == null ) {
-				from.LocalOverheadMessage( Network.MessageType.Regular, 2119, false, "The object vanishes from your hands as you touch it." );
+      int version = reader.ReadEncodedInt();
+    }
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), delegate {
-					from.LocalOverheadMessage( Network.MessageType.Regular, 2118, false, "You feel a strange tingling sensation throughout your body." );
-				} );
+    private sealed class DestructionTimer : Timer
+    {
+      private Mobile _mobile;
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 4.0 ), delegate {
-					from.LocalOverheadMessage( Network.MessageType.Regular, 2118, false, "Your skin begins to burn." );
-				} );
+      private bool _screamed;
 
-				new DestructionTimer( from ).Start();
-				Delete();
+      public DestructionTimer(Mobile mob)
+        : base(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.1), 10)
+      {
+        _mobile = mob;
+      }
 
-				//from.SendMessage( "You must be in a faction to use this item." );
-			} else if ( Use( from ) ) {
-				from.RevealingAction();
-				Consume();
-			}
-		}
+      protected override void OnTick()
+      {
+        if (_mobile.Alive)
+        {
+          if (!_screamed)
+          {
+            _screamed = true;
 
-		public PowerFactionItem( int itemId )
-			: base( itemId ) {
-		}
+            _mobile.PlaySound(_mobile.Female ? 814 : 1088);
+            _mobile.PublicOverheadMessage(MessageType.Regular, 2118, false, "Aaaaah!");
+          }
 
-		public PowerFactionItem( Serial serial )
-			: base( serial ) {
-		}
+          _mobile.Damage(Utility.Dice(2, 6, 0));
+        }
+      }
+    }
 
-		public override void Serialize( GenericWriter writer ) {
-			base.Serialize( writer );
+    private sealed class WeightedItem
+    {
+      public WeightedItem(int weight, Type type)
+      {
+        Weight = weight;
+        Type = type;
+      }
 
-			writer.WriteEncodedInt( ( int ) 0 ); // version
-		}
+      public int Weight{ get; }
 
-		public override void Deserialize( GenericReader reader ) {
-			base.Deserialize( reader );
+      public Type Type{ get; }
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      public Item Construct()
+      {
+        return Activator.CreateInstance(Type) as Item;
+      }
+    }
+  }
 }

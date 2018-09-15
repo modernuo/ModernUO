@@ -22,43 +22,43 @@ using Server.Network;
 
 namespace Server.Menus.Questions
 {
-	public class QuestionMenu : IMenu
-	{
-		private int m_Serial;
-		private static int m_NextSerial;
+  public class QuestionMenu : IMenu
+  {
+    private static int m_NextSerial;
+    private int m_Serial;
 
-		int IMenu.Serial => m_Serial;
+    public QuestionMenu(string question, string[] answers)
+    {
+      Question = question;
+      Answers = answers;
 
-		int IMenu.EntryLength => Answers.Length;
+      do
+      {
+        m_Serial = ++m_NextSerial;
+        m_Serial &= 0x7FFFFFFF;
+      } while (m_Serial == 0);
+    }
 
-		public string Question { get; set; }
+    public string Question{ get; set; }
 
-		public string[] Answers { get; }
+    public string[] Answers{ get; }
 
-		public QuestionMenu( string question, string[] answers )
-		{
-			Question = question;
-			Answers = answers;
+    int IMenu.Serial => m_Serial;
 
-			do
-			{
-				m_Serial = ++m_NextSerial;
-				m_Serial &= 0x7FFFFFFF;
-			} while ( m_Serial == 0 );
-		}
+    int IMenu.EntryLength => Answers.Length;
 
-		public virtual void OnCancel( NetState state )
-		{
-		}
+    public virtual void OnCancel(NetState state)
+    {
+    }
 
-		public virtual void OnResponse( NetState state, int index )
-		{
-		}
+    public virtual void OnResponse(NetState state, int index)
+    {
+    }
 
-		public void SendTo( NetState state )
-		{
-			state.AddMenu( this );
-			state.Send( new DisplayQuestionMenu( this ) );
-		}
-	}
+    public void SendTo(NetState state)
+    {
+      state.AddMenu(this);
+      state.Send(new DisplayQuestionMenu(this));
+    }
+  }
 }

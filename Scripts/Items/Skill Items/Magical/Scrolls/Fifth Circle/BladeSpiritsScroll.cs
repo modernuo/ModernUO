@@ -1,35 +1,33 @@
 namespace Server.Items
 {
-	public class BladeSpiritsScroll : SpellScroll
-	{
-		[Constructible]
-		public BladeSpiritsScroll() : this( 1 )
-		{
-		}
+  public class BladeSpiritsScroll : SpellScroll
+  {
+    [Constructible]
+    public BladeSpiritsScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public BladeSpiritsScroll( int amount ) : base( 32, 0x1F4D, amount )
-		{
-		}
+    [Constructible]
+    public BladeSpiritsScroll(int amount) : base(32, 0x1F4D, amount)
+    {
+    }
 
-		public BladeSpiritsScroll( Serial serial ) : base( serial )
-		{
-		}
+    public BladeSpiritsScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

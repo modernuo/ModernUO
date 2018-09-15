@@ -1,40 +1,40 @@
 namespace Server.Items
 {
-	public class ShaminoCrossbow : RepeatingCrossbow
-	{
-		public override int LabelNumber => 1062915; // Shamino�s Best Crossbow
+  public class ShaminoCrossbow : RepeatingCrossbow
+  {
+    [Constructible]
+    public ShaminoCrossbow()
+    {
+      Hue = 0x504;
+      LootType = LootType.Blessed;
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+      Attributes.AttackChance = 15;
+      Attributes.WeaponDamage = 40;
+      WeaponAttributes.SelfRepair = 10;
+      WeaponAttributes.LowerStatReq = 100;
+    }
 
-		[Constructible]
-		public ShaminoCrossbow()
-		{
-			Hue = 0x504;
-			LootType = LootType.Blessed;
+    public ShaminoCrossbow(Serial serial) : base(serial)
+    {
+    }
 
-			Attributes.AttackChance = 15;
-			Attributes.WeaponDamage = 40;
-			WeaponAttributes.SelfRepair = 10;
-			WeaponAttributes.LowerStatReq = 100;
-		}
+    public override int LabelNumber => 1062915; // Shamino�s Best Crossbow
 
-		public ShaminoCrossbow( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( (int) 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

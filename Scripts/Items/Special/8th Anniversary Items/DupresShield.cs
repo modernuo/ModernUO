@@ -1,50 +1,50 @@
 namespace Server.Items
 {
-	public class DupresShield : BaseShield, ITokunoDyable
-	{
-		public override int LabelNumber => 1075196; // Dupre�s Shield
+  public class DupresShield : BaseShield, ITokunoDyable
+  {
+    [Constructible]
+    public DupresShield() : base(0x2B01)
+    {
+      LootType = LootType.Blessed;
+      Weight = 6.0;
 
-		public override int BasePhysicalResistance => 1;
-		public override int BaseFireResistance => 0;
-		public override int BaseColdResistance => 0;
-		public override int BasePoisonResistance => 0;
-		public override int BaseEnergyResistance => 1;
+      Attributes.BonusHits = 5;
+      Attributes.RegenHits = 1;
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+      SkillBonuses.SetValues(0, SkillName.Parry, 5);
+    }
 
-		public override int AosStrReq => 50;
+    public DupresShield(Serial serial) : base(serial)
+    {
+    }
 
-		public override int ArmorBase => 15;
+    public override int LabelNumber => 1075196; // Dupre�s Shield
 
-		[Constructible]
-		public DupresShield() : base( 0x2B01 )
-		{
-			LootType = LootType.Blessed;
-			Weight = 6.0;
+    public override int BasePhysicalResistance => 1;
+    public override int BaseFireResistance => 0;
+    public override int BaseColdResistance => 0;
+    public override int BasePoisonResistance => 0;
+    public override int BaseEnergyResistance => 1;
 
-			Attributes.BonusHits = 5;
-			Attributes.RegenHits = 1;
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-			SkillBonuses.SetValues( 0, SkillName.Parry, 5 );
-		}
+    public override int AosStrReq => 50;
 
-		public DupresShield( Serial serial ) : base( serial )
-		{
-		}
+    public override int ArmorBase => 15;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); //version
-		}
+      writer.WriteEncodedInt(0); //version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

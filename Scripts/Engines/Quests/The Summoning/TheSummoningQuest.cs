@@ -4,109 +4,109 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Doom
 {
-	public class TheSummoningQuest : QuestSystem
-	{
-		private static Type[] m_TypeReferenceTable = {
-				typeof( AcceptConversation ),
-				typeof( CollectBonesObjective ),
-				typeof( VanquishDaemonConversation ),
-				typeof( VanquishDaemonObjective )
-			};
+  public class TheSummoningQuest : QuestSystem
+  {
+    private static Type[] m_TypeReferenceTable =
+    {
+      typeof(AcceptConversation),
+      typeof(CollectBonesObjective),
+      typeof(VanquishDaemonConversation),
+      typeof(VanquishDaemonObjective)
+    };
 
-		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
+    public TheSummoningQuest(Victoria victoria, PlayerMobile from) : base(from)
+    {
+      Victoria = victoria;
+    }
 
-		public Victoria Victoria { get; private set; }
+    public TheSummoningQuest()
+    {
+    }
 
-		public bool WaitForSummon { get; set; }
+    public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
-		public override object Name => 1050025;
+    public Victoria Victoria{ get; private set; }
 
-		public override object OfferMessage => 1050020;
+    public bool WaitForSummon{ get; set; }
 
-		public override bool IsTutorial => false;
-		public override TimeSpan RestartDelay => TimeSpan.Zero;
-		public override int Picture => 0x15B5;
+    public override object Name => 1050025;
 
-		// NOTE: Quest not entirely OSI-accurate: some changes made to prevent numerous OSI bugs
+    public override object OfferMessage => 1050020;
 
-		public override void Slice()
-		{
-			if ( WaitForSummon && Victoria != null )
-			{
-				SummoningAltar altar = Victoria.Altar;
+    public override bool IsTutorial => false;
+    public override TimeSpan RestartDelay => TimeSpan.Zero;
+    public override int Picture => 0x15B5;
 
-				if ( altar != null && (altar.Daemon == null || !altar.Daemon.Alive) )
-				{
-					if ( From.Map == Victoria.Map && From.InRange( Victoria, 8 ) )
-					{
-						WaitForSummon = false;
+    // NOTE: Quest not entirely OSI-accurate: some changes made to prevent numerous OSI bugs
 
-						AddConversation( new VanquishDaemonConversation() );
-					}
-				}
-			}
+    public override void Slice()
+    {
+      if (WaitForSummon && Victoria != null)
+      {
+        SummoningAltar altar = Victoria.Altar;
 
-			base.Slice();
-		}
+        if (altar != null && (altar.Daemon == null || !altar.Daemon.Alive))
+          if (From.Map == Victoria.Map && From.InRange(Victoria, 8))
+          {
+            WaitForSummon = false;
 
-		public static int GetDaemonBonesFor( BaseCreature creature )
-		{
-			if ( creature == null || creature.Controlled || creature.Summoned )
-				return 0;
+            AddConversation(new VanquishDaemonConversation());
+          }
+      }
 
-			int fame = creature.Fame;
+      base.Slice();
+    }
 
-			if ( fame < 1500 )
-				return Utility.Dice( 2, 5, -1 );
-			if ( fame < 20000 )
-				return Utility.Dice( 2, 4, 8 );
-			return 50;
-		}
+    public static int GetDaemonBonesFor(BaseCreature creature)
+    {
+      if (creature == null || creature.Controlled || creature.Summoned)
+        return 0;
 
-		public TheSummoningQuest( Victoria victoria, PlayerMobile from ) : base( from )
-		{
-			Victoria = victoria;
-		}
+      int fame = creature.Fame;
 
-		public TheSummoningQuest()
-		{
-		}
+      if (fame < 1500)
+        return Utility.Dice(2, 5, -1);
+      if (fame < 20000)
+        return Utility.Dice(2, 4, 8);
+      return 50;
+    }
 
-		public override void Cancel()
-		{
-			base.Cancel();
+    public override void Cancel()
+    {
+      base.Cancel();
 
-			QuestObjective obj = FindObjective( typeof( CollectBonesObjective ) );
+      QuestObjective obj = FindObjective(typeof(CollectBonesObjective));
 
-			if ( obj != null && obj.CurProgress > 0 )
-			{
-				From.BankBox.DropItem( new DaemonBone( obj.CurProgress ) );
+      if (obj != null && obj.CurProgress > 0)
+      {
+        From.BankBox.DropItem(new DaemonBone(obj.CurProgress));
 
-				From.SendLocalizedMessage( 1050030 ); // The Daemon bones that you have thus far given to Victoria have been returned to you.
-			}
-		}
+        From.SendLocalizedMessage(
+          1050030); // The Daemon bones that you have thus far given to Victoria have been returned to you.
+      }
+    }
 
-		public override void Accept()
-		{
-			base.Accept();
+    public override void Accept()
+    {
+      base.Accept();
 
-			AddConversation( new AcceptConversation() );
-		}
+      AddConversation(new AcceptConversation());
+    }
 
-		public override void ChildDeserialize( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+    public override void ChildDeserialize(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-			Victoria = reader.ReadMobile() as Victoria;
-			WaitForSummon = reader.ReadBool();
-		}
+      Victoria = reader.ReadMobile() as Victoria;
+      WaitForSummon = reader.ReadBool();
+    }
 
-		public override void ChildSerialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 0 ); // version
+    public override void ChildSerialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
 
-			writer.Write( (Mobile) Victoria );
-			writer.Write( (bool) WaitForSummon );
-		}
-	}
+      writer.Write(Victoria);
+      writer.Write(WaitForSummon);
+    }
+  }
 }

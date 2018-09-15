@@ -2,79 +2,79 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public abstract class BaseGuard : Mobile
-	{
-		public static void Spawn( Mobile caller, Mobile target )
-		{
-			Spawn( caller, target, 1, false );
-		}
+  public abstract class BaseGuard : Mobile
+  {
+    public BaseGuard(Mobile target)
+    {
+      if (target != null)
+      {
+        Location = target.Location;
+        Map = target.Map;
 
-		public static void Spawn( Mobile caller, Mobile target, int amount, bool onlyAdditional )
-		{
-			if ( target == null || target.Deleted )
-				return;
+        Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+          5023);
+      }
+    }
 
-			foreach ( Mobile m in target.GetMobilesInRange( 15 ) )
-			{
-				if ( m is BaseGuard g )
-				{
-					if ( g.Focus == null ) // idling
-					{
-						g.Focus = target;
+    public BaseGuard(Serial serial) : base(serial)
+    {
+    }
 
-						--amount;
-					}
-					else if ( g.Focus == target && !onlyAdditional )
-					{
-						--amount;
-					}
-				}
-			}
+    public abstract Mobile Focus{ get; set; }
 
-			while ( amount-- > 0 )
-				caller.Region.MakeGuard( target );
-		}
+    public static void Spawn(Mobile caller, Mobile target)
+    {
+      Spawn(caller, target, 1, false);
+    }
 
-		public BaseGuard( Mobile target )
-		{
-			if ( target != null )
-			{
-				Location = target.Location;
-				Map = target.Map;
+    public static void Spawn(Mobile caller, Mobile target, int amount, bool onlyAdditional)
+    {
+      if (target == null || target.Deleted)
+        return;
 
-				Effects.SendLocationParticles( EffectItem.Create( Location, Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 5023 );
-			}
-		}
+      foreach (Mobile m in target.GetMobilesInRange(15))
+        if (m is BaseGuard g)
+        {
+          if (g.Focus == null) // idling
+          {
+            g.Focus = target;
 
-		public BaseGuard( Serial serial ) : base( serial )
-		{
-		}
+            --amount;
+          }
+          else if (g.Focus == target && !onlyAdditional)
+          {
+            --amount;
+          }
+        }
 
-		public override bool OnBeforeDeath()
-		{
-			Effects.SendLocationParticles( EffectItem.Create( Location, Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 2023 );
+      while (amount-- > 0)
+        caller.Region.MakeGuard(target);
+    }
 
-			PlaySound( 0x1FE );
+    public override bool OnBeforeDeath()
+    {
+      Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+        2023);
 
-			Delete();
+      PlaySound(0x1FE);
 
-			return false;
-		}
+      Delete();
 
-		public abstract Mobile Focus{ get; set; }
+      return false;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

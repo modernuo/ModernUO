@@ -23,280 +23,279 @@ using Server.Network;
 
 namespace Server.Targeting
 {
-	public abstract class Target
-	{
-		private static int m_NextTargetID;
+  public abstract class Target
+  {
+    private static int m_NextTargetID;
 
-		public static bool TargetIDValidation { get; set; } = true;
+    private Timer m_TimeoutTimer;
 
-		public DateTime TimeoutTime { get; private set; }
+    protected Target(int range, bool allowGround, TargetFlags flags)
+    {
+      TargetID = ++m_NextTargetID;
+      Range = range;
+      AllowGround = allowGround;
+      Flags = flags;
 
-		protected Target( int range, bool allowGround, TargetFlags flags )
-		{
-			TargetID = ++m_NextTargetID;
-			Range = range;
-			AllowGround = allowGround;
-			Flags = flags;
+      CheckLOS = true;
+    }
 
-			CheckLOS = true;
-		}
+    public static bool TargetIDValidation{ get; set; } = true;
 
-		public static void Cancel( Mobile m )
-		{
-			NetState ns = m.NetState;
+    public DateTime TimeoutTime{ get; private set; }
 
-			ns?.Send( CancelTarget.Instance );
+    public bool CheckLOS{ get; set; }
 
-			Target targ = m.Target;
+    public bool DisallowMultis{ get; set; }
 
-			targ?.OnTargetCancel( m, TargetCancelType.Canceled );
-		}
+    public bool AllowNonlocal{ get; set; }
 
-		private Timer m_TimeoutTimer;
+    public int TargetID{ get; }
 
-		public void BeginTimeout( Mobile from, TimeSpan delay )
-		{
-			TimeoutTime = DateTime.UtcNow + delay;
+    public int Range{ get; set; }
 
-			m_TimeoutTimer?.Stop();
+    public bool AllowGround{ get; set; }
 
-			m_TimeoutTimer = new TimeoutTimer( this, from, delay );
-			m_TimeoutTimer.Start();
-		}
+    public TargetFlags Flags{ get; set; }
 
-		public void CancelTimeout()
-		{
-			m_TimeoutTimer?.Stop();
+    public static void Cancel(Mobile m)
+    {
+      NetState ns = m.NetState;
 
-			m_TimeoutTimer = null;
-		}
+      ns?.Send(CancelTarget.Instance);
 
-		public void Timeout( Mobile from )
-		{
-			CancelTimeout();
-			from.ClearTarget();
+      Target targ = m.Target;
 
-			Cancel( from );
+      targ?.OnTargetCancel(m, TargetCancelType.Canceled);
+    }
 
-			OnTargetCancel( from, TargetCancelType.Timeout );
-			OnTargetFinish( from );
-		}
+    public void BeginTimeout(Mobile from, TimeSpan delay)
+    {
+      TimeoutTime = DateTime.UtcNow + delay;
 
-		private class TimeoutTimer : Timer
-		{
-			private Target m_Target;
-			private Mobile m_Mobile;
+      m_TimeoutTimer?.Stop();
 
-			private static TimeSpan ThirtySeconds = TimeSpan.FromSeconds( 30.0 );
-			private static TimeSpan TenSeconds = TimeSpan.FromSeconds( 10.0 );
-			private static TimeSpan OneSecond = TimeSpan.FromSeconds( 1.0 );
+      m_TimeoutTimer = new TimeoutTimer(this, from, delay);
+      m_TimeoutTimer.Start();
+    }
 
-			public TimeoutTimer( Target target, Mobile m, TimeSpan delay ) : base( delay )
-			{
-				m_Target = target;
-				m_Mobile = m;
+    public void CancelTimeout()
+    {
+      m_TimeoutTimer?.Stop();
 
-				if ( delay >= ThirtySeconds )
-					Priority = TimerPriority.FiveSeconds;
-				else if ( delay >= TenSeconds )
-					Priority = TimerPriority.OneSecond;
-				else if ( delay >= OneSecond )
-					Priority = TimerPriority.TwoFiftyMS;
-				else
-					Priority = TimerPriority.TwentyFiveMS;
-			}
+      m_TimeoutTimer = null;
+    }
 
-			protected override void OnTick()
-			{
-				if ( m_Mobile.Target == m_Target )
-					m_Target.Timeout( m_Mobile );
-			}
-		}
+    public void Timeout(Mobile from)
+    {
+      CancelTimeout();
+      from.ClearTarget();
 
-		public bool CheckLOS { get; set; }
+      Cancel(from);
 
-		public bool DisallowMultis { get; set; }
+      OnTargetCancel(from, TargetCancelType.Timeout);
+      OnTargetFinish(from);
+    }
 
-		public bool AllowNonlocal { get; set; }
+    public virtual Packet GetPacketFor(NetState ns)
+    {
+      return new TargetReq(this);
+    }
 
-		public int TargetID { get; }
+    public void Cancel(Mobile from, TargetCancelType type)
+    {
+      CancelTimeout();
+      from.ClearTarget();
 
-		public virtual Packet GetPacketFor( NetState ns )
-		{
-			return new TargetReq( this );
-		}
+      OnTargetCancel(from, type);
+      OnTargetFinish(from);
+    }
 
-		public void Cancel( Mobile from, TargetCancelType type )
-		{
-			CancelTimeout();
-			from.ClearTarget();
+    public void Invoke(Mobile from, object targeted)
+    {
+      CancelTimeout();
+      from.ClearTarget();
 
-			OnTargetCancel( from, type );
-			OnTargetFinish( from );
-		}
+      if (from.Deleted)
+      {
+        OnTargetCancel(from, TargetCancelType.Canceled);
+        OnTargetFinish(from);
+        return;
+      }
 
-		public void Invoke( Mobile from, object targeted )
-		{
-			CancelTimeout();
-			from.ClearTarget();
+      Point3D loc;
+      Map map;
 
-			if ( from.Deleted )
-			{
-				OnTargetCancel( from, TargetCancelType.Canceled );
-				OnTargetFinish( from );
-				return;
-			}
+      Item item = targeted as Item;
+      Mobile mobile = targeted as Mobile;
 
-			Point3D loc;
-			Map map;
+      if (targeted is LandTarget target)
+      {
+        loc = target.Location;
+        map = from.Map;
+      }
+      else if (targeted is StaticTarget staticTarget)
+      {
+        loc = staticTarget.Location;
+        map = from.Map;
+      }
+      else if (mobile != null)
+      {
+        if (mobile.Deleted)
+        {
+          OnTargetDeleted(from, mobile);
+          OnTargetFinish(from);
+          return;
+        }
 
-			Item item = targeted as Item;
-			Mobile mobile = targeted as Mobile;
+        if (!mobile.CanTarget)
+        {
+          OnTargetUntargetable(from, mobile);
+          OnTargetFinish(from);
+          return;
+        }
 
-			if ( targeted is LandTarget target )
-			{
-				loc = target.Location;
-				map = from.Map;
-			}
-			else if ( targeted is StaticTarget staticTarget )
-			{
-				loc = staticTarget.Location;
-				map = from.Map;
-			}
-			else if ( mobile != null )
-			{
-				if ( mobile.Deleted )
-				{
-					OnTargetDeleted( from, mobile );
-					OnTargetFinish( from );
-					return;
-				}
+        loc = mobile.Location;
+        map = mobile.Map;
+      }
+      else if (item != null)
+      {
+        if (item.Deleted)
+        {
+          OnTargetDeleted(from, item);
+          OnTargetFinish(from);
+          return;
+        }
 
-				if ( !mobile.CanTarget )
-				{
-					OnTargetUntargetable( from, mobile );
-					OnTargetFinish( from );
-					return;
-				}
+        if (!item.CanTarget)
+        {
+          OnTargetUntargetable(from, item);
+          OnTargetFinish(from);
+          return;
+        }
 
-				loc = mobile.Location;
-				map = mobile.Map;
-			}
-			else if ( item != null )
-			{
-				if ( item.Deleted )
-				{
-					OnTargetDeleted( from, item );
-					OnTargetFinish( from );
-					return;
-				}
+        object root = item.RootParent;
 
-				if ( !item.CanTarget )
-				{
-					OnTargetUntargetable( from, item );
-					OnTargetFinish( from );
-					return;
-				}
+        if (!AllowNonlocal && root is Mobile && root != from && from.AccessLevel == AccessLevel.Player)
+        {
+          OnNonlocalTarget(from, item);
+          OnTargetFinish(from);
+          return;
+        }
 
-				object root = item.RootParent;
+        loc = item.GetWorldLocation();
+        map = item.Map;
+      }
+      else
+      {
+        OnTargetCancel(from, TargetCancelType.Canceled);
+        OnTargetFinish(from);
+        return;
+      }
 
-				if ( !AllowNonlocal && root is Mobile && root != from && from.AccessLevel == AccessLevel.Player )
-				{
-					OnNonlocalTarget( from, item );
-					OnTargetFinish( from );
-					return;
-				}
+      if (map == null || map != from.Map || Range != -1 && !from.InRange(loc, Range))
+      {
+        OnTargetOutOfRange(from, targeted);
+      }
+      else
+      {
+        if (!from.CanSee(targeted))
+          OnCantSeeTarget(from, targeted);
+        else if (CheckLOS && !from.InLOS(targeted))
+          OnTargetOutOfLOS(from, targeted);
+        else if (item?.InSecureTrade == true)
+          OnTargetInSecureTrade(from, targeted);
+        else if (item?.IsAccessibleTo(from) == true)
+          OnTargetNotAccessible(from, targeted);
+        else if (item?.CheckTarget(from, this, targeted) == true)
+          OnTargetUntargetable(from, targeted);
+        else if (mobile?.CheckTarget(from, this, mobile) != true)
+          OnTargetUntargetable(from, mobile);
+        else if (from.Region.OnTarget(from, this, targeted))
+          OnTarget(from, targeted);
+      }
 
-				loc = item.GetWorldLocation();
-				map = item.Map;
-			}
-			else
-			{
-				OnTargetCancel( from, TargetCancelType.Canceled );
-				OnTargetFinish( from );
-				return;
-			}
+      OnTargetFinish(from);
+    }
 
-			if ( map == null || map != from.Map || ( Range != -1 && !from.InRange( loc, Range ) ) )
-			{
-				OnTargetOutOfRange( from, targeted );
-			}
-			else
-			{
-				if ( !from.CanSee( targeted ) )
-					OnCantSeeTarget( from, targeted );
-				else if ( CheckLOS && !from.InLOS( targeted ) )
-					OnTargetOutOfLOS( from, targeted );
-				else if ( item?.InSecureTrade == true )
-					OnTargetInSecureTrade( from, targeted );
-				else if ( item?.IsAccessibleTo( from ) == true )
-					OnTargetNotAccessible( from, targeted );
-				else if ( item?.CheckTarget( from, this, targeted ) == true )
-					OnTargetUntargetable( from, targeted );
-				else if ( mobile?.CheckTarget( from, this, mobile ) != true )
-					OnTargetUntargetable( from, mobile );
-				else if ( from.Region.OnTarget( from, this, targeted ) )
-					OnTarget( from, targeted );
-			}
+    protected virtual void OnTarget(Mobile from, object targeted)
+    {
+    }
 
-			OnTargetFinish( from );
-		}
+    protected virtual void OnTargetNotAccessible(Mobile from, object targeted)
+    {
+      from.SendLocalizedMessage(500447); // That is not accessible.
+    }
 
-		protected virtual void OnTarget( Mobile from, object targeted )
-		{
-		}
+    protected virtual void OnTargetInSecureTrade(Mobile from, object targeted)
+    {
+      from.SendLocalizedMessage(500447); // That is not accessible.
+    }
 
-		protected virtual void OnTargetNotAccessible( Mobile from, object targeted )
-		{
-			from.SendLocalizedMessage( 500447 ); // That is not accessible.
-		}
+    protected virtual void OnNonlocalTarget(Mobile from, object targeted)
+    {
+      from.SendLocalizedMessage(500447); // That is not accessible.
+    }
 
-		protected virtual void OnTargetInSecureTrade( Mobile from, object targeted )
-		{
-			from.SendLocalizedMessage( 500447 ); // That is not accessible.
-		}
+    protected virtual void OnCantSeeTarget(Mobile from, object targeted)
+    {
+      from.SendLocalizedMessage(500237); // Target can not be seen.
+    }
 
-		protected virtual void OnNonlocalTarget( Mobile from, object targeted )
-		{
-			from.SendLocalizedMessage( 500447 ); // That is not accessible.
-		}
+    protected virtual void OnTargetOutOfLOS(Mobile from, object targeted)
+    {
+      from.SendLocalizedMessage(500237); // Target can not be seen.
+    }
 
-		protected virtual void OnCantSeeTarget( Mobile from, object targeted )
-		{
-			from.SendLocalizedMessage( 500237 ); // Target can not be seen.
-		}
+    protected virtual void OnTargetOutOfRange(Mobile from, object targeted)
+    {
+      from.SendLocalizedMessage(500446); // That is too far away.
+    }
 
-		protected virtual void OnTargetOutOfLOS( Mobile from, object targeted )
-		{
-			from.SendLocalizedMessage( 500237 ); // Target can not be seen.
-		}
+    protected virtual void OnTargetDeleted(Mobile from, object targeted)
+    {
+    }
 
-		protected virtual void OnTargetOutOfRange( Mobile from, object targeted )
-		{
-			from.SendLocalizedMessage( 500446 ); // That is too far away.
-		}
+    protected virtual void OnTargetUntargetable(Mobile from, object targeted)
+    {
+      from.SendLocalizedMessage(500447); // That is not accessible.
+    }
 
-		protected virtual void OnTargetDeleted( Mobile from, object targeted )
-		{
-		}
+    protected virtual void OnTargetCancel(Mobile from, TargetCancelType cancelType)
+    {
+    }
 
-		protected virtual void OnTargetUntargetable( Mobile from, object targeted )
-		{
-			from.SendLocalizedMessage( 500447 ); // That is not accessible.
-		}
+    protected virtual void OnTargetFinish(Mobile from)
+    {
+    }
 
-		protected virtual void OnTargetCancel( Mobile from, TargetCancelType cancelType )
-		{
-		}
+    private class TimeoutTimer : Timer
+    {
+      private static TimeSpan ThirtySeconds = TimeSpan.FromSeconds(30.0);
+      private static TimeSpan TenSeconds = TimeSpan.FromSeconds(10.0);
+      private static TimeSpan OneSecond = TimeSpan.FromSeconds(1.0);
+      private Mobile m_Mobile;
+      private Target m_Target;
 
-		protected virtual void OnTargetFinish( Mobile from )
-		{
-		}
+      public TimeoutTimer(Target target, Mobile m, TimeSpan delay) : base(delay)
+      {
+        m_Target = target;
+        m_Mobile = m;
 
-		public int Range { get; set; }
+        if (delay >= ThirtySeconds)
+          Priority = TimerPriority.FiveSeconds;
+        else if (delay >= TenSeconds)
+          Priority = TimerPriority.OneSecond;
+        else if (delay >= OneSecond)
+          Priority = TimerPriority.TwoFiftyMS;
+        else
+          Priority = TimerPriority.TwentyFiveMS;
+      }
 
-		public bool AllowGround { get; set; }
-
-		public TargetFlags Flags { get; set; }
-	}
+      protected override void OnTick()
+      {
+        if (m_Mobile.Target == m_Target)
+          m_Target.Timeout(m_Mobile);
+      }
+    }
+  }
 }

@@ -4,40 +4,40 @@ using System.Xml;
 
 namespace Server.Gumps
 {
-	public class LocationTree
-	{
-		public LocationTree( string fileName, Map map )
-		{
-			LastBranch = new Dictionary<Mobile, ParentNode>();
-			Map = map;
+  public class LocationTree
+  {
+    public LocationTree(string fileName, Map map)
+    {
+      LastBranch = new Dictionary<Mobile, ParentNode>();
+      Map = map;
 
-			string path = Path.Combine( "Data/Locations/", fileName );
+      string path = Path.Combine("Data/Locations/", fileName);
 
-			if ( File.Exists( path ) )
-			{
-				XmlTextReader xml = new XmlTextReader( new StreamReader( path ) );
+      if (File.Exists(path))
+      {
+        XmlTextReader xml = new XmlTextReader(new StreamReader(path));
 
-				xml.WhitespaceHandling = WhitespaceHandling.None;
+        xml.WhitespaceHandling = WhitespaceHandling.None;
 
-				Root = Parse( xml );
+        Root = Parse(xml);
 
-				xml.Close();
-			}
-		}
+        xml.Close();
+      }
+    }
 
-		public Dictionary<Mobile, ParentNode> LastBranch { get; }
+    public Dictionary<Mobile, ParentNode> LastBranch{ get; }
 
-		public Map Map { get; }
+    public Map Map{ get; }
 
-		public ParentNode Root { get; }
+    public ParentNode Root{ get; }
 
-		private ParentNode Parse( XmlTextReader xml )
-		{
-			xml.Read();
-			xml.Read();
-			xml.Read();
+    private ParentNode Parse(XmlTextReader xml)
+    {
+      xml.Read();
+      xml.Read();
+      xml.Read();
 
-			return new ParentNode( xml, null );
-		}
-	}
+      return new ParentNode(xml, null);
+    }
+  }
 }

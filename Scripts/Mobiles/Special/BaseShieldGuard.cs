@@ -1,148 +1,163 @@
-using Server.Items;
 using Server.Guilds;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public abstract class BaseShieldGuard : BaseCreature
-	{
-		public BaseShieldGuard() : base( AIType.AI_Melee, FightMode.Aggressor, 14, 1, 0.8, 1.6 )
-		{
-			InitStats( 1000, 1000, 1000 );
-			Title = "the guard";
+  public abstract class BaseShieldGuard : BaseCreature
+  {
+    public BaseShieldGuard() : base(AIType.AI_Melee, FightMode.Aggressor, 14, 1, 0.8, 1.6)
+    {
+      InitStats(1000, 1000, 1000);
+      Title = "the guard";
 
-			SpeechHue = Utility.RandomDyedHue();
+      SpeechHue = Utility.RandomDyedHue();
 
-			Hue = Utility.RandomSkinHue();
+      Hue = Utility.RandomSkinHue();
 
-			if ( Female = Utility.RandomBool() )
-			{
-				Body = 0x191;
-				Name = NameList.RandomName( "female" );
+      if (Female = Utility.RandomBool())
+      {
+        Body = 0x191;
+        Name = NameList.RandomName("female");
 
-				AddItem( new FemalePlateChest() );
-				AddItem( new PlateArms() );
-				AddItem( new PlateLegs() );
+        AddItem(new FemalePlateChest());
+        AddItem(new PlateArms());
+        AddItem(new PlateLegs());
 
-				switch( Utility.Random( 2 ) )
-				{
-					case 0: AddItem( new Doublet( Utility.RandomNondyedHue() ) ); break;
-					case 1: AddItem( new BodySash( Utility.RandomNondyedHue() ) ); break;
-				}
+        switch (Utility.Random(2))
+        {
+          case 0:
+            AddItem(new Doublet(Utility.RandomNondyedHue()));
+            break;
+          case 1:
+            AddItem(new BodySash(Utility.RandomNondyedHue()));
+            break;
+        }
 
-				switch( Utility.Random( 2 ) )
-				{
-					case 0: AddItem( new Skirt( Utility.RandomNondyedHue() ) ); break;
-					case 1: AddItem( new Kilt( Utility.RandomNondyedHue() ) ); break;
-				}
-			}
-			else
-			{
-				Body = 0x190;
-				Name = NameList.RandomName( "male" );
+        switch (Utility.Random(2))
+        {
+          case 0:
+            AddItem(new Skirt(Utility.RandomNondyedHue()));
+            break;
+          case 1:
+            AddItem(new Kilt(Utility.RandomNondyedHue()));
+            break;
+        }
+      }
+      else
+      {
+        Body = 0x190;
+        Name = NameList.RandomName("male");
 
-				AddItem( new PlateChest() );
-				AddItem( new PlateArms() );
-				AddItem( new PlateLegs() );
+        AddItem(new PlateChest());
+        AddItem(new PlateArms());
+        AddItem(new PlateLegs());
 
-				switch( Utility.Random( 3 ) )
-				{
-					case 0: AddItem( new Doublet( Utility.RandomNondyedHue() ) ); break;
-					case 1: AddItem( new Tunic( Utility.RandomNondyedHue() ) ); break;
-					case 2: AddItem( new BodySash( Utility.RandomNondyedHue() ) ); break;
-				}
-			}
+        switch (Utility.Random(3))
+        {
+          case 0:
+            AddItem(new Doublet(Utility.RandomNondyedHue()));
+            break;
+          case 1:
+            AddItem(new Tunic(Utility.RandomNondyedHue()));
+            break;
+          case 2:
+            AddItem(new BodySash(Utility.RandomNondyedHue()));
+            break;
+        }
+      }
 
-			Utility.AssignRandomHair( this );
-			if ( Utility.RandomBool() )
-				Utility.AssignRandomFacialHair( this, HairHue );
+      Utility.AssignRandomHair(this);
+      if (Utility.RandomBool())
+        Utility.AssignRandomFacialHair(this, HairHue);
 
-			VikingSword weapon = new VikingSword();
-			weapon.Movable = false;
-			AddItem( weapon );
+      VikingSword weapon = new VikingSword();
+      weapon.Movable = false;
+      AddItem(weapon);
 
-			BaseShield shield = Shield;
-			shield.Movable = false;
-			AddItem( shield );
+      BaseShield shield = Shield;
+      shield.Movable = false;
+      AddItem(shield);
 
-			PackGold( 250, 500 );
+      PackGold(250, 500);
 
-			Skills[SkillName.Anatomy].Base = 120.0;
-			Skills[SkillName.Tactics].Base = 120.0;
-			Skills[SkillName.Swords].Base = 120.0;
-			Skills[SkillName.MagicResist].Base = 120.0;
-			Skills[SkillName.DetectHidden].Base = 100.0;
-		}
+      Skills[SkillName.Anatomy].Base = 120.0;
+      Skills[SkillName.Tactics].Base = 120.0;
+      Skills[SkillName.Swords].Base = 120.0;
+      Skills[SkillName.MagicResist].Base = 120.0;
+      Skills[SkillName.DetectHidden].Base = 100.0;
+    }
 
-		public abstract int Keyword{ get; }
-		public abstract BaseShield Shield{ get; }
-		public abstract int SignupNumber{ get; }
-		public abstract GuildType Type{ get; }
+    public BaseShieldGuard(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool HandlesOnSpeech( Mobile from )
-		{
-			if ( from.InRange( Location, 2 ) )
-				return true;
+    public abstract int Keyword{ get; }
+    public abstract BaseShield Shield{ get; }
+    public abstract int SignupNumber{ get; }
+    public abstract GuildType Type{ get; }
 
-			return base.HandlesOnSpeech( from );
-		}
+    public override bool HandlesOnSpeech(Mobile from)
+    {
+      if (from.InRange(Location, 2))
+        return true;
 
-		public override void OnSpeech( SpeechEventArgs e )
-		{
-			if ( !e.Handled && e.HasKeyword( Keyword ) && e.Mobile.InRange( Location, 2 ) )
-			{
-				e.Handled = true;
+      return base.HandlesOnSpeech(from);
+    }
 
-				Mobile from = e.Mobile;
-				Guild g = from.Guild as Guild;
+    public override void OnSpeech(SpeechEventArgs e)
+    {
+      if (!e.Handled && e.HasKeyword(Keyword) && e.Mobile.InRange(Location, 2))
+      {
+        e.Handled = true;
 
-				if ( g == null || g.Type != Type )
-				{
-					Say( SignupNumber );
-				}
-				else
-				{
-					Container pack = from.Backpack;
-					BaseShield shield = Shield;
-					Item twoHanded = from.FindItemOnLayer( Layer.TwoHanded );
+        Mobile from = e.Mobile;
+        Guild g = from.Guild as Guild;
 
-					if ( (pack?.FindItemByType( shield.GetType() ) != null) || ( twoHanded != null && shield.GetType().IsAssignableFrom( twoHanded.GetType() ) ) )
-					{
-						Say( 1007110 ); // Why dost thou ask about virtue guards when thou art one?
-						shield.Delete();
-					}
-					else if ( from.PlaceInBackpack( shield ) )
-					{
-						Say( Utility.Random( 1007101, 5 ) );
-						Say( 1007139 ); // I see you are in need of our shield, Here you go.
-						from.AddToBackpack( shield );
-					}
-					else
-					{
-						from.SendLocalizedMessage( 502868 ); // Your backpack is too full.
-						shield.Delete();
-					}
-				}
-			}
+        if (g == null || g.Type != Type)
+        {
+          Say(SignupNumber);
+        }
+        else
+        {
+          Container pack = from.Backpack;
+          BaseShield shield = Shield;
+          Item twoHanded = from.FindItemOnLayer(Layer.TwoHanded);
 
-			base.OnSpeech( e );
-		}
+          if (pack?.FindItemByType(shield.GetType()) != null ||
+              twoHanded != null && shield.GetType().IsAssignableFrom(twoHanded.GetType()))
+          {
+            Say(1007110); // Why dost thou ask about virtue guards when thou art one?
+            shield.Delete();
+          }
+          else if (from.PlaceInBackpack(shield))
+          {
+            Say(Utility.Random(1007101, 5));
+            Say(1007139); // I see you are in need of our shield, Here you go.
+            from.AddToBackpack(shield);
+          }
+          else
+          {
+            from.SendLocalizedMessage(502868); // Your backpack is too full.
+            shield.Delete();
+          }
+        }
+      }
 
-		public BaseShieldGuard( Serial serial ) : base( serial )
-		{
-		}
+      base.OnSpeech(e);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -2,189 +2,184 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class ExodusOverseer : BaseCreature
-	{
-		public override string CorpseName => "an overseer's corpse";
-		public bool FieldActive { get; private set; }
+  public class ExodusOverseer : BaseCreature
+  {
+    [Constructible]
+    public ExodusOverseer() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 0x2F4;
 
-		public bool CanUseField // TODO: an OSI bug prevents to verify this
-			=> Hits >= HitsMax * 9 / 10;
+      SetStr(561, 650);
+      SetDex(76, 95);
+      SetInt(61, 90);
 
-		public override bool IsScaredOfScaryThings => false;
-		public override bool IsScaryToPets => true;
+      SetHits(331, 390);
 
-		public override string DefaultName => "an exodus overseer";
+      SetDamage(13, 19);
 
-		[Constructible]
-		public ExodusOverseer() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 0x2F4;
+      SetDamageType(ResistanceType.Physical, 50);
+      SetDamageType(ResistanceType.Energy, 50);
 
-			SetStr( 561, 650 );
-			SetDex( 76, 95 );
-			SetInt( 61, 90 );
+      SetResistance(ResistanceType.Physical, 45, 55);
+      SetResistance(ResistanceType.Fire, 40, 60);
+      SetResistance(ResistanceType.Cold, 25, 35);
+      SetResistance(ResistanceType.Poison, 25, 35);
+      SetResistance(ResistanceType.Energy, 25, 35);
 
-			SetHits( 331, 390 );
+      SetSkill(SkillName.MagicResist, 80.2, 98.0);
+      SetSkill(SkillName.Tactics, 80.2, 98.0);
+      SetSkill(SkillName.Wrestling, 80.2, 98.0);
 
-			SetDamage( 13, 19 );
+      Fame = 10000;
+      Karma = -10000;
+      VirtualArmor = 50;
 
-			SetDamageType( ResistanceType.Physical, 50 );
-			SetDamageType( ResistanceType.Energy, 50 );
+      if (Utility.Random(2) == 0)
+        PackItem(new PowerCrystal());
+      else
+        PackItem(new ArcaneGem());
 
-			SetResistance( ResistanceType.Physical, 45, 55 );
-			SetResistance( ResistanceType.Fire, 40, 60 );
-			SetResistance( ResistanceType.Cold, 25, 35 );
-			SetResistance( ResistanceType.Poison, 25, 35 );
-			SetResistance( ResistanceType.Energy, 25, 35 );
+      FieldActive = CanUseField;
+    }
 
-			SetSkill( SkillName.MagicResist, 80.2, 98.0 );
-			SetSkill( SkillName.Tactics, 80.2, 98.0 );
-			SetSkill( SkillName.Wrestling, 80.2, 98.0 );
+    public ExodusOverseer(Serial serial) : base(serial)
+    {
+    }
 
-			Fame = 10000;
-			Karma = -10000;
-			VirtualArmor = 50;
+    public override string CorpseName => "an overseer's corpse";
+    public bool FieldActive{ get; private set; }
 
-			if ( Utility.Random( 2 ) == 0 )
-				PackItem( new PowerCrystal() );
-			else
-				PackItem( new ArcaneGem() );
+    public bool CanUseField // TODO: an OSI bug prevents to verify this
+      => Hits >= HitsMax * 9 / 10;
 
-			FieldActive = CanUseField;
-		}
+    public override bool IsScaredOfScaryThings => false;
+    public override bool IsScaryToPets => true;
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Rich );
-		}
+    public override string DefaultName => "an exodus overseer";
 
-		public override bool AutoDispel => true;
-		public override bool BardImmune => !Core.AOS;
-		public override Poison PoisonImmune => Poison.Lethal;
+    public override bool AutoDispel => true;
+    public override bool BardImmune => !Core.AOS;
+    public override Poison PoisonImmune => Poison.Lethal;
 
-		public override int GetIdleSound()
-		{
-			return 0xFD;
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Rich);
+    }
 
-		public override int GetAngerSound()
-		{
-			return 0x26C;
-		}
+    public override int GetIdleSound()
+    {
+      return 0xFD;
+    }
 
-		public override int GetDeathSound()
-		{
-			return 0x211;
-		}
+    public override int GetAngerSound()
+    {
+      return 0x26C;
+    }
 
-		public override int GetAttackSound()
-		{
-			return 0x23B;
-		}
+    public override int GetDeathSound()
+    {
+      return 0x211;
+    }
 
-		public override int GetHurtSound()
-		{
-			return 0x140;
-		}
+    public override int GetAttackSound()
+    {
+      return 0x23B;
+    }
 
-		public override void AlterMeleeDamageFrom( Mobile from, ref int damage )
-		{
-			if ( FieldActive )
-				damage = 0; // no melee damage when the field is up
-		}
+    public override int GetHurtSound()
+    {
+      return 0x140;
+    }
 
-		public override void AlterSpellDamageFrom( Mobile caster, ref int damage )
-		{
-			if ( !FieldActive )
-				damage = 0; // no spell damage when the field is down
-		}
+    public override void AlterMeleeDamageFrom(Mobile from, ref int damage)
+    {
+      if (FieldActive)
+        damage = 0; // no melee damage when the field is up
+    }
 
-		public override void OnDamagedBySpell( Mobile from )
-		{
-			if ( from != null && from.Alive && 0.4 > Utility.RandomDouble() )
-			{
-				SendEBolt( from );
-			}
+    public override void AlterSpellDamageFrom(Mobile caster, ref int damage)
+    {
+      if (!FieldActive)
+        damage = 0; // no spell damage when the field is down
+    }
 
-			if ( !FieldActive )
-			{
-				// should there be an effect when spells nullifying is on?
-				FixedParticles( 0, 10, 0, 0x2522, EffectLayer.Waist );
-			}
-			else if ( FieldActive && !CanUseField )
-			{
-				FieldActive = false;
+    public override void OnDamagedBySpell(Mobile from)
+    {
+      if (from != null && from.Alive && 0.4 > Utility.RandomDouble()) SendEBolt(from);
 
-				// TODO: message and effect when field turns down; cannot be verified on OSI due to a bug
-				FixedParticles( 0x3735, 1, 30, 0x251F, EffectLayer.Waist );
-			}
-		}
+      if (!FieldActive)
+      {
+        // should there be an effect when spells nullifying is on?
+        FixedParticles(0, 10, 0, 0x2522, EffectLayer.Waist);
+      }
+      else if (FieldActive && !CanUseField)
+      {
+        FieldActive = false;
 
-		public override void OnGotMeleeAttack( Mobile attacker )
-		{
-			base.OnGotMeleeAttack( attacker );
+        // TODO: message and effect when field turns down; cannot be verified on OSI due to a bug
+        FixedParticles(0x3735, 1, 30, 0x251F, EffectLayer.Waist);
+      }
+    }
 
-			if ( FieldActive )
-			{
-				FixedParticles( 0x376A, 20, 10, 0x2530, EffectLayer.Waist );
+    public override void OnGotMeleeAttack(Mobile attacker)
+    {
+      base.OnGotMeleeAttack(attacker);
 
-				PlaySound( 0x2F4 );
+      if (FieldActive)
+      {
+        FixedParticles(0x376A, 20, 10, 0x2530, EffectLayer.Waist);
 
-				attacker.SendAsciiMessage( "Your weapon cannot penetrate the creature's magical barrier" );
-			}
+        PlaySound(0x2F4);
 
-			if ( attacker != null && attacker.Alive && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble() )
-			{
-				SendEBolt( attacker );
-			}
-		}
+        attacker.SendAsciiMessage("Your weapon cannot penetrate the creature's magical barrier");
+      }
 
-		public override void OnThink()
-		{
-			base.OnThink();
+      if (attacker != null && attacker.Alive && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble())
+        SendEBolt(attacker);
+    }
 
-			// TODO: an OSI bug prevents to verify if the field can regenerate or not
-			if ( !FieldActive && !IsHurt() )
-				FieldActive = true;
-		}
+    public override void OnThink()
+    {
+      base.OnThink();
 
-		public override bool Move( Direction d )
-		{
-			bool move = base.Move( d );
+      // TODO: an OSI bug prevents to verify if the field can regenerate or not
+      if (!FieldActive && !IsHurt())
+        FieldActive = true;
+    }
 
-			if ( move && FieldActive && Combatant != null )
-				FixedParticles( 0, 10, 0, 0x2530, EffectLayer.Waist );
+    public override bool Move(Direction d)
+    {
+      bool move = base.Move(d);
 
-			return move;
-		}
+      if (move && FieldActive && Combatant != null)
+        FixedParticles(0, 10, 0, 0x2530, EffectLayer.Waist);
 
-		public void SendEBolt( Mobile to )
-		{
-			MovingParticles( to, 0x379F, 7, 0, false, true, 0xBE3, 0xFCB, 0x211 );
-			to.PlaySound( 0x229 );
-			DoHarmful( to );
-			AOS.Damage( to, this, 50, 0, 0, 0, 0, 100 );
-		}
+      return move;
+    }
 
-		public ExodusOverseer( Serial serial ) : base( serial )
-		{
-		}
+    public void SendEBolt(Mobile to)
+    {
+      MovingParticles(to, 0x379F, 7, 0, false, true, 0xBE3, 0xFCB, 0x211);
+      to.PlaySound(0x229);
+      DoHarmful(to);
+      AOS.Damage(to, this, 50, 0, 0, 0, 0, 100);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
 
-			FieldActive = CanUseField;
+      FieldActive = CanUseField;
 
-			if ( Name == "Exodus Overseer" )
-				Name = null;
-		}
-	}
+      if (Name == "Exodus Overseer")
+        Name = null;
+    }
+  }
 }

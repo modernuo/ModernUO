@@ -1,85 +1,96 @@
-﻿using System;
-using Server.Mobiles;
+﻿using Server.Mobiles;
 
 namespace Server.Items
 {
-	public class HalloweenPumpkin : Item
-	{
-		private static readonly string[] m_Staff =
-		{
-			"Ryan", "Mark", "Eos", "Athena", "Xavier", "Krrios", "Zippy"
-		};
+  public class HalloweenPumpkin : Item
+  {
+    private static readonly string[] m_Staff =
+    {
+      "Ryan", "Mark", "Eos", "Athena", "Xavier", "Krrios", "Zippy"
+    };
 
-		[Constructible]
-		public HalloweenPumpkin()
-		{
-			Weight = Utility.RandomMinMax( 3, 20 );
-			ItemID = ( Utility.RandomDouble() <= .02 ) ? Utility.RandomList( 0x4694, 0x4698 ) : Utility.RandomList( 0xc6a, 0xc6b, 0xc6c );
-		}
+    [Constructible]
+    public HalloweenPumpkin()
+    {
+      Weight = Utility.RandomMinMax(3, 20);
+      ItemID = Utility.RandomDouble() <= .02
+        ? Utility.RandomList(0x4694, 0x4698)
+        : Utility.RandomList(0xc6a, 0xc6b, 0xc6c);
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !from.InRange( GetWorldLocation(), 2 ) )
-				return;
+    public HalloweenPumpkin(Serial serial)
+      : base(serial)
+    {
+    }
 
-			bool douse = false;
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!from.InRange(GetWorldLocation(), 2))
+        return;
 
-			switch ( ItemID )
-			{
-				case 0x4694: ItemID = 0x4691; break;
-				case 0x4691: ItemID = 0x4694; douse = true; break;
-				case 0x4698: ItemID = 0x4695; break;
-				case 0x4695: ItemID = 0x4698; douse = true; break;
-				default: return;
-			}
+      bool douse = false;
 
-			from.SendLocalizedMessage( douse ? 1113988 : 1113987 ); // You extinguish/light the Jack-O-Lantern
-			Effects.PlaySound( GetWorldLocation(), Map, douse ? 0x3be : 0x47 );
-		}
+      switch (ItemID)
+      {
+        case 0x4694:
+          ItemID = 0x4691;
+          break;
+        case 0x4691:
+          ItemID = 0x4694;
+          douse = true;
+          break;
+        case 0x4698:
+          ItemID = 0x4695;
+          break;
+        case 0x4695:
+          ItemID = 0x4698;
+          douse = true;
+          break;
+        default: return;
+      }
 
-		private void AssignRandomName()
-		{
-			Name = $"{m_Staff[Utility.Random(m_Staff.Length)]}'s Jack-O-Lantern";
-		}
+      from.SendLocalizedMessage(douse ? 1113988 : 1113987); // You extinguish/light the Jack-O-Lantern
+      Effects.PlaySound(GetWorldLocation(), Map, douse ? 0x3be : 0x47);
+    }
 
-		public override bool OnDragLift( Mobile from )
-		{
-			if ( Name == null && ( ItemID == 0x4694 || ItemID == 0x4691 || ItemID == 0x4698 || ItemID == 0x4695 ) )
-			{
-				if ( Utility.RandomBool() )
-				{
-					new PumpkinHead().MoveToWorld( GetWorldLocation(), Map );
+    private void AssignRandomName()
+    {
+      Name = $"{m_Staff[Utility.Random(m_Staff.Length)]}'s Jack-O-Lantern";
+    }
 
-					Delete();
-					return false;
-				}
+    public override bool OnDragLift(Mobile from)
+    {
+      if (Name == null && (ItemID == 0x4694 || ItemID == 0x4691 || ItemID == 0x4698 || ItemID == 0x4695))
+      {
+        if (Utility.RandomBool())
+        {
+          new PumpkinHead().MoveToWorld(GetWorldLocation(), Map);
 
-				AssignRandomName();
-			}
+          Delete();
+          return false;
+        }
 
-			return true;
-		}
+        AssignRandomName();
+      }
 
-		public HalloweenPumpkin( Serial serial )
-			: base( serial )
-		{
-		}
+      return true;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)1 ); // version
-		}
+      writer.Write(1); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( version == 0 && Name == null && ItemID == 0x4698 )
-				AssignRandomName();
-		}
-	}
+      if (version == 0 && Name == null && ItemID == 0x4698)
+        AssignRandomName();
+    }
+  }
 }

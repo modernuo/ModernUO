@@ -3,62 +3,62 @@ using System.Collections.Generic;
 
 namespace Server.Multis
 {
-	public class DynamicDecay
-	{
-		public static bool Enabled  => Core.ML;
+  public class DynamicDecay
+  {
+    private static Dictionary<DecayLevel, DecayStageInfo> m_Stages;
 
-		private static Dictionary<DecayLevel, DecayStageInfo> m_Stages;
+    static DynamicDecay()
+    {
+      m_Stages = new Dictionary<DecayLevel, DecayStageInfo>();
 
-		static DynamicDecay()
-		{
-			m_Stages = new Dictionary<DecayLevel, DecayStageInfo>();
+      Register(DecayLevel.LikeNew, TimeSpan.FromHours(1), TimeSpan.FromHours(1));
+      Register(DecayLevel.Slightly, TimeSpan.FromDays(1), TimeSpan.FromDays(2));
+      Register(DecayLevel.Somewhat, TimeSpan.FromDays(1), TimeSpan.FromDays(2));
+      Register(DecayLevel.Fairly, TimeSpan.FromDays(1), TimeSpan.FromDays(2));
+      Register(DecayLevel.Greatly, TimeSpan.FromDays(1), TimeSpan.FromDays(2));
+      Register(DecayLevel.IDOC, TimeSpan.FromHours(12), TimeSpan.FromHours(24));
+    }
 
-			Register( DecayLevel.LikeNew,		TimeSpan.FromHours( 1 ),	TimeSpan.FromHours( 1 )		);
-			Register( DecayLevel.Slightly,		TimeSpan.FromDays( 1 ),		TimeSpan.FromDays( 2 )		);
-			Register( DecayLevel.Somewhat,		TimeSpan.FromDays( 1 ),		TimeSpan.FromDays( 2 )		);
-			Register( DecayLevel.Fairly,		TimeSpan.FromDays( 1 ),		TimeSpan.FromDays( 2 )		);
-			Register( DecayLevel.Greatly,		TimeSpan.FromDays( 1 ),		TimeSpan.FromDays( 2 )		);
-			Register( DecayLevel.IDOC,			TimeSpan.FromHours( 12 ),	TimeSpan.FromHours( 24 )	);
-		}
+    public static bool Enabled => Core.ML;
 
-		public static void Register( DecayLevel level, TimeSpan min, TimeSpan max )
-		{
-			DecayStageInfo info = new DecayStageInfo( min, max );
+    public static void Register(DecayLevel level, TimeSpan min, TimeSpan max)
+    {
+      DecayStageInfo info = new DecayStageInfo(min, max);
 
-			if ( m_Stages.ContainsKey( level ) )
-				m_Stages[level] = info;
-			else
-				m_Stages.Add( level, info );
-		}
+      if (m_Stages.ContainsKey(level))
+        m_Stages[level] = info;
+      else
+        m_Stages.Add(level, info);
+    }
 
-		public static bool Decays( DecayLevel level )
-		{
-			return m_Stages.ContainsKey( level );
-		}
+    public static bool Decays(DecayLevel level)
+    {
+      return m_Stages.ContainsKey(level);
+    }
 
-		public static TimeSpan GetRandomDuration( DecayLevel level )
-		{
-			if ( !m_Stages.ContainsKey( level ) )
-				return TimeSpan.Zero;
+    public static TimeSpan GetRandomDuration(DecayLevel level)
+    {
+      if (!m_Stages.ContainsKey(level))
+        return TimeSpan.Zero;
 
-			DecayStageInfo info = m_Stages[level];
-			long min = info.MinDuration.Ticks;
-			long max = info.MaxDuration.Ticks;
+      DecayStageInfo info = m_Stages[level];
+      long min = info.MinDuration.Ticks;
+      long max = info.MaxDuration.Ticks;
 
-			return TimeSpan.FromTicks( min + (long)( Utility.RandomDouble() * ( max - min ) ) );
-		}
-	}
+      return TimeSpan.FromTicks(min + (long)(Utility.RandomDouble() * (max - min)));
+    }
+  }
 
-	public class DecayStageInfo
-	{
-		public TimeSpan MinDuration { get; }
+  public class DecayStageInfo
+  {
+    public DecayStageInfo(TimeSpan min, TimeSpan max)
+    {
+      MinDuration = min;
+      MaxDuration = max;
+    }
 
-		public TimeSpan MaxDuration { get; }
+    public TimeSpan MinDuration{ get; }
 
-		public DecayStageInfo( TimeSpan min, TimeSpan max )
-		{
-			MinDuration = min;
-			MaxDuration = max;
-		}
-	}
+    public TimeSpan MaxDuration{ get; }
+  }
 }

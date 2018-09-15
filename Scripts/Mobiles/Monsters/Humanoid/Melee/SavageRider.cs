@@ -3,121 +3,123 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class SavageRider : BaseCreature
-	{
-		public override string CorpseName => "a savage corpse";
-		[Constructible]
-		public SavageRider() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.15, 0.4 )
-		{
-			Name = NameList.RandomName( "savage rider" );
+  public class SavageRider : BaseCreature
+  {
+    [Constructible]
+    public SavageRider() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.15, 0.4)
+    {
+      Name = NameList.RandomName("savage rider");
 
-			if ( Female = Utility.RandomBool() )
-				Body = 186;
-			else
-				Body = 185;
+      if (Female = Utility.RandomBool())
+        Body = 186;
+      else
+        Body = 185;
 
-			SetStr( 151, 170 );
-			SetDex( 92, 130 );
-			SetInt( 51, 65 );
+      SetStr(151, 170);
+      SetDex(92, 130);
+      SetInt(51, 65);
 
-			SetDamage( 29, 34 );
+      SetDamage(29, 34);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetSkill( SkillName.Fencing, 72.5, 95.0 );
-			SetSkill( SkillName.Healing, 60.3, 90.0 );
-			SetSkill( SkillName.Macing, 72.5, 95.0 );
-			SetSkill( SkillName.Poisoning, 60.0, 82.5 );
-			SetSkill( SkillName.MagicResist, 72.5, 95.0 );
-			SetSkill( SkillName.Swords, 72.5, 95.0 );
-			SetSkill( SkillName.Tactics, 72.5, 95.0 );
+      SetSkill(SkillName.Fencing, 72.5, 95.0);
+      SetSkill(SkillName.Healing, 60.3, 90.0);
+      SetSkill(SkillName.Macing, 72.5, 95.0);
+      SetSkill(SkillName.Poisoning, 60.0, 82.5);
+      SetSkill(SkillName.MagicResist, 72.5, 95.0);
+      SetSkill(SkillName.Swords, 72.5, 95.0);
+      SetSkill(SkillName.Tactics, 72.5, 95.0);
 
-			Fame = 1000;
-			Karma = -1000;
+      Fame = 1000;
+      Karma = -1000;
 
-			PackItem( new Bandage( Utility.RandomMinMax( 1, 15 ) ) );
+      PackItem(new Bandage(Utility.RandomMinMax(1, 15)));
 
-			if ( 0.1 > Utility.RandomDouble() )
-				PackItem( new BolaBall() );
+      if (0.1 > Utility.RandomDouble())
+        PackItem(new BolaBall());
 
-			AddItem( new TribalSpear() );
-			AddItem( new BoneArms() );
-			AddItem( new BoneLegs() );
-			// TODO: BEAR MASK
+      AddItem(new TribalSpear());
+      AddItem(new BoneArms());
+      AddItem(new BoneLegs());
+      // TODO: BEAR MASK
 
-			new SavageRidgeback().Rider = this;
-		}
+      new SavageRidgeback().Rider = this;
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average );
-		}
+    public SavageRider(Serial serial) : base(serial)
+    {
+    }
 
-		public override int Meat => 1;
-		public override bool AlwaysMurderer => true;
-		public override bool ShowFameTitle => false;
+    public override string CorpseName => "a savage corpse";
 
-		public override OppositionGroup OppositionGroup => OppositionGroup.SavagesAndOrcs;
+    public override int Meat => 1;
+    public override bool AlwaysMurderer => true;
+    public override bool ShowFameTitle => false;
 
-		public override bool OnBeforeDeath()
-		{
-			IMount mount = Mount;
+    public override OppositionGroup OppositionGroup => OppositionGroup.SavagesAndOrcs;
 
-			if ( mount != null )
-				mount.Rider = null;
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Average);
+    }
 
-			if ( mount is Mobile mobile )
-				mobile.Delete();
+    public override bool OnBeforeDeath()
+    {
+      IMount mount = Mount;
 
-			return base.OnBeforeDeath();
-		}
+      if (mount != null)
+        mount.Rider = null;
 
-		public override bool IsEnemy( Mobile m )
-		{
-			if ( m.BodyMod == 183 || m.BodyMod == 184 )
-				return false;
+      if (mount is Mobile mobile)
+        mobile.Delete();
 
-			return base.IsEnemy( m );
-		}
+      return base.OnBeforeDeath();
+    }
 
-		public override void AggressiveAction( Mobile aggressor, bool criminal )
-		{
-			base.AggressiveAction( aggressor, criminal );
+    public override bool IsEnemy(Mobile m)
+    {
+      if (m.BodyMod == 183 || m.BodyMod == 184)
+        return false;
 
-			if ( aggressor.BodyMod == 183 || aggressor.BodyMod == 184 )
-			{
-				AOS.Damage( aggressor, 50, 0, 100, 0, 0, 0 );
-				aggressor.BodyMod = 0;
-				aggressor.HueMod = -1;
-				aggressor.FixedParticles( 0x36BD, 20, 10, 5044, EffectLayer.Head );
-				aggressor.PlaySound( 0x307 );
-				aggressor.SendLocalizedMessage( 1040008 ); // Your skin is scorched as the tribal paint burns away!
+      return base.IsEnemy(m);
+    }
 
-				if ( aggressor is PlayerMobile mobile )
-					mobile.SavagePaintExpiration = TimeSpan.Zero;
-			}
-		}
+    public override void AggressiveAction(Mobile aggressor, bool criminal)
+    {
+      base.AggressiveAction(aggressor, criminal);
 
-		public override void AlterMeleeDamageTo( Mobile to, ref int damage )
-		{
-			if ( to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu || to is LesserHiryu || to is Daemon )
-				damage *= 3;
-		}
+      if (aggressor.BodyMod == 183 || aggressor.BodyMod == 184)
+      {
+        AOS.Damage(aggressor, 50, 0, 100, 0, 0, 0);
+        aggressor.BodyMod = 0;
+        aggressor.HueMod = -1;
+        aggressor.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
+        aggressor.PlaySound(0x307);
+        aggressor.SendLocalizedMessage(1040008); // Your skin is scorched as the tribal paint burns away!
 
-		public SavageRider( Serial serial ) : base( serial )
-		{
-		}
+        if (aggressor is PlayerMobile mobile)
+          mobile.SavagePaintExpiration = TimeSpan.Zero;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void AlterMeleeDamageTo(Mobile to, ref int damage)
+    {
+      if (to is Dragon || to is WhiteWyrm || to is SwampDragon || to is Drake || to is Nightmare || to is Hiryu ||
+          to is LesserHiryu || to is Daemon)
+        damage *= 3;
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

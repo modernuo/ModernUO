@@ -1,124 +1,125 @@
 using System;
+using Server.Commands;
 using Server.Items;
 using Server.Network;
-using Server.Commands;
 
 namespace Server.Gumps
 {
-	public class AddDoorGump : Gump
-	{
-		private int m_Type;
+  public class AddDoorGump : Gump
+  {
+    public static DoorInfo[] m_Types =
+    {
+      new DoorInfo(typeof(MetalDoor), 0x675),
+      new DoorInfo(typeof(RattanDoor), 0x695),
+      new DoorInfo(typeof(DarkWoodDoor), 0x6A5),
+      new DoorInfo(typeof(LightWoodDoor), 0x6D5),
+      new DoorInfo(typeof(StrongWoodDoor), 0x6E5)
+    };
 
-		public AddDoorGump() : this( -1 )
-		{
-		}
+    private int m_Type;
 
-		public void AddBlueBack( int width, int height )
-		{
-			AddBackground (  0,  0, width-00, height-00, 0xE10 );
-			AddBackground (  8,  5, width-16, height-11, 0x053 );
-			AddImageTiled ( 15, 14, width-29, height-29, 0xE14 );
-			AddAlphaRegion( 15, 14, width-29, height-29 );
-		}
+    public AddDoorGump() : this(-1)
+    {
+    }
 
-		public AddDoorGump( int type ) : base( 50, 40 )
-		{
-			m_Type = type;
+    public AddDoorGump(int type) : base(50, 40)
+    {
+      m_Type = type;
 
-			AddPage( 0 );
+      AddPage(0);
 
-			if ( m_Type >= 0 && m_Type < m_Types.Length )
-			{
-				AddBlueBack( 155, 174 );
+      if (m_Type >= 0 && m_Type < m_Types.Length)
+      {
+        AddBlueBack(155, 174);
 
-				int baseID = m_Types[m_Type].m_BaseID;
+        int baseID = m_Types[m_Type].m_BaseID;
 
-				AddItem( 25, 24, baseID );
-				AddButton( 26, 37, 0x5782, 0x5782, 1, GumpButtonType.Reply, 0 );
+        AddItem(25, 24, baseID);
+        AddButton(26, 37, 0x5782, 0x5782, 1, GumpButtonType.Reply, 0);
 
-				AddItem( 47, 45, baseID + 2 );
-				AddButton( 43, 57, 0x5783, 0x5783, 2, GumpButtonType.Reply, 0 );
+        AddItem(47, 45, baseID + 2);
+        AddButton(43, 57, 0x5783, 0x5783, 2, GumpButtonType.Reply, 0);
 
-				AddItem( 87, 22, baseID + 10 );
-				AddButton( 116, 35, 0x5785, 0x5785, 6, GumpButtonType.Reply, 0 );
+        AddItem(87, 22, baseID + 10);
+        AddButton(116, 35, 0x5785, 0x5785, 6, GumpButtonType.Reply, 0);
 
-				AddItem( 65, 45, baseID + 8 );
-				AddButton( 96, 55, 0x5784, 0x5784, 5, GumpButtonType.Reply, 0 );
+        AddItem(65, 45, baseID + 8);
+        AddButton(96, 55, 0x5784, 0x5784, 5, GumpButtonType.Reply, 0);
 
-				AddButton( 73, 36, 0x2716, 0x2716, 9, GumpButtonType.Reply, 0 );
-			}
-			else
-			{
-				AddBlueBack( 265, 145 );
+        AddButton(73, 36, 0x2716, 0x2716, 9, GumpButtonType.Reply, 0);
+      }
+      else
+      {
+        AddBlueBack(265, 145);
 
-				for ( int i = 0; i < m_Types.Length; ++i )
-				{
-					AddButton( 30 + (i * 49), 13, 0x2624, 0x2625, i + 1, GumpButtonType.Reply, 0 );
-					AddItem( 22 + (i * 49), 20, m_Types[i].m_BaseID );
-				}
-			}
-		}
+        for (int i = 0; i < m_Types.Length; ++i)
+        {
+          AddButton(30 + i * 49, 13, 0x2624, 0x2625, i + 1, GumpButtonType.Reply, 0);
+          AddItem(22 + i * 49, 20, m_Types[i].m_BaseID);
+        }
+      }
+    }
 
-		public override void OnResponse( NetState sender, RelayInfo info )
-		{
-			Mobile from = sender.Mobile;
-			int button = info.ButtonID - 1;
+    public void AddBlueBack(int width, int height)
+    {
+      AddBackground(0, 0, width - 00, height - 00, 0xE10);
+      AddBackground(8, 5, width - 16, height - 11, 0x053);
+      AddImageTiled(15, 14, width - 29, height - 29, 0xE14);
+      AddAlphaRegion(15, 14, width - 29, height - 29);
+    }
 
-			if ( m_Type == -1 )
-			{
-				if ( button >= 0 && button < m_Types.Length )
-					from.SendGump( new AddDoorGump( button ) );
-			}
-			else
-			{
-				if ( button >= 0 && button < 8 )
-				{
-					from.SendGump( new AddDoorGump( m_Type ) );
-					CommandSystem.Handle( from,
-						$"{CommandSystem.Prefix}Add {m_Types[m_Type].m_Type.Name} {(DoorFacing) button}");
-				}
-				else if ( button == 8 )
-				{
-					from.SendGump( new AddDoorGump( m_Type ) );
-					CommandSystem.Handle( from, $"{CommandSystem.Prefix}Link");
-				}
-				else
-				{
-					from.SendGump( new AddDoorGump() );
-				}
-			}
-		}
+    public override void OnResponse(NetState sender, RelayInfo info)
+    {
+      Mobile from = sender.Mobile;
+      int button = info.ButtonID - 1;
 
-		public static void Initialize()
-		{
-			CommandSystem.Register( "AddDoor", AccessLevel.GameMaster, AddDoor_OnCommand );
-		}
+      if (m_Type == -1)
+      {
+        if (button >= 0 && button < m_Types.Length)
+          from.SendGump(new AddDoorGump(button));
+      }
+      else
+      {
+        if (button >= 0 && button < 8)
+        {
+          from.SendGump(new AddDoorGump(m_Type));
+          CommandSystem.Handle(from,
+            $"{CommandSystem.Prefix}Add {m_Types[m_Type].m_Type.Name} {(DoorFacing)button}");
+        }
+        else if (button == 8)
+        {
+          from.SendGump(new AddDoorGump(m_Type));
+          CommandSystem.Handle(from, $"{CommandSystem.Prefix}Link");
+        }
+        else
+        {
+          from.SendGump(new AddDoorGump());
+        }
+      }
+    }
 
-		[Usage( "AddDoor" )]
-		[Description( "Displays a menu from which you can interactively add doors." )]
-		public static void AddDoor_OnCommand( CommandEventArgs e )
-		{
-			e.Mobile.SendGump( new AddDoorGump() );
-		}
+    public static void Initialize()
+    {
+      CommandSystem.Register("AddDoor", AccessLevel.GameMaster, AddDoor_OnCommand);
+    }
 
-		public static DoorInfo[] m_Types = {
-				new DoorInfo( typeof( MetalDoor ), 0x675 ),
-				new DoorInfo( typeof( RattanDoor ), 0x695 ),
-				new DoorInfo( typeof( DarkWoodDoor ), 0x6A5 ),
-				new DoorInfo( typeof( LightWoodDoor ), 0x6D5 ),
-				new DoorInfo( typeof( StrongWoodDoor ), 0x6E5 )
-			};
-	}
+    [Usage("AddDoor")]
+    [Description("Displays a menu from which you can interactively add doors.")]
+    public static void AddDoor_OnCommand(CommandEventArgs e)
+    {
+      e.Mobile.SendGump(new AddDoorGump());
+    }
+  }
 
-	public class DoorInfo
-	{
-		public Type m_Type;
-		public int m_BaseID;
+  public class DoorInfo
+  {
+    public int m_BaseID;
+    public Type m_Type;
 
-		public DoorInfo( Type type, int baseID )
-		{
-			m_Type = type;
-			m_BaseID = baseID;
-		}
-	}
+    public DoorInfo(Type type, int baseID)
+    {
+      m_Type = type;
+      m_BaseID = baseID;
+    }
+  }
 }

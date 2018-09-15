@@ -1,64 +1,64 @@
 namespace Server.Engines.Mahjong
 {
-	public class MahjongDealerIndicator
-	{
-		public static MahjongPieceDim GetDimensions( Point2D position, MahjongPieceDirection direction )
-		{
-			if ( direction == MahjongPieceDirection.Up || direction == MahjongPieceDirection.Down )
-				return new MahjongPieceDim( position, 40, 20 );
-			return new MahjongPieceDim( position, 20, 40 );
-		}
+  public class MahjongDealerIndicator
+  {
+    public MahjongDealerIndicator(MahjongGame game, Point2D position, MahjongPieceDirection direction, MahjongWind wind)
+    {
+      Game = game;
+      Position = position;
+      Direction = direction;
+      Wind = wind;
+    }
 
-		public MahjongGame Game { get; }
+    public MahjongDealerIndicator(MahjongGame game, GenericReader reader)
+    {
+      Game = game;
 
-		public Point2D Position { get; private set; }
+      int version = reader.ReadInt();
 
-		public MahjongPieceDirection Direction { get; private set; }
+      Position = reader.ReadPoint2D();
+      Direction = (MahjongPieceDirection)reader.ReadInt();
+      Wind = (MahjongWind)reader.ReadInt();
+    }
 
-		public MahjongWind Wind { get; private set; }
+    public MahjongGame Game{ get; }
 
-		public MahjongDealerIndicator( MahjongGame game, Point2D position, MahjongPieceDirection direction, MahjongWind wind )
-		{
-			Game = game;
-			Position = position;
-			Direction = direction;
-			Wind = wind;
-		}
+    public Point2D Position{ get; private set; }
 
-		public MahjongPieceDim Dimensions => GetDimensions( Position, Direction );
+    public MahjongPieceDirection Direction{ get; private set; }
 
-		public void Move( Point2D position, MahjongPieceDirection direction, MahjongWind wind )
-		{
-			MahjongPieceDim dim = GetDimensions( position, direction );
+    public MahjongWind Wind{ get; private set; }
 
-			if ( !dim.IsValid() )
-				return;
+    public MahjongPieceDim Dimensions => GetDimensions(Position, Direction);
 
-			Position = position;
-			Direction = direction;
-			Wind = wind;
+    public static MahjongPieceDim GetDimensions(Point2D position, MahjongPieceDirection direction)
+    {
+      if (direction == MahjongPieceDirection.Up || direction == MahjongPieceDirection.Down)
+        return new MahjongPieceDim(position, 40, 20);
+      return new MahjongPieceDim(position, 20, 40);
+    }
 
-			Game.Players.SendGeneralPacket( true, true );
-		}
+    public void Move(Point2D position, MahjongPieceDirection direction, MahjongWind wind)
+    {
+      MahjongPieceDim dim = GetDimensions(position, direction);
 
-		public void Save( GenericWriter writer )
-		{
-			writer.Write( (int) 0 ); // version
+      if (!dim.IsValid())
+        return;
 
-			writer.Write( Position );
-			writer.Write( (int) Direction );
-			writer.Write( (int) Wind );
-		}
+      Position = position;
+      Direction = direction;
+      Wind = wind;
 
-		public MahjongDealerIndicator( MahjongGame game, GenericReader reader )
-		{
-			Game = game;
+      Game.Players.SendGeneralPacket(true, true);
+    }
 
-			int version = reader.ReadInt();
+    public void Save(GenericWriter writer)
+    {
+      writer.Write(0); // version
 
-			Position = reader.ReadPoint2D();
-			Direction = (MahjongPieceDirection) reader.ReadInt();
-			Wind = (MahjongWind) reader.ReadInt();
-		}
-	}
+      writer.Write(Position);
+      writer.Write((int)Direction);
+      writer.Write((int)Wind);
+    }
+  }
 }

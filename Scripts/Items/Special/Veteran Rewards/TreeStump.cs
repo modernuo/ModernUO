@@ -6,262 +6,307 @@ using Server.Network;
 
 namespace Server.Items
 {
-	public class TreeStump : BaseAddon, IRewardItem
-	{
-		public override BaseAddonDeed Deed
-		{
-			get
-			{
-				TreeStumpDeed deed = new TreeStumpDeed();
-				deed.IsRewardItem = m_IsRewardItem;
-				deed.Logs = m_Logs;
+  public class TreeStump : BaseAddon, IRewardItem
+  {
+    private bool m_IsRewardItem;
 
-				return deed;
-			}
-		}
+    private int m_Logs;
 
-		private bool m_IsRewardItem;
+    private Timer m_Timer;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsRewardItem
-		{
-			get => m_IsRewardItem;
-			set{ m_IsRewardItem = value; InvalidateProperties(); }
-		}
+    [Constructible]
+    public TreeStump(int itemID)
+    {
+      AddComponent(new AddonComponent(itemID), 0, 0, 0);
 
-		private int m_Logs;
+      m_Timer = Timer.DelayCall(TimeSpan.FromDays(1), TimeSpan.FromDays(1), GiveLogs);
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Logs
-		{
-			get => m_Logs;
-			set{ m_Logs = value; InvalidateProperties(); }
-		}
+    public TreeStump(Serial serial) : base(serial)
+    {
+    }
 
-		private Timer m_Timer;
+    public override BaseAddonDeed Deed
+    {
+      get
+      {
+        TreeStumpDeed deed = new TreeStumpDeed();
+        deed.IsRewardItem = m_IsRewardItem;
+        deed.Logs = m_Logs;
 
-		[Constructible]
-		public TreeStump( int itemID )
-		{
-			AddComponent( new AddonComponent( itemID ), 0, 0, 0 );
+        return deed;
+      }
+    }
 
-			m_Timer = Timer.DelayCall( TimeSpan.FromDays( 1 ), TimeSpan.FromDays( 1 ), GiveLogs );
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Logs
+    {
+      get => m_Logs;
+      set
+      {
+        m_Logs = value;
+        InvalidateProperties();
+      }
+    }
 
-		public TreeStump( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsRewardItem
+    {
+      get => m_IsRewardItem;
+      set
+      {
+        m_IsRewardItem = value;
+        InvalidateProperties();
+      }
+    }
 
-		private void GiveLogs()
-		{
-			m_Logs = Math.Min( 100, m_Logs + 10 );
-		}
+    private void GiveLogs()
+    {
+      m_Logs = Math.Min(100, m_Logs + 10);
+    }
 
-		public override void OnComponentUsed( AddonComponent c, Mobile from )
-		{
-			BaseHouse house = BaseHouse.FindHouseAt( this );
+    public override void OnComponentUsed(AddonComponent c, Mobile from)
+    {
+      BaseHouse house = BaseHouse.FindHouseAt(this);
 
-			/*
-			 * Unique problems have unique solutions.  OSI does not have a problem with 1000s of mining carts
-			 * due to the fact that they have only a miniscule fraction of the number of 10 year vets that a
-			 * typical RunUO shard will have (RunUO's scaled down account aging system makes this a unique problem),
-			 * and the "freeness" of free accounts. We also dont have mitigating factors like inactive (unpaid)
-			 * accounts not gaining veteran time.
-			 *
-			 * The lack of high end vets and vet rewards on OSI has made testing the *exact* ranging/stacking
-			 * behavior of these things all but impossible, so either way its just an estimation.
-			 *
-			 * If youd like your shard's carts/stumps to work the way they did before, simply replace the check
-			 * below with this line of code:
-			 *
-			 * if (!from.InRange(GetWorldLocation(), 2)
-			 *
-			 * However, I am sure these checks are more accurate to OSI than the former version was.
-			 *
-			 */
+      /*
+       * Unique problems have unique solutions.  OSI does not have a problem with 1000s of mining carts
+       * due to the fact that they have only a miniscule fraction of the number of 10 year vets that a
+       * typical RunUO shard will have (RunUO's scaled down account aging system makes this a unique problem),
+       * and the "freeness" of free accounts. We also dont have mitigating factors like inactive (unpaid)
+       * accounts not gaining veteran time.
+       *
+       * The lack of high end vets and vet rewards on OSI has made testing the *exact* ranging/stacking
+       * behavior of these things all but impossible, so either way its just an estimation.
+       *
+       * If youd like your shard's carts/stumps to work the way they did before, simply replace the check
+       * below with this line of code:
+       *
+       * if (!from.InRange(GetWorldLocation(), 2)
+       *
+       * However, I am sure these checks are more accurate to OSI than the former version was.
+       *
+       */
 
-			if (!from.InRange(GetWorldLocation(), 2) || !from.InLOS(this) || !((from.Z - Z) > -3 && (from.Z - Z) < 3))
-			{
-				from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-			}
-			else if ( house != null && house.HasSecureAccess( from, SecureLevel.Friends ) )
-			{
-				if ( m_Logs > 0 )
-				{
-					Item logs = null;
+      if (!from.InRange(GetWorldLocation(), 2) || !from.InLOS(this) || !(from.Z - Z > -3 && from.Z - Z < 3))
+      {
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+      }
+      else if (house != null && house.HasSecureAccess(from, SecureLevel.Friends))
+      {
+        if (m_Logs > 0)
+        {
+          Item logs = null;
 
-					switch ( Utility.Random( 7 ) )
-					{
-						case 0: logs = new Log(); break;
-						case 1: logs = new AshLog(); break;
-						case 2: logs = new OakLog(); break;
-						case 3: logs = new YewLog(); break;
-						case 4: logs = new HeartwoodLog(); break;
-						case 5: logs = new BloodwoodLog(); break;
-						case 6: logs = new FrostwoodLog(); break;
-					}
+          switch (Utility.Random(7))
+          {
+            case 0:
+              logs = new Log();
+              break;
+            case 1:
+              logs = new AshLog();
+              break;
+            case 2:
+              logs = new OakLog();
+              break;
+            case 3:
+              logs = new YewLog();
+              break;
+            case 4:
+              logs = new HeartwoodLog();
+              break;
+            case 5:
+              logs = new BloodwoodLog();
+              break;
+            case 6:
+              logs = new FrostwoodLog();
+              break;
+          }
 
-					int amount = Math.Min( 10, m_Logs );
-					logs.Amount = amount;
+          int amount = Math.Min(10, m_Logs);
+          logs.Amount = amount;
 
-					if ( !from.PlaceInBackpack( logs ) )
-					{
-						logs.Delete();
-						from.SendLocalizedMessage( 1078837 ); // Your backpack is full! Please make room and try again.
-					}
-					else
-					{
-						m_Logs -= amount;
-						PublicOverheadMessage( MessageType.Regular, 0, 1094719, m_Logs.ToString() ); // Logs: ~1_COUNT~
-					}
-				}
-				else
-					from.SendLocalizedMessage( 1094720 ); // There are no more logs available.
-			}
-			else
-				from.SendLocalizedMessage( 1061637 ); // You are not allowed to access this.
-		}
+          if (!from.PlaceInBackpack(logs))
+          {
+            logs.Delete();
+            from.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
+          }
+          else
+          {
+            m_Logs -= amount;
+            PublicOverheadMessage(MessageType.Regular, 0, 1094719, m_Logs.ToString()); // Logs: ~1_COUNT~
+          }
+        }
+        else
+        {
+          from.SendLocalizedMessage(1094720); // There are no more logs available.
+        }
+      }
+      else
+      {
+        from.SendLocalizedMessage(1061637); // You are not allowed to access this.
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
+      writer.WriteEncodedInt(0); // version
 
-			writer.Write( (bool) m_IsRewardItem );
-			writer.Write( (int) m_Logs );
+      writer.Write(m_IsRewardItem);
+      writer.Write(m_Logs);
 
-			if ( m_Timer != null )
-				writer.Write( (DateTime) m_Timer.Next );
-			else
-				writer.Write( (DateTime) DateTime.UtcNow + TimeSpan.FromDays( 1 ) );
-		}
+      if (m_Timer != null)
+        writer.Write(m_Timer.Next);
+      else
+        writer.Write(DateTime.UtcNow + TimeSpan.FromDays(1));
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
+      int version = reader.ReadEncodedInt();
 
-			m_IsRewardItem = reader.ReadBool();
-			m_Logs = reader.ReadInt();
+      m_IsRewardItem = reader.ReadBool();
+      m_Logs = reader.ReadInt();
 
-			DateTime next = reader.ReadDateTime();
+      DateTime next = reader.ReadDateTime();
 
-			if ( next < DateTime.UtcNow )
-				next = DateTime.UtcNow;
+      if (next < DateTime.UtcNow)
+        next = DateTime.UtcNow;
 
-			m_Timer = Timer.DelayCall( next - DateTime.UtcNow, TimeSpan.FromDays( 1 ), GiveLogs );
-		}
-	}
+      m_Timer = Timer.DelayCall(next - DateTime.UtcNow, TimeSpan.FromDays(1), GiveLogs);
+    }
+  }
 
-	public class TreeStumpDeed : BaseAddonDeed, IRewardItem, IRewardOption
-	{
-		public override int LabelNumber => 1080406; // a deed for a tree stump decoration
+  public class TreeStumpDeed : BaseAddonDeed, IRewardItem, IRewardOption
+  {
+    private bool m_IsRewardItem;
 
-		public override BaseAddon Addon
-		{
-			get
-			{
-				TreeStump addon = new TreeStump( m_ItemID );
-				addon.IsRewardItem = m_IsRewardItem;
-				addon.Logs = m_Logs;
+    private int m_ItemID;
 
-				return addon;
-			}
-		}
+    private int m_Logs;
 
-		private int m_ItemID;
-		private bool m_IsRewardItem;
+    [Constructible]
+    public TreeStumpDeed()
+    {
+      LootType = LootType.Blessed;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsRewardItem
-		{
-			get => m_IsRewardItem;
-			set{ m_IsRewardItem = value; InvalidateProperties(); }
-		}
+    public TreeStumpDeed(Serial serial) : base(serial)
+    {
+    }
 
-		private int m_Logs;
+    public override int LabelNumber => 1080406; // a deed for a tree stump decoration
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Logs
-		{
-			get => m_Logs;
-			set{ m_Logs = value; InvalidateProperties(); }
-		}
+    public override BaseAddon Addon
+    {
+      get
+      {
+        TreeStump addon = new TreeStump(m_ItemID);
+        addon.IsRewardItem = m_IsRewardItem;
+        addon.Logs = m_Logs;
 
-		[Constructible]
-		public TreeStumpDeed()
-		{
-			LootType = LootType.Blessed;
-		}
+        return addon;
+      }
+    }
 
-		public TreeStumpDeed( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Logs
+    {
+      get => m_Logs;
+      set
+      {
+        m_Logs = value;
+        InvalidateProperties();
+      }
+    }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsRewardItem
+    {
+      get => m_IsRewardItem;
+      set
+      {
+        m_IsRewardItem = value;
+        InvalidateProperties();
+      }
+    }
 
-			if ( m_IsRewardItem )
-				list.Add( 1076223 ); // 7th Year Veteran Reward
-		}
+    public void GetOptions(RewardOptionList list)
+    {
+      list.Add(1, 1080403); // Tree Stump with Axe West
+      list.Add(2, 1080404); // Tree Stump with Axe North
+      list.Add(3, 1080401); // Tree Stump East
+      list.Add(4, 1080402); // Tree Stump South
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( m_IsRewardItem && !RewardSystem.CheckIsUsableBy( from, this, null ) )
-				return;
+    public void OnOptionSelected(Mobile from, int option)
+    {
+      switch (option)
+      {
+        case 1:
+          m_ItemID = 0xE56;
+          break;
+        case 2:
+          m_ItemID = 0xE58;
+          break;
+        case 3:
+          m_ItemID = 0xE57;
+          break;
+        case 4:
+          m_ItemID = 0xE59;
+          break;
+      }
 
-			if ( IsChildOf( from.Backpack ) )
-			{
-				from.CloseGump( typeof( RewardOptionGump ) );
-				from.SendGump( new RewardOptionGump( this ) );
-			}
-			else
-				from.SendLocalizedMessage( 1062334 ); // This item must be in your backpack to be used.
-		}
+      if (!Deleted)
+        base.OnDoubleClick(from);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-			writer.WriteEncodedInt( 0 ); // version
+      if (m_IsRewardItem)
+        list.Add(1076223); // 7th Year Veteran Reward
+    }
 
-			writer.Write( (bool) m_IsRewardItem );
-			writer.Write( (int) m_Logs );
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+        return;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      if (IsChildOf(from.Backpack))
+      {
+        from.CloseGump(typeof(RewardOptionGump));
+        from.SendGump(new RewardOptionGump(this));
+      }
+      else
+      {
+        from.SendLocalizedMessage(1062334); // This item must be in your backpack to be used.
+      }
+    }
 
-			int version = reader.ReadEncodedInt();
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			m_IsRewardItem = reader.ReadBool();
-			m_Logs = reader.ReadInt();
-		}
+      writer.WriteEncodedInt(0); // version
 
-		public void GetOptions( RewardOptionList list )
-		{
-			list.Add( 1, 1080403 ); // Tree Stump with Axe West
-			list.Add( 2, 1080404 ); // Tree Stump with Axe North
-			list.Add( 3, 1080401 ); // Tree Stump East
-			list.Add( 4, 1080402 ); // Tree Stump South
-		}
+      writer.Write(m_IsRewardItem);
+      writer.Write(m_Logs);
+    }
 
-		public void OnOptionSelected( Mobile from, int option )
-		{
-			switch ( option )
-			{
-				case 1: m_ItemID = 0xE56; break;
-				case 2: m_ItemID = 0xE58; break;
-				case 3: m_ItemID = 0xE57; break;
-				case 4: m_ItemID = 0xE59; break;
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			if ( !Deleted )
-				base.OnDoubleClick( from );
-		}
-	}
+      int version = reader.ReadEncodedInt();
+
+      m_IsRewardItem = reader.ReadBool();
+      m_Logs = reader.ReadInt();
+    }
+  }
 }

@@ -4,178 +4,181 @@ using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	public class Revenant : BaseCreature
-	{
-		private Mobile m_Target;
-		private DateTime m_ExpireTime;
+  public class Revenant : BaseCreature
+  {
+    private DateTime m_ExpireTime;
+    private Mobile m_Target;
 
-		public override void DisplayPaperdollTo( Mobile to )
-		{
-			// Do nothing
-		}
+    public Revenant(Mobile caster, Mobile target, TimeSpan duration) : base(AIType.AI_Melee, FightMode.Closest, 10, 1,
+      0.18, 0.36)
+    {
+      Body = 400;
+      Hue = 1;
+      // TODO: Sound values?
 
-		public override Mobile ConstantFocus => m_Target;
-		public override bool NoHouseRestrictions => true;
+      double scalar = caster.Skills[SkillName.SpiritSpeak].Value * 0.01;
 
-		public override double DispelDifficulty => 80.0;
-		public override double DispelFocus => 20.0;
+      m_Target = target;
+      m_ExpireTime = DateTime.UtcNow + duration;
 
-		public override string DefaultName => "a revenant";
+      SetStr(200);
+      SetDex(150);
+      SetInt(150);
 
-		public Revenant( Mobile caster, Mobile target, TimeSpan duration ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.18, 0.36 )
-		{
-			Body = 400;
-			Hue = 1;
-			// TODO: Sound values?
+      SetDamage(16, 17);
 
-			double scalar = caster.Skills[SkillName.SpiritSpeak].Value * 0.01;
+      // Bestiary says 50 phys 50 cold, animal lore says differently
+      SetDamageType(ResistanceType.Physical, 100);
 
-			m_Target = target;
-			m_ExpireTime = DateTime.UtcNow + duration;
+      SetSkill(SkillName.MagicResist, 100.0 * scalar); // magic resist is absolute value of spiritspeak
+      SetSkill(SkillName.Tactics, 100.0); // always 100
+      SetSkill(SkillName.Swords,
+        100.0 * scalar); // not displayed in animal lore but tests clearly show this is influenced
+      SetSkill(SkillName.DetectHidden, 75.0 * scalar);
 
-			SetStr( 200 );
-			SetDex( 150 );
-			SetInt( 150 );
+      scalar /= 1.2;
 
-			SetDamage( 16, 17 );
+      SetResistance(ResistanceType.Physical, 40 + (int)(20 * scalar), 50 + (int)(20 * scalar));
+      SetResistance(ResistanceType.Cold, 40 + (int)(20 * scalar), 50 + (int)(20 * scalar));
+      SetResistance(ResistanceType.Fire, (int)(20 * scalar));
+      SetResistance(ResistanceType.Poison, 100);
+      SetResistance(ResistanceType.Energy, 40 + (int)(20 * scalar), 50 + (int)(20 * scalar));
 
-			// Bestiary says 50 phys 50 cold, animal lore says differently
-			SetDamageType( ResistanceType.Physical, 100 );
+      Fame = 0;
+      Karma = 0;
 
-			SetSkill( SkillName.MagicResist, 100.0 * scalar ); // magic resist is absolute value of spiritspeak
-			SetSkill( SkillName.Tactics, 100.0 ); // always 100
-			SetSkill( SkillName.Swords, 100.0 * scalar ); // not displayed in animal lore but tests clearly show this is influenced
-			SetSkill( SkillName.DetectHidden, 75.0 * scalar );
+      ControlSlots = 3;
 
-			scalar /= 1.2;
+      VirtualArmor = 32;
 
-			SetResistance( ResistanceType.Physical, 40 + (int)(20 * scalar), 50 + (int)(20 * scalar)  );
-			SetResistance( ResistanceType.Cold, 40 + (int)(20 * scalar), 50 + (int)(20 * scalar) );
-			SetResistance( ResistanceType.Fire, (int)(20 * scalar) );
-			SetResistance( ResistanceType.Poison, 100 );
-			SetResistance( ResistanceType.Energy, 40 + (int)(20 * scalar), 50 + (int)(20 * scalar) );
+      Item shroud = new DeathShroud();
 
-			Fame = 0;
-			Karma = 0;
+      shroud.Hue = 0x455;
 
-			ControlSlots = 3;
+      shroud.Movable = false;
 
-			VirtualArmor = 32;
+      AddItem(shroud);
 
-			Item shroud = new DeathShroud();
+      Halberd weapon = new Halberd();
 
-			shroud.Hue = 0x455;
+      weapon.Hue = 1;
+      weapon.Movable = false;
 
-			shroud.Movable = false;
+      AddItem(weapon);
+    }
 
-			AddItem( shroud );
+    public Revenant(Serial serial) : base(serial)
+    {
+    }
 
-			Halberd weapon = new Halberd();
+    public override Mobile ConstantFocus => m_Target;
+    public override bool NoHouseRestrictions => true;
 
-			weapon.Hue = 1;
-			weapon.Movable = false;
+    public override double DispelDifficulty => 80.0;
+    public override double DispelFocus => 20.0;
 
-			AddItem( weapon );
-		}
+    public override string DefaultName => "a revenant";
 
-		public override bool AlwaysMurderer => true;
+    public override bool AlwaysMurderer => true;
 
-		public override bool BleedImmune => true;
-		public override bool BardImmune => true;
-		public override Poison PoisonImmune => Poison.Lethal;
+    public override bool BleedImmune => true;
+    public override bool BardImmune => true;
+    public override Poison PoisonImmune => Poison.Lethal;
 
-		public override void OnThink()
-		{
-			if ( !m_Target.Alive || DateTime.UtcNow > m_ExpireTime )
-			{
-				Kill();
-				return;
-			}
+    public override void DisplayPaperdollTo(Mobile to)
+    {
+      // Do nothing
+    }
 
-			if ( Map != m_Target.Map || !InRange( m_Target, 15 ) )
-			{
-				Map fromMap = Map;
-				Point3D from = Location;
+    public override void OnThink()
+    {
+      if (!m_Target.Alive || DateTime.UtcNow > m_ExpireTime)
+      {
+        Kill();
+        return;
+      }
 
-				Map toMap = m_Target.Map;
-				Point3D to = m_Target.Location;
+      if (Map != m_Target.Map || !InRange(m_Target, 15))
+      {
+        Map fromMap = Map;
+        Point3D from = Location;
 
-				if ( toMap != null )
-				{
-					for ( int i = 0; i < 5; ++i )
-					{
-						Point3D loc = new Point3D( to.X - 4 + Utility.Random( 9 ), to.Y - 4 + Utility.Random( 9 ), to.Z );
+        Map toMap = m_Target.Map;
+        Point3D to = m_Target.Location;
 
-						if ( toMap.CanSpawnMobile( loc ) )
-						{
-							to = loc;
-							break;
-						}
+        if (toMap != null)
+          for (int i = 0; i < 5; ++i)
+          {
+            Point3D loc = new Point3D(to.X - 4 + Utility.Random(9), to.Y - 4 + Utility.Random(9), to.Z);
 
-						loc.Z = toMap.GetAverageZ( loc.X, loc.Y );
+            if (toMap.CanSpawnMobile(loc))
+            {
+              to = loc;
+              break;
+            }
 
-						if ( toMap.CanSpawnMobile( loc ) )
-						{
-							to = loc;
-							break;
-						}
-					}
-				}
+            loc.Z = toMap.GetAverageZ(loc.X, loc.Y);
 
-				Map = toMap;
-				Location = to;
+            if (toMap.CanSpawnMobile(loc))
+            {
+              to = loc;
+              break;
+            }
+          }
 
-				ProcessDelta();
+        Map = toMap;
+        Location = to;
 
-				Effects.SendLocationParticles( EffectItem.Create( from, fromMap, EffectItem.DefaultDuration ), 0x3728, 1, 13, 37, 7, 5023, 0 );
-				FixedParticles( 0x3728, 1, 13, 5023, 37, 7, EffectLayer.Waist );
+        ProcessDelta();
 
-				PlaySound( 0x37D );
-			}
+        Effects.SendLocationParticles(EffectItem.Create(from, fromMap, EffectItem.DefaultDuration), 0x3728, 1, 13,
+          37, 7, 5023, 0);
+        FixedParticles(0x3728, 1, 13, 5023, 37, 7, EffectLayer.Waist);
 
-			if (m_Target.Hidden && InRange(m_Target, 3) && Core.TickCount - NextSkillTime >= 0 && UseSkill(SkillName.DetectHidden))
-			{
-				Target targ = Target;
+        PlaySound(0x37D);
+      }
 
-				targ?.Invoke( this, this );
-			}
+      if (m_Target.Hidden && InRange(m_Target, 3) && Core.TickCount - NextSkillTime >= 0 &&
+          UseSkill(SkillName.DetectHidden))
+      {
+        Target targ = Target;
 
-			Combatant = m_Target;
-			FocusMob = m_Target;
+        targ?.Invoke(this, this);
+      }
 
-			if ( AIObject != null )
-				AIObject.Action = ActionType.Combat;
+      Combatant = m_Target;
+      FocusMob = m_Target;
 
-			base.OnThink();
-		}
+      if (AIObject != null)
+        AIObject.Action = ActionType.Combat;
 
-		public override bool OnBeforeDeath()
-		{
-			Effects.PlaySound( Location, Map, 0x10B );
-			Effects.SendLocationParticles( EffectItem.Create( Location, Map, TimeSpan.FromSeconds( 10.0 ) ), 0x37CC, 1, 50, 2101, 7, 9909, 0 );
+      base.OnThink();
+    }
 
-			Delete();
-			return false;
-		}
+    public override bool OnBeforeDeath()
+    {
+      Effects.PlaySound(Location, Map, 0x10B);
+      Effects.SendLocationParticles(EffectItem.Create(Location, Map, TimeSpan.FromSeconds(10.0)), 0x37CC, 1, 50, 2101,
+        7, 9909, 0);
 
-		public Revenant( Serial serial ) : base( serial )
-		{
-		}
+      Delete();
+      return false;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			Delete();
-		}
-	}
+      Delete();
+    }
+  }
 }

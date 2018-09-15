@@ -4,107 +4,112 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	public class Sheep : BaseCreature, ICarvable
-	{
-		public override string CorpseName => "a sheep corpse";
-		private DateTime m_NextWoolTime;
+  public class Sheep : BaseCreature, ICarvable
+  {
+    private DateTime m_NextWoolTime;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime NextWoolTime
-		{
-			get => m_NextWoolTime;
-			set{ m_NextWoolTime = value; Body = ( DateTime.UtcNow >= m_NextWoolTime ) ? 0xCF : 0xDF; }
-		}
+    [Constructible]
+    public Sheep() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+      Body = 0xCF;
+      BaseSoundID = 0xD6;
 
-		public void Carve( Mobile from, Item item )
-		{
-			if ( DateTime.UtcNow < m_NextWoolTime )
-			{
-				// This sheep is not yet ready to be shorn.
-				PrivateOverheadMessage( MessageType.Regular, 0x3B2, 500449, from.NetState );
-				return;
-			}
+      SetStr(19);
+      SetDex(25);
+      SetInt(5);
 
-			from.SendLocalizedMessage( 500452 ); // You place the gathered wool into your backpack.
-			from.AddToBackpack( new Wool( Map == Map.Felucca ? 2 : 1 ) );
+      SetHits(12);
+      SetMana(0);
 
-			NextWoolTime = DateTime.UtcNow + TimeSpan.FromHours( 3.0 ); // TODO: Proper time delay
-		}
+      SetDamage(1, 2);
 
-		public override void OnThink()
-		{
-			base.OnThink();
-			Body = ( DateTime.UtcNow >= m_NextWoolTime ) ? 0xCF : 0xDF;
-		}
+      SetDamageType(ResistanceType.Physical, 100);
 
-		public override string DefaultName => "a sheep";
+      SetResistance(ResistanceType.Physical, 5, 10);
 
-		[Constructible]
-		public Sheep() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			Body = 0xCF;
-			BaseSoundID = 0xD6;
+      SetSkill(SkillName.MagicResist, 5.0);
+      SetSkill(SkillName.Tactics, 6.0);
+      SetSkill(SkillName.Wrestling, 5.0);
 
-			SetStr( 19 );
-			SetDex( 25 );
-			SetInt( 5 );
+      Fame = 300;
+      Karma = 0;
 
-			SetHits( 12 );
-			SetMana( 0 );
+      VirtualArmor = 6;
 
-			SetDamage( 1, 2 );
+      Tamable = true;
+      ControlSlots = 1;
+      MinTameSkill = 11.1;
+    }
 
-			SetDamageType( ResistanceType.Physical, 100 );
+    public Sheep(Serial serial) : base(serial)
+    {
+    }
 
-			SetResistance( ResistanceType.Physical, 5, 10 );
+    public override string CorpseName => "a sheep corpse";
 
-			SetSkill( SkillName.MagicResist, 5.0 );
-			SetSkill( SkillName.Tactics, 6.0 );
-			SetSkill( SkillName.Wrestling, 5.0 );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public DateTime NextWoolTime
+    {
+      get => m_NextWoolTime;
+      set
+      {
+        m_NextWoolTime = value;
+        Body = DateTime.UtcNow >= m_NextWoolTime ? 0xCF : 0xDF;
+      }
+    }
 
-			Fame = 300;
-			Karma = 0;
+    public override string DefaultName => "a sheep";
 
-			VirtualArmor = 6;
+    public override int Meat => 3;
+    public override MeatType MeatType => MeatType.LambLeg;
+    public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
-			Tamable = true;
-			ControlSlots = 1;
-			MinTameSkill = 11.1;
-		}
+    public override int Wool => Body == 0xCF ? 3 : 0;
 
-		public override int Meat => 3;
-		public override MeatType MeatType => MeatType.LambLeg;
-		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+    public void Carve(Mobile from, Item item)
+    {
+      if (DateTime.UtcNow < m_NextWoolTime)
+      {
+        // This sheep is not yet ready to be shorn.
+        PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500449, from.NetState);
+        return;
+      }
 
-		public override int Wool => (Body == 0xCF ? 3 : 0);
+      from.SendLocalizedMessage(500452); // You place the gathered wool into your backpack.
+      from.AddToBackpack(new Wool(Map == Map.Felucca ? 2 : 1));
 
-		public Sheep( Serial serial ) : base( serial )
-		{
-		}
+      NextWoolTime = DateTime.UtcNow + TimeSpan.FromHours(3.0); // TODO: Proper time delay
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void OnThink()
+    {
+      base.OnThink();
+      Body = DateTime.UtcNow >= m_NextWoolTime ? 0xCF : 0xDF;
+    }
 
-			writer.Write( (int) 1 );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteDeltaTime( m_NextWoolTime );
-		}
+      writer.Write(1);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.WriteDeltaTime(m_NextWoolTime);
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			switch ( version )
-			{
-				case 1:
-				{
-					NextWoolTime = reader.ReadDeltaTime();
-					break;
-				}
-			}
-		}
-	}
+      int version = reader.ReadInt();
+
+      switch (version)
+      {
+        case 1:
+        {
+          NextWoolTime = reader.ReadDeltaTime();
+          break;
+        }
+      }
+    }
+  }
 }

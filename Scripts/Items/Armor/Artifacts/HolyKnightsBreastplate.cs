@@ -1,42 +1,42 @@
 namespace Server.Items
 {
-	public class HolyKnightsBreastplate : PlateChest
-	{
-		public override int LabelNumber => 1061097; // Holy Knight's Breastplate
-		public override int ArtifactRarity => 11;
+  public class HolyKnightsBreastplate : PlateChest
+  {
+    [Constructible]
+    public HolyKnightsBreastplate()
+    {
+      Hue = 0x47E;
+      Attributes.BonusHits = 10;
+      Attributes.ReflectPhysical = 15;
+    }
 
-		public override int BasePhysicalResistance => 35;
+    public HolyKnightsBreastplate(Serial serial) : base(serial)
+    {
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public override int LabelNumber => 1061097; // Holy Knight's Breastplate
+    public override int ArtifactRarity => 11;
 
-		[Constructible]
-		public HolyKnightsBreastplate()
-		{
-			Hue = 0x47E;
-			Attributes.BonusHits = 10;
-			Attributes.ReflectPhysical = 15;
-		}
+    public override int BasePhysicalResistance => 35;
 
-		public HolyKnightsBreastplate( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 );
-		}
+      writer.Write(1);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( version < 1 )
-				PhysicalBonus = 0;
-		}
-	}
+      if (version < 1)
+        PhysicalBonus = 0;
+    }
+  }
 }

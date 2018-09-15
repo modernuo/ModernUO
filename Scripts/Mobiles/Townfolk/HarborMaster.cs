@@ -2,72 +2,73 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class HarborMaster : BaseCreature
-	{
-		public override bool CanTeach => false;
+  public class HarborMaster : BaseCreature
+  {
+    [Constructible]
+    public HarborMaster()
+      : base(AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4)
+    {
+      InitStats(31, 41, 51);
 
-		[Constructible]
-		public HarborMaster()
-			: base( AIType.AI_Animal, FightMode.None, 10, 1, 0.2, 0.4 )
-		{
-			InitStats( 31, 41, 51 );
-
-			SetSkill( SkillName.Mining, 36, 68 );
+      SetSkill(SkillName.Mining, 36, 68);
 
 
-			SpeechHue = Utility.RandomDyedHue();
-			Hue = Utility.RandomSkinHue();
-			Blessed = true;
+      SpeechHue = Utility.RandomDyedHue();
+      Hue = Utility.RandomSkinHue();
+      Blessed = true;
 
 
-			if ( Female = Utility.RandomBool() )
-			{
-				Body = 0x191;
-				Name = NameList.RandomName( "female" );
-				Title = "the Harbor Mistress";
-			}
-			else
-			{
-				Body = 0x190;
-				Name = NameList.RandomName( "male" );
-				Title = "the Harbor Master";
-			}
-			AddItem( new Shirt( Utility.RandomDyedHue() ) );
-			AddItem( new Boots() );
-			AddItem( new LongPants( Utility.RandomNeutralHue() ) );
-			AddItem( new QuarterStaff() );
+      if (Female = Utility.RandomBool())
+      {
+        Body = 0x191;
+        Name = NameList.RandomName("female");
+        Title = "the Harbor Mistress";
+      }
+      else
+      {
+        Body = 0x190;
+        Name = NameList.RandomName("male");
+        Title = "the Harbor Master";
+      }
 
-			Utility.AssignRandomHair( this );
+      AddItem(new Shirt(Utility.RandomDyedHue()));
+      AddItem(new Boots());
+      AddItem(new LongPants(Utility.RandomNeutralHue()));
+      AddItem(new QuarterStaff());
 
-			Container pack = new Backpack();
+      Utility.AssignRandomHair(this);
 
-			pack.DropItem( new Gold( 250, 300 ) );
+      Container pack = new Backpack();
 
-			pack.Movable = false;
+      pack.DropItem(new Gold(250, 300));
 
-			AddItem( pack );
-		}
+      pack.Movable = false;
 
-		public override bool ClickTitle => false;
+      AddItem(pack);
+    }
 
 
-		public HarborMaster( Serial serial )
-			: base( serial )
-		{
-		}
+    public HarborMaster(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override bool CanTeach => false;
 
-			writer.Write( (int)0 ); // version
-		}
+    public override bool ClickTitle => false;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			int version = reader.ReadInt();
-		}
-	}
+      writer.Write(0); // version
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

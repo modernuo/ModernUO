@@ -1,45 +1,46 @@
 namespace Server.Items
 {
-	public class WildfireBow : ElvenCompositeLongbow
-	{
-		public override int LabelNumber => 1075044; // Wildfire Bow
+  public class WildfireBow : ElvenCompositeLongbow
+  {
+    [Constructible]
+    public WildfireBow()
+    {
+      Hue = 0x489;
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+      SkillBonuses.SetValues(0, SkillName.Archery, 10);
+      WeaponAttributes.ResistFireBonus = 25;
 
-		[Constructible]
-		public WildfireBow()
-		{
-			Hue = 0x489;
+      Velocity = 15;
+    }
 
-			SkillBonuses.SetValues( 0, SkillName.Archery, 10 );
-			WeaponAttributes.ResistFireBonus = 25;
+    public WildfireBow(Serial serial) : base(serial)
+    {
+    }
 
-			Velocity = 15;
-		}
+    public override int LabelNumber => 1075044; // Wildfire Bow
 
-		public override void GetDamageTypes( Mobile wielder, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct )
-		{
-			phys = cold = pois = nrgy = chaos = direct = 0;
-			fire = 100;
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public WildfireBow( Serial serial ) : base( serial )
-		{
-		}
+    public override void GetDamageTypes(Mobile wielder, out int phys, out int fire, out int cold, out int pois,
+      out int nrgy, out int chaos, out int direct)
+    {
+      phys = cold = pois = nrgy = chaos = direct = 0;
+      fire = 100;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

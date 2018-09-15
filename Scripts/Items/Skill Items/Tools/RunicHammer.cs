@@ -2,76 +2,76 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0x13E4, 0x13E3 )]
-	public class RunicHammer : BaseRunicTool
-	{
-		public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
+  [Flippable(0x13E4, 0x13E3)]
+  public class RunicHammer : BaseRunicTool
+  {
+    [Constructible]
+    public RunicHammer(CraftResource resource) : base(resource, 0x13E3)
+    {
+      Weight = 8.0;
+      Layer = Layer.OneHanded;
+      Hue = CraftResources.GetHue(resource);
+    }
 
-		public override int LabelNumber
-		{
-			get
-			{
-				int index = CraftResources.GetIndex( Resource );
+    [Constructible]
+    public RunicHammer(CraftResource resource, int uses) : base(resource, uses, 0x13E3)
+    {
+      Weight = 8.0;
+      Layer = Layer.OneHanded;
+      Hue = CraftResources.GetHue(resource);
+    }
 
-				if ( index >= 1 && index <= 8 )
-					return 1049019 + index;
+    public RunicHammer(Serial serial) : base(serial)
+    {
+    }
 
-				return 1045128; // runic smithy hammer
-			}
-		}
+    public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
 
-		public override void AddNameProperties( ObjectPropertyList list )
-		{
-			base.AddNameProperties( list );
+    public override int LabelNumber
+    {
+      get
+      {
+        int index = CraftResources.GetIndex(Resource);
 
-			int index = CraftResources.GetIndex( Resource );
+        if (index >= 1 && index <= 8)
+          return 1049019 + index;
 
-			if ( index >= 1 && index <= 8 )
-				return;
+        return 1045128; // runic smithy hammer
+      }
+    }
 
-			if ( !CraftResources.IsStandard( Resource ) )
-			{
-				int num = CraftResources.GetLocalizationNumber( Resource );
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+      base.AddNameProperties(list);
 
-				if ( num > 0 )
-					list.Add( num );
-				else
-					list.Add( CraftResources.GetName( Resource ) );
-			}
-		}
+      int index = CraftResources.GetIndex(Resource);
 
-		[Constructible]
-		public RunicHammer( CraftResource resource ) : base( resource, 0x13E3 )
-		{
-			Weight = 8.0;
-			Layer = Layer.OneHanded;
-			Hue = CraftResources.GetHue( resource );
-		}
+      if (index >= 1 && index <= 8)
+        return;
 
-		[Constructible]
-		public RunicHammer( CraftResource resource, int uses ) : base( resource, uses, 0x13E3 )
-		{
-			Weight = 8.0;
-			Layer = Layer.OneHanded;
-			Hue = CraftResources.GetHue( resource );
-		}
+      if (!CraftResources.IsStandard(Resource))
+      {
+        int num = CraftResources.GetLocalizationNumber(Resource);
 
-		public RunicHammer( Serial serial ) : base( serial )
-		{
-		}
+        if (num > 0)
+          list.Add(num);
+        else
+          list.Add(CraftResources.GetName(Resource));
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

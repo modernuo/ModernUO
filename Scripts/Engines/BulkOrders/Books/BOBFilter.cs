@@ -1,62 +1,62 @@
 namespace Server.Engines.BulkOrders
 {
-	public class BOBFilter
-	{
-		public bool IsDefault => ( Type == 0 && Quality == 0 && Material == 0 && Quantity == 0 );
+  public class BOBFilter
+  {
+    public BOBFilter()
+    {
+    }
 
-		public void Clear()
-		{
-			Type = 0;
-			Quality = 0;
-			Material = 0;
-			Quantity = 0;
-		}
+    public BOBFilter(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-		public int Type { get; set; }
+      switch (version)
+      {
+        case 1:
+        {
+          Type = reader.ReadEncodedInt();
+          Quality = reader.ReadEncodedInt();
+          Material = reader.ReadEncodedInt();
+          Quantity = reader.ReadEncodedInt();
 
-		public int Quality { get; set; }
+          break;
+        }
+      }
+    }
 
-		public int Material { get; set; }
+    public bool IsDefault => Type == 0 && Quality == 0 && Material == 0 && Quantity == 0;
 
-		public int Quantity { get; set; }
+    public int Type{ get; set; }
 
-		public BOBFilter()
-		{
-		}
+    public int Quality{ get; set; }
 
-		public BOBFilter( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+    public int Material{ get; set; }
 
-			switch ( version )
-			{
-				case 1:
-				{
-					Type = reader.ReadEncodedInt();
-					Quality = reader.ReadEncodedInt();
-					Material = reader.ReadEncodedInt();
-					Quantity = reader.ReadEncodedInt();
+    public int Quantity{ get; set; }
 
-					break;
-				}
-			}
-		}
+    public void Clear()
+    {
+      Type = 0;
+      Quality = 0;
+      Material = 0;
+      Quantity = 0;
+    }
 
-		public void Serialize( GenericWriter writer )
-		{
-			if ( IsDefault )
-			{
-				writer.WriteEncodedInt( 0 ); // version
-			}
-			else
-			{
-				writer.WriteEncodedInt( 1 ); // version
+    public void Serialize(GenericWriter writer)
+    {
+      if (IsDefault)
+      {
+        writer.WriteEncodedInt(0); // version
+      }
+      else
+      {
+        writer.WriteEncodedInt(1); // version
 
-				writer.WriteEncodedInt( Type );
-				writer.WriteEncodedInt( Quality );
-				writer.WriteEncodedInt( Material );
-				writer.WriteEncodedInt( Quantity );
-			}
-		}
-	}
+        writer.WriteEncodedInt(Type);
+        writer.WriteEncodedInt(Quality);
+        writer.WriteEncodedInt(Material);
+        writer.WriteEncodedInt(Quantity);
+      }
+    }
+  }
 }

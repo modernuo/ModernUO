@@ -1,158 +1,159 @@
 using System;
-using Server.Mobiles;
 using Server.Gumps;
+using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Objectives
 {
-	public class KillObjective : BaseObjective
-	{
-		public int DesiredAmount { get; set; }
+  public class KillObjective : BaseObjective
+  {
+    public KillObjective()
+      : this(0, null, null, null)
+    {
+    }
 
-		public Type[] AcceptedTypes { get; set; }
+    public KillObjective(int amount, Type[] types, TextDefinition name)
+      : this(amount, types, name, null)
+    {
+    }
 
-		public TextDefinition Name { get; set; }
+    public KillObjective(int amount, Type[] types, TextDefinition name, QuestArea area)
+    {
+      DesiredAmount = amount;
+      AcceptedTypes = types;
+      Name = name;
+      Area = area;
+    }
 
-		public QuestArea Area { get; set; }
+    public int DesiredAmount{ get; set; }
 
-		public KillObjective()
-			: this( 0, null, null, null )
-		{
-		}
+    public Type[] AcceptedTypes{ get; set; }
 
-		public KillObjective( int amount, Type[] types, TextDefinition name )
-			: this( amount, types, name, null )
-		{
-		}
+    public TextDefinition Name{ get; set; }
 
-		public KillObjective( int amount, Type[] types, TextDefinition name, QuestArea area )
-		{
-			DesiredAmount = amount;
-			AcceptedTypes = types;
-			Name = name;
-			Area = area;
-		}
+    public QuestArea Area{ get; set; }
 
-		public override void WriteToGump( Gump g, ref int y )
-		{
-			string amount = DesiredAmount.ToString();
+    public override void WriteToGump(Gump g, ref int y)
+    {
+      string amount = DesiredAmount.ToString();
 
-			g.AddHtmlLocalized( 98, y, 312, 16, 1072204, 0x15F90, false, false ); // Slay
-			g.AddLabel( 133, y, 0x481, amount );
+      g.AddHtmlLocalized(98, y, 312, 16, 1072204, 0x15F90, false, false); // Slay
+      g.AddLabel(133, y, 0x481, amount);
 
-			if ( Name.Number > 0 )
-				g.AddHtmlLocalized( 133 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF, false, false );
-			else if ( Name.String != null )
-				g.AddLabel( 133 + amount.Length * 15, y, 0x481, Name.String );
+      if (Name.Number > 0)
+        g.AddHtmlLocalized(133 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF, false, false);
+      else if (Name.String != null)
+        g.AddLabel(133 + amount.Length * 15, y, 0x481, Name.String);
 
-			y += 16;
+      y += 16;
 
-			#region Location
-			if ( Area != null )
-			{
-				g.AddHtmlLocalized( 103, y, 312, 20, 1018327, 0x15F90, false, false ); // Location
+      #region Location
 
-				if ( Area.Name.Number > 0 )
-					g.AddHtmlLocalized( 223, y, 312, 20, Area.Name.Number, 0xFFFFFF, false, false );
-				else if ( Area.Name.String != null )
-					g.AddLabel( 223, y, 0x481, Area.Name.String );
+      if (Area != null)
+      {
+        g.AddHtmlLocalized(103, y, 312, 20, 1018327, 0x15F90, false, false); // Location
 
-				y += 16;
-			}
-			#endregion
-		}
+        if (Area.Name.Number > 0)
+          g.AddHtmlLocalized(223, y, 312, 20, Area.Name.Number, 0xFFFFFF, false, false);
+        else if (Area.Name.String != null)
+          g.AddLabel(223, y, 0x481, Area.Name.String);
 
-		public override BaseObjectiveInstance CreateInstance( MLQuestInstance instance )
-		{
-			return new KillObjectiveInstance( this, instance );
-		}
-	}
+        y += 16;
+      }
 
-	#region Timed
+      #endregion
+    }
 
-	public class TimedKillObjective : KillObjective
-	{
-		public override bool IsTimed => true;
-		public override TimeSpan Duration { get; }
+    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
+    {
+      return new KillObjectiveInstance(this, instance);
+    }
+  }
 
-		public TimedKillObjective( TimeSpan duration, int amount, Type[] types, TextDefinition name )
-			: this( duration, amount, types, name, null )
-		{
-		}
+  #region Timed
 
-		public TimedKillObjective( TimeSpan duration, int amount, Type[] types, TextDefinition name, QuestArea area )
-			: base( amount, types, name, area )
-		{
-			Duration = duration;
-		}
-	}
+  public class TimedKillObjective : KillObjective
+  {
+    public TimedKillObjective(TimeSpan duration, int amount, Type[] types, TextDefinition name)
+      : this(duration, amount, types, name, null)
+    {
+    }
 
-	#endregion
+    public TimedKillObjective(TimeSpan duration, int amount, Type[] types, TextDefinition name, QuestArea area)
+      : base(amount, types, name, area)
+    {
+      Duration = duration;
+    }
 
-	public class KillObjectiveInstance : BaseObjectiveInstance
-	{
-		public KillObjective Objective { get; set; }
+    public override bool IsTimed => true;
+    public override TimeSpan Duration{ get; }
+  }
 
-		public int Slain { get; set; }
+  #endregion
 
-		public KillObjectiveInstance( KillObjective objective, MLQuestInstance instance )
-			: base( instance, objective )
-		{
-			Objective = objective;
-			Slain = 0;
-		}
+  public class KillObjectiveInstance : BaseObjectiveInstance
+  {
+    public KillObjectiveInstance(KillObjective objective, MLQuestInstance instance)
+      : base(instance, objective)
+    {
+      Objective = objective;
+      Slain = 0;
+    }
 
-		public bool AddKill( Mobile mob, Type type )
-		{
-			int desired = Objective.DesiredAmount;
+    public KillObjective Objective{ get; set; }
 
-			foreach ( Type acceptedType in Objective.AcceptedTypes )
-			{
-				if ( acceptedType.IsAssignableFrom( type ) )
-				{
-					if ( Objective.Area != null && !Objective.Area.Contains( mob ) )
-						return false;
+    public int Slain{ get; set; }
 
-					PlayerMobile pm = Instance.Player;
+    public override DataType ExtraDataType => DataType.KillObjective;
 
-					if ( ++Slain >= desired )
-						pm.SendLocalizedMessage( 1075050 ); // You have killed all the required quest creatures of this type.
-					else
-						pm.SendLocalizedMessage( 1075051, ( desired - Slain ).ToString() ); // You have killed a quest creature. ~1_val~ more left.
+    public bool AddKill(Mobile mob, Type type)
+    {
+      int desired = Objective.DesiredAmount;
 
-					return true;
-				}
-			}
+      foreach (Type acceptedType in Objective.AcceptedTypes)
+        if (acceptedType.IsAssignableFrom(type))
+        {
+          if (Objective.Area != null && !Objective.Area.Contains(mob))
+            return false;
 
-			return false;
-		}
+          PlayerMobile pm = Instance.Player;
 
-		public override bool IsCompleted()
-		{
-			return ( Slain >= Objective.DesiredAmount );
-		}
+          if (++Slain >= desired)
+            pm.SendLocalizedMessage(1075050); // You have killed all the required quest creatures of this type.
+          else
+            pm.SendLocalizedMessage(1075051,
+              (desired - Slain).ToString()); // You have killed a quest creature. ~1_val~ more left.
 
-		public override void WriteToGump( Gump g, ref int y )
-		{
-			Objective.WriteToGump( g, ref y );
+          return true;
+        }
 
-			base.WriteToGump( g, ref y );
+      return false;
+    }
 
-			g.AddHtmlLocalized( 103, y, 120, 16, 3000087, 0x15F90, false, false ); // Total
-			g.AddLabel( 223, y, 0x481, Slain.ToString() );
-			y += 16;
+    public override bool IsCompleted()
+    {
+      return Slain >= Objective.DesiredAmount;
+    }
 
-			g.AddHtmlLocalized( 103, y, 120, 16, 1074782, 0x15F90, false, false ); // Return to
-			g.AddLabel( 223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor( Instance.QuesterType ) );
-			y += 16;
-		}
+    public override void WriteToGump(Gump g, ref int y)
+    {
+      Objective.WriteToGump(g, ref y);
 
-		public override DataType ExtraDataType => DataType.KillObjective;
+      base.WriteToGump(g, ref y);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x15F90, false, false); // Total
+      g.AddLabel(223, y, 0x481, Slain.ToString());
+      y += 16;
 
-			writer.Write( Slain );
-		}
-	}
+      g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x15F90, false, false); // Return to
+      g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Instance.QuesterType));
+      y += 16;
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(Slain);
+    }
+  }
 }

@@ -3,159 +3,160 @@ using Server.Network;
 
 namespace Server.Items
 {
-	public class SpecialBeardDye : Item
-	{
-		public override int LabelNumber => 1041087; // Special Beard Dye
+  public class SpecialBeardDye : Item
+  {
+    [Constructible]
+    public SpecialBeardDye() : base(0xE26)
+    {
+      Weight = 1.0;
+      LootType = LootType.Newbied;
+    }
 
-		[Constructible]
-		public SpecialBeardDye() : base( 0xE26 )
-		{
-			Weight = 1.0;
-			LootType = LootType.Newbied;
-		}
+    public SpecialBeardDye(Serial serial) : base(serial)
+    {
+    }
 
-		public SpecialBeardDye( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1041087; // Special Beard Dye
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( from.InRange( GetWorldLocation(), 1 ) )
-			{
-				from.CloseGump( typeof( SpecialBeardDyeGump ) );
-				from.SendGump( new SpecialBeardDyeGump( this ) );
-			}
-			else
-			{
-				from.LocalOverheadMessage( MessageType.Regular, 906, 1019045 ); // I can't reach that.
-			}
-		}
-	}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (from.InRange(GetWorldLocation(), 1))
+      {
+        from.CloseGump(typeof(SpecialBeardDyeGump));
+        from.SendGump(new SpecialBeardDyeGump(this));
+      }
+      else
+      {
+        from.LocalOverheadMessage(MessageType.Regular, 906, 1019045); // I can't reach that.
+      }
+    }
+  }
 
-	public class SpecialBeardDyeGump : Gump
-	{
-		private SpecialBeardDye m_SpecialBeardDye;
+  public class SpecialBeardDyeGump : Gump
+  {
+    private static SpecialBeardDyeEntry[] m_Entries =
+    {
+      new SpecialBeardDyeEntry("*****", 12, 10),
+      new SpecialBeardDyeEntry("*****", 32, 5),
+      new SpecialBeardDyeEntry("*****", 38, 8),
+      new SpecialBeardDyeEntry("*****", 54, 3),
+      new SpecialBeardDyeEntry("*****", 62, 10),
+      new SpecialBeardDyeEntry("*****", 81, 2),
+      new SpecialBeardDyeEntry("*****", 89, 2),
+      new SpecialBeardDyeEntry("*****", 1153, 2)
+    };
 
-		private class SpecialBeardDyeEntry
-		{
-			public string Name { get; }
+    private SpecialBeardDye m_SpecialBeardDye;
 
-			public int HueStart { get; }
+    public SpecialBeardDyeGump(SpecialBeardDye dye) : base(0, 0)
+    {
+      m_SpecialBeardDye = dye;
 
-			public int HueCount { get; }
+      AddPage(0);
+      AddBackground(150, 60, 350, 358, 2600);
+      AddBackground(170, 104, 110, 270, 5100);
+      AddHtmlLocalized(230, 75, 200, 20, 1011013, false, false); // Hair Color Selection Menu
+      AddHtmlLocalized(235, 380, 300, 20, 1013007, false, false); // Dye my beard this color!
+      AddButton(200, 380, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0); // DYE HAIR
 
-			public SpecialBeardDyeEntry( string name, int hueStart, int hueCount )
-			{
-				Name = name;
-				HueStart = hueStart;
-				HueCount = hueCount;
-			}
-		}
+      for (int i = 0; i < m_Entries.Length; ++i)
+      {
+        AddLabel(180, 109 + i * 22, m_Entries[i].HueStart - 1, m_Entries[i].Name);
+        AddButton(257, 110 + i * 22, 5224, 5224, 0, GumpButtonType.Page, i + 1);
+      }
 
-		private static SpecialBeardDyeEntry[] m_Entries = {
-				new SpecialBeardDyeEntry( "*****", 12, 10 ),
-				new SpecialBeardDyeEntry( "*****", 32, 5 ),
-				new SpecialBeardDyeEntry( "*****", 38, 8 ),
-				new SpecialBeardDyeEntry( "*****", 54, 3 ),
-				new SpecialBeardDyeEntry( "*****", 62, 10 ),
-				new SpecialBeardDyeEntry( "*****", 81, 2 ),
-				new SpecialBeardDyeEntry( "*****", 89, 2 ),
-				new SpecialBeardDyeEntry( "*****", 1153, 2 )
-		};
+      for (int i = 0; i < m_Entries.Length; ++i)
+      {
+        SpecialBeardDyeEntry e = m_Entries[i];
 
-		public SpecialBeardDyeGump( SpecialBeardDye dye ) : base( 0, 0 )
-		{
-			m_SpecialBeardDye = dye;
+        AddPage(i + 1);
 
-			AddPage( 0 );
-			AddBackground( 150, 60, 350, 358, 2600 );
-			AddBackground( 170, 104, 110, 270, 5100 );
-			AddHtmlLocalized( 230, 75, 200, 20, 1011013, false, false );		// Hair Color Selection Menu
-			AddHtmlLocalized( 235, 380, 300, 20, 1013007, false, false );		// Dye my beard this color!
-			AddButton( 200, 380, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0 );        // DYE HAIR
+        for (int j = 0; j < e.HueCount; ++j)
+        {
+          AddLabel(328 + j / 16 * 80, 102 + j % 16 * 17, e.HueStart + j - 1, "*****");
+          AddRadio(310 + j / 16 * 80, 102 + j % 16 * 17, 210, 211, false, i * 100 + j);
+        }
+      }
+    }
 
-			for ( int i = 0; i < m_Entries.Length; ++i )
-			{
-				AddLabel( 180, 109 + (i * 22), m_Entries[i].HueStart - 1, m_Entries[i].Name );
-				AddButton( 257, 110 + (i * 22), 5224, 5224, 0, GumpButtonType.Page, i + 1 );
-			}
+    public override void OnResponse(NetState from, RelayInfo info)
+    {
+      if (m_SpecialBeardDye.Deleted)
+        return;
 
-			for ( int i = 0; i < m_Entries.Length; ++i )
-			{
-				SpecialBeardDyeEntry e = m_Entries[i];
+      Mobile m = from.Mobile;
+      int[] switches = info.Switches;
 
-				AddPage( i + 1 );
+      if (!m_SpecialBeardDye.IsChildOf(m.Backpack))
+      {
+        m.SendLocalizedMessage(1042010); //You must have the objectin your backpack to use it.
+        return;
+      }
 
-				for ( int j = 0; j < e.HueCount; ++j )
-				{
-					AddLabel( 328 + ((j / 16) * 80), 102 + ((j % 16) * 17), e.HueStart + j - 1, "*****" );
-					AddRadio( 310 + ((j / 16) * 80), 102 + ((j % 16) * 17), 210, 211, false, (i * 100) + j );
-				}
-			}
-		}
+      if (info.ButtonID != 0 && switches.Length > 0)
+      {
+        if (m.FacialHairItemID == 0)
+        {
+          m.SendLocalizedMessage(502623); // You have no hair to dye and cannot use this
+        }
+        else
+        {
+          // To prevent this from being exploited, the hue is abstracted into an internal list
 
-		public override void OnResponse( NetState from, RelayInfo info )
-		{
-			if ( m_SpecialBeardDye.Deleted )
-				return;
+          int entryIndex = switches[0] / 100;
+          int hueOffset = switches[0] % 100;
 
-			Mobile m = from.Mobile;
-			int[] switches = info.Switches;
+          if (entryIndex >= 0 && entryIndex < m_Entries.Length)
+          {
+            SpecialBeardDyeEntry e = m_Entries[entryIndex];
 
-			if ( !m_SpecialBeardDye.IsChildOf( m.Backpack ) )
-			{
-				m.SendLocalizedMessage( 1042010 ); //You must have the objectin your backpack to use it.
-				return;
-			}
+            if (hueOffset >= 0 && hueOffset < e.HueCount)
+            {
+              int hue = e.HueStart + hueOffset;
 
-			if ( info.ButtonID != 0 && switches.Length > 0 )
-			{
-				if ( m.FacialHairItemID == 0 )
-				{
-					m.SendLocalizedMessage( 502623 );	// You have no hair to dye and cannot use this
-				}
-				else
-				{
-					// To prevent this from being exploited, the hue is abstracted into an internal list
+              m.FacialHairHue = hue;
 
-					int entryIndex = switches[0] / 100;
-					int hueOffset = switches[0] % 100;
+              m.SendLocalizedMessage(501199); // You dye your hair
+              m_SpecialBeardDye.Delete();
+              m.PlaySound(0x4E);
+            }
+          }
+        }
+      }
+      else
+      {
+        m.SendLocalizedMessage(501200); // You decide not to dye your hair
+      }
+    }
 
-					if ( entryIndex >= 0 && entryIndex < m_Entries.Length )
-					{
-						SpecialBeardDyeEntry e = m_Entries[entryIndex];
+    private class SpecialBeardDyeEntry
+    {
+      public SpecialBeardDyeEntry(string name, int hueStart, int hueCount)
+      {
+        Name = name;
+        HueStart = hueStart;
+        HueCount = hueCount;
+      }
 
-						if ( hueOffset >= 0 && hueOffset < e.HueCount )
-						{
-							int hue = e.HueStart + hueOffset;
+      public string Name{ get; }
 
-							m.FacialHairHue = hue;
+      public int HueStart{ get; }
 
-							m.SendLocalizedMessage( 501199 );  // You dye your hair
-							m_SpecialBeardDye.Delete();
-							m.PlaySound( 0x4E );
-						}
-					}
-				}
-			}
-			else
-			{
-				m.SendLocalizedMessage( 501200 ); // You decide not to dye your hair
-			}
-		}
-	}
+      public int HueCount{ get; }
+    }
+  }
 }

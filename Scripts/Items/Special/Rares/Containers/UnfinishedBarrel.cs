@@ -1,31 +1,30 @@
 namespace Server.Items
 {
-	public class UnfinishedBarrel : Item
-	{
+  public class UnfinishedBarrel : Item
+  {
+    [Constructible]
+    public UnfinishedBarrel() : base(0x1EB5)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public UnfinishedBarrel() : base( 0x1EB5 )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public UnfinishedBarrel(Serial serial) : base(serial)
+    {
+    }
 
-		public UnfinishedBarrel( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

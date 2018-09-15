@@ -21,705 +21,700 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Server
 {
-	public class TileMatrix
-	{
-		private StaticTile[][][][][] m_StaticTiles;
-		private LandTile[][][] m_LandTiles;
-
-		private LandTile[] m_InvalidLandBlock;
-
-		private UOPIndex m_MapIndex;
-
-		private int m_FileIndex;
-		private int m_Width, m_Height;
-
-		private Map m_Owner;
-
-		private int[][] m_StaticPatches;
-		private int[][] m_LandPatches;
-
-		/*public Map Owner
-		{
-			get
-			{
-				return m_Owner;
-			}
-		}*/
-
-		public TileMatrixPatch Patch { get; }
-
-		public int BlockWidth { get; }
-
-		public int BlockHeight { get; }
-
-		/*public int Width
-		{
-			get
-			{
-				return m_Width;
-			}
-		}
-
-		public int Height
-		{
-			get
-			{
-				return m_Height;
-			}
-		}*/
-
-		public FileStream MapStream { get; set; }
+  public class TileMatrix
+  {
+    private static List<TileMatrix> m_Instances = new List<TileMatrix>();
 
-		/*public bool MapUOPPacked
-		{
-			get{ return ( m_MapIndex != null ); }
-		}*/
-
-		public FileStream IndexStream { get; set; }
+    private int m_FileIndex;
+    private List<TileMatrix> m_FileShare = new List<TileMatrix>();
+
+    private LandTile[] m_InvalidLandBlock;
+    private int[][] m_LandPatches;
+    private LandTile[][][] m_LandTiles;
+
+    private TileList[][] m_Lists;
 
-		public FileStream DataStream { get; set; }
-
-		public BinaryReader IndexReader { get; set; }
+    private UOPIndex m_MapIndex;
+    private DateTime m_NextLandWarning;
+
+    private DateTime m_NextStaticWarning;
+
+    private Map m_Owner;
+
+    private int[][] m_StaticPatches;
+    private StaticTile[][][][][] m_StaticTiles;
+
+    private StaticTile[] m_TileBuffer = new StaticTile[128];
 
-		public bool Exists => ( MapStream != null && IndexStream != null && DataStream != null );
+    private TileList m_TilesList = new TileList();
+    private int m_Width, m_Height;
 
-		private static List<TileMatrix> m_Instances = new List<TileMatrix>();
-		private List<TileMatrix> m_FileShare = new List<TileMatrix>();
+    public TileMatrix(Map owner, int fileIndex, int mapID, int width, int height)
+    {
+      lock (m_Instances)
+      {
+        for (int i = 0; i < m_Instances.Count; ++i)
+        {
+          TileMatrix tm = m_Instances[i];
+
+          if (tm.m_FileIndex == fileIndex)
+            lock (m_FileShare)
+            {
+              lock (tm.m_FileShare)
+              {
+                tm.m_FileShare.Add(this);
+                m_FileShare.Add(tm);
+              }
+            }
+        }
+
+        m_Instances.Add(this);
+      }
+
+      m_FileIndex = fileIndex;
+      m_Width = width;
+      m_Height = height;
+      BlockWidth = width >> 3;
+      BlockHeight = height >> 3;
 
-		public TileMatrix( Map owner, int fileIndex, int mapID, int width, int height )
-		{
-			lock (m_Instances) {
-				for ( int i = 0; i < m_Instances.Count; ++i )
-				{
-					TileMatrix tm = m_Instances[i];
+      m_Owner = owner;
 
-					if ( tm.m_FileIndex == fileIndex )
-					{
-						lock (m_FileShare) {
-							lock (tm.m_FileShare) {
-								tm.m_FileShare.Add( this );
-								m_FileShare.Add( tm );
-							}
-						}
-					}
-				}
+      if (fileIndex != 0x7F)
+      {
+        string mapPath = Core.FindDataFile("map{0}.mul", fileIndex);
 
-				m_Instances.Add( this );
-			}
+        if (File.Exists(mapPath))
+        {
+          MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        }
+        else
+        {
+          mapPath = Core.FindDataFile("map{0}LegacyMUL.uop", fileIndex);
 
-			m_FileIndex = fileIndex;
-			m_Width = width;
-			m_Height = height;
-			BlockWidth = width >> 3;
-			BlockHeight = height >> 3;
+          if (File.Exists(mapPath))
+          {
+            MapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            m_MapIndex = new UOPIndex(MapStream);
+          }
+        }
 
-			m_Owner = owner;
+        string indexPath = Core.FindDataFile("staidx{0}.mul", fileIndex);
 
-			if ( fileIndex != 0x7F )
-			{
-				string mapPath = Core.FindDataFile( "map{0}.mul", fileIndex );
+        if (File.Exists(indexPath))
+        {
+          IndexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+          IndexReader = new BinaryReader(IndexStream);
+        }
 
-				if ( File.Exists( mapPath ) )
-				{
-					MapStream = new FileStream( mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
-				}
-				else
-				{
-					mapPath = Core.FindDataFile( "map{0}LegacyMUL.uop", fileIndex );
-
-					if ( File.Exists( mapPath ) )
-					{
-						MapStream = new FileStream( mapPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
-						m_MapIndex = new UOPIndex( MapStream );
-					}
-				}
+        string staticsPath = Core.FindDataFile("statics{0}.mul", fileIndex);
 
-				string indexPath = Core.FindDataFile( "staidx{0}.mul", fileIndex );
+        if (File.Exists(staticsPath))
+          DataStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+      }
 
-				if ( File.Exists( indexPath ) )
-				{
-					IndexStream = new FileStream( indexPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
-					IndexReader = new BinaryReader( IndexStream );
-				}
+      EmptyStaticBlock = new StaticTile[8][][];
 
-				string staticsPath = Core.FindDataFile( "statics{0}.mul", fileIndex );
+      for (int i = 0; i < 8; ++i)
+      {
+        EmptyStaticBlock[i] = new StaticTile[8][];
 
-				if ( File.Exists( staticsPath ) )
-					DataStream = new FileStream( staticsPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
-			}
+        for (int j = 0; j < 8; ++j)
+          EmptyStaticBlock[i][j] = new StaticTile[0];
+      }
 
-			EmptyStaticBlock = new StaticTile[8][][];
+      m_InvalidLandBlock = new LandTile[196];
 
-			for ( int i = 0; i < 8; ++i )
-			{
-				EmptyStaticBlock[i] = new StaticTile[8][];
+      m_LandTiles = new LandTile[BlockWidth][][];
+      m_StaticTiles = new StaticTile[BlockWidth][][][][];
+      m_StaticPatches = new int[BlockWidth][];
+      m_LandPatches = new int[BlockWidth][];
 
-				for ( int j = 0; j < 8; ++j )
-					EmptyStaticBlock[i][j] = new StaticTile[0];
-			}
+      Patch = new TileMatrixPatch(this, mapID);
+    }
 
-			m_InvalidLandBlock = new LandTile[196];
+    /*public Map Owner
+    {
+      get
+      {
+        return m_Owner;
+      }
+    }*/
 
-			m_LandTiles = new LandTile[BlockWidth][][];
-			m_StaticTiles = new StaticTile[BlockWidth][][][][];
-			m_StaticPatches = new int[BlockWidth][];
-			m_LandPatches = new int[BlockWidth][];
+    public TileMatrixPatch Patch{ get; }
 
-			Patch = new TileMatrixPatch( this, mapID );
-		}
+    public int BlockWidth{ get; }
 
-		public StaticTile[][][] EmptyStaticBlock { get; }
+    public int BlockHeight{ get; }
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void SetStaticBlock( int x, int y, StaticTile[][][] value )
-		{
-			if ( x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight )
-				return;
+    /*public int Width
+    {
+      get
+      {
+        return m_Width;
+      }
+    }
 
-			if ( m_StaticTiles[x] == null )
-				m_StaticTiles[x] = new StaticTile[BlockHeight][][][];
+    public int Height
+    {
+      get
+      {
+        return m_Height;
+      }
+    }*/
 
-			m_StaticTiles[x][y] = value;
+    public FileStream MapStream{ get; set; }
 
-			if ( m_StaticPatches[x] == null )
-				m_StaticPatches[x] = new int[(BlockHeight + 31) >> 5];
+    /*public bool MapUOPPacked
+    {
+      get{ return ( m_MapIndex != null ); }
+    }*/
 
-			m_StaticPatches[x][y >> 5] |= 1 << (y & 0x1F);
-		}
+    public FileStream IndexStream{ get; set; }
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public StaticTile[][][] GetStaticBlock( int x, int y )
-		{
-			if ( x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || DataStream == null || IndexStream == null )
-				return EmptyStaticBlock;
+    public FileStream DataStream{ get; set; }
 
-			if ( m_StaticTiles[x] == null )
-				m_StaticTiles[x] = new StaticTile[BlockHeight][][][];
+    public BinaryReader IndexReader{ get; set; }
 
-			StaticTile[][][] tiles = m_StaticTiles[x][y];
+    public bool Exists => MapStream != null && IndexStream != null && DataStream != null;
 
-			if ( tiles == null )
-			{
-				lock (m_FileShare) {
-					for ( int i = 0; tiles == null && i < m_FileShare.Count; ++i )
-					{
-						TileMatrix shared = m_FileShare[i];
+    public StaticTile[][][] EmptyStaticBlock{ get; }
 
-						lock (shared) {
-							if ( x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight )
-							{
-								StaticTile[][][][] theirTiles = shared.m_StaticTiles[x];
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public void SetStaticBlock(int x, int y, StaticTile[][][] value)
+    {
+      if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
+        return;
 
-								if ( theirTiles != null )
-									tiles = theirTiles[y];
+      if (m_StaticTiles[x] == null)
+        m_StaticTiles[x] = new StaticTile[BlockHeight][][][];
 
-								if ( tiles != null )
-								{
-									int[] theirBits = shared.m_StaticPatches[x];
+      m_StaticTiles[x][y] = value;
 
-									if ( theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0 )
-										tiles = null;
-								}
-							}
-						}
-					}
-				}
+      if (m_StaticPatches[x] == null)
+        m_StaticPatches[x] = new int[(BlockHeight + 31) >> 5];
 
-				if ( tiles == null )
-					tiles = ReadStaticBlock( x, y );
+      m_StaticPatches[x][y >> 5] |= 1 << (y & 0x1F);
+    }
 
-				m_StaticTiles[x][y] = tiles;
-			}
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public StaticTile[][][] GetStaticBlock(int x, int y)
+    {
+      if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || DataStream == null || IndexStream == null)
+        return EmptyStaticBlock;
 
-			return tiles;
-		}
+      if (m_StaticTiles[x] == null)
+        m_StaticTiles[x] = new StaticTile[BlockHeight][][][];
 
-		public StaticTile[] GetStaticTiles( int x, int y )
-		{
-			StaticTile[][][] tiles = GetStaticBlock( x >> 3, y >> 3 );
+      StaticTile[][][] tiles = m_StaticTiles[x][y];
 
-			return tiles[x & 0x7][y & 0x7];
-		}
+      if (tiles == null)
+      {
+        lock (m_FileShare)
+        {
+          for (int i = 0; tiles == null && i < m_FileShare.Count; ++i)
+          {
+            TileMatrix shared = m_FileShare[i];
 
-		private TileList m_TilesList = new TileList();
+            lock (shared)
+            {
+              if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+              {
+                StaticTile[][][][] theirTiles = shared.m_StaticTiles[x];
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public StaticTile[] GetStaticTiles( int x, int y, bool multis )
-		{
-			StaticTile[][][] tiles = GetStaticBlock( x >> 3, y >> 3 );
+                if (theirTiles != null)
+                  tiles = theirTiles[y];
 
-			if ( multis )
-			{
-				IPooledEnumerable<StaticTile[]> eable = m_Owner.GetMultiTilesAt( x, y );
+                if (tiles != null)
+                {
+                  int[] theirBits = shared.m_StaticPatches[x];
 
-				if ( eable == Map.NullEnumerable<StaticTile[]>.Instance )
-					return tiles[x & 0x7][y & 0x7];
+                  if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
+                    tiles = null;
+                }
+              }
+            }
+          }
+        }
 
-				bool any = false;
+        if (tiles == null)
+          tiles = ReadStaticBlock(x, y);
 
-				foreach ( StaticTile[] multiTiles in eable )
-				{
-					if ( !any )
-						any = true;
+        m_StaticTiles[x][y] = tiles;
+      }
 
-					m_TilesList.AddRange( multiTiles );
-				}
+      return tiles;
+    }
 
-				eable.Free();
+    public StaticTile[] GetStaticTiles(int x, int y)
+    {
+      StaticTile[][][] tiles = GetStaticBlock(x >> 3, y >> 3);
 
-				if ( !any )
-					return tiles[x & 0x7][y & 0x7];
+      return tiles[x & 0x7][y & 0x7];
+    }
 
-				m_TilesList.AddRange( tiles[x & 0x7][y & 0x7] );
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public StaticTile[] GetStaticTiles(int x, int y, bool multis)
+    {
+      StaticTile[][][] tiles = GetStaticBlock(x >> 3, y >> 3);
 
-				return m_TilesList.ToArray();
-			}
+      if (multis)
+      {
+        IPooledEnumerable<StaticTile[]> eable = m_Owner.GetMultiTilesAt(x, y);
 
-			return tiles[x & 0x7][y & 0x7];
-		}
+        if (eable == Map.NullEnumerable<StaticTile[]>.Instance)
+          return tiles[x & 0x7][y & 0x7];
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void SetLandBlock( int x, int y, LandTile[] value )
-		{
-			if ( x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight )
-				return;
+        bool any = false;
 
-			if ( m_LandTiles[x] == null )
-				m_LandTiles[x] = new LandTile[BlockHeight][];
+        foreach (StaticTile[] multiTiles in eable)
+        {
+          if (!any)
+            any = true;
 
-			m_LandTiles[x][y] = value;
+          m_TilesList.AddRange(multiTiles);
+        }
 
-			if ( m_LandPatches[x] == null )
-				m_LandPatches[x] = new int[(BlockHeight + 31) >> 5];
+        eable.Free();
 
-			m_LandPatches[x][y >> 5] |= 1 << (y & 0x1F);
-		}
+        if (!any)
+          return tiles[x & 0x7][y & 0x7];
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public LandTile[] GetLandBlock( int x, int y )
-		{
-			if ( x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || MapStream == null )
-				return m_InvalidLandBlock;
+        m_TilesList.AddRange(tiles[x & 0x7][y & 0x7]);
 
-			if ( m_LandTiles[x] == null )
-				m_LandTiles[x] = new LandTile[BlockHeight][];
+        return m_TilesList.ToArray();
+      }
 
-			LandTile[] tiles = m_LandTiles[x][y];
+      return tiles[x & 0x7][y & 0x7];
+    }
 
-			if ( tiles == null )
-			{
-				lock (m_FileShare) {
-					for ( int i = 0; tiles == null && i < m_FileShare.Count; ++i )
-					{
-						TileMatrix shared = m_FileShare[i];
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public void SetLandBlock(int x, int y, LandTile[] value)
+    {
+      if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
+        return;
 
-						lock (shared) {
-							if ( x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight )
-							{
-								LandTile[][] theirTiles = shared.m_LandTiles[x];
+      if (m_LandTiles[x] == null)
+        m_LandTiles[x] = new LandTile[BlockHeight][];
 
-								if ( theirTiles != null )
-									tiles = theirTiles[y];
+      m_LandTiles[x][y] = value;
 
-								if ( tiles != null )
-								{
-									int[] theirBits = shared.m_LandPatches[x];
+      if (m_LandPatches[x] == null)
+        m_LandPatches[x] = new int[(BlockHeight + 31) >> 5];
 
-									if ( theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0 )
-										tiles = null;
-								}
-							}
-						}
-					}
-				}
+      m_LandPatches[x][y >> 5] |= 1 << (y & 0x1F);
+    }
 
-				if ( tiles == null )
-					tiles = ReadLandBlock( x, y );
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public LandTile[] GetLandBlock(int x, int y)
+    {
+      if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || MapStream == null)
+        return m_InvalidLandBlock;
 
-				m_LandTiles[x][y] = tiles;
-			}
+      if (m_LandTiles[x] == null)
+        m_LandTiles[x] = new LandTile[BlockHeight][];
 
-			return tiles;
-		}
+      LandTile[] tiles = m_LandTiles[x][y];
 
-		public LandTile GetLandTile( int x, int y )
-		{
-			LandTile[] tiles = GetLandBlock( x >> 3, y >> 3 );
+      if (tiles == null)
+      {
+        lock (m_FileShare)
+        {
+          for (int i = 0; tiles == null && i < m_FileShare.Count; ++i)
+          {
+            TileMatrix shared = m_FileShare[i];
 
-			return tiles[((y & 0x7) << 3) + (x & 0x7)];
-		}
+            lock (shared)
+            {
+              if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+              {
+                LandTile[][] theirTiles = shared.m_LandTiles[x];
 
-		private TileList[][] m_Lists;
+                if (theirTiles != null)
+                  tiles = theirTiles[y];
 
-		private StaticTile[] m_TileBuffer = new StaticTile[128];
+                if (tiles != null)
+                {
+                  int[] theirBits = shared.m_LandPatches[x];
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		private unsafe StaticTile[][][] ReadStaticBlock( int x, int y )
-		{
-			try
-			{
-				IndexReader.BaseStream.Seek( ((x * BlockHeight) + y) * 12, SeekOrigin.Begin );
+                  if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
+                    tiles = null;
+                }
+              }
+            }
+          }
+        }
 
-				int lookup = IndexReader.ReadInt32();
-				int length = IndexReader.ReadInt32();
+        if (tiles == null)
+          tiles = ReadLandBlock(x, y);
 
-				if ( lookup < 0 || length <= 0 )
-				{
-					return EmptyStaticBlock;
-				}
+        m_LandTiles[x][y] = tiles;
+      }
 
-				int count = length / 7;
+      return tiles;
+    }
 
-				DataStream.Seek( lookup, SeekOrigin.Begin );
+    public LandTile GetLandTile(int x, int y)
+    {
+      LandTile[] tiles = GetLandBlock(x >> 3, y >> 3);
 
-				if ( m_TileBuffer.Length < count )
-					m_TileBuffer = new StaticTile[count];
+      return tiles[((y & 0x7) << 3) + (x & 0x7)];
+    }
 
-				StaticTile[] staTiles = m_TileBuffer;//new StaticTile[tileCount];
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    private unsafe StaticTile[][][] ReadStaticBlock(int x, int y)
+    {
+      try
+      {
+        IndexReader.BaseStream.Seek((x * BlockHeight + y) * 12, SeekOrigin.Begin);
 
-				fixed ( StaticTile *pTiles = staTiles )
-				{
+        int lookup = IndexReader.ReadInt32();
+        int length = IndexReader.ReadInt32();
+
+        if (lookup < 0 || length <= 0) return EmptyStaticBlock;
+
+        int count = length / 7;
+
+        DataStream.Seek(lookup, SeekOrigin.Begin);
+
+        if (m_TileBuffer.Length < count)
+          m_TileBuffer = new StaticTile[count];
+
+        StaticTile[] staTiles = m_TileBuffer; //new StaticTile[tileCount];
+
+        fixed (StaticTile* pTiles = staTiles)
+        {
 #if !MONO
-					NativeReader.Read( DataStream.SafeFileHandle.DangerousGetHandle(), pTiles, length );
+          NativeReader.Read(DataStream.SafeFileHandle.DangerousGetHandle(), pTiles, length);
 #else
 						NativeReader.Read( m_Statics.Handle, pTiles, length );
 #endif
-					if ( m_Lists == null )
-					{
-						m_Lists = new TileList[8][];
+          if (m_Lists == null)
+          {
+            m_Lists = new TileList[8][];
 
-						for ( int i = 0; i < 8; ++i )
-						{
-							m_Lists[i] = new TileList[8];
+            for (int i = 0; i < 8; ++i)
+            {
+              m_Lists[i] = new TileList[8];
 
-							for ( int j = 0; j < 8; ++j )
-								m_Lists[i][j] = new TileList();
-						}
-					}
+              for (int j = 0; j < 8; ++j)
+                m_Lists[i][j] = new TileList();
+            }
+          }
 
-					TileList[][] lists = m_Lists;
+          TileList[][] lists = m_Lists;
 
-					StaticTile *pCur = pTiles, pEnd = pTiles + count;
+          StaticTile* pCur = pTiles, pEnd = pTiles + count;
 
-					while ( pCur < pEnd )
-					{
-						lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add( pCur->m_ID, pCur->m_Z );
-						pCur = pCur + 1;
-					}
+          while (pCur < pEnd)
+          {
+            lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add(pCur->m_ID, pCur->m_Z);
+            pCur = pCur + 1;
+          }
 
-					StaticTile[][][] tiles = new StaticTile[8][][];
+          StaticTile[][][] tiles = new StaticTile[8][][];
 
-					for ( int i = 0; i < 8; ++i )
-					{
-						tiles[i] = new StaticTile[8][];
+          for (int i = 0; i < 8; ++i)
+          {
+            tiles[i] = new StaticTile[8][];
 
-						for ( int j = 0; j < 8; ++j )
-							tiles[i][j] = lists[i][j].ToArray();
-					}
+            for (int j = 0; j < 8; ++j)
+              tiles[i][j] = lists[i][j].ToArray();
+          }
 
-					return tiles;
-				}
-			}
-			catch ( EndOfStreamException )
-			{
-				if ( DateTime.UtcNow >= m_NextStaticWarning )
-				{
-					Console.WriteLine( "Warning: Static EOS for {0} ({1}, {2})", m_Owner, x, y );
-					m_NextStaticWarning = DateTime.UtcNow + TimeSpan.FromMinutes( 1.0 );
-				}
+          return tiles;
+        }
+      }
+      catch (EndOfStreamException)
+      {
+        if (DateTime.UtcNow >= m_NextStaticWarning)
+        {
+          Console.WriteLine("Warning: Static EOS for {0} ({1}, {2})", m_Owner, x, y);
+          m_NextStaticWarning = DateTime.UtcNow + TimeSpan.FromMinutes(1.0);
+        }
 
-				return EmptyStaticBlock;
-			}
-		}
+        return EmptyStaticBlock;
+      }
+    }
 
-		private DateTime m_NextStaticWarning;
-		private DateTime m_NextLandWarning;
+    public void Force()
+    {
+      if (ScriptCompiler.Assemblies == null || ScriptCompiler.Assemblies.Length == 0)
+        throw new Exception();
+    }
 
-		public void Force()
-		{
-			if ( ScriptCompiler.Assemblies == null || ScriptCompiler.Assemblies.Length == 0 )
-				throw new Exception();
-		}
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    private unsafe LandTile[] ReadLandBlock(int x, int y)
+    {
+      try
+      {
+        int offset = (x * BlockHeight + y) * 196 + 4;
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		private unsafe LandTile[] ReadLandBlock( int x, int y )
-		{
-			try
-			{
-				int offset = ((x * BlockHeight) + y) * 196 + 4;
+        if (m_MapIndex != null)
+          offset = m_MapIndex.Lookup(offset);
 
-				if ( m_MapIndex != null )
-					offset = m_MapIndex.Lookup( offset );
+        MapStream.Seek(offset, SeekOrigin.Begin);
 
-				MapStream.Seek( offset, SeekOrigin.Begin );
+        LandTile[] tiles = new LandTile[64];
 
-				LandTile[] tiles = new LandTile[64];
-
-				fixed ( LandTile *pTiles = tiles )
-				{
+        fixed (LandTile* pTiles = tiles)
+        {
 #if !MONO
-					NativeReader.Read( MapStream.SafeFileHandle.DangerousGetHandle(), pTiles, 192 );
+          NativeReader.Read(MapStream.SafeFileHandle.DangerousGetHandle(), pTiles, 192);
 #else
 					NativeReader.Read( m_Map.Handle, pTiles, 192 );
 #endif
-				}
+        }
 
-				return tiles;
-			}
-			catch
-			{
-				if ( DateTime.UtcNow >= m_NextLandWarning )
-				{
-					Console.WriteLine( "Warning: Land EOS for {0} ({1}, {2})", m_Owner, x, y );
-					m_NextLandWarning = DateTime.UtcNow + TimeSpan.FromMinutes( 1.0 );
-				}
+        return tiles;
+      }
+      catch
+      {
+        if (DateTime.UtcNow >= m_NextLandWarning)
+        {
+          Console.WriteLine("Warning: Land EOS for {0} ({1}, {2})", m_Owner, x, y);
+          m_NextLandWarning = DateTime.UtcNow + TimeSpan.FromMinutes(1.0);
+        }
 
-				return m_InvalidLandBlock;
-			}
-		}
+        return m_InvalidLandBlock;
+      }
+    }
 
-		public void Dispose()
-		{
-			if ( m_MapIndex != null )
-				m_MapIndex.Close();
-			else
-			{
-				MapStream?.Close();
-			}
+    public void Dispose()
+    {
+      if (m_MapIndex != null)
+        m_MapIndex.Close();
+      else
+        MapStream?.Close();
 
-			DataStream?.Close();
+      DataStream?.Close();
 
-			IndexReader?.Close();
-		}
-	}
+      IndexReader?.Close();
+    }
+  }
 
-	[StructLayout(LayoutKind.Sequential, Pack=1)]
-	public struct LandTile
-	{
-		internal short m_ID;
-		internal sbyte m_Z;
+  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  public struct LandTile
+  {
+    internal short m_ID;
+    internal sbyte m_Z;
 
-		public int ID => m_ID;
+    public int ID => m_ID;
 
-		public int Z
-		{
-			get => m_Z;
-			set => m_Z = (sbyte)value;
-		}
+    public int Z
+    {
+      get => m_Z;
+      set => m_Z = (sbyte)value;
+    }
 
-		public int Height => 0;
+    public int Height => 0;
 
-		public bool Ignored => ( m_ID == 2 || m_ID == 0x1DB || ( m_ID >= 0x1AE && m_ID <= 0x1B5 ) );
+    public bool Ignored => m_ID == 2 || m_ID == 0x1DB || m_ID >= 0x1AE && m_ID <= 0x1B5;
 
-		public LandTile( short id, sbyte z )
-		{
-			m_ID = id;
-			m_Z = z;
-		}
+    public LandTile(short id, sbyte z)
+    {
+      m_ID = id;
+      m_Z = z;
+    }
 
-		public void Set( short id, sbyte z )
-		{
-			m_ID = id;
-			m_Z = z;
-		}
-	}
+    public void Set(short id, sbyte z)
+    {
+      m_ID = id;
+      m_Z = z;
+    }
+  }
 
-	[StructLayout(LayoutKind.Sequential, Pack=1)]
-	public struct StaticTile
-	{
-		internal ushort m_ID;
-		internal byte m_X;
-		internal byte m_Y;
-		internal sbyte m_Z;
-		internal short m_Hue;
+  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  public struct StaticTile
+  {
+    internal ushort m_ID;
+    internal byte m_X;
+    internal byte m_Y;
+    internal sbyte m_Z;
+    internal short m_Hue;
 
-		public int ID => m_ID;
+    public int ID => m_ID;
 
-		public int X
-		{
-			get => m_X;
-			set => m_X = (byte)value;
-		}
+    public int X
+    {
+      get => m_X;
+      set => m_X = (byte)value;
+    }
 
-		public int Y
-		{
-			get => m_Y;
-			set => m_Y = (byte)value;
-		}
+    public int Y
+    {
+      get => m_Y;
+      set => m_Y = (byte)value;
+    }
 
-		public int Z
-		{
-			get => m_Z;
-			set => m_Z = (sbyte)value;
-		}
+    public int Z
+    {
+      get => m_Z;
+      set => m_Z = (sbyte)value;
+    }
 
-		public int Hue
-		{
-			get => m_Hue;
-			set => m_Hue = (short)value;
-		}
+    public int Hue
+    {
+      get => m_Hue;
+      set => m_Hue = (short)value;
+    }
 
-		public int Height => TileData.ItemTable[m_ID & TileData.MaxItemValue].Height;
+    public int Height => TileData.ItemTable[m_ID & TileData.MaxItemValue].Height;
 
-		public StaticTile( ushort id, sbyte z )
-		{
-			m_ID = id;
-			m_Z = z;
+    public StaticTile(ushort id, sbyte z)
+    {
+      m_ID = id;
+      m_Z = z;
 
-			m_X = 0;
-			m_Y = 0;
-			m_Hue = 0;
-		}
+      m_X = 0;
+      m_Y = 0;
+      m_Hue = 0;
+    }
 
-		public StaticTile( ushort id, byte x, byte y, sbyte z, short hue )
-		{
-			m_ID = id;
-			m_X = x;
-			m_Y = y;
-			m_Z = z;
-			m_Hue = hue;
-		}
+    public StaticTile(ushort id, byte x, byte y, sbyte z, short hue)
+    {
+      m_ID = id;
+      m_X = x;
+      m_Y = y;
+      m_Z = z;
+      m_Hue = hue;
+    }
 
-		public void Set( ushort id, sbyte z )
-		{
-			m_ID = id;
-			m_Z = z;
-		}
+    public void Set(ushort id, sbyte z)
+    {
+      m_ID = id;
+      m_Z = z;
+    }
 
-		public void Set( ushort id, byte x, byte y, sbyte z, short hue )
-		{
-			m_ID = id;
-			m_X = x;
-			m_Y = y;
-			m_Z = z;
-			m_Hue = hue;
-		}
-	}
+    public void Set(ushort id, byte x, byte y, sbyte z, short hue)
+    {
+      m_ID = id;
+      m_X = x;
+      m_Y = y;
+      m_Z = z;
+      m_Hue = hue;
+    }
+  }
 
-	public class UOPIndex
-	{
-		private class UOPEntry : IComparable<UOPEntry>
-		{
-			public int m_Offset;
-			public int m_Length;
-			public int m_Order;
+  public class UOPIndex
+  {
+    private UOPEntry[] m_Entries;
+    private int m_Length;
 
-			public UOPEntry( int offset, int length )
-			{
-				m_Offset = offset;
-				m_Length = length;
-				m_Order = 0;
-			}
+    private BinaryReader m_Reader;
 
-			public int CompareTo( UOPEntry other )
-			{
-				return m_Order.CompareTo( other.m_Order );
-			}
-		}
+    public UOPIndex(FileStream stream)
+    {
+      m_Reader = new BinaryReader(stream);
+      m_Length = (int)stream.Length;
 
-		private class OffsetComparer : IComparer<UOPEntry>
-		{
-			public static readonly IComparer<UOPEntry> Instance = new OffsetComparer();
+      if (m_Reader.ReadInt32() != 0x50594D)
+        throw new ArgumentException("Invalid UOP file.");
 
-			public OffsetComparer()
-			{
-			}
+      Version = m_Reader.ReadInt32();
+      m_Reader.ReadInt32();
+      int nextTable = m_Reader.ReadInt32();
 
-			public int Compare( UOPEntry x, UOPEntry y )
-			{
-				return x.m_Offset.CompareTo( y.m_Offset );
-			}
-		}
+      List<UOPEntry> entries = new List<UOPEntry>();
 
-		private BinaryReader m_Reader;
-		private int m_Length;
-		private UOPEntry[] m_Entries;
+      do
+      {
+        stream.Seek(nextTable, SeekOrigin.Begin);
+        int count = m_Reader.ReadInt32();
+        nextTable = m_Reader.ReadInt32();
+        m_Reader.ReadInt32();
 
-		public int Version { get; }
+        for (int i = 0; i < count; ++i)
+        {
+          int offset = m_Reader.ReadInt32();
 
-		public UOPIndex( FileStream stream )
-		{
-			m_Reader = new BinaryReader( stream );
-			m_Length = (int)stream.Length;
+          if (offset == 0)
+          {
+            stream.Seek(30, SeekOrigin.Current);
+            continue;
+          }
 
-			if ( m_Reader.ReadInt32() != 0x50594D )
-				throw new ArgumentException( "Invalid UOP file." );
+          m_Reader.ReadInt64();
+          int length = m_Reader.ReadInt32();
 
-			Version = m_Reader.ReadInt32();
-			m_Reader.ReadInt32();
-			int nextTable = m_Reader.ReadInt32();
+          entries.Add(new UOPEntry(offset, length));
 
-			List<UOPEntry> entries = new List<UOPEntry>();
+          stream.Seek(18, SeekOrigin.Current);
+        }
+      } while (nextTable != 0 && nextTable < m_Length);
 
-			do
-			{
-				stream.Seek( nextTable, SeekOrigin.Begin );
-				int count = m_Reader.ReadInt32();
-				nextTable = m_Reader.ReadInt32();
-				m_Reader.ReadInt32();
+      entries.Sort(OffsetComparer.Instance);
 
-				for ( int i = 0; i < count; ++i )
-				{
-					int offset = m_Reader.ReadInt32();
+      for (int i = 0; i < entries.Count; ++i)
+      {
+        stream.Seek(entries[i].m_Offset + 2, SeekOrigin.Begin);
 
-					if ( offset == 0 )
-					{
-						stream.Seek( 30, SeekOrigin.Current );
-						continue;
-					}
+        int dataOffset = m_Reader.ReadInt16();
+        entries[i].m_Offset += 4 + dataOffset;
 
-					m_Reader.ReadInt64();
-					int length = m_Reader.ReadInt32();
+        stream.Seek(dataOffset, SeekOrigin.Current);
+        entries[i].m_Order = m_Reader.ReadInt32();
+      }
 
-					entries.Add( new UOPEntry( offset, length ) );
+      entries.Sort();
+      m_Entries = entries.ToArray();
+    }
 
-					stream.Seek( 18, SeekOrigin.Current );
-				}
-			}
-			while ( nextTable != 0 && nextTable < m_Length );
+    public int Version{ get; }
 
-			entries.Sort( OffsetComparer.Instance );
+    public int Lookup(int offset)
+    {
+      int total = 0;
 
-			for ( int i = 0; i < entries.Count; ++i )
-			{
-				stream.Seek( entries[i].m_Offset + 2, SeekOrigin.Begin );
+      for (int i = 0; i < m_Entries.Length; ++i)
+      {
+        int newTotal = total + m_Entries[i].m_Length;
 
-				int dataOffset = m_Reader.ReadInt16();
-				entries[i].m_Offset += 4 + dataOffset;
+        if (offset < newTotal)
+          return m_Entries[i].m_Offset + (offset - total);
 
-				stream.Seek( dataOffset, SeekOrigin.Current );
-				entries[i].m_Order = m_Reader.ReadInt32();
-			}
+        total = newTotal;
+      }
 
-			entries.Sort();
-			m_Entries = entries.ToArray();
-		}
+      return m_Length;
+    }
 
-		public int Lookup( int offset )
-		{
-			int total = 0;
+    public void Close()
+    {
+      m_Reader.Close();
+    }
 
-			for ( int i = 0; i < m_Entries.Length; ++i )
-			{
-				int newTotal = total + m_Entries[i].m_Length;
+    private class UOPEntry : IComparable<UOPEntry>
+    {
+      public int m_Length;
+      public int m_Offset;
+      public int m_Order;
 
-				if ( offset < newTotal )
-					return m_Entries[i].m_Offset + ( offset - total );
+      public UOPEntry(int offset, int length)
+      {
+        m_Offset = offset;
+        m_Length = length;
+        m_Order = 0;
+      }
 
-				total = newTotal;
-			}
+      public int CompareTo(UOPEntry other)
+      {
+        return m_Order.CompareTo(other.m_Order);
+      }
+    }
 
-			return m_Length;
-		}
+    private class OffsetComparer : IComparer<UOPEntry>
+    {
+      public static readonly IComparer<UOPEntry> Instance = new OffsetComparer();
 
-		public void Close()
-		{
-			m_Reader.Close();
-		}
-	}
+      public int Compare(UOPEntry x, UOPEntry y)
+      {
+        return x.m_Offset.CompareTo(y.m_Offset);
+      }
+    }
+  }
 }

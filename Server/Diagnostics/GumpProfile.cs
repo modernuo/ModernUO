@@ -21,28 +21,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace Server.Diagnostics {
-	public class GumpProfile : BaseProfile {
-		private static Dictionary<Type, GumpProfile> _profiles = new Dictionary<Type, GumpProfile>();
+namespace Server.Diagnostics
+{
+  public class GumpProfile : BaseProfile
+  {
+    private static Dictionary<Type, GumpProfile> _profiles = new Dictionary<Type, GumpProfile>();
 
-		public static IEnumerable<GumpProfile> Profiles => _profiles.Values;
+    public GumpProfile(Type type)
+      : base(type.FullName)
+    {
+    }
 
-		public static GumpProfile Acquire( Type type ) {
-			if ( !Core.Profiling ) {
-				return null;
-			}
+    public static IEnumerable<GumpProfile> Profiles => _profiles.Values;
 
-			GumpProfile prof;
+    public static GumpProfile Acquire(Type type)
+    {
+      if (!Core.Profiling) return null;
 
-			if ( !_profiles.TryGetValue( type, out prof ) ) {
-				_profiles.Add( type, prof = new GumpProfile( type ) );
-			}
+      GumpProfile prof;
 
-			return prof;
-		}
+      if (!_profiles.TryGetValue(type, out prof)) _profiles.Add(type, prof = new GumpProfile(type));
 
-		public GumpProfile( Type type )
-			: base( type.FullName ) {
-		}
-	}
+      return prof;
+    }
+  }
 }

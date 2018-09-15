@@ -2,55 +2,55 @@ using System;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0x13FD, 0x13FC )]
-	public class HeavyCrossbow : BaseRanged
-	{
-		public override int EffectID => 0x1BFE;
-		public override Type AmmoType => typeof( Bolt );
-		public override Item Ammo => new Bolt();
+  [Flippable(0x13FD, 0x13FC)]
+  public class HeavyCrossbow : BaseRanged
+  {
+    [Constructible]
+    public HeavyCrossbow() : base(0x13FD)
+    {
+      Weight = 9.0;
+      Layer = Layer.TwoHanded;
+    }
 
-		public override WeaponAbility PrimaryAbility => WeaponAbility.MovingShot;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;
+    public HeavyCrossbow(Serial serial) : base(serial)
+    {
+    }
 
-		public override int AosStrengthReq => 80;
-		public override int AosMinDamage => Core.ML ? 20 : 19;
-		public override int AosMaxDamage => Core.ML ? 24 : 20;
-		public override int AosSpeed => 22;
-		public override float MlSpeed => 5.00f;
+    public override int EffectID => 0x1BFE;
+    public override Type AmmoType => typeof(Bolt);
+    public override Item Ammo => new Bolt();
 
-		public override int OldStrengthReq => 40;
-		public override int OldMinDamage => 11;
-		public override int OldMaxDamage => 56;
-		public override int OldSpeed => 10;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.MovingShot;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;
 
-		public override int DefMaxRange => 8;
+    public override int AosStrengthReq => 80;
+    public override int AosMinDamage => Core.ML ? 20 : 19;
+    public override int AosMaxDamage => Core.ML ? 24 : 20;
+    public override int AosSpeed => 22;
+    public override float MlSpeed => 5.00f;
 
-		public override int InitMinHits => 31;
-		public override int InitMaxHits => 100;
+    public override int OldStrengthReq => 40;
+    public override int OldMinDamage => 11;
+    public override int OldMaxDamage => 56;
+    public override int OldSpeed => 10;
 
-		[Constructible]
-		public HeavyCrossbow() : base( 0x13FD )
-		{
-			Weight = 9.0;
-			Layer = Layer.TwoHanded;
-		}
+    public override int DefMaxRange => 8;
 
-		public HeavyCrossbow( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 31;
+    public override int InitMaxHits => 100;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

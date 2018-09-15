@@ -1,40 +1,40 @@
 namespace Server.Items
 {
-	public class SongWovenMantle : LeafArms
-	{
-		public override int LabelNumber => 1072931; // Song Woven Mantle
+  public class SongWovenMantle : LeafArms
+  {
+    [Constructible]
+    public SongWovenMantle()
+    {
+      Hue = 0x493;
 
-		public override int BasePhysicalResistance => 14;
-		public override int BaseColdResistance => 14;
-		public override int BaseEnergyResistance => 16;
+      SkillBonuses.SetValues(0, SkillName.Musicianship, 10.0);
 
-		[Constructible]
-		public SongWovenMantle()
-		{
-			Hue = 0x493;
+      Attributes.Luck = 100;
+      Attributes.DefendChance = 5;
+    }
 
-			SkillBonuses.SetValues( 0, SkillName.Musicianship, 10.0 );
+    public SongWovenMantle(Serial serial) : base(serial)
+    {
+    }
 
-			Attributes.Luck = 100;
-			Attributes.DefendChance = 5;
-		}
+    public override int LabelNumber => 1072931; // Song Woven Mantle
 
-		public SongWovenMantle( Serial serial ) : base( serial )
-		{
-		}
+    public override int BasePhysicalResistance => 14;
+    public override int BaseColdResistance => 14;
+    public override int BaseEnergyResistance => 16;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 );
-		}
+      writer.WriteEncodedInt(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

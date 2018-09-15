@@ -1,156 +1,161 @@
-using System;
+using Server.Engines.MLQuests;
 using Server.Items;
 using Server.Mobiles;
-using Server.Engines.MLQuests;
 
 namespace Server.Spells.Spellweaving
 {
-	public abstract class ArcanistSpell : Spell
-	{
-		public abstract double RequiredSkill { get; }
-		public abstract int RequiredMana { get; }
+  public abstract class ArcanistSpell : Spell
+  {
+    private int m_CastTimeFocusLevel;
 
-		public override SkillName CastSkill => SkillName.Spellweaving;
-		public override SkillName DamageSkill => SkillName.Spellweaving;
+    public ArcanistSpell(Mobile caster, Item scroll, SpellInfo info)
+      : base(caster, scroll, info)
+    {
+    }
 
-		public override bool ClearHandsOnCast => false;
+    public abstract double RequiredSkill{ get; }
+    public abstract int RequiredMana{ get; }
 
-		private int m_CastTimeFocusLevel;
+    public override SkillName CastSkill => SkillName.Spellweaving;
+    public override SkillName DamageSkill => SkillName.Spellweaving;
 
-		public ArcanistSpell( Mobile caster, Item scroll, SpellInfo info )
-			: base( caster, scroll, info )
-		{
-		}
+    public override bool ClearHandsOnCast => false;
 
-		public virtual int FocusLevel => m_CastTimeFocusLevel;
+    public virtual int FocusLevel => m_CastTimeFocusLevel;
 
-		public static int GetFocusLevel( Mobile from )
-		{
-			ArcaneFocus focus = FindArcaneFocus( from );
+    public static int GetFocusLevel(Mobile from)
+    {
+      ArcaneFocus focus = FindArcaneFocus(from);
 
-			if ( focus == null || focus.Deleted )
-				return 0;
+      if (focus == null || focus.Deleted)
+        return 0;
 
-			return focus.StrengthBonus;
-		}
+      return focus.StrengthBonus;
+    }
 
-		public static ArcaneFocus FindArcaneFocus( Mobile from )
-		{
-			if ( from?.Backpack == null )
-				return null;
+    public static ArcaneFocus FindArcaneFocus(Mobile from)
+    {
+      if (from?.Backpack == null)
+        return null;
 
-			if ( from.Holding is ArcaneFocus )
-				return (ArcaneFocus)from.Holding;
+      if (from.Holding is ArcaneFocus)
+        return (ArcaneFocus)from.Holding;
 
-			return from.Backpack.FindItemByType<ArcaneFocus>();
-		}
+      return from.Backpack.FindItemByType<ArcaneFocus>();
+    }
 
-		public static bool CheckExpansion( Mobile from )
-		{
-			if ( !(from is PlayerMobile) )
-				return true;
+    public static bool CheckExpansion(Mobile from)
+    {
+      if (!(from is PlayerMobile))
+        return true;
 
-			if ( from.NetState == null )
-				return false;
+      if (from.NetState == null)
+        return false;
 
-			return from.NetState.SupportsExpansion( Expansion.ML );
-		}
+      return from.NetState.SupportsExpansion(Expansion.ML);
+    }
 
-		public override bool CheckCast()
-		{
-			if ( !base.CheckCast() )
-				return false;
+    public override bool CheckCast()
+    {
+      if (!base.CheckCast())
+        return false;
 
-			Mobile caster = Caster;
+      Mobile caster = Caster;
 
-			if ( !CheckExpansion( caster ) )
-			{
-				caster.SendLocalizedMessage( 1072176 ); // You must upgrade to the Mondain's Legacy Expansion Pack before using that ability
-				return false;
-			}
+      if (!CheckExpansion(caster))
+      {
+        caster.SendLocalizedMessage(
+          1072176); // You must upgrade to the Mondain's Legacy Expansion Pack before using that ability
+        return false;
+      }
 
-			if ( caster is PlayerMobile )
-			{
-				MLQuestContext context = MLQuestSystem.GetContext( (PlayerMobile)caster );
+      if (caster is PlayerMobile)
+      {
+        MLQuestContext context = MLQuestSystem.GetContext((PlayerMobile)caster);
 
-				if ( context == null || !context.Spellweaving )
-				{
-					caster.SendLocalizedMessage( 1073220 ); // You must have completed the epic arcanist quest to use this ability.
-					return false;
-				}
-			}
+        if (context == null || !context.Spellweaving)
+        {
+          caster.SendLocalizedMessage(
+            1073220); // You must have completed the epic arcanist quest to use this ability.
+          return false;
+        }
+      }
 
-			int mana = ScaleMana( RequiredMana );
+      int mana = ScaleMana(RequiredMana);
 
-			if ( caster.Mana < mana )
-			{
-				caster.SendLocalizedMessage( 1060174, mana.ToString() ); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
-				return false;
-			}
+      if (caster.Mana < mana)
+      {
+        caster.SendLocalizedMessage(1060174,
+          mana.ToString()); // You must have at least ~1_MANA_REQUIREMENT~ Mana to use this ability.
+        return false;
+      }
 
-			if ( caster.Skills[CastSkill].Value < RequiredSkill )
-			{
-				caster.SendLocalizedMessage( 1063013, $"{RequiredSkill.ToString("F1")}\t{"#1044114"}"); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
-				return false;
-			}
+      if (caster.Skills[CastSkill].Value < RequiredSkill)
+      {
+        caster.SendLocalizedMessage(1063013,
+          $"{RequiredSkill.ToString("F1")}\t{"#1044114"}"); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+        return false;
+      }
 
-			return true;
-		}
+      return true;
+    }
 
-		public override void GetCastSkills( out double min, out double max )
-		{
-			min = RequiredSkill - 12.5;	//per 5 on Friday, 2/16/07
-			max = RequiredSkill + 37.5;
-		}
+    public override void GetCastSkills(out double min, out double max)
+    {
+      min = RequiredSkill - 12.5; //per 5 on Friday, 2/16/07
+      max = RequiredSkill + 37.5;
+    }
 
-		public override int GetMana()
-		{
-			return RequiredMana;
-		}
+    public override int GetMana()
+    {
+      return RequiredMana;
+    }
 
-		public override void DoFizzle()
-		{
-			Caster.PlaySound( 0x1D6 );
-			Caster.NextSpellTime = Core.TickCount;
-		}
+    public override void DoFizzle()
+    {
+      Caster.PlaySound(0x1D6);
+      Caster.NextSpellTime = Core.TickCount;
+    }
 
-		public override void DoHurtFizzle()
-		{
-			Caster.PlaySound( 0x1D6 );
-		}
+    public override void DoHurtFizzle()
+    {
+      Caster.PlaySound(0x1D6);
+    }
 
-		public override void OnDisturb( DisturbType type, bool message )
-		{
-			base.OnDisturb( type, message );
+    public override void OnDisturb(DisturbType type, bool message)
+    {
+      base.OnDisturb(type, message);
 
-			if ( message )
-				Caster.PlaySound( 0x1D6 );
-		}
+      if (message)
+        Caster.PlaySound(0x1D6);
+    }
 
-		public override void OnBeginCast()
-		{
-			base.OnBeginCast();
+    public override void OnBeginCast()
+    {
+      base.OnBeginCast();
 
-			SendCastEffect();
-			m_CastTimeFocusLevel = GetFocusLevel( Caster );
-		}
+      SendCastEffect();
+      m_CastTimeFocusLevel = GetFocusLevel(Caster);
+    }
 
-		public virtual void SendCastEffect()
-		{
-			Caster.FixedEffect( 0x37C4, 10, (int)(GetCastDelay().TotalSeconds * 28), 4, 3 );
-		}
+    public virtual void SendCastEffect()
+    {
+      Caster.FixedEffect(0x37C4, 10, (int)(GetCastDelay().TotalSeconds * 28), 4, 3);
+    }
 
-		public virtual bool CheckResisted( Mobile m )
-		{
-			double percent = (50 + 2*(GetResistSkill( m ) - GetDamageSkill( Caster )))/100;	//TODO: According to the guide this is it.. but.. is it correct per OSI?
+    public virtual bool CheckResisted(Mobile m)
+    {
+      double percent =
+        (50 + 2 * (GetResistSkill(m) - GetDamageSkill(Caster))) /
+        100; //TODO: According to the guide this is it.. but.. is it correct per OSI?
 
-			if ( percent <= 0 )
-				return false;
+      if (percent <= 0)
+        return false;
 
-			if ( percent >= 1.0 )
-				return true;
+      if (percent >= 1.0)
+        return true;
 
-			return (percent >= Utility.RandomDouble());
-		}
-	}
+      return percent >= Utility.RandomDouble();
+    }
+  }
 }

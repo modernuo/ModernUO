@@ -1,86 +1,87 @@
 using System.Collections.Generic;
-using Server.Spells;
 using Server.ContextMenus;
+using Server.Multis;
+using Server.Spells;
 
 namespace Server.Items
 {
-	public class SpellScroll : Item, ICommodity
-	{
-		public int SpellID { get; private set; }
+  public class SpellScroll : Item, ICommodity
+  {
+    public SpellScroll(Serial serial) : base(serial)
+    {
+    }
 
-		int ICommodity.DescriptionNumber => LabelNumber;
-		bool ICommodity.IsDeedable => (Core.ML);
+    [Constructible]
+    public SpellScroll(int spellID, int itemID) : this(spellID, itemID, 1)
+    {
+    }
 
-		public SpellScroll( Serial serial ) : base( serial )
-		{
-		}
+    [Constructible]
+    public SpellScroll(int spellID, int itemID, int amount) : base(itemID)
+    {
+      Stackable = true;
+      Weight = 1.0;
+      Amount = amount;
 
-		[Constructible]
-		public SpellScroll( int spellID, int itemID ) : this( spellID, itemID, 1 )
-		{
-		}
+      SpellID = spellID;
+    }
 
-		[Constructible]
-		public SpellScroll( int spellID, int itemID, int amount ) : base( itemID )
-		{
-			Stackable = true;
-			Weight = 1.0;
-			Amount = amount;
+    public int SpellID{ get; private set; }
 
-			SpellID = spellID;
-		}
+    int ICommodity.DescriptionNumber => LabelNumber;
+    bool ICommodity.IsDeedable => Core.ML;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			writer.Write( (int) SpellID );
-		}
+      writer.Write(SpellID);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					SpellID = reader.ReadInt();
+      switch (version)
+      {
+        case 0:
+        {
+          SpellID = reader.ReadInt();
 
-					break;
-				}
-			}
-		}
+          break;
+        }
+      }
+    }
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
 
-			if ( from.Alive && Movable )
-				list.Add( new AddToSpellbookEntry() );
-		}
+      if (from.Alive && Movable)
+        list.Add(new AddToSpellbookEntry());
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !Multis.DesignContext.Check( from ) )
-				return; // They are customizing
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!DesignContext.Check(from))
+        return; // They are customizing
 
-			if ( !IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-				return;
-			}
+      if (!IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+        return;
+      }
 
-			Spell spell = SpellRegistry.NewSpell( SpellID, from, this );
+      Spell spell = SpellRegistry.NewSpell(SpellID, from, this);
 
-			if ( spell != null )
-				spell.Cast();
-			else
-				from.SendLocalizedMessage( 502345 ); // This spell has been temporarily disabled.
-		}
-	}
+      if (spell != null)
+        spell.Cast();
+      else
+        from.SendLocalizedMessage(502345); // This spell has been temporarily disabled.
+    }
+  }
 }

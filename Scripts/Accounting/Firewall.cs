@@ -1,303 +1,156 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
 namespace Server
 {
-	public class Firewall
-	{
-		#region Firewall Entries
-		public interface IFirewallEntry
-		{
-			bool IsBlocked( IPAddress address );
-		}
+  public class Firewall
+  {
+    static Firewall()
+    {
+      List = new List<IFirewallEntry>();
 
-		public class IPFirewallEntry : IFirewallEntry
-		{
-			IPAddress m_Address;
-			public IPFirewallEntry( IPAddress address )
-			{
-				m_Address = address;
-			}
+      string path = "firewall.cfg";
 
-			public bool IsBlocked( IPAddress address )
-			{
-				return m_Address.Equals( address );
-			}
+      if (File.Exists(path))
+        using (StreamReader ip = new StreamReader(path))
+        {
+          string line;
 
-			public override string ToString()
-			{
-				return m_Address.ToString();
-			}
+          while ((line = ip.ReadLine()) != null)
+          {
+            line = line.Trim();
 
-			public override bool Equals( object obj )
-			{
-				if ( obj is IPAddress )
-				{
-					return obj.Equals( m_Address );
-				}
-				if ( obj is string s )
-				{
-					if ( IPAddress.TryParse( s, out IPAddress otherAddress ) )
-						return otherAddress.Equals( m_Address );
-				}
-				else if ( obj is IPFirewallEntry entry )
-				{
-					return m_Address.Equals( entry.m_Address );
-				}
+            if (line.Length == 0)
+              continue;
 
-				return false;
-			}
+            List.Add(ToFirewallEntry(line));
 
-			public override int GetHashCode()
-			{
-				return m_Address.GetHashCode();
-			}
-		}
+            /*
+            object toAdd;
 
-		public class CIDRFirewallEntry : IFirewallEntry
-		{
-			IPAddress m_CIDRPrefix;
-			int m_CIDRLength;
+            IPAddress addr;
+            if ( IPAddress.TryParse( line, out addr ) )
+              toAdd = addr;
+            else
+              toAdd = line;
 
-			public CIDRFirewallEntry( IPAddress cidrPrefix, int cidrLength )
-			{
-				m_CIDRPrefix = cidrPrefix;
-				m_CIDRLength = cidrLength;
-			}
+            m_Blocked.Add( toAdd.ToString() );
+             * */
+          }
+        }
+    }
 
-			public bool IsBlocked( IPAddress address )
-			{
-				return Utility.IPMatchCIDR( m_CIDRPrefix, address, m_CIDRLength );
-			}
+    public static List<IFirewallEntry> List{ get; }
 
-			public override string ToString()
-			{
-				return $"{m_CIDRPrefix}/{m_CIDRLength}";
-			}
+    public static IFirewallEntry ToFirewallEntry(object entry)
+    {
+      if (entry is IFirewallEntry firewallEntry)
+        return firewallEntry;
+      if (entry is IPAddress address)
+        return new IPFirewallEntry(address);
+      if (entry is string s)
+        return ToFirewallEntry(s);
 
-			public override bool Equals( object obj )
-			{
-				if ( obj is string entry )
-				{
-					string[] str = entry.Split( '/' );
+      return null;
+    }
 
-					if ( str.Length == 2 )
-					{
-						if ( IPAddress.TryParse( str[0], out IPAddress cidrPrefix ) )
-						{
-							if ( int.TryParse( str[1], out int cidrLength ) )
-								return m_CIDRPrefix.Equals( cidrPrefix ) && m_CIDRLength.Equals( cidrLength );
-						}
-					}
-				}
-				else if ( obj is CIDRFirewallEntry cidrEntry )
-				{
-					return m_CIDRPrefix.Equals( cidrEntry.m_CIDRPrefix ) && m_CIDRLength.Equals( cidrEntry.m_CIDRLength );
-				}
+    public static IFirewallEntry ToFirewallEntry(string entry)
+    {
+      if (IPAddress.TryParse(entry, out IPAddress addr))
+        return new IPFirewallEntry(addr);
 
-				return false;
-			}
+      //Try CIDR parse
+      string[] str = entry.Split('/');
 
-			public override int GetHashCode()
-			{
-				return m_CIDRPrefix.GetHashCode() ^ m_CIDRLength.GetHashCode();
-			}
-		}
+      if (str.Length == 2)
+        if (IPAddress.TryParse(str[0], out IPAddress cidrPrefix))
+          if (int.TryParse(str[1], out int cidrLength))
+            return new CIDRFirewallEntry(cidrPrefix, cidrLength);
 
-		public class WildcardIPFirewallEntry : IFirewallEntry
-		{
-			string m_Entry;
+      return new WildcardIPFirewallEntry(entry);
+    }
 
-			bool m_Valid = true;
+    public static void RemoveAt(int index)
+    {
+      List.RemoveAt(index);
+      Save();
+    }
 
-			public WildcardIPFirewallEntry( string entry )
-			{
-				m_Entry = entry;
-			}
+    public static void Remove(object obj)
+    {
+      IFirewallEntry entry = ToFirewallEntry(obj);
 
-			public bool IsBlocked( IPAddress address )
-			{
-				if ( !m_Valid )
-					return false;	//Why process if it's invalid?  it'll return false anyway after processing it.
+      if (entry != null)
+      {
+        List.Remove(entry);
+        Save();
+      }
+    }
 
-				return Utility.IPMatch( m_Entry, address, ref m_Valid );
-			}
+    public static void Add(object obj)
+    {
+      if (obj is IPAddress address)
+        Add(address);
+      else if (obj is string s)
+        Add(s);
+      else if (obj is IFirewallEntry entry)
+        Add(entry);
+    }
 
-			public override string ToString()
-			{
-				return m_Entry;
-			}
+    public static void Add(IFirewallEntry entry)
+    {
+      if (!List.Contains(entry))
+        List.Add(entry);
 
-			public override bool Equals( object obj )
-			{
-				if ( obj is string )
-					return obj.Equals( m_Entry );
+      Save();
+    }
 
-				return obj is WildcardIPFirewallEntry entry && m_Entry.Equals( entry.m_Entry );
-			}
+    public static void Add(string pattern)
+    {
+      IFirewallEntry entry = ToFirewallEntry(pattern);
 
-			public override int GetHashCode()
-			{
-				return m_Entry.GetHashCode();
-			}
-		}
-		#endregion
+      if (!List.Contains(entry))
+        List.Add(entry);
 
-		static Firewall()
-		{
-			List = new List<IFirewallEntry>();
+      Save();
+    }
 
-			string path = "firewall.cfg";
+    public static void Add(IPAddress ip)
+    {
+      IFirewallEntry entry = new IPFirewallEntry(ip);
 
-			if ( File.Exists( path ) )
-			{
-				using ( StreamReader ip = new StreamReader( path ) )
-				{
-					string line;
+      if (!List.Contains(entry))
+        List.Add(entry);
 
-					while ( (line = ip.ReadLine()) != null )
-					{
-						line = line.Trim();
+      Save();
+    }
 
-						if ( line.Length == 0 )
-							continue;
+    public static void Save()
+    {
+      string path = "firewall.cfg";
 
-						List.Add( ToFirewallEntry( line ) );
+      using (StreamWriter op = new StreamWriter(path))
+      {
+        for (int i = 0; i < List.Count; ++i)
+          op.WriteLine(List[i]);
+      }
+    }
 
-						/*
-						object toAdd;
+    public static bool IsBlocked(IPAddress ip)
+    {
+      for (int i = 0; i < List.Count; i++)
+        if (List[i].IsBlocked(ip))
+          return true;
 
-						IPAddress addr;
-						if ( IPAddress.TryParse( line, out addr ) )
-							toAdd = addr;
-						else
-							toAdd = line;
+      return false;
+      /*
+      bool contains = false;
 
-						m_Blocked.Add( toAdd.ToString() );
-						 * */
-					}
-				}
-			}
-		}
-
-		public static List<IFirewallEntry> List { get; }
-
-		public static IFirewallEntry ToFirewallEntry( object entry )
-		{
-			if ( entry is IFirewallEntry firewallEntry )
-				return firewallEntry;
-			if ( entry is IPAddress address )
-				return new IPFirewallEntry( address );
-			if ( entry is string s )
-				return ToFirewallEntry( s );
-
-			return null;
-		}
-
-		public static IFirewallEntry ToFirewallEntry( string entry )
-		{
-			if ( IPAddress.TryParse( entry, out IPAddress addr ) )
-				return new IPFirewallEntry( addr );
-
-			//Try CIDR parse
-			string[] str = entry.Split( '/' );
-
-			if ( str.Length == 2 )
-			{
-				if ( IPAddress.TryParse( str[0], out IPAddress cidrPrefix ) )
-				{
-					if ( int.TryParse( str[1], out int cidrLength ) )
-						return new CIDRFirewallEntry( cidrPrefix, cidrLength );
-				}
-			}
-
-			return new WildcardIPFirewallEntry( entry );
-		}
-
-		public static void RemoveAt( int index )
-		{
-			List.RemoveAt( index );
-			Save();
-		}
-
-		public static void Remove( object obj )
-		{
-			IFirewallEntry entry = ToFirewallEntry( obj );
-
-			if ( entry != null )
-			{
-				List.Remove( entry );
-				Save();
-			}
-		}
-
-		public static void Add( object obj )
-		{
-			if ( obj is IPAddress address )
-				Add( address );
-			else if ( obj is string s )
-				Add( s );
-			else if ( obj is IFirewallEntry entry )
-				Add( entry );
-		}
-
-		public static void Add( IFirewallEntry entry )
-		{
-			if ( !List.Contains( entry ) )
-				List.Add( entry );
-
-			Save();
-		}
-
-		public static void Add( string pattern )
-		{
-			IFirewallEntry entry = ToFirewallEntry( pattern );
-
-			if ( !List.Contains( entry ) )
-				List.Add( entry );
-
-			Save();
-		}
-
-		public static void Add( IPAddress ip )
-		{
-			IFirewallEntry entry = new IPFirewallEntry( ip );
-
-			if ( !List.Contains( entry ) )
-				List.Add( entry );
-
-			Save();
-		}
-
-		public static void Save()
-		{
-			string path = "firewall.cfg";
-
-			using ( StreamWriter op = new StreamWriter( path ) )
-			{
-				for ( int i = 0; i < List.Count; ++i )
-					op.WriteLine( List[i] );
-			}
-		}
-
-		public static bool IsBlocked( IPAddress ip )
-		{
-			for( int i = 0; i < List.Count; i++ )
-			{
-				if ( List[i].IsBlocked( ip ) )
-					return true;
-			}
-
-			return false;
-			/*
-			bool contains = false;
-
-			for ( int i = 0; !contains && i < m_Blocked.Count; ++i )
-			{
-				if ( m_Blocked[i] is IPAddress )
-					contains = ip.Equals( m_Blocked[i] );
+      for ( int i = 0; !contains && i < m_Blocked.Count; ++i )
+      {
+        if ( m_Blocked[i] is IPAddress )
+          contains = ip.Equals( m_Blocked[i] );
                 else if ( m_Blocked[i] is String )
                 {
                     string s = (string)m_Blocked[i];
@@ -307,10 +160,144 @@ namespace Server
                     if ( !contains )
                         contains = Utility.IPMatch( s, ip );
                 }
-			}
+      }
 
-			return contains;
-			 * */
-		}
-	}
+      return contains;
+       * */
+    }
+
+    #region Firewall Entries
+
+    public interface IFirewallEntry
+    {
+      bool IsBlocked(IPAddress address);
+    }
+
+    public class IPFirewallEntry : IFirewallEntry
+    {
+      private IPAddress m_Address;
+
+      public IPFirewallEntry(IPAddress address)
+      {
+        m_Address = address;
+      }
+
+      public bool IsBlocked(IPAddress address)
+      {
+        return m_Address.Equals(address);
+      }
+
+      public override string ToString()
+      {
+        return m_Address.ToString();
+      }
+
+      public override bool Equals(object obj)
+      {
+        if (obj is IPAddress) return obj.Equals(m_Address);
+        if (obj is string s)
+        {
+          if (IPAddress.TryParse(s, out IPAddress otherAddress))
+            return otherAddress.Equals(m_Address);
+        }
+        else if (obj is IPFirewallEntry entry)
+        {
+          return m_Address.Equals(entry.m_Address);
+        }
+
+        return false;
+      }
+
+      public override int GetHashCode()
+      {
+        return m_Address.GetHashCode();
+      }
+    }
+
+    public class CIDRFirewallEntry : IFirewallEntry
+    {
+      private int m_CIDRLength;
+      private IPAddress m_CIDRPrefix;
+
+      public CIDRFirewallEntry(IPAddress cidrPrefix, int cidrLength)
+      {
+        m_CIDRPrefix = cidrPrefix;
+        m_CIDRLength = cidrLength;
+      }
+
+      public bool IsBlocked(IPAddress address)
+      {
+        return Utility.IPMatchCIDR(m_CIDRPrefix, address, m_CIDRLength);
+      }
+
+      public override string ToString()
+      {
+        return $"{m_CIDRPrefix}/{m_CIDRLength}";
+      }
+
+      public override bool Equals(object obj)
+      {
+        if (obj is string entry)
+        {
+          string[] str = entry.Split('/');
+
+          if (str.Length == 2)
+            if (IPAddress.TryParse(str[0], out IPAddress cidrPrefix))
+              if (int.TryParse(str[1], out int cidrLength))
+                return m_CIDRPrefix.Equals(cidrPrefix) && m_CIDRLength.Equals(cidrLength);
+        }
+        else if (obj is CIDRFirewallEntry cidrEntry)
+        {
+          return m_CIDRPrefix.Equals(cidrEntry.m_CIDRPrefix) && m_CIDRLength.Equals(cidrEntry.m_CIDRLength);
+        }
+
+        return false;
+      }
+
+      public override int GetHashCode()
+      {
+        return m_CIDRPrefix.GetHashCode() ^ m_CIDRLength.GetHashCode();
+      }
+    }
+
+    public class WildcardIPFirewallEntry : IFirewallEntry
+    {
+      private string m_Entry;
+
+      private bool m_Valid = true;
+
+      public WildcardIPFirewallEntry(string entry)
+      {
+        m_Entry = entry;
+      }
+
+      public bool IsBlocked(IPAddress address)
+      {
+        if (!m_Valid)
+          return false; //Why process if it's invalid?  it'll return false anyway after processing it.
+
+        return Utility.IPMatch(m_Entry, address, ref m_Valid);
+      }
+
+      public override string ToString()
+      {
+        return m_Entry;
+      }
+
+      public override bool Equals(object obj)
+      {
+        if (obj is string)
+          return obj.Equals(m_Entry);
+
+        return obj is WildcardIPFirewallEntry entry && m_Entry.Equals(entry.m_Entry);
+      }
+
+      public override int GetHashCode()
+      {
+        return m_Entry.GetHashCode();
+      }
+    }
+
+    #endregion
+  }
 }

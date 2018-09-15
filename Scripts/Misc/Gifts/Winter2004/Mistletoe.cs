@@ -6,325 +6,325 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-	public class MistletoeAddon : Item, IDyable, IAddon
-	{
-		[Constructible]
-		public MistletoeAddon() : this( Utility.RandomDyedHue() )
-		{
-		}
+  public class MistletoeAddon : Item, IDyable, IAddon
+  {
+    [Constructible]
+    public MistletoeAddon() : this(Utility.RandomDyedHue())
+    {
+    }
 
-		[Constructible]
-		public MistletoeAddon( int hue ) : base( 0x2375 )
-		{
-			Hue = hue;
-			Movable = false;
-		}
+    [Constructible]
+    public MistletoeAddon(int hue) : base(0x2375)
+    {
+      Hue = hue;
+      Movable = false;
+    }
 
-		public MistletoeAddon( Serial serial ) : base( serial )
-		{
-		}
+    public MistletoeAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public bool CouldFit( IPoint3D p, Map map )
-		{
-			if ( !map.CanFit( p.X, p.Y, p.Z, ItemData.Height ) )
-				return false;
+    public bool CouldFit(IPoint3D p, Map map)
+    {
+      if (!map.CanFit(p.X, p.Y, p.Z, ItemData.Height))
+        return false;
 
-			if ( ItemID == 0x2375 )
-				return BaseAddon.IsWall( p.X, p.Y - 1, p.Z, map ); // North wall
-			return BaseAddon.IsWall( p.X - 1, p.Y, p.Z, map ); // West wall
-		}
+      if (ItemID == 0x2375)
+        return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // North wall
+      return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map); // West wall
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public Item Deed => new MistletoeDeed(Hue);
 
-			writer.Write( (int) 0 ); // version
-		}
+    public virtual bool Dye(Mobile from, DyeTub sender)
+    {
+      if (Deleted)
+        return false;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      BaseHouse house = BaseHouse.FindHouseAt(this);
 
-			int version = reader.ReadInt();
+      if (house != null && house.IsCoOwner(from))
+      {
+        if (from.InRange(GetWorldLocation(), 1))
+        {
+          Hue = sender.DyedHue;
+          return true;
+        }
 
-			Timer.DelayCall( TimeSpan.Zero, FixMovingCrate );
-		}
+        from.SendLocalizedMessage(500295); // You are too far away to do that.
+        return false;
+      }
 
-		private void FixMovingCrate()
-		{
-			if ( Deleted )
-				return;
+      return false;
+    }
 
-			if ( Movable || IsLockedDown )
-			{
-				Item deed = Deed;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-				if ( Parent is Item item )
-				{
-					item.AddItem( deed );
-					deed.Location = Location;
-				}
-				else
-				{
-					deed.MoveToWorld( Location, Map );
-				}
+      writer.Write(0); // version
+    }
 
-				Delete();
-			}
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public Item Deed => new MistletoeDeed( Hue );
+      int version = reader.ReadInt();
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			BaseHouse house = BaseHouse.FindHouseAt( this );
+      Timer.DelayCall(TimeSpan.Zero, FixMovingCrate);
+    }
 
-			if ( house != null && house.IsCoOwner( from ) )
-			{
-				if ( from.InRange( GetWorldLocation(), 3 ) )
-				{
-					from.CloseGump( typeof( MistletoeAddonGump ) );
-					from.SendGump( new MistletoeAddonGump( from, this ) );
-				}
-				else
-				{
-					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
-				}
-			}
-		}
+    private void FixMovingCrate()
+    {
+      if (Deleted)
+        return;
 
-		public virtual bool Dye( Mobile from, DyeTub sender )
-		{
-			if ( Deleted )
-				return false;
+      if (Movable || IsLockedDown)
+      {
+        Item deed = Deed;
 
-			BaseHouse house = BaseHouse.FindHouseAt( this );
+        if (Parent is Item item)
+        {
+          item.AddItem(deed);
+          deed.Location = Location;
+        }
+        else
+        {
+          deed.MoveToWorld(Location, Map);
+        }
 
-			if ( house != null && house.IsCoOwner( from ) )
-			{
-				if ( from.InRange( GetWorldLocation(), 1 ) )
-				{
-					Hue = sender.DyedHue;
-					return true;
-				}
+        Delete();
+      }
+    }
 
-				from.SendLocalizedMessage( 500295 ); // You are too far away to do that.
-				return false;
-			}
+    public override void OnDoubleClick(Mobile from)
+    {
+      BaseHouse house = BaseHouse.FindHouseAt(this);
 
-			return false;
-		}
+      if (house != null && house.IsCoOwner(from))
+      {
+        if (from.InRange(GetWorldLocation(), 3))
+        {
+          from.CloseGump(typeof(MistletoeAddonGump));
+          from.SendGump(new MistletoeAddonGump(from, this));
+        }
+        else
+        {
+          from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+        }
+      }
+    }
 
-		private class MistletoeAddonGump : Gump
-		{
-			private Mobile m_From;
-			private MistletoeAddon m_Addon;
+    private class MistletoeAddonGump : Gump
+    {
+      private MistletoeAddon m_Addon;
+      private Mobile m_From;
 
-			public MistletoeAddonGump( Mobile from, MistletoeAddon addon ) : base( 150, 50 )
-			{
-				m_From = from;
-				m_Addon = addon;
+      public MistletoeAddonGump(Mobile from, MistletoeAddon addon) : base(150, 50)
+      {
+        m_From = from;
+        m_Addon = addon;
 
-				AddPage( 0 );
+        AddPage(0);
 
-				AddBackground( 0, 0, 220, 170, 0x13BE );
-				AddBackground( 10, 10, 200, 150, 0xBB8 );
-				AddHtmlLocalized( 20, 30, 180, 60, 1062839, false, false ); // Do you wish to re-deed this decoration?
-				AddHtmlLocalized( 55, 100, 160, 25, 1011011, false, false ); // CONTINUE
-				AddButton( 20, 100, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0 );
-				AddHtmlLocalized( 55, 125, 160, 25, 1011012, false, false ); // CANCEL
-				AddButton( 20, 125, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0 );
-			}
+        AddBackground(0, 0, 220, 170, 0x13BE);
+        AddBackground(10, 10, 200, 150, 0xBB8);
+        AddHtmlLocalized(20, 30, 180, 60, 1062839, false, false); // Do you wish to re-deed this decoration?
+        AddHtmlLocalized(55, 100, 160, 25, 1011011, false, false); // CONTINUE
+        AddButton(20, 100, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddHtmlLocalized(55, 125, 160, 25, 1011012, false, false); // CANCEL
+        AddButton(20, 125, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
+      }
 
-			public override void OnResponse( NetState sender, RelayInfo info )
-			{
-				if ( m_Addon.Deleted )
-					return;
+      public override void OnResponse(NetState sender, RelayInfo info)
+      {
+        if (m_Addon.Deleted)
+          return;
 
-				if ( info.ButtonID == 1 )
-				{
-					if ( m_From.InRange( m_Addon.GetWorldLocation(), 3 ) )
-					{
-						m_From.AddToBackpack( m_Addon.Deed );
-						m_Addon.Delete();
-					}
-					else
-					{
-						m_From.SendLocalizedMessage( 500295 ); // You are too far away to do that.
-					}
-				}
-			}
-		}
-	}
+        if (info.ButtonID == 1)
+        {
+          if (m_From.InRange(m_Addon.GetWorldLocation(), 3))
+          {
+            m_From.AddToBackpack(m_Addon.Deed);
+            m_Addon.Delete();
+          }
+          else
+          {
+            m_From.SendLocalizedMessage(500295); // You are too far away to do that.
+          }
+        }
+      }
+    }
+  }
 
-	[Flippable( 0x14F0, 0x14EF )]
-	public class MistletoeDeed : Item
-	{
-		public override int LabelNumber => 1070882; // Mistletoe Deed
+  [Flippable(0x14F0, 0x14EF)]
+  public class MistletoeDeed : Item
+  {
+    [Constructible]
+    public MistletoeDeed() : this(0)
+    {
+    }
 
-		[Constructible]
-		public MistletoeDeed() : this( 0 )
-		{
-		}
+    [Constructible]
+    public MistletoeDeed(int hue) : base(0x14F0)
+    {
+      Hue = hue;
+      Weight = 1.0;
+      LootType = LootType.Blessed;
+    }
 
-		[Constructible]
-		public MistletoeDeed( int hue ) : base( 0x14F0 )
-		{
-			Hue = hue;
-			Weight = 1.0;
-			LootType = LootType.Blessed;
-		}
+    public MistletoeDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public MistletoeDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1070882; // Mistletoe Deed
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void OnSingleClick( Mobile from )
-		{
-			base.OnSingleClick( from );
+    public override void OnSingleClick(Mobile from)
+    {
+      base.OnSingleClick(from);
 
-			LabelTo( from, 1070880 ); // Winter 2004
-		}
+      LabelTo(from, 1070880); // Winter 2004
+    }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-			list.Add( 1070880  ); // Winter 2004
-		}
+      list.Add(1070880); // Winter 2004
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( IsChildOf( from.Backpack ) )
-			{
-				BaseHouse house = BaseHouse.FindHouseAt( from );
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (IsChildOf(from.Backpack))
+      {
+        BaseHouse house = BaseHouse.FindHouseAt(from);
 
-				if ( house != null && house.IsCoOwner( from ) )
-				{
-					from.SendLocalizedMessage( 1062838 ); // Where would you like to place this decoration?
-					from.BeginTarget( -1, true, TargetFlags.None, Placement_OnTarget, null );
-				}
-				else
-				{
-					from.SendLocalizedMessage( 502092 ); // You must be in your house to do this.
-				}
-			}
-			else
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-			}
-		}
+        if (house != null && house.IsCoOwner(from))
+        {
+          from.SendLocalizedMessage(1062838); // Where would you like to place this decoration?
+          from.BeginTarget(-1, true, TargetFlags.None, Placement_OnTarget, null);
+        }
+        else
+        {
+          from.SendLocalizedMessage(502092); // You must be in your house to do this.
+        }
+      }
+      else
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+      }
+    }
 
-		public void Placement_OnTarget( Mobile from, object targeted, object state )
-		{
-			if ( !(targeted is IPoint3D p) )
-				return;
+    public void Placement_OnTarget(Mobile from, object targeted, object state)
+    {
+      if (!(targeted is IPoint3D p))
+        return;
 
-			Point3D loc = new Point3D( p );
+      Point3D loc = new Point3D(p);
 
-			BaseHouse house = BaseHouse.FindHouseAt( loc, from.Map, 16 );
+      BaseHouse house = BaseHouse.FindHouseAt(loc, from.Map, 16);
 
-			if ( house != null && house.IsCoOwner( from ) )
-			{
-				bool northWall = BaseAddon.IsWall( loc.X, loc.Y - 1, loc.Z, from.Map );
-				bool westWall = BaseAddon.IsWall( loc.X - 1, loc.Y, loc.Z, from.Map );
+      if (house != null && house.IsCoOwner(from))
+      {
+        bool northWall = BaseAddon.IsWall(loc.X, loc.Y - 1, loc.Z, from.Map);
+        bool westWall = BaseAddon.IsWall(loc.X - 1, loc.Y, loc.Z, from.Map);
 
-				if ( northWall && westWall )
-					from.SendGump( new MistletoeDeedGump( from, loc, this ) );
-				else
-					PlaceAddon( from, loc, northWall, westWall );
-			}
-			else
-			{
-				from.SendLocalizedMessage( 1042036 ); // That location is not in your house.
-			}
-		}
+        if (northWall && westWall)
+          from.SendGump(new MistletoeDeedGump(from, loc, this));
+        else
+          PlaceAddon(from, loc, northWall, westWall);
+      }
+      else
+      {
+        from.SendLocalizedMessage(1042036); // That location is not in your house.
+      }
+    }
 
-		private void PlaceAddon( Mobile from, Point3D loc, bool northWall, bool westWall )
-		{
-			if ( Deleted )
-				return;
+    private void PlaceAddon(Mobile from, Point3D loc, bool northWall, bool westWall)
+    {
+      if (Deleted)
+        return;
 
-			BaseHouse house = BaseHouse.FindHouseAt( loc, from.Map, 16 );
+      BaseHouse house = BaseHouse.FindHouseAt(loc, from.Map, 16);
 
-			if ( house == null || !house.IsCoOwner( from ) )
-			{
-				from.SendLocalizedMessage( 1042036 ); // That location is not in your house.
-				return;
-			}
+      if (house == null || !house.IsCoOwner(from))
+      {
+        from.SendLocalizedMessage(1042036); // That location is not in your house.
+        return;
+      }
 
-			int itemID = 0;
+      int itemID = 0;
 
-			if ( northWall )
-				itemID = 0x2374;
-			else if ( westWall )
-				itemID = 0x2375;
-			else
-				from.SendLocalizedMessage( 1070883 ); // The mistletoe must be placed next to a wall.
+      if (northWall)
+        itemID = 0x2374;
+      else if (westWall)
+        itemID = 0x2375;
+      else
+        from.SendLocalizedMessage(1070883); // The mistletoe must be placed next to a wall.
 
-			if ( itemID > 0 )
-			{
-				Item addon = new MistletoeAddon( Hue );
+      if (itemID > 0)
+      {
+        Item addon = new MistletoeAddon(Hue);
 
-				addon.ItemID = itemID;
-				addon.MoveToWorld( loc, from.Map );
+        addon.ItemID = itemID;
+        addon.MoveToWorld(loc, from.Map);
 
-				house.Addons.Add( addon );
-				Delete();
-			}
-		}
+        house.Addons.Add(addon);
+        Delete();
+      }
+    }
 
-		private class MistletoeDeedGump : Gump
-		{
-			private Mobile m_From;
-			private Point3D m_Loc;
-			private MistletoeDeed m_Deed;
+    private class MistletoeDeedGump : Gump
+    {
+      private MistletoeDeed m_Deed;
+      private Mobile m_From;
+      private Point3D m_Loc;
 
-			public MistletoeDeedGump( Mobile from, Point3D loc, MistletoeDeed deed ) : base( 150, 50 )
-			{
-				m_From = from;
-				m_Loc = loc;
-				m_Deed = deed;
+      public MistletoeDeedGump(Mobile from, Point3D loc, MistletoeDeed deed) : base(150, 50)
+      {
+        m_From = from;
+        m_Loc = loc;
+        m_Deed = deed;
 
-				AddBackground( 0, 0, 300, 150, 0xA28 );
+        AddBackground(0, 0, 300, 150, 0xA28);
 
-				AddPage( 0 );
+        AddPage(0);
 
-				AddItem( 90, 30, 0x2375 );
-				AddItem( 180, 30, 0x2374 );
-				AddButton( 50, 35, 0x868, 0x869, 1, GumpButtonType.Reply, 0 );
-				AddButton( 145, 35, 0x868, 0x869, 2, GumpButtonType.Reply, 0 );
-			}
+        AddItem(90, 30, 0x2375);
+        AddItem(180, 30, 0x2374);
+        AddButton(50, 35, 0x868, 0x869, 1, GumpButtonType.Reply, 0);
+        AddButton(145, 35, 0x868, 0x869, 2, GumpButtonType.Reply, 0);
+      }
 
-			public override void OnResponse( NetState sender, RelayInfo info )
-			{
-				if ( m_Deed.Deleted )
-					return;
+      public override void OnResponse(NetState sender, RelayInfo info)
+      {
+        if (m_Deed.Deleted)
+          return;
 
-				switch( info.ButtonID )
-				{
-					case 1:
-						m_Deed.PlaceAddon( m_From, m_Loc, false, true );
-						break;
-					case 2:
-						m_Deed.PlaceAddon( m_From, m_Loc, true, false );
-						break;
-				}
-			}
-		}
-	}
+        switch (info.ButtonID)
+        {
+          case 1:
+            m_Deed.PlaceAddon(m_From, m_Loc, false, true);
+            break;
+          case 2:
+            m_Deed.PlaceAddon(m_From, m_Loc, true, false);
+            break;
+        }
+      }
+    }
+  }
 }

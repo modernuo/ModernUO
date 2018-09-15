@@ -1,49 +1,49 @@
 namespace Server.Items
 {
-	public class FarmablePumpkin : FarmableCrop
-	{
-		public static int GetCropID()
-		{
-			return Utility.Random( 3166, 3 );
-		}
+  public class FarmablePumpkin : FarmableCrop
+  {
+    [Constructible]
+    public FarmablePumpkin()
+      : base(GetCropID())
+    {
+    }
 
-		public override Item GetCropObject()
-		{
-			Pumpkin pumpkin = new Pumpkin();
+    public FarmablePumpkin(Serial serial)
+      : base(serial)
+    {
+    }
 
-			pumpkin.ItemID = Utility.Random( 3178, 3 );
+    public static int GetCropID()
+    {
+      return Utility.Random(3166, 3);
+    }
 
-			return pumpkin;
-		}
+    public override Item GetCropObject()
+    {
+      Pumpkin pumpkin = new Pumpkin();
 
-		public override int GetPickedID()
-		{
-			return Utility.Random( 3166, 3 );
-		}
+      pumpkin.ItemID = Utility.Random(3178, 3);
 
-		[Constructible]
-		public FarmablePumpkin()
-			: base( GetCropID() )
-		{
-		}
+      return pumpkin;
+    }
 
-		public FarmablePumpkin( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int GetPickedID()
+    {
+      return Utility.Random(3166, 3);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( (int) 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("RunUO Server Core")]	//Having just RunUO there is reundant, ie, RunUO.exe with the word 'RunUO' under it
+[assembly: AssemblyTitle("RunUO Server Core")] //Having just RunUO there is reundant, ie, RunUO.exe with the word 'RunUO' under it
 [assembly: AssemblyDescription("UO Server Software")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("RunUO")]

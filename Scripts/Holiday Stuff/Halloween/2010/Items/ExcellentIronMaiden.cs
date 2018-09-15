@@ -1,32 +1,32 @@
 namespace Server.Items
 {
-	public class ExcellentIronMaiden : Item
-	{
-		public override double DefaultWeight => 5;
+  public class ExcellentIronMaiden : Item
+  {
+    [Constructible]
+    public ExcellentIronMaiden()
+      : base(0x3f15)
+    {
+    }
 
-		[Constructible]
-		public ExcellentIronMaiden()
-			: base( 0x3f15 )
-		{
-		}
+    public ExcellentIronMaiden(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public ExcellentIronMaiden( Serial serial )
-			: base( serial )
-		{
-		}
+    public override double DefaultWeight => 5;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( ( int )0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

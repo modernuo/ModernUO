@@ -3,54 +3,54 @@ using System.Collections;
 
 namespace Server.Engines.Reports
 {
-	public delegate PersistableObject ConstructCallback();
+  public delegate PersistableObject ConstructCallback();
 
-	public sealed class PersistableTypeRegistry
-	{
-		private static Hashtable m_Table;
+  public sealed class PersistableTypeRegistry
+  {
+    private static Hashtable m_Table;
 
-		public static PersistableType Find( string name )
-		{
-			return m_Table[name] as PersistableType;
-		}
+    static PersistableTypeRegistry()
+    {
+      m_Table = new Hashtable(StringComparer.OrdinalIgnoreCase);
 
-		public static void Register( PersistableType type )
-		{
-			if ( type != null )
-				m_Table[type.Name] = type;
-		}
+      Register(Report.ThisTypeID);
+      Register(BarGraph.ThisTypeID);
+      Register(PieChart.ThisTypeID);
+      Register(Snapshot.ThisTypeID);
+      Register(ItemValue.ThisTypeID);
+      Register(ChartItem.ThisTypeID);
+      Register(ReportItem.ThisTypeID);
+      Register(ReportColumn.ThisTypeID);
+      Register(SnapshotHistory.ThisTypeID);
 
-		static PersistableTypeRegistry()
-		{
-			m_Table = new Hashtable( StringComparer.OrdinalIgnoreCase );
+      Register(PageInfo.ThisTypeID);
+      Register(QueueStatus.ThisTypeID);
+      Register(StaffHistory.ThisTypeID);
+      Register(ResponseInfo.ThisTypeID);
+    }
 
-			Register( Report.ThisTypeID );
-			Register( BarGraph.ThisTypeID );
-			Register( PieChart.ThisTypeID );
-			Register( Snapshot.ThisTypeID );
-			Register( ItemValue.ThisTypeID );
-			Register( ChartItem.ThisTypeID );
-			Register( ReportItem.ThisTypeID );
-			Register( ReportColumn.ThisTypeID );
-			Register( SnapshotHistory.ThisTypeID );
+    public static PersistableType Find(string name)
+    {
+      return m_Table[name] as PersistableType;
+    }
 
-			Register( PageInfo.ThisTypeID );
-			Register( QueueStatus.ThisTypeID );
-			Register( StaffHistory.ThisTypeID );
-			Register( ResponseInfo.ThisTypeID );
-		}
-	}
+    public static void Register(PersistableType type)
+    {
+      if (type != null)
+        m_Table[type.Name] = type;
+    }
+  }
 
-	public sealed class PersistableType
-	{
-		public string Name { get; }
+  public sealed class PersistableType
+  {
+    public PersistableType(string name, ConstructCallback constructor)
+    {
+      Name = name;
+      Constructor = constructor;
+    }
 
-		public ConstructCallback Constructor { get; }
+    public string Name{ get; }
 
-		public PersistableType( string name, ConstructCallback constructor )
-		{
-			Name = name;
-			Constructor = constructor;
-		}
-	}
+    public ConstructCallback Constructor{ get; }
+  }
 }

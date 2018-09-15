@@ -1,31 +1,30 @@
 namespace Server.Items
 {
-	public class DecoTray2 : Item
-	{
+  public class DecoTray2 : Item
+  {
+    [Constructible]
+    public DecoTray2() : base(0x991)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public DecoTray2() : base( 0x991 )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public DecoTray2(Serial serial) : base(serial)
+    {
+    }
 
-		public DecoTray2( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

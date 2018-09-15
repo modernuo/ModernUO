@@ -1,240 +1,250 @@
 using System;
-using Server.Items;
-using Server.Spells.Seventh;
-using Server.Spells.Fifth;
 using Server.Engines.CannedEvil;
+using Server.Items;
+using Server.Spells.Fifth;
+using Server.Spells.Seventh;
 
 namespace Server.Mobiles
 {
-	public class Barracoon : BaseChampion
-	{
-		public override ChampionSkullType SkullType => ChampionSkullType.Greed;
+  public class Barracoon : BaseChampion
+  {
+    [Constructible]
+    public Barracoon() : base(AIType.AI_Melee)
+    {
+      Title = "the piper";
+      Body = 0x190;
+      Hue = 0x83EC;
 
-		public override Type[] UniqueList => new[] { typeof( FangOfRactus ) };
-		public override Type[] SharedList => new[] { 	typeof( EmbroideredOakLeafCloak ),
-			typeof( DjinnisRing ),
-			typeof( DetectiveBoots ),
-			typeof( GuantletsOfAnger ) };
+      SetStr(305, 425);
+      SetDex(72, 150);
+      SetInt(505, 750);
 
-		public override Type[] DecorativeList => new[] { typeof( SwampTile ), typeof( MonsterStatuette ) };
+      SetHits(4200);
+      SetStam(102, 300);
 
-		public override MonsterStatuetteType[] StatueTypes => new[] { MonsterStatuetteType.Slime };
+      SetDamage(25, 35);
 
-		public override string DefaultName => "Barracoon";
+      SetDamageType(ResistanceType.Physical, 100);
 
-		[Constructible]
-		public Barracoon() : base( AIType.AI_Melee )
-		{
-			Title = "the piper";
-			Body = 0x190;
-			Hue = 0x83EC;
+      SetResistance(ResistanceType.Physical, 60, 70);
+      SetResistance(ResistanceType.Fire, 50, 60);
+      SetResistance(ResistanceType.Cold, 50, 60);
+      SetResistance(ResistanceType.Poison, 40, 50);
+      SetResistance(ResistanceType.Energy, 40, 50);
 
-			SetStr( 305, 425 );
-			SetDex( 72, 150 );
-			SetInt( 505, 750 );
+      SetSkill(SkillName.MagicResist, 100.0);
+      SetSkill(SkillName.Tactics, 97.6, 100.0);
+      SetSkill(SkillName.Wrestling, 97.6, 100.0);
 
-			SetHits( 4200 );
-			SetStam( 102, 300 );
+      Fame = 22500;
+      Karma = -22500;
 
-			SetDamage( 25, 35 );
+      VirtualArmor = 70;
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      AddItem(new FancyShirt(Utility.RandomGreenHue()));
+      AddItem(new LongPants(Utility.RandomYellowHue()));
+      AddItem(new JesterHat(Utility.RandomPinkHue()));
+      AddItem(new Cloak(Utility.RandomPinkHue()));
+      AddItem(new Sandals());
 
-			SetResistance( ResistanceType.Physical, 60, 70 );
-			SetResistance( ResistanceType.Fire, 50, 60 );
-			SetResistance( ResistanceType.Cold, 50, 60 );
-			SetResistance( ResistanceType.Poison, 40, 50 );
-			SetResistance( ResistanceType.Energy, 40, 50 );
+      HairItemID = 0x203B; // Short Hair
+      HairHue = 0x94;
+    }
 
-			SetSkill( SkillName.MagicResist, 100.0 );
-			SetSkill( SkillName.Tactics, 97.6, 100.0 );
-			SetSkill( SkillName.Wrestling, 97.6, 100.0 );
+    public Barracoon(Serial serial) : base(serial)
+    {
+    }
 
-			Fame = 22500;
-			Karma = -22500;
+    public override ChampionSkullType SkullType => ChampionSkullType.Greed;
 
-			VirtualArmor = 70;
+    public override Type[] UniqueList => new[] { typeof(FangOfRactus) };
 
-			AddItem( new FancyShirt( Utility.RandomGreenHue() ) );
-			AddItem( new LongPants( Utility.RandomYellowHue() ) );
-			AddItem( new JesterHat( Utility.RandomPinkHue() ) );
-			AddItem( new Cloak( Utility.RandomPinkHue() ) );
-			AddItem( new Sandals() );
+    public override Type[] SharedList => new[]
+    {
+      typeof(EmbroideredOakLeafCloak),
+      typeof(DjinnisRing),
+      typeof(DetectiveBoots),
+      typeof(GuantletsOfAnger)
+    };
 
-			HairItemID = 0x203B; // Short Hair
-			HairHue = 0x94;
-		}
+    public override Type[] DecorativeList => new[] { typeof(SwampTile), typeof(MonsterStatuette) };
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.UltraRich, 3 );
-		}
+    public override MonsterStatuetteType[] StatueTypes => new[] { MonsterStatuetteType.Slime };
 
-		public override bool AlwaysMurderer => true;
-		public override bool AutoDispel => true;
-		public override double AutoDispelChance => 1.0;
-		public override bool BardImmune => !Core.SE;
-		public override bool Unprovokable => Core.SE;
-		public override bool Uncalmable => Core.SE;
-		public override Poison PoisonImmune => Poison.Deadly;
+    public override string DefaultName => "Barracoon";
 
-		public override bool ShowFameTitle => false;
-		public override bool ClickTitle => false;
+    public override bool AlwaysMurderer => true;
+    public override bool AutoDispel => true;
+    public override double AutoDispelChance => 1.0;
+    public override bool BardImmune => !Core.SE;
+    public override bool Unprovokable => Core.SE;
+    public override bool Uncalmable => Core.SE;
+    public override Poison PoisonImmune => Poison.Deadly;
 
-		public void Polymorph( Mobile m )
-		{
-			if ( !m.CanBeginAction( typeof( PolymorphSpell ) ) || !m.CanBeginAction( typeof( IncognitoSpell ) ) || m.IsBodyMod )
-				return;
+    public override bool ShowFameTitle => false;
+    public override bool ClickTitle => false;
 
-			IMount mount = m.Mount;
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.UltraRich, 3);
+    }
 
-			if ( mount != null )
-				mount.Rider = null;
+    public void Polymorph(Mobile m)
+    {
+      if (!m.CanBeginAction(typeof(PolymorphSpell)) || !m.CanBeginAction(typeof(IncognitoSpell)) || m.IsBodyMod)
+        return;
 
-			if ( m.Mounted )
-				return;
+      IMount mount = m.Mount;
 
-			if ( m.BeginAction( typeof( PolymorphSpell ) ) )
-			{
-				Item disarm = m.FindItemOnLayer( Layer.OneHanded );
+      if (mount != null)
+        mount.Rider = null;
 
-				if ( disarm != null && disarm.Movable )
-					m.AddToBackpack( disarm );
+      if (m.Mounted)
+        return;
 
-				disarm = m.FindItemOnLayer( Layer.TwoHanded );
+      if (m.BeginAction(typeof(PolymorphSpell)))
+      {
+        Item disarm = m.FindItemOnLayer(Layer.OneHanded);
 
-				if ( disarm != null && disarm.Movable )
-					m.AddToBackpack( disarm );
+        if (disarm != null && disarm.Movable)
+          m.AddToBackpack(disarm);
 
-				m.BodyMod = 42;
-				m.HueMod = 0;
+        disarm = m.FindItemOnLayer(Layer.TwoHanded);
 
-				new ExpirePolymorphTimer( m ).Start();
-			}
-		}
+        if (disarm != null && disarm.Movable)
+          m.AddToBackpack(disarm);
 
-		private class ExpirePolymorphTimer : Timer
-		{
-			private Mobile m_Owner;
+        m.BodyMod = 42;
+        m.HueMod = 0;
 
-			public ExpirePolymorphTimer( Mobile owner ) : base( TimeSpan.FromMinutes( 3.0 ) )
-			{
-				m_Owner = owner;
+        new ExpirePolymorphTimer(m).Start();
+      }
+    }
 
-				Priority = TimerPriority.OneSecond;
-			}
+    public void SpawnRatmen(Mobile target)
+    {
+      Map map = Map;
 
-			protected override void OnTick()
-			{
-				if ( !m_Owner.CanBeginAction( typeof( PolymorphSpell ) ) )
-				{
-					m_Owner.BodyMod = 0;
-					m_Owner.HueMod = -1;
-					m_Owner.EndAction( typeof( PolymorphSpell ) );
-				}
-			}
-		}
+      if (map == null)
+        return;
 
-		public void SpawnRatmen( Mobile target )
-		{
-			Map map = Map;
+      int rats = 0;
 
-			if ( map == null )
-				return;
+      foreach (Mobile m in GetMobilesInRange(10))
+        if (m is Ratman || m is RatmanArcher || m is RatmanMage)
+          ++rats;
 
-			int rats = 0;
+      if (rats < 16)
+      {
+        PlaySound(0x3D);
 
-			foreach ( Mobile m in GetMobilesInRange( 10 ) )
-			{
-				if ( m is Ratman || m is RatmanArcher || m is RatmanMage )
-					++rats;
-			}
+        int newRats = Utility.RandomMinMax(3, 6);
 
-			if ( rats < 16 )
-			{
-				PlaySound( 0x3D );
+        for (int i = 0; i < newRats; ++i)
+        {
+          BaseCreature rat;
 
-				int newRats = Utility.RandomMinMax( 3, 6 );
+          switch (Utility.Random(5))
+          {
+            default:
+            case 0:
+            case 1:
+              rat = new Ratman();
+              break;
+            case 2:
+            case 3:
+              rat = new RatmanArcher();
+              break;
+            case 4:
+              rat = new RatmanMage();
+              break;
+          }
 
-				for ( int i = 0; i < newRats; ++i )
-				{
-					BaseCreature rat;
+          rat.Team = Team;
 
-					switch ( Utility.Random( 5 ) )
-					{
-						default:
-						case 0: case 1:	rat = new Ratman(); break;
-						case 2: case 3:	rat = new RatmanArcher(); break;
-						case 4:			rat = new RatmanMage(); break;
-					}
+          bool validLocation = false;
+          Point3D loc = Location;
 
-					rat.Team = Team;
+          for (int j = 0; !validLocation && j < 10; ++j)
+          {
+            int x = X + Utility.Random(3) - 1;
+            int y = Y + Utility.Random(3) - 1;
+            int z = map.GetAverageZ(x, y);
 
-					bool validLocation = false;
-					Point3D loc = Location;
+            if (validLocation = map.CanFit(x, y, Z, 16, false, false))
+              loc = new Point3D(x, y, Z);
+            else if (validLocation = map.CanFit(x, y, z, 16, false, false))
+              loc = new Point3D(x, y, z);
+          }
 
-					for ( int j = 0; !validLocation && j < 10; ++j )
-					{
-						int x = X + Utility.Random( 3 ) - 1;
-						int y = Y + Utility.Random( 3 ) - 1;
-						int z = map.GetAverageZ( x, y );
+          rat.MoveToWorld(loc, map);
+          rat.Combatant = target;
+        }
+      }
+    }
 
-						if ( validLocation = map.CanFit( x, y, Z, 16, false, false ) )
-							loc = new Point3D( x, y, Z );
-						else if ( validLocation = map.CanFit( x, y, z, 16, false, false ) )
-							loc = new Point3D( x, y, z );
-					}
+    public void DoSpecialAbility(Mobile target)
+    {
+      if (target == null || target.Deleted) //sanity
+        return;
+      if (0.6 >= Utility.RandomDouble()) // 60% chance to polymorph attacker into a ratman
+        Polymorph(target);
 
-					rat.MoveToWorld( loc, map );
-					rat.Combatant = target;
-				}
-			}
-		}
+      if (0.2 >= Utility.RandomDouble()) // 20% chance to more ratmen
+        SpawnRatmen(target);
 
-		public void DoSpecialAbility( Mobile target )
-		{
-			if ( target == null || target.Deleted ) //sanity
-				return;
-			if ( 0.6 >= Utility.RandomDouble() ) // 60% chance to polymorph attacker into a ratman
-				Polymorph( target );
+      if (Hits < 500 && !IsBodyMod) // Baracoon is low on life, polymorph into a ratman
+        Polymorph(this);
+    }
 
-			if ( 0.2 >= Utility.RandomDouble() ) // 20% chance to more ratmen
-				SpawnRatmen( target );
+    public override void OnGotMeleeAttack(Mobile attacker)
+    {
+      base.OnGotMeleeAttack(attacker);
 
-			if ( Hits < 500 && !IsBodyMod ) // Baracoon is low on life, polymorph into a ratman
-				Polymorph( this );
-		}
+      DoSpecialAbility(attacker);
+    }
 
-		public override void OnGotMeleeAttack( Mobile attacker )
-		{
-			base.OnGotMeleeAttack( attacker );
+    public override void OnGaveMeleeAttack(Mobile defender)
+    {
+      base.OnGaveMeleeAttack(defender);
 
-			DoSpecialAbility( attacker );
-		}
+      DoSpecialAbility(defender);
+    }
 
-		public override void OnGaveMeleeAttack( Mobile defender )
-		{
-			base.OnGaveMeleeAttack( defender );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			DoSpecialAbility( defender );
-		}
+      writer.Write(0); // version
+    }
 
-		public Barracoon( Serial serial ) : base( serial )
-		{
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      int version = reader.ReadInt();
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    private class ExpirePolymorphTimer : Timer
+    {
+      private Mobile m_Owner;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      public ExpirePolymorphTimer(Mobile owner) : base(TimeSpan.FromMinutes(3.0))
+      {
+        m_Owner = owner;
 
-			int version = reader.ReadInt();
-		}
-	}
+        Priority = TimerPriority.OneSecond;
+      }
+
+      protected override void OnTick()
+      {
+        if (!m_Owner.CanBeginAction(typeof(PolymorphSpell)))
+        {
+          m_Owner.BodyMod = 0;
+          m_Owner.HueMod = -1;
+          m_Owner.EndAction(typeof(PolymorphSpell));
+        }
+      }
+    }
+  }
 }

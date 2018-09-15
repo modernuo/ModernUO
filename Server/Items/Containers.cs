@@ -18,133 +18,128 @@
  *
  ***************************************************************************/
 
-using System;
-
 using Server.Accounting;
 using Server.Network;
 
 namespace Server.Items
 {
-	public class BankBox : Container
-	{
-		public override int DefaultMaxWeight => 0;
+  public class BankBox : Container
+  {
+    public BankBox(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool IsVirtualItem => true;
+    public BankBox(Mobile owner) : base(0xE7C)
+    {
+      Layer = Layer.Bank;
+      Movable = false;
+      Owner = owner;
+    }
 
-		public BankBox( Serial serial ) : base( serial )
-		{
-		}
+    public override int DefaultMaxWeight => 0;
 
-		public Mobile Owner { get; private set; }
+    public override bool IsVirtualItem => true;
 
-		public bool Opened { get; private set; }
+    public Mobile Owner{ get; private set; }
 
-		public void Open()
-		{
-			Opened = true;
+    public bool Opened{ get; private set; }
 
-			if ( Owner != null )
-			{
-				Owner.PrivateOverheadMessage( MessageType.Regular, 0x3B2, true,
-					$"Bank container has {TotalItems} items, {TotalWeight} stones", Owner.NetState );
-				Owner.Send( new EquipUpdate( this ) );
-				DisplayTo( Owner );
-			}
-		}
+    public static bool SendDeleteOnClose{ get; set; }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public void Open()
+    {
+      Opened = true;
 
-			writer.Write( (int) 0 ); // version
+      if (Owner != null)
+      {
+        Owner.PrivateOverheadMessage(MessageType.Regular, 0x3B2, true,
+          $"Bank container has {TotalItems} items, {TotalWeight} stones", Owner.NetState);
+        Owner.Send(new EquipUpdate(this));
+        DisplayTo(Owner);
+      }
+    }
 
-			writer.Write( (Mobile) Owner );
-			writer.Write( (bool) Opened );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
 
-			int version = reader.ReadInt();
+      writer.Write(Owner);
+      writer.Write(Opened);
+    }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Owner = reader.ReadMobile();
-					Opened = reader.ReadBool();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-					if ( Owner == null )
-						Delete();
+      int version = reader.ReadInt();
 
-					break;
-				}
-			}
+      switch (version)
+      {
+        case 0:
+        {
+          Owner = reader.ReadMobile();
+          Opened = reader.ReadBool();
 
-			if ( ItemID == 0xE41 )
-				ItemID = 0xE7C;
-		}
+          if (Owner == null)
+            Delete();
 
-		public static bool SendDeleteOnClose { get; set; }
+          break;
+        }
+      }
 
-		public void Close()
-		{
-			Opened = false;
+      if (ItemID == 0xE41)
+        ItemID = 0xE7C;
+    }
 
-			if ( Owner != null && SendDeleteOnClose )
-				Owner.Send( RemovePacket );
-		}
+    public void Close()
+    {
+      Opened = false;
 
-		public override void OnSingleClick( Mobile from )
-		{
-		}
+      if (Owner != null && SendDeleteOnClose)
+        Owner.Send(RemovePacket);
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-		}
+    public override void OnSingleClick(Mobile from)
+    {
+    }
 
-		public override DeathMoveResult OnParentDeath( Mobile parent )
-		{
-			return DeathMoveResult.RemainEquipped;
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+    }
 
-		public BankBox( Mobile owner ) : base( 0xE7C )
-		{
-			Layer = Layer.Bank;
-			Movable = false;
-			Owner = owner;
-		}
+    public override DeathMoveResult OnParentDeath(Mobile parent)
+    {
+      return DeathMoveResult.RemainEquipped;
+    }
 
-		public override bool IsAccessibleTo(Mobile check)
-		{
-			if ( ( check == Owner && Opened ) || check.AccessLevel >= AccessLevel.GameMaster )
-		 		return base.IsAccessibleTo (check);
-			return false;
-		}
+    public override bool IsAccessibleTo(Mobile check)
+    {
+      if (check == Owner && Opened || check.AccessLevel >= AccessLevel.GameMaster)
+        return base.IsAccessibleTo(check);
+      return false;
+    }
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			if ( ( from == Owner && Opened ) || from.AccessLevel >= AccessLevel.GameMaster )
-		 		return base.OnDragDrop( from, dropped );
-			return false;
-		}
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      if (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster)
+        return base.OnDragDrop(from, dropped);
+      return false;
+    }
 
-		public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
-		{
-			if ( ( from == Owner && Opened ) || from.AccessLevel >= AccessLevel.GameMaster )
-		 		return base.OnDragDropInto (from, item, p);
-			return false;
-		}
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+    {
+      if (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster)
+        return base.OnDragDropInto(from, item, p);
+      return false;
+    }
 
-		public override int GetTotal(TotalType type)
-		{
-			if (AccountGold.Enabled && Owner?.Account != null && type == TotalType.Gold)
-			{
-				return Owner.Account.TotalGold;
-			}
+    public override int GetTotal(TotalType type)
+    {
+      if (AccountGold.Enabled && Owner?.Account != null && type == TotalType.Gold) return Owner.Account.TotalGold;
 
-			return base.GetTotal(type);
-		}
-	}
+      return base.GetTotal(type);
+    }
+  }
 }

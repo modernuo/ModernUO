@@ -4,134 +4,145 @@ using Server.Items;
 
 namespace Server.Commands
 {
-	public class SignParser
-	{
-		private class SignEntry
-		{
-			public string m_Text;
-			public Point3D m_Location;
-			public int m_ItemID;
-			public int m_Map;
+  public class SignParser
+  {
+    private static Queue<Item> m_ToDelete = new Queue<Item>();
 
-			public SignEntry( string text, Point3D pt, int itemID, int mapLoc )
-			{
-				m_Text = text;
-				m_Location = pt;
-				m_ItemID = itemID;
-				m_Map = mapLoc;
-			}
-		}
+    public static void Initialize()
+    {
+      CommandSystem.Register("SignGen", AccessLevel.Administrator, SignGen_OnCommand);
+    }
 
-		public static void Initialize()
-		{
-			CommandSystem.Register( "SignGen", AccessLevel.Administrator, SignGen_OnCommand );
-		}
+    [Usage("SignGen")]
+    [Description("Generates world/shop signs on all facets.")]
+    public static void SignGen_OnCommand(CommandEventArgs c)
+    {
+      Parse(c.Mobile);
+    }
 
-		[Usage( "SignGen" )]
-		[Description( "Generates world/shop signs on all facets." )]
-		public static void SignGen_OnCommand( CommandEventArgs c )
-		{
-			Parse( c.Mobile );
-		}
+    public static void Parse(Mobile from)
+    {
+      string cfg = Path.Combine(Core.BaseDirectory, "Data/signs.cfg");
 
-		public static void Parse( Mobile from )
-		{
-			string cfg = Path.Combine( Core.BaseDirectory, "Data/signs.cfg" );
+      if (File.Exists(cfg))
+      {
+        List<SignEntry> list = new List<SignEntry>();
+        from.SendMessage("Generating signs, please wait.");
 
-			if ( File.Exists( cfg ) )
-			{
-				List<SignEntry> list = new List<SignEntry>();
-				from.SendMessage( "Generating signs, please wait." );
+        using (StreamReader ip = new StreamReader(cfg))
+        {
+          string line;
 
-				using ( StreamReader ip = new StreamReader( cfg ) )
-				{
-					string line;
+          while ((line = ip.ReadLine()) != null)
+          {
+            string[] split = line.Split(' ');
 
-					while ( (line = ip.ReadLine()) != null )
-					{
-						string[] split = line.Split( ' ' );
+            SignEntry e = new SignEntry(
+              line.Substring(split[0].Length + 1 + split[1].Length + 1 + split[2].Length + 1 +
+                             split[3].Length + 1 + split[4].Length + 1),
+              new Point3D(Utility.ToInt32(split[2]), Utility.ToInt32(split[3]), Utility.ToInt32(split[4])),
+              Utility.ToInt32(split[1]), Utility.ToInt32(split[0]));
 
-						SignEntry e = new SignEntry(
-							line.Substring( split[0].Length + 1 + split[1].Length + 1 + split[2].Length + 1 + split[3].Length + 1 + split[4].Length + 1 ),
-							new Point3D( Utility.ToInt32( split[2] ), Utility.ToInt32( split[3] ), Utility.ToInt32( split[4] ) ),
-							Utility.ToInt32( split[1] ), Utility.ToInt32( split[0] ) );
+            list.Add(e);
+          }
+        }
 
-						list.Add( e );
-					}
-				}
+        Map[] brit = { Map.Felucca, Map.Trammel };
+        Map[] fel = { Map.Felucca };
+        Map[] tram = { Map.Trammel };
+        Map[] ilsh = { Map.Ilshenar };
+        Map[] malas = { Map.Malas };
+        Map[] tokuno = { Map.Tokuno };
 
-				Map[] brit = { Map.Felucca, Map.Trammel };
-				Map[] fel = { Map.Felucca };
-				Map[] tram = { Map.Trammel };
-				Map[] ilsh = { Map.Ilshenar };
-				Map[] malas = { Map.Malas };
-				Map[] tokuno = { Map.Tokuno };
+        for (int i = 0; i < list.Count; ++i)
+        {
+          SignEntry e = list[i];
+          Map[] maps = null;
 
-				for ( int i = 0; i < list.Count; ++i )
-				{
-					SignEntry e = list[i];
-					Map[] maps = null;
+          switch (e.m_Map)
+          {
+            case 0:
+              maps = brit;
+              break; // Trammel and Felucca
+            case 1:
+              maps = fel;
+              break; // Felucca
+            case 2:
+              maps = tram;
+              break; // Trammel
+            case 3:
+              maps = ilsh;
+              break; // Ilshenar
+            case 4:
+              maps = malas;
+              break; // Malas
+            case 5:
+              maps = tokuno;
+              break; // Tokuno Islands
+          }
 
-					switch ( e.m_Map )
-					{
-						case 0: maps = brit; break; // Trammel and Felucca
-						case 1: maps = fel; break;  // Felucca
-						case 2: maps = tram; break; // Trammel
-						case 3: maps = ilsh; break; // Ilshenar
-						case 4: maps = malas; break; // Malas
-						case 5: maps = tokuno; break; // Tokuno Islands
-					}
+          for (int j = 0; maps != null && j < maps.Length; ++j)
+            Add_Static(e.m_ItemID, e.m_Location, maps[j], e.m_Text);
+        }
 
-					for ( int j = 0; maps != null && j < maps.Length; ++j )
-						Add_Static( e.m_ItemID, e.m_Location, maps[j], e.m_Text );
-				}
+        from.SendMessage("Sign generating complete.");
+      }
+      else
+      {
+        from.SendMessage("{0} not found!", cfg);
+      }
+    }
 
-				from.SendMessage( "Sign generating complete." );
-			}
-			else
-			{
-				from.SendMessage( "{0} not found!", cfg );
-			}
-		}
+    public static void Add_Static(int itemID, Point3D location, Map map, string name)
+    {
+      IPooledEnumerable<Item> eable = map.GetItemsInRange(location, 0);
 
-		private static Queue<Item> m_ToDelete = new Queue<Item>();
+      foreach (Item item in eable)
+        if (item is Sign && item.Z == location.Z && item.ItemID == itemID)
+          m_ToDelete.Enqueue(item);
 
-		public static void Add_Static( int itemID, Point3D location, Map map, string name )
-		{
-			IPooledEnumerable<Item> eable = map.GetItemsInRange( location, 0 );
+      eable.Free();
 
-			foreach ( Item item in eable )
-			{
-				if ( item is Sign && item.Z == location.Z && item.ItemID == itemID )
-					m_ToDelete.Enqueue( item );
-			}
+      while (m_ToDelete.Count > 0)
+        m_ToDelete.Dequeue().Delete();
 
-			eable.Free();
+      Item sign;
 
-			while ( m_ToDelete.Count > 0 )
-				m_ToDelete.Dequeue().Delete();
+      if (name.StartsWith("#"))
+      {
+        sign = new LocalizedSign(itemID, Utility.ToInt32(name.Substring(1)));
+      }
+      else
+      {
+        sign = new Sign(itemID);
+        sign.Name = name;
+      }
 
-			Item sign;
+      if (map == Map.Malas)
+      {
+        if (location.X >= 965 && location.Y >= 502 && location.X <= 1012 && location.Y <= 537)
+          sign.Hue = 0x47E;
+        else if (location.X >= 1960 && location.Y >= 1278 && location.X < 2106 && location.Y < 1413)
+          sign.Hue = 0x44E;
+      }
 
-			if ( name.StartsWith( "#" ) )
-			{
-				sign = new LocalizedSign( itemID, Utility.ToInt32( name.Substring( 1 ) ) );
-			}
-			else
-			{
-				sign = new Sign( itemID );
-				sign.Name = name;
-			}
+      sign.MoveToWorld(location, map);
+    }
 
-			if ( map == Map.Malas )
-			{
-				if ( location.X >= 965 && location.Y >= 502 && location.X <= 1012 && location.Y <= 537 )
-					sign.Hue = 0x47E;
-				else if ( location.X >= 1960 && location.Y >= 1278 && location.X < 2106 && location.Y < 1413 )
-					sign.Hue = 0x44E;
-			}
+    private class SignEntry
+    {
+      public int m_ItemID;
+      public Point3D m_Location;
+      public int m_Map;
+      public string m_Text;
 
-			sign.MoveToWorld( location, map );
-		}
-	}
+      public SignEntry(string text, Point3D pt, int itemID, int mapLoc)
+      {
+        m_Text = text;
+        m_Location = pt;
+        m_ItemID = itemID;
+        m_Map = mapLoc;
+      }
+    }
+  }
 }

@@ -1,195 +1,197 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Server.Targeting;
-using Server.Spells;
-using Server.Mobiles;
 using Server.Misc;
+using Server.Mobiles;
+using Server.Spells;
+using Server.Targeting;
 
 namespace Server.Items
 {
-	public abstract class BaseConfusionBlastPotion : BasePotion
-	{
-		public abstract int Radius{ get; }
+  public abstract class BaseConfusionBlastPotion : BasePotion
+  {
+    private List<Mobile> m_Users = new List<Mobile>();
 
-		public override bool RequireFreeHand => false;
+    public BaseConfusionBlastPotion(PotionEffect effect) : base(0xF06, effect)
+    {
+      Hue = 0x48D;
+    }
 
-		public BaseConfusionBlastPotion( PotionEffect effect ) : base( 0xF06, effect )
-		{
-			Hue = 0x48D;
-		}
+    public BaseConfusionBlastPotion(Serial serial) : base(serial)
+    {
+    }
 
-		public BaseConfusionBlastPotion( Serial serial ) : base( serial )
-		{
-		}
+    public abstract int Radius{ get; }
 
-		public override void Drink( Mobile from )
-		{
-			if ( Core.AOS && (from.Paralyzed || from.Frozen || (from.Spell != null && from.Spell.IsCasting)) )
-			{
-				from.SendLocalizedMessage( 1062725 ); // You can not use that potion while paralyzed.
-				return;
-			}
+    public override bool RequireFreeHand => false;
 
-			int delay = GetDelay( from );
+    public override void Drink(Mobile from)
+    {
+      if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell != null && from.Spell.IsCasting))
+      {
+        from.SendLocalizedMessage(1062725); // You can not use that potion while paralyzed.
+        return;
+      }
 
-			if ( delay > 0 )
-			{
-				from.SendLocalizedMessage( 1072529, $"{delay}\t{(delay > 1 ? "seconds." : "second.")}"); // You cannot use that for another ~1_NUM~ ~2_TIMEUNITS~
-				return;
-			}
+      int delay = GetDelay(from);
 
-			if ( from.Target is ThrowTarget targ && targ.Potion == this )
-				return;
+      if (delay > 0)
+      {
+        from.SendLocalizedMessage(1072529,
+          $"{delay}\t{(delay > 1 ? "seconds." : "second.")}"); // You cannot use that for another ~1_NUM~ ~2_TIMEUNITS~
+        return;
+      }
 
-			from.RevealingAction();
+      if (from.Target is ThrowTarget targ && targ.Potion == this)
+        return;
 
-			if ( !m_Users.Contains( from ) )
-				m_Users.Add( from );
+      from.RevealingAction();
 
-			from.Target = new ThrowTarget( this );
-		}
+      if (!m_Users.Contains(from))
+        m_Users.Add(from);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      from.Target = new ThrowTarget(this);
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		private List<Mobile> m_Users = new List<Mobile>();
+      int version = reader.ReadInt();
+    }
 
-		public void Explode_Callback( object state )
-		{
-			object[] states = (object[]) state;
+    public void Explode_Callback(object state)
+    {
+      object[] states = (object[])state;
 
-			Explode( (Mobile) states[ 0 ], (Point3D) states[ 1 ], (Map) states[ 2 ] );
-		}
+      Explode((Mobile)states[0], (Point3D)states[1], (Map)states[2]);
+    }
 
-		public virtual void Explode( Mobile from, Point3D loc, Map map )
-		{
-			if ( Deleted || map == null )
-				return;
+    public virtual void Explode(Mobile from, Point3D loc, Map map)
+    {
+      if (Deleted || map == null)
+        return;
 
-			Consume();
+      Consume();
 
-			// Check if any other players are using this potion
-			for ( int i = 0; i < m_Users.Count; i ++ )
-			{
-				if ( m_Users[ i ].Target is ThrowTarget targ && targ.Potion == this )
-					Target.Cancel( from );
-			}
+      // Check if any other players are using this potion
+      for (int i = 0; i < m_Users.Count; i++)
+        if (m_Users[i].Target is ThrowTarget targ && targ.Potion == this)
+          Target.Cancel(from);
 
-			// Effects
-			Effects.PlaySound( loc, map, 0x207 );
+      // Effects
+      Effects.PlaySound(loc, map, 0x207);
 
-			Geometry.Circle2D( loc, map, Radius, BlastEffect, 270, 90 );
+      Geometry.Circle2D(loc, map, Radius, BlastEffect, 270, 90);
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 0.3 ), new TimerStateCallback( CircleEffect2 ), new object[] { loc, map } );
+      Timer.DelayCall(TimeSpan.FromSeconds(0.3), new TimerStateCallback(CircleEffect2), new object[] { loc, map });
 
-			foreach ( Mobile mobile in map.GetMobilesInRange( loc, Radius ) )
-			{
-				if ( mobile is BaseCreature mon )
-				{
-					if ( mon.Controlled || mon.Summoned )
-						continue;
+      foreach (Mobile mobile in map.GetMobilesInRange(loc, Radius))
+        if (mobile is BaseCreature mon)
+        {
+          if (mon.Controlled || mon.Summoned)
+            continue;
 
-					mon.Pacify( from, DateTime.UtcNow + TimeSpan.FromSeconds( 5.0 ) ); // TODO check
-				}
-			}
-		}
+          mon.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(5.0)); // TODO check
+        }
+    }
 
-		#region Effects
-		public virtual void BlastEffect( Point3D p, Map map )
-		{
-			if ( map.CanFit( p, 12, true, false ) )
-				Effects.SendLocationEffect( p, map, 0x376A, 4, 9 );
-		}
+    private class ThrowTarget : Target
+    {
+      public ThrowTarget(BaseConfusionBlastPotion potion) : base(12, true, TargetFlags.None)
+      {
+        Potion = potion;
+      }
 
-		public void CircleEffect2( object state )
-		{
-			object[] states = (object[]) state;
+      public BaseConfusionBlastPotion Potion{ get; }
 
-			Geometry.Circle2D( (Point3D)states[0], (Map)states[1], Radius, BlastEffect, 90, 270 );
-		}
-		#endregion
+      protected override void OnTarget(Mobile from, object targeted)
+      {
+        if (Potion.Deleted || Potion.Map == Map.Internal)
+          return;
 
-		#region Delay
-		private static Hashtable m_Delay = new Hashtable();
+        if (!(targeted is IPoint3D p) || from.Map == null)
+          return;
 
-		public static void AddDelay( Mobile m )
-		{
-			if ( m_Delay[ m ] is Timer timer )
-				timer.Stop();
+        // Add delay
+        AddDelay(from);
 
-			m_Delay[ m ] = Timer.DelayCall( TimeSpan.FromSeconds( 60 ), new TimerStateCallback( EndDelay_Callback ), m );
-		}
+        SpellHelper.GetSurfaceTop(ref p);
 
-		public static int GetDelay( Mobile m )
-		{
-			if ( m_Delay[ m ] is Timer timer && timer.Next > DateTime.UtcNow )
-				return (int) (timer.Next - DateTime.UtcNow).TotalSeconds;
+        from.RevealingAction();
 
-			return 0;
-		}
+        IEntity to;
 
-		private static void EndDelay_Callback( object obj )
-		{
-			if ( obj is Mobile mobile )
-				EndDelay( mobile );
-		}
+        if (p is Mobile mobile)
+          to = mobile;
+        else
+          to = new Entity(Serial.Zero, new Point3D(p), from.Map);
 
-		public static void EndDelay( Mobile m )
-		{
-			if ( m_Delay[ m ] is Timer timer )
-			{
-				timer.Stop();
-				m_Delay.Remove( m );
-			}
-		}
-		#endregion
+        Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue, 0);
+        Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(Potion.Explode_Callback),
+          new object[] { from, new Point3D(p), from.Map });
+      }
+    }
 
-		private class ThrowTarget : Target
-		{
-			public BaseConfusionBlastPotion Potion { get; }
+    #region Effects
 
-			public ThrowTarget( BaseConfusionBlastPotion potion ) : base( 12, true, TargetFlags.None )
-			{
-				Potion = potion;
-			}
+    public virtual void BlastEffect(Point3D p, Map map)
+    {
+      if (map.CanFit(p, 12, true, false))
+        Effects.SendLocationEffect(p, map, 0x376A, 4, 9);
+    }
 
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( Potion.Deleted || Potion.Map == Map.Internal )
-					return;
+    public void CircleEffect2(object state)
+    {
+      object[] states = (object[])state;
 
-				if ( !(targeted is IPoint3D p) || from.Map == null )
-					return;
+      Geometry.Circle2D((Point3D)states[0], (Map)states[1], Radius, BlastEffect, 90, 270);
+    }
 
-				// Add delay
-				AddDelay( from );
+    #endregion
 
-				SpellHelper.GetSurfaceTop( ref p );
+    #region Delay
 
-				from.RevealingAction();
+    private static Hashtable m_Delay = new Hashtable();
 
-				IEntity to;
+    public static void AddDelay(Mobile m)
+    {
+      if (m_Delay[m] is Timer timer)
+        timer.Stop();
 
-				if ( p is Mobile mobile )
-					to = mobile;
-				else
-					to = new Entity( Serial.Zero, new Point3D( p ), from.Map );
+      m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(60), new TimerStateCallback(EndDelay_Callback), m);
+    }
 
-				Effects.SendMovingEffect( from, to, 0xF0D, 7, 0, false, false, Potion.Hue, 0 );
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerStateCallback( Potion.Explode_Callback ), new object[] { from, new Point3D( p ), from.Map } );
-			}
-		}
-	}
+    public static int GetDelay(Mobile m)
+    {
+      if (m_Delay[m] is Timer timer && timer.Next > DateTime.UtcNow)
+        return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
+
+      return 0;
+    }
+
+    private static void EndDelay_Callback(object obj)
+    {
+      if (obj is Mobile mobile)
+        EndDelay(mobile);
+    }
+
+    public static void EndDelay(Mobile m)
+    {
+      if (m_Delay[m] is Timer timer)
+      {
+        timer.Stop();
+        m_Delay.Remove(m);
+      }
+    }
+
+    #endregion
+  }
 }

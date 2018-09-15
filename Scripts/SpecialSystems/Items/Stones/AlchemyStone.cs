@@ -1,40 +1,40 @@
 namespace Server.Items
 {
-	public class AlchemyStone : Item
-	{
-		public override string DefaultName => "an Alchemist Supply Stone";
+  public class AlchemyStone : Item
+  {
+    [Constructible]
+    public AlchemyStone() : base(0xED4)
+    {
+      Movable = false;
+      Hue = 0x250;
+    }
 
-		[Constructible]
-		public AlchemyStone() : base( 0xED4 )
-		{
-			Movable = false;
-			Hue = 0x250;
-		}
+    public AlchemyStone(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			AlchemyBag alcBag = new AlchemyBag();
+    public override string DefaultName => "an Alchemist Supply Stone";
 
-			if ( !from.AddToBackpack( alcBag ) )
-				alcBag.Delete();
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      AlchemyBag alcBag = new AlchemyBag();
 
-		public AlchemyStone( Serial serial ) : base( serial )
-		{
-		}
+      if (!from.AddToBackpack(alcBag))
+        alcBag.Delete();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

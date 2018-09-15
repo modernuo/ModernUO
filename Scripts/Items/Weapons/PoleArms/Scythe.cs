@@ -2,53 +2,53 @@ using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0x26BA, 0x26C4 )]
-	public class Scythe : BasePoleArm
-	{
-		public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
+  [Flippable(0x26BA, 0x26C4)]
+  public class Scythe : BasePoleArm
+  {
+    [Constructible]
+    public Scythe() : base(0x26BA)
+    {
+      Weight = 5.0;
+    }
 
-		public override int AosStrengthReq => 45;
-		public override int AosMinDamage => 15;
-		public override int AosMaxDamage => 18;
-		public override int AosSpeed => 32;
-		public override float MlSpeed => 3.50f;
+    public Scythe(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 45;
-		public override int OldMinDamage => 15;
-		public override int OldMaxDamage => 18;
-		public override int OldSpeed => 32;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
 
-		public override int InitMinHits => 31;
-		public override int InitMaxHits => 100;
+    public override int AosStrengthReq => 45;
+    public override int AosMinDamage => 15;
+    public override int AosMaxDamage => 18;
+    public override int AosSpeed => 32;
+    public override float MlSpeed => 3.50f;
 
-		public override HarvestSystem HarvestSystem => null;
+    public override int OldStrengthReq => 45;
+    public override int OldMinDamage => 15;
+    public override int OldMaxDamage => 18;
+    public override int OldSpeed => 32;
 
-		[Constructible]
-		public Scythe() : base( 0x26BA )
-		{
-			Weight = 5.0;
-		}
+    public override int InitMinHits => 31;
+    public override int InitMaxHits => 100;
 
-		public Scythe( Serial serial ) : base( serial )
-		{
-		}
+    public override HarvestSystem HarvestSystem => null;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( Weight == 15.0 )
-				Weight = 5.0;
-		}
-	}
+      if (Weight == 15.0)
+        Weight = 5.0;
+    }
+  }
 }

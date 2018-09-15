@@ -1,76 +1,79 @@
 using System;
 using System.Collections.Generic;
+using Server.Items;
+using Server.Network;
 
 namespace Server.Mobiles
 {
-	public class Scribe : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+  public class Scribe : BaseVendor
+  {
+    public static readonly TimeSpan ShushDelay = TimeSpan.FromMinutes(1);
 
-		public override NpcGuild NpcGuild => NpcGuild.MagesGuild;
+    private DateTime m_NextShush;
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		private DateTime m_NextShush;
-		public static readonly TimeSpan ShushDelay = TimeSpan.FromMinutes( 1 );
+    [Constructible]
+    public Scribe() : base("the scribe")
+    {
+      SetSkill(SkillName.EvalInt, 60.0, 83.0);
+      SetSkill(SkillName.Inscribe, 90.0, 100.0);
+    }
 
-		[Constructible]
-		public Scribe() : base( "the scribe" )
-		{
-			SetSkill( SkillName.EvalInt, 60.0, 83.0 );
-			SetSkill( SkillName.Inscribe, 90.0, 100.0 );
-		}
+    public Scribe(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBScribe() );
-		}
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals;
+    public override NpcGuild NpcGuild => NpcGuild.MagesGuild;
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals;
 
-			AddItem( new Items.Robe( Utility.RandomNeutralHue() ) );
-		}
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBScribe());
+    }
 
-		public override bool HandlesOnSpeech( Mobile from )
-		{
-			return from.Player;
-		}
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-		public override void OnSpeech( SpeechEventArgs e )
-		{
-			base.OnSpeech( e );
+      AddItem(new Robe(Utility.RandomNeutralHue()));
+    }
 
-			if ( !e.Handled && m_NextShush <= DateTime.UtcNow && InLOS( e.Mobile ) )
-			{
-				Direction = GetDirectionTo( e.Mobile );
+    public override bool HandlesOnSpeech(Mobile from)
+    {
+      return from.Player;
+    }
 
-				PlaySound( Female ? 0x32F : 0x441 );
-				PublicOverheadMessage( Network.MessageType.Regular, 0x3B2, 1073990 ); // Shhhh!
+    public override void OnSpeech(SpeechEventArgs e)
+    {
+      base.OnSpeech(e);
 
-				m_NextShush = DateTime.UtcNow + ShushDelay;
-				e.Handled = true;
-			}
-		}
+      if (!e.Handled && m_NextShush <= DateTime.UtcNow && InLOS(e.Mobile))
+      {
+        Direction = GetDirectionTo(e.Mobile);
 
-		public Scribe( Serial serial ) : base( serial )
-		{
-		}
+        PlaySound(Female ? 0x32F : 0x441);
+        PublicOverheadMessage(MessageType.Regular, 0x3B2, 1073990); // Shhhh!
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        m_NextShush = DateTime.UtcNow + ShushDelay;
+        e.Handled = true;
+      }
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -4,129 +4,130 @@ using Server.Mobiles;
 
 namespace Server.Engines.Craft
 {
-	public class DefGlassblowing : CraftSystem
-	{
-		public override SkillName MainSkill => SkillName.Alchemy;
+  public class DefGlassblowing : CraftSystem
+  {
+    private static CraftSystem m_CraftSystem;
 
-		public override int GumpTitleNumber => 1044622;
+    private DefGlassblowing() : base(1, 1, 1.25) // base( 1, 2, 1.7 )
+    {
+    }
 
-		private static CraftSystem m_CraftSystem;
+    public override SkillName MainSkill => SkillName.Alchemy;
 
-		public static CraftSystem CraftSystem
-		{
-			get
-			{
-				if ( m_CraftSystem == null )
-					m_CraftSystem = new DefGlassblowing();
+    public override int GumpTitleNumber => 1044622;
 
-				return m_CraftSystem;
-			}
-		}
+    public static CraftSystem CraftSystem
+    {
+      get
+      {
+        if (m_CraftSystem == null)
+          m_CraftSystem = new DefGlassblowing();
 
-		public override double GetChanceAtMin( CraftItem item )
-		{
-			if ( item.ItemType == typeof( HollowPrism ) )
-				return 0.5; // 50%
+        return m_CraftSystem;
+      }
+    }
 
-			return 0.0; // 0%
-		}
+    public override double GetChanceAtMin(CraftItem item)
+    {
+      if (item.ItemType == typeof(HollowPrism))
+        return 0.5; // 50%
 
-		private DefGlassblowing() : base( 1, 1, 1.25 )// base( 1, 2, 1.7 )
-		{
-		}
+      return 0.0; // 0%
+    }
 
-		public override int CanCraft( Mobile from, BaseTool tool, Type itemType )
-		{
-			if ( tool == null || tool.Deleted || tool.UsesRemaining < 0 )
-				return 1044038; // You have worn out your tool!
-			if ( !BaseTool.CheckTool( tool, from ) )
-				return 1048146; // If you have a tool equipped, you must use that tool.
-			if ( !(from is PlayerMobile mobile && mobile.Glassblowing && mobile.Skills[SkillName.Alchemy].Base >= 100.0) )
-				return 1044634; // You havent learned glassblowing.
-			if ( !BaseTool.CheckAccessible( tool, from ) )
-				return 1044263; // The tool must be on your person to use.
+    public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
+    {
+      if (tool == null || tool.Deleted || tool.UsesRemaining < 0)
+        return 1044038; // You have worn out your tool!
+      if (!BaseTool.CheckTool(tool, from))
+        return 1048146; // If you have a tool equipped, you must use that tool.
+      if (!(from is PlayerMobile mobile && mobile.Glassblowing && mobile.Skills[SkillName.Alchemy].Base >= 100.0))
+        return 1044634; // You havent learned glassblowing.
+      if (!BaseTool.CheckAccessible(tool, from))
+        return 1044263; // The tool must be on your person to use.
 
-			bool anvil, forge;
+      bool anvil, forge;
 
-			DefBlacksmithy.CheckAnvilAndForge( from, 2, out anvil, out forge );
+      DefBlacksmithy.CheckAnvilAndForge(from, 2, out anvil, out forge);
 
-			if ( forge )
-				return 0;
+      if (forge)
+        return 0;
 
-			return 1044628; // You must be near a forge to blow glass.
-		}
+      return 1044628; // You must be near a forge to blow glass.
+    }
 
-		public override void PlayCraftEffect( Mobile from )
-		{
-			from.PlaySound( 0x2B ); // bellows
+    public override void PlayCraftEffect(Mobile from)
+    {
+      from.PlaySound(0x2B); // bellows
 
-			//if ( from.Body.Type == BodyType.Human && !from.Mounted )
-			//	from.Animate( 9, 5, 1, true, false, 0 );
+      //if ( from.Body.Type == BodyType.Human && !from.Mounted )
+      //	from.Animate( 9, 5, 1, true, false, 0 );
 
-			//new InternalTimer( from ).Start();
-		}
+      //new InternalTimer( from ).Start();
+    }
 
-		// Delay to synchronize the sound with the hit on the anvil
-		private class InternalTimer : Timer
-		{
-			private Mobile m_From;
+    public override int PlayEndingEffect(Mobile from, bool failed, bool lostMaterial, bool toolBroken, int quality,
+      bool makersMark, CraftItem item)
+    {
+      if (toolBroken)
+        from.SendLocalizedMessage(1044038); // You have worn out your tool
 
-			public InternalTimer( Mobile from ) : base( TimeSpan.FromSeconds( 0.7 ) )
-			{
-				m_From = from;
-			}
+      if (failed)
+      {
+        if (lostMaterial)
+          return 1044043; // You failed to create the item, and some of your materials are lost.
+        return 1044157; // You failed to create the item, but no materials were lost.
+      }
 
-			protected override void OnTick()
-			{
-				m_From.PlaySound( 0x2A );
-			}
-		}
+      from.PlaySound(0x41); // glass breaking
 
-		public override int PlayEndingEffect( Mobile from, bool failed, bool lostMaterial, bool toolBroken, int quality, bool makersMark, CraftItem item )
-		{
-			if ( toolBroken )
-				from.SendLocalizedMessage( 1044038 ); // You have worn out your tool
+      if (quality == 0)
+        return 502785; // You were barely able to make this item.  It's quality is below average.
+      if (makersMark && quality == 2)
+        return 1044156; // You create an exceptional quality item and affix your maker's mark.
+      if (quality == 2)
+        return 1044155; // You create an exceptional quality item.
+      return 1044154; // You create the item.
+    }
 
-			if ( failed )
-			{
-				if ( lostMaterial )
-					return 1044043; // You failed to create the item, and some of your materials are lost.
-				return 1044157; // You failed to create the item, but no materials were lost.
-			}
+    public override void InitCraftList()
+    {
+      int index = AddCraft(typeof(Bottle), 1044050, 1023854, 52.5, 102.5, typeof(Sand), 1044625, 1, 1044627);
+      SetUseAllRes(index, true);
 
-			from.PlaySound( 0x41 ); // glass breaking
+      AddCraft(typeof(SmallFlask), 1044050, 1044610, 52.5, 102.5, typeof(Sand), 1044625, 2, 1044627);
+      AddCraft(typeof(MediumFlask), 1044050, 1044611, 52.5, 102.5, typeof(Sand), 1044625, 3, 1044627);
+      AddCraft(typeof(CurvedFlask), 1044050, 1044612, 55.0, 105.0, typeof(Sand), 1044625, 2, 1044627);
+      AddCraft(typeof(LongFlask), 1044050, 1044613, 57.5, 107.5, typeof(Sand), 1044625, 4, 1044627);
+      AddCraft(typeof(LargeFlask), 1044050, 1044623, 60.0, 110.0, typeof(Sand), 1044625, 5, 1044627);
+      AddCraft(typeof(AniSmallBlueFlask), 1044050, 1044614, 60.0, 110.0, typeof(Sand), 1044625, 5, 1044627);
+      AddCraft(typeof(AniLargeVioletFlask), 1044050, 1044615, 60.0, 110.0, typeof(Sand), 1044625, 5, 1044627);
+      AddCraft(typeof(AniRedRibbedFlask), 1044050, 1044624, 60.0, 110.0, typeof(Sand), 1044625, 7, 1044627);
+      AddCraft(typeof(EmptyVialsWRack), 1044050, 1044616, 65.0, 115.0, typeof(Sand), 1044625, 8, 1044627);
+      AddCraft(typeof(FullVialsWRack), 1044050, 1044617, 65.0, 115.0, typeof(Sand), 1044625, 9, 1044627);
+      AddCraft(typeof(SpinningHourglass), 1044050, 1044618, 75.0, 125.0, typeof(Sand), 1044625, 10, 1044627);
 
-			if ( quality == 0 )
-				return 502785; // You were barely able to make this item.  It's quality is below average.
-			if ( makersMark && quality == 2 )
-				return 1044156; // You create an exceptional quality item and affix your maker's mark.
-			if ( quality == 2 )
-				return 1044155; // You create an exceptional quality item.
-			return 1044154; // You create the item.
-		}
+      if (Core.ML)
+      {
+        index = AddCraft(typeof(HollowPrism), 1044050, 1072895, 100.0, 150.0, typeof(Sand), 1044625, 8, 1044627);
+        SetNeededExpansion(index, Expansion.ML);
+      }
+    }
 
-		public override void InitCraftList()
-		{
-			int index = AddCraft( typeof( Bottle ), 1044050, 1023854, 52.5, 102.5, typeof( Sand ), 1044625, 1, 1044627 );
-			SetUseAllRes( index, true );
+    // Delay to synchronize the sound with the hit on the anvil
+    private class InternalTimer : Timer
+    {
+      private Mobile m_From;
 
-			AddCraft( typeof( SmallFlask ), 1044050, 1044610, 52.5, 102.5, typeof( Sand ), 1044625, 2, 1044627 );
-			AddCraft( typeof( MediumFlask ), 1044050, 1044611, 52.5, 102.5, typeof( Sand ), 1044625, 3, 1044627 );
-			AddCraft( typeof( CurvedFlask ), 1044050, 1044612, 55.0, 105.0, typeof( Sand ), 1044625, 2, 1044627 );
-			AddCraft( typeof( LongFlask ), 1044050, 1044613, 57.5, 107.5, typeof( Sand ), 1044625, 4, 1044627 );
-			AddCraft( typeof( LargeFlask ), 1044050, 1044623, 60.0, 110.0, typeof( Sand ), 1044625, 5, 1044627 );
-			AddCraft( typeof( AniSmallBlueFlask ), 1044050, 1044614, 60.0, 110.0, typeof( Sand ), 1044625, 5, 1044627 );
-			AddCraft( typeof( AniLargeVioletFlask ), 1044050, 1044615, 60.0, 110.0, typeof( Sand ), 1044625, 5, 1044627 );
-			AddCraft( typeof( AniRedRibbedFlask ), 1044050, 1044624, 60.0, 110.0, typeof( Sand ), 1044625, 7, 1044627 );
-			AddCraft( typeof( EmptyVialsWRack ), 1044050, 1044616, 65.0, 115.0, typeof( Sand ), 1044625, 8, 1044627 );
-			AddCraft( typeof( FullVialsWRack ), 1044050, 1044617, 65.0, 115.0, typeof( Sand ), 1044625, 9, 1044627 );
-			AddCraft( typeof( SpinningHourglass ), 1044050, 1044618, 75.0, 125.0, typeof( Sand ), 1044625, 10, 1044627 );
+      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(0.7))
+      {
+        m_From = from;
+      }
 
-			if ( Core.ML )
-			{
-				index = AddCraft( typeof( HollowPrism ), 1044050, 1072895, 100.0, 150.0, typeof( Sand ), 1044625, 8, 1044627 );
-				SetNeededExpansion( index, Expansion.ML );
-			}
-		}
-	}
+      protected override void OnTick()
+      {
+        m_From.PlaySound(0x2A);
+      }
+    }
+  }
 }

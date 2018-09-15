@@ -2,148 +2,148 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class KhaldunZealot : BaseCreature
-	{
-		public override bool ClickTitle => false;
-		public override bool ShowFameTitle => false;
+  public class KhaldunZealot : BaseCreature
+  {
+    [Constructible]
+    public KhaldunZealot() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 0x190;
+      Title = "the Knight";
+      Hue = 0;
 
-		public override string DefaultName => "Zealot of Khaldun";
+      SetStr(351, 400);
+      SetDex(151, 165);
+      SetInt(76, 100);
 
-		[Constructible]
-		public KhaldunZealot(): base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 0x190;
-			Title = "the Knight";
-			Hue = 0;
+      SetHits(448, 470);
 
-			SetStr( 351, 400 );
-			SetDex( 151, 165 );
-			SetInt( 76, 100 );
+      SetDamage(15, 25);
 
-			SetHits( 448, 470 );
+      SetDamageType(ResistanceType.Physical, 75);
+      SetDamageType(ResistanceType.Cold, 25);
 
-			SetDamage( 15, 25 );
+      SetResistance(ResistanceType.Physical, 35, 45);
+      SetResistance(ResistanceType.Fire, 25, 30);
+      SetResistance(ResistanceType.Cold, 50, 60);
+      SetResistance(ResistanceType.Poison, 25, 35);
+      SetResistance(ResistanceType.Energy, 25, 35);
 
-			SetDamageType( ResistanceType.Physical, 75 );
-			SetDamageType( ResistanceType.Cold, 25 );
+      SetSkill(SkillName.Wrestling, 70.1, 80.0);
+      SetSkill(SkillName.Swords, 120.1, 130.0);
+      SetSkill(SkillName.Anatomy, 120.1, 130.0);
+      SetSkill(SkillName.MagicResist, 90.1, 100.0);
+      SetSkill(SkillName.Tactics, 90.1, 100.0);
 
-			SetResistance( ResistanceType.Physical, 35, 45 );
-			SetResistance( ResistanceType.Fire, 25, 30 );
-			SetResistance( ResistanceType.Cold, 50, 60 );
-			SetResistance( ResistanceType.Poison, 25, 35 );
-			SetResistance( ResistanceType.Energy, 25, 35 );
+      Fame = 10000;
+      Karma = -10000;
+      VirtualArmor = 40;
 
-			SetSkill( SkillName.Wrestling, 70.1, 80.0 );
-			SetSkill( SkillName.Swords, 120.1, 130.0 );
-			SetSkill( SkillName.Anatomy, 120.1, 130.0 );
-			SetSkill( SkillName.MagicResist, 90.1, 100.0 );
-			SetSkill( SkillName.Tactics, 90.1, 100.0 );
+      VikingSword weapon = new VikingSword();
+      weapon.Hue = 0x835;
+      weapon.Movable = false;
+      AddItem(weapon);
 
-			Fame = 10000;
-			Karma = -10000;
-			VirtualArmor = 40;
+      MetalShield shield = new MetalShield();
+      shield.Hue = 0x835;
+      shield.Movable = false;
+      AddItem(shield);
 
-			VikingSword weapon = new VikingSword();
-			weapon.Hue = 0x835;
-			weapon.Movable = false;
-			AddItem( weapon );
+      BoneHelm helm = new BoneHelm();
+      helm.Hue = 0x835;
+      AddItem(helm);
 
-			MetalShield shield = new MetalShield();
-			shield.Hue = 0x835;
-			shield.Movable = false;
-			AddItem( shield );
+      BoneArms arms = new BoneArms();
+      arms.Hue = 0x835;
+      AddItem(arms);
 
-			BoneHelm helm = new BoneHelm();
-			helm.Hue = 0x835;
-			AddItem( helm );
+      BoneGloves gloves = new BoneGloves();
+      gloves.Hue = 0x835;
+      AddItem(gloves);
 
-			BoneArms arms = new BoneArms();
-			arms.Hue = 0x835;
-			AddItem( arms );
+      BoneChest tunic = new BoneChest();
+      tunic.Hue = 0x835;
+      AddItem(tunic);
 
-			BoneGloves gloves = new BoneGloves();
-			gloves.Hue = 0x835;
-			AddItem( gloves );
+      BoneLegs legs = new BoneLegs();
+      legs.Hue = 0x835;
+      AddItem(legs);
 
-			BoneChest tunic = new BoneChest();
-			tunic.Hue = 0x835;
-			AddItem( tunic );
+      AddItem(new Boots());
+    }
 
-			BoneLegs legs = new BoneLegs();
-			legs.Hue = 0x835;
-			AddItem( legs );
+    public KhaldunZealot(Serial serial) : base(serial)
+    {
+    }
 
-			AddItem( new Boots() );
-		}
+    public override bool ClickTitle => false;
+    public override bool ShowFameTitle => false;
 
-		public override int GetIdleSound()
-		{
-			return 0x184;
-		}
+    public override string DefaultName => "Zealot of Khaldun";
 
-		public override int GetAngerSound()
-		{
-			return 0x286;
-		}
+    public override bool AlwaysMurderer => true;
+    public override bool Unprovokable => true;
+    public override Poison PoisonImmune => Poison.Deadly;
 
-		public override int GetDeathSound()
-		{
-			return 0x288;
-		}
+    public override int GetIdleSound()
+    {
+      return 0x184;
+    }
 
-		public override int GetHurtSound()
-		{
-			return 0x19F;
-		}
+    public override int GetAngerSound()
+    {
+      return 0x286;
+    }
 
-		public override bool AlwaysMurderer => true;
-		public override bool Unprovokable => true;
-		public override Poison PoisonImmune => Poison.Deadly;
+    public override int GetDeathSound()
+    {
+      return 0x288;
+    }
 
-		public KhaldunZealot( Serial serial ) : base( serial )
-		{
-		}
+    public override int GetHurtSound()
+    {
+      return 0x19F;
+    }
 
-		public override bool OnBeforeDeath()
-		{
-			BoneKnight rm = new BoneKnight();
-			rm.Team = Team;
-			rm.Combatant = Combatant;
-			rm.NoKillAwards = true;
+    public override bool OnBeforeDeath()
+    {
+      BoneKnight rm = new BoneKnight();
+      rm.Team = Team;
+      rm.Combatant = Combatant;
+      rm.NoKillAwards = true;
 
-			if ( rm.Backpack == null )
-			{
-				Backpack pack = new Backpack();
-				pack.Movable = false;
-				rm.AddItem( pack );
-			}
+      if (rm.Backpack == null)
+      {
+        Backpack pack = new Backpack();
+        pack.Movable = false;
+        rm.AddItem(pack);
+      }
 
-			for ( int i = 0; i < 2; i++ )
-			{
-				LootPack.FilthyRich.Generate( this, rm.Backpack, true, LootPack.GetLuckChanceForKiller( this ) );
-				LootPack.FilthyRich.Generate( this, rm.Backpack, false, LootPack.GetLuckChanceForKiller( this ) );
-			}
+      for (int i = 0; i < 2; i++)
+      {
+        LootPack.FilthyRich.Generate(this, rm.Backpack, true, LootPack.GetLuckChanceForKiller(this));
+        LootPack.FilthyRich.Generate(this, rm.Backpack, false, LootPack.GetLuckChanceForKiller(this));
+      }
 
-			Effects.PlaySound(this, Map, GetDeathSound());
-			Effects.SendLocationEffect( Location, Map, 0x3709, 30, 10, 0x835, 0 );
-			rm.MoveToWorld( Location, Map );
+      Effects.PlaySound(this, Map, GetDeathSound());
+      Effects.SendLocationEffect(Location, Map, 0x3709, 30, 10, 0x835, 0);
+      rm.MoveToWorld(Location, Map);
 
-			Delete();
-			return false;
-		}
+      Delete();
+      return false;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

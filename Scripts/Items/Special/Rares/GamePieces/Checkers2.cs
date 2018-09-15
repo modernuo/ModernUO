@@ -1,31 +1,30 @@
 namespace Server.Items
 {
-	public class Checkers2 : Item
-	{
+  public class Checkers2 : Item
+  {
+    [Constructible]
+    public Checkers2() : base(0xE1B)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public Checkers2() : base( 0xE1B )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public Checkers2(Serial serial) : base(serial)
+    {
+    }
 
-		public Checkers2( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

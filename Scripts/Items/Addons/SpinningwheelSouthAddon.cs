@@ -2,135 +2,138 @@ using System;
 
 namespace Server.Items
 {
-	public class SpinningwheelSouthAddon : BaseAddon, ISpinningWheel
-	{
-		public override BaseAddonDeed Deed => new SpinningwheelSouthDeed();
+  public class SpinningwheelSouthAddon : BaseAddon, ISpinningWheel
+  {
+    private Timer m_Timer;
 
-		[Constructible]
-		public SpinningwheelSouthAddon()
-		{
-			AddComponent( new AddonComponent( 0x1015 ), 0, 0, 0 );
-		}
+    [Constructible]
+    public SpinningwheelSouthAddon()
+    {
+      AddComponent(new AddonComponent(0x1015), 0, 0, 0);
+    }
 
-		public SpinningwheelSouthAddon( Serial serial ) : base( serial )
-		{
-		}
+    public SpinningwheelSouthAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override BaseAddonDeed Deed => new SpinningwheelSouthDeed();
 
-			writer.Write( (int) 0 ); // version
-		}
+    public bool Spinning => m_Timer != null;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public void BeginSpin(SpinCallback callback, Mobile from, int hue)
+    {
+      m_Timer = new SpinTimer(this, callback, from, hue);
+      m_Timer.Start();
 
-			int version = reader.ReadInt();
-		}
+      foreach (AddonComponent c in Components)
+        switch (c.ItemID)
+        {
+          case 0x1015:
+          case 0x1019:
+          case 0x101C:
+          case 0x10A4:
+            ++c.ItemID;
+            break;
+        }
+    }
 
-		private Timer m_Timer;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void OnComponentLoaded( AddonComponent c )
-		{
-			switch ( c.ItemID )
-			{
-				case 0x1016:
-				case 0x101A:
-				case 0x101D:
-				case 0x10A5: --c.ItemID; break;
-			}
-		}
+      writer.Write(0); // version
+    }
 
-		public bool Spinning => m_Timer != null;
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public void BeginSpin( SpinCallback callback, Mobile from, int hue )
-		{
-			m_Timer = new SpinTimer( this, callback, from, hue );
-			m_Timer.Start();
+      int version = reader.ReadInt();
+    }
 
-			foreach ( AddonComponent c in Components )
-			{
-				switch ( c.ItemID )
-				{
-					case 0x1015:
-					case 0x1019:
-					case 0x101C:
-					case 0x10A4: ++c.ItemID; break;
-				}
-			}
-		}
+    public override void OnComponentLoaded(AddonComponent c)
+    {
+      switch (c.ItemID)
+      {
+        case 0x1016:
+        case 0x101A:
+        case 0x101D:
+        case 0x10A5:
+          --c.ItemID;
+          break;
+      }
+    }
 
-		public void EndSpin( SpinCallback callback, Mobile from, int hue )
-		{
-			m_Timer?.Stop();
+    public void EndSpin(SpinCallback callback, Mobile from, int hue)
+    {
+      m_Timer?.Stop();
 
-			m_Timer = null;
+      m_Timer = null;
 
-			foreach ( AddonComponent c in Components )
-			{
-				switch ( c.ItemID )
-				{
-					case 0x1016:
-					case 0x101A:
-					case 0x101D:
-					case 0x10A5: --c.ItemID; break;
-				}
-			}
+      foreach (AddonComponent c in Components)
+        switch (c.ItemID)
+        {
+          case 0x1016:
+          case 0x101A:
+          case 0x101D:
+          case 0x10A5:
+            --c.ItemID;
+            break;
+        }
 
-			callback?.Invoke( this, from, hue );
-		}
+      callback?.Invoke(this, from, hue);
+    }
 
-		private class SpinTimer : Timer
-		{
-			private SpinningwheelSouthAddon m_Wheel;
-			private SpinCallback m_Callback;
-			private Mobile m_From;
-			private int m_Hue;
+    private class SpinTimer : Timer
+    {
+      private SpinCallback m_Callback;
+      private Mobile m_From;
+      private int m_Hue;
+      private SpinningwheelSouthAddon m_Wheel;
 
-			public SpinTimer( SpinningwheelSouthAddon wheel, SpinCallback callback, Mobile from, int hue ) : base( TimeSpan.FromSeconds( 3.0 ) )
-			{
-				m_Wheel = wheel;
-				m_Callback = callback;
-				m_From = from;
-				m_Hue = hue;
-				Priority = TimerPriority.TwoFiftyMS;
-			}
+      public SpinTimer(SpinningwheelSouthAddon wheel, SpinCallback callback, Mobile from, int hue) : base(
+        TimeSpan.FromSeconds(3.0))
+      {
+        m_Wheel = wheel;
+        m_Callback = callback;
+        m_From = from;
+        m_Hue = hue;
+        Priority = TimerPriority.TwoFiftyMS;
+      }
 
-			protected override void OnTick()
-			{
-				m_Wheel.EndSpin( m_Callback, m_From, m_Hue );
-			}
-		}
-	}
+      protected override void OnTick()
+      {
+        m_Wheel.EndSpin(m_Callback, m_From, m_Hue);
+      }
+    }
+  }
 
-	public class SpinningwheelSouthDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new SpinningwheelSouthAddon();
-		public override int LabelNumber => 1044342; // spining wheel (south)
+  public class SpinningwheelSouthDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public SpinningwheelSouthDeed()
+    {
+    }
 
-		[Constructible]
-		public SpinningwheelSouthDeed()
-		{
-		}
+    public SpinningwheelSouthDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public SpinningwheelSouthDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new SpinningwheelSouthAddon();
+    public override int LabelNumber => 1044342; // spining wheel (south)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

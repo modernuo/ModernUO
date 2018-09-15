@@ -22,75 +22,75 @@ using System;
 
 namespace Server
 {
-	public interface IEntity : IPoint3D, IComparable, IComparable<IEntity>
-	{
-		Serial Serial{ get; }
-		Point3D Location{ get; }
-		Map Map{ get; }
-		void MoveToWorld(Point3D location, Map map);
-		bool Deleted { get; }
+  public interface IEntity : IPoint3D, IComparable, IComparable<IEntity>
+  {
+    Serial Serial{ get; }
+    Point3D Location{ get; }
+    Map Map{ get; }
+    bool Deleted{ get; }
+    void MoveToWorld(Point3D location, Map map);
 
-		void Delete();
-		void ProcessDelta();
-	}
+    void Delete();
+    void ProcessDelta();
+  }
 
-	public class Entity : IEntity, IComparable<Entity>
-	{
-		public int CompareTo( IEntity other )
-		{
-			if ( other == null )
-				return -1;
+  public class Entity : IEntity, IComparable<Entity>
+  {
+    public Entity(Serial serial, Point3D loc, Map map)
+    {
+      Serial = serial;
+      Location = loc;
+      Map = map;
+      Deleted = false;
+    }
 
-			return Serial.CompareTo( other.Serial );
-		}
+    public int CompareTo(Entity other)
+    {
+      return CompareTo((IEntity)other);
+    }
 
-		public int CompareTo( Entity other )
-		{
-			return CompareTo( (IEntity) other );
-		}
+    public int CompareTo(IEntity other)
+    {
+      if (other == null)
+        return -1;
 
-		public int CompareTo( object other )
-		{
-			if ( other == null || other is IEntity )
-				return CompareTo( (IEntity) other );
+      return Serial.CompareTo(other.Serial);
+    }
 
-			throw new ArgumentException();
-		}
+    public int CompareTo(object other)
+    {
+      if (other == null || other is IEntity)
+        return CompareTo((IEntity)other);
 
-		public Entity( Serial serial, Point3D loc, Map map )
-		{
-			Serial = serial;
-			Location = loc;
-			Map = map;
-			Deleted = false;
-		}
+      throw new ArgumentException();
+    }
 
-		public Serial Serial { get; }
+    public Serial Serial{ get; }
 
-		public Point3D Location { get; private set; }
+    public Point3D Location{ get; private set; }
 
-		public int X => Location.X;
+    public int X => Location.X;
 
-		public int Y => Location.Y;
+    public int Y => Location.Y;
 
-		public int Z => Location.Z;
+    public int Z => Location.Z;
 
-		public Map Map { get; private set; }
+    public Map Map{ get; private set; }
 
-		public virtual void MoveToWorld(Point3D newLocation, Map map)
-		{
-			Location = newLocation;
-			Map = map;
-		}
+    public virtual void MoveToWorld(Point3D newLocation, Map map)
+    {
+      Location = newLocation;
+      Map = map;
+    }
 
-		public bool Deleted { get; }
+    public bool Deleted{ get; }
 
-		public void Delete()
-		{
-		}
+    public void Delete()
+    {
+    }
 
-		public void ProcessDelta()
-		{
-		}
-	}
+    public void ProcessDelta()
+    {
+    }
+  }
 }

@@ -22,65 +22,65 @@ using Server.Network;
 
 namespace Server.Menus.ItemLists
 {
-	public class ItemListEntry
-	{
-		public string Name { get; }
+  public class ItemListEntry
+  {
+    public ItemListEntry(string name, int itemID) : this(name, itemID, 0)
+    {
+    }
 
-		public int ItemID { get; }
+    public ItemListEntry(string name, int itemID, int hue)
+    {
+      Name = name;
+      ItemID = itemID;
+      Hue = hue;
+    }
 
-		public int Hue { get; }
+    public string Name{ get; }
 
-		public ItemListEntry( string name, int itemID ) : this( name, itemID, 0 )
-		{
-		}
+    public int ItemID{ get; }
 
-		public ItemListEntry( string name, int itemID, int hue )
-		{
-			Name = name;
-			ItemID = itemID;
-			Hue = hue;
-		}
-	}
+    public int Hue{ get; }
+  }
 
-	public class ItemListMenu : IMenu
-	{
-		private int m_Serial;
-		private static int m_NextSerial;
+  public class ItemListMenu : IMenu
+  {
+    private static int m_NextSerial;
+    private int m_Serial;
 
-		int IMenu.Serial => m_Serial;
+    public ItemListMenu(string question, ItemListEntry[] entries)
+    {
+      Question = question;
+      Entries = entries;
 
-		int IMenu.EntryLength => Entries.Length;
+      do
+      {
+        m_Serial = m_NextSerial++;
+        m_Serial &= 0x7FFFFFFF;
+      } while (m_Serial == 0);
 
-		public string Question { get; }
+      m_Serial = (int)((uint)m_Serial | 0x80000000);
+    }
 
-		public ItemListEntry[] Entries { get; set; }
+    public string Question{ get; }
 
-		public ItemListMenu( string question, ItemListEntry[] entries )
-		{
-			Question = question;
-			Entries = entries;
+    public ItemListEntry[] Entries{ get; set; }
 
-			do
-			{
-				m_Serial = m_NextSerial++;
-				m_Serial &= 0x7FFFFFFF;
-			} while ( m_Serial == 0 );
+    int IMenu.Serial => m_Serial;
 
-			m_Serial = (int)((uint)m_Serial | 0x80000000);
-		}
+    int IMenu.EntryLength => Entries.Length;
 
-		public virtual void OnCancel( NetState state )
-		{
-		}
+    public virtual void OnCancel(NetState state)
+    {
+    }
 
-		public virtual void OnResponse( NetState state, int index )
-		{
-		}
+    public virtual void OnResponse(NetState state, int index)
+    {
+    }
 
-		public void SendTo( NetState state )
-		{
-			state.AddMenu( this );
-			state.Send( new DisplayItemListMenu( this ) );
-		}
-	}
+    public void SendTo(NetState state)
+    {
+      state.AddMenu(this);
+      state.Send(new DisplayItemListMenu(this));
+    }
+  }
 }

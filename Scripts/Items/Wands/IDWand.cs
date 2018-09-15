@@ -2,49 +2,49 @@ using System;
 
 namespace Server.Items
 {
-	public class IDWand : BaseWand
-	{
-		public override TimeSpan GetUseDelay => TimeSpan.Zero;
+  public class IDWand : BaseWand
+  {
+    [Constructible]
+    public IDWand() : base(WandEffect.Identification, 25, 175)
+    {
+    }
 
-		[Constructible]
-		public IDWand() : base( WandEffect.Identification, 25, 175 )
-		{
-		}
+    public IDWand(Serial serial) : base(serial)
+    {
+    }
 
-		public IDWand( Serial serial ) : base( serial )
-		{
-		}
+    public override TimeSpan GetUseDelay => TimeSpan.Zero;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override bool OnWandTarget( Mobile from, object o )
-		{
-			if (o is Item item)
-			{
-				if ( item is BaseWeapon weapon )
-					weapon.Identified = true;
-				else if ( item is BaseArmor armor )
-					armor.Identified = true;
+    public override bool OnWandTarget(Mobile from, object o)
+    {
+      if (o is Item item)
+      {
+        if (item is BaseWeapon weapon)
+          weapon.Identified = true;
+        else if (item is BaseArmor armor)
+          armor.Identified = true;
 
-				if (!Core.AOS)
-					item.OnSingleClick( from );
+        if (!Core.AOS)
+          item.OnSingleClick(from);
 
-				return true;
-			}
+        return true;
+      }
 
-			return false;
-		}
-	}
+      return false;
+    }
+  }
 }

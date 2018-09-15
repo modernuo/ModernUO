@@ -4,48 +4,49 @@ using System.Threading;
 
 namespace Server.Engines.MyRunUO
 {
-	public class Config
-	{
-		// Is MyRunUO enabled?
-		public static bool Enabled = false;
+  public class Config
+  {
+    // Details required for database connection string
+    public const string DatabaseDriver = "{MySQL ODBC 5.2w Driver}";
+    public const string DatabaseServer = "localhost";
+    public const string DatabaseName = "MyRunUO";
+    public const string DatabaseUserID = "username";
 
-		// Details required for database connection string
-		public const string DatabaseDriver		= "{MySQL ODBC 5.2w Driver}";
-		public const string DatabaseServer		= "localhost";
-		public const string DatabaseName		= "MyRunUO";
-		public const string DatabaseUserID		= "username";
-		public const string DatabasePassword	= "password";
+    public const string DatabasePassword = "password";
 
-		// Should the database use transactions? This is recommended
-		public static bool UseTransactions = true;
+    // Is MyRunUO enabled?
+    public static bool Enabled = false;
 
-		// Use optimized table loading techniques? (LOAD DATA INFILE)
-		public static bool LoadDataInFile = true;
+    // Should the database use transactions? This is recommended
+    public static bool UseTransactions = true;
 
-		// This must be enabled if the database server is on a remote machine.
-		public static bool DatabaseNonLocal = ( DatabaseServer != "localhost" );
+    // Use optimized table loading techniques? (LOAD DATA INFILE)
+    public static bool LoadDataInFile = true;
 
-		// Text encoding used
-		public static Encoding EncodingIO = Encoding.ASCII;
+    // This must be enabled if the database server is on a remote machine.
+    public static bool DatabaseNonLocal = DatabaseServer != "localhost";
 
-		// Database communication is done in a separate thread. This value is the 'priority' of that thread, or, how much CPU it will try to use
-		public static ThreadPriority DatabaseThreadPriority = ThreadPriority.BelowNormal;
+    // Text encoding used
+    public static Encoding EncodingIO = Encoding.ASCII;
 
-		// Any character with an AccessLevel equal to or higher than this will not be displayed
-		public static AccessLevel HiddenAccessLevel	= AccessLevel.Counselor;
+    // Database communication is done in a separate thread. This value is the 'priority' of that thread, or, how much CPU it will try to use
+    public static ThreadPriority DatabaseThreadPriority = ThreadPriority.BelowNormal;
 
-		// Export character database every 30 minutes
-		public static TimeSpan CharacterUpdateInterval = TimeSpan.FromMinutes( 30.0 );
+    // Any character with an AccessLevel equal to or higher than this will not be displayed
+    public static AccessLevel HiddenAccessLevel = AccessLevel.Counselor;
 
-		// Export online list database every 5 minutes
-		public static TimeSpan StatusUpdateInterval = TimeSpan.FromMinutes( 5.0 );
+    // Export character database every 30 minutes
+    public static TimeSpan CharacterUpdateInterval = TimeSpan.FromMinutes(30.0);
 
-		public static string CompileConnectionString()
-		{
-			string connectionString =
-				$"DRIVER={DatabaseDriver};SERVER={DatabaseServer};DATABASE={DatabaseName};UID={DatabaseUserID};PASSWORD={DatabasePassword};";
+    // Export online list database every 5 minutes
+    public static TimeSpan StatusUpdateInterval = TimeSpan.FromMinutes(5.0);
 
-			return connectionString;
-		}
-	}
+    public static string CompileConnectionString()
+    {
+      string connectionString =
+        $"DRIVER={DatabaseDriver};SERVER={DatabaseServer};DATABASE={DatabaseName};UID={DatabaseUserID};PASSWORD={DatabasePassword};";
+
+      return connectionString;
+    }
+  }
 }

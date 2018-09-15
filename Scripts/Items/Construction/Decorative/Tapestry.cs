@@ -1,1167 +1,1179 @@
 namespace Server.Items
 {
-	public class Tapestry1N : Item
-	{
-		private InternalItem m_Item;
+  public class Tapestry1N : Item
+  {
+    private InternalItem m_Item;
 
-		[Constructible]
-		public Tapestry1N() : base( 0xEAA )
-		{
-			Movable = false;
+    [Constructible]
+    public Tapestry1N() : base(0xEAA)
+    {
+      Movable = false;
 
-			m_Item = new InternalItem( this );
-		}
+      m_Item = new InternalItem(this);
+    }
 
-		public Tapestry1N( Serial serial ) : base( serial )
-		{
-		}
+    public Tapestry1N(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X + 1, Y , Z );
-		}
-
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
-
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
-
-			m_Item?.Delete();
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-
-			writer.Write( m_Item );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X + 1, Y, Z);
+    }
 
-			int version = reader.ReadInt();
-
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private Tapestry1N m_Item;
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-			public InternalItem( Tapestry1N item ) : base( 0xEAB )
-			{
-				Movable = true;
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-				m_Item = item;
-			}
+      m_Item?.Delete();
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+      writer.Write(m_Item);
+    }
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X - 1, Y , Z );
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
-
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
-
-				m_Item?.Delete();
-			}
-
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
-
-				writer.Write( (int) 0 ); // version
-
-				writer.Write( m_Item );
-			}
-
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+      int version = reader.ReadInt();
 
-				int version = reader.ReadInt();
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-				m_Item = reader.ReadItem() as Tapestry1N;
-			}
-		}
-	}
+    private class InternalItem : Item
+    {
+      private Tapestry1N m_Item;
 
-	public class Tapestry2N : Item
-	{
-		private InternalItem m_Item;
+      public InternalItem(Tapestry1N item) : base(0xEAB)
+      {
+        Movable = true;
 
-		[Constructible]
-		public Tapestry2N() : base( 0xEAC )
-		{
-			Movable = false;
-
-			m_Item = new InternalItem( this );
-		}
-
-		public Tapestry2N( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X + 1, Y , Z );
-		}
+        m_Item = item;
+      }
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
-
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
-
-			m_Item?.Delete();
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-
-			writer.Write( m_Item );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private Tapestry2N m_Item;
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X - 1, Y, Z);
+      }
 
-			public InternalItem( Tapestry2N item ) : base( 0xEAD )
-			{
-				Movable = true;
-
-				m_Item = item;
-			}
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X - 1, Y , Z );
-			}
+        m_Item?.Delete();
+      }
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
-
-				m_Item?.Delete();
-			}
-
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
-
-				writer.Write( (int) 0 ); // version
-
-				writer.Write( m_Item );
-			}
-
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+        writer.Write(0); // version
 
-				int version = reader.ReadInt();
+        writer.Write(m_Item);
+      }
 
-				m_Item = reader.ReadItem() as Tapestry2N;
-			}
-		}
-	}
-	public class Tapestry2W : Item
-	{
-		private InternalItem m_Item;
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-		[Constructible]
-		public Tapestry2W() : base( 0xEAE )
-		{
-			Movable = false;
+        int version = reader.ReadInt();
 
-			m_Item = new InternalItem( this );
-		}
+        m_Item = reader.ReadItem() as Tapestry1N;
+      }
+    }
+  }
 
-		public Tapestry2W( Serial serial ) : base( serial )
-		{
-		}
+  public class Tapestry2N : Item
+  {
+    private InternalItem m_Item;
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X , Y - 1 , Z );
-		}
+    [Constructible]
+    public Tapestry2N() : base(0xEAC)
+    {
+      Movable = false;
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
-
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
-
-			m_Item?.Delete();
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-
-			writer.Write( m_Item );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      m_Item = new InternalItem(this);
+    }
 
-			int version = reader.ReadInt();
+    public Tapestry2N(Serial serial) : base(serial)
+    {
+    }
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private Tapestry2W m_Item;
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X + 1, Y, Z);
+    }
 
-			public InternalItem( Tapestry2W item ) : base( 0xEAF )
-			{
-				Movable = true;
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-				m_Item = item;
-			}
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+      m_Item?.Delete();
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X , Y + 1 , Z );
-			}
+      writer.Write(m_Item);
+    }
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
-
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
-
-				m_Item?.Delete();
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+      int version = reader.ReadInt();
 
-				writer.Write( (int) 0 ); // version
-
-				writer.Write( m_Item );
-			}
-
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-				int version = reader.ReadInt();
+    private class InternalItem : Item
+    {
+      private Tapestry2N m_Item;
 
-				m_Item = reader.ReadItem() as Tapestry2W;
-			}
-		}
-	}
+      public InternalItem(Tapestry2N item) : base(0xEAD)
+      {
+        Movable = true;
 
-	public class Tapestry3N : Item
-	{
-		private InternalItem m_Item;
+        m_Item = item;
+      }
 
-		[Constructible]
-		public Tapestry3N() : base( 0xFD6 )
-		{
-			Movable = false;
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-			m_Item = new InternalItem( this );
-		}
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X - 1, Y, Z);
+      }
 
-		public Tapestry3N( Serial serial ) : base( serial )
-		{
-		}
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X - 2, Y , Z );
-		}
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+        m_Item?.Delete();
+      }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-			m_Item?.Delete();
-		}
+        writer.Write(0); // version
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        writer.Write(m_Item);
+      }
 
-			writer.Write( (int) 0 ); // version
-
-			writer.Write( m_Item );
-		}
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        int version = reader.ReadInt();
 
-			int version = reader.ReadInt();
+        m_Item = reader.ReadItem() as Tapestry2N;
+      }
+    }
+  }
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private Tapestry3N m_Item;
+  public class Tapestry2W : Item
+  {
+    private InternalItem m_Item;
 
-			public InternalItem( Tapestry3N item ) : base( 0xFD5 )
-			{
-				Movable = true;
+    [Constructible]
+    public Tapestry2W() : base(0xEAE)
+    {
+      Movable = false;
 
-				m_Item = item;
-			}
+      m_Item = new InternalItem(this);
+    }
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+    public Tapestry2W(Serial serial) : base(serial)
+    {
+    }
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X + 2, Y , Z );
-			}
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X, Y - 1, Z);
+    }
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-				m_Item?.Delete();
-			}
+      m_Item?.Delete();
+    }
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-				writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-				writer.Write( m_Item );
-			}
+      writer.Write(m_Item);
+    }
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-				int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-				m_Item = reader.ReadItem() as Tapestry3N;
-			}
-		}
-	}
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-	public class Tapestry3W : Item
-	{
-		private InternalItem m_Item;
+    private class InternalItem : Item
+    {
+      private Tapestry2W m_Item;
 
-		[Constructible]
-		public Tapestry3W() : base( 0xFD7 )
-		{
-			Movable = false;
+      public InternalItem(Tapestry2W item) : base(0xEAF)
+      {
+        Movable = true;
 
-			m_Item = new InternalItem( this );
-		}
+        m_Item = item;
+      }
 
-		public Tapestry3W( Serial serial ) : base( serial )
-		{
-		}
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X , Y - 2 , Z );
-		}
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X, Y + 1, Z);
+      }
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-			m_Item?.Delete();
-		}
+        m_Item?.Delete();
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+        writer.Write(0); // version
 
-			writer.Write( m_Item );
-		}
+        writer.Write(m_Item);
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+        int version = reader.ReadInt();
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private Tapestry3W m_Item;
+        m_Item = reader.ReadItem() as Tapestry2W;
+      }
+    }
+  }
 
-			public InternalItem( Tapestry3W item ) : base( 0xFD8 )
-			{
-				Movable = true;
+  public class Tapestry3N : Item
+  {
+    private InternalItem m_Item;
 
-				m_Item = item;
-			}
+    [Constructible]
+    public Tapestry3N() : base(0xFD6)
+    {
+      Movable = false;
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+      m_Item = new InternalItem(this);
+    }
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X , Y + 2 , Z );
-			}
+    public Tapestry3N(Serial serial) : base(serial)
+    {
+    }
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X - 2, Y, Z);
+    }
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-				m_Item?.Delete();
-			}
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+      m_Item?.Delete();
+    }
 
-				writer.Write( (int) 0 ); // version
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-				writer.Write( m_Item );
-			}
+      writer.Write(0); // version
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+      writer.Write(m_Item);
+    }
 
-				int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-				m_Item = reader.ReadItem() as Tapestry3W;
-			}
-		}
-	}
+      int version = reader.ReadInt();
 
-	public class Tapestry4N : Item
-	{
-		private InternalItem m_Item;
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-		[Constructible]
-		public Tapestry4N() : base( 0xFDA )
-		{
-			Movable = false;
+    private class InternalItem : Item
+    {
+      private Tapestry3N m_Item;
 
-			m_Item = new InternalItem( this );
-		}
+      public InternalItem(Tapestry3N item) : base(0xFD5)
+      {
+        Movable = true;
 
-		public Tapestry4N( Serial serial ) : base( serial )
-		{
-		}
+        m_Item = item;
+      }
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X - 1, Y , Z );
-		}
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X + 2, Y, Z);
+      }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-			m_Item?.Delete();
-		}
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        m_Item?.Delete();
+      }
 
-			writer.Write( (int) 0 ); // version
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-			writer.Write( m_Item );
-		}
+        writer.Write(0); // version
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        writer.Write(m_Item);
+      }
 
-			int version = reader.ReadInt();
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private Tapestry4N m_Item;
+        int version = reader.ReadInt();
 
-			public InternalItem( Tapestry4N item ) : base( 0xFD9 )
-			{
-				Movable = true;
+        m_Item = reader.ReadItem() as Tapestry3N;
+      }
+    }
+  }
 
-				m_Item = item;
-			}
+  public class Tapestry3W : Item
+  {
+    private InternalItem m_Item;
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+    [Constructible]
+    public Tapestry3W() : base(0xFD7)
+    {
+      Movable = false;
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X + 1, Y , Z );
-			}
+      m_Item = new InternalItem(this);
+    }
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+    public Tapestry3W(Serial serial) : base(serial)
+    {
+    }
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X, Y - 2, Z);
+    }
 
-				m_Item?.Delete();
-			}
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-				writer.Write( (int) 0 ); // version
+      m_Item?.Delete();
+    }
 
-				writer.Write( m_Item );
-			}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+      writer.Write(0); // version
 
-				int version = reader.ReadInt();
+      writer.Write(m_Item);
+    }
 
-				m_Item = reader.ReadItem() as Tapestry4N;
-			}
-		}
-	}
-	public class Tapestry4W : Item
-	{
-		private InternalItem m_Item;
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		[Constructible]
-		public Tapestry4W() : base( 0xFDB )
-		{
-			Movable = false;
+      int version = reader.ReadInt();
 
-			m_Item = new InternalItem( this );
-		}
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-		public Tapestry4W( Serial serial ) : base( serial )
-		{
-		}
+    private class InternalItem : Item
+    {
+      private Tapestry3W m_Item;
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X , Y - 1, Z );
-		}
+      public InternalItem(Tapestry3W item) : base(0xFD8)
+      {
+        Movable = true;
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+        m_Item = item;
+      }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-			m_Item?.Delete();
-		}
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X, Y + 2, Z);
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-			writer.Write( (int) 0 ); // version
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-			writer.Write( m_Item );
-		}
+        m_Item?.Delete();
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-			int version = reader.ReadInt();
+        writer.Write(0); // version
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
+        writer.Write(m_Item);
+      }
 
-		private class InternalItem : Item
-		{
-			private Tapestry4W m_Item;
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-			public InternalItem( Tapestry4W item ) : base( 0xFDC )
-			{
-				Movable = true;
+        int version = reader.ReadInt();
 
-				m_Item = item;
-			}
+        m_Item = reader.ReadItem() as Tapestry3W;
+      }
+    }
+  }
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+  public class Tapestry4N : Item
+  {
+    private InternalItem m_Item;
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X , Y + 1, Z );
-			}
+    [Constructible]
+    public Tapestry4N() : base(0xFDA)
+    {
+      Movable = false;
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+      m_Item = new InternalItem(this);
+    }
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+    public Tapestry4N(Serial serial) : base(serial)
+    {
+    }
 
-				m_Item?.Delete();
-			}
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X - 1, Y, Z);
+    }
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-				writer.Write( (int) 0 ); // version
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-				writer.Write( m_Item );
-			}
+      m_Item?.Delete();
+    }
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-				int version = reader.ReadInt();
+      writer.Write(0); // version
 
-				m_Item = reader.ReadItem() as Tapestry4W;
-			}
-		}
-	}
+      writer.Write(m_Item);
+    }
 
-	public class Tapestry5N : Item
-	{
-		private InternalItem m_Item;
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		[Constructible]
-		public Tapestry5N() : base( 0xFDE )
-		{
-			Movable = false;
+      int version = reader.ReadInt();
 
-			m_Item = new InternalItem( this );
-		}
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-		public Tapestry5N( Serial serial ) : base( serial )
-		{
-		}
+    private class InternalItem : Item
+    {
+      private Tapestry4N m_Item;
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X - 1, Y , Z );
-		}
+      public InternalItem(Tapestry4N item) : base(0xFD9)
+      {
+        Movable = true;
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+        m_Item = item;
+      }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-			m_Item?.Delete();
-		}
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X + 1, Y, Z);
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-			writer.Write( (int) 0 ); // version
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-			writer.Write( m_Item );
-		}
+        m_Item?.Delete();
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-			int version = reader.ReadInt();
+        writer.Write(0); // version
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private Tapestry5N m_Item;
+        writer.Write(m_Item);
+      }
 
-			public InternalItem( Tapestry5N item ) : base( 0xFDD )
-			{
-				Movable = true;
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-				m_Item = item;
-			}
+        int version = reader.ReadInt();
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+        m_Item = reader.ReadItem() as Tapestry4N;
+      }
+    }
+  }
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X + 1, Y , Z );
-			}
+  public class Tapestry4W : Item
+  {
+    private InternalItem m_Item;
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+    [Constructible]
+    public Tapestry4W() : base(0xFDB)
+    {
+      Movable = false;
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+      m_Item = new InternalItem(this);
+    }
 
-				m_Item?.Delete();
-			}
+    public Tapestry4W(Serial serial) : base(serial)
+    {
+    }
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X, Y - 1, Z);
+    }
 
-				writer.Write( (int) 0 ); // version
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-				writer.Write( m_Item );
-			}
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+      m_Item?.Delete();
+    }
 
-				int version = reader.ReadInt();
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-				m_Item = reader.ReadItem() as Tapestry5N;
-			}
-		}
-	}
-	public class Tapestry5W : Item
-	{
-		private InternalItem m_Item;
+      writer.Write(0); // version
 
-		[Constructible]
-		public Tapestry5W() : base( 0xFDF )
-		{
-			Movable = false;
+      writer.Write(m_Item);
+    }
 
-			m_Item = new InternalItem( this );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public Tapestry5W( Serial serial ) : base( serial )
-		{
-		}
+      int version = reader.ReadInt();
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X , Y - 1, Z );
-		}
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+    private class InternalItem : Item
+    {
+      private Tapestry4W m_Item;
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+      public InternalItem(Tapestry4W item) : base(0xFDC)
+      {
+        Movable = true;
 
-			m_Item?.Delete();
-		}
+        m_Item = item;
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-			writer.Write( (int) 0 ); // version
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X, Y + 1, Z);
+      }
 
-			writer.Write( m_Item );
-		}
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-			int version = reader.ReadInt();
+        m_Item?.Delete();
+      }
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-		private class InternalItem : Item
-		{
-			private Tapestry5W m_Item;
+        writer.Write(0); // version
 
-			public InternalItem( Tapestry5W item ) : base( 0xFE0 )
-			{
-				Movable = true;
+        writer.Write(m_Item);
+      }
 
-				m_Item = item;
-			}
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+        int version = reader.ReadInt();
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X , Y + 1, Z );
-			}
+        m_Item = reader.ReadItem() as Tapestry4W;
+      }
+    }
+  }
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+  public class Tapestry5N : Item
+  {
+    private InternalItem m_Item;
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+    [Constructible]
+    public Tapestry5N() : base(0xFDE)
+    {
+      Movable = false;
 
-				m_Item?.Delete();
-			}
+      m_Item = new InternalItem(this);
+    }
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+    public Tapestry5N(Serial serial) : base(serial)
+    {
+    }
 
-				writer.Write( (int) 0 ); // version
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X - 1, Y, Z);
+    }
 
-				writer.Write( m_Item );
-			}
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-				int version = reader.ReadInt();
+      m_Item?.Delete();
+    }
 
-				m_Item = reader.ReadItem() as Tapestry5W;
-			}
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-	public class Tapestry6N : Item
-	{
-		private InternalItem m_Item;
+      writer.Write(0); // version
 
-		[Constructible]
-		public Tapestry6N() : base( 0xFE2 )
-		{
-			Movable = false;
+      writer.Write(m_Item);
+    }
 
-			m_Item = new InternalItem( this );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public Tapestry6N( Serial serial ) : base( serial )
-		{
-		}
+      int version = reader.ReadInt();
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X - 1, Y , Z );
-		}
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+    private class InternalItem : Item
+    {
+      private Tapestry5N m_Item;
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+      public InternalItem(Tapestry5N item) : base(0xFDD)
+      {
+        Movable = true;
 
-			m_Item?.Delete();
-		}
+        m_Item = item;
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-			writer.Write( (int) 0 ); // version
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X + 1, Y, Z);
+      }
 
-			writer.Write( m_Item );
-		}
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-			int version = reader.ReadInt();
+        m_Item?.Delete();
+      }
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private Tapestry6N m_Item;
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-			public InternalItem( Tapestry6N item ) : base( 0xFE1 )
-			{
-				Movable = true;
+        writer.Write(0); // version
 
-				m_Item = item;
-			}
+        writer.Write(m_Item);
+      }
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X + 1, Y , Z );
-			}
+        int version = reader.ReadInt();
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+        m_Item = reader.ReadItem() as Tapestry5N;
+      }
+    }
+  }
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+  public class Tapestry5W : Item
+  {
+    private InternalItem m_Item;
 
-				m_Item?.Delete();
-			}
+    [Constructible]
+    public Tapestry5W() : base(0xFDF)
+    {
+      Movable = false;
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+      m_Item = new InternalItem(this);
+    }
 
-				writer.Write( (int) 0 ); // version
+    public Tapestry5W(Serial serial) : base(serial)
+    {
+    }
 
-				writer.Write( m_Item );
-			}
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X, Y - 1, Z);
+    }
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-				int version = reader.ReadInt();
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-				m_Item = reader.ReadItem() as Tapestry6N;
-			}
-		}
-	}
-	public class Tapestry6W : Item
-	{
-		private InternalItem m_Item;
+      m_Item?.Delete();
+    }
 
-		[Constructible]
-		public Tapestry6W() : base( 0xFE3 )
-		{
-			Movable = false;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			m_Item = new InternalItem( this );
-		}
+      writer.Write(0); // version
 
-		public Tapestry6W( Serial serial ) : base( serial )
-		{
-		}
+      writer.Write(m_Item);
+    }
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X , Y - 1, Z );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+      int version = reader.ReadInt();
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-			m_Item?.Delete();
-		}
+    private class InternalItem : Item
+    {
+      private Tapestry5W m_Item;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      public InternalItem(Tapestry5W item) : base(0xFE0)
+      {
+        Movable = true;
 
-			writer.Write( (int) 0 ); // version
+        m_Item = item;
+      }
 
-			writer.Write( m_Item );
-		}
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X, Y + 1, Z);
+      }
 
-			int version = reader.ReadInt();
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-		private class InternalItem : Item
-		{
-			private Tapestry6W m_Item;
+        m_Item?.Delete();
+      }
 
-			public InternalItem( Tapestry6W item ) : base( 0xFE4 )
-			{
-				Movable = true;
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-				m_Item = item;
-			}
+        writer.Write(0); // version
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+        writer.Write(m_Item);
+      }
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X , Y + 1, Z );
-			}
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+        int version = reader.ReadInt();
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+        m_Item = reader.ReadItem() as Tapestry5W;
+      }
+    }
+  }
 
-				m_Item?.Delete();
-			}
+  public class Tapestry6N : Item
+  {
+    private InternalItem m_Item;
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+    [Constructible]
+    public Tapestry6N() : base(0xFE2)
+    {
+      Movable = false;
 
-				writer.Write( (int) 0 ); // version
+      m_Item = new InternalItem(this);
+    }
 
-				writer.Write( m_Item );
-			}
+    public Tapestry6N(Serial serial) : base(serial)
+    {
+    }
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X - 1, Y, Z);
+    }
 
-				int version = reader.ReadInt();
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-				m_Item = reader.ReadItem() as Tapestry6W;
-			}
-		}
-	}
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
+
+      m_Item?.Delete();
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
+
+      writer.Write(m_Item);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+
+      m_Item = reader.ReadItem() as InternalItem;
+    }
+
+    private class InternalItem : Item
+    {
+      private Tapestry6N m_Item;
+
+      public InternalItem(Tapestry6N item) : base(0xFE1)
+      {
+        Movable = true;
+
+        m_Item = item;
+      }
+
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
+
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X + 1, Y, Z);
+      }
+
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
+
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
+
+        m_Item?.Delete();
+      }
+
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+
+        writer.Write(m_Item);
+      }
+
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
+
+        int version = reader.ReadInt();
+
+        m_Item = reader.ReadItem() as Tapestry6N;
+      }
+    }
+  }
+
+  public class Tapestry6W : Item
+  {
+    private InternalItem m_Item;
+
+    [Constructible]
+    public Tapestry6W() : base(0xFE3)
+    {
+      Movable = false;
+
+      m_Item = new InternalItem(this);
+    }
+
+    public Tapestry6W(Serial serial) : base(serial)
+    {
+    }
+
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X, Y - 1, Z);
+    }
+
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
+
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
+
+      m_Item?.Delete();
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
+
+      writer.Write(m_Item);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+
+      m_Item = reader.ReadItem() as InternalItem;
+    }
+
+    private class InternalItem : Item
+    {
+      private Tapestry6W m_Item;
+
+      public InternalItem(Tapestry6W item) : base(0xFE4)
+      {
+        Movable = true;
+
+        m_Item = item;
+      }
+
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
+
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X, Y + 1, Z);
+      }
+
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
+
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
+
+        m_Item?.Delete();
+      }
+
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+
+        writer.Write(m_Item);
+      }
+
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
+
+        int version = reader.ReadInt();
+
+        m_Item = reader.ReadItem() as Tapestry6W;
+      }
+    }
+  }
 }

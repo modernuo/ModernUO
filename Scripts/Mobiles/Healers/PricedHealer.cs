@@ -2,76 +2,76 @@ using Server.Gumps;
 
 namespace Server.Mobiles
 {
-	public class PricedHealer : BaseHealer
-	{
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Price { get; set; }
+  public class PricedHealer : BaseHealer
+  {
+    [Constructible]
+    public PricedHealer() : this(5000)
+    {
+    }
 
-		[Constructible]
-		public PricedHealer() : this( 5000 )
-		{
-		}
+    [Constructible]
+    public PricedHealer(int price)
+    {
+      Price = price;
 
-		[Constructible]
-		public PricedHealer( int price )
-		{
-			Price = price;
+      if (!Core.AOS)
+        NameHue = 0x35;
+    }
 
-			if ( !Core.AOS )
-				NameHue = 0x35;
-		}
+    public PricedHealer(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool IsInvulnerable => true;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Price{ get; set; }
 
-		public override void InitSBInfo()
-		{
-		}
+    public override bool IsInvulnerable => true;
 
-		public override bool HealsYoungPlayers => false;
+    public override bool HealsYoungPlayers => false;
 
-		public override void OfferResurrection( Mobile m )
-		{
-			Direction = GetDirectionTo( m );
+    public override void InitSBInfo()
+    {
+    }
 
-			m.PlaySound( 0x214 );
-			m.FixedEffect( 0x376A, 10, 16 );
+    public override void OfferResurrection(Mobile m)
+    {
+      Direction = GetDirectionTo(m);
 
-			m.CloseGump( typeof( ResurrectGump ) );
-			m.SendGump( new ResurrectGump( m, this, Price ) );
-		}
+      m.PlaySound(0x214);
+      m.FixedEffect(0x376A, 10, 16);
 
-		public override bool CheckResurrect( Mobile m )
-		{
-			return true;
-		}
+      m.CloseGump(typeof(ResurrectGump));
+      m.SendGump(new ResurrectGump(m, this, Price));
+    }
 
-		public PricedHealer( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CheckResurrect(Mobile m)
+    {
+      return true;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			writer.Write( (int) Price );
-		}
+      writer.Write(Price);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Price = reader.ReadInt();
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          Price = reader.ReadInt();
+          break;
+        }
+      }
+    }
+  }
 }

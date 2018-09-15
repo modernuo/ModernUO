@@ -1,204 +1,198 @@
 using System;
 using System.Collections;
-using Server.Network;
 using Server.Mobiles;
+using Server.Network;
 
 namespace Server.Items
 {
-	public enum CampfireStatus
-	{
-		Burning,
-		Extinguishing,
-		Off
-	}
+  public enum CampfireStatus
+  {
+    Burning,
+    Extinguishing,
+    Off
+  }
 
-	public class Campfire : Item
-	{
-		public static readonly int SecureRange = 7;
+  public class Campfire : Item
+  {
+    public static readonly int SecureRange = 7;
 
-		private static readonly Hashtable m_Table = new Hashtable();
+    private static readonly Hashtable m_Table = new Hashtable();
 
-		public static CampfireEntry GetEntry( Mobile player )
-		{
-			return (CampfireEntry) m_Table[player];
-		}
+    private ArrayList m_Entries;
 
-		public static void RemoveEntry( CampfireEntry entry )
-		{
-			m_Table.Remove( entry.Player );
-			entry.Fire.m_Entries.Remove( entry );
-		}
+    private Timer m_Timer;
 
-		private Timer m_Timer;
+    public Campfire() : base(0xDE3)
+    {
+      Movable = false;
+      Light = LightType.Circle300;
 
-		private ArrayList m_Entries;
+      m_Entries = new ArrayList();
 
-		public Campfire() : base( 0xDE3 )
-		{
-			Movable = false;
-			Light = LightType.Circle300;
+      Created = DateTime.UtcNow;
+      m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick);
+    }
 
-			m_Entries = new ArrayList();
+    public Campfire(Serial serial) : base(serial)
+    {
+    }
 
-			Created = DateTime.UtcNow;
-			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ), OnTick );
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public DateTime Created{ get; }
 
-		public Campfire( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public CampfireStatus Status
+    {
+      get
+      {
+        switch (ItemID)
+        {
+          case 0xDE3:
+            return CampfireStatus.Burning;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime Created { get; }
+          case 0xDE9:
+            return CampfireStatus.Extinguishing;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public CampfireStatus Status
-		{
-			get
-			{
-				switch ( ItemID )
-				{
-					case 0xDE3:
-						return CampfireStatus.Burning;
+          default:
+            return CampfireStatus.Off;
+        }
+      }
+      set
+      {
+        if (Status == value)
+          return;
 
-					case 0xDE9:
-						return CampfireStatus.Extinguishing;
+        switch (value)
+        {
+          case CampfireStatus.Burning:
+            ItemID = 0xDE3;
+            Light = LightType.Circle300;
+            break;
 
-					default:
-						return CampfireStatus.Off;
-				}
-			}
-			set
-			{
-				if ( Status == value )
-					return;
+          case CampfireStatus.Extinguishing:
+            ItemID = 0xDE9;
+            Light = LightType.Circle150;
+            break;
 
-				switch ( value )
-				{
-					case CampfireStatus.Burning:
-						ItemID = 0xDE3;
-						Light = LightType.Circle300;
-						break;
+          default:
+            ItemID = 0xDEA;
+            Light = LightType.ArchedWindowEast;
+            ClearEntries();
+            break;
+        }
+      }
+    }
 
-					case CampfireStatus.Extinguishing:
-						ItemID = 0xDE9;
-						Light = LightType.Circle150;
-						break;
+    public static CampfireEntry GetEntry(Mobile player)
+    {
+      return (CampfireEntry)m_Table[player];
+    }
 
-					default:
-						ItemID = 0xDEA;
-						Light = LightType.ArchedWindowEast;
-						ClearEntries();
-						break;
-				}
-			}
-		}
+    public static void RemoveEntry(CampfireEntry entry)
+    {
+      m_Table.Remove(entry.Player);
+      entry.Fire.m_Entries.Remove(entry);
+    }
 
-		private void OnTick()
-		{
-			DateTime now = DateTime.UtcNow;
-			TimeSpan age = now - Created;
+    private void OnTick()
+    {
+      DateTime now = DateTime.UtcNow;
+      TimeSpan age = now - Created;
 
-			if ( age >= TimeSpan.FromSeconds( 100.0 ) )
-				Delete();
-			else if ( age >= TimeSpan.FromSeconds( 90.0 ) )
-				Status = CampfireStatus.Off;
-			else if ( age >= TimeSpan.FromSeconds( 60.0 ) )
-				Status = CampfireStatus.Extinguishing;
+      if (age >= TimeSpan.FromSeconds(100.0))
+        Delete();
+      else if (age >= TimeSpan.FromSeconds(90.0))
+        Status = CampfireStatus.Off;
+      else if (age >= TimeSpan.FromSeconds(60.0))
+        Status = CampfireStatus.Extinguishing;
 
-			if ( Status == CampfireStatus.Off || Deleted )
-				return;
+      if (Status == CampfireStatus.Off || Deleted)
+        return;
 
-			foreach ( CampfireEntry entry in new ArrayList( m_Entries ) )
-			{
-				if ( !entry.Valid || entry.Player.NetState == null )
-				{
-					RemoveEntry( entry );
-				}
-				else if ( !entry.Safe && now - entry.Start >= TimeSpan.FromSeconds( 30.0 ) )
-				{
-					entry.Safe = true;
-					entry.Player.SendLocalizedMessage( 500621 ); // The camp is now secure.
-				}
-			}
+      foreach (CampfireEntry entry in new ArrayList(m_Entries))
+        if (!entry.Valid || entry.Player.NetState == null)
+        {
+          RemoveEntry(entry);
+        }
+        else if (!entry.Safe && now - entry.Start >= TimeSpan.FromSeconds(30.0))
+        {
+          entry.Safe = true;
+          entry.Player.SendLocalizedMessage(500621); // The camp is now secure.
+        }
 
-			IPooledEnumerable<NetState> eable = GetClientsInRange( SecureRange );
+      IPooledEnumerable<NetState> eable = GetClientsInRange(SecureRange);
 
-			foreach ( NetState state in eable )
-			{
-				if ( state.Mobile is PlayerMobile pm && GetEntry( pm ) == null )
-				{
-					CampfireEntry entry = new CampfireEntry( pm, this );
+      foreach (NetState state in eable)
+        if (state.Mobile is PlayerMobile pm && GetEntry(pm) == null)
+        {
+          CampfireEntry entry = new CampfireEntry(pm, this);
 
-					m_Table[pm] = entry;
-					m_Entries.Add( entry );
+          m_Table[pm] = entry;
+          m_Entries.Add(entry);
 
-					pm.SendLocalizedMessage( 500620 ); // You feel it would take a few moments to secure your camp.
-				}
-			}
+          pm.SendLocalizedMessage(500620); // You feel it would take a few moments to secure your camp.
+        }
 
-			eable.Free();
-		}
+      eable.Free();
+    }
 
-		private void ClearEntries()
-		{
-			if ( m_Entries == null )
-				return;
+    private void ClearEntries()
+    {
+      if (m_Entries == null)
+        return;
 
-			foreach ( CampfireEntry entry in new ArrayList( m_Entries ) )
-			{
-				RemoveEntry( entry );
-			}
-		}
+      foreach (CampfireEntry entry in new ArrayList(m_Entries)) RemoveEntry(entry);
+    }
 
-		public override void OnAfterDelete()
-		{
-			m_Timer?.Stop();
+    public override void OnAfterDelete()
+    {
+      m_Timer?.Stop();
 
-			ClearEntries();
-		}
+      ClearEntries();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			Delete();
-		}
-	}
+      Delete();
+    }
+  }
 
-	public class CampfireEntry
-	{
-		private bool m_Safe;
+  public class CampfireEntry
+  {
+    private bool m_Safe;
 
-		public PlayerMobile Player { get; }
+    public CampfireEntry(PlayerMobile player, Campfire fire)
+    {
+      Player = player;
+      Fire = fire;
+      Start = DateTime.UtcNow;
+      m_Safe = false;
+    }
 
-		public Campfire Fire { get; }
+    public PlayerMobile Player{ get; }
 
-		public DateTime Start { get; }
+    public Campfire Fire{ get; }
 
-		public bool Valid => !Fire.Deleted && Fire.Status != CampfireStatus.Off && Player.Map == Fire.Map && Player.InRange( Fire, Campfire.SecureRange );
+    public DateTime Start{ get; }
 
-		public bool Safe
-		{
-			get => Valid && m_Safe;
-			set => m_Safe = value;
-		}
+    public bool Valid => !Fire.Deleted && Fire.Status != CampfireStatus.Off && Player.Map == Fire.Map &&
+                         Player.InRange(Fire, Campfire.SecureRange);
 
-		public CampfireEntry( PlayerMobile player, Campfire fire )
-		{
-			Player = player;
-			Fire = fire;
-			Start = DateTime.UtcNow;
-			m_Safe = false;
-		}
-	}
+    public bool Safe
+    {
+      get => Valid && m_Safe;
+      set => m_Safe = value;
+    }
+  }
 }

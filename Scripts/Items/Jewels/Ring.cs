@@ -1,83 +1,83 @@
 namespace Server.Items
 {
-	public abstract class BaseRing : BaseJewel
-	{
-		public override int BaseGemTypeNumber => 1044176; // star sapphire ring
+  public abstract class BaseRing : BaseJewel
+  {
+    public BaseRing(int itemID) : base(itemID, Layer.Ring)
+    {
+    }
 
-		public BaseRing( int itemID ) : base( itemID, Layer.Ring )
-		{
-		}
+    public BaseRing(Serial serial) : base(serial)
+    {
+    }
 
-		public BaseRing( Serial serial ) : base( serial )
-		{
-		}
+    public override int BaseGemTypeNumber => 1044176; // star sapphire ring
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class GoldRing : BaseRing
-	{
-		[Constructible]
-		public GoldRing() : base( 0x108a )
-		{
-			Weight = 0.1;
-		}
+  public class GoldRing : BaseRing
+  {
+    [Constructible]
+    public GoldRing() : base(0x108a)
+    {
+      Weight = 0.1;
+    }
 
-		public GoldRing( Serial serial ) : base( serial )
-		{
-		}
+    public GoldRing(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class SilverRing : BaseRing
-	{
-		[Constructible]
-		public SilverRing() : base( 0x1F09 )
-		{
-			Weight = 0.1;
-		}
+  public class SilverRing : BaseRing
+  {
+    [Constructible]
+    public SilverRing() : base(0x1F09)
+    {
+      Weight = 0.1;
+    }
 
-		public SilverRing( Serial serial ) : base( serial )
-		{
-		}
+    public SilverRing(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

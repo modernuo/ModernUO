@@ -2,73 +2,73 @@ using Server.Guilds;
 
 namespace Server.Items
 {
-	public class ChaosShield : BaseShield
-	{
-		public override int BasePhysicalResistance => 1;
-		public override int BaseFireResistance => 0;
-		public override int BaseColdResistance => 0;
-		public override int BasePoisonResistance => 0;
-		public override int BaseEnergyResistance => 0;
+  public class ChaosShield : BaseShield
+  {
+    [Constructible]
+    public ChaosShield() : base(0x1BC3)
+    {
+      if (!Core.AOS)
+        LootType = LootType.Newbied;
 
-		public override int InitMinHits => 100;
-		public override int InitMaxHits => 125;
+      Weight = 5.0;
+    }
 
-		public override int AosStrReq => 95;
+    public ChaosShield(Serial serial) : base(serial)
+    {
+    }
 
-		public override int ArmorBase => 32;
+    public override int BasePhysicalResistance => 1;
+    public override int BaseFireResistance => 0;
+    public override int BaseColdResistance => 0;
+    public override int BasePoisonResistance => 0;
+    public override int BaseEnergyResistance => 0;
 
-		[Constructible]
-		public ChaosShield() : base( 0x1BC3 )
-		{
-			if ( !Core.AOS )
-				LootType = LootType.Newbied;
+    public override int InitMinHits => 100;
+    public override int InitMaxHits => 125;
 
-			Weight = 5.0;
-		}
+    public override int AosStrReq => 95;
 
-		public ChaosShield( Serial serial ) : base(serial)
-		{
-		}
+    public override int ArmorBase => 32;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 );//version
-		}
+      writer.Write(0); //version
+    }
 
-		public override bool OnEquip( Mobile from )
-		{
-			return Validate( from ) && base.OnEquip( from );
-		}
+    public override bool OnEquip(Mobile from)
+    {
+      return Validate(from) && base.OnEquip(from);
+    }
 
-		public override void OnSingleClick( Mobile from )
-		{
-			if ( Validate( Parent as Mobile ) )
-				base.OnSingleClick( from );
-		}
+    public override void OnSingleClick(Mobile from)
+    {
+      if (Validate(Parent as Mobile))
+        base.OnSingleClick(from);
+    }
 
-		public virtual bool Validate( Mobile m )
-		{
-			if ( m == null || !m.Player || m.AccessLevel != AccessLevel.Player || Core.AOS )
-				return true;
+    public virtual bool Validate(Mobile m)
+    {
+      if (m == null || !m.Player || m.AccessLevel != AccessLevel.Player || Core.AOS)
+        return true;
 
-			if ( !(m.Guild is Guild g) || g.Type != GuildType.Chaos )
-			{
-				m.FixedEffect( 0x3728, 10, 13 );
-				Delete();
+      if (!(m.Guild is Guild g) || g.Type != GuildType.Chaos)
+      {
+        m.FixedEffect(0x3728, 10, 13);
+        Delete();
 
-				return false;
-			}
+        return false;
+      }
 
-			return true;
-		}
-	}
+      return true;
+    }
+  }
 }

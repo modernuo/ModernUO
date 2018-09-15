@@ -1,32 +1,32 @@
 namespace Server.Items
 {
-	public class ChairInAGhostCostume : Item
-	{
-		public override double DefaultWeight => 5;
+  public class ChairInAGhostCostume : Item
+  {
+    [Constructible]
+    public ChairInAGhostCostume()
+      : base(0x3F26)
+    {
+    }
 
-		[Constructible]
-		public ChairInAGhostCostume()
-			: base( 0x3F26 )
-		{
-		}
+    public ChairInAGhostCostume(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public ChairInAGhostCostume( Serial serial )
-			: base( serial )
-		{
-		}
+    public override double DefaultWeight => 5;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( ( int )0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

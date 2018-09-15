@@ -2,48 +2,50 @@ using System;
 
 namespace Server.Engines.Reports
 {
-	public class Snapshot : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "ss", Construct );
+  public class Snapshot : PersistableObject
+  {
+    public Snapshot()
+    {
+      Children = new ObjectCollection();
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new Snapshot();
-		}
+    public DateTime TimeStamp{ get; set; }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public ObjectCollection Children{ get; set; }
 
-		public DateTime TimeStamp { get; set; }
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetDateTime("t", TimeStamp);
+    }
 
-		public ObjectCollection Children { get; set; }
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      TimeStamp = ip.GetDateTime("t");
+    }
 
-		public Snapshot()
-		{
-			Children = new ObjectCollection();
-		}
+    public override void SerializeChildren(PersistanceWriter op)
+    {
+      for (int i = 0; i < Children.Count; ++i)
+        Children[i].Serialize(op);
+    }
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetDateTime( "t", TimeStamp );
-		}
+    public override void DeserializeChildren(PersistanceReader ip)
+    {
+      while (ip.HasChild)
+        Children.Add(ip.GetChild());
+    }
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			TimeStamp = ip.GetDateTime( "t" );
-		}
+    #region Type Identification
 
-		public override void SerializeChildren( PersistanceWriter op )
-		{
-			for ( int i = 0; i < Children.Count; ++i )
-				Children[i].Serialize( op );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("ss", Construct);
 
-		public override void DeserializeChildren( PersistanceReader ip )
-		{
-			while ( ip.HasChild )
-				Children.Add( ip.GetChild() );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new Snapshot();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

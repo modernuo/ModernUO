@@ -2,38 +2,38 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Haven
 {
-	public class SchmendrickScrollOfPower : QuestItem
-	{
-		public override int LabelNumber => 1049118; // a scroll with ancient markings
+  public class SchmendrickScrollOfPower : QuestItem
+  {
+    public SchmendrickScrollOfPower() : base(0xE34)
+    {
+      Weight = 1.0;
+      Hue = 0x34D;
+    }
 
-		public SchmendrickScrollOfPower() : base( 0xE34 )
-		{
-			Weight = 1.0;
-			Hue = 0x34D;
-		}
+    public SchmendrickScrollOfPower(Serial serial) : base(serial)
+    {
+    }
 
-		public SchmendrickScrollOfPower( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1049118; // a scroll with ancient markings
 
-		public override bool CanDrop( PlayerMobile player )
-		{
-			return !(player.Quest is UzeraanTurmoilQuest qs &&
-			         qs.IsObjectiveInProgress(typeof(ReturnScrollOfPowerObjective)));
-		}
+    public override bool CanDrop(PlayerMobile player)
+    {
+      return !(player.Quest is UzeraanTurmoilQuest qs &&
+               qs.IsObjectiveInProgress(typeof(ReturnScrollOfPowerObjective)));
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

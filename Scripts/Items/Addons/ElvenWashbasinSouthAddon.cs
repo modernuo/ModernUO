@@ -1,61 +1,61 @@
 namespace Server.Items
 {
-	public class ElvenWashBasinSouthAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new ElvenWashBasinSouthDeed();
+  public class ElvenWashBasinSouthAddon : BaseAddon
+  {
+    [Constructible]
+    public ElvenWashBasinSouthAddon()
+    {
+      AddComponent(new AddonComponent(0x30E1), 0, 0, 0);
+      AddComponent(new AddonComponent(0x30E2), 1, 0, 0);
+    }
 
-		[Constructible]
-		public ElvenWashBasinSouthAddon()
-		{
-			AddComponent( new AddonComponent( 0x30E1 ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x30E2 ), 1, 0, 0 );
-		}
+    public ElvenWashBasinSouthAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public ElvenWashBasinSouthAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new ElvenWashBasinSouthDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 
-	public class ElvenWashBasinSouthDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new ElvenWashBasinSouthAddon();
-		public override int LabelNumber => 1072865; // elven wash basin (south)
+  public class ElvenWashBasinSouthDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public ElvenWashBasinSouthDeed()
+    {
+    }
 
-		[Constructible]
-		public ElvenWashBasinSouthDeed()
-		{
-		}
+    public ElvenWashBasinSouthDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public ElvenWashBasinSouthDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new ElvenWashBasinSouthAddon();
+    public override int LabelNumber => 1072865; // elven wash basin (south)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

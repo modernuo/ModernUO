@@ -1,177 +1,178 @@
 using System;
+using Server.Spells;
 
 namespace Server.Items
 {
-	public class FlameSpurtTrap : BaseTrap
-	{
-		private Item m_Spurt;
-		private Timer m_Timer;
+  public class FlameSpurtTrap : BaseTrap
+  {
+    private Item m_Spurt;
+    private Timer m_Timer;
 
-		[Constructible]
-		public FlameSpurtTrap() : base( 0x1B71 )
-		{
-			Visible = false;
-		}
+    [Constructible]
+    public FlameSpurtTrap() : base(0x1B71)
+    {
+      Visible = false;
+    }
 
-		public virtual void StartTimer()
-		{
-			if ( m_Timer == null )
-				m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ), Refresh );
-		}
+    public FlameSpurtTrap(Serial serial) : base(serial)
+    {
+    }
 
-		public virtual void StopTimer()
-		{
-			m_Timer?.Stop();
+    public virtual void StartTimer()
+    {
+      if (m_Timer == null)
+        m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), Refresh);
+    }
 
-			m_Timer = null;
-		}
+    public virtual void StopTimer()
+    {
+      m_Timer?.Stop();
 
-		public virtual void CheckTimer()
-		{
-			Map map = Map;
+      m_Timer = null;
+    }
 
-			if ( map != null && map.GetSector( GetWorldLocation() ).Active )
-				StartTimer();
-			else
-				StopTimer();
-		}
+    public virtual void CheckTimer()
+    {
+      Map map = Map;
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			base.OnLocationChange( oldLocation );
+      if (map != null && map.GetSector(GetWorldLocation()).Active)
+        StartTimer();
+      else
+        StopTimer();
+    }
 
-			CheckTimer();
-		}
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      base.OnLocationChange(oldLocation);
 
-		public override void OnMapChange()
-		{
-			base.OnMapChange();
+      CheckTimer();
+    }
 
-			CheckTimer();
-		}
+    public override void OnMapChange()
+    {
+      base.OnMapChange();
 
-		public override void OnSectorActivate()
-		{
-			base.OnSectorActivate();
+      CheckTimer();
+    }
 
-			StartTimer();
-		}
+    public override void OnSectorActivate()
+    {
+      base.OnSectorActivate();
 
-		public override void OnSectorDeactivate()
-		{
-			base.OnSectorDeactivate();
+      StartTimer();
+    }
 
-			StopTimer();
-		}
+    public override void OnSectorDeactivate()
+    {
+      base.OnSectorDeactivate();
 
-		public override void OnDelete()
-		{
-			base.OnDelete();
+      StopTimer();
+    }
 
-			m_Spurt?.Delete();
-		}
+    public override void OnDelete()
+    {
+      base.OnDelete();
 
-		public virtual void Refresh()
-		{
-			if ( Deleted )
-				return;
+      m_Spurt?.Delete();
+    }
 
-			bool foundPlayer = false;
+    public virtual void Refresh()
+    {
+      if (Deleted)
+        return;
 
-			foreach ( Mobile mob in GetMobilesInRange( 3 ) )
-			{
-				if ( !mob.Player || !mob.Alive || mob.AccessLevel > AccessLevel.Player )
-					continue;
+      bool foundPlayer = false;
 
-				if ( ( (Z + 8) >= mob.Z && (mob.Z + 16) > Z ) )
-				{
-					foundPlayer = true;
-					break;
-				}
-			}
+      foreach (Mobile mob in GetMobilesInRange(3))
+      {
+        if (!mob.Player || !mob.Alive || mob.AccessLevel > AccessLevel.Player)
+          continue;
 
-			if ( !foundPlayer )
-			{
-				m_Spurt?.Delete();
+        if (Z + 8 >= mob.Z && mob.Z + 16 > Z)
+        {
+          foundPlayer = true;
+          break;
+        }
+      }
 
-				m_Spurt = null;
-			}
-			else if ( m_Spurt == null || m_Spurt.Deleted )
-			{
-				m_Spurt = new Static( 0x3709 );
-				m_Spurt.MoveToWorld( Location, Map );
+      if (!foundPlayer)
+      {
+        m_Spurt?.Delete();
 
-				Effects.PlaySound( GetWorldLocation(), Map, 0x309 );
-			}
-		}
+        m_Spurt = null;
+      }
+      else if (m_Spurt == null || m_Spurt.Deleted)
+      {
+        m_Spurt = new Static(0x3709);
+        m_Spurt.MoveToWorld(Location, Map);
 
-		public override bool OnMoveOver( Mobile m )
-		{
-			if ( m.AccessLevel > AccessLevel.Player )
-				return true;
+        Effects.PlaySound(GetWorldLocation(), Map, 0x309);
+      }
+    }
 
-			if ( m.Player && m.Alive )
-			{
-				CheckTimer();
+    public override bool OnMoveOver(Mobile m)
+    {
+      if (m.AccessLevel > AccessLevel.Player)
+        return true;
 
-				Spells.SpellHelper.Damage( TimeSpan.FromTicks( 1 ), m, m, Utility.RandomMinMax( 1, 30 ) );
-				m.PlaySound( m.Female ? 0x327 : 0x437 );
-			}
+      if (m.Player && m.Alive)
+      {
+        CheckTimer();
 
-			return false;
-		}
+        SpellHelper.Damage(TimeSpan.FromTicks(1), m, m, Utility.RandomMinMax(1, 30));
+        m.PlaySound(m.Female ? 0x327 : 0x437);
+      }
 
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			base.OnMovement( m, oldLocation );
+      return false;
+    }
 
-			if ( m.Location == oldLocation || !m.Player || !m.Alive || m.AccessLevel > AccessLevel.Player )
-				return;
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      base.OnMovement(m, oldLocation);
 
-			if ( CheckRange( m.Location, oldLocation, 1 ) )
-			{
-				CheckTimer();
+      if (m.Location == oldLocation || !m.Player || !m.Alive || m.AccessLevel > AccessLevel.Player)
+        return;
 
-				Spells.SpellHelper.Damage( TimeSpan.FromTicks( 1 ), m, m, Utility.RandomMinMax( 1, 10 ) );
-				m.PlaySound( m.Female ? 0x327 : 0x437 );
+      if (CheckRange(m.Location, oldLocation, 1))
+      {
+        CheckTimer();
 
-				if ( m.Body.IsHuman )
-					m.Animate( 20, 1, 1, true, false, 0 );
-			}
-		}
+        SpellHelper.Damage(TimeSpan.FromTicks(1), m, m, Utility.RandomMinMax(1, 10));
+        m.PlaySound(m.Female ? 0x327 : 0x437);
 
-		public FlameSpurtTrap( Serial serial ) : base( serial )
-		{
-		}
+        if (m.Body.IsHuman)
+          m.Animate(20, 1, 1, true, false, 0);
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			writer.Write( (Item) m_Spurt );
-		}
+      writer.Write(m_Spurt);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Item item = reader.ReadItem();
+      switch (version)
+      {
+        case 0:
+        {
+          Item item = reader.ReadItem();
 
-					item?.Delete();
+          item?.Delete();
 
-					CheckTimer();
+          CheckTimer();
 
-					break;
-				}
-			}
-		}
-	}
+          break;
+        }
+      }
+    }
+  }
 }

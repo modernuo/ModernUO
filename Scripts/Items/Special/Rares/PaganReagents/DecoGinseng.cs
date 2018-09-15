@@ -1,31 +1,30 @@
 namespace Server.Items
 {
-	public class DecoGinseng : Item
-	{
+  public class DecoGinseng : Item
+  {
+    [Constructible]
+    public DecoGinseng() : base(0x18E9)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public DecoGinseng() : base( 0x18E9 )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public DecoGinseng(Serial serial) : base(serial)
+    {
+    }
 
-		public DecoGinseng( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

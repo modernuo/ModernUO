@@ -2,34 +2,34 @@ using Server.Spells.Fourth;
 
 namespace Server.Items
 {
-	public class LightningWand : BaseWand
-	{
-		[Constructible]
-		public LightningWand() : base( WandEffect.Lightning, 5, Core.ML ? 109 : 20 )
-		{
-		}
+  public class LightningWand : BaseWand
+  {
+    [Constructible]
+    public LightningWand() : base(WandEffect.Lightning, 5, Core.ML ? 109 : 20)
+    {
+    }
 
-		public LightningWand( Serial serial ) : base( serial )
-		{
-		}
+    public LightningWand(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void OnWandUse( Mobile from )
-		{
-			Cast( new LightningSpell( from, this ) );
-		}
-	}
+    public override void OnWandUse(Mobile from)
+    {
+      Cast(new LightningSpell(from, this));
+    }
+  }
 }

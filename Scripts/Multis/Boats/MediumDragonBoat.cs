@@ -1,99 +1,99 @@
 namespace Server.Multis
 {
-	public class MediumDragonBoat : BaseBoat
-	{
-		public override int NorthID => 0xC;
-		public override int  EastID => 0xD;
-		public override int SouthID => 0xE;
-		public override int  WestID => 0xF;
+  public class MediumDragonBoat : BaseBoat
+  {
+    [Constructible]
+    public MediumDragonBoat()
+    {
+    }
 
-		public override int HoldDistance => 4;
-		public override int TillerManDistance => -5;
+    public MediumDragonBoat(Serial serial) : base(serial)
+    {
+    }
 
-		public override Point2D StarboardOffset => new Point2D(  2, 0 );
-		public override Point2D      PortOffset => new Point2D( -2, 0 );
+    public override int NorthID => 0xC;
+    public override int EastID => 0xD;
+    public override int SouthID => 0xE;
+    public override int WestID => 0xF;
 
-		public override Point3D MarkOffset => new Point3D( 0, 1, 3 );
+    public override int HoldDistance => 4;
+    public override int TillerManDistance => -5;
 
-		public override BaseDockedBoat DockedBoat => new MediumDockedDragonBoat( this );
+    public override Point2D StarboardOffset => new Point2D(2, 0);
+    public override Point2D PortOffset => new Point2D(-2, 0);
 
-		[Constructible]
-		public MediumDragonBoat()
-		{
-		}
+    public override Point3D MarkOffset => new Point3D(0, 1, 3);
 
-		public MediumDragonBoat( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseDockedBoat DockedBoat => new MediumDockedDragonBoat(this);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 );
-		}
-	}
+      writer.Write(0);
+    }
+  }
 
-	public class MediumDragonBoatDeed : BaseBoatDeed
-	{
-		public override int LabelNumber => 1041208; // medium dragon ship deed
-		public override BaseBoat Boat => new MediumDragonBoat();
+  public class MediumDragonBoatDeed : BaseBoatDeed
+  {
+    [Constructible]
+    public MediumDragonBoatDeed() : base(0xC, Point3D.Zero)
+    {
+    }
 
-		[Constructible]
-		public MediumDragonBoatDeed() : base( 0xC, Point3D.Zero )
-		{
-		}
+    public MediumDragonBoatDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public MediumDragonBoatDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1041208; // medium dragon ship deed
+    public override BaseBoat Boat => new MediumDragonBoat();
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 );
-		}
-	}
+      writer.Write(0);
+    }
+  }
 
-	public class MediumDockedDragonBoat : BaseDockedBoat
-	{
-		public override BaseBoat Boat => new MediumDragonBoat();
+  public class MediumDockedDragonBoat : BaseDockedBoat
+  {
+    public MediumDockedDragonBoat(BaseBoat boat) : base(0xC, Point3D.Zero, boat)
+    {
+    }
 
-		public MediumDockedDragonBoat( BaseBoat boat ) : base( 0xC, Point3D.Zero, boat )
-		{
-		}
+    public MediumDockedDragonBoat(Serial serial) : base(serial)
+    {
+    }
 
-		public MediumDockedDragonBoat( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseBoat Boat => new MediumDragonBoat();
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 );
-		}
-	}
+      writer.Write(0);
+    }
+  }
 }

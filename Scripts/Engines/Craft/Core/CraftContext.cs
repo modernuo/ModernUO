@@ -2,54 +2,54 @@ using System.Collections.Generic;
 
 namespace Server.Engines.Craft
 {
-	public enum CraftMarkOption
-	{
-		MarkItem,
-		DoNotMark,
-		PromptForMark
-	}
+  public enum CraftMarkOption
+  {
+    MarkItem,
+    DoNotMark,
+    PromptForMark
+  }
 
-	public class CraftContext
-	{
-		public List<CraftItem> Items { get; }
+  public class CraftContext
+  {
+    public CraftContext()
+    {
+      Items = new List<CraftItem>();
+      LastResourceIndex = -1;
+      LastResourceIndex2 = -1;
+      LastGroupIndex = -1;
+    }
 
-		public int LastResourceIndex { get; set; }
+    public List<CraftItem> Items{ get; }
 
-		public int LastResourceIndex2 { get; set; }
+    public int LastResourceIndex{ get; set; }
 
-		public int LastGroupIndex { get; set; }
+    public int LastResourceIndex2{ get; set; }
 
-		public bool DoNotColor { get; set; }
+    public int LastGroupIndex{ get; set; }
 
-		public CraftMarkOption MarkOption { get; set; }
+    public bool DoNotColor{ get; set; }
 
-		public CraftContext()
-		{
-			Items = new List<CraftItem>();
-			LastResourceIndex = -1;
-			LastResourceIndex2 = -1;
-			LastGroupIndex = -1;
-		}
+    public CraftMarkOption MarkOption{ get; set; }
 
-		public CraftItem LastMade
-		{
-			get
-			{
-				if ( Items.Count > 0 )
-					return Items[0];
+    public CraftItem LastMade
+    {
+      get
+      {
+        if (Items.Count > 0)
+          return Items[0];
 
-				return null;
-			}
-		}
+        return null;
+      }
+    }
 
-		public void OnMade( CraftItem item )
-		{
-			Items.Remove( item );
+    public void OnMade(CraftItem item)
+    {
+      Items.Remove(item);
 
-			if ( Items.Count == 10 )
-				Items.RemoveAt( 9 );
+      if (Items.Count == 10)
+        Items.RemoveAt(9);
 
-			Items.Insert( 0, item );
-		}
-	}
+      Items.Insert(0, item);
+    }
+  }
 }

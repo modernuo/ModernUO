@@ -2,57 +2,57 @@ using System;
 
 namespace Server.Items
 {
-	public class CandleSkull : BaseLight
-	{
-		public override int LitItemID
-		{
-			get
-			{
-				if ( ItemID == 0x1583 || ItemID == 0x1854 )
-					return 0x1854;
+  public class CandleSkull : BaseLight
+  {
+    [Constructible]
+    public CandleSkull() : base(0x1853)
+    {
+      if (Burnout)
+        Duration = TimeSpan.FromMinutes(25);
+      else
+        Duration = TimeSpan.Zero;
 
-				return 0x1858;
-			}
-		}
+      Burning = false;
+      Light = LightType.Circle150;
+      Weight = 5.0;
+    }
 
-		public override int UnlitItemID
-		{
-			get
-			{
-				if ( ItemID == 0x1853 || ItemID == 0x1584 )
-					return 0x1853;
+    public CandleSkull(Serial serial) : base(serial)
+    {
+    }
 
-				return 0x1857;
-			}
-		}
+    public override int LitItemID
+    {
+      get
+      {
+        if (ItemID == 0x1583 || ItemID == 0x1854)
+          return 0x1854;
 
-		[Constructible]
-		public CandleSkull() : base( 0x1853 )
-		{
-			if ( Burnout )
-				Duration = TimeSpan.FromMinutes( 25 );
-			else
-				Duration = TimeSpan.Zero;
+        return 0x1858;
+      }
+    }
 
-			Burning = false;
-			Light = LightType.Circle150;
-			Weight = 5.0;
-		}
+    public override int UnlitItemID
+    {
+      get
+      {
+        if (ItemID == 0x1853 || ItemID == 0x1584)
+          return 0x1853;
 
-		public CandleSkull( Serial serial ) : base( serial )
-		{
-		}
+        return 0x1857;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

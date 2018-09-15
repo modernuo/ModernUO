@@ -22,331 +22,325 @@ using System;
 
 namespace Server
 {
-	public enum Expansion
-	{
-		None,
-		T2A,
-		UOR,
-		UOTD,
-		LBR,
-		AOS,
-		SE,
-		ML,
-		SA,
-		HS,
-		TOL
-	}
+  public enum Expansion
+  {
+    None,
+    T2A,
+    UOR,
+    UOTD,
+    LBR,
+    AOS,
+    SE,
+    ML,
+    SA,
+    HS,
+    TOL
+  }
 
-	[Flags]
-	public enum ClientFlags
-	{
-		None	= 0x00000000,
-		Felucca	= 0x00000001,
-		Trammel	= 0x00000002,
-		Ilshenar= 0x00000004,
-		Malas	= 0x00000008,
-		Tokuno	= 0x00000010,
-		TerMur	= 0x00000020,
-		Unk1	= 0x00000040,
-		Unk2	= 0x00000080,
-		UOTD	= 0x00000100
-	}
+  [Flags]
+  public enum ClientFlags
+  {
+    None = 0x00000000,
+    Felucca = 0x00000001,
+    Trammel = 0x00000002,
+    Ilshenar = 0x00000004,
+    Malas = 0x00000008,
+    Tokuno = 0x00000010,
+    TerMur = 0x00000020,
+    Unk1 = 0x00000040,
+    Unk2 = 0x00000080,
+    UOTD = 0x00000100
+  }
 
-	[Flags]
-	public enum FeatureFlags
-	{
-		None					= 0x00000000,
-		T2A						= 0x00000001,
-		UOR						= 0x00000002,
-		UOTD					= 0x00000004,
-		LBR						= 0x00000008,
-		AOS						= 0x00000010,
-		SixthCharacterSlot		= 0x00000020,
-		SE						= 0x00000040,
-		ML						= 0x00000080,
-		EigthAge				= 0x00000100,
-		NinthAge				= 0x00000200, /* Crystal/Shadow Custom House Tiles */
-		TenthAge				= 0x00000400,
-		IncreasedStorage		= 0x00000800, /* Increased Housing/Bank Storage */
-		SeventhCharacterSlot	= 0x00001000,
-		RoleplayFaces			= 0x00002000,
-		TrialAccount			= 0x00004000,
-		LiveAccount				= 0x00008000,
-		SA						= 0x00010000,
-		HS						= 0x00020000,
-		Gothic					= 0x00040000,
-		Rustic					= 0x00080000,
-		Jungle					= 0x00100000,
-		Shadowguard				= 0x00200000,
-		TOL						= 0x00400000,
+  [Flags]
+  public enum FeatureFlags
+  {
+    None = 0x00000000,
+    T2A = 0x00000001,
+    UOR = 0x00000002,
+    UOTD = 0x00000004,
+    LBR = 0x00000008,
+    AOS = 0x00000010,
+    SixthCharacterSlot = 0x00000020,
+    SE = 0x00000040,
+    ML = 0x00000080,
+    EigthAge = 0x00000100,
+    NinthAge = 0x00000200, /* Crystal/Shadow Custom House Tiles */
+    TenthAge = 0x00000400,
+    IncreasedStorage = 0x00000800, /* Increased Housing/Bank Storage */
+    SeventhCharacterSlot = 0x00001000,
+    RoleplayFaces = 0x00002000,
+    TrialAccount = 0x00004000,
+    LiveAccount = 0x00008000,
+    SA = 0x00010000,
+    HS = 0x00020000,
+    Gothic = 0x00040000,
+    Rustic = 0x00080000,
+    Jungle = 0x00100000,
+    Shadowguard = 0x00200000,
+    TOL = 0x00400000,
 
-		ExpansionNone			= None,
-		ExpansionT2A			= T2A,
-		ExpansionUOR			= ExpansionT2A | UOR,
-		ExpansionUOTD			= ExpansionUOR | UOTD,
-		ExpansionLBR			= ExpansionUOTD | LBR,
-		ExpansionAOS			= ExpansionLBR | AOS | LiveAccount,
-		ExpansionSE				= ExpansionAOS | SE,
-		ExpansionML				= ExpansionSE | ML | NinthAge,
-		ExpansionSA				= ExpansionML | SA | Gothic | Rustic,
-		ExpansionHS				= ExpansionSA | HS,
-		ExpansionTOL			= ExpansionHS | TOL | Jungle | Shadowguard
-	}
+    ExpansionNone = None,
+    ExpansionT2A = T2A,
+    ExpansionUOR = ExpansionT2A | UOR,
+    ExpansionUOTD = ExpansionUOR | UOTD,
+    ExpansionLBR = ExpansionUOTD | LBR,
+    ExpansionAOS = ExpansionLBR | AOS | LiveAccount,
+    ExpansionSE = ExpansionAOS | SE,
+    ExpansionML = ExpansionSE | ML | NinthAge,
+    ExpansionSA = ExpansionML | SA | Gothic | Rustic,
+    ExpansionHS = ExpansionSA | HS,
+    ExpansionTOL = ExpansionHS | TOL | Jungle | Shadowguard
+  }
 
-	[Flags]
-	public enum	CharacterListFlags
-	{
-		None					= 0x00000000,
-		Unk1					= 0x00000001,
-		OverwriteConfigButton	= 0x00000002,
-		OneCharacterSlot		= 0x00000004,
-		ContextMenus			= 0x00000008,
-		SlotLimit				= 0x00000010,
-		AOS						= 0x00000020,
-		SixthCharacterSlot		= 0x00000040,
-		SE						= 0x00000080,
-		ML						= 0x00000100,
-		Unk2					= 0x00000200,
-		UO3DClientType			= 0x00000400,
-		Unk3					= 0x00000800,
-		SeventhCharacterSlot	= 0x00001000,
-		Unk4					= 0x00002000,
-		NewMovementSystem		= 0x00004000,
-		NewFeluccaAreas			= 0x00008000,
+  [Flags]
+  public enum CharacterListFlags
+  {
+    None = 0x00000000,
+    Unk1 = 0x00000001,
+    OverwriteConfigButton = 0x00000002,
+    OneCharacterSlot = 0x00000004,
+    ContextMenus = 0x00000008,
+    SlotLimit = 0x00000010,
+    AOS = 0x00000020,
+    SixthCharacterSlot = 0x00000040,
+    SE = 0x00000080,
+    ML = 0x00000100,
+    Unk2 = 0x00000200,
+    UO3DClientType = 0x00000400,
+    Unk3 = 0x00000800,
+    SeventhCharacterSlot = 0x00001000,
+    Unk4 = 0x00002000,
+    NewMovementSystem = 0x00004000,
+    NewFeluccaAreas = 0x00008000,
 
-		ExpansionNone			= ContextMenus, //
-		ExpansionT2A			= ContextMenus, //
-		ExpansionUOR			= ContextMenus, // None
-		ExpansionUOTD			= ContextMenus, //
-		ExpansionLBR			= ContextMenus, //
-		ExpansionAOS			= ContextMenus | AOS,
-		ExpansionSE				= ExpansionAOS | SE,
-		ExpansionML				= ExpansionSE | ML,
-		ExpansionSA				= ExpansionML,
-		ExpansionHS				= ExpansionSA,
-		ExpansionTOL			= ExpansionHS
-	}
+    ExpansionNone = ContextMenus, //
+    ExpansionT2A = ContextMenus, //
+    ExpansionUOR = ContextMenus, // None
+    ExpansionUOTD = ContextMenus, //
+    ExpansionLBR = ContextMenus, //
+    ExpansionAOS = ContextMenus | AOS,
+    ExpansionSE = ExpansionAOS | SE,
+    ExpansionML = ExpansionSE | ML,
+    ExpansionSA = ExpansionML,
+    ExpansionHS = ExpansionSA,
+    ExpansionTOL = ExpansionHS
+  }
 
-	[Flags]
-	public enum HousingFlags
-	{
-		None			= 0x0,
-		AOS				= 0x10,
-		SE				= 0x40,
-		ML				= 0x80,
-		Crystal			= 0x200,
-		SA				= 0x10000,
-		HS				= 0x20000,
-		Gothic			= 0x40000,
-		Rustic			= 0x80000,
-		Jungle			= 0x100000,
-		Shadowguard		= 0x200000,
-		TOL				= 0x400000,
+  [Flags]
+  public enum HousingFlags
+  {
+    None = 0x0,
+    AOS = 0x10,
+    SE = 0x40,
+    ML = 0x80,
+    Crystal = 0x200,
+    SA = 0x10000,
+    HS = 0x20000,
+    Gothic = 0x40000,
+    Rustic = 0x80000,
+    Jungle = 0x100000,
+    Shadowguard = 0x200000,
+    TOL = 0x400000,
 
-		HousingAOS		= AOS,
-		HousingSE		= HousingAOS | SE,
-		HousingML		= HousingSE | ML | Crystal,
-		HousingSA		= HousingML | SA | Gothic | Rustic,
-		HousingHS		= HousingSA | HS,
-		HousingTOL		= HousingHS | TOL | Jungle | Shadowguard
-	}
+    HousingAOS = AOS,
+    HousingSE = HousingAOS | SE,
+    HousingML = HousingSE | ML | Crystal,
+    HousingSA = HousingML | SA | Gothic | Rustic,
+    HousingHS = HousingSA | HS,
+    HousingTOL = HousingHS | TOL | Jungle | Shadowguard
+  }
 
-	public class ExpansionInfo
-	{
-		public static ExpansionInfo CoreExpansion => GetInfo(Core.Expansion);
+  public class ExpansionInfo
+  {
+    static ExpansionInfo()
+    {
+      Table = new[]
+      {
+        new ExpansionInfo(
+          0,
+          "None",
+          ClientFlags.None,
+          FeatureFlags.ExpansionNone,
+          CharacterListFlags.ExpansionNone,
+          HousingFlags.None),
+        new ExpansionInfo(
+          1,
+          "The Second Age",
+          ClientFlags.Felucca,
+          FeatureFlags.ExpansionT2A,
+          CharacterListFlags.ExpansionT2A,
+          HousingFlags.None),
+        new ExpansionInfo(
+          2,
+          "Renaissance",
+          ClientFlags.Trammel,
+          FeatureFlags.ExpansionUOR,
+          CharacterListFlags.ExpansionUOR,
+          HousingFlags.None),
+        new ExpansionInfo(
+          3,
+          "Third Dawn",
+          ClientFlags.Ilshenar,
+          FeatureFlags.ExpansionUOTD,
+          CharacterListFlags.ExpansionUOTD,
+          HousingFlags.None),
+        new ExpansionInfo(
+          4,
+          "Blackthorn's Revenge",
+          ClientFlags.Ilshenar,
+          FeatureFlags.ExpansionLBR,
+          CharacterListFlags.ExpansionLBR,
+          HousingFlags.None),
+        new ExpansionInfo(
+          5,
+          "Age of Shadows",
+          ClientFlags.Malas,
+          FeatureFlags.ExpansionAOS,
+          CharacterListFlags.ExpansionAOS,
+          HousingFlags.HousingAOS),
+        new ExpansionInfo(
+          6,
+          "Samurai Empire",
+          ClientFlags.Tokuno,
+          FeatureFlags.ExpansionSE,
+          CharacterListFlags.ExpansionSE,
+          HousingFlags.HousingSE),
+        new ExpansionInfo(
+          7,
+          "Mondain's Legacy",
+          new ClientVersion("5.0.0a"),
+          FeatureFlags.ExpansionML,
+          CharacterListFlags.ExpansionML,
+          HousingFlags.HousingML),
+        new ExpansionInfo(
+          8,
+          "Stygian Abyss",
+          ClientFlags.TerMur,
+          FeatureFlags.ExpansionSA,
+          CharacterListFlags.ExpansionSA,
+          HousingFlags.HousingSA),
+        new ExpansionInfo(
+          9,
+          "High Seas",
+          new ClientVersion("7.0.9.0"),
+          FeatureFlags.ExpansionHS,
+          CharacterListFlags.ExpansionHS,
+          HousingFlags.HousingHS),
+        new ExpansionInfo(
+          10,
+          "Time of Legends",
+          new ClientVersion("7.0.45.65"),
+          FeatureFlags.ExpansionTOL,
+          CharacterListFlags.ExpansionTOL,
+          HousingFlags.HousingTOL)
+      };
+    }
 
-		public static ExpansionInfo[] Table { get; private set; }
+    public ExpansionInfo(
+      int id,
+      string name,
+      ClientFlags clientFlags,
+      FeatureFlags supportedFeatures,
+      CharacterListFlags charListFlags,
+      HousingFlags customHousingFlag)
+      : this(id, name, supportedFeatures, charListFlags, customHousingFlag)
+    {
+      ClientFlags = clientFlags;
+    }
 
-		static ExpansionInfo()
-		{
-			Table = new[]
-			{
-				new ExpansionInfo(
-					0,
-					"None",
-					ClientFlags.None,
-					FeatureFlags.ExpansionNone,
-					CharacterListFlags.ExpansionNone,
-					HousingFlags.None),
-				new ExpansionInfo(
-					1,
-					"The Second Age",
-					ClientFlags.Felucca,
-					FeatureFlags.ExpansionT2A,
-					CharacterListFlags.ExpansionT2A,
-					HousingFlags.None),
-				new ExpansionInfo(
-					2,
-					"Renaissance",
-					ClientFlags.Trammel,
-					FeatureFlags.ExpansionUOR,
-					CharacterListFlags.ExpansionUOR,
-					HousingFlags.None),
-				new ExpansionInfo(
-					3,
-					"Third Dawn",
-					ClientFlags.Ilshenar,
-					FeatureFlags.ExpansionUOTD,
-					CharacterListFlags.ExpansionUOTD,
-					HousingFlags.None),
-				new ExpansionInfo(
-					4,
-					"Blackthorn's Revenge",
-					ClientFlags.Ilshenar,
-					FeatureFlags.ExpansionLBR,
-					CharacterListFlags.ExpansionLBR,
-					HousingFlags.None),
-				new ExpansionInfo(
-					5,
-					"Age of Shadows",
-					ClientFlags.Malas,
-					FeatureFlags.ExpansionAOS,
-					CharacterListFlags.ExpansionAOS,
-					HousingFlags.HousingAOS),
-				new ExpansionInfo(
-					6,
-					"Samurai Empire",
-					ClientFlags.Tokuno,
-					FeatureFlags.ExpansionSE,
-					CharacterListFlags.ExpansionSE,
-					HousingFlags.HousingSE),
-				new ExpansionInfo(
-					7,
-					"Mondain's Legacy",
-					new ClientVersion("5.0.0a"),
-					FeatureFlags.ExpansionML,
-					CharacterListFlags.ExpansionML,
-					HousingFlags.HousingML),
-				new ExpansionInfo(
-					8,
-					"Stygian Abyss",
-					ClientFlags.TerMur,
-					FeatureFlags.ExpansionSA,
-					CharacterListFlags.ExpansionSA,
-					HousingFlags.HousingSA),
-				new ExpansionInfo(
-					9,
-					"High Seas",
-					new ClientVersion("7.0.9.0"),
-					FeatureFlags.ExpansionHS,
-					CharacterListFlags.ExpansionHS,
-					HousingFlags.HousingHS),
-				new ExpansionInfo(
-					10,
-					"Time of Legends",
-					new ClientVersion("7.0.45.65"),
-					FeatureFlags.ExpansionTOL,
-					CharacterListFlags.ExpansionTOL,
-					HousingFlags.HousingTOL)
-			};
-		}
+    public ExpansionInfo(
+      int id,
+      string name,
+      ClientVersion requiredClient,
+      FeatureFlags supportedFeatures,
+      CharacterListFlags charListFlags,
+      HousingFlags customHousingFlag)
+      : this(id, name, supportedFeatures, charListFlags, customHousingFlag)
+    {
+      RequiredClient = requiredClient;
+    }
 
-		public static FeatureFlags GetFeatures(Expansion ex)
-		{
-			var info = GetInfo(ex);
+    private ExpansionInfo(
+      int id,
+      string name,
+      FeatureFlags supportedFeatures,
+      CharacterListFlags charListFlags,
+      HousingFlags customHousingFlag)
+    {
+      ID = id;
+      Name = name;
 
-			if (info != null)
-			{
-				return info.SupportedFeatures;
-			}
+      SupportedFeatures = supportedFeatures;
+      CharacterListFlags = charListFlags;
+      CustomHousingFlag = customHousingFlag;
+    }
 
-			switch (ex)
-			{
-				case Expansion.None:
-					return FeatureFlags.ExpansionNone;
-				case Expansion.T2A:
-					return FeatureFlags.ExpansionT2A;
-				case Expansion.UOR:
-					return FeatureFlags.ExpansionUOR;
-				case Expansion.UOTD:
-					return FeatureFlags.ExpansionUOTD;
-				case Expansion.LBR:
-					return FeatureFlags.ExpansionLBR;
-				case Expansion.AOS:
-					return FeatureFlags.ExpansionAOS;
-				case Expansion.SE:
-					return FeatureFlags.ExpansionSE;
-				case Expansion.ML:
-					return FeatureFlags.ExpansionML;
-				case Expansion.SA:
-					return FeatureFlags.ExpansionSA;
-				case Expansion.HS:
-					return FeatureFlags.ExpansionHS;
-				case Expansion.TOL:
-					return FeatureFlags.ExpansionTOL;
-			}
+    public static ExpansionInfo CoreExpansion => GetInfo(Core.Expansion);
 
-			return FeatureFlags.ExpansionNone;
-		}
+    public static ExpansionInfo[] Table{ get; }
 
-		public static ExpansionInfo GetInfo(Expansion ex)
-		{
-			return GetInfo((int)ex);
-		}
+    public int ID{ get; }
+    public string Name{ get; set; }
 
-		public static ExpansionInfo GetInfo(int ex)
-		{
-			var v = ex;
+    public ClientFlags ClientFlags{ get; set; }
+    public FeatureFlags SupportedFeatures{ get; set; }
+    public CharacterListFlags CharacterListFlags{ get; set; }
+    public ClientVersion RequiredClient{ get; set; }
+    public HousingFlags CustomHousingFlag{ get; set; }
 
-			if (v < 0 || v >= Table.Length)
-			{
-				v = 0;
-			}
+    public static FeatureFlags GetFeatures(Expansion ex)
+    {
+      ExpansionInfo info = GetInfo(ex);
 
-			return Table[v];
-		}
+      if (info != null) return info.SupportedFeatures;
 
-		public int ID { get; private set; }
-		public string Name { get; set; }
+      switch (ex)
+      {
+        case Expansion.None:
+          return FeatureFlags.ExpansionNone;
+        case Expansion.T2A:
+          return FeatureFlags.ExpansionT2A;
+        case Expansion.UOR:
+          return FeatureFlags.ExpansionUOR;
+        case Expansion.UOTD:
+          return FeatureFlags.ExpansionUOTD;
+        case Expansion.LBR:
+          return FeatureFlags.ExpansionLBR;
+        case Expansion.AOS:
+          return FeatureFlags.ExpansionAOS;
+        case Expansion.SE:
+          return FeatureFlags.ExpansionSE;
+        case Expansion.ML:
+          return FeatureFlags.ExpansionML;
+        case Expansion.SA:
+          return FeatureFlags.ExpansionSA;
+        case Expansion.HS:
+          return FeatureFlags.ExpansionHS;
+        case Expansion.TOL:
+          return FeatureFlags.ExpansionTOL;
+      }
 
-		public ClientFlags ClientFlags { get; set; }
-		public FeatureFlags SupportedFeatures { get; set; }
-		public CharacterListFlags CharacterListFlags { get; set; }
-		public ClientVersion RequiredClient { get; set; }
-		public HousingFlags CustomHousingFlag { get; set; }
+      return FeatureFlags.ExpansionNone;
+    }
 
-		public ExpansionInfo(
-			int id,
-			string name,
-			ClientFlags clientFlags,
-			FeatureFlags supportedFeatures,
-			CharacterListFlags charListFlags,
-			HousingFlags customHousingFlag)
-			: this(id, name, supportedFeatures, charListFlags, customHousingFlag)
-		{
-			ClientFlags = clientFlags;
-		}
+    public static ExpansionInfo GetInfo(Expansion ex)
+    {
+      return GetInfo((int)ex);
+    }
 
-		public ExpansionInfo(
-			int id,
-			string name,
-			ClientVersion requiredClient,
-			FeatureFlags supportedFeatures,
-			CharacterListFlags charListFlags,
-			HousingFlags customHousingFlag)
-			: this(id, name, supportedFeatures, charListFlags, customHousingFlag)
-		{
-			RequiredClient = requiredClient;
-		}
+    public static ExpansionInfo GetInfo(int ex)
+    {
+      int v = ex;
 
-		private ExpansionInfo(
-			int id,
-			string name,
-			FeatureFlags supportedFeatures,
-			CharacterListFlags charListFlags,
-			HousingFlags customHousingFlag)
-		{
-			ID = id;
-			Name = name;
+      if (v < 0 || v >= Table.Length) v = 0;
 
-			SupportedFeatures = supportedFeatures;
-			CharacterListFlags = charListFlags;
-			CustomHousingFlag = customHousingFlag;
-		}
+      return Table[v];
+    }
 
-		public override string ToString()
-		{
-			return Name;
-		}
-	}
+    public override string ToString()
+    {
+      return Name;
+    }
+  }
 }

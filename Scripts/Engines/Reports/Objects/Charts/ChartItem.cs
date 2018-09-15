@@ -1,42 +1,44 @@
 namespace Server.Engines.Reports
 {
-	public class ChartItem : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "ci", Construct );
+  public class ChartItem : PersistableObject
+  {
+    private ChartItem()
+    {
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new ChartItem();
-		}
+    public ChartItem(string name, int value)
+    {
+      Name = name;
+      Value = value;
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public string Name{ get; set; }
 
-		public string Name { get; set; }
+    public int Value{ get; set; }
 
-		public int Value { get; set; }
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetString("n", Name);
+      op.SetInt32("v", Value);
+    }
 
-		private ChartItem()
-		{
-		}
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      Name = Utility.Intern(ip.GetString("n"));
+      Value = ip.GetInt32("v");
+    }
 
-		public ChartItem( string name, int value )
-		{
-			Name = name;
-			Value = value;
-		}
+    #region Type Identification
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetString( "n", Name );
-			op.SetInt32( "v", Value );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("ci", Construct);
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			Name = Utility.Intern( ip.GetString( "n" ) );
-			Value = ip.GetInt32( "v" );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new ChartItem();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

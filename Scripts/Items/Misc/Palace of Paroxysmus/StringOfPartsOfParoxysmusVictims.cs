@@ -1,31 +1,30 @@
 namespace Server.Items
 {
-	public class StringOfPartsOfParoxysmusVictims : Item
-	{
-		public override int LabelNumber => 1072082; // String of Parts of Paroxysmus' Victims
+  public class StringOfPartsOfParoxysmusVictims : Item
+  {
+    [Constructible]
+    public StringOfPartsOfParoxysmusVictims() : base(0xFD2)
+    {
+    }
 
-		[Constructible]
-		public StringOfPartsOfParoxysmusVictims() : base( 0xFD2 )
-		{
-		}
+    public StringOfPartsOfParoxysmusVictims(Serial serial) : base(serial)
+    {
+    }
 
-		public StringOfPartsOfParoxysmusVictims( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1072082; // String of Parts of Paroxysmus' Victims
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }
-

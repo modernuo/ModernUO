@@ -1,32 +1,32 @@
 ﻿namespace Server.Items.Holiday
 {
-	public class PaintedPorcelainMask : BasePaintedMask
-	{
-		public override string MaskName => "Porcelain Mask";
+  public class PaintedPorcelainMask : BasePaintedMask
+  {
+    [Constructible]
+    public PaintedPorcelainMask()
+      : base(0x4BA7)
+    {
+    }
 
-		[Constructible]
-		public PaintedPorcelainMask()
-			: base( 0x4BA7 )
-		{
-		}
+    public PaintedPorcelainMask(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public PaintedPorcelainMask( Serial serial )
-			: base( serial )
-		{
-		}
+    public override string MaskName => "Porcelain Mask";
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( ( int )1 ); // version
-		}
+      writer.Write(1); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

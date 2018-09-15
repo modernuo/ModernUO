@@ -4,68 +4,69 @@ using Server.Network;
 
 namespace Server.Items
 {
-	public class PlagueBeastMutationCore : Item, IScissorable
-	{
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Cut { get; set; }
+  public class PlagueBeastMutationCore : Item, IScissorable
+  {
+    [Constructible]
+    public PlagueBeastMutationCore() : base(0x1CF0)
+    {
+      Cut = true;
+      Weight = 1.0;
+      Hue = 0x480;
+    }
 
-		public override string DefaultName => "a plague beast mutation core";
+    public PlagueBeastMutationCore(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public PlagueBeastMutationCore() : base( 0x1CF0 )
-		{
-			Cut = true;
-			Weight = 1.0;
-			Hue = 0x480;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Cut{ get; set; }
 
-		public virtual bool Scissor( Mobile from, Scissors scissors )
-		{
-			if ( !Cut )
-			{
-				PlagueBeastLord owner = RootParent as PlagueBeastLord;
+    public override string DefaultName => "a plague beast mutation core";
 
-				Cut = true;
-				Movable = true;
+    public virtual bool Scissor(Mobile from, Scissors scissors)
+    {
+      if (!Cut)
+      {
+        PlagueBeastLord owner = RootParent as PlagueBeastLord;
 
-				from.AddToBackpack( this );
-				from.LocalOverheadMessage( MessageType.Regular, 0x34, 1071906 ); // * You remove the plague mutation core from the plague beast, causing it to dissolve into a pile of goo *
+        Cut = true;
+        Movable = true;
 
-				if ( owner != null )
-					Timer.DelayCall<PlagueBeastLord>( TimeSpan.FromSeconds( 1 ), KillParent, owner );
+        from.AddToBackpack(this);
+        from.LocalOverheadMessage(MessageType.Regular, 0x34,
+          1071906); // * You remove the plague mutation core from the plague beast, causing it to dissolve into a pile of goo *
 
-				return true;
-			}
+        if (owner != null)
+          Timer.DelayCall(TimeSpan.FromSeconds(1), KillParent, owner);
 
-			return false;
-		}
+        return true;
+      }
 
-		private void KillParent( PlagueBeastLord parent )
-		{
-			parent.Unfreeze();
-			parent.Kill();
-		}
+      return false;
+    }
 
-		public PlagueBeastMutationCore( Serial serial ) : base( serial )
-		{
-		}
+    private void KillParent(PlagueBeastLord parent)
+    {
+      parent.Unfreeze();
+      parent.Kill();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
+      writer.WriteEncodedInt(0); // version
 
-			writer.Write( (bool) Cut );
-		}
+      writer.Write(Cut);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
+      int version = reader.ReadEncodedInt();
 
-			Cut = reader.ReadBool();
-		}
-	}
+      Cut = reader.ReadBool();
+    }
+  }
 }

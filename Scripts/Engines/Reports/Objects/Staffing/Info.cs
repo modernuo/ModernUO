@@ -3,94 +3,96 @@ using Server.Accounting;
 
 namespace Server.Engines.Reports
 {
-	public abstract class BaseInfo : IComparable
-	{
-		public static TimeSpan SortRange { get; set; }
+  public abstract class BaseInfo : IComparable
+  {
+    private string m_Display;
 
-		private string m_Display;
+    public BaseInfo(string account)
+    {
+      Account = account;
+      Pages = new PageInfoCollection();
+    }
 
-		public string Account { get; set; }
+    public static TimeSpan SortRange{ get; set; }
 
-		public PageInfoCollection Pages { get; set; }
+    public string Account{ get; set; }
 
-		public string Display
-		{
-			get
-			{
-				if ( m_Display != null )
-					return m_Display;
+    public PageInfoCollection Pages{ get; set; }
 
-				if ( Account != null )
-				{
-					IAccount acct = Accounts.GetAccount( Account );
+    public string Display
+    {
+      get
+      {
+        if (m_Display != null)
+          return m_Display;
 
-					if ( acct != null )
-					{
-						Mobile mob = null;
+        if (Account != null)
+        {
+          IAccount acct = Accounts.GetAccount(Account);
 
-						for ( int i = 0; i < acct.Length; ++i )
-						{
-							Mobile check = acct[i];
+          if (acct != null)
+          {
+            Mobile mob = null;
 
-							if ( check != null && (mob == null || check.AccessLevel > mob.AccessLevel) )
-								mob = check;
-						}
+            for (int i = 0; i < acct.Length; ++i)
+            {
+              Mobile check = acct[i];
 
-						if ( mob?.Name != null && mob.Name.Length > 0 )
-							return ( m_Display = mob.Name );
-					}
-				}
+              if (check != null && (mob == null || check.AccessLevel > mob.AccessLevel))
+                mob = check;
+            }
 
-				return ( m_Display = Account );
-			}
-		}
+            if (mob?.Name != null && mob.Name.Length > 0)
+              return m_Display = mob.Name;
+          }
+        }
 
-		public int GetPageCount( PageResolution res, DateTime min, DateTime max )
-		{
-			return StaffHistory.GetPageCount( Pages, res, min, max );
-		}
+        return m_Display = Account;
+      }
+    }
 
-		public BaseInfo( string account )
-		{
-			Account = account;
-			Pages = new PageInfoCollection();
-		}
+    public int CompareTo(object obj)
+    {
+      BaseInfo cmp = obj as BaseInfo;
 
-		public void Register( PageInfo page )
-		{
-			Pages.Add( page );
-		}
+      int v = cmp.GetPageCount(cmp is StaffInfo ? PageResolution.Handled : PageResolution.None,
+                DateTime.UtcNow - SortRange, DateTime.UtcNow)
+              - GetPageCount(this is StaffInfo ? PageResolution.Handled : PageResolution.None,
+                DateTime.UtcNow - SortRange, DateTime.UtcNow);
 
-		public void Unregister( PageInfo page )
-		{
-			Pages.Remove( page );
-		}
+      if (v == 0)
+        v = string.Compare(Display, cmp.Display);
 
-		public int CompareTo( object obj )
-		{
-			BaseInfo cmp = obj as BaseInfo;
+      return v;
+    }
 
-			int v = cmp.GetPageCount( cmp is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - SortRange, DateTime.UtcNow )
-				- GetPageCount( this is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - SortRange, DateTime.UtcNow );
+    public int GetPageCount(PageResolution res, DateTime min, DateTime max)
+    {
+      return StaffHistory.GetPageCount(Pages, res, min, max);
+    }
 
-			if ( v == 0 )
-				v = string.Compare( Display, cmp.Display );
+    public void Register(PageInfo page)
+    {
+      Pages.Add(page);
+    }
 
-			return v;
-		}
-	}
+    public void Unregister(PageInfo page)
+    {
+      Pages.Remove(page);
+    }
+  }
 
-	public class StaffInfo : BaseInfo
-	{
-		public StaffInfo( string account ) : base( account )
-		{
-		}
-	}
+  public class StaffInfo : BaseInfo
+  {
+    public StaffInfo(string account) : base(account)
+    {
+    }
+  }
 
-	public class UserInfo : BaseInfo
-	{
-		public UserInfo( string account ) : base( account )
-		{
-		}
-	}
+  public class UserInfo : BaseInfo
+  {
+    public UserInfo(string account) : base(account)
+    {
+    }
+  }
 }

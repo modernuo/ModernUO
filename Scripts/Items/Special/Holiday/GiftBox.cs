@@ -1,37 +1,37 @@
 namespace Server.Items
 {
-	[Furniture]
-	[Flippable( 0x232A, 0x232B )]
-	public class GiftBox : BaseContainer
-	{
-		[Constructible]
-		public GiftBox() : this( Utility.RandomDyedHue() )
-		{
-		}
+  [Furniture]
+  [Flippable(0x232A, 0x232B)]
+  public class GiftBox : BaseContainer
+  {
+    [Constructible]
+    public GiftBox() : this(Utility.RandomDyedHue())
+    {
+    }
 
-		[Constructible]
-		public GiftBox( int hue ) : base( Utility.Random( 0x232A, 2 ) )
-		{
-			Weight = 2.0;
-			Hue = hue;
-		}
+    [Constructible]
+    public GiftBox(int hue) : base(Utility.Random(0x232A, 2))
+    {
+      Weight = 2.0;
+      Hue = hue;
+    }
 
-		public GiftBox( Serial serial ) : base( serial )
-		{
-		}
+    public GiftBox(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

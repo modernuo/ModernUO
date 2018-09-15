@@ -1,49 +1,48 @@
 namespace Server.Spells.Necromancy
 {
-	public abstract class TransformationSpell : NecromancerSpell, ITransformationSpell
-	{
-		public abstract int Body{ get; }
-		public virtual int Hue => 0;
+  public abstract class TransformationSpell : NecromancerSpell, ITransformationSpell
+  {
+    public TransformationSpell(Mobile caster, Item scroll, SpellInfo info) : base(caster, scroll, info)
+    {
+    }
 
-		public virtual int PhysResistOffset => 0;
-		public virtual int FireResistOffset => 0;
-		public virtual int ColdResistOffset => 0;
-		public virtual int PoisResistOffset => 0;
-		public virtual int NrgyResistOffset => 0;
+    public override bool BlockedByHorrificBeast => false;
+    public abstract int Body{ get; }
+    public virtual int Hue => 0;
 
-		public TransformationSpell( Mobile caster, Item scroll, SpellInfo info ) : base( caster, scroll, info )
-		{
-		}
+    public virtual int PhysResistOffset => 0;
+    public virtual int FireResistOffset => 0;
+    public virtual int ColdResistOffset => 0;
+    public virtual int PoisResistOffset => 0;
+    public virtual int NrgyResistOffset => 0;
 
-		public override bool BlockedByHorrificBeast => false;
+    public virtual double TickRate => 1.0;
 
-		public override bool CheckCast()
-		{
-			if ( !TransformationSpellHelper.CheckCast( Caster, this ) )
-				return false;
+    public virtual void OnTick(Mobile m)
+    {
+    }
 
-			return base.CheckCast();
-		}
+    public virtual void DoEffect(Mobile m)
+    {
+    }
 
-		public override void OnCast()
-		{
-			TransformationSpellHelper.OnCast( Caster, this );
+    public virtual void RemoveEffect(Mobile m)
+    {
+    }
 
-			FinishSequence();
-		}
+    public override bool CheckCast()
+    {
+      if (!TransformationSpellHelper.CheckCast(Caster, this))
+        return false;
 
-		public virtual double TickRate => 1.0;
+      return base.CheckCast();
+    }
 
-		public virtual void OnTick( Mobile m )
-		{
-		}
+    public override void OnCast()
+    {
+      TransformationSpellHelper.OnCast(Caster, this);
 
-		public virtual void DoEffect( Mobile m )
-		{
-		}
-
-		public virtual void RemoveEffect( Mobile m )
-		{
-		}
-	}
+      FinishSequence();
+    }
+  }
 }

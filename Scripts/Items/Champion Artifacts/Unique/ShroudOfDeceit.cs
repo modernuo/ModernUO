@@ -1,49 +1,49 @@
 namespace Server.Items
 {
-	public class ShroudOfDeciet : BoneChest
-	{
-		public override int LabelNumber => 1094914; // Shroud of Deceit [Replica]
+  public class ShroudOfDeciet : BoneChest
+  {
+    [Constructible]
+    public ShroudOfDeciet()
+    {
+      Hue = 0x38F;
 
-		public override int BasePhysicalResistance => 11;
-		public override int BaseFireResistance => 6;
-		public override int BaseColdResistance => 18;
-		public override int BasePoisonResistance => 15;
-		public override int BaseEnergyResistance => 13;
+      Attributes.RegenHits = 3;
 
-		public override int InitMinHits => 150;
-		public override int InitMaxHits => 150;
+      ArmorAttributes.MageArmor = 1;
 
-		public override bool CanFortify => false;
+      SkillBonuses.Skill_1_Name = SkillName.MagicResist;
+      SkillBonuses.Skill_1_Value = 10;
+    }
 
-		[Constructible]
-		public ShroudOfDeciet()
-		{
-			Hue = 0x38F;
+    public ShroudOfDeciet(Serial serial) : base(serial)
+    {
+    }
 
-			Attributes.RegenHits = 3;
+    public override int LabelNumber => 1094914; // Shroud of Deceit [Replica]
 
-			ArmorAttributes.MageArmor = 1;
+    public override int BasePhysicalResistance => 11;
+    public override int BaseFireResistance => 6;
+    public override int BaseColdResistance => 18;
+    public override int BasePoisonResistance => 15;
+    public override int BaseEnergyResistance => 13;
 
-			SkillBonuses.Skill_1_Name = SkillName.MagicResist;
-			SkillBonuses.Skill_1_Value = 10;
-		}
+    public override int InitMinHits => 150;
+    public override int InitMaxHits => 150;
 
-		public ShroudOfDeciet( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CanFortify => false;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

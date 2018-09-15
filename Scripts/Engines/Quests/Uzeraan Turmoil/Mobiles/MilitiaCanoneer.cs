@@ -3,100 +3,100 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Haven
 {
-	public class MilitiaCanoneer : BaseQuester
-	{
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Active { get; set; }
+  public class MilitiaCanoneer : BaseQuester
+  {
+    [Constructible]
+    public MilitiaCanoneer() : base("the Militia Canoneer")
+    {
+      Active = true;
+    }
 
-		[Constructible]
-		public MilitiaCanoneer() : base( "the Militia Canoneer" )
-		{
-			Active = true;
-		}
+    public MilitiaCanoneer(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitBody()
-		{
-			InitStats( 100, 125, 25 );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Active{ get; set; }
 
-			Hue = Utility.RandomSkinHue();
+    public override void InitBody()
+    {
+      InitStats(100, 125, 25);
 
-			Female = false;
-			Body = 0x190;
-			Name = NameList.RandomName( "male" );
-		}
+      Hue = Utility.RandomSkinHue();
 
-		public override void InitOutfit()
-		{
-			Utility.AssignRandomHair( this );
-			Utility.AssignRandomFacialHair( this, HairHue );
+      Female = false;
+      Body = 0x190;
+      Name = NameList.RandomName("male");
+    }
 
-			AddItem( new PlateChest() );
-			AddItem( new PlateArms() );
-			AddItem( new PlateGloves() );
-			AddItem( new PlateLegs() );
+    public override void InitOutfit()
+    {
+      Utility.AssignRandomHair(this);
+      Utility.AssignRandomFacialHair(this, HairHue);
 
-			Torch torch = new Torch();
-			torch.Movable = false;
-			AddItem( torch );
-			torch.Ignite();
-		}
+      AddItem(new PlateChest());
+      AddItem(new PlateArms());
+      AddItem(new PlateGloves());
+      AddItem(new PlateLegs());
 
-		public override bool CanTalkTo( PlayerMobile to )
-		{
-			return false;
-		}
+      Torch torch = new Torch();
+      torch.Movable = false;
+      AddItem(torch);
+      torch.Ignite();
+    }
 
-		public override void OnTalk( PlayerMobile player, bool contextMenu )
-		{
-		}
+    public override bool CanTalkTo(PlayerMobile to)
+    {
+      return false;
+    }
 
-		public override bool IsEnemy( Mobile m )
-		{
-			if ( m.Player || m is BaseVendor )
-				return false;
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+    }
 
-			if ( m is BaseCreature bc )
-			{
-				Mobile master = bc.GetMaster();
-				if ( master != null )
-					return IsEnemy( master );
-			}
+    public override bool IsEnemy(Mobile m)
+    {
+      if (m.Player || m is BaseVendor)
+        return false;
 
-			return m.Karma < 0;
-		}
+      if (m is BaseCreature bc)
+      {
+        Mobile master = bc.GetMaster();
+        if (master != null)
+          return IsEnemy(master);
+      }
 
-		public bool WillFire( Cannon cannon, Mobile target )
-		{
-			if ( Active && IsEnemy( target ) )
-			{
-				Direction = GetDirectionTo( target );
-				Say( Utility.RandomList( 500651, 1049098, 1049320, 1043149 ) );
-				return true;
-			}
+      return m.Karma < 0;
+    }
 
-			return false;
-		}
+    public bool WillFire(Cannon cannon, Mobile target)
+    {
+      if (Active && IsEnemy(target))
+      {
+        Direction = GetDirectionTo(target);
+        Say(Utility.RandomList(500651, 1049098, 1049320, 1043149));
+        return true;
+      }
 
-		public MilitiaCanoneer( Serial serial ) : base( serial )
-		{
-		}
+      return false;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			writer.Write( (bool) Active );
-		}
+      writer.Write(Active);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			Active = reader.ReadBool();
-		}
-	}
+      Active = reader.ReadBool();
+    }
+  }
 }

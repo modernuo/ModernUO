@@ -2,39 +2,40 @@ using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-	public class Baker : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+  public class Baker : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public Baker() : base( "the baker" )
-		{
-			SetSkill( SkillName.Cooking, 75.0, 98.0 );
-			SetSkill( SkillName.TasteID, 36.0, 68.0 );
-		}
+    [Constructible]
+    public Baker() : base("the baker")
+    {
+      SetSkill(SkillName.Cooking, 75.0, 98.0);
+      SetSkill(SkillName.TasteID, 36.0, 68.0);
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBBaker() );
-		}
+    public Baker(Serial serial) : base(serial)
+    {
+    }
 
-		public Baker( Serial serial ) : base( serial )
-		{
-		}
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBBaker());
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

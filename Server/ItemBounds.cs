@@ -23,39 +23,36 @@ using System.IO;
 
 namespace Server
 {
-	public static class ItemBounds
-	{
-		public static Rectangle2D[] Table { get; }
+  public static class ItemBounds
+  {
+    static ItemBounds()
+    {
+      Table = new Rectangle2D[TileData.ItemTable.Length];
 
-		static ItemBounds()
-		{
-			Table = new Rectangle2D[TileData.ItemTable.Length];
+      if (File.Exists("Data/Binary/Bounds.bin"))
+        using (FileStream fs = new FileStream("Data/Binary/Bounds.bin", FileMode.Open, FileAccess.Read,
+          FileShare.Read))
+        {
+          BinaryReader bin = new BinaryReader(fs);
 
-			if ( File.Exists( "Data/Binary/Bounds.bin" ) )
-			{
-				using ( FileStream fs = new FileStream( "Data/Binary/Bounds.bin", FileMode.Open, FileAccess.Read, FileShare.Read ) )
-				{
-					BinaryReader bin = new BinaryReader( fs );
+          int count = Math.Min(Table.Length, (int)(fs.Length / 8));
 
-					int count = Math.Min( Table.Length, (int)( fs.Length / 8 ) );
+          for (int i = 0; i < count; ++i)
+          {
+            int xMin = bin.ReadInt16();
+            int yMin = bin.ReadInt16();
+            int xMax = bin.ReadInt16();
+            int yMax = bin.ReadInt16();
 
-					for ( int i = 0; i < count; ++i )
-					{
-						int xMin = bin.ReadInt16();
-						int yMin = bin.ReadInt16();
-						int xMax = bin.ReadInt16();
-						int yMax = bin.ReadInt16();
+            Table[i].Set(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
+          }
 
-						Table[i].Set( xMin, yMin, (xMax - xMin) + 1, (yMax - yMin) + 1 );
-					}
+          bin.Close();
+        }
+      else
+        Console.WriteLine("Warning: Data/Binary/Bounds.bin does not exist");
+    }
 
-					bin.Close();
-				}
-			}
-			else
-			{
-				Console.WriteLine( "Warning: Data/Binary/Bounds.bin does not exist" );
-			}
-		}
-	}
+    public static Rectangle2D[] Table{ get; }
+  }
 }

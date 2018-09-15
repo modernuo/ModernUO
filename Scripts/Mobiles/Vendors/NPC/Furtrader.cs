@@ -2,42 +2,43 @@ using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-	public class Furtrader : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+  public class Furtrader : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public Furtrader() : base( "the furtrader" )
-		{
-			SetSkill( SkillName.Camping, 55.0, 78.0 );
-			//SetSkill( SkillName.Alchemy, 60.0, 83.0 );
-			SetSkill( SkillName.AnimalLore, 85.0, 100.0 );
-			SetSkill( SkillName.Cooking, 45.0, 68.0 );
-			SetSkill( SkillName.Tracking, 36.0, 68.0 );
-		}
+    [Constructible]
+    public Furtrader() : base("the furtrader")
+    {
+      SetSkill(SkillName.Camping, 55.0, 78.0);
+      //SetSkill( SkillName.Alchemy, 60.0, 83.0 );
+      SetSkill(SkillName.AnimalLore, 85.0, 100.0);
+      SetSkill(SkillName.Cooking, 45.0, 68.0);
+      SetSkill(SkillName.Tracking, 36.0, 68.0);
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBFurtrader() );
-		}
+    public Furtrader(Serial serial) : base(serial)
+    {
+    }
 
-		public Furtrader( Serial serial ) : base( serial )
-		{
-		}
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBFurtrader());
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

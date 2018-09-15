@@ -1,122 +1,136 @@
 using System;
 using System.Collections.Generic;
-using Server.Engines.Harvest;
 using Server.ContextMenus;
+using Server.Engines.ConPVP;
+using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-	public abstract class BasePoleArm : BaseMeleeWeapon, IUsesRemaining
-	{
-		public override int DefHitSound => 0x237;
-		public override int DefMissSound => 0x238;
+  public abstract class BasePoleArm : BaseMeleeWeapon, IUsesRemaining
+  {
+    private bool m_ShowUsesRemaining;
 
-		public override SkillName DefSkill => SkillName.Swords;
-		public override WeaponType DefType => WeaponType.Polearm;
-		public override WeaponAnimation DefAnimation => WeaponAnimation.Slash2H;
+    private int m_UsesRemaining;
 
-		public virtual HarvestSystem HarvestSystem => Lumberjacking.System;
+    public BasePoleArm(int itemID) : base(itemID)
+    {
+      m_UsesRemaining = 150;
+    }
 
-		private int m_UsesRemaining;
-		private bool m_ShowUsesRemaining;
+    public BasePoleArm(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int UsesRemaining
-		{
-			get => m_UsesRemaining;
-			set { m_UsesRemaining = value; InvalidateProperties(); }
-		}
+    public override int DefHitSound => 0x237;
+    public override int DefMissSound => 0x238;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool ShowUsesRemaining
-		{
-			get => m_ShowUsesRemaining;
-			set { m_ShowUsesRemaining = value; InvalidateProperties(); }
-		}
+    public override SkillName DefSkill => SkillName.Swords;
+    public override WeaponType DefType => WeaponType.Polearm;
+    public override WeaponAnimation DefAnimation => WeaponAnimation.Slash2H;
 
-		public BasePoleArm( int itemID ) : base( itemID )
-		{
-			m_UsesRemaining = 150;
-		}
+    public virtual HarvestSystem HarvestSystem => Lumberjacking.System;
 
-		public BasePoleArm( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int UsesRemaining
+    {
+      get => m_UsesRemaining;
+      set
+      {
+        m_UsesRemaining = value;
+        InvalidateProperties();
+      }
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( HarvestSystem == null )
-				return;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool ShowUsesRemaining
+    {
+      get => m_ShowUsesRemaining;
+      set
+      {
+        m_ShowUsesRemaining = value;
+        InvalidateProperties();
+      }
+    }
 
-			if ( IsChildOf( from.Backpack ) || Parent == from )
-				HarvestSystem.BeginHarvesting( from, this );
-			else
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (HarvestSystem == null)
+        return;
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+      if (IsChildOf(from.Backpack) || Parent == from)
+        HarvestSystem.BeginHarvesting(from, this);
+      else
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+    }
 
-			if ( HarvestSystem != null )
-				BaseHarvestTool.AddContextMenuEntries( from, this, list, HarvestSystem );
-		}
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      if (HarvestSystem != null)
+        BaseHarvestTool.AddContextMenuEntries(from, this, list, HarvestSystem);
+    }
 
-			writer.Write( (int) 2 ); // version
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (bool) m_ShowUsesRemaining );
+      writer.Write(2); // version
 
-			writer.Write( (int) m_UsesRemaining );
-		}
+      writer.Write(m_ShowUsesRemaining);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(m_UsesRemaining);
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			switch ( version )
-			{
-				case 2:
-				{
-					m_ShowUsesRemaining = reader.ReadBool();
-					goto case 1;
-				}
-				case 1:
-				{
-					m_UsesRemaining = reader.ReadInt();
-					goto case 0;
-				}
-				case 0:
-				{
-					if ( m_UsesRemaining < 1 )
-						m_UsesRemaining = 150;
+      int version = reader.ReadInt();
 
-					break;
-				}
-			}
-		}
+      switch (version)
+      {
+        case 2:
+        {
+          m_ShowUsesRemaining = reader.ReadBool();
+          goto case 1;
+        }
+        case 1:
+        {
+          m_UsesRemaining = reader.ReadInt();
+          goto case 0;
+        }
+        case 0:
+        {
+          if (m_UsesRemaining < 1)
+            m_UsesRemaining = 150;
 
-		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus = 1 )
-		{
-			base.OnHit( attacker, defender, damageBonus );
+          break;
+        }
+      }
+    }
 
-			if (!Core.AOS && (attacker.Player || attacker.Body.IsHuman) && Layer == Layer.TwoHanded && attacker.Skills[SkillName.Anatomy].Value >= 80 && (attacker.Skills[SkillName.Anatomy].Value / 400.0) >= Utility.RandomDouble() && Engines.ConPVP.DuelContext.AllowSpecialAbility(attacker, "Concussion Blow", false))
-			{
-				StatMod mod = defender.GetStatMod( "Concussion" );
+    public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
+    {
+      base.OnHit(attacker, defender, damageBonus);
 
-				if ( mod == null )
-				{
-					defender.SendMessage( "You receive a concussion blow!" );
-					defender.AddStatMod( new StatMod( StatType.Int, "Concussion", -(defender.RawInt / 2), TimeSpan.FromSeconds( 30.0 ) ) );
+      if (!Core.AOS && (attacker.Player || attacker.Body.IsHuman) && Layer == Layer.TwoHanded &&
+          attacker.Skills[SkillName.Anatomy].Value >= 80 &&
+          attacker.Skills[SkillName.Anatomy].Value / 400.0 >= Utility.RandomDouble() &&
+          DuelContext.AllowSpecialAbility(attacker, "Concussion Blow", false))
+      {
+        StatMod mod = defender.GetStatMod("Concussion");
 
-					attacker.SendMessage( "You deliver a concussion blow!" );
-					attacker.PlaySound( 0x11C );
-				}
-			}
-		}
-	}
+        if (mod == null)
+        {
+          defender.SendMessage("You receive a concussion blow!");
+          defender.AddStatMod(new StatMod(StatType.Int, "Concussion", -(defender.RawInt / 2),
+            TimeSpan.FromSeconds(30.0)));
+
+          attacker.SendMessage("You deliver a concussion blow!");
+          attacker.PlaySound(0x11C);
+        }
+      }
+    }
+  }
 }

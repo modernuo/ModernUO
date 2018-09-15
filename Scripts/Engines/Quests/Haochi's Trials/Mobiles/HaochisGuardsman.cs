@@ -1,82 +1,103 @@
-using Server.Mobiles;
 using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Engines.Quests.Samurai
 {
-	public class HaochisGuardsman : BaseQuester
-	{
-		[Constructible]
-		public HaochisGuardsman() : base( "the Guardsman of Daimyo Haochi" )
-		{
-		}
+  public class HaochisGuardsman : BaseQuester
+  {
+    [Constructible]
+    public HaochisGuardsman() : base("the Guardsman of Daimyo Haochi")
+    {
+    }
 
-		public override void InitBody()
-		{
-			InitStats( 100, 100, 25 );
+    public HaochisGuardsman(Serial serial) : base(serial)
+    {
+    }
 
-			Hue = Race.Human.RandomSkinHue();
+    public override int TalkNumber => -1;
 
-			Female = false;
-			Body = 0x190;
-			Name = NameList.RandomName( "male" );
-		}
+    public override void InitBody()
+    {
+      InitStats(100, 100, 25);
 
-		public override void InitOutfit()
-		{
-			Utility.AssignRandomHair( this );
+      Hue = Race.Human.RandomSkinHue();
 
-			AddItem( new LeatherDo() );
-			AddItem( new LeatherHiroSode() );
-			AddItem( new SamuraiTabi( Utility.RandomNondyedHue() ) );
+      Female = false;
+      Body = 0x190;
+      Name = NameList.RandomName("male");
+    }
 
-			switch ( Utility.Random( 3 ) )
-			{
-				case 0: AddItem( new StuddedHaidate() ); break;
-				case 1: AddItem( new PlateSuneate() ); break;
-				default: AddItem( new LeatherSuneate() ); break;
-			}
+    public override void InitOutfit()
+    {
+      Utility.AssignRandomHair(this);
 
-			switch ( Utility.Random( 4 ) )
-			{
-				case 0: AddItem( new DecorativePlateKabuto() ); break;
-				case 1: AddItem( new ChainHatsuburi() ); break;
-				case 2: AddItem( new LightPlateJingasa() ); break;
-				default: AddItem( new LeatherJingasa() ); break;
-			}
+      AddItem(new LeatherDo());
+      AddItem(new LeatherHiroSode());
+      AddItem(new SamuraiTabi(Utility.RandomNondyedHue()));
 
-			Item weapon;
-			switch ( Utility.Random( 3 ) )
-			{
-				case 0: weapon = new NoDachi(); break;
-				case 1: weapon = new Lajatang(); break;
-				default: weapon = new Wakizashi(); break;
-			}
-			weapon.Movable = false;
-			AddItem( weapon );
-		}
+      switch (Utility.Random(3))
+      {
+        case 0:
+          AddItem(new StuddedHaidate());
+          break;
+        case 1:
+          AddItem(new PlateSuneate());
+          break;
+        default:
+          AddItem(new LeatherSuneate());
+          break;
+      }
 
-		public override int TalkNumber => -1;
+      switch (Utility.Random(4))
+      {
+        case 0:
+          AddItem(new DecorativePlateKabuto());
+          break;
+        case 1:
+          AddItem(new ChainHatsuburi());
+          break;
+        case 2:
+          AddItem(new LightPlateJingasa());
+          break;
+        default:
+          AddItem(new LeatherJingasa());
+          break;
+      }
 
-		public override void OnTalk( PlayerMobile player, bool contextMenu )
-		{
-		}
+      Item weapon;
+      switch (Utility.Random(3))
+      {
+        case 0:
+          weapon = new NoDachi();
+          break;
+        case 1:
+          weapon = new Lajatang();
+          break;
+        default:
+          weapon = new Wakizashi();
+          break;
+      }
 
-		public HaochisGuardsman( Serial serial ) : base( serial )
-		{
-		}
+      weapon.Movable = false;
+      AddItem(weapon);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+    }
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.WriteEncodedInt(0); // version
+    }
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

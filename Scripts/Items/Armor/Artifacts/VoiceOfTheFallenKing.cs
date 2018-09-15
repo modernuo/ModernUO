@@ -1,50 +1,50 @@
 namespace Server.Items
 {
-	public class VoiceOfTheFallenKing : LeatherGorget
-	{
-		public override int LabelNumber => 1061094; // Voice of the Fallen King
-		public override int ArtifactRarity => 11;
+  public class VoiceOfTheFallenKing : LeatherGorget
+  {
+    [Constructible]
+    public VoiceOfTheFallenKing()
+    {
+      Hue = 0x76D;
+      Attributes.BonusStr = 8;
+      Attributes.RegenHits = 5;
+      Attributes.RegenStam = 3;
+    }
 
-		public override int BaseColdResistance => 18;
-		public override int BaseEnergyResistance => 18;
+    public VoiceOfTheFallenKing(Serial serial) : base(serial)
+    {
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public override int LabelNumber => 1061094; // Voice of the Fallen King
+    public override int ArtifactRarity => 11;
 
-		[Constructible]
-		public VoiceOfTheFallenKing()
-		{
-			Hue = 0x76D;
-			Attributes.BonusStr = 8;
-			Attributes.RegenHits = 5;
-			Attributes.RegenStam = 3;
-		}
+    public override int BaseColdResistance => 18;
+    public override int BaseEnergyResistance => 18;
 
-		public VoiceOfTheFallenKing( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 );
-		}
+      writer.Write(1);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( version < 1 )
-			{
-				if ( Hue == 0x551 )
-					Hue = 0x76D;
+      if (version < 1)
+      {
+        if (Hue == 0x551)
+          Hue = 0x76D;
 
-				ColdBonus = 0;
-				EnergyBonus = 0;
-			}
-		}
-	}
+        ColdBonus = 0;
+        EnergyBonus = 0;
+      }
+    }
+  }
 }

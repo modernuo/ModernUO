@@ -2,41 +2,42 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class SpawnedOrcishLord : OrcishLord
-	{
-		public override string CorpseName => "an orcish corpse";
-		[Constructible]
-		public SpawnedOrcishLord()
-		{
-			Container pack = Backpack;
+  public class SpawnedOrcishLord : OrcishLord
+  {
+    [Constructible]
+    public SpawnedOrcishLord()
+    {
+      Container pack = Backpack;
 
-			pack?.Delete();
+      pack?.Delete();
 
-			NoKillAwards = true;
-		}
+      NoKillAwards = true;
+    }
 
-		public SpawnedOrcishLord( Serial serial ) : base( serial )
-		{
-		}
+    public SpawnedOrcishLord(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnDeath( Container c )
-		{
-			base.OnDeath( c );
+    public override string CorpseName => "an orcish corpse";
 
-			c.Delete();
-		}
+    public override void OnDeath(Container c)
+    {
+      base.OnDeath(c);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+      c.Delete();
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-			NoKillAwards = true;
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+      NoKillAwards = true;
+    }
+  }
 }

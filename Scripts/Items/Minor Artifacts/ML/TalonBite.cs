@@ -1,44 +1,44 @@
 namespace Server.Items
 {
-	public class TalonBite : OrnateAxe
-	{
-		public override int LabelNumber => 1075029; // Talon Bite
+  public class TalonBite : OrnateAxe
+  {
+    [Constructible]
+    public TalonBite()
+    {
+      ItemID = 0x2D34;
+      Hue = 0x47E;
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+      SkillBonuses.SetValues(0, SkillName.Tactics, 10.0);
 
-		[Constructible]
-		public TalonBite()
-		{
-			ItemID = 0x2D34;
-			Hue = 0x47E;
+      Attributes.BonusDex = 8;
+      Attributes.WeaponSpeed = 20;
+      Attributes.WeaponDamage = 35;
 
-			SkillBonuses.SetValues( 0, SkillName.Tactics, 10.0 );
+      WeaponAttributes.HitHarm = 33;
+      WeaponAttributes.UseBestSkill = 1;
+    }
 
-			Attributes.BonusDex = 8;
-			Attributes.WeaponSpeed = 20;
-			Attributes.WeaponDamage = 35;
+    public TalonBite(Serial serial) : base(serial)
+    {
+    }
 
-			WeaponAttributes.HitHarm = 33;
-			WeaponAttributes.UseBestSkill = 1;
-		}
+    public override int LabelNumber => 1075029; // Talon Bite
 
-		public TalonBite( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

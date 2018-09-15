@@ -1,80 +1,80 @@
 namespace Server.Mobiles
 {
-	public class Rabbit : BaseCreature
-	{
-		public override string CorpseName => "a hare corpse";
-		public override string DefaultName => "a rabbit";
+  public class Rabbit : BaseCreature
+  {
+    [Constructible]
+    public Rabbit() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+      Body = 205;
 
-		[Constructible]
-		public Rabbit() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			Body = 205;
+      if (Utility.RandomBool())
+        Hue = Utility.RandomAnimalHue();
 
-			if ( Utility.RandomBool() )
-				Hue = Utility.RandomAnimalHue();
+      SetStr(6, 10);
+      SetDex(26, 38);
+      SetInt(6, 14);
 
-			SetStr( 6, 10 );
-			SetDex( 26, 38 );
-			SetInt( 6, 14 );
+      SetHits(4, 6);
+      SetMana(0);
 
-			SetHits( 4, 6 );
-			SetMana( 0 );
+      SetDamage(1);
 
-			SetDamage( 1 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetResistance(ResistanceType.Physical, 5, 10);
 
-			SetResistance( ResistanceType.Physical, 5, 10 );
+      SetSkill(SkillName.MagicResist, 5.0);
+      SetSkill(SkillName.Tactics, 5.0);
+      SetSkill(SkillName.Wrestling, 5.0);
 
-			SetSkill( SkillName.MagicResist, 5.0 );
-			SetSkill( SkillName.Tactics, 5.0 );
-			SetSkill( SkillName.Wrestling, 5.0 );
+      Fame = 150;
+      Karma = 0;
 
-			Fame = 150;
-			Karma = 0;
+      VirtualArmor = 6;
 
-			VirtualArmor = 6;
+      Tamable = true;
+      ControlSlots = 1;
+      MinTameSkill = -18.9;
+    }
 
-			Tamable = true;
-			ControlSlots = 1;
-			MinTameSkill = -18.9;
-		}
+    public Rabbit(Serial serial) : base(serial)
+    {
+    }
 
-		public override int Meat => 1;
-		public override int Hides => 1;
-		public override FoodType FavoriteFood => FoodType.FruitsAndVegies;
+    public override string CorpseName => "a hare corpse";
+    public override string DefaultName => "a rabbit";
 
-		public Rabbit(Serial serial) : base(serial)
-		{
-		}
+    public override int Meat => 1;
+    public override int Hides => 1;
+    public override FoodType FavoriteFood => FoodType.FruitsAndVegies;
 
-		public override int GetAttackSound()
-		{
-			return 0xC9;
-		}
+    public override int GetAttackSound()
+    {
+      return 0xC9;
+    }
 
-		public override int GetHurtSound()
-		{
-			return 0xCA;
-		}
+    public override int GetHurtSound()
+    {
+      return 0xCA;
+    }
 
-		public override int GetDeathSound()
-		{
-			return 0xCB;
-		}
+    public override int GetDeathSound()
+    {
+      return 0xCB;
+    }
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write((int) 0);
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

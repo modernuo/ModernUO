@@ -1,38 +1,38 @@
 namespace Server.Factions
 {
-	public class StrongholdMonolith : BaseMonolith
-	{
-		public override int DefaultLabelNumber => 1041042; // A Faction Sigil Monolith
+  public class StrongholdMonolith : BaseMonolith
+  {
+    public StrongholdMonolith() : this(null, null)
+    {
+    }
 
-		public override void OnTownChanged()
-		{
-			AssignName( Town?.Definition.StrongholdMonolithName );
-		}
+    public StrongholdMonolith(Town town, Faction faction) : base(town, faction)
+    {
+    }
 
-		public StrongholdMonolith() : this( null, null )
-		{
-		}
+    public StrongholdMonolith(Serial serial) : base(serial)
+    {
+    }
 
-		public StrongholdMonolith( Town town, Faction faction ) : base( town, faction )
-		{
-		}
+    public override int DefaultLabelNumber => 1041042; // A Faction Sigil Monolith
 
-		public StrongholdMonolith( Serial serial ) : base( serial )
-		{
-		}
+    public override void OnTownChanged()
+    {
+      AssignName(Town?.Definition.StrongholdMonolithName);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

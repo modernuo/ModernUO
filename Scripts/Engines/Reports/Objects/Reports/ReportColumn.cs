@@ -1,51 +1,53 @@
 namespace Server.Engines.Reports
 {
-	public class ReportColumn : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "rc", Construct );
+  public class ReportColumn : PersistableObject
+  {
+    private ReportColumn()
+    {
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new ReportColumn();
-		}
+    public ReportColumn(string width, string align) : this(width, align, null)
+    {
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public ReportColumn(string width, string align, string name)
+    {
+      Width = width;
+      Align = align;
+      Name = name;
+    }
 
-		public string Width { get; set; }
+    public string Width{ get; set; }
 
-		public string Align { get; set; }
+    public string Align{ get; set; }
 
-		public string Name { get; set; }
+    public string Name{ get; set; }
 
-		private ReportColumn()
-		{
-		}
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetString("w", Width);
+      op.SetString("a", Align);
+      op.SetString("n", Name);
+    }
 
-		public ReportColumn( string width, string align ) : this( width, align, null )
-		{
-		}
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      Width = Utility.Intern(ip.GetString("w"));
+      Align = Utility.Intern(ip.GetString("a"));
+      Name = Utility.Intern(ip.GetString("n"));
+    }
 
-		public ReportColumn( string width, string align, string name )
-		{
-			Width = width;
-			Align = align;
-			Name = name;
-		}
+    #region Type Identification
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetString( "w", Width );
-			op.SetString( "a", Align );
-			op.SetString( "n", Name );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("rc", Construct);
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			Width = Utility.Intern( ip.GetString( "w" ) );
-			Align = Utility.Intern( ip.GetString( "a" ) );
-			Name = Utility.Intern( ip.GetString( "n" ) );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new ReportColumn();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

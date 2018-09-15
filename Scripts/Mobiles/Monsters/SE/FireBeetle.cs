@@ -1,123 +1,124 @@
+using Server.Engines.Craft;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	[Engines.Craft.Forge]
-	public class FireBeetle : BaseMount
-	{
-		public override string CorpseName => "a fire beetle corpse";
-		public override bool SubdueBeforeTame => true; // Must be beaten into submission
-		public override bool StatLossAfterTame => true;
-		public virtual double BoostedSpeed => 0.1;
-		public override bool ReduceSpeedWithDamage => false;
+  [Forge]
+  public class FireBeetle : BaseMount
+  {
+    [Constructible]
+    public FireBeetle() : base("a fire beetle", 0xA9, 0x3E95, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      SetStr(300);
+      SetDex(100);
+      SetInt(500);
 
-		[Constructible]
-		public FireBeetle() : base( "a fire beetle", 0xA9, 0x3E95, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			SetStr( 300 );
-			SetDex( 100 );
-			SetInt( 500 );
+      SetHits(200);
 
-			SetHits( 200 );
+      SetDamage(7, 20);
 
-			SetDamage( 7, 20 );
+      SetDamageType(ResistanceType.Physical, 0);
+      SetDamageType(ResistanceType.Fire, 100);
 
-			SetDamageType( ResistanceType.Physical, 0 );
-			SetDamageType( ResistanceType.Fire, 100 );
+      SetResistance(ResistanceType.Physical, 40);
+      SetResistance(ResistanceType.Fire, 70, 75);
+      SetResistance(ResistanceType.Cold, 10);
+      SetResistance(ResistanceType.Poison, 30);
+      SetResistance(ResistanceType.Energy, 30);
 
-			SetResistance( ResistanceType.Physical, 40 );
-			SetResistance( ResistanceType.Fire, 70, 75 );
-			SetResistance( ResistanceType.Cold, 10 );
-			SetResistance( ResistanceType.Poison, 30 );
-			SetResistance( ResistanceType.Energy, 30 );
+      SetSkill(SkillName.MagicResist, 90.0);
+      SetSkill(SkillName.Tactics, 100.0);
+      SetSkill(SkillName.Wrestling, 100.0);
 
-			SetSkill( SkillName.MagicResist, 90.0 );
-			SetSkill( SkillName.Tactics, 100.0 );
-			SetSkill( SkillName.Wrestling, 100.0 );
+      Fame = 4000;
+      Karma = -4000;
 
-			Fame = 4000;
-			Karma = -4000;
+      Tamable = true;
+      ControlSlots = 3;
+      MinTameSkill = 93.9;
 
-			Tamable = true;
-			ControlSlots = 3;
-			MinTameSkill = 93.9;
+      PackItem(new SulfurousAsh(Utility.RandomMinMax(16, 25)));
+      PackItem(new IronIngot(2));
 
-			PackItem( new SulfurousAsh( Utility.RandomMinMax( 16, 25 ) ) );
-			PackItem( new IronIngot( 2 ) );
+      Hue = 0x489;
+    }
 
-			Hue = 0x489;
-		}
+    public FireBeetle(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnHarmfulSpell( Mobile from )
-		{
-			if ( !Controlled && ControlMaster == null )
-				CurrentSpeed = BoostedSpeed;
-		}
-
-		public override void OnCombatantChange()
-		{
-			if ( Combatant == null && !Controlled && ControlMaster == null )
-				CurrentSpeed = PassiveSpeed;
-		}
-
-		public override bool OverrideBondingReqs()
-		{
-			return true;
-		}
-
-		public override int GetAngerSound()
-		{
-			return 0x21D;
-		}
-
-		public override int GetIdleSound()
-		{
-			return 0x21D;
-		}
-
-		public override int GetAttackSound()
-		{
-			return 0x162;
-		}
-
-		public override int GetHurtSound()
-		{
-			return 0x163;
-		}
-
-		public override int GetDeathSound()
-		{
-			return 0x21D;
-		}
+    public override string CorpseName => "a fire beetle corpse";
+    public override bool SubdueBeforeTame => true; // Must be beaten into submission
+    public override bool StatLossAfterTame => true;
+    public virtual double BoostedSpeed => 0.1;
+    public override bool ReduceSpeedWithDamage => false;
 
 
-		public override int Meat => 16;
-		public override FoodType FavoriteFood => FoodType.Meat;
+    public override int Meat => 16;
+    public override FoodType FavoriteFood => FoodType.Meat;
 
-		public override double GetControlChance( Mobile m, bool useBaseSkill )
-		{
-			return 1.0;
-		}
+    public override void OnHarmfulSpell(Mobile from)
+    {
+      if (!Controlled && ControlMaster == null)
+        CurrentSpeed = BoostedSpeed;
+    }
 
-		public FireBeetle( Serial serial ) : base( serial )
-		{
-		}
+    public override void OnCombatantChange()
+    {
+      if (Combatant == null && !Controlled && ControlMaster == null)
+        CurrentSpeed = PassiveSpeed;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override bool OverrideBondingReqs()
+    {
+      return true;
+    }
 
-			writer.Write( (int) 1 ); // version
-		}
+    public override int GetAngerSound()
+    {
+      return 0x21D;
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override int GetIdleSound()
+    {
+      return 0x21D;
+    }
 
-			int version = reader.ReadInt();
+    public override int GetAttackSound()
+    {
+      return 0x162;
+    }
 
-			if ( version == 0 )
-				Hue = 0x489;
-		}
-	}
+    public override int GetHurtSound()
+    {
+      return 0x163;
+    }
+
+    public override int GetDeathSound()
+    {
+      return 0x21D;
+    }
+
+    public override double GetControlChance(Mobile m, bool useBaseSkill)
+    {
+      return 1.0;
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(1); // version
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+
+      if (version == 0)
+        Hue = 0x489;
+    }
+  }
 }

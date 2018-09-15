@@ -22,85 +22,85 @@ using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-	public class BuyItemStateComparer : IComparer<BuyItemState>
-	{
-		public int Compare( BuyItemState l, BuyItemState r )
-		{
-			if ( l == null && r == null ) return 0;
-			if ( l == null ) return -1;
-			if ( r == null ) return 1;
+  public class BuyItemStateComparer : IComparer<BuyItemState>
+  {
+    public int Compare(BuyItemState l, BuyItemState r)
+    {
+      if (l == null && r == null) return 0;
+      if (l == null) return -1;
+      if (r == null) return 1;
 
-			return l.MySerial.CompareTo( r.MySerial );
-		}
-	}
+      return l.MySerial.CompareTo(r.MySerial);
+    }
+  }
 
-	public class BuyItemResponse
-	{
-		public BuyItemResponse( Serial serial, int amount )
-		{
-			Serial = serial;
-			Amount = amount;
-		}
+  public class BuyItemResponse
+  {
+    public BuyItemResponse(Serial serial, int amount)
+    {
+      Serial = serial;
+      Amount = amount;
+    }
 
-		public Serial Serial { get; }
+    public Serial Serial{ get; }
 
-		public int Amount { get; }
-	}
+    public int Amount{ get; }
+  }
 
-	public class SellItemResponse
-	{
-		public SellItemResponse( Item i, int amount )
-		{
-			Item = i;
-			Amount = amount;
-		}
+  public class SellItemResponse
+  {
+    public SellItemResponse(Item i, int amount)
+    {
+      Item = i;
+      Amount = amount;
+    }
 
-		public Item Item { get; }
+    public Item Item{ get; }
 
-		public int Amount { get; }
-	}
+    public int Amount{ get; }
+  }
 
-	public class SellItemState
-	{
-		public SellItemState( Item item, int price, string name )
-		{
-			Item = item;
-			Price = price;
-			Name = name;
-		}
+  public class SellItemState
+  {
+    public SellItemState(Item item, int price, string name)
+    {
+      Item = item;
+      Price = price;
+      Name = name;
+    }
 
-		public Item Item { get; }
+    public Item Item{ get; }
 
-		public int Price { get; }
+    public int Price{ get; }
 
-		public string Name { get; }
-	}
+    public string Name{ get; }
+  }
 
-	public class BuyItemState
-	{
-		public BuyItemState( string name, Serial cont, Serial serial, int price, int amount, int itemID, int hue )
-		{
-			Description = name;
-			ContainerSerial = cont;
-			MySerial = serial;
-			Price = price;
-			Amount = amount;
-			ItemID = itemID;
-			Hue = hue;
-		}
+  public class BuyItemState
+  {
+    public BuyItemState(string name, Serial cont, Serial serial, int price, int amount, int itemID, int hue)
+    {
+      Description = name;
+      ContainerSerial = cont;
+      MySerial = serial;
+      Price = price;
+      Amount = amount;
+      ItemID = itemID;
+      Hue = hue;
+    }
 
-		public int Price { get; }
+    public int Price{ get; }
 
-		public Serial MySerial { get; }
+    public Serial MySerial{ get; }
 
-		public Serial ContainerSerial { get; }
+    public Serial ContainerSerial{ get; }
 
-		public int ItemID { get; }
+    public int ItemID{ get; }
 
-		public int Amount { get; }
+    public int Amount{ get; }
 
-		public int Hue { get; }
+    public int Hue{ get; }
 
-		public string Description { get; }
-	}
+    public string Description{ get; }
+  }
 }

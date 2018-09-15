@@ -2,142 +2,142 @@ using System;
 
 namespace Server.Factions
 {
-	public interface IFactionItem
-	{
-		FactionItem FactionItemState{ get; set; }
-	}
+  public interface IFactionItem
+  {
+    FactionItem FactionItemState{ get; set; }
+  }
 
-	public class FactionItem
-	{
-		public static readonly TimeSpan ExpirationPeriod = TimeSpan.FromDays( 21.0 );
+  public class FactionItem
+  {
+    public static readonly TimeSpan ExpirationPeriod = TimeSpan.FromDays(21.0);
 
-		public Item Item { get; }
+    public FactionItem(Item item, Faction faction)
+    {
+      Item = item;
+      Faction = faction;
+    }
 
-		public Faction Faction { get; }
+    public FactionItem(GenericReader reader, Faction faction)
+    {
+      int version = reader.ReadEncodedInt();
 
-		public DateTime Expiration { get; private set; }
+      switch (version)
+      {
+        case 0:
+        {
+          Item = reader.ReadItem();
+          Expiration = reader.ReadDateTime();
+          break;
+        }
+      }
 
-		public bool HasExpired
-		{
-			get
-			{
-				if ( Item == null || Item.Deleted )
-					return true;
+      Faction = faction;
+    }
 
-				return ( Expiration != DateTime.MinValue && DateTime.UtcNow >= Expiration );
-			}
-		}
+    public Item Item{ get; }
 
-		public void StartExpiration()
-		{
-			Expiration = DateTime.UtcNow + ExpirationPeriod;
-		}
+    public Faction Faction{ get; }
 
-		public void CheckAttach()
-		{
-			if ( !HasExpired )
-				Attach();
-			else
-				Detach();
-		}
+    public DateTime Expiration{ get; private set; }
 
-		public void Attach()
-		{
-			if ( Item is IFactionItem item )
-				item.FactionItemState = this;
+    public bool HasExpired
+    {
+      get
+      {
+        if (Item == null || Item.Deleted)
+          return true;
 
-			Faction?.State.FactionItems.Add( this );
-		}
+        return Expiration != DateTime.MinValue && DateTime.UtcNow >= Expiration;
+      }
+    }
 
-		public void Detach()
-		{
-			if ( Item is IFactionItem item )
-				item.FactionItemState = null;
+    public void StartExpiration()
+    {
+      Expiration = DateTime.UtcNow + ExpirationPeriod;
+    }
 
-			if ( Faction != null && Faction.State.FactionItems.Contains( this ) )
-				Faction.State.FactionItems.Remove( this );
-		}
+    public void CheckAttach()
+    {
+      if (!HasExpired)
+        Attach();
+      else
+        Detach();
+    }
 
-		public FactionItem( Item item, Faction faction )
-		{
-			Item = item;
-			Faction = faction;
-		}
+    public void Attach()
+    {
+      if (Item is IFactionItem item)
+        item.FactionItemState = this;
 
-		public FactionItem( GenericReader reader, Faction faction )
-		{
-			int version = reader.ReadEncodedInt();
+      Faction?.State.FactionItems.Add(this);
+    }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Item = reader.ReadItem();
-					Expiration = reader.ReadDateTime();
-					break;
-				}
-			}
+    public void Detach()
+    {
+      if (Item is IFactionItem item)
+        item.FactionItemState = null;
 
-			Faction = faction;
-		}
+      if (Faction != null && Faction.State.FactionItems.Contains(this))
+        Faction.State.FactionItems.Remove(this);
+    }
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 0 );
+    public void Serialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0);
 
-			writer.Write( (Item) Item );
-			writer.Write( (DateTime) Expiration );
-		}
+      writer.Write(Item);
+      writer.Write(Expiration);
+    }
 
-		public static int GetMaxWearables( Mobile mob )
-		{
-			PlayerState pl = PlayerState.Find( mob );
+    public static int GetMaxWearables(Mobile mob)
+    {
+      PlayerState pl = PlayerState.Find(mob);
 
-			if ( pl == null )
-				return 0;
+      if (pl == null)
+        return 0;
 
-			if ( pl.Faction.IsCommander( mob ) )
-				return 9;
+      if (pl.Faction.IsCommander(mob))
+        return 9;
 
-			return pl.Rank.MaxWearables;
-		}
+      return pl.Rank.MaxWearables;
+    }
 
-		public static FactionItem Find( Item item )
-		{
-			if ( item is IFactionItem factionItem )
-			{
-				FactionItem state = factionItem.FactionItemState;
+    public static FactionItem Find(Item item)
+    {
+      if (item is IFactionItem factionItem)
+      {
+        FactionItem state = factionItem.FactionItemState;
 
-				if ( state?.HasExpired == true )
-				{
-					state.Detach();
-					state = null;
-				}
+        if (state?.HasExpired == true)
+        {
+          state.Detach();
+          state = null;
+        }
 
-				return state;
-			}
+        return state;
+      }
 
-			return null;
-		}
+      return null;
+    }
 
-		public static Item Imbue( Item item, Faction faction, bool expire, int hue )
-		{
-			if ( !(item is IFactionItem) )
-				return item;
+    public static Item Imbue(Item item, Faction faction, bool expire, int hue)
+    {
+      if (!(item is IFactionItem))
+        return item;
 
-			FactionItem state = Find( item );
+      FactionItem state = Find(item);
 
-			if ( state == null )
-			{
-				state = new FactionItem( item, faction );
-				state.Attach();
-			}
+      if (state == null)
+      {
+        state = new FactionItem(item, faction);
+        state.Attach();
+      }
 
-			if ( expire )
-				state.StartExpiration();
+      if (expire)
+        state.StartExpiration();
 
-			item.Hue = hue;
-			return item;
-		}
-	}
+      item.Hue = hue;
+      return item;
+    }
+  }
 }

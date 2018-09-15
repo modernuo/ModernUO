@@ -1,72 +1,78 @@
 using System;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Server.Factions
 {
-	public class Reflector
-	{
-		private static List<Town> m_Towns;
+  public class Reflector
+  {
+    private static List<Town> m_Towns;
 
-		public static List<Town> Towns
-		{
-			get
-			{
-				if ( m_Towns == null )
-					ProcessTypes();
+    private static List<Faction> m_Factions;
 
-				return m_Towns;
-			}
-		}
+    public static List<Town> Towns
+    {
+      get
+      {
+        if (m_Towns == null)
+          ProcessTypes();
 
-		private static List<Faction> m_Factions;
+        return m_Towns;
+      }
+    }
 
-		public static List<Faction> Factions
-		{
-			get
-			{
-				if ( m_Factions == null )
-					ProcessTypes();
+    public static List<Faction> Factions
+    {
+      get
+      {
+        if (m_Factions == null)
+          ProcessTypes();
 
-				return m_Factions;
-			}
-		}
+        return m_Factions;
+      }
+    }
 
-		private static object Construct( Type type )
-		{
-			try{ return Activator.CreateInstance( type ); }
-			catch{ return null; }
-		}
+    private static object Construct(Type type)
+    {
+      try
+      {
+        return Activator.CreateInstance(type);
+      }
+      catch
+      {
+        return null;
+      }
+    }
 
-		private static void ProcessTypes()
-		{
-			m_Factions = new List<Faction>();
-			m_Towns = new List<Town>();
+    private static void ProcessTypes()
+    {
+      m_Factions = new List<Faction>();
+      m_Towns = new List<Town>();
 
-			Assembly[] asms = ScriptCompiler.Assemblies;
+      Assembly[] asms = ScriptCompiler.Assemblies;
 
-			for ( int i = 0; i < asms.Length; ++i )
-			{
-				Assembly asm = asms[i];
-				TypeCache tc = ScriptCompiler.GetTypeCache( asm );
-				Type[] types = tc.Types;
+      for (int i = 0; i < asms.Length; ++i)
+      {
+        Assembly asm = asms[i];
+        TypeCache tc = ScriptCompiler.GetTypeCache(asm);
+        Type[] types = tc.Types;
 
-				for ( int j = 0; j < types.Length; ++j )
-				{
-					Type type = types[j];
+        for (int j = 0; j < types.Length; ++j)
+        {
+          Type type = types[j];
 
-					if ( type.IsSubclassOf( typeof( Faction ) ) )
-					{
-						if ( Construct( type ) is Faction faction )
-							Faction.Factions.Add( faction );
-					}
-					else if ( type.IsSubclassOf( typeof( Town ) ) )
-					{
-						if ( Construct( type ) is Town town )
-							Town.Towns.Add( town );
-					}
-				}
-			}
-		}
-	}
+          if (type.IsSubclassOf(typeof(Faction)))
+          {
+            if (Construct(type) is Faction faction)
+              Faction.Factions.Add(faction);
+          }
+          else if (type.IsSubclassOf(typeof(Town)))
+          {
+            if (Construct(type) is Town town)
+              Town.Towns.Add(town);
+          }
+        }
+      }
+    }
+  }
 }

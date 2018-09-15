@@ -1,45 +1,45 @@
 ﻿namespace Server.Items
 {
-	class WaterBarrel : BaseWaterContainer
-	{
-		public override int LabelNumber => 1025453;  /* water barrel */
+  internal class WaterBarrel : BaseWaterContainer
+  {
+    private static int vItemID = 0xe77;
+    private static int fItemID = 0x154d;
 
-		public override int voidItem_ID => vItemID;
-		public override int fullItem_ID => fItemID;
-		public override int MaxQuantity => 100;
+    [Constructible]
+    public WaterBarrel()
+      : this(false)
+    {
+    }
 
-		private static int vItemID = 0xe77;
-		private static int fItemID = 0x154d;
+    [Constructible]
+    public WaterBarrel(bool filled)
+      : base(filled ? fItemID : vItemID, filled)
+    {
+    }
 
-		[Constructible]
-		public WaterBarrel()
-			: this( false )
-		{
-		}
+    public WaterBarrel(Serial serial)
+      : base(serial)
+    {
+    }
 
-		[Constructible]
-		public WaterBarrel( bool filled )
-			: base( ( filled ) ? fItemID : vItemID, filled )
-		{
-		}
+    public override int LabelNumber => 1025453; /* water barrel */
 
-		public WaterBarrel( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int voidItem_ID => vItemID;
+    public override int fullItem_ID => fItemID;
+    public override int MaxQuantity => 100;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

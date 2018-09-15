@@ -1,270 +1,271 @@
 using System;
-using Server.Mobiles;
 using Server.Gumps;
 using Server.Misc;
+using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Objectives
 {
-	public class EscortObjective : BaseObjective
-	{
-		public QuestArea Destination { get; set; }
+  public class EscortObjective : BaseObjective
+  {
+    public EscortObjective()
+      : this(null)
+    {
+    }
 
-		public EscortObjective()
-			: this( null )
-		{
-		}
+    public EscortObjective(QuestArea destination)
+    {
+      Destination = destination;
+    }
 
-		public EscortObjective( QuestArea destination )
-		{
-			Destination = destination;
-		}
+    public QuestArea Destination{ get; set; }
 
-		public override bool CanOffer( IQuestGiver quester, PlayerMobile pm, bool message )
-		{
-			if ( ( quester is BaseCreature creature && creature.Controlled ) || ( quester is BaseEscortable escortable && escortable.IsBeingDeleted ) )
-				return false;
+    public override bool CanOffer(IQuestGiver quester, PlayerMobile pm, bool message)
+    {
+      if (quester is BaseCreature creature && creature.Controlled ||
+          quester is BaseEscortable escortable && escortable.IsBeingDeleted)
+        return false;
 
-			MLQuestContext context = MLQuestSystem.GetContext( pm );
+      MLQuestContext context = MLQuestSystem.GetContext(pm);
 
-			if ( context != null )
-			{
-				foreach ( MLQuestInstance instance in context.QuestInstances )
-				{
-					if ( instance.Quest.IsEscort )
-					{
-						if ( message )
-							MLQuestSystem.Tell( quester, pm, 500896 ); // I see you already have an escort.
+      if (context != null)
+        foreach (MLQuestInstance instance in context.QuestInstances)
+          if (instance.Quest.IsEscort)
+          {
+            if (message)
+              MLQuestSystem.Tell(quester, pm, 500896); // I see you already have an escort.
 
-						return false;
-					}
-				}
-			}
+            return false;
+          }
 
-			DateTime nextEscort = pm.LastEscortTime + BaseEscortable.EscortDelay;
+      DateTime nextEscort = pm.LastEscortTime + BaseEscortable.EscortDelay;
 
-			if ( nextEscort > DateTime.UtcNow )
-			{
-				if ( message )
-				{
-					int minutes = (int)Math.Ceiling( ( nextEscort - DateTime.UtcNow ).TotalMinutes );
+      if (nextEscort > DateTime.UtcNow)
+      {
+        if (message)
+        {
+          int minutes = (int)Math.Ceiling((nextEscort - DateTime.UtcNow).TotalMinutes);
 
-					if ( minutes == 1 )
-						MLQuestSystem.Tell( quester, pm, "You must rest 1 minute before we set out on this journey." );
-					else
-						MLQuestSystem.Tell( quester, pm, 1071195, minutes.ToString() ); // You must rest ~1_minsleft~ minutes before we set out on this journey.
-				}
+          if (minutes == 1)
+            MLQuestSystem.Tell(quester, pm, "You must rest 1 minute before we set out on this journey.");
+          else
+            MLQuestSystem.Tell(quester, pm, 1071195,
+              minutes.ToString()); // You must rest ~1_minsleft~ minutes before we set out on this journey.
+        }
 
-				return false;
-			}
+        return false;
+      }
 
-			return true;
-		}
+      return true;
+    }
 
-		public override void WriteToGump( Gump g, ref int y )
-		{
-			g.AddHtmlLocalized( 98, y, 312, 16, 1072206, 0x15F90, false, false ); // Escort to
+    public override void WriteToGump(Gump g, ref int y)
+    {
+      g.AddHtmlLocalized(98, y, 312, 16, 1072206, 0x15F90, false, false); // Escort to
 
-			if ( Destination.Name.Number > 0 )
-				g.AddHtmlLocalized( 173, y, 312, 20, Destination.Name.Number, 0xFFFFFF, false, false );
-			else if ( Destination.Name.String != null )
-				g.AddLabel( 173, y, 0x481, Destination.Name.String );
+      if (Destination.Name.Number > 0)
+        g.AddHtmlLocalized(173, y, 312, 20, Destination.Name.Number, 0xFFFFFF, false, false);
+      else if (Destination.Name.String != null)
+        g.AddLabel(173, y, 0x481, Destination.Name.String);
 
-			y += 16;
-		}
+      y += 16;
+    }
 
-		public override BaseObjectiveInstance CreateInstance( MLQuestInstance instance )
-		{
-			if ( instance == null || Destination == null )
-				return null;
+    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
+    {
+      if (instance == null || Destination == null)
+        return null;
 
-			return new EscortObjectiveInstance( this, instance );
-		}
-	}
+      return new EscortObjectiveInstance(this, instance);
+    }
+  }
 
-	public class EscortObjectiveInstance : BaseObjectiveInstance
-	{
-		private EscortObjective m_Objective;
-		private Timer m_Timer;
-		private DateTime m_LastSeenEscorter;
-		private BaseCreature m_Escort;
+  public class EscortObjectiveInstance : BaseObjectiveInstance
+  {
+    private BaseCreature m_Escort;
+    private DateTime m_LastSeenEscorter;
+    private EscortObjective m_Objective;
+    private Timer m_Timer;
 
-		public bool HasCompleted { get; set; }
+    public EscortObjectiveInstance(EscortObjective objective, MLQuestInstance instance)
+      : base(instance, objective)
+    {
+      m_Objective = objective;
+      HasCompleted = false;
+      m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5), CheckDestination);
+      m_LastSeenEscorter = DateTime.UtcNow;
+      m_Escort = instance.Quester as BaseCreature;
 
-		public EscortObjectiveInstance( EscortObjective objective, MLQuestInstance instance )
-			: base( instance, objective )
-		{
-			m_Objective = objective;
-			HasCompleted = false;
-			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 5 ), TimeSpan.FromSeconds( 5 ), CheckDestination );
-			m_LastSeenEscorter = DateTime.UtcNow;
-			m_Escort = instance.Quester as BaseCreature;
+      if (MLQuestSystem.Debug && m_Escort == null && instance.Quester != null)
+        Console.WriteLine("Warning: EscortObjective is not supported for type '{0}'",
+          instance.Quester.GetType().Name);
+    }
 
-			if ( MLQuestSystem.Debug && m_Escort == null && instance.Quester != null )
-				Console.WriteLine( "Warning: EscortObjective is not supported for type '{0}'", instance.Quester.GetType().Name );
-		}
+    public bool HasCompleted{ get; set; }
 
-		public override bool IsCompleted()
-		{
-			return HasCompleted;
-		}
+    public override DataType ExtraDataType => DataType.EscortObjective;
 
-		private void CheckDestination()
-		{
-			if ( m_Escort == null || HasCompleted ) // Completed by deserialization
-			{
-				StopTimer();
-				return;
-			}
+    public override bool IsCompleted()
+    {
+      return HasCompleted;
+    }
 
-			MLQuestInstance instance = Instance;
-			PlayerMobile pm = instance.Player;
+    private void CheckDestination()
+    {
+      if (m_Escort == null || HasCompleted) // Completed by deserialization
+      {
+        StopTimer();
+        return;
+      }
 
-			if ( instance.Removed )
-			{
-				Abandon();
-			}
-			else if ( m_Objective.Destination.Contains( m_Escort ) )
-			{
-				m_Escort.Say( 1042809, pm.Name ); // We have arrived! I thank thee, ~1_PLAYER_NAME~! I have no further need of thy services. Here is thy pay.
+      MLQuestInstance instance = Instance;
+      PlayerMobile pm = instance.Player;
 
-				if ( pm.Young || m_Escort.Region.IsPartOf( "Haven Island" ) )
-					Titles.AwardFame( pm, 10, true );
-				else
-					VirtueHelper.AwardVirtue( pm, VirtueName.Compassion, ( m_Escort is BaseEscortable escortable && escortable.IsPrisoner ) ? 400 : 200 );
+      if (instance.Removed)
+      {
+        Abandon();
+      }
+      else if (m_Objective.Destination.Contains(m_Escort))
+      {
+        m_Escort.Say(1042809,
+          pm.Name); // We have arrived! I thank thee, ~1_PLAYER_NAME~! I have no further need of thy services. Here is thy pay.
 
-				EndFollow( m_Escort );
-				StopTimer();
+        if (pm.Young || m_Escort.Region.IsPartOf("Haven Island"))
+          Titles.AwardFame(pm, 10, true);
+        else
+          VirtueHelper.AwardVirtue(pm, VirtueName.Compassion,
+            m_Escort is BaseEscortable escortable && escortable.IsPrisoner ? 400 : 200);
 
-				HasCompleted = true;
-				CheckComplete();
+        EndFollow(m_Escort);
+        StopTimer();
 
-				// Auto claim reward
-				MLQuestSystem.OnDoubleClick( m_Escort, pm );
-			}
-			else if ( pm.Map != m_Escort.Map || !pm.InRange( m_Escort, 30 ) ) // TODO: verify range
-			{
-				if ( m_LastSeenEscorter + BaseEscortable.AbandonDelay <= DateTime.UtcNow )
-					Abandon();
-			}
-			else
-			{
-				m_LastSeenEscorter = DateTime.UtcNow;
-			}
-		}
+        HasCompleted = true;
+        CheckComplete();
 
-		private void StopTimer()
-		{
-			if ( m_Timer != null )
-			{
-				m_Timer.Stop();
-				m_Timer = null;
-			}
-		}
+        // Auto claim reward
+        MLQuestSystem.OnDoubleClick(m_Escort, pm);
+      }
+      else if (pm.Map != m_Escort.Map || !pm.InRange(m_Escort, 30)) // TODO: verify range
+      {
+        if (m_LastSeenEscorter + BaseEscortable.AbandonDelay <= DateTime.UtcNow)
+          Abandon();
+      }
+      else
+      {
+        m_LastSeenEscorter = DateTime.UtcNow;
+      }
+    }
 
-		public static void BeginFollow( BaseCreature quester, PlayerMobile pm )
-		{
-			quester.ControlSlots = 0;
-			quester.SetControlMaster( pm );
+    private void StopTimer()
+    {
+      if (m_Timer != null)
+      {
+        m_Timer.Stop();
+        m_Timer = null;
+      }
+    }
 
-			quester.ActiveSpeed = 0.1;
-			quester.PassiveSpeed = 0.2;
+    public static void BeginFollow(BaseCreature quester, PlayerMobile pm)
+    {
+      quester.ControlSlots = 0;
+      quester.SetControlMaster(pm);
 
-			quester.ControlOrder = OrderType.Follow;
-			quester.ControlTarget = pm;
+      quester.ActiveSpeed = 0.1;
+      quester.PassiveSpeed = 0.2;
 
-			quester.CantWalk = false;
-			quester.CurrentSpeed = 0.1;
-		}
+      quester.ControlOrder = OrderType.Follow;
+      quester.ControlTarget = pm;
 
-		public static void EndFollow( BaseCreature quester )
-		{
-			quester.ActiveSpeed = 0.2;
-			quester.PassiveSpeed = 1.0;
+      quester.CantWalk = false;
+      quester.CurrentSpeed = 0.1;
+    }
 
-			quester.ControlOrder = OrderType.None;
-			quester.ControlTarget = null;
+    public static void EndFollow(BaseCreature quester)
+    {
+      quester.ActiveSpeed = 0.2;
+      quester.PassiveSpeed = 1.0;
 
-			quester.CurrentSpeed = 1.0;
+      quester.ControlOrder = OrderType.None;
+      quester.ControlTarget = null;
 
-			quester.SetControlMaster( null );
+      quester.CurrentSpeed = 1.0;
 
-			(quester as BaseEscortable)?.BeginDelete();
-		}
+      quester.SetControlMaster(null);
 
-		public override void OnQuestAccepted()
-		{
-			MLQuestInstance instance = Instance;
-			PlayerMobile pm = instance.Player;
+      (quester as BaseEscortable)?.BeginDelete();
+    }
 
-			pm.LastEscortTime = DateTime.UtcNow;
+    public override void OnQuestAccepted()
+    {
+      MLQuestInstance instance = Instance;
+      PlayerMobile pm = instance.Player;
 
-			if ( m_Escort != null )
-				BeginFollow( m_Escort, pm );
-		}
+      pm.LastEscortTime = DateTime.UtcNow;
 
-		public void Abandon()
-		{
-			StopTimer();
+      if (m_Escort != null)
+        BeginFollow(m_Escort, pm);
+    }
 
-			MLQuestInstance instance = Instance;
-			PlayerMobile pm = instance.Player;
+    public void Abandon()
+    {
+      StopTimer();
 
-			if ( m_Escort != null && !m_Escort.Deleted )
-			{
-				if ( !pm.Alive )
-					m_Escort.Say( 500901 ); // Ack!  My escort has come to haunt me!
-				else
-					m_Escort.Say( 500902 ); // My escort seems to have abandoned me!
+      MLQuestInstance instance = Instance;
+      PlayerMobile pm = instance.Player;
 
-				EndFollow( m_Escort );
-			}
+      if (m_Escort != null && !m_Escort.Deleted)
+      {
+        if (!pm.Alive)
+          m_Escort.Say(500901); // Ack!  My escort has come to haunt me!
+        else
+          m_Escort.Say(500902); // My escort seems to have abandoned me!
 
-			// Note: this sound is sent twice on OSI (once here and once in Cancel())
-			//m_Player.SendSound( 0x5B3 ); // private sound
-			pm.SendLocalizedMessage( 1071194 ); // You have failed your escort quest...
+        EndFollow(m_Escort);
+      }
 
-			if ( !instance.Removed )
-				instance.Cancel();
-		}
+      // Note: this sound is sent twice on OSI (once here and once in Cancel())
+      //m_Player.SendSound( 0x5B3 ); // private sound
+      pm.SendLocalizedMessage(1071194); // You have failed your escort quest...
 
-		public override void OnQuesterDeleted()
-		{
-			if ( IsCompleted() || Instance.Removed )
-				return;
+      if (!instance.Removed)
+        instance.Cancel();
+    }
 
-			Abandon();
-		}
+    public override void OnQuesterDeleted()
+    {
+      if (IsCompleted() || Instance.Removed)
+        return;
 
-		public override void OnPlayerDeath()
-		{
-			// Note: OSI also cancels it when the quest is already complete
-			if ( /*IsCompleted() ||*/ Instance.Removed )
-				return;
+      Abandon();
+    }
 
-			Instance.Cancel();
-		}
+    public override void OnPlayerDeath()
+    {
+      // Note: OSI also cancels it when the quest is already complete
+      if ( /*IsCompleted() ||*/ Instance.Removed)
+        return;
 
-		public override void OnExpire()
-		{
-			Abandon();
-		}
+      Instance.Cancel();
+    }
 
-		public override void WriteToGump( Gump g, ref int y )
-		{
-			m_Objective.WriteToGump( g, ref y );
+    public override void OnExpire()
+    {
+      Abandon();
+    }
 
-			base.WriteToGump( g, ref y );
+    public override void WriteToGump(Gump g, ref int y)
+    {
+      m_Objective.WriteToGump(g, ref y);
 
-			// No extra instance stuff printed for this objective
-		}
+      base.WriteToGump(g, ref y);
 
-		public override DataType ExtraDataType => DataType.EscortObjective;
+      // No extra instance stuff printed for this objective
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( HasCompleted );
-		}
-	}
+      writer.Write(HasCompleted);
+    }
+  }
 }

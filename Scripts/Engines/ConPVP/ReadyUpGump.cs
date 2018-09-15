@@ -1,233 +1,232 @@
-using System;
 using System.Collections;
 using Server.Gumps;
-using Server.Network;
 using Server.Mobiles;
+using Server.Network;
 
 namespace Server.Engines.ConPVP
 {
-	public class ReadyUpGump : Gump
-	{
-		private Mobile m_From;
-		private DuelContext m_Context;
+  public class ReadyUpGump : Gump
+  {
+    private DuelContext m_Context;
+    private Mobile m_From;
 
-		public string Center( string text )
-		{
-			return $"<CENTER>{text}</CENTER>";
-		}
+    public ReadyUpGump(Mobile from, DuelContext context) : base(50, 50)
+    {
+      m_From = from;
+      m_Context = context;
 
-		public void AddGoldenButton( int x, int y, int bid )
-		{
-			AddButton( x  , y  , 0xD2, 0xD2, bid, GumpButtonType.Reply, 0 );
-			AddButton( x+3, y+3, 0xD8, 0xD8, bid, GumpButtonType.Reply, 0 );
-		}
+      Closable = false;
+      AddPage(0);
 
-		public ReadyUpGump( Mobile from, DuelContext context ) : base( 50, 50 )
-		{
-			m_From = from;
-			m_Context = context;
+      if (context.Rematch)
+      {
+        int height = 25 + 20 + 10 + 22 + 25;
 
-			Closable = false;
-			AddPage( 0 );
+        AddBackground(0, 0, 210, height, 9250);
+        AddBackground(10, 10, 190, height - 20, 0xDAC);
 
-			if ( context.Rematch )
-			{
-				int height = 25 + 20 + 10 + 22 + 25;
+        AddHtml(35, 25, 140, 20, Center("Rematch?"), false, false);
 
-				AddBackground( 0, 0, 210, height, 9250 );
-				AddBackground( 10, 10, 190, height - 20, 0xDAC );
+        AddButton(35, 55, 247, 248, 1, GumpButtonType.Reply, 0);
+        AddButton(115, 55, 242, 241, 2, GumpButtonType.Reply, 0);
+      }
+      else
+      {
+        #region Participants
 
-				AddHtml( 35, 25, 140, 20, Center( "Rematch?" ), false, false );
+        AddPage(1);
 
-				AddButton( 35, 55, 247, 248, 1, GumpButtonType.Reply, 0 );
-				AddButton( 115, 55, 242, 241, 2, GumpButtonType.Reply, 0 );
-			}
-			else
-			{
-				#region Participants
-				AddPage( 1 );
+        ArrayList parts = context.Participants;
 
-				ArrayList parts = context.Participants;
+        int height = 25 + 20;
 
-				int height = 25 + 20;
+        for (int i = 0; i < parts.Count; ++i)
+        {
+          Participant p = (Participant)parts[i];
 
-				for ( int i = 0; i < parts.Count; ++i )
-				{
-					Participant p = (Participant)parts[i];
+          height += 4;
 
-					height += 4;
+          if (p.Players.Length > 1)
+            height += 22;
 
-					if ( p.Players.Length > 1 )
-						height += 22;
+          height += p.Players.Length * 22;
+        }
 
-					height += (p.Players.Length * 22);
-				}
+        height += 10 + 22 + 25;
 
-				height += 10 + 22 + 25;
+        AddBackground(0, 0, 260, height, 9250);
+        AddBackground(10, 10, 240, height - 20, 0xDAC);
 
-				AddBackground( 0, 0, 260, height, 9250 );
-				AddBackground( 10, 10, 240, height - 20, 0xDAC );
+        AddHtml(35, 25, 190, 20, Center("Participants"), false, false);
 
-				AddHtml( 35, 25, 190, 20, Center( "Participants" ), false, false );
+        int y = 20 + 25;
 
-				int y = 20 + 25;
+        for (int i = 0; i < parts.Count; ++i)
+        {
+          Participant p = (Participant)parts[i];
 
-				for ( int i = 0; i < parts.Count; ++i )
-				{
-					Participant p = (Participant)parts[i];
+          y += 4;
 
-					y += 4;
+          int offset = 0;
 
-					int offset = 0;
+          if (p.Players.Length > 1)
+          {
+            AddHtml(35, y, 176, 20, $"Team #{i + 1}", false, false);
+            y += 22;
+            offset = 10;
+          }
 
-					if ( p.Players.Length > 1 )
-					{
-						AddHtml( 35, y, 176, 20, $"Team #{i + 1}", false, false );
-						y += 22;
-						offset = 10;
-					}
+          for (int j = 0; j < p.Players.Length; ++j)
+          {
+            DuelPlayer pl = p.Players[j];
 
-					for ( int j = 0; j < p.Players.Length; ++j )
-					{
-						DuelPlayer pl = p.Players[j];
+            string name = pl == null ? "(Empty)" : pl.Mobile.Name;
 
-						string name = ( pl == null ? "(Empty)" : pl.Mobile.Name );
+            AddHtml(35 + offset, y, 166, 20, name, false, false);
 
-						AddHtml( 35 + offset, y, 166, 20, name, false, false );
+            y += 22;
+          }
+        }
 
-						y += 22;
-					}
-				}
+        y += 8;
 
-				y += 8;
+        AddHtml(35, y, 176, 20, "Continue?", false, false);
 
-				AddHtml( 35, y, 176, 20, "Continue?", false, false );
+        y -= 2;
 
-				y -= 2;
+        AddButton(102, y, 247, 248, 0, GumpButtonType.Page, 2);
+        AddButton(169, y, 242, 241, 2, GumpButtonType.Reply, 0);
 
-				AddButton( 102, y, 247, 248, 0, GumpButtonType.Page, 2 );
-				AddButton( 169, y, 242, 241, 2, GumpButtonType.Reply, 0 );
-				#endregion
+        #endregion
 
-				#region Rules
-				AddPage( 2 );
+        #region Rules
 
-				Ruleset ruleset = context.Ruleset;
-				Ruleset basedef = ruleset.Base;
+        AddPage(2);
 
-				height = 25 + 20 + 5 + 20 + 20 + 4;
+        Ruleset ruleset = context.Ruleset;
+        Ruleset basedef = ruleset.Base;
 
-				int changes = 0;
+        height = 25 + 20 + 5 + 20 + 20 + 4;
 
-				BitArray defs;
+        int changes = 0;
 
-				if ( ruleset.Flavors.Count > 0 )
-				{
-					defs = new BitArray( basedef.Options );
+        BitArray defs;
 
-					for ( int i = 0; i < ruleset.Flavors.Count; ++i )
-						defs.Or( ((Ruleset)ruleset.Flavors[i]).Options );
+        if (ruleset.Flavors.Count > 0)
+        {
+          defs = new BitArray(basedef.Options);
 
-					height += ruleset.Flavors.Count * 18;
-				}
-				else
-				{
-					defs = basedef.Options;
-				}
+          for (int i = 0; i < ruleset.Flavors.Count; ++i)
+            defs.Or(((Ruleset)ruleset.Flavors[i]).Options);
 
-				BitArray opts = ruleset.Options;
+          height += ruleset.Flavors.Count * 18;
+        }
+        else
+        {
+          defs = basedef.Options;
+        }
 
-				for ( int i = 0; i < opts.Length; ++i )
-				{
-					if ( defs[i] != opts[i] )
-						++changes;
-				}
+        BitArray opts = ruleset.Options;
 
-				height += (changes * 22);
+        for (int i = 0; i < opts.Length; ++i)
+          if (defs[i] != opts[i])
+            ++changes;
 
-				height += 10 + 22 + 25;
+        height += changes * 22;
 
-				AddBackground( 0, 0, 260, height, 9250 );
-				AddBackground( 10, 10, 240, height - 20, 0xDAC );
+        height += 10 + 22 + 25;
 
-				AddHtml( 35, 25, 190, 20, Center( "Rules" ), false, false );
+        AddBackground(0, 0, 260, height, 9250);
+        AddBackground(10, 10, 240, height - 20, 0xDAC);
 
-				AddHtml( 35, 50, 190, 20, $"Set: {basedef.Title}", false, false );
+        AddHtml(35, 25, 190, 20, Center("Rules"), false, false);
 
-				y = 70;
+        AddHtml(35, 50, 190, 20, $"Set: {basedef.Title}", false, false);
 
-				for ( int i = 0; i < ruleset.Flavors.Count; ++i, y += 18 )
-					AddHtml( 35, y, 190, 20, $" + {((Ruleset) ruleset.Flavors[i]).Title}", false, false );
+        y = 70;
 
-				y += 4;
+        for (int i = 0; i < ruleset.Flavors.Count; ++i, y += 18)
+          AddHtml(35, y, 190, 20, $" + {((Ruleset)ruleset.Flavors[i]).Title}", false, false);
 
-				if ( changes > 0 )
-				{
-					AddHtml( 35, y, 190, 20, "Modifications:", false, false );
-					y += 20;
+        y += 4;
 
-					for ( int i = 0; i < opts.Length; ++i )
-					{
-						if ( defs[i] != opts[i] )
-						{
-							string name = ruleset.Layout.FindByIndex( i );
+        if (changes > 0)
+        {
+          AddHtml(35, y, 190, 20, "Modifications:", false, false);
+          y += 20;
 
-							if ( name != null ) // sanity
-							{
-								AddImage( 35, y, opts[i] ? 0xD3 : 0xD2 );
-								AddHtml( 60, y, 165, 22, name, false, false );
-							}
+          for (int i = 0; i < opts.Length; ++i)
+            if (defs[i] != opts[i])
+            {
+              string name = ruleset.Layout.FindByIndex(i);
 
-							y += 22;
-						}
-					}
-				}
-				else
-				{
-					AddHtml( 35, y, 190, 20, "Modifications: None", false, false );
-					y += 20;
-				}
+              if (name != null) // sanity
+              {
+                AddImage(35, y, opts[i] ? 0xD3 : 0xD2);
+                AddHtml(60, y, 165, 22, name, false, false);
+              }
 
-				y += 8;
+              y += 22;
+            }
+        }
+        else
+        {
+          AddHtml(35, y, 190, 20, "Modifications: None", false, false);
+          y += 20;
+        }
 
-				AddHtml( 35, y, 176, 20, "Continue?", false, false );
+        y += 8;
 
-				y -= 2;
+        AddHtml(35, y, 176, 20, "Continue?", false, false);
 
-				AddButton( 102, y, 247, 248, 1, GumpButtonType.Reply, 0 );
-				AddButton( 169, y, 242, 241, 3, GumpButtonType.Reply, 0 );
-				#endregion
-			}
-		}
+        y -= 2;
 
-		public override void OnResponse( NetState sender, RelayInfo info )
-		{
-			if ( !m_Context.Registered || !m_Context.ReadyWait )
-				return;
+        AddButton(102, y, 247, 248, 1, GumpButtonType.Reply, 0);
+        AddButton(169, y, 242, 241, 3, GumpButtonType.Reply, 0);
 
-			switch ( info.ButtonID )
-			{
-				case 1: // okay
-				{
-					if ( !(m_From is PlayerMobile pm) )
-						break;
+        #endregion
+      }
+    }
 
-					pm.DuelPlayer.Ready = true;
-					m_Context.SendReadyGump();
+    public string Center(string text)
+    {
+      return $"<CENTER>{text}</CENTER>";
+    }
 
-					break;
-				}
-				case 2: // reject participants
-				{
-					m_Context.RejectReady( m_From, "participants" );
-					break;
-				}
-				case 3: // reject rules
-				{
-					m_Context.RejectReady( m_From, "rules" );
-					break;
-				}
-			}
-		}
-	}
+    public void AddGoldenButton(int x, int y, int bid)
+    {
+      AddButton(x, y, 0xD2, 0xD2, bid, GumpButtonType.Reply, 0);
+      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid, GumpButtonType.Reply, 0);
+    }
+
+    public override void OnResponse(NetState sender, RelayInfo info)
+    {
+      if (!m_Context.Registered || !m_Context.ReadyWait)
+        return;
+
+      switch (info.ButtonID)
+      {
+        case 1: // okay
+        {
+          if (!(m_From is PlayerMobile pm))
+            break;
+
+          pm.DuelPlayer.Ready = true;
+          m_Context.SendReadyGump();
+
+          break;
+        }
+        case 2: // reject participants
+        {
+          m_Context.RejectReady(m_From, "participants");
+          break;
+        }
+        case 3: // reject rules
+        {
+          m_Context.RejectReady(m_From, "rules");
+          break;
+        }
+      }
+    }
+  }
 }

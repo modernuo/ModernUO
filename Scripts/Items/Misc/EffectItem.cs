@@ -3,85 +3,85 @@ using System.Collections.Generic;
 
 namespace Server.Items
 {
-	public class EffectItem : Item
-	{
-		private static List<EffectItem> m_Free = new List<EffectItem>(); // List of available EffectItems
+  public class EffectItem : Item
+  {
+    private static List<EffectItem> m_Free = new List<EffectItem>(); // List of available EffectItems
 
-		public static readonly TimeSpan DefaultDuration = TimeSpan.FromSeconds( 5.0 );
+    public static readonly TimeSpan DefaultDuration = TimeSpan.FromSeconds(5.0);
 
-		public static EffectItem Create( Point3D p, Map map, TimeSpan duration )
-		{
-			EffectItem item = null;
+    private EffectItem() : base(1) // nodraw
+    {
+      Movable = false;
+    }
 
-			for ( int i = m_Free.Count - 1; item == null && i >= 0; --i ) // We reuse new entries first so decay works better
-			{
-				EffectItem free = m_Free[i];
+    public EffectItem(Serial serial) : base(serial)
+    {
+    }
 
-				m_Free.RemoveAt( i );
+    public override bool Decays => true;
 
-				if ( !free.Deleted && free.Map == Map.Internal )
-					item = free;
-			}
+    public static EffectItem Create(Point3D p, Map map, TimeSpan duration)
+    {
+      EffectItem item = null;
 
-			if ( item == null )
-				item = new EffectItem();
-			else
-				item.ItemID = 1;
+      for (int i = m_Free.Count - 1; item == null && i >= 0; --i) // We reuse new entries first so decay works better
+      {
+        EffectItem free = m_Free[i];
 
-			item.MoveToWorld( p, map );
-			item.BeginFree( duration );
+        m_Free.RemoveAt(i);
 
-			return item;
-		}
+        if (!free.Deleted && free.Map == Map.Internal)
+          item = free;
+      }
 
-		private EffectItem() : base( 1 ) // nodraw
-		{
-			Movable = false;
-		}
+      if (item == null)
+        item = new EffectItem();
+      else
+        item.ItemID = 1;
 
-		public void BeginFree( TimeSpan duration )
-		{
-			new FreeTimer( this, duration ).Start();
-		}
+      item.MoveToWorld(p, map);
+      item.BeginFree(duration);
 
-		public override bool Decays => true;
+      return item;
+    }
 
-		public EffectItem( Serial serial ) : base( serial )
-		{
-		}
+    public void BeginFree(TimeSpan duration)
+    {
+      new FreeTimer(this, duration).Start();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			Delete();
-		}
+      Delete();
+    }
 
-		private class FreeTimer : Timer
-		{
-			private EffectItem m_Item;
+    private class FreeTimer : Timer
+    {
+      private EffectItem m_Item;
 
-			public FreeTimer( EffectItem item, TimeSpan delay ) : base( delay )
-			{
-				m_Item = item;
-				Priority = TimerPriority.OneSecond;
-			}
+      public FreeTimer(EffectItem item, TimeSpan delay) : base(delay)
+      {
+        m_Item = item;
+        Priority = TimerPriority.OneSecond;
+      }
 
-			protected override void OnTick()
-			{
-				m_Item.Internalize();
+      protected override void OnTick()
+      {
+        m_Item.Internalize();
 
-				m_Free.Add( m_Item );
-			}
-		}
-	}
+        m_Free.Add(m_Item);
+      }
+    }
+  }
 }

@@ -1,43 +1,45 @@
 namespace Server.Engines.Reports
 {
-	public class PieChart : Chart
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "pc", Construct );
+  public class PieChart : Chart
+  {
+    public PieChart(string name, string fileName, bool showPercents)
+    {
+      m_Name = name;
+      m_FileName = fileName;
+      ShowPercents = showPercents;
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new PieChart();
-		}
+    private PieChart()
+    {
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public bool ShowPercents{ get; set; }
 
-		public bool ShowPercents { get; set; }
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      base.SerializeAttributes(op);
 
-		public PieChart( string name, string fileName, bool showPercents )
-		{
-			m_Name = name;
-			m_FileName = fileName;
-			ShowPercents = showPercents;
-		}
+      op.SetBoolean("p", ShowPercents);
+    }
 
-		private PieChart()
-		{
-		}
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      base.DeserializeAttributes(ip);
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			base.SerializeAttributes( op );
+      ShowPercents = ip.GetBoolean("p");
+    }
 
-			op.SetBoolean( "p", ShowPercents );
-		}
+    #region Type Identification
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			base.DeserializeAttributes( ip );
+    public static readonly PersistableType ThisTypeID = new PersistableType("pc", Construct);
 
-			ShowPercents = ip.GetBoolean( "p" );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new PieChart();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

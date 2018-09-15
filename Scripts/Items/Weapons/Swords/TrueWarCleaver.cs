@@ -1,32 +1,32 @@
 namespace Server.Items
 {
-	public class TrueWarCleaver : WarCleaver
-	{
-		public override int LabelNumber => 1073528; // true war cleaver
+  public class TrueWarCleaver : WarCleaver
+  {
+    [Constructible]
+    public TrueWarCleaver()
+    {
+      Attributes.WeaponDamage = 4;
+      Attributes.RegenHits = 2;
+    }
 
-		[Constructible]
-		public TrueWarCleaver()
-		{
-			Attributes.WeaponDamage = 4;
-			Attributes.RegenHits = 2;
-		}
+    public TrueWarCleaver(Serial serial) : base(serial)
+    {
+    }
 
-		public TrueWarCleaver( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073528; // true war cleaver
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

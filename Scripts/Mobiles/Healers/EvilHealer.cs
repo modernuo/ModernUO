@@ -1,67 +1,67 @@
 namespace Server.Mobiles
 {
-	public class EvilHealer : BaseHealer
-	{
-		public override bool CanTeach => true;
+  public class EvilHealer : BaseHealer
+  {
+    [Constructible]
+    public EvilHealer()
+    {
+      Title = "the healer";
 
-		public override bool CheckTeach( SkillName skill, Mobile from )
-		{
-			if ( !base.CheckTeach( skill, from ) )
-				return false;
+      Karma = -10000;
 
-			return ( skill == SkillName.Forensics )
-				|| ( skill == SkillName.Healing )
-				|| ( skill == SkillName.SpiritSpeak )
-				|| ( skill == SkillName.Swords );
-		}
+      SetSkill(SkillName.Forensics, 80.0, 100.0);
+      SetSkill(SkillName.SpiritSpeak, 80.0, 100.0);
+      SetSkill(SkillName.Swords, 80.0, 100.0);
+    }
 
-		[Constructible]
-		public EvilHealer()
-		{
-			Title = "the healer";
+    public EvilHealer(Serial serial) : base(serial)
+    {
+    }
 
-			Karma = -10000;
+    public override bool CanTeach => true;
 
-			SetSkill( SkillName.Forensics, 80.0, 100.0 );
-			SetSkill( SkillName.SpiritSpeak, 80.0, 100.0 );
-			SetSkill( SkillName.Swords, 80.0, 100.0 );
-		}
+    public override bool AlwaysMurderer => true;
+    public override bool IsActiveVendor => true;
 
-		public override bool AlwaysMurderer => true;
-		public override bool IsActiveVendor => true;
+    public override bool CheckTeach(SkillName skill, Mobile from)
+    {
+      if (!base.CheckTeach(skill, from))
+        return false;
 
-		public override void InitSBInfo()
-		{
-			SBInfos.Add( new SBHealer() );
-		}
+      return skill == SkillName.Forensics
+             || skill == SkillName.Healing
+             || skill == SkillName.SpiritSpeak
+             || skill == SkillName.Swords;
+    }
 
-		public override bool CheckResurrect( Mobile m )
-		{
-			if ( Core.AOS && m.Criminal )
-			{
-				Say( 501222 ); // Thou art a criminal.  I shall not resurrect thee.
-				return false;
-			}
+    public override void InitSBInfo()
+    {
+      SBInfos.Add(new SBHealer());
+    }
 
-			return true;
-		}
+    public override bool CheckResurrect(Mobile m)
+    {
+      if (Core.AOS && m.Criminal)
+      {
+        Say(501222); // Thou art a criminal.  I shall not resurrect thee.
+        return false;
+      }
 
-		public EvilHealer( Serial serial ) : base( serial )
-		{
-		}
+      return true;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

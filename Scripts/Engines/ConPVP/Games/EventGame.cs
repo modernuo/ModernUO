@@ -1,77 +1,77 @@
+using Server.Gumps;
 using Server.Items;
 
 namespace Server.Engines.ConPVP
 {
-	public abstract class EventController : Item
-	{
-		public abstract EventGame Construct( DuelContext dc );
+  public abstract class EventController : Item
+  {
+    public EventController()
+      : base(0x1B7A)
+    {
+      Visible = false;
+      Movable = false;
+    }
 
-		public abstract string Title { get; }
+    public EventController(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public abstract string GetTeamName( int teamID );
+    public abstract string Title{ get; }
+    public abstract EventGame Construct(DuelContext dc);
 
-		public EventController()
-			: base( 0x1B7A )
-		{
-			Visible = false;
-			Movable = false;
-		}
+    public abstract string GetTeamName(int teamID);
 
-		public EventController( Serial serial )
-			: base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      int version = reader.ReadInt();
+    }
 
-			int version = reader.ReadInt();
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (from.AccessLevel >= AccessLevel.GameMaster)
+        from.SendGump(new PropertiesGump(from, this));
+    }
+  }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( from.AccessLevel >= AccessLevel.GameMaster )
-				from.SendGump( new Gumps.PropertiesGump( from, this ) );
-		}
-	}
+  public abstract class EventGame
+  {
+    protected DuelContext m_Context;
 
-	public abstract class EventGame
-	{
-		protected DuelContext m_Context;
+    public EventGame(DuelContext context)
+    {
+      m_Context = context;
+    }
 
-		public DuelContext Context  => m_Context;
+    public DuelContext Context => m_Context;
 
-		public virtual bool FreeConsume  => true;
+    public virtual bool FreeConsume => true;
 
-		public EventGame( DuelContext context )
-		{
-			m_Context = context;
-		}
+    public virtual bool OnDeath(Mobile mob, Container corpse)
+    {
+      return true;
+    }
 
-		public virtual bool OnDeath( Mobile mob, Container corpse )
-		{
-			return true;
-		}
+    public virtual bool CantDoAnything(Mobile mob)
+    {
+      return false;
+    }
 
-		public virtual bool CantDoAnything( Mobile mob )
-		{
-			return false;
-		}
+    public virtual void OnStart()
+    {
+    }
 
-		public virtual void OnStart()
-		{
-		}
-
-		public virtual void OnStop()
-		{
-		}
-	}
+    public virtual void OnStop()
+    {
+    }
+  }
 }

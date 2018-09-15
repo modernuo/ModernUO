@@ -22,32 +22,32 @@ using Server.Network;
 
 namespace Server.HuePickers
 {
-	public class HuePicker
-	{
-		private static int m_NextSerial = 1;
+  public class HuePicker
+  {
+    private static int m_NextSerial = 1;
 
-		public int Serial { get; }
+    public HuePicker(int itemID)
+    {
+      do
+      {
+        Serial = m_NextSerial++;
+      } while (Serial == 0);
 
-		public int ItemID { get; }
+      ItemID = itemID;
+    }
 
-		public HuePicker( int itemID )
-		{
-			do
-			{
-				Serial = m_NextSerial++;
-			} while ( Serial == 0 );
+    public int Serial{ get; }
 
-			ItemID = itemID;
-		}
+    public int ItemID{ get; }
 
-		public virtual void OnResponse( int hue )
-		{
-		}
+    public virtual void OnResponse(int hue)
+    {
+    }
 
-		public void SendTo( NetState state )
-		{
-			state.Send( new DisplayHuePicker( this ) );
-			state.AddHuePicker( this );
-		}
-	}
+    public void SendTo(NetState state)
+    {
+      state.Send(new DisplayHuePicker(this));
+      state.AddHuePicker(this);
+    }
+  }
 }

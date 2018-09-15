@@ -2,83 +2,83 @@ using Server.Mobiles;
 
 namespace Server.Factions
 {
-	public class TownStone : BaseSystemController
-	{
-		private Town m_Town;
+  public class TownStone : BaseSystemController
+  {
+    private Town m_Town;
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public Town Town
-		{
-			get => m_Town;
-			set
-			{
-				m_Town = value;
+    [Constructible]
+    public TownStone() : this(null)
+    {
+    }
 
-				AssignName( m_Town?.Definition.TownStoneName );
-			}
-		}
+    [Constructible]
+    public TownStone(Town town) : base(0xEDE)
+    {
+      Movable = false;
+      Town = town;
+    }
 
-		public override string DefaultName => "faction town stone";
+    public TownStone(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public TownStone() : this( null )
-		{
-		}
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
+    public Town Town
+    {
+      get => m_Town;
+      set
+      {
+        m_Town = value;
 
-		[Constructible]
-		public TownStone( Town town ) : base( 0xEDE )
-		{
-			Movable = false;
-			Town = town;
-		}
+        AssignName(m_Town?.Definition.TownStoneName);
+      }
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( m_Town == null )
-				return;
+    public override string DefaultName => "faction town stone";
 
-			Faction faction = Faction.Find( from );
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (m_Town == null)
+        return;
 
-			if ( faction == null && from.AccessLevel < AccessLevel.GameMaster )
-				return; // TODO: Message?
+      Faction faction = Faction.Find(from);
 
-			if ( m_Town.Owner == null || ( from.AccessLevel < AccessLevel.GameMaster && faction != m_Town.Owner ) )
-				from.SendLocalizedMessage( 1010332 ); // Your faction does not control this town
-			else if ( !m_Town.Owner.IsCommander( from ) )
-				from.SendLocalizedMessage( 1005242 ); // Only faction Leaders can use townstones
-			else if ( FactionGump.Exists( from ) )
-				from.SendLocalizedMessage( 1042160 ); // You already have a faction menu open.
-			else if ( from is PlayerMobile mobile )
-				mobile.SendGump( new TownStoneGump( mobile, m_Town.Owner, m_Town ) );
-		}
+      if (faction == null && from.AccessLevel < AccessLevel.GameMaster)
+        return; // TODO: Message?
 
-		public TownStone( Serial serial ) : base( serial )
-		{
-		}
+      if (m_Town.Owner == null || from.AccessLevel < AccessLevel.GameMaster && faction != m_Town.Owner)
+        from.SendLocalizedMessage(1010332); // Your faction does not control this town
+      else if (!m_Town.Owner.IsCommander(from))
+        from.SendLocalizedMessage(1005242); // Only faction Leaders can use townstones
+      else if (FactionGump.Exists(from))
+        from.SendLocalizedMessage(1042160); // You already have a faction menu open.
+      else if (from is PlayerMobile mobile)
+        mobile.SendGump(new TownStoneGump(mobile, m_Town.Owner, m_Town));
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			Town.WriteReference( writer, m_Town );
-		}
+      Town.WriteReference(writer, m_Town);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Town = Town.ReadReference( reader );
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          Town = Town.ReadReference(reader);
+          break;
+        }
+      }
+    }
+  }
 }

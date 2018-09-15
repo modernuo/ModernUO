@@ -1,54 +1,61 @@
 namespace Server.Items
 {
-	public class LocalizedSign : Sign
-	{
-		private int m_LabelNumber;
+  public class LocalizedSign : Sign
+  {
+    private int m_LabelNumber;
 
-		public override int LabelNumber => m_LabelNumber;
+    [Constructible]
+    public LocalizedSign(SignType type, SignFacing facing, int labelNumber) : base(0xB95 + 2 * (int)type + (int)facing)
+    {
+      m_LabelNumber = labelNumber;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Number{ get => m_LabelNumber;
-			set{ m_LabelNumber = value; InvalidateProperties(); } }
+    [Constructible]
+    public LocalizedSign(int itemID, int labelNumber) : base(itemID)
+    {
+      m_LabelNumber = labelNumber;
+    }
 
-		[Constructible]
-		public LocalizedSign( SignType type, SignFacing facing, int labelNumber ) : base( ( 0xB95 + (2 * (int)type) ) + (int)facing )
-		{
-			m_LabelNumber = labelNumber;
-		}
+    public LocalizedSign(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public LocalizedSign( int itemID, int labelNumber ) : base( itemID )
-		{
-			m_LabelNumber = labelNumber;
-		}
+    public override int LabelNumber => m_LabelNumber;
 
-		public LocalizedSign( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Number
+    {
+      get => m_LabelNumber;
+      set
+      {
+        m_LabelNumber = value;
+        InvalidateProperties();
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
+      writer.Write(0);
 
-			writer.Write( m_LabelNumber );
-		}
+      writer.Write(m_LabelNumber);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_LabelNumber = reader.ReadInt();
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          m_LabelNumber = reader.ReadInt();
+          break;
+        }
+      }
+    }
+  }
 }

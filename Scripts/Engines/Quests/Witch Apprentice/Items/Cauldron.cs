@@ -1,31 +1,31 @@
 namespace Server.Items
 {
-	public class Cauldron : Item
-	{
-		public override string DefaultName => "a cauldron";
+  public class Cauldron : Item
+  {
+    [Constructible]
+    public Cauldron() : base(0x9ED)
+    {
+      Weight = 1.0;
+    }
 
-		[Constructible]
-		public Cauldron() : base( 0x9ED )
-		{
-			Weight = 1.0;
-		}
+    public Cauldron(Serial serial) : base(serial)
+    {
+    }
 
-		public Cauldron( Serial serial ) : base( serial )
-		{
-		}
+    public override string DefaultName => "a cauldron";
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

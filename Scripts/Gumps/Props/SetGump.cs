@@ -1,280 +1,284 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Server.Network;
-using Server.HuePickers;
 using Server.Commands;
+using Server.HuePickers;
+using Server.Network;
 
 namespace Server.Gumps
 {
-	public class SetGump : Gump
-	{
-		private PropertyInfo m_Property;
-		private Mobile m_Mobile;
-		private object m_Object;
-		private Stack<StackEntry> m_Stack;
-		private int m_Page;
-		private ArrayList m_List;
+  public class SetGump : Gump
+  {
+    public static readonly bool OldStyle = PropsConfig.OldStyle;
 
-		public static readonly bool OldStyle = PropsConfig.OldStyle;
+    public static readonly int GumpOffsetX = PropsConfig.GumpOffsetX;
+    public static readonly int GumpOffsetY = PropsConfig.GumpOffsetY;
 
-		public static readonly int GumpOffsetX = PropsConfig.GumpOffsetX;
-		public static readonly int GumpOffsetY = PropsConfig.GumpOffsetY;
+    public static readonly int TextHue = PropsConfig.TextHue;
+    public static readonly int TextOffsetX = PropsConfig.TextOffsetX;
 
-		public static readonly int TextHue = PropsConfig.TextHue;
-		public static readonly int TextOffsetX = PropsConfig.TextOffsetX;
+    public static readonly int OffsetGumpID = PropsConfig.OffsetGumpID;
+    public static readonly int HeaderGumpID = PropsConfig.HeaderGumpID;
+    public static readonly int EntryGumpID = PropsConfig.EntryGumpID;
+    public static readonly int BackGumpID = PropsConfig.BackGumpID;
+    public static readonly int SetGumpID = PropsConfig.SetGumpID;
 
-		public static readonly int OffsetGumpID = PropsConfig.OffsetGumpID;
-		public static readonly int HeaderGumpID = PropsConfig.HeaderGumpID;
-		public static readonly int  EntryGumpID = PropsConfig.EntryGumpID;
-		public static readonly int   BackGumpID = PropsConfig.BackGumpID;
-		public static readonly int    SetGumpID = PropsConfig.SetGumpID;
+    public static readonly int SetWidth = PropsConfig.SetWidth;
+    public static readonly int SetOffsetX = PropsConfig.SetOffsetX, SetOffsetY = PropsConfig.SetOffsetY;
+    public static readonly int SetButtonID1 = PropsConfig.SetButtonID1;
+    public static readonly int SetButtonID2 = PropsConfig.SetButtonID2;
 
-		public static readonly int SetWidth = PropsConfig.SetWidth;
-		public static readonly int SetOffsetX = PropsConfig.SetOffsetX, SetOffsetY = PropsConfig.SetOffsetY;
-		public static readonly int SetButtonID1 = PropsConfig.SetButtonID1;
-		public static readonly int SetButtonID2 = PropsConfig.SetButtonID2;
+    public static readonly int PrevWidth = PropsConfig.PrevWidth;
+    public static readonly int PrevOffsetX = PropsConfig.PrevOffsetX, PrevOffsetY = PropsConfig.PrevOffsetY;
+    public static readonly int PrevButtonID1 = PropsConfig.PrevButtonID1;
+    public static readonly int PrevButtonID2 = PropsConfig.PrevButtonID2;
 
-		public static readonly int PrevWidth = PropsConfig.PrevWidth;
-		public static readonly int PrevOffsetX = PropsConfig.PrevOffsetX, PrevOffsetY = PropsConfig.PrevOffsetY;
-		public static readonly int PrevButtonID1 = PropsConfig.PrevButtonID1;
-		public static readonly int PrevButtonID2 = PropsConfig.PrevButtonID2;
+    public static readonly int NextWidth = PropsConfig.NextWidth;
+    public static readonly int NextOffsetX = PropsConfig.NextOffsetX, NextOffsetY = PropsConfig.NextOffsetY;
+    public static readonly int NextButtonID1 = PropsConfig.NextButtonID1;
+    public static readonly int NextButtonID2 = PropsConfig.NextButtonID2;
 
-		public static readonly int NextWidth = PropsConfig.NextWidth;
-		public static readonly int NextOffsetX = PropsConfig.NextOffsetX, NextOffsetY = PropsConfig.NextOffsetY;
-		public static readonly int NextButtonID1 = PropsConfig.NextButtonID1;
-		public static readonly int NextButtonID2 = PropsConfig.NextButtonID2;
+    public static readonly int OffsetSize = PropsConfig.OffsetSize;
 
-		public static readonly int OffsetSize = PropsConfig.OffsetSize;
+    public static readonly int EntryHeight = PropsConfig.EntryHeight;
+    public static readonly int BorderSize = PropsConfig.BorderSize;
 
-		public static readonly int EntryHeight = PropsConfig.EntryHeight;
-		public static readonly int BorderSize = PropsConfig.BorderSize;
+    private static readonly int EntryWidth = 212;
 
-		private static readonly int EntryWidth = 212;
+    private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
+    private static readonly int TotalHeight = OffsetSize + 2 * (EntryHeight + OffsetSize);
 
-		private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-		private static readonly int TotalHeight = OffsetSize + (2 * (EntryHeight + OffsetSize));
+    private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
+    private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
+    private ArrayList m_List;
+    private Mobile m_Mobile;
+    private object m_Object;
+    private int m_Page;
+    private PropertyInfo m_Property;
+    private Stack<StackEntry> m_Stack;
 
-		private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-		private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
+    public SetGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list) : base(
+      GumpOffsetX, GumpOffsetY)
+    {
+      m_Property = prop;
+      m_Mobile = mobile;
+      m_Object = o;
+      m_Stack = stack;
+      m_Page = page;
+      m_List = list;
 
-		public SetGump( PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list ) : base( GumpOffsetX, GumpOffsetY )
-		{
-			m_Property = prop;
-			m_Mobile = mobile;
-			m_Object = o;
-			m_Stack = stack;
-			m_Page = page;
-			m_List = list;
+      bool canNull = !prop.PropertyType.IsValueType;
+      bool canDye = prop.IsDefined(typeof(HueAttribute), false);
+      bool isBody = prop.IsDefined(typeof(BodyAttribute), false);
 
-			bool canNull = !prop.PropertyType.IsValueType;
-			bool canDye = prop.IsDefined( typeof( HueAttribute ), false );
-			bool isBody = prop.IsDefined( typeof( BodyAttribute ), false );
+      object val = prop.GetValue(m_Object, null);
+      string initialText;
 
-			object val = prop.GetValue( m_Object, null );
-			string initialText;
+      if (val == null)
+        initialText = "";
+      else if (val is TextDefinition definition)
+        initialText = definition.GetValue();
+      else
+        initialText = val.ToString();
 
-			if ( val == null )
-				initialText = "";
-			else if ( val is TextDefinition definition )
-				initialText = definition.GetValue();
-			else
-				initialText = val.ToString();
+      AddPage(0);
 
-			AddPage( 0 );
+      AddBackground(0, 0, BackWidth,
+        BackHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0) +
+        (isBody ? EntryHeight + OffsetSize : 0), BackGumpID);
+      AddImageTiled(BorderSize, BorderSize, TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
+        TotalHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0) +
+        (isBody ? EntryHeight + OffsetSize : 0), OffsetGumpID);
 
-			AddBackground( 0, 0, BackWidth, BackHeight + (canNull ? (EntryHeight + OffsetSize) : 0) + (canDye ? (EntryHeight + OffsetSize) : 0) + (isBody ? (EntryHeight + OffsetSize) : 0), BackGumpID );
-			AddImageTiled( BorderSize, BorderSize, TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0), TotalHeight + (canNull ? (EntryHeight + OffsetSize) : 0) + (canDye ? (EntryHeight + OffsetSize) : 0) + (isBody ? (EntryHeight + OffsetSize) : 0), OffsetGumpID );
+      int x = BorderSize + OffsetSize;
+      int y = BorderSize + OffsetSize;
 
-			int x = BorderSize + OffsetSize;
-			int y = BorderSize + OffsetSize;
+      AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
+      AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, prop.Name);
+      x += EntryWidth + OffsetSize;
 
-			AddImageTiled( x, y, EntryWidth, EntryHeight, EntryGumpID );
-			AddLabelCropped( x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, prop.Name );
-			x += EntryWidth + OffsetSize;
+      if (SetGumpID != 0)
+        AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-			if ( SetGumpID != 0 )
-				AddImageTiled( x, y, SetWidth, EntryHeight, SetGumpID );
+      x = BorderSize + OffsetSize;
+      y += EntryHeight + OffsetSize;
 
-			x = BorderSize + OffsetSize;
-			y += EntryHeight + OffsetSize;
+      AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
+      AddTextEntry(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, 0, initialText);
+      x += EntryWidth + OffsetSize;
 
-			AddImageTiled( x, y, EntryWidth, EntryHeight, EntryGumpID );
-			AddTextEntry( x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, 0, initialText );
-			x += EntryWidth + OffsetSize;
+      if (SetGumpID != 0)
+        AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-			if ( SetGumpID != 0 )
-				AddImageTiled( x, y, SetWidth, EntryHeight, SetGumpID );
+      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1, GumpButtonType.Reply, 0);
 
-			AddButton( x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1, GumpButtonType.Reply, 0 );
+      if (canNull)
+      {
+        x = BorderSize + OffsetSize;
+        y += EntryHeight + OffsetSize;
 
-			if ( canNull )
-			{
-				x = BorderSize + OffsetSize;
-				y += EntryHeight + OffsetSize;
+        AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
+        AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Null");
+        x += EntryWidth + OffsetSize;
 
-				AddImageTiled( x, y, EntryWidth, EntryHeight, EntryGumpID );
-				AddLabelCropped( x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Null" );
-				x += EntryWidth + OffsetSize;
+        if (SetGumpID != 0)
+          AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-				if ( SetGumpID != 0 )
-					AddImageTiled( x, y, SetWidth, EntryHeight, SetGumpID );
+        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2, GumpButtonType.Reply, 0);
+      }
 
-				AddButton( x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2, GumpButtonType.Reply, 0 );
-			}
+      if (canDye)
+      {
+        x = BorderSize + OffsetSize;
+        y += EntryHeight + OffsetSize;
 
-			if ( canDye )
-			{
-				x = BorderSize + OffsetSize;
-				y += EntryHeight + OffsetSize;
+        AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
+        AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Hue Picker");
+        x += EntryWidth + OffsetSize;
 
-				AddImageTiled( x, y, EntryWidth, EntryHeight, EntryGumpID );
-				AddLabelCropped( x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Hue Picker" );
-				x += EntryWidth + OffsetSize;
+        if (SetGumpID != 0)
+          AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-				if ( SetGumpID != 0 )
-					AddImageTiled( x, y, SetWidth, EntryHeight, SetGumpID );
+        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3, GumpButtonType.Reply, 0);
+      }
 
-				AddButton( x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3, GumpButtonType.Reply, 0 );
-			}
+      if (isBody)
+      {
+        x = BorderSize + OffsetSize;
+        y += EntryHeight + OffsetSize;
 
-			if ( isBody )
-			{
-				x = BorderSize + OffsetSize;
-				y += EntryHeight + OffsetSize;
+        AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
+        AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Body Picker");
+        x += EntryWidth + OffsetSize;
 
-				AddImageTiled( x, y, EntryWidth, EntryHeight, EntryGumpID );
-				AddLabelCropped( x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Body Picker" );
-				x += EntryWidth + OffsetSize;
+        if (SetGumpID != 0)
+          AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-				if ( SetGumpID != 0 )
-					AddImageTiled( x, y, SetWidth, EntryHeight, SetGumpID );
+        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4, GumpButtonType.Reply, 0);
+      }
+    }
 
-				AddButton( x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4, GumpButtonType.Reply, 0 );
-			}
-		}
+    public override void OnResponse(NetState sender, RelayInfo info)
+    {
+      object toSet;
+      bool shouldSet, shouldSend = true;
 
-		private class InternalPicker : HuePicker
-		{
-			private PropertyInfo m_Property;
-			private Mobile m_Mobile;
-			private object m_Object;
-			private Stack<StackEntry> m_Stack;
-			private int m_Page;
-			private ArrayList m_List;
+      switch (info.ButtonID)
+      {
+        case 1:
+        {
+          TextRelay text = info.GetTextEntry(0);
 
-			public InternalPicker( PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list ) : base( ((IHued)o).HuedItemID )
-			{
-				m_Property = prop;
-				m_Mobile = mobile;
-				m_Object = o;
-				m_Stack = stack;
-				m_Page = page;
-				m_List = list;
-			}
+          if (text != null)
+          {
+            try
+            {
+              toSet = PropertiesGump.GetObjectFromString(m_Property.PropertyType, text.Text);
+              shouldSet = true;
+            }
+            catch
+            {
+              toSet = null;
+              shouldSet = false;
+              m_Mobile.SendMessage("Bad format");
+            }
+          }
+          else
+          {
+            toSet = null;
+            shouldSet = false;
+          }
 
-			public override void OnResponse( int hue )
-			{
-				try
-				{
-					CommandLogging.LogChangeProperty( m_Mobile, m_Object, m_Property.Name, hue.ToString() );
-					m_Property.SetValue( m_Object, hue, null );
-					PropertiesGump.OnValueChanged( m_Object, m_Property, m_Stack );
-				}
-				catch
-				{
-					m_Mobile.SendMessage( "An exception was caught. The property may not have changed." );
-				}
+          break;
+        }
+        case 2: // Null
+        {
+          toSet = null;
+          shouldSet = true;
 
-				m_Mobile.SendGump( new PropertiesGump( m_Mobile, m_Object, m_Stack, m_List, m_Page ) );
-			}
-		}
+          break;
+        }
+        case 3: // Hue Picker
+        {
+          toSet = null;
+          shouldSet = false;
+          shouldSend = false;
 
-		public override void OnResponse( NetState sender, RelayInfo info )
-		{
-			object toSet;
-			bool shouldSet, shouldSend = true;
+          m_Mobile.SendHuePicker(new InternalPicker(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List));
 
-			switch ( info.ButtonID )
-			{
-				case 1:
-				{
-					TextRelay text = info.GetTextEntry( 0 );
+          break;
+        }
+        case 4: // Body Picker
+        {
+          toSet = null;
+          shouldSet = false;
+          shouldSend = false;
 
-					if ( text != null )
-					{
-						try
-						{
-							toSet = PropertiesGump.GetObjectFromString( m_Property.PropertyType, text.Text );
-							shouldSet = true;
-						}
-						catch
-						{
-							toSet = null;
-							shouldSet = false;
-							m_Mobile.SendMessage( "Bad format" );
-						}
-					}
-					else
-					{
-						toSet = null;
-						shouldSet = false;
-					}
+          m_Mobile.SendGump(new SetBodyGump(m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List));
 
-					break;
-				}
-				case 2: // Null
-				{
-					toSet = null;
-					shouldSet = true;
+          break;
+        }
+        default:
+        {
+          toSet = null;
+          shouldSet = false;
 
-					break;
-				}
-				case 3: // Hue Picker
-				{
-					toSet = null;
-					shouldSet = false;
-					shouldSend = false;
+          break;
+        }
+      }
 
-					m_Mobile.SendHuePicker( new InternalPicker( m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List ) );
+      if (shouldSet)
+        try
+        {
+          CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name,
+            toSet == null ? "(null)" : toSet.ToString());
+          m_Property.SetValue(m_Object, toSet, null);
+          PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+        }
+        catch
+        {
+          m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
+        }
 
-					break;
-				}
-				case 4: // Body Picker
-				{
-					toSet = null;
-					shouldSet = false;
-					shouldSend = false;
+      if (shouldSend)
+        m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+    }
 
-					m_Mobile.SendGump( new SetBodyGump( m_Property, m_Mobile, m_Object, m_Stack, m_Page, m_List ) );
+    private class InternalPicker : HuePicker
+    {
+      private ArrayList m_List;
+      private Mobile m_Mobile;
+      private object m_Object;
+      private int m_Page;
+      private PropertyInfo m_Property;
+      private Stack<StackEntry> m_Stack;
 
-					break;
-				}
-				default:
-				{
-					toSet = null;
-					shouldSet = false;
+      public InternalPicker(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page,
+        ArrayList list) : base(((IHued)o).HuedItemID)
+      {
+        m_Property = prop;
+        m_Mobile = mobile;
+        m_Object = o;
+        m_Stack = stack;
+        m_Page = page;
+        m_List = list;
+      }
 
-					break;
-				}
-			}
+      public override void OnResponse(int hue)
+      {
+        try
+        {
+          CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, hue.ToString());
+          m_Property.SetValue(m_Object, hue, null);
+          PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+        }
+        catch
+        {
+          m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
+        }
 
-			if ( shouldSet )
-			{
-				try
-				{
-					CommandLogging.LogChangeProperty( m_Mobile, m_Object, m_Property.Name, toSet==null?"(null)":toSet.ToString() );
-					m_Property.SetValue( m_Object, toSet, null );
-					PropertiesGump.OnValueChanged( m_Object, m_Property, m_Stack );
-				}
-				catch
-				{
-					m_Mobile.SendMessage( "An exception was caught. The property may not have changed." );
-				}
-			}
-
-			if ( shouldSend )
-				m_Mobile.SendGump( new PropertiesGump( m_Mobile, m_Object, m_Stack, m_List, m_Page ) );
-		}
-	}
+        m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
+      }
+    }
+  }
 }

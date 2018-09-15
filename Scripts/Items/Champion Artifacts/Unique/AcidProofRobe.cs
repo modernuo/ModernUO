@@ -1,44 +1,41 @@
 namespace Server.Items
 {
-	public class AcidProofRobe : Robe
-	{
-		public override int LabelNumber => 1095236; // Acid-Proof Robe [Replica]
+  public class AcidProofRobe : Robe
+  {
+    [Constructible]
+    public AcidProofRobe()
+    {
+      Hue = 0x455;
+      LootType = LootType.Blessed;
+    }
 
-		public override int BaseFireResistance => 4;
+    public AcidProofRobe(Serial serial) : base(serial)
+    {
+    }
 
-		public override int InitMinHits => 150;
-		public override int InitMaxHits => 150;
+    public override int LabelNumber => 1095236; // Acid-Proof Robe [Replica]
 
-		public override bool CanFortify => false;
+    public override int BaseFireResistance => 4;
 
-		[Constructible]
-		public AcidProofRobe()
-		{
-			Hue = 0x455;
-			LootType = LootType.Blessed;
-		}
+    public override int InitMinHits => 150;
+    public override int InitMaxHits => 150;
 
-		public AcidProofRobe( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CanFortify => false;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 );
-		}
+      writer.Write(1);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if (version < 1 && Hue == 1)
-			{
-				Hue = 0x455;
-			}
-		}
-	}
+      if (version < 1 && Hue == 1) Hue = 0x455;
+    }
+  }
 }

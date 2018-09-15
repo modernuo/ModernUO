@@ -1,67 +1,71 @@
-using Server.Network;
-using Server.Mobiles;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Hag;
+using Server.Mobiles;
+using Server.Network;
 
 namespace Server.Items
 {
-	[Flippable( 0x14F5, 0x14F6 )]
-	public class Spyglass : Item
-	{
-		[Constructible]
-		public Spyglass() : base( 0x14F5 )
-		{
-			Weight = 3.0;
-		}
+  [Flippable(0x14F5, 0x14F6)]
+  public class Spyglass : Item
+  {
+    [Constructible]
+    public Spyglass() : base(0x14F5)
+    {
+      Weight = 3.0;
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1008155 ); // You peer into the heavens, seeking the moons...
+    public Spyglass(Serial serial) : base(serial)
+    {
+    }
 
-			from.Send( new MessageLocalizedAffix( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 1008146 + (int)Clock.GetMoonPhase( Map.Trammel, from.X, from.Y ), "", AffixType.Prepend, "Trammel : ", "" ) );
-			from.Send( new MessageLocalizedAffix( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 1008146 + (int)Clock.GetMoonPhase( Map.Felucca, from.X, from.Y ), "", AffixType.Prepend, "Felucca : ", "" ) );
+    public override void OnDoubleClick(Mobile from)
+    {
+      from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
+        1008155); // You peer into the heavens, seeking the moons...
 
-			if ( from is PlayerMobile player )
-			{
-				QuestSystem qs = player.Quest;
+      from.Send(new MessageLocalizedAffix(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3,
+        1008146 + (int)Clock.GetMoonPhase(Map.Trammel, from.X, from.Y), "", AffixType.Prepend, "Trammel : ", ""));
+      from.Send(new MessageLocalizedAffix(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3,
+        1008146 + (int)Clock.GetMoonPhase(Map.Felucca, from.X, from.Y), "", AffixType.Prepend, "Felucca : ", ""));
 
-				if ( qs is WitchApprenticeQuest )
-				{
-					if ( qs.FindObjective( typeof( FindIngredientObjective ) ) is FindIngredientObjective obj && !obj.Completed && obj.Ingredient == Ingredient.StarChart )
-					{
-						Clock.GetTime( from.Map, from.X, from.Y, out int hours, out int _ );
+      if (from is PlayerMobile player)
+      {
+        QuestSystem qs = player.Quest;
 
-						if ( hours < 5 || hours > 17 )
-						{
-							player.SendLocalizedMessage( 1055040 ); // You gaze up into the glittering night sky.  With great care, you compose a chart of the most prominent star patterns.
+        if (qs is WitchApprenticeQuest)
+          if (qs.FindObjective(typeof(FindIngredientObjective)) is FindIngredientObjective obj && !obj.Completed &&
+              obj.Ingredient == Ingredient.StarChart)
+          {
+            Clock.GetTime(from.Map, from.X, from.Y, out int hours, out int _);
 
-							obj.Complete();
-						}
-						else
-						{
-							player.SendLocalizedMessage( 1055039 ); // You gaze up into the sky, but it is not dark enough to see any stars.
-						}
-					}
-				}
-			}
-		}
+            if (hours < 5 || hours > 17)
+            {
+              player.SendLocalizedMessage(
+                1055040); // You gaze up into the glittering night sky.  With great care, you compose a chart of the most prominent star patterns.
 
-		public Spyglass( Serial serial ) : base( serial )
-		{
-		}
+              obj.Complete();
+            }
+            else
+            {
+              player.SendLocalizedMessage(
+                1055039); // You gaze up into the sky, but it is not dark enough to see any stars.
+            }
+          }
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

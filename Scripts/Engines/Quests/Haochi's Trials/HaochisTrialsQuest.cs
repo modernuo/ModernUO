@@ -3,117 +3,115 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Samurai
 {
-	public class HaochisTrialsQuest : QuestSystem
-	{
-		private static Type[] m_TypeReferenceTable = {
-				typeof( AcceptConversation ),
-				typeof( RadarConversation ),
-				typeof( FirstTrialIntroConversation ),
-				typeof( FirstTrialKillConversation ),
-				typeof( GainKarmaConversation ),
-				typeof( SecondTrialIntroConversation ),
-				typeof( SecondTrialAttackConversation ),
-				typeof( ThirdTrialIntroConversation ),
-				typeof( ThirdTrialKillConversation ),
-				typeof( FourthTrialIntroConversation ),
-				typeof( FourthTrialCatsConversation ),
-				typeof( FifthTrialIntroConversation ),
-				typeof( FifthTrialReturnConversation ),
-				typeof( LostSwordConversation ),
-				typeof( SixthTrialIntroConversation ),
-				typeof( SeventhTrialIntroConversation ),
-				typeof( EndConversation ),
-				typeof( FindHaochiObjective ),
-				typeof( FirstTrialIntroObjective ),
-				typeof( FirstTrialKillObjective ),
-				typeof( FirstTrialReturnObjective ),
-				typeof( SecondTrialIntroObjective ),
-				typeof( SecondTrialAttackObjective ),
-				typeof( SecondTrialReturnObjective ),
-				typeof( ThirdTrialIntroObjective ),
-				typeof( ThirdTrialKillObjective ),
-				typeof( ThirdTrialReturnObjective ),
-				typeof( FourthTrialIntroObjective ),
-				typeof( FourthTrialCatsObjective ),
-				typeof( FourthTrialReturnObjective ),
-				typeof( FifthTrialIntroObjective ),
-				typeof( FifthTrialReturnObjective ),
-				typeof( SixthTrialIntroObjective ),
-				typeof( SixthTrialReturnObjective ),
-				typeof( SeventhTrialIntroObjective ),
-				typeof( SeventhTrialReturnObjective )
-			};
+  public class HaochisTrialsQuest : QuestSystem
+  {
+    private static Type[] m_TypeReferenceTable =
+    {
+      typeof(AcceptConversation),
+      typeof(RadarConversation),
+      typeof(FirstTrialIntroConversation),
+      typeof(FirstTrialKillConversation),
+      typeof(GainKarmaConversation),
+      typeof(SecondTrialIntroConversation),
+      typeof(SecondTrialAttackConversation),
+      typeof(ThirdTrialIntroConversation),
+      typeof(ThirdTrialKillConversation),
+      typeof(FourthTrialIntroConversation),
+      typeof(FourthTrialCatsConversation),
+      typeof(FifthTrialIntroConversation),
+      typeof(FifthTrialReturnConversation),
+      typeof(LostSwordConversation),
+      typeof(SixthTrialIntroConversation),
+      typeof(SeventhTrialIntroConversation),
+      typeof(EndConversation),
+      typeof(FindHaochiObjective),
+      typeof(FirstTrialIntroObjective),
+      typeof(FirstTrialKillObjective),
+      typeof(FirstTrialReturnObjective),
+      typeof(SecondTrialIntroObjective),
+      typeof(SecondTrialAttackObjective),
+      typeof(SecondTrialReturnObjective),
+      typeof(ThirdTrialIntroObjective),
+      typeof(ThirdTrialKillObjective),
+      typeof(ThirdTrialReturnObjective),
+      typeof(FourthTrialIntroObjective),
+      typeof(FourthTrialCatsObjective),
+      typeof(FourthTrialReturnObjective),
+      typeof(FifthTrialIntroObjective),
+      typeof(FifthTrialReturnObjective),
+      typeof(SixthTrialIntroObjective),
+      typeof(SixthTrialReturnObjective),
+      typeof(SeventhTrialIntroObjective),
+      typeof(SeventhTrialReturnObjective)
+    };
 
-		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
+    private bool m_SentRadarConversion;
 
-		public override object Name => 1063022;
+    public HaochisTrialsQuest(PlayerMobile from) : base(from)
+    {
+    }
 
-		public override object OfferMessage => 1063023;
+    // Serialization
+    public HaochisTrialsQuest()
+    {
+    }
 
-		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
-		public override bool IsTutorial => true;
+    public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
-		public override int Picture => 0x15D7;
+    public override object Name => 1063022;
 
-		public HaochisTrialsQuest( PlayerMobile from ) : base( from )
-		{
-		}
+    public override object OfferMessage => 1063023;
 
-		// Serialization
-		public HaochisTrialsQuest()
-		{
-		}
+    public override TimeSpan RestartDelay => TimeSpan.MaxValue;
+    public override bool IsTutorial => true;
 
-		public override void Accept()
-		{
-			base.Accept();
+    public override int Picture => 0x15D7;
 
-			AddConversation( new AcceptConversation() );
-		}
+    public override void Accept()
+    {
+      base.Accept();
 
-		private bool m_SentRadarConversion;
+      AddConversation(new AcceptConversation());
+    }
 
-		public override void Slice()
-		{
-			if ( !m_SentRadarConversion && ( From.Map != Map.Malas || From.X < 360 || From.X > 400 || From.Y < 760 || From.Y > 780 ) )
-			{
-				m_SentRadarConversion = true;
-				AddConversation( new RadarConversation() );
-			}
+    public override void Slice()
+    {
+      if (!m_SentRadarConversion &&
+          (From.Map != Map.Malas || From.X < 360 || From.X > 400 || From.Y < 760 || From.Y > 780))
+      {
+        m_SentRadarConversion = true;
+        AddConversation(new RadarConversation());
+      }
 
-			base.Slice();
-		}
+      base.Slice();
+    }
 
-		public override void ChildDeserialize( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+    public override void ChildDeserialize(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-			m_SentRadarConversion = reader.ReadBool();
-		}
+      m_SentRadarConversion = reader.ReadBool();
+    }
 
-		public override void ChildSerialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( 0 ); // version
+    public override void ChildSerialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
 
-			writer.Write( (bool) m_SentRadarConversion );
-		}
+      writer.Write(m_SentRadarConversion);
+    }
 
-		public static bool HasLostHaochisKatana( Mobile from )
-		{
-			if ( !(from is PlayerMobile pm) )
-				return false;
+    public static bool HasLostHaochisKatana(Mobile from)
+    {
+      if (!(from is PlayerMobile pm))
+        return false;
 
-			QuestSystem qs = pm.Quest;
+      QuestSystem qs = pm.Quest;
 
-			if ( qs is HaochisTrialsQuest )
-			{
-				if ( qs.IsObjectiveInProgress( typeof( FifthTrialReturnObjective ) ) )
-				{
-					return ( from.Backpack?.FindItemByType( typeof( HaochisKatana ) ) == null );
-				}
-			}
+      if (qs is HaochisTrialsQuest)
+        if (qs.IsObjectiveInProgress(typeof(FifthTrialReturnObjective)))
+          return from.Backpack?.FindItemByType(typeof(HaochisKatana)) == null;
 
-			return false;
-		}
-	}
+      return false;
+    }
+  }
 }

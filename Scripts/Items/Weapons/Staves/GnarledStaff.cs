@@ -1,47 +1,47 @@
 namespace Server.Items
 {
-	[FlippableAttribute( 0x13F8, 0x13F9 )]
-	public class GnarledStaff : BaseStaff
-	{
-		public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
+  [Flippable(0x13F8, 0x13F9)]
+  public class GnarledStaff : BaseStaff
+  {
+    [Constructible]
+    public GnarledStaff() : base(0x13F8)
+    {
+      Weight = 3.0;
+    }
 
-		public override int AosStrengthReq => 20;
-		public override int AosMinDamage => 15;
-		public override int AosMaxDamage => 17;
-		public override int AosSpeed => 33;
-		public override float MlSpeed => 3.25f;
+    public GnarledStaff(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 20;
-		public override int OldMinDamage => 10;
-		public override int OldMaxDamage => 30;
-		public override int OldSpeed => 33;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
 
-		public override int InitMinHits => 31;
-		public override int InitMaxHits => 50;
+    public override int AosStrengthReq => 20;
+    public override int AosMinDamage => 15;
+    public override int AosMaxDamage => 17;
+    public override int AosSpeed => 33;
+    public override float MlSpeed => 3.25f;
 
-		[Constructible]
-		public GnarledStaff() : base( 0x13F8 )
-		{
-			Weight = 3.0;
-		}
+    public override int OldStrengthReq => 20;
+    public override int OldMinDamage => 10;
+    public override int OldMaxDamage => 30;
+    public override int OldSpeed => 33;
 
-		public GnarledStaff( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 31;
+    public override int InitMaxHits => 50;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

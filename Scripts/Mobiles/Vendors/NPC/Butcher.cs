@@ -1,47 +1,49 @@
 using System.Collections.Generic;
+using Server.Items;
 
-namespace Server.Mobiles 
-{ 
-	public class Butcher : BaseVendor 
-	{ 
-		private List<SBInfo> m_SBInfos = new List<SBInfo>(); 
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+namespace Server.Mobiles
+{
+  public class Butcher : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public Butcher() : base( "the butcher" ) 
-		{ 
-			SetSkill( SkillName.Anatomy, 45.0, 68.0 );
-		} 
+    [Constructible]
+    public Butcher() : base("the butcher")
+    {
+      SetSkill(SkillName.Anatomy, 45.0, 68.0);
+    }
 
-		public override void InitSBInfo() 
-		{ 
-			m_SBInfos.Add( new SBButcher() ); 
-		}
+    public Butcher(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-			AddItem( new Items.HalfApron() );
-			AddItem( new Items.Cleaver() );
-		}
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBButcher());
+    }
 
-		public Butcher( Serial serial ) : base( serial ) 
-		{ 
-		}
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-		public override void Serialize( GenericWriter writer ) 
-		{ 
-			base.Serialize( writer ); 
+      AddItem(new HalfApron());
+      AddItem(new Cleaver());
+    }
 
-			writer.Write( (int) 0 ); // version 
-		} 
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader ) 
-		{ 
-			base.Deserialize( reader ); 
+      writer.Write(0); // version 
+    }
 
-			int version = reader.ReadInt(); 
-		} 
-	} 
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

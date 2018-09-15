@@ -1,66 +1,66 @@
 namespace Server.Items
 {
-	[Furniture]
-	[Flippable(0xEBB, 0xEBC)]
-	public class TallMusicStand : Item
-	{
-		[Constructible]
-		public TallMusicStand() : base(0xEBB)
-		{
-			Weight = 10.0;
-		}
+  [Furniture]
+  [Flippable(0xEBB, 0xEBC)]
+  public class TallMusicStand : Item
+  {
+    [Constructible]
+    public TallMusicStand() : base(0xEBB)
+    {
+      Weight = 10.0;
+    }
 
-		public TallMusicStand(Serial serial) : base(serial)
-		{
-		}
+    public TallMusicStand(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write((int) 0);
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( Weight == 8.0 )
-				Weight = 10.0;
-		}
-	}
+      if (Weight == 8.0)
+        Weight = 10.0;
+    }
+  }
 
-	[Furniture]
-	[Flippable(0xEB6,0xEB8)]
-	public class ShortMusicStand : Item
-	{
-		[Constructible]
-		public ShortMusicStand() : base(0xEB6)
-		{
-			Weight = 10.0;
-		}
+  [Furniture]
+  [Flippable(0xEB6, 0xEB8)]
+  public class ShortMusicStand : Item
+  {
+    [Constructible]
+    public ShortMusicStand() : base(0xEB6)
+    {
+      Weight = 10.0;
+    }
 
-		public ShortMusicStand(Serial serial) : base(serial)
-		{
-		}
+    public ShortMusicStand(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write((int) 0);
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( Weight == 6.0 )
-				Weight = 10.0;
-		}
-	}
+      if (Weight == 6.0)
+        Weight = 10.0;
+    }
+  }
 }

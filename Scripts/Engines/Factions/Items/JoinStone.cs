@@ -3,77 +3,77 @@ using Server.Network;
 
 namespace Server.Factions
 {
-	public class JoinStone : BaseSystemController
-	{
-		private Faction m_Faction;
+  public class JoinStone : BaseSystemController
+  {
+    private Faction m_Faction;
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public Faction Faction
-		{
-			get => m_Faction;
-			set
-			{
-				m_Faction = value;
+    [Constructible]
+    public JoinStone() : this(null)
+    {
+    }
 
-				Hue = m_Faction?.Definition.HueJoin ?? 0;
-				AssignName( m_Faction?.Definition.SignupName );
-			}
-		}
+    [Constructible]
+    public JoinStone(Faction faction) : base(0xEDC)
+    {
+      Movable = false;
+      Faction = faction;
+    }
 
-		public override string DefaultName => "faction signup stone";
+    public JoinStone(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public JoinStone() : this( null )
-		{
-		}
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
+    public Faction Faction
+    {
+      get => m_Faction;
+      set
+      {
+        m_Faction = value;
 
-		[Constructible]
-		public JoinStone( Faction faction ) : base( 0xEDC )
-		{
-			Movable = false;
-			Faction = faction;
-		}
+        Hue = m_Faction?.Definition.HueJoin ?? 0;
+        AssignName(m_Faction?.Definition.SignupName);
+      }
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( m_Faction == null )
-				return;
+    public override string DefaultName => "faction signup stone";
 
-			if ( !from.InRange( GetWorldLocation(), 2 ) )
-				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
-			else if ( FactionGump.Exists( from ) )
-				from.SendLocalizedMessage( 1042160 ); // You already have a faction menu open.
-			else if ( Faction.Find( from ) == null && from is PlayerMobile mobile )
-				mobile.SendGump( new JoinStoneGump( mobile, m_Faction ) );
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (m_Faction == null)
+        return;
 
-		public JoinStone( Serial serial ) : base( serial )
-		{
-		}
+      if (!from.InRange(GetWorldLocation(), 2))
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+      else if (FactionGump.Exists(from))
+        from.SendLocalizedMessage(1042160); // You already have a faction menu open.
+      else if (Faction.Find(from) == null && from is PlayerMobile mobile)
+        mobile.SendGump(new JoinStoneGump(mobile, m_Faction));
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			Faction.WriteReference( writer, m_Faction );
-		}
+      Faction.WriteReference(writer, m_Faction);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Faction = Faction.ReadReference( reader );
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          Faction = Faction.ReadReference(reader);
+          break;
+        }
+      }
+    }
+  }
 }

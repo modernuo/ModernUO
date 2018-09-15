@@ -1,50 +1,50 @@
 namespace Server.Engines.Mahjong
 {
-	public class MahjongWallBreakIndicator
-	{
-		public static MahjongPieceDim GetDimensions( Point2D position )
-		{
-			return new MahjongPieceDim( position, 20, 20 );
-		}
+  public class MahjongWallBreakIndicator
+  {
+    public MahjongWallBreakIndicator(MahjongGame game, Point2D position)
+    {
+      Game = game;
+      Position = position;
+    }
 
-		public MahjongGame Game { get; }
+    public MahjongWallBreakIndicator(MahjongGame game, GenericReader reader)
+    {
+      Game = game;
 
-		public Point2D Position { get; private set; }
+      int version = reader.ReadInt();
 
-		public MahjongWallBreakIndicator( MahjongGame game, Point2D position )
-		{
-			Game = game;
-			Position = position;
-		}
+      Position = reader.ReadPoint2D();
+    }
 
-		public MahjongPieceDim Dimensions => GetDimensions( Position );
+    public MahjongGame Game{ get; }
 
-		public void Move( Point2D position )
-		{
-			MahjongPieceDim dim = GetDimensions( position );
+    public Point2D Position{ get; private set; }
 
-			if ( !dim.IsValid() )
-				return;
+    public MahjongPieceDim Dimensions => GetDimensions(Position);
 
-			Position = position;
+    public static MahjongPieceDim GetDimensions(Point2D position)
+    {
+      return new MahjongPieceDim(position, 20, 20);
+    }
 
-			Game.Players.SendGeneralPacket( true, true );
-		}
+    public void Move(Point2D position)
+    {
+      MahjongPieceDim dim = GetDimensions(position);
 
-		public void Save( GenericWriter writer )
-		{
-			writer.Write( (int) 0 ); // version
+      if (!dim.IsValid())
+        return;
 
-			writer.Write( Position );
-		}
+      Position = position;
 
-		public MahjongWallBreakIndicator( MahjongGame game, GenericReader reader )
-		{
-			Game = game;
+      Game.Players.SendGeneralPacket(true, true);
+    }
 
-			int version = reader.ReadInt();
+    public void Save(GenericWriter writer)
+    {
+      writer.Write(0); // version
 
-			Position = reader.ReadPoint2D();
-		}
-	}
+      writer.Write(Position);
+    }
+  }
 }

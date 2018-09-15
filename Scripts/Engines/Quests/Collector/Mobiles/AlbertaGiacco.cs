@@ -1,92 +1,86 @@
-using Server.Mobiles;
 using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Engines.Quests.Collector
 {
-	public class AlbertaGiacco : BaseQuester
-	{
-		public override string DefaultName => "Alberta Giacco";
+  public class AlbertaGiacco : BaseQuester
+  {
+    [Constructible]
+    public AlbertaGiacco() : base("the respected painter")
+    {
+    }
 
-		[Constructible]
-		public AlbertaGiacco() : base( "the respected painter" )
-		{
-		}
+    public AlbertaGiacco(Serial serial) : base(serial)
+    {
+    }
 
-		public AlbertaGiacco( Serial serial ) : base( serial )
-		{
-		}
+    public override string DefaultName => "Alberta Giacco";
 
-		public override void InitBody()
-		{
-			InitStats( 100, 100, 25 );
+    public override void InitBody()
+    {
+      InitStats(100, 100, 25);
 
-			Hue = 0x83F2;
+      Hue = 0x83F2;
 
-			Female = true;
-			Body = 0x191;
-		}
+      Female = true;
+      Body = 0x191;
+    }
 
-		public override void InitOutfit()
-		{
-			AddItem( new FancyShirt() );
-			AddItem( new Skirt( 0x59B ) );
-			AddItem( new Boots() );
-			AddItem( new FeatheredHat( 0x59B ) );
-			AddItem( new FullApron( 0x59B ) );
+    public override void InitOutfit()
+    {
+      AddItem(new FancyShirt());
+      AddItem(new Skirt(0x59B));
+      AddItem(new Boots());
+      AddItem(new FeatheredHat(0x59B));
+      AddItem(new FullApron(0x59B));
 
-			HairItemID = 0x203D; // Pony Tail
-			HairHue = 0x457;
-		}
+      HairItemID = 0x203D; // Pony Tail
+      HairHue = 0x457;
+    }
 
-		public override bool CanTalkTo( PlayerMobile to )
-		{
-			QuestSystem qs = to.Quest as CollectorQuest;
+    public override bool CanTalkTo(PlayerMobile to)
+    {
+      QuestSystem qs = to.Quest as CollectorQuest;
 
-			if ( qs == null )
-				return false;
+      if (qs == null)
+        return false;
 
-			return ( qs.IsObjectiveInProgress( typeof( FindAlbertaObjective ) )
-				|| qs.IsObjectiveInProgress( typeof( SitOnTheStoolObjective ) )
-				|| qs.IsObjectiveInProgress( typeof( ReturnPaintingObjective ) ) );
-		}
+      return qs.IsObjectiveInProgress(typeof(FindAlbertaObjective))
+             || qs.IsObjectiveInProgress(typeof(SitOnTheStoolObjective))
+             || qs.IsObjectiveInProgress(typeof(ReturnPaintingObjective));
+    }
 
-		public override void OnTalk( PlayerMobile player, bool contextMenu )
-		{
-			QuestSystem qs = player.Quest;
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+      QuestSystem qs = player.Quest;
 
-			if ( qs is CollectorQuest )
-			{
-				Direction = GetDirectionTo( player );
+      if (qs is CollectorQuest)
+      {
+        Direction = GetDirectionTo(player);
 
-				QuestObjective obj = qs.FindObjective( typeof( FindAlbertaObjective ) );
+        QuestObjective obj = qs.FindObjective(typeof(FindAlbertaObjective));
 
-				if ( obj != null && !obj.Completed )
-				{
-					obj.Complete();
-				}
-				else if ( qs.IsObjectiveInProgress( typeof( SitOnTheStoolObjective ) ) )
-				{
-					qs.AddConversation( new AlbertaStoolConversation() );
-				}
-				else if ( qs.IsObjectiveInProgress( typeof( ReturnPaintingObjective ) ) )
-				{
-					qs.AddConversation( new AlbertaAfterPaintingConversation() );
-				}
-			}
-		}
+        if (obj != null && !obj.Completed)
+          obj.Complete();
+        else if (qs.IsObjectiveInProgress(typeof(SitOnTheStoolObjective)))
+          qs.AddConversation(new AlbertaStoolConversation());
+        else if (qs.IsObjectiveInProgress(typeof(ReturnPaintingObjective)))
+          qs.AddConversation(new AlbertaAfterPaintingConversation());
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,55 +1,55 @@
 namespace Server.Items
 {
-	public class BurglarsBandana : Bandana
-	{
-		public override int LabelNumber => 1063473;
+  public class BurglarsBandana : Bandana
+  {
+    [Constructible]
+    public BurglarsBandana()
+    {
+      Hue = Utility.RandomBool() ? 0x58C : 0x10;
 
-		public override int BasePhysicalResistance => 10;
-		public override int BaseFireResistance => 5;
-		public override int BaseColdResistance => 7;
-		public override int BasePoisonResistance => 10;
-		public override int BaseEnergyResistance => 10;
+      SkillBonuses.SetValues(0, SkillName.Stealing, 10.0);
+      SkillBonuses.SetValues(1, SkillName.Stealth, 10.0);
+      SkillBonuses.SetValues(2, SkillName.Snooping, 10.0);
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+      Attributes.BonusDex = 5;
+    }
 
-		[Constructible]
-		public BurglarsBandana()
-		{
-			Hue = Utility.RandomBool() ? 0x58C : 0x10;
+    public BurglarsBandana(Serial serial) : base(serial)
+    {
+    }
 
-			SkillBonuses.SetValues( 0, SkillName.Stealing, 10.0 );
-			SkillBonuses.SetValues( 1, SkillName.Stealth, 10.0 );
-			SkillBonuses.SetValues( 2, SkillName.Snooping, 10.0 );
+    public override int LabelNumber => 1063473;
 
-			Attributes.BonusDex = 5;
-		}
+    public override int BasePhysicalResistance => 10;
+    public override int BaseFireResistance => 5;
+    public override int BaseColdResistance => 7;
+    public override int BasePoisonResistance => 10;
+    public override int BaseEnergyResistance => 10;
 
-		public BurglarsBandana( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 2 );
-		}
+      writer.Write(2);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( version < 2 )
-			{
-				Resistances.Physical = 0;
-				Resistances.Fire = 0;
-				Resistances.Cold = 0;
-				Resistances.Poison = 0;
-				Resistances.Energy = 0;
-			}
-		}
-	}
+      if (version < 2)
+      {
+        Resistances.Physical = 0;
+        Resistances.Fire = 0;
+        Resistances.Cold = 0;
+        Resistances.Poison = 0;
+        Resistances.Energy = 0;
+      }
+    }
+  }
 }

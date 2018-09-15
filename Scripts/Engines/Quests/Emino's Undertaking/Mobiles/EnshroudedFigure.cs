@@ -1,54 +1,54 @@
-using Server.Mobiles;
 using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Engines.Quests.Ninja
 {
-	public class EnshroudedFigure : BaseQuester
-	{
-		public override string DefaultName => "an enshrouded figure";
+  public class EnshroudedFigure : BaseQuester
+  {
+    [Constructible]
+    public EnshroudedFigure()
+    {
+    }
 
-		[Constructible]
-		public EnshroudedFigure()
-		{
-		}
+    public EnshroudedFigure(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitBody()
-		{
-			InitStats( 100, 100, 25 );
+    public override string DefaultName => "an enshrouded figure";
 
-			Hue = 0x8401;
-			Female = false;
-			Body = 0x190;
-		}
+    public override int TalkNumber => -1;
 
-		public override void InitOutfit()
-		{
-			AddItem( new DeathShroud() );
-			AddItem( new ThighBoots() );
-		}
+    public override void InitBody()
+    {
+      InitStats(100, 100, 25);
 
-		public override int TalkNumber => -1;
+      Hue = 0x8401;
+      Female = false;
+      Body = 0x190;
+    }
 
-		public override void OnTalk( PlayerMobile player, bool contextMenu )
-		{
-		}
+    public override void InitOutfit()
+    {
+      AddItem(new DeathShroud());
+      AddItem(new ThighBoots());
+    }
 
-		public EnshroudedFigure( Serial serial ) : base( serial )
-		{
-		}
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

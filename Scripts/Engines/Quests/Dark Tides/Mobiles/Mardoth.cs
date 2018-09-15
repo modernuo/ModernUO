@@ -4,217 +4,216 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Necro
 {
-	public class Mardoth : BaseQuester
-	{
-		public override string DefaultName => "Mardoth";
+  public class Mardoth : BaseQuester
+  {
+    [Constructible]
+    public Mardoth() : base("the Ancient Necromancer")
+    {
+    }
 
-		[Constructible]
-		public Mardoth() : base( "the Ancient Necromancer" )
-		{
-		}
+    public Mardoth(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitBody()
-		{
-			InitStats( 100, 100, 25 );
+    public override string DefaultName => "Mardoth";
 
-			Hue = 0x8849;
-			Body = 0x190;
-		}
+    public override void InitBody()
+    {
+      InitStats(100, 100, 25);
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			if ( from is PlayerMobile player )
-			{
-				QuestSystem qs = player.Quest;
+      Hue = 0x8849;
+      Body = 0x190;
+    }
 
-				if ( qs is DarkTidesQuest )
-				{
-					if ( dropped is DarkTidesHorn horn )
-					{
-						if ( player.Young )
-						{
-							if ( horn.Charges < 10 )
-							{
-								SayTo( from, 1049384 ); // I have recharged the item for you.
-								horn.Charges = 10;
-							}
-							else
-							{
-								SayTo( from, 1049385 ); // That doesn't need recharging yet.
-							}
-						}
-						else
-						{
-							player.SendLocalizedMessage(1114333); //You must be young to have this item recharged.
-						}
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      if (from is PlayerMobile player)
+      {
+        QuestSystem qs = player.Quest;
 
-						return false;
-					}
-				}
-			}
+        if (qs is DarkTidesQuest)
+          if (dropped is DarkTidesHorn horn)
+          {
+            if (player.Young)
+            {
+              if (horn.Charges < 10)
+              {
+                SayTo(from, 1049384); // I have recharged the item for you.
+                horn.Charges = 10;
+              }
+              else
+              {
+                SayTo(from, 1049385); // That doesn't need recharging yet.
+              }
+            }
+            else
+            {
+              player.SendLocalizedMessage(1114333); //You must be young to have this item recharged.
+            }
 
-			return base.OnDragDrop( from, dropped );
-		}
+            return false;
+          }
+      }
 
-		public override void InitOutfit()
-		{
-			AddItem( new Sandals( 0x1 ) );
-			AddItem( new Robe( 0x66D ) );
-			AddItem( new BlackStaff() );
-			AddItem( new WizardsHat( 0x1 ) );
+      return base.OnDragDrop(from, dropped);
+    }
 
-			FacialHairItemID = 0x2041;
-			FacialHairHue = 0x482;
+    public override void InitOutfit()
+    {
+      AddItem(new Sandals(0x1));
+      AddItem(new Robe(0x66D));
+      AddItem(new BlackStaff());
+      AddItem(new WizardsHat(0x1));
 
-			HairItemID = 0x203C;
-			HairHue = 0x482;
+      FacialHairItemID = 0x2041;
+      FacialHairHue = 0x482;
 
-			Item gloves = new BoneGloves();
-			gloves.Hue = 0x66D;
-			AddItem( gloves );
+      HairItemID = 0x203C;
+      HairHue = 0x482;
 
-			Item gorget = new PlateGorget();
-			gorget.Hue = 0x1;
-			AddItem( gorget );
-		}
+      Item gloves = new BoneGloves();
+      gloves.Hue = 0x66D;
+      AddItem(gloves);
 
-		public override int GetAutoTalkRange( PlayerMobile m )
-		{
-			return 3;
-		}
+      Item gorget = new PlateGorget();
+      gorget.Hue = 0x1;
+      AddItem(gorget);
+    }
 
-		public override bool CanTalkTo( PlayerMobile to )
-		{
-			if ( !(to.Quest is DarkTidesQuest qs) )
-				return ( to.Quest == null && QuestSystem.CanOfferQuest( to, typeof( DarkTidesQuest ) ) );
+    public override int GetAutoTalkRange(PlayerMobile m)
+    {
+      return 3;
+    }
 
-			return ( qs.FindObjective( typeof( FindMardothAboutVaultObjective ) ) != null );
-		}
+    public override bool CanTalkTo(PlayerMobile to)
+    {
+      if (!(to.Quest is DarkTidesQuest qs))
+        return to.Quest == null && QuestSystem.CanOfferQuest(to, typeof(DarkTidesQuest));
 
-		public override void OnTalk( PlayerMobile player, bool contextMenu )
-		{
-			QuestSystem qs = player.Quest;
+      return qs.FindObjective(typeof(FindMardothAboutVaultObjective)) != null;
+    }
 
-			if ( qs is DarkTidesQuest )
-			{
-				if ( DarkTidesQuest.HasLostCallingScroll( player ) )
-				{
-					qs.AddConversation( new LostCallingScrollConversation( true ) );
-				}
-				else
-				{
-					QuestObjective obj = qs.FindObjective( typeof( FindMardothAboutVaultObjective ) );
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+      QuestSystem qs = player.Quest;
 
-					if ( obj != null && !obj.Completed )
-					{
-						obj.Complete();
-					}
-					else
-					{
-						obj = qs.FindObjective( typeof( FindMardothAboutKronusObjective ) );
+      if (qs is DarkTidesQuest)
+      {
+        if (DarkTidesQuest.HasLostCallingScroll(player))
+        {
+          qs.AddConversation(new LostCallingScrollConversation(true));
+        }
+        else
+        {
+          QuestObjective obj = qs.FindObjective(typeof(FindMardothAboutVaultObjective));
 
-						if ( obj != null && !obj.Completed )
-						{
-							obj.Complete();
-						}
-						else
-						{
-							obj = qs.FindObjective( typeof( FindMardothEndObjective ) );
+          if (obj != null && !obj.Completed)
+          {
+            obj.Complete();
+          }
+          else
+          {
+            obj = qs.FindObjective(typeof(FindMardothAboutKronusObjective));
 
-							if ( obj != null && !obj.Completed )
-							{
-								Container cont = GetNewContainer();
+            if (obj != null && !obj.Completed)
+            {
+              obj.Complete();
+            }
+            else
+            {
+              obj = qs.FindObjective(typeof(FindMardothEndObjective));
 
-								cont.DropItem( new PigIron( 20 ) );
-								cont.DropItem( new NoxCrystal( 20 ) );
-								cont.DropItem( new BatWing( 25 ) );
-								cont.DropItem( new DaemonBlood( 20 ) );
-								cont.DropItem( new GraveDust( 20 ) );
+              if (obj != null && !obj.Completed)
+              {
+                Container cont = GetNewContainer();
 
-								BaseWeapon weapon = new BoneHarvester();
+                cont.DropItem(new PigIron(20));
+                cont.DropItem(new NoxCrystal(20));
+                cont.DropItem(new BatWing(25));
+                cont.DropItem(new DaemonBlood(20));
+                cont.DropItem(new GraveDust(20));
 
-								weapon.Slayer = SlayerName.OrcSlaying;
+                BaseWeapon weapon = new BoneHarvester();
 
-								if ( Core.AOS )
-								{
-									BaseRunicTool.ApplyAttributesTo( weapon, 3, 20, 40 );
-								}
-								else
-								{
-									weapon.DamageLevel = (WeaponDamageLevel)RandomMinMaxScaled( 2, 4 );
-									weapon.AccuracyLevel = (WeaponAccuracyLevel)RandomMinMaxScaled( 2, 4 );
-									weapon.DurabilityLevel = (WeaponDurabilityLevel)RandomMinMaxScaled( 2, 4 );
-								}
+                weapon.Slayer = SlayerName.OrcSlaying;
 
-								cont.DropItem( weapon );
+                if (Core.AOS)
+                {
+                  BaseRunicTool.ApplyAttributesTo(weapon, 3, 20, 40);
+                }
+                else
+                {
+                  weapon.DamageLevel = (WeaponDamageLevel)RandomMinMaxScaled(2, 4);
+                  weapon.AccuracyLevel = (WeaponAccuracyLevel)RandomMinMaxScaled(2, 4);
+                  weapon.DurabilityLevel = (WeaponDurabilityLevel)RandomMinMaxScaled(2, 4);
+                }
 
-								cont.DropItem( new BankCheck( 2000 ) );
-								cont.DropItem( new EnchantedSextant() );
+                cont.DropItem(weapon);
 
-								if ( !player.PlaceInBackpack( cont ) )
-								{
-									cont.Delete();
-									player.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
-								}
-								else
-								{
-									obj.Complete();
-								}
-							}
-							else if ( contextMenu )
-							{
-								FocusTo( player );
-								player.SendLocalizedMessage( 1061821 ); // Mardoth has nothing more for you at this time.
-							}
-						}
-					}
-				}
-			}
-			else if ( qs == null && QuestSystem.CanOfferQuest( player, typeof( DarkTidesQuest ) ) )
-			{
-				new DarkTidesQuest( player ).SendOffer();
-			}
-		}
+                cont.DropItem(new BankCheck(2000));
+                cont.DropItem(new EnchantedSextant());
 
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			base.OnMovement( m, oldLocation );
+                if (!player.PlaceInBackpack(cont))
+                {
+                  cont.Delete();
+                  player.SendLocalizedMessage(
+                    1046260); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
+                }
+                else
+                {
+                  obj.Complete();
+                }
+              }
+              else if (contextMenu)
+              {
+                FocusTo(player);
+                player.SendLocalizedMessage(1061821); // Mardoth has nothing more for you at this time.
+              }
+            }
+          }
+        }
+      }
+      else if (qs == null && QuestSystem.CanOfferQuest(player, typeof(DarkTidesQuest)))
+      {
+        new DarkTidesQuest(player).SendOffer();
+      }
+    }
 
-			if ( m is PlayerMobile && !m.Frozen && !m.Alive && InRange( m, 4 ) && !InRange( oldLocation, 4 ) && InLOS( m ) )
-			{
-				if ( m.Map == null || !m.Map.CanFit( m.Location, 16, false, false ) )
-				{
-					m.SendLocalizedMessage( 502391 ); // Thou can not be resurrected there!
-				}
-				else
-				{
-					Direction = GetDirectionTo( m );
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      base.OnMovement(m, oldLocation);
 
-					m.PlaySound( 0x214 );
-					m.FixedEffect( 0x376A, 10, 16 );
+      if (m is PlayerMobile && !m.Frozen && !m.Alive && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
+      {
+        if (m.Map == null || !m.Map.CanFit(m.Location, 16, false, false))
+        {
+          m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
+        }
+        else
+        {
+          Direction = GetDirectionTo(m);
 
-					m.CloseGump( typeof( ResurrectGump ) );
-					m.SendGump( new ResurrectGump( m, ResurrectMessage.Healer ) );
-				}
-			}
-		}
+          m.PlaySound(0x214);
+          m.FixedEffect(0x376A, 10, 16);
 
-		public Mardoth( Serial serial ) : base( serial )
-		{
-		}
+          m.CloseGump(typeof(ResurrectGump));
+          m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
+        }
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

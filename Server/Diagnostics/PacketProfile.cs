@@ -20,84 +20,94 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.IO;
 
-namespace Server.Diagnostics {
-	public abstract class BasePacketProfile : BaseProfile {
-		public long TotalLength { get; private set; }
+namespace Server.Diagnostics
+{
+  public abstract class BasePacketProfile : BaseProfile
+  {
+    protected BasePacketProfile(string name)
+      : base(name)
+    {
+    }
 
-		public double AverageLength => ( double ) TotalLength / Math.Max( 1, Count );
+    public long TotalLength{ get; private set; }
 
-		protected BasePacketProfile(string name)
-			: base( name ) {
-		}
+    public double AverageLength => (double)TotalLength / Math.Max(1, Count);
 
-		public void Finish( int length ) {
-			Finish();
+    public void Finish(int length)
+    {
+      Finish();
 
-			TotalLength += length;
-		}
+      TotalLength += length;
+    }
 
-		public override void WriteTo( TextWriter op ) {
-			base.WriteTo( op );
+    public override void WriteTo(TextWriter op)
+    {
+      base.WriteTo(op);
 
-			op.Write( "\t{0,12:F2} {1,-12:N0}", AverageLength, TotalLength );
-		}
-	}
+      op.Write("\t{0,12:F2} {1,-12:N0}", AverageLength, TotalLength);
+    }
+  }
 
-	public class PacketSendProfile : BasePacketProfile {
-		private static Dictionary<Type, PacketSendProfile> _profiles = new Dictionary<Type, PacketSendProfile>();
+  public class PacketSendProfile : BasePacketProfile
+  {
+    private static Dictionary<Type, PacketSendProfile> _profiles = new Dictionary<Type, PacketSendProfile>();
 
-		public static IEnumerable<PacketSendProfile> Profiles => _profiles.Values;
+    private long _created;
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public static PacketSendProfile Acquire( Type type ) {
-			PacketSendProfile prof;
+    public PacketSendProfile(Type type)
+      : base(type.FullName)
+    {
+    }
 
-			if ( !_profiles.TryGetValue( type, out prof ) ) {
-				_profiles.Add( type, prof = new PacketSendProfile( type ) );
-			}
+    public static IEnumerable<PacketSendProfile> Profiles => _profiles.Values;
 
-			return prof;
-		}
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public static PacketSendProfile Acquire(Type type)
+    {
+      PacketSendProfile prof;
 
-		private long _created;
+      if (!_profiles.TryGetValue(type, out prof)) _profiles.Add(type, prof = new PacketSendProfile(type));
 
-		public void Increment() {
-			Interlocked.Increment(ref _created);
-		}
+      return prof;
+    }
 
-		public PacketSendProfile( Type type )
-			: base( type.FullName ) {
-		}
+    public void Increment()
+    {
+      Interlocked.Increment(ref _created);
+    }
 
-		public override void WriteTo( TextWriter op ) {
-			base.WriteTo( op );
+    public override void WriteTo(TextWriter op)
+    {
+      base.WriteTo(op);
 
-			op.Write( "\t{0,12:N0}", _created );
-		}
-	}
+      op.Write("\t{0,12:N0}", _created);
+    }
+  }
 
-	public class PacketReceiveProfile : BasePacketProfile {
-		private static Dictionary<int, PacketReceiveProfile> _profiles = new Dictionary<int, PacketReceiveProfile>();
+  public class PacketReceiveProfile : BasePacketProfile
+  {
+    private static Dictionary<int, PacketReceiveProfile> _profiles = new Dictionary<int, PacketReceiveProfile>();
 
-		public static IEnumerable<PacketReceiveProfile> Profiles => _profiles.Values;
+    public PacketReceiveProfile(int packetId)
+      : base($"0x{packetId:X2}")
+    {
+    }
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public static PacketReceiveProfile Acquire( int packetId ) {
-			PacketReceiveProfile prof;
+    public static IEnumerable<PacketReceiveProfile> Profiles => _profiles.Values;
 
-			if ( !_profiles.TryGetValue( packetId, out prof ) ) {
-				_profiles.Add( packetId, prof = new PacketReceiveProfile( packetId ) );
-			}
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public static PacketReceiveProfile Acquire(int packetId)
+    {
+      PacketReceiveProfile prof;
 
-			return prof;
-		}
+      if (!_profiles.TryGetValue(packetId, out prof))
+        _profiles.Add(packetId, prof = new PacketReceiveProfile(packetId));
 
-		public PacketReceiveProfile( int packetId )
-			: base($"0x{packetId:X2}") {
-		}
-	}
+      return prof;
+    }
+  }
 }

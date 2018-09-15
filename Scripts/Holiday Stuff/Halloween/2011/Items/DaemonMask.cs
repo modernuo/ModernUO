@@ -1,33 +1,32 @@
 ﻿namespace Server.Items.Holiday
 {
-	public class PaintedDaemonMask : BasePaintedMask
-	{
-		public override string MaskName => "Daemon Mask";
+  public class PaintedDaemonMask : BasePaintedMask
+  {
+    [Constructible]
+    public PaintedDaemonMask()
+      : base(0x4a92)
+    {
+    }
 
-		[Constructible]
-		public PaintedDaemonMask()
-			: base( 0x4a92 )
-		{
-		}
+    public PaintedDaemonMask(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public PaintedDaemonMask( Serial serial )
-			: base( serial )
-		{
-		}
+    public override string MaskName => "Daemon Mask";
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( ( int )0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }
-

@@ -1,15 +1,15 @@
 namespace Server.Engines.PartySystem
 {
-	public class PartyMemberInfo
-	{
-		public Mobile Mobile { get; }
+  public class PartyMemberInfo
+  {
+    public PartyMemberInfo(Mobile m)
+    {
+      Mobile = m;
+      CanLoot = !Core.ML;
+    }
 
-		public bool CanLoot { get; set; }
+    public Mobile Mobile{ get; }
 
-		public PartyMemberInfo( Mobile m )
-		{
-			Mobile = m;
-			CanLoot = !Core.ML;
-		}
-	}
+    public bool CanLoot{ get; set; }
+  }
 }

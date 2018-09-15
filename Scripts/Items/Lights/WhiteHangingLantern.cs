@@ -2,67 +2,75 @@ using System;
 
 namespace Server.Items
 {
-	[Flippable]
-	public class WhiteHangingLantern : BaseLight
-	{
-		public override int LitItemID
-		{
-			get
-			{
-				if ( ItemID == 0x24C6 )
-					return 0x24C5;
-				return 0x24C7;
-			}
-		}
-		
-		public override int UnlitItemID
-		{
-			get
-			{
-				if ( ItemID == 0x24C5 )
-					return 0x24C6;
-				return 0x24C8;
-			}
-		}
-		
-		[Constructible]
-		public WhiteHangingLantern() : base( 0x24C6 )
-		{
-			Movable = true;
-			Duration = TimeSpan.Zero; // Never burnt out
-			Burning = false;
-			Light = LightType.Circle300;
-			Weight = 3.0;
-		}
+  [Flippable]
+  public class WhiteHangingLantern : BaseLight
+  {
+    [Constructible]
+    public WhiteHangingLantern() : base(0x24C6)
+    {
+      Movable = true;
+      Duration = TimeSpan.Zero; // Never burnt out
+      Burning = false;
+      Light = LightType.Circle300;
+      Weight = 3.0;
+    }
 
-		public WhiteHangingLantern( Serial serial ) : base( serial )
-		{
-		}
+    public WhiteHangingLantern(Serial serial) : base(serial)
+    {
+    }
 
-		public void Flip()
-		{
-			Light = LightType.Circle300;
+    public override int LitItemID
+    {
+      get
+      {
+        if (ItemID == 0x24C6)
+          return 0x24C5;
+        return 0x24C7;
+      }
+    }
 
-			switch ( ItemID )
-			{
-				case 0x24C6: ItemID = 0x24C8; break;
-				case 0x24C5: ItemID = 0x24C7; break;
+    public override int UnlitItemID
+    {
+      get
+      {
+        if (ItemID == 0x24C5)
+          return 0x24C6;
+        return 0x24C8;
+      }
+    }
 
-				case 0x24C8: ItemID = 0x24C6; break;
-				case 0x24C7: ItemID = 0x24C5; break;
-			}
-		}
+    public void Flip()
+    {
+      Light = LightType.Circle300;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+      switch (ItemID)
+      {
+        case 0x24C6:
+          ItemID = 0x24C8;
+          break;
+        case 0x24C5:
+          ItemID = 0x24C7;
+          break;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+        case 0x24C8:
+          ItemID = 0x24C6;
+          break;
+        case 0x24C7:
+          ItemID = 0x24C5;
+          break;
+      }
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

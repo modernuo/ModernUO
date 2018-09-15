@@ -3,161 +3,168 @@ using Server.Mobiles;
 
 namespace Server.Items
 {
-	public class ScrollofTranscendence : SpecialScroll
-	{
-		public override int LabelNumber => 1094934; // Scroll of Transcendence
+  public class ScrollofTranscendence : SpecialScroll
+  {
+    public ScrollofTranscendence() : this(SkillName.Alchemy, 0.0)
+    {
+    }
 
-		public override int Message => 1094933; /*Using a Scroll of Transcendence for a given skill will permanently increase your current
+    [Constructible]
+    public ScrollofTranscendence(SkillName skill, double value) : base(skill, value)
+    {
+      ItemID = 0x14EF;
+      Hue = 0x490;
+    }
+
+    public ScrollofTranscendence(Serial serial) : base(serial)
+    {
+    }
+
+    public override int LabelNumber => 1094934; // Scroll of Transcendence
+
+    public override int Message =>
+      1094933; /*Using a Scroll of Transcendence for a given skill will permanently increase your current
 																*level in that skill by the amount of points displayed on the scroll.
 																*As you may not gain skills beyond your maximum skill cap, any excess points will be lost.*/
 
-		public override string DefaultTitle =>
-			$"<basefont color=#FFFFFF>Scroll of Transcendence ({Value} Skill):</basefont>";
+    public override string DefaultTitle =>
+      $"<basefont color=#FFFFFF>Scroll of Transcendence ({Value} Skill):</basefont>";
 
-		public static ScrollofTranscendence CreateRandom( int min, int max )
-		{
-			SkillName skill = (SkillName)Utility.Random( SkillInfo.Table.Length );
+    public static ScrollofTranscendence CreateRandom(int min, int max)
+    {
+      SkillName skill = (SkillName)Utility.Random(SkillInfo.Table.Length);
 
-			return new ScrollofTranscendence(skill, Utility.RandomMinMax(min, max) * 0.1);
-		}
+      return new ScrollofTranscendence(skill, Utility.RandomMinMax(min, max) * 0.1);
+    }
 
-		public ScrollofTranscendence() : this( SkillName.Alchemy, 0.0 )
-		{
-		}
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-		[Constructible]
-		public ScrollofTranscendence( SkillName skill, double value ) : base( skill, value )
-		{
-			ItemID = 0x14EF;
-			Hue = 0x490;
-		}
+      if (Value == 1)
+        list.Add(1076759, "{0}\t{1}.0 Skill Points", GetName(), Value);
+      else
+        list.Add(1076759, "{0}\t{1} Skill Points", GetName(), Value);
+    }
 
-		public ScrollofTranscendence(Serial serial) : base(serial)
-		{
-		}
+    public override bool CanUse(Mobile from)
+    {
+      if (!base.CanUse(from))
+        return false;
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties(list);
+      if (!(from is PlayerMobile pm))
+        return false;
 
-			if ( Value == 1 )
-				list.Add(1076759, "{0}\t{1}.0 Skill Points", GetName(), Value);
-			else
-				list.Add(1076759, "{0}\t{1} Skill Points", GetName(), Value);
-		}
+      #region Mondain's Legacy
 
-		public override bool CanUse( Mobile from )
-		{
-			if ( !base.CanUse( from ) )
-				return false;
+      /* to add when skillgain quests will be implemented
 
-			if ( !(from is PlayerMobile pm) )
-				return false;
+      for (int i = pm.Quests.Count - 1; i >= 0; i--)
+      {
+        BaseQuest quest = pm.Quests[i];
 
-			#region Mondain's Legacy
-			/* to add when skillgain quests will be implemented
+        for (int j = quest.Objectives.Count - 1; j >= 0; j--)
+        {
+          BaseObjective objective = quest.Objectives[j];
 
-			for (int i = pm.Quests.Count - 1; i >= 0; i--)
-			{
-				BaseQuest quest = pm.Quests[i];
+          if (objective is ApprenticeObjective)
+          {
+            from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
+            return false;
+          }
+        }
+      }
 
-				for (int j = quest.Objectives.Count - 1; j >= 0; j--)
-				{
-					BaseObjective objective = quest.Objectives[j];
+      */
 
-					if (objective is ApprenticeObjective)
-					{
-						from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
-						return false;
-					}
-				}
-			}
+      #endregion
 
-			*/
-			#endregion
+      #region Scroll of Alacrity
 
-			#region Scroll of Alacrity
-			if (pm.AcceleratedStart > DateTime.UtcNow)
-			{
-				from.SendLocalizedMessage(1077951); // You are already under the effect of an accelerated skillgain scroll.
-				return false;
-			}
-			#endregion
+      if (pm.AcceleratedStart > DateTime.UtcNow)
+      {
+        from.SendLocalizedMessage(1077951); // You are already under the effect of an accelerated skillgain scroll.
+        return false;
+      }
 
-			return true;
-		}
+      #endregion
 
-		public override void Use( Mobile from )
-		{
-			if ( !CanUse( from ) )
-				return;
+      return true;
+    }
 
-			double tskill = from.Skills[Skill].Base; // value of skill without item bonuses etc
-			double tcap = from.Skills[Skill].Cap; // maximum value permitted
-			bool canGain = false;
+    public override void Use(Mobile from)
+    {
+      if (!CanUse(from))
+        return;
 
-			double newValue = Value;
+      double tskill = from.Skills[Skill].Base; // value of skill without item bonuses etc
+      double tcap = from.Skills[Skill].Cap; // maximum value permitted
+      bool canGain = false;
 
-			if ( ( tskill + newValue ) > tcap )
-				newValue = tcap - tskill;
+      double newValue = Value;
 
-			if ( tskill < tcap && from.Skills[Skill].Lock == SkillLock.Up )
-			{
-				if ( ( from.SkillsTotal + newValue * 10 ) > from.SkillsCap )
-				{
-					int ns = from.Skills.Length; // number of items in from.Skills[]
+      if (tskill + newValue > tcap)
+        newValue = tcap - tskill;
 
-					for ( int i = 0; i < ns; i++ )
-					{
-						// skill must point down and its value must be enough
-						if ( from.Skills[i].Lock == SkillLock.Down && from.Skills[i].Base >= newValue )
-						{
-							from.Skills[i].Base -= newValue;
-							canGain = true;
-							break;
-						}
-					}
-				}
-				else
-					canGain = true;
-			}
+      if (tskill < tcap && from.Skills[Skill].Lock == SkillLock.Up)
+      {
+        if (from.SkillsTotal + newValue * 10 > from.SkillsCap)
+        {
+          int ns = from.Skills.Length; // number of items in from.Skills[]
 
-			if ( !canGain )
-			{
-				from.SendLocalizedMessage( 1094935 );	/*You cannot increase this skill at this time. The skill may be locked or set to lower in your skill menu.
+          for (int i = 0; i < ns; i++)
+            // skill must point down and its value must be enough
+            if (from.Skills[i].Lock == SkillLock.Down && from.Skills[i].Base >= newValue)
+            {
+              from.Skills[i].Base -= newValue;
+              canGain = true;
+              break;
+            }
+        }
+        else
+        {
+          canGain = true;
+        }
+      }
+
+      if (!canGain)
+      {
+        from.SendLocalizedMessage(
+          1094935); /*You cannot increase this skill at this time. The skill may be locked or set to lower in your skill menu.
 														*If you are at your total skill cap, you must use a Powerscroll to increase your current skill cap.*/
-				return;
-			}
+        return;
+      }
 
-			from.SendLocalizedMessage( 1049513, GetNameLocalized() ); // You feel a surge of magic as the scroll enhances your ~1_type~!
+      from.SendLocalizedMessage(1049513,
+        GetNameLocalized()); // You feel a surge of magic as the scroll enhances your ~1_type~!
 
-			from.Skills[Skill].Base += newValue;
+      from.Skills[Skill].Base += newValue;
 
-			Effects.PlaySound( from.Location, from.Map, 0x1F7 );
-			Effects.SendTargetParticles( from, 0x373A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100 );
-			Effects.SendTargetParticles( from, 0x376A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100 );
+      Effects.PlaySound(from.Location, from.Map, 0x1F7);
+      Effects.SendTargetParticles(from, 0x373A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100);
+      Effects.SendTargetParticles(from, 0x376A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100);
 
-			Delete();
-		}
+      Delete();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize(writer);
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write((int)0); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize(reader);
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = ( InheritsItem ? 0 : reader.ReadInt() ); //Required for SpecialScroll insertion
+      int version = InheritsItem ? 0 : reader.ReadInt(); //Required for SpecialScroll insertion
 
-			LootType = LootType.Cursed;
-			Insured = false;
+      LootType = LootType.Cursed;
+      Insured = false;
 
-			if (Hue == 0x7E)
-				Hue = 0x490;
-		}
-	}
+      if (Hue == 0x7E)
+        Hue = 0x490;
+    }
+  }
 }

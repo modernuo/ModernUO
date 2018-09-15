@@ -2,268 +2,206 @@ using Server.Items;
 
 namespace Server.Engines.Quests.Necro
 {
-	public class AcceptConversation : QuestConversation
-	{
-		public override object Message => 1049092;
+  public class AcceptConversation : QuestConversation
+  {
+    public override object Message => 1049092;
 
-		public AcceptConversation()
-		{
-		}
+    public override void OnRead()
+    {
+      Container bag = BaseQuester.GetNewContainer();
 
-		public override void OnRead()
-		{
-			Container bag = BaseQuester.GetNewContainer();
+      bag.DropItem(new DarkTidesHorn());
 
-			bag.DropItem( new DarkTidesHorn() );
+      System.From.AddToBackpack(bag);
 
-			System.From.AddToBackpack( bag );
+      System.AddConversation(new ReanimateMaabusConversation());
+    }
+  }
 
-			System.AddConversation( new ReanimateMaabusConversation() );
-		}
-	}
+  public class ReanimateMaabusConversation : QuestConversation
+  {
+    private static QuestItemInfo[] m_Info =
+    {
+      new QuestItemInfo(1026153, 6178), // teleporter
+      new QuestItemInfo(1049117, 4036), // Horn of Retreat
+      new QuestItemInfo(1048032, 3702) // a bag
+    };
 
-	public class ReanimateMaabusConversation : QuestConversation
-	{
-		public override object Message => 1060099;
+    public override object Message => 1060099;
 
-		private static QuestItemInfo[] m_Info = {
-				new QuestItemInfo( 1026153, 6178 ), // teleporter
-				new QuestItemInfo( 1049117, 4036 ), // Horn of Retreat
-				new QuestItemInfo( 1048032, 3702 )  // a bag
-			};
+    public override QuestItemInfo[] Info => m_Info;
 
-		public override QuestItemInfo[] Info => m_Info;
+    public override void OnRead()
+    {
+      System.AddObjective(new FindMaabusTombObjective());
+    }
+  }
 
-		public ReanimateMaabusConversation()
-		{
-		}
+  public class MaabasConversation : QuestConversation
+  {
+    private static QuestItemInfo[] m_Info =
+    {
+      new QuestItemInfo(1026153, 6178) // teleporter
+    };
 
-		public override void OnRead()
-		{
-			System.AddObjective( new FindMaabusTombObjective() );
-		}
-	}
+    public override object Message => 1060103;
 
-	public class MaabasConversation : QuestConversation
-	{
-		public override object Message => 1060103;
+    public override QuestItemInfo[] Info => m_Info;
 
-		private static QuestItemInfo[] m_Info = {
-				new QuestItemInfo( 1026153, 6178 ) // teleporter
-			};
+    public override void OnRead()
+    {
+      System.AddObjective(new FindCrystalCaveObjective());
+    }
+  }
 
-		public override QuestItemInfo[] Info => m_Info;
+  public class HorusConversation : QuestConversation
+  {
+    public override object Message => 1060105;
 
-		public MaabasConversation()
-		{
-		}
+    public override void OnRead()
+    {
+      System.AddObjective(new FindMardothAboutVaultObjective());
+    }
+  }
 
-		public override void OnRead()
-		{
-			System.AddObjective( new FindCrystalCaveObjective() );
-		}
-	}
+  public class MardothVaultConversation : QuestConversation
+  {
+    public override object Message => 1060107;
 
-	public class HorusConversation : QuestConversation
-	{
-		public override object Message => 1060105;
+    public override void OnRead()
+    {
+      System.AddObjective(new FindCityOfLightObjective());
+    }
+  }
 
-		public HorusConversation()
-		{
-		}
+  public class VaultOfSecretsConversation : QuestConversation
+  {
+    private static QuestItemInfo[] m_Info =
+    {
+      new QuestItemInfo(1023643, 8787) // spellbook
+    };
 
-		public override void OnRead()
-		{
-			System.AddObjective( new FindMardothAboutVaultObjective() );
-		}
-	}
+    public override object Message => 1060110;
 
-	public class MardothVaultConversation : QuestConversation
-	{
-		public override object Message => 1060107;
+    public override QuestItemInfo[] Info => m_Info;
 
-		public MardothVaultConversation()
-		{
-		}
+    public override void OnRead()
+    {
+      System.AddObjective(new FetchAbraxusScrollObjective());
+    }
+  }
 
-		public override void OnRead()
-		{
-			System.AddObjective( new FindCityOfLightObjective() );
-		}
-	}
+  public class ReadAbraxusScrollConversation : QuestConversation
+  {
+    public override object Message => 1060114;
 
-	public class VaultOfSecretsConversation : QuestConversation
-	{
-		public override object Message => 1060110;
+    public override void OnRead()
+    {
+      System.AddObjective(new ReadAbraxusScrollObjective());
+    }
+  }
 
-		private static QuestItemInfo[] m_Info = {
-				new QuestItemInfo( 1023643, 8787 ) // spellbook
-			};
+  public class SecondHorusConversation : QuestConversation
+  {
+    public override object Message => 1060118;
 
-		public override QuestItemInfo[] Info => m_Info;
+    public override void OnRead()
+    {
+      System.AddObjective(new FindCallingScrollObjective());
+    }
+  }
 
-		public VaultOfSecretsConversation()
-		{
-		}
+  public class HealConversation : QuestConversation
+  {
+    public override object Message => 1061610;
+  }
 
-		public override void OnRead()
-		{
-			System.AddObjective( new FetchAbraxusScrollObjective() );
-		}
-	}
+  public class HorusRewardConversation : QuestConversation
+  {
+    public override object Message => 1060717;
 
-	public class ReadAbraxusScrollConversation : QuestConversation
-	{
-		public override object Message => 1060114;
+    public override bool Logged => false;
+  }
 
-		public ReadAbraxusScrollConversation()
-		{
-		}
+  public class LostCallingScrollConversation : QuestConversation
+  {
+    private bool m_FromMardoth;
 
-		public override void OnRead()
-		{
-			System.AddObjective( new ReadAbraxusScrollObjective() );
-		}
-	}
+    public LostCallingScrollConversation(bool fromMardoth)
+    {
+      m_FromMardoth = fromMardoth;
+    }
 
-	public class SecondHorusConversation : QuestConversation
-	{
-		public override object Message => 1060118;
+    // Serialization
+    public LostCallingScrollConversation()
+    {
+    }
 
-		public SecondHorusConversation()
-		{
-		}
+    public override object Message
+    {
+      get
+      {
+        if (m_FromMardoth) return 1062058;
 
-		public override void OnRead()
-		{
-			System.AddObjective( new FindCallingScrollObjective() );
-		}
-	}
+        /* You have arrived at the well, but no longer have the scroll
+           * of calling.  Use Mardoth's teleporter to return to the
+           * Crystal Cave and fetch another scroll from the box.
+           */
+        return 1060129;
+      }
+    }
 
-	public class HealConversation : QuestConversation
-	{
-		public override object Message => 1061610;
+    public override bool Logged => false;
 
-		public HealConversation()
-		{
-		}
-	}
+    public override void ChildDeserialize(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-	public class HorusRewardConversation : QuestConversation
-	{
-		public override object Message => 1060717;
+      m_FromMardoth = reader.ReadBool();
+    }
 
-		public override bool Logged => false;
+    public override void ChildSerialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
 
-		public HorusRewardConversation()
-		{
-		}
-	}
+      writer.Write(m_FromMardoth);
+    }
+  }
 
-	public class LostCallingScrollConversation : QuestConversation
-	{
-		private bool m_FromMardoth;
+  public class MardothKronusConversation : QuestConversation
+  {
+    public override object Message => 1060121;
 
-		public override object Message
-		{
-			get
-			{
-				if ( m_FromMardoth )
-				{
-					/* You return without the scroll of Calling?  I'm afraid that
-					 * won't do.  You must return to the Crystal Cave and fetch
-					 * another scroll.  Use the teleporter to the West of me to
-					 * get there.  Return here when you have the scroll.  Do not
-					 * fail me this time, young apprentice of evil.
-					 */
-					return 1062058;
-				}
+    public override void OnRead()
+    {
+      System.AddObjective(new FindWellOfTearsObjective());
+    }
+  }
 
-				/* You have arrived at the well, but no longer have the scroll
-					 * of calling.  Use Mardoth's teleporter to return to the
-					 * Crystal Cave and fetch another scroll from the box.
-					 */
-				return 1060129;
-			}
-		}
+  public class MardothEndConversation : QuestConversation
+  {
+    public override object Message => 1060133;
 
-		public override bool Logged => false;
+    public override void OnRead()
+    {
+      System.AddObjective(new FindBankObjective());
+    }
+  }
 
-		public LostCallingScrollConversation( bool fromMardoth )
-		{
-			m_FromMardoth = fromMardoth;
-		}
+  public class BankerConversation : QuestConversation
+  {
+    public override object Message => 1060137;
 
-		// Serialization
-		public LostCallingScrollConversation()
-		{
-		}
+    public override void OnRead()
+    {
+      System.Complete();
+    }
+  }
 
-		public override void ChildDeserialize( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+  public class RadarConversation : QuestConversation
+  {
+    public override object Message => 1061692;
 
-			m_FromMardoth = reader.ReadBool();
-		}
-
-		public override void ChildSerialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 0 ); // version
-
-			writer.Write( (bool) m_FromMardoth );
-		}
-	}
-
-	public class MardothKronusConversation : QuestConversation
-	{
-		public override object Message => 1060121;
-
-		public MardothKronusConversation()
-		{
-		}
-
-		public override void OnRead()
-		{
-			System.AddObjective( new FindWellOfTearsObjective() );
-		}
-	}
-
-	public class MardothEndConversation : QuestConversation
-	{
-		public override object Message => 1060133;
-
-		public MardothEndConversation()
-		{
-		}
-
-		public override void OnRead()
-		{
-			System.AddObjective( new FindBankObjective() );
-		}
-	}
-
-	public class BankerConversation : QuestConversation
-	{
-		public override object Message => 1060137;
-
-		public BankerConversation()
-		{
-		}
-
-		public override void OnRead()
-		{
-			System.Complete();
-		}
-	}
-
-	public class RadarConversation : QuestConversation
-	{
-		public override object Message => 1061692;
-
-		public override bool Logged => false;
-
-		public RadarConversation()
-		{
-		}
-	}
+    public override bool Logged => false;
+  }
 }

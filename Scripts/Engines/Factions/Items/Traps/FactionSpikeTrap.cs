@@ -2,83 +2,86 @@ using System;
 
 namespace Server.Factions
 {
-	public class FactionSpikeTrap : BaseFactionTrap
-	{
-		public override int LabelNumber => 1044601; // faction spike trap
+  public class FactionSpikeTrap : BaseFactionTrap
+  {
+    [Constructible]
+    public FactionSpikeTrap() : this(null)
+    {
+    }
 
-		public override int AttackMessage => 1010545; // Large spikes in the ground spring up piercing your skin!
-		public override int DisarmMessage => 1010541; // You carefully dismantle the trigger on the spikes and disable the trap.
-		public override int EffectSound => 0x22E;
-		public override int MessageHue => 0x5A;
+    public FactionSpikeTrap(Faction f) : this(f, null)
+    {
+    }
 
-		public override AllowedPlacing AllowedPlacing => AllowedPlacing.ControlledFactionTown;
+    public FactionSpikeTrap(Faction f, Mobile m) : base(f, m, 0x11A0)
+    {
+    }
 
-		public override void DoVisibleEffect()
-		{
-			Effects.SendLocationEffect( Location, Map, 0x11A4, 12, 6 );
-		}
+    public FactionSpikeTrap(Serial serial) : base(serial)
+    {
+    }
 
-		public override void DoAttackEffect( Mobile m )
-		{
-			m.Damage( Utility.Dice( 6, 10, 40 ), m );
-		}
+    public override int LabelNumber => 1044601; // faction spike trap
 
-		[Constructible]
-		public FactionSpikeTrap() : this( null )
-		{
-		}
+    public override int AttackMessage => 1010545; // Large spikes in the ground spring up piercing your skin!
 
-		public FactionSpikeTrap( Faction f ) : this( f, null )
-		{
-		}
+    public override int DisarmMessage =>
+      1010541; // You carefully dismantle the trigger on the spikes and disable the trap.
 
-		public FactionSpikeTrap( Faction f, Mobile m ) : base( f, m, 0x11A0 )
-		{
-		}
+    public override int EffectSound => 0x22E;
+    public override int MessageHue => 0x5A;
 
-		public FactionSpikeTrap( Serial serial ) : base( serial )
-		{
-		}
+    public override AllowedPlacing AllowedPlacing => AllowedPlacing.ControlledFactionTown;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void DoVisibleEffect()
+    {
+      Effects.SendLocationEffect(Location, Map, 0x11A4, 12, 6);
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void DoAttackEffect(Mobile m)
+    {
+      m.Damage(Utility.Dice(6, 10, 40), m);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			int version = reader.ReadInt();
-		}
-	}
+      writer.Write(0); // version
+    }
 
-	public class FactionSpikeTrapDeed : BaseFactionTrapDeed
-	{
-		public override Type TrapType => typeof( FactionSpikeTrap );
-		public override int LabelNumber => 1044605; // faction spike trap deed
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public FactionSpikeTrapDeed() : base( 0x11A5 )
-		{
-		}
+      int version = reader.ReadInt();
+    }
+  }
 
-		public FactionSpikeTrapDeed( Serial serial ) : base( serial )
-		{
-		}
+  public class FactionSpikeTrapDeed : BaseFactionTrapDeed
+  {
+    public FactionSpikeTrapDeed() : base(0x11A5)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public FactionSpikeTrapDeed(Serial serial) : base(serial)
+    {
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override Type TrapType => typeof(FactionSpikeTrap);
+    public override int LabelNumber => 1044605; // faction spike trap deed
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

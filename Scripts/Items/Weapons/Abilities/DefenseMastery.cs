@@ -3,95 +3,96 @@ using System.Collections;
 
 namespace Server.Items
 {
-	/// <summary>
-	/// Raises your physical resistance for a short time while lowering your ability to inflict damage. Requires Bushido or Ninjitsu skill.
-	/// </summary>
-	public class DefenseMastery : WeaponAbility
-	{
-		public DefenseMastery()
-		{
-		}
+  /// <summary>
+  ///   Raises your physical resistance for a short time while lowering your ability to inflict damage. Requires Bushido or
+  ///   Ninjitsu skill.
+  /// </summary>
+  public class DefenseMastery : WeaponAbility
+  {
+    private static Hashtable m_Table = new Hashtable();
 
-		public override bool CheckSkills( Mobile from )
-		{
-			if ( GetSkill( from, SkillName.Ninjitsu ) < 50.0  && GetSkill( from, SkillName.Bushido ) < 50.0 )
-			{
-				from.SendLocalizedMessage( 1063347, "50" ); // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
-				return false;
-			}
+    public override int BaseMana => 30;
 
-			return base.CheckSkills( from );
-		}
+    public override bool CheckSkills(Mobile from)
+    {
+      if (GetSkill(from, SkillName.Ninjitsu) < 50.0 && GetSkill(from, SkillName.Bushido) < 50.0)
+      {
+        from.SendLocalizedMessage(1063347,
+          "50"); // You need ~1_SKILL_REQUIREMENT~ Bushido or Ninjitsu skill to perform that attack!
+        return false;
+      }
 
-		public override int BaseMana => 30;
+      return base.CheckSkills(from);
+    }
 
-		public override void OnHit( Mobile attacker, Mobile defender, int damage )
-		{
-			if ( !Validate( attacker ) || !CheckMana( attacker, true ) )
-				return;
+    public override void OnHit(Mobile attacker, Mobile defender, int damage)
+    {
+      if (!Validate(attacker) || !CheckMana(attacker, true))
+        return;
 
-			ClearCurrentAbility( attacker );
+      ClearCurrentAbility(attacker);
 
-			attacker.SendLocalizedMessage( 1063353 ); // You perform a masterful defense!
+      attacker.SendLocalizedMessage(1063353); // You perform a masterful defense!
 
-			attacker.FixedParticles( 0x375A, 1, 17, 0x7F2, 0x3E8, 0x3, EffectLayer.Waist );
+      attacker.FixedParticles(0x375A, 1, 17, 0x7F2, 0x3E8, 0x3, EffectLayer.Waist);
 
-			int modifier = (int)(30.0 * ((Math.Max( attacker.Skills[SkillName.Bushido].Value, attacker.Skills[SkillName.Ninjitsu].Value ) - 50.0) / 70.0));
+      int modifier =
+        (int)(30.0 *
+              ((Math.Max(attacker.Skills[SkillName.Bushido].Value, attacker.Skills[SkillName.Ninjitsu].Value) -
+                50.0) / 70.0));
 
-			if ( m_Table[attacker] is DefenseMasteryInfo info )
-				EndDefense( (object)info );
+      if (m_Table[attacker] is DefenseMasteryInfo info)
+        EndDefense(info);
 
-			ResistanceMod mod = new ResistanceMod( ResistanceType.Physical, 50 + modifier );
-			attacker.AddResistanceMod( mod );
+      ResistanceMod mod = new ResistanceMod(ResistanceType.Physical, 50 + modifier);
+      attacker.AddResistanceMod(mod);
 
-			info = new DefenseMasteryInfo( attacker, 80 - modifier, mod );
-			info.m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 3.0 ), new TimerStateCallback( EndDefense ), info );
+      info = new DefenseMasteryInfo(attacker, 80 - modifier, mod);
+      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3.0), new TimerStateCallback(EndDefense), info);
 
-			m_Table[attacker] = info;
+      m_Table[attacker] = info;
 
-			attacker.Delta( MobileDelta.WeaponDamage );
-		}
+      attacker.Delta(MobileDelta.WeaponDamage);
+    }
 
-		private class DefenseMasteryInfo
-		{
-			public Mobile m_From;
-			public Timer m_Timer;
-			public int m_DamageMalus;
-			public ResistanceMod m_Mod;
+    public static bool GetMalus(Mobile targ, ref int damageMalus)
+    {
+      if (!(m_Table[targ] is DefenseMasteryInfo info))
+        return false;
 
-			public DefenseMasteryInfo( Mobile from, int damageMalus, ResistanceMod mod )
-			{
-				m_From = from;
-				m_DamageMalus = damageMalus;
-				m_Mod = mod;
-			}
-		}
+      damageMalus = info.m_DamageMalus;
+      return true;
+    }
 
-		private static Hashtable m_Table = new Hashtable();
+    private static void EndDefense(object state)
+    {
+      DefenseMasteryInfo info = (DefenseMasteryInfo)state;
 
-		public static bool GetMalus( Mobile targ, ref int damageMalus )
-		{
-			if ( !(m_Table[targ] is DefenseMasteryInfo info) )
-				return false;
+      if (info.m_Mod != null)
+        info.m_From.RemoveResistanceMod(info.m_Mod);
 
-			damageMalus = info.m_DamageMalus;
-			return true;
-		}
+      info.m_Timer?.Stop();
 
-		private static void EndDefense( object state )
-		{
-			DefenseMasteryInfo info = (DefenseMasteryInfo)state;
+      // No message is sent to the player.
 
-			if ( info.m_Mod != null )
-				info.m_From.RemoveResistanceMod( info.m_Mod );
+      m_Table.Remove(info.m_From);
 
-			info.m_Timer?.Stop();
+      info.m_From.Delta(MobileDelta.WeaponDamage);
+    }
 
-			// No message is sent to the player.
+    private class DefenseMasteryInfo
+    {
+      public int m_DamageMalus;
+      public Mobile m_From;
+      public ResistanceMod m_Mod;
+      public Timer m_Timer;
 
-			m_Table.Remove( info.m_From );
-
-			info.m_From.Delta( MobileDelta.WeaponDamage );
-		}
-	}
+      public DefenseMasteryInfo(Mobile from, int damageMalus, ResistanceMod mod)
+      {
+        m_From = from;
+        m_DamageMalus = damageMalus;
+        m_Mod = mod;
+      }
+    }
+  }
 }

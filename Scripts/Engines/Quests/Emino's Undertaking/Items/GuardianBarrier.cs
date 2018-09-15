@@ -2,69 +2,65 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Ninja
 {
-	public class GuardianBarrier : Item
-	{
-		[Constructible]
-		public GuardianBarrier() : base( 0x3967 )
-		{
-			Movable = false;
-			Visible = false;
-		}
+  public class GuardianBarrier : Item
+  {
+    [Constructible]
+    public GuardianBarrier() : base(0x3967)
+    {
+      Movable = false;
+      Visible = false;
+    }
 
-		public override bool OnMoveOver( Mobile m )
-		{
-			if ( m.AccessLevel > AccessLevel.Player )
-				return true;
+    public GuardianBarrier(Serial serial) : base(serial)
+    {
+    }
 
-			// If the mobile is to the north of the barrier, allow him to pass
-			if ( Y >= m.Y )
-				return true;
+    public override bool OnMoveOver(Mobile m)
+    {
+      if (m.AccessLevel > AccessLevel.Player)
+        return true;
 
-			if ( m is BaseCreature creature )
-			{
-				Mobile master = creature.GetMaster();
+      // If the mobile is to the north of the barrier, allow him to pass
+      if (Y >= m.Y)
+        return true;
 
-				// Allow creatures to cross from the south to the north only if their master is near to the north
-				return master != null && Y >= master.Y && master.InRange(this, 4);
-			}
+      if (m is BaseCreature creature)
+      {
+        Mobile master = creature.GetMaster();
 
-			if ( m is PlayerMobile pm )
-			{
-				if ( pm.Quest is EminosUndertakingQuest qs )
-				{
-					if ( qs.FindObjective( typeof( SneakPastGuardiansObjective ) ) is SneakPastGuardiansObjective obj )
-					{
-						if ( m.Hidden )
-							return true; // Hidden ninjas can pass
+        // Allow creatures to cross from the south to the north only if their master is near to the north
+        return master != null && Y >= master.Y && master.InRange(this, 4);
+      }
 
-						if ( !obj.TaughtHowToUseSkills )
-						{
-							obj.TaughtHowToUseSkills = true;
-							qs.AddConversation( new NeedToHideConversation() );
-						}
-					}
-				}
-			}
+      if (m is PlayerMobile pm)
+        if (pm.Quest is EminosUndertakingQuest qs)
+          if (qs.FindObjective(typeof(SneakPastGuardiansObjective)) is SneakPastGuardiansObjective obj)
+          {
+            if (m.Hidden)
+              return true; // Hidden ninjas can pass
 
-			return false;
-		}
+            if (!obj.TaughtHowToUseSkills)
+            {
+              obj.TaughtHowToUseSkills = true;
+              qs.AddConversation(new NeedToHideConversation());
+            }
+          }
 
-		public GuardianBarrier( Serial serial ) : base( serial )
-		{
-		}
+      return false;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

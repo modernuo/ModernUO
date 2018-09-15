@@ -1,97 +1,103 @@
 using System;
 using System.IO;
 using Server.Accounting;
+using Server.Commands;
 using Server.Network;
 
 namespace Server.RemoteAdmin
 {
-	public class RemoteAdminLogging
-	{
-		const string LogBaseDirectory = "Logs";
-		const string LogSubDirectory = "RemoteAdmin";
+  public class RemoteAdminLogging
+  {
+    private const string LogBaseDirectory = "Logs";
+    private const string LogSubDirectory = "RemoteAdmin";
 
-		public static bool Enabled { get; set; } = true;
+    private static bool Initialized;
 
-		public static StreamWriter Output { get; private set; }
+    public static bool Enabled{ get; set; } = true;
 
-		private static bool Initialized;
-		public static void LazyInitialize()
-		{
-			if ( Initialized || !Enabled ) return;
-			Initialized = true;
+    public static StreamWriter Output{ get; private set; }
 
-			if ( !Directory.Exists( LogBaseDirectory ) )
-				Directory.CreateDirectory( LogBaseDirectory );
+    public static void LazyInitialize()
+    {
+      if (Initialized || !Enabled) return;
+      Initialized = true;
 
-			string directory = Path.Combine( LogBaseDirectory, LogSubDirectory );
+      if (!Directory.Exists(LogBaseDirectory))
+        Directory.CreateDirectory(LogBaseDirectory);
 
-			if ( !Directory.Exists( directory ) )
-				Directory.CreateDirectory( directory );
+      string directory = Path.Combine(LogBaseDirectory, LogSubDirectory);
 
-			try
-			{
-				Output = new StreamWriter( Path.Combine( directory, string.Format( LogSubDirectory + "{0}.log", DateTime.UtcNow.ToString( "yyyyMMdd" ) ) ), true );
+      if (!Directory.Exists(directory))
+        Directory.CreateDirectory(directory);
 
-				Output.AutoFlush = true;
+      try
+      {
+        Output = new StreamWriter(
+          Path.Combine(directory,
+            string.Format(LogSubDirectory + "{0}.log", DateTime.UtcNow.ToString("yyyyMMdd"))), true);
 
-				Output.WriteLine( "##############################" );
-				Output.WriteLine( "Log started on {0}", DateTime.UtcNow );
-				Output.WriteLine();
-			}
-			catch
-			{
-				Utility.PushColor( ConsoleColor.Red );
-				Console.WriteLine( "RemoteAdminLogging: Failed to initialize LogWriter." );
-				Utility.PopColor();
-				Enabled = false;
-			}
-		}
+        Output.AutoFlush = true;
 
-		public static object Format( object o )
-		{
-			o = Commands.CommandLogging.Format( o );
-			if ( o == null )
-				return "(null)";
+        Output.WriteLine("##############################");
+        Output.WriteLine("Log started on {0}", DateTime.UtcNow);
+        Output.WriteLine();
+      }
+      catch
+      {
+        Utility.PushColor(ConsoleColor.Red);
+        Console.WriteLine("RemoteAdminLogging: Failed to initialize LogWriter.");
+        Utility.PopColor();
+        Enabled = false;
+      }
+    }
 
-			return o;
-		}
+    public static object Format(object o)
+    {
+      o = CommandLogging.Format(o);
+      if (o == null)
+        return "(null)";
 
-		public static void WriteLine( NetState state, string format, params object[] args )
-		{
-			for ( int i = 0; i < args.Length; i++ )
-				args[i] = Commands.CommandLogging.Format( args[i] );
+      return o;
+    }
 
-			WriteLine( state, string.Format( format, args ) );
-		}
+    public static void WriteLine(NetState state, string format, params object[] args)
+    {
+      for (int i = 0; i < args.Length; i++)
+        args[i] = CommandLogging.Format(args[i]);
 
-		public static void WriteLine( NetState state, string text )
-		{
-			LazyInitialize();
+      WriteLine(state, string.Format(format, args));
+    }
 
-			if ( !Enabled ) return;
+    public static void WriteLine(NetState state, string text)
+    {
+      LazyInitialize();
 
-			try
-			{
-				Account acct = state.Account as Account;
-				string name = acct == null ? "(UNKNOWN)" : acct.Username;
-				string accesslevel = acct == null ? "NoAccount" : acct.AccessLevel.ToString();
-				string statestr = state == null ? "NULLSTATE" : state.ToString();
+      if (!Enabled) return;
 
-				Output.WriteLine( "{0}: {1}: {2}: {3}", DateTime.UtcNow, statestr, name, text );
+      try
+      {
+        Account acct = state.Account as Account;
+        string name = acct == null ? "(UNKNOWN)" : acct.Username;
+        string accesslevel = acct == null ? "NoAccount" : acct.AccessLevel.ToString();
+        string statestr = state == null ? "NULLSTATE" : state.ToString();
 
-				string path = Core.BaseDirectory;
+        Output.WriteLine("{0}: {1}: {2}: {3}", DateTime.UtcNow, statestr, name, text);
 
-				Commands.CommandLogging.AppendPath( ref path, LogBaseDirectory );
-				Commands.CommandLogging.AppendPath( ref path, LogSubDirectory );
-				Commands.CommandLogging.AppendPath( ref path, accesslevel );
-				path = Path.Combine( path, $"{name}.log");
+        string path = Core.BaseDirectory;
 
-				using ( StreamWriter sw = new StreamWriter( path, true ) )
-					sw.WriteLine( "{0}: {1}: {2}", DateTime.UtcNow, statestr, text );
-			}
-			catch
-			{
-			}
-		}
-	}
+        CommandLogging.AppendPath(ref path, LogBaseDirectory);
+        CommandLogging.AppendPath(ref path, LogSubDirectory);
+        CommandLogging.AppendPath(ref path, accesslevel);
+        path = Path.Combine(path, $"{name}.log");
+
+        using (StreamWriter sw = new StreamWriter(path, true))
+        {
+          sw.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, statestr, text);
+        }
+      }
+      catch
+      {
+      }
+    }
+  }
 }

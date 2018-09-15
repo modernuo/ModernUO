@@ -1,64 +1,64 @@
 namespace Server.Mobiles
 {
-	public class HellSteed : BaseMount
-	{
-		public override string CorpseName => "a hellsteed corpse";
-		public override bool HasBreath => true;
-		public override int BreathChaosDamage => 100;
-		public override Poison PoisonImmune => Poison.Lethal;
+  public class HellSteed : BaseMount
+  {
+    [Constructible]
+    public HellSteed() : this("a hellsteed")
+    {
+    }
 
-		[Constructible]
-		public HellSteed() : this( "a hellsteed" )
-		{
-		}
+    [Constructible]
+    public HellSteed(string name) : base(name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+      SetStats(this);
+    }
 
-		[Constructible]
-		public HellSteed( string name ) : base( name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			SetStats( this );
-		}
+    public HellSteed(Serial serial) : base(serial)
+    {
+    }
 
-		public static void SetStats( BaseCreature steed )
-		{
-			steed.SetStr( 201, 210 );
-			steed.SetDex( 101, 110 );
-			steed.SetInt( 101, 115 );
+    public override string CorpseName => "a hellsteed corpse";
+    public override bool HasBreath => true;
+    public override int BreathChaosDamage => 100;
+    public override Poison PoisonImmune => Poison.Lethal;
 
-			steed.SetHits( 201, 220 );
+    public static void SetStats(BaseCreature steed)
+    {
+      steed.SetStr(201, 210);
+      steed.SetDex(101, 110);
+      steed.SetInt(101, 115);
 
-			steed.SetDamage( 20, 24 );
+      steed.SetHits(201, 220);
 
-			steed.SetDamageType( ResistanceType.Physical, 25 );
-			steed.SetDamageType( ResistanceType.Fire, 75 );
+      steed.SetDamage(20, 24);
 
-			steed.SetResistance( ResistanceType.Physical, 60, 70 );
-			steed.SetResistance( ResistanceType.Fire, 90 );
-			steed.SetResistance( ResistanceType.Poison, 100 );
+      steed.SetDamageType(ResistanceType.Physical, 25);
+      steed.SetDamageType(ResistanceType.Fire, 75);
 
-			steed.SetSkill( SkillName.MagicResist, 90.1, 110.0 );
-			steed.SetSkill( SkillName.Tactics, 50.0 );
-			steed.SetSkill( SkillName.Wrestling, 90.1, 110.0 );
+      steed.SetResistance(ResistanceType.Physical, 60, 70);
+      steed.SetResistance(ResistanceType.Fire, 90);
+      steed.SetResistance(ResistanceType.Poison, 100);
 
-			steed.Fame = 0;
-			steed.Karma = 0;
-		}
+      steed.SetSkill(SkillName.MagicResist, 90.1, 110.0);
+      steed.SetSkill(SkillName.Tactics, 50.0);
+      steed.SetSkill(SkillName.Wrestling, 90.1, 110.0);
 
-		public HellSteed( Serial serial ) : base( serial )
-		{
-		}
+      steed.Fame = 0;
+      steed.Karma = 0;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

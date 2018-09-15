@@ -2,60 +2,62 @@ using System.IO;
 
 namespace Server.Engines.Reports
 {
-	public class SnapshotHistory : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "sh", Construct );
+  public class SnapshotHistory : PersistableObject
+  {
+    public SnapshotHistory()
+    {
+      Snapshots = new SnapshotCollection();
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new SnapshotHistory();
-		}
+    public SnapshotCollection Snapshots{ get; set; }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public void Save()
+    {
+      string path = Path.Combine(Core.BaseDirectory, "reportHistory.xml");
+      PersistanceWriter pw = new XmlPersistanceWriter(path, "Stats");
 
-		public SnapshotCollection Snapshots { get; set; }
+      pw.WriteDocument(this);
 
-		public SnapshotHistory()
-		{
-			Snapshots = new SnapshotCollection();
-		}
+      pw.Close();
+    }
 
-		public void Save()
-		{
-			string path = Path.Combine( Core.BaseDirectory, "reportHistory.xml" );
-			PersistanceWriter pw = new XmlPersistanceWriter( path, "Stats" );
+    public void Load()
+    {
+      string path = Path.Combine(Core.BaseDirectory, "reportHistory.xml");
 
-			pw.WriteDocument( this );
+      if (!File.Exists(path))
+        return;
 
-			pw.Close();
-		}
+      PersistanceReader pr = new XmlPersistanceReader(path, "Stats");
 
-		public void Load()
-		{
-			string path = Path.Combine( Core.BaseDirectory, "reportHistory.xml" );
+      pr.ReadDocument(this);
 
-			if ( !File.Exists( path ) )
-				return;
+      pr.Close();
+    }
 
-			PersistanceReader pr = new XmlPersistanceReader( path, "Stats" );
+    public override void SerializeChildren(PersistanceWriter op)
+    {
+      for (int i = 0; i < Snapshots.Count; ++i)
+        Snapshots[i].Serialize(op);
+    }
 
-			pr.ReadDocument( this );
+    public override void DeserializeChildren(PersistanceReader ip)
+    {
+      while (ip.HasChild)
+        Snapshots.Add(ip.GetChild() as Snapshot);
+    }
 
-			pr.Close();
-		}
+    #region Type Identification
 
-		public override void SerializeChildren( PersistanceWriter op )
-		{
-			for ( int i = 0; i < Snapshots.Count; ++i )
-				Snapshots[i].Serialize( op );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("sh", Construct);
 
-		public override void DeserializeChildren( PersistanceReader ip )
-		{
-			while ( ip.HasChild )
-				Snapshots.Add( ip.GetChild() as Snapshot );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new SnapshotHistory();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

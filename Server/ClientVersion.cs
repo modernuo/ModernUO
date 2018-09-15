@@ -19,246 +19,247 @@
  ***************************************************************************/
 
 using System;
-using System.Text;
 using System.Collections;
+using System.Text;
 
 namespace Server
 {
-	public enum ClientType
-	{
-		Regular,
-		UOTD,
-		God,
-		SA
-	}
+  public enum ClientType
+  {
+    Regular,
+    UOTD,
+    God,
+    SA
+  }
 
-	public class ClientVersion : IComparable, IComparer
-	{
-		public int Major { get; }
+  public class ClientVersion : IComparable, IComparer
+  {
+    public ClientVersion(int maj, int min, int rev, int pat) : this(maj, min, rev, pat, ClientType.Regular)
+    {
+    }
 
-		public int Minor { get; }
+    public ClientVersion(int maj, int min, int rev, int pat, ClientType type)
+    {
+      Major = maj;
+      Minor = min;
+      Revision = rev;
+      Patch = pat;
+      Type = type;
 
-		public int Revision { get; }
+      SourceString = _ToStringImpl();
+    }
 
-		public int Patch { get; }
+    public ClientVersion(string fmt)
+    {
+      SourceString = fmt;
 
-		public ClientType Type { get; }
+      try
+      {
+        fmt = fmt.ToLower();
 
-		public string SourceString { get; }
+        int br1 = fmt.IndexOf('.');
+        int br2 = fmt.IndexOf('.', br1 + 1);
 
-		public ClientVersion( int maj, int min, int rev, int pat ) : this( maj, min, rev, pat, ClientType.Regular )
-		{
-		}
+        int br3 = br2 + 1;
+        while (br3 < fmt.Length && char.IsDigit(fmt, br3))
+          br3++;
 
-		public ClientVersion( int maj, int min, int rev, int pat, ClientType type )
-		{
-			Major = maj;
-			Minor = min;
-			Revision = rev;
-			Patch = pat;
-			Type = type;
+        Major = Utility.ToInt32(fmt.Substring(0, br1));
+        Minor = Utility.ToInt32(fmt.Substring(br1 + 1, br2 - br1 - 1));
+        Revision = Utility.ToInt32(fmt.Substring(br2 + 1, br3 - br2 - 1));
 
-			SourceString = _ToStringImpl();
-		}
+        if (br3 < fmt.Length)
+        {
+          if (Major <= 5 && Minor <= 0 && Revision <= 6) //Anything before 5.0.7
+          {
+            if (!char.IsWhiteSpace(fmt, br3))
+              Patch = fmt[br3] - 'a' + 1;
+          }
+          else
+          {
+            Patch = Utility.ToInt32(fmt.Substring(br3 + 1, fmt.Length - br3 - 1));
+          }
+        }
 
-		public static bool operator == ( ClientVersion l, ClientVersion r )
-		{
-			return ( Compare( l, r ) == 0 );
-		}
+        if (fmt.IndexOf("god") >= 0 || fmt.IndexOf("gq") >= 0)
+          Type = ClientType.God;
+        else if (fmt.IndexOf("third dawn") >= 0 || fmt.IndexOf("uo:td") >= 0 || fmt.IndexOf("uotd") >= 0 ||
+                 fmt.IndexOf("uo3d") >= 0 || fmt.IndexOf("uo:3d") >= 0)
+          Type = ClientType.UOTD;
+        else
+          Type = ClientType.Regular;
+      }
+      catch
+      {
+        Major = 0;
+        Minor = 0;
+        Revision = 0;
+        Patch = 0;
+        Type = ClientType.Regular;
+      }
+    }
 
-		public static bool operator != ( ClientVersion l, ClientVersion r )
-		{
-			return ( Compare( l, r ) != 0 );
-		}
+    public int Major{ get; }
 
-		public static bool operator >= ( ClientVersion l, ClientVersion r )
-		{
-			return ( Compare( l, r ) >= 0 );
-		}
+    public int Minor{ get; }
 
-		public static bool operator > ( ClientVersion l, ClientVersion r )
-		{
-			return ( Compare( l, r ) > 0 );
-		}
+    public int Revision{ get; }
 
-		public static bool operator <= ( ClientVersion l, ClientVersion r )
-		{
-			return ( Compare( l, r ) <= 0 );
-		}
+    public int Patch{ get; }
 
-		public static bool operator < ( ClientVersion l, ClientVersion r )
-		{
-			return ( Compare( l, r ) < 0 );
-		}
+    public ClientType Type{ get; }
 
-		public override int GetHashCode()
-		{
-			return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
-		}
+    public string SourceString{ get; }
 
-		public override bool Equals( object obj )
-		{
-			if ( obj == null )
-				return false;
+    public int CompareTo(object obj)
+    {
+      if (obj == null)
+        return 1;
 
-			ClientVersion v = obj as ClientVersion;
+      ClientVersion o = obj as ClientVersion;
 
-			if ( v == null )
-				return false;
+      if (o == null)
+        throw new ArgumentException();
 
-			return Major == v.Major
-				&& Minor == v.Minor
-				&& Revision == v.Revision
-				&& Patch == v.Patch
-				&& Type == v.Type;
-		}
+      if (Major > o.Major)
+        return 1;
+      if (Major < o.Major)
+        return -1;
+      if (Minor > o.Minor)
+        return 1;
+      if (Minor < o.Minor)
+        return -1;
+      if (Revision > o.Revision)
+        return 1;
+      if (Revision < o.Revision)
+        return -1;
+      if (Patch > o.Patch)
+        return 1;
+      if (Patch < o.Patch)
+        return -1;
+      return 0;
+    }
 
-		private string _ToStringImpl()
-		{
-			StringBuilder builder = new StringBuilder(16);
+    public int Compare(object x, object y)
+    {
+      if (IsNull(x) && IsNull(y))
+        return 0;
+      if (IsNull(x))
+        return -1;
+      if (IsNull(y))
+        return 1;
 
-			builder.Append(Major);
-			builder.Append('.');
-			builder.Append(Minor);
-			builder.Append('.');
-			builder.Append(Revision);
+      ClientVersion a = x as ClientVersion;
+      ClientVersion b = y as ClientVersion;
 
-			if (Major <= 5 && Minor <= 0 && Revision <= 6)	//Anything before 5.0.7
-			{
-				if (Patch > 0)
-					builder.Append((char)('a' + (Patch - 1)));
-			}
-			else
-			{
-				builder.Append('.');
-				builder.Append(Patch);
-			}
+      if (IsNull(a) || IsNull(b))
+        throw new ArgumentException();
 
-			if (Type != ClientType.Regular)
-			{
-				builder.Append(' ');
-				builder.Append(Type.ToString());
-			}
+      return a.CompareTo(b);
+    }
 
-			return builder.ToString();
-		}
+    public static bool operator ==(ClientVersion l, ClientVersion r)
+    {
+      return Compare(l, r) == 0;
+    }
 
-		public override string ToString()
-		{
-			return _ToStringImpl();
-		}
+    public static bool operator !=(ClientVersion l, ClientVersion r)
+    {
+      return Compare(l, r) != 0;
+    }
 
-		public ClientVersion( string fmt )
-		{
-			SourceString = fmt;
+    public static bool operator >=(ClientVersion l, ClientVersion r)
+    {
+      return Compare(l, r) >= 0;
+    }
 
-			try
-			{
-				fmt = fmt.ToLower();
+    public static bool operator >(ClientVersion l, ClientVersion r)
+    {
+      return Compare(l, r) > 0;
+    }
 
-				int br1 = fmt.IndexOf( '.' );
-				int br2 = fmt.IndexOf( '.', br1 + 1 );
+    public static bool operator <=(ClientVersion l, ClientVersion r)
+    {
+      return Compare(l, r) <= 0;
+    }
 
-				int br3 = br2 + 1;
-				while ( br3 < fmt.Length && char.IsDigit( fmt, br3 ) )
-					br3++;
+    public static bool operator <(ClientVersion l, ClientVersion r)
+    {
+      return Compare(l, r) < 0;
+    }
 
-				Major = Utility.ToInt32( fmt.Substring( 0, br1 ) );
-				Minor = Utility.ToInt32( fmt.Substring( br1 + 1, br2 - br1 - 1 ) );
-				Revision = Utility.ToInt32( fmt.Substring( br2 + 1, br3 - br2 - 1 ) );
+    public override int GetHashCode()
+    {
+      return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
+    }
 
-				if ( br3 < fmt.Length )
-				{
-					if ( Major <= 5 && Minor <= 0 && Revision <= 6 )	//Anything before 5.0.7
-					{
-						if ( !char.IsWhiteSpace( fmt, br3 ) )
-							Patch = (fmt[br3] - 'a') + 1;
-					}
-					else
-					{
-						Patch = Utility.ToInt32( fmt.Substring( br3+1, fmt.Length - br3 - 1 ) );
-					}
-				}
+    public override bool Equals(object obj)
+    {
+      if (obj == null)
+        return false;
 
-				if ( fmt.IndexOf( "god" ) >= 0 || fmt.IndexOf( "gq" ) >= 0 )
-					Type = ClientType.God;
-				else if ( fmt.IndexOf( "third dawn" ) >= 0 || fmt.IndexOf( "uo:td" ) >= 0 || fmt.IndexOf( "uotd" ) >= 0 || fmt.IndexOf( "uo3d" ) >= 0 || fmt.IndexOf( "uo:3d" ) >= 0 )
-					Type = ClientType.UOTD;
-				else
-					Type = ClientType.Regular;
-			}
-			catch
-			{
-				Major = 0;
-				Minor = 0;
-				Revision = 0;
-				Patch = 0;
-				Type = ClientType.Regular;
-			}
-		}
+      ClientVersion v = obj as ClientVersion;
 
-		public int CompareTo( object obj )
-		{
-			if ( obj == null )
-				return 1;
+      if (v == null)
+        return false;
 
-			ClientVersion o = obj as ClientVersion;
+      return Major == v.Major
+             && Minor == v.Minor
+             && Revision == v.Revision
+             && Patch == v.Patch
+             && Type == v.Type;
+    }
 
-			if ( o == null )
-				throw new ArgumentException();
+    private string _ToStringImpl()
+    {
+      StringBuilder builder = new StringBuilder(16);
 
-			if ( Major > o.Major )
-				return 1;
-			if ( Major < o.Major )
-				return -1;
-			if ( Minor > o.Minor )
-				return 1;
-			if ( Minor < o.Minor )
-				return -1;
-			if ( Revision > o.Revision )
-				return 1;
-			if ( Revision < o.Revision )
-				return -1;
-			if ( Patch > o.Patch )
-				return 1;
-			if ( Patch < o.Patch )
-				return -1;
-			return 0;
-		}
+      builder.Append(Major);
+      builder.Append('.');
+      builder.Append(Minor);
+      builder.Append('.');
+      builder.Append(Revision);
 
-		public static bool IsNull( object x )
-		{
-			return ReferenceEquals( x, null );
-		}
+      if (Major <= 5 && Minor <= 0 && Revision <= 6) //Anything before 5.0.7
+      {
+        if (Patch > 0)
+          builder.Append((char)('a' + (Patch - 1)));
+      }
+      else
+      {
+        builder.Append('.');
+        builder.Append(Patch);
+      }
 
-		public int Compare( object x, object y )
-		{
-			if ( IsNull( x ) && IsNull( y ) )
-				return 0;
-			if ( IsNull( x ) )
-				return -1;
-			if ( IsNull( y ) )
-				return 1;
+      if (Type != ClientType.Regular)
+      {
+        builder.Append(' ');
+        builder.Append(Type.ToString());
+      }
 
-			ClientVersion a = x as ClientVersion;
-			ClientVersion b = y as ClientVersion;
+      return builder.ToString();
+    }
 
-			if ( IsNull( a ) || IsNull( b ) )
-				throw new ArgumentException();
+    public override string ToString()
+    {
+      return _ToStringImpl();
+    }
 
-			return a.CompareTo( b );
-		}
+    public static bool IsNull(object x)
+    {
+      return ReferenceEquals(x, null);
+    }
 
-		public static int Compare( ClientVersion a, ClientVersion b )
-		{
-			if ( IsNull( a ) && IsNull( b ) )
-				return 0;
-			if ( IsNull( a ) )
-				return -1;
-			if ( IsNull( b ) )
-				return 1;
+    public static int Compare(ClientVersion a, ClientVersion b)
+    {
+      if (IsNull(a) && IsNull(b))
+        return 0;
+      if (IsNull(a))
+        return -1;
+      if (IsNull(b))
+        return 1;
 
-			return a.CompareTo( b );
-		}
-	}
+      return a.CompareTo(b);
+    }
+  }
 }

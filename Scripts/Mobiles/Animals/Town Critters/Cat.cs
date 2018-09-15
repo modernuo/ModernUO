@@ -1,65 +1,65 @@
 namespace Server.Mobiles
 {
-	[TypeAlias( "Server.Mobiles.Housecat" )]
-	public class Cat : BaseCreature
-	{
-		public override string CorpseName => "a cat corpse";
-		public override string DefaultName => "a cat";
+  [TypeAlias("Server.Mobiles.Housecat")]
+  public class Cat : BaseCreature
+  {
+    [Constructible]
+    public Cat() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+      Body = 0xC9;
+      Hue = Utility.RandomAnimalHue();
+      BaseSoundID = 0x69;
 
-		[Constructible]
-		public Cat() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			Body = 0xC9;
-			Hue = Utility.RandomAnimalHue();
-			BaseSoundID = 0x69;
+      SetStr(9);
+      SetDex(35);
+      SetInt(5);
 
-			SetStr( 9 );
-			SetDex( 35 );
-			SetInt( 5 );
+      SetHits(6);
+      SetMana(0);
 
-			SetHits( 6 );
-			SetMana( 0 );
+      SetDamage(1);
 
-			SetDamage( 1 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetResistance(ResistanceType.Physical, 5, 10);
 
-			SetResistance( ResistanceType.Physical, 5, 10 );
+      SetSkill(SkillName.MagicResist, 5.0);
+      SetSkill(SkillName.Tactics, 4.0);
+      SetSkill(SkillName.Wrestling, 5.0);
 
-			SetSkill( SkillName.MagicResist, 5.0 );
-			SetSkill( SkillName.Tactics, 4.0 );
-			SetSkill( SkillName.Wrestling, 5.0 );
+      Fame = 0;
+      Karma = 150;
 
-			Fame = 0;
-			Karma = 150;
+      VirtualArmor = 8;
 
-			VirtualArmor = 8;
+      Tamable = true;
+      ControlSlots = 1;
+      MinTameSkill = -0.9;
+    }
 
-			Tamable = true;
-			ControlSlots = 1;
-			MinTameSkill = -0.9;
-		}
+    public Cat(Serial serial) : base(serial)
+    {
+    }
 
-		public override int Meat => 1;
-		public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish;
-		public override PackInstinct PackInstinct => PackInstinct.Feline;
+    public override string CorpseName => "a cat corpse";
+    public override string DefaultName => "a cat";
 
-		public Cat(Serial serial) : base(serial)
-		{
-		}
+    public override int Meat => 1;
+    public override FoodType FavoriteFood => FoodType.Meat | FoodType.Fish;
+    public override PackInstinct PackInstinct => PackInstinct.Feline;
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write((int) 0);
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -3,129 +3,128 @@ using System.Collections;
 
 namespace Server.Mobiles
 {
-	public class RaiJu : BaseCreature
-	{
-		public override string CorpseName => "a rai-ju corpse";
-		public override string DefaultName => "a Rai-Ju";
+  public class RaiJu : BaseCreature
+  {
+    private static Hashtable m_Table = new Hashtable();
 
-		[Constructible]
-		public RaiJu() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 199;
-			BaseSoundID = 0x346;
+    [Constructible]
+    public RaiJu() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 199;
+      BaseSoundID = 0x346;
 
-			SetStr( 151, 225 );
-			SetDex( 81, 135 );
-			SetInt( 176, 180 );
+      SetStr(151, 225);
+      SetDex(81, 135);
+      SetInt(176, 180);
 
-			SetHits( 201, 280 );
+      SetHits(201, 280);
 
-			SetDamage( 12, 15 );
+      SetDamage(12, 15);
 
-			SetDamageType( ResistanceType.Physical, 10 );
-			SetDamageType( ResistanceType.Fire, 10 );
-			SetDamageType( ResistanceType.Cold, 10 );
-			SetDamageType( ResistanceType.Poison, 10 );
-			SetDamageType( ResistanceType.Energy, 60 );
+      SetDamageType(ResistanceType.Physical, 10);
+      SetDamageType(ResistanceType.Fire, 10);
+      SetDamageType(ResistanceType.Cold, 10);
+      SetDamageType(ResistanceType.Poison, 10);
+      SetDamageType(ResistanceType.Energy, 60);
 
-			SetResistance( ResistanceType.Physical, 45, 65 );
-			SetResistance( ResistanceType.Fire, 70, 85 );
-			SetResistance( ResistanceType.Cold, 30, 60 );
-			SetResistance( ResistanceType.Poison, 50, 70 );
-			SetResistance( ResistanceType.Energy, 60, 80 );
+      SetResistance(ResistanceType.Physical, 45, 65);
+      SetResistance(ResistanceType.Fire, 70, 85);
+      SetResistance(ResistanceType.Cold, 30, 60);
+      SetResistance(ResistanceType.Poison, 50, 70);
+      SetResistance(ResistanceType.Energy, 60, 80);
 
-			SetSkill( SkillName.Wrestling, 85.1, 95.0 );
-			SetSkill( SkillName.Tactics, 55.1, 65.0 );
-			SetSkill( SkillName.MagicResist, 110.1, 125.0 );
-			SetSkill( SkillName.Anatomy, 25.1, 35.0 );
+      SetSkill(SkillName.Wrestling, 85.1, 95.0);
+      SetSkill(SkillName.Tactics, 55.1, 65.0);
+      SetSkill(SkillName.MagicResist, 110.1, 125.0);
+      SetSkill(SkillName.Anatomy, 25.1, 35.0);
 
-			Fame = 8000;
-			Karma = -8000;
+      Fame = 8000;
+      Karma = -8000;
+    }
 
-		}
+    public RaiJu(Serial serial) : base(serial)
+    {
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Rich, 2 );
-			AddLoot( LootPack.Gems, 2 );
-		}
-		public override bool BleedImmune => true;
+    public override string CorpseName => "a rai-ju corpse";
+    public override string DefaultName => "a Rai-Ju";
+    public override bool BleedImmune => true;
 
-		public override void OnGaveMeleeAttack( Mobile defender )
-		{
-			base.OnGaveMeleeAttack( defender );
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Rich, 2);
+      AddLoot(LootPack.Gems, 2);
+    }
 
-			if ( 0.1 > Utility.RandomDouble() && !IsStunned( defender ) )
-			{
-				/* Lightning Fist
-				 * Cliloc: 1070839
-				 * Effect: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(884 715, 10)" ToLocation: "(884 715, 10)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
-				 * Damage: 35-65, 100% energy, resistable
-				 * Freezes for 4 seconds
-				 * Effect cannot stack
-				 */
+    public override void OnGaveMeleeAttack(Mobile defender)
+    {
+      base.OnGaveMeleeAttack(defender);
 
-				defender.FixedEffect( 0x37B9, 10, 5 );
-				defender.SendLocalizedMessage( 1070839 ); // The creature attacks with stunning force!
+      if (0.1 > Utility.RandomDouble() && !IsStunned(defender))
+      {
+        /* Lightning Fist
+         * Cliloc: 1070839
+         * Effect: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(884 715, 10)" ToLocation: "(884 715, 10)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
+         * Damage: 35-65, 100% energy, resistable
+         * Freezes for 4 seconds
+         * Effect cannot stack
+         */
 
-				// This should be done in place of the normal attack damage.
-				//AOS.Damage( defender, this, Utility.RandomMinMax( 35, 65 ), 0, 0, 0, 0, 100 );
+        defender.FixedEffect(0x37B9, 10, 5);
+        defender.SendLocalizedMessage(1070839); // The creature attacks with stunning force!
 
-				defender.Frozen = true;
+        // This should be done in place of the normal attack damage.
+        //AOS.Damage( defender, this, Utility.RandomMinMax( 35, 65 ), 0, 0, 0, 0, 100 );
 
-				ExpireTimer timer = new ExpireTimer( defender, TimeSpan.FromSeconds( 4.0 ) );
-				timer.Start();
-				m_Table[defender] = timer;
-			}
-		}
+        defender.Frozen = true;
 
-		private static Hashtable m_Table = new Hashtable();
+        ExpireTimer timer = new ExpireTimer(defender, TimeSpan.FromSeconds(4.0));
+        timer.Start();
+        m_Table[defender] = timer;
+      }
+    }
 
-		public bool IsStunned( Mobile m )
-		{
-			return m_Table.Contains( m );
-		}
+    public bool IsStunned(Mobile m)
+    {
+      return m_Table.Contains(m);
+    }
 
-		private class ExpireTimer : Timer
- 		{
-			private Mobile m_Mobile;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			public ExpireTimer( Mobile m, TimeSpan delay ) : base( delay )
-			{
-				m_Mobile = m;
-				Priority = TimerPriority.TwoFiftyMS;
-			}
+      writer.Write(0); // version
+    }
 
-			public void DoExpire()
-			{
-				m_Mobile.Frozen = false;
-				Stop();
-				m_Table.Remove( m_Mobile );
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			protected override void OnTick()
-			{
-				m_Mobile.SendLocalizedMessage( 1005603 ); // You can move again!
-				DoExpire();
-			}
-		}
+      int version = reader.ReadInt();
+    }
 
-		public RaiJu( Serial serial ) : base( serial )
-		{
-		}
+    private class ExpireTimer : Timer
+    {
+      private Mobile m_Mobile;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      public ExpireTimer(Mobile m, TimeSpan delay) : base(delay)
+      {
+        m_Mobile = m;
+        Priority = TimerPriority.TwoFiftyMS;
+      }
 
-			writer.Write( (int) 0 ); // version
-		}
+      public void DoExpire()
+      {
+        m_Mobile.Frozen = false;
+        Stop();
+        m_Table.Remove(m_Mobile);
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      protected override void OnTick()
+      {
+        m_Mobile.SendLocalizedMessage(1005603); // You can move again!
+        DoExpire();
+      }
+    }
+  }
 }

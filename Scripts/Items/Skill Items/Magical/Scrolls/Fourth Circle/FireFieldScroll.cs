@@ -1,35 +1,33 @@
 namespace Server.Items
 {
-	public class FireFieldScroll : SpellScroll
-	{
-		[Constructible]
-		public FireFieldScroll() : this( 1 )
-		{
-		}
+  public class FireFieldScroll : SpellScroll
+  {
+    [Constructible]
+    public FireFieldScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public FireFieldScroll( int amount ) : base( 27, 0x1F48, amount )
-		{
-		}
+    [Constructible]
+    public FireFieldScroll(int amount) : base(27, 0x1F48, amount)
+    {
+    }
 
-		public FireFieldScroll( Serial serial ) : base( serial )
-		{
-		}
+    public FireFieldScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,230 +1,231 @@
 using System;
 using System.Text;
 using Server.Mobiles;
+using Server.Network;
 
 namespace Server.Engines.ConPVP
 {
-	public class Participant
-	{
-		public int Count => Players.Length;
-		public DuelPlayer[] Players { get; private set; }
+  public class Participant
+  {
+    public Participant(DuelContext context, int count)
+    {
+      Context = context;
+      //m_Stakes = new StakesContainer( context, this );
+      Resize(count);
+    }
 
-		public DuelContext Context { get; }
+    public int Count => Players.Length;
+    public DuelPlayer[] Players{ get; private set; }
 
-		public TournyParticipant TournyPart { get; set; }
+    public DuelContext Context{ get; }
 
-		public DuelPlayer Find( Mobile mob )
-		{
-			if ( mob is PlayerMobile pm )
-			{
-				if ( pm.DuelContext == Context && pm.DuelPlayer.Participant == this )
-					return pm.DuelPlayer;
+    public TournyParticipant TournyPart{ get; set; }
 
-				return null;
-			}
+    public int FilledSlots
+    {
+      get
+      {
+        int count = 0;
 
-			for ( int i = 0; i < Players.Length; ++i )
-			{
-				if ( Players[i] != null && Players[i].Mobile == mob )
-					return Players[i];
-			}
+        for (int i = 0; i < Players.Length; ++i)
+          if (Players[i] != null)
+            ++count;
 
-			return null;
-		}
+        return count;
+      }
+    }
 
-		public bool Contains( Mobile mob )
-		{
-			return ( Find( mob ) != null );
-		}
+    public bool HasOpenSlot
+    {
+      get
+      {
+        for (int i = 0; i < Players.Length; ++i)
+          if (Players[i] == null)
+            return true;
 
-		public void Broadcast( int hue, string message, string nonLocalOverhead, string localOverhead )
-		{
-			for ( int i = 0; i < Players.Length; ++i )
-			{
-				if ( Players[i] != null )
-				{
-					if ( message != null )
-						Players[i].Mobile.SendMessage( hue, message );
+        return false;
+      }
+    }
 
-					if ( nonLocalOverhead != null )
-						Players[i].Mobile.NonlocalOverheadMessage( Network.MessageType.Regular, hue, false, string.Format( nonLocalOverhead, Players[i].Mobile.Name, Players[i].Mobile.Female ? "her" : "his" ) );
+    public bool Eliminated
+    {
+      get
+      {
+        for (int i = 0; i < Players.Length; ++i)
+          if (Players[i] != null && !Players[i].Eliminated)
+            return false;
 
-					if ( localOverhead != null )
-						Players[i].Mobile.LocalOverheadMessage( Network.MessageType.Regular, hue, false, localOverhead );
-				}
-			}
-		}
+        return true;
+      }
+    }
 
-		public int FilledSlots
-		{
-			get
-			{
-				int count = 0;
+    public string NameList
+    {
+      get
+      {
+        StringBuilder sb = new StringBuilder();
 
-				for ( int i = 0; i < Players.Length; ++i )
-				{
-					if ( Players[i] != null )
-						++count;
-				}
+        for (int i = 0; i < Players.Length; ++i)
+        {
+          if (Players[i] == null)
+            continue;
 
-				return count;
-			}
-		}
+          Mobile mob = Players[i].Mobile;
 
-		public bool HasOpenSlot
-		{
-			get
-			{
-				for ( int i = 0; i < Players.Length; ++i )
-				{
-					if ( Players[i] == null )
-						return true;
-				}
+          if (sb.Length > 0)
+            sb.Append(", ");
 
-				return false;
-			}
-		}
+          sb.Append(mob.Name);
+        }
 
-		public bool Eliminated
-		{
-			get
-			{
-				for ( int i = 0; i < Players.Length; ++i )
-				{
-					if ( Players[i] != null && !Players[i].Eliminated )
-						return false;
-				}
+        if (sb.Length == 0)
+          return "Empty";
 
-				return true;
-			}
-		}
+        return sb.ToString();
+      }
+    }
 
-		public string NameList
-		{
-			get
-			{
-				StringBuilder sb = new StringBuilder();
+    public DuelPlayer Find(Mobile mob)
+    {
+      if (mob is PlayerMobile pm)
+      {
+        if (pm.DuelContext == Context && pm.DuelPlayer.Participant == this)
+          return pm.DuelPlayer;
 
-				for ( int i = 0; i < Players.Length; ++i )
-				{
-					if ( Players[i] == null )
-						continue;
+        return null;
+      }
 
-					Mobile mob = Players[i].Mobile;
+      for (int i = 0; i < Players.Length; ++i)
+        if (Players[i] != null && Players[i].Mobile == mob)
+          return Players[i];
 
-					if ( sb.Length > 0 )
-						sb.Append( ", " );
+      return null;
+    }
 
-					sb.Append( mob.Name );
-				}
+    public bool Contains(Mobile mob)
+    {
+      return Find(mob) != null;
+    }
 
-				if ( sb.Length == 0 )
-					return "Empty";
+    public void Broadcast(int hue, string message, string nonLocalOverhead, string localOverhead)
+    {
+      for (int i = 0; i < Players.Length; ++i)
+        if (Players[i] != null)
+        {
+          if (message != null)
+            Players[i].Mobile.SendMessage(hue, message);
 
-				return sb.ToString();
-			}
-		}
+          if (nonLocalOverhead != null)
+            Players[i].Mobile.NonlocalOverheadMessage(MessageType.Regular, hue, false,
+              string.Format(nonLocalOverhead, Players[i].Mobile.Name,
+                Players[i].Mobile.Female ? "her" : "his"));
 
-		public void Nullify( DuelPlayer player )
-		{
-			if ( player == null )
-				return;
+          if (localOverhead != null)
+            Players[i].Mobile.LocalOverheadMessage(MessageType.Regular, hue, false, localOverhead);
+        }
+    }
 
-			int index = Array.IndexOf( Players, player );
+    public void Nullify(DuelPlayer player)
+    {
+      if (player == null)
+        return;
 
-			if ( index == -1 )
-				return;
+      int index = Array.IndexOf(Players, player);
 
-			Players[index] = null;
-		}
+      if (index == -1)
+        return;
 
-		public void Remove( DuelPlayer player )
-		{
-			if ( player == null )
-				return;
+      Players[index] = null;
+    }
 
-			int index = Array.IndexOf( Players, player );
+    public void Remove(DuelPlayer player)
+    {
+      if (player == null)
+        return;
 
-			if ( index == -1 )
-				return;
+      int index = Array.IndexOf(Players, player);
 
-			DuelPlayer[] old = Players;
-			Players = new DuelPlayer[old.Length - 1];
+      if (index == -1)
+        return;
 
-			for ( int i = 0; i < index; ++i )
-				Players[i] = old[i];
+      DuelPlayer[] old = Players;
+      Players = new DuelPlayer[old.Length - 1];
 
-			for ( int i = index + 1; i < old.Length; ++i )
-				Players[i - 1] = old[i];
-		}
+      for (int i = 0; i < index; ++i)
+        Players[i] = old[i];
 
-		public void Remove( Mobile player )
-		{
-			Remove( Find( player ) );
-		}
+      for (int i = index + 1; i < old.Length; ++i)
+        Players[i - 1] = old[i];
+    }
 
-		public void Add( Mobile player )
-		{
-			if ( Contains( player ) )
-				return;
+    public void Remove(Mobile player)
+    {
+      Remove(Find(player));
+    }
 
-			for ( int i = 0; i < Players.Length; ++i )
-			{
-				if ( Players[i] == null )
-				{
-					Players[i] = new DuelPlayer( player, this );
-					return;
-				}
-			}
+    public void Add(Mobile player)
+    {
+      if (Contains(player))
+        return;
 
-			Resize( Players.Length + 1 );
-			Players[Players.Length - 1] = new DuelPlayer( player, this );
-		}
+      for (int i = 0; i < Players.Length; ++i)
+        if (Players[i] == null)
+        {
+          Players[i] = new DuelPlayer(player, this);
+          return;
+        }
 
-		public void Resize( int count )
-		{
-			DuelPlayer[] old = Players;
-			Players = new DuelPlayer[count];
+      Resize(Players.Length + 1);
+      Players[Players.Length - 1] = new DuelPlayer(player, this);
+    }
 
-			if ( old != null )
-			{
-				int ct = 0;
+    public void Resize(int count)
+    {
+      DuelPlayer[] old = Players;
+      Players = new DuelPlayer[count];
 
-				for ( int i = 0; i < old.Length; ++i )
-				{
-					if ( old[i] != null && ct < count )
-						Players[ct++] = old[i];
-				}
-			}
-		}
+      if (old != null)
+      {
+        int ct = 0;
 
-		public Participant( DuelContext context, int count )
-		{
-			Context = context;
-			//m_Stakes = new StakesContainer( context, this );
-			Resize( count );
-		}
-	}
+        for (int i = 0; i < old.Length; ++i)
+          if (old[i] != null && ct < count)
+            Players[ct++] = old[i];
+      }
+    }
+  }
 
-	public class DuelPlayer
-	{
-		private bool m_Eliminated;
+  public class DuelPlayer
+  {
+    private bool m_Eliminated;
 
-		public Mobile Mobile { get; }
+    public DuelPlayer(Mobile mob, Participant p)
+    {
+      Mobile = mob;
+      Participant = p;
 
-		public bool Ready { get; set; }
+      if (mob is PlayerMobile mobile)
+        mobile.DuelPlayer = this;
+    }
 
-		public bool Eliminated{ get => m_Eliminated;
-			set{ m_Eliminated = value; if ( Participant.Context.m_Tournament != null && m_Eliminated ){ Participant.Context.m_Tournament.OnEliminated( this ); Mobile.SendEverything(); } } }
-		public Participant Participant { get; set; }
+    public Mobile Mobile{ get; }
 
-		public DuelPlayer( Mobile mob, Participant p )
-		{
-			Mobile = mob;
-			Participant = p;
+    public bool Ready{ get; set; }
 
-			if ( mob is PlayerMobile mobile )
-				mobile.DuelPlayer = this;
-		}
-	}
+    public bool Eliminated
+    {
+      get => m_Eliminated;
+      set
+      {
+        m_Eliminated = value;
+        if (Participant.Context.m_Tournament != null && m_Eliminated)
+        {
+          Participant.Context.m_Tournament.OnEliminated(this);
+          Mobile.SendEverything();
+        }
+      }
+    }
+
+    public Participant Participant{ get; set; }
+  }
 }

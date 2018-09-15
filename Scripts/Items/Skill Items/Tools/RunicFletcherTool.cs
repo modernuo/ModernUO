@@ -2,53 +2,53 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	public class RunicFletcherTool : BaseRunicTool
-	{
-		public override CraftSystem CraftSystem => DefBowFletching.CraftSystem;
+  public class RunicFletcherTool : BaseRunicTool
+  {
+    [Constructible]
+    public RunicFletcherTool(CraftResource resource) : base(resource, 0x1022)
+    {
+      Weight = 2.0;
+      Hue = CraftResources.GetHue(resource);
+    }
 
-		public override int LabelNumber
-		{
-			get
-			{
-				int index = CraftResources.GetIndex( Resource );
+    [Constructible]
+    public RunicFletcherTool(CraftResource resource, int uses) : base(resource, uses, 0x1022)
+    {
+      Weight = 2.0;
+      Hue = CraftResources.GetHue(resource);
+    }
 
-				if ( index >= 1 && index <= 6 )
-					return 1072627 + index;
+    public RunicFletcherTool(Serial serial) : base(serial)
+    {
+    }
 
-				return 1044559; // Fletcher's Tools
-			}
-		}
+    public override CraftSystem CraftSystem => DefBowFletching.CraftSystem;
 
-		[Constructible]
-		public RunicFletcherTool( CraftResource resource ) : base( resource, 0x1022 )
-		{
-			Weight = 2.0;
-			Hue = CraftResources.GetHue( resource );
-		}
+    public override int LabelNumber
+    {
+      get
+      {
+        int index = CraftResources.GetIndex(Resource);
 
-		[Constructible]
-		public RunicFletcherTool( CraftResource resource, int uses ) : base( resource, uses, 0x1022 )
-		{
-			Weight = 2.0;
-			Hue = CraftResources.GetHue( resource );
-		}
+        if (index >= 1 && index <= 6)
+          return 1072627 + index;
 
-		public RunicFletcherTool( Serial serial ) : base( serial )
-		{
-		}
+        return 1044559; // Fletcher's Tools
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

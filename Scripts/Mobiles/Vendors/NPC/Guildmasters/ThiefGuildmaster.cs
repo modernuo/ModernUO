@@ -3,124 +3,125 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class ThiefGuildmaster : BaseGuildmaster
-	{
-		public override NpcGuild NpcGuild => NpcGuild.ThievesGuild;
+  public class ThiefGuildmaster : BaseGuildmaster
+  {
+    [Constructible]
+    public ThiefGuildmaster() : base("thief")
+    {
+      SetSkill(SkillName.DetectHidden, 75.0, 98.0);
+      SetSkill(SkillName.Hiding, 65.0, 88.0);
+      SetSkill(SkillName.Lockpicking, 85.0, 100.0);
+      SetSkill(SkillName.Snooping, 90.0, 100.0);
+      SetSkill(SkillName.Poisoning, 60.0, 83.0);
+      SetSkill(SkillName.Stealing, 90.0, 100.0);
+      SetSkill(SkillName.Fencing, 75.0, 98.0);
+      SetSkill(SkillName.Stealth, 85.0, 100.0);
+      SetSkill(SkillName.RemoveTrap, 85.0, 100.0);
+    }
 
-		public override TimeSpan JoinAge => TimeSpan.FromDays( 7.0 );
+    public ThiefGuildmaster(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public ThiefGuildmaster() : base( "thief" )
-		{
-			SetSkill( SkillName.DetectHidden, 75.0, 98.0 );
-			SetSkill( SkillName.Hiding, 65.0, 88.0 );
-			SetSkill( SkillName.Lockpicking, 85.0, 100.0 );
-			SetSkill( SkillName.Snooping, 90.0, 100.0 );
-			SetSkill( SkillName.Poisoning, 60.0, 83.0 );
-			SetSkill( SkillName.Stealing, 90.0, 100.0 );
-			SetSkill( SkillName.Fencing, 75.0, 98.0 );
-			SetSkill( SkillName.Stealth, 85.0, 100.0 );
-			SetSkill( SkillName.RemoveTrap, 85.0, 100.0 );
-		}
+    public override NpcGuild NpcGuild => NpcGuild.ThievesGuild;
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    public override TimeSpan JoinAge => TimeSpan.FromDays(7.0);
 
-			if ( Utility.RandomBool() )
-				AddItem( new Kryss() );
-			else
-				AddItem( new Dagger() );
-		}
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-		public override bool CheckCustomReqs( PlayerMobile pm )
-		{
-			if ( pm.Young )
-			{
-				SayTo( pm, 502089 ); // You cannot be a member of the Thieves' Guild while you are Young.
-				return false;
-			}
+      if (Utility.RandomBool())
+        AddItem(new Kryss());
+      else
+        AddItem(new Dagger());
+    }
 
-			if ( pm.Kills > 0 )
-			{
-				SayTo( pm, 501050 ); // This guild is for cunning thieves, not oafish cutthroats.
-				return false;
-			}
-			if ( pm.Skills[SkillName.Stealing].Base < 60.0 )
-			{
-				SayTo( pm, 501051 ); // You must be at least a journeyman pickpocket to join this elite organization.
-				return false;
-			}
+    public override bool CheckCustomReqs(PlayerMobile pm)
+    {
+      if (pm.Young)
+      {
+        SayTo(pm, 502089); // You cannot be a member of the Thieves' Guild while you are Young.
+        return false;
+      }
 
-			return true;
-		}
+      if (pm.Kills > 0)
+      {
+        SayTo(pm, 501050); // This guild is for cunning thieves, not oafish cutthroats.
+        return false;
+      }
 
-		public override void SayWelcomeTo( Mobile m )
-		{
-			SayTo( m, 1008053 ); // Welcome to the guild! Stay to the shadows, friend.
-		}
+      if (pm.Skills[SkillName.Stealing].Base < 60.0)
+      {
+        SayTo(pm, 501051); // You must be at least a journeyman pickpocket to join this elite organization.
+        return false;
+      }
 
-		public override bool HandlesOnSpeech( Mobile from )
-		{
-			if ( from.InRange( Location, 2 ) )
-				return true;
+      return true;
+    }
 
-			return base.HandlesOnSpeech( from );
-		}
+    public override void SayWelcomeTo(Mobile m)
+    {
+      SayTo(m, 1008053); // Welcome to the guild! Stay to the shadows, friend.
+    }
 
-		public override void OnSpeech( SpeechEventArgs e )
-		{
-			Mobile from = e.Mobile;
+    public override bool HandlesOnSpeech(Mobile from)
+    {
+      if (from.InRange(Location, 2))
+        return true;
 
-			if ( !e.Handled && from is PlayerMobile && from.InRange( Location, 2 ) && e.HasKeyword( 0x1F ) ) // *disguise*
-			{
-				PlayerMobile pm = (PlayerMobile)from;
+      return base.HandlesOnSpeech(from);
+    }
 
-				if ( pm.NpcGuild == NpcGuild.ThievesGuild )
-					SayTo( from, 501839 ); // That particular item costs 700 gold pieces.
-				else
-					SayTo( from, 501838 ); // I don't know what you're talking about.
+    public override void OnSpeech(SpeechEventArgs e)
+    {
+      Mobile from = e.Mobile;
 
-				e.Handled = true;
-			}
+      if (!e.Handled && from is PlayerMobile && from.InRange(Location, 2) && e.HasKeyword(0x1F)) // *disguise*
+      {
+        PlayerMobile pm = (PlayerMobile)from;
 
-			base.OnSpeech( e );
-		}
+        if (pm.NpcGuild == NpcGuild.ThievesGuild)
+          SayTo(from, 501839); // That particular item costs 700 gold pieces.
+        else
+          SayTo(from, 501838); // I don't know what you're talking about.
 
-		public override bool OnGoldGiven( Mobile from, Gold dropped )
-		{
-			if ( from is PlayerMobile && dropped.Amount == 700 )
-			{
-				PlayerMobile pm = (PlayerMobile)from;
+        e.Handled = true;
+      }
 
-				if ( pm.NpcGuild == NpcGuild.ThievesGuild )
-				{
-					from.AddToBackpack( new DisguiseKit() );
+      base.OnSpeech(e);
+    }
 
-					dropped.Delete();
-					return true;
-				}
-			}
+    public override bool OnGoldGiven(Mobile from, Gold dropped)
+    {
+      if (from is PlayerMobile && dropped.Amount == 700)
+      {
+        PlayerMobile pm = (PlayerMobile)from;
 
-			return base.OnGoldGiven( from, dropped );
-		}
+        if (pm.NpcGuild == NpcGuild.ThievesGuild)
+        {
+          from.AddToBackpack(new DisguiseKit());
 
-		public ThiefGuildmaster( Serial serial ) : base( serial )
-		{
-		}
+          dropped.Delete();
+          return true;
+        }
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      return base.OnGoldGiven(from, dropped);
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

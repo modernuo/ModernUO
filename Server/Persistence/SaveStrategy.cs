@@ -20,28 +20,28 @@
 
 namespace Server
 {
-	public abstract class SaveStrategy
-	{
-		public static SaveStrategy Acquire()
-		{
-			if (Core.MultiProcessor)
-			{
-				int processorCount = Core.ProcessorCount;
+  public abstract class SaveStrategy
+  {
+    public abstract string Name{ get; }
 
-				if (processorCount > 2)
-				{
-					return new DualSaveStrategy(); // return new DynamicSaveStrategy(); (4.0 or return new ParallelSaveStrategy(processorCount); (2.0)
-				}
+    public static SaveStrategy Acquire()
+    {
+      if (Core.MultiProcessor)
+      {
+        int processorCount = Core.ProcessorCount;
 
-				return new DualSaveStrategy();
-			}
+        if (processorCount > 2)
+          return
+            new DualSaveStrategy(); // return new DynamicSaveStrategy(); (4.0 or return new ParallelSaveStrategy(processorCount); (2.0)
 
-			return new StandardSaveStrategy();
-		}
+        return new DualSaveStrategy();
+      }
 
-		public abstract string Name { get; }
-		public abstract void Save(SaveMetrics metrics, bool permitBackgroundWrite);
+      return new StandardSaveStrategy();
+    }
 
-		public abstract void ProcessDecay();
-	}
+    public abstract void Save(SaveMetrics metrics, bool permitBackgroundWrite);
+
+    public abstract void ProcessDecay();
+  }
 }

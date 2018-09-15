@@ -1,81 +1,80 @@
 namespace Server.Mobiles
 {
-	public class Healer : BaseHealer
-	{
-		public override bool CanTeach => true;
+  public class Healer : BaseHealer
+  {
+    [Constructible]
+    public Healer()
+    {
+      Title = "the healer";
 
-		public override bool CheckTeach( SkillName skill, Mobile from )
-		{
-			if ( !base.CheckTeach( skill, from ) )
-				return false;
+      if (!Core.AOS)
+        NameHue = 0x35;
 
-			return ( skill == SkillName.Forensics )
-				|| ( skill == SkillName.Healing )
-				|| ( skill == SkillName.SpiritSpeak )
-				|| ( skill == SkillName.Swords );
-		}
+      SetSkill(SkillName.Forensics, 80.0, 100.0);
+      SetSkill(SkillName.SpiritSpeak, 80.0, 100.0);
+      SetSkill(SkillName.Swords, 80.0, 100.0);
+    }
 
-		[Constructible]
-		public Healer()
-		{
-			Title = "the healer";
+    public Healer(Serial serial) : base(serial)
+    {
+    }
 
-			if ( !Core.AOS )
-				NameHue = 0x35;
+    public override bool CanTeach => true;
 
-			SetSkill( SkillName.Forensics, 80.0, 100.0 );
-			SetSkill( SkillName.SpiritSpeak, 80.0, 100.0 );
-			SetSkill( SkillName.Swords, 80.0, 100.0 );
-		}
+    public override bool IsActiveVendor => true;
+    public override bool IsInvulnerable => true;
 
-		public override bool IsActiveVendor => true;
-		public override bool IsInvulnerable => true;
+    public override bool CheckTeach(SkillName skill, Mobile from)
+    {
+      if (!base.CheckTeach(skill, from))
+        return false;
 
-		public override void InitSBInfo()
-		{
-			SBInfos.Add( new SBHealer() );
-		}
+      return skill == SkillName.Forensics
+             || skill == SkillName.Healing
+             || skill == SkillName.SpiritSpeak
+             || skill == SkillName.Swords;
+    }
 
-		public override bool CheckResurrect( Mobile m )
-		{
-			if ( m.Criminal )
-			{
-				Say( 501222 ); // Thou art a criminal.  I shall not resurrect thee.
-				return false;
-			}
+    public override void InitSBInfo()
+    {
+      SBInfos.Add(new SBHealer());
+    }
 
-			if ( m.Kills >= 5 )
-			{
-				Say( 501223 ); // Thou'rt not a decent and good person. I shall not resurrect thee.
-				return false;
-			}
-			if ( m.Karma < 0 )
-			{
-				Say( 501224 ); // Thou hast strayed from the path of virtue, but thou still deservest a second chance.
-			}
+    public override bool CheckResurrect(Mobile m)
+    {
+      if (m.Criminal)
+      {
+        Say(501222); // Thou art a criminal.  I shall not resurrect thee.
+        return false;
+      }
 
-			return true;
-		}
+      if (m.Kills >= 5)
+      {
+        Say(501223); // Thou'rt not a decent and good person. I shall not resurrect thee.
+        return false;
+      }
 
-		public Healer( Serial serial ) : base( serial )
-		{
-		}
+      if (m.Karma < 0)
+        Say(501224); // Thou hast strayed from the path of virtue, but thou still deservest a second chance.
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      return true;
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			if ( Core.AOS && NameHue == 0x35 )
-				NameHue = -1;
-		}
-	}
+      int version = reader.ReadInt();
+
+      if (Core.AOS && NameHue == 0x35)
+        NameHue = -1;
+    }
+  }
 }

@@ -1,309 +1,320 @@
-using System;
-
 namespace Server.Items
 {
-	public class SnowGlobe : Item
-	{
-		public override double DefaultWeight => 1.0;
+  public class SnowGlobe : Item
+  {
+    public SnowGlobe()
+      : base(0xE2F)
+    {
+      LootType = LootType.Blessed;
+      Light = LightType.Circle150;
+    }
 
-		public SnowGlobe()
-			: base( 0xE2F )
-		{
-			LootType = LootType.Blessed;
-			Light = LightType.Circle150;
-		}
+    public SnowGlobe(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public SnowGlobe( Serial serial )
-			: base( serial )
-		{
-		}
+    public override double DefaultWeight => 1.0;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public enum SnowGlobeTypeOne
-	{
-		Britain,
-		Moonglow,
-		Minoc,
-		Magincia,
-		BuccaneersDen,
-		Trinsic,
-		Yew,
-		SkaraBrae,
-		Jhelom,
-		Nujelm,
-		Papua,
-		Delucia,
-		Cove,
-		Ocllo,
-		SerpentsHold,
-		EmpathAbbey,
-		TheLycaeum,
-		Vesper,
-		Wind
-	}
+  public enum SnowGlobeTypeOne
+  {
+    Britain,
+    Moonglow,
+    Minoc,
+    Magincia,
+    BuccaneersDen,
+    Trinsic,
+    Yew,
+    SkaraBrae,
+    Jhelom,
+    Nujelm,
+    Papua,
+    Delucia,
+    Cove,
+    Ocllo,
+    SerpentsHold,
+    EmpathAbbey,
+    TheLycaeum,
+    Vesper,
+    Wind
+  }
 
-	public class SnowGlobeOne : SnowGlobe
-	{
-		private SnowGlobeTypeOne m_Type;
+  public class SnowGlobeOne : SnowGlobe
+  {
+    private SnowGlobeTypeOne m_Type;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public SnowGlobeTypeOne Place
-		{
-			get => m_Type;
-			set { m_Type = value; InvalidateProperties(); }
-		}
+    [Constructible]
+    public SnowGlobeOne()
+      : this((SnowGlobeTypeOne)Utility.Random(19))
+    {
+    }
 
-		public override int LabelNumber => 1041454 + (int) m_Type;
+    [Constructible]
+    public SnowGlobeOne(SnowGlobeTypeOne type)
+    {
+      m_Type = type;
+    }
 
-		[Constructible]
-		public SnowGlobeOne()
-			: this( (SnowGlobeTypeOne) Utility.Random( 19 ) )
-		{
-		}
+    public SnowGlobeOne(Serial serial)
+      : base(serial)
+    {
+    }
 
-		[Constructible]
-		public SnowGlobeOne( SnowGlobeTypeOne type )
-		{
-			m_Type = type;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public SnowGlobeTypeOne Place
+    {
+      get => m_Type;
+      set
+      {
+        m_Type = value;
+        InvalidateProperties();
+      }
+    }
 
-		public SnowGlobeOne( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int LabelNumber => 1041454 + (int)m_Type;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-			writer.WriteEncodedInt( (int) m_Type );
-		}
+      writer.Write(0); // version
+      writer.WriteEncodedInt((int)m_Type);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Type = (SnowGlobeTypeOne) reader.ReadEncodedInt();
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          m_Type = (SnowGlobeTypeOne)reader.ReadEncodedInt();
+          break;
+        }
+      }
+    }
+  }
 
-	public enum SnowGlobeTypeTwo
-	{
-		AncientCitadel,
-		BlackthornesCastle,
-		CityofMontor,
-		CityofMistas,
-		ExodusLair,
-		LakeofFire,
-		Lakeshire,
-		PassofKarnaugh,
-		TheEtherealFortress,
-		TwinOaksTavern,
-		ChaosShrine,
-		ShrineofHumility,
-		ShrineofSacrifice,
-		ShrineofCompassion,
-		ShrineofHonor,
-		ShrineofHonesty,
-		ShrineofSpirituality,
-		ShrineofJustice,
-		ShrineofValor
-	}
+  public enum SnowGlobeTypeTwo
+  {
+    AncientCitadel,
+    BlackthornesCastle,
+    CityofMontor,
+    CityofMistas,
+    ExodusLair,
+    LakeofFire,
+    Lakeshire,
+    PassofKarnaugh,
+    TheEtherealFortress,
+    TwinOaksTavern,
+    ChaosShrine,
+    ShrineofHumility,
+    ShrineofSacrifice,
+    ShrineofCompassion,
+    ShrineofHonor,
+    ShrineofHonesty,
+    ShrineofSpirituality,
+    ShrineofJustice,
+    ShrineofValor
+  }
 
-	public class SnowGlobeTwo : SnowGlobe
-	{
-		/* Oddly, these are not localized. */
-		private static readonly string[] m_PlaceNames = {
-			/* AncientCitadel */ 		"Ancient Citadel",
-			/* BlackthornesCastle */ 	"Blackthorne's Castle",
-			/* CityofMontor */ 			"City of Montor",
-			/* CityofMistas */ 			"City of Mistas",
-			/* ExodusLair */ 			"Exodus' Lair",
-			/* LakeofFire */ 			"Lake of Fire",
-			/* Lakeshire */ 			"Lakeshire",
-			/* PassofKarnaugh */ 		"Pass of Karnaugh",
-			/* TheEtherealFortress */ 	"The Etheral Fortress",
-			/* TwinOaksTavern */ 		"Twin Oaks Tavern",
-			/* ChaosShrine */ 			"Chaos Shrine",
-			/* ShrineofHumility */ 		"Shrine of Humility",
-			/* ShrineofSacrifice */ 	"Shrine of Sacrifice",
-			/* ShrineofCompassion */ 	"Shrine of Compassion",
-			/* ShrineofHonor */ 		"Shrine of Honor",
-			/* ShrineofHonesty */ 		"Shrine of Honesty",
-			/* ShrineofSpirituality */ 	"Shrine of Spirituality",
-			/* ShrineofJustice */ 		"Shrine of Justice",
-			/* ShrineofValor */ 		"Shrine of Valor"
-		};
+  public class SnowGlobeTwo : SnowGlobe
+  {
+    /* Oddly, these are not localized. */
+    private static readonly string[] m_PlaceNames =
+    {
+      /* AncientCitadel */ "Ancient Citadel",
+      /* BlackthornesCastle */ "Blackthorne's Castle",
+      /* CityofMontor */ "City of Montor",
+      /* CityofMistas */ "City of Mistas",
+      /* ExodusLair */ "Exodus' Lair",
+      /* LakeofFire */ "Lake of Fire",
+      /* Lakeshire */ "Lakeshire",
+      /* PassofKarnaugh */ "Pass of Karnaugh",
+      /* TheEtherealFortress */ "The Etheral Fortress",
+      /* TwinOaksTavern */ "Twin Oaks Tavern",
+      /* ChaosShrine */ "Chaos Shrine",
+      /* ShrineofHumility */ "Shrine of Humility",
+      /* ShrineofSacrifice */ "Shrine of Sacrifice",
+      /* ShrineofCompassion */ "Shrine of Compassion",
+      /* ShrineofHonor */ "Shrine of Honor",
+      /* ShrineofHonesty */ "Shrine of Honesty",
+      /* ShrineofSpirituality */ "Shrine of Spirituality",
+      /* ShrineofJustice */ "Shrine of Justice",
+      /* ShrineofValor */ "Shrine of Valor"
+    };
 
-		private SnowGlobeTypeTwo m_Type;
+    private SnowGlobeTypeTwo m_Type;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public SnowGlobeTypeTwo Place
-		{
-			get => m_Type;
-			set { m_Type = value; InvalidateProperties(); }
-		}
+    [Constructible]
+    public SnowGlobeTwo()
+      : this((SnowGlobeTypeTwo)Utility.Random(19))
+    {
+    }
 
-		public override string DefaultName
-		{
-			get
-			{
-				int idx = (int) m_Type;
+    [Constructible]
+    public SnowGlobeTwo(SnowGlobeTypeTwo type)
+    {
+      m_Type = type;
+    }
 
-				if ( idx < 0 || idx >= m_PlaceNames.Length )
-					return "a snowy scene";
+    public SnowGlobeTwo(Serial serial)
+      : base(serial)
+    {
+    }
 
-				return $"a snowy scene of {m_PlaceNames[idx]}";
-			}
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public SnowGlobeTypeTwo Place
+    {
+      get => m_Type;
+      set
+      {
+        m_Type = value;
+        InvalidateProperties();
+      }
+    }
 
-		[Constructible]
-		public SnowGlobeTwo()
-			: this( (SnowGlobeTypeTwo) Utility.Random( 19 ) )
-		{
-		}
+    public override string DefaultName
+    {
+      get
+      {
+        int idx = (int)m_Type;
 
-		[Constructible]
-		public SnowGlobeTwo( SnowGlobeTypeTwo type )
-		{
-			m_Type = type;
-		}
+        if (idx < 0 || idx >= m_PlaceNames.Length)
+          return "a snowy scene";
 
-		public SnowGlobeTwo( Serial serial )
-			: base( serial )
-		{
-		}
+        return $"a snowy scene of {m_PlaceNames[idx]}";
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-			writer.WriteEncodedInt( (int) m_Type );
-		}
+      writer.Write(0); // version
+      writer.WriteEncodedInt((int)m_Type);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Type = (SnowGlobeTypeTwo) reader.ReadEncodedInt();
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          m_Type = (SnowGlobeTypeTwo)reader.ReadEncodedInt();
+          break;
+        }
+      }
+    }
+  }
 
-	public enum SnowGlobeTypeThree
-	{
-		Luna,
-		Umbra,
-		Zento,
-		Heartwood,
-		Covetous,
-		Deceit,
-		Destard,
-		Hythloth,
-		Khaldun,
-		Shame,
-		Wrong,
-		Doom,
-		TheCitadel,
-		ThePalaceofParoxysmus,
-		TheBlightedGrove,
-		ThePrismofLight
-	}
+  public enum SnowGlobeTypeThree
+  {
+    Luna,
+    Umbra,
+    Zento,
+    Heartwood,
+    Covetous,
+    Deceit,
+    Destard,
+    Hythloth,
+    Khaldun,
+    Shame,
+    Wrong,
+    Doom,
+    TheCitadel,
+    ThePalaceofParoxysmus,
+    TheBlightedGrove,
+    ThePrismofLight
+  }
 
-	public class SnowGlobeThree : SnowGlobe
-	{
-		private SnowGlobeTypeThree m_Type;
+  public class SnowGlobeThree : SnowGlobe
+  {
+    private SnowGlobeTypeThree m_Type;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public SnowGlobeTypeThree Place
-		{
-			get => m_Type;
-			set { m_Type = value; InvalidateProperties(); }
-		}
+    [Constructible]
+    public SnowGlobeThree()
+      : this((SnowGlobeTypeThree)Utility.Random(16))
+    {
+    }
 
-		public override int LabelNumber
-		{
-			get
-			{
-				if ( m_Type >= SnowGlobeTypeThree.Covetous )
-					return 1075440 + ( (int) m_Type - 4 );
+    [Constructible]
+    public SnowGlobeThree(SnowGlobeTypeThree type)
+    {
+      m_Type = type;
+    }
 
-				return 1075294 + (int) m_Type;
-			}
-		}
+    public SnowGlobeThree(Serial serial)
+      : base(serial)
+    {
+    }
 
-		[Constructible]
-		public SnowGlobeThree()
-			: this( (SnowGlobeTypeThree) Utility.Random( 16 ) )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public SnowGlobeTypeThree Place
+    {
+      get => m_Type;
+      set
+      {
+        m_Type = value;
+        InvalidateProperties();
+      }
+    }
 
-		[Constructible]
-		public SnowGlobeThree( SnowGlobeTypeThree type )
-		{
-			m_Type = type;
-		}
+    public override int LabelNumber
+    {
+      get
+      {
+        if (m_Type >= SnowGlobeTypeThree.Covetous)
+          return 1075440 + ((int)m_Type - 4);
 
-		public SnowGlobeThree( Serial serial )
-			: base( serial )
-		{
-		}
+        return 1075294 + (int)m_Type;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-			writer.WriteEncodedInt( (int) m_Type );
-		}
+      writer.Write(0); // version
+      writer.WriteEncodedInt((int)m_Type);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Type = (SnowGlobeTypeThree) reader.ReadEncodedInt();
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          m_Type = (SnowGlobeTypeThree)reader.ReadEncodedInt();
+          break;
+        }
+      }
+    }
+  }
 }

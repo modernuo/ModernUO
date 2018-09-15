@@ -1,35 +1,33 @@
 namespace Server.Items
 {
-	public class LightningScroll : SpellScroll
-	{
-		[Constructible]
-		public LightningScroll() : this( 1 )
-		{
-		}
+  public class LightningScroll : SpellScroll
+  {
+    [Constructible]
+    public LightningScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public LightningScroll( int amount ) : base( 29, 0x1F4A, amount )
-		{
-		}
+    [Constructible]
+    public LightningScroll(int amount) : base(29, 0x1F4A, amount)
+    {
+    }
 
-		public LightningScroll( Serial serial ) : base( serial )
-		{
-		}
+    public LightningScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

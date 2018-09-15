@@ -2,105 +2,106 @@ using Server.Multis;
 
 namespace Server.Items
 {
-	public class SerpentPillar : Item
-	{
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Active { get; set; }
+  public class SerpentPillar : Item
+  {
+    [Constructible]
+    public SerpentPillar() : this(null, new Rectangle2D(), false)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public string Word { get; set; }
+    public SerpentPillar(string word, Rectangle2D destination) : this(word, destination, true)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Rectangle2D Destination { get; set; }
+    public SerpentPillar(string word, Rectangle2D destination, bool active) : base(0x233F)
+    {
+      Movable = false;
 
-		[Constructible]
-		public SerpentPillar() : this( null, new Rectangle2D(), false )
-		{
-		}
+      Active = active;
+      Word = word;
+      Destination = destination;
+    }
 
-		public SerpentPillar( string word, Rectangle2D destination ) : this( word, destination, true )
-		{
-		}
+    public SerpentPillar(Serial serial) : base(serial)
+    {
+    }
 
-		public SerpentPillar( string word, Rectangle2D destination, bool active ) : base( 0x233F )
-		{
-			Movable = false;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Active{ get; set; }
 
-			Active = active;
-			Word = word;
-			Destination = destination;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public string Word{ get; set; }
 
-		public override bool HandlesOnSpeech => true;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Rectangle2D Destination{ get; set; }
 
-		public override void OnSpeech( SpeechEventArgs e )
-		{
-			Mobile from = e.Mobile;
+    public override bool HandlesOnSpeech => true;
 
-			if ( !e.Handled && from.InRange( this, 10 ) && e.Speech.ToLower() == Word )
-			{
-				BaseBoat boat = BaseBoat.FindBoatAt( from, from.Map );
+    public override void OnSpeech(SpeechEventArgs e)
+    {
+      Mobile from = e.Mobile;
 
-				if ( boat == null )
-					return;
+      if (!e.Handled && from.InRange(this, 10) && e.Speech.ToLower() == Word)
+      {
+        BaseBoat boat = BaseBoat.FindBoatAt(from, from.Map);
 
-				if ( !Active )
-				{
-					boat.TillerMan?.Say( 502507 ); // Ar, Legend has it that these pillars are inactive! No man knows how it might be undone!
+        if (boat == null)
+          return;
 
-					return;
-				}
+        if (!Active)
+        {
+          boat.TillerMan
+            ?.Say(502507); // Ar, Legend has it that these pillars are inactive! No man knows how it might be undone!
 
-				Map map = from.Map;
+          return;
+        }
 
-				for ( int i = 0; i < 5; i++ ) // Try 5 times
-				{
-					int x = Utility.Random( Destination.X, Destination.Width );
-					int y = Utility.Random( Destination.Y, Destination.Height );
-					int z = map.GetAverageZ( x, y );
+        Map map = from.Map;
 
-					Point3D dest = new Point3D( x, y, z );
+        for (int i = 0; i < 5; i++) // Try 5 times
+        {
+          int x = Utility.Random(Destination.X, Destination.Width);
+          int y = Utility.Random(Destination.Y, Destination.Height);
+          int z = map.GetAverageZ(x, y);
 
-					if ( boat.CanFit( dest, map, boat.ItemID ) )
-					{
-						int xOffset = x - boat.X;
-						int yOffset = y - boat.Y;
-						int zOffset = z - boat.Z;
+          Point3D dest = new Point3D(x, y, z);
 
-						boat.Teleport( xOffset, yOffset, zOffset );
+          if (boat.CanFit(dest, map, boat.ItemID))
+          {
+            int xOffset = x - boat.X;
+            int yOffset = y - boat.Y;
+            int zOffset = z - boat.Z;
 
-						return;
-					}
-				}
+            boat.Teleport(xOffset, yOffset, zOffset);
 
-				boat.TillerMan?.Say( 502508 ); // Ar, I refuse to take that matey through here!
-			}
-		}
+            return;
+          }
+        }
 
-		public SerpentPillar( Serial serial ) : base( serial )
-		{
-		}
+        boat.TillerMan?.Say(502508); // Ar, I refuse to take that matey through here!
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
+      writer.WriteEncodedInt(0); // version
 
-			writer.Write( (bool) Active );
-			writer.Write( (string) Word );
-			writer.Write( (Rectangle2D) Destination );
-		}
+      writer.Write(Active);
+      writer.Write(Word);
+      writer.Write(Destination);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
+      int version = reader.ReadEncodedInt();
 
-			Active = reader.ReadBool();
-			Word = reader.ReadString();
-			Destination = reader.ReadRect2D();
-		}
-	}
+      Active = reader.ReadBool();
+      Word = reader.ReadString();
+      Destination = reader.ReadRect2D();
+    }
+  }
 }

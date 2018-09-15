@@ -1,109 +1,123 @@
 using System;
-using Server.Items;
 using Server.Engines.Craft;
+using Server.Items;
 
 namespace Server.Factions
 {
-	public abstract class BaseFactionTrapDeed : Item, ICraftable
-	{
-		public abstract Type TrapType{ get; }
+  public abstract class BaseFactionTrapDeed : Item, ICraftable
+  {
+    private Faction m_Faction;
 
-		private Faction m_Faction;
+    public BaseFactionTrapDeed(int itemID) : base(itemID)
+    {
+      Weight = 1.0;
+      LootType = LootType.Blessed;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Faction Faction
-		{
-			get => m_Faction;
-			set
-			{
-				m_Faction = value;
+    public BaseFactionTrapDeed(bool createdFromDeed) : this(0x14F0)
+    {
+    }
 
-				if ( m_Faction != null )
-					Hue = m_Faction.Definition.HuePrimary;
-			}
-		}
+    public BaseFactionTrapDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public BaseFactionTrapDeed( int itemID ) : base( itemID )
-		{
-			Weight = 1.0;
-			LootType = LootType.Blessed;
-		}
+    public abstract Type TrapType{ get; }
 
-		public BaseFactionTrapDeed( bool createdFromDeed ) : this( 0x14F0 )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Faction Faction
+    {
+      get => m_Faction;
+      set
+      {
+        m_Faction = value;
 
-		public BaseFactionTrapDeed( Serial serial ) : base( serial )
-		{
-		}
+        if (m_Faction != null)
+          Hue = m_Faction.Definition.HuePrimary;
+      }
+    }
 
-		public virtual BaseFactionTrap Construct( Mobile from )
-		{
-			try{ return Activator.CreateInstance( TrapType, new object[]{ m_Faction, from } ) as BaseFactionTrap; }
-			catch{ return null; }
-		}
+    #region ICraftable Members
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			Faction faction = Faction.Find( from );
+    public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
+      CraftItem craftItem, int resHue)
+    {
+      ItemID = 0x14F0;
+      Faction = Faction.Find(from);
 
-			if ( faction == null )
-				from.SendLocalizedMessage( 1010353, "", 0x23 ); // Only faction members may place faction traps
-			else if ( faction != m_Faction )
-				from.SendLocalizedMessage( 1010354, "", 0x23 ); // You may only place faction traps created by your faction
-			else if ( faction.Traps.Count >= faction.MaximumTraps )
-				from.SendLocalizedMessage( 1010358, "", 0x23 ); // Your faction already has the maximum number of traps placed
-			else
-			{
-				BaseFactionTrap trap = Construct( from );
+      return 1;
+    }
 
-				if ( trap == null )
-					return;
+    #endregion
 
-				int message = trap.IsValidLocation( from.Location, from.Map );
+    public virtual BaseFactionTrap Construct(Mobile from)
+    {
+      try
+      {
+        return Activator.CreateInstance(TrapType, m_Faction, from) as BaseFactionTrap;
+      }
+      catch
+      {
+        return null;
+      }
+    }
 
-				if ( message > 0 )
-				{
-					from.SendLocalizedMessage( message, "", 0x23 );
-					trap.Delete();
-				}
-				else
-				{
-					from.SendLocalizedMessage( 1010360 ); // You arm the trap and carefully hide it from view
-					trap.MoveToWorld( from.Location, from.Map );
-					faction.Traps.Add( trap );
-					Delete();
-				}
-			}
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      Faction faction = Faction.Find(from);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      if (faction == null)
+      {
+        from.SendLocalizedMessage(1010353, "", 0x23); // Only faction members may place faction traps
+      }
+      else if (faction != m_Faction)
+      {
+        from.SendLocalizedMessage(1010354, "", 0x23); // You may only place faction traps created by your faction
+      }
+      else if (faction.Traps.Count >= faction.MaximumTraps)
+      {
+        from.SendLocalizedMessage(1010358, "", 0x23); // Your faction already has the maximum number of traps placed
+      }
+      else
+      {
+        BaseFactionTrap trap = Construct(from);
 
-			writer.Write( (int) 0 ); // version
+        if (trap == null)
+          return;
 
-			Faction.WriteReference( writer, m_Faction );
-		}
+        int message = trap.IsValidLocation(from.Location, from.Map);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        if (message > 0)
+        {
+          from.SendLocalizedMessage(message, "", 0x23);
+          trap.Delete();
+        }
+        else
+        {
+          from.SendLocalizedMessage(1010360); // You arm the trap and carefully hide it from view
+          trap.MoveToWorld(from.Location, from.Map);
+          faction.Traps.Add(trap);
+          Delete();
+        }
+      }
+    }
 
-			int version = reader.ReadInt();
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			m_Faction = Faction.ReadReference( reader );
-		}
-		#region ICraftable Members
+      writer.Write(0); // version
 
-		public int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
-		{
-			ItemID = 0x14F0;
-			Faction = Faction.Find( from );
+      Faction.WriteReference(writer, m_Faction);
+    }
 
-			return 1;
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		#endregion
-	}
+      int version = reader.ReadInt();
+
+      m_Faction = Faction.ReadReference(reader);
+    }
+  }
 }

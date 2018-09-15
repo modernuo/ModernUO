@@ -1,35 +1,33 @@
 namespace Server.Items
 {
-	public class SummonAirElementalScroll : SpellScroll
-	{
-		[Constructible]
-		public SummonAirElementalScroll() : this( 1 )
-		{
-		}
+  public class SummonAirElementalScroll : SpellScroll
+  {
+    [Constructible]
+    public SummonAirElementalScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public SummonAirElementalScroll( int amount ) : base( 59, 0x1F68, amount )
-		{
-		}
+    [Constructible]
+    public SummonAirElementalScroll(int amount) : base(59, 0x1F68, amount)
+    {
+    }
 
-		public SummonAirElementalScroll( Serial serial ) : base( serial )
-		{
-		}
+    public SummonAirElementalScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

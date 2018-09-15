@@ -23,212 +23,210 @@ using System.Collections.Generic;
 using System.Threading;
 using Server.Network;
 
-namespace Server {
-	public delegate void FileCommitCallback( FileQueue.Chunk chunk );
+namespace Server
+{
+  public delegate void FileCommitCallback(FileQueue.Chunk chunk);
 
-	public sealed class FileQueue : IDisposable {
-		public sealed class Chunk {
-			private FileQueue owner;
-			private int slot;
+  public sealed class FileQueue : IDisposable
+  {
+    private static int bufferSize;
+    private static BufferPool bufferPool;
 
-			private int offset;
+    private Chunk[] active;
+    private int activeCount;
+    private Page buffered;
 
-			public byte[] Buffer { get; }
+    private FileCommitCallback callback;
 
-			public int Offset => 0;
+    private ManualResetEvent idle;
 
-			public int Size { get; }
+    private Queue<Page> pending;
 
-			public Chunk( FileQueue owner, int slot, byte[] buffer, int offset, int size ) {
-				this.owner = owner;
-				this.slot = slot;
+    private object syncRoot;
 
-				this.Buffer = buffer;
-				this.offset = offset;
-				this.Size = size;
-			}
+    static FileQueue()
+    {
+      bufferSize = FileOperations.BufferSize;
+      bufferPool = new BufferPool("File Buffers", 64, bufferSize);
+    }
 
-			public void Commit() {
-				owner.Commit( this, slot );
-			}
-		}
+    public FileQueue(int concurrentWrites, FileCommitCallback callback)
+    {
+      if (concurrentWrites < 1) throw new ArgumentOutOfRangeException("concurrentWrites");
 
-		private struct Page {
-			public byte[] buffer;
-			public int length;
-		}
+      if (bufferSize < 1) throw new ArgumentOutOfRangeException("bufferSize");
+      if (callback == null) throw new ArgumentNullException("callback");
 
-		private static int bufferSize;
-		private static BufferPool bufferPool;
+      syncRoot = new object();
 
-		static FileQueue() {
-			bufferSize = FileOperations.BufferSize;
-			bufferPool = new BufferPool( "File Buffers", 64, bufferSize );
-		}
+      active = new Chunk[concurrentWrites];
+      pending = new Queue<Page>();
 
-		private object syncRoot;
+      this.callback = callback;
 
-		private Chunk[] active;
-		private int activeCount;
+      idle = new ManualResetEvent(true);
+    }
 
-		private Queue<Page> pending;
-		private Page buffered;
+    public long Position{ get; private set; }
 
-		private FileCommitCallback callback;
+    public void Dispose()
+    {
+      if (idle != null)
+      {
+        idle.Close();
+        idle = null;
+      }
+    }
 
-		private ManualResetEvent idle;
+    private void Append(Page page)
+    {
+      lock (syncRoot)
+      {
+        if (activeCount == 0) idle.Reset();
 
-		public long Position { get; private set; }
+        ++activeCount;
 
-		public FileQueue( int concurrentWrites, FileCommitCallback callback ) {
-			if ( concurrentWrites < 1 ) {
-				throw new ArgumentOutOfRangeException( "concurrentWrites" );
-			}
+        for (int slot = 0; slot < active.Length; ++slot)
+          if (active[slot] == null)
+          {
+            active[slot] = new Chunk(this, slot, page.buffer, 0, page.length);
 
-			if ( bufferSize < 1 ) {
-				throw new ArgumentOutOfRangeException( "bufferSize" );
-			}
-			if ( callback == null ) {
-				throw new ArgumentNullException( "callback" );
-			}
+            callback(active[slot]);
 
-			syncRoot = new object();
+            return;
+          }
 
-			active = new Chunk[concurrentWrites];
-			pending = new Queue<Page>();
+        pending.Enqueue(page);
+      }
+    }
 
-			this.callback = callback;
+    public void Flush()
+    {
+      if (buffered.buffer != null)
+      {
+        Append(buffered);
 
-			idle = new ManualResetEvent( true );
-		}
+        buffered.buffer = null;
+        buffered.length = 0;
+      }
 
-		private void Append( Page page ) {
-			lock ( syncRoot ) {
-				if ( activeCount == 0 ) {
-					idle.Reset();
-				}
+      /*lock ( syncRoot ) {
+        if ( pending.Count > 0 ) {
+          idle.Reset();
+        }
 
-				++activeCount;
+        for ( int slot = 0; slot < active.Length && pending.Count > 0; ++slot ) {
+          if ( active[slot] == null ) {
+            Page page = pending.Dequeue();
 
-				for ( int slot = 0; slot < active.Length; ++slot ) {
-					if ( active[slot] == null ) {
-						active[slot] = new Chunk( this, slot, page.buffer, 0, page.length );
+            active[slot] = new Chunk( this, slot, page.buffer, 0, page.length );
 
-						callback( active[slot] );
+            ++activeCount;
 
-						return;
-					}
-				}
+            callback( active[slot] );
+          }
+        }
+      }*/
 
-				pending.Enqueue( page );
-			}
-		}
+      idle.WaitOne();
+    }
 
-		public void Dispose() {
-			if ( idle != null ) {
-				idle.Close();
-				idle = null;
-			}
-		}
+    private void Commit(Chunk chunk, int slot)
+    {
+      if (slot < 0 || slot >= active.Length) throw new ArgumentOutOfRangeException("slot");
 
-		public void Flush() {
-			if ( buffered.buffer != null ) {
-				Append( buffered );
+      lock (syncRoot)
+      {
+        if (active[slot] != chunk) throw new ArgumentException();
 
-				buffered.buffer = null;
-				buffered.length = 0;
-			}
+        bufferPool.ReleaseBuffer(chunk.Buffer);
 
-			/*lock ( syncRoot ) {
-				if ( pending.Count > 0 ) {
-					idle.Reset();
-				}
+        if (pending.Count > 0)
+        {
+          Page page = pending.Dequeue();
 
-				for ( int slot = 0; slot < active.Length && pending.Count > 0; ++slot ) {
-					if ( active[slot] == null ) {
-						Page page = pending.Dequeue();
+          active[slot] = new Chunk(this, slot, page.buffer, 0, page.length);
 
-						active[slot] = new Chunk( this, slot, page.buffer, 0, page.length );
+          callback(active[slot]);
+        }
+        else
+        {
+          active[slot] = null;
+        }
 
-						++activeCount;
+        --activeCount;
 
-						callback( active[slot] );
-					}
-				}
-			}*/
+        if (activeCount == 0) idle.Set();
+      }
+    }
 
-			idle.WaitOne();
-		}
+    public void Enqueue(byte[] buffer, int offset, int size)
+    {
+      if (buffer == null) throw new ArgumentNullException("buffer");
 
-		private void Commit( Chunk chunk, int slot ) {
-			if ( slot < 0 || slot >= active.Length ) {
-				throw new ArgumentOutOfRangeException( "slot" );
-			}
+      if (offset < 0) throw new ArgumentOutOfRangeException("offset");
+      if (size < 0) throw new ArgumentOutOfRangeException("size");
+      if (buffer.Length - offset < size) throw new ArgumentException();
 
-			lock ( syncRoot ) {
-				if ( active[slot] != chunk ) {
-					throw new ArgumentException();
-				}
+      Position += size;
 
-				bufferPool.ReleaseBuffer( chunk.Buffer );
+      while (size > 0)
+      {
+        if (buffered.buffer == null) buffered.buffer = bufferPool.AcquireBuffer();
 
-				if ( pending.Count > 0 ) {
-					Page page = pending.Dequeue();
+        byte[] page = buffered.buffer; // buffer page
+        int pageSpace = page.Length - buffered.length; // available bytes in page
+        int byteCount = size > pageSpace ? pageSpace : size; // how many bytes we can copy over
 
-					active[slot] = new Chunk( this, slot, page.buffer, 0, page.length );
+        Buffer.BlockCopy(buffer, offset, page, buffered.length, byteCount);
 
-					callback( active[slot] );
-				} else {
-					active[slot] = null;
-				}
+        buffered.length += byteCount;
+        offset += byteCount;
+        size -= byteCount;
 
-				--activeCount;
+        if (buffered.length == page.Length)
+        {
+          // page full
+          Append(buffered);
 
-				if ( activeCount == 0 ) {
-					idle.Set();
-				}
-			}
-		}
+          buffered.buffer = null;
+          buffered.length = 0;
+        }
+      }
+    }
 
-		public void Enqueue( byte[] buffer, int offset, int size ) {
-			if ( buffer == null ) {
-				throw new ArgumentNullException( "buffer" );
-			}
+    public sealed class Chunk
+    {
+      private int offset;
+      private FileQueue owner;
+      private int slot;
 
-			if ( offset < 0 ) {
-				throw new ArgumentOutOfRangeException( "offset" );
-			}
-			if ( size < 0 ) {
-				throw new ArgumentOutOfRangeException( "size" );
-			}
-			if ( ( buffer.Length - offset ) < size ) {
-				throw new ArgumentException();
-			}
+      public Chunk(FileQueue owner, int slot, byte[] buffer, int offset, int size)
+      {
+        this.owner = owner;
+        this.slot = slot;
 
-			Position += size;
+        Buffer = buffer;
+        this.offset = offset;
+        Size = size;
+      }
 
-			while ( size > 0 ) {
-				if ( buffered.buffer == null ) { // nothing yet buffered
-					buffered.buffer = bufferPool.AcquireBuffer();
-				}
+      public byte[] Buffer{ get; }
 
-				byte[] page = buffered.buffer; // buffer page
-				int pageSpace = page.Length - buffered.length; // available bytes in page
-				int byteCount = ( size > pageSpace ? pageSpace : size ); // how many bytes we can copy over
+      public int Offset => 0;
 
-				Buffer.BlockCopy( buffer, offset, page, buffered.length, byteCount );
+      public int Size{ get; }
 
-				buffered.length += byteCount;
-				offset += byteCount;
-				size -= byteCount;
+      public void Commit()
+      {
+        owner.Commit(this, slot);
+      }
+    }
 
-				if ( buffered.length == page.Length ) { // page full
-					Append( buffered );
-
-					buffered.buffer = null;
-					buffered.length = 0;
-				}
-			}
-		}
-	}
+    private struct Page
+    {
+      public byte[] buffer;
+      public int length;
+    }
+  }
 }

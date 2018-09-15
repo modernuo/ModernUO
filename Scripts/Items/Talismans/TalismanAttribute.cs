@@ -2,121 +2,121 @@ using System;
 
 namespace Server.Items
 {
-	[PropertyObject]
-	public class TalismanAttribute
-	{
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Type Type { get; set; }
+  [PropertyObject]
+  public class TalismanAttribute
+  {
+    public TalismanAttribute() : this(null, 0, 0)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TextDefinition Name { get; set; }
+    public TalismanAttribute(TalismanAttribute copy)
+    {
+      if (copy != null)
+      {
+        Type = copy.Type;
+        Name = copy.Name;
+        Amount = copy.Amount;
+      }
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Amount { get; set; }
+    public TalismanAttribute(Type type, TextDefinition name) : this(type, name, 0)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsEmpty => Type == null;
+    public TalismanAttribute(Type type, TextDefinition name, int amount)
+    {
+      Type = type;
+      Name = name;
+      Amount = amount;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsItem => Type != null && Type.Namespace.Equals( "Server.Items" );
+    public TalismanAttribute(GenericReader reader)
+    {
+      int version = reader.ReadInt();
 
-		public TalismanAttribute() : this( null, 0, 0 )
-		{
-		}
+      SaveFlag flags = (SaveFlag)reader.ReadEncodedInt();
 
-		public TalismanAttribute( TalismanAttribute copy )
-		{
-			if ( copy != null )
-			{
-				Type = copy.Type;
-				Name = copy.Name;
-				Amount = copy.Amount;
-			}
-		}
+      if (GetSaveFlag(flags, SaveFlag.Type))
+        Type = ScriptCompiler.FindTypeByFullName(reader.ReadString(), false);
 
-		public TalismanAttribute( Type type, TextDefinition name ) : this( type, name, 0 )
-		{
-		}
+      if (GetSaveFlag(flags, SaveFlag.Name))
+        Name = TextDefinition.Deserialize(reader);
 
-		public TalismanAttribute( Type type, TextDefinition name, int amount )
-		{
-			Type = type;
-			Name = name;
-			Amount = amount;
-		}
+      if (GetSaveFlag(flags, SaveFlag.Amount))
+        Amount = reader.ReadEncodedInt();
+    }
 
-		public TalismanAttribute( GenericReader reader )
-		{
-			int version = reader.ReadInt();
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Type Type{ get; set; }
 
-			SaveFlag flags = (SaveFlag) reader.ReadEncodedInt();
+    [CommandProperty(AccessLevel.GameMaster)]
+    public TextDefinition Name{ get; set; }
 
-			if ( GetSaveFlag( flags, SaveFlag.Type ) )
-				Type = ScriptCompiler.FindTypeByFullName( reader.ReadString(), false );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Amount{ get; set; }
 
-			if ( GetSaveFlag( flags, SaveFlag.Name ) )
-				Name = TextDefinition.Deserialize( reader );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsEmpty => Type == null;
 
-			if ( GetSaveFlag( flags, SaveFlag.Amount ) )
-				Amount = reader.ReadEncodedInt();
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsItem => Type != null && Type.Namespace.Equals("Server.Items");
 
-		public override string ToString()
-		{
-			if ( Type != null )
-				return Type.Name;
+    public override string ToString()
+    {
+      if (Type != null)
+        return Type.Name;
 
-			return "None";
-		}
+      return "None";
+    }
 
-		private static void SetSaveFlag( ref SaveFlag flags, SaveFlag toSet, bool setIf )
-		{
-			if ( setIf )
-				flags |= toSet;
-		}
+    private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
+    {
+      if (setIf)
+        flags |= toSet;
+    }
 
-		private static bool GetSaveFlag( SaveFlag flags, SaveFlag toGet )
-		{
-			return ( (flags & toGet) != 0 );
-		}
+    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet)
+    {
+      return (flags & toGet) != 0;
+    }
 
-		[Flags]
-		private enum SaveFlag
-		{
-			None				= 0x00000000,
-			Type				= 0x00000001,
-			Name				= 0x00000002,
-			Amount				= 0x00000004,
-		}
+    public virtual void Serialize(GenericWriter writer)
+    {
+      writer.Write(0); // version
 
-		public virtual void Serialize( GenericWriter writer )
-		{
-			writer.Write( (int) 0 ); // version
+      SaveFlag flags = SaveFlag.None;
 
-			SaveFlag flags = SaveFlag.None;
+      SetSaveFlag(ref flags, SaveFlag.Type, Type != null);
+      SetSaveFlag(ref flags, SaveFlag.Name, Name != null);
+      SetSaveFlag(ref flags, SaveFlag.Amount, Amount != 0);
 
-			SetSaveFlag( ref flags, SaveFlag.Type,		Type != null );
-			SetSaveFlag( ref flags, SaveFlag.Name,		Name != null );
-			SetSaveFlag( ref flags, SaveFlag.Amount,	Amount != 0 );
+      writer.WriteEncodedInt((int)flags);
 
-			writer.WriteEncodedInt( (int) flags );
+      if (GetSaveFlag(flags, SaveFlag.Type))
+        writer.Write(Type.FullName);
 
-			if ( GetSaveFlag( flags, SaveFlag.Type ) )
-				writer.Write( Type.FullName );
+      if (GetSaveFlag(flags, SaveFlag.Name))
+        TextDefinition.Serialize(writer, Name);
 
-			if ( GetSaveFlag( flags, SaveFlag.Name ) )
-				TextDefinition.Serialize( writer, Name );
+      if (GetSaveFlag(flags, SaveFlag.Amount))
+        writer.WriteEncodedInt(Amount);
+    }
 
-			if ( GetSaveFlag( flags, SaveFlag.Amount ) )
-				writer.WriteEncodedInt( Amount );
-		}
+    public int DamageBonus(Mobile to)
+    {
+      if (to != null && to.GetType() == Type) // Verified: only works on the exact type
+        return Amount;
 
-		public int DamageBonus( Mobile to )
-		{
-			if ( to != null && to.GetType() == Type ) // Verified: only works on the exact type
-				return Amount;
+      return 0;
+    }
 
-			return 0;
-		}
-	}
+    [Flags]
+    private enum SaveFlag
+    {
+      None = 0x00000000,
+      Type = 0x00000001,
+      Name = 0x00000002,
+      Amount = 0x00000004
+    }
+  }
 }

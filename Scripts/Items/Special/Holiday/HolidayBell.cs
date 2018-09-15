@@ -1,106 +1,111 @@
-﻿using System;
-
-namespace Server.Items
+﻿namespace Server.Items
 {
-	public class HolidayBell : Item
-	{
-		private static string[] m_StaffNames = {
-			"Adrick",
-			"Alai",
-			"Bulldoz",
-			"Evocare",
-			"FierY-iCe",
-			"Greyburn",
-			"Hanse",
-			"Ignatz",
-			"Jalek",
-			"LadyMOI",
-			"Lord Krum",
-			"Malantus",
-			"Nimrond",
-			"Oaks",
-			"Prophet",
-			"Runesabre",
-			"Sage",
-			"Stellerex",
-			"T-Bone",
-			"Tajima",
-			"Tyrant",
-			"Vex"
-		};
-		private static int[] m_Hues = {
-			0xA, 0x24, 0x42, 0x56, 0x1A, 0x4C, 0x3C, 0x60, 0x2E, 0x55, 0x23, 0x38, 0x482, 0x6, 0x10
-		};
+  public class HolidayBell : Item
+  {
+    private static string[] m_StaffNames =
+    {
+      "Adrick",
+      "Alai",
+      "Bulldoz",
+      "Evocare",
+      "FierY-iCe",
+      "Greyburn",
+      "Hanse",
+      "Ignatz",
+      "Jalek",
+      "LadyMOI",
+      "Lord Krum",
+      "Malantus",
+      "Nimrond",
+      "Oaks",
+      "Prophet",
+      "Runesabre",
+      "Sage",
+      "Stellerex",
+      "T-Bone",
+      "Tajima",
+      "Tyrant",
+      "Vex"
+    };
 
-		[CommandProperty(AccessLevel.GameMaster)]
-		public int SoundID
-		{
-			get => m_SoundID;
-			set { m_SoundID = value; InvalidateProperties(); }
-		}
+    private static int[] m_Hues =
+    {
+      0xA, 0x24, 0x42, 0x56, 0x1A, 0x4C, 0x3C, 0x60, 0x2E, 0x55, 0x23, 0x38, 0x482, 0x6, 0x10
+    };
 
-		[CommandProperty(AccessLevel.GameMaster)]
-		public string Giver { get => m_Maker;
-			set => m_Maker = value;
-		}
+    private string m_Maker;
+    private int m_SoundID;
 
-		public override string DefaultName => $"A Holiday Bell From {Giver}";
+    [Constructible]
+    public HolidayBell()
+      : this(m_StaffNames[Utility.Random(m_StaffNames.Length)])
+    {
+    }
 
-		private string m_Maker;
-		private int m_SoundID;
+    [Constructible]
+    public HolidayBell(string maker)
+      : base(0x1C12)
+    {
+      m_Maker = maker;
 
-		[Constructible]
-		public HolidayBell()
-			: this(m_StaffNames[Utility.Random(m_StaffNames.Length)])
-		{
-		}
+      LootType = LootType.Blessed;
+      Hue = m_Hues[Utility.Random(m_Hues.Length)];
+      SoundID = 0x0F5 + Utility.Random(14);
+    }
 
-		[Constructible]
-		public HolidayBell(string maker)
-			: base(0x1C12)
-		{
-			m_Maker = maker;
+    public HolidayBell(Serial serial)
+      : base(serial)
+    {
+    }
 
-			LootType = LootType.Blessed;
-			Hue = m_Hues[Utility.Random(m_Hues.Length)];
-			SoundID = 0x0F5 + Utility.Random(14);
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int SoundID
+    {
+      get => m_SoundID;
+      set
+      {
+        m_SoundID = value;
+        InvalidateProperties();
+      }
+    }
 
-		public override void OnDoubleClick(Mobile from)
-		{
-			if (!from.InRange(GetWorldLocation(), 2))
-			{
-				from.SendLocalizedMessage(500446); // That is too far away.
-			}
-			else from.PlaySound(m_SoundID);
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public string Giver
+    {
+      get => m_Maker;
+      set => m_Maker = value;
+    }
 
-		public HolidayBell(Serial serial)
-			: base(serial)
-		{
-		}
+    public override string DefaultName => $"A Holiday Bell From {Giver}";
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!from.InRange(GetWorldLocation(), 2))
+        from.SendLocalizedMessage(500446); // That is too far away.
+      else from.PlaySound(m_SoundID);
+    }
 
-			writer.Write((int)0); // version
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write((string)m_Maker);
+      writer.Write(0); // version
 
-			writer.WriteEncodedInt((int)m_SoundID);
-		}
+      writer.Write(m_Maker);
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+      writer.WriteEncodedInt(m_SoundID);
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			m_Maker = reader.ReadString();
-			m_SoundID = reader.ReadEncodedInt();
+      int version = reader.ReadInt();
 
-			Utility.Intern(ref m_Maker);
-		}
-	}
+      m_Maker = reader.ReadString();
+      m_SoundID = reader.ReadEncodedInt();
+
+      Utility.Intern(ref m_Maker);
+    }
+  }
 }

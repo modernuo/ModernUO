@@ -1,43 +1,43 @@
 namespace Server.Items
 {
-	public class ArcaneShield : WoodenKiteShield
-	{
-		public override int LabelNumber => 1061101; // Arcane Shield
-		public override int ArtifactRarity => 11;
+  public class ArcaneShield : WoodenKiteShield
+  {
+    [Constructible]
+    public ArcaneShield()
+    {
+      ItemID = 0x1B78;
+      Hue = 0x556;
+      Attributes.NightSight = 1;
+      Attributes.SpellChanneling = 1;
+      Attributes.DefendChance = 15;
+      Attributes.CastSpeed = 1;
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public ArcaneShield(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public ArcaneShield()
-		{
-			ItemID = 0x1B78;
-			Hue = 0x556;
-			Attributes.NightSight = 1;
-			Attributes.SpellChanneling = 1;
-			Attributes.DefendChance = 15;
-			Attributes.CastSpeed = 1;
-		}
+    public override int LabelNumber => 1061101; // Arcane Shield
+    public override int ArtifactRarity => 11;
 
-		public ArcaneShield( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( Attributes.NightSight == 0 )
-				Attributes.NightSight = 1;
-		}
-	}
+      if (Attributes.NightSight == 0)
+        Attributes.NightSight = 1;
+    }
+  }
 }

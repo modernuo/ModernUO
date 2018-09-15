@@ -2,55 +2,55 @@ using System;
 
 namespace Server.Engines.BulkOrders
 {
-	public class BOBLargeSubEntry
-	{
-		public Type ItemType { get; }
+  public class BOBLargeSubEntry
+  {
+    public BOBLargeSubEntry(LargeBulkEntry lbe)
+    {
+      ItemType = lbe.Details.Type;
+      AmountCur = lbe.Amount;
+      Number = lbe.Details.Number;
+      Graphic = lbe.Details.Graphic;
+    }
 
-		public int AmountCur { get; }
+    public BOBLargeSubEntry(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-		public int Number { get; }
+      switch (version)
+      {
+        case 0:
+        {
+          string type = reader.ReadString();
 
-		public int Graphic { get; }
+          if (type != null)
+            ItemType = ScriptCompiler.FindTypeByFullName(type);
 
-		public BOBLargeSubEntry( LargeBulkEntry lbe )
-		{
-			ItemType = lbe.Details.Type;
-			AmountCur = lbe.Amount;
-			Number = lbe.Details.Number;
-			Graphic = lbe.Details.Graphic;
-		}
+          AmountCur = reader.ReadEncodedInt();
+          Number = reader.ReadEncodedInt();
+          Graphic = reader.ReadEncodedInt();
 
-		public BOBLargeSubEntry( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+          break;
+        }
+      }
+    }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					string type = reader.ReadString();
+    public Type ItemType{ get; }
 
-					if ( type != null )
-						ItemType = ScriptCompiler.FindTypeByFullName( type );
+    public int AmountCur{ get; }
 
-					AmountCur = reader.ReadEncodedInt();
-					Number = reader.ReadEncodedInt();
-					Graphic = reader.ReadEncodedInt();
+    public int Number{ get; }
 
-					break;
-				}
-			}
-		}
+    public int Graphic{ get; }
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( 0 ); // version
+    public void Serialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
 
-			writer.Write( ItemType == null ? null : ItemType.FullName );
+      writer.Write(ItemType == null ? null : ItemType.FullName);
 
-			writer.WriteEncodedInt( (int) AmountCur );
-			writer.WriteEncodedInt( (int) Number );
-			writer.WriteEncodedInt( (int) Graphic );
-		}
-	}
+      writer.WriteEncodedInt(AmountCur);
+      writer.WriteEncodedInt(Number);
+      writer.WriteEncodedInt(Graphic);
+    }
+  }
 }

@@ -1,298 +1,310 @@
-using System;
 using Server.Accounting;
+using Server.Commands;
+using Server.Commands.Generic;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targets;
-using Server.Commands;
-using Server.Commands.Generic;
 
 namespace Server.Gumps
 {
-	public class ClientGump : Gump
-	{
-		private NetState m_State;
+  public class ClientGump : Gump
+  {
+    private const int LabelColor32 = 0xFFFFFF;
+    private NetState m_State;
 
-		private void Resend( Mobile to, RelayInfo info )
-		{
-			TextRelay te = info.GetTextEntry( 0 );
+    public ClientGump(Mobile from, NetState state) : this(from, state, "")
+    {
+    }
 
-			to.SendGump( new ClientGump( to, m_State, te == null ? "" : te.Text ) );
-		}
+    public ClientGump(Mobile from, NetState state, string initialText) : base(30, 20)
+    {
+      if (state == null)
+        return;
 
-		public override void OnResponse( NetState state, RelayInfo info )
-		{
-			if ( m_State == null )
-				return;
+      m_State = state;
 
-			Mobile focus = m_State.Mobile;
-			Mobile from = state.Mobile;
+      AddPage(0);
 
-			if ( focus == null )
-			{
-				from.SendMessage( "That character is no longer online." );
-				return;
-			}
+      AddBackground(0, 0, 400, 274, 5054);
 
-			if ( focus.Deleted )
-			{
-				from.SendMessage( "That character no longer exists." );
-				return;
-			}
-			if ( from != focus && focus.Hidden && from.AccessLevel < focus.AccessLevel && ( !( focus is PlayerMobile ) || !((PlayerMobile)focus).VisibilityList.Contains( from ) ) )
-			{
-				from.SendMessage( "That character is no longer visible." );
-				return;
-			}
+      AddImageTiled(10, 10, 380, 19, 0xA40);
+      AddAlphaRegion(10, 10, 380, 19);
 
-			switch ( info.ButtonID )
-			{
-				case 1: // Tell
-				{
-					TextRelay text = info.GetTextEntry( 0 );
+      AddImageTiled(10, 32, 380, 232, 0xA40);
+      AddAlphaRegion(10, 32, 380, 232);
 
-					if ( text != null )
-					{
-						focus.SendMessage( 0x482, "{0} tells you:", from.Name );
-						focus.SendMessage( 0x482, text.Text );
+      AddHtml(10, 10, 380, 20, Color(Center("User Information"), LabelColor32), false, false);
 
-						CommandLogging.WriteLine( from, "{0} {1} telling {2} \"{3}\" ", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( focus ), text.Text );
-					}
+      int line = 0;
 
-					from.SendGump( new ClientGump( from, m_State ) );
+      AddHtml(14, 36 + line * 20, 200, 20, Color("Address:", LabelColor32), false, false);
+      AddHtml(70, 36 + line++ * 20, 200, 20, Color(state.ToString(), LabelColor32), false, false);
 
-					break;
-				}
-				case 4: // Props
-				{
-					Resend( from, info );
+      AddHtml(14, 36 + line * 20, 200, 20, Color("Client:", LabelColor32), false, false);
+      AddHtml(70, 36 + line++ * 20, 200, 20,
+        Color(state.Version == null ? "(null)" : state.Version.ToString(), LabelColor32), false, false);
 
-					if ( !BaseCommand.IsAccessible( from, focus ) )
-						from.SendMessage( "That is not accessible." );
-					else
-					{
-						from.SendGump( new PropertiesGump( from, focus ) );
-						CommandLogging.WriteLine( from, "{0} {1} opening properties gump of {2} ", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( focus ) );
-					}
+      AddHtml(14, 36 + line * 20, 200, 20, Color("Version:", LabelColor32), false, false);
 
-					break;
-				}
-				case 5: // Go to
-				{
-					if ( focus.Map == null || focus.Map == Map.Internal )
-					{
-						from.SendMessage( "That character is not in the world." );
-					}
-					else
-					{
-						from.MoveToWorld( focus.Location, focus.Map );
-						Resend( from, info );
+      ExpansionInfo info = state.ExpansionInfo;
+      string expansionName = info.Name;
 
-						CommandLogging.WriteLine( from, "{0} {1} going to {2}, Location {3}, Map {4}", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( focus ), focus.Location, focus.Map );
-					}
+      AddHtml(70, 36 + line++ * 20, 200, 20, Color(expansionName, LabelColor32), false, false);
 
-					break;
-				}
-				case 6: // Get
-				{
-					if ( from.Map == null || from.Map == Map.Internal )
-					{
-						from.SendMessage( "You cannot bring that person here." );
-					}
-					else
-					{
-						focus.MoveToWorld( from.Location, from.Map );
-						Resend( from, info );
+      Account a = state.Account as Account;
+      Mobile m = state.Mobile;
 
-						CommandLogging.WriteLine( from, "{0} {1} bringing {2} to Location {3}, Map {4}", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( focus ), from.Location, from.Map );
-					}
+      if (from.AccessLevel >= AccessLevel.GameMaster && a != null)
+      {
+        AddHtml(14, 36 + line * 20, 200, 20, Color("Account:", LabelColor32), false, false);
+        AddHtml(70, 36 + line++ * 20, 200, 20, Color(a.Username, LabelColor32), false, false);
+      }
 
-					break;
-				}
-				case 7: // Move
-				{
-					from.Target = new MoveTarget( focus );
-					Resend( from, info );
+      if (m != null)
+      {
+        AddHtml(14, 36 + line * 20, 200, 20, Color("Mobile:", LabelColor32), false, false);
+        AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Name} (0x{m.Serial.Value:X})", LabelColor32), false,
+          false);
 
-					break;
-				}
-				case 8: // Kick
-				{
-					if ( from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel )
-					{
-						focus.Say( "I've been kicked!" );
+        AddHtml(14, 36 + line * 20, 200, 20, Color("Location:", LabelColor32), false, false);
+        AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Location} [{m.Map}]", LabelColor32), false, false);
 
-						m_State.Dispose();
+        AddButton(13, 157, 0xFAB, 0xFAD, 1, GumpButtonType.Reply, 0);
+        AddHtml(48, 158, 200, 20, Color("Send Message", LabelColor32), false, false);
 
-						CommandLogging.WriteLine( from, "{0} {1} kicking {2} ", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( focus ) );
-					}
+        AddImageTiled(12, 182, 376, 80, 0xA40);
+        AddImageTiled(13, 183, 374, 78, 0xBBC);
+        AddTextEntry(15, 183, 372, 78, 0x480, 0, "");
 
-					break;
-				}
-				case 9: // Kill
-				{
-					if ( from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel )
-					{
-						focus.Kill();
-						CommandLogging.WriteLine( from, "{0} {1} killing {2} ", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( focus ) );
-					}
+        AddImageTiled(245, 35, 142, 144, 5058);
 
-					Resend( from, info );
+        AddImageTiled(246, 36, 140, 142, 0xA40);
+        AddAlphaRegion(246, 36, 140, 142);
 
-					break;
-				}
-				case 10: //Res
-				{
-					if ( from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel )
-					{
-						focus.PlaySound( 0x214 );
-						focus.FixedEffect( 0x376A, 10, 16 );
+        line = 0;
 
-						focus.Resurrect();
+        if (BaseCommand.IsAccessible(from, m))
+        {
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Properties", LabelColor32), false, false);
+        }
 
-						CommandLogging.WriteLine( from, "{0} {1} resurrecting {2} ", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( focus ) );
-					}
+        if (from != m)
+        {
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 5, GumpButtonType.Reply, 0);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Go to them", LabelColor32), false, false);
 
-					Resend( from, info );
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 6, GumpButtonType.Reply, 0);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Bring them here", LabelColor32), false, false);
+        }
 
-					break;
-				}
-				case 11: // Skills
-				{
-					Resend( from, info );
+        AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 7, GumpButtonType.Reply, 0);
+        AddHtml(280, 38 + line++ * 20, 100, 20, Color("Move to target", LabelColor32), false, false);
 
-					if ( from.AccessLevel > focus.AccessLevel )
-					{
-						from.SendGump( new SkillsGump( from, (Mobile)focus ) );
-						CommandLogging.WriteLine( from, "{0} {1} Opening Skills gump of {2} ", from.AccessLevel, CommandLogging.Format( from ), CommandLogging.Format( focus ) );
-					}
+        if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > m.AccessLevel)
+        {
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 8, GumpButtonType.Reply, 0);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Disconnect", LabelColor32), false, false);
 
-					break;
-				}
-			}
-		}
+          if (m.Alive)
+          {
+            AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 9, GumpButtonType.Reply, 0);
+            AddHtml(280, 38 + line++ * 20, 100, 20, Color("Kill", LabelColor32), false, false);
+          }
+          else
+          {
+            AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 10, GumpButtonType.Reply, 0);
+            AddHtml(280, 38 + line++ * 20, 100, 20, Color("Resurrect", LabelColor32), false, false);
+          }
+        }
 
-		public ClientGump( Mobile from, NetState state ) : this( from, state, "" )
-		{
-		}
+        if (from.AccessLevel >= AccessLevel.Counselor && from.AccessLevel > m.AccessLevel)
+        {
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 11, GumpButtonType.Reply, 0);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Skills browser", LabelColor32), false, false);
+        }
+      }
+    }
 
-		private const int LabelColor32 = 0xFFFFFF;
+    private void Resend(Mobile to, RelayInfo info)
+    {
+      TextRelay te = info.GetTextEntry(0);
 
-		public string Center( string text )
-		{
-			return $"<CENTER>{text}</CENTER>";
-		}
+      to.SendGump(new ClientGump(to, m_State, te == null ? "" : te.Text));
+    }
 
-		public string Color( string text, int color )
-		{
-			return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-		}
+    public override void OnResponse(NetState state, RelayInfo info)
+    {
+      if (m_State == null)
+        return;
 
-		public ClientGump( Mobile from, NetState state, string initialText ) : base( 30, 20 )
-		{
-			if ( state == null )
-				return;
+      Mobile focus = m_State.Mobile;
+      Mobile from = state.Mobile;
 
-			m_State = state;
+      if (focus == null)
+      {
+        from.SendMessage("That character is no longer online.");
+        return;
+      }
 
-			AddPage( 0 );
+      if (focus.Deleted)
+      {
+        from.SendMessage("That character no longer exists.");
+        return;
+      }
 
-			AddBackground( 0, 0, 400, 274, 5054 );
+      if (from != focus && focus.Hidden && from.AccessLevel < focus.AccessLevel &&
+          (!(focus is PlayerMobile) || !((PlayerMobile)focus).VisibilityList.Contains(from)))
+      {
+        from.SendMessage("That character is no longer visible.");
+        return;
+      }
 
-			AddImageTiled( 10, 10, 380, 19, 0xA40 );
-			AddAlphaRegion( 10, 10, 380, 19 );
+      switch (info.ButtonID)
+      {
+        case 1: // Tell
+        {
+          TextRelay text = info.GetTextEntry(0);
 
-			AddImageTiled( 10, 32, 380, 232, 0xA40 );
-			AddAlphaRegion( 10, 32, 380, 232 );
+          if (text != null)
+          {
+            focus.SendMessage(0x482, "{0} tells you:", from.Name);
+            focus.SendMessage(0x482, text.Text);
 
-			AddHtml( 10, 10, 380, 20, Color( Center( "User Information" ), LabelColor32 ), false, false );
+            CommandLogging.WriteLine(from, "{0} {1} telling {2} \"{3}\" ", from.AccessLevel,
+              CommandLogging.Format(from), CommandLogging.Format(focus), text.Text);
+          }
 
-			int line = 0;
+          from.SendGump(new ClientGump(from, m_State));
 
-			AddHtml( 14, 36 + (line * 20), 200, 20, Color( "Address:", LabelColor32 ), false, false );
-			AddHtml( 70, 36 + (line++ * 20), 200, 20, Color( state.ToString(), LabelColor32 ), false, false );
+          break;
+        }
+        case 4: // Props
+        {
+          Resend(from, info);
 
-			AddHtml( 14, 36 + (line * 20), 200, 20, Color( "Client:", LabelColor32 ), false, false );
-			AddHtml( 70, 36 + (line++ * 20), 200, 20, Color( state.Version == null ? "(null)" : state.Version.ToString(), LabelColor32 ), false, false );
+          if (!BaseCommand.IsAccessible(from, focus))
+          {
+            from.SendMessage("That is not accessible.");
+          }
+          else
+          {
+            from.SendGump(new PropertiesGump(from, focus));
+            CommandLogging.WriteLine(from, "{0} {1} opening properties gump of {2} ", from.AccessLevel,
+              CommandLogging.Format(from), CommandLogging.Format(focus));
+          }
 
-			AddHtml( 14, 36 + (line * 20), 200, 20, Color( "Version:", LabelColor32 ), false, false );
+          break;
+        }
+        case 5: // Go to
+        {
+          if (focus.Map == null || focus.Map == Map.Internal)
+          {
+            from.SendMessage("That character is not in the world.");
+          }
+          else
+          {
+            from.MoveToWorld(focus.Location, focus.Map);
+            Resend(from, info);
 
-			ExpansionInfo info = state.ExpansionInfo;
-			string expansionName = info.Name;
+            CommandLogging.WriteLine(from, "{0} {1} going to {2}, Location {3}, Map {4}", from.AccessLevel,
+              CommandLogging.Format(from), CommandLogging.Format(focus), focus.Location, focus.Map);
+          }
 
-			AddHtml( 70, 36 + (line++ * 20), 200, 20, Color( expansionName, LabelColor32 ), false, false );
+          break;
+        }
+        case 6: // Get
+        {
+          if (from.Map == null || from.Map == Map.Internal)
+          {
+            from.SendMessage("You cannot bring that person here.");
+          }
+          else
+          {
+            focus.MoveToWorld(from.Location, from.Map);
+            Resend(from, info);
 
-			Account a = state.Account as Account;
-			Mobile m = state.Mobile;
+            CommandLogging.WriteLine(from, "{0} {1} bringing {2} to Location {3}, Map {4}", from.AccessLevel,
+              CommandLogging.Format(from), CommandLogging.Format(focus), from.Location, from.Map);
+          }
 
-			if ( from.AccessLevel >= AccessLevel.GameMaster && a != null )
-			{
-				AddHtml( 14, 36 + (line * 20), 200, 20, Color( "Account:", LabelColor32 ), false, false );
-				AddHtml( 70, 36 + (line++ * 20), 200, 20, Color( a.Username, LabelColor32 ), false, false );
-			}
+          break;
+        }
+        case 7: // Move
+        {
+          from.Target = new MoveTarget(focus);
+          Resend(from, info);
 
-			if ( m != null )
-			{
-				AddHtml( 14, 36 + (line * 20), 200, 20, Color( "Mobile:", LabelColor32 ), false, false );
-				AddHtml( 70, 36 + (line++ * 20), 200, 20, Color($"{m.Name} (0x{m.Serial.Value:X})", LabelColor32 ), false, false );
+          break;
+        }
+        case 8: // Kick
+        {
+          if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel)
+          {
+            focus.Say("I've been kicked!");
 
-				AddHtml( 14, 36 + (line * 20), 200, 20, Color( "Location:", LabelColor32 ), false, false );
-				AddHtml( 70, 36 + (line++ * 20), 200, 20, Color($"{m.Location} [{m.Map}]", LabelColor32 ), false, false );
+            m_State.Dispose();
 
-				AddButton( 13, 157, 0xFAB, 0xFAD, 1, GumpButtonType.Reply, 0 );
-				AddHtml( 48, 158, 200, 20, Color( "Send Message", LabelColor32 ), false, false );
+            CommandLogging.WriteLine(from, "{0} {1} kicking {2} ", from.AccessLevel, CommandLogging.Format(from),
+              CommandLogging.Format(focus));
+          }
 
-				AddImageTiled( 12, 182, 376, 80, 0xA40 );
-				AddImageTiled( 13, 183, 374, 78, 0xBBC );
-				AddTextEntry( 15, 183, 372, 78, 0x480, 0, "" );
+          break;
+        }
+        case 9: // Kill
+        {
+          if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel)
+          {
+            focus.Kill();
+            CommandLogging.WriteLine(from, "{0} {1} killing {2} ", from.AccessLevel, CommandLogging.Format(from),
+              CommandLogging.Format(focus));
+          }
 
-				AddImageTiled( 245, 35, 142, 144, 5058 );
+          Resend(from, info);
 
-				AddImageTiled( 246, 36, 140, 142, 0xA40 );
-				AddAlphaRegion( 246, 36, 140, 142 );
+          break;
+        }
+        case 10: //Res
+        {
+          if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > focus.AccessLevel)
+          {
+            focus.PlaySound(0x214);
+            focus.FixedEffect(0x376A, 10, 16);
 
-				line = 0;
+            focus.Resurrect();
 
-				if ( BaseCommand.IsAccessible( from, m ) )
-				{
-					AddButton( 246, 36 + (line * 20), 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0 );
-					AddHtml( 280, 38 + (line++ * 20), 100, 20, Color( "Properties", LabelColor32 ), false, false );
-				}
+            CommandLogging.WriteLine(from, "{0} {1} resurrecting {2} ", from.AccessLevel,
+              CommandLogging.Format(from), CommandLogging.Format(focus));
+          }
 
-				if ( from != m )
-				{
-					AddButton( 246, 36 + (line * 20), 0xFA5, 0xFA7, 5, GumpButtonType.Reply, 0 );
-					AddHtml( 280, 38 + (line++ * 20), 100, 20, Color( "Go to them", LabelColor32 ), false, false );
+          Resend(from, info);
 
-					AddButton( 246, 36 + (line * 20), 0xFA5, 0xFA7, 6, GumpButtonType.Reply, 0 );
-					AddHtml( 280, 38 + (line++ * 20), 100, 20, Color( "Bring them here", LabelColor32 ), false, false );
-				}
+          break;
+        }
+        case 11: // Skills
+        {
+          Resend(from, info);
 
-				AddButton( 246, 36 + (line * 20), 0xFA5, 0xFA7, 7, GumpButtonType.Reply, 0 );
-				AddHtml( 280, 38 + (line++ * 20), 100, 20, Color( "Move to target", LabelColor32 ), false, false );
+          if (from.AccessLevel > focus.AccessLevel)
+          {
+            from.SendGump(new SkillsGump(from, focus));
+            CommandLogging.WriteLine(from, "{0} {1} Opening Skills gump of {2} ", from.AccessLevel,
+              CommandLogging.Format(from), CommandLogging.Format(focus));
+          }
 
-				if ( from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > m.AccessLevel )
-				{
-					AddButton( 246, 36 + (line * 20), 0xFA5, 0xFA7, 8, GumpButtonType.Reply, 0 );
-					AddHtml( 280, 38 + (line++ * 20), 100, 20, Color( "Disconnect", LabelColor32 ), false, false );
+          break;
+        }
+      }
+    }
 
-					if ( m.Alive )
-					{
-						AddButton( 246, 36 + (line * 20), 0xFA5, 0xFA7, 9, GumpButtonType.Reply, 0 );
-						AddHtml( 280, 38 + (line++ * 20), 100, 20, Color( "Kill", LabelColor32 ), false, false );
-					}
-					else
-					{
-						AddButton( 246, 36 + (line * 20), 0xFA5, 0xFA7, 10, GumpButtonType.Reply, 0 );
-						AddHtml( 280, 38 + (line++ * 20), 100, 20, Color( "Resurrect", LabelColor32 ), false, false );
-					}
-				}
+    public string Center(string text)
+    {
+      return $"<CENTER>{text}</CENTER>";
+    }
 
-				if ( from.AccessLevel >= AccessLevel.Counselor && from.AccessLevel > m.AccessLevel )
-				{
-					AddButton( 246, 36 + (line * 20), 0xFA5, 0xFA7, 11, GumpButtonType.Reply, 0 );
-					AddHtml( 280, 38 + (line++ * 20), 100, 20, Color( "Skills browser", LabelColor32 ), false, false );
-				}
-			}
-		}
-	}
+    public string Color(string text, int color)
+    {
+      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+    }
+  }
 }

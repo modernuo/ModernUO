@@ -3,132 +3,126 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Ninja
 {
-	public class EminosUndertakingQuest : QuestSystem
-	{
-		private static Type[] m_TypeReferenceTable = {
-				typeof( AcceptConversation ),
-				typeof( FindZoelConversation ),
-				typeof( RadarConversation ),
-				typeof( EnterCaveConversation ),
-				typeof( SneakPastGuardiansConversation ),
-				typeof( NeedToHideConversation ),
-				typeof( UseTeleporterConversation ),
-				typeof( GiveZoelNoteConversation ),
-				typeof( LostNoteConversation ),
-				typeof( GainInnInformationConversation ),
-				typeof( ReturnFromInnConversation ),
-				typeof( SearchForSwordConversation ),
-				typeof( HallwayWalkConversation ),
-				typeof( ReturnSwordConversation ),
-				typeof( SlayHenchmenConversation ),
-				typeof( ContinueSlayHenchmenConversation ),
-				typeof( GiveEminoSwordConversation ),
-				typeof( LostSwordConversation ),
-				typeof( EarnGiftsConversation ),
-				typeof( EarnLessGiftsConversation ),
-				typeof( FindEminoBeginObjective ),
-				typeof( FindZoelObjective ),
-				typeof( EnterCaveObjective ),
-				typeof( SneakPastGuardiansObjective ),
-				typeof( UseTeleporterObjective ),
-				typeof( GiveZoelNoteObjective ),
-				typeof( GainInnInformationObjective ),
-				typeof( ReturnFromInnObjective ),
-				typeof( SearchForSwordObjective ),
-				typeof( HallwayWalkObjective ),
-				typeof( ReturnSwordObjective ),
-				typeof( SlayHenchmenObjective ),
-				typeof( GiveEminoSwordObjective )
-			};
+  public class EminosUndertakingQuest : QuestSystem
+  {
+    private static Type[] m_TypeReferenceTable =
+    {
+      typeof(AcceptConversation),
+      typeof(FindZoelConversation),
+      typeof(RadarConversation),
+      typeof(EnterCaveConversation),
+      typeof(SneakPastGuardiansConversation),
+      typeof(NeedToHideConversation),
+      typeof(UseTeleporterConversation),
+      typeof(GiveZoelNoteConversation),
+      typeof(LostNoteConversation),
+      typeof(GainInnInformationConversation),
+      typeof(ReturnFromInnConversation),
+      typeof(SearchForSwordConversation),
+      typeof(HallwayWalkConversation),
+      typeof(ReturnSwordConversation),
+      typeof(SlayHenchmenConversation),
+      typeof(ContinueSlayHenchmenConversation),
+      typeof(GiveEminoSwordConversation),
+      typeof(LostSwordConversation),
+      typeof(EarnGiftsConversation),
+      typeof(EarnLessGiftsConversation),
+      typeof(FindEminoBeginObjective),
+      typeof(FindZoelObjective),
+      typeof(EnterCaveObjective),
+      typeof(SneakPastGuardiansObjective),
+      typeof(UseTeleporterObjective),
+      typeof(GiveZoelNoteObjective),
+      typeof(GainInnInformationObjective),
+      typeof(ReturnFromInnObjective),
+      typeof(SearchForSwordObjective),
+      typeof(HallwayWalkObjective),
+      typeof(ReturnSwordObjective),
+      typeof(SlayHenchmenObjective),
+      typeof(GiveEminoSwordObjective)
+    };
 
-		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
+    private bool m_SentRadarConversion;
 
-		public override object Name => 1063173;
+    public EminosUndertakingQuest(PlayerMobile from) : base(from)
+    {
+    }
 
-		public override object OfferMessage => 1063174;
+    // Serialization
+    public EminosUndertakingQuest()
+    {
+    }
 
-		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
-		public override bool IsTutorial => true;
+    public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
-		public override int Picture => 0x15D5;
+    public override object Name => 1063173;
 
-		public EminosUndertakingQuest( PlayerMobile from ) : base( from )
-		{
-		}
+    public override object OfferMessage => 1063174;
 
-		// Serialization
-		public EminosUndertakingQuest()
-		{
-		}
+    public override TimeSpan RestartDelay => TimeSpan.MaxValue;
+    public override bool IsTutorial => true;
 
-		public override void Accept()
-		{
-			base.Accept();
+    public override int Picture => 0x15D5;
 
-			AddConversation( new AcceptConversation() );
-		}
+    public override void Accept()
+    {
+      base.Accept();
 
-		private bool m_SentRadarConversion;
+      AddConversation(new AcceptConversation());
+    }
 
-		public override void Slice()
-		{
-			if ( !m_SentRadarConversion && ( From.Map != Map.Malas || From.X < 407 || From.X > 431 || From.Y < 801 || From.Y > 830 ) )
-			{
-				m_SentRadarConversion = true;
-				AddConversation( new RadarConversation() );
-			}
+    public override void Slice()
+    {
+      if (!m_SentRadarConversion &&
+          (From.Map != Map.Malas || From.X < 407 || From.X > 431 || From.Y < 801 || From.Y > 830))
+      {
+        m_SentRadarConversion = true;
+        AddConversation(new RadarConversation());
+      }
 
-			base.Slice();
-		}
+      base.Slice();
+    }
 
-		public override void ChildDeserialize( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+    public override void ChildDeserialize(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-			m_SentRadarConversion = reader.ReadBool();
-		}
+      m_SentRadarConversion = reader.ReadBool();
+    }
 
-		public override void ChildSerialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 0 ); // version
+    public override void ChildSerialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
 
-			writer.Write( (bool) m_SentRadarConversion );
-		}
+      writer.Write(m_SentRadarConversion);
+    }
 
-		public static bool HasLostNoteForZoel( Mobile from )
-		{
-			if ( !(from is PlayerMobile pm) )
-				return false;
+    public static bool HasLostNoteForZoel(Mobile from)
+    {
+      if (!(from is PlayerMobile pm))
+        return false;
 
-			QuestSystem qs = pm.Quest;
+      QuestSystem qs = pm.Quest;
 
-			if ( qs is EminosUndertakingQuest )
-			{
-				if ( qs.IsObjectiveInProgress( typeof( GiveZoelNoteObjective ) ) )
-				{
-					return ( from.Backpack?.FindItemByType( typeof( NoteForZoel ) ) == null );
-				}
-			}
+      if (qs is EminosUndertakingQuest)
+        if (qs.IsObjectiveInProgress(typeof(GiveZoelNoteObjective)))
+          return from.Backpack?.FindItemByType(typeof(NoteForZoel)) == null;
 
-			return false;
-		}
+      return false;
+    }
 
-		public static bool HasLostEminosKatana( Mobile from )
-		{
-			if ( !(from is PlayerMobile pm) )
-				return false;
+    public static bool HasLostEminosKatana(Mobile from)
+    {
+      if (!(from is PlayerMobile pm))
+        return false;
 
-			QuestSystem qs = pm.Quest;
+      QuestSystem qs = pm.Quest;
 
-			if ( qs is EminosUndertakingQuest )
-			{
-				if ( qs.IsObjectiveInProgress( typeof( GiveEminoSwordObjective ) ) )
-				{
-					return ( from.Backpack?.FindItemByType( typeof( EminosKatana ) ) == null );
-				}
-			}
+      if (qs is EminosUndertakingQuest)
+        if (qs.IsObjectiveInProgress(typeof(GiveEminoSwordObjective)))
+          return from.Backpack?.FindItemByType(typeof(EminosKatana)) == null;
 
-			return false;
-		}
-	}
+      return false;
+    }
+  }
 }

@@ -1,33 +1,32 @@
 namespace Server.Items
 {
-	public class ThorvaldsMedallion : Item
-	{
-		public override int LabelNumber => 1074232; // Thorvald's Medallion
+  public class ThorvaldsMedallion : Item
+  {
+    [Constructible]
+    public ThorvaldsMedallion() : base(0x2AAA)
+    {
+      LootType = LootType.Blessed;
+      Hue = 0x47F; // TODO check
+    }
 
-		[Constructible]
-		public ThorvaldsMedallion() : base( 0x2AAA )
-		{
-			LootType = LootType.Blessed;
-			Hue = 0x47F; // TODO check
-		}
+    public ThorvaldsMedallion(Serial serial) : base(serial)
+    {
+    }
 
-		public ThorvaldsMedallion( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1074232; // Thorvald's Medallion
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }
-

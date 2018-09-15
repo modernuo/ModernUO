@@ -22,78 +22,79 @@ using Server.Network;
 
 namespace Server
 {
-	public class QuestArrow
-	{
-		public Mobile Mobile { get; }
+  public class QuestArrow
+  {
+    public QuestArrow(Mobile m, Mobile t)
+    {
+      Running = true;
+      Mobile = m;
+      Target = t;
+    }
 
-		public Mobile Target { get; }
+    public QuestArrow(Mobile m, Mobile t, int x, int y) : this(m, t)
+    {
+      Update(x, y);
+    }
 
-		public bool Running { get; private set; }
+    public Mobile Mobile{ get; }
 
-		public void Update()
-		{
-			Update( Target.X, Target.Y );
-		}
+    public Mobile Target{ get; }
 
-		public void Update( int x, int y )
-		{
-			if ( !Running )
-				return;
+    public bool Running{ get; private set; }
 
-			NetState ns = Mobile.NetState;
+    public void Update()
+    {
+      Update(Target.X, Target.Y);
+    }
 
-			if ( ns == null )
-				return;
+    public void Update(int x, int y)
+    {
+      if (!Running)
+        return;
 
-			if ( ns.HighSeas )
-				ns.Send( new SetArrowHS( x, y, Target.Serial ) );
-			else
-				ns.Send( new SetArrow( x, y ) );
-		}
+      NetState ns = Mobile.NetState;
 
-		public void Stop()
-		{
-			Stop( Target.X, Target.Y );
-		}
+      if (ns == null)
+        return;
 
-		public void Stop( int x, int y )
-		{
-			if ( !Running )
-				return;
+      if (ns.HighSeas)
+        ns.Send(new SetArrowHS(x, y, Target.Serial));
+      else
+        ns.Send(new SetArrow(x, y));
+    }
 
-			Mobile.ClearQuestArrow();
+    public void Stop()
+    {
+      Stop(Target.X, Target.Y);
+    }
 
-			NetState ns = Mobile.NetState;
+    public void Stop(int x, int y)
+    {
+      if (!Running)
+        return;
 
-			if ( ns != null ) {
-				if ( ns.HighSeas )
-					ns.Send( new CancelArrowHS( x, y, Target.Serial ) );
-				else
-					ns.Send( new CancelArrow() );
-			}
+      Mobile.ClearQuestArrow();
 
-			Running = false;
-			OnStop();
-		}
+      NetState ns = Mobile.NetState;
 
-		public virtual void OnStop()
-		{
-		}
+      if (ns != null)
+      {
+        if (ns.HighSeas)
+          ns.Send(new CancelArrowHS(x, y, Target.Serial));
+        else
+          ns.Send(new CancelArrow());
+      }
 
-		public virtual void OnClick( bool rightClick )
-		{
-		}
+      Running = false;
+      OnStop();
+    }
 
-		public QuestArrow( Mobile m, Mobile t )
-		{
-			Running = true;
-			Mobile = m;
-			Target = t;
-		}
+    public virtual void OnStop()
+    {
+    }
 
-		public QuestArrow( Mobile m, Mobile t, int x, int y ) : this( m, t )
-		{
-			Update( x, y );
-		}
-	}
+    public virtual void OnClick(bool rightClick)
+    {
+    }
+  }
 }

@@ -21,102 +21,114 @@
 using System;
 using System.IO;
 
-namespace Server {
-	public sealed class SequentialFileWriter : Stream {
-		private FileStream fileStream;
-		private FileQueue fileQueue;
+namespace Server
+{
+  public sealed class SequentialFileWriter : Stream
+  {
+    private FileQueue fileQueue;
+    private FileStream fileStream;
 
-		private AsyncCallback writeCallback;
+    private SaveMetrics metrics;
 
-		private SaveMetrics metrics;
+    private AsyncCallback writeCallback;
 
-		public SequentialFileWriter( string path, SaveMetrics metrics ) {
-			if ( path == null ) {
-				throw new ArgumentNullException( "path" );
-			}
+    public SequentialFileWriter(string path, SaveMetrics metrics)
+    {
+      if (path == null) throw new ArgumentNullException("path");
 
-			this.metrics = metrics;
+      this.metrics = metrics;
 
-			fileStream = FileOperations.OpenSequentialStream( path, FileMode.Create, FileAccess.Write, FileShare.None );
+      fileStream = FileOperations.OpenSequentialStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 
-			fileQueue = new FileQueue(
-				Math.Max( 1, FileOperations.Concurrency ),
-				FileCallback
-			);
-		}
+      fileQueue = new FileQueue(
+        Math.Max(1, FileOperations.Concurrency),
+        FileCallback
+      );
+    }
 
-		public override long Position {
-			get => fileQueue.Position;
-			set => throw new InvalidOperationException();
-		}
+    public override long Position
+    {
+      get => fileQueue.Position;
+      set => throw new InvalidOperationException();
+    }
 
-		private void FileCallback( FileQueue.Chunk chunk ) {
-			if ( FileOperations.AreSynchronous ) {
-				fileStream.Write( chunk.Buffer, chunk.Offset, chunk.Size );
+    public override bool CanRead => false;
 
-				metrics?.OnFileWritten( chunk.Size );
+    public override bool CanSeek => false;
 
-				chunk.Commit();
-			} else {
-				if ( writeCallback == null ) {
-					writeCallback = OnWrite;
-				}
+    public override bool CanWrite => true;
 
-				fileStream.BeginWrite( chunk.Buffer, chunk.Offset, chunk.Size, writeCallback, chunk );
-			}
-		}
+    public override long Length => Position;
 
-		private void OnWrite( IAsyncResult asyncResult ) {
-			FileQueue.Chunk chunk = asyncResult.AsyncState as FileQueue.Chunk;
+    private void FileCallback(FileQueue.Chunk chunk)
+    {
+      if (FileOperations.AreSynchronous)
+      {
+        fileStream.Write(chunk.Buffer, chunk.Offset, chunk.Size);
 
-			fileStream.EndWrite( asyncResult );
+        metrics?.OnFileWritten(chunk.Size);
 
-			metrics?.OnFileWritten( chunk.Size );
+        chunk.Commit();
+      }
+      else
+      {
+        if (writeCallback == null) writeCallback = OnWrite;
 
-			chunk.Commit();
-		}
+        fileStream.BeginWrite(chunk.Buffer, chunk.Offset, chunk.Size, writeCallback, chunk);
+      }
+    }
 
-		public override void Write( byte[] buffer, int offset, int size ) {
-			fileQueue.Enqueue( buffer, offset, size );
-		}
+    private void OnWrite(IAsyncResult asyncResult)
+    {
+      FileQueue.Chunk chunk = asyncResult.AsyncState as FileQueue.Chunk;
 
-		public override void Flush() {
-			fileQueue.Flush();
-			fileStream.Flush();
-		}
+      fileStream.EndWrite(asyncResult);
 
-		protected override void Dispose( bool disposing ) {
-			if ( fileStream != null ) {
-				Flush();
+      metrics?.OnFileWritten(chunk.Size);
 
-				fileQueue.Dispose();
-				fileQueue = null;
+      chunk.Commit();
+    }
 
-				fileStream.Close();
-				fileStream = null;
-			}
+    public override void Write(byte[] buffer, int offset, int size)
+    {
+      fileQueue.Enqueue(buffer, offset, size);
+    }
 
-			base.Dispose( disposing );
-		}
+    public override void Flush()
+    {
+      fileQueue.Flush();
+      fileStream.Flush();
+    }
 
-		public override bool CanRead  => false;
+    protected override void Dispose(bool disposing)
+    {
+      if (fileStream != null)
+      {
+        Flush();
 
-		public override bool CanSeek  => false;
+        fileQueue.Dispose();
+        fileQueue = null;
 
-		public override bool CanWrite  => true;
+        fileStream.Close();
+        fileStream = null;
+      }
 
-		public override long Length  => Position;
+      base.Dispose(disposing);
+    }
 
-		public override int Read( byte[] buffer, int offset, int count ) {
-			throw new InvalidOperationException();
-		}
+    public override int Read(byte[] buffer, int offset, int count)
+    {
+      throw new InvalidOperationException();
+    }
 
-		public override long Seek( long offset, SeekOrigin origin ) {
-			throw new InvalidOperationException();
-		}
+    public override long Seek(long offset, SeekOrigin origin)
+    {
+      throw new InvalidOperationException();
+    }
 
-		public override void SetLength( long value ) {
-			fileStream.SetLength( value );
-		}
-	}
+    public override void SetLength(long value)
+    {
+      fileStream.SetLength(value);
+    }
+  }
 }

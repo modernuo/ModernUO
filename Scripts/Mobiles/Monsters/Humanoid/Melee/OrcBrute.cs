@@ -2,157 +2,155 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class OrcBrute : BaseCreature
-	{
-		public override string CorpseName => "an orcish corpse";
-		public override string DefaultName => "an orc brute";
+  public class OrcBrute : BaseCreature
+  {
+    [Constructible]
+    public OrcBrute() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 189;
+      BaseSoundID = 0x45A;
 
-		[Constructible]
-		public OrcBrute() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 189;
-			BaseSoundID = 0x45A;
+      SetStr(767, 945);
+      SetDex(66, 75);
+      SetInt(46, 70);
 
-			SetStr( 767, 945 );
-			SetDex( 66, 75 );
-			SetInt( 46, 70 );
+      SetHits(476, 552);
 
-			SetHits( 476, 552 );
+      SetDamage(20, 25);
 
-			SetDamage( 20, 25 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetResistance(ResistanceType.Physical, 45, 55);
+      SetResistance(ResistanceType.Fire, 40, 50);
+      SetResistance(ResistanceType.Cold, 25, 35);
+      SetResistance(ResistanceType.Poison, 25, 35);
+      SetResistance(ResistanceType.Energy, 25, 35);
 
-			SetResistance( ResistanceType.Physical, 45, 55 );
-			SetResistance( ResistanceType.Fire, 40, 50 );
-			SetResistance( ResistanceType.Cold, 25, 35 );
-			SetResistance( ResistanceType.Poison, 25, 35 );
-			SetResistance( ResistanceType.Energy, 25, 35 );
+      SetSkill(SkillName.Macing, 90.1, 100.0);
+      SetSkill(SkillName.MagicResist, 125.1, 140.0);
+      SetSkill(SkillName.Tactics, 90.1, 100.0);
+      SetSkill(SkillName.Wrestling, 90.1, 100.0);
 
-			SetSkill( SkillName.Macing, 90.1, 100.0 );
-			SetSkill( SkillName.MagicResist, 125.1, 140.0 );
-			SetSkill( SkillName.Tactics, 90.1, 100.0 );
-			SetSkill( SkillName.Wrestling, 90.1, 100.0 );
+      Fame = 15000;
+      Karma = -15000;
 
-			Fame = 15000;
-			Karma = -15000;
+      VirtualArmor = 50;
 
-			VirtualArmor = 50;
+      Item ore = new ShadowIronOre(25);
+      ore.ItemID = 0x19B9;
+      PackItem(ore);
+      PackItem(new IronIngot(10));
 
-			Item ore = new ShadowIronOre( 25 );
-			ore.ItemID = 0x19B9;
-			PackItem( ore );
-			PackItem( new IronIngot( 10 ) );
+      if (0.05 > Utility.RandomDouble())
+        PackItem(new OrcishKinMask());
 
-			if ( 0.05 > Utility.RandomDouble() )
-				PackItem( new OrcishKinMask() );
+      if (0.2 > Utility.RandomDouble())
+        PackItem(new BolaBall());
+    }
 
-			if ( 0.2 > Utility.RandomDouble() )
-				PackItem( new BolaBall() );
-		}
+    public OrcBrute(Serial serial) : base(serial)
+    {
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.FilthyRich );
-			AddLoot( LootPack.Rich );
-		}
+    public override string CorpseName => "an orcish corpse";
+    public override string DefaultName => "an orc brute";
 
-		public override bool BardImmune => !Core.AOS;
-		public override Poison PoisonImmune => Poison.Lethal;
-		public override int Meat => 2;
+    public override bool BardImmune => !Core.AOS;
+    public override Poison PoisonImmune => Poison.Lethal;
+    public override int Meat => 2;
 
-		public override OppositionGroup OppositionGroup => OppositionGroup.SavagesAndOrcs;
+    public override OppositionGroup OppositionGroup => OppositionGroup.SavagesAndOrcs;
 
-		public override bool IsEnemy( Mobile m )
-		{
-			if ( m.Player && m.FindItemOnLayer( Layer.Helm ) is OrcishKinMask )
-				return false;
+    public override bool CanRummageCorpses => true;
+    public override bool AutoDispel => true;
 
-			return base.IsEnemy( m );
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.FilthyRich);
+      AddLoot(LootPack.Rich);
+    }
 
-		public override void AggressiveAction( Mobile aggressor, bool criminal )
-		{
-			base.AggressiveAction( aggressor, criminal );
+    public override bool IsEnemy(Mobile m)
+    {
+      if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
+        return false;
 
-			Item item = aggressor.FindItemOnLayer( Layer.Helm );
+      return base.IsEnemy(m);
+    }
 
-			if ( item is OrcishKinMask )
-			{
-				AOS.Damage( aggressor, 50, 0, 100, 0, 0, 0 );
-				item.Delete();
-				aggressor.FixedParticles( 0x36BD, 20, 10, 5044, EffectLayer.Head );
-				aggressor.PlaySound( 0x307 );
-			}
-		}
+    public override void AggressiveAction(Mobile aggressor, bool criminal)
+    {
+      base.AggressiveAction(aggressor, criminal);
 
-		public override bool CanRummageCorpses => true;
-		public override bool AutoDispel => true;
+      Item item = aggressor.FindItemOnLayer(Layer.Helm);
 
-		public override void OnDamagedBySpell( Mobile caster )
-		{
-			if ( caster == this )
-				return;
+      if (item is OrcishKinMask)
+      {
+        AOS.Damage(aggressor, 50, 0, 100, 0, 0, 0);
+        item.Delete();
+        aggressor.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
+        aggressor.PlaySound(0x307);
+      }
+    }
 
-			SpawnOrcLord( caster );
-		}
+    public override void OnDamagedBySpell(Mobile caster)
+    {
+      if (caster == this)
+        return;
 
-		public void SpawnOrcLord( Mobile target )
-		{
-			Map map = target.Map;
+      SpawnOrcLord(caster);
+    }
 
-			if ( map == null )
-				return;
+    public void SpawnOrcLord(Mobile target)
+    {
+      Map map = target.Map;
 
-			int orcs = 0;
+      if (map == null)
+        return;
 
-			foreach ( Mobile m in GetMobilesInRange( 10 ) )
-			{
-				if ( m is OrcishLord )
-					++orcs;
-			}
+      int orcs = 0;
 
-			if ( orcs < 10 )
-			{
-				BaseCreature orc = new SpawnedOrcishLord();
+      foreach (Mobile m in GetMobilesInRange(10))
+        if (m is OrcishLord)
+          ++orcs;
 
-				orc.Team = Team;
+      if (orcs < 10)
+      {
+        BaseCreature orc = new SpawnedOrcishLord();
 
-				Point3D loc = target.Location;
-				bool validLocation = false;
+        orc.Team = Team;
 
-				for ( int j = 0; !validLocation && j < 10; ++j )
-				{
-					int x = target.X + Utility.Random( 3 ) - 1;
-					int y = target.Y + Utility.Random( 3 ) - 1;
-					int z = map.GetAverageZ( x, y );
+        Point3D loc = target.Location;
+        bool validLocation = false;
 
-					if ( validLocation = map.CanFit( x, y, Z, 16, false, false ) )
-						loc = new Point3D( x, y, Z );
-					else if ( validLocation = map.CanFit( x, y, z, 16, false, false ) )
-						loc = new Point3D( x, y, z );
-				}
+        for (int j = 0; !validLocation && j < 10; ++j)
+        {
+          int x = target.X + Utility.Random(3) - 1;
+          int y = target.Y + Utility.Random(3) - 1;
+          int z = map.GetAverageZ(x, y);
 
-				orc.MoveToWorld( loc, map );
+          if (validLocation = map.CanFit(x, y, Z, 16, false, false))
+            loc = new Point3D(x, y, Z);
+          else if (validLocation = map.CanFit(x, y, z, 16, false, false))
+            loc = new Point3D(x, y, z);
+        }
 
-				orc.Combatant = target;
-			}
-		}
+        orc.MoveToWorld(loc, map);
 
-		public OrcBrute( Serial serial ) : base( serial )
-		{
-		}
+        orc.Combatant = target;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

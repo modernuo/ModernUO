@@ -7,277 +7,277 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests
 {
-	public enum ObjectiveType
-	{
-		All,
-		Any
-	}
+  public enum ObjectiveType
+  {
+    All,
+    Any
+  }
 
-	public class MLQuest
-	{
-		public bool Deserialized { get; set; }
+  public class MLQuest
+  {
+    public static readonly TextDefinition
+      CompletionNoticeDefault =
+        new TextDefinition(1072273); // You've completed a quest!  Don't forget to collect your reward.
 
-		public bool SaveEnabled { get; set; }
+    public static readonly TextDefinition CompletionNoticeShort = new TextDefinition(1046258); // Your quest is complete.
 
-		// TODO: Flags? (Deserialized, SaveEnabled, Activated)
+    public static readonly TextDefinition
+      CompletionNoticeShortReturn = new TextDefinition(1073775); // Your quest is complete. Return for your reward.
 
-		public bool Activated { get; set; }
+    public static readonly TextDefinition
+      CompletionNoticeCraft = new TextDefinition(1073967); // You obtained what you seek, now receive your reward.
 
-		public List<BaseObjective> Objectives { get; set; }
+    public MLQuest()
+    {
+      Activated = false;
+      Objectives = new List<BaseObjective>();
+      ObjectiveType = ObjectiveType.All;
+      Rewards = new List<BaseReward>();
+      CompletionNotice = CompletionNoticeDefault;
 
-		public ObjectiveType ObjectiveType { get; set; }
+      Instances = new List<MLQuestInstance>();
 
-		public List<BaseReward> Rewards { get; set; }
+      SaveEnabled = true;
+    }
 
-		public List<MLQuestInstance> Instances { get; set; }
+    public bool Deserialized{ get; set; }
 
-		public bool OneTimeOnly { get; set; }
+    public bool SaveEnabled{ get; set; }
 
-		public bool HasRestartDelay { get; set; }
+    // TODO: Flags? (Deserialized, SaveEnabled, Activated)
 
-		public bool HasObjective<T>() where T : BaseObjective
-		{
-			foreach ( BaseObjective obj in Objectives )
-			{
-				if ( obj is T )
-					return true;
-			}
+    public bool Activated{ get; set; }
 
-			return false;
-		}
+    public List<BaseObjective> Objectives{ get; set; }
 
-		public bool IsEscort => HasObjective<EscortObjective>();
+    public ObjectiveType ObjectiveType{ get; set; }
 
-		public bool IsSkillTrainer => HasObjective<GainSkillObjective>();
+    public List<BaseReward> Rewards{ get; set; }
 
-		public bool RequiresCollection => HasObjective<CollectObjective>() || HasObjective<DeliverObjective>();
+    public List<MLQuestInstance> Instances{ get; set; }
 
-		public virtual bool RecordCompletion => ( OneTimeOnly || HasRestartDelay );
+    public bool OneTimeOnly{ get; set; }
 
-		public virtual bool IsChainTriggered  => false;
-		public virtual Type NextQuest  => null;
+    public bool HasRestartDelay{ get; set; }
 
-		public TextDefinition Title { get; set; }
+    public bool IsEscort => HasObjective<EscortObjective>();
 
-		public TextDefinition Description { get; set; }
+    public bool IsSkillTrainer => HasObjective<GainSkillObjective>();
 
-		public TextDefinition RefusalMessage { get; set; }
+    public bool RequiresCollection => HasObjective<CollectObjective>() || HasObjective<DeliverObjective>();
 
-		public TextDefinition InProgressMessage { get; set; }
+    public virtual bool RecordCompletion => OneTimeOnly || HasRestartDelay;
 
-		public TextDefinition CompletionMessage { get; set; }
+    public virtual bool IsChainTriggered => false;
+    public virtual Type NextQuest => null;
 
-		public TextDefinition CompletionNotice { get; set; }
+    public TextDefinition Title{ get; set; }
 
-		public static readonly TextDefinition CompletionNoticeDefault = new TextDefinition( 1072273 ); // You've completed a quest!  Don't forget to collect your reward.
-		public static readonly TextDefinition CompletionNoticeShort = new TextDefinition( 1046258 ); // Your quest is complete.
-		public static readonly TextDefinition CompletionNoticeShortReturn = new TextDefinition( 1073775 ); // Your quest is complete. Return for your reward.
-		public static readonly TextDefinition CompletionNoticeCraft = new TextDefinition( 1073967 ); // You obtained what you seek, now receive your reward.
+    public TextDefinition Description{ get; set; }
 
-		public MLQuest()
-		{
-			Activated = false;
-			Objectives = new List<BaseObjective>();
-			ObjectiveType = ObjectiveType.All;
-			Rewards = new List<BaseReward>();
-			CompletionNotice = CompletionNoticeDefault;
+    public TextDefinition RefusalMessage{ get; set; }
 
-			Instances = new List<MLQuestInstance>();
+    public TextDefinition InProgressMessage{ get; set; }
 
-			SaveEnabled = true;
-		}
+    public TextDefinition CompletionMessage{ get; set; }
 
-		public virtual void Generate()
-		{
-			if ( MLQuestSystem.Debug )
-				Console.WriteLine( "INFO: Generating quest: {0}", GetType() );
-		}
+    public TextDefinition CompletionNotice{ get; set; }
 
-		#region Generation Methods
+    public virtual int Version => 0;
 
-		public void PutSpawner( Spawner s, Point3D loc, Map map )
-		{
-			string name = $"MLQS-{GetType().Name}";
+    public bool HasObjective<T>() where T : BaseObjective
+    {
+      foreach (BaseObjective obj in Objectives)
+        if (obj is T)
+          return true;
 
-			// Auto cleanup on regeneration
-			List<Item> toDelete = new List<Item>();
+      return false;
+    }
 
-			foreach ( Item item in map.GetItemsInRange( loc, 0 ) )
-			{
-				if ( item is Spawner && item.Name == name )
-					toDelete.Add( item );
-			}
+    public virtual void Generate()
+    {
+      if (MLQuestSystem.Debug)
+        Console.WriteLine("INFO: Generating quest: {0}", GetType());
+    }
 
-			foreach ( Item item in toDelete )
-				item.Delete();
-
-			s.Name = name;
-			s.MoveToWorld( loc, map );
-		}
-
-		public void PutDeco( Item deco, Point3D loc, Map map )
-		{
-			// Auto cleanup on regeneration
-			List<Item> toDelete = new List<Item>();
+    public MLQuestInstance CreateInstance(IQuestGiver quester, PlayerMobile pm)
+    {
+      return new MLQuestInstance(this, quester, pm);
+    }
 
-			foreach ( Item item in map.GetItemsInRange( loc, 0 ) )
-			{
-				if ( item.ItemID == deco.ItemID && item.Z == loc.Z )
-					toDelete.Add( item );
-			}
+    public bool CanOffer(IQuestGiver quester, PlayerMobile pm, bool message)
+    {
+      return CanOffer(quester, pm, MLQuestSystem.GetContext(pm), message);
+    }
+
+    public virtual bool CanOffer(IQuestGiver quester, PlayerMobile pm, MLQuestContext context, bool message)
+    {
+      if (!Activated || quester.Deleted)
+        return false;
+
+      if (context != null)
+      {
+        if (context.IsFull)
+        {
+          if (message)
+            MLQuestSystem.Tell(quester, pm, 1080107); // I'm sorry, I have nothing for you at this time.
+
+          return false;
+        }
+
+        MLQuest checkQuest = this;
+
+        while (checkQuest != null)
+        {
+          DateTime nextAvailable;
+
+          if (context.HasDoneQuest(checkQuest, out nextAvailable))
+          {
+            if (checkQuest.OneTimeOnly)
+            {
+              if (message)
+                MLQuestSystem.Tell(quester, pm, 1075454); // I cannot offer you the quest again.
+
+              return false;
+            }
+
+            if (nextAvailable > DateTime.UtcNow)
+            {
+              if (message)
+                MLQuestSystem.Tell(quester, pm,
+                  1075575); // I'm sorry, but I don't have anything else for you right now. Could you check back with me in a few minutes?
+
+              return false;
+            }
+          }
+
+          if (checkQuest.NextQuest == null)
+            break;
+
+          checkQuest = MLQuestSystem.FindQuest(checkQuest.NextQuest);
+        }
+      }
+
+      foreach (BaseObjective obj in Objectives)
+        if (!obj.CanOffer(quester, pm, message))
+          return false;
+
+      return true;
+    }
+
+    public virtual void SendOffer(IQuestGiver quester, PlayerMobile pm)
+    {
+      pm.SendGump(new QuestOfferGump(this, quester, pm));
+    }
+
+    public virtual void OnAccept(IQuestGiver quester, PlayerMobile pm)
+    {
+      if (!CanOffer(quester, pm, true))
+        return;
+
+      MLQuestInstance instance = CreateInstance(quester, pm);
+
+      pm.SendLocalizedMessage(1049019); // You have accepted the Quest.
+      pm.SendSound(0x2E7); // private sound
 
-			foreach ( Item item in toDelete )
-				item.Delete();
-
-			deco.MoveToWorld( loc, map );
-		}
-
-		#endregion
-
-		public MLQuestInstance CreateInstance( IQuestGiver quester, PlayerMobile pm )
-		{
-			return new MLQuestInstance( this, quester, pm );
-		}
-
-		public bool CanOffer( IQuestGiver quester, PlayerMobile pm, bool message )
-		{
-			return CanOffer( quester, pm, MLQuestSystem.GetContext( pm ), message );
-		}
-
-		public virtual bool CanOffer( IQuestGiver quester, PlayerMobile pm, MLQuestContext context, bool message )
-		{
-			if ( !Activated || quester.Deleted )
-				return false;
-
-			if ( context != null )
-			{
-				if ( context.IsFull )
-				{
-					if ( message )
-						MLQuestSystem.Tell( quester, pm, 1080107 ); // I'm sorry, I have nothing for you at this time.
-
-					return false;
-				}
-
-				MLQuest checkQuest = this;
-
-				while ( checkQuest != null )
-				{
-					DateTime nextAvailable;
-
-					if ( context.HasDoneQuest( checkQuest, out nextAvailable ) )
-					{
-						if ( checkQuest.OneTimeOnly )
-						{
-							if ( message )
-								MLQuestSystem.Tell( quester, pm, 1075454 ); // I cannot offer you the quest again.
-
-							return false;
-						}
-
-						if ( nextAvailable > DateTime.UtcNow )
-						{
-							if ( message )
-								MLQuestSystem.Tell( quester, pm, 1075575 ); // I'm sorry, but I don't have anything else for you right now. Could you check back with me in a few minutes?
-
-							return false;
-						}
-					}
-
-					if ( checkQuest.NextQuest == null )
-						break;
-
-					checkQuest = MLQuestSystem.FindQuest( checkQuest.NextQuest );
-				}
-			}
-
-			foreach ( BaseObjective obj in Objectives )
-			{
-				if ( !obj.CanOffer( quester, pm, message ) )
-					return false;
-			}
-
-			return true;
-		}
-
-		public virtual void SendOffer( IQuestGiver quester, PlayerMobile pm )
-		{
-			pm.SendGump( new QuestOfferGump( this, quester, pm ) );
-		}
-
-		public virtual void OnAccept( IQuestGiver quester, PlayerMobile pm )
-		{
-			if ( !CanOffer( quester, pm, true ) )
-				return;
-
-			MLQuestInstance instance = CreateInstance( quester, pm );
-
-			pm.SendLocalizedMessage( 1049019 ); // You have accepted the Quest.
-			pm.SendSound( 0x2E7 ); // private sound
-
-			OnAccepted( instance );
-
-			foreach ( BaseObjectiveInstance obj in instance.Objectives )
-				obj.OnQuestAccepted();
-		}
-
-		public virtual void OnAccepted( MLQuestInstance instance )
-		{
-		}
-
-		public virtual void OnRefuse( IQuestGiver quester, PlayerMobile pm )
-		{
-			pm.SendGump( new QuestConversationGump( this, pm, RefusalMessage ) );
-		}
-
-		public virtual void GetRewards( MLQuestInstance instance )
-		{
-			instance.SendRewardGump();
-		}
-
-		public virtual void OnRewardClaimed( MLQuestInstance instance )
-		{
-		}
-
-		public virtual void OnCancel( MLQuestInstance instance )
-		{
-		}
-
-		public virtual void OnQuesterDeleted( MLQuestInstance instance )
-		{
-		}
-
-		public virtual void OnPlayerDeath( MLQuestInstance instance )
-		{
-		}
-
-		public virtual TimeSpan GetRestartDelay()
-		{
-			return TimeSpan.FromSeconds( Utility.Random( 1, 5 ) * 30 );
-		}
-
-		public static void Serialize( GenericWriter writer, MLQuest quest )
-		{
-			MLQuestSystem.WriteQuestRef( writer, quest );
-			writer.Write( quest.Version );
-		}
-
-		public static void Deserialize( GenericReader reader, int version )
-		{
-			MLQuest quest = MLQuestSystem.ReadQuestRef( reader );
-			int oldVersion = reader.ReadInt();
-
-			if ( quest == null )
-				return; // not saved or no longer exists
-
-			quest.Refresh( oldVersion );
-			quest.Deserialized = true;
-		}
-
-		public virtual int Version  => 0;
-
-		public virtual void Refresh( int oldVersion )
-		{
-		}
-	}
+      OnAccepted(instance);
+
+      foreach (BaseObjectiveInstance obj in instance.Objectives)
+        obj.OnQuestAccepted();
+    }
+
+    public virtual void OnAccepted(MLQuestInstance instance)
+    {
+    }
+
+    public virtual void OnRefuse(IQuestGiver quester, PlayerMobile pm)
+    {
+      pm.SendGump(new QuestConversationGump(this, pm, RefusalMessage));
+    }
+
+    public virtual void GetRewards(MLQuestInstance instance)
+    {
+      instance.SendRewardGump();
+    }
+
+    public virtual void OnRewardClaimed(MLQuestInstance instance)
+    {
+    }
+
+    public virtual void OnCancel(MLQuestInstance instance)
+    {
+    }
+
+    public virtual void OnQuesterDeleted(MLQuestInstance instance)
+    {
+    }
+
+    public virtual void OnPlayerDeath(MLQuestInstance instance)
+    {
+    }
+
+    public virtual TimeSpan GetRestartDelay()
+    {
+      return TimeSpan.FromSeconds(Utility.Random(1, 5) * 30);
+    }
+
+    public static void Serialize(GenericWriter writer, MLQuest quest)
+    {
+      MLQuestSystem.WriteQuestRef(writer, quest);
+      writer.Write(quest.Version);
+    }
+
+    public static void Deserialize(GenericReader reader, int version)
+    {
+      MLQuest quest = MLQuestSystem.ReadQuestRef(reader);
+      int oldVersion = reader.ReadInt();
+
+      if (quest == null)
+        return; // not saved or no longer exists
+
+      quest.Refresh(oldVersion);
+      quest.Deserialized = true;
+    }
+
+    public virtual void Refresh(int oldVersion)
+    {
+    }
+
+    #region Generation Methods
+
+    public void PutSpawner(Spawner s, Point3D loc, Map map)
+    {
+      string name = $"MLQS-{GetType().Name}";
+
+      // Auto cleanup on regeneration
+      List<Item> toDelete = new List<Item>();
+
+      foreach (Item item in map.GetItemsInRange(loc, 0))
+        if (item is Spawner && item.Name == name)
+          toDelete.Add(item);
+
+      foreach (Item item in toDelete)
+        item.Delete();
+
+      s.Name = name;
+      s.MoveToWorld(loc, map);
+    }
+
+    public void PutDeco(Item deco, Point3D loc, Map map)
+    {
+      // Auto cleanup on regeneration
+      List<Item> toDelete = new List<Item>();
+
+      foreach (Item item in map.GetItemsInRange(loc, 0))
+        if (item.ItemID == deco.ItemID && item.Z == loc.Z)
+          toDelete.Add(item);
+
+      foreach (Item item in toDelete)
+        item.Delete();
+
+      deco.MoveToWorld(loc, map);
+    }
+
+    #endregion
+  }
 }

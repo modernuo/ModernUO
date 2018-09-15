@@ -1,94 +1,95 @@
 namespace Server.Items
 {
-	public class BasePiece : Item
-	{
-		public BaseBoard Board { get; set; }
+  public class BasePiece : Item
+  {
+    public BasePiece(int itemID, BaseBoard board) : base(itemID)
+    {
+      Board = board;
+    }
 
-		public override bool IsVirtualItem => true;
+    public BasePiece(Serial serial) : base(serial)
+    {
+    }
 
-		public BasePiece( int itemID, BaseBoard board ) : base( itemID )
-		{
-			Board = board;
-		}
+    public BaseBoard Board{ get; set; }
 
-		public BasePiece( Serial serial ) : base( serial )
-		{
-		}
+    public override bool IsVirtualItem => true;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override bool CanTarget => false;
 
-			writer.Write( (int) 0 );
-			writer.Write( Board );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0);
+      writer.Write(Board);
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Board = (BaseBoard)reader.ReadItem();
+      int version = reader.ReadInt();
 
-					if ( Board == null || Parent == null )
-						Delete();
+      switch (version)
+      {
+        case 0:
+        {
+          Board = (BaseBoard)reader.ReadItem();
 
-					break;
-				}
-			}
-		}
+          if (Board == null || Parent == null)
+            Delete();
 
-		public override void OnSingleClick( Mobile from )
-		{
-			if ( Board == null || Board.Deleted )
-				Delete();
-			else if ( !IsChildOf( Board ) )
-				Board.DropItem( this );
-			else
-				base.OnSingleClick( from );
-		}
+          break;
+        }
+      }
+    }
 
-		public override bool OnDragLift( Mobile from )
-		{
-			if ( Board == null || Board.Deleted )
-			{
-				Delete();
-				return false;
-			}
+    public override void OnSingleClick(Mobile from)
+    {
+      if (Board == null || Board.Deleted)
+        Delete();
+      else if (!IsChildOf(Board))
+        Board.DropItem(this);
+      else
+        base.OnSingleClick(from);
+    }
 
-			if ( !IsChildOf( Board ) )
-			{
-				Board.DropItem( this );
-				return false;
-			}
-			return true;
-		}
+    public override bool OnDragLift(Mobile from)
+    {
+      if (Board == null || Board.Deleted)
+      {
+        Delete();
+        return false;
+      }
 
-		public override bool CanTarget => false;
+      if (!IsChildOf(Board))
+      {
+        Board.DropItem(this);
+        return false;
+      }
 
-		public override bool DropToMobile( Mobile from, Mobile target, Point3D p )
-		{
-			return false;
-		}
+      return true;
+    }
 
-		public override bool DropToItem( Mobile from, Item target, Point3D p )
-		{
-			return ( target == Board && p.X != -1 && p.Y != -1 && base.DropToItem( from, target, p ) );
-		}
+    public override bool DropToMobile(Mobile from, Mobile target, Point3D p)
+    {
+      return false;
+    }
 
-		public override bool DropToWorld( Mobile from, Point3D p )
-		{
-			return false;
-		}
+    public override bool DropToItem(Mobile from, Item target, Point3D p)
+    {
+      return target == Board && p.X != -1 && p.Y != -1 && base.DropToItem(from, target, p);
+    }
 
-		public override int GetLiftSound( Mobile from )
-		{
-			return -1;
-		}
-	}
+    public override bool DropToWorld(Mobile from, Point3D p)
+    {
+      return false;
+    }
+
+    public override int GetLiftSound(Mobile from)
+    {
+      return -1;
+    }
+  }
 }

@@ -3,125 +3,127 @@ using Server.Targeting;
 
 namespace Server.Engines.Quests.Collector
 {
-	public class EnchantedPaints : QuestItem
-	{
-		[Constructible]
-		public EnchantedPaints() : base( 0xFC1 )
-		{
-			LootType = LootType.Blessed;
+  public class EnchantedPaints : QuestItem
+  {
+    [Constructible]
+    public EnchantedPaints() : base(0xFC1)
+    {
+      LootType = LootType.Blessed;
 
-			Weight = 1.0;
-		}
+      Weight = 1.0;
+    }
 
-		public EnchantedPaints( Serial serial ) : base( serial )
-		{
-		}
+    public EnchantedPaints(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool CanDrop( PlayerMobile player )
-		{
-			return !(player.Quest is CollectorQuest);
+    public override bool CanDrop(PlayerMobile player)
+    {
+      return !(player.Quest is CollectorQuest);
 
-			/*return !( qs.IsObjectiveInProgress( typeof( CaptureImagesObjective ) )
-				|| qs.IsObjectiveInProgress( typeof( ReturnImagesObjective ) ) );*/
-		}
+      /*return !( qs.IsObjectiveInProgress( typeof( CaptureImagesObjective ) )
+        || qs.IsObjectiveInProgress( typeof( ReturnImagesObjective ) ) );*/
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( from is PlayerMobile player )
-			{
-				QuestSystem qs = player.Quest;
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (from is PlayerMobile player)
+      {
+        QuestSystem qs = player.Quest;
 
-				if ( qs is CollectorQuest )
-				{
-					if ( qs.IsObjectiveInProgress( typeof( CaptureImagesObjective ) ) )
-					{
-						player.SendAsciiMessage( 0x59, "Target the creature whose image you wish to create." );
-						player.Target = new InternalTarget( this );
+        if (qs is CollectorQuest)
+          if (qs.IsObjectiveInProgress(typeof(CaptureImagesObjective)))
+          {
+            player.SendAsciiMessage(0x59, "Target the creature whose image you wish to create.");
+            player.Target = new InternalTarget(this);
 
-						return;
-					}
-				}
-			}
+            return;
+          }
+      }
 
-			from.SendLocalizedMessage( 1010085 ); // You cannot use this.
-		}
+      from.SendLocalizedMessage(1010085); // You cannot use this.
+    }
 
-		private class InternalTarget : Target
-		{
-			private EnchantedPaints m_Paints;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			public InternalTarget( EnchantedPaints paints ) : base( -1, false, TargetFlags.None )
-			{
-				CheckLOS = false;
-				m_Paints = paints;
-			}
+      writer.Write(0); // version
+    }
 
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( m_Paints.Deleted || !m_Paints.IsChildOf( from.Backpack ) )
-					return;
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-				if ( from is PlayerMobile player )
-				{
-					QuestSystem qs = player.Quest;
+      int version = reader.ReadInt();
+    }
 
-					if ( qs is CollectorQuest )
-					{
-						if ( qs.FindObjective( typeof( CaptureImagesObjective ) ) is CaptureImagesObjective obj && !obj.Completed )
-						{
-							if ( targeted is Mobile )
-							{
-								CaptureResponse response = obj.CaptureImage(( targeted.GetType().Name=="GreaterMongbat" ? new Mongbat().GetType() : targeted.GetType() ), out ImageType image );
+    private class InternalTarget : Target
+    {
+      private EnchantedPaints m_Paints;
 
-								switch ( response )
-								{
-									case CaptureResponse.Valid:
-									{
-										player.SendLocalizedMessage( 1055125 ); // The enchanted paints swirl for a moment then an image begins to take shape. *Click*
-										player.AddToBackpack( new PaintedImage( image ) );
+      public InternalTarget(EnchantedPaints paints) : base(-1, false, TargetFlags.None)
+      {
+        CheckLOS = false;
+        m_Paints = paints;
+      }
 
-										break;
-									}
-									case CaptureResponse.AlreadyDone:
-									{
-										player.SendAsciiMessage( 0x2C, "You have already captured the image of this creature" );
+      protected override void OnTarget(Mobile from, object targeted)
+      {
+        if (m_Paints.Deleted || !m_Paints.IsChildOf(from.Backpack))
+          return;
 
-										break;
-									}
-									case CaptureResponse.Invalid:
-									{
-										player.SendLocalizedMessage( 1055124 ); // You have no interest in capturing the image of this creature.
+        if (from is PlayerMobile player)
+        {
+          QuestSystem qs = player.Quest;
 
-										break;
-									}
-								}
-							}
-							else
-							{
-								player.SendAsciiMessage( 0x35, "You have no interest in that." );
-							}
+          if (qs is CollectorQuest)
+            if (qs.FindObjective(typeof(CaptureImagesObjective)) is CaptureImagesObjective obj && !obj.Completed)
+            {
+              if (targeted is Mobile)
+              {
+                CaptureResponse response = obj.CaptureImage(
+                  targeted.GetType().Name == "GreaterMongbat"
+                    ? new Mongbat().GetType()
+                    : targeted.GetType(), out ImageType image);
 
-							return;
-						}
-					}
-				}
+                switch (response)
+                {
+                  case CaptureResponse.Valid:
+                  {
+                    player.SendLocalizedMessage(
+                      1055125); // The enchanted paints swirl for a moment then an image begins to take shape. *Click*
+                    player.AddToBackpack(new PaintedImage(image));
 
-				from.SendLocalizedMessage( 1010085 ); // You cannot use this.
-			}
-		}
+                    break;
+                  }
+                  case CaptureResponse.AlreadyDone:
+                  {
+                    player.SendAsciiMessage(0x2C,
+                      "You have already captured the image of this creature");
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+                    break;
+                  }
+                  case CaptureResponse.Invalid:
+                  {
+                    player.SendLocalizedMessage(
+                      1055124); // You have no interest in capturing the image of this creature.
 
-			writer.Write( (int) 0 ); // version
-		}
+                    break;
+                  }
+                }
+              }
+              else
+              {
+                player.SendAsciiMessage(0x35, "You have no interest in that.");
+              }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+              return;
+            }
+        }
 
-			int version = reader.ReadInt();
-		}
-	}
+        from.SendLocalizedMessage(1010085); // You cannot use this.
+      }
+    }
+  }
 }

@@ -24,234 +24,230 @@ using Server.Network;
 
 namespace Server.Commands
 {
-	public delegate void CommandEventHandler( CommandEventArgs e );
+  public delegate void CommandEventHandler(CommandEventArgs e);
 
-	public class CommandEventArgs : EventArgs
-	{
-		public Mobile Mobile { get; }
+  public class CommandEventArgs : EventArgs
+  {
+    public CommandEventArgs(Mobile mobile, string command, string argString, string[] arguments)
+    {
+      Mobile = mobile;
+      Command = command;
+      ArgString = argString;
+      Arguments = arguments;
+    }
 
-		public string Command { get; }
+    public Mobile Mobile{ get; }
 
-		public string ArgString { get; }
+    public string Command{ get; }
 
-		public string[] Arguments { get; }
+    public string ArgString{ get; }
 
-		public int Length => Arguments.Length;
+    public string[] Arguments{ get; }
 
-		public string GetString( int index )
-		{
-			if ( index < 0 || index >= Arguments.Length )
-				return "";
+    public int Length => Arguments.Length;
 
-			return Arguments[index];
-		}
+    public string GetString(int index)
+    {
+      if (index < 0 || index >= Arguments.Length)
+        return "";
 
-		public int GetInt32( int index )
-		{
-			if ( index < 0 || index >= Arguments.Length )
-				return 0;
+      return Arguments[index];
+    }
 
-			return Utility.ToInt32( Arguments[index] );
-		}
+    public int GetInt32(int index)
+    {
+      if (index < 0 || index >= Arguments.Length)
+        return 0;
 
-		public bool GetBoolean( int index )
-		{
-			if ( index < 0 || index >= Arguments.Length )
-				return false;
+      return Utility.ToInt32(Arguments[index]);
+    }
 
-			return Utility.ToBoolean( Arguments[index] );
-		}
+    public bool GetBoolean(int index)
+    {
+      if (index < 0 || index >= Arguments.Length)
+        return false;
 
-		public double GetDouble( int index )
-		{
-			if ( index < 0 || index >= Arguments.Length )
-				return 0.0;
+      return Utility.ToBoolean(Arguments[index]);
+    }
 
-			return Utility.ToDouble( Arguments[index] );
-		}
+    public double GetDouble(int index)
+    {
+      if (index < 0 || index >= Arguments.Length)
+        return 0.0;
 
-		public TimeSpan GetTimeSpan( int index )
-		{
-			if ( index < 0 || index >= Arguments.Length )
-				return TimeSpan.Zero;
+      return Utility.ToDouble(Arguments[index]);
+    }
 
-			return Utility.ToTimeSpan( Arguments[index] );
-		}
+    public TimeSpan GetTimeSpan(int index)
+    {
+      if (index < 0 || index >= Arguments.Length)
+        return TimeSpan.Zero;
 
-		public CommandEventArgs( Mobile mobile, string command, string argString, string[] arguments )
-		{
-			Mobile = mobile;
-			Command = command;
-			ArgString = argString;
-			Arguments = arguments;
-		}
-	}
+      return Utility.ToTimeSpan(Arguments[index]);
+    }
+  }
 
-	public class CommandEntry : IComparable
-	{
-		public string Command { get; }
+  public class CommandEntry : IComparable
+  {
+    public CommandEntry(string command, CommandEventHandler handler, AccessLevel accessLevel)
+    {
+      Command = command;
+      Handler = handler;
+      AccessLevel = accessLevel;
+    }
 
-		public CommandEventHandler Handler { get; }
+    public string Command{ get; }
 
-		public AccessLevel AccessLevel { get; }
+    public CommandEventHandler Handler{ get; }
 
-		public CommandEntry( string command, CommandEventHandler handler, AccessLevel accessLevel )
-		{
-			Command = command;
-			Handler = handler;
-			AccessLevel = accessLevel;
-		}
+    public AccessLevel AccessLevel{ get; }
 
-		public int CompareTo( object obj )
-		{
-			if ( obj == this )
-				return 0;
-			if ( obj == null )
-				return 1;
+    public int CompareTo(object obj)
+    {
+      if (obj == this)
+        return 0;
+      if (obj == null)
+        return 1;
 
-			if ( !(obj is CommandEntry e) )
-				throw new ArgumentException();
+      if (!(obj is CommandEntry e))
+        throw new ArgumentException();
 
-			return Command.CompareTo( e.Command );
-		}
-	}
+      return Command.CompareTo(e.Command);
+    }
+  }
 
-	public static class CommandSystem
-	{
-		public static string Prefix { get; set; } = "[";
+  public static class CommandSystem
+  {
+    static CommandSystem()
+    {
+      Entries = new Dictionary<string, CommandEntry>(StringComparer.OrdinalIgnoreCase);
+    }
 
-		public static string[] Split( string value )
-		{
-			char[] array = value.ToCharArray();
-			List<string> list = new List<string>();
+    public static string Prefix{ get; set; } = "[";
 
-			int start = 0;
+    public static Dictionary<string, CommandEntry> Entries{ get; }
 
-			while ( start < array.Length )
-			{
-				char c = array[start];
+    public static AccessLevel BadCommandIgnoreLevel{ get; set; } = AccessLevel.Player;
 
-				if ( c == '"' )
-				{
-					++start;
-					int end = start;
+    public static string[] Split(string value)
+    {
+      char[] array = value.ToCharArray();
+      List<string> list = new List<string>();
 
-					while ( end < array.Length )
-					{
-						if ( array[end] != '"' || array[end - 1] == '\\' )
-							++end;
-						else
-							break;
-					}
+      int start = 0;
 
-					list.Add( value.Substring( start, end - start ) );
+      while (start < array.Length)
+      {
+        char c = array[start];
 
-					start = end + 2;
-				}
-				else if ( c != ' ' )
-				{
-					int end = start;
+        if (c == '"')
+        {
+          ++start;
+          int end = start;
 
-					while ( end < array.Length )
-					{
-						if ( array[end] != ' ' )
-							++end;
-						else
-							break;
-					}
+          while (end < array.Length)
+            if (array[end] != '"' || array[end - 1] == '\\')
+              ++end;
+            else
+              break;
 
-					list.Add( value.Substring( start, end - start ) );
+          list.Add(value.Substring(start, end - start));
 
-					start = end + 1;
-				}
-				else
-				{
-					++start;
-				}
-			}
+          start = end + 2;
+        }
+        else if (c != ' ')
+        {
+          int end = start;
 
-			return list.ToArray();
-		}
+          while (end < array.Length)
+            if (array[end] != ' ')
+              ++end;
+            else
+              break;
 
-		public static Dictionary<string, CommandEntry> Entries { get; }
+          list.Add(value.Substring(start, end - start));
 
-		static CommandSystem()
-		{
-			Entries = new Dictionary<string, CommandEntry>( StringComparer.OrdinalIgnoreCase );
-		}
+          start = end + 1;
+        }
+        else
+        {
+          ++start;
+        }
+      }
 
-		public static void Register( string command, AccessLevel access, CommandEventHandler handler )
-		{
-			Entries[command] = new CommandEntry( command, handler, access );
-		}
+      return list.ToArray();
+    }
 
-		public static AccessLevel BadCommandIgnoreLevel { get; set; } = AccessLevel.Player;
+    public static void Register(string command, AccessLevel access, CommandEventHandler handler)
+    {
+      Entries[command] = new CommandEntry(command, handler, access);
+    }
 
-		public static bool Handle( Mobile from, string text )
-		{
-			return Handle( from, text, MessageType.Regular );
-		}
+    public static bool Handle(Mobile from, string text)
+    {
+      return Handle(from, text, MessageType.Regular);
+    }
 
-		public static bool Handle( Mobile from, string text, MessageType type )
-		{
-			if ( text.StartsWith( Prefix ) || type == MessageType.Command )
-			{
-				if ( type != MessageType.Command )
-					text = text.Substring( Prefix.Length );
+    public static bool Handle(Mobile from, string text, MessageType type)
+    {
+      if (text.StartsWith(Prefix) || type == MessageType.Command)
+      {
+        if (type != MessageType.Command)
+          text = text.Substring(Prefix.Length);
 
-				int indexOf = text.IndexOf( ' ' );
+        int indexOf = text.IndexOf(' ');
 
-				string command;
-				string[] args;
-				string argString;
+        string command;
+        string[] args;
+        string argString;
 
-				if ( indexOf >= 0 )
-				{
-					argString = text.Substring( indexOf + 1 );
+        if (indexOf >= 0)
+        {
+          argString = text.Substring(indexOf + 1);
 
-					command = text.Substring( 0, indexOf );
-					args = Split( argString );
-				}
-				else
-				{
-					argString = "";
-					command = text.ToLower();
-					args = new string[0];
-				}
+          command = text.Substring(0, indexOf);
+          args = Split(argString);
+        }
+        else
+        {
+          argString = "";
+          command = text.ToLower();
+          args = new string[0];
+        }
 
-				Entries.TryGetValue( command, out CommandEntry entry );
+        Entries.TryGetValue(command, out CommandEntry entry);
 
-				if ( entry != null )
-				{
-					if ( from.AccessLevel >= entry.AccessLevel )
-					{
-						if ( entry.Handler != null )
-						{
-							CommandEventArgs e = new CommandEventArgs( from, command, argString, args );
-							entry.Handler( e );
-							EventSink.InvokeCommand( e );
-						}
-					}
-					else
-					{
-						if ( from.AccessLevel <= BadCommandIgnoreLevel )
-							return false;
+        if (entry != null)
+        {
+          if (from.AccessLevel >= entry.AccessLevel)
+          {
+            if (entry.Handler != null)
+            {
+              CommandEventArgs e = new CommandEventArgs(from, command, argString, args);
+              entry.Handler(e);
+              EventSink.InvokeCommand(e);
+            }
+          }
+          else
+          {
+            if (from.AccessLevel <= BadCommandIgnoreLevel)
+              return false;
 
-						from.SendMessage( "You do not have access to that command." );
-					}
-				}
-				else
-				{
-					if ( from.AccessLevel <= BadCommandIgnoreLevel )
-						return false;
+            from.SendMessage("You do not have access to that command.");
+          }
+        }
+        else
+        {
+          if (from.AccessLevel <= BadCommandIgnoreLevel)
+            return false;
 
-					from.SendMessage( "That is not a valid command." );
-				}
+          from.SendMessage("That is not a valid command.");
+        }
 
-				return true;
-			}
+        return true;
+      }
 
-			return false;
-		}
-	}
+      return false;
+    }
+  }
 }

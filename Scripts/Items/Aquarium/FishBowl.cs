@@ -4,167 +4,167 @@ using Server.Network;
 
 namespace Server.Items
 {
-	public class FishBowl : BaseContainer
-	{
-		public override int LabelNumber => 1074499; // A fish bowl
+  public class FishBowl : BaseContainer
+  {
+    [Constructible]
+    public FishBowl() : base(0x241C)
+    {
+      Hue = 0x47E;
+      MaxItems = 1;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Empty => ( Items.Count == 0 );
+    public FishBowl(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public BaseFish Fish
-		{
-			get
-			{
-				if ( Empty )
-					return null;
+    public override int LabelNumber => 1074499; // A fish bowl
 
-				return Items[0] as BaseFish;
-			}
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Empty => Items.Count == 0;
 
-		public override double DefaultWeight => 2.0;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public BaseFish Fish
+    {
+      get
+      {
+        if (Empty)
+          return null;
 
-		[Constructible]
-		public FishBowl() : base( 0x241C )
-		{
-			Hue = 0x47E;
-			MaxItems = 1;
-		}
+        return Items[0] as BaseFish;
+      }
+    }
 
-		public FishBowl( Serial serial ) : base( serial )
-		{
-		}
+    public override double DefaultWeight => 2.0;
 
-		public override void OnDoubleClick( Mobile from )
-		{
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+    }
 
-		public override bool TryDropItem( Mobile from, Item dropped, bool sendFullMessage )
-		{
-			if ( !CheckHold( from, dropped, sendFullMessage, true ) )
-				return false;
+    public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
+    {
+      if (!CheckHold(from, dropped, sendFullMessage, true))
+        return false;
 
-			DropItem( dropped );
-			return true;
-		}
+      DropItem(dropped);
+      return true;
+    }
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			if ( !IsAccessibleTo( from ) )
-			{
-				from.SendLocalizedMessage( 502436 ); // That is not accessible.
-				return false;
-			}
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      if (!IsAccessibleTo(from))
+      {
+        from.SendLocalizedMessage(502436); // That is not accessible.
+        return false;
+      }
 
-			if ( !( dropped is BaseFish ) )
-			{
-				from.SendLocalizedMessage( 1074836 ); // The container can not hold that type of object.
-				return false;
-			}
+      if (!(dropped is BaseFish))
+      {
+        from.SendLocalizedMessage(1074836); // The container can not hold that type of object.
+        return false;
+      }
 
-			if ( base.OnDragDrop( from, dropped ) )
-			{
-				((BaseFish) dropped).StopTimer();
-				InvalidateProperties();
+      if (base.OnDragDrop(from, dropped))
+      {
+        ((BaseFish)dropped).StopTimer();
+        InvalidateProperties();
 
-				return true;
-			}
+        return true;
+      }
 
-			return false;
-		}
+      return false;
+    }
 
-		public override bool CheckItemUse( Mobile from, Item item )
-		{
-			if ( item != this )
-				return false;
+    public override bool CheckItemUse(Mobile from, Item item)
+    {
+      if (item != this)
+        return false;
 
-			return base.CheckItemUse( from, item );
-		}
+      return base.CheckItemUse(from, item);
+    }
 
-		public override bool CheckLift( Mobile from, Item item, ref LRReason reject )
-		{
-			if ( item != this )
-			{
-				reject = LRReason.CannotLift;
-				return false;
-			}
+    public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
+    {
+      if (item != this)
+      {
+        reject = LRReason.CannotLift;
+        return false;
+      }
 
-			return base.CheckLift( from, item, ref reject );
-		}
+      return base.CheckLift(from, item, ref reject);
+    }
 
-		public override void AddNameProperties( ObjectPropertyList list )
-		{
-			base.AddNameProperties( list );
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+      base.AddNameProperties(list);
 
-			if ( !Empty )
-			{
-				BaseFish fish = Fish;
+      if (!Empty)
+      {
+        BaseFish fish = Fish;
 
-				if ( fish != null )
-					list.Add( 1074494, "#{0}", fish.LabelNumber ); // Contains: ~1_CREATURE~
-			}
-		}
+        if (fish != null)
+          list.Add(1074494, "#{0}", fish.LabelNumber); // Contains: ~1_CREATURE~
+      }
+    }
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
 
-			if ( !Empty && IsAccessibleTo( from ) )
-				list.Add( new RemoveCreature( this ) );
-		}
+      if (!Empty && IsAccessibleTo(from))
+        list.Add(new RemoveCreature(this));
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 ); // version
-		}
+      writer.Write(1); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( version == 0 )
-				Weight = DefaultWeight;
-		}
+      if (version == 0)
+        Weight = DefaultWeight;
+    }
 
-		private class RemoveCreature : ContextMenuEntry
-		{
-			private FishBowl m_Bowl;
+    private class RemoveCreature : ContextMenuEntry
+    {
+      private FishBowl m_Bowl;
 
-			public RemoveCreature( FishBowl bowl ) : base( 6242, 3 ) // Remove creature
-			{
-				m_Bowl = bowl;
-			}
+      public RemoveCreature(FishBowl bowl) : base(6242, 3) // Remove creature
+      {
+        m_Bowl = bowl;
+      }
 
-			public override void OnClick()
-			{
-				if ( m_Bowl == null || m_Bowl.Deleted || !m_Bowl.IsAccessibleTo( Owner.From ) )
-					return;
+      public override void OnClick()
+      {
+        if (m_Bowl == null || m_Bowl.Deleted || !m_Bowl.IsAccessibleTo(Owner.From))
+          return;
 
-				BaseFish fish = m_Bowl.Fish;
+        BaseFish fish = m_Bowl.Fish;
 
-				if ( fish != null )
-				{
-					if ( fish.IsLockedDown ) // for legacy fish bowls
-					{
-						Owner.From.SendLocalizedMessage( 1010449 ); // You may not use this object while it is locked down.
-					}
-					else if ( !Owner.From.PlaceInBackpack( fish ) )
-					{
-						Owner.From.SendLocalizedMessage( 1074496 ); // There is no room in your pack for the creature.
-					}
-					else
-					{
-						Owner.From.SendLocalizedMessage( 1074495 ); // The creature has been removed from the fish bowl.
-						fish.StartTimer();
-						m_Bowl.InvalidateProperties();
-					}
-				}
-			}
-		}
-	}
+        if (fish != null)
+        {
+          if (fish.IsLockedDown) // for legacy fish bowls
+          {
+            Owner.From.SendLocalizedMessage(1010449); // You may not use this object while it is locked down.
+          }
+          else if (!Owner.From.PlaceInBackpack(fish))
+          {
+            Owner.From.SendLocalizedMessage(1074496); // There is no room in your pack for the creature.
+          }
+          else
+          {
+            Owner.From.SendLocalizedMessage(1074495); // The creature has been removed from the fish bowl.
+            fish.StartTimer();
+            m_Bowl.InvalidateProperties();
+          }
+        }
+      }
+    }
+  }
 }

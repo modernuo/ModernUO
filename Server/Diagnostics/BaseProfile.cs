@@ -19,67 +19,70 @@
  ***************************************************************************/
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
-namespace Server.Diagnostics {
-	public abstract class BaseProfile {
-		public static void WriteAll<T>( TextWriter op, IEnumerable<T> profiles ) where T : BaseProfile {
-			List<T> list = new List<T>( profiles );
+namespace Server.Diagnostics
+{
+  public abstract class BaseProfile
+  {
+    private Stopwatch _stopwatch;
 
-			list.Sort( delegate( T a, T b ) {
-				return -a.TotalTime.CompareTo( b.TotalTime );
-			} );
+    protected BaseProfile(string name)
+    {
+      Name = name;
 
-			foreach ( T prof in list ) {
-				prof.WriteTo( op );
-				op.WriteLine();
-			}
-		}
+      _stopwatch = new Stopwatch();
+    }
 
-		private Stopwatch _stopwatch;
+    public string Name{ get; }
 
-		public string Name { get; }
+    public long Count{ get; private set; }
 
-		public long Count { get; private set; }
+    public TimeSpan AverageTime => TimeSpan.FromTicks(TotalTime.Ticks / Math.Max(1, Count));
 
-		public TimeSpan AverageTime => TimeSpan.FromTicks( TotalTime.Ticks / Math.Max( 1, Count ) );
+    public TimeSpan PeakTime{ get; private set; }
 
-		public TimeSpan PeakTime { get; private set; }
+    public TimeSpan TotalTime{ get; private set; }
 
-		public TimeSpan TotalTime { get; private set; }
+    public static void WriteAll<T>(TextWriter op, IEnumerable<T> profiles) where T : BaseProfile
+    {
+      List<T> list = new List<T>(profiles);
 
-		protected BaseProfile( string name ) {
-			Name = name;
+      list.Sort(delegate(T a, T b) { return -a.TotalTime.CompareTo(b.TotalTime); });
 
-			_stopwatch = new Stopwatch();
-		}
+      foreach (T prof in list)
+      {
+        prof.WriteTo(op);
+        op.WriteLine();
+      }
+    }
 
-		public virtual void Start() {
-			if ( _stopwatch.IsRunning ) {
-				_stopwatch.Reset();
-			}
+    public virtual void Start()
+    {
+      if (_stopwatch.IsRunning) _stopwatch.Reset();
 
-			_stopwatch.Start();
-		}
+      _stopwatch.Start();
+    }
 
-		public virtual void Finish() {
-			TimeSpan elapsed = _stopwatch.Elapsed;
+    public virtual void Finish()
+    {
+      TimeSpan elapsed = _stopwatch.Elapsed;
 
-			TotalTime += elapsed;
+      TotalTime += elapsed;
 
-			if ( elapsed > PeakTime ) {
-				PeakTime = elapsed;
-			}
+      if (elapsed > PeakTime) PeakTime = elapsed;
 
-			Count++;
+      Count++;
 
-			_stopwatch.Reset();
-		}
+      _stopwatch.Reset();
+    }
 
-		public virtual void WriteTo( TextWriter op ) {
-			op.Write( "{0,-100} {1,12:N0} {2,12:F5} {3,-12:F5} {4,12:F5}", Name, Count, AverageTime.TotalSeconds, PeakTime.TotalSeconds, TotalTime.TotalSeconds );
-		}
-	}
+    public virtual void WriteTo(TextWriter op)
+    {
+      op.Write("{0,-100} {1,12:N0} {2,12:F5} {3,-12:F5} {4,12:F5}", Name, Count, AverageTime.TotalSeconds,
+        PeakTime.TotalSeconds, TotalTime.TotalSeconds);
+    }
+  }
 }

@@ -3,31 +3,32 @@ using Server.Items;
 
 namespace Server.Engines.Craft
 {
-	public abstract class CustomCraft
-	{
-		public Mobile From { get; }
+  public abstract class CustomCraft
+  {
+    public CustomCraft(Mobile from, CraftItem craftItem, CraftSystem craftSystem, Type typeRes, BaseTool tool,
+      int quality)
+    {
+      From = from;
+      CraftItem = craftItem;
+      CraftSystem = craftSystem;
+      TypeRes = typeRes;
+      Tool = tool;
+      Quality = quality;
+    }
 
-		public CraftItem CraftItem { get; }
+    public Mobile From{ get; }
 
-		public CraftSystem CraftSystem { get; }
+    public CraftItem CraftItem{ get; }
 
-		public Type TypeRes { get; }
+    public CraftSystem CraftSystem{ get; }
 
-		public BaseTool Tool { get; }
+    public Type TypeRes{ get; }
 
-		public int Quality { get; }
+    public BaseTool Tool{ get; }
 
-		public CustomCraft( Mobile from, CraftItem craftItem, CraftSystem craftSystem, Type typeRes, BaseTool tool, int quality )
-		{
-			From = from;
-			CraftItem = craftItem;
-			CraftSystem = craftSystem;
-			TypeRes = typeRes;
-			Tool = tool;
-			Quality = quality;
-		}
+    public int Quality{ get; }
 
-		public abstract void EndCraftAction();
-		public abstract Item CompleteCraft( out int message );
-	}
+    public abstract void EndCraftAction();
+    public abstract Item CompleteCraft(out int message);
+  }
 }

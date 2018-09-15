@@ -1,30 +1,30 @@
 namespace Server.Items
 {
-	public class BrineShrimp : BaseFish
-	{
-		public override int LabelNumber => 1074415; // Brine shrimp
+  public class BrineShrimp : BaseFish
+  {
+    [Constructible]
+    public BrineShrimp() : base(0x3B11)
+    {
+    }
 
-		[Constructible]
-		public BrineShrimp() : base( 0x3B11 )
-		{
-		}
+    public BrineShrimp(Serial serial) : base(serial)
+    {
+    }
 
-		public BrineShrimp( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1074415; // Brine shrimp
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

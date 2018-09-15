@@ -1,52 +1,36 @@
 namespace Server.Engines.Quests.Zento
 {
-	public class AcceptConversation : QuestConversation
-	{
-		public override object Message => 1049092;
+  public class AcceptConversation : QuestConversation
+  {
+    public override object Message => 1049092;
 
-		public AcceptConversation()
-		{
-		}
+    public override void OnRead()
+    {
+      System.AddObjective(new FirstKillObjective());
+    }
+  }
 
-		public override void OnRead()
-		{
-			System.AddObjective( new FirstKillObjective() );
-		}
-	}
+  public class DirectionConversation : QuestConversation
+  {
+    public override object Message => 1063323;
 
-	public class DirectionConversation : QuestConversation
-	{
-		public override object Message => 1063323;
+    public override bool Logged => false;
+  }
 
-		public override bool Logged => false;
+  public class TakeCareConversation : QuestConversation
+  {
+    public override object Message => 1063324;
 
-		public DirectionConversation()
-		{
-		}
-	}
+    public override bool Logged => false;
+  }
 
-	public class TakeCareConversation : QuestConversation
-	{
-		public override object Message => 1063324;
+  public class EndConversation : QuestConversation
+  {
+    public override object Message => 1063321;
 
-		public override bool Logged => false;
-
-		public TakeCareConversation()
-		{
-		}
-	}
-
-	public class EndConversation : QuestConversation
-	{
-		public override object Message => 1063321;
-
-		public EndConversation()
-		{
-		}
-
-		public override void OnRead()
-		{
-			System.Complete();
-		}
-	}
+    public override void OnRead()
+    {
+      System.Complete();
+    }
+  }
 }

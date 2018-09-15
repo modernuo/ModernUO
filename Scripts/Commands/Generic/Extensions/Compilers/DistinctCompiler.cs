@@ -6,242 +6,254 @@ using System.Reflection.Emit;
 
 namespace Server.Commands.Generic
 {
-	public static class DistinctCompiler
-	{
-		public static IComparer Compile( AssemblyEmitter assembly, Type objectType, Property[] props )
-		{
-			TypeBuilder typeBuilder = assembly.DefineType(
-					"__distinct",
-					TypeAttributes.Public,
-					typeof( object )
-				);
+  public static class DistinctCompiler
+  {
+    public static IComparer Compile(AssemblyEmitter assembly, Type objectType, Property[] props)
+    {
+      TypeBuilder typeBuilder = assembly.DefineType(
+        "__distinct",
+        TypeAttributes.Public,
+        typeof(object)
+      );
 
-			#region Constructor
-			{
-				ConstructorBuilder ctor = typeBuilder.DefineConstructor(
-						MethodAttributes.Public,
-						CallingConventions.Standard,
-						Type.EmptyTypes
-					);
+      #region Constructor
 
-				ILGenerator il = ctor.GetILGenerator();
+      {
+        ConstructorBuilder ctor = typeBuilder.DefineConstructor(
+          MethodAttributes.Public,
+          CallingConventions.Standard,
+          Type.EmptyTypes
+        );
 
-				// : base()
-				il.Emit( OpCodes.Ldarg_0 );
-				il.Emit( OpCodes.Call, typeof( object ).GetConstructor( Type.EmptyTypes ) );
+        ILGenerator il = ctor.GetILGenerator();
 
-				// return;
-				il.Emit( OpCodes.Ret );
-			}
-			#endregion
+        // : base()
+        il.Emit(OpCodes.Ldarg_0);
+        il.Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
 
-			#region IComparer
-			typeBuilder.AddInterfaceImplementation( typeof( IComparer ) );
+        // return;
+        il.Emit(OpCodes.Ret);
+      }
 
-			MethodBuilder compareMethod;
+      #endregion
 
-			#region Compare
-			{
-				MethodEmitter emitter = new MethodEmitter( typeBuilder );
+      #region IComparer
 
-				emitter.Define(
-					/*  name  */ "Compare",
-					/*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
-					/* return */ typeof( int ),
-					/* params */ new[] { typeof( object ), typeof( object ) } );
+      typeBuilder.AddInterfaceImplementation(typeof(IComparer));
 
-				LocalBuilder a = emitter.CreateLocal( objectType );
-				LocalBuilder b = emitter.CreateLocal( objectType );
+      MethodBuilder compareMethod;
 
-				LocalBuilder v = emitter.CreateLocal( typeof( int ) );
+      #region Compare
 
-				emitter.LoadArgument( 1 );
-				emitter.CastAs( objectType );
-				emitter.StoreLocal( a );
+      {
+        MethodEmitter emitter = new MethodEmitter(typeBuilder);
 
-				emitter.LoadArgument( 2 );
-				emitter.CastAs( objectType );
-				emitter.StoreLocal( b );
+        emitter.Define(
+          /*  name  */ "Compare",
+          /*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
+          /* return */ typeof(int),
+          /* params */ new[] { typeof(object), typeof(object) });
 
-				emitter.Load( 0 );
-				emitter.StoreLocal( v );
+        LocalBuilder a = emitter.CreateLocal(objectType);
+        LocalBuilder b = emitter.CreateLocal(objectType);
 
-				Label end = emitter.CreateLabel();
+        LocalBuilder v = emitter.CreateLocal(typeof(int));
 
-				for ( int i = 0; i < props.Length; ++i )
-				{
-					if ( i > 0 )
-					{
-						emitter.LoadLocal( v );
-						emitter.BranchIfTrue( end ); // if ( v != 0 ) return v;
-					}
+        emitter.LoadArgument(1);
+        emitter.CastAs(objectType);
+        emitter.StoreLocal(a);
 
-					Property prop = props[i];
+        emitter.LoadArgument(2);
+        emitter.CastAs(objectType);
+        emitter.StoreLocal(b);
 
-					emitter.LoadLocal( a );
-					emitter.Chain( prop );
+        emitter.Load(0);
+        emitter.StoreLocal(v);
 
-					bool couldCompare =
-					emitter.CompareTo( 1, delegate
-					{
-						emitter.LoadLocal( b );
-						emitter.Chain( prop );
-					} );
+        Label end = emitter.CreateLabel();
 
-					if ( !couldCompare )
-						throw new InvalidOperationException( "Property is not comparable." );
+        for (int i = 0; i < props.Length; ++i)
+        {
+          if (i > 0)
+          {
+            emitter.LoadLocal(v);
+            emitter.BranchIfTrue(end); // if ( v != 0 ) return v;
+          }
 
-					emitter.StoreLocal( v );
-				}
+          Property prop = props[i];
 
-				emitter.MarkLabel( end );
+          emitter.LoadLocal(a);
+          emitter.Chain(prop);
 
-				emitter.LoadLocal( v );
-				emitter.Return();
+          bool couldCompare =
+            emitter.CompareTo(1, delegate
+            {
+              emitter.LoadLocal(b);
+              emitter.Chain(prop);
+            });
 
-				typeBuilder.DefineMethodOverride(
-						emitter.Method,
-						typeof( IComparer ).GetMethod(
-							"Compare",
-							new[]
-								{
-									typeof( object ),
-									typeof( object )
-								}
-						)
-					);
+          if (!couldCompare)
+            throw new InvalidOperationException("Property is not comparable.");
 
-				compareMethod = emitter.Method;
-			}
-			#endregion
-			#endregion
+          emitter.StoreLocal(v);
+        }
 
-			#region IEqualityComparer
-			typeBuilder.AddInterfaceImplementation( typeof( IEqualityComparer<object> ) );
+        emitter.MarkLabel(end);
 
-			#region Equals
-			{
-				MethodEmitter emitter = new MethodEmitter( typeBuilder );
+        emitter.LoadLocal(v);
+        emitter.Return();
 
-				emitter.Define(
-					/*  name  */ "Equals",
-					/*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
-					/* return */ typeof( bool ),
-					/* params */ new[] { typeof( object ), typeof( object ) } );
+        typeBuilder.DefineMethodOverride(
+          emitter.Method,
+          typeof(IComparer).GetMethod(
+            "Compare",
+            new[]
+            {
+              typeof(object),
+              typeof(object)
+            }
+          )
+        );
 
-				emitter.Generator.Emit( OpCodes.Ldarg_0 );
-				emitter.Generator.Emit( OpCodes.Ldarg_1 );
-				emitter.Generator.Emit( OpCodes.Ldarg_2 );
+        compareMethod = emitter.Method;
+      }
 
-				emitter.Generator.Emit( OpCodes.Call, compareMethod );
+      #endregion
 
-				emitter.Generator.Emit( OpCodes.Ldc_I4_0 );
+      #endregion
 
-				emitter.Generator.Emit( OpCodes.Ceq );
+      #region IEqualityComparer
 
-				emitter.Generator.Emit( OpCodes.Ret );
+      typeBuilder.AddInterfaceImplementation(typeof(IEqualityComparer<object>));
 
-				typeBuilder.DefineMethodOverride(
-						emitter.Method,
-						typeof( IEqualityComparer<object> ).GetMethod(
-							"Equals",
-							new[]
-							{
-								typeof( object ),
-								typeof( object )
-							}
-						)
-					);
-			}
-			#endregion
+      #region Equals
 
-			#region GetHashCode
-			{
-				MethodEmitter emitter = new MethodEmitter( typeBuilder );
+      {
+        MethodEmitter emitter = new MethodEmitter(typeBuilder);
 
-				emitter.Define(
-					/*  name  */ "GetHashCode",
-					/*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
-					/* return */ typeof( int ),
-					/* params */ new[] { typeof( object ) } );
+        emitter.Define(
+          /*  name  */ "Equals",
+          /*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
+          /* return */ typeof(bool),
+          /* params */ new[] { typeof(object), typeof(object) });
 
-				LocalBuilder obj = emitter.CreateLocal( objectType );
+        emitter.Generator.Emit(OpCodes.Ldarg_0);
+        emitter.Generator.Emit(OpCodes.Ldarg_1);
+        emitter.Generator.Emit(OpCodes.Ldarg_2);
 
-				emitter.LoadArgument( 1 );
-				emitter.CastAs( objectType );
-				emitter.StoreLocal( obj );
+        emitter.Generator.Emit(OpCodes.Call, compareMethod);
 
-				for ( int i = 0; i < props.Length; ++i )
-				{
-					Property prop = props[i];
+        emitter.Generator.Emit(OpCodes.Ldc_I4_0);
 
-					emitter.LoadLocal( obj );
-					emitter.Chain( prop );
+        emitter.Generator.Emit(OpCodes.Ceq);
 
-					Type active = emitter.Active;
+        emitter.Generator.Emit(OpCodes.Ret);
 
-					MethodInfo getHashCode = active.GetMethod( "GetHashCode", Type.EmptyTypes );
+        typeBuilder.DefineMethodOverride(
+          emitter.Method,
+          typeof(IEqualityComparer<object>).GetMethod(
+            "Equals",
+            new[]
+            {
+              typeof(object),
+              typeof(object)
+            }
+          )
+        );
+      }
 
-					if ( getHashCode == null )
-						getHashCode = typeof( object ).GetMethod( "GetHashCode", Type.EmptyTypes );
+      #endregion
 
-					if ( active != typeof( int ) )
-					{
-						if ( !active.IsValueType )
-						{
-							LocalBuilder value = emitter.AcquireTemp( active );
+      #region GetHashCode
 
-							Label valueNotNull = emitter.CreateLabel();
-							Label done = emitter.CreateLabel();
+      {
+        MethodEmitter emitter = new MethodEmitter(typeBuilder);
 
-							emitter.StoreLocal( value );
-							emitter.LoadLocal( value );
+        emitter.Define(
+          /*  name  */ "GetHashCode",
+          /*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
+          /* return */ typeof(int),
+          /* params */ new[] { typeof(object) });
 
-							emitter.BranchIfTrue( valueNotNull );
+        LocalBuilder obj = emitter.CreateLocal(objectType);
 
-							emitter.Load( 0 );
-							emitter.Pop( typeof( int ) );
+        emitter.LoadArgument(1);
+        emitter.CastAs(objectType);
+        emitter.StoreLocal(obj);
 
-							emitter.Branch( done );
+        for (int i = 0; i < props.Length; ++i)
+        {
+          Property prop = props[i];
 
-							emitter.MarkLabel( valueNotNull );
+          emitter.LoadLocal(obj);
+          emitter.Chain(prop);
 
-							emitter.LoadLocal( value );
-							emitter.Call( getHashCode );
+          Type active = emitter.Active;
 
-							emitter.ReleaseTemp( value );
+          MethodInfo getHashCode = active.GetMethod("GetHashCode", Type.EmptyTypes);
 
-							emitter.MarkLabel( done );
-						}
-						else
-						{
-							emitter.Call( getHashCode );
-						}
-					}
+          if (getHashCode == null)
+            getHashCode = typeof(object).GetMethod("GetHashCode", Type.EmptyTypes);
 
-					if ( i > 0 )
-						emitter.Xor();
-				}
+          if (active != typeof(int))
+          {
+            if (!active.IsValueType)
+            {
+              LocalBuilder value = emitter.AcquireTemp(active);
 
-				emitter.Return();
+              Label valueNotNull = emitter.CreateLabel();
+              Label done = emitter.CreateLabel();
 
-				typeBuilder.DefineMethodOverride(
-						emitter.Method,
-						typeof( IEqualityComparer<object> ).GetMethod(
-							"GetHashCode",
-							new[]
-							{
-								typeof( object )
-							}
-						)
-					);
-			}
-			#endregion
-			#endregion
+              emitter.StoreLocal(value);
+              emitter.LoadLocal(value);
 
-			Type comparerType = typeBuilder.CreateType();
+              emitter.BranchIfTrue(valueNotNull);
 
-			return (IComparer) Activator.CreateInstance( comparerType );
-		}
-	}
+              emitter.Load(0);
+              emitter.Pop(typeof(int));
+
+              emitter.Branch(done);
+
+              emitter.MarkLabel(valueNotNull);
+
+              emitter.LoadLocal(value);
+              emitter.Call(getHashCode);
+
+              emitter.ReleaseTemp(value);
+
+              emitter.MarkLabel(done);
+            }
+            else
+            {
+              emitter.Call(getHashCode);
+            }
+          }
+
+          if (i > 0)
+            emitter.Xor();
+        }
+
+        emitter.Return();
+
+        typeBuilder.DefineMethodOverride(
+          emitter.Method,
+          typeof(IEqualityComparer<object>).GetMethod(
+            "GetHashCode",
+            new[]
+            {
+              typeof(object)
+            }
+          )
+        );
+      }
+
+      #endregion
+
+      #endregion
+
+      Type comparerType = typeBuilder.CreateType();
+
+      return (IComparer)Activator.CreateInstance(comparerType);
+    }
+  }
 }

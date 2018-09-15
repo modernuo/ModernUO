@@ -2,139 +2,140 @@ using System.Collections.Generic;
 
 namespace Server.Factions.AI
 {
-	public enum ReactionType
-	{
-		Ignore,
-		Warn,
-		Attack
-	}
+  public enum ReactionType
+  {
+    Ignore,
+    Warn,
+    Attack
+  }
 
-	public enum MovementType
-	{
-		Stand,
-		Patrol,
-		Follow
-	}
+  public enum MovementType
+  {
+    Stand,
+    Patrol,
+    Follow
+  }
 
-	public class Reaction
-	{
-		public Faction Faction { get; }
+  public class Reaction
+  {
+    public Reaction(Faction faction, ReactionType type)
+    {
+      Faction = faction;
+      Type = type;
+    }
 
-		public ReactionType Type { get; set; }
+    public Reaction(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-		public Reaction( Faction faction, ReactionType type )
-		{
-			Faction = faction;
-			Type = type;
-		}
+      switch (version)
+      {
+        case 0:
+        {
+          Faction = Faction.ReadReference(reader);
+          Type = (ReactionType)reader.ReadEncodedInt();
 
-		public Reaction( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+          break;
+        }
+      }
+    }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Faction = Faction.ReadReference( reader );
-					Type = (ReactionType) reader.ReadEncodedInt();
+    public Faction Faction{ get; }
 
-					break;
-				}
-			}
-		}
+    public ReactionType Type{ get; set; }
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 0 ); // version
+    public void Serialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
 
-			Faction.WriteReference( writer, Faction );
-			writer.WriteEncodedInt( (int) Type );
-		}
-	}
+      Faction.WriteReference(writer, Faction);
+      writer.WriteEncodedInt((int)Type);
+    }
+  }
 
-	public class Orders
-	{
-		private List<Reaction> m_Reactions;
+  public class Orders
+  {
+    private List<Reaction> m_Reactions;
 
-		public BaseFactionGuard Guard { get; }
+    public Orders(BaseFactionGuard guard)
+    {
+      Guard = guard;
+      m_Reactions = new List<Reaction>();
+      Movement = MovementType.Patrol;
+    }
 
-		public MovementType Movement { get; set; }
+    public Orders(BaseFactionGuard guard, GenericReader reader)
+    {
+      Guard = guard;
 
-		public Mobile Follow { get; set; }
+      int version = reader.ReadEncodedInt();
 
-		public Reaction GetReaction( Faction faction )
-		{
-			Reaction reaction;
+      switch (version)
+      {
+        case 1:
+        {
+          Follow = reader.ReadMobile();
+          goto case 0;
+        }
+        case 0:
+        {
+          int count = reader.ReadEncodedInt();
+          m_Reactions = new List<Reaction>(count);
 
-			for ( int i = 0; i < m_Reactions.Count; ++i )
-			{
-				reaction = m_Reactions[i];
+          for (int i = 0; i < count; ++i)
+            m_Reactions.Add(new Reaction(reader));
 
-				if ( reaction.Faction == faction )
-					return reaction;
-			}
+          Movement = (MovementType)reader.ReadEncodedInt();
 
-			reaction = new Reaction( faction, ( faction == null || faction == Guard.Faction ) ? ReactionType.Ignore : ReactionType.Attack );
-			m_Reactions.Add( reaction );
+          break;
+        }
+      }
+    }
 
-			return reaction;
-		}
+    public BaseFactionGuard Guard{ get; }
 
-		public void SetReaction( Faction faction, ReactionType type )
-		{
-			Reaction reaction = GetReaction( faction );
+    public MovementType Movement{ get; set; }
 
-			reaction.Type = type;
-		}
+    public Mobile Follow{ get; set; }
 
-		public Orders( BaseFactionGuard guard )
-		{
-			Guard = guard;
-			m_Reactions = new List<Reaction>();
-			Movement = MovementType.Patrol;
-		}
+    public Reaction GetReaction(Faction faction)
+    {
+      Reaction reaction;
 
-		public Orders( BaseFactionGuard guard, GenericReader reader )
-		{
-			Guard = guard;
+      for (int i = 0; i < m_Reactions.Count; ++i)
+      {
+        reaction = m_Reactions[i];
 
-			int version = reader.ReadEncodedInt();
+        if (reaction.Faction == faction)
+          return reaction;
+      }
 
-			switch ( version )
-			{
-				case 1:
-				{
-					Follow = reader.ReadMobile();
-					goto case 0;
-				}
-				case 0:
-				{
-					int count = reader.ReadEncodedInt();
-					m_Reactions = new List<Reaction>( count );
+      reaction = new Reaction(faction,
+        faction == null || faction == Guard.Faction ? ReactionType.Ignore : ReactionType.Attack);
+      m_Reactions.Add(reaction);
 
-					for ( int i = 0; i < count; ++i )
-						m_Reactions.Add( new Reaction( reader ) );
+      return reaction;
+    }
 
-					Movement = (MovementType)reader.ReadEncodedInt();
+    public void SetReaction(Faction faction, ReactionType type)
+    {
+      Reaction reaction = GetReaction(faction);
 
-					break;
-				}
-			}
-		}
+      reaction.Type = type;
+    }
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 1 ); // version
+    public void Serialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(1); // version
 
-			writer.Write( (Mobile) Follow );
+      writer.Write(Follow);
 
-			writer.WriteEncodedInt( (int) m_Reactions.Count );
+      writer.WriteEncodedInt(m_Reactions.Count);
 
-			for ( int i = 0; i < m_Reactions.Count; ++i )
-				m_Reactions[i].Serialize( writer );
+      for (int i = 0; i < m_Reactions.Count; ++i)
+        m_Reactions[i].Serialize(writer);
 
-			writer.WriteEncodedInt( (int) Movement );
-		}
-	}
+      writer.WriteEncodedInt((int)Movement);
+    }
+  }
 }

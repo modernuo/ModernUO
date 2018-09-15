@@ -22,29 +22,29 @@ using Server.Network;
 
 namespace Server.Targeting
 {
-	public abstract class MultiTarget : Target
-	{
-		public int MultiID { get; set; }
+  public abstract class MultiTarget : Target
+  {
+    protected MultiTarget(int multiID, Point3D offset)
+      : this(multiID, offset, 10, true, TargetFlags.None)
+    {
+    }
 
-		public Point3D Offset { get; set; }
+    protected MultiTarget(int multiID, Point3D offset, int range, bool allowGround, TargetFlags flags)
+      : base(range, allowGround, flags)
+    {
+      MultiID = multiID;
+      Offset = offset;
+    }
 
-		protected MultiTarget( int multiID, Point3D offset )
-			: this( multiID, offset, 10, true, TargetFlags.None )
-		{
-		}
+    public int MultiID{ get; set; }
 
-		protected MultiTarget( int multiID, Point3D offset, int range, bool allowGround, TargetFlags flags )
-			: base( range, allowGround, flags )
-		{
-			MultiID = multiID;
-			Offset = offset;
-		}
+    public Point3D Offset{ get; set; }
 
-		public override Packet GetPacketFor( NetState ns )
-		{
-			if ( ns.HighSeas )
-				return new MultiTargetReqHS( this );
-			return new MultiTargetReq( this );
-		}
-	}
+    public override Packet GetPacketFor(NetState ns)
+    {
+      if (ns.HighSeas)
+        return new MultiTargetReqHS(this);
+      return new MultiTargetReq(this);
+    }
+  }
 }

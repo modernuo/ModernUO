@@ -1,47 +1,47 @@
 namespace Server.Items
 {
-	public class FarmableOnion : FarmableCrop
-	{
-		public static int GetCropID()
-		{
-			return 3183;
-		}
+  public class FarmableOnion : FarmableCrop
+  {
+    [Constructible]
+    public FarmableOnion() : base(GetCropID())
+    {
+    }
 
-		public override Item GetCropObject()
-		{
-			Onion onion = new Onion();
+    public FarmableOnion(Serial serial) : base(serial)
+    {
+    }
 
-			onion.ItemID = Utility.Random( 3181, 2 );
+    public static int GetCropID()
+    {
+      return 3183;
+    }
 
-			return onion;
-		}
+    public override Item GetCropObject()
+    {
+      Onion onion = new Onion();
 
-		public override int GetPickedID()
-		{
-			return 3254;
-		}
+      onion.ItemID = Utility.Random(3181, 2);
 
-		[Constructible]
-		public FarmableOnion() : base( GetCropID() )
-		{
-		}
+      return onion;
+    }
 
-		public FarmableOnion( Serial serial ) : base( serial )
-		{
-		}
+    public override int GetPickedID()
+    {
+      return 3254;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

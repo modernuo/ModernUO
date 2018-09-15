@@ -2,58 +2,57 @@
 
 namespace Server.Engines.MLQuests
 {
-	public class QuestArea
-	{
-		public TextDefinition Name { get; set; }
+  public class QuestArea
+  {
+    public QuestArea(TextDefinition name, string region)
+      : this(name, region, null)
+    {
+    }
 
-		public string RegionName { get; set; }
+    public QuestArea(TextDefinition name, string region, Map forceMap)
+    {
+      Name = name;
+      RegionName = region;
+      ForceMap = forceMap;
 
-		public Map ForceMap { get; set; }
+      if (MLQuestSystem.Debug)
+        ValidationQueue<QuestArea>.Add(this);
+    }
 
-		public QuestArea( TextDefinition name, string region )
-			: this( name, region, null )
-		{
-		}
+    public TextDefinition Name{ get; set; }
 
-		public QuestArea( TextDefinition name, string region, Map forceMap )
-		{
-			Name = name;
-			RegionName = region;
-			ForceMap = forceMap;
+    public string RegionName{ get; set; }
 
-			if ( MLQuestSystem.Debug )
-				ValidationQueue<QuestArea>.Add( this );
-		}
+    public Map ForceMap{ get; set; }
 
-		public bool Contains( Mobile mob )
-		{
-			return Contains( mob.Region );
-		}
+    public bool Contains(Mobile mob)
+    {
+      return Contains(mob.Region);
+    }
 
-		public bool Contains( Region reg )
-		{
-			if ( reg == null || ( ForceMap != null && reg.Map != ForceMap ) )
-				return false;
+    public bool Contains(Region reg)
+    {
+      if (reg == null || ForceMap != null && reg.Map != ForceMap)
+        return false;
 
-			return reg.IsPartOf( RegionName );
-		}
+      return reg.IsPartOf(RegionName);
+    }
 
-		// Debug method
-		public void Validate()
-		{
-			bool found = false;
+    // Debug method
+    public void Validate()
+    {
+      bool found = false;
 
-			foreach ( Region r in Region.Regions )
-			{
-				if ( r.Name == RegionName && ( ForceMap == null || r.Map == ForceMap ) )
-				{
-					found = true;
-					break;
-				}
-			}
+      foreach (Region r in Region.Regions)
+        if (r.Name == RegionName && (ForceMap == null || r.Map == ForceMap))
+        {
+          found = true;
+          break;
+        }
 
-			if ( !found )
-				Console.WriteLine( "Warning: QuestArea region '{0}' does not exist (ForceMap = {1})", RegionName, ( ForceMap == null ) ? "-null-" : ForceMap.ToString() );
-		}
-	}
+      if (!found)
+        Console.WriteLine("Warning: QuestArea region '{0}' does not exist (ForceMap = {1})", RegionName,
+          ForceMap == null ? "-null-" : ForceMap.ToString());
+    }
+  }
 }

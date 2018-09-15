@@ -2,72 +2,73 @@ using System;
 
 namespace Server.Factions
 {
-	public class VendorDefinition
-	{
-		public Type Type { get; }
+  public class VendorDefinition
+  {
+    public VendorDefinition(Type type, int itemID, int price, int upkeep, int maximum, TextDefinition header,
+      TextDefinition label)
+    {
+      Type = type;
 
-		public int Price { get; }
+      Price = price;
+      Upkeep = upkeep;
+      Maximum = maximum;
+      ItemID = itemID;
 
-		public int Upkeep { get; }
+      Header = header;
+      Label = label;
+    }
 
-		public int Maximum { get; }
+    public Type Type{ get; }
 
-		public int ItemID { get; }
+    public int Price{ get; }
 
-		public TextDefinition Header { get; }
+    public int Upkeep{ get; }
 
-		public TextDefinition Label { get; }
+    public int Maximum{ get; }
 
-		public VendorDefinition( Type type, int itemID, int price, int upkeep, int maximum, TextDefinition header, TextDefinition label )
-		{
-			Type = type;
+    public int ItemID{ get; }
 
-			Price = price;
-			Upkeep = upkeep;
-			Maximum = maximum;
-			ItemID = itemID;
+    public TextDefinition Header{ get; }
 
-			Header = header;
-			Label = label;
-		}
+    public TextDefinition Label{ get; }
 
-		public static VendorDefinition[] Definitions { get; } =
-		{
-			new VendorDefinition( typeof( FactionBottleVendor ), 0xF0E,
-				5000,
-				1000,
-				10,
-				new TextDefinition( 1011549, "POTION BOTTLE VENDOR" ),
-				new TextDefinition( 1011544, "Buy Potion Bottle Vendor" )
-			),
-			new VendorDefinition( typeof( FactionBoardVendor ), 0x1BD7,
-				3000,
-				500,
-				10,
-				new TextDefinition( 1011552, "WOOD VENDOR" ),
-				new TextDefinition( 1011545, "Buy Wooden Board Vendor" )
-			),
-			new VendorDefinition( typeof( FactionOreVendor ), 0x19B8,
-				3000,
-				500,
-				10,
-				new TextDefinition( 1011553, "IRON ORE VENDOR" ),
-				new TextDefinition( 1011546, "Buy Iron Ore Vendor" )
-			),
-			new VendorDefinition( typeof( FactionReagentVendor ), 0xF86,
-				5000,
-				1000,
-				10,
-				new TextDefinition( 1011554, "REAGENT VENDOR" ),
-				new TextDefinition( 1011547, "Buy Reagent Vendor" )
-			),
-			new VendorDefinition( typeof( FactionHorseVendor ), 0x20DD,
-				5000,
-				1000,
-				1,
-				new TextDefinition( 1011556, "HORSE BREEDER" ),
-				new TextDefinition( 1011555, "Buy Horse Breeder" )
-			)
-		};
-	}
+    public static VendorDefinition[] Definitions{ get; } =
+    {
+      new VendorDefinition(typeof(FactionBottleVendor), 0xF0E,
+        5000,
+        1000,
+        10,
+        new TextDefinition(1011549, "POTION BOTTLE VENDOR"),
+        new TextDefinition(1011544, "Buy Potion Bottle Vendor")
+      ),
+      new VendorDefinition(typeof(FactionBoardVendor), 0x1BD7,
+        3000,
+        500,
+        10,
+        new TextDefinition(1011552, "WOOD VENDOR"),
+        new TextDefinition(1011545, "Buy Wooden Board Vendor")
+      ),
+      new VendorDefinition(typeof(FactionOreVendor), 0x19B8,
+        3000,
+        500,
+        10,
+        new TextDefinition(1011553, "IRON ORE VENDOR"),
+        new TextDefinition(1011546, "Buy Iron Ore Vendor")
+      ),
+      new VendorDefinition(typeof(FactionReagentVendor), 0xF86,
+        5000,
+        1000,
+        10,
+        new TextDefinition(1011554, "REAGENT VENDOR"),
+        new TextDefinition(1011547, "Buy Reagent Vendor")
+      ),
+      new VendorDefinition(typeof(FactionHorseVendor), 0x20DD,
+        5000,
+        1000,
+        1,
+        new TextDefinition(1011556, "HORSE BREEDER"),
+        new TextDefinition(1011555, "Buy Horse Breeder")
+      )
+    };
+  }
 }

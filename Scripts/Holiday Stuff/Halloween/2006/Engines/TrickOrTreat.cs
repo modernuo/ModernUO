@@ -1,363 +1,333 @@
 using System;
-using Server.Items;
-using Server.Targeting;
-using Server.Events.Halloween;
-using Server.Mobiles;
 using System.Collections.Generic;
+using Server.Events.Halloween;
+using Server.Items;
+using Server.Mobiles;
+using Server.Targeting;
 
 namespace Server.Engines.Events
 {
-	public class TrickOrTreat
-	{
-		public static TimeSpan OneSecond = TimeSpan.FromSeconds( 1 );
+  public class TrickOrTreat
+  {
+    public static TimeSpan OneSecond = TimeSpan.FromSeconds(1);
 
-		public static void Initialize()
-		{
-			DateTime now = DateTime.UtcNow;
+    public static void Initialize()
+    {
+      DateTime now = DateTime.UtcNow;
 
-			if ( DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween )
-			{
-				EventSink.Speech += EventSink_Speech;
-			}
-		}
+      if (DateTime.UtcNow >= HolidaySettings.StartHalloween && DateTime.UtcNow <= HolidaySettings.FinishHalloween)
+        EventSink.Speech += EventSink_Speech;
+    }
 
-		private static void EventSink_Speech( SpeechEventArgs e )
-		{
+    private static void EventSink_Speech(SpeechEventArgs e)
+    {
+      if (Insensitive.Contains(e.Speech, "trick or treat"))
+      {
+        e.Mobile.Target = new TrickOrTreatTarget();
 
-			if ( Insensitive.Contains( e.Speech, "trick or treat" ) )
-			{
-				e.Mobile.Target = new TrickOrTreatTarget();
+        e.Mobile.SendLocalizedMessage(1076764); /* Pick someone to Trick or Treat. */
+      }
+    }
 
-				e.Mobile.SendLocalizedMessage( 1076764 );  /* Pick someone to Trick or Treat. */
-			}
-		}
+    public static void Bleeding(Mobile m_From)
+    {
+      if (CheckMobile(m_From))
+        if (m_From.Location != Point3D.Zero)
+        {
+          int amount = Utility.RandomMinMax(3, 7);
 
-		private class TrickOrTreatTarget : Target
-		{
-			public TrickOrTreatTarget()
-				: base( 15, false, TargetFlags.None )
-			{
-			}
+          for (int i = 0; i < amount; i++)
+            new Blood(Utility.RandomMinMax(0x122C, 0x122F)).MoveToWorld(
+              RandomPointOneAway(m_From.X, m_From.Y, m_From.Z, m_From.Map), m_From.Map);
+        }
+    }
 
-			protected override void OnTarget( Mobile from, object targ )
-			{
-				if ( targ != null && CheckMobile( from ) )
-				{
-					if ( !( targ is Mobile ) )
-					{
-						from.SendLocalizedMessage( 1076781 ); /* There is little chance of getting candy from that! */
-						return;
-					}
-					if ( !( targ is BaseVendor ) || ( ( BaseVendor )targ ).Deleted )
-					{
-						from.SendLocalizedMessage( 1076765 ); /* That doesn't look friendly. */
-						return;
-					}
+    public static void RemoveHueMod(Mobile target)
+    {
+      if (target != null && !target.Deleted) target.SolidHueOverride = -1;
+    }
 
-					DateTime now = DateTime.UtcNow;
+    public static void SolidHueMobile(Mobile target)
+    {
+      if (CheckMobile(target))
+      {
+        target.SolidHueOverride = Utility.RandomMinMax(2501, 2644);
 
-					BaseVendor m_Begged = targ as BaseVendor;
+        Timer.DelayCall(TimeSpan.FromSeconds(10), RemoveHueMod, target);
+      }
+    }
 
-					if ( CheckMobile( m_Begged ) )
-					{
-						if ( m_Begged.NextTrickOrTreat > now )
-						{
-							from.SendLocalizedMessage( 1076767 ); /* That doesn't appear to have any more candy. */
-							return;
-						}
+    public static void MakeTwin(Mobile m_From)
+    {
+      List<Item> m_Items = new List<Item>();
 
-						m_Begged.NextTrickOrTreat = now + TimeSpan.FromMinutes( Utility.RandomMinMax( 5, 10 ) );
+      if (CheckMobile(m_From))
+      {
+        Mobile twin = new NaughtyTwin(m_From);
 
-						if ( from.Backpack != null && !from.Backpack.Deleted )
-						{
-							if ( Utility.RandomDouble() > .10 )
-							{
-								switch( Utility.Random( 3 ) )
-								{
-									case 0: m_Begged.Say( 1076768 ); break; /* Oooooh, aren't you cute! */
-									case 1: m_Begged.Say( 1076779 ); break; /* All right...This better not spoil your dinner! */
-									case 2: m_Begged.Say( 1076778 ); break; /* Here you go! Enjoy! */
-									default: break;
-								}
+        if (twin != null && !twin.Deleted)
+        {
+          foreach (Item item in m_From.Items)
+            if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
+              m_Items.Add(item);
 
-								if ( Utility.RandomDouble() <= .01 && from.Skills.Begging.Value >= 100 )
-								{
-									from.AddToBackpack( HolidaySettings.RandomGMBeggerItem );
+          if (m_Items.Count > 0)
+          {
+            for (int i = 0; i < m_Items.Count; i++) /* dupe exploits start out like this ... */
+              twin.AddItem(Mobile.LiftItemDupe(m_Items[i], 1));
 
-									from.SendLocalizedMessage( 1076777 ); /* You receive a special treat! */
-								}
-								else
-								{
-									from.AddToBackpack( HolidaySettings.RandomTreat );
+            foreach (Item item in twin.Items) /* ... and end like this */
+              if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
+                item.Movable = false;
+          }
 
-									from.SendLocalizedMessage( 1076769 );   /* You receive some candy. */
-								}
-							}
-							else
-							{
-								m_Begged.Say( 1076770 ); /* TRICK! */
+          twin.Hue = m_From.Hue;
+          twin.BodyValue = m_From.BodyValue;
+          twin.Kills = m_From.Kills;
 
-								int m_Action = Utility.Random( 4 );
+          Point3D point = RandomPointOneAway(m_From.X, m_From.Y, m_From.Z, m_From.Map);
 
-								if ( m_Action == 0 )
-								{
-									Timer.DelayCall<Mobile>( OneSecond, OneSecond, 10, Bleeding, from );
-								}
-								else if ( m_Action == 1 )
-								{
-									Timer.DelayCall<Mobile>( TimeSpan.FromSeconds( 2 ), SolidHueMobile, from );
-								}
-								else
-								{
-									Timer.DelayCall<Mobile>( TimeSpan.FromSeconds( 2 ), MakeTwin, from );
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+          twin.MoveToWorld(m_From.Map.CanSpawnMobile(point) ? point : m_From.Location, m_From.Map);
 
-		public static void Bleeding( Mobile m_From )
-		{
-			if ( CheckMobile( m_From ) )
-			{
-				if ( m_From.Location != Point3D.Zero )
-				{
-					int amount = Utility.RandomMinMax( 3, 7 );
+          Timer.DelayCall(TimeSpan.FromSeconds(5), DeleteTwin, twin);
+        }
+      }
+    }
 
-					for( int i = 0; i < amount; i++ )
-					{
-						new Blood( Utility.RandomMinMax( 0x122C, 0x122F ) ).MoveToWorld( RandomPointOneAway( m_From.X, m_From.Y, m_From.Z, m_From.Map ), m_From.Map );
-					}
-				}
-			}
-		}
+    public static void DeleteTwin(Mobile m_Twin)
+    {
+      if (CheckMobile(m_Twin)) m_Twin.Delete();
+    }
 
-		public static void RemoveHueMod( Mobile target )
-		{
-			if ( target != null && !target.Deleted )
-			{
-				target.SolidHueOverride = -1;
-			}
-		}
+    public static Point3D RandomPointOneAway(int x, int y, int z, Map map)
+    {
+      Point3D loc = new Point3D(x + Utility.Random(-1, 3), y + Utility.Random(-1, 3), 0);
 
-		public static void SolidHueMobile( Mobile target )
-		{
-			if ( CheckMobile( target ) )
-			{
-				target.SolidHueOverride = Utility.RandomMinMax( 2501, 2644 );
+      loc.Z = map.CanFit(loc, 0) ? map.GetAverageZ(loc.X, loc.Y) : z;
 
-				Timer.DelayCall<Mobile>( TimeSpan.FromSeconds( 10 ), RemoveHueMod, target );
-			}
-		}
+      return loc;
+    }
 
-		public static void MakeTwin( Mobile m_From )
-		{
-			List<Item> m_Items = new List<Item>();
+    public static bool CheckMobile(Mobile mobile)
+    {
+      return mobile?.Map != null && !mobile.Deleted && mobile.Alive && mobile.Map != Map.Internal;
+    }
 
-			if ( CheckMobile( m_From ) )
-			{
-				Mobile twin = new NaughtyTwin( m_From );
+    private class TrickOrTreatTarget : Target
+    {
+      public TrickOrTreatTarget()
+        : base(15, false, TargetFlags.None)
+      {
+      }
 
-				if ( twin != null && !twin.Deleted )
-				{
-					foreach( Item item in m_From.Items )
-					{
-						if ( item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank )
-						{
-							m_Items.Add( item );
-						}
-					}
+      protected override void OnTarget(Mobile from, object targ)
+      {
+        if (targ != null && CheckMobile(from))
+        {
+          if (!(targ is Mobile))
+          {
+            from.SendLocalizedMessage(1076781); /* There is little chance of getting candy from that! */
+            return;
+          }
 
-					if ( m_Items.Count > 0 )
-					{
-						for( int i = 0; i < m_Items.Count; i++ ) /* dupe exploits start out like this ... */
-						{
-							twin.AddItem( Mobile.LiftItemDupe( m_Items[ i ], 1 ) );
-						}
+          if (!(targ is BaseVendor) || ((BaseVendor)targ).Deleted)
+          {
+            from.SendLocalizedMessage(1076765); /* That doesn't look friendly. */
+            return;
+          }
 
-						foreach( Item item in twin.Items ) /* ... and end like this */
-						{
-							if ( item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank )
-							{
-								item.Movable = false;
-							}
-						}
-					}
+          DateTime now = DateTime.UtcNow;
 
-					twin.Hue = m_From.Hue;
-					twin.BodyValue = m_From.BodyValue;
-					twin.Kills = m_From.Kills;
+          BaseVendor m_Begged = targ as BaseVendor;
 
-					Point3D point = RandomPointOneAway( m_From.X, m_From.Y, m_From.Z, m_From.Map );
+          if (CheckMobile(m_Begged))
+          {
+            if (m_Begged.NextTrickOrTreat > now)
+            {
+              from.SendLocalizedMessage(1076767); /* That doesn't appear to have any more candy. */
+              return;
+            }
 
-					twin.MoveToWorld( m_From.Map.CanSpawnMobile( point ) ? point : m_From.Location, m_From.Map );
+            m_Begged.NextTrickOrTreat = now + TimeSpan.FromMinutes(Utility.RandomMinMax(5, 10));
 
-					Timer.DelayCall( TimeSpan.FromSeconds( 5 ), DeleteTwin, twin );
-				}
-			}
-		}
+            if (from.Backpack != null && !from.Backpack.Deleted)
+            {
+              if (Utility.RandomDouble() > .10)
+              {
+                switch (Utility.Random(3))
+                {
+                  case 0:
+                    m_Begged.Say(1076768);
+                    break; /* Oooooh, aren't you cute! */
+                  case 1:
+                    m_Begged.Say(1076779);
+                    break; /* All right...This better not spoil your dinner! */
+                  case 2:
+                    m_Begged.Say(1076778);
+                    break; /* Here you go! Enjoy! */
+                }
 
-		public static void DeleteTwin( Mobile m_Twin )
-		{
-			if ( CheckMobile( m_Twin ) )
-			{
-				m_Twin.Delete();
-			}
-		}
+                if (Utility.RandomDouble() <= .01 && from.Skills.Begging.Value >= 100)
+                {
+                  from.AddToBackpack(HolidaySettings.RandomGMBeggerItem);
 
-		public static Point3D RandomPointOneAway( int x, int y, int z, Map map )
-		{
-			Point3D loc = new Point3D( x + Utility.Random( -1, 3 ), y + Utility.Random( -1, 3 ), 0 );
+                  from.SendLocalizedMessage(1076777); /* You receive a special treat! */
+                }
+                else
+                {
+                  from.AddToBackpack(HolidaySettings.RandomTreat);
 
-			loc.Z = ( map.CanFit( loc, 0 )) ? map.GetAverageZ( loc.X, loc.Y ) : z;
+                  from.SendLocalizedMessage(1076769); /* You receive some candy. */
+                }
+              }
+              else
+              {
+                m_Begged.Say(1076770); /* TRICK! */
 
-			return loc;
-		}
+                int m_Action = Utility.Random(4);
 
-		public static bool CheckMobile( Mobile mobile )
-		{
-			return ( mobile?.Map != null && !mobile.Deleted && mobile.Alive && mobile.Map != Map.Internal );
-		}
-	}
+                if (m_Action == 0)
+                  Timer.DelayCall(OneSecond, OneSecond, 10, Bleeding, from);
+                else if (m_Action == 1)
+                  Timer.DelayCall(TimeSpan.FromSeconds(2), SolidHueMobile, from);
+                else
+                  Timer.DelayCall(TimeSpan.FromSeconds(2), MakeTwin, from);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
-	public class NaughtyTwin : BaseCreature
-	{
-		private Mobile m_From;
+  public class NaughtyTwin : BaseCreature
+  {
+    private static Point3D[] Felucca_Locations =
+    {
+      new Point3D(4467, 1283, 5), // Moonglow
+      new Point3D(1336, 1997, 5), // Britain
+      new Point3D(1499, 3771, 5), // Jhelom
+      new Point3D(771, 752, 5), // Yew
+      new Point3D(2701, 692, 5), // Minoc
+      new Point3D(1828, 2948, -20), // Trinsic
+      new Point3D(643, 2067, 5), // Skara Brae
+      new Point3D(3563, 2139, Map.Trammel.GetAverageZ(3563, 2139)) // (New) Magincia
+    };
 
-		private static Point3D[] Felucca_Locations =
-		{
-			new Point3D( 4467, 1283, 5 ), // Moonglow
-			new Point3D( 1336, 1997, 5 ), // Britain
-			new Point3D( 1499, 3771, 5 ), // Jhelom
-			new Point3D(  771,  752, 5 ), // Yew
-			new Point3D( 2701,  692, 5 ), // Minoc
-			new Point3D( 1828, 2948,-20), // Trinsic
-			new Point3D(  643, 2067, 5 ), // Skara Brae
-			new Point3D( 3563, 2139, Map.Trammel.GetAverageZ( 3563, 2139 ) ), // (New) Magincia
-		};
+    private static Point3D[] Malas_Locations =
+    {
+      new Point3D(1015, 527, -65), // Luna
+      new Point3D(1997, 1386, -85) // Umbra
+    };
 
-		private static Point3D[] Malas_Locations =
-		{
-			new Point3D(1015, 527, -65), // Luna
-			new Point3D(1997, 1386, -85) // Umbra
-		};
+    private static Point3D[] Ilshenar_Locations =
+    {
+      new Point3D(1215, 467, -13), // Compassion
+      new Point3D(722, 1366, -60), // Honesty
+      new Point3D(744, 724, -28), // Honor
+      new Point3D(281, 1016, 0), // Humility
+      new Point3D(987, 1011, -32), // Justice
+      new Point3D(1174, 1286, -30), // Sacrifice
+      new Point3D(1532, 1340, -3), // Spirituality
+      new Point3D(528, 216, -45), // Valor
+      new Point3D(1721, 218, 96) // Chaos
+    };
 
-		private static Point3D[] Ilshenar_Locations =
-		{
-			new Point3D( 1215,  467, -13 ), // Compassion
-			new Point3D(  722, 1366, -60 ), // Honesty
-			new Point3D(  744,  724, -28 ), // Honor
-			new Point3D(  281, 1016,   0 ), // Humility
-			new Point3D(  987, 1011, -32 ), // Justice
-			new Point3D( 1174, 1286, -30 ), // Sacrifice
-			new Point3D( 1532, 1340, - 3 ), // Spirituality
-			new Point3D(  528,  216, -45 ), // Valor
-			new Point3D( 1721,  218,  96 )  // Chaos
-		};
+    private static Point3D[] Tokuno_Locations =
+    {
+      new Point3D(1169, 998, 41), // Isamu-Jima
+      new Point3D(802, 1204, 25), // Makoto-Jima
+      new Point3D(270, 628, 15) // Homare-Jima
+    };
 
-		private static Point3D[] Tokuno_Locations =
-		{
-			new Point3D( 1169,  998, 41 ), // Isamu-Jima
-			new Point3D(  802, 1204, 25 ), // Makoto-Jima
-			new Point3D(  270,  628, 15 )  // Homare-Jima
-		};
+    private Mobile m_From;
 
-		public NaughtyTwin( Mobile from )
-			: base( AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4 )
-		{
-			if ( TrickOrTreat.CheckMobile( from ) )
-			{
-				Body = from.Body;
+    public NaughtyTwin(Mobile from)
+      : base(AIType.AI_Melee, FightMode.None, 10, 1, 0.2, 0.4)
+    {
+      if (TrickOrTreat.CheckMobile(from))
+      {
+        Body = from.Body;
 
-				m_From = from;
-				Name = $"{from.Name}\'s Naughty Twin";
+        m_From = from;
+        Name = $"{from.Name}\'s Naughty Twin";
 
-				Timer.DelayCall<Mobile>( TrickOrTreat.OneSecond, Utility.RandomBool() ? StealCandy : new TimerStateCallback<Mobile>( ToGate ), m_From );
-			}
-		}
+        Timer.DelayCall(TrickOrTreat.OneSecond,
+          Utility.RandomBool() ? StealCandy : new TimerStateCallback<Mobile>(ToGate), m_From);
+      }
+    }
 
-		public override void OnThink()
-		{
-			if ( m_From == null || m_From.Deleted )
-			{
-				Delete();
-			}
-		}
+    public NaughtyTwin(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public static Item FindCandyTypes( Mobile target )
-		{
-			Type[] types = { typeof( WrappedCandy ), typeof( Lollipops ), typeof( NougatSwirl ), typeof( Taffy ), typeof( JellyBeans ) };
+    public override void OnThink()
+    {
+      if (m_From == null || m_From.Deleted) Delete();
+    }
 
-			if ( TrickOrTreat.CheckMobile( target ) )
-			{
-				for( int i = 0; i < types.Length; i++ )
-				{
-					Item item = target.Backpack.FindItemByType( types[ i ] );
+    public static Item FindCandyTypes(Mobile target)
+    {
+      Type[] types =
+        { typeof(WrappedCandy), typeof(Lollipops), typeof(NougatSwirl), typeof(Taffy), typeof(JellyBeans) };
 
-					if ( item != null )
-					{
-						return item;
-					}
-				}
-			}
-			return null;
-		}
+      if (TrickOrTreat.CheckMobile(target))
+        for (int i = 0; i < types.Length; i++)
+        {
+          Item item = target.Backpack.FindItemByType(types[i]);
 
-		public static void StealCandy( Mobile target )
-		{
-			if ( TrickOrTreat.CheckMobile( target ) )
-			{
-				Item item = FindCandyTypes( target );
+          if (item != null) return item;
+        }
 
-				target.SendLocalizedMessage( 1113967 ); /* Your naughty twin steals some of your candy. */
+      return null;
+    }
 
-				if ( item != null && !item.Deleted )
-				{
-					item.Delete();
-				}
-			}
-		}
+    public static void StealCandy(Mobile target)
+    {
+      if (TrickOrTreat.CheckMobile(target))
+      {
+        Item item = FindCandyTypes(target);
 
-		public static void ToGate( Mobile target )
-		{
-			if ( TrickOrTreat.CheckMobile( target ) )
-			{
-				target.SendLocalizedMessage( 1113972 ); /* Your naughty twin teleports you away with a naughty laugh! */
+        target.SendLocalizedMessage(1113967); /* Your naughty twin steals some of your candy. */
 
-				target.MoveToWorld( RandomMoongate( target ), target.Map );
-			}
-		}
+        if (item != null && !item.Deleted) item.Delete();
+      }
+    }
 
-		public static Point3D RandomMoongate( Mobile target )
-		{
-			Map map = target.Map;
+    public static void ToGate(Mobile target)
+    {
+      if (TrickOrTreat.CheckMobile(target))
+      {
+        target.SendLocalizedMessage(1113972); /* Your naughty twin teleports you away with a naughty laugh! */
 
-			switch( target.Map.MapID )
-			{
-				case 2: return Ilshenar_Locations[ Utility.Random( Ilshenar_Locations.Length ) ];
-				case 3: return Malas_Locations[ Utility.Random( Malas_Locations.Length ) ];
-				case 4: return Tokuno_Locations[ Utility.Random( Tokuno_Locations.Length ) ];
-				default: return Felucca_Locations[ Utility.Random( Felucca_Locations.Length ) ];
-			}
-		}
+        target.MoveToWorld(RandomMoongate(target), target.Map);
+      }
+    }
 
-		public NaughtyTwin( Serial serial )
-			: base( serial )
-		{
-		}
+    public static Point3D RandomMoongate(Mobile target)
+    {
+      Map map = target.Map;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( ( int )0 );
-		}
+      switch (target.Map.MapID)
+      {
+        case 2: return Ilshenar_Locations[Utility.Random(Ilshenar_Locations.Length)];
+        case 3: return Malas_Locations[Utility.Random(Malas_Locations.Length)];
+        case 4: return Tokuno_Locations[Utility.Random(Tokuno_Locations.Length)];
+        default: return Felucca_Locations[Utility.Random(Felucca_Locations.Length)];
+      }
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

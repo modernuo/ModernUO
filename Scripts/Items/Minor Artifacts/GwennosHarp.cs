@@ -1,36 +1,36 @@
 namespace Server.Items
 {
-	public class GwennosHarp : LapHarp
-	{
-		public override int LabelNumber => 1063480;
+  public class GwennosHarp : LapHarp
+  {
+    [Constructible]
+    public GwennosHarp()
+    {
+      Hue = 0x47E;
+      Slayer = SlayerName.Repond;
+      Slayer2 = SlayerName.ReptilianDeath;
+    }
 
-		public override int InitMinUses => 1600;
-		public override int InitMaxUses => 1600;
+    public GwennosHarp(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public GwennosHarp()
-		{
-			Hue = 0x47E;
-			Slayer = SlayerName.Repond;
-			Slayer2 = SlayerName.ReptilianDeath;
-		}
+    public override int LabelNumber => 1063480;
 
-		public GwennosHarp( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinUses => 1600;
+    public override int InitMaxUses => 1600;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

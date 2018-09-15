@@ -2,34 +2,34 @@ using Server.Spells.First;
 
 namespace Server.Items
 {
-	public class HealWand : BaseWand
-	{
-		[Constructible]
-		public HealWand() : base( WandEffect.Healing, 10, Core.ML ? 109 : 25 )
-		{
-		}
+  public class HealWand : BaseWand
+  {
+    [Constructible]
+    public HealWand() : base(WandEffect.Healing, 10, Core.ML ? 109 : 25)
+    {
+    }
 
-		public HealWand( Serial serial ) : base( serial )
-		{
-		}
+    public HealWand(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void OnWandUse( Mobile from )
-		{
-			Cast( new HealSpell( from, this ) );
-		}
-	}
+    public override void OnWandUse(Mobile from)
+    {
+      Cast(new HealSpell(from, this));
+    }
+  }
 }

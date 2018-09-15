@@ -21,40 +21,41 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Server.Diagnostics {
-	public class TimerProfile : BaseProfile {
-		private static Dictionary<string, TimerProfile> _profiles = new Dictionary<string, TimerProfile>();
+namespace Server.Diagnostics
+{
+  public class TimerProfile : BaseProfile
+  {
+    private static Dictionary<string, TimerProfile> _profiles = new Dictionary<string, TimerProfile>();
 
-		public static IEnumerable<TimerProfile> Profiles => _profiles.Values;
+    public TimerProfile(string name)
+      : base(name)
+    {
+    }
 
-		public static TimerProfile Acquire( string name ) {
-			if ( !Core.Profiling ) {
-				return null;
-			}
+    public static IEnumerable<TimerProfile> Profiles => _profiles.Values;
 
-			TimerProfile prof;
+    public long Created{ get; set; }
 
-			if ( !_profiles.TryGetValue( name, out prof ) ) {
-				_profiles.Add( name, prof = new TimerProfile( name ) );
-			}
+    public long Started{ get; set; }
 
-			return prof;
-		}
+    public long Stopped{ get; set; }
 
-		public long Created { get; set; }
+    public static TimerProfile Acquire(string name)
+    {
+      if (!Core.Profiling) return null;
 
-		public long Started { get; set; }
+      TimerProfile prof;
 
-		public long Stopped { get; set; }
+      if (!_profiles.TryGetValue(name, out prof)) _profiles.Add(name, prof = new TimerProfile(name));
 
-		public TimerProfile( string name )
-			: base( name ) {
-		}
+      return prof;
+    }
 
-		public override void WriteTo( TextWriter op ) {
-			base.WriteTo( op );
+    public override void WriteTo(TextWriter op)
+    {
+      base.WriteTo(op);
 
-			op.Write( "\t{0,12:N0} {1,12:N0} {2,-12:N0}", Created, Started, Stopped );
-		}
-	}
+      op.Write("\t{0,12:N0} {1,12:N0} {2,-12:N0}", Created, Started, Stopped);
+    }
+  }
 }

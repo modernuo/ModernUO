@@ -1,40 +1,40 @@
 namespace Server.Items
 {
-	public class TaintedTreeSample : Item // On OSI the base class is Kindling, and it's ignitable...
-	{
-		public override int LabelNumber => 1074997; // Tainted Tree Sample
+  public class TaintedTreeSample : Item // On OSI the base class is Kindling, and it's ignitable...
+  {
+    [Constructible]
+    public TaintedTreeSample() : base(0xDE2)
+    {
+      LootType = LootType.Blessed;
+      Hue = 0x9D;
+    }
 
-		public override bool Nontransferable => true;
+    public TaintedTreeSample(Serial serial) : base(serial)
+    {
+    }
 
-		public override void AddNameProperties( ObjectPropertyList list )
-		{
-			base.AddNameProperties( list );
-			AddQuestItemProperty( list );
-		}
+    public override int LabelNumber => 1074997; // Tainted Tree Sample
 
-		[Constructible]
-		public TaintedTreeSample() : base( 0xDE2 )
-		{
-			LootType = LootType.Blessed;
-			Hue = 0x9D;
-		}
+    public override bool Nontransferable => true;
 
-		public TaintedTreeSample( Serial serial ) : base( serial )
-		{
-		}
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+      base.AddNameProperties(list);
+      AddQuestItemProperty(list);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // Version
-		}
+      writer.Write(0); // Version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

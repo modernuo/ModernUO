@@ -1,173 +1,175 @@
 using System.Collections.Generic;
-using Server.Items;
 using Server.ContextMenus;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Beetle : BaseMount
-	{
-		public override string CorpseName => "a giant beetle corpse";
-		public virtual double BoostedSpeed => 0.1;
+  public class Beetle : BaseMount
+  {
+    [Constructible]
+    public Beetle() : this("a giant beetle")
+    {
+    }
 
-		[Constructible]
-		public Beetle() : this( "a giant beetle" )
-		{
-		}
+    [Constructible]
+    public Beetle(string name) : base(name, 0x317, 0x3EBC, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.25, 0.5)
+    {
+      SetStr(300);
+      SetDex(100);
+      SetInt(500);
 
-		public override bool SubdueBeforeTame => true; // Must be beaten into submission
-		public override bool ReduceSpeedWithDamage => false;
+      SetHits(200);
 
-		[Constructible]
-		public Beetle( string name ) : base( name, 0x317, 0x3EBC, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.25, 0.5 )
-		{
-			SetStr( 300 );
-			SetDex( 100 );
-			SetInt( 500 );
+      SetDamage(7, 20);
 
-			SetHits( 200 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamage( 7, 20 );
+      SetResistance(ResistanceType.Physical, 30, 40);
+      SetResistance(ResistanceType.Fire, 20, 30);
+      SetResistance(ResistanceType.Cold, 20, 30);
+      SetResistance(ResistanceType.Poison, 20, 30);
+      SetResistance(ResistanceType.Energy, 20, 30);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetSkill(SkillName.MagicResist, 80.0);
+      SetSkill(SkillName.Tactics, 100.0);
+      SetSkill(SkillName.Wrestling, 100.0);
 
-			SetResistance( ResistanceType.Physical, 30, 40 );
-			SetResistance( ResistanceType.Fire, 20, 30 );
-			SetResistance( ResistanceType.Cold, 20, 30 );
-			SetResistance( ResistanceType.Poison, 20, 30 );
-			SetResistance( ResistanceType.Energy, 20, 30 );
+      Fame = 4000;
+      Karma = -4000;
 
-			SetSkill( SkillName.MagicResist, 80.0 );
-			SetSkill( SkillName.Tactics, 100.0 );
-			SetSkill( SkillName.Wrestling, 100.0 );
+      Tamable = true;
+      ControlSlots = 3;
+      MinTameSkill = 29.1;
 
-			Fame = 4000;
-			Karma = -4000;
+      Container pack = Backpack;
 
-			Tamable = true;
-			ControlSlots = 3;
-			MinTameSkill = 29.1;
+      pack?.Delete();
 
-			Container pack = Backpack;
+      pack = new StrongBackpack();
+      pack.Movable = false;
 
-			pack?.Delete();
+      AddItem(pack);
+    }
 
-			pack = new StrongBackpack();
-			pack.Movable = false;
+    public Beetle(Serial serial) : base(serial)
+    {
+    }
 
-			AddItem( pack );
-		}
+    public override string CorpseName => "a giant beetle corpse";
+    public virtual double BoostedSpeed => 0.1;
 
-		public override int GetAngerSound()
-		{
-			return 0x21D;
-		}
+    public override bool SubdueBeforeTame => true; // Must be beaten into submission
+    public override bool ReduceSpeedWithDamage => false;
 
-		public override int GetIdleSound()
-		{
-			return 0x21D;
-		}
+    public override FoodType FavoriteFood => FoodType.Meat;
 
-		public override int GetAttackSound()
-		{
-			return 0x162;
-		}
+    public override int GetAngerSound()
+    {
+      return 0x21D;
+    }
 
-		public override int GetHurtSound()
-		{
-			return 0x163;
-		}
+    public override int GetIdleSound()
+    {
+      return 0x21D;
+    }
 
-		public override int GetDeathSound()
-		{
-			return 0x21D;
-		}
+    public override int GetAttackSound()
+    {
+      return 0x162;
+    }
 
-		public override FoodType FavoriteFood => FoodType.Meat;
+    public override int GetHurtSound()
+    {
+      return 0x163;
+    }
 
-		public Beetle( Serial serial ) : base( serial )
-		{
-		}
+    public override int GetDeathSound()
+    {
+      return 0x21D;
+    }
 
-		public override void OnHarmfulSpell( Mobile from )
-		{
-			if ( !Controlled && ControlMaster == null )
-				CurrentSpeed = BoostedSpeed;
-		}
+    public override void OnHarmfulSpell(Mobile from)
+    {
+      if (!Controlled && ControlMaster == null)
+        CurrentSpeed = BoostedSpeed;
+    }
 
-		public override void OnCombatantChange()
-		{
-			if ( Combatant == null && !Controlled && ControlMaster == null )
-				CurrentSpeed = PassiveSpeed;
-		}
+    public override void OnCombatantChange()
+    {
+      if (Combatant == null && !Controlled && ControlMaster == null)
+        CurrentSpeed = PassiveSpeed;
+    }
 
-		#region Pack Animal Methods
-		public override bool OnBeforeDeath()
-		{
-			if ( !base.OnBeforeDeath() )
-				return false;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			PackAnimal.CombineBackpacks( this );
+      writer.Write(0); // version
+    }
 
-			return true;
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override DeathMoveResult GetInventoryMoveResultFor( Item item )
-		{
-			return DeathMoveResult.MoveToCorpse;
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override bool IsSnoop( Mobile from )
-		{
-			if ( PackAnimal.CheckAccess( this, from ) )
-				return false;
+    #region Pack Animal Methods
 
-			return base.IsSnoop( from );
-		}
+    public override bool OnBeforeDeath()
+    {
+      if (!base.OnBeforeDeath())
+        return false;
 
-		public override bool OnDragDrop( Mobile from, Item item )
-		{
-			if ( CheckFeed( from, item ) )
-				return true;
+      PackAnimal.CombineBackpacks(this);
 
-			if ( PackAnimal.CheckAccess( this, from ) )
-			{
-				AddToBackpack( item );
-				return true;
-			}
+      return true;
+    }
 
-			return base.OnDragDrop( from, item );
-		}
+    public override DeathMoveResult GetInventoryMoveResultFor(Item item)
+    {
+      return DeathMoveResult.MoveToCorpse;
+    }
 
-		public override bool CheckNonlocalDrop( Mobile from, Item item, Item target )
-		{
-			return PackAnimal.CheckAccess( this, from );
-		}
+    public override bool IsSnoop(Mobile from)
+    {
+      if (PackAnimal.CheckAccess(this, from))
+        return false;
 
-		public override bool CheckNonlocalLift( Mobile from, Item item )
-		{
-			return PackAnimal.CheckAccess( this, from );
-		}
+      return base.IsSnoop(from);
+    }
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+    public override bool OnDragDrop(Mobile from, Item item)
+    {
+      if (CheckFeed(from, item))
+        return true;
 
-			PackAnimal.GetContextMenuEntries( this, from, list );
-		}
-		#endregion
+      if (PackAnimal.CheckAccess(this, from))
+      {
+        AddToBackpack(item);
+        return true;
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      return base.OnDragDrop(from, item);
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override bool CheckNonlocalDrop(Mobile from, Item item, Item target)
+    {
+      return PackAnimal.CheckAccess(this, from);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override bool CheckNonlocalLift(Mobile from, Item item)
+    {
+      return PackAnimal.CheckAccess(this, from);
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
+
+      PackAnimal.GetContextMenuEntries(this, from, list);
+    }
+
+    #endregion
+  }
 }

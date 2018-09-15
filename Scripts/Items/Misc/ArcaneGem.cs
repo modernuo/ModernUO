@@ -3,202 +3,209 @@ using Server.Targeting;
 
 namespace Server.Items
 {
-	public class ArcaneGem : Item
-	{
-		public override string DefaultName => "arcane gem";
+  public class ArcaneGem : Item
+  {
+    public const int DefaultArcaneHue = 2117;
 
-		[Constructible]
-		public ArcaneGem() : base( 0x1EA7 )
-		{
-			Stackable = Core.ML;
-			Weight = 1.0;
-		}
+    [Constructible]
+    public ArcaneGem() : base(0x1EA7)
+    {
+      Stackable = Core.ML;
+      Weight = 1.0;
+    }
 
-		public ArcaneGem( Serial serial ) : base( serial )
-		{
-		}
+    public ArcaneGem(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-			}
-			else
-			{
-				from.BeginTarget( 2, false, TargetFlags.None, OnTarget );
-				from.SendMessage( "What do you wish to use the gem on?" );
-			}
-		}
+    public override string DefaultName => "arcane gem";
 
-		public int GetChargesFor( Mobile m )
-		{
-			int v = (int)(m.Skills[SkillName.Tailoring].Value / 5);
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+      }
+      else
+      {
+        from.BeginTarget(2, false, TargetFlags.None, OnTarget);
+        from.SendMessage("What do you wish to use the gem on?");
+      }
+    }
 
-			if ( v < 16 )
-				return 16;
-			if ( v > 24 )
-				return 24;
+    public int GetChargesFor(Mobile m)
+    {
+      int v = (int)(m.Skills[SkillName.Tailoring].Value / 5);
 
-			return v;
-		}
+      if (v < 16)
+        return 16;
+      if (v > 24)
+        return 24;
 
-		public const int DefaultArcaneHue = 2117;
+      return v;
+    }
 
-		public void OnTarget( Mobile from, object obj )
-		{
-			if ( !IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-				return;
-			}
+    public void OnTarget(Mobile from, object obj)
+    {
+      if (!IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+        return;
+      }
 
-			if ( obj is IArcaneEquip eq && eq is Item item )
-			{
-				BaseClothing clothing = item as BaseClothing;
-				BaseArmor armor = item as BaseArmor;
-				BaseWeapon weapon = item as BaseWeapon;
+      if (obj is IArcaneEquip eq && eq is Item item)
+      {
+        BaseClothing clothing = item as BaseClothing;
+        BaseArmor armor = item as BaseArmor;
+        BaseWeapon weapon = item as BaseWeapon;
 
-				CraftResource resource = clothing?.Resource ?? armor?.Resource ?? weapon?.Resource ?? CraftResource.None;
+        CraftResource resource = clothing?.Resource ?? armor?.Resource ?? weapon?.Resource ?? CraftResource.None;
 
-				if ( !item.IsChildOf( from.Backpack ) )
-				{
-					from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-					return;
-				}
-				if ( item.LootType == LootType.Blessed )
-				{
-					from.SendMessage( "You can only use this on exceptionally crafted robes, thigh boots, cloaks, or leather gloves." );
-					return;
-				}
-				if ( resource != CraftResource.None && resource != CraftResource.RegularLeather )
-				{
-					from.SendLocalizedMessage( 1049690 ); // Arcane gems can not be used on that type of leather.
-					return;
-				}
+        if (!item.IsChildOf(from.Backpack))
+        {
+          from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+          return;
+        }
 
-				int charges = GetChargesFor( from );
+        if (item.LootType == LootType.Blessed)
+        {
+          from.SendMessage(
+            "You can only use this on exceptionally crafted robes, thigh boots, cloaks, or leather gloves.");
+          return;
+        }
 
-				if ( eq.IsArcane )
-				{
-					if ( eq.CurArcaneCharges >= eq.MaxArcaneCharges )
-					{
-						from.SendMessage( "That item is already fully charged." );
-					}
-					else
-					{
-						if ( eq.CurArcaneCharges <= 0 )
-							item.Hue = DefaultArcaneHue;
+        if (resource != CraftResource.None && resource != CraftResource.RegularLeather)
+        {
+          from.SendLocalizedMessage(1049690); // Arcane gems can not be used on that type of leather.
+          return;
+        }
 
-						if ( (eq.CurArcaneCharges + charges) > eq.MaxArcaneCharges )
-							eq.CurArcaneCharges = eq.MaxArcaneCharges;
-						else
-							eq.CurArcaneCharges += charges;
+        int charges = GetChargesFor(from);
 
-						from.SendMessage( "You recharge the item." );
-						if ( Amount <= 1 )
-							Delete();
-						else Amount--;
-					}
-				}
-				else if ( from.Skills[SkillName.Tailoring].Value >= 80.0 )
-				{
-					bool isExceptional = clothing?.Quality == ClothingQuality.Exceptional ||
-					                     armor?.Quality == ArmorQuality.Exceptional ||
-					                     weapon?.Quality == WeaponQuality.Exceptional;
+        if (eq.IsArcane)
+        {
+          if (eq.CurArcaneCharges >= eq.MaxArcaneCharges)
+          {
+            from.SendMessage("That item is already fully charged.");
+          }
+          else
+          {
+            if (eq.CurArcaneCharges <= 0)
+              item.Hue = DefaultArcaneHue;
 
-					if ( isExceptional )
-					{
-						if (clothing != null)
-						{
-							clothing.Quality = ClothingQuality.Regular;
-							clothing.Crafter = from;
-						}
-						else if (armor != null)
-						{
-							armor.Quality = ArmorQuality.Regular;
-							armor.Crafter = from;
-							armor.PhysicalBonus = armor.FireBonus = armor.ColdBonus = armor.PoisonBonus = armor.EnergyBonus = 0; // Is there a method to remove bonuses?
-						}
-						else if (weapon != null)
-						{
-							weapon.Quality = WeaponQuality.Regular;
-							weapon.Crafter = from;
-						}
+            if (eq.CurArcaneCharges + charges > eq.MaxArcaneCharges)
+              eq.CurArcaneCharges = eq.MaxArcaneCharges;
+            else
+              eq.CurArcaneCharges += charges;
 
-						eq.CurArcaneCharges = eq.MaxArcaneCharges = charges;
+            from.SendMessage("You recharge the item.");
+            if (Amount <= 1)
+              Delete();
+            else Amount--;
+          }
+        }
+        else if (from.Skills[SkillName.Tailoring].Value >= 80.0)
+        {
+          bool isExceptional = clothing?.Quality == ClothingQuality.Exceptional ||
+                               armor?.Quality == ArmorQuality.Exceptional ||
+                               weapon?.Quality == WeaponQuality.Exceptional;
 
-						item.Hue = DefaultArcaneHue;
+          if (isExceptional)
+          {
+            if (clothing != null)
+            {
+              clothing.Quality = ClothingQuality.Regular;
+              clothing.Crafter = from;
+            }
+            else if (armor != null)
+            {
+              armor.Quality = ArmorQuality.Regular;
+              armor.Crafter = from;
+              armor.PhysicalBonus =
+                armor.FireBonus =
+                  armor.ColdBonus =
+                    armor.PoisonBonus = armor.EnergyBonus = 0; // Is there a method to remove bonuses?
+            }
+            else if (weapon != null)
+            {
+              weapon.Quality = WeaponQuality.Regular;
+              weapon.Crafter = from;
+            }
 
-						from.SendMessage( "You enhance the item with your gem." );
-						if ( Amount <= 1 )
-							Delete();
-						else Amount--;
-					}
-					else
-					{
-						from.SendMessage( "Only exceptional items can be enhanced with the gem." );
-					}
-				}
-				else
-				{
-					from.SendMessage( "You do not have enough skill in tailoring to enhance the item." );
-				}
-			}
-			else
-			{
-				from.SendMessage( "You can only use this on exceptionally crafted robes, thigh boots, cloaks, or leather gloves." );
-			}
-		}
+            eq.CurArcaneCharges = eq.MaxArcaneCharges = charges;
 
-		public static bool ConsumeCharges( Mobile from, int amount )
-		{
-			List<Item> items = from.Items;
-			int avail = 0;
+            item.Hue = DefaultArcaneHue;
 
-			for ( int i = 0; i < items.Count; ++i )
-			{
-				Item obj = items[i];
+            from.SendMessage("You enhance the item with your gem.");
+            if (Amount <= 1)
+              Delete();
+            else Amount--;
+          }
+          else
+          {
+            from.SendMessage("Only exceptional items can be enhanced with the gem.");
+          }
+        }
+        else
+        {
+          from.SendMessage("You do not have enough skill in tailoring to enhance the item.");
+        }
+      }
+      else
+      {
+        from.SendMessage(
+          "You can only use this on exceptionally crafted robes, thigh boots, cloaks, or leather gloves.");
+      }
+    }
 
-				if ( obj is IArcaneEquip eq && eq.IsArcane )
-					avail += eq.CurArcaneCharges;
-			}
+    public static bool ConsumeCharges(Mobile from, int amount)
+    {
+      List<Item> items = from.Items;
+      int avail = 0;
 
-			if ( avail < amount )
-				return false;
+      for (int i = 0; i < items.Count; ++i)
+      {
+        Item obj = items[i];
 
-			for ( int i = 0; i < items.Count; ++i )
-			{
-				Item obj = items[i];
+        if (obj is IArcaneEquip eq && eq.IsArcane)
+          avail += eq.CurArcaneCharges;
+      }
 
-				if ( obj is IArcaneEquip eq && eq.IsArcane )
-				{
-					if ( eq.CurArcaneCharges > amount )
-					{
-						eq.CurArcaneCharges -= amount;
-						break;
-					}
+      if (avail < amount)
+        return false;
 
-					amount -= eq.CurArcaneCharges;
-					eq.CurArcaneCharges = 0;
-				}
-			}
+      for (int i = 0; i < items.Count; ++i)
+      {
+        Item obj = items[i];
 
-			return true;
-		}
+        if (obj is IArcaneEquip eq && eq.IsArcane)
+        {
+          if (eq.CurArcaneCharges > amount)
+          {
+            eq.CurArcaneCharges -= amount;
+            break;
+          }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+          amount -= eq.CurArcaneCharges;
+          eq.CurArcaneCharges = 0;
+        }
+      }
 
-			writer.Write( (int) 0 );
-		}
+      return true;
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			int version = reader.ReadInt();
-		}
-	}
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

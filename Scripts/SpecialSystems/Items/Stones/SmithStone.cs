@@ -1,40 +1,40 @@
 namespace Server.Items
 {
-	public class SmithStone : Item
-	{
-		public override string DefaultName => "a Blacksmith Supply Stone";
+  public class SmithStone : Item
+  {
+    [Constructible]
+    public SmithStone() : base(0xED4)
+    {
+      Movable = false;
+      Hue = 0x476;
+    }
 
-		[Constructible]
-		public SmithStone() : base( 0xED4 )
-		{
-			Movable = false;
-			Hue = 0x476;
-		}
+    public SmithStone(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			SmithBag SmithBag = new SmithBag( 5000 );
+    public override string DefaultName => "a Blacksmith Supply Stone";
 
-			if ( !from.AddToBackpack( SmithBag ) )
-				SmithBag.Delete();
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      SmithBag SmithBag = new SmithBag(5000);
 
-		public SmithStone( Serial serial ) : base( serial )
-		{
-		}
+      if (!from.AddToBackpack(SmithBag))
+        SmithBag.Delete();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

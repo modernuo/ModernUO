@@ -3,45 +3,45 @@ using Server.Mobiles;
 
 namespace Server.Multis
 {
-	public class BankerCamp : BaseCamp
-	{
-		[Constructible]
-		public BankerCamp() : base( 0x1F6 )
-		{
-		}
+  public class BankerCamp : BaseCamp
+  {
+    [Constructible]
+    public BankerCamp() : base(0x1F6)
+    {
+    }
 
-		public override void AddComponents()
-		{
-			BaseDoor west, east;
+    public BankerCamp(Serial serial) : base(serial)
+    {
+    }
 
-			AddItem( west = new LightWoodGate( DoorFacing.WestCW ), -4, 4, 7 );
-			AddItem( east = new LightWoodGate( DoorFacing.EastCCW ), -3, 4, 7 );
+    public override void AddComponents()
+    {
+      BaseDoor west, east;
 
-			west.Link = east;
-			east.Link = west;
+      AddItem(west = new LightWoodGate(DoorFacing.WestCW), -4, 4, 7);
+      AddItem(east = new LightWoodGate(DoorFacing.EastCCW), -3, 4, 7);
 
-			AddItem( new Sign( SignType.Bank, SignFacing.West ), -5, 5, -4 );
+      west.Link = east;
+      east.Link = west;
 
-			AddMobile( new Banker(), 4, -4,  3, 7 );
-			AddMobile( new Banker(), 5,  4, -2, 0 );
-		}
+      AddItem(new Sign(SignType.Bank, SignFacing.West), -5, 5, -4);
 
-		public BankerCamp( Serial serial ) : base( serial )
-		{
-		}
+      AddMobile(new Banker(), 4, -4, 3, 7);
+      AddMobile(new Banker(), 5, 4, -2, 0);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

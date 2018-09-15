@@ -1,35 +1,33 @@
 namespace Server.Items
 {
-	public class VengefulSpiritScroll : SpellScroll
-	{
-		[Constructible]
-		public VengefulSpiritScroll() : this( 1 )
-		{
-		}
+  public class VengefulSpiritScroll : SpellScroll
+  {
+    [Constructible]
+    public VengefulSpiritScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public VengefulSpiritScroll( int amount ) : base( 113, 0x226D, amount )
-		{
-		}
+    [Constructible]
+    public VengefulSpiritScroll(int amount) : base(113, 0x226D, amount)
+    {
+    }
 
-		public VengefulSpiritScroll( Serial serial ) : base( serial )
-		{
-		}
+    public VengefulSpiritScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

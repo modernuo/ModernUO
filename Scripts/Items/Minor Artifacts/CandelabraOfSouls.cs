@@ -1,30 +1,30 @@
 namespace Server.Items
 {
-	public class CandelabraOfSouls : Item
-	{
-		public override int LabelNumber => 1063478;
+  public class CandelabraOfSouls : Item
+  {
+    [Constructible]
+    public CandelabraOfSouls() : base(0xB26)
+    {
+    }
 
-		[Constructible]
-		public CandelabraOfSouls() : base( 0xB26 )
-		{
-		}
+    public CandelabraOfSouls(Serial serial) : base(serial)
+    {
+    }
 
-		public CandelabraOfSouls( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1063478;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,33 +1,32 @@
 namespace Server.Items
 {
-	public class CoilsFang : Item
-	{
-		public override int LabelNumber => 1074229; // Coil's Fang
+  public class CoilsFang : Item
+  {
+    [Constructible]
+    public CoilsFang() : base(0x10E8)
+    {
+      LootType = LootType.Blessed;
+      Hue = 0x487;
+    }
 
-		[Constructible]
-		public CoilsFang() : base( 0x10E8 )
-		{
-			LootType = LootType.Blessed;
-			Hue = 0x487;
-		}
+    public CoilsFang(Serial serial) : base(serial)
+    {
+    }
 
-		public CoilsFang( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1074229; // Coil's Fang
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }
-

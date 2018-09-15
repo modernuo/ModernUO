@@ -1,132 +1,150 @@
-using Mat = Server.Engines.BulkOrders.BulkMaterialType;
 using System.Collections.Generic;
+using Mat = Server.Engines.BulkOrders.BulkMaterialType;
 
 namespace Server.Engines.BulkOrders
 {
-	[TypeAlias( "Scripts.Engines.BulkOrders.LargeSmithBOD" )]
-	public class LargeSmithBOD : LargeBOD
-	{
-		public static double[] m_BlacksmithMaterialChances = {
-				0.501953125, // None
-				0.250000000, // Dull Copper
-				0.125000000, // Shadow Iron
-				0.062500000, // Copper
-				0.031250000, // Bronze
-				0.015625000, // Gold
-				0.007812500, // Agapite
-				0.003906250, // Verite
-				0.001953125  // Valorite
-			};
+  [TypeAlias("Scripts.Engines.BulkOrders.LargeSmithBOD")]
+  public class LargeSmithBOD : LargeBOD
+  {
+    public static double[] m_BlacksmithMaterialChances =
+    {
+      0.501953125, // None
+      0.250000000, // Dull Copper
+      0.125000000, // Shadow Iron
+      0.062500000, // Copper
+      0.031250000, // Bronze
+      0.015625000, // Gold
+      0.007812500, // Agapite
+      0.003906250, // Verite
+      0.001953125 // Valorite
+    };
 
-		public override int ComputeFame()
-		{
-			return SmithRewardCalculator.Instance.ComputeFame( this );
-		}
+    [Constructible]
+    public LargeSmithBOD()
+    {
+      LargeBulkEntry[] entries;
+      bool useMaterials = true;
 
-		public override int ComputeGold()
-		{
-			return SmithRewardCalculator.Instance.ComputeGold( this );
-		}
+      int rand = Utility.Random(8);
 
-		[Constructible]
-		public LargeSmithBOD()
-		{
-			LargeBulkEntry[] entries;
-			bool useMaterials = true;
+      switch (rand)
+      {
+        default:
+        case 0:
+          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeRing);
+          break;
+        case 1:
+          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargePlate);
+          break;
+        case 2:
+          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeChain);
+          break;
+        case 3:
+          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeAxes);
+          break;
+        case 4:
+          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeFencing);
+          break;
+        case 5:
+          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeMaces);
+          break;
+        case 6:
+          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargePolearms);
+          break;
+        case 7:
+          entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.LargeSwords);
+          break;
+      }
 
-			int rand = Utility.Random( 8 );
+      if (rand > 2 && rand < 8)
+        useMaterials = false;
 
-			switch ( rand )
-			{
-				default:
-				case  0: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargeRing ); 	 break;
-				case  1: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargePlate );	 break;
-				case  2: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargeChain );	 break;
-				case  3: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargeAxes );		 break;
-				case  4: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargeFencing );	 break;
-				case  5: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargeMaces );	 break;
-				case  6: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargePolearms );	 break;
-				case  7: entries = LargeBulkEntry.ConvertEntries( this, LargeBulkEntry.LargeSwords );	 break;
-			}
+      int hue = 0x44E;
+      int amountMax = Utility.RandomList(10, 15, 20, 20);
+      bool reqExceptional = 0.825 > Utility.RandomDouble();
 
-			if ( rand > 2 && rand < 8 )
-				useMaterials = false;
+      BulkMaterialType material;
 
-			int hue = 0x44E;
-			int amountMax = Utility.RandomList( 10, 15, 20, 20 );
-			bool reqExceptional = ( 0.825 > Utility.RandomDouble() );
+      if (useMaterials)
+        material = GetRandomMaterial(BulkMaterialType.DullCopper, m_BlacksmithMaterialChances);
+      else
+        material = BulkMaterialType.None;
 
-			BulkMaterialType material;
+      Hue = hue;
+      AmountMax = amountMax;
+      Entries = entries;
+      RequireExceptional = reqExceptional;
+      Material = material;
+    }
 
-			if ( useMaterials )
-				material = GetRandomMaterial( BulkMaterialType.DullCopper, m_BlacksmithMaterialChances );
-			else
-				material = BulkMaterialType.None;
+    public LargeSmithBOD(int amountMax, bool reqExceptional, BulkMaterialType mat, LargeBulkEntry[] entries)
+    {
+      Hue = 0x44E;
+      AmountMax = amountMax;
+      Entries = entries;
+      RequireExceptional = reqExceptional;
+      Material = mat;
+    }
 
-			Hue = hue;
-			AmountMax = amountMax;
-			Entries = entries;
-			RequireExceptional = reqExceptional;
-			Material = material;
-		}
+    public LargeSmithBOD(Serial serial) : base(serial)
+    {
+    }
 
-		public LargeSmithBOD( int amountMax, bool reqExceptional, BulkMaterialType mat, LargeBulkEntry[] entries )
-		{
-			Hue = 0x44E;
-			AmountMax = amountMax;
-			Entries = entries;
-			RequireExceptional = reqExceptional;
-			Material = mat;
-		}
+    public override int ComputeFame()
+    {
+      return SmithRewardCalculator.Instance.ComputeFame(this);
+    }
 
-		public override List<Item> ComputeRewards( bool full )
-		{
-			List<Item> list = new List<Item>();
+    public override int ComputeGold()
+    {
+      return SmithRewardCalculator.Instance.ComputeGold(this);
+    }
 
-			RewardGroup rewardGroup = SmithRewardCalculator.Instance.LookupRewards( SmithRewardCalculator.Instance.ComputePoints( this ) );
+    public override List<Item> ComputeRewards(bool full)
+    {
+      List<Item> list = new List<Item>();
 
-			if ( rewardGroup != null )
-			{
-				if ( full )
-				{
-					for ( int i = 0; i < rewardGroup.Items.Length; ++i )
-					{
-						Item item = rewardGroup.Items[i].Construct();
+      RewardGroup rewardGroup =
+        SmithRewardCalculator.Instance.LookupRewards(SmithRewardCalculator.Instance.ComputePoints(this));
 
-						if ( item != null )
-							list.Add( item );
-					}
-				}
-				else
-				{
-					RewardItem rewardItem = rewardGroup.AcquireItem();
+      if (rewardGroup != null)
+      {
+        if (full)
+        {
+          for (int i = 0; i < rewardGroup.Items.Length; ++i)
+          {
+            Item item = rewardGroup.Items[i].Construct();
 
-					Item item = rewardItem?.Construct();
+            if (item != null)
+              list.Add(item);
+          }
+        }
+        else
+        {
+          RewardItem rewardItem = rewardGroup.AcquireItem();
 
-					if ( item != null )
-						list.Add( item );
-				}
-			}
+          Item item = rewardItem?.Construct();
 
-			return list;
-		}
+          if (item != null)
+            list.Add(item);
+        }
+      }
 
-		public LargeSmithBOD( Serial serial ) : base( serial )
-		{
-		}
+      return list;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

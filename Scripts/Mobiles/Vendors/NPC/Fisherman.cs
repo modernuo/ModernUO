@@ -1,48 +1,50 @@
 using System.Collections.Generic;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Fisherman : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+  public class Fisherman : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		public override NpcGuild NpcGuild => NpcGuild.FishermensGuild;
+    [Constructible]
+    public Fisherman() : base("the fisher")
+    {
+      SetSkill(SkillName.Fishing, 75.0, 98.0);
+    }
 
-		[Constructible]
-		public Fisherman() : base( "the fisher" )
-		{
-			SetSkill( SkillName.Fishing, 75.0, 98.0 );
-		}
+    public Fisherman(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBFisherman() );
-		}
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    public override NpcGuild NpcGuild => NpcGuild.FishermensGuild;
 
-			AddItem( new Items.FishingPole() );
-		}
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBFisherman());
+    }
 
-		public Fisherman( Serial serial ) : base( serial )
-		{
-		}
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      AddItem(new FishingPole());
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

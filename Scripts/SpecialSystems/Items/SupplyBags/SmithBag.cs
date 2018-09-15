@@ -1,45 +1,44 @@
 namespace Server.Items
-{ 
-	public class SmithBag : Bag 
-	{ 
-		[Constructible] 
-		public SmithBag() : this( 5000 ) 
-		{ 
-		} 
+{
+  public class SmithBag : Bag
+  {
+    [Constructible]
+    public SmithBag() : this(5000)
+    {
+    }
 
-		[Constructible] 
-		public SmithBag( int amount ) 
-		{ 
-			DropItem( new DullCopperIngot   ( amount ) ); 
-			DropItem( new ShadowIronIngot   ( amount ) ); 
-			DropItem( new CopperIngot   ( amount ) ); 
-			DropItem( new BronzeIngot   ( amount ) ); 
-			DropItem( new GoldIngot   ( amount ) ); 
-			DropItem( new AgapiteIngot   ( amount ) ); 
-			DropItem( new VeriteIngot   ( amount ) ); 
-			DropItem( new ValoriteIngot   ( amount ) ); 
-			DropItem( new IronIngot   ( amount ) ); 
-			DropItem( new Tongs ( amount ) );
-			DropItem( new TinkerTools ( amount ) );
+    [Constructible]
+    public SmithBag(int amount)
+    {
+      DropItem(new DullCopperIngot(amount));
+      DropItem(new ShadowIronIngot(amount));
+      DropItem(new CopperIngot(amount));
+      DropItem(new BronzeIngot(amount));
+      DropItem(new GoldIngot(amount));
+      DropItem(new AgapiteIngot(amount));
+      DropItem(new VeriteIngot(amount));
+      DropItem(new ValoriteIngot(amount));
+      DropItem(new IronIngot(amount));
+      DropItem(new Tongs(amount));
+      DropItem(new TinkerTools(amount));
+    }
 
-		} 
+    public SmithBag(Serial serial) : base(serial)
+    {
+    }
 
-		public SmithBag( Serial serial ) : base( serial ) 
-		{ 
-		} 
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer ) 
-		{ 
-			base.Serialize( writer ); 
+      writer.Write(0); // version 
+    }
 
-			writer.Write( (int) 0 ); // version 
-		} 
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader ) 
-		{ 
-			base.Deserialize( reader ); 
-
-			int version = reader.ReadInt(); 
-		} 
-	} 
-} 
+      int version = reader.ReadInt();
+    }
+  }
+}

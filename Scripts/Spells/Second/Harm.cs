@@ -2,111 +2,108 @@ using Server.Targeting;
 
 namespace Server.Spells.Second
 {
-	public class HarmSpell : MagerySpell
-	{
-		private static SpellInfo m_Info = new SpellInfo(
-				"Harm", "An Mani",
-				212,
-				Core.AOS ? 9001 : 9041,
-				Reagent.Nightshade,
-				Reagent.SpidersSilk
-			);
+  public class HarmSpell : MagerySpell
+  {
+    private static SpellInfo m_Info = new SpellInfo(
+      "Harm", "An Mani",
+      212,
+      Core.AOS ? 9001 : 9041,
+      Reagent.Nightshade,
+      Reagent.SpidersSilk
+    );
 
-		public override SpellCircle Circle => SpellCircle.Second;
+    public HarmSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    {
+    }
 
-		public HarmSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
-		{
-		}
+    public override SpellCircle Circle => SpellCircle.Second;
 
-		public override void OnCast()
-		{
-			Caster.Target = new InternalTarget( this );
-		}
+    public override bool DelayedDamage => false;
 
-		public override bool DelayedDamage => false;
-
-
-		public override double GetSlayerDamageScalar( Mobile target )
-		{
-			return 1.0; //This spell isn't affected by slayer spellbooks
-		}
+    public override void OnCast()
+    {
+      Caster.Target = new InternalTarget(this);
+    }
 
 
-		public void Target( Mobile m )
-		{
-			if ( !Caster.CanSee( m ) )
-			{
-				Caster.SendLocalizedMessage( 500237 ); // Target can not be seen.
-			}
-			else if ( CheckHSequence( m ) )
-			{
-				SpellHelper.Turn( Caster, m );
+    public override double GetSlayerDamageScalar(Mobile target)
+    {
+      return 1.0; //This spell isn't affected by slayer spellbooks
+    }
 
-				SpellHelper.CheckReflect( (int)Circle, Caster, ref m );
 
-				double damage;
+    public void Target(Mobile m)
+    {
+      if (!Caster.CanSee(m))
+      {
+        Caster.SendLocalizedMessage(500237); // Target can not be seen.
+      }
+      else if (CheckHSequence(m))
+      {
+        SpellHelper.Turn(Caster, m);
 
-				if ( Core.AOS )
-				{
-					damage = GetNewAosDamage( 17, 1, 5, m );
-				}
-				else
-				{
-					damage = Utility.Random( 1, 15 );
+        SpellHelper.CheckReflect((int)Circle, Caster, ref m);
 
-					if ( CheckResisted( m ) )
-					{
-						damage *= 0.75;
+        double damage;
 
-						m.SendLocalizedMessage( 501783 ); // You feel yourself resisting magical energy.
-					}
+        if (Core.AOS)
+        {
+          damage = GetNewAosDamage(17, 1, 5, m);
+        }
+        else
+        {
+          damage = Utility.Random(1, 15);
 
-					damage *= GetDamageScalar( m );
-				}
+          if (CheckResisted(m))
+          {
+            damage *= 0.75;
 
-				if ( !m.InRange( Caster, 2 ) )
-					damage *= 0.25; // 1/4 damage at > 2 tile range
-				else if ( !m.InRange( Caster, 1 ) )
-					damage *= 0.50; // 1/2 damage at 2 tile range
+            m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
+          }
 
-				if ( Core.AOS )
-				{
-					m.FixedParticles( 0x374A, 10, 30, 5013, 1153, 2, EffectLayer.Waist );
-					m.PlaySound( 0x0FC );
-				}
-				else
-				{
-					m.FixedParticles( 0x374A, 10, 15, 5013, EffectLayer.Waist );
-					m.PlaySound( 0x1F1 );
-				}
+          damage *= GetDamageScalar(m);
+        }
 
-				SpellHelper.Damage( this, m, damage, 0, 0, 100, 0, 0 );
-			}
+        if (!m.InRange(Caster, 2))
+          damage *= 0.25; // 1/4 damage at > 2 tile range
+        else if (!m.InRange(Caster, 1))
+          damage *= 0.50; // 1/2 damage at 2 tile range
 
-			FinishSequence();
-		}
+        if (Core.AOS)
+        {
+          m.FixedParticles(0x374A, 10, 30, 5013, 1153, 2, EffectLayer.Waist);
+          m.PlaySound(0x0FC);
+        }
+        else
+        {
+          m.FixedParticles(0x374A, 10, 15, 5013, EffectLayer.Waist);
+          m.PlaySound(0x1F1);
+        }
 
-		private class InternalTarget : Target
-		{
-			private HarmSpell m_Owner;
+        SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
+      }
 
-			public InternalTarget( HarmSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Harmful )
-			{
-				m_Owner = owner;
-			}
+      FinishSequence();
+    }
 
-			protected override void OnTarget( Mobile from, object o )
-			{
-				if ( o is Mobile )
-				{
-					m_Owner.Target( (Mobile)o );
-				}
-			}
+    private class InternalTarget : Target
+    {
+      private HarmSpell m_Owner;
 
-			protected override void OnTargetFinish( Mobile from )
-			{
-				m_Owner.FinishSequence();
-			}
-		}
-	}
+      public InternalTarget(HarmSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
+      {
+        m_Owner = owner;
+      }
+
+      protected override void OnTarget(Mobile from, object o)
+      {
+        if (o is Mobile) m_Owner.Target((Mobile)o);
+      }
+
+      protected override void OnTargetFinish(Mobile from)
+      {
+        m_Owner.FinishSequence();
+      }
+    }
+  }
 }

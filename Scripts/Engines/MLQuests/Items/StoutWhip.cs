@@ -1,31 +1,31 @@
 namespace Server.Items
 {
-	public class StoutWhip : Item
-	{
-		public override int LabelNumber => 1074812; // Stout Whip
+  public class StoutWhip : Item
+  {
+    [Constructible]
+    public StoutWhip() : base(0x166F)
+    {
+      LootType = LootType.Blessed;
+    }
 
-		[Constructible]
-		public StoutWhip() : base( 0x166F )
-		{
-			LootType = LootType.Blessed;
-		}
+    public StoutWhip(Serial serial) : base(serial)
+    {
+    }
 
-		public StoutWhip( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1074812; // Stout Whip
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // Version
-		}
+      writer.Write(0); // Version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,45 +1,45 @@
 namespace Server.Items
 {
-	public class LeggingsOfEmbers : PlateLegs
-	{
-		public override int LabelNumber => 1062911; // Royal Leggings of Embers
+  public class LeggingsOfEmbers : PlateLegs
+  {
+    [Constructible]
+    public LeggingsOfEmbers()
+    {
+      Hue = 0x2C;
+      LootType = LootType.Blessed;
 
-		public override int BasePhysicalResistance => 15;
-		public override int BaseFireResistance => 25;
-		public override int BaseColdResistance => 0;
-		public override int BasePoisonResistance => 15;
-		public override int BaseEnergyResistance => 15;
+      ArmorAttributes.SelfRepair = 10;
+      ArmorAttributes.MageArmor = 1;
+      ArmorAttributes.LowerStatReq = 100;
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public LeggingsOfEmbers(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public LeggingsOfEmbers()
-		{
-			Hue = 0x2C;
-			LootType = LootType.Blessed;
+    public override int LabelNumber => 1062911; // Royal Leggings of Embers
 
-			ArmorAttributes.SelfRepair = 10;
-			ArmorAttributes.MageArmor = 1;
-			ArmorAttributes.LowerStatReq = 100;
-		}
+    public override int BasePhysicalResistance => 15;
+    public override int BaseFireResistance => 25;
+    public override int BaseColdResistance => 0;
+    public override int BasePoisonResistance => 15;
+    public override int BaseEnergyResistance => 15;
 
-		public LeggingsOfEmbers( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( (int) 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

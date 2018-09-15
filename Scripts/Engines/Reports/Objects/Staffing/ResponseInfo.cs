@@ -2,50 +2,52 @@ using System;
 
 namespace Server.Engines.Reports
 {
-	public class ResponseInfo : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "rs", Construct );
+  public class ResponseInfo : PersistableObject
+  {
+    public ResponseInfo()
+    {
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new ResponseInfo();
-		}
+    public ResponseInfo(string sentBy, string message)
+    {
+      TimeStamp = DateTime.UtcNow;
+      SentBy = sentBy;
+      Message = message;
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public DateTime TimeStamp{ get; set; }
 
-		public DateTime TimeStamp { get; set; }
+    public string SentBy{ get; set; }
 
-		public string SentBy { get; set; }
+    public string Message{ get; set; }
 
-		public string Message { get; set; }
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetDateTime("t", TimeStamp);
 
-		public ResponseInfo()
-		{
-		}
+      op.SetString("s", SentBy);
+      op.SetString("m", Message);
+    }
 
-		public ResponseInfo( string sentBy, string message )
-		{
-			TimeStamp = DateTime.UtcNow;
-			SentBy = sentBy;
-			Message = message;
-		}
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      TimeStamp = ip.GetDateTime("t");
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetDateTime( "t", TimeStamp );
+      SentBy = ip.GetString("s");
+      Message = ip.GetString("m");
+    }
 
-			op.SetString( "s", SentBy );
-			op.SetString( "m", Message );
-		}
+    #region Type Identification
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			TimeStamp = ip.GetDateTime( "t" );
+    public static readonly PersistableType ThisTypeID = new PersistableType("rs", Construct);
 
-			SentBy = ip.GetString( "s" );
-			Message = ip.GetString( "m" );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new ResponseInfo();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

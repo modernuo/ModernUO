@@ -1,32 +1,32 @@
 namespace Server.Items
 {
-	public class Harp : BaseInstrument
-	{
-		[Constructible]
-		public Harp() : base( 0xEB1, 0x43, 0x44 )
-		{
-			Weight = 35.0;
-		}
+  public class Harp : BaseInstrument
+  {
+    [Constructible]
+    public Harp() : base(0xEB1, 0x43, 0x44)
+    {
+      Weight = 35.0;
+    }
 
-		public Harp( Serial serial ) : base( serial )
-		{
-		}
+    public Harp(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( Weight == 3.0 )
-				Weight = 35.0;
-		}
-	}
+      if (Weight == 3.0)
+        Weight = 35.0;
+    }
+  }
 }

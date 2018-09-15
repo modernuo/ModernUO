@@ -1,144 +1,148 @@
 using System;
 using System.Collections;
-using Server.Items;
 using Server.Engines.CannedEvil;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Semidar : BaseChampion
-	{
-		public override ChampionSkullType SkullType => ChampionSkullType.Pain;
+  public class Semidar : BaseChampion
+  {
+    [Constructible]
+    public Semidar() : base(AIType.AI_Mage)
+    {
+      Body = 174;
+      BaseSoundID = 0x4B0;
 
-		public override Type[] UniqueList => new[] { typeof( GladiatorsCollar ) };
-		public override Type[] SharedList => new[] { typeof(RoyalGuardSurvivalKnife), typeof(ANecromancerShroud), typeof(LieutenantOfTheBritannianRoyalGuard) };
-		public override Type[] DecorativeList => new[] { typeof( LavaTile ), typeof( DemonSkull ) };
+      SetStr(502, 600);
+      SetDex(102, 200);
+      SetInt(601, 750);
 
-		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
+      SetHits(1500);
+      SetStam(103, 250);
 
-		public override string DefaultName => "Semidar";
+      SetDamage(29, 35);
 
-		[Constructible]
-		public Semidar() : base( AIType.AI_Mage )
-		{
-			Body = 174;
-			BaseSoundID = 0x4B0;
+      SetDamageType(ResistanceType.Physical, 75);
+      SetDamageType(ResistanceType.Fire, 25);
 
-			SetStr( 502, 600 );
-			SetDex( 102, 200 );
-			SetInt( 601, 750 );
+      SetResistance(ResistanceType.Physical, 20, 30);
+      SetResistance(ResistanceType.Fire, 50, 60);
+      SetResistance(ResistanceType.Cold, 20, 30);
+      SetResistance(ResistanceType.Poison, 20, 30);
+      SetResistance(ResistanceType.Energy, 10, 20);
 
-			SetHits( 1500 );
-			SetStam( 103, 250 );
+      SetSkill(SkillName.EvalInt, 95.1, 100.0);
+      SetSkill(SkillName.Magery, 90.1, 105.0);
+      SetSkill(SkillName.Meditation, 95.1, 100.0);
+      SetSkill(SkillName.MagicResist, 120.2, 140.0);
+      SetSkill(SkillName.Tactics, 90.1, 105.0);
+      SetSkill(SkillName.Wrestling, 90.1, 105.0);
 
-			SetDamage( 29, 35 );
+      Fame = 24000;
+      Karma = -24000;
 
-			SetDamageType( ResistanceType.Physical, 75 );
-			SetDamageType( ResistanceType.Fire, 25 );
+      VirtualArmor = 20;
+    }
 
-			SetResistance( ResistanceType.Physical, 20, 30 );
-			SetResistance( ResistanceType.Fire, 50, 60 );
-			SetResistance( ResistanceType.Cold, 20, 30 );
-			SetResistance( ResistanceType.Poison, 20, 30 );
-			SetResistance( ResistanceType.Energy, 10, 20 );
+    public Semidar(Serial serial) : base(serial)
+    {
+    }
 
-			SetSkill( SkillName.EvalInt, 95.1, 100.0 );
-			SetSkill( SkillName.Magery, 90.1, 105.0 );
-			SetSkill( SkillName.Meditation, 95.1, 100.0 );
-			SetSkill( SkillName.MagicResist, 120.2, 140.0 );
-			SetSkill( SkillName.Tactics, 90.1, 105.0 );
-			SetSkill( SkillName.Wrestling, 90.1, 105.0 );
+    public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
-			Fame = 24000;
-			Karma = -24000;
+    public override Type[] UniqueList => new[] { typeof(GladiatorsCollar) };
 
-			VirtualArmor = 20;
-		}
+    public override Type[] SharedList => new[]
+      { typeof(RoyalGuardSurvivalKnife), typeof(ANecromancerShroud), typeof(LieutenantOfTheBritannianRoyalGuard) };
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.UltraRich, 4 );
-			AddLoot( LootPack.FilthyRich );
-		}
+    public override Type[] DecorativeList => new[] { typeof(LavaTile), typeof(DemonSkull) };
 
-		public override bool Unprovokable => true;
-		public override Poison PoisonImmune => Poison.Lethal;
+    public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
 
-		public override void CheckReflect( Mobile caster, ref bool reflect )
-		{
-			if ( caster.Body.IsMale )
-				reflect = true; // Always reflect if caster isn't female
-		}
+    public override string DefaultName => "Semidar";
 
-		public override void AlterDamageScalarFrom( Mobile caster, ref double scalar )
-		{
-			if ( caster.Body.IsMale )
-				scalar = 20; // Male bodies always reflect.. damage scaled 20x
-		}
+    public override bool Unprovokable => true;
+    public override Poison PoisonImmune => Poison.Lethal;
 
-		public void DrainLife()
-		{
-			if ( Map == null )
-				return;
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.UltraRich, 4);
+      AddLoot(LootPack.FilthyRich);
+    }
 
-			ArrayList list = new ArrayList();
+    public override void CheckReflect(Mobile caster, ref bool reflect)
+    {
+      if (caster.Body.IsMale)
+        reflect = true; // Always reflect if caster isn't female
+    }
 
-			foreach ( Mobile m in GetMobilesInRange( 2 ) )
-			{
-				if ( m == this || !CanBeHarmful( m ) )
-					continue;
+    public override void AlterDamageScalarFrom(Mobile caster, ref double scalar)
+    {
+      if (caster.Body.IsMale)
+        scalar = 20; // Male bodies always reflect.. damage scaled 20x
+    }
 
-				if ( m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != Team) )
-					list.Add( m );
-				else if ( m.Player )
-					list.Add( m );
-			}
+    public void DrainLife()
+    {
+      if (Map == null)
+        return;
 
-			foreach ( Mobile m in list )
-			{
-				DoHarmful( m );
+      ArrayList list = new ArrayList();
 
-				m.FixedParticles( 0x374A, 10, 15, 5013, 0x496, 0, EffectLayer.Waist );
-				m.PlaySound( 0x231 );
+      foreach (Mobile m in GetMobilesInRange(2))
+      {
+        if (m == this || !CanBeHarmful(m))
+          continue;
 
-				m.SendMessage( "You feel the life drain out of you!" );
+        if (m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned ||
+                                  ((BaseCreature)m).Team != Team))
+          list.Add(m);
+        else if (m.Player)
+          list.Add(m);
+      }
 
-				int toDrain = Utility.RandomMinMax( 10, 40 );
+      foreach (Mobile m in list)
+      {
+        DoHarmful(m);
 
-				Hits += toDrain;
-				m.Damage( toDrain, this );
-			}
-		}
+        m.FixedParticles(0x374A, 10, 15, 5013, 0x496, 0, EffectLayer.Waist);
+        m.PlaySound(0x231);
 
-		public override void OnGaveMeleeAttack( Mobile defender )
-		{
-			base.OnGaveMeleeAttack( defender );
+        m.SendMessage("You feel the life drain out of you!");
 
-			if ( 0.25 >= Utility.RandomDouble() )
-				DrainLife();
-		}
+        int toDrain = Utility.RandomMinMax(10, 40);
 
-		public override void OnGotMeleeAttack( Mobile attacker )
-		{
-			base.OnGotMeleeAttack( attacker );
+        Hits += toDrain;
+        m.Damage(toDrain, this);
+      }
+    }
 
-			if ( 0.25 >= Utility.RandomDouble() )
-				DrainLife();
-		}
+    public override void OnGaveMeleeAttack(Mobile defender)
+    {
+      base.OnGaveMeleeAttack(defender);
 
-		public Semidar( Serial serial ) : base( serial )
-		{
-		}
+      if (0.25 >= Utility.RandomDouble())
+        DrainLife();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void OnGotMeleeAttack(Mobile attacker)
+    {
+      base.OnGotMeleeAttack(attacker);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+      if (0.25 >= Utility.RandomDouble())
+        DrainLife();
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

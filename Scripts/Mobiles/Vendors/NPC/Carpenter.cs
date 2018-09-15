@@ -1,54 +1,56 @@
 using System.Collections.Generic;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Carpenter : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+  public class Carpenter : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
+    [Constructible]
+    public Carpenter() : base("the carpenter")
+    {
+      SetSkill(SkillName.Carpentry, 85.0, 100.0);
+      SetSkill(SkillName.Lumberjacking, 60.0, 83.0);
+    }
 
-		[Constructible]
-		public Carpenter() : base( "the carpenter" )
-		{
-			SetSkill( SkillName.Carpentry, 85.0, 100.0 );
-			SetSkill( SkillName.Lumberjacking, 60.0, 83.0 );
-		}
+    public Carpenter(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBStavesWeapon() );
-			m_SBInfos.Add( new SBCarpenter() );
-			m_SBInfos.Add( new SBWoodenShields() );
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-			if ( IsTokunoVendor )
-				m_SBInfos.Add( new SBSECarpenter() );
-		}
+    public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBStavesWeapon());
+      m_SBInfos.Add(new SBCarpenter());
+      m_SBInfos.Add(new SBWoodenShields());
 
-			AddItem( new Items.HalfApron() );
-		}
+      if (IsTokunoVendor)
+        m_SBInfos.Add(new SBSECarpenter());
+    }
 
-		public Carpenter( Serial serial ) : base( serial )
-		{
-		}
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      AddItem(new HalfApron());
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

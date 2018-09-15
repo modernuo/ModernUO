@@ -1,27 +1,28 @@
 namespace Server.Ethics
 {
-	public class EthicDefinition
-	{
-		public int PrimaryHue { get; }
+  public class EthicDefinition
+  {
+    public EthicDefinition(int primaryHue, TextDefinition title, TextDefinition adjunct, TextDefinition joinPhrase,
+      Power[] powers)
+    {
+      PrimaryHue = primaryHue;
 
-		public TextDefinition Title { get; }
+      Title = title;
+      Adjunct = adjunct;
 
-		public TextDefinition Adjunct { get; }
+      JoinPhrase = joinPhrase;
 
-		public TextDefinition JoinPhrase { get; }
+      Powers = powers;
+    }
 
-		public Power[] Powers { get; }
+    public int PrimaryHue{ get; }
 
-		public EthicDefinition( int primaryHue, TextDefinition title, TextDefinition adjunct, TextDefinition joinPhrase, Power[] powers )
-		{
-			PrimaryHue = primaryHue;
+    public TextDefinition Title{ get; }
 
-			Title = title;
-			Adjunct = adjunct;
+    public TextDefinition Adjunct{ get; }
 
-			JoinPhrase = joinPhrase;
+    public TextDefinition JoinPhrase{ get; }
 
-			Powers = powers;
-		}
-	}
+    public Power[] Powers{ get; }
+  }
 }

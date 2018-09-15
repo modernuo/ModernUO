@@ -2,89 +2,81 @@ using System;
 
 namespace Server.Items
 {
-	public class JackOLantern : BaseAddon
-	{
-		public override bool ShareHue => false;
+  public class JackOLantern : BaseAddon
+  {
+    [Constructible]
+    public JackOLantern()
+      : this(1 > Utility.Random(2))
+    {
+    }
 
-		private AddonComponent GetComponent( int itemID, int hue )
-		{
-			AddonComponent ac = new AddonComponent( itemID );
+    [Constructible]
+    public JackOLantern(bool south)
+    {
+      AddComponent(new AddonComponent(5703), 0, 0, +0);
 
-			ac.Hue = hue;
-			ac.Name = "jack-o-lantern";
+      int hue = 1161;
+      //( 1 > Utility.Random( 5 ) ? 2118 : 1161 );
 
-			return ac;
-		}
+      if (!south)
+      {
+        AddComponent(GetComponent(3178, 0000), 0, 0, -1);
+        AddComponent(GetComponent(3883, hue), 0, 0, +1);
+        AddComponent(GetComponent(3862, hue), 0, 0, +0);
+      }
+      else
+      {
+        AddComponent(GetComponent(3179, 0000), 0, 0, +0);
+        AddComponent(GetComponent(3885, hue), 0, 0, -1);
+        AddComponent(GetComponent(3871, hue), 0, 0, +0);
+      }
+    }
 
-		[Constructible]
-		public JackOLantern()
-			: this( 1 > Utility.Random( 2 ) )
-		{
-		}
+    public JackOLantern(Serial serial)
+      : base(serial)
+    {
+    }
 
-		[Constructible]
-		public JackOLantern( bool south )
-		{
-			AddComponent( new AddonComponent( 5703 ), 0, 0, +0 );
+    public override bool ShareHue => false;
 
-			int hue = 1161;
-			//( 1 > Utility.Random( 5 ) ? 2118 : 1161 );
+    private AddonComponent GetComponent(int itemID, int hue)
+    {
+      AddonComponent ac = new AddonComponent(itemID);
 
-			if ( !south )
-			{
-				AddComponent( GetComponent( 3178, 0000 ), 0, 0, -1 );
-				AddComponent( GetComponent( 3883, hue ), 0, 0, +1 );
-				AddComponent( GetComponent( 3862, hue ), 0, 0, +0 );
-			}
-			else
-			{
-				AddComponent( GetComponent( 3179, 0000 ), 0, 0, +0 );
-				AddComponent( GetComponent( 3885, hue ), 0, 0, -1 );
-				AddComponent( GetComponent( 3871, hue ), 0, 0, +0 );
-			}
-		}
+      ac.Hue = hue;
+      ac.Name = "jack-o-lantern";
 
-		public JackOLantern( Serial serial )
-			: base( serial )
-		{
-		}
+      return ac;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (byte) 2 ); // version
-		}
+      writer.Write((byte)2); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadByte();
+      int version = reader.ReadByte();
 
-			if ( version == 0 )
-			{
-				Timer.DelayCall( TimeSpan.Zero, delegate
-				{
-					for ( int i = 0; i < Components.Count; ++i )
-					{
-						if ( Components[i] is AddonComponent ac && ac.Hue == 2118 )
-							ac.Hue = 1161;
-					}
-				} );
-			}
+      if (version == 0)
+        Timer.DelayCall(TimeSpan.Zero, delegate
+        {
+          for (int i = 0; i < Components.Count; ++i)
+            if (Components[i] is AddonComponent ac && ac.Hue == 2118)
+              ac.Hue = 1161;
+        });
 
-			if ( version <= 1 )
-			{
-				Timer.DelayCall( TimeSpan.Zero, delegate
-				{
-					for ( int i = 0; i < Components.Count; ++i )
-					{
-						if ( Components[i] is AddonComponent ac )
-							ac.Name = "jack-o-lantern";
-					}
-				} );
-			}
-		}
-	}
+      if (version <= 1)
+        Timer.DelayCall(TimeSpan.Zero, delegate
+        {
+          for (int i = 0; i < Components.Count; ++i)
+            if (Components[i] is AddonComponent ac)
+              ac.Name = "jack-o-lantern";
+        });
+    }
+  }
 }

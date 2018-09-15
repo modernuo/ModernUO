@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Server.Gumps;
@@ -6,297 +5,299 @@ using Server.Network;
 
 namespace Server.Engines.ConPVP
 {
-	public class PreferencesController : Item
-	{
-		private Preferences m_Preferences;
-
-		//[CommandProperty( AccessLevel.GameMaster )]
-		public Preferences Preferences{ get => m_Preferences;
-			set{} }
-
-		public override string DefaultName => "preferences controller";
-
-		[Constructible]
-		public PreferencesController() : base( 0x1B7A )
-		{
-			Visible = false;
-			Movable = false;
-
-			m_Preferences = new Preferences();
-
-			if ( Preferences.Instance == null )
-				Preferences.Instance = m_Preferences;
-			else
-				Delete();
-		}
-
-		public override void Delete()
-		{
-			if ( Preferences.Instance != m_Preferences )
-				base.Delete();
-		}
-
-		public PreferencesController( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 );
-
-			m_Preferences.Serialize( writer );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Preferences = new Preferences( reader );
-					Preferences.Instance = m_Preferences;
-					break;
-				}
-			}
-		}
-	}
-
-	public class Preferences
-	{
-		private Hashtable m_Table;
-
-		public ArrayList Entries { get; }
-
-		public PreferencesEntry Find( Mobile mob )
-		{
-			PreferencesEntry entry = (PreferencesEntry) m_Table[mob];
-
-			if ( entry == null )
-			{
-				m_Table[mob] = entry = new PreferencesEntry( mob, this );
-				Entries.Add( entry );
-			}
-
-			return entry;
-		}
-
-		public static Preferences Instance { get; set; }
-
-		public Preferences()
-		{
-			m_Table = new Hashtable();
-			Entries = new ArrayList();
-		}
-
-		public Preferences( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
-
-			switch ( version )
-			{
-				case 0:
-				{
-					int count = reader.ReadEncodedInt();
-
-					m_Table = new Hashtable( count );
-					Entries = new ArrayList( count );
-
-					for ( int i = 0; i < count; ++i )
-					{
-						PreferencesEntry entry = new PreferencesEntry( reader, this, version );
+  public class PreferencesController : Item
+  {
+    private Preferences m_Preferences;
+
+    [Constructible]
+    public PreferencesController() : base(0x1B7A)
+    {
+      Visible = false;
+      Movable = false;
+
+      m_Preferences = new Preferences();
+
+      if (Preferences.Instance == null)
+        Preferences.Instance = m_Preferences;
+      else
+        Delete();
+    }
+
+    public PreferencesController(Serial serial) : base(serial)
+    {
+    }
+
+    //[CommandProperty( AccessLevel.GameMaster )]
+    public Preferences Preferences
+    {
+      get => m_Preferences;
+      set { }
+    }
+
+    public override string DefaultName => "preferences controller";
+
+    public override void Delete()
+    {
+      if (Preferences.Instance != m_Preferences)
+        base.Delete();
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0);
+
+      m_Preferences.Serialize(writer);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+
+      switch (version)
+      {
+        case 0:
+        {
+          m_Preferences = new Preferences(reader);
+          Preferences.Instance = m_Preferences;
+          break;
+        }
+      }
+    }
+  }
+
+  public class Preferences
+  {
+    private Hashtable m_Table;
+
+    public Preferences()
+    {
+      m_Table = new Hashtable();
+      Entries = new ArrayList();
+    }
+
+    public Preferences(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
+
+      switch (version)
+      {
+        case 0:
+        {
+          int count = reader.ReadEncodedInt();
+
+          m_Table = new Hashtable(count);
+          Entries = new ArrayList(count);
+
+          for (int i = 0; i < count; ++i)
+          {
+            PreferencesEntry entry = new PreferencesEntry(reader, this, version);
+
+            if (entry.Mobile != null)
+            {
+              m_Table[entry.Mobile] = entry;
+              Entries.Add(entry);
+            }
+          }
+
+          break;
+        }
+      }
+    }
 
-						if ( entry.Mobile != null )
-						{
-							m_Table[entry.Mobile] = entry;
-							Entries.Add( entry );
-						}
-					}
+    public ArrayList Entries{ get; }
 
-					break;
-				}
-			}
-		}
+    public static Preferences Instance{ get; set; }
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 0 ); // version;
+    public PreferencesEntry Find(Mobile mob)
+    {
+      PreferencesEntry entry = (PreferencesEntry)m_Table[mob];
 
-			writer.WriteEncodedInt( (int) Entries.Count );
+      if (entry == null)
+      {
+        m_Table[mob] = entry = new PreferencesEntry(mob, this);
+        Entries.Add(entry);
+      }
 
-			for ( int i = 0; i < Entries.Count; ++i )
-				((PreferencesEntry)Entries[i]).Serialize( writer );
-		}
-	}
+      return entry;
+    }
 
-	public class PreferencesEntry
-	{
-		private Preferences m_Preferences;
+    public void Serialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version;
 
-		public Mobile Mobile { get; }
+      writer.WriteEncodedInt(Entries.Count);
 
-		public ArrayList Disliked { get; }
+      for (int i = 0; i < Entries.Count; ++i)
+        ((PreferencesEntry)Entries[i]).Serialize(writer);
+    }
+  }
 
-		public PreferencesEntry( Mobile mob, Preferences prefs )
-		{
-			m_Preferences = prefs;
-			Mobile = mob;
-			Disliked = new ArrayList();
-		}
+  public class PreferencesEntry
+  {
+    private Preferences m_Preferences;
 
-		public PreferencesEntry( GenericReader reader, Preferences prefs, int version )
-		{
-			m_Preferences = prefs;
+    public PreferencesEntry(Mobile mob, Preferences prefs)
+    {
+      m_Preferences = prefs;
+      Mobile = mob;
+      Disliked = new ArrayList();
+    }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Mobile = reader.ReadMobile();
+    public PreferencesEntry(GenericReader reader, Preferences prefs, int version)
+    {
+      m_Preferences = prefs;
 
-					int count = reader.ReadEncodedInt();
+      switch (version)
+      {
+        case 0:
+        {
+          Mobile = reader.ReadMobile();
 
-					Disliked = new ArrayList( count );
+          int count = reader.ReadEncodedInt();
 
-					for ( int i = 0; i < count; ++i )
-						Disliked.Add( reader.ReadString() );
+          Disliked = new ArrayList(count);
 
-					break;
-				}
-			}
-		}
+          for (int i = 0; i < count; ++i)
+            Disliked.Add(reader.ReadString());
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.Write( (Mobile) Mobile );
+          break;
+        }
+      }
+    }
 
-			writer.WriteEncodedInt( (int) Disliked.Count );
+    public Mobile Mobile{ get; }
 
-			for ( int i = 0; i < Disliked.Count; ++i )
-				writer.Write( (string) Disliked[i] );
-		}
-	}
+    public ArrayList Disliked{ get; }
 
-	public class PreferencesGump : Gump
-	{
-		private Mobile m_From;
-		private PreferencesEntry m_Entry;
+    public void Serialize(GenericWriter writer)
+    {
+      writer.Write(Mobile);
 
-		public override void OnResponse( NetState sender, RelayInfo info )
-		{
-			if ( m_Entry == null )
-				return;
+      writer.WriteEncodedInt(Disliked.Count);
 
-			if ( info.ButtonID != 1 )
-				return;
+      for (int i = 0; i < Disliked.Count; ++i)
+        writer.Write((string)Disliked[i]);
+    }
+  }
 
-			m_Entry.Disliked.Clear();
+  public class PreferencesGump : Gump
+  {
+    private int m_ColumnX = 12;
+    private PreferencesEntry m_Entry;
+    private Mobile m_From;
 
-			List<Arena> arenas = Arena.Arenas;
+    public PreferencesGump(Mobile from, Preferences prefs) : base(50, 50)
+    {
+      m_From = from;
+      m_Entry = prefs.Find(from);
 
-			for ( int i = 0; i < info.Switches.Length; ++i )
-			{
-				int idx = info.Switches[i];
+      if (m_Entry == null)
+        return;
 
-				if ( idx >= 0 && idx < arenas.Count )
-					m_Entry.Disliked.Add( arenas[idx].Name );
-			}
-		}
+      List<Arena> arenas = Arena.Arenas;
 
-		public PreferencesGump( Mobile from, Preferences prefs ) : base( 50, 50 )
-		{
-			m_From = from;
-			m_Entry = prefs.Find( from );
+      AddPage(0);
 
-			if ( m_Entry == null )
-				return;
+      int height = 12 + 20 + arenas.Count * 31 + 24 + 12;
 
-			List<Arena> arenas = Arena.Arenas;
+      AddBackground(0, 0, 499 + 40 - 365, height, 0x2436);
 
-			AddPage( 0 );
+      for (int i = 1; i < arenas.Count; i += 2)
+        AddImageTiled(12, 32 + i * 31, 475 + 40 - 365, 30, 0x2430);
 
-			int height = 12 + 20 + (arenas.Count * 31) + 24 + 12;
+      AddAlphaRegion(10, 10, 479 + 40 - 365, height - 20);
 
-			AddBackground( 0, 0, 499+40-365, height, 0x2436 );
+      AddColumnHeader(35, null);
+      AddColumnHeader(115, "Arena");
 
-			for ( int i = 1; i < arenas.Count; i += 2 )
-				AddImageTiled( 12, 32 + (i * 31), 475+40-365, 30, 0x2430 );
+      AddButton(499 + 40 - 365 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(499 + 40 - 365 - 12 - 63, height - 12 - 24, 241, 242, 2, GumpButtonType.Reply, 0);
 
-			AddAlphaRegion( 10, 10, 479+40-365, height - 20 );
+      for (int i = 0; i < arenas.Count; ++i)
+      {
+        Arena ar = arenas[i];
 
-			AddColumnHeader(  35, null );
-			AddColumnHeader( 115, "Arena" );
+        string name = ar.Name;
 
-			AddButton( 499+40-365 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1, GumpButtonType.Reply, 0 );
-			AddButton( 499+40-365 - 12 - 63, height - 12 - 24, 241, 242, 2, GumpButtonType.Reply, 0 );
+        if (name == null)
+          name = "(no name)";
 
-			for ( int i = 0; i < arenas.Count; ++i )
-			{
-				Arena ar = arenas[i];
+        int x = 12;
+        int y = 32 + i * 31;
 
-				string name = ar.Name;
+        int color = 0xCCFFCC;
 
-				if ( name == null )
-					name = "(no name)";
+        AddCheck(x + 3, y + 1, 9730, 9727, m_Entry.Disliked.Contains(name), i);
+        x += 35;
 
-				int x = 12;
-				int y = 32 + (i * 31);
+        AddBorderedText(x + 5, y + 5, 115 - 5, name, color, 0);
+        x += 115;
+      }
+    }
 
-				int color = 0xCCFFCC;
+    public override void OnResponse(NetState sender, RelayInfo info)
+    {
+      if (m_Entry == null)
+        return;
 
-				AddCheck( x + 3, y + 1, 9730, 9727, m_Entry.Disliked.Contains(name), i );
-				x += 35;
+      if (info.ButtonID != 1)
+        return;
 
-				AddBorderedText( x + 5, y + 5, 115 - 5, name, color, 0 );
-				x += 115;
-			}
-		}
+      m_Entry.Disliked.Clear();
 
-		public string Center( string text )
-		{
-			return $"<CENTER>{text}</CENTER>";
-		}
+      List<Arena> arenas = Arena.Arenas;
 
-		public string Color( string text, int color )
-		{
-			return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-		}
+      for (int i = 0; i < info.Switches.Length; ++i)
+      {
+        int idx = info.Switches[i];
 
-		private void AddBorderedText( int x, int y, int width, string text, int color, int borderColor )
-		{
-			/*AddColoredText( x - 1, y, width, text, borderColor );
-			AddColoredText( x + 1, y, width, text, borderColor );
-			AddColoredText( x, y - 1, width, text, borderColor );
-			AddColoredText( x, y + 1, width, text, borderColor );*/
-			/*AddColoredText( x - 1, y - 1, width, text, borderColor );
-			AddColoredText( x + 1, y + 1, width, text, borderColor );*/
-			AddColoredText( x, y, width, text, color );
-		}
+        if (idx >= 0 && idx < arenas.Count)
+          m_Entry.Disliked.Add(arenas[idx].Name);
+      }
+    }
 
-		private void AddColoredText( int x, int y, int width, string text, int color )
-		{
-			if ( color == 0 )
-				AddHtml( x, y, width, 20, text, false, false );
-			else
-				AddHtml( x, y, width, 20, Color( text, color ), false, false );
-		}
+    public string Center(string text)
+    {
+      return $"<CENTER>{text}</CENTER>";
+    }
 
-		private int m_ColumnX = 12;
+    public string Color(string text, int color)
+    {
+      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+    }
 
-		private void AddColumnHeader( int width, string name )
-		{
-			AddBackground( m_ColumnX, 12, width, 20, 0x242C );
-			AddImageTiled( m_ColumnX + 2, 14, width - 4, 16, 0x2430 );
+    private void AddBorderedText(int x, int y, int width, string text, int color, int borderColor)
+    {
+      /*AddColoredText( x - 1, y, width, text, borderColor );
+      AddColoredText( x + 1, y, width, text, borderColor );
+      AddColoredText( x, y - 1, width, text, borderColor );
+      AddColoredText( x, y + 1, width, text, borderColor );*/
+      /*AddColoredText( x - 1, y - 1, width, text, borderColor );
+      AddColoredText( x + 1, y + 1, width, text, borderColor );*/
+      AddColoredText(x, y, width, text, color);
+    }
 
-			if ( name != null )
-				AddBorderedText( m_ColumnX, 13, width, Center( name ), 0xFFFFFF, 0 );
+    private void AddColoredText(int x, int y, int width, string text, int color)
+    {
+      if (color == 0)
+        AddHtml(x, y, width, 20, text, false, false);
+      else
+        AddHtml(x, y, width, 20, Color(text, color), false, false);
+    }
 
-			m_ColumnX += width;
-		}
-	}
+    private void AddColumnHeader(int width, string name)
+    {
+      AddBackground(m_ColumnX, 12, width, 20, 0x242C);
+      AddImageTiled(m_ColumnX + 2, 14, width - 4, 16, 0x2430);
+
+      if (name != null)
+        AddBorderedText(m_ColumnX, 13, width, Center(name), 0xFFFFFF, 0);
+
+      m_ColumnX += width;
+    }
+  }
 }

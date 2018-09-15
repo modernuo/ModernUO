@@ -2,33 +2,34 @@ using System;
 
 namespace Server.Factions
 {
-	public class GuardDefinition
-	{
-		public Type Type { get; }
+  public class GuardDefinition
+  {
+    public GuardDefinition(Type type, int itemID, int price, int upkeep, int maximum, TextDefinition header,
+      TextDefinition label)
+    {
+      Type = type;
 
-		public int Price { get; }
+      Price = price;
+      Upkeep = upkeep;
+      Maximum = maximum;
+      ItemID = itemID;
 
-		public int Upkeep { get; }
+      Header = header;
+      Label = label;
+    }
 
-		public int Maximum { get; }
+    public Type Type{ get; }
 
-		public int ItemID { get; }
+    public int Price{ get; }
 
-		public TextDefinition Header { get; }
+    public int Upkeep{ get; }
 
-		public TextDefinition Label { get; }
+    public int Maximum{ get; }
 
-		public GuardDefinition( Type type, int itemID, int price, int upkeep, int maximum, TextDefinition header, TextDefinition label )
-		{
-			Type = type;
+    public int ItemID{ get; }
 
-			Price = price;
-			Upkeep = upkeep;
-			Maximum = maximum;
-			ItemID = itemID;
+    public TextDefinition Header{ get; }
 
-			Header = header;
-			Label = label;
-		}
-	}
+    public TextDefinition Label{ get; }
+  }
 }

@@ -2,67 +2,71 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class FleshGolem : BaseCreature
-	{
-		public override string CorpseName => "a flesh golem corpse";
-		public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
+  public class FleshGolem : BaseCreature
+  {
+    [Constructible]
+    public FleshGolem() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 304;
+      BaseSoundID = 684;
 
-		public override string DefaultName => "a flesh golem";
+      SetStr(176, 200);
+      SetDex(51, 75);
+      SetInt(46, 70);
 
-		[Constructible]
-		public FleshGolem() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 304;
-			BaseSoundID = 684;
+      SetHits(106, 120);
 
-			SetStr( 176, 200 );
-			SetDex( 51, 75 );
-			SetInt( 46, 70 );
+      SetDamage(18, 22);
 
-			SetHits( 106, 120 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamage( 18, 22 );
+      SetResistance(ResistanceType.Physical, 50, 60);
+      SetResistance(ResistanceType.Fire, 25, 35);
+      SetResistance(ResistanceType.Cold, 15, 25);
+      SetResistance(ResistanceType.Poison, 60, 70);
+      SetResistance(ResistanceType.Energy, 30, 40);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetSkill(SkillName.MagicResist, 50.1, 75.0);
+      SetSkill(SkillName.Tactics, 55.1, 80.0);
+      SetSkill(SkillName.Wrestling, 60.1, 70.0);
 
-			SetResistance( ResistanceType.Physical, 50, 60 );
-			SetResistance( ResistanceType.Fire, 25, 35 );
-			SetResistance( ResistanceType.Cold, 15, 25 );
-			SetResistance( ResistanceType.Poison, 60, 70 );
-			SetResistance( ResistanceType.Energy, 30, 40 );
+      Fame = 1000;
+      Karma = -1800;
 
-			SetSkill( SkillName.MagicResist, 50.1, 75.0 );
-			SetSkill( SkillName.Tactics, 55.1, 80.0 );
-			SetSkill( SkillName.Wrestling, 60.1, 70.0 );
+      VirtualArmor = 34;
+    }
 
-			Fame = 1000;
-			Karma = -1800;
+    public FleshGolem(Serial serial) : base(serial)
+    {
+    }
 
-			VirtualArmor = 34;
-		}
+    public override string CorpseName => "a flesh golem corpse";
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average );
-		}
+    public override string DefaultName => "a flesh golem";
 
-		public override bool BleedImmune => true;
-		public override int TreasureMapLevel => 1;
+    public override bool BleedImmune => true;
+    public override int TreasureMapLevel => 1;
 
-		public FleshGolem( Serial serial ) : base( serial )
-		{
-		}
+    public override WeaponAbility GetWeaponAbility()
+    {
+      return WeaponAbility.BleedAttack;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Average);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

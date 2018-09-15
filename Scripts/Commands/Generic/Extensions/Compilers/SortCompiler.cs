@@ -5,160 +5,166 @@ using System.Reflection.Emit;
 
 namespace Server.Commands.Generic
 {
-	public sealed class OrderInfo
-	{
-		private int m_Order;
+  public sealed class OrderInfo
+  {
+    private int m_Order;
 
-		public Property Property { get; set; }
+    public OrderInfo(Property property, bool isAscending)
+    {
+      Property = property;
 
-		public bool IsAscending
-		{
-			get => ( m_Order > 0 );
-			set => m_Order = ( value ? +1 : -1 );
-		}
+      IsAscending = isAscending;
+    }
 
-		public bool IsDescending
-		{
-			get => ( m_Order < 0 );
-			set => m_Order = ( value ? -1 : +1 );
-		}
+    public Property Property{ get; set; }
 
-		public int Sign
-		{
-			get => Math.Sign( m_Order );
-			set
-			{
-				m_Order = Math.Sign( value );
+    public bool IsAscending
+    {
+      get => m_Order > 0;
+      set => m_Order = value ? +1 : -1;
+    }
 
-				if ( m_Order == 0 )
-					throw new InvalidOperationException( "Sign cannot be zero." );
-			}
-		}
+    public bool IsDescending
+    {
+      get => m_Order < 0;
+      set => m_Order = value ? -1 : +1;
+    }
 
-		public OrderInfo( Property property, bool isAscending )
-		{
-			Property = property;
+    public int Sign
+    {
+      get => Math.Sign(m_Order);
+      set
+      {
+        m_Order = Math.Sign(value);
 
-			IsAscending = isAscending;
-		}
-	}
+        if (m_Order == 0)
+          throw new InvalidOperationException("Sign cannot be zero.");
+      }
+    }
+  }
 
-	public static class SortCompiler
-	{
-		public static IComparer Compile( AssemblyEmitter assembly, Type objectType, OrderInfo[] orders )
-		{
-			TypeBuilder typeBuilder = assembly.DefineType(
-					"__sort",
-					TypeAttributes.Public,
-					typeof( object )
-				);
+  public static class SortCompiler
+  {
+    public static IComparer Compile(AssemblyEmitter assembly, Type objectType, OrderInfo[] orders)
+    {
+      TypeBuilder typeBuilder = assembly.DefineType(
+        "__sort",
+        TypeAttributes.Public,
+        typeof(object)
+      );
 
-			#region Constructor
-			{
-				ConstructorBuilder ctor = typeBuilder.DefineConstructor(
-						MethodAttributes.Public,
-						CallingConventions.Standard,
-						Type.EmptyTypes
-					);
+      #region Constructor
 
-				ILGenerator il = ctor.GetILGenerator();
+      {
+        ConstructorBuilder ctor = typeBuilder.DefineConstructor(
+          MethodAttributes.Public,
+          CallingConventions.Standard,
+          Type.EmptyTypes
+        );
 
-				// : base()
-				il.Emit( OpCodes.Ldarg_0 );
-				il.Emit( OpCodes.Call, typeof( object ).GetConstructor( Type.EmptyTypes ) );
+        ILGenerator il = ctor.GetILGenerator();
 
-				// return;
-				il.Emit( OpCodes.Ret );
-			}
-			#endregion
+        // : base()
+        il.Emit(OpCodes.Ldarg_0);
+        il.Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
 
-			#region IComparer
-			typeBuilder.AddInterfaceImplementation( typeof( IComparer ) );
+        // return;
+        il.Emit(OpCodes.Ret);
+      }
 
-			MethodBuilder compareMethod;
+      #endregion
 
-			#region Compare
-			{
-				MethodEmitter emitter = new MethodEmitter( typeBuilder );
+      #region IComparer
 
-				emitter.Define(
-					/*  name  */ "Compare",
-					/*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
-					/* return */ typeof( int ),
-					/* params */ new[] { typeof( object ), typeof( object ) } );
+      typeBuilder.AddInterfaceImplementation(typeof(IComparer));
 
-				LocalBuilder a = emitter.CreateLocal( objectType );
-				LocalBuilder b = emitter.CreateLocal( objectType );
+      MethodBuilder compareMethod;
 
-				LocalBuilder v = emitter.CreateLocal( typeof( int ) );
+      #region Compare
 
-				emitter.LoadArgument( 1 );
-				emitter.CastAs( objectType );
-				emitter.StoreLocal( a );
+      {
+        MethodEmitter emitter = new MethodEmitter(typeBuilder);
 
-				emitter.LoadArgument( 2 );
-				emitter.CastAs( objectType );
-				emitter.StoreLocal( b );
+        emitter.Define(
+          /*  name  */ "Compare",
+          /*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
+          /* return */ typeof(int),
+          /* params */ new[] { typeof(object), typeof(object) });
 
-				emitter.Load( 0 );
-				emitter.StoreLocal( v );
+        LocalBuilder a = emitter.CreateLocal(objectType);
+        LocalBuilder b = emitter.CreateLocal(objectType);
 
-				Label end = emitter.CreateLabel();
+        LocalBuilder v = emitter.CreateLocal(typeof(int));
 
-				for ( int i = 0; i < orders.Length; ++i )
-				{
-					if ( i > 0 )
-					{
-						emitter.LoadLocal( v );
-						emitter.BranchIfTrue( end ); // if ( v != 0 ) return v;
-					}
+        emitter.LoadArgument(1);
+        emitter.CastAs(objectType);
+        emitter.StoreLocal(a);
 
-					OrderInfo orderInfo = orders[i];
+        emitter.LoadArgument(2);
+        emitter.CastAs(objectType);
+        emitter.StoreLocal(b);
 
-					Property prop = orderInfo.Property;
-					int sign = orderInfo.Sign;
+        emitter.Load(0);
+        emitter.StoreLocal(v);
 
-					emitter.LoadLocal( a );
-					emitter.Chain( prop );
+        Label end = emitter.CreateLabel();
 
-					bool couldCompare =
-					emitter.CompareTo( sign, delegate
-					{
-						emitter.LoadLocal( b );
-						emitter.Chain( prop );
-					} );
+        for (int i = 0; i < orders.Length; ++i)
+        {
+          if (i > 0)
+          {
+            emitter.LoadLocal(v);
+            emitter.BranchIfTrue(end); // if ( v != 0 ) return v;
+          }
 
-					if ( !couldCompare )
-						throw new InvalidOperationException( "Property is not comparable." );
+          OrderInfo orderInfo = orders[i];
 
-					emitter.StoreLocal( v );
-				}
+          Property prop = orderInfo.Property;
+          int sign = orderInfo.Sign;
 
-				emitter.MarkLabel( end );
+          emitter.LoadLocal(a);
+          emitter.Chain(prop);
 
-				emitter.LoadLocal( v );
-				emitter.Return();
+          bool couldCompare =
+            emitter.CompareTo(sign, delegate
+            {
+              emitter.LoadLocal(b);
+              emitter.Chain(prop);
+            });
 
-				typeBuilder.DefineMethodOverride(
-						emitter.Method,
-						typeof( IComparer ).GetMethod(
-							"Compare",
-							new[]
-								{
-									typeof( object ),
-									typeof( object )
-								}
-						)
-					);
+          if (!couldCompare)
+            throw new InvalidOperationException("Property is not comparable.");
 
-				compareMethod = emitter.Method;
-			}
-			#endregion
-			#endregion
+          emitter.StoreLocal(v);
+        }
 
-			Type comparerType = typeBuilder.CreateType();
+        emitter.MarkLabel(end);
 
-			return (IComparer) Activator.CreateInstance( comparerType );
-		}
-	}
+        emitter.LoadLocal(v);
+        emitter.Return();
+
+        typeBuilder.DefineMethodOverride(
+          emitter.Method,
+          typeof(IComparer).GetMethod(
+            "Compare",
+            new[]
+            {
+              typeof(object),
+              typeof(object)
+            }
+          )
+        );
+
+        compareMethod = emitter.Method;
+      }
+
+      #endregion
+
+      #endregion
+
+      Type comparerType = typeBuilder.CreateType();
+
+      return (IComparer)Activator.CreateInstance(comparerType);
+    }
+  }
 }

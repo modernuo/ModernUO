@@ -2,174 +2,185 @@ using Server.Items;
 
 namespace Server.Engines.Quests.Haven
 {
-	public enum CannonDirection
-	{
-		North,
-		East,
-		South,
-		West
-	}
+  public enum CannonDirection
+  {
+    North,
+    East,
+    South,
+    West
+  }
 
-	public class Cannon : BaseAddon
-	{
-		[CommandProperty( AccessLevel.GameMaster )]
-		public CannonDirection CannonDirection { get; private set; }
+  public class Cannon : BaseAddon
+  {
+    [Constructible]
+    public Cannon(CannonDirection direction)
+    {
+      CannonDirection = direction;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public MilitiaCanoneer Canoneer { get; set; }
+      switch (direction)
+      {
+        case CannonDirection.North:
+        {
+          AddComponent(new CannonComponent(0xE8D), 0, 0, 0);
+          AddComponent(new CannonComponent(0xE8C), 0, 1, 0);
+          AddComponent(new CannonComponent(0xE8B), 0, 2, 0);
 
-		[Constructible]
-		public Cannon( CannonDirection direction )
-		{
-			CannonDirection = direction;
+          break;
+        }
+        case CannonDirection.East:
+        {
+          AddComponent(new CannonComponent(0xE96), 0, 0, 0);
+          AddComponent(new CannonComponent(0xE95), -1, 0, 0);
+          AddComponent(new CannonComponent(0xE94), -2, 0, 0);
 
-			switch ( direction )
-			{
-				case CannonDirection.North:
-				{
-					AddComponent( new CannonComponent( 0xE8D ), 0, 0, 0 );
-					AddComponent( new CannonComponent( 0xE8C ), 0, 1, 0 );
-					AddComponent( new CannonComponent( 0xE8B ), 0, 2, 0 );
+          break;
+        }
+        case CannonDirection.South:
+        {
+          AddComponent(new CannonComponent(0xE91), 0, 0, 0);
+          AddComponent(new CannonComponent(0xE92), 0, -1, 0);
+          AddComponent(new CannonComponent(0xE93), 0, -2, 0);
 
-					break;
-				}
-				case CannonDirection.East:
-				{
-					AddComponent( new CannonComponent( 0xE96 ), 0, 0, 0 );
-					AddComponent( new CannonComponent( 0xE95 ), -1, 0, 0 );
-					AddComponent( new CannonComponent( 0xE94 ), -2, 0, 0 );
+          break;
+        }
+        default:
+        {
+          AddComponent(new CannonComponent(0xE8E), 0, 0, 0);
+          AddComponent(new CannonComponent(0xE8F), 1, 0, 0);
+          AddComponent(new CannonComponent(0xE90), 2, 0, 0);
 
-					break;
-				}
-				case CannonDirection.South:
-				{
-					AddComponent( new CannonComponent( 0xE91 ), 0, 0, 0 );
-					AddComponent( new CannonComponent( 0xE92 ), 0, -1, 0 );
-					AddComponent( new CannonComponent( 0xE93 ), 0, -2, 0 );
+          break;
+        }
+      }
+    }
 
-					break;
-				}
-				default:
-				{
-					AddComponent( new CannonComponent( 0xE8E ), 0, 0, 0 );
-					AddComponent( new CannonComponent( 0xE8F ), 1, 0, 0 );
-					AddComponent( new CannonComponent( 0xE90 ), 2, 0, 0 );
+    public Cannon(Serial serial) : base(serial)
+    {
+    }
 
-					break;
-				}
-			}
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public CannonDirection CannonDirection{ get; private set; }
 
-		public Cannon( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public MilitiaCanoneer Canoneer{ get; set; }
 
-		public void DoFireEffect( IPoint3D target )
-		{
-			Point3D from;
-			switch ( CannonDirection )
-			{
-				case CannonDirection.North:	from = new Point3D( X, Y - 1, Z ); break;
-				case CannonDirection.East:	from = new Point3D( X + 1, Y, Z ); break;
-				case CannonDirection.South:	from = new Point3D( X, Y + 1, Z ); break;
-				default:					from = new Point3D( X - 1, Y, Z ); break;
-			}
+    public override bool HandlesOnMovement => Canoneer != null && !Canoneer.Deleted && Canoneer.Active;
 
-			Effects.SendLocationEffect( from, Map, 0x36B0, 16, 1 );
-			Effects.PlaySound( from, Map, 0x11D );
+    public void DoFireEffect(IPoint3D target)
+    {
+      Point3D from;
+      switch (CannonDirection)
+      {
+        case CannonDirection.North:
+          from = new Point3D(X, Y - 1, Z);
+          break;
+        case CannonDirection.East:
+          from = new Point3D(X + 1, Y, Z);
+          break;
+        case CannonDirection.South:
+          from = new Point3D(X, Y + 1, Z);
+          break;
+        default:
+          from = new Point3D(X - 1, Y, Z);
+          break;
+      }
 
-			Effects.SendLocationEffect( target, Map, 0x36B0, 16, 1 );
-			Effects.PlaySound( target, Map, 0x11D );
-		}
+      Effects.SendLocationEffect(from, Map, 0x36B0, 16, 1);
+      Effects.PlaySound(from, Map, 0x11D);
 
-		public void Fire( Mobile from, Mobile target )
-		{
-			DoFireEffect( target );
+      Effects.SendLocationEffect(target, Map, 0x36B0, 16, 1);
+      Effects.PlaySound(target, Map, 0x11D);
+    }
 
-			target.Damage( 9999, from );
-		}
+    public void Fire(Mobile from, Mobile target)
+    {
+      DoFireEffect(target);
 
-		public override bool HandlesOnMovement => Canoneer != null && !Canoneer.Deleted && Canoneer.Active;
+      target.Damage(9999, from);
+    }
 
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			if ( Canoneer == null || Canoneer.Deleted || !Canoneer.Active )
-				return;
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      if (Canoneer == null || Canoneer.Deleted || !Canoneer.Active)
+        return;
 
-			bool canFire;
-			switch ( CannonDirection )
-			{
-				case CannonDirection.North:
-					canFire = m.X >= X - 7 && m.X <= X + 7 && m.Y == Y - 7 && oldLocation.Y < Y - 7;
-					break;
-				case CannonDirection.East:
-					canFire = m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X + 7 && oldLocation.X > X + 7;
-					break;
-				case CannonDirection.South:
-					canFire = m.X >= X - 7 && m.X <= X + 7 && m.Y == Y + 7 && oldLocation.Y > Y + 7;
-					break;
-				default:
-					canFire = m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X - 7 && oldLocation.X < X - 7;
-					break;
-			}
+      bool canFire;
+      switch (CannonDirection)
+      {
+        case CannonDirection.North:
+          canFire = m.X >= X - 7 && m.X <= X + 7 && m.Y == Y - 7 && oldLocation.Y < Y - 7;
+          break;
+        case CannonDirection.East:
+          canFire = m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X + 7 && oldLocation.X > X + 7;
+          break;
+        case CannonDirection.South:
+          canFire = m.X >= X - 7 && m.X <= X + 7 && m.Y == Y + 7 && oldLocation.Y > Y + 7;
+          break;
+        default:
+          canFire = m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X - 7 && oldLocation.X < X - 7;
+          break;
+      }
 
-			if ( canFire && Canoneer.WillFire( this, m ) )
-				Fire( Canoneer, m );
-		}
+      if (canFire && Canoneer.WillFire(this, m))
+        Fire(Canoneer, m);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			if ( Canoneer != null && Canoneer.Deleted )
-				Canoneer = null;
+    public override void Serialize(GenericWriter writer)
+    {
+      if (Canoneer != null && Canoneer.Deleted)
+        Canoneer = null;
 
-			base.Serialize( writer );
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			writer.WriteEncodedInt( (int) CannonDirection );
-			writer.Write( (Mobile) Canoneer );
-		}
+      writer.WriteEncodedInt((int)CannonDirection);
+      writer.Write(Canoneer);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			CannonDirection = (CannonDirection) reader.ReadEncodedInt();
-			Canoneer = (MilitiaCanoneer) reader.ReadMobile();
-		}
-	}
+      CannonDirection = (CannonDirection)reader.ReadEncodedInt();
+      Canoneer = (MilitiaCanoneer)reader.ReadMobile();
+    }
+  }
 
-	public class CannonComponent : AddonComponent
-	{
-		[CommandProperty( AccessLevel.GameMaster )]
-		public MilitiaCanoneer Canoneer
-		{
-			get => Addon is Cannon cannon ? cannon.Canoneer : null;
-			set { if ( Addon is Cannon cannon ) cannon.Canoneer = value; }
-		}
+  public class CannonComponent : AddonComponent
+  {
+    public CannonComponent(int itemID) : base(itemID)
+    {
+    }
 
-		public CannonComponent( int itemID ) : base( itemID )
-		{
-		}
+    public CannonComponent(Serial serial) : base(serial)
+    {
+    }
 
-		public CannonComponent( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public MilitiaCanoneer Canoneer
+    {
+      get => Addon is Cannon cannon ? cannon.Canoneer : null;
+      set
+      {
+        if (Addon is Cannon cannon) cannon.Canoneer = value;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

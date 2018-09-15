@@ -3,22 +3,28 @@ using System.Collections.Generic;
 
 namespace Server.Factions
 {
-	public class VendorList
-	{
-		public VendorDefinition Definition { get; }
+  public class VendorList
+  {
+    public VendorList(VendorDefinition definition)
+    {
+      Definition = definition;
+      Vendors = new List<BaseFactionVendor>();
+    }
 
-		public List<BaseFactionVendor> Vendors { get; }
+    public VendorDefinition Definition{ get; }
 
-		public BaseFactionVendor Construct( Town town, Faction faction )
-		{
-			try{ return Activator.CreateInstance( Definition.Type, new object[]{ town, faction } ) as BaseFactionVendor; }
-			catch{ return null; }
-		}
+    public List<BaseFactionVendor> Vendors{ get; }
 
-		public VendorList( VendorDefinition definition )
-		{
-			Definition = definition;
-			Vendors = new List<BaseFactionVendor>();
-		}
-	}
+    public BaseFactionVendor Construct(Town town, Faction faction)
+    {
+      try
+      {
+        return Activator.CreateInstance(Definition.Type, town, faction) as BaseFactionVendor;
+      }
+      catch
+      {
+        return null;
+      }
+    }
+  }
 }

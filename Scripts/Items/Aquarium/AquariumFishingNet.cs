@@ -1,189 +1,190 @@
 namespace Server.Items
 {
-	public class AquariumFishNet : SpecialFishingNet
-	{
-		public override int LabelNumber => 1074463; // An aquarium fishing net
+  public class AquariumFishNet : SpecialFishingNet
+  {
+    [Constructible]
+    public AquariumFishNet()
+    {
+      ItemID = 0xDC8;
 
-		[Constructible]
-		public AquariumFishNet()
-		{
-			ItemID = 0xDC8;
+      if (Hue == 0x8A0)
+        Hue = 0x240;
+    }
 
-			if ( Hue == 0x8A0 )
-				Hue = 0x240;
-		}
+    public AquariumFishNet(Serial serial) : base(serial)
+    {
+    }
 
-		protected override void AddNetProperties( ObjectPropertyList list )
-		{
-		}
+    public override int LabelNumber => 1074463; // An aquarium fishing net
 
-		public override bool RequireDeepWater => false;
+    public override bool RequireDeepWater => false;
 
-		protected override void FinishEffect( Point3D p, Map map, Mobile from )
-		{
-			if ( from.Skills.Fishing.Value < 10 )
-			{
-				from.SendLocalizedMessage( 1074487 ); // The creatures are too quick for you!
-			}
-			else
-			{
-				BaseFish fish = GiveFish( from );
-				FishBowl bowl = Aquarium.GetEmptyBowl( from );
+    protected override void AddNetProperties(ObjectPropertyList list)
+    {
+    }
 
-				if ( bowl != null )
-				{
-					fish.StopTimer();
-					bowl.AddItem( fish );
-					from.SendLocalizedMessage( 1074489 ); // A live creature jumps into the fish bowl in your pack!
-					Delete();
-					return;
-				}
+    protected override void FinishEffect(Point3D p, Map map, Mobile from)
+    {
+      if (from.Skills.Fishing.Value < 10)
+      {
+        from.SendLocalizedMessage(1074487); // The creatures are too quick for you!
+      }
+      else
+      {
+        BaseFish fish = GiveFish(from);
+        FishBowl bowl = Aquarium.GetEmptyBowl(from);
 
-				if ( from.PlaceInBackpack( fish ) )
-				{
-					from.PlaySound( 0x5A2 );
-					from.SendLocalizedMessage( 1074490 ); // A live creature flops around in your pack before running out of air.
+        if (bowl != null)
+        {
+          fish.StopTimer();
+          bowl.AddItem(fish);
+          from.SendLocalizedMessage(1074489); // A live creature jumps into the fish bowl in your pack!
+          Delete();
+          return;
+        }
 
-					fish.Kill();
-					Delete();
-					return;
-				}
+        if (from.PlaceInBackpack(fish))
+        {
+          from.PlaySound(0x5A2);
+          from.SendLocalizedMessage(
+            1074490); // A live creature flops around in your pack before running out of air.
 
-				fish.Delete();
+          fish.Kill();
+          Delete();
+          return;
+        }
 
-				from.SendLocalizedMessage( 1074488 ); // You could not hold the creature.
-			}
+        fish.Delete();
 
-			InUse = false;
-			Movable = true;
+        from.SendLocalizedMessage(1074488); // You could not hold the creature.
+      }
 
-			if ( !from.PlaceInBackpack( this ) )
-			{
-				if ( from.Map == null || from.Map == Map.Internal )
-					Delete();
-				else
-					MoveToWorld( from.Location, from.Map );
-			}
-		}
+      InUse = false;
+      Movable = true;
 
-		private BaseFish GiveFish( Mobile from )
-		{
-			double skill = from.Skills.Fishing.Value;
+      if (!from.PlaceInBackpack(this))
+      {
+        if (from.Map == null || from.Map == Map.Internal)
+          Delete();
+        else
+          MoveToWorld(from.Location, from.Map);
+      }
+    }
 
-			if ( ( skill / 100.0 ) >= Utility.RandomDouble() )
-			{
-				int max = (int) skill / 5;
+    private BaseFish GiveFish(Mobile from)
+    {
+      double skill = from.Skills.Fishing.Value;
 
-				if ( max > 20 )
-					max = 20;
+      if (skill / 100.0 >= Utility.RandomDouble())
+      {
+        int max = (int)skill / 5;
 
-				switch ( Utility.Random( max ) )
-				{
-					case 0: return new MinocBlueFish();
-					case 1: return new Shrimp();
-					case 2: return new FandancerFish();
-					case 3: return new GoldenBroadtail();
-					case 4: return new RedDartFish();
-					case 5: return new AlbinoCourtesanFish();
-					case 6: return new MakotoCourtesanFish();
-					case 7: return new NujelmHoneyFish();
-					case 8: return new Jellyfish();
-					case 9: return new SpeckledCrab();
-					case 10: return new LongClawCrab();
-					case 11: return new AlbinoFrog();
-					case 12: return new KillerFrog();
-					case 13: return new VesperReefTiger();
-					case 14: return new PurpleFrog();
-					case 15: return new BritainCrownFish();
-					case 16: return new YellowFinBluebelly();
-					case 17: return new SpottedBuccaneer();
-					case 18: return new SpinedScratcherFish();
-					default: return new SmallMouthSuckerFin();
-				}
-			}
+        if (max > 20)
+          max = 20;
 
-			return new MinocBlueFish();
-		}
+        switch (Utility.Random(max))
+        {
+          case 0: return new MinocBlueFish();
+          case 1: return new Shrimp();
+          case 2: return new FandancerFish();
+          case 3: return new GoldenBroadtail();
+          case 4: return new RedDartFish();
+          case 5: return new AlbinoCourtesanFish();
+          case 6: return new MakotoCourtesanFish();
+          case 7: return new NujelmHoneyFish();
+          case 8: return new Jellyfish();
+          case 9: return new SpeckledCrab();
+          case 10: return new LongClawCrab();
+          case 11: return new AlbinoFrog();
+          case 12: return new KillerFrog();
+          case 13: return new VesperReefTiger();
+          case 14: return new PurpleFrog();
+          case 15: return new BritainCrownFish();
+          case 16: return new YellowFinBluebelly();
+          case 17: return new SpottedBuccaneer();
+          case 18: return new SpinedScratcherFish();
+          default: return new SmallMouthSuckerFin();
+        }
+      }
 
-		public AquariumFishNet( Serial serial ) : base( serial )
-		{
-		}
+      return new MinocBlueFish();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	// Legacy code
-	public class AquariumFishingNet : Item
-	{
-		public override int LabelNumber => 1074463; // An aquarium fishing net
+  // Legacy code
+  public class AquariumFishingNet : Item
+  {
+    public AquariumFishingNet()
+    {
+    }
 
-		public AquariumFishingNet()
-		{
-		}
+    public AquariumFishingNet(Serial serial) : base(serial)
+    {
+    }
 
-		public AquariumFishingNet( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1074463; // An aquarium fishing net
 
-		private Item CreateReplacement()
-		{
-			Item result = new AquariumFishNet();
-			result.Hue = Hue;
-			result.LootType = LootType;
-			result.Movable = Movable;
-			result.Name = Name;
-			result.QuestItem = QuestItem;
-			result.Visible = Visible;
+    private Item CreateReplacement()
+    {
+      Item result = new AquariumFishNet();
+      result.Hue = Hue;
+      result.LootType = LootType;
+      result.Movable = Movable;
+      result.Name = Name;
+      result.QuestItem = QuestItem;
+      result.Visible = Visible;
 
-			return result;
-		}
+      return result;
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-				return;
-			}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+        return;
+      }
 
-			Item replacement = CreateReplacement();
+      Item replacement = CreateReplacement();
 
-			if ( !from.PlaceInBackpack( replacement ) )
-			{
-				replacement.Delete();
-				from.SendLocalizedMessage( 500720 ); // You don't have enough room in your backpack!
-			}
-			else
-			{
-				Delete();
-				from.Use( replacement );
-			}
-		}
+      if (!from.PlaceInBackpack(replacement))
+      {
+        replacement.Delete();
+        from.SendLocalizedMessage(500720); // You don't have enough room in your backpack!
+      }
+      else
+      {
+        Delete();
+        from.Use(replacement);
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

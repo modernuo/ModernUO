@@ -2,42 +2,43 @@ using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-	public class Architect : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+  public class Architect : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
+    [Constructible]
+    public Architect() : base("the architect")
+    {
+    }
 
-		[Constructible]
-		public Architect() : base( "the architect" )
-		{
-		}
+    public Architect(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitSBInfo()
-		{
-			if ( !Core.AOS )
-				m_SBInfos.Add( new SBHouseDeed() );
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-			m_SBInfos.Add( new SBArchitect() );
-		}
+    public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
 
-		public Architect( Serial serial ) : base( serial )
-		{
-		}
+    public override void InitSBInfo()
+    {
+      if (!Core.AOS)
+        m_SBInfos.Add(new SBHouseDeed());
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      m_SBInfos.Add(new SBArchitect());
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,41 +1,41 @@
 namespace Server.Items
 {
-	public class OblivionsNeedle : Dagger
-	{
-		public override int LabelNumber => 1094916; // Oblivion's Needle [Replica]
+  public class OblivionsNeedle : Dagger
+  {
+    [Constructible]
+    public OblivionsNeedle()
+    {
+      Attributes.BonusStam = 20;
+      Attributes.AttackChance = 20;
+      Attributes.DefendChance = -20;
+      Attributes.WeaponDamage = 40;
 
-		public override int InitMinHits => 150;
-		public override int InitMaxHits => 150;
+      WeaponAttributes.HitLeechStam = 50;
+    }
 
-		public override bool CanFortify => false;
+    public OblivionsNeedle(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public OblivionsNeedle()
-		{
-			Attributes.BonusStam = 20;
-			Attributes.AttackChance = 20;
-			Attributes.DefendChance = -20;
-			Attributes.WeaponDamage = 40;
+    public override int LabelNumber => 1094916; // Oblivion's Needle [Replica]
 
-			WeaponAttributes.HitLeechStam = 50;
-		}
+    public override int InitMinHits => 150;
+    public override int InitMaxHits => 150;
 
-		public OblivionsNeedle( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CanFortify => false;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

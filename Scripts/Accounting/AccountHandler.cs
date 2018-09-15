@@ -10,407 +10,417 @@ using Server.Regions;
 
 namespace Server.Misc
 {
-	public enum PasswordProtection
-	{
-		None,
-		Crypt,
-		NewCrypt
-	}
+  public enum PasswordProtection
+  {
+    None,
+    Crypt,
+    NewCrypt
+  }
 
-	public class AccountHandler
-	{
-		private static int MaxAccountsPerIP = 1;
-		private static bool AutoAccountCreation = true;
-		private static bool RestrictDeletion = !TestCenter.Enabled;
-		private static TimeSpan DeleteDelay = TimeSpan.FromDays( 7.0 );
+  public class AccountHandler
+  {
+    private static int MaxAccountsPerIP = 1;
+    private static bool AutoAccountCreation = true;
+    private static bool RestrictDeletion = !TestCenter.Enabled;
+    private static TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
 
-		public static PasswordProtection ProtectPasswords = PasswordProtection.NewCrypt;
+    public static PasswordProtection ProtectPasswords = PasswordProtection.NewCrypt;
 
-		public static AccessLevel LockdownLevel { get; set; }
+    private static CityInfo[] StartingCities =
+    {
+      new CityInfo("New Haven", "New Haven Bank", 1150168, 3667, 2625, 0),
+      new CityInfo("Yew", "The Empath Abbey", 1075072, 633, 858, 0),
+      new CityInfo("Minoc", "The Barnacle", 1075073, 2476, 413, 15),
+      new CityInfo("Britain", "The Wayfarer's Inn", 1075074, 1602, 1591, 20),
+      new CityInfo("Moonglow", "The Scholars Inn", 1075075, 4408, 1168, 0),
+      new CityInfo("Trinsic", "The Traveler's Inn", 1075076, 1845, 2745, 0),
+      new CityInfo("Jhelom", "The Mercenary Inn", 1075078, 1374, 3826, 0),
+      new CityInfo("Skara Brae", "The Falconer's Inn", 1075079, 618, 2234, 0),
+      new CityInfo("Vesper", "The Ironwood Inn", 1075080, 2771, 976, 0)
+    };
 
-		private static CityInfo[] StartingCities = {
-				new CityInfo( "New Haven",	"New Haven Bank",	1150168, 3667,	2625,	0  ),
-				new CityInfo( "Yew",		"The Empath Abbey",	1075072, 633,	858,	0  ),
-				new CityInfo( "Minoc",		"The Barnacle",		1075073, 2476,	413,	15 ),
-				new CityInfo( "Britain",	"The Wayfarer's Inn",	1075074, 1602,	1591,	20 ),
-				new CityInfo( "Moonglow",	"The Scholars Inn",	1075075, 4408,	1168,	0  ),
-				new CityInfo( "Trinsic",	"The Traveler's Inn",	1075076, 1845,	2745,	0  ),
-				new CityInfo( "Jhelom",		"The Mercenary Inn",	1075078, 1374,	3826,	0  ),
-				new CityInfo( "Skara Brae",	"The Falconer's Inn",	1075079, 618,	2234,	0  ),
-				new CityInfo( "Vesper",		"The Ironwood Inn",	1075080, 2771,	976,	0  )
-			};
+    /* Old Haven/Magincia Locations
+      new CityInfo( "Britain", "Sweet Dreams Inn", 1496, 1628, 10 );
+      // ..
+      // Trinsic
+      new CityInfo( "Magincia", "The Great Horns Tavern", 3734, 2222, 20 ),
+      // Jhelom
+      // ..
+      new CityInfo( "Haven", "Buckler's Hideaway", 3667, 2625, 0 )
 
-		/* Old Haven/Magincia Locations
-			new CityInfo( "Britain", "Sweet Dreams Inn", 1496, 1628, 10 );
-			// ..
-			// Trinsic
-			new CityInfo( "Magincia", "The Great Horns Tavern", 3734, 2222, 20 ),
-			// Jhelom
-			// ..
-			new CityInfo( "Haven", "Buckler's Hideaway", 3667, 2625, 0 )
+      if ( Core.AOS )
+      {
+        //CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3618, 2591, 0 );
+        CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3503, 2574, 14 );
+        StartingCities[StartingCities.Length - 1] = haven;
+      }
+    */
 
-			if ( Core.AOS )
-			{
-				//CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3618, 2591, 0 );
-				CityInfo haven = new CityInfo( "Haven", "Uzeraan's Mansion", 3503, 2574, 14 );
-				StartingCities[StartingCities.Length - 1] = haven;
-			}
-		*/
+    private static bool PasswordCommandEnabled = false;
 
-		private static bool PasswordCommandEnabled = false;
+    private static Dictionary<IPAddress, int> m_IPTable;
 
-		public static void Initialize()
-		{
-			EventSink.DeleteRequest += EventSink_DeleteRequest;
-			EventSink.AccountLogin += EventSink_AccountLogin;
-			EventSink.GameLogin += EventSink_GameLogin;
+    private static readonly char[] m_ForbiddenChars =
+    {
+      '<', '>', ':', '"', '/', '\\', '|', '?', '*'
+    };
 
-			if ( PasswordCommandEnabled )
-				CommandSystem.Register( "Password", AccessLevel.Player, Password_OnCommand );
-		}
+    public static AccessLevel LockdownLevel{ get; set; }
 
-		[Usage( "Password <newPassword> <repeatPassword>" )]
-		[Description( "Changes the password of the commanding players account. Requires the same C-class IP address as the account's creator." )]
-		public static void Password_OnCommand( CommandEventArgs e )
-		{
-			Mobile from = e.Mobile;
+    public static Dictionary<IPAddress, int> IPTable
+    {
+      get
+      {
+        if (m_IPTable == null)
+        {
+          m_IPTable = new Dictionary<IPAddress, int>();
 
-			if ( !(from.Account is Account acct) )
-				return;
+          foreach (Account a in Accounts.GetAccounts())
+            if (a.LoginIPs.Length > 0)
+            {
+              IPAddress ip = a.LoginIPs[0];
 
-			IPAddress[] accessList = acct.LoginIPs;
+              if (m_IPTable.ContainsKey(ip))
+                m_IPTable[ip]++;
+              else
+                m_IPTable[ip] = 1;
+            }
+        }
 
-			if ( accessList.Length == 0 )
-				return;
+        return m_IPTable;
+      }
+    }
 
-			NetState ns = from.NetState;
+    public static void Initialize()
+    {
+      EventSink.DeleteRequest += EventSink_DeleteRequest;
+      EventSink.AccountLogin += EventSink_AccountLogin;
+      EventSink.GameLogin += EventSink_GameLogin;
 
-			if ( ns == null )
-				return;
+      if (PasswordCommandEnabled)
+        CommandSystem.Register("Password", AccessLevel.Player, Password_OnCommand);
+    }
 
-			if ( e.Length == 0 )
-			{
-				from.SendMessage( "You must specify the new password." );
-				return;
-			}
-			if ( e.Length == 1 )
-			{
-				from.SendMessage( "To prevent potential typing mistakes, you must type the password twice. Use the format:" );
-				from.SendMessage( "Password \"(newPassword)\" \"(repeated)\"" );
-				return;
-			}
+    [Usage("Password <newPassword> <repeatPassword>")]
+    [Description(
+      "Changes the password of the commanding players account. Requires the same C-class IP address as the account's creator.")]
+    public static void Password_OnCommand(CommandEventArgs e)
+    {
+      Mobile from = e.Mobile;
 
-			string pass = e.GetString( 0 );
-			string pass2 = e.GetString( 1 );
+      if (!(from.Account is Account acct))
+        return;
 
-			if ( pass != pass2 )
-			{
-				from.SendMessage( "The passwords do not match." );
-				return;
-			}
+      IPAddress[] accessList = acct.LoginIPs;
 
-			bool isSafe = true;
+      if (accessList.Length == 0)
+        return;
 
-			for ( int i = 0; isSafe && i < pass.Length; ++i )
-				isSafe = ( pass[i] >= 0x20 && pass[i] < 0x7F );
+      NetState ns = from.NetState;
 
-			if ( !isSafe )
-			{
-				from.SendMessage( "That is not a valid password." );
-				return;
-			}
+      if (ns == null)
+        return;
 
-			try
-			{
-				IPAddress ipAddress = ns.Address;
+      if (e.Length == 0)
+      {
+        from.SendMessage("You must specify the new password.");
+        return;
+      }
 
-				if ( Utility.IPMatchClassC( accessList[0], ipAddress ) )
-				{
-					acct.SetPassword( pass );
-					from.SendMessage( "The password to your account has changed." );
-				}
-				else
-				{
-					PageEntry entry = PageQueue.GetEntry( from );
+      if (e.Length == 1)
+      {
+        from.SendMessage("To prevent potential typing mistakes, you must type the password twice. Use the format:");
+        from.SendMessage("Password \"(newPassword)\" \"(repeated)\"");
+        return;
+      }
 
-					if ( entry != null )
-					{
-						if ( entry.Message.StartsWith( "[Automated: Change Password]" ) )
-							from.SendMessage( "You already have a password change request in the help system queue." );
-						else
-							from.SendMessage( "Your IP address does not match that which created this account." );
-					}
-					else if ( PageQueue.CheckAllowedToPage( from ) )
-					{
-						from.SendMessage( "Your IP address does not match that which created this account.  A page has been entered into the help system on your behalf." );
+      string pass = e.GetString(0);
+      string pass2 = e.GetString(1);
 
-						from.SendLocalizedMessage( 501234, "", 0x35 ); /* The next available Counselor/Game Master will respond as soon as possible.
+      if (pass != pass2)
+      {
+        from.SendMessage("The passwords do not match.");
+        return;
+      }
+
+      bool isSafe = true;
+
+      for (int i = 0; isSafe && i < pass.Length; ++i)
+        isSafe = pass[i] >= 0x20 && pass[i] < 0x7F;
+
+      if (!isSafe)
+      {
+        from.SendMessage("That is not a valid password.");
+        return;
+      }
+
+      try
+      {
+        IPAddress ipAddress = ns.Address;
+
+        if (Utility.IPMatchClassC(accessList[0], ipAddress))
+        {
+          acct.SetPassword(pass);
+          from.SendMessage("The password to your account has changed.");
+        }
+        else
+        {
+          PageEntry entry = PageQueue.GetEntry(from);
+
+          if (entry != null)
+          {
+            if (entry.Message.StartsWith("[Automated: Change Password]"))
+              from.SendMessage("You already have a password change request in the help system queue.");
+            else
+              from.SendMessage("Your IP address does not match that which created this account.");
+          }
+          else if (PageQueue.CheckAllowedToPage(from))
+          {
+            from.SendMessage(
+              "Your IP address does not match that which created this account.  A page has been entered into the help system on your behalf.");
+
+            from.SendLocalizedMessage(501234, "",
+              0x35); /* The next available Counselor/Game Master will respond as soon as possible.
 																	    * Please check your Journal for messages every few minutes.
 																	    */
 
-						PageQueue.Enqueue( new PageEntry( from,
-							$"[Automated: Change Password]<br>Desired password: {pass}<br>Current IP address: {ipAddress}<br>Account IP address: {accessList[0]}", PageType.Account ) );
-					}
+            PageQueue.Enqueue(new PageEntry(from,
+              $"[Automated: Change Password]<br>Desired password: {pass}<br>Current IP address: {ipAddress}<br>Account IP address: {accessList[0]}",
+              PageType.Account));
+          }
+        }
+      }
+      catch
+      {
+      }
+    }
 
-				}
-			}
-			catch
-			{
-			}
-		}
+    private static void EventSink_DeleteRequest(DeleteRequestEventArgs e)
+    {
+      NetState state = e.State;
+      int index = e.Index;
 
-		private static void EventSink_DeleteRequest( DeleteRequestEventArgs e )
-		{
-			NetState state = e.State;
-			int index = e.Index;
+      if (!(state.Account is Account acct))
+      {
+        state.Dispose();
+      }
+      else if (index < 0 || index >= acct.Length)
+      {
+        state.Send(new DeleteResult(DeleteResultType.BadRequest));
+        state.Send(new CharacterListUpdate(acct));
+      }
+      else
+      {
+        Mobile m = acct[index];
 
-			if ( !(state.Account is Account acct) )
-			{
-				state.Dispose();
-			}
-			else if ( index < 0 || index >= acct.Length )
-			{
-				state.Send( new DeleteResult( DeleteResultType.BadRequest ) );
-				state.Send( new CharacterListUpdate( acct ) );
-			}
-			else
-			{
-				Mobile m = acct[index];
+        if (m == null)
+        {
+          state.Send(new DeleteResult(DeleteResultType.CharNotExist));
+          state.Send(new CharacterListUpdate(acct));
+        }
+        else if (m.NetState != null)
+        {
+          state.Send(new DeleteResult(DeleteResultType.CharBeingPlayed));
+          state.Send(new CharacterListUpdate(acct));
+        }
+        else if (RestrictDeletion && DateTime.UtcNow < m.CreationTime + DeleteDelay)
+        {
+          state.Send(new DeleteResult(DeleteResultType.CharTooYoung));
+          state.Send(new CharacterListUpdate(acct));
+        }
+        else if (m.AccessLevel == AccessLevel.Player &&
+                 Region.Find(m.LogoutLocation, m.LogoutMap).GetRegion(typeof(Jail)) != null
+        ) //Don't need to check current location, if netstate is null, they're logged out
+        {
+          state.Send(new DeleteResult(DeleteResultType.BadRequest));
+          state.Send(new CharacterListUpdate(acct));
+        }
+        else
+        {
+          Console.WriteLine("Client: {0}: Deleting character {1} (0x{2:X})", state, index, m.Serial.Value);
 
-				if ( m == null )
-				{
-					state.Send( new DeleteResult( DeleteResultType.CharNotExist ) );
-					state.Send( new CharacterListUpdate( acct ) );
-				}
-				else if ( m.NetState != null )
-				{
-					state.Send( new DeleteResult( DeleteResultType.CharBeingPlayed ) );
-					state.Send( new CharacterListUpdate( acct ) );
-				}
-				else if ( RestrictDeletion && DateTime.UtcNow < (m.CreationTime + DeleteDelay) )
-				{
-					state.Send( new DeleteResult( DeleteResultType.CharTooYoung ) );
-					state.Send( new CharacterListUpdate( acct ) );
-				}
-				else if ( m.AccessLevel == AccessLevel.Player && Region.Find( m.LogoutLocation, m.LogoutMap ).GetRegion( typeof( Jail ) ) != null )	//Don't need to check current location, if netstate is null, they're logged out
-				{
-					state.Send( new DeleteResult( DeleteResultType.BadRequest ) );
-					state.Send( new CharacterListUpdate( acct ) );
-				}
-				else
-				{
-					Console.WriteLine( "Client: {0}: Deleting character {1} (0x{2:X})", state, index, m.Serial.Value );
+          acct.Comments.Add(new AccountComment("System", $"Character #{index + 1} {m} deleted by {state}"));
 
-					acct.Comments.Add( new AccountComment( "System", $"Character #{index + 1} {m} deleted by {state}") );
+          m.Delete();
+          state.Send(new CharacterListUpdate(acct));
+        }
+      }
+    }
 
-					m.Delete();
-					state.Send( new CharacterListUpdate( acct ) );
-				}
-			}
-		}
+    public static bool CanCreate(IPAddress ip)
+    {
+      if (!IPTable.ContainsKey(ip))
+        return true;
 
-		public static bool CanCreate( IPAddress ip )
-		{
-			if ( !IPTable.ContainsKey( ip ) )
-				return true;
+      return IPTable[ip] < MaxAccountsPerIP;
+    }
 
-			return ( IPTable[ip] < MaxAccountsPerIP );
-		}
+    private static bool IsForbiddenChar(char c)
+    {
+      for (int i = 0; i < m_ForbiddenChars.Length; ++i)
+        if (c == m_ForbiddenChars[i])
+          return true;
 
-		private static Dictionary<IPAddress, int> m_IPTable;
+      return false;
+    }
 
-		public static Dictionary<IPAddress, int> IPTable
-		{
-			get
-			{
-				if ( m_IPTable == null )
-				{
-					m_IPTable = new Dictionary<IPAddress, int>();
+    private static Account CreateAccount(NetState state, string un, string pw)
+    {
+      if (un.Length == 0 || pw.Length == 0)
+        return null;
 
-					foreach ( Account a in Accounts.GetAccounts() )
-						if ( a.LoginIPs.Length > 0 )
-						{
-							IPAddress ip = a.LoginIPs[0];
+      bool isSafe = !(un.StartsWith(" ") || un.EndsWith(" ") || un.EndsWith("."));
 
-							if ( m_IPTable.ContainsKey( ip ) )
-								m_IPTable[ip]++;
-							else
-								m_IPTable[ip] = 1;
-						}
-				}
+      for (int i = 0; isSafe && i < un.Length; ++i)
+        isSafe = un[i] >= 0x20 && un[i] < 0x7F && !IsForbiddenChar(un[i]);
 
-				return m_IPTable;
-			}
-		}
+      for (int i = 0; isSafe && i < pw.Length; ++i)
+        isSafe = pw[i] >= 0x20 && pw[i] < 0x7F;
 
-		private static readonly char[] m_ForbiddenChars = {
-			'<', '>', ':', '"', '/', '\\', '|', '?', '*'
-		};
+      if (!isSafe)
+        return null;
 
-		private static bool IsForbiddenChar( char c )
-		{
-			for ( int i = 0; i < m_ForbiddenChars.Length; ++i )
-				if ( c == m_ForbiddenChars[i] )
-					return true;
+      if (!CanCreate(state.Address))
+      {
+        Console.WriteLine("Login: {0}: Account '{1}' not created, ip already has {2} account{3}.", state, un,
+          MaxAccountsPerIP, MaxAccountsPerIP == 1 ? "" : "s");
+        return null;
+      }
 
-			return false;
-		}
+      Console.WriteLine("Login: {0}: Creating new account '{1}'", state, un);
 
-		private static Account CreateAccount( NetState state, string un, string pw )
-		{
-			if ( un.Length == 0 || pw.Length == 0 )
-				return null;
+      Account a = new Account(un, pw);
 
-			bool isSafe = !( un.StartsWith( " " ) || un.EndsWith( " " ) || un.EndsWith( "." ) );
+      return a;
+    }
 
-			for ( int i = 0; isSafe && i < un.Length; ++i )
-				isSafe = ( un[i] >= 0x20 && un[i] < 0x7F && !IsForbiddenChar( un[i] ) );
+    public static void EventSink_AccountLogin(AccountLoginEventArgs e)
+    {
+      if (!IPLimiter.SocketBlock && !IPLimiter.Verify(e.State.Address))
+      {
+        e.Accepted = false;
+        e.RejectReason = ALRReason.InUse;
 
-			for ( int i = 0; isSafe && i < pw.Length; ++i )
-				isSafe = ( pw[i] >= 0x20 && pw[i] < 0x7F );
+        Console.WriteLine("Login: {0}: Past IP limit threshold", e.State);
 
-			if ( !isSafe )
-				return null;
+        using (StreamWriter op = new StreamWriter("ipLimits.log", true))
+        {
+          op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow);
+        }
 
-			if ( !CanCreate( state.Address ) )
-			{
-				Console.WriteLine( "Login: {0}: Account '{1}' not created, ip already has {2} account{3}.", state, un, MaxAccountsPerIP, MaxAccountsPerIP == 1 ? "" : "s" );
-				return null;
-			}
+        return;
+      }
 
-			Console.WriteLine( "Login: {0}: Creating new account '{1}'", state, un );
+      string un = e.Username;
+      string pw = e.Password;
 
-			Account a = new Account( un, pw );
+      e.Accepted = false;
 
-			return a;
-		}
+      if (!(Accounts.GetAccount(un) is Account acct))
+      {
+        if (AutoAccountCreation && un.Trim().Length > 0
+        ) // To prevent someone from making an account of just '' or a bunch of meaningless spaces
+        {
+          e.State.Account = acct = CreateAccount(e.State, un, pw);
+          e.Accepted = acct?.CheckAccess(e.State) ?? false;
 
-		public static void EventSink_AccountLogin( AccountLoginEventArgs e )
-		{
-			if ( !IPLimiter.SocketBlock && !IPLimiter.Verify( e.State.Address ) )
-			{
-				e.Accepted = false;
-				e.RejectReason = ALRReason.InUse;
+          if (!e.Accepted)
+            e.RejectReason = ALRReason.BadComm;
+        }
+        else
+        {
+          Console.WriteLine("Login: {0}: Invalid username '{1}'", e.State, un);
+          e.RejectReason = ALRReason.Invalid;
+        }
+      }
+      else if (!acct.HasAccess(e.State))
+      {
+        Console.WriteLine("Login: {0}: Access denied for '{1}'", e.State, un);
+        e.RejectReason = LockdownLevel > AccessLevel.Player ? ALRReason.BadComm : ALRReason.BadPass;
+      }
+      else if (!acct.CheckPassword(pw))
+      {
+        Console.WriteLine("Login: {0}: Invalid password for '{1}'", e.State, un);
+        e.RejectReason = ALRReason.BadPass;
+      }
+      else if (acct.Banned)
+      {
+        Console.WriteLine("Login: {0}: Banned account '{1}'", e.State, un);
+        e.RejectReason = ALRReason.Blocked;
+      }
+      else
+      {
+        Console.WriteLine("Login: {0}: Valid credentials for '{1}'", e.State, un);
+        e.State.Account = acct;
+        e.Accepted = true;
 
-				Console.WriteLine( "Login: {0}: Past IP limit threshold", e.State );
+        acct.LogAccess(e.State);
+      }
 
-				using ( StreamWriter op = new StreamWriter( "ipLimits.log", true ) )
-					op.WriteLine( "{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow );
+      if (!e.Accepted)
+        AccountAttackLimiter.RegisterInvalidAccess(e.State);
+    }
 
-				return;
-			}
+    public static void EventSink_GameLogin(GameLoginEventArgs e)
+    {
+      if (!IPLimiter.SocketBlock && !IPLimiter.Verify(e.State.Address))
+      {
+        e.Accepted = false;
 
-			string un = e.Username;
-			string pw = e.Password;
+        Console.WriteLine("Login: {0}: Past IP limit threshold", e.State);
 
-			e.Accepted = false;
+        using (StreamWriter op = new StreamWriter("ipLimits.log", true))
+        {
+          op.WriteLine("{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow);
+        }
 
-			if ( !(Accounts.GetAccount( un ) is Account acct) )
-			{
-				if ( AutoAccountCreation && un.Trim().Length > 0 ) // To prevent someone from making an account of just '' or a bunch of meaningless spaces
-				{
-					e.State.Account = acct = CreateAccount( e.State, un, pw );
-					e.Accepted = acct?.CheckAccess( e.State ) ?? false;
+        return;
+      }
 
-					if ( !e.Accepted )
-						e.RejectReason = ALRReason.BadComm;
-				}
-				else
-				{
-					Console.WriteLine( "Login: {0}: Invalid username '{1}'", e.State, un );
-					e.RejectReason = ALRReason.Invalid;
-				}
-			}
-			else if ( !acct.HasAccess( e.State ) )
-			{
-				Console.WriteLine( "Login: {0}: Access denied for '{1}'", e.State, un );
-				e.RejectReason = ( LockdownLevel > AccessLevel.Player ? ALRReason.BadComm : ALRReason.BadPass );
-			}
-			else if ( !acct.CheckPassword( pw ) )
-			{
-				Console.WriteLine( "Login: {0}: Invalid password for '{1}'", e.State, un );
-				e.RejectReason = ALRReason.BadPass;
-			}
-			else if ( acct.Banned )
-			{
-				Console.WriteLine( "Login: {0}: Banned account '{1}'", e.State, un );
-				e.RejectReason = ALRReason.Blocked;
-			}
-			else
-			{
-				Console.WriteLine( "Login: {0}: Valid credentials for '{1}'", e.State, un );
-				e.State.Account = acct;
-				e.Accepted = true;
+      string un = e.Username;
+      string pw = e.Password;
 
-				acct.LogAccess( e.State );
-			}
+      if (!(Accounts.GetAccount(un) is Account acct))
+      {
+        e.Accepted = false;
+      }
+      else if (!acct.HasAccess(e.State))
+      {
+        Console.WriteLine("Login: {0}: Access denied for '{1}'", e.State, un);
+        e.Accepted = false;
+      }
+      else if (!acct.CheckPassword(pw))
+      {
+        Console.WriteLine("Login: {0}: Invalid password for '{1}'", e.State, un);
+        e.Accepted = false;
+      }
+      else if (acct.Banned)
+      {
+        Console.WriteLine("Login: {0}: Banned account '{1}'", e.State, un);
+        e.Accepted = false;
+      }
+      else
+      {
+        acct.LogAccess(e.State);
 
-			if ( !e.Accepted )
-				AccountAttackLimiter.RegisterInvalidAccess( e.State );
-		}
+        Console.WriteLine("Login: {0}: Account '{1}' at character list", e.State, un);
+        e.State.Account = acct;
+        e.Accepted = true;
+        e.CityInfo = StartingCities;
+      }
 
-		public static void EventSink_GameLogin( GameLoginEventArgs e )
-		{
-			if ( !IPLimiter.SocketBlock && !IPLimiter.Verify( e.State.Address ) )
-			{
-				e.Accepted = false;
+      if (!e.Accepted)
+        AccountAttackLimiter.RegisterInvalidAccess(e.State);
+    }
 
-				Console.WriteLine( "Login: {0}: Past IP limit threshold", e.State );
+    public static bool CheckAccount(Mobile mobCheck, Mobile accCheck)
+    {
+      if (accCheck?.Account is Account a)
+        for (int i = 0; i < a.Length; ++i)
+          if (a[i] == mobCheck)
+            return true;
 
-				using ( StreamWriter op = new StreamWriter( "ipLimits.log", true ) )
-					op.WriteLine( "{0}\tPast IP limit threshold\t{1}", e.State, DateTime.UtcNow );
-
-				return;
-			}
-
-			string un = e.Username;
-			string pw = e.Password;
-
-			if ( !(Accounts.GetAccount( un ) is Account acct) )
-			{
-				e.Accepted = false;
-			}
-			else if ( !acct.HasAccess( e.State ) )
-			{
-				Console.WriteLine( "Login: {0}: Access denied for '{1}'", e.State, un );
-				e.Accepted = false;
-			}
-			else if ( !acct.CheckPassword( pw ) )
-			{
-				Console.WriteLine( "Login: {0}: Invalid password for '{1}'", e.State, un );
-				e.Accepted = false;
-			}
-			else if ( acct.Banned )
-			{
-				Console.WriteLine( "Login: {0}: Banned account '{1}'", e.State, un );
-				e.Accepted = false;
-			}
-			else
-			{
-				acct.LogAccess( e.State );
-
-				Console.WriteLine( "Login: {0}: Account '{1}' at character list", e.State, un );
-				e.State.Account = acct;
-				e.Accepted = true;
-				e.CityInfo = StartingCities;
-			}
-
-			if ( !e.Accepted )
-				AccountAttackLimiter.RegisterInvalidAccess( e.State );
-		}
-
-		public static bool CheckAccount( Mobile mobCheck, Mobile accCheck )
-		{
-			if ( accCheck?.Account is Account a )
-			{
-				for ( int i = 0; i < a.Length; ++i )
-				{
-					if ( a[i] == mobCheck )
-						return true;
-				}
-			}
-
-			return false;
-		}
-	}
+      return false;
+    }
+  }
 }

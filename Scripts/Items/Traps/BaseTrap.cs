@@ -2,84 +2,85 @@ using System;
 
 namespace Server.Items
 {
-	public abstract class BaseTrap : Item
-	{
-		public virtual bool PassivelyTriggered => false;
-		public virtual TimeSpan PassiveTriggerDelay => TimeSpan.Zero;
-		public virtual int PassiveTriggerRange => -1;
-		public virtual TimeSpan ResetDelay => TimeSpan.Zero;
+  public abstract class BaseTrap : Item
+  {
+    private DateTime m_NextPassiveTrigger, m_NextActiveTrigger;
 
-		private DateTime m_NextPassiveTrigger, m_NextActiveTrigger;
+    public BaseTrap(int itemID) : base(itemID)
+    {
+      Movable = false;
+    }
 
-		public virtual void OnTrigger( Mobile from )
-		{
-		}
+    public BaseTrap(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
+    public virtual bool PassivelyTriggered => false;
+    public virtual TimeSpan PassiveTriggerDelay => TimeSpan.Zero;
+    public virtual int PassiveTriggerRange => -1;
+    public virtual TimeSpan ResetDelay => TimeSpan.Zero;
 
-		public virtual int GetEffectHue()
-		{
-			int hue = Hue & 0x3FFF;
+    public override bool HandlesOnMovement => true; // Tell the core that we implement OnMovement
 
-			if ( hue < 2 )
-				return 0;
+    public virtual void OnTrigger(Mobile from)
+    {
+    }
 
-			return hue - 1;
-		}
+    public virtual int GetEffectHue()
+    {
+      int hue = Hue & 0x3FFF;
 
-		public bool CheckRange( Point3D loc, Point3D oldLoc, int range )
-		{
-			return CheckRange( loc, range ) && !CheckRange( oldLoc, range );
-		}
+      if (hue < 2)
+        return 0;
 
-		public bool CheckRange( Point3D loc, int range )
-		{
-			return ( (Z + 8) >= loc.Z && (loc.Z + 16) > Z )
-				&& Utility.InRange( GetWorldLocation(), loc, range );
-		}
+      return hue - 1;
+    }
 
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			base.OnMovement( m, oldLocation );
+    public bool CheckRange(Point3D loc, Point3D oldLoc, int range)
+    {
+      return CheckRange(loc, range) && !CheckRange(oldLoc, range);
+    }
 
-			if ( m.Location == oldLocation )
-				return;
+    public bool CheckRange(Point3D loc, int range)
+    {
+      return Z + 8 >= loc.Z && loc.Z + 16 > Z
+                            && Utility.InRange(GetWorldLocation(), loc, range);
+    }
 
-			if ( CheckRange( m.Location, oldLocation, 0 ) && DateTime.UtcNow >= m_NextActiveTrigger )
-			{
-				m_NextActiveTrigger = m_NextPassiveTrigger = DateTime.UtcNow + ResetDelay;
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      base.OnMovement(m, oldLocation);
 
-				OnTrigger( m );
-			}
-			else if ( PassivelyTriggered && CheckRange( m.Location, oldLocation, PassiveTriggerRange ) && DateTime.UtcNow >= m_NextPassiveTrigger )
-			{
-				m_NextPassiveTrigger = DateTime.UtcNow + PassiveTriggerDelay;
+      if (m.Location == oldLocation)
+        return;
 
-				OnTrigger( m );
-			}
-		}
+      if (CheckRange(m.Location, oldLocation, 0) && DateTime.UtcNow >= m_NextActiveTrigger)
+      {
+        m_NextActiveTrigger = m_NextPassiveTrigger = DateTime.UtcNow + ResetDelay;
 
-		public BaseTrap( int itemID ) : base( itemID )
-		{
-			Movable = false;
-		}
+        OnTrigger(m);
+      }
+      else if (PassivelyTriggered && CheckRange(m.Location, oldLocation, PassiveTriggerRange) &&
+               DateTime.UtcNow >= m_NextPassiveTrigger)
+      {
+        m_NextPassiveTrigger = DateTime.UtcNow + PassiveTriggerDelay;
 
-		public BaseTrap( Serial serial ) : base( serial )
-		{
-		}
+        OnTrigger(m);
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

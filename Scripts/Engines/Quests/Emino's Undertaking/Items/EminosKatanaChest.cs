@@ -4,133 +4,136 @@ using Server.Network;
 
 namespace Server.Engines.Quests.Ninja
 {
-	public class EminosKatanaChest : WoodenChest
-	{
-		[Constructible]
-		public EminosKatanaChest()
-		{
-			Movable = false;
-			ItemID = 0xE42;
+  public class EminosKatanaChest : WoodenChest
+  {
+    [Constructible]
+    public EminosKatanaChest()
+    {
+      Movable = false;
+      ItemID = 0xE42;
 
-			GenerateTreasure();
-		}
+      GenerateTreasure();
+    }
 
-		public EminosKatanaChest( Serial serial ) : base( serial )
-		{
-		}
+    public EminosKatanaChest(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool IsDecoContainer => false;
+    public override bool IsDecoContainer => false;
 
-		private void GenerateTreasure()
-		{
-			for ( int i = Items.Count - 1; i >= 0; i-- )
-				Items[i].Delete();
+    private void GenerateTreasure()
+    {
+      for (int i = Items.Count - 1; i >= 0; i--)
+        Items[i].Delete();
 
-			for ( int i = 0; i < 75; i++ )
-			{
-				switch ( Utility.Random( 3 ) )
-				{
-					case 0: DropItem( new GoldBracelet() ); break;
-					case 1: DropItem( new GoldRing() ); break;
-					case 2: DropItem( Loot.RandomGem() ); break;
-				}
-			}
-		}
+      for (int i = 0; i < 75; i++)
+        switch (Utility.Random(3))
+        {
+          case 0:
+            DropItem(new GoldBracelet());
+            break;
+          case 1:
+            DropItem(new GoldRing());
+            break;
+          case 2:
+            DropItem(Loot.RandomGem());
+            break;
+        }
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( from is PlayerMobile player && player.InRange( GetWorldLocation(), 2 ) )
-			{
-				QuestSystem qs = player.Quest;
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (from is PlayerMobile player && player.InRange(GetWorldLocation(), 2))
+      {
+        QuestSystem qs = player.Quest;
 
-				if ( qs is EminosUndertakingQuest )
-				{
-					if ( EminosUndertakingQuest.HasLostEminosKatana( from ) )
-					{
-						Item katana = new EminosKatana();
+        if (qs is EminosUndertakingQuest)
+        {
+          if (EminosUndertakingQuest.HasLostEminosKatana(from))
+          {
+            Item katana = new EminosKatana();
 
-						if ( !player.PlaceInBackpack( katana ) )
-						{
-							katana.Delete();
-							player.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
-						}
-					}
-					else
-					{
-						QuestObjective obj = qs.FindObjective( typeof( HallwayWalkObjective ) );
+            if (!player.PlaceInBackpack(katana))
+            {
+              katana.Delete();
+              player.SendLocalizedMessage(
+                1046260); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
+            }
+          }
+          else
+          {
+            QuestObjective obj = qs.FindObjective(typeof(HallwayWalkObjective));
 
-						if ( obj != null && !obj.Completed )
-						{
-							Item katana = new EminosKatana();
+            if (obj != null && !obj.Completed)
+            {
+              Item katana = new EminosKatana();
 
-							if ( player.PlaceInBackpack( katana ) )
-							{
-								GenerateTreasure();
-								obj.Complete();
-							}
-							else
-							{
-								katana.Delete();
-								player.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
-							}
-						}
-					}
-				}
-			}
+              if (player.PlaceInBackpack(katana))
+              {
+                GenerateTreasure();
+                obj.Complete();
+              }
+              else
+              {
+                katana.Delete();
+                player.SendLocalizedMessage(
+                  1046260); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
+              }
+            }
+          }
+        }
+      }
 
-			base.OnDoubleClick( from );
-		}
+      base.OnDoubleClick(from);
+    }
 
-		public override bool CheckHold( Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight )
-		{
-			return false;
-		}
+    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
+    {
+      return false;
+    }
 
-		public override bool CheckItemUse( Mobile from, Item item )
-		{
-			return item == this;
-		}
+    public override bool CheckItemUse(Mobile from, Item item)
+    {
+      return item == this;
+    }
 
-		public override bool CheckLift( Mobile from, Item item, ref LRReason reject )
-		{
-			if ( from.AccessLevel >= AccessLevel.GameMaster )
-				return true;
+    public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
+    {
+      if (from.AccessLevel >= AccessLevel.GameMaster)
+        return true;
 
-			if ( from is PlayerMobile player && player.Quest is EminosUndertakingQuest )
-			{
-				if ( player.Quest.FindObjective( typeof( HallwayWalkObjective ) ) is HallwayWalkObjective obj )
-				{
-					if ( obj.StolenTreasure )
-						from.SendLocalizedMessage( 1063247 ); // The guard is watching you carefully!  It would be unwise to remove another item from here.
-					else
-						return true;
-				}
-			}
+      if (from is PlayerMobile player && player.Quest is EminosUndertakingQuest)
+        if (player.Quest.FindObjective(typeof(HallwayWalkObjective)) is HallwayWalkObjective obj)
+        {
+          if (obj.StolenTreasure)
+            from.SendLocalizedMessage(
+              1063247); // The guard is watching you carefully!  It would be unwise to remove another item from here.
+          else
+            return true;
+        }
 
-			return false;
-		}
+      return false;
+    }
 
-		public override void OnItemLifted( Mobile from, Item item )
-		{
-			if ( from is PlayerMobile player && player.Quest is EminosUndertakingQuest )
-			{
-				if ( player.Quest.FindObjective( typeof( HallwayWalkObjective ) ) is HallwayWalkObjective obj )
-					obj.StolenTreasure = true;
-			}
-		}
+    public override void OnItemLifted(Mobile from, Item item)
+    {
+      if (from is PlayerMobile player && player.Quest is EminosUndertakingQuest)
+        if (player.Quest.FindObjective(typeof(HallwayWalkObjective)) is HallwayWalkObjective obj)
+          obj.StolenTreasure = true;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

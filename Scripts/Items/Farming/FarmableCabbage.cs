@@ -1,47 +1,47 @@
 namespace Server.Items
 {
-	public class FarmableCabbage : FarmableCrop
-	{
-		public static int GetCropID()
-		{
-			return 3254;
-		}
+  public class FarmableCabbage : FarmableCrop
+  {
+    [Constructible]
+    public FarmableCabbage() : base(GetCropID())
+    {
+    }
 
-		public override Item GetCropObject()
-		{
-			Cabbage cabbage = new Cabbage();
+    public FarmableCabbage(Serial serial) : base(serial)
+    {
+    }
 
-			cabbage.ItemID = Utility.Random( 3195, 2 );
+    public static int GetCropID()
+    {
+      return 3254;
+    }
 
-			return cabbage;
-		}
+    public override Item GetCropObject()
+    {
+      Cabbage cabbage = new Cabbage();
 
-		public override int GetPickedID()
-		{
-			return 3254;
-		}
+      cabbage.ItemID = Utility.Random(3195, 2);
 
-		[Constructible]
-		public FarmableCabbage() : base( GetCropID() )
-		{
-		}
+      return cabbage;
+    }
 
-		public FarmableCabbage( Serial serial ) : base( serial )
-		{
-		}
+    public override int GetPickedID()
+    {
+      return 3254;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

@@ -2,38 +2,38 @@ using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	public class SewingKit : BaseTool
-	{
-		public override CraftSystem CraftSystem => DefTailoring.CraftSystem;
+  public class SewingKit : BaseTool
+  {
+    [Constructible]
+    public SewingKit() : base(0xF9D)
+    {
+      Weight = 2.0;
+    }
 
-		[Constructible]
-		public SewingKit() : base( 0xF9D )
-		{
-			Weight = 2.0;
-		}
+    [Constructible]
+    public SewingKit(int uses) : base(uses, 0xF9D)
+    {
+      Weight = 2.0;
+    }
 
-		[Constructible]
-		public SewingKit( int uses ) : base( uses, 0xF9D )
-		{
-			Weight = 2.0;
-		}
+    public SewingKit(Serial serial) : base(serial)
+    {
+    }
 
-		public SewingKit( Serial serial ) : base( serial )
-		{
-		}
+    public override CraftSystem CraftSystem => DefTailoring.CraftSystem;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

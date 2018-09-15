@@ -20,27 +20,28 @@
 
 namespace Server.Network
 {
-	public delegate void OnPacketReceive( NetState state, PacketReader pvSrc );
-	public delegate bool ThrottlePacketCallback( NetState state );
+  public delegate void OnPacketReceive(NetState state, PacketReader pvSrc);
 
-	public class PacketHandler
-	{
-		public PacketHandler( int packetID, int length, bool ingame, OnPacketReceive onReceive )
-		{
-			PacketID = packetID;
-			Length = length;
-			Ingame = ingame;
-			OnReceive = onReceive;
-		}
+  public delegate bool ThrottlePacketCallback(NetState state);
 
-		public int PacketID { get; }
+  public class PacketHandler
+  {
+    public PacketHandler(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+    {
+      PacketID = packetID;
+      Length = length;
+      Ingame = ingame;
+      OnReceive = onReceive;
+    }
 
-		public int Length { get; }
+    public int PacketID{ get; }
 
-		public OnPacketReceive OnReceive { get; }
+    public int Length{ get; }
 
-		public ThrottlePacketCallback ThrottleCallback { get; set; }
+    public OnPacketReceive OnReceive{ get; }
 
-		public bool Ingame { get; }
-	}
+    public ThrottlePacketCallback ThrottleCallback{ get; set; }
+
+    public bool Ingame{ get; }
+  }
 }

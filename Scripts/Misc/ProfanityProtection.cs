@@ -2,116 +2,124 @@ using Server.Network;
 
 namespace Server.Misc
 {
-	public enum ProfanityAction
-	{
-		None,			// no action taken
-		Disallow,		// speech is not displayed
-		Criminal,		// makes the player criminal, not killable by guards
-		CriminalAction,	// makes the player criminal, can be killed by guards
-		Disconnect,		// player is kicked
-		Other			// some other implementation
-	}
+  public enum ProfanityAction
+  {
+    None, // no action taken
+    Disallow, // speech is not displayed
+    Criminal, // makes the player criminal, not killable by guards
+    CriminalAction, // makes the player criminal, can be killed by guards
+    Disconnect, // player is kicked
+    Other // some other implementation
+  }
 
-	public class ProfanityProtection
-	{
-		private static bool Enabled = false;
-		private static ProfanityAction Action = ProfanityAction.Disallow; // change here what to do when profanity is detected
+  public class ProfanityProtection
+  {
+    private static bool Enabled = false;
 
-		public static void Initialize()
-		{
-			if ( Enabled )
-				EventSink.Speech += EventSink_Speech;
-		}
+    private static ProfanityAction
+      Action = ProfanityAction.Disallow; // change here what to do when profanity is detected
 
-		private static bool OnProfanityDetected( Mobile from, string speech )
-		{
-			switch ( Action )
-			{
-				case ProfanityAction.None: return true;
-				case ProfanityAction.Disallow: return false;
-				case ProfanityAction.Criminal: from.Criminal = true; return true;
-				case ProfanityAction.CriminalAction: from.CriminalAction( false ); return true;
-				case ProfanityAction.Disconnect:
-				{
-					NetState ns = from.NetState;
+    public static char[] Exceptions{ get; } =
+    {
+      ' ', '-', '.', '\'', '"', ',', '_', '+', '=', '~', '`', '!', '^', '*', '\\', '/', ';', ':', '<', '>', '[', ']',
+      '{', '}', '?', '|', '(', ')', '%', '$', '&', '#', '@'
+    };
 
-					ns?.Dispose();
+    public static string[] StartDisallowed{ get; } = { };
 
-					return false;
-				}
-				default:
-				case ProfanityAction.Other: // TODO: Provide custom implementation if this is chosen
-				{
-					return true;
-				}
-			}
-		}
+    public static string[] Disallowed{ get; } =
+    {
+      "jigaboo",
+      "chigaboo",
+      "wop",
+      "kyke",
+      "kike",
+      "tit",
+      "spic",
+      "prick",
+      "piss",
+      "lezbo",
+      "lesbo",
+      "felatio",
+      "dyke",
+      "dildo",
+      "chinc",
+      "chink",
+      "cunnilingus",
+      "cum",
+      "cocksucker",
+      "cock",
+      "clitoris",
+      "clit",
+      "ass",
+      "hitler",
+      "penis",
+      "nigga",
+      "nigger",
+      "klit",
+      "kunt",
+      "jiz",
+      "jism",
+      "jerkoff",
+      "jackoff",
+      "goddamn",
+      "fag",
+      "blowjob",
+      "bitch",
+      "asshole",
+      "dick",
+      "pussy",
+      "snatch",
+      "cunt",
+      "twat",
+      "shit",
+      "fuck"
+    };
 
-		private static void EventSink_Speech( SpeechEventArgs e )
-		{
-			Mobile from = e.Mobile;
+    public static void Initialize()
+    {
+      if (Enabled)
+        EventSink.Speech += EventSink_Speech;
+    }
 
-			if ( from.AccessLevel > AccessLevel.Player )
-				return;
+    private static bool OnProfanityDetected(Mobile from, string speech)
+    {
+      switch (Action)
+      {
+        case ProfanityAction.None: return true;
+        case ProfanityAction.Disallow: return false;
+        case ProfanityAction.Criminal:
+          from.Criminal = true;
+          return true;
+        case ProfanityAction.CriminalAction:
+          from.CriminalAction(false);
+          return true;
+        case ProfanityAction.Disconnect:
+        {
+          NetState ns = from.NetState;
 
-			if ( !NameVerification.Validate( e.Speech, 0, int.MaxValue, true, true, false, int.MaxValue, Exceptions, Disallowed, StartDisallowed ) )
-				e.Blocked = !OnProfanityDetected( from, e.Speech );
-		}
+          ns?.Dispose();
 
-		public static char[]	Exceptions { get; } =
-		{
-			' ', '-', '.', '\'', '"', ',', '_', '+', '=', '~', '`', '!', '^', '*', '\\', '/', ';', ':', '<', '>', '[', ']', '{', '}', '?', '|', '(', ')', '%', '$', '&', '#', '@'
-		};
+          return false;
+        }
+        default:
+        case ProfanityAction.Other: // TODO: Provide custom implementation if this is chosen
+        {
+          return true;
+        }
+      }
+    }
 
-		public static string[]	StartDisallowed { get; } = {};
+    private static void EventSink_Speech(SpeechEventArgs e)
+    {
+      Mobile from = e.Mobile;
 
-		public static string[]	Disallowed { get; } =
-		{
-			"jigaboo",
-			"chigaboo",
-			"wop",
-			"kyke",
-			"kike",
-			"tit",
-			"spic",
-			"prick",
-			"piss",
-			"lezbo",
-			"lesbo",
-			"felatio",
-			"dyke",
-			"dildo",
-			"chinc",
-			"chink",
-			"cunnilingus",
-			"cum",
-			"cocksucker",
-			"cock",
-			"clitoris",
-			"clit",
-			"ass",
-			"hitler",
-			"penis",
-			"nigga",
-			"nigger",
-			"klit",
-			"kunt",
-			"jiz",
-			"jism",
-			"jerkoff",
-			"jackoff",
-			"goddamn",
-			"fag",
-			"blowjob",
-			"bitch",
-			"asshole",
-			"dick",
-			"pussy",
-			"snatch",
-			"cunt",
-			"twat",
-			"shit",
-			"fuck"
-		};
-	}
+      if (from.AccessLevel > AccessLevel.Player)
+        return;
+
+      if (!NameVerification.Validate(e.Speech, 0, int.MaxValue, true, true, false, int.MaxValue, Exceptions,
+        Disallowed, StartDisallowed))
+        e.Blocked = !OnProfanityDetected(from, e.Speech);
+    }
+  }
 }

@@ -1,31 +1,30 @@
 namespace Server.Items
 {
-	public class DecoRoseOfTrinsic3 : Item
-	{
+  public class DecoRoseOfTrinsic3 : Item
+  {
+    [Constructible]
+    public DecoRoseOfTrinsic3() : base(0x234B)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public DecoRoseOfTrinsic3() : base( 0x234B )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public DecoRoseOfTrinsic3(Serial serial) : base(serial)
+    {
+    }
 
-		public DecoRoseOfTrinsic3( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

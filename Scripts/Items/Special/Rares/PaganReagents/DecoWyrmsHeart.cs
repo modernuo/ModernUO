@@ -1,31 +1,30 @@
 namespace Server.Items
 {
-	public class DecoWyrmsHeart : Item
-	{
+  public class DecoWyrmsHeart : Item
+  {
+    [Constructible]
+    public DecoWyrmsHeart() : base(0xF91)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public DecoWyrmsHeart() : base( 0xF91 )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public DecoWyrmsHeart(Serial serial) : base(serial)
+    {
+    }
 
-		public DecoWyrmsHeart( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

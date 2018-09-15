@@ -2,68 +2,68 @@ using System;
 
 namespace Server.Items
 {
-	public class Candelabra : BaseLight, IShipwreckedItem
-	{
-		public override int LitItemID => 0xB1D;
-		public override int UnlitItemID => 0xA27;
+  public class Candelabra : BaseLight, IShipwreckedItem
+  {
+    [Constructible]
+    public Candelabra() : base(0xA27)
+    {
+      Duration = TimeSpan.Zero; // Never burnt out
+      Burning = false;
+      Light = LightType.Circle225;
+      Weight = 3.0;
+    }
 
-		[Constructible]
-		public Candelabra() : base( 0xA27 )
-		{
-			Duration = TimeSpan.Zero; // Never burnt out
-			Burning = false;
-			Light = LightType.Circle225;
-			Weight = 3.0;
-		}
+    public Candelabra(Serial serial) : base(serial)
+    {
+    }
 
-		public Candelabra( Serial serial ) : base( serial )
-		{
-		}
+    public override int LitItemID => 0xB1D;
+    public override int UnlitItemID => 0xA27;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 1 );
+    #region IShipwreckedItem Members
 
-			writer.Write( IsShipwreckedItem );
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsShipwreckedItem{ get; set; }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
+    #endregion
 
-			switch ( version )
-			{
-				case 1:
-				{
-					IsShipwreckedItem = reader.ReadBool();
-					break;
-				}
-			}
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(1);
 
-		public override void AddNameProperties( ObjectPropertyList list )
-		{
-			base.AddNameProperties( list );
+      writer.Write(IsShipwreckedItem);
+    }
 
-			if ( IsShipwreckedItem )
-				list.Add( 1041645 ); // recovered from a shipwreck
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
 
-		public override void OnSingleClick( Mobile from )
-		{
-			base.OnSingleClick( from );
+      switch (version)
+      {
+        case 1:
+        {
+          IsShipwreckedItem = reader.ReadBool();
+          break;
+        }
+      }
+    }
 
-			if ( IsShipwreckedItem )
-				LabelTo( from, 1041645 );	//recovered from a shipwreck
-		}
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+      base.AddNameProperties(list);
 
-		#region IShipwreckedItem Members
+      if (IsShipwreckedItem)
+        list.Add(1041645); // recovered from a shipwreck
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsShipwreckedItem { get; set; }
+    public override void OnSingleClick(Mobile from)
+    {
+      base.OnSingleClick(from);
 
-		#endregion
-	}
+      if (IsShipwreckedItem)
+        LabelTo(from, 1041645); //recovered from a shipwreck
+    }
+  }
 }

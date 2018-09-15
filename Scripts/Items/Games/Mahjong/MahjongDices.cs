@@ -1,47 +1,48 @@
 namespace Server.Engines.Mahjong
 {
-	public class MahjongDices
-	{
-		public MahjongGame Game { get; }
+  public class MahjongDices
+  {
+    public MahjongDices(MahjongGame game)
+    {
+      Game = game;
+      First = Utility.Random(1, 6);
+      Second = Utility.Random(1, 6);
+    }
 
-		public int First { get; private set; }
+    public MahjongDices(MahjongGame game, GenericReader reader)
+    {
+      Game = game;
 
-		public int Second { get; private set; }
+      int version = reader.ReadInt();
 
-		public MahjongDices( MahjongGame game )
-		{
-			Game = game;
-			First = Utility.Random( 1, 6 );
-			Second = Utility.Random( 1, 6 );
-		}
+      First = reader.ReadInt();
+      Second = reader.ReadInt();
+    }
 
-		public void RollDices( Mobile from )
-		{
-			First = Utility.Random( 1, 6 );
-			Second = Utility.Random( 1, 6 );
+    public MahjongGame Game{ get; }
 
-			Game.Players.SendGeneralPacket( true, true );
+    public int First{ get; private set; }
 
-			if ( from != null )
-				Game.Players.SendLocalizedMessage( 1062695, $"{from.Name}\t{First}\t{Second}"); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
-		}
+    public int Second{ get; private set; }
 
-		public void Save( GenericWriter writer )
-		{
-			writer.Write( (int) 0 ); // version
+    public void RollDices(Mobile from)
+    {
+      First = Utility.Random(1, 6);
+      Second = Utility.Random(1, 6);
 
-			writer.Write( First );
-			writer.Write( Second );
-		}
+      Game.Players.SendGeneralPacket(true, true);
 
-		public MahjongDices( MahjongGame game, GenericReader reader )
-		{
-			Game = game;
+      if (from != null)
+        Game.Players.SendLocalizedMessage(1062695,
+          $"{from.Name}\t{First}\t{Second}"); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
+    }
 
-			int version = reader.ReadInt();
+    public void Save(GenericWriter writer)
+    {
+      writer.Write(0); // version
 
-			First = reader.ReadInt();
-			Second = reader.ReadInt();
-		}
-	}
+      writer.Write(First);
+      writer.Write(Second);
+    }
+  }
 }

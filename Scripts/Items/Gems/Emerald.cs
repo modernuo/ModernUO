@@ -1,39 +1,38 @@
 namespace Server.Items
 {
-	public class Emerald : Item
-	{
-		public override double DefaultWeight => 0.1;
+  public class Emerald : Item
+  {
+    [Constructible]
+    public Emerald() : this(1)
+    {
+    }
 
-		[Constructible]
-		public Emerald() : this( 1 )
-		{
-		}
+    [Constructible]
+    public Emerald(int amount) : base(0xF10)
+    {
+      Stackable = true;
+      Amount = amount;
+    }
 
-		[Constructible]
-		public Emerald( int amount ) : base( 0xF10 )
-		{
-			Stackable = true;
-			Amount = amount;
-		}
+    public Emerald(Serial serial) : base(serial)
+    {
+    }
 
-		public Emerald( Serial serial ) : base( serial )
-		{
-		}
+    public override double DefaultWeight => 0.1;
 
-		
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

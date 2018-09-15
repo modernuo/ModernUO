@@ -1,235 +1,242 @@
 using System;
-using Server.Items;
 using Server.Engines.CannedEvil;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class LordOaks : BaseChampion
-	{
-		private Mobile m_Queen;
-		private bool m_SpawnedQueen;
+  public class LordOaks : BaseChampion
+  {
+    private Mobile m_Queen;
+    private bool m_SpawnedQueen;
 
-		public override ChampionSkullType SkullType => ChampionSkullType.Enlightenment;
+    [Constructible]
+    public LordOaks() : base(AIType.AI_Mage, FightMode.Evil)
+    {
+      Body = 175;
+      SetStr(403, 850);
+      SetDex(101, 150);
+      SetInt(503, 800);
 
-		public override Type[] UniqueList => new[] { typeof( OrcChieftainHelm ) };
-		public override Type[] SharedList => new[] { 	typeof( RoyalGuardSurvivalKnife ),
-			typeof( DjinnisRing ),
-			typeof( LieutenantOfTheBritannianRoyalGuard ),
-			typeof( SamaritanRobe ),
-			typeof( DetectiveBoots ),
-			typeof( TheMostKnowledgePerson ) };
+      SetHits(3000);
+      SetStam(202, 400);
 
-		public override Type[] DecorativeList => new[] { typeof( WaterTile ),
-			typeof( WindSpirit ),
-			typeof( Pier ),
-			typeof( DirtPatch )};
+      SetDamage(21, 33);
 
-		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
+      SetDamageType(ResistanceType.Physical, 75);
+      SetDamageType(ResistanceType.Fire, 25);
 
-		public override string DefaultName => "Lord Oaks";
+      SetResistance(ResistanceType.Physical, 85, 90);
+      SetResistance(ResistanceType.Fire, 60, 70);
+      SetResistance(ResistanceType.Cold, 60, 70);
+      SetResistance(ResistanceType.Poison, 80, 90);
+      SetResistance(ResistanceType.Energy, 80, 90);
 
-		[Constructible]
-		public LordOaks() : base( AIType.AI_Mage, FightMode.Evil )
-		{
-			Body = 175;
-			SetStr( 403, 850 );
-			SetDex( 101, 150 );
-			SetInt( 503, 800 );
+      SetSkill(SkillName.Anatomy, 75.1, 100.0);
+      SetSkill(SkillName.EvalInt, 120.1, 130.0);
+      SetSkill(SkillName.Magery, 120.0);
+      SetSkill(SkillName.Meditation, 120.1, 130.0);
+      SetSkill(SkillName.MagicResist, 100.5, 150.0);
+      SetSkill(SkillName.Tactics, 100.0);
+      SetSkill(SkillName.Wrestling, 100.0);
 
-			SetHits( 3000 );
-			SetStam( 202, 400 );
+      Fame = 22500;
+      Karma = 22500;
 
-			SetDamage( 21, 33 );
+      VirtualArmor = 100;
+    }
 
-			SetDamageType( ResistanceType.Physical, 75 );
-			SetDamageType( ResistanceType.Fire, 25 );
+    public LordOaks(Serial serial) : base(serial)
+    {
+    }
 
-			SetResistance( ResistanceType.Physical, 85, 90 );
-			SetResistance( ResistanceType.Fire, 60, 70 );
-			SetResistance( ResistanceType.Cold, 60, 70 );
-			SetResistance( ResistanceType.Poison, 80, 90 );
-			SetResistance( ResistanceType.Energy, 80, 90 );
+    public override ChampionSkullType SkullType => ChampionSkullType.Enlightenment;
 
-			SetSkill( SkillName.Anatomy, 75.1, 100.0 );
-			SetSkill( SkillName.EvalInt, 120.1, 130.0 );
-			SetSkill( SkillName.Magery, 120.0 );
-			SetSkill( SkillName.Meditation, 120.1, 130.0 );
-			SetSkill( SkillName.MagicResist, 100.5, 150.0 );
-			SetSkill( SkillName.Tactics, 100.0 );
-			SetSkill( SkillName.Wrestling, 100.0 );
+    public override Type[] UniqueList => new[] { typeof(OrcChieftainHelm) };
 
-			Fame = 22500;
-			Karma = 22500;
+    public override Type[] SharedList => new[]
+    {
+      typeof(RoyalGuardSurvivalKnife),
+      typeof(DjinnisRing),
+      typeof(LieutenantOfTheBritannianRoyalGuard),
+      typeof(SamaritanRobe),
+      typeof(DetectiveBoots),
+      typeof(TheMostKnowledgePerson)
+    };
 
-			VirtualArmor = 100;
-		}
+    public override Type[] DecorativeList => new[]
+    {
+      typeof(WaterTile),
+      typeof(WindSpirit),
+      typeof(Pier),
+      typeof(DirtPatch)
+    };
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.UltraRich, 5 );
-		}
+    public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { };
 
-		public override bool AutoDispel => true;
-		public override bool CanFly => true;
-		public override bool BardImmune => !Core.SE;
-		public override bool Unprovokable => Core.SE;
-		public override bool Uncalmable => Core.SE;
-		public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
+    public override string DefaultName => "Lord Oaks";
 
-		public override Poison PoisonImmune => Poison.Deadly;
+    public override bool AutoDispel => true;
+    public override bool CanFly => true;
+    public override bool BardImmune => !Core.SE;
+    public override bool Unprovokable => Core.SE;
+    public override bool Uncalmable => Core.SE;
+    public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
-		public void SpawnPixies( Mobile target )
-		{
-			Map map = Map;
+    public override Poison PoisonImmune => Poison.Deadly;
 
-			if ( map == null )
-				return;
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.UltraRich, 5);
+    }
 
-			Say( 1042154 ); // You shall never defeat me as long as I have my queen!
+    public void SpawnPixies(Mobile target)
+    {
+      Map map = Map;
 
-			int newPixies = Utility.RandomMinMax( 3, 6 );
+      if (map == null)
+        return;
 
-			for ( int i = 0; i < newPixies; ++i )
-			{
-				Pixie pixie = new Pixie();
+      Say(1042154); // You shall never defeat me as long as I have my queen!
 
-				pixie.Team = Team;
-				pixie.FightMode = FightMode.Closest;
+      int newPixies = Utility.RandomMinMax(3, 6);
 
-				bool validLocation = false;
-				Point3D loc = Location;
+      for (int i = 0; i < newPixies; ++i)
+      {
+        Pixie pixie = new Pixie();
 
-				for ( int j = 0; !validLocation && j < 10; ++j )
-				{
-					int x = X + Utility.Random( 3 ) - 1;
-					int y = Y + Utility.Random( 3 ) - 1;
-					int z = map.GetAverageZ( x, y );
+        pixie.Team = Team;
+        pixie.FightMode = FightMode.Closest;
 
-					if ( validLocation = map.CanFit( x, y, Z, 16, false, false ) )
-						loc = new Point3D( x, y, Z );
-					else if ( validLocation = map.CanFit( x, y, z, 16, false, false ) )
-						loc = new Point3D( x, y, z );
-				}
+        bool validLocation = false;
+        Point3D loc = Location;
 
-				pixie.MoveToWorld( loc, map );
-				pixie.Combatant = target;
-			}
-		}
+        for (int j = 0; !validLocation && j < 10; ++j)
+        {
+          int x = X + Utility.Random(3) - 1;
+          int y = Y + Utility.Random(3) - 1;
+          int z = map.GetAverageZ(x, y);
 
-		public override int GetAngerSound()
-		{
-			return 0x2F8;
-		}
+          if (validLocation = map.CanFit(x, y, Z, 16, false, false))
+            loc = new Point3D(x, y, Z);
+          else if (validLocation = map.CanFit(x, y, z, 16, false, false))
+            loc = new Point3D(x, y, z);
+        }
 
-		public override int GetIdleSound()
-		{
-			return 0x2F8;
-		}
+        pixie.MoveToWorld(loc, map);
+        pixie.Combatant = target;
+      }
+    }
 
-		public override int GetAttackSound()
-		{
-			return Utility.Random( 0x2F5, 2 );
-		}
+    public override int GetAngerSound()
+    {
+      return 0x2F8;
+    }
 
-		public override int GetHurtSound()
-		{
-			return 0x2F9;
-		}
+    public override int GetIdleSound()
+    {
+      return 0x2F8;
+    }
 
-		public override int GetDeathSound()
-		{
-			return 0x2F7;
-		}
+    public override int GetAttackSound()
+    {
+      return Utility.Random(0x2F5, 2);
+    }
 
-		public void CheckQueen()
-		{
-			if ( Map == null )
-				return;
+    public override int GetHurtSound()
+    {
+      return 0x2F9;
+    }
 
-			if ( !m_SpawnedQueen )
-			{
-				Say( 1042153 ); // Come forth my queen!
+    public override int GetDeathSound()
+    {
+      return 0x2F7;
+    }
 
-				m_Queen = new Silvani();
+    public void CheckQueen()
+    {
+      if (Map == null)
+        return;
 
-				((BaseCreature)m_Queen).Team = Team;
+      if (!m_SpawnedQueen)
+      {
+        Say(1042153); // Come forth my queen!
 
-				m_Queen.MoveToWorld( Location, Map );
+        m_Queen = new Silvani();
 
-				m_SpawnedQueen = true;
-			}
-			else if ( m_Queen != null && m_Queen.Deleted )
-			{
-				m_Queen = null;
-			}
-		}
+        ((BaseCreature)m_Queen).Team = Team;
 
-		public override void AlterDamageScalarFrom( Mobile caster, ref double scalar )
-		{
-			CheckQueen();
+        m_Queen.MoveToWorld(Location, Map);
 
-			if ( m_Queen != null )
-			{
-				scalar *= 0.1;
+        m_SpawnedQueen = true;
+      }
+      else if (m_Queen != null && m_Queen.Deleted)
+      {
+        m_Queen = null;
+      }
+    }
 
-				if ( 0.1 >= Utility.RandomDouble() )
-					SpawnPixies( caster );
-			}
-		}
+    public override void AlterDamageScalarFrom(Mobile caster, ref double scalar)
+    {
+      CheckQueen();
 
-		public override void OnGaveMeleeAttack( Mobile defender )
-		{
-			base.OnGaveMeleeAttack( defender );
+      if (m_Queen != null)
+      {
+        scalar *= 0.1;
 
-			defender.Damage( Utility.Random( 20, 10 ), this );
-			defender.Stam -= Utility.Random( 20, 10 );
-			defender.Mana -= Utility.Random( 20, 10 );
-		}
+        if (0.1 >= Utility.RandomDouble())
+          SpawnPixies(caster);
+      }
+    }
 
-		public override void OnGotMeleeAttack( Mobile attacker )
-		{
-			base.OnGotMeleeAttack( attacker );
+    public override void OnGaveMeleeAttack(Mobile defender)
+    {
+      base.OnGaveMeleeAttack(defender);
 
-			CheckQueen();
+      defender.Damage(Utility.Random(20, 10), this);
+      defender.Stam -= Utility.Random(20, 10);
+      defender.Mana -= Utility.Random(20, 10);
+    }
 
-			if ( m_Queen != null && 0.1 >= Utility.RandomDouble() )
-				SpawnPixies( attacker );
+    public override void OnGotMeleeAttack(Mobile attacker)
+    {
+      base.OnGotMeleeAttack(attacker);
 
-			attacker.Damage( Utility.Random( 20, 10 ), this );
-			attacker.Stam -= Utility.Random( 20, 10 );
-			attacker.Mana -= Utility.Random( 20, 10 );
-		}
+      CheckQueen();
 
-		public LordOaks( Serial serial ) : base( serial )
-		{
-		}
+      if (m_Queen != null && 0.1 >= Utility.RandomDouble())
+        SpawnPixies(attacker);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      attacker.Damage(Utility.Random(20, 10), this);
+      attacker.Stam -= Utility.Random(20, 10);
+      attacker.Mana -= Utility.Random(20, 10);
+    }
 
-			writer.Write( (int) 0 ); // version
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( m_Queen );
-			writer.Write( m_SpawnedQueen );
-		}
+      writer.Write(0); // version
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(m_Queen);
+      writer.Write(m_SpawnedQueen);
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Queen = reader.ReadMobile();
-					m_SpawnedQueen = reader.ReadBool();
+      int version = reader.ReadInt();
 
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          m_Queen = reader.ReadMobile();
+          m_SpawnedQueen = reader.ReadBool();
+
+          break;
+        }
+      }
+    }
+  }
 }

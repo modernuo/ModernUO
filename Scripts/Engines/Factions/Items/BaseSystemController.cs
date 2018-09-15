@@ -1,64 +1,64 @@
 namespace Server.Factions
 {
-	public abstract class BaseSystemController : Item
-	{
-		private int m_LabelNumber;
+  public abstract class BaseSystemController : Item
+  {
+    private int m_LabelNumber;
 
-		public virtual int DefaultLabelNumber => base.LabelNumber;
-		public new virtual string DefaultName => null;
+    public BaseSystemController(int itemID) : base(itemID)
+    {
+    }
 
-		public override int LabelNumber
-		{
-			get
-			{
-				if ( m_LabelNumber > 0 )
-					return m_LabelNumber;
+    public BaseSystemController(Serial serial) : base(serial)
+    {
+    }
 
-				return DefaultLabelNumber;
-			}
-		}
+    public virtual int DefaultLabelNumber => base.LabelNumber;
+    public new virtual string DefaultName => null;
 
-		public virtual void AssignName( TextDefinition name )
-		{
-			if ( name != null && name.Number > 0 )
-			{
-				m_LabelNumber = name.Number;
-				Name = null;
-			}
-			else if ( name?.String != null )
-			{
-				m_LabelNumber = 0;
-				Name = name.String;
-			}
-			else
-			{
-				m_LabelNumber = 0;
-				Name = DefaultName;
-			}
+    public override int LabelNumber
+    {
+      get
+      {
+        if (m_LabelNumber > 0)
+          return m_LabelNumber;
 
-			InvalidateProperties();
-		}
+        return DefaultLabelNumber;
+      }
+    }
 
-		public BaseSystemController( int itemID ) : base( itemID )
-		{
-		}
+    public virtual void AssignName(TextDefinition name)
+    {
+      if (name != null && name.Number > 0)
+      {
+        m_LabelNumber = name.Number;
+        Name = null;
+      }
+      else if (name?.String != null)
+      {
+        m_LabelNumber = 0;
+        Name = name.String;
+      }
+      else
+      {
+        m_LabelNumber = 0;
+        Name = DefaultName;
+      }
 
-		public BaseSystemController( Serial serial ) : base( serial )
-		{
-		}
+      InvalidateProperties();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

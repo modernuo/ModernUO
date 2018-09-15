@@ -2,45 +2,45 @@ using Server.Gumps;
 
 namespace Server.Factions
 {
-	public abstract class FactionGump : Gump
-	{
-		public virtual int ButtonTypes => 10;
+  public abstract class FactionGump : Gump
+  {
+    public FactionGump(int x, int y) : base(x, y)
+    {
+    }
 
-		public int ToButtonID( int type, int index )
-		{
-			return 1 + (index * ButtonTypes) + type;
-		}
+    public virtual int ButtonTypes => 10;
 
-		public bool FromButtonID( int buttonID, out int type, out int index )
-		{
-			int offset = buttonID - 1;
+    public int ToButtonID(int type, int index)
+    {
+      return 1 + index * ButtonTypes + type;
+    }
 
-			if ( offset >= 0 )
-			{
-				type = offset % ButtonTypes;
-				index = offset / ButtonTypes;
-				return true;
-			}
+    public bool FromButtonID(int buttonID, out int type, out int index)
+    {
+      int offset = buttonID - 1;
 
-			type = index = 0;
-			return false;
-		}
+      if (offset >= 0)
+      {
+        type = offset % ButtonTypes;
+        index = offset / ButtonTypes;
+        return true;
+      }
 
-		public static bool Exists( Mobile mob )
-		{
-			return ( mob.FindGump( typeof( FactionGump ) ) != null );
-		}
+      type = index = 0;
+      return false;
+    }
 
-		public void AddHtmlText( int x, int y, int width, int height, TextDefinition text, bool back, bool scroll )
-		{
-			if ( text != null && text.Number > 0 )
-				AddHtmlLocalized( x, y, width, height, text.Number, back, scroll );
-			else if ( text?.String != null )
-				AddHtml( x, y, width, height, text.String, back, scroll );
-		}
+    public static bool Exists(Mobile mob)
+    {
+      return mob.FindGump(typeof(FactionGump)) != null;
+    }
 
-		public FactionGump( int x, int y ) : base( x, y )
-		{
-		}
-	}
+    public void AddHtmlText(int x, int y, int width, int height, TextDefinition text, bool back, bool scroll)
+    {
+      if (text != null && text.Number > 0)
+        AddHtmlLocalized(x, y, width, height, text.Number, back, scroll);
+      else if (text?.String != null)
+        AddHtml(x, y, width, height, text.String, back, scroll);
+    }
+  }
 }

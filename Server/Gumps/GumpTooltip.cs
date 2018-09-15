@@ -18,37 +18,35 @@
  *
  ***************************************************************************/
 
-using System;
 using Server.Network;
 
 namespace Server.Gumps
 {
-	public class GumpTooltip : GumpEntry
-	{
-		private int m_Number;
+  public class GumpTooltip : GumpEntry
+  {
+    private static byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
+    private int m_Number;
 
-		public GumpTooltip( int number )
-		{
-			m_Number = number;
-		}
+    public GumpTooltip(int number)
+    {
+      m_Number = number;
+    }
 
-		public int Number
-		{
-			get => m_Number;
-			set => Delta( ref m_Number, value );
-		}
+    public int Number
+    {
+      get => m_Number;
+      set => Delta(ref m_Number, value);
+    }
 
-		public override string Compile( NetState ns )
-		{
-			return $"{{ tooltip {m_Number} }}";
-		}
+    public override string Compile(NetState ns)
+    {
+      return $"{{ tooltip {m_Number} }}";
+    }
 
-		private static byte[] m_LayoutName = Gump.StringToBuffer( "tooltip" );
-
-		public override void AppendTo( NetState ns, IGumpWriter disp )
-		{
-			disp.AppendLayout( m_LayoutName );
-			disp.AppendLayout( m_Number );
-		}
-	}
+    public override void AppendTo(NetState ns, IGumpWriter disp)
+    {
+      disp.AppendLayout(m_LayoutName);
+      disp.AppendLayout(m_Number);
+    }
+  }
 }

@@ -5,128 +5,141 @@ using Server.Mobiles;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0x27AA, 0x27F5 )]
-	public class Fukiya : Item, INinjaWeapon
-	{
-		public virtual int WrongAmmoMessage  => 1063329; //You can only load fukiya darts
-		public virtual int NoFreeHandMessage  => 1063327; //You must have a free hand to use a fukiya.
-		public virtual int EmptyWeaponMessage  => 1063325; //You have no fukiya darts!
-		public virtual int RecentlyUsedMessage  => 1063326; //You are already using that fukiya.
-		public virtual int FullWeaponMessage  => 1063330; //You can only load fukiya darts
+  [Flippable(0x27AA, 0x27F5)]
+  public class Fukiya : Item, INinjaWeapon
+  {
+    private Poison m_Poison;
+    private int m_PoisonCharges;
 
-		public virtual int WeaponMinRange  => 0;
-		public virtual int WeaponMaxRange  => 6;
+    private int m_UsesRemaining;
 
-		public virtual int WeaponDamage => Utility.RandomMinMax(4, 6);
+    [Constructible]
+    public Fukiya() : base(0x27AA)
+    {
+      Weight = 4.0;
+      Layer = Layer.OneHanded;
+    }
 
-		public  Type AmmoType => typeof(FukiyaDarts);
+    public Fukiya(Serial serial) : base(serial)
+    {
+    }
 
-		private int m_UsesRemaining;
-		private Poison m_Poison;
-		private int m_PoisonCharges;
+    public virtual int WrongAmmoMessage => 1063329; //You can only load fukiya darts
+    public virtual int NoFreeHandMessage => 1063327; //You must have a free hand to use a fukiya.
+    public virtual int EmptyWeaponMessage => 1063325; //You have no fukiya darts!
+    public virtual int RecentlyUsedMessage => 1063326; //You are already using that fukiya.
+    public virtual int FullWeaponMessage => 1063330; //You can only load fukiya darts
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int UsesRemaining
-		{
-			get => m_UsesRemaining;
-			set { m_UsesRemaining = value; InvalidateProperties();  }
-		}
+    public virtual int WeaponMinRange => 0;
+    public virtual int WeaponMaxRange => 6;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Poison Poison
-		{
-			get => m_Poison;
-			set{ m_Poison = value; InvalidateProperties(); }
-		}
+    public virtual int WeaponDamage => Utility.RandomMinMax(4, 6);
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int PoisonCharges
-		{
-			get => m_PoisonCharges;
-			set { m_PoisonCharges = value; InvalidateProperties(); }
-		}
+    public Type AmmoType => typeof(FukiyaDarts);
 
-		public bool ShowUsesRemaining{ get => true;
-			set{} }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int UsesRemaining
+    {
+      get => m_UsesRemaining;
+      set
+      {
+        m_UsesRemaining = value;
+        InvalidateProperties();
+      }
+    }
 
-		[Constructible]
-		public Fukiya() : base( 0x27AA )
-		{
-			Weight = 4.0;
-			Layer = Layer.OneHanded;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Poison Poison
+    {
+      get => m_Poison;
+      set
+      {
+        m_Poison = value;
+        InvalidateProperties();
+      }
+    }
 
-		public Fukiya( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int PoisonCharges
+    {
+      get => m_PoisonCharges;
+      set
+      {
+        m_PoisonCharges = value;
+        InvalidateProperties();
+      }
+    }
 
-		public void AttackAnimation(Mobile from, Mobile to)
-		{
-			if (from.Body.IsHuman && !from.Mounted)
-			{
-				from.Animate(33, 2, 1, true, true, 0);
-			}
+    public bool ShowUsesRemaining
+    {
+      get => true;
+      set { }
+    }
 
-			from.PlaySound(0x223);
-			from.MovingEffect(to, 0x2804, 5, 0, false, false);
-		}
+    public void AttackAnimation(Mobile from, Mobile to)
+    {
+      if (from.Body.IsHuman && !from.Mounted) from.Animate(33, 2, 1, true, true, 0);
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+      from.PlaySound(0x223);
+      from.MovingEffect(to, 0x2804, 5, 0, false, false);
+    }
 
-			list.Add( 1060584, m_UsesRemaining.ToString() ); // uses remaining: ~1_val~
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-			if ( m_Poison != null && m_PoisonCharges > 0 )
-				list.Add( 1062412 + m_Poison.Level, m_PoisonCharges.ToString() );
-		}
+      list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			NinjaWeapon.AttemptShoot((PlayerMobile)from, this);
-		}
+      if (m_Poison != null && m_PoisonCharges > 0)
+        list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
+    }
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+    public override void OnDoubleClick(Mobile from)
+    {
+      NinjaWeapon.AttemptShoot((PlayerMobile)from, this);
+    }
 
-			if ( IsChildOf( from ) )
-			{
-				list.Add(new NinjaWeapon.LoadEntry(this, 6224));
-				list.Add(new NinjaWeapon.UnloadEntry(this, 6225));
-			}
-		}
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      if (IsChildOf(from))
+      {
+        list.Add(new NinjaWeapon.LoadEntry(this, 6224));
+        list.Add(new NinjaWeapon.UnloadEntry(this, 6225));
+      }
+    }
 
-			writer.Write( (int) 0 );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) m_UsesRemaining );
+      writer.Write(0);
 
-			Poison.Serialize( m_Poison, writer );
-			writer.Write( (int) m_PoisonCharges );
-		}
+      writer.Write(m_UsesRemaining);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      Poison.Serialize(m_Poison, writer);
+      writer.Write(m_PoisonCharges);
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_UsesRemaining = reader.ReadInt();
+      int version = reader.ReadInt();
 
-					m_Poison = Poison.Deserialize( reader );
-					m_PoisonCharges = reader.ReadInt();
+      switch (version)
+      {
+        case 0:
+        {
+          m_UsesRemaining = reader.ReadInt();
 
-					break;
-				}
-			}
-		}
-	}
+          m_Poison = Poison.Deserialize(reader);
+          m_PoisonCharges = reader.ReadInt();
+
+          break;
+        }
+      }
+    }
+  }
 }

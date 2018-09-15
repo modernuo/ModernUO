@@ -3,82 +3,90 @@ using EDI = Server.Mobiles.EscortDestinationInfo;
 
 namespace Server.Mobiles
 {
-	public class Messenger : BaseEscortable
-	{
-		[Constructible]
-		public Messenger()
-		{
-			Title = "the messenger";
-		}
+  public class Messenger : BaseEscortable
+  {
+    [Constructible]
+    public Messenger()
+    {
+      Title = "the messenger";
+    }
 
-		public override bool CanTeach => true;
-		public override bool ClickTitle => false; // Do not display 'the messenger' when single-clicking
+    public Messenger(Serial serial) : base(serial)
+    {
+    }
 
-		private static int GetRandomHue()
-		{
-			switch ( Utility.Random( 6 ) )
-			{
-				default:
-				case 0: return 0;
-				case 1: return Utility.RandomBlueHue();
-				case 2: return Utility.RandomGreenHue();
-				case 3: return Utility.RandomRedHue();
-				case 4: return Utility.RandomYellowHue();
-				case 5: return Utility.RandomNeutralHue();
-			}
-		}
+    public override bool CanTeach => true;
+    public override bool ClickTitle => false; // Do not display 'the messenger' when single-clicking
 
-		public override void InitOutfit()
-		{
-			if ( Female )
-				AddItem( new PlainDress() );
-			else
-				AddItem( new Shirt( GetRandomHue() ) );
+    private static int GetRandomHue()
+    {
+      switch (Utility.Random(6))
+      {
+        default:
+        case 0: return 0;
+        case 1: return Utility.RandomBlueHue();
+        case 2: return Utility.RandomGreenHue();
+        case 3: return Utility.RandomRedHue();
+        case 4: return Utility.RandomYellowHue();
+        case 5: return Utility.RandomNeutralHue();
+      }
+    }
 
-			int lowHue = GetRandomHue();
+    public override void InitOutfit()
+    {
+      if (Female)
+        AddItem(new PlainDress());
+      else
+        AddItem(new Shirt(GetRandomHue()));
 
-			AddItem( new ShortPants( lowHue ) );
+      int lowHue = GetRandomHue();
 
-			if ( Female )
-				AddItem( new Boots( lowHue ) );
-			else
-				AddItem( new Shoes( lowHue ) );
+      AddItem(new ShortPants(lowHue));
 
-			//if ( !Female )
-				//AddItem( new BodySash( lowHue ) );
+      if (Female)
+        AddItem(new Boots(lowHue));
+      else
+        AddItem(new Shoes(lowHue));
 
-			//AddItem( new Cloak( GetRandomHue() ) );
+      //if ( !Female )
+      //AddItem( new BodySash( lowHue ) );
 
-			//if ( !Female )
-				//AddItem( new Longsword() );
+      //AddItem( new Cloak( GetRandomHue() ) );
 
-			switch ( Utility.Random( 4 ) )
-			{
-				case 0: AddItem( new ShortHair( Utility.RandomHairHue() ) ); break;
-				case 1: AddItem( new TwoPigTails( Utility.RandomHairHue() ) ); break;
-				case 2: AddItem( new ReceedingHair( Utility.RandomHairHue() ) ); break;
-				case 3: AddItem( new KrisnaHair( Utility.RandomHairHue() ) ); break;
-			}
+      //if ( !Female )
+      //AddItem( new Longsword() );
 
-			PackGold( 200, 250 );
-		}
+      switch (Utility.Random(4))
+      {
+        case 0:
+          AddItem(new ShortHair(Utility.RandomHairHue()));
+          break;
+        case 1:
+          AddItem(new TwoPigTails(Utility.RandomHairHue()));
+          break;
+        case 2:
+          AddItem(new ReceedingHair(Utility.RandomHairHue()));
+          break;
+        case 3:
+          AddItem(new KrisnaHair(Utility.RandomHairHue()));
+          break;
+      }
 
-		public Messenger( Serial serial ) : base( serial )
-		{
-		}
+      PackGold(200, 250);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

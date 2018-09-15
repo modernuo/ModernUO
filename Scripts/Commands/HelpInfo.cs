@@ -1,413 +1,411 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
+using System.Text;
+using Server.Commands.Generic;
 using Server.Gumps;
 using Server.Network;
-using Server.Commands.Generic;
-using CommandInfo=Server.Commands.Docs.DocCommandEntry;
-using CommandInfoSorter=Server.Commands.Docs.CommandEntrySorter;
+using CommandInfo = Server.Commands.Docs.DocCommandEntry;
+using CommandInfoSorter = Server.Commands.Docs.CommandEntrySorter;
 
 namespace Server.Commands
 {
-	public class HelpInfo
-	{
-		public static Dictionary<string, CommandInfo> HelpInfos { get; } = new Dictionary<string, CommandInfo>();
+  public class HelpInfo
+  {
+    public static Dictionary<string, CommandInfo> HelpInfos{ get; } = new Dictionary<string, CommandInfo>();
 
-		public static List<CommandInfo> SortedHelpInfo { get; private set; } = new List<CommandInfo>();
+    public static List<CommandInfo> SortedHelpInfo{ get; private set; } = new List<CommandInfo>();
 
-		[CallPriority( 100 )]
-		public static void Initialize()
-		{
-			CommandSystem.Register( "HelpInfo", AccessLevel.Player, HelpInfo_OnCommand );
+    [CallPriority(100)]
+    public static void Initialize()
+    {
+      CommandSystem.Register("HelpInfo", AccessLevel.Player, HelpInfo_OnCommand);
 
-			FillTable();
-		}
+      FillTable();
+    }
 
-		[Usage( "HelpInfo [<command>]" )]
-		[Description( "Gives information on a specified command, or when no argument specified, displays a gump containing all commands" )]
-		private static void HelpInfo_OnCommand( CommandEventArgs e )
-		{
-			if ( e.Length > 0 )
-			{
-				string arg = e.GetString( 0 ).ToLower();
-				if (HelpInfos.TryGetValue( arg, out CommandInfo c ))
-				{
-					Mobile m = e.Mobile;
+    [Usage("HelpInfo [<command>]")]
+    [Description(
+      "Gives information on a specified command, or when no argument specified, displays a gump containing all commands")]
+    private static void HelpInfo_OnCommand(CommandEventArgs e)
+    {
+      if (e.Length > 0)
+      {
+        string arg = e.GetString(0).ToLower();
+        if (HelpInfos.TryGetValue(arg, out CommandInfo c))
+        {
+          Mobile m = e.Mobile;
 
-					if ( m.AccessLevel >= c.AccessLevel )
-						m.SendGump( new CommandInfoGump( c ) );
-					else
-						m.SendMessage( "You don't have access to that command." );
+          if (m.AccessLevel >= c.AccessLevel)
+            m.SendGump(new CommandInfoGump(c));
+          else
+            m.SendMessage("You don't have access to that command.");
 
-					return;
-				}
+          return;
+        }
 
-				e.Mobile.SendMessage($"Command '{arg}' not found!");
-			}
+        e.Mobile.SendMessage($"Command '{arg}' not found!");
+      }
 
-			e.Mobile.SendGump( new CommandListGump( 0, e.Mobile, null ) );
+      e.Mobile.SendGump(new CommandListGump(0, e.Mobile, null));
+    }
 
-		}
+    public static void FillTable()
+    {
+      List<CommandEntry> commands = new List<CommandEntry>(CommandSystem.Entries.Values);
+      List<CommandInfo> list = new List<CommandInfo>();
 
-		public static void FillTable()
-		{
-			List<CommandEntry> commands = new List<CommandEntry>( CommandSystem.Entries.Values );
-			List<CommandInfo> list = new List<CommandInfo>();
+      commands.Sort();
+      commands.Reverse();
+      Docs.Clean(commands);
 
-			commands.Sort();
-			commands.Reverse();
-			Docs.Clean( commands );
+      for (int i = 0; i < commands.Count; ++i)
+      {
+        CommandEntry e = commands[i];
 
-			for( int i = 0; i < commands.Count; ++i )
-			{
-				CommandEntry e =commands[i];
+        MethodInfo mi = e.Handler.Method;
 
-				MethodInfo mi = e.Handler.Method;
+        object[] attrs = mi.GetCustomAttributes(typeof(UsageAttribute), false);
 
-				object[] attrs = mi.GetCustomAttributes( typeof( UsageAttribute ), false );
+        if (attrs.Length == 0)
+          continue;
 
-				if ( attrs.Length == 0 )
-					continue;
+        UsageAttribute usage = attrs[0] as UsageAttribute;
 
-				UsageAttribute usage = attrs[0] as UsageAttribute;
+        attrs = mi.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-				attrs = mi.GetCustomAttributes( typeof( DescriptionAttribute ), false );
+        if (attrs.Length == 0)
+          continue;
 
-				if ( attrs.Length == 0 )
-					continue;
+        if (usage == null || !(attrs[0] is DescriptionAttribute desc))
+          continue;
 
-				if ( usage == null || !(attrs[0] is DescriptionAttribute desc) )
-					continue;
+        attrs = mi.GetCustomAttributes(typeof(AliasesAttribute), false);
 
-				attrs = mi.GetCustomAttributes( typeof( AliasesAttribute ), false );
+        AliasesAttribute aliases = attrs.Length == 0 ? null : attrs[0] as AliasesAttribute;
 
-				AliasesAttribute aliases = (attrs.Length == 0 ? null : attrs[0] as AliasesAttribute);
+        string descString = desc.Description.Replace("<", "(").Replace(">", ")");
 
-				string descString = desc.Description.Replace( "<", "(" ).Replace( ">", ")" );
+        if (aliases == null)
+        {
+          list.Add(new CommandInfo(e.AccessLevel, e.Command, null, usage.Usage, descString));
+        }
+        else
+        {
+          list.Add(new CommandInfo(e.AccessLevel, e.Command, aliases.Aliases, usage.Usage, descString));
 
-				if ( aliases == null )
-					list.Add( new CommandInfo( e.AccessLevel, e.Command, null, usage.Usage, descString ) );
-				else
-				{
-					list.Add( new CommandInfo( e.AccessLevel, e.Command, aliases.Aliases, usage.Usage, descString ) );
+          for (int j = 0; j < aliases.Aliases.Length; j++)
+          {
+            string[] newAliases = new string[aliases.Aliases.Length];
 
-					for( int j = 0; j < aliases.Aliases.Length; j++ )
-					{
-						string[] newAliases = new string[aliases.Aliases.Length];
+            aliases.Aliases.CopyTo(newAliases, 0);
 
-						aliases.Aliases.CopyTo( newAliases, 0 );
+            newAliases[j] = e.Command;
 
-						newAliases[j] = e.Command;
+            list.Add(new CommandInfo(e.AccessLevel, aliases.Aliases[j], newAliases, usage.Usage, descString));
+          }
+        }
+      }
 
-						list.Add( new CommandInfo( e.AccessLevel, aliases.Aliases[j], newAliases, usage.Usage, descString ) );
-					}
-				}
-			}
 
+      for (int i = 0; i < TargetCommands.AllCommands.Count; ++i)
+      {
+        BaseCommand command = TargetCommands.AllCommands[i];
 
-			for( int i = 0; i < TargetCommands.AllCommands.Count; ++i )
-			{
-				BaseCommand command = TargetCommands.AllCommands[i];
+        string usage = command.Usage;
+        string desc = command.Description;
 
-				string usage = command.Usage;
-				string desc = command.Description;
+        if (usage == null || desc == null)
+          continue;
 
-				if ( usage == null || desc == null )
-					continue;
+        string[] cmds = command.Commands;
+        string cmd = cmds[0];
+        string[] aliases = new string[cmds.Length - 1];
 
-				string[] cmds = command.Commands;
-				string cmd = cmds[0];
-				string[] aliases = new string[cmds.Length - 1];
+        for (int j = 0; j < aliases.Length; ++j)
+          aliases[j] = cmds[j + 1];
 
-				for( int j = 0; j < aliases.Length; ++j )
-					aliases[j] = cmds[j + 1];
+        desc = desc.Replace("<", "(").Replace(">", ")");
 
-				desc = desc.Replace( "<", "(" ).Replace( ">", ")" );
+        if (command.Supports != CommandSupport.Single)
+        {
+          StringBuilder sb = new StringBuilder(50 + desc.Length);
 
-				if ( command.Supports != CommandSupport.Single )
-				{
-					StringBuilder sb = new StringBuilder( 50 + desc.Length );
+          sb.Append("Modifiers: ");
 
-					sb.Append( "Modifiers: " );
+          if ((command.Supports & CommandSupport.Global) != 0)
+            sb.Append("<i>Global</i>, ");
 
-					if ( (command.Supports & CommandSupport.Global) != 0 )
-						sb.Append( "<i>Global</i>, " );
+          if ((command.Supports & CommandSupport.Online) != 0)
+            sb.Append("<i>Online</i>, ");
 
-					if ( (command.Supports & CommandSupport.Online) != 0 )
-						sb.Append( "<i>Online</i>, " );
+          if ((command.Supports & CommandSupport.Region) != 0)
+            sb.Append("<i>Region</i>, ");
 
-					if ( (command.Supports & CommandSupport.Region) != 0 )
-						sb.Append( "<i>Region</i>, " );
+          if ((command.Supports & CommandSupport.Contained) != 0)
+            sb.Append("<i>Contained</i>, ");
 
-					if ( (command.Supports & CommandSupport.Contained) != 0 )
-						sb.Append( "<i>Contained</i>, " );
+          if ((command.Supports & CommandSupport.Multi) != 0)
+            sb.Append("<i>Multi</i>, ");
 
-					if ( (command.Supports & CommandSupport.Multi) != 0 )
-						sb.Append( "<i>Multi</i>, " );
+          if ((command.Supports & CommandSupport.Area) != 0)
+            sb.Append("<i>Area</i>, ");
 
-					if ( (command.Supports & CommandSupport.Area) != 0 )
-						sb.Append( "<i>Area</i>, " );
+          if ((command.Supports & CommandSupport.Self) != 0)
+            sb.Append("<i>Self</i>, ");
 
-					if ( (command.Supports & CommandSupport.Self) != 0 )
-						sb.Append( "<i>Self</i>, " );
+          sb.Remove(sb.Length - 2, 2);
+          sb.Append("<br>");
+          sb.Append(desc);
 
-					sb.Remove( sb.Length - 2, 2 );
-					sb.Append( "<br>" );
-					sb.Append( desc );
+          desc = sb.ToString();
+        }
 
-					desc = sb.ToString();
-				}
+        list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, desc));
 
-				list.Add( new CommandInfo( command.AccessLevel, cmd, aliases, usage, desc ) );
+        for (int j = 0; j < aliases.Length; j++)
+        {
+          string[] newAliases = new string[aliases.Length];
 
-				for( int j = 0; j < aliases.Length; j++ )
-				{
-					string[] newAliases = new string[aliases.Length];
+          aliases.CopyTo(newAliases, 0);
 
-					aliases.CopyTo( newAliases, 0 );
+          newAliases[j] = cmd;
 
-					newAliases[j] = cmd;
+          list.Add(new CommandInfo(command.AccessLevel, aliases[j], newAliases, usage, desc));
+        }
+      }
 
-					list.Add( new CommandInfo( command.AccessLevel, aliases[j], newAliases, usage, desc ) );
-				}
-			}
+      List<BaseCommandImplementor> commandImpls = BaseCommandImplementor.Implementors;
 
-			List<BaseCommandImplementor> commandImpls = BaseCommandImplementor.Implementors;
+      for (int i = 0; i < commandImpls.Count; ++i)
+      {
+        BaseCommandImplementor command = commandImpls[i];
 
-			for( int i = 0; i < commandImpls.Count; ++i )
-			{
-				BaseCommandImplementor command = commandImpls[i];
+        string usage = command.Usage;
+        string desc = command.Description;
 
-				string usage = command.Usage;
-				string desc = command.Description;
+        if (usage == null || desc == null)
+          continue;
 
-				if ( usage == null || desc == null )
-					continue;
+        string[] cmds = command.Accessors;
+        string cmd = cmds[0];
+        string[] aliases = new string[cmds.Length - 1];
 
-				string[] cmds = command.Accessors;
-				string cmd = cmds[0];
-				string[] aliases = new string[cmds.Length - 1];
+        for (int j = 0; j < aliases.Length; ++j)
+          aliases[j] = cmds[j + 1];
 
-				for( int j = 0; j < aliases.Length; ++j )
-					aliases[j] = cmds[j + 1];
+        desc = desc.Replace("<", ")").Replace(">", ")");
 
-				desc = desc.Replace( "<", ")" ).Replace( ">", ")" );
+        list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, desc));
 
-				list.Add( new CommandInfo( command.AccessLevel, cmd, aliases, usage, desc ) );
+        for (int j = 0; j < aliases.Length; j++)
+        {
+          string[] newAliases = new string[aliases.Length];
 
-				for( int j = 0; j < aliases.Length; j++ )
-				{
-					string[] newAliases = new string[aliases.Length];
+          aliases.CopyTo(newAliases, 0);
 
-					aliases.CopyTo( newAliases, 0 );
+          newAliases[j] = cmd;
 
-					newAliases[j] = cmd;
+          list.Add(new CommandInfo(command.AccessLevel, aliases[j], newAliases, usage, desc));
+        }
+      }
 
-					list.Add( new CommandInfo( command.AccessLevel, aliases[j], newAliases, usage, desc ) );
-				}
-			}
+      list.Sort(new CommandInfoSorter());
 
-			list.Sort( new CommandInfoSorter() );
+      SortedHelpInfo = list;
 
-			SortedHelpInfo = list;
+      foreach (CommandInfo c in SortedHelpInfo)
+        if (!HelpInfos.ContainsKey(c.Name.ToLower()))
+          HelpInfos.Add(c.Name.ToLower(), c);
+    }
 
-			foreach( CommandInfo c in SortedHelpInfo )
-			{
-				if ( !HelpInfos.ContainsKey( c.Name.ToLower() ) )
-					HelpInfos.Add( c.Name.ToLower(), c );
-			}
-		}
+    public class CommandListGump : BaseGridGump
+    {
+      private const int EntriesPerPage = 15;
+      private List<CommandInfo> m_List;
 
-		public class CommandListGump : BaseGridGump
-		{
-			private const int EntriesPerPage = 15;
+      private int m_Page;
 
-			int m_Page;
-			List<CommandInfo> m_List;
+      public CommandListGump(int page, Mobile from, List<CommandInfo> list)
+        : base(30, 30)
+      {
+        m_Page = page;
 
-			public CommandListGump( int page, Mobile from, List<CommandInfo> list )
-				: base( 30, 30 )
-			{
-				m_Page = page;
+        if (list == null)
+        {
+          m_List = new List<CommandInfo>();
 
-				if ( list == null )
-				{
-					m_List = new List<CommandInfo>();
+          foreach (CommandInfo c in SortedHelpInfo)
+            if (from.AccessLevel >= c.AccessLevel)
+              m_List.Add(c);
+        }
+        else
+        {
+          m_List = list;
+        }
 
-					foreach( CommandInfo c in SortedHelpInfo )
-					{
-						if ( from.AccessLevel >= c.AccessLevel )
-							m_List.Add( c );
-					}
-				}
-				else
-					m_List = list;
 
+        AddNewPage();
 
-				AddNewPage();
+        if (m_Page > 0)
+          AddEntryButton(20, ArrowLeftID1, ArrowLeftID2, 1, ArrowLeftWidth, ArrowLeftHeight);
+        else
+          AddEntryHeader(20);
 
-				if ( m_Page > 0 )
-					AddEntryButton( 20, ArrowLeftID1, ArrowLeftID2, 1, ArrowLeftWidth, ArrowLeftHeight );
-				else
-					AddEntryHeader( 20 );
+        AddEntryHtml(160, Center(
+          $"Page {m_Page + 1} of {(m_List.Count + EntriesPerPage - 1) / EntriesPerPage}"));
 
-				AddEntryHtml( 160, Center(
-					$"Page {m_Page + 1} of {(m_List.Count + EntriesPerPage - 1) / EntriesPerPage}") );
+        if ((m_Page + 1) * EntriesPerPage < m_List.Count)
+          AddEntryButton(20, ArrowRightID1, ArrowRightID2, 2, ArrowRightWidth, ArrowRightHeight);
+        else
+          AddEntryHeader(20);
 
-				if ( (m_Page + 1) * EntriesPerPage < m_List.Count )
-					AddEntryButton( 20, ArrowRightID1, ArrowRightID2, 2, ArrowRightWidth, ArrowRightHeight );
-				else
-					AddEntryHeader( 20 );
+        int last = (int)AccessLevel.Player - 1;
 
-				int last = (int)AccessLevel.Player - 1;
+        for (int i = m_Page * EntriesPerPage, line = 0; line < EntriesPerPage && i < m_List.Count; ++i, ++line)
+        {
+          CommandInfo c = m_List[i];
+          if (from.AccessLevel >= c.AccessLevel)
+          {
+            if ((int)c.AccessLevel != last)
+            {
+              AddNewLine();
 
-				for( int i = m_Page * EntriesPerPage, line = 0; line < EntriesPerPage && i < m_List.Count; ++i, ++line )
-				{
-					CommandInfo c = m_List[i];
-					if ( from.AccessLevel >= c.AccessLevel )
-					{
-						if ( (int)c.AccessLevel != last )
-						{
-							AddNewLine();
+              AddEntryHtml(20 + OffsetSize + 160, Color(c.AccessLevel.ToString(), 0xFF0000));
+              AddEntryHeader(20);
+              line++;
+            }
 
-							AddEntryHtml( 20 + OffsetSize + 160, Color( c.AccessLevel.ToString(), 0xFF0000 ) );
-							AddEntryHeader( 20 );
-							line++;
-						}
+            last = (int)c.AccessLevel;
 
-						last = (int)c.AccessLevel;
+            AddNewLine();
 
-						AddNewLine();
+            AddEntryHtml(20 + OffsetSize + 160, c.Name);
 
-						AddEntryHtml( 20 + OffsetSize + 160, c.Name );
+            AddEntryButton(20, ArrowRightID1, ArrowRightID2, 3 + i, ArrowRightWidth, ArrowRightHeight);
+          }
+        }
 
-						AddEntryButton( 20, ArrowRightID1, ArrowRightID2, 3 + i, ArrowRightWidth, ArrowRightHeight );
-					}
-				}
+        FinishPage();
+      }
 
-				FinishPage();
-			}
+      public override void OnResponse(NetState sender, RelayInfo info)
+      {
+        Mobile m = sender.Mobile;
+        switch (info.ButtonID)
+        {
+          case 0:
+          {
+            m.CloseGump(typeof(CommandInfoGump));
+            break;
+          }
+          case 1:
+          {
+            if (m_Page > 0)
+              m.SendGump(new CommandListGump(m_Page - 1, m, m_List));
 
-			public override void OnResponse( NetState sender, RelayInfo info )
-			{
-				Mobile m = sender.Mobile;
-				switch( info.ButtonID )
-				{
-					case 0:
-						{
-							m.CloseGump( typeof( CommandInfoGump ) );
-							break;
-						}
-					case 1:
-						{
-							if ( m_Page > 0 )
-								m.SendGump( new CommandListGump( m_Page - 1, m, m_List ) );
+            break;
+          }
+          case 2:
+          {
+            if ((m_Page + 1) * EntriesPerPage < SortedHelpInfo.Count)
+              m.SendGump(new CommandListGump(m_Page + 1, m, m_List));
 
-							break;
-						}
-					case 2:
-						{
-							if ( (m_Page + 1) * EntriesPerPage < SortedHelpInfo.Count )
-								m.SendGump( new CommandListGump( m_Page + 1, m, m_List ) );
+            break;
+          }
+          default:
+          {
+            int v = info.ButtonID - 3;
 
-							break;
-						}
-					default:
-						{
+            if (v >= 0 && v < m_List.Count)
+            {
+              CommandInfo c = m_List[v];
 
-							int v = info.ButtonID - 3;
+              if (m.AccessLevel >= c.AccessLevel)
+              {
+                m.SendGump(new CommandInfoGump(c));
+                m.SendGump(new CommandListGump(m_Page, m, m_List));
+              }
+              else
+              {
+                m.SendMessage("You no longer have access to that command.");
+                m.SendGump(new CommandListGump(m_Page, m, null));
+              }
+            }
 
-							if ( v >= 0 && v < m_List.Count )
-							{
-								CommandInfo c = m_List[v];
+            break;
+          }
+        }
+      }
+    }
 
-								if ( m.AccessLevel >= c.AccessLevel )
-								{
-									m.SendGump( new CommandInfoGump( c ) );
-									m.SendGump( new CommandListGump( m_Page, m, m_List ) );
-								}
-								else
-								{
-									m.SendMessage( "You no longer have access to that command." );
-									m.SendGump( new CommandListGump( m_Page, m, null ) );
-								}
-							}
-							break;
-						}
-				}
-			}
-		}
 
+    public class CommandInfoGump : Gump
+    {
+      public CommandInfoGump(CommandInfo info)
+        : this(info, 320, 200)
+      {
+      }
 
-		public class CommandInfoGump : Gump
-		{
-			public string Color( string text, int color )
-			{
-				return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-			}
+      public CommandInfoGump(CommandInfo info, int width, int height)
+        : base(300, 50)
+      {
+        AddPage(0);
 
-			public string Center( string text )
-			{
-				return $"<CENTER>{text}</CENTER>";
-			}
+        AddBackground(0, 0, width, height, 5054);
 
-			public CommandInfoGump( CommandInfo info )
-				: this( info, 320, 200 )
-			{
-			}
+        //AddImageTiled( 10, 10, width - 20, 20, 2624 );
+        //AddAlphaRegion( 10, 10, width - 20, 20 );
+        //AddHtmlLocalized( 10, 10, width - 20, 20, header, headerColor, false, false );
+        AddHtml(10, 10, width - 20, 20, Color(Center(info.Name), 0xFF0000), false, false);
 
-			public CommandInfoGump( CommandInfo info, int width, int height )
-				: base( 300, 50 )
-			{
-				AddPage( 0 );
+        //AddImageTiled( 10, 40, width - 20, height - 80, 2624 );
+        //AddAlphaRegion( 10, 40, width - 20, height - 80 );
 
-				AddBackground( 0, 0, width, height, 5054 );
+        StringBuilder sb = new StringBuilder();
 
-				//AddImageTiled( 10, 10, width - 20, 20, 2624 );
-				//AddAlphaRegion( 10, 10, width - 20, 20 );
-				//AddHtmlLocalized( 10, 10, width - 20, 20, header, headerColor, false, false );
-				AddHtml( 10, 10, width - 20, 20, Color( Center( info.Name ), 0xFF0000 ), false, false );
+        sb.Append("Usage: ");
+        sb.Append(info.Usage.Replace("<", "(").Replace(">", ")"));
+        sb.Append("<BR>");
 
-				//AddImageTiled( 10, 40, width - 20, height - 80, 2624 );
-				//AddAlphaRegion( 10, 40, width - 20, height - 80 );
+        string[] aliases = info.Aliases;
 
-				StringBuilder sb = new StringBuilder();
+        if (aliases != null && aliases.Length != 0)
+        {
+          sb.Append($"Alias{(aliases.Length == 1 ? "" : "es")}: ");
 
-				sb.Append( "Usage: " );
-				sb.Append( info.Usage.Replace( "<", "(" ).Replace( ">", ")" ) );
-				sb.Append( "<BR>" );
+          for (int i = 0; i < aliases.Length; ++i)
+          {
+            if (i != 0)
+              sb.Append(", ");
 
-				string[] aliases = info.Aliases;
+            sb.Append(aliases[i]);
+          }
 
-				if ( aliases != null && aliases.Length != 0 )
-				{
-					sb.Append($"Alias{(aliases.Length == 1 ? "" : "es")}: ");
+          sb.Append("<BR>");
+        }
 
-					for( int i = 0; i < aliases.Length; ++i )
-					{
-						if ( i != 0 )
-							sb.Append( ", " );
+        sb.Append("AccessLevel: ");
+        sb.Append(info.AccessLevel.ToString());
+        sb.Append("<BR>");
+        sb.Append("<BR>");
 
-						sb.Append( aliases[i] );
-					}
+        sb.Append(info.Description);
 
-					sb.Append( "<BR>" );
-				}
+        AddHtml(10, 40, width - 20, height - 80, sb.ToString(), false, true);
 
-				sb.Append( "AccessLevel: " );
-				sb.Append( info.AccessLevel.ToString() );
-				sb.Append( "<BR>" );
-				sb.Append( "<BR>" );
+        //AddImageTiled( 10, height - 30, width - 20, 20, 2624 );
+        //AddAlphaRegion( 10, height - 30, width - 20, 20 );
+      }
 
-				sb.Append( info.Description );
+      public string Color(string text, int color)
+      {
+        return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+      }
 
-				AddHtml( 10, 40, width - 20, height - 80, sb.ToString(), false, true );
-
-				//AddImageTiled( 10, height - 30, width - 20, 20, 2624 );
-				//AddAlphaRegion( 10, height - 30, width - 20, 20 );
-
-			}
-		}
-	}
+      public string Center(string text)
+      {
+        return $"<CENTER>{text}</CENTER>";
+      }
+    }
+  }
 }

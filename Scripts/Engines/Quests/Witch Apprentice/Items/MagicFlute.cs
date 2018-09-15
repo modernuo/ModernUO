@@ -2,69 +2,69 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Hag
 {
-	public class MagicFlute : Item
-	{
-		public override int LabelNumber => 1055051; // magic flute
+  public class MagicFlute : Item
+  {
+    [Constructible]
+    public MagicFlute() : base(0x1421)
+    {
+      Hue = 0x8AB;
+    }
 
-		[Constructible]
-		public MagicFlute() : base( 0x1421 )
-		{
-			Hue = 0x8AB;
-		}
+    public MagicFlute(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !IsChildOf( from.Backpack ) )
-			{
-				SendLocalizedMessageTo( from, 1042292 ); // You must have the object in your backpack to use it.
-				return;
-			}
+    public override int LabelNumber => 1055051; // magic flute
 
-			from.PlaySound( 0x3D );
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!IsChildOf(from.Backpack))
+      {
+        SendLocalizedMessageTo(from, 1042292); // You must have the object in your backpack to use it.
+        return;
+      }
 
-			if ( from is PlayerMobile player )
-			{
-				QuestSystem qs = player.Quest;
+      from.PlaySound(0x3D);
 
-				if ( qs is WitchApprenticeQuest )
-				{
-					if ( qs.FindObjective( typeof( FindZeefzorpulObjective ) ) is FindZeefzorpulObjective obj && !obj.Completed )
-					{
-						if ( ( player.Map != Map.Trammel && player.Map != Map.Felucca ) || !player.InRange( obj.ImpLocation, 8 ) )
-						{
-							player.SendLocalizedMessage( 1055053 ); // Nothing happens. Zeefzorpul must not be hiding in this area.
-						}
-						else if ( player.InRange( obj.ImpLocation, 4 ) )
-						{
-							Delete();
+      if (from is PlayerMobile player)
+      {
+        QuestSystem qs = player.Quest;
 
-							obj.Complete();
-						}
-						else
-						{
-							player.SendLocalizedMessage( 1055052 ); // The flute sparkles. Zeefzorpul must be in a good hiding place nearby.
-						}
-					}
-				}
-			}
-		}
+        if (qs is WitchApprenticeQuest)
+          if (qs.FindObjective(typeof(FindZeefzorpulObjective)) is FindZeefzorpulObjective obj && !obj.Completed)
+          {
+            if (player.Map != Map.Trammel && player.Map != Map.Felucca || !player.InRange(obj.ImpLocation, 8))
+            {
+              player.SendLocalizedMessage(
+                1055053); // Nothing happens. Zeefzorpul must not be hiding in this area.
+            }
+            else if (player.InRange(obj.ImpLocation, 4))
+            {
+              Delete();
 
-		public MagicFlute( Serial serial ) : base( serial )
-		{
-		}
+              obj.Complete();
+            }
+            else
+            {
+              player.SendLocalizedMessage(
+                1055052); // The flute sparkles. Zeefzorpul must be in a good hiding place nearby.
+            }
+          }
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

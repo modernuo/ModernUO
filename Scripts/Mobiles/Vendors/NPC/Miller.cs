@@ -2,38 +2,38 @@ using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-	public class Miller : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos => m_SBInfos;
+  public class Miller : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public Miller() : base( "the miller" )
-		{
-	
-		}
+    [Constructible]
+    public Miller() : base("the miller")
+    {
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBMiller() );
-		}
+    public Miller(Serial serial) : base(serial)
+    {
+    }
 
-		public Miller( Serial serial ) : base( serial )
-		{
-		}
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBMiller());
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

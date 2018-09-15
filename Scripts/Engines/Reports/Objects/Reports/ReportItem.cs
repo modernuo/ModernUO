@@ -1,35 +1,37 @@
 namespace Server.Engines.Reports
 {
-	public class ReportItem : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "ri", Construct );
+  public class ReportItem : PersistableObject
+  {
+    public ReportItem()
+    {
+      Values = new ItemValueCollection();
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new ReportItem();
-		}
+    public ItemValueCollection Values{ get; }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public override void SerializeChildren(PersistanceWriter op)
+    {
+      for (int i = 0; i < Values.Count; ++i)
+        Values[i].Serialize(op);
+    }
 
-		public ItemValueCollection Values { get; }
+    public override void DeserializeChildren(PersistanceReader ip)
+    {
+      while (ip.HasChild)
+        Values.Add(ip.GetChild() as ItemValue);
+    }
 
-		public ReportItem()
-		{
-			Values = new ItemValueCollection();
-		}
+    #region Type Identification
 
-		public override void SerializeChildren( PersistanceWriter op )
-		{
-			for ( int i = 0; i < Values.Count; ++i )
-				Values[i].Serialize( op );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("ri", Construct);
 
-		public override void DeserializeChildren( PersistanceReader ip )
-		{
-			while ( ip.HasChild )
-				Values.Add( ip.GetChild() as ItemValue );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new ReportItem();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

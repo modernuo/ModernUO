@@ -1,43 +1,44 @@
 namespace Server.Items
 {
-	public class BrownBook : BaseBook
-	{
-		[Constructible]
-		public BrownBook() : base( 0xFEF )
-		{
-		}
+  public class BrownBook : BaseBook
+  {
+    [Constructible]
+    public BrownBook() : base(0xFEF)
+    {
+    }
 
-		[Constructible]
-		public BrownBook( int pageCount, bool writable ) : base( 0xFEF, pageCount, writable )
-		{
-		}
+    [Constructible]
+    public BrownBook(int pageCount, bool writable) : base(0xFEF, pageCount, writable)
+    {
+    }
 
-		[Constructible]
-		public BrownBook( string title, string author, int pageCount, bool writable ) : base( 0xFEF, title, author, pageCount, writable )
-		{
-		}
+    [Constructible]
+    public BrownBook(string title, string author, int pageCount, bool writable) : base(0xFEF, title, author, pageCount,
+      writable)
+    {
+    }
 
-		// Intended for defined books only
-		public BrownBook( bool writable ) : base( 0xFEF, writable )
-		{
-		}
+    // Intended for defined books only
+    public BrownBook(bool writable) : base(0xFEF, writable)
+    {
+    }
 
-		public BrownBook( Serial serial ) : base( serial )
-		{
-		}
+    public BrownBook(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 ); // version
-		}
-	}
+      writer.Write(0); // version
+    }
+  }
 }

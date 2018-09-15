@@ -1,39 +1,39 @@
 namespace Server.Items
 {
-	public class CompletedTuitionReimbursementForm : Item
-	{
-		public override int LabelNumber => 1074625; // Completed Tuition Reimbursement Form
+  public class CompletedTuitionReimbursementForm : Item
+  {
+    [Constructible]
+    public CompletedTuitionReimbursementForm() : base(0x14F0)
+    {
+      LootType = LootType.Blessed;
+    }
 
-		public override bool Nontransferable => true;
+    public CompletedTuitionReimbursementForm(Serial serial) : base(serial)
+    {
+    }
 
-		public override void AddNameProperties( ObjectPropertyList list )
-		{
-			base.AddNameProperties( list );
-			AddQuestItemProperty( list );
-		}
+    public override int LabelNumber => 1074625; // Completed Tuition Reimbursement Form
 
-		[Constructible]
-		public CompletedTuitionReimbursementForm() : base( 0x14F0 )
-		{
-			LootType = LootType.Blessed;
-		}
+    public override bool Nontransferable => true;
 
-		public CompletedTuitionReimbursementForm( Serial serial ) : base( serial )
-		{
-		}
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+      base.AddNameProperties(list);
+      AddQuestItemProperty(list);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // Version
-		}
+      writer.Write(0); // Version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -3,44 +3,45 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Zento
 {
-	public class TerribleHatchlingsQuest : QuestSystem
-	{
-		private static Type[] m_TypeReferenceTable = {
-				typeof( AcceptConversation ),
-				typeof( DirectionConversation ),
-				typeof( TakeCareConversation ),
-				typeof( EndConversation ),
-				typeof( FirstKillObjective ),
-				typeof( SecondKillObjective ),
-				typeof( ThirdKillObjective ),
-				typeof( ReturnObjective )
-			};
+  public class TerribleHatchlingsQuest : QuestSystem
+  {
+    private static Type[] m_TypeReferenceTable =
+    {
+      typeof(AcceptConversation),
+      typeof(DirectionConversation),
+      typeof(TakeCareConversation),
+      typeof(EndConversation),
+      typeof(FirstKillObjective),
+      typeof(SecondKillObjective),
+      typeof(ThirdKillObjective),
+      typeof(ReturnObjective)
+    };
 
-		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
+    public TerribleHatchlingsQuest(PlayerMobile from) : base(from)
+    {
+    }
 
-		public override object Name => 1063314;
+    // Serialization
+    public TerribleHatchlingsQuest()
+    {
+    }
 
-		public override object OfferMessage => 1063315;
+    public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
-		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
-		public override bool IsTutorial => true;
+    public override object Name => 1063314;
 
-		public override int Picture => 0x15CF;
+    public override object OfferMessage => 1063315;
 
-		public TerribleHatchlingsQuest( PlayerMobile from ) : base( from )
-		{
-		}
+    public override TimeSpan RestartDelay => TimeSpan.MaxValue;
+    public override bool IsTutorial => true;
 
-		// Serialization
-		public TerribleHatchlingsQuest()
-		{
-		}
+    public override int Picture => 0x15CF;
 
-		public override void Accept()
-		{
-			base.Accept();
+    public override void Accept()
+    {
+      base.Accept();
 
-			AddConversation( new AcceptConversation() );
-		}
-	}
+      AddConversation(new AcceptConversation());
+    }
+  }
 }

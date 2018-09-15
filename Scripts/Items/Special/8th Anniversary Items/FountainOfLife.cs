@@ -2,265 +2,273 @@ using System;
 
 namespace Server.Items
 {
-	public class EnhancedBandage : Bandage
-	{
-		public static int HealingBonus  => 10;
+  public class EnhancedBandage : Bandage
+  {
+    [Constructible]
+    public EnhancedBandage()
+      : this(1)
+    {
+    }
 
-		public override int LabelNumber => 1152441; // enhanced bandage
+    [Constructible]
+    public EnhancedBandage(int amount)
+      : base(amount)
+    {
+      Hue = 0x8A5;
+    }
 
-		[Constructible]
-		public EnhancedBandage()
-			: this( 1 )
-		{
-		}
+    public EnhancedBandage(Serial serial)
+      : base(serial)
+    {
+    }
 
-		[Constructible]
-		public EnhancedBandage( int amount )
-			: base( amount )
-		{
-			Hue = 0x8A5;
-		}
+    public static int HealingBonus => 10;
 
-		public EnhancedBandage( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int LabelNumber => 1152441; // enhanced bandage
 
-		public override bool Dye( Mobile from, DyeTub sender )
-		{
-			return false;
-		}
+    public override bool Dye(Mobile from, DyeTub sender)
+    {
+      return false;
+    }
 
-		public override void AddNameProperties( ObjectPropertyList list )
-		{
-			base.AddNameProperties( list );
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+      base.AddNameProperties(list);
 
-			list.Add( 1075216 ); // these bandages have been enhanced
-		}
+      list.Add(1075216); // these bandages have been enhanced
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); //version
-		}
+      writer.WriteEncodedInt(0); //version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 
-	[FlippableAttribute( 0x2AC0, 0x2AC3 )]
-	public class FountainOfLife : BaseAddonContainer
-	{
-		public override BaseAddonContainerDeed Deed => new FountainOfLifeDeed( m_Charges );
+  [Flippable(0x2AC0, 0x2AC3)]
+  public class FountainOfLife : BaseAddonContainer
+  {
+    private int m_Charges;
 
-		public override bool OnDragLift( Mobile from )
-		{
-			return false;
-		}
+    private Timer m_Timer;
 
-		public virtual TimeSpan RechargeTime => TimeSpan.FromDays( 1 );
+    [Constructible]
+    public FountainOfLife()
+      : this(10)
+    {
+    }
 
-		public override int LabelNumber => 1075197; // Fountain of Life
-		public override int DefaultGumpID => 0x484;
-		public override int DefaultDropSound => 66;
-		public override int DefaultMaxItems => 125;
+    [Constructible]
+    public FountainOfLife(int charges)
+      : base(0x2AC0)
+    {
+      m_Charges = charges;
 
-		private int m_Charges;
+      m_Timer = Timer.DelayCall(RechargeTime, RechargeTime, Recharge);
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Charges
-		{
-			get => m_Charges;
-			set { m_Charges = Math.Min( value, 10 ); InvalidateProperties(); }
-		}
+    public FountainOfLife(Serial serial)
+      : base(serial)
+    {
+    }
 
-		private Timer m_Timer;
+    public override BaseAddonContainerDeed Deed => new FountainOfLifeDeed(m_Charges);
 
-		[Constructible]
-		public FountainOfLife()
-			: this( 10 )
-		{
-		}
+    public virtual TimeSpan RechargeTime => TimeSpan.FromDays(1);
 
-		[Constructible]
-		public FountainOfLife( int charges )
-			: base( 0x2AC0 )
-		{
-			m_Charges = charges;
+    public override int LabelNumber => 1075197; // Fountain of Life
+    public override int DefaultGumpID => 0x484;
+    public override int DefaultDropSound => 66;
+    public override int DefaultMaxItems => 125;
 
-			m_Timer = Timer.DelayCall( RechargeTime, RechargeTime, Recharge );
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Charges
+    {
+      get => m_Charges;
+      set
+      {
+        m_Charges = Math.Min(value, 10);
+        InvalidateProperties();
+      }
+    }
 
-		public FountainOfLife( Serial serial )
-			: base( serial )
-		{
-		}
+    public override bool OnDragLift(Mobile from)
+    {
+      return false;
+    }
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			if ( dropped is Bandage )
-			{
-				bool allow = base.OnDragDrop( from, dropped );
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      if (dropped is Bandage)
+      {
+        bool allow = base.OnDragDrop(from, dropped);
 
-				if ( allow )
-					Enhance( from );
+        if (allow)
+          Enhance(from);
 
-				return allow;
-			}
+        return allow;
+      }
 
-			from.SendLocalizedMessage( 1075209 ); // Only bandages may be dropped into the fountain.
-			return false;
-		}
+      from.SendLocalizedMessage(1075209); // Only bandages may be dropped into the fountain.
+      return false;
+    }
 
-		public override bool OnDragDropInto( Mobile from, Item item, Point3D p )
-		{
-			if ( item is Bandage )
-			{
-				bool allow = base.OnDragDropInto( from, item, p );
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+    {
+      if (item is Bandage)
+      {
+        bool allow = base.OnDragDropInto(from, item, p);
 
-				if ( allow )
-					Enhance( from );
+        if (allow)
+          Enhance(from);
 
-				return allow;
-			}
+        return allow;
+      }
 
-			from.SendLocalizedMessage( 1075209 ); // Only bandages may be dropped into the fountain.
-			return false;
-		}
+      from.SendLocalizedMessage(1075209); // Only bandages may be dropped into the fountain.
+      return false;
+    }
 
-		public override void AddNameProperties( ObjectPropertyList list )
-		{
-			base.AddNameProperties( list );
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+      base.AddNameProperties(list);
 
-			list.Add( 1075217, m_Charges.ToString() ); // ~1_val~ charges remaining
-		}
+      list.Add(1075217, m_Charges.ToString()); // ~1_val~ charges remaining
+    }
 
-		public override void OnDelete()
-		{
-			m_Timer?.Stop();
+    public override void OnDelete()
+    {
+      m_Timer?.Stop();
 
-			base.OnDelete();
-		}
+      base.OnDelete();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); //version
+      writer.WriteEncodedInt(0); //version
 
-			writer.Write( m_Charges );
-			writer.Write( (DateTime)m_Timer.Next );
-		}
+      writer.Write(m_Charges);
+      writer.Write(m_Timer.Next);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
+      int version = reader.ReadEncodedInt();
 
-			m_Charges = reader.ReadInt();
+      m_Charges = reader.ReadInt();
 
-			DateTime next = reader.ReadDateTime();
+      DateTime next = reader.ReadDateTime();
 
-			if ( next < DateTime.UtcNow )
-				m_Timer = Timer.DelayCall( TimeSpan.Zero, RechargeTime, Recharge );
-			else
-				m_Timer = Timer.DelayCall( next - DateTime.UtcNow, RechargeTime, Recharge );
-		}
+      if (next < DateTime.UtcNow)
+        m_Timer = Timer.DelayCall(TimeSpan.Zero, RechargeTime, Recharge);
+      else
+        m_Timer = Timer.DelayCall(next - DateTime.UtcNow, RechargeTime, Recharge);
+    }
 
-		public void Recharge()
-		{
-			m_Charges = 10;
+    public void Recharge()
+    {
+      m_Charges = 10;
 
-			Enhance( null );
-		}
+      Enhance(null);
+    }
 
-		public void Enhance( Mobile from )
-		{
-			for( int i = Items.Count - 1; i >= 0 && m_Charges > 0; --i )
-			{
-				if ( Items[i] is EnhancedBandage )
-					continue;
+    public void Enhance(Mobile from)
+    {
+      for (int i = Items.Count - 1; i >= 0 && m_Charges > 0; --i)
+      {
+        if (Items[i] is EnhancedBandage)
+          continue;
 
-				if ( Items[i] is Bandage bandage )
-				{
-					Item enhanced;
+        if (Items[i] is Bandage bandage)
+        {
+          Item enhanced;
 
-					if ( bandage.Amount > m_Charges )
-					{
-						bandage.Amount -= m_Charges;
-						enhanced = new EnhancedBandage( m_Charges );
-						m_Charges = 0;
-					}
-					else
-					{
-						enhanced = new EnhancedBandage( bandage.Amount );
-						m_Charges -= bandage.Amount;
-						bandage.Delete();
-					}
+          if (bandage.Amount > m_Charges)
+          {
+            bandage.Amount -= m_Charges;
+            enhanced = new EnhancedBandage(m_Charges);
+            m_Charges = 0;
+          }
+          else
+          {
+            enhanced = new EnhancedBandage(bandage.Amount);
+            m_Charges -= bandage.Amount;
+            bandage.Delete();
+          }
 
-					if ( from == null || !TryDropItem( from, enhanced, false ) ) // try stacking first
-						DropItem( enhanced );
-				}
-			}
+          if (from == null || !TryDropItem(from, enhanced, false)) // try stacking first
+            DropItem(enhanced);
+        }
+      }
 
-			InvalidateProperties();
-		}
-	}
+      InvalidateProperties();
+    }
+  }
 
-	public class FountainOfLifeDeed : BaseAddonContainerDeed
-	{
-		public override int LabelNumber => 1075197; // Fountain of Life
-		public override BaseAddonContainer Addon => new FountainOfLife( m_Charges );
+  public class FountainOfLifeDeed : BaseAddonContainerDeed
+  {
+    private int m_Charges;
 
-		private int m_Charges;
+    [Constructible]
+    public FountainOfLifeDeed()
+      : this(10)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Charges
-		{
-			get => m_Charges;
-			set { m_Charges = Math.Min( value, 10 ); InvalidateProperties(); }
-		}
+    [Constructible]
+    public FountainOfLifeDeed(int charges)
+    {
+      LootType = LootType.Blessed;
+      m_Charges = charges;
+    }
 
-		[Constructible]
-		public FountainOfLifeDeed()
-			: this( 10 )
-		{
-		}
+    public FountainOfLifeDeed(Serial serial)
+      : base(serial)
+    {
+    }
 
-		[Constructible]
-		public FountainOfLifeDeed( int charges )
-		{
-			LootType = LootType.Blessed;
-			m_Charges = charges;
-		}
+    public override int LabelNumber => 1075197; // Fountain of Life
+    public override BaseAddonContainer Addon => new FountainOfLife(m_Charges);
 
-		public FountainOfLifeDeed( Serial serial )
-			: base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Charges
+    {
+      get => m_Charges;
+      set
+      {
+        m_Charges = Math.Min(value, 10);
+        InvalidateProperties();
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); //version
+      writer.WriteEncodedInt(0); //version
 
-			writer.Write( m_Charges );
-		}
+      writer.Write(m_Charges);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
+      int version = reader.ReadEncodedInt();
 
-			m_Charges = reader.ReadInt();
-		}
-	}
+      m_Charges = reader.ReadInt();
+    }
+  }
 }

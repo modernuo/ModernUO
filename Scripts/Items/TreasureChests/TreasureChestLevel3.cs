@@ -2,159 +2,160 @@ using System;
 
 namespace Server.Items
 {
-	public class TreasureChestLevel3 : LockableContainer
-	{
-		private const int m_Level = 3;
+  public class TreasureChestLevel3 : LockableContainer
+  {
+    private const int m_Level = 3;
 
-		public override bool Decays => true;
+    [Constructible]
+    public TreasureChestLevel3()
+      : base(0xE41)
+    {
+      SetChestAppearance();
+      Movable = false;
 
-		public override bool IsDecoContainer => false;
+      TrapType = TrapType.PoisonTrap;
+      TrapPower = m_Level * Utility.Random(1, 25);
+      Locked = true;
 
-		public override TimeSpan DecayTime => TimeSpan.FromMinutes( Utility.Random( 15, 60 ) );
+      RequiredSkill = 84;
+      LockLevel = RequiredSkill - Utility.Random(1, 10);
+      MaxLockLevel = RequiredSkill + Utility.Random(1, 10);
+      ;
 
-		private void SetChestAppearance()
-		{
-			bool UseFirstItemId = Utility.RandomBool();
-			switch( Utility.RandomList( 0, 1, 2 ) )
-			{
-				case 0:// Wooden Chest
-					ItemID = ( UseFirstItemId ? 0xe42 : 0xe43 );
-					GumpID = 0x49;
-					break;
+      // According to OSI, loot in level 3 chest is:
+      //  Gold 250 - 350
+      //  Arrows 10
+      //  Reagents
+      //  Scrolls
+      //  Potions
+      //  Gems
+      //  Magic Wand
+      //  Magic weapon
+      //  Magic armour
+      //  Magic clothing  (not implemented)
+      //  Magic jewelry  (not implemented)
 
-				case 1:// Metal Chest
-					ItemID = ( UseFirstItemId ? 0x9ab : 0xe7c );
-					GumpID = 0x4A;
-					break;
+      // Gold
+      DropItem(new Gold(Utility.Random(180, 240)));
 
-				case 2:// Metal Golden Chest
-					ItemID = ( UseFirstItemId ? 0xe40 : 0xe41 );
-					GumpID = 0x42;
-					break;
-			}
-		}
+      // Drop bolts
+      //DropItem( new Arrow( 10 ) );
 
-		public override int DefaultGumpID => 0x42;
+      // Reagents
+      for (int i = Utility.Random(1, m_Level); i > 1; i--)
+      {
+        Item ReagentLoot = Loot.RandomReagent();
+        ReagentLoot.Amount = Utility.Random(1, 9);
+        DropItem(ReagentLoot);
+      }
 
-		public override int DefaultDropSound => 0x42;
+      // Scrolls
+      for (int i = Utility.Random(1, m_Level); i > 1; i--)
+      {
+        Item ScrollLoot = Loot.RandomScroll(0, 47, SpellbookType.Regular);
+        ScrollLoot.Amount = Utility.Random(1, 12);
+        DropItem(ScrollLoot);
+      }
 
-		public override Rectangle2D Bounds => new Rectangle2D( 18, 105, 144, 73 );
+      // Potions
+      for (int i = Utility.Random(1, m_Level); i > 1; i--)
+      {
+        Item PotionLoot = Loot.RandomPotion();
+        DropItem(PotionLoot);
+      }
 
-		[Constructible]
-		public TreasureChestLevel3()
-			: base( 0xE41 )
-		{
-			SetChestAppearance();
-			Movable = false;
+      // Gems
+      for (int i = Utility.Random(1, m_Level); i > 1; i--)
+      {
+        Item GemLoot = Loot.RandomGem();
+        GemLoot.Amount = Utility.Random(1, 9);
+        DropItem(GemLoot);
+      }
 
-			TrapType = TrapType.PoisonTrap;
-			TrapPower = m_Level * Utility.Random( 1, 25 );
-			Locked = true;
+      // Magic Wand
+      for (int i = Utility.Random(1, m_Level); i > 1; i--)
+        DropItem(Loot.RandomWand());
 
-			RequiredSkill = 84;
-			LockLevel = RequiredSkill - Utility.Random( 1, 10 );
-			MaxLockLevel = RequiredSkill + Utility.Random( 1, 10 ); ;
+      // Equipment
+      for (int i = Utility.Random(1, m_Level); i > 1; i--)
+      {
+        Item item = Loot.RandomArmorOrShieldOrWeapon();
 
-			// According to OSI, loot in level 3 chest is:
-			//  Gold 250 - 350
-			//  Arrows 10
-			//  Reagents
-			//  Scrolls
-			//  Potions
-			//  Gems
-			//  Magic Wand
-			//  Magic weapon
-			//  Magic armour
-			//  Magic clothing  (not implemented)
-			//  Magic jewelry  (not implemented)
+        if (item is BaseWeapon weapon)
+        {
+          weapon.DamageLevel = (WeaponDamageLevel)Utility.Random(m_Level);
+          weapon.AccuracyLevel = (WeaponAccuracyLevel)Utility.Random(m_Level);
+          weapon.DurabilityLevel = (WeaponDurabilityLevel)Utility.Random(m_Level);
+          weapon.Quality = WeaponQuality.Regular;
+        }
+        else if (item is BaseArmor armor)
+        {
+          armor.ProtectionLevel = (ArmorProtectionLevel)Utility.Random(m_Level);
+          armor.Durability = (ArmorDurabilityLevel)Utility.Random(m_Level);
+          armor.Quality = ArmorQuality.Regular;
+        }
 
-			// Gold
-			DropItem( new Gold( Utility.Random( 180, 240 ) ) );
+        DropItem(item);
+      }
 
-			// Drop bolts
-			//DropItem( new Arrow( 10 ) );
+      // Clothing
+      for (int i = Utility.Random(1, 2); i > 1; i--)
+        DropItem(Loot.RandomClothing());
 
-			// Reagents
-			for( int i = Utility.Random( 1, m_Level ); i > 1; i-- )
-			{
-				Item ReagentLoot = Loot.RandomReagent();
-				ReagentLoot.Amount = Utility.Random( 1, 9 );
-				DropItem( ReagentLoot );
-			}
+      // Jewelry
+      for (int i = Utility.Random(1, 2); i > 1; i--)
+        DropItem(Loot.RandomJewelry());
+    }
 
-			// Scrolls
-			for( int i = Utility.Random( 1, m_Level ); i > 1; i-- )
-			{
-				Item ScrollLoot = Loot.RandomScroll( 0, 47, SpellbookType.Regular );
-				ScrollLoot.Amount = Utility.Random( 1, 12 );
-				DropItem( ScrollLoot );
-			}
+    public TreasureChestLevel3(Serial serial)
+      : base(serial)
+    {
+    }
 
-			// Potions
-			for( int i = Utility.Random( 1, m_Level ); i > 1; i-- )
-			{
-				Item PotionLoot = Loot.RandomPotion();
-				DropItem( PotionLoot );
-			}
+    public override bool Decays => true;
 
-			// Gems
-			for( int i = Utility.Random( 1, m_Level ); i > 1; i-- )
-			{
-				Item GemLoot = Loot.RandomGem();
-				GemLoot.Amount = Utility.Random( 1, 9 );
-				DropItem( GemLoot );
-			}
+    public override bool IsDecoContainer => false;
 
-			// Magic Wand
-			for( int i = Utility.Random( 1, m_Level ); i > 1; i-- )
-				DropItem( Loot.RandomWand() );
+    public override TimeSpan DecayTime => TimeSpan.FromMinutes(Utility.Random(15, 60));
 
-			// Equipment
-			for( int i = Utility.Random( 1, m_Level ); i > 1; i-- )
-			{
-				Item item = Loot.RandomArmorOrShieldOrWeapon();
+    public override int DefaultGumpID => 0x42;
 
-				if ( item is BaseWeapon weapon )
-				{
-					weapon.DamageLevel = ( WeaponDamageLevel )Utility.Random( m_Level );
-					weapon.AccuracyLevel = ( WeaponAccuracyLevel )Utility.Random( m_Level );
-					weapon.DurabilityLevel = ( WeaponDurabilityLevel )Utility.Random( m_Level );
-					weapon.Quality = WeaponQuality.Regular;
-				}
-				else if ( item is BaseArmor armor )
-				{
-					armor.ProtectionLevel = ( ArmorProtectionLevel )Utility.Random( m_Level );
-					armor.Durability = ( ArmorDurabilityLevel )Utility.Random( m_Level );
-					armor.Quality = ArmorQuality.Regular;
-				}
+    public override int DefaultDropSound => 0x42;
 
-				DropItem( item );
-			}
+    public override Rectangle2D Bounds => new Rectangle2D(18, 105, 144, 73);
 
-			// Clothing
-			for( int i = Utility.Random( 1, 2 ); i > 1; i-- )
-				DropItem( Loot.RandomClothing() );
+    private void SetChestAppearance()
+    {
+      bool UseFirstItemId = Utility.RandomBool();
+      switch (Utility.RandomList(0, 1, 2))
+      {
+        case 0: // Wooden Chest
+          ItemID = UseFirstItemId ? 0xe42 : 0xe43;
+          GumpID = 0x49;
+          break;
 
-			// Jewelry
-			for( int i = Utility.Random( 1, 2 ); i > 1; i-- )
-				DropItem( Loot.RandomJewelry() );
-		}
+        case 1: // Metal Chest
+          ItemID = UseFirstItemId ? 0x9ab : 0xe7c;
+          GumpID = 0x4A;
+          break;
 
-		public TreasureChestLevel3( Serial serial )
-			: base( serial )
-		{
-		}
+        case 2: // Metal Golden Chest
+          ItemID = UseFirstItemId ? 0xe40 : 0xe41;
+          GumpID = 0x42;
+          break;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( ( int )1 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(1); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

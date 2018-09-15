@@ -2,111 +2,110 @@ using System;
 
 namespace Server.Items
 {
-	public class DecayedCorpse : Container
-	{
-		private Timer m_DecayTimer;
-		private DateTime m_DecayTime;
+  public class DecayedCorpse : Container
+  {
+    private static TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(7.0);
+    private DateTime m_DecayTime;
+    private Timer m_DecayTimer;
 
-		private static TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes( 7.0 );
+    public DecayedCorpse(string name) : base(Utility.Random(0xECA, 9))
+    {
+      Movable = false;
+      Name = name;
 
-		public DecayedCorpse( string name ) : base( Utility.Random( 0xECA, 9 ) )
-		{
-			Movable = false;
-			Name = name;
+      BeginDecay(m_DefaultDecayTime);
+    }
 
-			BeginDecay( m_DefaultDecayTime );
-		}
+    public DecayedCorpse(Serial serial) : base(serial)
+    {
+    }
 
-		public void BeginDecay( TimeSpan delay )
-		{
-			m_DecayTimer?.Stop();
+    // Do not display (x items, y stones)
+    public override bool DisplaysContent => false;
 
-			m_DecayTime = DateTime.UtcNow + delay;
+    public void BeginDecay(TimeSpan delay)
+    {
+      m_DecayTimer?.Stop();
 
-			m_DecayTimer = new InternalTimer( this, delay );
-			m_DecayTimer.Start();
-		}
+      m_DecayTime = DateTime.UtcNow + delay;
 
-		public override void OnAfterDelete()
-		{
-			m_DecayTimer?.Stop();
+      m_DecayTimer = new InternalTimer(this, delay);
+      m_DecayTimer.Start();
+    }
 
-			m_DecayTimer = null;
-		}
+    public override void OnAfterDelete()
+    {
+      m_DecayTimer?.Stop();
 
-		private class InternalTimer : Timer
-		{
-			private DecayedCorpse m_Corpse;
+      m_DecayTimer = null;
+    }
 
-			public InternalTimer( DecayedCorpse c, TimeSpan delay ) : base( delay )
-			{
-				m_Corpse = c;
-				Priority = TimerPriority.FiveSeconds;
-			}
+    // Do not display (x items, y stones)
+    public override bool CheckContentDisplay(Mobile from)
+    {
+      return false;
+    }
 
-			protected override void OnTick()
-			{
-				m_Corpse.Delete();
-			}
-		}
+    public override void AddNameProperty(ObjectPropertyList list)
+    {
+      list.Add(1046414, Name); // the remains of ~1_NAME~
+    }
 
-		// Do not display (x items, y stones)
-		public override bool CheckContentDisplay( Mobile from )
-		{
-			return false;
-		}
+    public override void OnSingleClick(Mobile from)
+    {
+      LabelTo(from, 1046414, Name); // the remains of ~1_NAME~
+    }
 
-		// Do not display (x items, y stones)
-		public override bool DisplaysContent => false;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void AddNameProperty( ObjectPropertyList list )
-		{
-			list.Add( 1046414, Name ); // the remains of ~1_NAME~
-		}
+      writer.Write(1); // version
 
-		public override void OnSingleClick( Mobile from )
-		{
-			LabelTo( from, 1046414, Name ); // the remains of ~1_NAME~
-		}
+      writer.Write(m_DecayTimer != null);
 
-		public DecayedCorpse( Serial serial ) : base( serial )
-		{
-		}
+      if (m_DecayTimer != null)
+        writer.WriteDeltaTime(m_DecayTime);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			writer.Write( (int) 1 ); // version
+      int version = reader.ReadInt();
 
-			writer.Write( m_DecayTimer != null );
+      switch (version)
+      {
+        case 0:
+        {
+          BeginDecay(m_DefaultDecayTime);
 
-			if ( m_DecayTimer != null )
-				writer.WriteDeltaTime( m_DecayTime );
-		}
+          break;
+        }
+        case 1:
+        {
+          if (reader.ReadBool())
+            BeginDecay(reader.ReadDeltaTime() - DateTime.UtcNow);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+          break;
+        }
+      }
+    }
 
-			int version = reader.ReadInt();
+    private class InternalTimer : Timer
+    {
+      private DecayedCorpse m_Corpse;
 
-			switch ( version )
-			{
-				case 0:
-				{
-					BeginDecay( m_DefaultDecayTime );
+      public InternalTimer(DecayedCorpse c, TimeSpan delay) : base(delay)
+      {
+        m_Corpse = c;
+        Priority = TimerPriority.FiveSeconds;
+      }
 
-					break;
-				}
-				case 1:
-				{
-					if ( reader.ReadBool() )
-						BeginDecay( reader.ReadDeltaTime() - DateTime.UtcNow );
-
-					break;
-				}
-			}
-		}
-	}
+      protected override void OnTick()
+      {
+        m_Corpse.Delete();
+      }
+    }
+  }
 }

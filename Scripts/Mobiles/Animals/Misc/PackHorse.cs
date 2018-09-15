@@ -1,219 +1,222 @@
 using System.Collections.Generic;
-using Server.Items;
 using Server.ContextMenus;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class PackHorse : BaseCreature
-	{
-		public override string CorpseName => "a horse corpse";
-		public override string DefaultName => "a pack horse";
+  public class PackHorse : BaseCreature
+  {
+    [Constructible]
+    public PackHorse() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+      Body = 291;
+      BaseSoundID = 0xA8;
 
-		[Constructible]
-		public PackHorse() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			Body = 291;
-			BaseSoundID = 0xA8;
+      SetStr(44, 120);
+      SetDex(36, 55);
+      SetInt(6, 10);
 
-			SetStr( 44, 120 );
-			SetDex( 36, 55 );
-			SetInt( 6, 10 );
+      SetHits(61, 80);
+      SetStam(81, 100);
+      SetMana(0);
 
-			SetHits( 61, 80 );
-			SetStam( 81, 100 );
-			SetMana( 0 );
+      SetDamage(5, 11);
 
-			SetDamage( 5, 11 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetResistance(ResistanceType.Physical, 20, 25);
+      SetResistance(ResistanceType.Fire, 10, 15);
+      SetResistance(ResistanceType.Cold, 20, 25);
+      SetResistance(ResistanceType.Poison, 10, 15);
+      SetResistance(ResistanceType.Energy, 10, 15);
 
-			SetResistance( ResistanceType.Physical, 20, 25 );
-			SetResistance( ResistanceType.Fire, 10, 15 );
-			SetResistance( ResistanceType.Cold, 20, 25 );
-			SetResistance( ResistanceType.Poison, 10, 15 );
-			SetResistance( ResistanceType.Energy, 10, 15 );
+      SetSkill(SkillName.MagicResist, 25.1, 30.0);
+      SetSkill(SkillName.Tactics, 29.3, 44.0);
+      SetSkill(SkillName.Wrestling, 29.3, 44.0);
 
-			SetSkill( SkillName.MagicResist, 25.1, 30.0 );
-			SetSkill( SkillName.Tactics, 29.3, 44.0 );
-			SetSkill( SkillName.Wrestling, 29.3, 44.0 );
+      Fame = 0;
+      Karma = 200;
 
-			Fame = 0;
-			Karma = 200;
+      VirtualArmor = 16;
 
-			VirtualArmor = 16;
+      Tamable = true;
+      ControlSlots = 1;
+      MinTameSkill = 11.1;
 
-			Tamable = true;
-			ControlSlots = 1;
-			MinTameSkill = 11.1;
+      Container pack = Backpack;
 
-			Container pack = Backpack;
+      pack?.Delete();
 
-			pack?.Delete();
+      pack = new StrongBackpack();
+      pack.Movable = false;
 
-			pack = new StrongBackpack();
-			pack.Movable = false;
+      AddItem(pack);
+    }
 
-			AddItem( pack );
-		}
+    public PackHorse(Serial serial) : base(serial)
+    {
+    }
 
-		public override int Meat => 3;
-		public override int Hides => 10;
-		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+    public override string CorpseName => "a horse corpse";
+    public override string DefaultName => "a pack horse";
 
-		public PackHorse( Serial serial ) : base( serial )
-		{
-		}
+    public override int Meat => 3;
+    public override int Hides => 10;
+    public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
-		#region Pack Animal Methods
-		public override bool OnBeforeDeath()
-		{
-			if ( !base.OnBeforeDeath() )
-				return false;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			PackAnimal.CombineBackpacks( this );
+      writer.Write(0);
+    }
 
-			return true;
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override DeathMoveResult GetInventoryMoveResultFor( Item item )
-		{
-			return DeathMoveResult.MoveToCorpse;
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override bool IsSnoop( Mobile from )
-		{
-			if ( PackAnimal.CheckAccess( this, from ) )
-				return false;
+    #region Pack Animal Methods
 
-			return base.IsSnoop( from );
-		}
+    public override bool OnBeforeDeath()
+    {
+      if (!base.OnBeforeDeath())
+        return false;
 
-		public override bool OnDragDrop( Mobile from, Item item )
-		{
-			if ( CheckFeed( from, item ) )
-				return true;
+      PackAnimal.CombineBackpacks(this);
 
-			if ( PackAnimal.CheckAccess( this, from ) )
-			{
-				AddToBackpack( item );
-				return true;
-			}
+      return true;
+    }
 
-			return base.OnDragDrop( from, item );
-		}
+    public override DeathMoveResult GetInventoryMoveResultFor(Item item)
+    {
+      return DeathMoveResult.MoveToCorpse;
+    }
 
-		public override bool CheckNonlocalDrop( Mobile from, Item item, Item target )
-		{
-			return PackAnimal.CheckAccess( this, from );
-		}
+    public override bool IsSnoop(Mobile from)
+    {
+      if (PackAnimal.CheckAccess(this, from))
+        return false;
 
-		public override bool CheckNonlocalLift( Mobile from, Item item )
-		{
-			return PackAnimal.CheckAccess( this, from );
-		}
+      return base.IsSnoop(from);
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			PackAnimal.TryPackOpen( this, from );
-		}
+    public override bool OnDragDrop(Mobile from, Item item)
+    {
+      if (CheckFeed(from, item))
+        return true;
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+      if (PackAnimal.CheckAccess(this, from))
+      {
+        AddToBackpack(item);
+        return true;
+      }
 
-			PackAnimal.GetContextMenuEntries( this, from, list );
-		}
-		#endregion
+      return base.OnDragDrop(from, item);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override bool CheckNonlocalDrop(Mobile from, Item item, Item target)
+    {
+      return PackAnimal.CheckAccess(this, from);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override bool CheckNonlocalLift(Mobile from, Item item)
+    {
+      return PackAnimal.CheckAccess(this, from);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void OnDoubleClick(Mobile from)
+    {
+      PackAnimal.TryPackOpen(this, from);
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
 
-	public class PackAnimalBackpackEntry : ContextMenuEntry
-	{
-		private BaseCreature m_Animal;
-		private Mobile m_From;
+      PackAnimal.GetContextMenuEntries(this, from, list);
+    }
 
-		public PackAnimalBackpackEntry( BaseCreature animal, Mobile from ) : base( 6145, 3 )
-		{
-			m_Animal = animal;
-			m_From = from;
+    #endregion
+  }
 
-			if ( animal.IsDeadPet )
-				Enabled = false;
-		}
+  public class PackAnimalBackpackEntry : ContextMenuEntry
+  {
+    private BaseCreature m_Animal;
+    private Mobile m_From;
 
-		public override void OnClick()
-		{
-			PackAnimal.TryPackOpen( m_Animal, m_From );
-		}
-	}
+    public PackAnimalBackpackEntry(BaseCreature animal, Mobile from) : base(6145, 3)
+    {
+      m_Animal = animal;
+      m_From = from;
 
-	public class PackAnimal
-	{
-		public static void GetContextMenuEntries( BaseCreature animal, Mobile from, List<ContextMenuEntry> list )
-		{
-			if ( CheckAccess( animal, from ) )
-				list.Add( new PackAnimalBackpackEntry( animal, from ) );
-		}
+      if (animal.IsDeadPet)
+        Enabled = false;
+    }
 
-		public static bool CheckAccess( BaseCreature animal, Mobile from )
-		{
-			if ( from == animal || from.AccessLevel >= AccessLevel.GameMaster )
-				return true;
+    public override void OnClick()
+    {
+      PackAnimal.TryPackOpen(m_Animal, m_From);
+    }
+  }
 
-			if ( from.Alive && animal.Controlled && !animal.IsDeadPet && ( from == animal.ControlMaster || from == animal.SummonMaster || animal.IsPetFriend( from ) ) )
-				return true;
+  public class PackAnimal
+  {
+    public static void GetContextMenuEntries(BaseCreature animal, Mobile from, List<ContextMenuEntry> list)
+    {
+      if (CheckAccess(animal, from))
+        list.Add(new PackAnimalBackpackEntry(animal, from));
+    }
 
-			return false;
-		}
+    public static bool CheckAccess(BaseCreature animal, Mobile from)
+    {
+      if (from == animal || from.AccessLevel >= AccessLevel.GameMaster)
+        return true;
 
-		public static void CombineBackpacks( BaseCreature animal )
-		{
-			if ( Core.AOS )
-				return;
+      if (from.Alive && animal.Controlled && !animal.IsDeadPet &&
+          (from == animal.ControlMaster || from == animal.SummonMaster || animal.IsPetFriend(from)))
+        return true;
 
-			if ( animal.IsBonded || animal.IsDeadPet )
-				return;
+      return false;
+    }
 
-			Container pack = animal.Backpack;
+    public static void CombineBackpacks(BaseCreature animal)
+    {
+      if (Core.AOS)
+        return;
 
-			if ( pack != null )
-			{
-				Container newPack = new Backpack();
+      if (animal.IsBonded || animal.IsDeadPet)
+        return;
 
-				for ( int i = pack.Items.Count - 1; i >= 0; --i )
-				{
-					if ( i >= pack.Items.Count )
-						continue;
+      Container pack = animal.Backpack;
 
-					newPack.DropItem( pack.Items[i] );
-				}
+      if (pack != null)
+      {
+        Container newPack = new Backpack();
 
-				pack.DropItem( newPack );
-			}
-		}
+        for (int i = pack.Items.Count - 1; i >= 0; --i)
+        {
+          if (i >= pack.Items.Count)
+            continue;
 
-		public static void TryPackOpen( BaseCreature animal, Mobile from )
-		{
-			if ( animal.IsDeadPet )
-				return;
+          newPack.DropItem(pack.Items[i]);
+        }
 
-			Container item = animal.Backpack;
+        pack.DropItem(newPack);
+      }
+    }
 
-			if ( item != null )
-				from.Use( item );
-		}
-	}
+    public static void TryPackOpen(BaseCreature animal, Mobile from)
+    {
+      if (animal.IsDeadPet)
+        return;
+
+      Container item = animal.Backpack;
+
+      if (item != null)
+        from.Use(item);
+    }
+  }
 }

@@ -1,28 +1,28 @@
 namespace Server.Items
 {
-	public class CounselorRobe : BaseSuit
-	{
-		[Constructible]
-		public CounselorRobe() : base( AccessLevel.Counselor, 0x3, 0x204F )
-		{
-		}
+  public class CounselorRobe : BaseSuit
+  {
+    [Constructible]
+    public CounselorRobe() : base(AccessLevel.Counselor, 0x3, 0x204F)
+    {
+    }
 
-		public CounselorRobe( Serial serial ) : base( serial )
-		{
-		}
+    public CounselorRobe(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

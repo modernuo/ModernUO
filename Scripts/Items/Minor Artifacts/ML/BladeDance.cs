@@ -1,40 +1,40 @@
 namespace Server.Items
 {
-	public class BladeDance : RuneBlade
-	{
-		public override int LabelNumber => 1075033; // Blade Dance
+  public class BladeDance : RuneBlade
+  {
+    [Constructible]
+    public BladeDance()
+    {
+      Hue = 0x66C;
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+      Attributes.BonusMana = 8;
+      Attributes.SpellChanneling = 1;
+      Attributes.WeaponDamage = 30;
+      WeaponAttributes.HitLeechMana = 20;
+      WeaponAttributes.UseBestSkill = 1;
+    }
 
-		[Constructible]
-		public BladeDance()
-		{
-			Hue = 0x66C;
+    public BladeDance(Serial serial) : base(serial)
+    {
+    }
 
-			Attributes.BonusMana = 8;
-			Attributes.SpellChanneling = 1;
-			Attributes.WeaponDamage = 30;
-			WeaponAttributes.HitLeechMana = 20;
-			WeaponAttributes.UseBestSkill = 1;
-		}
+    public override int LabelNumber => 1075033; // Blade Dance
 
-		public BladeDance( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

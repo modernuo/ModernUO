@@ -1,535 +1,542 @@
 namespace Server.Items
 {
-	[FlippableAttribute( 0x155E, 0x155F, 0x155C, 0x155D )] 
-	public class DecorativeBowWest : Item
-	{
-		[Constructible]
-		public DecorativeBowWest() : base( Utility.Random( 0x155E, 2 ) )
-		{
-			Movable = false;
-		}
-
-		public DecorativeBowWest( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
-
-	[FlippableAttribute( 0x155C, 0x155D, 0x155E, 0x155F )] 
-	public class DecorativeBowNorth : Item
-	{
-		[Constructible]
-		public DecorativeBowNorth() : base( Utility.Random( 0x155C, 2 ) )
-		{
-			Movable = false;
-		}
-
-		public DecorativeBowNorth( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
-
-	[FlippableAttribute( 0x1560, 0x1561, 0x1562, 0x1563 )] 
-	public class DecorativeAxeNorth : Item
-	{
-		[Constructible]
-		public DecorativeAxeNorth() : base( Utility.Random( 0x1560, 2 ) )
-		{
-			Movable = false;
-		}
-
-		public DecorativeAxeNorth( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
-
-	[FlippableAttribute( 0x1562, 0x1563, 0x1560, 0x1561 )] 
-	public class DecorativeAxeWest : Item
-	{
-		[Constructible]
-		public DecorativeAxeWest() : base( Utility.Random( 0x1562, 2 ) )
-		{
-			Movable = false;
-		}
-
-		public DecorativeAxeWest( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-		}
+  [Flippable(0x155E, 0x155F, 0x155C, 0x155D)]
+  public class DecorativeBowWest : Item
+  {
+    [Constructible]
+    public DecorativeBowWest() : base(Utility.Random(0x155E, 2))
+    {
+      Movable = false;
+    }
+
+    public DecorativeBowWest(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
+
+  [Flippable(0x155C, 0x155D, 0x155E, 0x155F)]
+  public class DecorativeBowNorth : Item
+  {
+    [Constructible]
+    public DecorativeBowNorth() : base(Utility.Random(0x155C, 2))
+    {
+      Movable = false;
+    }
+
+    public DecorativeBowNorth(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
+
+  [Flippable(0x1560, 0x1561, 0x1562, 0x1563)]
+  public class DecorativeAxeNorth : Item
+  {
+    [Constructible]
+    public DecorativeAxeNorth() : base(Utility.Random(0x1560, 2))
+    {
+      Movable = false;
+    }
+
+    public DecorativeAxeNorth(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
+
+  [Flippable(0x1562, 0x1563, 0x1560, 0x1561)]
+  public class DecorativeAxeWest : Item
+  {
+    [Constructible]
+    public DecorativeAxeWest() : base(Utility.Random(0x1562, 2))
+    {
+      Movable = false;
+    }
+
+    public DecorativeAxeWest(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class DecorativeSwordNorth : Item
-	{
-		private InternalItem m_Item;
+  public class DecorativeSwordNorth : Item
+  {
+    private InternalItem m_Item;
 
-		[Constructible]
-		public DecorativeSwordNorth() : base( 0x1565 )
-		{
-			Movable = false;
+    [Constructible]
+    public DecorativeSwordNorth() : base(0x1565)
+    {
+      Movable = false;
 
-			m_Item = new InternalItem( this );
-		}
+      m_Item = new InternalItem(this);
+    }
 
-		public DecorativeSwordNorth( Serial serial ) : base( serial )
-		{
-		}
+    public DecorativeSwordNorth(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X - 1, Y, Z );
-		}
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X - 1, Y, Z);
+    }
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
-
-			m_Item?.Delete();
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-			writer.Write( m_Item );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      m_Item?.Delete();
+    }
 
-			int version = reader.ReadInt();
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private DecorativeSwordNorth m_Item;
+      writer.Write(0); // version
 
-			public InternalItem( DecorativeSwordNorth item ) : base( 0x1564 )
-			{
-				Movable = true;
+      writer.Write(m_Item);
+    }
 
-				m_Item = item;
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+      int version = reader.ReadInt();
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X + 1, Y, Z );
-			}
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+    private class InternalItem : Item
+    {
+      private DecorativeSwordNorth m_Item;
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
-
-				m_Item?.Delete();
-			}
-
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
-
-				writer.Write( (int) 0 ); // version
+      public InternalItem(DecorativeSwordNorth item) : base(0x1564)
+      {
+        Movable = true;
 
-				writer.Write( m_Item );
-			}
-
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+        m_Item = item;
+      }
 
-				int version = reader.ReadInt();
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-				m_Item = reader.ReadItem() as DecorativeSwordNorth;
-			}
-		}
-	}
-	public class DecorativeSwordWest : Item
-	{
-		private InternalItem m_Item;
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X + 1, Y, Z);
+      }
 
-		[Constructible]
-		public DecorativeSwordWest() : base( 0x1566 )
-		{
-			Movable = false;
-
-			m_Item = new InternalItem( this );
-		}
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-		public DecorativeSwordWest( Serial serial ) : base( serial )
-		{
-		}
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X , Y - 1 , Z );
-		}
+        m_Item?.Delete();
+      }
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
-
-			m_Item?.Delete();
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-
-			writer.Write( m_Item );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        writer.Write(0); // version
 
-			int version = reader.ReadInt();
+        writer.Write(m_Item);
+      }
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private DecorativeSwordWest m_Item;
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-			public InternalItem( DecorativeSwordWest item ) : base( 0x1567 )
-			{
-				Movable = true;
+        int version = reader.ReadInt();
 
-				m_Item = item;
-			}
+        m_Item = reader.ReadItem() as DecorativeSwordNorth;
+      }
+    }
+  }
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+  public class DecorativeSwordWest : Item
+  {
+    private InternalItem m_Item;
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X , Y + 1, Z );
-			}
+    [Constructible]
+    public DecorativeSwordWest() : base(0x1566)
+    {
+      Movable = false;
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+      m_Item = new InternalItem(this);
+    }
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
-
-				m_Item?.Delete();
-			}
-
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
-
-				writer.Write( (int) 0 ); // version
+    public DecorativeSwordWest(Serial serial) : base(serial)
+    {
+    }
 
-				writer.Write( m_Item );
-			}
-
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X, Y - 1, Z);
+    }
 
-				int version = reader.ReadInt();
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-				m_Item = reader.ReadItem() as DecorativeSwordWest;
-			}
-		}
-	}
-	public class DecorativeDAxeNorth : Item
-	{
-		private InternalItem m_Item;
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-		[Constructible]
-		public DecorativeDAxeNorth() : base( 0x1569 )
-		{
-			Movable = false;
-
-			m_Item = new InternalItem( this );
-		}
-
-		public DecorativeDAxeNorth( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X - 1, Y, Z );
-		}
+      m_Item?.Delete();
+    }
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
-
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
-
-			m_Item?.Delete();
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-
-			writer.Write( m_Item );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private DecorativeDAxeNorth m_Item;
+      writer.Write(0); // version
 
-			public InternalItem( DecorativeDAxeNorth item ) : base( 0x1568 )
-			{
-				Movable = true;
-
-				m_Item = item;
-			}
+      writer.Write(m_Item);
+    }
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X + 1, Y, Z );
-			}
+      int version = reader.ReadInt();
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
-
-				m_Item?.Delete();
-			}
-
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
-
-				writer.Write( (int) 0 ); // version
-
-				writer.Write( m_Item );
-			}
-
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+    private class InternalItem : Item
+    {
+      private DecorativeSwordWest m_Item;
 
-				int version = reader.ReadInt();
+      public InternalItem(DecorativeSwordWest item) : base(0x1567)
+      {
+        Movable = true;
 
-				m_Item = reader.ReadItem() as DecorativeDAxeNorth;
-			}
-		}
-	}
-	public class DecorativeDAxeWest : Item
-	{
-		private InternalItem m_Item;
+        m_Item = item;
+      }
 
-		[Constructible]
-		public DecorativeDAxeWest() : base( 0x156A )
-		{
-			Movable = false;
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-			m_Item = new InternalItem( this );
-		}
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X, Y + 1, Z);
+      }
 
-		public DecorativeDAxeWest( Serial serial ) : base( serial )
-		{
-		}
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
 
-		public override void OnLocationChange( Point3D oldLocation )
-		{
-			if ( m_Item != null )
-				m_Item.Location = new Point3D( X , Y - 1 , Z );
-		}
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-		public override void OnMapChange()
-		{
-			if ( m_Item != null )
-				m_Item.Map = Map;
-		}
+        m_Item?.Delete();
+      }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-			m_Item?.Delete();
-		}
+        writer.Write(0); // version
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+        writer.Write(m_Item);
+      }
 
-			writer.Write( (int) 0 ); // version
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-			writer.Write( m_Item );
-		}
+        int version = reader.ReadInt();
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        m_Item = reader.ReadItem() as DecorativeSwordWest;
+      }
+    }
+  }
 
-			int version = reader.ReadInt();
+  public class DecorativeDAxeNorth : Item
+  {
+    private InternalItem m_Item;
 
-			m_Item = reader.ReadItem() as InternalItem;
-		}
-		private class InternalItem : Item
-		{
-			private DecorativeDAxeWest m_Item;
+    [Constructible]
+    public DecorativeDAxeNorth() : base(0x1569)
+    {
+      Movable = false;
 
-			public InternalItem( DecorativeDAxeWest item ) : base( 0x156B )
-			{
-				Movable = true;
+      m_Item = new InternalItem(this);
+    }
 
-				m_Item = item;
-			}
+    public DecorativeDAxeNorth(Serial serial) : base(serial)
+    {
+    }
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X - 1, Y, Z);
+    }
 
-			public override void OnLocationChange( Point3D oldLocation )
-			{
-				if ( m_Item != null )
-					m_Item.Location = new Point3D( X , Y + 1, Z );
-			}
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
 
-			public override void OnMapChange()
-			{
-				if ( m_Item != null )
-					m_Item.Map = Map;
-			}
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+      m_Item?.Delete();
+    }
 
-				m_Item?.Delete();
-			}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+      writer.Write(0); // version
 
-				writer.Write( (int) 0 ); // version
+      writer.Write(m_Item);
+    }
 
-				writer.Write( m_Item );
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+      int version = reader.ReadInt();
 
-				int version = reader.ReadInt();
+      m_Item = reader.ReadItem() as InternalItem;
+    }
 
-				m_Item = reader.ReadItem() as DecorativeDAxeWest;
-			}
-		}
-	}
+    private class InternalItem : Item
+    {
+      private DecorativeDAxeNorth m_Item;
+
+      public InternalItem(DecorativeDAxeNorth item) : base(0x1568)
+      {
+        Movable = true;
+
+        m_Item = item;
+      }
+
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
+
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X + 1, Y, Z);
+      }
+
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
+
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
+
+        m_Item?.Delete();
+      }
+
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+
+        writer.Write(m_Item);
+      }
+
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
+
+        int version = reader.ReadInt();
+
+        m_Item = reader.ReadItem() as DecorativeDAxeNorth;
+      }
+    }
+  }
+
+  public class DecorativeDAxeWest : Item
+  {
+    private InternalItem m_Item;
+
+    [Constructible]
+    public DecorativeDAxeWest() : base(0x156A)
+    {
+      Movable = false;
+
+      m_Item = new InternalItem(this);
+    }
+
+    public DecorativeDAxeWest(Serial serial) : base(serial)
+    {
+    }
+
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+      if (m_Item != null)
+        m_Item.Location = new Point3D(X, Y - 1, Z);
+    }
+
+    public override void OnMapChange()
+    {
+      if (m_Item != null)
+        m_Item.Map = Map;
+    }
+
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
+
+      m_Item?.Delete();
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+
+      writer.Write(0); // version
+
+      writer.Write(m_Item);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+
+      m_Item = reader.ReadItem() as InternalItem;
+    }
+
+    private class InternalItem : Item
+    {
+      private DecorativeDAxeWest m_Item;
+
+      public InternalItem(DecorativeDAxeWest item) : base(0x156B)
+      {
+        Movable = true;
+
+        m_Item = item;
+      }
+
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
+
+      public override void OnLocationChange(Point3D oldLocation)
+      {
+        if (m_Item != null)
+          m_Item.Location = new Point3D(X, Y + 1, Z);
+      }
+
+      public override void OnMapChange()
+      {
+        if (m_Item != null)
+          m_Item.Map = Map;
+      }
+
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
+
+        m_Item?.Delete();
+      }
+
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
+
+        writer.Write(0); // version
+
+        writer.Write(m_Item);
+      }
+
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
+
+        int version = reader.ReadInt();
+
+        m_Item = reader.ReadItem() as DecorativeDAxeWest;
+      }
+    }
+  }
 }

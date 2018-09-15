@@ -5,234 +5,257 @@ using Mat = Server.Engines.BulkOrders.BulkMaterialType;
 
 namespace Server.Engines.BulkOrders
 {
-	[TypeAlias( "Scripts.Engines.BulkOrders.SmallSmithBOD" )]
-	public class SmallSmithBOD : SmallBOD
-	{
-		public static double[] m_BlacksmithMaterialChances = {
-				0.501953125, // None
-				0.250000000, // Dull Copper
-				0.125000000, // Shadow Iron
-				0.062500000, // Copper
-				0.031250000, // Bronze
-				0.015625000, // Gold
-				0.007812500, // Agapite
-				0.003906250, // Verite
-				0.001953125  // Valorite
-			};
+  [TypeAlias("Scripts.Engines.BulkOrders.SmallSmithBOD")]
+  public class SmallSmithBOD : SmallBOD
+  {
+    public static double[] m_BlacksmithMaterialChances =
+    {
+      0.501953125, // None
+      0.250000000, // Dull Copper
+      0.125000000, // Shadow Iron
+      0.062500000, // Copper
+      0.031250000, // Bronze
+      0.015625000, // Gold
+      0.007812500, // Agapite
+      0.003906250, // Verite
+      0.001953125 // Valorite
+    };
 
-		public override int ComputeFame()
-		{
-			return SmithRewardCalculator.Instance.ComputeFame( this );
-		}
+    private SmallSmithBOD(SmallBulkEntry entry, BulkMaterialType material, int amountMax, bool reqExceptional)
+    {
+      Hue = 0x44E;
+      AmountMax = amountMax;
+      Type = entry.Type;
+      Number = entry.Number;
+      Graphic = entry.Graphic;
+      RequireExceptional = reqExceptional;
+      Material = material;
+    }
 
-		public override int ComputeGold()
-		{
-			return SmithRewardCalculator.Instance.ComputeGold( this );
-		}
+    [Constructible]
+    public SmallSmithBOD()
+    {
+      SmallBulkEntry[] entries;
+      bool useMaterials;
 
-		public override List<Item> ComputeRewards( bool full )
-		{
-			List<Item> list = new List<Item>();
+      if (useMaterials = Utility.RandomBool())
+        entries = SmallBulkEntry.BlacksmithArmor;
+      else
+        entries = SmallBulkEntry.BlacksmithWeapons;
 
-			RewardGroup rewardGroup = SmithRewardCalculator.Instance.LookupRewards( SmithRewardCalculator.Instance.ComputePoints( this ) );
+      if (entries.Length > 0)
+      {
+        int hue = 0x44E;
+        int amountMax = Utility.RandomList(10, 15, 20);
 
-			if ( rewardGroup != null )
-			{
-				if ( full )
-				{
-					for ( int i = 0; i < rewardGroup.Items.Length; ++i )
-					{
-						Item item = rewardGroup.Items[i].Construct();
+        BulkMaterialType material;
 
-						if ( item != null )
-							list.Add( item );
-					}
-				}
-				else
-				{
-					RewardItem rewardItem = rewardGroup.AcquireItem();
+        if (useMaterials)
+          material = GetRandomMaterial(BulkMaterialType.DullCopper, m_BlacksmithMaterialChances);
+        else
+          material = BulkMaterialType.None;
 
-					Item item = rewardItem?.Construct();
+        bool reqExceptional = Utility.RandomBool() || material == BulkMaterialType.None;
 
-					if ( item != null )
-						list.Add( item );
-				}
-			}
+        SmallBulkEntry entry = entries[Utility.Random(entries.Length)];
 
-			return list;
-		}
+        Hue = hue;
+        AmountMax = amountMax;
+        Type = entry.Type;
+        Number = entry.Number;
+        Graphic = entry.Graphic;
+        RequireExceptional = reqExceptional;
+        Material = material;
+      }
+    }
 
-		public static SmallSmithBOD CreateRandomFor( Mobile m )
-		{
-			SmallBulkEntry[] entries;
-			bool useMaterials;
+    public SmallSmithBOD(int amountCur, int amountMax, Type type, int number, int graphic, bool reqExceptional,
+      BulkMaterialType mat)
+    {
+      Hue = 0x44E;
+      AmountMax = amountMax;
+      AmountCur = amountCur;
+      Type = type;
+      Number = number;
+      Graphic = graphic;
+      RequireExceptional = reqExceptional;
+      Material = mat;
+    }
 
-			if ( useMaterials = Utility.RandomBool() )
-				entries = SmallBulkEntry.BlacksmithArmor;
-			else
-				entries = SmallBulkEntry.BlacksmithWeapons;
+    public SmallSmithBOD(Serial serial) : base(serial)
+    {
+    }
 
-			if ( entries.Length > 0 )
-			{
-				double theirSkill = m.Skills[SkillName.Blacksmith].Base;
-				int amountMax;
+    public override int ComputeFame()
+    {
+      return SmithRewardCalculator.Instance.ComputeFame(this);
+    }
 
-				if ( theirSkill >= 70.1 )
-					amountMax = Utility.RandomList( 10, 15, 20, 20 );
-				else if ( theirSkill >= 50.1 )
-					amountMax = Utility.RandomList( 10, 15, 15, 20 );
-				else
-					amountMax = Utility.RandomList( 10, 10, 15, 20 );
+    public override int ComputeGold()
+    {
+      return SmithRewardCalculator.Instance.ComputeGold(this);
+    }
 
-				BulkMaterialType material = BulkMaterialType.None;
+    public override List<Item> ComputeRewards(bool full)
+    {
+      List<Item> list = new List<Item>();
 
-				if ( useMaterials && theirSkill >= 70.1 )
-				{
-					for ( int i = 0; i < 20; ++i )
-					{
-						BulkMaterialType check = GetRandomMaterial( BulkMaterialType.DullCopper, m_BlacksmithMaterialChances );
-						double skillReq = 0.0;
+      RewardGroup rewardGroup =
+        SmithRewardCalculator.Instance.LookupRewards(SmithRewardCalculator.Instance.ComputePoints(this));
 
-						switch ( check )
-						{
-							case BulkMaterialType.DullCopper: skillReq = 65.0; break;
-							case BulkMaterialType.ShadowIron: skillReq = 70.0; break;
-							case BulkMaterialType.Copper: skillReq = 75.0; break;
-							case BulkMaterialType.Bronze: skillReq = 80.0; break;
-							case BulkMaterialType.Gold: skillReq = 85.0; break;
-							case BulkMaterialType.Agapite: skillReq = 90.0; break;
-							case BulkMaterialType.Verite: skillReq = 95.0; break;
-							case BulkMaterialType.Valorite: skillReq = 100.0; break;
-							case BulkMaterialType.Spined: skillReq = 65.0; break;
-							case BulkMaterialType.Horned: skillReq = 80.0; break;
-							case BulkMaterialType.Barbed: skillReq = 99.0; break;
-						}
+      if (rewardGroup != null)
+      {
+        if (full)
+        {
+          for (int i = 0; i < rewardGroup.Items.Length; ++i)
+          {
+            Item item = rewardGroup.Items[i].Construct();
 
-						if ( theirSkill >= skillReq )
-						{
-							material = check;
-							break;
-						}
-					}
-				}
+            if (item != null)
+              list.Add(item);
+          }
+        }
+        else
+        {
+          RewardItem rewardItem = rewardGroup.AcquireItem();
 
-				double excChance = 0.0;
+          Item item = rewardItem?.Construct();
 
-				if ( theirSkill >= 70.1 )
-					excChance = (theirSkill + 80.0) / 200.0;
+          if (item != null)
+            list.Add(item);
+        }
+      }
 
-				bool reqExceptional = ( excChance > Utility.RandomDouble() );
+      return list;
+    }
 
-				CraftSystem system = DefBlacksmithy.CraftSystem;
+    public static SmallSmithBOD CreateRandomFor(Mobile m)
+    {
+      SmallBulkEntry[] entries;
+      bool useMaterials;
 
-				List<SmallBulkEntry> validEntries = new List<SmallBulkEntry>();
+      if (useMaterials = Utility.RandomBool())
+        entries = SmallBulkEntry.BlacksmithArmor;
+      else
+        entries = SmallBulkEntry.BlacksmithWeapons;
 
-				for ( int i = 0; i < entries.Length; ++i )
-				{
-					CraftItem item = system.CraftItems.SearchFor( entries[i].Type );
+      if (entries.Length > 0)
+      {
+        double theirSkill = m.Skills[SkillName.Blacksmith].Base;
+        int amountMax;
 
-					if ( item != null )
-					{
-						bool allRequiredSkills = true;
-						double chance = item.GetSuccessChance( m, null, system, false, ref allRequiredSkills );
+        if (theirSkill >= 70.1)
+          amountMax = Utility.RandomList(10, 15, 20, 20);
+        else if (theirSkill >= 50.1)
+          amountMax = Utility.RandomList(10, 15, 15, 20);
+        else
+          amountMax = Utility.RandomList(10, 10, 15, 20);
 
-						if ( allRequiredSkills && chance >= 0.0 )
-						{
-							if ( reqExceptional )
-								chance = item.GetExceptionalChance( system, chance, m );
+        BulkMaterialType material = BulkMaterialType.None;
 
-							if ( chance > 0.0 )
-								validEntries.Add( entries[i] );
-							}
-						}
-					}
+        if (useMaterials && theirSkill >= 70.1)
+          for (int i = 0; i < 20; ++i)
+          {
+            BulkMaterialType check = GetRandomMaterial(BulkMaterialType.DullCopper, m_BlacksmithMaterialChances);
+            double skillReq = 0.0;
 
-				if ( validEntries.Count > 0 )
-				{
-					SmallBulkEntry entry = validEntries[Utility.Random( validEntries.Count )];
-					return new SmallSmithBOD( entry, material, amountMax, reqExceptional );
-				}
-			}
+            switch (check)
+            {
+              case BulkMaterialType.DullCopper:
+                skillReq = 65.0;
+                break;
+              case BulkMaterialType.ShadowIron:
+                skillReq = 70.0;
+                break;
+              case BulkMaterialType.Copper:
+                skillReq = 75.0;
+                break;
+              case BulkMaterialType.Bronze:
+                skillReq = 80.0;
+                break;
+              case BulkMaterialType.Gold:
+                skillReq = 85.0;
+                break;
+              case BulkMaterialType.Agapite:
+                skillReq = 90.0;
+                break;
+              case BulkMaterialType.Verite:
+                skillReq = 95.0;
+                break;
+              case BulkMaterialType.Valorite:
+                skillReq = 100.0;
+                break;
+              case BulkMaterialType.Spined:
+                skillReq = 65.0;
+                break;
+              case BulkMaterialType.Horned:
+                skillReq = 80.0;
+                break;
+              case BulkMaterialType.Barbed:
+                skillReq = 99.0;
+                break;
+            }
 
-			return null;
-		}
+            if (theirSkill >= skillReq)
+            {
+              material = check;
+              break;
+            }
+          }
 
-		private SmallSmithBOD( SmallBulkEntry entry, BulkMaterialType material, int amountMax, bool reqExceptional )
-		{
-			Hue = 0x44E;
-			AmountMax = amountMax;
-			Type = entry.Type;
-			Number = entry.Number;
-			Graphic = entry.Graphic;
-			RequireExceptional = reqExceptional;
-			Material = material;
-		}
+        double excChance = 0.0;
 
-		[Constructible]
-		public SmallSmithBOD()
-		{
-			SmallBulkEntry[] entries;
-			bool useMaterials;
+        if (theirSkill >= 70.1)
+          excChance = (theirSkill + 80.0) / 200.0;
 
-			if ( useMaterials = Utility.RandomBool() )
-				entries = SmallBulkEntry.BlacksmithArmor;
-			else
-				entries = SmallBulkEntry.BlacksmithWeapons;
+        bool reqExceptional = excChance > Utility.RandomDouble();
 
-			if ( entries.Length > 0 )
-			{
-				int hue = 0x44E;
-				int amountMax = Utility.RandomList( 10, 15, 20 );
+        CraftSystem system = DefBlacksmithy.CraftSystem;
 
-				BulkMaterialType material;
+        List<SmallBulkEntry> validEntries = new List<SmallBulkEntry>();
 
-				if ( useMaterials )
-					material = GetRandomMaterial( BulkMaterialType.DullCopper, m_BlacksmithMaterialChances );
-				else
-					material = BulkMaterialType.None;
+        for (int i = 0; i < entries.Length; ++i)
+        {
+          CraftItem item = system.CraftItems.SearchFor(entries[i].Type);
 
-				bool reqExceptional = Utility.RandomBool() || (material == BulkMaterialType.None);
+          if (item != null)
+          {
+            bool allRequiredSkills = true;
+            double chance = item.GetSuccessChance(m, null, system, false, ref allRequiredSkills);
 
-				SmallBulkEntry entry = entries[Utility.Random( entries.Length )];
+            if (allRequiredSkills && chance >= 0.0)
+            {
+              if (reqExceptional)
+                chance = item.GetExceptionalChance(system, chance, m);
 
-				Hue = hue;
-				AmountMax = amountMax;
-				Type = entry.Type;
-				Number = entry.Number;
-				Graphic = entry.Graphic;
-				RequireExceptional = reqExceptional;
-				Material = material;
-			}
-		}
+              if (chance > 0.0)
+                validEntries.Add(entries[i]);
+            }
+          }
+        }
 
-		public SmallSmithBOD( int amountCur, int amountMax, Type type, int number, int graphic, bool reqExceptional, BulkMaterialType mat )
-		{
-			Hue = 0x44E;
-			AmountMax = amountMax;
-			AmountCur = amountCur;
-			Type = type;
-			Number = number;
-			Graphic = graphic;
-			RequireExceptional = reqExceptional;
-			Material = mat;
-		}
+        if (validEntries.Count > 0)
+        {
+          SmallBulkEntry entry = validEntries[Utility.Random(validEntries.Count)];
+          return new SmallSmithBOD(entry, material, amountMax, reqExceptional);
+        }
+      }
 
-		public SmallSmithBOD( Serial serial ) : base( serial )
-		{
-		}
+      return null;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

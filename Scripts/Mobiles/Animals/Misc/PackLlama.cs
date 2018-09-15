@@ -1,141 +1,143 @@
 using System.Collections.Generic;
-using Server.Items;
 using Server.ContextMenus;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class PackLlama : BaseCreature
-	{
-		public override string CorpseName => "a llama corpse";
-		public override string DefaultName => "a pack llama";
+  public class PackLlama : BaseCreature
+  {
+    [Constructible]
+    public PackLlama() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+      Body = 292;
+      BaseSoundID = 0x3F3;
 
-		[Constructible]
-		public PackLlama() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			Body = 292;
-			BaseSoundID = 0x3F3;
+      SetStr(52, 80);
+      SetDex(36, 55);
+      SetInt(16, 30);
 
-			SetStr( 52, 80 );
-			SetDex( 36, 55 );
-			SetInt( 16, 30 );
+      SetHits(50);
+      SetStam(86, 105);
+      SetMana(0);
 
-			SetHits( 50 );
-			SetStam( 86, 105 );
-			SetMana( 0 );
+      SetDamage(2, 6);
 
-			SetDamage( 2, 6 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetResistance(ResistanceType.Physical, 25, 35);
+      SetResistance(ResistanceType.Fire, 10, 15);
+      SetResistance(ResistanceType.Cold, 10, 15);
+      SetResistance(ResistanceType.Poison, 10, 15);
+      SetResistance(ResistanceType.Energy, 10, 15);
 
-			SetResistance( ResistanceType.Physical, 25, 35 );
-			SetResistance( ResistanceType.Fire, 10, 15 );
-			SetResistance( ResistanceType.Cold, 10, 15 );
-			SetResistance( ResistanceType.Poison, 10, 15 );
-			SetResistance( ResistanceType.Energy, 10, 15 );
+      SetSkill(SkillName.MagicResist, 15.1, 20.0);
+      SetSkill(SkillName.Tactics, 19.2, 29.0);
+      SetSkill(SkillName.Wrestling, 19.2, 29.0);
 
-			SetSkill( SkillName.MagicResist, 15.1, 20.0 );
-			SetSkill( SkillName.Tactics, 19.2, 29.0 );
-			SetSkill( SkillName.Wrestling, 19.2, 29.0 );
+      Fame = 0;
+      Karma = 200;
 
-			Fame = 0;
-			Karma = 200;
+      VirtualArmor = 16;
 
-			VirtualArmor = 16;
+      Tamable = true;
+      ControlSlots = 1;
+      MinTameSkill = 11.1;
 
-			Tamable = true;
-			ControlSlots = 1;
-			MinTameSkill = 11.1;
+      Container pack = Backpack;
 
-			Container pack = Backpack;
+      pack?.Delete();
 
-			pack?.Delete();
+      pack = new StrongBackpack();
+      pack.Movable = false;
 
-			pack = new StrongBackpack();
-			pack.Movable = false;
+      AddItem(pack);
+    }
 
-			AddItem( pack );
-		}
+    public PackLlama(Serial serial) : base(serial)
+    {
+    }
 
-		public override int Meat => 1;
-		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+    public override string CorpseName => "a llama corpse";
+    public override string DefaultName => "a pack llama";
 
-		public PackLlama( Serial serial ) : base( serial )
-		{
-		}
+    public override int Meat => 1;
+    public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
-		#region Pack Animal Methods
-		public override bool OnBeforeDeath()
-		{
-			if ( !base.OnBeforeDeath() )
-				return false;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			PackAnimal.CombineBackpacks( this );
+      writer.Write(0);
+    }
 
-			return true;
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override DeathMoveResult GetInventoryMoveResultFor( Item item )
-		{
-			return DeathMoveResult.MoveToCorpse;
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override bool IsSnoop( Mobile from )
-		{
-			if ( PackAnimal.CheckAccess( this, from ) )
-				return false;
+    #region Pack Animal Methods
 
-			return base.IsSnoop( from );
-		}
+    public override bool OnBeforeDeath()
+    {
+      if (!base.OnBeforeDeath())
+        return false;
 
-		public override bool OnDragDrop( Mobile from, Item item )
-		{
-			if ( CheckFeed( from, item ) )
-				return true;
+      PackAnimal.CombineBackpacks(this);
 
-			if ( PackAnimal.CheckAccess( this, from ) )
-			{
-				AddToBackpack( item );
-				return true;
-			}
+      return true;
+    }
 
-			return base.OnDragDrop( from, item );
-		}
+    public override DeathMoveResult GetInventoryMoveResultFor(Item item)
+    {
+      return DeathMoveResult.MoveToCorpse;
+    }
 
-		public override bool CheckNonlocalDrop( Mobile from, Item item, Item target )
-		{
-			return PackAnimal.CheckAccess( this, from );
-		}
+    public override bool IsSnoop(Mobile from)
+    {
+      if (PackAnimal.CheckAccess(this, from))
+        return false;
 
-		public override bool CheckNonlocalLift( Mobile from, Item item )
-		{
-			return PackAnimal.CheckAccess( this, from );
-		}
+      return base.IsSnoop(from);
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			PackAnimal.TryPackOpen( this, from );
-		}
+    public override bool OnDragDrop(Mobile from, Item item)
+    {
+      if (CheckFeed(from, item))
+        return true;
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+      if (PackAnimal.CheckAccess(this, from))
+      {
+        AddToBackpack(item);
+        return true;
+      }
 
-			PackAnimal.GetContextMenuEntries( this, from, list );
-		}
-		#endregion
+      return base.OnDragDrop(from, item);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override bool CheckNonlocalDrop(Mobile from, Item item, Item target)
+    {
+      return PackAnimal.CheckAccess(this, from);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override bool CheckNonlocalLift(Mobile from, Item item)
+    {
+      return PackAnimal.CheckAccess(this, from);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void OnDoubleClick(Mobile from)
+    {
+      PackAnimal.TryPackOpen(this, from);
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
+
+      PackAnimal.GetContextMenuEntries(this, from, list);
+    }
+
+    #endregion
+  }
 }

@@ -2,43 +2,45 @@ using System;
 
 namespace Server.Engines.Reports
 {
-	public class QueueStatus : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "qs", Construct );
+  public class QueueStatus : PersistableObject
+  {
+    public QueueStatus()
+    {
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new QueueStatus();
-		}
+    public QueueStatus(int count)
+    {
+      TimeStamp = DateTime.UtcNow;
+      Count = count;
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public DateTime TimeStamp{ get; set; }
 
-		public DateTime TimeStamp { get; set; }
+    public int Count{ get; set; }
 
-		public int Count { get; set; }
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetDateTime("t", TimeStamp);
+      op.SetInt32("c", Count);
+    }
 
-		public QueueStatus()
-		{
-		}
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      TimeStamp = ip.GetDateTime("t");
+      Count = ip.GetInt32("c");
+    }
 
-		public QueueStatus( int count )
-		{
-			TimeStamp = DateTime.UtcNow;
-			Count = count;
-		}
+    #region Type Identification
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetDateTime( "t", TimeStamp );
-			op.SetInt32( "c", Count );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("qs", Construct);
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			TimeStamp = ip.GetDateTime( "t" );
-			Count = ip.GetInt32( "c" );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new QueueStatus();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

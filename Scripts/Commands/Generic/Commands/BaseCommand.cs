@@ -1,163 +1,158 @@
-using System;
 using System.Collections;
 using Server.Gumps;
 
 namespace Server.Commands.Generic
 {
-	public enum ObjectTypes
-	{
-		Both,
-		Items,
-		Mobiles,
-		All
-	}
+  public enum ObjectTypes
+  {
+    Both,
+    Items,
+    Mobiles,
+    All
+  }
 
-	public abstract class BaseCommand
-	{
-		public bool ListOptimized { get; set; }
+  public abstract class BaseCommand
+  {
+    private ArrayList m_Responses, m_Failures;
 
-		public string[] Commands { get; set; }
+    public BaseCommand()
+    {
+      m_Responses = new ArrayList();
+      m_Failures = new ArrayList();
+    }
 
-		public string Usage { get; set; }
+    public bool ListOptimized{ get; set; }
 
-		public string Description { get; set; }
+    public string[] Commands{ get; set; }
 
-		public AccessLevel AccessLevel { get; set; }
+    public string Usage{ get; set; }
 
-		public ObjectTypes ObjectTypes { get; set; }
+    public string Description{ get; set; }
 
-		public CommandSupport Supports { get; set; }
+    public AccessLevel AccessLevel{ get; set; }
 
-		public BaseCommand()
-		{
-			m_Responses = new ArrayList();
-			m_Failures = new ArrayList();
-		}
+    public ObjectTypes ObjectTypes{ get; set; }
 
-		public static bool IsAccessible( Mobile from, object obj )
-		{
-			if ( from.AccessLevel >= AccessLevel.Administrator || obj == null )
-				return true;
+    public CommandSupport Supports{ get; set; }
 
-			Mobile mob = null;
+    public static bool IsAccessible(Mobile from, object obj)
+    {
+      if (from.AccessLevel >= AccessLevel.Administrator || obj == null)
+        return true;
 
-			if ( obj is Mobile m )
-				mob = m;
-			else if ( obj is Item item )
-				mob = item.RootParent as Mobile;
+      Mobile mob = null;
 
-			return mob == null || mob == from || from.AccessLevel > mob.AccessLevel;
-		}
+      if (obj is Mobile m)
+        mob = m;
+      else if (obj is Item item)
+        mob = item.RootParent as Mobile;
 
-		public virtual void ExecuteList( CommandEventArgs e, ArrayList list )
-		{
-			for ( int i = 0; i < list.Count; ++i )
-				Execute( e, list[i] );
-		}
+      return mob == null || mob == from || from.AccessLevel > mob.AccessLevel;
+    }
 
-		public virtual void Execute( CommandEventArgs e, object obj )
-		{
-		}
+    public virtual void ExecuteList(CommandEventArgs e, ArrayList list)
+    {
+      for (int i = 0; i < list.Count; ++i)
+        Execute(e, list[i]);
+    }
 
-		public virtual bool ValidateArgs( BaseCommandImplementor impl, CommandEventArgs e )
-		{
-			return true;
-		}
+    public virtual void Execute(CommandEventArgs e, object obj)
+    {
+    }
 
-		private ArrayList m_Responses, m_Failures;
+    public virtual bool ValidateArgs(BaseCommandImplementor impl, CommandEventArgs e)
+    {
+      return true;
+    }
 
-		private class MessageEntry
-		{
-			public string m_Message;
-			public int m_Count;
+    public void AddResponse(string message)
+    {
+      for (int i = 0; i < m_Responses.Count; ++i)
+      {
+        MessageEntry entry = (MessageEntry)m_Responses[i];
 
-			public MessageEntry( string message )
-			{
-				m_Message = message;
-				m_Count = 1;
-			}
+        if (entry.m_Message == message)
+        {
+          ++entry.m_Count;
+          return;
+        }
+      }
 
-			public override string ToString()
-			{
-				if ( m_Count > 1 )
-					return $"{m_Message} ({m_Count})";
+      if (m_Responses.Count == 10)
+        return;
 
-				return m_Message;
-			}
-		}
+      m_Responses.Add(new MessageEntry(message));
+    }
 
-		public void AddResponse( string message )
-		{
-			for ( int i = 0; i < m_Responses.Count; ++i )
-			{
-				MessageEntry entry = (MessageEntry)m_Responses[i];
+    public void AddResponse(Gump gump)
+    {
+      m_Responses.Add(gump);
+    }
 
-				if ( entry.m_Message == message )
-				{
-					++entry.m_Count;
-					return;
-				}
-			}
+    public void LogFailure(string message)
+    {
+      for (int i = 0; i < m_Failures.Count; ++i)
+      {
+        MessageEntry entry = (MessageEntry)m_Failures[i];
 
-			if ( m_Responses.Count == 10 )
-				return;
+        if (entry.m_Message == message)
+        {
+          ++entry.m_Count;
+          return;
+        }
+      }
 
-			m_Responses.Add( new MessageEntry( message ) );
-		}
+      if (m_Failures.Count == 10)
+        return;
 
-		public void AddResponse( Gump gump )
-		{
-			m_Responses.Add( gump );
-		}
+      m_Failures.Add(new MessageEntry(message));
+    }
 
-		public void LogFailure( string message )
-		{
-			for ( int i = 0; i < m_Failures.Count; ++i )
-			{
-				MessageEntry entry = (MessageEntry)m_Failures[i];
+    public void Flush(Mobile from, bool flushToLog)
+    {
+      if (m_Responses.Count > 0)
+        for (int i = 0; i < m_Responses.Count; ++i)
+        {
+          object obj = m_Responses[i];
 
-				if ( entry.m_Message == message )
-				{
-					++entry.m_Count;
-					return;
-				}
-			}
+          if (obj is MessageEntry entry)
+          {
+            from.SendMessage(entry.ToString());
 
-			if ( m_Failures.Count == 10 )
-				return;
+            if (flushToLog)
+              CommandLogging.WriteLine(from, entry.ToString());
+          }
+          else if (obj is Gump gump)
+          {
+            from.SendGump(gump);
+          }
+        }
+      else
+        for (int i = 0; i < m_Failures.Count; ++i)
+          from.SendMessage(((MessageEntry)m_Failures[i]).ToString());
 
-			m_Failures.Add( new MessageEntry( message ) );
-		}
+      m_Responses.Clear();
+      m_Failures.Clear();
+    }
 
-		public void Flush( Mobile from, bool flushToLog )
-		{
-			if ( m_Responses.Count > 0 )
-			{
-				for ( int i = 0; i < m_Responses.Count; ++i )
-				{
-					object obj = m_Responses[i];
+    private class MessageEntry
+    {
+      public int m_Count;
+      public string m_Message;
 
-					if ( obj is MessageEntry entry )
-					{
-						from.SendMessage( entry.ToString() );
+      public MessageEntry(string message)
+      {
+        m_Message = message;
+        m_Count = 1;
+      }
 
-						if ( flushToLog )
-							CommandLogging.WriteLine( from, entry.ToString() );
-					}
-					else if ( obj is Gump gump )
-					{
-						from.SendGump( gump );
-					}
-				}
-			}
-			else
-			{
-				for ( int i = 0; i < m_Failures.Count; ++i )
-					from.SendMessage( ((MessageEntry)m_Failures[i]).ToString() );
-			}
+      public override string ToString()
+      {
+        if (m_Count > 1)
+          return $"{m_Message} ({m_Count})";
 
-			m_Responses.Clear();
-			m_Failures.Clear();
-		}
-	}
+        return m_Message;
+      }
+    }
+  }
 }

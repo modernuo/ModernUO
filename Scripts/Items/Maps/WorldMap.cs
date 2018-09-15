@@ -1,47 +1,47 @@
 namespace Server.Items
 {
-	public class WorldMap : MapItem
-	{
-		[Constructible]
-		public WorldMap()
-		{
-			SetDisplay( 0, 0, 5119, 4095, 400, 400 );
-		}
+  public class WorldMap : MapItem
+  {
+    [Constructible]
+    public WorldMap()
+    {
+      SetDisplay(0, 0, 5119, 4095, 400, 400);
+    }
 
-		public override void CraftInit( Mobile from )
-		{
-			// Unlike the others, world map is not based on crafted location
+    public WorldMap(Serial serial) : base(serial)
+    {
+    }
 
-			double skillValue = from.Skills[SkillName.Cartography].Value;
-			int x20 = (int)(skillValue * 20);
-			int size = 25 + (int)(skillValue * 6.6);
+    public override int LabelNumber => 1015233; // world map
 
-			if ( size < 200 )
-				size = 200;
-			else if ( size > 400 )
-				size = 400;
+    public override void CraftInit(Mobile from)
+    {
+      // Unlike the others, world map is not based on crafted location
 
-			SetDisplay( 1344 - x20, 1600 - x20, 1472 + x20, 1728 + x20, size, size );
-		}
+      double skillValue = from.Skills[SkillName.Cartography].Value;
+      int x20 = (int)(skillValue * 20);
+      int size = 25 + (int)(skillValue * 6.6);
 
-		public override int LabelNumber => 1015233; // world map
+      if (size < 200)
+        size = 200;
+      else if (size > 400)
+        size = 400;
 
-		public WorldMap( Serial serial ) : base( serial )
-		{
-		}
+      SetDisplay(1344 - x20, 1600 - x20, 1472 + x20, 1728 + x20, size, size);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

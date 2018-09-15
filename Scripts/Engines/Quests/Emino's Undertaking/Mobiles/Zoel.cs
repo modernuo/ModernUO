@@ -1,134 +1,132 @@
-using Server.Mobiles;
-using Server.Items;
 using Server.Gumps;
+using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Engines.Quests.Ninja
 {
-	public class Zoel : BaseQuester
-	{
-		public override string DefaultName => "Elite Ninja Zoel";
+  public class Zoel : BaseQuester
+  {
+    [Constructible]
+    public Zoel() : base("the Masterful Tactician")
+    {
+    }
 
-		[Constructible]
-		public Zoel() : base( "the Masterful Tactician" )
-		{
-		}
+    public Zoel(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitBody()
-		{
-			InitStats( 100, 100, 25 );
+    public override string DefaultName => "Elite Ninja Zoel";
 
-			Hue = 0x83FE;
+    public override int TalkNumber => -1;
 
-			Female = false;
-			Body = 0x190;
-		}
+    public override void InitBody()
+    {
+      InitStats(100, 100, 25);
 
-		public override void InitOutfit()
-		{
-			HairItemID = 0x203B;
-			HairHue = 0x901;
+      Hue = 0x83FE;
 
-			AddItem( new HakamaShita( 0x1 ) );
-			AddItem( new NinjaTabi() );
-			AddItem( new TattsukeHakama() );
-			AddItem( new Bandana() );
+      Female = false;
+      Body = 0x190;
+    }
 
-			AddItem( new LeatherNinjaBelt() );
+    public override void InitOutfit()
+    {
+      HairItemID = 0x203B;
+      HairHue = 0x901;
 
-			Tekagi tekagi = new Tekagi();
-			tekagi.Movable = false;
-			AddItem( tekagi );
-		}
+      AddItem(new HakamaShita(0x1));
+      AddItem(new NinjaTabi());
+      AddItem(new TattsukeHakama());
+      AddItem(new Bandana());
 
-		public override int TalkNumber => -1;
+      AddItem(new LeatherNinjaBelt());
 
-		public override int GetAutoTalkRange( PlayerMobile pm )
-		{
-			return 2;
-		}
+      Tekagi tekagi = new Tekagi();
+      tekagi.Movable = false;
+      AddItem(tekagi);
+    }
 
-		public override bool CanTalkTo( PlayerMobile to )
-		{
-			return to.Quest is EminosUndertakingQuest;
-		}
+    public override int GetAutoTalkRange(PlayerMobile pm)
+    {
+      return 2;
+    }
 
-		public override void OnTalk( PlayerMobile player, bool contextMenu )
-		{
-			QuestSystem qs = player.Quest;
+    public override bool CanTalkTo(PlayerMobile to)
+    {
+      return to.Quest is EminosUndertakingQuest;
+    }
 
-			if ( qs is EminosUndertakingQuest )
-			{
-				QuestObjective obj = qs.FindObjective( typeof( FindZoelObjective ) );
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+      QuestSystem qs = player.Quest;
 
-				if ( obj != null && !obj.Completed )
-					obj.Complete();
-			}
-		}
+      if (qs is EminosUndertakingQuest)
+      {
+        QuestObjective obj = qs.FindObjective(typeof(FindZoelObjective));
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			if ( from is PlayerMobile player )
-			{
-				QuestSystem qs = player.Quest;
+        if (obj != null && !obj.Completed)
+          obj.Complete();
+      }
+    }
 
-				if ( qs is EminosUndertakingQuest )
-				{
-					if ( dropped is NoteForZoel )
-					{
-						QuestObjective obj = qs.FindObjective( typeof( GiveZoelNoteObjective ) );
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      if (from is PlayerMobile player)
+      {
+        QuestSystem qs = player.Quest;
 
-						if ( obj != null && !obj.Completed )
-						{
-							dropped.Delete();
-							obj.Complete();
-							return true;
-						}
-					}
-				}
-			}
+        if (qs is EminosUndertakingQuest)
+          if (dropped is NoteForZoel)
+          {
+            QuestObjective obj = qs.FindObjective(typeof(GiveZoelNoteObjective));
 
-			return base.OnDragDrop( from, dropped );
-		}
+            if (obj != null && !obj.Completed)
+            {
+              dropped.Delete();
+              obj.Complete();
+              return true;
+            }
+          }
+      }
 
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			base.OnMovement( m, oldLocation );
+      return base.OnDragDrop(from, dropped);
+    }
 
-			if ( !m.Frozen && !m.Alive && InRange( m, 4 ) && !InRange( oldLocation, 4 ) && InLOS( m ) )
-			{
-				if ( m.Map == null || !m.Map.CanFit( m.Location, 16, false, false ) )
-				{
-					m.SendLocalizedMessage( 502391 ); // Thou can not be resurrected there!
-				}
-				else
-				{
-					Direction = GetDirectionTo( m );
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      base.OnMovement(m, oldLocation);
 
-					m.PlaySound( 0x214 );
-					m.FixedEffect( 0x376A, 10, 16 );
+      if (!m.Frozen && !m.Alive && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
+      {
+        if (m.Map == null || !m.Map.CanFit(m.Location, 16, false, false))
+        {
+          m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
+        }
+        else
+        {
+          Direction = GetDirectionTo(m);
 
-					m.CloseGump( typeof( ResurrectGump ) );
-					m.SendGump( new ResurrectGump( m, ResurrectMessage.Healer ) );
-				}
-			}
-		}
+          m.PlaySound(0x214);
+          m.FixedEffect(0x376A, 10, 16);
 
-		public Zoel( Serial serial ) : base( serial )
-		{
-		}
+          m.CloseGump(typeof(ResurrectGump));
+          m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
+        }
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

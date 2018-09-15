@@ -1,31 +1,30 @@
 namespace Server.Items
 {
-	public class DecoBottlesOfLiquor : Item
-	{
+  public class DecoBottlesOfLiquor : Item
+  {
+    [Constructible]
+    public DecoBottlesOfLiquor() : base(0x99E)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public DecoBottlesOfLiquor() : base( 0x99E )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public DecoBottlesOfLiquor(Serial serial) : base(serial)
+    {
+    }
 
-		public DecoBottlesOfLiquor( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

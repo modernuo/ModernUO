@@ -1,61 +1,61 @@
 namespace Server.Items
 {
-	public class StoneFireplaceSouthAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new StoneFireplaceSouthDeed();
+  public class StoneFireplaceSouthAddon : BaseAddon
+  {
+    [Constructible]
+    public StoneFireplaceSouthAddon()
+    {
+      AddComponent(new AddonComponent(0x967), -1, 0, 0);
+      AddComponent(new AddonComponent(0x961), 0, 0, 0);
+    }
 
-		[Constructible]
-		public StoneFireplaceSouthAddon()
-		{
-			AddComponent( new AddonComponent( 0x967 ), -1, 0, 0 );
-			AddComponent( new AddonComponent( 0x961 ), 0, 0, 0 );
-		}
+    public StoneFireplaceSouthAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public StoneFireplaceSouthAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new StoneFireplaceSouthDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class StoneFireplaceSouthDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new StoneFireplaceSouthAddon();
-		public override int LabelNumber => 1061849; // stone fireplace (south)
+  public class StoneFireplaceSouthDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public StoneFireplaceSouthDeed()
+    {
+    }
 
-		[Constructible]
-		public StoneFireplaceSouthDeed()
-		{
-		}
+    public StoneFireplaceSouthDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public StoneFireplaceSouthDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new StoneFireplaceSouthAddon();
+    public override int LabelNumber => 1061849; // stone fireplace (south)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

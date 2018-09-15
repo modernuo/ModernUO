@@ -1,89 +1,89 @@
 namespace Server.Items
 {
-	[Flippable( 0x1EA3, 0x1EA4 )]
-	public class SmallFishingNetComponent : AddonComponent
-	{
-		public override int LabelNumber => 1076286; // Small Fish Net
+  [Flippable(0x1EA3, 0x1EA4)]
+  public class SmallFishingNetComponent : AddonComponent
+  {
+    public SmallFishingNetComponent() : base(0x1EA3)
+    {
+    }
 
-		public SmallFishingNetComponent() : base( 0x1EA3 )
-		{
-		}
+    public SmallFishingNetComponent(Serial serial) : base(serial)
+    {
+    }
 
-		public SmallFishingNetComponent( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1076286; // Small Fish Net
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 
-	public class SmallFishingNetAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new SmallFishingNetDeed();
+  public class SmallFishingNetAddon : BaseAddon
+  {
+    [Constructible]
+    public SmallFishingNetAddon()
+    {
+      AddComponent(new SmallFishingNetComponent(), 0, 0, 0);
+    }
 
-		[Constructible]
-		public SmallFishingNetAddon()
-		{
-			AddComponent( new SmallFishingNetComponent(), 0, 0, 0 );
-		}
+    public SmallFishingNetAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public SmallFishingNetAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new SmallFishingNetDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 
-	public class SmallFishingNetDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new SmallFishingNetAddon();
-		public override int LabelNumber => 1076286; // Small Fish Net
+  public class SmallFishingNetDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public SmallFishingNetDeed()
+    {
+      LootType = LootType.Blessed;
+    }
 
-		[Constructible]
-		public SmallFishingNetDeed()
-		{
-			LootType = LootType.Blessed;
-		}
+    public SmallFishingNetDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public SmallFishingNetDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new SmallFishingNetAddon();
+    public override int LabelNumber => 1076286; // Small Fish Net
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

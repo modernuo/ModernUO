@@ -1,44 +1,44 @@
 namespace Server.Items
 {
-	public class Subdue : Scythe
-	{
-		public override int LabelNumber => 1094930; // Subdue [Replica]
+  public class Subdue : Scythe
+  {
+    [Constructible]
+    public Subdue()
+    {
+      Hue = 0x2cb;
 
-		public override int InitMinHits => 150;
-		public override int InitMaxHits => 150;
+      Attributes.SpellChanneling = 1;
+      Attributes.WeaponSpeed = 20;
+      Attributes.WeaponDamage = 50;
+      Attributes.AttackChance = 10;
 
-		public override bool CanFortify => false;
+      WeaponAttributes.HitLeechMana = 100;
+      WeaponAttributes.UseBestSkill = 1;
+    }
 
-		[Constructible]
-		public Subdue()
-		{
-			Hue = 0x2cb;
+    public Subdue(Serial serial) : base(serial)
+    {
+    }
 
-			Attributes.SpellChanneling = 1;
-			Attributes.WeaponSpeed = 20;
-			Attributes.WeaponDamage = 50;
-			Attributes.AttackChance = 10;
+    public override int LabelNumber => 1094930; // Subdue [Replica]
 
-			WeaponAttributes.HitLeechMana = 100;
-			WeaponAttributes.UseBestSkill = 1;
-		}
+    public override int InitMinHits => 150;
+    public override int InitMaxHits => 150;
 
-		public Subdue( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CanFortify => false;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

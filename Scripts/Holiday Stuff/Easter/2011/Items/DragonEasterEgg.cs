@@ -1,42 +1,42 @@
 ﻿namespace Server.Items
 {
-	public class DragonEasterEgg : Item, IDyable
-	{
-		public override int LabelNumber => 1097278;
+  public class DragonEasterEgg : Item, IDyable
+  {
+    [Constructible]
+    public DragonEasterEgg()
+      : base(0x47E6)
+    {
+    }
 
-		[Constructible]
-		public DragonEasterEgg()
-			: base( 0x47E6 )
-		{
-		}
+    public DragonEasterEgg(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public DragonEasterEgg( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int LabelNumber => 1097278;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public bool Dye(Mobile from, DyeTub sender)
+    {
+      if (Deleted || !sender.AllowDyables)
+        return false;
 
-			writer.Write( ( int ) 0 );
-		}
+      Hue = sender.DyedHue;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      return true;
+    }
 
-			int version = reader.ReadInt();
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public bool Dye( Mobile from, DyeTub sender )
-		{
-			if ( Deleted || !sender.AllowDyables )
-				return false;
+      writer.Write(0);
+    }
 
-			Hue = sender.DyedHue;
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			return true;
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

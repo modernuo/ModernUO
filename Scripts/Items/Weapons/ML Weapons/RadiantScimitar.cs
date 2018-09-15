@@ -1,50 +1,50 @@
 namespace Server.Items
 {
-	[FlippableAttribute( 0x2D33, 0x2D27 )]
-	public class RadiantScimitar : BaseSword
-	{
-		public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
+  [Flippable(0x2D33, 0x2D27)]
+  public class RadiantScimitar : BaseSword
+  {
+    [Constructible]
+    public RadiantScimitar() : base(0x2D33)
+    {
+      Weight = 9.0;
+    }
 
-		public override int AosStrengthReq => 20;
-		public override int AosMinDamage => 12;
-		public override int AosMaxDamage => 14;
-		public override int AosSpeed => 43;
-		public override float MlSpeed => 2.50f;
+    public RadiantScimitar(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 20;
-		public override int OldMinDamage => 12;
-		public override int OldMaxDamage => 14;
-		public override int OldSpeed => 43;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
 
-		public override int DefHitSound => 0x23B;
-		public override int DefMissSound => 0x239;
+    public override int AosStrengthReq => 20;
+    public override int AosMinDamage => 12;
+    public override int AosMaxDamage => 14;
+    public override int AosSpeed => 43;
+    public override float MlSpeed => 2.50f;
 
-		public override int InitMinHits => 30;
-		public override int InitMaxHits => 60;
+    public override int OldStrengthReq => 20;
+    public override int OldMinDamage => 12;
+    public override int OldMaxDamage => 14;
+    public override int OldSpeed => 43;
 
-		[Constructible]
-		public RadiantScimitar() : base( 0x2D33 )
-		{
-			Weight = 9.0;
-		}
+    public override int DefHitSound => 0x23B;
+    public override int DefMissSound => 0x239;
 
-		public RadiantScimitar( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 30;
+    public override int InitMaxHits => 60;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

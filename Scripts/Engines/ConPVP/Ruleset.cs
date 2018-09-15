@@ -2,100 +2,100 @@ using System.Collections;
 
 namespace Server.Engines.ConPVP
 {
-	public class Ruleset
-	{
-		public RulesetLayout Layout { get; }
+  public class Ruleset
+  {
+    public Ruleset(RulesetLayout layout)
+    {
+      Layout = layout;
+      Options = new BitArray(layout.TotalLength);
+    }
 
-		public BitArray Options { get; private set; }
+    public RulesetLayout Layout{ get; }
 
-		public string Title { get; set; }
+    public BitArray Options{ get; private set; }
 
-		public Ruleset Base { get; private set; }
+    public string Title{ get; set; }
 
-		public ArrayList Flavors { get; } = new ArrayList();
+    public Ruleset Base{ get; private set; }
 
-		public bool Changed { get; set; }
+    public ArrayList Flavors{ get; } = new ArrayList();
 
-		public void ApplyDefault( Ruleset newDefault )
-		{
-			Base = newDefault;
-			Changed = false;
+    public bool Changed{ get; set; }
 
-			Options = new BitArray( newDefault.Options );
+    public void ApplyDefault(Ruleset newDefault)
+    {
+      Base = newDefault;
+      Changed = false;
 
-			ApplyFlavorsTo( this );
-		}
+      Options = new BitArray(newDefault.Options);
 
-		public void ApplyFlavorsTo( Ruleset ruleset )
-		{
-			for ( int i = 0; i < Flavors.Count; ++i )
-			{
-				Ruleset flavor = (Ruleset)Flavors[i];
+      ApplyFlavorsTo(this);
+    }
 
-				Options.Or( flavor.Options );
-			}
-		}
+    public void ApplyFlavorsTo(Ruleset ruleset)
+    {
+      for (int i = 0; i < Flavors.Count; ++i)
+      {
+        Ruleset flavor = (Ruleset)Flavors[i];
 
-		public void AddFlavor( Ruleset flavor )
-		{
-			if ( Flavors.Contains( flavor ) )
-				return;
+        Options.Or(flavor.Options);
+      }
+    }
 
-			Flavors.Add( flavor );
-			Options.Or( flavor.Options );
-		}
+    public void AddFlavor(Ruleset flavor)
+    {
+      if (Flavors.Contains(flavor))
+        return;
 
-		public void RemoveFlavor( Ruleset flavor )
-		{
-			if ( !Flavors.Contains( flavor ) )
-				return;
+      Flavors.Add(flavor);
+      Options.Or(flavor.Options);
+    }
 
-			Flavors.Remove( flavor );
-			Options.And( flavor.Options.Not() );
-			flavor.Options.Not();
-		}
+    public void RemoveFlavor(Ruleset flavor)
+    {
+      if (!Flavors.Contains(flavor))
+        return;
 
-		public void SetOptionRange( string title, bool value )
-		{
-			RulesetLayout layout = Layout.FindByTitle( title );
+      Flavors.Remove(flavor);
+      Options.And(flavor.Options.Not());
+      flavor.Options.Not();
+    }
 
-			if ( layout == null )
-				return;
+    public void SetOptionRange(string title, bool value)
+    {
+      RulesetLayout layout = Layout.FindByTitle(title);
 
-			for ( int i = 0; i < layout.TotalLength; ++i )
-				Options[i + layout.Offset] = value;
+      if (layout == null)
+        return;
 
-			Changed = true;
-		}
+      for (int i = 0; i < layout.TotalLength; ++i)
+        Options[i + layout.Offset] = value;
 
-		public bool GetOption( string title, string option )
-		{
-			int index = 0;
-			RulesetLayout layout = Layout.FindByOption( title, option, ref index );
+      Changed = true;
+    }
 
-			if ( layout == null )
-				return true;
+    public bool GetOption(string title, string option)
+    {
+      int index = 0;
+      RulesetLayout layout = Layout.FindByOption(title, option, ref index);
 
-			return Options[layout.Offset + index];
-		}
+      if (layout == null)
+        return true;
 
-		public void SetOption( string title, string option, bool value )
-		{
-			int index = 0;
-			RulesetLayout layout = Layout.FindByOption( title, option, ref index );
+      return Options[layout.Offset + index];
+    }
 
-			if ( layout == null )
-				return;
+    public void SetOption(string title, string option, bool value)
+    {
+      int index = 0;
+      RulesetLayout layout = Layout.FindByOption(title, option, ref index);
 
-			Options[layout.Offset + index] = value;
+      if (layout == null)
+        return;
 
-			Changed = true;
-		}
+      Options[layout.Offset + index] = value;
 
-		public Ruleset( RulesetLayout layout )
-		{
-			Layout = layout;
-			Options = new BitArray( layout.TotalLength );
-		}
-	}
+      Changed = true;
+    }
+  }
 }

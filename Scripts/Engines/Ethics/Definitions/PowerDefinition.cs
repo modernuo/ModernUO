@@ -1,22 +1,22 @@
 namespace Server.Ethics
 {
-	public class PowerDefinition
-	{
-		public int Power { get; }
+  public class PowerDefinition
+  {
+    public PowerDefinition(int power, TextDefinition name, TextDefinition phrase, TextDefinition description)
+    {
+      Power = power;
 
-		public TextDefinition Name { get; }
+      Name = name;
+      Phrase = phrase;
+      Description = description;
+    }
 
-		public TextDefinition Phrase { get; }
+    public int Power{ get; }
 
-		public TextDefinition Description { get; }
+    public TextDefinition Name{ get; }
 
-		public PowerDefinition( int power, TextDefinition name, TextDefinition phrase, TextDefinition description )
-		{
-			Power = power;
+    public TextDefinition Phrase{ get; }
 
-			Name = name;
-			Phrase = phrase;
-			Description = description;
-		}
-	}
+    public TextDefinition Description{ get; }
+  }
 }

@@ -1,57 +1,57 @@
 namespace Server.Items
 {
-	[FlippableAttribute( 0x1f81, 0x1f82, 0x1f83, 0x1f84 )]
-	public class Glass : Item
-	{
-		[Constructible]
-		public Glass() : base( 0x1f81 )
-		{
-			Weight = 0.1;
-		}
+  [Flippable(0x1f81, 0x1f82, 0x1f83, 0x1f84)]
+  public class Glass : Item
+  {
+    [Constructible]
+    public Glass() : base(0x1f81)
+    {
+      Weight = 0.1;
+    }
 
-		public Glass( Serial serial ) : base( serial )
-		{
-		}
+    public Glass(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class GlassBottle : Item
-	{
-		[Constructible]
-		public GlassBottle() : base( 0xe2b )
-		{
-			Weight = 0.3;
-		}
+  public class GlassBottle : Item
+  {
+    [Constructible]
+    public GlassBottle() : base(0xe2b)
+    {
+      Weight = 0.3;
+    }
 
-		public GlassBottle( Serial serial ) : base( serial )
-		{
-		}
+    public GlassBottle(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

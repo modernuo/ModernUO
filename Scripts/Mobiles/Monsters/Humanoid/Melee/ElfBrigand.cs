@@ -2,108 +2,134 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-	// TODO: Needs some Spellweaving abilities
-	public class ElfBrigand : BaseCreature
-	{
-		public override bool ClickTitle => false;
+  // TODO: Needs some Spellweaving abilities
+  public class ElfBrigand : BaseCreature
+  {
+    [Constructible]
+    public ElfBrigand() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      SpeechHue = Utility.RandomDyedHue();
+      Title = "the brigand";
+      Race = Race.Elf;
+      Hue = Race.RandomSkinHue();
 
-		[Constructible]
-		public ElfBrigand() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			SpeechHue = Utility.RandomDyedHue();
-			Title = "the brigand";
-			Race = Race.Elf;
-			Hue = Race.RandomSkinHue();
+      if (Female = Utility.RandomBool())
+      {
+        Body = 0x25E;
+        Name = NameList.RandomName("female elf brigand");
 
-			if ( Female = Utility.RandomBool() )
-			{
-				Body = 0x25E;
-				Name = NameList.RandomName( "female elf brigand" );
+        switch (Utility.Random(2))
+        {
+          case 0:
+            AddItem(new Skirt(Utility.RandomNondyedHue()));
+            break;
+          case 1:
+            AddItem(new Kilt(Utility.RandomNondyedHue()));
+            break;
+        }
+      }
+      else
+      {
+        Body = 0x25D;
+        Name = NameList.RandomName("male elf brigand");
+        AddItem(new ShortPants(Utility.RandomNondyedHue()));
+      }
 
-				switch ( Utility.Random( 2 ) )
-				{
-					case 0: AddItem( new Skirt( Utility.RandomNondyedHue() ) ); break;
-					case 1: AddItem( new Kilt( Utility.RandomNondyedHue() ) ); break;
-				}
-			}
-			else
-			{
-				Body = 0x25D;
-				Name = NameList.RandomName( "male elf brigand" );
-				AddItem( new ShortPants( Utility.RandomNondyedHue() ) );
-			}
+      SetStr(86, 100);
+      SetDex(81, 95);
+      SetInt(61, 75);
 
-			SetStr( 86, 100 );
-			SetDex( 81, 95 );
-			SetInt( 61, 75 );
+      SetDamage(10, 23);
 
-			SetDamage( 10, 23 );
+      SetSkill(SkillName.Fencing, 66.0, 97.5);
+      SetSkill(SkillName.Macing, 65.0, 87.5);
+      SetSkill(SkillName.MagicResist, 25.0, 47.5);
+      SetSkill(SkillName.Swords, 65.0, 87.5);
+      SetSkill(SkillName.Tactics, 65.0, 87.5);
+      SetSkill(SkillName.Wrestling, 15.0, 37.5);
 
-			SetSkill( SkillName.Fencing, 66.0, 97.5 );
-			SetSkill( SkillName.Macing, 65.0, 87.5 );
-			SetSkill( SkillName.MagicResist, 25.0, 47.5 );
-			SetSkill( SkillName.Swords, 65.0, 87.5 );
-			SetSkill( SkillName.Tactics, 65.0, 87.5 );
-			SetSkill( SkillName.Wrestling, 15.0, 37.5 );
+      Fame = 1000;
+      Karma = -1000;
 
-			Fame = 1000;
-			Karma = -1000;
+      switch (Utility.Random(4))
+      {
+        case 0:
+          AddItem(new Boots());
+          break;
+        case 1:
+          AddItem(new ThighBoots());
+          break;
+        case 2:
+          AddItem(new Sandals());
+          break;
+        case 3:
+          AddItem(new Shoes());
+          break;
+      }
 
-			switch ( Utility.Random( 4 ) )
-			{
-				case 0: AddItem( new Boots() ); break;
-				case 1: AddItem( new ThighBoots() ); break;
-				case 2: AddItem( new Sandals() ); break;
-				case 3: AddItem( new Shoes() ); break;
-			}
+      AddItem(new Shirt(Utility.RandomNondyedHue()));
 
-			AddItem( new Shirt( Utility.RandomNondyedHue() ) );
+      switch (Utility.Random(7))
+      {
+        case 0:
+          AddItem(new Longsword());
+          break;
+        case 1:
+          AddItem(new Cutlass());
+          break;
+        case 2:
+          AddItem(new Broadsword());
+          break;
+        case 3:
+          AddItem(new Axe());
+          break;
+        case 4:
+          AddItem(new Club());
+          break;
+        case 5:
+          AddItem(new Dagger());
+          break;
+        case 6:
+          AddItem(new Spear());
+          break;
+      }
 
-			switch ( Utility.Random( 7 ) )
-			{
-				case 0: AddItem( new Longsword() ); break;
-				case 1: AddItem( new Cutlass() ); break;
-				case 2: AddItem( new Broadsword() ); break;
-				case 3: AddItem( new Axe() ); break;
-				case 4: AddItem( new Club() ); break;
-				case 5: AddItem( new Dagger() ); break;
-				case 6: AddItem( new Spear() ); break;
-			}
+      Utility.AssignRandomHair(this, true);
+    }
 
-			Utility.AssignRandomHair( this, true );
-		}
+    public ElfBrigand(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnDeath( Container c )
-		{
-			base.OnDeath( c );
+    public override bool ClickTitle => false;
 
-			if ( Utility.RandomDouble() < 0.9 )
-				c.DropItem( new SeveredElfEars() );
-		}
+    public override bool AlwaysMurderer => true;
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average );
-		}
+    public override void OnDeath(Container c)
+    {
+      base.OnDeath(c);
 
-		public override bool AlwaysMurderer => true;
+      if (Utility.RandomDouble() < 0.9)
+        c.DropItem(new SeveredElfEars());
+    }
 
-		public ElfBrigand( Serial serial ) : base( serial )
-		{
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Average);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

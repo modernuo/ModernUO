@@ -3,268 +3,216 @@ using Server.Mobiles;
 
 namespace Server.Engines.Quests.Ninja
 {
-	public class FindEminoBeginObjective : QuestObjective
-	{
-		public override object Message => 1063174;
+  public class FindEminoBeginObjective : QuestObjective
+  {
+    public override object Message => 1063174;
 
-		public FindEminoBeginObjective()
-		{
-		}
+    public override void OnComplete()
+    {
+      System.AddConversation(new FindZoelConversation());
+    }
+  }
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new FindZoelConversation() );
-		}
-	}
+  public class FindZoelObjective : QuestObjective
+  {
+    public override object Message => 1063176;
 
-	public class FindZoelObjective : QuestObjective
-	{
-		public override object Message => 1063176;
+    public override void OnComplete()
+    {
+      System.AddConversation(new EnterCaveConversation());
+    }
+  }
 
-		public FindZoelObjective()
-		{
-		}
+  public class EnterCaveObjective : QuestObjective
+  {
+    public override object Message => 1063179;
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new EnterCaveConversation() );
-		}
-	}
+    public override void CheckProgress()
+    {
+      if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(406, 1141, 0), 2))
+        Complete();
+    }
 
-	public class EnterCaveObjective : QuestObjective
-	{
-		public override object Message => 1063179;
+    public override void OnComplete()
+    {
+      System.AddConversation(new SneakPastGuardiansConversation());
+    }
+  }
 
-		public EnterCaveObjective()
-		{
-		}
+  public class SneakPastGuardiansObjective : QuestObjective
+  {
+    public bool TaughtHowToUseSkills{ get; set; }
 
-		public override void CheckProgress()
-		{
-			if ( System.From.Map == Map.Malas && System.From.InRange( new Point3D( 406, 1141, 0 ), 2 ) )
-				Complete();
-		}
+    public override object Message => 1063261;
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new SneakPastGuardiansConversation() );
-		}
-	}
+    public override void CheckProgress()
+    {
+      if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(412, 1123, 0), 3))
+        Complete();
+    }
 
-	public class SneakPastGuardiansObjective : QuestObjective
-	{
-		public bool TaughtHowToUseSkills { get; set; }
+    public override void OnComplete()
+    {
+      System.AddConversation(new UseTeleporterConversation());
+    }
 
-		public override object Message => 1063261;
+    public override void ChildDeserialize(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-		public SneakPastGuardiansObjective()
-		{
-		}
+      TaughtHowToUseSkills = reader.ReadBool();
+    }
 
-		public override void CheckProgress()
-		{
-			if ( System.From.Map == Map.Malas && System.From.InRange( new Point3D( 412, 1123, 0 ), 3 ) )
-				Complete();
-		}
+    public override void ChildSerialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new UseTeleporterConversation() );
-		}
+      writer.Write(TaughtHowToUseSkills);
+    }
+  }
 
-		public override void ChildDeserialize( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+  public class UseTeleporterObjective : QuestObjective
+  {
+    public override object Message => 1063183;
 
-			TaughtHowToUseSkills = reader.ReadBool();
-		}
+    public override void OnComplete()
+    {
+      System.AddConversation(new GiveZoelNoteConversation());
+    }
+  }
 
-		public override void ChildSerialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 0 ); // version
+  public class GiveZoelNoteObjective : QuestObjective
+  {
+    public override object Message => 1063185;
 
-			writer.Write( (bool) TaughtHowToUseSkills );
-		}
-	}
+    public override void OnComplete()
+    {
+      System.AddConversation(new GainInnInformationConversation());
+    }
+  }
 
-	public class UseTeleporterObjective : QuestObjective
-	{
-		public override object Message => 1063183;
+  public class GainInnInformationObjective : QuestObjective
+  {
+    public override object Message => 1063190;
 
-		public UseTeleporterObjective()
-		{
-		}
+    public override void CheckProgress()
+    {
+      Mobile from = System.From;
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new GiveZoelNoteConversation() );
-		}
-	}
+      if (from.Map == Map.Malas && from.X > 399 && from.X < 408 && from.Y > 1091 && from.Y < 1099)
+        Complete();
+    }
 
-	public class GiveZoelNoteObjective : QuestObjective
-	{
-		public override object Message => 1063185;
+    public override void OnComplete()
+    {
+      System.AddConversation(new ReturnFromInnConversation());
+    }
+  }
 
-		public GiveZoelNoteObjective()
-		{
-		}
+  public class ReturnFromInnObjective : QuestObjective
+  {
+    public override object Message => 1063197;
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new GainInnInformationConversation() );
-		}
-	}
+    public override void OnComplete()
+    {
+      System.AddConversation(new SearchForSwordConversation());
+    }
+  }
 
-	public class GainInnInformationObjective : QuestObjective
-	{
-		public override object Message => 1063190;
+  public class SearchForSwordObjective : QuestObjective
+  {
+    public override object Message => 1063200;
 
-		public GainInnInformationObjective()
-		{
-		}
+    public override void OnComplete()
+    {
+      System.AddConversation(new HallwayWalkConversation());
+    }
+  }
 
-		public override void CheckProgress()
-		{
-			Mobile from = System.From;
+  public class HallwayWalkObjective : QuestObjective
+  {
+    public bool StolenTreasure{ get; set; }
 
-			if ( from.Map == Map.Malas && from.X > 399 && from.X < 408 && from.Y > 1091 && from.Y < 1099 )
-				Complete();
-		}
+    public override object Message => 1063202;
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new ReturnFromInnConversation() );
-		}
-	}
+    public override void OnComplete()
+    {
+      System.AddConversation(new ReturnSwordConversation());
+    }
 
-	public class ReturnFromInnObjective : QuestObjective
-	{
-		public override object Message => 1063197;
+    public override void ChildDeserialize(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-		public ReturnFromInnObjective()
-		{
-		}
+      StolenTreasure = reader.ReadBool();
+    }
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new SearchForSwordConversation() );
-		}
-	}
+    public override void ChildSerialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
 
-	public class SearchForSwordObjective : QuestObjective
-	{
-		public override object Message => 1063200;
+      writer.Write(StolenTreasure);
+    }
+  }
 
-		public SearchForSwordObjective()
-		{
-		}
+  public class ReturnSwordObjective : QuestObjective
+  {
+    public override object Message => 1063204;
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new HallwayWalkConversation() );
-		}
-	}
+    public override void CheckProgress()
+    {
+      Mobile from = System.From;
 
-	public class HallwayWalkObjective : QuestObjective
-	{
-		public bool StolenTreasure { get; set; }
+      if (from.Map != Map.Malas || from.Y > 992)
+        Complete();
+    }
 
-		public override object Message => 1063202;
+    public override void OnComplete()
+    {
+      System.AddConversation(new SlayHenchmenConversation());
+    }
+  }
 
-		public HallwayWalkObjective()
-		{
-		}
+  public class SlayHenchmenObjective : QuestObjective
+  {
+    public override object Message => 1063206;
 
-		public override void OnComplete()
-		{
-			System.AddConversation( new ReturnSwordConversation() );
-		}
+    public override int MaxProgress => 3;
 
-		public override void ChildDeserialize( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+    public override void RenderProgress(BaseQuestGump gump)
+    {
+      if (!Completed)
+      {
+        // Henchmen killed:
+        gump.AddHtmlLocalized(70, 260, 270, 100, 1063207, BaseQuestGump.Blue, false, false);
+        gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
+        gump.AddLabel(100, 280, 0x64, "/");
+        gump.AddLabel(130, 280, 0x64, MaxProgress.ToString());
+      }
+      else
+      {
+        base.RenderProgress(gump);
+      }
+    }
 
-			StolenTreasure = reader.ReadBool();
-		}
+    public override void OnKill(BaseCreature creature, Container corpse)
+    {
+      if (creature is Henchman)
+        CurProgress++;
+    }
 
-		public override void ChildSerialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 0 ); // version
+    public override void OnComplete()
+    {
+      System.AddConversation(new GiveEminoSwordConversation());
+    }
+  }
 
-			writer.Write( (bool) StolenTreasure );
-		}
-	}
+  public class GiveEminoSwordObjective : QuestObjective
+  {
+    public override object Message => 1063210;
 
-	public class ReturnSwordObjective : QuestObjective
-	{
-		public override object Message => 1063204;
-
-		public ReturnSwordObjective()
-		{
-		}
-
-		public override void CheckProgress()
-		{
-			Mobile from = System.From;
-
-			if ( from.Map != Map.Malas || from.Y > 992 )
-				Complete();
-		}
-
-		public override void OnComplete()
-		{
-			System.AddConversation( new SlayHenchmenConversation() );
-		}
-	}
-
-	public class SlayHenchmenObjective : QuestObjective
-	{
-		public override object Message => 1063206;
-
-		public SlayHenchmenObjective()
-		{
-		}
-
-		public override int MaxProgress => 3;
-
-		public override void RenderProgress( BaseQuestGump gump )
-		{
-			if ( !Completed )
-			{
-				// Henchmen killed:
-				gump.AddHtmlLocalized( 70, 260, 270, 100, 1063207, BaseQuestGump.Blue, false, false );
-				gump.AddLabel( 70, 280, 0x64, CurProgress.ToString() );
-				gump.AddLabel( 100, 280, 0x64, "/" );
-				gump.AddLabel( 130, 280, 0x64, MaxProgress.ToString() );
-			}
-			else
-			{
-				base.RenderProgress( gump );
-			}
-		}
-
-		public override void OnKill( BaseCreature creature, Container corpse )
-		{
-			if ( creature is Henchman )
-				CurProgress++;
-		}
-
-		public override void OnComplete()
-		{
-			System.AddConversation( new GiveEminoSwordConversation() );
-		}
-	}
-
-	public class GiveEminoSwordObjective : QuestObjective
-	{
-		public override object Message => 1063210;
-
-		public GiveEminoSwordObjective()
-		{
-		}
-
-		public override void OnComplete()
-		{
-		}
-	}
+    public override void OnComplete()
+    {
+    }
+  }
 }

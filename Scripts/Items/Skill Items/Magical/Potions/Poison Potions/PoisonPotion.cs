@@ -1,33 +1,33 @@
 namespace Server.Items
 {
-	public class PoisonPotion : BasePoisonPotion
-	{
-		public override Poison Poison => Poison.Regular;
+  public class PoisonPotion : BasePoisonPotion
+  {
+    [Constructible]
+    public PoisonPotion() : base(PotionEffect.Poison)
+    {
+    }
 
-		public override double MinPoisoningSkill => 30.0;
-		public override double MaxPoisoningSkill => 70.0;
+    public PoisonPotion(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public PoisonPotion() : base( PotionEffect.Poison )
-		{
-		}
+    public override Poison Poison => Poison.Regular;
 
-		public PoisonPotion( Serial serial ) : base( serial )
-		{
-		}
+    public override double MinPoisoningSkill => 30.0;
+    public override double MaxPoisoningSkill => 70.0;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

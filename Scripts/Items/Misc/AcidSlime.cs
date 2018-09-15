@@ -1,97 +1,96 @@
 using System;
-using Server.Mobiles;
 using System.Collections.Generic;
+using Server.Mobiles;
 
 namespace Server.Items
 {
-	public class AcidSlime : Item
-	{
-		private TimeSpan m_Duration;
-		private int m_MinDamage;
-		private int m_MaxDamage;
-		private DateTime m_Created;
-		private bool m_Drying;
-		private Timer m_Timer;
+  public class AcidSlime : Item
+  {
+    private DateTime m_Created;
+    private bool m_Drying;
+    private TimeSpan m_Duration;
+    private int m_MaxDamage;
+    private int m_MinDamage;
+    private Timer m_Timer;
 
-		[Constructible]
-		public AcidSlime() : this( TimeSpan.FromSeconds( 10.0 ), 5, 10 )
-		{
-		}
+    [Constructible]
+    public AcidSlime() : this(TimeSpan.FromSeconds(10.0), 5, 10)
+    {
+    }
 
-		public override string DefaultName => "slime";
+    [Constructible]
+    public AcidSlime(TimeSpan duration, int minDamage, int maxDamage)
+      : base(0x122A)
+    {
+      Hue = 0x3F;
+      Movable = false;
+      m_MinDamage = minDamage;
+      m_MaxDamage = maxDamage;
+      m_Created = DateTime.UtcNow;
+      m_Duration = duration;
+      m_Timer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromSeconds(1), OnTick);
+    }
 
-		[Constructible]
-		public AcidSlime( TimeSpan duration, int minDamage, int maxDamage )
-			: base( 0x122A )
-		{
-			Hue = 0x3F;
-			Movable = false;
-			m_MinDamage = minDamage;
-			m_MaxDamage = maxDamage;
-			m_Created = DateTime.UtcNow;
-			m_Duration = duration;
-			m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1 ), OnTick );
-		}
+    public AcidSlime(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnAfterDelete()
-		{
-			m_Timer?.Stop();
-		}
+    public override string DefaultName => "slime";
 
-		private void OnTick()
-		{
-			DateTime now = DateTime.UtcNow;
-			TimeSpan age = now - m_Created;
+    public override void OnAfterDelete()
+    {
+      m_Timer?.Stop();
+    }
 
-			if ( age > m_Duration ) {
-				Delete();
-			} else {
-				if ( !m_Drying && age > (m_Duration - age) )
-				{
-					m_Drying = true;
-					ItemID = 0x122B;
-				}
+    private void OnTick()
+    {
+      DateTime now = DateTime.UtcNow;
+      TimeSpan age = now - m_Created;
 
-				List<Mobile> toDamage = new List<Mobile>();
+      if (age > m_Duration)
+      {
+        Delete();
+      }
+      else
+      {
+        if (!m_Drying && age > m_Duration - age)
+        {
+          m_Drying = true;
+          ItemID = 0x122B;
+        }
 
-				foreach( Mobile m in GetMobilesInRange( 0 ) )
-				{
-					if ( m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned) )
-					{
-						toDamage.Add( m );
-					}
-				}
+        List<Mobile> toDamage = new List<Mobile>();
 
-				for ( int i = 0; i < toDamage.Count; i++ )
-					Damage( toDamage[i] );
-			}
-		}
+        foreach (Mobile m in GetMobilesInRange(0))
+          if (m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned))
+            toDamage.Add(m);
 
-		public override bool OnMoveOver( Mobile m )
-		{
-			Damage( m );
-			return true;
-		}
+        for (int i = 0; i < toDamage.Count; i++)
+          Damage(toDamage[i]);
+      }
+    }
 
-		public void Damage ( Mobile m )
-		{
-			int damage = Utility.RandomMinMax( m_MinDamage, m_MaxDamage );
-			if ( Core.AOS )
-				AOS.Damage( m, damage, 0, 0, 0, 100, 0 );
-			else
-				m.Damage( damage );
-		}
+    public override bool OnMoveOver(Mobile m)
+    {
+      Damage(m);
+      return true;
+    }
 
-		public AcidSlime( Serial serial ) : base( serial )
-		{
-		}
+    public void Damage(Mobile m)
+    {
+      int damage = Utility.RandomMinMax(m_MinDamage, m_MaxDamage);
+      if (Core.AOS)
+        AOS.Damage(m, damage, 0, 0, 0, 100, 0);
+      else
+        m.Damage(damage);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+    }
+  }
 }

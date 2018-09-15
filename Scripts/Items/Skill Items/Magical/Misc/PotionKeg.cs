@@ -1,340 +1,342 @@
 using System;
+using Server.Network;
 
 namespace Server.Items
 {
-	public class PotionKeg : Item
-	{
-		private PotionEffect m_Type;
-		private int m_Held;
+  public class PotionKeg : Item
+  {
+    private int m_Held;
+    private PotionEffect m_Type;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Held
-		{
-			get => m_Held;
-			set
-			{
-				if ( m_Held != value )
-				{
-					m_Held = value;
-					UpdateWeight();
-					InvalidateProperties();
-				}
-			}
-		}
+    [Constructible]
+    public PotionKeg() : base(0x1940)
+    {
+      UpdateWeight();
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public PotionEffect Type
-		{
-			get => m_Type;
-			set
-			{
-				m_Type = value;
-				InvalidateProperties();
-			}
-		}
+    public PotionKeg(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public PotionKeg() : base( 0x1940 )
-		{
-			UpdateWeight();
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Held
+    {
+      get => m_Held;
+      set
+      {
+        if (m_Held != value)
+        {
+          m_Held = value;
+          UpdateWeight();
+          InvalidateProperties();
+        }
+      }
+    }
 
-		public virtual void UpdateWeight()
-		{
-			int held = Math.Max( 0, Math.Min( m_Held, 100 ) );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public PotionEffect Type
+    {
+      get => m_Type;
+      set
+      {
+        m_Type = value;
+        InvalidateProperties();
+      }
+    }
 
-			Weight = 20 + ((held * 80) / 100);
-		}
+    public override int LabelNumber
+    {
+      get
+      {
+        if (m_Held > 0 && (int)m_Type >= (int)PotionEffect.Conflagration)
+          return 1072658 + (int)m_Type - (int)PotionEffect.Conflagration;
 
-		public PotionKeg( Serial serial ) : base( serial )
-		{
-		}
+        return m_Held > 0 ? 1041620 + (int)m_Type : 1041641;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public virtual void UpdateWeight()
+    {
+      int held = Math.Max(0, Math.Min(m_Held, 100));
 
-			writer.Write( (int) 1 ); // version
+      Weight = 20 + held * 80 / 100;
+    }
 
-			writer.Write( (int) m_Type );
-			writer.Write( (int) m_Held );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(1); // version
 
-			int version = reader.ReadInt();
+      writer.Write((int)m_Type);
+      writer.Write(m_Held);
+    }
 
-			switch ( version )
-			{
-				case 1:
-				case 0:
-				{
-					m_Type = (PotionEffect)reader.ReadInt();
-					m_Held = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-					break;
-				}
-			}
+      int version = reader.ReadInt();
 
-			if ( version < 1 )
-				Timer.DelayCall( TimeSpan.Zero, UpdateWeight );
-		}
+      switch (version)
+      {
+        case 1:
+        case 0:
+        {
+          m_Type = (PotionEffect)reader.ReadInt();
+          m_Held = reader.ReadInt();
 
-		public override int LabelNumber
-		{
-			get
-			{
-				if ( m_Held > 0 && ( int )m_Type >= ( int )PotionEffect.Conflagration )
-				{
-					return 1072658 + ( int )m_Type - ( int )PotionEffect.Conflagration;
-				}
+          break;
+        }
+      }
 
-				return (m_Held > 0 ? 1041620 + (int)m_Type : 1041641);
-			}
-		}
+      if (version < 1)
+        Timer.DelayCall(TimeSpan.Zero, UpdateWeight);
+    }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-			int number;
+      int number;
 
-			if ( m_Held <= 0 )
-				number = 502246; // The keg is empty.
-			else if ( m_Held < 5 )
-				number = 502248; // The keg is nearly empty.
-			else if ( m_Held < 20 )
-				number = 502249; // The keg is not very full.
-			else if ( m_Held < 30 )
-				number = 502250; // The keg is about one quarter full.
-			else if ( m_Held < 40 )
-				number = 502251; // The keg is about one third full.
-			else if ( m_Held < 47 )
-				number = 502252; // The keg is almost half full.
-			else if ( m_Held < 54 )
-				number = 502254; // The keg is approximately half full.
-			else if ( m_Held < 70 )
-				number = 502253; // The keg is more than half full.
-			else if ( m_Held < 80 )
-				number = 502255; // The keg is about three quarters full.
-			else if ( m_Held < 96 )
-				number = 502256; // The keg is very full.
-			else if ( m_Held < 100 )
-				number = 502257; // The liquid is almost to the top of the keg.
-			else
-				number = 502258; // The keg is completely full.
+      if (m_Held <= 0)
+        number = 502246; // The keg is empty.
+      else if (m_Held < 5)
+        number = 502248; // The keg is nearly empty.
+      else if (m_Held < 20)
+        number = 502249; // The keg is not very full.
+      else if (m_Held < 30)
+        number = 502250; // The keg is about one quarter full.
+      else if (m_Held < 40)
+        number = 502251; // The keg is about one third full.
+      else if (m_Held < 47)
+        number = 502252; // The keg is almost half full.
+      else if (m_Held < 54)
+        number = 502254; // The keg is approximately half full.
+      else if (m_Held < 70)
+        number = 502253; // The keg is more than half full.
+      else if (m_Held < 80)
+        number = 502255; // The keg is about three quarters full.
+      else if (m_Held < 96)
+        number = 502256; // The keg is very full.
+      else if (m_Held < 100)
+        number = 502257; // The liquid is almost to the top of the keg.
+      else
+        number = 502258; // The keg is completely full.
 
-			list.Add( number );
-		}
+      list.Add(number);
+    }
 
-		public override void OnSingleClick( Mobile from )
-		{
-			base.OnSingleClick( from );
+    public override void OnSingleClick(Mobile from)
+    {
+      base.OnSingleClick(from);
 
-			int number;
+      int number;
 
-			if ( m_Held <= 0 )
-				number = 502246; // The keg is empty.
-			else if ( m_Held < 5 )
-				number = 502248; // The keg is nearly empty.
-			else if ( m_Held < 20 )
-				number = 502249; // The keg is not very full.
-			else if ( m_Held < 30 )
-				number = 502250; // The keg is about one quarter full.
-			else if ( m_Held < 40 )
-				number = 502251; // The keg is about one third full.
-			else if ( m_Held < 47 )
-				number = 502252; // The keg is almost half full.
-			else if ( m_Held < 54 )
-				number = 502254; // The keg is approximately half full.
-			else if ( m_Held < 70 )
-				number = 502253; // The keg is more than half full.
-			else if ( m_Held < 80 )
-				number = 502255; // The keg is about three quarters full.
-			else if ( m_Held < 96 )
-				number = 502256; // The keg is very full.
-			else if ( m_Held < 100 )
-				number = 502257; // The liquid is almost to the top of the keg.
-			else
-				number = 502258; // The keg is completely full.
+      if (m_Held <= 0)
+        number = 502246; // The keg is empty.
+      else if (m_Held < 5)
+        number = 502248; // The keg is nearly empty.
+      else if (m_Held < 20)
+        number = 502249; // The keg is not very full.
+      else if (m_Held < 30)
+        number = 502250; // The keg is about one quarter full.
+      else if (m_Held < 40)
+        number = 502251; // The keg is about one third full.
+      else if (m_Held < 47)
+        number = 502252; // The keg is almost half full.
+      else if (m_Held < 54)
+        number = 502254; // The keg is approximately half full.
+      else if (m_Held < 70)
+        number = 502253; // The keg is more than half full.
+      else if (m_Held < 80)
+        number = 502255; // The keg is about three quarters full.
+      else if (m_Held < 96)
+        number = 502256; // The keg is very full.
+      else if (m_Held < 100)
+        number = 502257; // The liquid is almost to the top of the keg.
+      else
+        number = 502258; // The keg is completely full.
 
-			LabelTo( from, number );
-		}
+      LabelTo(from, number);
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( from.InRange( GetWorldLocation(), 2 ) )
-			{
-				if ( m_Held > 0 )
-				{
-					Container pack = from.Backpack;
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (from.InRange(GetWorldLocation(), 2))
+      {
+        if (m_Held > 0)
+        {
+          Container pack = from.Backpack;
 
-					if ( pack != null && pack.ConsumeTotal( typeof( Bottle ), 1 ) )
-					{
-						from.SendLocalizedMessage( 502242 ); // You pour some of the keg's contents into an empty bottle...
+          if (pack != null && pack.ConsumeTotal(typeof(Bottle), 1))
+          {
+            from.SendLocalizedMessage(502242); // You pour some of the keg's contents into an empty bottle...
 
-						BasePotion pot = FillBottle();
+            BasePotion pot = FillBottle();
 
-						if ( pack.TryDropItem( from, pot, false ) )
-						{
-							from.SendLocalizedMessage( 502243 ); // ...and place it into your backpack.
-							from.PlaySound( 0x240 );
+            if (pack.TryDropItem(from, pot, false))
+            {
+              from.SendLocalizedMessage(502243); // ...and place it into your backpack.
+              from.PlaySound(0x240);
 
-							if ( --Held == 0 )
-								from.SendLocalizedMessage( 502245 ); // The keg is now empty.
-						}
-						else
-						{
-							from.SendLocalizedMessage( 502244 ); // ...but there is no room for the bottle in your backpack.
-							pot.Delete();
-						}
-					}
-				}
-				else
-				{
-					from.SendLocalizedMessage( 502246 ); // The keg is empty.
-				}
-			}
-			else
-			{
-				from.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
-			}
-		}
+              if (--Held == 0)
+                from.SendLocalizedMessage(502245); // The keg is now empty.
+            }
+            else
+            {
+              from.SendLocalizedMessage(502244); // ...but there is no room for the bottle in your backpack.
+              pot.Delete();
+            }
+          }
+        }
+        else
+        {
+          from.SendLocalizedMessage(502246); // The keg is empty.
+        }
+      }
+      else
+      {
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+      }
+    }
 
-		public override bool OnDragDrop( Mobile from, Item item )
-		{
-			if (!(item is BasePotion pot))
-			{
-				from.SendLocalizedMessage( 502232 ); // The keg is not designed to hold that type of object.
-				return false;
-			}
+    public override bool OnDragDrop(Mobile from, Item item)
+    {
+      if (!(item is BasePotion pot))
+      {
+        from.SendLocalizedMessage(502232); // The keg is not designed to hold that type of object.
+        return false;
+      }
 
-			int toHold = Math.Min( 100 - m_Held, pot.Amount );
+      int toHold = Math.Min(100 - m_Held, pot.Amount);
 
-			if ( toHold <= 0 )
-			{
-				from.SendLocalizedMessage( 502233 ); // The keg will not hold any more!
-				return false;
-			}
+      if (toHold <= 0)
+      {
+        from.SendLocalizedMessage(502233); // The keg will not hold any more!
+        return false;
+      }
 
-			if ( m_Held == 0 )
-			{
-				#region Mondain's Legacy
-				if ( (int) pot.PotionEffect >= (int) PotionEffect.Invisibility )
-				{
-					from.SendLocalizedMessage( 502232 ); // The keg is not designed to hold that type of object.
-					return false;
-				}
-				#endregion
+      if (m_Held == 0)
+      {
+        #region Mondain's Legacy
 
-				if ( GiveBottle( from, toHold ) )
-				{
-					m_Type = pot.PotionEffect;
-					Held = toHold;
+        if ((int)pot.PotionEffect >= (int)PotionEffect.Invisibility)
+        {
+          from.SendLocalizedMessage(502232); // The keg is not designed to hold that type of object.
+          return false;
+        }
 
-					from.PlaySound( 0x240 );
+        #endregion
 
-					from.SendLocalizedMessage( 502237 ); // You place the empty bottle in your backpack.
+        if (GiveBottle(from, toHold))
+        {
+          m_Type = pot.PotionEffect;
+          Held = toHold;
 
-					pot.Consume( toHold );
+          from.PlaySound(0x240);
 
-					if ( !pot.Deleted )
-						pot.Bounce( from );
+          from.SendLocalizedMessage(502237); // You place the empty bottle in your backpack.
 
-					return true;
-				}
+          pot.Consume(toHold);
 
-				from.SendLocalizedMessage( 502238 ); // You don't have room for the empty bottle in your backpack.
-				return false;
-			}
+          if (!pot.Deleted)
+            pot.Bounce(from);
 
-			if ( pot.PotionEffect != m_Type )
-			{
-				from.SendLocalizedMessage( 502236 ); // You decide that it would be a bad idea to mix different types of potions.
-				return false;
-			}
+          return true;
+        }
 
-			if ( GiveBottle( from, toHold ) )
-			{
-				Held += toHold;
+        from.SendLocalizedMessage(502238); // You don't have room for the empty bottle in your backpack.
+        return false;
+      }
 
-				from.PlaySound( 0x240 );
+      if (pot.PotionEffect != m_Type)
+      {
+        from.SendLocalizedMessage(
+          502236); // You decide that it would be a bad idea to mix different types of potions.
+        return false;
+      }
 
-				from.SendLocalizedMessage( 502237 ); // You place the empty bottle in your backpack.
+      if (GiveBottle(from, toHold))
+      {
+        Held += toHold;
 
-				pot.Consume( toHold );
+        from.PlaySound(0x240);
 
-				if ( !pot.Deleted )
-					pot.Bounce( from );
+        from.SendLocalizedMessage(502237); // You place the empty bottle in your backpack.
 
-				return true;
-			}
+        pot.Consume(toHold);
 
-			from.SendLocalizedMessage( 502238 ); // You don't have room for the empty bottle in your backpack.
-			return false;
-		}
+        if (!pot.Deleted)
+          pot.Bounce(from);
 
-		public bool GiveBottle( Mobile m, int amount )
-		{
-			Container pack = m.Backpack;
+        return true;
+      }
 
-			Bottle bottle = new Bottle( amount );
+      from.SendLocalizedMessage(502238); // You don't have room for the empty bottle in your backpack.
+      return false;
+    }
 
-			if ( pack == null || !pack.TryDropItem( m, bottle, false ) )
-			{
-				bottle.Delete();
-				return false;
-			}
+    public bool GiveBottle(Mobile m, int amount)
+    {
+      Container pack = m.Backpack;
 
-			return true;
-		}
+      Bottle bottle = new Bottle(amount);
 
-		public BasePotion FillBottle()
-		{
-			switch ( m_Type )
-			{
-				default:
-				case PotionEffect.Nightsight:			return new NightSightPotion();
+      if (pack == null || !pack.TryDropItem(m, bottle, false))
+      {
+        bottle.Delete();
+        return false;
+      }
 
-				case PotionEffect.CureLesser:			return new LesserCurePotion();
-				case PotionEffect.Cure:				return new CurePotion();
-				case PotionEffect.CureGreater:			return new GreaterCurePotion();
+      return true;
+    }
 
-				case PotionEffect.Agility:			return new AgilityPotion();
-				case PotionEffect.AgilityGreater:		return new GreaterAgilityPotion();
+    public BasePotion FillBottle()
+    {
+      switch (m_Type)
+      {
+        default:
+        case PotionEffect.Nightsight: return new NightSightPotion();
 
-				case PotionEffect.Strength:			return new StrengthPotion();
-				case PotionEffect.StrengthGreater:		return new GreaterStrengthPotion();
+        case PotionEffect.CureLesser: return new LesserCurePotion();
+        case PotionEffect.Cure: return new CurePotion();
+        case PotionEffect.CureGreater: return new GreaterCurePotion();
 
-				case PotionEffect.PoisonLesser:			return new LesserPoisonPotion();
-				case PotionEffect.Poison:			return new PoisonPotion();
-				case PotionEffect.PoisonGreater:		return new GreaterPoisonPotion();
-				case PotionEffect.PoisonDeadly:			return new DeadlyPoisonPotion();
+        case PotionEffect.Agility: return new AgilityPotion();
+        case PotionEffect.AgilityGreater: return new GreaterAgilityPotion();
 
-				case PotionEffect.Refresh:			return new RefreshPotion();
-				case PotionEffect.RefreshTotal:			return new TotalRefreshPotion();
+        case PotionEffect.Strength: return new StrengthPotion();
+        case PotionEffect.StrengthGreater: return new GreaterStrengthPotion();
 
-				case PotionEffect.HealLesser:			return new LesserHealPotion();
-				case PotionEffect.Heal:				return new HealPotion();
-				case PotionEffect.HealGreater:			return new GreaterHealPotion();
+        case PotionEffect.PoisonLesser: return new LesserPoisonPotion();
+        case PotionEffect.Poison: return new PoisonPotion();
+        case PotionEffect.PoisonGreater: return new GreaterPoisonPotion();
+        case PotionEffect.PoisonDeadly: return new DeadlyPoisonPotion();
 
-				case PotionEffect.ExplosionLesser:		return new LesserExplosionPotion();
-				case PotionEffect.Explosion:			return new ExplosionPotion();
-				case PotionEffect.ExplosionGreater:		return new GreaterExplosionPotion();
+        case PotionEffect.Refresh: return new RefreshPotion();
+        case PotionEffect.RefreshTotal: return new TotalRefreshPotion();
 
-				case PotionEffect.Conflagration:		return new ConflagrationPotion();
-				case PotionEffect.ConflagrationGreater:		return new GreaterConflagrationPotion();
+        case PotionEffect.HealLesser: return new LesserHealPotion();
+        case PotionEffect.Heal: return new HealPotion();
+        case PotionEffect.HealGreater: return new GreaterHealPotion();
 
-				case PotionEffect.ConfusionBlast:		return new ConfusionBlastPotion();
-				case PotionEffect.ConfusionBlastGreater:	return new GreaterConfusionBlastPotion();
-			}
-		}
+        case PotionEffect.ExplosionLesser: return new LesserExplosionPotion();
+        case PotionEffect.Explosion: return new ExplosionPotion();
+        case PotionEffect.ExplosionGreater: return new GreaterExplosionPotion();
 
-		public static void Initialize()
-		{
-			TileData.ItemTable[0x1940].Height = 4;
-		}
-	}
+        case PotionEffect.Conflagration: return new ConflagrationPotion();
+        case PotionEffect.ConflagrationGreater: return new GreaterConflagrationPotion();
+
+        case PotionEffect.ConfusionBlast: return new ConfusionBlastPotion();
+        case PotionEffect.ConfusionBlastGreater: return new GreaterConfusionBlastPotion();
+      }
+    }
+
+    public static void Initialize()
+    {
+      TileData.ItemTable[0x1940].Height = 4;
+    }
+  }
 }
