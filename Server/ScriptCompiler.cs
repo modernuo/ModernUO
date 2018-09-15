@@ -716,10 +716,9 @@ namespace Server
         {
           object[] attrs = type.GetCustomAttributes(typeofTypeAliasAttribute, false);
 
-          if (attrs != null && attrs.Length > 0)
-            if (attrs[0] is TypeAliasAttribute attr)
-              for (int j = 0; j < attr.Aliases.Length; ++j)
-                FullNames.Add(attr.Aliases[j], type);
+          if (attrs.Length > 0 && attrs[0] is TypeAliasAttribute attr)
+            for (int j = 0; j < attr.Aliases.Length; ++j)
+              FullNames.Add(attr.Aliases[j], type);
         }
       }
     }

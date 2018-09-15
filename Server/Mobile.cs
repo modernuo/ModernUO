@@ -3189,8 +3189,7 @@ namespace Server
 
     private void StopAggrExpire()
     {
-      if (m_ExpireAggrTimer != null)
-        m_ExpireAggrTimer.Stop();
+      m_ExpireAggrTimer?.Stop();
 
       m_ExpireAggrTimer = null;
     }
@@ -8221,16 +8220,17 @@ namespace Server
 
       public override void OnResponse(Mobile from, string text)
       {
-        if (m_Callback != null)
-          m_Callback(from, text);
+        m_Callback?.Invoke(@from, text);
       }
 
       public override void OnCancel(Mobile from)
       {
         if (m_CallbackHandlesCancel && m_Callback != null)
           m_Callback(from, "");
-        else if (m_CancelCallback != null)
-          m_CancelCallback(from, "");
+        else
+        {
+          m_CancelCallback?.Invoke(@from, "");
+        }
       }
     }
 
@@ -8285,16 +8285,17 @@ namespace Server
 
       public override void OnResponse(Mobile from, string text)
       {
-        if (m_Callback != null)
-          m_Callback(from, text, m_State);
+        m_Callback?.Invoke(@from, text, m_State);
       }
 
       public override void OnCancel(Mobile from)
       {
         if (m_CallbackHandlesCancel && m_Callback != null)
           m_Callback(from, "", m_State);
-        else if (m_CancelCallback != null)
-          m_CancelCallback(from, "", m_State);
+        else
+        {
+          m_CancelCallback?.Invoke(@from, "", m_State);
+        }
       }
     }
 
@@ -8349,16 +8350,17 @@ namespace Server
 
       public override void OnResponse(Mobile from, string text)
       {
-        if (m_Callback != null)
-          m_Callback(from, text, m_State);
+        m_Callback?.Invoke(@from, text, m_State);
       }
 
       public override void OnCancel(Mobile from)
       {
         if (m_CallbackHandlesCancel && m_Callback != null)
           m_Callback(from, "", m_State);
-        else if (m_CancelCallback != null)
-          m_CancelCallback(from, "", m_State);
+        else
+        {
+          m_CancelCallback?.Invoke(@from, "", m_State);
+        }
       }
     }
 
@@ -10058,10 +10060,7 @@ namespace Server
 
     public void PrivateOverheadMessage(MessageType type, int hue, int number, string args, NetState state)
     {
-      if (state == null)
-        return;
-
-      state.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
+      state?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
     }
 
     public void LocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
@@ -10086,8 +10085,7 @@ namespace Server
     {
       NetState ns = m_NetState;
 
-      if (ns != null)
-        ns.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
+      ns?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
     }
 
     public void NonlocalOverheadMessage(MessageType type, int hue, int number)
@@ -10146,8 +10144,7 @@ namespace Server
     {
       NetState ns = m_NetState;
 
-      if (ns != null)
-        ns.Send(MessageLocalized.InstantiateGeneric(number));
+      ns?.Send(MessageLocalized.InstantiateGeneric(number));
     }
 
     public void SendLocalizedMessage(int number, string args)
@@ -10161,15 +10158,13 @@ namespace Server
       {
         NetState ns = m_NetState;
 
-        if (ns != null)
-          ns.Send(MessageLocalized.InstantiateGeneric(number));
+        ns?.Send(MessageLocalized.InstantiateGeneric(number));
       }
       else
       {
         NetState ns = m_NetState;
 
-        if (ns != null)
-          ns.Send(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
+        ns?.Send(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
       }
     }
 
@@ -10187,9 +10182,8 @@ namespace Server
     {
       NetState ns = m_NetState;
 
-      if (ns != null)
-        ns.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System",
-          (append ? AffixType.Append : AffixType.Prepend) | AffixType.System, affix, args));
+      ns?.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System",
+        (append ? AffixType.Append : AffixType.Prepend) | AffixType.System, affix, args));
     }
 
     #endregion
@@ -10210,8 +10204,7 @@ namespace Server
     {
       NetState ns = m_NetState;
 
-      if (ns != null)
-        ns.Send(new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text));
+      ns?.Send(new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text));
     }
 
     public void SendMessage(int hue, string format, params object[] args)
@@ -10233,8 +10226,7 @@ namespace Server
     {
       NetState ns = m_NetState;
 
-      if (ns != null)
-        ns.Send(new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text));
+      ns?.Send(new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text));
     }
 
     public void SendAsciiMessage(int hue, string format, params object[] args)

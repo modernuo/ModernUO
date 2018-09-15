@@ -913,8 +913,8 @@ namespace Server.Spells
 
           m_Spell.OnCast();
 
-          if (m_Spell.Caster.Player && m_Spell.Caster.Target != originalTarget && m_Spell.Caster.Target != null)
-            m_Spell.Caster.Target.BeginTimeout(m_Spell.Caster, TimeSpan.FromSeconds(30.0));
+          if (m_Spell.Caster.Player && m_Spell.Caster.Target != originalTarget)
+            m_Spell.Caster.Target?.BeginTimeout(m_Spell.Caster, TimeSpan.FromSeconds(30.0));
 
           m_Spell.m_CastTimer = null;
         }

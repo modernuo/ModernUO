@@ -154,8 +154,6 @@ namespace Server
 
       string name = ToString();
 
-      if (name == null) name = "null";
-
       return TimerProfile.Acquire(name);
     }
 

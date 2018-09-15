@@ -3188,16 +3188,8 @@ namespace Server.Multis
       {
         base.GetProperties(list);
 
-        string houseName, owner, location;
-
-        houseName = m_House == null ? "an unnamed house" : m_House.Sign.GetName();
-
-        Mobile houseOwner = m_House?.Owner;
-
-        if (houseOwner == null)
-          owner = "nobody";
-        else
-          owner = houseOwner.Name;
+        string houseName = m_House == null ? "an unnamed house" : m_House.Sign.GetName();
+        string owner = m_House?.Owner?.Name ?? "nobody";
 
         int xLong = 0, yLat = 0, xMins = 0, yMins = 0;
         bool xEast = false, ySouth = false;
@@ -3205,10 +3197,8 @@ namespace Server.Multis
         bool valid = m_House != null && Sextant.Format(m_House.Location, m_House.Map, ref xLong, ref yLat, ref xMins,
                        ref yMins, ref xEast, ref ySouth);
 
-        if (valid)
-          location = $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}";
-        else
-          location = "unknown";
+        string location =
+          valid ? $"{yLat}° {yMins}'{(ySouth ? "S" : "N")}, {xLong}° {xMins}'{(xEast ? "E" : "W")}" : "unknown";
 
         list.Add(1061112, Utility.FixHtml(houseName)); // House Name: ~1_val~
         list.Add(1061113, owner); // Owner: ~1_val~
@@ -3764,7 +3754,7 @@ namespace Server.Multis
 
       ISecurable sec = null;
 
-      if (item is ISecurable)
+      if (item is ISecurable securable)
       {
         bool isOwned = house.Doors.Contains(item);
 
@@ -3775,7 +3765,7 @@ namespace Server.Multis
           isOwned = house.HasLockedDownItem(item);
 
         if (isOwned)
-          sec = (ISecurable)item;
+          sec = securable;
       }
       else
       {

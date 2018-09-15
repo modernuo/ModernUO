@@ -518,7 +518,7 @@ namespace Server.Network
     {
       EquipInfoAttribute[] attrs = info.Attributes;
 
-      EnsureCapacity(17 + (info.Crafter == null ? 0 : 6 + info.Crafter.Name == null ? 0 : info.Crafter.Name.Length) +
+      EnsureCapacity(17 + (info.Crafter?.Name.Length ?? 0) +
                      (info.Unidentified ? 4 : 0) + attrs.Length * 6);
 
       m_Stream.Write((short)0x10);
