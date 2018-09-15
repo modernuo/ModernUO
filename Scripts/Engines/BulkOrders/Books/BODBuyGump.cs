@@ -86,7 +86,7 @@ namespace Server.Engines.BulkOrders
 
               Container pack = m_From.Backpack;
 
-              if (pack == null || pack != null && !pack.CheckHold(m_From, item, true, true, 0,
+              if (pack == null || !pack.CheckHold(m_From, item, true, true, 0,
                     item.PileWeight + item.TotalWeight))
               {
                 pv.SayTo(m_From, 503204); // You do not have room in your backpack for this
@@ -94,7 +94,7 @@ namespace Server.Engines.BulkOrders
               }
               else
               {
-                if (pack != null && pack.ConsumeTotal(typeof(Gold), price) || Banker.Withdraw(m_From, price))
+                if (pack.ConsumeTotal(typeof(Gold), price) || Banker.Withdraw(m_From, price))
                 {
                   m_Book.Entries.Remove(m_Object);
                   m_Book.InvalidateProperties();

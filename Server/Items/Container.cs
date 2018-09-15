@@ -1081,17 +1081,7 @@ namespace Server.Items
       return -1;
     }
 
-    public int ConsumeTotal(Type[][] types, int[] amounts)
-    {
-      return ConsumeTotal(types, amounts, true, null);
-    }
-
-    public int ConsumeTotal(Type[][] types, int[] amounts, bool recurse)
-    {
-      return ConsumeTotal(types, amounts, recurse, null);
-    }
-
-    public int ConsumeTotal(Type[][] types, int[] amounts, bool recurse, OnItemConsumed callback)
+    public int ConsumeTotal(Type[][] types, int[] amounts, bool recurse = true, OnItemConsumed callback = null)
     {
       if (types.Length != amounts.Length)
         throw new ArgumentException();
@@ -1507,12 +1497,7 @@ namespace Server.Items
 
     #region Non-Generic FindItem[s] by Type
 
-    public Item[] FindItemsByType(Type type)
-    {
-      return FindItemsByType(type, true);
-    }
-
-    public Item[] FindItemsByType(Type type, bool recurse)
+    public Item[] FindItemsByType(Type type, bool recurse = true)
     {
       if (m_FindItemsList.Count > 0)
         m_FindItemsList.Clear();

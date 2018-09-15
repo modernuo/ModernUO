@@ -53,14 +53,14 @@ namespace Server.Engines.Chat
 
       accountChatName = accountChatName?.Trim();
 
-      if (accountChatName != null && accountChatName.Length > 0)
+      if (!string.IsNullOrEmpty(accountChatName))
       {
         if (chatName.Length > 0 && chatName != accountChatName)
           from.SendMessage("You cannot change chat nickname once it has been set.");
       }
       else
       {
-        if (chatName == null || chatName.Length == 0)
+        if (chatName.Length == 0)
         {
           SendCommandTo(from, ChatCommand.AskNewNickname);
           return;

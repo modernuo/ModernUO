@@ -1609,16 +1609,16 @@ namespace Server.Engines.ConPVP
       Item[] bombs = corpse.FindItemsByType(typeof(BRBomb), false);
 
       for (int i = 0; i < bombs.Length; ++i)
-        (bombs[i] as BRBomb).DropTo(mob, killer);
+        (bombs[i] as BRBomb)?.DropTo(mob, killer);
 
-      hadBomb = hadBomb || bombs.Length > 0;
+      hadBomb = bombs.Length > 0;
 
       if (mob.Backpack != null)
       {
         bombs = mob.Backpack.FindItemsByType(typeof(BRBomb), false);
 
         for (int i = 0; i < bombs.Length; ++i)
-          (bombs[i] as BRBomb).DropTo(mob, killer);
+          (bombs[i] as BRBomb)?.DropTo(mob, killer);
 
         hadBomb = hadBomb || bombs.Length > 0;
       }
