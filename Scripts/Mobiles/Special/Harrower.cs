@@ -323,8 +323,8 @@ namespace Server.Mobiles
         {
           DamageStore ds = rights[i];
 
-          if (ds.m_HasRight && ds.m_Mobile is PlayerMobile)
-            PlayerMobile.ChampionTitleInfo.AwardHarrowerTitle((PlayerMobile)ds.m_Mobile);
+          if (ds.m_HasRight && ds.m_Mobile is PlayerMobile mobile)
+            PlayerMobile.ChampionTitleInfo.AwardHarrowerTitle(mobile);
         }
 
         if (!NoKillAwards)

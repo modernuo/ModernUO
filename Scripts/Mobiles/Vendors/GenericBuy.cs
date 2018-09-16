@@ -159,7 +159,7 @@ namespace Server.Mobiles
 
         object Obj_Disp = GetDisplayEntity();
 
-        if (Core.ML && Obj_Disp is Item && !(Obj_Disp as Item).Stackable)
+        if (Core.ML && Obj_Disp is Item item && !item.Stackable)
           MaxAmount = Math.Min(20, MaxAmount);
         else
           MaxAmount = Math.Min(999, MaxAmount * 2);
@@ -257,10 +257,10 @@ namespace Server.Mobiles
         if (cache)
           m_Table[key] = obj;
 
-        if (obj is Item)
-          AddItem((Item)obj);
-        else if (obj is Mobile)
-          m_Mobiles.Add((Mobile)obj);
+        if (obj is Item item)
+          AddItem(item);
+        else if (obj is Mobile mobile)
+          m_Mobiles.Add(mobile);
       }
 
       public override void OnAfterDelete()

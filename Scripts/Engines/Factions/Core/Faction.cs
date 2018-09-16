@@ -242,7 +242,7 @@ namespace Server.Factions
       IPooledEnumerable<IEntity> eable = mob.Map.GetObjectsInRange(mob.Location, range, items, mobs);
 
       foreach (IEntity obj in eable)
-        if (type.IsAssignableFrom(obj.GetType()))
+        if (type.IsInstanceOfType(obj))
         {
           eable.Free();
           return true;

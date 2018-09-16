@@ -1272,7 +1272,7 @@ namespace Server.Items
         {
           Item item = list[i];
 
-          if (type.IsAssignableFrom(item.GetType()))
+          if (type.IsInstanceOfType(item))
           {
             int need = amount - consumed;
             int theirAmount = item.Amount;

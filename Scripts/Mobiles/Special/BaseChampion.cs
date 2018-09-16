@@ -69,10 +69,10 @@ namespace Server.Mobiles
 
       Item artifact = Loot.Construct(type);
 
-      if (artifact is MonsterStatuette && StatueTypes.Length > 0)
+      if (artifact is MonsterStatuette statuette && StatueTypes.Length > 0)
       {
-        ((MonsterStatuette)artifact).Type = StatueTypes[Utility.Random(StatueTypes.Length)];
-        ((MonsterStatuette)artifact).LootType = LootType.Regular;
+        statuette.Type = StatueTypes[Utility.Random(StatueTypes.Length)];
+        statuette.LootType = LootType.Regular;
       }
 
       return artifact;

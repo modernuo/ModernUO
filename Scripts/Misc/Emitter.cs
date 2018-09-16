@@ -503,12 +503,9 @@ namespace Server
 				 * Bleh.
 				 */
 
-				Type[] ifaces = active.FindInterfaces( delegate( Type type, object obj )
-				{
-					return ( type.IsGenericType )
-						&& ( type.GetGenericTypeDefinition() == typeof( IComparable<> ) )
-						&& ( type.GetGenericArguments()[0].IsAssignableFrom( active ) );
-				}, null );
+				Type[] ifaces = active.FindInterfaces((type, obj) => (type.IsGenericType)
+				                                                     && (type.GetGenericTypeDefinition() == typeof(IComparable<>))
+				                                                     && (type.GetGenericArguments()[0].IsAssignableFrom(active)), null );
 
 				if ( ifaces.Length > 0 )
 				{

@@ -97,9 +97,7 @@ namespace Server.Mobiles
 
     public override Item CreateBulkOrder(Mobile from, bool fromContextMenu)
     {
-      PlayerMobile pm = from as PlayerMobile;
-
-      if (pm != null && pm.NextSmithBulkOrder == TimeSpan.Zero && (fromContextMenu || 0.2 > Utility.RandomDouble()))
+      if (from is PlayerMobile pm && pm.NextSmithBulkOrder == TimeSpan.Zero && (fromContextMenu || 0.2 > Utility.RandomDouble()))
       {
         double theirSkill = pm.Skills[SkillName.Blacksmith].Base;
 
@@ -131,16 +129,16 @@ namespace Server.Mobiles
 
     public override TimeSpan GetNextBulkOrder(Mobile from)
     {
-      if (from is PlayerMobile)
-        return ((PlayerMobile)from).NextSmithBulkOrder;
+      if (from is PlayerMobile mobile)
+        return mobile.NextSmithBulkOrder;
 
       return TimeSpan.Zero;
     }
 
     public override void OnSuccessfulBulkOrderReceive(Mobile from)
     {
-      if (Core.SE && from is PlayerMobile)
-        ((PlayerMobile)from).NextSmithBulkOrder = TimeSpan.Zero;
+      if (Core.SE && from is PlayerMobile mobile)
+        mobile.NextSmithBulkOrder = TimeSpan.Zero;
     }
 
     #endregion

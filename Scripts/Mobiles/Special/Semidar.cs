@@ -94,8 +94,8 @@ namespace Server.Mobiles
         if (m == this || !CanBeHarmful(m))
           continue;
 
-        if (m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned ||
-                                  ((BaseCreature)m).Team != Team))
+        if (m is BaseCreature creature && (creature.Controlled || creature.Summoned ||
+                                  creature.Team != Team))
           list.Add(m);
         else if (m.Player)
           list.Add(m);

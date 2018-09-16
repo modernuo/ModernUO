@@ -1415,9 +1415,8 @@ namespace Server.Mobiles
 
       IBuyItemInfo[] buyinfo = (IBuyItemInfo[])m_ArmorBuyInfo.ToArray(typeof(IBuyItemInfo));
 
-      if (buyinfo != null)
-        foreach (IBuyItemInfo info in buyinfo)
-          info.PriceScalar = priceScalar;
+      foreach (IBuyItemInfo info in buyinfo)
+        info.PriceScalar = priceScalar;
     }
 
     #endregion

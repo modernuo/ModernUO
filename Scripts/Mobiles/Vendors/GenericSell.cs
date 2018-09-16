@@ -23,9 +23,7 @@ namespace Server.Mobiles
 		{
 			m_Table.TryGetValue( item.GetType(), out int price );
 
-			if ( item is BaseArmor ) {
-				BaseArmor armor = (BaseArmor)item;
-
+			if ( item is BaseArmor armor ) {
 				if ( armor.Quality == ArmorQuality.Low )
 					price = (int)( price * 0.60 );
 				else if ( armor.Quality == ArmorQuality.Exceptional )
@@ -38,9 +36,7 @@ namespace Server.Mobiles
 				if ( price < 1 )
 					price = 1;
 			}
-			else if ( item is BaseWeapon ) {
-				BaseWeapon weapon = (BaseWeapon)item;
-
+			else if ( item is BaseWeapon weapon ) {
 				if ( weapon.Quality == WeaponQuality.Low )
 					price = (int)( price * 0.60 );
 				else if ( weapon.Quality == WeaponQuality.Exceptional )
@@ -53,17 +49,15 @@ namespace Server.Mobiles
 				if ( price < 1 )
 					price = 1;
 			}
-			else if ( item is BaseBeverage ) {
+			else if ( item is BaseBeverage bev ) {
 				int price1 = price, price2 = price;
 
-				if ( item is Pitcher )
+				if ( bev is Pitcher )
 				{ price1 = 3; price2 = 5; }
-				else if ( item is BeverageBottle )
+				else if ( bev is BeverageBottle )
 				{ price1 = 3; price2 = 3; }
-				else if ( item is Jug )
+				else if ( bev is Jug )
 				{ price1 = 6; price2 = 6; }
-
-				BaseBeverage bev = (BaseBeverage)item;
 
 				if ( bev.IsEmpty || bev.Content == BeverageType.Milk )
 					price = price1;

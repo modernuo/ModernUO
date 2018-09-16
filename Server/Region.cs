@@ -425,7 +425,7 @@ namespace Server
 
       do
       {
-        if (regionType.IsAssignableFrom(r.GetType()))
+        if (regionType.IsInstanceOfType(r))
           return r;
 
         r = r.Parent;

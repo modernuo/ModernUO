@@ -136,7 +136,7 @@ namespace Server.Engines.MLQuests.Objectives
     {
       Type destType = Objective.Destination;
 
-      return destType != null && destType.IsAssignableFrom(type);
+      return destType?.IsAssignableFrom(type) == true;
     }
 
     public override bool IsCompleted()

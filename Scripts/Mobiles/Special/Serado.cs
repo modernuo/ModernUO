@@ -122,58 +122,55 @@ namespace Server.Mobiles
 
     private void DoCounter(Mobile attacker)
     {
-      if (Map == null || attacker is BaseCreature && ((BaseCreature)attacker).BardProvoked)
+      if (Map == null)
         return;
 
-      if (0.2 > Utility.RandomDouble())
-      {
-        /* Counterattack with Hit Poison Area
+      if (!(0.2 > Utility.RandomDouble()))
+        return;
+
+      BaseCreature bc = attacker as BaseCreature;
+
+      if (bc?.BardProvoked == true)
+        return;
+      
+      /* Counterattack with Hit Poison Area
          * 20-25 damage, unresistable
          * Lethal poison, 100% of the time
          * Particle effect: Type: "2" From: "0x4061A107" To: "0x0" ItemId: "0x36BD" ItemIdName: "explosion" FromLocation: "(296 615, 17)" ToLocation: "(296 615, 17)" Speed: "1" Duration: "10" FixedDirection: "True" Explode: "False" Hue: "0xA6" RenderMode: "0x0" Effect: "0x1F78" ExplodeEffect: "0x1" ExplodeSound: "0x0" Serial: "0x4061A107" Layer: "255" Unknown: "0x0"
          * Doesn't work on provoked monsters
          */
 
-        Mobile target = null;
+      Mobile target = bc?.GetMaster();
 
-        if (attacker is BaseCreature)
-        {
-          Mobile m = ((BaseCreature)attacker).GetMaster();
+      if (target == null || !target.InRange(this, 25))
+        target = attacker;
 
-          if (m != null)
-            target = m;
-        }
+      Animate(10, 4, 1, true, false, 0);
 
-        if (target == null || !target.InRange(this, 25))
-          target = attacker;
+      ArrayList targets = new ArrayList();
 
-        Animate(10, 4, 1, true, false, 0);
+      foreach (Mobile m in target.GetMobilesInRange(8))
+      {
+        if (m == this || !CanBeHarmful(m))
+          continue;
 
-        ArrayList targets = new ArrayList();
+        if (m is BaseCreature creature && (creature.Controlled || creature.Summoned ||
+                                  creature.Team != Team))
+          targets.Add(m);
+        else if (m.Player)
+          targets.Add(m);
+      }
 
-        foreach (Mobile m in target.GetMobilesInRange(8))
-        {
-          if (m == this || !CanBeHarmful(m))
-            continue;
+      for (int i = 0; i < targets.Count; ++i)
+      {
+        Mobile m = (Mobile)targets[i];
 
-          if (m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned ||
-                                    ((BaseCreature)m).Team != Team))
-            targets.Add(m);
-          else if (m.Player)
-            targets.Add(m);
-        }
+        DoHarmful(m);
 
-        for (int i = 0; i < targets.Count; ++i)
-        {
-          Mobile m = (Mobile)targets[i];
+        AOS.Damage(m, this, Utility.RandomMinMax(20, 25), true, 0, 0, 0, 100, 0);
 
-          DoHarmful(m);
-
-          AOS.Damage(m, this, Utility.RandomMinMax(20, 25), true, 0, 0, 0, 100, 0);
-
-          m.FixedParticles(0x36BD, 1, 10, 0x1F78, 0xA6, 0, (EffectLayer)255);
-          m.ApplyPoison(this, Poison.Lethal);
-        }
+        m.FixedParticles(0x36BD, 1, 10, 0x1F78, 0xA6, 0, (EffectLayer)255);
+        m.ApplyPoison(this, Poison.Lethal);
       }
     }
 

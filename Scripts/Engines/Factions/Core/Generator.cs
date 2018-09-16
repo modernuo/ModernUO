@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Commands;
 
 namespace Server.Factions
@@ -68,11 +69,7 @@ namespace Server.Factions
 
     private static bool CheckExistance(Point3D loc, Map facet, Type type)
     {
-      foreach (Item item in facet.GetItemsInRange(loc, 0))
-        if (type.IsAssignableFrom(item.GetType()))
-          return true;
-
-      return false;
+      return facet.GetItemsInRange(loc, 0).Any(type.IsInstanceOfType);
     }
   }
 }

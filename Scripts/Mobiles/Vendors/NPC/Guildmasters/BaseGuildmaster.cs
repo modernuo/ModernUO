@@ -73,20 +73,18 @@ namespace Server.Mobiles
     {
       Mobile from = e.Mobile;
 
-      if (!e.Handled && from is PlayerMobile && from.InRange(Location, 2) && WasNamed(e.Speech))
+      if (!e.Handled && from is PlayerMobile pm && pm.InRange(Location, 2) && WasNamed(e.Speech))
       {
-        PlayerMobile pm = (PlayerMobile)from;
-
         if (e.HasKeyword(0x0004)) // *join* | *member*
         {
           if (pm.NpcGuild == NpcGuild)
-            SayTo(from, 501047); // Thou art already a member of our guild.
+            SayTo(pm, 501047); // Thou art already a member of our guild.
           else if (pm.NpcGuild != NpcGuild.None)
-            SayTo(from, 501046); // Thou must resign from thy other guild first.
+            SayTo(pm, 501046); // Thou must resign from thy other guild first.
           else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > DateTime.UtcNow)
-            SayTo(from, 501048); // You are too young to join my guild...
+            SayTo(pm, 501048); // You are too young to join my guild...
           else if (CheckCustomReqs(pm))
-            SayPriceTo(from);
+            SayPriceTo(pm);
 
           e.Handled = true;
         }
@@ -94,16 +92,16 @@ namespace Server.Mobiles
         {
           if (pm.NpcGuild != NpcGuild)
           {
-            SayTo(from, 501052); // Thou dost not belong to my guild!
+            SayTo(pm, 501052); // Thou dost not belong to my guild!
           }
           else if (pm.NpcGuildJoinTime + QuitAge > DateTime.UtcNow ||
                    pm.NpcGuildGameTime + QuitGameAge > pm.GameTime)
           {
-            SayTo(from, 501053); // You just joined my guild! You must wait a week to resign.
+            SayTo(pm, 501053); // You just joined my guild! You must wait a week to resign.
           }
           else
           {
-            SayTo(from, 501054); // I accept thy resignation.
+            SayTo(pm, 501054); // I accept thy resignation.
             pm.NpcGuild = NpcGuild.None;
           }
 
@@ -116,25 +114,23 @@ namespace Server.Mobiles
 
     public override bool OnGoldGiven(Mobile from, Gold dropped)
     {
-      if (from is PlayerMobile && dropped.Amount == JoinCost)
+      if (from is PlayerMobile pm && dropped.Amount == JoinCost)
       {
-        PlayerMobile pm = (PlayerMobile)from;
-
         if (pm.NpcGuild == NpcGuild)
         {
-          SayTo(from, 501047); // Thou art already a member of our guild.
+          SayTo(pm, 501047); // Thou art already a member of our guild.
         }
         else if (pm.NpcGuild != NpcGuild.None)
         {
-          SayTo(from, 501046); // Thou must resign from thy other guild first.
+          SayTo(pm, 501046); // Thou must resign from thy other guild first.
         }
         else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > DateTime.UtcNow)
         {
-          SayTo(from, 501048); // You are too young to join my guild...
+          SayTo(pm, 501048); // You are too young to join my guild...
         }
         else if (CheckCustomReqs(pm))
         {
-          SayWelcomeTo(from);
+          SayWelcomeTo(pm);
 
           pm.NpcGuild = NpcGuild;
           pm.NpcGuildJoinTime = DateTime.UtcNow;

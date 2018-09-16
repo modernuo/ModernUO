@@ -111,9 +111,8 @@ namespace Server.Mobiles
         e.Handled = true;
 
         Mobile from = e.Mobile;
-        Guild g = from.Guild as Guild;
 
-        if (g == null || g.Type != Type)
+        if (!(from.Guild is Guild g) || g.Type != Type)
         {
           Say(SignupNumber);
         }
@@ -124,7 +123,7 @@ namespace Server.Mobiles
           Item twoHanded = from.FindItemOnLayer(Layer.TwoHanded);
 
           if (pack?.FindItemByType(shield.GetType()) != null ||
-              twoHanded != null && shield.GetType().IsAssignableFrom(twoHanded.GetType()))
+              twoHanded != null && shield.GetType().IsInstanceOfType(twoHanded))
           {
             Say(1007110); // Why dost thou ask about virtue guards when thou art one?
             shield.Delete();

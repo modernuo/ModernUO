@@ -40,7 +40,7 @@ namespace Server.Gumps
                  targeted is AddonComponent)
           targeted = ((AddonComponent)targeted).Addon;
 
-        if (m_Type.IsAssignableFrom(targeted.GetType()))
+        if (m_Type.IsInstanceOfType(targeted))
         {
           CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, targeted.ToString());
           m_Property.SetValue(m_Object, targeted, null);

@@ -3552,12 +3552,7 @@ namespace Server.Mobiles
       private Item[] m_Items;
       private int m_Page;
 
-      public ItemInsuranceMenuGump(PlayerMobile from, Item[] items)
-        : this(from, items, null, 0)
-      {
-      }
-
-      public ItemInsuranceMenuGump(PlayerMobile from, Item[] items, bool[] insure, int page)
+      public ItemInsuranceMenuGump(PlayerMobile from, Item[] items, bool[] insure = null, int page = 0)
         : base(25, 50)
       {
         m_From = from;

@@ -47,9 +47,7 @@ namespace Server.Mobiles
 
     public override Item CreateBulkOrder(Mobile from, bool fromContextMenu)
     {
-      PlayerMobile pm = from as PlayerMobile;
-
-      if (pm != null && pm.NextTailorBulkOrder == TimeSpan.Zero && (fromContextMenu || 0.2 > Utility.RandomDouble()))
+      if (from is PlayerMobile pm && pm.NextTailorBulkOrder == TimeSpan.Zero && (fromContextMenu || 0.2 > Utility.RandomDouble()))
       {
         double theirSkill = pm.Skills[SkillName.Tailoring].Base;
 
@@ -81,16 +79,16 @@ namespace Server.Mobiles
 
     public override TimeSpan GetNextBulkOrder(Mobile from)
     {
-      if (from is PlayerMobile)
-        return ((PlayerMobile)from).NextTailorBulkOrder;
+      if (from is PlayerMobile mobile)
+        return mobile.NextTailorBulkOrder;
 
       return TimeSpan.Zero;
     }
 
     public override void OnSuccessfulBulkOrderReceive(Mobile from)
     {
-      if (Core.SE && from is PlayerMobile)
-        ((PlayerMobile)from).NextTailorBulkOrder = TimeSpan.Zero;
+      if (Core.SE && from is PlayerMobile mobile)
+        mobile.NextTailorBulkOrder = TimeSpan.Zero;
     }
 
     #endregion

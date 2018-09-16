@@ -466,8 +466,8 @@ namespace Server.Mobiles
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (targeted is BaseCreature)
-          m_Trainer.EndStable(from, (BaseCreature)targeted);
+        if (targeted is BaseCreature creature)
+          m_Trainer.EndStable(from, creature);
         else if (targeted == from)
           m_Trainer.SayTo(from, 502672); // HA HA HA! Sorry, I am not an inn.
         else

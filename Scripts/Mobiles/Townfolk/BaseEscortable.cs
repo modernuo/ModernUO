@@ -149,7 +149,7 @@ namespace Server.Mobiles
             bool okay = true;
 
             foreach (BaseObjective obj in quest.Objectives)
-              if (obj is EscortObjective && ((EscortObjective)obj).Destination.Contains(reg))
+              if (obj is EscortObjective objective && objective.Destination.Contains(reg))
               {
                 okay = false; // We're already there!
                 break;
@@ -271,10 +271,10 @@ namespace Server.Mobiles
         return false;
       }
 
-      if (m is PlayerMobile && ((PlayerMobile)m).LastEscortTime + EscortDelay >= DateTime.UtcNow)
+      if (m is PlayerMobile mobile && mobile.LastEscortTime + EscortDelay >= DateTime.UtcNow)
       {
         int minutes =
-          (int)Math.Ceiling((((PlayerMobile)m).LastEscortTime + EscortDelay - DateTime.UtcNow).TotalMinutes);
+          (int)Math.Ceiling((mobile.LastEscortTime + EscortDelay - DateTime.UtcNow).TotalMinutes);
 
         Say("You must rest {0} minute{1} before we set out on this journey.", minutes, minutes == 1 ? "" : "s");
         return false;
@@ -284,8 +284,8 @@ namespace Server.Mobiles
       {
         m_LastSeenEscorter = DateTime.UtcNow;
 
-        if (m is PlayerMobile)
-          ((PlayerMobile)m).LastEscortTime = DateTime.UtcNow;
+        if (m is PlayerMobile playerMobile)
+          playerMobile.LastEscortTime = DateTime.UtcNow;
 
         Say("Lead on! Payment will be made when we arrive in {0}.",
           dest.Name == "Ocllo" && m.Map == Map.Trammel ? "Haven" : dest.Name);
@@ -473,9 +473,7 @@ namespace Server.Mobiles
 
         bool gainedPath = false;
 
-        PlayerMobile pm = escorter as PlayerMobile;
-
-        if (pm != null)
+        if (escorter is PlayerMobile pm)
         {
           if (pm.CompassionGains > 0 && DateTime.UtcNow > pm.NextCompassionDay)
           {
