@@ -142,13 +142,8 @@ namespace Server.Items
       return low + (high - low) * percent / 1000001;
     }
 
-    private static void ApplyAttribute(AosAttributes attrs, int min, int max, AosAttribute attr, int low, int high)
-    {
-      ApplyAttribute(attrs, min, max, attr, low, high, 1);
-    }
-
     private static void ApplyAttribute(AosAttributes attrs, int min, int max, AosAttribute attr, int low, int high,
-      int scale)
+      int scale = 1)
     {
       if (attr == AosAttribute.CastSpeed)
         attrs[attr] += Scale(min, max, low / scale, high / scale) * scale;
@@ -436,9 +431,7 @@ namespace Server.Items
 
     public static void GetElementalDamages(BaseWeapon weapon, bool randomizeOrder)
     {
-      int fire, phys, cold, nrgy, pois, chaos, direct;
-
-      weapon.GetDamageTypes(null, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct);
+      weapon.GetDamageTypes(null, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct);
 
       int totalDamage = phys;
 

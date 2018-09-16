@@ -52,7 +52,7 @@ namespace Server.Items
 
       if (freeze)
       {
-        m.Frozen = freeze;
+        m.Frozen = true;
         Timer.DelayCall(TimeSpan.FromSeconds(message == 1095162 ? 2.0 : 1.25),
           new TimerStateCallback(EndFall_Callback), m);
       }

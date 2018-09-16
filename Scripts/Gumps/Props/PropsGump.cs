@@ -452,9 +452,7 @@ namespace Server.Gumps
 
     private static bool HasAttribute(Type type, Type check, bool inherit)
     {
-      object[] objs = type.GetCustomAttributes(check, inherit);
-
-      return objs != null && objs.Length > 0;
+      return type.GetCustomAttributes(check, inherit).Length > 0;
     }
 
     private static bool IsType(Type type, Type check)

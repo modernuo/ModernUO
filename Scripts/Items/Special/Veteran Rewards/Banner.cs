@@ -301,12 +301,7 @@ namespace Server.Items
                 }
                 else if (north || west)
                 {
-                  Banner banner = null;
-
-                  if (north)
-                    banner = new Banner(m_ItemID);
-                  else if (west)
-                    banner = new Banner(m_ItemID + 1);
+                  Banner banner = new Banner(m_ItemID + (west ? 0 : 1));
 
                   house.Addons.Add(banner);
 

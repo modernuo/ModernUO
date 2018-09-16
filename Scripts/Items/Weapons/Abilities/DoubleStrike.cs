@@ -25,7 +25,7 @@ namespace Server.Items
       // Swing again:
 
       // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
-      if (defender == null || defender.Deleted || attacker.Deleted || defender.Map != attacker.Map ||
+      if (defender.Deleted || attacker.Deleted || defender.Map != attacker.Map ||
           !defender.Alive || !attacker.Alive || !attacker.CanSee(defender))
       {
         attacker.Combatant = null;

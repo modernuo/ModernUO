@@ -125,15 +125,8 @@ namespace Server.Engines.Plants
     private int m_SeedLabelPlural;
 
     private PlantTypeInfo(int itemID, int offsetX, int offsetY, PlantType plantType, bool containsPlant, bool flowery,
-      bool crossable, bool reproduces, PlantCategory plantCategory)
-      : this(itemID, offsetX, offsetY, plantType, containsPlant, flowery, crossable, reproduces, plantCategory, -1, -1,
-        -1, -1, -1, -1)
-    {
-    }
-
-    private PlantTypeInfo(int itemID, int offsetX, int offsetY, PlantType plantType, bool containsPlant, bool flowery,
-      bool crossable, bool reproduces, PlantCategory plantCategory, int plantLabelSeed, int plantLabelPlant,
-      int plantLabelFullGrown, int plantLabelDecorative, int seedLabel, int seedLabelPlural)
+      bool crossable, bool reproduces, PlantCategory plantCategory, int plantLabelSeed = -1, int plantLabelPlant = -1,
+      int plantLabelFullGrown = -1, int plantLabelDecorative = -1, int seedLabel = -1, int seedLabelPlural = -1)
     {
       ItemID = itemID;
       OffsetX = offsetX;

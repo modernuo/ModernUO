@@ -309,12 +309,7 @@ namespace Server.Items
                 }
                 else if (north || west)
                 {
-                  HangingSkeleton banner = null;
-
-                  if (north)
-                    banner = new HangingSkeleton(m_ItemID);
-                  else if (west)
-                    banner = new HangingSkeleton(GetWestItemID(m_ItemID));
+                  HangingSkeleton banner = new HangingSkeleton(west ? GetWestItemID(m_ItemID) : m_ItemID);
 
                   house.Addons.Add(banner);
 

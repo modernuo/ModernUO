@@ -197,27 +197,24 @@ namespace Server.Items
             BaseCreature bc =
               (BaseCreature)Activator.CreateInstance(Creatures[Utility.Random(Creatures.Length)]);
 
-            if (bc != null)
+            Point3D spawnLoc = GetSpawnPosition();
+
+            DoEffect(spawnLoc, map);
+
+            Timer.DelayCall(TimeSpan.FromSeconds(1), delegate
             {
-              Point3D spawnLoc = GetSpawnPosition();
+              bc.Home = Location;
+              bc.RangeHome = SpawnRange;
+              bc.FightMode = FightMode.Closest;
+
+              bc.MoveToWorld(spawnLoc, map);
 
               DoEffect(spawnLoc, map);
 
-              Timer.DelayCall(TimeSpan.FromSeconds(1), delegate
-              {
-                bc.Home = Location;
-                bc.RangeHome = SpawnRange;
-                bc.FightMode = FightMode.Closest;
+              bc.ForceReacquire();
+            });
 
-                bc.MoveToWorld(spawnLoc, map);
-
-                DoEffect(spawnLoc, map);
-
-                bc.ForceReacquire();
-              });
-
-              NextSpawn = DateTime.UtcNow + NextSpawnDelay;
-            }
+            NextSpawn = DateTime.UtcNow + NextSpawnDelay;
           }
           else
           {
@@ -227,6 +224,7 @@ namespace Server.Items
         }
         catch
         {
+          // ignored
         }
       else
         from.SendLocalizedMessage(500446); // That is too far away.

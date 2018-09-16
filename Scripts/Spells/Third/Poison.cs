@@ -75,17 +75,15 @@ namespace Server.Spells.Third
 
             double total = Caster.Skills[SkillName.Magery].Value;
 
-            if (Caster is PlayerMobile)
+            if (Caster is PlayerMobile pm)
             {
-              PlayerMobile pm = (PlayerMobile)Caster;
-
               if (pm.DuelContext != null && pm.DuelContext.Started && !pm.DuelContext.Finished &&
                   !pm.DuelContext.Ruleset.GetOption("Skills", "Poisoning"))
               {
               }
               else
               {
-                total += Caster.Skills[SkillName.Poisoning].Value;
+                total += pm.Skills[SkillName.Poisoning].Value;
               }
             }
             else
@@ -133,7 +131,7 @@ namespace Server.Spells.Third
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile) m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile) m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

@@ -126,7 +126,7 @@ namespace Server.Items
                   armor.ColdBonus =
                     armor.PoisonBonus = armor.EnergyBonus = 0; // Is there a method to remove bonuses?
             }
-            else if (weapon != null)
+            else
             {
               weapon.Quality = WeaponQuality.Regular;
               weapon.Crafter = from;

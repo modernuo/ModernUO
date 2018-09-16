@@ -934,8 +934,7 @@ namespace Server
       }
       catch
       {
-        double val;
-        if (double.TryParse(doubleString, out val))
+        if (double.TryParse(doubleString, out double val))
           return val;
 
         return defaultValue;
@@ -950,8 +949,7 @@ namespace Server
       }
       catch
       {
-        int val;
-        if (int.TryParse(intString, out val))
+        if (int.TryParse(intString, out int val))
           return val;
 
         return defaultValue;
@@ -966,9 +964,7 @@ namespace Server
       }
       catch
       {
-        DateTime d;
-
-        if (DateTime.TryParse(dateTimeString, out d))
+        if (DateTime.TryParse(dateTimeString, out DateTime d))
           return d;
 
         return defaultValue;
@@ -983,9 +979,7 @@ namespace Server
       }
       catch
       {
-        DateTimeOffset d;
-
-        if (DateTimeOffset.TryParse(dateTimeOffsetString, out d))
+        if (DateTimeOffset.TryParse(dateTimeOffsetString, out DateTimeOffset d))
           return d;
 
         return defaultValue;

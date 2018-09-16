@@ -292,11 +292,7 @@ namespace Server.Mobiles
     {
       private PlagueBeastLord m_Lord;
 
-      public DecayTimer(PlagueBeastLord lord) : this(lord, 0, 120)
-      {
-      }
-
-      public DecayTimer(PlagueBeastLord lord, int count, int deadline) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1))
+      public DecayTimer(PlagueBeastLord lord, int count = 0, int deadline = 120) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1))
       {
         m_Lord = lord;
         Count = count;

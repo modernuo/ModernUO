@@ -53,7 +53,7 @@ namespace Server.Gumps
 
       string fealtyName;
 
-      if (fealty == null || (fealtyName = fealty.Name) == null || (fealtyName = fealtyName.Trim()).Length <= 0)
+      if ((fealtyName = fealty.Name) == null || (fealtyName = fealtyName.Trim()).Length <= 0)
         fealtyName = "(empty)";
 
       if (beholder == fealty)

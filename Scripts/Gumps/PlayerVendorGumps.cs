@@ -652,23 +652,15 @@ namespace Server.Gumps
 
     private class CustomItem
     {
-      public CustomItem(int itemID, int loc) : this(null, itemID, loc, 0, false)
+      public CustomItem(int itemID, int loc, bool longText = false) : this(null, itemID, loc, 0, longText)
       {
       }
 
-      public CustomItem(int itemID, int loc, bool longText) : this(null, itemID, loc, 0, longText)
+      public CustomItem(Type type, int loc, int art = 0) : this(type, 0, loc, art)
       {
       }
 
-      public CustomItem(Type type, int loc) : this(type, loc, 0)
-      {
-      }
-
-      public CustomItem(Type type, int loc, int art) : this(type, 0, loc, art, false)
-      {
-      }
-
-      public CustomItem(Type type, int itemID, int loc, int art, bool longText)
+      public CustomItem(Type type, int itemID = 0, int loc = 0, int art = 0, bool longText = false)
       {
         Type = type;
         ItemID = itemID;
@@ -702,6 +694,7 @@ namespace Server.Gumps
         }
         catch
         {
+          // ignored
         }
 
         return i;

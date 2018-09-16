@@ -152,10 +152,10 @@ namespace Server.Engines.Plants
       if (firstPrimary && secondPrimary)
         return notBrightFirst | notBrightSecond;
 
-      if (firstPrimary && !secondPrimary)
+      if (firstPrimary)
         return notBrightFirst;
 
-      if (!firstPrimary && secondPrimary)
+      if (secondPrimary)
         return notBrightSecond;
 
       return notBrightFirst & notBrightSecond;

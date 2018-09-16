@@ -8207,20 +8207,15 @@ namespace Server
         m_CancelCallback = cancelCallback;
       }
 
-      public SimplePrompt(PromptCallback callback, bool callbackHandlesCancel)
+      public SimplePrompt(PromptCallback callback, bool callbackHandlesCancel = false)
       {
         m_Callback = callback;
         m_CallbackHandlesCancel = callbackHandlesCancel;
       }
 
-      public SimplePrompt(PromptCallback callback)
-        : this(callback, false)
-      {
-      }
-
       public override void OnResponse(Mobile from, string text)
       {
-        m_Callback?.Invoke(@from, text);
+        m_Callback?.Invoke(from, text);
       }
 
       public override void OnCancel(Mobile from)
@@ -8229,7 +8224,7 @@ namespace Server
           m_Callback(from, "");
         else
         {
-          m_CancelCallback?.Invoke(@from, "");
+          m_CancelCallback?.Invoke(from, "");
         }
       }
     }
@@ -8285,7 +8280,7 @@ namespace Server
 
       public override void OnResponse(Mobile from, string text)
       {
-        m_Callback?.Invoke(@from, text, m_State);
+        m_Callback?.Invoke(from, text, m_State);
       }
 
       public override void OnCancel(Mobile from)
@@ -8294,7 +8289,7 @@ namespace Server
           m_Callback(from, "", m_State);
         else
         {
-          m_CancelCallback?.Invoke(@from, "", m_State);
+          m_CancelCallback?.Invoke(from, "", m_State);
         }
       }
     }
@@ -8350,7 +8345,7 @@ namespace Server
 
       public override void OnResponse(Mobile from, string text)
       {
-        m_Callback?.Invoke(@from, text, m_State);
+        m_Callback?.Invoke(from, text, m_State);
       }
 
       public override void OnCancel(Mobile from)
@@ -8359,7 +8354,7 @@ namespace Server
           m_Callback(from, "", m_State);
         else
         {
-          m_CancelCallback?.Invoke(@from, "", m_State);
+          m_CancelCallback?.Invoke(from, "", m_State);
         }
       }
     }

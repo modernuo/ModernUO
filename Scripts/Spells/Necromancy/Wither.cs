@@ -52,10 +52,8 @@ namespace Server.Spells.Necromancy
             {
               if (isMonster)
               {
-                if (m is BaseCreature)
+                if (m is BaseCreature bc)
                 {
-                  BaseCreature bc = (BaseCreature)m;
-
                   if (!bc.Controlled && !bc.Summoned && bc.Team == cbc.Team)
                     continue;
                 }

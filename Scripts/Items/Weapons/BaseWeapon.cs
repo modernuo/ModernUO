@@ -1225,9 +1225,7 @@ namespace Server.Items
 
       AddBlood(attacker, defender, damage);
 
-      int phys, fire, cold, pois, nrgy, chaos, direct;
-
-      GetDamageTypes(attacker, out phys, out fire, out cold, out pois, out nrgy, out chaos, out direct);
+      GetDamageTypes(attacker, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct);
 
       if (Core.ML && this is BaseRanged)
         if (attacker.FindItemOnLayer(Layer.Cloak) is BaseQuiver quiver)

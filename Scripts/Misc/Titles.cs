@@ -349,7 +349,7 @@ namespace Server.Misc
 
         if (highest == null || check.BaseFixedPoint > highest.BaseFixedPoint)
           highest = check;
-        else if (highest != null && highest.Lock != SkillLock.Up && check.Lock == SkillLock.Up &&
+        else if (highest.Lock != SkillLock.Up && check.Lock == SkillLock.Up &&
                  check.BaseFixedPoint == highest.BaseFixedPoint)
           highest = check;
       }

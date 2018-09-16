@@ -210,11 +210,7 @@ namespace Server.Items
 
       private DecorativeShieldDeed m_Shield;
 
-      public InternalGump(DecorativeShieldDeed shield) : this(shield, 1)
-      {
-      }
-
-      public InternalGump(DecorativeShieldDeed shield, int page) : base(150, 50)
+      public InternalGump(DecorativeShieldDeed shield, int page = 1) : base(150, 50)
       {
         m_Shield = shield;
         m_Page = page;
@@ -321,12 +317,7 @@ namespace Server.Items
                 }
                 else if (north || west)
                 {
-                  DecorativeShield shield = null;
-
-                  if (north)
-                    shield = new DecorativeShield(m_ItemID);
-                  else if (west)
-                    shield = new DecorativeShield(GetWestItemID(m_ItemID));
+                  DecorativeShield shield = new DecorativeShield(west ? GetWestItemID(m_ItemID) : m_ItemID);
 
                   house.Addons.Add(shield);
 

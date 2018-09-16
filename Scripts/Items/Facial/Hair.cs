@@ -62,12 +62,7 @@ namespace Server.Items
     }
      * */
 
-    protected Hair(int itemID)
-      : this(itemID, 0)
-    {
-    }
-
-    protected Hair(int itemID, int hue)
+    protected Hair(int itemID, int hue = 0)
       : base(itemID)
     {
       LootType = LootType.Blessed;
@@ -115,13 +110,7 @@ namespace Server.Items
 
   public class GenericHair : Hair
   {
-    private GenericHair(int itemID)
-      : this(itemID, 0)
-    {
-    }
-
-
-    private GenericHair(int itemID, int hue)
+    private GenericHair(int itemID, int hue = 0)
       : base(itemID, hue)
     {
     }
@@ -148,13 +137,7 @@ namespace Server.Items
 
   public class Mohawk : Hair
   {
-    private Mohawk()
-      : this(0)
-    {
-    }
-
-
-    private Mohawk(int hue)
+    private Mohawk(int hue = 0)
       : base(0x2044, hue)
     {
     }
@@ -181,13 +164,7 @@ namespace Server.Items
 
   public class PageboyHair : Hair
   {
-    private PageboyHair()
-      : this(0)
-    {
-    }
-
-
-    private PageboyHair(int hue)
+    private PageboyHair(int hue = 0)
       : base(0x2045, hue)
     {
     }
@@ -214,13 +191,7 @@ namespace Server.Items
 
   public class BunsHair : Hair
   {
-    private BunsHair()
-      : this(0)
-    {
-    }
-
-
-    private BunsHair(int hue)
+    private BunsHair(int hue = 0)
       : base(0x2046, hue)
     {
     }
@@ -247,13 +218,7 @@ namespace Server.Items
 
   public class LongHair : Hair
   {
-    private LongHair()
-      : this(0)
-    {
-    }
-
-
-    private LongHair(int hue)
+    private LongHair(int hue = 0)
       : base(0x203C, hue)
     {
     }
@@ -280,13 +245,7 @@ namespace Server.Items
 
   public class ShortHair : Hair
   {
-    private ShortHair()
-      : this(0)
-    {
-    }
-
-
-    private ShortHair(int hue)
+    private ShortHair(int hue = 0)
       : base(0x203B, hue)
     {
     }
@@ -313,13 +272,7 @@ namespace Server.Items
 
   public class PonyTail : Hair
   {
-    private PonyTail()
-      : this(0)
-    {
-    }
-
-
-    private PonyTail(int hue)
+    private PonyTail(int hue = 0)
       : base(0x203D, hue)
     {
     }
@@ -346,13 +299,7 @@ namespace Server.Items
 
   public class Afro : Hair
   {
-    private Afro()
-      : this(0)
-    {
-    }
-
-
-    private Afro(int hue)
+    private Afro(int hue = 0)
       : base(0x2047, hue)
     {
     }
@@ -379,13 +326,7 @@ namespace Server.Items
 
   public class ReceedingHair : Hair
   {
-    private ReceedingHair()
-      : this(0)
-    {
-    }
-
-
-    private ReceedingHair(int hue)
+    private ReceedingHair(int hue = 0)
       : base(0x2048, hue)
     {
     }
@@ -412,13 +353,7 @@ namespace Server.Items
 
   public class TwoPigTails : Hair
   {
-    private TwoPigTails()
-      : this(0)
-    {
-    }
-
-
-    private TwoPigTails(int hue)
+    private TwoPigTails(int hue = 0)
       : base(0x2049, hue)
     {
     }
@@ -445,13 +380,7 @@ namespace Server.Items
 
   public class KrisnaHair : Hair
   {
-    private KrisnaHair()
-      : this(0)
-    {
-    }
-
-
-    private KrisnaHair(int hue)
+    private KrisnaHair(int hue = 0)
       : base(0x204A, hue)
     {
     }

@@ -140,8 +140,7 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      object toSet;
-      bool shouldSet, shouldSend = true;
+      bool shouldSend = true;
       object viewProps = null;
 
       switch (info.ButtonID)
@@ -149,25 +148,17 @@ namespace Server.Gumps
         case 0: // closed
         {
           m_Mobile.SendGump(new PropertiesGump(m_Mobile, m_Object, m_Stack, m_List, m_Page));
-
-          toSet = null;
-          shouldSet = false;
           shouldSend = false;
-
           break;
         }
         case 1: // Change by Target
         {
           m_Mobile.Target = new SetObjectTarget(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List);
-          toSet = null;
-          shouldSet = false;
           shouldSend = false;
           break;
         }
         case 2: // Change by Serial
         {
-          toSet = null;
-          shouldSet = false;
           shouldSend = false;
 
           m_Mobile.SendMessage("Enter the serial you wish to find:");
@@ -177,16 +168,20 @@ namespace Server.Gumps
         }
         case 3: // Nullify
         {
-          toSet = null;
-          shouldSet = true;
-
+          try
+          {
+            CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, "(null)");
+            m_Property.SetValue(m_Object, null, null);
+            PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+          }
+          catch
+          {
+            m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
+          }
           break;
         }
         case 4: // View Properties
         {
-          toSet = null;
-          shouldSet = false;
-
           object obj = m_Property.GetValue(m_Object, null);
 
           if (obj == null)
@@ -198,27 +193,7 @@ namespace Server.Gumps
 
           break;
         }
-        default:
-        {
-          toSet = null;
-          shouldSet = false;
-
-          break;
-        }
       }
-
-      if (shouldSet)
-        try
-        {
-          CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name,
-            toSet == null ? "(null)" : toSet.ToString());
-          m_Property.SetValue(m_Object, toSet, null);
-          PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
-        }
-        catch
-        {
-          m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
-        }
 
       if (shouldSend)
         m_Mobile.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List));
@@ -256,51 +231,40 @@ namespace Server.Gumps
 
       public override void OnResponse(Mobile from, string text)
       {
-        object toSet;
-        bool shouldSet;
-
         try
         {
           int serial = Utility.ToInt32(text);
 
-          toSet = World.FindEntity(serial);
+          IEntity toSet = World.FindEntity(serial);
 
           if (toSet == null)
           {
-            shouldSet = false;
             m_Mobile.SendMessage("No object with that serial was found.");
           }
-          else if (!m_Type.IsAssignableFrom(toSet.GetType()))
+          else if (!m_Type.IsInstanceOfType(toSet))
           {
-            toSet = null;
-            shouldSet = false;
             m_Mobile.SendMessage("The object with that serial could not be assigned to a property of type : {0}",
               m_Type.Name);
           }
           else
           {
-            shouldSet = true;
+            try
+            {
+              CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name,
+                toSet.ToString());
+              m_Property.SetValue(m_Object, toSet, null);
+              PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
+            }
+            catch
+            {
+              m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
+            }
           }
         }
         catch
         {
-          toSet = null;
-          shouldSet = false;
           m_Mobile.SendMessage("Bad format");
         }
-
-        if (shouldSet)
-          try
-          {
-            CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name,
-              toSet == null ? "(null)" : toSet.ToString());
-            m_Property.SetValue(m_Object, toSet, null);
-            PropertiesGump.OnValueChanged(m_Object, m_Property, m_Stack);
-          }
-          catch
-          {
-            m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
-          }
 
         m_Mobile.SendGump(new SetObjectGump(m_Property, m_Mobile, m_Object, m_Stack, m_Type, m_Page, m_List));
       }

@@ -327,7 +327,7 @@ namespace Server.Factions
           {
             double prio = m_Mobile.GetDistanceToSqrt(m);
 
-            if (!activeOnly && (inactive == null || prio < inactPrio))
+            if (inactive == null || prio < inactPrio)
             {
               inactive = m;
               inactPrio = prio;

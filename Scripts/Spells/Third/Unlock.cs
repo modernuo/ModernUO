@@ -37,9 +37,7 @@ namespace Server.Spells.Third
 
       protected override void OnTarget(Mobile from, object o)
       {
-        IPoint3D loc = o as IPoint3D;
-
-        if (loc == null)
+        if (!(o is IPoint3D loc))
           return;
 
         if (m_Owner.CheckSequence())
@@ -81,7 +79,7 @@ namespace Server.Spells.Third
               int level = (int)(from.Skills[SkillName.Magery].Value * 0.8) - 4;
 
               if (level >= cont.RequiredSkill &&
-                  !(cont is TreasureMapChest && ((TreasureMapChest)cont).Level > 2))
+                  !(cont is TreasureMapChest chest && chest.Level > 2))
               {
                 cont.Locked = false;
 

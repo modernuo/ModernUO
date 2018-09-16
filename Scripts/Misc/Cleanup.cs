@@ -128,8 +128,7 @@ namespace Server.Misc
         return false;
 
       if (item is ICommodity || item is BaseBoat
-                             || item is Fish || item is BigFish
-                             || item is BasePotion || item is Food || item is CookableFood
+                             || item is Fish || item is BigFish || item is Food || item is CookableFood
                              || item is SpecialFishingNet || item is BaseMagicFish
                              || item is Shoes || item is Sandals
                              || item is Boots || item is ThighBoots
@@ -137,7 +136,6 @@ namespace Server.Misc
                              || item is BaseArmor || item is BaseWeapon
                              || item is BaseClothing
                              || item is BaseJewel && Core.AOS
-                             || item is BasePotion && Core.ML
 
                              #region Champion artifacts
 

@@ -55,7 +55,7 @@ namespace Server.Mobiles
 
     public override void OnDamage(int amount, Mobile from, bool willKill)
     {
-      if (from != null && !willKill && amount > 3 && from != null && !InRange(from, 7))
+      if (from != null && !willKill && amount > 3 && !InRange(from, 7))
       {
         MovingEffect(from, 0xF51, 10, 0, false, false);
         SpellHelper.Damage(TimeSpan.FromSeconds(1.0), from, this, Utility.RandomMinMax(30, 40) - (Core.AOS ? 0 : 10),

@@ -340,16 +340,11 @@ namespace Server.Gumps
       return Encoding.ASCII.GetBytes(str);
     }
 
-    private Packet Compile()
-    {
-      return Compile(null);
-    }
-
-    private Packet Compile(NetState ns)
+    private Packet Compile(NetState ns = null)
     {
       IGumpWriter disp;
 
-      if (ns != null && ns.Unpack)
+      if (ns?.Unpack == true)
         disp = new DisplayGumpPacked(this);
       else
         disp = new DisplayGumpFast(this);
@@ -367,11 +362,10 @@ namespace Server.Gumps
         disp.AppendLayout(m_NoResize);
 
       int count = Entries.Count;
-      GumpEntry e;
 
       for (int i = 0; i < count; ++i)
       {
-        e = Entries[i];
+        GumpEntry e = Entries[i];
 
         disp.AppendLayout(m_BeginLayout);
         e.AppendTo(ns, disp);

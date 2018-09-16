@@ -11,15 +11,7 @@ namespace Server.Mobiles
     private int m_Page;
     private Spawner m_Spawner;
 
-    public SpawnerGump(Spawner spawner) : this(spawner, 0)
-    {
-    }
-
-    public SpawnerGump(Spawner spawner, int page) : this(spawner, null, page)
-    {
-    }
-
-    public SpawnerGump(Spawner spawner, SpawnerEntry focusentry, int page) : base(50, 50)
+    public SpawnerGump(Spawner spawner, SpawnerEntry focusentry = null, int page = 0) : base(50, 50)
     {
       m_Spawner = spawner;
       m_Entry = focusentry;
@@ -51,7 +43,7 @@ namespace Server.Mobiles
           AddButton(5, 22 * i + 21 + offset, entry != null ? 0xFBA : 0xFA5, entry != null ? 0xFBC : 0xFA7,
             GetButtonID(2, i * 2), GumpButtonType.Reply, 0); //Expand
         else
-          AddButton(5, 22 * i + 21 + offset, entry != null ? 0xFBB : 0xFA5, entry != null ? 0xFBC : 0xFA7,
+          AddButton(5, 22 * i + 21 + offset, 0xFBB, 0xFBC,
             GetButtonID(2, i * 2), GumpButtonType.Reply, 0); //Unexpand
 
         AddButton(38, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2), GumpButtonType.Reply,
@@ -163,7 +155,7 @@ namespace Server.Mobiles
 
             if (type != null)
             {
-              SpawnerEntry entry = null;
+              SpawnerEntry entry;
 
               if (entryindex < ocount)
               {
@@ -220,8 +212,6 @@ namespace Server.Mobiles
     {
       if (m_Spawner.Deleted)
         return;
-
-      Mobile from = state.Mobile;
 
       int val = info.ButtonID - 1;
 
@@ -309,7 +299,7 @@ namespace Server.Mobiles
         }
       }
 
-      if (m_Entry != null && m_Spawner.Entries.Contains(m_Entry))
+      if (m_Entry != null && m_Spawner.Entries?.Contains(m_Entry) == true)
         state.Mobile.SendGump(new SpawnerGump(m_Spawner, m_Entry, m_Page));
       else
         state.Mobile.SendGump(new SpawnerGump(m_Spawner, null, m_Page));

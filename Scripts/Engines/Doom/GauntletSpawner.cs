@@ -220,9 +220,6 @@ namespace Server.Engines.Doom
       else
         trap = new MushroomTrap();
 
-      if (trap == null)
-        return;
-
       if (trap is FireColumnTrap || trap is MushroomTrap)
         trap.Hue = 0x451;
 

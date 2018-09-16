@@ -488,43 +488,31 @@ namespace Server.Items
     public static Container Mobile_CreateCorpseHandler(Mobile owner, HairInfo hair, FacialHairInfo facialhair,
       List<Item> initialContent, List<Item> equipItems)
     {
-      bool shouldFillCorpse = true;
-
-      //if ( owner is BaseCreature )
-      //	shouldFillCorpse = !((BaseCreature)owner).IsBonded;
-
       Corpse c;
       if (owner is MilitiaFighter)
-        c = new MilitiaFighterCorpse(owner, hair, facialhair, shouldFillCorpse ? equipItems : new List<Item>());
+        c = new MilitiaFighterCorpse(owner, hair, facialhair, equipItems);
       else
-        c = new Corpse(owner, hair, facialhair, shouldFillCorpse ? equipItems : new List<Item>());
+        c = new Corpse(owner, hair, facialhair, equipItems);
 
       owner.Corpse = c;
-
-      if (shouldFillCorpse)
+      
+      for (int i = 0; i < initialContent.Count; ++i)
       {
-        for (int i = 0; i < initialContent.Count; ++i)
-        {
-          Item item = initialContent[i];
+        Item item = initialContent[i];
 
-          if (Core.AOS && owner.Player && item.Parent == owner.Backpack)
-            c.AddItem(item);
-          else
-            c.DropItem(item);
+        if (Core.AOS && owner.Player && item.Parent == owner.Backpack)
+          c.AddItem(item);
+        else
+          c.DropItem(item);
 
-          if (owner.Player && Core.AOS)
-            c.SetRestoreInfo(item, item.Location);
-        }
-
-        if (Core.SE && !owner.Player)
-          c.AssignInstancedLoot();
-        else if (Core.AOS && owner is PlayerMobile pm)
-          c.RestoreEquip = pm.EquipSnapshot;
+        if (owner.Player && Core.AOS)
+          c.SetRestoreInfo(item, item.Location);
       }
-      else
-      {
-        c.Carved = true; // TODO: Is it needed?
-      }
+
+      if (Core.SE && !owner.Player)
+        c.AssignInstancedLoot();
+      else if (Core.AOS && owner is PlayerMobile pm)
+        c.RestoreEquip = pm.EquipSnapshot;
 
       Point3D loc = owner.Location;
       Map map = owner.Map;
@@ -769,11 +757,11 @@ namespace Server.Items
 
     public bool DevourCorpse()
     {
-      if (Devoured || Deleted || Killer == null || Killer.Deleted || !Killer.Alive || !(Killer is IDevourer) ||
+      if (Devoured || Deleted || Killer == null || Killer.Deleted || !Killer.Alive || !(Killer is IDevourer devourer) ||
           Owner == null || Owner.Deleted)
         return false;
 
-      m_Devourer = (IDevourer)Killer; // Set the devourer the killer
+      m_Devourer = devourer; // Set the devourer the killer
       return m_Devourer.Devour(this); // Devour the corpse if it hasn't
     }
 
@@ -803,7 +791,7 @@ namespace Server.Items
       {
         PartyMemberInfo pmi = p[Owner];
 
-        if (pmi != null && pmi.CanLoot)
+        if (pmi?.CanLoot == true)
           return false;
       }
 

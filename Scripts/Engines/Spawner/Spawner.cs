@@ -354,44 +354,40 @@ namespace Server.Mobiles
     {
       Defrag();
 
-      if (Entries.Count > 0 && !IsFull)
+      if (Entries.Count <= 0 || IsFull)
+        return;
+      
+      int probsum = 0;
+
+      for (int i = 0; i < Entries.Count; i++)
+        if (!Entries[i].IsFull)
+          probsum += Entries[i].SpawnedProbability;
+
+      if (probsum <= 0)
+        return;
+      
+      int rand = Utility.RandomMinMax(1, probsum);
+
+      for (int i = 0; i < Entries.Count; i++)
       {
-        int probsum = 0;
+        SpawnerEntry entry = Entries[i];
+        if (entry.IsFull)
+          continue;
 
-        for (int i = 0; i < Entries.Count; i++)
-          if (!Entries[i].IsFull)
-            probsum += Entries[i].SpawnedProbability;
-
-        if (probsum > 0)
+        if (rand <= entry.SpawnedProbability)
         {
-          int rand = Utility.RandomMinMax(1, probsum);
-
-          for (int i = 0; i < Entries.Count; i++)
-          {
-            SpawnerEntry entry = Entries[i];
-            if (!entry.IsFull)
-            {
-              bool success = true;
-
-              if (rand <= entry.SpawnedProbability)
-              {
-                EntryFlags flags;
-                success = Spawn(entry, out flags);
-                entry.Valid = flags;
-                return;
-              }
-
-              if (success)
-                rand -= entry.SpawnedProbability;
-            }
-          }
+          Spawn(entry, out EntryFlags flags);
+          entry.Valid = flags;
+          return;
         }
+
+        rand -= entry.SpawnedProbability;
       }
     }
 
     private static string[,] FormatProperties(string[] args)
     {
-      string[,] props = null;
+      string[,] props;
 
       int remains = args.Length;
 

@@ -44,7 +44,7 @@ namespace Server.Gumps
       AddHtmlLocalized(45, 110, 150, 20, 1061279, GetColor(SecureLevel.Friends), false, false); // Friends
 
       Mobile houseOwner = house.Owner;
-      if (Guild.NewGuildSystem && house != null && houseOwner?.Guild != null &&
+      if (Guild.NewGuildSystem && houseOwner?.Guild != null &&
           ((Guild)houseOwner.Guild).Leader == houseOwner
       ) //Only the actual House owner AND guild master can set guild secures
       {

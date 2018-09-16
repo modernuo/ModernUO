@@ -17,11 +17,7 @@ namespace Server.Items
       }
     }*/
 
-    protected Beard(int itemID) : this(itemID, 0)
-    {
-    }
-
-    protected Beard(int itemID, int hue) : base(itemID)
+    protected Beard(int itemID, int hue = 0) : base(itemID)
     {
       LootType = LootType.Blessed;
       Layer = Layer.FacialHair;
@@ -67,12 +63,7 @@ namespace Server.Items
 
   public class GenericBeard : Beard
   {
-    private GenericBeard(int itemID) : this(itemID, 0)
-    {
-    }
-
-
-    private GenericBeard(int itemID, int hue) : base(itemID, hue)
+    private GenericBeard(int itemID, int hue = 0) : base(itemID, hue)
     {
     }
 
@@ -97,12 +88,7 @@ namespace Server.Items
 
   public class LongBeard : Beard
   {
-    private LongBeard()
-      : this(0)
-    {
-    }
-
-    private LongBeard(int hue)
+    private LongBeard(int hue = 0)
       : base(0x203E, hue)
     {
     }
@@ -128,13 +114,7 @@ namespace Server.Items
 
   public class ShortBeard : Beard
   {
-    private ShortBeard()
-      : this(0)
-    {
-    }
-
-
-    private ShortBeard(int hue)
+    private ShortBeard(int hue = 0)
       : base(0x203f, hue)
     {
     }
@@ -160,13 +140,7 @@ namespace Server.Items
 
   public class Goatee : Beard
   {
-    private Goatee()
-      : this(0)
-    {
-    }
-
-
-    private Goatee(int hue)
+    private Goatee(int hue = 0)
       : base(0x2040, hue)
     {
     }
@@ -192,13 +166,7 @@ namespace Server.Items
 
   public class Mustache : Beard
   {
-    private Mustache()
-      : this(0)
-    {
-    }
-
-
-    private Mustache(int hue)
+    private Mustache(int hue = 0)
       : base(0x2041, hue)
     {
     }
@@ -224,13 +192,7 @@ namespace Server.Items
 
   public class MediumShortBeard : Beard
   {
-    private MediumShortBeard()
-      : this(0)
-    {
-    }
-
-
-    private MediumShortBeard(int hue)
+    private MediumShortBeard(int hue = 0)
       : base(0x204B, hue)
     {
     }
@@ -256,13 +218,7 @@ namespace Server.Items
 
   public class MediumLongBeard : Beard
   {
-    private MediumLongBeard()
-      : this(0)
-    {
-    }
-
-
-    private MediumLongBeard(int hue)
+    private MediumLongBeard(int hue = 0)
       : base(0x204C, hue)
     {
     }
@@ -288,13 +244,7 @@ namespace Server.Items
 
   public class Vandyke : Beard
   {
-    private Vandyke()
-      : this(0)
-    {
-    }
-
-
-    private Vandyke(int hue)
+    private Vandyke(int hue = 0)
       : base(0x204D, hue)
     {
     }

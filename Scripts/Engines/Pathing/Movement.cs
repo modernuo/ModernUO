@@ -529,7 +529,7 @@ namespace Server.Movement
         zLow = landZ;
         zCenter = landCenter;
 
-        if (!isSet || landTop > zTop)
+        if (landTop > zTop)
           zTop = landTop;
 
         isSet = true;

@@ -571,7 +571,7 @@ namespace Server.Mobiles
 
     private static bool CheckBlock(MountBlock block)
     {
-      return block is MountBlock && block.m_Timer.Running;
+      return block?.m_Timer.Running == true;
     }
 
     public void SetMountBlock(BlockMountType type, TimeSpan duration, bool dismount)
@@ -640,9 +640,7 @@ namespace Server.Mobiles
       if (ns == null)
         return;
 
-      int global, personal;
-
-      ComputeLightLevels(out global, out personal);
+      ComputeLightLevels(out int global, out int personal);
 
       if (!forceResend)
         forceResend = global != m_LastGlobalLight || personal != m_LastPersonalLight;

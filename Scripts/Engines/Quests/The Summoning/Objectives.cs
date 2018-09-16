@@ -110,7 +110,7 @@ namespace Server.Engines.Quests.Doom
       }
       else
       {
-        bool hasRights = true;
+        bool hasRights = false;
 
         if (m_Daemon != null)
         {

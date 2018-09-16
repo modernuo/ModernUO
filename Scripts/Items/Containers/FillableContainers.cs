@@ -197,21 +197,21 @@ namespace Server.Items
       {
         Item item = m_Content.Construct();
 
-        if (item != null)
+        if (item == null)
+          continue;
+        
+        List<Item> list = Items;
+
+        for (int j = 0; j < list.Count; ++j)
         {
-          List<Item> list = Items;
+          Item subItem = list[j];
 
-          for (int j = 0; j < list.Count; ++j)
-          {
-            Item subItem = list[j];
-
-            if (!(subItem is Container) && subItem.StackWith(null, item, false))
-              break;
-          }
-
-          if (item != null && !item.Deleted)
-            DropItem(item);
+          if (!(subItem is Container) && subItem.StackWith(null, item, false))
+            break;
         }
+
+        if (!item.Deleted)
+          DropItem(item);
       }
     }
 

@@ -96,7 +96,7 @@ namespace Server.Mobiles
             UnmountMe();
 
             RemoveFollowers();
-            m_Rider = value;
+            m_Rider = null;
           }
           else
           {

@@ -188,15 +188,14 @@ namespace Server.Engines.Reports
 
         for (int i = 0; i < _chartItems.Count; i++)
         {
-          DataItem item = (DataItem)_chartItems[i];
-          SolidBrush brs = null;
+          DataItem item = (DataItem)_chartItems[i];          
           try
           {
             grp.DrawPie(new Pen(_borderColor, 0.5f), pieRect, item.StartPos, item.SweepSize);
           }
-          finally
+          catch
           {
-            brs?.Dispose();
+            // ignored
           }
         }
 
@@ -226,8 +225,8 @@ namespace Server.Engines.Reports
       }
       finally
       {
-        sf?.Dispose();
-        grp?.Dispose();
+        sf.Dispose();
+        grp.Dispose();
         sfp?.Dispose();
         fnt?.Dispose();
         pen?.Dispose();

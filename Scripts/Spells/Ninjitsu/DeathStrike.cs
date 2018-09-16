@@ -85,9 +85,7 @@ namespace Server.Spells.Ninjitsu
 
     public static void AddStep(Mobile m)
     {
-      DeathStrikeInfo info = m_Table[m] as DeathStrikeInfo;
-
-      if (info == null)
+      if (!(m_Table[m] is DeathStrikeInfo info))
         return;
 
       if (++info.m_Steps >= 5)
@@ -98,12 +96,10 @@ namespace Server.Spells.Ninjitsu
     {
       Mobile defender = (Mobile)state;
 
-      DeathStrikeInfo info = m_Table[defender] as DeathStrikeInfo;
-
-      if (info == null) //sanity
+      if (!(m_Table[defender] is DeathStrikeInfo info)) //sanity
         return;
 
-      int maxDamage, damage = 0;
+      int damage;
 
       double ninjitsu = info.m_Attacker.Skills[SkillName.Ninjitsu].Value;
       double stalkingBonus = Tracking.GetStalkingBonus(info.m_Attacker, info.m_Target);
@@ -130,7 +126,7 @@ namespace Server.Spells.Ninjitsu
         int divisor = info.m_Steps >= 5 ? 30 : 80;
         double baseDamage = ninjitsu / divisor * 10;
 
-        maxDamage = info.m_Steps >= 5 ? 62 : 22; // DamageBonus is 8 at most. That brings the cap up to 70/30.
+        int maxDamage = info.m_Steps >= 5 ? 62 : 22;
         damage = Math.Max(0, Math.Min(maxDamage, (int)(baseDamage + stalkingBonus))) + info.m_DamageBonus;
       }
 

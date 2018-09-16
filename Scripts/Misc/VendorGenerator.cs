@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Commands;
 using Server.Mobiles;
 
@@ -140,7 +141,7 @@ namespace Server
 
         bool hasSpawner = false;
 
-        for (int j = 0; !hasSpawner && j < si.m_Floor.Count; ++j)
+        for (int j = 0; j < si.m_Floor.Count; ++j)
         {
           Point2D fp = (Point2D)si.m_Floor[j];
 
@@ -148,13 +149,7 @@ namespace Server
           yTotal += fp.Y;
 
           IPooledEnumerable<Spawner> eable = map.GetItemsInRange<Spawner>(new Point3D(fp.X, fp.Y, 0), 0);
-
-          foreach (Spawner item in eable)
-          {
-            hasSpawner = true;
-            break;
-          }
-
+          hasSpawner = eable.Any();
           eable.Free();
 
           if (hasSpawner)
@@ -237,9 +232,7 @@ namespace Server
           if (cp == Point2D.Zero)
             continue;
 
-          int z;
-
-          if (!GetFloorZ(map, cp.X, cp.Y, out z))
+          if (!GetFloorZ(map, cp.X, cp.Y, out int z))
             continue;
 
           new Spawner(1, 1, 1, 0, 4, (string)names[j]).MoveToWorld(new Point3D(cp.X, cp.Y, z), map);

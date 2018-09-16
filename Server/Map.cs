@@ -93,13 +93,13 @@ namespace Server
 
     public static IEnumerable<T> SelectMobiles<T>(Sector s, Rectangle2D bounds) where T : Mobile
     {
-      return s.Mobiles.OfType<T>().Where(o => o != null && !o.Deleted && bounds.Contains(o));
+      return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o));
     }
 
     public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
     {
       return s.Items.OfType<T>()
-        .Where(o => o != null && !o.Deleted && o.Parent == null && o is T && bounds.Contains(o));
+        .Where(o => !o.Deleted && o.Parent == null && bounds.Contains(o));
     }
 
     public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds)
@@ -151,12 +151,7 @@ namespace Server
       return Map.PooledEnumerable<NetState>.Instantiate(map, bounds, ClientSelector ?? SelectClients);
     }
 
-    public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds)
-    {
-      return GetEntities(map, bounds, true, true);
-    }
-
-    public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds, bool items, bool mobiles)
+    public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds, bool items = true, bool mobiles = true)
     {
       return Map.PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
     }

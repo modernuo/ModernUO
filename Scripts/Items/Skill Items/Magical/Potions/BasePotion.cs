@@ -143,16 +143,13 @@ namespace Server.Items
           {
             BasePotion pot = (BasePotion)Activator.CreateInstance(GetType());
 
-            if (pot != null)
-            {
-              Amount--;
+            Amount--;
 
-              if (from.Backpack != null && !from.Backpack.Deleted)
-                from.Backpack.DropItem(pot);
-              else
-                pot.MoveToWorld(from.Location, from.Map);
-              pot.Drink(from);
-            }
+            if (from.Backpack != null && !from.Backpack.Deleted)
+              from.Backpack.DropItem(pot);
+            else
+              pot.MoveToWorld(from.Location, from.Map);
+            pot.Drink(from);
           }
           else
           {

@@ -72,11 +72,12 @@ namespace Server.RemoteAdmin
     {
       LazyInitialize();
 
-      if (!Enabled) return;
+      if (!Enabled)
+        return;
 
       try
       {
-        Account acct = state.Account as Account;
+        Account acct = state?.Account as Account;
         string name = acct == null ? "(UNKNOWN)" : acct.Username;
         string accesslevel = acct == null ? "NoAccount" : acct.AccessLevel.ToString();
         string statestr = state == null ? "NULLSTATE" : state.ToString();
@@ -97,6 +98,7 @@ namespace Server.RemoteAdmin
       }
       catch
       {
+        // ignored
       }
     }
   }

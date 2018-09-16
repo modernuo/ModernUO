@@ -154,7 +154,7 @@ namespace Server.Mobiles
       {
         object[] objs = t.GetCustomAttributes(typeof(FriendlyNameAttribute), false);
 
-        if (objs != null && objs.Length > 0)
+        if (objs.Length > 0)
         {
           FriendlyNameAttribute friendly = objs[0] as FriendlyNameAttribute;
 

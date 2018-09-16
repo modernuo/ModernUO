@@ -160,48 +160,48 @@ namespace Server.PathAlgorithms.FastAStar
 
           bool wasTouched = m_Touched[newNode];
 
-          if (!wasTouched)
+          if (wasTouched)
+            continue;
+          
+          int newCost = m_Nodes[bestNode].cost + 1;
+          int newTotal = newCost + Heuristic(newNode % AreaSize, newNode / AreaSize % AreaSize,
+                           m_Nodes[newNode].z);
+
+          if (m_Nodes[newNode].total <= newTotal)
+            continue;
+          
+          m_Nodes[newNode].parent = bestNode;
+          m_Nodes[newNode].cost = newCost;
+          m_Nodes[newNode].total = newTotal;
+
+          if (m_OnOpen[newNode])
+            continue;
+          
+          AddToChain(newNode);
+
+          if (newNode != destNode)
+            continue;
+          
+          pathCount = 0;
+          parent = m_Nodes[newNode].parent;
+
+          while (parent != -1)
           {
-            int newCost = m_Nodes[bestNode].cost + 1;
-            int newTotal = newCost + Heuristic(newNode % AreaSize, newNode / AreaSize % AreaSize,
-                             m_Nodes[newNode].z);
+            path[pathCount++] = GetDirection(parent % AreaSize, parent / AreaSize % AreaSize,
+              newNode % AreaSize, newNode / AreaSize % AreaSize);
+            newNode = parent;
+            parent = m_Nodes[newNode].parent;
 
-            if (!wasTouched || m_Nodes[newNode].total > newTotal)
-            {
-              m_Nodes[newNode].parent = bestNode;
-              m_Nodes[newNode].cost = newCost;
-              m_Nodes[newNode].total = newTotal;
-
-              if (!wasTouched || !m_OnOpen[newNode])
-              {
-                AddToChain(newNode);
-
-                if (newNode == destNode)
-                {
-                  pathCount = 0;
-                  parent = m_Nodes[newNode].parent;
-
-                  while (parent != -1)
-                  {
-                    path[pathCount++] = GetDirection(parent % AreaSize, parent / AreaSize % AreaSize,
-                      newNode % AreaSize, newNode / AreaSize % AreaSize);
-                    newNode = parent;
-                    parent = m_Nodes[newNode].parent;
-
-                    if (newNode == fromNode)
-                      break;
-                  }
-
-                  Direction[] dirs = new Direction[pathCount];
-
-                  while (pathCount > 0)
-                    dirs[backtrack++] = path[--pathCount];
-
-                  return dirs;
-                }
-              }
-            }
+            if (newNode == fromNode)
+              break;
           }
+
+          Direction[] dirs = new Direction[pathCount];
+
+          while (pathCount > 0)
+            dirs[backtrack++] = path[--pathCount];
+
+          return dirs;
         }
       }
 

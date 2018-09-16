@@ -55,7 +55,7 @@ namespace Server.Spells.Third
         {
           item.OnSnoop(Caster);
         }
-        else if (item is Corpse && !((Corpse)item).CheckLoot(Caster, null))
+        else if (item is Corpse corpse && !corpse.CheckLoot(Caster, null))
         {
         }
         else if (Caster.Region.OnDoubleClick(Caster, item))
@@ -82,10 +82,10 @@ namespace Server.Spells.Third
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is ITelekinesisable)
-          m_Owner.Target((ITelekinesisable)o);
-        else if (o is Container)
-          m_Owner.Target((Container)o);
+        if (o is ITelekinesisable telekinesisable)
+          m_Owner.Target(telekinesisable);
+        else if (o is Container container)
+          m_Owner.Target(container);
         else
           from.SendLocalizedMessage(501857); // This spell won't work on that!
       }

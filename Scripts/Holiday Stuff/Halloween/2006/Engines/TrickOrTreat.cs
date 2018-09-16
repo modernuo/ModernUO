@@ -65,32 +65,32 @@ namespace Server.Engines.Events
       {
         Mobile twin = new NaughtyTwin(m_From);
 
-        if (twin != null && !twin.Deleted)
+        if (twin.Deleted)
+          return;
+        
+        foreach (Item item in m_From.Items)
+          if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
+            m_Items.Add(item);
+
+        if (m_Items.Count > 0)
         {
-          foreach (Item item in m_From.Items)
+          for (int i = 0; i < m_Items.Count; i++) /* dupe exploits start out like this ... */
+            twin.AddItem(Mobile.LiftItemDupe(m_Items[i], 1));
+
+          foreach (Item item in twin.Items) /* ... and end like this */
             if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
-              m_Items.Add(item);
-
-          if (m_Items.Count > 0)
-          {
-            for (int i = 0; i < m_Items.Count; i++) /* dupe exploits start out like this ... */
-              twin.AddItem(Mobile.LiftItemDupe(m_Items[i], 1));
-
-            foreach (Item item in twin.Items) /* ... and end like this */
-              if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
-                item.Movable = false;
-          }
-
-          twin.Hue = m_From.Hue;
-          twin.BodyValue = m_From.BodyValue;
-          twin.Kills = m_From.Kills;
-
-          Point3D point = RandomPointOneAway(m_From.X, m_From.Y, m_From.Z, m_From.Map);
-
-          twin.MoveToWorld(m_From.Map.CanSpawnMobile(point) ? point : m_From.Location, m_From.Map);
-
-          Timer.DelayCall(TimeSpan.FromSeconds(5), DeleteTwin, twin);
+              item.Movable = false;
         }
+
+        twin.Hue = m_From.Hue;
+        twin.BodyValue = m_From.BodyValue;
+        twin.Kills = m_From.Kills;
+
+        Point3D point = RandomPointOneAway(m_From.X, m_From.Y, m_From.Z, m_From.Map);
+
+        twin.MoveToWorld(m_From.Map.CanSpawnMobile(point) ? point : m_From.Location, m_From.Map);
+
+        Timer.DelayCall(TimeSpan.FromSeconds(5), DeleteTwin, twin);
       }
     }
 
@@ -184,11 +184,11 @@ namespace Server.Engines.Events
               {
                 m_Begged.Say(1076770); /* TRICK! */
 
-                int m_Action = Utility.Random(4);
+                int action = Utility.Random(4);
 
-                if (m_Action == 0)
+                if (action == 0)
                   Timer.DelayCall(OneSecond, OneSecond, 10, Bleeding, from);
-                else if (m_Action == 1)
+                else if (action == 1)
                   Timer.DelayCall(TimeSpan.FromSeconds(2), SolidHueMobile, from);
                 else
                   Timer.DelayCall(TimeSpan.FromSeconds(2), MakeTwin, from);
@@ -302,8 +302,6 @@ namespace Server.Engines.Events
 
     public static Point3D RandomMoongate(Mobile target)
     {
-      Map map = target.Map;
-
       switch (target.Map.MapID)
       {
         case 2: return Ilshenar_Locations[Utility.Random(Ilshenar_Locations.Length)];

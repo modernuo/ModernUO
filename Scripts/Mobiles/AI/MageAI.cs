@@ -150,12 +150,7 @@ namespace Server.Mobiles
           m_Mobile.UseSkill(SkillName.SpiritSpeak);
         }
         else
-        {
           spell = new GreaterHealSpell(m_Mobile, null);
-
-          if (spell == null)
-            spell = new HealSpell(m_Mobile, null);
-        }
       }
       else if (m_Mobile.Hits < m_Mobile.HitsMax - 10)
       {
@@ -933,7 +928,7 @@ namespace Server.Mobiles
           {
             double prio = m_Mobile.GetDistanceToSqrt(m);
 
-            if (!activeOnly && (inactive == null || prio < inactPrio))
+            if (inactive == null || prio < inactPrio)
             {
               inactive = m;
               inactPrio = prio;
