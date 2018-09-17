@@ -26,9 +26,7 @@ namespace Server.Misc
 
     private static void EventSink_Login(LoginEventArgs e)
     {
-      Account acct = e.Mobile.Account as Account;
-
-      if (acct == null)
+      if (!(e.Mobile.Account is Account acct))
         return;
 
       DateTime now = DateTime.UtcNow;

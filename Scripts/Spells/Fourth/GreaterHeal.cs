@@ -46,7 +46,7 @@ namespace Server.Spells.Fourth
       {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
       }
-      else if (m is BaseCreature && ((BaseCreature)m).IsAnimatedDead)
+      else if (m is BaseCreature creature && creature.IsAnimatedDead)
       {
         Caster.SendLocalizedMessage(1061654); // You cannot heal that which is not alive.
       }
@@ -92,7 +92,8 @@ namespace Server.Spells.Fourth
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile) m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

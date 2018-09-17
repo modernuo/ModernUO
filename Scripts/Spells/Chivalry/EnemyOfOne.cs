@@ -50,13 +50,13 @@ namespace Server.Spells.Chivalry
         m_Table[Caster] = Timer.DelayCall(TimeSpan.FromMinutes(delay), new TimerStateCallback(Expire_Callback),
           Caster);
 
-        if (Caster is PlayerMobile)
+        if (Caster is PlayerMobile mobile)
         {
-          ((PlayerMobile)Caster).EnemyOfOneType = null;
-          ((PlayerMobile)Caster).WaitingForEnemy = true;
+          mobile.EnemyOfOneType = null;
+          mobile.WaitingForEnemy = true;
 
-          BuffInfo.AddBuff(Caster,
-            new BuffInfo(BuffIcon.EnemyOfOne, 1075653, 1044111, TimeSpan.FromMinutes(delay), Caster));
+          BuffInfo.AddBuff(mobile,
+            new BuffInfo(BuffIcon.EnemyOfOne, 1075653, 1044111, TimeSpan.FromMinutes(delay), mobile));
         }
       }
 
@@ -71,10 +71,10 @@ namespace Server.Spells.Chivalry
 
       m.PlaySound(0x1F8);
 
-      if (m is PlayerMobile)
+      if (m is PlayerMobile mobile)
       {
-        ((PlayerMobile)m).EnemyOfOneType = null;
-        ((PlayerMobile)m).WaitingForEnemy = false;
+        mobile.EnemyOfOneType = null;
+        mobile.WaitingForEnemy = false;
       }
     }
   }

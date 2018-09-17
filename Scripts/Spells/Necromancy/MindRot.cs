@@ -120,8 +120,8 @@ namespace Server.Spells.Necromancy
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile)
-          m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
         else
           from.SendLocalizedMessage(1060508); // You can't curse that.
       }
@@ -135,14 +135,12 @@ namespace Server.Spells.Necromancy
 
   public class MRExpireTimer : Timer
   {
-    private Mobile m_Caster;
     private DateTime m_End;
     private Mobile m_Target;
 
     public MRExpireTimer(Mobile caster, Mobile target, TimeSpan delay) : base(TimeSpan.FromSeconds(1.0),
       TimeSpan.FromSeconds(1.0))
     {
-      m_Caster = caster;
       m_Target = target;
       m_End = DateTime.UtcNow + delay;
       Priority = TimerPriority.TwoFiftyMS;

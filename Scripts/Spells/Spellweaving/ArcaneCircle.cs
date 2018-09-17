@@ -97,7 +97,7 @@ namespace Server.Spells.Spellweaving
       {
         ItemData id = item.ItemData;
 
-        if (item == null || item.Z + id.CalcHeight != location.Z)
+        if (item.Z + id.CalcHeight != location.Z)
           continue;
         if (IsValidTile(item.ItemID))
         {
@@ -120,14 +120,12 @@ namespace Server.Spells.Spellweaving
 
     private List<Mobile> GetArcanists()
     {
-      List<Mobile> weavers = new List<Mobile>();
-
-      weavers.Add(Caster);
+      List<Mobile> weavers = new List<Mobile> { Caster };
 
       //OSI Verified: Even enemies/combatants count
       foreach (Mobile m in Caster.GetMobilesInRange(1)) //Range verified as 1
         if (m != Caster && m is PlayerMobile && Caster.CanBeBeneficial(m, false) &&
-            Math.Abs(Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value) <= 20 && !(m is Clone))
+            Math.Abs(Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value) <= 20)
           weavers.Add(m);
       // Everyone gets the Arcane Focus, power capped elsewhere
 
@@ -143,15 +141,15 @@ namespace Server.Spells.Spellweaving
 
       if (focus == null)
       {
-        ArcaneFocus f = new ArcaneFocus(duration, strengthBonus);
-        if (to.PlaceInBackpack(f))
+        focus = new ArcaneFocus(duration, strengthBonus);
+        if (to.PlaceInBackpack(focus))
         {
-          f.SendTimeRemainingMessage(to);
+          focus.SendTimeRemainingMessage(to);
           to.SendLocalizedMessage(1072740); // An arcane focus appears in your backpack.
         }
         else
         {
-          f.Delete();
+          focus.Delete();
         }
       }
       else //OSI renewal rules: the new one will override the old one, always.

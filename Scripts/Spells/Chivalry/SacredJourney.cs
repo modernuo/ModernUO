@@ -21,11 +21,7 @@ namespace Server.Spells.Chivalry
 
     private RunebookEntry m_Entry;
 
-    public SacredJourneySpell(Mobile caster, Item scroll) : this(caster, scroll, null, null)
-    {
-    }
-
-    public SacredJourneySpell(Mobile caster, Item scroll, RunebookEntry entry, Runebook book) : base(caster, scroll,
+    public SacredJourneySpell(Mobile caster, Item scroll, RunebookEntry entry = null, Runebook book = null) : base(caster, scroll,
       m_Info)
     {
       m_Entry = entry;
@@ -96,9 +92,9 @@ namespace Server.Spells.Chivalry
       else if (!SpellHelper.CheckTravel(Caster, map, loc, TravelCheckType.RecallTo))
       {
       }
-      else if (map == Map.Felucca && Caster is PlayerMobile && ((PlayerMobile)Caster).Young)
+      else if (map == Map.Felucca && Caster is PlayerMobile mobile && mobile.Young)
       {
-        Caster.SendLocalizedMessage(1049543); // You decide against traveling to Felucca while you are still young.
+        mobile.SendLocalizedMessage(1049543); // You decide against traveling to Felucca while you are still young.
       }
       else if (Caster.Kills >= 5 && map != Map.Felucca)
       {
@@ -157,38 +153,32 @@ namespace Server.Spells.Chivalry
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is RecallRune)
+        if (o is RecallRune rune)
         {
-          RecallRune rune = (RecallRune)o;
-
           if (rune.Marked)
             m_Owner.Effect(rune.Target, rune.TargetMap, true);
           else
             from.SendLocalizedMessage(501805); // That rune is not yet marked.
         }
-        else if (o is Runebook)
+        else if (o is Runebook runebook)
         {
-          RunebookEntry e = ((Runebook)o).Default;
+          RunebookEntry e = runebook.Default;
 
           if (e != null)
             m_Owner.Effect(e.Location, e.Map, true);
           else
             from.SendLocalizedMessage(502354); // Target is not marked.
         }
-        else if (o is Key && ((Key)o).KeyValue != 0 && ((Key)o).Link is BaseBoat)
+        else if (o is Key key && key.KeyValue != 0 && key.Link is BaseBoat boat)
         {
-          BaseBoat boat = ((Key)o).Link as BaseBoat;
-
-          if (!boat.Deleted && boat.CheckKey(((Key)o).KeyValue))
+          if (!boat.Deleted && boat.CheckKey(key.KeyValue))
             m_Owner.Effect(boat.GetMarkedLocation(), boat.Map, false);
           else
             from.Send(new MessageLocalized(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 502357,
               from.Name, "")); // I can not recall from that object.
         }
-        else if (o is HouseRaffleDeed && ((HouseRaffleDeed)o).ValidLocation())
+        else if (o is HouseRaffleDeed deed && deed.ValidLocation())
         {
-          HouseRaffleDeed deed = (HouseRaffleDeed)o;
-
           m_Owner.Effect(deed.PlotLocation, deed.PlotFacet, true);
         }
         else

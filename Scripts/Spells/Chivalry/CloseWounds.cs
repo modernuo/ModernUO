@@ -48,7 +48,7 @@ namespace Server.Spells.Chivalry
       {
         Caster.SendLocalizedMessage(1060178); // You are too far away to perform that action!
       }
-      else if (m is BaseCreature && ((BaseCreature)m).IsAnimatedDead)
+      else if (m is BaseCreature creature && creature.IsAnimatedDead)
       {
         Caster.SendLocalizedMessage(1061654); // You cannot heal that which is not alive.
       }
@@ -72,19 +72,12 @@ namespace Server.Spells.Chivalry
          * The caster's Karma affects the amount of damage healed.
          */
 
-        int toHeal = ComputePowerValue(6) + Utility.RandomMinMax(0, 2);
-
         // TODO: Should caps be applied?
-        if (toHeal < 7)
-          toHeal = 7;
-        else if (toHeal > 39)
-          toHeal = 39;
+        int toHeal = Math.Min(Math.Max(ComputePowerValue(6) + Utility.RandomMinMax(0, 2), 7), 39);
 
         if (m.Hits + toHeal > m.HitsMax)
           toHeal = m.HitsMax - m.Hits;
 
-        //m.Hits += toHeal;	//Was previously due to the message
-        //m.Heal( toHeal, Caster, false );
         SpellHelper.Heal(toHeal, m, Caster, false);
 
         m.SendLocalizedMessage(1060203,
@@ -109,8 +102,8 @@ namespace Server.Spells.Chivalry
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile)
-          m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

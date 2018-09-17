@@ -54,13 +54,10 @@ namespace Server.Spells.Chivalry
         for (int i = 0; i < targets.Count; ++i)
         {
           Mobile m = targets[i];
-          BaseCreature bc = m as BaseCreature;
 
-          if (bc != null)
+          if (m is BaseCreature bc)
           {
-            bool dispellable = bc.Summoned && !bc.IsAnimatedDead;
-
-            if (dispellable)
+            if (bc.Summoned && !bc.IsAnimatedDead)
             {
               double dispelChance = (50.0 + 100 * (chiv - bc.DispelDifficulty) / (bc.DispelFocus * 2)) / 100;
               dispelChance *= dispelSkill / 100.0;

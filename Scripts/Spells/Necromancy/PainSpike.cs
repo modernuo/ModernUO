@@ -39,7 +39,7 @@ namespace Server.Spells.Necromancy
       {
         SpellHelper.Turn(Caster, m);
 
-        //SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m ); //Irrelevent asfter AoS
+        //SpellHelper.CheckReflect( (int)this.Circle, Caster, ref m ); //Irrelevent after AoS
 
         /* Temporarily causes intense physical pain to the target, dealing direct damage.
          * After 10 seconds the spell wears off, and if the target is still alive,
@@ -61,9 +61,8 @@ namespace Server.Spells.Necromancy
         if (m_Table.Contains(m))
         {
           damage = Utility.RandomMinMax(3, 7);
-          Timer t = m_Table[m] as Timer;
 
-          if (t != null)
+          if (m_Table[m] is Timer t)
           {
             t.Delay += TimeSpan.FromSeconds(2.0);
 
@@ -77,6 +76,7 @@ namespace Server.Spells.Necromancy
 
         BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.PainSpike, 1075667, buffTime, m, Convert.ToString((int)damage)));
 
+        // TODO: Find a better way to do this
         WeightOverloading.DFA = DFAlgorithm.PainSpike;
         m.Damage((int)damage, Caster);
         SpellHelper.DoLeech((int)damage, Caster, m);
@@ -126,8 +126,8 @@ namespace Server.Spells.Necromancy
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile)
-          m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

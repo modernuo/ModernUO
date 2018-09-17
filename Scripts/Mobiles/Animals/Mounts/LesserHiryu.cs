@@ -138,7 +138,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.Gems, 4);
     }
 
-    public override double GetControlChance(Mobile m, bool useBaseSkill)
+    public override double GetControlChance(Mobile m, bool useBaseSkill = false)
     {
       double tamingChance = base.GetControlChance(m, useBaseSkill);
 

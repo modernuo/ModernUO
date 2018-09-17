@@ -34,7 +34,7 @@ namespace Server.Spells.Chivalry
 
         foreach (Mobile m in Caster.GetMobilesInRange(3)) // TODO: Validate range
         {
-          if (m is BaseCreature && ((BaseCreature)m).IsAnimatedDead)
+          if (m is BaseCreature creature && creature.IsAnimatedDead)
             continue;
 
           if (Caster != m && m.InLOS(Caster) && Caster.CanBeBeneficial(m, false, true) && !(m is Golem))
@@ -54,7 +54,7 @@ namespace Server.Spells.Chivalry
         bool sacrifice = false;
 
         // TODO: Is there really a resurrection chance?
-        double resChance = 0.1 + 0.9 * ((double)Caster.Karma / 10000);
+        double resChance = 0.1 + 0.9 * Caster.Karma / 10000.0d;
 
         for (int i = 0; i < targets.Count; ++i)
         {

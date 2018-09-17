@@ -76,9 +76,7 @@ namespace Server.Spells.Chivalry
           Effects.SendMovingParticles(from, to, 0x2255, 1, 0, false, false, 13, 3, 9501, 1, 0, EffectLayer.Head,
             0x100);
 
-          StatMod mod;
-
-          mod = m.GetStatMod("[Magic] Str Offset");
+          StatMod mod = m.GetStatMod("[Magic] Str Offset");
           if (mod != null && mod.Offset < 0)
             m.RemoveStatMod("[Magic] Str Offset");
 
@@ -130,8 +128,8 @@ namespace Server.Spells.Chivalry
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile)
-          m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

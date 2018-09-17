@@ -87,9 +87,7 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      ChampionSpawnRegion r = Caster.Region.GetRegion(typeof(ChampionSpawnRegion)) as ChampionSpawnRegion;
-
-      if (r == null || !Caster.InRange(r.ChampionSpawn, Range))
+      if (!(Caster.Region.GetRegion(typeof(ChampionSpawnRegion)) is ChampionSpawnRegion r) || !Caster.InRange(r.ChampionSpawn, Range))
       {
         Caster.SendLocalizedMessage(1072111); // You are not in a valid exorcism region.
       }

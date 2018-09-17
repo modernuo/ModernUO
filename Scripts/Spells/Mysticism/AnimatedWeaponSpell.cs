@@ -76,8 +76,8 @@ namespace Server.Spells.Mysticism
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is IPoint3D)
-          m_Owner.Target((IPoint3D)o);
+        if (o is IPoint3D d)
+          m_Owner.Target(d);
       }
 
       protected override void OnTargetFinish(Mobile from)

@@ -234,12 +234,10 @@ namespace Server.Items
       if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
         return;
 
-      IPoint3D ip = o as IPoint3D;
-
-      if (ip != null)
+      if (o is IPoint3D ip)
       {
-        if (ip is Item)
-          ip = ((Item)ip).GetWorldTop();
+        if (ip is Item item)
+          ip = item.GetWorldTop();
 
         Point3D p = new Point3D(ip);
 

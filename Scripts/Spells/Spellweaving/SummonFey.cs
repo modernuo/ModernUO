@@ -28,13 +28,13 @@ namespace Server.Spells.Spellweaving
       Mobile caster = Caster;
 
       // This is done after casting completes
-      if (caster is PlayerMobile)
+      if (caster is PlayerMobile mobile)
       {
-        MLQuestContext context = MLQuestSystem.GetContext((PlayerMobile)caster);
+        MLQuestContext context = MLQuestSystem.GetContext(mobile);
 
         if (context == null || !context.SummonFey)
         {
-          caster.SendLocalizedMessage(
+          mobile.SendLocalizedMessage(
             1074563); // You haven't forged a friendship with the fey and are unable to summon their aid.
           return false;
         }

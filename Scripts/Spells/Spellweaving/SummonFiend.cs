@@ -28,13 +28,13 @@ namespace Server.Spells.Spellweaving
       Mobile caster = Caster;
 
       // This is done after casting completes
-      if (caster is PlayerMobile)
+      if (caster is PlayerMobile mobile)
       {
-        MLQuestContext context = MLQuestSystem.GetContext((PlayerMobile)caster);
+        MLQuestContext context = MLQuestSystem.GetContext(mobile);
 
         if (context == null || !context.SummonFiend)
         {
-          caster.SendLocalizedMessage(1074564); // You haven't demonstrated mastery to summon a fiend.
+          mobile.SendLocalizedMessage(1074564); // You haven't demonstrated mastery to summon a fiend.
           return false;
         }
       }

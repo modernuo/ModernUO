@@ -77,8 +77,7 @@ namespace Server.SkillHandlers
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        BaseBook book = targeted as BaseBook;
-        if (book == null)
+        if (!(targeted is BaseBook book))
         {
           from.SendLocalizedMessage(1046296); // That is not a book
         }
@@ -122,9 +121,7 @@ namespace Server.SkillHandlers
         if (m_BookSrc.Deleted)
           return;
 
-        BaseBook bookDst = targeted as BaseBook;
-
-        if (bookDst == null)
+        if (!(targeted is BaseBook bookDst))
         {
           from.SendLocalizedMessage(1046296); // That is not a book
         }

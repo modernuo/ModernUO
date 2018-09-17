@@ -95,7 +95,7 @@ namespace Server
     {
       return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o));
     }
-
+    
     public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
     {
       return s.Items.OfType<T>()
@@ -1081,23 +1081,13 @@ namespace Server
       return GetObjectsInRange(p, Core.GlobalMaxUpdateRange);
     }
 
-    public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range)
-    {
-      return GetObjectsInRange(p, range, true, true);
-    }
-
-    public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range, bool items, bool mobiles)
+    public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range, bool items = true, bool mobiles = true)
     {
       return GetObjectsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1), items,
         mobiles);
     }
 
-    public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds)
-    {
-      return GetObjectsInBounds(bounds, true, true);
-    }
-
-    public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds, bool items, bool mobiles)
+    public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds, bool items = true, bool mobiles = true)
     {
       return PooledEnumeration.GetEntities(this, bounds, items, mobiles);
     }
@@ -1353,13 +1343,7 @@ namespace Server
         dest = swap;
       }
 
-      double rise, run, zslp;
-      double sq3d;
-      double x, y, z;
-      int xd, yd, zd;
-      int ix, iy, iz;
       int height;
-      bool found;
       Point3D p;
       Point3DList path = new Point3DList();
       TileFlag flags;
@@ -1370,28 +1354,25 @@ namespace Server
       if (path.Count > 0)
         path.Clear();
 
-      xd = dest.m_X - org.m_X;
-      yd = dest.m_Y - org.m_Y;
-      zd = dest.m_Z - org.m_Z;
-      zslp = Math.Sqrt(xd * xd + yd * yd);
-      if (zd != 0)
-        sq3d = Math.Sqrt(zslp * zslp + zd * zd);
-      else
-        sq3d = zslp;
+      int xd = dest.m_X - org.m_X;
+      int yd = dest.m_Y - org.m_Y;
+      int zd = dest.m_Z - org.m_Z;
+      double zslp = Math.Sqrt(xd * xd + yd * yd);
+      double sq3d = zd != 0 ? Math.Sqrt(zslp * zslp + zd * zd) : zslp;
 
-      rise = yd / sq3d;
-      run = xd / sq3d;
+      double rise = yd / sq3d;
+      double run = xd / sq3d;
       zslp = zd / sq3d;
 
-      y = org.m_Y;
-      z = org.m_Z;
-      x = org.m_X;
+      double y = org.m_Y;
+      double z = org.m_Z;
+      double x = org.m_X;
       while (Utility.NumberBetween(x, dest.m_X, org.m_X, 0.5) && Utility.NumberBetween(y, dest.m_Y, org.m_Y, 0.5) &&
              Utility.NumberBetween(z, dest.m_Z, org.m_Z, 0.5))
       {
-        ix = (int)Math.Round(x);
-        iy = (int)Math.Round(y);
-        iz = (int)Math.Round(z);
+        int ix = (int)Math.Round(x);
+        int iy = (int)Math.Round(y);
+        int iz = (int)Math.Round(z);
         if (path.Count > 0)
         {
           p = path.Last;
@@ -1517,7 +1498,7 @@ namespace Server
 
         height = id.CalcHeight;
 
-        found = false;
+        bool found = false;
 
         int count = path.Count;
 

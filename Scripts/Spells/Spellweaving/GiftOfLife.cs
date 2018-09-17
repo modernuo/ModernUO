@@ -39,8 +39,6 @@ namespace Server.Spells.Spellweaving
 
     public void Target(Mobile m)
     {
-      BaseCreature bc = m as BaseCreature;
-
       if (!Caster.CanSee(m))
       {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
@@ -49,7 +47,7 @@ namespace Server.Spells.Spellweaving
       {
         // As per Osi: Nothing happens.
       }
-      else if (m != Caster && (bc == null || !bc.IsBonded || bc.ControlMaster != Caster))
+      else if (m != Caster && !(m is BaseCreature bc && bc.IsBonded && bc.ControlMaster == Caster))
       {
         Caster.SendLocalizedMessage(1072077); // You may only cast this spell on yourself or a bonded pet.
       }
@@ -101,9 +99,8 @@ namespace Server.Spells.Spellweaving
       {
         double hitsScalar = timer.Spell.HitsScalar;
 
-        if (m is BaseCreature && m.IsDeadBondedPet)
+        if (m is BaseCreature pet && pet.IsDeadBondedPet)
         {
-          BaseCreature pet = (BaseCreature)m;
           Mobile master = pet.GetMaster();
 
           if (master?.NetState != null && Utility.InUpdateRange(pet, master))
@@ -190,8 +187,8 @@ namespace Server.Spells.Spellweaving
 
       protected override void OnTarget(Mobile m, object o)
       {
-        if (o is Mobile)
-          m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
         else
           m.SendLocalizedMessage(1072077); // You may only cast this spell on yourself or a bonded pet.
       }

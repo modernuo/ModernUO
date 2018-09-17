@@ -40,7 +40,7 @@ namespace Server.Spells.Fifth
       {
         Caster.SendLocalizedMessage(1005049); // That cannot be dispelled.
       }
-      else if (item is Moongate && !((Moongate)item).Dispellable)
+      else if (item is Moongate moongate && !moongate.Dispellable)
       {
         Caster.SendLocalizedMessage(1005047); // That magic is too chaotic
       }
@@ -69,8 +69,8 @@ namespace Server.Spells.Fifth
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Item)
-          m_Owner.Target((Item)o);
+        if (o is Item item)
+          m_Owner.Target(item);
         else
           m_Owner.Caster.SendLocalizedMessage(1005049); // That cannot be dispelled.
       }

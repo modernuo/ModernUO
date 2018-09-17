@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Factions;
 using Server.Items;
 using Server.Misc;
@@ -65,19 +66,11 @@ namespace Server.Spells.Seventh
 
     private bool GateExistsAt(Map map, Point3D loc)
     {
-      bool _gateFound = false;
-
       IPooledEnumerable<Item> eable = map.GetItemsInRange(loc, 0);
-      foreach (Item item in eable)
-        if (item is Moongate || item is PublicMoongate)
-        {
-          _gateFound = true;
-          break;
-        }
-
+      bool gateFound = eable.Any(item => item is Moongate || item is PublicMoongate);
       eable.Free();
 
-      return _gateFound;
+      return gateFound;
     }
 
     public void Effect(Point3D loc, Map map, bool checkMulti)
@@ -96,9 +89,9 @@ namespace Server.Spells.Seventh
       else if (!SpellHelper.CheckTravel(Caster, map, loc, TravelCheckType.GateTo))
       {
       }
-      else if (map == Map.Felucca && Caster is PlayerMobile && ((PlayerMobile)Caster).Young)
+      else if (map == Map.Felucca && Caster is PlayerMobile mobile && mobile.Young)
       {
-        Caster.SendLocalizedMessage(1049543); // You decide against traveling to Felucca while you are still young.
+        mobile.SendLocalizedMessage(1049543); // You decide against traveling to Felucca while you are still young.
       }
       else if (Caster.Kills >= 5 && map != Map.Felucca)
       {
@@ -207,18 +200,16 @@ namespace Server.Spells.Seventh
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is RecallRune)
+        if (o is RecallRune rune)
         {
-          RecallRune rune = (RecallRune)o;
-
           if (rune.Marked)
             m_Owner.Effect(rune.Target, rune.TargetMap, true);
           else
             from.SendLocalizedMessage(501803); // That rune is not yet marked.
         }
-        else if (o is Runebook)
+        else if (o is Runebook runebook)
         {
-          RunebookEntry e = ((Runebook)o).Default;
+          RunebookEntry e = runebook.Default;
 
           if (e != null)
             m_Owner.Effect(e.Location, e.Map, true);
@@ -234,10 +225,8 @@ namespace Server.Spells.Seventh
           else
             from.Send( new MessageLocalized( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 501030, from.Name, "" ) ); // I can not gate travel from that object.
         }*/
-        else if (o is HouseRaffleDeed && ((HouseRaffleDeed)o).ValidLocation())
+        else if (o is HouseRaffleDeed deed && deed.ValidLocation())
         {
-          HouseRaffleDeed deed = (HouseRaffleDeed)o;
-
           m_Owner.Effect(deed.PlotLocation, deed.PlotFacet, true);
         }
         else

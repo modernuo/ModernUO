@@ -23,8 +23,8 @@ namespace Server.Targets
           return;
         }
 
-        if (p is Item)
-          p = ((Item)p).GetWorldTop();
+        if (p is Item pItem)
+          p = pItem.GetWorldTop();
 
         CommandLogging.WriteLine(from, "{0} {1} moving {2} to {3}", from.AccessLevel, CommandLogging.Format(from),
           CommandLogging.Format(m_Object), new Point3D(p));

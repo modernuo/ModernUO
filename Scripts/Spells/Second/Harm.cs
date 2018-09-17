@@ -25,12 +25,10 @@ namespace Server.Spells.Second
       Caster.Target = new InternalTarget(this);
     }
 
-
     public override double GetSlayerDamageScalar(Mobile target)
     {
       return 1.0; //This spell isn't affected by slayer spellbooks
     }
-
 
     public void Target(Mobile m)
     {
@@ -97,7 +95,8 @@ namespace Server.Spells.Second
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile) m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

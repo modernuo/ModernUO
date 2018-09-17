@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Items;
 using Server.Network;
 using Server.Spells;
@@ -134,14 +135,9 @@ namespace Server.SkillHandlers
 
       public override void OnCast()
       {
-        Corpse toChannel = null;
-
-        foreach (Item item in Caster.GetItemsInRange(3))
-          if (item is Corpse && !((Corpse)item).Channeled)
-          {
-            toChannel = (Corpse)item;
-            break;
-          }
+        IPooledEnumerable<Corpse> eable = Caster.GetItemsInRange<Corpse>(3);
+        Corpse toChannel = eable.ToList().Find(item => item is Corpse corpse && !corpse.Channeled);
+        eable.Free();
 
         int max, min, mana, number;
 

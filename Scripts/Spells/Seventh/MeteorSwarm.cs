@@ -39,8 +39,8 @@ namespace Server.Spells.Seventh
       {
         SpellHelper.Turn(Caster, p);
 
-        if (p is Item)
-          p = ((Item)p).GetWorldLocation();
+        if (p is Item item)
+          p = item.GetWorldLocation();
 
         List<Mobile> targets = new List<Mobile>();
 
@@ -120,9 +120,7 @@ namespace Server.Spells.Seventh
 
       protected override void OnTarget(Mobile from, object o)
       {
-        IPoint3D p = o as IPoint3D;
-
-        if (p != null)
+        if (o is IPoint3D p)
           m_Owner.Target(p);
       }
 

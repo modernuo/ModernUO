@@ -37,9 +37,7 @@ namespace Server.Spells.Bushido
       if (Caster == null) // Sanity
         return false;
 
-      BaseWeapon weap = Caster.FindItemOnLayer(Layer.OneHanded) as BaseWeapon;
-
-      if (weap == null)
+      if (!(Caster.FindItemOnLayer(Layer.OneHanded) is BaseWeapon weap))
         weap = Caster.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
 
       if (weap != null)
@@ -70,9 +68,7 @@ namespace Server.Spells.Bushido
 
     public static bool CheckSpellEvasion(Mobile defender)
     {
-      BaseWeapon weap = defender.FindItemOnLayer(Layer.OneHanded) as BaseWeapon;
-
-      if (weap == null)
+      if (!(defender.FindItemOnLayer(Layer.OneHanded) is BaseWeapon weap))
         weap = defender.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon;
 
       if (Core.ML)

@@ -59,9 +59,7 @@ namespace Server.Spells.Seventh
         {
           Mobile m = targets[i];
 
-          BaseCreature bc = m as BaseCreature;
-
-          if (bc == null)
+          if (!(m is BaseCreature bc))
             continue;
 
           double dispelChance =
@@ -98,9 +96,7 @@ namespace Server.Spells.Seventh
 
       protected override void OnTarget(Mobile from, object o)
       {
-        IPoint3D p = o as IPoint3D;
-
-        if (p != null)
+        if (o is IPoint3D p)
           m_Owner.Target(p);
       }
 

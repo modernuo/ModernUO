@@ -33,18 +33,12 @@ namespace Server.Spells.Ninjitsu
         return false;
       }
 
-      if (Core.ML)
+      if (Core.ML && @from.Weapon is BaseRanged)
       {
-        BaseRanged ranged = from.Weapon as BaseRanged;
-
-        if (ranged != null)
-        {
-          from.SendLocalizedMessage(1075858); // You can only use this with melee attacks.
-          return false;
-        }
+        from.SendLocalizedMessage(1075858); // You can only use this with melee attacks.
+        return false;
       }
-
-
+      
       return base.Validate(from);
     }
 
@@ -86,9 +80,7 @@ namespace Server.Spells.Ninjitsu
 
     public override void OnClearMove(Mobile from)
     {
-      KiAttackInfo info = m_Table[from] as KiAttackInfo;
-
-      if (info != null)
+      if (m_Table[@from] is KiAttackInfo info)
       {
         info.m_Timer?.Stop();
 
@@ -98,9 +90,7 @@ namespace Server.Spells.Ninjitsu
 
     public static double GetBonus(Mobile from)
     {
-      KiAttackInfo info = m_Table[from] as KiAttackInfo;
-
-      if (info == null)
+      if (!(m_Table[@from] is KiAttackInfo info))
         return 0.0;
 
       int xDelta = info.m_Location.X - from.X;

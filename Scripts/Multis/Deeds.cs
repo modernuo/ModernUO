@@ -15,12 +15,10 @@ namespace Server.Multis.Deeds
 
     protected override void OnTarget(Mobile from, object o)
     {
-      IPoint3D ip = o as IPoint3D;
-
-      if (ip != null)
+      if (o is IPoint3D ip)
       {
-        if (ip is Item)
-          ip = ((Item)ip).GetWorldTop();
+        if (ip is Item item)
+          ip = item.GetWorldTop();
 
         Point3D p = new Point3D(ip);
 
@@ -139,9 +137,8 @@ namespace Server.Multis.Deeds
       }
       else
       {
-        ArrayList toMove;
         Point3D center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-        HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out toMove);
+        HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out ArrayList toMove);
 
         switch (res)
         {
@@ -155,10 +152,10 @@ namespace Server.Multis.Deeds
             {
               object o = toMove[i];
 
-              if (o is Mobile)
-                ((Mobile)o).Location = house.BanLocation;
-              else if (o is Item)
-                ((Item)o).Location = house.BanLocation;
+              if (o is Mobile mobile)
+                mobile.Location = house.BanLocation;
+              else if (o is Item item)
+                item.Location = house.BanLocation;
             }
 
             break;

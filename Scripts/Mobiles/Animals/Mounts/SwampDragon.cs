@@ -168,7 +168,7 @@ namespace Server.Mobiles
       return 0x2C8;
     }
 
-    public override double GetControlChance(Mobile m, bool useBaseSkill)
+    public override double GetControlChance(Mobile m, bool useBaseSkill = false)
     {
       return 1.0;
     }

@@ -309,33 +309,31 @@ namespace Server.Mobiles
 
     public override bool CheckGold(Mobile from, Item dropped)
     {
-      if (dropped is Gold)
+      if (!(dropped is Gold g))
+        return false;
+      
+      if (g.Amount > 50)
       {
-        Gold g = (Gold)dropped;
+        PrivateOverheadMessage(MessageType.Regular, 0x3B2, false, "I cannot accept so large a tip!",
+          from.NetState);
+      }
+      else
+      {
+        string tip = TipMessage;
 
-        if (g.Amount > 50)
+        if (tip == null || (tip = tip.Trim()).Length == 0)
         {
-          PrivateOverheadMessage(MessageType.Regular, 0x3B2, false, "I cannot accept so large a tip!",
+          PrivateOverheadMessage(MessageType.Regular, 0x3B2, false,
+            "It would not be fair of me to take your money and not offer you information in return.",
             from.NetState);
         }
         else
         {
-          string tip = TipMessage;
+          Direction = GetDirectionTo(from);
+          PrivateOverheadMessage(MessageType.Regular, 0x3B2, false, tip, from.NetState);
 
-          if (tip == null || (tip = tip.Trim()).Length == 0)
-          {
-            PrivateOverheadMessage(MessageType.Regular, 0x3B2, false,
-              "It would not be fair of me to take your money and not offer you information in return.",
-              from.NetState);
-          }
-          else
-          {
-            Direction = GetDirectionTo(from);
-            PrivateOverheadMessage(MessageType.Regular, 0x3B2, false, tip, from.NetState);
-
-            g.Delete();
-            return true;
-          }
+          g.Delete();
+          return true;
         }
       }
 

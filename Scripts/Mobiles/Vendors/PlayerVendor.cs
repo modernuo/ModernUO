@@ -107,9 +107,9 @@ namespace Server.Mobiles
         return false;
       }
 
-      if (!BaseHouse.NewVendorSystem && Parent is PlayerVendor)
+      if (!BaseHouse.NewVendorSystem && Parent is PlayerVendor vendor)
       {
-        BaseHouse house = ((PlayerVendor)Parent).House;
+        BaseHouse house = vendor.House;
 
         if (house != null && house.IsAosRules && !house.CheckAosStorage(1 + item.TotalItems + plusItems))
         {
@@ -155,9 +155,7 @@ namespace Server.Mobiles
     {
       base.GetChildContextMenuEntries(from, list, item);
 
-      PlayerVendor pv = RootParent as PlayerVendor;
-
-      if (pv == null || pv.IsOwner(from))
+      if (!(RootParent is PlayerVendor pv) || pv.IsOwner(from))
         return;
 
       VendorItem vi = pv.GetVendorItem(item);
@@ -199,10 +197,8 @@ namespace Server.Mobiles
 
     public override void OnSingleClickContained(Mobile from, Item item)
     {
-      if (RootParent is PlayerVendor)
+      if (RootParent is PlayerVendor vendor)
       {
-        PlayerVendor vendor = (PlayerVendor)RootParent;
-
         VendorItem vi = vendor.GetVendorItem(item);
 
         if (vi != null)
@@ -985,9 +981,7 @@ namespace Server.Mobiles
 
     public static void TryToBuy(Item item, Mobile from)
     {
-      PlayerVendor vendor = item.RootParent as PlayerVendor;
-
-      if (vendor == null || !vendor.CanInteractWith(from, false))
+      if (!(item.RootParent is PlayerVendor vendor) || !vendor.CanInteractWith(from, false))
         return;
 
       if (vendor.IsOwner(from))
@@ -1330,7 +1324,8 @@ namespace Server.Mobiles
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (targeted is Item) TryToBuy((Item)targeted, from);
+        if (targeted is Item item)
+          TryToBuy(item, from);
       }
     }
 
@@ -1358,10 +1353,9 @@ namespace Server.Mobiles
         else
           firstWord = text;
 
-        int price;
         string description;
 
-        if (int.TryParse(firstWord, out price))
+        if (int.TryParse(firstWord, out int price))
         {
           if (sep >= 0)
             description = text.Substring(sep + 1).Trim();
@@ -1397,7 +1391,7 @@ namespace Server.Mobiles
 
           if (item is Container)
           {
-            if (item is LockableContainer && ((LockableContainer)item).Locked)
+            if (item is LockableContainer container && container.Locked)
               m_Vendor.SayTo(from, 1043298); // Locked items may not be made not-for-sale.
             else if (item.Items.Count > 0)
               m_Vendor.SayTo(from, 1043299); // To be not for sale, all items in a container must be for sale.
@@ -1448,9 +1442,7 @@ namespace Server.Mobiles
 
         text = text.Trim();
 
-        int amount;
-
-        if (!int.TryParse(text, out amount))
+        if (!int.TryParse(text, out int amount))
           amount = 0;
 
         GiveGold(from, amount);

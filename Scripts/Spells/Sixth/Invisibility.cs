@@ -47,7 +47,7 @@ namespace Server.Spells.Sixth
       {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
       }
-      else if (m is BaseVendor || m is PlayerVendor || m is PlayerBarkeeper || m.AccessLevel > Caster.AccessLevel)
+      else if (m is BaseVendor || m is PlayerVendor || m.AccessLevel > Caster.AccessLevel)
       {
         Caster.SendLocalizedMessage(501857); // This spell won't work on that!
       }
@@ -125,7 +125,8 @@ namespace Server.Spells.Sixth
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile) m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

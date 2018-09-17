@@ -538,25 +538,19 @@ namespace Server.Multis
       {
         Item fixture = Fixtures[i];
 
-        if (fixture is HouseTeleporter)
+        if (fixture is HouseTeleporter tp)
         {
-          HouseTeleporter tp = (HouseTeleporter)fixture;
-
           for (int j = 1; j <= Fixtures.Count; ++j)
           {
-            HouseTeleporter check = Fixtures[(i + j) % Fixtures.Count] as HouseTeleporter;
-
-            if (check != null && check.ItemID == tp.ItemID)
+            if (Fixtures[(i + j) % Fixtures.Count] is HouseTeleporter check && check.ItemID == tp.ItemID)
             {
               tp.Target = check;
               break;
             }
           }
         }
-        else if (fixture is BaseHouseDoor)
+        else if (fixture is BaseHouseDoor door)
         {
-          BaseHouseDoor door = (BaseHouseDoor)fixture;
-
           if (door.Link != null)
             continue;
 
@@ -630,9 +624,7 @@ namespace Server.Multis
 
           for (int j = i + 1; j < Fixtures.Count; ++j)
           {
-            BaseHouseDoor check = Fixtures[j] as BaseHouseDoor;
-
-            if (check != null && check.Link == null && check.Facing == linkFacing &&
+            if (Fixtures[j] is BaseHouseDoor check && check.Link == null && check.Facing == linkFacing &&
                 check.X - door.X == xOffset && check.Y - door.Y == yOffset && check.Z == door.Z)
             {
               check.Link = door;
@@ -725,9 +717,7 @@ namespace Server.Multis
 
     public static void ApplyFoundation(FoundationType type, MultiComponentList mcl)
     {
-      int east, south, post, corner;
-
-      GetFoundationGraphics(type, out east, out south, out post, out corner);
+      GetFoundationGraphics(type, out int east, out int south, out int post, out int corner);
 
       int xCenter = mcl.Center.X;
       int yCenter = mcl.Center.Y;
@@ -834,7 +824,8 @@ namespace Server.Multis
 
     public void BeginCustomize(Mobile m)
     {
-      if (!m.CheckAlive()) return;
+      if (!m.CheckAlive())
+        return;
 
       if (SpellHelper.CheckCombat(m))
       {
@@ -1579,6 +1570,7 @@ namespace Server.Multis
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -1706,9 +1698,7 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      HouseFoundation foundation = World.FindItem(pvSrc.ReadInt32()) as HouseFoundation;
-
-      if (foundation != null && from.Map == foundation.Map && from.InRange(foundation.GetWorldLocation(), 24) &&
+      if (World.FindItem(pvSrc.ReadInt32()) is HouseFoundation foundation && from.Map == foundation.Map && from.InRange(foundation.GetWorldLocation(), 24) &&
           from.CanSee(foundation))
       {
         DesignState stateToSend;
@@ -2139,8 +2129,8 @@ namespace Server.Multis
 
       Table[from] = c;
 
-      if (from is PlayerMobile)
-        ((PlayerMobile)from).DesignContext = c;
+      if (from is PlayerMobile pm)
+        pm.DesignContext = c;
 
       foundation.Customizer = from;
 
@@ -2180,11 +2170,8 @@ namespace Server.Multis
 
       Table.Remove(from);
 
-      if (from is PlayerMobile)
-        ((PlayerMobile)from).DesignContext = null;
-
-      if (context == null)
-        return;
+      if (from is PlayerMobile pm)
+        pm.DesignContext = null;
 
       context.Foundation.Customizer = null;
 
@@ -2437,7 +2424,7 @@ namespace Server.Multis
 
         ++planeCount;
 
-        int size = 0;
+        int size;
 
         if (i == 0)
           size = width * height * 2;
@@ -2573,7 +2560,7 @@ namespace Server.Multis
 
         while (count > 0)
         {
-          SendQueueEntry sqe = null;
+          SendQueueEntry sqe;
 
           lock (m_SendQueueSyncRoot)
           {
@@ -2582,7 +2569,7 @@ namespace Server.Multis
 
           try
           {
-            Packet p = null;
+            Packet p;
 
             lock (sqe.m_Root)
             {

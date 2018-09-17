@@ -28,9 +28,7 @@ namespace Server.SkillHandlers
       if (reg == null || reg.IsDisabled())
         return true; // not in town? we can snoop any npc
 
-      BaseCreature cret = to as BaseCreature;
-
-      if (to.Body.IsHuman && (cret == null || !cret.AlwaysAttackable && !cret.AlwaysMurderer))
+      if (to.Body.IsHuman && (!(to is BaseCreature cret) || !cret.AlwaysAttackable && !cret.AlwaysMurderer))
         return false; // in town we cannot snoop blue human npcs
 
       return true;
@@ -81,7 +79,7 @@ namespace Server.SkillHandlers
 
         if (from.AccessLevel > AccessLevel.Player || from.CheckTargetSkill(SkillName.Snooping, cont, 0.0, 100.0))
         {
-          if (cont is TrappableContainer && ((TrappableContainer)cont).ExecuteTrap(from))
+          if (cont is TrappableContainer container && container.ExecuteTrap(from))
             return;
 
           cont.DisplayTo(from);

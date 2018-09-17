@@ -71,9 +71,9 @@ namespace Server.Spells.Fifth
             duration *= 0.75;
         }
 
-        if (m is PlagueBeastLord)
+        if (m is PlagueBeastLord lord)
         {
-          ((PlagueBeastLord)m).OnParalyzed(Caster);
+          lord.OnParalyzed(Caster);
           duration = 120;
         }
 
@@ -99,8 +99,8 @@ namespace Server.Spells.Fifth
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile)
-          m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

@@ -235,8 +235,8 @@ namespace Server.Multis
 
     public int GetInt32(object obj)
     {
-      if (obj is int)
-        return (int)obj;
+      if (obj is int i)
+        return i;
 
       return 0;
     }

@@ -36,29 +36,23 @@ namespace Server
 
     public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy)
     {
-      return Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, false, false, false);
+      return Damage(m, from, damage, false, phys, fire, cold, pois, nrgy);
     }
 
     public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy,
       int chaos)
     {
-      return Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, chaos, 0, false, false, false);
-    }
-
-    public static int Damage(Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois,
-      int nrgy)
-    {
-      return Damage(m, from, damage, ignoreArmor, phys, fire, cold, pois, nrgy, 0, 0, false, false, false);
+      return Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, chaos);
     }
 
     public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy,
       bool keepAlive)
     {
-      return Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive, false, false);
+      return Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive);
     }
 
     public static int Damage(Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois,
-      int nrgy, int chaos, int direct, bool keepAlive, bool archer, bool deathStrike)
+      int nrgy, int chaos = 0, int direct = 0, bool keepAlive = false, bool archer = false, bool deathStrike = false)
     {
       if (m == null || m.Deleted || !m.Alive || damage <= 0)
         return 0;

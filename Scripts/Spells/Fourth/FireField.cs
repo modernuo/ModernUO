@@ -246,36 +246,36 @@ namespace Server.Spells.Fourth
             Map map = m_Item.Map;
             Mobile caster = m_Item.m_Caster;
 
-            if (map != null && caster != null)
+            if (map == null || caster == null)
+              return;
+            
+            foreach (Mobile m in m_Item.GetMobilesInRange(0))
+              if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
+                  SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
+                m_Queue.Enqueue(m);
+
+            while (m_Queue.Count > 0)
             {
-              foreach (Mobile m in m_Item.GetMobilesInRange(0))
-                if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
-                    SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
-                  m_Queue.Enqueue(m);
+              Mobile m = (Mobile)m_Queue.Dequeue();
 
-              while (m_Queue.Count > 0)
+              if (SpellHelper.CanRevealCaster(m))
+                caster.RevealingAction();
+
+              caster.DoHarmful(m);
+
+              int damage = m_Item.m_Damage;
+
+              if (!Core.AOS && m.CheckSkill(SkillName.MagicResist, 0.0, 30.0))
               {
-                Mobile m = (Mobile)m_Queue.Dequeue();
+                damage = 1;
 
-                if (SpellHelper.CanRevealCaster(m))
-                  caster.RevealingAction();
-
-                caster.DoHarmful(m);
-
-                int damage = m_Item.m_Damage;
-
-                if (!Core.AOS && m.CheckSkill(SkillName.MagicResist, 0.0, 30.0))
-                {
-                  damage = 1;
-
-                  m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
-                }
-
-                AOS.Damage(m, caster, damage, 0, 100, 0, 0, 0);
-                m.PlaySound(0x208);
-
-                (m as BaseCreature)?.OnHarmfulSpell(caster);
+                m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
               }
+
+              AOS.Damage(m, caster, damage, 0, 100, 0, 0, 0);
+              m.PlaySound(0x208);
+
+              (m as BaseCreature)?.OnHarmfulSpell(caster);
             }
           }
         }
@@ -293,8 +293,8 @@ namespace Server.Spells.Fourth
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is IPoint3D)
-          m_Owner.Target((IPoint3D)o);
+        if (o is IPoint3D d)
+          m_Owner.Target(d);
       }
 
       protected override void OnTargetFinish(Mobile from)

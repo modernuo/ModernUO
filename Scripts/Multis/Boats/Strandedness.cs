@@ -97,17 +97,17 @@ namespace Server.Misc
 
       object surface = map.GetTopSurface(from.Location);
 
-      if (surface is LandTile)
+      if (surface is LandTile tile)
       {
-        int id = ((LandTile)surface).ID;
+        int id = tile.ID;
 
         return id >= 168 && id <= 171
                || id >= 310 && id <= 311;
       }
 
-      if (surface is StaticTile)
+      if (surface is StaticTile staticTile)
       {
-        int id = ((StaticTile)surface).ID;
+        int id = staticTile.ID;
 
         return id >= 0x1796 && id <= 0x17B2;
       }

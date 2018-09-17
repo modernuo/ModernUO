@@ -66,7 +66,7 @@ namespace Server.Spells.Fourth
         ) //On OSI you CAN curse yourself and get this effect.
         {
           TimeSpan duration = SpellHelper.GetDuration(Caster, m);
-          m_UnderEffect[m] = t = Timer.DelayCall(duration, new TimerStateCallback(RemoveEffect), m);
+          m_UnderEffect[m] = Timer.DelayCall(duration, new TimerStateCallback(RemoveEffect), m);
           m.UpdateResistances();
         }
 
@@ -101,8 +101,8 @@ namespace Server.Spells.Fourth
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile)
-          m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

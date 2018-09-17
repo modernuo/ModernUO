@@ -90,13 +90,8 @@ namespace Server.Spells
       if (IsCasting)
       {
         object o = ProtectionSpell.Registry[Caster];
-        bool disturb = true;
 
-        if (o is double)
-          if ((double)o > Utility.RandomDouble() * 100.0)
-            disturb = false;
-
-        if (disturb)
+        if (!(o is double d) || d <= Utility.RandomDouble() * 100.0)
           Disturb(DisturbType.Hurt, false, true);
       }
     }
@@ -205,8 +200,8 @@ namespace Server.Spells
 
       TransformContext context = TransformationSpellHelper.GetContext(Caster);
 
-      if (context?.Spell is ReaperFormSpell)
-        damageBonus += ((ReaperFormSpell)context.Spell).SpellDamageBonus;
+      if (context?.Spell is ReaperFormSpell spell)
+        damageBonus += spell.SpellDamageBonus;
 
       damage = AOS.Scale(damage, 100 + damageBonus);
 
@@ -380,20 +375,12 @@ namespace Server.Spells
       }
     }
 
-    public void Disturb(DisturbType type)
-    {
-      Disturb(type, true, false);
-    }
-
     public virtual bool CheckDisturb(DisturbType type, bool firstCircle, bool resistable)
     {
-      if (resistable && Scroll is BaseWand)
-        return false;
-
-      return true;
+      return !(resistable && Scroll is BaseWand);
     }
 
-    public void Disturb(DisturbType type, bool firstCircle, bool resistable)
+    public void Disturb(DisturbType type, bool firstCircle = true, bool resistable = false)
     {
       if (!CheckDisturb(type, firstCircle, resistable))
         return;
@@ -456,7 +443,7 @@ namespace Server.Spells
       if (Scroll is BaseWand)
         return;
 
-      if (Info.Mantra != null && Info.Mantra.Length > 0 && Caster.Player)
+      if (!string.IsNullOrEmpty(Info.Mantra) && Caster.Player)
         Caster.PublicOverheadMessage(MessageType.Spell, Caster.SpeechHue, true, Info.Mantra, false);
     }
 
@@ -464,8 +451,8 @@ namespace Server.Spells
     {
       StartCastTime = Core.TickCount;
 
-      if (Core.AOS && Caster.Spell is Spell && ((Spell)Caster.Spell).State == SpellState.Sequencing)
-        ((Spell)Caster.Spell).Disturb(DisturbType.NewCast);
+      if (Core.AOS && Caster.Spell is Spell spell && spell.State == SpellState.Sequencing)
+        spell.Disturb(DisturbType.NewCast);
 
       if (!Caster.CheckAlive()) return false;
 
@@ -491,9 +478,9 @@ namespace Server.Spells
       {
         Caster.SendLocalizedMessage(502644); // You have not yet recovered from casting a spell.
       }
-      else if (Caster is PlayerMobile && ((PlayerMobile)Caster).PeacedUntil > DateTime.UtcNow)
+      else if (Caster is PlayerMobile mobile && mobile.PeacedUntil > DateTime.UtcNow)
       {
-        Caster.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
+        mobile.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
       }
 
       #region Dueling
@@ -582,9 +569,7 @@ namespace Server.Spells
       if (Scroll is BaseWand)
         return true;
 
-      double minSkill, maxSkill;
-
-      GetCastSkills(out minSkill, out maxSkill);
+      GetCastSkills(out double minSkill, out double maxSkill);
 
       if (DamageSkill != CastSkill)
         Caster.CheckSkill(DamageSkill, 0.0, Caster.Skills[DamageSkill].Cap);
@@ -710,8 +695,8 @@ namespace Server.Spells
         DoFizzle();
       }
       else if (Scroll != null && !(Scroll is Runebook) &&
-               (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || Scroll is BaseWand &&
-                (((BaseWand)Scroll).Charges <= 0 || Scroll.Parent != Caster)))
+               (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || Scroll is BaseWand baseWand &&
+                (baseWand.Charges <= 0 || baseWand.Parent != Caster)))
       {
         DoFizzle();
       }
@@ -728,9 +713,9 @@ namespace Server.Spells
         Caster.SendLocalizedMessage(502646); // You cannot cast a spell while frozen.
         DoFizzle();
       }
-      else if (Caster is PlayerMobile && ((PlayerMobile)Caster).PeacedUntil > DateTime.UtcNow)
+      else if (Caster is PlayerMobile mobile && mobile.PeacedUntil > DateTime.UtcNow)
       {
-        Caster.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
+        mobile.SendLocalizedMessage(1072060); // You cannot cast a spell while calmed.
         DoFizzle();
       }
       else if (CheckFizzle())
@@ -741,9 +726,9 @@ namespace Server.Spells
         {
           Scroll.Consume();
         }
-        else if (Scroll is BaseWand)
+        else if (Scroll is BaseWand wand)
         {
-          ((BaseWand)Scroll).ConsumeCharge(Caster);
+          wand.ConsumeCharge(Caster);
           Caster.RevealingAction();
         }
 

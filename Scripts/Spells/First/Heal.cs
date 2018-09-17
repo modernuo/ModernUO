@@ -49,7 +49,7 @@ namespace Server.Spells.First
       {
         Caster.SendLocalizedMessage(1060177); // You cannot heal a creature that is already dead!
       }
-      else if (m is BaseCreature && ((BaseCreature)m).IsAnimatedDead)
+      else if (m is BaseCreature creature && creature.IsAnimatedDead)
       {
         Caster.SendLocalizedMessage(1061654); // You cannot heal that which is not alive.
       }
@@ -102,7 +102,8 @@ namespace Server.Spells.First
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile) m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

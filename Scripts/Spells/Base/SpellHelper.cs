@@ -102,6 +102,7 @@ namespace Server.Spells
       IsMLDungeon
     };
 
+    // TODO: Find a better way
     private static bool[,] m_Rules =
     {
       /*T2A(Fel),	Khaldun,	Ilshenar,	Wind(Tram),	Wind(Fel),	Dungeons(Fel),	Solen(Tram),	Solen(Fel),	CrystalCave(Malas),	Gauntlet(Malas),	Gauntlet(Ferry),	SafeZone,	Stronghold,	ChampionSpawn,	Dungeons(Tokuno[Malas]),	LampRoom(Doom),	GuardianRoom(Doom),	Heartwood,	MLDungeons */
@@ -155,17 +156,7 @@ namespace Server.Spells
       return Core.AOS ? AosDamageDelay : OldDamageDelay;
     }
 
-    public static bool CheckMulti(Point3D p, Map map)
-    {
-      return CheckMulti(p, map, true, 0);
-    }
-
-    public static bool CheckMulti(Point3D p, Map map, bool houses)
-    {
-      return CheckMulti(p, map, houses, 0);
-    }
-
-    public static bool CheckMulti(Point3D p, Map map, bool houses, int housingrange)
+    public static bool CheckMulti(Point3D p, Map map, bool houses = true, int housingrange = 0)
     {
       if (map == null || map == Map.Internal)
         return false;
@@ -176,10 +167,8 @@ namespace Server.Spells
       {
         BaseMulti multi = sector.Multis[i];
 
-        if (multi is BaseHouse)
+        if (multi is BaseHouse bh)
         {
-          BaseHouse bh = (BaseHouse)multi;
-
           if (houses && bh.IsInside(p, 16) || housingrange > 0 && bh.InRange(p, housingrange))
             return true;
         }
@@ -194,15 +183,11 @@ namespace Server.Spells
 
     public static void Turn(Mobile from, object to)
     {
-      IPoint3D target = to as IPoint3D;
-
-      if (target == null)
+      if (!(to is IPoint3D target))
         return;
 
-      if (target is Item)
+      if (target is Item item)
       {
-        Item item = (Item)target;
-
         if (item.RootParent != from)
           from.Direction = from.GetDirectionTo(item.GetWorldLocation());
       }
@@ -258,26 +243,18 @@ namespace Server.Spells
 
     public static bool CanRevealCaster(Mobile m)
     {
-      if (m is BaseCreature)
-      {
-        BaseCreature c = (BaseCreature)m;
 
-        if (!c.Controlled)
-          return true;
-      }
-
-      return false;
+      return m is BaseCreature c && !c.Controlled;
     }
 
     public static void GetSurfaceTop(ref IPoint3D p)
     {
-      if (p is Item)
+      if (p is Item item)
       {
-        p = ((Item)p).GetSurfaceTop();
+        p = item.GetSurfaceTop();
       }
-      else if (p is StaticTarget)
+      else if (p is StaticTarget t)
       {
-        StaticTarget t = (StaticTarget)p;
         int z = t.Z;
 
         if ((t.Flags & TileFlag.Surface) == 0)
@@ -408,9 +385,8 @@ namespace Server.Spells
     {
       Guild g = m.Guild as Guild;
 
-      if (g == null && m is BaseCreature)
+      if (g == null && m is BaseCreature c)
       {
-        BaseCreature c = (BaseCreature)m;
         m = c.ControlMaster;
 
         if (m != null)
@@ -436,26 +412,23 @@ namespace Server.Spells
       if (to.Hidden && to.AccessLevel > from.AccessLevel)
         return false;
 
+      BaseCreature bcFrom = from as BaseCreature;
+      BaseCreature bcTarg = to as BaseCreature;
+
       #region Dueling
 
-      PlayerMobile pmFrom = from as PlayerMobile;
-      PlayerMobile pmTarg = to as PlayerMobile;
+      PlayerMobile pmFrom;
+      PlayerMobile pmTarg;
 
-      if (pmFrom == null && from is BaseCreature)
-      {
-        BaseCreature bcFrom = (BaseCreature)from;
+      if (bcFrom != null && bcFrom.Summoned)
+        pmFrom = bcFrom.SummonMaster as PlayerMobile;
+      else
+        pmFrom = from as PlayerMobile;
 
-        if (bcFrom.Summoned)
-          pmFrom = bcFrom.SummonMaster as PlayerMobile;
-      }
-
-      if (pmTarg == null && to is BaseCreature)
-      {
-        BaseCreature bcTarg = (BaseCreature)to;
-
-        if (bcTarg.Summoned)
-          pmTarg = bcTarg.SummonMaster as PlayerMobile;
-      }
+      if (bcTarg != null && bcTarg.Summoned)
+        pmTarg = bcTarg.SummonMaster as PlayerMobile;
+      else
+        pmTarg = to as PlayerMobile;
 
       if (pmFrom != null && pmTarg != null)
         if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext && pmFrom.DuelContext.Started &&
@@ -475,37 +448,27 @@ namespace Server.Spells
       if (p != null && p.Contains(to))
         return false;
 
-      if (to is BaseCreature)
+      if (bcTarg != null && (bcTarg.Controlled || bcTarg.Summoned))
       {
-        BaseCreature c = (BaseCreature)to;
+        if (bcTarg.ControlMaster == from || bcTarg.SummonMaster == from)
+          return false;
 
-        if (c.Controlled || c.Summoned)
-        {
-          if (c.ControlMaster == from || c.SummonMaster == from)
-            return false;
-
-          if (p != null && (p.Contains(c.ControlMaster) || p.Contains(c.SummonMaster)))
-            return false;
-        }
+        if (p != null && (p.Contains(bcTarg.ControlMaster) || p.Contains(bcTarg.SummonMaster)))
+          return false;
       }
 
-      if (from is BaseCreature)
+      if (bcFrom != null && (bcFrom.Controlled || bcFrom.Summoned))
       {
-        BaseCreature c = (BaseCreature)from;
+        if (bcFrom.ControlMaster == to || bcFrom.SummonMaster == to)
+          return false;
 
-        if (c.Controlled || c.Summoned)
-        {
-          if (c.ControlMaster == to || c.SummonMaster == to)
-            return false;
+        p = Party.Get(to);
 
-          p = Party.Get(to);
-
-          if (p != null && (p.Contains(c.ControlMaster) || p.Contains(c.SummonMaster)))
-            return false;
-        }
+        if (p != null && (p.Contains(bcFrom.ControlMaster) || p.Contains(bcFrom.SummonMaster)))
+          return false;
       }
 
-      if (to is BaseCreature && !((BaseCreature)to).Controlled && ((BaseCreature)to).InitialInnocent)
+      if (bcTarg != null && !bcTarg.Controlled && bcTarg.InitialInnocent)
         return true;
 
       int noto = Notoriety.Compute(from, to);
@@ -661,13 +624,8 @@ namespace Server.Spells
       }
 
       // Always allow monsters to teleport
-      if (caster is BaseCreature && (type == TravelCheckType.TeleportTo || type == TravelCheckType.TeleportFrom))
-      {
-        BaseCreature bc = (BaseCreature)caster;
-
-        if (!bc.Controlled && !bc.Summoned)
+      if (caster is BaseCreature bc && !bc.Controlled && !bc.Summoned && (type == TravelCheckType.TeleportTo || type == TravelCheckType.TeleportFrom))
           return true;
-      }
 
       m_TravelCaster = caster;
       m_TravelType = type;
@@ -883,12 +841,12 @@ namespace Server.Spells
     }
 
     //towns
-    public static bool IsTown(IPoint3D loc, Mobile caster)
+    public static bool IsTown(IPoint3D ip, Mobile caster)
     {
-      if (loc is Item)
-        loc = ((Item)loc).GetWorldLocation();
+      if (ip is Item item)
+        ip = item.GetWorldLocation();
 
-      return IsTown(new Point3D(loc), caster);
+      return IsTown(new Point3D(ip), caster);
     }
 
     public static bool IsTown(Point3D loc, Mobile caster)
@@ -917,12 +875,12 @@ namespace Server.Spells
       return reg != null && !reg.IsDisabled();
     }
 
-    public static bool CheckTown(IPoint3D loc, Mobile caster)
+    public static bool CheckTown(IPoint3D ip, Mobile caster)
     {
-      if (loc is Item)
-        loc = ((Item)loc).GetWorldLocation();
+      if (ip is Item item)
+        ip = item.GetWorldLocation();
 
-      return CheckTown(new Point3D(loc), caster);
+      return CheckTown(new Point3D(ip), caster);
     }
 
     public static bool CheckTown(Point3D loc, Mobile caster)
@@ -971,18 +929,18 @@ namespace Server.Spells
           target = temp;
         }
       }
-      else if (target is BaseCreature)
+      else if (target is BaseCreature creature)
       {
         bool reflect = false;
 
-        ((BaseCreature)target).CheckReflect(caster, ref reflect);
+        creature.CheckReflect(caster, ref reflect);
 
         if (reflect)
         {
-          target.FixedEffect(0x37B9, 10, 5);
+          creature.FixedEffect(0x37B9, 10, 5);
 
           Mobile temp = caster;
-          caster = target;
+          caster = creature;
           target = temp;
         }
       }
@@ -1022,63 +980,45 @@ namespace Server.Spells
         new SpellDamageTimer(spell, target, from, iDamage, delay).Start();
       }
 
-      if (target is BaseCreature && from != null && delay == TimeSpan.Zero)
+      if (target is BaseCreature c && from != null && delay == TimeSpan.Zero)
       {
-        BaseCreature c = (BaseCreature)target;
-
         c.OnHarmfulSpell(from);
         c.OnDamagedBySpell(from);
       }
     }
 
     public static void Damage(Spell spell, Mobile target, double damage, int phys, int fire, int cold, int pois,
-      int nrgy)
+      int nrgy, int chaos = 0, DFAlgorithm dfa = DFAlgorithm.Standard)
     {
-      TimeSpan ts = GetDamageDelayForSpell(spell);
-
-      Damage(spell, ts, target, spell.Caster, damage, phys, fire, cold, pois, nrgy, DFAlgorithm.Standard);
-    }
-
-    public static void Damage(Spell spell, Mobile target, double damage, int phys, int fire, int cold, int pois,
-      int nrgy, DFAlgorithm dfa)
-    {
-      TimeSpan ts = GetDamageDelayForSpell(spell);
-
-      Damage(spell, ts, target, spell.Caster, damage, phys, fire, cold, pois, nrgy, dfa);
+      Damage(spell, GetDamageDelayForSpell(spell), target, spell.Caster, damage, phys, fire, cold, pois, nrgy, chaos, dfa);
     }
 
     public static void Damage(TimeSpan delay, Mobile target, double damage, int phys, int fire, int cold, int pois,
-      int nrgy)
+      int nrgy, int chaos = 0, DFAlgorithm dfa = DFAlgorithm.Standard)
     {
-      Damage(delay, target, null, damage, phys, fire, cold, pois, nrgy);
+      Damage(delay, target, null, damage, phys, fire, cold, pois, nrgy, chaos, dfa);
     }
 
     public static void Damage(TimeSpan delay, Mobile target, Mobile from, double damage, int phys, int fire, int cold,
-      int pois, int nrgy)
+      int pois, int nrgy, int chaos = 0, DFAlgorithm dfa = DFAlgorithm.Standard)
     {
-      Damage(delay, target, from, damage, phys, fire, cold, pois, nrgy, DFAlgorithm.Standard);
-    }
-
-    public static void Damage(TimeSpan delay, Mobile target, Mobile from, double damage, int phys, int fire, int cold,
-      int pois, int nrgy, DFAlgorithm dfa)
-    {
-      Damage(null, delay, target, from, damage, phys, fire, cold, pois, nrgy, dfa);
+      Damage(null, delay, target, from, damage, phys, fire, cold, pois, nrgy, chaos, dfa);
     }
 
     public static void Damage(Spell spell, TimeSpan delay, Mobile target, Mobile from, double damage, int phys, int fire,
-      int cold, int pois, int nrgy, DFAlgorithm dfa)
+      int cold, int pois, int nrgy, int chaos = 0, DFAlgorithm dfa = DFAlgorithm.Standard)
     {
-      int iDamage = (int)damage;
+      int dmg = (int)damage;
 
       if (delay == TimeSpan.Zero)
       {
-        (from as BaseCreature)?.AlterSpellDamageTo(target, ref iDamage);
+        (from as BaseCreature)?.AlterSpellDamageTo(target, ref dmg);
 
-        (target as BaseCreature)?.AlterSpellDamageFrom(from, ref iDamage);
+        (target as BaseCreature)?.AlterSpellDamageFrom(from, ref dmg);
 
         WeightOverloading.DFA = dfa;
 
-        int damageGiven = AOS.Damage(target, from, iDamage, phys, fire, cold, pois, nrgy);
+        int damageGiven = AOS.Damage(target, from, dmg, phys, fire, cold, pois, nrgy, chaos);
 
         if (from != null) // sanity check
           DoLeech(damageGiven, from, target);
@@ -1087,13 +1027,11 @@ namespace Server.Spells
       }
       else
       {
-        new SpellDamageTimerAOS(spell, target, from, iDamage, phys, fire, cold, pois, nrgy, delay, dfa).Start();
+        new SpellDamageTimerAOS(spell, delay, target, from, dmg, phys, fire, cold, pois, nrgy, chaos, dfa).Start();
       }
 
-      if (target is BaseCreature && from != null && delay == TimeSpan.Zero)
+      if (target is BaseCreature c && from != null && delay == TimeSpan.Zero)
       {
-        BaseCreature c = (BaseCreature)target;
-
         c.OnHarmfulSpell(from);
         c.OnDamagedBySpell(from);
       }
@@ -1103,24 +1041,24 @@ namespace Server.Spells
     {
       TransformContext context = TransformationSpellHelper.GetContext(from);
 
-      if (context != null) /* cleanup */
+      if (context == null) /* cleanup */
+        return;
+      
+      if (context.Type == typeof(WraithFormSpell))
       {
-        if (context.Type == typeof(WraithFormSpell))
+        int wraithLeech =
+          5 + (int)(15 * from.Skills.SpiritSpeak.Value / 100); // Wraith form gives 5-20% mana leech
+        int manaLeech = AOS.Scale(damageGiven, wraithLeech);
+        if (manaLeech != 0)
         {
-          int wraithLeech =
-            5 + (int)(15 * from.Skills.SpiritSpeak.Value / 100); // Wraith form gives 5-20% mana leech
-          int manaLeech = AOS.Scale(damageGiven, wraithLeech);
-          if (manaLeech != 0)
-          {
-            from.Mana += manaLeech;
-            from.PlaySound(0x44D);
-          }
-        }
-        else if (context.Type == typeof(VampiricEmbraceSpell))
-        {
-          from.Hits += AOS.Scale(damageGiven, 20);
+          from.Mana += manaLeech;
           from.PlaySound(0x44D);
         }
+      }
+      else if (context.Type == typeof(VampiricEmbraceSpell))
+      {
+        from.Hits += AOS.Scale(damageGiven, 20);
+        from.PlaySound(0x44D);
       }
     }
 
@@ -1172,12 +1110,12 @@ namespace Server.Spells
     {
       private int m_Damage;
       private DFAlgorithm m_DFA;
-      private int m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy;
+      private int m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy, m_Chaos;
       private Spell m_Spell;
       private Mobile m_Target, m_From;
 
-      public SpellDamageTimerAOS(Spell s, Mobile target, Mobile from, int damage, int phys, int fire, int cold,
-        int pois, int nrgy, TimeSpan delay, DFAlgorithm dfa)
+      public SpellDamageTimerAOS(Spell s, TimeSpan delay, Mobile target, Mobile from, int damage, int phys, int fire, int cold,
+        int pois, int nrgy, int chaos, DFAlgorithm dfa)
         : base(delay)
       {
         m_Target = target;
@@ -1188,6 +1126,7 @@ namespace Server.Spells
         m_Cold = cold;
         m_Pois = pois;
         m_Nrgy = nrgy;
+        m_Chaos = chaos;
         m_DFA = dfa;
         m_Spell = s;
         if (m_Spell != null && m_Spell.DelayedDamage && !m_Spell.DelayedDamageStacking)
@@ -1198,27 +1137,28 @@ namespace Server.Spells
 
       protected override void OnTick()
       {
-        if (m_From is BaseCreature && m_Target != null)
-          ((BaseCreature)m_From).AlterSpellDamageTo(m_Target, ref m_Damage);
+        BaseCreature bcFrom = m_From as BaseCreature;
+        BaseCreature bcTarg = m_Target as BaseCreature;
+        
+        if (bcFrom != null && m_Target != null)
+          bcFrom.AlterSpellDamageTo(m_Target, ref m_Damage);
 
-        if (m_Target is BaseCreature && m_From != null)
-          ((BaseCreature)m_Target).AlterSpellDamageFrom(m_From, ref m_Damage);
+        if (bcTarg != null && m_From != null)
+          bcTarg.AlterSpellDamageFrom(m_From, ref m_Damage);
 
         WeightOverloading.DFA = m_DFA;
 
-        int damageGiven = AOS.Damage(m_Target, m_From, m_Damage, m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy);
+        int damageGiven = AOS.Damage(m_Target, m_From, m_Damage, m_Phys, m_Fire, m_Cold, m_Pois, m_Nrgy, m_Chaos);
 
         if (m_From != null) // sanity check
           DoLeech(damageGiven, m_From, m_Target);
 
         WeightOverloading.DFA = DFAlgorithm.Standard;
 
-        if (m_Target is BaseCreature && m_From != null)
+        if (bcTarg != null && m_From != null)
         {
-          BaseCreature c = (BaseCreature)m_Target;
-
-          c.OnHarmfulSpell(m_From);
-          c.OnDamagedBySpell(m_From);
+          bcTarg.OnHarmfulSpell(m_From);
+          bcTarg.OnDamagedBySpell(m_From);
         }
 
         m_Spell?.RemoveDelayedDamageContext(m_Target);
@@ -1253,9 +1193,7 @@ namespace Server.Spells
 
     public static bool OnCast(Mobile caster, Spell spell)
     {
-      ITransformationSpell transformSpell = spell as ITransformationSpell;
-
-      if (transformSpell == null)
+      if (!(spell is ITransformationSpell transformSpell))
         return false;
 
       if (Sigil.ExistsOn(caster))

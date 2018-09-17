@@ -64,8 +64,8 @@ namespace Server.Spells.Second
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is TrappableContainer)
-          m_Owner.Target((TrappableContainer)o);
+        if (o is TrappableContainer container)
+          m_Owner.Target(container);
         else
           from.SendMessage("You can't disarm that");
       }

@@ -46,8 +46,8 @@ namespace Server.Spells.Mysticism
 
         SpellHelper.Turn(Caster, p);
 
-        if (p is Item)
-          p = ((Item)p).GetWorldLocation();
+        if (p is Item item)
+          p = item.GetWorldLocation();
 
         List<Mobile> targets = new List<Mobile>();
 
@@ -83,11 +83,7 @@ namespace Server.Spells.Mysticism
         foreach (Mobile m in targets)
         {
           Caster.DoHarmful(m);
-
-          int[] types = new int[4];
-          types[Utility.Random(types.Length)] = 100;
-
-          SpellHelper.Damage(this, m, damage, 0, types[0], types[1], types[2], types[3]);
+          SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100);
 
           double resistedReduction = reduction - m.Skills[SkillName.MagicResist].Value / 800.0;
 

@@ -231,9 +231,7 @@ namespace Server.Multis
 
       for (int i = 0; i < sector.Multis.Count; i++)
       {
-        BaseBoat boat = sector.Multis[i] as BaseBoat;
-
-        if (boat != null && boat.Contains(loc.X, loc.Y))
+        if (sector.Multis[i] is BaseBoat boat && boat.Contains(loc.X, loc.Y))
           return boat;
       }
 
@@ -1521,19 +1519,15 @@ namespace Server.Multis
         }
 
         foreach (IEntity e in toMove)
-          if (e is Item)
+          if (e is Item item)
           {
-            Item item = (Item)e;
-
             item.NoMoveHS = true;
 
             if (!(item is TillerMan || item is Hold || item is Plank))
               item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z);
           }
-          else if (e is Mobile)
+          else if (e is Mobile m)
           {
-            Mobile m = (Mobile)e;
-
             m.NoMoveHS = true;
             m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z);
           }
@@ -1542,10 +1536,10 @@ namespace Server.Multis
         Location = new Point3D(X + xOffset, Y + yOffset, Z);
 
         foreach (IEntity e in toMove)
-          if (e is Item)
-            ((Item)e).NoMoveHS = false;
-          else if (e is Mobile)
-            ((Mobile)e).NoMoveHS = false;
+          if (e is Item item)
+            item.NoMoveHS = false;
+          else if (e is Mobile mobile)
+            mobile.NoMoveHS = false;
 
         NoMoveHS = false;
       }
@@ -1567,16 +1561,12 @@ namespace Server.Multis
       {
         IEntity e = toMove[i];
 
-        if (e is Item)
+        if (e is Item item)
         {
-          Item item = (Item)e;
-
           item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset);
         }
-        else if (e is Mobile)
+        else if (e is Mobile m)
         {
-          Mobile m = (Mobile)e;
-
           m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z + zOffset);
         }
       }
@@ -1595,23 +1585,19 @@ namespace Server.Multis
 
       MultiComponentList mcl = Components;
 
-      foreach (object o in map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height))
+      foreach (IEntity o in map.GetObjectsInBounds(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height))
       )
       {
         if (o == this || o is TillerMan || o is Hold || o is Plank)
           continue;
 
-        if (o is Item)
+        if (o is Item item)
         {
-          Item item = (Item)o;
-
           if (Contains(item) && item.Visible && item.Z >= Z)
             list.Add(item);
         }
-        else if (o is Mobile)
+        else if (o is Mobile m)
         {
-          Mobile m = (Mobile)o;
-
           if (Contains(m))
             list.Add(m);
         }
@@ -1679,16 +1665,12 @@ namespace Server.Multis
       {
         IEntity e = toMove[i];
 
-        if (e is Item)
+        if (e is Item item)
         {
-          Item item = (Item)e;
-
           item.Location = Rotate(item.Location, count);
         }
-        else if (e is Mobile)
+        else if (e is Mobile m)
         {
-          Mobile m = (Mobile)e;
-
           m.Direction = (m.Direction - old + facing) & Direction.Mask;
           m.Location = Rotate(m.Location, count);
         }
@@ -1894,10 +1876,8 @@ namespace Server.Multis
           m_Stream.Write((byte)0xF3);
           m_Stream.Write((short)0x1);
 
-          if (ent is BaseMulti)
+          if (ent is BaseMulti bm)
           {
-            BaseMulti bm = (BaseMulti)ent;
-
             m_Stream.Write((byte)0x02);
             m_Stream.Write(bm.Serial);
             // TODO: Mask no longer needed, merge with Item case?
@@ -1915,10 +1895,8 @@ namespace Server.Multis
             m_Stream.Write((short)bm.Hue);
             m_Stream.Write((byte)bm.GetPacketFlags());
           }
-          else if (ent is Mobile)
+          else if (ent is Mobile m)
           {
-            Mobile m = (Mobile)ent;
-
             m_Stream.Write((byte)0x01);
             m_Stream.Write(m.Serial);
             m_Stream.Write((short)m.Body);
@@ -1935,10 +1913,8 @@ namespace Server.Multis
             m_Stream.Write((short)m.Hue);
             m_Stream.Write((byte)m.GetPacketFlags());
           }
-          else if (ent is Item)
+          else if (ent is Item item)
           {
-            Item item = (Item)ent;
-
             m_Stream.Write((byte)0x00);
             m_Stream.Write(item.Serial);
             m_Stream.Write((ushort)(item.ItemID & 0xFFFF));

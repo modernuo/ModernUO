@@ -110,9 +110,7 @@ namespace Server.Multis
         if (m_Owner == null)
           return Core.AOS ? DecayType.Condemned : DecayType.ManualRefresh;
 
-        Account acct = m_Owner.Account as Account;
-
-        if (acct == null)
+        if (!(m_Owner.Account is Account acct))
           return Core.AOS ? DecayType.Condemned : DecayType.ManualRefresh;
 
         if (acct.AccessLevel >= AccessLevel.GameMaster)
@@ -751,17 +749,18 @@ namespace Server.Multis
         if (!addon.Deleted)
         {
           Item deed = null;
-          bool retainDeedHue = false; //if the items aren't hued but the deed itself is
+          bool retainDeedHue = false; // if the items aren't hued but the deed itself is
           int hue = 0;
 
-          if (addon is IAddon)
-          {
-            deed = ((IAddon)addon).Deed;
+          BaseAddon ba = addon as BaseAddon;
 
-            if (addon is BaseAddon && ((BaseAddon)addon).RetainDeedHue
-            ) //There are things that are IAddon which aren't BaseAddon
+          if (addon is IAddon baseAddon)
+          {
+            deed = baseAddon.Deed;
+
+            // There are things that are IAddon which aren't BaseAddon
+            if (ba?.RetainDeedHue == true)
             {
-              BaseAddon ba = (BaseAddon)addon;
               retainDeedHue = true;
 
               for (int i = 0; hue == 0 && i < ba.Components.Count; ++i)
@@ -778,16 +777,14 @@ namespace Server.Multis
           {
             #region Mondain's Legacy
 
-            if (deed is BaseAddonContainerDeed && addon is BaseAddonContainer)
+            if (deed is BaseAddonContainerDeed containerDeed && addon is BaseAddonContainer c)
             {
-              BaseAddonContainer c = (BaseAddonContainer)addon;
               c.DropItemsToGround();
-
-              ((BaseAddonContainerDeed)deed).Resource = c.Resource;
+              containerDeed.Resource = c.Resource;
             }
-            else if (deed is BaseAddonDeed && addon is BaseAddon)
+            else if (deed is BaseAddonDeed addonDeed && ba != null)
             {
-              ((BaseAddonDeed)deed).Resource = ((BaseAddon)addon).Resource;
+              addonDeed.Resource = ba.Resource;
             }
 
             #endregion
@@ -874,10 +871,10 @@ namespace Server.Multis
 
         RelocatedEntities.Add(relocEntity);
 
-        if (entity is Item)
-          ((Item)entity).Internalize();
-        else
-          ((Mobile)entity).Internalize();
+        if (entity is Item item)
+          item.Internalize();
+        else if (entity is Mobile mobile)
+          mobile.Internalize();
       }
     }
 
@@ -889,15 +886,14 @@ namespace Server.Multis
         Point3D location = new Point3D(relLoc.X + X, relLoc.Y + Y, relLoc.Z + Z);
 
         IEntity entity = relocEntity.Entity;
-        if (entity is Item)
+        if (entity is Item item)
         {
-          Item item = (Item)entity;
-
           if (!item.Deleted)
           {
-            if (item is IAddon)
+            IAddon addon = item as IAddon;
+            if (addon != null)
             {
-              if (((IAddon)item).CouldFit(location, Map))
+              if (addon.CouldFit(location, Map))
               {
                 item.MoveToWorld(location, Map);
                 continue;
@@ -939,19 +935,18 @@ namespace Server.Multis
 
               Item relocateItem = item;
 
-              if (item is StrongBox)
-                relocateItem = ((StrongBox)item).ConvertToStandardContainer();
+              if (item is StrongBox box)
+                relocateItem = box.ConvertToStandardContainer();
 
-              if (item is IAddon)
+              if (addon != null)
               {
-                Item deed = ((IAddon)item).Deed;
+                Item deed = addon.Deed;
                 bool retainDeedHue = false; //if the items aren't hued but the deed itself is
                 int hue = 0;
 
-                if (item is BaseAddon && ((BaseAddon)item).RetainDeedHue
+                if (item is BaseAddon ba && ba.RetainDeedHue
                 ) //There are things that are IAddon which aren't BaseAddon
                 {
-                  BaseAddon ba = (BaseAddon)item;
                   retainDeedHue = true;
 
                   for (int i = 0; hue == 0 && i < ba.Components.Count; ++i)
@@ -967,17 +962,14 @@ namespace Server.Multis
 
                 if (deed != null)
                 {
-                  if (deed is BaseAddonContainerDeed && item is BaseAddonContainer)
+                  if (deed is BaseAddonContainerDeed containerDeed && item is BaseAddonContainer c)
                   {
-                    BaseAddonContainer c = (BaseAddonContainer)item;
                     c.DropItemsToGround();
 
-                    ((BaseAddonContainerDeed)deed).Resource = c.Resource;
+                    containerDeed.Resource = c.Resource;
                   }
-                  else if (deed is BaseAddonDeed && item is BaseAddon)
-                  {
-                    ((BaseAddonDeed)deed).Resource = ((BaseAddon)item).Resource;
-                  }
+                  else if (deed is BaseAddonDeed addonDeed && item is BaseAddon baseAddon)
+                    addonDeed.Resource = baseAddon.Resource;
 
                   if (retainDeedHue)
                     deed.Hue = hue;
@@ -1004,17 +996,12 @@ namespace Server.Multis
             if (((SecureInfo)Secures[i]).Item == item)
               Secures.RemoveAt(i);
         }
-        else
+        else if (entity is Mobile mobile && !mobile.Deleted)
         {
-          Mobile mobile = (Mobile)entity;
-
-          if (!mobile.Deleted)
-          {
-            if (Map.CanFit(location, 16, false, false))
-              mobile.MoveToWorld(location, Map);
-            else
-              InternalizedVendors.Add(mobile);
-          }
+          if (Map.CanFit(location, 16, false, false))
+            mobile.MoveToWorld(location, Map);
+          else
+            InternalizedVendors.Add(mobile);
         }
       }
 
@@ -1212,9 +1199,7 @@ namespace Server.Multis
 
       for (int i = 0; i < sector.Multis.Count; ++i)
       {
-        BaseHouse house = sector.Multis[i] as BaseHouse;
-
-        if (house != null && house.IsInside(loc, height))
+        if (sector.Multis[i] is BaseHouse house && house.IsInside(loc, height))
           return house;
       }
 
@@ -1254,8 +1239,8 @@ namespace Server.Multis
         return true;
       if (item is Runebook)
         return true;
-      if (item is ISecurable)
-        return HasSecureAccess(from, ((ISecurable)item).Level);
+      if (item is ISecurable securable)
+        return HasSecureAccess(from, securable.Level);
       if (item is Container)
         return IsCoOwner(from);
       if (item.Stackable)
@@ -1264,8 +1249,6 @@ namespace Server.Multis
         return IsFriend(from);
       if (item is PotionKeg)
         return IsFriend(from);
-      if (item is BaseBoard)
-        return true;
       if (item is Dices)
         return true;
       if (item is RecallRune)
@@ -1276,7 +1259,7 @@ namespace Server.Multis
         return true;
       if (item is BaseInstrument)
         return true;
-      if (item is Dyes || item is DyeTub)
+      if (item is Dyes)
         return true;
       if (item is VendorRentalContract)
         return true;
@@ -1358,10 +1341,10 @@ namespace Server.Multis
           item.Map = Map;
 
       foreach (IEntity entity in GetHouseEntities())
-        if (entity is Item)
-          ((Item)entity).Map = Map;
-        else
-          ((Mobile)entity).Map = Map;
+        if (entity is Item item)
+          item.Map = Map;
+        else if (entity is Mobile mobile)
+          mobile.Map = Map;
     }
 
     public virtual void ChangeSignType(int itemID)
@@ -1408,10 +1391,10 @@ namespace Server.Multis
       {
         Point3D newLocation = new Point3D(entity.X + x, entity.Y + y, entity.Z + z);
 
-        if (entity is Item)
-          ((Item)entity).Location = newLocation;
-        else
-          ((Mobile)entity).Location = newLocation;
+        if (entity is Item item)
+          item.Location = newLocation;
+        else if (entity is Mobile mobile)
+          mobile.Location = newLocation;
       }
     }
 
@@ -1499,7 +1482,7 @@ namespace Server.Multis
       AddDoor(westDoor, x, y, z);
       AddDoor(eastDoor, x + 1, y, z);
 
-      return new BaseDoor[2] { westDoor, eastDoor };
+      return new BaseDoor[] { westDoor, eastDoor };
     }
 
     public uint CreateKeys(Mobile m)
@@ -1544,7 +1527,7 @@ namespace Server.Multis
       AddDoor(westDoor, x, y, z);
       AddDoor(eastDoor, x + 1, y, z);
 
-      return new BaseDoor[2] { westDoor, eastDoor };
+      return new BaseDoor[] { westDoor, eastDoor };
     }
 
     public BaseDoor MakeDoor(bool wood, DoorFacing facing)
@@ -1583,9 +1566,7 @@ namespace Server.Multis
 
       if (m_Trash == null || m_Trash.Deleted)
       {
-        m_Trash = new TrashBarrel();
-
-        m_Trash.Movable = false;
+        m_Trash = new TrashBarrel { Movable = false };
         m_Trash.MoveToWorld(from.Location, from.Map);
 
         from.SendLocalizedMessage(502121); /* You have a new trash barrel.
@@ -1604,25 +1585,16 @@ namespace Server.Multis
       Sign.MoveToWorld(new Point3D(X + xoff, Y + yoff, Z + zoff), Map);
     }
 
-    private void SetLockdown(Item i, bool locked)
-    {
-      SetLockdown(i, locked, false);
-    }
-
-    private void SetLockdown(Item i, bool locked, bool checkContains)
+    private void SetLockdown(Item i, bool locked, bool checkContains = false)
     {
       if (LockDowns == null)
         return;
 
-      #region Mondain's Legacy
-
       if (i is BaseAddonContainer)
         i.Movable = false;
       else
-
-        #endregion
-
         i.Movable = !locked;
+      
       i.IsLockedDown = locked;
 
       if (locked)
@@ -1976,12 +1948,9 @@ namespace Server.Multis
       {
         AggressorInfo info = m.Aggressed[i];
 
-        Guild attackerGuild = m.Guild as Guild;
-        Guild defenderGuild = info.Defender.Guild as Guild;
-
         if (info.Defender.Player && info.Defender.Alive &&
             DateTime.UtcNow - info.LastCombatTime < HouseRegion.CombatHeatDelay &&
-            (attackerGuild == null || defenderGuild == null ||
+            (!(m.Guild is Guild attackerGuild) || !(info.Defender.Guild is Guild defenderGuild) ||
              defenderGuild != attackerGuild && !defenderGuild.IsEnemy(attackerGuild)))
           return true;
       }
@@ -2063,7 +2032,7 @@ namespace Server.Multis
       {
         Container c = info.Item;
 
-        if (!c.Deleted && c is StrongBox && ((StrongBox)c).Owner == from)
+        if (!c.Deleted && c is StrongBox box && box.Owner == from)
         {
           from.SendLocalizedMessage(502112); //You already have a strong box
           return;
@@ -2086,10 +2055,7 @@ namespace Server.Multis
           }
       }
 
-      StrongBox sb = new StrongBox(from, this);
-      sb.Movable = false;
-      sb.IsLockedDown = false;
-      sb.IsSecure = true;
+      StrongBox sb = new StrongBox(from, this) { Movable = false, IsLockedDown = false, IsSecure = true };
       Secures.Add(new SecureInfo(sb, SecureLevel.CoOwners));
       sb.MoveToWorld(from.Location, from.Map);
     }
@@ -2115,7 +2081,7 @@ namespace Server.Multis
       {
         from.SendLocalizedMessage(501352); // You may not eject someone who is not in your house!
       }
-      else if (targ is BaseCreature && ((BaseCreature)targ).NoHouseRestrictions)
+      else if (targ is BaseCreature creature && creature.NoHouseRestrictions)
       {
         from.SendLocalizedMessage(501347); // You cannot eject that from the house!
       }
@@ -2196,7 +2162,7 @@ namespace Server.Multis
         from.SendLocalizedMessage(
           1062521); // You cannot ban someone from a private house.  Revoke their access instead.
       }
-      else if (targ is BaseCreature && ((BaseCreature)targ).NoHouseRestrictions)
+      else if (targ is BaseCreature bc && bc.NoHouseRestrictions)
       {
         from.SendLocalizedMessage(1062040); // You cannot ban that.
       }
@@ -2296,12 +2262,12 @@ namespace Server.Multis
         {
           Container c = info.Item;
 
-          if (c is StrongBox && ((StrongBox)c).Owner == targ)
+          if (c is StrongBox box && box.Owner == targ)
           {
-            c.IsLockedDown = false;
-            c.IsSecure = false;
+            box.IsLockedDown = false;
+            box.IsSecure = false;
             Secures.Remove(info);
-            c.Destroy();
+            box.Destroy();
             break;
           }
         }
@@ -2452,9 +2418,8 @@ namespace Server.Multis
       {
         Item item = (Item)LockDowns[i];
 
-        if (item is Container && !(item is BaseBoard || item is Aquarium || item is FishBowl))
+        if (item is Container cont && !(cont is BaseBoard || cont is Aquarium || cont is FishBowl))
         {
-          Container cont = (Container)item;
           List<Item> children = cont.Items;
 
           for (int j = 0; j < children.Count; ++j)
@@ -2640,9 +2605,7 @@ namespace Server.Multis
 
             for (int i = 0; i < items.Count; ++i)
             {
-              Container c = items[i] as Container;
-
-              if (c != null)
+              if (items[i] is Container c)
               {
                 c.IsSecure = true;
                 Secures.Add(new SecureInfo(c, SecureLevel.CoOwners));
@@ -2888,16 +2851,15 @@ namespace Server.Multis
 
           if (item != null)
           {
-            if (!item.Deleted && item is IAddon)
+            if (!item.Deleted && item is IAddon addon)
             {
-              Item deed = ((IAddon)item).Deed;
+              Item deed = addon.Deed;
               bool retainDeedHue = false; //if the items aren't hued but the deed itself is
               int hue = 0;
 
-              if (item is BaseAddon && ((BaseAddon)item).RetainDeedHue
+              if (addon is BaseAddon ba && ba.RetainDeedHue
               ) //There are things that are IAddon which aren't BaseAddon
               {
-                BaseAddon ba = (BaseAddon)item;
                 retainDeedHue = true;
 
                 for (int j = 0; hue == 0 && j < ba.Components.Count; ++j)
@@ -2959,9 +2921,7 @@ namespace Server.Multis
 
     public static bool HasAccountHouse(Mobile m)
     {
-      Account a = m.Account as Account;
-
-      if (a == null)
+      if (!(m.Account is Account a))
         return false;
 
       for (int i = 0; i < a.Length; ++i)
@@ -3009,9 +2969,7 @@ namespace Server.Multis
 
         for (int i = 0; keyValue == 0 && i < Doors.Count; ++i)
         {
-          BaseDoor door = Doors[i] as BaseDoor;
-
-          if (door != null)
+          if (Doors[i] is BaseDoor door)
             keyValue = door.KeyValue;
         }
 
@@ -3026,9 +2984,7 @@ namespace Server.Multis
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
         {
-          BaseDoor door = Doors[i] as BaseDoor;
-
-          if (door != null)
+          if (Doors[i] is BaseDoor door)
             door.KeyValue = keyValue;
         }
     }
@@ -3038,9 +2994,7 @@ namespace Server.Multis
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
         {
-          BaseDoor door = Doors[i] as BaseDoor;
-
-          if (door != null)
+          if (Doors[i] is BaseDoor door)
           {
             door.KeyValue = 0;
             door.Locked = false;
@@ -3075,9 +3029,7 @@ namespace Server.Multis
         if (c == m)
           return true;
 
-        Account bannedAccount = c.Account as Account;
-
-        if (bannedAccount != null && bannedAccount == theirAccount)
+        if (c.Account is Account bannedAccount && bannedAccount == theirAccount)
           return true;
       }
 
@@ -3092,10 +3044,8 @@ namespace Server.Multis
       if (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access != null && Access.Contains(m))
         return true;
 
-      if (m is BaseCreature)
+      if (m is BaseCreature bc)
       {
-        BaseCreature bc = (BaseCreature)m;
-
         if (bc.NoHouseRestrictions)
           return true;
 
@@ -3425,57 +3375,43 @@ namespace Server.Multis
       if (!from.Alive || m_House.Deleted || !m_House.IsCoOwner(from))
         return;
 
-      if (targeted is Item)
+      if (targeted is Item item)
       {
         if (m_Release)
         {
-          #region Mondain's legacy
-
-          if (targeted is AddonContainerComponent)
+          if (item is AddonContainerComponent component)
           {
-            AddonContainerComponent component = (AddonContainerComponent)targeted;
-
             if (component.Addon != null)
               m_House.Release(from, component.Addon);
           }
           else
-
-            #endregion
-
           {
-            m_House.Release(from, (Item)targeted);
+            m_House.Release(from, item);
           }
         }
         else
         {
-          if (targeted is VendorRentalContract)
+          if (item is VendorRentalContract)
           {
             from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
               1062392); // You must double click the contract in your pack to lock it down.
             from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501732); // I cannot lock this down!
           }
-          else if ((Item)targeted is AddonComponent)
+          else if (item is AddonComponent)
           {
             from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 501727); // You cannot lock that down!
             from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 501732); // I cannot lock this down!
           }
           else
           {
-            #region Mondain's legacy
-
-            if (targeted is AddonContainerComponent)
+            if (item is AddonContainerComponent component)
             {
-              AddonContainerComponent component = (AddonContainerComponent)targeted;
-
               if (component.Addon != null)
                 m_House.LockDown(from, component.Addon);
             }
             else
-
-              #endregion
-
             {
-              m_House.LockDown(from, (Item)targeted);
+              m_House.LockDown(from, item);
             }
           }
         }
@@ -3513,30 +3449,23 @@ namespace Server.Multis
       if (!from.Alive || m_House.Deleted || !m_House.IsCoOwner(from))
         return;
 
-      if (targeted is Item)
+      if (targeted is Item item)
       {
         if (m_Release)
         {
-          #region Mondain's legacy
-
-          if (targeted is AddonContainerComponent)
+          if (item is AddonContainerComponent component)
           {
-            AddonContainerComponent component = (AddonContainerComponent)targeted;
-
             if (component.Addon != null)
               m_House.ReleaseSecure(from, component.Addon);
           }
           else
-
-            #endregion
-
           {
-            m_House.ReleaseSecure(from, (Item)targeted);
+            m_House.ReleaseSecure(from, item);
           }
         }
         else
         {
-          if (targeted is VendorRentalContract)
+          if (item is VendorRentalContract)
           {
             from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
               1062392); // You must double click the contract in your pack to lock it down.
@@ -3544,21 +3473,14 @@ namespace Server.Multis
           }
           else
           {
-            #region Mondain's legacy
-
-            if (targeted is AddonContainerComponent)
+            if (item is AddonContainerComponent component)
             {
-              AddonContainerComponent component = (AddonContainerComponent)targeted;
-
               if (component.Addon != null)
                 m_House.AddSecure(from, component.Addon);
             }
             else
-
-              #endregion
-
             {
-              m_House.AddSecure(from, (Item)targeted);
+              m_House.AddSecure(from, item);
             }
           }
         }
@@ -3586,8 +3508,8 @@ namespace Server.Multis
       if (!from.Alive || m_House.Deleted || !m_House.IsFriend(from))
         return;
 
-      if (targeted is Mobile)
-        m_House.Kick(from, (Mobile)targeted);
+      if (targeted is Mobile mobile)
+        m_House.Kick(from, mobile);
       else
         from.SendLocalizedMessage(501347); //You cannot eject that from the house!
     }
@@ -3611,12 +3533,12 @@ namespace Server.Multis
       if (!from.Alive || m_House.Deleted || !m_House.IsFriend(from))
         return;
 
-      if (targeted is Mobile)
+      if (targeted is Mobile mobile)
       {
         if (m_Banning)
-          m_House.Ban(from, (Mobile)targeted);
+          m_House.Ban(from, mobile);
         else
-          m_House.RemoveBan(from, (Mobile)targeted);
+          m_House.RemoveBan(from, mobile);
       }
       else
       {
@@ -3641,8 +3563,8 @@ namespace Server.Multis
       if (!from.Alive || m_House.Deleted || !m_House.IsFriend(from))
         return;
 
-      if (targeted is Mobile)
-        m_House.GrantAccess(from, (Mobile)targeted);
+      if (targeted is Mobile mobile)
+        m_House.GrantAccess(from, mobile);
       else
         from.SendLocalizedMessage(1060712); // That is not a player.
     }
@@ -3666,12 +3588,12 @@ namespace Server.Multis
       if (!from.Alive || m_House.Deleted || !m_House.IsOwner(from))
         return;
 
-      if (targeted is Mobile)
+      if (targeted is Mobile mobile)
       {
         if (m_Add)
-          m_House.AddCoOwner(from, (Mobile)targeted);
+          m_House.AddCoOwner(from, mobile);
         else
-          m_House.RemoveCoOwner(from, (Mobile)targeted);
+          m_House.RemoveCoOwner(from, mobile);
       }
       else
       {
@@ -3698,12 +3620,12 @@ namespace Server.Multis
       if (!from.Alive || m_House.Deleted || !m_House.IsCoOwner(from))
         return;
 
-      if (targeted is Mobile)
+      if (targeted is Mobile mobile)
       {
         if (m_Add)
-          m_House.AddFriend(from, (Mobile)targeted);
+          m_House.AddFriend(from, mobile);
         else
-          m_House.RemoveFriend(from, (Mobile)targeted);
+          m_House.RemoveFriend(from, mobile);
       }
       else
       {
@@ -3725,8 +3647,8 @@ namespace Server.Multis
 
     protected override void OnTarget(Mobile from, object targeted)
     {
-      if (targeted is Mobile)
-        m_House.BeginConfirmTransfer(from, (Mobile)targeted);
+      if (targeted is Mobile mobile)
+        m_House.BeginConfirmTransfer(from, mobile);
       else
         from.SendLocalizedMessage(501384); // Only a player can own a house!
     }
@@ -3759,7 +3681,7 @@ namespace Server.Multis
         bool isOwned = house.Doors.Contains(item);
 
         if (!isOwned)
-          isOwned = house is HouseFoundation && ((HouseFoundation)house).IsFixture(item);
+          isOwned = house is HouseFoundation foundation && foundation.IsFixture(item);
 
         if (!isOwned)
           isOwned = house.HasLockedDownItem(item);

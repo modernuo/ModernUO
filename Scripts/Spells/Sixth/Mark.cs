@@ -74,8 +74,8 @@ namespace Server.Spells.Sixth
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is RecallRune)
-          m_Owner.Target((RecallRune)o);
+        if (o is RecallRune rune)
+          m_Owner.Target(rune);
         else
           from.Send(new MessageLocalized(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 501797, from.Name,
             "")); // I cannot mark that object.

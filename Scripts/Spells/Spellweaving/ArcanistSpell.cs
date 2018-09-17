@@ -69,13 +69,13 @@ namespace Server.Spells.Spellweaving
         return false;
       }
 
-      if (caster is PlayerMobile)
+      if (caster is PlayerMobile mobile)
       {
-        MLQuestContext context = MLQuestSystem.GetContext((PlayerMobile)caster);
+        MLQuestContext context = MLQuestSystem.GetContext(mobile);
 
         if (context == null || !context.Spellweaving)
         {
-          caster.SendLocalizedMessage(
+          mobile.SendLocalizedMessage(
             1073220); // You must have completed the epic arcanist quest to use this ability.
           return false;
         }
@@ -93,7 +93,7 @@ namespace Server.Spells.Spellweaving
       if (caster.Skills[CastSkill].Value < RequiredSkill)
       {
         caster.SendLocalizedMessage(1063013,
-          $"{RequiredSkill.ToString("F1")}\t{"#1044114"}"); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
+          $"{RequiredSkill:F1}\t{"#1044114"}"); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
         return false;
       }
 

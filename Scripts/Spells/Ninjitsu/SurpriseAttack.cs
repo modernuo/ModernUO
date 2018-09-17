@@ -86,9 +86,7 @@ namespace Server.Spells.Ninjitsu
 
     public static bool GetMalus(Mobile target, ref int malus)
     {
-      SurpriseAttackInfo info = m_Table[target] as SurpriseAttackInfo;
-
-      if (info == null)
+      if (!(m_Table[target] is SurpriseAttackInfo info))
         return false;
 
       malus = info.m_Malus;

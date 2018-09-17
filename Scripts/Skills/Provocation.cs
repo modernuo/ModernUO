@@ -42,10 +42,8 @@ namespace Server.SkillHandlers
       {
         from.RevealingAction();
 
-        if (targeted is BaseCreature && from.CanBeHarmful((Mobile)targeted, true))
+        if (targeted is BaseCreature creature && from.CanBeHarmful(creature, true))
         {
-          BaseCreature creature = (BaseCreature)targeted;
-
           if (!m_Instrument.IsChildOf(from.Backpack))
           {
             from.SendLocalizedMessage(
@@ -91,10 +89,8 @@ namespace Server.SkillHandlers
       {
         from.RevealingAction();
 
-        if (targeted is BaseCreature)
+        if (targeted is BaseCreature creature)
         {
-          BaseCreature creature = (BaseCreature)targeted;
-
           if (!m_Instrument.IsChildOf(from.Backpack))
           {
             from.SendLocalizedMessage(

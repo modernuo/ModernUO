@@ -63,11 +63,7 @@ namespace Server.Spells.Mysticism
         VisualEffect(targeted);
 
         int damage = GetNewAosDamage(33, 1, 5, targeted);
-
-        int[] types = new int[4];
-        types[Utility.Random(types.Length)] = 100;
-
-        SpellHelper.Damage(this, targeted, damage, 0, types[0], types[1], types[2], types[3]);
+        SpellHelper.Damage(this, targeted, damage, 0, 0, 0, 0, 0);
 
         SpellPlagueContext context = new SpellPlagueContext(this, targeted);
 
@@ -176,10 +172,7 @@ namespace Server.Spells.Mysticism
             m_Explosions++;
             m_LastExploded = DateTime.Now;
 
-            int[] types = new int[4];
-            types[Utility.Random(types.Length)] = 100;
-
-            SpellHelper.Damage(m_Owner, m_Target, damage, 0, types[0], types[1], types[2], types[3]);
+            SpellHelper.Damage(m_Owner, m_Target, damage, 0, 0, 0, 0, 0, 100);
 
             if (m_Explosions >= 3)
               EndPlague();
@@ -222,8 +215,8 @@ namespace Server.Spells.Mysticism
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Mobile)
-          m_Owner.Target((Mobile)o);
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
       }
 
       protected override void OnTargetFinish(Mobile from)

@@ -38,9 +38,7 @@ namespace Server.SkillHandlers
 
       for (int i = 0; i < m.Items.Count; i++)
       {
-        BaseArmor armor = m.Items[i] as BaseArmor;
-
-        if (armor == null)
+        if (!(m.Items[i] is BaseArmor armor))
           continue;
 
         int materialType = (int)armor.MaterialType;
@@ -91,9 +89,7 @@ namespace Server.SkillHandlers
 
           m.AllowedStealthSteps = steps;
 
-          PlayerMobile pm = m as PlayerMobile; // IsStealthing should be moved to Server.Mobiles
-
-          if (pm != null)
+          if (m is PlayerMobile pm)
             pm.IsStealthing = true;
 
           m.SendLocalizedMessage(502730); // You begin to move quietly.

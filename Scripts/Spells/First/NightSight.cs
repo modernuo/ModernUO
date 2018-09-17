@@ -34,10 +34,8 @@ namespace Server.Spells.First
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (targeted is Mobile && m_Spell.CheckBSequence((Mobile)targeted))
+        if (targeted is Mobile targ && m_Spell.CheckBSequence(targ))
         {
-          Mobile targ = (Mobile)targeted;
-
           SpellHelper.Turn(m_Spell.Caster, targ);
 
           if (targ.BeginAction(typeof(LightCycle)))

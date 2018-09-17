@@ -132,9 +132,7 @@ namespace Server.Spells.Necromancy
     {
       MaabusCoffinComponent comp = obj as MaabusCoffinComponent;
 
-      MaabusCoffin addon = comp?.Addon as MaabusCoffin;
-
-      if (addon != null)
+      if (comp?.Addon is MaabusCoffin addon)
       {
         PlayerMobile pm = Caster as PlayerMobile;
 
@@ -154,9 +152,7 @@ namespace Server.Spells.Necromancy
         return;
       }
 
-      Corpse c = obj as Corpse;
-
-      if (c == null)
+      if (!(obj is Corpse c))
       {
         Caster.SendLocalizedMessage(1061084); // You cannot animate that.
       }
@@ -167,8 +163,8 @@ namespace Server.Spells.Necromancy
         if (c.Owner != null) type = c.Owner.GetType();
 
         if (c.ItemID != 0x2006 || c.Animated || type == typeof(PlayerMobile) || type == null ||
-            c.Owner != null && c.Owner.Fame < 100 || c.Owner is BaseCreature &&
-            (((BaseCreature)c.Owner).Summoned || ((BaseCreature)c.Owner).IsBonded))
+            c.Owner != null && c.Owner.Fame < 100 || c.Owner is BaseCreature creature &&
+            (creature.Summoned || creature.IsBonded))
         {
           Caster.SendLocalizedMessage(1061085); // There's not enough life force there to animate.
         }
@@ -326,25 +322,20 @@ namespace Server.Spells.Necromancy
       if (summoned == null)
         return;
 
-      if (summoned is BaseCreature)
+      if (summoned is BaseCreature bc)
       {
-        BaseCreature bc = (BaseCreature)summoned;
-
         // to be sure
         bc.Tamable = false;
 
-        if (bc is BaseMount)
-          bc.ControlSlots = 1;
-        else
-          bc.ControlSlots = 0;
+        bc.ControlSlots = bc is BaseMount ? 1 : 0;
 
         Effects.PlaySound(loc, map, bc.GetAngerSound());
 
-        BaseCreature.Summon((BaseCreature)summoned, false, caster, loc, 0x28, TimeSpan.FromDays(1.0));
+        BaseCreature.Summon(bc, false, caster, loc, 0x28, TimeSpan.FromDays(1.0));
       }
 
-      if (summoned is SkeletalDragon)
-        Scale((SkeletalDragon)summoned, 50); // lose 50% hp and strength
+      if (summoned is SkeletalDragon dragon)
+        Scale(dragon, 50); // lose 50% hp and strength
 
       summoned.Fame = 0;
       summoned.Karma = -1500;
@@ -359,9 +350,7 @@ namespace Server.Spells.Necromancy
 
     public static void Scale(BaseCreature bc, int scalar)
     {
-      int toScale;
-
-      toScale = bc.RawStr;
+      int toScale = bc.RawStr;
       bc.RawStr = AOS.Scale(toScale, scalar);
 
       toScale = bc.HitsMaxSeed;
