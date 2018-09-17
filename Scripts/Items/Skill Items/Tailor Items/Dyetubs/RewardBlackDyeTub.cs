@@ -1,71 +1,65 @@
-using System;
+using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-	public class RewardBlackDyeTub : DyeTub, Engines.VeteranRewards.IRewardItem
-	{
-		public override int LabelNumber => 1006008; // Black Dye Tub
+  public class RewardBlackDyeTub : DyeTub, IRewardItem
+  {
+    [Constructible]
+    public RewardBlackDyeTub()
+    {
+      Hue = DyedHue = 0x0001;
+      Redyable = false;
+      LootType = LootType.Blessed;
+    }
 
-		private bool m_IsRewardItem;
+    public RewardBlackDyeTub(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsRewardItem
-		{
-			get{ return m_IsRewardItem; }
-			set{ m_IsRewardItem = value; }
-		}
+    public override int LabelNumber => 1006008; // Black Dye Tub
 
-		[Constructible]
-		public RewardBlackDyeTub()
-		{
-			Hue = DyedHue = 0x0001;
-			Redyable = false;
-			LootType = LootType.Blessed;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsRewardItem{ get; set; }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( m_IsRewardItem && !Engines.VeteranRewards.RewardSystem.CheckIsUsableBy( from, this, null ) )
-				return;
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+        return;
 
-			base.OnDoubleClick( from );
-		}
+      base.OnDoubleClick(from);
+    }
 
-		public RewardBlackDyeTub( Serial serial ) : base( serial )
-		{
-		}
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+      if (Core.ML && IsRewardItem)
+        list.Add(1076217); // 1st Year Veteran Reward
+    }
 
-			if ( Core.ML && m_IsRewardItem )
-				list.Add( 1076217 ); // 1st Year Veteran Reward
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(1); // version
 
-			writer.Write( (int) 1 ); // version
+      writer.Write(IsRewardItem);
+    }
 
-			writer.Write( (bool) m_IsRewardItem );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      int version = reader.ReadInt();
 
-			int version = reader.ReadInt();
-
-			switch ( version )
-			{
-				case 1:
-				{
-					m_IsRewardItem = reader.ReadBool();
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 1:
+        {
+          IsRewardItem = reader.ReadBool();
+          break;
+        }
+      }
+    }
+  }
 }

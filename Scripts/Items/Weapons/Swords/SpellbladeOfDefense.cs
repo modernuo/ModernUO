@@ -1,34 +1,31 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class SpellbladeOfDefense : ElvenSpellblade
-	{
-		public override int LabelNumber => 1073516; // spellblade of defense
+  public class SpellbladeOfDefense : ElvenSpellblade
+  {
+    [Constructible]
+    public SpellbladeOfDefense()
+    {
+      Attributes.DefendChance = 5;
+    }
 
-		[Constructible]
-		public SpellbladeOfDefense()
-		{
-			Attributes.DefendChance = 5;
-		}
+    public SpellbladeOfDefense(Serial serial) : base(serial)
+    {
+    }
 
-		public SpellbladeOfDefense( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073516; // spellblade of defense
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

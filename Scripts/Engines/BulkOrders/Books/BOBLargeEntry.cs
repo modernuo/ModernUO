@@ -1,110 +1,107 @@
-using System;
-
 namespace Server.Engines.BulkOrders
 {
-	public class BOBLargeEntry
-	{
-		private bool m_RequireExceptional;
-		private BODType m_DeedType;
-		private BulkMaterialType m_Material;
-		private int m_AmountMax;
-		private int m_Price;
-		private BOBLargeSubEntry[] m_Entries;
+  public class BOBLargeEntry
+  {
+    public BOBLargeEntry(LargeBOD bod)
+    {
+      RequireExceptional = bod.RequireExceptional;
 
-		public bool RequireExceptional{ get{ return m_RequireExceptional; } }
-		public BODType DeedType{ get{ return m_DeedType; } }
-		public BulkMaterialType Material{ get{ return m_Material; } }
-		public int AmountMax{ get{ return m_AmountMax; } }
-		public int Price{ get{ return m_Price; } set{ m_Price = value; } }
-		public BOBLargeSubEntry[] Entries{ get{ return m_Entries; } }
+      if (bod is LargeTailorBOD)
+        DeedType = BODType.Tailor;
+      else if (bod is LargeSmithBOD)
+        DeedType = BODType.Smith;
 
-		public Item Reconstruct()
-		{
-			LargeBOD bod = null;
+      Material = bod.Material;
+      AmountMax = bod.AmountMax;
 
-			if ( m_DeedType == BODType.Smith )
-				bod = new LargeSmithBOD( m_AmountMax, m_RequireExceptional, m_Material, ReconstructEntries() );
-			else if ( m_DeedType == BODType.Tailor )
-				bod = new LargeTailorBOD( m_AmountMax, m_RequireExceptional, m_Material, ReconstructEntries() );
+      Entries = new BOBLargeSubEntry[bod.Entries.Length];
 
-			for ( int i = 0; bod != null && i < bod.Entries.Length; ++i )
-				bod.Entries[i].Owner = bod;
+      for (int i = 0; i < Entries.Length; ++i)
+        Entries[i] = new BOBLargeSubEntry(bod.Entries[i]);
+    }
 
-			return bod;
-		}
+    public BOBLargeEntry(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-		private LargeBulkEntry[] ReconstructEntries()
-		{
-			LargeBulkEntry[] entries = new LargeBulkEntry[m_Entries.Length];
+      switch (version)
+      {
+        case 0:
+        {
+          RequireExceptional = reader.ReadBool();
 
-			for ( int i = 0; i < m_Entries.Length; ++i )
-			{
-				entries[i] = new LargeBulkEntry( null, new SmallBulkEntry( m_Entries[i].ItemType, m_Entries[i].Number, m_Entries[i].Graphic ) );
-				entries[i].Amount = m_Entries[i].AmountCur;
-			}
+          DeedType = (BODType)reader.ReadEncodedInt();
 
-			return entries;
-		}
+          Material = (BulkMaterialType)reader.ReadEncodedInt();
+          AmountMax = reader.ReadEncodedInt();
+          Price = reader.ReadEncodedInt();
 
-		public BOBLargeEntry( LargeBOD bod )
-		{
-			m_RequireExceptional = bod.RequireExceptional;
+          Entries = new BOBLargeSubEntry[reader.ReadEncodedInt()];
 
-			if ( bod is LargeTailorBOD )
-				m_DeedType = BODType.Tailor;
-			else if ( bod is LargeSmithBOD )
-				m_DeedType = BODType.Smith;
+          for (int i = 0; i < Entries.Length; ++i)
+            Entries[i] = new BOBLargeSubEntry(reader);
 
-			m_Material = bod.Material;
-			m_AmountMax = bod.AmountMax;
+          break;
+        }
+      }
+    }
 
-			m_Entries = new BOBLargeSubEntry[bod.Entries.Length];
+    public bool RequireExceptional{ get; }
 
-			for ( int i = 0; i < m_Entries.Length; ++i )
-				m_Entries[i] = new BOBLargeSubEntry( bod.Entries[i] );
-		}
+    public BODType DeedType{ get; }
 
-		public BOBLargeEntry( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+    public BulkMaterialType Material{ get; }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_RequireExceptional = reader.ReadBool();
+    public int AmountMax{ get; }
 
-					m_DeedType = (BODType)reader.ReadEncodedInt();
+    public int Price{ get; set; }
 
-					m_Material = (BulkMaterialType)reader.ReadEncodedInt();
-					m_AmountMax = reader.ReadEncodedInt();
-					m_Price = reader.ReadEncodedInt();
+    public BOBLargeSubEntry[] Entries{ get; }
 
-					m_Entries = new BOBLargeSubEntry[reader.ReadEncodedInt()];
+    public Item Reconstruct()
+    {
+      LargeBOD bod = null;
 
-					for ( int i = 0; i < m_Entries.Length; ++i )
-						m_Entries[i] = new BOBLargeSubEntry( reader );
+      if (DeedType == BODType.Smith)
+        bod = new LargeSmithBOD(AmountMax, RequireExceptional, Material, ReconstructEntries());
+      else if (DeedType == BODType.Tailor)
+        bod = new LargeTailorBOD(AmountMax, RequireExceptional, Material, ReconstructEntries());
 
-					break;
-				}
-			}
-		}
+      for (int i = 0; bod != null && i < bod.Entries.Length; ++i)
+        bod.Entries[i].Owner = bod;
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( 0 ); // version
+      return bod;
+    }
 
-			writer.Write( (bool) m_RequireExceptional );
+    private LargeBulkEntry[] ReconstructEntries()
+    {
+      LargeBulkEntry[] entries = new LargeBulkEntry[Entries.Length];
 
-			writer.WriteEncodedInt( (int) m_DeedType );
-			writer.WriteEncodedInt( (int) m_Material );
-			writer.WriteEncodedInt( (int) m_AmountMax );
-			writer.WriteEncodedInt( (int) m_Price );
+      for (int i = 0; i < Entries.Length; ++i)
+      {
+        entries[i] = new LargeBulkEntry(null,
+          new SmallBulkEntry(Entries[i].ItemType, Entries[i].Number, Entries[i].Graphic));
+        entries[i].Amount = Entries[i].AmountCur;
+      }
 
-			writer.WriteEncodedInt( (int) m_Entries.Length );
+      return entries;
+    }
 
-			for ( int i = 0; i < m_Entries.Length; ++i )
-				m_Entries[i].Serialize( writer );
-		}
-	}
+    public void Serialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
+
+      writer.Write(RequireExceptional);
+
+      writer.WriteEncodedInt((int)DeedType);
+      writer.WriteEncodedInt((int)Material);
+      writer.WriteEncodedInt(AmountMax);
+      writer.WriteEncodedInt(Price);
+
+      writer.WriteEncodedInt(Entries.Length);
+
+      for (int i = 0; i < Entries.Length; ++i)
+        Entries[i].Serialize(writer);
+    }
+  }
 }

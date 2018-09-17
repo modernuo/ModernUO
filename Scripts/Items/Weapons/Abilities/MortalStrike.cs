@@ -3,94 +3,85 @@ using System.Collections;
 
 namespace Server.Items
 {
-	/// <summary>
-	/// The assassin's friend.
-	/// A successful Mortal Strike will render its victim unable to heal any damage for several seconds.
-	/// Use a gruesome follow-up to finish off your foe.
-	/// </summary>
-	public class MortalStrike : WeaponAbility
-	{
-		public MortalStrike()
-		{
-		}
+  /// <summary>
+  ///   The assassin's friend.
+  ///   A successful Mortal Strike will render its victim unable to heal any damage for several seconds.
+  ///   Use a gruesome follow-up to finish off your foe.
+  /// </summary>
+  public class MortalStrike : WeaponAbility
+  {
+    public static readonly TimeSpan PlayerDuration = TimeSpan.FromSeconds(6.0);
+    public static readonly TimeSpan NPCDuration = TimeSpan.FromSeconds(12.0);
 
-		public override int BaseMana => 30;
+    private static Hashtable m_Table = new Hashtable();
 
-		public static readonly TimeSpan PlayerDuration = TimeSpan.FromSeconds( 6.0 );
-		public static readonly TimeSpan NPCDuration = TimeSpan.FromSeconds( 12.0 );
+    public override int BaseMana => 30;
 
-		public override void OnHit(Mobile attacker, Mobile defender, int damage)
-		{
-			if( !Validate( attacker ) || !CheckMana( attacker, true ) )
-			{
-				return;
-			}
+    public override void OnHit(Mobile attacker, Mobile defender, int damage)
+    {
+      if (!Validate(attacker) || !CheckMana(attacker, true)) return;
 
-			ClearCurrentAbility( attacker );
+      ClearCurrentAbility(attacker);
 
-			attacker.SendLocalizedMessage( 1060086 ); // You deliver a mortal wound!
-			defender.SendLocalizedMessage( 1060087 ); // You have been mortally wounded!
+      attacker.SendLocalizedMessage(1060086); // You deliver a mortal wound!
+      defender.SendLocalizedMessage(1060087); // You have been mortally wounded!
 
-			defender.PlaySound( 0x1E1 );
-			defender.FixedParticles( 0x37B9, 244, 25, 9944, 31, 0, EffectLayer.Waist );
+      defender.PlaySound(0x1E1);
+      defender.FixedParticles(0x37B9, 244, 25, 9944, 31, 0, EffectLayer.Waist);
 
-			// Do not reset timer if one is already in place.
-			if ( !IsWounded( defender ) )
-				BeginWound( defender, defender.Player ? PlayerDuration : NPCDuration );
-		}
+      // Do not reset timer if one is already in place.
+      if (!IsWounded(defender))
+        BeginWound(defender, defender.Player ? PlayerDuration : NPCDuration);
+    }
 
-		private static Hashtable m_Table = new Hashtable();
+    public static bool IsWounded(Mobile m)
+    {
+      return m_Table.Contains(m);
+    }
 
-		public static bool IsWounded( Mobile m )
-		{
-			return m_Table.Contains( m );
-		}
+    public static void BeginWound(Mobile m, TimeSpan duration)
+    {
+      Timer t = (Timer)m_Table[m];
 
-		public static void BeginWound( Mobile m, TimeSpan duration )
-		{
-			Timer t = (Timer)m_Table[m];
+      t?.Stop();
 
-			if ( t != null )
-				t.Stop();
+      t = new InternalTimer(m, duration);
+      m_Table[m] = t;
 
-			t = new InternalTimer( m, duration );
-			m_Table[m] = t;
+      t.Start();
 
-			t.Start();
+      m.YellowHealthbar = true;
+    }
 
-			m.YellowHealthbar = true;
-		}
+    public static void EndWound(Mobile m)
+    {
+      if (!IsWounded(m))
+        return;
 
-		public static void EndWound( Mobile m )
-		{
-			if ( !IsWounded( m ) )
-				return;
+      Timer t = (Timer)m_Table[m];
 
-			Timer t = (Timer)m_Table[m];
+      t?.Stop();
 
-			if ( t != null )
-				t.Stop();
+      m_Table.Remove(m);
 
-			m_Table.Remove( m );
+      m.YellowHealthbar = false;
+      m.SendLocalizedMessage(1060208); // You are no longer mortally wounded.
+    }
 
-			m.YellowHealthbar = false;
-			m.SendLocalizedMessage( 1060208 ); // You are no longer mortally wounded.
-		}
+    private class InternalTimer : Timer
+    {
+      private Mobile m_Mobile;
 
-		private class InternalTimer : Timer
-		{
-			private Mobile m_Mobile;
+      public InternalTimer(Mobile m, TimeSpan duration) : base(duration)
+      {
+        m_Mobile = m;
+        Priority = TimerPriority.TwoFiftyMS;
+      }
 
-			public InternalTimer( Mobile m, TimeSpan duration ) : base( duration )
-			{
-				m_Mobile = m;
-				Priority = TimerPriority.TwoFiftyMS;
-			}
-
-			protected override void OnTick()
-			{
-				EndWound( m_Mobile );
-			}
-		}
-	}
+      protected override void OnTick()
+      {
+        EndWound(m_Mobile);
+      }
+    }
+  }
 }

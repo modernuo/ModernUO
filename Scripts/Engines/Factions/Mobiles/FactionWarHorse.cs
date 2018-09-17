@@ -1,112 +1,112 @@
-using System;
-using Server;
 using Server.Mobiles;
 
 namespace Server.Factions
 {
-	public class FactionWarHorse : BaseMount
-	{
-		public override string CorpseName => "a war horse corpse";
-		private Faction m_Faction;
+  public class FactionWarHorse : BaseMount
+  {
+    public const int SilverPrice = 500;
+    public const int GoldPrice = 3000;
+    private Faction m_Faction;
 
-		[CommandProperty( AccessLevel.GameMaster, AccessLevel.Administrator )]
-		public Faction Faction
-		{
-			get{ return m_Faction; }
-			set
-			{
-				m_Faction = value;
+    [Constructible]
+    public FactionWarHorse() : this(null)
+    {
+    }
 
-				Body = ( m_Faction == null ? 0xE2 : m_Faction.Definition.WarHorseBody );
-				ItemID = ( m_Faction == null ? 0x3EA0 : m_Faction.Definition.WarHorseItem );
-			}
-		}
+    public FactionWarHorse(Faction faction) : base("a war horse", 0xE2, 0x3EA0, AIType.AI_Melee, FightMode.Aggressor, 10,
+      1, 0.2, 0.4)
+    {
+      BaseSoundID = 0xA8;
 
-		public const int SilverPrice = 500;
-		public const int GoldPrice = 3000;
+      SetStr(400);
+      SetDex(125);
+      SetInt(51, 55);
 
-		[Constructible]
-		public FactionWarHorse() : this( null )
-		{
-		}
+      SetHits(240);
+      SetMana(0);
 
-		public FactionWarHorse( Faction faction ) : base( "a war horse", 0xE2, 0x3EA0, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			BaseSoundID = 0xA8;
+      SetDamage(5, 8);
 
-			SetStr( 400 );
-			SetDex( 125 );
-			SetInt( 51, 55 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetHits( 240 );
-			SetMana( 0 );
+      SetResistance(ResistanceType.Physical, 40, 50);
+      SetResistance(ResistanceType.Fire, 30, 40);
+      SetResistance(ResistanceType.Cold, 30, 40);
+      SetResistance(ResistanceType.Poison, 30, 40);
+      SetResistance(ResistanceType.Energy, 30, 40);
 
-			SetDamage( 5, 8 );
+      SetSkill(SkillName.MagicResist, 25.1, 30.0);
+      SetSkill(SkillName.Tactics, 29.3, 44.0);
+      SetSkill(SkillName.Wrestling, 29.3, 44.0);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      Fame = 300;
+      Karma = 300;
 
-			SetResistance( ResistanceType.Physical, 40, 50 );
-			SetResistance( ResistanceType.Fire, 30, 40 );
-			SetResistance( ResistanceType.Cold, 30, 40 );
-			SetResistance( ResistanceType.Poison, 30, 40 );
-			SetResistance( ResistanceType.Energy, 30, 40 );
+      Tamable = true;
+      ControlSlots = 1;
 
-			SetSkill( SkillName.MagicResist, 25.1, 30.0 );
-			SetSkill( SkillName.Tactics, 29.3, 44.0 );
-			SetSkill( SkillName.Wrestling, 29.3, 44.0 );
+      Faction = faction;
+    }
 
-			Fame = 300;
-			Karma = 300;
+    public FactionWarHorse(Serial serial) : base(serial)
+    {
+    }
 
-			Tamable = true;
-			ControlSlots = 1;
+    public override string CorpseName => "a war horse corpse";
 
-			Faction = faction;
-		}
+    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    public Faction Faction
+    {
+      get => m_Faction;
+      set
+      {
+        m_Faction = value;
 
-		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+        Body = m_Faction?.Definition.WarHorseBody ?? 0xE2;
+        ItemID = m_Faction?.Definition.WarHorseItem ?? 0x3EA0;
+      }
+    }
 
-		public FactionWarHorse( Serial serial ) : base( serial )
-		{
-		}
+    public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			PlayerState pl = PlayerState.Find( from );
+    public override void OnDoubleClick(Mobile from)
+    {
+      PlayerState pl = PlayerState.Find(from);
 
-			if ( pl == null )
-				from.SendLocalizedMessage( 1010366 ); // You cannot mount a faction war horse!
-			else if ( pl.Faction != this.Faction )
-				from.SendLocalizedMessage( 1010367 ); // You cannot ride an opposing faction's war horse!
-			else if ( pl.Rank.Rank < 2 )
-				from.SendLocalizedMessage( 1010368 ); // You must achieve a faction rank of at least two before riding a war horse!
-			else
-				base.OnDoubleClick( from );
-		}
+      if (pl == null)
+        from.SendLocalizedMessage(1010366); // You cannot mount a faction war horse!
+      else if (pl.Faction != Faction)
+        from.SendLocalizedMessage(1010367); // You cannot ride an opposing faction's war horse!
+      else if (pl.Rank.Rank < 2)
+        from.SendLocalizedMessage(
+          1010368); // You must achieve a faction rank of at least two before riding a war horse!
+      else
+        base.OnDoubleClick(from);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			Faction.WriteReference( writer, m_Faction );
-		}
+      Faction.WriteReference(writer, m_Faction);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Faction = Faction.ReadReference( reader );
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          Faction = Faction.ReadReference(reader);
+          break;
+        }
+      }
+    }
+  }
 }

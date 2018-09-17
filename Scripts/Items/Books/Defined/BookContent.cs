@@ -1,61 +1,49 @@
-using System;
-
 namespace Server.Items
 {
-	public class BookContent
-	{
-		private string m_Title;
-		private string m_Author;
+  public class BookContent
+  {
+    public BookContent(string title, string author, params BookPageInfo[] pages)
+    {
+      Title = title;
+      Author = author;
+      Pages = pages;
+    }
 
-		private BookPageInfo[] m_Pages;
+    public string Title{ get; }
 
-		public string Title{ get{ return m_Title; } }
-		public string Author{ get{ return m_Author; } }
+    public string Author{ get; }
 
-		public BookPageInfo[] Pages{ get{ return m_Pages; } }
+    public BookPageInfo[] Pages{ get; }
 
-		public BookContent( string title, string author, params BookPageInfo[] pages )
-		{
-			m_Title = title;
-			m_Author = author;
-			m_Pages = pages;
-		}
+    public BookPageInfo[] Copy()
+    {
+      BookPageInfo[] copy = new BookPageInfo[Pages.Length];
 
-		public BookPageInfo[] Copy()
-		{
-			BookPageInfo[] copy = new BookPageInfo[m_Pages.Length];
+      for (int i = 0; i < copy.Length; ++i)
+        copy[i] = new BookPageInfo(Pages[i].Lines);
 
-			for ( int i = 0; i < copy.Length; ++i )
-				copy[i] = new BookPageInfo( m_Pages[i].Lines );
+      return copy;
+    }
 
-			return copy;
-		}
+    public bool IsMatch(BookPageInfo[] cmp)
+    {
+      if (cmp.Length != Pages.Length)
+        return false;
 
-		public bool IsMatch( BookPageInfo[] cmp )
-		{
-			if ( cmp.Length != m_Pages.Length )
-				return false;
+      for (int i = 0; i < cmp.Length; ++i)
+      {
+        string[] a = Pages[i].Lines;
+        string[] b = cmp[i].Lines;
 
-			for ( int i = 0; i < cmp.Length; ++i )
-			{
-				string[] a = m_Pages[i].Lines;
-				string[] b = cmp[i].Lines;
+        if (a.Length != b.Length) return false;
 
-				if ( a.Length != b.Length )
-				{
-					return false;
-				}
-				else if ( a != b )
-				{
-					for ( int j = 0; j < a.Length; ++j )
-					{
-						if ( a[j] != b[j] )
-							return false;
-					}
-				}
-			}
+        if (a != b)
+          for (int j = 0; j < a.Length; ++j)
+            if (a[j] != b[j])
+              return false;
+      }
 
-			return true;
-		}
-	}
+      return true;
+    }
+  }
 }

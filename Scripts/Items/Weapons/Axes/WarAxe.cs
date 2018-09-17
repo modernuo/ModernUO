@@ -1,61 +1,58 @@
-using System;
-using Server.Items;
-using Server.Network;
 using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0x13B0, 0x13AF )]
-	public class WarAxe : BaseAxe
-	{
-		public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.BleedAttack;
+  [Flippable(0x13B0, 0x13AF)]
+  public class WarAxe : BaseAxe
+  {
+    [Constructible]
+    public WarAxe() : base(0x13B0)
+    {
+      Weight = 8.0;
+    }
 
-		public override int AosStrengthReq => 35;
-		public override int AosMinDamage => 14;
-		public override int AosMaxDamage => 15;
-		public override int AosSpeed => 33;
-		public override float MlSpeed => 3.25f;
+    public WarAxe(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 35;
-		public override int OldMinDamage => 9;
-		public override int OldMaxDamage => 27;
-		public override int OldSpeed => 40;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.BleedAttack;
 
-		public override int DefHitSound => 0x233;
-		public override int DefMissSound => 0x239;
+    public override int AosStrengthReq => 35;
+    public override int AosMinDamage => 14;
+    public override int AosMaxDamage => 15;
+    public override int AosSpeed => 33;
+    public override float MlSpeed => 3.25f;
 
-		public override int InitMinHits => 31;
-		public override int InitMaxHits => 80;
+    public override int OldStrengthReq => 35;
+    public override int OldMinDamage => 9;
+    public override int OldMaxDamage => 27;
+    public override int OldSpeed => 40;
 
-		public override SkillName DefSkill => SkillName.Macing;
-		public override WeaponType DefType => WeaponType.Bashing;
-		public override WeaponAnimation DefAnimation => WeaponAnimation.Bash1H;
+    public override int DefHitSound => 0x233;
+    public override int DefMissSound => 0x239;
 
-		public override HarvestSystem HarvestSystem => null;
+    public override int InitMinHits => 31;
+    public override int InitMaxHits => 80;
 
-		[Constructible]
-		public WarAxe() : base( 0x13B0 )
-		{
-			Weight = 8.0;
-		}
+    public override SkillName DefSkill => SkillName.Macing;
+    public override WeaponType DefType => WeaponType.Bashing;
+    public override WeaponAnimation DefAnimation => WeaponAnimation.Bash1H;
 
-		public WarAxe( Serial serial ) : base( serial )
-		{
-		}
+    public override HarvestSystem HarvestSystem => null;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

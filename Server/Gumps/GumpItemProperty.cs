@@ -18,43 +18,35 @@
  *
  ***************************************************************************/
 
-using System;
 using Server.Network;
 
 namespace Server.Gumps
 {
-	public class GumpItemProperty : GumpEntry
-	{
-		private int m_Serial;
+  public class GumpItemProperty : GumpEntry
+  {
+    private static byte[] m_LayoutName = Gump.StringToBuffer("itemproperty");
+    private int m_Serial;
 
-		public GumpItemProperty( int serial )
-		{
-			m_Serial = serial;
-		}
+    public GumpItemProperty(int serial)
+    {
+      m_Serial = serial;
+    }
 
-		public int Serial
-		{
-			get
-			{
-				return m_Serial;
-			}
-			set
-			{
-				Delta( ref m_Serial, value );
-			}
-		}
+    public int Serial
+    {
+      get => m_Serial;
+      set => Delta(ref m_Serial, value);
+    }
 
-		public override string Compile( NetState ns )
-		{
-			return String.Format( "{{ itemproperty {0} }}", m_Serial );
-		}
+    public override string Compile(NetState ns)
+    {
+      return $"{{ itemproperty {m_Serial} }}";
+    }
 
-		private static byte[] m_LayoutName = Gump.StringToBuffer( "itemproperty" );
-
-		public override void AppendTo( NetState ns, IGumpWriter disp )
-		{
-			disp.AppendLayout( m_LayoutName );
-			disp.AppendLayout( m_Serial );
-		}
-	}
+    public override void AppendTo(NetState ns, IGumpWriter disp)
+    {
+      disp.AppendLayout(m_LayoutName);
+      disp.AppendLayout(m_Serial);
+    }
+  }
 }

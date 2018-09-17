@@ -1,92 +1,95 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Mobiles
 {
-	public class CrystalVortex : BaseCreature
-	{
-		public override string CorpseName => "a crystal vortex corpse";
-		public override string DefaultName => "a crystal vortex";
+  public class CrystalVortex : BaseCreature
+  {
+    [Constructible]
+    public CrystalVortex()
+      : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 0xD;
+      Hue = 0x2B2;
+      BaseSoundID = 0x107;
 
-		[Constructible]
-		public CrystalVortex()
-			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 0xD;
-			Hue = 0x2B2;
-			BaseSoundID = 0x107;
+      SetStr(800, 900);
+      SetDex(500, 600);
+      SetInt(200);
 
-			SetStr( 800, 900 );
-			SetDex( 500, 600 );
-			SetInt( 200 );
+      SetHits(350, 400);
+      SetMana(0);
 
-			SetHits( 350, 400 );
-			SetMana( 0 );
+      SetDamage(15, 20);
 
-			SetDamage( 15, 20 );
+      SetDamageType(ResistanceType.Physical, 0);
+      SetDamageType(ResistanceType.Cold, 50);
+      SetDamageType(ResistanceType.Energy, 50);
 
-			SetDamageType( ResistanceType.Physical, 0 );
-			SetDamageType( ResistanceType.Cold, 50 );
-			SetDamageType( ResistanceType.Energy, 50 );
+      SetResistance(ResistanceType.Physical, 60, 80);
+      SetResistance(ResistanceType.Fire, 0, 10);
+      SetResistance(ResistanceType.Cold, 70, 80);
+      SetResistance(ResistanceType.Poison, 40, 50);
+      SetResistance(ResistanceType.Energy, 60, 90);
 
-			SetResistance( ResistanceType.Physical, 60, 80 );
-			SetResistance( ResistanceType.Fire, 0, 10 );
-			SetResistance( ResistanceType.Cold, 70, 80 );
-			SetResistance( ResistanceType.Poison, 40, 50 );
-			SetResistance( ResistanceType.Energy, 60, 90 );
+      SetSkill(SkillName.MagicResist, 120.0);
+      SetSkill(SkillName.Tactics, 120.0);
+      SetSkill(SkillName.Wrestling, 120.0);
 
-			SetSkill( SkillName.MagicResist, 120.0 );
-			SetSkill( SkillName.Tactics, 120.0 );
-			SetSkill( SkillName.Wrestling, 120.0 );
+      Fame = 17000;
+      Karma = -17000;
 
-			Fame = 17000;
-			Karma = -17000;
+      PackArcaneScroll(0, 2);
+    }
 
-			PackArcaneScroll( 0, 2 );
-		}
+    public CrystalVortex(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.FilthyRich, 2 );
-			// TODO: uncomment once added
-			//AddLoot( LootPack.Parrot );
-		}
+    public override string CorpseName => "a crystal vortex corpse";
+    public override string DefaultName => "a crystal vortex";
 
-		/*
-		// TODO: uncomment once added
-		public override void OnDeath( Container c )
-		{
-			base.OnDeath( c );
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.FilthyRich, 2);
+      // TODO: uncomment once added
+      //AddLoot( LootPack.Parrot );
+    }
 
-			if ( Utility.RandomDouble() < 0.75 )
-				c.DropItem( new CrystallineFragments() );
+    /*
+    // TODO: uncomment once added
+    public override void OnDeath( Container c )
+    {
+      base.OnDeath( c );
 
-			if ( Utility.RandomDouble() < 0.06 )
-				c.DropItem( new JaggedCrystals() );
-		}
-		*/
+      if ( Utility.RandomDouble() < 0.75 )
+        c.DropItem( new CrystallineFragments() );
 
-		public override int GetAngerSound() { return 0x15; }
-		public override int GetAttackSound() { return 0x28; }
+      if ( Utility.RandomDouble() < 0.06 )
+        c.DropItem( new JaggedCrystals() );
+    }
+    */
 
-		public CrystalVortex( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int GetAngerSound()
+    {
+      return 0x15;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override int GetAttackSound()
+    {
+      return 0x28;
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,165 +1,158 @@
 using System;
 using System.Collections.Generic;
-using Server;
-using Server.Misc;
-using Server.Items;
 using Server.Gumps;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public abstract class BaseHealer : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+  public abstract class BaseHealer : BaseVendor
+  {
+    private static TimeSpan ResurrectDelay = TimeSpan.FromSeconds(2.0);
 
-		public override bool IsActiveVendor => false;
-		public override bool IsInvulnerable => false;
+    private DateTime m_NextResurrect;
 
-		public override void InitSBInfo()
-		{
-		}
+    public BaseHealer() : base(null)
+    {
+      if (!IsInvulnerable)
+      {
+        AI = AIType.AI_Mage;
+        ActiveSpeed = 0.2;
+        PassiveSpeed = 0.8;
+        RangePerception = DefaultRangePerception;
+        FightMode = FightMode.Aggressor;
+      }
 
-		public BaseHealer() : base( null )
-		{
-			if ( !IsInvulnerable )
-			{
-				AI = AIType.AI_Mage;
-				ActiveSpeed = 0.2;
-				PassiveSpeed = 0.8;
-				RangePerception = BaseCreature.DefaultRangePerception;
-				FightMode = FightMode.Aggressor;
-			}
+      SpeechHue = 0;
 
-			SpeechHue = 0;
+      SetStr(304, 400);
+      SetDex(102, 150);
+      SetInt(204, 300);
 
-			SetStr( 304, 400 );
-			SetDex( 102, 150 );
-			SetInt( 204, 300 );
+      SetDamage(10, 23);
 
-			SetDamage( 10, 23 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetResistance(ResistanceType.Physical, 40, 50);
+      SetResistance(ResistanceType.Fire, 40, 50);
+      SetResistance(ResistanceType.Cold, 40, 50);
+      SetResistance(ResistanceType.Poison, 40, 50);
+      SetResistance(ResistanceType.Energy, 40, 50);
 
-			SetResistance( ResistanceType.Physical, 40, 50 );
-			SetResistance( ResistanceType.Fire, 40, 50 );
-			SetResistance( ResistanceType.Cold, 40, 50 );
-			SetResistance( ResistanceType.Poison, 40, 50 );
-			SetResistance( ResistanceType.Energy, 40, 50 );
+      SetSkill(SkillName.Anatomy, 75.0, 97.5);
+      SetSkill(SkillName.EvalInt, 82.0, 100.0);
+      SetSkill(SkillName.Healing, 75.0, 97.5);
+      SetSkill(SkillName.Magery, 82.0, 100.0);
+      SetSkill(SkillName.MagicResist, 82.0, 100.0);
+      SetSkill(SkillName.Tactics, 82.0, 100.0);
 
-			SetSkill( SkillName.Anatomy, 75.0, 97.5 );
-			SetSkill( SkillName.EvalInt, 82.0, 100.0 );
-			SetSkill( SkillName.Healing, 75.0, 97.5 );
-			SetSkill( SkillName.Magery, 82.0, 100.0 );
-			SetSkill( SkillName.MagicResist, 82.0, 100.0 );
-			SetSkill( SkillName.Tactics, 82.0, 100.0 );
+      Fame = 1000;
+      Karma = 10000;
 
-			Fame = 1000;
-			Karma = 10000;
+      PackItem(new Bandage(Utility.RandomMinMax(5, 10)));
+      PackItem(new HealPotion());
+      PackItem(new CurePotion());
+    }
 
-			PackItem( new Bandage( Utility.RandomMinMax( 5, 10 ) ) );
-			PackItem( new HealPotion() );
-			PackItem( new CurePotion() );
-		}
+    public BaseHealer(Serial serial) : base(serial)
+    {
+    }
 
-		public override VendorShoeType ShoeType => VendorShoeType.Sandals;
+    protected override List<SBInfo> SBInfos{ get; } = new List<SBInfo>();
 
-		public virtual int GetRobeColor()
-		{
-			return Utility.RandomYellowHue();
-		}
+    public override bool IsActiveVendor => false;
+    public override bool IsInvulnerable => false;
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    public override VendorShoeType ShoeType => VendorShoeType.Sandals;
 
-			AddItem( new Robe( GetRobeColor() ) );
-		}
+    public virtual bool HealsYoungPlayers => true;
 
-		public virtual bool HealsYoungPlayers{ get{ return true; } }
+    public override void InitSBInfo()
+    {
+    }
 
-		public virtual bool CheckResurrect( Mobile m )
-		{
-			return true;
-		}
+    public virtual int GetRobeColor()
+    {
+      return Utility.RandomYellowHue();
+    }
 
-		private DateTime m_NextResurrect;
-		private static TimeSpan ResurrectDelay = TimeSpan.FromSeconds( 2.0 );
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-		public virtual void OfferResurrection( Mobile m )
-		{
-			Direction = GetDirectionTo( m );
+      AddItem(new Robe(GetRobeColor()));
+    }
 
-			m.PlaySound(0x1F2);
-			m.FixedEffect( 0x376A, 10, 16 );
+    public virtual bool CheckResurrect(Mobile m)
+    {
+      return true;
+    }
 
-			m.CloseGump( typeof( ResurrectGump ) );
-			m.SendGump( new ResurrectGump( m, ResurrectMessage.Healer ) );
-		}
+    public virtual void OfferResurrection(Mobile m)
+    {
+      Direction = GetDirectionTo(m);
 
-		public virtual void OfferHeal( PlayerMobile m )
-		{
-			Direction = GetDirectionTo( m );
+      m.PlaySound(0x1F2);
+      m.FixedEffect(0x376A, 10, 16);
 
-			if ( m.CheckYoungHealTime() )
-			{
-				Say( 501229 ); // You look like you need some healing my child.
+      m.CloseGump(typeof(ResurrectGump));
+      m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
+    }
 
-				m.PlaySound( 0x1F2 );
-				m.FixedEffect( 0x376A, 9, 32 );
+    public virtual void OfferHeal(PlayerMobile m)
+    {
+      Direction = GetDirectionTo(m);
 
-				m.Hits = m.HitsMax;
-			}
-			else
-			{
-				Say( 501228 ); // I can do no more for you at this time.
-			}
-		}
+      if (m.CheckYoungHealTime())
+      {
+        Say(501229); // You look like you need some healing my child.
 
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			if ( !m.Frozen && DateTime.UtcNow >= m_NextResurrect && InRange( m, 4 ) && !InRange( oldLocation, 4 ) && InLOS( m ) )
-			{
-				if ( !m.Alive )
-				{
-					m_NextResurrect = DateTime.UtcNow + ResurrectDelay;
+        m.PlaySound(0x1F2);
+        m.FixedEffect(0x376A, 9, 32);
 
-					if ( m.Map == null || !m.Map.CanFit( m.Location, 16, false, false ) )
-					{
-						m.SendLocalizedMessage( 502391 ); // Thou can not be resurrected there!
-					}
-					else if ( CheckResurrect( m ) )
-					{
-						OfferResurrection( m );
-					}
-				}
-				else if ( this.HealsYoungPlayers && m.Hits < m.HitsMax && m is PlayerMobile && ((PlayerMobile)m).Young )
-				{
-					OfferHeal( (PlayerMobile) m );
-				}
-			}
-		}
+        m.Hits = m.HitsMax;
+      }
+      else
+      {
+        Say(501228); // I can do no more for you at this time.
+      }
+    }
 
-		public BaseHealer( Serial serial ) : base( serial )
-		{
-		}
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      if (!m.Frozen && DateTime.UtcNow >= m_NextResurrect && InRange(m, 4) && !InRange(oldLocation, 4) && InLOS(m))
+      {
+        if (!m.Alive)
+        {
+          m_NextResurrect = DateTime.UtcNow + ResurrectDelay;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-		}
+          if (m.Map == null || !m.Map.CanFit(m.Location, 16, false, false))
+            m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
+          else if (CheckResurrect(m)) OfferResurrection(m);
+        }
+        else if (HealsYoungPlayers && m.Hits < m.HitsMax && m is PlayerMobile mobile && mobile.Young)
+        {
+          OfferHeal(mobile);
+        }
+      }
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+    }
 
-			if ( !IsInvulnerable )
-			{
-				AI = AIType.AI_Mage;
-				ActiveSpeed = 0.2;
-				PassiveSpeed = 0.8;
-				RangePerception = BaseCreature.DefaultRangePerception;
-				FightMode = FightMode.Aggressor;
-			}
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      if (!IsInvulnerable)
+      {
+        AI = AIType.AI_Mage;
+        ActiveSpeed = 0.2;
+        PassiveSpeed = 0.8;
+        RangePerception = DefaultRangePerception;
+        FightMode = FightMode.Aggressor;
+      }
+    }
+  }
 }

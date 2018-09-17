@@ -1,51 +1,55 @@
 using System;
-using Server;
 
 namespace Server.Items
 {
-	public class DetectiveBoots : Boots
-	{
-		public override int LabelNumber => 1094894 + m_Level; // [Quality] Detective of the Royal Guard [Replica]
+  public class DetectiveBoots : Boots
+  {
+    private int m_Level;
 
-		public override int InitMinHits => 150;
-		public override int InitMaxHits => 150;
+    [Constructible]
+    public DetectiveBoots()
+    {
+      Hue = 0x455;
+      Level = Utility.RandomMinMax(0, 2);
+    }
 
-		public override bool CanFortify => false;
+    public DetectiveBoots(Serial serial) : base(serial)
+    {
+    }
 
-		private int m_Level;
+    public override int LabelNumber => 1094894 + m_Level; // [Quality] Detective of the Royal Guard [Replica]
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Level
-		{
-			get{ return m_Level; }
-			set{ m_Level = Math.Max( Math.Min( 2, value), 0 ); Attributes.BonusInt = 2 + m_Level; InvalidateProperties(); }
-		}
+    public override int InitMinHits => 150;
+    public override int InitMaxHits => 150;
 
-		[Constructible]
-		public DetectiveBoots()
-		{
-			Hue = 0x455;
-			Level = Utility.RandomMinMax( 0, 2 );
-		}
+    public override bool CanFortify => false;
 
-		public DetectiveBoots( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Level
+    {
+      get => m_Level;
+      set
+      {
+        m_Level = Math.Max(Math.Min(2, value), 0);
+        Attributes.BonusInt = 2 + m_Level;
+        InvalidateProperties();
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			Level = Attributes.BonusInt - 2;
-		}
-	}
+      Level = Attributes.BonusInt - 2;
+    }
+  }
 }

@@ -48,57 +48,51 @@ namespace Server.Items
 
 	public class CraftAttributeInfo
 	{
-		private int m_WeaponFireDamage;
-		private int m_WeaponColdDamage;
-		private int m_WeaponPoisonDamage;
-		private int m_WeaponEnergyDamage;
-		private int m_WeaponChaosDamage;
-		private int m_WeaponDirectDamage;
-		private int m_WeaponDurability;
-		private int m_WeaponLuck;
-		private int m_WeaponGoldIncrease;
-		private int m_WeaponLowerRequirements;
+		public int WeaponFireDamage { get; set; }
 
-		private int m_ArmorPhysicalResist;
-		private int m_ArmorFireResist;
-		private int m_ArmorColdResist;
-		private int m_ArmorPoisonResist;
-		private int m_ArmorEnergyResist;
-		private int m_ArmorDurability;
-		private int m_ArmorLuck;
-		private int m_ArmorGoldIncrease;
-		private int m_ArmorLowerRequirements;
+		public int WeaponColdDamage { get; set; }
 
-		private int m_RunicMinAttributes;
-		private int m_RunicMaxAttributes;
-		private int m_RunicMinIntensity;
-		private int m_RunicMaxIntensity;
+		public int WeaponPoisonDamage { get; set; }
 
-		public int WeaponFireDamage{ get{ return m_WeaponFireDamage; } set{ m_WeaponFireDamage = value; } }
-		public int WeaponColdDamage{ get{ return m_WeaponColdDamage; } set{ m_WeaponColdDamage = value; } }
-		public int WeaponPoisonDamage{ get{ return m_WeaponPoisonDamage; } set{ m_WeaponPoisonDamage = value; } }
-		public int WeaponEnergyDamage{ get{ return m_WeaponEnergyDamage; } set{ m_WeaponEnergyDamage = value; } }
-		public int WeaponChaosDamage{ get{ return m_WeaponChaosDamage; } set{ m_WeaponChaosDamage = value; } }
-		public int WeaponDirectDamage{ get{ return m_WeaponDirectDamage; } set{ m_WeaponDirectDamage = value; } }
-		public int WeaponDurability{ get{ return m_WeaponDurability; } set{ m_WeaponDurability = value; } }
-		public int WeaponLuck{ get{ return m_WeaponLuck; } set{ m_WeaponLuck = value; } }
-		public int WeaponGoldIncrease{ get{ return m_WeaponGoldIncrease; } set{ m_WeaponGoldIncrease = value; } }
-		public int WeaponLowerRequirements{ get{ return m_WeaponLowerRequirements; } set{ m_WeaponLowerRequirements = value; } }
+		public int WeaponEnergyDamage { get; set; }
 
-		public int ArmorPhysicalResist{ get{ return m_ArmorPhysicalResist; } set{ m_ArmorPhysicalResist = value; } }
-		public int ArmorFireResist{ get{ return m_ArmorFireResist; } set{ m_ArmorFireResist = value; } }
-		public int ArmorColdResist{ get{ return m_ArmorColdResist; } set{ m_ArmorColdResist = value; } }
-		public int ArmorPoisonResist{ get{ return m_ArmorPoisonResist; } set{ m_ArmorPoisonResist = value; } }
-		public int ArmorEnergyResist{ get{ return m_ArmorEnergyResist; } set{ m_ArmorEnergyResist = value; } }
-		public int ArmorDurability{ get{ return m_ArmorDurability; } set{ m_ArmorDurability = value; } }
-		public int ArmorLuck{ get{ return m_ArmorLuck; } set{ m_ArmorLuck = value; } }
-		public int ArmorGoldIncrease{ get{ return m_ArmorGoldIncrease; } set{ m_ArmorGoldIncrease = value; } }
-		public int ArmorLowerRequirements{ get{ return m_ArmorLowerRequirements; } set{ m_ArmorLowerRequirements = value; } }
+		public int WeaponChaosDamage { get; set; }
 
-		public int RunicMinAttributes{ get{ return m_RunicMinAttributes; } set{ m_RunicMinAttributes = value; } }
-		public int RunicMaxAttributes{ get{ return m_RunicMaxAttributes; } set{ m_RunicMaxAttributes = value; } }
-		public int RunicMinIntensity{ get{ return m_RunicMinIntensity; } set{ m_RunicMinIntensity = value; } }
-		public int RunicMaxIntensity{ get{ return m_RunicMaxIntensity; } set{ m_RunicMaxIntensity = value; } }
+		public int WeaponDirectDamage { get; set; }
+
+		public int WeaponDurability { get; set; }
+
+		public int WeaponLuck { get; set; }
+
+		public int WeaponGoldIncrease { get; set; }
+
+		public int WeaponLowerRequirements { get; set; }
+
+		public int ArmorPhysicalResist { get; set; }
+
+		public int ArmorFireResist { get; set; }
+
+		public int ArmorColdResist { get; set; }
+
+		public int ArmorPoisonResist { get; set; }
+
+		public int ArmorEnergyResist { get; set; }
+
+		public int ArmorDurability { get; set; }
+
+		public int ArmorLuck { get; set; }
+
+		public int ArmorGoldIncrease { get; set; }
+
+		public int ArmorLowerRequirements { get; set; }
+
+		public int RunicMinAttributes { get; set; }
+
+		public int RunicMaxAttributes { get; set; }
+
+		public int RunicMinIntensity { get; set; }
+
+		public int RunicMaxIntensity { get; set; }
 
 		public CraftAttributeInfo()
 		{
@@ -392,28 +386,26 @@ namespace Server.Items
 
 	public class CraftResourceInfo
 	{
-		private int m_Hue;
-		private int m_Number;
-		private string m_Name;
-		private CraftAttributeInfo m_AttributeInfo;
-		private CraftResource m_Resource;
-		private Type[] m_ResourceTypes;
+		public int Hue { get; }
 
-		public int Hue{ get{ return m_Hue; } }
-		public int Number{ get{ return m_Number; } }
-		public string Name{ get{ return m_Name; } }
-		public CraftAttributeInfo AttributeInfo{ get{ return m_AttributeInfo; } }
-		public CraftResource Resource{ get{ return m_Resource; } }
-		public Type[] ResourceTypes{ get{ return m_ResourceTypes; } }
+		public int Number { get; }
+
+		public string Name { get; }
+
+		public CraftAttributeInfo AttributeInfo { get; }
+
+		public CraftResource Resource { get; }
+
+		public Type[] ResourceTypes { get; }
 
 		public CraftResourceInfo( int hue, int number, string name, CraftAttributeInfo attributeInfo, CraftResource resource, params Type[] resourceTypes )
 		{
-			m_Hue = hue;
-			m_Number = number;
-			m_Name = name;
-			m_AttributeInfo = attributeInfo;
-			m_Resource = resource;
-			m_ResourceTypes = resourceTypes;
+			Hue = hue;
+			Number = number;
+			Name = name;
+			AttributeInfo = attributeInfo;
+			Resource = resource;
+			ResourceTypes = resourceTypes;
 
 			for ( int i = 0; i < resourceTypes.Length; ++i )
 				CraftResources.RegisterType( resourceTypes[i], resource );
@@ -422,8 +414,7 @@ namespace Server.Items
 
 	public class CraftResources
 	{
-		private static CraftResourceInfo[] m_MetalInfo = new CraftResourceInfo[]
-			{
+		private static CraftResourceInfo[] m_MetalInfo = {
 				new CraftResourceInfo( 0x000, 1053109, "Iron",			CraftAttributeInfo.Blank,		CraftResource.Iron,				typeof( IronIngot ),		typeof( IronOre ),			typeof( Granite ) ),
 				new CraftResourceInfo( 0x973, 1053108, "Dull Copper",	CraftAttributeInfo.DullCopper,	CraftResource.DullCopper,		typeof( DullCopperIngot ),	typeof( DullCopperOre ),	typeof( DullCopperGranite ) ),
 				new CraftResourceInfo( 0x966, 1053107, "Shadow Iron",	CraftAttributeInfo.ShadowIron,	CraftResource.ShadowIron,		typeof( ShadowIronIngot ),	typeof( ShadowIronOre ),	typeof( ShadowIronGranite ) ),
@@ -435,8 +426,7 @@ namespace Server.Items
 				new CraftResourceInfo( 0x8AB, 1053101, "Valorite",		CraftAttributeInfo.Valorite,	CraftResource.Valorite,			typeof( ValoriteIngot ),	typeof( ValoriteOre ),		typeof( ValoriteGranite ) ),
 			};
 
-		private static CraftResourceInfo[] m_ScaleInfo = new CraftResourceInfo[]
-			{
+		private static CraftResourceInfo[] m_ScaleInfo = {
 				new CraftResourceInfo( 0x66D, 1053129, "Red Scales",	CraftAttributeInfo.RedScales,		CraftResource.RedScales,		typeof( RedScales ) ),
 				new CraftResourceInfo( 0x8A8, 1053130, "Yellow Scales",	CraftAttributeInfo.YellowScales,	CraftResource.YellowScales,		typeof( YellowScales ) ),
 				new CraftResourceInfo( 0x455, 1053131, "Black Scales",	CraftAttributeInfo.BlackScales,		CraftResource.BlackScales,		typeof( BlackScales ) ),
@@ -445,24 +435,21 @@ namespace Server.Items
 				new CraftResourceInfo( 0x8B0, 1053134, "Blue Scales",	CraftAttributeInfo.BlueScales,		CraftResource.BlueScales,		typeof( BlueScales ) )
 			};
 
-		private static CraftResourceInfo[] m_LeatherInfo = new CraftResourceInfo[]
-			{
+		private static CraftResourceInfo[] m_LeatherInfo = {
 				new CraftResourceInfo( 0x000, 1049353, "Normal",		CraftAttributeInfo.Blank,		CraftResource.RegularLeather,	typeof( Leather ),			typeof( Hides ) ),
 				new CraftResourceInfo( 0x283, 1049354, "Spined",		CraftAttributeInfo.Spined,		CraftResource.SpinedLeather,	typeof( SpinedLeather ),	typeof( SpinedHides ) ),
 				new CraftResourceInfo( 0x227, 1049355, "Horned",		CraftAttributeInfo.Horned,		CraftResource.HornedLeather,	typeof( HornedLeather ),	typeof( HornedHides ) ),
 				new CraftResourceInfo( 0x1C1, 1049356, "Barbed",		CraftAttributeInfo.Barbed,		CraftResource.BarbedLeather,	typeof( BarbedLeather ),	typeof( BarbedHides ) )
 			};
 
-		private static CraftResourceInfo[] m_AOSLeatherInfo = new CraftResourceInfo[]
-			{
+		private static CraftResourceInfo[] m_AOSLeatherInfo = {
 				new CraftResourceInfo( 0x000, 1049353, "Normal",		CraftAttributeInfo.Blank,		CraftResource.RegularLeather,	typeof( Leather ),			typeof( Hides ) ),
 				new CraftResourceInfo( 0x8AC, 1049354, "Spined",		CraftAttributeInfo.Spined,		CraftResource.SpinedLeather,	typeof( SpinedLeather ),	typeof( SpinedHides ) ),
 				new CraftResourceInfo( 0x845, 1049355, "Horned",		CraftAttributeInfo.Horned,		CraftResource.HornedLeather,	typeof( HornedLeather ),	typeof( HornedHides ) ),
 				new CraftResourceInfo( 0x851, 1049356, "Barbed",		CraftAttributeInfo.Barbed,		CraftResource.BarbedLeather,	typeof( BarbedLeather ),	typeof( BarbedHides ) ),
 			};
 
-		private static CraftResourceInfo[] m_WoodInfo = new CraftResourceInfo[]
-			{
+		private static CraftResourceInfo[] m_WoodInfo = {
 				new CraftResourceInfo( 0x000, 1011542, "Normal",		CraftAttributeInfo.Blank,		CraftResource.RegularWood,	typeof( Log ),			typeof( Board ) ),
 				new CraftResourceInfo( 0x7DA, 1072533, "Oak",			CraftAttributeInfo.OakWood,		CraftResource.OakWood,		typeof( OakLog ),		typeof( OakBoard ) ),
 				new CraftResourceInfo( 0x4A7, 1072534, "Ash",			CraftAttributeInfo.AshWood,		CraftResource.AshWood,		typeof( AshLog ),		typeof( AshBoard ) ),
@@ -589,7 +576,7 @@ namespace Server.Items
 		{
 			CraftResourceInfo info = GetInfo( resource );
 
-			return ( info == null ? 0 : info.Number );
+			return info?.Number ?? 0;
 		}
 
 		/// <summary>
@@ -599,7 +586,7 @@ namespace Server.Items
 		{
 			CraftResourceInfo info = GetInfo( resource );
 
-			return ( info == null ? 0 : info.Hue );
+			return info?.Hue ?? 0;
 		}
 
 		/// <summary>
@@ -609,7 +596,7 @@ namespace Server.Items
 		{
 			CraftResourceInfo info = GetInfo( resource );
 
-			return ( info == null ? String.Empty : info.Name );
+			return ( info == null ? string.Empty : info.Name );
 		}
 
 		/// <summary>
@@ -619,30 +606,30 @@ namespace Server.Items
 		{
 			if ( info.Name.IndexOf( "Spined" ) >= 0 )
 				return CraftResource.SpinedLeather;
-			else if ( info.Name.IndexOf( "Horned" ) >= 0 )
+			if ( info.Name.IndexOf( "Horned" ) >= 0 )
 				return CraftResource.HornedLeather;
-			else if ( info.Name.IndexOf( "Barbed" ) >= 0 )
+			if ( info.Name.IndexOf( "Barbed" ) >= 0 )
 				return CraftResource.BarbedLeather;
-			else if ( info.Name.IndexOf( "Leather" ) >= 0 )
+			if ( info.Name.IndexOf( "Leather" ) >= 0 )
 				return CraftResource.RegularLeather;
 
 			if ( info.Level == 0 )
 				return CraftResource.Iron;
-			else if ( info.Level == 1 )
+			if ( info.Level == 1 )
 				return CraftResource.DullCopper;
-			else if ( info.Level == 2 )
+			if ( info.Level == 2 )
 				return CraftResource.ShadowIron;
-			else if ( info.Level == 3 )
+			if ( info.Level == 3 )
 				return CraftResource.Copper;
-			else if ( info.Level == 4 )
+			if ( info.Level == 4 )
 				return CraftResource.Bronze;
-			else if ( info.Level == 5 )
+			if ( info.Level == 5 )
 				return CraftResource.Gold;
-			else if ( info.Level == 6 )
+			if ( info.Level == 6 )
 				return CraftResource.Agapite;
-			else if ( info.Level == 7 )
+			if ( info.Level == 7 )
 				return CraftResource.Verite;
-			else if ( info.Level == 8 )
+			if ( info.Level == 8 )
 				return CraftResource.Valorite;
 
 			return CraftResource.None;
@@ -658,11 +645,11 @@ namespace Server.Items
 			{
 				if ( info.Level == 0 )
 					return CraftResource.RegularLeather;
-				else if ( info.Level == 1 )
+				if ( info.Level == 1 )
 					return CraftResource.SpinedLeather;
-				else if ( info.Level == 2 )
+				if ( info.Level == 2 )
 					return CraftResource.HornedLeather;
-				else if ( info.Level == 3 )
+				if ( info.Level == 3 )
 					return CraftResource.BarbedLeather;
 
 				return CraftResource.None;
@@ -686,39 +673,17 @@ namespace Server.Items
 		public static readonly OreInfo Verite		= new OreInfo( 7, 0x89F, "Verite" );
 		public static readonly OreInfo Valorite		= new OreInfo( 8, 0x8AB, "Valorite" );
 
-		private int m_Level;
-		private int m_Hue;
-		private string m_Name;
-
 		public OreInfo( int level, int hue, string name )
 		{
-			m_Level = level;
-			m_Hue = hue;
-			m_Name = name;
+			Level = level;
+			Hue = hue;
+			Name = name;
 		}
 
-		public int Level
-		{
-			get
-			{
-				return m_Level;
-			}
-		}
+		public int Level { get; }
 
-		public int Hue
-		{
-			get
-			{
-				return m_Hue;
-			}
-		}
+		public int Hue { get; }
 
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-		}
+		public string Name { get; }
 	}
 }

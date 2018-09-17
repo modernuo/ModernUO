@@ -1,46 +1,33 @@
 using System;
 using System.Collections;
-using System.Text;
 
 namespace Server.Commands.Generic
 {
-	public sealed class LimitExtension : BaseExtension
-	{
-		public static ExtensionInfo ExtInfo = new ExtensionInfo( 80, "Limit", 1, delegate() { return new LimitExtension(); } );
+  public sealed class LimitExtension : BaseExtension
+  {
+    public static ExtensionInfo ExtInfo = new ExtensionInfo(80, "Limit", 1, () => new LimitExtension());
 
-		public static void Initialize()
-		{
-			ExtensionInfo.Register( ExtInfo );
-		}
+    public override ExtensionInfo Info => ExtInfo;
 
-		public override ExtensionInfo Info
-		{
-			get { return ExtInfo; }
-		}
+    public int Limit{ get; private set; }
 
-		private int m_Limit;
+    public static void Initialize()
+    {
+      ExtensionInfo.Register(ExtInfo);
+    }
 
-		public int Limit
-		{
-			get { return m_Limit; }
-		}
+    public override void Parse(Mobile from, string[] arguments, int offset, int size)
+    {
+      Limit = Utility.ToInt32(arguments[offset]);
 
-		public LimitExtension()
-		{
-		}
+      if (Limit < 0)
+        throw new Exception("Limit cannot be less than zero.");
+    }
 
-		public override void Parse( Mobile from, string[] arguments, int offset, int size )
-		{
-			m_Limit = Utility.ToInt32( arguments[offset] );
-
-			if ( m_Limit < 0 )
-				throw new Exception( "Limit cannot be less than zero." );
-		}
-
-		public override void Filter( ArrayList list )
-		{
-			if ( list.Count > m_Limit )
-				list.RemoveRange( m_Limit, list.Count - m_Limit );
-		}
-	}
+    public override void Filter(ArrayList list)
+    {
+      if (list.Count > Limit)
+        list.RemoveRange(Limit, list.Count - Limit);
+    }
+  }
 }

@@ -1,101 +1,92 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Server.Items;
-using Server.Targeting;
-using Server.Engines.Quests;
-using Server.Engines.Quests.Haven;
-using Server.ContextMenus;
-
 namespace Server.Mobiles
 {
-	public class CorruptedSoul : BaseCreature
-	{
-		public override bool DeleteCorpseOnDeath => true;
+  public class CorruptedSoul : BaseCreature
+  {
+    [Constructible]
+    public CorruptedSoul() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, .1, 5)
+    {
+      Body = 0x3CA;
+      Hue = 0x453;
 
-		public override string DefaultName => "a corrupted soul";
+      SetStr(102, 115);
+      SetDex(101, 115);
+      SetInt(203, 215);
 
-		[Constructible]
-		public CorruptedSoul() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, .1, 5 )
-		{
-			Body = 0x3CA;
-			Hue = 0x453;
+      SetHits(61, 69);
 
-			SetStr( 102, 115 );
-			SetDex( 101, 115 );
-			SetInt( 203, 215 );
+      SetDamage(4, 40);
 
-			SetHits( 61, 69 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamage( 4, 40 );
+      SetResistance(ResistanceType.Physical, 61, 74);
+      SetResistance(ResistanceType.Fire, 22, 48);
+      SetResistance(ResistanceType.Cold, 73, 100);
+      SetResistance(ResistanceType.Poison, 0);
+      SetResistance(ResistanceType.Energy, 51, 60);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetSkill(SkillName.MagicResist, 80.2, 89.4);
+      SetSkill(SkillName.Tactics, 81.3, 89.9);
+      SetSkill(SkillName.Wrestling, 80.1, 88.7);
 
-			SetResistance( ResistanceType.Physical, 61, 74 );
-			SetResistance( ResistanceType.Fire, 22, 48 );
-			SetResistance( ResistanceType.Cold, 73, 100 );
-			SetResistance( ResistanceType.Poison, 0 );
-			SetResistance( ResistanceType.Energy, 51, 60 );
+      Fame = 5000;
+      Karma = -5000;
 
-			SetSkill( SkillName.MagicResist, 80.2, 89.4 );
-			SetSkill( SkillName.Tactics, 81.3, 89.9 );
-			SetSkill( SkillName.Wrestling, 80.1, 88.7 );
+      // VirtualArmor = 6; Not sure
+    }
 
-			Fame = 5000;
-			Karma = -5000;
+    public CorruptedSoul(Serial serial) : base(serial)
+    {
+    }
 
-			// VirtualArmor = 6; Not sure
-		}
+    public override bool DeleteCorpseOnDeath => true;
 
-		public override bool AlwaysAttackable => true;
-		public override bool BleedImmune => true; // NEED TO VERIFY
+    public override string DefaultName => "a corrupted soul";
 
-		// NEED TO VERIFY SOUNDS! Known: No Idle Sound.
+    public override bool AlwaysAttackable => true;
+    public override bool BleedImmune => true; // NEED TO VERIFY
 
-		/*public override int GetAngerSound()
-		{
-			return 0x0;
-		}*/
+    /*public override int GetDeathSound()
+    {
+      return 0x0;
+    }*/
 
-		public override int GetAttackSound()
-		{
-			return 0x233;
-		}
+    public override bool AlwaysMurderer => true;
 
-		/*public override int GetDeathSound()
-		{
-			return 0x0;
-		}*/
+    // NEED TO VERIFY SOUNDS! Known: No Idle Sound.
 
-		public override bool AlwaysMurderer => true;
+    /*public override int GetAngerSound()
+    {
+      return 0x0;
+    }*/
 
-		// TODO: Proper OnDeath Effect
+    public override int GetAttackSound()
+    {
+      return 0x233;
+    }
 
-		public override bool OnBeforeDeath()
-		{
-			if ( !base.OnBeforeDeath() )
-				return false;
+    // TODO: Proper OnDeath Effect
 
-			// 1 in 20 chance that a Thread of Fate will appear in the killer's pack
+    public override bool OnBeforeDeath()
+    {
+      if (!base.OnBeforeDeath())
+        return false;
 
-			Effects.SendLocationEffect( Location, Map, 0x376A, 10, 1 );
-			return true;
-		}
+      // 1 in 20 chance that a Thread of Fate will appear in the killer's pack
 
-		public CorruptedSoul( Serial serial ) : base( serial )
-		{
-		}
+      Effects.SendLocationEffect(Location, Map, 0x376A, 10, 1);
+      return true;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

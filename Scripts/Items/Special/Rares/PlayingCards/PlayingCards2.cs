@@ -1,33 +1,30 @@
-using System;
-
 namespace Server.Items
 {
-	public class PlayingCards2 : Item
-	{
+  public class PlayingCards2 : Item
+  {
+    [Constructible]
+    public PlayingCards2() : base(0xFA2)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public PlayingCards2() : base( 0xFA2 )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public PlayingCards2(Serial serial) : base(serial)
+    {
+    }
 
-		public PlayingCards2( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

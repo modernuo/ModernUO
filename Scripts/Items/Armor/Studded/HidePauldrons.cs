@@ -1,54 +1,51 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	[FlippableAttribute( 0x2B77, 0x316E )]
-	public class HidePauldrons : BaseArmor
-	{
-		public override Race RequiredRace => Race.Elf;
+  [Flippable(0x2B77, 0x316E)]
+  public class HidePauldrons : BaseArmor
+  {
+    [Constructible]
+    public HidePauldrons() : base(0x2B77)
+    {
+      Weight = 4.0;
+    }
 
-		public override int BasePhysicalResistance => 3;
-		public override int BaseFireResistance => 3;
-		public override int BaseColdResistance => 4;
-		public override int BasePoisonResistance => 3;
-		public override int BaseEnergyResistance => 2;
+    public HidePauldrons(Serial serial) : base(serial)
+    {
+    }
 
-		public override int InitMinHits => 35;
-		public override int InitMaxHits => 45;
+    public override Race RequiredRace => Race.Elf;
 
-		public override int AosStrReq => 20;
-		public override int OldStrReq => 20;
+    public override int BasePhysicalResistance => 3;
+    public override int BaseFireResistance => 3;
+    public override int BaseColdResistance => 4;
+    public override int BasePoisonResistance => 3;
+    public override int BaseEnergyResistance => 2;
 
-		public override int ArmorBase => 15;
+    public override int InitMinHits => 35;
+    public override int InitMaxHits => 45;
 
-		public override ArmorMaterialType MaterialType => ArmorMaterialType.Studded;
-		public override CraftResource DefaultResource => CraftResource.RegularLeather;
+    public override int AosStrReq => 20;
+    public override int OldStrReq => 20;
 
-		public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.Half;
+    public override int ArmorBase => 15;
 
-		[Constructible]
-		public HidePauldrons() : base( 0x2B77 )
-		{
-			Weight = 4.0;
-		}
+    public override ArmorMaterialType MaterialType => ArmorMaterialType.Studded;
+    public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-		public HidePauldrons( Serial serial ) : base( serial )
-		{
-		}
+    public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.Half;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 );
-		}
+      writer.WriteEncodedInt(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

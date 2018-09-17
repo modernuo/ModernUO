@@ -1,63 +1,61 @@
 using System;
-using Server.Network;
-using Server.Items;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0x13B2, 0x13B1 )]
-	public class Bow : BaseRanged
-	{
-		public override int EffectID => 0xF42;
-		public override Type AmmoType => typeof( Arrow );
-		public override Item Ammo => new Arrow();
+  [Flippable(0x13B2, 0x13B1)]
+  public class Bow : BaseRanged
+  {
+    [Constructible]
+    public Bow() : base(0x13B2)
+    {
+      Weight = 6.0;
+      Layer = Layer.TwoHanded;
+    }
 
-		public override WeaponAbility PrimaryAbility => WeaponAbility.ParalyzingBlow;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
+    public Bow(Serial serial) : base(serial)
+    {
+    }
 
-		public override int AosStrengthReq => 30;
-		public override int AosMinDamage => Core.ML ? 15 : 16;
-		public override int AosMaxDamage => Core.ML ? 19 : 18;
-		public override int AosSpeed => 25;
-		public override float MlSpeed => 4.25f;
+    public override int EffectID => 0xF42;
+    public override Type AmmoType => typeof(Arrow);
+    public override Item Ammo => new Arrow();
 
-		public override int OldStrengthReq => 20;
-		public override int OldMinDamage => 9;
-		public override int OldMaxDamage => 41;
-		public override int OldSpeed => 20;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.ParalyzingBlow;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
 
-		public override int DefMaxRange => 10;
+    public override int AosStrengthReq => 30;
+    public override int AosMinDamage => Core.ML ? 15 : 16;
+    public override int AosMaxDamage => Core.ML ? 19 : 18;
+    public override int AosSpeed => 25;
+    public override float MlSpeed => 4.25f;
 
-		public override int InitMinHits => 31;
-		public override int InitMaxHits => 60;
+    public override int OldStrengthReq => 20;
+    public override int OldMinDamage => 9;
+    public override int OldMaxDamage => 41;
+    public override int OldSpeed => 20;
 
-		public override WeaponAnimation DefAnimation => WeaponAnimation.ShootBow;
+    public override int DefMaxRange => 10;
 
-		[Constructible]
-		public Bow() : base( 0x13B2 )
-		{
-			Weight = 6.0;
-			Layer = Layer.TwoHanded;
-		}
+    public override int InitMinHits => 31;
+    public override int InitMaxHits => 60;
 
-		public Bow( Serial serial ) : base( serial )
-		{
-		}
+    public override WeaponAnimation DefAnimation => WeaponAnimation.ShootBow;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( Weight == 7.0 )
-				Weight = 6.0;
-		}
-	}
+      if (Weight == 7.0)
+        Weight = 6.0;
+    }
+  }
 }

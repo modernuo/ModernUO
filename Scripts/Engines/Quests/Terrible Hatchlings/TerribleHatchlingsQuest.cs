@@ -1,70 +1,47 @@
 using System;
-using Server;
-using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Engines.Quests.Zento
 {
-	public class TerribleHatchlingsQuest : QuestSystem
-	{
-		private static Type[] m_TypeReferenceTable = new Type[]
-			{
-				typeof( AcceptConversation ),
-				typeof( DirectionConversation ),
-				typeof( TakeCareConversation ),
-				typeof( EndConversation ),
-				typeof( FirstKillObjective ),
-				typeof( SecondKillObjective ),
-				typeof( ThirdKillObjective ),
-				typeof( ReturnObjective )
-			};
+  public class TerribleHatchlingsQuest : QuestSystem
+  {
+    private static Type[] m_TypeReferenceTable =
+    {
+      typeof(AcceptConversation),
+      typeof(DirectionConversation),
+      typeof(TakeCareConversation),
+      typeof(EndConversation),
+      typeof(FirstKillObjective),
+      typeof(SecondKillObjective),
+      typeof(ThirdKillObjective),
+      typeof(ReturnObjective)
+    };
 
-		public override Type[] TypeReferenceTable => m_TypeReferenceTable;
+    public TerribleHatchlingsQuest(PlayerMobile from) : base(from)
+    {
+    }
 
-		public override object Name
-		{
-			get
-			{
-				// Terrible Hatchlings
-				return 1063314;
-			}
-		}
+    // Serialization
+    public TerribleHatchlingsQuest()
+    {
+    }
 
-		public override object OfferMessage
-		{
-			get
-			{
-				/* The Deathwatch Beetle Hatchlings have trampled through my fields
-				 * again, what a nuisance! Please help me get rid of the terrible
-				 * hatchlings. If you kill 10 of them, you will be rewarded.
-				 * The Deathwatch Beetle Hatchlings live in The Waste -
-				 * the desert close to this city.<BR><BR>
-				 *
-				 * Will you accept this challenge?
-				 */
-				return 1063315;
-			}
-		}
+    public override Type[] TypeReferenceTable => m_TypeReferenceTable;
 
-		public override TimeSpan RestartDelay => TimeSpan.MaxValue;
-		public override bool IsTutorial => true;
+    public override object Name => 1063314;
 
-		public override int Picture => 0x15CF;
+    public override object OfferMessage => 1063315;
 
-		public TerribleHatchlingsQuest( PlayerMobile from ) : base( from )
-		{
-		}
+    public override TimeSpan RestartDelay => TimeSpan.MaxValue;
+    public override bool IsTutorial => true;
 
-		// Serialization
-		public TerribleHatchlingsQuest()
-		{
-		}
+    public override int Picture => 0x15CF;
 
-		public override void Accept()
-		{
-			base.Accept();
+    public override void Accept()
+    {
+      base.Accept();
 
-			AddConversation( new AcceptConversation() );
-		}
-	}
+      AddConversation(new AcceptConversation());
+    }
+  }
 }

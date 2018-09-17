@@ -1,39 +1,33 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class ClumsyScroll : SpellScroll
-	{
-		[Constructible]
-		public ClumsyScroll() : this( 1 )
-		{
-		}
+  public class ClumsyScroll : SpellScroll
+  {
+    [Constructible]
+    public ClumsyScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public ClumsyScroll( int amount ) : base( 0, 0x1F2E, amount )
-		{
-		}
+    [Constructible]
+    public ClumsyScroll(int amount) : base(0, 0x1F2E, amount)
+    {
+    }
 
-		public ClumsyScroll( Serial serial ) : base( serial )
-		{
-		}
+    public ClumsyScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

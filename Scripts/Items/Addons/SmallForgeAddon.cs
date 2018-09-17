@@ -1,63 +1,60 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class SmallForgeAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new SmallForgeDeed();
+  public class SmallForgeAddon : BaseAddon
+  {
+    [Constructible]
+    public SmallForgeAddon()
+    {
+      AddComponent(new ForgeComponent(0xFB1), 0, 0, 0);
+    }
 
-		[Constructible]
-		public SmallForgeAddon()
-		{
-			AddComponent( new ForgeComponent( 0xFB1 ), 0, 0, 0 );
-		}
+    public SmallForgeAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public SmallForgeAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new SmallForgeDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class SmallForgeDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new SmallForgeAddon();
-		public override int LabelNumber => 1044330; // small forge
+  public class SmallForgeDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public SmallForgeDeed()
+    {
+    }
 
-		[Constructible]
-		public SmallForgeDeed()
-		{
-		}
+    public SmallForgeDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public SmallForgeDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new SmallForgeAddon();
+    public override int LabelNumber => 1044330; // small forge
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

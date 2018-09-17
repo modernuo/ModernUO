@@ -1,68 +1,68 @@
-using System;
-using Server.Items;
 using Server.Network;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0xF95, 0xF96, 0xF97, 0xF98, 0xF99, 0xF9A, 0xF9B, 0xF9C )]
-	public class BoltOfCloth : Item, IScissorable, IDyable, ICommodity
-	{
-		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		bool ICommodity.IsDeedable { get { return true; } }
+  [Flippable(0xF95, 0xF96, 0xF97, 0xF98, 0xF99, 0xF9A, 0xF9B, 0xF9C)]
+  public class BoltOfCloth : Item, IScissorable, IDyable, ICommodity
+  {
+    [Constructible]
+    public BoltOfCloth() : this(1)
+    {
+    }
 
-		[Constructible]
-		public BoltOfCloth() : this( 1 )
-		{
-		}
+    [Constructible]
+    public BoltOfCloth(int amount) : base(0xF95)
+    {
+      Stackable = true;
+      Weight = 5.0;
+      Amount = amount;
+    }
 
-		[Constructible]
-		public BoltOfCloth( int amount ) : base( 0xF95 )
-		{
-			Stackable = true;
-			Weight = 5.0;
-			Amount = amount;
-		}
+    public BoltOfCloth(Serial serial) : base(serial)
+    {
+    }
 
-		public BoltOfCloth( Serial serial ) : base( serial )
-		{
-		}
+    int ICommodity.DescriptionNumber => LabelNumber;
+    bool ICommodity.IsDeedable => true;
 
-		public bool Dye( Mobile from, DyeTub sender )
-		{
-			if ( Deleted ) return false;
+    public bool Dye(Mobile from, DyeTub sender)
+    {
+      if (Deleted) return false;
 
-			Hue = sender.DyedHue;
+      Hue = sender.DyedHue;
 
-			return true;
-		}
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      return true;
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public bool Scissor(Mobile from, Scissors scissors)
+    {
+      if (Deleted || !from.CanSee(this)) return false;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      base.ScissorHelper(from, new Cloth(), 50);
 
-			int version = reader.ReadInt();
-		}
+      return true;
+    }
 
-		public bool Scissor( Mobile from, Scissors scissors )
-		{
-			if ( Deleted || !from.CanSee( this ) ) return false;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			base.ScissorHelper( from, new Cloth(), 50 );
+      writer.Write(0); // version
+    }
 
-			return true;
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void OnSingleClick( Mobile from )
-		{
-			int number = (Amount == 1) ? 1049122 : 1049121;
+      int version = reader.ReadInt();
+    }
 
-			from.Send( new MessageLocalized( Serial, ItemID, MessageType.Label, 0x3B2, 3, number, "", (Amount * 50).ToString() ) );
-		}
-	}
+    public override void OnSingleClick(Mobile from)
+    {
+      int number = Amount == 1 ? 1049122 : 1049121;
+
+      from.Send(
+        new MessageLocalized(Serial, ItemID, MessageType.Label, 0x3B2, 3, number, "", (Amount * 50).ToString()));
+    }
+  }
 }

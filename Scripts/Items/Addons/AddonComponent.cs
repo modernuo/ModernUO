@@ -1,285 +1,262 @@
-using System;
-using Server;
+using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[Server.Engines.Craft.Anvil]
-	public class AnvilComponent : AddonComponent
-	{
-		[Constructible]
-		public AnvilComponent( int itemID ) : base( itemID )
-		{
-		}
+  [Anvil]
+  public class AnvilComponent : AddonComponent
+  {
+    [Constructible]
+    public AnvilComponent(int itemID) : base(itemID)
+    {
+    }
 
-		public AnvilComponent( Serial serial ) : base( serial )
-		{
-		}
+    public AnvilComponent(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	[Server.Engines.Craft.Forge]
-	public class ForgeComponent : AddonComponent
-	{
-		[Constructible]
-		public ForgeComponent( int itemID ) : base( itemID )
-		{
-		}
+  [Forge]
+  public class ForgeComponent : AddonComponent
+  {
+    [Constructible]
+    public ForgeComponent(int itemID) : base(itemID)
+    {
+    }
 
-		public ForgeComponent( Serial serial ) : base( serial )
-		{
-		}
+    public ForgeComponent(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class LocalizedAddonComponent : AddonComponent
-	{
-		private int m_LabelNumber;
+  public class LocalizedAddonComponent : AddonComponent
+  {
+    private int m_LabelNumber;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Number
-		{
-			get{ return m_LabelNumber; }
-			set{ m_LabelNumber = value; InvalidateProperties(); }
-		}
+    [Constructible]
+    public LocalizedAddonComponent(int itemID, int labelNumber) : base(itemID)
+    {
+      m_LabelNumber = labelNumber;
+    }
 
-		public override int LabelNumber => m_LabelNumber;
+    public LocalizedAddonComponent(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public LocalizedAddonComponent( int itemID, int labelNumber ) : base( itemID )
-		{
-			m_LabelNumber = labelNumber;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Number
+    {
+      get => m_LabelNumber;
+      set
+      {
+        m_LabelNumber = value;
+        InvalidateProperties();
+      }
+    }
 
-		public LocalizedAddonComponent( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => m_LabelNumber;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			writer.Write( (int) m_LabelNumber );
-		}
+      writer.Write(m_LabelNumber);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_LabelNumber = reader.ReadInt();
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          m_LabelNumber = reader.ReadInt();
+          break;
+        }
+      }
+    }
+  }
 
-	public class AddonComponent : Item, IChopable
-	{
-		private Point3D m_Offset;
-		private BaseAddon m_Addon;
+  public class AddonComponent : Item, IChopable
+  {
+    private static LightEntry[] m_Entries =
+    {
+      new LightEntry(LightType.WestSmall, 1122, 1123, 1124, 1141, 1142, 1143, 1144, 1145, 1146, 2347, 2359, 2360, 2361,
+        2362, 2363, 2364, 2387, 2388, 2389, 2390, 2391, 2392),
+      new LightEntry(LightType.NorthSmall, 1131, 1133, 1134, 1147, 1148, 1149, 1150, 1151, 1152, 2352, 2373, 2374,
+        2375, 2376, 2377, 2378, 2401, 2402, 2403, 2404, 2405, 2406),
+      new LightEntry(LightType.Circle300, 6526, 6538, 6571),
+      new LightEntry(LightType.Circle150, 5703, 6587)
+    };
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public BaseAddon Addon
-		{
-			get
-			{
-				return m_Addon;
-			}
-			set
-			{
-				m_Addon = value;
-			}
-		}
+    [Constructible]
+    public AddonComponent(int itemID) : base(itemID)
+    {
+      Movable = false;
+      ApplyLightTo(this);
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Offset
-		{
-			get
-			{
-				return m_Offset;
-			}
-			set
-			{
-				m_Offset = value;
-			}
-		}
+    public AddonComponent(Serial serial) : base(serial)
+    {
+    }
 
-		[Hue, CommandProperty( AccessLevel.GameMaster )]
-		public override int Hue
-		{
-			get
-			{
-				return base.Hue;
-			}
-			set
-			{
-				base.Hue = value;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public BaseAddon Addon{ get; set; }
 
-				if ( m_Addon != null && m_Addon.ShareHue )
-					m_Addon.Hue = value;
-			}
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Point3D Offset{ get; set; }
 
-		public virtual bool NeedsWall{ get{ return false; } }
-		public virtual Point3D WallPosition{ get{ return Point3D.Zero; } }
+    [Hue]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public override int Hue
+    {
+      get => base.Hue;
+      set
+      {
+        base.Hue = value;
 
-		[Constructible]
-		public AddonComponent( int itemID ) : base( itemID )
-		{
-			Movable = false;
-			ApplyLightTo( this );
-		}
+        if (Addon != null && Addon.ShareHue)
+          Addon.Hue = value;
+      }
+    }
 
-		public AddonComponent( Serial serial ) : base( serial )
-		{
-		}
+    public virtual bool NeedsWall => false;
+    public virtual Point3D WallPosition => Point3D.Zero;
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( m_Addon != null )
-				m_Addon.OnComponentUsed( this, from );
-		}
+    public void OnChop(Mobile from)
+    {
+      if (Addon != null && from.InRange(GetWorldLocation(), 3))
+        Addon.OnChop(from);
+      else
+        from.SendLocalizedMessage(500446); // That is too far away.
+    }
 
-		public void OnChop( Mobile from )
-		{
-			if ( m_Addon != null && from.InRange( GetWorldLocation(), 3 ) )
-				m_Addon.OnChop( from );
-			else
-				from.SendLocalizedMessage( 500446 ); // That is too far away.
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      Addon?.OnComponentUsed(this, from);
+    }
 
-		public override void OnLocationChange( Point3D old )
-		{
-			if ( m_Addon != null )
-				m_Addon.Location = new Point3D( X - m_Offset.X, Y - m_Offset.Y, Z - m_Offset.Z );
-		}
+    public override void OnLocationChange(Point3D old)
+    {
+      if (Addon != null)
+        Addon.Location = new Point3D(X - Offset.X, Y - Offset.Y, Z - Offset.Z);
+    }
 
-		public override void OnMapChange()
-		{
-			if ( m_Addon != null )
-				m_Addon.Map = Map;
-		}
+    public override void OnMapChange()
+    {
+      if (Addon != null)
+        Addon.Map = Map;
+    }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-			if ( m_Addon != null )
-				m_Addon.Delete();
-		}
+      Addon?.Delete();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 ); // version
+      writer.Write(1); // version
 
-			writer.Write( m_Addon );
-			writer.Write( m_Offset );
-		}
+      writer.Write(Addon);
+      writer.Write(Offset);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 1:
-				case 0:
-				{
-					m_Addon = reader.ReadItem() as BaseAddon;
-					m_Offset = reader.ReadPoint3D();
+      switch (version)
+      {
+        case 1:
+        case 0:
+        {
+          Addon = reader.ReadItem() as BaseAddon;
+          Offset = reader.ReadPoint3D();
 
-					if ( m_Addon != null )
-						m_Addon.OnComponentLoaded( this );
+          Addon?.OnComponentLoaded(this);
 
-					ApplyLightTo( this );
+          ApplyLightTo(this);
 
-					break;
-				}
-			}
+          break;
+        }
+      }
 
-			if ( version < 1 && Weight == 0 )
-				Weight = -1;
-		}
+      if (version < 1 && Weight == 0)
+        Weight = -1;
+    }
 
-		public static void ApplyLightTo( Item item )
-		{
-			if ( (item.ItemData.Flags & TileFlag.LightSource) == 0 )
-				return; // not a light source
+    public static void ApplyLightTo(Item item)
+    {
+      if ((item.ItemData.Flags & TileFlag.LightSource) == 0)
+        return; // not a light source
 
-			int itemID = item.ItemID;
+      int itemID = item.ItemID;
 
-			for ( int i = 0; i < m_Entries.Length; ++i )
-			{
-				LightEntry entry = m_Entries[i];
-				int[] toMatch = entry.m_ItemIDs;
-				bool contains = false;
+      for (int i = 0; i < m_Entries.Length; ++i)
+      {
+        LightEntry entry = m_Entries[i];
+        int[] toMatch = entry.m_ItemIDs;
+        bool contains = false;
 
-				for ( int j = 0; !contains && j < toMatch.Length; ++j )
-					contains = ( itemID == toMatch[j] );
+        for (int j = 0; !contains && j < toMatch.Length; ++j)
+          contains = itemID == toMatch[j];
 
-				if ( contains )
-				{
-					item.Light = entry.m_Light;
-					return;
-				}
-			}
-		}
+        if (contains)
+        {
+          item.Light = entry.m_Light;
+          return;
+        }
+      }
+    }
 
-		private static LightEntry[] m_Entries = new LightEntry[]
-			{
-				new LightEntry( LightType.WestSmall, 1122, 1123, 1124, 1141, 1142, 1143, 1144, 1145, 1146, 2347, 2359, 2360, 2361, 2362, 2363, 2364, 2387, 2388, 2389, 2390, 2391, 2392 ),
-				new LightEntry( LightType.NorthSmall, 1131, 1133, 1134, 1147, 1148, 1149, 1150, 1151, 1152, 2352, 2373, 2374, 2375, 2376, 2377, 2378, 2401, 2402, 2403, 2404, 2405, 2406 ),
-				new LightEntry( LightType.Circle300, 6526, 6538, 6571 ),
-				new LightEntry( LightType.Circle150, 5703, 6587 )
-			};
+    private class LightEntry
+    {
+      public int[] m_ItemIDs;
+      public LightType m_Light;
 
-		private class LightEntry
-		{
-			public LightType m_Light;
-			public int[] m_ItemIDs;
-
-			public LightEntry( LightType light, params int[] itemIDs )
-			{
-				m_Light = light;
-				m_ItemIDs = itemIDs;
-			}
-		}
-	}
+      public LightEntry(LightType light, params int[] itemIDs)
+      {
+        m_Light = light;
+        m_ItemIDs = itemIDs;
+      }
+    }
+  }
 }

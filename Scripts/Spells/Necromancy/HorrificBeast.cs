@@ -1,44 +1,40 @@
 using System;
-using System.Collections;
-using Server.Network;
-using Server.Items;
-using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-	public class HorrificBeastSpell : TransformationSpell
-	{
-		private static SpellInfo m_Info = new SpellInfo(
-				"Horrific Beast", "Rel Xen Vas Bal",
-				203,
-				9031,
-				Reagent.BatWing,
-				Reagent.DaemonBlood
-			);
+  public class HorrificBeastSpell : TransformationSpell
+  {
+    private static SpellInfo m_Info = new SpellInfo(
+      "Horrific Beast", "Rel Xen Vas Bal",
+      203,
+      9031,
+      Reagent.BatWing,
+      Reagent.DaemonBlood
+    );
 
-		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 2.0 );
+    public HorrificBeastSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    {
+    }
 
-		public override double RequiredSkill => 40.0;
-		public override int RequiredMana => 11;
+    public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.0);
 
-		public override int Body => 746;
+    public override double RequiredSkill => 40.0;
+    public override int RequiredMana => 11;
 
-		public HorrificBeastSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
-		{
-		}
+    public override int Body => 746;
 
-		public override void DoEffect( Mobile m )
-		{
-			m.PlaySound( 0x165 );
-			m.FixedParticles( 0x3728, 1, 13, 9918, 92, 3, EffectLayer.Head );
+    public override void DoEffect(Mobile m)
+    {
+      m.PlaySound(0x165);
+      m.FixedParticles(0x3728, 1, 13, 9918, 92, 3, EffectLayer.Head);
 
-			m.Delta( MobileDelta.WeaponDamage );
-			m.CheckStatTimers();
-		}
+      m.Delta(MobileDelta.WeaponDamage);
+      m.CheckStatTimers();
+    }
 
-		public override void RemoveEffect( Mobile m )
-		{
-			m.Delta( MobileDelta.WeaponDamage );
-		}
-	}
+    public override void RemoveEffect(Mobile m)
+    {
+      m.Delta(MobileDelta.WeaponDamage);
+    }
+  }
 }

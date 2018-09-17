@@ -1,52 +1,49 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class SeaChart : MapItem
-	{
-		[Constructible]
-		public SeaChart()
-		{
-			SetDisplay( 0, 0, 5119, 4095, 400, 400 );
-		}
+  public class SeaChart : MapItem
+  {
+    [Constructible]
+    public SeaChart()
+    {
+      SetDisplay(0, 0, 5119, 4095, 400, 400);
+    }
 
-		public override void CraftInit( Mobile from )
-		{
-			double skillValue = from.Skills[SkillName.Cartography].Value;
-			int dist = 64 + (int)(skillValue * 10);
+    public SeaChart(Serial serial) : base(serial)
+    {
+    }
 
-			if ( dist < 200 )
-				dist = 200;
+    public override int LabelNumber => 1015232; // sea chart
 
-			int size = 24 + (int)(skillValue * 3.3);
+    public override void CraftInit(Mobile from)
+    {
+      double skillValue = from.Skills[SkillName.Cartography].Value;
+      int dist = 64 + (int)(skillValue * 10);
 
-			if ( size < 200 )
-				size = 200;
-			else if ( size > 400 )
-				size = 400;
+      if (dist < 200)
+        dist = 200;
 
-			SetDisplay( from.X - dist, from.Y - dist, from.X + dist, from.Y + dist, size, size );
-		}
+      int size = 24 + (int)(skillValue * 3.3);
 
-		public override int LabelNumber => 1015232; // sea chart
+      if (size < 200)
+        size = 200;
+      else if (size > 400)
+        size = 400;
 
-		public SeaChart( Serial serial ) : base( serial )
-		{
-		}
+      SetDisplay(from.X - dist, from.Y - dist, from.X + dist, from.Y + dist, size, size);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

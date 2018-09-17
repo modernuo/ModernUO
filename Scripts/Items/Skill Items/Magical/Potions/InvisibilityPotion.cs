@@ -1,111 +1,111 @@
 using System;
 using System.Collections;
-using Server;
 
 namespace Server.Items
 {
-	public class InvisibilityPotion : BasePotion
-	{
-		public override int LabelNumber => 1072941; // Potion of Invisibility
+  public class InvisibilityPotion : BasePotion
+  {
+    private static Hashtable m_Table = new Hashtable();
 
-		[Constructible]
-		public InvisibilityPotion() : base( 0xF0A, PotionEffect.Invisibility )
-		{
-			Hue = 0x48D;
-		}
+    [Constructible]
+    public InvisibilityPotion() : base(0xF0A, PotionEffect.Invisibility)
+    {
+      Hue = 0x48D;
+    }
 
-		public InvisibilityPotion( Serial serial ) : base( serial )
-		{
-		}
+    public InvisibilityPotion(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Drink( Mobile from )
-		{
-			if ( from.Hidden )
-			{
-				from.SendLocalizedMessage( 1073185 ); // You are already unseen.
-				return;
-			}
+    public override int LabelNumber => 1072941; // Potion of Invisibility
 
-			if ( HasTimer( from ) )
-			{
-				from.SendLocalizedMessage( 1073186 ); // An invisibility potion is already taking effect on your person.
-				return;
-			}
+    public override void Drink(Mobile from)
+    {
+      if (from.Hidden)
+      {
+        from.SendLocalizedMessage(1073185); // You are already unseen.
+        return;
+      }
 
-			Consume();
-			m_Table[ from ] = Timer.DelayCall( TimeSpan.FromSeconds( 2 ), new TimerStateCallback( Hide_Callback ), from );
-			PlayDrinkEffect( from );
-		}
+      if (HasTimer(from))
+      {
+        from.SendLocalizedMessage(1073186); // An invisibility potion is already taking effect on your person.
+        return;
+      }
 
-		private static void Hide_Callback( object obj )
-		{
-			if ( obj is Mobile )
-				Hide( (Mobile) obj );
-		}
+      Consume();
+      m_Table[from] = Timer.DelayCall(TimeSpan.FromSeconds(2), new TimerStateCallback(Hide_Callback), from);
+      PlayDrinkEffect(from);
+    }
 
-		public static void Hide( Mobile m )
-		{
-			Effects.SendLocationParticles( EffectItem.Create( new Point3D( m.X, m.Y, m.Z + 16 ), m.Map, EffectItem.DefaultDuration ), 0x376A, 10, 15, 5045 );
-			m.PlaySound( 0x3C4 );
+    private static void Hide_Callback(object obj)
+    {
+      if (obj is Mobile mobile)
+        Hide(mobile);
+    }
 
-			m.Hidden = true;
+    public static void Hide(Mobile m)
+    {
+      Effects.SendLocationParticles(
+        EffectItem.Create(new Point3D(m.X, m.Y, m.Z + 16), m.Map, EffectItem.DefaultDuration), 0x376A, 10, 15, 5045);
+      m.PlaySound(0x3C4);
 
-			BuffInfo.RemoveBuff( m, BuffIcon.HidingAndOrStealth );
-			BuffInfo.AddBuff( m, new BuffInfo( BuffIcon.Invisibility, 1075825 ) );	//Invisibility/Invisible
+      m.Hidden = true;
 
-			RemoveTimer( m );
+      BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
+      BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825)); //Invisibility/Invisible
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 30 ), new TimerStateCallback( EndHide_Callback ), m );
-		}
+      RemoveTimer(m);
 
-		private static void EndHide_Callback( object obj )
-		{
-			if ( obj is Mobile )
-				EndHide( (Mobile) obj );
-		}
+      Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerStateCallback(EndHide_Callback), m);
+    }
 
-		public static void EndHide( Mobile m )
-		{
-			m.RevealingAction();
-			RemoveTimer( m );
-		}
+    private static void EndHide_Callback(object obj)
+    {
+      if (obj is Mobile mobile)
+        EndHide(mobile);
+    }
 
-		private static Hashtable m_Table = new Hashtable();
+    public static void EndHide(Mobile m)
+    {
+      m.RevealingAction();
+      RemoveTimer(m);
+    }
 
-		public static bool HasTimer( Mobile m )
-		{
-			return m_Table[ m ] != null;
-		}
+    public static bool HasTimer(Mobile m)
+    {
+      return m_Table[m] != null;
+    }
 
-		public static void RemoveTimer( Mobile m )
-		{
-			Timer t = (Timer) m_Table[ m ];
+    public static void RemoveTimer(Mobile m)
+    {
+      Timer t = (Timer)m_Table[m];
 
-			if ( t != null )
-			{
-				t.Stop();
-				m_Table.Remove( m );
-			}
-		}
+      if (t != null)
+      {
+        t.Stop();
+        m_Table.Remove(m);
+      }
+    }
 
-		public static void Iterrupt( Mobile m )
-		{
-			m.SendLocalizedMessage( 1073187 ); // The invisibility effect is interrupted.
-			RemoveTimer( m );
-		}
+    public static void Iterrupt(Mobile m)
+    {
+      m.SendLocalizedMessage(1073187); // The invisibility effect is interrupted.
+      RemoveTimer(m);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

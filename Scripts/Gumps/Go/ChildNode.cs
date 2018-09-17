@@ -1,66 +1,41 @@
-using System;
 using System.Xml;
-using Server;
 
 namespace Server.Gumps
 {
-	public class ChildNode
-	{
-		private ParentNode m_Parent;
+  public class ChildNode
+  {
+    public ChildNode(XmlTextReader xml, ParentNode parent)
+    {
+      Parent = parent;
 
-		private string m_Name;
-		private Point3D m_Location;
+      Parse(xml);
+    }
 
-		public ChildNode( XmlTextReader xml, ParentNode parent )
-		{
-			m_Parent = parent;
+    public ParentNode Parent{ get; }
 
-			Parse( xml );
-		}
+    public string Name{ get; private set; }
 
-		private void Parse( XmlTextReader xml )
-		{
-			if ( xml.MoveToAttribute( "name" ) )
-				m_Name = xml.Value;
-			else
-				m_Name = "empty";
+    public Point3D Location{ get; private set; }
 
-			int x = 0, y = 0, z = 0;
+    private void Parse(XmlTextReader xml)
+    {
+      if (xml.MoveToAttribute("name"))
+        Name = xml.Value;
+      else
+        Name = "empty";
 
-			if ( xml.MoveToAttribute( "x" ) )
-				x = Utility.ToInt32( xml.Value );
+      int x = 0, y = 0, z = 0;
 
-			if ( xml.MoveToAttribute( "y" ) )
-				y = Utility.ToInt32( xml.Value );
+      if (xml.MoveToAttribute("x"))
+        x = Utility.ToInt32(xml.Value);
 
-			if ( xml.MoveToAttribute( "z" ) )
-				z = Utility.ToInt32( xml.Value );
+      if (xml.MoveToAttribute("y"))
+        y = Utility.ToInt32(xml.Value);
 
-			m_Location = new Point3D( x, y, z );
-		}
+      if (xml.MoveToAttribute("z"))
+        z = Utility.ToInt32(xml.Value);
 
-		public ParentNode Parent
-		{
-			get
-			{
-				return m_Parent;
-			}
-		}
-
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-		}
-
-		public Point3D Location
-		{
-			get
-			{
-				return m_Location;
-			}
-		}
-	}
+      Location = new Point3D(x, y, z);
+    }
+  }
 }

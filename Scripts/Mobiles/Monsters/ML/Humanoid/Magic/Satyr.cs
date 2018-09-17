@@ -3,238 +3,236 @@ using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
-	public class Satyr : BaseCreature
-	{
-		public override string CorpseName => "a satyr's corpse";
-		public override string DefaultName => "a satyr";
+  public class Satyr : BaseCreature
+  {
+    [Constructible]
+    public Satyr() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+      Body = 271;
+      BaseSoundID = 0x586;
 
-		[Constructible]
-		public Satyr() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			Body = 271;
-			BaseSoundID = 0x586;
+      SetStr(177, 195);
+      SetDex(251, 269);
+      SetInt(153, 170);
 
-			SetStr( 177, 195 );
-			SetDex( 251, 269 );
-			SetInt( 153, 170 );
+      SetHits(350, 400);
 
-			SetHits( 350, 400 );
+      SetDamage(13, 24);
 
-			SetDamage( 13, 24 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetResistance(ResistanceType.Physical, 55, 60);
+      SetResistance(ResistanceType.Fire, 25, 35);
+      SetResistance(ResistanceType.Cold, 30, 40);
+      SetResistance(ResistanceType.Poison, 30, 40);
+      SetResistance(ResistanceType.Energy, 30, 40);
 
-			SetResistance( ResistanceType.Physical, 55, 60 );
-			SetResistance( ResistanceType.Fire, 25, 35 );
-			SetResistance( ResistanceType.Cold, 30, 40 );
-			SetResistance( ResistanceType.Poison, 30, 40 );
-			SetResistance( ResistanceType.Energy, 30, 40 );
+      SetSkill(SkillName.MagicResist, 55.0, 65.0);
+      SetSkill(SkillName.Tactics, 80.0, 100.0);
+      SetSkill(SkillName.Wrestling, 80.0, 100.0);
 
-			SetSkill( SkillName.MagicResist, 55.0, 65.0 );
-			SetSkill( SkillName.Tactics, 80.0, 100.0 );
-			SetSkill( SkillName.Wrestling, 80.0, 100.0 );
+      Fame = 5000;
+      Karma = 0;
 
-			Fame = 5000;
-			Karma = 0;
+      VirtualArmor = 28; // Don't know what it should be
 
-			VirtualArmor = 28; // Don't know what it should be
+      PackArcanceScroll(0.05);
+    }
 
-			PackArcanceScroll( 0.05 );
-		}
+    public Satyr(Serial serial) : base(serial)
+    {
+    }
 
-		public override OppositionGroup OppositionGroup
-		{
-			get { return OppositionGroup.FeyAndUndead; }
-		}
+    public override string CorpseName => "a satyr's corpse";
+    public override string DefaultName => "a satyr";
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.MlRich );
-		}
+    public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
-		public override void OnThink()
-		{
-			base.OnThink();
+    public override int Meat => 1;
 
-			Peace( Combatant );
-			Undress( Combatant );
-			Suppress( Combatant );
-			Provoke( Combatant );
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.MlRich);
+    }
 
-		#region Peace
-		private DateTime m_NextPeace;
+    public override void OnThink()
+    {
+      base.OnThink();
 
-		public void Peace( Mobile target )
-		{
-			if ( target == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || 0.1 < Utility.RandomDouble() )
-				return;
+      Peace(Combatant);
+      Undress(Combatant);
+      Suppress(Combatant);
+      Provoke(Combatant);
+    }
 
-			PlayerMobile p = target as PlayerMobile;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			if ( p != null && p.PeacedUntil < DateTime.UtcNow && !p.Hidden && CanBeHarmful( p ) )
-			{
-				p.PeacedUntil = DateTime.UtcNow + TimeSpan.FromMinutes( 1 );
-				p.SendLocalizedMessage( 500616 ); // You hear lovely music, and forget to continue battling!
-				p.FixedParticles( 0x376A, 1, 32, 0x15BD, EffectLayer.Waist );
-				p.Combatant = null;
+      writer.Write(0); // version
+    }
 
-				PlaySound( 0x58D );
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			m_NextPeace = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
-		}
-		#endregion
+      int version = reader.ReadInt();
+    }
 
-		#region Suppress
-		private static Dictionary<Mobile, Timer> m_Suppressed = new Dictionary<Mobile, Timer>();
-		private DateTime m_NextSuppress;
+    #region Peace
 
-		public void Suppress( Mobile target )
-		{
-			if ( target == null || m_Suppressed.ContainsKey( target ) || Deleted || !Alive || m_NextSuppress > DateTime.UtcNow || 0.1 < Utility.RandomDouble() )
-				return;
+    private DateTime m_NextPeace;
 
-			TimeSpan delay = TimeSpan.FromSeconds( Utility.RandomMinMax( 20, 80 ) );
+    public void Peace(Mobile target)
+    {
+      if (target == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || 0.1 < Utility.RandomDouble())
+        return;
 
-			if ( !target.Hidden && CanBeHarmful( target ) )
-			{
-				target.SendLocalizedMessage( 1072061 ); // You hear jarring music, suppressing your strength.
+      if (target is PlayerMobile p && p.PeacedUntil < DateTime.UtcNow && !p.Hidden && CanBeHarmful(p))
+      {
+        p.PeacedUntil = DateTime.UtcNow + TimeSpan.FromMinutes(1);
+        p.SendLocalizedMessage(500616); // You hear lovely music, and forget to continue battling!
+        p.FixedParticles(0x376A, 1, 32, 0x15BD, EffectLayer.Waist);
+        p.Combatant = null;
 
-				for ( int i = 0; i < target.Skills.Length; i++ )
-				{
-					Skill s = target.Skills[ i ];
+        PlaySound(0x58D);
+      }
 
-					target.AddSkillMod( new TimedSkillMod( s.SkillName, true, s.Base * -0.28, delay ) );
-				}
+      m_NextPeace = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+    }
 
-				int count = (int) Math.Round( delay.TotalSeconds / 1.25 );
-				Timer timer = new AnimateTimer( target, count );
-				m_Suppressed.Add( target, timer );
-				timer.Start();
+    #endregion
 
-				PlaySound( 0x58C );
-			}
+    #region Suppress
 
-			m_NextSuppress = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
-		}
+    private static Dictionary<Mobile, Timer> m_Suppressed = new Dictionary<Mobile, Timer>();
+    private DateTime m_NextSuppress;
 
-		public static void SuppressRemove( Mobile target )
-		{
-			if ( target != null && m_Suppressed.ContainsKey( target ) )
-			{
-				Timer timer = m_Suppressed[ target ];
+    public void Suppress(Mobile target)
+    {
+      if (target == null || m_Suppressed.ContainsKey(target) || Deleted || !Alive ||
+          m_NextSuppress > DateTime.UtcNow || 0.1 < Utility.RandomDouble())
+        return;
 
-				if ( timer != null || timer.Running )
-					timer.Stop();
+      TimeSpan delay = TimeSpan.FromSeconds(Utility.RandomMinMax(20, 80));
 
-				m_Suppressed.Remove( target );
-			}
-		}
+      if (!target.Hidden && CanBeHarmful(target))
+      {
+        target.SendLocalizedMessage(1072061); // You hear jarring music, suppressing your strength.
 
-		private class AnimateTimer : Timer
-		{
-			private Mobile m_Owner;
-			private int m_Count;
+        for (int i = 0; i < target.Skills.Length; i++)
+        {
+          Skill s = target.Skills[i];
 
-			public AnimateTimer( Mobile owner, int count ) : base( TimeSpan.Zero, TimeSpan.FromSeconds( 1.25 ) )
-			{
-				m_Owner = owner;
-				m_Count = count;
-			}
+          target.AddSkillMod(new TimedSkillMod(s.SkillName, true, s.Base * -0.28, delay));
+        }
 
-			protected override void OnTick()
-			{
-				if ( m_Owner.Deleted || !m_Owner.Alive || m_Count-- < 0 )
-				{
-					SuppressRemove( m_Owner );
-				}
-				else
-					m_Owner.FixedParticles( 0x376A, 1, 32, 0x15BD, EffectLayer.Waist );
-			}
-		}
-		#endregion
+        int count = (int)Math.Round(delay.TotalSeconds / 1.25);
+        Timer timer = new AnimateTimer(target, count);
+        m_Suppressed.Add(target, timer);
+        timer.Start();
 
-		#region Undress
-		private DateTime m_NextUndress;
+        PlaySound(0x58C);
+      }
 
-		public void Undress( Mobile target )
-		{
-			if ( target == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || 0.005 < Utility.RandomDouble() )
-				return;
+      m_NextSuppress = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+    }
 
-			if ( target.Player && target.Female && !target.Hidden && CanBeHarmful( target ) )
-			{
-				UndressItem( target, Layer.OuterTorso );
-				UndressItem( target, Layer.InnerTorso );
-				UndressItem( target, Layer.MiddleTorso );
-				UndressItem( target, Layer.Pants );
-				UndressItem( target, Layer.Shirt );
+    public static void SuppressRemove(Mobile target)
+    {
+      if (target != null && m_Suppressed[target] is Timer t)
+      {
+        if (t.Running)
+          t.Stop();
 
-				target.SendLocalizedMessage( 1072196 ); // The satyr's music makes your blood race. Your clothing is too confining.
-			}
+        m_Suppressed.Remove(target);
+      }
+    }
 
-			m_NextUndress = DateTime.UtcNow + TimeSpan.FromMinutes( 1 );
-		}
+    private class AnimateTimer : Timer
+    {
+      private int m_Count;
+      private Mobile m_Owner;
 
-		public void UndressItem( Mobile m, Layer layer )
-		{
-			Item item = m.FindItemOnLayer( layer );
+      public AnimateTimer(Mobile owner, int count) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.25))
+      {
+        m_Owner = owner;
+        m_Count = count;
+      }
 
-			if ( item != null && item.Movable )
-				m.PlaceInBackpack( item );
-		}
-		#endregion
+      protected override void OnTick()
+      {
+        if (m_Owner.Deleted || !m_Owner.Alive || m_Count-- < 0)
+          SuppressRemove(m_Owner);
+        else
+          m_Owner.FixedParticles(0x376A, 1, 32, 0x15BD, EffectLayer.Waist);
+      }
+    }
 
-		#region Provoke
-		private DateTime m_NextProvoke;
+    #endregion
 
-		public void Provoke( Mobile target )
-		{
-			if ( target == null || Deleted || !Alive || m_NextProvoke > DateTime.UtcNow || 0.05 < Utility.RandomDouble() )
-				return;
+    #region Undress
 
-			foreach ( Mobile m in GetMobilesInRange( RangePerception ) )
-			{
-				if ( m is BaseCreature )
-				{
-					BaseCreature c = (BaseCreature) m;
+    private DateTime m_NextUndress;
 
-					if ( c == this || c == target || c.Unprovokable || c.IsParagon ||  c.BardProvoked || c.AccessLevel != AccessLevel.Player || !c.CanBeHarmful( target ) )
-						continue;
+    public void Undress(Mobile target)
+    {
+      if (target == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || 0.005 < Utility.RandomDouble())
+        return;
 
-					c.Provoke( this, target, true );
+      if (target.Player && target.Female && !target.Hidden && CanBeHarmful(target))
+      {
+        UndressItem(target, Layer.OuterTorso);
+        UndressItem(target, Layer.InnerTorso);
+        UndressItem(target, Layer.MiddleTorso);
+        UndressItem(target, Layer.Pants);
+        UndressItem(target, Layer.Shirt);
 
-					if ( target.Player )
-						target.SendLocalizedMessage( 1072062 ); // You hear angry music, and start to fight.
+        target.SendLocalizedMessage(
+          1072196); // The satyr's music makes your blood race. Your clothing is too confining.
+      }
 
-					PlaySound( 0x58A );
-					break;
-				}
-			}
+      m_NextUndress = DateTime.UtcNow + TimeSpan.FromMinutes(1);
+    }
 
-			m_NextProvoke = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
-		}
-		#endregion
+    public void UndressItem(Mobile m, Layer layer)
+    {
+      Item item = m.FindItemOnLayer(layer);
 
-		public override int Meat => 1;
+      if (item != null && item.Movable)
+        m.PlaceInBackpack(item);
+    }
 
-		public Satyr( Serial serial ) : base( serial )
-		{
-		}
+    #endregion
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    #region Provoke
 
-			writer.Write( (int) 0 ); // version
-		}
+    private DateTime m_NextProvoke;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public void Provoke(Mobile target)
+    {
+      if (target == null || Deleted || !Alive || m_NextProvoke > DateTime.UtcNow || 0.05 < Utility.RandomDouble())
+        return;
 
-			int version = reader.ReadInt();
-		}
-	}
+      foreach (Mobile m in GetMobilesInRange(RangePerception))
+        if (m is BaseCreature c)
+        {
+          if (c == this || c == target || c.Unprovokable || c.IsParagon || c.BardProvoked ||
+              c.AccessLevel != AccessLevel.Player || !c.CanBeHarmful(target))
+            continue;
+
+          c.Provoke(this, target, true);
+
+          if (target.Player)
+            target.SendLocalizedMessage(1072062); // You hear angry music, and start to fight.
+
+          PlaySound(0x58A);
+          break;
+        }
+
+      m_NextProvoke = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+    }
+
+    #endregion
+  }
 }

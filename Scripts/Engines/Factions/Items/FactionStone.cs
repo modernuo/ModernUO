@@ -1,105 +1,104 @@
-using System;
-using Server;
 using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Factions
 {
-	public class FactionStone : BaseSystemController
-	{
-		private Faction m_Faction;
+  public class FactionStone : BaseSystemController
+  {
+    private Faction m_Faction;
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public Faction Faction
-		{
-			get{ return m_Faction; }
-			set
-			{
-				m_Faction = value;
+    [Constructible]
+    public FactionStone() : this(null)
+    {
+    }
 
-				AssignName( m_Faction == null ? null : m_Faction.Definition.FactionStoneName );
-			}
-		}
+    [Constructible]
+    public FactionStone(Faction faction) : base(0xEDC)
+    {
+      Movable = false;
+      Faction = faction;
+    }
 
-		public override string DefaultName => "faction stone";
+    public FactionStone(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public FactionStone() : this( null )
-		{
-		}
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
+    public Faction Faction
+    {
+      get => m_Faction;
+      set
+      {
+        m_Faction = value;
 
-		[Constructible]
-		public FactionStone( Faction faction ) : base( 0xEDC )
-		{
-			Movable = false;
-			Faction = faction;
-		}
+        AssignName(m_Faction?.Definition.FactionStoneName);
+      }
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( m_Faction == null )
-				return;
+    public override string DefaultName => "faction stone";
 
-			if ( !from.InRange( GetWorldLocation(), 2 ) )
-			{
-				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
-			}
-			else if ( FactionGump.Exists( from ) )
-			{
-				from.SendLocalizedMessage( 1042160 ); // You already have a faction menu open.
-			}
-			else if ( from is PlayerMobile )
-			{
-				Faction existingFaction = Faction.Find( from );
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (m_Faction == null)
+        return;
 
-				if ( existingFaction == m_Faction || from.AccessLevel >= AccessLevel.GameMaster )
-				{
-					PlayerState pl = PlayerState.Find( from );
+      if (!from.InRange(GetWorldLocation(), 2))
+      {
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+      }
+      else if (FactionGump.Exists(from))
+      {
+        from.SendLocalizedMessage(1042160); // You already have a faction menu open.
+      }
+      else if (from is PlayerMobile mobile)
+      {
+        Faction existingFaction = Faction.Find(mobile);
 
-					if ( pl != null && pl.IsLeaving )
-						from.SendLocalizedMessage( 1005051 ); // You cannot use the faction stone until you have finished quitting your current faction
-					else
-						from.SendGump( new FactionStoneGump( (PlayerMobile) from, m_Faction ) );
-				}
-				else if ( existingFaction != null )
-				{
-					// TODO: Validate
-					from.SendLocalizedMessage( 1005053 ); // This is not your faction stone!
-				}
-				else
-				{
-					from.SendGump( new JoinStoneGump( (PlayerMobile) from, m_Faction ) );
-				}
-			}
-		}
+        if (existingFaction == m_Faction || mobile.AccessLevel >= AccessLevel.GameMaster)
+        {
+          PlayerState pl = PlayerState.Find(mobile);
 
-		public FactionStone( Serial serial ) : base( serial )
-		{
-		}
+          if (pl != null && pl.IsLeaving)
+            mobile.SendLocalizedMessage(
+              1005051); // You cannot use the faction stone until you have finished quitting your current faction
+          else
+            mobile.SendGump(new FactionStoneGump(mobile, m_Faction));
+        }
+        else if (existingFaction != null)
+        {
+          // TODO: Validate
+          mobile.SendLocalizedMessage(1005053); // This is not your faction stone!
+        }
+        else
+        {
+          mobile.SendGump(new JoinStoneGump(mobile, m_Faction));
+        }
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			Faction.WriteReference( writer, m_Faction );
-		}
+      Faction.WriteReference(writer, m_Faction);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Faction = Faction.ReadReference( reader );
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          Faction = Faction.ReadReference(reader);
+          break;
+        }
+      }
+    }
+  }
 }

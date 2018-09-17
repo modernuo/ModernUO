@@ -1,39 +1,33 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class TeleportScroll : SpellScroll
-	{
-		[Constructible]
-		public TeleportScroll() : this( 1 )
-		{
-		}
+  public class TeleportScroll : SpellScroll
+  {
+    [Constructible]
+    public TeleportScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public TeleportScroll( int amount ) : base( 21, 0x1F42, amount )
-		{
-		}
+    [Constructible]
+    public TeleportScroll(int amount) : base(21, 0x1F42, amount)
+    {
+    }
 
-		public TeleportScroll( Serial serial ) : base( serial )
-		{
-		}
+    public TeleportScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

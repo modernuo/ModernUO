@@ -1,42 +1,39 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class TitansHammer : WarHammer
-	{
-		public override int LabelNumber => 1060024; // Titan's Hammer
-		public override int ArtifactRarity => 10;
+  public class TitansHammer : WarHammer
+  {
+    [Constructible]
+    public TitansHammer()
+    {
+      Hue = 0x482;
+      WeaponAttributes.HitEnergyArea = 100;
+      Attributes.BonusStr = 15;
+      Attributes.AttackChance = 15;
+      Attributes.WeaponDamage = 50;
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public TitansHammer(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public TitansHammer()
-		{
-			Hue = 0x482;
-			WeaponAttributes.HitEnergyArea = 100;
-			Attributes.BonusStr = 15;
-			Attributes.AttackChance = 15;
-			Attributes.WeaponDamage = 50;
-		}
+    public override int LabelNumber => 1060024; // Titan's Hammer
+    public override int ArtifactRarity => 10;
 
-		public TitansHammer( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

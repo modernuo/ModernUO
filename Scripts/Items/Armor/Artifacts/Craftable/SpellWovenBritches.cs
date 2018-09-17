@@ -1,43 +1,40 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class SpellWovenBritches : LeafLegs
-	{
-		public override int LabelNumber => 1072929; // Spell Woven Britches
+  public class SpellWovenBritches : LeafLegs
+  {
+    [Constructible]
+    public SpellWovenBritches()
+    {
+      Hue = 0x487;
 
-		public override int BaseFireResistance => 15;
-		public override int BasePoisonResistance => 16;
+      SkillBonuses.SetValues(0, SkillName.Meditation, 10.0);
 
-		[Constructible]
-		public SpellWovenBritches()
-		{
-			Hue = 0x487;
+      Attributes.BonusInt = 8;
+      Attributes.SpellDamage = 10;
+      Attributes.LowerManaCost = 10;
+    }
 
-			SkillBonuses.SetValues( 0, SkillName.Meditation, 10.0 );
+    public SpellWovenBritches(Serial serial) : base(serial)
+    {
+    }
 
-			Attributes.BonusInt = 8;
-			Attributes.SpellDamage = 10;
-			Attributes.LowerManaCost = 10;
-		}
+    public override int LabelNumber => 1072929; // Spell Woven Britches
 
-		public SpellWovenBritches( Serial serial ) : base( serial )
-		{
-		}
+    public override int BaseFireResistance => 15;
+    public override int BasePoisonResistance => 16;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 );
-		}
+      writer.WriteEncodedInt(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

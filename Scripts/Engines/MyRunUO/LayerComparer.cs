@@ -1,97 +1,87 @@
-using System;
 using System.Collections;
 
 namespace Server.Engines.MyRunUO
 {
-	public class LayerComparer : IComparer
-	{
-		private static Layer PlateArms = (Layer)255;
-		private static Layer ChainTunic = (Layer)254;
-		private static Layer LeatherShorts = (Layer)253;
+  public class LayerComparer : IComparer
+  {
+    private static Layer PlateArms = (Layer)255;
+    private static Layer ChainTunic = (Layer)254;
+    private static Layer LeatherShorts = (Layer)253;
 
-		private static Layer[] m_DesiredLayerOrder = new Layer[]
-		{
-			Layer.Cloak,
-			Layer.Bracelet,
-			Layer.Ring,
-			Layer.Shirt,
-			Layer.Pants,
-			Layer.InnerLegs,
-			Layer.Shoes,
-			LeatherShorts,
-			Layer.Arms,
-			Layer.InnerTorso,
-			LeatherShorts,
-			PlateArms,
-			Layer.MiddleTorso,
-			Layer.OuterLegs,
-			Layer.Neck,
-			Layer.Waist,
-			Layer.Gloves,
-			Layer.OuterTorso,
-			Layer.OneHanded,
-			Layer.TwoHanded,
-			Layer.FacialHair,
-			Layer.Hair,
-			Layer.Helm,
-			Layer.Talisman
-		};
+    private static Layer[] m_DesiredLayerOrder =
+    {
+      Layer.Cloak,
+      Layer.Bracelet,
+      Layer.Ring,
+      Layer.Shirt,
+      Layer.Pants,
+      Layer.InnerLegs,
+      Layer.Shoes,
+      LeatherShorts,
+      Layer.Arms,
+      Layer.InnerTorso,
+      LeatherShorts,
+      PlateArms,
+      Layer.MiddleTorso,
+      Layer.OuterLegs,
+      Layer.Neck,
+      Layer.Waist,
+      Layer.Gloves,
+      Layer.OuterTorso,
+      Layer.OneHanded,
+      Layer.TwoHanded,
+      Layer.FacialHair,
+      Layer.Hair,
+      Layer.Helm,
+      Layer.Talisman
+    };
 
-		private static int[] m_TranslationTable;
+    public static readonly IComparer Instance = new LayerComparer();
 
-		public static int[] TranslationTable
-		{
-			get{ return m_TranslationTable; }
-		}
+    static LayerComparer()
+    {
+      TranslationTable = new int[256];
 
-		static LayerComparer()
-		{
-			m_TranslationTable = new int[256];
+      for (int i = 0; i < m_DesiredLayerOrder.Length; ++i)
+        TranslationTable[(int)m_DesiredLayerOrder[i]] = m_DesiredLayerOrder.Length - i;
+    }
 
-			for ( int i = 0; i < m_DesiredLayerOrder.Length; ++i )
-				m_TranslationTable[(int)m_DesiredLayerOrder[i]] = m_DesiredLayerOrder.Length - i;
-		}
+    public static int[] TranslationTable{ get; }
 
-		public static bool IsValid( Item item )
-		{
-			return ( m_TranslationTable[(int)item.Layer] > 0 );
-		}
+    public int Compare(object x, object y)
+    {
+      Item a = (Item)x;
+      Item b = (Item)y;
 
-		public static readonly IComparer Instance = new LayerComparer();
+      Layer aLayer = a.Layer;
+      Layer bLayer = b.Layer;
 
-		public LayerComparer()
-		{
-		}
+      aLayer = Fix(a.ItemID, aLayer);
+      bLayer = Fix(b.ItemID, bLayer);
 
-		public Layer Fix( int itemID, Layer oldLayer )
-		{
-			if ( itemID == 0x1410 || itemID == 0x1417 ) // platemail arms
-				return PlateArms;
+      return TranslationTable[(int)bLayer] - TranslationTable[(int)aLayer];
+    }
 
-			if ( itemID == 0x13BF || itemID == 0x13C4 ) // chainmail tunic
-				return ChainTunic;
+    public static bool IsValid(Item item)
+    {
+      return TranslationTable[(int)item.Layer] > 0;
+    }
 
-			if ( itemID == 0x1C08 || itemID == 0x1C09 ) // leather skirt
-				return LeatherShorts;
+    public Layer Fix(int itemID, Layer oldLayer)
+    {
+      if (itemID == 0x1410 || itemID == 0x1417) // platemail arms
+        return PlateArms;
 
-			if ( itemID == 0x1C00 || itemID == 0x1C01 ) // leather shorts
-				return LeatherShorts;
+      if (itemID == 0x13BF || itemID == 0x13C4) // chainmail tunic
+        return ChainTunic;
 
-			return oldLayer;
-		}
+      if (itemID == 0x1C08 || itemID == 0x1C09) // leather skirt
+        return LeatherShorts;
 
-		public int Compare( object x, object y )
-		{
-			Item a = (Item)x;
-			Item b = (Item)y;
+      if (itemID == 0x1C00 || itemID == 0x1C01) // leather shorts
+        return LeatherShorts;
 
-			Layer aLayer = a.Layer;
-			Layer bLayer = b.Layer;
-
-			aLayer = Fix( a.ItemID, aLayer );
-			bLayer = Fix( b.ItemID, bLayer );
-
-			return m_TranslationTable[(int)bLayer] - m_TranslationTable[(int)aLayer];
-		}
-	}
+      return oldLayer;
+    }
+  }
 }

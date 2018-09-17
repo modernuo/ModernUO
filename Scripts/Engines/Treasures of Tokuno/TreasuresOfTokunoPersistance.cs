@@ -1,70 +1,62 @@
-using System;
-using System.Collections.Generic;
-
 namespace Server.Misc
 {
-	public class TreasuresOfTokunoPersistance : Item
-	{
-		private static TreasuresOfTokunoPersistance m_Instance;
+  public class TreasuresOfTokunoPersistance : Item
+  {
+    public TreasuresOfTokunoPersistance() : base(1)
+    {
+      Movable = false;
 
-		public static TreasuresOfTokunoPersistance Instance{ get{ return m_Instance; } }
+      if (Instance == null || Instance.Deleted)
+        Instance = this;
+      else
+        base.Delete();
+    }
 
-		public override string DefaultName
-		{
-			get { return "TreasuresOfTokuno Persistance - Internal"; }
-		}
+    public TreasuresOfTokunoPersistance(Serial serial) : base(serial)
+    {
+      Instance = this;
+    }
 
-		public static void Initialize()
-		{
-			if ( m_Instance == null )
-				new TreasuresOfTokunoPersistance();
-		}
+    public static TreasuresOfTokunoPersistance Instance{ get; private set; }
 
-		public TreasuresOfTokunoPersistance() : base( 1 )
-		{
-			Movable = false;
+    public override string DefaultName => "TreasuresOfTokuno Persistance - Internal";
 
-			if ( m_Instance == null || m_Instance.Deleted )
-				m_Instance = this;
-			else
-				base.Delete();
-		}
+    public static void Initialize()
+    {
+      if (Instance == null)
+        new TreasuresOfTokunoPersistance();
+    }
 
-		public TreasuresOfTokunoPersistance( Serial serial ) : base( serial )
-		{
-			m_Instance = this;
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0); // version
 
-			writer.Write( (int) 0 ); // version
+      writer.WriteEncodedInt((int)TreasuresOfTokuno.RewardEra);
+      writer.WriteEncodedInt((int)TreasuresOfTokuno.DropEra);
+    }
 
-			writer.WriteEncodedInt( (int)TreasuresOfTokuno.RewardEra );
-			writer.WriteEncodedInt( (int)TreasuresOfTokuno.DropEra );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+      int version = reader.ReadInt();
 
-			int version = reader.ReadInt();
+      switch (version)
+      {
+        case 0:
+        {
+          TreasuresOfTokuno.RewardEra = (TreasuresOfTokunoEra)reader.ReadEncodedInt();
+          TreasuresOfTokuno.DropEra = (TreasuresOfTokunoEra)reader.ReadEncodedInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					TreasuresOfTokuno.RewardEra = (TreasuresOfTokunoEra)reader.ReadEncodedInt();
-					TreasuresOfTokuno.DropEra = (TreasuresOfTokunoEra)reader.ReadEncodedInt();
-					
-					break;
-				}
-			}
-		}
+          break;
+        }
+      }
+    }
 
-		public override void Delete()
-		{
-		}
-	}
+    public override void Delete()
+    {
+    }
+  }
 }

@@ -1,54 +1,51 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	[FlippableAttribute( 0x144e, 0x1453 )]
-	public class BoneArms : BaseArmor
-	{
-		public override int BasePhysicalResistance => 3;
-		public override int BaseFireResistance => 3;
-		public override int BaseColdResistance => 4;
-		public override int BasePoisonResistance => 2;
-		public override int BaseEnergyResistance => 4;
+  [Flippable(0x144e, 0x1453)]
+  public class BoneArms : BaseArmor
+  {
+    [Constructible]
+    public BoneArms() : base(0x144E)
+    {
+      Weight = 2.0;
+    }
 
-		public override int InitMinHits => 25;
-		public override int InitMaxHits => 30;
+    public BoneArms(Serial serial) : base(serial)
+    {
+    }
 
-		public override int AosStrReq => 55;
-		public override int OldStrReq => 40;
+    public override int BasePhysicalResistance => 3;
+    public override int BaseFireResistance => 3;
+    public override int BaseColdResistance => 4;
+    public override int BasePoisonResistance => 2;
+    public override int BaseEnergyResistance => 4;
 
-		public override int OldDexBonus => -2;
+    public override int InitMinHits => 25;
+    public override int InitMaxHits => 30;
 
-		public override int ArmorBase => 30;
-		public override int RevertArmorBase => 4;
+    public override int AosStrReq => 55;
+    public override int OldStrReq => 40;
 
-		public override ArmorMaterialType MaterialType => ArmorMaterialType.Bone;
-		public override CraftResource DefaultResource => CraftResource.RegularLeather;
+    public override int OldDexBonus => -2;
 
-		[Constructible]
-		public BoneArms() : base( 0x144E )
-		{
-			Weight = 2.0;
-		}
+    public override int ArmorBase => 30;
+    public override int RevertArmorBase => 4;
 
-		public BoneArms( Serial serial ) : base( serial )
-		{
-		}
+    public override ArmorMaterialType MaterialType => ArmorMaterialType.Bone;
+    public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
 
-			if ( Weight == 1.0 )
-				Weight = 2.0;
-		}
+      if (Weight == 1.0)
+        Weight = 2.0;
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

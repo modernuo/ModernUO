@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Server;
 using Server.Gumps;
 using Server.Items;
 using Server.Multis;
@@ -9,197 +7,204 @@ using Server.Targeting;
 
 namespace Server.Commands.Generic
 {
-	public class DesignInsertCommand : BaseCommand
-	{
-		public static void Initialize()
-		{
-			TargetCommands.Register( new DesignInsertCommand() );
-		}
+  public class DesignInsertCommand : BaseCommand
+  {
+    public enum DesignInsertResult
+    {
+      Valid,
+      InvalidItem,
+      NotInHouse,
+      OutsideHouseBounds
+    }
 
-		public DesignInsertCommand()
-		{
-			AccessLevel = AccessLevel.GameMaster;
-			Supports = CommandSupport.Single | CommandSupport.Area;
-			Commands = new string[] { "DesignInsert" };
-			ObjectTypes = ObjectTypes.Items;
-			Usage = "DesignInsert [allItems=false]";
-			Description = "Inserts multiple targeted items into a customizable house's design.";
-		}
+    public DesignInsertCommand()
+    {
+      AccessLevel = AccessLevel.GameMaster;
+      Supports = CommandSupport.Single | CommandSupport.Area;
+      Commands = new[] { "DesignInsert" };
+      ObjectTypes = ObjectTypes.Items;
+      Usage = "DesignInsert [allItems=false]";
+      Description = "Inserts multiple targeted items into a customizable house's design.";
+    }
 
-		#region Single targeting mode
-		public override void Execute( CommandEventArgs e, object obj )
-		{
-			Target t = new DesignInsertTarget( new List<HouseFoundation>(), ( e.Length < 1 || !e.GetBoolean( 0 ) ) );
-			t.Invoke( e.Mobile, obj );
-		}
+    public static void Initialize()
+    {
+      TargetCommands.Register(new DesignInsertCommand());
+    }
 
-		private class DesignInsertTarget : Target
-		{
-			private List<HouseFoundation> m_Foundations;
-			private bool m_StaticsOnly;
+    public static DesignInsertResult ProcessInsert(Item item, bool staticsOnly, out HouseFoundation house)
+    {
+      house = null;
 
-			public DesignInsertTarget( List<HouseFoundation> foundations, bool staticsOnly )
-				: base( -1, false, TargetFlags.None )
-			{
-				m_Foundations = foundations;
-				m_StaticsOnly = staticsOnly;
-			}
+      if (item == null || item is BaseMulti || item is HouseSign || staticsOnly && !(item is Static))
+        return DesignInsertResult.InvalidItem;
 
-			protected override void OnTargetCancel( Mobile from, TargetCancelType cancelType )
-			{
-				if ( m_Foundations.Count != 0 )
-				{
-					from.SendMessage( "Your changes have been committed. Updating..." );
+      house = BaseHouse.FindHouseAt(item) as HouseFoundation;
 
-					foreach ( HouseFoundation house in m_Foundations )
-						house.Delta( ItemDelta.Update );
-				}
-			}
+      if (house == null)
+        return DesignInsertResult.NotInHouse;
 
-			protected override void OnTarget( Mobile from, object obj )
-			{
-				HouseFoundation house;
-				DesignInsertResult result = ProcessInsert( obj as Item, m_StaticsOnly, out house );
+      int x = item.X - house.X;
+      int y = item.Y - house.Y;
+      int z = item.Z - house.Z;
 
-				switch ( result )
-				{
-					case DesignInsertResult.Valid:
-					{
-						if ( m_Foundations.Count == 0 )
-							from.SendMessage( "The item has been inserted into the house design. Press ESC when you are finished." );
-						else
-							from.SendMessage( "The item has been inserted into the house design." );
+      if (!TryInsertIntoState(house.CurrentState, item.ItemID, x, y, z))
+        return DesignInsertResult.OutsideHouseBounds;
 
-						if ( !m_Foundations.Contains( house ) )
-							m_Foundations.Add( house );
+      TryInsertIntoState(house.DesignState, item.ItemID, x, y, z);
+      item.Delete();
 
-						break;
-					}
-					case DesignInsertResult.InvalidItem:
-					{
-						from.SendMessage( "That cannot be inserted. Try again." );
-						break;
-					}
-					case DesignInsertResult.NotInHouse:
-					case DesignInsertResult.OutsideHouseBounds:
-					{
-						from.SendMessage( "That item is not inside a customizable house. Try again." );
-						break;
-					}
-				}
+      return DesignInsertResult.Valid;
+    }
 
-				from.Target = new DesignInsertTarget( m_Foundations, m_StaticsOnly );
-			}
-		}
-		#endregion
+    private static bool TryInsertIntoState(DesignState state, int itemID, int x, int y, int z)
+    {
+      MultiComponentList mcl = state.Components;
 
-		#region Area targeting mode
-		public override void ExecuteList( CommandEventArgs e, ArrayList list )
-		{
-			e.Mobile.SendGump( new WarningGump( 1060637, 30720, String.Format( "You are about to insert {0} objects. This cannot be undone without a full server revert.<br><br>Continue?", list.Count ), 0xFFC000, 420, 280, new WarningGumpCallback( OnConfirmCallback ), new object[] { e, list, ( e.Length < 1 || !e.GetBoolean( 0 ) ) } ) );
-			AddResponse( "Awaiting confirmation..." );
-		}
+      if (x < mcl.Min.X || y < mcl.Min.Y || x > mcl.Max.X || y > mcl.Max.Y)
+        return false;
 
-		private void OnConfirmCallback( Mobile from, bool okay, object state )
-		{
-			object[] states = (object[])state;
-			CommandEventArgs e = (CommandEventArgs)states[0];
-			ArrayList list = (ArrayList)states[1];
-			bool staticsOnly = (bool)states[2];
+      mcl.Add(itemID, x, y, z);
+      state.OnRevised();
 
-			bool flushToLog = false;
+      return true;
+    }
 
-			if ( okay )
-			{
-				List<HouseFoundation> foundations = new List<HouseFoundation>();
-				flushToLog = ( list.Count > 20 );
+    #region Single targeting mode
 
-				for ( int i = 0; i < list.Count; ++i )
-				{
-					HouseFoundation house;
-					DesignInsertResult result = ProcessInsert( list[i] as Item, staticsOnly, out house );
+    public override void Execute(CommandEventArgs e, object obj)
+    {
+      Target t = new DesignInsertTarget(new List<HouseFoundation>(), e.Length < 1 || !e.GetBoolean(0));
+      t.Invoke(e.Mobile, obj);
+    }
 
-					switch ( result )
-					{
-						case DesignInsertResult.Valid:
-						{
-							AddResponse( "The item has been inserted into the house design." );
+    private class DesignInsertTarget : Target
+    {
+      private List<HouseFoundation> m_Foundations;
+      private bool m_StaticsOnly;
 
-							if ( !foundations.Contains( house ) )
-								foundations.Add( house );
+      public DesignInsertTarget(List<HouseFoundation> foundations, bool staticsOnly)
+        : base(-1, false, TargetFlags.None)
+      {
+        m_Foundations = foundations;
+        m_StaticsOnly = staticsOnly;
+      }
 
-							break;
-						}
-						case DesignInsertResult.InvalidItem:
-						{
-							LogFailure( "That cannot be inserted." );
-							break;
-						}
-						case DesignInsertResult.NotInHouse:
-						case DesignInsertResult.OutsideHouseBounds:
-						{
-							LogFailure( "That item is not inside a customizable house." );
-							break;
-						}
-					}
-				}
+      protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
+      {
+        if (m_Foundations.Count != 0)
+        {
+          from.SendMessage("Your changes have been committed. Updating...");
 
-				foreach ( HouseFoundation house in foundations )
-					house.Delta( ItemDelta.Update );
-			}
-			else
-			{
-				AddResponse( "Command aborted." );
-			}
+          foreach (HouseFoundation house in m_Foundations)
+            house.Delta(ItemDelta.Update);
+        }
+      }
 
-			Flush( from, flushToLog );
-		}
-		#endregion
+      protected override void OnTarget(Mobile from, object obj)
+      {
+        HouseFoundation house;
+        DesignInsertResult result = ProcessInsert(obj as Item, m_StaticsOnly, out house);
 
-		public enum DesignInsertResult
-		{
-			Valid,
-			InvalidItem,
-			NotInHouse,
-			OutsideHouseBounds
-		}
+        switch (result)
+        {
+          case DesignInsertResult.Valid:
+          {
+            if (m_Foundations.Count == 0)
+              from.SendMessage(
+                "The item has been inserted into the house design. Press ESC when you are finished.");
+            else
+              from.SendMessage("The item has been inserted into the house design.");
 
-		public static DesignInsertResult ProcessInsert( Item item, bool staticsOnly, out HouseFoundation house )
-		{
-			house = null;
+            if (!m_Foundations.Contains(house))
+              m_Foundations.Add(house);
 
-			if ( item == null || item is BaseMulti || item is HouseSign || ( staticsOnly && !( item is Static ) ) )
-				return DesignInsertResult.InvalidItem;
+            break;
+          }
+          case DesignInsertResult.InvalidItem:
+          {
+            from.SendMessage("That cannot be inserted. Try again.");
+            break;
+          }
+          case DesignInsertResult.NotInHouse:
+          case DesignInsertResult.OutsideHouseBounds:
+          {
+            from.SendMessage("That item is not inside a customizable house. Try again.");
+            break;
+          }
+        }
 
-			house = BaseHouse.FindHouseAt( item ) as HouseFoundation;
+        from.Target = new DesignInsertTarget(m_Foundations, m_StaticsOnly);
+      }
+    }
 
-			if ( house == null )
-				return DesignInsertResult.NotInHouse;
+    #endregion
 
-			int x = item.X - house.X;
-			int y = item.Y - house.Y;
-			int z = item.Z - house.Z;
+    #region Area targeting mode
 
-			if ( !TryInsertIntoState( house.CurrentState, item.ItemID, x, y, z ) )
-				return DesignInsertResult.OutsideHouseBounds;
+    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    {
+      e.Mobile.SendGump(new WarningGump(1060637, 30720,
+        $"You are about to insert {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?",
+        0xFFC000, 420, 280, OnConfirmCallback, new object[] { e, list, e.Length < 1 || !e.GetBoolean(0) }));
+      AddResponse("Awaiting confirmation...");
+    }
 
-			TryInsertIntoState( house.DesignState, item.ItemID, x, y, z );
-			item.Delete();
+    private void OnConfirmCallback(Mobile from, bool okay, object state)
+    {
+      object[] states = (object[])state;
+      CommandEventArgs e = (CommandEventArgs)states[0];
+      ArrayList list = (ArrayList)states[1];
+      bool staticsOnly = (bool)states[2];
 
-			return DesignInsertResult.Valid;
-		}
+      bool flushToLog = false;
 
-		private static bool TryInsertIntoState( DesignState state, int itemID, int x, int y, int z )
-		{
-			MultiComponentList mcl = state.Components;
+      if (okay)
+      {
+        List<HouseFoundation> foundations = new List<HouseFoundation>();
+        flushToLog = list.Count > 20;
 
-			if ( x < mcl.Min.X || y < mcl.Min.Y || x > mcl.Max.X || y > mcl.Max.Y )
-				return false;
+        for (int i = 0; i < list.Count; ++i)
+        {
+          HouseFoundation house;
+          DesignInsertResult result = ProcessInsert(list[i] as Item, staticsOnly, out house);
 
-			mcl.Add( itemID, x, y, z );
-			state.OnRevised();
+          switch (result)
+          {
+            case DesignInsertResult.Valid:
+            {
+              AddResponse("The item has been inserted into the house design.");
 
-			return true;
-		}
-	}
+              if (!foundations.Contains(house))
+                foundations.Add(house);
+
+              break;
+            }
+            case DesignInsertResult.InvalidItem:
+            {
+              LogFailure("That cannot be inserted.");
+              break;
+            }
+            case DesignInsertResult.NotInHouse:
+            case DesignInsertResult.OutsideHouseBounds:
+            {
+              LogFailure("That item is not inside a customizable house.");
+              break;
+            }
+          }
+        }
+
+        foreach (HouseFoundation house in foundations)
+          house.Delta(ItemDelta.Update);
+      }
+      else
+      {
+        AddResponse("Command aborted.");
+      }
+
+      Flush(from, flushToLog);
+    }
+
+    #endregion
+  }
 }

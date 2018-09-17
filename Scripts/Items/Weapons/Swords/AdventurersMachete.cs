@@ -1,34 +1,31 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class AdventurersMachete : ElvenMachete
-	{
-		public override int LabelNumber => 1073533; // adventurer's machete
+  public class AdventurersMachete : ElvenMachete
+  {
+    [Constructible]
+    public AdventurersMachete()
+    {
+      Attributes.Luck = 20;
+    }
 
-		[Constructible]
-		public AdventurersMachete()
-		{
-			Attributes.Luck = 20;
-		}
+    public AdventurersMachete(Serial serial) : base(serial)
+    {
+    }
 
-		public AdventurersMachete( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073533; // adventurer's machete
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

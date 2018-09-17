@@ -1,27 +1,30 @@
 using System;
-using Server;
 using System.Collections.Generic;
 
 namespace Server.Factions
 {
-	public class VendorList
-	{
-		private VendorDefinition m_Definition;
-		private List<BaseFactionVendor> m_Vendors;
+  public class VendorList
+  {
+    public VendorList(VendorDefinition definition)
+    {
+      Definition = definition;
+      Vendors = new List<BaseFactionVendor>();
+    }
 
-		public VendorDefinition Definition{ get{ return m_Definition; } }
-		public List<BaseFactionVendor> Vendors  => m_Vendors;
+    public VendorDefinition Definition{ get; }
 
-		public BaseFactionVendor Construct( Town town, Faction faction )
-		{
-			try{ return Activator.CreateInstance( m_Definition.Type, new object[]{ town, faction } ) as BaseFactionVendor; }
-			catch{ return null; }
-		}
+    public List<BaseFactionVendor> Vendors{ get; }
 
-		public VendorList( VendorDefinition definition )
-		{
-			m_Definition = definition;
-			m_Vendors = new List<BaseFactionVendor>();
-		}
-	}
+    public BaseFactionVendor Construct(Town town, Faction faction)
+    {
+      try
+      {
+        return Activator.CreateInstance(Definition.Type, town, faction) as BaseFactionVendor;
+      }
+      catch
+      {
+        return null;
+      }
+    }
+  }
 }

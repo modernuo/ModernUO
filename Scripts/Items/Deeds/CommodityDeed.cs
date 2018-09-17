@@ -1,271 +1,248 @@
-using System;
 using Server.Targeting;
-using Server.Network;
 
 namespace Server.Items
 {
-	public interface ICommodity /* added IsDeedable prop so expansion-based deedables can determine true/false */
-	{
-		int DescriptionNumber{ get; }
-		bool IsDeedable { get; }
-	}
+  public interface ICommodity /* added IsDeedable prop so expansion-based deedables can determine true/false */
+  {
+    int DescriptionNumber{ get; }
+    bool IsDeedable{ get; }
+  }
 
-	public class CommodityDeed : Item
-	{
-		private Item m_Commodity;
+  public class CommodityDeed : Item
+  {
+    public CommodityDeed(Item commodity) : base(0x14F0)
+    {
+      Weight = 1.0;
+      Hue = 0x47;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Item Commodity
-		{
-			get
-			{
-				return m_Commodity;
-			}
-		}
+      Commodity = commodity;
 
-		public bool SetCommodity( Item item )
-		{
-			InvalidateProperties();
+      LootType = LootType.Blessed;
+    }
 
-			if ( m_Commodity == null && item is ICommodity && ((ICommodity)item).IsDeedable )
-			{
-				m_Commodity = item;
-				m_Commodity.Internalize();
-				InvalidateProperties();
+    [Constructible]
+    public CommodityDeed() : this(null)
+    {
+    }
 
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+    public CommodityDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Item Commodity{ get; private set; }
 
-			writer.Write( (int) 1 ); // version
+    public override int LabelNumber => Commodity == null ? 1047016 : 1047017;
 
-			writer.Write( m_Commodity );
-		}
+    public bool SetCommodity(Item item)
+    {
+      InvalidateProperties();
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      if (Commodity == null && (item as ICommodity)?.IsDeedable == true)
+      {
+        Commodity = item;
+        Commodity.Internalize();
+        InvalidateProperties();
 
-			int version = reader.ReadInt();
+        return true;
+      }
 
-			m_Commodity = reader.ReadItem();
+      return false;
+    }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					if (m_Commodity != null)
-					{
-						Hue = 0x592;
-					}
-					break;
-				}
-			}
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public CommodityDeed( Item commodity ) : base( 0x14F0 )
-		{
-			Weight = 1.0;
-			Hue = 0x47;
+      writer.Write(1); // version
 
-			m_Commodity = commodity;
+      writer.Write(Commodity);
+    }
 
-			LootType = LootType.Blessed;
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		[Constructible]
-		public CommodityDeed() : this( null )
-		{
-		}
+      int version = reader.ReadInt();
 
-		public CommodityDeed( Serial serial ) : base( serial )
-		{
-		}
+      Commodity = reader.ReadItem();
 
-		public override void OnDelete()
-		{
-			if ( m_Commodity != null )
-				m_Commodity.Delete();
+      switch (version)
+      {
+        case 0:
+        {
+          if (Commodity != null) Hue = 0x592;
+          break;
+        }
+      }
+    }
 
-			base.OnDelete();
-		}
+    public override void OnDelete()
+    {
+      Commodity?.Delete();
 
-		public override int LabelNumber => m_Commodity == null ? 1047016 : 1047017;
+      base.OnDelete();
+    }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-			if ( m_Commodity != null )
-			{
-				string args;
+      if (Commodity != null)
+      {
+        string args;
 
-				if ( m_Commodity.Name == null )
-					args = String.Format( "#{0}\t{1}", ( m_Commodity is ICommodity ) ? ((ICommodity)m_Commodity).DescriptionNumber : m_Commodity.LabelNumber, m_Commodity.Amount );
-				else
-					args = String.Format( "{0}\t{1}", m_Commodity.Name, m_Commodity.Amount );
+        if (Commodity.Name == null)
+          args =
+            $"#{(Commodity is ICommodity commodity ? commodity.DescriptionNumber : Commodity.LabelNumber)}\t{Commodity.Amount}";
+        else
+          args = $"{Commodity.Name}\t{Commodity.Amount}";
 
-				list.Add( 1060658, args ); // ~1_val~: ~2_val~
-			}
-			else
-			{
-				list.Add( 1060748 ); // unfilled
-			}
-		}
+        list.Add(1060658, args); // ~1_val~: ~2_val~
+      }
+      else
+      {
+        list.Add(1060748); // unfilled
+      }
+    }
 
-		public override void OnSingleClick( Mobile from )
-		{
-			base.OnSingleClick( from );
+    public override void OnSingleClick(Mobile from)
+    {
+      base.OnSingleClick(from);
 
-			if ( m_Commodity != null )
-			{
-				string args;
+      if (Commodity != null)
+      {
+        string args;
 
-				if ( m_Commodity.Name == null )
-					args = String.Format( "#{0}\t{1}", ( m_Commodity is ICommodity ) ? ((ICommodity)m_Commodity).DescriptionNumber : m_Commodity.LabelNumber, m_Commodity.Amount );
-				else
-					args = String.Format( "{0}\t{1}", m_Commodity.Name, m_Commodity.Amount );
+        if (Commodity.Name == null)
+          args =
+            $"#{(Commodity is ICommodity commodity ? commodity.DescriptionNumber : Commodity.LabelNumber)}\t{Commodity.Amount}";
+        else
+          args = $"{Commodity.Name}\t{Commodity.Amount}";
 
-				LabelTo( from, 1060658, args ); // ~1_val~: ~2_val~
-			}
-		}
+        LabelTo(from, 1060658, args); // ~1_val~: ~2_val~
+      }
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			int number;
+    public override void OnDoubleClick(Mobile from)
+    {
+      int number;
 
-			BankBox box = from.FindBankNoCreate();
-			CommodityDeedBox cox = CommodityDeedBox.Find( this );
+      BankBox box = from.FindBankNoCreate();
+      CommodityDeedBox cox = CommodityDeedBox.Find(this);
 
-			// Veteran Rewards mods
-			if ( m_Commodity != null )
-			{
-				if ( box != null && IsChildOf( box ) )
-				{
-					number = 1047031; // The commodity has been redeemed.
+      // Veteran Rewards mods
+      if (Commodity != null)
+      {
+        if (box != null && IsChildOf(box))
+        {
+          number = 1047031; // The commodity has been redeemed.
 
-					box.DropItem( m_Commodity );
+          box.DropItem(Commodity);
 
-					m_Commodity = null;
-					Delete();
-				}
-				else if ( cox != null )
-				{
-					if ( cox.IsSecure )
-					{
-						number = 1047031; // The commodity has been redeemed.
+          Commodity = null;
+          Delete();
+        }
+        else if (cox != null)
+        {
+          if (cox.IsSecure)
+          {
+            number = 1047031; // The commodity has been redeemed.
 
-						cox.DropItem( m_Commodity );
+            cox.DropItem(Commodity);
 
-						m_Commodity = null;
-						Delete();
-					}
-					else
-						number = 1080525; // The commodity deed box must be secured before you can use it.
-				}
-				else
-				{
-					if( Core.ML )
-					{
-						number = 1080526; // That must be in your bank box or commodity deed box to use it.
-					}
-					else
-					{
-						number = 1047024; // To claim the resources ....
-					}
-				}
-			}
-			else if ( cox != null && !cox.IsSecure )
-			{
-				number = 1080525; // The commodity deed box must be secured before you can use it.
-			}
-			else if ( ( box == null || !IsChildOf( box ) ) && cox == null )
-			{
-				if( Core.ML )
-				{
-					number = 1080526; // That must be in your bank box or commodity deed box to use it.
-				}
-				else
-				{
-					number = 1047026; // That must be in your bank box to use it.
-				}
-			}
-			else
-			{
-				number = 1047029; // Target the commodity to fill this deed with.
+            Commodity = null;
+            Delete();
+          }
+          else
+          {
+            number = 1080525; // The commodity deed box must be secured before you can use it.
+          }
+        }
+        else
+        {
+          if (Core.ML)
+            number = 1080526; // That must be in your bank box or commodity deed box to use it.
+          else
+            number = 1047024; // To claim the resources ....
+        }
+      }
+      else if (cox != null && !cox.IsSecure)
+      {
+        number = 1080525; // The commodity deed box must be secured before you can use it.
+      }
+      else if ((box == null || !IsChildOf(box)) && cox == null)
+      {
+        if (Core.ML)
+          number = 1080526; // That must be in your bank box or commodity deed box to use it.
+        else
+          number = 1047026; // That must be in your bank box to use it.
+      }
+      else
+      {
+        number = 1047029; // Target the commodity to fill this deed with.
 
-				from.Target = new InternalTarget( this );
-			}
+        from.Target = new InternalTarget(this);
+      }
 
-			from.SendLocalizedMessage( number );
-		}
+      from.SendLocalizedMessage(number);
+    }
 
-		private class InternalTarget : Target
-		{
-			private CommodityDeed m_Deed;
+    private class InternalTarget : Target
+    {
+      private CommodityDeed m_Deed;
 
-			public InternalTarget( CommodityDeed deed ) : base( 3, false, TargetFlags.None )
-			{
-				m_Deed = deed;
-			}
+      public InternalTarget(CommodityDeed deed) : base(3, false, TargetFlags.None)
+      {
+        m_Deed = deed;
+      }
 
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( m_Deed.Deleted )
-					return;
+      protected override void OnTarget(Mobile from, object targeted)
+      {
+        if (m_Deed.Deleted)
+          return;
 
-				int number;
+        int number;
 
-				if ( m_Deed.Commodity != null )
-				{
-					number = 1047028; // The commodity deed has already been filled.
-				}
-				else if ( targeted is Item )
-				{
-					BankBox box = from.FindBankNoCreate();
-					CommodityDeedBox cox = CommodityDeedBox.Find( m_Deed );
+        if (m_Deed.Commodity != null)
+        {
+          number = 1047028; // The commodity deed has already been filled.
+        }
+        else if (targeted is Item item)
+        {
+          BankBox box = from.FindBankNoCreate();
+          CommodityDeedBox cox = CommodityDeedBox.Find(m_Deed);
 
-					// Veteran Rewards mods
-					if ( box != null && m_Deed.IsChildOf( box ) && ((Item)targeted).IsChildOf( box ) ||
-						cox != null && cox.IsSecure && ((Item)targeted).IsChildOf( cox ) )
-					{
-						if ( m_Deed.SetCommodity( (Item) targeted ) )
-						{
-							m_Deed.Hue = 0x592;
-							number = 1047030; // The commodity deed has been filled.
-						}
-						else
-						{
-							number = 1047027; // That is not a commodity the bankers will fill a commodity deed with.
-						}
-					}
-					else
-					{
-						if( Core.ML )
-						{
-							number = 1080526; // That must be in your bank box or commodity deed box to use it.
-						}
-						else
-						{
-							number = 1047026; // That must be in your bank box to use it.
-						}
-					}
-				}
-				else
-				{
-					number = 1047027; // That is not a commodity the bankers will fill a commodity deed with.
-				}
+          // Veteran Rewards mods
+          if (box != null && m_Deed.IsChildOf(box) && item.IsChildOf(box) ||
+              cox != null && cox.IsSecure && item.IsChildOf(cox))
+          {
+            if (m_Deed.SetCommodity(item))
+            {
+              m_Deed.Hue = 0x592;
+              number = 1047030; // The commodity deed has been filled.
+            }
+            else
+            {
+              number = 1047027; // That is not a commodity the bankers will fill a commodity deed with.
+            }
+          }
+          else if (Core.ML)
+          {
+            number = 1080526; // That must be in your bank box or commodity deed box to use it.
+          }
+          else
+          {
+            number = 1047026; // That must be in your bank box to use it.
+          }
+        }
+        else
+        {
+          number = 1047027; // That is not a commodity the bankers will fill a commodity deed with.
+        }
 
-				from.SendLocalizedMessage( number );
-			}
-		}
-	}
+        from.SendLocalizedMessage(number);
+      }
+    }
+  }
 }

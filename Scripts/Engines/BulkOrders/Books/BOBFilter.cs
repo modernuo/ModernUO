@@ -1,88 +1,62 @@
-using System;
-
 namespace Server.Engines.BulkOrders
 {
-	public class BOBFilter
-	{
-		private int m_Type;
-		private int m_Quality;
-		private int m_Material;
-		private int m_Quantity;
+  public class BOBFilter
+  {
+    public BOBFilter()
+    {
+    }
 
-		public bool IsDefault
-		{
-			get{ return ( m_Type == 0 && m_Quality == 0 && m_Material == 0 && m_Quantity == 0 ); }
-		}
+    public BOBFilter(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-		public void Clear()
-		{
-			m_Type = 0;
-			m_Quality = 0;
-			m_Material = 0;
-			m_Quantity = 0;
-		}
+      switch (version)
+      {
+        case 1:
+        {
+          Type = reader.ReadEncodedInt();
+          Quality = reader.ReadEncodedInt();
+          Material = reader.ReadEncodedInt();
+          Quantity = reader.ReadEncodedInt();
 
-		public int Type
-		{
-			get{ return m_Type; }
-			set{ m_Type = value; }
-		}
+          break;
+        }
+      }
+    }
 
-		public int Quality
-		{
-			get{ return m_Quality; }
-			set{ m_Quality = value; }
-		}
+    public bool IsDefault => Type == 0 && Quality == 0 && Material == 0 && Quantity == 0;
 
-		public int Material
-		{
-			get{ return m_Material; }
-			set{ m_Material = value; }
-		}
+    public int Type{ get; set; }
 
-		public int Quantity
-		{
-			get{ return m_Quantity; }
-			set{ m_Quantity = value; }
-		}
+    public int Quality{ get; set; }
 
-		public BOBFilter()
-		{
-		}
+    public int Material{ get; set; }
 
-		public BOBFilter( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+    public int Quantity{ get; set; }
 
-			switch ( version )
-			{
-				case 1:
-				{
-					m_Type = reader.ReadEncodedInt();
-					m_Quality = reader.ReadEncodedInt();
-					m_Material = reader.ReadEncodedInt();
-					m_Quantity = reader.ReadEncodedInt();
+    public void Clear()
+    {
+      Type = 0;
+      Quality = 0;
+      Material = 0;
+      Quantity = 0;
+    }
 
-					break;
-				}
-			}
-		}
+    public void Serialize(GenericWriter writer)
+    {
+      if (IsDefault)
+      {
+        writer.WriteEncodedInt(0); // version
+      }
+      else
+      {
+        writer.WriteEncodedInt(1); // version
 
-		public void Serialize( GenericWriter writer )
-		{
-			if ( IsDefault )
-			{
-				writer.WriteEncodedInt( 0 ); // version
-			}
-			else
-			{
-				writer.WriteEncodedInt( 1 ); // version
-
-				writer.WriteEncodedInt( m_Type );
-				writer.WriteEncodedInt( m_Quality );
-				writer.WriteEncodedInt( m_Material );
-				writer.WriteEncodedInt( m_Quantity );
-			}
-		}
-	}
+        writer.WriteEncodedInt(Type);
+        writer.WriteEncodedInt(Quality);
+        writer.WriteEncodedInt(Material);
+        writer.WriteEncodedInt(Quantity);
+      }
+    }
+  }
 }

@@ -1,33 +1,30 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class SpinedScratcherFish : BaseFish
-	{
-		public override int LabelNumber => 1073832; // A Spined Scratcher Fish
+  public class SpinedScratcherFish : BaseFish
+  {
+    [Constructible]
+    public SpinedScratcherFish() : base(0x3B05)
+    {
+    }
 
-		[Constructible]
-		public SpinedScratcherFish() : base( 0x3B05 )
-		{
-		}
+    public SpinedScratcherFish(Serial serial) : base(serial)
+    {
+    }
 
-		public SpinedScratcherFish( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073832; // A Spined Scratcher Fish
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

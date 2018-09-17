@@ -1,72 +1,75 @@
-using System;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class ArcaneDaemon : BaseCreature
-	{
-		public override string CorpseName => "an arcane daemon corpse";
-		public override WeaponAbility GetWeaponAbility() => WeaponAbility.ConcussionBlow;
+  public class ArcaneDaemon : BaseCreature
+  {
+    [Constructible]
+    public ArcaneDaemon() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 0x310;
+      BaseSoundID = 0x47D;
 
-		public override string DefaultName => "an arcane daemon";
+      SetStr(131, 150);
+      SetDex(126, 145);
+      SetInt(301, 350);
 
-		[Constructible]
-		public ArcaneDaemon() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 0x310;
-			BaseSoundID = 0x47D;
+      SetHits(101, 115);
 
-			SetStr( 131, 150 );
-			SetDex( 126, 145 );
-			SetInt( 301, 350 );
+      SetDamage(12, 16);
 
-			SetHits( 101, 115 );
+      SetDamageType(ResistanceType.Physical, 80);
+      SetDamageType(ResistanceType.Fire, 20);
 
-			SetDamage( 12, 16 );
+      SetResistance(ResistanceType.Physical, 50, 60);
+      SetResistance(ResistanceType.Fire, 70, 80);
+      SetResistance(ResistanceType.Cold, 10, 20);
+      SetResistance(ResistanceType.Poison, 50, 60);
+      SetResistance(ResistanceType.Energy, 30, 40);
 
-			SetDamageType( ResistanceType.Physical, 80 );
-			SetDamageType( ResistanceType.Fire, 20 );
+      SetSkill(SkillName.MagicResist, 85.1, 95.0);
+      SetSkill(SkillName.Tactics, 70.1, 80.0);
+      SetSkill(SkillName.Wrestling, 60.1, 80.0);
+      SetSkill(SkillName.Magery, 80.1, 90.0);
+      SetSkill(SkillName.EvalInt, 70.1, 80.0);
+      SetSkill(SkillName.Meditation, 70.1, 80.0);
 
-			SetResistance( ResistanceType.Physical, 50, 60 );
-			SetResistance( ResistanceType.Fire, 70, 80 );
-			SetResistance( ResistanceType.Cold, 10, 20 );
-			SetResistance( ResistanceType.Poison, 50, 60 );
-			SetResistance( ResistanceType.Energy, 30, 40 );
+      Fame = 7000;
+      Karma = -10000;
 
-			SetSkill( SkillName.MagicResist, 85.1, 95.0 );
-			SetSkill( SkillName.Tactics, 70.1, 80.0 );
-			SetSkill( SkillName.Wrestling, 60.1, 80.0 );
-			SetSkill( SkillName.Magery, 80.1, 90.0 );
-			SetSkill( SkillName.EvalInt, 70.1, 80.0 );
-			SetSkill( SkillName.Meditation, 70.1, 80.0 );
+      VirtualArmor = 55;
+    }
 
-			Fame = 7000;
-			Karma = -10000;
+    public ArcaneDaemon(Serial serial) : base(serial)
+    {
+    }
 
-			VirtualArmor = 55;
-		}
+    public override string CorpseName => "an arcane daemon corpse";
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average, 2 );
-		}
+    public override string DefaultName => "an arcane daemon";
 
-		public override Poison PoisonImmune => Poison.Deadly;
+    public override Poison PoisonImmune => Poison.Deadly;
 
-		public ArcaneDaemon( Serial serial ) : base( serial )
-		{
-		}
+    public override WeaponAbility GetWeaponAbility()
+    {
+      return WeaponAbility.ConcussionBlow;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Average, 2);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

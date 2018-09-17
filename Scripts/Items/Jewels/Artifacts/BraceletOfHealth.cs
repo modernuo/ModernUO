@@ -1,37 +1,34 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class BraceletOfHealth : GoldBracelet
-	{
-		public override int LabelNumber => 1061103; // Bracelet of Health
-		public override int ArtifactRarity => 11;
+  public class BraceletOfHealth : GoldBracelet
+  {
+    [Constructible]
+    public BraceletOfHealth()
+    {
+      Hue = 0x21;
+      Attributes.BonusHits = 5;
+      Attributes.RegenHits = 10;
+    }
 
-		[Constructible]
-		public BraceletOfHealth()
-		{
-			Hue = 0x21;
-			Attributes.BonusHits = 5;
-			Attributes.RegenHits = 10;
-		}
+    public BraceletOfHealth(Serial serial) : base(serial)
+    {
+    }
 
-		public BraceletOfHealth( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1061103; // Bracelet of Health
+    public override int ArtifactRarity => 11;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

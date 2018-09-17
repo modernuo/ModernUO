@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
 using Server.Gumps;
 using Server.Multis;
 using Server.Prompts;
@@ -71,40 +69,20 @@ namespace Server.Items
 
 	public abstract class BasePlayerBB : Item, ISecurable
 	{
-		private PlayerBBMessage m_Greeting;
-		private List<PlayerBBMessage> m_Messages;
-		private string m_Title;
-		private SecureLevel m_Level;
+		public List<PlayerBBMessage> Messages { get; private set; }
 
-		public List<PlayerBBMessage> Messages
-		{
-			get{ return m_Messages; }
-		}
-
-		public PlayerBBMessage Greeting
-		{
-			get{ return m_Greeting; }
-			set{ m_Greeting = value; }
-		}
+		public PlayerBBMessage Greeting { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public string Title
-		{
-			get{ return m_Title; }
-			set{ m_Title = value; }
-		}
+		public string Title { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get{ return m_Level; }
-			set{ m_Level = value; }
-		}
+		public SecureLevel Level { get; set; }
 
 		public BasePlayerBB( int itemID ) : base( itemID )
 		{
-			m_Messages = new List<PlayerBBMessage>();
-			m_Level = SecureLevel.Anyone;
+			Messages = new List<PlayerBBMessage>();
+			Level = SecureLevel.Anyone;
 		}
 
 		public BasePlayerBB( Serial serial ) : base( serial )
@@ -123,24 +101,24 @@ namespace Server.Items
 
 			writer.Write( (int) 1 );
 
-			writer.Write( (int) m_Level );
+			writer.Write( (int) Level );
 
-			writer.Write( m_Title );
+			writer.Write( Title );
 
-			if ( m_Greeting != null )
+			if ( Greeting != null )
 			{
 				writer.Write( true );
-				m_Greeting.Serialize( writer );
+				Greeting.Serialize( writer );
 			}
 			else
 			{
 				writer.Write( false );
 			}
 
-			writer.WriteEncodedInt( m_Messages.Count );
+			writer.WriteEncodedInt( Messages.Count );
 
-			for ( int i = 0; i < m_Messages.Count; ++i )
-				m_Messages[i].Serialize( writer );
+			for ( int i = 0; i < Messages.Count; ++i )
+				Messages[i].Serialize( writer );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -153,25 +131,25 @@ namespace Server.Items
 			{
 				case 1:
 				{
-					m_Level = (SecureLevel)reader.ReadInt();
+					Level = (SecureLevel)reader.ReadInt();
 					goto case 0;
 				}
 				case 0:
 				{
 					if ( version < 1 )
-						m_Level = SecureLevel.Anyone;
+						Level = SecureLevel.Anyone;
 
-					m_Title = reader.ReadString();
+					Title = reader.ReadString();
 
 					if ( reader.ReadBool() )
-						m_Greeting = new PlayerBBMessage( reader );
+						Greeting = new PlayerBBMessage( reader );
 
 					int count = reader.ReadEncodedInt();
 
-					m_Messages = new List<PlayerBBMessage>( count );
+					Messages = new List<PlayerBBMessage>( count );
 
 					for ( int i = 0; i < count; ++i )
-						m_Messages.Add( new PlayerBBMessage( reader ) );
+						Messages.Add( new PlayerBBMessage( reader ) );
 
 					break;
 				}
@@ -190,9 +168,9 @@ namespace Server.Items
 		{
 			BaseHouse house = BaseHouse.FindHouseAt( this );
 
-			if ( house == null || !house.IsLockedDown( this ) )
+			if ( house == null || !house.HasLockedDownItem( this ) )
 				from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
-			else if ( !from.InRange( this.GetWorldLocation(), 2 ) || !from.InLOS( this ) )
+			else if ( !from.InRange( GetWorldLocation(), 2 ) || !from.InLOS( this ) )
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 			else if ( CheckAccess( house, from ) )
 				from.SendGump( new PlayerBBGump( from, house, this, 0 ) );
@@ -224,22 +202,23 @@ namespace Server.Items
 				BaseHouse house = m_House;
 				BasePlayerBB board = m_Board;
 
-				if ( house == null || !house.IsLockedDown( board ) )
+				if ( house == null || !house.HasLockedDownItem( board ) )
 				{
 					from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
 					return;
 				}
-				else if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
+
+				if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
 				{
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 					return;
 				}
-				else if ( !CheckAccess( house, from ) )
+				if ( !CheckAccess( house, from ) )
 				{
 					from.SendLocalizedMessage( 1062398 ); // You are not allowed to post to this bulletin board.
 					return;
 				}
-				else if ( m_Greeting && !house.IsOwner( from ) )
+				if ( m_Greeting && !house.IsOwner( from ) )
 				{
 					return;
 				}
@@ -299,17 +278,18 @@ namespace Server.Items
 				BaseHouse house = m_House;
 				BasePlayerBB board = m_Board;
 
-				if ( house == null || !house.IsLockedDown( board ) )
+				if ( house == null || !house.HasLockedDownItem( board ) )
 				{
 					from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
 					return;
 				}
-				else if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
+
+				if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
 				{
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 					return;
 				}
-				else if ( !CheckAccess( house, from ) )
+				if ( !CheckAccess( house, from ) )
 				{
 					from.SendLocalizedMessage( 1062398 ); // You are not allowed to post to this bulletin board.
 					return;
@@ -330,36 +310,20 @@ namespace Server.Items
 
 	public class PlayerBBMessage
 	{
-		private DateTime m_Time;
-		private Mobile m_Poster;
-		private string m_Message;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public DateTime Time { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime Time
-		{
-			get{ return m_Time; }
-			set{ m_Time = value; }
-		}
+		public Mobile Poster { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Poster
-		{
-			get{ return m_Poster; }
-			set{ m_Poster = value; }
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public string Message
-		{
-			get{ return m_Message; }
-			set{ m_Message = value; }
-		}
+		public string Message { get; set; }
 
 		public PlayerBBMessage( DateTime time, Mobile poster, string message )
 		{
-			m_Time = time;
-			m_Poster = poster;
-			m_Message = message;
+			Time = time;
+			Poster = poster;
+			Message = message;
 		}
 
 		public PlayerBBMessage( GenericReader reader )
@@ -370,9 +334,9 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_Time = reader.ReadDateTime();
-					m_Poster = reader.ReadMobile();
-					m_Message = reader.ReadString();
+					Time = reader.ReadDateTime();
+					Poster = reader.ReadMobile();
+					Message = reader.ReadString();
 					break;
 				}
 			}
@@ -382,9 +346,9 @@ namespace Server.Items
 		{
 			writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( m_Time );
-			writer.Write( m_Poster );
-			writer.Write( m_Message );
+			writer.Write( Time );
+			writer.Write( Poster );
+			writer.Write( Message );
 		}
 	}
 
@@ -405,17 +369,18 @@ namespace Server.Items
 			BaseHouse house = m_House;
 			BasePlayerBB board = m_Board;
 
-			if ( house == null || !house.IsLockedDown( board ) )
+			if ( house == null || !house.HasLockedDownItem( board ) )
 			{
 				from.SendLocalizedMessage( 1062396 ); // This bulletin board must be locked down in a house to be usable.
 				return;
 			}
-			else if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
+
+			if ( !from.InRange( board.GetWorldLocation(), 2 ) || !from.InLOS( board ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
 				return;
 			}
-			else if ( !BasePlayerBB.CheckAccess( house, from ) )
+			if ( !BasePlayerBB.CheckAccess( house, from ) )
 			{
 				from.SendLocalizedMessage( 1062398 ); // You are not allowed to post to this bulletin board.
 				return;
@@ -505,7 +470,7 @@ namespace Server.Items
 							{
 								from.SendLocalizedMessage( 501356 ); // This person is already banned!
 							}
-							else if ( poster is BaseCreature && ((BaseCreature)poster).NoHouseRestrictions )
+							else if ( poster is BaseCreature creature && creature.NoHouseRestrictions )
 							{
 								from.SendLocalizedMessage( 1062040 ); // You cannot ban that.
 							}
@@ -609,7 +574,7 @@ namespace Server.Items
 				AddHtml( 255, 180, 150, 20, message.Time.ToString( "yyyy-MM-dd HH:mm:ss" ), false, false );
 
 				Mobile poster = message.Poster;
-				string name = ( poster == null ? null : poster.Name );
+				string name = poster?.Name;
 
 				if ( name == null || (name = name.Trim()).Length == 0 )
 					name = "Someone";

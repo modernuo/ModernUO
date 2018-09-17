@@ -1,33 +1,30 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class Coral : BaseFish
-	{
-		public override int LabelNumber => 1074588; // Coral
+  public class Coral : BaseFish
+  {
+    [Constructible]
+    public Coral() : base(Utility.RandomList(0x3AF9, 0x3AFA, 0x3AFB))
+    {
+    }
 
-		[Constructible]
-		public Coral() : base( Utility.RandomList( 0x3AF9, 0x3AFA, 0x3AFB ) )
-		{
-		}
+    public Coral(Serial serial) : base(serial)
+    {
+    }
 
-		public Coral( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1074588; // Coral
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

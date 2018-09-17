@@ -1,56 +1,53 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class HatOfTheMagi : WizardsHat
-	{
-		public override int LabelNumber => 1061597; // Hat of the Magi
+  public class HatOfTheMagi : WizardsHat
+  {
+    [Constructible]
+    public HatOfTheMagi()
+    {
+      Hue = 0x481;
 
-		public override int ArtifactRarity => 11;
+      Attributes.BonusInt = 8;
+      Attributes.RegenMana = 4;
+      Attributes.SpellDamage = 10;
+    }
 
-		public override int BasePoisonResistance => 20;
-		public override int BaseEnergyResistance => 20;
+    public HatOfTheMagi(Serial serial) : base(serial)
+    {
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public override int LabelNumber => 1061597; // Hat of the Magi
 
-		[Constructible]
-		public HatOfTheMagi()
-		{
-			Hue = 0x481;
+    public override int ArtifactRarity => 11;
 
-			Attributes.BonusInt = 8;
-			Attributes.RegenMana = 4;
-			Attributes.SpellDamage = 10;
-		}
+    public override int BasePoisonResistance => 20;
+    public override int BaseEnergyResistance => 20;
 
-		public HatOfTheMagi( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 );
-		}
+      writer.Write(1);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Resistances.Poison = 0;
-					Resistances.Energy = 0;
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          Resistances.Poison = 0;
+          Resistances.Energy = 0;
+          break;
+        }
+      }
+    }
+  }
 }

@@ -1,39 +1,33 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class MindBlastScroll : SpellScroll
-	{
-		[Constructible]
-		public MindBlastScroll() : this( 1 )
-		{
-		}
+  public class MindBlastScroll : SpellScroll
+  {
+    [Constructible]
+    public MindBlastScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public MindBlastScroll( int amount ) : base( 36, 0x1F51, amount )
-		{
-		}
+    [Constructible]
+    public MindBlastScroll(int amount) : base(36, 0x1F51, amount)
+    {
+    }
 
-		public MindBlastScroll( Serial serial ) : base( serial )
-		{
-		}
+    public MindBlastScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

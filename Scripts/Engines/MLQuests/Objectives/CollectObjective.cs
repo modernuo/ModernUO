@@ -1,259 +1,224 @@
 using System;
-using Server;
-using Server.Engines.MLQuests;
-using Server.Mobiles;
 using Server.Gumps;
 using Server.Items;
+using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Objectives
 {
-	public class CollectObjective : BaseObjective
-	{
-		private int m_DesiredAmount;
-		private Type m_AcceptedType;
-		private TextDefinition m_Name;
+  public class CollectObjective : BaseObjective
+  {
+    public CollectObjective()
+      : this(0, null, null)
+    {
+    }
 
-		public int DesiredAmount
-		{
-			get { return m_DesiredAmount; }
-			set { m_DesiredAmount = value; }
-		}
+    public CollectObjective(int amount, Type type, TextDefinition name)
+    {
+      DesiredAmount = amount;
+      AcceptedType = type;
+      Name = name;
 
-		public Type AcceptedType
-		{
-			get { return m_AcceptedType; }
-			set { m_AcceptedType = value; }
-		}
+      if (MLQuestSystem.Debug && ShowDetailed && name.Number > 0)
+      {
+        int itemid = LabelToItemID(name.Number);
 
-		public TextDefinition Name
-		{
-			get { return m_Name; }
-			set { m_Name = value; }
-		}
+        if (itemid <= 0 || itemid > 0x4000)
+          Console.WriteLine("Warning: cliloc {0} is likely giving the wrong item ID", name.Number);
+      }
+    }
 
-		public virtual bool ShowDetailed
-		{
-			get { return true; }
-		}
+    public int DesiredAmount{ get; set; }
 
-		public CollectObjective()
-			: this( 0, null, null )
-		{
-		}
+    public Type AcceptedType{ get; set; }
 
-		public CollectObjective( int amount, Type type, TextDefinition name )
-		{
-			m_DesiredAmount = amount;
-			m_AcceptedType = type;
-			m_Name = name;
+    public TextDefinition Name{ get; set; }
 
-			if ( MLQuestSystem.Debug && ShowDetailed && name.Number > 0 )
-			{
-				int itemid = LabelToItemID( name.Number );
+    public virtual bool ShowDetailed => true;
 
-				if ( itemid <= 0 || itemid > 0x4000 )
-					Console.WriteLine( "Warning: cliloc {0} is likely giving the wrong item ID", name.Number );
-			}
-		}
+    public bool CheckType(Type type)
+    {
+      return AcceptedType != null && AcceptedType.IsAssignableFrom(type);
+    }
 
-		public bool CheckType( Type type )
-		{
-			return ( m_AcceptedType != null && m_AcceptedType.IsAssignableFrom( type ) );
-		}
+    public virtual bool CheckItem(Item item)
+    {
+      return true;
+    }
 
-		public virtual bool CheckItem( Item item )
-		{
-			return true;
-		}
+    public static int LabelToItemID(int label)
+    {
+      if (label < 1078872)
+        return label - 1020000;
+      return label - 1078872;
+    }
 
-		public static int LabelToItemID( int label )
-		{
-			if ( label < 1078872 )
-				return ( label - 1020000 );
-			else
-				return ( label - 1078872 );
-		}
+    public override void WriteToGump(Gump g, ref int y)
+    {
+      if (ShowDetailed)
+      {
+        string amount = DesiredAmount.ToString();
 
-		public override void WriteToGump( Gump g, ref int y )
-		{
-			if ( ShowDetailed )
-			{
-				string amount = m_DesiredAmount.ToString();
+        g.AddHtmlLocalized(98, y, 350, 16, 1072205, 0x15F90, false, false); // Obtain
+        g.AddLabel(143, y, 0x481, amount);
 
-				g.AddHtmlLocalized( 98, y, 350, 16, 1072205, 0x15F90, false, false ); // Obtain
-				g.AddLabel( 143, y, 0x481, amount );
+        if (Name.Number > 0)
+        {
+          g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF, false, false);
+          g.AddItem(350, y, LabelToItemID(Name.Number));
+        }
+        else if (Name.String != null)
+        {
+          g.AddLabel(143 + amount.Length * 15, y, 0x481, Name.String);
+        }
+      }
+      else
+      {
+        if (Name.Number > 0)
+          g.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x15F90, false, false);
+        else if (Name.String != null)
+          g.AddLabel(98, y, 0x481, Name.String);
+      }
 
-				if ( m_Name.Number > 0 )
-				{
-					g.AddHtmlLocalized( 143 + amount.Length * 15, y, 190, 18, m_Name.Number, 0x77BF, false, false );
-					g.AddItem( 350, y, LabelToItemID( m_Name.Number ) );
-				}
-				else if ( m_Name.String != null )
-				{
-					g.AddLabel( 143 + amount.Length * 15, y, 0x481, m_Name.String );
-				}
-			}
-			else
-			{
-				if ( m_Name.Number > 0 )
-					g.AddHtmlLocalized( 98, y, 312, 32, m_Name.Number, 0x15F90, false, false );
-				else if ( m_Name.String != null )
-					g.AddLabel( 98, y, 0x481, m_Name.String );
-			}
+      y += 32;
+    }
 
-			y += 32;
-		}
+    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
+    {
+      return new CollectObjectiveInstance(this, instance);
+    }
+  }
 
-		public override BaseObjectiveInstance CreateInstance( MLQuestInstance instance )
-		{
-			return new CollectObjectiveInstance( this, instance );
-		}
-	}
+  #region Timed
 
-	#region Timed
+  public class TimedCollectObjective : CollectObjective
+  {
+    public TimedCollectObjective(TimeSpan duration, int amount, Type type, TextDefinition name)
+      : base(amount, type, name)
+    {
+      Duration = duration;
+    }
 
-	public class TimedCollectObjective : CollectObjective
-	{
-		private TimeSpan m_Duration;
+    public override bool IsTimed => true;
+    public override TimeSpan Duration{ get; }
+  }
 
-		public override bool IsTimed => true;
-		public override TimeSpan Duration => m_Duration;
+  #endregion
 
-		public TimedCollectObjective( TimeSpan duration, int amount, Type type, TextDefinition name )
-			: base( amount, type, name )
-		{
-			m_Duration = duration;
-		}
-	}
+  public class CollectObjectiveInstance : BaseObjectiveInstance
+  {
+    public CollectObjectiveInstance(CollectObjective objective, MLQuestInstance instance)
+      : base(instance, objective)
+    {
+      Objective = objective;
+    }
 
-	#endregion
+    public CollectObjective Objective{ get; set; }
 
-	public class CollectObjectiveInstance : BaseObjectiveInstance
-	{
-		private CollectObjective m_Objective;
+    private int GetCurrentTotal()
+    {
+      Container pack = Instance.Player.Backpack;
 
-		public CollectObjective Objective
-		{
-			get { return m_Objective; }
-			set { m_Objective = value; }
-		}
+      if (pack == null)
+        return 0;
 
-		public CollectObjectiveInstance( CollectObjective objective, MLQuestInstance instance )
-			: base( instance, objective )
-		{
-			m_Objective = objective;
-		}
+      Item[] items = pack.FindItemsByType(Objective.AcceptedType, false); // Note: subclasses are included
+      int total = 0;
 
-		private int GetCurrentTotal()
-		{
-			Container pack = Instance.Player.Backpack;
+      foreach (Item item in items)
+        if (item.QuestItem && Objective.CheckItem(item))
+          total += item.Amount;
 
-			if ( pack == null )
-				return 0;
+      return total;
+    }
 
-			Item[] items = pack.FindItemsByType( m_Objective.AcceptedType, false ); // Note: subclasses are included
-			int total = 0;
+    public override bool AllowsQuestItem(Item item, Type type)
+    {
+      return Objective.CheckType(type) && Objective.CheckItem(item);
+    }
 
-			foreach ( Item item in items )
-			{
-				if ( item.QuestItem && m_Objective.CheckItem( item ) )
-					total += item.Amount;
-			}
+    public override bool IsCompleted()
+    {
+      return GetCurrentTotal() >= Objective.DesiredAmount;
+    }
 
-			return total;
-		}
+    public override void OnQuestCancelled()
+    {
+      PlayerMobile pm = Instance.Player;
+      Container pack = pm.Backpack;
 
-		public override bool AllowsQuestItem( Item item, Type type )
-		{
-			return ( m_Objective.CheckType( type ) && m_Objective.CheckItem( item ) );
-		}
+      if (pack == null)
+        return;
 
-		public override bool IsCompleted()
-		{
-			return ( GetCurrentTotal() >= m_Objective.DesiredAmount );
-		}
+      Type checkType = Objective.AcceptedType;
+      Item[] items = pack.FindItemsByType(checkType, false);
 
-		public override void OnQuestCancelled()
-		{
-			PlayerMobile pm = Instance.Player;
-			Container pack = pm.Backpack;
+      foreach (Item item in items)
+        if (item.QuestItem && !MLQuestSystem.CanMarkQuestItem(pm, item, checkType)
+        ) // does another quest still need this item? (OSI just unmarks everything)
+          item.QuestItem = false;
+    }
 
-			if ( pack == null )
-				return;
+    // Should only be called after IsComplete() is checked to be true
+    public override void OnClaimReward()
+    {
+      Container pack = Instance.Player.Backpack;
 
-			Type checkType = m_Objective.AcceptedType;
-			Item[] items = pack.FindItemsByType( checkType, false );
+      if (pack == null)
+        return;
 
-			foreach ( Item item in items )
-			{
-				if ( item.QuestItem && !MLQuestSystem.CanMarkQuestItem( pm, item, checkType ) ) // does another quest still need this item? (OSI just unmarks everything)
-					item.QuestItem = false;
-			}
-		}
+      // TODO: OSI also counts the item in the cursor?
 
-		// Should only be called after IsComplete() is checked to be true
-		public override void OnClaimReward()
-		{
-			Container pack = Instance.Player.Backpack;
+      Item[] items = pack.FindItemsByType(Objective.AcceptedType, false);
+      int left = Objective.DesiredAmount;
 
-			if ( pack == null )
-				return;
+      foreach (Item item in items)
+        if (item.QuestItem && Objective.CheckItem(item))
+        {
+          if (left == 0)
+            return;
 
-			// TODO: OSI also counts the item in the cursor?
+          if (item.Amount > left)
+          {
+            item.Consume(left);
+            left = 0;
+          }
+          else
+          {
+            item.Delete();
+            left -= item.Amount;
+          }
+        }
+    }
 
-			Item[] items = pack.FindItemsByType( m_Objective.AcceptedType, false );
-			int left = m_Objective.DesiredAmount;
+    public override void OnAfterClaimReward()
+    {
+      OnQuestCancelled(); // same thing, clear other quest items
+    }
 
-			foreach ( Item item in items )
-			{
-				if ( item.QuestItem && m_Objective.CheckItem( item ) )
-				{
-					if ( left == 0 )
-						return;
+    public override void OnExpire()
+    {
+      OnQuestCancelled();
 
-					if ( item.Amount > left )
-					{
-						item.Consume( left );
-						left = 0;
-					}
-					else
-					{
-						item.Delete();
-						left -= item.Amount;
-					}
-				}
-			}
-		}
+      // No message
+    }
 
-		public override void OnAfterClaimReward()
-		{
-			OnQuestCancelled(); // same thing, clear other quest items
-		}
+    public override void WriteToGump(Gump g, ref int y)
+    {
+      Objective.WriteToGump(g, ref y);
+      y -= 16;
 
-		public override void OnExpire()
-		{
-			OnQuestCancelled();
+      if (Objective.ShowDetailed)
+      {
+        base.WriteToGump(g, ref y);
 
-			// No message
-		}
+        g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x15F90, false, false); // Total
+        g.AddLabel(223, y, 0x481, GetCurrentTotal().ToString());
+        y += 16;
 
-		public override void WriteToGump( Gump g, ref int y )
-		{
-			m_Objective.WriteToGump( g, ref y );
-			y -= 16;
-
-			if ( m_Objective.ShowDetailed )
-			{
-				base.WriteToGump( g, ref y );
-
-				g.AddHtmlLocalized( 103, y, 120, 16, 3000087, 0x15F90, false, false ); // Total
-				g.AddLabel( 223, y, 0x481, GetCurrentTotal().ToString() );
-				y += 16;
-
-				g.AddHtmlLocalized( 103, y, 120, 16, 1074782, 0x15F90, false, false ); // Return to
-				g.AddLabel( 223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor( Instance.QuesterType ) );
-				y += 16;
-			}
-		}
-	}
+        g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x15F90, false, false); // Return to
+        g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Instance.QuesterType));
+        y += 16;
+      }
+    }
+  }
 }

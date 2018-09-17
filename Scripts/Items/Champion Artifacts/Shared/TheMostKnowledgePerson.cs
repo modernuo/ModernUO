@@ -1,44 +1,41 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class TheMostKnowledgePerson : BaseOuterTorso
-	{
-		public override int LabelNumber => 1094893; // The Most Knowledge Person [Replica]
+  public class TheMostKnowledgePerson : BaseOuterTorso
+  {
+    [Constructible]
+    public TheMostKnowledgePerson() : base(0x2684)
+    {
+      Hue = 0x117;
+      StrRequirement = 0;
 
-		public override int InitMinHits => 150;
-		public override int InitMaxHits => 150;
+      Attributes.BonusHits = 3 + Utility.RandomMinMax(0, 2);
+    }
 
-		public override bool CanFortify => false;
+    public TheMostKnowledgePerson(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool CanBeBlessed => false;
+    public override int LabelNumber => 1094893; // The Most Knowledge Person [Replica]
 
-		[Constructible]
-		public TheMostKnowledgePerson() : base( 0x2684 )
-		{
-			Hue = 0x117;
-			StrRequirement = 0;
+    public override int InitMinHits => 150;
+    public override int InitMaxHits => 150;
 
-			Attributes.BonusHits = 3 + Utility.RandomMinMax( 0, 2 );
-		}
+    public override bool CanFortify => false;
 
-		public TheMostKnowledgePerson( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CanBeBlessed => false;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,51 +1,48 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class OrnateCrownOfTheHarrower : BoneHelm
-	{
-		public override int LabelNumber => 1061095; // Ornate Crown of the Harrower
-		public override int ArtifactRarity => 11;
+  public class OrnateCrownOfTheHarrower : BoneHelm
+  {
+    [Constructible]
+    public OrnateCrownOfTheHarrower()
+    {
+      Hue = 0x4F6;
+      Attributes.RegenHits = 2;
+      Attributes.RegenStam = 3;
+      Attributes.WeaponDamage = 25;
+    }
 
-		public override int BasePoisonResistance => 17;
+    public OrnateCrownOfTheHarrower(Serial serial) : base(serial)
+    {
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public override int LabelNumber => 1061095; // Ornate Crown of the Harrower
+    public override int ArtifactRarity => 11;
 
-		[Constructible]
-		public OrnateCrownOfTheHarrower()
-		{
-			Hue = 0x4F6;
-			Attributes.RegenHits = 2;
-			Attributes.RegenStam = 3;
-			Attributes.WeaponDamage = 25;
-		}
+    public override int BasePoisonResistance => 17;
 
-		public OrnateCrownOfTheHarrower( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 );
-		}
+      writer.Write(1);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( version < 1 )
-			{
-				if ( Hue == 0x55A )
-					Hue = 0x4F6;
+      if (version < 1)
+      {
+        if (Hue == 0x55A)
+          Hue = 0x4F6;
 
-				PoisonBonus = 0;
-			}
-		}
-	}
+        PoisonBonus = 0;
+      }
+    }
+  }
 }

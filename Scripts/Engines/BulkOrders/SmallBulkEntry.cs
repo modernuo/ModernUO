@@ -1,46 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Server;
 
 namespace Server.Engines.BulkOrders
 {
 	public class SmallBulkEntry
 	{
-		private Type m_Type;
-		private int m_Number;
-		private int m_Graphic;
+		public Type Type { get; }
 
-		public Type Type{ get{ return m_Type; } }
-		public int Number{ get{ return m_Number; } }
-		public int Graphic{ get{ return m_Graphic; } }
+		public int Number { get; }
+
+		public int Graphic { get; }
 
 		public SmallBulkEntry( Type type, int number, int graphic )
 		{
-			m_Type = type;
-			m_Number = number;
-			m_Graphic = graphic;
+			Type = type;
+			Number = number;
+			Graphic = graphic;
 		}
 
-		public static SmallBulkEntry[] BlacksmithWeapons
-		{
-			get{ return GetEntries( "Blacksmith", "weapons" ); }
-		}
+		public static SmallBulkEntry[] BlacksmithWeapons => GetEntries( "Blacksmith", "weapons" );
 
-		public static SmallBulkEntry[] BlacksmithArmor
-		{
-			get{ return GetEntries( "Blacksmith", "armor" ); }
-		}
+		public static SmallBulkEntry[] BlacksmithArmor => GetEntries( "Blacksmith", "armor" );
 
-		public static SmallBulkEntry[] TailorCloth
-		{
-			get{ return GetEntries( "Tailoring", "cloth" ); }
-		}
+		public static SmallBulkEntry[] TailorCloth => GetEntries( "Tailoring", "cloth" );
 
-		public static SmallBulkEntry[] TailorLeather
-		{
-			get{ return GetEntries( "Tailoring", "leather" ); }
-		}
+		public static SmallBulkEntry[] TailorLeather => GetEntries( "Tailoring", "leather" );
 
 		private static Dictionary<string, Dictionary<string, SmallBulkEntry[]>> m_Cache;
 
@@ -60,7 +45,7 @@ namespace Server.Engines.BulkOrders
 
 		public static SmallBulkEntry[] LoadEntries( string type, string name )
 		{
-			return LoadEntries( String.Format( "Data/Bulk Orders/{0}/{1}.cfg", type, name ) );
+			return LoadEntries($"Data/Bulk Orders/{type}/{name}.cfg");
 		}
 
 		public static SmallBulkEntry[] LoadEntries( string path )

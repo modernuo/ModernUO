@@ -1,315 +1,323 @@
-using System;
 using Server.Engines.VeteranRewards;
 
 namespace Server.Items
 {
-	public abstract class BaseCloak : BaseClothing
-	{
-		public BaseCloak( int itemID ) : this( itemID, 0 )
-		{
-		}
+  public abstract class BaseCloak : BaseClothing
+  {
+    public BaseCloak(int itemID) : this(itemID, 0)
+    {
+    }
 
-		public BaseCloak( int itemID, int hue ) : base( itemID, Layer.Cloak, hue )
-		{
-		}
+    public BaseCloak(int itemID, int hue) : base(itemID, Layer.Cloak, hue)
+    {
+    }
 
-		public BaseCloak( Serial serial ) : base( serial )
-		{
-		}
+    public BaseCloak(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	[Flippable]
-	public class Cloak : BaseCloak, IArcaneEquip
-	{
-		#region Arcane Impl
-		private int m_MaxArcaneCharges, m_CurArcaneCharges;
+  [Flippable]
+  public class Cloak : BaseCloak, IArcaneEquip
+  {
+    [Constructible]
+    public Cloak() : this(0)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int MaxArcaneCharges
-		{
-			get{ return m_MaxArcaneCharges; }
-			set{ m_MaxArcaneCharges = value; InvalidateProperties(); Update(); }
-		}
+    [Constructible]
+    public Cloak(int hue) : base(0x1515, hue)
+    {
+      Weight = 5.0;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int CurArcaneCharges
-		{
-			get{ return m_CurArcaneCharges; }
-			set{ m_CurArcaneCharges = value; InvalidateProperties(); Update(); }
-		}
+    public Cloak(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsArcane
-		{
-			get{ return ( m_MaxArcaneCharges > 0 && m_CurArcaneCharges >= 0 ); }
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public void Update()
-		{
-			if ( IsArcane )
-				ItemID = 0x26AD;
-			else if ( ItemID == 0x26AD )
-				ItemID = 0x1515;
+      writer.Write(1); // version
 
-			if ( IsArcane && CurArcaneCharges == 0 )
-				Hue = 0;
-		}
+      if (IsArcane)
+      {
+        writer.Write(true);
+        writer.Write(m_CurArcaneCharges);
+        writer.Write(m_MaxArcaneCharges);
+      }
+      else
+      {
+        writer.Write(false);
+      }
+    }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			if ( IsArcane )
-				list.Add( 1061837, "{0}\t{1}", m_CurArcaneCharges, m_MaxArcaneCharges ); // arcane charges: ~1_val~ / ~2_val~
-		}
+      int version = reader.ReadInt();
 
-		public override void OnSingleClick( Mobile from )
-		{
-			base.OnSingleClick( from );
+      switch (version)
+      {
+        case 1:
+        {
+          if (reader.ReadBool())
+          {
+            m_CurArcaneCharges = reader.ReadInt();
+            m_MaxArcaneCharges = reader.ReadInt();
 
-			if ( IsArcane )
-				LabelTo( from, 1061837, String.Format( "{0}\t{1}", m_CurArcaneCharges, m_MaxArcaneCharges ) );
-		}
+            if (Hue == 2118)
+              Hue = ArcaneGem.DefaultArcaneHue;
+          }
 
-		public void Flip()
-		{
-			if ( ItemID == 0x1515 )
-				ItemID = 0x1530;
-			else if ( ItemID == 0x1530 )
-				ItemID = 0x1515;
-		}
-		#endregion
+          break;
+        }
+      }
 
-		[Constructible]
-		public Cloak() : this( 0 )
-		{
-		}
+      if (Weight == 4.0)
+        Weight = 5.0;
+    }
 
-		[Constructible]
-		public Cloak( int hue ) : base( 0x1515, hue )
-		{
-			Weight = 5.0;
-		}
+    #region Arcane Impl
 
-		public Cloak( Serial serial ) : base( serial )
-		{
-		}
+    private int m_MaxArcaneCharges, m_CurArcaneCharges;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int MaxArcaneCharges
+    {
+      get => m_MaxArcaneCharges;
+      set
+      {
+        m_MaxArcaneCharges = value;
+        InvalidateProperties();
+        Update();
+      }
+    }
 
-			writer.Write( (int) 1 ); // version
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int CurArcaneCharges
+    {
+      get => m_CurArcaneCharges;
+      set
+      {
+        m_CurArcaneCharges = value;
+        InvalidateProperties();
+        Update();
+      }
+    }
 
-			if ( IsArcane )
-			{
-				writer.Write( true );
-				writer.Write( (int) m_CurArcaneCharges );
-				writer.Write( (int) m_MaxArcaneCharges );
-			}
-			else
-			{
-				writer.Write( false );
-			}
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsArcane => m_MaxArcaneCharges > 0 && m_CurArcaneCharges >= 0;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public void Update()
+    {
+      if (IsArcane)
+        ItemID = 0x26AD;
+      else if (ItemID == 0x26AD)
+        ItemID = 0x1515;
 
-			int version = reader.ReadInt();
+      if (IsArcane && CurArcaneCharges == 0)
+        Hue = 0;
+    }
 
-			switch ( version )
-			{
-				case 1:
-				{
-					if ( reader.ReadBool() )
-					{
-						m_CurArcaneCharges = reader.ReadInt();
-						m_MaxArcaneCharges = reader.ReadInt();
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-						if ( Hue == 2118 )
-							Hue = ArcaneGem.DefaultArcaneHue;
-					}
+      if (IsArcane)
+        list.Add(1061837, "{0}\t{1}", m_CurArcaneCharges, m_MaxArcaneCharges); // arcane charges: ~1_val~ / ~2_val~
+    }
 
-					break;
-				}
-			}
+    public override void OnSingleClick(Mobile from)
+    {
+      base.OnSingleClick(from);
 
-			if ( Weight == 4.0 )
-				Weight = 5.0;
-		}
-	}
+      if (IsArcane)
+        LabelTo(from, 1061837, $"{m_CurArcaneCharges}\t{m_MaxArcaneCharges}");
+    }
 
-	[Flippable]
-	public class RewardCloak : BaseCloak, IRewardItem
-	{
-		private int m_LabelNumber;
-		private bool m_IsRewardItem;
+    public void Flip()
+    {
+      if (ItemID == 0x1515)
+        ItemID = 0x1530;
+      else if (ItemID == 0x1530)
+        ItemID = 0x1515;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsRewardItem
-		{
-			get{ return m_IsRewardItem; }
-			set{ m_IsRewardItem = value; }
-		}
+    #endregion
+  }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Number
-		{
-			get{ return m_LabelNumber; }
-			set{ m_LabelNumber = value; InvalidateProperties(); }
-		}
+  [Flippable]
+  public class RewardCloak : BaseCloak, IRewardItem
+  {
+    private int m_LabelNumber;
 
-		public override int LabelNumber
-		{
-			get
-			{
-				if ( m_LabelNumber > 0 )
-					return m_LabelNumber;
+    [Constructible]
+    public RewardCloak() : this(0)
+    {
+    }
 
-				return base.LabelNumber;
-			}
-		}
+    [Constructible]
+    public RewardCloak(int hue) : this(hue, 0)
+    {
+    }
 
-		public override int BasePhysicalResistance => 3;
+    [Constructible]
+    public RewardCloak(int hue, int labelNumber) : base(0x1515, hue)
+    {
+      Weight = 5.0;
+      LootType = LootType.Blessed;
 
-		public override void OnAdded(IEntity parent)
-		{
-			base.OnAdded( parent );
+      m_LabelNumber = labelNumber;
+    }
 
-			if ( parent is Mobile )
-				((Mobile)parent).VirtualArmorMod += 2;
-		}
+    public RewardCloak(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnRemoved(IEntity parent)
-		{
-			base.OnRemoved( parent );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Number
+    {
+      get => m_LabelNumber;
+      set
+      {
+        m_LabelNumber = value;
+        InvalidateProperties();
+      }
+    }
 
-			if ( parent is Mobile )
-				((Mobile)parent).VirtualArmorMod -= 2;
-		}
+    public override int LabelNumber
+    {
+      get
+      {
+        if (m_LabelNumber > 0)
+          return m_LabelNumber;
 
-		public override bool Dye( Mobile from, DyeTub sender )
-		{
-			from.SendLocalizedMessage( sender.FailMessage );
-			return false;
-		}
+        return base.LabelNumber;
+      }
+    }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    public override int BasePhysicalResistance => 3;
 
-			if ( Core.ML && m_IsRewardItem )
-				list.Add( RewardSystem.GetRewardYearLabel( this, new object[]{ Hue, m_LabelNumber } ) ); // X Year Veteran Reward
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsRewardItem{ get; set; }
 
-		public override bool CanEquip( Mobile m )
-		{
-			if ( !base.CanEquip( m ) )
-				return false;
+    public override void OnAdded(IEntity parent)
+    {
+      base.OnAdded(parent);
 
-			return !m_IsRewardItem || Engines.VeteranRewards.RewardSystem.CheckIsUsableBy( m, this, new object[]{ Hue, m_LabelNumber } );
-		}
+      if (parent is Mobile mobile)
+        mobile.VirtualArmorMod += 2;
+    }
 
-		[Constructible]
-		public RewardCloak() : this( 0 )
-		{
-		}
+    public override void OnRemoved(IEntity parent)
+    {
+      base.OnRemoved(parent);
 
-		[Constructible]
-		public RewardCloak( int hue ) : this( hue, 0 )
-		{
-		}
+      if (parent is Mobile mobile)
+        mobile.VirtualArmorMod -= 2;
+    }
 
-		[Constructible]
-		public RewardCloak( int hue, int labelNumber ) : base( 0x1515, hue )
-		{
-			Weight = 5.0;
-			LootType = LootType.Blessed;
+    public override bool Dye(Mobile from, DyeTub sender)
+    {
+      from.SendLocalizedMessage(sender.FailMessage);
+      return false;
+    }
 
-			m_LabelNumber = labelNumber;
-		}
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-		public RewardCloak( Serial serial ) : base( serial )
-		{
-		}
+      if (Core.ML && IsRewardItem)
+        list.Add(RewardSystem.GetRewardYearLabel(this,
+          new object[] { Hue, m_LabelNumber })); // X Year Veteran Reward
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override bool CanEquip(Mobile m)
+    {
+      if (!base.CanEquip(m))
+        return false;
 
-			writer.Write( (int) 0 ); // version
+      return !IsRewardItem || RewardSystem.CheckIsUsableBy(m, this, new object[] { Hue, m_LabelNumber });
+    }
 
-			writer.Write( (int) m_LabelNumber );
-			writer.Write( (bool) m_IsRewardItem );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
 
-			int version = reader.ReadInt();
+      writer.Write(m_LabelNumber);
+      writer.Write(IsRewardItem);
+    }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_LabelNumber = reader.ReadInt();
-					m_IsRewardItem = reader.ReadBool();
-					break;
-				}
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			if ( Parent is Mobile )
-				((Mobile)Parent).VirtualArmorMod += 2;
-		}
-	}
+      int version = reader.ReadInt();
 
-	[Flippable( 0x230A, 0x2309 )]
-	public class FurCape : BaseCloak
-	{
-		[Constructible]
-		public FurCape() : this( 0 )
-		{
-		}
+      switch (version)
+      {
+        case 0:
+        {
+          m_LabelNumber = reader.ReadInt();
+          IsRewardItem = reader.ReadBool();
+          break;
+        }
+      }
 
-		[Constructible]
-		public FurCape( int hue ) : base( 0x230A, hue )
-		{
-			Weight = 4.0;
-		}
+      if (Parent is Mobile mobile)
+        mobile.VirtualArmorMod += 2;
+    }
+  }
 
-		public FurCape( Serial serial ) : base( serial )
-		{
-		}
+  [Flippable(0x230A, 0x2309)]
+  public class FurCape : BaseCloak
+  {
+    [Constructible]
+    public FurCape() : this(0)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    [Constructible]
+    public FurCape(int hue) : base(0x230A, hue)
+    {
+      Weight = 4.0;
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public FurCape(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			int version = reader.ReadInt();
-		}
-	}
+      writer.Write(0); // version
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

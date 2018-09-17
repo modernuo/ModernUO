@@ -20,193 +20,166 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Server.Network;
 
 namespace Server
 {
-	[Parsable]
-	public abstract class Race
-	{
-		public static Race DefaultRace { get { return m_Races[0];  } }
+  [Parsable]
+  public abstract class Race
+  {
+    private static string[] m_RaceNames;
+    private static Race[] m_RaceValues;
 
-		private static Race[] m_Races = new Race[0x100];
+    protected Race(int raceID, int raceIndex, string name, string pluralName, int maleBody, int femaleBody,
+      int maleGhostBody, int femaleGhostBody, Expansion requiredExpansion)
+    {
+      RaceID = raceID;
+      RaceIndex = raceIndex;
 
-		public static Race[] Races { get { return m_Races; } }
+      Name = name;
 
-		public static Race Human { get { return m_Races[0]; } }
-		public static Race Elf { get { return m_Races[1]; } }
-		public static Race Gargoyle { get { return m_Races[2]; } }
+      MaleBody = maleBody;
+      FemaleBody = femaleBody;
+      MaleGhostBody = maleGhostBody;
+      FemaleGhostBody = femaleGhostBody;
 
-		private static List<Race> m_AllRaces = new List<Race>();
+      RequiredExpansion = requiredExpansion;
+      PluralName = pluralName;
+    }
 
-		public static List<Race> AllRaces { get { return m_AllRaces; } }
+    public static Race DefaultRace => Races[0];
 
-		private int m_RaceID, m_RaceIndex;
+    public static Race[] Races{ get; } = new Race[0x100];
 
-		private string m_Name, m_PluralName;
+    public static Race Human => Races[0];
+    public static Race Elf => Races[1];
+    public static Race Gargoyle => Races[2];
 
-		private static string[] m_RaceNames;
-		private static Race[] m_RaceValues;
+    public static List<Race> AllRaces{ get; } = new List<Race>();
 
-		public static string[] GetRaceNames()
-		{
-			CheckNamesAndValues();
-			return m_RaceNames;
-		}
+    public Expansion RequiredExpansion{ get; }
 
-		public static Race[] GetRaceValues()
-		{
-			CheckNamesAndValues();
-			return m_RaceValues;
-		}
+    public int MaleBody{ get; }
 
-		public static Race Parse( string value )
-		{
-			CheckNamesAndValues();
+    public int MaleGhostBody{ get; }
 
-			for( int i = 0; i < m_RaceNames.Length; ++i )
-			{
-				if( Insensitive.Equals( m_RaceNames[i], value ) )
-					return m_RaceValues[i];
-			}
+    public int FemaleBody{ get; }
 
-			int index;
-			if( int.TryParse( value, out index ) )
-			{
-				if( index >= 0 && index < m_Races.Length && m_Races[index] != null )
-					return m_Races[index];
-			}
+    public int FemaleGhostBody{ get; }
 
-			throw new ArgumentException( "Invalid race name" );
-		}
+    public int RaceID{ get; }
 
-		private static void CheckNamesAndValues()
-		{
-			if( m_RaceNames != null && m_RaceNames.Length == m_AllRaces.Count )
-				return;
+    public int RaceIndex{ get; }
 
-			m_RaceNames = new string[m_AllRaces.Count];
-			m_RaceValues = new Race[m_AllRaces.Count];
+    public string Name{ get; set; }
 
-			for( int i = 0; i < m_AllRaces.Count; ++i )
-			{
-				Race race = m_AllRaces[i];
+    public string PluralName{ get; set; }
 
-				m_RaceNames[i] = race.Name;
-				m_RaceValues[i] = race;
-			}
-		}
+    public static string[] GetRaceNames()
+    {
+      CheckNamesAndValues();
+      return m_RaceNames;
+    }
 
-		public override string ToString()
-		{
-			return m_Name;
-		}
+    public static Race[] GetRaceValues()
+    {
+      CheckNamesAndValues();
+      return m_RaceValues;
+    }
 
-		private int m_MaleBody, m_FemaleBody, m_MaleGhostBody, m_FemaleGhostBody;
+    public static Race Parse(string value)
+    {
+      CheckNamesAndValues();
 
-		private Expansion m_RequiredExpansion;
+      for (int i = 0; i < m_RaceNames.Length; ++i)
+        if (Insensitive.Equals(m_RaceNames[i], value))
+          return m_RaceValues[i];
 
-		public Expansion RequiredExpansion { get { return m_RequiredExpansion; } }
+      if (int.TryParse(value, out int index))
+        if (index >= 0 && index < Races.Length && Races[index] != null)
+          return Races[index];
 
-		public int MaleBody { get { return m_MaleBody; } }
-		public int MaleGhostBody { get { return m_MaleGhostBody; } }
+      throw new ArgumentException("Invalid race name");
+    }
 
-		public int FemaleBody { get { return m_FemaleBody; } }
-		public int FemaleGhostBody { get { return m_FemaleGhostBody; } }
+    private static void CheckNamesAndValues()
+    {
+      if (m_RaceNames != null && m_RaceNames.Length == AllRaces.Count)
+        return;
 
-		protected Race( int raceID, int raceIndex, string name, string pluralName, int maleBody, int femaleBody, int maleGhostBody, int femaleGhostBody, Expansion requiredExpansion )
-		{
-			m_RaceID = raceID;
-			m_RaceIndex = raceIndex;
+      m_RaceNames = new string[AllRaces.Count];
+      m_RaceValues = new Race[AllRaces.Count];
 
-			m_Name = name;
+      for (int i = 0; i < AllRaces.Count; ++i)
+      {
+        Race race = AllRaces[i];
 
-			m_MaleBody = maleBody;
-			m_FemaleBody = femaleBody;
-			m_MaleGhostBody = maleGhostBody;
-			m_FemaleGhostBody = femaleGhostBody;
+        m_RaceNames[i] = race.Name;
+        m_RaceValues[i] = race;
+      }
+    }
 
-			m_RequiredExpansion = requiredExpansion;
-			m_PluralName = pluralName;
-		}
+    public override string ToString()
+    {
+      return Name;
+    }
 
-		public virtual bool ValidateHair( Mobile m, int itemID ) { return ValidateHair( m.Female, itemID ); }
-		public abstract bool ValidateHair( bool female, int itemID );
+    public virtual bool ValidateHair(Mobile m, int itemID)
+    {
+      return ValidateHair(m.Female, itemID);
+    }
 
-		public virtual int RandomHair( Mobile m ) { return RandomHair( m.Female ); }
-		public abstract int RandomHair( bool female );
+    public abstract bool ValidateHair(bool female, int itemID);
 
-		public virtual bool ValidateFacialHair( Mobile m, int itemID ) { return ValidateFacialHair( m.Female, itemID ); }
-		public abstract bool ValidateFacialHair( bool female, int itemID );
+    public virtual int RandomHair(Mobile m)
+    {
+      return RandomHair(m.Female);
+    }
 
-		public virtual int RandomFacialHair( Mobile m ) { return RandomFacialHair( m.Female ); }
-		public abstract int RandomFacialHair( bool female );	//For the *ahem* bearded ladies
+    public abstract int RandomHair(bool female);
 
-		public abstract int ClipSkinHue( int hue );
-		public abstract int RandomSkinHue();
+    public virtual bool ValidateFacialHair(Mobile m, int itemID)
+    {
+      return ValidateFacialHair(m.Female, itemID);
+    }
 
-		public abstract int ClipHairHue( int hue );
-		public abstract int RandomHairHue();
+    public abstract bool ValidateFacialHair(bool female, int itemID);
 
-		public virtual int Body( Mobile m )
-		{
-			if( m.Alive )
-				return AliveBody( m.Female );
+    public virtual int RandomFacialHair(Mobile m)
+    {
+      return RandomFacialHair(m.Female);
+    }
 
-			return GhostBody( m.Female );
-		}
+    public abstract int RandomFacialHair(bool female); //For the *ahem* bearded ladies
 
-		public virtual int AliveBody( Mobile m ) { return AliveBody( m.Female ); }
-		public virtual int AliveBody( bool female )
-		{
-			return (female ? m_FemaleBody : m_MaleBody);
-		}
+    public abstract int ClipSkinHue(int hue);
+    public abstract int RandomSkinHue();
 
-		public virtual int GhostBody( Mobile m ) { return GhostBody( m.Female ); }
-		public virtual int GhostBody( bool female )
-		{
-			return (female ? m_FemaleGhostBody : m_MaleGhostBody);
-		}
+    public abstract int ClipHairHue(int hue);
+    public abstract int RandomHairHue();
 
-		public int RaceID
-		{
-			get
-			{
-				return m_RaceID;
-			}
-		}
+    public virtual int Body(Mobile m)
+    {
+      return m.Alive ? AliveBody(m.Female) : GhostBody(m.Female);
+    }
 
-		public int RaceIndex
-		{
-			get
-			{
-				return m_RaceIndex;
-			}
-		}
+    public virtual int AliveBody(Mobile m)
+    {
+      return AliveBody(m.Female);
+    }
 
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-			set
-			{
-				m_Name = value;
-			}
-		}
+    public virtual int AliveBody(bool female)
+    {
+      return female ? FemaleBody : MaleBody;
+    }
 
-		public string PluralName
-		{
-			get
-			{
-				return m_PluralName;
-			}
-			set
-			{
-				m_PluralName = value;
-			}
-		}
-	}
+    public virtual int GhostBody(Mobile m)
+    {
+      return GhostBody(m.Female);
+    }
+
+    public virtual int GhostBody(bool female)
+    {
+      return female ? FemaleGhostBody : MaleGhostBody;
+    }
+  }
 }

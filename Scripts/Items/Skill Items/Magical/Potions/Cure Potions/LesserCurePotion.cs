@@ -1,47 +1,44 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class LesserCurePotion : BaseCurePotion
-	{
-		private static CureLevelInfo[] m_OldLevelInfo = new CureLevelInfo[]
-			{
-				new CureLevelInfo( Poison.Lesser,  0.75 ), // 75% chance to cure lesser poison
-				new CureLevelInfo( Poison.Regular, 0.50 ), // 50% chance to cure regular poison
-				new CureLevelInfo( Poison.Greater, 0.15 )  // 15% chance to cure greater poison
-			};
+  public class LesserCurePotion : BaseCurePotion
+  {
+    private static CureLevelInfo[] m_OldLevelInfo =
+    {
+      new CureLevelInfo(Poison.Lesser, 0.75), // 75% chance to cure lesser poison
+      new CureLevelInfo(Poison.Regular, 0.50), // 50% chance to cure regular poison
+      new CureLevelInfo(Poison.Greater, 0.15) // 15% chance to cure greater poison
+    };
 
-		private static CureLevelInfo[] m_AosLevelInfo = new CureLevelInfo[]
-			{
-				new CureLevelInfo( Poison.Lesser,  0.75 ),
-				new CureLevelInfo( Poison.Regular, 0.50 ),
-				new CureLevelInfo( Poison.Greater, 0.25 )
-			};
+    private static CureLevelInfo[] m_AosLevelInfo =
+    {
+      new CureLevelInfo(Poison.Lesser, 0.75),
+      new CureLevelInfo(Poison.Regular, 0.50),
+      new CureLevelInfo(Poison.Greater, 0.25)
+    };
 
-		public override CureLevelInfo[] LevelInfo => Core.AOS ? m_AosLevelInfo : m_OldLevelInfo;
+    [Constructible]
+    public LesserCurePotion() : base(PotionEffect.CureLesser)
+    {
+    }
 
-		[Constructible]
-		public LesserCurePotion() : base( PotionEffect.CureLesser )
-		{
-		}
+    public LesserCurePotion(Serial serial) : base(serial)
+    {
+    }
 
-		public LesserCurePotion( Serial serial ) : base( serial )
-		{
-		}
+    public override CureLevelInfo[] LevelInfo => Core.AOS ? m_AosLevelInfo : m_OldLevelInfo;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,42 +1,47 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	[Flippable]
-	public class Futon : Item
-	{
-		[Constructible]
-		public Futon() : base( Utility.RandomDouble() > 0.5 ? 0x295C : 0x295E )
-		{
-		}
+  [Flippable]
+  public class Futon : Item
+  {
+    [Constructible]
+    public Futon() : base(Utility.RandomDouble() > 0.5 ? 0x295C : 0x295E)
+    {
+    }
 
-		public Futon( Serial serial ) : base( serial )
-		{
-		}
+    public Futon(Serial serial) : base(serial)
+    {
+    }
 
-		public void Flip()
-		{
-			switch ( ItemID )
-			{
-				case 0x295C: ItemID = 0x295D; break;
-				case 0x295E: ItemID = 0x295F; break;
+    public void Flip()
+    {
+      switch (ItemID)
+      {
+        case 0x295C:
+          ItemID = 0x295D;
+          break;
+        case 0x295E:
+          ItemID = 0x295F;
+          break;
 
-				case 0x295D: ItemID = 0x295C; break;
-				case 0x295F: ItemID = 0x295E; break;
-			}
-		}
+        case 0x295D:
+          ItemID = 0x295C;
+          break;
+        case 0x295F:
+          ItemID = 0x295E;
+          break;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,137 +1,136 @@
 using System;
 using System.Collections.Generic;
-using Server;
-using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class LadyJennifyr : SkeletalKnight
-	{
-		public override string CorpseName => "a Lady Jennifyr corpse";
-		public override string DefaultName => "Lady Jennifyr";
+  public class LadyJennifyr : SkeletalKnight
+  {
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
-		[Constructible]
-		public LadyJennifyr()
-		{
-			IsParagon = true;
+    [Constructible]
+    public LadyJennifyr()
+    {
+      IsParagon = true;
 
-			Hue = 0x76D;
+      Hue = 0x76D;
 
-			SetStr( 208, 309 );
-			SetDex( 91, 118 );
-			SetInt( 44, 101 );
+      SetStr(208, 309);
+      SetDex(91, 118);
+      SetInt(44, 101);
 
-			SetHits( 1113, 1285 );
+      SetHits(1113, 1285);
 
-			SetDamage( 15, 25 );
+      SetDamage(15, 25);
 
-			SetDamageType( ResistanceType.Physical, 40 );
-			SetDamageType( ResistanceType.Cold, 60 );
+      SetDamageType(ResistanceType.Physical, 40);
+      SetDamageType(ResistanceType.Cold, 60);
 
-			SetResistance( ResistanceType.Physical, 56, 65 );
-			SetResistance( ResistanceType.Fire, 41, 49 );
-			SetResistance( ResistanceType.Cold, 71, 80 );
-			SetResistance( ResistanceType.Poison, 41, 50 );
-			SetResistance( ResistanceType.Energy, 50, 58 );
+      SetResistance(ResistanceType.Physical, 56, 65);
+      SetResistance(ResistanceType.Fire, 41, 49);
+      SetResistance(ResistanceType.Cold, 71, 80);
+      SetResistance(ResistanceType.Poison, 41, 50);
+      SetResistance(ResistanceType.Energy, 50, 58);
 
-			SetSkill( SkillName.Wrestling, 127.9, 137.1 );
-			SetSkill( SkillName.Tactics, 128.4, 141.9 );
-			SetSkill( SkillName.MagicResist, 102.1, 119.5 );
-			SetSkill( SkillName.Anatomy, 129.0, 137.5 );
+      SetSkill(SkillName.Wrestling, 127.9, 137.1);
+      SetSkill(SkillName.Tactics, 128.4, 141.9);
+      SetSkill(SkillName.MagicResist, 102.1, 119.5);
+      SetSkill(SkillName.Anatomy, 129.0, 137.5);
 
-			Fame = 18000;
-			Karma = -18000;
-		}
+      Fame = 18000;
+      Karma = -18000;
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.UltraRich, 3 );
-		}
+    public LadyJennifyr(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override void OnGaveMeleeAttack( Mobile defender )
-		{
-			base.OnGaveMeleeAttack( defender );
+    public override string CorpseName => "a Lady Jennifyr corpse";
+    public override string DefaultName => "Lady Jennifyr";
 
-			if ( Utility.RandomDouble() < 0.1 )
-			{
-				if (m_Table.TryGetValue( defender, out ExpireTimer timer ))
-					timer.DoExpire();
+    /*
+    // TODO: Uncomment once added
+    public override void OnDeath( Container c )
+    {
+      base.OnDeath( c );
 
-				defender.FixedParticles( 0x3709, 10, 30, 5052, EffectLayer.LeftFoot );
-				defender.PlaySound( 0x208 );
-				defender.SendLocalizedMessage( 1070833 ); // The creature fans you with fire, reducing your resistance to fire attacks.
+      if ( Utility.RandomDouble() < 0.15 )
+        c.DropItem( new DisintegratingThesisNotes() );
 
-				ResistanceMod mod = new ResistanceMod( ResistanceType.Fire, -10 );
-				defender.AddResistanceMod( mod );
+      if ( Utility.RandomDouble() < 0.1 )
+        c.DropItem( new ParrotItem() );
+    }
+    */
 
-				m_Table[defender] = timer = new ExpireTimer( defender, mod );
-				timer.Start();
-			}
-		}
+    public override bool GivesMLMinorArtifact => true;
 
-		private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.UltraRich, 3);
+    }
 
-		private class ExpireTimer : Timer
-		{
-			private Mobile m_Mobile;
-			private ResistanceMod m_Mod;
+    public override void OnGaveMeleeAttack(Mobile defender)
+    {
+      base.OnGaveMeleeAttack(defender);
 
-			public ExpireTimer( Mobile m, ResistanceMod mod )
-				: base( TimeSpan.FromSeconds( 10 ) )
-			{
-				m_Mobile = m;
-				m_Mod = mod;
-				Priority = TimerPriority.TwoFiftyMS;
-			}
+      if (Utility.RandomDouble() < 0.1)
+      {
+        if (m_Table.TryGetValue(defender, out ExpireTimer timer))
+          timer.DoExpire();
 
-			public void DoExpire()
-			{
-				m_Mobile.RemoveResistanceMod( m_Mod );
+        defender.FixedParticles(0x3709, 10, 30, 5052, EffectLayer.LeftFoot);
+        defender.PlaySound(0x208);
+        defender.SendLocalizedMessage(
+          1070833); // The creature fans you with fire, reducing your resistance to fire attacks.
 
-				Stop();
-				m_Table.Remove( m_Mobile );
-			}
+        ResistanceMod mod = new ResistanceMod(ResistanceType.Fire, -10);
+        defender.AddResistanceMod(mod);
 
-			protected override void OnTick()
-			{
-				m_Mobile.SendLocalizedMessage( 1070834 ); // Your resistance to fire attacks has returned.
-				DoExpire();
-			}
-		}
+        m_Table[defender] = timer = new ExpireTimer(defender, mod);
+        timer.Start();
+      }
+    }
 
-		/*
-		// TODO: Uncomment once added
-		public override void OnDeath( Container c )
-		{
-			base.OnDeath( c );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			if ( Utility.RandomDouble() < 0.15 )
-				c.DropItem( new DisintegratingThesisNotes() );
+      writer.Write(0); // version
+    }
 
-			if ( Utility.RandomDouble() < 0.1 )
-				c.DropItem( new ParrotItem() );
-		}
-		*/
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override bool GivesMLMinorArtifact => true;
+      int version = reader.ReadInt();
+    }
 
-		public LadyJennifyr( Serial serial )
-			: base( serial )
-		{
-		}
+    private class ExpireTimer : Timer
+    {
+      private Mobile m_Mobile;
+      private ResistanceMod m_Mod;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      public ExpireTimer(Mobile m, ResistanceMod mod)
+        : base(TimeSpan.FromSeconds(10))
+      {
+        m_Mobile = m;
+        m_Mod = mod;
+        Priority = TimerPriority.TwoFiftyMS;
+      }
 
-			writer.Write( (int) 0 ); // version
-		}
+      public void DoExpire()
+      {
+        m_Mobile.RemoveResistanceMod(m_Mod);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+        Stop();
+        m_Table.Remove(m_Mobile);
+      }
 
-			int version = reader.ReadInt();
-		}
-	}
+      protected override void OnTick()
+      {
+        m_Mobile.SendLocalizedMessage(1070834); // Your resistance to fire attacks has returned.
+        DoExpire();
+      }
+    }
+  }
 }

@@ -2,342 +2,297 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Server;
 
 namespace Server.Commands.Generic
 {
-	[Flags]
-	public enum CommandSupport
-	{
-		Single		= 0x0001,
-		Global		= 0x0002,
-		Online		= 0x0004,
-		Multi		= 0x0008,
-		Area		= 0x0010,
-		Self		= 0x0020,
-		Region		= 0x0040,
-		Contained	= 0x0080,
-		IPAddress	= 0x0100,
+  [Flags]
+  public enum CommandSupport
+  {
+    Single = 0x0001,
+    Global = 0x0002,
+    Online = 0x0004,
+    Multi = 0x0008,
+    Area = 0x0010,
+    Self = 0x0020,
+    Region = 0x0040,
+    Contained = 0x0080,
+    IPAddress = 0x0100,
 
-		All			= Single | Global | Online | Multi | Area | Self | Region | Contained | IPAddress,
-		AllMobiles	= All & ~Contained,
-		AllNPCs		= All & ~(IPAddress | Online | Self | Contained),
-		AllItems	= All & ~(IPAddress | Online | Self | Region),
+    All = Single | Global | Online | Multi | Area | Self | Region | Contained | IPAddress,
+    AllMobiles = All & ~Contained,
+    AllNPCs = All & ~(IPAddress | Online | Self | Contained),
+    AllItems = All & ~(IPAddress | Online | Self | Region),
 
-		Simple		= Single | Multi,
-		Complex		= Global | Online | Area | Region | Contained | IPAddress
-	}
+    Simple = Single | Multi,
+    Complex = Global | Online | Area | Region | Contained | IPAddress
+  }
 
-	public abstract class BaseCommandImplementor
-	{
-		public static void RegisterImplementors()
-		{
-			Register( new RegionCommandImplementor() );
-			Register( new GlobalCommandImplementor() );
-			Register( new OnlineCommandImplementor() );
-			Register( new SingleCommandImplementor() );
-			Register( new SerialCommandImplementor() );
-			Register( new MultiCommandImplementor() );
-			Register( new AreaCommandImplementor() );
-			Register( new SelfCommandImplementor() );
-			Register( new ContainedCommandImplementor() );
-			Register( new IPAddressCommandImplementor() );
+  public abstract class BaseCommandImplementor
+  {
+    private static List<BaseCommandImplementor> m_Implementors;
 
-			Register( new RangeCommandImplementor() );
-			Register( new ScreenCommandImplementor() );
-			Register( new FacetCommandImplementor() );
-		}
+    public BaseCommandImplementor()
+    {
+      Commands = new Dictionary<string, BaseCommand>(StringComparer.OrdinalIgnoreCase);
+    }
 
-		private string[] m_Accessors;
-		private AccessLevel m_AccessLevel;
-		private CommandSupport m_SupportRequirement;
-		private Dictionary<string, BaseCommand> m_Commands;
-		private string m_Usage;
-		private string m_Description;
-		private bool m_SupportsConditionals;
+    public bool SupportsConditionals{ get; set; }
 
-		public bool SupportsConditionals
-		{
-			get{ return m_SupportsConditionals; }
-			set{ m_SupportsConditionals = value; }
-		}
+    public string[] Accessors{ get; set; }
 
-		public string[] Accessors
-		{
-			get{ return m_Accessors; }
-			set{ m_Accessors = value; }
-		}
+    public string Usage{ get; set; }
 
-		public string Usage
-		{
-			get{ return m_Usage; }
-			set{ m_Usage = value; }
-		}
+    public string Description{ get; set; }
 
-		public string Description
-		{
-			get{ return m_Description; }
-			set{ m_Description = value; }
-		}
+    public AccessLevel AccessLevel{ get; set; }
 
-		public AccessLevel AccessLevel
-		{
-			get{ return m_AccessLevel; }
-			set{ m_AccessLevel = value; }
-		}
+    public CommandSupport SupportRequirement{ get; set; }
 
-		public CommandSupport SupportRequirement
-		{
-			get{ return m_SupportRequirement; }
-			set{ m_SupportRequirement = value; }
-		}
+    public Dictionary<string, BaseCommand> Commands{ get; }
 
-		public Dictionary<string, BaseCommand> Commands
-		{
-			get{ return m_Commands; }
-		}
+    public static List<BaseCommandImplementor> Implementors
+    {
+      get
+      {
+        if (m_Implementors == null)
+        {
+          m_Implementors = new List<BaseCommandImplementor>();
+          RegisterImplementors();
+        }
 
-		public BaseCommandImplementor()
-		{
-			m_Commands = new Dictionary<string, BaseCommand>( StringComparer.OrdinalIgnoreCase );
-		}
+        return m_Implementors;
+      }
+    }
 
-		public virtual void Compile( Mobile from, BaseCommand command, ref string[] args, ref object obj )
-		{
-			obj = null;
-		}
+    public static void RegisterImplementors()
+    {
+      Register(new RegionCommandImplementor());
+      Register(new GlobalCommandImplementor());
+      Register(new OnlineCommandImplementor());
+      Register(new SingleCommandImplementor());
+      Register(new SerialCommandImplementor());
+      Register(new MultiCommandImplementor());
+      Register(new AreaCommandImplementor());
+      Register(new SelfCommandImplementor());
+      Register(new ContainedCommandImplementor());
+      Register(new IPAddressCommandImplementor());
 
-		public virtual void Register( BaseCommand command )
-		{
-			for ( int i = 0; i < command.Commands.Length; ++i )
-				m_Commands[command.Commands[i]] = command;
-		}
+      Register(new RangeCommandImplementor());
+      Register(new ScreenCommandImplementor());
+      Register(new FacetCommandImplementor());
+    }
 
-		public bool CheckObjectTypes( Mobile from, BaseCommand command, Extensions ext, out bool items, out bool mobiles )
-		{
-			items = mobiles = false;
+    public virtual void Compile(Mobile from, BaseCommand command, ref string[] args, ref object obj)
+    {
+      obj = null;
+    }
 
-			ObjectConditional cond = ObjectConditional.Empty;
+    public virtual void Register(BaseCommand command)
+    {
+      for (int i = 0; i < command.Commands.Length; ++i)
+        Commands[command.Commands[i]] = command;
+    }
 
-			foreach ( BaseExtension check in ext )
-			{
-				if ( check is WhereExtension )
-				{
-					cond = ( check as WhereExtension ).Conditional;
+    public bool CheckObjectTypes(Mobile from, BaseCommand command, Extensions ext, out bool items, out bool mobiles)
+    {
+      items = mobiles = false;
 
-					break;
-				}
-			}
+      ObjectConditional cond = ObjectConditional.Empty;
 
-			bool condIsItem = cond.IsItem;
-			bool condIsMobile = cond.IsMobile;
+      foreach (BaseExtension check in ext)
+        if (check is WhereExtension extension)
+        {
+          cond = extension.Conditional;
 
-			switch ( command.ObjectTypes )
-			{
-				case ObjectTypes.All:
-				case ObjectTypes.Both:
-				{
-					if ( condIsItem )
-						items = true;
+          break;
+        }
 
-					if ( condIsMobile )
-						mobiles = true;
+      bool condIsItem = cond.IsItem;
+      bool condIsMobile = cond.IsMobile;
 
-					break;
-				}
-				case ObjectTypes.Items:
-				{
-					if ( condIsItem )
-					{
-						items = true;
-					}
-					else if ( condIsMobile )
-					{
-						from.SendMessage( "You may not use a mobile type condition for this command." );
-						return false;
-					}
+      switch (command.ObjectTypes)
+      {
+        case ObjectTypes.All:
+        case ObjectTypes.Both:
+        {
+          if (condIsItem)
+            items = true;
 
-					break;
-				}
-				case ObjectTypes.Mobiles:
-				{
-					if ( condIsMobile )
-					{
-						mobiles = true;
-					}
-					else if ( condIsItem )
-					{
-						from.SendMessage( "You may not use an item type condition for this command." );
-						return false;
-					}
+          if (condIsMobile)
+            mobiles = true;
 
-					break;
-				}
-			}
+          break;
+        }
+        case ObjectTypes.Items:
+        {
+          if (condIsItem)
+          {
+            items = true;
+          }
+          else if (condIsMobile)
+          {
+            from.SendMessage("You may not use a mobile type condition for this command.");
+            return false;
+          }
 
-			return true;
-		}
+          break;
+        }
+        case ObjectTypes.Mobiles:
+        {
+          if (condIsMobile)
+          {
+            mobiles = true;
+          }
+          else if (condIsItem)
+          {
+            from.SendMessage("You may not use an item type condition for this command.");
+            return false;
+          }
 
-		public void RunCommand( Mobile from, BaseCommand command, string[] args )
-		{
-			try
-			{
-				object obj = null;
+          break;
+        }
+      }
 
-				Compile( from, command, ref args, ref obj );
+      return true;
+    }
 
-				RunCommand( from, obj, command, args );
-			}
-			catch ( Exception ex )
-			{
-				from.SendMessage( ex.Message );
-			}
-		}
+    public void RunCommand(Mobile from, BaseCommand command, string[] args)
+    {
+      try
+      {
+        object obj = null;
 
-		public string GenerateArgString( string[] args )
-		{
-			if ( args.Length == 0 )
-				return "";
+        Compile(from, command, ref args, ref obj);
 
-			// NOTE: this does not preserve the case where quotation marks are used on a single word
+        RunCommand(from, obj, command, args);
+      }
+      catch (Exception ex)
+      {
+        from.SendMessage(ex.Message);
+      }
+    }
 
-			StringBuilder sb = new StringBuilder();
+    public string GenerateArgString(string[] args)
+    {
+      if (args.Length == 0)
+        return "";
 
-			for ( int i = 0; i < args.Length; ++i )
-			{
-				if ( i > 0 )
-					sb.Append( ' ' );
+      // NOTE: this does not preserve the case where quotation marks are used on a single word
 
-				if ( args[i].IndexOf( ' ' ) >= 0 )
-				{
-					sb.Append( '"' );
-					sb.Append( args[i] );
-					sb.Append( '"' );
-				}
-				else
-				{
-					sb.Append( args[i] );
-				}
-			}
+      StringBuilder sb = new StringBuilder();
 
-			return sb.ToString();
-		}
+      for (int i = 0; i < args.Length; ++i)
+      {
+        if (i > 0)
+          sb.Append(' ');
 
-		public void RunCommand( Mobile from, object obj, BaseCommand command, string[] args )
-		{
-		//	try
-		//	{
-				CommandEventArgs e = new CommandEventArgs( from, command.Commands[0], GenerateArgString( args ), args );
+        if (args[i].IndexOf(' ') >= 0)
+        {
+          sb.Append('"');
+          sb.Append(args[i]);
+          sb.Append('"');
+        }
+        else
+        {
+          sb.Append(args[i]);
+        }
+      }
 
-				if ( !command.ValidateArgs( this, e ) )
-					return;
+      return sb.ToString();
+    }
 
-				bool flushToLog = false;
+    public void RunCommand(Mobile from, object obj, BaseCommand command, string[] args)
+    {
+      //	try
+      //	{
+      CommandEventArgs e = new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args);
 
-				if ( obj is ArrayList )
-				{
-					ArrayList list = (ArrayList)obj;
+      if (!command.ValidateArgs(this, e))
+        return;
 
-					if ( list.Count > 20 )
-						CommandLogging.Enabled = false;
-					else if ( list.Count == 0 )
-						command.LogFailure( "Nothing was found to use this command on." );
+      bool flushToLog = false;
 
-					command.ExecuteList( e, list );
+      if (obj is ArrayList list)
+      {
+        if (list.Count > 20)
+          CommandLogging.Enabled = false;
+        else if (list.Count == 0)
+          command.LogFailure("Nothing was found to use this command on.");
 
-					if ( list.Count > 20 )
-					{
-						flushToLog = true;
-						CommandLogging.Enabled = true;
-					}
-				}
-				else if ( obj != null )
-				{
-					if ( command.ListOptimized )
-					{
-						ArrayList list = new ArrayList();
-						list.Add( obj );
-						command.ExecuteList( e, list );
-					}
-					else
-					{
-						command.Execute( e, obj );
-					}
-				}
+        command.ExecuteList(e, list);
 
-				command.Flush( from, flushToLog );
-		//	}
-		//	catch ( Exception ex )
-		//	{
-		//		from.SendMessage( ex.Message );
-		//	}
-		}
+        if (list.Count > 20)
+        {
+          flushToLog = true;
+          CommandLogging.Enabled = true;
+        }
+      }
+      else if (obj != null)
+      {
+        if (command.ListOptimized)
+          command.ExecuteList(e, new ArrayList { obj });
+        else
+          command.Execute(e, obj);
+      }
 
-		public virtual void Process( Mobile from, BaseCommand command, string[] args )
-		{
-			RunCommand( from, command, args );
-		}
+      command.Flush(from, flushToLog);
+      //	}
+      //	catch ( Exception ex )
+      //	{
+      //		from.SendMessage( ex.Message );
+      //	}
+    }
 
-		public virtual void Execute( CommandEventArgs e )
-		{
-			if ( e.Length >= 1 )
-			{
-				m_Commands.TryGetValue( e.GetString( 0 ), out BaseCommand command );
+    public virtual void Process(Mobile from, BaseCommand command, string[] args)
+    {
+      RunCommand(from, command, args);
+    }
 
-				if ( command == null )
-				{
-					e.Mobile.SendMessage( "That is either an invalid command name or one that does not support this modifier." );
-				}
-				else if ( e.Mobile.AccessLevel < command.AccessLevel )
-				{
-					e.Mobile.SendMessage( "You do not have access to that command." );
-				}
-				else
-				{
-					string[] oldArgs = e.Arguments;
-					string[] args = new string[oldArgs.Length - 1];
+    public virtual void Execute(CommandEventArgs e)
+    {
+      if (e.Length >= 1)
+      {
+        Commands.TryGetValue(e.GetString(0), out BaseCommand command);
 
-					for ( int i = 0; i < args.Length; ++i )
-						args[i] = oldArgs[i + 1];
+        if (command == null)
+        {
+          e.Mobile.SendMessage(
+            "That is either an invalid command name or one that does not support this modifier.");
+        }
+        else if (e.Mobile.AccessLevel < command.AccessLevel)
+        {
+          e.Mobile.SendMessage("You do not have access to that command.");
+        }
+        else
+        {
+          string[] oldArgs = e.Arguments;
+          string[] args = new string[oldArgs.Length - 1];
 
-					Process( e.Mobile, command, args );
-				}
-			}
-			else
-			{
-				e.Mobile.SendMessage( "You must supply a command name." );
-			}
-		}
+          for (int i = 0; i < args.Length; ++i)
+            args[i] = oldArgs[i + 1];
 
-		public void Register()
-		{
-			if ( m_Accessors == null )
-				return;
+          Process(e.Mobile, command, args);
+        }
+      }
+      else
+      {
+        e.Mobile.SendMessage("You must supply a command name.");
+      }
+    }
 
-			for ( int i = 0; i < m_Accessors.Length; ++i )
-				CommandSystem.Register( m_Accessors[i], m_AccessLevel, new CommandEventHandler( Execute ) );
-		}
+    public void Register()
+    {
+      if (Accessors == null)
+        return;
 
-		public static void Register( BaseCommandImplementor impl )
-		{
-			m_Implementors.Add( impl );
-			impl.Register();
-		}
+      for (int i = 0; i < Accessors.Length; ++i)
+        CommandSystem.Register(Accessors[i], AccessLevel, Execute);
+    }
 
-		private static List<BaseCommandImplementor> m_Implementors;
-
-		public static List<BaseCommandImplementor> Implementors
-		{
-			get
-			{
-				if ( m_Implementors == null )
-				{
-					m_Implementors = new List<BaseCommandImplementor>();
-					RegisterImplementors();
-				}
-
-				return m_Implementors;
-			}
-		}
-	}
+    public static void Register(BaseCommandImplementor impl)
+    {
+      m_Implementors.Add(impl);
+      impl.Register();
+    }
+  }
 }

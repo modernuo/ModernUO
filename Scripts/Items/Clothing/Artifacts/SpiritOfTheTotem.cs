@@ -1,54 +1,51 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class SpiritOfTheTotem : BearMask
-	{
-		public override int LabelNumber => 1061599; // Spirit of the Totem
+  public class SpiritOfTheTotem : BearMask
+  {
+    [Constructible]
+    public SpiritOfTheTotem()
+    {
+      Hue = 0x455;
 
-		public override int ArtifactRarity => 11;
+      Attributes.BonusStr = 20;
+      Attributes.ReflectPhysical = 15;
+      Attributes.AttackChance = 15;
+    }
 
-		public override int BasePhysicalResistance => 20;
+    public SpiritOfTheTotem(Serial serial) : base(serial)
+    {
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public override int LabelNumber => 1061599; // Spirit of the Totem
 
-		[Constructible]
-		public SpiritOfTheTotem()
-		{
-			Hue = 0x455;
+    public override int ArtifactRarity => 11;
 
-			Attributes.BonusStr = 20;
-			Attributes.ReflectPhysical = 15;
-			Attributes.AttackChance = 15;
-		}
+    public override int BasePhysicalResistance => 20;
 
-		public SpiritOfTheTotem( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 );
-		}
+      writer.Write(1);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					Resistances.Physical = 0;
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          Resistances.Physical = 0;
+          break;
+        }
+      }
+    }
+  }
 }

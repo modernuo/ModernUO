@@ -1,147 +1,159 @@
 using System;
-using Server;
-using Server.Targeting;
-using System.Collections;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Mobiles;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0x2790, 0x27DB )]
-	public class LeatherNinjaBelt : BaseWaist, IDyable, INinjaWeapon
-	{
-		public override CraftResource DefaultResource => CraftResource.RegularLeather;
+  [Flippable(0x2790, 0x27DB)]
+  public class LeatherNinjaBelt : BaseWaist, IDyable, INinjaWeapon
+  {
+    private Poison m_Poison;
+    private int m_PoisonCharges;
 
-		public virtual int WrongAmmoMessage  => 1063301; //You can only place shuriken in a ninja belt.
-		public virtual int NoFreeHandMessage  => 1063299; //You must have a free hand to throw shuriken.
-		public virtual int EmptyWeaponMessage  => 1063297; //You have no shuriken in your ninja belt!
-		public virtual int RecentlyUsedMessage  => 1063298; //You cannot throw another shuriken yet.
-		public virtual int FullWeaponMessage  => 1063302; //You cannot add any more shuriken.
+    private int m_UsesRemaining;
 
-		public virtual int WeaponMinRange  => 2;
-		public virtual int WeaponMaxRange  => 10;
+    [Constructible]
+    public LeatherNinjaBelt() : base(0x2790)
 
-		public virtual int WeaponDamage { get { return Utility.RandomMinMax(3, 5); } }
+    {
+      Weight = 1.0;
+      Layer = Layer.Waist;
+    }
 
-		public virtual Type AmmoType  => typeof(Shuriken);
+    public LeatherNinjaBelt(Serial serial) : base(serial)
+    {
+    }
 
-		private int m_UsesRemaining;
-		private Poison m_Poison;
-		private int m_PoisonCharges;
+    public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int UsesRemaining
-		{
-			get { return m_UsesRemaining; }
-			set { m_UsesRemaining = value; InvalidateProperties(); }
-		}
+    public virtual int WrongAmmoMessage => 1063301; //You can only place shuriken in a ninja belt.
+    public virtual int NoFreeHandMessage => 1063299; //You must have a free hand to throw shuriken.
+    public virtual int EmptyWeaponMessage => 1063297; //You have no shuriken in your ninja belt!
+    public virtual int RecentlyUsedMessage => 1063298; //You cannot throw another shuriken yet.
+    public virtual int FullWeaponMessage => 1063302; //You cannot add any more shuriken.
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Poison Poison
-		{
-			get{ return m_Poison; }
-			set{ m_Poison = value; InvalidateProperties(); }
-		}
+    public virtual int WeaponMinRange => 2;
+    public virtual int WeaponMaxRange => 10;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int PoisonCharges
-		{
-			get { return m_PoisonCharges; }
-			set { m_PoisonCharges = value; InvalidateProperties(); }
-		}
+    public virtual int WeaponDamage => Utility.RandomMinMax(3, 5);
 
-		public bool ShowUsesRemaining{ get{ return true; } set{} }
+    public virtual Type AmmoType => typeof(Shuriken);
 
-		[Constructible]
-		public LeatherNinjaBelt() : base( 0x2790 )
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int UsesRemaining
+    {
+      get => m_UsesRemaining;
+      set
+      {
+        m_UsesRemaining = value;
+        InvalidateProperties();
+      }
+    }
 
-		{
-			Weight = 1.0;
-			Layer = Layer.Waist;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Poison Poison
+    {
+      get => m_Poison;
+      set
+      {
+        m_Poison = value;
+        InvalidateProperties();
+      }
+    }
 
-		public LeatherNinjaBelt( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int PoisonCharges
+    {
+      get => m_PoisonCharges;
+      set
+      {
+        m_PoisonCharges = value;
+        InvalidateProperties();
+      }
+    }
 
-		public void AttackAnimation(Mobile from, Mobile to)
-		{
-			if (from.Body.IsHuman)
-			{
-				from.Animate(from.Mounted ? 26 : 9, 7, 1, true, false, 0);
-			}
+    public bool ShowUsesRemaining
+    {
+      get => true;
+      set { }
+    }
 
-			from.PlaySound(0x23A);
-			from.MovingEffect(to, 0x27AC, 1, 0, false, false);
-		}
+    public void AttackAnimation(Mobile from, Mobile to)
+    {
+      if (from.Body.IsHuman) from.Animate(from.Mounted ? 26 : 9, 7, 1, true, false, 0);
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+      from.PlaySound(0x23A);
+      from.MovingEffect(to, 0x27AC, 1, 0, false, false);
+    }
 
-			list.Add( 1060584, m_UsesRemaining.ToString() ); // uses remaining: ~1_val~
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-			if ( m_Poison != null && m_PoisonCharges > 0 )
-				list.Add( 1062412 + m_Poison.Level, m_PoisonCharges.ToString() );
-		}
+      list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
 
-		public override bool OnEquip( Mobile from )
-		{
-			if (base.OnEquip(from))
-			{
-				from.SendLocalizedMessage(1070785); // Double click this item each time you wish to throw a shuriken.
-				return true;
-			}
-			return false;
-		}
+      if (m_Poison != null && m_PoisonCharges > 0)
+        list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
+    }
 
-		public override void OnDoubleClick(Mobile from)
-		{
-			NinjaWeapon.AttemptShoot((PlayerMobile)from, this);
-		}
+    public override bool OnEquip(Mobile from)
+    {
+      if (base.OnEquip(from))
+      {
+        from.SendLocalizedMessage(1070785); // Double click this item each time you wish to throw a shuriken.
+        return true;
+      }
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+      return false;
+    }
 
-			if ( IsChildOf( from ) )
-			{
-				list.Add(new NinjaWeapon.LoadEntry(this, 6222));
-				list.Add(new NinjaWeapon.UnloadEntry(this, 6223));
-			}
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      NinjaWeapon.AttemptShoot((PlayerMobile)from, this);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
 
-			writer.Write( (int) 0 );
+      if (IsChildOf(from))
+      {
+        list.Add(new NinjaWeapon.LoadEntry(this, 6222));
+        list.Add(new NinjaWeapon.UnloadEntry(this, 6223));
+      }
+    }
 
-			writer.Write( (int) m_UsesRemaining );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			Poison.Serialize( m_Poison, writer );
-			writer.Write( (int) m_PoisonCharges );
-		}
+      writer.Write(0);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(m_UsesRemaining);
 
-			int version = reader.ReadInt();
+      Poison.Serialize(m_Poison, writer);
+      writer.Write(m_PoisonCharges);
+    }
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_UsesRemaining = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-					m_Poison = Poison.Deserialize( reader );
-					m_PoisonCharges = reader.ReadInt();
+      int version = reader.ReadInt();
 
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          m_UsesRemaining = reader.ReadInt();
+
+          m_Poison = Poison.Deserialize(reader);
+          m_PoisonCharges = reader.ReadInt();
+
+          break;
+        }
+      }
+    }
+  }
 }

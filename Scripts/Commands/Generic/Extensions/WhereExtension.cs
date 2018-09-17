@@ -1,55 +1,39 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using Server.Commands;
 
 namespace Server.Commands.Generic
 {
-	public sealed class WhereExtension : BaseExtension
-	{
-		public static ExtensionInfo ExtInfo = new ExtensionInfo( 20, "Where", -1, delegate() { return new WhereExtension(); } );
+  public sealed class WhereExtension : BaseExtension
+  {
+    public static ExtensionInfo ExtInfo = new ExtensionInfo(20, "Where", -1, () => new WhereExtension());
 
-		public static void Initialize()
-		{
-			ExtensionInfo.Register( ExtInfo );
-		}
+    public override ExtensionInfo Info => ExtInfo;
 
-		public override ExtensionInfo Info
-		{
-			get { return ExtInfo; }
-		}
+    public ObjectConditional Conditional{ get; private set; }
 
-		private ObjectConditional m_Conditional;
+    public static void Initialize()
+    {
+      ExtensionInfo.Register(ExtInfo);
+    }
 
-		public ObjectConditional Conditional
-		{
-			get { return m_Conditional; }
-		}
+    public override void Optimize(Mobile from, Type baseType, ref AssemblyEmitter assembly)
+    {
+      if (baseType == null)
+        throw new InvalidOperationException("Insanity.");
 
-		public WhereExtension()
-		{
-		}
+      Conditional.Compile(ref assembly);
+    }
 
-		public override void Optimize( Mobile from, Type baseType, ref AssemblyEmitter assembly )
-		{
-			if ( baseType == null )
-				throw new InvalidOperationException( "Insanity." );
+    public override void Parse(Mobile from, string[] arguments, int offset, int size)
+    {
+      if (size < 1)
+        throw new Exception("Invalid condition syntax.");
 
-			m_Conditional.Compile( ref assembly );
-		}
+      Conditional = ObjectConditional.ParseDirect(from, arguments, offset, size);
+    }
 
-		public override void Parse( Mobile from, string[] arguments, int offset, int size )
-		{
-			if ( size < 1 )
-				throw new Exception( "Invalid condition syntax." );
-
-			m_Conditional = ObjectConditional.ParseDirect( from, arguments, offset, size );
-		}
-
-		public override bool IsValid( object obj )
-		{
-			return m_Conditional.CheckCondition( obj );
-		}
-	}
+    public override bool IsValid(object obj)
+    {
+      return Conditional.CheckCondition(obj);
+    }
+  }
 }

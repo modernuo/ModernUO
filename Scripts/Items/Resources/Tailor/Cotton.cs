@@ -1,115 +1,112 @@
-using System;
-using Server.Items;
 using Server.Targeting;
 
 namespace Server.Items
 {
-	public class Cotton : Item, IDyable
-	{
-		[Constructible]
-		public Cotton() : this( 1 )
-		{
-		}
+  public class Cotton : Item, IDyable
+  {
+    [Constructible]
+    public Cotton() : this(1)
+    {
+    }
 
-		[Constructible]
-		public Cotton( int amount ) : base( 0xDF9 )
-		{
-			Stackable = true;
-			Weight = 4.0;
-			Amount = amount;
-		}
+    [Constructible]
+    public Cotton(int amount) : base(0xDF9)
+    {
+      Stackable = true;
+      Weight = 4.0;
+      Amount = amount;
+    }
 
-		public Cotton( Serial serial ) : base( serial )
-		{
-		}
+    public Cotton(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public bool Dye(Mobile from, DyeTub sender)
+    {
+      if (Deleted)
+        return false;
 
-			writer.Write( (int) 0 ); // version
-		}
+      Hue = sender.DyedHue;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      return true;
+    }
 
-			int version = reader.ReadInt();
-		}
-		public bool Dye( Mobile from, DyeTub sender )
-		{
-			if ( Deleted )
-				return false;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			Hue = sender.DyedHue;
+      writer.Write(0); // version
+    }
 
-			return true;
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 502655 ); // What spinning wheel do you wish to spin this on?
-				from.Target = new PickWheelTarget( this );
-			}
-			else
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-			}
-		}
+      int version = reader.ReadInt();
+    }
 
-		public static void OnSpun( ISpinningWheel wheel, Mobile from, int hue )
-		{
-			Item item = new SpoolOfThread( 6 );
-			item.Hue = hue;
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(502655); // What spinning wheel do you wish to spin this on?
+        from.Target = new PickWheelTarget(this);
+      }
+      else
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+      }
+    }
 
-			from.AddToBackpack( item );
-			from.SendLocalizedMessage( 1010577 ); // You put the spools of thread in your backpack.
-		}
+    public virtual void OnSpun(ISpinningWheel wheel, Mobile from, int hue)
+    {
+      Item item = new SpoolOfThread(6);
+      item.Hue = hue;
 
-		private class PickWheelTarget : Target
-		{
-			private Cotton m_Cotton;
+      from.AddToBackpack(item);
+      from.SendLocalizedMessage(1010577); // You put the spools of thread in your backpack.
+    }
 
-			public PickWheelTarget( Cotton cotton ) : base( 3, false, TargetFlags.None )
-			{
-				m_Cotton = cotton;
-			}
+    private class PickWheelTarget : Target
+    {
+      private Cotton m_Cotton;
 
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( m_Cotton.Deleted )
-					return;
+      public PickWheelTarget(Cotton cotton) : base(3, false, TargetFlags.None)
+      {
+        m_Cotton = cotton;
+      }
 
-				ISpinningWheel wheel = targeted as ISpinningWheel;
+      protected override void OnTarget(Mobile from, object targeted)
+      {
+        if (m_Cotton.Deleted)
+          return;
 
-				if ( wheel == null && targeted is AddonComponent )
-					wheel = ((AddonComponent)targeted).Addon as ISpinningWheel;
+        ISpinningWheel wheel = targeted as ISpinningWheel;
 
-				if ( wheel is Item )
-				{
-					Item item = (Item)wheel;
+        if (wheel == null && targeted is AddonComponent component)
+          wheel = component.Addon as ISpinningWheel;
 
-					if ( !m_Cotton.IsChildOf( from.Backpack ) )
-					{
-						from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-					}
-					else if ( wheel.Spinning )
-					{
-						from.SendLocalizedMessage( 502656 ); // That spinning wheel is being used.
-					}
-					else
-					{
-						m_Cotton.Consume();
-						wheel.BeginSpin( new SpinCallback( Cotton.OnSpun ), from, m_Cotton.Hue );
-					}
-				}
-				else
-				{
-					from.SendLocalizedMessage( 502658 ); // Use that on a spinning wheel.
-				}
-			}
-		}
-	}
+        if (wheel is Item)
+        {
+          if (!m_Cotton.IsChildOf(from.Backpack))
+          {
+            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+          }
+          else if (wheel.Spinning)
+          {
+            from.SendLocalizedMessage(502656); // That spinning wheel is being used.
+          }
+          else
+          {
+            m_Cotton.Consume();
+            wheel.BeginSpin(m_Cotton.OnSpun, from, m_Cotton.Hue);
+          }
+        }
+        else
+        {
+          from.SendLocalizedMessage(502658); // Use that on a spinning wheel.
+        }
+      }
+    }
+  }
 }

@@ -1,32 +1,28 @@
-using System;
-using Server.Network;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class ArtifactVase : Item
-	{
-		[Constructible]
-		public ArtifactVase() : base( 0x0B48 )
-		{
-		}
+  public class ArtifactVase : Item
+  {
+    [Constructible]
+    public ArtifactVase() : base(0x0B48)
+    {
+    }
 
-		public ArtifactVase( Serial serial ) : base( serial )
-		{
-		}
+    public ArtifactVase(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

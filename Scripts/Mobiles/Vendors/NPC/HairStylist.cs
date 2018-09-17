@@ -1,43 +1,42 @@
-using System; 
-using System.Collections.Generic; 
-using Server; 
+using System.Collections.Generic;
 
-namespace Server.Mobiles 
-{ 
-	public class HairStylist : BaseVendor 
-	{ 
-		private List<SBInfo> m_SBInfos = new List<SBInfo>(); 
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } } 
+namespace Server.Mobiles
+{
+  public class HairStylist : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public HairStylist() : base( "the hair stylist" ) 
-		{ 
-			SetSkill( SkillName.Alchemy, 80.0, 100.0 );
-			SetSkill( SkillName.Magery, 90.0, 110.0 );
-			SetSkill( SkillName.TasteID, 85.0, 100.0 );
-		} 
+    [Constructible]
+    public HairStylist() : base("the hair stylist")
+    {
+      SetSkill(SkillName.Alchemy, 80.0, 100.0);
+      SetSkill(SkillName.Magery, 90.0, 110.0);
+      SetSkill(SkillName.TasteID, 85.0, 100.0);
+    }
 
-		public override void InitSBInfo() 
-		{ 
-			m_SBInfos.Add( new SBHairStylist() ); 
-		} 
+    public HairStylist(Serial serial) : base(serial)
+    {
+    }
 
-		public HairStylist( Serial serial ) : base( serial ) 
-		{ 
-		} 
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public override void Serialize( GenericWriter writer ) 
-		{ 
-			base.Serialize( writer ); 
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBHairStylist());
+    }
 
-			writer.Write( (int) 0 ); // version 
-		} 
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader ) 
-		{ 
-			base.Deserialize( reader ); 
+      writer.Write(0); // version 
+    }
 
-			int version = reader.ReadInt(); 
-		} 
-	} 
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

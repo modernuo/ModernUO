@@ -1,62 +1,62 @@
 using System;
-using Server;
+using Server.Mobiles;
 
 namespace Server.Items
 {
-	public class Torch : BaseEquipableLight
-	{
-		public override int LitItemID => 0xA12;
-		public override int UnlitItemID => 0xF6B;
+  public class Torch : BaseEquipableLight
+  {
+    [Constructible]
+    public Torch() : base(0xF6B)
+    {
+      if (Burnout)
+        Duration = TimeSpan.FromMinutes(30);
+      else
+        Duration = TimeSpan.Zero;
 
-		public override int LitSound => 0x54;
-		public override int UnlitSound => 0x4BB;
+      Burning = false;
+      Light = LightType.Circle300;
+      Weight = 1.0;
+    }
 
-		[Constructible]
-		public Torch() : base( 0xF6B )
-		{
-			if ( Burnout )
-				Duration = TimeSpan.FromMinutes( 30 );
-			else
-				Duration = TimeSpan.Zero;
+    public Torch(Serial serial) : base(serial)
+    {
+    }
 
-			Burning = false;
-			Light = LightType.Circle300;
-			Weight = 1.0;
-		}
+    public override int LitItemID => 0xA12;
+    public override int UnlitItemID => 0xF6B;
 
-		public override void OnAdded(IEntity parent)
-		{
-			base.OnAdded( parent );
+    public override int LitSound => 0x54;
+    public override int UnlitSound => 0x4BB;
 
-			if ( parent is Mobile && Burning )
-				Mobiles.MeerMage.StopEffect( (Mobile)parent, true );
-		}
+    public override void OnAdded(IEntity parent)
+    {
+      base.OnAdded(parent);
 
-		public override void Ignite()
-		{
-			base.Ignite();
+      if (parent is Mobile mobile && Burning)
+        MeerMage.StopEffect(mobile, true);
+    }
 
-			if ( Parent is Mobile && Burning )
-				Mobiles.MeerMage.StopEffect( (Mobile)Parent, true );
-		}
+    public override void Ignite()
+    {
+      base.Ignite();
 
-		public Torch( Serial serial ) : base( serial )
-		{
-		}
+      if (Parent is Mobile mobile && Burning)
+        MeerMage.StopEffect(mobile, true);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
 
-			if ( Weight == 2.0 )
-				Weight = 1.0;
-		}
-	}
+      if (Weight == 2.0)
+        Weight = 1.0;
+    }
+  }
 }

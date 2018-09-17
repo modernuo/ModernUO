@@ -1,5 +1,3 @@
-using System;
-using Server;
 using Server.Items;
 using Server.Network;
 using Server.Prompts;
@@ -325,9 +323,7 @@ namespace Server.Gumps
 				if ( !m_Contract.IsUsableBy( from, true, false, true, true ) )
 					return;
 
-				Mobile mob = targeted as Mobile;
-
-				if ( mob == null || !mob.Player || !mob.Alive || mob == from )
+				if ( !(targeted is Mobile mob) || !mob.Player || !mob.Alive || mob == from )
 				{
 					from.SendLocalizedMessage(1071984); //That is not a valid target for a rental contract!
 				}
@@ -555,7 +551,7 @@ namespace Server.Gumps
 
 			/* The landlord for this vendor is offering you a partial refund of your rental fee
 			 * in exchange for immediate termination of your rental contract.<BR><BR>
-			 * 
+			 *
 			 * If you accept this offer, the vendor will be immediately dismissed.  You will then
 			 * be able to claim the inventory and any funds the vendor may be holding for you via
 			 * a context menu on the house sign for this house.

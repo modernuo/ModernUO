@@ -1,33 +1,30 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class PadsOfTheCuSidhe : FurBoots
-	{
-		public override int LabelNumber => 1075048; // Pads of the Cu Sidhe
+  public class PadsOfTheCuSidhe : FurBoots
+  {
+    [Constructible]
+    public PadsOfTheCuSidhe() : base(0x47E)
+    {
+    }
 
-		[Constructible]
-		public PadsOfTheCuSidhe() : base( 0x47E )
-		{
-		}
+    public PadsOfTheCuSidhe(Serial serial) : base(serial)
+    {
+    }
 
-		public PadsOfTheCuSidhe( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1075048; // Pads of the Cu Sidhe
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

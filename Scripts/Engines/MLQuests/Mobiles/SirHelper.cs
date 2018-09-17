@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Server;
 using Server.Engines.MLQuests.Gumps;
 using Server.Gumps;
 using Server.Items;
@@ -10,132 +7,135 @@ using Server.Network;
 
 namespace Server.Engines.MLQuests.Mobiles
 {
-	public class SirHelper : Mage
-	{
-		private static readonly Gump m_Gump = new InfoNPCGump( 1078029, 1078028 );
-		private static readonly TimeSpan m_ShoutDelay = TimeSpan.FromSeconds( 20 );
-		private static readonly TimeSpan m_ShoutCooldown = TimeSpan.FromDays( 1 ); // TODO: Verify, could be a lot longer... or until a restart even
+  public class SirHelper : Mage
+  {
+    private static readonly Gump m_Gump = new InfoNPCGump(1078029, 1078028);
+    private static readonly TimeSpan m_ShoutDelay = TimeSpan.FromSeconds(20);
 
-		private DateTime m_NextShout;
+    private static readonly TimeSpan
+      m_ShoutCooldown = TimeSpan.FromDays(1); // TODO: Verify, could be a lot longer... or until a restart even
 
-		public override string DefaultName => "Sir Helper";
-		public override bool IsActiveVendor => false;
+    private DateTime m_NextShout;
 
-		[Constructible]
-		public SirHelper()
-		{
-			Title = "the Profession Guide"; // TODO: Don't display in paperdoll
+    [Constructible]
+    public SirHelper()
+    {
+      Title = "the Profession Guide"; // TODO: Don't display in paperdoll
 
-			Hue = 0x83EA;
+      Hue = 0x83EA;
 
-			Direction = Direction.South;
-			Frozen = true;
-		}
+      Direction = Direction.South;
+      Frozen = true;
+    }
 
-		public override void InitSBInfo()
-		{
-		}
+    public SirHelper(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override bool GetGender()
-		{
-			return false; // male
-		}
+    public override string DefaultName => "Sir Helper";
+    public override bool IsActiveVendor => false;
 
-		public override void CheckMorph()
-		{
-		}
+    public override void InitSBInfo()
+    {
+    }
 
-		public override void InitOutfit()
-		{
-			HairItemID = 0x203C;
-			FacialHairItemID = 0x204D;
-			HairHue = FacialHairHue = 0x8A7;
+    public override bool GetGender()
+    {
+      return false; // male
+    }
 
-			AddItem( new Sandals() );
+    public override void CheckMorph()
+    {
+    }
 
-			Item item;
+    public override void InitOutfit()
+    {
+      HairItemID = 0x203C;
+      FacialHairItemID = 0x204D;
+      HairHue = FacialHairHue = 0x8A7;
 
-			item = new Cloak();
-			item.ItemID = 0x26AD;
-			item.Hue = 0x455;
-			AddItem( item );
+      AddItem(new Sandals());
 
-			item = new Robe();
-			item.ItemID = 0x26AE;
-			item.Hue = 0x4AB;
-			AddItem( item );
+      Item item;
 
-			item = new Backpack();
-			item.Movable = false;
-			AddItem( item );
-		}
+      item = new Cloak();
+      item.ItemID = 0x26AD;
+      item.Hue = 0x455;
+      AddItem(item);
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( from.CanBeginAction( this ) )
-			{
-				from.BeginAction( this );
-				Timer.DelayCall<Mobile>( m_ShoutCooldown, EndLock, from );
-			}
+      item = new Robe();
+      item.ItemID = 0x26AE;
+      item.Hue = 0x4AB;
+      AddItem(item);
 
-			MLQuestSystem.TurnToFace( this, from );
-			from.SendGump( m_Gump );
+      item = new Backpack();
+      item.Movable = false;
+      AddItem(item);
+    }
 
-			// Paperdoll doesn't open
-			//base.OnDoubleClick( from );
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (from.CanBeginAction(this))
+      {
+        from.BeginAction(this);
+        Timer.DelayCall(m_ShoutCooldown, EndLock, from);
+      }
 
-		public override void OnThink()
-		{
-			base.OnThink();
+      MLQuestSystem.TurnToFace(this, from);
+      from.SendGump(m_Gump);
 
-			if ( m_NextShout <= DateTime.UtcNow )
-			{
-				Packet shoutPacket = null;
+      // Paperdoll doesn't open
+      //base.OnDoubleClick( from );
+    }
 
-				foreach ( NetState state in GetClientsInRange( 12 ) )
-				{
-					Mobile m = state.Mobile;
+    public override void OnThink()
+    {
+      base.OnThink();
 
-					if ( m.CanSee( this ) && m.InLOS( this ) && m.CanBeginAction( this ) )
-					{
-						if ( shoutPacket == null )
-							shoutPacket = Packet.Acquire( new MessageLocalized( Serial, Body, MessageType.Regular, 946, 3, 1078099, Name, "" ) ); // Double Click On Me For Help!
+      if (m_NextShout <= DateTime.UtcNow)
+      {
+        Packet shoutPacket = null;
 
-						state.Send( shoutPacket );
-					}
-				}
+        foreach (NetState state in GetClientsInRange(12))
+        {
+          Mobile m = state.Mobile;
 
-				Packet.Release( shoutPacket );
+          if (m.CanSee(this) && m.InLOS(this) && m.CanBeginAction(this))
+          {
+            if (shoutPacket == null)
+              shoutPacket = Packet.Acquire(new MessageLocalized(Serial, Body, MessageType.Regular, 946, 3,
+                1078099, Name, "")); // Double Click On Me For Help!
 
-				m_NextShout = DateTime.UtcNow + m_ShoutDelay;
-			}
-		}
+            state.Send(shoutPacket);
+          }
+        }
 
-		private void EndLock( Mobile m )
-		{
-			m.EndAction( this );
-		}
+        Packet.Release(shoutPacket);
 
-		public SirHelper( Serial serial )
-			: base( serial )
-		{
-		}
+        m_NextShout = DateTime.UtcNow + m_ShoutDelay;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    private void EndLock(Mobile m)
+    {
+      m.EndAction(this);
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			Frozen = true;
-		}
-	}
+      int version = reader.ReadInt();
+
+      Frozen = true;
+    }
+  }
 }

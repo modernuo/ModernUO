@@ -1,149 +1,175 @@
 using System;
-using Server;
+using Server.Engines.Craft;
 using Server.Mobiles;
 using Server.Targeting;
-using Server.Engines.Craft;
+
 namespace Server.Items
 {
-	[TypeAlias( "Server.Items.DragonBarding" )]
-	public class DragonBardingDeed : Item, ICraftable
-	{
-		private bool m_Exceptional;
-		private Mobile m_Crafter;
-		private CraftResource m_Resource;
+  [TypeAlias("Server.Items.DragonBarding")]
+  public class DragonBardingDeed : Item, ICraftable
+  {
+    private Mobile m_Crafter;
+    private bool m_Exceptional;
+    private CraftResource m_Resource;
 
-		public override int LabelNumber => m_Exceptional ? 1053181 : 1053012; // dragon barding deed
+    public DragonBardingDeed() : base(0x14F0)
+    {
+      Weight = 1.0;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Crafter{ get{ return m_Crafter; } set{ m_Crafter = value; InvalidateProperties(); } }
+    public DragonBardingDeed(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Exceptional{ get{ return m_Exceptional; } set{ m_Exceptional = value; InvalidateProperties(); } }
+    public override int LabelNumber => m_Exceptional ? 1053181 : 1053012; // dragon barding deed
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public CraftResource Resource{ get{ return m_Resource; } set{ m_Resource = value; Hue = CraftResources.GetHue( value ); InvalidateProperties(); } }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Mobile Crafter
+    {
+      get => m_Crafter;
+      set
+      {
+        m_Crafter = value;
+        InvalidateProperties();
+      }
+    }
 
-		public DragonBardingDeed() : base( 0x14F0 )
-		{
-			Weight = 1.0;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Exceptional
+    {
+      get => m_Exceptional;
+      set
+      {
+        m_Exceptional = value;
+        InvalidateProperties();
+      }
+    }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public CraftResource Resource
+    {
+      get => m_Resource;
+      set
+      {
+        m_Resource = value;
+        Hue = CraftResources.GetHue(value);
+        InvalidateProperties();
+      }
+    }
 
-			if ( m_Exceptional && m_Crafter != null )
-				list.Add( 1050043, m_Crafter.Name ); // crafted by ~1_NAME~
-		}
+    #region ICraftable Members
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( IsChildOf( from.Backpack ) )
-			{
-				from.BeginTarget( 6, false, TargetFlags.None, new TargetCallback( OnTarget ) );
-				from.SendLocalizedMessage( 1053024 ); // Select the swamp dragon you wish to place the barding on.
-			}
-			else
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-			}
-		}
+    public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
+      CraftItem craftItem, int resHue)
+    {
+      Exceptional = quality >= 2;
 
-		public virtual void OnTarget( Mobile from, object obj )
-		{
-			if ( Deleted )
-				return;
+      if (makersMark)
+        Crafter = from;
 
-			SwampDragon pet = obj as SwampDragon;
+      Type resourceType = typeRes;
 
-			if ( pet == null || pet.HasBarding )
-			{
-				from.SendLocalizedMessage( 1053025 ); // That is not an unarmored swamp dragon.
-			}
-			else if ( !pet.Controlled || pet.ControlMaster != from )
-			{
-				from.SendLocalizedMessage( 1053026 ); // You can only put barding on a tamed swamp dragon that you own.
-			}
-			else if ( !IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 1060640 ); // The item must be in your backpack to use it.
-			}
-			else
-			{
-				pet.BardingExceptional = this.Exceptional;
-				pet.BardingCrafter = this.Crafter;
-				pet.BardingHP = pet.BardingMaxHP;
-				pet.BardingResource = this.Resource;
-				pet.HasBarding = true;
-				pet.Hue = this.Hue;
+      if (resourceType == null)
+        resourceType = craftItem.Resources.GetAt(0).ItemType;
 
-				this.Delete();
+      Resource = CraftResources.GetFromType(resourceType);
 
-				from.SendLocalizedMessage( 1053027 ); // You place the barding on your swamp dragon.  Use a bladed item on your dragon to remove the armor.
-			}
-		}
+      CraftContext context = craftSystem.GetContext(from);
 
-		public DragonBardingDeed( Serial serial ) : base( serial )
-		{
-		}
+      if (context != null && context.DoNotColor)
+        Hue = 0;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      return quality;
+    }
 
-			writer.Write( (int) 1 ); // version
+    #endregion
 
-			writer.Write( (bool) m_Exceptional );
-			writer.Write( (Mobile) m_Crafter );
-			writer.Write( (int) m_Resource );
-		}
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      if (m_Exceptional && m_Crafter != null)
+        list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
+    }
 
-			int version = reader.ReadInt();
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (IsChildOf(from.Backpack))
+      {
+        from.BeginTarget(6, false, TargetFlags.None, OnTarget);
+        from.SendLocalizedMessage(1053024); // Select the swamp dragon you wish to place the barding on.
+      }
+      else
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+      }
+    }
 
-			switch ( version )
-			{
-				case 1:
-				case 0:
-				{
-					m_Exceptional = reader.ReadBool();
-					m_Crafter = reader.ReadMobile();
+    public virtual void OnTarget(Mobile from, object obj)
+    {
+      if (Deleted)
+        return;
 
-					if ( version < 1 )
-						reader.ReadInt();
+      if (!(obj is SwampDragon pet) || pet.HasBarding)
+      {
+        from.SendLocalizedMessage(1053025); // That is not an unarmored swamp dragon.
+      }
+      else if (!pet.Controlled || pet.ControlMaster != from)
+      {
+        from.SendLocalizedMessage(1053026); // You can only put barding on a tamed swamp dragon that you own.
+      }
+      else if (!IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(1060640); // The item must be in your backpack to use it.
+      }
+      else
+      {
+        pet.BardingExceptional = Exceptional;
+        pet.BardingCrafter = Crafter;
+        pet.BardingHP = pet.BardingMaxHP;
+        pet.BardingResource = Resource;
+        pet.HasBarding = true;
+        pet.Hue = Hue;
 
-					m_Resource = (CraftResource) reader.ReadInt();
-					break;
-				}
-			}
-		}
-		#region ICraftable Members
+        Delete();
 
-		public int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
-		{
-			Exceptional = ( quality >= 2 );
+        from.SendLocalizedMessage(
+          1053027); // You place the barding on your swamp dragon.  Use a bladed item on your dragon to remove the armor.
+      }
+    }
 
-			if ( makersMark )
-				Crafter = from;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			Type resourceType = typeRes;
+      writer.Write(1); // version
 
-			if ( resourceType == null )
-				resourceType = craftItem.Resources.GetAt( 0 ).ItemType;
+      writer.Write(m_Exceptional);
+      writer.Write(m_Crafter);
+      writer.Write((int)m_Resource);
+    }
 
-			Resource = CraftResources.GetFromType( resourceType );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			CraftContext context = craftSystem.GetContext( from );
+      int version = reader.ReadInt();
 
-			if ( context != null && context.DoNotColor )
-				Hue = 0;
+      switch (version)
+      {
+        case 1:
+        case 0:
+        {
+          m_Exceptional = reader.ReadBool();
+          m_Crafter = reader.ReadMobile();
 
-			return quality;
-		}
+          if (version < 1)
+            reader.ReadInt();
 
-		#endregion
-	}
+          m_Resource = (CraftResource)reader.ReadInt();
+          break;
+        }
+      }
+    }
+  }
 }

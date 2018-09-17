@@ -1,38 +1,35 @@
-using System;
-using Server;
 using Server.Spells.First;
-using Server.Targeting;
 
 namespace Server.Items
 {
-	public class MagicArrowWand : BaseWand
-	{
-		[Constructible]
-		public MagicArrowWand() : base( WandEffect.MagicArrow, 5, Core.ML ? 109 : 30 )
-		{
-		}
+  public class MagicArrowWand : BaseWand
+  {
+    [Constructible]
+    public MagicArrowWand() : base(WandEffect.MagicArrow, 5, Core.ML ? 109 : 30)
+    {
+    }
 
-		public MagicArrowWand( Serial serial ) : base( serial )
-		{
-		}
+    public MagicArrowWand(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override void OnWandUse( Mobile from )
-		{
-			Cast( new MagicArrowSpell( from, this ) );
-		}
-	}
+    public override void OnWandUse(Mobile from)
+    {
+      Cast(new MagicArrowSpell(from, this));
+    }
+  }
 }

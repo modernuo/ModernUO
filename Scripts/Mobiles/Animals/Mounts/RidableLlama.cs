@@ -1,70 +1,68 @@
-using System;
-using Server.Mobiles;
-
 namespace Server.Mobiles
 {
-	public class RidableLlama : BaseMount
-	{
-		public override string CorpseName => "a llama corpse";
-		[Constructible]
-		public RidableLlama() : this( "a ridable llama" )
-		{
-		}
+  public class RidableLlama : BaseMount
+  {
+    [Constructible]
+    public RidableLlama() : this("a ridable llama")
+    {
+    }
 
-		[Constructible]
-		public RidableLlama( string name ) : base( name, 0xDC, 0x3EA6, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			BaseSoundID = 0x3F3;
+    [Constructible]
+    public RidableLlama(string name) : base(name, 0xDC, 0x3EA6, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+      BaseSoundID = 0x3F3;
 
-			SetStr( 21, 49 );
-			SetDex( 56, 75 );
-			SetInt( 16, 30 );
+      SetStr(21, 49);
+      SetDex(56, 75);
+      SetInt(16, 30);
 
-			SetHits( 15, 27 );
-			SetMana( 0 );
+      SetHits(15, 27);
+      SetMana(0);
 
-			SetDamage( 3, 5 );
+      SetDamage(3, 5);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetResistance( ResistanceType.Physical, 10, 15 );
-			SetResistance( ResistanceType.Fire, 5, 10 );
-			SetResistance( ResistanceType.Cold, 5, 10 );
-			SetResistance( ResistanceType.Poison, 5, 10 );
-			SetResistance( ResistanceType.Energy, 5, 10 );
+      SetResistance(ResistanceType.Physical, 10, 15);
+      SetResistance(ResistanceType.Fire, 5, 10);
+      SetResistance(ResistanceType.Cold, 5, 10);
+      SetResistance(ResistanceType.Poison, 5, 10);
+      SetResistance(ResistanceType.Energy, 5, 10);
 
-			SetSkill( SkillName.MagicResist, 15.1, 20.0 );
-			SetSkill( SkillName.Tactics, 19.2, 29.0 );
-			SetSkill( SkillName.Wrestling, 19.2, 29.0 );
+      SetSkill(SkillName.MagicResist, 15.1, 20.0);
+      SetSkill(SkillName.Tactics, 19.2, 29.0);
+      SetSkill(SkillName.Wrestling, 19.2, 29.0);
 
-			Fame = 300;
-			Karma = 0;
+      Fame = 300;
+      Karma = 0;
 
-			Tamable = true;
-			ControlSlots = 1;
-			MinTameSkill = 29.1;
-		}
+      Tamable = true;
+      ControlSlots = 1;
+      MinTameSkill = 29.1;
+    }
 
-		public override int Meat => 1;
-		public override int Hides => 12;
-		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+    public RidableLlama(Serial serial) : base(serial)
+    {
+    }
 
-		public RidableLlama( Serial serial ) : base( serial )
-		{
-		}
+    public override string CorpseName => "a llama corpse";
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override int Meat => 1;
+    public override int Hides => 12;
+    public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

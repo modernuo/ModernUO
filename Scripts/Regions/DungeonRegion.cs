@@ -1,48 +1,48 @@
-using System;
 using System.Xml;
-using Server;
-using Server.Mobiles;
-using Server.Gumps;
 
 namespace Server.Regions
 {
-	public class DungeonRegion : BaseRegion
-	{
-		public override bool YoungProtected => false;
+  public class DungeonRegion : BaseRegion
+  {
+    private Point3D m_EntranceLocation;
 
-		private Point3D m_EntranceLocation;
-		private Map m_EntranceMap;
+    public DungeonRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
+    {
+      XmlElement entrEl = xml["entrance"];
 
-		public Point3D EntranceLocation{ get{ return m_EntranceLocation; } set{ m_EntranceLocation = value; } }
-		public Map EntranceMap{ get{ return m_EntranceMap; } set{ m_EntranceMap = value; } }
+      Map entrMap = map;
+      ReadMap(entrEl, "map", ref entrMap, false);
 
-		public DungeonRegion( XmlElement xml, Map map, Region parent ) : base( xml, map, parent )
-		{
-			XmlElement entrEl = xml["entrance"];
+      if (ReadPoint3D(entrEl, entrMap, ref m_EntranceLocation, false))
+        EntranceMap = entrMap;
+    }
 
-			Map entrMap = map;
-			ReadMap( entrEl, "map", ref entrMap, false );
+    public override bool YoungProtected => false;
 
-			if ( ReadPoint3D( entrEl, entrMap, ref m_EntranceLocation, false ) )
-				m_EntranceMap = entrMap;
-		}
+    public Point3D EntranceLocation
+    {
+      get => m_EntranceLocation;
+      set => m_EntranceLocation = value;
+    }
 
-		public override bool AllowHousing( Mobile from, Point3D p )
-		{
-			return false;
-		}
+    public Map EntranceMap{ get; set; }
 
-		public override void AlterLightLevel( Mobile m, ref int global, ref int personal )
-		{
-			global = LightCycle.DungeonLevel;
-		}
+    public override bool AllowHousing(Mobile from, Point3D p)
+    {
+      return false;
+    }
 
-		public override bool CanUseStuckMenu( Mobile m )
-		{
-			if ( this.Map == Map.Felucca )
-				return false;
+    public override void AlterLightLevel(Mobile m, ref int global, ref int personal)
+    {
+      global = LightCycle.DungeonLevel;
+    }
 
-			return base.CanUseStuckMenu( m );
-		}
-	}
+    public override bool CanUseStuckMenu(Mobile m)
+    {
+      if (Map == Map.Felucca)
+        return false;
+
+      return base.CanUseStuckMenu(m);
+    }
+  }
 }

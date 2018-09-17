@@ -19,94 +19,70 @@
  ***************************************************************************/
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
-namespace Server.Diagnostics {
-	public abstract class BaseProfile {
-		public static void WriteAll<T>( TextWriter op, IEnumerable<T> profiles ) where T : BaseProfile {
-			List<T> list = new List<T>( profiles );
+namespace Server.Diagnostics
+{
+  public abstract class BaseProfile
+  {
+    private Stopwatch _stopwatch;
 
-			list.Sort( delegate( T a, T b ) {
-				return -a.TotalTime.CompareTo( b.TotalTime );
-			} );
+    protected BaseProfile(string name)
+    {
+      Name = name;
 
-			foreach ( T prof in list ) {
-				prof.WriteTo( op );
-				op.WriteLine();
-			}
-		}
+      _stopwatch = new Stopwatch();
+    }
 
-		private string _name;
+    public string Name{ get; }
 
-		private long _count;
+    public long Count{ get; private set; }
 
-		private TimeSpan _totalTime;
-		private TimeSpan _peakTime;
+    public TimeSpan AverageTime => TimeSpan.FromTicks(TotalTime.Ticks / Math.Max(1, Count));
 
-		private Stopwatch _stopwatch;
+    public TimeSpan PeakTime{ get; private set; }
 
-		public string Name {
-			get {
-				return _name;
-			}
-		}
+    public TimeSpan TotalTime{ get; private set; }
 
-		public long Count {
-			get {
-				return _count;
-			}
-		}
+    public static void WriteAll<T>(TextWriter op, IEnumerable<T> profiles) where T : BaseProfile
+    {
+      List<T> list = new List<T>(profiles);
 
-		public TimeSpan AverageTime {
-			get {
-				return TimeSpan.FromTicks( _totalTime.Ticks / Math.Max( 1, _count ) );
-			}
-		}
+      list.Sort(delegate(T a, T b) { return -a.TotalTime.CompareTo(b.TotalTime); });
 
-		public TimeSpan PeakTime {
-			get {
-				return _peakTime;
-			}
-		}
+      foreach (T prof in list)
+      {
+        prof.WriteTo(op);
+        op.WriteLine();
+      }
+    }
 
-		public TimeSpan TotalTime {
-			get {
-				return _totalTime;
-			}
-		}
+    public virtual void Start()
+    {
+      if (_stopwatch.IsRunning) _stopwatch.Reset();
 
-		protected BaseProfile( string name ) {
-			_name = name;
+      _stopwatch.Start();
+    }
 
-			_stopwatch = new Stopwatch();
-		}
+    public virtual void Finish()
+    {
+      TimeSpan elapsed = _stopwatch.Elapsed;
 
-		public virtual void Start() {
-			if ( _stopwatch.IsRunning ) {
-				_stopwatch.Reset();
-			}
+      TotalTime += elapsed;
 
-			_stopwatch.Start();
-		}
+      if (elapsed > PeakTime) PeakTime = elapsed;
 
-		public virtual void Finish() {
-			TimeSpan elapsed = _stopwatch.Elapsed;
+      Count++;
 
-			_totalTime += elapsed;
+      _stopwatch.Reset();
+    }
 
-			if ( elapsed > _peakTime ) {
-				_peakTime = elapsed;
-			}
-
-			_count++;
-
-			_stopwatch.Reset();
-		}
-
-		public virtual void WriteTo( TextWriter op ) {
-			op.Write( "{0,-100} {1,12:N0} {2,12:F5} {3,-12:F5} {4,12:F5}", Name, Count, AverageTime.TotalSeconds, PeakTime.TotalSeconds, TotalTime.TotalSeconds );
-		}
-	}
+    public virtual void WriteTo(TextWriter op)
+    {
+      op.Write("{0,-100} {1,12:N0} {2,12:F5} {3,-12:F5} {4,12:F5}", Name, Count, AverageTime.TotalSeconds,
+        PeakTime.TotalSeconds, TotalTime.TotalSeconds);
+    }
+  }
 }

@@ -1,149 +1,138 @@
-﻿using System;
-using Server.Targeting;
+﻿using Server.Targeting;
 
 namespace Server.Items
 {
-	[Flippable( 0x1053, 0x1054 )]
-	public class DawnsMusicGear : Item
-	{
-		public static DawnsMusicGear RandomCommon
-		{
-			get { return new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Common ) ); }
-		}
+  [Flippable(0x1053, 0x1054)]
+  public class DawnsMusicGear : Item
+  {
+    [Constructible]
+    public DawnsMusicGear() : this(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Common))
+    {
+    }
 
-		public static DawnsMusicGear RandomUncommon
-		{
-			get { return new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Uncommon ) ); }
-		}
+    [Constructible]
+    public DawnsMusicGear(MusicName music) : base(0x1053)
+    {
+      Music = music;
 
-		public static DawnsMusicGear RandomRare
-		{
-			get { return new DawnsMusicGear( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Rare ) ); }
-		}
+      Weight = 1.0;
+    }
 
-		private MusicName m_Music;
+    public DawnsMusicGear(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public MusicName Music
-		{
-			get { return m_Music; }
-			set { m_Music = value; }
-		}
+    public static DawnsMusicGear RandomCommon => new DawnsMusicGear(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Common));
 
-		[Constructible]
-		public DawnsMusicGear() : this( DawnsMusicBox.RandomTrack( DawnsMusicRarity.Common ) )
-		{
-		}
+    public static DawnsMusicGear RandomUncommon =>
+      new DawnsMusicGear(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Uncommon));
 
-		[Constructible]
-		public DawnsMusicGear( MusicName music ) : base( 0x1053 )
-		{
-			m_Music = music;
+    public static DawnsMusicGear RandomRare => new DawnsMusicGear(DawnsMusicBox.RandomTrack(DawnsMusicRarity.Rare));
 
-			Weight = 1.0;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public MusicName Music{ get; set; }
 
-		public DawnsMusicGear( Serial serial ) : base( serial )
-		{
-		}
+    public override void AddNameProperty(ObjectPropertyList list)
+    {
+      DawnsMusicInfo info = DawnsMusicBox.GetInfo(Music);
 
-		public override void AddNameProperty( ObjectPropertyList list )
-		{
-			DawnsMusicInfo info = DawnsMusicBox.GetInfo( m_Music );
+      if (info != null)
+      {
+        if (info.Rarity == DawnsMusicRarity.Common)
+          list.Add(1075204); // Gear for Dawn's Music Box (Common)
+        else if (info.Rarity == DawnsMusicRarity.Uncommon)
+          list.Add(1075205); // Gear for Dawn's Music Box (Uncommon)
+        else if (info.Rarity == DawnsMusicRarity.Rare)
+          list.Add(1075206); // Gear for Dawn's Music Box (Rare)
 
-			if ( info != null )
-			{
-				if ( info.Rarity == DawnsMusicRarity.Common )
-					list.Add( 1075204 ); // Gear for Dawn's Music Box (Common)
-				else if ( info.Rarity == DawnsMusicRarity.Uncommon )
-					list.Add( 1075205 ); // Gear for Dawn's Music Box (Uncommon)
-				else if ( info.Rarity == DawnsMusicRarity.Rare )
-					list.Add( 1075206 ); // Gear for Dawn's Music Box (Rare)
+        list.Add(info.Name);
+      }
+      else
+      {
+        base.AddNameProperty(list);
+      }
+    }
 
-				list.Add( info.Name );
-			}
-			else
-				base.AddNameProperty( list );
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      from.Target = new InternalTarget(this);
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			from.Target = new InternalTarget( this );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.WriteEncodedInt(1); // version
 
-			writer.WriteEncodedInt( (int) 1 ); // version
-			
-			writer.Write( (int) m_Music );
-		}
+      writer.Write((int)Music);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-			
-			switch ( version )
-			{
-				case 1:
-				{
-					m_Music = (MusicName) reader.ReadInt();
-					break;
-				}
-			}
-			
-			if ( version == 0 ) // Music wasn't serialized in version 0, pick a new track of random rarity
-			{
-				DawnsMusicRarity rarity;
-				double rand = Utility.RandomDouble();
-				
-				if ( rand < 0.025 )
-					rarity = DawnsMusicRarity.Rare;
-				else if ( rand < 0.225 )
-					rarity = DawnsMusicRarity.Uncommon;
-				else
-					rarity = DawnsMusicRarity.Common;
-				
-				m_Music = DawnsMusicBox.RandomTrack( rarity );
-			}
-		}
+      int version = reader.ReadEncodedInt();
 
-		public class InternalTarget : Target
-		{
-			private DawnsMusicGear m_Gear;
+      switch (version)
+      {
+        case 1:
+        {
+          Music = (MusicName)reader.ReadInt();
+          break;
+        }
+      }
 
-			public InternalTarget( DawnsMusicGear gear ) : base( 2, false, TargetFlags.None )
-			{
-				m_Gear = gear;
-			}
+      if (version == 0) // Music wasn't serialized in version 0, pick a new track of random rarity
+      {
+        DawnsMusicRarity rarity;
+        double rand = Utility.RandomDouble();
 
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( m_Gear == null || m_Gear.Deleted )
-					return;
+        if (rand < 0.025)
+          rarity = DawnsMusicRarity.Rare;
+        else if (rand < 0.225)
+          rarity = DawnsMusicRarity.Uncommon;
+        else
+          rarity = DawnsMusicRarity.Common;
 
-				DawnsMusicBox box = targeted as DawnsMusicBox;
+        Music = DawnsMusicBox.RandomTrack(rarity);
+      }
+    }
 
-				if ( box != null )
-				{
-					if ( !box.Tracks.Contains( m_Gear.Music ) )
-					{
-						box.Tracks.Add( m_Gear.Music );
-						box.InvalidateProperties();
+    public class InternalTarget : Target
+    {
+      private DawnsMusicGear m_Gear;
 
-						m_Gear.Delete();
+      public InternalTarget(DawnsMusicGear gear) : base(2, false, TargetFlags.None)
+      {
+        m_Gear = gear;
+      }
 
-						from.SendLocalizedMessage( 1071961 ); // This song has been added to the musicbox.
-					}
-					else
-						from.SendLocalizedMessage( 1071962 ); // This song track is already in the musicbox.
-				}
-				else
-					from.SendLocalizedMessage( 1071964 ); // Gears can only be put into a musicbox.
-			}
-		}
-	}
+      protected override void OnTarget(Mobile from, object targeted)
+      {
+        if (m_Gear == null || m_Gear.Deleted)
+          return;
+
+        if (targeted is DawnsMusicBox box)
+        {
+          if (!box.Tracks.Contains(m_Gear.Music))
+          {
+            box.Tracks.Add(m_Gear.Music);
+            box.InvalidateProperties();
+
+            m_Gear.Delete();
+
+            from.SendLocalizedMessage(1071961); // This song has been added to the musicbox.
+          }
+          else
+          {
+            from.SendLocalizedMessage(1071962); // This song track is already in the musicbox.
+          }
+        }
+        else
+        {
+          from.SendLocalizedMessage(1071964); // Gears can only be put into a musicbox.
+        }
+      }
+    }
+  }
 }

@@ -18,37 +18,30 @@
  *
  ***************************************************************************/
 
-using System;
-using Server;
-
 namespace Server
 {
-	public abstract class SaveStrategy
-	{
-		public static SaveStrategy Acquire()
-		{
-			if (Core.MultiProcessor)
-			{
-				int processorCount = Core.ProcessorCount;
+  public abstract class SaveStrategy
+  {
+    public abstract string Name{ get; }
 
-				if (processorCount > 2)
-				{
-					return new DualSaveStrategy(); // return new DynamicSaveStrategy(); (4.0 or return new ParallelSaveStrategy(processorCount); (2.0)
-				}
-				else
-				{
-					return new DualSaveStrategy();
-				}
-			}
-			else
-			{
-				return new StandardSaveStrategy();
-			}
-		}
+    public static SaveStrategy Acquire()
+    {
+      if (Core.MultiProcessor)
+      {
+        int processorCount = Core.ProcessorCount;
 
-		public abstract string Name { get; }
-		public abstract void Save(SaveMetrics metrics, bool permitBackgroundWrite);
+        if (processorCount > 2)
+          return
+            new DualSaveStrategy(); // return new DynamicSaveStrategy(); (4.0 or return new ParallelSaveStrategy(processorCount); (2.0)
 
-		public abstract void ProcessDecay();
-	}
+        return new DualSaveStrategy();
+      }
+
+      return new StandardSaveStrategy();
+    }
+
+    public abstract void Save(SaveMetrics metrics, bool permitBackgroundWrite);
+
+    public abstract void ProcessDecay();
+  }
 }

@@ -1,80 +1,81 @@
-using System;
 using System.Collections.Generic;
-using Server;
-using Server.Gumps;
 using Server.Items;
-using Server.Network;
-using Server.Targeting;
-using Server.ContextMenus;
 
 namespace Server.Mobiles
 {
-	public class GypsyMaiden : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+  public class GypsyMaiden : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public GypsyMaiden() : base( "the gypsy maiden" )
-		{
-		}
+    [Constructible]
+    public GypsyMaiden() : base("the gypsy maiden")
+    {
+    }
 
-		public override bool GetGender()
-		{
-			return true; // always female
-		}
+    public GypsyMaiden(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBProvisioner() );
-		}
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    public override bool GetGender()
+    {
+      return true; // always female
+    }
 
-			switch ( Utility.Random( 4 ) )
-			{
-				case 0: AddItem( new JesterHat( Utility.RandomBrightHue() ) ); break;
-				case 1: AddItem( new Bandana( Utility.RandomBrightHue() ) ); break;
-				case 2: AddItem( new SkullCap( Utility.RandomBrightHue() ) ); break;
-			}
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBProvisioner());
+    }
 
-			if ( Utility.RandomBool() )
-				AddItem( new HalfApron( Utility.RandomBrightHue() ) );
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-			Item item = FindItemOnLayer( Layer.Pants );
+      switch (Utility.Random(4))
+      {
+        case 0:
+          AddItem(new JesterHat(Utility.RandomBrightHue()));
+          break;
+        case 1:
+          AddItem(new Bandana(Utility.RandomBrightHue()));
+          break;
+        case 2:
+          AddItem(new SkullCap(Utility.RandomBrightHue()));
+          break;
+      }
 
-			if ( item != null )
-				item.Hue = Utility.RandomBrightHue();
+      if (Utility.RandomBool())
+        AddItem(new HalfApron(Utility.RandomBrightHue()));
 
-			item = FindItemOnLayer( Layer.OuterLegs );
+      Item item = FindItemOnLayer(Layer.Pants);
 
-			if ( item != null )
-				item.Hue = Utility.RandomBrightHue();
+      if (item != null)
+        item.Hue = Utility.RandomBrightHue();
 
-			item = FindItemOnLayer( Layer.InnerLegs );
+      item = FindItemOnLayer(Layer.OuterLegs);
 
-			if ( item != null )
-				item.Hue = Utility.RandomBrightHue();
-		}
+      if (item != null)
+        item.Hue = Utility.RandomBrightHue();
 
-		public GypsyMaiden( Serial serial ) : base( serial )
-		{
-		}
+      item = FindItemOnLayer(Layer.InnerLegs);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      if (item != null)
+        item.Hue = Utility.RandomBrightHue();
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,43 +1,43 @@
 ﻿namespace Server.Items
 {
-	class Bucket : BaseWaterContainer
-	{
-		public override int voidItem_ID => vItemID;
-		public override int fullItem_ID => fItemID;
-		public override int MaxQuantity => 25;
+  internal class Bucket : BaseWaterContainer
+  {
+    private static int vItemID = 0x14e0;
+    private static int fItemID = 0x2004;
 
-		private static int vItemID = 0x14e0;
-		private static int fItemID = 0x2004;
+    [Constructible]
+    public Bucket()
+      : this(false)
+    {
+    }
 
-		[Constructible]
-		public Bucket()
-			: this( false )
-		{
-		}
+    [Constructible]
+    public Bucket(bool filled)
+      : base(filled ? fItemID : vItemID, filled)
+    {
+    }
 
-		[Constructible]
-		public Bucket( bool filled )
-			: base( ( filled ) ? Bucket.fItemID : Bucket.vItemID, filled )
-		{
-		}
+    public Bucket(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public Bucket( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int voidItem_ID => vItemID;
+    public override int fullItem_ID => fItemID;
+    public override int MaxQuantity => 25;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

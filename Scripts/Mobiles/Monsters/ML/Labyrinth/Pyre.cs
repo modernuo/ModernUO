@@ -1,88 +1,82 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Server;
 using Server.Items;
-using Server.Spells;
 
 namespace Server.Mobiles
 {
-	public class Pyre : Phoenix
-	{
-		public override string CorpseName => "a Pyre corpse";
-		public override string DefaultName => "Pyre";
+  public class Pyre : Phoenix
+  {
+    [Constructible]
+    public Pyre()
+    {
+      IsParagon = true;
 
-		[Constructible]
-		public Pyre()
-		{
-			IsParagon = true;
+      Hue = 0x489;
 
-			Hue = 0x489;
+      FightMode = FightMode.Closest;
 
-			FightMode = FightMode.Closest;
+      SetStr(605, 611);
+      SetDex(391, 519);
+      SetInt(669, 818);
 
-			SetStr( 605, 611 );
-			SetDex( 391, 519 );
-			SetInt( 669, 818 );
+      SetHits(1783, 1939);
 
-			SetHits( 1783, 1939 );
+      SetDamage(30);
 
-			SetDamage( 30 );
+      SetDamageType(ResistanceType.Physical, 50);
+      SetDamageType(ResistanceType.Fire, 50);
 
-			SetDamageType( ResistanceType.Physical, 50 );
-			SetDamageType( ResistanceType.Fire, 50 );
+      SetResistance(ResistanceType.Physical, 65);
+      SetResistance(ResistanceType.Fire, 72, 75);
+      SetResistance(ResistanceType.Poison, 36, 41);
+      SetResistance(ResistanceType.Energy, 50, 51);
 
-			SetResistance( ResistanceType.Physical, 65 );
-			SetResistance( ResistanceType.Fire, 72, 75 );
-			SetResistance( ResistanceType.Poison, 36, 41 );
-			SetResistance( ResistanceType.Energy, 50, 51 );
+      SetSkill(SkillName.Wrestling, 121.9, 130.6);
+      SetSkill(SkillName.Tactics, 114.4, 117.4);
+      SetSkill(SkillName.MagicResist, 147.7, 153.0);
+      SetSkill(SkillName.Poisoning, 122.8, 124.0);
+      SetSkill(SkillName.Magery, 121.8, 127.8);
+      SetSkill(SkillName.EvalInt, 103.6, 117.0);
+      SetSkill(SkillName.Meditation, 100.0, 110.0);
 
-			SetSkill( SkillName.Wrestling, 121.9, 130.6 );
-			SetSkill( SkillName.Tactics, 114.4, 117.4 );
-			SetSkill( SkillName.MagicResist, 147.7, 153.0 );
-			SetSkill( SkillName.Poisoning, 122.8, 124.0 );
-			SetSkill( SkillName.Magery, 121.8, 127.8 );
-			SetSkill( SkillName.EvalInt, 103.6, 117.0 );
-			SetSkill( SkillName.Meditation, 100.0, 110.0 );
+      Fame = 21000;
+      Karma = -21000;
+    }
 
-			Fame = 21000;
-			Karma = -21000;
-		}
+    public Pyre(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.UltraRich, 3 );
-		}
+    public override string CorpseName => "a Pyre corpse";
+    public override string DefaultName => "Pyre";
 
-		public override WeaponAbility GetWeaponAbility()
-		{
-			if ( Utility.RandomBool() )
-				return WeaponAbility.ParalyzingBlow;
-			else
-				return WeaponAbility.BleedAttack;
-		}
+    public override bool GivesMLMinorArtifact => true;
+    public override int TreasureMapLevel => 5;
+    public override bool HasAura => true;
 
-		public override bool GivesMLMinorArtifact => true;
-		public override int TreasureMapLevel => 5;
-		public override bool HasAura => true;
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.UltraRich, 3);
+    }
 
-		public Pyre( Serial serial )
-			: base( serial )
-		{
-		}
+    public override WeaponAbility GetWeaponAbility()
+    {
+      if (Utility.RandomBool())
+        return WeaponAbility.ParalyzingBlow;
+      return WeaponAbility.BleedAttack;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

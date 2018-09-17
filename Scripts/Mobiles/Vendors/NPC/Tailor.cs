@@ -1,99 +1,96 @@
 using System;
 using System.Collections.Generic;
-using Server;
 using Server.Engines.BulkOrders;
 
 namespace Server.Mobiles
 {
-	public class Tailor : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+  public class Tailor : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		public override NpcGuild NpcGuild => NpcGuild.TailorsGuild;
+    [Constructible]
+    public Tailor() : base("the tailor")
+    {
+      SetSkill(SkillName.Tailoring, 64.0, 100.0);
+    }
 
-		[Constructible]
-		public Tailor() : base( "the tailor" )
-		{
-			SetSkill( SkillName.Tailoring, 64.0, 100.0 );
-		}
+    public Tailor(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBTailor() );
-		}
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return Utility.RandomBool() ? VendorShoeType.Sandals : VendorShoeType.Shoes; }
-		}
+    public override NpcGuild NpcGuild => NpcGuild.TailorsGuild;
 
-		#region Bulk Orders
-		public override Item CreateBulkOrder( Mobile from, bool fromContextMenu )
-		{
-			PlayerMobile pm = from as PlayerMobile;
+    public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Sandals : VendorShoeType.Shoes;
 
-			if ( pm != null && pm.NextTailorBulkOrder == TimeSpan.Zero && (fromContextMenu || 0.2 > Utility.RandomDouble()) )
-			{
-				double theirSkill = pm.Skills[SkillName.Tailoring].Base;
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBTailor());
+    }
 
-				if ( theirSkill >= 70.1 )
-					pm.NextTailorBulkOrder = TimeSpan.FromHours( 6.0 );
-				else if ( theirSkill >= 50.1 )
-					pm.NextTailorBulkOrder = TimeSpan.FromHours( 2.0 );
-				else
-					pm.NextTailorBulkOrder = TimeSpan.FromHours( 1.0 );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-				if ( theirSkill >= 70.1 && ((theirSkill - 40.0) / 300.0) > Utility.RandomDouble() )
-					return new LargeTailorBOD();
+      writer.Write(0); // version
+    }
 
-				return SmallTailorBOD.CreateRandomFor( from );
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			return null;
-		}
+      int version = reader.ReadInt();
+    }
 
-		public override bool IsValidBulkOrder( Item item )
-		{
-			return ( item is SmallTailorBOD || item is LargeTailorBOD );
-		}
+    #region Bulk Orders
 
-		public override bool SupportsBulkOrders( Mobile from )
-		{
-			return ( from is PlayerMobile && from.Skills[SkillName.Tailoring].Base > 0 );
-		}
+    public override Item CreateBulkOrder(Mobile from, bool fromContextMenu)
+    {
+      if (from is PlayerMobile pm && pm.NextTailorBulkOrder == TimeSpan.Zero && (fromContextMenu || 0.2 > Utility.RandomDouble()))
+      {
+        double theirSkill = pm.Skills[SkillName.Tailoring].Base;
 
-		public override TimeSpan GetNextBulkOrder( Mobile from )
-		{
-			if ( from is PlayerMobile )
-				return ((PlayerMobile)from).NextTailorBulkOrder;
+        if (theirSkill >= 70.1)
+          pm.NextTailorBulkOrder = TimeSpan.FromHours(6.0);
+        else if (theirSkill >= 50.1)
+          pm.NextTailorBulkOrder = TimeSpan.FromHours(2.0);
+        else
+          pm.NextTailorBulkOrder = TimeSpan.FromHours(1.0);
 
-			return TimeSpan.Zero;
-		}
+        if (theirSkill >= 70.1 && (theirSkill - 40.0) / 300.0 > Utility.RandomDouble())
+          return new LargeTailorBOD();
 
-		public override void OnSuccessfulBulkOrderReceive( Mobile from )
-		{
-			if( Core.SE && from is PlayerMobile )
-				((PlayerMobile)from).NextTailorBulkOrder = TimeSpan.Zero;
-		}
-		#endregion
+        return SmallTailorBOD.CreateRandomFor(from);
+      }
 
-		public Tailor( Serial serial ) : base( serial )
-		{
-		}
+      return null;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override bool IsValidBulkOrder(Item item)
+    {
+      return item is SmallTailorBOD || item is LargeTailorBOD;
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override bool SupportsBulkOrders(Mobile from)
+    {
+      return from is PlayerMobile && from.Skills[SkillName.Tailoring].Base > 0;
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override TimeSpan GetNextBulkOrder(Mobile from)
+    {
+      if (from is PlayerMobile mobile)
+        return mobile.NextTailorBulkOrder;
 
-			int version = reader.ReadInt();
-		}
-	}
+      return TimeSpan.Zero;
+    }
+
+    public override void OnSuccessfulBulkOrderReceive(Mobile from)
+    {
+      if (Core.SE && from is PlayerMobile mobile)
+        mobile.NextTailorBulkOrder = TimeSpan.Zero;
+    }
+
+    #endregion
+  }
 }

@@ -20,34 +20,29 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Server.Diagnostics {
-	public class TargetProfile : BaseProfile {
-		private static Dictionary<Type, TargetProfile> _profiles = new Dictionary<Type, TargetProfile>();
+namespace Server.Diagnostics
+{
+  public class TargetProfile : BaseProfile
+  {
+    private static Dictionary<Type, TargetProfile> _profiles = new Dictionary<Type, TargetProfile>();
 
-		public static IEnumerable<TargetProfile> Profiles {
-			get {
-				return _profiles.Values;
-			}
-		}
+    public TargetProfile(Type type)
+      : base(type.FullName)
+    {
+    }
 
-		public static TargetProfile Acquire( Type type ) {
-			if ( !Core.Profiling ) {
-				return null;
-			}
+    public static IEnumerable<TargetProfile> Profiles => _profiles.Values;
 
-			TargetProfile prof;
+    public static TargetProfile Acquire(Type type)
+    {
+      if (!Core.Profiling) return null;
 
-			if ( !_profiles.TryGetValue( type, out prof ) ) {
-				_profiles.Add( type, prof = new TargetProfile( type ) );
-			}
+      TargetProfile prof;
 
-			return prof;
-		}
+      if (!_profiles.TryGetValue(type, out prof)) _profiles.Add(type, prof = new TargetProfile(type));
 
-		public TargetProfile( Type type )
-			: base( type.FullName ) {
-		}
-	}
+      return prof;
+    }
+  }
 }

@@ -2,118 +2,115 @@ using System;
 
 namespace Server.Items
 {
-	public class TreasureChestLevel1 : LockableContainer
-	{
-		private const int m_Level = 1;
+  public class TreasureChestLevel1 : LockableContainer
+  {
+    private const int m_Level = 1;
 
-		public override bool Decays => true;
+    [Constructible]
+    public TreasureChestLevel1()
+      : base(0xE41)
+    {
+      SetChestAppearance();
+      Movable = false;
 
-		public override bool IsDecoContainer => false;
+      TrapType = TrapType.DartTrap;
+      TrapPower = m_Level * Utility.Random(1, 25);
+      Locked = true;
 
-		public override TimeSpan DecayTime => TimeSpan.FromMinutes( Utility.Random( 15, 60 ) );
+      RequiredSkill = 57;
+      LockLevel = RequiredSkill - Utility.Random(1, 10);
+      MaxLockLevel = RequiredSkill + Utility.Random(1, 10);
 
-		private void SetChestAppearance()
-		{
-			bool UseFirstItemId = Utility.RandomBool();
+      // According to OSI, loot in level 1 chest is:
+      //  Gold 25 - 50
+      //  Bolts 10
+      //  Gems
+      //  Normal weapon
+      //  Normal armour
+      //  Normal clothing
+      //  Normal jewelry
 
-			switch( Utility.RandomList( 0, 1, 2 ) )
-			{
-				case 0:// Large Crate
-					this.ItemID = ( UseFirstItemId ? 0xe3c : 0xe3d );
-					this.GumpID = 0x44;
-					break;
+      // Gold
+      DropItem(new Gold(Utility.Random(30, 100)));
 
-				case 1:// Medium Crate
-					this.ItemID = ( UseFirstItemId ? 0xe3e : 0xe3f );
-					this.GumpID = 0x44;
-					break;
+      // Drop bolts
+      //DropItem( new Bolt( 10 ) );
 
-				case 2:// Small Crate
-					this.ItemID = ( UseFirstItemId ? 0x9a9 : 0xe7e );
-					this.GumpID = 0x44;
-					break;
-			}
-		}
+      // Gems
+      if (Utility.RandomBool())
+      {
+        Item GemLoot = Loot.RandomGem();
+        GemLoot.Amount = Utility.Random(1, 3);
+        DropItem(GemLoot);
+      }
 
-		public override int DefaultGumpID => 0x42;
+      // Weapon
+      if (Utility.RandomBool())
+        DropItem(Loot.RandomWeapon());
 
-		public override int DefaultDropSound => 0x42;
+      // Armour
+      if (Utility.RandomBool())
+        DropItem(Loot.RandomArmorOrShield());
 
-		public override Rectangle2D Bounds
-		{
-			get { return new Rectangle2D( 18, 105, 144, 73 ); }
-		}
+      // Clothing
+      if (Utility.RandomBool())
+        DropItem(Loot.RandomClothing());
 
-		[Constructible]
-		public TreasureChestLevel1()
-			: base( 0xE41 )
-		{
-			this.SetChestAppearance();
-			Movable = false;
+      // Jewelry
+      if (Utility.RandomBool())
+        DropItem(Loot.RandomJewelry());
+    }
 
-			TrapType = TrapType.DartTrap;
-			TrapPower = m_Level * Utility.Random( 1, 25 );
-			Locked = true;
+    public TreasureChestLevel1(Serial serial)
+      : base(serial)
+    {
+    }
 
-			RequiredSkill = 57;
-			LockLevel = this.RequiredSkill - Utility.Random( 1, 10 );
-			MaxLockLevel = this.RequiredSkill + Utility.Random( 1, 10 );
+    public override bool Decays => true;
 
-			// According to OSI, loot in level 1 chest is:
-			//  Gold 25 - 50
-			//  Bolts 10
-			//  Gems
-			//  Normal weapon
-			//  Normal armour
-			//  Normal clothing
-			//  Normal jewelry
+    public override bool IsDecoContainer => false;
 
-			// Gold
-			DropItem( new Gold( Utility.Random( 30, 100 ) ) );
+    public override TimeSpan DecayTime => TimeSpan.FromMinutes(Utility.Random(15, 60));
 
-			// Drop bolts
-			//DropItem( new Bolt( 10 ) );
+    public override int DefaultGumpID => 0x42;
 
-			// Gems
-			if( Utility.RandomBool() == true )
-			{
-				Item GemLoot = Loot.RandomGem();
-				GemLoot.Amount = Utility.Random( 1, 3 );
-				DropItem( GemLoot );
-			}
+    public override int DefaultDropSound => 0x42;
 
-			// Weapon
-			if( Utility.RandomBool() == true )
-				DropItem( Loot.RandomWeapon() );
+    public override Rectangle2D Bounds => new Rectangle2D(18, 105, 144, 73);
 
-			// Armour
-			if( Utility.RandomBool() == true )
-				DropItem( Loot.RandomArmorOrShield() );
+    private void SetChestAppearance()
+    {
+      bool UseFirstItemId = Utility.RandomBool();
 
-			// Clothing
-			if( Utility.RandomBool() == true )
-				DropItem( Loot.RandomClothing() );
+      switch (Utility.RandomList(0, 1, 2))
+      {
+        case 0: // Large Crate
+          ItemID = UseFirstItemId ? 0xe3c : 0xe3d;
+          GumpID = 0x44;
+          break;
 
-			// Jewelry
-			if( Utility.RandomBool() == true )
-				DropItem( Loot.RandomJewelry() );
-		}
+        case 1: // Medium Crate
+          ItemID = UseFirstItemId ? 0xe3e : 0xe3f;
+          GumpID = 0x44;
+          break;
 
-		public TreasureChestLevel1( Serial serial )
-			: base( serial )
-		{
-		}
+        case 2: // Small Crate
+          ItemID = UseFirstItemId ? 0x9a9 : 0xe7e;
+          GumpID = 0x44;
+          break;
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( ( int )1 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(1); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

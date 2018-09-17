@@ -1,50 +1,49 @@
-using System;
 using System.Collections.Generic;
-using Server;
 
 namespace Server.Mobiles
 {
-	[TypeAlias( "Server.Mobiles.GargoyleStonecrafter" )]
-	public class StoneCrafter : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+  [TypeAlias("Server.Mobiles.GargoyleStonecrafter")]
+  public class StoneCrafter : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
+    [Constructible]
+    public StoneCrafter() : base("the stone crafter")
+    {
+      SetSkill(SkillName.Carpentry, 85.0, 100.0);
+    }
 
-		[Constructible]
-		public StoneCrafter() : base( "the stone crafter" )
-		{
-			SetSkill( SkillName.Carpentry, 85.0, 100.0 );
-		}
+    public StoneCrafter(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBStoneCrafter() );
-			m_SBInfos.Add( new SBStavesWeapon() );
-			m_SBInfos.Add( new SBCarpenter() );
-			m_SBInfos.Add( new SBWoodenShields() );
-		}
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public StoneCrafter( Serial serial ) : base( serial )
-		{
-		}
+    public override NpcGuild NpcGuild => NpcGuild.TinkersGuild;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBStoneCrafter());
+      m_SBInfos.Add(new SBStavesWeapon());
+      m_SBInfos.Add(new SBCarpenter());
+      m_SBInfos.Add(new SBWoodenShields());
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			if ( Title == "the stonecrafter" )
-				Title = "the stone crafter";
-		}
-	}
+      int version = reader.ReadInt();
+
+      if (Title == "the stonecrafter")
+        Title = "the stone crafter";
+    }
+  }
 }

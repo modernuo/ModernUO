@@ -1,34 +1,31 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class TrueRadiantScimitar : RadiantScimitar
-	{
-		public override int LabelNumber => 1073541; // true radiant scimitar
+  public class TrueRadiantScimitar : RadiantScimitar
+  {
+    [Constructible]
+    public TrueRadiantScimitar()
+    {
+      Attributes.NightSight = 1;
+    }
 
-		[Constructible]
-		public TrueRadiantScimitar()
-		{
-			Attributes.NightSight = 1;
-		}
+    public TrueRadiantScimitar(Serial serial) : base(serial)
+    {
+    }
 
-		public TrueRadiantScimitar( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073541; // true radiant scimitar
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

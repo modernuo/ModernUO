@@ -1,202 +1,185 @@
-using System;
 using System.Collections.Generic;
-using Server;
-using Server.Mobiles;
 using Server.Items;
-using Server.ContextMenus;
-using Server.Engines.Quests;
+using Server.Mobiles;
 
 namespace Server.Engines.Quests.Haven
 {
-	public class Dryad : BaseQuester
-	{
-		public override bool IsActiveVendor => true;
-		public override bool DisallowAllMoves => false;
-		public override bool ClickTitle => true;
-		public override bool CanTeach => true;
-		public override string DefaultName => "Anwin Brenna";
+  public class Dryad : BaseQuester
+  {
+    [Constructible]
+    public Dryad() : base("the Dryad")
+    {
+      SetSkill(SkillName.Peacemaking, 80.0, 100.0);
+      SetSkill(SkillName.Cooking, 80.0, 100.0);
+      SetSkill(SkillName.Provocation, 80.0, 100.0);
+      SetSkill(SkillName.Musicianship, 80.0, 100.0);
+      SetSkill(SkillName.Poisoning, 80.0, 100.0);
+      SetSkill(SkillName.Archery, 80.0, 100.0);
+      SetSkill(SkillName.Tailoring, 80.0, 100.0);
+    }
 
-		[Constructible]
-		public Dryad() : base( "the Dryad" )
-		{
-			SetSkill( SkillName.Peacemaking, 80.0, 100.0 );
-			SetSkill( SkillName.Cooking, 80.0, 100.0 );
-			SetSkill( SkillName.Provocation, 80.0, 100.0 );
-			SetSkill( SkillName.Musicianship, 80.0, 100.0 );
-			SetSkill( SkillName.Poisoning, 80.0, 100.0 );
-			SetSkill( SkillName.Archery, 80.0, 100.0 );
-			SetSkill( SkillName.Tailoring, 80.0, 100.0 );
-		}
+    public Dryad(Serial serial) : base(serial)
+    {
+    }
 
-		public Dryad( Serial serial ) : base( serial )
-		{
-		}
+    public override bool IsActiveVendor => true;
+    public override bool DisallowAllMoves => false;
+    public override bool ClickTitle => true;
+    public override bool CanTeach => true;
+    public override string DefaultName => "Anwin Brenna";
 
-		public override void InitBody()
-		{
-			InitStats( 100, 100, 25 );
+    public override void InitBody()
+    {
+      InitStats(100, 100, 25);
 
-			Hue = 0x85A7;
+      Hue = 0x85A7;
 
-			Female = true;
-			Body = 0x191;
-		}
+      Female = true;
+      Body = 0x191;
+    }
 
-		public override void InitOutfit()
-		{
-			AddItem( new Kilt( 0x301 ) );
-			AddItem( new FancyShirt( 0x300 ) );
+    public override void InitOutfit()
+    {
+      AddItem(new Kilt(0x301));
+      AddItem(new FancyShirt(0x300));
 
-			HairItemID = 0x203D; // Pony Tail
-			HairHue = 0x22;
+      HairItemID = 0x203D; // Pony Tail
+      HairHue = 0x22;
 
-			Bow bow = new Bow();
-			bow.Movable = false;
-			AddItem( bow );
-		}
+      Bow bow = new Bow();
+      bow.Movable = false;
+      AddItem(bow);
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBDryad() );
-		}
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBDryad());
+    }
 
-		public override int GetAutoTalkRange( PlayerMobile pm )
-		{
-			return 4;
-		}
+    public override int GetAutoTalkRange(PlayerMobile pm)
+    {
+      return 4;
+    }
 
-		public override bool CanTalkTo( PlayerMobile to )
-		{
-			UzeraanTurmoilQuest qs = to.Quest as UzeraanTurmoilQuest;
+    public override bool CanTalkTo(PlayerMobile to)
+    {
+      return to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective(typeof(FindDryadObjective)) != null;
+    }
 
-			return ( qs != null && qs.FindObjective( typeof( FindDryadObjective ) ) != null );
-		}
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+      QuestSystem qs = player.Quest;
 
-		public override void OnTalk( PlayerMobile player, bool contextMenu )
-		{
-			QuestSystem qs = player.Quest;
+      if (qs is UzeraanTurmoilQuest)
+      {
+        if (UzeraanTurmoilQuest.HasLostFertileDirt(player))
+        {
+          FocusTo(player);
+          qs.AddConversation(new LostFertileDirtConversation(false));
+        }
+        else
+        {
+          QuestObjective obj = qs.FindObjective(typeof(FindDryadObjective));
 
-			if ( qs is UzeraanTurmoilQuest )
-			{
-				if ( UzeraanTurmoilQuest.HasLostFertileDirt( player ) )
-				{
-					FocusTo( player );
-					qs.AddConversation( new LostFertileDirtConversation( false ) );
-				}
-				else
-				{
-					QuestObjective obj = qs.FindObjective( typeof( FindDryadObjective ) );
+          if (obj != null && !obj.Completed)
+          {
+            FocusTo(player);
 
-					if ( obj != null && !obj.Completed )
-					{
-						FocusTo( player );
+            Item fertileDirt = new QuestFertileDirt();
 
-						Item fertileDirt = new QuestFertileDirt();
+            if (!player.PlaceInBackpack(fertileDirt))
+            {
+              fertileDirt.Delete();
+              player.SendLocalizedMessage(
+                1046260); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
+            }
+            else
+            {
+              obj.Complete();
+            }
+          }
+          else if (contextMenu)
+          {
+            FocusTo(player);
+            SayTo(player, 1049357); // I have nothing more for you at this time.
+          }
+        }
+      }
+    }
 
-						if ( !player.PlaceInBackpack( fertileDirt ) )
-						{
-							fertileDirt.Delete();
-							player.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
-						}
-						else
-						{
-							obj.Complete();
-						}
-					}
-					else if ( contextMenu )
-					{
-						FocusTo( player );
-						SayTo( player, 1049357 ); // I have nothing more for you at this time.
-					}
-				}
-			}
-		}
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      if (from is PlayerMobile player)
+        if (player.Quest is UzeraanTurmoilQuest qs && dropped is Apple &&
+            UzeraanTurmoilQuest.HasLostFertileDirt(from))
+        {
+          FocusTo(from);
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			PlayerMobile player = from as PlayerMobile;
+          Item fertileDirt = new QuestFertileDirt();
 
-			if ( player != null )
-			{
-				UzeraanTurmoilQuest qs = player.Quest as UzeraanTurmoilQuest;
+          if (!player.PlaceInBackpack(fertileDirt))
+          {
+            fertileDirt.Delete();
+            player.SendLocalizedMessage(
+              1046260); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
+            return false;
+          }
 
-				if ( qs != null && dropped is Apple && UzeraanTurmoilQuest.HasLostFertileDirt( from ) )
-				{
-					FocusTo( from );
+          dropped.Consume();
+          qs.AddConversation(new DryadAppleConversation());
+          return dropped.Deleted;
+        }
 
-					Item fertileDirt = new QuestFertileDirt();
+      return base.OnDragDrop(from, dropped);
+    }
 
-					if ( !player.PlaceInBackpack( fertileDirt ) )
-					{
-						fertileDirt.Delete();
-						player.SendLocalizedMessage( 1046260 ); // You need to clear some space in your inventory to continue with the quest.  Come back here when you have more space in your inventory.
-						return false;
-					}
-					else
-					{
-						dropped.Consume();
-						qs.AddConversation( new DryadAppleConversation() );
-						return dropped.Deleted;
-					}
-				}
-			}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			return base.OnDragDrop( from, dropped );
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			writer.Write( (int) 0 ); // version
-		}
+      int version = reader.ReadInt();
+    }
+  }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+  public class SBDryad : SBInfo
+  {
+    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
 
-	public class SBDryad : SBInfo
-	{
-		private List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo();
-		private IShopSellInfo m_SellInfo = new InternalSellInfo();
+    public class InternalBuyInfo : List<GenericBuyInfo>
+    {
+      public InternalBuyInfo()
+      {
+        Add(new GenericBuyInfo(typeof(Bandage), 5, 20, 0xE21, 0));
+        Add(new GenericBuyInfo(typeof(Ginseng), 3, 20, 0xF85, 0));
+        Add(new GenericBuyInfo(typeof(Garlic), 3, 20, 0xF84, 0));
+        Add(new GenericBuyInfo(typeof(Bloodmoss), 5, 20, 0xF7B, 0));
+        Add(new GenericBuyInfo(typeof(Nightshade), 3, 20, 0xF88, 0));
+        Add(new GenericBuyInfo(typeof(SpidersSilk), 3, 20, 0xF8D, 0));
+        Add(new GenericBuyInfo(typeof(MandrakeRoot), 3, 20, 0xF86, 0));
+      }
+    }
 
-		public SBDryad()
-		{
-		}
-
-		public override IShopSellInfo SellInfo => m_SellInfo;
-		public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
-
-		public class InternalBuyInfo : List<GenericBuyInfo>
-		{
-			public InternalBuyInfo()
-			{
-				Add( new GenericBuyInfo( typeof( Bandage ), 5, 20, 0xE21, 0 ) );
-				Add( new GenericBuyInfo( typeof( Ginseng ), 3, 20, 0xF85, 0 ) );
-				Add( new GenericBuyInfo( typeof( Garlic ), 3, 20, 0xF84, 0 ) );
-				Add( new GenericBuyInfo( typeof( Bloodmoss ), 5, 20, 0xF7B, 0 ) );
-				Add( new GenericBuyInfo( typeof( Nightshade ), 3, 20, 0xF88, 0 ) );
-				Add( new GenericBuyInfo( typeof( SpidersSilk ), 3, 20, 0xF8D, 0 ) );
-				Add( new GenericBuyInfo( typeof( MandrakeRoot ), 3, 20, 0xF86, 0 ) );
-			}
-		}
-
-		public class InternalSellInfo : GenericSellInfo
-		{
-			public InternalSellInfo()
-			{
-				Add( typeof( Bandage ), 2 );
-				Add( typeof( Garlic ), 2 );
-				Add( typeof( Ginseng ), 2 );
-				Add( typeof( Bloodmoss ), 3 );
-				Add( typeof( Nightshade ), 2 );
-				Add( typeof( SpidersSilk ), 2 );
-				Add( typeof( MandrakeRoot ), 2 );
-			}
-		}
-	}
+    public class InternalSellInfo : GenericSellInfo
+    {
+      public InternalSellInfo()
+      {
+        Add(typeof(Bandage), 2);
+        Add(typeof(Garlic), 2);
+        Add(typeof(Ginseng), 2);
+        Add(typeof(Bloodmoss), 3);
+        Add(typeof(Nightshade), 2);
+        Add(typeof(SpidersSilk), 2);
+        Add(typeof(MandrakeRoot), 2);
+      }
+    }
+  }
 }

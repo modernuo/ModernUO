@@ -1,35 +1,31 @@
-using System;
-using Server.Network;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class TatteredAncientMummyWrapping : Item
-	{
-		public override int LabelNumber => 1094912; // Tattered Ancient Mummy Wrapping [Replica]
+  public class TatteredAncientMummyWrapping : Item
+  {
+    [Constructible]
+    public TatteredAncientMummyWrapping() : base(0xE21)
+    {
+      Hue = 0x909;
+    }
 
-		[Constructible]
-		public TatteredAncientMummyWrapping() : base( 0xE21 )
-		{
-			Hue = 0x909;
-		}
+    public TatteredAncientMummyWrapping(Serial serial) : base(serial)
+    {
+    }
 
-		public TatteredAncientMummyWrapping( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1094912; // Tattered Ancient Mummy Wrapping [Replica]
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

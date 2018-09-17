@@ -1,40 +1,37 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class EmberStaff : QuarterStaff
-	{
-		public override int LabelNumber => 1077582; // Ember Staff
+  public class EmberStaff : QuarterStaff
+  {
+    [Constructible]
+    public EmberStaff()
+    {
+      LootType = LootType.Blessed;
 
-		[Constructible]
-		public EmberStaff()
-		{
-			LootType = LootType.Blessed;
+      WeaponAttributes.HitFireball = 15;
+      WeaponAttributes.MageWeapon = 10;
+      Attributes.SpellChanneling = 1;
+      Attributes.CastSpeed = -1;
+      WeaponAttributes.LowerStatReq = 50;
+    }
 
-			WeaponAttributes.HitFireball = 15;
-			WeaponAttributes.MageWeapon = 10;
-			Attributes.SpellChanneling = 1;
-			Attributes.CastSpeed = -1;
-			WeaponAttributes.LowerStatReq = 50;
-		}
+    public EmberStaff(Serial serial) : base(serial)
+    {
+    }
 
-		public EmberStaff( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1077582; // Ember Staff
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

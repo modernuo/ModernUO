@@ -1,34 +1,31 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class IcyScimitar : RadiantScimitar
-	{
-		public override int LabelNumber => 1073543; // icy scimitar
+  public class IcyScimitar : RadiantScimitar
+  {
+    [Constructible]
+    public IcyScimitar()
+    {
+      WeaponAttributes.HitHarm = 15;
+    }
 
-		[Constructible]
-		public IcyScimitar()
-		{
-			WeaponAttributes.HitHarm = 15;
-		}
+    public IcyScimitar(Serial serial) : base(serial)
+    {
+    }
 
-		public IcyScimitar( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073543; // icy scimitar
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

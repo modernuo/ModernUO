@@ -1,73 +1,70 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class LargeStoneTableEastAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new LargeStoneTableEastDeed();
+  public class LargeStoneTableEastAddon : BaseAddon
+  {
+    [Constructible]
+    public LargeStoneTableEastAddon() : this(0)
+    {
+    }
 
-		public override bool RetainDeedHue => true;
+    [Constructible]
+    public LargeStoneTableEastAddon(int hue)
+    {
+      AddComponent(new AddonComponent(0x1202), 0, 0, 0);
+      AddComponent(new AddonComponent(0x1203), 0, 1, 0);
+      AddComponent(new AddonComponent(0x1201), 0, 2, 0);
+      Hue = hue;
+    }
 
-		[Constructible]
-		public LargeStoneTableEastAddon() : this( 0 )
-		{
-		}
+    public LargeStoneTableEastAddon(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public LargeStoneTableEastAddon( int hue )
-		{
-			AddComponent( new AddonComponent( 0x1202 ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x1203 ), 0, 1, 0 );
-			AddComponent( new AddonComponent( 0x1201 ), 0, 2, 0 );
-			Hue = hue;
-		}
+    public override BaseAddonDeed Deed => new LargeStoneTableEastDeed();
 
-		public LargeStoneTableEastAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override bool RetainDeedHue => true;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 ); // version
-		}
+      writer.Write(1); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class LargeStoneTableEastDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new LargeStoneTableEastAddon( this.Hue );
-		public override int LabelNumber => 1044511; // large stone table (east)
+  public class LargeStoneTableEastDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public LargeStoneTableEastDeed()
+    {
+    }
 
-		[Constructible]
-		public LargeStoneTableEastDeed()
-		{
-		}
+    public LargeStoneTableEastDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public LargeStoneTableEastDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new LargeStoneTableEastAddon(Hue);
+    public override int LabelNumber => 1044511; // large stone table (east)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

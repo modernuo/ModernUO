@@ -1,110 +1,79 @@
-using System;
 using System.Collections;
-using System.Diagnostics;
 using System.Drawing;
 
 namespace Server.Engines.Reports
 {
-	// Modified from MS sample
+  // Modified from MS sample
 
-	//*********************************************************************
-	//
-	// ChartItem Class
-	//
-	// This class represents a data point in a chart
-	//
-	//*********************************************************************
+  //*********************************************************************
+  //
+  // ChartItem Class
+  //
+  // This class represents a data point in a chart
+  //
+  //*********************************************************************
 
-	public class DataItem 
-	{
-		private string _label;
-		private string _description;
-		private float _value;
-		private Color _color;
-		private float _startPos;
-		private float _sweepSize;
+  public class DataItem
+  {
+    private DataItem()
+    {
+    }
 
-		private DataItem()	{}
-		
-		public DataItem(string label, string desc, float data, float start, float sweep, Color clr)
-		{
-			_label = label;
-			_description = desc;
-			_value = data;
-			_startPos = start;
-			_sweepSize = sweep;
-			_color = clr;
-		}
+    public DataItem(string label, string desc, float data, float start, float sweep, Color clr)
+    {
+      Label = label;
+      Description = desc;
+      Value = data;
+      StartPos = start;
+      SweepSize = sweep;
+      ItemColor = clr;
+    }
 
-		public string Label 
-		{
-			get{ return _label; }
-			set{ _label = value; }
-		}
+    public string Label{ get; set; }
 
-		public string Description 
-		{
-			get{ return _description; }
-			set{ _description = value; }
-		} 
+    public string Description{ get; set; }
 
-		public float Value 
-		{
-			get{ return _value; }
-			set{ _value = value; }
-		}
+    public float Value{ get; set; }
 
-		public Color ItemColor 
-		{
-			get{ return _color; }
-			set{ _color = value; }
-		}
+    public Color ItemColor{ get; set; }
 
-		public float StartPos
-		{
-			get{ return _startPos; }
-			set{ _startPos = value; }
-		}
+    public float StartPos{ get; set; }
 
-		public float SweepSize
-		{
-			get{ return _sweepSize; }
-			set{ _sweepSize = value; }
-		}
-	}
+    public float SweepSize{ get; set; }
+  }
 
-	//*********************************************************************
-	//
-	// Custom Collection for ChartItems
-	//
-	//*********************************************************************
+  //*********************************************************************
+  //
+  // Custom Collection for ChartItems
+  //
+  //*********************************************************************
 
-	public class ChartItemsCollection : CollectionBase 
-	{
-		public DataItem this[int index] 
-		{
-			get{ return (DataItem)(List[index]); }
-			set{ List[index] = value; }
-		}
- 
-		public int Add(DataItem value) 
-		{
-			return List.Add(value);
-		}
- 
-		public int IndexOf(DataItem value) 
-		{
-			return List.IndexOf(value);
-		}
- 
-		public bool Contains(DataItem value) 
-		{
-			return List.Contains(value);
-		}
+  public class ChartItemsCollection : CollectionBase
+  {
+    public DataItem this[int index]
+    {
+      get => (DataItem)List[index];
+      set => List[index] = value;
+    }
 
-		public void Remove(DataItem value) 
-		{
-			List.Remove(value);
-		}
-	}
+    public int Add(DataItem value)
+    {
+      return List.Add(value);
+    }
+
+    public int IndexOf(DataItem value)
+    {
+      return List.IndexOf(value);
+    }
+
+    public bool Contains(DataItem value)
+    {
+      return List.Contains(value);
+    }
+
+    public void Remove(DataItem value)
+    {
+      List.Remove(value);
+    }
+  }
 }

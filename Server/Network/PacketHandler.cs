@@ -18,65 +18,30 @@
  *
  ***************************************************************************/
 
-using System;
-
 namespace Server.Network
 {
-	public delegate void OnPacketReceive( NetState state, PacketReader pvSrc );
-	public delegate bool ThrottlePacketCallback( NetState state );
+  public delegate void OnPacketReceive(NetState state, PacketReader pvSrc);
 
-	public class PacketHandler
-	{
-		private int m_PacketID;
-		private int m_Length;
-		private bool m_Ingame;
-		private OnPacketReceive m_OnReceive;
-		private ThrottlePacketCallback m_ThrottleCallback;
+  public delegate bool ThrottlePacketCallback(NetState state);
 
-		public PacketHandler( int packetID, int length, bool ingame, OnPacketReceive onReceive )
-		{
-			m_PacketID = packetID;
-			m_Length = length;
-			m_Ingame = ingame;
-			m_OnReceive = onReceive;
-		}
+  public class PacketHandler
+  {
+    public PacketHandler(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+    {
+      PacketID = packetID;
+      Length = length;
+      Ingame = ingame;
+      OnReceive = onReceive;
+    }
 
-		public int PacketID
-		{
-			get
-			{
-				return m_PacketID;
-			}
-		}
+    public int PacketID{ get; }
 
-		public int Length
-		{
-			get
-			{
-				return m_Length;
-			}
-		}
+    public int Length{ get; }
 
-		public OnPacketReceive OnReceive
-		{
-			get
-			{
-				return m_OnReceive;
-			}
-		}
+    public OnPacketReceive OnReceive{ get; }
 
-		public ThrottlePacketCallback ThrottleCallback
-		{
-			get{ return m_ThrottleCallback; }
-			set{ m_ThrottleCallback = value; }
-		}
+    public ThrottlePacketCallback ThrottleCallback{ get; set; }
 
-		public bool Ingame
-		{
-			get
-			{
-				return m_Ingame;
-			}
-		}
-	}
+    public bool Ingame{ get; }
+  }
 }

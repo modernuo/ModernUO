@@ -1,60 +1,58 @@
-using System;
-using Server;
 using Server.Engines.Harvest;
 
 namespace Server.Items
 {
-	public class SturdyPickaxe : BaseAxe, IUsesRemaining
-	{
-		public override int LabelNumber => 1045126; // sturdy pickaxe
-		public override HarvestSystem HarvestSystem => Mining.System;
+  public class SturdyPickaxe : BaseAxe, IUsesRemaining
+  {
+    [Constructible]
+    public SturdyPickaxe() : this(180)
+    {
+    }
 
-		public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
+    [Constructible]
+    public SturdyPickaxe(int uses) : base(0xE86)
+    {
+      Weight = 11.0;
+      Hue = 0x973;
+      UsesRemaining = uses;
+      ShowUsesRemaining = true;
+    }
 
-		public override int AosStrengthReq => 50;
-		public override int AosMinDamage => 13;
-		public override int AosMaxDamage => 15;
-		public override int AosSpeed => 35;
-		public override float MlSpeed => 3.00f;
+    public SturdyPickaxe(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 25;
-		public override int OldMinDamage => 1;
-		public override int OldMaxDamage => 15;
-		public override int OldSpeed => 35;
+    public override int LabelNumber => 1045126; // sturdy pickaxe
+    public override HarvestSystem HarvestSystem => Mining.System;
 
-		public override WeaponAnimation DefAnimation => WeaponAnimation.Slash1H;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
 
-		[Constructible]
-		public SturdyPickaxe() : this( 180 )
-		{
-		}
+    public override int AosStrengthReq => 50;
+    public override int AosMinDamage => 13;
+    public override int AosMaxDamage => 15;
+    public override int AosSpeed => 35;
+    public override float MlSpeed => 3.00f;
 
-		[Constructible]
-		public SturdyPickaxe( int uses ) : base( 0xE86 )
-		{
-			Weight = 11.0;
-			Hue = 0x973;
-			UsesRemaining = uses;
-			ShowUsesRemaining = true;
-		}
+    public override int OldStrengthReq => 25;
+    public override int OldMinDamage => 1;
+    public override int OldMaxDamage => 15;
+    public override int OldSpeed => 35;
 
-		public SturdyPickaxe( Serial serial ) : base( serial )
-		{
-		}
+    public override WeaponAnimation DefAnimation => WeaponAnimation.Slash1H;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

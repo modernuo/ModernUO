@@ -1,63 +1,60 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class SquirrelStatueEastAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new SquirrelStatueEastDeed();
+  public class SquirrelStatueEastAddon : BaseAddon
+  {
+    [Constructible]
+    public SquirrelStatueEastAddon()
+    {
+      AddComponent(new AddonComponent(0x2D10), 0, 0, 0);
+    }
 
-		[Constructible]
-		public SquirrelStatueEastAddon()
-		{
-			AddComponent( new AddonComponent( 0x2D10 ), 0, 0, 0 );
-		}
+    public SquirrelStatueEastAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public SquirrelStatueEastAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new SquirrelStatueEastDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 
-	public class SquirrelStatueEastDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new SquirrelStatueEastAddon();
-		public override int LabelNumber => 1073398; // squirrel statue (east)
+  public class SquirrelStatueEastDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public SquirrelStatueEastDeed()
+    {
+    }
 
-		[Constructible]
-		public SquirrelStatueEastDeed()
-		{
-		}
+    public SquirrelStatueEastDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public SquirrelStatueEastDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new SquirrelStatueEastAddon();
+    public override int LabelNumber => 1073398; // squirrel statue (east)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

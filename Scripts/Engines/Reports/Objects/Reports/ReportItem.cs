@@ -1,39 +1,37 @@
-using System;
-
 namespace Server.Engines.Reports
 {
-	public class ReportItem : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "ri", new ConstructCallback( Construct ) );
+  public class ReportItem : PersistableObject
+  {
+    public ReportItem()
+    {
+      Values = new ItemValueCollection();
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new ReportItem();
-		}
+    public ItemValueCollection Values{ get; }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public override void SerializeChildren(PersistanceWriter op)
+    {
+      for (int i = 0; i < Values.Count; ++i)
+        Values[i].Serialize(op);
+    }
 
-		private ItemValueCollection m_Values;
+    public override void DeserializeChildren(PersistanceReader ip)
+    {
+      while (ip.HasChild)
+        Values.Add(ip.GetChild() as ItemValue);
+    }
 
-		public ItemValueCollection Values{ get{ return m_Values; } }
+    #region Type Identification
 
-		public ReportItem()
-		{
-			m_Values = new ItemValueCollection();
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("ri", Construct);
 
-		public override void SerializeChildren( PersistanceWriter op )
-		{
-			for ( int i = 0; i < m_Values.Count; ++i )
-				m_Values[i].Serialize( op );
-		}
+    private static PersistableObject Construct()
+    {
+      return new ReportItem();
+    }
 
-		public override void DeserializeChildren( PersistanceReader ip )
-		{
-			while ( ip.HasChild )
-				m_Values.Add( ip.GetChild() as ItemValue );
-		}
-	}
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

@@ -1,48 +1,48 @@
-using System;
 using System.Collections.Generic;
-using Server;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Waiter : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+  public class Waiter : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public Waiter() : base( "the waiter" )
-		{
-			SetSkill( SkillName.Discordance, 36.0, 68.0 );
-		}
+    [Constructible]
+    public Waiter() : base("the waiter")
+    {
+      SetSkill(SkillName.Discordance, 36.0, 68.0);
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBWaiter() );
-		}
+    public Waiter(Serial serial) : base(serial)
+    {
+    }
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-			AddItem( new Server.Items.HalfApron() );
-		}
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBWaiter());
+    }
 
-		public Waiter( Serial serial ) : base( serial )
-		{
-		}
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      AddItem(new HalfApron());
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

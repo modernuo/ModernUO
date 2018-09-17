@@ -1,58 +1,52 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class OrcChieftainHelm : OrcHelm
-	{
-		public override int LabelNumber => 1094924; // Orc Chieftain Helm [Replica]
+  public class OrcChieftainHelm : OrcHelm
+  {
+    [Constructible]
+    public OrcChieftainHelm()
+    {
+      Hue = 0x2a3;
 
-		public override int BasePhysicalResistance => 23;
-		public override int BaseFireResistance => 1;
-		public override int BaseColdResistance => 23;
-		public override int BasePoisonResistance => 3;
-		public override int BaseEnergyResistance => 5;
+      Attributes.Luck = 100;
+      Attributes.RegenHits = 3;
 
-		public override int InitMinHits => 150;
-		public override int InitMaxHits => 150;
+      if (Utility.RandomBool())
+        Attributes.BonusHits = 30;
+      else
+        Attributes.AttackChance = 30;
+    }
 
-		public override bool CanFortify => false;
+    public OrcChieftainHelm(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public OrcChieftainHelm()
-		{
-			Hue = 0x2a3;
+    public override int LabelNumber => 1094924; // Orc Chieftain Helm [Replica]
 
-			Attributes.Luck = 100;
-			Attributes.RegenHits = 3;
+    public override int BasePhysicalResistance => 23;
+    public override int BaseFireResistance => 1;
+    public override int BaseColdResistance => 23;
+    public override int BasePoisonResistance => 3;
+    public override int BaseEnergyResistance => 5;
 
-			if( Utility.RandomBool() )
-				Attributes.BonusHits = 30;
-			else
-				Attributes.AttackChance = 30;
-		}
+    public override int InitMinHits => 150;
+    public override int InitMaxHits => 150;
 
-		public OrcChieftainHelm( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CanFortify => false;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 );
-		}
+      writer.Write(1);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if (version < 1 && Hue == 0x3f) /* Pigmented? */
-			{
-				Hue = 0x2a3;
-			}
-		}
-	}
+      if (version < 1 && Hue == 0x3f) /* Pigmented? */ Hue = 0x2a3;
+    }
+  }
 }

@@ -1,58 +1,54 @@
-using System;
-using System.Collections;
-using Server;
 using Server.Items;
 
 namespace Server.Engines.CannedEvil
 {
-	public class ChampionAltar : PentagramAddon
-	{
-		private ChampionSpawn m_Spawn;
+  public class ChampionAltar : PentagramAddon
+  {
+    private ChampionSpawn m_Spawn;
 
-		public ChampionAltar( ChampionSpawn spawn )
-		{
-			m_Spawn = spawn;
-		}
+    public ChampionAltar(ChampionSpawn spawn)
+    {
+      m_Spawn = spawn;
+    }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+    public ChampionAltar(Serial serial) : base(serial)
+    {
+    }
 
-			if ( m_Spawn != null )
-				m_Spawn.Delete();
-		}
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-		public ChampionAltar( Serial serial ) : base( serial )
-		{
-		}
+      m_Spawn?.Delete();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			writer.Write( m_Spawn );
-		}
+      writer.Write(m_Spawn);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Spawn = reader.ReadItem() as ChampionSpawn;
+      switch (version)
+      {
+        case 0:
+        {
+          m_Spawn = reader.ReadItem() as ChampionSpawn;
 
-					if ( m_Spawn == null )
-						Delete();
+          if (m_Spawn == null)
+            Delete();
 
-					break;
-				}
-			}
-		}
-	}
+          break;
+        }
+      }
+    }
+  }
 }

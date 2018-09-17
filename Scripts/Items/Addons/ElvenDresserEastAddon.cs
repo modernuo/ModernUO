@@ -1,64 +1,61 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class ElvenDresserEastAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new ElvenDresserEastDeed();
+  public class ElvenDresserEastAddon : BaseAddon
+  {
+    [Constructible]
+    public ElvenDresserEastAddon()
+    {
+      AddComponent(new AddonComponent(0x30E4), 0, 0, 0);
+      AddComponent(new AddonComponent(0x30E3), 0, -1, 0);
+    }
 
-		[Constructible]
-		public ElvenDresserEastAddon()
-		{
-			AddComponent( new AddonComponent( 0x30E4 ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x30E3 ), 0, -1, 0 );
-		}
+    public ElvenDresserEastAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public ElvenDresserEastAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new ElvenDresserEastDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 
-	public class ElvenDresserEastDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new ElvenDresserEastAddon();
-		public override int LabelNumber => 1073388; // elven dresser (east)
+  public class ElvenDresserEastDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public ElvenDresserEastDeed()
+    {
+    }
 
-		[Constructible]
-		public ElvenDresserEastDeed()
-		{
-		}
+    public ElvenDresserEastDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public ElvenDresserEastDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new ElvenDresserEastAddon();
+    public override int LabelNumber => 1073388; // elven dresser (east)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

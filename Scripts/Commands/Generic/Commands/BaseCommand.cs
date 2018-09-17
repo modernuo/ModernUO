@@ -1,205 +1,158 @@
-using System;
 using System.Collections;
-using Server;
 using Server.Gumps;
 
 namespace Server.Commands.Generic
 {
-	public enum ObjectTypes
-	{
-		Both,
-		Items,
-		Mobiles,
-		All
-	}
+  public enum ObjectTypes
+  {
+    Both,
+    Items,
+    Mobiles,
+    All
+  }
 
-	public abstract class BaseCommand
-	{
-		private string[] m_Commands;
-		private AccessLevel m_AccessLevel;
-		private CommandSupport m_Implementors;
-		private ObjectTypes m_ObjectTypes;
-		private bool m_ListOptimized;
-		private string m_Usage;
-		private string m_Description;
+  public abstract class BaseCommand
+  {
+    private ArrayList m_Responses, m_Failures;
 
-		public bool ListOptimized
-		{
-			get{ return m_ListOptimized; }
-			set{ m_ListOptimized = value; }
-		}
+    public BaseCommand()
+    {
+      m_Responses = new ArrayList();
+      m_Failures = new ArrayList();
+    }
 
-		public string[] Commands
-		{
-			get{ return m_Commands; }
-			set{ m_Commands = value; }
-		}
+    public bool ListOptimized{ get; set; }
 
-		public string Usage
-		{
-			get{ return m_Usage; }
-			set{ m_Usage = value; }
-		}
+    public string[] Commands{ get; set; }
 
-		public string Description
-		{
-			get{ return m_Description; }
-			set{ m_Description = value; }
-		}
+    public string Usage{ get; set; }
 
-		public AccessLevel AccessLevel
-		{
-			get{ return m_AccessLevel; }
-			set{ m_AccessLevel = value; }
-		}
+    public string Description{ get; set; }
 
-		public ObjectTypes ObjectTypes
-		{
-			get{ return m_ObjectTypes; }
-			set{ m_ObjectTypes = value; }
-		}
+    public AccessLevel AccessLevel{ get; set; }
 
-		public CommandSupport Supports
-		{
-			get{ return m_Implementors; }
-			set{ m_Implementors = value; }
-		}
+    public ObjectTypes ObjectTypes{ get; set; }
 
-		public BaseCommand()
-		{
-			m_Responses = new ArrayList();
-			m_Failures = new ArrayList();
-		}
+    public CommandSupport Supports{ get; set; }
 
-		public static bool IsAccessible( Mobile from, object obj )
-		{
-			if ( from.AccessLevel >= AccessLevel.Administrator || obj == null )
-				return true;
+    public static bool IsAccessible(Mobile from, object obj)
+    {
+      if (from.AccessLevel >= AccessLevel.Administrator || obj == null)
+        return true;
 
-			Mobile mob;
+      Mobile mob = null;
 
-			if ( obj is Mobile )
-				mob = (Mobile)obj;
-			else if ( obj is Item )
-				mob = ((Item)obj).RootParent as Mobile;
-			else
-				mob = null;
+      if (obj is Mobile m)
+        mob = m;
+      else if (obj is Item item)
+        mob = item.RootParent as Mobile;
 
-			if ( mob == null || mob == from || from.AccessLevel > mob.AccessLevel )
-				return true;
+      return mob == null || mob == from || from.AccessLevel > mob.AccessLevel;
+    }
 
-			return false;
-		}
+    public virtual void ExecuteList(CommandEventArgs e, ArrayList list)
+    {
+      for (int i = 0; i < list.Count; ++i)
+        Execute(e, list[i]);
+    }
 
-		public virtual void ExecuteList( CommandEventArgs e, ArrayList list )
-		{
-			for ( int i = 0; i < list.Count; ++i )
-				Execute( e, list[i] );
-		}
+    public virtual void Execute(CommandEventArgs e, object obj)
+    {
+    }
 
-		public virtual void Execute( CommandEventArgs e, object obj )
-		{
-		}
+    public virtual bool ValidateArgs(BaseCommandImplementor impl, CommandEventArgs e)
+    {
+      return true;
+    }
 
-		public virtual bool ValidateArgs( BaseCommandImplementor impl, CommandEventArgs e )
-		{
-			return true;
-		}
+    public void AddResponse(string message)
+    {
+      for (int i = 0; i < m_Responses.Count; ++i)
+      {
+        MessageEntry entry = (MessageEntry)m_Responses[i];
 
-		private ArrayList m_Responses, m_Failures;
+        if (entry.m_Message == message)
+        {
+          ++entry.m_Count;
+          return;
+        }
+      }
 
-		private class MessageEntry
-		{
-			public string m_Message;
-			public int m_Count;
+      if (m_Responses.Count == 10)
+        return;
 
-			public MessageEntry( string message )
-			{
-				m_Message = message;
-				m_Count = 1;
-			}
+      m_Responses.Add(new MessageEntry(message));
+    }
 
-			public override string ToString()
-			{
-				if ( m_Count > 1 )
-					return String.Format( "{0} ({1})", m_Message, m_Count );
+    public void AddResponse(Gump gump)
+    {
+      m_Responses.Add(gump);
+    }
 
-				return m_Message;
-			}
-		}
+    public void LogFailure(string message)
+    {
+      for (int i = 0; i < m_Failures.Count; ++i)
+      {
+        MessageEntry entry = (MessageEntry)m_Failures[i];
 
-		public void AddResponse( string message )
-		{
-			for ( int i = 0; i < m_Responses.Count; ++i )
-			{
-				MessageEntry entry = (MessageEntry)m_Responses[i];
+        if (entry.m_Message == message)
+        {
+          ++entry.m_Count;
+          return;
+        }
+      }
 
-				if ( entry.m_Message == message )
-				{
-					++entry.m_Count;
-					return;
-				}
-			}
+      if (m_Failures.Count == 10)
+        return;
 
-			if ( m_Responses.Count == 10 )
-				return;
+      m_Failures.Add(new MessageEntry(message));
+    }
 
-			m_Responses.Add( new MessageEntry( message ) );
-		}
+    public void Flush(Mobile from, bool flushToLog)
+    {
+      if (m_Responses.Count > 0)
+        for (int i = 0; i < m_Responses.Count; ++i)
+        {
+          object obj = m_Responses[i];
 
-		public void AddResponse( Gump gump )
-		{
-			m_Responses.Add( gump );
-		}
+          if (obj is MessageEntry entry)
+          {
+            from.SendMessage(entry.ToString());
 
-		public void LogFailure( string message )
-		{
-			for ( int i = 0; i < m_Failures.Count; ++i )
-			{
-				MessageEntry entry = (MessageEntry)m_Failures[i];
+            if (flushToLog)
+              CommandLogging.WriteLine(from, entry.ToString());
+          }
+          else if (obj is Gump gump)
+          {
+            from.SendGump(gump);
+          }
+        }
+      else
+        for (int i = 0; i < m_Failures.Count; ++i)
+          from.SendMessage(((MessageEntry)m_Failures[i]).ToString());
 
-				if ( entry.m_Message == message )
-				{
-					++entry.m_Count;
-					return;
-				}
-			}
+      m_Responses.Clear();
+      m_Failures.Clear();
+    }
 
-			if ( m_Failures.Count == 10 )
-				return;
+    private class MessageEntry
+    {
+      public int m_Count;
+      public string m_Message;
 
-			m_Failures.Add( new MessageEntry( message ) );
-		}
+      public MessageEntry(string message)
+      {
+        m_Message = message;
+        m_Count = 1;
+      }
 
-		public void Flush( Mobile from, bool flushToLog )
-		{
-			if ( m_Responses.Count > 0 )
-			{
-				for ( int i = 0; i < m_Responses.Count; ++i )
-				{
-					object obj = m_Responses[i];
+      public override string ToString()
+      {
+        if (m_Count > 1)
+          return $"{m_Message} ({m_Count})";
 
-					if ( obj is MessageEntry )
-					{
-						from.SendMessage( ((MessageEntry)obj).ToString() );
-
-						if ( flushToLog )
-							CommandLogging.WriteLine( from, ((MessageEntry)obj).ToString() );
-					}
-					else if ( obj is Gump )
-					{
-						from.SendGump( (Gump) obj );
-					}
-				}
-			}
-			else
-			{
-				for ( int i = 0; i < m_Failures.Count; ++i )
-					from.SendMessage( ((MessageEntry)m_Failures[i]).ToString() );
-			}
-
-			m_Responses.Clear();
-			m_Failures.Clear();
-		}
-	}
+        return m_Message;
+      }
+    }
+  }
 }

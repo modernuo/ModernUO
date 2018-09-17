@@ -1,193 +1,193 @@
 using System;
-using Server;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class ShadowKnight : BaseCreature
-	{
-		public override string CorpseName => "a shadow knight corpse";
-		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.ConcussionBlow : WeaponAbility.CrushingBlow;
+  public class ShadowKnight : BaseCreature
+  {
+    private bool m_HasTeleportedAway;
 
-		public override bool IgnoreYoungProtection => Core.ML;
+    private Timer m_SoundTimer;
 
-		[Constructible]
-		public ShadowKnight() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Name = NameList.RandomName( "shadow knight" );
-			Title = "the Shadow Knight";
-			Body = 311;
+    [Constructible]
+    public ShadowKnight() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Name = NameList.RandomName("shadow knight");
+      Title = "the Shadow Knight";
+      Body = 311;
 
-			SetStr( 250 );
-			SetDex( 100 );
-			SetInt( 100 );
+      SetStr(250);
+      SetDex(100);
+      SetInt(100);
 
-			SetHits( 2000 );
+      SetHits(2000);
 
-			SetDamage( 20, 30 );
+      SetDamage(20, 30);
 
-			SetDamageType( ResistanceType.Physical, 60 );
-			SetDamageType( ResistanceType.Cold, 40 );
+      SetDamageType(ResistanceType.Physical, 60);
+      SetDamageType(ResistanceType.Cold, 40);
 
-			SetResistance( ResistanceType.Physical, 90 );
-			SetResistance( ResistanceType.Fire, 65 );
-			SetResistance( ResistanceType.Cold, 75 );
-			SetResistance( ResistanceType.Poison, 75 );
-			SetResistance( ResistanceType.Energy, 55 );
+      SetResistance(ResistanceType.Physical, 90);
+      SetResistance(ResistanceType.Fire, 65);
+      SetResistance(ResistanceType.Cold, 75);
+      SetResistance(ResistanceType.Poison, 75);
+      SetResistance(ResistanceType.Energy, 55);
 
-			SetSkill( SkillName.Chivalry, 120.0 );
-			SetSkill( SkillName.DetectHidden, 80.0 );
-			SetSkill( SkillName.EvalInt, 100.0 );
-			SetSkill( SkillName.Magery, 100.0 );
-			SetSkill( SkillName.Meditation, 100.0 );
-			SetSkill( SkillName.MagicResist, 120.0 );
-			SetSkill( SkillName.Tactics, 100.0 );
-			SetSkill( SkillName.Wrestling, 100.0 );
+      SetSkill(SkillName.Chivalry, 120.0);
+      SetSkill(SkillName.DetectHidden, 80.0);
+      SetSkill(SkillName.EvalInt, 100.0);
+      SetSkill(SkillName.Magery, 100.0);
+      SetSkill(SkillName.Meditation, 100.0);
+      SetSkill(SkillName.MagicResist, 120.0);
+      SetSkill(SkillName.Tactics, 100.0);
+      SetSkill(SkillName.Wrestling, 100.0);
 
-			Fame = 25000;
-			Karma = -25000;
+      Fame = 25000;
+      Karma = -25000;
 
-			VirtualArmor = 54;
-		}
+      VirtualArmor = 54;
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.UltraRich, 2 );
-		}
+    public ShadowKnight(Serial serial) : base(serial)
+    {
+    }
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+    public override string CorpseName => "a shadow knight corpse";
 
-		public override void OnDeath( Container c )
-		{
-			base.OnDeath( c );
+    public override bool IgnoreYoungProtection => Core.ML;
 
-			if ( !Summoned && !NoKillAwards && DemonKnight.CheckArtifactChance( this ) )
-				DemonKnight.DistributeArtifact( this );
-		}
+    public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
-		public override int GetIdleSound()
-		{
-			return 0x2CE;
-		}
+    public override bool BardImmune => !Core.SE;
+    public override bool Unprovokable => Core.SE;
+    public override bool AreaPeaceImmune => Core.SE;
+    public override Poison PoisonImmune => Poison.Lethal;
 
-		public override int GetDeathSound()
-		{
-			return 0x2C1;
-		}
+    public override int TreasureMapLevel => 1;
 
-		public override int GetHurtSound()
-		{
-			return 0x2D1;
-		}
+    public override WeaponAbility GetWeaponAbility()
+    {
+      return Utility.RandomBool() ? WeaponAbility.ConcussionBlow : WeaponAbility.CrushingBlow;
+    }
 
-		public override int GetAttackSound()
-		{
-			return 0x2C8;
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.UltraRich, 2);
+    }
 
-		private Timer m_SoundTimer;
-		private bool m_HasTeleportedAway;
+    public override void OnDeath(Container c)
+    {
+      base.OnDeath(c);
 
-		public override void OnCombatantChange()
-		{
-			base.OnCombatantChange();
+      if (!Summoned && !NoKillAwards && DemonKnight.CheckArtifactChance(this))
+        DemonKnight.DistributeArtifact(this);
+    }
 
-			if ( Hidden && Combatant != null )
-				Combatant = null;
-		}
+    public override int GetIdleSound()
+    {
+      return 0x2CE;
+    }
 
-		public virtual void SendTrackingSound()
-		{
-			if ( Hidden )
-			{
-				Effects.PlaySound( this.Location, this.Map, 0x2C8 );
-				Combatant = null;
-			}
-			else
-			{
-				Frozen = false;
+    public override int GetDeathSound()
+    {
+      return 0x2C1;
+    }
 
-				if ( m_SoundTimer != null )
-					m_SoundTimer.Stop();
+    public override int GetHurtSound()
+    {
+      return 0x2D1;
+    }
 
-				m_SoundTimer = null;
-			}
-		}
+    public override int GetAttackSound()
+    {
+      return 0x2C8;
+    }
 
-		public override void OnThink()
-		{
-			if ( !m_HasTeleportedAway && Hits < (HitsMax / 2) )
-			{
-				Map map = this.Map;
+    public override void OnCombatantChange()
+    {
+      base.OnCombatantChange();
 
-				if ( map != null )
-				{
-					// try 10 times to find a teleport spot
-					for ( int i = 0; i < 10; ++i )
-					{
-						int x = X + (Utility.RandomMinMax( 5, 10 ) * (Utility.RandomBool() ? 1 : -1));
-						int y = Y + (Utility.RandomMinMax( 5, 10 ) * (Utility.RandomBool() ? 1 : -1));
-						int z = Z;
+      if (Hidden && Combatant != null)
+        Combatant = null;
+    }
 
-						if ( !map.CanFit( x, y, z, 16, false, false ) )
-							continue;
+    public virtual void SendTrackingSound()
+    {
+      if (Hidden)
+      {
+        Effects.PlaySound(Location, Map, 0x2C8);
+        Combatant = null;
+      }
+      else
+      {
+        Frozen = false;
 
-						Point3D from = this.Location;
-						Point3D to = new Point3D( x, y, z );
+        m_SoundTimer?.Stop();
 
-						if ( !InLOS( to ) )
-							continue;
+        m_SoundTimer = null;
+      }
+    }
 
-						this.Location = to;
-						this.ProcessDelta();
-						this.Hidden = true;
-						this.Combatant = null;
+    public override void OnThink()
+    {
+      if (!m_HasTeleportedAway && Hits < HitsMax / 2)
+      {
+        Map map = Map;
 
-						Effects.SendLocationParticles( EffectItem.Create( from, map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 2023 );
-						Effects.SendLocationParticles( EffectItem.Create(   to, map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 5023 );
+        if (map != null)
+          for (int i = 0; i < 10; ++i)
+          {
+            int x = X + Utility.RandomMinMax(5, 10) * (Utility.RandomBool() ? 1 : -1);
+            int y = Y + Utility.RandomMinMax(5, 10) * (Utility.RandomBool() ? 1 : -1);
+            int z = Z;
 
-						Effects.PlaySound( to, map, 0x1FE );
+            if (!map.CanFit(x, y, z, 16, false, false))
+              continue;
 
-						m_HasTeleportedAway = true;
-						m_SoundTimer = Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), TimeSpan.FromSeconds( 2.5 ), new TimerCallback( SendTrackingSound ) );
+            Point3D from = Location;
+            Point3D to = new Point3D(x, y, z);
 
-						Frozen = true;
+            if (!InLOS(to))
+              continue;
 
-						break;
-					}
-				}
-			}
+            Location = to;
+            ProcessDelta();
+            Hidden = true;
+            Combatant = null;
 
-			base.OnThink();
-		}
+            Effects.SendLocationParticles(EffectItem.Create(from, map, EffectItem.DefaultDuration), 0x3728, 10,
+              10, 2023);
+            Effects.SendLocationParticles(EffectItem.Create(to, map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+              5023);
 
-		public override bool BardImmune => !Core.SE;
-		public override bool Unprovokable => Core.SE;
-		public override bool AreaPeaceImmune => Core.SE;
-		public override Poison PoisonImmune => Poison.Lethal;
+            Effects.PlaySound(to, map, 0x1FE);
 
-		public override int TreasureMapLevel => 1;
+            m_HasTeleportedAway = true;
+            m_SoundTimer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(2.5),
+              SendTrackingSound);
 
-		public ShadowKnight( Serial serial ) : base( serial )
-		{
-		}
+            Frozen = true;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+            break;
+          }
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
+      base.OnThink();
+    }
 
-			if ( BaseSoundID == 357 )
-				BaseSoundID = -1;
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+
+      if (BaseSoundID == 357)
+        BaseSoundID = -1;
+    }
+  }
 }

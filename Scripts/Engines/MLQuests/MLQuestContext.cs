@@ -1,300 +1,275 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Server.Mobiles;
-using Server.Engines.MLQuests.Objectives;
 
 namespace Server.Engines.MLQuests
 {
-	[Flags]
-	public enum MLQuestFlag
-	{
-		None			= 0x00,
-		Spellweaving	= 0x01,
-		SummonFey		= 0x02,
-		SummonFiend		= 0x04,
-		BedlamAccess	= 0x08
-	}
+  [Flags]
+  public enum MLQuestFlag
+  {
+    None = 0x00,
+    Spellweaving = 0x01,
+    SummonFey = 0x02,
+    SummonFiend = 0x04,
+    BedlamAccess = 0x08
+  }
 
-	[PropertyObject]
-	public class MLQuestContext
-	{
-		private class MLDoneQuestInfo
-		{
-			public MLQuest m_Quest;
-			public DateTime m_NextAvailable;
+  [PropertyObject]
+  public class MLQuestContext
+  {
+    private List<MLDoneQuestInfo> m_DoneQuests;
+    private MLQuestFlag m_Flags;
 
-			public MLDoneQuestInfo( MLQuest quest, DateTime nextAvailable )
-			{
-				m_Quest = quest;
-				m_NextAvailable = nextAvailable;
-			}
+    public MLQuestContext(PlayerMobile owner)
+    {
+      Owner = owner;
+      QuestInstances = new List<MLQuestInstance>();
+      m_DoneQuests = new List<MLDoneQuestInfo>();
+      ChainOffers = new List<MLQuest>();
+      m_Flags = MLQuestFlag.None;
+    }
 
-			public void Serialize( GenericWriter writer )
-			{
-				MLQuestSystem.WriteQuestRef( writer, m_Quest );
-				writer.Write( m_NextAvailable );
-			}
+    public MLQuestContext(GenericReader reader, int version)
+    {
+      Owner = reader.ReadMobile<PlayerMobile>();
+      QuestInstances = new List<MLQuestInstance>();
+      m_DoneQuests = new List<MLDoneQuestInfo>();
+      ChainOffers = new List<MLQuest>();
 
-			public static MLDoneQuestInfo Deserialize( GenericReader reader, int version )
-			{
-				MLQuest quest = MLQuestSystem.ReadQuestRef( reader );
-				DateTime nextAvailable = reader.ReadDateTime();
+      int instances = reader.ReadInt();
 
-				if ( quest == null || !quest.RecordCompletion )
-					return null; // forget about this record
+      for (int i = 0; i < instances; ++i)
+      {
+        MLQuestInstance instance = MLQuestInstance.Deserialize(reader, version, Owner);
 
-				return new MLDoneQuestInfo( quest, nextAvailable );
-			}
-		}
+        if (instance != null)
+          QuestInstances.Add(instance);
+      }
 
-		private PlayerMobile m_Owner;
-		private List<MLQuestInstance> m_QuestInstances;
-		private List<MLDoneQuestInfo> m_DoneQuests;
-		private List<MLQuest> m_ChainOffers;
-		private MLQuestFlag m_Flags;
+      int doneQuests = reader.ReadInt();
 
-		public PlayerMobile Owner
-		{
-			get { return m_Owner; }
-		}
+      for (int i = 0; i < doneQuests; ++i)
+      {
+        MLDoneQuestInfo info = MLDoneQuestInfo.Deserialize(reader, version);
 
-		public List<MLQuestInstance> QuestInstances
-		{
-			get { return m_QuestInstances; }
-		}
+        if (info != null)
+          m_DoneQuests.Add(info);
+      }
 
-		public List<MLQuest> ChainOffers
-		{
-			get { return m_ChainOffers; }
-		}
+      int chainOffers = reader.ReadInt();
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool IsFull
-		{
-			get { return m_QuestInstances.Count >= MLQuestSystem.MaxConcurrentQuests; }
-		}
+      for (int i = 0; i < chainOffers; ++i)
+      {
+        MLQuest quest = MLQuestSystem.ReadQuestRef(reader);
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Spellweaving
-		{
-			get { return GetFlag( MLQuestFlag.Spellweaving ); }
-			set { SetFlag( MLQuestFlag.Spellweaving, value ); }
-		}
+        if (quest != null && quest.IsChainTriggered)
+          ChainOffers.Add(quest);
+      }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool SummonFey
-		{
-			get { return GetFlag( MLQuestFlag.SummonFey ); }
-			set { SetFlag( MLQuestFlag.SummonFey, value ); }
-		}
+      m_Flags = (MLQuestFlag)reader.ReadEncodedInt();
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool SummonFiend
-		{
-			get { return GetFlag( MLQuestFlag.SummonFiend ); }
-			set { SetFlag( MLQuestFlag.SummonFiend, value ); }
-		}
+    public PlayerMobile Owner{ get; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool BedlamAccess
-		{
-			get { return GetFlag( MLQuestFlag.BedlamAccess ); }
-			set { SetFlag( MLQuestFlag.BedlamAccess, value ); }
-		}
+    public List<MLQuestInstance> QuestInstances{ get; }
 
-		public MLQuestContext( PlayerMobile owner )
-		{
-			m_Owner = owner;
-			m_QuestInstances = new List<MLQuestInstance>();
-			m_DoneQuests = new List<MLDoneQuestInfo>();
-			m_ChainOffers = new List<MLQuest>();
-			m_Flags = MLQuestFlag.None;
-		}
+    public List<MLQuest> ChainOffers{ get; }
 
-		public bool HasDoneQuest( Type questType )
-		{
-			MLQuest quest = MLQuestSystem.FindQuest( questType );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool IsFull => QuestInstances.Count >= MLQuestSystem.MaxConcurrentQuests;
 
-			return ( quest != null && HasDoneQuest( quest ) );
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Spellweaving
+    {
+      get => GetFlag(MLQuestFlag.Spellweaving);
+      set => SetFlag(MLQuestFlag.Spellweaving, value);
+    }
 
-		public bool HasDoneQuest( MLQuest quest )
-		{
-			foreach ( MLDoneQuestInfo info in m_DoneQuests )
-			{
-				if ( info.m_Quest == quest )
-					return true;
-			}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool SummonFey
+    {
+      get => GetFlag(MLQuestFlag.SummonFey);
+      set => SetFlag(MLQuestFlag.SummonFey, value);
+    }
 
-			return false;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool SummonFiend
+    {
+      get => GetFlag(MLQuestFlag.SummonFiend);
+      set => SetFlag(MLQuestFlag.SummonFiend, value);
+    }
 
-		public bool HasDoneQuest( MLQuest quest, out DateTime nextAvailable )
-		{
-			nextAvailable = DateTime.MinValue;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool BedlamAccess
+    {
+      get => GetFlag(MLQuestFlag.BedlamAccess);
+      set => SetFlag(MLQuestFlag.BedlamAccess, value);
+    }
 
-			foreach ( MLDoneQuestInfo info in m_DoneQuests )
-			{
-				if ( info.m_Quest == quest )
-				{
-					nextAvailable = info.m_NextAvailable;
-					return true;
-				}
-			}
+    public bool HasDoneQuest(Type questType)
+    {
+      MLQuest quest = MLQuestSystem.FindQuest(questType);
 
-			return false;
-		}
+      return quest != null && HasDoneQuest(quest);
+    }
 
-		public void SetDoneQuest( MLQuest quest )
-		{
-			SetDoneQuest( quest, DateTime.MinValue );
-		}
+    public bool HasDoneQuest(MLQuest quest)
+    {
+      foreach (MLDoneQuestInfo info in m_DoneQuests)
+        if (info.m_Quest == quest)
+          return true;
 
-		public void SetDoneQuest( MLQuest quest, DateTime nextAvailable )
-		{
-			foreach ( MLDoneQuestInfo info in m_DoneQuests )
-			{
-				if ( info.m_Quest == quest )
-				{
-					info.m_NextAvailable = nextAvailable;
-					return;
-				}
-			}
+      return false;
+    }
 
-			m_DoneQuests.Add( new MLDoneQuestInfo( quest, nextAvailable ) );
-		}
+    public bool HasDoneQuest(MLQuest quest, out DateTime nextAvailable)
+    {
+      nextAvailable = DateTime.MinValue;
 
-		public void RemoveDoneQuest( MLQuest quest )
-		{
-			for ( int i = m_DoneQuests.Count - 1; i >= 0; --i )
-			{
-				MLDoneQuestInfo info = m_DoneQuests[i];
+      foreach (MLDoneQuestInfo info in m_DoneQuests)
+        if (info.m_Quest == quest)
+        {
+          nextAvailable = info.m_NextAvailable;
+          return true;
+        }
 
-				if ( info.m_Quest == quest )
-					m_DoneQuests.RemoveAt( i );
-			}
-		}
+      return false;
+    }
 
-		public void HandleDeath()
-		{
-			for ( int i = m_QuestInstances.Count - 1; i >= 0; --i )
-				m_QuestInstances[i].OnPlayerDeath();
-		}
+    public void SetDoneQuest(MLQuest quest)
+    {
+      SetDoneQuest(quest, DateTime.MinValue);
+    }
 
-		public void HandleDeletion()
-		{
-			for ( int i = m_QuestInstances.Count - 1; i >= 0; --i )
-				m_QuestInstances[i].Remove();
-		}
+    public void SetDoneQuest(MLQuest quest, DateTime nextAvailable)
+    {
+      foreach (MLDoneQuestInfo info in m_DoneQuests)
+        if (info.m_Quest == quest)
+        {
+          info.m_NextAvailable = nextAvailable;
+          return;
+        }
 
-		public MLQuestInstance FindInstance( Type questType )
-		{
-			MLQuest quest = MLQuestSystem.FindQuest( questType );
+      m_DoneQuests.Add(new MLDoneQuestInfo(quest, nextAvailable));
+    }
 
-			if ( quest == null )
-				return null;
+    public void RemoveDoneQuest(MLQuest quest)
+    {
+      for (int i = m_DoneQuests.Count - 1; i >= 0; --i)
+      {
+        MLDoneQuestInfo info = m_DoneQuests[i];
 
-			return FindInstance( quest );
-		}
+        if (info.m_Quest == quest)
+          m_DoneQuests.RemoveAt(i);
+      }
+    }
 
-		public MLQuestInstance FindInstance( MLQuest quest )
-		{
-			foreach ( MLQuestInstance instance in m_QuestInstances )
-			{
-				if ( instance.Quest == quest )
-					return instance;
-			}
+    public void HandleDeath()
+    {
+      for (int i = QuestInstances.Count - 1; i >= 0; --i)
+        QuestInstances[i].OnPlayerDeath();
+    }
 
-			return null;
-		}
+    public void HandleDeletion()
+    {
+      for (int i = QuestInstances.Count - 1; i >= 0; --i)
+        QuestInstances[i].Remove();
+    }
 
-		public bool IsDoingQuest( Type questType )
-		{
-			MLQuest quest = MLQuestSystem.FindQuest( questType );
+    public MLQuestInstance FindInstance(Type questType)
+    {
+      MLQuest quest = MLQuestSystem.FindQuest(questType);
 
-			return ( quest != null && IsDoingQuest( quest ) );
-		}
+      if (quest == null)
+        return null;
 
-		public bool IsDoingQuest( MLQuest quest )
-		{
-			return ( FindInstance( quest ) != null );
-		}
+      return FindInstance(quest);
+    }
 
-		public void Serialize( GenericWriter writer )
-		{
-			// Version info is written in MLQuestPersistence.Serialize
+    public MLQuestInstance FindInstance(MLQuest quest)
+    {
+      foreach (MLQuestInstance instance in QuestInstances)
+        if (instance.Quest == quest)
+          return instance;
 
-			writer.WriteMobile<PlayerMobile>( m_Owner );
-			writer.Write( m_QuestInstances.Count );
+      return null;
+    }
 
-			foreach ( MLQuestInstance instance in m_QuestInstances )
-				instance.Serialize( writer );
+    public bool IsDoingQuest(Type questType)
+    {
+      MLQuest quest = MLQuestSystem.FindQuest(questType);
 
-			writer.Write( m_DoneQuests.Count );
+      return quest != null && IsDoingQuest(quest);
+    }
 
-			foreach ( MLDoneQuestInfo info in m_DoneQuests )
-				info.Serialize( writer );
+    public bool IsDoingQuest(MLQuest quest)
+    {
+      return FindInstance(quest) != null;
+    }
 
-			writer.Write( m_ChainOffers.Count );
+    public void Serialize(GenericWriter writer)
+    {
+      // Version info is written in MLQuestPersistence.Serialize
 
-			foreach ( MLQuest quest in m_ChainOffers )
-				MLQuestSystem.WriteQuestRef( writer, quest );
+      writer.WriteMobile(Owner);
+      writer.Write(QuestInstances.Count);
 
-			writer.WriteEncodedInt( (int)m_Flags );
-		}
+      foreach (MLQuestInstance instance in QuestInstances)
+        instance.Serialize(writer);
 
-		public MLQuestContext( GenericReader reader, int version )
-		{
-			m_Owner = reader.ReadMobile<PlayerMobile>();
-			m_QuestInstances = new List<MLQuestInstance>();
-			m_DoneQuests = new List<MLDoneQuestInfo>();
-			m_ChainOffers = new List<MLQuest>();
+      writer.Write(m_DoneQuests.Count);
 
-			int instances = reader.ReadInt();
+      foreach (MLDoneQuestInfo info in m_DoneQuests)
+        info.Serialize(writer);
 
-			for ( int i = 0; i < instances; ++i )
-			{
-				MLQuestInstance instance = MLQuestInstance.Deserialize( reader, version, m_Owner );
+      writer.Write(ChainOffers.Count);
 
-				if ( instance != null )
-					m_QuestInstances.Add( instance );
-			}
+      foreach (MLQuest quest in ChainOffers)
+        MLQuestSystem.WriteQuestRef(writer, quest);
 
-			int doneQuests = reader.ReadInt();
+      writer.WriteEncodedInt((int)m_Flags);
+    }
 
-			for ( int i = 0; i < doneQuests; ++i )
-			{
-				MLDoneQuestInfo info = MLDoneQuestInfo.Deserialize( reader, version );
+    public bool GetFlag(MLQuestFlag flag)
+    {
+      return (m_Flags & flag) != 0;
+    }
 
-				if ( info != null )
-					m_DoneQuests.Add( info );
-			}
+    public void SetFlag(MLQuestFlag flag, bool value)
+    {
+      if (value)
+        m_Flags |= flag;
+      else
+        m_Flags &= ~flag;
+    }
 
-			int chainOffers = reader.ReadInt();
+    private class MLDoneQuestInfo
+    {
+      public DateTime m_NextAvailable;
+      public MLQuest m_Quest;
 
-			for ( int i = 0; i < chainOffers; ++i )
-			{
-				MLQuest quest = MLQuestSystem.ReadQuestRef( reader );
+      public MLDoneQuestInfo(MLQuest quest, DateTime nextAvailable)
+      {
+        m_Quest = quest;
+        m_NextAvailable = nextAvailable;
+      }
 
-				if ( quest != null && quest.IsChainTriggered )
-					m_ChainOffers.Add( quest );
-			}
+      public void Serialize(GenericWriter writer)
+      {
+        MLQuestSystem.WriteQuestRef(writer, m_Quest);
+        writer.Write(m_NextAvailable);
+      }
 
-			m_Flags = (MLQuestFlag)reader.ReadEncodedInt();
-		}
+      public static MLDoneQuestInfo Deserialize(GenericReader reader, int version)
+      {
+        MLQuest quest = MLQuestSystem.ReadQuestRef(reader);
+        DateTime nextAvailable = reader.ReadDateTime();
 
-		public bool GetFlag( MLQuestFlag flag )
-		{
-			return ( ( m_Flags & flag ) != 0 );
-		}
+        if (quest == null || !quest.RecordCompletion)
+          return null; // forget about this record
 
-		public void SetFlag( MLQuestFlag flag, bool value )
-		{
-			if ( value )
-				m_Flags |= flag;
-			else
-				m_Flags &= ~flag;
-		}
-	}
+        return new MLDoneQuestInfo(quest, nextAvailable);
+      }
+    }
+  }
 }

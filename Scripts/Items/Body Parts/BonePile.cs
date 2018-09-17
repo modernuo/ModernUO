@@ -1,45 +1,41 @@
-using System;
-using Server.Items;
-using Server.Network;
-
 namespace Server.Items
 {
-	[FlippableAttribute( 0x1B09, 0x1B10 )]
-	public class BonePile : Item, IScissorable
-	{
-		[Constructible]
-		public BonePile( ) : base( 0x1B09 + Utility.Random( 8 ) )
-		{
-			Stackable = false;
-			Weight = 10.0;
-		}
+  [Flippable(0x1B09, 0x1B10)]
+  public class BonePile : Item, IScissorable
+  {
+    [Constructible]
+    public BonePile() : base(0x1B09 + Utility.Random(8))
+    {
+      Stackable = false;
+      Weight = 10.0;
+    }
 
-		public BonePile( Serial serial ) : base( serial )
-		{
-		}
+    public BonePile(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public bool Scissor(Mobile from, Scissors scissors)
+    {
+      if (Deleted || !from.CanSee(this))
+        return false;
 
-			writer.Write( (int) 0 ); // version
-		}
+      base.ScissorHelper(from, new Bone(), Utility.RandomMinMax(10, 15));
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      return true;
+    }
 
-			int version = reader.ReadInt();
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public bool Scissor( Mobile from, Scissors scissors )
-		{
-			if ( Deleted || !from.CanSee( this ) )
-				return false;
+      writer.Write(0); // version
+    }
 
-			base.ScissorHelper( from, new Bone(), Utility.RandomMinMax( 10, 15 ) );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			return true;
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

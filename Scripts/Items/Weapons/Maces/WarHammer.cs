@@ -1,54 +1,50 @@
-using System;
-using Server.Network;
-using Server.Items;
-
 namespace Server.Items
 {
-	[FlippableAttribute( 0x1439, 0x1438 )]
-	public class WarHammer : BaseBashing
-	{
-		public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.CrushingBlow;
+  [Flippable(0x1439, 0x1438)]
+  public class WarHammer : BaseBashing
+  {
+    [Constructible]
+    public WarHammer() : base(0x1439)
+    {
+      Weight = 10.0;
+      Layer = Layer.TwoHanded;
+    }
 
-		public override int AosStrengthReq => 95;
-		public override int AosMinDamage => 17;
-		public override int AosMaxDamage => 18;
-		public override int AosSpeed => 28;
-		public override float MlSpeed => 3.75f;
+    public WarHammer(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 40;
-		public override int OldMinDamage => 8;
-		public override int OldMaxDamage => 36;
-		public override int OldSpeed => 31;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.CrushingBlow;
 
-		public override int InitMinHits => 31;
-		public override int InitMaxHits => 110;
+    public override int AosStrengthReq => 95;
+    public override int AosMinDamage => 17;
+    public override int AosMaxDamage => 18;
+    public override int AosSpeed => 28;
+    public override float MlSpeed => 3.75f;
 
-		public override WeaponAnimation DefAnimation => WeaponAnimation.Bash2H;
+    public override int OldStrengthReq => 40;
+    public override int OldMinDamage => 8;
+    public override int OldMaxDamage => 36;
+    public override int OldSpeed => 31;
 
-		[Constructible]
-		public WarHammer() : base( 0x1439 )
-		{
-			Weight = 10.0;
-			Layer = Layer.TwoHanded;
-		}
+    public override int InitMinHits => 31;
+    public override int InitMaxHits => 110;
 
-		public WarHammer( Serial serial ) : base( serial )
-		{
-		}
+    public override WeaponAnimation DefAnimation => WeaponAnimation.Bash2H;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

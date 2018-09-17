@@ -1,41 +1,39 @@
-using System;
-using Server;
 using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	public class MalletAndChisel : BaseTool
-	{
-		public override CraftSystem CraftSystem => DefMasonry.CraftSystem;
+  public class MalletAndChisel : BaseTool
+  {
+    [Constructible]
+    public MalletAndChisel() : base(0x12B3)
+    {
+      Weight = 1.0;
+    }
 
-		[Constructible]
-		public MalletAndChisel() : base( 0x12B3 )
-		{
-			Weight = 1.0;
-		}
+    [Constructible]
+    public MalletAndChisel(int uses) : base(uses, 0x12B3)
+    {
+      Weight = 1.0;
+    }
 
-		[Constructible]
-		public MalletAndChisel( int uses ) : base( uses, 0x12B3 )
-		{
-			Weight = 1.0;
-		}
+    public MalletAndChisel(Serial serial) : base(serial)
+    {
+    }
 
-		public MalletAndChisel( Serial serial ) : base( serial )
-		{
-		}
+    public override CraftSystem CraftSystem => DefMasonry.CraftSystem;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

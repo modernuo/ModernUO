@@ -1,55 +1,52 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	[FlippableAttribute( 0x49CA, 0x49CB )]
-	public class HeartShapedBox : BaseContainer
-	{
-		public override int DefaultDropSound => m_DropSound;
+  [Flippable(0x49CA, 0x49CB)]
+  public class HeartShapedBox : BaseContainer
+  {
+    private static int m_DropSound;
 
-		[Constructible]
-		public HeartShapedBox()
-			: base( 0x49CA )
-		{
-		}
+    [Constructible]
+    public HeartShapedBox()
+      : base(0x49CA)
+    {
+    }
 
-		public override bool OnDragDropInto( Mobile from, Item item, Point3D p )
-		{
-			PrepareSound( from );
-			return base.OnDragDropInto( from, item, p );
-		}
+    public HeartShapedBox(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			PrepareSound( from );
-			return base.OnDragDrop( from, dropped );
-		}
+    public override int DefaultDropSound => m_DropSound;
 
-		private static int m_DropSound;
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+    {
+      PrepareSound(from);
+      return base.OnDragDropInto(from, item, p);
+    }
 
-		private static void PrepareSound( Mobile from )
-		{
-			m_DropSound = from.Female ? 0x430 : 0x320;
-		}
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      PrepareSound(from);
+      return base.OnDragDrop(from, dropped);
+    }
 
-		public HeartShapedBox( Serial serial )
-			: base( serial )
-		{
-		}
+    private static void PrepareSound(Mobile from)
+    {
+      m_DropSound = from.Female ? 0x430 : 0x320;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

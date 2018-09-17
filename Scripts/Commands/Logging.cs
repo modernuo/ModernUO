@@ -1,147 +1,139 @@
 using System;
 using System.IO;
-using Server;
+using System.Text;
 using Server.Accounting;
 
 namespace Server.Commands
 {
-	public class CommandLogging
-	{
-		private static StreamWriter m_Output;
-		private static bool m_Enabled = true;
+  public class CommandLogging
+  {
+    private static char[] m_NotSafe = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+    public static bool Enabled{ get; set; } = true;
 
-		public static bool Enabled{ get{ return m_Enabled; } set{ m_Enabled = value; } }
+    public static StreamWriter Output{ get; private set; }
 
-		public static StreamWriter Output{ get{ return m_Output; } }
+    public static void Initialize()
+    {
+      EventSink.Command += EventSink_Command;
 
-		public static void Initialize()
-		{
-			EventSink.Command += new CommandEventHandler( EventSink_Command );
+      if (!Directory.Exists("Logs"))
+        Directory.CreateDirectory("Logs");
 
-			if ( !Directory.Exists( "Logs" ) )
-				Directory.CreateDirectory( "Logs" );
+      string directory = "Logs/Commands";
 
-			string directory = "Logs/Commands";
+      if (!Directory.Exists(directory))
+        Directory.CreateDirectory(directory);
 
-			if ( !Directory.Exists( directory ) )
-				Directory.CreateDirectory( directory );
+      try
+      {
+        Output = new StreamWriter(Path.Combine(directory, $"{DateTime.UtcNow.ToLongDateString()}.log"), true);
 
-			try
-			{
-				m_Output = new StreamWriter( Path.Combine( directory, String.Format( "{0}.log", DateTime.UtcNow.ToLongDateString() ) ), true );
+        Output.AutoFlush = true;
 
-				m_Output.AutoFlush = true;
+        Output.WriteLine("##############################");
+        Output.WriteLine("Log started on {0}", DateTime.UtcNow);
+        Output.WriteLine();
+      }
+      catch
+      {
+      }
+    }
 
-				m_Output.WriteLine( "##############################" );
-				m_Output.WriteLine( "Log started on {0}", DateTime.UtcNow );
-				m_Output.WriteLine();
-			}
-			catch
-			{
-			}
-		}
+    public static object Format(object o)
+    {
+      if (o is Mobile m)
+      {
+        if (m.Account == null)
+          return $"{m} (no account)";
 
-		public static object Format( object o )
-		{
-			if ( o is Mobile )
-			{
-				Mobile m = (Mobile)o;
+        return $"{m} ('{m.Account.Username}')";
+      }
 
-				if ( m.Account == null )
-					return String.Format( "{0} (no account)", m );
-				else
-					return String.Format( "{0} ('{1}')", m, m.Account.Username );
-			}
-			else if ( o is Item )
-			{
-				Item item = (Item)o;
+      if (o is Item item) return $"0x{item.Serial.Value:X} ({item.GetType().Name})";
 
-				return String.Format( "0x{0:X} ({1})", item.Serial.Value, item.GetType().Name );
-			}
+      return o;
+    }
 
-			return o;
-		}
+    public static void WriteLine(Mobile from, string format, params object[] args)
+    {
+      if (!Enabled)
+        return;
 
-		public static void WriteLine( Mobile from, string format, params object[] args )
-		{
-			if ( !m_Enabled )
-				return;
+      WriteLine(from, string.Format(format, args));
+    }
 
-			WriteLine( from, String.Format( format, args ) );
-		}
+    public static void WriteLine(Mobile from, string text)
+    {
+      if (!Enabled)
+        return;
 
-		public static void WriteLine( Mobile from, string text )
-		{
-			if ( !m_Enabled )
-				return;
+      try
+      {
+        Output.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text);
 
-			try
-			{
-				m_Output.WriteLine( "{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text );
+        string path = Core.BaseDirectory;
 
-				string path = Core.BaseDirectory;
+        string name = !(from.Account is Account acct) ? from.Name : acct.Username;
 
-				Account acct = from.Account as Account;
+        AppendPath(ref path, "Logs");
+        AppendPath(ref path, "Commands");
+        AppendPath(ref path, from.AccessLevel.ToString());
+        path = Path.Combine(path, $"{name}.log");
 
-				string name = ( acct == null ? from.Name : acct.Username );
+        using (StreamWriter sw = new StreamWriter(path, true))
+        {
+          sw.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text);
+        }
+      }
+      catch
+      {
+      }
+    }
 
-				AppendPath( ref path, "Logs" );
-				AppendPath( ref path, "Commands" );
-				AppendPath( ref path, from.AccessLevel.ToString() );
-				path = Path.Combine( path, String.Format( "{0}.log", name ) );
+    public static void AppendPath(ref string path, string toAppend)
+    {
+      path = Path.Combine(path, toAppend);
 
-				using ( StreamWriter sw = new StreamWriter( path, true ) )
-					sw.WriteLine( "{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text );
-			}
-			catch
-			{
-			}
-		}
+      if (!Directory.Exists(path))
+        Directory.CreateDirectory(path);
+    }
 
-		private static char[] m_NotSafe = new char[]{ '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+    public static string Safe(string ip)
+    {
+      if (ip == null)
+        return "null";
 
-		public static void AppendPath( ref string path, string toAppend )
-		{
-			path = Path.Combine( path, toAppend );
+      ip = ip.Trim();
 
-			if ( !Directory.Exists( path ) )
-				Directory.CreateDirectory( path );
-		}
+      if (ip.Length == 0)
+        return "empty";
 
-		public static string Safe( string ip )
-		{
-			if ( ip == null )
-				return "null";
+      bool isSafe = true;
 
-			ip = ip.Trim();
+      for (int i = 0; isSafe && i < m_NotSafe.Length; ++i)
+        isSafe = ip.IndexOf(m_NotSafe[i]) == -1;
 
-			if ( ip.Length == 0 )
-				return "empty";
+      if (isSafe)
+        return ip;
 
-			bool isSafe = true;
+      StringBuilder sb = new StringBuilder(ip);
 
-			for ( int i = 0; isSafe && i < m_NotSafe.Length; ++i )
-				isSafe = ( ip.IndexOf( m_NotSafe[i] ) == -1 );
+      for (int i = 0; i < m_NotSafe.Length; ++i)
+        sb.Replace(m_NotSafe[i], '_');
 
-			if ( isSafe )
-				return ip;
+      return sb.ToString();
+    }
 
-			System.Text.StringBuilder sb = new System.Text.StringBuilder( ip );
+    public static void EventSink_Command(CommandEventArgs e)
+    {
+      WriteLine(e.Mobile, "{0} {1} used command '{2} {3}'", e.Mobile.AccessLevel, Format(e.Mobile), e.Command,
+        e.ArgString);
+    }
 
-			for ( int i = 0; i < m_NotSafe.Length; ++i )
-				sb.Replace( m_NotSafe[i], '_' );
-
-			return sb.ToString();
-		}
-
-		public static void EventSink_Command( CommandEventArgs e )
-		{
-			WriteLine( e.Mobile, "{0} {1} used command '{2} {3}'", e.Mobile.AccessLevel, Format( e.Mobile ), e.Command, e.ArgString );
-		}
-
-		public static void LogChangeProperty( Mobile from, object o, string name, string value )
-		{
-			WriteLine( from, "{0} {1} set property '{2}' of {3} to '{4}'", from.AccessLevel, Format( from ), name, Format( o ), value );
-		}
-	}
+    public static void LogChangeProperty(Mobile from, object o, string name, string value)
+    {
+      WriteLine(from, "{0} {1} set property '{2}' of {3} to '{4}'", from.AccessLevel, Format(from), name, Format(o),
+        value);
+    }
+  }
 }

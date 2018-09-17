@@ -1,33 +1,30 @@
-using System;
-
 namespace Server.Items
 {
-	public class DecoArrowShafts : Item
-	{
+  public class DecoArrowShafts : Item
+  {
+    [Constructible]
+    public DecoArrowShafts() : base(Utility.Random(2) + 0x1024)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public DecoArrowShafts() : base( Utility.Random(2) + 0x1024 )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public DecoArrowShafts(Serial serial) : base(serial)
+    {
+    }
 
-		public DecoArrowShafts( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

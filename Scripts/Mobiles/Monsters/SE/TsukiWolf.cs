@@ -1,190 +1,212 @@
 using System;
 using System.Collections;
+using Server.Engines.Plants;
 using Server.Items;
-using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	public class TsukiWolf : BaseCreature
-	{
-		public override string CorpseName => "a tsuki wolf corpse";
-		public override string DefaultName => "a tsuki wolf";
+  public class TsukiWolf : BaseCreature
+  {
+    private static Hashtable m_Table = new Hashtable();
 
-		[Constructible]
-		public TsukiWolf()
-			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 250;
-			Hue = Utility.Random(3) == 0 ? Utility.RandomNeutralHue() : 0;
+    [Constructible]
+    public TsukiWolf()
+      : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 250;
+      Hue = Utility.Random(3) == 0 ? Utility.RandomNeutralHue() : 0;
 
-			SetStr( 401, 450 );
-			SetDex( 151, 200 );
-			SetInt( 66, 76 );
+      SetStr(401, 450);
+      SetDex(151, 200);
+      SetInt(66, 76);
 
-			SetHits( 376, 450 );
-			SetMana( 40 );
+      SetHits(376, 450);
+      SetMana(40);
 
-			SetDamage( 14, 18 );
+      SetDamage(14, 18);
 
-			SetDamageType( ResistanceType.Physical, 90 );
-			SetDamageType( ResistanceType.Cold, 5 );
-			SetDamageType( ResistanceType.Energy, 5 );
+      SetDamageType(ResistanceType.Physical, 90);
+      SetDamageType(ResistanceType.Cold, 5);
+      SetDamageType(ResistanceType.Energy, 5);
 
-			SetResistance( ResistanceType.Physical, 40, 60 );
-			SetResistance( ResistanceType.Fire, 50, 70 );
-			SetResistance( ResistanceType.Cold, 50, 70 );
-			SetResistance( ResistanceType.Poison, 50, 70 );
-			SetResistance( ResistanceType.Energy, 50, 70 );
+      SetResistance(ResistanceType.Physical, 40, 60);
+      SetResistance(ResistanceType.Fire, 50, 70);
+      SetResistance(ResistanceType.Cold, 50, 70);
+      SetResistance(ResistanceType.Poison, 50, 70);
+      SetResistance(ResistanceType.Energy, 50, 70);
 
-			SetSkill( SkillName.Anatomy, 65.1, 72.0 );
-			SetSkill( SkillName.MagicResist, 65.1, 70.0 );
-			SetSkill( SkillName.Tactics, 95.1, 110.0 );
-			SetSkill( SkillName.Wrestling, 97.6, 107.5 );
+      SetSkill(SkillName.Anatomy, 65.1, 72.0);
+      SetSkill(SkillName.MagicResist, 65.1, 70.0);
+      SetSkill(SkillName.Tactics, 95.1, 110.0);
+      SetSkill(SkillName.Wrestling, 97.6, 107.5);
 
-			Fame = 8500;
-			Karma = -8500;
+      Fame = 8500;
+      Karma = -8500;
 
-			if ( Core.ML && Utility.RandomDouble() < .33 )
-				PackItem( Engines.Plants.Seed.RandomPeculiarSeed(1) );
+      if (Core.ML && Utility.RandomDouble() < .33)
+        PackItem(Seed.RandomPeculiarSeed(1));
 
-			switch( Utility.Random( 10 ) )
-			{
-				case 0: PackItem( new LeftArm() ); break;
-				case 1: PackItem( new RightArm() ); break;
-				case 2: PackItem( new Torso() ); break;
-				case 3: PackItem( new Bone() ); break;
-				case 4: PackItem( new RibCage() ); break;
-				case 5: PackItem( new RibCage() ); break;
-				case 6: PackItem( new BonePile() ); break;
-				case 7: PackItem( new BonePile() ); break;
-				case 8: PackItem( new BonePile() ); break;
-				case 9: PackItem( new BonePile() ); break;
-			}
-		}
+      switch (Utility.Random(10))
+      {
+        case 0:
+          PackItem(new LeftArm());
+          break;
+        case 1:
+          PackItem(new RightArm());
+          break;
+        case 2:
+          PackItem(new Torso());
+          break;
+        case 3:
+          PackItem(new Bone());
+          break;
+        case 4:
+          PackItem(new RibCage());
+          break;
+        case 5:
+          PackItem(new RibCage());
+          break;
+        case 6:
+          PackItem(new BonePile());
+          break;
+        case 7:
+          PackItem(new BonePile());
+          break;
+        case 8:
+          PackItem(new BonePile());
+          break;
+        case 9:
+          PackItem(new BonePile());
+          break;
+      }
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average );
-			AddLoot( LootPack.Rich );
-		}
-		public override int Meat => 4;
-		public override int Hides => 25;
-		public override FoodType FavoriteFood => FoodType.Meat;
+    public TsukiWolf(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override void OnGaveMeleeAttack( Mobile defender )
-		{
-			base.OnGaveMeleeAttack( defender );
+    public override string CorpseName => "a tsuki wolf corpse";
+    public override string DefaultName => "a tsuki wolf";
+    public override int Meat => 4;
+    public override int Hides => 25;
+    public override FoodType FavoriteFood => FoodType.Meat;
 
-			if( 0.1 > Utility.RandomDouble() )
-			{
-				/* Blood Bath
-				 * Start cliloc 1070826
-				 * Sound: 0x52B
-				 * 2-3 blood spots
-				 * Damage: 2 hps per second for 5 seconds
-				 * End cliloc: 1070824
-				 */
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Average);
+      AddLoot(LootPack.Rich);
+    }
 
-				ExpireTimer timer = (ExpireTimer)m_Table[defender];
+    public override void OnGaveMeleeAttack(Mobile defender)
+    {
+      base.OnGaveMeleeAttack(defender);
 
-				if( timer != null )
-				{
-					timer.DoExpire();
-					defender.SendLocalizedMessage( 1070825 ); // The creature continues to rage!
-				}
-				else
-					defender.SendLocalizedMessage( 1070826 ); // The creature goes into a rage, inflicting heavy damage!
+      if (0.1 > Utility.RandomDouble())
+      {
+        /* Blood Bath
+         * Start cliloc 1070826
+         * Sound: 0x52B
+         * 2-3 blood spots
+         * Damage: 2 hps per second for 5 seconds
+         * End cliloc: 1070824
+         */
 
-				timer = new ExpireTimer( defender, this );
-				timer.Start();
-				m_Table[defender] = timer;
-			}
-		}
+        ExpireTimer timer = (ExpireTimer)m_Table[defender];
 
-		private static Hashtable m_Table = new Hashtable();
+        if (timer != null)
+        {
+          timer.DoExpire();
+          defender.SendLocalizedMessage(1070825); // The creature continues to rage!
+        }
+        else
+        {
+          defender.SendLocalizedMessage(1070826); // The creature goes into a rage, inflicting heavy damage!
+        }
 
-		private class ExpireTimer : Timer
-		{
-			private Mobile m_Mobile;
-			private Mobile m_From;
-			private int m_Count;
+        timer = new ExpireTimer(defender, this);
+        timer.Start();
+        m_Table[defender] = timer;
+      }
+    }
 
-			public ExpireTimer( Mobile m, Mobile from )
-				: base( TimeSpan.FromSeconds( 1.0 ), TimeSpan.FromSeconds( 1.0 ) )
-			{
-				m_Mobile = m;
-				m_From = from;
-				Priority = TimerPriority.TwoFiftyMS;
-			}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			public void DoExpire()
-			{
-				Stop();
-				m_Table.Remove( m_Mobile );
-			}
+      writer.Write(0);
+    }
 
-			public void DrainLife()
-			{
-				if( m_Mobile.Alive )
-					m_Mobile.Damage( 2, m_From );
-				else
-					DoExpire();
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			protected override void OnTick()
-			{
-				DrainLife();
+      int version = reader.ReadInt();
+    }
 
-				if( ++m_Count >= 5 )
-				{
-					DoExpire();
-					m_Mobile.SendLocalizedMessage( 1070824 ); // The creature's rage subsides.
-				}
-			}
-		}
+    public override int GetAngerSound()
+    {
+      return 0x52D;
+    }
 
-		public TsukiWolf( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int GetIdleSound()
+    {
+      return 0x52C;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override int GetAttackSound()
+    {
+      return 0x52B;
+    }
 
-			writer.Write( (int)0 );
-		}
+    public override int GetHurtSound()
+    {
+      return 0x52E;
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override int GetDeathSound()
+    {
+      return 0x52A;
+    }
 
-			int version = reader.ReadInt();
-		}
+    private class ExpireTimer : Timer
+    {
+      private int m_Count;
+      private Mobile m_From;
+      private Mobile m_Mobile;
 
-		public override int GetAngerSound()
-		{
-			return 0x52D;
-		}
+      public ExpireTimer(Mobile m, Mobile from)
+        : base(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0))
+      {
+        m_Mobile = m;
+        m_From = from;
+        Priority = TimerPriority.TwoFiftyMS;
+      }
 
-		public override int GetIdleSound()
-		{
-			return 0x52C;
-		}
+      public void DoExpire()
+      {
+        Stop();
+        m_Table.Remove(m_Mobile);
+      }
 
-		public override int GetAttackSound()
-		{
-			return 0x52B;
-		}
+      public void DrainLife()
+      {
+        if (m_Mobile.Alive)
+          m_Mobile.Damage(2, m_From);
+        else
+          DoExpire();
+      }
 
-		public override int GetHurtSound()
-		{
-			return 0x52E;
-		}
+      protected override void OnTick()
+      {
+        DrainLife();
 
-		public override int GetDeathSound()
-		{
-			return 0x52A;
-		}
-	}
+        if (++m_Count >= 5)
+        {
+          DoExpire();
+          m_Mobile.SendLocalizedMessage(1070824); // The creature's rage subsides.
+        }
+      }
+    }
+  }
 }

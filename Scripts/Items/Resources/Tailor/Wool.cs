@@ -1,158 +1,155 @@
-using System;
-using Server.Items;
 using Server.Targeting;
 
 namespace Server.Items
 {
-	public class Wool : Item, IDyable
-	{
-		[Constructible]
-		public Wool() : this( 1 )
-		{
-		}
+  public class Wool : Item, IDyable
+  {
+    [Constructible]
+    public Wool() : this(1)
+    {
+    }
 
-		[Constructible]
-		public Wool( int amount ) : base( 0xDF8 )
-		{
-			Stackable = true;
-			Weight = 4.0;
-			Amount = amount;
-		}
+    [Constructible]
+    public Wool(int amount) : base(0xDF8)
+    {
+      Stackable = true;
+      Weight = 4.0;
+      Amount = amount;
+    }
 
-		public Wool( Serial serial ) : base( serial )
-		{
-		}
+    public Wool(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public bool Dye(Mobile from, DyeTub sender)
+    {
+      if (Deleted)
+        return false;
 
-			writer.Write( (int) 0 ); // version
-		}
+      Hue = sender.DyedHue;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      return true;
+    }
 
-			int version = reader.ReadInt();
-		}
-		public bool Dye( Mobile from, DyeTub sender )
-		{
-			if ( Deleted )
-				return false;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			Hue = sender.DyedHue;
+      writer.Write(0); // version
+    }
 
-			return true;
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 502655 ); // What spinning wheel do you wish to spin this on?
-				from.Target = new PickWheelTarget( this );
-			}
-			else
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-			}
-		}
+      int version = reader.ReadInt();
+    }
 
-		public static void OnSpun( ISpinningWheel wheel, Mobile from, int hue )
-		{
-			Item item = new DarkYarn( 3 );
-			item.Hue = hue;
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(502655); // What spinning wheel do you wish to spin this on?
+        from.Target = new PickWheelTarget(this);
+      }
+      else
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+      }
+    }
 
-			from.AddToBackpack( item );
-			from.SendLocalizedMessage( 1010576 ); // You put the balls of yarn in your backpack.
-		}
+    public virtual void OnSpun(ISpinningWheel wheel, Mobile from, int hue)
+    {
+      Item item = new DarkYarn(3);
+      item.Hue = hue;
 
-		private class PickWheelTarget : Target
-		{
-			private Wool m_Wool;
+      from.AddToBackpack(item);
+      from.SendLocalizedMessage(1010576); // You put the balls of yarn in your backpack.
+    }
 
-			public PickWheelTarget( Wool wool ) : base( 3, false, TargetFlags.None )
-			{
-				m_Wool = wool;
-			}
+    private class PickWheelTarget : Target
+    {
+      private Wool m_Wool;
 
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( m_Wool.Deleted )
-					return;
+      public PickWheelTarget(Wool wool) : base(3, false, TargetFlags.None)
+      {
+        m_Wool = wool;
+      }
 
-				ISpinningWheel wheel = targeted as ISpinningWheel;
+      protected override void OnTarget(Mobile from, object targeted)
+      {
+        if (m_Wool.Deleted)
+          return;
 
-				if ( wheel == null && targeted is AddonComponent )
-					wheel = ((AddonComponent)targeted).Addon as ISpinningWheel;
+        ISpinningWheel wheel = targeted as ISpinningWheel;
 
-				if ( wheel is Item )
-				{
-					Item item = (Item)wheel;
+        if (wheel == null && targeted is AddonComponent component)
+          wheel = component.Addon as ISpinningWheel;
 
-					if ( !m_Wool.IsChildOf( from.Backpack ) )
-					{
-						from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-					}
-					else if ( wheel.Spinning )
-					{
-						from.SendLocalizedMessage( 502656 ); // That spinning wheel is being used.
-					}
-					else
-					{
-						m_Wool.Consume();
-						if ( m_Wool is TaintedWool )	wheel.BeginSpin( new SpinCallback( TaintedWool.OnSpun ), from, m_Wool.Hue );
-						else wheel.BeginSpin( new SpinCallback( Wool.OnSpun ), from, m_Wool.Hue );
-					}
-				}
-				else
-				{
-					from.SendLocalizedMessage( 502658 ); // Use that on a spinning wheel.
-				}
-			}
-		}
-	}
-	public class TaintedWool : Wool
-	{
-		[Constructible]
-		public TaintedWool() : this( 1 )
-		{
-		}
-		
-		[Constructible]
-		public TaintedWool( int amount ) : base( 0x101F )
-		{
-			Stackable = true;
-			Weight = 4.0;
-			Amount = amount;
-		}
+        if (wheel is Item)
+        {
+          if (!m_Wool.IsChildOf(from.Backpack))
+          {
+            from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+          }
+          else if (wheel.Spinning)
+          {
+            from.SendLocalizedMessage(502656); // That spinning wheel is being used.
+          }
+          else
+          {
+            m_Wool.Consume();
+            wheel.BeginSpin(m_Wool.OnSpun, from, m_Wool.Hue);
+          }
+        }
+        else
+        {
+          from.SendLocalizedMessage(502658); // Use that on a spinning wheel.
+        }
+      }
+    }
+  }
 
-		public TaintedWool( Serial serial ) : base( serial )
-		{
-		}
+  public class TaintedWool : Wool
+  {
+    [Constructible]
+    public TaintedWool() : this(1)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    [Constructible]
+    public TaintedWool(int amount) : base(0x101F)
+    {
+      Stackable = true;
+      Weight = 4.0;
+      Amount = amount;
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public TaintedWool(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			int version = reader.ReadInt();
-		}
-		
-		new public static void OnSpun( ISpinningWheel wheel, Mobile from, int hue )
-		{
-			Item item = new DarkYarn( 1 );
-			item.Hue = hue;
+      writer.Write(0); // version
+    }
 
-			from.AddToBackpack( item );
-			from.SendLocalizedMessage( 1010574 ); // You put a ball of yarn in your backpack.
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+
+    public override void OnSpun(ISpinningWheel wheel, Mobile from, int hue)
+    {
+      Item item = new DarkYarn(1);
+      item.Hue = hue;
+
+      from.AddToBackpack(item);
+      from.SendLocalizedMessage(1010574); // You put a ball of yarn in your backpack.
+    }
+  }
 }

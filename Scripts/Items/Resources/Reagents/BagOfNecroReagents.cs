@@ -1,42 +1,38 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class BagOfNecroReagents : Bag
-	{
-		[Constructible]
-		public BagOfNecroReagents() : this( 50 )
-		{
-		}
+  public class BagOfNecroReagents : Bag
+  {
+    [Constructible]
+    public BagOfNecroReagents() : this(50)
+    {
+    }
 
-		[Constructible]
-		public BagOfNecroReagents( int amount )
-		{
-			DropItem( new BatWing    ( amount ) );
-			DropItem( new GraveDust  ( amount ) );
-			DropItem( new DaemonBlood( amount ) );
-			DropItem( new NoxCrystal ( amount ) );
-			DropItem( new PigIron    ( amount ) );
-		}
+    [Constructible]
+    public BagOfNecroReagents(int amount)
+    {
+      DropItem(new BatWing(amount));
+      DropItem(new GraveDust(amount));
+      DropItem(new DaemonBlood(amount));
+      DropItem(new NoxCrystal(amount));
+      DropItem(new PigIron(amount));
+    }
 
-		public BagOfNecroReagents( Serial serial ) : base( serial )
-		{
-		}
+    public BagOfNecroReagents(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

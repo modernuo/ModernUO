@@ -1,35 +1,32 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class FriendOfTheLibraryToken : Item
-	{
-		public override int LabelNumber => 1073136; // Friend of the Library Token (allows donations to be made)
+  public class FriendOfTheLibraryToken : Item
+  {
+    [Constructible]
+    public FriendOfTheLibraryToken() : base(0x2F58)
+    {
+      Layer = Layer.Talisman;
+      Hue = 0x28A;
+    }
 
-		[Constructible]
-		public FriendOfTheLibraryToken() : base( 0x2F58 )
-		{
-			Layer = Layer.Talisman;
-			Hue = 0x28A;
-		}
+    public FriendOfTheLibraryToken(Serial serial) : base(serial)
+    {
+    }
 
-		public FriendOfTheLibraryToken( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073136; // Friend of the Library Token (allows donations to be made)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // Version
-		}
+      writer.Write(0); // Version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

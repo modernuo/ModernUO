@@ -1,69 +1,64 @@
-using System;
-using Server;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Bogle : BaseCreature
-	{
-		public override string CorpseName => "a ghostly corpse";
-		public override string DefaultName => "a bogle";
+  public class Bogle : BaseCreature
+  {
+    [Constructible]
+    public Bogle() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 153;
+      BaseSoundID = 0x482;
 
-		[Constructible]
-		public Bogle() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 153;
-			BaseSoundID = 0x482;
+      SetStr(76, 100);
+      SetDex(76, 95);
+      SetInt(36, 60);
 
-			SetStr( 76, 100 );
-			SetDex( 76, 95 );
-			SetInt( 36, 60 );
+      SetHits(46, 60);
 
-			SetHits( 46, 60 );
+      SetDamage(7, 11);
 
-			SetDamage( 7, 11 );
+      SetSkill(SkillName.EvalInt, 55.1, 70.0);
+      SetSkill(SkillName.Magery, 55.1, 70.0);
+      SetSkill(SkillName.MagicResist, 55.1, 70.0);
+      SetSkill(SkillName.Tactics, 45.1, 60.0);
+      SetSkill(SkillName.Wrestling, 45.1, 55.0);
 
-			SetSkill( SkillName.EvalInt, 55.1, 70.0 );
-			SetSkill( SkillName.Magery, 55.1, 70.0 );
-			SetSkill( SkillName.MagicResist, 55.1, 70.0 );
-			SetSkill( SkillName.Tactics, 45.1, 60.0 );
-			SetSkill( SkillName.Wrestling, 45.1, 55.0 );
+      Fame = 4000;
+      Karma = -4000;
 
-			Fame = 4000;
-			Karma = -4000;
+      VirtualArmor = 28;
+      PackItem(Loot.RandomWeapon());
+      PackItem(new Bone());
+    }
 
-			VirtualArmor = 28;
-			PackItem( Loot.RandomWeapon() );
-			PackItem( new Bone() );
-		}
+    public Bogle(Serial serial) : base(serial)
+    {
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Meager );
-		}
+    public override string CorpseName => "a ghostly corpse";
+    public override string DefaultName => "a bogle";
 
-		public override bool BleedImmune => true;
-		public override Poison PoisonImmune => Poison.Lethal;
+    public override bool BleedImmune => true;
+    public override Poison PoisonImmune => Poison.Lethal;
 
-		public Bogle( Serial serial ) : base( serial )
-		{
-		}
+    public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Meager);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

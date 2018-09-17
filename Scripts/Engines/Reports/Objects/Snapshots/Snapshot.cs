@@ -1,52 +1,51 @@
 using System;
-using System.Collections;
 
 namespace Server.Engines.Reports
 {
-	public class Snapshot : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "ss", new ConstructCallback( Construct ) );
+  public class Snapshot : PersistableObject
+  {
+    public Snapshot()
+    {
+      Children = new ObjectCollection();
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new Snapshot();
-		}
+    public DateTime TimeStamp{ get; set; }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public ObjectCollection Children{ get; set; }
 
-		private DateTime m_TimeStamp;
-		private ObjectCollection m_Children;
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetDateTime("t", TimeStamp);
+    }
 
-		public DateTime TimeStamp{ get{ return m_TimeStamp; } set{ m_TimeStamp = value; } }
-		public ObjectCollection Children{ get{ return m_Children; } set{ m_Children = value; } }
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      TimeStamp = ip.GetDateTime("t");
+    }
 
-		public Snapshot()
-		{
-			m_Children = new ObjectCollection();
-		}
+    public override void SerializeChildren(PersistanceWriter op)
+    {
+      for (int i = 0; i < Children.Count; ++i)
+        Children[i].Serialize(op);
+    }
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetDateTime( "t", m_TimeStamp );
-		}
+    public override void DeserializeChildren(PersistanceReader ip)
+    {
+      while (ip.HasChild)
+        Children.Add(ip.GetChild());
+    }
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			m_TimeStamp = ip.GetDateTime( "t" );
-		}
+    #region Type Identification
 
-		public override void SerializeChildren( PersistanceWriter op )
-		{
-			for ( int i = 0; i < m_Children.Count; ++i )
-				m_Children[i].Serialize( op );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("ss", Construct);
 
-		public override void DeserializeChildren( PersistanceReader ip )
-		{
-			while ( ip.HasChild )
-				m_Children.Add( ip.GetChild() );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new Snapshot();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

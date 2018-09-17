@@ -1,89 +1,88 @@
-using System;
-using Server;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	[TypeAlias("Server.Mobiles.FerelTreefellow")]
-	public class FeralTreefellow : BaseCreature
-	{
-		public override string CorpseName => "a treefellow corpse";
-		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
+  [TypeAlias("Server.Mobiles.FerelTreefellow")]
+  public class FeralTreefellow : BaseCreature
+  {
+    [Constructible]
+    public FeralTreefellow() : base(AIType.AI_Melee, FightMode.Evil, 10, 1, 0.2, 0.4)
+    {
+      Body = 301;
 
-		public override string DefaultName => "a feral treefellow";
+      SetStr(1351, 1600);
+      SetDex(301, 550);
+      SetInt(651, 900);
 
-		[Constructible]
-		public FeralTreefellow() : base( AIType.AI_Melee, FightMode.Evil, 10, 1, 0.2, 0.4 )
-		{
-			Body = 301;
+      SetHits(1170, 1320);
 
-			SetStr( 1351, 1600 );
-			SetDex( 301, 550 );
-			SetInt( 651, 900 );
+      SetDamage(26, 35);
 
-			SetHits( 1170, 1320 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamage( 26, 35 );
+      SetResistance(ResistanceType.Physical, 60, 70);
+      SetResistance(ResistanceType.Cold, 70, 80);
+      SetResistance(ResistanceType.Poison, 60, 70);
+      SetResistance(ResistanceType.Energy, 40, 60);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetSkill(SkillName.MagicResist, 40.1, 55.0); // Unknown
+      SetSkill(SkillName.Tactics, 65.1, 90.0); // Unknown
+      SetSkill(SkillName.Wrestling, 65.1, 85.0); // Unknown
 
-			SetResistance( ResistanceType.Physical, 60, 70 );
-			SetResistance( ResistanceType.Cold, 70, 80 );
-			SetResistance( ResistanceType.Poison, 60, 70 );
-			SetResistance( ResistanceType.Energy, 40, 60 );
+      Fame = 12500; //Unknown
+      Karma = 12500; //Unknown
 
-			SetSkill( SkillName.MagicResist, 40.1, 55.0 );// Unknown
-			SetSkill( SkillName.Tactics, 65.1, 90.0 );// Unknown
-			SetSkill( SkillName.Wrestling, 65.1, 85.0 );// Unknown
+      VirtualArmor = 24;
+      PackItem(new Log(Utility.RandomMinMax(23, 34)));
+    }
 
-			Fame = 12500;  //Unknown
-			Karma = 12500;  //Unknown
+    public FeralTreefellow(Serial serial) : base(serial)
+    {
+    }
 
-			VirtualArmor = 24;
-			PackItem( new Log( Utility.RandomMinMax( 23, 34 ) ) );
-		}
+    public override string CorpseName => "a treefellow corpse";
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.FeyAndUndead; }
-		}
+    public override string DefaultName => "a feral treefellow";
 
-		public override int GetIdleSound()
-		{
-			return 443;
-		}
+    public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
-		public override int GetDeathSound()
-		{
-			return 31;
-		}
+    public override bool BleedImmune => true;
 
-		public override int GetAttackSound()
-		{
-			return 672;
-		}
+    public override WeaponAbility GetWeaponAbility()
+    {
+      return WeaponAbility.Dismount;
+    }
 
-		public override bool BleedImmune => true;
+    public override int GetIdleSound()
+    {
+      return 443;
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average ); //Unknown
-		}
+    public override int GetDeathSound()
+    {
+      return 31;
+    }
 
-		public FeralTreefellow( Serial serial ) : base( serial )
-		{
-		}
+    public override int GetAttackSound()
+    {
+      return 672;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Average); //Unknown
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

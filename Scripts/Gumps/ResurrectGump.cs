@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
 using Server.Items;
 using Server.Network;
 using Server.Mobiles;
@@ -145,19 +142,19 @@ namespace Server.Gumps
 
 			from.CloseGump( typeof( ResurrectGump ) );
 
-			if( info.ButtonID == 1 || info.ButtonID == 2 )
+			if ( info.ButtonID == 1 || info.ButtonID == 2 )
 			{
-				if( from.Map == null || !from.Map.CanFit( from.Location, 16, false, false ) )
+				if ( from.Map == null || !from.Map.CanFit( from.Location, 16, false, false ) )
 				{
 					from.SendLocalizedMessage( 502391 ); // Thou can not be resurrected there!
 					return;
 				}
 
-				if( m_Price > 0 )
+				if ( m_Price > 0 )
 				{
-					if( info.IsSwitched( 1 ) )
+					if ( info.IsSwitched( 1 ) )
 					{
-						if( Banker.Withdraw( from, m_Price ) )
+						if ( Banker.Withdraw( from, m_Price ) )
 						{
 							from.SendLocalizedMessage( 1060398, m_Price.ToString() ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
 							from.SendLocalizedMessage( 1060022, Banker.GetBalance( from ).ToString() ); // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
@@ -180,7 +177,7 @@ namespace Server.Gumps
 
 				from.Resurrect();
 
-				if( m_Healer != null && from != m_Healer )
+				if ( m_Healer != null && from != m_Healer )
 				{
 					VirtueLevel level = VirtueHelper.GetLevel( m_Healer, VirtueName.Compassion );
 
@@ -192,14 +189,14 @@ namespace Server.Gumps
 					}
 				}
 
-				if( m_FromSacrifice && from is PlayerMobile )
+				if ( m_FromSacrifice && from is PlayerMobile mobile )
 				{
-					((PlayerMobile)from).AvailableResurrects -= 1;
+					mobile.AvailableResurrects -= 1;
 
-					Container pack = from.Backpack;
-					Container corpse = from.Corpse;
+					Container pack = mobile.Backpack;
+					Container corpse = mobile.Corpse;
 
-					if( pack != null && corpse != null )
+					if ( pack != null && corpse != null )
 					{
 						List<Item> items = new List<Item>( corpse.Items );
 
@@ -207,43 +204,43 @@ namespace Server.Gumps
 						{
 							Item item = items[i];
 
-							if( item.Layer != Layer.Hair && item.Layer != Layer.FacialHair && item.Movable )
+							if ( item.Layer != Layer.Hair && item.Layer != Layer.FacialHair && item.Movable )
 								pack.DropItem( item );
 						}
 					}
 				}
 
-				if( from.Fame > 0 )
+				if ( from.Fame > 0 )
 				{
 					int amount = from.Fame / 10;
 
 					Misc.Titles.AwardFame( from, -amount, true );
 				}
 
-				if( !Core.AOS && from.ShortTermMurders >= 5 )
+				if ( !Core.AOS && from.ShortTermMurders >= 5 )
 				{
 					double loss = (100.0 - (4.0 + (from.ShortTermMurders / 5.0))) / 100.0; // 5 to 15% loss
 
-					if( loss < 0.85 )
+					if ( loss < 0.85 )
 						loss = 0.85;
-					else if( loss > 0.95 )
+					else if ( loss > 0.95 )
 						loss = 0.95;
 
-					if( from.RawStr * loss > 10 )
+					if ( from.RawStr * loss > 10 )
 						from.RawStr = (int)(from.RawStr * loss);
-					if( from.RawInt * loss > 10 )
+					if ( from.RawInt * loss > 10 )
 						from.RawInt = (int)(from.RawInt * loss);
-					if( from.RawDex * loss > 10 )
+					if ( from.RawDex * loss > 10 )
 						from.RawDex = (int)(from.RawDex * loss);
 
 					for( int s = 0; s < from.Skills.Length; s++ )
 					{
-						if( from.Skills[s].Base * loss > 35 )
+						if ( from.Skills[s].Base * loss > 35 )
 							from.Skills[s].Base *= loss;
 					}
 				}
 
-				if( from.Alive && m_HitsScalar > 0 )
+				if ( from.Alive && m_HitsScalar > 0 )
 					from.Hits = (int)(from.HitsMax * m_HitsScalar);
 			}
 		}

@@ -1,41 +1,38 @@
-using System;
-using Server;
-using Server.Misc;
-using Server.Items;
 using Server.Guilds;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class OrderGuard : BaseShieldGuard
-	{
-		public override int Keyword => 0x21; // *order shield*
-		public override BaseShield Shield => new OrderShield();
-		public override int SignupNumber => 1007141; // Sign up with a guild of order if thou art interested.
-		public override GuildType Type => GuildType.Order;
+  public class OrderGuard : BaseShieldGuard
+  {
+    [Constructible]
+    public OrderGuard()
+    {
+    }
 
-		public override bool BardImmune => true;
+    public OrderGuard(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public OrderGuard()
-		{
-		}
+    public override int Keyword => 0x21; // *order shield*
+    public override BaseShield Shield => new OrderShield();
+    public override int SignupNumber => 1007141; // Sign up with a guild of order if thou art interested.
+    public override GuildType Type => GuildType.Order;
 
-		public OrderGuard( Serial serial ) : base( serial )
-		{
-		}
+    public override bool BardImmune => true;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

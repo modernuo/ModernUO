@@ -1,133 +1,132 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Spells.Spellweaving
 {
-	public class AttuneWeaponSpell : ArcanistSpell
-	{
-		private static SpellInfo m_Info = new SpellInfo(
-				"Attune Weapon", "Haeldril",
-				-1
-			);
+  public class AttuneWeaponSpell : ArcanistSpell
+  {
+    private static SpellInfo m_Info = new SpellInfo(
+      "Attune Weapon", "Haeldril",
+      -1
+    );
 
-		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 1.0 );
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
-		public override double RequiredSkill => 0.0;
-		public override int RequiredMana => 24;
+    public AttuneWeaponSpell(Mobile caster, Item scroll)
+      : base(caster, scroll, m_Info)
+    {
+    }
 
-		public AttuneWeaponSpell( Mobile caster, Item scroll )
-			: base( caster, scroll, m_Info )
-		{
-		}
+    public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.0);
 
-		public override bool CheckCast()
-		{
-			if( m_Table.ContainsKey( Caster ) )
-			{
-				Caster.SendLocalizedMessage( 501775 ); // This spell is already in effect.
-				return false;
-			}
-			else if( !Caster.CanBeginAction( typeof( AttuneWeaponSpell ) ) )
-			{
-				Caster.SendLocalizedMessage( 1075124 ); // You must wait before casting that spell again.
-				return false;
-			}
+    public override double RequiredSkill => 0.0;
+    public override int RequiredMana => 24;
 
-			return base.CheckCast();
-		}
+    public override bool CheckCast()
+    {
+      if (m_Table.ContainsKey(Caster))
+      {
+        Caster.SendLocalizedMessage(501775); // This spell is already in effect.
+        return false;
+      }
 
-		public override void OnCast()
-		{
-			if( CheckSequence() )
-			{
-				Caster.PlaySound( 0x5C3 );
-				Caster.FixedParticles( 0x3728, 1, 13, 0x26B8, 0x455, 7, EffectLayer.Waist );
-				Caster.FixedParticles( 0x3779, 1, 15, 0x251E, 0x3F, 7, EffectLayer.Waist );
+      if (!Caster.CanBeginAction(typeof(AttuneWeaponSpell)))
+      {
+        Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
+        return false;
+      }
 
-				double skill = Caster.Skills[SkillName.Spellweaving].Value;
+      return base.CheckCast();
+    }
 
-				int damageAbsorb = (int)(18 + ((skill-10)/10)*3 + (FocusLevel * 6));
-				Caster.MeleeDamageAbsorb = damageAbsorb;
+    public override void OnCast()
+    {
+      if (CheckSequence())
+      {
+        Caster.PlaySound(0x5C3);
+        Caster.FixedParticles(0x3728, 1, 13, 0x26B8, 0x455, 7, EffectLayer.Waist);
+        Caster.FixedParticles(0x3779, 1, 15, 0x251E, 0x3F, 7, EffectLayer.Waist);
 
-				TimeSpan duration = TimeSpan.FromSeconds( 60 + (FocusLevel * 12) );
+        double skill = Caster.Skills[SkillName.Spellweaving].Value;
 
-				ExpireTimer t = new ExpireTimer( Caster, duration );
-				t.Start();
+        int damageAbsorb = (int)(18 + (skill - 10) / 10 * 3 + FocusLevel * 6);
+        Caster.MeleeDamageAbsorb = damageAbsorb;
 
-				m_Table[Caster] = t;
+        TimeSpan duration = TimeSpan.FromSeconds(60 + FocusLevel * 12);
 
-				Caster.BeginAction( typeof( AttuneWeaponSpell ) );
+        ExpireTimer t = new ExpireTimer(Caster, duration);
+        t.Start();
 
-				BuffInfo.AddBuff( Caster, new BuffInfo( BuffIcon.AttuneWeapon, 1075798, duration, Caster, damageAbsorb.ToString() ) );
-			}
+        m_Table[Caster] = t;
 
-			FinishSequence();
-		}
+        Caster.BeginAction(typeof(AttuneWeaponSpell));
 
-		private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+        BuffInfo.AddBuff(Caster,
+          new BuffInfo(BuffIcon.AttuneWeapon, 1075798, duration, Caster, damageAbsorb.ToString()));
+      }
 
-		public static void TryAbsorb( Mobile defender, ref int damage )
-		{
-			if( damage == 0 || !IsAbsorbing( defender ) || defender.MeleeDamageAbsorb <= 0 )
-				return;
+      FinishSequence();
+    }
 
-			int absorbed = Math.Min( damage, defender.MeleeDamageAbsorb );
+    public static void TryAbsorb(Mobile defender, ref int damage)
+    {
+      if (damage == 0 || !IsAbsorbing(defender) || defender.MeleeDamageAbsorb <= 0)
+        return;
 
-			damage -= absorbed;
-			defender.MeleeDamageAbsorb -= absorbed;
+      int absorbed = Math.Min(damage, defender.MeleeDamageAbsorb);
 
-			defender.SendLocalizedMessage( 1075127, String.Format( "{0}\t{1}", absorbed, defender.MeleeDamageAbsorb ) ); // ~1_damage~ point(s) of damage have been absorbed. A total of ~2_remaining~ point(s) of shielding remain.
+      damage -= absorbed;
+      defender.MeleeDamageAbsorb -= absorbed;
 
-			if( defender.MeleeDamageAbsorb <= 0 )
-				StopAbsorbing( defender, true );
-		}
+      defender.SendLocalizedMessage(1075127,
+        $"{absorbed}\t{defender.MeleeDamageAbsorb}"); // ~1_damage~ point(s) of damage have been absorbed. A total of ~2_remaining~ point(s) of shielding remain.
 
-		public static bool IsAbsorbing( Mobile m )
-		{
-			return m_Table.ContainsKey( m );
-		}
+      if (defender.MeleeDamageAbsorb <= 0)
+        StopAbsorbing(defender, true);
+    }
 
-		public static void StopAbsorbing( Mobile m, bool message )
-		{
-			if (m_Table.TryGetValue( m, out ExpireTimer t ))
-			{
-				t.DoExpire( message );
-			}
-		}
+    public static bool IsAbsorbing(Mobile m)
+    {
+      return m_Table.ContainsKey(m);
+    }
 
-		private class ExpireTimer : Timer
-		{
-			private Mobile m_Mobile;
+    public static void StopAbsorbing(Mobile m, bool message)
+    {
+      if (m_Table.TryGetValue(m, out ExpireTimer t)) t.DoExpire(message);
+    }
 
-			public ExpireTimer( Mobile m, TimeSpan delay )
-				: base( delay )
-			{
-				m_Mobile = m;
-			}
+    private class ExpireTimer : Timer
+    {
+      private Mobile m_Mobile;
 
-			protected override void OnTick()
-			{
-				DoExpire( true );
-			}
+      public ExpireTimer(Mobile m, TimeSpan delay)
+        : base(delay)
+      {
+        m_Mobile = m;
+      }
 
-			public void DoExpire( bool message )
-			{
-				Stop();
+      protected override void OnTick()
+      {
+        DoExpire(true);
+      }
 
-				m_Mobile.MeleeDamageAbsorb = 0;
+      public void DoExpire(bool message)
+      {
+        Stop();
 
-				if( message )
-				{
-					m_Mobile.SendLocalizedMessage( 1075126 ); // Your attunement fades.
-					m_Mobile.PlaySound( 0x1F8 );
-				}
+        m_Mobile.MeleeDamageAbsorb = 0;
 
-				m_Table.Remove( m_Mobile );
+        if (message)
+        {
+          m_Mobile.SendLocalizedMessage(1075126); // Your attunement fades.
+          m_Mobile.PlaySound(0x1F8);
+        }
 
-				Timer.DelayCall( TimeSpan.FromSeconds( 120 ), delegate { m_Mobile.EndAction( typeof( AttuneWeaponSpell ) ); } );
-				BuffInfo.RemoveBuff( m_Mobile, BuffIcon.AttuneWeapon );
-			}
-		}
-	}
+        m_Table.Remove(m_Mobile);
+
+        DelayCall(TimeSpan.FromSeconds(120), delegate { m_Mobile.EndAction(typeof(AttuneWeaponSpell)); });
+        BuffInfo.RemoveBuff(m_Mobile, BuffIcon.AttuneWeapon);
+      }
+    }
+  }
 }

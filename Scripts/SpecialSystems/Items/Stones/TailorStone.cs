@@ -1,46 +1,40 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class TailorStone : Item
-	{
-		public override string DefaultName
-		{
-			get { return "a Tailor Supply Stone"; }
-		}
+  public class TailorStone : Item
+  {
+    [Constructible]
+    public TailorStone() : base(0xED4)
+    {
+      Movable = false;
+      Hue = 0x315;
+    }
 
-		[Constructible]
-		public TailorStone() : base( 0xED4 )
-		{
-			Movable = false;
-			Hue = 0x315;
-		}
+    public TailorStone(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			TailorBag tailorBag = new TailorBag();
+    public override string DefaultName => "a Tailor Supply Stone";
 
-			if ( !from.AddToBackpack( tailorBag ) )
-				tailorBag.Delete();
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      TailorBag tailorBag = new TailorBag();
 
-		public TailorStone( Serial serial ) : base( serial )
-		{
-		}
+      if (!from.AddToBackpack(tailorBag))
+        tailorBag.Delete();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

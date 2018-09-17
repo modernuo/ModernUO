@@ -1,56 +1,52 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class HuntersHeaddress : DeerMask
-	{
-		public override int LabelNumber => 1061595; // Hunter's Headdress
+  public class HuntersHeaddress : DeerMask
+  {
+    [Constructible]
+    public HuntersHeaddress()
+    {
+      Hue = 0x594;
 
-		public override int ArtifactRarity => 11;
+      SkillBonuses.SetValues(0, SkillName.Archery, 20);
 
-		public override int BaseColdResistance => 23;
+      Attributes.BonusDex = 8;
+      Attributes.NightSight = 1;
+      Attributes.AttackChance = 15;
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public HuntersHeaddress(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public HuntersHeaddress()
-		{
-			Hue = 0x594;
+    public override int LabelNumber => 1061595; // Hunter's Headdress
 
-			SkillBonuses.SetValues( 0, SkillName.Archery, 20 );
+    public override int ArtifactRarity => 11;
 
-			Attributes.BonusDex = 8;
-			Attributes.NightSight = 1;
-			Attributes.AttackChance = 15;
+    public override int BaseColdResistance => 23;
 
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public HuntersHeaddress( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(1);
+    }
 
-			writer.Write( (int) 1 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-			switch ( version )
-			{
-				case 0:
-				{
-					Resistances.Cold = 0;
-					break;
-				}
-			}
-		}
-	}
+      int version = reader.ReadInt();
+      switch (version)
+      {
+        case 0:
+        {
+          Resistances.Cold = 0;
+          break;
+        }
+      }
+    }
+  }
 }

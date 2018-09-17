@@ -2,167 +2,134 @@ using System;
 
 namespace Server.Factions
 {
-	public class TownState
-	{
-		private Town m_Town;
-		private Faction m_Owner;
+  public class TownState
+  {
+    private Mobile m_Finance;
+    private Mobile m_Sheriff;
 
-		private Mobile m_Sheriff;
-		private Mobile m_Finance;
+    public TownState(Town town)
+    {
+      Town = town;
+    }
 
-		private int m_Silver;
-		private int m_Tax;
+    public TownState(GenericReader reader)
+    {
+      int version = reader.ReadEncodedInt();
 
-		private DateTime m_LastTaxChange;
-		private DateTime m_LastIncome;
+      switch (version)
+      {
+        case 3:
+        {
+          LastIncome = reader.ReadDateTime();
 
-		public Town Town
-		{
-			get{ return m_Town; }
-			set{ m_Town = value; }
-		}
+          goto case 2;
+        }
+        case 2:
+        {
+          Tax = reader.ReadEncodedInt();
+          LastTaxChange = reader.ReadDateTime();
 
-		public Faction Owner
-		{
-			get{ return m_Owner; }
-			set{ m_Owner = value; }
-		}
+          goto case 1;
+        }
+        case 1:
+        {
+          Silver = reader.ReadEncodedInt();
 
-		public Mobile Sheriff
-		{
-			get{ return m_Sheriff; }
-			set
-			{
-				if ( m_Sheriff != null )
-				{
-					PlayerState pl = PlayerState.Find( m_Sheriff );
+          goto case 0;
+        }
+        case 0:
+        {
+          Town = Town.ReadReference(reader);
+          Owner = Faction.ReadReference(reader);
 
-					if ( pl != null )
-						pl.Sheriff = null;
-				}
+          m_Sheriff = reader.ReadMobile();
+          m_Finance = reader.ReadMobile();
 
-				m_Sheriff = value;
+          Town.State = this;
 
-				if ( m_Sheriff != null )
-				{
-					PlayerState pl = PlayerState.Find( m_Sheriff );
+          break;
+        }
+      }
+    }
 
-					if ( pl != null )
-						pl.Sheriff = m_Town;
-				}
-			}
-		}
+    public Town Town{ get; set; }
 
-		public Mobile Finance
-		{
-			get{ return m_Finance; }
-			set
-			{
-				if ( m_Finance != null )
-				{
-					PlayerState pl = PlayerState.Find( m_Finance );
+    public Faction Owner{ get; set; }
 
-					if ( pl != null )
-						pl.Finance = null;
-				}
+    public Mobile Sheriff
+    {
+      get => m_Sheriff;
+      set
+      {
+        if (m_Sheriff != null)
+        {
+          PlayerState pl = PlayerState.Find(m_Sheriff);
 
-				m_Finance = value;
+          if (pl != null)
+            pl.Sheriff = null;
+        }
 
-				if ( m_Finance != null )
-				{
-					PlayerState pl = PlayerState.Find( m_Finance );
+        m_Sheriff = value;
 
-					if ( pl != null )
-						pl.Finance = m_Town;
-				}
-			}
-		}
+        if (m_Sheriff != null)
+        {
+          PlayerState pl = PlayerState.Find(m_Sheriff);
 
-		public int Silver
-		{
-			get{ return m_Silver; }
-			set{ m_Silver = value; }
-		}
+          if (pl != null)
+            pl.Sheriff = Town;
+        }
+      }
+    }
 
-		public int Tax
-		{
-			get{ return m_Tax; }
-			set{ m_Tax = value; }
-		}
+    public Mobile Finance
+    {
+      get => m_Finance;
+      set
+      {
+        if (m_Finance != null)
+        {
+          PlayerState pl = PlayerState.Find(m_Finance);
 
-		public DateTime LastTaxChange
-		{
-			get{ return m_LastTaxChange; }
-			set{ m_LastTaxChange = value; }
-		}
+          if (pl != null)
+            pl.Finance = null;
+        }
 
-		public DateTime LastIncome
-		{
-			get{ return m_LastIncome; }
-			set{ m_LastIncome = value; }
-		}
+        m_Finance = value;
 
-		public TownState( Town town )
-		{
-			m_Town = town;
-		}
+        if (m_Finance != null)
+        {
+          PlayerState pl = PlayerState.Find(m_Finance);
 
-		public TownState( GenericReader reader )
-		{
-			int version = reader.ReadEncodedInt();
+          if (pl != null)
+            pl.Finance = Town;
+        }
+      }
+    }
 
-			switch ( version )
-			{
-				case 3:
-				{
-					m_LastIncome = reader.ReadDateTime();
+    public int Silver{ get; set; }
 
-					goto case 2;
-				}
-				case 2:
-				{
-					m_Tax = reader.ReadEncodedInt();
-					m_LastTaxChange = reader.ReadDateTime();
+    public int Tax{ get; set; }
 
-					goto case 1;
-				}
-				case 1:
-				{
-					m_Silver = reader.ReadEncodedInt();
+    public DateTime LastTaxChange{ get; set; }
 
-					goto case 0;
-				}
-				case 0:
-				{
-					m_Town = Town.ReadReference( reader );
-					m_Owner = Faction.ReadReference( reader );
+    public DateTime LastIncome{ get; set; }
 
-					m_Sheriff = reader.ReadMobile();
-					m_Finance = reader.ReadMobile();
+    public void Serialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(3); // version
 
-					m_Town.State = this;
+      writer.Write(LastIncome);
 
-					break;
-				}
-			}
-		}
+      writer.WriteEncodedInt(Tax);
+      writer.Write(LastTaxChange);
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( (int) 3 ); // version
+      writer.WriteEncodedInt(Silver);
 
-			writer.Write( (DateTime) m_LastIncome );
+      Town.WriteReference(writer, Town);
+      Faction.WriteReference(writer, Owner);
 
-			writer.WriteEncodedInt( (int) m_Tax );
-			writer.Write( (DateTime) m_LastTaxChange );
-
-			writer.WriteEncodedInt( (int) m_Silver );
-
-			Town.WriteReference( writer, m_Town );
-			Faction.WriteReference( writer, m_Owner );
-
-			writer.Write( (Mobile) m_Sheriff );
-			writer.Write( (Mobile) m_Finance );
-		}
-	}
+      writer.Write(m_Sheriff);
+      writer.Write(m_Finance);
+    }
+  }
 }

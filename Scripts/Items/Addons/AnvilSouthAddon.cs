@@ -1,63 +1,60 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class AnvilSouthAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new AnvilSouthDeed();
+  public class AnvilSouthAddon : BaseAddon
+  {
+    [Constructible]
+    public AnvilSouthAddon()
+    {
+      AddComponent(new AnvilComponent(0xFB0), 0, 0, 0);
+    }
 
-		[Constructible]
-		public AnvilSouthAddon()
-		{
-			AddComponent( new AnvilComponent( 0xFB0 ), 0, 0, 0 );
-		}
+    public AnvilSouthAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public AnvilSouthAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new AnvilSouthDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class AnvilSouthDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new AnvilSouthAddon();
-		public override int LabelNumber => 1044334; // anvil (south)
+  public class AnvilSouthDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public AnvilSouthDeed()
+    {
+    }
 
-		[Constructible]
-		public AnvilSouthDeed()
-		{
-		}
+    public AnvilSouthDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public AnvilSouthDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new AnvilSouthAddon();
+    public override int LabelNumber => 1044334; // anvil (south)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

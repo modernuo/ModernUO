@@ -1,40 +1,37 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class EnchantScroll : SpellScroll
-	{
-		[Constructible]
-		public EnchantScroll()
-			: this( 1 )
-		{
-		}
+  public class EnchantScroll : SpellScroll
+  {
+    [Constructible]
+    public EnchantScroll()
+      : this(1)
+    {
+    }
 
-		[Constructible]
-		public EnchantScroll( int amount )
-			: base( 680, 0x2DA1, amount )
-		{
-		}
+    [Constructible]
+    public EnchantScroll(int amount)
+      : base(680, 0x2DA1, amount)
+    {
+    }
 
-		public EnchantScroll( Serial serial )
-			: base( serial )
-		{
-		}
+    public EnchantScroll(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			/*int version = */
-			reader.ReadInt();
-		}
-	}
+      /*int version = */
+      reader.ReadInt();
+    }
+  }
 }

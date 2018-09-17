@@ -1,41 +1,39 @@
-using System;
-
 namespace Server.Items
 {
-	public class ResilientBracer : GoldBracelet
-	{
-		public override int LabelNumber => 1072933; // Resillient Bracer
+  public class ResilientBracer : GoldBracelet
+  {
+    [Constructible]
+    public ResilientBracer()
+    {
+      Hue = 0x488;
 
-		public override int PhysicalResistance => 20;
+      SkillBonuses.SetValues(0, SkillName.MagicResist, 15.0);
 
-		[Constructible]
-		public ResilientBracer()
-		{
-			Hue = 0x488;
+      Attributes.BonusHits = 5;
+      Attributes.RegenHits = 2;
+      Attributes.DefendChance = 10;
+    }
 
-			SkillBonuses.SetValues( 0, SkillName.MagicResist, 15.0 );
+    public ResilientBracer(Serial serial) : base(serial)
+    {
+    }
 
-			Attributes.BonusHits = 5;
-			Attributes.RegenHits = 2;
-			Attributes.DefendChance = 10;
-		}
+    public override int LabelNumber => 1072933; // Resillient Bracer
 
-		public ResilientBracer( Serial serial ) : base( serial )
-		{
-		}
+    public override int PhysicalResistance => 20;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

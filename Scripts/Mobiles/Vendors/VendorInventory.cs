@@ -1,179 +1,137 @@
 using System;
 using System.Collections.Generic;
-using Server;
 using Server.Multis;
 
 namespace Server.Mobiles
 {
-	public class VendorInventory
-	{
-		public static readonly TimeSpan GracePeriod = TimeSpan.FromDays( 7.0 );
+  public class VendorInventory
+  {
+    public static readonly TimeSpan GracePeriod = TimeSpan.FromDays(7.0);
 
-		private BaseHouse m_House;
-		private string m_VendorName;
-		private string m_ShopName;
-		private Mobile m_Owner;
+    private Timer m_ExpireTimer;
 
-		private List<Item> m_Items;
-		private int m_Gold;
+    public VendorInventory(BaseHouse house, Mobile owner, string vendorName, string shopName)
+    {
+      House = house;
+      Owner = owner;
+      VendorName = vendorName;
+      ShopName = shopName;
 
-		private DateTime m_ExpireTime;
-		private Timer m_ExpireTimer;
+      Items = new List<Item>();
 
-		public VendorInventory( BaseHouse house, Mobile owner, string vendorName, string shopName )
-		{
-			m_House = house;
-			m_Owner = owner;
-			m_VendorName = vendorName;
-			m_ShopName = shopName;
+      ExpireTime = DateTime.UtcNow + GracePeriod;
+      m_ExpireTimer = new ExpireTimer(this, GracePeriod);
+      m_ExpireTimer.Start();
+    }
 
-			m_Items = new List<Item>();
+    public VendorInventory(BaseHouse house, GenericReader reader)
+    {
+      House = house;
 
-			m_ExpireTime = DateTime.UtcNow + GracePeriod;
-			m_ExpireTimer = new ExpireTimer( this, GracePeriod );
-			m_ExpireTimer.Start();
-		}
+      int version = reader.ReadEncodedInt();
 
-		public BaseHouse House
-		{
-			get{ return m_House; }
-			set{ m_House = value; }
-		}
+      Owner = reader.ReadMobile();
+      VendorName = reader.ReadString();
+      ShopName = reader.ReadString();
 
-		public string VendorName
-		{
-			get{ return m_VendorName; }
-			set{ m_VendorName = value; }
-		}
+      Items = reader.ReadStrongItemList();
+      Gold = reader.ReadInt();
 
-		public string ShopName
-		{
-			get{ return m_ShopName; }
-			set{ m_ShopName = value; }
-		}
+      ExpireTime = reader.ReadDeltaTime();
 
-		public Mobile Owner
-		{
-			get{ return m_Owner; }
-			set{ m_Owner = value; }
-		}
+      if (Items.Count == 0 && Gold == 0)
+      {
+        Timer.DelayCall(TimeSpan.Zero, Delete);
+      }
+      else
+      {
+        TimeSpan delay = ExpireTime - DateTime.UtcNow;
+        m_ExpireTimer = new ExpireTimer(this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero);
+        m_ExpireTimer.Start();
+      }
+    }
 
-		public List<Item> Items
-		{
-			get{ return m_Items; }
-		}
+    public BaseHouse House{ get; set; }
 
-		public int Gold
-		{
-			get{ return m_Gold; }
-			set{ m_Gold = value; }
-		}
+    public string VendorName{ get; set; }
 
-		public DateTime ExpireTime
-		{
-			get{ return m_ExpireTime; }
-		}
+    public string ShopName{ get; set; }
 
-		public void AddItem( Item item )
-		{
-			item.Internalize();
-			m_Items.Add( item );
-		}
+    public Mobile Owner{ get; set; }
 
-		public void Delete()
-		{
-			foreach ( Item item in Items )
-			{
-				item.Delete();
-			}
+    public List<Item> Items{ get; }
 
-			Items.Clear();
-			Gold = 0;
+    public int Gold{ get; set; }
 
-			if ( House != null )
-				House.VendorInventories.Remove( this );
+    public DateTime ExpireTime{ get; }
 
-			m_ExpireTimer.Stop();
-		}
+    public void AddItem(Item item)
+    {
+      item.Internalize();
+      Items.Add(item);
+    }
 
-		public void Serialize( GenericWriter writer )
-		{
-			writer.WriteEncodedInt( 0 ); // version
+    public void Delete()
+    {
+      foreach (Item item in Items) item.Delete();
 
-			writer.Write( (Mobile) m_Owner );
-			writer.Write( (string) m_VendorName );
-			writer.Write( (string) m_ShopName );
+      Items.Clear();
+      Gold = 0;
 
-			writer.Write( m_Items, true );
-			writer.Write( (int) m_Gold );
+      House?.VendorInventories.Remove(this);
 
-			writer.WriteDeltaTime( m_ExpireTime );
-		}
+      m_ExpireTimer.Stop();
+    }
 
-		public VendorInventory( BaseHouse house, GenericReader reader )
-		{
-			m_House = house;
+    public void Serialize(GenericWriter writer)
+    {
+      writer.WriteEncodedInt(0); // version
 
-			int version = reader.ReadEncodedInt();
+      writer.Write(Owner);
+      writer.Write(VendorName);
+      writer.Write(ShopName);
 
-			m_Owner = reader.ReadMobile();
-			m_VendorName = reader.ReadString();
-			m_ShopName = reader.ReadString();
+      writer.Write(Items, true);
+      writer.Write(Gold);
 
-			m_Items = reader.ReadStrongItemList();
-			m_Gold = reader.ReadInt();
+      writer.WriteDeltaTime(ExpireTime);
+    }
 
-			m_ExpireTime = reader.ReadDeltaTime();
+    private class ExpireTimer : Timer
+    {
+      private VendorInventory m_Inventory;
 
-			if ( m_Items.Count == 0 && m_Gold == 0 )
-			{
-				Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Delete ) );
-			}
-			else
-			{
-				TimeSpan delay = m_ExpireTime - DateTime.UtcNow;
-				m_ExpireTimer = new ExpireTimer( this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero );
-				m_ExpireTimer.Start();
-			}
-		}
+      public ExpireTimer(VendorInventory inventory, TimeSpan delay) : base(delay)
+      {
+        m_Inventory = inventory;
 
-		private class ExpireTimer : Timer
-		{
-			private VendorInventory m_Inventory;
+        Priority = TimerPriority.OneMinute;
+      }
 
-			public ExpireTimer( VendorInventory inventory, TimeSpan delay ) : base( delay )
-			{
-				m_Inventory = inventory;
+      protected override void OnTick()
+      {
+        BaseHouse house = m_Inventory.House;
 
-				Priority = TimerPriority.OneMinute;
-			}
+        if (house != null)
+        {
+          if (m_Inventory.Gold > 0)
+          {
+            if (house.MovingCrate == null)
+              house.MovingCrate = new MovingCrate(house);
 
-			protected override void OnTick()
-			{
-				BaseHouse house = m_Inventory.House;
+            Banker.Deposit(house.MovingCrate, m_Inventory.Gold);
+          }
 
-				if ( house != null )
-				{
-					if ( m_Inventory.Gold > 0 )
-					{
-						if ( house.MovingCrate == null )
-							house.MovingCrate = new MovingCrate( house );
+          foreach (Item item in m_Inventory.Items)
+            if (!item.Deleted)
+              house.DropToMovingCrate(item);
 
-						Banker.Deposit( house.MovingCrate, m_Inventory.Gold );
-					}
+          m_Inventory.Gold = 0;
+          m_Inventory.Items.Clear();
+        }
 
-					foreach ( Item item in m_Inventory.Items )
-					{
-						if ( !item.Deleted )
-							house.DropToMovingCrate( item );
-					}
-
-					m_Inventory.Gold = 0;
-					m_Inventory.Items.Clear();
-				}
-
-				m_Inventory.Delete();
-			}
-		}
-	}
+        m_Inventory.Delete();
+      }
+    }
+  }
 }

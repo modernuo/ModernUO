@@ -1,184 +1,174 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
-using Server.Items;
 using Server.ContextMenus;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public abstract class BaseFamiliar : BaseCreature
-	{
-		public BaseFamiliar()
-			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, .1, .1 )
-		{
-		}
+  public abstract class BaseFamiliar : BaseCreature
+  {
+    private bool m_LastHidden;
 
-		public override bool BardImmune => true;
-		public override Poison PoisonImmune => Poison.Lethal;
-		public override bool Commandable => false;
+    public BaseFamiliar()
+      : base(AIType.AI_Melee, FightMode.Closest, 10, 1, .1, .1)
+    {
+    }
 
-		public override bool PlayerRangeSensitive => false;
+    public BaseFamiliar(Serial serial) : base(serial)
+    {
+    }
 
-		private bool m_LastHidden;
+    public override bool BardImmune => true;
+    public override Poison PoisonImmune => Poison.Lethal;
+    public override bool Commandable => false;
 
-		public virtual void RangeCheck()
-		{
-			if( !Deleted && ControlMaster != null && !ControlMaster.Deleted )
-			{
-				int range = ( RangeHome - 2 );
+    public override bool PlayerRangeSensitive => false;
 
-				if( !InRange( ControlMaster.Location, RangeHome ) )
-				{
-					Mobile master = ControlMaster;
+    public virtual void RangeCheck()
+    {
+      if (!Deleted && ControlMaster != null && !ControlMaster.Deleted)
+      {
+        int range = RangeHome - 2;
 
-					Point3D m_Loc = Point3D.Zero;
+        if (!InRange(ControlMaster.Location, RangeHome))
+        {
+          Mobile master = ControlMaster;
 
-					if( Map == master.Map )
-					{
-						int x = ( X > master.X ) ? ( master.X + range ) : ( master.X - range );
-						int y = ( Y > master.Y ) ? ( master.Y + range ) : ( master.Y - range );
+          Point3D m_Loc = Point3D.Zero;
 
-						for( int i = 0; i < 10; i++ )
-						{
-							m_Loc.X = x + Utility.RandomMinMax( -1, 1 );
-							m_Loc.Y = y + Utility.RandomMinMax( -1, 1 );
+          if (Map == master.Map)
+          {
+            int x = X > master.X ? master.X + range : master.X - range;
+            int y = Y > master.Y ? master.Y + range : master.Y - range;
 
-							m_Loc.Z = Map.GetAverageZ( m_Loc.X, m_Loc.Y );
+            for (int i = 0; i < 10; i++)
+            {
+              m_Loc.X = x + Utility.RandomMinMax(-1, 1);
+              m_Loc.Y = y + Utility.RandomMinMax(-1, 1);
 
-							if( Map.CanSpawnMobile( m_Loc ) )
-							{
-								break;
-							}
+              m_Loc.Z = Map.GetAverageZ(m_Loc.X, m_Loc.Y);
 
-							m_Loc = master.Location;
-						}
+              if (Map.CanSpawnMobile(m_Loc)) break;
 
-						if( !Deleted )
-						{
-							SetLocation( m_Loc, true );
-						}
-					}
-				}
-			}
-		}
+              m_Loc = master.Location;
+            }
 
-		public override void OnThink()
-		{
-			Mobile master = ControlMaster;
+            if (!Deleted) SetLocation(m_Loc, true);
+          }
+        }
+      }
+    }
 
-			if( Deleted )
-			{
-				return;
-			}
-			if( master == null || master.Deleted )
-			{
-				DropPackContents();
-				EndRelease( null );
-				return;
-			}
+    public override void OnThink()
+    {
+      Mobile master = ControlMaster;
 
-			RangeCheck();
+      if (Deleted) return;
+      if (master == null || master.Deleted)
+      {
+        DropPackContents();
+        EndRelease(null);
+        return;
+      }
 
-			if( m_LastHidden != master.Hidden )
-				Hidden = m_LastHidden = master.Hidden;
+      RangeCheck();
 
-			if( AIObject != null && AIObject.WalkMobileRange( master,  5, true, 1, 1 ))
-			{
-				Warmode = master.Warmode;
-				Combatant = master.Combatant;
+      if (m_LastHidden != master.Hidden)
+        Hidden = m_LastHidden = master.Hidden;
 
-				CurrentSpeed = 0.10;
-			}
-			else
-			{
-				Warmode = false;
-				FocusMob = Combatant = null;
+      if (AIObject != null && AIObject.WalkMobileRange(master, 5, true, 1, 1))
+      {
+        Warmode = master.Warmode;
+        Combatant = master.Combatant;
 
-				CurrentSpeed = .01;
-			}
-		}
+        CurrentSpeed = 0.10;
+      }
+      else
+      {
+        Warmode = false;
+        FocusMob = Combatant = null;
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+        CurrentSpeed = .01;
+      }
+    }
 
-			if ( from.Alive && Controlled && from == ControlMaster && from.InRange( this, 14 ) )
-				list.Add( new ReleaseEntry( from, this ) );
-		}
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
 
-		public virtual void BeginRelease( Mobile from )
-		{
-			if ( !Deleted && Controlled && from == ControlMaster && from.CheckAlive() )
-				EndRelease( from );
-		}
+      if (from.Alive && Controlled && from == ControlMaster && from.InRange(this, 14))
+        list.Add(new ReleaseEntry(from, this));
+    }
 
-		public virtual void EndRelease( Mobile from )
-		{
-			if ( from == null || (!Deleted && Controlled && from == ControlMaster && from.CheckAlive()) )
-			{
-				Effects.SendLocationParticles( EffectItem.Create( Location, Map, EffectItem.DefaultDuration ), 0x3728, 1, 13, 2100, 3, 5042, 0 );
-				PlaySound( 0x201 );
-				Delete();
-			}
-		}
+    public virtual void BeginRelease(Mobile from)
+    {
+      if (!Deleted && Controlled && from == ControlMaster && from.CheckAlive())
+        EndRelease(from);
+    }
 
-		public virtual void DropPackContents()
-		{
-			Map map = this.Map;
-			Container pack = this.Backpack;
+    public virtual void EndRelease(Mobile from)
+    {
+      if (from == null || !Deleted && Controlled && from == ControlMaster && from.CheckAlive())
+      {
+        Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3728, 1, 13,
+          2100, 3, 5042, 0);
+        PlaySound(0x201);
+        Delete();
+      }
+    }
 
-			if ( map != null && map != Map.Internal && pack != null )
-			{
-				List<Item> list = new List<Item>( pack.Items );
+    public virtual void DropPackContents()
+    {
+      Map map = Map;
+      Container pack = Backpack;
 
-				for ( int i = 0; i < list.Count; ++i )
-					list[i].MoveToWorld( Location, map );
-			}
-		}
+      if (map != null && map != Map.Internal && pack != null)
+      {
+        List<Item> list = new List<Item>(pack.Items);
 
-		public BaseFamiliar( Serial serial ) : base( serial )
-		{
-		}
+        for (int i = 0; i < list.Count; ++i)
+          list[i].MoveToWorld(Location, map);
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			ValidationQueue<BaseFamiliar>.Add( this );
-		}
+      ValidationQueue<BaseFamiliar>.Add(this);
+    }
 
-		public void Validate()
-		{
-			DropPackContents();
-			Delete();
-		}
+    public void Validate()
+    {
+      DropPackContents();
+      Delete();
+    }
 
-		private class ReleaseEntry : ContextMenuEntry
-		{
-			private Mobile m_From;
-			private BaseFamiliar m_Familiar;
+    private class ReleaseEntry : ContextMenuEntry
+    {
+      private BaseFamiliar m_Familiar;
+      private Mobile m_From;
 
-			public ReleaseEntry( Mobile from, BaseFamiliar familiar ) : base( 6118, 14 )
-			{
-				m_From = from;
-				m_Familiar = familiar;
-			}
+      public ReleaseEntry(Mobile from, BaseFamiliar familiar) : base(6118, 14)
+      {
+        m_From = from;
+        m_Familiar = familiar;
+      }
 
-			public override void OnClick()
-			{
-				if ( !m_Familiar.Deleted && m_Familiar.Controlled && m_From == m_Familiar.ControlMaster && m_From.CheckAlive() )
-					m_Familiar.BeginRelease( m_From );
-			}
-		}
-	}
+      public override void OnClick()
+      {
+        if (!m_Familiar.Deleted && m_Familiar.Controlled && m_From == m_Familiar.ControlMaster &&
+            m_From.CheckAlive())
+          m_Familiar.BeginRelease(m_From);
+      }
+    }
+  }
 }

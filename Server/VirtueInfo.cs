@@ -18,130 +18,151 @@
  *
  ***************************************************************************/
 
-using System;
-
 namespace Server
 {
-	[PropertyObject]
-	public class VirtueInfo
-	{
-		private int[] m_Values;
+  [PropertyObject]
+  public class VirtueInfo
+  {
+    public VirtueInfo()
+    {
+    }
 
-		public int[] Values
-		{
-			get
-			{
-				return m_Values;
-			}
-		}
+    public VirtueInfo(GenericReader reader)
+    {
+      int version = reader.ReadByte();
 
-		public int GetValue( int index )
-		{
-			if ( m_Values == null )
-				return 0;
-			else
-				return m_Values[index];
-		}
+      switch (version)
+      {
+        case 1: //Changed the values throughout the virtue system
+        case 0:
+        {
+          int mask = reader.ReadByte();
 
-		public void SetValue( int index, int value )
-		{
-			if ( m_Values == null )
-				m_Values = new int[8];
+          if (mask != 0)
+          {
+            Values = new int[8];
 
-			m_Values[index] = value;
-		}
+            for (int i = 0; i < 8; ++i)
+              if ((mask & (1 << i)) != 0)
+                Values[i] = reader.ReadInt();
+          }
 
-		public override string ToString()
-		{
-			return "...";
-		}
+          break;
+        }
+      }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Humility{ get{ return GetValue( 0 ); } set{ SetValue( 0, value ); } }
+      if (version == 0)
+      {
+        Compassion *= 200;
+        Sacrifice *= 250; //Even though 40 (the max) only gives 10k, It's because it was formerly too easy
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Sacrifice{ get{ return GetValue( 1 ); } set{ SetValue( 1, value ); } }
+        //No direct conversion factor for Justice, this is just an approximation
+        Justice *= 500;
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Compassion{ get{ return GetValue( 2 ); } set{ SetValue( 2, value ); } }
+        //All the other virtues haven't been defined at 'version 0' point in time in the scripts.
+      }
+    }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Spirituality{ get{ return GetValue( 3 ); } set{ SetValue( 3, value ); } }
+    public int[] Values{ get; private set; }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Valor{ get{ return GetValue( 4 ); } set{ SetValue( 4, value ); } }
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Humility
+    {
+      get => GetValue(0);
+      set => SetValue(0, value);
+    }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Honor{ get{ return GetValue( 5 ); } set{ SetValue( 5, value ); } }
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Sacrifice
+    {
+      get => GetValue(1);
+      set => SetValue(1, value);
+    }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Justice{ get{ return GetValue( 6 ); } set{ SetValue( 6, value ); } }
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Compassion
+    {
+      get => GetValue(2);
+      set => SetValue(2, value);
+    }
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.GameMaster )]
-		public int Honesty{ get{ return GetValue( 7 ); } set{ SetValue( 7, value ); } }
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Spirituality
+    {
+      get => GetValue(3);
+      set => SetValue(3, value);
+    }
 
-		public VirtueInfo()
-		{
-		}
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Valor
+    {
+      get => GetValue(4);
+      set => SetValue(4, value);
+    }
 
-		public VirtueInfo( GenericReader reader )
-		{
-			int version = reader.ReadByte();
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Honor
+    {
+      get => GetValue(5);
+      set => SetValue(5, value);
+    }
 
-			switch ( version )
-			{
-				case 1:	//Changed the values throughout the virtue system
-				case 0:
-				{
-					int mask = reader.ReadByte();
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Justice
+    {
+      get => GetValue(6);
+      set => SetValue(6, value);
+    }
 
-					if ( mask != 0 )
-					{
-						m_Values = new int[8];
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    public int Honesty
+    {
+      get => GetValue(7);
+      set => SetValue(7, value);
+    }
 
-						for ( int i = 0; i < 8; ++i )
-							if ( (mask & (1 << i)) != 0 )
-								m_Values[i] = reader.ReadInt();
-					}
+    public int GetValue(int index)
+    {
+      if (Values == null)
+        return 0;
+      return Values[index];
+    }
 
-					break;
-				}
-			}
+    public void SetValue(int index, int value)
+    {
+      if (Values == null)
+        Values = new int[8];
 
-			if( version == 0 )
-			{
-				Compassion *= 200;
-				Sacrifice *= 250;	//Even though 40 (the max) only gives 10k, It's because it was formerly too easy
+      Values[index] = value;
+    }
 
-				//No direct conversion factor for Justice, this is just an approximation
-				Justice *= 500;
+    public override string ToString()
+    {
+      return "...";
+    }
 
-				//All the other virtues haven't been defined at 'version 0' point in time in the scripts.
-			}
-		}
+    public static void Serialize(GenericWriter writer, VirtueInfo info)
+    {
+      writer.Write((byte)1); // version
 
-		public static void Serialize( GenericWriter writer, VirtueInfo info )
-		{
-			writer.Write( (byte) 1 ); // version
+      if (info.Values == null)
+      {
+        writer.Write((byte)0);
+      }
+      else
+      {
+        int mask = 0;
 
-			if ( info.m_Values == null )
-			{
-				writer.Write( (byte) 0 );
-			}
-			else
-			{
-				int mask = 0;
+        for (int i = 0; i < 8; ++i)
+          if (info.Values[i] != 0)
+            mask |= 1 << i;
 
-				for ( int i = 0; i < 8; ++i )
-					if ( info.m_Values[i] != 0 )
-						mask |= 1 << i;
+        writer.Write((byte)mask);
 
-				writer.Write( (byte) mask );
-
-				for ( int i = 0; i < 8; ++i )
-					if ( info.m_Values[i] != 0 )
-						writer.Write( (int) info.m_Values[i] );
-			}
-		}
-	}
+        for (int i = 0; i < 8; ++i)
+          if (info.Values[i] != 0)
+            writer.Write(info.Values[i]);
+      }
+    }
+  }
 }

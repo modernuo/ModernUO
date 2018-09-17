@@ -8,7 +8,7 @@ namespace Server.Engines.Events
 {
 	public class HalloweenHauntings
 	{
-		public static Dictionary<PlayerMobile, ZombieSkeleton> ReAnimated { get { return m_ReAnimated; } set { m_ReAnimated = value; } }
+		public static Dictionary<PlayerMobile, ZombieSkeleton> ReAnimated { get; set; }
 
 		private static Timer m_Timer;
 		private static Timer m_ClearTimer;
@@ -18,12 +18,9 @@ namespace Server.Engines.Events
 		private static int m_QueueDelaySeconds;
 		private static int m_QueueClearIntervalSeconds;
 
-		private static Dictionary<PlayerMobile, ZombieSkeleton> m_ReAnimated;
-
 		private static List<PlayerMobile> m_DeathQueue;
 
-		private static Rectangle2D[] m_Cemetaries = new Rectangle2D[]
-		{
+		private static Rectangle2D[] m_Cemetaries = {
 			new Rectangle2D(1272,3712,30,20), // Jhelom
 			new Rectangle2D(1337,1444,48,52), // Britain
 			new Rectangle2D(2424,1098,20,28), // Trinsic
@@ -54,42 +51,32 @@ namespace Server.Engines.Events
 			TimeSpan tick = TimeSpan.FromSeconds( m_QueueDelaySeconds );
 			TimeSpan clear = TimeSpan.FromSeconds( m_QueueClearIntervalSeconds );
 
-			m_ReAnimated = new Dictionary<PlayerMobile, ZombieSkeleton>();
+			ReAnimated = new Dictionary<PlayerMobile, ZombieSkeleton>();
 			m_DeathQueue = new List<PlayerMobile>();
 
-			if( today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween )
+			if ( today >= HolidaySettings.StartHalloween && today <= HolidaySettings.FinishHalloween )
 			{
-				m_Timer = Timer.DelayCall( tick, tick, new TimerCallback( Timer_Callback ) );
+				m_Timer = Timer.DelayCall( tick, tick, Timer_Callback );
 
-				m_ClearTimer = Timer.DelayCall( clear, clear, new TimerCallback( Clear_Callback ) );
+				m_ClearTimer = Timer.DelayCall( clear, clear, Clear_Callback );
 
-				EventSink.PlayerDeath += new PlayerDeathEventHandler( EventSink_PlayerDeath );
+				EventSink.PlayerDeath += EventSink_PlayerDeath;
 			}
 		}
 
 		public static void EventSink_PlayerDeath( PlayerDeathEventArgs e )
 		{
-			if( e.Mobile != null && !e.Mobile.Deleted ) /* not sure .. better safe than sorry? */
-			{
-				if( e.Mobile is PlayerMobile )
-				{
-					PlayerMobile player = e.Mobile as PlayerMobile;
-
-					if( m_Timer.Running && !m_DeathQueue.Contains( player ) && m_DeathQueue.Count < m_DeathQueueLimit )
-					{
-						m_DeathQueue.Add( player );
-					}
-				}
-			}
+			if ( e.Mobile is PlayerMobile player && !player.Deleted && m_Timer.Running && !m_DeathQueue.Contains( player ) && m_DeathQueue.Count < m_DeathQueueLimit )
+				m_DeathQueue.Add( player );
 		}
 
 		private static void Clear_Callback()
 		{
-			m_ReAnimated.Clear();
+			ReAnimated.Clear();
 
 			m_DeathQueue.Clear();
 
-			if( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
+			if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
 			{
 				m_ClearTimer.Stop();
 			}
@@ -99,11 +86,11 @@ namespace Server.Engines.Events
 		{
 			PlayerMobile player = null;
 
-			if( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
+			if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
 			{
 				for( int index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++ )
 				{
-					if( !m_ReAnimated.ContainsKey( m_DeathQueue[ index ] ) )
+					if ( !ReAnimated.ContainsKey( m_DeathQueue[ index ] ) )
 					{
 						player = m_DeathQueue[ index ];
 
@@ -111,17 +98,17 @@ namespace Server.Engines.Events
 					}
 				}
 
-				if( player != null && !player.Deleted && m_ReAnimated.Count < m_TotalZombieLimit )
+				if ( player != null && !player.Deleted && ReAnimated.Count < m_TotalZombieLimit )
 				{
 					Map map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
 
 					Point3D home = ( GetRandomPointInRect( m_Cemetaries[ Utility.Random( m_Cemetaries.Length ) ], map ));
 
-					if( map.CanSpawnMobile( home ) )
+					if ( map.CanSpawnMobile( home ) )
 					{
 						ZombieSkeleton zombieskel = new ZombieSkeleton( player );
 
-						m_ReAnimated.Add( player, zombieskel );
+						ReAnimated.Add( player, zombieskel );
 						zombieskel.Home = home;
 						zombieskel.RangeHome = 10;
 
@@ -149,10 +136,10 @@ namespace Server.Engines.Events
 	public class PlayerBones : BaseContainer
 	{
 		[Constructible]
-		public PlayerBones( String name )
+		public PlayerBones( string name )
 			: base( Utility.RandomMinMax( 0x0ECA, 0x0ED2 ) )
 		{
-			Name = String.Format( "{0}'s bones", name );
+			Name = $"{name}'s bones";
 
 			switch( Utility.Random( 10 ) )
 			{
@@ -198,7 +185,7 @@ namespace Server.Engines.Events
 		{
 			m_DeadPlayer = player;
 
-			Name = ( player != null ) ? String.Format( "{0}'s {1}", player.Name, m_Name ) : m_Name;
+			Name = ( player != null ) ? $"{player.Name}'s {m_Name}" : m_Name;
 
 			Body = 0x93;
 			BaseSoundID = 0x1c3;
@@ -241,7 +228,7 @@ namespace Server.Engines.Events
 				case 2: PackItem( new Torso() ); break;
 				case 3: PackItem( new Bone() ); break;
 				case 4: PackItem( new RibCage() ); break;
-				case 5: if( m_DeadPlayer != null && !m_DeadPlayer.Deleted ) { PackItem( new PlayerBones( m_DeadPlayer.Name ) ); } break;
+				case 5: if ( m_DeadPlayer != null && !m_DeadPlayer.Deleted ) { PackItem( new PlayerBones( m_DeadPlayer.Name ) ); } break;
 				default: break;
 			}
 
@@ -259,11 +246,11 @@ namespace Server.Engines.Events
 
 		public override void OnDelete()
 		{
-			if( HalloweenHauntings.ReAnimated != null )
+			if ( HalloweenHauntings.ReAnimated != null )
 			{
-				if( m_DeadPlayer != null && !m_DeadPlayer.Deleted )
+				if ( m_DeadPlayer != null && !m_DeadPlayer.Deleted )
 				{
-					if( HalloweenHauntings.ReAnimated.Count > 0 && HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
+					if ( HalloweenHauntings.ReAnimated.Count > 0 && HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
 					{
 						HalloweenHauntings.ReAnimated.Remove( m_DeadPlayer );
 					}

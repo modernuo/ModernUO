@@ -1,43 +1,39 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class StitchersMittens : LeafGloves
-	{
-		public override int LabelNumber => 1072932; // Stitcher's Mittens
+  public class StitchersMittens : LeafGloves
+  {
+    [Constructible]
+    public StitchersMittens()
+    {
+      Hue = 0x481;
 
-		public override int BasePhysicalResistance => 20;
-		public override int BaseColdResistance => 20;
+      SkillBonuses.SetValues(0, SkillName.Healing, 10.0);
 
-		[Constructible]
-		public StitchersMittens()
-		{
-			Hue = 0x481;
+      Attributes.BonusDex = 5;
+      Attributes.LowerRegCost = 30;
+    }
 
-			SkillBonuses.SetValues( 0, SkillName.Healing, 10.0 );
+    public StitchersMittens(Serial serial) : base(serial)
+    {
+    }
 
-			Attributes.BonusDex = 5;
-			Attributes.LowerRegCost = 30;
-		}
+    public override int LabelNumber => 1072932; // Stitcher's Mittens
 
-		public StitchersMittens( Serial serial ) : base( serial )
-		{
-		}
+    public override int BasePhysicalResistance => 20;
+    public override int BaseColdResistance => 20;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

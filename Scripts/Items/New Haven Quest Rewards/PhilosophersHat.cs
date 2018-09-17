@@ -1,43 +1,40 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class PhilosophersHat : WizardsHat
-	{
-		public override int LabelNumber => 1077602; // Philosopher's Hat
+  public class PhilosophersHat : WizardsHat
+  {
+    [Constructible]
+    public PhilosophersHat()
+    {
+      LootType = LootType.Blessed;
 
-		public override int BasePhysicalResistance => 5;
-		public override int BaseFireResistance => 5;
-		public override int BaseColdResistance => 9;
-		public override int BasePoisonResistance => 5;
-		public override int BaseEnergyResistance => 5;
+      Attributes.RegenMana = 1;
+      Attributes.LowerRegCost = 7;
+    }
 
-		[Constructible]
-		public PhilosophersHat()
-		{
-			LootType = LootType.Blessed;
+    public PhilosophersHat(Serial serial) : base(serial)
+    {
+    }
 
-			Attributes.RegenMana = 1;
-			Attributes.LowerRegCost = 7;
-		}
+    public override int LabelNumber => 1077602; // Philosopher's Hat
 
-		public PhilosophersHat( Serial serial ) : base( serial )
-		{
-		}
+    public override int BasePhysicalResistance => 5;
+    public override int BaseFireResistance => 5;
+    public override int BaseColdResistance => 9;
+    public override int BasePoisonResistance => 5;
+    public override int BaseEnergyResistance => 5;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

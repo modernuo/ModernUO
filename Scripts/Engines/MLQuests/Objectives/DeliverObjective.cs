@@ -1,284 +1,243 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Objectives
 {
-	public class DeliverObjective : BaseObjective
-	{
-		private Type m_Delivery;
-		private int m_Amount;
-		private TextDefinition m_Name;
-		private Type m_Destination;
-		private bool m_SpawnsDelivery;
+  public class DeliverObjective : BaseObjective
+  {
+    public DeliverObjective(Type delivery, int amount, TextDefinition name, Type destination)
+      : this(delivery, amount, name, destination, true)
+    {
+    }
 
-		public Type Delivery
-		{
-			get { return m_Delivery; }
-			set { m_Delivery = value; }
-		}
+    public DeliverObjective(Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery)
+    {
+      Delivery = delivery;
+      Amount = amount;
+      Name = name;
+      Destination = destination;
+      SpawnsDelivery = spawnsDelivery;
 
-		public int Amount
-		{
-			get { return m_Amount; }
-			set { m_Amount = value; }
-		}
+      if (MLQuestSystem.Debug && name.Number > 0)
+      {
+        int itemid = CollectObjective.LabelToItemID(name.Number);
 
-		public TextDefinition Name
-		{
-			get { return m_Name; }
-			set { m_Name = value; }
-		}
+        if (itemid <= 0 || itemid > 0x4000)
+          Console.WriteLine("Warning: cliloc {0} is likely giving the wrong item ID", name.Number);
+      }
+    }
 
-		public Type Destination
-		{
-			get { return m_Destination; }
-			set { m_Destination = value; }
-		}
+    public Type Delivery{ get; set; }
 
-		public bool SpawnsDelivery
-		{
-			get { return m_SpawnsDelivery; }
-			set { m_SpawnsDelivery = value; }
-		}
+    public int Amount{ get; set; }
 
-		public DeliverObjective( Type delivery, int amount, TextDefinition name, Type destination )
-			: this( delivery, amount, name, destination, true )
-		{
-		}
+    public TextDefinition Name{ get; set; }
 
-		public DeliverObjective( Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery )
-		{
-			m_Delivery = delivery;
-			m_Amount = amount;
-			m_Name = name;
-			m_Destination = destination;
-			m_SpawnsDelivery = spawnsDelivery;
+    public Type Destination{ get; set; }
 
-			if ( MLQuestSystem.Debug && name.Number > 0 )
-			{
-				int itemid = CollectObjective.LabelToItemID( name.Number );
+    public bool SpawnsDelivery{ get; set; }
 
-				if ( itemid <= 0 || itemid > 0x4000 )
-					Console.WriteLine( "Warning: cliloc {0} is likely giving the wrong item ID", name.Number );
-			}
-		}
+    public virtual void SpawnDelivery(Container pack)
+    {
+      if (!SpawnsDelivery || pack == null)
+        return;
 
-		public virtual void SpawnDelivery( Container pack )
-		{
-			if ( !m_SpawnsDelivery || pack == null )
-				return;
+      List<Item> delivery = new List<Item>();
 
-			List<Item> delivery = new List<Item>();
+      for (int i = 0; i < Amount; ++i)
+      {
+        if (!(Activator.CreateInstance(Delivery) is Item item))
+          continue;
 
-			for ( int i = 0; i < m_Amount; ++i )
-			{
-				Item item = Activator.CreateInstance( m_Delivery ) as Item;
+        delivery.Add(item);
 
-				if ( item == null )
-					continue;
+        if (item.Stackable && Amount > 1)
+        {
+          item.Amount = Amount;
+          break;
+        }
+      }
 
-				delivery.Add( item );
+      foreach (Item item in delivery)
+        pack.DropItem(item); // Confirmed: on OSI items are added even if your pack is full
+    }
 
-				if ( item.Stackable && m_Amount > 1 )
-				{
-					item.Amount = m_Amount;
-					break;
-				}
-			}
+    public override void WriteToGump(Gump g, ref int y)
+    {
+      string amount = Amount.ToString();
 
-			foreach ( Item item in delivery )
-				pack.DropItem( item ); // Confirmed: on OSI items are added even if your pack is full
-		}
+      g.AddHtmlLocalized(98, y, 312, 16, 1072207, 0x15F90, false, false); // Deliver
+      g.AddLabel(143, y, 0x481, amount);
 
-		public override void WriteToGump( Gump g, ref int y )
-		{
-			string amount = m_Amount.ToString();
+      if (Name.Number > 0)
+      {
+        g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF, false, false);
+        g.AddItem(350, y, CollectObjective.LabelToItemID(Name.Number));
+      }
+      else if (Name.String != null)
+      {
+        g.AddLabel(143 + amount.Length * 15, y, 0x481, Name.String);
+      }
 
-			g.AddHtmlLocalized( 98, y, 312, 16, 1072207, 0x15F90, false, false ); // Deliver
-			g.AddLabel( 143, y, 0x481, amount );
+      y += 32;
 
-			if ( m_Name.Number > 0 )
-			{
-				g.AddHtmlLocalized( 143 + amount.Length * 15, y, 190, 18, m_Name.Number, 0x77BF, false, false );
-				g.AddItem( 350, y, CollectObjective.LabelToItemID( m_Name.Number ) );
-			}
-			else if ( m_Name.String != null )
-			{
-				g.AddLabel( 143 + amount.Length * 15, y, 0x481, m_Name.String );
-			}
+      g.AddHtmlLocalized(103, y, 120, 16, 1072379, 0x15F90, false, false); // Deliver to
+      g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Destination));
 
-			y += 32;
+      y += 16;
+    }
 
-			g.AddHtmlLocalized( 103, y, 120, 16, 1072379, 0x15F90, false, false ); // Deliver to
-			g.AddLabel( 223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor( m_Destination ) );
+    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
+    {
+      return new DeliverObjectiveInstance(this, instance);
+    }
+  }
 
-			y += 16;
-		}
+  #region Timed
 
-		public override BaseObjectiveInstance CreateInstance( MLQuestInstance instance )
-		{
-			return new DeliverObjectiveInstance( this, instance );
-		}
-	}
+  public class TimedDeliverObjective : DeliverObjective
+  {
+    public TimedDeliverObjective(TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination)
+      : this(duration, delivery, amount, name, destination, true)
+    {
+    }
 
-	#region Timed
+    public TimedDeliverObjective(TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination,
+      bool spawnsDelivery)
+      : base(delivery, amount, name, destination, spawnsDelivery)
+    {
+      Duration = duration;
+    }
 
-	public class TimedDeliverObjective : DeliverObjective
-	{
-		private TimeSpan m_Duration;
+    public override bool IsTimed => true;
+    public override TimeSpan Duration{ get; }
+  }
 
-		public override bool IsTimed => true;
-		public override TimeSpan Duration => m_Duration;
+  #endregion
 
-		public TimedDeliverObjective( TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination )
-			: this( duration, delivery, amount, name, destination, true )
-		{
-		}
+  public class DeliverObjectiveInstance : BaseObjectiveInstance
+  {
+    public DeliverObjectiveInstance(DeliverObjective objective, MLQuestInstance instance)
+      : base(instance, objective)
+    {
+      Objective = objective;
+    }
 
-		public TimedDeliverObjective( TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery )
-			: base( delivery, amount, name, destination, spawnsDelivery )
-		{
-			m_Duration = duration;
-		}
-	}
+    public DeliverObjective Objective{ get; set; }
 
-	#endregion
+    public bool HasCompleted{ get; set; }
 
-	public class DeliverObjectiveInstance : BaseObjectiveInstance
-	{
-		private DeliverObjective m_Objective;
-		private bool m_HasCompleted;
+    public override DataType ExtraDataType => DataType.DeliverObjective;
 
-		public DeliverObjective Objective
-		{
-			get { return m_Objective; }
-			set { m_Objective = value; }
-		}
+    public virtual bool IsDestination(IQuestGiver quester, Type type)
+    {
+      Type destType = Objective.Destination;
 
-		public bool HasCompleted
-		{
-			get { return m_HasCompleted; }
-			set { m_HasCompleted = value; }
-		}
+      return destType?.IsAssignableFrom(type) == true;
+    }
 
-		public DeliverObjectiveInstance( DeliverObjective objective, MLQuestInstance instance )
-			: base( instance, objective )
-		{
-			m_Objective = objective;
-		}
+    public override bool IsCompleted()
+    {
+      return HasCompleted;
+    }
 
-		public virtual bool IsDestination( IQuestGiver quester, Type type )
-		{
-			Type destType = m_Objective.Destination;
+    public override void OnQuestAccepted()
+    {
+      Objective.SpawnDelivery(Instance.Player.Backpack);
+    }
 
-			return ( destType != null && destType.IsAssignableFrom( type ) );
-		}
+    // This is VERY similar to CollectObjective.GetCurrentTotal
+    private int GetCurrentTotal()
+    {
+      Container pack = Instance.Player.Backpack;
 
-		public override bool IsCompleted()
-		{
-			return m_HasCompleted;
-		}
+      if (pack == null)
+        return 0;
 
-		public override void OnQuestAccepted()
-		{
-			m_Objective.SpawnDelivery( Instance.Player.Backpack );
-		}
+      Item[] items = pack.FindItemsByType(Objective.Delivery, false); // Note: subclasses are included
+      int total = 0;
 
-		// This is VERY similar to CollectObjective.GetCurrentTotal
-		private int GetCurrentTotal()
-		{
-			Container pack = Instance.Player.Backpack;
+      foreach (Item item in items)
+        total += item.Amount;
 
-			if ( pack == null )
-				return 0;
+      return total;
+    }
 
-			Item[] items = pack.FindItemsByType( m_Objective.Delivery, false ); // Note: subclasses are included
-			int total = 0;
+    public override bool OnBeforeClaimReward()
+    {
+      PlayerMobile pm = Instance.Player;
 
-			foreach ( Item item in items )
-				total += item.Amount;
+      int total = GetCurrentTotal();
+      int desired = Objective.Amount;
 
-			return total;
-		}
+      if (total < desired)
+      {
+        pm.SendLocalizedMessage(1074861); // You do not have everything you need!
+        pm.SendLocalizedMessage(1074885, $"{total}\t{desired}"); // You have ~1_val~ item(s) but require ~2_val~
+        return false;
+      }
 
-		public override bool OnBeforeClaimReward()
-		{
-			PlayerMobile pm = Instance.Player;
+      return true;
+    }
 
-			int total = GetCurrentTotal();
-			int desired = m_Objective.Amount;
+    // TODO: This is VERY similar to CollectObjective.OnClaimReward
+    public override void OnClaimReward()
+    {
+      Container pack = Instance.Player.Backpack;
 
-			if ( total < desired )
-			{
-				pm.SendLocalizedMessage( 1074861 ); // You do not have everything you need!
-				pm.SendLocalizedMessage( 1074885, String.Format( "{0}\t{1}", total, desired ) ); // You have ~1_val~ item(s) but require ~2_val~
-				return false;
-			}
+      if (pack == null)
+        return;
 
-			return true;
-		}
+      Item[] items = pack.FindItemsByType(Objective.Delivery, false);
+      int left = Objective.Amount;
 
-		// TODO: This is VERY similar to CollectObjective.OnClaimReward
-		public override void OnClaimReward()
-		{
-			Container pack = Instance.Player.Backpack;
+      foreach (Item item in items)
+      {
+        if (left == 0)
+          break;
 
-			if ( pack == null )
-				return;
+        if (item.Amount > left)
+        {
+          item.Consume(left);
+          left = 0;
+        }
+        else
+        {
+          item.Delete();
+          left -= item.Amount;
+        }
+      }
+    }
 
-			Item[] items = pack.FindItemsByType( m_Objective.Delivery, false );
-			int left = m_Objective.Amount;
+    public override void OnQuestCancelled()
+    {
+      OnClaimReward(); // same effect
+    }
 
-			foreach ( Item item in items )
-			{
-				if ( left == 0 )
-					break;
+    public override void OnExpire()
+    {
+      OnQuestCancelled();
 
-				if ( item.Amount > left )
-				{
-					item.Consume( left );
-					left = 0;
-				}
-				else
-				{
-					item.Delete();
-					left -= item.Amount;
-				}
-			}
-		}
+      Instance.Player.SendLocalizedMessage(1074813); // You have failed to complete your delivery.
+    }
 
-		public override void OnQuestCancelled()
-		{
-			OnClaimReward(); // same effect
-		}
+    public override void WriteToGump(Gump g, ref int y)
+    {
+      Objective.WriteToGump(g, ref y);
 
-		public override void OnExpire()
-		{
-			OnQuestCancelled();
+      base.WriteToGump(g, ref y);
 
-			Instance.Player.SendLocalizedMessage( 1074813 ); // You have failed to complete your delivery.
-		}
+      // No extra instance stuff printed for this objective
+    }
 
-		public override void WriteToGump( Gump g, ref int y )
-		{
-			m_Objective.WriteToGump( g, ref y );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			base.WriteToGump( g, ref y );
-
-			// No extra instance stuff printed for this objective
-		}
-
-		public override DataType ExtraDataType => DataType.DeliverObjective;
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( m_HasCompleted );
-		}
-	}
+      writer.Write(HasCompleted);
+    }
+  }
 }

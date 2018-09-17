@@ -1,87 +1,92 @@
 using System;
-using Server;
-using Server.Items;
 using Server.Engines.CannedEvil;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Mephitis : BaseChampion
-	{
-		public override ChampionSkullType SkullType => ChampionSkullType.Venom;
+  public class Mephitis : BaseChampion
+  {
+    [Constructible]
+    public Mephitis() : base(AIType.AI_Melee)
+    {
+      Body = 173;
+      BaseSoundID = 0x183;
 
-		public override Type[] UniqueList => new Type[] { typeof( Calm ) };
-		public override Type[] SharedList => new Type[] { typeof(OblivionsNeedle), typeof(ANecromancerShroud), typeof(EmbroideredOakLeafCloak), typeof(TheMostKnowledgePerson) };
-		public override Type[] DecorativeList => new Type[] { typeof( Web ), typeof( MonsterStatuette ) };
+      SetStr(505, 1000);
+      SetDex(102, 300);
+      SetInt(402, 600);
 
-		public override MonsterStatuetteType[] StatueTypes => new MonsterStatuetteType[] { MonsterStatuetteType.Spider };
+      SetHits(3000);
+      SetStam(105, 600);
 
-		public override string DefaultName => "Mephitis";
+      SetDamage(21, 33);
 
-		[Constructible]
-		public Mephitis() : base( AIType.AI_Melee )
-		{
-			Body = 173;
-			BaseSoundID = 0x183;
+      SetDamageType(ResistanceType.Physical, 50);
+      SetDamageType(ResistanceType.Poison, 50);
 
-			SetStr( 505, 1000 );
-			SetDex( 102, 300 );
-			SetInt( 402, 600 );
+      SetResistance(ResistanceType.Physical, 75, 80);
+      SetResistance(ResistanceType.Fire, 60, 70);
+      SetResistance(ResistanceType.Cold, 60, 70);
+      SetResistance(ResistanceType.Poison, 100);
+      SetResistance(ResistanceType.Energy, 60, 70);
 
-			SetHits( 3000 );
-			SetStam( 105, 600 );
+      SetSkill(SkillName.MagicResist, 70.7, 140.0);
+      SetSkill(SkillName.Tactics, 97.6, 100.0);
+      SetSkill(SkillName.Wrestling, 97.6, 100.0);
 
-			SetDamage( 21, 33 );
+      Fame = 22500;
+      Karma = -22500;
 
-			SetDamageType( ResistanceType.Physical, 50 );
-			SetDamageType( ResistanceType.Poison, 50 );
+      VirtualArmor = 80;
+    }
 
-			SetResistance( ResistanceType.Physical, 75, 80 );
-			SetResistance( ResistanceType.Fire, 60, 70 );
-			SetResistance( ResistanceType.Cold, 60, 70 );
-			SetResistance( ResistanceType.Poison, 100 );
-			SetResistance( ResistanceType.Energy, 60, 70 );
+    public Mephitis(Serial serial) : base(serial)
+    {
+    }
 
-			SetSkill( SkillName.MagicResist, 70.7, 140.0 );
-			SetSkill( SkillName.Tactics, 97.6, 100.0 );
-			SetSkill( SkillName.Wrestling, 97.6, 100.0 );
+    public override ChampionSkullType SkullType => ChampionSkullType.Venom;
 
-			Fame = 22500;
-			Karma = -22500;
+    public override Type[] UniqueList => new[] { typeof(Calm) };
 
-			VirtualArmor = 80;
-		}
+    public override Type[] SharedList => new[]
+    {
+      typeof(OblivionsNeedle), typeof(ANecromancerShroud), typeof(EmbroideredOakLeafCloak),
+      typeof(TheMostKnowledgePerson)
+    };
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.UltraRich, 4 );
-		}
+    public override Type[] DecorativeList => new[] { typeof(Web), typeof(MonsterStatuette) };
 
-		public override Poison PoisonImmune => Poison.Lethal;
-		public override Poison HitPoison => Poison.Lethal;
+    public override MonsterStatuetteType[] StatueTypes => new[] { MonsterStatuetteType.Spider };
 
-		public override void OnGotMeleeAttack( Mobile attacker )
-		{
-			base.OnGotMeleeAttack( attacker );
+    public override string DefaultName => "Mephitis";
 
-			// TODO: Web ability
-		}
+    public override Poison PoisonImmune => Poison.Lethal;
+    public override Poison HitPoison => Poison.Lethal;
 
-		public Mephitis( Serial serial ) : base( serial )
-		{
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.UltraRich, 4);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void OnGotMeleeAttack(Mobile attacker)
+    {
+      base.OnGotMeleeAttack(attacker);
 
-			writer.Write( (int) 0 ); // version
-		}
+      // TODO: Web ability
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			int version = reader.ReadInt();
-		}
-	}
+      writer.Write(0); // version
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

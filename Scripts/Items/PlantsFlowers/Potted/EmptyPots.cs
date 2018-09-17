@@ -1,58 +1,56 @@
-using System;
-
 namespace Server.Items
 {
-	public class SmallEmptyPot : Item
-	{
-		[Constructible]
-		public SmallEmptyPot() : base(0x11C6)
-		{
-			Weight = 100;
-		}
+  public class SmallEmptyPot : Item
+  {
+    [Constructible]
+    public SmallEmptyPot() : base(0x11C6)
+    {
+      Weight = 100;
+    }
 
-		public SmallEmptyPot(Serial serial) : base(serial)
-		{
-		}
+    public SmallEmptyPot(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write((int) 0);
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class LargeEmptyPot : Item
-	{
-		[Constructible]
-		public LargeEmptyPot() : base(0x11C7)
-		{
-			Weight = 6;
-		}
+  public class LargeEmptyPot : Item
+  {
+    [Constructible]
+    public LargeEmptyPot() : base(0x11C7)
+    {
+      Weight = 6;
+    }
 
-		public LargeEmptyPot(Serial serial) : base(serial)
-		{
-		}
+    public LargeEmptyPot(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize(GenericWriter writer)
-		{
-			base.Serialize(writer);
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write((int) 0);
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize(reader);
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

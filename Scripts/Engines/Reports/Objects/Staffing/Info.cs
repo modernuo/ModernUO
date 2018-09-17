@@ -1,103 +1,98 @@
 using System;
-using System.Collections;
-using Server;
 using Server.Accounting;
-using Server.Engines;
-using Server.Engines.Help;
 
 namespace Server.Engines.Reports
 {
-	public abstract class BaseInfo : IComparable
-	{
-		private static TimeSpan m_SortRange;
+  public abstract class BaseInfo : IComparable
+  {
+    private string m_Display;
 
-		public static TimeSpan SortRange{ get{ return m_SortRange; } set{ m_SortRange = value; } }
+    public BaseInfo(string account)
+    {
+      Account = account;
+      Pages = new PageInfoCollection();
+    }
 
-		private string m_Account;
-		private string m_Display;
-		private PageInfoCollection m_Pages;
+    public static TimeSpan SortRange{ get; set; }
 
-		public string Account{ get{ return m_Account; } set{ m_Account = value; } }
-		public PageInfoCollection Pages{ get{ return m_Pages; } set{ m_Pages = value; } }
+    public string Account{ get; set; }
 
-		public string Display
-		{
-			get
-			{
-				if ( m_Display != null )
-					return m_Display;
+    public PageInfoCollection Pages{ get; set; }
 
-				if ( m_Account != null )
-				{
-					IAccount acct = Accounts.GetAccount( m_Account );
+    public string Display
+    {
+      get
+      {
+        if (m_Display != null)
+          return m_Display;
 
-					if ( acct != null )
-					{
-						Mobile mob = null;
+        if (Account != null)
+        {
+          IAccount acct = Accounts.GetAccount(Account);
 
-						for ( int i = 0; i < acct.Length; ++i )
-						{
-							Mobile check = acct[i];
+          if (acct != null)
+          {
+            Mobile mob = null;
 
-							if ( check != null && (mob == null || check.AccessLevel > mob.AccessLevel) )
-								mob = check;
-						}
+            for (int i = 0; i < acct.Length; ++i)
+            {
+              Mobile check = acct[i];
 
-						if ( mob != null && mob.Name != null && mob.Name.Length > 0 )
-							return ( m_Display = mob.Name );
-					}
-				}
+              if (check != null && (mob == null || check.AccessLevel > mob.AccessLevel))
+                mob = check;
+            }
 
-				return ( m_Display = m_Account );
-			}
-		}
+            if (mob?.Name != null && mob.Name.Length > 0)
+              return m_Display = mob.Name;
+          }
+        }
 
-		public int GetPageCount( PageResolution res, DateTime min, DateTime max )
-		{
-			return StaffHistory.GetPageCount( m_Pages, res, min, max );
-		}
+        return m_Display = Account;
+      }
+    }
 
-		public BaseInfo( string account )
-		{
-			m_Account = account;
-			m_Pages = new PageInfoCollection();
-		}
+    public int CompareTo(object obj)
+    {
+      BaseInfo cmp = obj as BaseInfo;
 
-		public void Register( PageInfo page )
-		{
-			m_Pages.Add( page );
-		}
+      int v = cmp.GetPageCount(cmp is StaffInfo ? PageResolution.Handled : PageResolution.None,
+                DateTime.UtcNow - SortRange, DateTime.UtcNow)
+              - GetPageCount(this is StaffInfo ? PageResolution.Handled : PageResolution.None,
+                DateTime.UtcNow - SortRange, DateTime.UtcNow);
 
-		public void Unregister( PageInfo page )
-		{
-			m_Pages.Remove( page );
-		}
+      if (v == 0)
+        v = string.Compare(Display, cmp.Display);
 
-		public int CompareTo( object obj )
-		{
-			BaseInfo cmp = obj as BaseInfo;
+      return v;
+    }
 
-			int v = cmp.GetPageCount( cmp is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - m_SortRange, DateTime.UtcNow )
-				- this.GetPageCount( this is StaffInfo ? PageResolution.Handled : PageResolution.None, DateTime.UtcNow - m_SortRange, DateTime.UtcNow );
+    public int GetPageCount(PageResolution res, DateTime min, DateTime max)
+    {
+      return StaffHistory.GetPageCount(Pages, res, min, max);
+    }
 
-			if ( v == 0 )
-				v = String.Compare( this.Display, cmp.Display );
+    public void Register(PageInfo page)
+    {
+      Pages.Add(page);
+    }
 
-			return v;
-		}
-	}
+    public void Unregister(PageInfo page)
+    {
+      Pages.Remove(page);
+    }
+  }
 
-	public class StaffInfo : BaseInfo
-	{
-		public StaffInfo( string account ) : base( account )
-		{
-		}
-	}
+  public class StaffInfo : BaseInfo
+  {
+    public StaffInfo(string account) : base(account)
+    {
+    }
+  }
 
-	public class UserInfo : BaseInfo
-	{
-		public UserInfo( string account ) : base( account )
-		{
-		}
-	}
+  public class UserInfo : BaseInfo
+  {
+    public UserInfo(string account) : base(account)
+    {
+    }
+  }
 }

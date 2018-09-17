@@ -1,34 +1,30 @@
-using System;
-using Server.Network;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class EvilIdolSkull : Item
-	{
-		public override int LabelNumber => 1095237; // Evil Idol
+  public class EvilIdolSkull : Item
+  {
+    [Constructible]
+    public EvilIdolSkull() : base(0x1F18)
+    {
+    }
 
-		[Constructible]
-		public EvilIdolSkull() : base( 0x1F18 )
-		{
-		}
+    public EvilIdolSkull(Serial serial) : base(serial)
+    {
+    }
 
-		public EvilIdolSkull( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1095237; // Evil Idol
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

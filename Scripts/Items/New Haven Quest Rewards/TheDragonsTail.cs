@@ -1,41 +1,38 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class TheDragonsTail : NoDachi
-	{
-		public override int LabelNumber => 1078015; // The Dragon's Tail
+  public class TheDragonsTail : NoDachi
+  {
+    [Constructible]
+    public TheDragonsTail()
+    {
+      LootType = LootType.Blessed;
 
-		public override int InitMinHits => 80;
-		public override int InitMaxHits => 80;
+      WeaponAttributes.HitLeechStam = 16;
+      Attributes.WeaponSpeed = 10;
+      Attributes.WeaponDamage = 25;
+    }
 
-		[Constructible]
-		public TheDragonsTail()
-		{
-			LootType = LootType.Blessed;
+    public TheDragonsTail(Serial serial) : base(serial)
+    {
+    }
 
-			WeaponAttributes.HitLeechStam = 16;
-			Attributes.WeaponSpeed = 10;
-			Attributes.WeaponDamage = 25;
-		}
+    public override int LabelNumber => 1078015; // The Dragon's Tail
 
-		public TheDragonsTail( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 80;
+    public override int InitMaxHits => 80;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

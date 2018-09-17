@@ -1,53 +1,57 @@
-using System;
-
 namespace Server.Engines.Reports
 {
-	public class ItemValue : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "iv", new ConstructCallback( Construct ) );
+  public class ItemValue : PersistableObject
+  {
+    private string m_Value;
 
-		private static PersistableObject Construct()
-		{
-			return new ItemValue();
-		}
+    private ItemValue()
+    {
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public ItemValue(string value) : this(value, null)
+    {
+    }
 
-		private string m_Value;
-		private string m_Format;
+    public ItemValue(string value, string format)
+    {
+      m_Value = value;
+      Format = format;
+    }
 
-		public string Value{ get{ return m_Value; } set{ m_Value = value; } }
-		public string Format{ get{ return m_Format; } set{ m_Format = value; } }
+    public string Value
+    {
+      get => m_Value;
+      set => m_Value = value;
+    }
 
-		private ItemValue()
-		{
-		}
+    public string Format{ get; set; }
 
-		public ItemValue( string value ) : this( value, null )
-		{
-		}
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetString("v", m_Value);
+      op.SetString("f", Format);
+    }
 
-		public ItemValue( string value, string format )
-		{
-			m_Value = value;
-			m_Format = format;
-		}
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      m_Value = ip.GetString("v");
+      Format = Utility.Intern(ip.GetString("f"));
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetString( "v", m_Value );
-			op.SetString( "f", m_Format );
-		}
+      if (Format == null)
+        Utility.Intern(ref m_Value);
+    }
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			m_Value = ip.GetString( "v" );
-			m_Format = Utility.Intern( ip.GetString( "f" ) );
+    #region Type Identification
 
-			if ( m_Format == null )
-				Utility.Intern( ref m_Value );
-		}
-	}
+    public static readonly PersistableType ThisTypeID = new PersistableType("iv", Construct);
+
+    private static PersistableObject Construct()
+    {
+      return new ItemValue();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

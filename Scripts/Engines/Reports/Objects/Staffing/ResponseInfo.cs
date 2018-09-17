@@ -1,59 +1,53 @@
 using System;
-using System.Collections;
-using Server;
-using Server.Engines;
-using Server.Engines.Help;
 
 namespace Server.Engines.Reports
 {
-	public class ResponseInfo : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "rs", new ConstructCallback( Construct ) );
+  public class ResponseInfo : PersistableObject
+  {
+    public ResponseInfo()
+    {
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new ResponseInfo();
-		}
+    public ResponseInfo(string sentBy, string message)
+    {
+      TimeStamp = DateTime.UtcNow;
+      SentBy = sentBy;
+      Message = message;
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public DateTime TimeStamp{ get; set; }
 
-		private DateTime m_TimeStamp;
+    public string SentBy{ get; set; }
 
-		private string m_SentBy;
-		private string m_Message;
+    public string Message{ get; set; }
 
-		public DateTime TimeStamp{ get{ return m_TimeStamp; } set{ m_TimeStamp = value; } }
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetDateTime("t", TimeStamp);
 
-		public string SentBy{ get{ return m_SentBy; } set{ m_SentBy = value; } }
-		public string Message{ get{ return m_Message; } set{ m_Message = value; } }
+      op.SetString("s", SentBy);
+      op.SetString("m", Message);
+    }
 
-		public ResponseInfo()
-		{
-		}
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      TimeStamp = ip.GetDateTime("t");
 
-		public ResponseInfo( string sentBy, string message )
-		{
-			m_TimeStamp = DateTime.UtcNow;
-			m_SentBy = sentBy;
-			m_Message = message;
-		}
+      SentBy = ip.GetString("s");
+      Message = ip.GetString("m");
+    }
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetDateTime( "t", m_TimeStamp );
+    #region Type Identification
 
-			op.SetString( "s", m_SentBy );
-			op.SetString( "m", m_Message );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("rs", Construct);
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			m_TimeStamp = ip.GetDateTime( "t" );
+    private static PersistableObject Construct()
+    {
+      return new ResponseInfo();
+    }
 
-			m_SentBy = ip.GetString( "s" );
-			m_Message = ip.GetString( "m" );
-		}
-	}
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

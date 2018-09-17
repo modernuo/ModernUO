@@ -1,43 +1,37 @@
-using System;
-using Server;
-using Server.Items;
 using Server.Mobiles;
-using Server.Engines.Quests;
 
 namespace Server.Engines.Quests.Haven
 {
-	public class UzeraanTurmoilHorn : HornOfRetreat
-	{
-		public override bool ValidateUse( Mobile from )
-		{
-			PlayerMobile pm = from as PlayerMobile;
+  public class UzeraanTurmoilHorn : HornOfRetreat
+  {
+    [Constructible]
+    public UzeraanTurmoilHorn()
+    {
+      DestLoc = new Point3D(3597, 2582, 0);
+      DestMap = Map.Trammel;
+    }
 
-			return ( pm != null && pm.Quest is UzeraanTurmoilQuest );
-		}
+    public UzeraanTurmoilHorn(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public UzeraanTurmoilHorn()
-		{
-			DestLoc = new Point3D( 3597, 2582, 0 );
-			DestMap = Map.Trammel;
-		}
+    public override bool ValidateUse(Mobile from)
+    {
+      return from is PlayerMobile pm && pm.Quest is UzeraanTurmoilQuest;
+    }
 
-		public UzeraanTurmoilHorn( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0); // version
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

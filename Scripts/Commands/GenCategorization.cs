@@ -1,426 +1,410 @@
 using System;
-using System.IO;
-using System.Xml;
 using System.Collections;
+using System.IO;
 using System.Reflection;
-using Server;
+using System.Text;
+using System.Xml;
 using Server.Items;
 
 namespace Server.Commands
 {
-	public class Categorization
-	{
-		private static CategoryEntry m_RootItems, m_RootMobiles;
+  public class Categorization
+  {
+    private static CategoryEntry m_RootItems, m_RootMobiles;
 
-		public static CategoryEntry Items
-		{
-			get
-			{
-				if ( m_RootItems == null )
-					Load();
+    private static Type typeofItem = typeof(Item);
+    private static Type typeofMobile = typeof(Mobile);
+    private static Type typeofConstructible = typeof(ConstructibleAttribute);
 
-				return m_RootItems;
-			}
-		}
+    public static CategoryEntry Items
+    {
+      get
+      {
+        if (m_RootItems == null)
+          Load();
 
-		public static CategoryEntry Mobiles
-		{
-			get
-			{
-				if ( m_RootMobiles == null )
-					Load();
+        return m_RootItems;
+      }
+    }
 
-				return m_RootMobiles;
-			}
-		}
+    public static CategoryEntry Mobiles
+    {
+      get
+      {
+        if (m_RootMobiles == null)
+          Load();
 
-		public static void Initialize()
-		{
-			CommandSystem.Register( "RebuildCategorization", AccessLevel.Administrator, new CommandEventHandler( RebuildCategorization_OnCommand ) );
-		}
+        return m_RootMobiles;
+      }
+    }
 
-		[Usage( "RebuildCategorization" )]
-		[Description( "Rebuilds the categorization data file used by the Add command." )]
-		public static void RebuildCategorization_OnCommand( CommandEventArgs e )
-		{
-			CategoryEntry root = new CategoryEntry( null, "Add Menu", new CategoryEntry[]{ Items, Mobiles } );
+    public static void Initialize()
+    {
+      CommandSystem.Register("RebuildCategorization", AccessLevel.Administrator, RebuildCategorization_OnCommand);
+    }
 
-			Export( root, "Data/objects.xml", "Objects" );
+    [Usage("RebuildCategorization")]
+    [Description("Rebuilds the categorization data file used by the Add command.")]
+    public static void RebuildCategorization_OnCommand(CommandEventArgs e)
+    {
+      CategoryEntry root = new CategoryEntry(null, "Add Menu", new[] { Items, Mobiles });
 
-			e.Mobile.SendMessage( "Categorization menu rebuilt." );
-		}
+      Export(root, "Data/objects.xml", "Objects");
 
-		public static void RecurseFindCategories( CategoryEntry ce, ArrayList list )
-		{
-			list.Add( ce );
+      e.Mobile.SendMessage("Categorization menu rebuilt.");
+    }
 
-			for ( int i = 0; i < ce.SubCategories.Length; ++i )
-				RecurseFindCategories( ce.SubCategories[i], list );
-		}
+    public static void RecurseFindCategories(CategoryEntry ce, ArrayList list)
+    {
+      list.Add(ce);
 
-		public static void Export( CategoryEntry ce, string fileName, string title )
-		{
-			XmlTextWriter xml = new XmlTextWriter( fileName, System.Text.Encoding.UTF8 );
+      for (int i = 0; i < ce.SubCategories.Length; ++i)
+        RecurseFindCategories(ce.SubCategories[i], list);
+    }
 
-			xml.Indentation = 1;
-			xml.IndentChar = '\t';
-			xml.Formatting = Formatting.Indented;
+    public static void Export(CategoryEntry ce, string fileName, string title)
+    {
+      XmlTextWriter xml = new XmlTextWriter(fileName, Encoding.UTF8);
 
-			xml.WriteStartDocument( true );
+      xml.Indentation = 1;
+      xml.IndentChar = '\t';
+      xml.Formatting = Formatting.Indented;
 
-			RecurseExport( xml, ce );
+      xml.WriteStartDocument(true);
 
-			xml.Flush();
-			xml.Close();
-		}
+      RecurseExport(xml, ce);
 
-		public static void RecurseExport( XmlTextWriter xml, CategoryEntry ce )
-		{
-			xml.WriteStartElement( "category" );
+      xml.Flush();
+      xml.Close();
+    }
 
-			xml.WriteAttributeString( "title", ce.Title );
+    public static void RecurseExport(XmlTextWriter xml, CategoryEntry ce)
+    {
+      xml.WriteStartElement("category");
 
-			ArrayList subCats = new ArrayList( ce.SubCategories );
+      xml.WriteAttributeString("title", ce.Title);
 
-			subCats.Sort( new CategorySorter() );
+      ArrayList subCats = new ArrayList(ce.SubCategories);
 
-			for ( int i = 0; i < subCats.Count; ++i )
-				RecurseExport( xml, (CategoryEntry)subCats[i] );
+      subCats.Sort(new CategorySorter());
 
-			ce.Matched.Sort( new CategorySorter() );
+      for (int i = 0; i < subCats.Count; ++i)
+        RecurseExport(xml, (CategoryEntry)subCats[i]);
 
-			for ( int i = 0; i < ce.Matched.Count; ++i )
-			{
-				CategoryTypeEntry cte = (CategoryTypeEntry)ce.Matched[i];
+      ce.Matched.Sort(new CategorySorter());
 
-				xml.WriteStartElement( "object" );
+      for (int i = 0; i < ce.Matched.Count; ++i)
+      {
+        CategoryTypeEntry cte = (CategoryTypeEntry)ce.Matched[i];
 
-				xml.WriteAttributeString( "type", cte.Type.ToString() );
+        xml.WriteStartElement("object");
 
-				object obj = cte.Object;
+        xml.WriteAttributeString("type", cte.Type.ToString());
 
-				if ( obj is Item )
-				{
-					Item item = (Item)obj;
+        if (cte.Object is Item item)
+        {
+          int itemID = item.ItemID;
 
-					int itemID = item.ItemID;
+          if (item is BaseAddon addon && addon.Components.Count == 1)
+            itemID = addon.Components[0].ItemID;
 
-					if ( item is BaseAddon && ((BaseAddon)item).Components.Count == 1 )
-						itemID = ((AddonComponent)(((BaseAddon)item).Components[0])).ItemID;
+          if (itemID > TileData.MaxItemValue)
+            itemID = 1;
 
-					if ( itemID > TileData.MaxItemValue )
-						itemID = 1;
+          xml.WriteAttributeString("gfx", XmlConvert.ToString(itemID));
 
-					xml.WriteAttributeString( "gfx", XmlConvert.ToString( itemID ) );
+          int hue = item.Hue & 0x7FFF;
 
-					int hue = item.Hue & 0x7FFF;
+          if ((hue & 0x4000) != 0)
+            hue = 0;
 
-					if ( (hue & 0x4000) != 0 )
-						hue = 0;
+          if (hue != 0)
+            xml.WriteAttributeString("hue", XmlConvert.ToString(hue));
 
-					if ( hue != 0 )
-						xml.WriteAttributeString( "hue", XmlConvert.ToString( hue ) );
+          item.Delete();
+        }
+        else if (cte.Object is Mobile mob)
+        {
+          int itemID = ShrinkTable.Lookup(mob, 1);
 
-					item.Delete();
-				}
-				else if ( obj is Mobile )
-				{
-					Mobile mob = (Mobile)obj;
+          xml.WriteAttributeString("gfx", XmlConvert.ToString(itemID));
 
-					int itemID = ShrinkTable.Lookup( mob, 1 );
+          int hue = mob.Hue & 0x7FFF;
 
-					xml.WriteAttributeString( "gfx", XmlConvert.ToString( itemID ) );
+          if ((hue & 0x4000) != 0)
+            hue = 0;
 
-					int hue = mob.Hue & 0x7FFF;
+          if (hue != 0)
+            xml.WriteAttributeString("hue", XmlConvert.ToString(hue));
 
-					if ( (hue & 0x4000) != 0 )
-						hue = 0;
+          mob.Delete();
+        }
 
-					if ( hue != 0 )
-						xml.WriteAttributeString( "hue", XmlConvert.ToString( hue ) );
+        xml.WriteEndElement();
+      }
 
-					mob.Delete();
-				}
+      xml.WriteEndElement();
+    }
 
-				xml.WriteEndElement();
-			}
+    public static void Load()
+    {
+      ArrayList types = new ArrayList();
 
-			xml.WriteEndElement();
-		}
+      AddTypes(Core.Assembly, types);
 
-		public static void Load()
-		{
-			ArrayList types = new ArrayList();
+      for (int i = 0; i < ScriptCompiler.Assemblies.Length; ++i)
+        AddTypes(ScriptCompiler.Assemblies[i], types);
 
-			AddTypes( Core.Assembly, types );
+      m_RootItems = Load(types, "Data/items.cfg");
+      m_RootMobiles = Load(types, "Data/mobiles.cfg");
+    }
 
-			for ( int i = 0; i < ScriptCompiler.Assemblies.Length; ++i )
-				AddTypes( ScriptCompiler.Assemblies[i], types );
+    private static CategoryEntry Load(ArrayList types, string config)
+    {
+      CategoryLine[] lines = CategoryLine.Load(config);
 
-			m_RootItems = Load( types, "Data/items.cfg" );
-			m_RootMobiles = Load( types, "Data/mobiles.cfg" );
-		}
+      if (lines.Length > 0)
+      {
+        int index = 0;
+        CategoryEntry root = new CategoryEntry(null, lines, ref index);
 
-		private static CategoryEntry Load( ArrayList types, string config )
-		{
-			CategoryLine[] lines = CategoryLine.Load( config );
+        Fill(root, types);
 
-			if ( lines.Length > 0 )
-			{
-				int index = 0;
-				CategoryEntry root = new CategoryEntry( null, lines, ref index );
+        return root;
+      }
 
-				Fill( root, types );
+      return new CategoryEntry();
+    }
 
-				return root;
-			}
+    private static bool IsConstructible(Type type)
+    {
+      if (!type.IsSubclassOf(typeofItem) && !type.IsSubclassOf(typeofMobile))
+        return false;
 
-			return new CategoryEntry();
-		}
+      ConstructorInfo ctor = type.GetConstructor(Type.EmptyTypes);
 
-		private static Type typeofItem = typeof( Item );
-		private static Type typeofMobile = typeof( Mobile );
-		private static Type typeofConstructible = typeof( ConstructibleAttribute );
+      return ctor != null && ctor.IsDefined(typeofConstructible, false);
+    }
 
-		private static bool IsConstructible( Type type )
-		{
-			if ( !type.IsSubclassOf( typeofItem ) && !type.IsSubclassOf( typeofMobile ) )
-				return false;
+    private static void AddTypes(Assembly asm, ArrayList types)
+    {
+      Type[] allTypes = asm.GetTypes();
 
-			ConstructorInfo ctor = type.GetConstructor( Type.EmptyTypes );
+      for (int i = 0; i < allTypes.Length; ++i)
+      {
+        Type type = allTypes[i];
 
-			return ( ctor != null && ctor.IsDefined( typeofConstructible, false ) );
-		}
+        if (type.IsAbstract)
+          continue;
 
-		private static void AddTypes( Assembly asm, ArrayList types )
-		{
-			Type[] allTypes = asm.GetTypes();
+        if (IsConstructible(type))
+          types.Add(type);
+      }
+    }
+
+    private static void Fill(CategoryEntry root, ArrayList list)
+    {
+      for (int i = 0; i < list.Count; ++i)
+      {
+        Type type = (Type)list[i];
+        CategoryEntry match = GetDeepestMatch(root, type);
 
-			for ( int i = 0; i < allTypes.Length; ++i )
-			{
-				Type type = allTypes[i];
+        if (match == null)
+          continue;
 
-				if ( type.IsAbstract )
-					continue;
+        try
+        {
+          match.Matched.Add(new CategoryTypeEntry(type));
+        }
+        catch
+        {
+        }
+      }
+    }
 
-				if ( IsConstructible( type ) )
-					types.Add( type );
-			}
-		}
+    private static CategoryEntry GetDeepestMatch(CategoryEntry root, Type type)
+    {
+      if (!root.IsMatch(type))
+        return null;
 
-		private static void Fill( CategoryEntry root, ArrayList list )
-		{
-			for ( int i = 0; i < list.Count; ++i )
-			{
-				Type type = (Type)list[i];
-				CategoryEntry match = GetDeepestMatch( root, type );
-
-				if ( match == null )
-					continue;
-
-				try
-				{
-					match.Matched.Add( new CategoryTypeEntry( type ) );
-				}
-				catch
-				{
-				}
-			}
-		}
-
-		private static CategoryEntry GetDeepestMatch( CategoryEntry root, Type type )
-		{
-			if ( !root.IsMatch( type ) )
-				return null;
-
-			for ( int i = 0; i < root.SubCategories.Length; ++i )
-			{
-				CategoryEntry check = GetDeepestMatch( root.SubCategories[i], type );
+      for (int i = 0; i < root.SubCategories.Length; ++i)
+      {
+        CategoryEntry check = GetDeepestMatch(root.SubCategories[i], type);
 
-				if ( check != null )
-					return check;
-			}
+        if (check != null)
+          return check;
+      }
 
-			return root;
-		}
-	}
+      return root;
+    }
+  }
 
-	public class CategorySorter : IComparer
-	{
-		public int Compare( object x, object y )
-		{
-			string a = null, b = null;
+  public class CategorySorter : IComparer
+  {
+    public int Compare(object x, object y)
+    {
+      string a = null, b = null;
 
-			if ( x is CategoryEntry )
-				a = ((CategoryEntry)x).Title;
-			else if ( x is CategoryTypeEntry )
-				a = ((CategoryTypeEntry)x).Type.Name;
+      if (x is CategoryEntry entry)
+        a = entry.Title;
+      else if (x is CategoryTypeEntry xTypeEntry)
+        a = xTypeEntry.Type.Name;
 
-			if ( y is CategoryEntry )
-				b = ((CategoryEntry)y).Title;
-			else if ( y is CategoryTypeEntry )
-				b = ((CategoryTypeEntry)y).Type.Name;
+      if (y is CategoryEntry categoryEntry)
+        b = categoryEntry.Title;
+      else if (y is CategoryTypeEntry yTypeEntry)
+        b = yTypeEntry.Type.Name;
 
-			if ( a == null && b == null )
-				return 0;
+      if (a == null && b == null)
+        return 0;
 
-			if ( a == null )
-				return 1;
+      if (a == null)
+        return 1;
 
-			if ( b == null )
-				return -1;
+      if (b == null)
+        return -1;
 
-			return a.CompareTo( b );
-		}
-	}
+      return a.CompareTo(b);
+    }
+  }
 
-	public class CategoryTypeEntry
-	{
-		private Type m_Type;
-		private object m_Object;
+  public class CategoryTypeEntry
+  {
+    public CategoryTypeEntry(Type type)
+    {
+      Type = type;
+      Object = Activator.CreateInstance(type);
+    }
 
-		public Type Type{ get{ return m_Type; } }
-		public object Object{ get{ return m_Object; } }
+    public Type Type{ get; }
 
-		public CategoryTypeEntry( Type type )
-		{
-			m_Type = type;
-			m_Object = Activator.CreateInstance( type );
-		}
-	}
+    public object Object{ get; }
+  }
 
-	public class CategoryEntry
-	{
-		private string m_Title;
-		private Type[] m_Matches;
-		private CategoryEntry[] m_SubCategories;
-		private CategoryEntry m_Parent;
-		private ArrayList m_Matched;
+  public class CategoryEntry
+  {
+    public CategoryEntry()
+    {
+      Title = "(empty)";
+      Matches = new Type[0];
+      SubCategories = new CategoryEntry[0];
+      Matched = new ArrayList();
+    }
 
-		public string Title{ get{ return m_Title; } }
-		public Type[] Matches{ get{ return m_Matches; } }
-		public CategoryEntry Parent{ get{ return m_Parent; } }
-		public CategoryEntry[] SubCategories{ get{ return m_SubCategories; } }
-		public ArrayList Matched{ get{ return m_Matched; } }
+    public CategoryEntry(CategoryEntry parent, string title, CategoryEntry[] subCats)
+    {
+      Parent = parent;
+      Title = title;
+      SubCategories = subCats;
+      Matches = new Type[0];
+      Matched = new ArrayList();
+    }
 
-		public CategoryEntry()
-		{
-			m_Title = "(empty)";
-			m_Matches = new Type[0];
-			m_SubCategories = new CategoryEntry[0];
-			m_Matched = new ArrayList();
-		}
+    public CategoryEntry(CategoryEntry parent, CategoryLine[] lines, ref int index)
+    {
+      Parent = parent;
 
-		public CategoryEntry( CategoryEntry parent, string title, CategoryEntry[] subCats )
-		{
-			m_Parent = parent;
-			m_Title = title;
-			m_SubCategories = subCats;
-			m_Matches = new Type[0];
-			m_Matched = new ArrayList();
-		}
+      string text = lines[index].Text;
 
-		public bool IsMatch( Type type )
-		{
-			bool isMatch = false;
+      int start = text.IndexOf('(');
 
-			for ( int i = 0; !isMatch && i < m_Matches.Length; ++i )
-				isMatch = ( type == m_Matches[i] || type.IsSubclassOf( m_Matches[i] ) );
+      if (start < 0)
+        throw new FormatException($"Input string not correctly formatted ('{text}')");
 
-			return isMatch;
-		}
+      Title = text.Substring(0, start).Trim();
 
-		public CategoryEntry( CategoryEntry parent, CategoryLine[] lines, ref int index )
-		{
-			m_Parent = parent;
+      int end = text.IndexOf(')', ++start);
 
-			string text = lines[index].Text;
+      if (end < start)
+        throw new FormatException($"Input string not correctly formatted ('{text}')");
 
-			int start = text.IndexOf( '(' );
+      text = text.Substring(start, end - start);
+      string[] split = text.Split(';');
 
-			if ( start < 0 )
-				throw new FormatException( String.Format( "Input string not correctly formatted ('{0}')", text ) );
+      ArrayList list = new ArrayList();
 
-			m_Title = text.Substring( 0, start ).Trim();
+      for (int i = 0; i < split.Length; ++i)
+      {
+        Type type = ScriptCompiler.FindTypeByName(split[i].Trim());
 
-			int end = text.IndexOf( ')', ++start );
+        if (type == null)
+          Console.WriteLine("Match type not found ('{0}')", split[i].Trim());
+        else
+          list.Add(type);
+      }
 
-			if ( end < start )
-				throw new FormatException( String.Format( "Input string not correctly formatted ('{0}')", text ) );
+      Matches = (Type[])list.ToArray(typeof(Type));
+      list.Clear();
 
-			text = text.Substring( start, end-start );
-			string[] split = text.Split( ';' );
+      int ourIndentation = lines[index].Indentation;
 
-			ArrayList list = new ArrayList();
+      ++index;
 
-			for ( int i = 0; i < split.Length; ++i )
-			{
-				Type type = ScriptCompiler.FindTypeByName( split[i].Trim() );
+      while (index < lines.Length && lines[index].Indentation > ourIndentation)
+        list.Add(new CategoryEntry(this, lines, ref index));
 
-				if ( type == null )
-					Console.WriteLine( "Match type not found ('{0}')", split[i].Trim() );
-				else
-					list.Add( type );
-			}
+      SubCategories = (CategoryEntry[])list.ToArray(typeof(CategoryEntry));
+      list.Clear();
 
-			m_Matches = (Type[])list.ToArray( typeof( Type ) );
-			list.Clear();
+      Matched = list;
+    }
 
-			int ourIndentation = lines[index].Indentation;
+    public string Title{ get; }
 
-			++index;
+    public Type[] Matches{ get; }
 
-			while ( index < lines.Length && lines[index].Indentation > ourIndentation )
-				list.Add( new CategoryEntry( this, lines, ref index ) );
+    public CategoryEntry Parent{ get; }
 
-			m_SubCategories = (CategoryEntry[])list.ToArray( typeof( CategoryEntry ) );
-			list.Clear();
+    public CategoryEntry[] SubCategories{ get; }
 
-			m_Matched = list;
-		}
-	}
+    public ArrayList Matched{ get; }
 
-	public class CategoryLine
-	{
-		private int m_Indentation;
-		private string m_Text;
+    public bool IsMatch(Type type)
+    {
+      bool isMatch = false;
 
-		public int Indentation{ get{ return m_Indentation; } }
-		public string Text{ get{ return m_Text; } }
+      for (int i = 0; !isMatch && i < Matches.Length; ++i)
+        isMatch = type == Matches[i] || type.IsSubclassOf(Matches[i]);
 
-		public CategoryLine( string input )
-		{
-			int index;
+      return isMatch;
+    }
+  }
 
-			for ( index = 0; index < input.Length; ++index )
-			{
-				if ( Char.IsLetter( input, index ) )
-					break;
-			}
+  public class CategoryLine
+  {
+    public CategoryLine(string input)
+    {
+      int index;
 
-			if ( index >= input.Length )
-				throw new FormatException( String.Format( "Input string not correctly formatted ('{0}')", input ) );
+      for (index = 0; index < input.Length; ++index)
+        if (char.IsLetter(input, index))
+          break;
 
-			m_Indentation = index;
-			m_Text = input.Substring( index );
-		}
+      if (index >= input.Length)
+        throw new FormatException($"Input string not correctly formatted ('{input}')");
 
-		public static CategoryLine[] Load( string path )
-		{
-			ArrayList list = new ArrayList();
+      Indentation = index;
+      Text = input.Substring(index);
+    }
 
-			if ( File.Exists( path ) )
-			{
-				using ( StreamReader ip = new StreamReader( path ) )
-				{
-					string line;
+    public int Indentation{ get; }
 
-					while ( (line = ip.ReadLine()) != null )
-						list.Add( new CategoryLine( line ) );
-				}
-			}
+    public string Text{ get; }
 
-			return (CategoryLine[])list.ToArray( typeof( CategoryLine ) );
-		}
-	}
+    public static CategoryLine[] Load(string path)
+    {
+      ArrayList list = new ArrayList();
+
+      if (File.Exists(path))
+        using (StreamReader ip = new StreamReader(path))
+        {
+          string line;
+
+          while ((line = ip.ReadLine()) != null)
+            list.Add(new CategoryLine(line));
+        }
+
+      return (CategoryLine[])list.ToArray(typeof(CategoryLine));
+    }
+  }
 }

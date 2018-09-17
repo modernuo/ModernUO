@@ -1,33 +1,30 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class SpeckledCrab : BaseFish
-	{
-		public override int LabelNumber => 1073826; // A Speckled Crab
+  public class SpeckledCrab : BaseFish
+  {
+    [Constructible]
+    public SpeckledCrab() : base(0x3AFC)
+    {
+    }
 
-		[Constructible]
-		public SpeckledCrab() : base( 0x3AFC )
-		{
-		}
+    public SpeckledCrab(Serial serial) : base(serial)
+    {
+    }
 
-		public SpeckledCrab( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073826; // A Speckled Crab
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

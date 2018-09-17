@@ -1,39 +1,23 @@
-using System;
-
 namespace Server.Engines.Craft
 {
-	public class CraftGroup
-	{
-		private CraftItemCol m_arCraftItem;
+  public class CraftGroup
+  {
+    public CraftGroup(TextDefinition groupName)
+    {
+      NameNumber = groupName;
+      NameString = groupName;
+      CraftItems = new CraftItemCol();
+    }
 
-		private string m_NameString;
-		private int m_NameNumber;
+    public CraftItemCol CraftItems{ get; }
 
-		public CraftGroup( TextDefinition groupName )
-		{
-			m_NameNumber = groupName;
-			m_NameString = groupName;
-			m_arCraftItem = new CraftItemCol();
-		}
+    public string NameString{ get; }
 
-		public void AddCraftItem( CraftItem craftItem )
-		{
-			m_arCraftItem.Add( craftItem );
-		}
+    public int NameNumber{ get; }
 
-		public CraftItemCol CraftItems
-		{
-			get { return m_arCraftItem; }
-		}
-
-		public string NameString
-		{
-			get { return m_NameString; }
-		}
-
-		public int NameNumber
-		{
-			get { return m_NameNumber; }
-		}
-	}
+    public void AddCraftItem(CraftItem craftItem)
+    {
+      CraftItems.Add(craftItem);
+    }
+  }
 }

@@ -1,66 +1,63 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class LargeForgeEastAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new LargeForgeEastDeed();
+  public class LargeForgeEastAddon : BaseAddon
+  {
+    [Constructible]
+    public LargeForgeEastAddon()
+    {
+      AddComponent(new ForgeComponent(0x1986), 0, 0, 0);
+      AddComponent(new ForgeComponent(0x198A), 0, 1, 0);
+      AddComponent(new ForgeComponent(0x1996), 0, 2, 0);
+      AddComponent(new ForgeComponent(0x1992), 0, 3, 0);
+    }
 
-		[Constructible]
-		public LargeForgeEastAddon()
-		{
-			AddComponent( new ForgeComponent( 0x1986 ), 0, 0, 0 );
-			AddComponent( new ForgeComponent( 0x198A ), 0, 1, 0 );
-			AddComponent( new ForgeComponent( 0x1996 ), 0, 2, 0 );
-			AddComponent( new ForgeComponent( 0x1992 ), 0, 3, 0 );
-		}
+    public LargeForgeEastAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public LargeForgeEastAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new LargeForgeEastDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class LargeForgeEastDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new LargeForgeEastAddon();
-		public override int LabelNumber => 1044331; // large forge (east)
+  public class LargeForgeEastDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public LargeForgeEastDeed()
+    {
+    }
 
-		[Constructible]
-		public LargeForgeEastDeed()
-		{
-		}
+    public LargeForgeEastDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public LargeForgeEastDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new LargeForgeEastAddon();
+    public override int LabelNumber => 1044331; // large forge (east)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

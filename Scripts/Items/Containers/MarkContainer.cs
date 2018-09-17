@@ -1,267 +1,246 @@
 using System;
-using Server;
 using Server.Commands;
 
 namespace Server.Items
 {
-	public class MarkContainer : LockableContainer
-	{
-		public static void Initialize()
-		{
-			CommandSystem.Register( "SecretLocGen", AccessLevel.Administrator, new CommandEventHandler( SecretLocGen_OnCommand ) );
-		}
+  public class MarkContainer : LockableContainer
+  {
+    private bool m_AutoLock;
+    private InternalTimer m_RelockTimer;
 
-		[Usage( "SecretLocGen" )]
-		[Description( "Generates mark containers to Malas secret locations." )]
-		public static void SecretLocGen_OnCommand( CommandEventArgs e )
-		{
-			CreateMalasPassage( 951, 546, -70, 1006, 994, -70, false, false );
-			CreateMalasPassage( 914, 192, -79, 1019, 1062, -70, false, false );
-			CreateMalasPassage( 1614, 143, -90, 1214, 1313, -90, false, false );
-			CreateMalasPassage( 2176, 324, -90, 1554, 172, -90, false, false );
-			CreateMalasPassage( 864, 812, -90, 1061, 1161, -70, false, false );
-			CreateMalasPassage( 1051, 1434, -85, 1076, 1244, -70, false, true );
-			CreateMalasPassage( 1326, 523, -87, 1201, 1554, -70, false, false );
-			CreateMalasPassage( 424, 189, -1, 2333, 1501, -90, true, false );
-			CreateMalasPassage( 1313, 1115, -85, 1183, 462, -45, false, false );
+    [Constructible]
+    public MarkContainer() : this(false)
+    {
+    }
 
-			e.Mobile.SendMessage( "Secret mark containers have been created." );
-		}
+    [Constructible]
+    public MarkContainer(bool bone) : this(bone, false)
+    {
+    }
 
-		private static bool FindMarkContainer( Point3D p, Map map )
-		{
-			IPooledEnumerable<MarkContainer> eable = map.GetItemsInRange<MarkContainer>( p, 0 );
+    [Constructible]
+    public MarkContainer(bool bone, bool locked) : base(bone ? 0xECA : 0xE79)
+    {
+      Movable = false;
 
-			foreach ( Item item in eable )
-			{
-				if ( item.Z == p.Z )
-				{
-					eable.Free();
-					return true;
-				}
-			}
+      if (bone)
+        Hue = 1102;
 
-			eable.Free();
-			return false;
-		}
+      m_AutoLock = locked;
+      Locked = locked;
 
-		private static void CreateMalasPassage( int x, int y, int z, int xTarget, int yTarget, int zTarget, bool bone, bool locked )
-		{
-			Point3D location = new Point3D( x, y, z );
+      if (locked)
+        LockLevel = -255;
+    }
 
-			if ( FindMarkContainer( location, Map.Malas ) )
-				return;
+    public MarkContainer(Serial serial) : base(serial)
+    {
+    }
 
-			MarkContainer cont = new MarkContainer( bone, locked );
-			cont.TargetMap = Map.Malas;
-			cont.Target = new Point3D( xTarget, yTarget, zTarget );
-			cont.Description = "strange location";
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool AutoLock
+    {
+      get => m_AutoLock;
+      set
+      {
+        m_AutoLock = value;
 
-			cont.MoveToWorld( location, Map.Malas );
-		}
+        if (!m_AutoLock)
+          StopTimer();
+        else if (!Locked && m_RelockTimer == null)
+          m_RelockTimer = new InternalTimer(this);
+      }
+    }
 
-		private bool m_AutoLock;
-		private InternalTimer m_RelockTimer;
-		private Map m_TargetMap;
-		private Point3D m_Target;
-		private string m_Description;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Map TargetMap{ get; set; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool AutoLock
-		{
-			get { return m_AutoLock; }
-			set
-			{
-				m_AutoLock = value;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Point3D Target{ get; set; }
 
-				if ( !m_AutoLock )
-					StopTimer();
-				else if ( !Locked && m_RelockTimer == null )
-					m_RelockTimer = new InternalTimer( this );
-			}
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Bone
+    {
+      get => ItemID == 0xECA;
+      set
+      {
+        ItemID = value ? 0xECA : 0xE79;
+        Hue = value ? 1102 : 0;
+      }
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Map TargetMap { get { return m_TargetMap; } set { m_TargetMap = value; } }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public string Description{ get; set; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Target { get { return m_Target; } set { m_Target = value; } }
+    public override bool IsDecoContainer => false;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Bone
-		{
-			get { return ItemID == 0xECA; }
-			set
-			{
-				ItemID = value ? 0xECA : 0xE79;
-				Hue = value ? 1102 : 0;
-			}
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public override bool Locked
+    {
+      get => base.Locked;
+      set
+      {
+        base.Locked = value;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public string Description { get { return m_Description; } set { m_Description = value; } }
+        if (m_AutoLock)
+        {
+          StopTimer();
 
-		public override bool IsDecoContainer
-		{
-			get{ return false; }
-		}
+          if (!Locked)
+            m_RelockTimer = new InternalTimer(this);
+        }
+      }
+    }
 
-		[Constructible]
-		public MarkContainer() : this( false )
-		{
-		}
+    public static void Initialize()
+    {
+      CommandSystem.Register("SecretLocGen", AccessLevel.Administrator, SecretLocGen_OnCommand);
+    }
 
-		[Constructible]
-		public MarkContainer( bool bone ) : this( bone, false )
-		{
-		}
+    [Usage("SecretLocGen")]
+    [Description("Generates mark containers to Malas secret locations.")]
+    public static void SecretLocGen_OnCommand(CommandEventArgs e)
+    {
+      CreateMalasPassage(951, 546, -70, 1006, 994, -70, false, false);
+      CreateMalasPassage(914, 192, -79, 1019, 1062, -70, false, false);
+      CreateMalasPassage(1614, 143, -90, 1214, 1313, -90, false, false);
+      CreateMalasPassage(2176, 324, -90, 1554, 172, -90, false, false);
+      CreateMalasPassage(864, 812, -90, 1061, 1161, -70, false, false);
+      CreateMalasPassage(1051, 1434, -85, 1076, 1244, -70, false, true);
+      CreateMalasPassage(1326, 523, -87, 1201, 1554, -70, false, false);
+      CreateMalasPassage(424, 189, -1, 2333, 1501, -90, true, false);
+      CreateMalasPassage(1313, 1115, -85, 1183, 462, -45, false, false);
 
-		[Constructible]
-		public MarkContainer( bool bone, bool locked ) : base( bone ? 0xECA : 0xE79 )
-		{
-			Movable = false;
+      e.Mobile.SendMessage("Secret mark containers have been created.");
+    }
 
-			if ( bone )
-				Hue = 1102;
+    private static bool FindMarkContainer(Point3D p, Map map)
+    {
+      IPooledEnumerable<MarkContainer> eable = map.GetItemsInRange<MarkContainer>(p, 0);
 
-			m_AutoLock = locked;
-			Locked = locked;
+      foreach (Item item in eable)
+        if (item.Z == p.Z)
+        {
+          eable.Free();
+          return true;
+        }
 
-			if ( locked )
-				LockLevel = -255;
-		}
+      eable.Free();
+      return false;
+    }
 
-		public MarkContainer( Serial serial ) : base( serial )
-		{
-		}
+    private static void CreateMalasPassage(int x, int y, int z, int xTarget, int yTarget, int zTarget, bool bone,
+      bool locked)
+    {
+      Point3D location = new Point3D(x, y, z);
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public override bool Locked
-		{
-			get { return base.Locked; }
-			set
-			{
-				base.Locked = value;
+      if (FindMarkContainer(location, Map.Malas))
+        return;
 
-				if ( m_AutoLock )
-				{
-					StopTimer();
+      MarkContainer cont = new MarkContainer(bone, locked);
+      cont.TargetMap = Map.Malas;
+      cont.Target = new Point3D(xTarget, yTarget, zTarget);
+      cont.Description = "strange location";
 
-					if ( !Locked )
-						m_RelockTimer = new InternalTimer( this );
-				}
-			}
-		}
+      cont.MoveToWorld(location, Map.Malas);
+    }
 
-		public void StopTimer()
-		{
-			if ( m_RelockTimer != null )
-				m_RelockTimer.Stop();
+    public void StopTimer()
+    {
+      m_RelockTimer?.Stop();
 
-			m_RelockTimer = null;
-		}
+      m_RelockTimer = null;
+    }
 
-		private class InternalTimer : Timer
-		{
-			private MarkContainer m_Container;
-			private DateTime m_RelockTime;
+    public void Mark(RecallRune rune)
+    {
+      if (TargetMap != null)
+      {
+        rune.Marked = true;
+        rune.TargetMap = TargetMap;
+        rune.Target = Target;
+        rune.Description = Description;
+        rune.House = null;
+      }
+    }
 
-			public MarkContainer Container  => m_Container;
-			public DateTime RelockTime  => m_RelockTime;
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      if (dropped is RecallRune rune && base.OnDragDrop(from, dropped))
+      {
+        Mark(rune);
+        return true;
+      }
 
-			public InternalTimer( MarkContainer container ) : this( container, TimeSpan.FromMinutes( 5.0 ) )
-			{
-			}
+      return false;
+    }
 
-			public InternalTimer( MarkContainer container, TimeSpan delay ) : base( delay )
-			{
-				m_Container = container;
-				m_RelockTime = DateTime.UtcNow + delay;
+    public override bool OnDragDropInto(Mobile from, Item dropped, Point3D p)
+    {
+      if (dropped is RecallRune rune && base.OnDragDropInto(from, dropped, p))
+      {
+        Mark(rune);
+        return true;
+      }
 
-				Start();
-			}
+      return false;
+    }
 
-			protected override void OnTick()
-			{
-				m_Container.Locked = true;
-				m_Container.LockLevel = -255;
-			}
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public void Mark( RecallRune rune )
-		{
-			if ( TargetMap != null )
-			{
-				rune.Marked = true;
-				rune.TargetMap = m_TargetMap;
-				rune.Target = m_Target;
-				rune.Description = m_Description;
-				rune.House = null;
-			}
-		}
+      writer.Write(0); // version
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			RecallRune rune = dropped as RecallRune;
+      writer.Write(m_AutoLock);
 
-			if ( rune != null && base.OnDragDrop( from, dropped ) )
-			{
-				Mark( rune );
+      if (!Locked && m_AutoLock)
+        writer.WriteDeltaTime(m_RelockTimer.RelockTime);
 
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+      writer.Write(TargetMap);
+      writer.Write(Target);
+      writer.Write(Description);
+    }
 
-		public override bool OnDragDropInto( Mobile from, Item dropped, Point3D p )
-		{
-			RecallRune rune = dropped as RecallRune;
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			if ( rune != null && base.OnDragDropInto( from, dropped, p ) )
-			{
-				Mark( rune );
+      int version = reader.ReadInt();
 
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+      m_AutoLock = reader.ReadBool();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      if (!Locked && m_AutoLock)
+        m_RelockTimer = new InternalTimer(this, reader.ReadDeltaTime() - DateTime.UtcNow);
 
-			writer.Write( (int)0 ); // version
+      TargetMap = reader.ReadMap();
+      Target = reader.ReadPoint3D();
+      Description = reader.ReadString();
+    }
 
-			writer.Write( m_AutoLock );
+    private class InternalTimer : Timer
+    {
+      public InternalTimer(MarkContainer container) : this(container, TimeSpan.FromMinutes(5.0))
+      {
+      }
 
-			if ( !Locked && m_AutoLock )
-				writer.WriteDeltaTime( m_RelockTimer.RelockTime );
+      public InternalTimer(MarkContainer container, TimeSpan delay) : base(delay)
+      {
+        Container = container;
+        RelockTime = DateTime.UtcNow + delay;
 
-			writer.Write( m_TargetMap );
-			writer.Write( m_Target );
-			writer.Write( m_Description );
-		}
+        Start();
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      public MarkContainer Container{ get; }
 
-			int version = reader.ReadInt();
+      public DateTime RelockTime{ get; }
 
-			m_AutoLock = reader.ReadBool();
-
-			if ( !Locked && m_AutoLock )
-				m_RelockTimer = new InternalTimer( this, reader.ReadDeltaTime() - DateTime.UtcNow );
-
-			m_TargetMap = reader.ReadMap();
-			m_Target = reader.ReadPoint3D();
-			m_Description = reader.ReadString();
-		}
-	}
+      protected override void OnTick()
+      {
+        Container.Locked = true;
+        Container.LockLevel = -255;
+      }
+    }
+  }
 }

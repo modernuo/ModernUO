@@ -1,207 +1,188 @@
-using System;
-using System.Collections;
-using Server;
-using Server.Targeting;
 using System.Collections.Generic;
+using Server.Targeting;
 
 namespace Server.Items
 {
-	public class KeyRing : Item
-	{
-		public static readonly int MaxKeys = 20;
+  public class KeyRing : Item
+  {
+    public static readonly int MaxKeys = 20;
 
-		private List<Key> m_Keys;
+    [Constructible]
+    public KeyRing() : base(0x1011)
+    {
+      Weight = 1.0; // They seem to have no weight on OSI ?!
 
-		public List<Key> Keys  => m_Keys;
+      Keys = new List<Key>();
+    }
 
-		[Constructible]
-		public KeyRing() : base( 0x1011 )
-		{
-			Weight = 1.0; // They seem to have no weight on OSI ?!
+    public KeyRing(Serial serial) : base(serial)
+    {
+    }
 
-			m_Keys = new List<Key>();
-		}
+    public List<Key> Keys{ get; private set; }
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			if ( !this.IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 1060640 ); // The item must be in your backpack to use it.
-				return false;
-			}
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      if (!IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(1060640); // The item must be in your backpack to use it.
+        return false;
+      }
 
-			Key key = dropped as Key;
+      if (!(dropped is Key key) || key.KeyValue == 0)
+      {
+        from.SendLocalizedMessage(501689); // Only non-blank keys can be put on a keyring.
+        return false;
+      }
 
-			if ( key == null || key.KeyValue == 0 )
-			{
-				from.SendLocalizedMessage( 501689 ); // Only non-blank keys can be put on a keyring.
-				return false;
-			}
-			else if ( this.Keys.Count >= MaxKeys )
-			{
-				from.SendLocalizedMessage( 1008138 ); // This keyring is full.
-				return false;
-			}
-			else
-			{
-				Add( key );
-				from.SendLocalizedMessage( 501691 ); // You put the key on the keyring.
-				return true;
-			}
-		}
+      if (Keys.Count >= MaxKeys)
+      {
+        from.SendLocalizedMessage(1008138); // This keyring is full.
+        return false;
+      }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !this.IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 1060640 ); // The item must be in your backpack to use it.
-				return;
-			}
+      Add(key);
+      from.SendLocalizedMessage(501691); // You put the key on the keyring.
+      return true;
+    }
 
-			from.SendLocalizedMessage( 501680 ); // What do you want to unlock?
-			from.Target = new InternalTarget( this );
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(1060640); // The item must be in your backpack to use it.
+        return;
+      }
 
-		private class InternalTarget : Target
-		{
-			private KeyRing m_KeyRing;
+      from.SendLocalizedMessage(501680); // What do you want to unlock?
+      from.Target = new InternalTarget(this);
+    }
 
-			public InternalTarget( KeyRing keyRing ) : base( -1, false, TargetFlags.None )
-			{
-				m_KeyRing = keyRing;
-			}
+    public override void OnDelete()
+    {
+      base.OnDelete();
 
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( m_KeyRing.Deleted || !m_KeyRing.IsChildOf( from.Backpack ) )
-				{
-					from.SendLocalizedMessage( 1060640 ); // The item must be in your backpack to use it.
-					return;
-				}
+      foreach (Key key in Keys) key.Delete();
 
-				if ( m_KeyRing == targeted )
-				{
-					m_KeyRing.Open( from );
-					from.SendLocalizedMessage( 501685 ); // You open the keyring.
-				}
-				else if ( targeted is ILockable )
-				{
-					ILockable o = (ILockable) targeted;
+      Keys.Clear();
+    }
 
-					foreach ( Key key in m_KeyRing.Keys )
-					{
-						if ( key.UseOn( from, o ) )
-							return;
-					}
+    public void Add(Key key)
+    {
+      key.Internalize();
+      Keys.Add(key);
 
-					from.SendLocalizedMessage( 1008140 ); // You do not have a key for that.
-				}
-				else
-				{
-					from.SendLocalizedMessage( 501666 ); // You can't unlock that!
-				}
-			}
-		}
+      UpdateItemID();
+    }
 
-		public override void OnDelete()
-		{
-			base.OnDelete();
+    public void Open(Mobile from)
+    {
+      if (!(Parent is Container cont))
+        return;
 
-			foreach ( Key key in m_Keys )
-			{
-				key.Delete();
-			}
+      for (int i = Keys.Count - 1; i >= 0; i--)
+      {
+        Key key = Keys[i];
 
-			m_Keys.Clear();
-		}
+        if (!key.Deleted && !cont.TryDropItem(from, key, true))
+          break;
 
-		public void Add( Key key )
-		{
-			key.Internalize();
-			m_Keys.Add( key );
+        Keys.RemoveAt(i);
+      }
 
-			UpdateItemID();
-		}
+      UpdateItemID();
+    }
 
-		public void Open( Mobile from )
-		{
-			Container cont = this.Parent as Container;
+    public void RemoveKeys(uint keyValue)
+    {
+      for (int i = Keys.Count - 1; i >= 0; i--)
+      {
+        Key key = Keys[i];
 
-			if ( cont == null )
-				return;
+        if (key.KeyValue == keyValue)
+        {
+          key.Delete();
+          Keys.RemoveAt(i);
+        }
+      }
 
-			for ( int i = m_Keys.Count - 1; i >= 0; i-- )
-			{
-				Key key = m_Keys[i];
+      UpdateItemID();
+    }
 
-				if ( !key.Deleted && !cont.TryDropItem( from, key, true ) )
-					break;
+    public bool ContainsKey(uint keyValue)
+    {
+      foreach (Key key in Keys)
+        if (key.KeyValue == keyValue)
+          return true;
 
-				m_Keys.RemoveAt( i );
-			}
+      return false;
+    }
 
-			UpdateItemID();
-		}
+    private void UpdateItemID()
+    {
+      if (Keys.Count < 1)
+        ItemID = 0x1011;
+      else if (Keys.Count < 3)
+        ItemID = 0x1769;
+      else if (Keys.Count < 5)
+        ItemID = 0x176A;
+      else
+        ItemID = 0x176B;
+    }
 
-		public void RemoveKeys( uint keyValue )
-		{
-			for ( int i = m_Keys.Count - 1; i >= 0; i-- )
-			{
-				Key key = m_Keys[i];
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-				if ( key.KeyValue == keyValue )
-				{
-					key.Delete();
-					m_Keys.RemoveAt( i );
-				}
-			}
+      writer.WriteEncodedInt(0); // version
 
-			UpdateItemID();
-		}
+      writer.WriteItemList(Keys);
+    }
 
-		public bool ContainsKey( uint keyValue )
-		{
-			foreach ( Key key in m_Keys )
-			{
-				if ( key.KeyValue == keyValue )
-					return true;
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			return false;
-		}
+      int version = reader.ReadEncodedInt();
 
-		private void UpdateItemID()
-		{
-			if ( this.Keys.Count < 1 )
-				this.ItemID = 0x1011;
-			else if ( this.Keys.Count < 3 )
-				this.ItemID = 0x1769;
-			else if ( this.Keys.Count < 5 )
-				this.ItemID = 0x176A;
-			else
-				this.ItemID = 0x176B;
-		}
+      Keys = reader.ReadStrongItemList<Key>();
+    }
 
-		public KeyRing( Serial serial ) : base( serial )
-		{
-		}
+    private class InternalTarget : Target
+    {
+      private KeyRing m_KeyRing;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      public InternalTarget(KeyRing keyRing) : base(-1, false, TargetFlags.None)
+      {
+        m_KeyRing = keyRing;
+      }
 
-			writer.WriteEncodedInt( 0 ); // version
+      protected override void OnTarget(Mobile from, object targeted)
+      {
+        if (m_KeyRing.Deleted || !m_KeyRing.IsChildOf(from.Backpack))
+        {
+          from.SendLocalizedMessage(1060640); // The item must be in your backpack to use it.
+          return;
+        }
 
-			writer.WriteItemList<Key>( m_Keys );
-		}
+        if (m_KeyRing == targeted)
+        {
+          m_KeyRing.Open(from);
+          from.SendLocalizedMessage(501685); // You open the keyring.
+        }
+        else if (targeted is ILockable o)
+        {
+          foreach (Key key in m_KeyRing.Keys)
+            if (key.UseOn(from, o))
+              return;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadEncodedInt();
-
-			m_Keys = reader.ReadStrongItemList<Key>();
-		}
-	}
+          from.SendLocalizedMessage(1008140); // You do not have a key for that.
+        }
+        else
+        {
+          from.SendLocalizedMessage(501666); // You can't unlock that!
+        }
+      }
+    }
+  }
 }

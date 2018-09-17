@@ -1,250 +1,253 @@
-using System;
-using System.Collections;
-using Server;
-using Server.Items;
 using Server.Gumps;
+using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
-using Server.Mobiles;
 
 namespace Server.Engines.ConPVP
 {
-	public class ParticipantGump : Gump
-	{
-		private Mobile m_From;
-		private DuelContext m_Context;
-		private Participant m_Participant;
+  public class ParticipantGump : Gump
+  {
+    public ParticipantGump(Mobile from, DuelContext context, Participant p) : base(50, 50)
+    {
+      From = from;
+      Context = context;
+      Participant = p;
 
-		public Mobile From{ get{ return m_From; } } 
-		public DuelContext Context{ get{ return m_Context; } }
-		public Participant Participant{ get{ return m_Participant; } }
+      from.CloseGump(typeof(RulesetGump));
+      from.CloseGump(typeof(DuelContextGump));
+      from.CloseGump(typeof(ParticipantGump));
 
-		public string Center( string text )
-		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
-		}
+      int count = p.Players.Length;
 
-		public void AddGoldenButton( int x, int y, int bid )
-		{
-			AddButton( x  , y  , 0xD2, 0xD2, bid, GumpButtonType.Reply, 0 );
-			AddButton( x+3, y+3, 0xD8, 0xD8, bid, GumpButtonType.Reply, 0 );
-		}
+      if (count < 4)
+        count = 4;
 
-		public void AddGoldenButtonLabeled( int x, int y, int bid, string text )
-		{
-			AddGoldenButton( x, y, bid );
-			AddHtml( x + 25, y, 200, 20, text, false, false );
-		}
+      AddPage(0);
 
-		public ParticipantGump( Mobile from, DuelContext context, Participant p ) : base( 50, 50 )
-		{
-			m_From = from;
-			m_Context = context;
-			m_Participant = p;
+      int height = 35 + 10 + 22 + 22 + 30 + 22 + 2 + count * 22 + 2 + 30;
 
-			from.CloseGump( typeof( RulesetGump ) );
-			from.CloseGump( typeof( DuelContextGump ) );
-			from.CloseGump( typeof( ParticipantGump ) );
+      AddBackground(0, 0, 300, height, 9250);
+      AddBackground(10, 10, 280, height - 20, 0xDAC);
 
-			int count = p.Players.Length;
+      AddButton(240, 25, 0xFB1, 0xFB3, 3, GumpButtonType.Reply, 0);
 
-			if ( count < 4 )
-				count = 4;
+      //AddButton( 223, 54, 0x265A, 0x265A, 4, GumpButtonType.Reply, 0 );
 
-			AddPage( 0 );
-			
-			int height = 35 + 10 + 22 + 22 + 30 + 22 + 2 + (count * 22) + 2 + 30;
+      AddHtml(35, 25, 230, 20, Center("Participant Setup"), false, false);
 
-			AddBackground( 0, 0, 300, height, 9250 );
-			AddBackground( 10, 10, 280, height - 20, 0xDAC );
+      int x = 35;
+      int y = 47;
 
-			AddButton( 240, 25, 0xFB1, 0xFB3, 3, GumpButtonType.Reply, 0 );
+      AddHtml(x, y, 200, 20, $"Team Size: {p.Players.Length}", false, false);
+      y += 22;
 
-			//AddButton( 223, 54, 0x265A, 0x265A, 4, GumpButtonType.Reply, 0 );
+      AddGoldenButtonLabeled(x + 20, y, 1, "Increase");
+      y += 22;
+      AddGoldenButtonLabeled(x + 20, y, 2, "Decrease");
+      y += 30;
 
-			AddHtml( 35, 25, 230, 20, Center( "Participant Setup" ), false, false );
+      AddHtml(35, y, 230, 20, Center("Players"), false, false);
+      y += 22;
 
-			int x = 35;
-			int y = 47;
+      for (int i = 0; i < p.Players.Length; ++i)
+      {
+        DuelPlayer pl = p.Players[i];
 
-			AddHtml( x, y, 200, 20, String.Format( "Team Size: {0}", p.Players.Length ), false, false ); y += 22;
+        AddGoldenButtonLabeled(x, y, 5 + i, $"{1 + i}: {(pl == null ? "Empty" : pl.Mobile.Name)}");
+        y += 22;
+      }
+    }
 
-			AddGoldenButtonLabeled( x + 20, y, 1, "Increase" ); y += 22;
-			AddGoldenButtonLabeled( x + 20, y, 2, "Decrease" ); y += 30;
+    public Mobile From{ get; }
 
-			AddHtml( 35, y, 230, 20, Center( "Players" ), false, false ); y += 22;
+    public DuelContext Context{ get; }
 
-			for ( int i = 0; i < p.Players.Length; ++i )
-			{
-				DuelPlayer pl = p.Players[i];
+    public Participant Participant{ get; }
 
-				AddGoldenButtonLabeled( x, y, 5 + i, String.Format( "{0}: {1}", 1 + i, pl == null ? "Empty" : pl.Mobile.Name ) ); y += 22;
-			}
-		}
+    public string Center(string text)
+    {
+      return $"<CENTER>{text}</CENTER>";
+    }
 
-		public override void OnResponse( NetState sender, RelayInfo info )
-		{
-			if ( !m_Context.Registered )
-				return;
+    public void AddGoldenButton(int x, int y, int bid)
+    {
+      AddButton(x, y, 0xD2, 0xD2, bid, GumpButtonType.Reply, 0);
+      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid, GumpButtonType.Reply, 0);
+    }
 
-			int bid = info.ButtonID;
+    public void AddGoldenButtonLabeled(int x, int y, int bid, string text)
+    {
+      AddGoldenButton(x, y, bid);
+      AddHtml(x + 25, y, 200, 20, text, false, false);
+    }
 
-			if ( bid == 0 )
-			{
-				m_From.SendGump( new DuelContextGump( m_From, m_Context ) );
-			}
-			else if ( bid == 1 )
-			{
-				if ( m_Participant.Count < 8 )
-					m_Participant.Resize( m_Participant.Count + 1 );
-				else
-					m_From.SendMessage( "You may not raise the team size any further." );
+    public override void OnResponse(NetState sender, RelayInfo info)
+    {
+      if (!Context.Registered)
+        return;
 
-				m_From.SendGump( new ParticipantGump( m_From, m_Context, m_Participant ) );
-			}
-			else if ( bid == 2 )
-			{
-				if ( m_Participant.Count > 1 && m_Participant.Count > m_Participant.FilledSlots )
-					m_Participant.Resize( m_Participant.Count - 1 );
-				else
-					m_From.SendMessage( "You may not lower the team size any further." );
+      int bid = info.ButtonID;
 
-				m_From.SendGump( new ParticipantGump( m_From, m_Context, m_Participant ) );
-			}
-			else if ( bid == 3 )
-			{
-				if ( m_Participant.FilledSlots > 0 )
-				{
-					m_From.SendMessage( "There is at least one currently active player. You must remove them first." );
-					m_From.SendGump( new ParticipantGump( m_From, m_Context, m_Participant ) );
-				}
-				else if ( m_Context.Participants.Count > 2 )
-				{
-					/*Container cont = m_Participant.Stakes;
+      if (bid == 0)
+      {
+        From.SendGump(new DuelContextGump(From, Context));
+      }
+      else if (bid == 1)
+      {
+        if (Participant.Count < 8)
+          Participant.Resize(Participant.Count + 1);
+        else
+          From.SendMessage("You may not raise the team size any further.");
 
-					if ( cont != null )
-						cont.Delete();*/
+        From.SendGump(new ParticipantGump(From, Context, Participant));
+      }
+      else if (bid == 2)
+      {
+        if (Participant.Count > 1 && Participant.Count > Participant.FilledSlots)
+          Participant.Resize(Participant.Count - 1);
+        else
+          From.SendMessage("You may not lower the team size any further.");
 
-					m_Context.Participants.Remove( m_Participant );
-					m_From.SendGump( new DuelContextGump( m_From, m_Context ) );
-				}
-				else
-				{
-					m_From.SendMessage( "Duels must have at least two participating parties." );
-					m_From.SendGump( new ParticipantGump( m_From, m_Context, m_Participant ) );
-				}
-			}
-			/*else if ( bid == 4 )
-			{
-				m_From.SendGump( new ParticipantGump( m_From, m_Context, m_Participant ) );
+        From.SendGump(new ParticipantGump(From, Context, Participant));
+      }
+      else if (bid == 3)
+      {
+        if (Participant.FilledSlots > 0)
+        {
+          From.SendMessage("There is at least one currently active player. You must remove them first.");
+          From.SendGump(new ParticipantGump(From, Context, Participant));
+        }
+        else if (Context.Participants.Count > 2)
+        {
+          /*Container cont = m_Participant.Stakes;
 
-				Container cont = m_Participant.Stakes;
+          if ( cont != null )
+            cont.Delete();*/
 
-				if ( cont != null && !cont.Deleted )
-				{
-					cont.DisplayTo( m_From );
+          Context.Participants.Remove(Participant);
+          From.SendGump(new DuelContextGump(From, Context));
+        }
+        else
+        {
+          From.SendMessage("Duels must have at least two participating parties.");
+          From.SendGump(new ParticipantGump(From, Context, Participant));
+        }
+      }
+      /*else if ( bid == 4 )
+      {
+        m_From.SendGump( new ParticipantGump( m_From, m_Context, m_Participant ) );
 
-					Item[] checks = cont.FindItemsByType( typeof( BankCheck ) );
+        Container cont = m_Participant.Stakes;
 
-					int gold = cont.TotalGold;
+        if ( cont != null && !cont.Deleted )
+        {
+          cont.DisplayTo( m_From );
 
-					for ( int i = 0; i < checks.Length; ++i )
-						gold += ((BankCheck)checks[i]).Worth;
+          Item[] checks = cont.FindItemsByType( typeof( BankCheck ) );
 
-					m_From.SendMessage( "This container has {0} item{1} and {2} stone{3}. In gold or check form there is a total of {4:D}gp.", cont.TotalItems, cont.TotalItems==1?"":"s", cont.TotalWeight, cont.TotalWeight==1?"":"s", gold );
-				}
-			}*/
-			else
-			{
-				bid -= 5;
+          int gold = cont.TotalGold;
 
-				if ( bid >= 0 && bid < m_Participant.Players.Length )
-				{
-					if ( m_Participant.Players[bid] == null )
-					{
-						m_From.Target = new ParticipantTarget( m_Context, m_Participant, bid );
-						m_From.SendMessage( "Target a player." );
-					}
-					else
-					{
-						m_Participant.Players[bid].Mobile.SendMessage( "You have been removed from the duel." );
+          for ( int i = 0; i < checks.Length; ++i )
+            gold += ((BankCheck)checks[i]).Worth;
 
-						if ( m_Participant.Players[bid].Mobile is PlayerMobile  )
-							((PlayerMobile)(m_Participant.Players[bid].Mobile)).DuelPlayer = null;
+          m_From.SendMessage( "This container has {0} item{1} and {2} stone{3}. In gold or check form there is a total of {4:D}gp.", cont.TotalItems, cont.TotalItems==1?"":"s", cont.TotalWeight, cont.TotalWeight==1?"":"s", gold );
+        }
+      }*/
+      else
+      {
+        bid -= 5;
 
-						m_Participant.Players[bid] = null;
-						m_From.SendMessage( "They have been removed from the duel." );
-						m_From.SendGump( new ParticipantGump( m_From, m_Context, m_Participant ) );
-					}
-				}
-			}
-		}
+        if (bid >= 0 && bid < Participant.Players.Length)
+        {
+          if (Participant.Players[bid] == null)
+          {
+            From.Target = new ParticipantTarget(Context, Participant, bid);
+            From.SendMessage("Target a player.");
+          }
+          else
+          {
+            Participant.Players[bid].Mobile.SendMessage("You have been removed from the duel.");
 
-		private class ParticipantTarget : Target
-		{
-			private DuelContext m_Context;
-			private Participant m_Participant;
-			private int m_Index;
+            if (Participant.Players[bid].Mobile is PlayerMobile)
+              ((PlayerMobile)Participant.Players[bid].Mobile).DuelPlayer = null;
 
-			public ParticipantTarget( DuelContext context, Participant p, int index ) : base( 12, false, TargetFlags.None )
-			{
-				m_Context = context;
-				m_Participant = p;
-				m_Index = index;
-			}
+            Participant.Players[bid] = null;
+            From.SendMessage("They have been removed from the duel.");
+            From.SendGump(new ParticipantGump(From, Context, Participant));
+          }
+        }
+      }
+    }
 
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( !m_Context.Registered )
-					return;
+    private class ParticipantTarget : Target
+    {
+      private DuelContext m_Context;
+      private int m_Index;
+      private Participant m_Participant;
 
-				int index = m_Index;
+      public ParticipantTarget(DuelContext context, Participant p, int index) : base(12, false, TargetFlags.None)
+      {
+        m_Context = context;
+        m_Participant = p;
+        m_Index = index;
+      }
 
-				if ( index < 0 || index >= m_Participant.Players.Length )
-					return;
+      protected override void OnTarget(Mobile from, object targeted)
+      {
+        if (!m_Context.Registered)
+          return;
 
-				Mobile mob = targeted as Mobile;
+        int index = m_Index;
 
-				if ( mob == null )
-				{
-					from.SendMessage( "That is not a player." );
-				}
-				else if ( !mob.Player )
-				{
-					if ( mob.Body.IsHuman )
-						mob.SayTo( from, 1005443 ); // Nay, I would rather stay here and watch a nail rust.
-					else
-						mob.SayTo( from, 1005444 ); // The creature ignores your offer.
-				}
-				else if ( AcceptDuelGump.IsIgnored( mob, from ) || mob.Blessed )
-				{
-					from.SendMessage( "They ignore your offer." );
-				}
-				else
-				{
-					PlayerMobile pm = mob as PlayerMobile;
+        if (index < 0 || index >= m_Participant.Players.Length)
+          return;
 
-					if ( pm == null )
-						return;
+        if (!(targeted is Mobile mob))
+        {
+          from.SendMessage("That is not a player.");
+        }
+        else if (!mob.Player)
+        {
+          if (mob.Body.IsHuman)
+            mob.SayTo(from, 1005443); // Nay, I would rather stay here and watch a nail rust.
+          else
+            mob.SayTo(from, 1005444); // The creature ignores your offer.
+        }
+        else if (AcceptDuelGump.IsIgnored(mob, from) || mob.Blessed)
+        {
+          from.SendMessage("They ignore your offer.");
+        }
+        else
+        {
+          if (!(mob is PlayerMobile pm))
+            return;
 
-					if ( pm.DuelContext != null )
-						from.SendMessage( "{0} cannot fight because they are already assigned to another duel.", pm.Name );
-					else if ( DuelContext.CheckCombat( pm ) )
-						from.SendMessage( "{0} cannot fight because they have recently been in combat with another player.", pm.Name );
-					else if ( mob.HasGump( typeof( AcceptDuelGump ) ) )
-						from.SendMessage( "{0} has already been offered a duel." );
-					else
-					{
-						from.SendMessage( "You send {0} to {1}.", m_Participant.Find( from ) == null ? "a challenge" : "an invitation", mob.Name );
-						mob.SendGump( new AcceptDuelGump( from, mob, m_Context, m_Participant, m_Index ) );
-					}
-				}
-			}
+          if (pm.DuelContext != null)
+          {
+            from.SendMessage("{0} cannot fight because they are already assigned to another duel.", pm.Name);
+          }
+          else if (DuelContext.CheckCombat(pm))
+          {
+            from.SendMessage("{0} cannot fight because they have recently been in combat with another player.",
+              pm.Name);
+          }
+          else if (mob.HasGump(typeof(AcceptDuelGump)))
+          {
+            from.SendMessage("{0} has already been offered a duel.");
+          }
+          else
+          {
+            from.SendMessage("You send {0} to {1}.",
+              m_Participant.Find(from) == null ? "a challenge" : "an invitation", mob.Name);
+            mob.SendGump(new AcceptDuelGump(from, mob, m_Context, m_Participant, m_Index));
+          }
+        }
+      }
 
-			protected override void OnTargetFinish( Mobile from )
-			{
-				from.SendGump( new ParticipantGump( from, m_Context, m_Participant ) );
-			}
-		}
-	}
+      protected override void OnTargetFinish(Mobile from)
+      {
+        from.SendGump(new ParticipantGump(from, m_Context, m_Participant));
+      }
+    }
+  }
 }

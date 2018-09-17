@@ -1,112 +1,112 @@
 using System;
-using Server;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class SandVortex : BaseCreature
-	{
-		public override string CorpseName => "a sand vortex corpse";
-		public override string DefaultName => "a sand vortex";
+  public class SandVortex : BaseCreature
+  {
+    private DateTime m_NextAttack;
 
-		[Constructible]
-		public SandVortex() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 790;
-			BaseSoundID = 263;
+    [Constructible]
+    public SandVortex() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 790;
+      BaseSoundID = 263;
 
-			SetStr( 96, 120 );
-			SetDex( 171, 195 );
-			SetInt( 76, 100 );
+      SetStr(96, 120);
+      SetDex(171, 195);
+      SetInt(76, 100);
 
-			SetHits( 51, 62 );
+      SetHits(51, 62);
 
-			SetDamage( 3, 16 );
+      SetDamage(3, 16);
 
-			SetDamageType( ResistanceType.Physical, 90 );
-			SetDamageType( ResistanceType.Fire, 10 );
+      SetDamageType(ResistanceType.Physical, 90);
+      SetDamageType(ResistanceType.Fire, 10);
 
-			SetResistance( ResistanceType.Physical, 80, 90 );
-			SetResistance( ResistanceType.Fire, 60, 70 );
-			SetResistance( ResistanceType.Cold, 60, 70 );
-			SetResistance( ResistanceType.Poison, 60, 70 );
-			SetResistance( ResistanceType.Energy, 60, 70 );
+      SetResistance(ResistanceType.Physical, 80, 90);
+      SetResistance(ResistanceType.Fire, 60, 70);
+      SetResistance(ResistanceType.Cold, 60, 70);
+      SetResistance(ResistanceType.Poison, 60, 70);
+      SetResistance(ResistanceType.Energy, 60, 70);
 
-			SetSkill( SkillName.MagicResist, 150.0 );
-			SetSkill( SkillName.Tactics, 70.0 );
-			SetSkill( SkillName.Wrestling, 80.0 );
+      SetSkill(SkillName.MagicResist, 150.0);
+      SetSkill(SkillName.Tactics, 70.0);
+      SetSkill(SkillName.Wrestling, 80.0);
 
-			Fame = 4500;
-			Karma = -4500;
+      Fame = 4500;
+      Karma = -4500;
 
-			VirtualArmor = 28;
-			PackItem( new Bone() );
-		}
+      VirtualArmor = 28;
+      PackItem(new Bone());
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Meager, 2 );
-		}
+    public SandVortex(Serial serial) : base(serial)
+    {
+    }
 
-		private DateTime m_NextAttack;
+    public override string CorpseName => "a sand vortex corpse";
+    public override string DefaultName => "a sand vortex";
 
-		public override void OnActionCombat()
-		{
-			Mobile combatant = Combatant;
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Meager, 2);
+    }
 
-			if ( combatant == null || combatant.Deleted || combatant.Map != Map || !InRange( combatant, 12 ) || !CanBeHarmful( combatant ) || !InLOS( combatant ) )
-				return;
+    public override void OnActionCombat()
+    {
+      Mobile combatant = Combatant;
 
-			if ( DateTime.UtcNow >= m_NextAttack )
-			{
-				SandAttack( combatant );
-				m_NextAttack = DateTime.UtcNow + TimeSpan.FromSeconds( 10.0 + (10.0 * Utility.RandomDouble()) );
-			}
-		}
+      if (combatant == null || combatant.Deleted || combatant.Map != Map || !InRange(combatant, 12) ||
+          !CanBeHarmful(combatant) || !InLOS(combatant))
+        return;
 
-		public void SandAttack( Mobile m )
-		{
-			DoHarmful( m );
+      if (DateTime.UtcNow >= m_NextAttack)
+      {
+        SandAttack(combatant);
+        m_NextAttack = DateTime.UtcNow + TimeSpan.FromSeconds(10.0 + 10.0 * Utility.RandomDouble());
+      }
+    }
 
-			m.FixedParticles( 0x36B0, 10, 25, 9540, 2413, 0, EffectLayer.Waist );
+    public void SandAttack(Mobile m)
+    {
+      DoHarmful(m);
 
-			new InternalTimer( m, this ).Start();
-		}
+      m.FixedParticles(0x36B0, 10, 25, 9540, 2413, 0, EffectLayer.Waist);
 
-		private class InternalTimer : Timer
-		{
-			private Mobile m_Mobile, m_From;
+      new InternalTimer(m, this).Start();
+    }
 
-			public InternalTimer( Mobile m, Mobile from ) : base( TimeSpan.FromSeconds( 1.0 ) )
-			{
-				m_Mobile = m;
-				m_From = from;
-				Priority = TimerPriority.TwoFiftyMS;
-			}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			protected override void OnTick()
-			{
-				m_Mobile.PlaySound( 0x4CF );
-				AOS.Damage( m_Mobile, m_From, Utility.RandomMinMax( 1, 40 ), 90, 10, 0, 0, 0 );
-			}
-		}
+      writer.Write(0); // version
+    }
 
-		public SandVortex( Serial serial ) : base( serial )
-		{
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      int version = reader.ReadInt();
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    private class InternalTimer : Timer
+    {
+      private Mobile m_Mobile, m_From;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      public InternalTimer(Mobile m, Mobile from) : base(TimeSpan.FromSeconds(1.0))
+      {
+        m_Mobile = m;
+        m_From = from;
+        Priority = TimerPriority.TwoFiftyMS;
+      }
 
-			int version = reader.ReadInt();
-		}
-	}
+      protected override void OnTick()
+      {
+        m_Mobile.PlaySound(0x4CF);
+        AOS.Damage(m_Mobile, m_From, Utility.RandomMinMax(1, 40), 90, 10, 0, 0, 0);
+      }
+    }
+  }
 }

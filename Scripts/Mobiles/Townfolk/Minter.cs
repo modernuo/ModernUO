@@ -1,38 +1,31 @@
-using System;
-using System.Collections;
-using Server.Items;
-using Server.ContextMenus;
-using Server.Misc;
-using Server.Network;
-
 namespace Server.Mobiles
 {
-	public class Minter : Banker
-	{
-		public override NpcGuild NpcGuild => NpcGuild.MerchantsGuild;
+  public class Minter : Banker
+  {
+    [Constructible]
+    public Minter()
+    {
+      Title = "the minter";
+    }
 
-		[Constructible]
-		public Minter()
-		{
-			Title = "the minter";
-		}
+    public Minter(Serial serial) : base(serial)
+    {
+    }
 
-		public Minter( Serial serial ) : base( serial )
-		{
-		}
+    public override NpcGuild NpcGuild => NpcGuild.MerchantsGuild;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

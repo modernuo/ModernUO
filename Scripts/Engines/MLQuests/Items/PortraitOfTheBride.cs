@@ -1,42 +1,39 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class PortraitOfTheBride : Item
-	{
-		public override int LabelNumber => 1075300; // Portrait of the Bride
+  public class PortraitOfTheBride : Item
+  {
+    [Constructible]
+    public PortraitOfTheBride() : base(0xE9F)
+    {
+      LootType = LootType.Blessed;
+    }
 
-		public override bool Nontransferable => true;
+    public PortraitOfTheBride(Serial serial) : base(serial)
+    {
+    }
 
-		public override void AddNameProperties( ObjectPropertyList list )
-		{
-			base.AddNameProperties( list );
-			AddQuestItemProperty( list );
-		}
+    public override int LabelNumber => 1075300; // Portrait of the Bride
 
-		[Constructible]
-		public PortraitOfTheBride() : base( 0xE9F )
-		{
-			LootType = LootType.Blessed;
-		}
+    public override bool Nontransferable => true;
 
-		public PortraitOfTheBride( Serial serial ) : base( serial )
-		{
-		}
+    public override void AddNameProperties(ObjectPropertyList list)
+    {
+      base.AddNameProperties(list);
+      AddQuestItemProperty(list);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // Version
-		}
+      writer.Write(0); // Version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

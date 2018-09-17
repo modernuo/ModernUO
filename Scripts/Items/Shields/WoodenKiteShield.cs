@@ -1,48 +1,45 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class WoodenKiteShield : BaseShield
-	{
-		public override int BasePhysicalResistance => 0;
-		public override int BaseFireResistance => 0;
-		public override int BaseColdResistance => 0;
-		public override int BasePoisonResistance => 0;
-		public override int BaseEnergyResistance => 1;
+  public class WoodenKiteShield : BaseShield
+  {
+    [Constructible]
+    public WoodenKiteShield() : base(0x1B79)
+    {
+      Weight = 5.0;
+    }
 
-		public override int InitMinHits => 50;
-		public override int InitMaxHits => 65;
+    public WoodenKiteShield(Serial serial) : base(serial)
+    {
+    }
 
-		public override int AosStrReq => 20;
+    public override int BasePhysicalResistance => 0;
+    public override int BaseFireResistance => 0;
+    public override int BaseColdResistance => 0;
+    public override int BasePoisonResistance => 0;
+    public override int BaseEnergyResistance => 1;
 
-		public override int ArmorBase => 12;
+    public override int InitMinHits => 50;
+    public override int InitMaxHits => 65;
 
-		[Constructible]
-		public WoodenKiteShield() : base( 0x1B79 )
-		{
-			Weight = 5.0;
-		}
+    public override int AosStrReq => 20;
 
-		public WoodenKiteShield( Serial serial ) : base(serial)
-		{
-		}
+    public override int ArmorBase => 12;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( Weight == 7.0 )
-				Weight = 5.0;
-		}
+      if (Weight == 7.0)
+        Weight = 5.0;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 );//version
-		}
-	}
+      writer.Write(0); //version
+    }
+  }
 }

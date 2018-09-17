@@ -1,42 +1,37 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class BatWing : BaseReagent, ICommodity
-	{
-		int ICommodity.DescriptionNumber { get { return LabelNumber; } }
-		bool ICommodity.IsDeedable { get { return true; } }
+  public class BatWing : BaseReagent, ICommodity
+  {
+    [Constructible]
+    public BatWing() : this(1)
+    {
+    }
 
-		[Constructible]
-		public BatWing() : this( 1 )
-		{
-		}
+    [Constructible]
+    public BatWing(int amount) : base(0xF78, amount)
+    {
+    }
 
-		[Constructible]
-		public BatWing( int amount ) : base( 0xF78, amount )
-		{
-		}
+    public BatWing(Serial serial) : base(serial)
+    {
+    }
 
-		public BatWing( Serial serial ) : base( serial )
-		{
-		}
+    int ICommodity.DescriptionNumber => LabelNumber;
+    bool ICommodity.IsDeedable => true;
 
-		
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,170 +1,167 @@
 using System;
 using System.Collections.Generic;
-using Server;
 using Server.Items;
-using Server.Multis;
 using Server.Mobiles;
+using Server.Multis;
 
 namespace Server.Misc
 {
-	public class Cleanup
-	{
-		public static void Initialize()
-		{
-			Timer.DelayCall( TimeSpan.FromSeconds( 2.5 ), new TimerCallback( Run ) );
-		}
+  public class Cleanup
+  {
+    public static void Initialize()
+    {
+      Timer.DelayCall(TimeSpan.FromSeconds(2.5), Run);
+    }
 
-		public static void Run()
-		{
-			List<Item> items = new List<Item>();
-			List<Item> validItems = new List<Item>();
-			List<Mobile> hairCleanup = new List<Mobile>();
+    public static void Run()
+    {
+      List<Item> items = new List<Item>();
+      List<Item> validItems = new List<Item>();
+      List<Mobile> hairCleanup = new List<Mobile>();
 
-			int boxes = 0;
+      int boxes = 0;
 
-			foreach ( Item item in World.Items.Values )
-			{
-				if ( item.Map == null )
-				{
-					items.Add( item );
-					continue;
-				}
-				else if ( item is CommodityDeed )
-				{
-					CommodityDeed deed = (CommodityDeed)item;
+      foreach (Item item in World.Items.Values)
+      {
+        if (item.Map == null)
+        {
+          items.Add(item);
+          continue;
+        }
 
-					if ( deed.Commodity != null )
-						validItems.Add( deed.Commodity );
+        if (item is CommodityDeed deed)
+        {
+          if (deed.Commodity != null)
+            validItems.Add(deed.Commodity);
 
-					continue;
-				}
-				else if ( item is BaseHouse )
-				{
-					BaseHouse house = (BaseHouse)item;
+          continue;
+        }
 
-					foreach ( RelocatedEntity relEntity in house.RelocatedEntities )
-					{
-						if ( relEntity.Entity is Item )
-							validItems.Add( (Item)relEntity.Entity );
-					}
+        if (item is BaseHouse house)
+        {
+          foreach (RelocatedEntity relEntity in house.RelocatedEntities)
+            if (relEntity.Entity is Item item1)
+              validItems.Add(item1);
 
-					foreach ( VendorInventory inventory in house.VendorInventories )
-					{
-						foreach ( Item subItem in inventory.Items )
-							validItems.Add( subItem );
-					}
-				}
-				else if ( item is BankBox )
-				{
-					BankBox box = (BankBox)item;
-					Mobile owner = box.Owner;
+          foreach (VendorInventory inventory in house.VendorInventories)
+          foreach (Item subItem in inventory.Items)
+            validItems.Add(subItem);
+        }
+        else if (item is BankBox box)
+        {
+          Mobile owner = box.Owner;
 
-					if ( owner == null )
-					{
-						items.Add( box );
-						++boxes;
-					}
-					else if ( box.Items.Count == 0 )
-					{
-						items.Add( box );
-						++boxes;
-					}
+          if (owner == null)
+          {
+            items.Add(box);
+            ++boxes;
+          }
+          else if (box.Items.Count == 0)
+          {
+            items.Add(box);
+            ++boxes;
+          }
 
-					continue;
-				}
-				else if ( (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair) )
-				{
-					object rootParent = item.RootParent;
+          continue;
+        }
+        else if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair)
+        {
+          object rootParent = item.RootParent;
 
-					if ( rootParent is Mobile )
-					{
-						Mobile rootMobile = (Mobile)rootParent;
-						if ( item.Parent != rootMobile && rootMobile.AccessLevel == AccessLevel.Player )
-						{
-							items.Add( item );
-							continue;
-						}
-						else if( item.Parent == rootMobile )
-						{
-							hairCleanup.Add( rootMobile );
-							continue;
-						}
-					}
-				}
+          if (rootParent is Mobile rootMobile)
+          {
+            if (item.Parent != rootMobile && rootMobile.AccessLevel == AccessLevel.Player)
+            {
+              items.Add(item);
+              continue;
+            }
 
-				if ( item.Parent != null || item.Map != Map.Internal || item.HeldBy != null )
-					continue;
+            if (item.Parent == rootMobile)
+            {
+              hairCleanup.Add(rootMobile);
+              continue;
+            }
+          }
+        }
 
-				if ( item.Location != Point3D.Zero )
-					continue;
+        if (item.Parent != null || item.Map != Map.Internal || item.HeldBy != null)
+          continue;
 
-				if ( !IsBuggable( item ) )
-					continue;
+        if (item.Location != Point3D.Zero)
+          continue;
 
-				items.Add( item );
-			}
+        if (!IsBuggable(item))
+          continue;
 
-			for ( int i = 0; i < validItems.Count; ++i )
-				items.Remove( validItems[i] );
+        items.Add(item);
+      }
 
-			if ( items.Count > 0 )
-			{
-				if ( boxes > 0 )
-					Console.WriteLine( "Cleanup: Detected {0} inaccessible items, including {1} bank boxes, removing..", items.Count, boxes );
-				else
-					Console.WriteLine( "Cleanup: Detected {0} inaccessible items, removing..", items.Count );
+      for (int i = 0; i < validItems.Count; ++i)
+        items.Remove(validItems[i]);
 
-				for ( int i = 0; i < items.Count; ++i )
-					items[i].Delete();
-			}
+      if (items.Count > 0)
+      {
+        if (boxes > 0)
+          Console.WriteLine("Cleanup: Detected {0} inaccessible items, including {1} bank boxes, removing..",
+            items.Count, boxes);
+        else
+          Console.WriteLine("Cleanup: Detected {0} inaccessible items, removing..", items.Count);
 
-			if ( hairCleanup.Count > 0 )
-			{
-				Console.WriteLine( "Cleanup: Detected {0} hair and facial hair items being worn, converting to their virtual counterparts..", hairCleanup.Count );
+        for (int i = 0; i < items.Count; ++i)
+          items[i].Delete();
+      }
 
-				for ( int i = 0; i < hairCleanup.Count; i++ )
-					hairCleanup[i].ConvertHair();
-			}
-		}
+      if (hairCleanup.Count > 0)
+      {
+        Console.WriteLine(
+          "Cleanup: Detected {0} hair and facial hair items being worn, converting to their virtual counterparts..",
+          hairCleanup.Count);
 
-		public static bool IsBuggable( Item item )
-		{
-			if ( item is Fists )
-				return false;
+        for (int i = 0; i < hairCleanup.Count; i++)
+          hairCleanup[i].ConvertHair();
+      }
+    }
 
-			if ( item is ICommodity || item is Multis.BaseBoat
-				|| item is Fish || item is BigFish
-				|| item is BasePotion || item is Food || item is CookableFood
-				|| item is SpecialFishingNet || item is BaseMagicFish
-				|| item is Shoes || item is Sandals
-				|| item is Boots || item is ThighBoots
-				|| item is TreasureMap || item is MessageInABottle
-				|| item is BaseArmor || item is BaseWeapon
-				|| item is BaseClothing
-				|| ( item is BaseJewel && Core.AOS )
-				|| ( item is BasePotion && Core.ML )
-				#region Champion artifacts
-				|| item is SkullPole
-				|| item is EvilIdolSkull
-				|| item is MonsterStatuette
-				|| item is Pier
-				|| item is ArtifactLargeVase
-				|| item is ArtifactVase
-				|| item is MinotaurStatueDeed
-				|| item is SwampTile
-				|| item is WallBlood
-				|| item is TatteredAncientMummyWrapping
-				|| item is LavaTile
-				|| item is DemonSkull
-				|| item is Web
-				|| item is WaterTile
-				|| item is WindSpirit
-				|| item is DirtPatch
-				|| item is Futon )
-				#endregion
-				return true;
+    public static bool IsBuggable(Item item)
+    {
+      if (item is Fists)
+        return false;
 
-			return false;
-		}
-	}
+      if (item is ICommodity || item is BaseBoat
+                             || item is Fish || item is BigFish || item is Food || item is CookableFood
+                             || item is SpecialFishingNet || item is BaseMagicFish
+                             || item is Shoes || item is Sandals
+                             || item is Boots || item is ThighBoots
+                             || item is TreasureMap || item is MessageInABottle
+                             || item is BaseArmor || item is BaseWeapon
+                             || item is BaseClothing
+                             || item is BaseJewel && Core.AOS
+
+                             #region Champion artifacts
+
+                             || item is SkullPole
+                             || item is EvilIdolSkull
+                             || item is MonsterStatuette
+                             || item is Pier
+                             || item is ArtifactLargeVase
+                             || item is ArtifactVase
+                             || item is MinotaurStatueDeed
+                             || item is SwampTile
+                             || item is WallBlood
+                             || item is TatteredAncientMummyWrapping
+                             || item is LavaTile
+                             || item is DemonSkull
+                             || item is Web
+                             || item is WaterTile
+                             || item is WindSpirit
+                             || item is DirtPatch
+                             || item is Futon)
+
+        #endregion
+
+        return true;
+
+      return false;
+    }
+  }
 }

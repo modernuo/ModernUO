@@ -3,160 +3,162 @@ using Server.Engines.Plants;
 
 namespace Server.Mobiles
 {
-	public class MLDryad : BaseCreature
-	{
-		public override string CorpseName => "a dryad's corpse";
-		public override bool InitialInnocent => true;
+  public class MLDryad : BaseCreature
+  {
+    [Constructible]
+    public MLDryad() : base(AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
+    {
+      Body = 266;
+      BaseSoundID = 0x57B;
 
-		public override OppositionGroup OppositionGroup
-		{
-			get { return OppositionGroup.FeyAndUndead; }
-		}
+      SetStr(132, 149);
+      SetDex(152, 168);
+      SetInt(251, 280);
 
-		public override string DefaultName => "a dryad";
+      SetHits(304, 321);
 
-		[Constructible]
-		public MLDryad() : base( AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4 )
-		{
-			Body = 266;
-			BaseSoundID = 0x57B;
+      SetDamage(11, 20);
 
-			SetStr( 132, 149 );
-			SetDex( 152, 168 );
-			SetInt( 251, 280 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetHits( 304, 321 );
+      SetResistance(ResistanceType.Physical, 40, 50);
+      SetResistance(ResistanceType.Fire, 15, 25);
+      SetResistance(ResistanceType.Cold, 40, 45);
+      SetResistance(ResistanceType.Poison, 30, 40);
+      SetResistance(ResistanceType.Energy, 25, 35);
 
-			SetDamage( 11, 20 );
+      SetSkill(SkillName.Meditation, 80.0, 90.0);
+      SetSkill(SkillName.EvalInt, 70.0, 80.0);
+      SetSkill(SkillName.Magery, 70.0, 80.0);
+      SetSkill(SkillName.Anatomy, 0);
+      SetSkill(SkillName.MagicResist, 100.0, 120.0);
+      SetSkill(SkillName.Tactics, 70.0, 80.0);
+      SetSkill(SkillName.Wrestling, 70.0, 80.0);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      Fame = 5000;
+      Karma = 5000;
 
-			SetResistance( ResistanceType.Physical, 40, 50 );
-			SetResistance( ResistanceType.Fire, 15, 25 );
-			SetResistance( ResistanceType.Cold, 40, 45 );
-			SetResistance( ResistanceType.Poison, 30, 40 );
-			SetResistance( ResistanceType.Energy, 25, 35 );
+      VirtualArmor = 28; // Don't know what it should be
 
-			SetSkill( SkillName.Meditation, 80.0, 90.0 );
-			SetSkill( SkillName.EvalInt, 70.0, 80.0 );
-			SetSkill( SkillName.Magery, 70.0, 80.0 );
-			SetSkill( SkillName.Anatomy, 0 );
-			SetSkill( SkillName.MagicResist, 100.0, 120.0 );
-			SetSkill( SkillName.Tactics, 70.0, 80.0 );
-			SetSkill( SkillName.Wrestling, 70.0, 80.0 );
+      if (Core.ML && Utility.RandomDouble() < .60)
+        PackItem(Seed.RandomPeculiarSeed(1));
 
-			Fame = 5000;
-			Karma = 5000;
+      PackArcanceScroll(0.05);
+    }
 
-			VirtualArmor = 28; // Don't know what it should be
+    public MLDryad(Serial serial) : base(serial)
+    {
+    }
 
-			if ( Core.ML && Utility.RandomDouble() < .60 )
-				PackItem( Seed.RandomPeculiarSeed( 1 ) );
+    public override string CorpseName => "a dryad's corpse";
+    public override bool InitialInnocent => true;
 
-			PackArcanceScroll( 0.05 );
-		}
+    public override OppositionGroup OppositionGroup => OppositionGroup.FeyAndUndead;
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.MlRich );
-		}
+    public override string DefaultName => "a dryad";
 
-		public override int Meat => 1;
+    public override int Meat => 1;
 
-		public override void OnThink()
-		{
-			base.OnThink();
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.MlRich);
+    }
 
-			AreaPeace();
-			AreaUndress();
-		}
+    public override void OnThink()
+    {
+      base.OnThink();
 
-		#region Area Peace
-		private DateTime m_NextPeace;
+      AreaPeace();
+      AreaUndress();
+    }
 
-		public void AreaPeace()
-		{
-			if ( Combatant == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || 0.1 < Utility.RandomDouble() )
-				return;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			TimeSpan duration = TimeSpan.FromSeconds( Utility.RandomMinMax( 20, 80 ) );
+      writer.Write(0); // version
+    }
 
-			foreach ( Mobile m in GetMobilesInRange( RangePerception ) )
-			{
-				PlayerMobile p = m as PlayerMobile;
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-				if ( IsValidTarget( p ) )
-				{
-					p.PeacedUntil = DateTime.UtcNow + duration;
-					p.SendLocalizedMessage( 1072065 ); // You gaze upon the dryad's beauty, and forget to continue battling!
-					p.FixedParticles( 0x376A, 1, 20, 0x7F5, EffectLayer.Waist );
-					p.Combatant = null;
-				}
-			}
+      int version = reader.ReadInt();
+    }
 
-			m_NextPeace = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
-			PlaySound( 0x1D3 );
-		}
+    #region Area Peace
 
-		public bool IsValidTarget( PlayerMobile m )
-		{
-			if ( m != null && m.PeacedUntil < DateTime.UtcNow && !m.Hidden && m.AccessLevel == AccessLevel.Player && CanBeHarmful( m ) )
-				return true;
+    private DateTime m_NextPeace;
 
-			return false;
-		}
-		#endregion
+    public void AreaPeace()
+    {
+      if (Combatant == null || Deleted || !Alive || m_NextPeace > DateTime.UtcNow || 0.1 < Utility.RandomDouble())
+        return;
 
-		#region Undress
-		private DateTime m_NextUndress;
+      TimeSpan duration = TimeSpan.FromSeconds(Utility.RandomMinMax(20, 80));
 
-		public void AreaUndress()
-		{
-			if ( Combatant == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || 0.005 < Utility.RandomDouble() )
-				return;
+      foreach (Mobile m in GetMobilesInRange(RangePerception))
+      {
+        PlayerMobile p = m as PlayerMobile;
 
-			foreach ( Mobile m in GetMobilesInRange( RangePerception ) )
-			{
-				if ( m != null && m.Player && !m.Female && !m.Hidden && m.AccessLevel == AccessLevel.Player && CanBeHarmful( m ) )
-				{
-					UndressItem( m, Layer.OuterTorso );
-					UndressItem( m, Layer.InnerTorso );
-					UndressItem( m, Layer.MiddleTorso );
-					UndressItem( m, Layer.Pants );
-					UndressItem( m, Layer.Shirt );
+        if (IsValidTarget(p))
+        {
+          p.PeacedUntil = DateTime.UtcNow + duration;
+          p.SendLocalizedMessage(1072065); // You gaze upon the dryad's beauty, and forget to continue battling!
+          p.FixedParticles(0x376A, 1, 20, 0x7F5, EffectLayer.Waist);
+          p.Combatant = null;
+        }
+      }
 
-					m.SendLocalizedMessage( 1072197 ); // The dryad's beauty makes your blood race. Your clothing is too confining.
-				}
-			}
+      m_NextPeace = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+      PlaySound(0x1D3);
+    }
 
-			m_NextUndress = DateTime.UtcNow + TimeSpan.FromMinutes( 1 );
-		}
+    public bool IsValidTarget(PlayerMobile m)
+    {
+      if (m != null && m.PeacedUntil < DateTime.UtcNow && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
+          CanBeHarmful(m))
+        return true;
 
-		public void UndressItem( Mobile m, Layer layer )
-		{
-			Item item = m.FindItemOnLayer( layer );
+      return false;
+    }
 
-			if ( item != null && item.Movable )
-				m.PlaceInBackpack( item );
-		}
-		#endregion
+    #endregion
 
-		public MLDryad( Serial serial ) : base( serial )
-		{
-		}
+    #region Undress
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    private DateTime m_NextUndress;
 
-			writer.Write( (int) 0 ); // version
-		}
+    public void AreaUndress()
+    {
+      if (Combatant == null || Deleted || !Alive || m_NextUndress > DateTime.UtcNow || 0.005 < Utility.RandomDouble())
+        return;
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      foreach (Mobile m in GetMobilesInRange(RangePerception))
+        if (m != null && m.Player && !m.Female && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
+            CanBeHarmful(m))
+        {
+          UndressItem(m, Layer.OuterTorso);
+          UndressItem(m, Layer.InnerTorso);
+          UndressItem(m, Layer.MiddleTorso);
+          UndressItem(m, Layer.Pants);
+          UndressItem(m, Layer.Shirt);
 
-			int version = reader.ReadInt();
-		}
-	}
+          m.SendLocalizedMessage(
+            1072197); // The dryad's beauty makes your blood race. Your clothing is too confining.
+        }
+
+      m_NextUndress = DateTime.UtcNow + TimeSpan.FromMinutes(1);
+    }
+
+    public void UndressItem(Mobile m, Layer layer)
+    {
+      Item item = m.FindItemOnLayer(layer);
+
+      if (item != null && item.Movable)
+        m.PlaceInBackpack(item);
+    }
+
+    #endregion
+  }
 }

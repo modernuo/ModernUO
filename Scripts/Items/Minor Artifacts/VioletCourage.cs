@@ -1,47 +1,44 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class VioletCourage : FemalePlateChest
-	{
-		public override int LabelNumber => 1063471;
+  public class VioletCourage : FemalePlateChest
+  {
+    [Constructible]
+    public VioletCourage()
+    {
+      Hue = 0x486;
+      Attributes.Luck = 95;
+      Attributes.DefendChance = 15;
+      ArmorAttributes.LowerStatReq = 100;
+      ArmorAttributes.MageArmor = 1;
+    }
 
-		public override int BasePhysicalResistance => 14;
-		public override int BaseFireResistance => 12;
-		public override int BaseColdResistance => 12;
-		public override int BasePoisonResistance => 8;
-		public override int BaseEnergyResistance => 9;
+    public VioletCourage(Serial serial) : base(serial)
+    {
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public override int LabelNumber => 1063471;
 
-		[Constructible]
-		public VioletCourage()
-		{
-			Hue = 0x486;
-			Attributes.Luck = 95;
-			Attributes.DefendChance = 15;
-			ArmorAttributes.LowerStatReq = 100;
-			ArmorAttributes.MageArmor = 1;
-		}
+    public override int BasePhysicalResistance => 14;
+    public override int BaseFireResistance => 12;
+    public override int BaseColdResistance => 12;
+    public override int BasePoisonResistance => 8;
+    public override int BaseEnergyResistance => 9;
 
-		public VioletCourage( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

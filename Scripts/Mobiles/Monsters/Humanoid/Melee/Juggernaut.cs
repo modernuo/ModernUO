@@ -1,159 +1,158 @@
 using System;
-using Server;
-using Server.Misc;
 using Server.Items;
 using Server.Network;
 
 namespace Server.Mobiles
 {
-	public class Juggernaut : BaseCreature
-	{
-		public override string CorpseName => "a juggernaut corpse";
-		private bool m_Stunning;
+  public class Juggernaut : BaseCreature
+  {
+    private bool m_Stunning;
 
-		public override string DefaultName => "a blackthorn juggernaut";
-
-		[Constructible]
-		public Juggernaut() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6 )
-		{
-			Body = 768;
+    [Constructible]
+    public Juggernaut() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.3, 0.6)
+    {
+      Body = 768;
 
 
-			SetStr( 301, 400 );
-			SetDex( 51, 70 );
-			SetInt( 51, 100 );
+      SetStr(301, 400);
+      SetDex(51, 70);
+      SetInt(51, 100);
 
-			SetHits( 181, 240 );
+      SetHits(181, 240);
 
-			SetDamage( 12, 19 );
+      SetDamage(12, 19);
 
-			SetDamageType( ResistanceType.Physical, 50 );
-			SetDamageType( ResistanceType.Fire, 25 );
-			SetDamageType( ResistanceType.Energy, 25 );
+      SetDamageType(ResistanceType.Physical, 50);
+      SetDamageType(ResistanceType.Fire, 25);
+      SetDamageType(ResistanceType.Energy, 25);
 
-			SetResistance( ResistanceType.Physical, 65, 75 );
-			SetResistance( ResistanceType.Fire, 35, 45 );
-			SetResistance( ResistanceType.Cold, 35, 45 );
-			SetResistance( ResistanceType.Poison, 15, 25 );
-			SetResistance( ResistanceType.Energy, 10, 20 );
+      SetResistance(ResistanceType.Physical, 65, 75);
+      SetResistance(ResistanceType.Fire, 35, 45);
+      SetResistance(ResistanceType.Cold, 35, 45);
+      SetResistance(ResistanceType.Poison, 15, 25);
+      SetResistance(ResistanceType.Energy, 10, 20);
 
-			SetSkill( SkillName.Anatomy, 90.1, 100.0 );
-			SetSkill( SkillName.MagicResist, 140.1, 150.0 );
-			SetSkill( SkillName.Tactics, 90.1, 100.0 );
-			SetSkill( SkillName.Wrestling, 90.1, 100.0 );
+      SetSkill(SkillName.Anatomy, 90.1, 100.0);
+      SetSkill(SkillName.MagicResist, 140.1, 150.0);
+      SetSkill(SkillName.Tactics, 90.1, 100.0);
+      SetSkill(SkillName.Wrestling, 90.1, 100.0);
 
-			Fame = 12000;
-			Karma = -12000;
+      Fame = 12000;
+      Karma = -12000;
 
-			VirtualArmor = 70;
+      VirtualArmor = 70;
 
-			if ( 0.1 > Utility.RandomDouble() )
-				PackItem( new PowerCrystal() );
+      if (0.1 > Utility.RandomDouble())
+        PackItem(new PowerCrystal());
 
-			if ( 0.4 > Utility.RandomDouble() )
-				PackItem( new ClockworkAssembly() );
-		}
+      if (0.4 > Utility.RandomDouble())
+        PackItem(new ClockworkAssembly());
+    }
 
-		public override void OnDeath( Container c )
-		{
-			base.OnDeath( c );
+    public Juggernaut(Serial serial) : base(serial)
+    {
+    }
 
-			if ( 0.05 > Utility.RandomDouble() )
-			{
-				if ( !IsParagon )
-				{
-					if ( 0.75 > Utility.RandomDouble() )
-						c.DropItem( DawnsMusicGear.RandomCommon );
-					else
-						c.DropItem( DawnsMusicGear.RandomUncommon );
-				}
-				else
-					c.DropItem( DawnsMusicGear.RandomRare );
-			}
-		}
+    public override string CorpseName => "a juggernaut corpse";
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Rich );
-			AddLoot( LootPack.Gems, 1 );
-		}
+    public override string DefaultName => "a blackthorn juggernaut";
 
-		public override int GetDeathSound()
-		{
-			return 0x423;
-		}
+    public override bool AlwaysMurderer => true;
+    public override bool BardImmune => !Core.AOS;
+    public override bool BleedImmune => true;
+    public override Poison PoisonImmune => Poison.Lethal;
+    public override int Meat => 1;
+    public override int TreasureMapLevel => 5;
 
-		public override int GetAttackSound()
-		{
-			return 0x23B;
-		}
+    public override void OnDeath(Container c)
+    {
+      base.OnDeath(c);
 
-		public override int GetHurtSound()
-		{
-			return 0x140;
-		}
+      if (0.05 > Utility.RandomDouble())
+      {
+        if (!IsParagon)
+        {
+          if (0.75 > Utility.RandomDouble())
+            c.DropItem(DawnsMusicGear.RandomCommon);
+          else
+            c.DropItem(DawnsMusicGear.RandomUncommon);
+        }
+        else
+        {
+          c.DropItem(DawnsMusicGear.RandomRare);
+        }
+      }
+    }
 
-		public override bool AlwaysMurderer => true;
-		public override bool BardImmune => !Core.AOS;
-		public override bool BleedImmune => true;
-		public override Poison PoisonImmune => Poison.Lethal;
-		public override int Meat => 1;
-		public override int TreasureMapLevel => 5;
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Rich);
+      AddLoot(LootPack.Gems, 1);
+    }
 
-		public override void OnGaveMeleeAttack( Mobile defender )
-		{
-			base.OnGaveMeleeAttack( defender );
+    public override int GetDeathSound()
+    {
+      return 0x423;
+    }
 
-			if ( !m_Stunning && 0.3 > Utility.RandomDouble() )
-			{
-				m_Stunning = true;
+    public override int GetAttackSound()
+    {
+      return 0x23B;
+    }
 
-				defender.Animate( 21, 6, 1, true, false, 0 );
-				this.PlaySound( 0xEE );
-				defender.LocalOverheadMessage( MessageType.Regular, 0x3B2, false, "You have been stunned by a colossal blow!" );
+    public override int GetHurtSound()
+    {
+      return 0x140;
+    }
 
-				BaseWeapon weapon = this.Weapon as BaseWeapon;
-				if ( weapon != null )
-					weapon.OnHit( this, defender );
+    public override void OnGaveMeleeAttack(Mobile defender)
+    {
+      base.OnGaveMeleeAttack(defender);
 
-				if ( defender.Alive )
-				{
-					defender.Frozen = true;
-					Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerStateCallback( Recover_Callback ), defender );
-				}
-			}
-		}
+      if (!m_Stunning && 0.3 > Utility.RandomDouble())
+      {
+        m_Stunning = true;
 
-		private void Recover_Callback( object state )
-		{
-			Mobile defender = state as Mobile;
+        defender.Animate(21, 6, 1, true, false, 0);
+        PlaySound(0xEE);
+        defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, false,
+          "You have been stunned by a colossal blow!");
 
-			if ( defender != null )
-			{
-				defender.Frozen = false;
-				defender.Combatant = null;
-				defender.LocalOverheadMessage( MessageType.Regular, 0x3B2, false, "You recover your senses." );
-			}
+        if (Weapon is BaseWeapon weapon)
+          weapon.OnHit(this, defender);
 
-			m_Stunning = false;
-		}
+        if (defender.Alive)
+        {
+          defender.Frozen = true;
+          Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerStateCallback(Recover_Callback), defender);
+        }
+      }
+    }
 
-		public Juggernaut( Serial serial ) : base( serial )
-		{
-		}
+    private void Recover_Callback(object state)
+    {
+      if (state is Mobile defender)
+      {
+        defender.Frozen = false;
+        defender.Combatant = null;
+        defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You recover your senses.");
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      m_Stunning = false;
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

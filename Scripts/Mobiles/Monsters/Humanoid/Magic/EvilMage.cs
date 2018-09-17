@@ -1,75 +1,73 @@
-using System;
-using Server;
-using Server.Misc;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class EvilMage : BaseCreature
-	{
-		public override string CorpseName => "an evil mage corpse";
-		[Constructible]
-		public EvilMage() : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Name = NameList.RandomName( "evil mage" );
-			Title = "the evil mage";
-			Body = 124;
+  public class EvilMage : BaseCreature
+  {
+    [Constructible]
+    public EvilMage() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Name = NameList.RandomName("evil mage");
+      Title = "the evil mage";
+      Body = 124;
 
-			SetStr( 81, 105 );
-			SetDex( 91, 115 );
-			SetInt( 96, 120 );
+      SetStr(81, 105);
+      SetDex(91, 115);
+      SetInt(96, 120);
 
-			SetHits( 49, 63 );
+      SetHits(49, 63);
 
-			SetDamage( 5, 10 );
+      SetDamage(5, 10);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetResistance( ResistanceType.Physical, 15, 20 );
-			SetResistance( ResistanceType.Fire, 5, 10 );
-			SetResistance( ResistanceType.Poison, 5, 10 );
-			SetResistance( ResistanceType.Energy, 5, 10 );
+      SetResistance(ResistanceType.Physical, 15, 20);
+      SetResistance(ResistanceType.Fire, 5, 10);
+      SetResistance(ResistanceType.Poison, 5, 10);
+      SetResistance(ResistanceType.Energy, 5, 10);
 
-			SetSkill( SkillName.EvalInt, 75.1, 100.0 );
-			SetSkill( SkillName.Magery, 75.1, 100.0 );
-			SetSkill( SkillName.MagicResist, 75.0, 97.5 );
-			SetSkill( SkillName.Tactics, 65.0, 87.5 );
-			SetSkill( SkillName.Wrestling, 20.2, 60.0 );
+      SetSkill(SkillName.EvalInt, 75.1, 100.0);
+      SetSkill(SkillName.Magery, 75.1, 100.0);
+      SetSkill(SkillName.MagicResist, 75.0, 97.5);
+      SetSkill(SkillName.Tactics, 65.0, 87.5);
+      SetSkill(SkillName.Wrestling, 20.2, 60.0);
 
-			Fame = 2500;
-			Karma = -2500;
+      Fame = 2500;
+      Karma = -2500;
 
-			VirtualArmor = 16;
-			PackReg( 6 );
-			PackItem( new Robe( Utility.RandomNeutralHue() ) ); // TODO: Proper hue
-			PackItem( new Sandals() );
-		}
+      VirtualArmor = 16;
+      PackReg(6);
+      PackItem(new Robe(Utility.RandomNeutralHue())); // TODO: Proper hue
+      PackItem(new Sandals());
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average );
-			AddLoot( LootPack.MedScrolls );
-		}
+    public EvilMage(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool CanRummageCorpses => true;
-		public override bool AlwaysMurderer => true;
-		public override int Meat => 1;
-		public override int TreasureMapLevel => Core.AOS ? 1 : 0;
+    public override string CorpseName => "an evil mage corpse";
 
-		public EvilMage( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CanRummageCorpses => true;
+    public override bool AlwaysMurderer => true;
+    public override int Meat => 1;
+    public override int TreasureMapLevel => Core.AOS ? 1 : 0;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Average);
+      AddLoot(LootPack.MedScrolls);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

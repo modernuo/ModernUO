@@ -1,105 +1,120 @@
 using System;
-using Server;
 using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	[Flippable( 0x27AC, 0x27F7 )]
-	public class Shuriken : Item, ICraftable, INinjaAmmo
-	{
-		private int m_UsesRemaining;
+  [Flippable(0x27AC, 0x27F7)]
+  public class Shuriken : Item, ICraftable, INinjaAmmo
+  {
+    private Poison m_Poison;
+    private int m_PoisonCharges;
+    private int m_UsesRemaining;
 
-		private Poison m_Poison;
-		private int m_PoisonCharges;
+    [Constructible]
+    public Shuriken() : this(1)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int UsesRemaining
-		{
-			get { return m_UsesRemaining; }
-			set { m_UsesRemaining = value; InvalidateProperties(); }
-		}
+    [Constructible]
+    public Shuriken(int amount) : base(0x27AC)
+    {
+      Weight = 1.0;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Poison Poison
-		{
-			get{ return m_Poison; }
-			set{ m_Poison = value; InvalidateProperties(); }
-		}
+      m_UsesRemaining = amount;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int PoisonCharges
-		{
-			get { return m_PoisonCharges; }
-			set { m_PoisonCharges = value; InvalidateProperties(); }
-		}
+    public Shuriken(Serial serial) : base(serial)
+    {
+    }
 
-		public bool ShowUsesRemaining{ get{ return true; } set{} }
+    public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
+      CraftItem craftItem, int resHue)
+    {
+      if (quality == 2)
+        UsesRemaining *= 2;
 
-		[Constructible]
-		public Shuriken() : this( 1 )
-		{
-		}
+      return quality;
+    }
 
-		[Constructible]
-		public Shuriken( int amount ) : base( 0x27AC )
-		{
-			Weight = 1.0;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int UsesRemaining
+    {
+      get => m_UsesRemaining;
+      set
+      {
+        m_UsesRemaining = value;
+        InvalidateProperties();
+      }
+    }
 
-			m_UsesRemaining = amount;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Poison Poison
+    {
+      get => m_Poison;
+      set
+      {
+        m_Poison = value;
+        InvalidateProperties();
+      }
+    }
 
-		public Shuriken( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int PoisonCharges
+    {
+      get => m_PoisonCharges;
+      set
+      {
+        m_PoisonCharges = value;
+        InvalidateProperties();
+      }
+    }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    public bool ShowUsesRemaining
+    {
+      get => true;
+      set { }
+    }
 
-			list.Add( 1060584, m_UsesRemaining.ToString() ); // uses remaining: ~1_val~
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-			if ( m_Poison != null && m_PoisonCharges > 0 )
-				list.Add( 1062412 + m_Poison.Level, m_PoisonCharges.ToString() );
-		}
+      list.Add(1060584, m_UsesRemaining.ToString()); // uses remaining: ~1_val~
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      if (m_Poison != null && m_PoisonCharges > 0)
+        list.Add(1062412 + m_Poison.Level, m_PoisonCharges.ToString());
+    }
 
-			writer.Write( (int) 0 ); // version
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) m_UsesRemaining );
+      writer.Write(0); // version
 
-			Poison.Serialize( m_Poison, writer );
-			writer.Write( (int) m_PoisonCharges );
-		}
+      writer.Write(m_UsesRemaining);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      Poison.Serialize(m_Poison, writer);
+      writer.Write(m_PoisonCharges);
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_UsesRemaining = reader.ReadInt();
+      int version = reader.ReadInt();
 
-					m_Poison = Poison.Deserialize( reader );
-					m_PoisonCharges = reader.ReadInt();
+      switch (version)
+      {
+        case 0:
+        {
+          m_UsesRemaining = reader.ReadInt();
 
-					break;
-				}
-			}
-		}
+          m_Poison = Poison.Deserialize(reader);
+          m_PoisonCharges = reader.ReadInt();
 
-		public int OnCraft( int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, CraftItem craftItem, int resHue )
-		{
-			if ( quality == 2 )
-				UsesRemaining *= 2;
-
-			return quality;
-		}
-	}
+          break;
+        }
+      }
+    }
+  }
 }

@@ -1,53 +1,48 @@
 using System;
-using Server;
 using Server.Items;
 
 namespace Server.Engines.Plants
 {
-	public class PlantResourceInfo
-	{
-		private static PlantResourceInfo[] m_ResourceList = new PlantResourceInfo[]
-			{
-				new PlantResourceInfo( PlantType.ElephantEarPlant, PlantHue.BrightRed, typeof( RedLeaves ) ),
-				new PlantResourceInfo( PlantType.PonytailPalm, PlantHue.BrightRed, typeof( RedLeaves ) ),
-				new PlantResourceInfo( PlantType.CenturyPlant, PlantHue.BrightRed, typeof( RedLeaves ) ),
-				new PlantResourceInfo( PlantType.Poppies, PlantHue.BrightOrange, typeof( OrangePetals ) ),
-				new PlantResourceInfo( PlantType.Bulrushes, PlantHue.BrightOrange, typeof( OrangePetals ) ),
-				new PlantResourceInfo( PlantType.PampasGrass, PlantHue.BrightOrange, typeof( OrangePetals ) ),
-				new PlantResourceInfo( PlantType.SnakePlant, PlantHue.BrightGreen, typeof( GreenThorns ) ),
-				new PlantResourceInfo( PlantType.BarrelCactus, PlantHue.BrightGreen, typeof( GreenThorns ) ),
-				new PlantResourceInfo( PlantType.CocoaTree, PlantHue.Plain, typeof( CocoaPulp ) )
-			};
+  public class PlantResourceInfo
+  {
+    private static PlantResourceInfo[] m_ResourceList =
+    {
+      new PlantResourceInfo(PlantType.ElephantEarPlant, PlantHue.BrightRed, typeof(RedLeaves)),
+      new PlantResourceInfo(PlantType.PonytailPalm, PlantHue.BrightRed, typeof(RedLeaves)),
+      new PlantResourceInfo(PlantType.CenturyPlant, PlantHue.BrightRed, typeof(RedLeaves)),
+      new PlantResourceInfo(PlantType.Poppies, PlantHue.BrightOrange, typeof(OrangePetals)),
+      new PlantResourceInfo(PlantType.Bulrushes, PlantHue.BrightOrange, typeof(OrangePetals)),
+      new PlantResourceInfo(PlantType.PampasGrass, PlantHue.BrightOrange, typeof(OrangePetals)),
+      new PlantResourceInfo(PlantType.SnakePlant, PlantHue.BrightGreen, typeof(GreenThorns)),
+      new PlantResourceInfo(PlantType.BarrelCactus, PlantHue.BrightGreen, typeof(GreenThorns)),
+      new PlantResourceInfo(PlantType.CocoaTree, PlantHue.Plain, typeof(CocoaPulp))
+    };
 
-		public static PlantResourceInfo GetInfo( PlantType plantType, PlantHue plantHue )
-		{
-			foreach ( PlantResourceInfo info in m_ResourceList )
-			{
-				if ( info.PlantType == plantType && info.PlantHue == plantHue )
-					return info;
-			}
+    private PlantResourceInfo(PlantType plantType, PlantHue plantHue, Type resourceType)
+    {
+      PlantType = plantType;
+      PlantHue = plantHue;
+      ResourceType = resourceType;
+    }
 
-			return null;
-		}
+    public PlantType PlantType{ get; }
 
-		private PlantType m_PlantType;
-		private PlantHue m_PlantHue;
-		private Type m_ResourceType;
+    public PlantHue PlantHue{ get; }
 
-		public PlantType PlantType  => m_PlantType;
-		public PlantHue PlantHue  => m_PlantHue;
-		public Type ResourceType  => m_ResourceType;
+    public Type ResourceType{ get; }
 
-		private PlantResourceInfo( PlantType plantType, PlantHue plantHue, Type resourceType )
-		{
-			m_PlantType = plantType;
-			m_PlantHue = plantHue;
-			m_ResourceType = resourceType;
-		}
+    public static PlantResourceInfo GetInfo(PlantType plantType, PlantHue plantHue)
+    {
+      foreach (PlantResourceInfo info in m_ResourceList)
+        if (info.PlantType == plantType && info.PlantHue == plantHue)
+          return info;
 
-		public Item CreateResource()
-		{
-			return (Item)Activator.CreateInstance( m_ResourceType );
-		}
-	}
+      return null;
+    }
+
+    public Item CreateResource()
+    {
+      return (Item)Activator.CreateInstance(ResourceType);
+    }
+  }
 }

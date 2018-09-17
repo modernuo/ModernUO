@@ -1,257 +1,235 @@
 using System;
-using System.Collections;
-using Server;
-using Server.Engines;
+using Server.Accounting;
 using Server.Engines.Help;
 
 namespace Server.Engines.Reports
 {
-	public enum PageResolution
-	{
-		None,
-		Handled,
-		Deleted,
-		Logged,
-		Canceled
-	}
+  public enum PageResolution
+  {
+    None,
+    Handled,
+    Deleted,
+    Logged,
+    Canceled
+  }
 
-	public class PageInfo : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "pi", new ConstructCallback( Construct ) );
+  public class PageInfo : PersistableObject
+  {
+    private StaffHistory m_History;
+    private StaffInfo m_Resolver;
+    private UserInfo m_Sender;
 
-		private static PersistableObject Construct()
-		{
-			return new PageInfo();
-		}
+    private string m_SentBy;
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public PageInfo()
+    {
+      Responses = new ResponseInfoCollection();
+    }
 
-		private StaffHistory m_History;
-		private StaffInfo m_Resolver;
-		private UserInfo m_Sender;
+    public PageInfo(PageEntry entry)
+    {
+      PageType = entry.Type;
 
-		public StaffInfo Resolver
-		{
-			get{ return m_Resolver; }
-			set
-			{
-				if ( m_Resolver == value )
-					return;
+      TimeSent = entry.Sent;
+      m_SentBy = GetAccount(entry.Sender);
 
-				lock ( StaffHistory.RenderLock )
-				{
-					if ( m_Resolver != null )
-						m_Resolver.Unregister( this );
+      Message = entry.Message;
+      Responses = new ResponseInfoCollection();
+    }
 
-					m_Resolver = value;
+    public StaffInfo Resolver
+    {
+      get => m_Resolver;
+      set
+      {
+        if (m_Resolver == value)
+          return;
 
-					if ( m_Resolver != null )
-						m_Resolver.Register( this );
-				}
-			}
-		}
+        lock (StaffHistory.RenderLock)
+        {
+          m_Resolver?.Unregister(this);
 
-		public UserInfo Sender
-		{
-			get{ return m_Sender; }
-			set
-			{
-				if ( m_Sender == value )
-					return;
+          m_Resolver = value;
 
-				lock ( StaffHistory.RenderLock )
-				{
-					if ( m_Sender != null )
-						m_Sender.Unregister( this );
+          m_Resolver?.Register(this);
+        }
+      }
+    }
 
-					m_Sender = value;
+    public UserInfo Sender
+    {
+      get => m_Sender;
+      set
+      {
+        if (m_Sender == value)
+          return;
 
-					if ( m_Sender != null )
-						m_Sender.Register( this );
-				}
-			}
-		}
+        lock (StaffHistory.RenderLock)
+        {
+          m_Sender?.Unregister(this);
 
-		private PageType m_PageType;
-		private PageResolution m_Resolution;
+          m_Sender = value;
 
-		private DateTime m_TimeSent;
-		private DateTime m_TimeResolved;
+          m_Sender?.Register(this);
+        }
+      }
+    }
 
-		private string m_SentBy;
-		private string m_ResolvedBy;
+    public StaffHistory History
+    {
+      get => m_History;
+      set
+      {
+        if (m_History == value)
+          return;
 
-		private string m_Message;
-		private ResponseInfoCollection m_Responses;
+        if (m_History != null)
+        {
+          Sender = null;
+          Resolver = null;
+        }
 
-		public StaffHistory History
-		{
-			get{ return m_History; }
-			set
-			{
-				if ( m_History == value )
-					return;
+        m_History = value;
 
-				if ( m_History != null )
-				{
-					Sender = null;
-					Resolver = null;
-				}
+        if (m_History != null)
+        {
+          Sender = m_History.GetUserInfo(m_SentBy);
+          UpdateResolver();
+        }
+      }
+    }
 
-				m_History = value;
+    public PageType PageType{ get; set; }
 
-				if ( m_History != null )
-				{
-					Sender = m_History.GetUserInfo( m_SentBy );
-					UpdateResolver();
-				}
-			}
-		}
+    public PageResolution Resolution{ get; private set; }
 
-		public PageType PageType{ get{ return m_PageType; } set{ m_PageType = value; } }
-		public PageResolution Resolution{ get{ return m_Resolution; } }
+    public DateTime TimeSent{ get; set; }
 
-		public DateTime TimeSent{ get{ return m_TimeSent; } set{ m_TimeSent = value; } }
-		public DateTime TimeResolved{ get{ return m_TimeResolved; } }
+    public DateTime TimeResolved{ get; private set; }
 
-		public string SentBy
-		{
-			get{ return m_SentBy; }
-			set
-			{
-				m_SentBy = value;
+    public string SentBy
+    {
+      get => m_SentBy;
+      set
+      {
+        m_SentBy = value;
 
-				if ( m_History != null )
-					Sender = m_History.GetUserInfo( m_SentBy );
-			}
-		}
+        if (m_History != null)
+          Sender = m_History.GetUserInfo(m_SentBy);
+      }
+    }
 
-		public string ResolvedBy
-		{
-			get{ return m_ResolvedBy; }
-		}
+    public string ResolvedBy{ get; private set; }
 
-		public string Message{ get{ return m_Message; } set{ m_Message = value; } }
-		public ResponseInfoCollection Responses{ get{ return m_Responses; } set{ m_Responses = value; } }
+    public string Message{ get; set; }
 
-		public void UpdateResolver()
-		{
-			string resolvedBy;
-			DateTime timeResolved;
-			PageResolution res = GetResolution( out resolvedBy, out timeResolved );
+    public ResponseInfoCollection Responses{ get; set; }
 
-			if ( m_History != null && IsStaffResolution( res ) )
-				Resolver = m_History.GetStaffInfo( resolvedBy );
-			else
-				Resolver = null;
+    public void UpdateResolver()
+    {
+      string resolvedBy;
+      DateTime timeResolved;
+      PageResolution res = GetResolution(out resolvedBy, out timeResolved);
 
-			m_ResolvedBy = resolvedBy;
-			m_TimeResolved = timeResolved;
-			m_Resolution = res;
-		}
+      if (m_History != null && IsStaffResolution(res))
+        Resolver = m_History.GetStaffInfo(resolvedBy);
+      else
+        Resolver = null;
 
-		public bool IsStaffResolution( PageResolution res )
-		{
-			return ( res == PageResolution.Handled );
-		}
+      ResolvedBy = resolvedBy;
+      TimeResolved = timeResolved;
+      Resolution = res;
+    }
 
-		public static PageResolution ResFromResp( string resp )
-		{
-			switch ( resp )
-			{
-				case "[Handled]":	return PageResolution.Handled;
-				case "[Deleting]":	return PageResolution.Deleted;
-				case "[Logout]":	return PageResolution.Logged;
-				case "[Canceled]":	return PageResolution.Canceled;
-			}
+    public bool IsStaffResolution(PageResolution res)
+    {
+      return res == PageResolution.Handled;
+    }
 
-			return PageResolution.None;
-		}
+    public static PageResolution ResFromResp(string resp)
+    {
+      switch (resp)
+      {
+        case "[Handled]": return PageResolution.Handled;
+        case "[Deleting]": return PageResolution.Deleted;
+        case "[Logout]": return PageResolution.Logged;
+        case "[Canceled]": return PageResolution.Canceled;
+      }
 
-		public PageResolution GetResolution( out string resolvedBy, out DateTime timeResolved )
-		{
-			for ( int i = m_Responses.Count - 1; i >= 0; --i )
-			{
-				ResponseInfo resp = m_Responses[i];
-				PageResolution res = ResFromResp( resp.Message );
+      return PageResolution.None;
+    }
 
-				if ( res != PageResolution.None )
-				{
-					resolvedBy = resp.SentBy;
-					timeResolved = resp.TimeStamp;
-					return res;
-				}
-			}
+    public PageResolution GetResolution(out string resolvedBy, out DateTime timeResolved)
+    {
+      for (int i = Responses.Count - 1; i >= 0; --i)
+      {
+        ResponseInfo resp = Responses[i];
+        PageResolution res = ResFromResp(resp.Message);
 
-			resolvedBy = m_SentBy;
-			timeResolved = m_TimeSent;
-			return PageResolution.None;
-		}
+        if (res != PageResolution.None)
+        {
+          resolvedBy = resp.SentBy;
+          timeResolved = resp.TimeStamp;
+          return res;
+        }
+      }
 
-		public static string GetAccount( Mobile mob )
-		{
-			if ( mob == null )
-				return null;
+      resolvedBy = m_SentBy;
+      timeResolved = TimeSent;
+      return PageResolution.None;
+    }
 
-			Accounting.Account acct = mob.Account as Accounting.Account;
+    public static string GetAccount(Mobile mob)
+    {
+      return mob?.Account is Account acct ? acct.Username : null;
+    }
 
-			if ( acct == null )
-				return null;
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetInt32("p", (int)PageType);
 
-			return acct.Username;
-		}
+      op.SetDateTime("ts", TimeSent);
+      op.SetString("s", m_SentBy);
 
-		public PageInfo()
-		{
-			m_Responses = new ResponseInfoCollection();
-		}
+      op.SetString("m", Message);
+    }
 
-		public PageInfo( PageEntry entry )
-		{
-			m_PageType = entry.Type;
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      PageType = (PageType)ip.GetInt32("p");
 
-			m_TimeSent = entry.Sent;
-			m_SentBy = GetAccount( entry.Sender );
+      TimeSent = ip.GetDateTime("ts");
+      m_SentBy = ip.GetString("s");
 
-			m_Message = entry.Message;
-			m_Responses = new ResponseInfoCollection();
-		}
+      Message = ip.GetString("m");
+    }
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetInt32( "p", (int)m_PageType );
+    public override void SerializeChildren(PersistanceWriter op)
+    {
+      lock (this)
+      {
+        for (int i = 0; i < Responses.Count; ++i)
+          Responses[i].Serialize(op);
+      }
+    }
 
-			op.SetDateTime( "ts", m_TimeSent );
-			op.SetString( "s", m_SentBy );
+    public override void DeserializeChildren(PersistanceReader ip)
+    {
+      while (ip.HasChild)
+        Responses.Add(ip.GetChild() as ResponseInfo);
+    }
 
-			op.SetString( "m", m_Message );
-		}
+    #region Type Identification
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			m_PageType = (PageType) ip.GetInt32( "p" );
+    public static readonly PersistableType ThisTypeID = new PersistableType("pi", Construct);
 
-			m_TimeSent = ip.GetDateTime( "ts" );
-			m_SentBy = ip.GetString( "s" );
+    private static PersistableObject Construct()
+    {
+      return new PageInfo();
+    }
 
-			m_Message = ip.GetString( "m" );
-		}
+    public override PersistableType TypeID => ThisTypeID;
 
-		public override void SerializeChildren( PersistanceWriter op )
-		{
-			lock ( this )
-			{
-				for ( int i = 0; i < m_Responses.Count; ++i )
-					m_Responses[i].Serialize( op );
-			}
-		}
-
-		public override void DeserializeChildren( PersistanceReader ip )
-		{
-			while ( ip.HasChild )
-				m_Responses.Add( ip.GetChild() as ResponseInfo );
-		}
-	}
+    #endregion
+  }
 }

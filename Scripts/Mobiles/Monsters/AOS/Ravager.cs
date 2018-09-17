@@ -1,67 +1,69 @@
-using System;
-using Server;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Ravager : BaseCreature
-	{
-		public override string CorpseName => "a ravager corpse";
-		public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.CrushingBlow;
+  public class Ravager : BaseCreature
+  {
+    [Constructible]
+    public Ravager() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 314;
+      BaseSoundID = 357;
 
-		public override string DefaultName => "a ravager";
+      SetStr(251, 275);
+      SetDex(101, 125);
+      SetInt(66, 90);
 
-		[Constructible]
-		public Ravager() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 314;
-			BaseSoundID = 357;
+      SetHits(161, 175);
 
-			SetStr( 251, 275 );
-			SetDex( 101, 125 );
-			SetInt( 66, 90 );
+      SetDamage(15, 20);
 
-			SetHits( 161, 175 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamage( 15, 20 );
+      SetResistance(ResistanceType.Physical, 50, 60);
+      SetResistance(ResistanceType.Fire, 50, 60);
+      SetResistance(ResistanceType.Cold, 60, 70);
+      SetResistance(ResistanceType.Poison, 30, 40);
+      SetResistance(ResistanceType.Energy, 20, 30);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetSkill(SkillName.MagicResist, 50.1, 75.0);
+      SetSkill(SkillName.Tactics, 75.1, 100.0);
+      SetSkill(SkillName.Wrestling, 70.1, 90.0);
 
-			SetResistance( ResistanceType.Physical, 50, 60 );
-			SetResistance( ResistanceType.Fire, 50, 60 );
-			SetResistance( ResistanceType.Cold, 60, 70 );
-			SetResistance( ResistanceType.Poison, 30, 40 );
-			SetResistance( ResistanceType.Energy, 20, 30 );
+      Fame = 3500;
+      Karma = -3500;
 
-			SetSkill( SkillName.MagicResist, 50.1, 75.0 );
-			SetSkill( SkillName.Tactics, 75.1, 100.0 );
-			SetSkill( SkillName.Wrestling, 70.1, 90.0 );
+      VirtualArmor = 54;
+    }
 
-			Fame = 3500;
-			Karma = -3500;
+    public Ravager(Serial serial) : base(serial)
+    {
+    }
 
-			VirtualArmor = 54;
-		}
+    public override string CorpseName => "a ravager corpse";
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Rich );
-		}
+    public override string DefaultName => "a ravager";
 
-		public Ravager( Serial serial ) : base( serial )
-		{
-		}
+    public override WeaponAbility GetWeaponAbility()
+    {
+      return Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.CrushingBlow;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Rich);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

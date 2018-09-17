@@ -4,230 +4,231 @@ using Server.Network;
 
 namespace Server.Mobiles
 {
-	public class Golem : BaseCreature
-	{
-		public override string CorpseName => "a golem corpse";
-		private bool m_Stunning;
+  public class Golem : BaseCreature
+  {
+    private bool m_Stunning;
 
-		public override bool IsScaredOfScaryThings => false;
-		public override bool IsScaryToPets => true;
+    [Constructible]
+    public Golem() : this(false, 1.0)
+    {
+    }
 
-		public override bool IsBondable => false;
+    [Constructible]
+    public Golem(bool summoned, double scalar) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
+    {
+      Body = 752;
 
-		public override FoodType FavoriteFood => FoodType.None;
+      if (summoned)
+        Hue = 2101;
 
-		public override bool CanBeDistracted => false;
+      SetStr((int)(251 * scalar), (int)(350 * scalar));
+      SetDex((int)(76 * scalar), (int)(100 * scalar));
+      SetInt((int)(101 * scalar), (int)(150 * scalar));
 
-		public override string DefaultName => "a golem";
+      SetHits((int)(151 * scalar), (int)(210 * scalar));
 
-		[Constructible]
-		public Golem() : this( false, 1.0 )
-		{
-		}
+      SetDamage((int)(13 * scalar), (int)(24 * scalar));
 
-		[Constructible]
-		public Golem( bool summoned, double scalar ) : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8 )
-		{
-			Body = 752;
+      SetDamageType(ResistanceType.Physical, 100);
 
-			if ( summoned )
-				Hue = 2101;
+      SetResistance(ResistanceType.Physical, (int)(35 * scalar), (int)(55 * scalar));
 
-			SetStr( (int)(251*scalar), (int)(350*scalar) );
-			SetDex( (int)(76*scalar), (int)(100*scalar) );
-			SetInt( (int)(101*scalar), (int)(150*scalar) );
+      if (summoned)
+        SetResistance(ResistanceType.Fire, (int)(50 * scalar), (int)(60 * scalar));
+      else
+        SetResistance(ResistanceType.Fire, (int)(100 * scalar));
 
-			SetHits( (int)(151*scalar), (int)(210*scalar) );
+      SetResistance(ResistanceType.Cold, (int)(10 * scalar), (int)(30 * scalar));
+      SetResistance(ResistanceType.Poison, (int)(10 * scalar), (int)(25 * scalar));
+      SetResistance(ResistanceType.Energy, (int)(30 * scalar), (int)(40 * scalar));
 
-			SetDamage( (int)(13*scalar), (int)(24*scalar) );
+      SetSkill(SkillName.MagicResist, 150.1 * scalar, 190.0 * scalar);
+      SetSkill(SkillName.Tactics, 60.1 * scalar, 100.0 * scalar);
+      SetSkill(SkillName.Wrestling, 60.1 * scalar, 100.0 * scalar);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      if (summoned)
+      {
+        Fame = 10;
+        Karma = 10;
+      }
+      else
+      {
+        Fame = 3500;
+        Karma = -3500;
+      }
 
-			SetResistance( ResistanceType.Physical, (int)(35*scalar), (int)(55*scalar) );
+      if (!summoned)
+      {
+        PackItem(new IronIngot(Utility.RandomMinMax(13, 21)));
 
-			if ( summoned )
-				SetResistance( ResistanceType.Fire, (int)(50*scalar), (int)(60*scalar) );
-			else
-				SetResistance( ResistanceType.Fire, (int)(100*scalar) );
+        if (0.1 > Utility.RandomDouble())
+          PackItem(new PowerCrystal());
 
-			SetResistance( ResistanceType.Cold, (int)(10*scalar), (int)(30*scalar) );
-			SetResistance( ResistanceType.Poison, (int)(10*scalar), (int)(25*scalar) );
-			SetResistance( ResistanceType.Energy, (int)(30*scalar), (int)(40*scalar) );
+        if (0.15 > Utility.RandomDouble())
+          PackItem(new ClockworkAssembly());
 
-			SetSkill( SkillName.MagicResist, (150.1*scalar), (190.0*scalar) );
-			SetSkill( SkillName.Tactics, (60.1*scalar), (100.0*scalar) );
-			SetSkill( SkillName.Wrestling, (60.1*scalar), (100.0*scalar) );
+        if (0.2 > Utility.RandomDouble())
+          PackItem(new ArcaneGem());
 
-			if ( summoned )
-			{
-				Fame = 10;
-				Karma = 10;
-			}
-			else
-			{
-				Fame = 3500;
-				Karma = -3500;
-			}
+        if (0.25 > Utility.RandomDouble())
+          PackItem(new Gears());
+      }
 
-			if ( !summoned )
-			{
-				PackItem( new IronIngot( Utility.RandomMinMax( 13, 21 ) ) );
+      ControlSlots = 3;
+    }
 
-				if ( 0.1 > Utility.RandomDouble() )
-					PackItem( new PowerCrystal() );
+    public Golem(Serial serial) : base(serial)
+    {
+    }
 
-				if ( 0.15 > Utility.RandomDouble() )
-					PackItem( new ClockworkAssembly() );
+    public override string CorpseName => "a golem corpse";
 
-				if ( 0.2 > Utility.RandomDouble() )
-					PackItem( new ArcaneGem() );
+    public override bool IsScaredOfScaryThings => false;
+    public override bool IsScaryToPets => true;
 
-				if ( 0.25 > Utility.RandomDouble() )
-					PackItem( new Gears() );
-			}
+    public override bool IsBondable => false;
 
-			ControlSlots = 3;
-		}
+    public override FoodType FavoriteFood => FoodType.None;
 
-		public override void OnDeath( Container c )
-		{
-			base.OnDeath( c );
+    public override bool CanBeDistracted => false;
 
-			if ( 0.05 > Utility.RandomDouble() )
-			{
-				if ( !IsParagon )
-				{
-					if ( 0.75 > Utility.RandomDouble() )
-						c.DropItem( DawnsMusicGear.RandomCommon );
-					else
-						c.DropItem( DawnsMusicGear.RandomUncommon );
-				}
-				else
-					c.DropItem( DawnsMusicGear.RandomRare );
-			}
-		}
+    public override string DefaultName => "a golem";
 
-		public override bool DeleteOnRelease => true;
+    public override bool DeleteOnRelease => true;
 
-		public override int GetAngerSound()
-		{
-			return 541;
-		}
+    public override bool AutoDispel => !Controlled;
+    public override bool BleedImmune => true;
 
-		public override int GetIdleSound()
-		{
-			if ( !Controlled )
-				return 542;
+    public override bool BardImmune => !Core.AOS || Controlled;
+    public override Poison PoisonImmune => Poison.Lethal;
 
-			return base.GetIdleSound();
-		}
+    public override void OnDeath(Container c)
+    {
+      base.OnDeath(c);
 
-		public override int GetDeathSound()
-		{
-			if ( !Controlled )
-				return 545;
+      if (0.05 > Utility.RandomDouble())
+      {
+        if (!IsParagon)
+        {
+          if (0.75 > Utility.RandomDouble())
+            c.DropItem(DawnsMusicGear.RandomCommon);
+          else
+            c.DropItem(DawnsMusicGear.RandomUncommon);
+        }
+        else
+        {
+          c.DropItem(DawnsMusicGear.RandomRare);
+        }
+      }
+    }
 
-			return base.GetDeathSound();
-		}
+    public override int GetAngerSound()
+    {
+      return 541;
+    }
 
-		public override int GetAttackSound()
-		{
-			return 562;
-		}
+    public override int GetIdleSound()
+    {
+      if (!Controlled)
+        return 542;
 
-		public override int GetHurtSound()
-		{
-			if ( Controlled )
-				return 320;
+      return base.GetIdleSound();
+    }
 
-			return base.GetHurtSound();
-		}
+    public override int GetDeathSound()
+    {
+      if (!Controlled)
+        return 545;
 
-		public override bool AutoDispel => !Controlled;
-		public override bool BleedImmune => true;
+      return base.GetDeathSound();
+    }
 
-		public override void OnGaveMeleeAttack( Mobile defender )
-		{
-			base.OnGaveMeleeAttack( defender );
+    public override int GetAttackSound()
+    {
+      return 562;
+    }
 
-			if ( !m_Stunning && 0.3 > Utility.RandomDouble() )
-			{
-				m_Stunning = true;
+    public override int GetHurtSound()
+    {
+      if (Controlled)
+        return 320;
 
-				defender.Animate( 21, 6, 1, true, false, 0 );
-				this.PlaySound( 0xEE );
-				defender.LocalOverheadMessage( MessageType.Regular, 0x3B2, false, "You have been stunned by a colossal blow!" );
+      return base.GetHurtSound();
+    }
 
-				BaseWeapon weapon = this.Weapon as BaseWeapon;
-				if ( weapon != null )
-					weapon.OnHit( this, defender );
+    public override void OnGaveMeleeAttack(Mobile defender)
+    {
+      base.OnGaveMeleeAttack(defender);
 
-				if ( defender.Alive )
-				{
-					defender.Frozen = true;
-					Timer.DelayCall( TimeSpan.FromSeconds( 5.0 ), new TimerStateCallback( Recover_Callback ), defender );
-				}
-			}
-		}
+      if (!m_Stunning && 0.3 > Utility.RandomDouble())
+      {
+        m_Stunning = true;
 
-		private void Recover_Callback( object state )
-		{
-			Mobile defender = state as Mobile;
+        defender.Animate(21, 6, 1, true, false, 0);
+        PlaySound(0xEE);
+        defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, false,
+          "You have been stunned by a colossal blow!");
 
-			if ( defender != null )
-			{
-				defender.Frozen = false;
-				defender.Combatant = null;
-				defender.LocalOverheadMessage( MessageType.Regular, 0x3B2, false, "You recover your senses." );
-			}
+        if (Weapon is BaseWeapon weapon)
+          weapon.OnHit(this, defender);
 
-			m_Stunning = false;
-		}
+        if (defender.Alive)
+        {
+          defender.Frozen = true;
+          Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerStateCallback(Recover_Callback), defender);
+        }
+      }
+    }
 
-		public override void OnDamage( int amount, Mobile from, bool willKill )
-		{
-			if ( Controlled || Summoned )
-			{
-				Mobile master = ( this.ControlMaster );
+    private void Recover_Callback(object state)
+    {
+      if (state is Mobile defender)
+      {
+        defender.Frozen = false;
+        defender.Combatant = null;
+        defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You recover your senses.");
+      }
 
-				if ( master == null )
-					master = this.SummonMaster;
+      m_Stunning = false;
+    }
 
-				if ( master != null && master.Player && master.Map == this.Map && master.InRange( Location, 20 ) )
-				{
-					if ( master.Mana >= amount )
-					{
-						master.Mana -= amount;
-					}
-					else
-					{
-						amount -= master.Mana;
-						master.Mana = 0;
-						master.Damage( amount );
-					}
-				}
-			}
+    public override void OnDamage(int amount, Mobile from, bool willKill)
+    {
+      if (Controlled || Summoned)
+      {
+        Mobile master = ControlMaster;
 
-			base.OnDamage( amount, from, willKill );
-		}
+        if (master == null)
+          master = SummonMaster;
 
-		public override bool BardImmune => !Core.AOS || Controlled;
-		public override Poison PoisonImmune => Poison.Lethal;
+        if (master != null && master.Player && master.Map == Map && master.InRange(Location, 20))
+        {
+          if (master.Mana >= amount)
+          {
+            master.Mana -= amount;
+          }
+          else
+          {
+            amount -= master.Mana;
+            master.Mana = 0;
+            master.Damage(amount);
+          }
+        }
+      }
 
-		public Golem( Serial serial ) : base( serial )
-		{
-		}
+      base.OnDamage(amount, from, willKill);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

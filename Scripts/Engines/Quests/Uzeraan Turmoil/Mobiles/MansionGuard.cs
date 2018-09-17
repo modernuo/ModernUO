@@ -1,80 +1,77 @@
-using System;
-using Server;
-using Server.Mobiles;
 using Server.Items;
-using Server.Engines.Quests;
+using Server.Mobiles;
 
 namespace Server.Engines.Quests.Haven
 {
-	public class MansionGuard : BaseQuester
-	{
-		[Constructible]
-		public MansionGuard() : base( "the Mansion Guard" )
-		{
-		}
+  public class MansionGuard : BaseQuester
+  {
+    [Constructible]
+    public MansionGuard() : base("the Mansion Guard")
+    {
+    }
 
-		public override void InitBody()
-		{
-			InitStats( 100, 100, 25 );
+    public MansionGuard(Serial serial) : base(serial)
+    {
+    }
 
-			Hue = Utility.RandomSkinHue();
+    public override void InitBody()
+    {
+      InitStats(100, 100, 25);
 
-			Female = false;
-			Body = 0x190;
-			Name = NameList.RandomName( "male" );
-		}
+      Hue = Utility.RandomSkinHue();
 
-		public override void InitOutfit()
-		{
-			AddItem( new PlateChest() );
-			AddItem( new PlateArms() );
-			AddItem( new PlateGloves() );
-			AddItem( new PlateLegs() );
+      Female = false;
+      Body = 0x190;
+      Name = NameList.RandomName("male");
+    }
 
-			Utility.AssignRandomHair( this );
-			Utility.AssignRandomFacialHair( this, HairHue );
+    public override void InitOutfit()
+    {
+      AddItem(new PlateChest());
+      AddItem(new PlateArms());
+      AddItem(new PlateGloves());
+      AddItem(new PlateLegs());
 
-			Bardiche weapon = new Bardiche();
-			weapon.Movable = false;
-			AddItem( weapon );
-		}
+      Utility.AssignRandomHair(this);
+      Utility.AssignRandomFacialHair(this, HairHue);
 
-		public override int GetAutoTalkRange( PlayerMobile pm )
-		{
-			return 3;
-		}
+      Bardiche weapon = new Bardiche();
+      weapon.Movable = false;
+      AddItem(weapon);
+    }
 
-		public override bool CanTalkTo( PlayerMobile to )
-		{
-			return ( to.Quest == null && QuestSystem.CanOfferQuest( to, typeof( UzeraanTurmoilQuest ) ) );
-		}
+    public override int GetAutoTalkRange(PlayerMobile pm)
+    {
+      return 3;
+    }
 
-		public override void OnTalk( PlayerMobile player, bool contextMenu )
-		{
-			if ( player.Quest == null && QuestSystem.CanOfferQuest( player, typeof( UzeraanTurmoilQuest ) ) )
-			{
-				Direction = GetDirectionTo( player );
+    public override bool CanTalkTo(PlayerMobile to)
+    {
+      return to.Quest == null && QuestSystem.CanOfferQuest(to, typeof(UzeraanTurmoilQuest));
+    }
 
-				new UzeraanTurmoilQuest( player ).SendOffer();
-			}
-		}
+    public override void OnTalk(PlayerMobile player, bool contextMenu)
+    {
+      if (player.Quest == null && QuestSystem.CanOfferQuest(player, typeof(UzeraanTurmoilQuest)))
+      {
+        Direction = GetDirectionTo(player);
 
-		public MansionGuard( Serial serial ) : base( serial )
-		{
-		}
+        new UzeraanTurmoilQuest(player).SendOffer();
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

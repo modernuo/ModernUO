@@ -1,70 +1,67 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class WaterTroughEastAddon : BaseAddon, IWaterSource
-	{
-		public override BaseAddonDeed Deed => new WaterTroughEastDeed();
+  public class WaterTroughEastAddon : BaseAddon, IWaterSource
+  {
+    [Constructible]
+    public WaterTroughEastAddon()
+    {
+      AddComponent(new AddonComponent(0xB41), 0, 0, 0);
+      AddComponent(new AddonComponent(0xB42), 0, 1, 0);
+    }
 
-		[Constructible]
-		public WaterTroughEastAddon()
-		{
-			AddComponent( new AddonComponent( 0xB41 ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0xB42 ), 0, 1, 0 );
-		}
+    public WaterTroughEastAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public WaterTroughEastAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new WaterTroughEastDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public int Quantity
+    {
+      get => 500;
+      set { }
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public int Quantity
-		{
-			get{ return 500; }
-			set{}
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class WaterTroughEastDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new WaterTroughEastAddon();
-		public override int LabelNumber => 1044349; // water trough (east)
+  public class WaterTroughEastDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public WaterTroughEastDeed()
+    {
+    }
 
-		[Constructible]
-		public WaterTroughEastDeed()
-		{
-		}
+    public WaterTroughEastDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public WaterTroughEastDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new WaterTroughEastAddon();
+    public override int LabelNumber => 1044349; // water trough (east)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

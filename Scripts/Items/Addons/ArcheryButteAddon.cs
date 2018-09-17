@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Server;
 using Server.Network;
 
 namespace Server.Items
@@ -8,54 +7,27 @@ namespace Server.Items
 	[FlippableAttribute( 0x100A/*East*/, 0x100B/*South*/ )]
 	public class ArcheryButte : AddonComponent
 	{
-		private double m_MinSkill;
-		private double m_MaxSkill;
-
-		private int m_Arrows, m_Bolts;
-
-		private DateTime m_LastUse;
+		[CommandProperty( AccessLevel.GameMaster )]
+		public double MinSkill { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public double MinSkill
-		{
-			get{ return m_MinSkill; }
-			set{ m_MinSkill = value; }
-		}
+		public double MaxSkill { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public double MaxSkill
-		{
-			get{ return m_MaxSkill; }
-			set{ m_MaxSkill = value; }
-		}
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime LastUse
-		{
-			get{ return m_LastUse; }
-			set{ m_LastUse = value; }
-		}
+		public DateTime LastUse { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool FacingEast
 		{
-			get{ return ( ItemID == 0x100A ); }
-			set{ ItemID = value ? 0x100A : 0x100B; }
+			get => ( ItemID == 0x100A );
+			set => ItemID = value ? 0x100A : 0x100B;
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Arrows
-		{
-			get{ return m_Arrows; }
-			set{ m_Arrows = value; }
-		}
+		public int Arrows { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public int Bolts
-		{
-			get{ return m_Bolts; }
-			set{ m_Bolts = value; }
-		}
+		public int Bolts { get; set; }
 
 		[Constructible]
 		public ArcheryButte() : this( 0x100A )
@@ -64,8 +36,8 @@ namespace Server.Items
 
 		public ArcheryButte( int itemID ) : base( itemID )
 		{
-			m_MinSkill = -25.0;
-			m_MaxSkill = +25.0;
+			MinSkill = -25.0;
+			MaxSkill = +25.0;
 		}
 
 		public ArcheryButte( Serial serial ) : base( serial )
@@ -74,7 +46,7 @@ namespace Server.Items
 
 		public override void OnDoubleClick( Mobile from )
 		{
-			if ( (m_Arrows > 0 || m_Bolts > 0) && from.InRange( GetWorldLocation(), 1 ) )
+			if ( (Arrows > 0 || Bolts > 0) && from.InRange( GetWorldLocation(), 1 ) )
 				Gather( from );
 			else
 				Fire( from );
@@ -84,14 +56,14 @@ namespace Server.Items
 		{
 			from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500592 ); // You gather the arrows and bolts.
 
-			if ( m_Arrows > 0 )
-				from.AddToBackpack( new Arrow( m_Arrows ) );
+			if ( Arrows > 0 )
+				from.AddToBackpack( new Arrow( Arrows ) );
 
-			if ( m_Bolts > 0 )
-				from.AddToBackpack( new Bolt( m_Bolts ) );
+			if ( Bolts > 0 )
+				from.AddToBackpack( new Bolt( Bolts ) );
 
-			m_Arrows = 0;
-			m_Bolts = 0;
+			Arrows = 0;
+			Bolts = 0;
 
 			m_Entries = null;
 		}
@@ -100,16 +72,14 @@ namespace Server.Items
 
 		private class ScoreEntry
 		{
-			private int m_Total;
-			private int m_Count;
+			public int Total { get; set; }
 
-			public int Total{ get{ return m_Total; } set{ m_Total = value; } }
-			public int Count{ get{ return m_Count; } set{ m_Count = value; } }
+			public int Count { get; set; }
 
 			public void Record( int score )
 			{
-				m_Total += score;
-				m_Count += 1;
+				Total += score;
+				Count += 1;
 			}
 
 			public ScoreEntry()
@@ -134,15 +104,13 @@ namespace Server.Items
 
 		public void Fire( Mobile from )
 		{
-			BaseRanged bow = from.Weapon as BaseRanged;
-
-			if ( bow == null )
+			if ( !(from.Weapon is BaseRanged bow) )
 			{
 				SendLocalizedMessageTo( from, 500593 ); // You must practice with ranged weapons on this.
 				return;
 			}
 
-			if ( DateTime.UtcNow < (m_LastUse + UseDelay) )
+			if ( DateTime.UtcNow < (LastUse + UseDelay) )
 				return;
 
 			Point3D worldLoc = GetWorldLocation();
@@ -164,7 +132,8 @@ namespace Server.Items
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500598 ); // You are too far away from the archery butte to get an accurate shot.
 				return;
 			}
-			else if ( from.InRange( worldLoc, 4 ) )
+
+			if ( from.InRange( worldLoc, 4 ) )
 			{
 				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500599 ); // You are too close to the target.
 				return;
@@ -189,7 +158,7 @@ namespace Server.Items
 				return;
 			}
 
-			m_LastUse = DateTime.UtcNow;
+			LastUse = DateTime.UtcNow;
 
 			from.Direction = from.GetDirectionTo( GetWorldLocation() );
 			bow.PlaySwingAnimation( from );
@@ -197,7 +166,7 @@ namespace Server.Items
 
 			ScoreEntry se = GetEntryFor( from );
 
-			if ( !from.CheckSkill( bow.Skill, m_MinSkill, m_MaxSkill ) )
+			if ( !from.CheckSkill( bow.Skill, MinSkill, MaxSkill ) )
 			{
 				from.PlaySound( bow.MissSound );
 
@@ -208,7 +177,7 @@ namespace Server.Items
 				if ( se.Count == 1 )
 					PublicOverheadMessage( MessageType.Regular, 0x3B2, 1062719, se.Total.ToString() );
 				else
-					PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, String.Format( "{0}\t{1}", se.Total, se.Count ) );
+					PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
 
 				return;
 			}
@@ -244,20 +213,21 @@ namespace Server.Items
 				splitScore = 5;
 			}
 
-			bool split = ( isKnown && ((m_Arrows + m_Bolts) * 0.02) > Utility.RandomDouble() );
+			bool split = ( isKnown && ((Arrows + Bolts) * 0.02) > Utility.RandomDouble() );
 
 			if ( split )
 			{
-				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010027 + area, String.Format( "{0}\t{1}", from.Name, isArrow ? "arrow" : "bolt" ) );
+				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010027 + area,
+					$"{from.Name}\t{(isArrow ? "arrow" : "bolt")}");
 			}
 			else
 			{
 				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1010035 + area, from.Name );
 
 				if ( isArrow )
-					++m_Arrows;
+					++Arrows;
 				else if ( isBolt )
-					++m_Bolts;
+					++Bolts;
 			}
 
 			se.Record( split ? splitScore : score );
@@ -265,7 +235,7 @@ namespace Server.Items
 			if ( se.Count == 1 )
 				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1062719, se.Total.ToString() );
 			else
-				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, String.Format( "{0}\t{1}", se.Total, se.Count ) );
+				PublicOverheadMessage( MessageType.Regular, 0x3B2, 1042683, $"{se.Total}\t{se.Count}");
 		}
 
 		public override void Serialize( GenericWriter writer )
@@ -274,10 +244,10 @@ namespace Server.Items
 
 			writer.Write( (int) 0 );
 
-			writer.Write( m_MinSkill );
-			writer.Write( m_MaxSkill );
-			writer.Write( m_Arrows );
-			writer.Write( m_Bolts );
+			writer.Write( MinSkill );
+			writer.Write( MaxSkill );
+			writer.Write( Arrows );
+			writer.Write( Bolts );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -290,15 +260,15 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					m_MinSkill = reader.ReadDouble();
-					m_MaxSkill = reader.ReadDouble();
-					m_Arrows = reader.ReadInt();
-					m_Bolts = reader.ReadInt();
+					MinSkill = reader.ReadDouble();
+					MaxSkill = reader.ReadDouble();
+					Arrows = reader.ReadInt();
+					Bolts = reader.ReadInt();
 
-					if ( m_MinSkill == 0.0 && m_MaxSkill == 30.0 )
+					if ( MinSkill == 0.0 && MaxSkill == 30.0 )
 					{
-						m_MinSkill = -25.0;
-						m_MaxSkill = +25.0;
+						MinSkill = -25.0;
+						MaxSkill = +25.0;
 					}
 
 					break;

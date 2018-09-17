@@ -2,19 +2,14 @@ using System;
 
 namespace Server
 {
-	[AttributeUsage( AttributeTargets.Class )]
-	public class CorpseNameAttribute : Attribute
-	{
-		private string m_Name;
+  [AttributeUsage(AttributeTargets.Class)]
+  public class CorpseNameAttribute : Attribute
+  {
+    public CorpseNameAttribute(string name)
+    {
+      Name = name;
+    }
 
-		public string Name
-		{
-			get{ return m_Name; }
-		}
-
-		public CorpseNameAttribute( string name )
-		{
-			m_Name = name;
-		}
-	}
+    public string Name{ get; }
+  }
 }

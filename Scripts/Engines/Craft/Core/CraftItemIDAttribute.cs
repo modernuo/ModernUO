@@ -1,18 +1,15 @@
 using System;
-using Server;
 
 namespace Server.Engines.Craft
 {
-	[AttributeUsage( AttributeTargets.Class )]
-	public class CraftItemIDAttribute : Attribute
-	{
-		private int m_ItemID;
+  [AttributeUsage(AttributeTargets.Class)]
+  public class CraftItemIDAttribute : Attribute
+  {
+    public CraftItemIDAttribute(int itemID)
+    {
+      ItemID = itemID;
+    }
 
-		public int ItemID{ get{ return m_ItemID; } }
-
-		public CraftItemIDAttribute( int itemID )
-		{
-			m_ItemID = itemID;
-		}
-	}
+    public int ItemID{ get; }
+  }
 }

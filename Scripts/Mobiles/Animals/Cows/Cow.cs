@@ -1,140 +1,130 @@
 using System;
-using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	public class Cow : BaseCreature
-	{
-		public override string CorpseName => "a cow corpse";
-		private DateTime m_MilkedOn;
+  public class Cow : BaseCreature
+  {
+    [Constructible]
+    public Cow() : base(AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    {
+      Body = Utility.RandomList(0xD8, 0xE7);
+      BaseSoundID = 0x78;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public DateTime MilkedOn
-		{
-			get { return m_MilkedOn; }
-			set { m_MilkedOn = value; }
-		}
+      SetStr(30);
+      SetDex(15);
+      SetInt(5);
 
-		private int m_Milk;
+      SetHits(18);
+      SetMana(0);
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Milk
-		{
-			get { return m_Milk; }
-			set { m_Milk = value; }
-		}
+      SetDamage(1, 4);
 
-		public override string DefaultName => "a cow";
+      SetDamage(1, 4);
 
-		[Constructible]
-		public Cow() : base( AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4 )
-		{
-			Body = Utility.RandomList( 0xD8, 0xE7 );
-			BaseSoundID = 0x78;
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetStr( 30 );
-			SetDex( 15 );
-			SetInt( 5 );
+      SetResistance(ResistanceType.Physical, 5, 15);
 
-			SetHits( 18 );
-			SetMana( 0 );
+      SetSkill(SkillName.MagicResist, 5.5);
+      SetSkill(SkillName.Tactics, 5.5);
+      SetSkill(SkillName.Wrestling, 5.5);
 
-			SetDamage( 1, 4 );
+      Fame = 300;
+      Karma = 0;
 
-			SetDamage( 1, 4 );
+      VirtualArmor = 10;
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      Tamable = true;
+      ControlSlots = 1;
+      MinTameSkill = 11.1;
 
-			SetResistance( ResistanceType.Physical, 5, 15 );
+      if (Core.AOS && Utility.Random(1000) == 0) // 0.1% chance to have mad cows
+        FightMode = FightMode.Closest;
+    }
 
-			SetSkill( SkillName.MagicResist, 5.5 );
-			SetSkill( SkillName.Tactics, 5.5 );
-			SetSkill( SkillName.Wrestling, 5.5 );
+    public Cow(Serial serial) : base(serial)
+    {
+    }
 
-			Fame = 300;
-			Karma = 0;
+    public override string CorpseName => "a cow corpse";
 
-			VirtualArmor = 10;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public DateTime MilkedOn{ get; set; }
 
-			Tamable = true;
-			ControlSlots = 1;
-			MinTameSkill = 11.1;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Milk{ get; set; }
 
-			if ( Core.AOS && Utility.Random( 1000 ) == 0 ) // 0.1% chance to have mad cows
-				FightMode = FightMode.Closest;
-		}
+    public override string DefaultName => "a cow";
 
-		public override int Meat => 8;
-		public override int Hides => 12;
-		public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
+    public override int Meat => 8;
+    public override int Hides => 12;
+    public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			base.OnDoubleClick( from );
+    public override void OnDoubleClick(Mobile from)
+    {
+      base.OnDoubleClick(from);
 
-			int random = Utility.Random( 100 );
+      int random = Utility.Random(100);
 
-			if ( random < 5 )
-				Tip();
-			else if ( random < 20 )
-				PlaySound( 120 );
-			else if ( random < 40 )
-				PlaySound( 121 );
-		}
+      if (random < 5)
+        Tip();
+      else if (random < 20)
+        PlaySound(120);
+      else if (random < 40)
+        PlaySound(121);
+    }
 
-		public void Tip()
-		{
-			PlaySound( 121 );
-			Animate( 8, 0, 3, true, false, 0 );
-		}
+    public void Tip()
+    {
+      PlaySound(121);
+      Animate(8, 0, 3, true, false, 0);
+    }
 
-		public bool TryMilk( Mobile from )
-		{
-			if ( !from.InLOS( this ) || !from.InRange( Location, 2 ) )
-				from.SendLocalizedMessage( 1080400 ); // You can not milk the cow from this location.
-			if ( Controlled && ControlMaster != from )
-				from.SendLocalizedMessage( 1071182 ); // The cow nimbly escapes your attempts to milk it.
-			if ( m_Milk == 0 && m_MilkedOn + TimeSpan.FromDays( 1 ) > DateTime.UtcNow )
-				from.SendLocalizedMessage( 1080198 ); // This cow can not be milked now. Please wait for some time.
-			else
-			{
-				if ( m_Milk == 0 )
-					m_Milk = 4;
+    public bool TryMilk(Mobile from)
+    {
+      if (!from.InLOS(this) || !from.InRange(Location, 2))
+        from.SendLocalizedMessage(1080400); // You can not milk the cow from this location.
+      if (Controlled && ControlMaster != from)
+        from.SendLocalizedMessage(1071182); // The cow nimbly escapes your attempts to milk it.
+      if (Milk == 0 && MilkedOn + TimeSpan.FromDays(1) > DateTime.UtcNow)
+      {
+        from.SendLocalizedMessage(1080198); // This cow can not be milked now. Please wait for some time.
+      }
+      else
+      {
+        if (Milk == 0)
+          Milk = 4;
 
-				m_MilkedOn = DateTime.UtcNow;
-				m_Milk--;
+        MilkedOn = DateTime.UtcNow;
+        Milk--;
 
-				return true;
-			}
+        return true;
+      }
 
-			return false;
-		}
+      return false;
+    }
 
-		public Cow( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(1);
 
-			writer.Write( (int) 1 );
+      writer.Write(MilkedOn);
+      writer.Write(Milk);
+    }
 
-			writer.Write( (DateTime) m_MilkedOn );
-			writer.Write( (int) m_Milk );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      int version = reader.ReadInt();
 
-			int version = reader.ReadInt();
-
-			if ( version > 0 )
-			{
-				m_MilkedOn = reader.ReadDateTime();
-				m_Milk = reader.ReadInt();
-			}
-		}
-	}
+      if (version > 0)
+      {
+        MilkedOn = reader.ReadDateTime();
+        Milk = reader.ReadInt();
+      }
+    }
+  }
 }

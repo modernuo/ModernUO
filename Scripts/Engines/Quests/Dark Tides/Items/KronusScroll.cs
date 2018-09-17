@@ -1,166 +1,166 @@
 using System;
-using Server;
-using Server.Mobiles;
 using Server.Items;
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Engines.Quests.Necro
 {
-	public class KronusScroll : QuestItem
-	{
-		public override int LabelNumber => 1060149; // Calling of Kronus
+  public class KronusScroll : QuestItem
+  {
+    private static readonly Rectangle2D m_WellOfTearsArea = new Rectangle2D(2080, 1346, 10, 10);
+    private static readonly Map m_WellOfTearsMap = Map.Malas;
 
-		[Constructible]
-		public KronusScroll() : base( 0x227A )
-		{
-			Weight = 1.0;
-			Hue = 0x44E;
-		}
+    [Constructible]
+    public KronusScroll() : base(0x227A)
+    {
+      Weight = 1.0;
+      Hue = 0x44E;
+    }
 
-		public KronusScroll( Serial serial ) : base( serial )
-		{
-		}
+    public KronusScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool CanDrop( PlayerMobile player )
-		{
-			DarkTidesQuest qs = player.Quest as DarkTidesQuest;
+    public override int LabelNumber => 1060149; // Calling of Kronus
 
-			if ( qs == null )
-				return true;
+    public override bool CanDrop(PlayerMobile player)
+    {
+      return !(player.Quest is DarkTidesQuest);
 
-			/*return !( qs.IsObjectiveInProgress( typeof( FindCallingScrollObjective ) )
-				|| qs.IsObjectiveInProgress( typeof( FindMardothAboutKronusObjective ) )
-				|| qs.IsObjectiveInProgress( typeof( FindWellOfTearsObjective ) )
-				|| qs.IsObjectiveInProgress( typeof( UseCallingScrollObjective ) ) );*/
-			return false;
-		}
+      /*return !( qs.IsObjectiveInProgress( typeof( FindCallingScrollObjective ) )
+        || qs.IsObjectiveInProgress( typeof( FindMardothAboutKronusObjective ) )
+        || qs.IsObjectiveInProgress( typeof( FindWellOfTearsObjective ) )
+        || qs.IsObjectiveInProgress( typeof( UseCallingScrollObjective ) ) );*/
+    }
 
-		private static readonly Rectangle2D m_WellOfTearsArea = new Rectangle2D( 2080, 1346, 10, 10 );
-		private static readonly Map m_WellOfTearsMap = Map.Malas;
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!IsChildOf(from))
+        return;
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !IsChildOf( from ) )
-				return;
+      if (from is PlayerMobile pm)
+      {
+        QuestSystem qs = pm.Quest;
 
-			PlayerMobile pm = from as PlayerMobile;
+        if (qs is DarkTidesQuest)
+        {
+          if (qs.IsObjectiveInProgress(typeof(FindMardothAboutKronusObjective)))
+          {
+            pm.SendLocalizedMessage(1060151, "",
+              0x41); // You read the scroll, but decide against performing the calling until you are instructed to do so by Mardoth.
+          }
+          else if (qs.IsObjectiveInProgress(typeof(FindWellOfTearsObjective)))
+          {
+            pm.SendLocalizedMessage(1060152, "",
+              0x41); // You must be at the Well of Tears in the city of Necromancers to use this scroll.
+          }
+          else if (qs.IsObjectiveInProgress(typeof(UseCallingScrollObjective)))
+          {
+            if (pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains(pm))
+            {
+              QuestObjective obj = qs.FindObjective(typeof(UseCallingScrollObjective));
 
-			if ( pm != null )
-			{
-				QuestSystem qs = pm.Quest;
+              if (obj != null && !obj.Completed)
+                obj.Complete();
 
-				if ( qs is DarkTidesQuest )
-				{
-					if ( qs.IsObjectiveInProgress( typeof( FindMardothAboutKronusObjective ) ) )
-					{
-						pm.SendLocalizedMessage( 1060151, "", 0x41 ); // You read the scroll, but decide against performing the calling until you are instructed to do so by Mardoth.
-					}
-					else if ( qs.IsObjectiveInProgress( typeof( FindWellOfTearsObjective ) ) )
-					{
-						pm.SendLocalizedMessage( 1060152, "", 0x41 ); // You must be at the Well of Tears in the city of Necromancers to use this scroll.
-					}
-					else if ( qs.IsObjectiveInProgress( typeof( UseCallingScrollObjective ) ) )
-					{
-						if ( pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains( pm ) )
-						{
-							QuestObjective obj = qs.FindObjective( typeof( UseCallingScrollObjective ) );
+              Delete();
+              new CallingTimer(pm).Start();
+            }
+            else
+            {
+              pm.SendLocalizedMessage(1060152, "",
+                0x41); // You must be at the Well of Tears in the city of Necromancers to use this scroll.
+            }
+          }
+          else
+          {
+            pm.SendLocalizedMessage(1060150, "",
+              0x41); // A strange terror grips your heart as you attempt to read the scroll.  You decide it would be a bad idea to read it out loud.
+          }
+        }
+      }
+    }
 
-							if ( obj != null && !obj.Completed )
-								obj.Complete();
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-							Delete();
-							new CallingTimer( pm ).Start();
-						}
-						else
-						{
-							pm.SendLocalizedMessage( 1060152, "", 0x41 ); // You must be at the Well of Tears in the city of Necromancers to use this scroll.
-						}
-					}
-					else
-					{
-						pm.SendLocalizedMessage( 1060150, "", 0x41 ); // A strange terror grips your heart as you attempt to read the scroll.  You decide it would be a bad idea to read it out loud.
-					}
-				}
-			}
-		}
+      writer.Write(0); // version
+    }
 
-		private class CallingTimer : Timer
-		{
-			private PlayerMobile m_Player;
-			private int m_Step;
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			public CallingTimer( PlayerMobile player ) : base( TimeSpan.Zero, TimeSpan.FromSeconds( 1.0 ), 6 )
-			{
-				Priority = TimerPriority.TwentyFiveMS;
+      int version = reader.ReadInt();
+    }
 
-				m_Player = player;
-				m_Step = 0;
-			}
+    private class CallingTimer : Timer
+    {
+      private PlayerMobile m_Player;
+      private int m_Step;
 
-			protected override void OnTick()
-			{
-				if ( m_Player.Deleted )
-				{
-					Stop();
-					return;
-				}
+      public CallingTimer(PlayerMobile player) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0), 6)
+      {
+        Priority = TimerPriority.TwentyFiveMS;
 
-				if ( !m_Player.Mounted )
-					m_Player.Animate( Utility.RandomBool() ? 16 : 17, 7, 1, true, false, 0 );
+        m_Player = player;
+        m_Step = 0;
+      }
 
-				if ( m_Step == 4 )
-				{
-					int baseX = KronusScroll.m_WellOfTearsArea.X;
-					int baseY = KronusScroll.m_WellOfTearsArea.Y;
-					int width = KronusScroll.m_WellOfTearsArea.Width;
-					int height = KronusScroll.m_WellOfTearsArea.Height;
-					Map map = KronusScroll.m_WellOfTearsMap;
+      protected override void OnTick()
+      {
+        if (m_Player.Deleted)
+        {
+          Stop();
+          return;
+        }
 
-					Effects.SendLocationParticles( EffectItem.Create( m_Player.Location, m_Player.Map, TimeSpan.FromSeconds( 1.0 ) ), 0, 0, 0, 0x13C4 );
-					Effects.PlaySound( m_Player.Location, m_Player.Map, 0x243 );
+        if (!m_Player.Mounted)
+          m_Player.Animate(Utility.RandomBool() ? 16 : 17, 7, 1, true, false, 0);
 
-					for ( int i = 0; i < 15; i++ )
-					{
-						int x = baseX + Utility.Random( width );
-						int y = baseY + Utility.Random( height );
-						int z = map.GetAverageZ( x, y );
+        if (m_Step == 4)
+        {
+          int baseX = m_WellOfTearsArea.X;
+          int baseY = m_WellOfTearsArea.Y;
+          int width = m_WellOfTearsArea.Width;
+          int height = m_WellOfTearsArea.Height;
+          Map map = m_WellOfTearsMap;
 
-						Point3D from = new Point3D( x, y, z + Utility.RandomMinMax( 5, 20 ) );
-						Point3D to = new Point3D( x, y, z );
+          Effects.SendLocationParticles(
+            EffectItem.Create(m_Player.Location, m_Player.Map, TimeSpan.FromSeconds(1.0)), 0, 0, 0, 0x13C4);
+          Effects.PlaySound(m_Player.Location, m_Player.Map, 0x243);
 
-						int hue = Utility.RandomList( 0x481, 0x482, 0x489, 0x497, 0x66D );
+          for (int i = 0; i < 15; i++)
+          {
+            int x = baseX + Utility.Random(width);
+            int y = baseY + Utility.Random(height);
+            int z = map.GetAverageZ(x, y);
 
-						Effects.SendPacket( from, map, new HuedEffect( EffectType.Moving, Serial.Zero, Serial.Zero, 0x36D4, from, to, 0, 0, false, true, hue, 0 ) );
-					}
-				}
+            Point3D from = new Point3D(x, y, z + Utility.RandomMinMax(5, 20));
+            Point3D to = new Point3D(x, y, z);
 
-				if ( m_Step < 5 )
-				{
-					m_Player.Frozen = true;
-				}
-				else // Cast completed
-				{
-					m_Player.Frozen = false;
+            int hue = Utility.RandomList(0x481, 0x482, 0x489, 0x497, 0x66D);
 
-					SummonedPaladin.BeginSummon( m_Player );
-				}
+            Effects.SendPacket(from, map,
+              new HuedEffect(EffectType.Moving, Serial.Zero, Serial.Zero, 0x36D4, from, to, 0, 0, false, true,
+                hue, 0));
+          }
+        }
 
-				m_Step++;
-			}
-		}
+        if (m_Step < 5)
+        {
+          m_Player.Frozen = true;
+        }
+        else // Cast completed
+        {
+          m_Player.Frozen = false;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+          SummonedPaladin.BeginSummon(m_Player);
+        }
 
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+        m_Step++;
+      }
+    }
+  }
 }

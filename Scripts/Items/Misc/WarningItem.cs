@@ -1,242 +1,216 @@
 using System;
-using Server;
-using Server.Network;
-using System.Collections;
 using System.Collections.Generic;
+using Server.Network;
 
 namespace Server.Items
 {
-	public class WarningItem : Item
-	{
-		private string m_WarningString;
-		private int m_WarningNumber;
-		private int m_Range;
-		private TimeSpan m_ResetDelay;
+  public class WarningItem : Item
+  {
+    private bool m_Broadcasting;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public string WarningString
-		{
-			get{ return m_WarningString; }
-			set{ m_WarningString = value; }
-		}
+    private DateTime m_LastBroadcast;
+    private int m_Range;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int WarningNumber
-		{
-			get{ return m_WarningNumber; }
-			set{ m_WarningNumber = value; }
-		}
+    [Constructible]
+    public WarningItem(int itemID, int range, int warning) : base(itemID)
+    {
+      if (range > 18)
+        range = 18;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Range
-		{
-			get{ return m_Range; }
-			set{ if ( value > 18 ) value = 18; m_Range = value; }
-		}
+      Movable = false;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan ResetDelay
-		{
-			get{ return m_ResetDelay; }
-			set{ m_ResetDelay = value; }
-		}
+      WarningNumber = warning;
+      m_Range = range;
+    }
 
-		[Constructible]
-		public WarningItem( int itemID, int range, int warning ) : base( itemID )
-		{
-			if ( range > 18 )
-				range = 18;
+    [Constructible]
+    public WarningItem(int itemID, int range, string warning) : base(itemID)
+    {
+      if (range > 18)
+        range = 18;
 
-			Movable = false;
+      Movable = false;
 
-			m_WarningNumber = warning;
-			m_Range = range;
-		}
+      WarningString = warning;
+      m_Range = range;
+    }
 
-		[Constructible]
-		public WarningItem( int itemID, int range, string warning ) : base( itemID )
-		{
-			if ( range > 18 )
-				range = 18;
+    public WarningItem(Serial serial) : base(serial)
+    {
+    }
 
-			Movable = false;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public string WarningString{ get; set; }
 
-			m_WarningString = warning;
-			m_Range = range;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int WarningNumber{ get; set; }
 
-		public WarningItem( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Range
+    {
+      get => m_Range;
+      set
+      {
+        if (value > 18) value = 18;
+        m_Range = value;
+      }
+    }
 
-		private bool m_Broadcasting;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public TimeSpan ResetDelay{ get; set; }
 
-		private DateTime m_LastBroadcast;
+    public virtual bool OnlyToTriggerer => false;
+    public virtual int NeighborRange => 5;
 
-		public virtual void SendMessage( Mobile triggerer, bool onlyToTriggerer, string messageString, int messageNumber )
-		{
-			if ( onlyToTriggerer )
-			{
-				if ( messageString != null )
-					triggerer.SendMessage( messageString );
-				else
-					triggerer.SendLocalizedMessage( messageNumber );
-			}
-			else
-			{
-				if ( messageString != null )
-					PublicOverheadMessage( MessageType.Regular, 0x3B2, false, messageString );
-				else
-					PublicOverheadMessage( MessageType.Regular, 0x3B2, messageNumber );
-			}
-		}
+    public override bool HandlesOnMovement => true;
 
-		public virtual bool OnlyToTriggerer{ get{ return false; } }
-		public virtual int NeighborRange  => 5;
+    public virtual void SendMessage(Mobile triggerer, bool onlyToTriggerer, string messageString, int messageNumber)
+    {
+      if (onlyToTriggerer)
+      {
+        if (messageString != null)
+          triggerer.SendMessage(messageString);
+        else
+          triggerer.SendLocalizedMessage(messageNumber);
+      }
+      else
+      {
+        if (messageString != null)
+          PublicOverheadMessage(MessageType.Regular, 0x3B2, false, messageString);
+        else
+          PublicOverheadMessage(MessageType.Regular, 0x3B2, messageNumber);
+      }
+    }
 
-		public virtual void Broadcast( Mobile triggerer )
-		{
-			if ( m_Broadcasting || (DateTime.UtcNow < (m_LastBroadcast + m_ResetDelay)) )
-				return;
+    public virtual void Broadcast(Mobile triggerer)
+    {
+      if (m_Broadcasting || DateTime.UtcNow < m_LastBroadcast + ResetDelay)
+        return;
 
-			m_LastBroadcast = DateTime.UtcNow;
+      m_LastBroadcast = DateTime.UtcNow;
 
-			m_Broadcasting = true;
+      m_Broadcasting = true;
 
-			SendMessage( triggerer, this.OnlyToTriggerer, m_WarningString, m_WarningNumber );
+      SendMessage(triggerer, OnlyToTriggerer, WarningString, WarningNumber);
 
-			if ( NeighborRange >= 0 )
-			{
-				List<WarningItem> list = new List<WarningItem>();
+      if (NeighborRange >= 0)
+      {
+        List<WarningItem> list = new List<WarningItem>();
 
-				foreach ( Item item in GetItemsInRange( NeighborRange ) )
-				{
-					if ( item != this && item is WarningItem )
-						list.Add( (WarningItem)item );
-				}
+        foreach (Item item in GetItemsInRange(NeighborRange))
+          if (item != this && item is WarningItem warningItem)
+            list.Add(warningItem);
 
-				for ( int i = 0; i < list.Count; i++ )
-					list[i].Broadcast( triggerer );
-			}
+        for (int i = 0; i < list.Count; i++)
+          list[i].Broadcast(triggerer);
+      }
 
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( InternalCallback ) );
-		}
+      Timer.DelayCall(TimeSpan.Zero, InternalCallback);
+    }
 
-		private void InternalCallback()
-		{
-			m_Broadcasting = false;
-		}
+    private void InternalCallback()
+    {
+      m_Broadcasting = false;
+    }
 
-		public override bool HandlesOnMovement => true;
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      if (m.Player && Utility.InRange(m.Location, Location, m_Range) &&
+          !Utility.InRange(oldLocation, Location, m_Range))
+        Broadcast(m);
+    }
 
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			if ( m.Player && Utility.InRange( m.Location, Location, m_Range ) && !Utility.InRange( oldLocation, Location, m_Range ) )
-				Broadcast( m );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
 
-			writer.Write( (int) 0 );
+      writer.Write(WarningString);
+      writer.Write(WarningNumber);
+      writer.Write(m_Range);
 
-			writer.Write( (string) m_WarningString );
-			writer.Write( (int) m_WarningNumber );
-			writer.Write( (int) m_Range );
+      writer.Write(ResetDelay);
+    }
 
-			writer.Write( (TimeSpan) m_ResetDelay );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      int version = reader.ReadInt();
 
-			int version = reader.ReadInt();
+      switch (version)
+      {
+        case 0:
+        {
+          WarningString = reader.ReadString();
+          WarningNumber = reader.ReadInt();
+          m_Range = reader.ReadInt();
+          ResetDelay = reader.ReadTimeSpan();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_WarningString = reader.ReadString();
-					m_WarningNumber = reader.ReadInt();
-					m_Range = reader.ReadInt();
-					m_ResetDelay = reader.ReadTimeSpan();
+          break;
+        }
+      }
+    }
+  }
 
-					break;
-				}
-			}
-		}
-	}
+  public class HintItem : WarningItem
+  {
+    [Constructible]
+    public HintItem(int itemID, int range, int warning, int hint) : base(itemID, range, warning)
+    {
+      HintNumber = hint;
+    }
 
-	public class HintItem : WarningItem
-	{
-		private string m_HintString;
-		private int m_HintNumber;
+    [Constructible]
+    public HintItem(int itemID, int range, string warning, string hint) : base(itemID, range, warning)
+    {
+      HintString = hint;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public string HintString
-		{
-			get{ return m_HintString; }
-			set{ m_HintString = value; }
-		}
+    public HintItem(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int HintNumber
-		{
-			get{ return m_HintNumber; }
-			set{ m_HintNumber = value; }
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public string HintString{ get; set; }
 
-		public override bool OnlyToTriggerer => true;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int HintNumber{ get; set; }
 
-		[Constructible]
-		public HintItem( int itemID, int range, int warning, int hint ) : base( itemID, range, warning )
-		{
-			m_HintNumber = hint;
-		}
+    public override bool OnlyToTriggerer => true;
 
-		[Constructible]
-		public HintItem( int itemID, int range, string warning, string hint ) : base( itemID, range, warning )
-		{
-			m_HintString = hint;
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      SendMessage(from, true, HintString, HintNumber);
+    }
 
-		public HintItem( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			SendMessage( from, true, m_HintString, m_HintNumber );
-		}
+      writer.Write(0);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(HintString);
+      writer.Write(HintNumber);
+    }
 
-			writer.Write( (int) 0 );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			writer.Write( (string) m_HintString );
-			writer.Write( (int) m_HintNumber );
-		}
+      int version = reader.ReadInt();
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      switch (version)
+      {
+        case 0:
+        {
+          HintString = reader.ReadString();
+          HintNumber = reader.ReadInt();
 
-			int version = reader.ReadInt();
-
-			switch ( version )
-			{
-				case 0:
-				{
-					m_HintString = reader.ReadString();
-					m_HintNumber = reader.ReadInt();
-
-					break;
-				}
-			}
-		}
-	}
+          break;
+        }
+      }
+    }
+  }
 }

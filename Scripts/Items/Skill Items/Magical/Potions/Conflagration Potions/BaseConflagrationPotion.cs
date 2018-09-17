@@ -1,347 +1,330 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Server;
-using Server.Network;
-using Server.Targeting;
 using Server.Spells;
+using Server.Targeting;
 
 namespace Server.Items
 {
-	public abstract class BaseConflagrationPotion : BasePotion
-	{
-		public abstract int MinDamage{ get; }
-		public abstract int MaxDamage{ get; }
+  public abstract class BaseConflagrationPotion : BasePotion
+  {
+    private List<Mobile> m_Users = new List<Mobile>();
 
-		public override bool RequireFreeHand => false;
+    public BaseConflagrationPotion(PotionEffect effect) : base(0xF06, effect)
+    {
+      Hue = 0x489;
+    }
 
-		public BaseConflagrationPotion( PotionEffect effect ) : base( 0xF06, effect )
-		{
-			Hue = 0x489;
-		}
+    public BaseConflagrationPotion(Serial serial) : base(serial)
+    {
+    }
 
-		public BaseConflagrationPotion( Serial serial ) : base( serial )
-		{
-		}
+    public abstract int MinDamage{ get; }
+    public abstract int MaxDamage{ get; }
 
-		public override void Drink( Mobile from )
-		{
-			if ( Core.AOS && (from.Paralyzed || from.Frozen || (from.Spell != null && from.Spell.IsCasting)) )
-			{
-				from.SendLocalizedMessage( 1062725 ); // You can not use that potion while paralyzed.
-				return;
-			}
+    public override bool RequireFreeHand => false;
 
-			int delay = GetDelay( from );
+    public override void Drink(Mobile from)
+    {
+      if (Core.AOS && (from.Paralyzed || from.Frozen || from.Spell != null && from.Spell.IsCasting))
+      {
+        from.SendLocalizedMessage(1062725); // You can not use that potion while paralyzed.
+        return;
+      }
 
-			if ( delay > 0 )
-			{
-				from.SendLocalizedMessage( 1072529, String.Format( "{0}\t{1}", delay, delay > 1 ? "seconds." : "second." ) ); // You cannot use that for another ~1_NUM~ ~2_TIMEUNITS~
-				return;
-			}
+      int delay = GetDelay(from);
 
-			ThrowTarget targ = from.Target as ThrowTarget;
+      if (delay > 0)
+      {
+        from.SendLocalizedMessage(1072529,
+          $"{delay}\t{(delay > 1 ? "seconds." : "second.")}"); // You cannot use that for another ~1_NUM~ ~2_TIMEUNITS~
+        return;
+      }
 
-			if ( targ != null && targ.Potion == this )
-				return;
+      if (from.Target is ThrowTarget targ && targ.Potion == this)
+        return;
 
-			from.RevealingAction();
+      from.RevealingAction();
 
-			if ( !m_Users.Contains( from ) )
-				m_Users.Add( from );
+      if (!m_Users.Contains(from))
+        m_Users.Add(from);
 
-			from.Target = new ThrowTarget( this );
-		}
+      from.Target = new ThrowTarget(this);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		private List<Mobile> m_Users = new List<Mobile>();
+      int version = reader.ReadInt();
+    }
 
-		public void Explode_Callback( object state )
-		{
-			object[] states = (object[]) state;
+    public void Explode_Callback(object state)
+    {
+      object[] states = (object[])state;
 
-			Explode( (Mobile) states[ 0 ], (Point3D) states[ 1 ], (Map) states[ 2 ] );
-		}
+      Explode((Mobile)states[0], (Point3D)states[1], (Map)states[2]);
+    }
 
-		public virtual void Explode( Mobile from, Point3D loc, Map map )
-		{
-			if ( Deleted || map == null )
-				return;
+    public virtual void Explode(Mobile from, Point3D loc, Map map)
+    {
+      if (Deleted || map == null)
+        return;
 
-			Consume();
+      Consume();
 
-			// Check if any other players are using this potion
-			for ( int i = 0; i < m_Users.Count; i ++ )
-			{
-				ThrowTarget targ = m_Users[ i ].Target as ThrowTarget;
+      // Check if any other players are using this potion
+      for (int i = 0; i < m_Users.Count; i++)
+        if (m_Users[i].Target is ThrowTarget targ && targ.Potion == this)
+          Target.Cancel(from);
 
-				if ( targ != null && targ.Potion == this )
-					Target.Cancel( from );
-			}
+      // Effects
+      Effects.PlaySound(loc, map, 0x20C);
 
-			// Effects
-			Effects.PlaySound( loc, map, 0x20C );
+      for (int i = -2; i <= 2; i++)
+      for (int j = -2; j <= 2; j++)
+      {
+        Point3D p = new Point3D(loc.X + i, loc.Y + j, loc.Z);
 
-			for ( int i = -2; i <= 2; i ++ )
-			{
-				for ( int j = -2; j <= 2; j ++ )
-				{
-					Point3D p = new Point3D( loc.X + i, loc.Y + j, loc.Z );
+        if (map.CanFit(p, 12, true, false) && from.InLOS(p))
+          new InternalItem(from, p, map, MinDamage, MaxDamage);
+      }
+    }
 
-					if ( map.CanFit( p, 12, true, false ) && from.InLOS( p ) )
-						new InternalItem( from, p, map, MinDamage, MaxDamage );
-				}
-			}
-		}
+    private class ThrowTarget : Target
+    {
+      public ThrowTarget(BaseConflagrationPotion potion) : base(12, true, TargetFlags.None)
+      {
+        Potion = potion;
+      }
 
-		#region Delay
-		private static Hashtable m_Delay = new Hashtable();
+      public BaseConflagrationPotion Potion{ get; }
 
-		public static void AddDelay( Mobile m )
-		{
-			Timer timer = m_Delay[ m ] as Timer;
+      protected override void OnTarget(Mobile from, object targeted)
+      {
+        if (Potion.Deleted || Potion.Map == Map.Internal)
+          return;
 
-			if ( timer != null )
-				timer.Stop();
+        if (!(targeted is IPoint3D p) || from.Map == null)
+          return;
 
-			m_Delay[ m ] = Timer.DelayCall( TimeSpan.FromSeconds( 30 ), new TimerStateCallback( EndDelay_Callback ), m );
-		}
+        // Add delay
+        AddDelay(from);
 
-		public static int GetDelay( Mobile m )
-		{
-			Timer timer = m_Delay[ m ] as Timer;
+        SpellHelper.GetSurfaceTop(ref p);
 
-			if ( timer != null && timer.Next > DateTime.UtcNow )
-				return (int) (timer.Next - DateTime.UtcNow).TotalSeconds;
+        from.RevealingAction();
 
-			return 0;
-		}
+        IEntity to;
 
-		private static void EndDelay_Callback( object obj )
-		{
-			if ( obj is Mobile )
-				EndDelay( (Mobile) obj );
-		}
+        if (p is Mobile mobile)
+          to = mobile;
+        else
+          to = new Entity(Serial.Zero, new Point3D(p), from.Map);
 
-		public static void EndDelay( Mobile m )
-		{
-			Timer timer = m_Delay[ m ] as Timer;
+        Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue, 0);
+        Timer.DelayCall(TimeSpan.FromSeconds(1.5), new TimerStateCallback(Potion.Explode_Callback),
+          new object[] { from, new Point3D(p), from.Map });
+      }
+    }
 
-			if ( timer != null )
-			{
-				timer.Stop();
-				m_Delay.Remove( m );
-			}
-		}
-		#endregion
+    public class InternalItem : Item
+    {
+      private DateTime m_End;
+      private int m_MaxDamage;
+      private int m_MinDamage;
+      private Timer m_Timer;
 
-		private class ThrowTarget : Target
-		{
-			private BaseConflagrationPotion m_Potion;
+      public InternalItem(Mobile from, Point3D loc, Map map, int min, int max) : base(0x398C)
+      {
+        Movable = false;
+        Light = LightType.Circle300;
 
-			public BaseConflagrationPotion Potion
-			{
-				get{ return m_Potion; }
-			}
+        MoveToWorld(loc, map);
 
-			public ThrowTarget( BaseConflagrationPotion potion ) : base( 12, true, TargetFlags.None )
-			{
-				m_Potion = potion;
-			}
+        From = from;
+        m_End = DateTime.UtcNow + TimeSpan.FromSeconds(10);
 
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( m_Potion.Deleted || m_Potion.Map == Map.Internal )
-					return;
+        SetDamage(min, max);
 
-				IPoint3D p = targeted as IPoint3D;
+        m_Timer = new InternalTimer(this, m_End);
+        m_Timer.Start();
+      }
 
-				if ( p == null || from.Map == null )
-					return;
+      public InternalItem(Serial serial) : base(serial)
+      {
+      }
 
-				// Add delay
-				BaseConflagrationPotion.AddDelay( from );
+      public Mobile From{ get; private set; }
 
-				SpellHelper.GetSurfaceTop( ref p );
+      public override bool BlocksFit => true;
 
-				from.RevealingAction();
+      public override void OnAfterDelete()
+      {
+        base.OnAfterDelete();
 
-				IEntity to;
+        m_Timer?.Stop();
+      }
 
-				if ( p is Mobile )
-					to = (Mobile)p;
-				else
-					to = new Entity( Serial.Zero, new Point3D( p ), from.Map );
+      public int GetDamage()
+      {
+        return Utility.RandomMinMax(m_MinDamage, m_MaxDamage);
+      }
 
-				Effects.SendMovingEffect( from, to, 0xF0D, 7, 0, false, false, m_Potion.Hue, 0 );
-				Timer.DelayCall( TimeSpan.FromSeconds( 1.5 ), new TimerStateCallback( m_Potion.Explode_Callback ), new object[] { from, new Point3D( p ), from.Map } );
-			}
-		}
+      private void SetDamage(int min, int max)
+      {
+        /* 	new way to apply alchemy bonus according to Stratics' calculator.
+          this gives a mean to values 25, 50, 75 and 100. Stratics' calculator is outdated.
+          Those goals will give 2 to alchemy bonus. It's not really OSI-like but it's an approximation. */
 
-		public class InternalItem : Item
-		{
-			private Mobile m_From;
-			private int m_MinDamage;
-			private int m_MaxDamage;
-			private DateTime m_End;
-			private Timer m_Timer;
+        m_MinDamage = min;
+        m_MaxDamage = max;
 
-			public Mobile From{ get{ return m_From; } }
+        if (From == null)
+          return;
 
-			public override bool BlocksFit => true;
+        int alchemySkill = From.Skills.Alchemy.Fixed;
+        int alchemyBonus = alchemySkill / 125 + alchemySkill / 250;
 
-			public InternalItem( Mobile from, Point3D loc, Map map, int min, int max ) : base( 0x398C )
-			{
-				Movable = false;
-				Light = LightType.Circle300;
+        m_MinDamage = Scale(From, m_MinDamage + alchemyBonus);
+        m_MaxDamage = Scale(From, m_MaxDamage + alchemyBonus);
+      }
 
-				MoveToWorld( loc, map );
+      public override void Serialize(GenericWriter writer)
+      {
+        base.Serialize(writer);
 
-				m_From = from;
-				m_End = DateTime.UtcNow + TimeSpan.FromSeconds( 10 );
+        writer.Write(0); // version
 
-				SetDamage( min, max );
+        writer.Write(From);
+        writer.Write(m_End);
+        writer.Write(m_MinDamage);
+        writer.Write(m_MaxDamage);
+      }
 
-				m_Timer = new InternalTimer( this, m_End );
-				m_Timer.Start();
-			}
+      public override void Deserialize(GenericReader reader)
+      {
+        base.Deserialize(reader);
 
-			public override void OnAfterDelete()
-			{
-				base.OnAfterDelete();
+        int version = reader.ReadInt();
 
-				if ( m_Timer != null )
-					m_Timer.Stop();
-			}
+        From = reader.ReadMobile();
+        m_End = reader.ReadDateTime();
+        m_MinDamage = reader.ReadInt();
+        m_MaxDamage = reader.ReadInt();
 
-			public InternalItem( Serial serial ) : base( serial )
-			{
-			}
+        m_Timer = new InternalTimer(this, m_End);
+        m_Timer.Start();
+      }
 
-			public int GetDamage(){ return Utility.RandomMinMax( m_MinDamage, m_MaxDamage ); }
+      public override bool OnMoveOver(Mobile m)
+      {
+        if (Visible && From != null && (!Core.AOS || m != From) && SpellHelper.ValidIndirectTarget(From, m) &&
+            From.CanBeHarmful(m, false))
+        {
+          From.DoHarmful(m);
 
-			private void SetDamage( int min, int max )
-			{
-				/* 	new way to apply alchemy bonus according to Stratics' calculator.
-					this gives a mean to values 25, 50, 75 and 100. Stratics' calculator is outdated.
-					Those goals will give 2 to alchemy bonus. It's not really OSI-like but it's an approximation. */
+          AOS.Damage(m, From, GetDamage(), 0, 100, 0, 0, 0);
+          m.PlaySound(0x208);
+        }
 
-				m_MinDamage = min;
-				m_MaxDamage = max;
+        return true;
+      }
 
-				if( m_From == null )
-					return;
+      private class InternalTimer : Timer
+      {
+        private DateTime m_End;
+        private InternalItem m_Item;
 
-				int alchemySkill = m_From.Skills.Alchemy.Fixed;
-				int alchemyBonus = alchemySkill / 125 + alchemySkill / 250 ;
+        public InternalTimer(InternalItem item, DateTime end) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
+        {
+          m_Item = item;
+          m_End = end;
 
-				m_MinDamage = Scale( m_From, m_MinDamage + alchemyBonus );
-				m_MaxDamage = Scale( m_From, m_MaxDamage + alchemyBonus );
-			}
+          Priority = TimerPriority.FiftyMS;
+        }
 
-			public override void Serialize( GenericWriter writer )
-			{
-				base.Serialize( writer );
+        protected override void OnTick()
+        {
+          if (m_Item.Deleted)
+            return;
 
-				writer.Write( (int) 0 ); // version
+          if (DateTime.UtcNow > m_End)
+          {
+            m_Item.Delete();
+            Stop();
+            return;
+          }
 
-				writer.Write( (Mobile) m_From );
-				writer.Write( (DateTime) m_End );
-				writer.Write( (int) m_MinDamage );
-				writer.Write( (int) m_MaxDamage );
-			}
+          Mobile from = m_Item.From;
 
-			public override void Deserialize( GenericReader reader )
-			{
-				base.Deserialize( reader );
+          if (m_Item.Map == null || from == null)
+            return;
 
-				int version = reader.ReadInt();
+          List<Mobile> mobiles = new List<Mobile>();
 
-				m_From = reader.ReadMobile();
-				m_End = reader.ReadDateTime();
-				m_MinDamage = reader.ReadInt();
-				m_MaxDamage = reader.ReadInt();
+          foreach (Mobile mobile in m_Item.GetMobilesInRange(0))
+            mobiles.Add(mobile);
 
-				m_Timer = new InternalTimer( this, m_End );
-				m_Timer.Start();
-			}
+          for (int i = 0; i < mobiles.Count; i++)
+          {
+            Mobile m = mobiles[i];
 
-			public override bool OnMoveOver( Mobile m )
-			{
-				if ( Visible && m_From != null && (!Core.AOS || m != m_From) && SpellHelper.ValidIndirectTarget( m_From, m ) && m_From.CanBeHarmful( m, false ) )
-				{
-					m_From.DoHarmful( m );
+            if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != from) &&
+                SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false))
+            {
+              from?.DoHarmful(m);
 
-					AOS.Damage( m, m_From, GetDamage(), 0, 100, 0, 0, 0 );
-					m.PlaySound( 0x208 );
-				}
+              AOS.Damage(m, from, m_Item.GetDamage(), 0, 100, 0, 0, 0);
+              m.PlaySound(0x208);
+            }
+          }
+        }
+      }
+    }
 
-				return true;
-			}
+    #region Delay
 
-			private class InternalTimer : Timer
-			{
-				private InternalItem m_Item;
-				private DateTime m_End;
+    private static Hashtable m_Delay = new Hashtable();
 
-				public InternalTimer( InternalItem item, DateTime end ) : base( TimeSpan.Zero, TimeSpan.FromSeconds( 1.0 ) )
-				{
-					m_Item = item;
-					m_End = end;
+    public static void AddDelay(Mobile m)
+    {
+      if (m_Delay[m] is Timer timer)
+        timer.Stop();
 
-					Priority = TimerPriority.FiftyMS;
-				}
+      m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerStateCallback(EndDelay_Callback), m);
+    }
 
-				protected override void OnTick()
-				{
-					if ( m_Item.Deleted )
-						return;
+    public static int GetDelay(Mobile m)
+    {
+      if (m_Delay[m] is Timer timer && timer.Next > DateTime.UtcNow)
+        return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
 
-					if ( DateTime.UtcNow > m_End )
-					{
-						m_Item.Delete();
-						Stop();
-						return;
-					}
+      return 0;
+    }
 
-					Mobile from = m_Item.From;
+    private static void EndDelay_Callback(object obj)
+    {
+      if (obj is Mobile mobile)
+        EndDelay(mobile);
+    }
 
-					if ( m_Item.Map == null || from == null )
-						return;
+    public static void EndDelay(Mobile m)
+    {
+      if (m_Delay[m] is Timer timer)
+      {
+        timer.Stop();
+        m_Delay.Remove(m);
+      }
+    }
 
-					List<Mobile> mobiles = new List<Mobile>();
-
-					foreach( Mobile mobile in m_Item.GetMobilesInRange( 0 ) )
-						mobiles.Add( mobile );
-
-					for( int i = 0; i < mobiles.Count; i++ )
-					{
-						Mobile m = mobiles[i];
-
-						if ( (m.Z + 16) > m_Item.Z && (m_Item.Z + 12) > m.Z && (!Core.AOS || m != from) && SpellHelper.ValidIndirectTarget( from, m ) && from.CanBeHarmful( m, false ) )
-						{
-							if ( from != null )
-								from.DoHarmful( m );
-
-							AOS.Damage( m, from, m_Item.GetDamage(), 0, 100, 0, 0, 0 );
-							m.PlaySound( 0x208 );
-						}
-					}
-				}
-			}
-		}
-	}
+    #endregion
+  }
 }

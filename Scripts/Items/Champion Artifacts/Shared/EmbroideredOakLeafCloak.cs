@@ -1,43 +1,40 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class EmbroideredOakLeafCloak : BaseOuterTorso
-	{
-		public override int LabelNumber => 1094901; // Embroidered Oak Leaf Cloak [Replica]
+  public class EmbroideredOakLeafCloak : BaseOuterTorso
+  {
+    [Constructible]
+    public EmbroideredOakLeafCloak() : base(0x2684)
+    {
+      Hue = 0x483;
+      StrRequirement = 0;
 
-		public override int InitMinHits => 150;
-		public override int InitMaxHits => 150;
+      SkillBonuses.Skill_1_Name = SkillName.Stealth;
+      SkillBonuses.Skill_1_Value = 5;
+    }
 
-		public override bool CanFortify => false;
+    public EmbroideredOakLeafCloak(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public EmbroideredOakLeafCloak() : base( 0x2684 )
-		{
-			Hue = 0x483;
-			StrRequirement = 0;
+    public override int LabelNumber => 1094901; // Embroidered Oak Leaf Cloak [Replica]
 
-			SkillBonuses.Skill_1_Name = SkillName.Stealth;
-			SkillBonuses.Skill_1_Value = 5;
-		}
+    public override int InitMinHits => 150;
+    public override int InitMaxHits => 150;
 
-		public EmbroideredOakLeafCloak( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CanFortify => false;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -10,8 +10,8 @@ namespace Server.Gumps
 	{
 		public static void Initialize()
 		{
-			CommandSystem.Register( "Who", AccessLevel.Counselor, new CommandEventHandler( WhoList_OnCommand ) );
-			CommandSystem.Register( "WhoList", AccessLevel.Counselor, new CommandEventHandler( WhoList_OnCommand ) );
+			CommandSystem.Register( "Who", AccessLevel.Counselor, WhoList_OnCommand );
+			CommandSystem.Register( "WhoList", AccessLevel.Counselor, WhoList_OnCommand );
 		}
 
 		[Usage( "WhoList [filter]" )]
@@ -92,10 +92,9 @@ namespace Server.Gumps
 
 				if ( x.AccessLevel > y.AccessLevel )
 					return -1;
-				else if ( x.AccessLevel < y.AccessLevel )
+				if ( x.AccessLevel < y.AccessLevel )
 					return 1;
-				else
-					return Insensitive.Compare( x.Name, y.Name );
+				return Insensitive.Compare( x.Name, y.Name );
 			}
 		}
 
@@ -127,7 +126,7 @@ namespace Server.Gumps
 			{
 				Mobile m = states[i].Mobile;
 
-				if ( m != null && (m == owner || !m.Hidden || owner.AccessLevel >= m.AccessLevel || (m is PlayerMobile && ((PlayerMobile)m).VisibilityList.Contains( owner ) ) ) )
+				if ( m != null && (m == owner || !m.Hidden || owner.AccessLevel >= m.AccessLevel || (m is PlayerMobile mobile && mobile.VisibilityList.Contains( owner ) ) ) )
 				{
 					if ( filter != null && ( m.Name == null || m.Name.ToLower().IndexOf( filter ) < 0 ) )
 						continue;
@@ -167,7 +166,8 @@ namespace Server.Gumps
 			if ( !OldStyle )
 				AddImageTiled( x - (OldStyle ? OffsetSize : 0), y, emptyWidth + (OldStyle ? OffsetSize * 2 : 0), EntryHeight, EntryGumpID );
 
-			AddLabel( x + TextOffsetX, y, TextHue, String.Format( "Page {0} of {1} ({2})", page+1, (m_Mobiles.Count + EntryCount - 1) / EntryCount, m_Mobiles.Count ) );
+			AddLabel( x + TextOffsetX, y, TextHue,
+				$"Page {page + 1} of {(m_Mobiles.Count + EntryCount - 1) / EntryCount} ({m_Mobiles.Count})");
 
 			x += emptyWidth + OffsetSize;
 
@@ -231,7 +231,7 @@ namespace Server.Gumps
 				{
 					if ( m.Kills >= 5 )
 						return 0x21;
-					else if ( m.Criminal )
+					if ( m.Criminal )
 						return 0x3B1;
 
 					return 0x58;
@@ -281,7 +281,7 @@ namespace Server.Gumps
 							from.SendMessage( "That player is no longer online." );
 							from.SendGump( new WhoGump( from, m_Mobiles, m_Page ) );
 						}
-						else if ( m == from || !m.Hidden || from.AccessLevel >= m.AccessLevel || (m is PlayerMobile && ((PlayerMobile)m).VisibilityList.Contains( from ))) 
+						else if ( m == from || !m.Hidden || from.AccessLevel >= m.AccessLevel || (m is PlayerMobile mobile && mobile.VisibilityList.Contains( from )))
 						{
 							from.SendGump( new ClientGump( from, m.NetState ) );
 						}

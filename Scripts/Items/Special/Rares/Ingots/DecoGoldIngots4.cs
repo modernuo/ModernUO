@@ -1,33 +1,30 @@
-using System;
-
 namespace Server.Items
 {
-	public class DecoGoldIngots4 : Item
-	{
+  public class DecoGoldIngots4 : Item
+  {
+    [Constructible]
+    public DecoGoldIngots4() : base(0x1BEE)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public DecoGoldIngots4() : base( 0x1BEE )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public DecoGoldIngots4(Serial serial) : base(serial)
+    {
+    }
 
-		public DecoGoldIngots4( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

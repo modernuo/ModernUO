@@ -1,184 +1,174 @@
 using System;
-using Server.Mobiles;
-using Server.Network;
 using System.Collections.Generic;
 
 namespace Server.Items
 {
-	public class CandyCane : Food
-	{
-		private static Dictionary<Mobile, CandyCaneTimer> m_ToothAches;
+  public class CandyCane : Food
+  {
+    [Constructible]
+    public CandyCane()
+      : this(0x2bdd + Utility.Random(4))
+    {
+    }
 
-		public static Dictionary<Mobile, CandyCaneTimer> ToothAches
-		{
-			get { return m_ToothAches; }
-			set { m_ToothAches = value; }
-		}
+    public CandyCane(int itemID)
+      : base(itemID)
+    {
+      Stackable = false;
+      LootType = LootType.Blessed;
+    }
 
-		public static void Initialize()
-		{
-			m_ToothAches = new Dictionary<Mobile, CandyCaneTimer>();
-		}
+    public CandyCane(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public class CandyCaneTimer : Timer
-		{
-			private int m_Eaten;
-			private Mobile m_Eater;
+    public static Dictionary<Mobile, CandyCaneTimer> ToothAches{ get; set; }
 
-			public Mobile Eater  => m_Eater;
-			public int Eaten { get { return m_Eaten; } set { m_Eaten = value; } }
+    public static void Initialize()
+    {
+      ToothAches = new Dictionary<Mobile, CandyCaneTimer>();
+    }
 
-			public CandyCaneTimer( Mobile eater )
-				: base( TimeSpan.FromSeconds( 30 ), TimeSpan.FromSeconds( 30 ) )
-			{
-				m_Eater = eater;
-				Priority = TimerPriority.FiveSeconds;
-				Start();
-			}
+    private static CandyCaneTimer EnsureTimer(Mobile from)
+    {
+      if (!ToothAches.TryGetValue(from, out CandyCaneTimer timer))
+        ToothAches[from] = timer = new CandyCaneTimer(from);
 
-			protected override void OnTick()
-			{
-				--m_Eaten;
+      return timer;
+    }
 
-				if ( m_Eater == null || m_Eater.Deleted || m_Eaten <= 0 )
-				{
-					Stop();
-					m_ToothAches.Remove( m_Eater );
-				}
-				else if ( m_Eater.Map != Map.Internal && m_Eater.Alive )
-				{
-					if ( m_Eaten > 60 )
-					{
-						m_Eater.Say( 1077388  + Utility.Random( 5 ) );
+    public static int GetToothAche(Mobile from)
+    {
+      if (ToothAches.TryGetValue(from, out CandyCaneTimer timer))
+        return timer.Eaten;
 
-						/* ARRGH! My tooth hurts sooo much!
-						 * You just can't find a good Britannian dentist these days...
-						 * My teeth!
-						 * MAKE IT STOP!
-						 * AAAH! It feels like someone kicked me in the teeth!
-						 */
+      return 0;
+    }
 
-						if ( Utility.RandomBool() && m_Eater.Body.IsHuman && !m_Eater.Mounted )
-							m_Eater.Animate( 32, 5, 1, true, false, 0 );
-					}
-					else if ( m_Eaten == 60 )
-					{
-						m_Eater.SendLocalizedMessage( 1077393 ); // The extreme pain in your teeth subsides.
-					}
-				}
-			}
-		}
+    public static void SetToothAche(Mobile from, int value)
+    {
+      EnsureTimer(from).Eaten = value;
+    }
 
-		private static CandyCaneTimer EnsureTimer( Mobile from )
-		{
-			if (!m_ToothAches.TryGetValue( from, out CandyCaneTimer timer ))
-				m_ToothAches[from] = timer = new CandyCaneTimer( from );
+    public override bool CheckHunger(Mobile from)
+    {
+      EnsureTimer(from).Eaten += 32;
 
-			return timer;
-		}
+      from.SendLocalizedMessage(1077387); // You feel as if you could eat as much as you wanted!
+      return true;
+    }
 
-		public static int GetToothAche( Mobile from )
-		{
-			if (m_ToothAches.TryGetValue( from, out CandyCaneTimer timer ))
-				return timer.Eaten;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0); // version
+    }
 
-			return 0;
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
 
-		public static void SetToothAche( Mobile from, int value )
-		{
-			EnsureTimer( from ).Eaten = value;
-		}
+    public class CandyCaneTimer : Timer
+    {
+      public CandyCaneTimer(Mobile eater)
+        : base(TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30))
+      {
+        Eater = eater;
+        Priority = TimerPriority.FiveSeconds;
+        Start();
+      }
 
-		[Constructible]
-		public CandyCane()
-			: this( 0x2bdd + Utility.Random( 4 ) )
-		{
-		}
+      public Mobile Eater{ get; }
 
-		public CandyCane( int itemID )
-			: base( itemID )
-		{
-			Stackable = false;
-			LootType = LootType.Blessed;
-		}
+      public int Eaten{ get; set; }
 
-		public override bool CheckHunger( Mobile from )
-		{
-			EnsureTimer( from ).Eaten += 32;
+      protected override void OnTick()
+      {
+        --Eaten;
 
-			from.SendLocalizedMessage( 1077387 ); // You feel as if you could eat as much as you wanted!
-			return true;
-		}
+        if (Eater == null || Eater.Deleted || Eaten <= 0)
+        {
+          Stop();
+          ToothAches.Remove(Eater);
+        }
+        else if (Eater.Map != Map.Internal && Eater.Alive)
+        {
+          if (Eaten > 60)
+          {
+            Eater.Say(1077388 + Utility.Random(5));
 
-		public CandyCane( Serial serial )
-			: base( serial )
-		{
-		}
+            /* ARRGH! My tooth hurts sooo much!
+             * You just can't find a good Britannian dentist these days...
+             * My teeth!
+             * MAKE IT STOP!
+             * AAAH! It feels like someone kicked me in the teeth!
+             */
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 ); // version
-		}
+            if (Utility.RandomBool() && Eater.Body.IsHuman && !Eater.Mounted)
+              Eater.Animate(32, 5, 1, true, false, 0);
+          }
+          else if (Eaten == 60)
+          {
+            Eater.SendLocalizedMessage(1077393); // The extreme pain in your teeth subsides.
+          }
+        }
+      }
+    }
+  }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+  public class GingerBreadCookie : Food
+  {
+    private readonly int[] m_Messages =
+    {
+      0,
+      1077396, // Noooo!
+      1077397, // Please don't eat me... *whimper*
+      1077405, // Not the face!
+      1077406, // Ahhhhhh! My foot�s gone!
+      1077407, // Please. No! I have gingerkids!
+      1077408, // No, no! I�m really made of poison. Really.
+      1077409 // Run, run as fast as you can! You can't catch me! I'm the gingerbread man!
+    };
 
-	public class GingerBreadCookie : Food
-	{
-		private readonly int[] m_Messages =
-		{
-			0,
-			1077396, // Noooo!
-			1077397, // Please don't eat me... *whimper*
-			1077405, // Not the face!
-			1077406, // Ahhhhhh! My foot�s gone!
-			1077407, // Please. No! I have gingerkids!
-			1077408, // No, no! I�m really made of poison. Really.
-			1077409 // Run, run as fast as you can! You can't catch me! I'm the gingerbread man!
-		};
+    [Constructible]
+    public GingerBreadCookie()
+      : base(Utility.RandomBool() ? 0x2be1 : 0x2be2)
+    {
+      Stackable = false;
+      LootType = LootType.Blessed;
+    }
 
-		[Constructible]
-		public GingerBreadCookie()
-			: base( Utility.RandomBool() ? 0x2be1 : 0x2be2 )
-		{
-			Stackable = false;
-			LootType = LootType.Blessed;
-		}
+    public GingerBreadCookie(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public GingerBreadCookie( Serial serial )
-			: base( serial )
-		{
-		}
+    public override bool Eat(Mobile from)
+    {
+      int message = m_Messages[Utility.Random(m_Messages.Length)];
 
-		public override bool Eat( Mobile from )
-		{
-			int message = m_Messages[Utility.Random( m_Messages.Length )];
+      if (message != 0)
+      {
+        SendLocalizedMessageTo(from, message);
+        return false;
+      }
 
-			if ( message != 0 )
-			{
-				SendLocalizedMessageTo( from, message );
-				return false;
-			}
+      return base.Eat(from);
+    }
 
-			return base.Eat( from );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0); // version
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

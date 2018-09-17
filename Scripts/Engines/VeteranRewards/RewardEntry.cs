@@ -2,80 +2,80 @@ using System;
 
 namespace Server.Engines.VeteranRewards
 {
-	public class RewardEntry
-	{
-		private RewardList m_List;
-		private RewardCategory m_Category;
-		private Type m_ItemType;
-		private Expansion m_RequiredExpansion;
-		private int m_Name;
-		private string m_NameString;
-		private object[] m_Args;
+  public class RewardEntry
+  {
+    public RewardEntry(RewardCategory category, int name, Type itemType, params object[] args)
+    {
+      Category = category;
+      ItemType = itemType;
+      RequiredExpansion = Expansion.None;
+      Name = name;
+      Args = args;
+      category.Entries.Add(this);
+    }
 
-		public RewardList List{ get{ return m_List; } set{ m_List = value; } }
-		public RewardCategory Category{ get{ return m_Category; } }
-		public Type ItemType{ get{ return m_ItemType; } }
-		public Expansion RequiredExpansion{ get{ return m_RequiredExpansion; } }
-		public int Name{ get{ return m_Name; } }
-		public string NameString{ get{ return m_NameString; } }
-		public object[] Args{ get{ return m_Args; } }
+    public RewardEntry(RewardCategory category, string name, Type itemType, params object[] args)
+    {
+      Category = category;
+      ItemType = itemType;
+      RequiredExpansion = Expansion.None;
+      NameString = name;
+      Args = args;
+      category.Entries.Add(this);
+    }
 
-		public Item Construct()
-		{
-			try
-			{
-				Item item = Activator.CreateInstance( m_ItemType, m_Args ) as Item;
+    public RewardEntry(RewardCategory category, int name, Type itemType, Expansion requiredExpansion,
+      params object[] args)
+    {
+      Category = category;
+      ItemType = itemType;
+      RequiredExpansion = requiredExpansion;
+      Name = name;
+      Args = args;
+      category.Entries.Add(this);
+    }
 
-				if ( item is IRewardItem )
-					((IRewardItem)item).IsRewardItem = true;
+    public RewardEntry(RewardCategory category, string name, Type itemType, Expansion requiredExpansion,
+      params object[] args)
+    {
+      Category = category;
+      ItemType = itemType;
+      RequiredExpansion = requiredExpansion;
+      NameString = name;
+      Args = args;
+      category.Entries.Add(this);
+    }
 
-				return item;
-			}
-			catch
-			{
-			}
+    public RewardList List{ get; set; }
 
-			return null;
-		}
+    public RewardCategory Category{ get; }
 
-		public RewardEntry( RewardCategory category, int name, Type itemType, params object[] args )
-		{
-			m_Category = category;
-			m_ItemType = itemType;
-			m_RequiredExpansion = Expansion.None;
-			m_Name = name;
-			m_Args = args;
-			category.Entries.Add( this );
-		}
+    public Type ItemType{ get; }
 
-		public RewardEntry( RewardCategory category, string name, Type itemType, params object[] args )
-		{
-			m_Category = category;
-			m_ItemType = itemType;
-			m_RequiredExpansion = Expansion.None;
-			m_NameString = name;
-			m_Args = args;
-			category.Entries.Add( this );
-		}
+    public Expansion RequiredExpansion{ get; }
 
-		public RewardEntry( RewardCategory category, int name, Type itemType, Expansion requiredExpansion, params object[] args )
-		{
-			m_Category = category;
-			m_ItemType = itemType;
-			m_RequiredExpansion = requiredExpansion;
-			m_Name = name;
-			m_Args = args;
-			category.Entries.Add( this );
-		}
+    public int Name{ get; }
 
-		public RewardEntry( RewardCategory category, string name, Type itemType, Expansion requiredExpansion, params object[] args )
-		{
-			m_Category = category;
-			m_ItemType = itemType;
-			m_RequiredExpansion = requiredExpansion;
-			m_NameString = name;
-			m_Args = args;
-			category.Entries.Add( this );
-		}
-	}
+    public string NameString{ get; }
+
+    public object[] Args{ get; }
+
+    public Item Construct()
+    {
+      try
+      {
+        Item item = Activator.CreateInstance(ItemType, Args) as Item;
+
+        if (item is IRewardItem rewardItem)
+          rewardItem.IsRewardItem = true;
+
+        return item;
+      }
+      catch
+      {
+      }
+
+      return null;
+    }
+  }
 }

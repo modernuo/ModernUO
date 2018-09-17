@@ -1,5 +1,4 @@
 using System;
-using Server;
 using Server.Targeting;
 
 namespace Server.Items
@@ -16,21 +15,18 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string From
 		{
-			get { return m_From; }
+			get => m_From;
 			set { m_From = value; InvalidateProperties(); }
 		}
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public string To
 		{
-			get { return m_To; }
+			get => m_To;
 			set { m_To = value; InvalidateProperties(); }
 		}
 
-		public bool IsSigned
-		{
-			get { return ( m_From != null && m_To != null ); }
-		}
+		public bool IsSigned => ( m_From != null && m_To != null );
 
 		[Constructible]
 		public CupidsArrow()
@@ -44,7 +40,7 @@ namespace Server.Items
 			base.AddNameProperty( list );
 
 			if ( IsSigned )
-				list.Add( 1152273, String.Format( "{0}\t{1}", m_From, m_To ) ); // ~1_val~ is madly in love with ~2_val~
+				list.Add( 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
 		}
 
 		public static bool CheckSeason( Mobile from )
@@ -61,7 +57,7 @@ namespace Server.Items
 			base.OnSingleClick( from );
 
 			if ( IsSigned )
-				LabelTo( from, 1152273, String.Format( "{0}\t{1}", m_From, m_To ) ); // ~1_val~ is madly in love with ~2_val~
+				LabelTo( from, 1152273, $"{m_From}\t{m_To}"); // ~1_val~ is madly in love with ~2_val~
 		}
 
 		public override void OnDoubleClick( Mobile from )
@@ -75,7 +71,7 @@ namespace Server.Items
 				return;
 			}
 
-			from.BeginTarget( 10, false, TargetFlags.None, new TargetCallback( OnTarget ) );
+			from.BeginTarget( 10, false, TargetFlags.None, OnTarget );
 			from.SendMessage( "Who do you wish to use this on?" );
 		}
 
@@ -84,10 +80,8 @@ namespace Server.Items
 			if ( IsSigned || !IsChildOf( from.Backpack ) )
 				return;
 
-			if ( targeted is Mobile )
+			if ( targeted is Mobile m )
 			{
-				Mobile m = (Mobile)targeted;
-
 				if ( !m.Alive )
 				{
 					from.SendLocalizedMessage( 1152269 ); // That target is dead and even Cupid's arrow won't make them love you.

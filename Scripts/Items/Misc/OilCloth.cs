@@ -1,154 +1,151 @@
 using System;
-using Server;
 using Server.Mobiles;
+using Server.Network;
 using Server.Targeting;
 
 namespace Server.Items
 {
-	public class OilCloth : Item, IScissorable, IDyable
-	{
-		public override int LabelNumber => 1041498; // oil cloth
+  public class OilCloth : Item, IScissorable, IDyable
+  {
+    [Constructible]
+    public OilCloth() : base(0x175D)
+    {
+      Hue = 2001;
+    }
 
-		public override double DefaultWeight
-		{
-			get { return 1.0; }
-		}
+    public OilCloth(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public OilCloth() : base( 0x175D )
-		{
-			Hue = 2001;
-		}
+    public override int LabelNumber => 1041498; // oil cloth
 
-		public bool Dye( Mobile from, DyeTub sender )
-		{
-			if ( Deleted )
-				return false;
+    public override double DefaultWeight => 1.0;
 
-			Hue = sender.DyedHue;
+    public bool Dye(Mobile from, DyeTub sender)
+    {
+      if (Deleted)
+        return false;
 
-			return true;
-		}
+      Hue = sender.DyedHue;
 
-		public bool Scissor( Mobile from, Scissors scissors )
-		{
-			if ( Deleted || !from.CanSee( this ) )
-				return false;
+      return true;
+    }
 
-			base.ScissorHelper( from, new Bandage(), 1 );
+    public bool Scissor(Mobile from, Scissors scissors)
+    {
+      if (Deleted || !from.CanSee(this))
+        return false;
 
-			return true;
-		}
+      base.ScissorHelper(from, new Bandage(), 1);
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( IsChildOf( from.Backpack ) )
-			{
-				from.BeginTarget( -1, false, TargetFlags.None, new TargetCallback( OnTarget ) );
-				from.SendLocalizedMessage( 1005424 ); // Select the weapon or armor you wish to use the cloth on.
-			}
-			else
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-			}
-		}
+      return true;
+    }
 
-		public void OnTarget( Mobile from, object obj )
-		{
-			// TODO: Need details on how oil cloths should get consumed here
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (IsChildOf(from.Backpack))
+      {
+        from.BeginTarget(-1, false, TargetFlags.None, OnTarget);
+        from.SendLocalizedMessage(1005424); // Select the weapon or armor you wish to use the cloth on.
+      }
+      else
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+      }
+    }
 
-			if ( !IsChildOf( from.Backpack ) )
-			{
-				from.SendLocalizedMessage( 1042001 ); // That must be in your pack for you to use it.
-			}
-			else if ( obj is Item && ((Item)obj).RootParent != from )
-			{
-				from.SendLocalizedMessage( 1005425 ); // You may only wipe down items you are holding or carrying.
-			}
-			else if ( obj is BaseWeapon )
-			{
-				BaseWeapon weapon = (BaseWeapon)obj;
+    public void OnTarget(Mobile from, object obj)
+    {
+      // TODO: Need details on how oil cloths should get consumed here
 
-				if ( weapon.Poison == null || weapon.PoisonCharges <= 0 )
-				{
-					from.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, 1005422 ); // Hmmmm... this does not need to be cleaned.
-				}
-				else
-				{
-					if ( weapon.PoisonCharges < 2 )
-						weapon.PoisonCharges = 0;
-					else
-						weapon.PoisonCharges -= 2;
+      if (!IsChildOf(from.Backpack))
+      {
+        from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+      }
+      else if (obj is Item item && item.RootParent != from)
+      {
+        from.SendLocalizedMessage(1005425); // You may only wipe down items you are holding or carrying.
+      }
+      else if (obj is BaseWeapon weapon)
+      {
+        if (weapon.Poison == null || weapon.PoisonCharges <= 0)
+        {
+          from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
+            1005422); // Hmmmm... this does not need to be cleaned.
+        }
+        else
+        {
+          if (weapon.PoisonCharges < 2)
+            weapon.PoisonCharges = 0;
+          else
+            weapon.PoisonCharges -= 2;
 
-					if ( weapon.PoisonCharges > 0 )
-						from.SendLocalizedMessage( 1005423 ); // You have removed some of the caustic substance, but not all.
-					else
-						from.SendLocalizedMessage( 1010497 ); // You have cleaned the item.
-				}
-			}
-			else if ( obj == from && obj is PlayerMobile )
-			{
-				PlayerMobile pm = (PlayerMobile)obj;
+          if (weapon.PoisonCharges > 0)
+            from.SendLocalizedMessage(1005423); // You have removed some of the caustic substance, but not all.
+          else
+            from.SendLocalizedMessage(1010497); // You have cleaned the item.
+        }
+      }
+      else if (obj == from && obj is PlayerMobile pm)
+      {
+        if (pm.BodyMod == 183 || pm.BodyMod == 184)
+        {
+          pm.SavagePaintExpiration = TimeSpan.Zero;
 
-				if ( pm.BodyMod == 183 || pm.BodyMod == 184 )
-				{
-					pm.SavagePaintExpiration = TimeSpan.Zero;
+          pm.BodyMod = 0;
+          pm.HueMod = -1;
 
-					pm.BodyMod = 0;
-					pm.HueMod = -1;
+          from.SendLocalizedMessage(1040006); // You wipe away all of your body paint.
 
-					from.SendLocalizedMessage( 1040006 ); // You wipe away all of your body paint.
+          Consume();
+        }
+        else
+        {
+          from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
+            1005422); // Hmmmm... this does not need to be cleaned.
+        }
+      }
 
-					Consume();
-				}
-				else
-				{
-					from.LocalOverheadMessage( Network.MessageType.Regular, 0x3B2, 1005422 ); // Hmmmm... this does not need to be cleaned.
-				}
-			}
-			#region Firebomb
-			else if ( obj is BaseBeverage )
-			{
-				BaseBeverage beverage = (BaseBeverage) obj;
+      #region Firebomb
 
-				if ( beverage.Content == BeverageType.Liquor )
-				{
-					Firebomb bomb = new Firebomb( beverage.ItemID );
-					bomb.Name = beverage.Name;
+      else if (obj is BaseBeverage beverage)
+      {
+        if (beverage.Content == BeverageType.Liquor)
+        {
+          Firebomb bomb = new Firebomb(beverage.ItemID);
+          bomb.Name = beverage.Name;
 
-					beverage.ReplaceWith( bomb );
+          beverage.ReplaceWith(bomb);
 
-					from.SendLocalizedMessage( 1060580 ); // You prepare a firebomb.
-					Consume();
-				}
-			}
-			else if ( obj is Firebomb )
-			{
-				from.SendLocalizedMessage( 1060579 ); // That is already a firebomb!
-			}
-			#endregion
-			else
-			{
-				from.SendLocalizedMessage( 1005426 ); // The cloth will not work on that.
-			}
-		}
+          from.SendLocalizedMessage(1060580); // You prepare a firebomb.
+          Consume();
+        }
+      }
+      else if (obj is Firebomb)
+      {
+        from.SendLocalizedMessage(1060579); // That is already a firebomb!
+      }
 
-		public OilCloth( Serial serial ) : base( serial )
-		{
-		}
+      #endregion
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      else
+      {
+        from.SendLocalizedMessage(1005426); // The cloth will not work on that.
+      }
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0);
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

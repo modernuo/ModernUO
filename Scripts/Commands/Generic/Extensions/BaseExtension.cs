@@ -1,182 +1,134 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Server.Commands.Generic
 {
-	public delegate BaseExtension ExtensionConstructor();
+  public delegate BaseExtension ExtensionConstructor();
 
-	public sealed class ExtensionInfo
-	{
-		private static Dictionary<string, ExtensionInfo> m_Table = new Dictionary<string, ExtensionInfo>( StringComparer.InvariantCultureIgnoreCase );
+  public sealed class ExtensionInfo
+  {
+    public ExtensionInfo(int order, string name, int size, ExtensionConstructor constructor)
+    {
+      Name = name;
+      Size = size;
 
-		public static Dictionary<string, ExtensionInfo> Table
-		{
-			get { return m_Table; }
-		}
+      Order = order;
 
-		public static void Register( ExtensionInfo ext )
-		{
-			m_Table[ext.m_Name] = ext;
-		}
+      Constructor = constructor;
+    }
 
-		private int m_Order;
+    public static Dictionary<string, ExtensionInfo> Table{ get; } =
+      new Dictionary<string, ExtensionInfo>(StringComparer.InvariantCultureIgnoreCase);
 
-		private string m_Name;
-		private int m_Size;
+    public int Order{ get; }
 
-		private ExtensionConstructor m_Constructor;
+    public string Name{ get; }
 
-		public int Order
-		{
-			get { return m_Order; }
-		}
+    public int Size{ get; }
 
-		public string Name
-		{
-			get { return m_Name; }
-		}
+    public bool IsFixedSize => Size >= 0;
 
-		public int Size
-		{
-			get { return m_Size; }
-		}
+    public ExtensionConstructor Constructor{ get; }
 
-		public bool IsFixedSize
-		{
-			get { return ( m_Size >= 0 ); }
-		}
+    public static void Register(ExtensionInfo ext)
+    {
+      Table[ext.Name] = ext;
+    }
+  }
 
-		public ExtensionConstructor Constructor
-		{
-			get { return m_Constructor; }
-		}
+  public sealed class Extensions : List<BaseExtension>
+  {
+    public bool IsValid(object obj)
+    {
+      for (int i = 0; i < Count; ++i)
+        if (!this[i].IsValid(obj))
+          return false;
 
-		public ExtensionInfo( int order, string name, int size, ExtensionConstructor constructor )
-		{
-			m_Name = name;
-			m_Size = size;
+      return true;
+    }
 
-			m_Order = order;
+    public void Filter(ArrayList list)
+    {
+      for (int i = 0; i < Count; ++i)
+        this[i].Filter(list);
+    }
 
-			m_Constructor = constructor;
-		}
-	}
+    public static Extensions Parse(Mobile from, ref string[] args)
+    {
+      Extensions parsed = new Extensions();
 
-	public sealed class Extensions : List<BaseExtension>
-	{
-		public Extensions()
-		{
-		}
+      int size = args.Length;
 
-		public bool IsValid( object obj )
-		{
-			for ( int i = 0; i < this.Count; ++i )
-			{
-				if ( !this[i].IsValid( obj ) )
-					return false;
-			}
+      Type baseType = null;
 
-			return true;
-		}
+      for (int i = args.Length - 1; i >= 0; --i)
+      {
+        if (!ExtensionInfo.Table.TryGetValue(args[i], out ExtensionInfo extInfo))
+          continue;
 
-		public void Filter( ArrayList list )
-		{
-			for ( int i = 0; i < this.Count; ++i )
-				this[i].Filter( list );
-		}
+        if (extInfo.IsFixedSize && i != size - extInfo.Size - 1)
+          throw new Exception("Invalid extended argument count.");
 
-		public static Extensions Parse( Mobile from, ref string[] args )
-		{
-			Extensions parsed = new Extensions();
+        BaseExtension ext = extInfo.Constructor();
 
-			int size = args.Length;
+        ext.Parse(from, args, i + 1, size - i - 1);
 
-			Type baseType = null;
+        if (ext is WhereExtension extension)
+          baseType = extension.Conditional.Type;
 
-			for ( int i = args.Length - 1; i >= 0; --i )
-			{
-				if ( !ExtensionInfo.Table.TryGetValue( args[i], out ExtensionInfo extInfo ) )
-					continue;
+        parsed.Add(ext);
 
-				if ( extInfo.IsFixedSize && i != ( size - extInfo.Size - 1 ) )
-					throw new Exception( "Invalid extended argument count." );
+        size = i;
+      }
 
-				BaseExtension ext = extInfo.Constructor();
+      parsed.Sort((a, b) => a.Order - b.Order);
 
-				ext.Parse( from, args, i + 1, size - i - 1 );
+      AssemblyEmitter emitter = null;
 
-				if ( ext is WhereExtension )
-					baseType = ( ext as WhereExtension ).Conditional.Type;
+      foreach (BaseExtension update in parsed)
+        update.Optimize(from, baseType, ref emitter);
 
-				parsed.Add( ext );
+      if (size != args.Length)
+      {
+        string[] old = args;
+        args = new string[size];
 
-				size = i;
-			}
+        for (int i = 0; i < args.Length; ++i)
+          args[i] = old[i];
+      }
 
-			parsed.Sort( delegate( BaseExtension a, BaseExtension b )
-			{
-				return ( a.Order - b.Order );
-			} );
+      return parsed;
+    }
+  }
 
-			AssemblyEmitter emitter = null;
+  public abstract class BaseExtension
+  {
+    public abstract ExtensionInfo Info{ get; }
 
-			foreach ( BaseExtension update in parsed )
-				update.Optimize( from, baseType, ref emitter );
+    public string Name => Info.Name;
 
-			if ( size != args.Length )
-			{
-				string[] old = args;
-				args = new string[size];
+    public int Size => Info.Size;
 
-				for ( int i = 0; i < args.Length; ++i )
-					args[i] = old[i];
-			}
+    public bool IsFixedSize => Info.IsFixedSize;
 
-			return parsed;
-		}
-	}
+    public int Order => Info.Order;
 
-	public abstract class BaseExtension
-	{
-		public abstract ExtensionInfo Info { get; }
+    public virtual void Optimize(Mobile from, Type baseType, ref AssemblyEmitter assembly)
+    {
+    }
 
-		public string Name
-		{
-			get { return Info.Name; }
-		}
+    public virtual void Parse(Mobile from, string[] arguments, int offset, int size)
+    {
+    }
 
-		public int Size
-		{
-			get { return Info.Size; }
-		}
+    public virtual bool IsValid(object obj)
+    {
+      return true;
+    }
 
-		public bool IsFixedSize
-		{
-			get { return Info.IsFixedSize; }
-		}
-
-		public int Order
-		{
-			get { return Info.Order; }
-		}
-
-		public virtual void Optimize( Mobile from, Type baseType, ref AssemblyEmitter assembly )
-		{
-		}
-
-		public virtual void Parse( Mobile from, string[] arguments, int offset, int size )
-		{
-		}
-
-		public virtual bool IsValid( object obj )
-		{
-			return true;
-		}
-
-		public virtual void Filter( ArrayList list )
-		{
-		}
-	}
+    public virtual void Filter(ArrayList list)
+    {
+    }
+  }
 }

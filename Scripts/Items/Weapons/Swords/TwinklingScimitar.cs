@@ -1,34 +1,31 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class TwinklingScimitar : RadiantScimitar
-	{
-		public override int LabelNumber => 1073544; // twinkling scimitar
+  public class TwinklingScimitar : RadiantScimitar
+  {
+    [Constructible]
+    public TwinklingScimitar()
+    {
+      Attributes.DefendChance = 6;
+    }
 
-		[Constructible]
-		public TwinklingScimitar()
-		{
-			Attributes.DefendChance = 6;
-		}
+    public TwinklingScimitar(Serial serial) : base(serial)
+    {
+    }
 
-		public TwinklingScimitar( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073544; // twinkling scimitar
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

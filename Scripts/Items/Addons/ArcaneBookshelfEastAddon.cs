@@ -1,64 +1,61 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class ArcaneBookshelfEastAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new ArcaneBookshelfEastDeed();
+  public class ArcaneBookshelfEastAddon : BaseAddon
+  {
+    [Constructible]
+    public ArcaneBookshelfEastAddon()
+    {
+      AddComponent(new AddonComponent(0x3084), 0, 0, 0);
+      AddComponent(new AddonComponent(0x3085), -1, 0, 0);
+    }
 
-		[Constructible]
-		public ArcaneBookshelfEastAddon()
-		{
-			AddComponent( new AddonComponent( 0x3084 ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x3085 ), -1, 0, 0 );
-		}
+    public ArcaneBookshelfEastAddon(Serial serial) : base(serial)
+    {
+    }
 
-		public ArcaneBookshelfEastAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddonDeed Deed => new ArcaneBookshelfEastDeed();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 
-	public class ArcaneBookshelfEastDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new ArcaneBookshelfEastAddon();
-		public override int LabelNumber => 1073371; // arcane bookshelf (east)
+  public class ArcaneBookshelfEastDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public ArcaneBookshelfEastDeed()
+    {
+    }
 
-		[Constructible]
-		public ArcaneBookshelfEastDeed()
-		{
-		}
+    public ArcaneBookshelfEastDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public ArcaneBookshelfEastDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new ArcaneBookshelfEastAddon();
+    public override int LabelNumber => 1073371; // arcane bookshelf (east)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

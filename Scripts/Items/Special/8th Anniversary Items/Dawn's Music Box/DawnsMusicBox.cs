@@ -7,309 +7,316 @@ using Server.Network;
 
 namespace Server.Items
 {
-	public sealed class StopMusic : Packet
-	{
-		public static readonly Packet Instance = Packet.SetStatic( new StopMusic() );
+  public sealed class StopMusic : Packet
+  {
+    public static readonly Packet Instance = SetStatic(new StopMusic());
 
-		public StopMusic() : base( 0x6D, 3 )
-		{
-			m_Stream.Write( (short) 0x1FFF );
-		}
-	}
+    public StopMusic() : base(0x6D, 3)
+    {
+      m_Stream.Write((short)0x1FFF);
+    }
+  }
 
-	[Flippable( 0x2AF9, 0x2AFD )]
-	public class DawnsMusicBox : Item, ISecurable
-	{
-		public override int LabelNumber => 1075198; // Dawn�s Music Box
+  [Flippable(0x2AF9, 0x2AFD)]
+  public class DawnsMusicBox : Item, ISecurable
+  {
+    private static Dictionary<MusicName, DawnsMusicInfo> m_Info = new Dictionary<MusicName, DawnsMusicInfo>();
 
-		private List<MusicName> m_Tracks;
+    public static MusicName[] m_CommonTracks =
+    {
+      MusicName.Samlethe, MusicName.Sailing, MusicName.Britain2, MusicName.Britain1,
+      MusicName.Bucsden, MusicName.Forest_a, MusicName.Cove, MusicName.Death,
+      MusicName.Dungeon9, MusicName.Dungeon2, MusicName.Cave01, MusicName.Combat3,
+      MusicName.Combat1, MusicName.Combat2, MusicName.Jhelom, MusicName.Linelle,
+      MusicName.LBCastle, MusicName.Minoc, MusicName.Moonglow, MusicName.Magincia,
+      MusicName.Nujelm, MusicName.BTCastle, MusicName.Tavern04, MusicName.Skarabra,
+      MusicName.Stones2, MusicName.Serpents, MusicName.Taiko, MusicName.Tavern01,
+      MusicName.Tavern02, MusicName.Tavern03, MusicName.TokunoDungeon, MusicName.Trinsic,
+      MusicName.OldUlt01, MusicName.Ocllo, MusicName.Vesper, MusicName.Victory,
+      MusicName.Mountn_a, MusicName.Wind, MusicName.Yew, MusicName.Zento
+    };
 
-		public List<MusicName> Tracks
-		{
-			get { return m_Tracks; }
-		}
+    public static MusicName[] m_UncommonTracks =
+    {
+      MusicName.GwennoConversation, MusicName.DreadHornArea, MusicName.ElfCity,
+      MusicName.GoodEndGame, MusicName.GoodVsEvil, MusicName.GreatEarthSerpents,
+      MusicName.GrizzleDungeon, MusicName.Humanoids_U9, MusicName.MelisandesLair,
+      MusicName.MinocNegative, MusicName.ParoxysmusLair, MusicName.Paws
+    };
 
-		private SecureLevel m_Level;
+    public static MusicName[] m_RareTracks =
+    {
+      MusicName.SelimsBar, MusicName.SerpentIsleCombat_U7, MusicName.ValoriaShips
+    };
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get { return m_Level; }
-			set { m_Level = value; }
-		}
+    private int m_Count;
+    private int m_ItemID;
 
-		[Constructible]
-		public DawnsMusicBox() : base( 0x2AF9 )
-		{
-			Weight = 1.0;
+    private Timer m_Timer;
 
-			m_Tracks = new List<MusicName>();
+    [Constructible]
+    public DawnsMusicBox() : base(0x2AF9)
+    {
+      Weight = 1.0;
 
-			while ( m_Tracks.Count < 4 )
-			{
-				MusicName name = RandomTrack( DawnsMusicRarity.Common );
+      Tracks = new List<MusicName>();
 
-				if ( !m_Tracks.Contains( name ) )
-					m_Tracks.Add( name );
-			}
-		}
+      while (Tracks.Count < 4)
+      {
+        MusicName name = RandomTrack(DawnsMusicRarity.Common);
 
-		public DawnsMusicBox( Serial serial ) : base( serial )
-		{
-		}
+        if (!Tracks.Contains(name))
+          Tracks.Add(name);
+      }
+    }
 
-		public override void OnAfterDuped( Item newItem )
-		{
-			DawnsMusicBox box = newItem as DawnsMusicBox;
+    public DawnsMusicBox(Serial serial) : base(serial)
+    {
+    }
 
-			if ( box == null )
-				return;
+    public override int LabelNumber => 1075198; // Dawn�s Music Box
 
-			box.m_Tracks = new List<MusicName>();
-			box.m_Tracks.AddRange( m_Tracks );
-		}
+    public List<MusicName> Tracks{ get; private set; }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public SecureLevel Level{ get; set; }
 
-			int commonSongs = 0;
-			int uncommonSongs = 0;
-			int rareSongs = 0;
+    public override void OnAfterDuped(Item newItem)
+    {
+      if (!(newItem is DawnsMusicBox box))
+        return;
 
-			for ( int i = 0; i < m_Tracks.Count; i++ )
-			{
-				DawnsMusicInfo info = GetInfo( m_Tracks[ i ] );
+      box.Tracks = new List<MusicName>();
+      box.Tracks.AddRange(Tracks);
+    }
 
-				switch ( info.Rarity )
-				{
-					case DawnsMusicRarity.Common: commonSongs++; break;
-					case DawnsMusicRarity.Uncommon: uncommonSongs++; break;
-					case DawnsMusicRarity.Rare: rareSongs++; break;
-				}
-			}
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-			if ( commonSongs > 0 )
-				list.Add( 1075234, commonSongs.ToString() ); // ~1_NUMBER~ Common Tracks
-			if ( uncommonSongs > 0 )
-				list.Add( 1075235, uncommonSongs.ToString() ); // ~1_NUMBER~ Uncommon Tracks
-			if ( rareSongs > 0 )
-				list.Add( 1075236, rareSongs.ToString() ); // ~1_NUMBER~ Rare Tracks
-		}
+      int commonSongs = 0;
+      int uncommonSongs = 0;
+      int rareSongs = 0;
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+      for (int i = 0; i < Tracks.Count; i++)
+      {
+        DawnsMusicInfo info = GetInfo(Tracks[i]);
 
-			SetSecureLevelEntry.AddTo( from, this, list ); // Set secure level
-		}
+        switch (info.Rarity)
+        {
+          case DawnsMusicRarity.Common:
+            commonSongs++;
+            break;
+          case DawnsMusicRarity.Uncommon:
+            uncommonSongs++;
+            break;
+          case DawnsMusicRarity.Rare:
+            rareSongs++;
+            break;
+        }
+      }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !IsChildOf( from.Backpack ) && !IsLockedDown )
-				from.SendLocalizedMessage( 1061856 ); // You must have the item in your backpack or locked down in order to use it.
-			else if ( IsLockedDown && !HasAccces( from ) )
-				from.SendLocalizedMessage( 502436 ); // That is not accessible.
-			else
-			{
-				from.CloseGump( typeof( DawnsMusicBoxGump ) );
-				from.SendGump( new DawnsMusicBoxGump( this ) );
-			}
-		}
+      if (commonSongs > 0)
+        list.Add(1075234, commonSongs.ToString()); // ~1_NUMBER~ Common Tracks
+      if (uncommonSongs > 0)
+        list.Add(1075235, uncommonSongs.ToString()); // ~1_NUMBER~ Uncommon Tracks
+      if (rareSongs > 0)
+        list.Add(1075236, rareSongs.ToString()); // ~1_NUMBER~ Rare Tracks
+    }
 
-		public bool HasAccces( Mobile m )
-		{
-			if ( m.AccessLevel >= AccessLevel.GameMaster )
-				return true;
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
 
-			BaseHouse house = BaseHouse.FindHouseAt( this );
+      SetSecureLevelEntry.AddTo(from, this, list); // Set secure level
+    }
 
-			return ( house != null && house.HasAccess( m ) );
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!IsChildOf(from.Backpack) && !IsLockedDown)
+      {
+        from.SendLocalizedMessage(
+          1061856); // You must have the item in your backpack or locked down in order to use it.
+      }
+      else if (IsLockedDown && !HasAccces(from))
+      {
+        from.SendLocalizedMessage(502436); // That is not accessible.
+      }
+      else
+      {
+        from.CloseGump(typeof(DawnsMusicBoxGump));
+        from.SendGump(new DawnsMusicBoxGump(this));
+      }
+    }
 
-		private Timer m_Timer;
-		private int m_ItemID = 0;
-		private int m_Count = 0;
+    public bool HasAccces(Mobile m)
+    {
+      if (m.AccessLevel >= AccessLevel.GameMaster)
+        return true;
 
-		public void PlayMusic( Mobile m, MusicName music )
-		{
-			if ( m_Timer != null && m_Timer.Running )
-				EndMusic( m );
-			else
-				m_ItemID = ItemID;
+      BaseHouse house = BaseHouse.FindHouseAt(this);
 
-			m.Send( new PlayMusic( music ) );
-			m_Timer = Timer.DelayCall( TimeSpan.FromSeconds( 0.5 ), TimeSpan.FromSeconds( 0.5 ), 4, new TimerCallback( Animate ) );
-		}
+      return house != null && house.HasAccess(m);
+    }
 
-		public void EndMusic( Mobile m )
-		{
-			if ( m_Timer != null && m_Timer.Running )
-				m_Timer.Stop();
+    public void PlayMusic(Mobile m, MusicName music)
+    {
+      if (m_Timer != null && m_Timer.Running)
+        EndMusic(m);
+      else
+        m_ItemID = ItemID;
 
-			m.Send( StopMusic.Instance );
+      m.Send(new PlayMusic(music));
+      m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 4, Animate);
+    }
 
-			if ( m_Count > 0 )
-				ItemID = m_ItemID;
+    public void EndMusic(Mobile m)
+    {
+      if (m_Timer != null && m_Timer.Running)
+        m_Timer.Stop();
 
-			m_Count = 0;
-		}
+      m.Send(StopMusic.Instance);
 
-		private void Animate()
-		{
-			m_Count++;
+      if (m_Count > 0)
+        ItemID = m_ItemID;
 
-			if ( m_Count >= 4 )
-			{
-				m_Count = 0;
-				ItemID = m_ItemID;
-			}
-			else
-				ItemID++;
-		}
+      m_Count = 0;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    private void Animate()
+    {
+      m_Count++;
 
-			writer.WriteEncodedInt( 0 ); // version
+      if (m_Count >= 4)
+      {
+        m_Count = 0;
+        ItemID = m_ItemID;
+      }
+      else
+      {
+        ItemID++;
+      }
+    }
 
-			writer.Write( (int) m_Tracks.Count );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			for ( int i = 0; i < m_Tracks.Count; i++ )
-				writer.Write( (int) m_Tracks[ i ] );
+      writer.WriteEncodedInt(0); // version
 
-			writer.Write( (int) m_Level );
-			writer.Write( (int) m_ItemID );
-		}
+      writer.Write(Tracks.Count);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      for (int i = 0; i < Tracks.Count; i++)
+        writer.Write((int)Tracks[i]);
 
-			int version = reader.ReadEncodedInt();
+      writer.Write((int)Level);
+      writer.Write(m_ItemID);
+    }
 
-			int count = reader.ReadInt();
-			m_Tracks = new List<MusicName>();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			for ( int i = 0; i < count; i++ )
-				m_Tracks.Add( (MusicName) reader.ReadInt() );
+      int version = reader.ReadEncodedInt();
 
-			m_Level = (SecureLevel) reader.ReadInt();
-			m_ItemID = reader.ReadInt();
-		}
+      int count = reader.ReadInt();
+      Tracks = new List<MusicName>();
 
-		private static Dictionary<MusicName, DawnsMusicInfo> m_Info = new Dictionary<MusicName, DawnsMusicInfo>();
+      for (int i = 0; i < count; i++)
+        Tracks.Add((MusicName)reader.ReadInt());
 
-		public static void Initialize()
-		{
-			m_Info.Add( MusicName.Samlethe, new DawnsMusicInfo( 1075152, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Sailing, new DawnsMusicInfo( 1075163, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Britain2, new DawnsMusicInfo( 1075145, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Britain1, new DawnsMusicInfo( 1075144, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Bucsden, new DawnsMusicInfo( 1075146, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Forest_a, new DawnsMusicInfo( 1075161, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Cove, new DawnsMusicInfo( 1075176, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Death, new DawnsMusicInfo( 1075171, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Dungeon9, new DawnsMusicInfo( 1075160, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Dungeon2, new DawnsMusicInfo( 1075175, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Cave01, new DawnsMusicInfo( 1075159, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Combat3, new DawnsMusicInfo( 1075170, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Combat1, new DawnsMusicInfo( 1075168, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Combat2, new DawnsMusicInfo( 1075169, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Jhelom, new DawnsMusicInfo( 1075147, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Linelle, new DawnsMusicInfo( 1075185, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.LBCastle, new DawnsMusicInfo( 1075148, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Minoc, new DawnsMusicInfo( 1075150, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Moonglow, new DawnsMusicInfo( 1075177, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Magincia, new DawnsMusicInfo( 1075149, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Nujelm, new DawnsMusicInfo( 1075174, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.BTCastle, new DawnsMusicInfo( 1075173, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Tavern04, new DawnsMusicInfo( 1075167, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Skarabra, new DawnsMusicInfo( 1075154, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Stones2, new DawnsMusicInfo( 1075143, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Serpents, new DawnsMusicInfo( 1075153, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Taiko, new DawnsMusicInfo( 1075180, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Tavern01, new DawnsMusicInfo( 1075164, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Tavern02, new DawnsMusicInfo( 1075165, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Tavern03, new DawnsMusicInfo( 1075166, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.TokunoDungeon, new DawnsMusicInfo( 1075179, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Trinsic, new DawnsMusicInfo( 1075155, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.OldUlt01, new DawnsMusicInfo( 1075142, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Ocllo, new DawnsMusicInfo( 1075151, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Vesper, new DawnsMusicInfo( 1075156, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Victory, new DawnsMusicInfo( 1075172, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Mountn_a, new DawnsMusicInfo( 1075162, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Wind, new DawnsMusicInfo( 1075157, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Yew, new DawnsMusicInfo( 1075158, DawnsMusicRarity.Common ) );
-			m_Info.Add( MusicName.Zento, new DawnsMusicInfo( 1075178, DawnsMusicRarity.Common ) );
+      Level = (SecureLevel)reader.ReadInt();
+      m_ItemID = reader.ReadInt();
+    }
 
-			m_Info.Add( MusicName.GwennoConversation, new DawnsMusicInfo( 1075131, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.DreadHornArea, new DawnsMusicInfo( 1075181, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.ElfCity, new DawnsMusicInfo( 1075182, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.GoodEndGame, new DawnsMusicInfo( 1075132, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.GoodVsEvil, new DawnsMusicInfo( 1075133, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.GreatEarthSerpents, new DawnsMusicInfo( 1075134, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.GrizzleDungeon, new DawnsMusicInfo( 1075186, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.Humanoids_U9, new DawnsMusicInfo( 1075135, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.MelisandesLair, new DawnsMusicInfo( 1075183, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.MinocNegative, new DawnsMusicInfo( 1075136, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.ParoxysmusLair, new DawnsMusicInfo( 1075184, DawnsMusicRarity.Uncommon ) );
-			m_Info.Add( MusicName.Paws, new DawnsMusicInfo( 1075137, DawnsMusicRarity.Uncommon ) );
+    public static void Initialize()
+    {
+      m_Info.Add(MusicName.Samlethe, new DawnsMusicInfo(1075152, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Sailing, new DawnsMusicInfo(1075163, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Britain2, new DawnsMusicInfo(1075145, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Britain1, new DawnsMusicInfo(1075144, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Bucsden, new DawnsMusicInfo(1075146, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Forest_a, new DawnsMusicInfo(1075161, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Cove, new DawnsMusicInfo(1075176, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Death, new DawnsMusicInfo(1075171, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Dungeon9, new DawnsMusicInfo(1075160, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Dungeon2, new DawnsMusicInfo(1075175, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Cave01, new DawnsMusicInfo(1075159, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Combat3, new DawnsMusicInfo(1075170, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Combat1, new DawnsMusicInfo(1075168, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Combat2, new DawnsMusicInfo(1075169, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Jhelom, new DawnsMusicInfo(1075147, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Linelle, new DawnsMusicInfo(1075185, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.LBCastle, new DawnsMusicInfo(1075148, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Minoc, new DawnsMusicInfo(1075150, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Moonglow, new DawnsMusicInfo(1075177, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Magincia, new DawnsMusicInfo(1075149, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Nujelm, new DawnsMusicInfo(1075174, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.BTCastle, new DawnsMusicInfo(1075173, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Tavern04, new DawnsMusicInfo(1075167, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Skarabra, new DawnsMusicInfo(1075154, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Stones2, new DawnsMusicInfo(1075143, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Serpents, new DawnsMusicInfo(1075153, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Taiko, new DawnsMusicInfo(1075180, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Tavern01, new DawnsMusicInfo(1075164, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Tavern02, new DawnsMusicInfo(1075165, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Tavern03, new DawnsMusicInfo(1075166, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.TokunoDungeon, new DawnsMusicInfo(1075179, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Trinsic, new DawnsMusicInfo(1075155, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.OldUlt01, new DawnsMusicInfo(1075142, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Ocllo, new DawnsMusicInfo(1075151, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Vesper, new DawnsMusicInfo(1075156, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Victory, new DawnsMusicInfo(1075172, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Mountn_a, new DawnsMusicInfo(1075162, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Wind, new DawnsMusicInfo(1075157, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Yew, new DawnsMusicInfo(1075158, DawnsMusicRarity.Common));
+      m_Info.Add(MusicName.Zento, new DawnsMusicInfo(1075178, DawnsMusicRarity.Common));
 
-			m_Info.Add( MusicName.SelimsBar, new DawnsMusicInfo( 1075138, DawnsMusicRarity.Rare ) );
-			m_Info.Add( MusicName.SerpentIsleCombat_U7, new DawnsMusicInfo( 1075139, DawnsMusicRarity.Rare ) );
-			m_Info.Add( MusicName.ValoriaShips, new DawnsMusicInfo( 1075140, DawnsMusicRarity.Rare ) );
-		}
+      m_Info.Add(MusicName.GwennoConversation, new DawnsMusicInfo(1075131, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.DreadHornArea, new DawnsMusicInfo(1075181, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.ElfCity, new DawnsMusicInfo(1075182, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.GoodEndGame, new DawnsMusicInfo(1075132, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.GoodVsEvil, new DawnsMusicInfo(1075133, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.GreatEarthSerpents, new DawnsMusicInfo(1075134, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.GrizzleDungeon, new DawnsMusicInfo(1075186, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.Humanoids_U9, new DawnsMusicInfo(1075135, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.MelisandesLair, new DawnsMusicInfo(1075183, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.MinocNegative, new DawnsMusicInfo(1075136, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.ParoxysmusLair, new DawnsMusicInfo(1075184, DawnsMusicRarity.Uncommon));
+      m_Info.Add(MusicName.Paws, new DawnsMusicInfo(1075137, DawnsMusicRarity.Uncommon));
 
-		public static MusicName[] m_CommonTracks = new MusicName[]
-		{
-			MusicName.Samlethe,	MusicName.Sailing,	MusicName.Britain2,			MusicName.Britain1,
-			MusicName.Bucsden,	MusicName.Forest_a,	MusicName.Cove,				MusicName.Death,
-			MusicName.Dungeon9,	MusicName.Dungeon2,	MusicName.Cave01,			MusicName.Combat3,
-			MusicName.Combat1,	MusicName.Combat2,	MusicName.Jhelom,			MusicName.Linelle,
-			MusicName.LBCastle,	MusicName.Minoc,	MusicName.Moonglow,			MusicName.Magincia,
-			MusicName.Nujelm,	MusicName.BTCastle,	MusicName.Tavern04,			MusicName.Skarabra,
-			MusicName.Stones2,	MusicName.Serpents,	MusicName.Taiko,			MusicName.Tavern01,
-			MusicName.Tavern02,	MusicName.Tavern03,	MusicName.TokunoDungeon,	MusicName.Trinsic,
-			MusicName.OldUlt01,	MusicName.Ocllo,	MusicName.Vesper,			MusicName.Victory,
-			MusicName.Mountn_a,	MusicName.Wind,		MusicName.Yew,				MusicName.Zento
-		};
+      m_Info.Add(MusicName.SelimsBar, new DawnsMusicInfo(1075138, DawnsMusicRarity.Rare));
+      m_Info.Add(MusicName.SerpentIsleCombat_U7, new DawnsMusicInfo(1075139, DawnsMusicRarity.Rare));
+      m_Info.Add(MusicName.ValoriaShips, new DawnsMusicInfo(1075140, DawnsMusicRarity.Rare));
+    }
 
-		public static MusicName[] m_UncommonTracks = new MusicName[]
-		{
-			MusicName.GwennoConversation,	MusicName.DreadHornArea,	MusicName.ElfCity,
-			MusicName.GoodEndGame,			MusicName.GoodVsEvil,		MusicName.GreatEarthSerpents,
-			MusicName.GrizzleDungeon,		MusicName.Humanoids_U9,		MusicName.MelisandesLair,
-			MusicName.MinocNegative,		MusicName.ParoxysmusLair,	MusicName.Paws
-		};
+    public static DawnsMusicInfo GetInfo(MusicName name)
+    {
+      if (m_Info.ContainsKey(name))
+        return m_Info[name];
 
-		public static MusicName[] m_RareTracks = new MusicName[]
-		{
-			MusicName.SelimsBar,		MusicName.SerpentIsleCombat_U7,	MusicName.ValoriaShips
-		};
+      return null;
+    }
 
-		public static DawnsMusicInfo GetInfo( MusicName name )
-		{
-			if ( m_Info.ContainsKey( name ) )
-				return m_Info[ name ];
+    public static MusicName RandomTrack(DawnsMusicRarity rarity)
+    {
+      MusicName[] list = null;
 
-			return null;
-		}
+      switch (rarity)
+      {
+        default:
+        case DawnsMusicRarity.Common:
+          list = m_CommonTracks;
+          break;
+        case DawnsMusicRarity.Uncommon:
+          list = m_UncommonTracks;
+          break;
+        case DawnsMusicRarity.Rare:
+          list = m_RareTracks;
+          break;
+      }
 
-		public static MusicName RandomTrack( DawnsMusicRarity rarity )
-		{
-			MusicName[] list = null;
-
-			switch ( rarity )
-			{
-				default:
-				case DawnsMusicRarity.Common: list = m_CommonTracks; break;
-				case DawnsMusicRarity.Uncommon: list = m_UncommonTracks; break;
-				case DawnsMusicRarity.Rare: list = m_RareTracks; break;
-			}
-
-			return list[ Utility.Random( list.Length ) ];
-		}
-	}
+      return list[Utility.Random(list.Length)];
+    }
+  }
 }

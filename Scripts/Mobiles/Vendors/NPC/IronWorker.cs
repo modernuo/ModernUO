@@ -1,124 +1,124 @@
-using System;
 using System.Collections.Generic;
-using Server;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class IronWorker : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+  public class IronWorker : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public IronWorker() : base( "the iron worker" )
-		{
-			SetSkill( SkillName.ArmsLore, 36.0, 68.0 );
-			SetSkill( SkillName.Blacksmith, 65.0, 88.0 );
-			SetSkill( SkillName.Fencing, 60.0, 83.0 );
-			SetSkill( SkillName.Macing, 61.0, 93.0 );
-			SetSkill( SkillName.Swords, 60.0, 83.0 );
-			SetSkill( SkillName.Tactics, 60.0, 83.0 );
-			SetSkill( SkillName.Parry, 61.0, 93.0 );
-		}
+    [Constructible]
+    public IronWorker() : base("the iron worker")
+    {
+      SetSkill(SkillName.ArmsLore, 36.0, 68.0);
+      SetSkill(SkillName.Blacksmith, 65.0, 88.0);
+      SetSkill(SkillName.Fencing, 60.0, 83.0);
+      SetSkill(SkillName.Macing, 61.0, 93.0);
+      SetSkill(SkillName.Swords, 60.0, 83.0);
+      SetSkill(SkillName.Tactics, 60.0, 83.0);
+      SetSkill(SkillName.Parry, 61.0, 93.0);
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBAxeWeapon() );
-			m_SBInfos.Add( new SBKnifeWeapon() );
-			m_SBInfos.Add( new SBMaceWeapon() );
-			m_SBInfos.Add( new SBSmithTools() );
-			m_SBInfos.Add( new SBPoleArmWeapon() );
-			m_SBInfos.Add( new SBSpearForkWeapon() );
-			m_SBInfos.Add( new SBSwordWeapon() );
+    public IronWorker(Serial serial) : base(serial)
+    {
+    }
 
-			m_SBInfos.Add( new SBMetalShields() );
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-			m_SBInfos.Add( new SBHelmetArmor() );
-			m_SBInfos.Add( new SBPlateArmor() );
-			m_SBInfos.Add( new SBChainmailArmor() );
-			m_SBInfos.Add( new SBRingmailArmor() );
-			m_SBInfos.Add( new SBStuddedArmor() );
-			m_SBInfos.Add( new SBLeatherArmor() );
-		}
+    public override VendorShoeType ShoeType => VendorShoeType.None;
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return VendorShoeType.None; }
-		}
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBAxeWeapon());
+      m_SBInfos.Add(new SBKnifeWeapon());
+      m_SBInfos.Add(new SBMaceWeapon());
+      m_SBInfos.Add(new SBSmithTools());
+      m_SBInfos.Add(new SBPoleArmWeapon());
+      m_SBInfos.Add(new SBSpearForkWeapon());
+      m_SBInfos.Add(new SBSwordWeapon());
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+      m_SBInfos.Add(new SBMetalShields());
 
-			Item item = ( Utility.RandomBool() ? null : new Server.Items.RingmailChest() );
+      m_SBInfos.Add(new SBHelmetArmor());
+      m_SBInfos.Add(new SBPlateArmor());
+      m_SBInfos.Add(new SBChainmailArmor());
+      m_SBInfos.Add(new SBRingmailArmor());
+      m_SBInfos.Add(new SBStuddedArmor());
+      m_SBInfos.Add(new SBLeatherArmor());
+    }
 
-			if ( item != null && !EquipItem( item ) )
-			{
-				item.Delete();
-				item = null;
-			}
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-			switch ( Utility.Random( 3 ) )
-			{
-				case 0:
-				case 1: AddItem( new JesterHat( Utility.RandomBrightHue() ) ); break;
-				case 2: AddItem( new Bandana( Utility.RandomBrightHue() ) ); break;
-			}
+      Item item = Utility.RandomBool() ? null : new RingmailChest();
 
-			if ( item == null )
-				AddItem( new FullApron( Utility.RandomBrightHue() ) );
+      if (item != null && !EquipItem(item))
+      {
+        item.Delete();
+        item = null;
+      }
 
-			AddItem( new Bascinet() );
-			AddItem( new SmithHammer() );
+      switch (Utility.Random(3))
+      {
+        case 0:
+        case 1:
+          AddItem(new JesterHat(Utility.RandomBrightHue()));
+          break;
+        case 2:
+          AddItem(new Bandana(Utility.RandomBrightHue()));
+          break;
+      }
 
-			item = FindItemOnLayer( Layer.Pants );
+      if (item == null)
+        AddItem(new FullApron(Utility.RandomBrightHue()));
 
-			if ( item != null )
-				item.Hue = Utility.RandomBrightHue();
+      AddItem(new Bascinet());
+      AddItem(new SmithHammer());
 
-			item = FindItemOnLayer( Layer.OuterLegs );
+      item = FindItemOnLayer(Layer.Pants);
 
-			if ( item != null )
-				item.Hue = Utility.RandomBrightHue();
+      if (item != null)
+        item.Hue = Utility.RandomBrightHue();
 
-			item = FindItemOnLayer( Layer.InnerLegs );
+      item = FindItemOnLayer(Layer.OuterLegs);
 
-			if ( item != null )
-				item.Hue = Utility.RandomBrightHue();
+      if (item != null)
+        item.Hue = Utility.RandomBrightHue();
 
-			item = FindItemOnLayer( Layer.OuterTorso );
+      item = FindItemOnLayer(Layer.InnerLegs);
 
-			if ( item != null )
-				item.Hue = Utility.RandomBrightHue();
+      if (item != null)
+        item.Hue = Utility.RandomBrightHue();
 
-			item = FindItemOnLayer( Layer.InnerTorso );
+      item = FindItemOnLayer(Layer.OuterTorso);
 
-			if ( item != null )
-				item.Hue = Utility.RandomBrightHue();
+      if (item != null)
+        item.Hue = Utility.RandomBrightHue();
 
-			item = FindItemOnLayer( Layer.Shirt );
+      item = FindItemOnLayer(Layer.InnerTorso);
 
-			if ( item != null )
-				item.Hue = Utility.RandomBrightHue();
-		}
+      if (item != null)
+        item.Hue = Utility.RandomBrightHue();
 
-		public IronWorker( Serial serial ) : base( serial )
-		{
-		}
+      item = FindItemOnLayer(Layer.Shirt);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      if (item != null)
+        item.Hue = Utility.RandomBrightHue();
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

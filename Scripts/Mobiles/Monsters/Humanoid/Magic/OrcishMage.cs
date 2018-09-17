@@ -1,109 +1,104 @@
-using System;
-using Server;
-using Server.Misc;
 using Server.Items;
+using Server.Misc;
 
 namespace Server.Mobiles
 {
-	public class OrcishMage : BaseCreature
-	{
-		public override string CorpseName => "a glowing orc corpse";
-		public override InhumanSpeech SpeechType => InhumanSpeech.Orc;
+  public class OrcishMage : BaseCreature
+  {
+    [Constructible]
+    public OrcishMage() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 140;
+      BaseSoundID = 0x45A;
 
-		public override string DefaultName => "an orcish mage";
+      SetStr(116, 150);
+      SetDex(91, 115);
+      SetInt(161, 185);
 
-		[Constructible]
-		public OrcishMage () : base( AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 140;
-			BaseSoundID = 0x45A;
+      SetHits(70, 90);
 
-			SetStr( 116, 150 );
-			SetDex( 91, 115 );
-			SetInt( 161, 185 );
+      SetDamage(4, 14);
 
-			SetHits( 70, 90 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamage( 4, 14 );
+      SetResistance(ResistanceType.Physical, 25, 35);
+      SetResistance(ResistanceType.Fire, 30, 40);
+      SetResistance(ResistanceType.Cold, 20, 30);
+      SetResistance(ResistanceType.Poison, 30, 40);
+      SetResistance(ResistanceType.Energy, 30, 40);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetSkill(SkillName.EvalInt, 60.1, 72.5);
+      SetSkill(SkillName.Magery, 60.1, 72.5);
+      SetSkill(SkillName.MagicResist, 60.1, 75.0);
+      SetSkill(SkillName.Tactics, 50.1, 65.0);
+      SetSkill(SkillName.Wrestling, 40.1, 50.0);
 
-			SetResistance( ResistanceType.Physical, 25, 35 );
-			SetResistance( ResistanceType.Fire, 30, 40 );
-			SetResistance( ResistanceType.Cold, 20, 30 );
-			SetResistance( ResistanceType.Poison, 30, 40 );
-			SetResistance( ResistanceType.Energy, 30, 40 );
+      Fame = 3000;
+      Karma = -3000;
 
-			SetSkill( SkillName.EvalInt, 60.1, 72.5 );
-			SetSkill( SkillName.Magery, 60.1, 72.5 );
-			SetSkill( SkillName.MagicResist, 60.1, 75.0 );
-			SetSkill( SkillName.Tactics, 50.1, 65.0 );
-			SetSkill( SkillName.Wrestling, 40.1, 50.0 );
-
-			Fame = 3000;
-			Karma = -3000;
-
-			VirtualArmor = 30;
+      VirtualArmor = 30;
 
 
-			PackReg( 6 );
+      PackReg(6);
 
-			if ( 0.05 > Utility.RandomDouble() )
-				PackItem( new OrcishKinMask() );
-		}
+      if (0.05 > Utility.RandomDouble())
+        PackItem(new OrcishKinMask());
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average );
-			AddLoot( LootPack.LowScrolls );
-		}
+    public OrcishMage(Serial serial) : base(serial)
+    {
+    }
 
-		public override bool CanRummageCorpses => true;
-		public override int TreasureMapLevel => 1;
-		public override int Meat => 1;
+    public override string CorpseName => "a glowing orc corpse";
+    public override InhumanSpeech SpeechType => InhumanSpeech.Orc;
 
-		public override OppositionGroup OppositionGroup
-		{
-			get{ return OppositionGroup.SavagesAndOrcs; }
-		}
+    public override string DefaultName => "an orcish mage";
 
-		public override bool IsEnemy( Mobile m )
-		{
-			if ( m.Player && m.FindItemOnLayer( Layer.Helm ) is OrcishKinMask )
-				return false;
+    public override bool CanRummageCorpses => true;
+    public override int TreasureMapLevel => 1;
+    public override int Meat => 1;
 
-			return base.IsEnemy( m );
-		}
+    public override OppositionGroup OppositionGroup => OppositionGroup.SavagesAndOrcs;
 
-		public override void AggressiveAction( Mobile aggressor, bool criminal )
-		{
-			base.AggressiveAction( aggressor, criminal );
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Average);
+      AddLoot(LootPack.LowScrolls);
+    }
 
-			Item item = aggressor.FindItemOnLayer( Layer.Helm );
+    public override bool IsEnemy(Mobile m)
+    {
+      if (m.Player && m.FindItemOnLayer(Layer.Helm) is OrcishKinMask)
+        return false;
 
-			if ( item is OrcishKinMask )
-			{
-				AOS.Damage( aggressor, 50, 0, 100, 0, 0, 0 );
-				item.Delete();
-				aggressor.FixedParticles( 0x36BD, 20, 10, 5044, EffectLayer.Head );
-				aggressor.PlaySound( 0x307 );
-			}
-		}
+      return base.IsEnemy(m);
+    }
 
-		public OrcishMage( Serial serial ) : base( serial )
-		{
-		}
+    public override void AggressiveAction(Mobile aggressor, bool criminal)
+    {
+      base.AggressiveAction(aggressor, criminal);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+      Item item = aggressor.FindItemOnLayer(Layer.Helm);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+      if (item is OrcishKinMask)
+      {
+        AOS.Damage(aggressor, 50, 0, 100, 0, 0, 0);
+        item.Delete();
+        aggressor.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
+        aggressor.PlaySound(0x307);
+      }
+    }
+
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

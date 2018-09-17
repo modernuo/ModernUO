@@ -1,86 +1,84 @@
 using System;
+using Server.Engines.ConPVP;
 using Server.Targeting;
-using Server.Network;
 
 namespace Server.Spells.Second
 {
-	public class CunningSpell : MagerySpell
-	{
-		private static SpellInfo m_Info = new SpellInfo(
-				"Cunning", "Uus Wis",
-				212,
-				9061,
-				Reagent.MandrakeRoot,
-				Reagent.Nightshade
-			);
+  public class CunningSpell : MagerySpell
+  {
+    private static SpellInfo m_Info = new SpellInfo(
+      "Cunning", "Uus Wis",
+      212,
+      9061,
+      Reagent.MandrakeRoot,
+      Reagent.Nightshade
+    );
 
-		public override SpellCircle Circle => SpellCircle.Second;
+    public CunningSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    {
+    }
 
-		public CunningSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
-		{
-		}
+    public override SpellCircle Circle => SpellCircle.Second;
 
-		public override bool CheckCast()
-		{
-			if ( Engines.ConPVP.DuelContext.CheckSuddenDeath( Caster ) )
-			{
-				Caster.SendMessage( 0x22, "You cannot cast this spell when in sudden death." );
-				return false;
-			}
+    public override bool CheckCast()
+    {
+      if (DuelContext.CheckSuddenDeath(Caster))
+      {
+        Caster.SendMessage(0x22, "You cannot cast this spell when in sudden death.");
+        return false;
+      }
 
-			return base.CheckCast();
-		}
+      return base.CheckCast();
+    }
 
-		public override void OnCast()
-		{
-			Caster.Target = new InternalTarget( this );
-		}
+    public override void OnCast()
+    {
+      Caster.Target = new InternalTarget(this);
+    }
 
-		public void Target( Mobile m )
-		{
-			if ( !Caster.CanSee( m ) )
-			{
-				Caster.SendLocalizedMessage( 500237 ); // Target can not be seen.
-			}
-			else if ( CheckBSequence( m ) )
-			{
-				SpellHelper.Turn( Caster, m );
+    public void Target(Mobile m)
+    {
+      if (!Caster.CanSee(m))
+      {
+        Caster.SendLocalizedMessage(500237); // Target can not be seen.
+      }
+      else if (CheckBSequence(m))
+      {
+        SpellHelper.Turn(Caster, m);
 
-				SpellHelper.AddStatBonus( Caster, m, StatType.Int );
+        SpellHelper.AddStatBonus(Caster, m, StatType.Int);
 
-				m.FixedParticles( 0x375A, 10, 15, 5011, EffectLayer.Head );
-				m.PlaySound( 0x1EB );
+        m.FixedParticles(0x375A, 10, 15, 5011, EffectLayer.Head);
+        m.PlaySound(0x1EB);
 
-				int percentage = (int)(SpellHelper.GetOffsetScalar( Caster, m, false )*100);
-				TimeSpan length = SpellHelper.GetDuration( Caster, m );
+        int percentage = (int)(SpellHelper.GetOffsetScalar(Caster, m, false) * 100);
+        TimeSpan length = SpellHelper.GetDuration(Caster, m);
 
-				BuffInfo.AddBuff( m, new BuffInfo( BuffIcon.Cunning, 1075843, length, m, percentage.ToString() ) );
-			}
+        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Cunning, 1075843, length, m, percentage.ToString()));
+      }
 
-			FinishSequence();
-		}
+      FinishSequence();
+    }
 
-		private class InternalTarget : Target
-		{
-			private CunningSpell m_Owner;
+    private class InternalTarget : Target
+    {
+      private CunningSpell m_Owner;
 
-			public InternalTarget( CunningSpell owner ) : base( Core.ML ? 10 : 12, false, TargetFlags.Beneficial )
-			{
-				m_Owner = owner;
-			}
+      public InternalTarget(CunningSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Beneficial)
+      {
+        m_Owner = owner;
+      }
 
-			protected override void OnTarget( Mobile from, object o )
-			{
-				if ( o is Mobile )
-				{
-					m_Owner.Target( (Mobile)o );
-				}
-			}
+      protected override void OnTarget(Mobile from, object o)
+      {
+        if (o is Mobile mobile)
+          m_Owner.Target(mobile);
+      }
 
-			protected override void OnTargetFinish( Mobile from )
-			{
-				m_Owner.FinishSequence();
-			}
-		}
-	}
+      protected override void OnTargetFinish(Mobile from)
+      {
+        m_Owner.FinishSequence();
+      }
+    }
+  }
 }

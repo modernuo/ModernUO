@@ -1,55 +1,51 @@
-using System;
-using Server.Network;
-using Server.Items;
-
 namespace Server.Items
 {
-	[FlippableAttribute( 0x2D32, 0x2D26 )]
-	public class RuneBlade : BaseSword
-	{
-		public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
+  [Flippable(0x2D32, 0x2D26)]
+  public class RuneBlade : BaseSword
+  {
+    [Constructible]
+    public RuneBlade() : base(0x2D32)
+    {
+      Weight = 7.0;
+      Layer = Layer.TwoHanded;
+    }
 
-		public override int AosStrengthReq => 30;
-		public override int AosMinDamage => 15;
-		public override int AosMaxDamage => 17;
-		public override int AosSpeed => 35;
-		public override float MlSpeed => 3.00f;
+    public RuneBlade(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 30;
-		public override int OldMinDamage => 15;
-		public override int OldMaxDamage => 17;
-		public override int OldSpeed => 35;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
 
-		public override int DefHitSound => 0x23B;
-		public override int DefMissSound => 0x239;
+    public override int AosStrengthReq => 30;
+    public override int AosMinDamage => 15;
+    public override int AosMaxDamage => 17;
+    public override int AosSpeed => 35;
+    public override float MlSpeed => 3.00f;
 
-		public override int InitMinHits => 30;
-		public override int InitMaxHits => 60;
+    public override int OldStrengthReq => 30;
+    public override int OldMinDamage => 15;
+    public override int OldMaxDamage => 17;
+    public override int OldSpeed => 35;
 
-		[Constructible]
-		public RuneBlade() : base( 0x2D32 )
-		{
-			Weight = 7.0;
-			Layer = Layer.TwoHanded;
-		}
+    public override int DefHitSound => 0x23B;
+    public override int DefMissSound => 0x239;
 
-		public RuneBlade( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 30;
+    public override int InitMaxHits => 60;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

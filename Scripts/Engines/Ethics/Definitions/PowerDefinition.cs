@@ -1,30 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Server.Ethics
 {
-	public class PowerDefinition
-	{
-		private int m_Power;
+  public class PowerDefinition
+  {
+    public PowerDefinition(int power, TextDefinition name, TextDefinition phrase, TextDefinition description)
+    {
+      Power = power;
 
-		private TextDefinition m_Name;
-		private TextDefinition m_Phrase;
-		private TextDefinition m_Description;
+      Name = name;
+      Phrase = phrase;
+      Description = description;
+    }
 
-		public int Power  => m_Power;
+    public int Power{ get; }
 
-		public TextDefinition Name  => m_Name;
-		public TextDefinition Phrase  => m_Phrase;
-		public TextDefinition Description  => m_Description;
+    public TextDefinition Name{ get; }
 
-		public PowerDefinition( int power, TextDefinition name, TextDefinition phrase, TextDefinition description )
-		{
-			m_Power = power;
+    public TextDefinition Phrase{ get; }
 
-			m_Name = name;
-			m_Phrase = phrase;
-			m_Description = description;
-		}
-	}
+    public TextDefinition Description{ get; }
+  }
 }

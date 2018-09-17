@@ -1,170 +1,156 @@
 using System;
 using System.Collections.Generic;
-using Server;
 using Server.Multis;
-using Server.Network;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0xE80, 0x9A8 )]
-	public class StrongBox : BaseContainer, IChopable
-	{
-		private Mobile m_Owner;
-		private BaseHouse m_House;
+  [Flippable(0xE80, 0x9A8)]
+  public class StrongBox : BaseContainer, IChopable
+  {
+    private BaseHouse m_House;
+    private Mobile m_Owner;
 
-		public override double DefaultWeight => 100;
-		public override int LabelNumber => 1023712;
+    public StrongBox(Mobile owner, BaseHouse house) : base(0xE80)
+    {
+      m_Owner = owner;
+      m_House = house;
 
-		public StrongBox( Mobile owner, BaseHouse house ) : base( 0xE80 )
-		{
-			m_Owner = owner;
-			m_House = house;
+      MaxItems = 25;
+    }
 
-			MaxItems = 25;
-		}
+    public StrongBox(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile Owner
-		{
-			get
-			{
-				return m_Owner;
-			}
-			set
-			{
-				m_Owner = value;
-				InvalidateProperties();
-			}
-		}
+    public override double DefaultWeight => 100;
+    public override int LabelNumber => 1023712;
 
-		public override int DefaultMaxWeight => 0;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Mobile Owner
+    {
+      get => m_Owner;
+      set
+      {
+        m_Owner = value;
+        InvalidateProperties();
+      }
+    }
 
-		public StrongBox( Serial serial ) : base(serial)
-		{
-		}
+    public override int DefaultMaxWeight => 0;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override bool Decays
+    {
+      get
+      {
+        if (m_House != null && m_Owner != null && !m_Owner.Deleted)
+          return !m_House.IsCoOwner(m_Owner);
+        return true;
+      }
+    }
 
-			writer.Write( (int) 0 ); // version
+    public override TimeSpan DecayTime => TimeSpan.FromMinutes(30.0);
 
-			writer.Write( m_Owner );
-			writer.Write( m_House );
-		}
+    public void OnChop(Mobile from)
+    {
+      if (m_House != null && !m_House.Deleted && m_Owner != null && !m_Owner.Deleted)
+      {
+        if (from == m_Owner || m_House.IsOwner(from))
+          Chop(from);
+      }
+      else
+      {
+        Chop(from);
+      }
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			int version = reader.ReadInt();
+      writer.Write(0); // version
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Owner = reader.ReadMobile();
-					m_House = reader.ReadItem() as BaseHouse;
+      writer.Write(m_Owner);
+      writer.Write(m_House);
+    }
 
-					break;
-				}
-			}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			Timer.DelayCall( TimeSpan.FromSeconds( 1.0 ), new TimerCallback( Validate ) );
-		}
+      int version = reader.ReadInt();
 
-		private void Validate()
-		{
-			if ( m_Owner != null && m_House != null && !m_House.IsCoOwner( m_Owner ) )
-			{
-				Console.WriteLine( "Warning: Destroying strongbox of {0}", m_Owner.Name );
-				Destroy();
-			}
-		}
+      switch (version)
+      {
+        case 0:
+        {
+          m_Owner = reader.ReadMobile();
+          m_House = reader.ReadItem() as BaseHouse;
 
-		public override bool Decays
-		{
-			get
-			{
-				if ( m_House != null && m_Owner != null && !m_Owner.Deleted )
-					return !m_House.IsCoOwner( m_Owner );
-				else
-					return true;
-			}
-		}
+          break;
+        }
+      }
 
-		public override TimeSpan DecayTime
-		{
-			get
-			{
-				return TimeSpan.FromMinutes( 30.0 );
-			}
-		}
+      Timer.DelayCall(TimeSpan.FromSeconds(1.0), Validate);
+    }
 
-		public override void AddNameProperty( ObjectPropertyList list )
-		{
-			if ( m_Owner != null )
-				list.Add( 1042887, m_Owner.Name ); // a strong box owned by ~1_OWNER_NAME~
-			else
-				base.AddNameProperty( list );
-		}
+    private void Validate()
+    {
+      if (m_Owner != null && m_House != null && !m_House.IsCoOwner(m_Owner))
+      {
+        Console.WriteLine("Warning: Destroying strongbox of {0}", m_Owner.Name);
+        Destroy();
+      }
+    }
 
-		public override void OnSingleClick( Mobile from )
-		{
-			if ( m_Owner != null )
-			{
-				LabelTo( from, 1042887, m_Owner.Name ); // a strong box owned by ~1_OWNER_NAME~
+    public override void AddNameProperty(ObjectPropertyList list)
+    {
+      if (m_Owner != null)
+        list.Add(1042887, m_Owner.Name); // a strong box owned by ~1_OWNER_NAME~
+      else
+        base.AddNameProperty(list);
+    }
 
-				if ( CheckContentDisplay( from ) )
-					LabelTo( from, "({0} items, {1} stones)", TotalItems, TotalWeight );
-			}
-			else
-			{
-				base.OnSingleClick( from );
-			}
-		}
+    public override void OnSingleClick(Mobile from)
+    {
+      if (m_Owner != null)
+      {
+        LabelTo(from, 1042887, m_Owner.Name); // a strong box owned by ~1_OWNER_NAME~
 
-		public override bool IsAccessibleTo( Mobile m )
-		{
-			if ( m_Owner == null || m_Owner.Deleted || m_House == null || m_House.Deleted || m.AccessLevel >= AccessLevel.GameMaster )
-				return true;
+        if (CheckContentDisplay(from))
+          LabelTo(from, "({0} items, {1} stones)", TotalItems, TotalWeight);
+      }
+      else
+      {
+        base.OnSingleClick(from);
+      }
+    }
 
-			return m == m_Owner && m_House.IsCoOwner( m ) && base.IsAccessibleTo( m );
-		}
+    public override bool IsAccessibleTo(Mobile m)
+    {
+      if (m_Owner == null || m_Owner.Deleted || m_House == null || m_House.Deleted ||
+          m.AccessLevel >= AccessLevel.GameMaster)
+        return true;
 
-		private void Chop( Mobile from )
-		{
-			Effects.PlaySound( Location, Map, 0x3B3 );
-			from.SendLocalizedMessage( 500461 ); // You destroy the item.
-			Destroy();
-		}
+      return m == m_Owner && m_House.IsCoOwner(m) && base.IsAccessibleTo(m);
+    }
 
-		public void OnChop( Mobile from )
-		{
-			if ( m_House != null && !m_House.Deleted && m_Owner != null && !m_Owner.Deleted )
-			{
-				if ( from == m_Owner || m_House.IsOwner( from ) )
-					Chop( from );
-			}
-			else
-			{
-				Chop( from );
-			}
-		}
+    private void Chop(Mobile from)
+    {
+      Effects.PlaySound(Location, Map, 0x3B3);
+      from.SendLocalizedMessage(500461); // You destroy the item.
+      Destroy();
+    }
 
-		public Container ConvertToStandardContainer()
-		{
-			Container metalBox = new MetalBox();
-			List<Item> subItems = new List<Item>( Items );
+    public Container ConvertToStandardContainer()
+    {
+      Container metalBox = new MetalBox();
+      List<Item> subItems = new List<Item>(Items);
 
-			foreach ( Item subItem in subItems )
-			{
-				metalBox.AddItem( subItem );
-			}
+      foreach (Item subItem in subItems) metalBox.AddItem(subItem);
 
-			this.Delete();
+      Delete();
 
-			return metalBox;
-		}
-	}
+      return metalBox;
+    }
+  }
 }

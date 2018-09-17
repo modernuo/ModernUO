@@ -1,72 +1,69 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class MediumStoneTableEastAddon : BaseAddon
-	{
-		public override BaseAddonDeed Deed => new MediumStoneTableEastDeed();
+  public class MediumStoneTableEastAddon : BaseAddon
+  {
+    [Constructible]
+    public MediumStoneTableEastAddon() : this(0)
+    {
+    }
 
-		public override bool RetainDeedHue => true;
+    [Constructible]
+    public MediumStoneTableEastAddon(int hue)
+    {
+      AddComponent(new AddonComponent(0x1202), 0, 0, 0);
+      AddComponent(new AddonComponent(0x1201), 0, 1, 0);
+      Hue = hue;
+    }
 
-		[Constructible]
-		public MediumStoneTableEastAddon() : this( 0 )
-		{
-		}
+    public MediumStoneTableEastAddon(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public MediumStoneTableEastAddon( int hue )
-		{
-			AddComponent( new AddonComponent( 0x1202 ), 0, 0, 0 );
-			AddComponent( new AddonComponent( 0x1201 ), 0, 1, 0 );
-			Hue = hue;
-		}
+    public override BaseAddonDeed Deed => new MediumStoneTableEastDeed();
 
-		public MediumStoneTableEastAddon( Serial serial ) : base( serial )
-		{
-		}
+    public override bool RetainDeedHue => true;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 ); // version
-		}
+      writer.Write(1); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class MediumStoneTableEastDeed : BaseAddonDeed
-	{
-		public override BaseAddon Addon => new MediumStoneTableEastAddon( this.Hue );
-		public override int LabelNumber => 1044508; // stone table (east)
+  public class MediumStoneTableEastDeed : BaseAddonDeed
+  {
+    [Constructible]
+    public MediumStoneTableEastDeed()
+    {
+    }
 
-		[Constructible]
-		public MediumStoneTableEastDeed()
-		{
-		}
+    public MediumStoneTableEastDeed(Serial serial) : base(serial)
+    {
+    }
 
-		public MediumStoneTableEastDeed( Serial serial ) : base( serial )
-		{
-		}
+    public override BaseAddon Addon => new MediumStoneTableEastAddon(Hue);
+    public override int LabelNumber => 1044508; // stone table (east)
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

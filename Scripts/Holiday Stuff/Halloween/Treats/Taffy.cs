@@ -1,41 +1,38 @@
-﻿using System;
-using Server;
-
-namespace Server.Items
+﻿namespace Server.Items
 {
-	public class Taffy : CandyCane
-	{
-		public override int LabelNumber => 1096949; /* taffy */
+  public class Taffy : CandyCane
+  {
+    [Constructible]
+    public Taffy()
+      : this(1)
+    {
+    }
 
-		[Constructible]
-		public Taffy()
-			: this( 1 )
-		{
-		}
+    public Taffy(int amount)
+      : base(0x469D)
+    {
+      Stackable = true;
+    }
 
-		public Taffy( int amount )
-			: base( 0x469D )
-		{
-			Stackable = true;
-		}
+    public Taffy(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public Taffy( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int LabelNumber => 1096949; /* taffy */
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( ( int )0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

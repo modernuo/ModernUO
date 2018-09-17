@@ -1,115 +1,121 @@
-using System;
 using System.Collections.Generic;
-using Server;
 using Server.Mobiles;
 
 namespace Server.Factions
 {
-	public abstract class BaseFactionVendor : BaseVendor
-	{
-		private Town m_Town;
-		private Faction m_Faction;
+  public abstract class BaseFactionVendor : BaseVendor
+  {
+    private Faction m_Faction;
+    private Town m_Town;
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public Town Town
-		{
-			get{ return m_Town; }
-			set{ Unregister(); m_Town = value; Register(); }
-		}
+    public BaseFactionVendor(Town town, Faction faction, string title) : base(title)
+    {
+      Frozen = true;
+      CantWalk = true;
+      Female = false;
+      BodyValue = 400;
+      Name = NameList.RandomName("male");
 
-		[CommandProperty( AccessLevel.Counselor, AccessLevel.Administrator )]
-		public Faction Faction
-		{
-			get{ return m_Faction; }
-			set{ Unregister(); m_Faction = value; Register(); }
-		}
+      RangeHome = 0;
 
-		public void Register()
-		{
-			if ( m_Town != null && m_Faction != null )
-				m_Town.RegisterVendor( this );
-		}
+      m_Town = town;
+      m_Faction = faction;
+      Register();
+    }
 
-		public override bool OnMoveOver( Mobile m )
-		{
-			if ( Core.ML )
-				return true;
+    public BaseFactionVendor(Serial serial) : base(serial)
+    {
+    }
 
-			return base.OnMoveOver( m );
-		}
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
+    public Town Town
+    {
+      get => m_Town;
+      set
+      {
+        Unregister();
+        m_Town = value;
+        Register();
+      }
+    }
 
-		public void Unregister()
-		{
-			if ( m_Town != null )
-				m_Town.UnregisterVendor( this );
-		}
+    [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
+    public Faction Faction
+    {
+      get => m_Faction;
+      set
+      {
+        Unregister();
+        m_Faction = value;
+        Register();
+      }
+    }
 
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+    protected override List<SBInfo> SBInfos{ get; } = new List<SBInfo>();
 
-		public override void InitSBInfo()
-		{
-		}
+    public void Register()
+    {
+      if (m_Town != null && m_Faction != null)
+        m_Town.RegisterVendor(this);
+    }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+    public override bool OnMoveOver(Mobile m)
+    {
+      if (Core.ML)
+        return true;
 
-			Unregister();
-		}
+      return base.OnMoveOver(m);
+    }
 
-		public override bool CheckVendorAccess( Mobile from )
-		{
-			return true;
-		}
+    public void Unregister()
+    {
+      m_Town?.UnregisterVendor(this);
+    }
 
-		public BaseFactionVendor( Town town, Faction faction, string title ) : base( title )
-		{
-			Frozen = true;
-			CantWalk = true;
-			Female = false;
-			BodyValue = 400;
-			Name = NameList.RandomName( "male" );
+    public override void InitSBInfo()
+    {
+    }
 
-			RangeHome = 0;
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-			m_Town = town;
-			m_Faction = faction;
-			Register();
-		}
+      Unregister();
+    }
 
-		public BaseFactionVendor( Serial serial ) : base( serial )
-		{
-		}
+    public override bool CheckVendorAccess(Mobile from)
+    {
+      return true;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			Town.WriteReference( writer, m_Town );
-			Faction.WriteReference( writer, m_Faction );
-		}
+      Town.WriteReference(writer, m_Town);
+      Faction.WriteReference(writer, m_Faction);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Town = Town.ReadReference( reader );
-					m_Faction = Faction.ReadReference( reader );
-					Register();
-					break;
-				}
-			}
+      switch (version)
+      {
+        case 0:
+        {
+          m_Town = Town.ReadReference(reader);
+          m_Faction = Faction.ReadReference(reader);
+          Register();
+          break;
+        }
+      }
 
-			Frozen = true;
-		}
-	}
+      Frozen = true;
+    }
+  }
 }

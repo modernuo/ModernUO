@@ -1,35 +1,32 @@
-﻿using System;
-using Server;
-
-namespace Server.Items.Holiday
+﻿namespace Server.Items.Holiday
 {
-	public class PaintedEvilJesterMask : BasePaintedMask
-	{
-		public override string MaskName => "Evil Jester Mask";
+  public class PaintedEvilJesterMask : BasePaintedMask
+  {
+    [Constructible]
+    public PaintedEvilJesterMask()
+      : base(0x4BA5)
+    {
+    }
 
-		[Constructible]
-		public PaintedEvilJesterMask()
-			: base( 0x4BA5 )
-		{
-		}
+    public PaintedEvilJesterMask(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public PaintedEvilJesterMask( Serial serial )
-			: base( serial )
-		{
-		}
+    public override string MaskName => "Evil Jester Mask";
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( ( int )0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,39 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Server.Ethics
 {
-	public class EthicDefinition
-	{
-		private int m_PrimaryHue;
+  public class EthicDefinition
+  {
+    public EthicDefinition(int primaryHue, TextDefinition title, TextDefinition adjunct, TextDefinition joinPhrase,
+      Power[] powers)
+    {
+      PrimaryHue = primaryHue;
 
-		private TextDefinition m_Title;
-		private TextDefinition m_Adjunct;
+      Title = title;
+      Adjunct = adjunct;
 
-		private TextDefinition m_JoinPhrase;
+      JoinPhrase = joinPhrase;
 
-		private Power[] m_Powers;
+      Powers = powers;
+    }
 
-		public int PrimaryHue  => m_PrimaryHue;
+    public int PrimaryHue{ get; }
 
-		public TextDefinition Title  => m_Title;
-		public TextDefinition Adjunct  => m_Adjunct;
+    public TextDefinition Title{ get; }
 
-		public TextDefinition JoinPhrase  => m_JoinPhrase;
+    public TextDefinition Adjunct{ get; }
 
-		public Power[] Powers  => m_Powers;
+    public TextDefinition JoinPhrase{ get; }
 
-		public EthicDefinition( int primaryHue, TextDefinition title, TextDefinition adjunct, TextDefinition joinPhrase, Power[] powers )
-		{
-			m_PrimaryHue = primaryHue;
-
-			m_Title = title;
-			m_Adjunct = adjunct;
-
-			m_JoinPhrase = joinPhrase;
-
-			m_Powers = powers;
-		}
-	}
+    public Power[] Powers{ get; }
+  }
 }

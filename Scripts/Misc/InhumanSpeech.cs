@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Server;
 
 namespace Server.Misc
 {
@@ -33,7 +32,7 @@ namespace Server.Misc
 
 					m_RatmanSpeech.Flags = IHSFlags.All;
 
-					m_RatmanSpeech.Keywords = new string[]
+					m_RatmanSpeech.Keywords = new[]
 						{
 							"meat", "gold", "kill", "killing", "slay",
 							"sword", "axe", "spell", "magic", "spells",
@@ -48,7 +47,7 @@ namespace Server.Misc
 							"jerk", "fool", "foolish", "ugly", "insult", "scum"
 						};
 
-					m_RatmanSpeech.Responses = new string[]
+					m_RatmanSpeech.Responses = new[]
 						{
 							"meat", "kill", "pound", "crush", "yum yum",
 							"crunch", "destroy", "murder", "eat", "munch",
@@ -62,7 +61,7 @@ namespace Server.Misc
 							"loser", "lose", "scum"
 						};
 
-					m_RatmanSpeech.Syllables = new string[]
+					m_RatmanSpeech.Syllables = new[]
 						{
 							"skrit",
 
@@ -109,7 +108,7 @@ namespace Server.Misc
 
 					m_OrcSpeech.Flags = IHSFlags.All;
 
-					m_OrcSpeech.Keywords = new string[]
+					m_OrcSpeech.Keywords = new[]
 						{
 							"meat", "gold", "kill", "killing", "slay",
 							"sword", "axe", "spell", "magic", "spells",
@@ -124,7 +123,7 @@ namespace Server.Misc
 							"jerk", "fool", "foolish", "ugly", "insult", "scum"
 						};
 
-					m_OrcSpeech.Responses = new string[]
+					m_OrcSpeech.Responses = new[]
 						{
 							"meat", "kill", "pound", "crush", "yum yum",
 							"crunch", "destroy", "murder", "eat", "munch",
@@ -138,7 +137,7 @@ namespace Server.Misc
 							"loser", "lose", "scum"
 						};
 
-					m_OrcSpeech.Syllables = new string[]
+					m_OrcSpeech.Syllables = new[]
 						{
 							"bu", "du", "fu", "ju", "gu",
 							"ulg", "gug", "gub", "gur", "oog",
@@ -196,7 +195,7 @@ namespace Server.Misc
 
 					m_LizardmanSpeech.Flags = IHSFlags.All;
 
-					m_LizardmanSpeech.Keywords = new string[]
+					m_LizardmanSpeech.Keywords = new[]
 						{
 							"meat", "gold", "kill", "killing", "slay",
 							"sword", "axe", "spell", "magic", "spells",
@@ -211,7 +210,7 @@ namespace Server.Misc
 							"jerk", "fool", "foolish", "ugly", "insult", "scum"
 						};
 
-					m_LizardmanSpeech.Responses = new string[]
+					m_LizardmanSpeech.Responses = new[]
 						{
 							"meat", "kill", "pound", "crush", "yum yum",
 							"crunch", "destroy", "murder", "eat", "munch",
@@ -225,7 +224,7 @@ namespace Server.Misc
 							"loser", "lose", "scum"
 						};
 
-					m_LizardmanSpeech.Syllables = new string[]
+					m_LizardmanSpeech.Syllables = new[]
 						{
 							"ss", "sth", "iss", "is", "ith", "kth",
 							"sith", "this", "its", "sit", "tis", "tsi",
@@ -260,7 +259,7 @@ namespace Server.Misc
 
 					m_WispSpeech.Flags = IHSFlags.OnMovement;
 
-					m_WispSpeech.Syllables = new string[]
+					m_WispSpeech.Syllables = new[]
 						{
 							"b", "c", "d", "f", "g", "h", "i",
 							"j", "k", "l", "m", "n", "p", "r",
@@ -275,26 +274,15 @@ namespace Server.Misc
 			}
 		}
 
-		private string[] m_Syllables;
 		private string[] m_Keywords;
-		private string[] m_Responses;
 
 		private Dictionary<string, string> m_KeywordHash;
 
-		private int m_Hue;
-		private int m_Sound;
-
-		private IHSFlags m_Flags;
-
-		public string[] Syllables
-		{
-			get{ return m_Syllables; }
-			set{ m_Syllables = value; }
-		}
+		public string[] Syllables { get; set; }
 
 		public string[] Keywords
 		{
-			get{ return m_Keywords; }
+			get => m_Keywords;
 			set
 			{
 				m_Keywords = value;
@@ -304,33 +292,17 @@ namespace Server.Misc
 			}
 		}
 
-		public string[] Responses
-		{
-			get{ return m_Responses; }
-			set{ m_Responses = value; }
-		}
+		public string[] Responses { get; set; }
 
-		public int Hue
-		{
-			get{ return m_Hue; }
-			set{ m_Hue = value; }
-		}
+		public int Hue { get; set; }
 
-		public int Sound
-		{
-			get{ return m_Sound; }
-			set{ m_Sound = value; }
-		}
+		public int Sound { get; set; }
 
-		public IHSFlags Flags
-		{
-			get{ return m_Flags; }
-			set{ m_Flags = value; }
-		}
+		public IHSFlags Flags { get; set; }
 
 		public string GetRandomSyllable()
 		{
-			return m_Syllables[Utility.Random( m_Syllables.Length )];
+			return Syllables[Utility.Random( Syllables.Length )];
 		}
 
 		public string ConstructWord( int syllableCount )
@@ -340,7 +312,7 @@ namespace Server.Misc
 			for ( int i = 0; i < syllableCount; ++i )
 				syllables[i] = GetRandomSyllable();
 
-			return String.Concat( syllables );
+			return string.Concat( syllables );
 		}
 
 		public string ConstructSentance( int wordCount )
@@ -382,7 +354,7 @@ namespace Server.Misc
 				sentance.Append( word );
 
 				if ( needUpperCase )
-					sentance.Replace( word[0], Char.ToUpper( word[0] ), sentance.Length - word.Length, 1 );
+					sentance.Replace( word[0], char.ToUpper( word[0] ), sentance.Length - word.Length, 1 );
 
 				needUpperCase = false;
 			}
@@ -403,17 +375,17 @@ namespace Server.Misc
 
 		private string GetRandomResponseWord( List<string> keywordsFound )
 		{
-			int random = Utility.Random( keywordsFound.Count + m_Responses.Length );
+			int random = Utility.Random( keywordsFound.Count + Responses.Length );
 
 			if ( random < keywordsFound.Count )
 				return keywordsFound[random];
 
-			return m_Responses[random - keywordsFound.Count];
+			return Responses[random - keywordsFound.Count];
 		}
 
 		public bool OnSpeech( Mobile mob, Mobile speaker, string text )
 		{
-			if ( (m_Flags & IHSFlags.OnSpeech) == 0 || m_Keywords == null || m_Responses == null || m_KeywordHash == null )
+			if ( (Flags & IHSFlags.OnSpeech) == 0 || m_Keywords == null || Responses == null || m_KeywordHash == null )
 				return false; // not enabled
 
 			if ( !speaker.Alive )
@@ -463,33 +435,33 @@ namespace Server.Misc
 					case 1:
 					{
 						response.Append( responseWord ).Append( " thee!" );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
 						break;
 					}
 					case 2:
 					{
 						response.Append( responseWord ).Append( '?' );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
 						break;
 					}
 					case 3:
 					{
 						response.Append( responseWord ).Append( "! " ).Append( secondResponseWord ).Append( '.' );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
-						response.Replace( secondResponseWord[0], Char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( secondResponseWord[0], char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
 						break;
 					}
 					case 4:
 					{
 						response.Append( responseWord ).Append( '.' );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
 						break;
 					}
 					case 5:
 					{
 						response.Append( responseWord ).Append( "? " ).Append( secondResponseWord ).Append( '.' );
-						response.Replace( responseWord[0], Char.ToUpper( responseWord[0] ), 0, 1 );
-						response.Replace( secondResponseWord[0], Char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
+						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
+						response.Replace( secondResponseWord[0], char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
 						break;
 					}
 				}
@@ -512,7 +484,7 @@ namespace Server.Misc
 
 		public void OnDeath( Mobile mob )
 		{
-			if ( (m_Flags & IHSFlags.OnDeath) == 0 )
+			if ( (Flags & IHSFlags.OnDeath) == 0 )
 				return; // not enabled
 
 			if ( 90 > Utility.Random( 100 ) )
@@ -531,7 +503,7 @@ namespace Server.Misc
 
 		public void OnMovement( Mobile mob, Mobile mover, Point3D oldLocation )
 		{
-			if ( (m_Flags & IHSFlags.OnMovement) == 0 )
+			if ( (Flags & IHSFlags.OnMovement) == 0 )
 				return; // not enabled
 
 			if ( !mover.Player || (mover.Hidden && mover.AccessLevel > AccessLevel.Player) )
@@ -548,7 +520,7 @@ namespace Server.Misc
 
 		public void OnDamage( Mobile mob, int amount )
 		{
-			if ( (m_Flags & IHSFlags.OnDamaged) == 0 )
+			if ( (Flags & IHSFlags.OnDamaged) == 0 )
 				return; // not enabled
 
 			if ( 90 > Utility.Random( 100 ) )
@@ -578,13 +550,13 @@ namespace Server.Misc
 
 		public void OnConstruct( Mobile mob )
 		{
-			mob.SpeechHue = m_Hue;
+			mob.SpeechHue = Hue;
 		}
 
 		public void SaySentance( Mobile mob, int wordCount )
 		{
 			mob.Say( ConstructSentance( wordCount ) );
-			mob.PlaySound( m_Sound );
+			mob.PlaySound( Sound );
 		}
 
 		public InhumanSpeech()

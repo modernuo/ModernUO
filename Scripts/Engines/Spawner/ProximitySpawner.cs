@@ -1,156 +1,132 @@
 using System;
-using System.Collections.Generic;
-using Server;
 
 namespace Server.Mobiles
 {
-	public class ProximitySpawner : Spawner
-	{
-		private int m_TriggerRange;
-		private TextDefinition m_SpawnMessage;
-		private bool m_InstantFlag;
+  public class ProximitySpawner : Spawner
+  {
+    [Constructible]
+    public ProximitySpawner()
+    {
+    }
 
-		[CommandProperty( AccessLevel.Developer )]
-		public int TriggerRange
-		{
-			get { return m_TriggerRange; }
-			set { m_TriggerRange = value; }
-		}
+    [Constructible]
+    public ProximitySpawner(string spawnName)
+      : base(spawnName)
+    {
+    }
 
-		[CommandProperty( AccessLevel.Developer )]
-		public TextDefinition SpawnMessage
-		{
-			get { return m_SpawnMessage; }
-			set { m_SpawnMessage = value; }
-		}
+    [Constructible]
+    public ProximitySpawner(int amount, int minDelay, int maxDelay, int team, int homeRange, string spawnName)
+      : base(amount, minDelay, maxDelay, team, homeRange, spawnName)
+    {
+    }
 
-		[CommandProperty( AccessLevel.Developer )]
-		public bool InstantFlag
-		{
-			get { return m_InstantFlag; }
-			set { m_InstantFlag = value; }
-		}
+    [Constructible]
+    public ProximitySpawner(int amount, int minDelay, int maxDelay, int team, int homeRange, int triggerRange,
+      string spawnMessage, bool instantFlag, string spawnName)
+      : base(amount, minDelay, maxDelay, team, homeRange, spawnName)
+    {
+      TriggerRange = triggerRange;
+      SpawnMessage = TextDefinition.Parse(spawnMessage);
+      InstantFlag = instantFlag;
+    }
 
-		[Constructible]
-		public ProximitySpawner()
-		{
-		}
+    public ProximitySpawner(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
+      params string[] spawnedNames)
+      : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
+    {
+    }
 
-		[Constructible]
-		public ProximitySpawner( string spawnName )
-			: base( spawnName )
-		{
-		}
+    public ProximitySpawner(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, int triggerRange,
+      TextDefinition spawnMessage, bool instantFlag, params string[] spawnedNames)
+      : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
+    {
+      TriggerRange = triggerRange;
+      SpawnMessage = spawnMessage;
+      InstantFlag = instantFlag;
+    }
 
-		[Constructible]
-		public ProximitySpawner( int amount, int minDelay, int maxDelay, int team, int homeRange, string spawnName )
-			: base( amount, minDelay, maxDelay, team, homeRange, spawnName )
-		{
-		}
+    public ProximitySpawner(Serial serial)
+      : base(serial)
+    {
+    }
 
-		[Constructible]
-		public ProximitySpawner( int amount, int minDelay, int maxDelay, int team, int homeRange, int triggerRange, string spawnMessage, bool instantFlag, string spawnName )
-			: base( amount, minDelay, maxDelay, team, homeRange, spawnName )
-		{
-			m_TriggerRange = triggerRange;
-			m_SpawnMessage = TextDefinition.Parse( spawnMessage );
-			m_InstantFlag = instantFlag;
-		}
+    [CommandProperty(AccessLevel.Developer)]
+    public int TriggerRange{ get; set; }
 
-		public ProximitySpawner( int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, params string[] spawnedNames )
-			: base( amount, minDelay, maxDelay, team, homeRange, spawnedNames )
-		{
-		}
+    [CommandProperty(AccessLevel.Developer)]
+    public TextDefinition SpawnMessage{ get; set; }
 
-		public ProximitySpawner( int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, int triggerRange, TextDefinition spawnMessage, bool instantFlag, params string[] spawnedNames )
-			: base( amount, minDelay, maxDelay, team, homeRange, spawnedNames )
-		{
-			m_TriggerRange = triggerRange;
-			m_SpawnMessage = spawnMessage;
-			m_InstantFlag = instantFlag;
-		}
+    [CommandProperty(AccessLevel.Developer)]
+    public bool InstantFlag{ get; set; }
 
-		public override string DefaultName
-		{
-			get { return "Proximity Spawner"; }
-		}
+    public override string DefaultName => "Proximity Spawner";
 
-		public override void DoTimer( TimeSpan delay )
-		{
-			if ( !Running )
-				return;
+    public override bool HandlesOnMovement => true;
 
-			End = DateTime.UtcNow + delay;
-		}
+    public override void DoTimer(TimeSpan delay)
+    {
+      if (!Running)
+        return;
 
-		public override void Respawn()
-		{
-			RemoveSpawns();
+      End = DateTime.UtcNow + delay;
+    }
 
-			End = DateTime.UtcNow;
-		}
+    public override void Respawn()
+    {
+      RemoveSpawns();
 
-		public override bool HandlesOnMovement => true;
+      End = DateTime.UtcNow;
+    }
 
-		public virtual bool ValidTrigger( Mobile m )
-		{
-			if ( m is BaseCreature )
-			{
-				BaseCreature bc = m as BaseCreature;
+    public virtual bool ValidTrigger(Mobile m)
+    {
+      if (m is BaseCreature bc && (bc.IsDeadBondedPet || !(bc.Controlled || bc.Summoned)))
+        return false;
 
-				if ( bc.IsDeadBondedPet || !(bc.Controlled || bc.Summoned) )
-					return false;
-			}
+      return m.AccessLevel == AccessLevel.Player && (m.Player || m.Alive && !m.Hidden && m.CanBeDamaged());
+    }
 
-			return m.AccessLevel == AccessLevel.Player && ( m.Player || ( m.Alive && !m.Hidden && m.CanBeDamaged() ) );
-		}
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      if (!Running)
+        return;
 
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			if ( !Running )
-				return;
+      if (IsEmpty && End <= DateTime.UtcNow && m.InRange(GetWorldLocation(), TriggerRange) &&
+          m.Location != oldLocation && ValidTrigger(m))
+      {
+        TextDefinition.SendMessageTo(m, SpawnMessage);
 
-			if ( IsEmpty && End <= DateTime.UtcNow && m.InRange( GetWorldLocation(), m_TriggerRange ) && m.Location != oldLocation && ValidTrigger( m ) )
-			{
-				TextDefinition.SendMessageTo( m, m_SpawnMessage );
+        DoTimer();
+        Spawn();
 
-				DoTimer();
-				Spawn();
+        if (InstantFlag)
+          foreach (ISpawnable spawned in Spawned.Keys)
+            if (spawned is Mobile mobile)
+              mobile.Combatant = m;
+      }
+    }
 
-				if ( m_InstantFlag )
-				{
-					foreach ( ISpawnable spawned in Spawned.Keys )
-						if ( spawned is Mobile )
-							((Mobile)spawned).Combatant = m;
-				}
-			}
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public ProximitySpawner( Serial serial )
-			: base( serial )
-		{
-		}
+      writer.WriteEncodedInt(0); // version
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(TriggerRange);
+      TextDefinition.Serialize(writer, SpawnMessage);
+      writer.Write(InstantFlag);
+    }
 
-			writer.WriteEncodedInt( (int) 0 ); // version
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			writer.Write( m_TriggerRange );
-			TextDefinition.Serialize( writer, m_SpawnMessage );
-			writer.Write( m_InstantFlag );
-		}
+      int version = reader.ReadEncodedInt();
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadEncodedInt();
-
-			m_TriggerRange = reader.ReadInt();
-			m_SpawnMessage = TextDefinition.Deserialize( reader );
-			m_InstantFlag = reader.ReadBool();
-		}
-	}
+      TriggerRange = reader.ReadInt();
+      SpawnMessage = TextDefinition.Deserialize(reader);
+      InstantFlag = reader.ReadBool();
+    }
+  }
 }

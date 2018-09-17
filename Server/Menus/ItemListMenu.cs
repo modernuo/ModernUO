@@ -18,123 +18,69 @@
  *
  ***************************************************************************/
 
-using System;
 using Server.Network;
 
 namespace Server.Menus.ItemLists
 {
-	public class ItemListEntry
-	{
-		private string m_Name;
-		private int m_ItemID;
-		private int m_Hue;
+  public class ItemListEntry
+  {
+    public ItemListEntry(string name, int itemID) : this(name, itemID, 0)
+    {
+    }
 
-		public string Name
-		{
-			get
-			{
-				return m_Name;
-			}
-		}
+    public ItemListEntry(string name, int itemID, int hue)
+    {
+      Name = name;
+      ItemID = itemID;
+      Hue = hue;
+    }
 
-		public int ItemID
-		{
-			get
-			{
-				return m_ItemID;
-			}
-		}
+    public string Name{ get; }
 
-		public int Hue
-		{
-			get
-			{
-				return m_Hue;
-			}
-		}
+    public int ItemID{ get; }
 
-		public ItemListEntry( string name, int itemID ) : this( name, itemID, 0 )
-		{
-		}
+    public int Hue{ get; }
+  }
 
-		public ItemListEntry( string name, int itemID, int hue )
-		{
-			m_Name = name;
-			m_ItemID = itemID;
-			m_Hue = hue;
-		}
-	}
+  public class ItemListMenu : IMenu
+  {
+    private static int m_NextSerial;
+    private int m_Serial;
 
-	public class ItemListMenu : IMenu
-	{
-		private string m_Question;
-		private ItemListEntry[] m_Entries;
+    public ItemListMenu(string question, ItemListEntry[] entries)
+    {
+      Question = question;
+      Entries = entries;
 
-		private int m_Serial;
-		private static int m_NextSerial;
+      do
+      {
+        m_Serial = m_NextSerial++;
+        m_Serial &= 0x7FFFFFFF;
+      } while (m_Serial == 0);
 
-		int IMenu.Serial
-		{
-			get
-			{
-				return m_Serial;
-			}
-		}
+      m_Serial = (int)((uint)m_Serial | 0x80000000);
+    }
 
-		int IMenu.EntryLength
-		{
-			get
-			{
-				return m_Entries.Length;
-			}
-		}
+    public string Question{ get; }
 
-		public string Question
-		{
-			get
-			{
-				return m_Question;
-			}
-		}
+    public ItemListEntry[] Entries{ get; set; }
 
-		public ItemListEntry[] Entries
-		{
-			get
-			{
-				return m_Entries;
-			}
-			set
-			{
-				m_Entries = value;
-			}
-		}
+    int IMenu.Serial => m_Serial;
 
-		public ItemListMenu( string question, ItemListEntry[] entries )
-		{
-			m_Question = question;
-			m_Entries = entries;
+    int IMenu.EntryLength => Entries.Length;
 
-			do
-			{
-				m_Serial = m_NextSerial++;
-				m_Serial &= 0x7FFFFFFF;
-			} while ( m_Serial == 0 );
+    public virtual void OnCancel(NetState state)
+    {
+    }
 
-			m_Serial = (int)((uint)m_Serial | 0x80000000);
-		}
+    public virtual void OnResponse(NetState state, int index)
+    {
+    }
 
-		public virtual void OnCancel( NetState state )
-		{
-		}
-
-		public virtual void OnResponse( NetState state, int index )
-		{
-		}
-
-		public void SendTo( NetState state )
-		{
-			state.AddMenu( this );
-			state.Send( new DisplayItemListMenu( this ) );
-		}
-	}
+    public void SendTo(NetState state)
+    {
+      state.AddMenu(this);
+      state.Send(new DisplayItemListMenu(this));
+    }
+  }
 }

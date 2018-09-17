@@ -1,56 +1,54 @@
-using System;
-using Server;
 using Server.Engines.Craft;
 
 namespace Server.Items
 {
-	public class RunicDovetailSaw : BaseRunicTool
-	{
-		public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
+  public class RunicDovetailSaw : BaseRunicTool
+  {
+    [Constructible]
+    public RunicDovetailSaw(CraftResource resource) : base(resource, 0x1028)
+    {
+      Weight = 2.0;
+      Hue = CraftResources.GetHue(resource);
+    }
 
-		public override int LabelNumber
-		{
-			get
-			{
-				int index = CraftResources.GetIndex( Resource );
+    [Constructible]
+    public RunicDovetailSaw(CraftResource resource, int uses) : base(resource, uses, 0x1028)
+    {
+      Weight = 2.0;
+      Hue = CraftResources.GetHue(resource);
+    }
 
-				if ( index >= 1 && index <= 6 )
-					return 1072633 + index;
+    public RunicDovetailSaw(Serial serial) : base(serial)
+    {
+    }
 
-				return 1024137; // dovetail saw
-			}
-		}
+    public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 
-		[Constructible]
-		public RunicDovetailSaw( CraftResource resource ) : base( resource, 0x1028 )
-		{
-			Weight = 2.0;
-			Hue = CraftResources.GetHue( resource );
-		}
+    public override int LabelNumber
+    {
+      get
+      {
+        int index = CraftResources.GetIndex(Resource);
 
-		[Constructible]
-		public RunicDovetailSaw( CraftResource resource, int uses ) : base( resource, uses, 0x1028 )
-		{
-			Weight = 2.0;
-			Hue = CraftResources.GetHue( resource );
-		}
+        if (index >= 1 && index <= 6)
+          return 1072633 + index;
 
-		public RunicDovetailSaw( Serial serial ) : base( serial )
-		{
-		}
+        return 1024137; // dovetail saw
+      }
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

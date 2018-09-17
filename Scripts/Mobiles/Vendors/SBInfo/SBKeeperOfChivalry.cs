@@ -1,34 +1,24 @@
-using System;
 using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class SBKeeperOfChivalry : SBInfo
-	{
-		private List<GenericBuyInfo> m_BuyInfo = new InternalBuyInfo();
-		private IShopSellInfo m_SellInfo = new InternalSellInfo();
+  public class SBKeeperOfChivalry : SBInfo
+  {
+    public override IShopSellInfo SellInfo{ get; } = new InternalSellInfo();
 
-		public SBKeeperOfChivalry()
-		{
-		}
+    public override List<GenericBuyInfo> BuyInfo{ get; } = new InternalBuyInfo();
 
-		public override IShopSellInfo SellInfo => m_SellInfo;
-		public override List<GenericBuyInfo> BuyInfo => m_BuyInfo;
+    public class InternalBuyInfo : List<GenericBuyInfo>
+    {
+      public InternalBuyInfo()
+      {
+        Add(new GenericBuyInfo(typeof(BookOfChivalry), 140, 20, 0x2252, 0));
+      }
+    }
 
-		public class InternalBuyInfo : List<GenericBuyInfo>
-		{
-			public InternalBuyInfo()
-			{
-				Add( new GenericBuyInfo( typeof( BookOfChivalry ), 140, 20, 0x2252, 0 ) );
-			}
-		}
-
-		public class InternalSellInfo : GenericSellInfo
-		{
-			public InternalSellInfo()
-			{
-			}
-		}
-	}
+    public class InternalSellInfo : GenericSellInfo
+    {
+    }
+  }
 }

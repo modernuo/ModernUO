@@ -1,51 +1,49 @@
-using System;
-using Server;
 using Server.Mobiles;
 
 namespace Server.Engines.Quests.Ninja
 {
-	public class BlueNinjaQuestTeleporter : DynamicTeleporter
-	{
-		public override int LabelNumber => 1026157; // teleporter
+  public class BlueNinjaQuestTeleporter : DynamicTeleporter
+  {
+    [Constructible]
+    public BlueNinjaQuestTeleporter() : base(0x51C, 0x2)
+    {
+    }
 
-		[Constructible]
-		public BlueNinjaQuestTeleporter() : base( 0x51C, 0x2 )
-		{
-		}
+    public BlueNinjaQuestTeleporter(Serial serial) : base(serial)
+    {
+    }
 
-		public override int NotWorkingMessage => 1063198; // You stand on the strange floor tile but nothing happens.
+    public override int LabelNumber => 1026157; // teleporter
 
-		public override bool GetDestination( PlayerMobile player, ref Point3D loc, ref Map map )
-		{
-			QuestSystem qs = player.Quest;
+    public override int NotWorkingMessage => 1063198; // You stand on the strange floor tile but nothing happens.
 
-			if ( qs is EminosUndertakingQuest && qs.FindObjective( typeof( GainInnInformationObjective ) ) != null )
-			{
-				loc = new Point3D( 411, 1116, 0 );
-				map = Map.Malas;
+    public override bool GetDestination(PlayerMobile player, ref Point3D loc, ref Map map)
+    {
+      QuestSystem qs = player.Quest;
 
-				return true;
-			}
+      if (qs is EminosUndertakingQuest && qs.FindObjective(typeof(GainInnInformationObjective)) != null)
+      {
+        loc = new Point3D(411, 1116, 0);
+        map = Map.Malas;
 
-			return false;
-		}
+        return true;
+      }
 
-		public BlueNinjaQuestTeleporter( Serial serial ) : base( serial )
-		{
-		}
+      return false;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

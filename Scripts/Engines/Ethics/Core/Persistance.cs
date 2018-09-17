@@ -1,66 +1,59 @@
-using System;
-
 namespace Server.Ethics
 {
-	public class EthicsPersistance : Item
-	{
-		private static EthicsPersistance m_Instance;
+  public class EthicsPersistance : Item
+  {
+    [Constructible]
+    public EthicsPersistance()
+      : base(1)
+    {
+      Movable = false;
 
-		public static EthicsPersistance Instance  => m_Instance;
+      if (Instance == null || Instance.Deleted)
+        Instance = this;
+      else
+        base.Delete();
+    }
 
-		public override string DefaultName
-		{
-			get { return "Ethics Persistance - Internal"; }
-		}
+    public EthicsPersistance(Serial serial)
+      : base(serial)
+    {
+      Instance = this;
+    }
 
-		[Constructible]
-		public EthicsPersistance()
-			: base( 1 )
-		{
-			Movable = false;
+    public static EthicsPersistance Instance{ get; private set; }
 
-			if ( m_Instance == null || m_Instance.Deleted )
-				m_Instance = this;
-			else
-				base.Delete();
-		}
+    public override string DefaultName => "Ethics Persistance - Internal";
 
-		public EthicsPersistance( Serial serial )
-			: base( serial )
-		{
-			m_Instance = this;
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0); // version
 
-			writer.Write( (int) 0 ); // version
+      for (int i = 0; i < Ethic.Ethics.Length; ++i)
+        Ethic.Ethics[i].Serialize(writer);
+    }
 
-			for ( int i = 0; i < Ethics.Ethic.Ethics.Length; ++i )
-				Ethics.Ethic.Ethics[i].Serialize( writer );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      int version = reader.ReadInt();
 
-			int version = reader.ReadInt();
+      switch (version)
+      {
+        case 0:
+        {
+          for (int i = 0; i < Ethic.Ethics.Length; ++i)
+            Ethic.Ethics[i].Deserialize(reader);
 
-			switch ( version )
-			{
-				case 0:
-				{
-					for ( int i = 0; i < Ethics.Ethic.Ethics.Length; ++i )
-						Ethics.Ethic.Ethics[i].Deserialize( reader );
+          break;
+        }
+      }
+    }
 
-					break;
-				}
-			}
-		}
-
-		public override void Delete()
-		{
-		}
-	}
+    public override void Delete()
+    {
+    }
+  }
 }

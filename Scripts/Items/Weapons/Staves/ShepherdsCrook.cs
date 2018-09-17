@@ -1,174 +1,169 @@
 using System;
-using Server.Network;
-using Server.Items;
-using Server.Targeting;
-using Server.Mobiles;
 using Server.Engines.CannedEvil;
+using Server.Mobiles;
+using Server.Network;
+using Server.Targeting;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0xE81, 0xE82 )]
-	public class ShepherdsCrook : BaseStaff
-	{
-		public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
+  [Flippable(0xE81, 0xE82)]
+  public class ShepherdsCrook : BaseStaff
+  {
+    [Constructible]
+    public ShepherdsCrook() : base(0xE81)
+    {
+      Weight = 4.0;
+    }
 
-		public override int AosStrengthReq => 20;
-		public override int AosMinDamage => 13;
-		public override int AosMaxDamage => 15;
-		public override int AosSpeed => 40;
-		public override float MlSpeed => 2.75f;
+    public ShepherdsCrook(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 10;
-		public override int OldMinDamage => 3;
-		public override int OldMaxDamage => 12;
-		public override int OldSpeed => 30;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
 
-		public override int InitMinHits => 31;
-		public override int InitMaxHits => 50;
+    public override int AosStrengthReq => 20;
+    public override int AosMinDamage => 13;
+    public override int AosMaxDamage => 15;
+    public override int AosSpeed => 40;
+    public override float MlSpeed => 2.75f;
 
-		[Constructible]
-		public ShepherdsCrook() : base( 0xE81 )
-		{
-			Weight = 4.0;
-		}
+    public override int OldStrengthReq => 10;
+    public override int OldMinDamage => 3;
+    public override int OldMaxDamage => 12;
+    public override int OldSpeed => 30;
 
-		public ShepherdsCrook( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 31;
+    public override int InitMaxHits => 50;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( Weight == 2.0 )
-				Weight = 4.0;
-		}
+      if (Weight == 2.0)
+        Weight = 4.0;
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			from.SendLocalizedMessage( 502464 ); // Target the animal you wish to herd.
-			from.Target = new HerdingTarget();
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      from.SendLocalizedMessage(502464); // Target the animal you wish to herd.
+      from.Target = new HerdingTarget();
+    }
 
-		private class HerdingTarget : Target
-		{
-			public HerdingTarget() : base( 10, false, TargetFlags.None )
-			{
-			}
+    private class HerdingTarget : Target
+    {
+      private static Type[] m_ChampTamables =
+      {
+        typeof(StrongMongbat), typeof(Imp), typeof(Scorpion), typeof(GiantSpider),
+        typeof(Snake), typeof(LavaLizard), typeof(Drake), typeof(Dragon),
+        typeof(Kirin), typeof(Unicorn), typeof(GiantRat), typeof(Slime),
+        typeof(DireWolf), typeof(HellHound), typeof(DeathwatchBeetle),
+        typeof(LesserHiryu), typeof(Hiryu)
+      };
 
-			protected override void OnTarget( Mobile from, object targ )
-			{
-				if ( targ is BaseCreature )
-				{
-					BaseCreature bc = (BaseCreature)targ;
+      public HerdingTarget() : base(10, false, TargetFlags.None)
+      {
+      }
 
-					if ( IsHerdable( bc ) )
-					{
-						if ( bc.Controlled )
-						{
-							bc.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 502467, from.NetState ); // That animal looks tame already.
-						}
-						else
-						{
-							from.SendLocalizedMessage( 502475 ); // Click where you wish the animal to go.
-							from.Target = new InternalTarget( bc );
-						}
-					}
-					else
-					{
-						from.SendLocalizedMessage( 502468 ); // That is not a herdable animal.
-					}
-				}
-				else
-				{
-					from.SendLocalizedMessage( 502472 ); // You don't seem to be able to persuade that to move.
-				}
-			}
+      protected override void OnTarget(Mobile from, object targ)
+      {
+        if (targ is BaseCreature bc)
+        {
+          if (IsHerdable(bc))
+          {
+            if (bc.Controlled)
+            {
+              bc.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502467,
+                from.NetState); // That animal looks tame already.
+            }
+            else
+            {
+              from.SendLocalizedMessage(502475); // Click where you wish the animal to go.
+              from.Target = new InternalTarget(bc);
+            }
+          }
+          else
+          {
+            from.SendLocalizedMessage(502468); // That is not a herdable animal.
+          }
+        }
+        else
+        {
+          from.SendLocalizedMessage(502472); // You don't seem to be able to persuade that to move.
+        }
+      }
 
-			private static Type[] m_ChampTamables = new Type[]
-			{
-				typeof( StrongMongbat ), typeof( Imp ), typeof( Scorpion ), typeof( GiantSpider ),
-				typeof( Snake ), typeof( LavaLizard ), typeof( Drake ), typeof( Dragon ),
-				typeof( Kirin ), typeof( Unicorn ), typeof( GiantRat ), typeof( Slime ),
-				typeof( DireWolf ), typeof( HellHound ), typeof( DeathwatchBeetle ),
-				typeof( LesserHiryu ), typeof( Hiryu )
-			};
+      private bool IsHerdable(BaseCreature bc)
+      {
+        if (bc.IsParagon)
+          return false;
 
-			private bool IsHerdable( BaseCreature bc )
-			{
-				if ( bc.IsParagon )
-					return false;
+        if (bc.Tamable)
+          return true;
 
-				if ( bc.Tamable )
-					return true;
+        Map map = bc.Map;
 
-				Map map = bc.Map;
+        if (Region.Find(bc.Home, map) is ChampionSpawnRegion region)
+        {
+          ChampionSpawn spawn = region.ChampionSpawn;
 
-				ChampionSpawnRegion region = Region.Find( bc.Home, map ) as ChampionSpawnRegion;
+          if (spawn != null && spawn.IsChampionSpawn(bc))
+          {
+            Type t = bc.GetType();
 
-				if ( region != null )
-				{
-					ChampionSpawn spawn = region.ChampionSpawn;
+            foreach (Type type in m_ChampTamables)
+              if (type == t)
+                return true;
+          }
+        }
 
-					if ( spawn != null && spawn.IsChampionSpawn( bc ) )
-					{
-						Type t = bc.GetType();
+        return false;
+      }
 
-						foreach ( Type type in m_ChampTamables )
-							if ( type == t )
-								return true;
-					}
-				}
+      private class InternalTarget : Target
+      {
+        private BaseCreature m_Creature;
 
-				return false;
-			}
+        public InternalTarget(BaseCreature c) : base(10, true, TargetFlags.None)
+        {
+          m_Creature = c;
+        }
 
-			private class InternalTarget : Target
-			{
-				private BaseCreature m_Creature;
+        protected override void OnTarget(Mobile from, object targ)
+        {
+          if (targ is IPoint2D p)
+          {
+            double min = m_Creature.MinTameSkill - 30;
+            double max = m_Creature.MinTameSkill + 30 + Utility.Random(10);
 
-				public InternalTarget( BaseCreature c ) : base( 10, true, TargetFlags.None )
-				{
-					m_Creature = c;
-				}
+            if (max <= from.Skills[SkillName.Herding].Value)
+              m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502471,
+                from.NetState); // That wasn't even challenging.
 
-				protected override void OnTarget( Mobile from, object targ )
-				{
-					if ( targ is IPoint2D )
-					{
-						double min = m_Creature.MinTameSkill - 30;
-						double max = m_Creature.MinTameSkill + 30 + Utility.Random( 10 );
+            if (from.CheckTargetSkill(SkillName.Herding, m_Creature, min, max))
+            {
+              if (p != from)
+                p = new Point2D(p.X, p.Y);
 
-						if ( max <= from.Skills[ SkillName.Herding ].Value )
-							m_Creature.PrivateOverheadMessage( MessageType.Regular, 0x3B2, 502471, from.NetState ); // That wasn't even challenging.
-
-						if ( from.CheckTargetSkill( SkillName.Herding, m_Creature, min, max ) )
-						{
-							IPoint2D p = (IPoint2D) targ;
-
-							if ( targ != from )
-								p = new Point2D( p.X, p.Y );
-
-							m_Creature.TargetLocation = p;
-							from.SendLocalizedMessage( 502479 ); // The animal walks where it was instructed to.
-						}
-						else
-						{
-							from.SendLocalizedMessage( 502472 ); // You don't seem to be able to persuade that to move.
-						}
-					}
-				}
-			}
-		}
-	}
+              m_Creature.TargetLocation = p;
+              from.SendLocalizedMessage(502479); // The animal walks where it was instructed to.
+            }
+            else
+            {
+              from.SendLocalizedMessage(502472); // You don't seem to be able to persuade that to move.
+            }
+          }
+        }
+      }
+    }
+  }
 }

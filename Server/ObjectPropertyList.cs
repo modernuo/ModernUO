@@ -18,181 +18,177 @@
  *
  ***************************************************************************/
 
-using System;
+using System.IO;
 using System.Text;
-using Server;
 using Server.Network;
 
 namespace Server
 {
-	public sealed class ObjectPropertyList : Packet
-	{
-		private IEntity m_Entity;
-		private int m_Hash;
-		private int m_Header;
-		private int m_Strings;
-		private string m_HeaderArgs;
+  public sealed class ObjectPropertyList : Packet
+  {
+    private static byte[] m_Buffer = new byte[1024];
+    private static Encoding m_Encoding = Encoding.Unicode;
 
-		public IEntity Entity{ get{ return m_Entity; } }
-		public int Hash{ get{ return 0x40000000 + m_Hash; } }
+    // Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
+    private static int[] m_StringNumbers =
+    {
+      1042971,
+      1070722
+    };
 
-		public int Header{ get{ return m_Header; } set{ m_Header = value; } }
-		public string HeaderArgs{ get{ return m_HeaderArgs; } set{ m_HeaderArgs = value; } }
+    private int m_Hash;
+    private int m_Strings;
 
-		private static bool m_Enabled = false;
+    public ObjectPropertyList(IEntity e) : base(0xD6)
+    {
+      EnsureCapacity(128);
 
-		public static bool Enabled{ get{ return m_Enabled; } set{ m_Enabled = value; } }
+      Entity = e;
 
-		public ObjectPropertyList( IEntity e ) : base( 0xD6 )
-		{
-			EnsureCapacity( 128 );
+      m_Stream.Write((short)1);
+      m_Stream.Write(e.Serial);
+      m_Stream.Write((byte)0);
+      m_Stream.Write((byte)0);
+      m_Stream.Write(e.Serial);
+    }
 
-			m_Entity = e;
+    public IEntity Entity{ get; }
 
-			m_Stream.Write( (short) 1 );
-			m_Stream.Write( (int) e.Serial );
-			m_Stream.Write( (byte) 0 );
-			m_Stream.Write( (byte) 0 );
-			m_Stream.Write( (int) e.Serial );
-		}
+    public int Hash => 0x40000000 + m_Hash;
 
-		public void Add( int number )
-		{
-			if ( number == 0 )
-				return;
+    public int Header{ get; set; }
 
-			AddHash( number );
+    public string HeaderArgs{ get; set; }
 
-			if ( m_Header == 0 )
-			{
-				m_Header = number;
-				m_HeaderArgs = "";
-			}
+    public static bool Enabled{ get; set; }
 
-			m_Stream.Write( number );
-			m_Stream.Write( (short) 0 );
-		}
+    public void Add(int number)
+    {
+      if (number == 0)
+        return;
 
-		public void Terminate()
-		{
-			m_Stream.Write( (int) 0 );
+      AddHash(number);
 
-			m_Stream.Seek( 11, System.IO.SeekOrigin.Begin );
-			m_Stream.Write( (int) m_Hash );
-		}
+      if (Header == 0)
+      {
+        Header = number;
+        HeaderArgs = "";
+      }
 
-		private static byte[] m_Buffer = new byte[1024];
-		private static Encoding m_Encoding = Encoding.Unicode;
+      m_Stream.Write(number);
+      m_Stream.Write((short)0);
+    }
 
-		public void AddHash( int val )
-		{
-			m_Hash ^= (val & 0x3FFFFFF);
-			m_Hash ^= (val >> 26) & 0x3F;
-		}
+    public void Terminate()
+    {
+      m_Stream.Write(0);
 
-		public void Add( int number, string arguments )
-		{
-			if ( number == 0 )
-				return;
+      m_Stream.Seek(11, SeekOrigin.Begin);
+      m_Stream.Write(m_Hash);
+    }
 
-			if ( arguments == null )
-				arguments = "";
+    public void AddHash(int val)
+    {
+      m_Hash ^= val & 0x3FFFFFF;
+      m_Hash ^= (val >> 26) & 0x3F;
+    }
 
-			if ( m_Header == 0 )
-			{
-				m_Header = number;
-				m_HeaderArgs = arguments;
-			}
+    public void Add(int number, string arguments)
+    {
+      if (number == 0)
+        return;
 
-			AddHash( number );
-			AddHash( arguments.GetHashCode() );
+      if (arguments == null)
+        arguments = "";
 
-			m_Stream.Write( number );
+      if (Header == 0)
+      {
+        Header = number;
+        HeaderArgs = arguments;
+      }
 
-			int byteCount = m_Encoding.GetByteCount( arguments );
+      AddHash(number);
+      AddHash(arguments.GetHashCode());
 
-			if ( byteCount > m_Buffer.Length )
-				m_Buffer = new byte[byteCount];
+      m_Stream.Write(number);
 
-			byteCount = m_Encoding.GetBytes( arguments, 0, arguments.Length, m_Buffer, 0 );
+      int byteCount = m_Encoding.GetByteCount(arguments);
 
-			m_Stream.Write( (short) byteCount );
-			m_Stream.Write( m_Buffer, 0, byteCount );
-		}
+      if (byteCount > m_Buffer.Length)
+        m_Buffer = new byte[byteCount];
 
-		public void Add( int number, string format, object arg0 )
-		{
-			Add( number, String.Format( format, arg0 ) );
-		}
+      byteCount = m_Encoding.GetBytes(arguments, 0, arguments.Length, m_Buffer, 0);
 
-		public void Add( int number, string format, object arg0, object arg1 )
-		{
-			Add( number, String.Format( format, arg0, arg1 ) );
-		}
+      m_Stream.Write((short)byteCount);
+      m_Stream.Write(m_Buffer, 0, byteCount);
+    }
 
-		public void Add( int number, string format, object arg0, object arg1, object arg2 )
-		{
-			Add( number, String.Format( format, arg0, arg1, arg2 ) );
-		}
+    public void Add(int number, string format, object arg0)
+    {
+      Add(number, string.Format(format, arg0));
+    }
 
-		public void Add( int number, string format, params object[] args )
-		{
-			Add( number, String.Format( format, args ) );
-		}
+    public void Add(int number, string format, object arg0, object arg1)
+    {
+      Add(number, string.Format(format, arg0, arg1));
+    }
 
-		// Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
-		private static int[] m_StringNumbers = new int[]
-			{
-				1042971,
-				1070722
-			};
+    public void Add(int number, string format, object arg0, object arg1, object arg2)
+    {
+      Add(number, string.Format(format, arg0, arg1, arg2));
+    }
 
-		private int GetStringNumber()
-		{
-			return m_StringNumbers[m_Strings++ % m_StringNumbers.Length];
-		}
+    public void Add(int number, string format, params object[] args)
+    {
+      Add(number, string.Format(format, args));
+    }
 
-		public void Add( string text )
-		{
-			Add( GetStringNumber(), text );
-		}
+    private int GetStringNumber()
+    {
+      return m_StringNumbers[m_Strings++ % m_StringNumbers.Length];
+    }
 
-		public void Add( string format, string arg0 )
-		{
-			Add( GetStringNumber(), String.Format( format, arg0 ) );
-		}
+    public void Add(string text)
+    {
+      Add(GetStringNumber(), text);
+    }
 
-		public void Add( string format, string arg0, string arg1 )
-		{
-			Add( GetStringNumber(), String.Format( format, arg0, arg1 ) );
-		}
+    public void Add(string format, string arg0)
+    {
+      Add(GetStringNumber(), string.Format(format, arg0));
+    }
 
-		public void Add( string format, string arg0, string arg1, string arg2 )
-		{
-			Add( GetStringNumber(), String.Format( format, arg0, arg1, arg2 ) );
-		}
+    public void Add(string format, string arg0, string arg1)
+    {
+      Add(GetStringNumber(), string.Format(format, arg0, arg1));
+    }
 
-		public void Add( string format, params object[] args )
-		{
-			Add( GetStringNumber(), String.Format( format, args ) );
-		}
-	}
+    public void Add(string format, string arg0, string arg1, string arg2)
+    {
+      Add(GetStringNumber(), string.Format(format, arg0, arg1, arg2));
+    }
 
-	public sealed class OPLInfo : Packet
-	{
-		/*public OPLInfo( ObjectPropertyList list ) : base( 0xBF )
-		{
-			EnsureCapacity( 13 );
+    public void Add(string format, params object[] args)
+    {
+      Add(GetStringNumber(), string.Format(format, args));
+    }
+  }
 
-			m_Stream.Write( (short) 0x10 );
-			m_Stream.Write( (int) list.Entity.Serial );
-			m_Stream.Write( (int) list.Hash );
-		}*/
+  public sealed class OPLInfo : Packet
+  {
+    /*public OPLInfo( ObjectPropertyList list ) : base( 0xBF )
+    {
+      EnsureCapacity( 13 );
 
-		public OPLInfo( ObjectPropertyList list ) : base( 0xDC, 9 )
-		{
-			m_Stream.Write( (int) list.Entity.Serial );
-			m_Stream.Write( (int) list.Hash );
-		}
-	}
+      m_Stream.Write( (short) 0x10 );
+      m_Stream.Write( (int) list.Entity.Serial );
+      m_Stream.Write( (int) list.Hash );
+    }*/
+
+    public OPLInfo(ObjectPropertyList list) : base(0xDC, 9)
+    {
+      m_Stream.Write(list.Entity.Serial);
+      m_Stream.Write(list.Hash);
+    }
+  }
 }

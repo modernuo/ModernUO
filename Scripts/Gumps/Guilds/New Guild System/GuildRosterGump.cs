@@ -1,266 +1,257 @@
-using System;
-using Server;
-using Server.Gumps;
-using Server.Network;
-using Server.Mobiles;
-using System.Collections;
-using Server.Targets;
-using Server.Factions;
 using System.Collections.Generic;
+using Server.Factions;
+using Server.Gumps;
+using Server.Mobiles;
+using Server.Network;
+using Server.Targeting;
 
 namespace Server.Guilds
 {
-	public class GuildRosterGump : BaseGuildListGump<PlayerMobile>
-	{
-		#region Comparers
-		private class NameComparer : IComparer<PlayerMobile>
-		{
-			public static readonly IComparer<PlayerMobile> Instance = new NameComparer();
+  public class GuildRosterGump : BaseGuildListGump<PlayerMobile>
+  {
+    private static InfoField<PlayerMobile>[] m_Fields =
+    {
+      new InfoField<PlayerMobile>(1062955, 130, NameComparer.Instance), //Name
+      new InfoField<PlayerMobile>(1062956, 80, RankComparer.Instance), //Rank
+      new InfoField<PlayerMobile>(1062952, 80, LastOnComparer.Instance), //Last On
+      new InfoField<PlayerMobile>(1062953, 150, TitleComparer.Instance) //Guild Title
+    };
 
-			public NameComparer()
-			{
-			}
+    public GuildRosterGump(PlayerMobile pm, Guild g) : this(pm, g, LastOnComparer.Instance, false, "", 0)
+    {
+    }
 
-			public int Compare( PlayerMobile x, PlayerMobile y )
-			{
-				if ( x == null && y == null )
-					return 0;
-				else if ( x == null )
-					return -1;
-				else if ( y == null )
-					return 1;
+    public GuildRosterGump(PlayerMobile pm, Guild g, IComparer<PlayerMobile> currentComparer, bool ascending,
+      string filter, int startNumber)
+      : base(pm, g, Utility.SafeConvertList<Mobile, PlayerMobile>(g.Members), currentComparer, ascending, filter,
+        startNumber, m_Fields)
+    {
+      PopulateGump();
+    }
 
-				return Insensitive.Compare( x.Name, y.Name );
-			}
-		}
+    public override void PopulateGump()
+    {
+      base.PopulateGump();
 
-		private class LastOnComparer : IComparer<PlayerMobile>
-		{
-			public static readonly IComparer<PlayerMobile> Instance = new LastOnComparer();
+      AddHtmlLocalized(266, 43, 110, 26, 1062974, 0xF, false, false); // Guild Roster
+    }
 
-			public LastOnComparer()
-			{
-			}
+    public override void DrawEndingEntry(int itemNumber)
+    {
+      AddBackground(225, 148 + itemNumber * 28, 150, 26, 0x2486);
+      AddButton(230, 153 + itemNumber * 28, 0x845, 0x846, 8, GumpButtonType.Reply, 0);
+      AddHtmlLocalized(255, 151 + itemNumber * 28, 110, 26, 1062992, 0x0, false, false); // Invite Player
+    }
 
-			public int Compare( PlayerMobile x, PlayerMobile y )
-			{
-				if ( x == null && y == null )
-					return 0;
-				else if ( x == null )
-					return -1;
-				else if ( y == null )
-					return 1;
+    protected override TextDefinition[] GetValuesFor(PlayerMobile pm, int aryLength)
+    {
+      TextDefinition[] defs = new TextDefinition[aryLength];
 
-				NetState aState = x.NetState;
-				NetState bState = y.NetState;
+      string name = $"{pm.Name}{(player.GuildFealty == pm && player.GuildFealty != guild.Leader ? " *" : "")}";
 
-				if ( aState == null && bState == null )
-					return x.LastOnline.CompareTo( y.LastOnline );
-				else if ( aState == null )
-					return -1;
-				else if ( bState == null )
-					return 1;
-				else
-					return 0;
-			}
-		}
-		private class TitleComparer : IComparer<PlayerMobile>
-		{
-			public static readonly IComparer<PlayerMobile> Instance = new TitleComparer();
+      if (pm == player)
+        name = Color(name, 0x006600);
+      else if (pm.NetState != null)
+        name = Color(name, 0x000066);
 
-			public TitleComparer()
-			{
-			}
+      defs[0] = name;
+      defs[1] = pm.GuildRank.Name;
+      defs[2] = pm.NetState != null
+        ? new TextDefinition(1063015)
+        : new TextDefinition(pm.LastOnline.ToString("yyyy-MM-dd"));
+      defs[3] = pm.GuildTitle ?? "";
 
-			public int Compare( PlayerMobile x, PlayerMobile y )
-			{
-				if ( x == null && y == null )
-					return 0;
-				else if ( x == null )
-					return -1;
-				else if ( y == null )
-					return 1;
+      return defs;
+    }
 
-				return Insensitive.Compare( x.GuildTitle, y.GuildTitle );
-			}
-		}
+    protected override bool IsFiltered(PlayerMobile pm, string filter)
+    {
+      if (pm == null)
+        return true;
 
-		private class RankComparer : IComparer<PlayerMobile>
-		{
-			public static readonly IComparer<PlayerMobile> Instance = new RankComparer();
+      return !Insensitive.Contains(pm.Name, filter);
+    }
 
-			public RankComparer()
-			{
-			}
+    public override Gump GetResentGump(PlayerMobile pm, Guild g, IComparer<PlayerMobile> comparer, bool ascending,
+      string filter, int startNumber)
+    {
+      return new GuildRosterGump(pm, g, comparer, ascending, filter, startNumber);
+    }
 
-			public int Compare( PlayerMobile x, PlayerMobile y )
-			{
-				if ( x == null && y == null )
-					return 0;
-				else if ( x == null )
-					return -1;
-				else if ( y == null )
-					return 1;
+    public override Gump GetObjectInfoGump(PlayerMobile pm, Guild g, PlayerMobile o)
+    {
+      return new GuildMemberInfoGump(pm, g, o, false, false);
+    }
 
-				return x.GuildRank.Rank.CompareTo( y.GuildRank.Rank );
-			}
-		}
+    public override void OnResponse(NetState sender, RelayInfo info)
+    {
+      base.OnResponse(sender, info);
 
-		#endregion
+      if (!(sender.Mobile is PlayerMobile pm) || !IsMember(pm, guild))
+        return;
 
-		private static InfoField<PlayerMobile>[] m_Fields = 
-			new InfoField<PlayerMobile>[]
-			{
-				new InfoField<PlayerMobile>( 1062955, 130, GuildRosterGump.NameComparer.Instance	),	//Name
-				new InfoField<PlayerMobile>( 1062956, 80,	 GuildRosterGump.RankComparer.Instance	),	//Rank
-				new InfoField<PlayerMobile>( 1062952, 80,	 GuildRosterGump.LastOnComparer.Instance),	//Last On
-				new InfoField<PlayerMobile>( 1062953, 150, GuildRosterGump.TitleComparer.Instance	)	//Guild Title
-			};
+      if (info.ButtonID == 8)
+      {
+        if (pm.GuildRank.GetFlag(RankFlags.CanInvitePlayer))
+        {
+          pm.SendLocalizedMessage(1063048); // Whom do you wish to invite into your guild?
+          pm.BeginTarget(-1, false, TargetFlags.None, new TargetStateCallback(InvitePlayer_Callback), guild);
+        }
+        else
+        {
+          pm.SendLocalizedMessage(503301); // You don't have permission to do that.
+        }
+      }
+    }
 
-		public GuildRosterGump( PlayerMobile pm, Guild g ) : this( pm, g, GuildRosterGump.LastOnComparer.Instance, false, "", 0 )
-		{
-		}
+    public void InvitePlayer_Callback(Mobile from, object targeted, object state)
+    {
+      PlayerMobile pm = from as PlayerMobile;
+      PlayerMobile targ = targeted as PlayerMobile;
 
-		public GuildRosterGump( PlayerMobile pm, Guild g, IComparer<PlayerMobile> currentComparer, bool ascending, string filter, int startNumber )
-			: base( pm, g,  Utility.SafeConvertList<Mobile, PlayerMobile>( g.Members ), currentComparer, ascending, filter, startNumber, m_Fields )
-		{
-			PopulateGump();
-		}
+      Guild g = state as Guild;
 
-		public override void PopulateGump()
-		{
-			base.PopulateGump();
+      PlayerState guildState = PlayerState.Find(g.Leader);
+      PlayerState targetState = PlayerState.Find(targ);
 
-			AddHtmlLocalized( 266, 43, 110, 26, 1062974, 0xF, false, false ); // Guild Roster
-		}
+      Faction guildFaction = guildState?.Faction;
+      Faction targetFaction = targetState?.Faction;
 
-		public override void DrawEndingEntry( int itemNumber )
-		{
-			AddBackground( 225, 148 + itemNumber * 28, 150, 26, 0x2486 );
-			AddButton( 230, 153 + itemNumber * 28, 0x845, 0x846, 8, GumpButtonType.Reply, 0 );
-			AddHtmlLocalized( 255, 151 + itemNumber * 28, 110, 26, 1062992, 0x0, false, false ); // Invite Player
-		}
+      if (pm == null || !IsMember(pm, guild) || !pm.GuildRank.GetFlag(RankFlags.CanInvitePlayer))
+      {
+        pm.SendLocalizedMessage(503301); // You don't have permission to do that.
+      }
+      else if (targ == null)
+      {
+        pm.SendLocalizedMessage(1063334); // That isn't a valid player.
+      }
+      else if (!targ.AcceptGuildInvites)
+      {
+        pm.SendLocalizedMessage(1063049, targ.Name); // ~1_val~ is not accepting guild invitations.
+      }
+      else if (g.IsMember(targ))
+      {
+        pm.SendLocalizedMessage(1063050, targ.Name); // ~1_val~ is already a member of your guild!
+      }
+      else if (targ.Guild != null)
+      {
+        pm.SendLocalizedMessage(1063051, targ.Name); // ~1_val~ is already a member of a guild.
+      }
+      else if (targ.HasGump(typeof(BaseGuildGump)) || targ.HasGump(typeof(CreateGuildGump))
+      ) //TODO: Check message if CreateGuildGump Open
+      {
+        pm.SendLocalizedMessage(1063052, targ.Name); // ~1_val~ is currently considering another guild invitation.
+      }
 
-		protected override TextDefinition[] GetValuesFor( PlayerMobile pm, int aryLength )
-		{
-			TextDefinition[] defs = new TextDefinition[aryLength];
+      #region Factions
 
-			string name = String.Format( "{0}{1}", pm.Name, ( player.GuildFealty == pm && player.GuildFealty != guild.Leader ) ? " *" : "" );
+      else if (targ.Young && guildFaction != null)
+      {
+        pm.SendLocalizedMessage(1070766); // You cannot invite a young player to your faction-aligned guild.
+      }
+      else if (guildFaction != targetFaction)
+      {
+        if (guildFaction == null)
+          pm.SendLocalizedMessage(1013027); // That player cannot join a non-faction guild.
+        else if (targetFaction == null)
+          pm.SendLocalizedMessage(1013026); // That player must be in a faction before joining this guild.
+        else
+          pm.SendLocalizedMessage(1013028); // That person has a different faction affiliation.
+      }
+      else if (targetState != null && targetState.IsLeaving)
+      {
+        // OSI does this quite strangely, so we'll just do it this way
+        pm.SendMessage("That person is quitting their faction and so you may not recruit them.");
+      }
 
-			if( pm == player )
-				name = Color( name, 0x006600 );
-			else if( pm.NetState != null )
-				name = Color( name, 0x000066 );
+      #endregion
 
-			defs[0] = name;
-			defs[1] = pm.GuildRank.Name;
-			defs[2] = (pm.NetState != null) ? new TextDefinition( 1063015 ): new TextDefinition( pm.LastOnline.ToString( "yyyy-MM-dd" ) ); 
-			defs[3] = (pm.GuildTitle == null) ? "" : pm.GuildTitle;
+      else
+      {
+        pm.SendLocalizedMessage(1063053, targ.Name); // You invite ~1_val~ to join your guild.
+        targ.SendGump(new GuildInvitationRequest(targ, guild, pm));
+      }
+    }
 
-			return defs;
-		}
+    #region Comparers
 
-		protected override bool IsFiltered( PlayerMobile pm, string filter )
-		{
-			if( pm == null )
-				return true;
+    private class NameComparer : IComparer<PlayerMobile>
+    {
+      public static readonly IComparer<PlayerMobile> Instance = new NameComparer();
 
-			return !Insensitive.Contains( pm.Name, filter );
-		}
+      public int Compare(PlayerMobile x, PlayerMobile y)
+      {
+        if (x == null && y == null)
+          return 0;
+        if (x == null)
+          return -1;
+        if (y == null)
+          return 1;
 
-		public override Gump GetResentGump( PlayerMobile pm, Guild g, IComparer<PlayerMobile> comparer, bool ascending, string filter, int startNumber )
-		{
-			return new GuildRosterGump( pm, g, comparer, ascending, filter, startNumber );
-		}
+        return Insensitive.Compare(x.Name, y.Name);
+      }
+    }
 
-		public override Gump GetObjectInfoGump( PlayerMobile pm, Guild g, PlayerMobile o )
-		{
-			return new GuildMemberInfoGump( pm, g, o, false, false ) ;
-		}
+    private class LastOnComparer : IComparer<PlayerMobile>
+    {
+      public static readonly IComparer<PlayerMobile> Instance = new LastOnComparer();
 
-		public override void OnResponse( NetState sender, RelayInfo info )
-		{
-			base.OnResponse( sender, info );
+      public int Compare(PlayerMobile x, PlayerMobile y)
+      {
+        if (x == null && y == null)
+          return 0;
+        if (x == null)
+          return -1;
+        if (y == null)
+          return 1;
 
-			PlayerMobile pm = sender.Mobile as PlayerMobile;
+        NetState aState = x.NetState;
+        NetState bState = y.NetState;
 
-			if( pm == null || !IsMember( pm, guild ) )
-				return;
+        if (aState == null && bState == null)
+          return x.LastOnline.CompareTo(y.LastOnline);
+        if (aState == null)
+          return -1;
+        if (bState == null)
+          return 1;
+        return 0;
+      }
+    }
 
-			if( info.ButtonID == 8 )
-			{
-				if( pm.GuildRank.GetFlag( RankFlags.CanInvitePlayer ) )
-				{
-					pm.SendLocalizedMessage( 1063048 ); // Whom do you wish to invite into your guild?
-					pm.BeginTarget( -1, false, Targeting.TargetFlags.None, new TargetStateCallback( InvitePlayer_Callback ), guild );
-				}
-				else
-					pm.SendLocalizedMessage( 503301 ); // You don't have permission to do that.
-			}
-		}
+    private class TitleComparer : IComparer<PlayerMobile>
+    {
+      public static readonly IComparer<PlayerMobile> Instance = new TitleComparer();
 
-		public void InvitePlayer_Callback( Mobile from, object targeted, object state )
-		{
-			PlayerMobile pm = from as PlayerMobile;
-			PlayerMobile targ = targeted as PlayerMobile;
+      public int Compare(PlayerMobile x, PlayerMobile y)
+      {
+        if (x == null && y == null)
+          return 0;
+        if (x == null)
+          return -1;
+        if (y == null)
+          return 1;
 
-			Guild g = state as Guild;
+        return Insensitive.Compare(x.GuildTitle, y.GuildTitle);
+      }
+    }
 
-			PlayerState guildState = PlayerState.Find( g.Leader );
-			PlayerState targetState = PlayerState.Find( targ );
+    private class RankComparer : IComparer<PlayerMobile>
+    {
+      public static readonly IComparer<PlayerMobile> Instance = new RankComparer();
 
-			Faction guildFaction = ( guildState == null ? null : guildState.Faction );
-			Faction targetFaction = ( targetState == null ? null : targetState.Faction );
+      public int Compare(PlayerMobile x, PlayerMobile y)
+      {
+        if (x == null && y == null)
+          return 0;
+        if (x == null)
+          return -1;
+        if (y == null)
+          return 1;
 
-			if( pm == null || !IsMember( pm, guild ) || !pm.GuildRank.GetFlag( RankFlags.CanInvitePlayer ) )
-			{
-				pm.SendLocalizedMessage( 503301 ); // You don't have permission to do that.
-			}
-			else if( targ == null )
-			{
-				pm.SendLocalizedMessage( 1063334 ); // That isn't a valid player.
-			}
-			else if( !targ.AcceptGuildInvites )
-			{
-				pm.SendLocalizedMessage( 1063049, targ.Name ); // ~1_val~ is not accepting guild invitations.
-			}
-			else if( g.IsMember( targ ) )
-			{
-				pm.SendLocalizedMessage( 1063050, targ.Name ); // ~1_val~ is already a member of your guild!
-			}
-			else if( targ.Guild != null )
-			{
-				pm.SendLocalizedMessage( 1063051, targ.Name ); // ~1_val~ is already a member of a guild.
-			}
-			else if( targ.HasGump( typeof( BaseGuildGump ) ) || targ.HasGump( typeof( CreateGuildGump ) ))	//TODO: Check message if CreateGuildGump Open
-			{
-				pm.SendLocalizedMessage( 1063052, targ.Name ); // ~1_val~ is currently considering another guild invitation.
-			}
-			#region Factions
-			else if( targ.Young && guildFaction != null )
-			{
-				pm.SendLocalizedMessage( 1070766 ); // You cannot invite a young player to your faction-aligned guild.
-			}
-			else if ( guildFaction != targetFaction )
-			{
-				if ( guildFaction == null )
-					pm.SendLocalizedMessage( 1013027 ); // That player cannot join a non-faction guild.
-				else if ( targetFaction == null )
-					pm.SendLocalizedMessage( 1013026 ); // That player must be in a faction before joining this guild.
-				else
-					pm.SendLocalizedMessage( 1013028 ); // That person has a different faction affiliation.
-			}
-			else if ( targetState != null && targetState.IsLeaving )
-			{
-				// OSI does this quite strangely, so we'll just do it this way
-				pm.SendMessage( "That person is quitting their faction and so you may not recruit them." );
-			}
-			#endregion
-			else
-			{
-				pm.SendLocalizedMessage( 1063053, targ.Name ); // You invite ~1_val~ to join your guild.
-				targ.SendGump( new GuildInvitationRequest( targ, guild, pm ) );
-			}
-		}
-	}
+        return x.GuildRank.Rank.CompareTo(y.GuildRank.Rank);
+      }
+    }
+
+    #endregion
+  }
 }

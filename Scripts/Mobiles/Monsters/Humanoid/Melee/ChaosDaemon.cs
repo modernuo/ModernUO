@@ -1,70 +1,71 @@
-using System;
-using System.Collections;
 using Server.Items;
-using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	public class ChaosDaemon : BaseCreature
-	{
-		public override string CorpseName => "a chaos daemon corpse";
-		public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
+  public class ChaosDaemon : BaseCreature
+  {
+    [Constructible]
+    public ChaosDaemon() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 792;
+      BaseSoundID = 0x3E9;
 
-		public override string DefaultName => "a chaos daemon";
+      SetStr(106, 130);
+      SetDex(171, 200);
+      SetInt(56, 80);
 
-		[Constructible]
-		public ChaosDaemon() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 792;
-			BaseSoundID = 0x3E9;
+      SetHits(91, 110);
 
-			SetStr( 106, 130 );
-			SetDex( 171, 200 );
-			SetInt( 56, 80 );
+      SetDamage(12, 17);
 
-			SetHits( 91, 110 );
+      SetDamageType(ResistanceType.Physical, 85);
+      SetDamageType(ResistanceType.Fire, 15);
 
-			SetDamage( 12, 17 );
+      SetResistance(ResistanceType.Physical, 50, 60);
+      SetResistance(ResistanceType.Fire, 60, 70);
+      SetResistance(ResistanceType.Cold, 40, 50);
+      SetResistance(ResistanceType.Poison, 20, 30);
+      SetResistance(ResistanceType.Energy, 20, 30);
 
-			SetDamageType( ResistanceType.Physical, 85 );
-			SetDamageType( ResistanceType.Fire, 15 );
+      SetSkill(SkillName.MagicResist, 85.1, 95.0);
+      SetSkill(SkillName.Tactics, 70.1, 80.0);
+      SetSkill(SkillName.Wrestling, 95.1, 100.0);
 
-			SetResistance( ResistanceType.Physical, 50, 60 );
-			SetResistance( ResistanceType.Fire, 60, 70 );
-			SetResistance( ResistanceType.Cold, 40, 50 );
-			SetResistance( ResistanceType.Poison, 20, 30 );
-			SetResistance( ResistanceType.Energy, 20, 30 );
+      Fame = 3000;
+      Karma = -4000;
 
-			SetSkill( SkillName.MagicResist, 85.1, 95.0 );
-			SetSkill( SkillName.Tactics, 70.1, 80.0 );
-			SetSkill( SkillName.Wrestling, 95.1, 100.0 );
+      VirtualArmor = 15;
+    }
 
-			Fame = 3000;
-			Karma = -4000;
+    public ChaosDaemon(Serial serial) : base(serial)
+    {
+    }
 
-			VirtualArmor = 15;
-		}
+    public override string CorpseName => "a chaos daemon corpse";
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Average );
-			AddLoot( LootPack.Meager );
-		}
+    public override string DefaultName => "a chaos daemon";
 
-		public ChaosDaemon( Serial serial ) : base( serial )
-		{
-		}
+    public override WeaponAbility GetWeaponAbility()
+    {
+      return WeaponAbility.CrushingBlow;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Average);
+      AddLoot(LootPack.Meager);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

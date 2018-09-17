@@ -1,57 +1,55 @@
 using System;
-using Server.Network;
-using Server.Items;
 
 namespace Server.Items
 {
-	[FlippableAttribute( 0x2D2B, 0x2D1F )]
-	public class MagicalShortbow : BaseRanged
-	{
-		public override int EffectID => 0xF42;
-		public override Type AmmoType => typeof( Arrow );
-		public override Item Ammo => new Arrow();
+  [Flippable(0x2D2B, 0x2D1F)]
+  public class MagicalShortbow : BaseRanged
+  {
+    [Constructible]
+    public MagicalShortbow() : base(0x2D2B)
+    {
+      Weight = 6.0;
+    }
 
-		public override WeaponAbility PrimaryAbility => WeaponAbility.LightningArrow;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.PsychicAttack;
+    public MagicalShortbow(Serial serial) : base(serial)
+    {
+    }
 
-		public override int AosStrengthReq => 45;
-		public override int AosMinDamage => 9;
-		public override int AosMaxDamage => 13;
-		public override int AosSpeed => 38;
-		public override float MlSpeed => 3.00f;
+    public override int EffectID => 0xF42;
+    public override Type AmmoType => typeof(Arrow);
+    public override Item Ammo => new Arrow();
 
-		public override int OldStrengthReq => 45;
-		public override int OldMinDamage => 9;
-		public override int OldMaxDamage => 13;
-		public override int OldSpeed => 38;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.LightningArrow;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.PsychicAttack;
 
-		public override int DefMaxRange => 10;
+    public override int AosStrengthReq => 45;
+    public override int AosMinDamage => 9;
+    public override int AosMaxDamage => 13;
+    public override int AosSpeed => 38;
+    public override float MlSpeed => 3.00f;
 
-		public override int InitMinHits => 41;
-		public override int InitMaxHits => 90;
+    public override int OldStrengthReq => 45;
+    public override int OldMinDamage => 9;
+    public override int OldMaxDamage => 13;
+    public override int OldSpeed => 38;
 
-		[Constructible]
-		public MagicalShortbow() : base( 0x2D2B )
-		{
-			Weight = 6.0;
-		}
+    public override int DefMaxRange => 10;
 
-		public MagicalShortbow( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 41;
+    public override int InitMaxHits => 90;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

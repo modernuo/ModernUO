@@ -1,40 +1,37 @@
 using System;
 using System.Collections.Generic;
-using Server;
 
 namespace Server.Engines.MLQuests
 {
-	[AttributeUsage( AttributeTargets.Class )]
-	public class QuesterNameAttribute : Attribute
-	{
-		private string m_QuesterName;
+  [AttributeUsage(AttributeTargets.Class)]
+  public class QuesterNameAttribute : Attribute
+  {
+    private static readonly Type m_Type = typeof(QuesterNameAttribute);
+    private static readonly Dictionary<Type, string> m_Cache = new Dictionary<Type, string>();
 
-		public string QuesterName  => m_QuesterName;
+    public QuesterNameAttribute(string questerName)
+    {
+      QuesterName = questerName;
+    }
 
-		public QuesterNameAttribute( string questerName )
-		{
-			m_QuesterName = questerName;
-		}
+    public string QuesterName{ get; }
 
-		private static readonly Type m_Type = typeof( QuesterNameAttribute );
-		private static readonly Dictionary<Type, string> m_Cache = new Dictionary<Type, string>();
+    public static string GetQuesterNameFor(Type t)
+    {
+      if (t == null)
+        return "";
 
-		public static string GetQuesterNameFor( Type t )
-		{
-			if ( t == null )
-				return "";
+      if (m_Cache.TryGetValue(t, out string result))
+        return result;
 
-			if (m_Cache.TryGetValue( t, out string result ))
-				return result;
+      object[] attributes = t.GetCustomAttributes(m_Type, false);
 
-			object[] attributes = t.GetCustomAttributes( m_Type, false );
+      if (attributes.Length != 0)
+        result = ((QuesterNameAttribute)attributes[0]).QuesterName;
+      else
+        result = t.Name;
 
-			if ( attributes.Length != 0 )
-				result = ( (QuesterNameAttribute)attributes[0] ).QuesterName;
-			else
-				result = t.Name;
-
-			return ( m_Cache[t] = result );
-		}
-	}
+      return m_Cache[t] = result;
+    }
+  }
 }

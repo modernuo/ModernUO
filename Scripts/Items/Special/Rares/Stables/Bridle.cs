@@ -1,33 +1,30 @@
-using System;
-
 namespace Server.Items
 {
-	public class DecoBridle : Item
-	{
+  public class DecoBridle : Item
+  {
+    [Constructible]
+    public DecoBridle() : base(0x1374)
+    {
+      Movable = true;
+      Stackable = false;
+    }
 
-		[Constructible]
-		public DecoBridle() : base( 0x1374 )
-		{
-			Movable = true;
-			Stackable = false;
-		}
+    public DecoBridle(Serial serial) : base(serial)
+    {
+    }
 
-		public DecoBridle( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0);
+    }
 
-			writer.Write( (int) 0 );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

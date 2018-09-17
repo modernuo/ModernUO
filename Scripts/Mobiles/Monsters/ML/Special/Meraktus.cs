@@ -1,242 +1,259 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Server.Items;
-using Server.Targeting;
-using Server.Misc;
 using Server.Engines.CannedEvil;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Meraktus : BaseChampion
-	{
-		public override string CorpseName => "the remains of Meraktus";
-		public override ChampionSkullType SkullType => ChampionSkullType.Pain;
+  public class Meraktus : BaseChampion
+  {
+    [Constructible]
+    public Meraktus()
+      : base(AIType.AI_Melee)
+    {
+      Title = "the Tormented";
+      Body = 263;
+      BaseSoundID = 680;
+      Hue = 0x835;
 
-		public override Type[] UniqueList => new [] { typeof( Subdue ) };
-		public override Type[] SharedList => new Type[] { };
+      SetStr(1419, 1438);
+      SetDex(309, 413);
+      SetInt(129, 131);
 
-		public override Type[] DecorativeList => new Type[]
-		{
-			typeof(ArtifactLargeVase),
-			typeof(ArtifactVase),
-			typeof(MinotaurStatueDeed),
-		};
+      SetHits(4100, 4200);
 
-		public override MonsterStatuetteType[] StatueTypes => new [] { MonsterStatuetteType.Minotaur };
+      SetDamage(16, 30);
 
-		public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
+      SetDamageType(ResistanceType.Physical, 100);
 
-		public override string DefaultName => "Meraktus";
+      SetResistance(ResistanceType.Physical, 65, 90);
+      SetResistance(ResistanceType.Fire, 65, 70);
+      SetResistance(ResistanceType.Cold, 50, 60);
+      SetResistance(ResistanceType.Poison, 40, 60);
+      SetResistance(ResistanceType.Energy, 50, 55);
 
-		[Constructible]
-		public Meraktus()
-			: base(AIType.AI_Melee)
-		{
-			Title = "the Tormented";
-			Body = 263;
-			BaseSoundID = 680;
-			Hue = 0x835;
+      //SetSkill( SkillName.Meditation, Unknown );
+      //SetSkill( SkillName.EvalInt, Unknown );
+      //SetSkill( SkillName.Magery, Unknown );
+      //SetSkill( SkillName.Poisoning, Unknown );
+      SetSkill(SkillName.Anatomy, 0);
+      SetSkill(SkillName.MagicResist, 107.0, 111.3);
+      SetSkill(SkillName.Tactics, 107.0, 117.0);
+      SetSkill(SkillName.Wrestling, 100.0, 105.0);
 
-			SetStr( 1419, 1438 );
-			SetDex( 309, 413 );
-			SetInt( 129, 131 );
+      Fame = 70000;
+      Karma = -70000;
 
-			SetHits( 4100, 4200 );
+      VirtualArmor = 28; // Don't know what it should be
 
-			SetDamage( 16, 30 );
+      if (Core.ML)
+      {
+        PackResources(8);
+        PackTalismans(5);
+      }
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      Timer.DelayCall(TimeSpan.FromSeconds(1), SpawnTormented);
+    }
 
-			SetResistance( ResistanceType.Physical, 65, 90 );
-			SetResistance( ResistanceType.Fire, 65, 70 );
-			SetResistance( ResistanceType.Cold, 50, 60 );
-			SetResistance( ResistanceType.Poison, 40, 60 );
-			SetResistance( ResistanceType.Energy, 50, 55 );
+    public Meraktus(Serial serial) : base(serial)
+    {
+    }
 
-			//SetSkill( SkillName.Meditation, Unknown );
-			//SetSkill( SkillName.EvalInt, Unknown );
-			//SetSkill( SkillName.Magery, Unknown );
-			//SetSkill( SkillName.Poisoning, Unknown );
-			SetSkill( SkillName.Anatomy, 0);
-			SetSkill( SkillName.MagicResist, 107.0, 111.3 );
-			SetSkill( SkillName.Tactics, 107.0, 117.0 );
-			SetSkill( SkillName.Wrestling, 100.0, 105.0 );
+    public override string CorpseName => "the remains of Meraktus";
+    public override ChampionSkullType SkullType => ChampionSkullType.Pain;
 
-			Fame = 70000;
-			Karma = -70000;
+    public override Type[] UniqueList => new[] { typeof(Subdue) };
+    public override Type[] SharedList => new Type[] { };
 
-			VirtualArmor = 28; // Don't know what it should be
+    public override Type[] DecorativeList => new[]
+    {
+      typeof(ArtifactLargeVase),
+      typeof(ArtifactVase),
+      typeof(MinotaurStatueDeed)
+    };
 
-			if ( Core.ML ) {
-				PackResources(8);
-				PackTalismans(5);
-			}
+    public override MonsterStatuetteType[] StatueTypes => new[] { MonsterStatuetteType.Minotaur };
 
-			Timer.DelayCall(TimeSpan.FromSeconds(1), new TimerCallback(SpawnTormented));
-		}
+    public override string DefaultName => "Meraktus";
 
-		public virtual void PackResources(int amount)
-		{
-			for (int i = 0; i < amount; i++)
-				switch (Utility.Random(6))
-				{
-					case 0: PackItem(new Blight()); break;
-					case 1: PackItem(new Scourge()); break;
-					case 2: PackItem(new Taint()); break;
-					case 3: PackItem(new Putrefication()); break;
-					case 4: PackItem(new Corruption()); break;
-					case 5: PackItem(new Muculent()); break;
-				}
-		}
+    public override int Meat => 2;
+    public override int Hides => 10;
+    public override HideType HideType => HideType.Regular;
+    public override Poison PoisonImmune => Poison.Regular;
+    public override int TreasureMapLevel => 3;
+    public override bool BardImmune => true;
+    public override bool Unprovokable => true;
+    public override bool Uncalmable => true;
 
-		public virtual void PackTalismans(int amount)
-		{
-			int count = Utility.Random(amount);
+    public override WeaponAbility GetWeaponAbility()
+    {
+      return WeaponAbility.Dismount;
+    }
 
-			for (int i = 0; i < count; i++)
-				PackItem(new RandomTalisman());
-		}
+    public virtual void PackResources(int amount)
+    {
+      for (int i = 0; i < amount; i++)
+        switch (Utility.Random(6))
+        {
+          case 0:
+            PackItem(new Blight());
+            break;
+          case 1:
+            PackItem(new Scourge());
+            break;
+          case 2:
+            PackItem(new Taint());
+            break;
+          case 3:
+            PackItem(new Putrefication());
+            break;
+          case 4:
+            PackItem(new Corruption());
+            break;
+          case 5:
+            PackItem(new Muculent());
+            break;
+        }
+    }
 
-		public override void OnDeath( Container c )
-		{
-			base.OnDeath( c );
+    public virtual void PackTalismans(int amount)
+    {
+      int count = Utility.Random(amount);
 
-			if ( Core.ML ) {
-				c.DropItem( new MalletAndChisel() );
+      for (int i = 0; i < count; i++)
+        PackItem(new RandomTalisman());
+    }
 
-				switch ( Utility.Random( 3 ) )
-				{
-					case 0: c.DropItem( new MinotaurHedge() ); break;
-					case 1: c.DropItem( new BonePile() ); break;
-					case 2: c.DropItem( new LightYarn() ); break;
-				}
+    public override void OnDeath(Container c)
+    {
+      base.OnDeath(c);
 
-				if ( Utility.RandomBool() )
-					c.DropItem( new TormentedChains() );
+      if (Core.ML)
+      {
+        c.DropItem(new MalletAndChisel());
 
-				if ( Utility.RandomDouble() < 0.025 )
-					c.DropItem(new CrimsonCincture());
-			}
-		}
+        switch (Utility.Random(3))
+        {
+          case 0:
+            c.DropItem(new MinotaurHedge());
+            break;
+          case 1:
+            c.DropItem(new BonePile());
+            break;
+          case 2:
+            c.DropItem(new LightYarn());
+            break;
+        }
 
-		public override void GenerateLoot()
-		{
-			if ( Core.ML ) {
-				AddLoot( LootPack.AosSuperBoss, 5 );  // Need to verify
-			}
-		}
+        if (Utility.RandomBool())
+          c.DropItem(new TormentedChains());
 
-		public override int GetAngerSound()
-		{
-			return 0x597;
-		}
+        if (Utility.RandomDouble() < 0.025)
+          c.DropItem(new CrimsonCincture());
+      }
+    }
 
-		public override int GetIdleSound()
-		{
-			return 0x596;
-		}
+    public override void GenerateLoot()
+    {
+      if (Core.ML) AddLoot(LootPack.AosSuperBoss, 5); // Need to verify
+    }
 
-		public override int GetAttackSound()
-		{
-			return 0x599;
-		}
+    public override int GetAngerSound()
+    {
+      return 0x597;
+    }
 
-		public override int GetHurtSound()
-		{
-			return 0x59a;
-		}
+    public override int GetIdleSound()
+    {
+      return 0x596;
+    }
 
-		public override int GetDeathSound()
-		{
-			return 0x59c;
-		}
+    public override int GetAttackSound()
+    {
+      return 0x599;
+    }
 
-		public override int Meat => 2;
-		public override int Hides => 10;
-		public override HideType HideType => HideType.Regular;
-		public override Poison PoisonImmune => Poison.Regular;
-		public override int TreasureMapLevel => 3;
-		public override bool BardImmune => true;
-		public override bool Unprovokable => true;
-		public override bool Uncalmable => true;
+    public override int GetHurtSound()
+    {
+      return 0x59a;
+    }
 
-		public override void OnGaveMeleeAttack(Mobile defender)
-		{
-			base.OnGaveMeleeAttack(defender);
-			if (0.2 >= Utility.RandomDouble())
-				Earthquake();
-		}
+    public override int GetDeathSound()
+    {
+      return 0x59c;
+    }
 
-		public void Earthquake()
-		{
-			Map map = this.Map;
-			if (map == null)
-				return;
-			ArrayList targets = new ArrayList();
-			foreach (Mobile m in this.GetMobilesInRange(8))
-			{
-				if (m == this || !CanBeHarmful(m))
-					continue;
-				if (m is BaseCreature && (((BaseCreature)m).Controlled || ((BaseCreature)m).Summoned || ((BaseCreature)m).Team != this.Team))
-					targets.Add(m);
-				else if (m.Player)
-					targets.Add(m);
-			}
-			PlaySound(0x2F3);
-			for (int i = 0; i < targets.Count; ++i)
-			{
-				Mobile m = (Mobile)targets[i];
-				if( m != null && !m.Deleted && m is PlayerMobile )
-				{
-					PlayerMobile pm = m as PlayerMobile;
-					if(pm != null && pm.Mounted)
-					{
-						pm.Mount.Rider=null;
-					}
-				}
-				double damage = m.Hits * 0.6;//was .6
-				if (damage < 10.0)
-					damage = 10.0;
-				else if (damage > 75.0)
-					damage = 75.0;
-				DoHarmful(m);
-				AOS.Damage(m, this, (int)damage, 100, 0, 0, 0, 0);
-				if (m.Alive && m.Body.IsHuman && !m.Mounted)
-					m.Animate(20, 7, 1, true, false, 0); // take hit
-			}
-		}
+    public override void OnGaveMeleeAttack(Mobile defender)
+    {
+      base.OnGaveMeleeAttack(defender);
+      if (0.2 >= Utility.RandomDouble())
+        Earthquake();
+    }
 
-		public Meraktus( Serial serial ) : base( serial )
-		{
-		}
+    public void Earthquake()
+    {
+      Map map = Map;
+      if (map == null)
+        return;
+      ArrayList targets = new ArrayList();
+      foreach (Mobile m in GetMobilesInRange(8))
+      {
+        if (m == this || !CanBeHarmful(m))
+          continue;
+        if (m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team))
+          targets.Add(m);
+        else if (m.Player)
+          targets.Add(m);
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+      PlaySound(0x2F3);
+      for (int i = 0; i < targets.Count; ++i)
+      {
+        Mobile m = (Mobile)targets[i];
+        if (m != null && !m.Deleted && m is PlayerMobile pm)
+          if (pm.Mounted)
+            pm.Mount.Rider = null;
+        double damage = m.Hits * 0.6; //was .6
+        if (damage < 10.0)
+          damage = 10.0;
+        else if (damage > 75.0)
+          damage = 75.0;
+        DoHarmful(m);
+        AOS.Damage(m, this, (int)damage, 100, 0, 0, 0, 0);
+        if (m.Alive && m.Body.IsHuman && !m.Mounted)
+          m.Animate(20, 7, 1, true, false, 0); // take hit
+      }
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-		#region SpawnHelpers
-		public void SpawnTormented()
-		{
-			BaseCreature spawna = new TormentedMinotaur();
-			spawna.MoveToWorld(Location, Map);
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-			BaseCreature spawnb = new TormentedMinotaur();
-			spawnb.MoveToWorld(Location, Map);
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
 
-			BaseCreature spawnc = new TormentedMinotaur();
-			spawnc.MoveToWorld(Location, Map);
+    #region SpawnHelpers
 
-			BaseCreature spawnd = new TormentedMinotaur();
-			spawnd.MoveToWorld(Location, Map);
-		}
-		#endregion
-	}
+    public void SpawnTormented()
+    {
+      BaseCreature spawna = new TormentedMinotaur();
+      spawna.MoveToWorld(Location, Map);
+
+      BaseCreature spawnb = new TormentedMinotaur();
+      spawnb.MoveToWorld(Location, Map);
+
+      BaseCreature spawnc = new TormentedMinotaur();
+      spawnc.MoveToWorld(Location, Map);
+
+      BaseCreature spawnd = new TormentedMinotaur();
+      spawnd.MoveToWorld(Location, Map);
+    }
+
+    #endregion
+  }
 }

@@ -1,186 +1,188 @@
 using System;
 using System.Collections;
-using Server.Targeting;
-using Server.Network;
 
 namespace Server.Spells.Second
 {
-	public class ProtectionSpell : MagerySpell
-	{
-		private static Hashtable m_Registry = new Hashtable();
-		public static Hashtable Registry  => m_Registry;
+  public class ProtectionSpell : MagerySpell
+  {
+    private static SpellInfo m_Info = new SpellInfo(
+      "Protection", "Uus Sanct",
+      236,
+      9011,
+      Reagent.Garlic,
+      Reagent.Ginseng,
+      Reagent.SulfurousAsh
+    );
 
-		private static SpellInfo m_Info = new SpellInfo(
-				"Protection", "Uus Sanct",
-				236,
-				9011,
-				Reagent.Garlic,
-				Reagent.Ginseng,
-				Reagent.SulfurousAsh
-			);
+    private static Hashtable m_Table = new Hashtable();
 
-		public override SpellCircle Circle => SpellCircle.Second;
+    public ProtectionSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    {
+    }
 
-		public ProtectionSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
-		{
-		}
+    public static Hashtable Registry{ get; } = new Hashtable();
 
-		public override bool CheckCast()
-		{
-			if ( Core.AOS )
-				return true;
+    public override SpellCircle Circle => SpellCircle.Second;
 
-			if ( m_Registry.ContainsKey( Caster ) )
-			{
-				Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
-				return false;
-			}
-			else if ( !Caster.CanBeginAction( typeof( DefensiveSpell ) ) )
-			{
-				Caster.SendLocalizedMessage( 1005385 ); // The spell will not adhere to you at this time.
-				return false;
-			}
+    public override bool CheckCast()
+    {
+      if (Core.AOS)
+        return true;
 
-			return true;
-		}
+      if (Registry.ContainsKey(Caster))
+      {
+        Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+        return false;
+      }
 
-		private static Hashtable m_Table = new Hashtable();
+      if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+      {
+        Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
+        return false;
+      }
 
-		public static void Toggle( Mobile caster, Mobile target )
-		{
-			/* Players under the protection spell effect can no longer have their spells "disrupted" when hit.
-			 * Players under the protection spell have decreased physical resistance stat value (-15 + (Inscription/20),
-			 * a decreased "resisting spells" skill value by -35 + (Inscription/20),
-			 * and a slower casting speed modifier (technically, a negative "faster cast speed") of 2 points.
-			 * The protection spell has an indefinite duration, becoming active when cast, and deactivated when re-cast.
-			 * Reactive Armor, Protection, and Magic Reflection will stay on�even after logging out,
-			 * even after dying�until you �turn them off� by casting them again.
-			 */
+      return true;
+    }
 
-			object[] mods = (object[])m_Table[target];
+    public static void Toggle(Mobile caster, Mobile target)
+    {
+      /* Players under the protection spell effect can no longer have their spells "disrupted" when hit.
+       * Players under the protection spell have decreased physical resistance stat value (-15 + (Inscription/20),
+       * a decreased "resisting spells" skill value by -35 + (Inscription/20),
+       * and a slower casting speed modifier (technically, a negative "faster cast speed") of 2 points.
+       * The protection spell has an indefinite duration, becoming active when cast, and deactivated when re-cast.
+       * Reactive Armor, Protection, and Magic Reflection will stay on�even after logging out,
+       * even after dying�until you �turn them off� by casting them again.
+       */
 
-			if ( mods == null )
-			{
-				target.PlaySound( 0x1E9 );
-				target.FixedParticles( 0x375A, 9, 20, 5016, EffectLayer.Waist );
+      object[] mods = (object[])m_Table[target];
 
-				mods = new object[2]
-					{
-						new ResistanceMod( ResistanceType.Physical, -15 + Math.Min( (int)(caster.Skills[SkillName.Inscribe].Value / 20), 15 ) ),
-						new DefaultSkillMod( SkillName.MagicResist, true, -35 + Math.Min( (int)(caster.Skills[SkillName.Inscribe].Value / 20), 35 ) )
-					};
+      if (mods == null)
+      {
+        target.PlaySound(0x1E9);
+        target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
 
-				m_Table[target] = mods;
-				Registry[target] = 100.0;
+        mods = new object[2]
+        {
+          new ResistanceMod(ResistanceType.Physical,
+            -15 + Math.Min((int)(caster.Skills[SkillName.Inscribe].Value / 20), 15)),
+          new DefaultSkillMod(SkillName.MagicResist, true,
+            -35 + Math.Min((int)(caster.Skills[SkillName.Inscribe].Value / 20), 35))
+        };
 
-				target.AddResistanceMod( (ResistanceMod)mods[0] );
-				target.AddSkillMod( (SkillMod)mods[1] );
+        m_Table[target] = mods;
+        Registry[target] = 100.0;
 
-				int physloss = -15 + (int) (caster.Skills[SkillName.Inscribe].Value / 20);
-				int resistloss = -35 + (int) (caster.Skills[SkillName.Inscribe].Value / 20);
-				string args = String.Format("{0}\t{1}", physloss, resistloss);
-				BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args.ToString()));
-			}
-			else
-			{
-				target.PlaySound( 0x1ED );
-				target.FixedParticles( 0x375A, 9, 20, 5016, EffectLayer.Waist );
+        target.AddResistanceMod((ResistanceMod)mods[0]);
+        target.AddSkillMod((SkillMod)mods[1]);
 
-				m_Table.Remove( target );
-				Registry.Remove( target );
+        int physloss = -15 + (int)(caster.Skills[SkillName.Inscribe].Value / 20);
+        int resistloss = -35 + (int)(caster.Skills[SkillName.Inscribe].Value / 20);
+        string args = $"{physloss}\t{resistloss}";
+        BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args));
+      }
+      else
+      {
+        target.PlaySound(0x1ED);
+        target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
 
-				target.RemoveResistanceMod( (ResistanceMod)mods[0] );
-				target.RemoveSkillMod( (SkillMod)mods[1] );
+        m_Table.Remove(target);
+        Registry.Remove(target);
 
-				BuffInfo.RemoveBuff(target, BuffIcon.Protection);
-			}
-		}
+        target.RemoveResistanceMod((ResistanceMod)mods[0]);
+        target.RemoveSkillMod((SkillMod)mods[1]);
 
-		public static void EndProtection( Mobile m )
-		{
-			if ( m_Table.Contains( m ) )
-			{
-				object[] mods = (object[]) m_Table[ m ];
+        BuffInfo.RemoveBuff(target, BuffIcon.Protection);
+      }
+    }
 
-				m_Table.Remove( m );
-				Registry.Remove( m );
+    public static void EndProtection(Mobile m)
+    {
+      if (m_Table.Contains(m))
+      {
+        object[] mods = (object[])m_Table[m];
 
-				m.RemoveResistanceMod( (ResistanceMod) mods[ 0 ] );
-				m.RemoveSkillMod( (SkillMod) mods[ 1 ] );
+        m_Table.Remove(m);
+        Registry.Remove(m);
 
-				BuffInfo.RemoveBuff( m, BuffIcon.Protection );
-			}
-		}
+        m.RemoveResistanceMod((ResistanceMod)mods[0]);
+        m.RemoveSkillMod((SkillMod)mods[1]);
 
-		public override void OnCast()
-		{
-			if ( Core.AOS )
-			{
-				if ( CheckSequence() )
-					Toggle( Caster, Caster );
+        BuffInfo.RemoveBuff(m, BuffIcon.Protection);
+      }
+    }
 
-				FinishSequence();
-			}
-			else
-			{
-				if ( m_Registry.ContainsKey( Caster ) )
-				{
-					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
-				}
-				else if ( !Caster.CanBeginAction( typeof( DefensiveSpell ) ) )
-				{
-					Caster.SendLocalizedMessage( 1005385 ); // The spell will not adhere to you at this time.
-				}
-				else if ( CheckSequence() )
-				{
-					if ( Caster.BeginAction( typeof( DefensiveSpell ) ) )
-					{
-						double value = (int)(Caster.Skills[SkillName.EvalInt].Value + Caster.Skills[SkillName.Meditation].Value + Caster.Skills[SkillName.Inscribe].Value);
-						value /= 4;
+    public override void OnCast()
+    {
+      if (Core.AOS)
+      {
+        if (CheckSequence())
+          Toggle(Caster, Caster);
 
-						if ( value < 0 )
-							value = 0;
-						else if ( value > 75 )
-							value = 75.0;
+        FinishSequence();
+      }
+      else
+      {
+        if (Registry.ContainsKey(Caster))
+        {
+          Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+        }
+        else if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+        {
+          Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
+        }
+        else if (CheckSequence())
+        {
+          if (Caster.BeginAction(typeof(DefensiveSpell)))
+          {
+            double value = (int)(Caster.Skills[SkillName.EvalInt].Value +
+                                 Caster.Skills[SkillName.Meditation].Value +
+                                 Caster.Skills[SkillName.Inscribe].Value);
+            value /= 4;
 
-						Registry.Add( Caster, value );
-						new InternalTimer( Caster ).Start();
+            if (value < 0)
+              value = 0;
+            else if (value > 75)
+              value = 75.0;
 
-						Caster.FixedParticles( 0x375A, 9, 20, 5016, EffectLayer.Waist );
-						Caster.PlaySound( 0x1ED );
-					}
-					else
-					{
-						Caster.SendLocalizedMessage( 1005385 ); // The spell will not adhere to you at this time.
-					}
-				}
+            Registry.Add(Caster, value);
+            new InternalTimer(Caster).Start();
 
-				FinishSequence();
-			}
-		}
+            Caster.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
+            Caster.PlaySound(0x1ED);
+          }
+          else
+          {
+            Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
+          }
+        }
 
-		private class InternalTimer : Timer
-		{
-			private Mobile m_Caster;
+        FinishSequence();
+      }
+    }
 
-			public InternalTimer( Mobile caster ) : base( TimeSpan.FromSeconds( 0 ) )
-			{
-				double val = caster.Skills[SkillName.Magery].Value * 2.0;
-				if ( val < 15 )
-					val = 15;
-				else if ( val > 240 )
-					val = 240;
+    private class InternalTimer : Timer
+    {
+      private Mobile m_Caster;
 
-				m_Caster = caster;
-				Delay = TimeSpan.FromSeconds( val );
-				Priority = TimerPriority.OneSecond;
-			}
+      public InternalTimer(Mobile caster) : base(TimeSpan.FromSeconds(0))
+      {
+        double val = caster.Skills[SkillName.Magery].Value * 2.0;
+        if (val < 15)
+          val = 15;
+        else if (val > 240)
+          val = 240;
 
-			protected override void OnTick()
-			{
-				ProtectionSpell.Registry.Remove( m_Caster );
-				DefensiveSpell.Nullify( m_Caster );
-			}
-		}
-	}
+        m_Caster = caster;
+        Delay = TimeSpan.FromSeconds(val);
+        Priority = TimerPriority.OneSecond;
+      }
+
+      protected override void OnTick()
+      {
+        Registry.Remove(m_Caster);
+        DefensiveSpell.Nullify(m_Caster);
+      }
+    }
+  }
 }

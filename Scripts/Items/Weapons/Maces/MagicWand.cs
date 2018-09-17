@@ -1,50 +1,46 @@
-using System;
-using Server.Network;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class MagicWand : BaseBashing
-	{
-		public override WeaponAbility PrimaryAbility => WeaponAbility.Dismount;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
+  public class MagicWand : BaseBashing
+  {
+    [Constructible]
+    public MagicWand() : base(0xDF2)
+    {
+      Weight = 1.0;
+    }
 
-		public override int AosStrengthReq => 5;
-		public override int AosMinDamage => 9;
-		public override int AosMaxDamage => 11;
-		public override int AosSpeed => 40;
-		public override float MlSpeed => 2.75f;
+    public MagicWand(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 0;
-		public override int OldMinDamage => 2;
-		public override int OldMaxDamage => 6;
-		public override int OldSpeed => 35;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.Dismount;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;
 
-		public override int InitMinHits => 31;
-		public override int InitMaxHits => 110;
+    public override int AosStrengthReq => 5;
+    public override int AosMinDamage => 9;
+    public override int AosMaxDamage => 11;
+    public override int AosSpeed => 40;
+    public override float MlSpeed => 2.75f;
 
-		[Constructible]
-		public MagicWand() : base( 0xDF2 )
-		{
-			Weight = 1.0;
-		}
+    public override int OldStrengthReq => 0;
+    public override int OldMinDamage => 2;
+    public override int OldMaxDamage => 6;
+    public override int OldSpeed => 35;
 
-		public MagicWand( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 31;
+    public override int InitMaxHits => 110;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

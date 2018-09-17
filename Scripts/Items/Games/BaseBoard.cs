@@ -1,169 +1,149 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server;
-using Server.Items;
-using Server.Multis;
-using Server.Network;
 using Server.ContextMenus;
 using Server.Gumps;
+using Server.Multis;
+using Server.Network;
 
 namespace Server.Items
 {
-	public abstract class BaseBoard : Container, ISecurable
-	{
-		private SecureLevel m_Level;
+  public abstract class BaseBoard : Container, ISecurable
+  {
+    public BaseBoard(int itemID) : base(itemID)
+    {
+      CreatePieces();
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public SecureLevel Level
-		{
-			get{ return m_Level; }
-			set{ m_Level = value; }
-		}
+      Weight = 5.0;
+    }
 
-		public BaseBoard( int itemID ) : base( itemID )
-		{
-			CreatePieces();
+    public BaseBoard(Serial serial) : base(serial)
+    {
+    }
 
-			Weight = 5.0;
-		}
+    public override bool DisplaysContent => false; // Do not display (x items, y stones)
 
-		public abstract void CreatePieces();
+    public override bool IsDecoContainer => false;
 
-		public void Reset()
-		{
-			for ( int i = Items.Count - 1; i >= 0; --i )
-			{
-				if ( i < Items.Count )
-					Items[i].Delete();
-			}
+    public override TimeSpan DecayTime => TimeSpan.FromDays(1.0);
 
-			CreatePieces();
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public SecureLevel Level{ get; set; }
 
-		public void CreatePiece( BasePiece piece, int x, int y )
-		{
-			AddItem( piece );
-			piece.Location = new Point3D( x, y, 0 );
-		}
+    public abstract void CreatePieces();
 
-		public override bool DisplaysContent => false; // Do not display (x items, y stones)
+    public void Reset()
+    {
+      for (int i = Items.Count - 1; i >= 0; --i)
+        if (i < Items.Count)
+          Items[i].Delete();
 
-		public override bool IsDecoContainer => false;
+      CreatePieces();
+    }
 
-		public BaseBoard( Serial serial ) : base( serial )
-		{
-		}
+    public void CreatePiece(BasePiece piece, int x, int y)
+    {
+      AddItem(piece);
+      piece.Location = new Point3D(x, y, 0);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 1 ); // version
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(1); // version
 
-			writer.Write( (int)m_Level );
-		}
+      writer.Write((int)Level);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
 
-			if ( version == 1 )
-				m_Level = (SecureLevel)reader.ReadInt();
+      if (version == 1)
+        Level = (SecureLevel)reader.ReadInt();
 
-			if ( Weight == 1.0 )
-				Weight = 5.0;
-		}
+      if (Weight == 1.0)
+        Weight = 5.0;
+    }
 
-		public override TimeSpan DecayTime => TimeSpan.FromDays( 1.0 );
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      return dropped is BasePiece piece && piece.Board == this && base.OnDragDrop(from, dropped);
+    }
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			BasePiece piece = dropped as BasePiece;
+    public override bool OnDragDropInto(Mobile from, Item dropped, Point3D point)
+    {
+      if (dropped is BasePiece piece && piece.Board == this && base.OnDragDropInto(from, dropped, point))
+      {
+        Packet p = new PlaySound(0x127, GetWorldLocation());
 
-			return ( piece != null && piece.Board == this && base.OnDragDrop( from, dropped ) );
-		}
+        p.Acquire();
 
-		public override bool OnDragDropInto( Mobile from, Item dropped, Point3D point )
-		{
-			BasePiece piece = dropped as BasePiece;
+        if (RootParent == from)
+          from.Send(p);
+        else
+          foreach (NetState state in GetClientsInRange(2))
+            state.Send(p);
 
-			if ( piece != null && piece.Board == this && base.OnDragDropInto( from, dropped, point ) )
-			{
-				Packet p = new PlaySound( 0x127, GetWorldLocation() );
+        p.Release();
 
-				p.Acquire();
+        return true;
+      }
 
-				if ( RootParent == from )
-				{
-					from.Send( p );
-				}
-				else
-				{
-					foreach ( NetState state in this.GetClientsInRange( 2 ) )
-						state.Send( p );
-				}
+      return false;
+    }
 
-				p.Release();
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      base.GetContextMenuEntries(from, list);
 
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
+      if (ValidateDefault(from, this))
+        list.Add(new DefaultEntry(from, this));
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			base.GetContextMenuEntries( from, list );
+      SetSecureLevelEntry.AddTo(from, this, list);
+    }
 
-			if ( ValidateDefault( from, this ) )
-				list.Add( new DefaultEntry( from, this ) );
+    public static bool ValidateDefault(Mobile from, BaseBoard board)
+    {
+      if (from.AccessLevel >= AccessLevel.GameMaster)
+        return true;
 
-			SetSecureLevelEntry.AddTo( from, this, list );
-		}
+      if (!from.Alive)
+        return false;
 
-		public static bool ValidateDefault( Mobile from, BaseBoard board )
-		{
-			if ( from.AccessLevel >= AccessLevel.GameMaster )
-				return true;
+      if (board.IsChildOf(from.Backpack))
+        return true;
 
-			if ( !from.Alive )
-				return false;
+      object root = board.RootParent;
 
-			if ( board.IsChildOf( from.Backpack ) )
-				return true;
+      if (root is Mobile && root != from)
+        return false;
 
-			object root = board.RootParent;
+      if (board.Deleted || board.Map != from.Map || !from.InRange(board.GetWorldLocation(), 1))
+        return false;
 
-			if ( root is Mobile && root != from )
-				return false;
+      BaseHouse house = BaseHouse.FindHouseAt(board);
 
-			if ( board.Deleted || board.Map != from.Map || !from.InRange( board.GetWorldLocation(), 1 ) )
-				return false;
+      return house != null && house.IsOwner(from);
+    }
 
-			BaseHouse house = BaseHouse.FindHouseAt( board );
+    public class DefaultEntry : ContextMenuEntry
+    {
+      private BaseBoard m_Board;
+      private Mobile m_From;
 
-			return ( house != null && house.IsOwner( from ) );
-		}
+      public DefaultEntry(Mobile from, BaseBoard board) : base(6162,
+        from.AccessLevel >= AccessLevel.GameMaster ? -1 : 1)
+      {
+        m_From = from;
+        m_Board = board;
+      }
 
-		public class DefaultEntry : ContextMenuEntry
-		{
-			private Mobile m_From;
-			private BaseBoard m_Board;
-
-			public DefaultEntry( Mobile from, BaseBoard board ) : base( 6162, from.AccessLevel >= AccessLevel.GameMaster ? -1 : 1 )
-			{
-				m_From = from;
-				m_Board = board;
-			}
-
-			public override void OnClick()
-			{
-				if ( BaseBoard.ValidateDefault( m_From, m_Board ) )
-					m_Board.Reset();
-			}
-		}
-	}
+      public override void OnClick()
+      {
+        if (ValidateDefault(m_From, m_Board))
+          m_Board.Reset();
+      }
+    }
+  }
 }

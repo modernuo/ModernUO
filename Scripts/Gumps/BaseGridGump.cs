@@ -1,197 +1,188 @@
-using System;
-
 namespace Server.Gumps
 {
-	public abstract class BaseGridGump : Gump
-	{
-		private int m_CurrentX, m_CurrentY;
-		private int m_CurrentPage;
+  public abstract class BaseGridGump : Gump
+  {
+    public const int ArrowLeftID1 = 0x15E3;
+    public const int ArrowLeftID2 = 0x15E7;
+    public const int ArrowLeftWidth = 16;
+    public const int ArrowLeftHeight = 16;
 
-		protected GumpBackground m_Background;
-		protected GumpImageTiled m_Offset;
+    public const int ArrowRightID1 = 0x15E1;
+    public const int ArrowRightID2 = 0x15E5;
+    public const int ArrowRightWidth = 16;
+    public const int ArrowRightHeight = 16;
+    protected GumpBackground m_Background;
+    protected GumpImageTiled m_Offset;
 
-		public int CurrentPage
-		{
-			get{ return m_CurrentPage; }
-		}
+    public BaseGridGump(int x, int y) : base(x, y)
+    {
+    }
 
-		public int CurrentX
-		{
-			get{ return m_CurrentX; }
-		}
+    public int CurrentPage{ get; private set; }
 
-		public int CurrentY
-		{
-			get{ return m_CurrentY; }
-		}
+    public int CurrentX{ get; private set; }
 
-		public BaseGridGump( int x, int y ) : base( x, y )
-		{
-		}
+    public int CurrentY{ get; private set; }
 
-		public virtual int BorderSize{ get{ return 10; } }
-		public virtual int OffsetSize{ get{ return 1; } }
+    public virtual int BorderSize => 10;
+    public virtual int OffsetSize => 1;
 
-		public virtual int EntryHeight{ get{ return 20; } }
+    public virtual int EntryHeight => 20;
 
-		public virtual int OffsetGumpID{ get{ return 0x0A40; } }
-		public virtual int HeaderGumpID{ get{ return 0x0E14; } }
-		public virtual int  EntryGumpID{ get{ return 0x0BBC; } }
-		public virtual int   BackGumpID{ get{ return 0x13BE; } }
+    public virtual int OffsetGumpID => 0x0A40;
+    public virtual int HeaderGumpID => 0x0E14;
+    public virtual int EntryGumpID => 0x0BBC;
+    public virtual int BackGumpID => 0x13BE;
 
-		public virtual int TextHue{ get{ return 0; } }
-		public virtual int TextOffsetX{ get{ return 2; } }
+    public virtual int TextHue => 0;
+    public virtual int TextOffsetX => 2;
 
-		public const int ArrowLeftID1 = 0x15E3;
-		public const int ArrowLeftID2 = 0x15E7;
-		public const int ArrowLeftWidth = 16;
-		public const int ArrowLeftHeight = 16;
+    public string Center(string text)
+    {
+      return $"<CENTER>{text}</CENTER>";
+    }
 
-		public const int ArrowRightID1 = 0x15E1;
-		public const int ArrowRightID2 = 0x15E5;
-		public const int ArrowRightWidth = 16;
-		public const int ArrowRightHeight = 16;
+    public string Color(string text, int color)
+    {
+      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
+    }
 
-		public string Center( string text )
-		{
-			return String.Format( "<CENTER>{0}</CENTER>", text );
-		}
+    public int GetButtonID(int typeCount, int type, int index)
+    {
+      return 1 + index * typeCount + type;
+    }
 
-		public string Color( string text, int color )
-		{
-			return String.Format( "<BASEFONT COLOR=#{0:X6}>{1}</BASEFONT>", color, text );
-		}
+    public bool SplitButtonID(int buttonID, int typeCount, out int type, out int index)
+    {
+      if (buttonID < 1)
+      {
+        type = 0;
+        index = 0;
+        return false;
+      }
 
-		public int GetButtonID( int typeCount, int type, int index )
-		{
-			return 1 + (index * typeCount) + type;
-		}
+      buttonID -= 1;
 
-		public bool SplitButtonID( int buttonID, int typeCount, out int type, out int index )
-		{
-			if ( buttonID < 1 )
-			{
-				type = 0;
-				index = 0;
-				return false;
-			}
+      type = buttonID % typeCount;
+      index = buttonID / typeCount;
 
-			buttonID -= 1;
+      return true;
+    }
 
-			type = buttonID % typeCount;
-			index = buttonID / typeCount;
+    public void FinishPage()
+    {
+      if (m_Background != null)
+        m_Background.Height = CurrentY + EntryHeight + OffsetSize + BorderSize;
 
-			return true;
-		}
+      if (m_Offset != null)
+        m_Offset.Height = CurrentY + EntryHeight + OffsetSize - BorderSize;
+    }
 
-		public void FinishPage()
-		{
-			if ( m_Background != null )
-				m_Background.Height = m_CurrentY + EntryHeight + OffsetSize + BorderSize;
+    public void AddNewPage()
+    {
+      FinishPage();
 
-			if ( m_Offset != null )
-				m_Offset.Height = m_CurrentY + EntryHeight + OffsetSize - BorderSize;
-		}
+      CurrentX = BorderSize + OffsetSize;
+      CurrentY = BorderSize + OffsetSize;
 
-		public void AddNewPage()
-		{
-			FinishPage();
+      AddPage(++CurrentPage);
 
-			m_CurrentX = BorderSize + OffsetSize;
-			m_CurrentY = BorderSize + OffsetSize;
+      m_Background = new GumpBackground(0, 0, 100, 100, BackGumpID);
+      Add(m_Background);
 
-			AddPage( ++m_CurrentPage );
+      m_Offset = new GumpImageTiled(BorderSize, BorderSize, 100, 100, OffsetGumpID);
+      Add(m_Offset);
+    }
 
-			m_Background = new GumpBackground( 0, 0, 100, 100, BackGumpID );
-			Add( m_Background );
+    public void AddNewLine()
+    {
+      CurrentY += EntryHeight + OffsetSize;
+      CurrentX = BorderSize + OffsetSize;
+    }
 
-			m_Offset = new GumpImageTiled( BorderSize, BorderSize, 100, 100, OffsetGumpID );
-			Add( m_Offset );
-		}
+    public void IncreaseX(int width)
+    {
+      CurrentX += width + OffsetSize;
 
-		public void AddNewLine()
-		{
-			m_CurrentY += EntryHeight + OffsetSize;
-			m_CurrentX = BorderSize + OffsetSize;
-		}
+      width = CurrentX + BorderSize;
 
-		public void IncreaseX( int width )
-		{
-			m_CurrentX += width + OffsetSize;
+      if (m_Background != null && width > m_Background.Width)
+        m_Background.Width = width;
 
-			width = m_CurrentX + BorderSize;
+      width = CurrentX - BorderSize;
 
-			if ( m_Background != null && width > m_Background.Width )
-				m_Background.Width = width;
+      if (m_Offset != null && width > m_Offset.Width)
+        m_Offset.Width = width;
+    }
 
-			width = m_CurrentX - BorderSize;
+    public void AddEntryLabel(int width, string text)
+    {
+      AddImageTiled(CurrentX, CurrentY, width, EntryHeight, EntryGumpID);
+      AddLabelCropped(CurrentX + TextOffsetX, CurrentY, width - TextOffsetX, EntryHeight, TextHue, text);
 
-			if ( m_Offset != null && width > m_Offset.Width )
-				m_Offset.Width = width;
-		}
+      IncreaseX(width);
+    }
 
-		public void AddEntryLabel( int width, string text )
-		{
-			AddImageTiled( m_CurrentX, m_CurrentY, width, EntryHeight, EntryGumpID );
-			AddLabelCropped( m_CurrentX + TextOffsetX, m_CurrentY, width - TextOffsetX, EntryHeight, TextHue, text );
+    public void AddEntryHtml(int width, string text)
+    {
+      AddImageTiled(CurrentX, CurrentY, width, EntryHeight, EntryGumpID);
+      AddHtml(CurrentX + TextOffsetX, CurrentY, width - TextOffsetX, EntryHeight, text, false, false);
 
-			IncreaseX( width );
-		}
+      IncreaseX(width);
+    }
 
-		public void AddEntryHtml( int width, string text )
-		{
-			AddImageTiled( m_CurrentX, m_CurrentY, width, EntryHeight, EntryGumpID );
-			AddHtml( m_CurrentX + TextOffsetX, m_CurrentY, width - TextOffsetX, EntryHeight, text, false, false );
+    public void AddEntryHeader(int width)
+    {
+      AddEntryHeader(width, 1);
+    }
 
-			IncreaseX( width );
-		}
+    public void AddEntryHeader(int width, int spannedEntries)
+    {
+      AddImageTiled(CurrentX, CurrentY, width, EntryHeight * spannedEntries + OffsetSize * (spannedEntries - 1),
+        HeaderGumpID);
+      IncreaseX(width);
+    }
 
-		public void AddEntryHeader( int width )
-		{
-			AddEntryHeader( width, 1 );
-		}
+    public void AddBlankLine()
+    {
+      if (m_Offset != null)
+        AddImageTiled(m_Offset.X, CurrentY, m_Offset.Width, EntryHeight, BackGumpID + 4);
 
-		public void AddEntryHeader( int width, int spannedEntries )
-		{
-			AddImageTiled( m_CurrentX, m_CurrentY, width, (EntryHeight * spannedEntries) + (OffsetSize * (spannedEntries - 1)), HeaderGumpID );
-			IncreaseX( width );
-		}
+      AddNewLine();
+    }
 
-		public void AddBlankLine()
-		{
-			if ( m_Offset != null )
-				AddImageTiled( m_Offset.X, m_CurrentY, m_Offset.Width, EntryHeight, BackGumpID + 4 );
+    public void AddEntryButton(int width, int normalID, int pressedID, int buttonID, int buttonWidth, int buttonHeight)
+    {
+      AddEntryButton(width, normalID, pressedID, buttonID, buttonWidth, buttonHeight, 1);
+    }
 
-			AddNewLine();
-		}
+    public void AddEntryButton(int width, int normalID, int pressedID, int buttonID, int buttonWidth, int buttonHeight,
+      int spannedEntries)
+    {
+      AddImageTiled(CurrentX, CurrentY, width, EntryHeight * spannedEntries + OffsetSize * (spannedEntries - 1),
+        HeaderGumpID);
+      AddButton(CurrentX + (width - buttonWidth) / 2,
+        CurrentY + (EntryHeight * spannedEntries + OffsetSize * (spannedEntries - 1) - buttonHeight) / 2, normalID,
+        pressedID, buttonID, GumpButtonType.Reply, 0);
 
-		public void AddEntryButton( int width, int normalID, int pressedID, int buttonID, int buttonWidth, int buttonHeight )
-		{
-			AddEntryButton( width, normalID, pressedID, buttonID, buttonWidth, buttonHeight, 1 );
-		}
+      IncreaseX(width);
+    }
 
-		public void AddEntryButton( int width, int normalID, int pressedID, int buttonID, int buttonWidth, int buttonHeight, int spannedEntries )
-		{
-			AddImageTiled( m_CurrentX, m_CurrentY, width, (EntryHeight * spannedEntries) + (OffsetSize * (spannedEntries - 1)), HeaderGumpID );
-			AddButton( m_CurrentX + ((width - buttonWidth) / 2), m_CurrentY + (((EntryHeight * spannedEntries) + (OffsetSize * (spannedEntries - 1)) - buttonHeight) / 2), normalID, pressedID, buttonID, GumpButtonType.Reply, 0 );
+    public void AddEntryPageButton(int width, int normalID, int pressedID, int page, int buttonWidth, int buttonHeight)
+    {
+      AddImageTiled(CurrentX, CurrentY, width, EntryHeight, HeaderGumpID);
+      AddButton(CurrentX + (width - buttonWidth) / 2, CurrentY + (EntryHeight - buttonHeight) / 2, normalID, pressedID,
+        0, GumpButtonType.Page, page);
 
-			IncreaseX( width );
-		}
+      IncreaseX(width);
+    }
 
-		public void AddEntryPageButton( int width, int normalID, int pressedID, int page, int buttonWidth, int buttonHeight )
-		{
-			AddImageTiled( m_CurrentX, m_CurrentY, width, EntryHeight, HeaderGumpID );
-			AddButton( m_CurrentX + ((width - buttonWidth) / 2), m_CurrentY + ((EntryHeight - buttonHeight) / 2), normalID, pressedID, 0, GumpButtonType.Page, page );
+    public void AddEntryText(int width, int entryID, string initialText)
+    {
+      AddImageTiled(CurrentX, CurrentY, width, EntryHeight, EntryGumpID);
+      AddTextEntry(CurrentX + TextOffsetX, CurrentY, width - TextOffsetX, EntryHeight, TextHue, entryID, initialText);
 
-			IncreaseX( width );
-		}
-
-		public void AddEntryText( int width, int entryID, string initialText )
-		{
-			AddImageTiled( m_CurrentX, m_CurrentY, width, EntryHeight, EntryGumpID );
-			AddTextEntry( m_CurrentX + TextOffsetX, m_CurrentY, width - TextOffsetX, EntryHeight, TextHue, entryID, initialText );
-
-			IncreaseX( width );
-		}
-	}
+      IncreaseX(width);
+    }
+  }
 }

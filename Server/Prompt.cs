@@ -18,38 +18,28 @@
  *
  ***************************************************************************/
 
-using System;
-using Server.Network;
-
 namespace Server.Prompts
 {
-	public abstract class Prompt
-	{
-		private int m_Serial;
-		private static int m_Serials;
+  public abstract class Prompt
+  {
+    private static int m_Serials;
 
-		public int Serial
-		{
-			get
-			{
-				return m_Serial;
-			}
-		}
+    protected Prompt()
+    {
+      do
+      {
+        Serial = ++m_Serials;
+      } while (Serial == 0);
+    }
 
-		protected Prompt()
-		{
-			do
-			{
-				m_Serial = ++m_Serials;
-			} while ( m_Serial == 0 );
-		}
+    public int Serial{ get; }
 
-		public virtual void OnCancel( Mobile from )
-		{
-		}
+    public virtual void OnCancel(Mobile from)
+    {
+    }
 
-		public virtual void OnResponse( Mobile from, string text )
-		{
-		}
-	}
+    public virtual void OnResponse(Mobile from, string text)
+    {
+    }
+  }
 }

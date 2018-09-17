@@ -2,22 +2,20 @@ using System;
 
 namespace Server.Factions
 {
-	public class SilverGivenEntry
-	{
-		public static readonly TimeSpan ExpirePeriod = TimeSpan.FromHours( 3.0 );
+  public class SilverGivenEntry
+  {
+    public static readonly TimeSpan ExpirePeriod = TimeSpan.FromHours(3.0);
 
-		private Mobile m_GivenTo;
-		private DateTime m_TimeOfGift;
+    public SilverGivenEntry(Mobile givenTo)
+    {
+      GivenTo = givenTo;
+      TimeOfGift = DateTime.UtcNow;
+    }
 
-		public Mobile GivenTo{ get{ return m_GivenTo; } }
-		public DateTime TimeOfGift{ get{ return m_TimeOfGift; } }
+    public Mobile GivenTo{ get; }
 
-		public bool IsExpired{ get{ return ( m_TimeOfGift + ExpirePeriod ) < DateTime.UtcNow; } }
+    public DateTime TimeOfGift{ get; }
 
-		public SilverGivenEntry( Mobile givenTo )
-		{
-			m_GivenTo = givenTo;
-			m_TimeOfGift = DateTime.UtcNow;
-		}
-	}
+    public bool IsExpired => TimeOfGift + ExpirePeriod < DateTime.UtcNow;
+  }
 }

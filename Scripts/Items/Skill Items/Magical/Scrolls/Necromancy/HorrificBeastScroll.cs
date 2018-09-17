@@ -1,39 +1,33 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class HorrificBeastScroll : SpellScroll
-	{
-		[Constructible]
-		public HorrificBeastScroll() : this( 1 )
-		{
-		}
+  public class HorrificBeastScroll : SpellScroll
+  {
+    [Constructible]
+    public HorrificBeastScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public HorrificBeastScroll( int amount ) : base( 105, 0x2265, amount )
-		{
-		}
+    [Constructible]
+    public HorrificBeastScroll(int amount) : base(105, 0x2265, amount)
+    {
+    }
 
-		public HorrificBeastScroll( Serial serial ) : base( serial )
-		{
-		}
+    public HorrificBeastScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

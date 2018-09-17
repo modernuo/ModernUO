@@ -1,57 +1,54 @@
-using System;
 using System.Collections.Generic;
-using Server;
+using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Cook : BaseVendor
-	{
-		private List<SBInfo> m_SBInfos = new List<SBInfo>();
-		protected override List<SBInfo> SBInfos{ get { return m_SBInfos; } }
+  public class Cook : BaseVendor
+  {
+    private List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-		[Constructible]
-		public Cook() : base( "the cook" )
-		{
-			SetSkill( SkillName.Cooking, 90.0, 100.0 );
-			SetSkill( SkillName.TasteID, 75.0, 98.0 );
-		}
+    [Constructible]
+    public Cook() : base("the cook")
+    {
+      SetSkill(SkillName.Cooking, 90.0, 100.0);
+      SetSkill(SkillName.TasteID, 75.0, 98.0);
+    }
 
-		public override void InitSBInfo()
-		{
-			m_SBInfos.Add( new SBCook() );
+    public Cook(Serial serial) : base(serial)
+    {
+    }
 
-			if ( IsTokunoVendor )
-				m_SBInfos.Add( new SBSECook() );
-		}
+    protected override List<SBInfo> SBInfos => m_SBInfos;
 
-		public override VendorShoeType ShoeType
-		{
-			get{ return Utility.RandomBool() ? VendorShoeType.Sandals : VendorShoeType.Shoes; }
-		}
+    public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Sandals : VendorShoeType.Shoes;
 
-		public override void InitOutfit()
-		{
-			base.InitOutfit();
+    public override void InitSBInfo()
+    {
+      m_SBInfos.Add(new SBCook());
 
-			AddItem( new Server.Items.HalfApron() );
-		}
+      if (IsTokunoVendor)
+        m_SBInfos.Add(new SBSECook());
+    }
 
-		public Cook( Serial serial ) : base( serial )
-		{
-		}
+    public override void InitOutfit()
+    {
+      base.InitOutfit();
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      AddItem(new HalfApron());
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,40 +1,37 @@
-﻿using System;
-using Server;
-
-namespace Server.Items
+﻿namespace Server.Items
 {
-	/*
-	first seen halloween 2009.  subsequently in 2010,
-	2011 and 2012. GM Beggar-only Semi-Rare Treats
-	*/
+  /*
+  first seen halloween 2009.  subsequently in 2010,
+  2011 and 2012. GM Beggar-only Semi-Rare Treats
+  */
 
-	public class GrimWarning  : Item
-	{
-		public override double DefaultWeight => 1;
+  public class GrimWarning : Item
+  {
+    [Constructible]
+    public GrimWarning()
+      : base(0x42BD)
+    {
+    }
 
-		[Constructible]
-		public GrimWarning ()
-			: base( 0x42BD )
-		{
-		}
+    public GrimWarning(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public GrimWarning( Serial serial )
-			: base( serial )
-		{
-		}
+    public override double DefaultWeight => 1;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( ( int )0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

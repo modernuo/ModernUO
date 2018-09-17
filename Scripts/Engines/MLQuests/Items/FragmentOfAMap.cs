@@ -1,34 +1,31 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class FragmentOfAMap : Item
-	{
-		public override int LabelNumber => 1074533; // Fragment of a Map
+  public class FragmentOfAMap : Item
+  {
+    [Constructible]
+    public FragmentOfAMap() : base(0x14ED)
+    {
+      LootType = LootType.Blessed;
+    }
 
-		[Constructible]
-		public FragmentOfAMap() : base( 0x14ED )
-		{
-			LootType = LootType.Blessed;
-		}
+    public FragmentOfAMap(Serial serial) : base(serial)
+    {
+    }
 
-		public FragmentOfAMap( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1074533; // Fragment of a Map
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // Version
-		}
+      writer.Write(0); // Version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

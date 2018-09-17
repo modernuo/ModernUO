@@ -1,42 +1,35 @@
 using System;
-using Server;
 
 namespace Server.Factions
 {
-	public class GuardDefinition
-	{
-		private Type m_Type;
+  public class GuardDefinition
+  {
+    public GuardDefinition(Type type, int itemID, int price, int upkeep, int maximum, TextDefinition header,
+      TextDefinition label)
+    {
+      Type = type;
 
-		private int m_Price;
-		private int m_Upkeep;
-		private int m_Maximum;
+      Price = price;
+      Upkeep = upkeep;
+      Maximum = maximum;
+      ItemID = itemID;
 
-		private int m_ItemID;
+      Header = header;
+      Label = label;
+    }
 
-		private TextDefinition m_Header;
-		private TextDefinition m_Label;
+    public Type Type{ get; }
 
-		public Type Type{ get{ return m_Type; } }
+    public int Price{ get; }
 
-		public int Price{ get{ return m_Price; } }
-		public int Upkeep{ get{ return m_Upkeep; } }
-		public int Maximum{ get{ return m_Maximum; } }
-		public int ItemID{ get{ return m_ItemID; } }
+    public int Upkeep{ get; }
 
-		public TextDefinition Header{ get{ return m_Header; } }
-		public TextDefinition Label{ get{ return m_Label; } }
+    public int Maximum{ get; }
 
-		public GuardDefinition( Type type, int itemID, int price, int upkeep, int maximum, TextDefinition header, TextDefinition label )
-		{
-			m_Type = type;
+    public int ItemID{ get; }
 
-			m_Price = price;
-			m_Upkeep = upkeep;
-			m_Maximum = maximum;
-			m_ItemID = itemID;
+    public TextDefinition Header{ get; }
 
-			m_Header = header;
-			m_Label = label;
-		}
-	}
+    public TextDefinition Label{ get; }
+  }
 }

@@ -1,112 +1,108 @@
-using System;
-using System.Collections;
 using Server.Items;
-using Server.Targeting;
 
 namespace Server.Mobiles
 {
-	public class RedSolenWorker : BaseCreature
-	{
-		public override string CorpseName => "a solen worker corpse";
-		public override string DefaultName => "a red solen worker";
+  public class RedSolenWorker : BaseCreature
+  {
+    [Constructible]
+    public RedSolenWorker() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 781;
+      BaseSoundID = 959;
 
-		[Constructible]
-		public RedSolenWorker() : base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 781;
-			BaseSoundID = 959;
+      SetStr(96, 120);
+      SetDex(81, 105);
+      SetInt(36, 60);
 
-			SetStr( 96, 120 );
-			SetDex( 81, 105 );
-			SetInt( 36, 60 );
+      SetHits(58, 72);
 
-			SetHits( 58, 72 );
+      SetDamage(5, 7);
 
-			SetDamage( 5, 7 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetResistance(ResistanceType.Physical, 25, 30);
+      SetResistance(ResistanceType.Fire, 20, 30);
+      SetResistance(ResistanceType.Cold, 10, 20);
+      SetResistance(ResistanceType.Poison, 10, 20);
+      SetResistance(ResistanceType.Energy, 20, 30);
 
-			SetResistance( ResistanceType.Physical, 25, 30 );
-			SetResistance( ResistanceType.Fire, 20, 30 );
-			SetResistance( ResistanceType.Cold, 10, 20 );
-			SetResistance( ResistanceType.Poison, 10, 20 );
-			SetResistance( ResistanceType.Energy, 20, 30 );
+      SetSkill(SkillName.MagicResist, 60.0);
+      SetSkill(SkillName.Tactics, 65.0);
+      SetSkill(SkillName.Wrestling, 60.0);
 
-			SetSkill( SkillName.MagicResist, 60.0 );
-			SetSkill( SkillName.Tactics, 65.0 );
-			SetSkill( SkillName.Wrestling, 60.0 );
+      Fame = 1500;
+      Karma = -1500;
 
-			Fame = 1500;
-			Karma = -1500;
+      VirtualArmor = 28;
 
-			VirtualArmor = 28;
+      PackGold(Utility.Random(100, 180));
 
-			PackGold( Utility.Random( 100, 180 ) );
+      SolenHelper.PackPicnicBasket(this);
 
-			SolenHelper.PackPicnicBasket( this );
+      PackItem(new ZoogiFungus());
+    }
 
-			PackItem( new ZoogiFungus() );
-		}
+    public RedSolenWorker(Serial serial) : base(serial)
+    {
+    }
 
-		public override int GetAngerSound()
-		{
-			return 0x269;
-		}
+    public override string CorpseName => "a solen worker corpse";
+    public override string DefaultName => "a red solen worker";
 
-		public override int GetIdleSound()
-		{
-			return 0x269;
-		}
+    public override int GetAngerSound()
+    {
+      return 0x269;
+    }
 
-		public override int GetAttackSound()
-		{
-			return 0x186;
-		}
+    public override int GetIdleSound()
+    {
+      return 0x269;
+    }
 
-		public override int GetHurtSound()
-		{
-			return 0x1BE;
-		}
+    public override int GetAttackSound()
+    {
+      return 0x186;
+    }
 
-		public override int GetDeathSound()
-		{
-			return 0x8E;
-		}
+    public override int GetHurtSound()
+    {
+      return 0x1BE;
+    }
 
-		public override void GenerateLoot()
-		{
-			AddLoot( LootPack.Gems, Utility.RandomMinMax( 1, 2 ) );
-		}
+    public override int GetDeathSound()
+    {
+      return 0x8E;
+    }
 
-		public override bool IsEnemy( Mobile m )
-		{
-			if ( SolenHelper.CheckRedFriendship( m ) )
-				return false;
-			else
-				return base.IsEnemy( m );
-		}
+    public override void GenerateLoot()
+    {
+      AddLoot(LootPack.Gems, Utility.RandomMinMax(1, 2));
+    }
 
-		public override void OnDamage( int amount, Mobile from, bool willKill )
-		{
-			SolenHelper.OnRedDamage( from );
+    public override bool IsEnemy(Mobile m)
+    {
+      if (SolenHelper.CheckRedFriendship(m))
+        return false;
+      return base.IsEnemy(m);
+    }
 
-			base.OnDamage( amount, from, willKill );
-		}
+    public override void OnDamage(int amount, Mobile from, bool willKill)
+    {
+      SolenHelper.OnRedDamage(from);
 
-		public RedSolenWorker( Serial serial ) : base( serial )
-		{
-		}
+      base.OnDamage(amount, from, willKill);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-			writer.Write( (int) 0 );
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
+      writer.Write(0);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+      int version = reader.ReadInt();
+    }
+  }
 }

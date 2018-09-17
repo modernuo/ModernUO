@@ -1,47 +1,44 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class Aegis : HeaterShield
-	{
-		public override int LabelNumber => 1061602; // �gis
-		public override int ArtifactRarity => 11;
+  public class Aegis : HeaterShield
+  {
+    [Constructible]
+    public Aegis()
+    {
+      Hue = 0x47E;
+      ArmorAttributes.SelfRepair = 5;
+      Attributes.ReflectPhysical = 15;
+      Attributes.DefendChance = 15;
+      Attributes.LowerManaCost = 8;
+    }
 
-		public override int BasePhysicalResistance => 15;
+    public Aegis(Serial serial) : base(serial)
+    {
+    }
 
-		public override int InitMinHits => 255;
-		public override int InitMaxHits => 255;
+    public override int LabelNumber => 1061602; // �gis
+    public override int ArtifactRarity => 11;
 
-		[Constructible]
-		public Aegis()
-		{
-			Hue = 0x47E;
-			ArmorAttributes.SelfRepair = 5;
-			Attributes.ReflectPhysical = 15;
-			Attributes.DefendChance = 15;
-			Attributes.LowerManaCost = 8;
-		}
+    public override int BasePhysicalResistance => 15;
 
-		public Aegis( Serial serial ) : base( serial )
-		{
-		}
+    public override int InitMinHits => 255;
+    public override int InitMaxHits => 255;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 );
-		}
+      writer.Write(1);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( version < 1 )
-				PhysicalBonus = 0;
-		}
-	}
+      if (version < 1)
+        PhysicalBonus = 0;
+    }
+  }
 }

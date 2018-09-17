@@ -1,40 +1,37 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class NetherCycloneScroll : SpellScroll
-	{
-		[Constructible]
-		public NetherCycloneScroll()
-			: this( 1 )
-		{
-		}
+  public class NetherCycloneScroll : SpellScroll
+  {
+    [Constructible]
+    public NetherCycloneScroll()
+      : this(1)
+    {
+    }
 
-		[Constructible]
-		public NetherCycloneScroll( int amount )
-			: base( 691, 0x2DAC, amount )
-		{
-		}
+    [Constructible]
+    public NetherCycloneScroll(int amount)
+      : base(691, 0x2DAC, amount)
+    {
+    }
 
-		public NetherCycloneScroll( Serial serial )
-			: base( serial )
-		{
-		}
+    public NetherCycloneScroll(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			/*int version = */
-			reader.ReadInt();
-		}
-	}
+      /*int version = */
+      reader.ReadInt();
+    }
+  }
 }

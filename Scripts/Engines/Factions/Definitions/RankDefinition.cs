@@ -1,25 +1,21 @@
-using System;
-
 namespace Server.Factions
 {
-	public class RankDefinition
-	{
-		private int m_Rank;
-		private int m_Required;
-		private int m_MaxWearables;
-		private TextDefinition m_Title;
+  public class RankDefinition
+  {
+    public RankDefinition(int rank, int required, int maxWearables, TextDefinition title)
+    {
+      Rank = rank;
+      Required = required;
+      Title = title;
+      MaxWearables = maxWearables;
+    }
 
-		public int Rank{ get{ return m_Rank; } }
-		public int Required{ get{ return m_Required; } }
-		public int MaxWearables{ get{ return m_MaxWearables; } }
-		public TextDefinition Title{ get{ return m_Title; } }
+    public int Rank{ get; }
 
-		public RankDefinition( int rank, int required, int maxWearables, TextDefinition title )
-		{
-			m_Rank = rank;
-			m_Required = required;
-			m_Title = title;
-			m_MaxWearables = maxWearables;
-		}
-	}
+    public int Required{ get; }
+
+    public int MaxWearables{ get; }
+
+    public TextDefinition Title{ get; }
+  }
 }

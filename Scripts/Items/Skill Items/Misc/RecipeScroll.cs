@@ -1,124 +1,124 @@
-using System;
-using Server;
 using Server.Engines.Craft;
 using Server.Mobiles;
 using Server.Network;
 
 namespace Server.Items
 {
-	public class RecipeScroll : Item
-	{
-		public override int LabelNumber => 1074560; // recipe scroll
+  public class RecipeScroll : Item
+  {
+    private int m_RecipeID;
 
-		private int m_RecipeID;
+    public RecipeScroll(Recipe r)
+      : this(r.ID)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int RecipeID
-		{
-			get { return m_RecipeID; }
-			set { m_RecipeID = value; InvalidateProperties(); }
-		}
+    [Constructible]
+    public RecipeScroll(int recipeID)
+      : base(0x2831)
+    {
+      m_RecipeID = recipeID;
+    }
 
-		public Recipe Recipe
-		{
-			get
-			{
-				if ( Recipe.Recipes.ContainsKey( m_RecipeID ) )
-					return Recipe.Recipes[m_RecipeID];
+    public RecipeScroll(Serial serial)
+      : base(serial)
+    {
+    }
 
-				return null;
-			}
-		}
+    public override int LabelNumber => 1074560; // recipe scroll
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int RecipeID
+    {
+      get => m_RecipeID;
+      set
+      {
+        m_RecipeID = value;
+        InvalidateProperties();
+      }
+    }
 
-			Recipe r = this.Recipe;
+    public Recipe Recipe
+    {
+      get
+      {
+        if (Recipe.Recipes.ContainsKey(m_RecipeID))
+          return Recipe.Recipes[m_RecipeID];
 
-			if( r != null )
-				list.Add( 1049644, r.TextDefinition.ToString() ); // [~1_stuff~]
-		}
+        return null;
+      }
+    }
 
-		public RecipeScroll( Recipe r )
-			: this( r.ID )
-		{
-		}
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      base.GetProperties(list);
 
-		[Constructible]
-		public RecipeScroll( int recipeID )
-			: base( 0x2831 )
-		{
-			m_RecipeID = recipeID;
-		}
+      Recipe r = Recipe;
 
-		public RecipeScroll( Serial serial )
-			: base( serial )
-		{
-		}
+      if (r != null)
+        list.Add(1049644, r.TextDefinition.ToString()); // [~1_stuff~]
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if( !from.InRange( this.GetWorldLocation(), 2 ) )
-			{
-				from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
-				return;
-			}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (!from.InRange(GetWorldLocation(), 2))
+      {
+        from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+        return;
+      }
 
-			Recipe r = this.Recipe;
+      Recipe r = Recipe;
 
-			if( r != null && from is PlayerMobile )
-			{
-				PlayerMobile pm = from as PlayerMobile;
+      if (r != null && from is PlayerMobile pm)
+      {
+        if (!pm.HasRecipe(r))
+        {
+          bool allRequiredSkills = true;
+          double chance = r.CraftItem.GetSuccessChance(pm, null, r.CraftSystem, false, ref allRequiredSkills);
 
-				if( !pm.HasRecipe( r ) )
-				{
-					bool allRequiredSkills = true;
-					double chance = r.CraftItem.GetSuccessChance( from, null, r.CraftSystem, false, ref allRequiredSkills );
+          if (allRequiredSkills && chance >= 0.0)
+          {
+            pm.SendLocalizedMessage(1073451,
+              r.TextDefinition.ToString()); // You have learned a new recipe: ~1_RECIPE~
+            pm.AcquireRecipe(r);
+            Delete();
+          }
+          else
+          {
+            pm.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
+          }
+        }
+        else
+        {
+          pm.SendLocalizedMessage(1073427); // You already know this recipe.
+        }
+      }
+    }
 
-					if ( allRequiredSkills && chance >= 0.0 )
-					{
-						pm.SendLocalizedMessage( 1073451, r.TextDefinition.ToString() ); // You have learned a new recipe: ~1_RECIPE~
-						pm.AcquireRecipe( r );
-						this.Delete();
-					}
-					else
-					{
-						pm.SendLocalizedMessage( 1044153 ); // You don't have the required skills to attempt this item.
-					}
-				}
-				else
-				{
-					pm.SendLocalizedMessage( 1073427 ); // You already know this recipe.
-				}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			}
-		}
+      writer.Write(0); // version
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(m_RecipeID);
+    }
 
-			writer.Write( (int)0 ); // version
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			writer.Write( (int)m_RecipeID );
-		}
+      int version = reader.ReadInt();
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      switch (version)
+      {
+        case 0:
+        {
+          m_RecipeID = reader.ReadInt();
 
-			int version = reader.ReadInt();
-
-			switch( version )
-			{
-				case 0:
-					{
-						m_RecipeID = reader.ReadInt();
-
-						break;
-					}
-			}
-		}
-	}
+          break;
+        }
+      }
+    }
+  }
 }

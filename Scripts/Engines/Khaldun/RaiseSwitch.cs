@@ -1,223 +1,218 @@
 using System;
-using Server;
 using Server.Network;
 
 namespace Server.Items
 {
-	public class RaiseSwitch : Item
-	{
-		private RaisableItem m_RaisableItem;
+  public class RaiseSwitch : Item
+  {
+    private ResetTimer m_ResetTimer;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public RaisableItem RaisableItem
-		{
-			get{ return m_RaisableItem; }
-			set{ m_RaisableItem = value; }
-		}
+    [Constructible]
+    public RaiseSwitch() : this(0x1093)
+    {
+    }
 
-		[Constructible]
-		public RaiseSwitch() : this( 0x1093 )
-		{
-		}
+    protected RaiseSwitch(int itemID) : base(itemID)
+    {
+      Movable = false;
+    }
 
-		protected RaiseSwitch( int itemID ) : base( itemID )
-		{
-			Movable = false;
-		}
+    public RaiseSwitch(Serial serial) : base(serial)
+    {
+    }
 
-		public override void OnDoubleClick( Mobile m )
-		{
-			if ( !m.InRange( this, 2 ) )
-			{
-				m.LocalOverheadMessage( MessageType.Regular, 0x3B2, 1019045 ); // I can't reach that.
-				return;
-			}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public RaisableItem RaisableItem{ get; set; }
 
-			if ( RaisableItem != null && RaisableItem.Deleted )
-				RaisableItem = null;
+    public override void OnDoubleClick(Mobile m)
+    {
+      if (!m.InRange(this, 2))
+      {
+        m.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+        return;
+      }
 
-			Flip();
+      if (RaisableItem != null && RaisableItem.Deleted)
+        RaisableItem = null;
 
-			if ( RaisableItem != null )
-			{
-				if ( RaisableItem.IsRaisable )
-				{
-					RaisableItem.Raise();
-					m.LocalOverheadMessage( MessageType.Regular, 0x5A, true, "You hear a grinding noise echoing in the distance." );
-				}
-				else
-				{
-					m.LocalOverheadMessage( MessageType.Regular, 0x5A, true, "You flip the switch again, but nothing happens." );
-				}
-			}
-		}
+      Flip();
 
-		protected virtual void Flip()
-		{
-			if ( ItemID != 0x1093 )
-			{
-				ItemID = 0x1093;
+      if (RaisableItem != null)
+      {
+        if (RaisableItem.IsRaisable)
+        {
+          RaisableItem.Raise();
+          m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
+            "You hear a grinding noise echoing in the distance.");
+        }
+        else
+        {
+          m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
+            "You flip the switch again, but nothing happens.");
+        }
+      }
+    }
 
-				StopResetTimer();
-			}
-			else
-			{
-				ItemID = 0x1095;
+    protected virtual void Flip()
+    {
+      if (ItemID != 0x1093)
+      {
+        ItemID = 0x1093;
 
-				if ( RaisableItem != null && RaisableItem.CloseDelay >= TimeSpan.Zero )
-					StartResetTimer( RaisableItem.CloseDelay );
-				else
-					StartResetTimer( TimeSpan.FromMinutes( 2.0 ) );
-			}
+        StopResetTimer();
+      }
+      else
+      {
+        ItemID = 0x1095;
 
-			Effects.PlaySound( Location, Map, 0x3E8 );
-		}
+        if (RaisableItem != null && RaisableItem.CloseDelay >= TimeSpan.Zero)
+          StartResetTimer(RaisableItem.CloseDelay);
+        else
+          StartResetTimer(TimeSpan.FromMinutes(2.0));
+      }
 
-		private ResetTimer m_ResetTimer;
+      Effects.PlaySound(Location, Map, 0x3E8);
+    }
 
-		protected void StartResetTimer( TimeSpan delay )
-		{
-			StopResetTimer();
+    protected void StartResetTimer(TimeSpan delay)
+    {
+      StopResetTimer();
 
-			m_ResetTimer = new ResetTimer( this, delay );
-			m_ResetTimer.Start();
-		}
+      m_ResetTimer = new ResetTimer(this, delay);
+      m_ResetTimer.Start();
+    }
 
-		protected void StopResetTimer()
-		{
-			if ( m_ResetTimer != null )
-			{
-				m_ResetTimer.Stop();
-				m_ResetTimer = null;
-			}
-		}
+    protected void StopResetTimer()
+    {
+      if (m_ResetTimer != null)
+      {
+        m_ResetTimer.Stop();
+        m_ResetTimer = null;
+      }
+    }
 
-		protected virtual void Reset()
-		{
-			if ( ItemID != 0x1093 )
-				Flip();
-		}
+    protected virtual void Reset()
+    {
+      if (ItemID != 0x1093)
+        Flip();
+    }
 
-		private class ResetTimer : Timer
-		{
-			private RaiseSwitch m_RaiseSwitch;
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			public ResetTimer( RaiseSwitch raiseSwitch, TimeSpan delay ) : base( delay )
-			{
-				m_RaiseSwitch = raiseSwitch;
+      writer.WriteEncodedInt(0); // version
 
-				Priority = ComputePriority( delay );
-			}
+      writer.Write(RaisableItem);
+    }
 
-			protected override void OnTick()
-			{
-				if ( m_RaiseSwitch.Deleted )
-					return;
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-				m_RaiseSwitch.m_ResetTimer = null;
+      int version = reader.ReadEncodedInt();
 
-				m_RaiseSwitch.Reset();
-			}
-		}
+      RaisableItem = (RaisableItem)reader.ReadItem();
 
-		public RaiseSwitch( Serial serial ) : base( serial )
-		{
-		}
+      Reset();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    private class ResetTimer : Timer
+    {
+      private RaiseSwitch m_RaiseSwitch;
 
-			writer.WriteEncodedInt( (int) 0 ); // version
+      public ResetTimer(RaiseSwitch raiseSwitch, TimeSpan delay) : base(delay)
+      {
+        m_RaiseSwitch = raiseSwitch;
 
-			writer.Write( (Item) m_RaisableItem );
-		}
+        Priority = ComputePriority(delay);
+      }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      protected override void OnTick()
+      {
+        if (m_RaiseSwitch.Deleted)
+          return;
 
-			int version = reader.ReadEncodedInt();
+        m_RaiseSwitch.m_ResetTimer = null;
 
-			m_RaisableItem = (RaisableItem) reader.ReadItem();
+        m_RaiseSwitch.Reset();
+      }
+    }
+  }
 
-			Reset();
-		}
-	}
+  public class DisappearingRaiseSwitch : RaiseSwitch
+  {
+    [Constructible]
+    public DisappearingRaiseSwitch() : base(0x108F)
+    {
+    }
 
-	public class DisappearingRaiseSwitch : RaiseSwitch
-	{
-		public int CurrentRange{ get{ return Visible ? 3 : 2; } }
+    public DisappearingRaiseSwitch(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public DisappearingRaiseSwitch() : base( 0x108F )
-		{
-		}
+    public int CurrentRange => Visible ? 3 : 2;
 
-		protected override void Flip()
-		{
-		}
+    public override bool HandlesOnMovement => true;
 
-		protected override void Reset()
-		{
-		}
+    protected override void Flip()
+    {
+    }
 
-		public override bool HandlesOnMovement => true;
+    protected override void Reset()
+    {
+    }
 
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			if ( Utility.InRange( m.Location, Location, CurrentRange ) || Utility.InRange( oldLocation, Location, CurrentRange ) )
-				Refresh();
-		}
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      if (Utility.InRange(m.Location, Location, CurrentRange) || Utility.InRange(oldLocation, Location, CurrentRange))
+        Refresh();
+    }
 
-		public override void OnMapChange()
-		{
-			if ( !Deleted )
-				Refresh();
-		}
+    public override void OnMapChange()
+    {
+      if (!Deleted)
+        Refresh();
+    }
 
-		public override void OnLocationChange( Point3D oldLoc )
-		{
-			if ( !Deleted )
-				Refresh();
-		}
+    public override void OnLocationChange(Point3D oldLoc)
+    {
+      if (!Deleted)
+        Refresh();
+    }
 
-		public void Refresh()
-		{
-			bool found = false;
-			foreach ( Mobile mob in GetMobilesInRange( CurrentRange ) )
-			{
-				if ( mob.Hidden && mob.AccessLevel > AccessLevel.Player )
-					continue;
+    public void Refresh()
+    {
+      bool found = false;
+      foreach (Mobile mob in GetMobilesInRange(CurrentRange))
+      {
+        if (mob.Hidden && mob.AccessLevel > AccessLevel.Player)
+          continue;
 
-				found = true;
-				break;
-			}
+        found = true;
+        break;
+      }
 
-			Visible = found;
-		}
+      Visible = found;
+    }
 
-		public DisappearingRaiseSwitch( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      if (RaisableItem != null && RaisableItem.Deleted)
+        RaisableItem = null;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			if ( RaisableItem != null && RaisableItem.Deleted )
-				RaisableItem = null;
+      base.Serialize(writer);
 
-			base.Serialize( writer );
+      writer.WriteEncodedInt(0); // version
+    }
 
-			writer.WriteEncodedInt( (int) 0 ); // version
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      int version = reader.ReadEncodedInt();
 
-			int version = reader.ReadEncodedInt();
-
-			Timer.DelayCall( TimeSpan.Zero, new TimerCallback( Refresh ) );
-		}
-	}
+      Timer.DelayCall(TimeSpan.Zero, Refresh);
+    }
+  }
 }

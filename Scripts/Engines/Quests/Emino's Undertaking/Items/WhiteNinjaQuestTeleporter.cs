@@ -1,59 +1,57 @@
-using System;
-using Server;
 using Server.Mobiles;
 
 namespace Server.Engines.Quests.Ninja
 {
-	public class WhiteNinjaQuestTeleporter : DynamicTeleporter
-	{
-		public override int LabelNumber => 1026157; // teleporter
+  public class WhiteNinjaQuestTeleporter : DynamicTeleporter
+  {
+    [Constructible]
+    public WhiteNinjaQuestTeleporter() : base(0x51C, 0x47E)
+    {
+    }
 
-		[Constructible]
-		public WhiteNinjaQuestTeleporter() : base( 0x51C, 0x47E )
-		{
-		}
+    public WhiteNinjaQuestTeleporter(Serial serial) : base(serial)
+    {
+    }
 
-		public override int NotWorkingMessage => 1063198; // You stand on the strange floor tile but nothing happens.
+    public override int LabelNumber => 1026157; // teleporter
 
-		public override bool GetDestination( PlayerMobile player, ref Point3D loc, ref Map map )
-		{
-			QuestSystem qs = player.Quest;
+    public override int NotWorkingMessage => 1063198; // You stand on the strange floor tile but nothing happens.
 
-			if ( qs is EminosUndertakingQuest )
-			{
-				QuestObjective obj = qs.FindObjective( typeof( SearchForSwordObjective ) );
+    public override bool GetDestination(PlayerMobile player, ref Point3D loc, ref Map map)
+    {
+      QuestSystem qs = player.Quest;
 
-				if ( obj != null )
-				{
-					if ( !obj.Completed )
-						obj.Complete();
+      if (qs is EminosUndertakingQuest)
+      {
+        QuestObjective obj = qs.FindObjective(typeof(SearchForSwordObjective));
 
-					loc = new Point3D( 411, 1085, 0 );
-					map = Map.Malas;
+        if (obj != null)
+        {
+          if (!obj.Completed)
+            obj.Complete();
 
-					return true;
-				}
-			}
+          loc = new Point3D(411, 1085, 0);
+          map = Map.Malas;
 
-			return false;
-		}
+          return true;
+        }
+      }
 
-		public WhiteNinjaQuestTeleporter( Serial serial ) : base( serial )
-		{
-		}
+      return false;
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

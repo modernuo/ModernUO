@@ -1,52 +1,48 @@
-using System;
-using Server;
-
 namespace Server.Engines.Mahjong
 {
-	public class MahjongDices
-	{
-		private MahjongGame m_Game;
-		private int m_First;
-		private int m_Second;
+  public class MahjongDices
+  {
+    public MahjongDices(MahjongGame game)
+    {
+      Game = game;
+      First = Utility.Random(1, 6);
+      Second = Utility.Random(1, 6);
+    }
 
-		public MahjongGame Game  => m_Game;
-		public int First  => m_First;
-		public int Second  => m_Second;
+    public MahjongDices(MahjongGame game, GenericReader reader)
+    {
+      Game = game;
 
-		public MahjongDices( MahjongGame game )
-		{
-			m_Game = game;
-			m_First = Utility.Random( 1, 6 );
-			m_Second = Utility.Random( 1, 6 );
-		}
+      int version = reader.ReadInt();
 
-		public void RollDices( Mobile from )
-		{
-			m_First = Utility.Random( 1, 6 );
-			m_Second = Utility.Random( 1, 6 );
+      First = reader.ReadInt();
+      Second = reader.ReadInt();
+    }
 
-			m_Game.Players.SendGeneralPacket( true, true );
+    public MahjongGame Game{ get; }
 
-			if ( from != null )
-				m_Game.Players.SendLocalizedMessage( 1062695, string.Format( "{0}\t{1}\t{2}", from.Name, m_First, m_Second ) ); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
-		}
+    public int First{ get; private set; }
 
-		public void Save( GenericWriter writer )
-		{
-			writer.Write( (int) 0 ); // version
+    public int Second{ get; private set; }
 
-			writer.Write( m_First );
-			writer.Write( m_Second );
-		}
+    public void RollDices(Mobile from)
+    {
+      First = Utility.Random(1, 6);
+      Second = Utility.Random(1, 6);
 
-		public MahjongDices( MahjongGame game, GenericReader reader )
-		{
-			m_Game = game;
+      Game.Players.SendGeneralPacket(true, true);
 
-			int version = reader.ReadInt();
+      if (from != null)
+        Game.Players.SendLocalizedMessage(1062695,
+          $"{from.Name}\t{First}\t{Second}"); // ~1_name~ rolls the dice and gets a ~2_number~ and a ~3_number~!
+    }
 
-			m_First = reader.ReadInt();
-			m_Second = reader.ReadInt();
-		}
-	}
+    public void Save(GenericWriter writer)
+    {
+      writer.Write(0); // version
+
+      writer.Write(First);
+      writer.Write(Second);
+    }
+  }
 }

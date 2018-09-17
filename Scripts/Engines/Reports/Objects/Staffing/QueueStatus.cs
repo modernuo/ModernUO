@@ -1,50 +1,46 @@
 using System;
-using System.Collections;
-using Server;
-using Server.Engines;
-using Server.Engines.Help;
 
 namespace Server.Engines.Reports
 {
-	public class QueueStatus : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "qs", new ConstructCallback( Construct ) );
+  public class QueueStatus : PersistableObject
+  {
+    public QueueStatus()
+    {
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new QueueStatus();
-		}
+    public QueueStatus(int count)
+    {
+      TimeStamp = DateTime.UtcNow;
+      Count = count;
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public DateTime TimeStamp{ get; set; }
 
-		private DateTime m_TimeStamp;
-		private int m_Count;
+    public int Count{ get; set; }
 
-		public DateTime TimeStamp{ get{ return m_TimeStamp; } set{ m_TimeStamp = value; } }
-		public int Count{ get{ return m_Count; } set{ m_Count = value; } }
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetDateTime("t", TimeStamp);
+      op.SetInt32("c", Count);
+    }
 
-		public QueueStatus()
-		{
-		}
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      TimeStamp = ip.GetDateTime("t");
+      Count = ip.GetInt32("c");
+    }
 
-		public QueueStatus( int count )
-		{
-			m_TimeStamp = DateTime.UtcNow;
-			m_Count = count;
-		}
+    #region Type Identification
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetDateTime( "t", m_TimeStamp );
-			op.SetInt32( "c", m_Count );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("qs", Construct);
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			m_TimeStamp = ip.GetDateTime( "t" );
-			m_Count = ip.GetInt32( "c" );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new QueueStatus();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

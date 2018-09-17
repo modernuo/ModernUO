@@ -1,54 +1,52 @@
-using System;
-
 namespace Server.Items
 {
-	public enum DarkWoodWallTypes
-	{
-		Corner,
-		SouthWall,
-		EastWall,
-		CornerPost,
-		EastDoorFrame,
-		SouthDoorFrame,
-		WestDoorFrame,
-		NorthDoorFrame,
-		SouthWindow,
-		EastWindow,
-		CornerMedium,
-		EastWallMedium,
-		SouthWallMedium,
-		CornerPostMedium,
-		CornerShort,
-		EastWallShort,
-		SouthWallShort,
-		CornerPostShort,
-		SouthWallVShort,
-		EastWallVShort
-	}
+  public enum DarkWoodWallTypes
+  {
+    Corner,
+    SouthWall,
+    EastWall,
+    CornerPost,
+    EastDoorFrame,
+    SouthDoorFrame,
+    WestDoorFrame,
+    NorthDoorFrame,
+    SouthWindow,
+    EastWindow,
+    CornerMedium,
+    EastWallMedium,
+    SouthWallMedium,
+    CornerPostMedium,
+    CornerShort,
+    EastWallShort,
+    SouthWallShort,
+    CornerPostShort,
+    SouthWallVShort,
+    EastWallVShort
+  }
 
-	public class DarkWoodWall : BaseWall
-	{
-		[Constructible]
-		public DarkWoodWall( DarkWoodWallTypes type ) : base( 0x0006 + (int)type )
-		{
-		}
+  public class DarkWoodWall : BaseWall
+  {
+    [Constructible]
+    public DarkWoodWall(DarkWoodWallTypes type) : base(0x0006 + (int)type)
+    {
+    }
 
-		public DarkWoodWall( Serial serial ) : base( serial )
-		{
-		}
+    public DarkWoodWall(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

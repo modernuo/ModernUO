@@ -1,132 +1,120 @@
 ﻿namespace Server.Items
 {
-	public abstract class BaseWaterContainer : Container, IHasQuantity
-	{
-		public abstract int voidItem_ID { get; }
-		public abstract int fullItem_ID { get; }
-		public abstract int MaxQuantity { get; }
+  public abstract class BaseWaterContainer : Container, IHasQuantity
+  {
+    private int m_Quantity;
 
-		public override int DefaultGumpID => 0x3e;
+    public BaseWaterContainer(int Item_Id, bool filled)
+      : base(Item_Id)
+    {
+      m_Quantity = filled ? MaxQuantity : 0;
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual bool IsEmpty { get { return ( m_Quantity <= 0 ); } }
+    public BaseWaterContainer(Serial serial)
+      : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual bool IsFull { get { return ( m_Quantity >= MaxQuantity ); } }
+    public abstract int voidItem_ID{ get; }
+    public abstract int fullItem_ID{ get; }
+    public abstract int MaxQuantity{ get; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public virtual int Quantity
-		{
-			get
-			{
-				return m_Quantity;
-			}
-			set
-			{
-				if( value != m_Quantity )
-				{
-					m_Quantity = ( value < 1 ) ? 0 : ( value > MaxQuantity ) ? MaxQuantity : value;
+    public override int DefaultGumpID => 0x3e;
 
-					Movable = ( !IsLockedDown ) ? IsEmpty : false;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public virtual bool IsEmpty => m_Quantity <= 0;
 
-					ItemID = ( IsEmpty ) ? voidItem_ID : fullItem_ID;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public virtual bool IsFull => m_Quantity >= MaxQuantity;
 
-					if( !IsEmpty )
-					{
-						IEntity rootParent = RootParent;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public virtual int Quantity
+    {
+      get => m_Quantity;
+      set
+      {
+        if (value != m_Quantity)
+        {
+          m_Quantity = value < 1 ? 0 : value > MaxQuantity ? MaxQuantity : value;
 
-						if( rootParent != null && rootParent.Map != null && rootParent.Map != Map.Internal )
-							MoveToWorld( rootParent.Location, rootParent.Map );
-					}
+          Movable = !IsLockedDown ? IsEmpty : false;
 
-					InvalidateProperties();
-				}
-			}
-		}
+          ItemID = IsEmpty ? voidItem_ID : fullItem_ID;
 
-		private int m_Quantity;
+          if (!IsEmpty)
+          {
+            IEntity rootParent = RootParent;
 
-		public BaseWaterContainer( int Item_Id, bool filled )
-			: base( Item_Id )
-		{
-			m_Quantity = ( filled ) ? MaxQuantity : 0;
-		}
+            if (rootParent?.Map != null && rootParent.Map != Map.Internal)
+              MoveToWorld(rootParent.Location, rootParent.Map);
+          }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if( IsEmpty )
-			{
-				base.OnDoubleClick( from );
-			}
-		}
+          InvalidateProperties();
+        }
+      }
+    }
 
-		public override void OnSingleClick( Mobile from )
-		{
-			if( IsEmpty )
-			{
-				base.OnSingleClick( from );
-			}
-			else
-			{
-				if( Name == null )
-					LabelTo( from, LabelNumber );
-				else
-					LabelTo( from, Name );
-			}
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (IsEmpty) base.OnDoubleClick(from);
+    }
 
-		public override void OnAosSingleClick( Mobile from )
-		{
-			if( IsEmpty )
-			{
-				base.OnAosSingleClick( from );
-			}
-			else
-			{
-				if( Name == null )
-					LabelTo( from, LabelNumber );
-				else
-					LabelTo( from, Name );
-			}
-		}
+    public override void OnSingleClick(Mobile from)
+    {
+      if (IsEmpty)
+      {
+        base.OnSingleClick(from);
+      }
+      else
+      {
+        if (Name == null)
+          LabelTo(from, LabelNumber);
+        else
+          LabelTo(from, Name);
+      }
+    }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			if( IsEmpty )
-			{
-				base.GetProperties( list );
-			}
-		}
+    public override void OnAosSingleClick(Mobile from)
+    {
+      if (IsEmpty)
+      {
+        base.OnAosSingleClick(from);
+      }
+      else
+      {
+        if (Name == null)
+          LabelTo(from, LabelNumber);
+        else
+          LabelTo(from, Name);
+      }
+    }
 
-		public override bool OnDragDropInto( Mobile from, Item item, Point3D p )
-		{
-			if( !IsEmpty )
-			{
-				return false;
-			}
+    public override void GetProperties(ObjectPropertyList list)
+    {
+      if (IsEmpty) base.GetProperties(list);
+    }
 
-			return base.OnDragDropInto( from, item, p );
-		}
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
+    {
+      if (!IsEmpty) return false;
 
-		public BaseWaterContainer( Serial serial )
-			: base( serial )
-		{
-		}
+      return base.OnDragDropInto(from, item, p);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int)0 ); // version
-			writer.Write( (int)m_Quantity );
-		}
+      writer.Write(0); // version
+      writer.Write(m_Quantity);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-			m_Quantity = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+      m_Quantity = reader.ReadInt();
+    }
+  }
 }

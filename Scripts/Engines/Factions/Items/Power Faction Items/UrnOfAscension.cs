@@ -1,71 +1,69 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Server;
+using Server.Factions;
 using Server.Gumps;
 using Server.Multis;
-using Server.Mobiles;
-using Server.Factions;
+using Server.Network;
 
-namespace Server {
-	public sealed class UrnOfAscension : PowerFactionItem {
-		public override string DefaultName {
-			get {
-				return "urn of ascension";
-			}
-		}
+namespace Server
+{
+  public sealed class UrnOfAscension : PowerFactionItem
+  {
+    public UrnOfAscension()
+      : base(9246)
+    {
+    }
 
-		public UrnOfAscension()
-			: base( 9246 ) {
-		}
+    public UrnOfAscension(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public UrnOfAscension( Serial serial )
-			: base( serial ) {
-		}
+    public override string DefaultName => "urn of ascension";
 
-		public override bool Use( Mobile from ) {
-			Faction ourFaction = Faction.Find( from );
+    public override bool Use(Mobile from)
+    {
+      Faction ourFaction = Faction.Find(from);
 
-			bool used = false;
+      bool used = false;
 
-			foreach ( Mobile mob in from.GetMobilesInRange( 8 ) ) {
-				if ( mob.Player && !mob.Alive && from.InLOS( mob ) ) {
-					if ( Faction.Find( mob ) != ourFaction ) {
-						continue;
-					}
+      foreach (Mobile mob in from.GetMobilesInRange(8))
+        if (mob.Player && !mob.Alive && from.InLOS(mob))
+        {
+          if (Faction.Find(mob) != ourFaction) continue;
 
-					BaseHouse house = BaseHouse.FindHouseAt( mob );
+          BaseHouse house = BaseHouse.FindHouseAt(mob);
 
-					if ( house == null || ( house.IsFriend( from ) || house.IsFriend( mob ) ) ) {
-						Faction.ClearSkillLoss( mob );
+          if (house == null || house.IsFriend(from) || house.IsFriend(mob))
+          {
+            Faction.ClearSkillLoss(mob);
 
-						mob.SendGump( new ResurrectGump( mob, from, ResurrectMessage.Generic ) );
-						used = true;
-					}
-				}
-			}
+            mob.SendGump(new ResurrectGump(mob, from, ResurrectMessage.Generic));
+            used = true;
+          }
+        }
 
-			if ( used ) {
-				from.LocalOverheadMessage( Server.Network.MessageType.Regular, 2219, false, "The urn shatters as you invoke its power." );
-				from.PlaySound( 64 );
+      if (used)
+      {
+        from.LocalOverheadMessage(MessageType.Regular, 2219, false, "The urn shatters as you invoke its power.");
+        from.PlaySound(64);
 
-				Effects.PlaySound( from.Location, from.Map, 1481 );
-			}
+        Effects.PlaySound(from.Location, from.Map, 1481);
+      }
 
-			return used;
-		}
+      return used;
+    }
 
-		public override void Serialize( GenericWriter writer ) {
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( ( int ) 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader ) {
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

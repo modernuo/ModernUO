@@ -1,34 +1,32 @@
-using System;
-
 namespace Server.Items
 {
-	public class TambourineTassel : BaseInstrument
-	{
-		[Constructible]
-		public TambourineTassel() : base( 0xE9E, 0x52, 0x53 )
-		{
-			Weight = 1.0;
-		}
+  public class TambourineTassel : BaseInstrument
+  {
+    [Constructible]
+    public TambourineTassel() : base(0xE9E, 0x52, 0x53)
+    {
+      Weight = 1.0;
+    }
 
-		public TambourineTassel( Serial serial ) : base( serial )
-		{
-		}
+    public TambourineTassel(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( Weight == 2.0 )
-				Weight = 1.0;
-		}
-	}
+      if (Weight == 2.0)
+        Weight = 1.0;
+    }
+  }
 }

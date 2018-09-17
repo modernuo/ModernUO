@@ -1,158 +1,156 @@
-using System;
 using System.Collections;
-using Server.Targeting;
-using Server.Network;
 
 namespace Server.Spells.First
 {
-	public class ReactiveArmorSpell : MagerySpell
-	{
-		private static SpellInfo m_Info = new SpellInfo(
-				"Reactive Armor", "Flam Sanct",
-				236,
-				9011,
-				Reagent.Garlic,
-				Reagent.SpidersSilk,
-				Reagent.SulfurousAsh
-			);
+  public class ReactiveArmorSpell : MagerySpell
+  {
+    private static SpellInfo m_Info = new SpellInfo(
+      "Reactive Armor", "Flam Sanct",
+      236,
+      9011,
+      Reagent.Garlic,
+      Reagent.SpidersSilk,
+      Reagent.SulfurousAsh
+    );
 
-		public override SpellCircle Circle => SpellCircle.First;
+    private static Hashtable m_Table = new Hashtable();
 
-		public ReactiveArmorSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
-		{
-		}
+    public ReactiveArmorSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    {
+    }
 
-		public override bool CheckCast()
-		{
-			if ( Core.AOS )
-				return true;
+    public override SpellCircle Circle => SpellCircle.First;
 
-			if ( Caster.MeleeDamageAbsorb > 0 )
-			{
-				Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
-				return false;
-			}
-			else if ( !Caster.CanBeginAction( typeof( DefensiveSpell ) ) )
-			{
-				Caster.SendLocalizedMessage( 1005385 ); // The spell will not adhere to you at this time.
-				return false;
-			}
+    public override bool CheckCast()
+    {
+      if (Core.AOS)
+        return true;
 
-			return true;
-		}
+      if (Caster.MeleeDamageAbsorb > 0)
+      {
+        Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+        return false;
+      }
 
-		private static Hashtable m_Table = new Hashtable();
+      if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+      {
+        Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
+        return false;
+      }
 
-		public override void OnCast()
-		{
-			if ( Core.AOS )
-			{
-				/* The reactive armor spell increases the caster's physical resistance, while lowering the caster's elemental resistances.
-				 * 15 + (Inscription/20) Physcial bonus
-				 * -5 Elemental
-				 * The reactive armor spell has an indefinite duration, becoming active when cast, and deactivated when re-cast.
-				 * Reactive Armor, Protection, and Magic Reflection will stay on�even after logging out, even after dying�until you �turn them off� by casting them again.
-				 * (+20 physical -5 elemental at 100 Inscription)
-				 */
+      return true;
+    }
 
-				if ( CheckSequence() )
-				{
-					Mobile targ = Caster;
+    public override void OnCast()
+    {
+      if (Core.AOS)
+      {
+        /* The reactive armor spell increases the caster's physical resistance, while lowering the caster's elemental resistances.
+         * 15 + (Inscription/20) Physcial bonus
+         * -5 Elemental
+         * The reactive armor spell has an indefinite duration, becoming active when cast, and deactivated when re-cast.
+         * Reactive Armor, Protection, and Magic Reflection will stay on�even after logging out, even after dying�until you �turn them off� by casting them again.
+         * (+20 physical -5 elemental at 100 Inscription)
+         */
 
-					ResistanceMod[] mods = (ResistanceMod[])m_Table[targ];
+        if (CheckSequence())
+        {
+          Mobile targ = Caster;
 
-					if ( mods == null )
-					{
-						targ.PlaySound( 0x1E9 );
-						targ.FixedParticles( 0x376A, 9, 32, 5008, EffectLayer.Waist );
+          ResistanceMod[] mods = (ResistanceMod[])m_Table[targ];
 
-						mods = new ResistanceMod[5]
-							{
-								new ResistanceMod( ResistanceType.Physical, 15 + (int)(targ.Skills[SkillName.Inscribe].Value / 20) ),
-								new ResistanceMod( ResistanceType.Fire, -5 ),
-								new ResistanceMod( ResistanceType.Cold, -5 ),
-								new ResistanceMod( ResistanceType.Poison, -5 ),
-								new ResistanceMod( ResistanceType.Energy, -5 )
-							};
+          if (mods == null)
+          {
+            targ.PlaySound(0x1E9);
+            targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
 
-						m_Table[targ] = mods;
+            mods = new ResistanceMod[5]
+            {
+              new ResistanceMod(ResistanceType.Physical,
+                15 + (int)(targ.Skills[SkillName.Inscribe].Value / 20)),
+              new ResistanceMod(ResistanceType.Fire, -5),
+              new ResistanceMod(ResistanceType.Cold, -5),
+              new ResistanceMod(ResistanceType.Poison, -5),
+              new ResistanceMod(ResistanceType.Energy, -5)
+            };
 
-						for ( int i = 0; i < mods.Length; ++i )
-							targ.AddResistanceMod( mods[i] );
+            m_Table[targ] = mods;
 
-						int physresist = 15 + (int)(targ.Skills[SkillName.Inscribe].Value / 20);
-						string args = String.Format("{0}\t{1}\t{2}\t{3}\t{4}", physresist, 5, 5, 5, 5);
+            for (int i = 0; i < mods.Length; ++i)
+              targ.AddResistanceMod(mods[i]);
 
-						BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args.ToString()));
-					}
-					else
-					{
-						targ.PlaySound( 0x1ED );
-						targ.FixedParticles( 0x376A, 9, 32, 5008, EffectLayer.Waist );
+            int physresist = 15 + (int)(targ.Skills[SkillName.Inscribe].Value / 20);
+            string args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
 
-						m_Table.Remove( targ );
+            BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args));
+          }
+          else
+          {
+            targ.PlaySound(0x1ED);
+            targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
 
-						for ( int i = 0; i < mods.Length; ++i )
-							targ.RemoveResistanceMod( mods[i] );
+            m_Table.Remove(targ);
 
-						BuffInfo.RemoveBuff(Caster, BuffIcon.ReactiveArmor);
-					}
-				}
+            for (int i = 0; i < mods.Length; ++i)
+              targ.RemoveResistanceMod(mods[i]);
 
-				FinishSequence();
-			}
-			else
-			{
-				if ( Caster.MeleeDamageAbsorb > 0 )
-				{
-					Caster.SendLocalizedMessage( 1005559 ); // This spell is already in effect.
-				}
-				else if ( !Caster.CanBeginAction( typeof( DefensiveSpell ) ) )
-				{
-					Caster.SendLocalizedMessage( 1005385 ); // The spell will not adhere to you at this time.
-				}
-				else if ( CheckSequence() )
-				{
-					if ( Caster.BeginAction( typeof( DefensiveSpell ) ) )
-					{
-						int value = (int)(Caster.Skills[SkillName.Magery].Value + Caster.Skills[SkillName.Meditation].Value + Caster.Skills[SkillName.Inscribe].Value);
-						value /= 3;
+            BuffInfo.RemoveBuff(Caster, BuffIcon.ReactiveArmor);
+          }
+        }
 
-						if ( value < 0 )
-							value = 1;
-						else if ( value > 75 )
-							value = 75;
+        FinishSequence();
+      }
+      else
+      {
+        if (Caster.MeleeDamageAbsorb > 0)
+        {
+          Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+        }
+        else if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+        {
+          Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
+        }
+        else if (CheckSequence())
+        {
+          if (Caster.BeginAction(typeof(DefensiveSpell)))
+          {
+            int value = (int)(Caster.Skills[SkillName.Magery].Value + Caster.Skills[SkillName.Meditation].Value +
+                              Caster.Skills[SkillName.Inscribe].Value);
+            value /= 3;
 
-						Caster.MeleeDamageAbsorb = value;
+            if (value < 0)
+              value = 1;
+            else if (value > 75)
+              value = 75;
 
-						Caster.FixedParticles( 0x376A, 9, 32, 5008, EffectLayer.Waist );
-						Caster.PlaySound( 0x1F2 );
-					}
-					else
-					{
-						Caster.SendLocalizedMessage( 1005385 ); // The spell will not adhere to you at this time.
-					}
-				}
+            Caster.MeleeDamageAbsorb = value;
 
-				FinishSequence();
-			}
-		}
+            Caster.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
+            Caster.PlaySound(0x1F2);
+          }
+          else
+          {
+            Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
+          }
+        }
 
-		public static void EndArmor( Mobile m )
-		{
-			if ( m_Table.Contains( m ) )
-			{
-				ResistanceMod[] mods = (ResistanceMod[]) m_Table[ m ];
+        FinishSequence();
+      }
+    }
 
-				if ( mods != null )
-				{
-					for ( int i = 0; i < mods.Length; ++i )
-						m.RemoveResistanceMod( mods[ i ] );
-				}
+    public static void EndArmor(Mobile m)
+    {
+      if (m_Table.Contains(m))
+      {
+        ResistanceMod[] mods = (ResistanceMod[])m_Table[m];
 
-				m_Table.Remove( m );
-				BuffInfo.RemoveBuff( m, BuffIcon.ReactiveArmor );
-			}
-		}
-	}
+        if (mods != null)
+          for (int i = 0; i < mods.Length; ++i)
+            m.RemoveResistanceMod(mods[i]);
+
+        m_Table.Remove(m);
+        BuffInfo.RemoveBuff(m, BuffIcon.ReactiveArmor);
+      }
+    }
+  }
 }

@@ -1,40 +1,37 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class SpellPlagueScroll : SpellScroll
-	{
-		[Constructible]
-		public SpellPlagueScroll()
-			: this( 1 )
-		{
-		}
+  public class SpellPlagueScroll : SpellScroll
+  {
+    [Constructible]
+    public SpellPlagueScroll()
+      : this(1)
+    {
+    }
 
-		[Constructible]
-		public SpellPlagueScroll( int amount )
-			: base( 689, 0x2DAA, amount )
-		{
-		}
+    [Constructible]
+    public SpellPlagueScroll(int amount)
+      : base(689, 0x2DAA, amount)
+    {
+    }
 
-		public SpellPlagueScroll( Serial serial )
-			: base( serial )
-		{
-		}
+    public SpellPlagueScroll(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			/*int version = */
-			reader.ReadInt();
-		}
-	}
+      /*int version = */
+      reader.ReadInt();
+    }
+  }
 }

@@ -1,236 +1,240 @@
 using System;
-using Server.Items;
+using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
-using Server.Mobiles;
 
 namespace Server.Items
 {
-	public abstract class BaseRanged : BaseMeleeWeapon
-	{
-		public abstract int EffectID{ get; }
-		public abstract Type AmmoType{ get; }
-		public abstract Item Ammo{ get; }
+  public abstract class BaseRanged : BaseMeleeWeapon
+  {
+    private bool m_Balanced;
 
-		public override int DefHitSound => 0x234;
-		public override int DefMissSound => 0x238;
+    private Timer m_RecoveryTimer; // so we don't start too many timers
+    private int m_Velocity;
 
-		public override SkillName DefSkill => SkillName.Archery;
-		public override WeaponType DefType => WeaponType.Ranged;
-		public override WeaponAnimation DefAnimation => WeaponAnimation.ShootXBow;
+    public BaseRanged(int itemID) : base(itemID)
+    {
+    }
 
-		public override SkillName AccuracySkill => SkillName.Archery;
+    public BaseRanged(Serial serial) : base(serial)
+    {
+    }
 
-		private Timer m_RecoveryTimer; // so we don't start too many timers
-		private bool m_Balanced;
-		private int m_Velocity;
+    public abstract int EffectID{ get; }
+    public abstract Type AmmoType{ get; }
+    public abstract Item Ammo{ get; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool Balanced
-		{
-			get{ return m_Balanced; }
-			set{ m_Balanced = value; InvalidateProperties(); }
-		}
+    public override int DefHitSound => 0x234;
+    public override int DefMissSound => 0x238;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Velocity
-		{
-			get{ return m_Velocity; }
-			set{ m_Velocity = value; InvalidateProperties(); }
-		}
+    public override SkillName DefSkill => SkillName.Archery;
+    public override WeaponType DefType => WeaponType.Ranged;
+    public override WeaponAnimation DefAnimation => WeaponAnimation.ShootXBow;
 
-		public BaseRanged( int itemID ) : base( itemID )
-		{
-		}
+    public override SkillName AccuracySkill => SkillName.Archery;
 
-		public BaseRanged( Serial serial ) : base( serial )
-		{
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Balanced
+    {
+      get => m_Balanced;
+      set
+      {
+        m_Balanced = value;
+        InvalidateProperties();
+      }
+    }
 
-		public override TimeSpan OnSwing( Mobile attacker, Mobile defender )
-		{
-			WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Velocity
+    {
+      get => m_Velocity;
+      set
+      {
+        m_Velocity = value;
+        InvalidateProperties();
+      }
+    }
 
-			// Make sure we've been standing still for .25/.5/1 second depending on Era
-			if (Core.TickCount - attacker.LastMoveTime >= (Core.SE ? 250 : Core.AOS ? 500 : 1000) || (Core.AOS && WeaponAbility.GetCurrentAbility(attacker) is MovingShot))
-			{
-				bool canSwing = true;
+    public override TimeSpan OnSwing(Mobile attacker, Mobile defender)
+    {
+      // WeaponAbility a = WeaponAbility.GetCurrentAbility( attacker );
 
-				if ( Core.AOS )
-				{
-					canSwing = ( !attacker.Paralyzed && !attacker.Frozen );
+      // Make sure we've been standing still for .25/.5/1 second depending on Era
+      if (Core.TickCount - attacker.LastMoveTime >= (Core.SE ? 250 : Core.AOS ? 500 : 1000) ||
+          Core.AOS && WeaponAbility.GetCurrentAbility(attacker) is MovingShot)
+      {
+        bool canSwing = true;
 
-					if ( canSwing )
-					{
-						Spell sp = attacker.Spell as Spell;
+        if (Core.AOS)
+        {
+          canSwing = !attacker.Paralyzed && !attacker.Frozen;
 
-						canSwing = ( sp == null || !sp.IsCasting || !sp.BlocksMovement );
-					}
-				}
+          if (canSwing) canSwing = !(attacker.Spell is Spell sp) || !sp.IsCasting || !sp.BlocksMovement;
+        }
 
-				#region Dueling
-				if ( attacker is PlayerMobile )
-				{
-					PlayerMobile pm = (PlayerMobile)attacker;
+        #region Dueling
 
-					if ( pm.DuelContext != null && !pm.DuelContext.CheckItemEquip( attacker, this ) )
-						canSwing = false;
-				}
-				#endregion
+        if (attacker is PlayerMobile pm)
+          if (pm.DuelContext != null && !pm.DuelContext.CheckItemEquip(attacker, this))
+            canSwing = false;
 
-				if ( canSwing && attacker.HarmfulCheck( defender ) )
-				{
-					attacker.DisruptiveAction();
-					attacker.Send( new Swing( 0, attacker, defender ) );
+        #endregion
 
-					if ( OnFired( attacker, defender ) )
-					{
-						if ( CheckHit( attacker, defender ) )
-							OnHit( attacker, defender );
-						else
-							OnMiss( attacker, defender );
-					}
-				}
+        if (canSwing && attacker.HarmfulCheck(defender))
+        {
+          attacker.DisruptiveAction();
+          attacker.Send(new Swing(0, attacker, defender));
 
-				attacker.RevealingAction();
+          if (OnFired(attacker, defender))
+          {
+            if (CheckHit(attacker, defender))
+              OnHit(attacker, defender);
+            else
+              OnMiss(attacker, defender);
+          }
+        }
 
-				return GetDelay( attacker );
-			}
-			else
-			{
-				attacker.RevealingAction();
+        attacker.RevealingAction();
 
-				return TimeSpan.FromSeconds( 0.25 );
-			}
-		}
+        return GetDelay(attacker);
+      }
 
-		public override void OnHit( Mobile attacker, Mobile defender, double damageBonus )
-		{
-			if ( attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) && 0.4 >= Utility.RandomDouble() )
-				defender.AddToBackpack( Ammo );
+      attacker.RevealingAction();
 
-			if ( Core.ML && m_Velocity > 0 )
-			{
-				int bonus = (int) attacker.GetDistanceToSqrt( defender );
+      return TimeSpan.FromSeconds(0.25);
+    }
 
-				if ( bonus > 0 && m_Velocity > Utility.Random( 100 ) )
-				{
-					AOS.Damage( defender, attacker, bonus * 3, 100, 0, 0, 0, 0 );
+    public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
+    {
+      if (attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
+          0.4 >= Utility.RandomDouble())
+        defender.AddToBackpack(Ammo);
 
-					if ( attacker.Player )
-						attacker.SendLocalizedMessage( 1072794 ); // Your arrow hits its mark with velocity!
+      if (Core.ML && m_Velocity > 0)
+      {
+        int bonus = (int)attacker.GetDistanceToSqrt(defender);
 
-					if ( defender.Player )
-						defender.SendLocalizedMessage( 1072795 ); // You have been hit by an arrow with velocity!
-				}
-			}
+        if (bonus > 0 && m_Velocity > Utility.Random(100))
+        {
+          AOS.Damage(defender, attacker, bonus * 3, 100, 0, 0, 0, 0);
 
-			base.OnHit( attacker, defender, damageBonus );
-		}
+          if (attacker.Player)
+            attacker.SendLocalizedMessage(1072794); // Your arrow hits its mark with velocity!
 
-		public override void OnMiss( Mobile attacker, Mobile defender )
-		{
-			if ( attacker.Player && 0.4 >= Utility.RandomDouble() )
-			{
-				if ( Core.SE )
-				{
-					PlayerMobile p = attacker as PlayerMobile;
+          if (defender.Player)
+            defender.SendLocalizedMessage(1072795); // You have been hit by an arrow with velocity!
+        }
+      }
 
-					if ( p != null )
-					{
-						Type ammo = AmmoType;
+      base.OnHit(attacker, defender, damageBonus);
+    }
 
-						if ( p.RecoverableAmmo.ContainsKey( ammo ) )
-							p.RecoverableAmmo[ ammo ]++;
-						else
-							p.RecoverableAmmo.Add( ammo, 1 );
+    public override void OnMiss(Mobile attacker, Mobile defender)
+    {
+      if (attacker.Player && 0.4 >= Utility.RandomDouble())
+      {
+        if (Core.SE)
+        {
+          if (attacker is PlayerMobile pm)
+          {
+            Type ammo = AmmoType;
 
-						if ( !p.Warmode )
-						{
-							if ( m_RecoveryTimer == null )
-								m_RecoveryTimer = Timer.DelayCall( TimeSpan.FromSeconds( 10 ), new TimerCallback( p.RecoverAmmo ) );
+            if (pm.RecoverableAmmo.ContainsKey(ammo))
+              pm.RecoverableAmmo[ammo]++;
+            else
+              pm.RecoverableAmmo.Add(ammo, 1);
 
-							if ( !m_RecoveryTimer.Running )
-								m_RecoveryTimer.Start();
-						}
-					}
-				} else {
-					Ammo.MoveToWorld( new Point3D( defender.X + Utility.RandomMinMax( -1, 1 ), defender.Y + Utility.RandomMinMax( -1, 1 ), defender.Z ), defender.Map );
-				}
-			}
+            if (!pm.Warmode)
+            {
+              if (m_RecoveryTimer == null)
+                m_RecoveryTimer = Timer.DelayCall(TimeSpan.FromSeconds(10), pm.RecoverAmmo);
 
-			base.OnMiss( attacker, defender );
-		}
+              if (!m_RecoveryTimer.Running)
+                m_RecoveryTimer.Start();
+            }
+          }
+        }
+        else
+        {
+          Ammo.MoveToWorld(
+            new Point3D(defender.X + Utility.RandomMinMax(-1, 1), defender.Y + Utility.RandomMinMax(-1, 1),
+              defender.Z), defender.Map);
+        }
+      }
 
-		public virtual bool OnFired( Mobile attacker, Mobile defender )
-		{
-			if ( attacker.Player )
-			{
-				BaseQuiver quiver = attacker.FindItemOnLayer( Layer.Cloak ) as BaseQuiver;
-				Container pack = attacker.Backpack;
+      base.OnMiss(attacker, defender);
+    }
 
-				if ( quiver == null || Utility.Random( 100 ) >= quiver.LowerAmmoCost )
-				{
-					// consume ammo
-					if ( quiver != null && quiver.ConsumeTotal( AmmoType, 1 ) )
-						quiver.InvalidateWeight();
-					else if ( pack == null || !pack.ConsumeTotal( AmmoType, 1 ) )
-						return false;
-				}
-				else if ( quiver.FindItemByType( AmmoType ) == null && ( pack == null || pack.FindItemByType( AmmoType ) == null ) )
-				{
-					// lower ammo cost should not work when we have no ammo at all
-					return false;
-				}
-			}
+    public virtual bool OnFired(Mobile attacker, Mobile defender)
+    {
+      if (attacker.Player)
+      {
+        BaseQuiver quiver = attacker.FindItemOnLayer(Layer.Cloak) as BaseQuiver;
+        Container pack = attacker.Backpack;
 
-			attacker.MovingEffect( defender, EffectID, 18, 1, false, false );
+        if (quiver == null || Utility.Random(100) >= quiver.LowerAmmoCost)
+        {
+          // consume ammo
+          if (quiver != null && quiver.ConsumeTotal(AmmoType, 1))
+            quiver.InvalidateWeight();
+          else if (pack == null || !pack.ConsumeTotal(AmmoType, 1))
+            return false;
+        }
+        else if (quiver.FindItemByType(AmmoType) == null && pack?.FindItemByType(AmmoType) == null)
+        {
+          // lower ammo cost should not work when we have no ammo at all
+          return false;
+        }
+      }
 
-			return true;
-		}
+      attacker.MovingEffect(defender, EffectID, 18, 1, false, false);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      return true;
+    }
 
-			writer.Write( (int) 3 ); // version
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (bool) m_Balanced );
-			writer.Write( (int) m_Velocity );
-		}
+      writer.Write(3); // version
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(m_Balanced);
+      writer.Write(m_Velocity);
+    }
 
-			int version = reader.ReadInt();
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			switch ( version )
-			{
-				case 3:
-				{
-					m_Balanced = reader.ReadBool();
-					m_Velocity = reader.ReadInt();
+      int version = reader.ReadInt();
 
-					goto case 2;
-				}
-				case 2:
-				case 1:
-				{
-					break;
-				}
-				case 0:
-				{
-					/*m_EffectID =*/ reader.ReadInt();
-					break;
-				}
-			}
+      switch (version)
+      {
+        case 3:
+        {
+          m_Balanced = reader.ReadBool();
+          m_Velocity = reader.ReadInt();
 
-			if ( version < 2 )
-			{
-				WeaponAttributes.MageWeapon = 0;
-				WeaponAttributes.UseBestSkill = 0;
-			}
-		}
-	}
+          goto case 2;
+        }
+        case 2:
+        case 1:
+        {
+          break;
+        }
+        case 0:
+        {
+          /*m_EffectID =*/
+          reader.ReadInt();
+          break;
+        }
+      }
+
+      if (version < 2)
+      {
+        WeaponAttributes.MageWeapon = 0;
+        WeaponAttributes.UseBestSkill = 0;
+      }
+    }
+  }
 }

@@ -1,34 +1,31 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class Luckblade : Leafblade
-	{
-		public override int LabelNumber => 1073522; // luckblade
+  public class Luckblade : Leafblade
+  {
+    [Constructible]
+    public Luckblade()
+    {
+      Attributes.Luck = 20;
+    }
 
-		[Constructible]
-		public Luckblade()
-		{
-			Attributes.Luck = 20;
-		}
+    public Luckblade(Serial serial) : base(serial)
+    {
+    }
 
-		public Luckblade( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073522; // luckblade
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

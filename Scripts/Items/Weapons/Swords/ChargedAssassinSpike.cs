@@ -1,34 +1,31 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class ChargedAssassinSpike : AssassinSpike
-	{
-		public override int LabelNumber => 1073518; // charged assassin spike
+  public class ChargedAssassinSpike : AssassinSpike
+  {
+    [Constructible]
+    public ChargedAssassinSpike()
+    {
+      WeaponAttributes.HitLightning = 10;
+    }
 
-		[Constructible]
-		public ChargedAssassinSpike()
-		{
-			WeaponAttributes.HitLightning = 10;
-		}
+    public ChargedAssassinSpike(Serial serial) : base(serial)
+    {
+    }
 
-		public ChargedAssassinSpike( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073518; // charged assassin spike
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

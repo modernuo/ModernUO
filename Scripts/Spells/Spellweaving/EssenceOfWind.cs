@@ -1,144 +1,141 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Spells.Spellweaving
 {
-	public class EssenceOfWindSpell : ArcanistSpell
-	{
-		private static SpellInfo m_Info = new SpellInfo( "Essence of Wind", "Anathrae", -1 );
+  public class EssenceOfWindSpell : ArcanistSpell
+  {
+    private static SpellInfo m_Info = new SpellInfo("Essence of Wind", "Anathrae", -1);
 
-		public override TimeSpan CastDelayBase => TimeSpan.FromSeconds( 3.0 );
+    private static Dictionary<Mobile, EssenceOfWindInfo> m_Table = new Dictionary<Mobile, EssenceOfWindInfo>();
 
-		public override double RequiredSkill => 52.0;
-		public override int RequiredMana => 40;
+    public EssenceOfWindSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    {
+    }
 
-		public EssenceOfWindSpell( Mobile caster, Item scroll ) : base( caster, scroll, m_Info )
-		{
-		}
+    public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(3.0);
 
-		public override void OnCast()
-		{
-			if( CheckSequence() )
-			{
-				Caster.PlaySound( 0x5C6 );
+    public override double RequiredSkill => 52.0;
+    public override int RequiredMana => 40;
 
-				int range = 5 + FocusLevel;
-				int damage = 25 + FocusLevel;
+    public override void OnCast()
+    {
+      if (CheckSequence())
+      {
+        Caster.PlaySound(0x5C6);
 
-				double skill = Caster.Skills[SkillName.Spellweaving].Value;
+        int range = 5 + FocusLevel;
+        int damage = 25 + FocusLevel;
 
-				TimeSpan duration = TimeSpan.FromSeconds( (int)(skill / 24) + FocusLevel );
+        double skill = Caster.Skills[SkillName.Spellweaving].Value;
 
-				int fcMalus = FocusLevel + 1;
-				int ssiMalus = 2 * (FocusLevel + 1);
+        TimeSpan duration = TimeSpan.FromSeconds((int)(skill / 24) + FocusLevel);
 
-				List<Mobile> targets = new List<Mobile>();
+        int fcMalus = FocusLevel + 1;
+        int ssiMalus = 2 * (FocusLevel + 1);
 
-				foreach( Mobile m in Caster.GetMobilesInRange( range ) )
-				{
-					if( Caster != m && Caster.InLOS( m ) && SpellHelper.ValidIndirectTarget( Caster, m ) && Caster.CanBeHarmful( m, false ) )
-						targets.Add( m );
-				}
+        List<Mobile> targets = new List<Mobile>();
 
-				for( int i = 0; i < targets.Count; i++ )
-				{
-					Mobile m = targets[i];
+        foreach (Mobile m in Caster.GetMobilesInRange(range))
+          if (Caster != m && Caster.InLOS(m) && SpellHelper.ValidIndirectTarget(Caster, m) &&
+              Caster.CanBeHarmful(m, false))
+            targets.Add(m);
 
-					Caster.DoHarmful( m );
+        for (int i = 0; i < targets.Count; i++)
+        {
+          Mobile m = targets[i];
 
-					SpellHelper.Damage( this, m, damage, 0, 0, 100, 0, 0 );
+          Caster.DoHarmful(m);
 
-					if( !CheckResisted( m ) )	//No message on resist
-					{
-						m_Table[m] = new EssenceOfWindInfo( m, fcMalus, ssiMalus, duration );
+          SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
 
-						BuffInfo.AddBuff( m, new BuffInfo( BuffIcon.EssenceOfWind, 1075802, duration, m, String.Format( "{0}\t{1}", fcMalus.ToString(), ssiMalus.ToString() ) ) );
-					}
-				}
-			}
+          if (!CheckResisted(m)) //No message on resist
+          {
+            m_Table[m] = new EssenceOfWindInfo(m, fcMalus, ssiMalus, duration);
 
-			FinishSequence();
-		}
+            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.EssenceOfWind, 1075802, duration, m,
+              $"{fcMalus.ToString()}\t{ssiMalus.ToString()}"));
+          }
+        }
+      }
 
-		private static Dictionary<Mobile, EssenceOfWindInfo> m_Table = new Dictionary<Mobile, EssenceOfWindInfo>();
+      FinishSequence();
+    }
 
-		private class EssenceOfWindInfo
-		{
-			private Mobile m_Defender;
-			private int m_FCMalus;
-			private int m_SSIMalus;
-			private ExpireTimer m_Timer;
+    public static int GetFCMalus(Mobile m)
+    {
+      if (m_Table.TryGetValue(m, out EssenceOfWindInfo info))
+        return info.FCMalus;
 
-			public Mobile Defender  => m_Defender;
-			public int FCMalus  => m_FCMalus;
-			public int SSIMalus  => m_SSIMalus;
-			public ExpireTimer Timer  => m_Timer;
+      return 0;
+    }
 
-			public EssenceOfWindInfo( Mobile defender, int fcMalus, int ssiMalus, TimeSpan duration )
-			{
-				m_Defender = defender;
-				m_FCMalus = fcMalus;
-				m_SSIMalus = ssiMalus;
+    public static int GetSSIMalus(Mobile m)
+    {
+      if (m_Table.TryGetValue(m, out EssenceOfWindInfo info))
+        return info.SSIMalus;
 
-				m_Timer = new ExpireTimer( m_Defender, duration );
-				m_Timer.Start();
-			}
-		}
+      return 0;
+    }
 
-		public static int GetFCMalus( Mobile m )
-		{
-			if (m_Table.TryGetValue( m, out EssenceOfWindInfo info ))
-				return info.FCMalus;
+    public static bool IsDebuffed(Mobile m)
+    {
+      return m_Table.ContainsKey(m);
+    }
 
-			return 0;
-		}
+    public static void StopDebuffing(Mobile m, bool message)
+    {
+      if (m_Table.TryGetValue(m, out EssenceOfWindInfo info))
+        info.Timer.DoExpire(message);
+    }
 
-		public static int GetSSIMalus( Mobile m )
-		{
-			if (m_Table.TryGetValue( m, out EssenceOfWindInfo info ))
-				return info.SSIMalus;
+    private class EssenceOfWindInfo
+    {
+      public EssenceOfWindInfo(Mobile defender, int fcMalus, int ssiMalus, TimeSpan duration)
+      {
+        Defender = defender;
+        FCMalus = fcMalus;
+        SSIMalus = ssiMalus;
 
-			return 0;
-		}
+        Timer = new ExpireTimer(Defender, duration);
+        Timer.Start();
+      }
 
-		public static bool IsDebuffed( Mobile m )
-		{
-			return m_Table.ContainsKey( m );
-		}
+      public Mobile Defender{ get; }
 
-		public static void StopDebuffing( Mobile m, bool message )
-		{
-			if (m_Table.TryGetValue( m, out EssenceOfWindInfo info ))
-				info.Timer.DoExpire( message );
-		}
+      public int FCMalus{ get; }
 
-		private class ExpireTimer : Timer
-		{
-			private Mobile m_Mobile;
+      public int SSIMalus{ get; }
 
-			public ExpireTimer( Mobile m, TimeSpan delay ) : base( delay )
-			{
-				m_Mobile = m;
-			}
+      public ExpireTimer Timer{ get; }
+    }
 
-			protected override void OnTick()
-			{
-				DoExpire( true );
-			}
+    private class ExpireTimer : Timer
+    {
+      private Mobile m_Mobile;
 
-			public void DoExpire( bool message )
-			{
-				Stop();
-				/*
-				if( message )
-				{
-				}
-				*/
-				m_Table.Remove( m_Mobile );
+      public ExpireTimer(Mobile m, TimeSpan delay) : base(delay)
+      {
+        m_Mobile = m;
+      }
 
-				BuffInfo.RemoveBuff( m_Mobile, BuffIcon.EssenceOfWind );
-			}
-		}
-	}
+      protected override void OnTick()
+      {
+        DoExpire(true);
+      }
+
+      public void DoExpire(bool message)
+      {
+        Stop();
+        /*
+        if ( message )
+        {
+        }
+        */
+        m_Table.Remove(m_Mobile);
+
+        BuffInfo.RemoveBuff(m_Mobile, BuffIcon.EssenceOfWind);
+      }
+    }
+  }
 }

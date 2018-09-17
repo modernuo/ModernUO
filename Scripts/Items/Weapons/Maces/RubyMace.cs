@@ -1,34 +1,31 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class RubyMace : DiamondMace
-	{
-		public override int LabelNumber => 1073529; // ruby mace
+  public class RubyMace : DiamondMace
+  {
+    [Constructible]
+    public RubyMace()
+    {
+      Attributes.WeaponDamage = 5;
+    }
 
-		[Constructible]
-		public RubyMace()
-		{
-			Attributes.WeaponDamage = 5;
-		}
+    public RubyMace(Serial serial) : base(serial)
+    {
+    }
 
-		public RubyMace( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073529; // ruby mace
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

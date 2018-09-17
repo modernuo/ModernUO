@@ -1,50 +1,46 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Mobiles
 {
-	public class InsaneDryad : MLDryad
-	{
-		public override string CorpseName => "an insane dryad corpse";
-		public override bool InitialInnocent => false;
+  public class InsaneDryad : MLDryad
+  {
+    [Constructible]
+    public InsaneDryad()
+    {
+      // TODO: Perhaps these should have negative karma?
+    }
 
-		public override string DefaultName => "an insane dryad";
+    /*
+    // TODO: uncomment once added
+    public override void OnDeath( Container c )
+    {
+      base.OnDeath( c );
 
-		[Constructible]
-		public InsaneDryad()
-		{
-			// TODO: Perhaps these should have negative karma?
-		}
+      if ( Utility.RandomDouble() < 0.1 )
+        c.DropItem( new ParrotItem() );
+    }
+    */
 
-		/*
-		// TODO: uncomment once added
-		public override void OnDeath( Container c )
-		{
-			base.OnDeath( c );
+    public InsaneDryad(Serial serial)
+      : base(serial)
+    {
+    }
 
-			if ( Utility.RandomDouble() < 0.1 )
-				c.DropItem( new ParrotItem() );
-		}
-		*/
+    public override string CorpseName => "an insane dryad corpse";
+    public override bool InitialInnocent => false;
 
-		public InsaneDryad( Serial serial )
-			: base( serial )
-		{
-		}
+    public override string DefaultName => "an insane dryad";
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

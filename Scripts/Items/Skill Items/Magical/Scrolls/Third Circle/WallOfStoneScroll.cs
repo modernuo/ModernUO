@@ -1,39 +1,33 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class WallOfStoneScroll : SpellScroll
-	{
-		[Constructible]
-		public WallOfStoneScroll() : this( 1 )
-		{
-		}
+  public class WallOfStoneScroll : SpellScroll
+  {
+    [Constructible]
+    public WallOfStoneScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public WallOfStoneScroll( int amount ) : base( 23, 0x1F44, amount )
-		{
-		}
+    [Constructible]
+    public WallOfStoneScroll(int amount) : base(23, 0x1F44, amount)
+    {
+    }
 
-		public WallOfStoneScroll( Serial serial ) : base( serial )
-		{
-		}
+    public WallOfStoneScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

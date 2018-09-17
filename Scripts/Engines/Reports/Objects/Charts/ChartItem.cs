@@ -1,46 +1,44 @@
-using System;
-
 namespace Server.Engines.Reports
 {
-	public class ChartItem : PersistableObject
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "ci", new ConstructCallback( Construct ) );
+  public class ChartItem : PersistableObject
+  {
+    private ChartItem()
+    {
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new ChartItem();
-		}
+    public ChartItem(string name, int value)
+    {
+      Name = name;
+      Value = value;
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public string Name{ get; set; }
 
-		private string m_Name;
-		private int m_Value;
+    public int Value{ get; set; }
 
-		public string Name{ get{ return m_Name; } set{ m_Name = value; } }
-		public int Value{ get{ return m_Value; } set{ m_Value = value; } }
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      op.SetString("n", Name);
+      op.SetInt32("v", Value);
+    }
 
-		private ChartItem()
-		{
-		}
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      Name = Utility.Intern(ip.GetString("n"));
+      Value = ip.GetInt32("v");
+    }
 
-		public ChartItem( string name, int value )
-		{
-			m_Name = name;
-			m_Value = value;
-		}
+    #region Type Identification
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			op.SetString( "n", m_Name );
-			op.SetInt32( "v", m_Value );
-		}
+    public static readonly PersistableType ThisTypeID = new PersistableType("ci", Construct);
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			m_Name = Utility.Intern( ip.GetString( "n" ) );
-			m_Value = ip.GetInt32( "v" );
-		}
-	}
+    private static PersistableObject Construct()
+    {
+      return new ChartItem();
+    }
+
+    public override PersistableType TypeID => ThisTypeID;
+
+    #endregion
+  }
 }

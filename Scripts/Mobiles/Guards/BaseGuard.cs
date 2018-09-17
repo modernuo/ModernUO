@@ -1,86 +1,80 @@
-using System;
-using System.Collections;
-using Server.Misc;
 using Server.Items;
-using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	public abstract class BaseGuard : Mobile
-	{
-		public static void Spawn( Mobile caller, Mobile target )
-		{
-			Spawn( caller, target, 1, false );
-		}
+  public abstract class BaseGuard : Mobile
+  {
+    public BaseGuard(Mobile target)
+    {
+      if (target != null)
+      {
+        Location = target.Location;
+        Map = target.Map;
 
-		public static void Spawn( Mobile caller, Mobile target, int amount, bool onlyAdditional )
-		{
-			if ( target == null || target.Deleted )
-				return;
+        Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+          5023);
+      }
+    }
 
-			foreach ( Mobile m in target.GetMobilesInRange( 15 ) )
-			{
-				if ( m is BaseGuard )
-				{
-					BaseGuard g = (BaseGuard)m;
+    public BaseGuard(Serial serial) : base(serial)
+    {
+    }
 
-					if ( g.Focus == null ) // idling
-					{
-						g.Focus = target;
+    public abstract Mobile Focus{ get; set; }
 
-						--amount;
-					}
-					else if ( g.Focus == target && !onlyAdditional )
-					{
-						--amount;
-					}
-				}
-			}
+    public static void Spawn(Mobile caller, Mobile target)
+    {
+      Spawn(caller, target, 1, false);
+    }
 
-			while ( amount-- > 0 )
-				caller.Region.MakeGuard( target );
-		}
+    public static void Spawn(Mobile caller, Mobile target, int amount, bool onlyAdditional)
+    {
+      if (target == null || target.Deleted)
+        return;
 
-		public BaseGuard( Mobile target )
-		{
-			if ( target != null )
-			{
-				Location = target.Location;
-				Map = target.Map;
+      foreach (Mobile m in target.GetMobilesInRange(15))
+        if (m is BaseGuard g)
+        {
+          if (g.Focus == null) // idling
+          {
+            g.Focus = target;
 
-				Effects.SendLocationParticles( EffectItem.Create( Location, Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 5023 );
-			}
-		}
+            --amount;
+          }
+          else if (g.Focus == target && !onlyAdditional)
+          {
+            --amount;
+          }
+        }
 
-		public BaseGuard( Serial serial ) : base( serial )
-		{
-		}
+      while (amount-- > 0)
+        caller.Region.MakeGuard(target);
+    }
 
-		public override bool OnBeforeDeath()
-		{
-			Effects.SendLocationParticles( EffectItem.Create( Location, Map, EffectItem.DefaultDuration ), 0x3728, 10, 10, 2023 );
+    public override bool OnBeforeDeath()
+    {
+      Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+        2023);
 
-			PlaySound( 0x1FE );
+      PlaySound(0x1FE);
 
-			Delete();
+      Delete();
 
-			return false;
-		}
+      return false;
+    }
 
-		public abstract Mobile Focus{ get; set; }
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0); // version
+    }
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

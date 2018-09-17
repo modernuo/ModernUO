@@ -1,8 +1,5 @@
 using System;
-using Server;
 using Server.Mobiles;
-using Server.Spells;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Items
@@ -35,13 +32,12 @@ namespace Server.Items
 			m_Created = DateTime.UtcNow;
 			m_Duration = duration;
 
-			m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1 ), new TimerCallback( OnTick ) );
+			m_Timer = Timer.DelayCall( TimeSpan.Zero, TimeSpan.FromSeconds( 1 ), OnTick );
 		}
 
 		public override void OnAfterDelete()
 		{
-			if( m_Timer != null )
-				m_Timer.Stop();
+			m_Timer?.Stop();
 		}
 
 		private void OnTick()
@@ -49,10 +45,10 @@ namespace Server.Items
 			DateTime now = DateTime.UtcNow;
 			TimeSpan age = now - m_Created;
 
-			if( age > m_Duration ) {
+			if ( age > m_Duration ) {
 				Delete();
 			} else {
-				if( !m_Drying && age > (m_Duration - age) )
+				if ( !m_Drying && age > (m_Duration - age) )
 				{
 					m_Drying = true;
 					ItemID = 0x122B;
@@ -62,9 +58,7 @@ namespace Server.Items
 
 				foreach( Mobile m in GetMobilesInRange( 0 ) )
 				{
-					BaseCreature bc = m as BaseCreature;
-
-					if( m.Alive && !m.IsDeadBondedPet && (bc == null || bc.Controlled || bc.Summoned) )
+					if ( m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned) )
 					{
 						toDamage.Add( m );
 					}

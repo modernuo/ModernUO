@@ -1,32 +1,28 @@
-using System;
+using System.Collections;
 
 namespace Server.Engines.Craft
 {
-	public class CraftSkillCol : System.Collections.CollectionBase
-	{
-		public CraftSkillCol()
-		{
-		}
+  public class CraftSkillCol : CollectionBase
+  {
+    public void Add(CraftSkill craftSkill)
+    {
+      List.Add(craftSkill);
+    }
 
-		public void Add( CraftSkill craftSkill )
-		{
-			List.Add( craftSkill );
-		}
+    public void Remove(int index)
+    {
+      if (index > Count - 1 || index < 0)
+      {
+      }
+      else
+      {
+        List.RemoveAt(index);
+      }
+    }
 
-		public void Remove( int index )
-		{
-			if ( index > Count - 1 || index < 0 )
-			{
-			}
-			else
-			{
-				List.RemoveAt( index );
-			}
-		}
-
-		public CraftSkill GetAt( int index )
-		{
-			return ( CraftSkill ) List[index];
-		}
-	}
+    public CraftSkill GetAt(int index)
+    {
+      return (CraftSkill)List[index];
+    }
+  }
 }

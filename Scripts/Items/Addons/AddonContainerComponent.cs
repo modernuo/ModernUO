@@ -1,171 +1,155 @@
-using System;
 using System.Collections.Generic;
-using Server;
 using Server.ContextMenus;
 
 namespace Server.Items
 {
-	public class AddonContainerComponent : Item, IChopable
-	{
-		public virtual bool NeedsWall  => false;
-		public virtual Point3D WallPosition  => Point3D.Zero;
+  public class AddonContainerComponent : Item, IChopable
+  {
+    [Constructible]
+    public AddonContainerComponent(int itemID) : base(itemID)
+    {
+      Movable = false;
 
-		private Point3D m_Offset;
-		private BaseAddonContainer m_Addon;
+      AddonComponent.ApplyLightTo(this);
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public BaseAddonContainer Addon
-		{
-			get { return m_Addon; }
-			set { m_Addon = value; }
-		}
+    public AddonContainerComponent(Serial serial) : base(serial)
+    {
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Point3D Offset
-		{
-			get { return m_Offset; }
-			set { m_Offset = value; }
-		}
+    public virtual bool NeedsWall => false;
+    public virtual Point3D WallPosition => Point3D.Zero;
 
-		[Hue, CommandProperty( AccessLevel.GameMaster )]
-		public override int Hue
-		{
-			get { return base.Hue; }
-			set
-			{
-				base.Hue = value;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public BaseAddonContainer Addon{ get; set; }
 
-				if ( m_Addon != null && m_Addon.ShareHue )
-					m_Addon.Hue = value;
-			}
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Point3D Offset{ get; set; }
 
-		[Constructible]
-		public AddonContainerComponent( int itemID ) : base( itemID )
-		{
-			Movable = false;
+    [Hue]
+    [CommandProperty(AccessLevel.GameMaster)]
+    public override int Hue
+    {
+      get => base.Hue;
+      set
+      {
+        base.Hue = value;
 
-			AddonComponent.ApplyLightTo( this );
-		}
+        if (Addon != null && Addon.ShareHue)
+          Addon.Hue = value;
+      }
+    }
 
-		public AddonContainerComponent( Serial serial ) : base( serial )
-		{
-		}
+    public virtual void OnChop(Mobile from)
+    {
+      if (Addon != null && from.InRange(GetWorldLocation(), 3))
+        Addon.OnChop(from);
+      else
+        from.SendLocalizedMessage(500446); // That is too far away.
+    }
 
-		public override bool OnDragDrop( Mobile from, Item dropped )
-		{
-			if ( Addon != null )
-				return Addon.OnDragDrop( from, dropped );
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+      if (Addon != null)
+        return Addon.OnDragDrop(from, dropped);
 
-			return false;
-		}
+      return false;
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( m_Addon != null )
-				m_Addon.OnComponentUsed( this, from );
-		}
+    public override void OnDoubleClick(Mobile from)
+    {
+      Addon?.OnComponentUsed(this, from);
+    }
 
-		public override void OnLocationChange( Point3D old )
-		{
-			if ( m_Addon != null )
-				m_Addon.Location = new Point3D( X - m_Offset.X, Y - m_Offset.Y, Z - m_Offset.Z );
-		}
+    public override void OnLocationChange(Point3D old)
+    {
+      if (Addon != null)
+        Addon.Location = new Point3D(X - Offset.X, Y - Offset.Y, Z - Offset.Z);
+    }
 
-		public override void GetContextMenuEntries( Mobile from, List<ContextMenuEntry> list )
-		{
-			if ( m_Addon != null )
-				m_Addon.GetContextMenuEntries( from, list );
-		}
+    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+    {
+      Addon?.GetContextMenuEntries(from, list);
+    }
 
-		public override void OnMapChange()
-		{
-			if ( m_Addon != null )
-				m_Addon.Map = Map;
-		}
+    public override void OnMapChange()
+    {
+      if (Addon != null)
+        Addon.Map = Map;
+    }
 
-		public override void OnAfterDelete()
-		{
-			base.OnAfterDelete();
+    public override void OnAfterDelete()
+    {
+      base.OnAfterDelete();
 
-			if ( m_Addon != null )
-				m_Addon.Delete();
-		}
+      Addon?.Delete();
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(0); // version
 
-			writer.Write( m_Addon );
-			writer.Write( m_Offset );
-		}
+      writer.Write(Addon);
+      writer.Write(Offset);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			m_Addon = reader.ReadItem() as BaseAddonContainer;
-			m_Offset = reader.ReadPoint3D();
+      Addon = reader.ReadItem() as BaseAddonContainer;
+      Offset = reader.ReadPoint3D();
 
-			if ( m_Addon != null )
-				m_Addon.OnComponentLoaded( this );
+      Addon?.OnComponentLoaded(this);
 
-			AddonComponent.ApplyLightTo( this );
-		}
+      AddonComponent.ApplyLightTo(this);
+    }
+  }
 
-		public virtual void OnChop( Mobile from )
-		{
-			if ( m_Addon != null && from.InRange( GetWorldLocation(), 3 ) )
-				m_Addon.OnChop( from );
-			else
-				from.SendLocalizedMessage( 500446 ); // That is too far away.
-		}
-	}
+  public class LocalizedContainerComponent : AddonContainerComponent
+  {
+    private int m_LabelNumber;
 
-	public class LocalizedContainerComponent : AddonContainerComponent
-	{
-		private int m_LabelNumber;
+    public LocalizedContainerComponent(int itemID, int labelNumber) : base(itemID)
+    {
+      m_LabelNumber = labelNumber;
+    }
 
-		public override int LabelNumber
-		{
-			get
-			{
-				if ( m_LabelNumber > 0 )
-					return m_LabelNumber;
+    public LocalizedContainerComponent(Serial serial) : base(serial)
+    {
+    }
 
-				return base.LabelNumber;
-			}
-		}
+    public override int LabelNumber
+    {
+      get
+      {
+        if (m_LabelNumber > 0)
+          return m_LabelNumber;
 
-		public LocalizedContainerComponent( int itemID, int labelNumber ) : base( itemID )
-		{
-			m_LabelNumber = labelNumber;
-		}
+        return base.LabelNumber;
+      }
+    }
 
-		public LocalizedContainerComponent( Serial serial ) : base( serial )
-		{
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      writer.Write(0); // version
 
-			writer.Write( (int) 0 ); // version
+      writer.Write(m_LabelNumber);
+    }
 
-			writer.Write( m_LabelNumber );
-		}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      int version = reader.ReadInt();
 
-			int version = reader.ReadInt();
-
-			m_LabelNumber = reader.ReadInt();
-		}
-	}
+      m_LabelNumber = reader.ReadInt();
+    }
+  }
 }

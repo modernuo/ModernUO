@@ -3,309 +3,305 @@ using System.Collections;
 
 namespace Server.Engines.Reports
 {
-	public enum BarGraphRenderMode
-	{
-		Bars,
-		Lines
-	}
+  public enum BarGraphRenderMode
+  {
+    Bars,
+    Lines
+  }
 
-	public class BarGraph : Chart
-	{
-		#region Type Identification
-		public static readonly PersistableType ThisTypeID = new PersistableType( "bg", new ConstructCallback( Construct ) );
+  public class BarGraph : Chart
+  {
+    public BarGraph(string name, string fileName, int ticks, string xTitle, string yTitle, BarGraphRenderMode rm)
+    {
+      m_Name = name;
+      m_FileName = fileName;
+      Ticks = ticks;
+      this.xTitle = xTitle;
+      this.yTitle = yTitle;
+      RenderMode = rm;
+    }
 
-		private static PersistableObject Construct()
-		{
-			return new BarGraph();
-		}
+    private BarGraph()
+    {
+    }
 
-		public override PersistableType TypeID => ThisTypeID;
-		#endregion
+    public int Ticks{ get; set; }
 
-		private int m_Ticks;
-		private BarGraphRenderMode m_RenderMode;
+    public BarGraphRenderMode RenderMode{ get; set; }
 
-		private string m_xTitle;
-		private string m_yTitle;
+    public string xTitle{ get; set; }
 
-		private int m_FontSize = 7;
-		private int m_Interval = 1;
+    public string yTitle{ get; set; }
 
-		private BarRegion[] m_Regions;
+    public int FontSize{ get; set; } = 7;
 
-		public int Ticks{ get{ return m_Ticks; } set{ m_Ticks = value; } }
-		public BarGraphRenderMode RenderMode{ get{ return m_RenderMode; } set{ m_RenderMode = value; } }
+    public int Interval{ get; set; } = 1;
 
-		public string xTitle{ get{ return m_xTitle; } set{ m_xTitle = value; } }
-		public string yTitle{ get{ return m_yTitle; } set{ m_yTitle = value; } }
+    public BarRegion[] Regions{ get; set; }
 
-		public int FontSize{ get{ return m_FontSize; } set{ m_FontSize = value; } }
-		public int Interval{ get{ return m_Interval; } set{ m_Interval = value; } }
+    public override void SerializeAttributes(PersistanceWriter op)
+    {
+      base.SerializeAttributes(op);
 
-		public BarRegion[] Regions{ get{ return m_Regions; } set{ m_Regions = value; } }
+      op.SetInt32("t", Ticks);
+      op.SetInt32("r", (int)RenderMode);
 
-		public BarGraph( string name, string fileName, int ticks, string xTitle, string yTitle, BarGraphRenderMode rm )
-		{
-			m_Name = name;
-			m_FileName = fileName;
-			m_Ticks = ticks;
-			m_xTitle = xTitle;
-			m_yTitle = yTitle;
-			m_RenderMode = rm;
-		}
+      op.SetString("x", xTitle);
+      op.SetString("y", yTitle);
 
-		private BarGraph()
-		{
-		}
+      op.SetInt32("s", FontSize);
+      op.SetInt32("i", Interval);
+    }
 
-		public override void SerializeAttributes( PersistanceWriter op )
-		{
-			base.SerializeAttributes( op );
+    public override void DeserializeAttributes(PersistanceReader ip)
+    {
+      base.DeserializeAttributes(ip);
 
-			op.SetInt32( "t", m_Ticks );
-			op.SetInt32( "r", (int) m_RenderMode );
+      Ticks = ip.GetInt32("t");
+      RenderMode = (BarGraphRenderMode)ip.GetInt32("r");
 
-			op.SetString( "x", m_xTitle );
-			op.SetString( "y", m_yTitle );
+      xTitle = Utility.Intern(ip.GetString("x"));
+      yTitle = Utility.Intern(ip.GetString("y"));
 
-			op.SetInt32( "s", m_FontSize );
-			op.SetInt32( "i", m_Interval );
-		}
+      FontSize = ip.GetInt32("s");
+      Interval = ip.GetInt32("i");
+    }
 
-		public override void DeserializeAttributes( PersistanceReader ip )
-		{
-			base.DeserializeAttributes( ip );
+    public static int LookupReportValue(Snapshot ss, string reportName, string valueName)
+    {
+      for (int j = 0; j < ss.Children.Count; ++j)
+      {
+        if (!(ss.Children[j] is Report report) || report.Name != reportName)
+          continue;
 
-			m_Ticks = ip.GetInt32( "t" );
-			m_RenderMode = (BarGraphRenderMode) ip.GetInt32( "r" );
+        for (int k = 0; k < report.Items.Count; ++k)
+        {
+          ReportItem item = report.Items[k];
 
-			m_xTitle = Utility.Intern( ip.GetString( "x" ) );
-			m_yTitle = Utility.Intern( ip.GetString( "y" ) );
+          if (item.Values[0].Value == valueName)
+            return Utility.ToInt32(item.Values[1].Value);
+        }
 
-			m_FontSize = ip.GetInt32( "s" );
-			m_Interval = ip.GetInt32( "i" );
-		}
+        break;
+      }
 
-		public static int LookupReportValue( Snapshot ss, string reportName, string valueName )
-		{
-			for ( int j = 0; j < ss.Children.Count; ++j )
-			{
-				Report report = ss.Children[j] as Report;
+      return -1;
+    }
 
-				if ( report == null || report.Name != reportName )
-					continue;
+    public static BarGraph DailyAverage(SnapshotHistory history, string reportName, string valueName)
+    {
+      int[] totals = new int[24];
+      int[] counts = new int[24];
 
-				for ( int k = 0; k < report.Items.Count; ++k )
-				{
-					ReportItem item = report.Items[k];
+      int min = history.Snapshots.Count - 7 * 24; // averages over one week
 
-					if ( item.Values[0].Value == valueName )
-						return Utility.ToInt32( item.Values[1].Value );
-				}
+      if (min < 0)
+        min = 0;
 
-				break;
-			}
+      for (int i = min; i < history.Snapshots.Count; ++i)
+      {
+        Snapshot ss = history.Snapshots[i];
 
-			return -1;
-		}
+        int val = LookupReportValue(ss, reportName, valueName);
 
-		public static BarGraph DailyAverage( SnapshotHistory history, string reportName, string valueName )
-		{
-			int[] totals = new int[24];
-			int[] counts = new int[24];
+        if (val == -1)
+          continue;
 
-			int min = history.Snapshots.Count - (7 * 24); // averages over one week
+        int hour = ss.TimeStamp.TimeOfDay.Hours;
 
-			if ( min < 0 )
-				min = 0;
+        totals[hour] += val;
+        counts[hour]++;
+      }
 
-			for ( int i = min; i < history.Snapshots.Count; ++i )
-			{
-				Snapshot ss = history.Snapshots[i];
+      BarGraph barGraph = new BarGraph("Hourly average " + valueName, "graphs_" + valueName.ToLower() + "_avg", 10,
+        "Time", valueName, BarGraphRenderMode.Lines);
 
-				int val = LookupReportValue( ss, reportName, valueName );
+      barGraph.FontSize = 6;
 
-				if ( val == -1 )
-					continue;
+      for (int i = 7; i <= totals.Length + 7; ++i)
+      {
+        int val;
 
-				int hour = ss.TimeStamp.TimeOfDay.Hours;
+        if (counts[i % totals.Length] == 0)
+          val = 0;
+        else
+          val = (totals[i % totals.Length] + counts[i % totals.Length] / 2) / counts[i % totals.Length];
 
-				totals[hour] += val;
-				counts[hour]++;
-			}
+        int realHours = i % totals.Length;
+        int hours;
 
-			BarGraph barGraph = new BarGraph( "Hourly average " + valueName, "graphs_" + valueName.ToLower() + "_avg", 10, "Time", valueName, BarGraphRenderMode.Lines );
+        if (realHours == 0)
+          hours = 12;
+        else if (realHours > 12)
+          hours = realHours - 12;
+        else
+          hours = realHours;
 
-			barGraph.m_FontSize = 6;
+        barGraph.Items.Add(hours + (realHours >= 12 ? " PM" : " AM"), val);
+      }
 
-			for ( int i = 7; i <= totals.Length+7; ++i )
-			{
-				int val;
+      return barGraph;
+    }
 
-				if ( counts[i%totals.Length] == 0 )
-					val = 0;
-				else
-					val = (totals[i%totals.Length] + (counts[i%totals.Length] / 2)) / counts[i%totals.Length];
+    public static BarGraph Growth(SnapshotHistory history, string reportName, string valueName)
+    {
+      BarGraph barGraph = new BarGraph("Growth of " + valueName + " over time",
+        "graphs_" + valueName.ToLower() + "_growth", 10, "Time", valueName, BarGraphRenderMode.Lines);
 
-				int realHours = i%totals.Length;
-				int hours;
+      barGraph.FontSize = 6;
+      barGraph.Interval = 7;
 
-				if ( realHours == 0 )
-					hours = 12;
-				else if ( realHours > 12 )
-					hours = realHours - 12;
-				else
-					hours = realHours;
+      DateTime startPeriod = history.Snapshots[0].TimeStamp.Date + TimeSpan.FromDays(1.0);
+      DateTime endPeriod = history.Snapshots[history.Snapshots.Count - 1].TimeStamp.Date;
 
-				barGraph.Items.Add( hours + (realHours >= 12 ? " PM" : " AM"), val );
-			}
+      ArrayList regions = new ArrayList();
 
-			return barGraph;
-		}
+      DateTime curDate = DateTime.MinValue;
+      int curPeak = -1;
+      int curLow = 1000;
+      int curTotl = 0;
+      int curCont = 0;
+      int curValu = 0;
 
-		public static BarGraph Growth( SnapshotHistory history, string reportName, string valueName )
-		{
-			BarGraph barGraph = new BarGraph( "Growth of " + valueName + " over time", "graphs_" + valueName.ToLower() + "_growth", 10, "Time", valueName, BarGraphRenderMode.Lines );
+      for (int i = 0; i < history.Snapshots.Count; ++i)
+      {
+        Snapshot ss = history.Snapshots[i];
+        DateTime timeStamp = ss.TimeStamp;
 
-			barGraph.FontSize = 6;
-			barGraph.Interval = 7;
+        if (timeStamp < startPeriod || timeStamp >= endPeriod)
+          continue;
 
-			DateTime startPeriod = history.Snapshots[0].TimeStamp.Date + TimeSpan.FromDays( 1.0 );
-			DateTime endPeriod = history.Snapshots[history.Snapshots.Count - 1].TimeStamp.Date;
+        int val = LookupReportValue(ss, reportName, valueName);
 
-			ArrayList regions = new ArrayList();
+        if (val == -1)
+          continue;
 
-			DateTime curDate = DateTime.MinValue;
-			int curPeak = -1;
-			int curLow  = 1000;
-			int curTotl = 0;
-			int curCont = 0;
-			int curValu = 0;
+        DateTime thisDate = timeStamp.Date;
 
-			for ( int i = 0; i < history.Snapshots.Count; ++i )
-			{
-				Snapshot ss = history.Snapshots[i];
-				DateTime timeStamp = ss.TimeStamp;
+        if (curDate == DateTime.MinValue)
+          curDate = thisDate;
 
-				if ( timeStamp < startPeriod || timeStamp >= endPeriod )
-					continue;
+        curCont++;
+        curTotl += val;
+        curValu = curTotl / curCont;
 
-				int val = LookupReportValue( ss, reportName, valueName );
+        if (curDate != thisDate && curValu >= 0)
+        {
+          string mnthName = thisDate.ToString("MMMM");
 
-				if ( val == -1 )
-					continue;
+          if (regions.Count == 0)
+          {
+            regions.Add(new BarRegion(barGraph.Items.Count, barGraph.Items.Count, mnthName));
+          }
+          else
+          {
+            BarRegion region = (BarRegion)regions[regions.Count - 1];
 
-				DateTime thisDate = timeStamp.Date;
+            if (region.m_Name == mnthName)
+              region.m_RangeTo = barGraph.Items.Count;
+            else
+              regions.Add(new BarRegion(barGraph.Items.Count, barGraph.Items.Count, mnthName));
+          }
 
-				if ( curDate == DateTime.MinValue )
-					curDate = thisDate;
+          barGraph.Items.Add(thisDate.Day.ToString(), curValu);
 
-				curCont++;
-				curTotl += val;
-				curValu = curTotl / curCont;
+          curPeak = val;
+          curLow = val;
+        }
+        else
+        {
+          if (val > curPeak)
+            curPeak = val;
 
-				if ( curDate != thisDate && curValu >= 0 )
-				{
-					string mnthName = thisDate.ToString( "MMMM" );
+          if (val > 0 && val < curLow)
+            curLow = val;
+        }
 
-					if ( regions.Count == 0 )
-					{
-						regions.Add( new BarRegion( barGraph.Items.Count, barGraph.Items.Count, mnthName ) );
-					}
-					else
-					{
-						BarRegion region = (BarRegion)regions[regions.Count - 1];
+        curDate = thisDate;
+      }
 
-						if ( region.m_Name == mnthName )
-							region.m_RangeTo = barGraph.Items.Count;
-						else
-							regions.Add( new BarRegion( barGraph.Items.Count, barGraph.Items.Count, mnthName ) );
-					}
+      barGraph.Regions = (BarRegion[])regions.ToArray(typeof(BarRegion));
 
-					barGraph.Items.Add( thisDate.Day.ToString(), curValu );
+      return barGraph;
+    }
 
-					curPeak = val;
-					curLow = val;
-				}
-				else
-				{
-					if ( val > curPeak )
-						curPeak = val;
+    public static BarGraph OverTime(SnapshotHistory history, string reportName, string valueName, int step, int max,
+      int ival)
+    {
+      BarGraph barGraph = new BarGraph(valueName + " over time", "graphs_" + valueName.ToLower() + "_ot", 10, "Time",
+        valueName, BarGraphRenderMode.Lines);
 
-					if ( val > 0 && val < curLow )
-						curLow = val;
-				}
+      TimeSpan ts = TimeSpan.FromHours(max * step - 0.5);
 
-				curDate = thisDate;
-			}
+      DateTime mostRecent = history.Snapshots[history.Snapshots.Count - 1].TimeStamp;
+      DateTime minTime = mostRecent - ts;
 
-			barGraph.Regions = (BarRegion[])regions.ToArray( typeof( BarRegion ) );
+      barGraph.FontSize = 6;
+      barGraph.Interval = ival;
 
-			return barGraph;
-		}
+      ArrayList regions = new ArrayList();
 
-		public static BarGraph OverTime( SnapshotHistory history, string reportName, string valueName, int step, int max, int ival )
-		{
-			BarGraph barGraph = new BarGraph( valueName + " over time", "graphs_" + valueName.ToLower() + "_ot", 10, "Time", valueName, BarGraphRenderMode.Lines );
+      for (int i = 0; i < history.Snapshots.Count; ++i)
+      {
+        Snapshot ss = history.Snapshots[i];
+        DateTime timeStamp = ss.TimeStamp;
 
-			TimeSpan ts = TimeSpan.FromHours( (max*step)-0.5 );
+        if (timeStamp < minTime)
+          continue;
 
-			DateTime mostRecent = history.Snapshots[history.Snapshots.Count - 1].TimeStamp;
-			DateTime minTime = mostRecent - ts;
+        if (i % step != 0)
+          continue;
 
-			barGraph.FontSize = 6;
-			barGraph.Interval = ival;
+        int val = LookupReportValue(ss, reportName, valueName);
 
-			ArrayList regions = new ArrayList();
+        if (val == -1)
+          continue;
 
-			for ( int i = 0; i < history.Snapshots.Count; ++i )
-			{
-				Snapshot ss = history.Snapshots[i];
-				DateTime timeStamp = ss.TimeStamp;
+        int realHours = timeStamp.TimeOfDay.Hours;
+        int hours;
 
-				if ( timeStamp < minTime )
-					continue;
+        if (realHours == 0)
+          hours = 12;
+        else if (realHours > 12)
+          hours = realHours - 12;
+        else
+          hours = realHours;
 
-				if ( (i % step) != 0 )
-					continue;
+        string dayName = timeStamp.DayOfWeek.ToString();
 
-				int val = LookupReportValue( ss, reportName, valueName );
+        if (regions.Count == 0)
+        {
+          regions.Add(new BarRegion(barGraph.Items.Count, barGraph.Items.Count, dayName));
+        }
+        else
+        {
+          BarRegion region = (BarRegion)regions[regions.Count - 1];
 
-				if ( val == -1 )
-					continue;
+          if (region.m_Name == dayName)
+            region.m_RangeTo = barGraph.Items.Count;
+          else
+            regions.Add(new BarRegion(barGraph.Items.Count, barGraph.Items.Count, dayName));
+        }
 
-				int realHours = timeStamp.TimeOfDay.Hours;
-				int hours;
+        barGraph.Items.Add(hours + (realHours >= 12 ? " PM" : " AM"), val);
+      }
 
-				if ( realHours == 0 )
-					hours = 12;
-				else if ( realHours > 12 )
-					hours = realHours - 12;
-				else
-					hours = realHours;
+      barGraph.Regions = (BarRegion[])regions.ToArray(typeof(BarRegion));
 
-				string dayName = timeStamp.DayOfWeek.ToString();
+      return barGraph;
+    }
 
-				if ( regions.Count == 0 )
-				{
-					regions.Add( new BarRegion( barGraph.Items.Count, barGraph.Items.Count, dayName ) );
-				}
-				else
-				{
-					BarRegion region = (BarRegion) regions[regions.Count - 1];
+    #region Type Identification
 
-					if ( region.m_Name == dayName )
-						region.m_RangeTo = barGraph.Items.Count;
-					else
-						regions.Add( new BarRegion( barGraph.Items.Count, barGraph.Items.Count, dayName ) );
-				}
+    public static readonly PersistableType ThisTypeID = new PersistableType("bg", Construct);
 
-				barGraph.Items.Add( hours + (realHours >= 12 ? " PM" : " AM"), val );
-			}
+    private static PersistableObject Construct()
+    {
+      return new BarGraph();
+    }
 
-			barGraph.Regions = (BarRegion[])regions.ToArray( typeof( BarRegion ) );
+    public override PersistableType TypeID => ThisTypeID;
 
-			return barGraph;
-		}
-	}
+    #endregion
+  }
 }

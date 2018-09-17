@@ -1,52 +1,45 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class TailorBag : Bag
-	{
-		public override string DefaultName
-		{
-			get { return "a Tailoring Kit"; }
-		}
+  public class TailorBag : Bag
+  {
+    [Constructible]
+    public TailorBag() : this(1)
+    {
+      Movable = true;
+      Hue = 0x315;
+    }
 
-		[Constructible]
-		public TailorBag() : this( 1 )
-		{
-			Movable = true;
-			Hue = 0x315;
-		}
+    [Constructible]
+    public TailorBag(int amount)
+    {
+      DropItem(new SewingKit(5));
+      DropItem(new Scissors());
+      DropItem(new Hides(500));
+      DropItem(new BoltOfCloth(20));
+      DropItem(new DyeTub());
+      DropItem(new DyeTub());
+      DropItem(new BlackDyeTub());
+      DropItem(new Dyes());
+    }
 
-		[Constructible]
-		public TailorBag( int amount )
-		{
-			DropItem( new SewingKit( 5 ) );
-			DropItem( new Scissors() );
-			DropItem( new Hides( 500 ) );
-			DropItem( new BoltOfCloth( 20 ) );
-			DropItem( new DyeTub() );
-			DropItem( new DyeTub() );
-			DropItem( new BlackDyeTub() );
-			DropItem( new Dyes() );
-		}
-		
-		public TailorBag( Serial serial ) : base( serial )
-		{
-		}
+    public TailorBag(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override string DefaultName => "a Tailoring Kit";
 
-			writer.Write( (int) 0 ); // version
-		}
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+      writer.Write(0); // version
+    }
 
-			int version = reader.ReadInt();
-		}
-	}
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+    }
+  }
 }

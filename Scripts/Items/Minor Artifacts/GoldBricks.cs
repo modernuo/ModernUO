@@ -1,33 +1,30 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class GoldBricks : Item
-	{
-		public override int LabelNumber => 1063489;
+  public class GoldBricks : Item
+  {
+    [Constructible]
+    public GoldBricks() : base(0x1BEB)
+    {
+    }
 
-		[Constructible]
-		public GoldBricks() : base( 0x1BEB )
-		{
-		}
+    public GoldBricks(Serial serial) : base(serial)
+    {
+    }
 
-		public GoldBricks( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1063489;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 );
-		}
+      writer.Write(0);
+    }
 
-		public override void Deserialize(GenericReader reader)
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,87 +1,84 @@
-using System;
-using Server;
 using Server.Ethics;
-using Server.Mobiles;
 
 namespace Server.Mobiles
 {
-	public class HolyFamiliar : BaseCreature
-	{
-		public override string CorpseName => "a holy corpse";
-		public override bool IsDispellable => false;
-		public override bool IsBondable => false;
+  public class HolyFamiliar : BaseCreature
+  {
+    [Constructible]
+    public HolyFamiliar()
+      : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    {
+      Body = 100;
+      BaseSoundID = 0xE5;
 
-		public override string DefaultName => "a silver wolf";
+      SetStr(96, 120);
+      SetDex(81, 105);
+      SetInt(36, 60);
 
-		[Constructible]
-		public HolyFamiliar()
-			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
-		{
-			Body = 100;
-			BaseSoundID = 0xE5;
+      SetHits(58, 72);
+      SetMana(0);
 
-			SetStr( 96, 120 );
-			SetDex( 81, 105 );
-			SetInt( 36, 60 );
+      SetDamage(11, 17);
 
-			SetHits( 58, 72 );
-			SetMana( 0 );
+      SetDamageType(ResistanceType.Physical, 100);
 
-			SetDamage( 11, 17 );
+      SetResistance(ResistanceType.Physical, 20, 25);
+      SetResistance(ResistanceType.Fire, 10, 20);
+      SetResistance(ResistanceType.Cold, 5, 10);
+      SetResistance(ResistanceType.Poison, 5, 10);
+      SetResistance(ResistanceType.Energy, 10, 15);
 
-			SetDamageType( ResistanceType.Physical, 100 );
+      SetSkill(SkillName.MagicResist, 57.6, 75.0);
+      SetSkill(SkillName.Tactics, 50.1, 70.0);
+      SetSkill(SkillName.Wrestling, 60.1, 80.0);
 
-			SetResistance( ResistanceType.Physical, 20, 25 );
-			SetResistance( ResistanceType.Fire, 10, 20 );
-			SetResistance( ResistanceType.Cold, 5, 10 );
-			SetResistance( ResistanceType.Poison, 5, 10 );
-			SetResistance( ResistanceType.Energy, 10, 15 );
+      Fame = 2500;
+      Karma = 2500;
 
-			SetSkill( SkillName.MagicResist, 57.6, 75.0 );
-			SetSkill( SkillName.Tactics, 50.1, 70.0 );
-			SetSkill( SkillName.Wrestling, 60.1, 80.0 );
+      VirtualArmor = 22;
 
-			Fame = 2500;
-			Karma = 2500;
+      Tamable = false;
+      ControlSlots = 1;
+    }
 
-			VirtualArmor = 22;
+    public HolyFamiliar(Serial serial)
+      : base(serial)
+    {
+    }
 
-			Tamable = false;
-			ControlSlots = 1;
-		}
+    public override string CorpseName => "a holy corpse";
+    public override bool IsDispellable => false;
+    public override bool IsBondable => false;
 
-		public override int Meat => 1;
-		public override int Hides => 7;
-		public override FoodType FavoriteFood => FoodType.Meat;
-		public override PackInstinct PackInstinct => PackInstinct.Canine;
+    public override string DefaultName => "a silver wolf";
 
-		public HolyFamiliar( Serial serial )
-			: base( serial )
-		{
-		}
+    public override int Meat => 1;
+    public override int Hides => 7;
+    public override FoodType FavoriteFood => FoodType.Meat;
+    public override PackInstinct PackInstinct => PackInstinct.Canine;
 
-		public override string ApplyNameSuffix( string suffix )
-		{
-			if ( suffix.Length == 0 )
-				suffix = Ethic.Hero.Definition.Adjunct.String;
-			else
-				suffix = String.Concat( suffix, " ", Ethic.Hero.Definition.Adjunct.String );
+    public override string ApplyNameSuffix(string suffix)
+    {
+      if (suffix.Length == 0)
+        suffix = Ethic.Hero.Definition.Adjunct.String;
+      else
+        suffix = string.Concat(suffix, " ", Ethic.Hero.Definition.Adjunct.String);
 
-			return base.ApplyNameSuffix( suffix );
-		}
+      return base.ApplyNameSuffix(suffix);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

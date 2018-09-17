@@ -1,85 +1,83 @@
-using System;
-
 namespace Server.Items
 {
-	public abstract class BaseBracelet : BaseJewel
-	{
-		public override int BaseGemTypeNumber => 1044221; // star sapphire bracelet
+  public abstract class BaseBracelet : BaseJewel
+  {
+    public BaseBracelet(int itemID) : base(itemID, Layer.Bracelet)
+    {
+    }
 
-		public BaseBracelet( int itemID ) : base( itemID, Layer.Bracelet )
-		{
-		}
+    public BaseBracelet(Serial serial) : base(serial)
+    {
+    }
 
-		public BaseBracelet( Serial serial ) : base( serial )
-		{
-		}
+    public override int BaseGemTypeNumber => 1044221; // star sapphire bracelet
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class GoldBracelet : BaseBracelet
-	{
-		[Constructible]
-		public GoldBracelet() : base( 0x1086 )
-		{
-			Weight = 0.1;
-		}
+  public class GoldBracelet : BaseBracelet
+  {
+    [Constructible]
+    public GoldBracelet() : base(0x1086)
+    {
+      Weight = 0.1;
+    }
 
-		public GoldBracelet( Serial serial ) : base( serial )
-		{
-		}
+    public GoldBracelet(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 
-	public class SilverBracelet : BaseBracelet
-	{
-		[Constructible]
-		public SilverBracelet() : base( 0x1F06 )
-		{
-			Weight = 0.1;
-		}
+  public class SilverBracelet : BaseBracelet
+  {
+    [Constructible]
+    public SilverBracelet() : base(0x1F06)
+    {
+      Weight = 0.1;
+    }
 
-		public SilverBracelet( Serial serial ) : base( serial )
-		{
-		}
+    public SilverBracelet(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

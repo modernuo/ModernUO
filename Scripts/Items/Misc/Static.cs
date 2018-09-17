@@ -1,98 +1,99 @@
-using System;
-using Server;
-
 namespace Server.Items
 {
-	public class Static : Item
-	{
-		public Static() : base( 0x80 )
-		{
-			Movable = false;
-		}
+  public class Static : Item
+  {
+    public Static() : base(0x80)
+    {
+      Movable = false;
+    }
 
-		[Constructible]
-		public Static( int itemID ) : base( itemID )
-		{
-			Movable = false;
-		}
+    [Constructible]
+    public Static(int itemID) : base(itemID)
+    {
+      Movable = false;
+    }
 
-		[Constructible]
-		public Static( int itemID, int count ) : this( Utility.Random( itemID, count ) )
-		{
-		}
+    [Constructible]
+    public Static(int itemID, int count) : this(Utility.Random(itemID, count))
+    {
+    }
 
-		public Static( Serial serial ) : base( serial )
-		{
-		}
+    public Static(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 1 ); // version
-		}
+      writer.Write(1); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
+      int version = reader.ReadInt();
 
-			if ( version == 0 && Weight == 0 )
-				Weight = -1;
-		}
-	}
+      if (version == 0 && Weight == 0)
+        Weight = -1;
+    }
+  }
 
-	public class LocalizedStatic : Static
-	{
-		private int m_LabelNumber;
+  public class LocalizedStatic : Static
+  {
+    private int m_LabelNumber;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Number
-		{
-			get{ return m_LabelNumber; }
-			set{ m_LabelNumber = value; InvalidateProperties(); }
-		}
+    [Constructible]
+    public LocalizedStatic(int itemID) : this(itemID, itemID < 0x4000 ? 1020000 + itemID : 1078872 + itemID)
+    {
+    }
 
-		public override int LabelNumber => m_LabelNumber;
+    [Constructible]
+    public LocalizedStatic(int itemID, int labelNumber) : base(itemID)
+    {
+      m_LabelNumber = labelNumber;
+    }
 
-		[Constructible]
-		public LocalizedStatic( int itemID ) : this( itemID, itemID < 0x4000 ? 1020000 + itemID : 1078872 + itemID )
-		{
-		}
+    public LocalizedStatic(Serial serial) : base(serial)
+    {
+    }
 
-		[Constructible]
-		public LocalizedStatic( int itemID, int labelNumber ) : base( itemID )
-		{
-			m_LabelNumber = labelNumber;
-		}
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Number
+    {
+      get => m_LabelNumber;
+      set
+      {
+        m_LabelNumber = value;
+        InvalidateProperties();
+      }
+    }
 
-		public LocalizedStatic( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => m_LabelNumber;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (byte) 0 ); // version
-			writer.WriteEncodedInt( (int) m_LabelNumber );
-		}
+      writer.Write((byte)0); // version
+      writer.WriteEncodedInt(m_LabelNumber);
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadByte();
+      int version = reader.ReadByte();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_LabelNumber = reader.ReadEncodedInt();
-					break;
-				}
-			}
-		}
-	}
+      switch (version)
+      {
+        case 0:
+        {
+          m_LabelNumber = reader.ReadEncodedInt();
+          break;
+        }
+      }
+    }
+  }
 }

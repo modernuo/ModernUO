@@ -2,338 +2,339 @@ using System;
 
 namespace Server.Items
 {
-	public enum ECEffectType
-	{
-		None,
-		Moving,
-		Location,
-		Target,
-		Lightning
-	}
+  public enum ECEffectType
+  {
+    None,
+    Moving,
+    Location,
+    Target,
+    Lightning
+  }
+
+  public enum EffectTriggerType
+  {
+    None,
+    Sequenced,
+    DoubleClick,
+    InRange
+  }
+
+  public class EffectController : Item
+  {
+    private IEntity m_Source;
+    private IEntity m_Target;
+
+    [Constructible]
+    public EffectController() : base(0x1B72)
+    {
+      Movable = false;
+      Visible = false;
+      TriggerType = EffectTriggerType.Sequenced;
+      EffectLayer = (EffectLayer)255;
+    }
+
+    public EffectController(Serial serial) : base(serial)
+    {
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public ECEffectType EffectType{ get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public EffectTriggerType TriggerType{ get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public EffectLayer EffectLayer{ get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public TimeSpan EffectDelay{ get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public TimeSpan TriggerDelay{ get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public TimeSpan SoundDelay{ get; set; }
+
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Item SourceItem
+    {
+      get => m_Source as Item;
+      set => m_Source = value;
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Mobile SourceMobile
+    {
+      get => m_Source as Mobile;
+      set => m_Source = value;
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool SourceNull
+    {
+      get => m_Source == null;
+      set
+      {
+        if (value) m_Source = null;
+      }
+    }
+
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Item TargetItem
+    {
+      get => m_Target as Item;
+      set => m_Target = value;
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public Mobile TargetMobile
+    {
+      get => m_Target as Mobile;
+      set => m_Target = value;
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool TargetNull
+    {
+      get => m_Target == null;
+      set
+      {
+        if (value) m_Target = null;
+      }
+    }
 
-	public enum EffectTriggerType
-	{
-		None,
-		Sequenced,
-		DoubleClick,
-		InRange
-	}
 
-	public class EffectController : Item
-	{
-		private TimeSpan m_EffectDelay;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public EffectController Sequence{ get; set; }
 
-		private ECEffectType m_EffectType;
-		private EffectTriggerType m_TriggerType;
 
-		private IEntity m_Source;
-		private IEntity m_Target;
+    [CommandProperty(AccessLevel.GameMaster)]
+    private bool FixedDirection{ get; set; }
 
-		private TimeSpan m_TriggerDelay;
-		private EffectController m_Trigger;
+    [CommandProperty(AccessLevel.GameMaster)]
+    private bool Explodes{ get; set; }
 
-		private int m_ItemID;
-		private int m_Hue;
-		private int m_RenderMode;
+    [CommandProperty(AccessLevel.GameMaster)]
+    private bool PlaySoundAtTrigger{ get; set; }
 
-		private int m_Speed;
-		private int m_Duration;
 
-		private bool m_FixedDirection;
-		private bool m_Explodes;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int EffectItemID{ get; set; }
 
-		private int m_ParticleEffect;
-		private int m_ExplodeParticleEffect;
-		private int m_ExplodeSound;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int EffectHue{ get; set; }
 
-		private EffectLayer m_EffectLayer;
-		private int m_Unknown;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int RenderMode{ get; set; }
 
-		private TimeSpan m_SoundDelay;
-		private int m_SoundID;
-		private bool m_PlaySoundAtTrigger;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Speed{ get; set; }
 
-		private int m_TriggerRange;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Duration{ get; set; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public ECEffectType EffectType{ get{ return m_EffectType; } set{ m_EffectType = value; } }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int ParticleEffect{ get; set; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public EffectTriggerType TriggerType{ get{ return m_TriggerType; } set{ m_TriggerType = value; } }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int ExplodeParticleEffect{ get; set; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public EffectLayer EffectLayer{ get{ return m_EffectLayer; } set{ m_EffectLayer = value; } }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int ExplodeSound{ get; set; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan EffectDelay{ get{ return m_EffectDelay; } set{ m_EffectDelay = value; } }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int Unknown{ get; set; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan TriggerDelay{ get{ return m_TriggerDelay; } set{ m_TriggerDelay = value; } }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int SoundID{ get; set; }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public TimeSpan SoundDelay{ get{ return m_SoundDelay; } set{ m_SoundDelay = value; } }
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int TriggerRange{ get; set; }
 
+    public override string DefaultName => "Effect Controller";
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Item SourceItem{ get{ return m_Source as Item; } set{ m_Source = value; } }
+    public override bool HandlesOnMovement => TriggerType == EffectTriggerType.InRange;
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile SourceMobile{ get{ return m_Source as Mobile; } set{ m_Source = value; } }
+    public override void OnDoubleClick(Mobile from)
+    {
+      if (TriggerType == EffectTriggerType.DoubleClick)
+        DoEffect(from);
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool SourceNull{ get{ return ( m_Source == null ); } set{ if ( value ) m_Source = null; } }
+    public override void OnMovement(Mobile m, Point3D oldLocation)
+    {
+      if (m.Location != oldLocation && TriggerType == EffectTriggerType.InRange &&
+          Utility.InRange(GetWorldLocation(), m.Location, TriggerRange) &&
+          !Utility.InRange(GetWorldLocation(), oldLocation, TriggerRange))
+        DoEffect(m);
+    }
 
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Item TargetItem{ get{ return m_Target as Item; } set{ m_Target = value; } }
+      writer.Write(0); // version
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public Mobile TargetMobile{ get{ return m_Target as Mobile; } set{ m_Target = value; } }
+      writer.Write(EffectDelay);
+      writer.Write(TriggerDelay);
+      writer.Write(SoundDelay);
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public bool TargetNull{ get{ return ( m_Target == null ); } set{ if ( value ) m_Target = null; } }
+      if (m_Source is Item srcItem)
+        writer.Write(srcItem);
+      else
+        writer.Write(m_Source as Mobile);
 
+      if (m_Target is Item targItem)
+        writer.Write(targItem);
+      else
+        writer.Write(m_Target as Mobile);
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public EffectController Sequence{ get{ return m_Trigger; } set{ m_Trigger = value; } }
+      writer.Write(Sequence);
 
+      writer.Write(FixedDirection);
+      writer.Write(Explodes);
+      writer.Write(PlaySoundAtTrigger);
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		private bool FixedDirection{ get{ return m_FixedDirection; } set{ m_FixedDirection = value; } }
+      writer.WriteEncodedInt((int)EffectType);
+      writer.WriteEncodedInt((int)EffectLayer);
+      writer.WriteEncodedInt((int)TriggerType);
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		private bool Explodes{ get{ return m_Explodes; } set{ m_Explodes = value; } }
+      writer.WriteEncodedInt(EffectItemID);
+      writer.WriteEncodedInt(EffectHue);
+      writer.WriteEncodedInt(RenderMode);
+      writer.WriteEncodedInt(Speed);
+      writer.WriteEncodedInt(Duration);
+      writer.WriteEncodedInt(ParticleEffect);
+      writer.WriteEncodedInt(ExplodeParticleEffect);
+      writer.WriteEncodedInt(ExplodeSound);
+      writer.WriteEncodedInt(Unknown);
+      writer.WriteEncodedInt(SoundID);
+      writer.WriteEncodedInt(TriggerRange);
+    }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		private bool PlaySoundAtTrigger{ get{ return m_PlaySoundAtTrigger; } set{ m_PlaySoundAtTrigger = value; } }
-
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int EffectItemID{ get{ return m_ItemID; } set{ m_ItemID = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int EffectHue{ get{ return m_Hue; } set{ m_Hue = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int RenderMode{ get{ return m_RenderMode; } set{ m_RenderMode = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Speed{ get{ return m_Speed; } set{ m_Speed = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Duration{ get{ return m_Duration; } set{ m_Duration = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int ParticleEffect{ get{ return m_ParticleEffect; } set{ m_ParticleEffect = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int ExplodeParticleEffect{ get{ return m_ExplodeParticleEffect; } set{ m_ExplodeParticleEffect = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int ExplodeSound{ get{ return m_ExplodeSound; } set{ m_ExplodeSound = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int Unknown{ get{ return m_Unknown; } set{ m_Unknown = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int SoundID{ get{ return m_SoundID; } set{ m_SoundID = value; } }
-
-		[CommandProperty( AccessLevel.GameMaster )]
-		public int TriggerRange{ get{ return m_TriggerRange; } set{ m_TriggerRange = value; } }
-
-		public override string DefaultName
-		{
-			get { return "Effect Controller"; }
-		}
-
-		[Constructible]
-		public EffectController() : base( 0x1B72 )
-		{
-			Movable = false;
-			Visible = false;
-			m_TriggerType = EffectTriggerType.Sequenced;
-			m_EffectLayer = (EffectLayer)255;
-		}
-
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( m_TriggerType == EffectTriggerType.DoubleClick )
-				DoEffect( from );
-		}
-
-		public override bool HandlesOnMovement => ( m_TriggerType == EffectTriggerType.InRange );
-
-		public override void OnMovement( Mobile m, Point3D oldLocation )
-		{
-			if ( m.Location != oldLocation && m_TriggerType == EffectTriggerType.InRange && Utility.InRange( GetWorldLocation(), m.Location, m_TriggerRange ) && !Utility.InRange( GetWorldLocation(), oldLocation, m_TriggerRange ) )
-				DoEffect( m );
-		}
-
-		public EffectController( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-
-			writer.Write( m_EffectDelay );
-			writer.Write( m_TriggerDelay );
-			writer.Write( m_SoundDelay );
-
-			if ( m_Source is Item )
-				writer.Write( m_Source as Item );
-			else
-				writer.Write( m_Source as Mobile );
-
-			if ( m_Target is Item )
-				writer.Write( m_Target as Item );
-			else
-				writer.Write( m_Target as Mobile );
-
-			writer.Write( m_Trigger as Item );
-
-			writer.Write( m_FixedDirection );
-			writer.Write( m_Explodes );
-			writer.Write( m_PlaySoundAtTrigger );
-
-			writer.WriteEncodedInt( (int) m_EffectType );
-			writer.WriteEncodedInt( (int) m_EffectLayer );
-			writer.WriteEncodedInt( (int) m_TriggerType );
-
-			writer.WriteEncodedInt( m_ItemID );
-			writer.WriteEncodedInt( m_Hue );
-			writer.WriteEncodedInt( m_RenderMode );
-			writer.WriteEncodedInt( m_Speed );
-			writer.WriteEncodedInt( m_Duration );
-			writer.WriteEncodedInt( m_ParticleEffect );
-			writer.WriteEncodedInt( m_ExplodeParticleEffect );
-			writer.WriteEncodedInt( m_ExplodeSound );
-			writer.WriteEncodedInt( m_Unknown );
-			writer.WriteEncodedInt( m_SoundID );
-			writer.WriteEncodedInt( m_TriggerRange );
-		}
-
-		private IEntity ReadEntity( GenericReader reader )
-		{
-			return World.FindEntity( reader.ReadInt() );
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-
-			switch ( version )
-			{
-				case 0:
-				{
-					m_EffectDelay = reader.ReadTimeSpan();
-					m_TriggerDelay = reader.ReadTimeSpan();
-					m_SoundDelay = reader.ReadTimeSpan();
-
-					m_Source = ReadEntity( reader );
-					m_Target = ReadEntity( reader );
-					m_Trigger = reader.ReadItem() as EffectController;
-
-					m_FixedDirection = reader.ReadBool();
-					m_Explodes = reader.ReadBool();
-					m_PlaySoundAtTrigger = reader.ReadBool();
-
-					m_EffectType = (ECEffectType)reader.ReadEncodedInt();
-					m_EffectLayer = (EffectLayer)reader.ReadEncodedInt();
-					m_TriggerType = (EffectTriggerType)reader.ReadEncodedInt();
-
-					m_ItemID = reader.ReadEncodedInt();
-					m_Hue = reader.ReadEncodedInt();
-					m_RenderMode = reader.ReadEncodedInt();
-					m_Speed = reader.ReadEncodedInt();
-					m_Duration = reader.ReadEncodedInt();
-					m_ParticleEffect = reader.ReadEncodedInt();
-					m_ExplodeParticleEffect = reader.ReadEncodedInt();
-					m_ExplodeSound = reader.ReadEncodedInt();
-					m_Unknown = reader.ReadEncodedInt();
-					m_SoundID = reader.ReadEncodedInt();
-					m_TriggerRange = reader.ReadEncodedInt();
-
-					break;
-				}
-			}
-		}
-
-		public void PlaySound(IEntity trigger)
-		{
-			IEntity ent = null;
-
-			if (m_PlaySoundAtTrigger)
-				ent = trigger as IEntity;
-
-			if (ent == null)
-				ent = this;
-
-			Effects.PlaySound((ent is Item) ? ((Item)ent).GetWorldLocation() : ent.Location, ent.Map, m_SoundID);
-		}
-
-		public void DoEffect(IEntity trigger)
-		{
-			if (Deleted || m_TriggerType == EffectTriggerType.None)
-				return;
-
-			if (trigger is Mobile && ((Mobile)trigger).Hidden && ((Mobile)trigger).AccessLevel > AccessLevel.Player)
-				return;
-
-			if (m_SoundID > 0)
-				Timer.DelayCall<IEntity>(m_SoundDelay, new TimerStateCallback<IEntity>(PlaySound), trigger);
-
-			if (m_Trigger != null)
-				Timer.DelayCall<IEntity>(m_TriggerDelay, new TimerStateCallback<IEntity>(m_Trigger.DoEffect), trigger);
-
-			if (m_EffectType != ECEffectType.None)
-				Timer.DelayCall<IEntity>(m_EffectDelay, new TimerStateCallback<IEntity>(InternalDoEffect), trigger);
-		}
-
-		public void InternalDoEffect(IEntity trigger)
-		{
-			IEntity from = m_Source, to = m_Target;
-
-			if (from == null)
-				from = trigger;
-
-			if (to == null)
-				to = trigger;
-
-			switch (m_EffectType)
-			{
-				case ECEffectType.Lightning:
-					{
-						Effects.SendBoltEffect(from, false, m_Hue);
-						break;
-					}
-				case ECEffectType.Location:
-					{
-						Effects.SendLocationParticles(EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration), m_ItemID, m_Speed, m_Duration, m_Hue, m_RenderMode, m_ParticleEffect, m_Unknown);
-						break;
-					}
-				case ECEffectType.Moving:
-					{
-						if (from == this)
-							from = EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration);
-
-						if (to == this)
-							to = EffectItem.Create(to.Location, to.Map, EffectItem.DefaultDuration);
-
-						Effects.SendMovingParticles(from, to, m_ItemID, m_Speed, m_Duration, m_FixedDirection, m_Explodes, m_Hue, m_RenderMode, m_ParticleEffect, m_ExplodeParticleEffect, m_ExplodeSound, m_EffectLayer, m_Unknown);
-						break;
-					}
-				case ECEffectType.Target:
-					{
-						Effects.SendTargetParticles(from, m_ItemID, m_Speed, m_Duration, m_Hue, m_RenderMode, m_ParticleEffect, m_EffectLayer, m_Unknown);
-						break;
-					}
-			}
-		}
-	}
+    private IEntity ReadEntity(GenericReader reader)
+    {
+      return World.FindEntity(reader.ReadInt());
+    }
+
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
+
+      int version = reader.ReadInt();
+
+      switch (version)
+      {
+        case 0:
+        {
+          EffectDelay = reader.ReadTimeSpan();
+          TriggerDelay = reader.ReadTimeSpan();
+          SoundDelay = reader.ReadTimeSpan();
+
+          m_Source = ReadEntity(reader);
+          m_Target = ReadEntity(reader);
+          Sequence = reader.ReadItem() as EffectController;
+
+          FixedDirection = reader.ReadBool();
+          Explodes = reader.ReadBool();
+          PlaySoundAtTrigger = reader.ReadBool();
+
+          EffectType = (ECEffectType)reader.ReadEncodedInt();
+          EffectLayer = (EffectLayer)reader.ReadEncodedInt();
+          TriggerType = (EffectTriggerType)reader.ReadEncodedInt();
+
+          EffectItemID = reader.ReadEncodedInt();
+          EffectHue = reader.ReadEncodedInt();
+          RenderMode = reader.ReadEncodedInt();
+          Speed = reader.ReadEncodedInt();
+          Duration = reader.ReadEncodedInt();
+          ParticleEffect = reader.ReadEncodedInt();
+          ExplodeParticleEffect = reader.ReadEncodedInt();
+          ExplodeSound = reader.ReadEncodedInt();
+          Unknown = reader.ReadEncodedInt();
+          SoundID = reader.ReadEncodedInt();
+          TriggerRange = reader.ReadEncodedInt();
+
+          break;
+        }
+      }
+    }
+
+    public void PlaySound(IEntity trigger)
+    {
+      IEntity ent = null;
+
+      if (PlaySoundAtTrigger)
+        ent = trigger;
+
+      if (ent == null)
+        ent = this;
+
+      Effects.PlaySound((ent as Item)?.GetWorldLocation() ?? ent.Location, ent.Map, SoundID);
+    }
+
+    public void DoEffect(IEntity trigger)
+    {
+      if (Deleted || TriggerType == EffectTriggerType.None)
+        return;
+
+      if (trigger is Mobile mobile && mobile.Hidden && mobile.AccessLevel > AccessLevel.Player)
+        return;
+
+      if (SoundID > 0)
+        Timer.DelayCall(SoundDelay, PlaySound, trigger);
+
+      if (Sequence != null)
+        Timer.DelayCall(TriggerDelay, Sequence.DoEffect, trigger);
+
+      if (EffectType != ECEffectType.None)
+        Timer.DelayCall(EffectDelay, InternalDoEffect, trigger);
+    }
+
+    public void InternalDoEffect(IEntity trigger)
+    {
+      IEntity from = m_Source, to = m_Target;
+
+      if (from == null)
+        from = trigger;
+
+      if (to == null)
+        to = trigger;
+
+      switch (EffectType)
+      {
+        case ECEffectType.Lightning:
+        {
+          Effects.SendBoltEffect(from, false, EffectHue);
+          break;
+        }
+        case ECEffectType.Location:
+        {
+          Effects.SendLocationParticles(EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration),
+            EffectItemID, Speed, Duration, EffectHue, RenderMode, ParticleEffect, Unknown);
+          break;
+        }
+        case ECEffectType.Moving:
+        {
+          if (from == this)
+            from = EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration);
+
+          if (to == this)
+            to = EffectItem.Create(to.Location, to.Map, EffectItem.DefaultDuration);
+
+          Effects.SendMovingParticles(from, to, EffectItemID, Speed, Duration, FixedDirection, Explodes, EffectHue,
+            RenderMode, ParticleEffect, ExplodeParticleEffect, ExplodeSound, EffectLayer, Unknown);
+          break;
+        }
+        case ECEffectType.Target:
+        {
+          Effects.SendTargetParticles(from, EffectItemID, Speed, Duration, EffectHue, RenderMode, ParticleEffect,
+            EffectLayer, Unknown);
+          break;
+        }
+      }
+    }
+  }
 }

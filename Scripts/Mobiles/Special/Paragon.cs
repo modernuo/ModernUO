@@ -1,217 +1,221 @@
 using System;
-using Server;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-	public class Paragon
-	{
-		public static double ChestChance = .10;                // Chance that a paragon will carry a paragon chest
-		public static double ChocolateIngredientChance = .20;  // Chance that a paragon will drop a chocolatiering ingredient
-		public static Map[] Maps = new Map[]                   // Maps that paragons will spawn on
-		{
-			Map.Ilshenar
-		};
+  public class Paragon
+  {
+    public static double ChestChance = .10; // Chance that a paragon will carry a paragon chest
+    public static double ChocolateIngredientChance = .20; // Chance that a paragon will drop a chocolatiering ingredient
 
-		private static TimeSpan FastRegenRate = TimeSpan.FromSeconds( .5 );
-		private static TimeSpan CPUSaverRate = TimeSpan.FromSeconds( 2 );
+    public static Map[] Maps =
+    {
+      Map.Ilshenar
+    };
 
-		private class ParagonStamRegen : Timer
-		{
-			private BaseCreature m_Owner;
+    private static TimeSpan FastRegenRate = TimeSpan.FromSeconds(.5);
+    private static TimeSpan CPUSaverRate = TimeSpan.FromSeconds(2);
 
-			public ParagonStamRegen( Mobile m )
-				: base( FastRegenRate, FastRegenRate )
-			{
-				this.Priority = TimerPriority.FiftyMS;
+    public static Type[] Artifacts =
+    {
+      typeof(GoldBricks), typeof(PhillipsWoodenSteed),
+      typeof(AlchemistsBauble), typeof(ArcticDeathDealer),
+      typeof(BlazeOfDeath), typeof(BowOfTheJukaKing),
+      typeof(BurglarsBandana), typeof(CavortingClub),
+      typeof(EnchantedTitanLegBone), typeof(GwennosHarp),
+      typeof(IolosLute), typeof(LunaLance),
+      typeof(NightsKiss), typeof(NoxRangersHeavyCrossbow),
+      typeof(OrcishVisage), typeof(PolarBearMask),
+      typeof(ShieldOfInvulnerability), typeof(StaffOfPower),
+      typeof(VioletCourage), typeof(HeartOfTheLion),
+      typeof(WrathOfTheDryad), typeof(PixieSwatter),
+      typeof(GlovesOfThePugilist)
+    };
 
-				m_Owner = m as BaseCreature;
-			}
+    public static int Hue = 0x501; // Paragon hue
 
-			protected override void OnTick()
-			{
-				if( !m_Owner.Deleted && m_Owner.IsParagon && m_Owner .Map != Map.Internal )
-				{
-					m_Owner.Stam++;
+    // Buffs
+    public static double HitsBuff = 5.0;
+    public static double StrBuff = 1.05;
+    public static double IntBuff = 1.20;
+    public static double DexBuff = 1.20;
+    public static double SkillsBuff = 1.20;
+    public static double SpeedBuff = 1.20;
+    public static double FameBuff = 1.40;
+    public static double KarmaBuff = 1.40;
+    public static int DamageBuff = 5;
 
-					Delay = Interval = ( m_Owner.Stam < ( m_Owner.StamMax * .75 ) ) ? FastRegenRate : CPUSaverRate;
-				}
-				else
-				{
-					Stop();
-				}
-			}
-		}
+    public static void Convert(BaseCreature bc)
+    {
+      if (bc.IsParagon)
+        return;
 
-		public static Type[] Artifacts = new Type[]
-		{
-			typeof( GoldBricks ), typeof( PhillipsWoodenSteed ),
-			typeof( AlchemistsBauble ), typeof( ArcticDeathDealer ),
-			typeof( BlazeOfDeath ), typeof( BowOfTheJukaKing ),
-			typeof( BurglarsBandana ), typeof( CavortingClub ),
-			typeof( EnchantedTitanLegBone ), typeof( GwennosHarp ),
-			typeof( IolosLute ), typeof( LunaLance ),
-			typeof( NightsKiss ), typeof( NoxRangersHeavyCrossbow ),
-			typeof( OrcishVisage ), typeof( PolarBearMask ),
-			typeof( ShieldOfInvulnerability ), typeof( StaffOfPower ),
-			typeof( VioletCourage ), typeof( HeartOfTheLion ),
-			typeof( WrathOfTheDryad ), typeof( PixieSwatter ),
-			typeof( GlovesOfThePugilist )
-		};
+      bc.Hue = Hue;
 
-		public static int    Hue   = 0x501;        // Paragon hue
+      if (bc.HitsMaxSeed >= 0)
+        bc.HitsMaxSeed = (int)(bc.HitsMaxSeed * HitsBuff);
 
-		// Buffs
-		public static double HitsBuff   = 5.0;
-		public static double StrBuff    = 1.05;
-		public static double IntBuff    = 1.20;
-		public static double DexBuff    = 1.20;
-		public static double SkillsBuff = 1.20;
-		public static double SpeedBuff  = 1.20;
-		public static double FameBuff   = 1.40;
-		public static double KarmaBuff  = 1.40;
-		public static int    DamageBuff = 5;
+      bc.RawStr = (int)(bc.RawStr * StrBuff);
+      bc.RawInt = (int)(bc.RawInt * IntBuff);
+      bc.RawDex = (int)(bc.RawDex * DexBuff);
 
-		public static void Convert( BaseCreature bc )
-		{
-			if ( bc.IsParagon )
-				return;
+      bc.Hits = bc.HitsMax;
+      bc.Mana = bc.ManaMax;
+      bc.Stam = bc.StamMax;
 
-			bc.Hue = Hue;
+      for (int i = 0; i < bc.Skills.Length; i++)
+      {
+        Skill skill = bc.Skills[i];
 
-			if ( bc.HitsMaxSeed >= 0 )
-				bc.HitsMaxSeed = (int)( bc.HitsMaxSeed * HitsBuff );
+        if (skill.Base > 0.0)
+          skill.Base *= SkillsBuff;
+      }
 
-			bc.RawStr = (int)( bc.RawStr * StrBuff );
-			bc.RawInt = (int)( bc.RawInt * IntBuff );
-			bc.RawDex = (int)( bc.RawDex * DexBuff );
+      bc.PassiveSpeed /= SpeedBuff;
+      bc.ActiveSpeed /= SpeedBuff;
+      bc.CurrentSpeed = bc.PassiveSpeed;
 
-			bc.Hits = bc.HitsMax;
-			bc.Mana = bc.ManaMax;
-			bc.Stam = bc.StamMax;
+      bc.DamageMin += DamageBuff;
+      bc.DamageMax += DamageBuff;
 
-			for( int i = 0; i < bc.Skills.Length; i++ )
-			{
-				Skill skill = (Skill)bc.Skills[i];
+      if (bc.Fame > 0)
+        bc.Fame = (int)(bc.Fame * FameBuff);
 
-				if ( skill.Base > 0.0 )
-					skill.Base *= SkillsBuff;
-			}
+      if (bc.Fame > 32000)
+        bc.Fame = 32000;
 
-			bc.PassiveSpeed /= SpeedBuff;
-			bc.ActiveSpeed /= SpeedBuff;
-			bc.CurrentSpeed = bc.PassiveSpeed;
+      // TODO: Mana regeneration rate = Sqrt( buffedFame ) / 4
 
-			bc.DamageMin += DamageBuff;
-			bc.DamageMax += DamageBuff;
+      if (bc.Karma != 0)
+      {
+        bc.Karma = (int)(bc.Karma * KarmaBuff);
 
-			if ( bc.Fame > 0 )
-				bc.Fame = (int)( bc.Fame * FameBuff );
+        if (Math.Abs(bc.Karma) > 32000)
+          bc.Karma = 32000 * Math.Sign(bc.Karma);
+      }
 
-			if ( bc.Fame > 32000 )
-				bc.Fame = 32000;
+      new ParagonStamRegen(bc).Start();
+    }
 
-			// TODO: Mana regeneration rate = Sqrt( buffedFame ) / 4
+    public static void UnConvert(BaseCreature bc)
+    {
+      if (!bc.IsParagon)
+        return;
 
-			if ( bc.Karma != 0 )
-			{
-				bc.Karma = (int)( bc.Karma * KarmaBuff );
+      bc.Hue = 0;
 
-				if( Math.Abs( bc.Karma ) > 32000 )
-					bc.Karma = 32000 * Math.Sign( bc.Karma );
-			}
+      if (bc.HitsMaxSeed >= 0)
+        bc.HitsMaxSeed = (int)(bc.HitsMaxSeed / HitsBuff);
 
-			new ParagonStamRegen( bc ).Start();
-		}
+      bc.RawStr = (int)(bc.RawStr / StrBuff);
+      bc.RawInt = (int)(bc.RawInt / IntBuff);
+      bc.RawDex = (int)(bc.RawDex / DexBuff);
 
-		public static void UnConvert( BaseCreature bc )
-		{
-			if( !bc.IsParagon )
-				return;
+      bc.Hits = bc.HitsMax;
+      bc.Mana = bc.ManaMax;
+      bc.Stam = bc.StamMax;
 
-			bc.Hue = 0;
+      for (int i = 0; i < bc.Skills.Length; i++)
+      {
+        Skill skill = bc.Skills[i];
 
-			if( bc.HitsMaxSeed >= 0 )
-				bc.HitsMaxSeed = (int)( bc.HitsMaxSeed / HitsBuff );
+        if (skill.Base > 0.0)
+          skill.Base /= SkillsBuff;
+      }
 
-			bc.RawStr = (int)( bc.RawStr / StrBuff );
-			bc.RawInt = (int)( bc.RawInt / IntBuff );
-			bc.RawDex = (int)( bc.RawDex / DexBuff );
+      bc.PassiveSpeed *= SpeedBuff;
+      bc.ActiveSpeed *= SpeedBuff;
+      bc.CurrentSpeed = bc.PassiveSpeed;
 
-			bc.Hits = bc.HitsMax;
-			bc.Mana = bc.ManaMax;
-			bc.Stam = bc.StamMax;
+      bc.DamageMin -= DamageBuff;
+      bc.DamageMax -= DamageBuff;
 
-			for( int i = 0; i < bc.Skills.Length; i++ )
-			{
-				Skill skill = (Skill)bc.Skills[i];
+      if (bc.Fame > 0)
+        bc.Fame = (int)(bc.Fame / FameBuff);
+      if (bc.Karma != 0)
+        bc.Karma = (int)(bc.Karma / KarmaBuff);
+    }
 
-				if ( skill.Base > 0.0 )
-					skill.Base /= SkillsBuff;
-			}
+    public static bool CheckConvert(BaseCreature bc)
+    {
+      return CheckConvert(bc, bc.Location, bc.Map);
+    }
 
-			bc.PassiveSpeed *= SpeedBuff;
-			bc.ActiveSpeed *= SpeedBuff;
-			bc.CurrentSpeed = bc.PassiveSpeed;
+    public static bool CheckConvert(BaseCreature bc, Point3D location, Map m)
+    {
+      if (!Core.AOS)
+        return false;
 
-			bc.DamageMin -= DamageBuff;
-			bc.DamageMax -= DamageBuff;
+      if (Array.IndexOf(Maps, m) == -1)
+        return false;
 
-			if ( bc.Fame > 0 )
-				bc.Fame = (int)( bc.Fame / FameBuff );
-			if ( bc.Karma != 0 )
-				bc.Karma = (int)( bc.Karma / KarmaBuff );
-		}
+      if (bc is BaseChampion || bc is Harrower || bc is BaseVendor || bc is BaseEscortable || bc is Clone ||
+          bc.IsParagon)
+        return false;
 
-		public static bool CheckConvert( BaseCreature bc )
-		{
-			return CheckConvert( bc, bc.Location, bc.Map );
-		}
+      int fame = bc.Fame;
 
-		public static bool CheckConvert( BaseCreature bc, Point3D location, Map m )
-		{
-			if ( !Core.AOS )
-				return false;
+      if (fame > 32000)
+        fame = 32000;
 
-			if ( Array.IndexOf( Maps, m ) == -1 )
-				return false;
+      double chance = 1 / Math.Round(20.0 - fame / 3200);
 
-			if ( bc is BaseChampion || bc is Harrower || bc is BaseVendor || bc is BaseEscortable || bc is Clone || bc.IsParagon )
-				return false;
+      return chance > Utility.RandomDouble();
+    }
 
-			int fame = bc.Fame;
+    public static bool CheckArtifactChance(Mobile m, BaseCreature bc)
+    {
+      if (!Core.AOS)
+        return false;
 
-			if ( fame > 32000 )
-				fame = 32000;
+      double fame = bc.Fame;
 
-			double chance = 1 / Math.Round( 20.0 - ( fame / 3200 ));
+      if (fame > 32000)
+        fame = 32000;
 
-			return ( chance > Utility.RandomDouble() );
-		}
+      double chance =
+        1 / (Math.Max(10, 100 * (0.83 - Math.Round(Math.Log(Math.Round(fame / 6000, 3) + 0.001, 10), 3))) *
+             (100 - Math.Sqrt(m.Luck)) / 100.0);
 
-		public static bool CheckArtifactChance( Mobile m, BaseCreature bc )
-		{
-			if ( !Core.AOS )
-				return false;
+      return chance > Utility.RandomDouble();
+    }
 
-			double fame = (double)bc.Fame;
+    public static void GiveArtifactTo(Mobile m)
+    {
+      Item item = (Item)Activator.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]);
 
-			if ( fame > 32000 )
-				fame = 32000;
+      if (m.AddToBackpack(item))
+        m.SendMessage("As a reward for slaying the mighty paragon, an artifact has been placed in your backpack.");
+      else
+        m.SendMessage(
+          "As your backpack is full, your reward for destroying the legendary paragon has been placed at your feet.");
+    }
 
-			double chance = 1 / ( Math.Max( 10, 100 * ( 0.83 - Math.Round( Math.Log( Math.Round( fame / 6000, 3 ) + 0.001, 10 ), 3 ) ) ) * ( 100 - Math.Sqrt( m.Luck ) ) / 100.0 );
+    private class ParagonStamRegen : Timer
+    {
+      private BaseCreature m_Owner;
 
-			return chance > Utility.RandomDouble();
-		}
+      public ParagonStamRegen(Mobile m)
+        : base(FastRegenRate, FastRegenRate)
+      {
+        Priority = TimerPriority.FiftyMS;
 
-		public static void GiveArtifactTo( Mobile m )
-		{
-			Item item = (Item)Activator.CreateInstance( Artifacts[Utility.Random(Artifacts.Length)] );
+        m_Owner = m as BaseCreature;
+      }
 
-			if ( m.AddToBackpack( item ) )
-				m.SendMessage( "As a reward for slaying the mighty paragon, an artifact has been placed in your backpack." );
-			else
-				m.SendMessage( "As your backpack is full, your reward for destroying the legendary paragon has been placed at your feet." );
-		}
-	}
+      protected override void OnTick()
+      {
+        if (!m_Owner.Deleted && m_Owner.IsParagon && m_Owner.Map != Map.Internal)
+        {
+          m_Owner.Stam++;
+
+          Delay = Interval = m_Owner.Stam < m_Owner.StamMax * .75 ? FastRegenRate : CPUSaverRate;
+        }
+        else
+        {
+          Stop();
+        }
+      }
+    }
+  }
 }

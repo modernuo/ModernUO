@@ -1,57 +1,53 @@
-using System;
-using Server.Network;
-using Server.Items;
-
 namespace Server.Items
 {
-	[FlippableAttribute( 0x27A6, 0x27F1 )]
-	public class Tetsubo : BaseBashing
-	{
-		public override WeaponAbility PrimaryAbility => WeaponAbility.FrenziedWhirlwind;
-		public override WeaponAbility SecondaryAbility => WeaponAbility.CrushingBlow;
+  [Flippable(0x27A6, 0x27F1)]
+  public class Tetsubo : BaseBashing
+  {
+    [Constructible]
+    public Tetsubo() : base(0x27A6)
+    {
+      Weight = 8.0;
+      Layer = Layer.TwoHanded;
+    }
 
-		public override int AosStrengthReq => 35;
-		public override int AosMinDamage => 12;
-		public override int AosMaxDamage => 14;
-		public override int AosSpeed => 45;
-		public override float MlSpeed => 2.50f;
+    public Tetsubo(Serial serial) : base(serial)
+    {
+    }
 
-		public override int OldStrengthReq => 35;
-		public override int OldMinDamage => 12;
-		public override int OldMaxDamage => 14;
-		public override int OldSpeed => 45;
+    public override WeaponAbility PrimaryAbility => WeaponAbility.FrenziedWhirlwind;
+    public override WeaponAbility SecondaryAbility => WeaponAbility.CrushingBlow;
 
-		public override int DefHitSound => 0x233;
-		public override int DefMissSound => 0x238;
+    public override int AosStrengthReq => 35;
+    public override int AosMinDamage => 12;
+    public override int AosMaxDamage => 14;
+    public override int AosSpeed => 45;
+    public override float MlSpeed => 2.50f;
 
-		public override int InitMinHits => 60;
-		public override int InitMaxHits => 65;
+    public override int OldStrengthReq => 35;
+    public override int OldMinDamage => 12;
+    public override int OldMaxDamage => 14;
+    public override int OldSpeed => 45;
 
-		public override WeaponAnimation DefAnimation => WeaponAnimation.Bash2H;
+    public override int DefHitSound => 0x233;
+    public override int DefMissSound => 0x238;
 
-		[Constructible]
-		public Tetsubo() : base( 0x27A6 )
-		{
-			Weight = 8.0;
-			Layer = Layer.TwoHanded;
-		}
+    public override int InitMinHits => 60;
+    public override int InitMaxHits => 65;
 
-		public Tetsubo( Serial serial ) : base( serial )
-		{
-		}
+    public override WeaponAnimation DefAnimation => WeaponAnimation.Bash2H;
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

@@ -1,80 +1,78 @@
-using System;
-using Server;
 using Server.Items;
 using EDI = Server.Mobiles.EscortDestinationInfo;
 
 namespace Server.Mobiles
 {
-	public class BrideGroom : BaseEscortable
-	{
-		[Constructible]
-		public BrideGroom()
-		{
-			if ( Female )
-				Title = "the bride";
-			else
-				Title = "the groom";
-		}
+  public class BrideGroom : BaseEscortable
+  {
+    [Constructible]
+    public BrideGroom()
+    {
+      if (Female)
+        Title = "the bride";
+      else
+        Title = "the groom";
+    }
 
-		public override bool CanTeach => true;
-		public override bool ClickTitle => false; // Do not display 'the groom' when single-clicking
+    public BrideGroom(Serial serial) : base(serial)
+    {
+    }
 
-		private static int GetRandomHue()
-		{
-			switch ( Utility.Random( 6 ) )
-			{
-				default:
-				case 0: return 0;
-				case 1: return Utility.RandomBlueHue();
-				case 2: return Utility.RandomGreenHue();
-				case 3: return Utility.RandomRedHue();
-				case 4: return Utility.RandomYellowHue();
-				case 5: return Utility.RandomNeutralHue();
-			}
-		}
+    public override bool CanTeach => true;
+    public override bool ClickTitle => false; // Do not display 'the groom' when single-clicking
 
-		public override void InitOutfit()
-		{
-			if ( Female )
-				AddItem( new FancyDress() );
-			else
-				AddItem( new FancyShirt() );
+    private static int GetRandomHue()
+    {
+      switch (Utility.Random(6))
+      {
+        default:
+        case 0: return 0;
+        case 1: return Utility.RandomBlueHue();
+        case 2: return Utility.RandomGreenHue();
+        case 3: return Utility.RandomRedHue();
+        case 4: return Utility.RandomYellowHue();
+        case 5: return Utility.RandomNeutralHue();
+      }
+    }
 
-			int lowHue = GetRandomHue();
+    public override void InitOutfit()
+    {
+      if (Female)
+        AddItem(new FancyDress());
+      else
+        AddItem(new FancyShirt());
 
-			AddItem( new LongPants( lowHue ) );
+      int lowHue = GetRandomHue();
 
-			if ( Female )
-				AddItem( new Shoes( lowHue ) );
-			else
-				AddItem( new Boots( lowHue ) );
+      AddItem(new LongPants(lowHue));
 
-			if( Utility.RandomBool() )
-				HairItemID = 0x203B;
-			else
-				HairItemID = 0x203C;
+      if (Female)
+        AddItem(new Shoes(lowHue));
+      else
+        AddItem(new Boots(lowHue));
 
-			HairHue = this.Race.RandomHairHue();
+      if (Utility.RandomBool())
+        HairItemID = 0x203B;
+      else
+        HairItemID = 0x203C;
 
-			PackGold( 200, 250 );
-		}
+      HairHue = Race.RandomHairHue();
 
-		public BrideGroom( Serial serial ) : base( serial )
-		{
-		}
+      PackGold(200, 250);
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

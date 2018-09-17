@@ -1,35 +1,32 @@
-﻿using System;
-using Server;
-
-namespace Server.Items.Holiday
+﻿namespace Server.Items.Holiday
 {
-	public class PaintedPlagueMask : BasePaintedMask
-	{
-		public override string MaskName => "Plague Mask";
+  public class PaintedPlagueMask : BasePaintedMask
+  {
+    [Constructible]
+    public PaintedPlagueMask()
+      : base(0x4A8E)
+    {
+    }
 
-		[Constructible]
-		public PaintedPlagueMask()
-			: base( 0x4A8E )
-		{
-		}
+    public PaintedPlagueMask(Serial serial)
+      : base(serial)
+    {
+    }
 
-		public PaintedPlagueMask( Serial serial )
-			: base( serial )
-		{
-		}
+    public override string MaskName => "Plague Mask";
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( ( int )0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }

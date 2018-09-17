@@ -1,34 +1,31 @@
-using System;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class LongbowOfMight : ElvenCompositeLongbow
-	{
-		public override int LabelNumber => 1073508; // longbow of might
+  public class LongbowOfMight : ElvenCompositeLongbow
+  {
+    [Constructible]
+    public LongbowOfMight()
+    {
+      Attributes.WeaponDamage = 5;
+    }
 
-		[Constructible]
-		public LongbowOfMight()
-		{
-			Attributes.WeaponDamage = 5;
-		}
+    public LongbowOfMight(Serial serial) : base(serial)
+    {
+    }
 
-		public LongbowOfMight( Serial serial ) : base( serial )
-		{
-		}
+    public override int LabelNumber => 1073508; // longbow of might
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.WriteEncodedInt( 0 ); // version
-		}
+      writer.WriteEncodedInt(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadEncodedInt();
-		}
-	}
+      int version = reader.ReadEncodedInt();
+    }
+  }
 }

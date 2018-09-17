@@ -1,39 +1,33 @@
-using System;
-using Server;
-using Server.Items;
-
 namespace Server.Items
 {
-	public class PolymorphScroll : SpellScroll
-	{
-		[Constructible]
-		public PolymorphScroll() : this( 1 )
-		{
-		}
+  public class PolymorphScroll : SpellScroll
+  {
+    [Constructible]
+    public PolymorphScroll() : this(1)
+    {
+    }
 
-		[Constructible]
-		public PolymorphScroll( int amount ) : base( 55, 0x1F64, amount )
-		{
-		}
+    [Constructible]
+    public PolymorphScroll(int amount) : base(55, 0x1F64, amount)
+    {
+    }
 
-		public PolymorphScroll( Serial serial ) : base( serial )
-		{
-		}
+    public PolymorphScroll(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize(GenericWriter writer)
+    {
+      base.Serialize(writer);
 
-			writer.Write( (int) 0 ); // version
-		}
+      writer.Write(0); // version
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize(GenericReader reader)
+    {
+      base.Deserialize(reader);
 
-			int version = reader.ReadInt();
-		}
-
-		
-	}
+      int version = reader.ReadInt();
+    }
+  }
 }
