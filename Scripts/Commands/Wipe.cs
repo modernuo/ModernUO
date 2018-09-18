@@ -80,7 +80,7 @@ namespace Server.Commands
       if (!items && !multis || !mobiles)
         return;
       
-      eable = map.GetObjectsInBounds(rect, true, true);
+      eable = map.GetObjectsInBounds(rect);
 
       foreach (IEntity obj in eable)
         if (items && obj is Item && !(obj is BaseMulti || obj is HouseSign))

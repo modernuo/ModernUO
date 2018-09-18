@@ -1295,7 +1295,7 @@ namespace Server.Items
       bool ignoreArmor = a is ArmorIgnore || move != null && move.IgnoreArmor(attacker);
 
       damageGiven = AOS.Damage(defender, attacker, damage, ignoreArmor, phys, fire, cold, pois, nrgy, chaos, direct,
-        false, this is BaseRanged, false);
+        false, this is BaseRanged);
 
       double propertyBonus = move?.GetPropertyBonus(attacker) ?? 1.0;
 

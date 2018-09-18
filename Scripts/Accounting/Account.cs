@@ -759,6 +759,7 @@ namespace Server.Accounting
 					}
 					catch
 					{
+						// ignored
 					}
 				}
 			}
@@ -783,7 +784,10 @@ namespace Server.Accounting
 				foreach ( XmlElement comment in comments.GetElementsByTagName( "comment" ) )
 				{
 					try { list.Add( new AccountComment( comment ) ); }
-					catch { }
+					catch
+					{
+						// ignored
+					}
 				}
 			}
 
@@ -807,7 +811,10 @@ namespace Server.Accounting
 				foreach ( XmlElement tag in tags.GetElementsByTagName( "tag" ) )
 				{
 					try { list.Add( new AccountTag( tag ) ); }
-					catch { }
+					catch
+					{
+						// ignored
+					}
 				}
 			}
 

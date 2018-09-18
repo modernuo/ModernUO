@@ -60,7 +60,7 @@ namespace Server.Accounting
       foreach (XmlElement account in root.GetElementsByTagName("account"))
         try
         {
-          Account acct = new Account(account);
+          new Account(account);
         }
         catch
         {

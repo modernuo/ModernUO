@@ -70,9 +70,7 @@ namespace Server.Regions
 
         foreach (XmlNode node in spawning.ChildNodes)
         {
-          XmlElement el = node as XmlElement;
-
-          if (el != null)
+          if (node is XmlElement el)
           {
             SpawnDefinition def = SpawnDefinition.GetSpawnDefinition(el);
             if (def == null)

@@ -194,7 +194,8 @@ namespace Server
 
       public override bool Equals(object obj)
       {
-        if (obj is IPAddress) return obj.Equals(m_Address);
+        if (obj is IPAddress)
+          return obj.Equals(m_Address);
         if (obj is string s)
         {
           if (IPAddress.TryParse(s, out IPAddress otherAddress))

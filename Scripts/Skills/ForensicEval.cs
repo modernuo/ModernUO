@@ -35,7 +35,7 @@ namespace Server.SkillHandlers
         {
           if (from.CheckTargetSkill(SkillName.Forensics, target, 40.0, 100.0))
           {
-            if (target is PlayerMobile && ((PlayerMobile)target).NpcGuild == NpcGuild.ThievesGuild)
+            if (target is PlayerMobile pm && pm.NpcGuild == NpcGuild.ThievesGuild)
               from.SendLocalizedMessage(501004); //That individual is a thief!
             else
               from.SendLocalizedMessage(501003); //You notice nothing unusual.
@@ -45,12 +45,10 @@ namespace Server.SkillHandlers
             from.SendLocalizedMessage(501001); //You cannot determain anything useful.
           }
         }
-        else if (target is Corpse)
+        else if (target is Corpse c)
         {
-          if (from.CheckTargetSkill(SkillName.Forensics, target, 0.0, 100.0))
+          if (from.CheckTargetSkill(SkillName.Forensics, c, 0.0, 100.0))
           {
-            Corpse c = (Corpse)target;
-
             if (c.m_Forensicist != null)
               from.SendLocalizedMessage(1042750,
                 c.m_Forensicist); // The forensicist  ~1_NAME~ has already discovered that:
@@ -84,9 +82,8 @@ namespace Server.SkillHandlers
             from.SendLocalizedMessage(501001); //You cannot determain anything useful.
           }
         }
-        else if (target is ILockpickable)
+        else if (target is ILockpickable p)
         {
-          ILockpickable p = (ILockpickable)target;
           if (p.Picker != null)
             from.SendLocalizedMessage(1042749, p.Picker.Name); //This lock was opened by ~1_PICKER_NAME~
           else

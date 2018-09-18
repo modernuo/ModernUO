@@ -125,7 +125,7 @@ namespace Server.Engines.Craft
 
         if (from.Backpack != null)
         {
-          Item[] items = from.Backpack.FindItemsByType(resourceType, true);
+          Item[] items = from.Backpack.FindItemsByType(resourceType);
 
           for (int i = 0; i < items.Length; ++i)
             resourceCount += items[i].Amount;
@@ -163,7 +163,7 @@ namespace Server.Engines.Craft
 
         if (from.Backpack != null)
         {
-          Item[] items = from.Backpack.FindItemsByType(resourceType, true);
+          Item[] items = from.Backpack.FindItemsByType(resourceType);
 
           for (int i = 0; i < items.Length; ++i)
             resourceCount += items[i].Amount;
@@ -219,7 +219,7 @@ namespace Server.Engines.Craft
 
         if (from.Backpack != null)
         {
-          Item[] items = from.Backpack.FindItemsByType(subResource.ItemType, true);
+          Item[] items = from.Backpack.FindItemsByType(subResource.ItemType);
 
           for (int j = 0; j < items.Length; ++j)
             resourceCount += items[j].Amount;

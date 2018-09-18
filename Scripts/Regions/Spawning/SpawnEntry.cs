@@ -122,8 +122,8 @@ namespace Server.Regions
 
       spawn.Spawner = this;
 
-      if (spawn is BaseCreature)
-        ((BaseCreature)spawn).RemoveIfUntamed = RemoveIfUntamed;
+      if (spawn is BaseCreature creature)
+        creature.RemoveIfUntamed = RemoveIfUntamed;
     }
 
     private TimeSpan RandomTime()
@@ -246,9 +246,8 @@ namespace Server.Regions
       for (int i = 0; i < count; i++)
       {
         int serial = reader.ReadInt();
-        ISpawnable spawnableEntity = World.FindEntity(serial) as ISpawnable;
 
-        if (spawnableEntity != null)
+        if (World.FindEntity(serial) is ISpawnable spawnableEntity)
           Add(spawnableEntity);
       }
 

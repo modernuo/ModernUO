@@ -103,8 +103,7 @@ namespace Server.Commands.Generic
 
       protected override void OnTarget(Mobile from, object obj)
       {
-        HouseFoundation house;
-        DesignInsertResult result = ProcessInsert(obj as Item, m_StaticsOnly, out house);
+        DesignInsertResult result = ProcessInsert(obj as Item, m_StaticsOnly, out HouseFoundation house);
 
         switch (result)
         {
@@ -153,7 +152,6 @@ namespace Server.Commands.Generic
     private void OnConfirmCallback(Mobile from, bool okay, object state)
     {
       object[] states = (object[])state;
-      CommandEventArgs e = (CommandEventArgs)states[0];
       ArrayList list = (ArrayList)states[1];
       bool staticsOnly = (bool)states[2];
 

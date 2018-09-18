@@ -52,6 +52,7 @@ namespace Server.Commands
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -80,6 +81,7 @@ namespace Server.Commands
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -222,7 +224,7 @@ namespace Server.Commands
             Type itemType = de.Key as Type;
             int[] countTable = de.Value as int[];
 
-            op.WriteLine("# {0}", itemType.FullName);
+            op.WriteLine("# {0}", itemType?.FullName);
 
             for (int i = 0; i < countTable.Length; ++i)
               if (countTable[i] > 0)
@@ -234,6 +236,7 @@ namespace Server.Commands
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -351,6 +354,7 @@ namespace Server.Commands
       }
       catch
       {
+        // ignored
       }
     }
 

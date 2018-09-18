@@ -32,12 +32,12 @@ namespace Server.SkillHandlers
         bool foundAnyone = false;
 
         Point3D p;
-        if (targ is Mobile)
-          p = ((Mobile)targ).Location;
-        else if (targ is Item)
-          p = ((Item)targ).Location;
-        else if (targ is IPoint3D)
-          p = new Point3D((IPoint3D)targ);
+        if (targ is Mobile mobile)
+          p = mobile.Location;
+        else if (targ is Item item)
+          p = item.Location;
+        else if (targ is IPoint3D d)
+          p = new Point3D(d);
         else
           p = src.Location;
 

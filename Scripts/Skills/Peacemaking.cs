@@ -105,8 +105,8 @@ namespace Server.SkillHandlers
 
                 foreach (Mobile m in from.GetMobilesInRange(range))
                 {
-                  if (m is BaseCreature && ((BaseCreature)m).Uncalmable ||
-                      m is BaseCreature && ((BaseCreature)m).AreaPeaceImmune || m == from ||
+                  BaseCreature bc = m as BaseCreature;
+                  if (bc?.Uncalmable == true || bc?.AreaPeaceImmune == true || m == from ||
                       !from.CanBeHarmful(m, false))
                     continue;
 
@@ -117,8 +117,8 @@ namespace Server.SkillHandlers
                   m.Combatant = null;
                   m.Warmode = false;
 
-                  if (m is BaseCreature && !((BaseCreature)m).BardPacified)
-                    ((BaseCreature)m).Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(1.0));
+                  if (bc?.BardPacified == false)
+                    bc.Pacify(from, DateTime.UtcNow + TimeSpan.FromSeconds(1.0));
                 }
 
                 if (!calmed)
@@ -134,18 +134,19 @@ namespace Server.SkillHandlers
             // Target mode : pacify a single target for a longer duration
 
             Mobile targ = (Mobile)targeted;
+            BaseCreature bc = targ as BaseCreature;
 
             if (!from.CanBeHarmful(targ, false))
             {
               from.SendLocalizedMessage(1049528);
               m_SetSkillTime = true;
             }
-            else if (targ is BaseCreature && ((BaseCreature)targ).Uncalmable)
+            else if (bc?.Uncalmable == true)
             {
               from.SendLocalizedMessage(1049526); // You have no chance of calming that creature.
               m_SetSkillTime = true;
             }
-            else if (targ is BaseCreature && ((BaseCreature)targ).BardPacified)
+            else if (bc?.BardPacified == true)
             {
               from.SendLocalizedMessage(1049527); // That creature is already being calmed.
               m_SetSkillTime = true;
@@ -177,14 +178,12 @@ namespace Server.SkillHandlers
                 m_Instrument.ConsumeUse(from);
 
                 from.NextSkillTime = Core.TickCount + 5000;
-                if (targ is BaseCreature)
+                targ.Combatant = null;
+                targ.Warmode = false;
+                
+                if (bc != null)
                 {
-                  BaseCreature bc = (BaseCreature)targ;
-
                   from.SendLocalizedMessage(1049532); // You play hypnotic music, calming your target.
-
-                  targ.Combatant = null;
-                  targ.Warmode = false;
 
                   double seconds = 100 - diff / 1.5;
 
@@ -201,8 +200,6 @@ namespace Server.SkillHandlers
 
                   targ.SendLocalizedMessage(
                     500616); // You hear lovely music, and forget to continue battling!
-                  targ.Combatant = null;
-                  targ.Warmode = false;
                 }
               }
             }

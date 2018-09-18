@@ -177,9 +177,7 @@ namespace Server.Regions
     {
       Mobile mobile = CreateMobile();
 
-      BaseCreature creature = mobile as BaseCreature;
-
-      if (creature != null)
+      if (mobile is BaseCreature creature)
       {
         creature.Home = entry.HomeLocation;
         creature.HomeMap = map;
@@ -327,9 +325,7 @@ namespace Server.Regions
           List<SpawnGroupElement> list = new List<SpawnGroupElement>();
           foreach (XmlNode node in xmlDef.ChildNodes)
           {
-            XmlElement el = node as XmlElement;
-
-            if (el != null)
+            if (node is XmlElement el)
             {
               SpawnDefinition def = GetSpawnDefinition(el);
               if (def == null)

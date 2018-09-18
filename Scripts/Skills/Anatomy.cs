@@ -34,20 +34,18 @@ namespace Server.SkillHandlers
           from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
             500324); // You know yourself quite well enough already.
         }
-        else if (targeted is TownCrier)
+        else if (targeted is TownCrier crier)
         {
-          ((TownCrier)targeted).PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500322,
+          crier.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500322,
             from.NetState); // This person looks fine to me, though he may have some news...
         }
-        else if (targeted is BaseVendor && ((BaseVendor)targeted).IsInvulnerable)
+        else if (targeted is BaseVendor vendor && vendor.IsInvulnerable)
         {
-          ((BaseVendor)targeted).PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500326,
+          vendor.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500326,
             from.NetState); // That can not be inspected.
         }
-        else if (targeted is Mobile)
+        else if (targeted is Mobile targ)
         {
-          Mobile targ = (Mobile)targeted;
-
           int marginOfError = Math.Max(0, 25 - (int)(from.Skills[SkillName.Anatomy].Value / 4));
 
           int str = targ.Str + Utility.RandomMinMax(-marginOfError, +marginOfError);

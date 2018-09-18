@@ -43,7 +43,7 @@ namespace Server.Spells
     public void Stop()
     {
       m_Stop = true;
-      Disturb(DisturbType.Hurt, false, false);
+      Disturb(DisturbType.Hurt, false);
     }
 
     public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)

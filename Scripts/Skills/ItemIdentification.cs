@@ -29,26 +29,26 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (o is Item)
+        if (o is Item item)
         {
-          if (from.CheckTargetSkill(SkillName.ItemID, o, 0, 100))
+          if (from.CheckTargetSkill(SkillName.ItemID, item, 0, 100))
           {
-            if (o is BaseWeapon)
-              ((BaseWeapon)o).Identified = true;
-            else if (o is BaseArmor)
-              ((BaseArmor)o).Identified = true;
+            if (item is BaseWeapon weapon)
+              weapon.Identified = true;
+            else if (item is BaseArmor armor)
+              armor.Identified = true;
 
             if (!Core.AOS)
-              ((Item)o).OnSingleClick(from);
+              item.OnSingleClick(from);
           }
           else
           {
             from.SendLocalizedMessage(500353); // You are not certain...
           }
         }
-        else if (o is Mobile)
+        else if (o is Mobile mobile)
         {
-          ((Mobile)o).OnSingleClick(from);
+          mobile.OnSingleClick(from);
         }
         else
         {

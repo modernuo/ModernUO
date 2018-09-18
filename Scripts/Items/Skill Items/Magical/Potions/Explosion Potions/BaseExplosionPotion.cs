@@ -189,7 +189,7 @@ namespace Server.Items
       if (direct)
         alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
 
-      IPooledEnumerable<IEntity> eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion, true);
+      IPooledEnumerable<IEntity> eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion);
       List<IEntity> toExplode = new List<IEntity>();
 
       int toDamage = 0;

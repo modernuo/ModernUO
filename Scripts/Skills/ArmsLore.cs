@@ -32,12 +32,10 @@ namespace Server.SkillHandlers
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (targeted is BaseWeapon)
+        if (targeted is BaseWeapon weap)
         {
-          if (from.CheckTargetSkill(SkillName.ArmsLore, targeted, 0, 100))
+          if (from.CheckTargetSkill(SkillName.ArmsLore, weap, 0, 100))
           {
-            BaseWeapon weap = (BaseWeapon)targeted;
-
             if (weap.MaxHitPoints != 0)
             {
               int hp = (int)(weap.HitPoints / (double)weap.MaxHitPoints * 10);
@@ -93,12 +91,10 @@ namespace Server.SkillHandlers
             from.SendLocalizedMessage(500353); // You are not certain...
           }
         }
-        else if (targeted is BaseArmor)
+        else if (targeted is BaseArmor arm)
         {
-          if (from.CheckTargetSkill(SkillName.ArmsLore, targeted, 0, 100))
+          if (from.CheckTargetSkill(SkillName.ArmsLore, arm, 0, 100))
           {
-            BaseArmor arm = (BaseArmor)targeted;
-
             if (arm.MaxHitPoints != 0)
             {
               int hp = (int)(arm.HitPoints / (double)arm.MaxHitPoints * 10);
@@ -137,11 +133,9 @@ namespace Server.SkillHandlers
             from.SendLocalizedMessage(500353); // You are not certain...
           }
         }
-        else if (targeted is SwampDragon && ((SwampDragon)targeted).HasBarding)
+        else if (targeted is SwampDragon pet && pet.HasBarding)
         {
-          SwampDragon pet = (SwampDragon)targeted;
-
-          if (from.CheckTargetSkill(SkillName.ArmsLore, targeted, 0, 100))
+          if (from.CheckTargetSkill(SkillName.ArmsLore, pet, 0, 100))
           {
             int perc = 4 * pet.BardingHP / pet.BardingMaxHP;
 

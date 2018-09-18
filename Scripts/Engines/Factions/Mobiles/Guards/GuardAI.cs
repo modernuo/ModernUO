@@ -588,7 +588,7 @@ namespace Server.Factions
               m_Guard.Mana >= 11)
           {
             spell = new RecallSpell(m_Guard, null,
-              new RunebookEntry(m_Guard.Home, m_Guard.Map, "Guard's Home", null), null);
+              new RunebookEntry(m_Guard.Home, m_Guard.Map, "Guard's Home", null));
           }
           else if (IsAllowed(GuardAI.Bless))
           {

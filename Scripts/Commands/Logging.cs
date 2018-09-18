@@ -36,6 +36,7 @@ namespace Server.Commands
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -87,6 +88,7 @@ namespace Server.Commands
       }
       catch
       {
+        // ignored
       }
     }
 

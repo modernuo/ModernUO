@@ -34,9 +34,7 @@ namespace Server.SkillHandlers
 
     public static bool GetEffect(Mobile targ, ref int effect)
     {
-      DiscordanceInfo info = m_Table[targ] as DiscordanceInfo;
-
-      if (info == null)
+      if (!(m_Table[targ] is DiscordanceInfo info))
         return false;
 
       effect = info.m_Effect;
@@ -116,12 +114,12 @@ namespace Server.SkillHandlers
         {
           object mod = m_Mods[i];
 
-          if (mod is ResistanceMod)
-            m_Creature.AddResistanceMod((ResistanceMod)mod);
-          else if (mod is StatMod)
-            m_Creature.AddStatMod((StatMod)mod);
-          else if (mod is SkillMod)
-            m_Creature.AddSkillMod((SkillMod)mod);
+          if (mod is ResistanceMod resistanceMod)
+            m_Creature.AddResistanceMod(resistanceMod);
+          else if (mod is StatMod statMod)
+            m_Creature.AddStatMod(statMod);
+          else if (mod is SkillMod skillMod)
+            m_Creature.AddSkillMod(skillMod);
         }
       }
 
@@ -131,12 +129,12 @@ namespace Server.SkillHandlers
         {
           object mod = m_Mods[i];
 
-          if (mod is ResistanceMod)
-            m_Creature.RemoveResistanceMod((ResistanceMod)mod);
-          else if (mod is StatMod)
-            m_Creature.RemoveStatMod(((StatMod)mod).Name);
-          else if (mod is SkillMod)
-            m_Creature.RemoveSkillMod((SkillMod)mod);
+          if (mod is ResistanceMod resistanceMod)
+            m_Creature.RemoveResistanceMod(resistanceMod);
+          else if (mod is StatMod statMod)
+            m_Creature.RemoveStatMod(statMod.Name);
+          else if (mod is SkillMod skillMod)
+            m_Creature.RemoveSkillMod(skillMod);
         }
       }
     }
@@ -161,13 +159,11 @@ namespace Server.SkillHandlers
           from.SendLocalizedMessage(
             1062488); // The instrument you are trying to play is no longer in your backpack!
         }
-        else if (target is Mobile)
+        else if (target is Mobile targ)
         {
-          Mobile targ = (Mobile)target;
-
-          if (targ == from || targ is BaseCreature &&
-              (((BaseCreature)targ).BardImmune || !from.CanBeHarmful(targ, false)) &&
-              ((BaseCreature)targ).ControlMaster != from)
+          if (targ == from || targ is BaseCreature bc &&
+              (bc.BardImmune || !from.CanBeHarmful(bc, false)) &&
+              bc.ControlMaster != from)
           {
             from.SendLocalizedMessage(1049535); // A song of discord would have no effect on that.
           }
@@ -189,7 +185,7 @@ namespace Server.SkillHandlers
               m_Instrument.PlayInstrumentBadly(from);
               m_Instrument.ConsumeUse(from);
             }
-            else if (from.CheckTargetSkill(SkillName.Discordance, target, diff - 25.0, diff + 25.0))
+            else if (from.CheckTargetSkill(SkillName.Discordance, targ, diff - 25.0, diff + 25.0))
             {
               from.SendLocalizedMessage(1049539); // You play the song surpressing your targets strength
               m_Instrument.PlayInstrumentWell(from);

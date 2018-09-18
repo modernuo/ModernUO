@@ -567,6 +567,7 @@ namespace Server.Commands
         }
         catch
         {
+          // ignored
         }
 
         from.SendMessage("Region name not found");

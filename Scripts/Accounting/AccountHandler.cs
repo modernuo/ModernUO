@@ -192,6 +192,7 @@ namespace Server.Misc
       }
       catch
       {
+        // ignored
       }
     }
 

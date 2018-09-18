@@ -8,6 +8,7 @@ using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Commands
 {
+  [Flags]
   public enum PropertyAccess
   {
     Read = 0x01,
@@ -394,7 +395,7 @@ namespace Server.Commands
 
       m_ParseParams[0] = value;
 
-      return method.Invoke(o, m_ParseParams);
+      return method?.Invoke(o, m_ParseParams);
     }
 
     private static bool IsNumeric(Type t)

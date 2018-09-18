@@ -329,7 +329,7 @@ namespace Server.Gumps
                 }
 
                 Book.OnTravel();
-                new RecallSpell(from, null, e, null).Cast();
+                new RecallSpell(from, null, e).Cast();
               }
               else
               {
@@ -387,7 +387,7 @@ namespace Server.Gumps
                   }
 
                   Book.OnTravel();
-                  new SacredJourneySpell(from, null, e, null).Cast();
+                  new SacredJourneySpell(from, null, e).Cast();
                 }
                 else
                 {

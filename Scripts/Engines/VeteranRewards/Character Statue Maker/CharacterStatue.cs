@@ -640,7 +640,7 @@ namespace Server.Mobiles
 
     public static AddonFitResult CouldFit(Point3D p, Map map, Mobile from, ref BaseHouse house)
     {
-      if (!map.CanFit(p.X, p.Y, p.Z, 20, true, true, true))
+      if (!map.CanFit(p.X, p.Y, p.Z, 20, true))
         return AddonFitResult.Blocked;
       if (!BaseAddon.CheckHouse(from, p, map, 20, ref house))
         return AddonFitResult.NotInHouse;

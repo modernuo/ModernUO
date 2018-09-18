@@ -637,7 +637,7 @@ namespace Server.Items
             {
               int z = map.GetAverageZ(x, y);
 
-              if (!map.CanFit(x, y, z, 16, true, true))
+              if (!map.CanFit(x, y, z, 16, true))
                 from.SendLocalizedMessage(
                   503021); // You have found the treasure chest but something is keeping it from being dug up.
               else if (from.BeginAction(typeof(TreasureMap)))

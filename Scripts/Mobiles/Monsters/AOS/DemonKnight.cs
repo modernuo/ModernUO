@@ -257,11 +257,11 @@ namespace Server.Mobiles
         int y = from.Y + Utility.RandomMinMax(-1, 1);
         int z = from.Z;
 
-        if (!map.CanFit(x, y, z, 16, false, true))
+        if (!map.CanFit(x, y, z, 16))
         {
           z = map.GetAverageZ(x, y);
 
-          if (z == from.Z || !map.CanFit(x, y, z, 16, false, true))
+          if (z == from.Z || !map.CanFit(x, y, z, 16))
             continue;
         }
 

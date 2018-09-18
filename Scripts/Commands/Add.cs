@@ -259,12 +259,13 @@ namespace Server.Commands
             obj = Convert.ToInt64(value.Substring(2), 16);
           else if (IsUnsignedNumeric(type))
             obj = Convert.ToUInt64(value.Substring(2), 16);
-
-          obj = Convert.ToInt32(value.Substring(2), 16);
+          else
+            obj = Convert.ToInt32(value.Substring(2), 16);
         }
 
         if (obj == null && !type.IsValueType)
           return null;
+        
         return Convert.ChangeType(obj, type);
       }
       catch
@@ -657,7 +658,7 @@ namespace Server.Commands
 
       m_ParseArgs[0] = value;
 
-      return method.Invoke(null, m_ParseArgs);
+      return method?.Invoke(null, m_ParseArgs);
     }
 
     public static bool IsSignedNumeric(Type type)

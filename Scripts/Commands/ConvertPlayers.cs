@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Server.Mobiles;
 using Server.Network;
@@ -63,24 +64,22 @@ namespace Server.Commands
       }
     }
 
+    private static PropertyInfo[] _mobProps =
+      typeof(Mobile).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        .Where(prop => prop.CanRead && prop.CanWrite).ToArray();
+
     private static void CopyProps(Mobile to, Mobile from)
     {
-      Type type = typeof(Mobile);
-
-      PropertyInfo[] props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-      for (int p = 0; p < props.Length; p++)
+      foreach (PropertyInfo prop in _mobProps)
       {
-        PropertyInfo prop = props[p];
-
-        if (prop.CanRead && prop.CanWrite)
-          try
-          {
-            prop.SetValue(to, prop.GetValue(from, null), null);
-          }
-          catch
-          {
-          }
+        try
+        {
+          prop.SetValue(to, prop.GetValue(from, null), null);
+        }
+        catch
+        {
+          // ignored
+        }
       }
     }
   }

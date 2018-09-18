@@ -78,11 +78,11 @@ namespace Server.Items
           int y = c.Y + Utility.RandomMinMax(-1, 1);
           int z = c.Z;
 
-          if (!c.Map.CanFit(x, y, z, 1, false, false, true))
+          if (!c.Map.CanFit(x, y, z, 1, false, false))
           {
             z = c.Map.GetAverageZ(x, y);
 
-            if (!c.Map.CanFit(x, y, z, 1, false, false, true))
+            if (!c.Map.CanFit(x, y, z, 1, false, false))
               continue;
           }
 

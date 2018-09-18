@@ -653,10 +653,10 @@ namespace Server.Items
             {
               object o = toMove[i];
 
-              if (o is Mobile)
-                ((Mobile)o).Location = house.BanLocation;
-              else if (o is Item)
-                ((Item)o).Location = house.BanLocation;
+              if (o is Mobile mobile)
+                mobile.Location = house.BanLocation;
+              else if (o is Item item)
+                item.Location = house.BanLocation;
             }
           }
 
@@ -739,10 +739,10 @@ namespace Server.Items
             {
               object o = toMove[i];
 
-              if (o is Mobile)
-                ((Mobile)o).Location = banLoc;
-              else if (o is Item)
-                ((Item)o).Location = banLoc;
+              if (o is Mobile mobile)
+                mobile.Location = banLoc;
+              else if (o is Item item)
+                item.Location = banLoc;
             }
 
             prev.MoveToWorld(center, from.Map);
@@ -807,12 +807,11 @@ namespace Server.Items
     {
       object obj = m_Table[house.GetType()];
 
-      if (obj is HousePlacementEntry) return (HousePlacementEntry)obj;
+      if (obj is HousePlacementEntry entry)
+        return entry;
 
-      if (obj is ArrayList)
+      if (obj is ArrayList list)
       {
-        ArrayList list = (ArrayList)obj;
-
         for (int i = 0; i < list.Count; ++i)
         {
           HousePlacementEntry e = (HousePlacementEntry)list[i];
@@ -821,14 +820,12 @@ namespace Server.Items
             return e;
         }
       }
-      else if (obj is Hashtable)
+      else if (obj is Hashtable table)
       {
-        Hashtable table = (Hashtable)obj;
-
         obj = table[house.ItemID];
 
-        if (obj is HousePlacementEntry)
-          return (HousePlacementEntry)obj;
+        if (obj is HousePlacementEntry placementEntry)
+          return placementEntry;
       }
 
       return null;
@@ -855,10 +852,8 @@ namespace Server.Items
 
           m_Table[e.Type] = list;
         }
-        else if (obj is ArrayList)
+        else if (obj is ArrayList list)
         {
-          ArrayList list = (ArrayList)obj;
-
           if (list.Count == 8)
           {
             Hashtable table = new Hashtable();
@@ -875,9 +870,9 @@ namespace Server.Items
             list.Add(e);
           }
         }
-        else if (obj is Hashtable)
+        else if (obj is Hashtable hashtable)
         {
-          ((Hashtable)obj)[e.MultiID] = e;
+          hashtable[e.MultiID] = e;
         }
       }
     }

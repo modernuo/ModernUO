@@ -34,7 +34,7 @@ namespace Server
               Point3D origin = new Point3D(pt);
               Map facet = from.Map;
 
-              if (facet != null && facet.CanFit(pt.X, pt.Y, pt.Z, 16, false, false, true))
+              if (facet != null && facet.CanFit(pt.X, pt.Y, pt.Z, 16, false, false))
               {
                 Movable = false;
 

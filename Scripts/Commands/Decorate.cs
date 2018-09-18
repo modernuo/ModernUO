@@ -970,6 +970,7 @@ namespace Server.Commands
               }
               catch
               {
+                // ignored
               }
             }
 
