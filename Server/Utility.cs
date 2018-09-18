@@ -186,18 +186,14 @@ namespace Server
 
     public static bool IsValidIP(string text)
     {
-      bool valid = true;
-
-      IPMatch(text, IPAddress.None, ref valid);
+      IPMatch(text, IPAddress.None, out bool valid);
 
       return valid;
     }
 
     public static bool IPMatch(string val, IPAddress ip)
     {
-      bool valid = true;
-
-      return IPMatch(val, ip, ref valid);
+      return IPMatch(val, ip, out _);
     }
 
     public static string FixHtml(string str)
@@ -428,7 +424,7 @@ namespace Server
       return false;
     }
 
-    public static bool IPMatch(string val, IPAddress ip, ref bool valid)
+    public static bool IPMatch(string val, IPAddress ip, out bool valid)
     {
       valid = true;
 
@@ -800,6 +796,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -811,6 +808,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
 

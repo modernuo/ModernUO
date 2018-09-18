@@ -1936,7 +1936,7 @@ namespace Server
       {
         ThreadCount++;
 
-        int lastCount = 0;
+        int lastCount;
 
         do
         {

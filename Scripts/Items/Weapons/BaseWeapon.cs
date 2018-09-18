@@ -1261,7 +1261,6 @@ namespace Server.Items
 
         if (nrgy < low)
         {
-          low = nrgy;
           type = 4;
         }
 
@@ -2035,8 +2034,7 @@ namespace Server.Items
 
     public int GetElementalDamageHue()
     {
-      GetDamageTypes(null, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos,
-        out int direct);
+      GetDamageTypes(null, out _, out int fire, out int cold, out int pois, out int nrgy, out _, out _);
       //Order is Cold, Energy, Fire, Poison, Physical left
 
       int currentMax = 50;

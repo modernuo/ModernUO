@@ -424,7 +424,7 @@ namespace Server
 
     public double GainFactor{ get; set; }
 
-    public static SkillInfo[] Table{ get; set; } = new SkillInfo[58]
+    public static SkillInfo[] Table{ get; set; } = new SkillInfo[]
     {
       new SkillInfo(0, "Alchemy", 0.0, 5.0, 5.0, "Alchemist", null, 0.0, 0.5, 0.5, 1.0),
       new SkillInfo(1, "Anatomy", 0.0, 0.0, 0.0, "Biologist", null, 0.15, 0.15, 0.7, 1.0),

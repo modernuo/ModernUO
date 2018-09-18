@@ -46,7 +46,7 @@ namespace Server
     public static readonly string GuildIndexPath = Path.Combine("Saves/Guilds/", "Guilds.idx");
     public static readonly string GuildDataPath = Path.Combine("Saves/Guilds/", "Guilds.bin");
 
-    private static readonly Type[] m_SerialTypeArray = new Type[1] { typeof(Serial) };
+    private static readonly Type[] m_SerialTypeArray = new Type[] { typeof(Serial) };
 
     internal static int m_Saves;
 
@@ -181,7 +181,7 @@ namespace Server
       _addQueue = new Queue<IEntity>();
       _deleteQueue = new Queue<IEntity>();
 
-      int mobileCount = 0, itemCount = 0, guildCount = 0;
+      int mobileCount, itemCount, guildCount;
 
       object[] ctorArgs = new object[1];
 
@@ -227,6 +227,7 @@ namespace Server
               }
               catch
               {
+                // ignored
               }
 
               if (m != null)
@@ -282,6 +283,7 @@ namespace Server
               }
               catch
               {
+                // ignored
               }
 
               if (item != null)
@@ -576,6 +578,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
 

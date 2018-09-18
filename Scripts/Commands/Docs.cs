@@ -637,7 +637,7 @@ namespace Server.Commands
       {
         if (realType?.IsGenericType == true)
         {
-          FormatGeneric(realType, out string typeName, out string fileName, out string linkName);
+          FormatGeneric(realType, out _, out _, out string linkName);
           aliased = linkName.Replace("@directory@", null);
         }
         else
@@ -2502,7 +2502,7 @@ namespace Server.Commands
 
           if (ifaceInfo == null)
           {
-            FormatGeneric(iface, out string typeName, out string fileName, out string linkName);
+            FormatGeneric(iface, out _, out _, out string linkName);
             typeHtml.Write($"<!-- DBG-2.1 -->{linkName.Replace("@directory@", null)}");
           }
           else

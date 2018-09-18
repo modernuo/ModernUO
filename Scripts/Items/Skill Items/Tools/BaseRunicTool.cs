@@ -431,7 +431,7 @@ namespace Server.Items
 
     public static void GetElementalDamages(BaseWeapon weapon, bool randomizeOrder)
     {
-      weapon.GetDamageTypes(null, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct);
+      weapon.GetDamageTypes(null, out int phys, out _, out _, out _, out _, out _, out _);
 
       int totalDamage = phys;
 

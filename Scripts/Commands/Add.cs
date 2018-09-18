@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Server.Items;
@@ -54,18 +55,8 @@ namespace Server.Commands
       CommandSystem.Register("OutlineAvg", AccessLevel.GameMaster, OutlineAvg_OnCommand);
     }
 
-    public static void Invoke(Mobile from, Point3D start, Point3D end, string[] args)
-    {
-      Invoke(from, start, end, args, null, false, false);
-    }
-
-    public static void Invoke(Mobile from, Point3D start, Point3D end, string[] args, List<Container> packs)
-    {
-      Invoke(from, start, end, args, packs, false, false);
-    }
-
-    public static void Invoke(Mobile from, Point3D start, Point3D end, string[] args, List<Container> packs,
-      bool outline, bool mapAvg)
+    public static void Invoke(Mobile from, Point3D start, Point3D end, string[] args, List<Container> packs = null,
+      bool outline = false, bool mapAvg = false)
     {
       StringBuilder sb = new StringBuilder();
 
@@ -148,13 +139,7 @@ namespace Server.Commands
     }
 
     public static int BuildObjects(Mobile from, Type type, Point3D start, Point3D end, string[] args, string[,] props,
-      List<Container> packs)
-    {
-      return BuildObjects(from, type, start, end, args, props, packs, false, false);
-    }
-
-    public static int BuildObjects(Mobile from, Type type, Point3D start, Point3D end, string[] args, string[,] props,
-      List<Container> packs, bool outline, bool mapAvg)
+      List<Container> packs, bool outline = false, bool mapAvg = false)
     {
       Utility.FixPoints(ref start, ref end);
 
@@ -206,10 +191,19 @@ namespace Server.Commands
 
         if (!IsConstructible(ctor, from.AccessLevel))
           continue;
+        
+        int totalParams = 0;
 
-        ParameterInfo[] paramList = ctor.GetParameters();
+        // Handle optional constructors
+        ParameterInfo[] paramList = ctor.GetParameters().Select(param =>
+        {
+          if (param.DefaultValue is DBNull)
+            totalParams += 1;
 
-        if (args.Length == paramList.Length)
+          return param;
+        }).ToArray();
+
+        if (args.Length == totalParams)
         {
           object[] paramValues = ParseValues(paramList, args);
 
@@ -232,23 +226,27 @@ namespace Server.Commands
 
       for (int i = 0; i < args.Length; ++i)
       {
-        object value = ParseValue(paramList[i].ParameterType, args[i]);
+        ParameterInfo param = paramList[i];
+        if (param.DefaultValue is DBNull)
+        {
+          object value = ParseValue(param.ParameterType, args[i], param.DefaultValue);
+          if (value == null)
+            return null;
 
-        if (value != null)
           values[i] = value;
+        }
         else
-          return null;
+          values[i] = Type.Missing;
       }
 
       return values;
     }
 
-    public static object ParseValue(Type type, string value)
+    public static object ParseValue(Type type, string value, object defaultValue)
     {
       try
       {
         if (IsEnum(type)) return Enum.Parse(type, value, true);
-
         if (IsType(type)) return ScriptCompiler.FindTypeByName(value);
         if (IsParsable(type)) return ParseParsable(type, value);
         object obj = value;
@@ -308,13 +306,7 @@ namespace Server.Commands
     }
 
     public static int Build(Mobile from, Point3D start, Point3D end, ConstructorInfo ctor, object[] values,
-      string[,] props, PropertyInfo[] realProps, List<Container> packs)
-    {
-      return Build(from, start, end, ctor, values, props, realProps, packs, false, false);
-    }
-
-    public static int Build(Mobile from, Point3D start, Point3D end, ConstructorInfo ctor, object[] values,
-      string[,] props, PropertyInfo[] realProps, List<Container> packs, bool outline, bool mapAvg)
+      string[,] props, PropertyInfo[] realProps, List<Container> packs, bool outline = false, bool mapAvg = false)
     {
       try
       {
@@ -353,7 +345,8 @@ namespace Server.Commands
 
             if (built is Item item)
               packs[i].DropItem(item);
-            else if (built is Mobile m) m.MoveToWorld(new Point3D(start.X, start.Y, start.Z), map);
+            else if (built is Mobile m)
+              m.MoveToWorld(new Point3D(start.X, start.Y, start.Z), map);
           }
         }
         else
@@ -375,7 +368,8 @@ namespace Server.Commands
 
             if (built is Item item)
               item.MoveToWorld(new Point3D(x, y, z), map);
-            else if (built is Mobile m) m.MoveToWorld(new Point3D(x, y, z), map);
+            else if (built is Mobile m)
+              m.MoveToWorld(new Point3D(x, y, z), map);
           }
         }
 
