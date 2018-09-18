@@ -60,7 +60,7 @@ namespace Server.Commands
         if (ent == null)
           e.Mobile.SendMessage("No object with that serial was found.");
         else if (!BaseCommand.IsAccessible(e.Mobile, ent))
-          e.Mobile.SendMessage("That is not accessible.");
+          e.Mobile.SendLocalizedMessage(500447); // That is not accessible.
         else
           e.Mobile.SendGump(new PropertiesGump(e.Mobile, ent));
       }
@@ -550,7 +550,7 @@ namespace Server.Commands
       protected override void OnTarget(Mobile from, object o)
       {
         if (!BaseCommand.IsAccessible(from, o))
-          from.SendMessage("That is not accessible.");
+          from.SendLocalizedMessage(500447); // That is not accessible.
         else
           from.SendGump(new PropertiesGump(from, o));
       }

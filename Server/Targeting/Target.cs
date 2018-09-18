@@ -204,11 +204,11 @@ namespace Server.Targeting
           OnTargetOutOfLOS(from, targeted);
         else if (item?.InSecureTrade == true)
           OnTargetInSecureTrade(from, targeted);
-        else if (item?.IsAccessibleTo(from) == true)
+        else if (item?.IsAccessibleTo(from) == false)
           OnTargetNotAccessible(from, targeted);
-        else if (item?.CheckTarget(from, this, targeted) == true)
+        else if (item?.CheckTarget(from, this, targeted) == false)
           OnTargetUntargetable(from, targeted);
-        else if (mobile?.CheckTarget(from, this, mobile) != true)
+        else if (mobile?.CheckTarget(from, this, mobile) == false)
           OnTargetUntargetable(from, mobile);
         else if (from.Region.OnTarget(from, this, targeted))
           OnTarget(from, targeted);

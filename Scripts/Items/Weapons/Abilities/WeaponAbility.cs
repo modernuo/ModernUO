@@ -12,6 +12,41 @@ namespace Server.Items
 {
   public abstract class WeaponAbility
   {
+    public static WeaponAbility[] Abilities{ get; } = {
+      null,
+      new ArmorIgnore(),
+      new BleedAttack(),
+      new ConcussionBlow(),
+      new CrushingBlow(),
+      new Disarm(),
+      new Dismount(),
+      new DoubleStrike(),
+      new InfectiousStrike(),
+      new MortalStrike(),
+      new MovingShot(),
+      new ParalyzingBlow(),
+      new ShadowStrike(),
+      new WhirlwindAttack(),
+
+      new RidingSwipe(),
+      new FrenziedWhirlwind(),
+      new Block(),
+      new DefenseMastery(),
+      new NerveStrike(),
+      new TalonStrike(),
+      new Feint(),
+      new DualWield(),
+      new DoubleShot(),
+      new ArmorPierce(),
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      new Disrobe()
+    };
+    
     public static readonly WeaponAbility ArmorIgnore = Abilities[1];
     public static readonly WeaponAbility BleedAttack = Abilities[2];
     public static readonly WeaponAbility ConcussionBlow = Abilities[3];
@@ -46,7 +81,6 @@ namespace Server.Items
 
     public static readonly WeaponAbility Disrobe = Abilities[30];
 
-
     private static Hashtable m_PlayersTable = new Hashtable();
 
     public virtual int BaseMana => 0;
@@ -55,42 +89,6 @@ namespace Server.Items
     public virtual double DamageScalar => 1.0;
 
     public virtual bool RequiresSE => false;
-
-    public static WeaponAbility[] Abilities{ get; } = new WeaponAbility[31]
-    {
-      null,
-      new ArmorIgnore(),
-      new BleedAttack(),
-      new ConcussionBlow(),
-      new CrushingBlow(),
-      new Disarm(),
-      new Dismount(),
-      new DoubleStrike(),
-      new InfectiousStrike(),
-      new MortalStrike(),
-      new MovingShot(),
-      new ParalyzingBlow(),
-      new ShadowStrike(),
-      new WhirlwindAttack(),
-
-      new RidingSwipe(),
-      new FrenziedWhirlwind(),
-      new Block(),
-      new DefenseMastery(),
-      new NerveStrike(),
-      new TalonStrike(),
-      new Feint(),
-      new DualWield(),
-      new DoubleShot(),
-      new ArmorPierce(),
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      new Disrobe()
-    };
 
     public static Hashtable Table{ get; } = new Hashtable();
 

@@ -758,7 +758,7 @@ namespace Server.Commands
         AddIndexLink(html, "commands.html", "Commands",
           "Every available command. This contains command name, usage, aliases, and description.");
         AddIndexLink(html, "objects.html", "Constructible Objects",
-          "Every constructable item or npc. This contains object name and usage. Hover mouse over parameters to see type description.");
+          "Every constructible item or npc. This contains object name and usage. Hover mouse over parameters to see type description.");
         AddIndexLink(html, "keywords.html", "Speech Keywords",
           "Lists speech keyword numbers and associated match patterns. These are used in some scripts for multi-language matching of client speech.");
         AddIndexLink(html, "bodies.html", "Body List",

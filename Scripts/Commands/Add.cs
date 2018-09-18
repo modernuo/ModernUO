@@ -222,14 +222,14 @@ namespace Server.Commands
 
     public static object[] ParseValues(ParameterInfo[] paramList, string[] args)
     {
-      object[] values = new object[args.Length];
+      object[] values = new object[paramList.Length];
 
-      for (int i = 0; i < args.Length; ++i)
+      for (int i = 0, a = 0; i < paramList.Length; ++i)
       {
         ParameterInfo param = paramList[i];
         if (param.DefaultValue is DBNull)
         {
-          object value = ParseValue(param.ParameterType, args[i], param.DefaultValue);
+          object value = ParseValue(param.ParameterType, args[a++], param.DefaultValue);
           if (value == null)
             return null;
 

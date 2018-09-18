@@ -222,7 +222,7 @@ namespace Server.Commands.Generic
 
             if (!BaseCommand.IsAccessible(m_From, obj))
             {
-              m_From.SendMessage("That is not accessible.");
+              m_From.SendLocalizedMessage(500447); // That is not accessible.
               m_From.SendGump(new InterfaceGump(m_From, m_Columns, m_List, m_Page, m_Select));
               break;
             }

@@ -28,7 +28,7 @@ namespace Server.Commands.Generic
 
       if (!BaseCommand.IsAccessible(from, targeted))
       {
-        from.SendMessage("That is not accessible.");
+        from.SendLocalizedMessage(500447); // That is not accessible.
         from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
           new TargetStateCallback(OnTarget), new object[] { command, args });
         return;
