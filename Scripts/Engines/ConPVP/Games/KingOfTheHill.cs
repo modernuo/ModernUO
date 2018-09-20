@@ -722,60 +722,28 @@ namespace Server.Engines.ConPVP
     public KHTeamInfo[] TeamInfo{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team1_W
-    {
-      get => TeamInfo[0];
-      set { }
-    }
+    public KHTeamInfo Team1_W => TeamInfo[0];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team2_E
-    {
-      get => TeamInfo[1];
-      set { }
-    }
+    public KHTeamInfo Team2_E => TeamInfo[1];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team3_N
-    {
-      get => TeamInfo[2];
-      set { }
-    }
+    public KHTeamInfo Team3_N => TeamInfo[2];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team4_S
-    {
-      get => TeamInfo[3];
-      set { }
-    }
+    public KHTeamInfo Team4_S => TeamInfo[3];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team5_NW
-    {
-      get => TeamInfo[4];
-      set { }
-    }
+    public KHTeamInfo Team5_NW => TeamInfo[4];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team6_SE
-    {
-      get => TeamInfo[5];
-      set { }
-    }
+    public KHTeamInfo Team6_SE => TeamInfo[5];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team7_SW
-    {
-      get => TeamInfo[6];
-      set { }
-    }
+    public KHTeamInfo Team7_SW => TeamInfo[6];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team8_NE
-    {
-      get => TeamInfo[7];
-      set { }
-    }
+    public KHTeamInfo Team8_NE => TeamInfo[7];
 
     public HillOfTheKing[] Hills{ get; private set; }
 

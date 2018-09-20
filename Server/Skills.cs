@@ -719,410 +719,178 @@ namespace Server
     #region Skill Getters & Setters
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Alchemy
-    {
-      get => this[SkillName.Alchemy];
-      set { }
-    }
+    public Skill Alchemy => this[SkillName.Alchemy];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Anatomy
-    {
-      get => this[SkillName.Anatomy];
-      set { }
-    }
+    public Skill Anatomy => this[SkillName.Anatomy];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill AnimalLore
-    {
-      get => this[SkillName.AnimalLore];
-      set { }
-    }
+    public Skill AnimalLore => this[SkillName.AnimalLore];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill ItemID
-    {
-      get => this[SkillName.ItemID];
-      set { }
-    }
+    public Skill ItemID => this[SkillName.ItemID];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill ArmsLore
-    {
-      get => this[SkillName.ArmsLore];
-      set { }
-    }
+    public Skill ArmsLore => this[SkillName.ArmsLore];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Parry
-    {
-      get => this[SkillName.Parry];
-      set { }
-    }
+    public Skill Parry => this[SkillName.Parry];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Begging
-    {
-      get => this[SkillName.Begging];
-      set { }
-    }
+    public Skill Begging => this[SkillName.Begging];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Blacksmith
-    {
-      get => this[SkillName.Blacksmith];
-      set { }
-    }
+    public Skill Blacksmith => this[SkillName.Blacksmith];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Fletching
-    {
-      get => this[SkillName.Fletching];
-      set { }
-    }
+    public Skill Fletching => this[SkillName.Fletching];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Peacemaking
-    {
-      get => this[SkillName.Peacemaking];
-      set { }
-    }
+    public Skill Peacemaking => this[SkillName.Peacemaking];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Camping
-    {
-      get => this[SkillName.Camping];
-      set { }
-    }
+    public Skill Camping => this[SkillName.Camping];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Carpentry
-    {
-      get => this[SkillName.Carpentry];
-      set { }
-    }
+    public Skill Carpentry => this[SkillName.Carpentry];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Cartography
-    {
-      get => this[SkillName.Cartography];
-      set { }
-    }
+    public Skill Cartography => this[SkillName.Cartography];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Cooking
-    {
-      get => this[SkillName.Cooking];
-      set { }
-    }
+    public Skill Cooking => this[SkillName.Cooking];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill DetectHidden
-    {
-      get => this[SkillName.DetectHidden];
-      set { }
-    }
+    public Skill DetectHidden => this[SkillName.DetectHidden];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Discordance
-    {
-      get => this[SkillName.Discordance];
-      set { }
-    }
+    public Skill Discordance => this[SkillName.Discordance];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill EvalInt
-    {
-      get => this[SkillName.EvalInt];
-      set { }
-    }
+    public Skill EvalInt => this[SkillName.EvalInt];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Healing
-    {
-      get => this[SkillName.Healing];
-      set { }
-    }
+    public Skill Healing => this[SkillName.Healing];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Fishing
-    {
-      get => this[SkillName.Fishing];
-      set { }
-    }
+    public Skill Fishing => this[SkillName.Fishing];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Forensics
-    {
-      get => this[SkillName.Forensics];
-      set { }
-    }
+    public Skill Forensics => this[SkillName.Forensics];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Herding
-    {
-      get => this[SkillName.Herding];
-      set { }
-    }
+    public Skill Herding => this[SkillName.Herding];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Hiding
-    {
-      get => this[SkillName.Hiding];
-      set { }
-    }
+    public Skill Hiding => this[SkillName.Hiding];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Provocation
-    {
-      get => this[SkillName.Provocation];
-      set { }
-    }
+    public Skill Provocation => this[SkillName.Provocation];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Inscribe
-    {
-      get => this[SkillName.Inscribe];
-      set { }
-    }
+    public Skill Inscribe => this[SkillName.Inscribe];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Lockpicking
-    {
-      get => this[SkillName.Lockpicking];
-      set { }
-    }
+    public Skill Lockpicking => this[SkillName.Lockpicking];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Magery
-    {
-      get => this[SkillName.Magery];
-      set { }
-    }
+    public Skill Magery => this[SkillName.Magery];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill MagicResist
-    {
-      get => this[SkillName.MagicResist];
-      set { }
-    }
+    public Skill MagicResist => this[SkillName.MagicResist];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Tactics
-    {
-      get => this[SkillName.Tactics];
-      set { }
-    }
+    public Skill Tactics => this[SkillName.Tactics];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Snooping
-    {
-      get => this[SkillName.Snooping];
-      set { }
-    }
+    public Skill Snooping => this[SkillName.Snooping];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Musicianship
-    {
-      get => this[SkillName.Musicianship];
-      set { }
-    }
+    public Skill Musicianship => this[SkillName.Musicianship];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Poisoning
-    {
-      get => this[SkillName.Poisoning];
-      set { }
-    }
+    public Skill Poisoning => this[SkillName.Poisoning];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Archery
-    {
-      get => this[SkillName.Archery];
-      set { }
-    }
+    public Skill Archery => this[SkillName.Archery];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill SpiritSpeak
-    {
-      get => this[SkillName.SpiritSpeak];
-      set { }
-    }
+    public Skill SpiritSpeak => this[SkillName.SpiritSpeak];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Stealing
-    {
-      get => this[SkillName.Stealing];
-      set { }
-    }
+    public Skill Stealing => this[SkillName.Stealing];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Tailoring
-    {
-      get => this[SkillName.Tailoring];
-      set { }
-    }
+    public Skill Tailoring => this[SkillName.Tailoring];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill AnimalTaming
-    {
-      get => this[SkillName.AnimalTaming];
-      set { }
-    }
+    public Skill AnimalTaming => this[SkillName.AnimalTaming];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill TasteID
-    {
-      get => this[SkillName.TasteID];
-      set { }
-    }
+    public Skill TasteID => this[SkillName.TasteID];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Tinkering
-    {
-      get => this[SkillName.Tinkering];
-      set { }
-    }
+    public Skill Tinkering => this[SkillName.Tinkering];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Tracking
-    {
-      get => this[SkillName.Tracking];
-      set { }
-    }
+    public Skill Tracking => this[SkillName.Tracking];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Veterinary
-    {
-      get => this[SkillName.Veterinary];
-      set { }
-    }
+    public Skill Veterinary => this[SkillName.Veterinary];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Swords
-    {
-      get => this[SkillName.Swords];
-      set { }
-    }
+    public Skill Swords => this[SkillName.Swords];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Macing
-    {
-      get => this[SkillName.Macing];
-      set { }
-    }
+    public Skill Macing => this[SkillName.Macing];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Fencing
-    {
-      get => this[SkillName.Fencing];
-      set { }
-    }
+    public Skill Fencing => this[SkillName.Fencing];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Wrestling
-    {
-      get => this[SkillName.Wrestling];
-      set { }
-    }
+    public Skill Wrestling => this[SkillName.Wrestling];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Lumberjacking
-    {
-      get => this[SkillName.Lumberjacking];
-      set { }
-    }
+    public Skill Lumberjacking => this[SkillName.Lumberjacking];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Mining
-    {
-      get => this[SkillName.Mining];
-      set { }
-    }
+    public Skill Mining => this[SkillName.Mining];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Meditation
-    {
-      get => this[SkillName.Meditation];
-      set { }
-    }
+    public Skill Meditation => this[SkillName.Meditation];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Stealth
-    {
-      get => this[SkillName.Stealth];
-      set { }
-    }
+    public Skill Stealth => this[SkillName.Stealth];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill RemoveTrap
-    {
-      get => this[SkillName.RemoveTrap];
-      set { }
-    }
+    public Skill RemoveTrap => this[SkillName.RemoveTrap];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Necromancy
-    {
-      get => this[SkillName.Necromancy];
-      set { }
-    }
+    public Skill Necromancy => this[SkillName.Necromancy];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Focus
-    {
-      get => this[SkillName.Focus];
-      set { }
-    }
+    public Skill Focus => this[SkillName.Focus];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Chivalry
-    {
-      get => this[SkillName.Chivalry];
-      set { }
-    }
+    public Skill Chivalry => this[SkillName.Chivalry];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Bushido
-    {
-      get => this[SkillName.Bushido];
-      set { }
-    }
+    public Skill Bushido => this[SkillName.Bushido];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Ninjitsu
-    {
-      get => this[SkillName.Ninjitsu];
-      set { }
-    }
+    public Skill Ninjitsu => this[SkillName.Ninjitsu];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Spellweaving
-    {
-      get => this[SkillName.Spellweaving];
-      set { }
-    }
+    public Skill Spellweaving => this[SkillName.Spellweaving];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Mysticism
-    {
-      get => this[SkillName.Mysticism];
-      set { }
-    }
+    public Skill Mysticism => this[SkillName.Mysticism];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Imbuing
-    {
-      get => this[SkillName.Imbuing];
-      set { }
-    }
+    public Skill Imbuing => this[SkillName.Imbuing];
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skill Throwing
-    {
-      get => this[SkillName.Throwing];
-      set { }
-    }
+    public Skill Throwing => this[SkillName.Throwing];
 
     #endregion
   }

@@ -1367,32 +1367,16 @@ namespace Server.Engines.ConPVP
     public BRTeamInfo[] TeamInfo{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public BRTeamInfo Team1
-    {
-      get => TeamInfo[0];
-      set { }
-    }
+    public BRTeamInfo Team1 => TeamInfo[0];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public BRTeamInfo Team2
-    {
-      get => TeamInfo[1];
-      set { }
-    }
+    public BRTeamInfo Team2 => TeamInfo[1];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public BRTeamInfo Team3
-    {
-      get => TeamInfo[2];
-      set { }
-    }
+    public BRTeamInfo Team3 => TeamInfo[2];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public BRTeamInfo Team4
-    {
-      get => TeamInfo[3];
-      set { }
-    }
+    public BRTeamInfo Team4 => TeamInfo[3];
 
     [CommandProperty(AccessLevel.GameMaster)]
     public TimeSpan Duration{ get; set; }

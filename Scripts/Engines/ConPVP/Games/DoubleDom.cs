@@ -389,18 +389,10 @@ namespace Server.Engines.ConPVP
     public DDTeamInfo[] TeamInfo{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DDTeamInfo Team1
-    {
-      get => TeamInfo[0];
-      set { }
-    }
+    public DDTeamInfo Team1 => TeamInfo[0];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public DDTeamInfo Team2
-    {
-      get => TeamInfo[1];
-      set { }
-    }
+    public DDTeamInfo Team2 => TeamInfo[1];
 
     [CommandProperty(AccessLevel.GameMaster)]
     public DDWayPoint PointA{ get; set; }

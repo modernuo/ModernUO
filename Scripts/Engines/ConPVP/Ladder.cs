@@ -5,36 +5,30 @@ namespace Server.Engines.ConPVP
 {
   public class LadderController : Item
   {
-    private Ladder m_Ladder;
-
     [Constructible]
     public LadderController() : base(0x1B7A)
     {
       Visible = false;
       Movable = false;
 
-      m_Ladder = new Ladder();
+      Ladder = new Ladder();
 
       if (Ladder.Instance == null)
-        Ladder.Instance = m_Ladder;
+        Ladder.Instance = Ladder;
     }
 
     public LadderController(Serial serial) : base(serial)
     {
     }
 
-    //[CommandProperty( AccessLevel.GameMaster )]
-    public Ladder Ladder
-    {
-      get => m_Ladder;
-      set { }
-    }
+    [CommandProperty( AccessLevel.Administrator )]
+    public Ladder Ladder{ get; private set; }
 
     public override string DefaultName => "ladder controller";
 
     public override void Delete()
     {
-      if (Ladder.Instance == m_Ladder)
+      if (Ladder.Instance == Ladder)
         Ladder.Instance = null;
 
       base.Delete();
@@ -46,9 +40,9 @@ namespace Server.Engines.ConPVP
 
       writer.Write(1);
 
-      m_Ladder.Serialize(writer);
+      Ladder.Serialize(writer);
 
-      writer.Write(Ladder.Instance == m_Ladder);
+      writer.Write(Ladder.Instance == Ladder);
     }
 
     public override void Deserialize(GenericReader reader)
@@ -62,10 +56,10 @@ namespace Server.Engines.ConPVP
         case 1:
         case 0:
         {
-          m_Ladder = new Ladder(reader);
+          Ladder = new Ladder(reader);
 
           if (version < 1 || reader.ReadBool())
-            Ladder.Instance = m_Ladder;
+            Ladder.Instance = Ladder;
 
           break;
         }

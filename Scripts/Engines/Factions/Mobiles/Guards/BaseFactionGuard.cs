@@ -472,7 +472,7 @@ namespace Server.Factions
       m_Item = item;
     }
 
-    public Mobile Rider
+    Mobile IMount.Rider
     {
       get => m_Item.Rider;
       set { }

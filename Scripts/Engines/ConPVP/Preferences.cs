@@ -7,18 +7,16 @@ namespace Server.Engines.ConPVP
 {
   public class PreferencesController : Item
   {
-    private Preferences m_Preferences;
-
     [Constructible]
     public PreferencesController() : base(0x1B7A)
     {
       Visible = false;
       Movable = false;
 
-      m_Preferences = new Preferences();
+      Preferences = new Preferences();
 
       if (Preferences.Instance == null)
-        Preferences.Instance = m_Preferences;
+        Preferences.Instance = Preferences;
       else
         Delete();
     }
@@ -27,18 +25,14 @@ namespace Server.Engines.ConPVP
     {
     }
 
-    //[CommandProperty( AccessLevel.GameMaster )]
-    public Preferences Preferences
-    {
-      get => m_Preferences;
-      set { }
-    }
+    [CommandProperty( AccessLevel.Administrator )]
+    public Preferences Preferences{ get; private set; }
 
     public override string DefaultName => "preferences controller";
 
     public override void Delete()
     {
-      if (Preferences.Instance != m_Preferences)
+      if (Preferences.Instance != Preferences)
         base.Delete();
     }
 
@@ -48,7 +42,7 @@ namespace Server.Engines.ConPVP
 
       writer.Write(0);
 
-      m_Preferences.Serialize(writer);
+      Preferences.Serialize(writer);
     }
 
     public override void Deserialize(GenericReader reader)
@@ -61,8 +55,8 @@ namespace Server.Engines.ConPVP
       {
         case 0:
         {
-          m_Preferences = new Preferences(reader);
-          Preferences.Instance = m_Preferences;
+          Preferences = new Preferences(reader);
+          Preferences.Instance = Preferences;
           break;
         }
       }

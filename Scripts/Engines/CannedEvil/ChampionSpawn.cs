@@ -769,7 +769,6 @@ namespace Server.Engines.CannedEvil
       switch (index)
       {
         default:
-        case 0:
           x = -1;
           y = -1;
           break;

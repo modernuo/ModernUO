@@ -1202,7 +1202,6 @@ namespace Server.Engines.ConPVP
   public class TournamentController : Item
   {
     private static ArrayList m_Instances = new ArrayList();
-    private Tournament m_Tournament;
 
     [Constructible]
     public TournamentController() : base(0x1B7A)
@@ -1210,7 +1209,7 @@ namespace Server.Engines.ConPVP
       Visible = false;
       Movable = false;
 
-      m_Tournament = new Tournament();
+      Tournament = new Tournament();
       m_Instances.Add(this);
     }
 
@@ -1219,11 +1218,7 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Tournament Tournament
-    {
-      get => m_Tournament;
-      set { }
-    }
+    public Tournament Tournament{ get; private set; }
 
     public static bool IsActive
     {
@@ -1248,22 +1243,22 @@ namespace Server.Engines.ConPVP
     {
       base.GetContextMenuEntries(from, list);
 
-      if (from.AccessLevel >= AccessLevel.GameMaster && m_Tournament != null)
+      if (from.AccessLevel >= AccessLevel.GameMaster && Tournament != null)
       {
-        list.Add(new EditEntry(m_Tournament));
+        list.Add(new EditEntry(Tournament));
 
-        if (m_Tournament.CurrentStage == TournamentStage.Inactive)
-          list.Add(new StartEntry(m_Tournament));
+        if (Tournament.CurrentStage == TournamentStage.Inactive)
+          list.Add(new StartEntry(Tournament));
       }
     }
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (from.AccessLevel >= AccessLevel.GameMaster && m_Tournament != null)
+      if (from.AccessLevel >= AccessLevel.GameMaster && Tournament != null)
       {
         from.CloseGump(typeof(PickRulesetGump));
         from.CloseGump(typeof(RulesetGump));
-        from.SendGump(new PickRulesetGump(from, null, m_Tournament.Ruleset));
+        from.SendGump(new PickRulesetGump(from, null, Tournament.Ruleset));
       }
     }
 
@@ -1273,7 +1268,7 @@ namespace Server.Engines.ConPVP
 
       writer.Write(0);
 
-      m_Tournament.Serialize(writer);
+      Tournament.Serialize(writer);
     }
 
     public override void Deserialize(GenericReader reader)
@@ -1286,7 +1281,7 @@ namespace Server.Engines.ConPVP
       {
         case 0:
         {
-          m_Tournament = new Tournament(reader);
+          Tournament = new Tournament(reader);
           break;
         }
       }

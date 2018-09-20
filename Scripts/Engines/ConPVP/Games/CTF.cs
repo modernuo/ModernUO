@@ -719,60 +719,28 @@ namespace Server.Engines.ConPVP
     public CTFTeamInfo[] TeamInfo{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team1
-    {
-      get => TeamInfo[0];
-      set { }
-    }
+    public CTFTeamInfo Team1 => TeamInfo[0];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team2
-    {
-      get => TeamInfo[1];
-      set { }
-    }
+    public CTFTeamInfo Team2 => TeamInfo[1];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team3
-    {
-      get => TeamInfo[2];
-      set { }
-    }
+    public CTFTeamInfo Team3 => TeamInfo[2];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team4
-    {
-      get => TeamInfo[3];
-      set { }
-    }
+    public CTFTeamInfo Team4 => TeamInfo[3];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team5
-    {
-      get => TeamInfo[4];
-      set { }
-    }
+    public CTFTeamInfo Team5 => TeamInfo[4];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team6
-    {
-      get => TeamInfo[5];
-      set { }
-    }
+    public CTFTeamInfo Team6 => TeamInfo[5];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team7
-    {
-      get => TeamInfo[6];
-      set { }
-    }
+    public CTFTeamInfo Team7 => TeamInfo[6];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team8
-    {
-      get => TeamInfo[7];
-      set { }
-    }
+    public CTFTeamInfo Team8 => TeamInfo[7];
 
     [CommandProperty(AccessLevel.GameMaster)]
     public TimeSpan Duration{ get; set; }

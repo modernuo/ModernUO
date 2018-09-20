@@ -3479,11 +3479,7 @@ namespace Server.Mobiles
     private bool m_IsBonded;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Spawner MySpawner
-    {
-      get => Spawner as Spawner;
-      set { }
-    }
+    public Spawner MySpawner => Spawner as Spawner;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Mobile LastOwner

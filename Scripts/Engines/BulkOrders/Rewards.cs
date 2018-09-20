@@ -691,7 +691,7 @@ namespace Server.Engines.BulkOrders
       switch (Utility.Random(4))
       {
         default:
-        case 0: return new SmallStretchedHideEastDeed();
+          return new SmallStretchedHideEastDeed();
         case 1: return new SmallStretchedHideSouthDeed();
         case 2: return new MediumStretchedHideEastDeed();
         case 3: return new MediumStretchedHideSouthDeed();
@@ -703,7 +703,7 @@ namespace Server.Engines.BulkOrders
       switch (Utility.Random(4))
       {
         default:
-        case 0: return new LightFlowerTapestryEastDeed();
+          return new LightFlowerTapestryEastDeed();
         case 1: return new LightFlowerTapestrySouthDeed();
         case 2: return new DarkFlowerTapestryEastDeed();
         case 3: return new DarkFlowerTapestrySouthDeed();
@@ -715,7 +715,7 @@ namespace Server.Engines.BulkOrders
       switch (Utility.Random(4))
       {
         default:
-        case 0: return new BrownBearRugEastDeed();
+          return new BrownBearRugEastDeed();
         case 1: return new BrownBearRugSouthDeed();
         case 2: return new PolarBearRugEastDeed();
         case 3: return new PolarBearRugSouthDeed();

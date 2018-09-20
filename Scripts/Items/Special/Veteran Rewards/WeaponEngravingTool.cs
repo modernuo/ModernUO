@@ -54,7 +54,7 @@ namespace Server.Items
       }
     }
 
-    public virtual bool ShowUsesRemaining
+    public bool ShowUsesRemaining
     {
       get => true;
       set { }

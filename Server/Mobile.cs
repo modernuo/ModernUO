@@ -677,11 +677,7 @@ namespace Server
     public List<Mobile> Stabled{ get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public VirtueInfo Virtues
-    {
-      get => m_Virtues;
-      set { }
-    }
+    public VirtueInfo Virtues{ get; private set; }
 
     public object Party{ get; set; }
 
@@ -709,16 +705,16 @@ namespace Server
     public int MagicDamageAbsorb{ get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int SkillsTotal => m_Skills?.Total ?? 0;
+    public int SkillsTotal => Skills?.Total ?? 0;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int SkillsCap
     {
-      get => m_Skills?.Cap ?? 0;
+      get => Skills?.Cap ?? 0;
       set
       {
-        if (m_Skills != null)
-          m_Skills.Cap = value;
+        if (Skills != null)
+          Skills.Cap = value;
       }
     }
 
@@ -1250,11 +1246,7 @@ namespace Server
     public static IWeapon DefaultWeapon{ get; set; }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skills Skills
-    {
-      get => m_Skills;
-      set { }
-    }
+    public Skills Skills{ get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
     public AccessLevel AccessLevel
@@ -2822,7 +2814,7 @@ namespace Server
 
       writer.Write(CantWalk);
 
-      VirtueInfo.Serialize(writer, m_Virtues);
+      VirtueInfo.Serialize(writer, Virtues);
 
       writer.Write(Thirst);
       writer.Write(BAC);
@@ -2892,7 +2884,7 @@ namespace Server
       writer.Write(m_Fame);
       writer.Write(m_Karma);
       writer.Write((byte)m_AccessLevel);
-      m_Skills.Serialize(writer);
+      Skills.Serialize(writer);
 
       writer.Write(Items);
 
@@ -3253,7 +3245,7 @@ namespace Server
       for (int i = 0; i < SkillMods.Count; ++i)
       {
         SkillMod mod = SkillMods[i];
-        Skill sk = m_Skills[mod.Skill];
+        Skill sk = Skills[mod.Skill];
         sk?.Update();
       }
     }
@@ -3283,7 +3275,7 @@ namespace Server
         SkillMods.Add(mod);
         mod.Owner = this;
 
-        Skill sk = m_Skills[mod.Skill];
+        Skill sk = Skills[mod.Skill];
         sk?.Update();
       }
     }
@@ -3305,7 +3297,7 @@ namespace Server
         SkillMods.Remove(mod);
         mod.Owner = null;
 
-        Skill sk = m_Skills[mod.Skill];
+        Skill sk = Skills[mod.Skill];
         sk?.Update();
       }
     }
@@ -5878,7 +5870,7 @@ namespace Server
         case 19: // Just removed variables
         case 18:
         {
-          m_Virtues = new VirtueInfo(reader);
+          Virtues = new VirtueInfo(reader);
 
           goto case 17;
         }
@@ -6001,7 +5993,7 @@ namespace Server
             Stabled = new List<Mobile>();
 
           if (version < 18)
-            m_Virtues = new VirtueInfo();
+            Virtues = new VirtueInfo();
 
           if (version < 11)
             m_DisplayGuildTitle = true;
@@ -6043,7 +6035,7 @@ namespace Server
           m_Karma = reader.ReadInt();
           m_AccessLevel = (AccessLevel)reader.ReadByte();
 
-          m_Skills = new Skills(this, reader);
+          Skills = new Skills(this, reader);
 
           Items = reader.ReadStrongItemList();
 
@@ -7372,7 +7364,7 @@ namespace Server
     {
       m_StatCap = 225;
       m_FollowersMax = 5;
-      m_Skills = new Skills(this);
+      Skills = new Skills(this);
       Items = new List<Item>();
       StatMods = new List<StatMod>();
       SkillMods = new List<SkillMod>();
@@ -7380,7 +7372,7 @@ namespace Server
       AutoPageNotify = true;
       Aggressors = new List<AggressorInfo>();
       Aggressed = new List<AggressorInfo>();
-      m_Virtues = new VirtueInfo();
+      Virtues = new VirtueInfo();
       Stabled = new List<Mobile>();
       DamageEntries = new List<DamageEntry>();
 
@@ -7519,7 +7511,7 @@ namespace Server
     public virtual void OnSkillsQuery(Mobile from)
     {
       if (from == this)
-        Send(new SkillUpdate(m_Skills));
+        Send(new SkillUpdate(Skills));
     }
 
     /// <summary>
@@ -7930,7 +7922,6 @@ namespace Server
     private int m_Hits, m_Stam, m_Mana;
     private int m_Fame, m_Karma;
     private AccessLevel m_AccessLevel;
-    private Skills m_Skills;
     private bool m_Player;
     private string m_Title;
     private int m_LightLevel;
@@ -7963,7 +7954,6 @@ namespace Server
     private DateTime m_NextWarmodeChange;
     private WarmodeTimer m_WarmodeTimer;
     private int m_VirtualArmorMod;
-    private VirtueInfo m_Virtues;
     private Body m_BodyMod;
     private Race m_Race;
 

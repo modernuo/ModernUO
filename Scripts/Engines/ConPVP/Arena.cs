@@ -8,15 +8,13 @@ namespace Server.Engines.ConPVP
 {
   public class ArenaController : Item
   {
-    private Arena m_Arena;
-
     [Constructible]
     public ArenaController() : base(0x1B7A)
     {
       Visible = false;
       Movable = false;
 
-      m_Arena = new Arena();
+      Arena = new Arena();
 
       Instances.Add(this);
     }
@@ -26,11 +24,7 @@ namespace Server.Engines.ConPVP
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Arena Arena
-    {
-      get => m_Arena;
-      set { }
-    }
+    public Arena Arena{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsPrivate{ get; set; }
@@ -44,13 +38,13 @@ namespace Server.Engines.ConPVP
       base.OnDelete();
 
       Instances.Remove(this);
-      m_Arena.Delete();
+      Arena.Delete();
     }
 
     public override void OnDoubleClick(Mobile from)
     {
       if (from.AccessLevel >= AccessLevel.GameMaster)
-        from.SendGump(new PropertiesGump(from, m_Arena));
+        from.SendGump(new PropertiesGump(from, Arena));
     }
 
     public override void Serialize(GenericWriter writer)
@@ -61,7 +55,7 @@ namespace Server.Engines.ConPVP
 
       writer.Write(IsPrivate);
 
-      m_Arena.Serialize(writer);
+      Arena.Serialize(writer);
     }
 
     public override void Deserialize(GenericReader reader)
@@ -80,7 +74,7 @@ namespace Server.Engines.ConPVP
         }
         case 0:
         {
-          m_Arena = new Arena(reader);
+          Arena = new Arena(reader);
           break;
         }
       }
@@ -191,7 +185,6 @@ namespace Server.Engines.ConPVP
 
     private bool m_IsGuarded;
     private string m_Name;
-    private ArenaStartPoints m_Points;
 
     private SafeZone m_Region;
 
@@ -200,7 +193,7 @@ namespace Server.Engines.ConPVP
 
     public Arena()
     {
-      m_Points = new ArenaStartPoints();
+      Points = new ArenaStartPoints();
       Players = new List<Mobile>();
     }
 
@@ -269,7 +262,7 @@ namespace Server.Engines.ConPVP
           }
 
           m_Active = reader.ReadBool();
-          m_Points = new ArenaStartPoints(reader);
+          Points = new ArenaStartPoints(reader);
 
           if (m_Active)
           {
@@ -425,11 +418,7 @@ namespace Server.Engines.ConPVP
     public bool IsOccupied => Players.Count > 0;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ArenaStartPoints Points
-    {
-      get => m_Points;
-      set { }
-    }
+    public ArenaStartPoints Points{ get; private set; }
 
     public Item Teleporter{ get; set; }
 
@@ -514,7 +503,7 @@ namespace Server.Engines.ConPVP
       if (index < 0)
         index = 0;
 
-      return m_Points.Points[index % m_Points.Points.Length];
+      return Points.Points[index % Points.Points.Length];
     }
 
     public void MoveInside(DuelPlayer[] players, int index)
@@ -522,7 +511,7 @@ namespace Server.Engines.ConPVP
       if (index < 0)
         index = 0;
       else
-        index %= m_Points.Points.Length;
+        index %= Points.Points.Length;
 
       Point3D start = GetBaseStartPoint(index);
 
@@ -652,7 +641,7 @@ namespace Server.Engines.ConPVP
       writer.Write(Wall);
       writer.Write(m_Active);
 
-      m_Points.Serialize(writer);
+      Points.Serialize(writer);
     }
 
     public static Arena FindArena(List<Mobile> players)

@@ -155,7 +155,7 @@ namespace Server.Mobiles
       JusticeProtectors = new List<Mobile>();
       m_GuildRank = RankDefinition.Lowest;
 
-      m_ChampionTitles = new ChampionTitleInfo();
+      ChampionTitles = new ChampionTitleInfo();
 
       InvalidateMyRunUO();
     }
@@ -2253,7 +2253,7 @@ namespace Server.Mobiles
         }
         case 23:
         {
-          m_ChampionTitles = new ChampionTitleInfo(reader);
+          ChampionTitles = new ChampionTitleInfo(reader);
           goto case 22;
         }
         case 22:
@@ -2457,8 +2457,8 @@ namespace Server.Mobiles
       if (LastOnline == DateTime.MinValue && Account != null)
         LastOnline = ((Account)Account).LastLogin;
 
-      if (m_ChampionTitles == null)
-        m_ChampionTitles = new ChampionTitleInfo();
+      if (ChampionTitles == null)
+        ChampionTitles = new ChampionTitleInfo();
 
       if (AccessLevel > AccessLevel.Player)
         m_IgnoreMobiles = true;
@@ -2534,7 +2534,7 @@ namespace Server.Mobiles
 
       writer.WriteDeltaTime(LastHonorLoss);
 
-      ChampionTitleInfo.Serialize(writer, m_ChampionTitles);
+      ChampionTitleInfo.Serialize(writer, ChampionTitles);
 
       writer.Write(LastValorLoss);
       writer.WriteEncodedInt(ToTItemsTurnedIn);
@@ -4451,14 +4451,8 @@ namespace Server.Mobiles
       set => SetFlag(PlayerFlag.DisplayChampionTitle, value);
     }
 
-    private ChampionTitleInfo m_ChampionTitles;
-
     [CommandProperty(AccessLevel.GameMaster)]
-    public ChampionTitleInfo ChampionTitles
-    {
-      get => m_ChampionTitles;
-      set { }
-    }
+    public ChampionTitleInfo ChampionTitles{ get; private set; }
 
     private void ToggleChampionTitleDisplay()
     {
@@ -4687,7 +4681,7 @@ namespace Server.Mobiles
 
       public static void CheckAtrophy(PlayerMobile pm)
       {
-        ChampionTitleInfo t = pm.m_ChampionTitles;
+        ChampionTitleInfo t = pm.ChampionTitles;
         if (t == null)
           return;
 
@@ -4702,7 +4696,7 @@ namespace Server.Mobiles
       public static void
         AwardHarrowerTitle(PlayerMobile pm) //Called when killing a harrower.  Will give a minimum of 1 point.
       {
-        ChampionTitleInfo t = pm.m_ChampionTitles;
+        ChampionTitleInfo t = pm.ChampionTitles;
         if (t == null)
           return;
 
