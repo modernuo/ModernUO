@@ -390,7 +390,7 @@ namespace Server.Items
 
     private bool HasRequiredSkill(Mobile from)
     {
-      return from.Skills[SkillName.Cartography].Value >= GetMinSkillLevel();
+      return from.Skills.Cartography.Value >= GetMinSkillLevel();
     }
 
     public void Decode(Mobile from)
@@ -410,7 +410,7 @@ namespace Server.Items
       {
         double minSkill = GetMinSkillLevel();
 
-        if (from.Skills[SkillName.Cartography].Value < minSkill)
+        if (from.Skills.Cartography.Value < minSkill)
           from.SendLocalizedMessage(503013); // The map is too difficult to attempt to decode.
 
         double maxSkill = minSkill + 60.0;
@@ -610,7 +610,7 @@ namespace Server.Items
           Point3D targ3D = (p as Item)?.GetWorldLocation() ?? new Point3D(p);
 
           int maxRange;
-          double skillValue = from.Skills[SkillName.Mining].Value;
+          double skillValue = from.Skills.Mining.Value;
 
           if (skillValue >= 100.0)
             maxRange = 4;

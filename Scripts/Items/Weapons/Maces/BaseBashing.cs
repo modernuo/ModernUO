@@ -45,8 +45,8 @@ namespace Server.Items
       double damage = base.GetBaseDamage(attacker);
 
       if (!Core.AOS && (attacker.Player || attacker.Body.IsHuman) && Layer == Layer.TwoHanded &&
-          attacker.Skills[SkillName.Anatomy].Value >= 80 &&
-          attacker.Skills[SkillName.Anatomy].Value / 400.0 >= Utility.RandomDouble() &&
+          attacker.Skills.Anatomy.Value >= 80 &&
+          attacker.Skills.Anatomy.Value / 400.0 >= Utility.RandomDouble() &&
           DuelContext.AllowSpecialAbility(attacker, "Crushing Blow", false))
       {
         damage *= 1.5;

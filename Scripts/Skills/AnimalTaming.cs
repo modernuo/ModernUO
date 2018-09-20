@@ -183,7 +183,7 @@ namespace Server.SkillHandlers
           return;
         }
 
-        if (!(CheckMastery(from, creature) || from.Skills[SkillName.AnimalTaming].Value >= creature.MinTameSkill))
+        if (!(CheckMastery(from, creature) || from.Skills.AnimalTaming.Value >= creature.MinTameSkill))
         {
           creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502806,
             from.NetState); // You have no chance of taming this creature.
@@ -385,8 +385,8 @@ namespace Server.SkillHandlers
                 if (m_Creature is GreaterDragon)
                 {
                   ScaleSkills(m_Creature, 0.72, 0.90); // 72% of original skills trainable to 90%
-                  m_Creature.Skills[SkillName.Magery].Base =
-                    m_Creature.Skills[SkillName.Magery]
+                  m_Creature.Skills.Magery.Base =
+                    m_Creature.Skills.Magery
                       .Cap; // Greater dragons have a 90% cap reduction and 90% skill reduction on magery
                 }
                 else if (m_Paralyzed)

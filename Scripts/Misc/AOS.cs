@@ -1180,11 +1180,11 @@ namespace Server
         for (i = 0; i < AnimalForm.Entries.Length; ++i)
           if (AnimalForm.Entries[i].Type == acontext.Type)
             break;
-        if (m.Skills[SkillName.Ninjitsu].Value < AnimalForm.Entries[i].ReqSkill)
+        if (m.Skills.Ninjitsu.Value < AnimalForm.Entries[i].ReqSkill)
           AnimalForm.RemoveContext(m, true);
       }
 
-      if (!m.CanBeginAction(typeof(PolymorphSpell)) && m.Skills[SkillName.Magery].Value < 66.1)
+      if (!m.CanBeginAction(typeof(PolymorphSpell)) && m.Skills.Magery.Value < 66.1)
       {
         m.BodyMod = 0;
         m.HueMod = -1;
@@ -1194,7 +1194,7 @@ namespace Server
         BaseClothing.ValidateMobile(m);
       }
 
-      if (!m.CanBeginAction(typeof(IncognitoSpell)) && m.Skills[SkillName.Magery].Value < 38.1)
+      if (!m.CanBeginAction(typeof(IncognitoSpell)) && m.Skills.Magery.Value < 38.1)
       {
         if (m is PlayerMobile mobile)
           mobile.SetHairMods(-1, -1);

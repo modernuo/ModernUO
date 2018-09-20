@@ -229,7 +229,7 @@ namespace Server.Engines.Craft
           }
           else
           {
-            double skillValue = usingDeed ? m_Deed.SkillLevel : from.Skills[SkillName.Tinkering].Value;
+            double skillValue = usingDeed ? m_Deed.SkillLevel : from.Skills.Tinkering.Value;
 
             if (skillValue < 60.0)
             {

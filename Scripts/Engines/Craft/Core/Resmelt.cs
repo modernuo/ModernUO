@@ -95,7 +95,7 @@ namespace Server.Engines.Craft
               break;
           }
 
-          if (difficulty > from.Skills[SkillName.Mining].Value)
+          if (difficulty > from.Skills.Mining.Value)
             return SmeltResult.NoSkill;
 
           Type resourceType = info.ResourceTypes[0];

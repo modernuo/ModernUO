@@ -65,7 +65,7 @@ namespace Server.Spells.Fifth
         {
           // Algorithm: ((20% of magery) + 7) seconds [- 50% if resisted]
 
-          duration = 7.0 + Caster.Skills[SkillName.Magery].Value * 0.2;
+          duration = 7.0 + Caster.Skills.Magery.Value * 0.2;
 
           if (CheckResisted(m))
             duration *= 0.75;

@@ -138,7 +138,7 @@ namespace Server.Items
             return;
           }
 
-          if (m_From.Skills[SkillName.Lockpicking].Value < m_Item.RequiredSkill)
+          if (m_From.Skills.Lockpicking.Value < m_Item.RequiredSkill)
           {
             /*
             // Do some training to gain skills

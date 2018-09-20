@@ -64,7 +64,7 @@ namespace Server.Mobiles
 
     public virtual bool SmartAI => m_Mobile is BaseVendor || m_Mobile is BaseEscortable || m_Mobile is Changeling;
 
-    public virtual bool IsNecromancer => Core.AOS && m_Mobile.Skills[SkillName.Necromancy].Value > 50;
+    public virtual bool IsNecromancer => Core.AOS && m_Mobile.Skills.Necromancy.Value > 50;
 
     public override bool Think()
     {
@@ -245,9 +245,9 @@ namespace Server.Mobiles
     public virtual bool UseNecromancy()
     {
       if (IsNecromancer)
-        return Utility.Random(m_Mobile.Skills[SkillName.Magery].BaseFixedPoint +
-                              m_Mobile.Skills[SkillName.Necromancy].BaseFixedPoint) >=
-               m_Mobile.Skills[SkillName.Magery].BaseFixedPoint;
+        return Utility.Random(m_Mobile.Skills.Magery.BaseFixedPoint +
+                              m_Mobile.Skills.Necromancy.BaseFixedPoint) >=
+               m_Mobile.Skills.Magery.BaseFixedPoint;
 
       return false;
     }
@@ -259,7 +259,7 @@ namespace Server.Mobiles
 
     public virtual Spell GetRandomDamageSpellNecro()
     {
-      int bound = m_Mobile.Skills[SkillName.Necromancy].Value >= 100 ? 5 : 3;
+      int bound = m_Mobile.Skills.Necromancy.Value >= 100 ? 5 : 3;
 
       switch (Utility.Random(bound))
       {
@@ -283,7 +283,7 @@ namespace Server.Mobiles
 
     public virtual Spell GetRandomDamageSpellMage()
     {
-      int maxCircle = (int)((m_Mobile.Skills[SkillName.Magery].Value + 20.0) / (100.0 / 7.0));
+      int maxCircle = (int)((m_Mobile.Skills.Magery.Value + 20.0) / (100.0 / 7.0));
 
       if (maxCircle < 1)
         maxCircle = 1;
@@ -334,7 +334,7 @@ namespace Server.Mobiles
 
     public virtual Spell GetRandomCurseSpellMage()
     {
-      if (m_Mobile.Skills[SkillName.Magery].Value >= 40.0 && Utility.Random(4) == 0)
+      if (m_Mobile.Skills.Magery.Value >= 40.0 && Utility.Random(4) == 0)
         return new CurseSpell(m_Mobile, null);
 
       switch (Utility.Random(3))
@@ -347,7 +347,7 @@ namespace Server.Mobiles
 
     public virtual Spell GetRandomManaDrainSpell()
     {
-      if (m_Mobile.Skills[SkillName.Magery].Value >= 80.0 && Utility.RandomBool())
+      if (m_Mobile.Skills.Magery.Value >= 80.0 && Utility.RandomBool())
         return new ManaVampireSpell(m_Mobile, null);
 
       return new ManaDrainSpell(m_Mobile, null);
@@ -392,7 +392,7 @@ namespace Server.Mobiles
         if (IsNecromancer)
         {
           double psDamage =
-            (m_Mobile.Skills[SkillName.SpiritSpeak].Value - c.Skills[SkillName.MagicResist].Value) / 10 +
+            (m_Mobile.Skills.SpiritSpeak.Value - c.Skills.MagicResist.Value) / 10 +
             (c.Player ? 18 : 30);
 
           if (psDamage > c.Hits)
@@ -429,7 +429,7 @@ namespace Server.Mobiles
           }
           case 5: // Paralyze them
           {
-            if (c.Paralyzed || m_Mobile.Skills[SkillName.Magery].Value <= 50.0)
+            if (c.Paralyzed || m_Mobile.Skills.Magery.Value <= 50.0)
               goto default;
 
             m_Mobile.DebugSay("Attempting to paralyze");
@@ -641,8 +641,8 @@ namespace Server.Mobiles
         }
       }
 
-      if (!Core.AOS && SmartAI && !m_Mobile.StunReady && m_Mobile.Skills[SkillName.Wrestling].Value >= 80.0 &&
-          m_Mobile.Skills[SkillName.Anatomy].Value >= 80.0)
+      if (!Core.AOS && SmartAI && !m_Mobile.StunReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
+          m_Mobile.Skills.Anatomy.Value >= 80.0)
         EventSink.InvokeStunRequest(new StunRequestEventArgs(m_Mobile));
 
       if (!m_Mobile.InRange(c, m_Mobile.RangePerception))

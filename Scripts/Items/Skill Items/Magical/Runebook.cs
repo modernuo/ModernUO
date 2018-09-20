@@ -119,7 +119,7 @@ namespace Server.Items
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
     {
-      int charges = 5 + quality + (int)(from.Skills[SkillName.Inscribe].Value / 30);
+      int charges = 5 + quality + (int)(from.Skills.Inscribe.Value / 30);
 
       if (charges > 10)
         charges = 10;

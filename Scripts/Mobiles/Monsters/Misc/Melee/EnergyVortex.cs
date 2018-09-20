@@ -70,7 +70,7 @@ namespace Server.Mobiles
 
     public override double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly)
     {
-      return (m.Int + m.Skills[SkillName.Magery].Value) / Math.Max(GetDistanceToSqrt(m), 1.0);
+      return (m.Int + m.Skills.Magery.Value) / Math.Max(GetDistanceToSqrt(m), 1.0);
     }
 
     public override int GetAngerSound()

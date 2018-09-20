@@ -227,7 +227,7 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(502703); // You must be standing next to an item to steal it.
         }
-        else if (si != null && m_Thief.Skills[SkillName.Stealing].Value < 100.0)
+        else if (si != null && m_Thief.Skills.Stealing.Value < 100.0)
         {
           m_Thief.SendLocalizedMessage(1060025, "",
             0x66D); // You're not skilled enough to attempt the theft of this item.
@@ -263,7 +263,7 @@ namespace Server.SkillHandlers
           {
             if (toSteal.Stackable && toSteal.Amount > 1)
             {
-              int maxAmount = (int)(m_Thief.Skills[SkillName.Stealing].Value / 10.0 / toSteal.Weight);
+              int maxAmount = (int)(m_Thief.Skills.Stealing.Value / 10.0 / toSteal.Weight);
 
               if (maxAmount < 1)
                 maxAmount = 1;
@@ -320,7 +320,7 @@ namespace Server.SkillHandlers
               m_Thief.SendLocalizedMessage(502723); // You fail to steal the item.
             }
 
-            caught = m_Thief.Skills[SkillName.Stealing].Value < Utility.Random(150);
+            caught = m_Thief.Skills.Stealing.Value < Utility.Random(150);
           }
         }
 

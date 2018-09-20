@@ -174,7 +174,7 @@ namespace Server.Mobiles
 
               // Algorithm: (40% of magery) + (1-10)
 
-              int toHeal = (int)(Skills[SkillName.Magery].Value * 0.4);
+              int toHeal = (int)(Skills.Magery.Value * 0.4);
               toHeal += Utility.Random(1, 10);
 
               m.Heal(toHeal, this);
@@ -203,7 +203,7 @@ namespace Server.Mobiles
 
               if (Core.AOS)
               {
-                int baseDamage = 6 + (int)(Skills[SkillName.EvalInt].Value / 5.0);
+                int baseDamage = 6 + (int)(Skills.EvalInt.Value / 5.0);
 
                 damage = Utility.RandomMinMax(baseDamage, baseDamage + 3);
               }
@@ -237,7 +237,7 @@ namespace Server.Mobiles
 
               m.Paralyzed = false;
 
-              double total = Skills[SkillName.Magery].Value + Skills[SkillName.Poisoning].Value;
+              double total = Skills.Magery.Value + Skills.Poisoning.Value;
 
               double dist = GetDistanceToSqrt(m);
 

@@ -38,7 +38,7 @@ namespace Server.Items
       defender.FixedParticles(0x373A, 1, 17, 0x26BC, 0x662, 0, EffectLayer.Waist);
 
       Timer t = new InternalTimer(defender,
-        (int)(10.0 * (attacker.Skills[SkillName.Ninjitsu].Value - 50.0) / 70.0 + 5), attacker); //5 - 15 damage
+        (int)(10.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 70.0 + 5), attacker); //5 - 15 damage
 
       t.Start();
 

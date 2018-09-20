@@ -15,7 +15,7 @@ namespace Server.Spells.Bushido
 
     public override double GetDamageScalar(Mobile attacker, Mobile defender)
     {
-      double bushido = attacker.Skills[SkillName.Bushido].Value;
+      double bushido = attacker.Skills.Bushido.Value;
 
       // TODO: 20 -> Perfection
       return 1.0 + bushido * 20 / 10000;
@@ -39,7 +39,7 @@ namespace Server.Spells.Bushido
       {
         attacker.FixedParticles(0x373A, 1, 17, 0x7E2, EffectLayer.Waist);
 
-        double bushido = attacker.Skills[SkillName.Bushido].Value;
+        double bushido = attacker.Skills.Bushido.Value;
 
         attacker.Hits += 20 + (int)(bushido * bushido / 480.0);
 
@@ -61,7 +61,7 @@ namespace Server.Spells.Bushido
           new ResistanceMod(ResistanceType.Energy, -40)
         };
         
-        double resSpells = attacker.Skills[SkillName.MagicResist].Value;
+        double resSpells = attacker.Skills.MagicResist.Value;
 
         if (resSpells > 0.0)
           mods.Add(new DefaultSkillMod(SkillName.MagicResist, true, -resSpells));

@@ -525,9 +525,9 @@ namespace Server.Items
 
       if (checkSkillAttrs && WeaponAttributes.UseBestSkill != 0)
       {
-        double swrd = m.Skills[SkillName.Swords].Value;
-        double fenc = m.Skills[SkillName.Fencing].Value;
-        double mcng = m.Skills[SkillName.Macing].Value;
+        double swrd = m.Skills.Swords.Value;
+        double fenc = m.Skills.Fencing.Value;
+        double mcng = m.Skills.Macing.Value;
         double val;
 
         sk = SkillName.Swords;
@@ -543,7 +543,7 @@ namespace Server.Items
       }
       else if (WeaponAttributes.MageWeapon != 0)
       {
-        if (m.Skills[SkillName.Magery].Value > m.Skills[Skill].Value)
+        if (m.Skills.Magery.Value > m.Skills[Skill].Value)
           sk = SkillName.Magery;
         else
           sk = Skill;
@@ -553,7 +553,7 @@ namespace Server.Items
         sk = Skill;
 
         if (sk != SkillName.Wrestling && !m.Player && !m.Body.IsHuman &&
-            m.Skills[SkillName.Wrestling].Value > m.Skills[sk].Value)
+            m.Skills.Wrestling.Value > m.Skills[sk].Value)
           sk = SkillName.Wrestling;
       }
 
@@ -849,9 +849,9 @@ namespace Server.Items
 
       BaseShield shield = defender.FindItemOnLayer(Layer.TwoHanded) as BaseShield;
 
-      double parry = defender.Skills[SkillName.Parry].Value;
-      double bushidoNonRacial = defender.Skills[SkillName.Bushido].NonRacialValue;
-      double bushido = defender.Skills[SkillName.Bushido].Value;
+      double parry = defender.Skills.Parry.Value;
+      double bushidoNonRacial = defender.Skills.Bushido.NonRacialValue;
+      double bushido = defender.Skills.Bushido.Value;
 
       if (shield != null)
       {
@@ -1481,7 +1481,7 @@ namespace Server.Items
       int damageBonus = 0;
 
       // Inscription bonus
-      int inscribeSkill = attacker.Skills[SkillName.Inscribe].Fixed;
+      int inscribeSkill = attacker.Skills.Inscribe.Fixed;
 
       damageBonus += inscribeSkill / 200;
 
@@ -1764,9 +1764,9 @@ namespace Server.Items
       if (checkSkills)
       {
         attacker.CheckSkill(SkillName.Tactics, 0.0,
-          attacker.Skills[SkillName.Tactics].Cap); // Passively check tactics for gain
+          attacker.Skills.Tactics.Cap); // Passively check tactics for gain
         attacker.CheckSkill(SkillName.Anatomy, 0.0,
-          attacker.Skills[SkillName.Anatomy].Cap); // Passively check Anatomy for gain
+          attacker.Skills.Anatomy.Cap); // Passively check Anatomy for gain
 
         if (Type == WeaponType.Axe)
           attacker.CheckSkill(SkillName.Lumberjacking, 0.0, 100.0); // Passively check Lumberjacking for gain
@@ -1779,9 +1779,9 @@ namespace Server.Items
        * No caps apply.
        */
       double strengthBonus = GetBonus(attacker.Str, 0.300, 100.0, 5.00);
-      double anatomyBonus = GetBonus(attacker.Skills[SkillName.Anatomy].Value, 0.500, 100.0, 5.00);
-      double tacticsBonus = GetBonus(attacker.Skills[SkillName.Tactics].Value, 0.625, 100.0, 6.25);
-      double lumberBonus = GetBonus(attacker.Skills[SkillName.Lumberjacking].Value, 0.200, 100.0, 10.00);
+      double anatomyBonus = GetBonus(attacker.Skills.Anatomy.Value, 0.500, 100.0, 5.00);
+      double tacticsBonus = GetBonus(attacker.Skills.Tactics.Value, 0.625, 100.0, 6.25);
+      double lumberBonus = GetBonus(attacker.Skills.Lumberjacking.Value, 0.200, 100.0, 10.00);
 
       if (Type != WeaponType.Axe)
         lumberBonus = 0.0;
@@ -1837,9 +1837,9 @@ namespace Server.Items
       if (checkSkills)
       {
         attacker.CheckSkill(SkillName.Tactics, 0.0,
-          attacker.Skills[SkillName.Tactics].Cap); // Passively check tactics for gain
+          attacker.Skills.Tactics.Cap); // Passively check tactics for gain
         attacker.CheckSkill(SkillName.Anatomy, 0.0,
-          attacker.Skills[SkillName.Anatomy].Cap); // Passively check Anatomy for gain
+          attacker.Skills.Anatomy.Cap); // Passively check Anatomy for gain
 
         if (Type == WeaponType.Axe)
           attacker.CheckSkill(SkillName.Lumberjacking, 0.0, 100.0); // Passively check Lumberjacking for gain
@@ -1850,7 +1850,7 @@ namespace Server.Items
        * :  50.0 = unchanged
        * : 100.0 = 50% bonus
        */
-      damage += damage * ((attacker.Skills[SkillName.Tactics].Value - 50.0) / 100.0);
+      damage += damage * ((attacker.Skills.Tactics.Value - 50.0) / 100.0);
 
 
       /* Compute strength modifier
@@ -1862,7 +1862,7 @@ namespace Server.Items
        * : 1% bonus for every 5 points of anatomy
        * : +10% bonus at Grandmaster or higher
        */
-      double anatomyValue = attacker.Skills[SkillName.Anatomy].Value;
+      double anatomyValue = attacker.Skills.Anatomy.Value;
       modifiers += anatomyValue / 5.0 / 100.0;
 
       if (anatomyValue >= 100.0)
@@ -1874,7 +1874,7 @@ namespace Server.Items
        */
       if (Type == WeaponType.Axe)
       {
-        double lumberValue = attacker.Skills[SkillName.Lumberjacking].Value;
+        double lumberValue = attacker.Skills.Lumberjacking.Value;
 
         modifiers += lumberValue / 5.0 / 100.0;
 

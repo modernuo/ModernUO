@@ -63,7 +63,7 @@ namespace Server.Spells.Ninjitsu
         m_Table.Remove(defender);
       }
 
-      int ninjitsu = attacker.Skills[SkillName.Ninjitsu].Fixed;
+      int ninjitsu = attacker.Skills.Ninjitsu.Fixed;
 
       int malus = ninjitsu / 60 + (int)Tracking.GetStalkingBonus(attacker, defender);
 

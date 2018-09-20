@@ -143,7 +143,7 @@ namespace Server.SkillHandlers
             else // Failed
             {
               // 5% of chance of getting poisoned if failed
-              if (m_From.Skills[SkillName.Poisoning].Base < 80.0 && Utility.Random(20) == 0)
+              if (m_From.Skills.Poisoning.Base < 80.0 && Utility.Random(20) == 0)
               {
                 m_From.SendLocalizedMessage(502148); // You make a grave mistake while applying the poison.
                 m_From.ApplyPoison(m_From, m_Poison);

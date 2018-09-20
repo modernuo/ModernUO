@@ -72,7 +72,7 @@ namespace Server.Spells.Fifth
           if (Core.AOS)
             duration = TimeSpan.FromSeconds(2 * Caster.Skills.Magery.Fixed / 5);
           else
-            duration = TimeSpan.FromSeconds(4.0 * Caster.Skills[SkillName.Magery].Value);
+            duration = TimeSpan.FromSeconds(4.0 * Caster.Skills.Magery.Value);
 
           SpellHelper.Summon(creature, Caster, 0x215, duration, false, false);
         }

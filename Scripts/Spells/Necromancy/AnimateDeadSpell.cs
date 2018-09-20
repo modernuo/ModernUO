@@ -274,8 +274,8 @@ namespace Server.Spells.Necromancy
       if (owner == null)
         return;
 
-      double necromancy = caster.Skills[SkillName.Necromancy].Value;
-      double spiritSpeak = caster.Skills[SkillName.SpiritSpeak].Value;
+      double necromancy = caster.Skills.Necromancy.Value;
+      double spiritSpeak = caster.Skills.SpiritSpeak.Value;
 
       int casterAbility = 0;
 

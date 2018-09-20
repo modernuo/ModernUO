@@ -27,7 +27,7 @@ namespace Server.Spells.Spellweaving
         int range = 5 + FocusLevel;
         int damage = 25 + FocusLevel;
 
-        double skill = Caster.Skills[SkillName.Spellweaving].Value;
+        double skill = Caster.Skills.Spellweaving.Value;
 
         TimeSpan duration = TimeSpan.FromSeconds((int)(skill / 24) + FocusLevel);
 

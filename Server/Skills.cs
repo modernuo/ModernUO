@@ -424,8 +424,7 @@ namespace Server
 
     public double GainFactor{ get; set; }
 
-    public static SkillInfo[] Table{ get; set; } = new SkillInfo[]
-    {
+    public static SkillInfo[] Table{ get; set; } = {
       new SkillInfo(0, "Alchemy", 0.0, 5.0, 5.0, "Alchemist", null, 0.0, 0.5, 0.5, 1.0),
       new SkillInfo(1, "Anatomy", 0.0, 0.0, 0.0, "Biologist", null, 0.15, 0.15, 0.7, 1.0),
       new SkillInfo(2, "Animal Lore", 0.0, 0.0, 0.0, "Naturalist", null, 0.0, 0.0, 1.0, 1.0),
@@ -710,10 +709,7 @@ namespace Server
         m_Highest = skill;
 
       Owner.OnSkillInvalidated(skill);
-
-      NetState ns = Owner.NetState;
-
-      ns?.Send(new SkillChange(skill));
+      Owner.NetState?.Send(new SkillChange(skill));
     }
 
     #region Skill Getters & Setters

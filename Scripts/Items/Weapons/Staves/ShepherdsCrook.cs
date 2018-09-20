@@ -145,7 +145,7 @@ namespace Server.Items
             double min = m_Creature.MinTameSkill - 30;
             double max = m_Creature.MinTameSkill + 30 + Utility.Random(10);
 
-            if (max <= from.Skills[SkillName.Herding].Value)
+            if (max <= from.Skills.Herding.Value)
               m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502471,
                 from.NetState); // That wasn't even challenging.
 

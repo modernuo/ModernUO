@@ -66,7 +66,7 @@ namespace Server.Items
       Timer.DelayCall(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0),
         new TimerStateCallback(EndAction), from);
 
-      int music = from.Skills[SkillName.Musicianship].Fixed;
+      int music = from.Skills.Musicianship.Fixed;
 
       int sucChance = 500 + (music - 775) * 2;
       double dSucChance = sucChance / 1000.0;
@@ -107,9 +107,9 @@ namespace Server.Items
 
       if (targets.Count > 0)
       {
-        int prov = from.Skills[SkillName.Provocation].Fixed;
-        int disc = from.Skills[SkillName.Discordance].Fixed;
-        int peace = from.Skills[SkillName.Peacemaking].Fixed;
+        int prov = from.Skills.Provocation.Fixed;
+        int disc = from.Skills.Discordance.Fixed;
+        int peace = from.Skills.Peacemaking.Fixed;
 
         int minDamage, maxDamage;
 

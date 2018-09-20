@@ -36,8 +36,8 @@ namespace Server.Items
 
       attacker.FixedParticles(0x37C4, 1, 16, 0x251D, 0x39D, 0x3, EffectLayer.RightHand);
 
-      int bonus = (int)(10.0 * ((Math.Max(attacker.Skills[SkillName.Bushido].Value,
-                                   attacker.Skills[SkillName.Ninjitsu].Value) - 50.0) / 70.0 + 5));
+      int bonus = (int)(10.0 * ((Math.Max(attacker.Skills.Bushido.Value,
+                                   attacker.Skills.Ninjitsu.Value) - 50.0) / 70.0 + 5));
 
       BeginBlock(attacker, bonus);
     }

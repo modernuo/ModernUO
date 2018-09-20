@@ -15,7 +15,7 @@ namespace Server.Spells.Ninjitsu
 
     public override double GetDamageScalar(Mobile attacker, Mobile defender)
     {
-      double ninjitsu = attacker.Skills[SkillName.Ninjitsu].Value;
+      double ninjitsu = attacker.Skills.Ninjitsu.Value;
 
       return 1.0 + ninjitsu / 360 + Tracking.GetStalkingBonus(attacker, defender) / 100;
     }

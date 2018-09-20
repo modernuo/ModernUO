@@ -69,11 +69,11 @@ namespace Server.Spells.Third
           }
           else
           {
-            //double total = Caster.Skills[SkillName.Magery].Value + Caster.Skills[SkillName.Poisoning].Value;
+            //double total = Caster.Skills.Magery.Value + Caster.Skills.Poisoning.Value;
 
             #region Dueling
 
-            double total = Caster.Skills[SkillName.Magery].Value;
+            double total = Caster.Skills.Magery.Value;
 
             if (Caster is PlayerMobile pm)
             {
@@ -83,12 +83,12 @@ namespace Server.Spells.Third
               }
               else
               {
-                total += pm.Skills[SkillName.Poisoning].Value;
+                total += pm.Skills.Poisoning.Value;
               }
             }
             else
             {
-              total += Caster.Skills[SkillName.Poisoning].Value;
+              total += Caster.Skills.Poisoning.Value;
             }
 
             #endregion

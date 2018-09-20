@@ -60,13 +60,13 @@ namespace Server.Spells.Necromancy
         {
           SkillMod mod = new DefaultSkillMod(SkillName.MagicResist, false, 50.0);
 
-          if (m.Skills[SkillName.MagicResist].Base > 50.0)
+          if (m.Skills.MagicResist.Base > 50.0)
             m.AddSkillMod(mod);
 
           m_Table[m] = mod;
         }
 
-        TimeSpan duration = TimeSpan.FromSeconds(Caster.Skills[SkillName.SpiritSpeak].Value / 12 + 1.0);
+        TimeSpan duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 12 + 1.0);
 
         Timer.DelayCall(duration, new TimerStateCallback(EffectExpire_Callback), m);
 

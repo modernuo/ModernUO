@@ -63,7 +63,7 @@ namespace Server.Spells.Fifth
             targ.PlaySound(0x1E9);
             targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
 
-            int physiMod = -25 + (int)(targ.Skills[SkillName.Inscribe].Value / 20);
+            int physiMod = -25 + (int)(targ.Skills.Inscribe.Value / 20);
             int otherMod = 10;
 
             mods = new ResistanceMod[5]
@@ -114,7 +114,7 @@ namespace Server.Spells.Fifth
         {
           if (Caster.BeginAction(typeof(DefensiveSpell)))
           {
-            int value = (int)(Caster.Skills[SkillName.Magery].Value + Caster.Skills[SkillName.Inscribe].Value);
+            int value = (int)(Caster.Skills.Magery.Value + Caster.Skills.Inscribe.Value);
             value = (int)(8 + value / 200 * 7.0); //absorb from 8 to 15 "circles"
 
             Caster.MagicDamageAbsorb = value;

@@ -41,7 +41,7 @@ namespace Server.SkillHandlers
         else
           p = src.Location;
 
-        double srcSkill = src.Skills[SkillName.DetectHidden].Value;
+        double srcSkill = src.Skills.DetectHidden.Value;
         int range = (int)(srcSkill / 10.0);
 
         if (!src.CheckSkill(SkillName.DetectHidden, 0.0, 100.0))
@@ -62,7 +62,7 @@ namespace Server.SkillHandlers
             if (trg.Hidden && src != trg)
             {
               double ss = srcSkill + Utility.Random(21) - 10;
-              double ts = trg.Skills[SkillName.Hiding].Value + Utility.Random(21) - 10;
+              double ts = trg.Skills.Hiding.Value + Utility.Random(21) - 10;
 
               if (src.AccessLevel >= trg.AccessLevel && (ss >= ts || inHouse && house.IsInside(trg)))
               {

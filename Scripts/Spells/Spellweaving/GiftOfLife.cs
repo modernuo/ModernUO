@@ -72,7 +72,7 @@ namespace Server.Spells.Spellweaving
         m.FixedParticles(0x3709, 1, 30, 0x26ED, 5, 2, EffectLayer.Waist);
         m.FixedParticles(0x376A, 1, 30, 0x251E, 5, 3, EffectLayer.Waist);
 
-        double skill = Caster.Skills[SkillName.Spellweaving].Value;
+        double skill = Caster.Skills.Spellweaving.Value;
 
         TimeSpan duration = TimeSpan.FromMinutes((int)(skill / 24) * 2 + FocusLevel);
 

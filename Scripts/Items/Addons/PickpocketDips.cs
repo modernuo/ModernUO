@@ -78,7 +78,7 @@ namespace Server.Items
         SendLocalizedMessageTo(from, 501816); // You are too far away to do that.
       else if (Swinging)
         SendLocalizedMessageTo(from, 501815); // You have to wait until it stops swinging.
-      else if (from.Skills[SkillName.Stealing].Base >= MaxSkill)
+      else if (from.Skills.Stealing.Base >= MaxSkill)
         SendLocalizedMessageTo(from,
           501830); // Your ability to steal cannot improve any further by simply practicing on a dummy.
       else if (from.Mounted)

@@ -167,8 +167,8 @@ namespace Server.Engines.Harvest
     {
       bool deepWater = SpecialFishingNet.FullValidation(map, loc.X, loc.Y);
 
-      double skillBase = from.Skills[SkillName.Fishing].Base;
-      double skillValue = from.Skills[SkillName.Fishing].Value;
+      double skillBase = from.Skills.Fishing.Base;
+      double skillValue = from.Skills.Fishing.Value;
 
       for (int i = 0; i < m_MutateTable.Length; ++i)
       {

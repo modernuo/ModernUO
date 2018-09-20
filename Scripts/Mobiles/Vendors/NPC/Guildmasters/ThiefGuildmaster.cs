@@ -51,7 +51,7 @@ namespace Server.Mobiles
         return false;
       }
 
-      if (pm.Skills[SkillName.Stealing].Base < 60.0)
+      if (pm.Skills.Stealing.Base < 60.0)
       {
         SayTo(pm, 501051); // You must be at least a journeyman pickpocket to join this elite organization.
         return false;

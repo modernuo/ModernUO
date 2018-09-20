@@ -63,7 +63,7 @@ namespace Server.Spells.Fifth
 
           SpellHelper.CheckReflect((int)Circle, ref from, ref target);
 
-          int damage = (int)((Caster.Skills[SkillName.Magery].Value + Caster.Int) / 5);
+          int damage = (int)((Caster.Skills.Magery.Value + Caster.Int) / 5);
 
           if (damage > 60)
             damage = 60;

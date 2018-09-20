@@ -52,7 +52,7 @@ namespace Server.Spells.Spellweaving
         }
         else
         {
-          double skill = Caster.Skills[SkillName.Spellweaving].Value;
+          double skill = Caster.Skills.Spellweaving.Value;
 
           int hitsPerRound = 5 + (int)(skill / 24) + FocusLevel;
           TimeSpan duration = TimeSpan.FromSeconds(30 + FocusLevel * 10);

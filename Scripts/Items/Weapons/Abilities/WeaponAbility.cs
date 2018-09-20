@@ -175,7 +175,7 @@ namespace Server.Items
       double reqSkill = GetRequiredSkill(from);
       bool reqTactics = Core.ML && RequiresTactics(from);
 
-      if (Core.ML && reqTactics && from.Skills[SkillName.Tactics].Base < reqSkill)
+      if (Core.ML && reqTactics && from.Skills.Tactics.Base < reqSkill)
       {
         from.SendLocalizedMessage(1079308,
           reqSkill.ToString()); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
@@ -186,9 +186,9 @@ namespace Server.Items
         return true;
 
       /* <UBWS> */
-      if (weapon.WeaponAttributes.UseBestSkill > 0 && (from.Skills[SkillName.Swords].Base >= reqSkill ||
-                                                       from.Skills[SkillName.Macing].Base >= reqSkill ||
-                                                       from.Skills[SkillName.Fencing].Base >= reqSkill))
+      if (weapon.WeaponAttributes.UseBestSkill > 0 && (from.Skills.Swords.Base >= reqSkill ||
+                                                       from.Skills.Macing.Base >= reqSkill ||
+                                                       from.Skills.Fencing.Base >= reqSkill))
         return true;
       /* </UBWS> */
 

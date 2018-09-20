@@ -47,9 +47,9 @@ namespace Server.Items
 
     public override double GetDefendSkillValue(Mobile attacker, Mobile defender)
     {
-      double wresValue = defender.Skills[SkillName.Wrestling].Value;
-      double anatValue = defender.Skills[SkillName.Anatomy].Value;
-      double evalValue = defender.Skills[SkillName.EvalInt].Value;
+      double wresValue = defender.Skills.Wrestling.Value;
+      double anatValue = defender.Skills.Anatomy.Value;
+      double evalValue = defender.Skills.EvalInt.Value;
       double incrValue = (anatValue + evalValue + 20.0) * 0.5;
 
       if (incrValue > 120.0)
@@ -66,8 +66,8 @@ namespace Server.Items
       {
         if (attacker.CanBeginAction(typeof(Fists)))
         {
-          if (attacker.Skills[SkillName.Anatomy].Value >= 80.0 &&
-              attacker.Skills[SkillName.Wrestling].Value >= 80.0)
+          if (attacker.Skills.Anatomy.Value >= 80.0 &&
+              attacker.Skills.Wrestling.Value >= 80.0)
           {
             if (attacker.Stam >= 15)
             {
@@ -108,8 +108,8 @@ namespace Server.Items
         {
           if (defender.Player || defender.Body.IsHuman)
           {
-            if (attacker.Skills[SkillName.ArmsLore].Value >= 80.0 &&
-                attacker.Skills[SkillName.Wrestling].Value >= 80.0)
+            if (attacker.Skills.ArmsLore.Value >= 80.0 &&
+                attacker.Skills.Wrestling.Value >= 80.0)
             {
               if (attacker.Stam >= 15)
               {
@@ -196,7 +196,7 @@ namespace Server.Items
 
     private static bool CheckMove(Mobile m, SkillName other)
     {
-      double wresValue = m.Skills[SkillName.Wrestling].Value;
+      double wresValue = m.Skills.Wrestling.Value;
       double scndValue = m.Skills[other].Value;
 
       /* 40% chance at 80, 80
@@ -233,8 +233,8 @@ namespace Server.Items
 
       #endregion
 
-      double armsValue = m.Skills[SkillName.ArmsLore].Value;
-      double wresValue = m.Skills[SkillName.Wrestling].Value;
+      double armsValue = m.Skills.ArmsLore.Value;
+      double wresValue = m.Skills.Wrestling.Value;
 
       if (!HasFreeHands(m))
       {
@@ -268,8 +268,8 @@ namespace Server.Items
 
       #endregion
 
-      double anatValue = m.Skills[SkillName.Anatomy].Value;
-      double wresValue = m.Skills[SkillName.Wrestling].Value;
+      double anatValue = m.Skills.Anatomy.Value;
+      double wresValue = m.Skills.Wrestling.Value;
 
       if (!HasFreeHands(m))
       {

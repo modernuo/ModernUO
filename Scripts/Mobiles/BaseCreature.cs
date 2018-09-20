@@ -923,9 +923,9 @@ namespace Server.Mobiles
         dMinTameSkill = -24.9;
 
       int taming =
-        (int)((useBaseSkill ? m.Skills[SkillName.AnimalTaming].Base : m.Skills[SkillName.AnimalTaming].Value) * 10);
+        (int)((useBaseSkill ? m.Skills.AnimalTaming.Base : m.Skills.AnimalTaming.Value) * 10);
       int lore =
-        (int)((useBaseSkill ? m.Skills[SkillName.AnimalLore].Base : m.Skills[SkillName.AnimalLore].Value) * 10);
+        (int)((useBaseSkill ? m.Skills.AnimalLore.Base : m.Skills.AnimalLore.Value) * 10);
       int bonus = 0, chance = 700;
 
       if (Core.ML)
@@ -1816,7 +1816,7 @@ namespace Server.Mobiles
         defender.ApplyPoison(this, p);
 
         if (Controlled)
-          CheckSkill(SkillName.Poisoning, 0, Skills[SkillName.Poisoning].Cap);
+          CheckSkill(SkillName.Poisoning, 0, Skills.Poisoning.Cap);
       }
 
       if (AutoDispel && defender is BaseCreature creature && creature.IsDispellable &&
@@ -1875,7 +1875,7 @@ namespace Server.Mobiles
         switch (acqType)
         {
           case FightMode.Strongest:
-            return m.Skills[SkillName.Tactics].Value + m.Str; //returns strongest mobile
+            return m.Skills.Tactics.Value + m.Str; //returns strongest mobile
 
           case FightMode.Weakest:
             return -m.Hits; // returns weakest mobile
@@ -4148,9 +4148,9 @@ namespace Server.Mobiles
 
               if (master != null && master == from) //So friends can't start the bonding process
               {
-                if (MinTameSkill <= 29.1 || master.Skills[SkillName.AnimalTaming].Base >= MinTameSkill ||
+                if (MinTameSkill <= 29.1 || master.Skills.AnimalTaming.Base >= MinTameSkill ||
                     OverrideBondingReqs() ||
-                    Core.ML && master.Skills[SkillName.AnimalTaming].Value >= MinTameSkill)
+                    Core.ML && master.Skills.AnimalTaming.Value >= MinTameSkill)
                 {
                   if (BondingBegin == DateTime.MinValue)
                   {
@@ -4235,11 +4235,11 @@ namespace Server.Mobiles
       if (!CanTeach)
         return false;
 
-      if (skill == SkillName.Stealth && from.Skills[SkillName.Hiding].Base < Stealth.HidingRequirement)
+      if (skill == SkillName.Stealth && from.Skills.Hiding.Base < Stealth.HidingRequirement)
         return false;
 
-      if (skill == SkillName.RemoveTrap && (from.Skills[SkillName.Lockpicking].Base < 50.0 ||
-                                            from.Skills[SkillName.DetectHidden].Base < 50.0))
+      if (skill == SkillName.RemoveTrap && (from.Skills.Lockpicking.Base < 50.0 ||
+                                            from.Skills.DetectHidden.Base < 50.0))
         return false;
 
       if (!Core.AOS && (skill == SkillName.Focus || skill == SkillName.Chivalry || skill == SkillName.Necromancy))

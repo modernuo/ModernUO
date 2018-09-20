@@ -548,7 +548,7 @@ namespace Server.Items
 				}
 				else if ( targeted is TribalBerry )
 				{
-					if ( from.Skills[SkillName.Cooking].Base >= 80.0 )
+					if ( from.Skills.Cooking.Base >= 80.0 )
 					{
 						m_Item.Delete();
 						((TribalBerry)targeted).Delete();

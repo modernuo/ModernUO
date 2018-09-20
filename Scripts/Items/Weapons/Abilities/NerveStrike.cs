@@ -59,10 +59,10 @@ namespace Server.Items
       if (Core.ML)
       {
         AOS.Damage(defender, attacker,
-          (int)(15.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + Utility.Random(10)), true, 100,
+          (int)(15.0 * (attacker.Skills.Bushido.Value - 50.0) / 70.0 + Utility.Random(10)), true, 100,
           0, 0, 0, 0); //0-25
 
-        if (!cantpara && (150.0 / 7.0 + 4.0 * attacker.Skills[SkillName.Bushido].Value / 7.0) / 100.0 >
+        if (!cantpara && (150.0 / 7.0 + 4.0 * attacker.Skills.Bushido.Value / 7.0) / 100.0 >
             Utility.RandomDouble())
         {
           defender.Paralyze(TimeSpan.FromSeconds(2.0));
@@ -71,7 +71,7 @@ namespace Server.Items
       }
       else if (!cantpara)
       {
-        AOS.Damage(defender, attacker, (int)(15.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + 10),
+        AOS.Damage(defender, attacker, (int)(15.0 * (attacker.Skills.Bushido.Value - 50.0) / 70.0 + 10),
           true, 100, 0, 0, 0, 0); //10-25
         defender.Freeze(TimeSpan.FromSeconds(2.0));
         Items.ParalyzingBlow.BeginImmunity(defender, Items.ParalyzingBlow.FreezeDelayDuration);

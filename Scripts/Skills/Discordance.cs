@@ -174,7 +174,7 @@ namespace Server.SkillHandlers
           else if (!targ.Player)
           {
             double diff = m_Instrument.GetDifficultyFor(targ) - 10.0;
-            double music = from.Skills[SkillName.Musicianship].Value;
+            double music = from.Skills.Musicianship.Value;
 
             if (music > 100.0)
               diff -= (music - 100.0) * 0.5;
@@ -197,7 +197,7 @@ namespace Server.SkillHandlers
 
               if (Core.AOS)
               {
-                double discord = from.Skills[SkillName.Discordance].Value;
+                double discord = from.Skills.Discordance.Value;
 
                 if (discord > 100.0)
                   effect = -20 + (int)((discord - 100.0) / -2.5);
@@ -221,7 +221,7 @@ namespace Server.SkillHandlers
               }
               else
               {
-                effect = (int)(from.Skills[SkillName.Discordance].Value / -5.0);
+                effect = (int)(from.Skills.Discordance.Value / -5.0);
                 scalar = effect * 0.01;
 
                 mods.Add(new StatMod(StatType.Str, "DiscordanceStr", (int)(targ.RawStr * scalar),

@@ -38,7 +38,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
       }
-      else if (pm == null || from.Skills[SkillName.Carpentry].Base < 100.0)
+      else if (pm == null || from.Skills.Carpentry.Base < 100.0)
       {
         pm.SendMessage("Only a Grandmaster Carpenter can learn from this book.");
       }

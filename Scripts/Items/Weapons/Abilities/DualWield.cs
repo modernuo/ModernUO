@@ -43,7 +43,7 @@ namespace Server.Items
       attacker.FixedParticles(0x3779, 1, 15, 0x7F6, 0x3E8, 3, EffectLayer.LeftHand);
 
       Timer t = new DualWieldTimer(attacker,
-        (int)(20.0 + 3.0 * (attacker.Skills[SkillName.Ninjitsu].Value - 50.0) / 7.0)); //20-50 % increase
+        (int)(20.0 + 3.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 7.0)); //20-50 % increase
 
       t.Start();
       Registry.Add(attacker, t);

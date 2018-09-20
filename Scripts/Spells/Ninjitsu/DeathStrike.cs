@@ -27,7 +27,7 @@ namespace Server.Spells.Ninjitsu
 
       ClearCurrentMove(attacker);
 
-      double ninjitsu = attacker.Skills[SkillName.Ninjitsu].Value;
+      double ninjitsu = attacker.Skills.Ninjitsu.Value;
 
       double chance;
       bool
@@ -59,7 +59,7 @@ namespace Server.Spells.Ninjitsu
         info = (DeathStrikeInfo)m_Table[defender];
 
         if (info.m_Steps > 0)
-          damageBonus = attacker.Skills[SkillName.Ninjitsu].Fixed / 150;
+          damageBonus = attacker.Skills.Ninjitsu.Fixed / 150;
 
         info.m_Timer?.Stop();
 
@@ -101,13 +101,13 @@ namespace Server.Spells.Ninjitsu
 
       int damage;
 
-      double ninjitsu = info.m_Attacker.Skills[SkillName.Ninjitsu].Value;
+      double ninjitsu = info.m_Attacker.Skills.Ninjitsu.Value;
       double stalkingBonus = Tracking.GetStalkingBonus(info.m_Attacker, info.m_Target);
 
       if (Core.ML)
       {
-        double scalar = (info.m_Attacker.Skills[SkillName.Hiding].Value +
-                         info.m_Attacker.Skills[SkillName.Stealth].Value) / 220;
+        double scalar = (info.m_Attacker.Skills.Hiding.Value +
+                         info.m_Attacker.Skills.Stealth.Value) / 220;
 
         if (scalar > 1)
           scalar = 1;

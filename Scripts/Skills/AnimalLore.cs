@@ -40,12 +40,12 @@ namespace Server.SkillHandlers
           {
             if (c.Body.IsAnimal || c.Body.IsMonster || c.Body.IsSea)
             {
-              if (!c.Controlled && from.Skills[SkillName.AnimalLore].Value < 100.0)
+              if (!c.Controlled && from.Skills.AnimalLore.Value < 100.0)
               {
                 from.SendLocalizedMessage(
                   1049674); // At your skill level, you can only lore tamed creatures.
               }
-              else if (!c.Controlled && !c.Tamable && from.Skills[SkillName.AnimalLore].Value < 110.0)
+              else if (!c.Controlled && !c.Tamable && from.Skills.AnimalLore.Value < 110.0)
               {
                 from.SendLocalizedMessage(
                   1049675); // At your skill level, you can only lore tamed or tameable creatures.

@@ -65,11 +65,11 @@ namespace Server.Mobiles
 
       AddItem(pack);
 
-      Skills[SkillName.Anatomy].Base = 120.0;
-      Skills[SkillName.Tactics].Base = 120.0;
-      Skills[SkillName.Archery].Base = 120.0;
-      Skills[SkillName.MagicResist].Base = 120.0;
-      Skills[SkillName.DetectHidden].Base = 100.0;
+      Skills.Anatomy.Base = 120.0;
+      Skills.Tactics.Base = 120.0;
+      Skills.Archery.Base = 120.0;
+      Skills.MagicResist.Base = 120.0;
+      Skills.DetectHidden.Base = 100.0;
 
       NextCombatTime = Core.TickCount + 500;
       Focus = target;

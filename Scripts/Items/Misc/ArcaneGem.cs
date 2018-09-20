@@ -35,7 +35,7 @@ namespace Server.Items
 
     public int GetChargesFor(Mobile m)
     {
-      int v = (int)(m.Skills[SkillName.Tailoring].Value / 5);
+      int v = (int)(m.Skills.Tailoring.Value / 5);
 
       if (v < 16)
         return 16;
@@ -104,7 +104,7 @@ namespace Server.Items
             else Amount--;
           }
         }
-        else if (from.Skills[SkillName.Tailoring].Value >= 80.0)
+        else if (from.Skills.Tailoring.Value >= 80.0)
         {
           bool isExceptional = clothing?.Quality == ClothingQuality.Exceptional ||
                                armor?.Quality == ArmorQuality.Exceptional ||

@@ -44,8 +44,8 @@ namespace Server.Items
       attacker.FixedParticles(0x3728, 1, 13, 0x7F3, 0x962, 0, EffectLayer.Waist);
 
       Timer t = new FeintTimer(defender,
-        (int)(20.0 + 3.0 * (Math.Max(attacker.Skills[SkillName.Ninjitsu].Value,
-                              attacker.Skills[SkillName.Bushido].Value) - 50.0) / 7.0)); //20-50 % decrease
+        (int)(20.0 + 3.0 * (Math.Max(attacker.Skills.Ninjitsu.Value,
+                              attacker.Skills.Bushido.Value) - 50.0) / 7.0)); //20-50 % decrease
 
       t.Start();
       Registry.Add(defender, t);

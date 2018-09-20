@@ -47,7 +47,7 @@ namespace Server.Spells.Spellweaving
         Caster.FixedParticles(0x3728, 1, 13, 0x26B8, 0x455, 7, EffectLayer.Waist);
         Caster.FixedParticles(0x3779, 1, 15, 0x251E, 0x3F, 7, EffectLayer.Waist);
 
-        double skill = Caster.Skills[SkillName.Spellweaving].Value;
+        double skill = Caster.Skills.Spellweaving.Value;
 
         int damageAbsorb = (int)(18 + (skill - 10) / 10 * 3 + FocusLevel * 6);
         Caster.MeleeDamageAbsorb = damageAbsorb;

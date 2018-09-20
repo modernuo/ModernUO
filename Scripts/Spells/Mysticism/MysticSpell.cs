@@ -22,12 +22,12 @@ namespace Server.Spells.Mysticism
      */
     public override double GetDamageSkill(Mobile m)
     {
-      return Math.Max(m.Skills[SkillName.Imbuing].Value, m.Skills[SkillName.Focus].Value);
+      return Math.Max(m.Skills.Imbuing.Value, m.Skills.Focus.Value);
     }
 
     public override int GetDamageFixed(Mobile m)
     {
-      return Math.Max(m.Skills[SkillName.Imbuing].Fixed, m.Skills[SkillName.Focus].Fixed);
+      return Math.Max(m.Skills.Imbuing.Fixed, m.Skills.Focus.Fixed);
     }
 
     public override void GetCastSkills(out double min, out double max)
@@ -82,12 +82,12 @@ namespace Server.Spells.Mysticism
 
     public static double GetBaseSkill(Mobile m)
     {
-      return m.Skills[SkillName.Mysticism].Value;
+      return m.Skills.Mysticism.Value;
     }
 
     public static double GetBoostSkill(Mobile m)
     {
-      return Math.Max(m.Skills[SkillName.Imbuing].Value, m.Skills[SkillName.Focus].Value);
+      return Math.Max(m.Skills.Imbuing.Value, m.Skills.Focus.Value);
     }
   }
 }

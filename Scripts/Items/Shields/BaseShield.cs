@@ -22,7 +22,7 @@ namespace Server.Items
         double ar = base.ArmorRating;
 
         if (m != null)
-          return m.Skills[SkillName.Parry].Value * ar / 200.0 + 1.0;
+          return m.Skills.Parry.Value * ar / 200.0 + 1.0;
         return ar;
       }
     }
@@ -115,7 +115,7 @@ namespace Server.Items
         return damage;
 
       double ar = ArmorRating;
-      double chance = (owner.Skills[SkillName.Parry].Value - ar * 2.0) / 100.0;
+      double chance = (owner.Skills.Parry.Value - ar * 2.0) / 100.0;
 
       if (chance < 0.01)
         chance = 0.01;

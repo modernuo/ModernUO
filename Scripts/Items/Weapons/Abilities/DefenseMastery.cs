@@ -38,7 +38,7 @@ namespace Server.Items
 
       int modifier =
         (int)(30.0 *
-              ((Math.Max(attacker.Skills[SkillName.Bushido].Value, attacker.Skills[SkillName.Ninjitsu].Value) -
+              ((Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value) -
                 50.0) / 70.0));
 
       if (m_Table[attacker] is DefenseMasteryInfo info)

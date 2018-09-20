@@ -70,7 +70,7 @@ namespace Server.Spells.Necromancy
       }
 
       //Calculations for the buff bar
-      double spiritlevel = Caster.Skills[SkillName.SpiritSpeak].Value / 10;
+      double spiritlevel = Caster.Skills.SpiritSpeak.Value / 10;
       if (spiritlevel < 4)
         spiritlevel = 4;
       int d_MinDamage = 4;
@@ -141,7 +141,7 @@ namespace Server.Spells.Necromancy
         m_Target = target;
         m_From = from;
 
-        double spiritLevel = from.Skills[SkillName.SpiritSpeak].Value / 10;
+        double spiritLevel = from.Skills.SpiritSpeak.Value / 10;
 
         m_MinBaseDamage = spiritLevel - 2;
         m_MaxBaseDamage = spiritLevel + 1;

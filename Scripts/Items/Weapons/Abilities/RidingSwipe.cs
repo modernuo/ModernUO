@@ -47,7 +47,7 @@ namespace Server.Items
 
         if (mount != null) //Ethy mounts don't take damage
         {
-          int amount = 10 + (int)(10.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + 5);
+          int amount = 10 + (int)(10.0 * (attacker.Skills.Bushido.Value - 50.0) / 70.0 + 5);
 
           AOS.Damage(mount, null, amount, 100, 0, 0, 0,
             0); //The mount just takes damage, there's no flagging as if it was attacking the mount directly
@@ -57,7 +57,7 @@ namespace Server.Items
       }
       else
       {
-        int amount = 10 + (int)(10.0 * (attacker.Skills[SkillName.Bushido].Value - 50.0) / 70.0 + 5);
+        int amount = 10 + (int)(10.0 * (attacker.Skills.Bushido.Value - 50.0) / 70.0 + 5);
 
         AOS.Damage(defender, attacker, amount, 100, 0, 0, 0, 0);
 

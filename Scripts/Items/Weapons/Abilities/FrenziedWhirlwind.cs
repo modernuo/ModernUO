@@ -74,8 +74,8 @@ namespace Server.Items
         attacker.PlaySound(0x2A1);
 
         // 5-15 damage
-        int amount = (int)(10.0 * ((Math.Max(attacker.Skills[SkillName.Bushido].Value,
-                                      attacker.Skills[SkillName.Ninjitsu].Value) - 50.0) / 70.0 + 5));
+        int amount = (int)(10.0 * ((Math.Max(attacker.Skills.Bushido.Value,
+                                      attacker.Skills.Ninjitsu.Value) - 50.0) / 70.0 + 5));
 
         for (int i = 0; i < targets.Count; ++i)
         {

@@ -76,7 +76,7 @@ namespace Server.Spells.Third
             }
             else
             {
-              int level = (int)(from.Skills[SkillName.Magery].Value * 0.8) - 4;
+              int level = (int)(from.Skills.Magery.Value * 0.8) - 4;
 
               if (level >= cont.RequiredSkill &&
                   !(cont is TreasureMapChest chest && chest.Level > 2))

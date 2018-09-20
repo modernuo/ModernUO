@@ -61,7 +61,7 @@ namespace Server.Mobiles
 
     public override double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly)
     {
-      return (m.Str + m.Skills[SkillName.Tactics].Value) / Math.Max(GetDistanceToSqrt(m), 1.0);
+      return (m.Str + m.Skills.Tactics.Value) / Math.Max(GetDistanceToSqrt(m), 1.0);
     }
 
     public override int GetAngerSound()

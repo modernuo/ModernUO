@@ -46,7 +46,7 @@ namespace Server.SkillHandlers
         }
         else if (targeted is Mobile targ)
         {
-          int marginOfError = Math.Max(0, 25 - (int)(from.Skills[SkillName.Anatomy].Value / 4));
+          int marginOfError = Math.Max(0, 25 - (int)(from.Skills.Anatomy.Value / 4));
 
           int str = targ.Str + Utility.RandomMinMax(-marginOfError, +marginOfError);
           int dex = targ.Dex + Utility.RandomMinMax(-marginOfError, +marginOfError);
@@ -71,7 +71,7 @@ namespace Server.SkillHandlers
             targ.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1038045 + strMod * 11 + dexMod,
               from.NetState); // That looks [strong] and [dexterous].
 
-            if (from.Skills[SkillName.Anatomy].Base >= 65.0)
+            if (from.Skills.Anatomy.Base >= 65.0)
               targ.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1038303 + stmMod,
                 from.NetState); // That being is at [10,20,...] percent endurance.
           }

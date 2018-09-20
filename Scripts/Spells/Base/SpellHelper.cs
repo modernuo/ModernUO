@@ -333,7 +333,7 @@ namespace Server.Spells
       if (Core.AOS)
         return TimeSpan.FromSeconds(6 * caster.Skills.EvalInt.Fixed / 50 + 1);
 
-      return TimeSpan.FromSeconds(caster.Skills[SkillName.Magery].Value * 1.2);
+      return TimeSpan.FromSeconds(caster.Skills.Magery.Value * 1.2);
     }
 
     public static double GetOffsetScalar(Mobile caster, Mobile target, bool curse)
@@ -378,7 +378,7 @@ namespace Server.Spells
         }
       }
 
-      return 1 + (int)(caster.Skills[SkillName.Magery].Value * 0.1);
+      return 1 + (int)(caster.Skills.Magery.Value * 0.1);
     }
 
     public static Guild GetGuildFor(Mobile m)
@@ -484,7 +484,7 @@ namespace Server.Spells
       if (map == null)
         return;
 
-      double scale = 1.0 + (caster.Skills[SkillName.Magery].Value - 100.0) / 200.0;
+      double scale = 1.0 + (caster.Skills.Magery.Value - 100.0) / 200.0;
 
       if (scaleDuration)
         duration = TimeSpan.FromSeconds(duration.TotalSeconds * scale);

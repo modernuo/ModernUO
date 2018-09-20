@@ -657,7 +657,7 @@ namespace Server.Mobiles
 
     public override int GetMinResistance(ResistanceType type)
     {
-      int magicResist = (int)(Skills[SkillName.MagicResist].Value * 10);
+      int magicResist = (int)(Skills.MagicResist.Value * 10);
       int min = int.MinValue;
 
       if (magicResist >= 1000)
@@ -2019,7 +2019,7 @@ namespace Server.Mobiles
       if (Alive)
         return false;
 
-      if (Core.ML && Skills[SkillName.SpiritSpeak].Value >= 100.0)
+      if (Core.ML && Skills.SpiritSpeak.Value >= 100.0)
         return false;
 
       if (Core.AOS)
@@ -2027,7 +2027,7 @@ namespace Server.Mobiles
         {
           Mobile m = hears[i];
 
-          if (m != this && m.Skills[SkillName.SpiritSpeak].Value >= 100.0)
+          if (m != this && m.Skills.SpiritSpeak.Value >= 100.0)
             return false;
         }
 

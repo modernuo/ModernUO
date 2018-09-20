@@ -158,7 +158,7 @@ namespace Server.Spells.Mysticism
         {
           int exploChance = 90 - m_Explosions * 30;
 
-          double resist = m_Target.Skills[SkillName.MagicResist].Value;
+          double resist = m_Target.Skills.MagicResist.Value;
 
           if (resist >= 70)
             exploChance -= (int)((resist - 70.0) * 3.0 / 10.0);

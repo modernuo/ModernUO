@@ -55,10 +55,10 @@ namespace Server.Spells
       int maxSkill = (1 + (int)Circle) * 10;
       maxSkill += (1 + (int)Circle / 6) * 25;
 
-      if (m.Skills[SkillName.MagicResist].Value < maxSkill)
-        m.CheckSkill(SkillName.MagicResist, 0.0, m.Skills[SkillName.MagicResist].Cap);
+      if (m.Skills.MagicResist.Value < maxSkill)
+        m.CheckSkill(SkillName.MagicResist, 0.0, m.Skills.MagicResist.Cap);
 
-      return m.Skills[SkillName.MagicResist].Value;
+      return m.Skills.MagicResist.Value;
     }
 
     public virtual bool CheckResisted(Mobile target)
@@ -76,16 +76,16 @@ namespace Server.Spells
       int maxSkill = (1 + (int)Circle) * 10;
       maxSkill += (1 + (int)Circle / 6) * 25;
 
-      if (target.Skills[SkillName.MagicResist].Value < maxSkill)
-        target.CheckSkill(SkillName.MagicResist, 0.0, target.Skills[SkillName.MagicResist].Cap);
+      if (target.Skills.MagicResist.Value < maxSkill)
+        target.CheckSkill(SkillName.MagicResist, 0.0, target.Skills.MagicResist.Cap);
 
       return n >= Utility.RandomDouble();
     }
 
     public virtual double GetResistPercentForCircle(Mobile target, SpellCircle circle)
     {
-      double firstPercent = target.Skills[SkillName.MagicResist].Value / 5.0;
-      double secondPercent = target.Skills[SkillName.MagicResist].Value -
+      double firstPercent = target.Skills.MagicResist.Value / 5.0;
+      double secondPercent = target.Skills.MagicResist.Value -
                              ((Caster.Skills[CastSkill].Value - 20.0) / 5.0 + (1 + (int)circle) * 5.0);
 
       return (firstPercent > secondPercent ? firstPercent : secondPercent) /

@@ -89,7 +89,6 @@ namespace Server.Spells.Necromancy
     private const int EnabledColor32 = 0x18CD00;
     private const int DisabledColor32 = 0x4A8B52;
 
-    private static Hashtable m_Table = new Hashtable();
     private SummonFamiliarEntry[] m_Entries;
     private Mobile m_From;
 
@@ -117,8 +116,8 @@ namespace Server.Spells.Necromancy
 
       AddHtmlLocalized(30, 26, 200, 20, 1060147, EnabledColor16, false, false); // Chose thy familiar...
 
-      double necro = from.Skills[SkillName.Necromancy].Value;
-      double spirit = from.Skills[SkillName.SpiritSpeak].Value;
+      double necro = from.Skills.Necromancy.Value;
+      double spirit = from.Skills.SpiritSpeak.Value;
 
       for (int i = 0; i < entries.Length; ++i)
       {
@@ -146,8 +145,8 @@ namespace Server.Spells.Necromancy
       {
         SummonFamiliarEntry entry = m_Entries[index];
 
-        double necro = m_From.Skills[SkillName.Necromancy].Value;
-        double spirit = m_From.Skills[SkillName.SpiritSpeak].Value;
+        double necro = m_From.Skills.Necromancy.Value;
+        double spirit = m_From.Skills.SpiritSpeak.Value;
 
         BaseCreature check = (BaseCreature)SummonFamiliarSpell.Table[m_From];
 
@@ -185,7 +184,8 @@ namespace Server.Spells.Necromancy
           {
             BaseCreature bc = (BaseCreature)Activator.CreateInstance(entry.Type);
 
-            bc.Skills.MagicResist = m_From.Skills.MagicResist;
+            // TODO: Is this right?
+            bc.Skills.MagicResist.Base = m_From.Skills.MagicResist.Base;
 
             if (BaseCreature.Summon(bc, m_From, m_From.Location, -1, TimeSpan.FromDays(1.0)))
             {
@@ -196,6 +196,7 @@ namespace Server.Spells.Necromancy
           }
           catch
           {
+            // ignored
           }
         }
       }
