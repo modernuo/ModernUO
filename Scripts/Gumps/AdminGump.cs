@@ -2237,13 +2237,11 @@ namespace Server.Gumps
 
               TextRelay matchEntry = info.GetTextEntry(0);
               string match = matchEntry?.Text.Trim().ToLower();
-              string notice = null;
 
               if (string.IsNullOrEmpty(match))
               {
                 results = new ArrayList((ICollection)Accounts.GetAccounts());
                 results.Sort(AccountComparer.Instance);
-                //notice = "You must enter a username to search.";
               }
               else
               {
@@ -2260,7 +2258,7 @@ namespace Server.Gumps
                   "One match found.", results[0]));
               else
                 from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, results,
-                  notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null),
+                  results.Count == 0 ? "Nothing matched your search terms." : null,
                   new ArrayList()));
 
               break;

@@ -387,9 +387,7 @@ namespace Server.Engines.Quests
 
     public static bool CanOfferQuest(Mobile check, Type questType)
     {
-      bool inRestartPeriod;
-
-      return CanOfferQuest(check, questType, out inRestartPeriod);
+      return CanOfferQuest(check, questType, out _);
     }
 
     public static bool CanOfferQuest(Mobile check, Type questType, out bool inRestartPeriod)

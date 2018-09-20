@@ -176,6 +176,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
   }

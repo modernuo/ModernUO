@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Items;
 using Server.Misc;
@@ -159,6 +160,7 @@ namespace Server.Misc
         }
         catch
         {
+          // ignored
         }
 
         if (i != null)
@@ -321,7 +323,7 @@ namespace Server.Gumps
       m_Collector = collector;
     }
 
-    public ToTTurnInGump(Mobile collector, ItemTileButtonInfo[] buttons) :
+    public ToTTurnInGump(Mobile collector, ImageTileButtonInfo[] buttons) :
       base(1071012, buttons) // Click a minor artifact to give it to Ihara Soko.
     {
       m_Collector = collector;
@@ -415,8 +417,9 @@ namespace Server.Gumps
 
     public ToTRedeemGump(Mobile collector, bool pigments) : base(pigments ? 1070986 : 1070985,
       pigments
-        ? PigmentRewards[(int)TreasuresOfTokuno.RewardEra - 1]
-        : (ImageTileButtonInfo[])NormalRewards[(int)TreasuresOfTokuno.RewardEra - 1])
+        ? PigmentRewards[(int)TreasuresOfTokuno.RewardEra - 1].ToArray<ImageTileButtonInfo>()
+        : NormalRewards[(int)TreasuresOfTokuno.RewardEra - 1].ToArray<ImageTileButtonInfo>()
+    )
     {
       m_Collector = collector;
     }
@@ -529,7 +532,7 @@ namespace Server.Gumps
       }
       else
       {
-        TypeTileButtonInfo t = buttonInfo as TypeTileButtonInfo;
+        TypeTileButtonInfo t = (TypeTileButtonInfo)buttonInfo;
 
         if (t.Type == typeof(PigmentsOfTokuno)) //Special case of course.
         {
@@ -547,6 +550,7 @@ namespace Server.Gumps
         }
         catch
         {
+          // ignored
         }
       }
 

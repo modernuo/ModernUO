@@ -516,7 +516,7 @@ namespace Server.Engines.Reports
           for (int i = 0; i < VerticalTickCount; i++)
           {
             float currentY = _topBuffer + i * _yTickValue / _scaleFactor; // Position for tick mark
-            float labelY = currentY - lblFont.Height / 2; // Place label in the middle of tick
+            float labelY = currentY - lblFont.Height / 2.0f; // Place label in the middle of tick
             RectangleF lblRec = new RectangleF(_spacer + fo - 6, labelY, _maxTickValueWidth, lblFont.Height);
 
             float currentTick = _maxValue - i * _yTickValue; // Calculate tick value from top to bottom

@@ -34,6 +34,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
   }

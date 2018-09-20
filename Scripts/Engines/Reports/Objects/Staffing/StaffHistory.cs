@@ -348,7 +348,7 @@ namespace Server.Engines.Reports
       return report;
     }
 
-    private PieChart[] ChartTotalPages(StaffInfo[] staff, TimeSpan ts, string title, string fname)
+    private PersistableObject[] ChartTotalPages(StaffInfo[] staff, TimeSpan ts, string title, string fname)
     {
       DateTime max = DateTime.UtcNow;
       DateTime min = max - ts;
@@ -385,7 +385,7 @@ namespace Server.Engines.Reports
       resChart.Items.Add("Logged Out", countLogged);
       resChart.Items.Add("Unresolved", countUnres);
 
-      return new[] { staffChart, resChart };
+      return new PersistableObject[] { staffChart, resChart };
     }
 
     #region Type Identification

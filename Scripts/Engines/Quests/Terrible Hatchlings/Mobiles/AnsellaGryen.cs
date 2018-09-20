@@ -103,7 +103,6 @@ namespace Server.Engines.Quests.Zento
       else
       {
         TerribleHatchlingsQuest newQuest = new TerribleHatchlingsQuest(player);
-        bool inRestartPeriod = false;
 
         if (qs != null)
         {
@@ -111,7 +110,7 @@ namespace Server.Engines.Quests.Zento
             SayTo(player,
               1063322); // Before you can help me with the Terrible Hatchlings, you'll need to finish the quest you've already taken!
         }
-        else if (QuestSystem.CanOfferQuest(player, typeof(TerribleHatchlingsQuest), out inRestartPeriod))
+        else if (QuestSystem.CanOfferQuest(player, typeof(TerribleHatchlingsQuest), out bool inRestartPeriod))
         {
           newQuest.SendOffer();
         }

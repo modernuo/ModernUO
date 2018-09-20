@@ -654,7 +654,7 @@ namespace Server.Mobiles
 
       for (int i = 0; i < doors.Count; i++)
       {
-        BaseDoor door = doors[i] as BaseDoor;
+        BaseDoor door = (BaseDoor)doors[i];
 
         Point3D doorLoc = door.GetWorldLocation();
         int doorHeight = door.ItemData.CalcHeight;

@@ -100,9 +100,9 @@ namespace Server.Engines.VeteranRewards
     private int PagesPerCategory(RewardCategory category)
     {
       List<RewardEntry> entries = category.Entries;
-      int j = 0, i = 0;
+      int i = 0;
 
-      for (j = 0; j < entries.Count; j++)
+      for (int j = 0; j < entries.Count; j++)
         if (RewardSystem.HasAccess(m_From, entries[j]))
           i++;
 

@@ -41,12 +41,12 @@ namespace Server.Engines.Reports
 
     public override int GetInt32(string key)
     {
-      return XmlConvert.ToInt32(m_Xml.GetAttribute(key));
+      return XmlConvert.ToInt32(m_Xml.GetAttribute(key) ?? "");
     }
 
     public override bool GetBoolean(string key)
     {
-      return XmlConvert.ToBoolean(m_Xml.GetAttribute(key));
+      return XmlConvert.ToBoolean(m_Xml.GetAttribute(key) ?? "");
     }
 
     public override string GetString(string key)

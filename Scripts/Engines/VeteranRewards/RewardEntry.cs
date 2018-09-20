@@ -73,6 +73,7 @@ namespace Server.Engines.VeteranRewards
       }
       catch
       {
+        // ignored
       }
 
       return null;
