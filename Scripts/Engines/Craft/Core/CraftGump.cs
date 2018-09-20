@@ -471,8 +471,6 @@ namespace Server.Engines.Craft
         {
           if (m_Page == CraftPage.PickResource && index >= 0 && index < system.CraftSubRes.Count)
           {
-            int groupIndex = context?.LastGroupIndex ?? -1;
-
             CraftSubRes res = system.CraftSubRes.GetAt(index);
 
             if (m_From.Skills[system.MainSkill].Base < res.RequiredSkill)
@@ -489,8 +487,6 @@ namespace Server.Engines.Craft
           }
           else if (m_Page == CraftPage.PickResource2 && index >= 0 && index < system.CraftSubRes2.Count)
           {
-            int groupIndex = context?.LastGroupIndex ?? -1;
-
             CraftSubRes res = system.CraftSubRes2.GetAt(index);
 
             if (m_From.Skills[system.MainSkill].Base < res.RequiredSkill)

@@ -14,7 +14,6 @@ namespace Server.Factions
     private Item m_Item;
     private Mobile m_Mobile;
     private object m_Notice;
-    private int m_Quality;
     private BaseTool m_Tool;
 
     public FactionImbueGump(int quality, Item item, Mobile from, CraftSystem craftSystem, BaseTool tool, object notice,
@@ -26,7 +25,6 @@ namespace Server.Factions
       m_CraftSystem = craftSystem;
       m_Tool = tool;
       m_Notice = notice;
-      m_Quality = quality;
       m_Definition = def;
 
       AddPage(0);
@@ -38,7 +36,7 @@ namespace Server.Factions
 
 
       AddHtmlLocalized(20, 60, 170, 25, 1018302, false, false); // Item quality:
-      AddHtmlLocalized(175, 60, 100, 25, 1018305 - m_Quality, false, false); //	Exceptional, Average, Low
+      AddHtmlLocalized(175, 60, 100, 25, 1018305 - quality, false, false); //	Exceptional, Average, Low
 
       AddHtmlLocalized(20, 80, 170, 25, 1011572, false, false); // Item Cost :
       AddLabel(175, 80, 0x34, def.SilverCost.ToString("N0")); // NOTE: Added 'N0'

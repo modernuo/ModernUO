@@ -128,7 +128,7 @@ namespace Server.Engines.Doom
       }
       else
       {
-        m.SendLocalizedMessage(1060001); // You throw the switch, but the mechanism cannot be engaged again so soon.
+        m?.SendLocalizedMessage(1060001); // You throw the switch, but the mechanism cannot be engaged again so soon.
       }
     }
 

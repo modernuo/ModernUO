@@ -58,12 +58,7 @@ namespace Server.Engines.ConPVP
 
     private CTFGame m_Game;
 
-    public CTFBoardGump(Mobile mob, CTFGame game)
-      : this(mob, game, null)
-    {
-    }
-
-    public CTFBoardGump(Mobile mob, CTFGame game, CTFTeamInfo section)
+    public CTFBoardGump(Mobile mob, CTFGame game, CTFTeamInfo section = null)
       : base(60, 60)
     {
       m_Game = game;

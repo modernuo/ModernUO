@@ -15,6 +15,7 @@ using Server.Targeting;
 
 namespace Server.Factions
 {
+  [Flags]
   public enum GuardAI
   {
     Bless = 0x01, // heal, cure, +stats

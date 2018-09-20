@@ -918,7 +918,7 @@ namespace Server.Factions
       if (smallest == null)
         return true; // sanity
 
-      if (StabilityFactor > 0 && (Members.Count + influx) * 100 / StabilityFactor > smallest.Members.Count)
+      if ((Members.Count + influx) * 100 / StabilityFactor > smallest.Members.Count)
         return false;
 
       return true;
@@ -939,7 +939,7 @@ namespace Server.Factions
           return;
         }
 
-        if (killer.GetDistanceToSqrt(victim) > 64)
+        if (killer?.GetDistanceToSqrt(victim) > 64)
         {
           sigil.ReturnHome();
           killer.SendLocalizedMessage(1042230); // The sigil has gone back to its home location.
@@ -947,13 +947,13 @@ namespace Server.Factions
         else if (Sigil.ExistsOn(killer))
         {
           sigil.ReturnHome();
-          killer.SendLocalizedMessage(
+          killer?.SendLocalizedMessage(
             1010258); // The sigil has gone back to its home location because you already have a sigil.
         }
         else if (!killerPack.TryDropItem(killer, sigil, false))
         {
           sigil.ReturnHome();
-          killer.SendLocalizedMessage(1010259); // The sigil has gone home because your backpack is full.
+          killer?.SendLocalizedMessage(1010259); // The sigil has gone home because your backpack is full.
         }
       });
 

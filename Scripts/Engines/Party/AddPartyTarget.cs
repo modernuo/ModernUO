@@ -21,7 +21,8 @@ namespace Server.Engines.PartySystem
         else if (p != null && p.Leader != from)
           from.SendLocalizedMessage(1005453); // You may only add members to the party if you are the leader.
         else if (m.Party is Mobile)
-          return;
+        {
+        }
         else if (p != null && p.Members.Count + p.Candidates.Count >= Party.Capacity)
           from.SendLocalizedMessage(1008095); // You may only have 10 in your party (this includes candidates).
         else if (!m.Player && m.Body.IsHuman)

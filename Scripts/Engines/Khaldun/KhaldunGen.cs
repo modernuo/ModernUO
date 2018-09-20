@@ -43,11 +43,11 @@ namespace Server.Commands
       return false;
     }
 
-    public static Item TryCreateItem(int x, int y, int z, Item srcItem)
+    public static T TryCreateItem<T>(int x, int y, int z, T srcItem) where T : Item
     {
-      IPooledEnumerable<Item> eable = Map.Felucca.GetItemsInBounds(new Rectangle2D(x, y, 1, 1));
+      IPooledEnumerable<T> eable = Map.Felucca.GetItemsInBounds<T>(new Rectangle2D(x, y, 1, 1));
 
-      foreach (Item item in eable)
+      foreach (T item in eable)
         if (item.GetType() == srcItem.GetType())
         {
           eable.Free();
@@ -191,15 +191,13 @@ namespace Server.Commands
 
       // Generate Central Khaldun entrance
       DisappearingRaiseSwitch sw =
-        TryCreateItem(5459, 1426, 10, new DisappearingRaiseSwitch()) as DisappearingRaiseSwitch;
-      RaiseSwitch lv = TryCreateItem(5403, 1359, 0, new RaiseSwitch()) as RaiseSwitch;
+        TryCreateItem(5459, 1426, 10, new DisappearingRaiseSwitch());
+      RaiseSwitch lv = TryCreateItem(5403, 1359, 0, new RaiseSwitch());
 
       RaisableItem stone =
-        TryCreateItem(5403, 1360, 0, new RaisableItem(0x788, 10, 0x477, 0x475, TimeSpan.FromMinutes(1.5))) as
-          RaisableItem;
+        TryCreateItem(5403, 1360, 0, new RaisableItem(0x788, 10, 0x477, 0x475, TimeSpan.FromMinutes(1.5)));
       RaisableItem door =
-        TryCreateItem(5524, 1367, 0, new RaisableItem(0x1D0, 20, 0x477, 0x475, TimeSpan.FromMinutes(5.0))) as
-          RaisableItem;
+        TryCreateItem(5524, 1367, 0, new RaisableItem(0x1D0, 20, 0x477, 0x475, TimeSpan.FromMinutes(5.0)));
 
       sw.RaisableItem = stone;
       lv.RaisableItem = door;

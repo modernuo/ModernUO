@@ -1,8 +1,8 @@
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.MyRunUO
 {
-  public class LayerComparer : IComparer
+  public class LayerComparer : IComparer<Item>
   {
     private static Layer PlateArms = (Layer)255;
     private static Layer ChainTunic = (Layer)254;
@@ -36,7 +36,7 @@ namespace Server.Engines.MyRunUO
       Layer.Talisman
     };
 
-    public static readonly IComparer Instance = new LayerComparer();
+    public static readonly IComparer<Item> Instance = new LayerComparer();
 
     static LayerComparer()
     {
@@ -48,11 +48,8 @@ namespace Server.Engines.MyRunUO
 
     public static int[] TranslationTable{ get; }
 
-    public int Compare(object x, object y)
+    public int Compare(Item a, Item b)
     {
-      Item a = (Item)x;
-      Item b = (Item)y;
-
       Layer aLayer = a.Layer;
       Layer bLayer = b.Layer;
 

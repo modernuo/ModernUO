@@ -205,7 +205,7 @@ namespace Server.Engines.Doom
       if (map == null)
         return;
 
-      BaseTrap trap = null;
+      BaseTrap trap;
 
       int random = Utility.Random(100);
 
@@ -324,6 +324,7 @@ namespace Server.Engines.Doom
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -409,9 +410,7 @@ namespace Server.Engines.Doom
 
           TypeName = reader.ReadString();
           Door = reader.ReadItem<BaseDoor>();
-          ;
           Addon = reader.ReadItem<BaseAddon>();
-          ;
           Sequence = reader.ReadItem<GauntletSpawner>();
 
           State = (GauntletSpawnerState)reader.ReadInt();

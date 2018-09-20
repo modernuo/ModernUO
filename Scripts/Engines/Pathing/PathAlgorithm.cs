@@ -2,8 +2,7 @@ namespace Server.PathAlgorithms
 {
   public abstract class PathAlgorithm
   {
-    private static Direction[] m_CalcDirections = new Direction[9]
-    {
+    private static Direction[] m_CalcDirections = {
       Direction.Up,
       Direction.North,
       Direction.Right,

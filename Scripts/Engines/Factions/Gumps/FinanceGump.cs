@@ -259,8 +259,6 @@ namespace Server.Factions
           {
             VendorList vendorList = vendorLists[index];
 
-            Town town = Town.FromRegion(m_From.Region);
-
             if (Town.FromRegion(m_From.Region) != m_Town)
             {
               m_From.SendLocalizedMessage(1010305); // You must be in your controlled city to buy Items

@@ -2050,6 +2050,7 @@ namespace Server.Engines.ConPVP
           }
           catch
           {
+            // ignored
           }
 
           GiveAwards();
@@ -2183,6 +2184,7 @@ namespace Server.Engines.ConPVP
                   }
                   catch
                   {
+                    // ignored
                   }
 
                   GiveAwards();
@@ -2875,7 +2877,6 @@ namespace Server.Engines.ConPVP
           else
           {
             AddHtml(35, y, 190, 20, "Modifications: None", false, false);
-            y += 20;
           }
 
           break;

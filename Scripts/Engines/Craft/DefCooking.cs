@@ -71,7 +71,7 @@ namespace Server.Engines.Craft
 
     public override void InitCraftList()
     {
-      int index = -1;
+      int index;
 
       /* Begin Ingredients */
       index = AddCraft(typeof(SackFlour), 1044495, 1024153, 0.0, 100.0, typeof(WheatSheaf), 1044489, 2, 1044490);

@@ -12,13 +12,8 @@ namespace Server.Engines.ConPVP
     private bool m_ReadOnly;
     private Ruleset m_Ruleset;
 
-    public RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext) : this(from, ruleset,
-      page, duelContext, false)
-    {
-    }
-
-    public RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext, bool readOnly) : base(
-      readOnly ? 310 : 50, 50)
+    public RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext, bool readOnly = false)
+      : base(readOnly ? 310 : 50, 50)
     {
       m_From = from;
       m_Ruleset = ruleset;

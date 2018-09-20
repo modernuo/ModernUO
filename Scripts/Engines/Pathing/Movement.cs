@@ -12,14 +12,12 @@ namespace Server.Movement
 
     private const TileFlag ImpassableSurface = TileFlag.Impassable | TileFlag.Surface;
 
-    private List<Mobile>[] m_MobPools = new List<Mobile>[3]
-    {
+    private List<Mobile>[] m_MobPools = {
       new List<Mobile>(), new List<Mobile>(),
       new List<Mobile>()
     };
 
-    private List<Item>[] m_Pools = new List<Item>[4]
-    {
+    private List<Item>[] m_Pools = {
       new List<Item>(), new List<Item>(),
       new List<Item>(), new List<Item>()
     };
@@ -224,20 +222,18 @@ namespace Server.Movement
 
       if (moveIsOk && checkDiagonals)
       {
-        int hold;
-
         if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
         {
           if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                out hold) || !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                m.CantWalk, out hold))
+                out _) || !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+                m.CantWalk, out _))
             moveIsOk = false;
         }
         else
         {
           if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                out hold) && !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                m.CantWalk, out hold))
+                out _) && !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+                m.CantWalk, out _))
             moveIsOk = false;
         }
       }

@@ -215,6 +215,7 @@ namespace Server.Engines.Help
               }
               catch
               {
+                // ignored
               }
           }
         }
@@ -550,7 +551,7 @@ namespace Server.Engines.Help
         if (entry.SpeechLog != null)
         {
           AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 10, GumpButtonType.Reply, 0);
-          AddLabel(52, bottom - buttons++ * 22, 2100, "View Speech Log");
+          AddLabel(52, bottom - buttons * 22, 2100, "View Speech Log");
         }
 
         AddLabel(18, 98, 2100, "Page Type:");

@@ -80,11 +80,11 @@ namespace Server
 
                       from.DoHarmful(mob);
 
-                      SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, from, damage / 3, 0, 0, 0, 0,
+                      SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, from, damage / 3.0, 0, 0, 0, 0,
                         100);
-                      SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, from, damage / 3, 0, 0, 0, 0,
+                      SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, from, damage / 3.0, 0, 0, 0, 0,
                         100);
-                      SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, from, damage / 3, 0, 0, 0, 0,
+                      SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, from, damage / 3.0, 0, 0, 0, 0,
                         100);
 
                       Timer.DelayCall(TimeSpan.FromSeconds(0.50), delegate { mob.PlaySound(0x1FB); });

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Commands;
 using Server.Factions;
 using Server.Items;
@@ -142,6 +141,7 @@ namespace Server.Engines.Craft
           }
           catch
           {
+            // ignored
           }
 
           if (item != null)
@@ -177,9 +177,9 @@ namespace Server.Engines.Craft
 
     public bool ConsumeAttributes(Mobile from, ref object message, bool consume)
     {
-      bool consumMana = false;
-      bool consumHits = false;
-      bool consumStam = false;
+      bool consumMana;
+      bool consumHits;
+      bool consumStam;
 
       if (Hits > 0 && from.Hits < Hits)
       {

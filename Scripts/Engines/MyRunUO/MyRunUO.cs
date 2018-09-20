@@ -29,7 +29,7 @@ namespace Server.Engines.MyRunUO
     private List<IAccount> m_Collecting;
     private int m_Index;
 
-    private ArrayList m_Items = new ArrayList();
+    private List<Item> m_Items = new List<Item>();
     private string m_LayersPath;
     private ArrayList m_List;
     private string m_MobilesPath;
@@ -504,7 +504,7 @@ namespace Server.Engines.MyRunUO
 
     public void InsertItems(Mobile mob)
     {
-      ArrayList items = m_Items;
+      List<Item> items = m_Items;
       items.AddRange(mob.Items);
       string serial = mob.Serial.Value.ToString();
 
@@ -518,7 +518,7 @@ namespace Server.Engines.MyRunUO
 
       for (int i = 0; i < items.Count; ++i)
       {
-        Item item = (Item)items[i];
+        Item item = items[i];
 
         if (!LayerComparer.IsValid(item))
           break;
@@ -573,6 +573,7 @@ namespace Server.Engines.MyRunUO
           }
           catch
           {
+            // ignored
           }
       }
 

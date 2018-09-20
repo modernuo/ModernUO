@@ -144,6 +144,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
   }

@@ -393,6 +393,7 @@ namespace Server.Engines.CannedEvil
           }
           catch
           {
+            // ignored
           }
       }
     }

@@ -33,7 +33,6 @@ namespace Server.Engines.ConPVP
 
     private Timer m_Countdown;
 
-    private ArrayList m_Entered = new ArrayList();
     public EventGame m_EventGame;
     private Map m_GateFacet;
 
@@ -192,7 +191,8 @@ namespace Server.Engines.ConPVP
       if (spell is RecallSpell)
         from.SendMessage("You may not cast this spell.");
 
-      string title = null, option = null;
+      string title = null;
+      string option;
 
       if (spell is ArcanistSpell)
       {
@@ -1555,7 +1555,6 @@ namespace Server.Engines.ConPVP
     public void CloseAllGumps()
     {
       Type[] types = { typeof(DuelContextGump), typeof(ParticipantGump), typeof(RulesetGump) };
-      int[] defs = { -1, -1, -1 };
 
       for (int i = 0; i < Participants.Count; ++i)
       {
@@ -1572,7 +1571,6 @@ namespace Server.Engines.ConPVP
 
           for (int k = 0; k < types.Length; ++k)
             mob.CloseGump(types[k]);
-          //mob.CloseGump( types[k], defs[k] );
         }
       }
     }

@@ -143,7 +143,7 @@ namespace Server.Engines.Craft
       for (int i = 0; i < m_CraftItem.Skills.Count; i++)
       {
         CraftSkill skill = m_CraftItem.Skills.GetAt(i);
-        double minSkill = skill.MinSkill, maxSkill = skill.MaxSkill;
+        double minSkill = skill.MinSkill;
 
         if (minSkill < 0)
           minSkill = 0;

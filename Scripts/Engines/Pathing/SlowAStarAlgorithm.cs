@@ -65,7 +65,7 @@ namespace Server.PathAlgorithms.SlowAStar
       PathNode[] closed = m_Closed, open = m_Open, successors = m_Successors;
       Direction[] path = m_Path;
 
-      int closedCount = 0, openCount = 0, sucCount = 0, pathCount = 0;
+      int closedCount = 0, openCount = 0, sucCount, pathCount = 0;
       int popIndex, curF;
       int x, y, z;
       int depth = 0;
