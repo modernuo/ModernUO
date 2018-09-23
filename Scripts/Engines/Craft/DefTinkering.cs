@@ -146,7 +146,7 @@ namespace Server.Engines.Craft
 
     public override void InitCraftList()
     {
-      int index = -1;
+      int index;
 
       #region Wooden Items
 

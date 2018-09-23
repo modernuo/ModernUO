@@ -233,7 +233,7 @@ namespace Server.Gumps
       {
         try
         {
-          int serial = Utility.ToInt32(text);
+          uint serial = Utility.ToUInt32(text);
 
           IEntity toSet = World.FindEntity(serial);
 

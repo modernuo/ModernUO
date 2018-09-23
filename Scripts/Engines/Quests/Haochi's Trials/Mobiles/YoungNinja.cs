@@ -11,7 +11,7 @@ namespace Server.Engines.Quests.Samurai
       InitStats(45, 30, 5);
       SetHits(20, 30);
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
       Body = 0x190;
 
       Utility.AssignRandomHair(this);

@@ -16,7 +16,7 @@ namespace Server.Engines.Quests.Haven
 
       SpeechHue = Utility.RandomDyedHue();
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       Female = false;
       Body = 0x190;

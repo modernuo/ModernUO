@@ -354,7 +354,6 @@ namespace Server.Movement
           int itemZ = tile.Z;
           int itemTop = itemZ;
           int ourZ = itemZ + itemData.CalcHeight;
-          int ourTop = ourZ + PersonHeight;
           int testTop = checkTop;
 
           if (moveIsOk)
@@ -411,7 +410,6 @@ namespace Server.Movement
           int itemZ = item.Z;
           int itemTop = itemZ;
           int ourZ = itemZ + itemData.CalcHeight;
-          int ourTop = ourZ + PersonHeight;
           int testTop = checkTop;
 
           if (moveIsOk)
@@ -454,7 +452,6 @@ namespace Server.Movement
       if (considerLand && !landBlocks && stepTop >= landZ)
       {
         int ourZ = landCenter;
-        int ourTop = ourZ + PersonHeight;
         int testTop = checkTop;
 
         if (ourZ + PersonHeight > testTop)

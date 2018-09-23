@@ -19,7 +19,7 @@ namespace Server.Engines.Quests.Naturalist
     {
       InitStats(100, 100, 25);
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       Female = false;
       Body = 0x190;

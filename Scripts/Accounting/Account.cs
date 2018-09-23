@@ -752,7 +752,7 @@ namespace Server.Accounting
 					try
 					{
 						int index = Utility.GetXMLInt32( Utility.GetAttribute( ele, "index", "0" ), 0 );
-						int serial = Utility.GetXMLInt32( Utility.GetText( ele, "0" ), 0 );
+						uint serial = Utility.GetXMLUInt32( Utility.GetText( ele, "0" ), 0 );
 
 						if ( index >= 0 && index < list.Length )
 							list[index] = World.FindMobile( serial );

@@ -233,7 +233,7 @@ namespace Server.Items
 
         Closable = true;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         AddBackground(50, 50, 400, 300, 0xA28);
@@ -310,7 +310,7 @@ namespace Server.Items
 
         Closable = false;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         AddPage(0);

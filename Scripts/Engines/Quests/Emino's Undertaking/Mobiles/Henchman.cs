@@ -10,7 +10,7 @@ namespace Server.Engines.Quests.Ninja
     {
       InitStats(45, 30, 5);
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
       Body = 0x190;
 
       Utility.AssignRandomHair(this);

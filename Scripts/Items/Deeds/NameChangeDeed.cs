@@ -55,7 +55,7 @@ namespace Server.Items
       m_Sender = sender;
 
       Closable = true;
-      Dragable = true;
+      Draggable = true;
       Resizable = false;
 
       AddPage(0);

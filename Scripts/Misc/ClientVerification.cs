@@ -155,7 +155,7 @@ namespace Server.Misc
             Timer.DelayCall(TimeSpan.FromMinutes(Utility.Random(5, 15)), delegate { SendAnnoyGump(m); });
           }, null, false);
 
-        g.Dragable = false;
+        g.Draggable = false;
         g.Closable = false;
         g.Resizable = false;
 

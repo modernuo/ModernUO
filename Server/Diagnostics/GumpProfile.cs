@@ -38,9 +38,7 @@ namespace Server.Diagnostics
     {
       if (!Core.Profiling) return null;
 
-      GumpProfile prof;
-
-      if (!_profiles.TryGetValue(type, out prof)) _profiles.Add(type, prof = new GumpProfile(type));
+      if (!_profiles.TryGetValue(type, out GumpProfile prof)) _profiles.Add(type, prof = new GumpProfile(type));
 
       return prof;
     }

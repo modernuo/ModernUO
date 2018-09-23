@@ -128,12 +128,12 @@ namespace Server
 
   public class CreateGuildEventArgs : EventArgs
   {
-    public CreateGuildEventArgs(int id)
+    public CreateGuildEventArgs(uint id)
     {
       Id = id;
     }
 
-    public int Id{ get; set; }
+    public uint Id{ get; set; }
 
     public BaseGuild Guild{ get; set; }
   }

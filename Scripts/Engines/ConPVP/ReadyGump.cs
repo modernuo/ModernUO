@@ -35,7 +35,7 @@ namespace Server.Engines.ConPVP
       height += 25;
 
       Closable = false;
-      Dragable = false;
+      Draggable = false;
 
       AddPage(0);
 

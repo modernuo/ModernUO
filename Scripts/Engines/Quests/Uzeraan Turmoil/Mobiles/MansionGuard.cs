@@ -18,7 +18,7 @@ namespace Server.Engines.Quests.Haven
     {
       InitStats(100, 100, 25);
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       Female = false;
       Body = 0x190;

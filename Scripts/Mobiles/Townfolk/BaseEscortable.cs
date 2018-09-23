@@ -200,7 +200,7 @@ namespace Server.Mobiles
       SetDex(90, 100);
       SetInt(15, 25);
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       if (Female = Utility.RandomBool())
       {

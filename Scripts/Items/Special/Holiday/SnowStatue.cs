@@ -181,7 +181,7 @@ namespace Server.Items
 
         Closable = true;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         AddPage(0);

@@ -319,7 +319,7 @@ namespace Server.Mobiles
       InitStats(100, 100, 25);
 
       Title = "the town crier";
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       if (!Core.AOS)
         NameHue = 0x35;

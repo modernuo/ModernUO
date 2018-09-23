@@ -34,14 +34,10 @@ namespace Server.Engines.Quests.Necro
       if (Maabus != null || SpawnLocation == Point3D.Zero)
         return;
 
-      foreach (MaabusCoffinComponent c in Components)
-        c.TurnToEmpty();
+      foreach (AddonComponent c in Components)
+        (c as MaabusCoffinComponent)?.TurnToEmpty();
 
-      Maabus = new Maabus();
-
-      Maabus.Location = SpawnLocation;
-      Maabus.Map = Map;
-
+      Maabus = new Maabus { Location = SpawnLocation, Map = Map };
       Maabus.Direction = Maabus.GetDirectionTo(caller);
 
       Timer.DelayCall(TimeSpan.FromSeconds(7.5), BeginSleep);

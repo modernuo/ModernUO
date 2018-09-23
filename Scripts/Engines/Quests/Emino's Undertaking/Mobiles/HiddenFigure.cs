@@ -31,7 +31,7 @@ namespace Server.Engines.Quests.Ninja
     {
       InitStats(100, 100, 25);
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       Female = Utility.RandomBool();
 

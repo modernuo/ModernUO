@@ -443,7 +443,7 @@ namespace Server.Commands
       {
         try
         {
-          int ser = e.GetInt32(0);
+          uint ser = e.GetUInt32(0);
 
           IEntity ent = World.FindEntity(ser);
 

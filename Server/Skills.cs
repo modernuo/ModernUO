@@ -547,6 +547,7 @@ namespace Server
             }
             else
             {
+              // Will be discarded
               new Skill(this, null, reader);
             }
 

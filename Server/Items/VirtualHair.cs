@@ -24,12 +24,7 @@ namespace Server
 {
   public abstract class BaseHairInfo
   {
-    protected BaseHairInfo(int itemid)
-      : this(itemid, 0)
-    {
-    }
-
-    protected BaseHairInfo(int itemid, int hue)
+    protected BaseHairInfo(int itemid, int hue = 0)
     {
       ItemID = itemid;
       Hue = hue;
@@ -67,7 +62,7 @@ namespace Server
   public class HairInfo : BaseHairInfo
   {
     public HairInfo(int itemid)
-      : base(itemid, 0)
+      : base(itemid)
     {
     }
 
@@ -81,7 +76,8 @@ namespace Server
     {
     }
 
-    public static int FakeSerial(Mobile parent)
+    // TOOD: Can we make this higher for newer clients?
+    public static uint FakeSerial(Mobile parent)
     {
       return 0x7FFFFFFF - 0x400 - parent.Serial * 4;
     }
@@ -90,7 +86,7 @@ namespace Server
   public class FacialHairInfo : BaseHairInfo
   {
     public FacialHairInfo(int itemid)
-      : base(itemid, 0)
+      : base(itemid)
     {
     }
 
@@ -104,7 +100,8 @@ namespace Server
     {
     }
 
-    public static int FakeSerial(Mobile parent)
+    // TOOD: Can we make this higher for newer clients?
+    public static uint FakeSerial(Mobile parent)
     {
       return 0x7FFFFFFF - 0x400 - 1 - parent.Serial * 4;
     }
@@ -120,9 +117,7 @@ namespace Server
       if (parent.SolidHueOverride >= 0)
         hue = parent.SolidHueOverride;
 
-      int hairSerial = HairInfo.FakeSerial(parent);
-
-      m_Stream.Write(hairSerial);
+      m_Stream.Write(HairInfo.FakeSerial(parent));
       m_Stream.Write((short)parent.HairItemID);
       m_Stream.Write((byte)0);
       m_Stream.Write((byte)Layer.Hair);
@@ -141,9 +136,7 @@ namespace Server
       if (parent.SolidHueOverride >= 0)
         hue = parent.SolidHueOverride;
 
-      int hairSerial = FacialHairInfo.FakeSerial(parent);
-
-      m_Stream.Write(hairSerial);
+      m_Stream.Write(FacialHairInfo.FakeSerial(parent));
       m_Stream.Write((short)parent.FacialHairItemID);
       m_Stream.Write((byte)0);
       m_Stream.Write((byte)Layer.FacialHair);

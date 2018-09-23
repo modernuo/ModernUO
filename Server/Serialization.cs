@@ -1076,7 +1076,7 @@ namespace Server
 
     public override IEntity ReadEntity()
     {
-      Serial serial = ReadInt();
+      Serial serial = ReadUInt();
       IEntity entity = World.FindEntity(serial);
       if (entity == null)
         return new Entity(serial, new Point3D(0, 0, 0), Map.Internal);
@@ -1085,17 +1085,17 @@ namespace Server
 
     public override Item ReadItem()
     {
-      return World.FindItem(ReadInt());
+      return World.FindItem(ReadUInt());
     }
 
     public override Mobile ReadMobile()
     {
-      return World.FindMobile(ReadInt());
+      return World.FindMobile(ReadUInt());
     }
 
     public override BaseGuild ReadGuild()
     {
-      return BaseGuild.Find(ReadInt());
+      return BaseGuild.Find(ReadUInt());
     }
 
     public override T ReadItem<T>()
@@ -1966,7 +1966,7 @@ namespace Server
   public interface ISerializable
   {
     int TypeReference{ get; }
-    int SerialIdentity{ get; }
+    uint SerialIdentity{ get; }
     void Serialize(GenericWriter writer);
   }
 }

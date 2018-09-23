@@ -522,7 +522,7 @@ namespace Server.Mobiles
       InitStats(100, 100, 25);
 
       SpeechHue = Utility.RandomDyedHue();
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       if (Female = GetGender())
       {
@@ -655,10 +655,7 @@ namespace Server.Mobiles
       for (int i = 0; i < Items.Count; ++i)
       {
         Item item = Items[i];
-
-        if (item is Hair || item is Beard)
-          item.Hue = 0;
-        else if (item is BaseClothing || item is BaseWeapon || item is BaseArmor || item is BaseTool)
+        if (item is BaseClothing || item is BaseWeapon || item is BaseArmor || item is BaseTool)
           item.Hue = GetRandomNecromancerHue();
       }
 
@@ -674,7 +671,7 @@ namespace Server.Mobiles
       {
         Item item = Items[i];
 
-        if (item is BaseClothing || item is Hair || item is Beard)
+        if (item is BaseClothing)
           item.Delete();
       }
 
@@ -713,7 +710,7 @@ namespace Server.Mobiles
 
     public virtual int GetHairHue()
     {
-      return Utility.RandomHairHue();
+      return Race.RandomHairHue();
     }
 
     public virtual void InitOutfit()

@@ -95,13 +95,11 @@ namespace Server.Movement
 
       if (moveIsOk && checkDiagonals)
       {
-        int hold;
-
         if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
         {
           MovementPool.AcquireMoveCache(ref list, itemsLeft);
 
-          if (!Check(map, m, list, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out hold))
+          if (!Check(map, m, list, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out _))
           {
             moveIsOk = false;
           }
@@ -109,7 +107,7 @@ namespace Server.Movement
           {
             MovementPool.AcquireMoveCache(ref list, itemsRight);
 
-            if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out hold))
+            if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out _))
               moveIsOk = false;
           }
         }
@@ -117,11 +115,11 @@ namespace Server.Movement
         {
           MovementPool.AcquireMoveCache(ref list, itemsLeft);
 
-          if (!Check(map, m, list, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out hold))
+          if (!Check(map, m, list, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out _))
           {
             MovementPool.AcquireMoveCache(ref list, itemsRight);
 
-            if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out hold))
+            if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out _))
               moveIsOk = false;
           }
         }

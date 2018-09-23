@@ -41,6 +41,11 @@ namespace Server.Gumps
         }
       }
     }
+    
+    protected void Delta(ref uint var, uint val)
+    {
+      if (var != val) var = val;
+    }
 
     protected void Delta(ref int var, int val)
     {

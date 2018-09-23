@@ -361,7 +361,7 @@ namespace Server.Items
 
         Closable = true;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         AddBackground(25, 0, 500, 265, 0xA28);

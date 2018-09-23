@@ -8,7 +8,7 @@ namespace Server.Mobiles
     public ChaosDragoon() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.15, 0.4)
     {
       Body = 0x190;
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       SetStr(176, 225);
       SetDex(81, 95);

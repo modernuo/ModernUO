@@ -14,7 +14,7 @@ namespace Server.Gumps
 
       Closable = true;
       Disposable = true;
-      Dragable = true;
+      Draggable = true;
       Resizable = false;
 
       AddBackground(0, 0, 220, 170, 0x13BE);

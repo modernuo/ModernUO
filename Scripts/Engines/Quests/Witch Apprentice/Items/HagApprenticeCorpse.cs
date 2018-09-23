@@ -13,18 +13,20 @@ namespace Server.Engines.Quests.Hag
     {
       Direction = Direction.South;
 
-      foreach (Item item in EquipItems) DropItem(item);
+      foreach (Item item in EquipItems)
+        DropItem(item);
     }
 
     public HagApprenticeCorpse(Serial serial) : base(serial)
     {
     }
 
+    // TODO: What is this? Why are we creating a mobile and deleting it?
     private static Mobile GetOwner()
     {
       Mobile apprentice = new Mobile();
 
-      apprentice.Hue = Utility.RandomSkinHue();
+      apprentice.Hue = Race.Human.RandomSkinHue();
       apprentice.Female = false;
       apprentice.Body = 0x190;
 

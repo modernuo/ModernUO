@@ -216,7 +216,7 @@ namespace Server.Items
 
     private IEntity ReadEntity(GenericReader reader)
     {
-      return World.FindEntity(reader.ReadInt());
+      return World.FindEntity(reader.ReadUInt());
     }
 
     public override void Deserialize(GenericReader reader)

@@ -55,7 +55,7 @@ namespace Server.Commands
     {
       if (e.Length == 1)
       {
-        IEntity ent = World.FindEntity(e.GetInt32(0));
+        IEntity ent = World.FindEntity(e.GetUInt32(0));
 
         if (ent == null)
           e.Mobile.SendMessage("No object with that serial was found.");
@@ -466,7 +466,7 @@ namespace Server.Commands
         }
 
       if (isSerial) // mutate back
-        toSet = (Serial)(int)toSet;
+        toSet = (Serial)(toSet ?? Serial.MinusOne);
 
       constructed = toSet;
       return null;

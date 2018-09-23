@@ -519,7 +519,7 @@ namespace Server.Mobiles
 
     public void InitBody()
     {
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
       SpeechHue = 0x3B2;
 
       if (!Core.AOS)

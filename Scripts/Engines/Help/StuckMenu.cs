@@ -120,7 +120,7 @@ namespace Server.Menus.Questions
       m_MarkUse = markUse;
 
       Closable = false;
-      Dragable = false;
+      Draggable = false;
       Disposable = false;
 
       AddBackground(0, 0, 270, 320, 2600);

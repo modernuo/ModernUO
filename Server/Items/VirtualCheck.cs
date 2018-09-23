@@ -181,7 +181,7 @@ namespace Server
 
         Closable = true;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         User.CloseGump(GetType());

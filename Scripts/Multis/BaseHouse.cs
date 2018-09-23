@@ -2472,7 +2472,7 @@ namespace Server.Multis
           for (int i = 0; i < relocatedCount; i++)
           {
             Point3D relLocation = reader.ReadPoint3D();
-            IEntity entity = World.FindEntity(reader.ReadInt());
+            IEntity entity = World.FindEntity(reader.ReadUInt());
 
             if (entity != null)
               RelocatedEntities.Add(new RelocatedEntity(entity, relLocation));

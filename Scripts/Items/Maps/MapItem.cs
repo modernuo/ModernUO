@@ -285,7 +285,7 @@ namespace Server.Items
     {
       Mobile from = state.Mobile;
 
-      if (!(World.FindItem(pvSrc.ReadInt32()) is MapItem map))
+      if (!(World.FindItem(pvSrc.ReadUInt32()) is MapItem map))
         return;
 
       int command = pvSrc.ReadByte();

@@ -347,7 +347,7 @@ namespace Server.Items
     {
       Mobile from = state.Mobile;
 
-      if (!(World.FindItem(pvSrc.ReadInt32()) is BaseBook book) || !book.Writable ||
+      if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBook book) || !book.Writable ||
           !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
         return;
 
@@ -364,7 +364,7 @@ namespace Server.Items
     {
       Mobile from = state.Mobile;
 
-      if (!(World.FindItem(pvSrc.ReadInt32()) is BaseBook book) || !book.Writable ||
+      if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBook book) || !book.Writable ||
           !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
         return;
 
@@ -392,7 +392,7 @@ namespace Server.Items
     {
       Mobile from = state.Mobile;
 
-      if (!(World.FindItem(pvSrc.ReadInt32()) is BaseBook book) || !book.Writable ||
+      if (!(World.FindItem(pvSrc.ReadUInt32()) is BaseBook book) || !book.Writable ||
           !from.InRange(book.GetWorldLocation(), 1) || !book.IsAccessibleTo(from))
         return;
 

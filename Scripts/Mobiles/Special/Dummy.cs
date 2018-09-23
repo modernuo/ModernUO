@@ -20,7 +20,7 @@ namespace Server.Mobiles
       double dPassiveSpeed) : base(iAI, iFightMode, iRangePerception, iRangeFight, dActiveSpeed, dPassiveSpeed)
     {
       Body = 400 + Utility.Random(2);
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       Skills.DetectHidden.Base = 100;
       Skills.MagicResist.Base = 120;

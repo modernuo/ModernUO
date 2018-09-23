@@ -8,7 +8,7 @@ namespace Server.Mobiles
     public EliteNinja() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
       SpeechHue = Utility.RandomDyedHue();
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
       Female = Utility.RandomBool();
 
       Body = Female ? 0x191 : 0x190;

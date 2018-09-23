@@ -596,7 +596,7 @@ namespace Server
 
         IEntity parent;
 
-        Serial serial = reader.ReadInt();
+        Serial serial = reader.ReadUInt();
 
         if (serial.IsItem)
           parent = World.FindItem(serial);
@@ -1863,7 +1863,7 @@ namespace Server
 
     int ISerializable.TypeReference => m_TypeRef;
 
-    int ISerializable.SerialIdentity => Serial;
+    uint ISerializable.SerialIdentity => Serial;
 
     public virtual void Serialize(GenericWriter writer)
     {
@@ -3077,7 +3077,7 @@ namespace Server
 
           if (GetSaveFlag(flags, SaveFlag.Parent))
           {
-            Serial parent = reader.ReadInt();
+            Serial parent = reader.ReadUInt();
 
             if (parent.IsMobile)
               m_Parent = World.FindMobile(parent);
@@ -3197,7 +3197,7 @@ namespace Server
 
           if (GetSaveFlag(flags, SaveFlag.Parent))
           {
-            Serial parent = reader.ReadInt();
+            Serial parent = reader.ReadUInt();
 
             if (parent.IsMobile)
               m_Parent = World.FindMobile(parent);
@@ -3290,7 +3290,7 @@ namespace Server
           if (name != DefaultName)
             AcquireCompactInfo().m_Name = name;
 
-          Serial parent = reader.ReadInt();
+          Serial parent = reader.ReadUInt();
 
           if (parent.IsMobile)
             m_Parent = World.FindMobile(parent);

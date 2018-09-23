@@ -2778,7 +2778,7 @@ namespace Server
 
     int ISerializable.TypeReference => m_TypeRef;
 
-    int ISerializable.SerialIdentity => Serial;
+    uint ISerializable.SerialIdentity => Serial;
 
     public virtual void Serialize(GenericWriter writer)
     {

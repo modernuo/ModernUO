@@ -218,13 +218,7 @@ namespace Server.Regions
       writer.Write(SpawnedObjects.Count);
 
       for (int i = 0; i < SpawnedObjects.Count; i++)
-      {
-        ISpawnable spawn = SpawnedObjects[i];
-
-        int serial = spawn.Serial;
-
-        writer.Write(serial);
-      }
+        writer.Write(SpawnedObjects[i].Serial);
 
       writer.Write(Running);
 
@@ -245,9 +239,7 @@ namespace Server.Regions
 
       for (int i = 0; i < count; i++)
       {
-        int serial = reader.ReadInt();
-
-        if (World.FindEntity(serial) is ISpawnable spawnableEntity)
+        if (World.FindEntity(reader.ReadUInt()) is ISpawnable spawnableEntity)
           Add(spawnableEntity);
       }
 
@@ -275,8 +267,7 @@ namespace Server.Regions
 
       for (int i = 0; i < count; i++)
       {
-        int serial = reader.ReadInt();
-        IEntity entity = World.FindEntity(serial);
+        IEntity entity = World.FindEntity(reader.ReadUInt());
 
         if (entity != null)
         {

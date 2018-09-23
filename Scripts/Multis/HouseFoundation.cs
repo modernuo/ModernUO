@@ -1698,7 +1698,7 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (World.FindItem(pvSrc.ReadInt32()) is HouseFoundation foundation && from.Map == foundation.Map && from.InRange(foundation.GetWorldLocation(), 24) &&
+      if (World.FindItem(pvSrc.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map && from.InRange(foundation.GetWorldLocation(), 24) &&
           from.CanSee(foundation))
       {
         DesignState stateToSend;
@@ -2274,7 +2274,7 @@ namespace Server.Multis
       m_Thread.Start();
     }
 
-    public DesignStateDetailed(int serial, int revision, int xMin, int yMin, int xMax, int yMax, MultiTileEntry[] tiles)
+    public DesignStateDetailed(uint serial, int revision, int xMin, int yMin, int xMax, int yMax, MultiTileEntry[] tiles)
       : base(0xD8)
     {
       EnsureCapacity(17 + tiles.Length * 5);
@@ -2408,7 +2408,7 @@ namespace Server.Multis
 
       int planeCount = 0;
 
-      byte[] m_DeflatedBuffer = null;
+      byte[] m_DeflatedBuffer;
       lock (m_DeflatedBufferPool)
       {
         m_DeflatedBuffer = m_DeflatedBufferPool.AcquireBuffer();
@@ -2512,6 +2512,16 @@ namespace Server.Multis
     }
 
     public void Write(int value)
+    {
+      m_PrimBuffer[0] = (byte)(value >> 24);
+      m_PrimBuffer[1] = (byte)(value >> 16);
+      m_PrimBuffer[2] = (byte)(value >> 8);
+      m_PrimBuffer[3] = (byte)value;
+
+      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
+    }
+    
+    public void Write(uint value)
     {
       m_PrimBuffer[0] = (byte)(value >> 24);
       m_PrimBuffer[1] = (byte)(value >> 16);
@@ -2633,7 +2643,8 @@ namespace Server.Multis
     {
       public NetState m_NetState;
       public DesignState m_Root;
-      public int m_Serial, m_Revision;
+      public int m_Revision;
+      public uint m_Serial;
       public MultiTileEntry[] m_Tiles;
       public int m_xMin, m_yMin, m_xMax, m_yMax;
 

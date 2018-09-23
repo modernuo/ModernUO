@@ -418,7 +418,7 @@ namespace Server.Factions
 
     public virtual void GenerateBody(bool isFemale, bool randomHair)
     {
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       if (isFemale)
       {

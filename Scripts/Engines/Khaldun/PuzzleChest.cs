@@ -553,7 +553,7 @@ namespace Server.Items
         m_Chest = chest;
         m_Solution = solution;
 
-        Dragable = false;
+        Draggable = false;
 
         AddBackground(25, 0, 500, 410, 0x53);
 

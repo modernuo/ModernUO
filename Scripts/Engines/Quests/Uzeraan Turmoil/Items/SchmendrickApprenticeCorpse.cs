@@ -17,11 +17,10 @@ namespace Server.Engines.Quests.Haven
     {
       Direction = Direction.West;
 
-      foreach (Item item in EquipItems) DropItem(item);
+      foreach (Item item in EquipItems)
+        DropItem(item);
 
-      m_Lantern = new Lantern();
-      m_Lantern.Movable = false;
-      m_Lantern.Protected = true;
+      m_Lantern = new Lantern { Movable = false, Protected = true };
       m_Lantern.Ignite();
     }
 
@@ -29,11 +28,12 @@ namespace Server.Engines.Quests.Haven
     {
     }
 
+    // TODO: What is this? Why are we creating and deleting a mobile?
     private static Mobile GetOwner()
     {
       Mobile apprentice = new Mobile();
 
-      apprentice.Hue = Utility.RandomSkinHue();
+      apprentice.Hue = Race.Human.RandomSkinHue();
       apprentice.Female = false;
       apprentice.Body = 0x190;
       apprentice.Name = NameList.RandomName("male");
@@ -50,32 +50,6 @@ namespace Server.Engines.Quests.Haven
       list.Add(new Robe(QuestSystem.RandomBrightHue()));
       list.Add(new WizardsHat(Utility.RandomNeutralHue()));
       list.Add(new Shoes(Utility.RandomNeutralHue()));
-
-      /*
-      int hairHue = Utility.RandomHairHue();
-
-      switch ( Utility.Random( 8 ) )
-      {
-        case 0: list.Add( new Afro( hairHue ) ); break;
-        case 1: list.Add( new KrisnaHair( hairHue ) ); break;
-        case 2: list.Add( new PageboyHair( hairHue ) ); break;
-        case 3: list.Add( new PonyTail( hairHue ) ); break;
-        case 4: list.Add( new ReceedingHair( hairHue ) ); break;
-        case 5: list.Add( new TwoPigTails( hairHue ) ); break;
-        case 6: list.Add( new ShortHair( hairHue ) ); break;
-        case 7: list.Add( new LongHair( hairHue ) ); break;
-      }
-
-      switch ( Utility.Random( 5 ) )
-      {
-        case 0: list.Add( new LongBeard( hairHue ) ); break;
-        case 1: list.Add( new MediumLongBeard( hairHue ) ); break;
-        case 2: list.Add( new Vandyke( hairHue ) ); break;
-        case 3: list.Add( new Mustache( hairHue ) ); break;
-        case 4: list.Add( new Goatee( hairHue ) ); break;
-      }
-       * */
-
       list.Add(new Spellbook());
 
       return list;
@@ -84,7 +58,6 @@ namespace Server.Engines.Quests.Haven
     private static HairInfo GetHair()
     {
       m_HairHue = Race.Human.RandomHairHue();
-
       return new HairInfo(Race.Human.RandomHair(false), m_HairHue);
     }
 

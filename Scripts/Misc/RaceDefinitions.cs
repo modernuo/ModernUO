@@ -36,7 +36,7 @@ namespace Server.Misc
           return true;
 
         if (female && itemID == 0x2048 || !female && itemID == 0x2046)
-          return false; //Buns & Receeding Hair
+          return false; //Buns & Receding Hair
 
         if (itemID >= 0x203B && itemID <= 0x203D)
           return true;
@@ -59,7 +59,7 @@ namespace Server.Misc
           case 5: return 0x2047; //Afro
           case 6: return 0x2049; //Pig tails
           case 7: return 0x204A; //Krisna
-          default: return female ? 0x2046 : 0x2048; //Buns or Receeding Hair
+          default: return female ? 0x2046 : 0x2048; //Buns or Receding Hair
         }
       }
 
@@ -284,16 +284,12 @@ namespace Server.Misc
 
       public override bool ValidateFacialHair(bool female, int itemID)
       {
-        if (female)
-          return false;
-        return itemID >= 0x42AD && itemID <= 0x42B0;
+        return !female && itemID >= 0x42AD && itemID <= 0x42B0;
       }
 
       public override int RandomFacialHair(bool female)
       {
-        if (female)
-          return 0;
-        return Utility.RandomList(0, 0x42AD, 0x42AE, 0x42AF, 0x42B0);
+        return female ? 0 : Utility.RandomList(0, 0x42AD, 0x42AE, 0x42AF, 0x42B0);
       }
 
       public override int ClipSkinHue(int hue)

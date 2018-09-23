@@ -4,6 +4,7 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Objectives
 {
+  [Flags]
   public enum GainSkillObjectiveFlags : byte
   {
     None = 0x00,

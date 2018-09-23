@@ -182,7 +182,7 @@ namespace Server.Engines.MyRunUO
 
     protected override void OnTick()
     {
-      bool shouldExit = false;
+      bool shouldExit;
 
       try
       {
@@ -306,7 +306,7 @@ namespace Server.Engines.MyRunUO
       m_Command.Enqueue(text);
     }
 
-    public void ExecuteNonQuery(string format, params string[] args)
+    public void ExecuteNonQuery(string format, params object[] args)
     {
       ExecuteNonQuery(string.Format(format, args));
     }
@@ -320,10 +320,7 @@ namespace Server.Engines.MyRunUO
     {
       if (sb == null)
       {
-        if (charIndex > 0)
-          sb = new StringBuilder(input, 0, charIndex, input.Length + 20);
-        else
-          sb = new StringBuilder(input.Length + 20);
+        sb = charIndex > 0 ? new StringBuilder(input, 0, charIndex, input.Length + 20) : new StringBuilder(input.Length + 20);
       }
 
       sb.Append("&#");
@@ -335,10 +332,7 @@ namespace Server.Engines.MyRunUO
     {
       if (sb == null)
       {
-        if (charIndex > 0)
-          sb = new StringBuilder(input, 0, charIndex, input.Length + 20);
-        else
-          sb = new StringBuilder(input.Length + 20);
+        sb = charIndex > 0 ? new StringBuilder(input, 0, charIndex, input.Length + 20) : new StringBuilder(input.Length + 20);
       }
 
       sb.Append(ent);
@@ -387,10 +381,7 @@ namespace Server.Engines.MyRunUO
           }
       }
 
-      if (sb != null)
-        return sb.ToString();
-
-      return input;
+      return sb != null ? sb.ToString() : input;
     }
 
     public void InsertMobile(Mobile mob)
@@ -541,7 +532,7 @@ namespace Server.Engines.MyRunUO
         InsertItem(serial, index++, mob.FacialHairItemID, mob.FacialHairHue);
 
       if (mob.HairItemID != 0 && !hideHair)
-        InsertItem(serial, index++, mob.HairItemID, mob.HairHue);
+        InsertItem(serial, index, mob.HairItemID, mob.HairHue);
 
       items.Clear();
     }

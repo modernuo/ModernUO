@@ -919,6 +919,18 @@ namespace Server
 
       return i;
     }
+    
+    public static uint ToUInt32(string value)
+    {
+      uint i;
+
+      if (value.StartsWith("0x"))
+        uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
+      else
+        uint.TryParse(value, out i);
+
+      return i;
+    }
 
     #endregion
 
@@ -932,10 +944,7 @@ namespace Server
       }
       catch
       {
-        if (double.TryParse(doubleString, out double val))
-          return val;
-
-        return defaultValue;
+        return double.TryParse(doubleString, out double val) ? val : defaultValue;
       }
     }
 
@@ -947,10 +956,19 @@ namespace Server
       }
       catch
       {
-        if (int.TryParse(intString, out int val))
-          return val;
-
-        return defaultValue;
+        return int.TryParse(intString, out int val) ? val : defaultValue;
+      }
+    }
+    
+    public static uint GetXMLUInt32(string uintString, uint defaultValue)
+    {
+      try
+      {
+        return XmlConvert.ToUInt32(uintString);
+      }
+      catch
+      {
+        return uint.TryParse(uintString, out uint val) ? val : defaultValue;
       }
     }
 
@@ -962,10 +980,7 @@ namespace Server
       }
       catch
       {
-        if (DateTime.TryParse(dateTimeString, out DateTime d))
-          return d;
-
-        return defaultValue;
+        return DateTime.TryParse(dateTimeString, out DateTime d) ? d : defaultValue;
       }
     }
 
@@ -977,10 +992,7 @@ namespace Server
       }
       catch
       {
-        if (DateTimeOffset.TryParse(dateTimeOffsetString, out DateTimeOffset d))
-          return d;
-
-        return defaultValue;
+        return DateTimeOffset.TryParse(dateTimeOffsetString, out DateTimeOffset d) ? d : defaultValue;
       }
     }
 
@@ -1008,18 +1020,12 @@ namespace Server
 
       XmlAttribute attr = node.Attributes[attributeName];
 
-      if (attr == null)
-        return defaultValue;
-
-      return attr.Value;
+      return attr == null ? defaultValue : attr.Value;
     }
 
     public static string GetText(XmlElement node, string defaultValue)
     {
-      if (node == null)
-        return defaultValue;
-
-      return node.InnerText;
+      return node == null ? defaultValue : node.InnerText;
     }
 
     public static int GetAddressValue(IPAddress address)
@@ -1281,38 +1287,6 @@ namespace Server
         return RandomList(0x62, 0x71);
 
       return RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
-    }
-
-    //[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
-    public static int ClipSkinHue(int hue)
-    {
-      if (hue < 1002)
-        return 1002;
-      if (hue > 1058)
-        return 1058;
-      return hue;
-    }
-
-    //[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
-    public static int RandomSkinHue()
-    {
-      return Random(1002, 57) | 0x8000;
-    }
-
-    //[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
-    public static int ClipHairHue(int hue)
-    {
-      if (hue < 1102)
-        return 1102;
-      if (hue > 1149)
-        return 1149;
-      return hue;
-    }
-
-    //[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
-    public static int RandomHairHue()
-    {
-      return Random(1102, 48);
     }
 
     #endregion

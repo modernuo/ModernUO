@@ -11,7 +11,6 @@ namespace Server.Engines.MyRunUO
     private string m_ConnectionString;
     private Queue m_Queue;
     private ManualResetEvent m_Sync;
-    private Thread m_Thread;
 
     public DatabaseCommandQueue(string completionString, string threadName) : this(Config.CompileConnectionString(),
       completionString, threadName)
@@ -35,10 +34,9 @@ namespace Server.Engines.MyRunUO
 
       m_Sync = new ManualResetEvent(true);
 
-      m_Thread = new Thread(Thread_Start);
-      m_Thread.Name = threadName; //"MyRunUO Database Command Queue";
-      m_Thread.Priority = Config.DatabaseThreadPriority;
-      m_Thread.Start();
+      // MyRunUO Database Command Queue;
+      Thread thread = new Thread(Thread_Start) { Name = threadName, Priority = Config.DatabaseThreadPriority };
+      thread.Start();
     }
 
     public bool HasCompleted{ get; private set; }
@@ -54,6 +52,7 @@ namespace Server.Engines.MyRunUO
         }
         catch
         {
+          // ignored
         }
       }
     }
@@ -111,6 +110,7 @@ namespace Server.Engines.MyRunUO
                 }
                 catch
                 {
+                  // ignored
                 }
 
                 try
@@ -119,6 +119,7 @@ namespace Server.Engines.MyRunUO
                 }
                 catch
                 {
+                  // ignored
                 }
 
                 try
@@ -127,6 +128,7 @@ namespace Server.Engines.MyRunUO
                 }
                 catch
                 {
+                  // ignored
                 }
 
                 try
@@ -135,6 +137,7 @@ namespace Server.Engines.MyRunUO
                 }
                 catch
                 {
+                  // ignored
                 }
 
                 Console.WriteLine(m_CompletionString, (DateTime.UtcNow - start).TotalSeconds);
@@ -164,6 +167,7 @@ namespace Server.Engines.MyRunUO
                 }
                 catch
                 {
+                  // ignored
                 }
 
                 try
@@ -172,6 +176,7 @@ namespace Server.Engines.MyRunUO
                 }
                 catch
                 {
+                  // ignored
                 }
 
                 try
@@ -180,6 +185,7 @@ namespace Server.Engines.MyRunUO
                 }
                 catch
                 {
+                  // ignored
                 }
 
                 try
@@ -188,6 +194,7 @@ namespace Server.Engines.MyRunUO
                 }
                 catch
                 {
+                  // ignored
                 }
 
                 try
@@ -196,6 +203,7 @@ namespace Server.Engines.MyRunUO
                 }
                 catch
                 {
+                  // ignored
                 }
 
                 Console.WriteLine("MyRunUO: Unable to connect to the database");

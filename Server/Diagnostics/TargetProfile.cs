@@ -38,9 +38,7 @@ namespace Server.Diagnostics
     {
       if (!Core.Profiling) return null;
 
-      TargetProfile prof;
-
-      if (!_profiles.TryGetValue(type, out prof)) _profiles.Add(type, prof = new TargetProfile(type));
+      if (!_profiles.TryGetValue(type, out TargetProfile prof)) _profiles.Add(type, prof = new TargetProfile(type));
 
       return prof;
     }

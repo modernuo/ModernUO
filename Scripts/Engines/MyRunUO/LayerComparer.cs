@@ -50,11 +50,14 @@ namespace Server.Engines.MyRunUO
 
     public int Compare(Item a, Item b)
     {
-      Layer aLayer = a.Layer;
-      Layer bLayer = b.Layer;
-
-      aLayer = Fix(a.ItemID, aLayer);
-      bLayer = Fix(b.ItemID, bLayer);
+      if (a == null)
+        return b == null ? 0 : 1;
+      
+      if (b == null)
+        return -1;
+      
+      Layer aLayer = Fix(a.ItemID, a.Layer);
+      Layer bLayer = Fix(b.ItemID, b.Layer);
 
       return TranslationTable[(int)bLayer] - TranslationTable[(int)aLayer];
     }
@@ -72,10 +75,7 @@ namespace Server.Engines.MyRunUO
       if (itemID == 0x13BF || itemID == 0x13C4) // chainmail tunic
         return ChainTunic;
 
-      if (itemID == 0x1C08 || itemID == 0x1C09) // leather skirt
-        return LeatherShorts;
-
-      if (itemID == 0x1C00 || itemID == 0x1C01) // leather shorts
+      if (itemID == 0x1C08 || itemID == 0x1C09 || itemID == 0x1C00 || itemID == 0x1C01) // leather skirt/shorts
         return LeatherShorts;
 
       return oldLayer;

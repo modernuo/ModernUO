@@ -21,7 +21,7 @@ namespace Server.Engines.ConPVP
       m_DuelContext = duelContext;
       m_ReadOnly = readOnly;
 
-      Dragable = !readOnly;
+      Draggable = !readOnly;
 
       from.CloseGump(typeof(RulesetGump));
       from.CloseGump(typeof(DuelContextGump));

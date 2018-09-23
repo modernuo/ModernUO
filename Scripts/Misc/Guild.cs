@@ -583,7 +583,7 @@ namespace Server.Guilds
       #endregion
     }
 
-    public Guild(int id) : base(id) //serialization ctor
+    public Guild(uint id) : base(id) //serialization ctor
     {
     }
 
@@ -727,7 +727,7 @@ namespace Server.Guilds
       }
       else
       {
-        Guild g = int.TryParse(arg, out int id)
+        Guild g = uint.TryParse(arg, out uint id)
           ? Find(id) as Guild
           : FindByAbbrev(arg) as Guild ?? FindByName(arg) as Guild;
 

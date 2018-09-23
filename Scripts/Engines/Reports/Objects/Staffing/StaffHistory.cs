@@ -221,7 +221,6 @@ namespace Server.Engines.Reports
 
         if (ts >= min && ts < max)
         {
-          DateTime date = ts.Date;
           TimeSpan time = ts.TimeOfDay;
 
           int hour = time.Hours;
@@ -232,9 +231,8 @@ namespace Server.Engines.Reports
       }
 
       BarGraph barGraph = new BarGraph("Average pages in queue", "graph_pagequeue_avg", 10, "Time", "Pages",
-        BarGraphRenderMode.Lines);
+        BarGraphRenderMode.Lines) { FontSize = 6 };
 
-      barGraph.FontSize = 6;
 
       for (int i = 7; i <= totals.Length + 7; ++i)
       {
@@ -303,9 +301,8 @@ namespace Server.Engines.Reports
         }
       }
 
-      BarGraph barGraph = new BarGraph(title, fname, 10, "Time", "Pages", BarGraphRenderMode.Lines);
+      BarGraph barGraph = new BarGraph(title, fname, 10, "Time", "Pages", BarGraphRenderMode.Lines) { FontSize = 6 };
 
-      barGraph.FontSize = 6;
 
       for (int i = 7; i <= totals.Length + 7; ++i)
       {

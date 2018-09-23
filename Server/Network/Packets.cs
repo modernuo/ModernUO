@@ -2346,6 +2346,7 @@ namespace Server.Network
 
     void AppendLayout(bool val);
     void AppendLayout(int val);
+    void AppendLayout(uint val);
     void AppendLayoutNS(int val);
     void AppendLayout(string text);
     void AppendLayout(byte[] buffer);
@@ -2397,6 +2398,14 @@ namespace Server.Network
     }
 
     public void AppendLayout(int val)
+    {
+      string toString = val.ToString();
+      int bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
+
+      m_Layout.Write(m_Buffer, 0, bytes);
+    }
+
+    public void AppendLayout(uint val)
     {
       string toString = val.ToString();
       int bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
@@ -2540,6 +2549,15 @@ namespace Server.Network
     }
 
     public void AppendLayout(int val)
+    {
+      string toString = val.ToString();
+      int bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
+
+      m_Stream.Write(m_Buffer, 0, bytes);
+      m_LayoutLength += bytes;
+    }
+
+    public void AppendLayout(uint val)
     {
       string toString = val.ToString();
       int bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
@@ -4183,6 +4201,7 @@ namespace Server.Network
     }
   }
 
+  [Flags]
   public enum AffixType : byte
   {
     Append = 0x00,
