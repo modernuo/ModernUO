@@ -37,9 +37,9 @@ namespace Server.Engines.Quests.Samurai
 
         if (qs is HaochisTrialsQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(SixthTrialIntroObjective));
+          QuestObjective obj = qs.FindObjective<SixthTrialIntroObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
             obj.Complete();
 
           SendLocalizedMessageTo(from, 1063251); // You light a candle in honor.

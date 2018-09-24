@@ -57,9 +57,9 @@ namespace Server.Engines.Quests.Hag
         }
         else
         {
-          QuestObjective obj = qs.FindObjective(typeof(FindGrizeldaAboutMurderObjective));
+          QuestObjective obj = qs.FindObjective<FindGrizeldaAboutMurderObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             PlaySound(0x420);
             PlaySound(0x20);
@@ -74,9 +74,9 @@ namespace Server.Engines.Quests.Hag
           }
           else
           {
-            obj = qs.FindObjective(typeof(ReturnRecipeObjective));
+            obj = qs.FindObjective<ReturnRecipeObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               PlaySound(0x258);
               PlaySound(0x41B);
@@ -90,9 +90,9 @@ namespace Server.Engines.Quests.Hag
             }
             else
             {
-              obj = qs.FindObjective(typeof(ReturnIngredientsObjective));
+              obj = qs.FindObjective<ReturnIngredientsObjective>();
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
               {
                 Container cont = GetNewContainer();
 

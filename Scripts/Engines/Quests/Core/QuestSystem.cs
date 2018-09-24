@@ -198,9 +198,22 @@ namespace Server.Engines.Quests
     {
       QuestObjective obj = FindObjective(type);
 
-      return obj != null && !obj.Completed;
+      return obj?.Completed == false;
     }
 
+    public T FindObjective<T>() where T : QuestObjective
+    {
+      for (int i = Objectives.Count - 1; i >= 0; --i)
+      {
+        QuestObjective obj = (QuestObjective)Objectives[i];
+
+        if (obj is T t)
+          return t;
+      }
+
+      return null;
+    }
+    
     public QuestObjective FindObjective(Type type)
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)

@@ -55,7 +55,7 @@ namespace Server.Engines.Quests.Haven
 
     public override bool CanTalkTo(PlayerMobile to)
     {
-      return to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective(typeof(FindSchmendrickObjective)) != null;
+      return to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective<FindSchmendrickObjective>() != null;
     }
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
@@ -71,9 +71,9 @@ namespace Server.Engines.Quests.Haven
         }
         else
         {
-          QuestObjective obj = qs.FindObjective(typeof(FindSchmendrickObjective));
+          QuestObjective obj = qs.FindObjective<FindSchmendrickObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             FocusTo(player);
             obj.Complete();

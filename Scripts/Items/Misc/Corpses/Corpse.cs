@@ -1023,8 +1023,8 @@ namespace Server.Items
 
           if (qs is UzeraanTurmoilQuest)
           {
-            if (qs.FindObjective(typeof(GetDaemonBoneObjective)) is GetDaemonBoneObjective obj &&
-                obj.CorpseWithBone == this && (!obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone(player)))
+            GetDaemonBoneObjective obj = qs.FindObjective<GetDaemonBoneObjective>();
+            if (obj?.CorpseWithBone == this && (!obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone(player)))
             {
               Item bone = new QuestDaemonBone();
 
@@ -1049,8 +1049,8 @@ namespace Server.Items
           }
           else if (qs is TheSummoningQuest)
           {
-            if (qs.FindObjective(typeof(VanquishDaemonObjective)) is VanquishDaemonObjective obj &&
-                obj.Completed && obj.CorpseWithSkull == this)
+            VanquishDaemonObjective obj = qs.FindObjective<VanquishDaemonObjective>();
+            if (obj?.Completed == true && obj.CorpseWithSkull == this)
             {
               GoldenSkull sk = new GoldenSkull();
 

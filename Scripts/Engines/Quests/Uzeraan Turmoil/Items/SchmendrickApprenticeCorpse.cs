@@ -104,9 +104,9 @@ namespace Server.Engines.Quests.Haven
 
         if (qs is UzeraanTurmoilQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(FindApprenticeObjective));
+          QuestObjective obj = qs.FindObjective<FindApprenticeObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             Item scroll = new SchmendrickScrollOfPower();
 

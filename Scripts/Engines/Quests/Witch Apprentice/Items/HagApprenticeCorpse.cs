@@ -62,7 +62,9 @@ namespace Server.Engines.Quests.Hag
         QuestSystem qs = player.Quest;
 
         if (qs is WitchApprenticeQuest)
-          if (qs.FindObjective(typeof(FindApprenticeObjective)) is FindApprenticeObjective obj && !obj.Completed)
+        {
+          FindApprenticeObjective obj = qs.FindObjective<FindApprenticeObjective>();
+          if (obj?.Completed == false)
           {
             if (obj.Corpse == this)
             {
@@ -77,6 +79,7 @@ namespace Server.Engines.Quests.Hag
 
             return;
           }
+        }
       }
 
       SendLocalizedMessageTo(from, 1055048); // You examine the corpse, but find nothing of interest.

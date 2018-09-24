@@ -62,9 +62,9 @@ namespace Server.Engines.Quests.Necro
 
       if (qs is DarkTidesQuest)
       {
-        QuestObjective obj = qs.FindObjective(typeof(FindCrystalCaveObjective));
+        QuestObjective obj = qs.FindObjective<FindCrystalCaveObjective>();
 
-        if (obj != null && !obj.Completed)
+        if (obj?.Completed == false)
           obj.Complete();
       }
     }
@@ -79,17 +79,17 @@ namespace Server.Engines.Quests.Necro
 
         if (qs is DarkTidesQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(ReturnToCrystalCaveObjective));
+          QuestObjective obj = qs.FindObjective<ReturnToCrystalCaveObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             obj.Complete();
           }
           else
           {
-            obj = qs.FindObjective(typeof(FindHorusAboutRewardObjective));
+            obj = qs.FindObjective<FindHorusAboutRewardObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               Container cont = GetNewContainer();
 
@@ -127,8 +127,8 @@ namespace Server.Engines.Quests.Necro
 
           if (qs is DarkTidesQuest)
           {
-            QuestObjective obj = qs.FindObjective(typeof(SpeakCavePasswordObjective));
-            bool enabled = obj != null && !obj.Completed;
+            QuestObjective obj = qs.FindObjective<SpeakCavePasswordObjective>();
+            bool enabled = obj?.Completed == false;
 
             list.Add(new SpeakPasswordEntry(this, pm, enabled));
           }
@@ -141,9 +141,9 @@ namespace Server.Engines.Quests.Necro
 
       if (qs is DarkTidesQuest)
       {
-        QuestObjective obj = qs.FindObjective(typeof(SpeakCavePasswordObjective));
+        QuestObjective obj = qs.FindObjective<SpeakCavePasswordObjective>();
 
-        if (obj != null && !obj.Completed)
+        if (obj?.Completed == false)
         {
           obj.Complete();
           return;

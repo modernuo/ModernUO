@@ -52,9 +52,9 @@ namespace Server.Engines.Quests.Matriarch
         }
         else
         {
-          QuestObjective obj = qs.FindObjective(typeof(ReturnAfterKillsObjective));
+          QuestObjective obj = qs.FindObjective<ReturnAfterKillsObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             obj.Complete();
           }
@@ -64,9 +64,9 @@ namespace Server.Engines.Quests.Matriarch
           }
           else
           {
-            obj = qs.FindObjective(typeof(ReturnAfterWaterObjective));
+            obj = qs.FindObjective<ReturnAfterWaterObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               obj.Complete();
             }
@@ -76,9 +76,9 @@ namespace Server.Engines.Quests.Matriarch
             }
             else
             {
-              obj = qs.FindObjective(typeof(GetRewardObjective));
+              obj = qs.FindObjective<GetRewardObjective>();
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
               {
                 if (SolenMatriarchQuest.GiveRewardTo(player))
                   obj.Complete();
@@ -153,9 +153,9 @@ namespace Server.Engines.Quests.Matriarch
 
       if (player.Quest is SolenMatriarchQuest qs && qs.RedSolen == RedSolen)
       {
-        QuestObjective obj = qs.FindObjective(typeof(ProcessFungiObjective));
+        QuestObjective obj = qs.FindObjective<ProcessFungiObjective>();
 
-        if (obj != null && !obj.Completed)
+        if (obj?.Completed == false)
         {
           int amount = fungi.Amount / 2;
 

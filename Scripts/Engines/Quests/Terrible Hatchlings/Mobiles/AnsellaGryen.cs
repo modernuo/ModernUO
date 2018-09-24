@@ -62,9 +62,9 @@ namespace Server.Engines.Quests.Zento
         }
         else
         {
-          QuestObjective obj = qs.FindObjective(typeof(ReturnObjective));
+          QuestObjective obj = qs.FindObjective<ReturnObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             Container cont = GetNewContainer();
 

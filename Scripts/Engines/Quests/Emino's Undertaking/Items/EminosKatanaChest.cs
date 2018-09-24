@@ -62,9 +62,9 @@ namespace Server.Engines.Quests.Ninja
           }
           else
           {
-            QuestObjective obj = qs.FindObjective(typeof(HallwayWalkObjective));
+            QuestObjective obj = qs.FindObjective<HallwayWalkObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               Item katana = new EminosKatana();
 
@@ -103,14 +103,14 @@ namespace Server.Engines.Quests.Ninja
         return true;
 
       if (from is PlayerMobile player && player.Quest is EminosUndertakingQuest)
-        if (player.Quest.FindObjective(typeof(HallwayWalkObjective)) is HallwayWalkObjective obj)
-        {
-          if (obj.StolenTreasure)
-            from.SendLocalizedMessage(
-              1063247); // The guard is watching you carefully!  It would be unwise to remove another item from here.
-          else
-            return true;
-        }
+      {
+        HallwayWalkObjective obj = player.Quest.FindObjective<HallwayWalkObjective>();
+        if (obj?.StolenTreasure == true)
+          from.SendLocalizedMessage(
+            1063247); // The guard is watching you carefully!  It would be unwise to remove another item from here.
+        else
+          return true;
+      }
 
       return false;
     }
@@ -118,8 +118,11 @@ namespace Server.Engines.Quests.Ninja
     public override void OnItemLifted(Mobile from, Item item)
     {
       if (from is PlayerMobile player && player.Quest is EminosUndertakingQuest)
-        if (player.Quest.FindObjective(typeof(HallwayWalkObjective)) is HallwayWalkObjective obj)
+      {
+        HallwayWalkObjective obj = player.Quest.FindObjective<HallwayWalkObjective>();
+        if (obj != null)
           obj.StolenTreasure = true;
+      }
     }
 
     public override void Serialize(GenericWriter writer)

@@ -56,8 +56,9 @@ namespace Server.Engines.Quests.Hag
       QuestSystem qs = player.Quest;
 
       if (qs is WitchApprenticeQuest)
-        if (qs.FindObjective(typeof(FindIngredientObjective)) is FindIngredientObjective obj && !obj.Completed &&
-            obj.Ingredient == Ingredient.Whiskey)
+      {
+        FindIngredientObjective obj = qs.FindObjective<FindIngredientObjective>();
+        if (obj?.Completed == false && obj.Ingredient == Ingredient.Whiskey)
         {
           PlaySound(Utility.RandomBool() ? 0x42E : 0x43F);
 
@@ -83,6 +84,7 @@ namespace Server.Engines.Quests.Hag
 
           return;
         }
+      }
 
       PlaySound(0x42C);
       SayTo(player, 1055041); // The drunken pirate shakes his fist at you and goes back to drinking.

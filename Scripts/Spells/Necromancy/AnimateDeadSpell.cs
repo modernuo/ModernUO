@@ -140,7 +140,7 @@ namespace Server.Spells.Necromancy
 
         if (qs is DarkTidesQuest)
         {
-          QuestObjective objective = qs.FindObjective(typeof(AnimateMaabusCorpseObjective));
+          QuestObjective objective = qs.FindObjective<AnimateMaabusCorpseObjective>();
 
           if (objective != null && !objective.Completed)
           {

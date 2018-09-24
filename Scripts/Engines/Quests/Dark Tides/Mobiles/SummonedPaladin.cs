@@ -78,7 +78,7 @@ namespace Server.Engines.Quests.Necro
         {
           QuestSystem qs = m_Necromancer.Quest;
 
-          if (qs is DarkTidesQuest && qs.FindObjective(typeof(FindMardothEndObjective)) == null)
+          if (qs is DarkTidesQuest && qs.FindObjective<FindMardothEndObjective>() == null)
             qs.AddObjective(new FindMardothEndObjective(false));
 
           Say(1060139, m_Necromancer.Name); // You have made my work easy for me, ~1_NAME~.  My task here is done.
@@ -113,7 +113,7 @@ namespace Server.Engines.Quests.Necro
 
       QuestSystem qs = m_Necromancer.Quest;
 
-      if (qs is DarkTidesQuest && qs.FindObjective(typeof(FindMardothEndObjective)) == null)
+      if (qs is DarkTidesQuest && qs.FindObjective<FindMardothEndObjective>() == null)
         qs.AddObjective(new FindMardothEndObjective(true));
     }
 

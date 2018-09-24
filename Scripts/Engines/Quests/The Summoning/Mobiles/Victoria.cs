@@ -76,9 +76,9 @@ namespace Server.Engines.Quests.Doom
         if (qs is TheSummoningQuest)
           if (dropped is DaemonBone bones)
           {
-            QuestObjective obj = qs.FindObjective(typeof(CollectBonesObjective));
+            QuestObjective obj = qs.FindObjective<CollectBonesObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               int need = obj.MaxProgress - obj.CurProgress;
 

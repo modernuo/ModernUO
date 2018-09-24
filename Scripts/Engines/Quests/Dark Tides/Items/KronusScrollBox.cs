@@ -31,9 +31,9 @@ namespace Server.Engines.Quests.Necro
 
         if (qs is DarkTidesQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(FindCallingScrollObjective));
+          QuestObjective obj = qs.FindObjective<FindCallingScrollObjective>();
 
-          if (obj != null && !obj.Completed || DarkTidesQuest.HasLostCallingScroll(from))
+          if (obj?.Completed == false || DarkTidesQuest.HasLostCallingScroll(from))
           {
             Item scroll = new KronusScroll();
 
@@ -42,7 +42,7 @@ namespace Server.Engines.Quests.Necro
               pm.SendLocalizedMessage(1060120, "",
                 0x41); // You rummage through the scrolls until you find the Scroll of Calling.  You quickly put it in your pack.
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
                 obj.Complete();
             }
             else

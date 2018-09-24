@@ -21,7 +21,7 @@ namespace Server.Engines.Quests.Ninja
     {
       QuestSystem qs = player.Quest;
 
-      if (qs is EminosUndertakingQuest && qs.FindObjective(typeof(GainInnInformationObjective)) != null)
+      if (qs is EminosUndertakingQuest && qs.FindObjective<GainInnInformationObjective>() != null)
       {
         loc = new Point3D(411, 1116, 0);
         map = Map.Malas;

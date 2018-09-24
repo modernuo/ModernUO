@@ -1171,9 +1171,9 @@ namespace Server.Mobiles
 
             if (qs is DarkTidesQuest)
             {
-              QuestObjective obj = qs.FindObjective(typeof(FetchAbraxusScrollObjective));
+              QuestObjective obj = qs.FindObjective<FetchAbraxusScrollObjective>();
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
               {
                 m_Mobile.AddToBackpack(new ScrollOfAbraxus());
                 obj.Complete();

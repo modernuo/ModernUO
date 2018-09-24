@@ -137,9 +137,9 @@ namespace Server.Engines.Harvest
 
         if (qs is CollectorQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(FishPearlsObjective));
+          QuestObjective obj = qs.FindObjective<FishPearlsObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             if (Utility.RandomDouble() < 0.5)
             {
