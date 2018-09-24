@@ -617,7 +617,7 @@ namespace Server.Spells
         return false;
       }
 
-      if (caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf(typeof(Jail)))
+      if (caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf<Jail>())
       {
         caster.SendLocalizedMessage(1114345); // You'll need a better jailbreak plan than that!
         return false;
@@ -698,7 +698,7 @@ namespace Server.Spells
     public static bool IsFeluccaDungeon(Map map, Point3D loc)
     {
       Region region = Region.Find(loc, map);
-      return region.IsPartOf(typeof(DungeonRegion)) && region.Map == Map.Felucca;
+      return region.IsPartOf<DungeonRegion>() && region.Map == Map.Felucca;
     }
 
     public static bool IsKhaldun(Map map, Point3D loc)
@@ -723,13 +723,11 @@ namespace Server.Spells
     {
       #region Duels
 
-      if (Region.Find(loc, map).IsPartOf(typeof(SafeZone)))
+      if (Region.Find(loc, map).IsPartOf<SafeZone>())
       {
         if (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
         {
-          PlayerMobile pm = m_TravelCaster as PlayerMobile;
-
-          if (pm?.DuelPlayer != null && !pm.DuelPlayer.Eliminated)
+          if (m_TravelCaster is PlayerMobile pm && pm.DuelPlayer != null && !pm.DuelPlayer.Eliminated)
             return true;
         }
 
@@ -750,12 +748,12 @@ namespace Server.Spells
           return false;
       }*/
 
-      return Region.Find(loc, map).IsPartOf(typeof(StrongholdRegion));
+      return Region.Find(loc, map).IsPartOf<StrongholdRegion>();
     }
 
     public static bool IsChampionSpawn(Map map, Point3D loc)
     {
-      return Region.Find(loc, map).IsPartOf(typeof(ChampionSpawnRegion));
+      return Region.Find(loc, map).IsPartOf<ChampionSpawnRegion>();
     }
 
     public static bool IsDoomFerry(Map map, Point3D loc)
@@ -858,11 +856,11 @@ namespace Server.Spells
 
       #region Dueling
 
-      SafeZone sz = (SafeZone)Region.Find(loc, map).GetRegion(typeof(SafeZone));
+      SafeZone sz = Region.Find(loc, map).GetRegion<SafeZone>();
 
       if (sz != null)
       {
-        PlayerMobile pm = (PlayerMobile)caster;
+        PlayerMobile pm = caster as PlayerMobile;
 
         if (pm?.DuelContext == null || !pm.DuelContext.Started || pm.DuelPlayer == null || pm.DuelPlayer.Eliminated)
           return true;
@@ -870,7 +868,7 @@ namespace Server.Spells
 
       #endregion
 
-      GuardedRegion reg = (GuardedRegion)Region.Find(loc, map).GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = Region.Find(loc, map).GetRegion<GuardedRegion>();
 
       return reg != null && !reg.IsDisabled();
     }

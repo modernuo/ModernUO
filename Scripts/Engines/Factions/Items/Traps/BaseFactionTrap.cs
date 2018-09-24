@@ -124,7 +124,7 @@ namespace Server.Factions
       {
         case AllowedPlacing.FactionStronghold:
         {
-          StrongholdRegion region = (StrongholdRegion)Region.Find(p, m).GetRegion(typeof(StrongholdRegion));
+          StrongholdRegion region = Region.Find(p, m).GetRegion<StrongholdRegion>();
 
           if (region != null && region.Faction == Faction)
             return 0;

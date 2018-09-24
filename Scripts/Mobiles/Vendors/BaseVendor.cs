@@ -1169,20 +1169,8 @@ namespace Server.Mobiles
 
     public virtual bool CheckVendorAccess(Mobile from)
     {
-      GuardedRegion reg = (GuardedRegion)Region.GetRegion(typeof(GuardedRegion));
-
-      if (reg != null && !reg.CheckVendorAccess(this, from))
-        return false;
-
-      if (Region != from.Region)
-      {
-        reg = (GuardedRegion)from.Region.GetRegion(typeof(GuardedRegion));
-
-        if (reg != null && !reg.CheckVendorAccess(this, from))
-          return false;
-      }
-
-      return true;
+      return Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false ||
+             Region != from.Region && from.Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false;
     }
 
     public override void Serialize(GenericWriter writer)

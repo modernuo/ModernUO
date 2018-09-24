@@ -112,7 +112,7 @@ namespace Server.Items
         {
           Container pack = targ.Backpack;
 
-          if (from.Region.IsPartOf(typeof(SafeZone)) || targ.Region.IsPartOf(typeof(SafeZone)))
+          if (from.Region.IsPartOf<SafeZone>() || targ.Region.IsPartOf<SafeZone>())
           {
             from.SendMessage("You may not throw snow here.");
           }

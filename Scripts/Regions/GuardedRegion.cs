@@ -77,7 +77,7 @@ namespace Server.Regions
     private static void CheckGuarded_OnCommand(CommandEventArgs e)
     {
       Mobile from = e.Mobile;
-      GuardedRegion reg = (GuardedRegion)from.Region.GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = from.Region.GetRegion<GuardedRegion>();
 
       if (reg == null)
         from.SendMessage("You are not in a guardable region.");
@@ -95,7 +95,7 @@ namespace Server.Regions
 
       if (e.Length == 1)
       {
-        GuardedRegion reg = (GuardedRegion)from.Region.GetRegion(typeof(GuardedRegion));
+        GuardedRegion reg = from.Region.GetRegion<GuardedRegion>();
 
         if (reg == null)
         {
@@ -122,7 +122,7 @@ namespace Server.Regions
     private static void ToggleGuarded_OnCommand(CommandEventArgs e)
     {
       Mobile from = e.Mobile;
-      GuardedRegion reg = (GuardedRegion)from.Region.GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = from.Region.GetRegion<GuardedRegion>();
 
       if (reg == null)
       {

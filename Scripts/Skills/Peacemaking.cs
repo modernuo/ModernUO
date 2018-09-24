@@ -51,15 +51,15 @@ namespace Server.SkillHandlers
       {
         from.RevealingAction();
 
-        if (!(targeted is Mobile))
+        if (!(targeted is Mobile targ))
         {
           from.SendLocalizedMessage(1049528); // You cannot calm that!
         }
-        else if (from.Region.IsPartOf(typeof(SafeZone)))
+        else if (from.Region.IsPartOf<SafeZone>())
         {
           from.SendMessage("You may not peacemake in this area.");
         }
-        else if (((Mobile)targeted).Region.IsPartOf(typeof(SafeZone)))
+        else if (targ.Region.IsPartOf<SafeZone>())
         {
           from.SendMessage("You may not peacemake there.");
         }
@@ -132,8 +132,6 @@ namespace Server.SkillHandlers
           else
           {
             // Target mode : pacify a single target for a longer duration
-
-            Mobile targ = (Mobile)targeted;
             BaseCreature bc = targ as BaseCreature;
 
             if (!from.CanBeHarmful(targ, false))

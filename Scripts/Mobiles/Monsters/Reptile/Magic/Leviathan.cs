@@ -83,7 +83,6 @@ namespace Server.Mobiles
     public override double BreathMinDelay => 5.0;
     public override double BreathMaxDelay => 7.5;
 
-    public override double TreasureMapChance => 0.25;
     public override int TreasureMapLevel => 5;
 
     public static Type[] Artifacts{ get; } =

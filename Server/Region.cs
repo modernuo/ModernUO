@@ -398,6 +398,7 @@ namespace Server
       return false;
     }
 
+    // TODO: Memoize this
     public bool IsChildOf(Region region)
     {
       if (region == null)
@@ -414,6 +415,22 @@ namespace Server
       }
 
       return false;
+    }
+    
+    // TODO: Memoize this
+    public T GetRegion<T>() where T : Region
+    {
+      Region r = this;
+
+      do
+      {
+        if (r is T tr)
+          return tr;
+
+        r = r.Parent;
+      } while (r != null);
+
+      return null;
     }
 
     public Region GetRegion(Type regionType)
@@ -451,15 +468,15 @@ namespace Server
 
       return null;
     }
+    
+    public bool IsPartOf<T>() where T : Region
+    {
+      return GetRegion<T>() != null;
+    }
 
     public bool IsPartOf(Region region)
     {
       return this == region || IsChildOf(region);
-    }
-
-    public bool IsPartOf(Type regionType)
-    {
-      return GetRegion(regionType) != null;
     }
 
     public bool IsPartOf(string regionName)
@@ -622,17 +639,17 @@ namespace Server
 
     public virtual bool AllowHousing(Mobile from, Point3D p)
     {
-      return Parent == null || Parent.AllowHousing(@from, p);
+      return Parent == null || Parent.AllowHousing(from, p);
     }
 
     public virtual bool SendInaccessibleMessage(Item item, Mobile from)
     {
-      return Parent != null && Parent.SendInaccessibleMessage(item, @from);
+      return Parent != null && Parent.SendInaccessibleMessage(item, from);
     }
 
     public virtual bool CheckAccessibility(Item item, Mobile from)
     {
-      return Parent == null || Parent.CheckAccessibility(item, @from);
+      return Parent == null || Parent.CheckAccessibility(item, from);
     }
 
     public virtual bool OnDecay(Item item)
@@ -644,7 +661,7 @@ namespace Server
     {
       return Parent?.AllowHarmful(from, target) == true ||
              Mobile.AllowHarmfulHandler == null ||
-             Mobile.AllowHarmfulHandler(@from, target);
+             Mobile.AllowHarmfulHandler(from, target);
     }
 
     public virtual void OnCriminalAction(Mobile m, bool message)
@@ -659,7 +676,7 @@ namespace Server
     {
       return Parent?.AllowBeneficial(from, target) == true ||
              Mobile.AllowBeneficialHandler == null ||
-             Mobile.AllowBeneficialHandler(@from, target);
+             Mobile.AllowBeneficialHandler(from, target);
     }
 
     public virtual void OnBeneficialAction(Mobile helper, Mobile target)

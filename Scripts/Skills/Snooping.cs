@@ -23,7 +23,7 @@ namespace Server.SkillHandlers
       if (map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0)
         return true; // felucca you can snoop anybody
 
-      GuardedRegion reg = (GuardedRegion)to.Region.GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = to.Region.GetRegion<GuardedRegion>();
 
       if (reg == null || reg.IsDisabled())
         return true; // not in town? we can snoop any npc

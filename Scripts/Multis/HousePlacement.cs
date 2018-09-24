@@ -56,9 +56,7 @@ namespace Server.Multis
       if (map == Map.Malas && (multiID == 0x007C || multiID == 0x007E))
         return HousePlacementResult.InvalidCastleKeep;
 
-      NoHousingRegion noHousingRegion = (NoHousingRegion)Region.Find(center, map).GetRegion(typeof(NoHousingRegion));
-
-      if (noHousingRegion != null)
+      if (Region.Find(center, map).IsPartOf<NoHousingRegion>())
         return HousePlacementResult.BadRegion;
 
       // This holds data describing the internal structure of the house
@@ -103,13 +101,13 @@ namespace Server.Multis
 
         if (!reg.AllowHousing(from, testPoint)) // Cannot place houses in dungeons, towns, treasure map areas etc
         {
-          if (reg.IsPartOf(typeof(TempNoHousingRegion)))
+          if (reg.IsPartOf<TempNoHousingRegion>())
             return HousePlacementResult.BadRegionTemp;
 
-          if (reg.IsPartOf(typeof(TreasureRegion)) || reg.IsPartOf(typeof(HouseRegion)))
+          if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
             return HousePlacementResult.BadRegionHidden;
 
-          if (reg.IsPartOf(typeof(HouseRaffleRegion)))
+          if (reg.IsPartOf<HouseRaffleRegion>())
             return HousePlacementResult.BadRegionRaffle;
 
           return HousePlacementResult.BadRegion;

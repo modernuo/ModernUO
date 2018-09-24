@@ -68,7 +68,7 @@ namespace Server.Spells.Eighth
         Caster.SendLocalizedMessage(501042); // Target can not be resurrected at that location.
         m.SendLocalizedMessage(502391); // Thou can not be resurrected there!
       }
-      else if (m.Region != null && m.Region.IsPartOf("Khaldun"))
+      else if (m.Region?.IsPartOf("Khaldun") == true)
       {
         Caster.SendLocalizedMessage(
           1010395); // The veil of death in this area is too strong and resists thy efforts to restore life.

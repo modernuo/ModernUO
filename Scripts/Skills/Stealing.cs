@@ -50,7 +50,7 @@ namespace Server.SkillHandlers
       {
         m.SendLocalizedMessage(1005584); // Both hands must be free to steal.
       }
-      else if (m.Region.IsPartOf(typeof(SafeZone)))
+      else if (m.Region.IsPartOf<SafeZone>())
       {
         m.SendMessage("You may not steal in this area.");
       }
@@ -90,7 +90,7 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(1005584); // Both hands must be free to steal.
         }
-        else if (m_Thief.Region.IsPartOf(typeof(SafeZone)))
+        else if (m_Thief.Region.IsPartOf<SafeZone>())
         {
           m_Thief.SendMessage("You may not steal in this area.");
         }

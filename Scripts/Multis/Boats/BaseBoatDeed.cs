@@ -103,7 +103,7 @@ namespace Server.Multis
           return;
         }
 
-        if (from.Region.IsPartOf(typeof(HouseRegion)) || BaseBoat.FindBoatAt(from, from.Map) != null)
+        if (from.Region.IsPartOf<HouseRegion>() || BaseBoat.FindBoatAt(from, from.Map) != null)
         {
           from.SendLocalizedMessage(1010568, null,
             0x25); // You may not place a ship while on another ship or inside a house.
@@ -162,9 +162,9 @@ namespace Server.Multis
 
           Region region = Region.Find(p, from.Map);
 
-          if (region.IsPartOf(typeof(DungeonRegion)))
+          if (region.IsPartOf<DungeonRegion>())
             from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
-          else if (region.IsPartOf(typeof(HouseRegion)) || region.IsPartOf(typeof(ChampionSpawnRegion)))
+          else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
             from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
           else
             m_Deed.OnPlacement(from, p);

@@ -87,7 +87,8 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      if (!(Caster.Region.GetRegion(typeof(ChampionSpawnRegion)) is ChampionSpawnRegion r) || !Caster.InRange(r.ChampionSpawn, Range))
+      ChampionSpawnRegion r = Caster.Region.GetRegion<ChampionSpawnRegion>();
+      if (r == null || !Caster.InRange(r.ChampionSpawn, Range))
       {
         Caster.SendLocalizedMessage(1072111); // You are not in a valid exorcism region.
       }
@@ -130,7 +131,7 @@ namespace Server.Spells.Necromancy
         if (SpellHelper.IsAnyT2A(map, c.Location) && SpellHelper.IsAnyT2A(map, m.Location))
           return false; //Same Map, both in T2A, ie, same 'sub server'.
 
-        if (m.Region.IsPartOf(typeof(DungeonRegion)) == Region.Find(c.Location, map).IsPartOf(typeof(DungeonRegion)))
+        if (m.Region.IsPartOf<DungeonRegion>() == Region.Find(c.Location, map).IsPartOf<DungeonRegion>())
           return false; //Same Map, both in Dungeon region OR They're both NOT in a dungeon region.
 
         //Just an approximation cause RunUO doens't divide up the world the same way OSI does ;p

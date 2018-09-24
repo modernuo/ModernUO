@@ -252,11 +252,11 @@ namespace Server.Engines.Help
         {
           BaseHouse house = BaseHouse.FindHouseAt(from);
 
-          if (house != null && house.IsAosRules && !from.Region.IsPartOf(typeof(SafeZone))) // Dueling
+          if (house != null && house.IsAosRules && !from.Region.IsPartOf<SafeZone>()) // Dueling
           {
             from.Location = house.BanLocation;
           }
-          else if (from.Region.IsPartOf(typeof(Jail)))
+          else if (from.Region.IsPartOf<Jail>())
           {
             from.SendLocalizedMessage(1114345, "", 0x35); // You'll need a better jailbreak plan than that!
           }
@@ -315,7 +315,7 @@ namespace Server.Engines.Help
         {
           if (IsYoung(from))
           {
-            if (from.Region.IsPartOf(typeof(Jail)))
+            if (from.Region.IsPartOf<Jail>())
               from.SendLocalizedMessage(1114345, "", 0x35); // You'll need a better jailbreak plan than that!
             else if (from.Region.IsPartOf("Haven Island"))
               from.SendLocalizedMessage(1041529); // You're already in Haven

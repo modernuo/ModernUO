@@ -3374,22 +3374,23 @@ namespace Server
 
       return m_Map.LineOfSight(this, target);
     }
+    
+    public bool BeginAction<T>()
+    {
+      return BeginAction(typeof(T));
+    }
 
     public bool BeginAction(object toLock)
     {
       if (_actions == null)
       {
-        _actions = new List<object>();
-
-        _actions.Add(toLock);
-
+        _actions = new List<object> { toLock };
         return true;
       }
 
       if (!_actions.Contains(toLock))
       {
         _actions.Add(toLock);
-
         return true;
       }
 

@@ -72,7 +72,7 @@ namespace Server.Items
 
     private Point3D GetFireLocation(Mobile from)
     {
-      if (from.Region.IsPartOf(typeof(DungeonRegion)))
+      if (from.Region.IsPartOf<DungeonRegion>())
         return Point3D.Zero;
 
       if (Parent == null)

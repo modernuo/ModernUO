@@ -105,14 +105,9 @@ namespace Server.Misc
           pmTarg?.DuelContext != null && pmTarg.DuelContext.Started)
         return false;
 
-      if (from.Region.GetRegion(typeof(SafeZone)) is SafeZone sz /*&& sz.IsDisabled()*/)
+      if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
         return false;
-
-      sz = target.Region.GetRegion(typeof(SafeZone)) as SafeZone;
-
-      if (sz != null /*&& sz.IsDisabled()*/)
-        return false;
-
+      
       #endregion
 
       Map map = from.Map;
@@ -191,12 +186,7 @@ namespace Server.Misc
           pmTarg?.DuelContext != null && pmTarg.DuelContext.Started)
         return false;
 
-      if (from.Region.GetRegion(typeof(SafeZone)) is SafeZone sz /*&& sz.IsDisabled()*/)
-        return false;
-
-      sz = target.Region.GetRegion(typeof(SafeZone)) as SafeZone;
-
-      if (sz != null /*&& sz.IsDisabled()*/)
+      if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
         return false;
 
       #endregion

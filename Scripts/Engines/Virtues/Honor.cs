@@ -93,7 +93,7 @@ namespace Server
     private static void Honor(PlayerMobile source, Mobile target)
     {
       IHonorTarget honorTarget = target as IHonorTarget;
-      GuardedRegion reg = (GuardedRegion)source.Region.GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = source.Region.GetRegion<GuardedRegion>();
       Map map = source.Map;
 
       if (honorTarget == null)

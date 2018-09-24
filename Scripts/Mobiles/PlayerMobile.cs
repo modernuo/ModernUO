@@ -117,7 +117,6 @@ namespace Server.Mobiles
 
     private Mobile m_InsuranceAward;
     private int m_InsuranceBonus;
-    private int m_InsuranceCost;
 
     private int m_LastGlobalLight = -1, m_LastPersonalLight = -1;
 
@@ -1246,8 +1245,8 @@ namespace Server.Mobiles
     {
       m_NextProtectionCheck = 10;
 
-      GuardedRegion reg = (GuardedRegion)Region.GetRegion(typeof(GuardedRegion));
-      bool isProtected = reg != null && !reg.IsDisabled();
+      GuardedRegion reg = Region.GetRegion<GuardedRegion>();
+      bool isProtected = reg?.IsDisabled() == false;
 
       if (isProtected != m_LastProtectedMessage)
       {
@@ -1323,7 +1322,7 @@ namespace Server.Mobiles
           if (Alive && house.InternalizedVendors.Count > 0 && house.IsOwner(this))
             list.Add(new CallbackEntry(6204, GetVendor));
 
-          if (house.IsAosRules && !Region.IsPartOf(typeof(SafeZone))) // Dueling
+          if (house.IsAosRules && !Region.IsPartOf<SafeZone>()) // Dueling
             list.Add(new CallbackEntry(6207, LeaveHouse));
         }
 
@@ -1365,9 +1364,8 @@ namespace Server.Mobiles
 
         BaseHouse curhouse = BaseHouse.FindHouseAt(this);
 
-        if (curhouse != null)
-          if (Alive && Core.Expansion >= Expansion.AOS && curhouse.IsAosRules && curhouse.IsFriend(from))
-            list.Add(new EjectPlayerEntry(from, this));
+        if (curhouse != null && Alive && Core.Expansion >= Expansion.AOS && curhouse.IsAosRules && curhouse.IsFriend(from))
+          list.Add(new EjectPlayerEntry(from, this));
       }
     }
 
@@ -1414,7 +1412,8 @@ namespace Server.Mobiles
 
     public override void DisruptiveAction()
     {
-      if (Meditating) RemoveBuff(BuffIcon.ActiveMeditation);
+      if (Meditating)
+        RemoveBuff(BuffIcon.ActiveMeditation);
 
       base.DisruptiveAction();
     }
@@ -1654,7 +1653,7 @@ namespace Server.Mobiles
 
       #region Dueling
 
-      if (Region.IsPartOf(typeof(SafeZone)) && m is PlayerMobile pm)
+      if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm)
         if (pm.DuelContext == null || pm.DuelPlayer == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
             pm.DuelPlayer.Eliminated)
           return true;
@@ -1760,10 +1759,8 @@ namespace Server.Mobiles
 
     private bool FindItems_Callback(Item item)
     {
-      if (!item.Deleted && (item.LootType == LootType.Blessed || item.Insured))
-        if (Backpack != item.Parent)
-          return true;
-      return false;
+      return !item.Deleted && (item.LootType == LootType.Blessed || item.Insured) &&
+             Backpack != item.Parent;
     }
 
     public override bool OnBeforeDeath()
@@ -1782,7 +1779,6 @@ namespace Server.Mobiles
       EquipSnapshot = new List<Item>(Items);
 
       m_NonAutoreinsuredItems = 0;
-      m_InsuranceCost = 0;
       m_InsuranceAward = FindMostRecentDamager(false);
 
       if (m_InsuranceAward is BaseCreature creature)
@@ -1829,7 +1825,6 @@ namespace Server.Mobiles
 
         if (Banker.Withdraw(this, cost))
         {
-          m_InsuranceCost += cost;
           item.PaidInsurance = true;
           SendLocalizedMessage(1060398,
             cost.ToString()); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
@@ -1848,10 +1843,8 @@ namespace Server.Mobiles
         item.Insured = false;
       }
 
-      if (m_InsuranceAward != null)
-        if (Banker.Deposit(m_InsuranceAward, 300))
-          if (m_InsuranceAward is PlayerMobile mobile)
-            mobile.m_InsuranceBonus += 300;
+      if (m_InsuranceAward != null && Banker.Deposit(m_InsuranceAward, 300) && m_InsuranceAward is PlayerMobile pm)
+        pm.m_InsuranceBonus += 300;
 
       return true;
 
@@ -2239,7 +2232,7 @@ namespace Server.Mobiles
             for (int i = 0; i < recipeCount; i++)
             {
               int r = reader.ReadInt();
-              if (reader.ReadBool()) //Don't add in recipies which we haven't gotten or have been removed
+              if (reader.ReadBool()) //Don't add in recipes which we haven't gotten or have been removed
                 m_AcquiredRecipes.Add(r, true);
             }
           }
@@ -2680,12 +2673,8 @@ namespace Server.Mobiles
 
     public virtual void CheckedAnimate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
-      if (!Mounted) base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
-    }
-
-    public override void Animate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
-    {
-      base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
+      if (!Mounted)
+        base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
     }
 
     public override bool CanSee(Item item)
@@ -2891,7 +2880,7 @@ namespace Server.Mobiles
       {
         BaseCreature pet = AutoStabled[i] as BaseCreature;
 
-        if (pet == null || pet.Deleted)
+        if (pet?.Deleted == true)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
@@ -2963,7 +2952,8 @@ namespace Server.Mobiles
 
       private void RemoveBlock(Mobile mobile)
       {
-        (mobile as PlayerMobile).m_MountBlock = null;
+        if (mobile is PlayerMobile pm)
+          pm.m_MountBlock = null;
       }
     }
 
@@ -3191,47 +3181,47 @@ namespace Server.Mobiles
 
     public void RecoverAmmo()
     {
-      if (Core.SE && Alive)
-      {
-        foreach (KeyValuePair<Type, int> kvp in RecoverableAmmo)
-          if (kvp.Value > 0)
+      if (!Core.SE || !Alive)
+        return;
+      
+      foreach (KeyValuePair<Type, int> kvp in RecoverableAmmo)
+        if (kvp.Value > 0)
+        {
+          Item ammo = null;
+
+          try
           {
-            Item ammo = null;
-
-            try
-            {
-              ammo = Activator.CreateInstance(kvp.Key) as Item;
-            }
-            catch
-            {
-            }
-
-            if (ammo != null)
-            {
-              string name = ammo.Name;
-              ammo.Amount = kvp.Value;
-
-              if (name == null)
-              {
-                if (ammo is Arrow)
-                  name = "arrow";
-                else if (ammo is Bolt)
-                  name = "bolt";
-              }
-
-              if (name != null && ammo.Amount > 1)
-                name = $"{name}s";
-
-              if (name == null)
-                name = $"#{ammo.LabelNumber}";
-
-              PlaceInBackpack(ammo);
-              SendLocalizedMessage(1073504, $"{ammo.Amount}\t{name}"); // You recover ~1_NUM~ ~2_AMMO~.
-            }
+            ammo = Activator.CreateInstance(kvp.Key) as Item;
+          }
+          catch
+          {
+            // ignored
           }
 
-        RecoverableAmmo.Clear();
-      }
+          if (ammo == null)
+            continue;
+          string name = ammo.Name;
+          ammo.Amount = kvp.Value;
+
+          if (name == null)
+          {
+            if (ammo is Arrow)
+              name = "arrow";
+            else if (ammo is Bolt)
+              name = "bolt";
+          }
+
+          if (name != null && ammo.Amount > 1)
+            name = $"{name}s";
+
+          if (name == null)
+            name = $"#{ammo.LabelNumber}";
+
+          PlaceInBackpack(ammo);
+          SendLocalizedMessage(1073504, $"{ammo.Amount}\t{name}"); // You recover ~1_NUM~ ~2_AMMO~.
+        }
+
+      RecoverableAmmo.Clear();
     }
 
     #endregion
@@ -4362,7 +4352,7 @@ namespace Server.Mobiles
 
     public bool YoungDeathTeleport()
     {
-      if (Region.IsPartOf(typeof(Jail))
+      if (Region.IsPartOf<Jail>()
           || Region.IsPartOf("Samurai start location")
           || Region.IsPartOf("Ninja start location")
           || Region.IsPartOf("Ninja cave"))
@@ -4371,7 +4361,7 @@ namespace Server.Mobiles
       Point3D loc;
       Map map;
 
-      DungeonRegion dungeon = (DungeonRegion)Region.GetRegion(typeof(DungeonRegion));
+      DungeonRegion dungeon = Region.GetRegion<DungeonRegion>();
       if (dungeon != null && dungeon.EntranceLocation != Point3D.Zero)
       {
         loc = dungeon.EntranceLocation;

@@ -253,7 +253,7 @@ namespace Server.Items
             healerNumber = 501042; // Target can not be resurrected at that location.
             patientNumber = 502391; // Thou can not be resurrected there!
           }
-          else if (Patient.Region != null && Patient.Region.IsPartOf("Khaldun"))
+          else if (Patient.Region?.IsPartOf("Khaldun") == true)
           {
             healerNumber =
               1010395; // The veil of death in this area is too strong and resists thy efforts to restore life.

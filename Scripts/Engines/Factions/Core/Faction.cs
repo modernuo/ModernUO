@@ -998,7 +998,7 @@ namespace Server.Factions
 
       #region Dueling
 
-      if (victim.Region.IsPartOf(typeof(SafeZone)))
+      if (victim.Region.IsPartOf<SafeZone>())
         return;
 
       #endregion

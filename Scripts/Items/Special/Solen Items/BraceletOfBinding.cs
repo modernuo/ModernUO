@@ -255,13 +255,13 @@ namespace Server.Items
         return false;
       }
 
-      if (from.Region.IsPartOf(typeof(Jail)))
+      if (from.Region.IsPartOf<Jail>())
       {
         from.SendLocalizedMessage(1114345, "", 0x35); // You'll need a better jailbreak plan than that!
         return false;
       }
 
-      if (boundRoot.Region.IsPartOf(typeof(Jail)))
+      if (boundRoot.Region.IsPartOf<Jail>())
       {
         from.SendLocalizedMessage(1019004); // You are not allowed to travel there.
         return false;

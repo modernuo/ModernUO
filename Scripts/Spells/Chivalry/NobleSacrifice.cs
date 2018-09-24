@@ -62,7 +62,7 @@ namespace Server.Spells.Chivalry
 
           if (!m.Alive)
           {
-            if (m.Region != null && m.Region.IsPartOf("Khaldun"))
+            if (m.Region?.IsPartOf("Khaldun") == true)
             {
               Caster.SendLocalizedMessage(
                 1010395); // The veil of death in this area is too strong and resists thy efforts to restore life.

@@ -111,7 +111,7 @@ namespace Server.Misc
     {
       Region r = m.Region;
 
-      if (r.IsPartOf(typeof(HouseRegion)) || BaseBoat.FindBoatAt(m, m.Map) != null)
+      if (r.IsPartOf<HouseRegion>() || BaseBoat.FindBoatAt(m, m.Map) != null)
         return false;
       //TODO: a CanReach of something check as opposed to above?
 

@@ -104,7 +104,7 @@ namespace Server.Mobiles
 
     public static bool IsInsideKhaldun(Mobile from)
     {
-      return from?.Region != null && from.Region.IsPartOf("Khaldun");
+      return from?.Region?.IsPartOf("Khaldun") == true;
     }
 
     public override void DisplayPaperdollTo(Mobile to)

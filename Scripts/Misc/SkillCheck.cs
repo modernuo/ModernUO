@@ -206,7 +206,7 @@ namespace Server.Misc
 
     public static void Gain(Mobile from, Skill skill)
     {
-      if (from.Region.IsPartOf(typeof(Jail)))
+      if (from.Region.IsPartOf<Jail>())
         return;
 
       if (from is BaseCreature creature && creature.IsDeadPet)

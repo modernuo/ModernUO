@@ -1916,7 +1916,7 @@ namespace Server.Engines.ConPVP
               Mobile check = (Mobile)part.Players[j];
 
               if (check.Deleted || check.Map == null || check.Map == Map.Internal || !check.Alive ||
-                  Sigil.ExistsOn(check) || check.Region.IsPartOf(typeof(Jail)))
+                  Sigil.ExistsOn(check) || check.Region.IsPartOf<Jail>())
               {
                 bad = true;
                 break;
@@ -2097,16 +2097,17 @@ namespace Server.Engines.ConPVP
                 Mobile check = (Mobile)part.Players[j];
 
                 if (check.Deleted || check.Map == null || check.Map == Map.Internal || !check.Alive ||
-                    Sigil.ExistsOn(check) || check.Region.IsPartOf(typeof(Jail)))
+                    Sigil.ExistsOn(check) || check.Region.IsPartOf<Jail>())
                 {
                   bad = true;
                   break;
                 }
               }
 
-              if (bad)
-              {
-                for (int j = 0; j < part.Players.Count; ++j)
+              if (!bad)
+                continue;
+              
+              for (int j = 0; j < part.Players.Count; ++j)
                   ((Mobile)part.Players[j]).SendMessage("You have been disqualified from the tournament.");
 
                 Undefeated.RemoveAt(i);
@@ -2193,7 +2194,7 @@ namespace Server.Engines.ConPVP
                   Undefeated.Clear();
                   break;
                 }
-              }
+              
             }
 
             if (Undefeated.Count > 1)

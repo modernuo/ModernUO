@@ -205,7 +205,7 @@ namespace Server.Items
       if (map == null)
         return false;
 
-      GuardedRegion reg = (GuardedRegion)Region.Find(p, map).GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = Region.Find(p, map).GetRegion<GuardedRegion>();
 
       return reg != null && !reg.IsDisabled();
     }

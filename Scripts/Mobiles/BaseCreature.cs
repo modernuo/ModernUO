@@ -131,8 +131,9 @@ namespace Server.Mobiles
 
     public int CompareTo(object obj)
     {
-      DamageStore ds = (DamageStore)obj;
-
+      if (!(obj is DamageStore ds))
+        return -1;
+      
       return ds.m_Damage - m_Damage;
     }
   }
@@ -158,7 +159,7 @@ namespace Server.Mobiles
         {
           FriendlyNameAttribute friendly = objs[0] as FriendlyNameAttribute;
 
-          return friendly.FriendlyName;
+          return friendly?.FriendlyName ?? "";
         }
       }
 
@@ -292,13 +293,7 @@ namespace Server.Mobiles
 
         return base.Name;
       }
-      set
-      {
-        if (value == DefaultName)
-          base.Name = null;
-        else
-          base.Name = value;
-      }
+      set { base.Name = value == DefaultName ? null : value; }
     }
 
     public virtual InhumanSpeech SpeechType => null;
@@ -578,7 +573,8 @@ namespace Server.Mobiles
       {
         m_CurrentAI = value;
 
-        if (m_CurrentAI == AIType.AI_Use_Default) m_CurrentAI = m_DefaultAI;
+        if (m_CurrentAI == AIType.AI_Use_Default)
+          m_CurrentAI = m_DefaultAI;
 
         ChangeAIType(m_CurrentAI);
       }
@@ -786,7 +782,6 @@ namespace Server.Mobiles
 
     public virtual bool CanDrop => IsBonded;
 
-    public virtual double TreasureMapChance => TreasureMap.LootChance;
     public virtual int TreasureMapLevel => -1;
 
     public virtual bool IgnoreYoungProtection => false;
@@ -843,9 +838,7 @@ namespace Server.Mobiles
 
     public virtual bool IsEnemy(Mobile m)
     {
-      OppositionGroup g = OppositionGroup;
-
-      if (g != null && g.IsEnemy(this, m))
+      if (OppositionGroup?.IsEnemy(this, m) == true)
         return true;
 
       if (m is BaseGuard)
@@ -879,10 +872,7 @@ namespace Server.Mobiles
     {
       if (IsParagon && !GivesMLMinorArtifact)
       {
-        if (suffix.Length == 0)
-          suffix = "(Paragon)";
-        else
-          suffix = string.Concat(suffix, " (Paragon)");
+        suffix = suffix.Length == 0 ? "(Paragon)" : $"{suffix} (Paragon)";
       }
 
       return base.ApplyNameSuffix(suffix);
@@ -989,10 +979,9 @@ namespace Server.Mobiles
 
       base.Damage(amount, from);
 
-      if (SubdueBeforeTame && !Controlled)
-        if (oldHits > HitsMax / 10 && Hits <= HitsMax / 10)
-          PublicOverheadMessage(MessageType.Regular, 0x3B2, false,
-            "* The creature has been beaten into subjugation! *");
+      if (SubdueBeforeTame && !Controlled && oldHits > HitsMax / 10 && Hits <= HitsMax / 10)
+        PublicOverheadMessage(MessageType.Regular, 0x3B2, false,
+          "* The creature has been beaten into subjugation! *");
     }
 
     public override void SetLocation(Point3D newLocation, bool isTeleport)
@@ -1620,7 +1609,7 @@ namespace Server.Mobiles
 
     public virtual bool IsHumanInTown()
     {
-      return Body.IsHuman && Region.IsPartOf(typeof(GuardedRegion));
+      return Body.IsHuman && Region.IsPartOf<GuardedRegion>();
     }
 
     public virtual bool CheckGold(Mobile from, Item dropped)
@@ -1647,10 +1636,7 @@ namespace Server.Mobiles
         SpeechHue = 0x23F;
         SayTo(from, "Thou art giving me gold?");
 
-        if (dropped.Amount >= 400)
-          SayTo(from, "'Tis a noble gift.");
-        else
-          SayTo(from, "Money is always welcome.");
+        SayTo(from, dropped.Amount >= 400 ? "'Tis a noble gift." : "Money is always welcome.");
 
         SpeechHue = 0x3B2;
         SayTo(from, 501548); // I thank thee.
@@ -1733,11 +1719,6 @@ namespace Server.Mobiles
       }
     }
 
-    public void ChangeAIToDefault()
-    {
-      ChangeAIType(m_DefaultAI);
-    }
-
     public virtual void OnTeamChange()
     {
     }
@@ -1806,10 +1787,7 @@ namespace Server.Mobiles
 
     public virtual void OnGaveMeleeAttack(Mobile defender)
     {
-      Poison p = HitPoison;
-
-      if (m_Paragon)
-        p = PoisonImpl.IncreaseLevel(p);
+      Poison p = m_Paragon ? PoisonImpl.IncreaseLevel(HitPoison) : HitPoison;
 
       if (p != null && HitPoisonChance >= Utility.RandomDouble())
       {
@@ -1865,7 +1843,7 @@ namespace Server.Mobiles
     /*
      * This function can be overridden.. so a "Strongest" mobile, can have a different definition depending
      * on who check for value
-     * -Could add a FightMode.Prefered
+     * -Could add a FightMode.Preferred
      *
      */
 
@@ -1983,10 +1961,10 @@ namespace Server.Mobiles
 
       #region Dueling
 
-      if (Region.IsPartOf(typeof(SafeZone)) && m is PlayerMobile pm)
-        if (pm.DuelContext == null || pm.DuelPlayer == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
-            pm.DuelPlayer.Eliminated)
-          return true;
+      if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm && 
+          (pm.DuelContext == null || pm.DuelPlayer == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
+          pm.DuelPlayer.Eliminated))
+        return true;
 
       #endregion
 
@@ -2277,17 +2255,18 @@ namespace Server.Mobiles
           !m.InRange(Location, 12) || !m.Alive)
         return;
 
-      if (Region.GetRegion(typeof(GuardedRegion)) is GuardedRegion guardedRegion)
-        if (!guardedRegion.IsDisabled() && guardedRegion.IsGuardCandidate(m) && BeginAction(typeof(GuardedRegion)))
-        {
-          Say(1013037 + Utility.Random(16));
-          guardedRegion.CallGuards(Location);
+      GuardedRegion guardedRegion = Region.GetRegion<GuardedRegion>();
 
-          Timer.DelayCall(TimeSpan.FromSeconds(5.0), ReleaseGuardLock);
+      if (guardedRegion?.IsDisabled() == false && guardedRegion.IsGuardCandidate(m) && BeginAction(typeof(GuardedRegion)))
+      {
+        Say(1013037 + Utility.Random(16));
+        guardedRegion.CallGuards(Location);
 
-          m_NoDupeGuards = m;
-          Timer.DelayCall(TimeSpan.Zero, ReleaseGuardDupeLock);
-        }
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), ReleaseGuardLock);
+
+        m_NoDupeGuards = m;
+        Timer.DelayCall(TimeSpan.Zero, ReleaseGuardDupeLock);
+      }
     }
 
     public void AddSpellAttack(Type type)
@@ -2850,7 +2829,7 @@ namespace Server.Mobiles
 
     public override bool CanBeRenamedBy(Mobile from)
     {
-      return Controlled && from == ControlMaster && !from.Region.IsPartOf(typeof(Jail)) ||
+      return Controlled && from == ControlMaster && !from.Region.IsPartOf<Jail>() ||
              base.CanBeRenamedBy(from);
     }
 
@@ -2909,12 +2888,11 @@ namespace Server.Mobiles
     {
       base.OnRegionChange(Old, New);
 
-      if (Controlled)
-        if (Spawner is SpawnEntry se && !se.UnlinkOnTaming && (New == null || !New.AcceptsSpawnsFrom(se.Region)))
-        {
-          Spawner.Remove(this);
-          Spawner = null;
-        }
+      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && (New == null || !New.AcceptsSpawnsFrom(se.Region)))
+      {
+        Spawner.Remove(this);
+        Spawner = null;
+      }
     }
 
     public static bool Summon(BaseCreature creature, Mobile caster, Point3D p, int sound, TimeSpan duration)
@@ -5376,7 +5354,7 @@ namespace Server.Mobiles
         }
 
         // added lines to check if a wild creature in a house region has to be removed or not
-        if (!c.Controlled && !c.IsStabled && (c.Region.IsPartOf(typeof(HouseRegion)) && c.CanBeDamaged() ||
+        if (!c.Controlled && !c.IsStabled && (c.Region.IsPartOf<HouseRegion>() && c.CanBeDamaged() ||
                                               c.RemoveIfUntamed && c.Spawner == null))
         {
           c.RemoveStep++;

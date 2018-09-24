@@ -54,8 +54,7 @@ namespace Server.Gumps
           return;
         }
 
-        if (m_Pet.Region != null && m_Pet.Region.IsPartOf("Khaldun")
-        ) //TODO: Confirm for pets, as per Bandage's script.
+        if (m_Pet.Region?.IsPartOf("Khaldun") == true) //TODO: Confirm for pets, as per Bandage's script.
         {
           from.SendLocalizedMessage(
             1010395); // The veil of death in this area is too strong and resists thy efforts to restore life.
