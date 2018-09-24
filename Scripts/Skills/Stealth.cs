@@ -65,7 +65,7 @@ namespace Server.SkillHandlers
         m.SendLocalizedMessage(502726); // You are not hidden well enough.  Become better at hiding.
         m.RevealingAction();
       }
-      else if (!m.CanBeginAction(typeof(Stealth)))
+      else if (!m.CanBeginAction<Stealth>())
       {
         m.SendLocalizedMessage(1063086); // You cannot use this skill right now.
         m.RevealingAction();

@@ -57,7 +57,7 @@ namespace Server.Spells.Bushido
         return false;
       }
 
-      if (!Caster.CanBeginAction(typeof(Evasion)))
+      if (!Caster.CanBeginAction<Evasion>())
       {
         if (messages) Caster.SendLocalizedMessage(501789); // You must wait before trying again.
         return false;
@@ -114,8 +114,8 @@ namespace Server.Spells.Bushido
 
         BeginEvasion(Caster);
 
-        Caster.BeginAction(typeof(Evasion));
-        Timer.DelayCall(TimeSpan.FromSeconds(20.0), delegate { Caster.EndAction(typeof(Evasion)); });
+        Caster.BeginAction<Evasion>();
+        Timer.DelayCall(TimeSpan.FromSeconds(20.0), delegate { Caster.EndAction<Evasion>(); });
       }
 
       FinishSequence();

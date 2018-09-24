@@ -105,7 +105,7 @@ namespace Server.Items
       {
         if (from.InRange(GetWorldLocation(), 3))
         {
-          from.CloseGump(typeof(WreathAddonGump));
+          from.CloseGump<WreathAddonGump>();
           from.SendGump(new WreathAddonGump(from, this));
         }
         else

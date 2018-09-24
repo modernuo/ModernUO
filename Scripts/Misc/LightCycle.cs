@@ -128,7 +128,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        m_Owner.EndAction(typeof(LightCycle));
+        m_Owner.EndAction<LightCycle>();
         m_Owner.LightLevel = 0;
         BuffInfo.RemoveBuff(m_Owner, BuffIcon.NightSight);
       }

@@ -240,7 +240,7 @@ namespace Server.Engines.Help
       m_From = from;
       m_Response = response;
 
-      from.CloseGump(typeof(PredefGump));
+      from.CloseGump<PredefGump>();
 
       bool canEdit = from.AccessLevel >= AccessLevel.GameMaster;
 

@@ -272,7 +272,7 @@ namespace Server.Items
 
     public override bool OnDragLift(Mobile from)
     {
-      if (from.HasGump(typeof(RunebookGump)))
+      if (from.HasGump<RunebookGump>())
       {
         from.SendLocalizedMessage(500169); // You cannot pick that up.
         return false;
@@ -280,7 +280,7 @@ namespace Server.Items
 
       foreach (Mobile m in Openers)
         if (IsOpen(m))
-          m.CloseGump(typeof(RunebookGump));
+          m.CloseGump<RunebookGump>();
 
       Openers.Clear();
 
@@ -314,7 +314,7 @@ namespace Server.Items
           return;
         }
 
-        from.CloseGump(typeof(RunebookGump));
+        from.CloseGump<RunebookGump>();
         from.SendGump(new RunebookGump(from, this));
 
         Openers.Add(from);

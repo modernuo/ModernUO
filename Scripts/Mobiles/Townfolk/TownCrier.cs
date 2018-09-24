@@ -209,7 +209,7 @@ namespace Server.Mobiles
       m_From = from;
       m_Owner = owner;
 
-      from.CloseGump(typeof(TownCrierGump));
+      from.CloseGump<TownCrierGump>();
 
       AddPage(0);
 

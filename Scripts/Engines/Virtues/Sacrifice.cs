@@ -82,7 +82,7 @@ namespace Server
          * We need to wait for them to accept the gump or they can just use
          * Sacrifice and cancel to have items in their backpack for free.
          */
-        from.CloseGump(typeof(ResurrectGump));
+        from.CloseGump<ResurrectGump>();
         from.SendGump(new ResurrectGump(from, true));
       }
     }

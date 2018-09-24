@@ -137,7 +137,7 @@ namespace Server.SkillHandlers
           }
           else if (faction != null)
           {
-            if (!m_Thief.CanBeginAction(typeof(IncognitoSpell)))
+            if (!m_Thief.CanBeginAction<IncognitoSpell>())
             {
               m_Thief.SendLocalizedMessage(1010581); //	You cannot steal the sigil when you are incognito
             }
@@ -145,7 +145,7 @@ namespace Server.SkillHandlers
             {
               m_Thief.SendLocalizedMessage(1010583); //	You cannot steal the sigil while disguised
             }
-            else if (!m_Thief.CanBeginAction(typeof(PolymorphSpell)))
+            else if (!m_Thief.CanBeginAction<PolymorphSpell>())
             {
               m_Thief.SendLocalizedMessage(1010582); //	You cannot steal the sigil while polymorphed
             }

@@ -15,7 +15,7 @@ namespace Server.Gumps
 
     public PetResurrectGump(Mobile from, BaseCreature pet, double hitsScalar) : base(50, 50)
     {
-      from.CloseGump(typeof(PetResurrectGump));
+      from.CloseGump<PetResurrectGump>();
 
       m_Pet = pet;
       m_HitsScalar = hitsScalar;

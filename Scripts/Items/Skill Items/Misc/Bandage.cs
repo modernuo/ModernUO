@@ -281,7 +281,7 @@ namespace Server.Items
               {
                 healerNumber = 503255; // You are able to resurrect the creature.
 
-                master.CloseGump(typeof(PetResurrectGump));
+                master.CloseGump<PetResurrectGump>();
                 master.SendGump(new PetResurrectGump(Healer, petPatient));
               }
               else
@@ -298,7 +298,7 @@ namespace Server.Items
                   {
                     healerNumber = 503255; // You are able to resurrect the creature.
 
-                    friend.CloseGump(typeof(PetResurrectGump));
+                    friend.CloseGump<PetResurrectGump>();
                     friend.SendGump(new PetResurrectGump(Healer, petPatient));
 
                     found = true;
@@ -312,7 +312,7 @@ namespace Server.Items
             }
             else
             {
-              Patient.CloseGump(typeof(ResurrectGump));
+              Patient.CloseGump<ResurrectGump>();
               Patient.SendGump(new ResurrectGump(Patient, Healer));
             }
           }

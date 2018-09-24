@@ -29,7 +29,7 @@ namespace Server.Engines.ConPVP
     {
       if (m_TeamInfo?.Game != null)
       {
-        from.CloseGump(typeof(DDBoardGump));
+        from.CloseGump<DDBoardGump>();
         from.SendGump(new DDBoardGump(from, m_TeamInfo.Game));
       }
     }
@@ -605,7 +605,7 @@ namespace Server.Engines.ConPVP
         }
       }
 
-      mob.CloseGump(typeof(DDBoardGump));
+      mob.CloseGump<DDBoardGump>();
       mob.SendGump(new DDBoardGump(mob, this));
 
       m_Context.Requip(mob, corpse);
@@ -797,7 +797,7 @@ namespace Server.Engines.ConPVP
 
           if (dp?.Mobile != null)
           {
-            dp.Mobile.CloseGump(typeof(DDBoardGump));
+            dp.Mobile.CloseGump<DDBoardGump>();
             dp.Mobile.SendGump(new DDBoardGump(dp.Mobile, this));
           }
         }

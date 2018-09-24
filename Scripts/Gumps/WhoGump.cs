@@ -104,7 +104,7 @@ namespace Server.Gumps
 
 		public WhoGump( Mobile owner, List<Mobile> list, int page ) : base( GumpOffsetX, GumpOffsetY )
 		{
-			owner.CloseGump( typeof( WhoGump ) );
+			owner.CloseGump<WhoGump>();
 
 			m_Owner = owner;
 			m_Mobiles = list;

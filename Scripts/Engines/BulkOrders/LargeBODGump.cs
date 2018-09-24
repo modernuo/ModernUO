@@ -13,8 +13,8 @@ namespace Server.Engines.BulkOrders
       m_From = from;
       m_Deed = deed;
 
-      m_From.CloseGump(typeof(LargeBODGump));
-      m_From.CloseGump(typeof(SmallBODGump));
+      m_From.CloseGump<LargeBODGump>();
+      m_From.CloseGump<SmallBODGump>();
 
       LargeBulkEntry[] entries = deed.Entries;
 

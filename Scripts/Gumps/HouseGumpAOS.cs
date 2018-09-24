@@ -79,7 +79,7 @@ namespace Server.Gumps
       m_House = house;
       m_Page = page;
 
-      from.CloseGump(typeof(HouseGumpAOS));
+      from.CloseGump<HouseGumpAOS>();
       //from.CloseGump( typeof( HouseListGump ) );
       //from.CloseGump( typeof( HouseRemoveGump ) );
 
@@ -1239,7 +1239,7 @@ namespace Server.Gumps
                 }
                 else
                 {
-                  from.CloseGump(typeof(HouseDemolishGump));
+                  from.CloseGump<HouseDemolishGump>();
                   from.SendGump(new HouseDemolishGump(from, m_House));
                 }
               }

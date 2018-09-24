@@ -77,7 +77,7 @@ namespace Server.Gumps
     public AdminGump(Mobile from, AdminGumpPage pageType, int listPage, ArrayList list, string notice,
       object state) : base(50, 40)
     {
-      from.CloseGump(typeof(AdminGump));
+      from.CloseGump<AdminGump>();
 
       m_From = from;
       m_PageType = pageType;

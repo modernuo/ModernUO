@@ -228,7 +228,7 @@ namespace Server.Menus.Questions
         if (m_Mobile.NetState == null || DateTime.UtcNow > m_End)
         {
           m_Mobile.Frozen = false;
-          m_Mobile.CloseGump(typeof(StuckMenu));
+          m_Mobile.CloseGump<StuckMenu>();
 
           Stop();
         }

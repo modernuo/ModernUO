@@ -32,7 +32,7 @@ namespace Server.Factions
 
     public static bool Exists(Mobile mob)
     {
-      return mob.FindGump(typeof(FactionGump)) != null;
+      return mob.HasGump<FactionGump>();
     }
 
     public void AddHtmlText(int x, int y, int width, int height, TextDefinition text, bool back, bool scroll)

@@ -51,7 +51,7 @@ namespace Server.Items
         }
         else
         {
-          if (from.BeginAction(typeof(BaseHealPotion)))
+          if (from.BeginAction<BaseHealPotion>())
           {
             DoHeal(from);
 
@@ -78,7 +78,7 @@ namespace Server.Items
 
     private static void ReleaseHealLock(object state)
     {
-      ((Mobile)state).EndAction(typeof(BaseHealPotion));
+      ((Mobile)state).EndAction<BaseHealPotion>();
     }
   }
 }

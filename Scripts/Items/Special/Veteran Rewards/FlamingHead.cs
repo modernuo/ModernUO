@@ -84,7 +84,7 @@ namespace Server.Items
 
         if (house != null && house.IsOwner(from))
         {
-          from.CloseGump(typeof(RewardDemolitionGump));
+          from.CloseGump<RewardDemolitionGump>();
           from.SendGump(new RewardDemolitionGump(this, 1018329)); // Do you wish to re-deed this skull?
         }
         else

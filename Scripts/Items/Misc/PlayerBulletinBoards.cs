@@ -523,7 +523,7 @@ namespace Server.Items
 
 		public PlayerBBGump( Mobile from, BaseHouse house, BasePlayerBB board, int page ) : base( 50, 10 )
 		{
-			from.CloseGump( typeof( PlayerBBGump ) );
+			from.CloseGump<PlayerBBGump>();
 
 			m_Page = page;
 			m_From = from;

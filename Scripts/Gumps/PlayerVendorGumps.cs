@@ -426,7 +426,7 @@ namespace Server.Gumps
       m_Vendor = v;
       int x, y;
 
-      from.CloseGump(typeof(PlayerVendorCustomizeGump));
+      from.CloseGump<PlayerVendorCustomizeGump>();
 
       AddPage(0);
       AddBackground(0, 0, 585, 393, 5054);

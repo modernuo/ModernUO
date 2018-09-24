@@ -37,8 +37,8 @@ namespace Server.Spells.Ninjitsu
 
       if (valid)
       {
-        attacker.BeginAction(typeof(Stealth));
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), delegate { attacker.EndAction(typeof(Stealth)); });
+        attacker.BeginAction<Stealth>();
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), delegate { attacker.EndAction<Stealth>(); });
       }
 
       return valid;

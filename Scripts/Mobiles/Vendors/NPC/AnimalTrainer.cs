@@ -89,7 +89,7 @@ namespace Server.Mobiles
 
     private void CloseClaimList(Mobile from)
     {
-      from.CloseGump(typeof(ClaimListGump));
+      from.CloseGump<ClaimListGump>();
     }
 
     public void BeginClaimList(Mobile from)
@@ -407,7 +407,7 @@ namespace Server.Mobiles
         m_From = from;
         m_List = list;
 
-        from.CloseGump(typeof(ClaimListGump));
+        from.CloseGump<ClaimListGump>();
 
         AddPage(0);
 

@@ -137,7 +137,7 @@ namespace Server.Guilds
       {
         pm.SendLocalizedMessage(1063051, targ.Name); // ~1_val~ is already a member of a guild.
       }
-      else if (targ.HasGump(typeof(BaseGuildGump)) || targ.HasGump(typeof(CreateGuildGump))
+      else if (targ.HasGump<BaseGuildGump>() || targ.HasGump<CreateGuildGump>()
       ) //TODO: Check message if CreateGuildGump Open
       {
         pm.SendLocalizedMessage(1063052, targ.Name); // ~1_val~ is currently considering another guild invitation.

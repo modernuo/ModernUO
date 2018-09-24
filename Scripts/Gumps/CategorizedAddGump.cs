@@ -222,7 +222,7 @@ namespace Server.Gumps
 
     public CategorizedAddGump(Mobile owner, CAGCategory category, int page) : base(GumpOffsetX, GumpOffsetY)
     {
-      owner.CloseGump(typeof(WhoGump));
+      owner.CloseGump<WhoGump>();
 
       m_Owner = owner;
       m_Category = category;

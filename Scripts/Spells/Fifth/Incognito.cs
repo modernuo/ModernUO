@@ -49,7 +49,7 @@ namespace Server.Spells.Fifth
         return false;
       }
 
-      if (!Caster.CanBeginAction(typeof(IncognitoSpell)))
+      if (!Caster.CanBeginAction<IncognitoSpell>())
       {
         Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
         return false;
@@ -70,7 +70,7 @@ namespace Server.Spells.Fifth
       {
         Caster.SendLocalizedMessage(1010445); // You cannot incognito if you have a sigil
       }
-      else if (!Caster.CanBeginAction(typeof(IncognitoSpell)))
+      else if (!Caster.CanBeginAction<IncognitoSpell>())
       {
         Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
       }
@@ -82,13 +82,13 @@ namespace Server.Spells.Fifth
       {
         Caster.SendLocalizedMessage(1061631); // You can't do that while disguised.
       }
-      else if (!Caster.CanBeginAction(typeof(PolymorphSpell)) || Caster.IsBodyMod)
+      else if (!Caster.CanBeginAction<PolymorphSpell>() || Caster.IsBodyMod)
       {
         DoFizzle();
       }
       else if (CheckSequence())
       {
-        if (Caster.BeginAction(typeof(IncognitoSpell)))
+        if (Caster.BeginAction<IncognitoSpell>())
         {
           DisguiseTimers.StopTimer(Caster);
 
@@ -173,14 +173,14 @@ namespace Server.Spells.Fifth
 
       protected override void OnTick()
       {
-        if (!m_Owner.CanBeginAction(typeof(IncognitoSpell)))
+        if (!m_Owner.CanBeginAction<IncognitoSpell>())
         {
           (m_Owner as PlayerMobile)?.SetHairMods(-1, -1);
 
           m_Owner.BodyMod = 0;
           m_Owner.HueMod = -1;
           m_Owner.NameMod = null;
-          m_Owner.EndAction(typeof(IncognitoSpell));
+          m_Owner.EndAction<IncognitoSpell>();
 
           BaseArmor.ValidateMobile(m_Owner);
           BaseClothing.ValidateMobile(m_Owner);

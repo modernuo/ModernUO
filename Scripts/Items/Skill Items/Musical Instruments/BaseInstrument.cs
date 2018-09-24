@@ -546,7 +546,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(500446); // That is too far away.
       }
-      else if (from.BeginAction(typeof(BaseInstrument)))
+      else if (from.BeginAction<BaseInstrument>())
       {
         SetInstrument(from, this);
 
@@ -593,7 +593,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        m_From.EndAction(typeof(BaseInstrument));
+        m_From.EndAction<BaseInstrument>();
       }
     }
   }

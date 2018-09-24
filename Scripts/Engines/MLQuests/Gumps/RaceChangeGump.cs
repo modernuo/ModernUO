@@ -19,8 +19,6 @@ namespace Server.Engines.MLQuests.Gumps
 
   public class RaceChangeConfirmGump : Gump
   {
-    public static readonly Type Type = typeof(RaceChangeConfirmGump);
-
     private static Dictionary<NetState, RaceChangeState> m_Pending;
     private PlayerMobile m_From;
 
@@ -30,7 +28,7 @@ namespace Server.Engines.MLQuests.Gumps
     public RaceChangeConfirmGump(IRaceChanger owner, PlayerMobile from, Race targetRace)
       : base(50, 50)
     {
-      from.CloseGump(Type);
+      from.CloseGump<RaceChangeConfirmGump>();
 
       m_Owner = owner;
       m_From = from;
@@ -152,8 +150,8 @@ namespace Server.Engines.MLQuests.Gumps
         from.SendLocalizedMessage(1073646); // Only the living may proceed...
       else if (from.Mounted)
         from.SendLocalizedMessage(1073647); // You may not continue while mounted...
-      else if (!from.CanBeginAction(typeof(PolymorphSpell)) || DisguiseTimers.IsDisguised(from) ||
-               AnimalForm.UnderTransformation(from) || !from.CanBeginAction(typeof(IncognitoSpell)) ||
+      else if (!from.CanBeginAction<PolymorphSpell>() || DisguiseTimers.IsDisguised(from) ||
+               AnimalForm.UnderTransformation(from) || !from.CanBeginAction<IncognitoSpell>() ||
                from.IsBodyMod) // TODO: Does this cover everything?
         from.SendLocalizedMessage(1073648); // You may only proceed while in your original state...
       else if (from.Spell != null && from.Spell.IsCasting)

@@ -66,7 +66,7 @@ namespace Server.Spells.Seventh
         return false;
       }
 
-      if (!Caster.CanBeginAction(typeof(PolymorphSpell)))
+      if (!Caster.CanBeginAction<PolymorphSpell>())
       {
         if (Core.ML)
           EndPolymorph(Caster);
@@ -101,7 +101,7 @@ namespace Server.Spells.Seventh
       {
         Caster.SendLocalizedMessage(1010521); // You cannot polymorph while you have a Town Sigil
       }
-      else if (!Caster.CanBeginAction(typeof(PolymorphSpell)))
+      else if (!Caster.CanBeginAction<PolymorphSpell>())
       {
         if (Core.ML)
           EndPolymorph(Caster);
@@ -120,13 +120,13 @@ namespace Server.Spells.Seventh
       {
         Caster.SendLocalizedMessage(1042512); // You cannot polymorph while wearing body paint
       }
-      else if (!Caster.CanBeginAction(typeof(IncognitoSpell)) || Caster.IsBodyMod)
+      else if (!Caster.CanBeginAction<IncognitoSpell>() || Caster.IsBodyMod)
       {
         DoFizzle();
       }
       else if (CheckSequence())
       {
-        if (Caster.BeginAction(typeof(PolymorphSpell)))
+        if (Caster.BeginAction<PolymorphSpell>())
         {
           if (m_NewBody != 0)
           {
@@ -184,11 +184,11 @@ namespace Server.Spells.Seventh
 
     private static void EndPolymorph(Mobile m)
     {
-      if (!m.CanBeginAction(typeof(PolymorphSpell)))
+      if (!m.CanBeginAction<PolymorphSpell>())
       {
         m.BodyMod = 0;
         m.HueMod = -1;
-        m.EndAction(typeof(PolymorphSpell));
+        m.EndAction<PolymorphSpell>();
 
         BaseArmor.ValidateMobile(m);
         BaseClothing.ValidateMobile(m);

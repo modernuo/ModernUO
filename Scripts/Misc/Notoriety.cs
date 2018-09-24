@@ -398,7 +398,7 @@ namespace Server.Misc
 
       if (bcTarg?.InitialInnocent != true)
         if (!target.Body.IsHuman && !target.Body.IsGhost && !IsPet(bcTarg) && pmTarg == null ||
-            !Core.ML && !target.CanBeginAction(typeof(PolymorphSpell)))
+            !Core.ML && !target.CanBeginAction<PolymorphSpell>())
           return Notoriety.CanBeAttacked;
 
       if (CheckAggressor(source.Aggressors, target))

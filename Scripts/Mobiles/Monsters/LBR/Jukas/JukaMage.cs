@@ -113,7 +113,7 @@ namespace Server.Mobiles
 
         foreach (Mobile m in GetMobilesInRange(8))
           if (m is JukaLord lord && IsFriend(lord) && lord.Combatant != null && CanBeBeneficial(lord) &&
-              lord.CanBeginAction(typeof(JukaMage)) && InLOS(lord))
+              lord.CanBeginAction<JukaMage>() && InLOS(lord))
           {
             toBuff = lord;
             break;
@@ -121,7 +121,7 @@ namespace Server.Mobiles
 
         if (toBuff != null)
         {
-          if (CanBeBeneficial(toBuff) && toBuff.BeginAction(typeof(JukaMage)))
+          if (CanBeBeneficial(toBuff) && toBuff.BeginAction<JukaMage>())
           {
             m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(30, 60));
 
@@ -179,7 +179,7 @@ namespace Server.Mobiles
 
       JukaLord toDebuff = (JukaLord)states[0];
 
-      toDebuff.EndAction(typeof(JukaMage));
+      toDebuff.EndAction<JukaMage>();
 
       if (toDebuff.Deleted)
         return;

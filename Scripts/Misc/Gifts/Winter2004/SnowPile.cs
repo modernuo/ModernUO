@@ -51,7 +51,7 @@ namespace Server.Items
         from.SendLocalizedMessage(1010097); // You cannot use this while mounted.
       }
 
-      else if (from.CanBeginAction(typeof(SnowPile)))
+      else if (from.CanBeginAction<SnowPile>())
       {
         from.SendLocalizedMessage(1005575); // You carefully pack the snow into a ball...
         from.Target = new SnowTarget(from, this);
@@ -73,7 +73,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        m_From.EndAction(typeof(SnowPile));
+        m_From.EndAction<SnowPile>();
       }
     }
 
@@ -104,7 +104,7 @@ namespace Server.Items
           }
           else if (pack?.FindItemByType(new[] { typeof(SnowPile), typeof(PileOfGlacialSnow) }) != null)
           {
-            if (from.BeginAction(typeof(SnowPile)))
+            if (from.BeginAction<SnowPile>())
             {
               new InternalTimer(from).Start();
 

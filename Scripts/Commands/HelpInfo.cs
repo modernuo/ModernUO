@@ -291,7 +291,7 @@ namespace Server.Commands
         {
           case 0:
           {
-            m.CloseGump(typeof(CommandInfoGump));
+            m.CloseGump<CommandInfoGump>();
             break;
           }
           case 1:

@@ -77,7 +77,7 @@ namespace Server.Mobiles
               Direction = GetDirectionTo(from);
               from.PlaySound(0x1F2);
               from.FixedEffect(0x376A, 10, 16);
-              from.CloseGump(typeof(ResurrectGump));
+              from.CloseGump<ResurrectGump>();
               from.SendGump(new ResurrectGump(from, ResurrectMessage.Healer));
             }
         }

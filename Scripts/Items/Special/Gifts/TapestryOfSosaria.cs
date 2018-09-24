@@ -36,7 +36,7 @@ namespace Server.Items
     {
       if (from.InRange(GetWorldLocation(), 2))
       {
-        from.CloseGump(typeof(InternalGump));
+        from.CloseGump<InternalGump>();
         from.SendGump(new InternalGump());
       }
       else

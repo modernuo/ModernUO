@@ -2099,7 +2099,7 @@ namespace Server.Mobiles
 
     public void ReleaseGuardLock()
     {
-      EndAction(typeof(GuardedRegion));
+      EndAction<GuardedRegion>();
     }
 
     public virtual bool CheckIdle()
@@ -2257,7 +2257,7 @@ namespace Server.Mobiles
 
       GuardedRegion guardedRegion = Region.GetRegion<GuardedRegion>();
 
-      if (guardedRegion?.IsDisabled() == false && guardedRegion.IsGuardCandidate(m) && BeginAction(typeof(GuardedRegion)))
+      if (guardedRegion?.IsDisabled() == false && guardedRegion.IsGuardCandidate(m) && BeginAction<GuardedRegion>())
       {
         Say(1013037 + Utility.Random(16));
         guardedRegion.CallGuards(Location);

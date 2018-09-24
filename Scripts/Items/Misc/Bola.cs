@@ -31,7 +31,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1040019); // The bola must be in your pack to use it.
       }
-      else if (!from.CanBeginAction(typeof(Bola)))
+      else if (!from.CanBeginAction<Bola>())
       {
         from.SendLocalizedMessage(1049624); // You have to wait a few moments before you can use another bola!
       }
@@ -64,7 +64,7 @@ namespace Server.Items
 
     private static void ReleaseBolaLock(object state)
     {
-      ((Mobile)state).EndAction(typeof(Bola));
+      ((Mobile)state).EndAction<Bola>();
     }
 
     private static void FinishThrow(object state)
@@ -197,7 +197,7 @@ namespace Server.Items
           else if (!from.CanBeHarmful(to))
           {
           }
-          else if (from.BeginAction(typeof(Bola)))
+          else if (from.BeginAction<Bola>())
           {
             EtherealMount.StopMounting(from);
 

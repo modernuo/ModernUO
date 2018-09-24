@@ -86,7 +86,7 @@ namespace Server.Items
 
         if (house != null && house.IsOwner(from))
         {
-          from.CloseGump(typeof(RewardDemolitionGump));
+          from.CloseGump<RewardDemolitionGump>();
           from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
         }
         else
@@ -163,7 +163,7 @@ namespace Server.Items
 
       if (IsChildOf(from.Backpack))
       {
-        from.CloseGump(typeof(InternalGump));
+        from.CloseGump<InternalGump>();
         from.SendGump(new InternalGump(this));
       }
       else
@@ -312,7 +312,7 @@ namespace Server.Items
 
                 if (north && west)
                 {
-                  from.CloseGump(typeof(FacingGump));
+                  from.CloseGump<FacingGump>();
                   from.SendGump(new FacingGump(m_Shield, m_ItemID, p3d, house));
                 }
                 else if (north || west)

@@ -26,7 +26,7 @@ namespace Server.Engines.MLQuests.Gumps
       if (closeGumps)
       {
         CloseOtherGumps(pm);
-        pm.CloseGump(typeof(QuestLogDetailedGump));
+        pm.CloseGump<QuestLogDetailedGump>();
       }
 
       SetTitle(quest.Title);

@@ -69,7 +69,7 @@ namespace Server
       if (e.Beholder != e.Beheld)
         return;
 
-      e.Beholder.CloseGump(typeof(VirtueGump));
+      e.Beholder.CloseGump<VirtueGump>();
 
       if (e.Beholder.Kills >= 5)
       {
@@ -117,7 +117,7 @@ namespace Server
       }
       else if (beholder.Map == beheld.Map && beholder.InRange(beheld, 12))
       {
-        beholder.CloseGump(typeof(VirtueGump));
+        beholder.CloseGump<VirtueGump>();
         beholder.SendGump(new VirtueGump(beholder, beheld));
       }
     }

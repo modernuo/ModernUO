@@ -14,7 +14,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (from.BeginAction(typeof(RejuvinationAddonComponent)))
+      if (from.BeginAction<RejuvinationAddonComponent>())
       {
         from.FixedEffect(0x373A, 1, 16);
 
@@ -50,7 +50,7 @@ namespace Server.Items
       Mobile from = (Mobile)states[0];
       int random = (int)states[1];
 
-      from.EndAction(typeof(RejuvinationAddonComponent));
+      from.EndAction<RejuvinationAddonComponent>();
 
       if (random == 4)
       {

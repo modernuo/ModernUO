@@ -35,8 +35,8 @@ namespace Server.Engines.Craft
 
       CraftContext context = craftSystem.GetContext(from);
 
-      from.CloseGump(typeof(CraftGump));
-      from.CloseGump(typeof(CraftGumpItem));
+      from.CloseGump<CraftGump>();
+      from.CloseGump<CraftGumpItem>();
 
       AddPage(0);
 

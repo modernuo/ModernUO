@@ -32,11 +32,11 @@ namespace Server.Items
         {
           from.SendLocalizedMessage(1010465); // You cannot disguise yourself while holding a sigil.
         }
-        else if (!from.CanBeginAction(typeof(IncognitoSpell)))
+        else if (!from.CanBeginAction<IncognitoSpell>())
         {
           from.SendLocalizedMessage(501698); // You cannot disguise yourself while incognitoed.
         }
-        else if (!from.CanBeginAction(typeof(PolymorphSpell)))
+        else if (!from.CanBeginAction<PolymorphSpell>())
         {
           from.SendLocalizedMessage(501699); // You cannot disguise yourself while polymorphed.
         }

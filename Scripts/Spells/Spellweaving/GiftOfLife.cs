@@ -105,7 +105,7 @@ namespace Server.Spells.Spellweaving
 
           if (master?.NetState != null && Utility.InUpdateRange(pet, master))
           {
-            master.CloseGump(typeof(PetResurrectGump));
+            master.CloseGump<PetResurrectGump>();
             master.SendGump(new PetResurrectGump(master, pet, hitsScalar));
           }
           else
@@ -118,7 +118,7 @@ namespace Server.Spells.Spellweaving
 
               if (friend.NetState != null && Utility.InUpdateRange(pet, friend))
               {
-                friend.CloseGump(typeof(PetResurrectGump));
+                friend.CloseGump<PetResurrectGump>();
                 friend.SendGump(new PetResurrectGump(friend, pet));
                 break;
               }
@@ -127,7 +127,7 @@ namespace Server.Spells.Spellweaving
         }
         else
         {
-          m.CloseGump(typeof(ResurrectGump));
+          m.CloseGump<ResurrectGump>();
           m.SendGump(new ResurrectGump(m, hitsScalar));
         }
 

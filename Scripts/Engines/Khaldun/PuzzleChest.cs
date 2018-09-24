@@ -259,8 +259,8 @@ namespace Server.Items
           solution = new PuzzleChestSolution(PuzzleChestCylinder.None, PuzzleChestCylinder.None,
             PuzzleChestCylinder.None, PuzzleChestCylinder.None, PuzzleChestCylinder.None);
 
-        from.CloseGump(typeof(PuzzleGump));
-        from.CloseGump(typeof(StatusGump));
+        from.CloseGump<PuzzleGump>();
+        from.CloseGump<StatusGump>();
         from.SendGump(new PuzzleGump(from, this, solution, 0));
 
         return true;

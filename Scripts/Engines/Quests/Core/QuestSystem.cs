@@ -232,7 +232,7 @@ namespace Server.Engines.Quests
 
     public virtual void ShowQuestLogUpdated()
     {
-      From.CloseGump(typeof(QuestLogUpdatedGump));
+      From.CloseGump<QuestLogUpdatedGump>();
       From.SendGump(new QuestLogUpdatedGump(this));
     }
 
@@ -240,10 +240,10 @@ namespace Server.Engines.Quests
     {
       if (Objectives.Count > 0)
       {
-        From.CloseGump(typeof(QuestItemInfoGump));
-        From.CloseGump(typeof(QuestLogUpdatedGump));
-        From.CloseGump(typeof(QuestObjectivesGump));
-        From.CloseGump(typeof(QuestConversationsGump));
+        From.CloseGump<QuestItemInfoGump>();
+        From.CloseGump<QuestLogUpdatedGump>();
+        From.CloseGump<QuestObjectivesGump>();
+        From.CloseGump<QuestConversationsGump>();
 
         From.SendGump(new QuestObjectivesGump(Objectives));
 
@@ -258,9 +258,9 @@ namespace Server.Engines.Quests
     {
       if (Conversations.Count > 0)
       {
-        From.CloseGump(typeof(QuestItemInfoGump));
-        From.CloseGump(typeof(QuestObjectivesGump));
-        From.CloseGump(typeof(QuestConversationsGump));
+        From.CloseGump<QuestItemInfoGump>();
+        From.CloseGump<QuestObjectivesGump>();
+        From.CloseGump<QuestConversationsGump>();
 
         From.SendGump(new QuestConversationsGump(Conversations));
 
@@ -348,9 +348,9 @@ namespace Server.Engines.Quests
       if (conv.Logged)
         Conversations.Add(conv);
 
-      From.CloseGump(typeof(QuestItemInfoGump));
-      From.CloseGump(typeof(QuestObjectivesGump));
-      From.CloseGump(typeof(QuestConversationsGump));
+      From.CloseGump<QuestItemInfoGump>();
+      From.CloseGump<QuestObjectivesGump>();
+      From.CloseGump<QuestConversationsGump>();
 
       if (conv.Logged)
         From.SendGump(new QuestConversationsGump(Conversations));
@@ -397,7 +397,7 @@ namespace Server.Engines.Quests
       if (!(check is PlayerMobile pm))
         return false;
 
-      if (pm.HasGump(typeof(QuestOfferGump)))
+      if (pm.HasGump<QuestOfferGump>())
         return false;
 
       if (questType == typeof(DarkTidesQuest) && pm.Profession != 4) // necromancer

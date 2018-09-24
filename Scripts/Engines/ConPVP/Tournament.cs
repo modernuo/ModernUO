@@ -210,12 +210,12 @@ namespace Server.Engines.ConPVP
                 break;
               }
 
-              if (from.HasGump(typeof(AcceptTeamGump)))
+              if (from.HasGump<AcceptTeamGump>())
               {
                 Registrar?.PrivateOverheadMessage(MessageType.Regular,
                   0x22, false, "You must first respond to the offer I've given you.", from.NetState);
               }
-              else if (from.HasGump(typeof(AcceptDuelGump)))
+              else if (from.HasGump<AcceptDuelGump>())
               {
                 Registrar?.PrivateOverheadMessage(MessageType.Regular,
                   0x22, false, "You must first cancel your duel offer.", from.NetState);
@@ -229,7 +229,7 @@ namespace Server.Engines.ConPVP
               {
                 ArrayList players = new ArrayList();
                 players.Add(from);
-                from.CloseGump(typeof(ConfirmSignupGump));
+                from.CloseGump<ConfirmSignupGump>();
                 from.SendGump(new ConfirmSignupGump(from, Registrar, tourny, players));
               }
               else
@@ -289,10 +289,10 @@ namespace Server.Engines.ConPVP
       m_Tournament = tourny;
       m_Players = players;
 
-      m_From.CloseGump(typeof(AcceptTeamGump));
-      m_From.CloseGump(typeof(AcceptDuelGump));
-      m_From.CloseGump(typeof(DuelContextGump));
-      m_From.CloseGump(typeof(ConfirmSignupGump));
+      m_From.CloseGump<AcceptTeamGump>();
+      m_From.CloseGump<AcceptDuelGump>();
+      m_From.CloseGump<DuelContextGump>();
+      m_From.CloseGump<ConfirmSignupGump>();
 
       #region Rules
 
@@ -778,14 +778,14 @@ namespace Server.Engines.ConPVP
           m_Registrar?.PrivateOverheadMessage(MessageType.Regular,
             0x22, false, "They are already assigned to another duel.", from.NetState);
         }
-        else if (mob.HasGump(typeof(AcceptTeamGump)))
+        else if (mob.HasGump<AcceptTeamGump>())
         {
           m_From.SendGump(new ConfirmSignupGump(m_From, m_Registrar, m_Tournament, m_Players));
 
           m_Registrar?.PrivateOverheadMessage(MessageType.Regular,
             0x22, false, "They have already been offered a partnership.", from.NetState);
         }
-        else if (mob.HasGump(typeof(ConfirmSignupGump)))
+        else if (mob.HasGump<ConfirmSignupGump>())
         {
           m_From.SendGump(new ConfirmSignupGump(m_From, m_Registrar, m_Tournament, m_Players));
 
@@ -1101,7 +1101,7 @@ namespace Server.Engines.ConPVP
 
       m_Active = false;
 
-      m_Requested.CloseGump(typeof(AcceptTeamGump));
+      m_Requested.CloseGump<AcceptTeamGump>();
       m_From.SendGump(new ConfirmSignupGump(m_From, m_Registrar, m_Tournament, m_Players));
 
       if (m_Registrar != null)
@@ -1256,8 +1256,8 @@ namespace Server.Engines.ConPVP
     {
       if (from.AccessLevel >= AccessLevel.GameMaster && Tournament != null)
       {
-        from.CloseGump(typeof(PickRulesetGump));
-        from.CloseGump(typeof(RulesetGump));
+        from.CloseGump<PickRulesetGump>();
+        from.CloseGump<RulesetGump>();
         from.SendGump(new PickRulesetGump(from, null, Tournament.Ruleset));
       }
     }
@@ -3521,7 +3521,7 @@ namespace Server.Engines.ConPVP
 
         if (tourny != null)
         {
-          from.CloseGump(typeof(TournamentBracketGump));
+          from.CloseGump<TournamentBracketGump>();
           from.SendGump(new TournamentBracketGump(from, tourny, TournyBracketGumpType.Index, null, 0, null));
 
           /*if ( tourny.Stage == TournamentStage.Fighting && tourny.Pyramid.Levels.Count > 0 )

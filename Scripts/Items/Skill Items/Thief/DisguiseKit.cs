@@ -49,7 +49,7 @@ namespace Server.Items
         from.SendLocalizedMessage(501702);
       else if (Stealing.SuspendOnMurder && pm.Kills > 0)
         from.SendLocalizedMessage(501703);
-      else if (!from.CanBeginAction(typeof(IncognitoSpell)))
+      else if (!from.CanBeginAction<IncognitoSpell>())
         from.SendLocalizedMessage(501704);
       else if (Sigil.ExistsOn(from))
         from.SendLocalizedMessage(1010465); // You cannot disguise yourself while holding a sigil
@@ -57,7 +57,7 @@ namespace Server.Items
         from.SendLocalizedMessage(1061634);
       else if (from.BodyMod == 183 || from.BodyMod == 184)
         from.SendLocalizedMessage(1040002);
-      else if (!from.CanBeginAction(typeof(PolymorphSpell)) || from.IsBodyMod)
+      else if (!from.CanBeginAction<PolymorphSpell>() || from.IsBodyMod)
         from.SendLocalizedMessage(501705);
       else
         return true;
@@ -110,7 +110,7 @@ namespace Server.Items
       m_Kit = kit;
       m_Used = used;
 
-      from.CloseGump(typeof(DisguiseGump));
+      from.CloseGump<DisguiseGump>();
 
       AddPage(0);
 

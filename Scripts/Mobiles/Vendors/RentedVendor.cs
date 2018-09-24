@@ -229,14 +229,14 @@ namespace Server.Mobiles
 
         if (m_Vendor.IsOwner(from))
         {
-          from.CloseGump(typeof(RenterVendorRentalGump));
+          from.CloseGump<RenterVendorRentalGump>();
           from.SendGump(new RenterVendorRentalGump(m_Vendor));
 
           m_Vendor.SendRentalExpireMessage(from);
         }
         else if (m_Vendor.IsLandlord(from))
         {
-          from.CloseGump(typeof(LandlordVendorRentalGump));
+          from.CloseGump<LandlordVendorRentalGump>();
           from.SendGump(new LandlordVendorRentalGump(m_Vendor));
 
           m_Vendor.SendRentalExpireMessage(from);
@@ -337,7 +337,7 @@ namespace Server.Mobiles
         {
           from.SendLocalizedMessage(1062504); // Please wait while the renter considers your offer.
 
-          owner.CloseGump(typeof(VendorRentalRefundGump));
+          owner.CloseGump<VendorRentalRefundGump>();
           owner.SendGump(new VendorRentalRefundGump(m_Vendor, from, amount));
         }
       }

@@ -263,9 +263,9 @@ namespace Server.Mobiles
             SayTo(pm,
               1070980); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
 
-            pm.CloseGump(typeof(ToTTurnInGump)); //Sanity
+            pm.CloseGump<ToTTurnInGump>(); //Sanity
 
-            if (!pm.HasGump(typeof(ToTRedeemGump)))
+            if (!pm.HasGump<ToTRedeemGump>())
               pm.SendGump(new ToTRedeemGump(this, false));
           }
           else
@@ -279,7 +279,7 @@ namespace Server.Mobiles
 
             ArrayList buttons = ToTTurnInGump.FindRedeemableItems(pm);
 
-            if (buttons.Count > 0 && !pm.HasGump(typeof(ToTTurnInGump)))
+            if (buttons.Count > 0 && !pm.HasGump<ToTTurnInGump>())
               pm.SendGump(new ToTTurnInGump(this, buttons));
           }
         }
@@ -288,8 +288,8 @@ namespace Server.Mobiles
 
         if (!InRange(m, leaveRange) && InRange(oldLocation, leaveRange))
         {
-          pm.CloseGump(typeof(ToTRedeemGump));
-          pm.CloseGump(typeof(ToTTurnInGump));
+          pm.CloseGump<ToTRedeemGump>();
+          pm.CloseGump<ToTTurnInGump>();
         }
       }
     }
@@ -372,9 +372,9 @@ namespace Server.Gumps
         m_Collector.SayTo(pm,
           1070980); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
 
-        pm.CloseGump(typeof(ToTTurnInGump)); //Sanity
+        pm.CloseGump<ToTTurnInGump>(); //Sanity
 
-        if (!pm.HasGump(typeof(ToTRedeemGump)))
+        if (!pm.HasGump<ToTRedeemGump>())
           pm.SendGump(new ToTRedeemGump(m_Collector, false));
       }
       else
@@ -384,7 +384,7 @@ namespace Server.Gumps
 
         ArrayList buttons = FindRedeemableItems(pm);
 
-        pm.CloseGump(typeof(ToTTurnInGump)); //Sanity
+        pm.CloseGump<ToTTurnInGump>(); //Sanity
 
         if (buttons.Count > 0)
           pm.SendGump(new ToTTurnInGump(m_Collector, buttons));
@@ -536,8 +536,8 @@ namespace Server.Gumps
 
         if (t.Type == typeof(PigmentsOfTokuno)) //Special case of course.
         {
-          pm.CloseGump(typeof(ToTTurnInGump)); //Sanity
-          pm.CloseGump(typeof(ToTRedeemGump));
+          pm.CloseGump<ToTTurnInGump>(); //Sanity
+          pm.CloseGump<ToTRedeemGump>();
 
           pm.SendGump(new ToTRedeemGump(m_Collector, true));
 

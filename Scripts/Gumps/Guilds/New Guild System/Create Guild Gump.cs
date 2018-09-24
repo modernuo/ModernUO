@@ -8,8 +8,8 @@ namespace Server.Guilds
   {
     public CreateGuildGump(PlayerMobile pm, string guildName = "Guild Name", string guildAbbrev = "") : base(10, 10)
     {
-      pm.CloseGump(typeof(CreateGuildGump));
-      pm.CloseGump(typeof(BaseGuildGump));
+      pm.CloseGump<CreateGuildGump>();
+      pm.CloseGump<BaseGuildGump>();
 
       AddPage(0);
 

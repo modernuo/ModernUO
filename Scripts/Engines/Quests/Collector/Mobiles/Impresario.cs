@@ -58,7 +58,7 @@ namespace Server.Engines.Quests.Collector
 
           if (obj.IsInRightTheater())
           {
-            player.CloseGump(typeof(SheetMusicOfferGump));
+            player.CloseGump<SheetMusicOfferGump>();
             player.SendGump(new SheetMusicOfferGump());
           }
           else

@@ -50,7 +50,7 @@ namespace Server.Spells.Mysticism
         return false;
       }
 
-      if (!Caster.CanBeginAction(typeof(PolymorphSpell)))
+      if (!Caster.CanBeginAction<PolymorphSpell>())
       {
         Caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
         return false;
@@ -77,11 +77,11 @@ namespace Server.Spells.Mysticism
       {
         Caster.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
       }
-      else if (!Caster.CanBeginAction(typeof(PolymorphSpell)))
+      else if (!Caster.CanBeginAction<PolymorphSpell>())
       {
         Caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
       }
-      else if (!Caster.CanBeginAction(typeof(IncognitoSpell)) || Caster.IsBodyMod && !UnderEffect(Caster))
+      else if (!Caster.CanBeginAction<IncognitoSpell>() || Caster.IsBodyMod && !UnderEffect(Caster))
       {
         Caster.SendLocalizedMessage(1063218); // You cannot use that ability in this form.
       }

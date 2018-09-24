@@ -1155,11 +1155,11 @@ namespace Server.Mobiles
       NetState ns = NetState;
 
       if (ns != null)
-        if (HasGump(typeof(ResurrectGump)))
+        if (HasGump<ResurrectGump>())
         {
           if (Alive)
           {
-            CloseGump(typeof(ResurrectGump));
+            CloseGump<ResurrectGump>();
           }
           else
           {
@@ -1397,7 +1397,7 @@ namespace Server.Mobiles
 
       if (CheckAlive() && house != null && house.IsOwner(this) && house.InternalizedVendors.Count > 0)
       {
-        CloseGump(typeof(ReclaimVendorGump));
+        CloseGump<ReclaimVendorGump>();
         SendGump(new ReclaimVendorGump(house));
       }
     }
@@ -1902,8 +1902,8 @@ namespace Server.Mobiles
       IncognitoSpell.StopTimer(this);
       DisguiseTimers.RemoveTimer(this);
 
-      EndAction(typeof(PolymorphSpell));
-      EndAction(typeof(IncognitoSpell));
+      EndAction<PolymorphSpell>();
+      EndAction<IncognitoSpell>();
 
       MeerMage.StopEffect(this, false);
 
@@ -3446,7 +3446,7 @@ namespace Server.Mobiles
 
       if (Core.SE)
       {
-        if (!HasGump(typeof(CancelRenewInventoryInsuranceGump)))
+        if (!HasGump<CancelRenewInventoryInsuranceGump>())
           SendGump(new CancelRenewInventoryInsuranceGump(this, null));
       }
       else
@@ -3522,7 +3522,7 @@ namespace Server.Mobiles
 
       // TODO: Investigate item sorting
 
-      CloseGump(typeof(ItemInsuranceMenuGump));
+      CloseGump<ItemInsuranceMenuGump>();
 
       if (items.Count == 0)
         SendLocalizedMessage(1114915, "", 0x35); // None of your current items meet the requirements for insurance.
@@ -3654,7 +3654,7 @@ namespace Server.Mobiles
           {
             if (m_From.AutoRenewInsurance)
             {
-              if (!m_From.HasGump(typeof(CancelRenewInventoryInsuranceGump)))
+              if (!m_From.HasGump<CancelRenewInventoryInsuranceGump>())
                 m_From.SendGump(new CancelRenewInventoryInsuranceGump(m_From, this));
             }
             else
@@ -3768,9 +3768,9 @@ namespace Server.Mobiles
     private void ToggleQuestItemTarget()
     {
       BaseQuestGump.CloseOtherGumps(this);
-      CloseGump(typeof(QuestLogDetailedGump));
-      CloseGump(typeof(QuestLogGump));
-      CloseGump(typeof(QuestOfferGump));
+      CloseGump<QuestLogDetailedGump>();
+      CloseGump<QuestLogGump>();
+      CloseGump<QuestOfferGump>();
       //CloseGump( typeof( UnknownGump802 ) );
       //CloseGump( typeof( UnknownGump804 ) );
 

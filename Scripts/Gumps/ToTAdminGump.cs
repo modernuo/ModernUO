@@ -128,7 +128,7 @@ namespace Server.Gumps
       ToTAdminGump tg;
 
       tg = new ToTAdminGump();
-      e.Mobile.CloseGump(typeof(ToTAdminGump));
+      e.Mobile.CloseGump<ToTAdminGump>();
       e.Mobile.SendGump(tg);
     }
   }

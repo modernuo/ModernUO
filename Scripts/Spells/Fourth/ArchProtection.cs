@@ -84,7 +84,7 @@ namespace Server.Spells.Fourth
             {
               Mobile m = targets[i];
 
-              if (m.BeginAction(typeof(ArchProtectionSpell)))
+              if (m.BeginAction<ArchProtectionSpell>())
               {
                 Caster.DoBeneficial(m);
                 m.VirtualArmorMod += val;
@@ -113,7 +113,7 @@ namespace Server.Spells.Fourth
       {
         int v = _Table[m];
         _Table.Remove(m);
-        m.EndAction(typeof(ArchProtectionSpell));
+        m.EndAction<ArchProtectionSpell>();
         m.VirtualArmorMod -= v;
         if (m.VirtualArmorMod < 0)
           m.VirtualArmorMod = 0;

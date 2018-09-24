@@ -146,9 +146,9 @@ namespace Server.Gumps
 
           if (m_List.Count > 0)
           {
-            from.CloseGump(typeof(HouseGump));
-            from.CloseGump(typeof(HouseListGump));
-            from.CloseGump(typeof(HouseRemoveGump));
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
             from.SendGump(new HouseRemoveGump(m_Number, m_List, m_House, m_AccountOf));
             return;
           }
@@ -170,9 +170,9 @@ namespace Server.Gumps
 
       m_House = house;
 
-      from.CloseGump(typeof(HouseGump));
-      from.CloseGump(typeof(HouseListGump));
-      from.CloseGump(typeof(HouseRemoveGump));
+      from.CloseGump<HouseGump>();
+      from.CloseGump<HouseListGump>();
+      from.CloseGump<HouseRemoveGump>();
 
       bool isCombatRestricted = house.IsCombatRestricted(from);
 
@@ -458,9 +458,9 @@ namespace Server.Gumps
         }
         case 2: // List of co-owners
         {
-          from.CloseGump(typeof(HouseGump));
-          from.CloseGump(typeof(HouseListGump));
-          from.CloseGump(typeof(HouseRemoveGump));
+          from.CloseGump<HouseGump>();
+          from.CloseGump<HouseListGump>();
+          from.CloseGump<HouseRemoveGump>();
           from.SendGump(new HouseListGump(1011275, m_House.CoOwners, m_House, false));
 
           break;
@@ -484,9 +484,9 @@ namespace Server.Gumps
         {
           if (isOwner)
           {
-            from.CloseGump(typeof(HouseGump));
-            from.CloseGump(typeof(HouseListGump));
-            from.CloseGump(typeof(HouseRemoveGump));
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
             from.SendGump(new HouseRemoveGump(1011274, m_House.CoOwners, m_House, false));
           }
           else
@@ -513,9 +513,9 @@ namespace Server.Gumps
         }
         case 6: // List friends
         {
-          from.CloseGump(typeof(HouseGump));
-          from.CloseGump(typeof(HouseListGump));
-          from.CloseGump(typeof(HouseRemoveGump));
+          from.CloseGump<HouseGump>();
+          from.CloseGump<HouseListGump>();
+          from.CloseGump<HouseRemoveGump>();
           from.SendGump(new HouseListGump(1011273, m_House.Friends, m_House, false));
 
           break;
@@ -538,9 +538,9 @@ namespace Server.Gumps
         {
           if (isCoOwner)
           {
-            from.CloseGump(typeof(HouseGump));
-            from.CloseGump(typeof(HouseListGump));
-            from.CloseGump(typeof(HouseRemoveGump));
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
             from.SendGump(new HouseRemoveGump(1011272, m_House.Friends, m_House, false));
           }
           else
@@ -581,18 +581,18 @@ namespace Server.Gumps
         }
         case 12: // List bans
         {
-          from.CloseGump(typeof(HouseGump));
-          from.CloseGump(typeof(HouseListGump));
-          from.CloseGump(typeof(HouseRemoveGump));
+          from.CloseGump<HouseGump>();
+          from.CloseGump<HouseListGump>();
+          from.CloseGump<HouseRemoveGump>();
           from.SendGump(new HouseListGump(1011271, m_House.Bans, m_House, true));
 
           break;
         }
         case 13: // Remove ban
         {
-          from.CloseGump(typeof(HouseGump));
-          from.CloseGump(typeof(HouseListGump));
-          from.CloseGump(typeof(HouseRemoveGump));
+          from.CloseGump<HouseGump>();
+          from.CloseGump<HouseListGump>();
+          from.CloseGump<HouseRemoveGump>();
           from.SendGump(new HouseRemoveGump(1011269, m_House.Bans, m_House, true));
 
           break;
@@ -621,7 +621,7 @@ namespace Server.Gumps
             }
             else
             {
-              from.CloseGump(typeof(HouseDemolishGump));
+              from.CloseGump<HouseDemolishGump>();
               from.SendGump(new HouseDemolishGump(from, m_House));
             }
           }

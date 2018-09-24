@@ -82,7 +82,7 @@ namespace Server.Spells.Ninjitsu
 
     public override bool CheckCast()
     {
-      if (!Caster.CanBeginAction(typeof(PolymorphSpell)))
+      if (!Caster.CanBeginAction<PolymorphSpell>())
       {
         Caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
         return false;
@@ -129,7 +129,7 @@ namespace Server.Spells.Ninjitsu
 
     public override void OnCast()
     {
-      if (!Caster.CanBeginAction(typeof(PolymorphSpell)))
+      if (!Caster.CanBeginAction<PolymorphSpell>())
       {
         Caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
       }
@@ -137,7 +137,7 @@ namespace Server.Spells.Ninjitsu
       {
         Caster.SendLocalizedMessage(1063219); // You cannot mimic an animal while in that form.
       }
-      else if (!Caster.CanBeginAction(typeof(IncognitoSpell)) || Caster.IsBodyMod && GetContext(Caster) == null)
+      else if (!Caster.CanBeginAction<IncognitoSpell>() || Caster.IsBodyMod && GetContext(Caster) == null)
       {
         DoFizzle();
       }
@@ -162,7 +162,7 @@ namespace Server.Spells.Ninjitsu
 
           if (GetLastAnimalForm(Caster) == -1 || !skipGump)
           {
-            Caster.CloseGump(typeof(AnimalFormGump));
+            Caster.CloseGump<AnimalFormGump>();
             Caster.SendGump(new AnimalFormGump(Caster, Entries, this));
           }
           else

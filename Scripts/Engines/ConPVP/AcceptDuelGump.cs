@@ -28,7 +28,7 @@ namespace Server.Engines.ConPVP
       m_Participant = p;
       m_Slot = slot;
 
-      challenged.CloseGump(typeof(AcceptDuelGump));
+      challenged.CloseGump<AcceptDuelGump>();
 
       Closable = false;
 
@@ -109,7 +109,7 @@ namespace Server.Engines.ConPVP
 
       m_Active = false;
 
-      m_Challenged.CloseGump(typeof(AcceptDuelGump));
+      m_Challenged.CloseGump<AcceptDuelGump>();
 
       m_Challenger.SendMessage("{0} seems unresponsive.", m_Challenged.Name);
       m_Challenged.SendMessage("You decline the challenge.");

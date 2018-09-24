@@ -13,9 +13,9 @@ namespace Server.Engines.ConPVP
       Context = context;
       Participant = p;
 
-      from.CloseGump(typeof(RulesetGump));
-      from.CloseGump(typeof(DuelContextGump));
-      from.CloseGump(typeof(ParticipantGump));
+      from.CloseGump<RulesetGump>();
+      from.CloseGump<DuelContextGump>();
+      from.CloseGump<ParticipantGump>();
 
       int count = p.Players.Length;
 
@@ -231,7 +231,7 @@ namespace Server.Engines.ConPVP
             from.SendMessage("{0} cannot fight because they have recently been in combat with another player.",
               pm.Name);
           }
-          else if (mob.HasGump(typeof(AcceptDuelGump)))
+          else if (mob.HasGump<AcceptDuelGump>())
           {
             from.SendMessage("{0} has already been offered a duel.");
           }

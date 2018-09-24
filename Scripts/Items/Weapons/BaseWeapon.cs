@@ -353,7 +353,7 @@ namespace Server.Items
 
     public static void BlockEquip(Mobile m, TimeSpan duration)
     {
-      if (m.BeginAction(typeof(BaseWeapon)))
+      if (m.BeginAction<BaseWeapon>())
         new ResetEquipTimer(m, duration).Start();
     }
 
@@ -419,7 +419,7 @@ namespace Server.Items
         return false;
       }
 
-      if (!from.CanBeginAction(typeof(BaseWeapon))) return false;
+      if (!from.CanBeginAction<BaseWeapon>()) return false;
 
       return base.CanEquip(from);
     }
@@ -2514,7 +2514,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        m_Mobile.EndAction(typeof(BaseWeapon));
+        m_Mobile.EndAction<BaseWeapon>();
       }
     }
 

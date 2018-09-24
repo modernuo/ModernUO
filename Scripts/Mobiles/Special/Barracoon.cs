@@ -91,7 +91,7 @@ namespace Server.Mobiles
 
     public void Polymorph(Mobile m)
     {
-      if (!m.CanBeginAction(typeof(PolymorphSpell)) || !m.CanBeginAction(typeof(IncognitoSpell)) || m.IsBodyMod)
+      if (!m.CanBeginAction<PolymorphSpell>() || !m.CanBeginAction<IncognitoSpell>() || m.IsBodyMod)
         return;
 
       IMount mount = m.Mount;
@@ -102,7 +102,7 @@ namespace Server.Mobiles
       if (m.Mounted)
         return;
 
-      if (m.BeginAction(typeof(PolymorphSpell)))
+      if (m.BeginAction<PolymorphSpell>())
       {
         Item disarm = m.FindItemOnLayer(Layer.OneHanded);
 
@@ -238,11 +238,11 @@ namespace Server.Mobiles
 
       protected override void OnTick()
       {
-        if (!m_Owner.CanBeginAction(typeof(PolymorphSpell)))
+        if (!m_Owner.CanBeginAction<PolymorphSpell>())
         {
           m_Owner.BodyMod = 0;
           m_Owner.HueMod = -1;
-          m_Owner.EndAction(typeof(PolymorphSpell));
+          m_Owner.EndAction<PolymorphSpell>();
         }
       }
     }

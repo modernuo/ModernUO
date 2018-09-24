@@ -23,9 +23,9 @@ namespace Server.Engines.ConPVP
 
       Draggable = !readOnly;
 
-      from.CloseGump(typeof(RulesetGump));
-      from.CloseGump(typeof(DuelContextGump));
-      from.CloseGump(typeof(ParticipantGump));
+      from.CloseGump<RulesetGump>();
+      from.CloseGump<DuelContextGump>();
+      from.CloseGump<ParticipantGump>();
 
       RulesetLayout depthCounter = page;
       int depth = 0;

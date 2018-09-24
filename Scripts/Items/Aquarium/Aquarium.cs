@@ -252,7 +252,7 @@ namespace Server.Items
         takeItem = false;
       }
 
-      from.CloseGump(typeof(AquariumGump));
+      from.CloseGump<AquariumGump>();
 
       InvalidateProperties();
 
@@ -820,7 +820,7 @@ namespace Server.Items
         return;
       }
 
-      from.CloseGump(typeof(AquariumGump));
+      from.CloseGump<AquariumGump>();
       from.SendGump(new AquariumGump(this, HasAccess(from)));
 
       from.PlaySound(0x5A4);

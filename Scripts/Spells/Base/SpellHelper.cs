@@ -22,7 +22,7 @@ namespace Server
   {
     public static void Nullify(Mobile from)
     {
-      if (!from.CanBeginAction(typeof(DefensiveSpell)))
+      if (!from.CanBeginAction<DefensiveSpell>())
         new InternalTimer(from).Start();
     }
 
@@ -40,7 +40,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        m_Mobile.EndAction(typeof(DefensiveSpell));
+        m_Mobile.EndAction<DefensiveSpell>();
       }
     }
   }
@@ -1174,7 +1174,7 @@ namespace Server.Spells
         return false;
       }
 
-      if (!caster.CanBeginAction(typeof(PolymorphSpell)))
+      if (!caster.CanBeginAction<PolymorphSpell>())
       {
         caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
         return false;
@@ -1198,7 +1198,7 @@ namespace Server.Spells
       {
         caster.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
       }
-      else if (!caster.CanBeginAction(typeof(PolymorphSpell)))
+      else if (!caster.CanBeginAction<PolymorphSpell>())
       {
         caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
       }
@@ -1211,7 +1211,7 @@ namespace Server.Spells
       {
         caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
       }
-      else if (!caster.CanBeginAction(typeof(IncognitoSpell)) || caster.IsBodyMod && GetContext(caster) == null)
+      else if (!caster.CanBeginAction<IncognitoSpell>() || caster.IsBodyMod && GetContext(caster) == null)
       {
         spell.DoFizzle();
       }

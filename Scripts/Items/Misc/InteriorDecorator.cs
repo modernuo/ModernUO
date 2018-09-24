@@ -68,7 +68,7 @@ namespace Server.Items
       if (!CheckUse(this, from))
         return;
 
-      if (from.FindGump(typeof(InternalGump)) == null)
+      if (!from.HasGump<InternalGump>())
         from.SendGump(new InternalGump(this));
 
       if (m_Command != DecorateCommand.None)
@@ -252,7 +252,7 @@ namespace Server.Items
       protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
       {
         if (cancelType == TargetCancelType.Canceled)
-          from.CloseGump(typeof(InternalGump));
+          from.CloseGump<InternalGump>();
       }
 
       private static void Turn(Item item, Mobile from)

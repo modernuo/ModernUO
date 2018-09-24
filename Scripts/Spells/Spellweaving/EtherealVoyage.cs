@@ -35,7 +35,7 @@ namespace Server.Spells.Spellweaving
     {
       if (TransformationSpellHelper.UnderTransformation(Caster, typeof(EtherealVoyageSpell)))
         Caster.SendLocalizedMessage(501775); // This spell is already in effect.
-      else if (!Caster.CanBeginAction(typeof(EtherealVoyageSpell)))
+      else if (!Caster.CanBeginAction<EtherealVoyageSpell>())
         Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
       else if (Caster.Combatant != null)
         Caster.SendLocalizedMessage(1072586); // You cannot cast Ethereal Voyage while you are in combat.
@@ -68,7 +68,7 @@ namespace Server.Spells.Spellweaving
 
       TransformationSpellHelper.RemoveContext(m, true);
 
-      Timer.DelayCall(TimeSpan.FromMinutes(5), delegate { m.EndAction(typeof(EtherealVoyageSpell)); });
+      Timer.DelayCall(TimeSpan.FromMinutes(5), delegate { m.EndAction<EtherealVoyageSpell>(); });
 
       BuffInfo.RemoveBuff(m, BuffIcon.EtherealVoyage);
     }

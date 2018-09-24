@@ -184,7 +184,7 @@ namespace Server
         Draggable = true;
         Resizable = false;
 
-        User.CloseGump(GetType());
+        User.CloseGump<EditGump>();
 
         CompileLayout();
       }
@@ -201,7 +201,7 @@ namespace Server
 
       public void Close()
       {
-        User.CloseGump(GetType());
+        User.CloseGump<EditGump>();
 
         if (Check != null && !Check.Deleted)
           Check.UpdateTrade(User);

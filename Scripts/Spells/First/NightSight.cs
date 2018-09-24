@@ -38,7 +38,7 @@ namespace Server.Spells.First
         {
           SpellHelper.Turn(m_Spell.Caster, targ);
 
-          if (targ.BeginAction(typeof(LightCycle)))
+          if (targ.BeginAction<LightCycle>())
           {
             new LightCycle.NightSightTimer(targ).Start();
             int level = (int)(LightCycle.DungeonLevel *

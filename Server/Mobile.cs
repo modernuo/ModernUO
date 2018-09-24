@@ -3396,10 +3396,20 @@ namespace Server
 
       return false;
     }
+    
+    public bool CanBeginAction<T>()
+    {
+      return CanBeginAction(typeof(T));
+    }
 
     public bool CanBeginAction(object toLock)
     {
       return _actions == null || !_actions.Contains(toLock);
+    }
+
+    public void EndAction<T>()
+    {
+      EndAction(typeof(T));
     }
 
     public void EndAction(object toLock)
@@ -8638,123 +8648,71 @@ namespace Server
       return false;
     }
 
-    public Gump FindGump(Type type)
+    public Gump FindGump<T>() where T : Gump
     {
-      NetState ns = m_NetState;
-
-      if (ns != null)
-        foreach (Gump gump in ns.Gumps)
-          if (type.IsInstanceOfType(gump))
-            return gump;
-
-      return null;
+      return m_NetState?.Gumps.Find(g => g is T);
     }
 
-    public bool CloseGump(Type type)
+    public bool CloseGump<T>() where T : Gump
     {
-      if (m_NetState != null)
+      if (m_NetState == null)
+        return false;
+      
+      Gump gump = FindGump<T>();
+
+      if (gump != null)
       {
-        Gump gump = FindGump(type);
-
-        if (gump != null)
-        {
-          m_NetState.Send(new CloseGump(gump.TypeID, 0));
-
-          m_NetState.RemoveGump(gump);
-
-          gump.OnServerClose(m_NetState);
-        }
-
-        return true;
+        // TODO: Recycle CloseGump
+        m_NetState.Send(new CloseGump(gump.TypeID, 0));
+        m_NetState.RemoveGump(gump);
+        gump.OnServerClose(m_NetState);
       }
 
-      return false;
-    }
-
-    [Obsolete("Use CloseGump( Type ) instead.")]
-    public bool CloseGump(Type type, int buttonID)
-    {
-      return CloseGump(type);
-    }
-
-    [Obsolete("Use CloseGump( Type ) instead.")]
-    public bool CloseGump(Type type, int buttonID, bool throwOnOffline)
-    {
-      return CloseGump(type);
+      return true;
     }
 
     public bool CloseAllGumps()
     {
       NetState ns = m_NetState;
 
-      if (ns != null)
+      if (ns == null)
+        return false;
+      
+      List<Gump> gumps = new List<Gump>(ns.Gumps);
+
+      ns.ClearGumps();
+
+      foreach (Gump gump in gumps)
       {
-        List<Gump> gumps = new List<Gump>(ns.Gumps);
+        ns.Send(new CloseGump(gump.TypeID, 0));
 
-        ns.ClearGumps();
-
-        foreach (Gump gump in gumps)
-        {
-          ns.Send(new CloseGump(gump.TypeID, 0));
-
-          gump.OnServerClose(ns);
-        }
-
-        return true;
+        gump.OnServerClose(ns);
       }
 
-      return false;
+      return true;
     }
-
-    [Obsolete("Use CloseAllGumps() instead.", false)]
-    public bool CloseAllGumps(bool throwOnOffline)
+    
+    public bool HasGump<T>() where T : Gump
     {
-      return CloseAllGumps();
-    }
-
-    public bool HasGump(Type type)
-    {
-      return FindGump(type) != null;
-    }
-
-    [Obsolete("Use HasGump( Type ) instead.", false)]
-    public bool HasGump(Type type, bool throwOnOffline)
-    {
-      return HasGump(type);
+      return FindGump<T>() != null;
     }
 
     public bool SendGump(Gump g)
     {
-      return SendGump(g, false);
-    }
-
-    public bool SendGump(Gump g, bool throwOnOffline)
-    {
-      if (m_NetState != null)
-      {
-        g.SendTo(m_NetState);
-        return true;
-      }
-
-      if (throwOnOffline) throw new MobileNotConnectedException(this, "Gump could not be sent.");
-      return false;
+      if (m_NetState == null)
+        return false;
+      
+      g.SendTo(m_NetState);
+      return true;
     }
 
     public bool SendMenu(IMenu m)
     {
-      return SendMenu(m, false);
-    }
-
-    public bool SendMenu(IMenu m, bool throwOnOffline)
-    {
-      if (m_NetState != null)
-      {
-        m.SendTo(m_NetState);
-        return true;
-      }
-
-      if (throwOnOffline) throw new MobileNotConnectedException(this, "Menu could not be sent.");
-      return false;
+      if (m_NetState == null)
+        return false;
+      
+      m.SendTo(m_NetState);
+      return true;
     }
 
     #endregion

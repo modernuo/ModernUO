@@ -955,15 +955,15 @@ namespace Server.Mobiles
     {
       if (BaseHouse.NewVendorSystem)
       {
-        to.CloseGump(typeof(NewPlayerVendorOwnerGump));
-        to.CloseGump(typeof(NewPlayerVendorCustomizeGump));
+        to.CloseGump<NewPlayerVendorOwnerGump>();
+        to.CloseGump<NewPlayerVendorCustomizeGump>();
 
         to.SendGump(new NewPlayerVendorOwnerGump(this));
       }
       else
       {
-        to.CloseGump(typeof(PlayerVendorOwnerGump));
-        to.CloseGump(typeof(PlayerVendorCustomizeGump));
+        to.CloseGump<PlayerVendorOwnerGump>();
+        to.CloseGump<PlayerVendorCustomizeGump>();
 
         to.SendGump(new PlayerVendorOwnerGump(this));
       }
@@ -1006,7 +1006,7 @@ namespace Server.Mobiles
       }
       else
       {
-        from.CloseGump(typeof(PlayerVendorBuyGump));
+        from.CloseGump<PlayerVendorBuyGump>();
         from.SendGump(new PlayerVendorBuyGump(vendor, vi));
       }
     }

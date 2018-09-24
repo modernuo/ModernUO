@@ -58,7 +58,7 @@ namespace Server.Engines.ConPVP
 
         if (ladder != null)
         {
-          from.CloseGump(typeof(LadderGump));
+          from.CloseGump<LadderGump>();
           from.SendGump(new LadderGump(ladder, 0));
         }
       }

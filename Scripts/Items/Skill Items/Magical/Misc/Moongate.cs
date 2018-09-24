@@ -172,7 +172,7 @@ namespace Server.Items
       {
         if (from.AccessLevel == AccessLevel.Player || !from.Hidden)
           from.Send(new PlaySound(0x20E, from.Location));
-        from.CloseGump(typeof(MoongateConfirmGump));
+        from.CloseGump<MoongateConfirmGump>();
         from.SendGump(new MoongateConfirmGump(from, this));
       }
       else
@@ -277,7 +277,7 @@ namespace Server.Items
     {
       if (GumpWidth > 0 && GumpHeight > 0 && TitleNumber > 0 && (MessageNumber > 0 || MessageString != null))
       {
-        from.CloseGump(typeof(WarningGump));
+        from.CloseGump<WarningGump>();
         from.SendGump(new WarningGump(TitleNumber, TitleColor,
           MessageString == null ? MessageNumber : (object)MessageString, MessageColor, GumpWidth, GumpHeight,
           Warning_Callback, from));

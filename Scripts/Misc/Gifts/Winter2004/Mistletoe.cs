@@ -105,7 +105,7 @@ namespace Server.Items
       {
         if (from.InRange(GetWorldLocation(), 3))
         {
-          from.CloseGump(typeof(MistletoeAddonGump));
+          from.CloseGump<MistletoeAddonGump>();
           from.SendGump(new MistletoeAddonGump(from, this));
         }
         else

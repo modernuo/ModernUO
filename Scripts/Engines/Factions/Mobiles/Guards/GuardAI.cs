@@ -599,7 +599,7 @@ namespace Server.Factions
                      (m_Guard.Mana < 11 || m_Guard.NextCombatTime - Core.TickCount > 2000))
               spell = new HealSpell(m_Guard, null);
           }
-          else if (m_Guard.CanBeginAction(typeof(BaseHealPotion)))
+          else if (m_Guard.CanBeginAction<BaseHealPotion>())
           {
             UseItemByType(typeof(BaseHealPotion));
           }

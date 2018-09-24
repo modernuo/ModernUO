@@ -95,18 +95,18 @@ namespace Server.Items
 
     public virtual void ApplyDelayTo(Mobile from)
     {
-      from.BeginAction(typeof(BaseWand));
+      from.BeginAction<BaseWand>();
       Timer.DelayCall(GetUseDelay, ReleaseWandLock_Callback, from);
     }
 
     public virtual void ReleaseWandLock_Callback(Mobile state)
     {
-      state.EndAction(typeof(BaseWand));
+      state.EndAction<BaseWand>();
     }
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (!from.CanBeginAction(typeof(BaseWand)))
+      if (!from.CanBeginAction<BaseWand>())
       {
         from.SendLocalizedMessage(1070860); // You must wait a moment for the wand to recharge.
         return;

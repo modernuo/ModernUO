@@ -79,7 +79,7 @@ namespace Server.Engines.MLQuests.Mobiles
 
     public void TryTalkTo(Mobile from, bool fromClick)
     {
-      if (!from.Hidden && !from.HasGump(typeOfRaceChangeConfirmGump) &&
+      if (!from.Hidden && !from.HasGump<RaceChangeConfirmGump>() &&
           !RaceChangeConfirmGump.IsPending(from.NetState) && CanTalkTo(from))
         TalkTo(from as PlayerMobile);
       else if (fromClick)

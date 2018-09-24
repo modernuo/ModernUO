@@ -110,17 +110,17 @@ namespace Server.Gumps
 
     public static void EnsureClosed(Mobile m)
     {
-      m.CloseGump(typeof(DeclareFealtyGump));
-      m.CloseGump(typeof(GrantGuildTitleGump));
-      m.CloseGump(typeof(GuildAdminCandidatesGump));
-      m.CloseGump(typeof(GuildCandidatesGump));
-      m.CloseGump(typeof(GuildChangeTypeGump));
-      m.CloseGump(typeof(GuildCharterGump));
-      m.CloseGump(typeof(GuildDismissGump));
-      m.CloseGump(typeof(GuildGump));
-      m.CloseGump(typeof(GuildmasterGump));
-      m.CloseGump(typeof(GuildRosterGump));
-      m.CloseGump(typeof(GuildWarGump));
+      m.CloseGump<DeclareFealtyGump>();
+      m.CloseGump<GrantGuildTitleGump>();
+      m.CloseGump<GuildAdminCandidatesGump>();
+      m.CloseGump<GuildCandidatesGump>();
+      m.CloseGump<GuildChangeTypeGump>();
+      m.CloseGump<GuildCharterGump>();
+      m.CloseGump<GuildDismissGump>();
+      m.CloseGump<GuildGump>();
+      m.CloseGump<GuildmasterGump>();
+      m.CloseGump<GuildRosterGump>();
+      m.CloseGump<GuildWarGump>();
     }
 
     public static bool BadLeader(Mobile m, Guild g)

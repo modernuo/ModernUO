@@ -326,7 +326,7 @@ namespace Server.Items
         from.SendLocalizedMessage(
           503031); // You did not decode this map and have no clue where to look for the treasure.
       }
-      else if (!from.CanBeginAction(typeof(TreasureMap)))
+      else if (!from.CanBeginAction<TreasureMap>())
       {
         from.SendLocalizedMessage(503020); // You are already digging treasure.
       }
@@ -591,7 +591,7 @@ namespace Server.Items
           from.SendLocalizedMessage(
             503031); // You did not decode this map and have no clue where to look for the treasure.
         }
-        else if (!from.CanBeginAction(typeof(TreasureMap)))
+        else if (!from.CanBeginAction<TreasureMap>())
         {
           from.SendLocalizedMessage(503020); // You are already digging treasure.
         }
@@ -640,7 +640,7 @@ namespace Server.Items
               if (!map.CanFit(x, y, z, 16, true))
                 from.SendLocalizedMessage(
                   503021); // You have found the treasure chest but something is keeping it from being dug up.
-              else if (from.BeginAction(typeof(TreasureMap)))
+              else if (from.BeginAction<TreasureMap>())
                 new DigTimer(from, m_Map, new Point3D(x, y, z), map).Start();
               else
                 from.SendLocalizedMessage(503020); // You are already digging treasure.
@@ -738,7 +738,7 @@ namespace Server.Items
       private void Terminate()
       {
         Stop();
-        m_From.EndAction(typeof(TreasureMap));
+        m_From.EndAction<TreasureMap>();
 
         m_Chest?.Delete();
 
@@ -823,7 +823,7 @@ namespace Server.Items
         if (m_Chest != null && m_Chest.Location.Z >= m_Location.Z)
         {
           Stop();
-          m_From.EndAction(typeof(TreasureMap));
+          m_From.EndAction<TreasureMap>();
 
           m_Chest.Temporary = false;
           m_TreasureMap.Completed = true;

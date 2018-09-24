@@ -25,7 +25,7 @@ namespace Server.Items
     {
       if (IsChildOf(from.Backpack))
       {
-        from.CloseGump(typeof(HeritageTokenGump));
+        from.CloseGump<HeritageTokenGump>();
         from.SendGump(new HeritageTokenGump(this));
       }
       else

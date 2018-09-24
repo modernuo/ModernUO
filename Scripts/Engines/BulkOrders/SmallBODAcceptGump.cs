@@ -13,8 +13,8 @@ namespace Server.Engines.BulkOrders
       m_From = from;
       m_Deed = deed;
 
-      m_From.CloseGump(typeof(LargeBODAcceptGump));
-      m_From.CloseGump(typeof(SmallBODAcceptGump));
+      m_From.CloseGump<LargeBODAcceptGump>();
+      m_From.CloseGump<SmallBODAcceptGump>();
 
       AddPage(0);
 

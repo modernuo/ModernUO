@@ -32,7 +32,7 @@ namespace Server.Items
         return false;
       }
 
-      if (!from.CanBeginAction(typeof(FireHorn)))
+      if (!from.CanBeginAction<FireHorn>())
       {
         from.SendLocalizedMessage(1049615); // You must take a moment to catch your breath.
         return false;
@@ -62,7 +62,7 @@ namespace Server.Items
       if (!CheckUse(from))
         return;
 
-      from.BeginAction(typeof(FireHorn));
+      from.BeginAction<FireHorn>();
       Timer.DelayCall(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0),
         new TimerStateCallback(EndAction), from);
 
@@ -180,7 +180,7 @@ namespace Server.Items
     {
       Mobile m = (Mobile)state;
 
-      m.EndAction(typeof(FireHorn));
+      m.EndAction<FireHorn>();
       m.SendLocalizedMessage(1049621); // You catch your breath.
     }
 

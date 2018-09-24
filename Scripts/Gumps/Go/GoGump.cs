@@ -67,7 +67,7 @@ namespace Server.Gumps
 
     private GoGump(int page, Mobile from, LocationTree tree, ParentNode node) : base(50, 50)
     {
-      from.CloseGump(typeof(GoGump));
+      from.CloseGump<GoGump>();
 
       tree.LastBranch[from] = node;
 

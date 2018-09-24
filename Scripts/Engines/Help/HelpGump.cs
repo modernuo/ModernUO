@@ -54,7 +54,7 @@ namespace Server.Engines.Help
   {
     public HelpGump(Mobile from) : base(0, 0)
     {
-      from.CloseGump(typeof(HelpGump));
+      from.CloseGump<HelpGump>();
 
       bool isYoung = IsYoung(from);
 

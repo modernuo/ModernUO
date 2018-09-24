@@ -64,7 +64,7 @@ namespace Server.Items
     {
       if (attacker.StunReady)
       {
-        if (attacker.CanBeginAction(typeof(Fists)))
+        if (attacker.CanBeginAction<Fists>())
         {
           if (attacker.Skills.Anatomy.Value >= 80.0 &&
               attacker.Skills.Wrestling.Value >= 80.0)
@@ -104,7 +104,7 @@ namespace Server.Items
       }
       else if (attacker.DisarmReady)
       {
-        if (attacker.CanBeginAction(typeof(Fists)))
+        if (attacker.CanBeginAction<Fists>())
         {
           if (defender.Player || defender.Body.IsHuman)
           {
@@ -304,12 +304,12 @@ namespace Server.Items
 
         Priority = TimerPriority.TwoFiftyMS;
 
-        m_Mobile.BeginAction(typeof(Fists));
+        m_Mobile.BeginAction<Fists>();
       }
 
       protected override void OnTick()
       {
-        m_Mobile.EndAction(typeof(Fists));
+        m_Mobile.EndAction<Fists>();
       }
     }
   }

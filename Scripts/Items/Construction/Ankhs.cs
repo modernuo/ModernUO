@@ -33,7 +33,7 @@ namespace Server.Items
       }
       else if (m.Map != null && m.Map.CanFit(m.Location, 16, false, false))
       {
-        m.CloseGump(typeof(ResurrectGump));
+        m.CloseGump<ResurrectGump>();
         m.SendGump(new ResurrectGump(m, ResurrectMessage.VirtueShrine));
       }
       else

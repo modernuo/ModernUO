@@ -13,7 +13,7 @@ namespace Server.Gumps
       m_From = from;
       m_Pet = pet;
 
-      m_From.CloseGump(typeof(ConfirmReleaseGump));
+      m_From.CloseGump<ConfirmReleaseGump>();
 
       AddPage(0);
 

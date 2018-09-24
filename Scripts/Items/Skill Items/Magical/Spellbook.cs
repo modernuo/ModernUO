@@ -524,7 +524,7 @@ namespace Server.Items
     {
       if (!Ethic.CheckEquip(from, this)) return false;
 
-      if (!from.CanBeginAction(typeof(BaseWeapon))) return false;
+      if (!from.CanBeginAction<BaseWeapon>()) return false;
 
       return base.CanEquip(from);
     }

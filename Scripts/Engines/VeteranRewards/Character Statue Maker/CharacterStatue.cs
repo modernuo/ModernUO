@@ -615,7 +615,7 @@ namespace Server.Mobiles
           m_Maker.Delete();
           statue.Sculpt(from);
 
-          from.CloseGump(typeof(CharacterStatueGump));
+          from.CloseGump<CharacterStatueGump>();
           from.SendGump(new CharacterStatueGump(m_Maker, statue, from));
         }
         else if (result == AddonFitResult.Blocked)

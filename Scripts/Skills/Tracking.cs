@@ -20,8 +20,8 @@ namespace Server.SkillHandlers
     {
       m.SendLocalizedMessage(1011350); // What do you wish to track?
 
-      m.CloseGump(typeof(TrackWhatGump));
-      m.CloseGump(typeof(TrackWhoGump));
+      m.CloseGump<TrackWhatGump>();
+      m.CloseGump<TrackWhoGump>();
       m.SendGump(new TrackWhatGump(m));
 
       return TimeSpan.FromSeconds(10.0); // 10 second delay before beign able to re-use a skill

@@ -37,7 +37,7 @@ namespace Server.Items
 			}
 			else
 			{
-				from.CloseGump( typeof( PromotionalTokenGump ) );
+				from.CloseGump<PromotionalTokenGump>();
 				from.SendGump( new PromotionalTokenGump( this ) );
 			}
 		}
@@ -51,7 +51,7 @@ namespace Server.Items
 			else if ( parent is Mobile mobile )
 				m = mobile;
 
-			m?.CloseGump( typeof( PromotionalTokenGump ) );
+			m?.CloseGump<PromotionalTokenGump>();
 		}
 
 		public override void Serialize( GenericWriter writer )

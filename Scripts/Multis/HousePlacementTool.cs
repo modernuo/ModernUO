@@ -60,8 +60,8 @@ namespace Server.Items
     {
       m_From = from;
 
-      from.CloseGump(typeof(HousePlacementCategoryGump));
-      from.CloseGump(typeof(HousePlacementListGump));
+      from.CloseGump<HousePlacementCategoryGump>();
+      from.CloseGump<HousePlacementListGump>();
 
       AddPage(0);
 
@@ -123,8 +123,8 @@ namespace Server.Items
       m_From = from;
       m_Entries = entries;
 
-      from.CloseGump(typeof(HousePlacementCategoryGump));
-      from.CloseGump(typeof(HousePlacementListGump));
+      from.CloseGump<HousePlacementCategoryGump>();
+      from.CloseGump<HousePlacementListGump>();
 
       AddPage(0);
 

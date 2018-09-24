@@ -167,7 +167,7 @@ namespace Server.Items
 
       if (m_User != null)
       {
-        m_User.CloseGump(typeof(GameGump));
+        m_User.CloseGump<GameGump>();
         m_User = null;
       }
     }
@@ -188,7 +188,7 @@ namespace Server.Items
         if (m_User.Deleted || m_User.Map != Map || !m_User.InRange(this, 3)
             || m_User.NetState == null || DateTime.UtcNow - m_LastUse >= m_UseTimeout)
         {
-          m_User.CloseGump(typeof(GameGump));
+          m_User.CloseGump<GameGump>();
         }
         else
         {

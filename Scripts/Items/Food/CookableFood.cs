@@ -99,7 +99,7 @@ namespace Server.Items
 
         if (IsHeatSource(targeted))
         {
-          if (from.BeginAction(typeof(CookableFood)))
+          if (from.BeginAction<CookableFood>())
           {
             from.PlaySound(0x225);
 
@@ -133,7 +133,7 @@ namespace Server.Items
 
         protected override void OnTick()
         {
-          m_From.EndAction(typeof(CookableFood));
+          m_From.EndAction<CookableFood>();
 
           if (m_From.Map != m_Map || m_Point != null && m_From.GetDistanceToSqrt(m_Point) > 3)
           {

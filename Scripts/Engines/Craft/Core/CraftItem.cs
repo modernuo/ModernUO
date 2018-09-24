@@ -755,7 +755,7 @@ namespace Server.Engines.Craft
 
     public void Craft(Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool)
     {
-      if (from.BeginAction(typeof(CraftSystem)))
+      if (from.BeginAction<CraftSystem>())
       {
         if (RequiredExpansion == Expansion.None ||
             from.NetState != null && from.NetState.SupportsExpansion(RequiredExpansion))
@@ -794,39 +794,39 @@ namespace Server.Engines.Craft
                   }
                   else
                   {
-                    from.EndAction(typeof(CraftSystem));
+                    from.EndAction<CraftSystem>();
                     from.SendGump(new CraftGump(from, craftSystem, tool, message));
                   }
                 }
                 else
                 {
-                  from.EndAction(typeof(CraftSystem));
+                  from.EndAction<CraftSystem>();
                   from.SendGump(new CraftGump(from, craftSystem, tool, message));
                 }
               }
               else
               {
-                from.EndAction(typeof(CraftSystem));
+                from.EndAction<CraftSystem>();
                 from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
               }
             }
             else
             {
-              from.EndAction(typeof(CraftSystem));
+              from.EndAction<CraftSystem>();
               from.SendGump(new CraftGump(from, craftSystem, tool,
                 1072847)); // You must learn that recipe from a scroll.
             }
           }
           else
           {
-            from.EndAction(typeof(CraftSystem));
+            from.EndAction<CraftSystem>();
             from.SendGump(new CraftGump(from, craftSystem, tool,
               1044153)); // You don't have the required skills to attempt this item.
           }
         }
         else
         {
-          from.EndAction(typeof(CraftSystem));
+          from.EndAction<CraftSystem>();
           from.SendGump(new CraftGump(from, craftSystem, tool,
             RequiredExpansionMessage(RequiredExpansion))); //The {0} expansion is required to attempt this item.
         }
@@ -1098,7 +1098,7 @@ namespace Server.Engines.Craft
         }
         else
         {
-          m_From.EndAction(typeof(CraftSystem));
+          m_From.EndAction<CraftSystem>();
 
           int badCraft = m_CraftSystem.CanCraft(m_From, m_Tool, m_CraftItem.ItemType);
 
