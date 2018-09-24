@@ -221,8 +221,7 @@ namespace Server.RemoteAdmin
 
     public static Packet Compress(Packet p)
     {
-      int length;
-      byte[] source = p.Compile(false, out length);
+      byte[] source = p.Compile(false, out int length);
 
       if (length > 100 && length < 60000)
       {

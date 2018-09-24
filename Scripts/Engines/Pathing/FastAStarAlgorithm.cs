@@ -247,7 +247,6 @@ namespace Server.PathAlgorithms.FastAStar
       int px = p % AreaSize;
       int py = p / AreaSize % AreaSize;
       int pz = m_Nodes[p].z;
-      int x, y, z;
 
       Point3D p3D = new Point3D(px + m_xOffset, py + m_yOffset, pz);
 
@@ -256,6 +255,8 @@ namespace Server.PathAlgorithms.FastAStar
 
       for (int i = 0; i < 8; ++i)
       {
+        int x;
+        int y;
         switch (i)
         {
           default:
@@ -299,7 +300,7 @@ namespace Server.PathAlgorithms.FastAStar
         if (x < 0 || x >= AreaSize || y < 0 || y >= AreaSize)
           continue;
 
-        if (CalcMoves.CheckMovement(m, map, p3D, (Direction)i, out z))
+        if (CalcMoves.CheckMovement(m, map, p3D, (Direction)i, out int z))
         {
           int idx = GetIndex(x + m_xOffset, y + m_yOffset, z);
 

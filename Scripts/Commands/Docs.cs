@@ -622,14 +622,7 @@ namespace Server.Commands
       string fullName = realType?.FullName ?? "(-null-)";
       string aliased = null; // = realType.Name;
 
-      TypeInfo info = null;
-
-      if (realType != null)
-      {
-        m_Types.TryGetValue(realType, out info);
-      }
-
-      if (info != null)
+      if (realType != null && m_Types.TryGetValue(realType, out TypeInfo info))
       {
         aliased = $"<!-- DBG-0 -->{info.LinkName(null)}";
       }

@@ -46,9 +46,7 @@ namespace Server.Items
 
     public static MoonPhase GetMoonPhase(Map map, int x, int y)
     {
-      int hours, minutes, totalMinutes;
-
-      GetTime(map, x, y, out hours, out minutes, out totalMinutes);
+      GetTime(map, x, y, out _, out _, out int totalMinutes);
 
       if (map != null)
         totalMinutes /= 10 + map.MapIndex * 20;
@@ -58,9 +56,7 @@ namespace Server.Items
 
     public static void GetTime(Map map, int x, int y, out int hours, out int minutes)
     {
-      int totalMinutes;
-
-      GetTime(map, x, y, out hours, out minutes, out totalMinutes);
+      GetTime(map, x, y, out hours, out minutes, out _);
     }
 
     public static void GetTime(Map map, int x, int y, out int hours, out int minutes, out int totalMinutes)
@@ -91,9 +87,7 @@ namespace Server.Items
 
     public static void GetTime(Map map, int x, int y, out int generalNumber, out string exactTime)
     {
-      int hours, minutes;
-
-      GetTime(map, x, y, out hours, out minutes);
+      GetTime(map, x, y, out int hours, out int minutes);
 
       // 00:00 AM - 00:59 AM : Witching hour
       // 01:00 AM - 03:59 AM : Middle of night
@@ -131,10 +125,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      int genericNumber;
-      string exactTime;
-
-      GetTime(from, out genericNumber, out exactTime);
+      GetTime(from, out int genericNumber, out string exactTime);
 
       SendLocalizedMessageTo(from, genericNumber);
       SendLocalizedMessageTo(from, 1042958, exactTime); // ~1_TIME~ to be exact
@@ -152,9 +143,6 @@ namespace Server.Items
       base.Deserialize(reader);
 
       int version = reader.ReadInt();
-
-      if (Weight == 2.0)
-        Weight = 3.0;
     }
   }
 

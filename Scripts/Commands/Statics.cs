@@ -211,9 +211,8 @@ namespace Server
 
             foreach (DeltaState state in table.Values)
             {
-              int oldTileCount;
               StaticTile[] oldTiles = ReadStaticBlock(idxReader, mulStream, state.m_X, state.m_Y,
-                matrix.BlockWidth, matrix.BlockHeight, out oldTileCount);
+                matrix.BlockWidth, matrix.BlockHeight, out int oldTileCount);
 
               if (oldTileCount < 0)
                 continue;
@@ -378,9 +377,8 @@ namespace Server
           for (int x = xStartBlock; x <= xEndBlock; ++x)
           for (int y = yStartBlock; y <= yEndBlock; ++y)
           {
-            int oldTileCount;
             StaticTile[] oldTiles = ReadStaticBlock(idxReader, mulStream, x, y, matrix.BlockWidth,
-              matrix.BlockHeight, out oldTileCount);
+              matrix.BlockHeight, out int oldTileCount);
 
             if (oldTileCount < 0)
               continue;

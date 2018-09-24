@@ -468,11 +468,7 @@ namespace Server.Engines.Harvest
     {
       base.OnHarvestStarted(from, tool, def, toHarvest);
 
-      int tileID;
-      Map map;
-      Point3D loc;
-
-      if (GetHarvestDetails(from, tool, toHarvest, out tileID, out map, out loc))
+      if (GetHarvestDetails(from, tool, toHarvest, out _, out Map map, out Point3D loc))
         Timer.DelayCall(TimeSpan.FromSeconds(1.5),
           delegate
           {

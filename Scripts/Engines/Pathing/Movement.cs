@@ -62,8 +62,6 @@ namespace Server.Movement
         return false;
       }
 
-      int startZ, startTop;
-
       List<Item> itemsStart = m_Pools[0];
       List<Item> itemsForward = m_Pools[1];
       List<Item> itemsLeft = m_Pools[2];
@@ -215,7 +213,7 @@ namespace Server.Movement
           }
       }
 
-      GetStartZ(m, map, loc, itemsStart, out startZ, out startTop);
+      GetStartZ(m, map, loc, itemsStart, out int startZ, out int startTop);
 
       bool moveIsOk = Check(map, m, itemsForward, mobsForward, xForward, yForward, startTop, startZ, m.CanSwim,
         m.CantWalk, out newZ);

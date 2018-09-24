@@ -3112,12 +3112,17 @@ namespace Server.Network
 
         IWeapon weapon = m.Weapon;
 
-        int min = 0, max = 0;
-
-        weapon?.GetStatusDamage(m, out min, out max);
-
-        m_Stream.Write((short)min); // Damage min
-        m_Stream.Write((short)max); // Damage max
+        if (weapon != null)
+        {
+          weapon.GetStatusDamage(m, out int min, out int max);
+          m_Stream.Write((short)min); // Damage min
+          m_Stream.Write((short)max); // Damage max
+        }
+        else
+        {
+          m_Stream.Write((short)0); // Damage min
+          m_Stream.Write((short)0); // Damage max
+        }
 
         m_Stream.Write(m.TithingPoints);
       }
@@ -3210,13 +3215,18 @@ namespace Server.Network
           m_Stream.Write((short)beheld.Luck); // Luck
 
           IWeapon weapon = beheld.Weapon;
-
-          int min = 0, max = 0;
-
-          weapon?.GetStatusDamage(beheld, out min, out max);
-
-          m_Stream.Write((short)min); // Damage min
-          m_Stream.Write((short)max); // Damage max
+          
+          if (weapon != null)
+          {
+            weapon.GetStatusDamage(beheld, out int min, out int max);
+            m_Stream.Write((short)min); // Damage min
+            m_Stream.Write((short)max); // Damage max
+          }
+          else
+          {
+            m_Stream.Write((short)0); // Damage min
+            m_Stream.Write((short)0); // Damage max
+          }
 
           m_Stream.Write(beheld.TithingPoints);
         }

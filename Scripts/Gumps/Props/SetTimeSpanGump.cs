@@ -127,7 +127,7 @@ namespace Server.Gumps
         {
           bool successfulParse = false;
           if (h != null && m != null && s != null)
-            successfulParse = TimeSpan.TryParse(h.Text + ":" + m.Text + ":" + s.Text, out toSet);
+            successfulParse = TimeSpan.TryParse($"{h.Text}:{m.Text}:{s.Text}", out toSet);
           else
             toSet = TimeSpan.Zero;
 

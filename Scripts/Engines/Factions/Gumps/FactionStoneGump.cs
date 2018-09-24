@@ -267,9 +267,7 @@ namespace Server.Factions
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      int type, index;
-
-      if (!FromButtonID(info.ButtonID, out type, out index))
+      if (!FromButtonID(info.ButtonID, out int type, out int index))
         return;
 
       switch (type)

@@ -277,9 +277,7 @@ namespace Server.Items
 
     public void SubmitSolution(Mobile m, PuzzleChestSolution solution)
     {
-      int correctCylinders, correctColors;
-
-      if (solution.Matches(Solution, out correctCylinders, out correctColors))
+      if (solution.Matches(Solution, out int correctCylinders, out int correctColors))
       {
         LockPick(m);
 

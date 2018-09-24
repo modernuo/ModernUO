@@ -100,9 +100,7 @@ namespace Server.Diagnostics
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static PacketReceiveProfile Acquire(int packetId)
     {
-      PacketReceiveProfile prof;
-
-      if (!_profiles.TryGetValue(packetId, out prof))
+      if (!_profiles.TryGetValue(packetId, out PacketReceiveProfile prof))
         _profiles.Add(packetId, prof = new PacketReceiveProfile(packetId));
 
       return prof;

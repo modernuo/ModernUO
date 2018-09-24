@@ -1018,9 +1018,7 @@ namespace Server
 
       Type type = typeof(T);
 
-      T tempVal;
-
-      if (type.IsEnum && Enum.TryParse(s, true, out tempVal))
+      if (type.IsEnum && Enum.TryParse(s, true, out T tempVal))
       {
         value = tempVal;
         return true;

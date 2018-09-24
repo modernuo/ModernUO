@@ -158,9 +158,8 @@ namespace Server.Engines.MLQuests
       }
 
       Type index = ScriptCompiler.FindTypeByName(e.GetString(0));
-      MLQuest quest;
 
-      if (index == null || !Quests.TryGetValue(index, out quest))
+      if (index == null || !Quests.TryGetValue(index, out MLQuest quest))
       {
         m.SendMessage("Invalid quest type name.");
         return;
@@ -303,10 +302,7 @@ namespace Server.Engines.MLQuests
 
       MLQuestContext context = GetContext(pm);
 
-      MLQuest quest;
-      MLQuestInstance entry;
-
-      if (!FindQuest(quester, pm, context, out quest, out entry))
+      if (!FindQuest(quester, pm, context, out MLQuest quest, out MLQuestInstance entry))
       {
         Tell(quester, pm, 1080107); // I'm sorry, I have nothing for you at this time.
         return;

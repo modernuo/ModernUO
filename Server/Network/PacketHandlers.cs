@@ -1010,10 +1010,7 @@ namespace Server.Network
       int amount = pvSrc.ReadUInt16();
       Item item = World.FindItem(serial);
 
-      bool rejected;
-      LRReason reject;
-
-      state.Mobile.Lift(item, amount, out rejected, out reject);
+      state.Mobile.Lift(item, amount, out bool rejected, out LRReason reject);
     }
 
     public static void EquipReq(NetState state, PacketReader pvSrc)

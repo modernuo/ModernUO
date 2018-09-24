@@ -192,11 +192,8 @@ namespace Server.Gumps
 
           StringBuilder sb = new StringBuilder();
 
-          int curUser, maxUser;
-          int curIOCP, maxIOCP;
-
-          ThreadPool.GetAvailableThreads(out curUser, out curIOCP);
-          ThreadPool.GetMaxThreads(out maxUser, out maxIOCP);
+          ThreadPool.GetAvailableThreads(out int curUser, out int curIOCP);
+          ThreadPool.GetMaxThreads(out int maxUser, out int maxIOCP);
 
           sb.Append("Worker Threads:<br>Capacity: ");
           sb.Append(maxUser);
@@ -219,7 +216,7 @@ namespace Server.Gumps
             for (int i = 0; i < pools.Count; ++i)
             {
               BufferPool pool = pools[i];
-              pool.GetInfo(out string name, out int freeCount, out int initialCapacity,
+              pool.GetInfo(out string name, out int freeCount, out _,
                 out int currentCapacity, out int bufferSize, out int misses);
 
               if (sb.Length > 0)

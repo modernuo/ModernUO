@@ -293,8 +293,7 @@ namespace Server
 
             string key = t.ToString();
 
-            List<Timer> list;
-            hash.TryGetValue(key, out list);
+            hash.TryGetValue(key, out List<Timer> list);
 
             if (list == null)
               hash[key] = list = new List<Timer>();

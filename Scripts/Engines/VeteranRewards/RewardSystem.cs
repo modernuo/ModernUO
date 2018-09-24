@@ -184,45 +184,43 @@ namespace Server.Engines.VeteranRewards
       {
         RewardList list = m_Lists[i];
         RewardEntry[] entries = list.Entries;
-        TimeSpan ts;
 
         for (int j = 0; j < entries.Length; ++j)
-          if (entries[j].ItemType == type)
+        {
+          if (entries[j].ItemType != type)
+            continue;
+          
+          if (args == null && entries[j].Args.Length == 0)
           {
-            if (args == null && entries[j].Args.Length == 0)
-            {
-              if ((!isRelaxedRules || i > 0) && !HasAccess(from, list, out ts))
-              {
-                from.SendLocalizedMessage(1008126, true,
-                  Math.Ceiling(ts.TotalDays / 30.0)
-                    .ToString()); // Your account is not old enough to use this item. Months until you can use this item :
-                return false;
-              }
-
+            if (isRelaxedRules && i <= 0 || HasAccess(@from, list, out TimeSpan ts))
               return true;
-            }
+            
+            @from.SendLocalizedMessage(1008126, true,
+              Math.Ceiling(ts.TotalDays / 30.0)
+                .ToString()); // Your account is not old enough to use this item. Months until you can use this item :
+            return false;
 
-            if (args.Length == entries[j].Args.Length)
-            {
-              bool match = true;
-
-              for (int k = 0; match && k < args.Length; ++k)
-                match = args[k].Equals(entries[j].Args[k]);
-
-              if (match)
-              {
-                if ((!isRelaxedRules || i > 0) && !HasAccess(from, list, out ts))
-                {
-                  from.SendLocalizedMessage(1008126, true,
-                    Math.Ceiling(ts.TotalDays / 30.0)
-                      .ToString()); // Your account is not old enough to use this item. Months until you can use this item :
-                  return false;
-                }
-
-                return true;
-              }
-            }
           }
+
+          if (args?.Length != entries[j].Args.Length)
+            continue;
+          
+          bool match = true;
+
+          for (int k = 0; match && k < args.Length; ++k)
+            match = args[k].Equals(entries[j].Args[k]);
+
+          if (match)
+          {
+            if (isRelaxedRules && i <= 0 || HasAccess(@from, list, out TimeSpan ts))
+              return true;
+            
+            @from.SendLocalizedMessage(1008126, true,
+              Math.Ceiling(ts.TotalDays / 30.0)
+                .ToString()); // Your account is not old enough to use this item. Months until you can use this item :
+            return false;
+          }
+        }
       }
 
       // no entry?

@@ -166,11 +166,10 @@ namespace Server
 
     public static IPAddress Intern(IPAddress ipAddress)
     {
-      if (_ipAddressTable == null) _ipAddressTable = new Dictionary<IPAddress, IPAddress>();
+      if (_ipAddressTable == null)
+        _ipAddressTable = new Dictionary<IPAddress, IPAddress>();
 
-      IPAddress interned;
-
-      if (!_ipAddressTable.TryGetValue(ipAddress, out interned))
+      if (!_ipAddressTable.TryGetValue(ipAddress, out IPAddress interned))
       {
         interned = ipAddress;
         _ipAddressTable[ipAddress] = interned;
@@ -886,24 +885,21 @@ namespace Server
 
     public static bool ToBoolean(string value)
     {
-      bool b;
-      bool.TryParse(value, out b);
+      bool.TryParse(value, out bool b);
 
       return b;
     }
 
     public static double ToDouble(string value)
     {
-      double d;
-      double.TryParse(value, out d);
+      double.TryParse(value, out double d);
 
       return d;
     }
 
     public static TimeSpan ToTimeSpan(string value)
     {
-      TimeSpan t;
-      TimeSpan.TryParse(value, out t);
+      TimeSpan.TryParse(value, out TimeSpan t);
 
       return t;
     }
@@ -1008,12 +1004,7 @@ namespace Server
       }
     }
 
-    public static string GetAttribute(XmlElement node, string attributeName)
-    {
-      return GetAttribute(node, attributeName, null);
-    }
-
-    public static string GetAttribute(XmlElement node, string attributeName, string defaultValue)
+    public static string GetAttribute(XmlElement node, string attributeName, string defaultValue = null)
     {
       if (node == null)
         return defaultValue;

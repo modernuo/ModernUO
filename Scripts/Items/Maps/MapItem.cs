@@ -196,9 +196,7 @@ namespace Server.Items
 
     public virtual void AddWorldPin(int x, int y)
     {
-      int mapX, mapY;
-      ConvertToMap(x, y, out mapX, out mapY);
-
+      ConvertToMap(x, y, out int mapX, out int mapY);
       AddPin(mapX, mapY);
     }
 

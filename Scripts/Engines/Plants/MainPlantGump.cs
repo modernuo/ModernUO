@@ -380,8 +380,7 @@ namespace Server.Engines.Plants
       }
       else
       {
-        int message;
-        if (m_Plant.ApplyPotion(effects[0], true, out message))
+        if (m_Plant.ApplyPotion(effects[0], true, out int message))
         {
           from.SendLocalizedMessage(1061884); // You don't have any strong potions of that type in your pack.
 

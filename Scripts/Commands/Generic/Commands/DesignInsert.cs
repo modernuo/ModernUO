@@ -164,8 +164,7 @@ namespace Server.Commands.Generic
 
         for (int i = 0; i < list.Count; ++i)
         {
-          HouseFoundation house;
-          DesignInsertResult result = ProcessInsert(list[i] as Item, staticsOnly, out house);
+          DesignInsertResult result = ProcessInsert(list[i] as Item, staticsOnly, out HouseFoundation house);
 
           switch (result)
           {

@@ -282,7 +282,7 @@ namespace Server.Engines.MyRunUO
     {
       if (m_Command == null)
       {
-        m_Command = new DatabaseCommandQueue("MyRunUO: Characeter database updated in {0:F1} seconds",
+        m_Command = new DatabaseCommandQueue("MyRunUO: Character database updated in {0:F1} seconds",
           "MyRunUO Character Database Thread");
 
         if (Config.LoadDataInFile)

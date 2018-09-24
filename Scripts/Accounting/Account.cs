@@ -1187,8 +1187,7 @@ namespace Server.Accounting
 		{
 			if (amount <= 0) { return false; }
 
-			int gold;
-			int plat = Math.DivRem(amount, AccountGold.CurrencyThreshold, out gold);
+			int plat = Math.DivRem(amount, AccountGold.CurrencyThreshold, out int gold);
 			TotalPlat += plat;
 			TotalGold += gold;
 

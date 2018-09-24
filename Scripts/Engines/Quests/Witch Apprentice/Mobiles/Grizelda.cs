@@ -181,13 +181,12 @@ namespace Server.Engines.Quests.Hag
       else
       {
         QuestSystem newQuest = new WitchApprenticeQuest(player);
-        bool inRestartPeriod = false;
 
         if (qs != null)
         {
           newQuest.AddConversation(new DontOfferConversation());
         }
-        else if (QuestSystem.CanOfferQuest(player, typeof(WitchApprenticeQuest), out inRestartPeriod))
+        else if (QuestSystem.CanOfferQuest(player, typeof(WitchApprenticeQuest), out bool inRestartPeriod))
         {
           PlaySound(0x20);
           PlaySound(0x206);

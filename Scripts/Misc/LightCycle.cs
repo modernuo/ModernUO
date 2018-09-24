@@ -67,9 +67,7 @@ namespace Server
       if (m_LevelOverride > int.MinValue)
         return m_LevelOverride;
 
-      int hours, minutes;
-
-      Clock.GetTime(from.Map, from.X, from.Y, out hours, out minutes);
+      Clock.GetTime(from.Map, from.X, from.Y, out int hours, out int minutes);
 
       /* OSI times:
        * 

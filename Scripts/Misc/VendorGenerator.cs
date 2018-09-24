@@ -209,7 +209,6 @@ namespace Server
         {
           Point2D cp = Point2D.Zero;
           int dist = 100000;
-          int tz;
 
           for (int k = 0; k < si.m_Floor.Count; ++k)
           {
@@ -222,7 +221,7 @@ namespace Server
             if (fd > 0 && fd < 5)
               fd -= Utility.Random(10);
 
-            if (fd < dist && GetFloorZ(map, fp.X, fp.Y, out tz))
+            if (fd < dist && GetFloorZ(map, fp.X, fp.Y, out _))
             {
               dist = fd;
               cp = fp;

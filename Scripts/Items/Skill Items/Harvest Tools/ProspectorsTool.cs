@@ -69,11 +69,7 @@ namespace Server.Items
 
       HarvestSystem system = Mining.System;
 
-      int tileID;
-      Map map;
-      Point3D loc;
-
-      if (!system.GetHarvestDetails(from, this, toProspect, out tileID, out map, out loc))
+      if (!system.GetHarvestDetails(from, this, toProspect, out int tileID, out Map map, out Point3D loc))
       {
         from.SendLocalizedMessage(1049048); // You cannot use your prospector tool on that.
         return;

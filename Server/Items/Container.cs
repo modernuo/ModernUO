@@ -1777,12 +1777,8 @@ namespace Server.Items
 
     public static ContainerData GetData(int itemID)
     {
-      ContainerData data = null;
-      m_Table.TryGetValue(itemID, out data);
-
-      if (data != null)
-        return data;
-      return Default;
+      m_Table.TryGetValue(itemID, out ContainerData data);
+      return data ?? Default;
     }
   }
 }

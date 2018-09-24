@@ -1059,9 +1059,7 @@ namespace Server.Multis
 
     public virtual bool CheckAosStorage(int need)
     {
-      int fromSecures, fromVendors, fromLockdowns, fromMovingCrate;
-
-      return GetAosCurSecures(out fromSecures, out fromVendors, out fromLockdowns, out fromMovingCrate) + need <=
+      return GetAosCurSecures(out int fromSecures, out int fromVendors, out int fromLockdowns, out int fromMovingCrate) + need <=
              GetAosMaxSecures();
     }
 

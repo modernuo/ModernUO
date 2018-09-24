@@ -61,9 +61,7 @@ namespace Server.Engines.VeteranRewards
         }
       }
 
-      int cur, max;
-
-      RewardSystem.ComputeRewardInfo(m_From, out cur, out max);
+      RewardSystem.ComputeRewardInfo(m_From, out int cur, out int max);
 
       if (cur < max)
         m_From.SendGump(new RewardNoticeGump(m_From));

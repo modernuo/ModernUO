@@ -604,9 +604,8 @@ namespace Server.Items
 
       prevHouse.Delete();
 
-      ArrayList toMove;
       //Point3D center = new Point3D( p.X - m_Offset.X, p.Y - m_Offset.Y, p.Z - m_Offset.Z );
-      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out toMove);
+      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out ArrayList toMove);
 
       switch (res)
       {

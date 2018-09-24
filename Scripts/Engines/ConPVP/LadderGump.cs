@@ -153,8 +153,7 @@ namespace Server.Engines.ConPVP
         int xp = entry.Experience;
         int level = Ladder.GetLevel(xp);
 
-        int xpBase, xpAdvance;
-        Ladder.GetLevelInfo(level, out xpBase, out xpAdvance);
+        Ladder.GetLevelInfo(level, out int xpBase, out int xpAdvance);
 
         int width;
 

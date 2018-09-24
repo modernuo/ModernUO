@@ -861,10 +861,7 @@ namespace Server.Items
 
     public bool GetRestoreInfo(Item item, ref Point3D loc)
     {
-      if (m_RestoreTable == null || item == null)
-        return false;
-
-      return m_RestoreTable.TryGetValue(item, out loc);
+      return item != null && m_RestoreTable?.TryGetValue(item, out loc) == true;
     }
 
     public void SetRestoreInfo(Item item, Point3D loc)

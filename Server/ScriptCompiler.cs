@@ -127,17 +127,7 @@ namespace Server
       }
     }
 
-    public static bool CompileCSScripts(out Assembly assembly)
-    {
-      return CompileCSScripts(false, true, out assembly);
-    }
-
-    public static bool CompileCSScripts(bool debug, out Assembly assembly)
-    {
-      return CompileCSScripts(debug, true, out assembly);
-    }
-
-    public static bool CompileCSScripts(bool debug, bool cache, out Assembly assembly)
+    public static bool CompileCSScripts(out Assembly assembly, bool cache = true, bool debug = false)
     {
       Console.Write("Scripts: Compiling C# scripts...");
       string[] files = GetScripts("*.cs");
@@ -190,6 +180,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
 
       DeleteFiles("Scripts.CS*.dll");
@@ -252,6 +243,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
 
         assembly = results.CompiledAssembly;
@@ -259,17 +251,7 @@ namespace Server
       }
     }
 
-    public static bool CompileVBScripts(out Assembly assembly)
-    {
-      return CompileVBScripts(false, out assembly);
-    }
-
-    public static bool CompileVBScripts(bool debug, out Assembly assembly)
-    {
-      return CompileVBScripts(debug, true, out assembly);
-    }
-
-    public static bool CompileVBScripts(bool debug, bool cache, out Assembly assembly)
+    public static bool CompileVBScripts(out Assembly assembly, bool cache = true, bool debug = false)
     {
       Console.Write("Scripts: Compiling VB.NET scripts...");
       string[] files = GetScripts("*.vb");
@@ -323,6 +305,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
         }
 
@@ -540,11 +523,10 @@ namespace Server
 
       List<Assembly> assemblies = new List<Assembly>();
 
-      Assembly assembly;
-
-      if (CompileCSScripts(debug, cache, out assembly))
+      if (CompileCSScripts(out Assembly assembly, cache, debug))
       {
-        if (assembly != null) assemblies.Add(assembly);
+        if (assembly != null)
+          assemblies.Add(assembly);
       }
       else
       {
@@ -553,9 +535,10 @@ namespace Server
 
       if (Core.VBdotNet)
       {
-        if (CompileVBScripts(debug, cache, out assembly))
+        if (CompileVBScripts(out Assembly vbAssembly, cache, debug))
         {
-          if (assembly != null) assemblies.Add(assembly);
+          if (vbAssembly != null)
+            assemblies.Add(vbAssembly);
         }
         else
         {
@@ -567,7 +550,8 @@ namespace Server
         Console.WriteLine("Scripts: Skipping VB.NET Scripts...done (use -vb to enable)");
       }
 
-      if (assemblies.Count == 0) return false;
+      if (assemblies.Count == 0)
+        return false;
 
       Assemblies = assemblies.ToArray();
 
@@ -618,8 +602,7 @@ namespace Server
         return m_NullCache;
       }
 
-      TypeCache c = null;
-      m_TypeCaches.TryGetValue(asm, out c);
+      m_TypeCaches.TryGetValue(asm, out TypeCache c);
 
       if (c == null)
         m_TypeCaches[asm] = c = new TypeCache(asm);
@@ -758,7 +741,7 @@ namespace Server
 
     public Type Get(string key, bool ignoreCase)
     {
-      Type t = null;
+      Type t;
 
       if (ignoreCase)
         m_Insensitive.TryGetValue(key, out t);

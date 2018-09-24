@@ -88,12 +88,9 @@ namespace Server.Mobiles
         if (!pack.CheckHold(this, item, false, true))
           return;
 
-        bool rejected;
-        LRReason reject;
-
         NextActionTime = Core.TickCount;
 
-        Lift(item, item.Amount, out rejected, out reject);
+        Lift(item, item.Amount, out bool rejected, out LRReason _);
 
         if (rejected)
           continue;

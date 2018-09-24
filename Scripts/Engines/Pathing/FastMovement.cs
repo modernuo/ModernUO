@@ -53,8 +53,6 @@ namespace Server.Movement
         return false;
       }
 
-      int startZ, startTop;
-
       IEnumerable<Item> itemsStart, itemsForward, itemsLeft, itemsRight;
 
       bool ignoreMovableImpassables = MovementImpl.IgnoreMovableImpassables;
@@ -85,7 +83,7 @@ namespace Server.Movement
         itemsRight = Enumerable.Empty<Item>();
       }
 
-      GetStartZ(m, map, loc, itemsStart, out startZ, out startTop);
+      GetStartZ(m, map, loc, itemsStart, out int startZ, out int startTop);
 
       List<Item> list = null;
 
@@ -134,7 +132,8 @@ namespace Server.Movement
 
     public bool CheckMovement(Mobile m, Direction d, out int newZ)
     {
-      if (!Enabled && _Successor != null) return _Successor.CheckMovement(m, d, out newZ);
+      if (!Enabled && _Successor != null)
+        return _Successor.CheckMovement(m, d, out newZ);
 
       return CheckMovement(m, m.Map, m.Location, d, out newZ);
     }
