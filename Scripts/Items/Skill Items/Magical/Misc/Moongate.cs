@@ -267,7 +267,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public string MessageString{ get; set; }
 
-    public virtual void Warning_Callback(Mobile from, bool okay, object state)
+    public virtual void Warning_Callback(Mobile from, bool okay)
     {
       if (okay)
         EndConfirmation(from);
@@ -280,7 +280,7 @@ namespace Server.Items
         from.CloseGump<WarningGump>();
         from.SendGump(new WarningGump(TitleNumber, TitleColor,
           MessageString == null ? MessageNumber : (object)MessageString, MessageColor, GumpWidth, GumpHeight,
-          Warning_Callback, from));
+          okay => Warning_Callback(from, okay)));
       }
       else
       {

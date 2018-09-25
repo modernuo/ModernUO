@@ -136,24 +136,25 @@ namespace Server.Misc
       }
     }
 
+    private static void KickMessage(Mobile from, bool okay)
+    {
+      from.SendMessage("You will be reminded of this again.");
+
+      if (m_OldClientResponse == OldClientResponse.LenientKick)
+        from.SendMessage(
+          "Old clients will be kicked after {0} days of character age and {1} hours of play time",
+          m_AgeLeniency, m_GameTimeLeniency);
+
+      Timer.DelayCall(TimeSpan.FromMinutes(Utility.Random(5, 15)), () => SendAnnoyGump(from));
+    }
+
     private static void SendAnnoyGump(Mobile m)
     {
       if (m.NetState != null && m.NetState.Version < Required)
       {
         Gump g = new WarningGump(1060637, 30720,
           $"Your client is out of date. Please update your client.<br>This server recommends that your client version be at least {Required}.<br> <br>You are currently using version {m.NetState.Version}.<br> <br>To patch, run UOPatch.exe inside your Ultima Online folder.",
-          0xFFC000, 480, 360,
-          delegate
-          {
-            m.SendMessage("You will be reminded of this again.");
-
-            if (m_OldClientResponse == OldClientResponse.LenientKick)
-              m.SendMessage(
-                "Old clients will be kicked after {0} days of character age and {1} hours of play time",
-                m_AgeLeniency, m_GameTimeLeniency);
-
-            Timer.DelayCall(TimeSpan.FromMinutes(Utility.Random(5, 15)), delegate { SendAnnoyGump(m); });
-          }, null, false);
+          0xFFC000, 480, 360, okay => KickMessage(m, okay), false);
 
         g.Draggable = false;
         g.Closable = false;

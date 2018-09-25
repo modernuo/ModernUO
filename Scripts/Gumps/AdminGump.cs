@@ -1385,7 +1385,7 @@ namespace Server.Gumps
       return list;
     }
 
-    public static void BanShared_Callback(Mobile from, bool okay, object state)
+    public static void BanShared_Callback(Mobile from, bool okay, Account a)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
@@ -1395,7 +1395,6 @@ namespace Server.Gumps
 
       if (okay)
       {
-        Account a = (Account)state;
         list = GetSharedAccounts(a.LoginIPs);
 
         for (int i = 0; i < list.Count; ++i)
@@ -1411,21 +1410,19 @@ namespace Server.Gumps
         notice = "You have chosen not to ban all shared accounts.";
       }
 
-      from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, state));
+      from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
 
       if (okay)
         from.SendGump(new BanDurationGump(list));
     }
 
-    public static void AccountDelete_Callback(Mobile from, bool okay, object state)
+    public static void AccountDelete_Callback(Mobile from, bool okay, Account a)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
 
       if (okay)
       {
-        Account a = (Account)state;
-
         CommandLogging.WriteLine(from, "{0} {1} deleting account {2}", from.AccessLevel, CommandLogging.Format(from),
           a.Username);
         a.Delete();
@@ -1436,33 +1433,22 @@ namespace Server.Gumps
       else
       {
         from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Information, 0, null,
-          "You have chosen not to delete the account.", state));
+          "You have chosen not to delete the account.", a));
       }
     }
 
-    public static void ResendGump_Callback(Mobile from, object state)
+    public static void ResendGump_Callback(Mobile from, ArrayList list, ArrayList rads, int page)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
-
-      object[] states = (object[])state;
-      ArrayList list = (ArrayList)states[0];
-      ArrayList rads = (ArrayList)states[1];
-      int page = (int)states[2];
 
       from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, page, list, null, rads));
     }
 
-    public static void Marked_Callback(Mobile from, bool okay, object state)
+    public static void Marked_Callback(Mobile from, bool okay, bool ban, ArrayList list, ArrayList rads, int page)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
-
-      object[] states = (object[])state;
-      bool ban = (bool)states[0];
-      ArrayList list = (ArrayList)states[1];
-      ArrayList rads = (ArrayList)states[2];
-      int page = (int)states[3];
 
       if (okay)
       {
@@ -1495,7 +1481,7 @@ namespace Server.Gumps
 
         from.SendGump(new NoticeGump(1060637, 30720,
           $"You have {(ban ? "banned" : "deleted")} the account{(rads.Count == 1 ? "" : "s")}.", 0xFFC000, 420,
-          280, ResendGump_Callback, new object[] { list, rads, ban ? page : 0 }));
+          280, () => ResendGump_Callback(from, list, rads, ban ? page : 0)));
 
         if (ban)
           from.SendGump(new BanDurationGump(rads));
@@ -1504,11 +1490,11 @@ namespace Server.Gumps
       {
         from.SendGump(new NoticeGump(1060637, 30720,
           $"You have chosen not to {(ban ? "ban" : "delete")} the account{(rads.Count == 1 ? "" : "s")}.",
-          0xFFC000, 420, 280, ResendGump_Callback, new object[] { list, rads, page }));
+          0xFFC000, 420, 280, () => ResendGump_Callback(from, list, rads, page )));
       }
     }
 
-    public static void FirewallShared_Callback(Mobile from, bool okay, object state)
+    public static void FirewallShared_Callback(Mobile from, bool okay, Account a)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
@@ -1517,8 +1503,6 @@ namespace Server.Gumps
 
       if (okay)
       {
-        Account a = (Account)state;
-
         for (int i = 0; i < a.LoginIPs.Length; ++i)
           Firewall.Add(a.LoginIPs[i]);
 
@@ -1529,18 +1513,13 @@ namespace Server.Gumps
         notice = "You have chosen not to firewall all addresses.";
       }
 
-      from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, state));
+      from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
     }
 
-    public static void Firewall_Callback(Mobile from, bool okay, object state)
+    public static void Firewall_Callback(Mobile from, bool okay, Account a, object toFirewall)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
-
-      object[] states = (object[])state;
-
-      Account a = (Account)states[0];
-      object toFirewall = states[1];
 
       string notice;
 
@@ -1558,15 +1537,10 @@ namespace Server.Gumps
       from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
     }
 
-    public static void RemoveLoginIP_Callback(Mobile from, bool okay, object state)
+    public static void RemoveLoginIP_Callback(Mobile from, bool okay, Account a, IPAddress ip)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
-
-      object[] states = (object[])state;
-
-      Account a = (Account)states[0];
-      IPAddress ip = (IPAddress)states[1];
 
       string notice;
 
@@ -1591,12 +1565,10 @@ namespace Server.Gumps
       from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null, notice, a));
     }
 
-    public static void RemoveLoginIPs_Callback(Mobile from, bool okay, object state)
+    public static void RemoveLoginIPs_Callback(Mobile from, bool okay, Account a)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
-
-      Account a = (Account)state;
 
       string notice;
 
@@ -2358,7 +2330,7 @@ namespace Server.Gumps
                   sb.AppendFormat("<br>- {0}", ((Account)list[i]).Username);
 
                 from.SendGump(new WarningGump(1060635, 30720, sb.ToString(), 0xFFC000, 420, 400,
-                  BanShared_Callback, a));
+                  okay => BanShared_Callback(from, okay, a)));
               }
               else if (a.LoginIPs.Length > 0)
               {
@@ -2381,7 +2353,7 @@ namespace Server.Gumps
               if (a.LoginIPs.Length > 0)
                 from.SendGump(new WarningGump(1060635, 30720,
                   $"You are about to firewall {a.LoginIPs.Length} address{(a.LoginIPs.Length != 1 ? "s" : "")}. Do you wish to continue?",
-                  0xFFC000, 420, 400, FirewallShared_Callback, a));
+                  0xFFC000, 420, 400, okay => FirewallShared_Callback(from, okay, a)));
               else
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null,
                   "This account has not yet been accessed.", m_State));
@@ -2490,7 +2462,7 @@ namespace Server.Gumps
 
               from.SendGump(new WarningGump(1060635, 30720,
                 $"<center>Account of {a.Username}</center><br>You are about to <em><basefont color=red>permanently delete</basefont></em> the account. Likewise, all characters on the account will be deleted, including equipped, inventory, and banked items. Any houses tied to the account will be demolished.<br><br>Do you wish to continue?",
-                0xFFC000, 420, 280, AccountDelete_Callback, m_State));
+                0xFFC000, 420, 280, okay => AccountDelete_Callback(from, okay, a)));
               break;
             }
             case 26: // View all shared accounts
@@ -2508,11 +2480,11 @@ namespace Server.Gumps
               if (rads.Count > 0)
                 from.SendGump(new WarningGump(1060635, 30720,
                   $"You are about to ban {rads.Count} marked account{(rads.Count == 1 ? "" : "s")}. Be cautioned, the only way to reverse this is by hand--manually unbanning each account.<br><br>Do you wish to continue?",
-                  0xFFC000, 420, 280, Marked_Callback, new object[] { true, list, rads, m_ListPage }));
+                  0xFFC000, 420, 280, okay => Marked_Callback(from, okay, true, list, rads, m_ListPage )));
               else
                 from.SendGump(new NoticeGump(1060637, 30720,
                   "You have not yet marked any accounts. Place a check mark next to the accounts you wish to ban and then try again.",
-                  0xFFC000, 420, 280, ResendGump_Callback, new object[] { list, rads, m_ListPage }));
+                  0xFFC000, 420, 280, () => ResendGump_Callback(from, list, rads, m_ListPage)));
 
               break;
             }
@@ -2527,12 +2499,11 @@ namespace Server.Gumps
                 from.SendGump(new WarningGump(1060635, 30720,
                   string.Format(
                     "You are about to <em><basefont color=red>permanently delete</basefont></em> {0} marked account{1}. Likewise, all characters on the account{1} will be deleted, including equipped, inventory, and banked items. Any houses tied to the account{1} will be demolished.<br><br>Do you wish to continue?",
-                    rads.Count, rads.Count == 1 ? "" : "s"), 0xFFC000, 420, 280, Marked_Callback,
-                  new object[] { false, list, rads, m_ListPage }));
+                    rads.Count, rads.Count == 1 ? "" : "s"), 0xFFC000, 420, 280, okay => Marked_Callback(from, okay, false, list, rads, m_ListPage )));
               else
                 from.SendGump(new NoticeGump(1060637, 30720,
                   "You have not yet marked any accounts. Place a check mark next to the accounts you wish to ban and then try again.",
-                  0xFFC000, 420, 280, ResendGump_Callback, new object[] { list, rads, m_ListPage }));
+                  0xFFC000, 420, 280, () => ResendGump_Callback(from, list, rads, m_ListPage)));
 
               break;
             }
@@ -2540,7 +2511,7 @@ namespace Server.Gumps
             {
               ArrayList list = m_List;
 
-              if (list == null || !(m_State is ArrayList rads))
+              if (list == null || !(m_State is ArrayList))
                 break;
 
               from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, m_ListPage, m_List, null,
@@ -2639,9 +2610,7 @@ namespace Server.Gumps
             }
             case 36: // Clear login addresses
             {
-              Account a = m_State as Account;
-
-              if (a == null)
+              if (!(m_State is Account a))
                 break;
 
               IPAddress[] ips = a.LoginIPs;
@@ -2652,7 +2621,7 @@ namespace Server.Gumps
               else
                 from.SendGump(new WarningGump(1060635, 30720,
                   $"You are about to clear the address list for account {a} containing {ips.Length} {(ips.Length == 1 ? "entry" : "entries")}. Do you wish to continue?",
-                  0xFFC000, 420, 280, RemoveLoginIPs_Callback, a));
+                  0xFFC000, 420, 280, okay => RemoveLoginIPs_Callback(from, okay, a)));
 
               break;
             }
@@ -2949,16 +2918,14 @@ namespace Server.Gumps
         {
           if (m_List != null && index >= 0 && index < m_List.Count)
           {
-            Account a = m_State as Account;
-
-            if (a == null)
+            if (!(m_State is Account a))
               break;
 
             if (m_PageType == AdminGumpPage.AccountDetails_Access_ClientIPs)
             {
               from.SendGump(new WarningGump(1060635, 30720,
                 $"You are about to firewall {m_List[index]}. All connection attempts from a matching IP will be refused. Are you sure?",
-                0xFFC000, 420, 280, Firewall_Callback, new[] { a, m_List[index] }));
+                0xFFC000, 420, 280, okay => Firewall_Callback(from, okay, a, m_List[index] )));
             }
             else if (m_PageType == AdminGumpPage.AccountDetails_Access_Restrictions)
             {
@@ -2982,21 +2949,19 @@ namespace Server.Gumps
             {
               object obj = m_List[index];
 
-              if (!(obj is IPAddress))
+              if (!(obj is IPAddress ip))
                 break;
 
-              Account a = m_State as Account;
-
-              if (a == null)
+              if (!(m_State is Account a))
                 break;
 
-              ArrayList list = GetSharedAccounts((IPAddress)obj);
+              ArrayList list = GetSharedAccounts(ip);
 
               if (list.Count > 1 || list.Count == 1 && !list.Contains(a))
                 from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, list, null, new ArrayList()));
               else
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null,
-                  "There are no other accounts which share that address.", m_State));
+                  "There are no other accounts which share that address.", a));
             }
 
           break;
@@ -3011,14 +2976,12 @@ namespace Server.Gumps
               if (ip == null)
                 break;
 
-              Account a = m_State as Account;
-
-              if (a == null)
+              if (!(m_State is Account a))
                 break;
 
               from.SendGump(new WarningGump(1060635, 30720,
                 $"You are about to remove address {ip} from account {a}. Do you wish to continue?", 0xFFC000,
-                420, 280, RemoveLoginIP_Callback, new object[] { a, ip }));
+                420, 280, okay => RemoveLoginIP_Callback(from, okay, a, ip)));
             }
 
           break;

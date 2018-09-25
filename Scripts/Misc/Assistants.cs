@@ -145,9 +145,9 @@ namespace Server.Misc
 //					Console.WriteLine("Player '{0}' failed to negotiate features.", m);
 //				}
 
-        if (m.NetState != null && m.NetState.Running)
+        if (m.NetState?.Running == true)
         {
-          m.SendGump(new WarningGump(1060635, 30720, Settings.WarningMessage, 0xFFC000, 420, 250, null, null));
+          m.SendGump(new WarningGump(1060635, 30720, Settings.WarningMessage, 0xFFC000, 420, 250));
 
           if (m.AccessLevel <= AccessLevel.Player)
           {

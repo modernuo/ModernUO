@@ -45,6 +45,8 @@ namespace Server
       CommandSystem.Register("UnfreezeMap", AccessLevel.Administrator, UnfreezeMap_OnCommand);
       CommandSystem.Register("UnfreezeWorld", AccessLevel.Administrator, UnfreezeWorld_OnCommand);
     }
+    
+    public delegate void FreezeCallback( Mobile from, bool okay, StateInfo si );
 
     [Usage("Freeze")]
     [Description("Makes a targeted area of dynamic items static.")]
@@ -57,10 +59,11 @@ namespace Server
     [Description("Makes every dynamic item in your map static.")]
     public static void FreezeMap_OnCommand(CommandEventArgs e)
     {
-      Map map = e.Mobile.Map;
+      Mobile from = e.Mobile;
+      Map map = from.Map;
 
       if (map != null && map != Map.Internal)
-        SendWarning(e.Mobile, "You are about to freeze <u>all items in {0}</u>.", BaseFreezeWarning, map, NullP3D,
+        SendWarning(from, "You are about to freeze <u>all items in {0}</u>.", BaseFreezeWarning, map, NullP3D,
           NullP3D, FreezeWarning_Callback);
     }
 
@@ -73,10 +76,10 @@ namespace Server
     }
 
     public static void SendWarning(Mobile m, string header, string baseWarning, Map map, Point3D start, Point3D end,
-      WarningGumpCallback callback)
+      FreezeCallback callback)
     {
       m.SendGump(new WarningGump(1060635, 30720, string.Format(baseWarning, string.Format(header, map)), 0xFFC000, 420,
-        400, callback, new StateInfo(map, start, end)));
+        400, okay => callback(m, okay, new StateInfo(map, start, end))));
     }
 
     private static void FreezeBox_Callback(Mobile from, Map map, Point3D start, Point3D end, object state)
@@ -85,12 +88,10 @@ namespace Server
         FreezeWarning_Callback);
     }
 
-    private static void FreezeWarning_Callback(Mobile from, bool okay, object state)
+    private static void FreezeWarning_Callback(Mobile from, bool okay, StateInfo si)
     {
       if (!okay)
         return;
-
-      StateInfo si = (StateInfo)state;
 
       Freeze(from, si.m_Map, si.m_Start, si.m_End);
     }
@@ -179,7 +180,7 @@ namespace Server
       {
         from.SendGump(new NoticeGump(1060637, 30720,
           "No freezable items were found.  Only the following item types are frozen:<br> - Static<br> - BaseFloor<br> - BaseWall",
-          0xFFC000, 320, 240, null, null));
+          0xFFC000, 320, 240));
         return;
       }
 
@@ -295,11 +296,11 @@ namespace Server
       if (totalFrozen == 0 && badDataFile)
         from.SendGump(new NoticeGump(1060637, 30720,
           "Output data files could not be opened and the freeze operation has been aborted.<br><br>This probably means your server and client are using the same data files.  Instructions on how to resolve this can be found in the first warning window.",
-          0xFFC000, 320, 240, null, null));
+          0xFFC000, 320, 240));
       else
         from.SendGump(new NoticeGump(1060637, 30720,
           $"Freeze operation completed successfully.<br><br>{totalFrozen} item{(totalFrozen != 1 ? "s were" : " was")} frozen.<br><br>You must restart your client and update it's data files to see the changes.",
-          0xFFC000, 320, 240, null, null));
+          0xFFC000, 320, 240));
     }
 
     [Usage("Unfreeze")]
@@ -334,12 +335,10 @@ namespace Server
         UnfreezeWarning_Callback);
     }
 
-    private static void UnfreezeWarning_Callback(Mobile from, bool okay, object state)
+    private static void UnfreezeWarning_Callback(Mobile from, bool okay, StateInfo si)
     {
       if (!okay)
         return;
-
-      StateInfo si = (StateInfo)state;
 
       Unfreeze(from, si.m_Map, si.m_Start, si.m_End);
     }
@@ -491,11 +490,11 @@ namespace Server
       if (totalUnfrozen == 0 && badDataFile)
         from.SendGump(new NoticeGump(1060637, 30720,
           "Output data files could not be opened and the unfreeze operation has been aborted.<br><br>This probably means your server and client are using the same data files.  Instructions on how to resolve this can be found in the first warning window.",
-          0xFFC000, 320, 240, null, null));
+          0xFFC000, 320, 240));
       else
         from.SendGump(new NoticeGump(1060637, 30720,
           $"Unfreeze operation completed successfully.<br><br>{totalUnfrozen} item{(totalUnfrozen != 1 ? "s were" : " was")} unfrozen.<br><br>You must restart your client and update it's data files to see the changes.",
-          0xFFC000, 320, 240, null, null));
+          0xFFC000, 320, 240));
     }
 
     private static FileStream OpenWrite(FileStream orig)
@@ -578,7 +577,7 @@ namespace Server
       }
     }
 
-    private class StateInfo
+    public class StateInfo
     {
       public Map m_Map;
       public Point3D m_Start, m_End;

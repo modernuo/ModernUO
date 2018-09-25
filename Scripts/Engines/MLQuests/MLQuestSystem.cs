@@ -231,7 +231,7 @@ namespace Server.Engines.MLQuests
     {
       Mobile m = e.Mobile;
 
-      ArrayList found = new ArrayList();
+      List<object> found = new List<object>();
 
       foreach (Item item in World.Items.Values)
         if (item.QuestItem)

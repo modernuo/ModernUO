@@ -571,17 +571,16 @@ namespace Server.Items
       }
       catch
       {
+        // ignored
       }
 
       return null;
     }
 
-    public void PlacementWarning_Callback(Mobile from, bool okay, object state)
+    public void PlacementWarning_Callback(Mobile from, bool okay, PreviewHouse prevHouse)
     {
       if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
         return;
-
-      PreviewHouse prevHouse = (PreviewHouse)state;
 
       if (!okay)
       {
@@ -594,13 +593,12 @@ namespace Server.Items
         /* Too much time has passed and the test house you created has been deleted.
          * Please try again!
          */
-        from.SendGump(new NoticeGump(1060637, 30720, 1060647, 32512, 320, 180, null, null));
+        from.SendGump(new NoticeGump(1060637, 30720, 1060647, 32512, 320, 180));
 
         return;
       }
 
       Point3D center = prevHouse.Location;
-      Map map = prevHouse.Map;
 
       prevHouse.Delete();
 
@@ -758,8 +756,7 @@ namespace Server.Items
              * If you are absolutely certain you wish to proceed, click the button next to OKAY below.
              * If you do not wish to trade for this house, click CANCEL.
              */
-            from.SendGump(new WarningGump(1060635, 30720, 1049583, 32512, 420, 280, PlacementWarning_Callback,
-              prev));
+            from.SendGump(new WarningGump(1060635, 30720, 1049583, 32512, 420, 280, okay => PlacementWarning_Callback(from, okay, prev)));
 
             return true;
           }

@@ -102,7 +102,7 @@ namespace Server.Mobiles
       }
     }
 
-    private void ConfirmRelease_Callback(Mobile from, bool okay, object state)
+    private void ConfirmRelease_Callback(Mobile from, bool okay)
     {
       if (okay)
         EndRelease(from);
@@ -110,10 +110,8 @@ namespace Server.Mobiles
 
     public override void BeginRelease(Mobile from)
     {
-      Container pack = Backpack;
-
-      if (pack != null && pack.Items.Count > 0)
-        from.SendGump(new WarningGump(1060635, 30720, 1061672, 32512, 420, 280, ConfirmRelease_Callback, null));
+      if (Backpack?.Items.Count > 0)
+        from.SendGump(new WarningGump(1060635, 30720, 1061672, 32512, 420, 280, okay => ConfirmRelease_Callback(from, okay)));
       else
         EndRelease(from);
     }

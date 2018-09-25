@@ -20,13 +20,12 @@ namespace Server.Commands.Generic
       ListOptimized = true;
     }
 
-    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
       if (list.Count > 0)
       {
-        List<string> columns = new List<string>();
+        List<string> columns = new List<string> { "Object" };
 
-        columns.Add("Object");
 
         if (e.Length > 0)
         {
@@ -55,12 +54,12 @@ namespace Server.Commands.Generic
     private string[] m_Columns;
     private Mobile m_From;
 
-    private ArrayList m_List;
+    private List<object> m_List;
     private int m_Page;
 
     private object m_Select;
 
-    public InterfaceGump(Mobile from, string[] columns, ArrayList list, int page, object select) : base(30, 30)
+    public InterfaceGump(Mobile from, string[] columns, List<object> list, int page, object select) : base(30, 30)
     {
       m_From = from;
 
@@ -248,10 +247,10 @@ namespace Server.Commands.Generic
 
     private Item m_Item;
 
-    private ArrayList m_List;
+    private List<object> m_List;
     private int m_Page;
 
-    public InterfaceItemGump(Mobile from, string[] columns, ArrayList list, int page, Item item) : base(30, 30)
+    public InterfaceItemGump(Mobile from, string[] columns, List<object> list, int page, Item item) : base(30, 30)
     {
       m_From = from;
 
@@ -381,12 +380,12 @@ namespace Server.Commands.Generic
     private string[] m_Columns;
     private Mobile m_From;
 
-    private ArrayList m_List;
+    private List<object> m_List;
 
     private Mobile m_Mobile;
     private int m_Page;
 
-    public InterfaceMobileGump(Mobile from, string[] columns, ArrayList list, int page, Mobile mob)
+    public InterfaceMobileGump(Mobile from, string[] columns, List<object> list, int page, Mobile mob)
       : base(30, 30)
     {
       m_From = from;

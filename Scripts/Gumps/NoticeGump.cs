@@ -2,18 +2,16 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-  public delegate void NoticeGumpCallback(Mobile from, object state);
+  public delegate void NoticeGumpCallback();
 
   public class NoticeGump : Gump
   {
     private NoticeGumpCallback m_Callback;
-    private object m_State;
 
     public NoticeGump(int header, int headerColor, object content, int contentColor, int width, int height,
-      NoticeGumpCallback callback, object state) : base((640 - width) / 2, (480 - height) / 2)
+      NoticeGumpCallback callback = null) : base((640 - width) / 2, (480 - height) / 2)
     {
       m_Callback = callback;
-      m_State = state;
 
       Closable = false;
 
@@ -43,7 +41,7 @@ namespace Server.Gumps
     public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (info.ButtonID == 1)
-        m_Callback?.Invoke(sender.Mobile, m_State);
+        m_Callback?.Invoke();
     }
   }
 }

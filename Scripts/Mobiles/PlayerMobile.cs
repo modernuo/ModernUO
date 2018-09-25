@@ -713,7 +713,7 @@ namespace Server.Mobiles
           notice = "The server is currently under lockdown. You have sufficient access level to connect.";
         }
 
-        from.SendGump(new NoticeGump(1060637, 30720, notice, 0xFFC000, 300, 140, null, null));
+        from.SendGump(new NoticeGump(1060637, 30720, notice, 0xFFC000, 300, 140));
         return;
       }
 

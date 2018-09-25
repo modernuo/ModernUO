@@ -185,12 +185,10 @@ namespace Server.Commands
       }
     }
 
-    public static void DeleteList_Callback(Mobile from, bool okay, object state)
+    public static void DeleteList_Callback(Mobile from, bool okay, List<IEntity> list)
     {
       if (okay)
       {
-        List<IEntity> list = (List<IEntity>)state;
-
         CommandLogging.WriteLine(from, "{0} {1} deleting {2} object{3}", from.AccessLevel,
           CommandLogging.Format(from), list.Count, list.Count == 1 ? "" : "s");
 
@@ -213,11 +211,12 @@ namespace Server.Commands
     [Description("Deletes all items and mobiles in your facet. Players and their inventory will not be deleted.")]
     public static void ClearFacet_OnCommand(CommandEventArgs e)
     {
-      Map map = e.Mobile.Map;
+      Mobile from = e.Mobile;
+      Map map = from.Map;
 
       if (map == null || map == Map.Internal)
       {
-        e.Mobile.SendMessage("You may not run that command here.");
+        from.SendMessage("You may not run that command here.");
         return;
       }
 
@@ -233,17 +232,17 @@ namespace Server.Commands
 
       if (list.Count > 0)
       {
-        CommandLogging.WriteLine(e.Mobile, "{0} {1} starting facet clear of {2} ({3} object{4})",
-          e.Mobile.AccessLevel, CommandLogging.Format(e.Mobile), map, list.Count, list.Count == 1 ? "" : "s");
+        CommandLogging.WriteLine(from, "{0} {1} starting facet clear of {2} ({3} object{4})",
+          from.AccessLevel, CommandLogging.Format(from), map, list.Count, list.Count == 1 ? "" : "s");
 
-        e.Mobile.SendGump(
+        from.SendGump(
           new WarningGump(1060635, 30720,
             $"You are about to delete {list.Count} object{(list.Count == 1 ? "" : "s")} from this facet.  Do you really wish to continue?",
-            0xFFC000, 360, 260, DeleteList_Callback, list));
+            0xFFC000, 360, 260, okay => DeleteList_Callback(from, okay, list)));
       }
       else
       {
-        e.Mobile.SendMessage("There were no objects found to delete.");
+        from.SendMessage("There were no objects found to delete.");
       }
     }
 

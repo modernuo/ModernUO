@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands.Generic;
 using Server.Gumps;
@@ -24,7 +25,7 @@ namespace Server.Commands
 
     public ArrayList BatchCommands{ get; }
 
-    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
       if (list.Count == 0)
       {
@@ -73,7 +74,7 @@ namespace Server.Commands
           if (list.Count > 20)
             CommandLogging.Enabled = false;
 
-          ArrayList usedList;
+          List<object> usedList;
 
           if (Utility.InsensitiveCompare(bc.Object, "Current") == 0)
           {
@@ -83,7 +84,7 @@ namespace Server.Commands
           {
             Hashtable propertyChains = new Hashtable();
 
-            usedList = new ArrayList(list.Count);
+            usedList = new List<object>(list.Count);
 
             for (int j = 0; j < list.Count; ++j)
             {

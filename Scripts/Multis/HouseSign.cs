@@ -148,11 +148,11 @@ namespace Server.Multis
       }
     }
 
-    public void ClaimGump_Callback(Mobile from, bool okay, object state)
+    public void ClaimGump_Callback(Mobile from, bool okay)
     {
       if (okay && Owner != null && Owner.Owner == null && Owner.DecayLevel != DecayLevel.DemolitionPending)
       {
-        bool canClaim = false;
+        bool canClaim;
 
         if (Owner.CoOwners == null || Owner.CoOwners.Count == 0)
           canClaim = Owner.IsFriend(from);
@@ -185,7 +185,7 @@ namespace Server.Multis
           canClaim = Owner.IsCoOwner(m);
 
         if (canClaim && !BaseHouse.HasAccountHouse(m))
-          m.SendGump(new WarningGump(501036, 32512, 1049719, 32512, 420, 280, ClaimGump_Callback, null));
+          m.SendGump(new WarningGump(501036, 32512, 1049719, 32512, 420, 280, okay => ClaimGump_Callback(m, okay)));
       }
 
       ShowSign(m);

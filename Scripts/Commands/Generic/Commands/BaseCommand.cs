@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 
 namespace Server.Commands.Generic
@@ -13,13 +14,8 @@ namespace Server.Commands.Generic
 
   public abstract class BaseCommand
   {
-    private ArrayList m_Responses, m_Failures;
-
-    public BaseCommand()
-    {
-      m_Responses = new ArrayList();
-      m_Failures = new ArrayList();
-    }
+    private List<MessageEntry> m_Responses = new List<MessageEntry>();
+    private List<MessageEntry> m_Failures = new List<MessageEntry>();
 
     public bool ListOptimized{ get; set; }
 
@@ -50,7 +46,7 @@ namespace Server.Commands.Generic
       return mob == null || mob == from || from.AccessLevel > mob.AccessLevel;
     }
 
-    public virtual void ExecuteList(CommandEventArgs e, ArrayList list)
+    public virtual void ExecuteList(CommandEventArgs e, List<object> list)
     {
       for (int i = 0; i < list.Count; ++i)
         Execute(e, list[i]);
@@ -69,7 +65,7 @@ namespace Server.Commands.Generic
     {
       for (int i = 0; i < m_Responses.Count; ++i)
       {
-        MessageEntry entry = (MessageEntry)m_Responses[i];
+        MessageEntry entry = m_Responses[i];
 
         if (entry.m_Message == message)
         {
@@ -84,16 +80,11 @@ namespace Server.Commands.Generic
       m_Responses.Add(new MessageEntry(message));
     }
 
-    public void AddResponse(Gump gump)
-    {
-      m_Responses.Add(gump);
-    }
-
     public void LogFailure(string message)
     {
       for (int i = 0; i < m_Failures.Count; ++i)
       {
-        MessageEntry entry = (MessageEntry)m_Failures[i];
+        MessageEntry entry = m_Failures[i];
 
         if (entry.m_Message == message)
         {
@@ -113,23 +104,16 @@ namespace Server.Commands.Generic
       if (m_Responses.Count > 0)
         for (int i = 0; i < m_Responses.Count; ++i)
         {
-          object obj = m_Responses[i];
+          MessageEntry entry = m_Responses[i];
 
-          if (obj is MessageEntry entry)
-          {
-            from.SendMessage(entry.ToString());
+          from.SendMessage(entry.ToString());
 
-            if (flushToLog)
-              CommandLogging.WriteLine(from, entry.ToString());
-          }
-          else if (obj is Gump gump)
-          {
-            from.SendGump(gump);
-          }
+          if (flushToLog)
+            CommandLogging.WriteLine(from, entry.ToString());
         }
       else
         for (int i = 0; i < m_Failures.Count; ++i)
-          from.SendMessage(((MessageEntry)m_Failures[i]).ToString());
+          from.SendMessage(m_Failures[i].ToString());
 
       m_Responses.Clear();
       m_Failures.Clear();
@@ -148,10 +132,7 @@ namespace Server.Commands.Generic
 
       public override string ToString()
       {
-        if (m_Count > 1)
-          return $"{m_Message} ({m_Count})";
-
-        return m_Message;
+        return m_Count > 1 ? $"{m_Message} ({m_Count})" : m_Message;
       }
     }
   }

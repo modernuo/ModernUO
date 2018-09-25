@@ -125,7 +125,7 @@ namespace Server.Regions
       if (House.InternalizedVendors.Count > 0 && House.IsInside(m) && !House.IsInside(oldLocation, 16) &&
           House.IsOwner(m) && m.Alive &&
           !m.HasGump<NoticeGump>())
-        m.SendGump(new NoticeGump(1060635, 30720, 1061826, 32512, 320, 180, null, null));
+        m.SendGump(new NoticeGump(1060635, 30720, 1061826, 32512, 320, 180));
 
       m_Recursion = false;
     }
@@ -185,7 +185,7 @@ namespace Server.Regions
       if (House.InternalizedVendors.Count > 0 && House.IsInside(from) && !House.IsInside(oldLocation, 16) &&
           House.IsOwner(from) && from.Alive &&
           !from.HasGump<NoticeGump>())
-        from.SendGump(new NoticeGump(1060635, 30720, 1061826, 32512, 320, 180, null, null));
+        from.SendGump(new NoticeGump(1060635, 30720, 1061826, 32512, 320, 180));
 
       return true;
     }

@@ -212,7 +212,7 @@ namespace Server.Commands.Generic
 
       bool flushToLog = false;
 
-      if (obj is ArrayList list)
+      if (obj is List<object> list)
       {
         if (list.Count > 20)
           CommandLogging.Enabled = false;
@@ -230,7 +230,7 @@ namespace Server.Commands.Generic
       else if (obj != null)
       {
         if (command.ListOptimized)
-          command.ExecuteList(e, new ArrayList { obj });
+          command.ExecuteList(e, new List<object>{ obj });
         else
           command.Execute(e, obj);
       }

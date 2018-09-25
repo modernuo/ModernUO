@@ -1754,7 +1754,7 @@ namespace Server.Multis
              * contract vendor in the house.
              */
             to.SendGump(
-              new WarningGump(1060635, 30720, 1062487, 32512, 420, 280, ConfirmTransfer_Callback, from));
+              new WarningGump(1060635, 30720, 1062487, 32512, 420, 280, okay => ConfirmTransfer_Callback(to, okay, from)));
           }
           else
           {
@@ -1769,10 +1769,8 @@ namespace Server.Multis
       }
     }
 
-    private void ConfirmTransfer_Callback(Mobile to, bool ok, object state)
+    private void ConfirmTransfer_Callback(Mobile to, bool ok, Mobile from)
     {
-      Mobile from = (Mobile)state;
-
       if (!ok || Deleted || !from.CheckAlive() || !IsOwner(from))
         return;
 
