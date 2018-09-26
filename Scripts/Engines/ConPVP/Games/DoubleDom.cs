@@ -663,21 +663,21 @@ namespace Server.Engines.ConPVP
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourney != null && tourney.TournyType == TournyType.FreeForAll)
+      if (tourney != null && tourney.TourneyType == TourneyType.FreeForAll)
       {
         sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
         sb.Append("-man FFA");
       }
-      else if (tourney != null && tourney.TournyType == TournyType.RandomTeam)
+      else if (tourney != null && tourney.TourneyType == TourneyType.RandomTeam)
       {
         sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-team");
       }
-      else if (tourney != null && tourney.TournyType == TournyType.RedVsBlue)
+      else if (tourney != null && tourney.TourneyType == TourneyType.RedVsBlue)
       {
         sb.Append("Red v Blue");
       }
-      else if (tourney != null && tourney.TournyType == TournyType.Faction)
+      else if (tourney != null && tourney.TourneyType == TourneyType.Faction)
       {
         sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-team Faction");

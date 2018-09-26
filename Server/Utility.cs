@@ -860,10 +860,15 @@ namespace Server
       if (randomHue)
         m.FacialHairHue = m.Race.RandomHairHue();
     }
-
-    public static List<TOutput> CastConvertList<TInput, TOutput>(List<TInput> list) where TOutput : TInput
+    
+    public static List<TOutput> CastListContravariant<TInput, TOutput>(List<TInput> list) where TInput : TOutput
     {
-      return list.ConvertAll(delegate(TInput value) { return (TOutput)value; });
+      return list.ConvertAll(value => (TOutput)value);
+    }
+
+    public static List<TOutput> CastListCovariant<TInput, TOutput>(List<TInput> list) where TOutput : TInput
+    {
+      return list.ConvertAll(value => (TOutput)value);
     }
 
     public static List<TOutput> SafeConvertList<TInput, TOutput>(List<TInput> list) where TOutput : class

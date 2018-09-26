@@ -37,14 +37,14 @@ namespace Server.Engines.ConPVP
     private Map m_GateFacet;
 
     private Point3D m_GatePoint;
-    public TournyMatch m_Match;
+    public TourneyMatch m_Match;
 
     public Arena m_OverrideArena;
 
     private Timer m_SDWarnTimer, m_SDActivateTimer;
     public Tournament m_Tournament;
 
-    private ArrayList m_Walls = new ArrayList();
+    private List<Item> m_Walls = new List<Item>();
 
     private bool m_Yielding;
 
@@ -679,11 +679,11 @@ namespace Server.Engines.ConPVP
         winner.Players.Length == 1 ? "{0} has won the duel." : "{0} and {1} team have won the duel.",
         winner.Players.Length == 1 ? "You have won the duel." : "Your team has won the duel.");
 
-      if (m_Tournament != null && winner.TournyPart != null)
+      if (m_Tournament != null && winner.TourneyPart != null)
       {
-        m_Match.Winner = winner.TournyPart;
-        winner.TournyPart.WonMatch(m_Match);
-        m_Tournament.HandleWon(Arena, m_Match, winner.TournyPart);
+        m_Match.Winner = winner.TourneyPart;
+        winner.TourneyPart.WonMatch(m_Match);
+        m_Tournament.HandleWon(Arena, m_Match, winner.TourneyPart);
       }
 
       for (int i = 0; i < Participants.Count; ++i)
@@ -697,7 +697,7 @@ namespace Server.Engines.ConPVP
             loser.Players.Length == 1 ? "You have lost the duel." : "Your team has lost the duel.");
 
           if (m_Tournament != null)
-            loser.TournyPart?.LostMatch(m_Match);
+            loser.TourneyPart?.LostMatch(m_Match);
         }
 
         for (int j = 0; j < loser.Players.Length; ++j)
@@ -1013,7 +1013,7 @@ namespace Server.Engines.ConPVP
     {
       m_AutoTieTimer?.Stop();
 
-      TimeSpan ts = m_Tournament == null || m_Tournament.TournyType == TournyType.Standard
+      TimeSpan ts = m_Tournament == null || m_Tournament.TourneyType == TourneyType.Standard
         ? AutoTieDelay
         : TimeSpan.FromMinutes(90.0);
 
@@ -1039,11 +1039,11 @@ namespace Server.Engines.ConPVP
 
       StopSDTimers();
 
-      ArrayList remaining = new ArrayList();
+      List<TourneyParticipant> remaining = new List<TourneyParticipant>();
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         if (p.Eliminated)
         {
@@ -1069,8 +1069,8 @@ namespace Server.Engines.ConPVP
               DelayBounce(TimeSpan.FromSeconds(8.0), pl.Mobile, null);
           }
 
-          if (p.TournyPart != null)
-            remaining.Add(p.TournyPart);
+          if (p.TourneyPart != null)
+            remaining.Add(p.TourneyPart);
         }
 
         for (int j = 0; j < p.Players.Length; ++j)
@@ -1652,7 +1652,7 @@ namespace Server.Engines.ConPVP
     public void DestroyWall()
     {
       for (int i = 0; i < m_Walls.Count; ++i)
-        ((Item)m_Walls[i]).Delete();
+        m_Walls[i].Delete();
 
       m_Walls.Clear();
     }
@@ -1699,11 +1699,11 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         if (p.Players.Length > 1)
         {
-          ArrayList players = new ArrayList();
+          List<Mobile> players = new List<Mobile>();
 
           for (int j = 0; j < p.Players.Length; ++j)
           {
@@ -1718,7 +1718,7 @@ namespace Server.Engines.ConPVP
           if (players.Count > 1)
             for (int leaderIndex = 0; leaderIndex + 1 < players.Count; leaderIndex += Party.Capacity)
             {
-              Mobile leader = (Mobile)players[leaderIndex];
+              Mobile leader = players[leaderIndex];
               Party party = Party.Get(leader);
 
               if (party == null)
@@ -1734,7 +1734,7 @@ namespace Server.Engines.ConPVP
 
               for (int j = leaderIndex + 1; j < players.Count && j < leaderIndex + Party.Capacity; ++j)
               {
-                Mobile player = (Mobile)players[j];
+                Mobile player = players[j];
                 Party existing = Party.Get(player);
 
                 if (existing == party)
@@ -1767,7 +1767,7 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -1907,7 +1907,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -1943,7 +1943,7 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -1970,7 +1970,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -1994,7 +1994,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -2052,7 +2052,7 @@ namespace Server.Engines.ConPVP
         {
           for (int i = 0; i < Participants.Count; ++i)
           {
-            Participant p = (Participant)Participants[i];
+            Participant p = Participants[i];
 
             for (int j = 0; j < p.Players.Length; ++j)
             {
@@ -2073,7 +2073,7 @@ namespace Server.Engines.ConPVP
 
         for (int i = 0; i < Participants.Count; ++i)
         {
-          Participant p = (Participant)Participants[i];
+          Participant p = Participants[i];
 
           for (int j = 0; j < p.Players.Length; ++j)
           {
@@ -2093,7 +2093,7 @@ namespace Server.Engines.ConPVP
         {
           for (int i = 0; i < Participants.Count; ++i)
           {
-            Participant p = (Participant)Participants[i];
+            Participant p = Participants[i];
 
             for (int j = 0; j < p.Players.Length; ++j)
             {
@@ -2136,7 +2136,7 @@ namespace Server.Engines.ConPVP
 
           for (int i = 0; i < Participants.Count; ++i)
           {
-            Participant p = (Participant)Participants[i];
+            Participant p = Participants[i];
 
             for (int j = 0; j < p.Players.Length; ++j)
             {
@@ -2169,7 +2169,7 @@ namespace Server.Engines.ConPVP
         {
           for (int i = 0; i < Participants.Count; ++i)
           {
-            Participant p = (Participant)Participants[i];
+            Participant p = Participants[i];
 
             for (int j = 0; j < p.Players.Length; ++j)
             {
@@ -2192,7 +2192,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -2320,11 +2320,11 @@ namespace Server.Engines.ConPVP
 
     private class ExitTeleporter : Item
     {
-      private ArrayList m_Entries;
+      private List<ReturnEntry> m_Entries;
 
       public ExitTeleporter() : base(0x1822)
       {
-        m_Entries = new ArrayList();
+        m_Entries = new List<ReturnEntry>();
 
         Hue = 0x482;
         Movable = false;
@@ -2353,7 +2353,7 @@ namespace Server.Engines.ConPVP
       {
         for (int i = 0; i < m_Entries.Count; ++i)
         {
-          ReturnEntry entry = (ReturnEntry)m_Entries[i];
+          ReturnEntry entry = m_Entries[i];
 
           if (entry.Mobile == mob)
             return entry;
@@ -2397,7 +2397,7 @@ namespace Server.Engines.ConPVP
 
         for (int i = 0; i < m_Entries.Count; ++i)
         {
-          ReturnEntry entry = (ReturnEntry)m_Entries[i];
+          ReturnEntry entry = m_Entries[i];
 
           writer.Write(entry.Mobile);
           writer.Write(entry.Location);
@@ -2420,7 +2420,7 @@ namespace Server.Engines.ConPVP
           {
             int count = reader.ReadEncodedInt();
 
-            m_Entries = new ArrayList(count);
+            m_Entries = new List<ReturnEntry>(count);
 
             for (int i = 0; i < count; ++i)
             {
@@ -2511,35 +2511,5 @@ namespace Server.Engines.ConPVP
         Delete();
       }
     }
-
-    /*public static Packet BindPackets( bool compress, params Packet[] packets )
-    {
-      if ( packets.Length == 0 )
-        throw new ArgumentException( "No packets to bind", "packets" );
-
-      byte[][] compiled = new byte[packets.Length][];
-      int[] lengths = new int[packets.Length];
-
-      int length = 0;
-
-      for ( int i = 0; i < packets.Length; ++i )
-      {
-        compiled[i] = packets[i].Compile( compress, out lengths[i] );
-        length += lengths[i];
-      }
-
-      return new BoundPackets( length, compiled, lengths );
-    }
-
-    private class BoundPackets : Packet
-    {
-      public BoundPackets( int length, byte[][] compiled, int[] lengths ) : base( 0, length )
-      {
-        m_Stream.Seek( 0, System.IO.SeekOrigin.Begin );
-
-        for ( int i = 0; i < compiled.Length; ++i )
-          m_Stream.Write( compiled[i], 0, lengths[i] );
-      }
-    }*/
   }
 }

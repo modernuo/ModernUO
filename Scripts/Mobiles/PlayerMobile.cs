@@ -3874,7 +3874,7 @@ namespace Server.Mobiles
       get => m_DuelPlayer;
       set
       {
-        bool wasInTourny = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
+        bool wasInTourney = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
 
         m_DuelPlayer = value;
 
@@ -3883,9 +3883,9 @@ namespace Server.Mobiles
         else
           DuelContext = m_DuelPlayer.Participant.Context;
 
-        bool isInTourny = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
+        bool isInTourney = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
 
-        if (wasInTourny != isInTourny)
+        if (wasInTourney != isInTourney)
           SendEverything();
       }
     }
