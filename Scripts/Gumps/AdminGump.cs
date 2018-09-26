@@ -2756,9 +2756,7 @@ namespace Server.Gumps
         }
         case 7:
         {
-          Mobile m = m_State as Mobile;
-
-          if (m == null)
+          if (!(m_State is Mobile m))
             break;
 
           string notice = null;
