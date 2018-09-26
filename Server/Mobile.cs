@@ -47,7 +47,7 @@ namespace Server
 
   public delegate void PromptCallback(Mobile from, string text);
 
-  public delegate void PromptStateCallback<T>(Mobile from, string text, T state);
+  public delegate void PromptStateCallback<in T>(Mobile from, string text, T state);
 
   #endregion
 
@@ -8205,8 +8205,6 @@ namespace Server
     private class SimpleStatePrompt<T> : Prompt
     {
       private PromptStateCallback<T> m_Callback;
-
-      private bool m_CallbackHandlesCancel;
       private PromptStateCallback<T> m_CancelCallback;
 
       private T m_State;
@@ -8222,7 +8220,7 @@ namespace Server
       {
         m_Callback = callback;
         m_State = state;
-        m_CallbackHandlesCancel = callbackHandlesCancel;
+        m_CancelCallback = callbackHandlesCancel ? callback : null;
       }
 
       public SimpleStatePrompt(PromptStateCallback<T> callback, T state) : this(callback, false, state)
@@ -8236,12 +8234,7 @@ namespace Server
 
       public override void OnCancel(Mobile from)
       {
-        if (m_CallbackHandlesCancel && m_Callback != null)
-          m_Callback(from, "", m_State);
-        else
-        {
-          m_CancelCallback?.Invoke(from, "", m_State);
-        }
+        m_CancelCallback?.Invoke(from, "", m_State);
       }
     }
 
