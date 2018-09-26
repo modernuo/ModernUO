@@ -25,8 +25,7 @@ namespace Server.Commands.Generic
       if (map == null || map == Map.Internal)
         return;
 
-      impl.OnTarget(from, map, Point3D.Zero, new Point3D(map.Width - 1, map.Height - 1, 0),
-        new object[] { command, args });
+      impl.OnTarget(from, map, Point3D.Zero, new Point3D(map.Width - 1, map.Height - 1, 0), command, args);
     }
   }
 }

@@ -54,12 +54,7 @@ namespace Server.Commands
 
     public static void BeginWipe(Mobile from, WipeType type)
     {
-      BoundingBoxPicker.Begin(from, WipeBox_Callback, type);
-    }
-
-    private static void WipeBox_Callback(Mobile from, Map map, Point3D start, Point3D end, object state)
-    {
-      DoWipe(from, map, start, end, (WipeType)state);
+      BoundingBoxPicker.Begin(from, (map, start, end) => DoWipe(from, map, start, end, type));
     }
 
     public static void DoWipe(Mobile from, Map map, Point3D start, Point3D end, WipeType type)

@@ -103,16 +103,16 @@ namespace Server.Items
     public string TitleString{ get; }
   }
 
-  public delegate void CustomHuePickerCallback(Mobile from, object state, int hue);
+  public delegate void CustomHuePickerCallback<in T>(Mobile from, T state, int hue);
 
-  public class CustomHuePickerGump : Gump
+  public class CustomHuePickerGump<T> : Gump
   {
-    private CustomHuePickerCallback m_Callback;
+    private CustomHuePickerCallback<T> m_Callback;
     private CustomHuePicker m_Definition;
     private Mobile m_From;
-    private object m_State;
+    private T m_State;
 
-    public CustomHuePickerGump(Mobile from, CustomHuePicker definition, CustomHuePickerCallback callback, object state) :
+    public CustomHuePickerGump(Mobile from, CustomHuePicker definition, CustomHuePickerCallback<T> callback, T state) :
       base(50, 50)
     {
       m_From = from;

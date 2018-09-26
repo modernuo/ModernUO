@@ -432,9 +432,8 @@ namespace Server.Commands
       from.SendMessage(sb.ToString());
     }
 
-    private static void TileBox_Callback(Mobile from, Map map, Point3D start, Point3D end, object state)
+    private static void TileBox_Callback(Mobile from, Map map, Point3D start, Point3D end, TileState ts)
     {
-      TileState ts = (TileState)state;
       bool mapAvg = false;
 
       switch (ts.m_ZType)
@@ -456,10 +455,13 @@ namespace Server.Commands
 
     private static void Internal_OnCommand(CommandEventArgs e, bool outline)
     {
+      Mobile from = e.Mobile;
+      
       if (e.Length >= 1)
-        BoundingBoxPicker.Begin(e.Mobile, TileBox_Callback, new TileState(TileZType.Start, 0, e.Arguments, outline));
+        BoundingBoxPicker.Begin(from, (map, start, end) =>
+          TileBox_Callback(from, map, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline)));
       else
-        e.Mobile.SendMessage("Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]",
+        from.SendMessage("Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]",
           outline ? "Outline" : "Tile");
     }
 
@@ -509,6 +511,8 @@ namespace Server.Commands
 
     private static void InternalZ_OnCommand(CommandEventArgs e, bool outline)
     {
+      Mobile from = e.Mobile;
+      
       if (e.Length >= 2)
       {
         string[] subArgs = new string[e.Length - 1];
@@ -516,23 +520,25 @@ namespace Server.Commands
         for (int i = 0; i < subArgs.Length; ++i)
           subArgs[i] = e.Arguments[i + 1];
 
-        BoundingBoxPicker.Begin(e.Mobile, TileBox_Callback,
-          new TileState(TileZType.Fixed, e.GetInt32(0), subArgs, outline));
+        BoundingBoxPicker.Begin(from, (map, start, end) =>
+          TileBox_Callback(from, map, start, end, new TileState(TileZType.Fixed, e.GetInt32(0), subArgs, outline)));
       }
       else
       {
-        e.Mobile.SendMessage("Format: {0}Z <z> <type> [params] [set {{<propertyName> <value> ...}}]",
+        from.SendMessage("Format: {0}Z <z> <type> [params] [set {{<propertyName> <value> ...}}]",
           outline ? "Outline" : "Tile");
       }
     }
 
     private static void InternalAvg_OnCommand(CommandEventArgs e, bool outline)
     {
+      Mobile from = e.Mobile;
+      
       if (e.Length >= 1)
-        BoundingBoxPicker.Begin(e.Mobile, TileBox_Callback,
-          new TileState(TileZType.MapAverage, 0, e.Arguments, outline));
+        BoundingBoxPicker.Begin(from, (map, start, end) =>
+          TileBox_Callback(from, map, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline)));
       else
-        e.Mobile.SendMessage("Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]",
+        from.SendMessage("Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]",
           outline ? "Outline" : "Tile");
     }
 
@@ -671,30 +677,6 @@ namespace Server.Commands
           return true;
 
       return false;
-    }
-
-    public class AddTarget : Target
-    {
-      private string[] m_Args;
-
-      public AddTarget(string[] args) : base(-1, true, TargetFlags.None)
-      {
-        m_Args = args;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-        {
-          if (p is Item item)
-            p = item.GetWorldTop();
-          else if (p is Mobile m)
-            p = m.Location;
-
-          Point3D point = new Point3D(p);
-          Add.Invoke(from, point, point, m_Args);
-        }
-      }
     }
 
     private enum TileZType

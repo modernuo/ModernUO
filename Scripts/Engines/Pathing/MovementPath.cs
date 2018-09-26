@@ -94,9 +94,9 @@ namespace Server
       }
     }
 
-    public static void Path_OnTarget(Mobile from, object obj)
+    public static void Path_OnTarget(Mobile from, object targeted)
     {
-      if (!(obj is IPoint3D p))
+      if (!(targeted is IPoint3D p))
         return;
 
       SpellHelper.GetSurfaceTop(ref p);
@@ -104,48 +104,6 @@ namespace Server
       Path(from, p, FastAStarAlgorithm.Instance, "Fast", 0);
       Path(from, p, SlowAStarAlgorithm.Instance, "Slow", 2);
       OverrideAlgorithm = null;
-
-      /*MovementPath path = new MovementPath( from, new Point3D( p ) );
-
-      if ( !path.Success )
-      {
-        from.SendMessage( "No path to there could be found." );
-      }
-      else
-      {
-        //for ( int i = 0; i < path.Directions.Length; ++i )
-        //	Timer.DelayCall( TimeSpan.FromSeconds( 0.1 + (i * 0.3) ), new TimerStateCallback( Pathfind ), new object[]{ from, path.Directions[i] } );
-        int x = from.X;
-        int y = from.Y;
-        int z = from.Z;
-
-        for ( int i = 0; i < path.Directions.Length; ++i )
-        {
-          Movement.Movement.Offset( path.Directions[i], ref x, ref y );
-
-          new Items.RecallRune().MoveToWorld( new Point3D( x, y, z ), from.Map );
-        }
-      }*/
-    }
-
-    public static void Pathfind(object state)
-    {
-      object[] states = (object[])state;
-      Mobile from = (Mobile)states[0];
-      Direction d = (Direction)states[1];
-
-      try
-      {
-        from.Direction = d;
-        from.NetState.BlockAllPackets = true;
-        from.Move(d);
-        from.NetState.BlockAllPackets = false;
-        from.ProcessDelta();
-      }
-      catch
-      {
-        // ignored
-      }
     }
   }
 }

@@ -52,7 +52,8 @@ namespace Server
     [Description("Makes a targeted area of dynamic items static.")]
     public static void Freeze_OnCommand(CommandEventArgs e)
     {
-      BoundingBoxPicker.Begin(e.Mobile, FreezeBox_Callback, null);
+      Mobile from = e.Mobile;
+      BoundingBoxPicker.Begin(from, (map, start, end) => FreezeBox_Callback(from, map, start, end));
     }
 
     [Usage("FreezeMap")]
@@ -82,7 +83,7 @@ namespace Server
         400, okay => callback(m, okay, new StateInfo(map, start, end))));
     }
 
-    private static void FreezeBox_Callback(Mobile from, Map map, Point3D start, Point3D end, object state)
+    private static void FreezeBox_Callback(Mobile from, Map map, Point3D start, Point3D end)
     {
       SendWarning(from, "You are about to freeze a section of items.", BaseFreezeWarning, map, start, end,
         FreezeWarning_Callback);
@@ -307,7 +308,8 @@ namespace Server
     [Description("Makes a targeted area of static items dynamic.")]
     public static void Unfreeze_OnCommand(CommandEventArgs e)
     {
-      BoundingBoxPicker.Begin(e.Mobile, UnfreezeBox_Callback, null);
+      Mobile from = e.Mobile;
+      BoundingBoxPicker.Begin(from, (map, start, end) => UnfreezeBox_Callback(from, map, start, end));
     }
 
     [Usage("UnfreezeMap")]
@@ -329,7 +331,7 @@ namespace Server
         NullP3D, NullP3D, UnfreezeWarning_Callback);
     }
 
-    private static void UnfreezeBox_Callback(Mobile from, Map map, Point3D start, Point3D end, object state)
+    private static void UnfreezeBox_Callback(Mobile from, Map map, Point3D start, Point3D end)
     {
       SendWarning(from, "You are about to unfreeze a section of items.", BaseUnfreezeWarning, map, start, end,
         UnfreezeWarning_Callback);
