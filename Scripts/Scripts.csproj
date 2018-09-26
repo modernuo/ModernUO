@@ -143,6 +143,7 @@
     <Compile Include="Engines\BulkOrders\Books\BODBuyGump.cs" />
     <Compile Include="Engines\BulkOrders\Books\BODType.cs" />
     <Compile Include="Engines\BulkOrders\Books\BulkOrderBook.cs" />
+    <Compile Include="Engines\BulkOrders\Books\IBOBEntry.cs" />
     <Compile Include="Engines\BulkOrders\BulkMaterialType.cs" />
     <Compile Include="Engines\BulkOrders\LargeBOD.cs" />
     <Compile Include="Engines\BulkOrders\LargeBODAcceptGump.cs" />

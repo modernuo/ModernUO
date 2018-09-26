@@ -9,15 +9,15 @@ namespace Server.Engines.BulkOrders
   {
     private BulkOrderBook m_Book;
     private PlayerMobile m_From;
-    private object m_Object;
+    private IBOBEntry m_Entry;
     private int m_Page;
     private int m_Price;
 
-    public BODBuyGump(PlayerMobile from, BulkOrderBook book, object obj, int page, int price) : base(100, 200)
+    public BODBuyGump(PlayerMobile from, BulkOrderBook book, IBOBEntry entry, int page, int price) : base(100, 200)
     {
       m_From = from;
       m_Book = book;
-      m_Object = obj;
+      m_Entry = entry;
       m_Price = price;
       m_Page = page;
 
@@ -44,19 +44,14 @@ namespace Server.Engines.BulkOrders
       {
         PlayerVendor pv = m_Book.RootParent as PlayerVendor;
 
-        if (m_Book.Entries.Contains(m_Object) && pv != null)
+        if (m_Book.Entries.Contains(m_Entry) && pv != null)
         {
           int price = 0;
 
           VendorItem vi = pv.GetVendorItem(m_Book);
 
           if (vi != null && !vi.IsForSale)
-          {
-            if (m_Object is BOBLargeEntry entry)
-              price = entry.Price;
-            else
-              price = ((BOBSmallEntry)m_Object).Price;
-          }
+            price = m_Entry.Price;
 
           if (price != m_Price)
           {
@@ -69,12 +64,7 @@ namespace Server.Engines.BulkOrders
           }
           else
           {
-            Item item = null;
-
-            if (m_Object is BOBLargeEntry entry)
-              item = entry.Reconstruct();
-            else
-              item = ((BOBSmallEntry)m_Object).Reconstruct();
+            Item item = m_Entry.Reconstruct();
 
             if (item == null)
             {
@@ -90,13 +80,13 @@ namespace Server.Engines.BulkOrders
                     item.PileWeight + item.TotalWeight))
               {
                 pv.SayTo(m_From, 503204); // You do not have room in your backpack for this
-                m_From.SendGump(new BOBGump(m_From, m_Book, m_Page, null));
+                m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
               }
               else
               {
                 if (pack.ConsumeTotal(typeof(Gold), price) || Banker.Withdraw(m_From, price))
                 {
-                  m_Book.Entries.Remove(m_Object);
+                  m_Book.Entries.Remove(m_Entry);
                   m_Book.InvalidateProperties();
                   pv.HoldGold += price;
                   m_From.AddToBackpack(item);
@@ -110,7 +100,7 @@ namespace Server.Engines.BulkOrders
                   }
 
                   if (m_Book.Entries.Count > 0)
-                    m_From.SendGump(new BOBGump(m_From, m_Book, m_Page, null));
+                    m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
                   else
                     m_From.SendLocalizedMessage(1062381); // The book is empty.
                 }
