@@ -74,8 +74,8 @@ namespace Server.Gumps
     private AdminGumpPage m_PageType;
     private object m_State;
 
-    public AdminGump(Mobile from, AdminGumpPage pageType, int listPage, ArrayList list, string notice,
-      object state) : base(50, 40)
+    public AdminGump(Mobile from, AdminGumpPage pageType, int listPage = 0, ArrayList list = null, string notice = null,
+      object state = null) : base(50, 40)
     {
       from.CloseGump<AdminGump>();
 
@@ -1216,7 +1216,7 @@ namespace Server.Gumps
       "Opens an interface providing server information and administration features including client, account, and firewall management.")]
     public static void Admin_OnCommand(CommandEventArgs e)
     {
-      e.Mobile.SendGump(new AdminGump(e.Mobile, AdminGumpPage.Clients, 0, null, null, null));
+      e.Mobile.SendGump(new AdminGump(e.Mobile, AdminGumpPage.Clients));
     }
 
     public static int GetHueFor(Mobile m)
@@ -1428,7 +1428,7 @@ namespace Server.Gumps
         a.Delete();
 
         from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, null,
-          $"{a.Username} : The account has been deleted.", null));
+          $"{a.Username} : The account has been deleted."));
       }
       else
       {
@@ -1656,7 +1656,7 @@ namespace Server.Gumps
             default: return;
           }
 
-          from.SendGump(new AdminGump(from, page, 0, null, null, null));
+          from.SendGump(new AdminGump(from, page));
           break;
         }
         case 1:
@@ -2002,7 +2002,7 @@ namespace Server.Gumps
             }
           }
 
-          from.SendGump(new AdminGump(from, page, 0, null, notice, null));
+          from.SendGump(new AdminGump(from, page, 0, null, notice));
 
           switch (index)
           {
@@ -2077,7 +2077,7 @@ namespace Server.Gumps
               {
                 NetState ns = (NetState)results[0];
                 object state = ns.Mobile;
-
+                
                 if (state == null)
                   state = ns.Account;
 
@@ -2088,13 +2088,12 @@ namespace Server.Gumps
                   from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Information, 0, null,
                     "One match found.", state));
                 else
-                  from.SendGump(new AdminGump(from, AdminGumpPage.Clients, 0, results, "One match found.",
-                    null));
+                  from.SendGump(new AdminGump(from, AdminGumpPage.Clients, 0, results, "One match found."));
               }
               else
               {
                 from.SendGump(new AdminGump(from, AdminGumpPage.Clients, 0, results,
-                  notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null), null));
+                  notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null)));
               }
 
               break;
@@ -2467,7 +2466,7 @@ namespace Server.Gumps
             }
             case 26: // View all shared accounts
             {
-              from.SendGump(new AdminGump(from, AdminGumpPage.Accounts_Shared, 0, null, null, null));
+              from.SendGump(new AdminGump(from, AdminGumpPage.Accounts_Shared));
               break;
             }
             case 27: // Ban marked
@@ -2737,7 +2736,7 @@ namespace Server.Gumps
 
                 Firewall.Remove(m_State);
                 from.SendGump(new AdminGump(from, AdminGumpPage.Firewall, 0, null,
-                  $"{m_State} : Removed from firewall.", null));
+                  $"{m_State} : Removed from firewall."));
               }
 
               break;
