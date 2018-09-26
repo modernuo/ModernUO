@@ -44,10 +44,10 @@ namespace Server.Commands
 
       for (int i = 0; i < files.Length; ++i)
       {
-        ArrayList list = DecorationListMag.ReadAll(files[i]);
+        List<DecorationListMag> list = DecorationListMag.ReadAll(files[i]);
 
         for (int j = 0; j < list.Count; ++j)
-          m_Count += ((DecorationListMag)list[j]).Generate(maps);
+          m_Count += list[j].Generate(maps);
       }
     }
   }
@@ -70,7 +70,7 @@ namespace Server.Commands
     private static Queue m_DeleteQueue = new Queue();
 
     private static string[] m_EmptyParams = new string[0];
-    private ArrayList m_Entries;
+    private List<DecorationEntryMag> m_Entries;
     private int m_ItemID;
     private string[] m_Params;
     private Type m_Type;
@@ -923,7 +923,7 @@ namespace Server.Commands
 
       for (int i = 0; i < m_Entries.Count; ++i)
       {
-        DecorationEntryMag entry = (DecorationEntryMag)m_Entries[i];
+        DecorationEntryMag entry = m_Entries[i];
         Point3D loc = entry.Location;
         string extra = entry.Extra;
 
@@ -981,13 +981,14 @@ namespace Server.Commands
       return count;
     }
 
-    public static ArrayList ReadAll(string path)
+    public static List<DecorationListMag> ReadAll(string path)
     {
       using (StreamReader ip = new StreamReader(path))
       {
-        ArrayList list = new ArrayList();
+        List<DecorationListMag> list = new List<DecorationListMag>();
 
-        for (DecorationListMag v = Read(ip); v != null; v = Read(ip))
+        DecorationListMag v;
+        while ((v = Read(ip)) != null)
           list.Add(v);
 
         return list;
@@ -1040,7 +1041,7 @@ namespace Server.Commands
         list.m_Params = m_EmptyParams;
       }
 
-      list.m_Entries = new ArrayList();
+      list.m_Entries = new List<DecorationEntryMag>();
 
       while ((line = ip.ReadLine()) != null)
       {

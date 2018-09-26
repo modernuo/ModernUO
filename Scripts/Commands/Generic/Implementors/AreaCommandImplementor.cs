@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Commands.Generic
 {
@@ -45,7 +45,7 @@ namespace Server.Commands.Generic
 
         eable.Free();
 
-        ArrayList objs = new ArrayList();
+        List<object> objs = new List<object>();
 
         foreach (IEntity obj in eable)
         {

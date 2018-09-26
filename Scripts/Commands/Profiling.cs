@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Server.Diagnostics;
 
 namespace Server.Commands
@@ -91,37 +93,32 @@ namespace Server.Commands
     {
       using (StreamWriter op = new StreamWriter("objects.log"))
       {
-        Hashtable table = new Hashtable();
+        Dictionary<Type, int> table = new Dictionary<Type, int>();
 
         foreach (Item item in World.Items.Values)
         {
           Type type = item.GetType();
 
-          object o = table[type];
-
-          if (o == null)
-            table[type] = 1;
+          if (table.ContainsKey(type))
+            table[type] = 1 + table[type];
           else
-            table[type] = 1 + (int)o;
+            table[type] = 1;
         }
 
-        ArrayList items = new ArrayList(table);
-
+        List<KeyValuePair<Type, int>> items = table.ToList();
         table.Clear();
 
         foreach (Mobile m in World.Mobiles.Values)
         {
           Type type = m.GetType();
 
-          object o = table[type];
-
-          if (o == null)
-            table[type] = 1;
+          if (table.ContainsKey(type))
+            table[type] = 1 + table[type];
           else
-            table[type] = 1 + (int)o;
+            table[type] = 1;
         }
 
-        ArrayList mobiles = new ArrayList(table);
+        List<KeyValuePair<Type, int>> mobiles = table.ToList();
 
         items.Sort(new CountSorter());
         mobiles.Sort(new CountSorter());
@@ -132,16 +129,16 @@ namespace Server.Commands
 
         op.WriteLine("# Items:");
 
-        foreach (DictionaryEntry de in items)
-          op.WriteLine("{0}\t{1:F2}%\t{2}", de.Value, 100 * (int)de.Value / (double)World.Items.Count, de.Key);
+        items.ForEach(kvp =>
+          op.WriteLine("{0}\t{1:F2}%\t{2}", kvp.Value, 100.0 * kvp.Value / World.Items.Count, kvp.Key));
 
         op.WriteLine();
         op.WriteLine();
 
         op.WriteLine("#Mobiles:");
 
-        foreach (DictionaryEntry de in mobiles)
-          op.WriteLine("{0}\t{1:F2}%\t{2}", de.Value, 100 * (int)de.Value / (double)World.Mobiles.Count, de.Key);
+        mobiles.ForEach(kvp =>
+          op.WriteLine("{0}\t{1:F2}%\t{2}", kvp.Value, 100.0 * kvp.Value / World.Mobiles.Count, kvp.Key));
       }
 
       e.Mobile.SendMessage("Object table has been generated. See the file : <runuo root>/objects.log");
@@ -151,7 +148,7 @@ namespace Server.Commands
     [Description("Generates a log file describing all items using expanded memory.")]
     public static void TraceExpanded_OnCommand(CommandEventArgs e)
     {
-      Hashtable typeTable = new Hashtable();
+      Dictionary<Type, int[]> typeTable = new Dictionary<Type, int[]>();
 
       foreach (Item item in World.Items.Values)
       {
@@ -164,8 +161,10 @@ namespace Server.Commands
 
         do
         {
-          if (!(typeTable[itemType] is int[] countTable))
-            typeTable[itemType] = countTable = new int[9];
+          typeTable.TryGetValue(itemType, out int[] countTable);
+
+          if (countTable == null)
+            countTable = new int[9];
 
           if ((flags & ExpandFlag.Name) != 0)
             ++countTable[0];
@@ -215,16 +214,15 @@ namespace Server.Commands
             "Spawner"
           };
 
-          ArrayList list = new ArrayList(typeTable);
+          List<KeyValuePair<Type, int[]>> list = typeTable.ToList();
 
-          list.Sort(new CountSorter());
+          list.Sort(new CountsSorter());
 
-          foreach (DictionaryEntry de in list)
+          foreach (KeyValuePair<Type, int[]> kvp in list)
           {
-            Type itemType = de.Key as Type;
-            int[] countTable = de.Value as int[];
+            int[] countTable = kvp.Value;
 
-            op.WriteLine("# {0}", itemType?.FullName);
+            op.WriteLine("# {0}", kvp.Key.FullName);
 
             for (int i = 0; i < countTable.Length; ++i)
               if (countTable[i] > 0)
@@ -294,7 +292,7 @@ namespace Server.Commands
     {
       try
       {
-        ArrayList types = new ArrayList();
+        List<Type> types = new List<Type>();
 
         using (BinaryReader bin = new BinaryReader(new FileStream(string.Format("Saves/{0}/{0}.tdb", type),
           FileMode.Open, FileAccess.Read, FileShare.Read)))
@@ -307,7 +305,7 @@ namespace Server.Commands
 
         long total = 0;
 
-        Hashtable table = new Hashtable();
+        Dictionary<Type, int> table = new Dictionary<Type, int>();
 
         using (BinaryReader bin = new BinaryReader(new FileStream(string.Format("Saves/{0}/{0}.idx", type),
           FileMode.Open, FileAccess.Read, FileShare.Read)))
@@ -320,16 +318,14 @@ namespace Server.Commands
             int serial = bin.ReadInt32();
             long pos = bin.ReadInt64();
             int length = bin.ReadInt32();
-            Type objType = (Type)types[typeID];
+            Type objType = types[typeID];
 
-            while (objType != null && objType != typeof(object))
+            while (objType != typeof(object))
             {
-              object obj = table[objType];
-
-              if (obj == null)
-                table[objType] = length;
+              if (table.ContainsKey(objType))
+                table[objType] = length + table[objType];
               else
-                table[objType] = length + (int)obj;
+                table[objType] = length;
 
               objType = objType.BaseType;
               total += length;
@@ -337,7 +333,7 @@ namespace Server.Commands
           }
         }
 
-        ArrayList list = new ArrayList(table);
+        List<KeyValuePair<Type, int>> list = table.ToList();
 
         list.Sort(new CountSorter());
 
@@ -347,9 +343,9 @@ namespace Server.Commands
           op.WriteLine("# Generated on {0}", DateTime.UtcNow);
           op.WriteLine();
           op.WriteLine();
-
-          foreach (DictionaryEntry de in list)
-            op.WriteLine("{0}\t{1:F2}%\t{2}", de.Value, 100 * (int)de.Value / (double)total, de.Key);
+          
+          list.ForEach(kvp => 
+            op.WriteLine("{0}\t{1:F2}%\t{2}", kvp.Value, 100.0 * kvp.Value / total, kvp.Key));
         }
       }
       catch
@@ -358,45 +354,35 @@ namespace Server.Commands
       }
     }
 
-    private class CountSorter : IComparer
+    private class CountSorter : IComparer<KeyValuePair<Type, int>>
     {
-      public int Compare(object x, object y)
+      public int Compare(KeyValuePair<Type, int> x, KeyValuePair<Type, int> y)
       {
-        DictionaryEntry a = (DictionaryEntry)x;
-        DictionaryEntry b = (DictionaryEntry)y;
-
-        int aCount = GetCount(a.Value);
-        int bCount = GetCount(b.Value);
+        int aCount = x.Value;
+        int bCount = y.Value;
 
         int v = -aCount.CompareTo(bCount);
 
-        if (v == 0)
-        {
-          Type aType = (Type)a.Key;
-          Type bType = (Type)b.Key;
+        if (v != 0)
+          return v;
 
-          v = aType.FullName.CompareTo(bType.FullName);
-        }
-
-        return v;
+        return x.Key.FullName.CompareTo(y.Key.FullName);
       }
-
-      private int GetCount(object obj)
+    }
+    
+    private class CountsSorter : IComparer<KeyValuePair<Type, int[]>>
+    {
+      public int Compare(KeyValuePair<Type, int[]> x, KeyValuePair<Type, int[]> y)
       {
-        if (obj is int intObj)
-          return intObj;
+        int aCount = x.Value.Aggregate(0, (t, val) => t + val);
+        int bCount = y.Value.Aggregate(0, (t, val) => t + val);
 
-        if (obj is int[] list)
-        {
-          int total = 0;
+        int v = -aCount.CompareTo(bCount);
 
-          for (int i = 0; i < list.Length; ++i)
-            total += list[i];
+        if (v != 0)
+          return v;
 
-          return total;
-        }
-
-        return 0;
+        return x.Key.FullName.CompareTo(y.Key.FullName);
       }
     }
   }

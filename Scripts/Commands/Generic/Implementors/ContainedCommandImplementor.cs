@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 using Server.Targeting;
 
@@ -56,10 +54,15 @@ namespace Server.Commands.Generic
           return;
         }
 
-        List<Item> list = cont.FindItemsByType<Item>().Where(item => ext.IsValid(item)).ToList();
+        List<object> list = new List<object>();
 
-        // TODO: Is there a way to avoid using ArrayList?
-        ext.Filter(new ArrayList(list));
+        foreach (Item item in cont.FindItemsByType<Item>())
+        {
+          if (ext.IsValid(item))
+            list.Add(item);
+        }
+
+        ext.Filter(list);
 
         RunCommand(from, list, command, args);
       }

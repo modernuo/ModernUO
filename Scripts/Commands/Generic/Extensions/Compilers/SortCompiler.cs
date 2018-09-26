@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -45,12 +45,12 @@ namespace Server.Commands.Generic
 
   public static class SortCompiler
   {
-    public static IComparer Compile(AssemblyEmitter assembly, Type objectType, OrderInfo[] orders)
+    public static IComparer<T> Compile<T>(AssemblyEmitter assembly, Type objectType, OrderInfo[] orders)
     {
       TypeBuilder typeBuilder = assembly.DefineType(
         "__sort",
         TypeAttributes.Public,
-        typeof(object)
+        typeof(T)
       );
 
       #region Constructor
@@ -66,7 +66,8 @@ namespace Server.Commands.Generic
 
         // : base()
         il.Emit(OpCodes.Ldarg_0);
-        il.Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
+        il.Emit(OpCodes.Call, typeof(T).GetConstructor(Type.EmptyTypes) ??
+                              throw new Exception($"Could not find empty constructor for type {typeof(T).FullName}"));
 
         // return;
         il.Emit(OpCodes.Ret);
@@ -76,12 +77,9 @@ namespace Server.Commands.Generic
 
       #region IComparer
 
-      typeBuilder.AddInterfaceImplementation(typeof(IComparer));
-
-      MethodBuilder compareMethod;
+      typeBuilder.AddInterfaceImplementation(typeof(IComparer<T>));
 
       #region Compare
-
       {
         MethodEmitter emitter = new MethodEmitter(typeBuilder);
 
@@ -89,7 +87,7 @@ namespace Server.Commands.Generic
           /*  name  */ "Compare",
           /*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
           /* return */ typeof(int),
-          /* params */ new[] { typeof(object), typeof(object) });
+          /* params */ new[] { typeof(T), typeof(T) });
 
         LocalBuilder a = emitter.CreateLocal(objectType);
         LocalBuilder b = emitter.CreateLocal(objectType);
@@ -145,17 +143,15 @@ namespace Server.Commands.Generic
 
         typeBuilder.DefineMethodOverride(
           emitter.Method,
-          typeof(IComparer).GetMethod(
+          typeof(IComparer<T>).GetMethod(
             "Compare",
             new[]
             {
-              typeof(object),
-              typeof(object)
+              typeof(T),
+              typeof(T)
             }
-          )
+          ) ?? throw new Exception($"No Compare method found for type {typeof(T).FullName}")
         );
-
-        compareMethod = emitter.Method;
       }
 
       #endregion
@@ -163,8 +159,7 @@ namespace Server.Commands.Generic
       #endregion
 
       Type comparerType = typeBuilder.CreateType();
-
-      return (IComparer)Activator.CreateInstance(comparerType);
+      return (IComparer<T>)Activator.CreateInstance(comparerType);
     }
   }
 }

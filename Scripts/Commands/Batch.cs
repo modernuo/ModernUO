@@ -14,16 +14,13 @@ namespace Server.Commands
     {
       Commands = new[] { "Batch" };
       ListOptimized = true;
-
-      BatchCommands = new ArrayList();
-      Condition = "";
     }
 
     public BaseCommandImplementor Scope{ get; set; }
 
-    public string Condition{ get; set; }
+    public string Condition{ get; set; } = "";
 
-    public ArrayList BatchCommands{ get; }
+    public List<BatchCommand> BatchCommands{ get; } = new List<BatchCommand>();
 
     public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
@@ -40,7 +37,7 @@ namespace Server.Commands
 
         for (int i = 0; i < BatchCommands.Count; ++i)
         {
-          BatchCommand bc = (BatchCommand)BatchCommands[i];
+          BatchCommand bc = BatchCommands[i];
 
           bc.GetDetails(out string commandString, out string argString, out string[] args);
 
@@ -69,7 +66,7 @@ namespace Server.Commands
         for (int i = 0; i < commands.Length; ++i)
         {
           BaseCommand command = commands[i];
-          BatchCommand bc = (BatchCommand)BatchCommands[i];
+          BatchCommand bc = BatchCommands[i];
 
           if (list.Count > 20)
             CommandLogging.Enabled = false;
@@ -274,7 +271,7 @@ namespace Server.Commands
 
       for (int i = 0; i < m_Batch.BatchCommands.Count; ++i)
       {
-        BatchCommand bc = (BatchCommand)m_Batch.BatchCommands[i];
+        BatchCommand bc = m_Batch.BatchCommands[i];
 
         AddNewLine();
 

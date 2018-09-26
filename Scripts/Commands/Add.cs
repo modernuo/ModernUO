@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Server.Items;
-using Server.Targeting;
 using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Commands

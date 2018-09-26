@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Commands.Generic
@@ -9,7 +8,7 @@ namespace Server.Commands.Generic
     public static ExtensionInfo ExtInfo =
       new ExtensionInfo(30, "Distinct", -1, delegate { return new DistinctExtension(); });
 
-    private IComparer m_Comparer;
+    private IComparer<object> m_Comparer;
 
     private List<Property> m_Properties;
 
@@ -39,7 +38,7 @@ namespace Server.Commands.Generic
       if (assembly == null)
         assembly = new AssemblyEmitter("__dynamic", false);
 
-      m_Comparer = DistinctCompiler.Compile(assembly, baseType, m_Properties.ToArray());
+      m_Comparer = DistinctCompiler.Compile<object>(assembly, baseType, m_Properties.ToArray());
     }
 
     public override void Parse(Mobile from, string[] arguments, int offset, int size)
@@ -57,12 +56,12 @@ namespace Server.Commands.Generic
       }
     }
 
-    public override void Filter(ArrayList list)
+    public override void Filter(List<object> list)
     {
       if (m_Comparer == null)
         throw new InvalidOperationException("The extension must first be optimized.");
 
-      ArrayList copy = new ArrayList(list);
+      List<object> copy = new List<object>(list);
 
       copy.Sort(m_Comparer);
 

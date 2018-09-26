@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Server.Commands.Generic;
@@ -284,7 +283,7 @@ namespace Server.Commands
       }
       else if (obj is Mobile master && master.Player)
       {
-        ArrayList pets = new ArrayList();
+        List<BaseCreature> pets = new List<BaseCreature>();
 
         foreach (Mobile m in World.Mobiles.Values)
           if (m is BaseCreature bc)

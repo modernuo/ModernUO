@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Commands.Generic
 {
@@ -25,7 +25,7 @@ namespace Server.Commands.Generic
         if (!CheckObjectTypes(from, command, ext, out bool items, out bool mobiles))
           return;
 
-        ArrayList list = new ArrayList();
+        List<object> list = new List<object>();
 
         if (items)
           foreach (Item item in World.Items.Values)

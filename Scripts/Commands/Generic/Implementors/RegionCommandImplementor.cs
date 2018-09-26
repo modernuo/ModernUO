@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Commands.Generic
 {
@@ -27,7 +27,7 @@ namespace Server.Commands.Generic
 
         Region reg = from.Region;
 
-        ArrayList list = new ArrayList();
+        List<object> list = new List<object>();
 
         if (mobiles)
         {

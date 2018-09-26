@@ -2197,7 +2197,8 @@ namespace Server.Commands
       List<TypeInfo> types = new List<TypeInfo>(m_Types.Values);
       types.Sort(new TypeComparer());
 
-      ArrayList items = new ArrayList(), mobiles = new ArrayList();
+      List<(Type, ConstructorInfo[])> items = new List<(Type, ConstructorInfo[])>();
+      List<(Type, ConstructorInfo[])> mobiles = new List<(Type, ConstructorInfo[])>();
 
       for (int i = 0; i < types.Count; ++i)
       {
@@ -2214,8 +2215,7 @@ namespace Server.Commands
 
         if (anyConstructible)
         {
-          (isItem ? items : mobiles).Add(t);
-          (isItem ? items : mobiles).Add(ctors);
+          (isItem ? items : mobiles).Add((t, ctors));
         }
       }
 
@@ -2237,8 +2237,11 @@ namespace Server.Commands
         html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
         html.WriteLine("         <tr><td class=\"header\">Item Name</td><td class=\"header\">Usage</td></tr>");
 
-        for (int i = 0; i < items.Count; i += 2)
-          DocumentConstructibleObject(html, (Type)items[i], (ConstructorInfo[])items[i + 1]);
+        items.ForEach(tuple =>
+        {
+          var (type, constructors) = tuple;
+          DocumentConstructibleObject(html, type, constructors);
+        });
 
         html.WriteLine("      </table></td></tr></table><br><br>");
 
@@ -2248,8 +2251,11 @@ namespace Server.Commands
         html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
         html.WriteLine("         <tr><td class=\"header\">Mobile Name</td><td class=\"header\">Usage</td></tr>");
 
-        for (int i = 0; i < mobiles.Count; i += 2)
-          DocumentConstructibleObject(html, (Type)mobiles[i], (ConstructorInfo[])mobiles[i + 1]);
+        mobiles.ForEach(tuple =>
+        {
+          var (type, constructors) = tuple;
+          DocumentConstructibleObject(html, type, constructors);
+        });
 
         html.WriteLine("      </table></td></tr></table>");
 
