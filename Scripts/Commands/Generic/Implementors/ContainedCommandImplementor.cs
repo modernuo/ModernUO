@@ -23,20 +23,16 @@ namespace Server.Commands.Generic
     {
       if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
         from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
-          new TargetStateCallback(OnTarget), new object[] { command, args });
+          (m, targeted) => OnTarget(m, targeted, command, args));
     }
 
-    public void OnTarget(Mobile from, object targeted, object state)
+    public void OnTarget(Mobile from, object targeted, BaseCommand command, string[] args)
     {
       if (!BaseCommand.IsAccessible(from, targeted))
       {
         from.SendLocalizedMessage(500447); // That is not accessible.
         return;
       }
-
-      object[] states = (object[])state;
-      BaseCommand command = (BaseCommand)states[0];
-      string[] args = (string[])states[1];
 
       if (command.ObjectTypes == ObjectTypes.Mobiles)
         return; // sanity check

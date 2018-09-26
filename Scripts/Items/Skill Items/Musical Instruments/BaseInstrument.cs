@@ -238,11 +238,11 @@ namespace Server.Items
       else
       {
         from.SendLocalizedMessage(500617); // What instrument shall you play?
-        from.BeginTarget(1, false, TargetFlags.None, new TargetStateCallback(OnPickedInstrument), callback);
+        from.BeginTarget(1, false, TargetFlags.None, OnPickedInstrument, callback);
       }
     }
 
-    public static void OnPickedInstrument(Mobile from, object targeted, object state)
+    public static void OnPickedInstrument(Mobile from, object targeted, InstrumentPickedCallback callback)
     {
       if (!(targeted is BaseInstrument instrument))
       {
@@ -251,24 +251,18 @@ namespace Server.Items
       else
       {
         SetInstrument(from, instrument);
-
-        InstrumentPickedCallback callback = state as InstrumentPickedCallback;
-
         callback?.Invoke(from, instrument);
       }
     }
 
     public static bool IsMageryCreature(BaseCreature bc)
     {
-      return bc != null && bc.AI == AIType.AI_Mage && bc.Skills.Magery.Base > 5.0;
+      return bc?.AI == AIType.AI_Mage && bc.Skills.Magery.Base > 5.0;
     }
 
     public static bool IsFireBreathingCreature(BaseCreature bc)
     {
-      if (bc == null)
-        return false;
-
-      return bc.HasBreath;
+      return bc?.HasBreath == true;
     }
 
     public static bool IsPoisonImmune(BaseCreature bc)
@@ -278,12 +272,7 @@ namespace Server.Items
 
     public static int GetPoisonLevel(BaseCreature bc)
     {
-      Poison p = bc?.HitPoison;
-
-      if (p == null)
-        return 0;
-
-      return p.Level + 1;
+      return (bc?.HitPoison.Level ?? -1) + 1;
     }
 
     public static double GetBaseDifficulty(Mobile targ)
@@ -295,7 +284,7 @@ namespace Server.Items
 
       double val = targ.HitsMax * 1.6 + targ.StamMax + targ.ManaMax;
 
-      val += targ.SkillsTotal / 10;
+      val += targ.SkillsTotal / 10.0;
 
       if (val > 700)
         val = 700 + (int)((val - 700) * (3.0 / 11));

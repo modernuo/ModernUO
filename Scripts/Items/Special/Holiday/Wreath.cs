@@ -202,7 +202,7 @@ namespace Server.Items
         if (house != null && house.IsCoOwner(from))
         {
           from.SendLocalizedMessage(1062838); // Where would you like to place this decoration?
-          from.BeginTarget(-1, true, TargetFlags.None, Placement_OnTarget, null);
+          from.BeginTarget(-1, true, TargetFlags.None, Placement_OnTarget);
         }
         else
         {
@@ -215,7 +215,7 @@ namespace Server.Items
       }
     }
 
-    public void Placement_OnTarget(Mobile from, object targeted, object state)
+    public void Placement_OnTarget(Mobile from, object targeted)
     {
       if (!(targeted is IPoint3D p))
         return;

@@ -19,15 +19,12 @@ namespace Server.Ethics.Hero
 
     public override void BeginInvoke(Player from)
     {
-      from.Mobile.BeginTarget(12, true, TargetFlags.None, new TargetStateCallback(Power_OnTarget), from);
+      from.Mobile.BeginTarget(12, true, TargetFlags.None, Power_OnTarget, from);
       from.Mobile.SendMessage("Where do you wish to bless?");
     }
 
-    private void Power_OnTarget(Mobile fromMobile, object obj, object state)
+    private void Power_OnTarget(Mobile fromMobile, object obj, Player from)
     {
-      if (!(state is Player from))
-        return;
-
       if (!(obj is IPoint3D p))
         return;
 

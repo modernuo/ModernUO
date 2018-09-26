@@ -1181,12 +1181,10 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    private static void ViewLadder_OnTarget(Mobile from, object obj, object state)
+    private static void ViewLadder_OnTarget(Mobile from, object obj, Ladder ladder)
     {
       if (obj is PlayerMobile pm)
       {
-        Ladder ladder = (Ladder)state;
-
         LadderEntry entry = ladder.Find(pm);
 
         if (entry == null)
@@ -1318,7 +1316,7 @@ namespace Server.Engines.ConPVP
           else
           {
             pm.SendMessage("Target a player to view their ranking and level.");
-            pm.BeginTarget(16, false, TargetFlags.None, new TargetStateCallback(ViewLadder_OnTarget), instance);
+            pm.BeginTarget(16, false, TargetFlags.None, ViewLadder_OnTarget, instance);
           }
         }
       }

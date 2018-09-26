@@ -231,7 +231,6 @@ namespace Server.Engines.MLQuests.Gumps
     private class RaceChangeState
     {
       private static readonly TimeSpan m_TimeoutDelay = TimeSpan.FromMinutes(1);
-      private static readonly TimerStateCallback<NetState> m_TimeoutCallback = Timeout;
 
       public IRaceChanger m_Owner;
       public Race m_TargetRace;
@@ -241,7 +240,7 @@ namespace Server.Engines.MLQuests.Gumps
       {
         m_Owner = owner;
         m_TargetRace = targetRace;
-        m_Timeout = Timer.DelayCall(m_TimeoutDelay, m_TimeoutCallback, ns);
+        m_Timeout = Timer.DelayCall(m_TimeoutDelay, Timeout, ns);
       }
     }
   }
