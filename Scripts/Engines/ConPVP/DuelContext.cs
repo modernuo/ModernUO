@@ -55,7 +55,7 @@ namespace Server.Engines.ConPVP
     public DuelContext(Mobile initiator, RulesetLayout layout, bool addNew)
     {
       Initiator = initiator;
-      Participants = new ArrayList();
+      Participants = new List<Participant>();
       Ruleset = new Ruleset(layout);
       Ruleset.ApplyDefault(layout.Defaults[0]);
 
@@ -63,8 +63,7 @@ namespace Server.Engines.ConPVP
       {
         Participants.Add(new Participant(this, 1));
         Participants.Add(new Participant(this, 1));
-
-        ((Participant)Participants[0]).Add(initiator);
+        Participants[0].Add(initiator);
       }
     }
 
@@ -82,7 +81,7 @@ namespace Server.Engines.ConPVP
 
     public Mobile Initiator{ get; }
 
-    public ArrayList Participants{ get; }
+    public List<Participant> Participants{ get; }
 
     public Ruleset Ruleset{ get; private set; }
 
@@ -92,22 +91,8 @@ namespace Server.Engines.ConPVP
 
     public bool IsSuddenDeath{ get; set; }
 
-    public bool IsOneVsOne
-    {
-      get
-      {
-        if (Participants.Count != 2)
-          return false;
-
-        if (((Participant)Participants[0]).Players.Length != 1)
-          return false;
-
-        if (((Participant)Participants[1]).Players.Length != 1)
-          return false;
-
-        return true;
-      }
-    }
+    public bool IsOneVsOne => Participants.Count == 2 && Participants[0].Players.Length == 1 &&
+                              Participants[1].Players.Length == 1;
 
     public bool StartedBeginCountdown{ get; private set; }
 
@@ -182,7 +167,7 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(from);
 
-      if (pl == null || pl.Eliminated)
+      if (pl?.Eliminated != false)
         return true;
 
       if (CantDoAnything(from))

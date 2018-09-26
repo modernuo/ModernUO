@@ -7921,7 +7921,7 @@ namespace Server
     private Region m_Region;
     private int m_VirtualArmor;
     private int m_Followers, m_FollowersMax;
-    private List<object> _actions; // prefer List<object> over ArrayList for more specific profiling information
+    private List<object> _actions;
     private Queue<MovementRecord> m_MoveRecords;
     private int m_WarmodeChanges;
     private DateTime m_NextWarmodeChange;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -15,7 +16,7 @@ namespace Server.Engines.ConPVP
 
     private BRGame m_Game;
 
-    private ArrayList m_Helpers;
+    private List<Mobile> m_Helpers;
 
     private Point3DList m_Path = new Point3DList();
     private int m_PathIdx;
@@ -29,7 +30,7 @@ namespace Server.Engines.ConPVP
 
       m_Game = game;
 
-      m_Helpers = new ArrayList();
+      m_Helpers = new List<Mobile>();
 
       m_Timer = new EffectTimer(this);
       m_Timer.Start();
@@ -270,29 +271,21 @@ namespace Server.Engines.ConPVP
         dest = swap;
       }*/
 
-      ArrayList list = new ArrayList();
-      double rise, run, zslp;
-      double dist3d, dist2d;
-      double x, y, z;
-      int xd, yd, zd;
-      Point3D p;
+      List<Point3D> list = new List<Point3D>();
 
-      xd = dest.X - org.X;
-      yd = dest.Y - org.Y;
-      zd = dest.Z - org.Z;
-      dist2d = Math.Sqrt(xd * xd + yd * yd);
-      if (zd != 0)
-        dist3d = Math.Sqrt(dist2d * dist2d + zd * zd);
-      else
-        dist3d = dist2d;
+      int xd = dest.X - org.X;
+      int yd = dest.Y - org.Y;
+      int zd = dest.Z - org.Z;
+      double dist2d = Math.Sqrt(xd * xd + yd * yd);
+      double dist3d = zd == 0 ? dist2d : Math.Sqrt(dist2d * dist2d + zd * zd);
 
-      rise = yd / dist3d;
-      run = xd / dist3d;
-      zslp = zd / dist3d;
+      double rise = yd / dist3d;
+      double run = xd / dist3d;
+      double zslp = zd / dist3d;
 
-      x = org.X;
-      y = org.Y;
-      z = org.Z;
+      double x = org.X;
+      double y = org.Y;
+      double z = org.Z;
       while (Utility.NumberBetween(x, dest.X, org.X, 0.5) && Utility.NumberBetween(y, dest.Y, org.Y, 0.5) &&
              Utility.NumberBetween(z, dest.Z, org.Z, 0.5))
       {
@@ -302,7 +295,7 @@ namespace Server.Engines.ConPVP
 
         if (list.Count > 0)
         {
-          p = (Point3D)list[list.Count - 1];
+          Point3D p = list[list.Count - 1];
 
           if (p.X != ix || p.Y != iy || p.Z != iz)
             list.Add(new Point3D(ix, iy, iz));
@@ -317,9 +310,8 @@ namespace Server.Engines.ConPVP
         z += zslp;
       }
 
-      if (list.Count > 0)
-        if ((Point3D)list[list.Count - 1] != dest)
-          list.Add(dest);
+      if (list.Count > 0 && list[list.Count - 1] != dest)
+        list.Add(dest);
 
       /*if ( dist3d > 4 && ( dest.X != org.X || dest.Y != org.Y ) )
       {
@@ -359,7 +351,7 @@ namespace Server.Engines.ConPVP
 
         for (int i = 0; i < count; i++)
         {
-          p = (Point3D)list[i];
+          Point3D p = list[i];
 
           int xp = i - count / 2;
 
@@ -371,7 +363,7 @@ namespace Server.Engines.ConPVP
 
       m_Path.Clear();
       for (int i = 0; i < list.Count; i++)
-        m_Path.Add((Point3D)list[i]);
+        m_Path.Add(list[i]);
 
       m_PathIdx = 0;
 
@@ -616,7 +608,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = m_Helpers.Count - 1; i >= 0; i--)
       {
-        Mobile mob = (Mobile)m_Helpers[i];
+        Mobile mob = m_Helpers[i];
 
         BRPlayerInfo pi = team[mob];
         if (pi != null)
@@ -661,7 +653,7 @@ namespace Server.Engines.ConPVP
 
         if (m_Helpers.Count > 0)
         {
-          Mobile last = (Mobile)m_Helpers[0];
+          Mobile last = m_Helpers[0];
 
           if (m_Game.GetTeamInfo(last) != team)
             m_Helpers.Clear();
@@ -983,16 +975,17 @@ namespace Server.Engines.ConPVP
     {
     }
 
-    public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section)
-      : base(60, 60)
+    public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section) : base(60, 60)
     {
       m_Game = game;
 
       BRTeamInfo ourTeam = game.GetTeamInfo(mob);
 
-      ArrayList entries = new ArrayList();
+      List<BRTeamInfo> entries = new List<BRTeamInfo>();
+      int total = 0;
 
       if (section == null)
+      {
         for (int i = 0; i < game.Context.Participants.Count; ++i)
         {
           BRTeamInfo teamInfo = game.Controller.TeamInfo[i % game.Controller.TeamInfo.Length];
@@ -1002,17 +995,15 @@ namespace Server.Engines.ConPVP
 
           entries.Add(teamInfo);
         }
+
+        total = entries.Count;
+      }
       else
         foreach (BRPlayerInfo player in section.Players.Values)
           if (player.Score > 0)
-            entries.Add(player);
+            total++;
 
       entries.Sort();
-      /*
-      delegate( IRankedCTF a, IRankedCTF b )
-    {
-      return b.Score - a.Score;
-    } );*/
 
       int height = 0;
 
@@ -1027,7 +1018,7 @@ namespace Server.Engines.ConPVP
 
       AddImageTiled(16, 15, 369, height - 29, 3604);
 
-      for (int i = 0; i < entries.Count; i += 1)
+      for (int i = 0; i < total; i += 1)
         AddImageTiled(22, 58 + i * 75, 357, 70, 0x2430);
 
       AddAlphaRegion(16, 15, 369, height - 29);
@@ -1043,7 +1034,7 @@ namespace Server.Engines.ConPVP
       if (section == null)
         for (int i = 0; i < entries.Count; ++i)
         {
-          BRTeamInfo teamInfo = entries[i] as BRTeamInfo;
+          BRTeamInfo teamInfo = entries[i];
 
           AddImage(30, 70 + i * 75, 10152);
           AddImage(30, 85 + i * 75, 10151);
@@ -1641,16 +1632,14 @@ namespace Server.Engines.ConPVP
 
     private void Finish_Callback()
     {
-      ArrayList teams = new ArrayList();
+      List<BRTeamInfo> teams = new List<BRTeamInfo>();
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
         BRTeamInfo teamInfo = Controller.TeamInfo[i % Controller.TeamInfo.Length];
 
-        if (teamInfo == null)
-          continue;
-
-        teams.Add(teamInfo);
+        if (teamInfo != null)
+          teams.Add(teamInfo);
       }
 
       teams.Sort();
@@ -1694,7 +1683,7 @@ namespace Server.Engines.ConPVP
 
       string title = sb.ToString();
 
-      BRTeamInfo winner = (BRTeamInfo)(teams.Count > 0 ? teams[0] : null);
+      BRTeamInfo winner = teams.Count > 0 ? teams[0] : null;
 
       for (int i = 0; i < teams.Count; ++i)
       {
@@ -1705,9 +1694,9 @@ namespace Server.Engines.ConPVP
         else if (i == 1)
           rank = TrophyRank.Silver;
 
-        BRPlayerInfo leader = ((BRTeamInfo)teams[i]).Leader;
+        BRPlayerInfo leader = teams[i].Leader;
 
-        foreach (BRPlayerInfo pl in ((BRTeamInfo)teams[i]).Players.Values)
+        foreach (BRPlayerInfo pl in teams[i].Players.Values)
         {
           Mobile mob = pl.Player;
 
@@ -1744,7 +1733,7 @@ namespace Server.Engines.ConPVP
           if (pl == leader)
             item.ItemID = 4810;
 
-          item.Name = $"{item.Name}, {((BRTeamInfo)teams[i]).Name.ToLower()} team";
+          item.Name = $"{item.Name}, {teams[i].Name.ToLower()} team";
 
           if (!mob.PlaceInBackpack(item))
             mob.BankBox.DropItem(item);
