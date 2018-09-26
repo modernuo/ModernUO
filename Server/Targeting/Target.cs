@@ -39,8 +39,6 @@ namespace Server.Targeting
       CheckLOS = true;
     }
 
-    public static bool TargetIDValidation{ get; set; } = true;
-
     public DateTime TimeoutTime{ get; private set; }
 
     public bool CheckLOS{ get; set; }
@@ -59,13 +57,8 @@ namespace Server.Targeting
 
     public static void Cancel(Mobile m)
     {
-      NetState ns = m.NetState;
-
-      ns?.Send(CancelTarget.Instance);
-
-      Target targ = m.Target;
-
-      targ?.OnTargetCancel(m, TargetCancelType.Canceled);
+      m.NetState?.Send(CancelTarget.Instance);
+      m.Target?.OnTargetCancel(m, TargetCancelType.Canceled);
     }
 
     public void BeginTimeout(Mobile from, TimeSpan delay)
@@ -81,7 +74,6 @@ namespace Server.Targeting
     public void CancelTimeout()
     {
       m_TimeoutTimer?.Stop();
-
       m_TimeoutTimer = null;
     }
 

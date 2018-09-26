@@ -130,17 +130,15 @@ namespace Server.Items
       Effects.SendTargetParticles(from, 0x373A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100);
 
       pm.AcceleratedStart = DateTime.UtcNow + TimeSpan.FromMinutes(15);
-      m_Table[from] = Timer.DelayCall(TimeSpan.FromMinutes(15), new TimerStateCallback(Expire_Callback), from);
+      m_Table[from] = Timer.DelayCall(TimeSpan.FromMinutes(15), Expire_Callback, from);
 
       pm.AcceleratedSkill = Skill;
 
       Delete();
     }
 
-    private static void Expire_Callback(object state)
+    private static void Expire_Callback(Mobile m)
     {
-      Mobile m = (Mobile)state;
-
       m_Table.Remove(m);
 
       m.PlaySound(0x1F8);

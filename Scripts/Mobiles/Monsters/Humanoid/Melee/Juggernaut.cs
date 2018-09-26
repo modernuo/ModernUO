@@ -124,20 +124,16 @@ namespace Server.Mobiles
         if (defender.Alive)
         {
           defender.Frozen = true;
-          Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerStateCallback(Recover_Callback), defender);
+          Timer.DelayCall(TimeSpan.FromSeconds(5.0), Recover_Callback, defender);
         }
       }
     }
 
-    private void Recover_Callback(object state)
+    private void Recover_Callback(Mobile defender)
     {
-      if (state is Mobile defender)
-      {
-        defender.Frozen = false;
-        defender.Combatant = null;
-        defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You recover your senses.");
-      }
-
+      defender.Frozen = false;
+      defender.Combatant = null;
+      defender.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You recover your senses.");
       m_Stunning = false;
     }
 

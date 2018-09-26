@@ -40,7 +40,7 @@ namespace Server
 
                 Effects.SendMovingEffect(
                   from, new Entity(Serial.Zero, origin, facet),
-                  ItemID & 0x3FFF, 7, 0, false, false, Hue - 1, 0
+                  ItemID & 0x3FFF, 7, 0, false, false, Hue - 1
                 );
 
                 Timer.DelayCall(TimeSpan.FromSeconds(0.5), delegate

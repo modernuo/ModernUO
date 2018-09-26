@@ -93,14 +93,12 @@ namespace Server.Items
           Registry.Add(m, t);
         }
 
-        Timer.DelayCall(TimeSpan.FromSeconds(2.0), new TimerStateCallback(RepeatEffect), attacker);
+        Timer.DelayCall(TimeSpan.FromSeconds(2.0), RepeatEffect, attacker);
       }
     }
 
-    private void RepeatEffect(object state)
+    private void RepeatEffect(Mobile attacker)
     {
-      Mobile attacker = (Mobile)state;
-
       attacker.FixedEffect(0x3728, 10, 15);
       attacker.PlaySound(0x2A1);
     }

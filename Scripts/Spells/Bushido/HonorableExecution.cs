@@ -46,7 +46,7 @@ namespace Server.Spells.Bushido
         int swingBonus = Math.Max(1, (int)(bushido * bushido / 720.0));
 
         info = new HonorableExecutionInfo(attacker, swingBonus);
-        info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(20.0), new TimerStateCallback(EndEffect), info);
+        info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(20.0), RemovePenalty, info.m_Mobile);
 
         m_Table[attacker] = info;
       }
@@ -67,7 +67,7 @@ namespace Server.Spells.Bushido
           mods.Add(new DefaultSkillMod(SkillName.MagicResist, true, -resSpells));
 
         info = new HonorableExecutionInfo(attacker, mods);
-        info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(7.0), new TimerStateCallback(EndEffect), info);
+        info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(7.0), RemovePenalty, info.m_Mobile);
 
         m_Table[attacker] = info;
       }
@@ -101,11 +101,6 @@ namespace Server.Spells.Bushido
       info.m_Timer?.Stop();
 
       m_Table.Remove(target);
-    }
-
-    public void EndEffect(object state)
-    {
-      RemovePenalty(((HonorableExecutionInfo)state).m_Mobile);
     }
 
     private class HonorableExecutionInfo

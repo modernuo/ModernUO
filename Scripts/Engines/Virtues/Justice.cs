@@ -150,13 +150,7 @@ namespace Server
       protector.SendLocalizedMessage(1049454, args); // ~2_NAME~ has declined your protection.
 
       if (protector.BeginAction<JusticeVirtue>())
-        Timer.DelayCall(TimeSpan.FromMinutes(15.0), new TimerStateCallback(RejectDelay_Callback), protector);
-    }
-
-    public static void RejectDelay_Callback(object state)
-    {
-      if (state is Mobile m)
-        m.EndAction<JusticeVirtue>();
+        Timer.DelayCall(TimeSpan.FromMinutes(15.0), protector.EndAction<JusticeVirtue>);
     }
 
     public static void CheckAtrophy(Mobile from)

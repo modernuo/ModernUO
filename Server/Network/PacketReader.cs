@@ -60,6 +60,7 @@ namespace Server.Network
       }
       catch
       {
+        // ignored
       }
     }
 

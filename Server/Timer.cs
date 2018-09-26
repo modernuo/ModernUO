@@ -40,9 +40,7 @@ namespace Server
 
   public delegate void TimerCallback();
 
-  public delegate void TimerStateCallback(object state);
-
-  public delegate void TimerStateCallback<T>(T state);
+  public delegate void TimerStateCallback<in T>(T state);
 
   public class Timer
   {
@@ -516,36 +514,6 @@ namespace Server
       return t;
     }
 
-    public static Timer DelayCall(TimerStateCallback callback, object state)
-    {
-      return DelayCall(TimeSpan.Zero, TimeSpan.Zero, 1, callback, state);
-    }
-
-    public static Timer DelayCall(TimeSpan delay, TimerStateCallback callback, object state)
-    {
-      return DelayCall(delay, TimeSpan.Zero, 1, callback, state);
-    }
-
-    public static Timer DelayCall(TimeSpan delay, TimeSpan interval, TimerStateCallback callback, object state)
-    {
-      return DelayCall(delay, interval, 0, callback, state);
-    }
-
-    public static Timer DelayCall(TimeSpan delay, TimeSpan interval, int count, TimerStateCallback callback,
-      object state)
-    {
-      Timer t = new DelayStateCallTimer(delay, interval, count, callback, state);
-
-      if (count == 1)
-        t.Priority = ComputePriority(delay);
-      else
-        t.Priority = ComputePriority(interval);
-
-      t.Start();
-
-      return t;
-    }
-
     #endregion
 
     #region DelayCall<T>(..)
@@ -570,10 +538,7 @@ namespace Server
     {
       Timer t = new DelayStateCallTimer<T>(delay, interval, count, callback, state);
 
-      if (count == 1)
-        t.Priority = ComputePriority(delay);
-      else
-        t.Priority = ComputePriority(interval);
+      t.Priority = ComputePriority(count == 1 ? delay : interval);
 
       t.Start();
 
@@ -605,34 +570,6 @@ namespace Server
       public override string ToString()
       {
         return $"DelayCallTimer[{FormatDelegate(Callback)}]";
-      }
-    }
-
-    private class DelayStateCallTimer : Timer
-    {
-      private object m_State;
-
-      public DelayStateCallTimer(TimeSpan delay, TimeSpan interval, int count, TimerStateCallback callback,
-        object state) : base(delay, interval, count)
-      {
-        Callback = callback;
-        m_State = state;
-
-        RegCreation();
-      }
-
-      public TimerStateCallback Callback{ get; }
-
-      public override bool DefRegCreation => false;
-
-      protected override void OnTick()
-      {
-        Callback?.Invoke(m_State);
-      }
-
-      public override string ToString()
-      {
-        return $"DelayStateCall[{FormatDelegate(Callback)}]";
       }
     }
 

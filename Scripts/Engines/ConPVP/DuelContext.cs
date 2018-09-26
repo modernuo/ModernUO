@@ -133,7 +133,7 @@ namespace Server.Engines.ConPVP
 
     public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
     {
-      Timer.DelayCall(ts, new TimerStateCallback(DelayBounce_Callback), new object[] { mob, corpse });
+      Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
     }
 
     public static bool AllowSpecialMove(Mobile from, string name, SpecialMove move)
@@ -492,12 +492,8 @@ namespace Server.Engines.ConPVP
       return false;
     }
 
-    private void DelayBounce_Callback(object state)
+    private void DelayBounce_Callback(Mobile mob, Container corpse)
     {
-      object[] states = (object[])state;
-      Mobile mob = (Mobile)states[0];
-      Container corpse = (Container)states[1];
-
       RemoveAggressions(mob);
       SendOutside(mob);
       Refresh(mob, corpse);
@@ -929,33 +925,21 @@ namespace Server.Engines.ConPVP
     {
       cb(count);
       m_Countdown = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), count,
-        new TimerStateCallback(Countdown_Callback), new object[] { count - 1, cb });
+        () => Countdown_Callback(--count, cb));
     }
 
     public void StopCountdown()
     {
       m_Countdown?.Stop();
-
       m_Countdown = null;
     }
 
-    private void Countdown_Callback(object state)
+    private void Countdown_Callback(int count, CountdownCallback cb)
     {
-      object[] states = (object[])state;
-
-      int count = (int)states[0];
-      CountdownCallback cb = (CountdownCallback)states[1];
-
       if (count == 0)
-      {
-        m_Countdown?.Stop();
-
-        m_Countdown = null;
-      }
+        StopCountdown();
 
       cb(count);
-
-      states[0] = count - 1;
     }
 
     public void StopSDTimers()

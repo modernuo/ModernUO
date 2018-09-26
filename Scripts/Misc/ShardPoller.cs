@@ -147,14 +147,13 @@ namespace Server.Misc
       if (m_ActivePollers.Count == 0)
         return;
 
-      Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(EventSink_Login_Callback), e.Mobile);
+      Timer.DelayCall(TimeSpan.FromSeconds(1.0), EventSink_Login_Callback, e.Mobile);
     }
 
-    private static void EventSink_Login_Callback(object state)
+    private static void EventSink_Login_Callback(Mobile from)
     {
-      Mobile from = (Mobile)state;
       NetState ns = from.NetState;
-
+      
       if (ns == null)
         return;
 
@@ -187,15 +186,6 @@ namespace Server.Misc
           poller.Active = false;
         }
       }
-    }
-
-    public void SendQueuedPoll_Callback(object state)
-    {
-      object[] states = (object[])state;
-      Mobile from = (Mobile)states[0];
-      Queue<ShardPoller> queue = (Queue<ShardPoller>)states[1];
-
-      from.SendGump(new ShardPollGump(from, this, false, queue));
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -493,13 +483,13 @@ namespace Server.Misc
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_Polls != null && m_Polls.Count > 0)
+      if (m_Polls?.Count > 0)
       {
         ShardPoller poller = m_Polls.Dequeue();
 
         if (poller != null)
-          Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(poller.SendQueuedPoll_Callback),
-            new object[] { m_From, m_Polls });
+          Timer.DelayCall(TimeSpan.FromSeconds(1.0),
+            () => m_From.SendGump(new ShardPollGump(m_From, poller, false, m_Polls)));
       }
 
       if (info.ButtonID == 1)

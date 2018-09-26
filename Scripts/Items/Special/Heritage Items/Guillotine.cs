@@ -54,7 +54,7 @@ namespace Server.Items
         {
           from.Location = Location;
 
-          Timer.DelayCall(TimeSpan.FromSeconds(0.5), new TimerStateCallback(Activate), new object[] { c, from });
+          Timer.DelayCall(TimeSpan.FromSeconds(0.5), () => Activate(c, from));
         }
         else
         {
@@ -80,14 +80,6 @@ namespace Server.Items
       base.Deserialize(reader);
 
       int version = reader.ReadEncodedInt();
-    }
-
-    private void Activate(object obj)
-    {
-      object[] param = (object[])obj;
-
-      if (param[0] is AddonComponent component && param[1] is Mobile mobile)
-        Activate(component, mobile);
     }
 
     public virtual void Activate(AddonComponent c, Mobile from)
@@ -127,22 +119,19 @@ namespace Server.Items
         501777); // Hmm... you suspect that if you used this again, it might hurt.
       SpellHelper.Damage(TimeSpan.Zero, from, Utility.Dice(2, 10, 5));
 
-      Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, new TimerStateCallback(Deactivate), c);
+      Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 2, Deactivate, c);
     }
 
-    private void Deactivate(object obj)
+    private void Deactivate(AddonComponent c)
     {
-      if (obj is AddonComponent c)
-      {
-        if (c.ItemID == 0x1269)
-          c.ItemID = 0x1260;
-        else if (c.ItemID == 0x1260)
-          c.ItemID = 0x125E;
-        else if (c.ItemID == 0x1247)
-          c.ItemID = 0x1246;
-        else if (c.ItemID == 0x1246)
-          c.ItemID = 0x1230;
-      }
+      if (c.ItemID == 0x1269)
+        c.ItemID = 0x1260;
+      else if (c.ItemID == 0x1260)
+        c.ItemID = 0x125E;
+      else if (c.ItemID == 0x1247)
+        c.ItemID = 0x1246;
+      else if (c.ItemID == 0x1246)
+        c.ItemID = 0x1230;
     }
   }
 

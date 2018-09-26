@@ -66,13 +66,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public void Explode_Callback(object state)
-    {
-      object[] states = (object[])state;
-
-      Explode((Mobile)states[0], (Point3D)states[1], (Map)states[2]);
-    }
-
     public virtual void Explode(Mobile from, Point3D loc, Map map)
     {
       if (Deleted || map == null)
@@ -129,9 +122,8 @@ namespace Server.Items
         else
           to = new Entity(Serial.Zero, new Point3D(p), from.Map);
 
-        Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue, 0);
-        Timer.DelayCall(TimeSpan.FromSeconds(1.5), new TimerStateCallback(Potion.Explode_Callback),
-          new object[] { from, new Point3D(p), from.Map });
+        Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
+        Timer.DelayCall(TimeSpan.FromSeconds(1.5), () => Potion.Explode(from, new Point3D(p), from.Map));
       }
     }
 
@@ -299,7 +291,7 @@ namespace Server.Items
       if (m_Delay[m] is Timer timer)
         timer.Stop();
 
-      m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerStateCallback(EndDelay_Callback), m);
+      m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), EndDelay, m);
     }
 
     public static int GetDelay(Mobile m)
@@ -308,12 +300,6 @@ namespace Server.Items
         return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
 
       return 0;
-    }
-
-    private static void EndDelay_Callback(object obj)
-    {
-      if (obj is Mobile mobile)
-        EndDelay(mobile);
     }
 
     public static void EndDelay(Mobile m)

@@ -20,7 +20,7 @@ namespace Server.Spells.Ninjitsu
         return;
 
       KiAttackInfo info = new KiAttackInfo(from);
-      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2.0), new TimerStateCallback(EndKiAttack), info);
+      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2.0), EndKiAttack, info);
 
       m_Table[from] = info;
     }
@@ -104,10 +104,8 @@ namespace Server.Spells.Ninjitsu
       return bonus;
     }
 
-    private static void EndKiAttack(object state)
+    private static void EndKiAttack(KiAttackInfo info)
     {
-      KiAttackInfo info = (KiAttackInfo)state;
-
       info.m_Timer?.Stop();
 
       ClearCurrentMove(info.m_Mobile);

@@ -459,29 +459,24 @@ namespace Server.Mobiles
       }
       else if (m_NewsTimer == null)
       {
+        int index = 0;
         m_NewsTimer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(3.0),
-          new TimerStateCallback(ShoutNews_Callback), new object[] { tce, 0 });
+          () => ShoutNews_Callback(tce, index));
 
         PublicOverheadMessage(MessageType.Regular, 0x3B2, 502976); // Hear ye! Hear ye!
       }
     }
 
-    private void ShoutNews_Callback(object state)
+    private void ShoutNews_Callback(TownCrierEntry tce, int index)
     {
-      object[] states = (object[])state;
-      TownCrierEntry tce = (TownCrierEntry)states[0];
-      int index = (int)states[1];
-
       if (index < 0 || index >= tce.Lines.Length)
       {
         m_NewsTimer?.Stop();
-
         m_NewsTimer = null;
       }
       else
       {
         PublicOverheadMessage(MessageType.Regular, 0x3B2, false, tce.Lines[index]);
-        states[1] = index + 1;
       }
     }
 
@@ -512,8 +507,9 @@ namespace Server.Mobiles
         }
         else
         {
+          int index = 0;
           m_NewsTimer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(3.0),
-            new TimerStateCallback(ShoutNews_Callback), new object[] { tce, 0 });
+            () => ShoutNews_Callback(tce, index));
 
           PublicOverheadMessage(MessageType.Regular, 0x3B2, 502978); // Some of the latest news!
         }

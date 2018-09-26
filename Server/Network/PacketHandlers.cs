@@ -1161,7 +1161,7 @@ namespace Server.Network
           // User pressed escape
           t.Cancel(from, TargetCancelType.Canceled);
         }
-        else if (Target.TargetIDValidation && t.TargetID != targetID)
+        else if (t.TargetID != targetID)
         {
           // Sanity, prevent fake target
         }
@@ -1242,86 +1242,87 @@ namespace Server.Network
       int buttonID = pvSrc.ReadInt32();
 
       foreach (Gump gump in state.Gumps)
-        if (gump.Serial == serial && gump.TypeID == typeID)
+      {
+        if (gump.Serial != serial || gump.TypeID != typeID)
+          continue;
+        bool buttonExists = buttonID == 0; // 0 is always 'close'
+
+        if (!buttonExists)
+          foreach (GumpEntry e in gump.Entries)
+          {
+            if (e is GumpButton button && button.ButtonID == buttonID)
+            {
+              buttonExists = true;
+              break;
+            }
+
+            if (e is GumpImageTileButton tileButton && tileButton.ButtonID == buttonID)
+            {
+              buttonExists = true;
+              break;
+            }
+          }
+
+        if (!buttonExists)
         {
-          bool buttonExists = buttonID == 0; // 0 is always 'close'
-
-          if (!buttonExists)
-            foreach (GumpEntry e in gump.Entries)
-            {
-              if (e is GumpButton button && button.ButtonID == buttonID)
-              {
-                buttonExists = true;
-                break;
-              }
-
-              if (e is GumpImageTileButton tileButton && tileButton.ButtonID == buttonID)
-              {
-                buttonExists = true;
-                break;
-              }
-            }
-
-          if (!buttonExists)
-          {
-            state.WriteConsole("Invalid gump response, disconnecting...");
-            state.Dispose();
-            return;
-          }
-
-          int switchCount = pvSrc.ReadInt32();
-
-          if (switchCount < 0 || switchCount > gump.m_Switches)
-          {
-            state.WriteConsole("Invalid gump response, disconnecting...");
-            state.Dispose();
-            return;
-          }
-
-          int[] switches = new int[switchCount];
-
-          for (int j = 0; j < switches.Length; ++j)
-            switches[j] = pvSrc.ReadInt32();
-
-          int textCount = pvSrc.ReadInt32();
-
-          if (textCount < 0 || textCount > gump.m_TextEntries)
-          {
-            state.WriteConsole("Invalid gump response, disconnecting...");
-            state.Dispose();
-            return;
-          }
-
-          TextRelay[] textEntries = new TextRelay[textCount];
-
-          for (int j = 0; j < textEntries.Length; ++j)
-          {
-            int entryID = pvSrc.ReadUInt16();
-            int textLength = pvSrc.ReadUInt16();
-
-            if (textLength > 239)
-            {
-              state.WriteConsole("Invalid gump response, disconnecting...");
-              state.Dispose();
-              return;
-            }
-
-            string text = pvSrc.ReadUnicodeStringSafe(textLength);
-            textEntries[j] = new TextRelay(entryID, text);
-          }
-
-          state.RemoveGump(gump);
-
-          GumpProfile prof = GumpProfile.Acquire(gump.GetType());
-
-          prof?.Start();
-
-          gump.OnResponse(state, new RelayInfo(buttonID, switches, textEntries));
-
-          prof?.Finish();
-
+          state.WriteConsole("Invalid gump response, disconnecting...");
+          state.Dispose();
           return;
         }
+
+        int switchCount = pvSrc.ReadInt32();
+
+        if (switchCount < 0 || switchCount > gump.m_Switches)
+        {
+          state.WriteConsole("Invalid gump response, disconnecting...");
+          state.Dispose();
+          return;
+        }
+
+        int[] switches = new int[switchCount];
+
+        for (int j = 0; j < switches.Length; ++j)
+          switches[j] = pvSrc.ReadInt32();
+
+        int textCount = pvSrc.ReadInt32();
+
+        if (textCount < 0 || textCount > gump.m_TextEntries)
+        {
+          state.WriteConsole("Invalid gump response, disconnecting...");
+          state.Dispose();
+          return;
+        }
+
+        TextRelay[] textEntries = new TextRelay[textCount];
+
+        for (int j = 0; j < textEntries.Length; ++j)
+        {
+          int entryID = pvSrc.ReadUInt16();
+          int textLength = pvSrc.ReadUInt16();
+
+          if (textLength > 239)
+          {
+            state.WriteConsole("Invalid gump response, disconnecting...");
+            state.Dispose();
+            return;
+          }
+
+          string text = pvSrc.ReadUnicodeStringSafe(textLength);
+          textEntries[j] = new TextRelay(entryID, text);
+        }
+
+        state.RemoveGump(gump);
+
+        GumpProfile prof = GumpProfile.Acquire(gump.GetType());
+
+        prof?.Start();
+
+        gump.OnResponse(state, new RelayInfo(buttonID, switches, textEntries));
+
+        prof?.Finish();
+
+        return;
+      }
 
       if (typeID == 461)
       {
@@ -1606,28 +1607,22 @@ namespace Server.Network
 
       PacketHandler ph = GetExtendedHandler(packetID);
 
-      if (ph != null)
+      if (ph == null)
       {
-        if (ph.Ingame && state.Mobile == null)
-        {
+        pvSrc.Trace(state);
+        return;
+      }
+      
+      if (ph.Ingame && state.Mobile?.Deleted != false)
+      {
+        if (state.Mobile == null)
           Console.WriteLine(
             "Client: {0}: Sent ingame packet (0xBFx{1:X2}) before having been attached to a mobile", state,
             packetID);
-          state.Dispose();
-        }
-        else if (ph.Ingame && state.Mobile.Deleted)
-        {
-          state.Dispose();
-        }
-        else
-        {
-          ph.OnReceive(state, pvSrc);
-        }
+        state.Dispose();
       }
       else
-      {
-        pvSrc.Trace(state);
-      }
+        ph.OnReceive(state, pvSrc);
     }
 
     public static void CastSpell(NetState state, PacketReader pvSrc)

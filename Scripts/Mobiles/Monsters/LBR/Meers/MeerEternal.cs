@@ -139,27 +139,23 @@ namespace Server.Mobiles
     {
       Say(true, message);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(0.5), new TimerStateCallback(DoFocusedLeech_Stage1), combatant);
+      Timer.DelayCall(TimeSpan.FromSeconds(0.5), DoFocusedLeech_Stage1, combatant);
     }
 
-    private void DoFocusedLeech_Stage1(object state)
+    private void DoFocusedLeech_Stage1(Mobile combatant)
     {
-      Mobile combatant = (Mobile)state;
-
       if (CanBeHarmful(combatant))
       {
         MovingParticles(combatant, 0x36FA, 1, 0, false, false, 1108, 0, 9533, 1, 0, (EffectLayer)255, 0x100);
         MovingParticles(combatant, 0x0001, 1, 0, false, true, 1108, 0, 9533, 9534, 0, (EffectLayer)255, 0);
         PlaySound(0x1FB);
 
-        Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(DoFocusedLeech_Stage2), combatant);
+        Timer.DelayCall(TimeSpan.FromSeconds(1.0), DoFocusedLeech_Stage2, combatant);
       }
     }
 
-    private void DoFocusedLeech_Stage2(object state)
+    private void DoFocusedLeech_Stage2(Mobile combatant)
     {
-      Mobile combatant = (Mobile)state;
-
       if (CanBeHarmful(combatant))
       {
         combatant.MovingParticles(this, 0x36F4, 1, 0, false, false, 32, 0, 9535, 1, 0, (EffectLayer)255, 0x100);

@@ -55,20 +55,18 @@ namespace Server.Engines.Quests.Doom
 
         Effects.PlaySound(GetWorldLocation(), Map, 0x100);
 
-        Timer.DelayCall(TimeSpan.FromSeconds(8.0), new TimerStateCallback(EndSummon), from);
+        Timer.DelayCall(TimeSpan.FromSeconds(8.0), () => EndSummon(from));
       }
     }
 
-    public virtual void EndSummon(object state)
+    public virtual void EndSummon(Mobile from)
     {
-      Mobile from = (Mobile)state;
-
-      if (Chyloth != null && !Chyloth.Deleted)
+      if (Chyloth?.Deleted == false)
       {
         from.SendLocalizedMessage(
           1050010); // The ferry man has already been summoned.  There is no need to ring for him again.
       }
-      else if (Dragon != null && !Dragon.Deleted)
+      else if (Dragon?.Deleted == false)
       {
         from.SendLocalizedMessage(
           1050017); // The ferryman has recently been summoned already.  You decide against ringing the bell again so soon.

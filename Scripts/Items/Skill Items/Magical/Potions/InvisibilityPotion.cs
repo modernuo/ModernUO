@@ -34,14 +34,8 @@ namespace Server.Items
       }
 
       Consume();
-      m_Table[from] = Timer.DelayCall(TimeSpan.FromSeconds(2), new TimerStateCallback(Hide_Callback), from);
+      m_Table[from] = Timer.DelayCall(TimeSpan.FromSeconds(2), Hide, from);
       PlayDrinkEffect(from);
-    }
-
-    private static void Hide_Callback(object obj)
-    {
-      if (obj is Mobile mobile)
-        Hide(mobile);
     }
 
     public static void Hide(Mobile m)
@@ -57,13 +51,7 @@ namespace Server.Items
 
       RemoveTimer(m);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerStateCallback(EndHide_Callback), m);
-    }
-
-    private static void EndHide_Callback(object obj)
-    {
-      if (obj is Mobile mobile)
-        EndHide(mobile);
+      Timer.DelayCall(TimeSpan.FromSeconds(30), EndHide, m);
     }
 
     public static void EndHide(Mobile m)

@@ -3797,30 +3797,18 @@ namespace Server
 
     public Target BeginTarget(int range, bool allowGround, TargetFlags flags, TargetCallback callback)
     {
-      Target t = new SimpleTarget(range, flags, allowGround, callback);
-
-      Target = t;
-
-      return t;
+      return Target = new SimpleTarget(range, flags, allowGround, callback);
     }
 
     public Target BeginTarget(int range, bool allowGround, TargetFlags flags, TargetStateCallback callback, object state)
     {
-      Target t = new SimpleStateTarget(range, flags, allowGround, callback, state);
-
-      Target = t;
-
-      return t;
+      return Target = new SimpleStateTarget(range, flags, allowGround, callback, state);
     }
 
     public Target BeginTarget<T>(int range, bool allowGround, TargetFlags flags, TargetStateCallback<T> callback,
       T state)
     {
-      Target t = new SimpleStateTarget<T>(range, flags, allowGround, callback, state);
-
-      Target = t;
-
-      return t;
+      return Target = new SimpleStateTarget<T>(range, flags, allowGround, callback, state);
     }
 
     /// <summary>
@@ -6760,9 +6748,11 @@ namespace Server
 
     public virtual bool CanSee(object o)
     {
-      if (o is Item item) return CanSee(item);
+      if (o is Item item)
+        return CanSee(item);
 
-      if (o is Mobile mobile) return CanSee(mobile);
+      if (o is Mobile mobile)
+        return CanSee(mobile);
 
       return true;
     }
@@ -9779,7 +9769,7 @@ namespace Server
 
     public void MovingEffect(IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes)
     {
-      Effects.SendMovingEffect(this, to, itemID, speed, duration, fixedDirection, explodes, 0, 0);
+      Effects.SendMovingEffect(this, to, itemID, speed, duration, fixedDirection, explodes);
     }
 
     public void MovingParticles(IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes,

@@ -47,8 +47,7 @@ namespace Server.Spells.Chivalry
         else if (delay > 3.5)
           delay = 3.5;
 
-        m_Table[Caster] = Timer.DelayCall(TimeSpan.FromMinutes(delay), new TimerStateCallback(Expire_Callback),
-          Caster);
+        m_Table[Caster] = Timer.DelayCall(TimeSpan.FromMinutes(delay), Expire_Callback, Caster);
 
         if (Caster is PlayerMobile mobile)
         {
@@ -63,10 +62,8 @@ namespace Server.Spells.Chivalry
       FinishSequence();
     }
 
-    private static void Expire_Callback(object state)
+    private static void Expire_Callback(Mobile m)
     {
-      Mobile m = (Mobile)state;
-
       m_Table.Remove(m);
 
       m.PlaySound(0x1F8);

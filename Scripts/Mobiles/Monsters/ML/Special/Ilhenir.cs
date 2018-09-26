@@ -241,14 +241,8 @@ namespace Server.Mobiles
         to.SendLocalizedMessage(1072069); // A cacophonic sound lambastes you, suppressing your ability to move.
         to.PlaySound(0x584);
 
-        m_Table[to] = Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerStateCallback(EndCacophonic_Callback), to);
+        m_Table[to] = Timer.DelayCall(TimeSpan.FromSeconds(30), CacophonicEnd, to);
       }
-    }
-
-    private void EndCacophonic_Callback(object state)
-    {
-      if (state is Mobile mobile)
-        CacophonicEnd(mobile);
     }
 
     public virtual void CacophonicEnd(Mobile from)

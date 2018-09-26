@@ -130,8 +130,6 @@ namespace Server.Mobiles
 
             DoBeneficial(toBuff);
 
-            object[] state = { toBuff, toBuff.HitsMaxSeed, toBuff.RawStr, toBuff.RawDex };
-
             SpellHelper.Turn(this, toBuff);
 
             int toScale = toBuff.HitsMaxSeed;
@@ -161,7 +159,7 @@ namespace Server.Mobiles
             toBuff.FixedParticles(0x375A, 10, 15, 5017, EffectLayer.Waist);
             toBuff.PlaySound(0x1EE);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(20.0), new TimerStateCallback(Unbuff), state);
+            Timer.DelayCall(TimeSpan.FromSeconds(20.0), () => Unbuff(toBuff, toBuff.HitsMaxSeed, toBuff.RawStr, toBuff.RawDex));
           }
         }
         else
@@ -173,20 +171,16 @@ namespace Server.Mobiles
       base.OnThink();
     }
 
-    private void Unbuff(object state)
+    private void Unbuff(JukaLord toDebuff, int hitsMaxSeed, int rawStr, int rawDex)
     {
-      object[] states = (object[])state;
-
-      JukaLord toDebuff = (JukaLord)states[0];
-
       toDebuff.EndAction<JukaMage>();
 
       if (toDebuff.Deleted)
         return;
 
-      toDebuff.HitsMaxSeed = (int)states[1];
-      toDebuff.RawStr = (int)states[2];
-      toDebuff.RawDex = (int)states[3];
+      toDebuff.HitsMaxSeed = hitsMaxSeed;
+      toDebuff.RawStr = rawStr;
+      toDebuff.RawDex = rawDex;
 
       toDebuff.Hits = toDebuff.Hits;
       toDebuff.Stam = toDebuff.Stam;

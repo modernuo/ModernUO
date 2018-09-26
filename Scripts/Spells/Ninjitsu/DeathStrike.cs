@@ -75,8 +75,10 @@ namespace Server.Spells.Ninjitsu
       defender.FixedParticles(0x374A, 1, 17, 0x26BC, EffectLayer.Waist);
       attacker.PlaySound(attacker.Female ? 0x50D : 0x50E);
 
-      info = new DeathStrikeInfo(defender, attacker, damageBonus, isRanged);
-      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerStateCallback(ProcessDeathStrike), defender);
+      info = new DeathStrikeInfo(defender, attacker, damageBonus, isRanged)
+      {
+        m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), ProcessDeathStrike, defender)
+      };
 
       m_Table[defender] = info;
 
@@ -92,10 +94,8 @@ namespace Server.Spells.Ninjitsu
         ProcessDeathStrike(m);
     }
 
-    private static void ProcessDeathStrike(object state)
+    private static void ProcessDeathStrike(Mobile defender)
     {
-      Mobile defender = (Mobile)state;
-
       if (!(m_Table[defender] is DeathStrikeInfo info)) //sanity
         return;
 

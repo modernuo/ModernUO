@@ -54,12 +54,9 @@ namespace Server.Engines.ConPVP
 
     private void Announce_Callback()
     {
-      Tournament tourny = null;
+      Tournament tourney = Tournament?.Tournament;
 
-      if (Tournament != null)
-        tourny = Tournament.Tournament;
-
-      if (tourny != null && tourny.Stage == TournamentStage.Signup)
+      if (tourney?.Stage == TournamentStage.Signup)
         PublicOverheadMessage(MessageType.Regular, 0x35, false,
           "Come one, come all! Do you aspire to be a fighter of great renown? Join this tournament and show the world your abilities.");
     }
@@ -68,37 +65,34 @@ namespace Server.Engines.ConPVP
     {
       base.OnMovement(m, oldLocation);
 
-      Tournament tourny = null;
+      Tournament tourney = Tournament?.Tournament;
 
-      if (Tournament != null)
-        tourny = Tournament.Tournament;
-
-      if (InRange(m, 4) && !InRange(oldLocation, 4) && tourny != null && tourny.Stage == TournamentStage.Signup &&
+      if (InRange(m, 4) && !InRange(oldLocation, 4) && tourney != null && tourney.Stage == TournamentStage.Signup &&
           m.CanBeginAction(this))
       {
         Ladder ladder = Ladder.Instance;
 
         LadderEntry entry = ladder?.Find(m);
 
-        if (entry != null && Ladder.GetLevel(entry.Experience) < tourny.LevelRequirement)
+        if (entry != null && Ladder.GetLevel(entry.Experience) < tourney.LevelRequirement)
           return;
 
-        if (tourny.IsFactionRestricted && Faction.Find(m) == null) return;
+        if (tourney.IsFactionRestricted && Faction.Find(m) == null) return;
 
-        if (tourny.HasParticipant(m))
+        if (tourney.HasParticipant(m))
           return;
 
         PrivateOverheadMessage(MessageType.Regular, 0x35, false,
           $"Hello m'{(m.Female ? "Lady" : "Lord")}. Dost thou wish to enter this tournament? You need only to write your name in this book.",
           m.NetState);
         m.BeginAction(this);
-        Timer.DelayCall(TimeSpan.FromSeconds(10.0), new TimerStateCallback(ReleaseLock_Callback), m);
+        Timer.DelayCall(TimeSpan.FromSeconds(10.0), ReleaseLock_Callback, m);
       }
     }
 
-    private void ReleaseLock_Callback(object obj)
+    public void ReleaseLock_Callback(Mobile m)
     {
-      ((Mobile)obj).EndAction(this);
+      m.EndAction(this);
     }
 
     public override void Serialize(GenericWriter writer)
@@ -157,20 +151,21 @@ namespace Server.Engines.ConPVP
       }
       else
       {
-        Tournament tourny = Tournament?.Tournament;
+        Tournament tourney = Tournament?.Tournament;
 
-        if (tourny != null)
-        {
-          if (Registrar != null)
+        if (tourney == null)
+          return;
+        
+        if (Registrar != null)
             Registrar.Direction = Registrar.GetDirectionTo(this);
 
-          switch (tourny.Stage)
+          switch (tourney.Stage)
           {
             case TournamentStage.Fighting:
             {
               if (Registrar != null)
               {
-                if (tourny.HasParticipant(from))
+                if (tourney.HasParticipant(from))
                   Registrar.PrivateOverheadMessage(MessageType.Regular,
                     0x35, false, "Excuse me? You are already signed up.", from.NetState);
                 else
@@ -193,7 +188,7 @@ namespace Server.Engines.ConPVP
               Ladder ladder = Ladder.Instance;
               LadderEntry entry = ladder?.Find(from);
 
-              if (entry != null && Ladder.GetLevel(entry.Experience) < tourny.LevelRequirement)
+              if (entry != null && Ladder.GetLevel(entry.Experience) < tourney.LevelRequirement)
               {
                 Registrar?.PrivateOverheadMessage(MessageType.Regular,
                   0x35, false, "You have not yet proven yourself a worthy dueler.", from.NetState);
@@ -201,7 +196,7 @@ namespace Server.Engines.ConPVP
                 break;
               }
 
-              if (tourny.IsFactionRestricted && Faction.Find(from) == null)
+              if (tourney.IsFactionRestricted && Faction.Find(from) == null)
               {
                 Registrar?.PrivateOverheadMessage(MessageType.Regular,
                   0x35, false, "Only those who have declared their faction allegiance may participate.",
@@ -225,12 +220,12 @@ namespace Server.Engines.ConPVP
                 Registrar?.PrivateOverheadMessage(MessageType.Regular,
                   0x22, false, "You are already participating in a duel.", mobile.NetState);
               }
-              else if (!tourny.HasParticipant(from))
+              else if (!tourney.HasParticipant(from))
               {
                 ArrayList players = new ArrayList();
                 players.Add(from);
                 from.CloseGump<ConfirmSignupGump>();
-                from.SendGump(new ConfirmSignupGump(from, Registrar, tourny, players));
+                from.SendGump(new ConfirmSignupGump(from, Registrar, tourney, players));
               }
               else
               {
@@ -241,7 +236,6 @@ namespace Server.Engines.ConPVP
               break;
             }
           }
-        }
       }
     }
 
@@ -282,11 +276,11 @@ namespace Server.Engines.ConPVP
     private Mobile m_Registrar;
     private Tournament m_Tournament;
 
-    public ConfirmSignupGump(Mobile from, Mobile registrar, Tournament tourny, ArrayList players) : base(50, 50)
+    public ConfirmSignupGump(Mobile from, Mobile registrar, Tournament tourney, ArrayList players) : base(50, 50)
     {
       m_From = from;
       m_Registrar = registrar;
-      m_Tournament = tourny;
+      m_Tournament = tourney;
       m_Players = players;
 
       m_From.CloseGump<AcceptTeamGump>();
@@ -296,7 +290,7 @@ namespace Server.Engines.ConPVP
 
       #region Rules
 
-      Ruleset ruleset = tourny.Ruleset;
+      Ruleset ruleset = tourney.Ruleset;
       Ruleset basedef = ruleset.Base;
 
       int height = 185 + 60 + 12;
@@ -329,8 +323,8 @@ namespace Server.Engines.ConPVP
 
       height += 10 + 22 + 25 + 25;
 
-      if (tourny.PlayersPerParticipant > 1)
-        height += 36 + tourny.PlayersPerParticipant * 20;
+      if (tourney.PlayersPerParticipant > 1)
+        height += 36 + tourney.PlayersPerParticipant * 20;
 
       #endregion
 
@@ -350,37 +344,37 @@ namespace Server.Engines.ConPVP
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourny.TournyType == TournyType.FreeForAll)
+      if (tourney.TournyType == TournyType.FreeForAll)
       {
         sb.Append("FFA");
       }
-      else if (tourny.TournyType == TournyType.RandomTeam)
+      else if (tourney.TournyType == TournyType.RandomTeam)
       {
-        sb.Append(tourny.ParticipantsPerMatch);
+        sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-Team");
       }
-      else if (tourny.TournyType == TournyType.Faction)
+      else if (tourney.TournyType == TournyType.Faction)
       {
-        sb.Append(tourny.ParticipantsPerMatch);
+        sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-Team Faction");
       }
-      else if (tourny.TournyType == TournyType.RedVsBlue)
+      else if (tourney.TournyType == TournyType.RedVsBlue)
       {
         sb.Append("Red v Blue");
       }
       else
       {
-        for (int i = 0; i < tourny.ParticipantsPerMatch; ++i)
+        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
         {
           if (sb.Length > 0)
             sb.Append('v');
 
-          sb.Append(tourny.PlayersPerParticipant);
+          sb.Append(tourney.PlayersPerParticipant);
         }
       }
 
-      if (tourny.EventController != null)
-        sb.Append(' ').Append(tourny.EventController.Title);
+      if (tourney.EventController != null)
+        sb.Append(' ').Append(tourney.EventController.Title);
 
       sb.Append(" Tournament Signup");
 
@@ -397,7 +391,7 @@ namespace Server.Engines.ConPVP
 
       string groupText = null;
 
-      switch (tourny.GroupType)
+      switch (tourney.GroupType)
       {
         case GroupingType.HighVsLow:
           groupText = "High vs Low";
@@ -415,7 +409,7 @@ namespace Server.Engines.ConPVP
 
       string tieText = null;
 
-      switch (tourny.TieType)
+      switch (tourney.TieType)
       {
         case TieType.Random:
           tieText = "Random";
@@ -427,10 +421,10 @@ namespace Server.Engines.ConPVP
           tieText = "Lowest advances";
           break;
         case TieType.FullAdvancement:
-          tieText = tourny.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances";
+          tieText = tourney.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances";
           break;
         case TieType.FullElimination:
-          tieText = tourny.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated";
+          tieText = tourney.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated";
           break;
       }
 
@@ -439,12 +433,12 @@ namespace Server.Engines.ConPVP
 
       string sdText = "Off";
 
-      if (tourny.SuddenDeath > TimeSpan.Zero)
+      if (tourney.SuddenDeath > TimeSpan.Zero)
       {
-        sdText = $"{(int)tourny.SuddenDeath.TotalMinutes}:{tourny.SuddenDeath.Seconds:D2}";
+        sdText = $"{(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2}";
 
-        if (tourny.SuddenDeathRounds > 0)
-          sdText = $"{sdText} (first {tourny.SuddenDeathRounds} rounds)";
+        if (tourney.SuddenDeathRounds > 0)
+          sdText = $"{sdText} (first {tourney.SuddenDeathRounds} rounds)";
         else
           sdText = $"{sdText} (all rounds)";
       }
@@ -494,7 +488,7 @@ namespace Server.Engines.ConPVP
 
       #region Team
 
-      if (tourny.PlayersPerParticipant > 1)
+      if (tourney.PlayersPerParticipant > 1)
       {
         y += 8;
         AddImageTiled(32, y - 1, 264, 1, 9107);
@@ -514,7 +508,7 @@ namespace Server.Engines.ConPVP
           AddBorderedText(60, y, 200, 20, ((Mobile)players[i]).Name, LabelColor32, BlackColor32);
         }
 
-        for (int i = players.Count; i < tourny.PlayersPerParticipant; ++i, y += 20)
+        for (int i = players.Count; i < tourney.PlayersPerParticipant; ++i, y += 20)
         {
           if (i == 0)
             AddImage(35, y, 0xD2);
@@ -581,10 +575,10 @@ namespace Server.Engines.ConPVP
     {
       if (info.ButtonID == 1 && info.IsSwitched(1))
       {
-        Tournament tourny = m_Tournament;
+        Tournament tourney = m_Tournament;
         Mobile from = m_From;
 
-        switch (tourny.Stage)
+        switch (tourney.Stage)
         {
           case TournamentStage.Fighting:
           {
@@ -610,7 +604,7 @@ namespace Server.Engines.ConPVP
           }
           case TournamentStage.Signup:
           {
-            if (m_Players.Count != tourny.PlayersPerParticipant)
+            if (m_Players.Count != tourney.PlayersPerParticipant)
             {
               m_Registrar?.PrivateOverheadMessage(MessageType.Regular,
                 0x35, false, "You have not yet chosen your team.", from.NetState);
@@ -627,7 +621,7 @@ namespace Server.Engines.ConPVP
 
               LadderEntry entry = ladder?.Find(mob);
 
-              if (entry != null && Ladder.GetLevel(entry.Experience) < tourny.LevelRequirement)
+              if (entry != null && Ladder.GetLevel(entry.Experience) < tourney.LevelRequirement)
               {
                 if (m_Registrar != null)
                 {
@@ -644,7 +638,7 @@ namespace Server.Engines.ConPVP
                 return;
               }
 
-              if (tourny.IsFactionRestricted && Faction.Find(mob) == null)
+              if (tourney.IsFactionRestricted && Faction.Find(mob) == null)
               {
                 m_Registrar?.PrivateOverheadMessage(MessageType.Regular,
                   0x35, false, "Only those who have declared their faction allegiance may participate.",
@@ -654,7 +648,7 @@ namespace Server.Engines.ConPVP
                 return;
               }
 
-              if (tourny.HasParticipant(mob))
+              if (tourney.HasParticipant(mob))
               {
                 if (m_Registrar != null)
                 {
@@ -692,17 +686,17 @@ namespace Server.Engines.ConPVP
             {
               string fmt;
 
-              if (tourny.PlayersPerParticipant == 1)
+              if (tourney.PlayersPerParticipant == 1)
                 fmt =
                   "As you say m'{0}. I've written your name to the bracket. The tournament will begin {1}.";
-              else if (tourny.PlayersPerParticipant == 2)
+              else if (tourney.PlayersPerParticipant == 2)
                 fmt =
                   "As you wish m'{0}. The tournament will begin {1}, but first you must name your partner.";
               else
                 fmt = "As you wish m'{0}. The tournament will begin {1}, but first you must name your team.";
 
               string timeUntil;
-              int minutesUntil = (int)Math.Round((tourny.SignupStart + tourny.SignupPeriod - DateTime.UtcNow)
+              int minutesUntil = (int)Math.Round((tourney.SignupStart + tourney.SignupPeriod - DateTime.UtcNow)
                 .TotalMinutes);
 
               if (minutesUntil == 0)
@@ -718,7 +712,7 @@ namespace Server.Engines.ConPVP
             part.Players.Clear();
             part.Players.AddRange(m_Players);
 
-            tourny.Participants.Add(part);
+            tourney.Participants.Add(part);
 
             break;
           }
@@ -839,12 +833,12 @@ namespace Server.Engines.ConPVP
     private Mobile m_Requested;
     private Tournament m_Tournament;
 
-    public AcceptTeamGump(Mobile from, Mobile requested, Tournament tourny, Mobile registrar, ArrayList players) :
+    public AcceptTeamGump(Mobile from, Mobile requested, Tournament tourney, Mobile registrar, ArrayList players) :
       base(50, 50)
     {
       m_From = from;
       m_Requested = requested;
-      m_Tournament = tourny;
+      m_Tournament = tourney;
       m_Registrar = registrar;
       m_Players = players;
 
@@ -852,7 +846,7 @@ namespace Server.Engines.ConPVP
 
       #region Rules
 
-      Ruleset ruleset = tourny.Ruleset;
+      Ruleset ruleset = tourney.Ruleset;
       Ruleset basedef = ruleset.Base;
 
       int height = 185 + 35 + 60 + 12;
@@ -900,37 +894,37 @@ namespace Server.Engines.ConPVP
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourny.TournyType == TournyType.FreeForAll)
+      if (tourney.TournyType == TournyType.FreeForAll)
       {
         sb.Append("FFA");
       }
-      else if (tourny.TournyType == TournyType.RandomTeam)
+      else if (tourney.TournyType == TournyType.RandomTeam)
       {
-        sb.Append(tourny.ParticipantsPerMatch);
+        sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-Team");
       }
-      else if (tourny.TournyType == TournyType.Faction)
+      else if (tourney.TournyType == TournyType.Faction)
       {
-        sb.Append(tourny.ParticipantsPerMatch);
+        sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-Team Faction");
       }
-      else if (tourny.TournyType == TournyType.RedVsBlue)
+      else if (tourney.TournyType == TournyType.RedVsBlue)
       {
         sb.Append("Red v Blue");
       }
       else
       {
-        for (int i = 0; i < tourny.ParticipantsPerMatch; ++i)
+        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
         {
           if (sb.Length > 0)
             sb.Append('v');
 
-          sb.Append(tourny.PlayersPerParticipant);
+          sb.Append(tourney.PlayersPerParticipant);
         }
       }
 
-      if (tourny.EventController != null)
-        sb.Append(' ').Append(tourny.EventController.Title);
+      if (tourney.EventController != null)
+        sb.Append(' ').Append(tourney.EventController.Title);
 
       sb.Append(" Tournament Invitation");
 
@@ -949,7 +943,7 @@ namespace Server.Engines.ConPVP
 
       string groupText = null;
 
-      switch (tourny.GroupType)
+      switch (tourney.GroupType)
       {
         case GroupingType.HighVsLow:
           groupText = "High vs Low";
@@ -967,7 +961,7 @@ namespace Server.Engines.ConPVP
 
       string tieText = null;
 
-      switch (tourny.TieType)
+      switch (tourney.TieType)
       {
         case TieType.Random:
           tieText = "Random";
@@ -979,10 +973,10 @@ namespace Server.Engines.ConPVP
           tieText = "Lowest advances";
           break;
         case TieType.FullAdvancement:
-          tieText = tourny.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances";
+          tieText = tourney.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances";
           break;
         case TieType.FullElimination:
-          tieText = tourny.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated";
+          tieText = tourney.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated";
           break;
       }
 
@@ -991,12 +985,12 @@ namespace Server.Engines.ConPVP
 
       string sdText = "Off";
 
-      if (tourny.SuddenDeath > TimeSpan.Zero)
+      if (tourney.SuddenDeath > TimeSpan.Zero)
       {
-        sdText = $"{(int)tourny.SuddenDeath.TotalMinutes}:{tourny.SuddenDeath.Seconds:D2}";
+        sdText = $"{(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2}";
 
-        if (tourny.SuddenDeathRounds > 0)
-          sdText = $"{sdText} (first {tourny.SuddenDeathRounds} rounds)";
+        if (tourney.SuddenDeathRounds > 0)
+          sdText = $"{sdText} (first {tourney.SuddenDeathRounds} rounds)";
         else
           sdText = $"{sdText} (all rounds)";
       }
@@ -1300,9 +1294,9 @@ namespace Server.Engines.ConPVP
     {
       private Tournament m_Tournament;
 
-      public EditEntry(Tournament tourny) : base(5101)
+      public EditEntry(Tournament tourney) : base(5101)
       {
-        m_Tournament = tourny;
+        m_Tournament = tourney;
       }
 
       public override void OnClick()
@@ -1315,9 +1309,9 @@ namespace Server.Engines.ConPVP
     {
       private Tournament m_Tournament;
 
-      public StartEntry(Tournament tourny) : base(5113)
+      public StartEntry(Tournament tourney) : base(5113)
       {
-        m_Tournament = tourny;
+        m_Tournament = tourney;
       }
 
       public override void OnClick()
@@ -2214,15 +2208,11 @@ namespace Server.Engines.ConPVP
     {
       if (arena?.Announcer != null)
         for (int j = 0; j < alerts.Length; ++j)
-          Timer.DelayCall(TimeSpan.FromSeconds(Math.Max(j - 0.5, 0.0)), new TimerStateCallback(Alert_Callback),
-            new object[] { arena.Announcer, alerts[j] });
-    }
-
-    private void Alert_Callback(object state)
-    {
-      object[] states = (object[])state;
-
-      ((Mobile)states[0])?.PublicOverheadMessage(MessageType.Regular, 0x35, false, (string)states[1]);
+        {
+          string alert = alerts[j];
+          Timer.DelayCall(TimeSpan.FromSeconds(Math.Max(j - 0.5, 0.0)),
+            () => arena.Announcer.PublicOverheadMessage(MessageType.Regular, 0x35, false, alert));
+        }
     }
   }
 
@@ -2235,7 +2225,7 @@ namespace Server.Engines.ConPVP
 
     public ArrayList Levels{ get; set; }
 
-    public void AddLevel(int partsPerMatch, ArrayList participants, GroupingType groupType, TournyType tournyType)
+    public void AddLevel(int partsPerMatch, ArrayList participants, GroupingType groupType, TournyType tourneyType)
     {
       ArrayList copy = new ArrayList(participants);
 
@@ -2244,7 +2234,7 @@ namespace Server.Engines.ConPVP
 
       PyramidLevel level = new PyramidLevel();
 
-      switch (tournyType)
+      switch (tourneyType)
       {
         case TournyType.RedVsBlue:
         {
@@ -2461,23 +2451,23 @@ namespace Server.Engines.ConPVP
 
     public bool InProgress => Context != null && Context.Registered;
 
-    public void Start(Arena arena, Tournament tourny)
+    public void Start(Arena arena, Tournament tourney)
     {
       TournyParticipant first = (TournyParticipant)Participants[0];
 
-      DuelContext dc = new DuelContext((Mobile)first.Players[0], tourny.Ruleset.Layout, false);
+      DuelContext dc = new DuelContext((Mobile)first.Players[0], tourney.Ruleset.Layout, false);
       dc.Ruleset.Options.SetAll(false);
-      dc.Ruleset.Options.Or(tourny.Ruleset.Options);
+      dc.Ruleset.Options.Or(tourney.Ruleset.Options);
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        TournyParticipant tournyPart = (TournyParticipant)Participants[i];
-        Participant duelPart = new Participant(dc, tournyPart.Players.Count);
+        TournyParticipant tourneyPart = (TournyParticipant)Participants[i];
+        Participant duelPart = new Participant(dc, tourneyPart.Players.Count);
 
-        duelPart.TournyPart = tournyPart;
+        duelPart.TournyPart = tourneyPart;
 
-        for (int j = 0; j < tournyPart.Players.Count; ++j)
-          duelPart.Add((Mobile)tournyPart.Players[j]);
+        for (int j = 0; j < tourneyPart.Players.Count; ++j)
+          duelPart.Add((Mobile)tourneyPart.Players[j]);
 
         for (int j = 0; j < duelPart.Players.Length; ++j)
           if (duelPart.Players[j] != null)
@@ -2486,17 +2476,17 @@ namespace Server.Engines.ConPVP
         dc.Participants.Add(duelPart);
       }
 
-      if (tourny.EventController != null)
-        dc.m_EventGame = tourny.EventController.Construct(dc);
+      if (tourney.EventController != null)
+        dc.m_EventGame = tourney.EventController.Construct(dc);
 
-      dc.m_Tournament = tourny;
+      dc.m_Tournament = tourney;
       dc.m_Match = this;
 
       dc.m_OverrideArena = arena;
 
-      if (tourny.SuddenDeath > TimeSpan.Zero &&
-          (tourny.SuddenDeathRounds == 0 || tourny.Pyramid.Levels.Count <= tourny.SuddenDeathRounds))
-        dc.StartSuddenDeath(tourny.SuddenDeath);
+      if (tourney.SuddenDeath > TimeSpan.Zero &&
+          (tourney.SuddenDeathRounds == 0 || tourney.Pyramid.Levels.Count <= tourney.SuddenDeathRounds))
+        dc.StartSuddenDeath(tourney.SuddenDeath);
 
       dc.SendReadyGump(0);
 
@@ -2659,11 +2649,11 @@ namespace Server.Engines.ConPVP
     private Tournament m_Tournament;
     private TournyBracketGumpType m_Type;
 
-    public TournamentBracketGump(Mobile from, Tournament tourny, TournyBracketGumpType type, ArrayList list, int page,
+    public TournamentBracketGump(Mobile from, Tournament tourney, TournyBracketGumpType type, ArrayList list, int page,
       object obj) : base(50, 50)
     {
       m_From = from;
-      m_Tournament = tourny;
+      m_Tournament = tourney;
       m_Type = type;
       m_List = list;
       m_Page = page;
@@ -2679,37 +2669,37 @@ namespace Server.Engines.ConPVP
 
           StringBuilder sb = new StringBuilder();
 
-          if (tourny.TournyType == TournyType.FreeForAll)
+          if (tourney.TournyType == TournyType.FreeForAll)
           {
             sb.Append("FFA");
           }
-          else if (tourny.TournyType == TournyType.RandomTeam)
+          else if (tourney.TournyType == TournyType.RandomTeam)
           {
-            sb.Append(tourny.ParticipantsPerMatch);
+            sb.Append(tourney.ParticipantsPerMatch);
             sb.Append("-Team");
           }
-          else if (tourny.TournyType == TournyType.RedVsBlue)
+          else if (tourney.TournyType == TournyType.RedVsBlue)
           {
             sb.Append("Red v Blue");
           }
-          else if (tourny.TournyType == TournyType.Faction)
+          else if (tourney.TournyType == TournyType.Faction)
           {
-            sb.Append(tourny.ParticipantsPerMatch);
+            sb.Append(tourney.ParticipantsPerMatch);
             sb.Append("-Team Faction");
           }
           else
           {
-            for (int i = 0; i < tourny.ParticipantsPerMatch; ++i)
+            for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
             {
               if (sb.Length > 0)
                 sb.Append('v');
 
-              sb.Append(tourny.PlayersPerParticipant);
+              sb.Append(tourney.PlayersPerParticipant);
             }
           }
 
-          if (tourny.EventController != null)
-            sb.Append(' ').Append(tourny.EventController.Title);
+          if (tourney.EventController != null)
+            sb.Append(' ').Append(tourney.EventController.Title);
 
           sb.Append(" Tournament Bracket");
 
@@ -2755,7 +2745,7 @@ namespace Server.Engines.ConPVP
         }
         case TournyBracketGumpType.Rules_Info:
         {
-          Ruleset ruleset = tourny.Ruleset;
+          Ruleset ruleset = tourney.Ruleset;
           Ruleset basedef = ruleset.Base;
 
           BitArray defs;
@@ -2791,7 +2781,7 @@ namespace Server.Engines.ConPVP
 
           string groupText = null;
 
-          switch (tourny.GroupType)
+          switch (tourney.GroupType)
           {
             case GroupingType.HighVsLow:
               groupText = "High vs Low";
@@ -2809,7 +2799,7 @@ namespace Server.Engines.ConPVP
 
           string tieText = null;
 
-          switch (tourny.TieType)
+          switch (tourney.TieType)
           {
             case TieType.Random:
               tieText = "Random";
@@ -2821,10 +2811,10 @@ namespace Server.Engines.ConPVP
               tieText = "Lowest advances";
               break;
             case TieType.FullAdvancement:
-              tieText = tourny.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances";
+              tieText = tourney.ParticipantsPerMatch == 2 ? "Both advance" : "Everyone advances";
               break;
             case TieType.FullElimination:
-              tieText = tourny.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated";
+              tieText = tourney.ParticipantsPerMatch == 2 ? "Both eliminated" : "Everyone eliminated";
               break;
           }
 
@@ -2833,12 +2823,12 @@ namespace Server.Engines.ConPVP
 
           string sdText = "Off";
 
-          if (tourny.SuddenDeath > TimeSpan.Zero)
+          if (tourney.SuddenDeath > TimeSpan.Zero)
           {
-            sdText = $"{(int)tourny.SuddenDeath.TotalMinutes}:{tourny.SuddenDeath.Seconds:D2}";
+            sdText = $"{(int)tourney.SuddenDeath.TotalMinutes}:{tourney.SuddenDeath.Seconds:D2}";
 
-            if (tourny.SuddenDeathRounds > 0)
-              sdText = $"{sdText} (first {tourny.SuddenDeathRounds} rounds)";
+            if (tourney.SuddenDeathRounds > 0)
+              sdText = $"{sdText} (first {tourney.SuddenDeathRounds} rounds)";
             else
               sdText = $"{sdText} (all rounds)";
           }
@@ -2888,7 +2878,7 @@ namespace Server.Engines.ConPVP
           AddBackground(0, 0, 300, 300, 9380);
 
           if (m_List == null)
-            m_List = new ArrayList(tourny.Participants);
+            m_List = new ArrayList(tourney.Participants);
 
           AddLeftArrow(25, 11, ToButtonID(0, 0));
           AddHtml(25, 35, 250, 20, Center($"{m_List.Count} Participant{(m_List.Count == 1 ? "" : "s")}"), false,
@@ -3000,7 +2990,7 @@ namespace Server.Engines.ConPVP
           AddHtml(25, 35, 250, 20, Center("Rounds"), false, false);
 
           if (m_List == null)
-            m_List = new ArrayList(tourny.Pyramid.Levels);
+            m_List = new ArrayList(tourney.Pyramid.Levels);
 
           int index, count, y;
           StartPage(out index, out count, out y, 12);
@@ -3517,17 +3507,17 @@ namespace Server.Engines.ConPVP
       }
       else
       {
-        Tournament tourny = Tournament?.Tournament;
+        Tournament tourney = Tournament?.Tournament;
 
-        if (tourny != null)
+        if (tourney != null)
         {
           from.CloseGump<TournamentBracketGump>();
-          from.SendGump(new TournamentBracketGump(from, tourny, TournyBracketGumpType.Index, null, 0, null));
+          from.SendGump(new TournamentBracketGump(from, tourney, TournyBracketGumpType.Index, null, 0, null));
 
-          /*if ( tourny.Stage == TournamentStage.Fighting && tourny.Pyramid.Levels.Count > 0 )
-            from.SendGump( new TournamentBracketGump( tourny, (PyramidLevel)tourny.Pyramid.Levels[tourny.Pyramid.Levels.Count - 1] ) );
+          /*if ( tourney.Stage == TournamentStage.Fighting && tourney.Pyramid.Levels.Count > 0 )
+            from.SendGump( new TournamentBracketGump( tourney, (PyramidLevel)tourney.Pyramid.Levels[tourney.Pyramid.Levels.Count - 1] ) );
           else
-            from.SendGump( new TournamentBracketGump( tourny, 0 ) );*/
+            from.SendGump( new TournamentBracketGump( tourney, 0 ) );*/
         }
       }
     }

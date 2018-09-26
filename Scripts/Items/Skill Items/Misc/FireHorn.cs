@@ -63,8 +63,7 @@ namespace Server.Items
         return;
 
       from.BeginAction<FireHorn>();
-      Timer.DelayCall(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0),
-        new TimerStateCallback(EndAction), from);
+      Timer.DelayCall(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0), EndAction, from);
 
       int music = from.Skills.Musicianship.Fixed;
 
@@ -176,12 +175,10 @@ namespace Server.Items
       }
     }
 
-    private static void EndAction(object state)
+    private static void EndAction(Mobile m)
     {
-      Mobile m = (Mobile)state;
-
-      m.EndAction<FireHorn>();
-      m.SendLocalizedMessage(1049621); // You catch your breath.
+      m?.EndAction<FireHorn>();
+      m?.SendLocalizedMessage(1049621); // You catch your breath.
     }
 
     public override void Serialize(GenericWriter writer)

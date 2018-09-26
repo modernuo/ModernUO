@@ -37,11 +37,6 @@ namespace Server.Engines.Craft
         m_Deed = deed;
       }
 
-      private static void EndGolemRepair(object state)
-      {
-        ((Mobile)state).EndAction<Golem>();
-      }
-
       private int GetWeakenChance(Mobile mob, SkillName skill, int curHits, int maxHits)
       {
         // 40% - (1% per hp lost) - (1% per 10 craft skill)
@@ -264,8 +259,7 @@ namespace Server.Engines.Craft
                   toDelete = true;
 
                   from.BeginAction<Golem>();
-                  Timer.DelayCall(TimeSpan.FromSeconds(12.0), new TimerStateCallback(EndGolemRepair),
-                    from);
+                  Timer.DelayCall(TimeSpan.FromSeconds(12.0), from.EndAction<Golem>);
                 }
                 else
                 {

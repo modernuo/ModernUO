@@ -252,8 +252,7 @@ namespace Server.Engines.Events
         m_From = from;
         Name = $"{from.Name}\'s Naughty Twin";
 
-        Timer.DelayCall(TrickOrTreat.OneSecond,
-          Utility.RandomBool() ? StealCandy : new TimerStateCallback<Mobile>(ToGate), m_From);
+        Timer.DelayCall(TrickOrTreat.OneSecond, StealCandyOrGate, m_From);
       }
     }
 
@@ -278,25 +277,24 @@ namespace Server.Engines.Events
       return null;
     }
 
-    public static void StealCandy(Mobile target)
+    public static void StealCandyOrGate(Mobile target)
     {
       if (TrickOrTreat.CheckMobile(target))
       {
-        Item item = FindCandyTypes(target);
+        if (Utility.RandomBool())
+        {
+          Item item = FindCandyTypes(target);
 
-        target.SendLocalizedMessage(1113967); /* Your naughty twin steals some of your candy. */
+          target.SendLocalizedMessage(1113967); /* Your naughty twin steals some of your candy. */
 
-        if (item != null && !item.Deleted) item.Delete();
-      }
-    }
-
-    public static void ToGate(Mobile target)
-    {
-      if (TrickOrTreat.CheckMobile(target))
-      {
-        target.SendLocalizedMessage(1113972); /* Your naughty twin teleports you away with a naughty laugh! */
-
-        target.MoveToWorld(RandomMoongate(target), target.Map);
+          if (item != null && !item.Deleted)
+            item.Delete();
+        }
+        else
+        {
+          target.SendLocalizedMessage(1113972); /* Your naughty twin teleports you away with a naughty laugh! */
+          target.MoveToWorld(RandomMoongate(target), target.Map);
+        }
       }
     }
 

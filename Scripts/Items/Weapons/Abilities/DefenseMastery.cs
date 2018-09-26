@@ -48,7 +48,7 @@ namespace Server.Items
       attacker.AddResistanceMod(mod);
 
       info = new DefenseMasteryInfo(attacker, 80 - modifier, mod);
-      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3.0), new TimerStateCallback(EndDefense), info);
+      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3.0), EndDefense, info);
 
       m_Table[attacker] = info;
 
@@ -64,10 +64,8 @@ namespace Server.Items
       return true;
     }
 
-    private static void EndDefense(object state)
+    private static void EndDefense(DefenseMasteryInfo info)
     {
-      DefenseMasteryInfo info = (DefenseMasteryInfo)state;
-
       if (info.m_Mod != null)
         info.m_From.RemoveResistanceMod(info.m_Mod);
 

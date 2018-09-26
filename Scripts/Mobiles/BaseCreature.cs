@@ -3690,7 +3690,7 @@ namespace Server.Mobiles
 
       Direction = GetDirectionTo(target);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(BreathEffectDelay), new TimerStateCallback(BreathEffect_Callback), target);
+      Timer.DelayCall(TimeSpan.FromSeconds(BreathEffectDelay), BreathEffect_Callback, target);
     }
 
     public virtual void BreathStallMovement()
@@ -3709,17 +3709,15 @@ namespace Server.Mobiles
       Animate(BreathAngerAnimation, 5, 1, true, false, 0);
     }
 
-    public virtual void BreathEffect_Callback(object state)
+    public virtual void BreathEffect_Callback(Mobile target)
     {
-      Mobile target = (Mobile)state;
-
       if (!target.Alive || !CanBeHarmful(target))
         return;
 
       BreathPlayEffectSound();
       BreathPlayEffect(target);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(BreathDamageDelay), new TimerStateCallback(BreathDamage_Callback), target);
+      Timer.DelayCall(TimeSpan.FromSeconds(BreathDamageDelay), BreathDamage_Callback, target);
     }
 
     public virtual void BreathPlayEffectSound()
@@ -3734,12 +3732,10 @@ namespace Server.Mobiles
         BreathEffectExplodes, BreathEffectHue, BreathEffectRenderMode);
     }
 
-    public virtual void BreathDamage_Callback(object state)
+    public virtual void BreathDamage_Callback(Mobile target)
     {
-      if (state is BaseCreature creature && creature.BreathImmune)
+      if (target is BaseCreature creature && creature.BreathImmune)
         return;
-
-      Mobile target = (Mobile)state;
 
       if (CanBeHarmful(target))
       {
@@ -5124,13 +5120,7 @@ namespace Server.Mobiles
 
       double seconds = (onSelf ? HealDelay : HealOwnerDelay) + (patient.Alive ? 0.0 : 5.0);
 
-      m_HealTimer = Timer.DelayCall(TimeSpan.FromSeconds(seconds), new TimerStateCallback(Heal_Callback), patient);
-    }
-
-    private void Heal_Callback(object state)
-    {
-      if (state is Mobile mobile)
-        Heal(mobile);
+      m_HealTimer = Timer.DelayCall(TimeSpan.FromSeconds(seconds), Heal, patient);
     }
 
     public virtual void Heal(Mobile patient)

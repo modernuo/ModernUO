@@ -701,7 +701,7 @@ namespace Server.Mobiles
             notice =
               "The server is currently under lockdown. You do not have sufficient access level to connect.";
 
-          Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(Disconnect), from);
+          Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => from.NetState?.Dispose());
         }
         else if (from.AccessLevel >= AccessLevel.Administrator)
         {
@@ -958,12 +958,6 @@ namespace Server.Mobiles
         InvalidateMyRunUO();
     }
 
-    private static void Disconnect(object state)
-    {
-      NetState ns = ((Mobile)state).NetState;
-      ns?.Dispose();
-    }
-
     private static void OnLogout(LogoutEventArgs e)
     {
       if (e.Mobile is PlayerMobile mobile)
@@ -984,14 +978,7 @@ namespace Server.Mobiles
 
       DisguiseTimers.StartTimer(e.Mobile);
 
-      Timer.DelayCall(TimeSpan.Zero, new TimerStateCallback(ClearSpecialMovesCallback), e.Mobile);
-    }
-
-    private static void ClearSpecialMovesCallback(object state)
-    {
-      Mobile from = (Mobile)state;
-
-      SpecialMove.ClearAllMoves(from);
+      Timer.DelayCall(TimeSpan.Zero, SpecialMove.ClearAllMoves, e.Mobile);
     }
 
     private static void EventSink_Disconnected(DisconnectedEventArgs e)

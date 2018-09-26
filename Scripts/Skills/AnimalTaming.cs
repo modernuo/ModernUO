@@ -107,12 +107,6 @@ namespace Server.SkillHandlers
           from.NextSkillTime = Core.TickCount;
       }
 
-      public virtual void ResetPacify(object obj)
-      {
-        if (obj is BaseCreature creature)
-          creature.BardPacified = true;
-      }
-
       protected override void OnTarget(Mobile from, object targeted)
       {
         from.RevealingAction();
@@ -215,8 +209,7 @@ namespace Server.SkillHandlers
           creature.Direction = creature.GetDirectionTo(from);
 
           if (creature.BardPacified && Utility.RandomDouble() > .24)
-            Timer.DelayCall(TimeSpan.FromSeconds(2.0), new TimerStateCallback(ResetPacify),
-              creature);
+            Timer.DelayCall(TimeSpan.FromSeconds(2.0), () => creature.BardPacified = true);
           else
             creature.BardEndTime = DateTime.UtcNow;
 

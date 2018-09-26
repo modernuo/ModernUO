@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Server.Accounting;
@@ -15,7 +16,7 @@ namespace Server.RemoteAdmin
 
     private const string DateFormat = "MMMM dd hh:mm:ss.f tt";
 
-    private static ArrayList m_Auth = new ArrayList();
+    private static List<NetState> m_Auth = new List<NetState>();
     private static bool m_NewLine = true;
     private static StringBuilder m_ConsoleData = new StringBuilder();
 
@@ -99,7 +100,7 @@ namespace Server.RemoteAdmin
     {
       packet.Acquire();
       for (int i = 0; i < m_Auth.Count; i++)
-        ((NetState)m_Auth[i]).Send(packet);
+        m_Auth[i].Send(packet);
       packet.Release();
     }
 
@@ -146,15 +147,15 @@ namespace Server.RemoteAdmin
       }
     }
 
-    private static void DelayedDisconnect(NetState state)
+    private static void DelayedDisconnect(NetState ns)
     {
-      Timer.DelayCall(TimeSpan.FromSeconds(15.0), new TimerStateCallback(Disconnect), state);
+      Timer.DelayCall(TimeSpan.FromSeconds(15.0), () => Disconnect(ns));
     }
 
-    private static void Disconnect(object state)
+    private static void Disconnect(NetState ns)
     {
-      m_Auth.Remove(state);
-      ((NetState)state).Dispose();
+      m_Auth.Remove(ns);
+      ns.Dispose();
     }
 
     public static void Authenticate(NetState state, PacketReader pvSrc)
@@ -208,10 +209,10 @@ namespace Server.RemoteAdmin
     private static void CleanUp()
     {
       //remove dead instances from m_Auth
-      ArrayList list = new ArrayList();
+      List<NetState> list = new List<NetState>();
       for (int i = 0; i < m_Auth.Count; i++)
       {
-        NetState ns = (NetState)m_Auth[i];
+        NetState ns = m_Auth[i];
         if (ns.Running)
           list.Add(ns);
       }

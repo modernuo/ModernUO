@@ -947,19 +947,12 @@ namespace Server.Engines.ConPVP
 
     public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
     {
-      Timer.DelayCall(ts, new TimerStateCallback(DelayBounce_Callback), new object[] { mob, corpse });
+      Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
     }
 
-    private void DelayBounce_Callback(object state)
+    private void DelayBounce_Callback(Mobile mob, Container corpse)
     {
-      object[] states = (object[])state;
-      Mobile mob = (Mobile)states[0];
-      Container corpse = (Container)states[1];
-
-      DuelPlayer dp = null;
-
-      if (mob is PlayerMobile mobile)
-        dp = mobile.DuelPlayer;
+      DuelPlayer dp = mob is PlayerMobile mobile ? mobile.DuelPlayer : null;
 
       m_Context.RemoveAggressions(mob);
 
@@ -1065,32 +1058,32 @@ namespace Server.Engines.ConPVP
 
       teams.Sort();
 
-      Tournament tourny = m_Context.m_Tournament;
+      Tournament tourney = m_Context.m_Tournament;
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourny != null && tourny.TournyType == TournyType.FreeForAll)
+      if (tourney != null && tourney.TournyType == TournyType.FreeForAll)
       {
-        sb.Append(m_Context.Participants.Count * tourny.PlayersPerParticipant);
+        sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
         sb.Append("-man FFA");
       }
-      else if (tourny != null && tourny.TournyType == TournyType.RandomTeam)
+      else if (tourney != null && tourney.TournyType == TournyType.RandomTeam)
       {
-        sb.Append(tourny.ParticipantsPerMatch);
+        sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-team");
       }
-      else if (tourny != null && tourny.TournyType == TournyType.RedVsBlue)
+      else if (tourney != null && tourney.TournyType == TournyType.RedVsBlue)
       {
         sb.Append("Red v Blue");
       }
-      else if (tourny != null)
+      else if (tourney != null)
       {
-        for (int i = 0; i < tourny.ParticipantsPerMatch; ++i)
+        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
         {
           if (sb.Length > 0)
             sb.Append('v');
 
-          sb.Append(tourny.PlayersPerParticipant);
+          sb.Append(tourney.PlayersPerParticipant);
         }
       }
 

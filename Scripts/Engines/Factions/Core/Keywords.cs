@@ -11,10 +11,8 @@ namespace Server.Factions
       EventSink.Speech += EventSink_Speech;
     }
 
-    private static void ShowScore_Sandbox(object state)
+    private static void ShowScore_Sandbox(PlayerState pl)
     {
-      PlayerState pl = (PlayerState)state;
-
       pl?.Mobile.PublicOverheadMessage(MessageType.Regular, pl.Mobile.SpeechHue, true,
         pl.KillPoints.ToString("N0")); // NOTE: Added 'N0'
     }
@@ -141,16 +139,13 @@ namespace Server.Factions
             PlayerState pl = PlayerState.Find(from);
 
             if (pl != null)
-              Timer.DelayCall(TimeSpan.Zero, new TimerStateCallback(ShowScore_Sandbox), pl);
+              Timer.DelayCall(TimeSpan.Zero, ShowScore_Sandbox, pl);
 
             break;
           }
           case 0x0178: // i honor your leadership
           {
-            Faction faction = Faction.Find(from);
-
-            faction?.BeginHonorLeadership(from);
-
+            Faction.Find(from)?.BeginHonorLeadership(from);
             break;
           }
         }

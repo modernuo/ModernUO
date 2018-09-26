@@ -115,7 +115,7 @@ namespace Server.Items
               targ.SendLocalizedMessage(1010572); // You have just been hit by a snowball!
               from.SendLocalizedMessage(1010573); // You throw the snowball and hit the target!
 
-              Effects.SendMovingEffect(from, targ, 0x36E4, 7, 0, false, true, 0x480, 0);
+              Effects.SendMovingEffect(from, targ, 0x36E4, 7, 0, false, true, 0x480);
             }
             else
             {

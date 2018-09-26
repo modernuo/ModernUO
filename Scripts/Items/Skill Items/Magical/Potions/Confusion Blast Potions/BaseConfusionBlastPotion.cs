@@ -67,13 +67,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public void Explode_Callback(object state)
-    {
-      object[] states = (object[])state;
-
-      Explode((Mobile)states[0], (Point3D)states[1], (Map)states[2]);
-    }
-
     public virtual void Explode(Mobile from, Point3D loc, Map map)
     {
       if (Deleted || map == null)
@@ -91,7 +84,7 @@ namespace Server.Items
 
       Geometry.Circle2D(loc, map, Radius, BlastEffect, 270, 90);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(0.3), new TimerStateCallback(CircleEffect2), new object[] { loc, map });
+      Timer.DelayCall(TimeSpan.FromSeconds(0.3), () => CircleEffect2(loc, map));
 
       foreach (Mobile mobile in map.GetMobilesInRange(loc, Radius))
         if (mobile is BaseCreature mon)
@@ -134,9 +127,8 @@ namespace Server.Items
         else
           to = new Entity(Serial.Zero, new Point3D(p), from.Map);
 
-        Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue, 0);
-        Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(Potion.Explode_Callback),
-          new object[] { from, new Point3D(p), from.Map });
+        Effects.SendMovingEffect(from, to, 0xF0D, 7, 0, false, false, Potion.Hue);
+        Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => Potion.Explode(from, new Point3D(p), from.Map));
       }
     }
 
@@ -148,11 +140,9 @@ namespace Server.Items
         Effects.SendLocationEffect(p, map, 0x376A, 4, 9);
     }
 
-    public void CircleEffect2(object state)
+    public void CircleEffect2(Point3D p, Map m)
     {
-      object[] states = (object[])state;
-
-      Geometry.Circle2D((Point3D)states[0], (Map)states[1], Radius, BlastEffect, 90, 270);
+      Geometry.Circle2D(p, m, Radius, BlastEffect, 90, 270);
     }
 
     #endregion
@@ -166,7 +156,7 @@ namespace Server.Items
       if (m_Delay[m] is Timer timer)
         timer.Stop();
 
-      m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(60), new TimerStateCallback(EndDelay_Callback), m);
+      m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(60), EndDelay, m);
     }
 
     public static int GetDelay(Mobile m)
@@ -175,12 +165,6 @@ namespace Server.Items
         return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
 
       return 0;
-    }
-
-    private static void EndDelay_Callback(object obj)
-    {
-      if (obj is Mobile mobile)
-        EndDelay(mobile);
     }
 
     public static void EndDelay(Mobile m)

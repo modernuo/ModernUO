@@ -68,7 +68,7 @@ namespace Server.Spells.Ninjitsu
       int malus = ninjitsu / 60 + (int)Tracking.GetStalkingBonus(attacker, defender);
 
       info = new SurpriseAttackInfo(defender, malus);
-      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(8.0), new TimerStateCallback(EndSurprise), info);
+      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(8.0), EndSurprise, info);
 
       m_Table[defender] = info;
 
@@ -93,12 +93,9 @@ namespace Server.Spells.Ninjitsu
       return true;
     }
 
-    private static void EndSurprise(object state)
+    private static void EndSurprise(SurpriseAttackInfo info)
     {
-      SurpriseAttackInfo info = (SurpriseAttackInfo)state;
-
       info.m_Timer?.Stop();
-
       info.m_Target.SendLocalizedMessage(1063131); // Your defenses have returned to normal.
 
       m_Table.Remove(info.m_Target);

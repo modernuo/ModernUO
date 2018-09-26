@@ -48,8 +48,7 @@ namespace Server.Spells.Chivalry
         else if (delay > 24)
           delay = 24;
 
-        m_Table[Caster] = t = Timer.DelayCall(TimeSpan.FromSeconds(delay), new TimerStateCallback(Expire_Callback),
-          Caster);
+        m_Table[Caster] = Timer.DelayCall(TimeSpan.FromSeconds(delay), Expire_Callback, Caster);
         Caster.Delta(MobileDelta.WeaponDamage);
 
         BuffInfo.AddBuff(Caster,
@@ -64,10 +63,8 @@ namespace Server.Spells.Chivalry
       return m_Table.Contains(m);
     }
 
-    private static void Expire_Callback(object state)
+    private static void Expire_Callback(Mobile m)
     {
-      Mobile m = (Mobile)state;
-
       m_Table.Remove(m);
 
       m.Delta(MobileDelta.WeaponDamage);

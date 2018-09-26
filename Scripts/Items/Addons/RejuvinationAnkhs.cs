@@ -38,18 +38,12 @@ namespace Server.Items
           SendLocalizedMessageTo(from, 500803); // You feel as though you've slept for days!
         }
 
-        Timer.DelayCall(TimeSpan.FromHours(2.0), new TimerStateCallback(ReleaseUseLock_Callback),
-          new object[] { from, random });
+        Timer.DelayCall(TimeSpan.FromHours(2.0), () => ReleaseUseLock_Callback(from, random));
       }
     }
 
-    public virtual void ReleaseUseLock_Callback(object state)
+    public virtual void ReleaseUseLock_Callback(Mobile from, int random)
     {
-      object[] states = (object[])state;
-
-      Mobile from = (Mobile)states[0];
-      int random = (int)states[1];
-
       from.EndAction<RejuvinationAddonComponent>();
 
       if (random == 4)

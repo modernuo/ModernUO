@@ -77,8 +77,7 @@ namespace Server.Engines.Quests
 
           --Charges;
 
-          m_PlayTimer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerStateCallback(PlayTimer_Callback),
-            from);
+          m_PlayTimer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => PlayTimer_Callback(from));
         }
         else
         {
@@ -91,10 +90,8 @@ namespace Server.Engines.Quests
       }
     }
 
-    public virtual void PlayTimer_Callback(object state)
+    public virtual void PlayTimer_Callback(Mobile from)
     {
-      Mobile from = (Mobile)state;
-
       m_PlayTimer = null;
 
       HornOfRetreatMoongate gate = new HornOfRetreatMoongate(DestLoc, DestMap, from, Hue);

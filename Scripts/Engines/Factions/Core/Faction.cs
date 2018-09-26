@@ -1231,12 +1231,7 @@ namespace Server.Factions
         }
       }
 
-      context.m_Timer = Timer.DelayCall(SkillLossPeriod, new TimerStateCallback(ClearSkillLoss_Callback), mob);
-    }
-
-    private static void ClearSkillLoss_Callback(object state)
-    {
-      ClearSkillLoss((Mobile)state);
+      context.m_Timer = Timer.DelayCall(SkillLossPeriod, () => ClearSkillLoss(mob));
     }
 
     public static bool ClearSkillLoss(Mobile mob)
