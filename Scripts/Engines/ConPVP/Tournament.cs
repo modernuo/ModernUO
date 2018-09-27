@@ -105,7 +105,7 @@ namespace Server.Engines.ConPVP
           Ruleset.ApplyDefault(Ruleset.Layout.Defaults[0]);
           Participants = new List<TourneyParticipant>();
           Undefeated = new List<TourneyParticipant>();
-          Arenas = new ArrayList();
+          Arenas = new List<Arena>();
 
           break;
         }
@@ -123,7 +123,7 @@ namespace Server.Engines.ConPVP
       Ruleset.ApplyDefault(Ruleset.Layout.Defaults[0]);
       Participants = new List<TourneyParticipant>();
       Undefeated = new List<TourneyParticipant>();
-      Arenas = new ArrayList();
+      Arenas = new List<Arena>();
       SignupPeriod = TimeSpan.FromMinutes(10.0);
 
       Timer.DelayCall(SliceInterval, SliceInterval, Slice);
@@ -198,7 +198,7 @@ namespace Server.Engines.ConPVP
 
     public TourneyPyramid Pyramid{ get; set; }
 
-    public ArrayList Arenas{ get; set; }
+    public List<Arena> Arenas{ get; set; }
 
     public List<TourneyParticipant> Participants{ get; set; }
 

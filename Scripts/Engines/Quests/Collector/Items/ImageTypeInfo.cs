@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Engines.Quests.Collector
@@ -56,6 +56,8 @@ namespace Server.Engines.Quests.Collector
       new ImageTypeInfo(9746, typeof(Juggernaut), 55, 38)
     };
 
+    private static ImageType[] m_ImageTypeList;
+
     public ImageTypeInfo(int figurine, Type type, int x, int y)
     {
       Figurine = figurine;
@@ -70,34 +72,26 @@ namespace Server.Engines.Quests.Collector
 
     public int Name => Figurine < 0x4000 ? 1020000 + Figurine : 1078872 + Figurine;
     public int X{ get; }
-
     public int Y{ get; }
 
     public static ImageTypeInfo Get(ImageType image)
     {
       int index = (int)image;
-      if (index >= 0 && index < m_Table.Length)
-        return m_Table[index];
-      return m_Table[0];
+      return m_Table[index >= 0 && index < m_Table.Length ? index : 0];
     }
 
     public static ImageType[] RandomList(int count)
     {
-      ArrayList list = new ArrayList(m_Table.Length);
-      for (int i = 0; i < m_Table.Length; i++)
-        list.Add((ImageType)i);
-
-      ImageType[] images = new ImageType[count];
-
-      for (int i = 0; i < images.Length; i++)
+      if (m_ImageTypeList == null)
       {
-        int index = Utility.Random(list.Count);
-        images[i] = (ImageType)list[index];
-
-        list.RemoveAt(index);
+        m_ImageTypeList = new ImageType[m_Table.Length];
+        for (int i = 0; i < m_Table.Length; i++)
+          m_ImageTypeList[i] = (ImageType)i;
       }
-
-      return images;
+      
+      ImageType[] array = m_ImageTypeList.ToArray();
+      Utility.Shuffle(array);
+      return array.Take(count).ToArray();
     }
   }
 }

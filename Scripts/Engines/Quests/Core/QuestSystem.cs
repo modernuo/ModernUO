@@ -44,8 +44,8 @@ namespace Server.Engines.Quests
     public QuestSystem(PlayerMobile from)
     {
       From = from;
-      Objectives = new ArrayList();
-      Conversations = new ArrayList();
+      Objectives = new List<QuestObjective>();
+      Conversations = new List<QuestConversation>();
     }
 
     public QuestSystem()
@@ -64,9 +64,9 @@ namespace Server.Engines.Quests
 
     public PlayerMobile From{ get; set; }
 
-    public ArrayList Objectives{ get; set; }
+    public List<QuestObjective> Objectives{ get; set; }
 
-    public ArrayList Conversations{ get; set; }
+    public List<QuestConversation> Conversations{ get; set; }
 
     public virtual void StartTimer()
     {
@@ -87,7 +87,7 @@ namespace Server.Engines.Quests
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)Objectives[i];
+        QuestObjective obj = Objectives[i];
 
         if (obj.GetTimerEvent())
           obj.CheckProgress();
@@ -98,7 +98,7 @@ namespace Server.Engines.Quests
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)Objectives[i];
+        QuestObjective obj = Objectives[i];
 
         if (obj.GetKillEvent(creature, corpse))
           obj.OnKill(creature, corpse);
@@ -109,7 +109,7 @@ namespace Server.Engines.Quests
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)Objectives[i];
+        QuestObjective obj = Objectives[i];
 
         if (obj.IgnoreYoungProtection(from))
           return true;
@@ -130,7 +130,7 @@ namespace Server.Engines.Quests
         {
           int count = reader.ReadEncodedInt();
 
-          Objectives = new ArrayList(count);
+          Objectives = new List<QuestObjective>(count);
 
           for (int i = 0; i < count; ++i)
           {
@@ -145,7 +145,7 @@ namespace Server.Engines.Quests
 
           count = reader.ReadEncodedInt();
 
-          Conversations = new ArrayList(count);
+          Conversations = new List<QuestConversation>(count);
 
           for (int i = 0; i < count; ++i)
           {
@@ -277,7 +277,7 @@ namespace Server.Engines.Quests
 
         From.SendGump(new QuestConversationsGump(Conversations));
 
-        QuestConversation last = (QuestConversation)Conversations[Conversations.Count - 1];
+        QuestConversation last = Conversations[Conversations.Count - 1];
 
         if (last.Info != null)
           From.SendGump(new QuestItemInfoGump(last.Info));
@@ -662,11 +662,6 @@ namespace Server.Engines.Quests
     public static string Color(string text, int color)
     {
       return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
-
-    public static ArrayList BuildList(object obj)
-    {
-      return new ArrayList { obj };
     }
 
     public void AddHtmlObject(int x, int y, int width, int height, object message, int color, bool back, bool scroll)

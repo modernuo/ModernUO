@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -1090,9 +1091,39 @@ namespace Server
       return total;
     }
 
-    public static int RandomList(params int[] list)
+    public static void Shuffle<T>(IEnumerable<T> enumerable)
+    {
+      if (enumerable is IList<T> list)
+        Shuffle(list);
+      
+      Shuffle(enumerable.ToArray());
+    }
+    
+    public static void Shuffle<T>(IList<T> list)
+    {
+      int count = list.Count;
+      for (int i = count - 1; i > 0; i--)
+      {
+        int r = RandomImpl.Next(count);
+        T swap = list[r];
+        list[r] = list[i];
+        list[i] = swap;
+      }
+    }
+    
+    public static T RandomList<T>(IList<T> list)
+    {
+      return list[RandomImpl.Next(list.Count)];
+    }
+    
+    public static T RandomList<T>(params T[] list)
     {
       return list[RandomImpl.Next(list.Length)];
+    }
+
+    public static int RandomList(params int[] list)
+    {
+      return RandomList<int>(list);
     }
 
     public static bool RandomBool()

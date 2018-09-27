@@ -149,7 +149,7 @@ namespace Server.Engines.Help
     private static Hashtable m_KeyedByHandler = new Hashtable();
     private static Hashtable m_KeyedBySender = new Hashtable();
 
-    public static ArrayList List{ get; } = new ArrayList();
+    public static List<PageEntry> List{ get; } = new List<PageEntry>();
 
     public static void Initialize()
     {

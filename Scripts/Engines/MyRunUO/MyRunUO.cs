@@ -25,7 +25,7 @@ namespace Server.Engines.MyRunUO
 
     private static DatabaseCommandQueue m_Command;
 
-    private static ArrayList m_MobilesToUpdate = new ArrayList();
+    private static List<Mobile> m_MobilesToUpdate = new List<Mobile>();
     private List<IAccount> m_Collecting;
     private int m_Index;
 
@@ -271,8 +271,8 @@ namespace Server.Engines.MyRunUO
       }
       else
       {
-        m_List = m_MobilesToUpdate;
-        m_MobilesToUpdate = new ArrayList();
+        m_List = new ArrayList(m_MobilesToUpdate);
+        m_MobilesToUpdate = new List<Mobile>();
         m_Stage = Stage.DumpingMobiles;
         m_Index = 0;
       }

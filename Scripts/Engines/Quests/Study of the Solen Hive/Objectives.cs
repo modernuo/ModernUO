@@ -154,7 +154,8 @@ namespace Server.Engines.Quests.Naturalist
       writer.WriteEncodedInt(0); // version
 
       writer.WriteEncodedInt(m_StudiedNests.Count);
-      foreach (NestArea nest in m_StudiedNests) writer.WriteEncodedInt(nest.ID);
+      foreach (NestArea nest in m_StudiedNests)
+        writer.WriteEncodedInt(nest.ID);
 
       writer.Write(StudiedSpecialNest);
     }

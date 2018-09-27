@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Server.Gumps;
 using Server.Network;
@@ -54,11 +55,11 @@ namespace Server.Engines.Help
 
       Add(new GumpLabel(180, 12, 2100, "Page Queue"));
 
-      ArrayList list = PageQueue.List;
-
-      for (int i = 0; i < list.Count;)
+      List<PageEntry> list = PageQueue.List;
+      
+      for (int i = 0;i < list.Count;)
       {
-        PageEntry e = (PageEntry)list[i];
+        PageEntry e = list[i];
 
         if (e.Sender.Deleted || e.Sender.NetState == null)
         {
@@ -66,42 +67,39 @@ namespace Server.Engines.Help
           PageQueue.Remove(e);
         }
         else
-        {
           ++i;
-        }
       }
 
-      m_List = (PageEntry[])list.ToArray(typeof(PageEntry));
+      m_List = list.ToArray();
 
-      if (m_List.Length > 0)
-      {
-        Add(new GumpPage(1));
-
-        for (int i = 0; i < m_List.Length; ++i)
-        {
-          PageEntry e = m_List[i];
-
-          if (i >= 5 && i % 5 == 0)
-          {
-            Add(new GumpButton(368, 12, 0xFA5, 0xFA7, 0, GumpButtonType.Page, i / 5 + 1));
-            Add(new GumpLabel(298, 12, 2100, "Next Page"));
-            Add(new GumpPage(i / 5 + 1));
-            Add(new GumpButton(12, 12, 0xFAE, 0xFB0, 0, GumpButtonType.Page, i / 5));
-            Add(new GumpLabel(48, 12, 2100, "Previous Page"));
-          }
-
-          string typeString = PageQueue.GetPageTypeName(e.Type);
-
-          string html =
-            $"[{typeString}] {e.Message} <basefont color=#{(e.Handler == null ? 0xFF0000 : 0xFF):X6}>[<u>{(e.Handler == null ? "Unhandled" : "Handling")}</u>]</basefont>";
-
-          Add(new GumpHtml(12, 44 + i % 5 * 80, 350, 70, html, true, true));
-          Add(new GumpButton(370, 44 + i % 5 * 80 + 24, 0xFA5, 0xFA7, i + 1, GumpButtonType.Reply, 0));
-        }
-      }
-      else
+      if (m_List.Length <= 0)
       {
         Add(new GumpLabel(12, 44, 2100, "The page queue is empty."));
+        return;
+      }
+
+      Add(new GumpPage(1));
+
+      for (int i = 0; i < m_List.Length; ++i)
+      {
+        PageEntry e = m_List[i];
+
+        if (i >= 5 && i % 5 == 0)
+        {
+          Add(new GumpButton(368, 12, 0xFA5, 0xFA7, 0, GumpButtonType.Page, i / 5 + 1));
+          Add(new GumpLabel(298, 12, 2100, "Next Page"));
+          Add(new GumpPage(i / 5 + 1));
+          Add(new GumpButton(12, 12, 0xFAE, 0xFB0, 0, GumpButtonType.Page, i / 5));
+          Add(new GumpLabel(48, 12, 2100, "Previous Page"));
+        }
+
+        string typeString = PageQueue.GetPageTypeName(e.Type);
+
+        string html =
+          $"[{typeString}] {e.Message} <basefont color=#{(e.Handler == null ? 0xFF0000 : 0xFF):X6}>[<u>{(e.Handler == null ? "Unhandled" : "Handling")}</u>]</basefont>";
+
+        Add(new GumpHtml(12, 44 + i % 5 * 80, 350, 70, html, true, true));
+        Add(new GumpButton(370, 44 + i % 5 * 80 + 24, 0xFA5, 0xFA7, i + 1, GumpButtonType.Reply, 0));
       }
     }
 
@@ -126,8 +124,6 @@ namespace Server.Engines.Help
 
   public class PredefinedResponse
   {
-    private static ArrayList m_List;
-
     public PredefinedResponse(string title, string message)
     {
       Title = title;
@@ -138,25 +134,13 @@ namespace Server.Engines.Help
 
     public string Message{ get; set; }
 
-    public static ArrayList List
-    {
-      get
-      {
-        if (m_List == null)
-          m_List = Load();
-
-        return m_List;
-      }
-    }
+    public static List<PredefinedResponse> List{ get; private set; } = Load();
 
     public static PredefinedResponse Add(string title, string message)
     {
-      if (m_List == null)
-        m_List = Load();
-
       PredefinedResponse resp = new PredefinedResponse(title, message);
 
-      m_List.Add(resp);
+      List.Add(resp);
       Save();
 
       return resp;
@@ -164,8 +148,8 @@ namespace Server.Engines.Help
 
     public static void Save()
     {
-      if (m_List == null)
-        m_List = Load();
+      if (List == null)
+        List = Load();
 
       try
       {
@@ -173,9 +157,9 @@ namespace Server.Engines.Help
 
         using (StreamWriter op = new StreamWriter(path))
         {
-          for (int i = 0; i < m_List.Count; ++i)
+          for (int i = 0; i < List.Count; ++i)
           {
-            PredefinedResponse resp = (PredefinedResponse)m_List[i];
+            PredefinedResponse resp = List[i];
 
             op.WriteLine("{0}\t{1}", resp.Title, resp.Message);
           }
@@ -187,42 +171,37 @@ namespace Server.Engines.Help
       }
     }
 
-    public static ArrayList Load()
+    public static List<PredefinedResponse> Load()
     {
-      ArrayList list = new ArrayList();
-
       string path = Path.Combine(Core.BaseDirectory, "Data/pageresponse.cfg");
 
-      if (File.Exists(path))
-        try
+      if (!File.Exists(path))
+        return new List<PredefinedResponse>();
+      
+      List<PredefinedResponse> list = new List<PredefinedResponse>();
+      
+      try
+      {
+        using (StreamReader ip = new StreamReader(path))
         {
-          using (StreamReader ip = new StreamReader(path))
+          string line;
+
+          while ((line = ip.ReadLine()?.Trim()) != null)
           {
-            string line;
+            if (line.Length == 0 || line.StartsWith("#"))
+              continue;
 
-            while ((line = ip.ReadLine()) != null)
-              try
-              {
-                line = line.Trim();
+            string[] split = line.Split('\t');
 
-                if (line.Length == 0 || line.StartsWith("#"))
-                  continue;
-
-                string[] split = line.Split('\t');
-
-                if (split.Length == 2)
-                  list.Add(new PredefinedResponse(split[0], split[1]));
-              }
-              catch
-              {
-                // ignored
-              }
+            if (split.Length == 2)
+              list.Add(new PredefinedResponse(split[0], split[1]));
           }
         }
-        catch (Exception e)
-        {
-          Console.WriteLine(e);
-        }
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine(e);
+      }
 
       return list;
     }
@@ -253,7 +232,7 @@ namespace Server.Engines.Help
 
         AddHtml(10, 10, 390, 20, Color(Center("Predefined Responses"), LabelColor32), false, false);
 
-        ArrayList list = PredefinedResponse.List;
+        List<PredefinedResponse> list = PredefinedResponse.List;
 
         AddPage(1);
 
@@ -270,7 +249,7 @@ namespace Server.Engines.Help
             AddLabel(48, 10, 2100, "Previous Page");
           }
 
-          PredefinedResponse resp = (PredefinedResponse)list[i];
+          PredefinedResponse resp = list[i];
 
           string html = $"<u>{resp.Title}</u><br>{resp.Message}";
 
@@ -358,7 +337,7 @@ namespace Server.Engines.Help
         {
           PredefinedResponse resp = new PredefinedResponse("", "");
 
-          ArrayList list = PredefinedResponse.List;
+          List<PredefinedResponse> list = PredefinedResponse.List;
           list.Add(resp);
 
           m_From.SendGump(new PredefGump(m_From, resp));
@@ -370,11 +349,11 @@ namespace Server.Engines.Help
           int type = index % 3;
           index /= 3;
 
-          ArrayList list = PredefinedResponse.List;
+          List<PredefinedResponse> list = PredefinedResponse.List;
 
           if (index >= 0 && index < list.Count)
           {
-            PredefinedResponse resp = (PredefinedResponse)list[index];
+            PredefinedResponse resp = list[index];
 
             switch (type)
             {
@@ -415,7 +394,7 @@ namespace Server.Engines.Help
       }
       else
       {
-        ArrayList list = PredefinedResponse.List;
+        List<PredefinedResponse> list = PredefinedResponse.List;
 
         switch (info.ButtonID)
         {
@@ -474,117 +453,110 @@ namespace Server.Engines.Help
 
     public PageEntryGump(Mobile m, PageEntry entry) : base(30, 30)
     {
-      try
+      m_Mobile = m;
+      m_Entry = entry;
+
+      int buttons = 0;
+
+      int bottom = 356;
+
+      AddPage(0);
+
+      AddImageTiled(0, 0, 410, 456, 0xA40);
+      AddAlphaRegion(1, 1, 408, 454);
+
+      AddPage(1);
+
+      AddLabel(18, 18, 2100, "Sent:");
+      AddLabelCropped(128, 18, 264, 20, 2100, entry.Sent.ToString());
+
+      AddLabel(18, 38, 2100, "Sender:");
+      AddLabelCropped(128, 38, 264, 20, 2100,
+        $"{entry.Sender.RawName} {entry.Sender.Location} [{entry.Sender.Map}]");
+
+      AddButton(18, bottom - buttons * 22, 0xFAB, 0xFAD, 8, GumpButtonType.Reply, 0);
+      AddImageTiled(52, bottom - buttons * 22 + 1, 340, 80, 0xA40 /*0xBBC*/ /*0x2458*/);
+      AddImageTiled(53, bottom - buttons * 22 + 2, 338, 78, 0xBBC /*0x2426*/);
+      AddTextEntry(55, bottom - buttons++ * 22 + 2, 336, 78, 0x480, 0, "");
+
+      AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 0, GumpButtonType.Page, 2);
+      AddLabel(52, bottom - buttons++ * 22, 2100, "Predefined Response");
+
+      if (entry.Sender != m)
       {
-        m_Mobile = m;
-        m_Entry = entry;
+        AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddLabel(52, bottom - buttons++ * 22, 2100, "Go to Sender");
+      }
 
-        int buttons = 0;
+      AddLabel(18, 58, 2100, "Handler:");
 
-        int bottom = 356;
+      if (entry.Handler == null)
+      {
+        AddLabelCropped(128, 58, 264, 20, 2100, "Unhandled");
 
-        AddPage(0);
+        AddButton(18, bottom - buttons * 22, 0xFB1, 0xFB3, 5, GumpButtonType.Reply, 0);
+        AddLabel(52, bottom - buttons++ * 22, 2100, "Delete Page");
 
-        AddImageTiled(0, 0, 410, 456, 0xA40);
-        AddAlphaRegion(1, 1, 408, 454);
+        AddButton(18, bottom - buttons * 22, 0xFB7, 0xFB9, 4, GumpButtonType.Reply, 0);
+        AddLabel(52, bottom - buttons++ * 22, 2100, "Handle Page");
+      }
+      else
+      {
+        AddLabelCropped(128, 58, 264, 20, m_AccessLevelHues[(int)entry.Handler.AccessLevel], entry.Handler.Name);
 
-        AddPage(1);
-
-        AddLabel(18, 18, 2100, "Sent:");
-        AddLabelCropped(128, 18, 264, 20, 2100, entry.Sent.ToString());
-
-        AddLabel(18, 38, 2100, "Sender:");
-        AddLabelCropped(128, 38, 264, 20, 2100,
-          $"{entry.Sender.RawName} {entry.Sender.Location} [{entry.Sender.Map}]");
-
-        AddButton(18, bottom - buttons * 22, 0xFAB, 0xFAD, 8, GumpButtonType.Reply, 0);
-        AddImageTiled(52, bottom - buttons * 22 + 1, 340, 80, 0xA40 /*0xBBC*/ /*0x2458*/);
-        AddImageTiled(53, bottom - buttons * 22 + 2, 338, 78, 0xBBC /*0x2426*/);
-        AddTextEntry(55, bottom - buttons++ * 22 + 2, 336, 78, 0x480, 0, "");
-
-        AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 0, GumpButtonType.Page, 2);
-        AddLabel(52, bottom - buttons++ * 22, 2100, "Predefined Response");
-
-        if (entry.Sender != m)
+        if (entry.Handler != m)
         {
-          AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-          AddLabel(52, bottom - buttons++ * 22, 2100, "Go to Sender");
-        }
-
-        AddLabel(18, 58, 2100, "Handler:");
-
-        if (entry.Handler == null)
-        {
-          AddLabelCropped(128, 58, 264, 20, 2100, "Unhandled");
-
-          AddButton(18, bottom - buttons * 22, 0xFB1, 0xFB3, 5, GumpButtonType.Reply, 0);
-          AddLabel(52, bottom - buttons++ * 22, 2100, "Delete Page");
-
-          AddButton(18, bottom - buttons * 22, 0xFB7, 0xFB9, 4, GumpButtonType.Reply, 0);
-          AddLabel(52, bottom - buttons++ * 22, 2100, "Handle Page");
+          AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 2, GumpButtonType.Reply, 0);
+          AddLabel(52, bottom - buttons++ * 22, 2100, "Go to Handler");
         }
         else
         {
-          AddLabelCropped(128, 58, 264, 20, m_AccessLevelHues[(int)entry.Handler.AccessLevel], entry.Handler.Name);
+          AddButton(18, bottom - buttons * 22, 0xFA2, 0xFA4, 6, GumpButtonType.Reply, 0);
+          AddLabel(52, bottom - buttons++ * 22, 2100, "Abandon Page");
 
-          if (entry.Handler != m)
-          {
-            AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 2, GumpButtonType.Reply, 0);
-            AddLabel(52, bottom - buttons++ * 22, 2100, "Go to Handler");
-          }
-          else
-          {
-            AddButton(18, bottom - buttons * 22, 0xFA2, 0xFA4, 6, GumpButtonType.Reply, 0);
-            AddLabel(52, bottom - buttons++ * 22, 2100, "Abandon Page");
-
-            AddButton(18, bottom - buttons * 22, 0xFB7, 0xFB9, 7, GumpButtonType.Reply, 0);
-            AddLabel(52, bottom - buttons++ * 22, 2100, "Page Handled");
-          }
-        }
-
-        AddLabel(18, 78, 2100, "Page Location:");
-        AddLabelCropped(128, 78, 264, 20, 2100, $"{entry.PageLocation} [{entry.PageMap}]");
-
-        AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 3, GumpButtonType.Reply, 0);
-        AddLabel(52, bottom - buttons++ * 22, 2100, "Go to Page Location");
-
-        if (entry.SpeechLog != null)
-        {
-          AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 10, GumpButtonType.Reply, 0);
-          AddLabel(52, bottom - buttons * 22, 2100, "View Speech Log");
-        }
-
-        AddLabel(18, 98, 2100, "Page Type:");
-        AddLabelCropped(128, 98, 264, 20, 2100, PageQueue.GetPageTypeName(entry.Type));
-
-        AddLabel(18, 118, 2100, "Message:");
-        AddHtml(128, 118, 250, 100, entry.Message, true, true);
-
-        AddPage(2);
-
-        ArrayList preresp = PredefinedResponse.List;
-
-        AddButton(18, 18, 0xFAE, 0xFB0, 0, GumpButtonType.Page, 1);
-        AddButton(410 - 18 - 32, 18, 0xFAB, 0xFAC, 9, GumpButtonType.Reply, 0);
-
-        if (preresp.Count == 0)
-        {
-          AddLabel(52, 18, 2100, "There are no predefined responses.");
-        }
-        else
-        {
-          AddLabel(52, 18, 2100, "Back");
-
-          for (int i = 0; i < preresp.Count; ++i)
-          {
-            AddButton(18, 40 + i * 22, 0xFA5, 0xFA7, 100 + i, GumpButtonType.Reply, 0);
-            AddLabel(52, 40 + i * 22, 2100, ((PredefinedResponse)preresp[i]).Title);
-          }
+          AddButton(18, bottom - buttons * 22, 0xFB7, 0xFB9, 7, GumpButtonType.Reply, 0);
+          AddLabel(52, bottom - buttons++ * 22, 2100, "Page Handled");
         }
       }
-      catch (Exception e)
+
+      AddLabel(18, 78, 2100, "Page Location:");
+      AddLabelCropped(128, 78, 264, 20, 2100, $"{entry.PageLocation} [{entry.PageMap}]");
+
+      AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 3, GumpButtonType.Reply, 0);
+      AddLabel(52, bottom - buttons++ * 22, 2100, "Go to Page Location");
+
+      if (entry.SpeechLog != null)
       {
-        Console.WriteLine(e);
+        AddButton(18, bottom - buttons * 22, 0xFA5, 0xFA7, 10, GumpButtonType.Reply, 0);
+        AddLabel(52, bottom - buttons * 22, 2100, "View Speech Log");
+      }
+
+      AddLabel(18, 98, 2100, "Page Type:");
+      AddLabelCropped(128, 98, 264, 20, 2100, PageQueue.GetPageTypeName(entry.Type));
+
+      AddLabel(18, 118, 2100, "Message:");
+      AddHtml(128, 118, 250, 100, entry.Message, true, true);
+
+      AddPage(2);
+
+      List<PredefinedResponse> preresp = PredefinedResponse.List;
+
+      AddButton(18, 18, 0xFAE, 0xFB0, 0, GumpButtonType.Page, 1);
+      AddButton(410 - 18 - 32, 18, 0xFAB, 0xFAC, 9, GumpButtonType.Reply, 0);
+
+      if (preresp.Count == 0)
+      {
+        AddLabel(52, 18, 2100, "There are no predefined responses.");
+      }
+      else
+      {
+        AddLabel(52, 18, 2100, "Back");
+
+        for (int i = 0; i < preresp.Count; ++i)
+        {
+          AddButton(18, 40 + i * 22, 0xFA5, 0xFA7, 100 + i, GumpButtonType.Reply, 0);
+          AddLabel(52, 40 + i * 22, 2100, preresp[i].Title);
+        }
       }
     }
 
@@ -804,8 +776,7 @@ namespace Server.Engines.Help
 
           if (m_Entry.SpeechLog != null)
           {
-            Gump gump = new SpeechLogGump(m_Entry.Sender, m_Entry.SpeechLog);
-            state.Mobile.SendGump(gump);
+            state.Mobile.SendGump(new SpeechLogGump(m_Entry.Sender, m_Entry.SpeechLog));
           }
 
           break;
@@ -813,13 +784,13 @@ namespace Server.Engines.Help
         default:
         {
           int index = info.ButtonID - 100;
-          ArrayList preresp = PredefinedResponse.List;
+          List<PredefinedResponse> preresp = PredefinedResponse.List;
 
           if (index >= 0 && index < preresp.Count)
           {
-            m_Entry.AddResponse(state.Mobile, "[PreDef] " + ((PredefinedResponse)preresp[index]).Title);
+            m_Entry.AddResponse(state.Mobile, "[PreDef] " + preresp[index].Title);
             m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name,
-              ((PredefinedResponse)preresp[index]).Message));
+              preresp[index].Message));
           }
 
           Resend(state);

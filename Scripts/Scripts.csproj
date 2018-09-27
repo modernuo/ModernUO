@@ -558,7 +558,7 @@
     <Compile Include="Engines\Quests\Collector\CollectorQuest.cs" />
     <Compile Include="Engines\Quests\Collector\Conversations.cs" />
     <Compile Include="Engines\Quests\Collector\Items\EnchantedPaints.cs" />
-    <Compile Include="Engines\Quests\Collector\Items\ImageType.cs" />
+    <Compile Include="Engines\Quests\Collector\Items\ImageTypeInfo.cs" />
     <Compile Include="Engines\Quests\Collector\Items\Obsidian.cs" />
     <Compile Include="Engines\Quests\Collector\Items\PaintedImage.cs" />
     <Compile Include="Engines\Quests\Collector\Mobiles\AlbertaGiacco.cs" />

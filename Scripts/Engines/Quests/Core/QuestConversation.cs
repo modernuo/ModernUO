@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
 
@@ -58,13 +59,13 @@ namespace Server.Engines.Quests
 
   public class QuestConversationsGump : BaseQuestGump
   {
-    private ArrayList m_Conversations;
+    private List<QuestConversation> m_Conversations;
 
-    public QuestConversationsGump(QuestConversation conv) : this(BuildList(conv))
+    public QuestConversationsGump(QuestConversation conv) : this(new List<QuestConversation>{ conv })
     {
     }
 
-    public QuestConversationsGump(ArrayList conversations) : base(30, 50)
+    public QuestConversationsGump(List<QuestConversation> conversations) : base(30, 50)
     {
       m_Conversations = conversations;
 
@@ -101,7 +102,7 @@ namespace Server.Engines.Quests
 
       for (int i = 0; i < conversations.Count; ++i)
       {
-        QuestConversation conv = (QuestConversation)conversations[conversations.Count - 1 - i];
+        QuestConversation conv = conversations[conversations.Count - 1 - i];
 
         if (i > 0)
         {
@@ -125,7 +126,7 @@ namespace Server.Engines.Quests
     {
       for (int i = m_Conversations.Count - 1; i >= 0; --i)
       {
-        QuestConversation qc = (QuestConversation)m_Conversations[i];
+        QuestConversation qc = m_Conversations[i];
 
         if (!qc.HasBeenRead)
         {

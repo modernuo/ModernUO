@@ -230,12 +230,12 @@ namespace Server.Factions
 
       if (Silver + flow < 0)
       {
-        ArrayList toDelete = BuildFinanceList();
+        List<Mobile> toDelete = BuildFinanceList();
 
         while (Silver + flow < 0 && toDelete.Count > 0)
         {
           int index = Utility.Random(toDelete.Count);
-          Mobile mob = (Mobile)toDelete[index];
+          Mobile mob = toDelete[index];
 
           mob.Delete();
 
@@ -247,19 +247,15 @@ namespace Server.Factions
       Silver += flow;
     }
 
-    public ArrayList BuildFinanceList()
+    public List<Mobile> BuildFinanceList()
     {
-      ArrayList list = new ArrayList();
+      List<Mobile> list = new List<Mobile>();
 
-      List<VendorList> vendorLists = VendorLists;
+      for (int i = 0; i < VendorLists.Count; ++i)
+        list.AddRange(VendorLists[i].Vendors);
 
-      for (int i = 0; i < vendorLists.Count; ++i)
-        list.AddRange(vendorLists[i].Vendors);
-
-      List<GuardList> guardLists = GuardLists;
-
-      for (int i = 0; i < guardLists.Count; ++i)
-        list.AddRange(guardLists[i].Guards);
+      for (int i = 0; i < GuardLists.Count; ++i)
+        list.AddRange(GuardLists[i].Guards);
 
       return list;
     }

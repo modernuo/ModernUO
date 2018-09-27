@@ -677,11 +677,11 @@ namespace Server.Factions
 
     public static void FactionItemReset_OnCommand(CommandEventArgs e)
     {
-      ArrayList pots = new ArrayList();
+      List<Item> items = new List<Item>();
 
       foreach (Item item in World.Items.Values)
         if (item is IFactionItem && !(item is HoodedShroudOfShadows))
-          pots.Add(item);
+          items.Add(item);
 
       int[] hues = new int[Factions.Count * 2];
 
@@ -693,9 +693,9 @@ namespace Server.Factions
 
       int count = 0;
 
-      for (int i = 0; i < pots.Count; ++i)
+      for (int i = 0; i < items.Count; ++i)
       {
-        Item item = (Item)pots[i];
+        Item item = items[i];
         IFactionItem fci = (IFactionItem)item;
 
         if (fci.FactionItemState != null || item.LootType != LootType.Blessed)
