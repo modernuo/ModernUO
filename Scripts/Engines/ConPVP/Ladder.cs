@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.ConPVP
 {
@@ -114,14 +114,13 @@ namespace Server.Engines.ConPVP
       /* +6 */ { 40, 160 }
     };
 
-    private ArrayList m_Entries;
+    public List<LadderEntry> Entries{ get; } = new List<LadderEntry>();
 
-    private Hashtable m_Table;
+    private Dictionary<Mobile, LadderEntry> m_Table;
 
     public Ladder()
     {
-      m_Table = new Hashtable();
-      m_Entries = new ArrayList();
+      m_Table = new Dictionary<Mobile, LadderEntry>();
     }
 
     public Ladder(GenericReader reader)
@@ -135,8 +134,8 @@ namespace Server.Engines.ConPVP
         {
           int count = reader.ReadEncodedInt();
 
-          m_Table = new Hashtable(count);
-          m_Entries = new ArrayList(count);
+          m_Table = new Dictionary<Mobile, LadderEntry>(count);
+          Entries = new List<LadderEntry>(count);
 
           for (int i = 0; i < count; ++i)
           {
@@ -145,18 +144,18 @@ namespace Server.Engines.ConPVP
             if (entry.Mobile != null)
             {
               m_Table[entry.Mobile] = entry;
-              entry.Index = m_Entries.Count;
-              m_Entries.Add(entry);
+              entry.Index = Entries.Count;
+              Entries.Add(entry);
             }
           }
 
           if (version == 0)
           {
-            m_Entries.Sort();
+            Entries.Sort();
 
-            for (int i = 0; i < m_Entries.Count; ++i)
+            for (int i = 0; i < Entries.Count; ++i)
             {
-              LadderEntry entry = (LadderEntry)m_Entries[i];
+              LadderEntry entry = Entries[i];
 
               entry.Index = i;
             }
@@ -241,20 +240,15 @@ namespace Server.Engines.ConPVP
       return xp * (weWon ? 1 : -1);
     }
 
-    public ArrayList ToArrayList()
-    {
-      return m_Entries;
-    }
-
     private int Swap(int idx, int newIdx)
     {
-      object hold = m_Entries[idx];
+      LadderEntry hold = Entries[idx];
 
-      m_Entries[idx] = m_Entries[newIdx];
-      m_Entries[newIdx] = hold;
+      Entries[idx] = Entries[newIdx];
+      Entries[newIdx] = hold;
 
-      ((LadderEntry)m_Entries[idx]).Index = idx;
-      ((LadderEntry)m_Entries[newIdx]).Index = newIdx;
+      Entries[idx].Index = idx;
+      Entries[newIdx].Index = newIdx;
 
       return newIdx;
     }
@@ -263,29 +257,25 @@ namespace Server.Engines.ConPVP
     {
       int index = entry.Index;
 
-      if (index >= 0 && index < m_Entries.Count)
+      if (index >= 0 && index < Entries.Count)
       {
-        // sanity
-
-        int c;
-
-        while (index - 1 >= 0 && (c = entry.CompareTo(m_Entries[index - 1])) < 0)
+        while (index - 1 >= 0 && (entry.CompareTo(Entries[index - 1])) < 0)
           index = Swap(index, index - 1);
 
-        while (index + 1 < m_Entries.Count && (c = entry.CompareTo(m_Entries[index + 1])) > 0)
+        while (index + 1 < Entries.Count && (entry.CompareTo(Entries[index + 1])) > 0)
           index = Swap(index, index + 1);
       }
     }
 
     public LadderEntry Find(Mobile mob)
     {
-      LadderEntry entry = (LadderEntry)m_Table[mob];
+      LadderEntry entry = m_Table[mob];
 
       if (entry == null)
       {
         m_Table[mob] = entry = new LadderEntry(mob, this);
-        entry.Index = m_Entries.Count;
-        m_Entries.Add(entry);
+        entry.Index = Entries.Count;
+        Entries.Add(entry);
       }
 
       return entry;
@@ -293,17 +283,17 @@ namespace Server.Engines.ConPVP
 
     public LadderEntry FindNoCreate(Mobile mob)
     {
-      return m_Table[mob] as LadderEntry;
+      return m_Table[mob];
     }
 
     public void Serialize(GenericWriter writer)
     {
       writer.WriteEncodedInt(1); // version;
 
-      writer.WriteEncodedInt(m_Entries.Count);
+      writer.WriteEncodedInt(Entries.Count);
 
-      for (int i = 0; i < m_Entries.Count; ++i)
-        ((LadderEntry)m_Entries[i]).Serialize(writer);
+      for (int i = 0; i < Entries.Count; ++i)
+        Entries[i].Serialize(writer);
     }
   }
 

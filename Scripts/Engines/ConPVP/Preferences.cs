@@ -65,12 +65,12 @@ namespace Server.Engines.ConPVP
 
   public class Preferences
   {
-    private Hashtable m_Table;
+    private Dictionary<Mobile, PreferencesEntry> m_Table;
 
     public Preferences()
     {
-      m_Table = new Hashtable();
-      Entries = new ArrayList();
+      m_Table = new Dictionary<Mobile, PreferencesEntry>();
+      Entries = new List<PreferencesEntry>();
     }
 
     public Preferences(GenericReader reader)
@@ -83,12 +83,12 @@ namespace Server.Engines.ConPVP
         {
           int count = reader.ReadEncodedInt();
 
-          m_Table = new Hashtable(count);
-          Entries = new ArrayList(count);
+          m_Table = new Dictionary<Mobile, PreferencesEntry>(count);
+          Entries = new List<PreferencesEntry>(count);
 
           for (int i = 0; i < count; ++i)
           {
-            PreferencesEntry entry = new PreferencesEntry(reader, this, version);
+            PreferencesEntry entry = new PreferencesEntry(reader, version);
 
             if (entry.Mobile != null)
             {
@@ -102,17 +102,17 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public ArrayList Entries{ get; }
+    public List<PreferencesEntry> Entries{ get; }
 
     public static Preferences Instance{ get; set; }
 
     public PreferencesEntry Find(Mobile mob)
     {
-      PreferencesEntry entry = (PreferencesEntry)m_Table[mob];
+      PreferencesEntry entry = m_Table[mob];
 
       if (entry == null)
       {
-        m_Table[mob] = entry = new PreferencesEntry(mob, this);
+        m_Table[mob] = entry = new PreferencesEntry(mob);
         Entries.Add(entry);
       }
 
@@ -126,25 +126,20 @@ namespace Server.Engines.ConPVP
       writer.WriteEncodedInt(Entries.Count);
 
       for (int i = 0; i < Entries.Count; ++i)
-        ((PreferencesEntry)Entries[i]).Serialize(writer);
+        Entries[i].Serialize(writer);
     }
   }
 
   public class PreferencesEntry
   {
-    private Preferences m_Preferences;
-
-    public PreferencesEntry(Mobile mob, Preferences prefs)
+    public PreferencesEntry(Mobile mob)
     {
-      m_Preferences = prefs;
       Mobile = mob;
-      Disliked = new ArrayList();
+      Disliked = new List<string>();
     }
 
-    public PreferencesEntry(GenericReader reader, Preferences prefs, int version)
+    public PreferencesEntry(GenericReader reader, int version)
     {
-      m_Preferences = prefs;
-
       switch (version)
       {
         case 0:
@@ -153,7 +148,7 @@ namespace Server.Engines.ConPVP
 
           int count = reader.ReadEncodedInt();
 
-          Disliked = new ArrayList(count);
+          Disliked = new List<string>(count);
 
           for (int i = 0; i < count; ++i)
             Disliked.Add(reader.ReadString());
@@ -165,7 +160,7 @@ namespace Server.Engines.ConPVP
 
     public Mobile Mobile{ get; }
 
-    public ArrayList Disliked{ get; }
+    public List<string> Disliked{ get; }
 
     public void Serialize(GenericWriter writer)
     {
@@ -174,7 +169,7 @@ namespace Server.Engines.ConPVP
       writer.WriteEncodedInt(Disliked.Count);
 
       for (int i = 0; i < Disliked.Count; ++i)
-        writer.Write((string)Disliked[i]);
+        writer.Write(Disliked[i]);
     }
   }
 
@@ -182,11 +177,9 @@ namespace Server.Engines.ConPVP
   {
     private int m_ColumnX = 12;
     private PreferencesEntry m_Entry;
-    private Mobile m_From;
 
     public PreferencesGump(Mobile from, Preferences prefs) : base(50, 50)
     {
-      m_From = from;
       m_Entry = prefs.Find(from);
 
       if (m_Entry == null)
@@ -215,10 +208,7 @@ namespace Server.Engines.ConPVP
       {
         Arena ar = arenas[i];
 
-        string name = ar.Name;
-
-        if (name == null)
-          name = "(no name)";
+        string name = ar.Name ?? "(no name)";
 
         int x = 12;
         int y = 32 + i * 31;
@@ -229,7 +219,6 @@ namespace Server.Engines.ConPVP
         x += 35;
 
         AddBorderedText(x + 5, y + 5, 115 - 5, name, color, 0);
-        x += 115;
       }
     }
 
@@ -266,12 +255,6 @@ namespace Server.Engines.ConPVP
 
     private void AddBorderedText(int x, int y, int width, string text, int color, int borderColor)
     {
-      /*AddColoredText( x - 1, y, width, text, borderColor );
-      AddColoredText( x + 1, y, width, text, borderColor );
-      AddColoredText( x, y - 1, width, text, borderColor );
-      AddColoredText( x, y + 1, width, text, borderColor );*/
-      /*AddColoredText( x - 1, y - 1, width, text, borderColor );
-      AddColoredText( x + 1, y + 1, width, text, borderColor );*/
       AddColoredText(x, y, width, text, color);
     }
 
