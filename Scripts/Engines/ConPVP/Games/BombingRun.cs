@@ -1490,7 +1490,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        Participant p = m_Context.Participants[i] as Participant;
+        Participant p = m_Context.Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
           if (p.Players[j] != null)
@@ -1619,7 +1619,7 @@ namespace Server.Engines.ConPVP
       }
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
-        ApplyHues(m_Context.Participants[i] as Participant,
+        ApplyHues(m_Context.Participants[i],
           Controller.TeamInfo[i % Controller.TeamInfo.Length].Color);
 
       m_FinishTimer?.Stop();
@@ -1784,7 +1784,7 @@ namespace Server.Engines.ConPVP
               p.Players[j].Eliminated = true;
       }
 
-      m_Context.Finish(m_Context.Participants[winner.TeamID] as Participant);
+      m_Context.Finish(m_Context.Participants[winner.TeamID]);
     }
 
     public override void OnStop()
@@ -1804,7 +1804,7 @@ namespace Server.Engines.ConPVP
       m_Bomb?.Delete();
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
-        ApplyHues(m_Context.Participants[i] as Participant, -1);
+        ApplyHues(m_Context.Participants[i], -1);
 
       m_FinishTimer?.Stop();
       m_FinishTimer = null;

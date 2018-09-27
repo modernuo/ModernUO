@@ -210,9 +210,7 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        TourneyParticipant part = Participants[i];
-
-        if (part.Players.Contains(mob))
+        if (Participants[i].Players.Contains(mob))
           return true;
       }
 
@@ -252,17 +250,11 @@ namespace Server.Engines.ConPVP
 
       sb.Append("The match has ended in a tie ");
 
-      if (remaining.Count == 2)
-        sb.Append("between ");
-      else
-        sb.Append("among ");
+      sb.Append(remaining.Count == 2 ? "between " : "among ");
 
       sb.Append(remaining.Count);
-
-      if (remaining[0].Players.Count == 1)
-        sb.Append(" players: ");
-      else
-        sb.Append(" teams: ");
+      
+      sb.Append(remaining[0].Players.Count == 1 ? " players: " : " teams: ");
 
       bool hasAppended = false;
 
@@ -293,7 +285,7 @@ namespace Server.Engines.ConPVP
       if (tieType == TieType.FullElimination && remaining.Count >= Undefeated.Count)
         tieType = TieType.FullAdvancement;
 
-      switch (TieType)
+      switch (tieType)
       {
         case TieType.FullAdvancement:
         {
@@ -456,12 +448,12 @@ namespace Server.Engines.ConPVP
           if (Pyramid.Levels.Count < 1)
             break;
 
-          PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1] as PyramidLevel;
+          PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1];
 
           if (top.FreeAdvance != null || top.Matches.Count != 1)
             break;
 
-          TourneyMatch match = top.Matches[0] as TourneyMatch;
+          TourneyMatch match = top.Matches[0];
           TourneyParticipant winner = match.Winner;
 
           if (winner != null)
@@ -474,14 +466,14 @@ namespace Server.Engines.ConPVP
           if (Pyramid.Levels.Count < 2)
             break;
 
-          PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1] as PyramidLevel;
+          PyramidLevel top = Pyramid.Levels[Pyramid.Levels.Count - 1];
 
           if (top.FreeAdvance != null || top.Matches.Count != 1)
             break;
 
           int cash = ComputeCashAward();
 
-          TourneyMatch match = top.Matches[0] as TourneyMatch;
+          TourneyMatch match = top.Matches[0];
           TourneyParticipant winner = match.Winner;
 
           for (int i = 0; i < match.Participants.Count; ++i)
@@ -494,7 +486,7 @@ namespace Server.Engines.ConPVP
               GiveAwards(part.Players, TrophyRank.Silver, cash / 2);
           }
 
-          PyramidLevel next = Pyramid.Levels[Pyramid.Levels.Count - 2] as PyramidLevel;
+          PyramidLevel next = Pyramid.Levels[Pyramid.Levels.Count - 2];
 
           if (next.Matches.Count > 2)
             break;
