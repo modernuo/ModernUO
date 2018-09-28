@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -69,12 +70,12 @@ namespace Server.Gumps
     };
 
     private Mobile m_From;
-    private ArrayList m_List;
+    private List<object> m_List;
     private int m_ListPage;
     private AdminGumpPage m_PageType;
     private object m_State;
 
-    public AdminGump(Mobile from, AdminGumpPage pageType, int listPage = 0, ArrayList list = null, string notice = null,
+    public AdminGump(Mobile from, AdminGumpPage pageType, int listPage = 0, List<object> list = null, string notice = null,
       object state = null) : base(50, 40)
     {
       from.CloseGump<AdminGump>();
@@ -413,8 +414,10 @@ namespace Server.Gumps
         {
           if (m_List == null)
           {
-            m_List = new ArrayList(NetState.Instances);
-            m_List.Sort(NetStateComparer.Instance);
+            List<NetState> states = NetState.Instances.ToList();
+            states.Sort(NetStateComparer.Instance);
+
+            m_List = states.ToList<object>();
           }
 
           AddClientHeader();
@@ -541,14 +544,22 @@ namespace Server.Gumps
 
           AddButtonLabeled(20, y, GetButtonID(7, 12), "Kill");
           AddButtonLabeled(200, y, GetButtonID(7, 13), "Resurrect");
-          y += 20;
 
           break;
         }
         case AdminGumpPage.Accounts_Shared:
         {
+          List<KeyValuePair<IPAddress, List<Account>>> sharedAccounts;
+
           if (m_List == null)
-            m_List = GetAllSharedAccounts();
+          {
+            sharedAccounts = GetAllSharedAccounts();
+            m_List = Utility.CastListContravariant<KeyValuePair<IPAddress, List<Account>>, object>(sharedAccounts);
+          }
+          else
+          {
+            sharedAccounts = Utility.CastListCovariant<object, KeyValuePair<IPAddress, List<Account>>>(m_List);
+          }
 
           AddLabelCropped(12, 120, 60, 20, LabelHue, "Count");
           AddLabelCropped(72, 120, 120, 20, LabelHue, "Address");
@@ -559,22 +570,22 @@ namespace Server.Gumps
           else
             AddImage(375, 122, 0x25EA);
 
-          if ((listPage + 1) * 12 < m_List.Count)
+          if ((listPage + 1) * 12 < sharedAccounts.Count)
             AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
           else
             AddImage(392, 122, 0x25E6);
 
-          if (m_List.Count == 0)
+          if (sharedAccounts.Count == 0)
             AddLabel(12, 140, LabelHue, "There are no accounts to display.");
 
           StringBuilder sb = new StringBuilder();
 
-          for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
+          for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < sharedAccounts.Count; ++i, ++index)
           {
-            DictionaryEntry de = (DictionaryEntry)m_List[index];
+            KeyValuePair<IPAddress, List<Account>> kvp = sharedAccounts[index];
 
-            IPAddress ipAddr = (IPAddress)de.Key;
-            ArrayList accts = (ArrayList)de.Value;
+            IPAddress ipAddr = kvp.Key;
+            List<Account> accts = kvp.Value;
 
             int offset = 140 + i * 20;
 
@@ -591,7 +602,7 @@ namespace Server.Gumps
 
               if (j < 4)
               {
-                Account acct = (Account)accts[j];
+                Account acct = accts[j];
 
                 sb.Append(acct.Username);
               }
@@ -611,9 +622,10 @@ namespace Server.Gumps
         }
         case AdminGumpPage.Accounts:
         {
-          if (m_List == null) m_List = new ArrayList(); // new ArrayList( (ICollection)Accounts.GetAccounts() );
+          if (m_List == null)
+            m_List = new List<object>();
 
-          ArrayList rads = state as ArrayList;
+          List<Account> rads = state as List<Account>;
 
           AddAccountHeader();
 
@@ -844,8 +856,15 @@ namespace Server.Gumps
           if (!(state is Account a))
             break;
 
+          List<IPAddress> ipAddresses;
+
           if (m_List == null)
-            m_List = new ArrayList(a.LoginIPs);
+          {
+            ipAddresses = a.LoginIPs.ToList();
+            m_List = Utility.CastListContravariant<IPAddress, object>(ipAddresses);
+          }
+          else
+            ipAddresses = Utility.CastListCovariant<object, IPAddress>(m_List);
 
           AddHtml(10, 195, 400, 20, Color(Center("Client Addresses"), LabelColor32), false, false);
 
@@ -867,18 +886,18 @@ namespace Server.Gumps
           else
             AddImage(184, 223, 0x25EA);
 
-          if ((listPage + 1) * 6 < m_List.Count)
+          if ((listPage + 1) * 6 < ipAddresses.Count)
             AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
           else
             AddImage(201, 223, 0x25E6);
 
-          if (m_List.Count == 0)
+          if (ipAddresses.Count == 0)
             AddHtml(18, 243, 200, 60, Color("This account has not yet been accessed.", LabelColor32), false,
               false);
 
-          for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
+          for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < ipAddresses.Count; ++i, ++index)
           {
-            AddHtml(18, 243 + i * 22, 114, 20, Color(m_List[index].ToString(), LabelColor32), false, false);
+            AddHtml(18, 243 + i * 22, 114, 20, Color(ipAddresses[index].ToString(), LabelColor32), false, false);
             AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index), GumpButtonType.Reply, 0);
             AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index), GumpButtonType.Reply, 0);
             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index), GumpButtonType.Reply, 0);
@@ -891,8 +910,15 @@ namespace Server.Gumps
           if (!(state is Account a))
             break;
 
+          List<string> ipRestrictions;
+
           if (m_List == null)
-            m_List = new ArrayList(a.IPRestrictions);
+          {
+            ipRestrictions = a.IPRestrictions.ToList();
+            m_List = Utility.CastListContravariant<string, object>(ipRestrictions);
+          }
+          else
+            ipRestrictions = Utility.CastListCovariant<object, string>(m_List);
 
           AddHtml(10, 195, 400, 20, Color(Center("Address Restrictions"), LabelColor32), false, false);
 
@@ -915,17 +941,17 @@ namespace Server.Gumps
           else
             AddImage(184, 223, 0x25EA);
 
-          if ((listPage + 1) * 6 < m_List.Count)
+          if ((listPage + 1) * 6 < ipRestrictions.Count)
             AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
           else
             AddImage(201, 223, 0x25E6);
 
-          if (m_List.Count == 0)
+          if (ipRestrictions.Count == 0)
             AddHtml(18, 243, 200, 60, Color("There are no addresses in this list.", LabelColor32), false, false);
 
-          for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
+          for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < ipRestrictions.Count; ++i, ++index)
           {
-            AddHtml(18, 243 + i * 22, 114, 20, Color(m_List[index].ToString(), LabelColor32), false, false);
+            AddHtml(18, 243 + i * 22, 114, 20, Color(ipRestrictions[index].ToString(), LabelColor32), false, false);
             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(8, index), GumpButtonType.Reply, 0);
           }
 
@@ -1031,8 +1057,15 @@ namespace Server.Gumps
         {
           AddFirewallHeader();
 
+          List<Firewall.IFirewallEntry> firewallEntries;
+
           if (m_List == null)
-            m_List = new ArrayList(Firewall.List);
+          {
+            firewallEntries = Firewall.List;
+            m_List = Utility.CastListContravariant<Firewall.IFirewallEntry, object>(firewallEntries);
+          }
+          else
+            firewallEntries = Utility.CastListCovariant<object, Firewall.IFirewallEntry>(m_List);
 
           AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
 
@@ -1041,24 +1074,21 @@ namespace Server.Gumps
           else
             AddImage(375, 122, 0x25EA);
 
-          if ((listPage + 1) * 12 < m_List.Count)
+          if ((listPage + 1) * 12 < firewallEntries.Count)
             AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
           else
             AddImage(392, 122, 0x25E6);
 
-          if (m_List.Count == 0)
+          if (firewallEntries.Count == 0)
             AddLabel(12, 140, LabelHue, "The firewall list is empty.");
 
-          for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < m_List.Count; ++i, ++index)
+          for (int i = 0, index = listPage * 12; i < 12 && index >= 0 && index < firewallEntries.Count; ++i, ++index)
           {
-            object obj = m_List[index];
-
-            if (!(obj is Firewall.IFirewallEntry))
-              break;
+            Firewall.IFirewallEntry firewallEntry = firewallEntries[index];
 
             int offset = 140 + i * 20;
 
-            AddLabelCropped(12, offset, 358, 20, LabelHue, obj.ToString());
+            AddLabelCropped(12, offset, 358, 20, LabelHue, firewallEntry.ToString());
             AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(6, index + 4), GumpButtonType.Reply, 0);
           }
 
@@ -1068,58 +1098,59 @@ namespace Server.Gumps
         {
           AddFirewallHeader();
 
-          if (!(state is Firewall.IFirewallEntry))
+          if (!(state is Firewall.IFirewallEntry firewallEntry))
             break;
 
-          AddHtml(10, 125, 400, 20, Color(Center(state.ToString()), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center(firewallEntry.ToString()), LabelColor32), false, false);
 
           AddButtonLabeled(20, 150, GetButtonID(6, 3), "Remove");
 
           AddHtml(10, 175, 400, 20, Color(Center("Potentially Affected Accounts"), LabelColor32), false, false);
 
+          List<Account> blockedAccts;
+
           if (m_List == null)
           {
-            m_List = new ArrayList();
+            blockedAccts = new List<Account>();
 
             foreach (IAccount ia in Accounts.GetAccounts())
             {
-              if (!(ia is Account acct))
-                continue;
+              Account acct = (Account)ia;
 
               IPAddress[] loginList = acct.LoginIPs;
 
               bool contains = false;
 
               for (int i = 0; !contains && i < loginList.Length; ++i)
-                if (((Firewall.IFirewallEntry)state).IsBlocked(loginList[i]))
+                if (firewallEntry.IsBlocked(loginList[i]))
                 {
-                  m_List.Add(acct);
+                  blockedAccts.Add(acct);
                   break;
                 }
             }
 
-            m_List.Sort(AccountComparer.Instance);
+            blockedAccts.Sort(AccountComparer.Instance);
+            m_List = Utility.CastListContravariant<Account, object>(blockedAccts);
           }
+          else
+            blockedAccts = Utility.CastListCovariant<object, Account>(m_List);
 
           if (listPage > 0)
             AddButton(375, 177, 0x15E3, 0x15E7, GetButtonID(1, 0), GumpButtonType.Reply, 0);
           else
             AddImage(375, 177, 0x25EA);
 
-          if ((listPage + 1) * 12 < m_List.Count)
+          if ((listPage + 1) * 12 < blockedAccts.Count)
             AddButton(392, 177, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
           else
             AddImage(392, 177, 0x25E6);
 
-          if (m_List.Count == 0)
+          if (blockedAccts.Count == 0)
             AddLabelCropped(12, 200, 398, 20, LabelHue, "No accounts found.");
 
-          for (int i = 0, index = listPage * 9; i < 9 && index >= 0 && index < m_List.Count; ++i, ++index)
+          for (int i = 0, index = listPage * 9; i < 9 && index >= 0 && index < blockedAccts.Count; ++i, ++index)
           {
-            Account a = m_List[index] as Account;
-
-            if (a == null)
-              continue;
+            Account a = blockedAccts[index];
 
             int offset = 200 + i * 20;
 
@@ -1301,10 +1332,9 @@ namespace Server.Gumps
       AddButtonLabeled(200, 80, GetButtonID(6, 2), "Add (Target)");
     }
 
-    private static ArrayList GetAllSharedAccounts()
+    private static List<KeyValuePair<IPAddress, List<Account>>> GetAllSharedAccounts()
     {
-      Hashtable table = new Hashtable();
-      ArrayList list;
+      Dictionary<IPAddress, List<Account>> table = new Dictionary<IPAddress, List<Account>>();
 
       foreach (Account acct in Accounts.GetAccounts())
       {
@@ -1312,40 +1342,38 @@ namespace Server.Gumps
 
         for (int i = 0; i < theirAddresses.Length; ++i)
         {
-          list = (ArrayList)table[theirAddresses[i]];
-
-          if (list == null)
-            table[theirAddresses[i]] = list = new ArrayList();
-
-          list.Add(acct);
+          if (!table.ContainsKey(theirAddresses[i]))
+            table[theirAddresses[i]] = new List<Account>{ acct };            
         }
       }
 
-      list = new ArrayList(table);
+      List<KeyValuePair<IPAddress, List<Account>>> tableEntries = table.ToList();
 
-      for (int i = 0; i < list.Count; ++i)
+      for (int i = 0; i < tableEntries.Count; ++i)
       {
-        DictionaryEntry de = (DictionaryEntry)list[i];
-        ArrayList accts = (ArrayList)de.Value;
-
-        if (accts.Count == 1)
+        KeyValuePair<IPAddress, List<Account>> kvp = tableEntries[i];
+        List<Account> list = kvp.Value;
+        
+        if (kvp.Value.Count == 1)
           list.RemoveAt(i--);
         else
-          accts.Sort(AccountComparer.Instance);
+          list.Sort(AccountComparer.Instance);
       }
 
-      list.Sort(SharedAccountComparer.Instance);
+      tableEntries.Sort(SharedAccountComparer.Instance);
 
-      return list;
+      return tableEntries;
     }
 
 
-    private static ArrayList GetSharedAccounts(IPAddress ipAddress)
+    private static List<Account> GetSharedAccounts(IPAddress ipAddress)
     {
-      ArrayList list = new ArrayList();
+      List<Account> list = new List<Account>();
 
-      foreach (Account acct in Accounts.GetAccounts())
+      foreach (IAccount account in Accounts.GetAccounts())
       {
+        Account acct = (Account)account;
+        
         IPAddress[] theirAddresses = acct.LoginIPs;
         bool contains = false;
 
@@ -1360,9 +1388,9 @@ namespace Server.Gumps
       return list;
     }
 
-    private static ArrayList GetSharedAccounts(IPAddress[] ipAddresses)
+    private static List<Account> GetSharedAccounts(IPAddress[] ipAddresses)
     {
-      ArrayList list = new ArrayList();
+      List<Account> list = new List<Account>();
 
       foreach (Account acct in Accounts.GetAccounts())
       {
@@ -1391,7 +1419,7 @@ namespace Server.Gumps
         return;
 
       string notice;
-      ArrayList list = null;
+      List<Account> list = null;
 
       if (okay)
       {
@@ -1399,8 +1427,8 @@ namespace Server.Gumps
 
         for (int i = 0; i < list.Count; ++i)
         {
-          ((Account)list[i]).SetUnspecifiedBan(from);
-          ((Account)list[i]).Banned = true;
+          list[i].SetUnspecifiedBan(from);
+          list[i].Banned = true;
         }
 
         notice = "All addresses in the list have been banned.";
@@ -1437,7 +1465,7 @@ namespace Server.Gumps
       }
     }
 
-    public static void ResendGump_Callback(Mobile from, ArrayList list, ArrayList rads, int page)
+    public static void ResendGump_Callback(Mobile from, List<object> list, List<Account> rads, int page)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
@@ -1445,7 +1473,7 @@ namespace Server.Gumps
       from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, page, list, null, rads));
     }
 
-    public static void Marked_Callback(Mobile from, bool okay, bool ban, ArrayList list, ArrayList rads, int page)
+    public static void Marked_Callback(Mobile from, bool okay, bool ban, List<object> list, List<Account> rads, int page)
     {
       if (from.AccessLevel < AccessLevel.Administrator)
         return;
@@ -1457,7 +1485,7 @@ namespace Server.Gumps
 
         for (int i = 0; i < rads.Count; ++i)
         {
-          Account acct = (Account)rads[i];
+          Account acct = rads[i];
 
           if (ban)
           {
@@ -1605,12 +1633,12 @@ namespace Server.Gumps
 
       if (m_PageType == AdminGumpPage.Accounts)
       {
-        ArrayList list = m_List;
+        List<Account> list = Utility.CastListCovariant<object, Account>(m_List);
 
-        if (list != null && m_State is ArrayList rads)
+        if (list != null && m_State is List<Account> rads)
           for (int i = 0, v = m_ListPage * 12; i < 12 && v < list.Count; ++i, ++v)
           {
-            object obj = list[v];
+            Account obj = list[v];
 
             if (info.IsSwitched(v))
             {
@@ -2034,7 +2062,7 @@ namespace Server.Gumps
             {
               bool forName = index == 0;
 
-              ArrayList results = new ArrayList();
+              List<NetState> results = new List<NetState>();
 
               string match = info.GetTextEntry(0)?.Text.Trim().ToLower();
               string notice = null;
@@ -2075,7 +2103,7 @@ namespace Server.Gumps
 
               if (results.Count == 1)
               {
-                NetState ns = (NetState)results[0];
+                NetState ns = results[0];
                 object state = ns.Mobile;
                 
                 if (state == null)
@@ -2088,11 +2116,13 @@ namespace Server.Gumps
                   from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Information, 0, null,
                     "One match found.", state));
                 else
-                  from.SendGump(new AdminGump(from, AdminGumpPage.Clients, 0, results, "One match found."));
+                  from.SendGump(new AdminGump(from, AdminGumpPage.Clients, 0,
+                    Utility.CastListContravariant<NetState, object>(results), "One match found."));
               }
               else
               {
-                from.SendGump(new AdminGump(from, AdminGumpPage.Clients, 0, results,
+                from.SendGump(new AdminGump(from, AdminGumpPage.Clients, 0,
+                  Utility.CastListContravariant<NetState, object>(results),
                   notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null)));
               }
 
@@ -2201,23 +2231,19 @@ namespace Server.Gumps
             }
             case 7:
             {
-              ArrayList results;
+              List<IAccount> results;
 
               TextRelay matchEntry = info.GetTextEntry(0);
               string match = matchEntry?.Text.Trim().ToLower();
 
               if (string.IsNullOrEmpty(match))
               {
-                results = new ArrayList((ICollection)Accounts.GetAccounts());
+                results = Accounts.GetAccounts().ToList();
                 results.Sort(AccountComparer.Instance);
               }
               else
               {
-                results = new ArrayList();
-                foreach (IAccount acct in Accounts.GetAccounts())
-                  if (acct.Username.ToLower().IndexOf(match) >= 0)
-                    results.Add(acct);
-
+                results = Accounts.GetAccounts().Where(acct => acct.Username.ToLower().IndexOf(match) >= 0).ToList();
                 results.Sort(AccountComparer.Instance);
               }
 
@@ -2225,9 +2251,10 @@ namespace Server.Gumps
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Information, 0, null,
                   "One match found.", results[0]));
               else
-                from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, results,
+                from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0,
+                  Utility.CastListContravariant<IAccount, object>(results),
                   results.Count == 0 ? "Nothing matched your search terms." : null,
-                  new ArrayList()));
+                  new List<object>()));
 
               break;
             }
@@ -2298,10 +2325,11 @@ namespace Server.Gumps
               if (!(m_State is Account a))
                 break;
 
-              ArrayList list = GetSharedAccounts(a.LoginIPs);
+              List<Account> list = GetSharedAccounts(a.LoginIPs);
 
               if (list.Count > 1 || list.Count == 1 && !list.Contains(a))
-                from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, list, null, new ArrayList()));
+                from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, 
+                  Utility.CastListContravariant<Account, object>(list), null, new List<object>()));
               else if (a.LoginIPs.Length > 0)
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null,
                   "There are no other accounts which share an address with this one.", m_State));
@@ -2316,7 +2344,7 @@ namespace Server.Gumps
               if (!(m_State is Account a))
                 break;
 
-              ArrayList list = GetSharedAccounts(a.LoginIPs);
+              List<Account> list = GetSharedAccounts(a.LoginIPs);
 
               if (list.Count > 0)
               {
@@ -2326,7 +2354,7 @@ namespace Server.Gumps
                   list.Count != 1 ? "s" : "");
 
                 for (int i = 0; i < list.Count; ++i)
-                  sb.AppendFormat("<br>- {0}", ((Account)list[i]).Username);
+                  sb.AppendFormat("<br>- {0}", list[i].Username);
 
                 from.SendGump(new WarningGump(1060635, 30720, sb.ToString(), 0xFFC000, 420, 400,
                   okay => BanShared_Callback(from, okay, a)));
@@ -2471,9 +2499,9 @@ namespace Server.Gumps
             }
             case 27: // Ban marked
             {
-              ArrayList list = m_List;
+              List<object> list = m_List;
 
-              if (list == null || !(m_State is ArrayList rads))
+              if (list == null || !(m_State is List<Account> rads))
                 break;
 
               if (rads.Count > 0)
@@ -2489,9 +2517,9 @@ namespace Server.Gumps
             }
             case 28: // Delete marked
             {
-              ArrayList list = m_List;
+              List<object> list = m_List;
 
-              if (list == null || !(m_State is ArrayList rads))
+              if (list == null || !(m_State is List<Account> rads))
                 break;
 
               if (rads.Count > 0)
@@ -2508,21 +2536,19 @@ namespace Server.Gumps
             }
             case 29: // Mark all
             {
-              ArrayList list = m_List;
-
-              if (list == null || !(m_State is ArrayList))
+              if (m_List == null || !(m_State is List<object>))
                 break;
 
               from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, m_ListPage, m_List, null,
-                new ArrayList(list)));
+                m_List.ToList()));
 
               break;
             }
             case 30: // View all empty accounts
             {
-              ArrayList results = new ArrayList();
+              List<object> results = new List<object>();
 
-              foreach (IAccount acct in Accounts.GetAccounts())
+              foreach (Account acct in Accounts.GetAccounts())
               {
                 bool empty = true;
 
@@ -2538,16 +2564,16 @@ namespace Server.Gumps
                   "One match found.", results[0]));
               else
                 from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, results,
-                  results.Count == 0 ? "Nothing matched your search terms." : null, new ArrayList()));
+                  results.Count == 0 ? "Nothing matched your search terms." : null, new List<object>()));
 
               break;
             }
             case 31: // View all inactive accounts
             {
-              ArrayList results = new ArrayList();
+              List<object> results = new List<object>();
 
-              foreach (IAccount acct in Accounts.GetAccounts())
-                if ((acct as Account)?.Inactive == true)
+              foreach (Account acct in Accounts.GetAccounts())
+                if (acct.Inactive)
                   results.Add(acct);
 
               if (results.Count == 1)
@@ -2555,16 +2581,16 @@ namespace Server.Gumps
                   "One match found.", results[0]));
               else
                 from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, results,
-                  results.Count == 0 ? "Nothing matched your search terms." : null, new ArrayList()));
+                  results.Count == 0 ? "Nothing matched your search terms." : null, new List<object>()));
 
               break;
             }
             case 32: // View all banned accounts
             {
-              ArrayList results = new ArrayList();
+              List<object> results = new List<object>();
 
-              foreach (IAccount acct in Accounts.GetAccounts())
-                if ((acct as Account)?.Banned == true)
+              foreach (Account acct in Accounts.GetAccounts())
+                if (acct.Banned)
                   results.Add(acct);
 
               if (results.Count == 1)
@@ -2572,7 +2598,7 @@ namespace Server.Gumps
                   "One match found.", results[0]));
               else
                 from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, results,
-                  results.Count == 0 ? "Nothing matched your search terms." : null, new ArrayList()));
+                  results.Count == 0 ? "Nothing matched your search terms." : null, new List<object>()));
 
               break;
             }
@@ -2583,13 +2609,13 @@ namespace Server.Gumps
             }
             case 35: // Unmark house owners
             {
-              ArrayList list = m_List;
-              ArrayList rads = m_State as ArrayList;
+              List<object> list = m_List;
+              List<Account> rads = m_State as List<Account>;
 
               if (list == null || rads == null)
                 break;
 
-              ArrayList newRads = new ArrayList();
+              List<Account> newRads = new List<Account>();
 
               foreach (Account acct in rads)
               {
@@ -2644,9 +2670,9 @@ namespace Server.Gumps
                   if (m_List[index] is Account)
                     from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Information, 0, null,
                       null, m_List[index]));
-                  else if (m_List[index] is DictionaryEntry)
+                  else if (m_List[index] is KeyValuePair<IPAddress, List<Account>> kvp)
                     from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0,
-                      (ArrayList)((DictionaryEntry)m_List[index]).Value, null, new ArrayList()));
+                      Utility.CastListContravariant<Account, object>(kvp.Value), null, new List<object>()));
                 }
               }
 
@@ -2666,7 +2692,7 @@ namespace Server.Gumps
               string match = matchEntry?.Text.Trim();
 
               string notice = null;
-              ArrayList results = new ArrayList();
+              List<object> results = new List<object>();
 
               if (string.IsNullOrEmpty(match))
                 notice = "You must enter a username to search.";
@@ -2696,7 +2722,7 @@ namespace Server.Gumps
               TextRelay relay = info.GetTextEntry(0);
               string text = relay?.Text.Trim();
 
-              if (text == null || text.Length == 0)
+              if (string.IsNullOrEmpty(text))
               {
                 from.SendGump(new AdminGump(from, m_PageType, m_ListPage, m_List,
                   "You must enter an address or pattern to add.", m_State));
@@ -2926,11 +2952,9 @@ namespace Server.Gumps
             }
             else if (m_PageType == AdminGumpPage.AccountDetails_Access_Restrictions)
             {
-              ArrayList list = new ArrayList(a.IPRestrictions);
-
-              list.Remove(m_List[index]);
-
-              a.IPRestrictions = (string[])list.ToArray(typeof(string));
+              List<string> list = a.IPRestrictions.ToList();
+              list.Remove(m_List[index] as string);
+              a.IPRestrictions = list.ToArray();
 
               from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_Restrictions, 0, null,
                 $"{m_List[index]} : Removed from list.", a));
@@ -2952,10 +2976,11 @@ namespace Server.Gumps
               if (!(m_State is Account a))
                 break;
 
-              ArrayList list = GetSharedAccounts(ip);
+              List<Account> list = GetSharedAccounts(ip);
 
               if (list.Count > 1 || list.Count == 1 && !list.Contains(a))
-                from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, list, null, new ArrayList()));
+                from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0,
+                  Utility.CastListContravariant<Account, object>(list), null, new List<object>()));
               else
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null,
                   "There are no other accounts which share that address.", a));
@@ -3002,7 +3027,7 @@ namespace Server.Gumps
       CommandSystem.Handle(m_From, $"{CommandSystem.Prefix}{c}");
     }
 
-    public static void GetAccountInfo(Account a, out AccessLevel accessLevel, out bool online)
+    public static void GetAccountInfo(IAccount a, out AccessLevel accessLevel, out bool online)
     {
       accessLevel = a.AccessLevel;
       online = false;
@@ -3022,19 +3047,13 @@ namespace Server.Gumps
       }
     }
 
-    private class SharedAccountComparer : IComparer
+    private class SharedAccountComparer : IComparer<KeyValuePair<IPAddress, List<Account>>>
     {
-      public static readonly IComparer Instance = new SharedAccountComparer();
+      public static readonly IComparer<KeyValuePair<IPAddress, List<Account>>> Instance = new SharedAccountComparer();
 
-      public int Compare(object x, object y)
+      public int Compare(KeyValuePair<IPAddress, List<Account>> x, KeyValuePair<IPAddress, List<Account>> y)
       {
-        DictionaryEntry a = (DictionaryEntry)x;
-        DictionaryEntry b = (DictionaryEntry)y;
-
-        ArrayList aList = (ArrayList)a.Value;
-        ArrayList bList = (ArrayList)b.Value;
-
-        return bList.Count - aList.Count;
+        return x.Value.Count - y.Value.Count;
       }
     }
 
@@ -3113,11 +3132,11 @@ namespace Server.Gumps
       }
     }
 
-    private class NetStateComparer : IComparer
+    private class NetStateComparer : IComparer<NetState>
     {
-      public static readonly IComparer Instance = new NetStateComparer();
+      public static readonly IComparer<NetState> Instance = new NetStateComparer();
 
-      public int Compare(object x, object y)
+      public int Compare(NetState x, NetState y)
       {
         if (x == null && y == null)
           return 0;
@@ -3126,11 +3145,8 @@ namespace Server.Gumps
         if (y == null)
           return 1;
 
-        if (!(x is NetState a) || !(y is NetState b))
-          throw new ArgumentException();
-
-        Mobile aMob = a.Mobile;
-        Mobile bMob = b.Mobile;
+        Mobile aMob = x.Mobile;
+        Mobile bMob = y.Mobile;
 
         if (aMob == null && bMob == null)
           return 0;
@@ -3141,17 +3157,16 @@ namespace Server.Gumps
 
         if (aMob.AccessLevel > bMob.AccessLevel)
           return -1;
-        if (aMob.AccessLevel < bMob.AccessLevel)
-          return 1;
-        return Insensitive.Compare(aMob.Name, bMob.Name);
+
+        return aMob.AccessLevel < bMob.AccessLevel ? 1 : Insensitive.Compare(aMob.Name, bMob.Name);
       }
     }
 
-    private class AccountComparer : IComparer
+    private class AccountComparer : IComparer<IAccount>
     {
-      public static readonly IComparer Instance = new AccountComparer();
+      public static readonly IComparer<IAccount> Instance = new AccountComparer();
 
-      public int Compare(object x, object y)
+      public int Compare(IAccount x, IAccount y)
       {
         if (x == null && y == null)
           return 0;
@@ -3160,11 +3175,8 @@ namespace Server.Gumps
         if (y == null)
           return 1;
 
-        if (!(x is Account a) || !(y is Account b))
-          throw new ArgumentException();
-
-        GetAccountInfo(a, out AccessLevel aLevel, out bool aOnline);
-        GetAccountInfo(b, out AccessLevel bLevel, out bool bOnline);
+        GetAccountInfo(x, out AccessLevel aLevel, out bool aOnline);
+        GetAccountInfo(y, out AccessLevel bLevel, out bool bOnline);
 
         if (aOnline && !bOnline)
           return -1;
@@ -3172,9 +3184,8 @@ namespace Server.Gumps
           return 1;
         if (aLevel > bLevel)
           return -1;
-        if (aLevel < bLevel)
-          return 1;
-        return Insensitive.Compare(a.Username, b.Username);
+        
+        return aLevel < bLevel ? 1 : Insensitive.Compare(x.Username, y.Username);
       }
     }
   }
