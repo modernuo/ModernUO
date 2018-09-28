@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Server.Commands.Generic;
 using Server.Network;
@@ -125,7 +126,7 @@ namespace Server.Gumps
 
     private static Type typeofCPA = typeof(CPA);
     private static Type typeofObject = typeof(object);
-    private ArrayList m_List;
+    private List<object> m_List;
     private Mobile m_Mobile;
     private object m_Object;
     private int m_Page;
@@ -162,7 +163,7 @@ namespace Server.Gumps
       Initialize(0);
     }
 
-    public PropertiesGump(Mobile mobile, object o, Stack<StackEntry> stack, ArrayList list, int page) : base(GumpOffsetX,
+    public PropertiesGump(Mobile mobile, object o, Stack<StackEntry> stack, List<object> list, int page) : base(GumpOffsetX,
       GumpOffsetY)
     {
       m_Mobile = mobile;
@@ -385,7 +386,7 @@ namespace Server.Gumps
             else if (IsType(type, typeofMap))
             {
               from.SendGump(new SetListOptionGump(prop, from, m_Object, m_Stack, m_Page, m_List,
-                Map.GetMapNames(), Map.GetMapValues()));
+                Map.GetMapNames(), Map.GetMapValues().ToArray<object>()));
             }
             else if (IsType(type, typeofSkills) && m_Object is Mobile mobile)
             {
@@ -513,30 +514,29 @@ namespace Server.Gumps
       return o.ToString();
     }
 
-    private ArrayList BuildList()
+    private List<object> BuildList()
     {
-      ArrayList list = new ArrayList();
+      List<object> list = new List<object>();
 
       if (m_Type == null)
         return list;
 
       PropertyInfo[] props = m_Type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
 
-      ArrayList groups = GetGroups(m_Type, props);
+      List<KeyValuePair<Type, List<PropertyInfo>>> groups = GetGroups(m_Type, props);
 
       for (int i = 0; i < groups.Count; ++i)
       {
-        DictionaryEntry de = (DictionaryEntry)groups[i];
-        ArrayList groupList = (ArrayList)de.Value;
+        KeyValuePair<Type, List<PropertyInfo>> kvp = groups[i];
 
-        if (!HasAttribute((Type)de.Key, typeofNoSort, false))
-          groupList.Sort(PropertySorter.Instance);
+        if (!HasAttribute(kvp.Key, typeofNoSort, false))
+          kvp.Value.Sort(PropertySorter.Instance);
 
         if (i != 0)
           list.Add(null);
 
-        list.Add(de.Key);
-        list.AddRange(groupList);
+        list.Add(kvp.Key);
+        list.AddRange(kvp.Value);
       }
 
       return list;
@@ -551,9 +551,9 @@ namespace Server.Gumps
       return null;
     }
 
-    private ArrayList GetGroups(Type objectType, PropertyInfo[] props)
+    private List<KeyValuePair<Type, List<PropertyInfo>>> GetGroups(Type objectType, PropertyInfo[] props)
     {
-      Hashtable groups = new Hashtable();
+      Dictionary<Type, List<PropertyInfo>> groups = new Dictionary<Type, List<PropertyInfo>>();
 
       for (int i = 0; i < props.Length; ++i)
       {
@@ -569,32 +569,24 @@ namespace Server.Gumps
 
             while (true)
             {
-              Type baseType = type.BaseType;
+              Type baseType = type?.BaseType;
 
-              if (baseType == null || baseType == typeofObject)
+              if (baseType == typeofObject || baseType?.GetProperty(prop.Name, prop.PropertyType) == null)
                 break;
-
-              if (baseType.GetProperty(prop.Name, prop.PropertyType) != null)
-                type = baseType;
-              else
-                break;
+              
+              type = baseType;
             }
-
-            ArrayList list = (ArrayList)groups[type];
-
-            if (list == null)
-              groups[type] = list = new ArrayList();
-
-            list.Add(prop);
+            
+            if (type != null && !groups.ContainsKey(type))
+              groups[type] = new List<PropertyInfo>{ prop };
           }
         }
       }
 
-      ArrayList sorted = new ArrayList(groups);
+      List<KeyValuePair<Type, List<PropertyInfo>>> list = groups.ToList();
+      list.Sort(new GroupComparer(objectType));
 
-      sorted.Sort(new GroupComparer(objectType));
-
-      return sorted;
+      return list;
     }
 
     public static object GetObjectFromString(Type t, string s)
@@ -652,7 +644,7 @@ namespace Server.Gumps
       return o.ToString();
     }
 
-    private class PropertySorter : IComparer
+    private class PropertySorter : IComparer<PropertyInfo>
     {
       public static readonly PropertySorter Instance = new PropertySorter();
 
@@ -660,28 +652,19 @@ namespace Server.Gumps
       {
       }
 
-      public int Compare(object x, object y)
+      public int Compare(PropertyInfo x, PropertyInfo y)
       {
         if (x == null && y == null)
           return 0;
         if (x == null)
           return -1;
-        if (y == null)
-          return 1;
-
-        PropertyInfo a = x as PropertyInfo;
-        PropertyInfo b = y as PropertyInfo;
-
-        if (a == null || b == null)
-          throw new ArgumentException();
-
-        return a.Name.CompareTo(b.Name);
+        
+        return y == null ? 1 : x.Name.CompareTo(x.Name);
       }
     }
 
-    private class GroupComparer : IComparer
-    {
-      private static Type typeofObject = typeof(object);
+    private class GroupComparer : IComparer<KeyValuePair<Type, List<PropertyInfo>>>
+    { 
       private Type m_Start;
 
       public GroupComparer(Type start)
@@ -689,22 +672,9 @@ namespace Server.Gumps
         m_Start = start;
       }
 
-      public int Compare(object x, object y)
+      public int Compare(KeyValuePair<Type, List<PropertyInfo>> x, KeyValuePair<Type, List<PropertyInfo>> y)
       {
-        if (x == null && y == null)
-          return 0;
-        if (x == null)
-          return -1;
-        if (y == null)
-          return 1;
-
-        if (!(x is DictionaryEntry) || !(y is DictionaryEntry))
-          throw new ArgumentException();
-
-        DictionaryEntry de1 = (DictionaryEntry)x;
-        DictionaryEntry de2 = (DictionaryEntry)y;
-
-        return GetDistance((Type)de1.Key).CompareTo(GetDistance((Type)de2.Key));
+        return GetDistance(x.Key).CompareTo(GetDistance(y.Key));
       }
 
       private int GetDistance(Type type)

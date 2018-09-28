@@ -10,7 +10,7 @@ namespace Server.Gumps
 {
   public class SetObjectTarget : Target
   {
-    private ArrayList m_List;
+    private List<object> m_List;
     private Mobile m_Mobile;
     private object m_Object;
     private int m_Page;
@@ -19,7 +19,7 @@ namespace Server.Gumps
     private Type m_Type;
 
     public SetObjectTarget(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page,
-      ArrayList list) : base(-1, false, TargetFlags.None)
+      List<object> list) : base(-1, false, TargetFlags.None)
     {
       m_Property = prop;
       m_Mobile = mobile;
@@ -37,8 +37,8 @@ namespace Server.Gumps
         if (m_Type == typeof(Type))
           targeted = targeted.GetType();
         else if ((m_Type == typeof(BaseAddon) || m_Type.IsAssignableFrom(typeof(BaseAddon))) &&
-                 targeted is AddonComponent)
-          targeted = ((AddonComponent)targeted).Addon;
+                 targeted is AddonComponent addonComponent)
+          targeted = addonComponent.Addon;
 
         if (m_Type.IsInstanceOfType(targeted))
         {

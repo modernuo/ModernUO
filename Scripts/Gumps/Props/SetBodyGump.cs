@@ -13,24 +13,19 @@ namespace Server.Gumps
     private const int SelectedColor32 = 0x8080FF;
     private const int TextColor32 = 0xFFFFFF;
 
-    private static ArrayList m_Monster, m_Animal, m_Sea, m_Human;
-    private ArrayList m_List;
+    private static List<InternalEntry> m_Monster, m_Animal, m_Sea, m_Human;
+    private List<object> m_List;
     private Mobile m_Mobile;
     private object m_Object;
-    private ArrayList m_OurList;
+    private List<InternalEntry> m_OurList;
     private int m_OurPage;
     private ModelBodyType m_OurType;
     private int m_Page;
     private PropertyInfo m_Property;
     private Stack<StackEntry> m_Stack;
 
-    public SetBodyGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list)
-      : this(prop, mobile, o, stack, page, list, 0, null, ModelBodyType.Invalid)
-    {
-    }
-
-    public SetBodyGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list,
-      int ourPage, ArrayList ourList, ModelBodyType ourType)
+    public SetBodyGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list,
+      int ourPage = 0, List<InternalEntry> ourList = null, ModelBodyType ourType = ModelBodyType.Invalid)
       : base(20, 30)
     {
       m_Property = prop;
@@ -73,7 +68,7 @@ namespace Server.Gumps
       {
         for (int i = 0, index = ourPage * 12; i < 12 && index >= 0 && index < ourList.Count; ++i, ++index)
         {
-          InternalEntry entry = (InternalEntry)ourList[index];
+          InternalEntry entry = ourList[index];
           int itemID = entry.ItemID;
 
           Rectangle2D bounds = ItemBounds.Table[itemID & 0x3FFF];
@@ -134,7 +129,7 @@ namespace Server.Gumps
           LoadLists();
 
         ModelBodyType type;
-        ArrayList list;
+        List<InternalEntry> list;
 
         switch (index)
         {
@@ -181,7 +176,7 @@ namespace Server.Gumps
           {
             try
             {
-              InternalEntry entry = (InternalEntry)m_OurList[index];
+              InternalEntry entry = m_OurList[index];
 
               CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, entry.Body.ToString());
               m_Property.SetValue(m_Object, entry.Body, null);
@@ -201,10 +196,10 @@ namespace Server.Gumps
 
     private static void LoadLists()
     {
-      m_Monster = new ArrayList();
-      m_Animal = new ArrayList();
-      m_Sea = new ArrayList();
-      m_Human = new ArrayList();
+      m_Monster = new List<InternalEntry>();
+      m_Animal = new List<InternalEntry>();
+      m_Sea = new List<InternalEntry>();
+      m_Human = new List<InternalEntry>();
 
       List<BodyEntry> entries = Docs.LoadBodies();
 
@@ -216,10 +211,11 @@ namespace Server.Gumps
         if (((Body)bodyID).IsEmpty)
           continue;
 
-        ArrayList list = null;
+        List<InternalEntry> list;
 
         switch (oldEntry.BodyType)
         {
+          default: continue;
           case ModelBodyType.Monsters:
             list = m_Monster;
             break;
@@ -234,9 +230,6 @@ namespace Server.Gumps
             break;
         }
 
-        if (list == null)
-          continue;
-
         int itemID = ShrinkTable.Lookup(bodyID, -1);
 
         if (itemID != -1)
@@ -249,7 +242,7 @@ namespace Server.Gumps
       m_Human.Sort();
     }
 
-    private class InternalEntry : IComparable
+    public class InternalEntry : IComparable<InternalEntry>
     {
       private static string[] m_GroupNames =
       {
@@ -296,10 +289,8 @@ namespace Server.Gumps
 
       public string DisplayName{ get; }
 
-      public int CompareTo(object obj)
+      public int CompareTo(InternalEntry comp)
       {
-        InternalEntry comp = (InternalEntry)obj;
-
         int v = Name.CompareTo(comp.Name);
 
         if (v == 0)
