@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.Reports
 {
@@ -154,14 +155,14 @@ namespace Server.Engines.Reports
       DateTime startPeriod = history.Snapshots[0].TimeStamp.Date + TimeSpan.FromDays(1.0);
       DateTime endPeriod = history.Snapshots[history.Snapshots.Count - 1].TimeStamp.Date;
 
-      ArrayList regions = new ArrayList();
+      List<BarRegion> regions = new List<BarRegion>();
 
       DateTime curDate = DateTime.MinValue;
       int curPeak = -1;
       int curLow = 1000;
       int curTotl = 0;
       int curCont = 0;
-      int curValu = 0;
+      int curValu;
 
       for (int i = 0; i < history.Snapshots.Count; ++i)
       {
@@ -195,7 +196,7 @@ namespace Server.Engines.Reports
           }
           else
           {
-            BarRegion region = (BarRegion)regions[regions.Count - 1];
+            BarRegion region = regions[regions.Count - 1];
 
             if (region.m_Name == mnthName)
               region.m_RangeTo = barGraph.Items.Count;
@@ -220,7 +221,7 @@ namespace Server.Engines.Reports
         curDate = thisDate;
       }
 
-      barGraph.Regions = (BarRegion[])regions.ToArray(typeof(BarRegion));
+      barGraph.Regions = regions.ToArray();
 
       return barGraph;
     }
@@ -239,7 +240,7 @@ namespace Server.Engines.Reports
       barGraph.FontSize = 6;
       barGraph.Interval = ival;
 
-      ArrayList regions = new ArrayList();
+      List<BarRegion> regions = new List<BarRegion>();
 
       for (int i = 0; i < history.Snapshots.Count; ++i)
       {
@@ -275,7 +276,7 @@ namespace Server.Engines.Reports
         }
         else
         {
-          BarRegion region = (BarRegion)regions[regions.Count - 1];
+          BarRegion region = regions[regions.Count - 1];
 
           if (region.m_Name == dayName)
             region.m_RangeTo = barGraph.Items.Count;
@@ -286,7 +287,7 @@ namespace Server.Engines.Reports
         barGraph.Items.Add(hours + (realHours >= 12 ? " PM" : " AM"), val);
       }
 
-      barGraph.Regions = (BarRegion[])regions.ToArray(typeof(BarRegion));
+      barGraph.Regions = regions.ToArray();
 
       return barGraph;
     }

@@ -250,11 +250,11 @@ namespace Server.Items
 
       if (house != null)
       {
-        ArrayList doors = house.Doors;
+        List<BaseDoor> doors = house.Doors;
 
         for (int i = 0; i < doors.Count; ++i)
         {
-          BaseDoor door = doors[i] as BaseDoor;
+          BaseDoor door = doors[i];
 
           if (door != null && door.Open)
             return AddonFitResult.DoorsNotClosed;

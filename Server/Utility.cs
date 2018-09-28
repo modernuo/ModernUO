@@ -1090,14 +1090,6 @@ namespace Server
       total += bonus;
       return total;
     }
-
-    public static void Shuffle<T>(IEnumerable<T> enumerable)
-    {
-      if (enumerable is IList<T> list)
-        Shuffle(list);
-      
-      Shuffle(enumerable.ToArray());
-    }
     
     public static void Shuffle<T>(IList<T> list)
     {
@@ -1111,25 +1103,11 @@ namespace Server
       }
     }
     
-    public static T RandomList<T>(IList<T> list)
-    {
-      return list[RandomImpl.Next(list.Count)];
-    }
-    
-    public static T RandomList<T>(params T[] list)
-    {
-      return list[RandomImpl.Next(list.Length)];
-    }
+    public static int RandomList(params int[] list) => RandomList<int>(list);
 
-    public static int RandomList(params int[] list)
-    {
-      return RandomList<int>(list);
-    }
+    public static T RandomList<T>(IList<T> list) => list[RandomImpl.Next(list.Count)];
 
-    public static bool RandomBool()
-    {
-      return RandomImpl.NextBool();
-    }
+    public static bool RandomBool() => RandomImpl.NextBool();
 
     public static int RandomMinMax(int min, int max)
     {

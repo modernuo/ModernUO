@@ -71,7 +71,7 @@ namespace Server.Gumps
     private static List<int> _HouseSigns = new List<int>();
     private BaseHouse m_House;
 
-    private ArrayList m_List;
+    private List<Mobile> m_List;
     private HouseGumpPageAOS m_Page;
 
     public HouseGumpAOS(HouseGumpPageAOS page, Mobile from, BaseHouse house) : base(50, 40)
@@ -506,10 +506,7 @@ namespace Server.Gumps
 
     private string GetDateTime(DateTime val)
     {
-      if (val == DateTime.MinValue)
-        return "";
-
-      return val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");
+      return val == DateTime.MinValue ? "" : val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");
     }
 
     public void AddPageButton(int x, int y, int buttonID, int number, HouseGumpPageAOS page)
@@ -533,12 +530,12 @@ namespace Server.Gumps
       AddHtmlLocalized(x + 35, y, 240, 20, number, enabled ? LabelColor : DisabledColor, false, false);
     }
 
-    public void AddList(ArrayList list, int button, bool accountOf, bool leadingStar, Mobile from)
+    public void AddList(List<Mobile> list, int button, bool accountOf, bool leadingStar, Mobile from)
     {
       if (list == null)
         return;
 
-      m_List = new ArrayList(list);
+      m_List = new List<Mobile>(list);
 
       int lastPage = 0;
       int index = 0;
@@ -563,7 +560,7 @@ namespace Server.Gumps
         }
 
 
-        Mobile m = (Mobile)list[i];
+        Mobile m = list[i];
 
         string name;
         int labelHue = LabelHue;
@@ -736,10 +733,10 @@ namespace Server.Gumps
 
             house.MoveAllToCrate();
 
-            newHouse.Friends = new ArrayList(house.Friends);
-            newHouse.CoOwners = new ArrayList(house.CoOwners);
-            newHouse.Bans = new ArrayList(house.Bans);
-            newHouse.Access = new ArrayList(house.Access);
+            newHouse.Friends = new List<Mobile>(house.Friends);
+            newHouse.CoOwners = new List<Mobile>(house.CoOwners);
+            newHouse.Bans = new List<Mobile>(house.Bans);
+            newHouse.Access = new List<Mobile>(house.Access);
             newHouse.BuiltOn = house.BuiltOn;
             newHouse.LastTraded = house.LastTraded;
             newHouse.Public = house.Public;

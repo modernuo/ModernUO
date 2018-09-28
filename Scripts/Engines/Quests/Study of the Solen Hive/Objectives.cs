@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Mobiles;
 
 namespace Server.Engines.Quests.Naturalist
@@ -8,14 +9,9 @@ namespace Server.Engines.Quests.Naturalist
   {
     private NestArea m_CurrentNest;
 
-    private ArrayList m_StudiedNests;
+    private List<NestArea> m_StudiedNests = new List<NestArea>();
     private DateTime m_StudyBegin;
     private StudyState m_StudyState;
-
-    public StudyNestsObjective()
-    {
-      m_StudiedNests = new ArrayList();
-    }
 
     public override object Message => 1054044;
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -20,7 +21,7 @@ namespace Server.Engines.Reports
     private const int _bufferSpace = 125;
     private Color _backgroundColor;
     private Color _borderColor;
-    private ArrayList _chartItems;
+    private List<DataItem> _chartItems;
     private int _legendFontHeight;
     private float _legendFontSize;
     private string _legendFontStyle;
@@ -29,19 +30,13 @@ namespace Server.Engines.Reports
     private int _perimeter;
     private float _total;
 
-    public PieChartRenderer()
+    public PieChartRenderer() : this(Color.White)
     {
-      _chartItems = new ArrayList();
-      _perimeter = 250;
-      _backgroundColor = Color.White;
-      _borderColor = Color.FromArgb(63, 63, 63);
-      _legendFontSize = 8;
-      _legendFontStyle = "Verdana";
     }
 
     public PieChartRenderer(Color bgColor)
     {
-      _chartItems = new ArrayList();
+      _chartItems = new List<DataItem>();
       _perimeter = 250;
       _backgroundColor = bgColor;
       _borderColor = Color.FromArgb(63, 63, 63);
@@ -118,7 +113,7 @@ namespace Server.Engines.Reports
         //Draw all wedges and legends
         for (int i = 0; i < _chartItems.Count; i++)
         {
-          DataItem item = (DataItem)_chartItems[i];
+          DataItem item = _chartItems[i];
           SolidBrush brs = null;
           try
           {
@@ -188,7 +183,7 @@ namespace Server.Engines.Reports
 
         for (int i = 0; i < _chartItems.Count; i++)
         {
-          DataItem item = (DataItem)_chartItems[i];          
+          DataItem item = _chartItems[i];          
           try
           {
             grp.DrawPie(new Pen(_borderColor, 0.5f), pieRect, item.StartPos, item.SweepSize);

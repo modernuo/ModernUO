@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Server.Guilds;
 using Server.Multis;
 using Server.Network;
@@ -10,7 +11,7 @@ namespace Server.Gumps
   {
     private BaseHouse m_House;
 
-    public HouseListGump(int number, ArrayList list, BaseHouse house, bool accountOf) : base(20, 30)
+    public HouseListGump(int number, List<Mobile> list, BaseHouse house, bool accountOf) : base(20, 30)
     {
       if (house.Deleted)
         return;
@@ -27,29 +28,31 @@ namespace Server.Gumps
 
       AddHtmlLocalized(20, 20, 350, 20, number, false, false);
 
-      if (list != null)
-        for (int i = 0; i < list.Count; ++i)
+      if (list == null)
+        return;
+      
+      for (int i = 0; i < list.Count; ++i)
+      {
+        if (i % 16 == 0)
         {
-          if (i % 16 == 0)
-          {
-            if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 16 + 1);
+          if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 16 + 1);
 
-            AddPage(i / 16 + 1);
+          AddPage(i / 16 + 1);
 
-            if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 16);
-          }
-
-          Mobile m = (Mobile)list[i];
-
-          string name;
-
-          if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
-            continue;
-
-          AddLabel(55, 55 + i % 16 * 20, 0, accountOf && m.Player && m.Account != null
-            ? $"Account of {name}"
-            : name);
+          if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 16);
         }
+
+        Mobile m = list[i];
+
+        string name;
+
+        if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
+          continue;
+
+        AddLabel(55, 55 + i % 16 * 20, 0, accountOf && m.Player && m.Account != null
+          ? $"Account of {name}"
+          : name);
+      }
     }
 
     public override void OnResponse(NetState state, RelayInfo info)
@@ -67,10 +70,10 @@ namespace Server.Gumps
   {
     private bool m_AccountOf;
     private BaseHouse m_House;
-    private ArrayList m_List, m_Copy;
+    private List<Mobile> m_List, m_Copy;
     private int m_Number;
 
-    public HouseRemoveGump(int number, ArrayList list, BaseHouse house, bool accountOf) : base(20, 30)
+    public HouseRemoveGump(int number, List<Mobile> list, BaseHouse house, bool accountOf) : base(20, 30)
     {
       if (house.Deleted)
         return;
@@ -93,33 +96,33 @@ namespace Server.Gumps
 
       AddHtmlLocalized(20, 20, 350, 20, number, false, false);
 
-      if (list != null)
+      if (list == null)
+        return;
+      
+      m_Copy = new List<Mobile>(list);
+
+      for (int i = 0; i < list.Count; ++i)
       {
-        m_Copy = new ArrayList(list);
-
-        for (int i = 0; i < list.Count; ++i)
+        if (i % 15 == 0)
         {
-          if (i % 15 == 0)
-          {
-            if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 15 + 1);
+          if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 15 + 1);
 
-            AddPage(i / 15 + 1);
+          AddPage(i / 15 + 1);
 
-            if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 15);
-          }
-
-          Mobile m = (Mobile)list[i];
-
-          string name;
-
-          if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
-            continue;
-
-          AddCheck(34, 52 + i % 15 * 20, 0xD2, 0xD3, false, i);
-          AddLabel(55, 52 + i % 15 * 20, 0, accountOf && m.Player && m.Account != null
-            ? $"Account of {name}"
-            : name);
+          if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 15);
         }
+
+        Mobile m = list[i];
+
+        string name;
+
+        if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
+          continue;
+
+        AddCheck(34, 52 + i % 15 * 20, 0xD2, 0xD3, false, i);
+        AddLabel(55, 52 + i % 15 * 20, 0, accountOf && m.Player && m.Account != null
+          ? $"Account of {name}"
+          : name);
       }
     }
 

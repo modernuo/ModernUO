@@ -268,7 +268,7 @@ namespace Server.Multis
       {
         Item item = Fixtures[i];
 
-        if (Doors.Contains(item))
+        if (item is BaseDoor door && Doors.Contains(door))
           continue;
 
         item.MoveToWorld(new Point3D(item.X + x, item.Y + y, item.Z + z), Map);
@@ -301,8 +301,11 @@ namespace Server.Multis
 
       for (int i = 0; i < Fixtures.Count; ++i)
       {
-        Fixtures[i].Delete();
-        Doors.Remove(Fixtures[i]);
+        Item item = Fixtures[i];
+        item.Delete();
+        
+        if (item is BaseDoor door)
+          Doors.Remove(door);
       }
 
       Fixtures.Clear();

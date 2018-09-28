@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Gumps;
@@ -277,7 +276,7 @@ namespace Server.Mobiles
               SayTo(pm, 1070981,
                 $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
 
-            ArrayList buttons = ToTTurnInGump.FindRedeemableItems(pm);
+            List<ItemTileButtonInfo> buttons = ToTTurnInGump.FindRedeemableItems(pm);
 
             if (buttons.Count > 0 && !pm.HasGump<ToTTurnInGump>())
               pm.SendGump(new ToTTurnInGump(this, buttons));
@@ -317,30 +316,25 @@ namespace Server.Gumps
   {
     private Mobile m_Collector;
 
-    public ToTTurnInGump(Mobile collector, ArrayList buttons) :
-      base(1071012, buttons) // Click a minor artifact to give it to Ihara Soko.
+    public ToTTurnInGump(Mobile collector, List<ItemTileButtonInfo> buttons) :
+      base(1071012, Utility.CastListContravariant<ItemTileButtonInfo, ImageTileButtonInfo>(buttons)) // Click a minor artifact to give it to Ihara Soko.
     {
       m_Collector = collector;
     }
 
-    public ToTTurnInGump(Mobile collector, ImageTileButtonInfo[] buttons) :
-      base(1071012, buttons) // Click a minor artifact to give it to Ihara Soko.
+    public static List<ItemTileButtonInfo> FindRedeemableItems(Mobile m)
     {
-      m_Collector = collector;
-    }
-
-    public static ArrayList FindRedeemableItems(Mobile m)
-    {
-      Backpack pack = (Backpack)m.Backpack;
+      Container pack = m.Backpack;
       if (pack == null)
-        return new ArrayList();
+        return new List<ItemTileButtonInfo>();
 
-      ArrayList items = new ArrayList(pack.FindItemsByType(TreasuresOfTokuno.LesserArtifactsTotal));
-      ArrayList buttons = new ArrayList();
+      List<ItemTileButtonInfo> buttons = new List<ItemTileButtonInfo>();
 
-      for (int i = 0; i < items.Count; i++)
+      Item[] items = pack.FindItemsByType(TreasuresOfTokuno.LesserArtifactsTotal);
+      
+      for (int i = 0; i < items.Length; i++)
       {
-        Item item = (Item)items[i];
+        Item item = items[i];
         if (item is ChestOfHeirlooms heirlooms && !heirlooms.Locked)
           continue;
 
@@ -382,7 +376,7 @@ namespace Server.Gumps
         m_Collector.SayTo(pm, 1070981,
           $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
 
-        ArrayList buttons = FindRedeemableItems(pm);
+        List<ItemTileButtonInfo> buttons = FindRedeemableItems(pm);
 
         pm.CloseGump<ToTTurnInGump>(); //Sanity
 
@@ -520,14 +514,10 @@ namespace Server.Gumps
           !(pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward))
         return;
 
-      bool pigments = buttonInfo is PigmentsTileButtonInfo;
-
       Item item = null;
 
-      if (pigments)
+      if (buttonInfo is PigmentsTileButtonInfo p)
       {
-        PigmentsTileButtonInfo p = (PigmentsTileButtonInfo)buttonInfo;
-
         item = new PigmentsOfTokuno(p.Pigment);
       }
       else

@@ -650,11 +650,11 @@ namespace Server.Mobiles
 
     public static AddonFitResult CheckDoors(Point3D p, int height, BaseHouse house)
     {
-      ArrayList doors = house.Doors;
+      List<BaseDoor> doors = house.Doors;
 
       for (int i = 0; i < doors.Count; i++)
       {
-        BaseDoor door = (BaseDoor)doors[i];
+        BaseDoor door = doors[i];
 
         Point3D doorLoc = door.GetWorldLocation();
         int doorHeight = door.ItemData.CalcHeight;

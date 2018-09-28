@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Server.Network;
 
 namespace Server.Gumps
@@ -50,13 +52,12 @@ namespace Server.Gumps
 
   public class BaseImageTileButtonsGump : Gump
   {
-    public BaseImageTileButtonsGump(TextDefinition header, ArrayList buttons) : this(header,
-      (ImageTileButtonInfo[])buttons.ToArray(typeof(ImageTileButtonInfo)))
+    public BaseImageTileButtonsGump(TextDefinition header, List<ImageTileButtonInfo> buttons) :
+      this(header, buttons.ToArray())
     {
     }
 
-    public BaseImageTileButtonsGump(TextDefinition header, ImageTileButtonInfo[] buttons) :
-      base(10, 10) //Coords are 0, o on OSI, intentional difference
+    public BaseImageTileButtonsGump(TextDefinition header, ImageTileButtonInfo[] buttons) : base(10, 10) //Coords are 0, o on OSI, intentional difference
     {
       Buttons = buttons;
       AddPage(0);
