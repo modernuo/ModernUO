@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Server.Guilds;
 using Server.Multis;
@@ -198,15 +197,14 @@ namespace Server.Gumps
 
       if (m_House.Sign != null)
       {
-        ArrayList lines = Wrap(m_House.Sign.GetName());
+        List<string> lines = Wrap(m_House.Sign.GetName());
 
-        if (lines != null)
-          for (int i = 0, y = (101 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
-          {
-            string s = (string)lines[i];
+        for (int i = 0, y = (101 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
+        {
+          string s = lines[i];
 
-            AddLabel(130 + (143 - s.Length * 8) / 2, y, 0, s);
-          }
+          AddLabel(130 + (143 - s.Length * 8) / 2, y, 0, s);
+        }
       }
 
       if (!isFriend)
@@ -352,13 +350,13 @@ namespace Server.Gumps
       }
     }
 
-    private ArrayList Wrap(string value)
+    private List<string> Wrap(string value)
     {
       if (value == null || (value = value.Trim()).Length <= 0)
         return null;
 
       string[] values = value.Split(' ');
-      ArrayList list = new ArrayList();
+      List<string> list = new List<string>();
       string current = "";
 
       for (int i = 0; i < values.Length; ++i)

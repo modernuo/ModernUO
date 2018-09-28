@@ -77,11 +77,8 @@ namespace Server.Accounting
 
       using (StreamWriter op = new StreamWriter(filePath))
       {
-        XmlTextWriter xml = new XmlTextWriter(op);
+        XmlTextWriter xml = new XmlTextWriter(op) { Formatting = Formatting.Indented, IndentChar = '\t', Indentation = 1 };
 
-        xml.Formatting = Formatting.Indented;
-        xml.IndentChar = '\t';
-        xml.Indentation = 1;
 
         xml.WriteStartDocument(true);
 

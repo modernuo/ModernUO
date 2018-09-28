@@ -1,16 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Server.ContextMenus;
-using Server.Ethics;
 using Server.Factions;
-using Server.Gumps;
 using Server.Items;
-using Server.Mobiles;
 using Server.Network;
 using Server.Regions;
-using Server.Targeting;
 
 namespace Server.Engines.ConPVP
 {

@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using Server.Commands;
@@ -82,7 +82,7 @@ namespace Server.Gumps
       }
       else
       {
-        ArrayList nodes = new ArrayList();
+        List<CAGNode> nodes = new List<CAGNode>();
 
         while (xml.Read() && xml.NodeType != XmlNodeType.EndElement)
           if (xml.NodeType == XmlNodeType.Element && xml.Name == "object")
@@ -99,7 +99,7 @@ namespace Server.Gumps
             xml.Skip();
           }
 
-        Nodes = (CAGNode[])nodes.ToArray(typeof(CAGNode));
+        Nodes = nodes.ToArray();
       }
     }
 
@@ -131,9 +131,8 @@ namespace Server.Gumps
     {
       if (File.Exists(path))
       {
-        XmlTextReader xml = new XmlTextReader(path);
+        XmlTextReader xml = new XmlTextReader(path) { WhitespaceHandling = WhitespaceHandling.None };
 
-        xml.WhitespaceHandling = WhitespaceHandling.None;
 
         while (xml.Read())
           if (xml.Name == "category" && xml.NodeType == XmlNodeType.Element)

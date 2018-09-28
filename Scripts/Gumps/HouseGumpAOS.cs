@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Guilds;
 using Server.Items;
 using Server.Mobiles;
@@ -114,15 +114,14 @@ namespace Server.Gumps
 
       if (m_House.Sign != null)
       {
-        ArrayList lines = Wrap(m_House.Sign.GetName());
+        List<string> lines = Wrap(m_House.Sign.GetName());
 
-        if (lines != null)
-          for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
-          {
-            string s = (string)lines[i];
+        for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
+        {
+          string s = (string)lines[i];
 
-            AddLabel(10 + (160 - s.Length * 8) / 2, y, 0, s);
-          }
+          AddLabel(10 + (160 - s.Length * 8) / 2, y, 0, s);
+        }
       }
 
       if (page == HouseGumpPageAOS.Vendors)
@@ -667,13 +666,13 @@ namespace Server.Gumps
 
       if (okay && house.IsFriend(from))
       {
-        ArrayList list = new ArrayList(house.Access);
+        List<Mobile> list = house.Access.ToList();
 
         house.Access?.Clear();
 
         for (int i = 0; i < list.Count; ++i)
         {
-          Mobile m = (Mobile)list[i];
+          Mobile m = list[i];
 
           if (!house.HasAccess(m) && house.IsInside(m))
           {
@@ -1419,13 +1418,13 @@ namespace Server.Gumps
       }
     }
 
-    private ArrayList Wrap(string value)
+    private List<string> Wrap(string value)
     {
       if (value == null || (value = value.Trim()).Length <= 0)
         return null;
 
       string[] values = value.Split(' ');
-      ArrayList list = new ArrayList();
+      List<string> list = new List<string>();
       string current = "";
 
       for (int i = 0; i < values.Length; ++i)

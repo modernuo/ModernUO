@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Regions;
 
@@ -78,7 +78,7 @@ namespace Server.Items
       if (Parent == null)
         return Location;
 
-      ArrayList list = new ArrayList(4);
+      List<Point3D> list = new List<Point3D>(4);
 
       AddOffsetLocation(from, 0, -1, list);
       AddOffsetLocation(from, -1, 0, list);
@@ -89,10 +89,10 @@ namespace Server.Items
         return Point3D.Zero;
 
       int idx = Utility.Random(list.Count);
-      return (Point3D)list[idx];
+      return list[idx];
     }
 
-    private void AddOffsetLocation(Mobile from, int offsetX, int offsetY, ArrayList list)
+    private void AddOffsetLocation(Mobile from, int offsetX, int offsetY, List<Point3D> list)
     {
       Map map = from.Map;
 
