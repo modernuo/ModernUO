@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.SkillHandlers;
 
 namespace Server.Spells.Ninjitsu
 {
   public class SurpriseAttack : NinjaMove
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, SurpriseAttackInfo> m_Table = new Dictionary<Mobile, SurpriseAttackInfo>();
 
     public override int BaseMana => 20;
     public override double RequiredSkill => Core.ML ? 60.0 : 30.0;
@@ -52,12 +53,10 @@ namespace Server.Spells.Ninjitsu
 
       attacker.RevealingAction();
 
-      SurpriseAttackInfo info;
+      SurpriseAttackInfo info = m_Table[defender];
 
-      if (m_Table.Contains(defender))
+      if (info != null)
       {
-        info = (SurpriseAttackInfo)m_Table[defender];
-
         info.m_Timer?.Stop();
 
         m_Table.Remove(defender);
@@ -86,7 +85,9 @@ namespace Server.Spells.Ninjitsu
 
     public static bool GetMalus(Mobile target, ref int malus)
     {
-      if (!(m_Table[target] is SurpriseAttackInfo info))
+      SurpriseAttackInfo info = m_Table[target];
+
+      if (info == null)
         return false;
 
       malus = info.m_Malus;

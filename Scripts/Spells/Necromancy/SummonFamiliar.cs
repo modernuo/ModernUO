@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -26,7 +27,7 @@ namespace Server.Spells.Necromancy
     public override double RequiredSkill => 30.0;
     public override int RequiredMana => 17;
 
-    public static Hashtable Table{ get; } = new Hashtable();
+    public static Dictionary<Mobile, BaseCreature> Table{ get; } = new Dictionary<Mobile, BaseCreature>();
 
     public static SummonFamiliarEntry[] Entries{ get; } =
     {
@@ -39,9 +40,9 @@ namespace Server.Spells.Necromancy
 
     public override bool CheckCast()
     {
-      BaseCreature check = (BaseCreature)Table[Caster];
+      BaseCreature check = Table[Caster];
 
-      if (check != null && !check.Deleted)
+      if (check?.Deleted == false)
       {
         Caster.SendLocalizedMessage(1061605); // You already have a familiar.
         return false;
@@ -148,7 +149,7 @@ namespace Server.Spells.Necromancy
         double necro = m_From.Skills.Necromancy.Value;
         double spirit = m_From.Skills.SpiritSpeak.Value;
 
-        BaseCreature check = (BaseCreature)SummonFamiliarSpell.Table[m_From];
+        BaseCreature check = SummonFamiliarSpell.Table[m_From];
 
         #region Dueling
 
@@ -159,7 +160,7 @@ namespace Server.Spells.Necromancy
 
         #endregion
 
-        else if (check != null && !check.Deleted)
+        else if (check?.Deleted == false)
         {
           m_From.SendLocalizedMessage(1061605); // You already have a familiar.
         }

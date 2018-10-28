@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy
@@ -15,7 +16,7 @@ namespace Server.Spells.Necromancy
       Reagent.DaemonBlood
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, MRBucket> m_Table = new Dictionary<Mobile, MRBucket>();
 
     public MindRotSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -70,13 +71,13 @@ namespace Server.Spells.Necromancy
 
     public static void ClearMindRotScalar(Mobile m)
     {
-      if (!m_Table.ContainsKey(m))
+      MRBucket tmpB = m_Table[m];
+
+      if (tmpB == null)
         return;
 
       BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
-      MRBucket tmpB = (MRBucket)m_Table[m];
-      MRExpireTimer tmpT = tmpB.m_MRExpireTimer;
-      tmpT.Stop();
+      tmpB.m_MRExpireTimer.Stop();
       m_Table.Remove(m);
       m.SendLocalizedMessage(1060872); // Your mind feels normal again.
     }
@@ -88,10 +89,11 @@ namespace Server.Spells.Necromancy
 
     public static bool GetMindRotScalar(Mobile m, ref double scalar)
     {
-      if (!m_Table.ContainsKey(m))
+      MRBucket tmpB = m_Table[m];
+
+      if (tmpB == null)
         return false;
 
-      MRBucket tmpB = (MRBucket)m_Table[m];
       scalar = tmpB.m_Scalar;
       return true;
     }
@@ -100,11 +102,10 @@ namespace Server.Spells.Necromancy
     {
       if (!m_Table.ContainsKey(target))
       {
-        m_Table.Add(target, new MRBucket(scalar, new MRExpireTimer(caster, target, duration)));
+        MRBucket tmpB = new MRBucket(scalar, new MRExpireTimer(caster, target, duration));
+        m_Table.Add(target, tmpB);
         BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
-        MRBucket tmpB = (MRBucket)m_Table[target];
-        MRExpireTimer tmpT = tmpB.m_MRExpireTimer;
-        tmpT.Start();
+        tmpB.m_MRExpireTimer.Start();
         target.SendLocalizedMessage(1074384);
       }
     }
@@ -144,16 +145,6 @@ namespace Server.Spells.Necromancy
       m_Target = target;
       m_End = DateTime.UtcNow + delay;
       Priority = TimerPriority.TwoFiftyMS;
-    }
-
-    public void RenewDelay(TimeSpan delay)
-    {
-      m_End = DateTime.UtcNow + delay;
-    }
-
-    public void Halt()
-    {
-      Stop();
     }
 
     protected override void OnTick()

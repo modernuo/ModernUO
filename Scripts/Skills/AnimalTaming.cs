@@ -36,9 +36,7 @@ namespace Server.SkillHandlers
 
     public static bool CheckMastery(Mobile tamer, BaseCreature creature)
     {
-      BaseCreature familiar = (BaseCreature)SummonFamiliarSpell.Table[tamer];
-
-      if (familiar != null && !familiar.Deleted && familiar is DarkWolfFamiliar)
+      if (SummonFamiliarSpell.Table[tamer] is DarkWolfFamiliar familiar && !familiar.Deleted)
         if (creature is DireWolf || creature is GreyWolf || creature is TimberWolf || creature is WhiteWolf ||
             creature is BakeKitsune)
           return true;

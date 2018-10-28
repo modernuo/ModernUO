@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -24,9 +25,8 @@ namespace Server.Spells.Ninjitsu
       9002
     );
 
-    private static Hashtable m_LastAnimalForms = new Hashtable();
-
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, int> m_LastAnimalForms = new Dictionary<Mobile, int>();
+    private static Dictionary<Mobile, AnimalFormContext> m_Table = new Dictionary<Mobile, AnimalFormContext>();
 
     private bool m_WasMoving;
 
@@ -197,8 +197,8 @@ namespace Server.Spells.Ninjitsu
 
     public int GetLastAnimalForm(Mobile m)
     {
-      if (m_LastAnimalForms.Contains(m))
-        return (int)m_LastAnimalForms[m];
+      if (m_LastAnimalForms.ContainsKey(m))
+        return m_LastAnimalForms[m];
 
       return -1;
     }
@@ -214,7 +214,7 @@ namespace Server.Spells.Ninjitsu
 
       if (m.Skills.Ninjitsu.Value < entry.ReqSkill)
       {
-        string args = $"{entry.ReqSkill.ToString("F1")}\t{SkillName.Ninjitsu}\t ";
+        string args = $"{entry.ReqSkill:F1}\t{SkillName.Ninjitsu}\t ";
         m.SendLocalizedMessage(1063013,
           args); // You need at least ~1_SKILL_REQUIREMENT~ ~2_SKILL_NAME~ skill to use that ability.
         return MorphResult.NoSkill;
@@ -257,8 +257,7 @@ namespace Server.Spells.Ninjitsu
 
       if (entry.StealthBonus)
       {
-        mod = new DefaultSkillMod(SkillName.Stealth, true, 20.0);
-        mod.ObeyCap = true;
+        mod = new DefaultSkillMod(SkillName.Stealth, true, 20.0) { ObeyCap = true };
         m.AddSkillMod(mod);
       }
 
@@ -266,8 +265,7 @@ namespace Server.Spells.Ninjitsu
 
       if (entry.StealingBonus)
       {
-        stealingMod = new DefaultSkillMod(SkillName.Stealing, true, 10.0);
-        stealingMod.ObeyCap = true;
+        stealingMod = new DefaultSkillMod(SkillName.Stealing, true, 10.0) { ObeyCap = true };
         m.AddSkillMod(stealingMod);
       }
 
@@ -325,19 +323,17 @@ namespace Server.Spells.Ninjitsu
 
     public static AnimalFormContext GetContext(Mobile m)
     {
-      return m_Table[m] as AnimalFormContext;
+      return m_Table[m];
     }
 
     public static bool UnderTransformation(Mobile m)
     {
-      return GetContext(m) != null;
+      return m_Table.ContainsKey(m);
     }
 
     public static bool UnderTransformation(Mobile m, Type type)
     {
-      AnimalFormContext context = GetContext(m);
-
-      return context != null && context.Type == type;
+      return GetContext(m)?.Type == type;
     }
 
     /*
@@ -400,14 +396,12 @@ namespace Server.Spells.Ninjitsu
       //TODO: Convert this for ML to the BaseImageTileButtonsgump
       private Mobile m_Caster;
       private AnimalForm m_Spell;
-      private Item m_Talisman;
 
       public AnimalFormGump(Mobile caster, AnimalFormEntry[] entries, AnimalForm spell)
         : base(50, 50)
       {
         m_Caster = caster;
         m_Spell = spell;
-        m_Talisman = caster.Talisman;
 
         AddPage(0);
 

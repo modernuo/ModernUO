@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Misc;
 using Server.Targeting;
 
@@ -15,7 +16,7 @@ namespace Server.Spells.Necromancy
       Reagent.PigIron
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     public PainSpikeSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -58,20 +59,18 @@ namespace Server.Spells.Necromancy
 
         TimeSpan buffTime = TimeSpan.FromSeconds(10.0);
 
-        if (m_Table.Contains(m))
+        InternalTimer timer = m_Table[m];
+
+        if (timer == null)
         {
-          damage = Utility.RandomMinMax(3, 7);
-
-          if (m_Table[m] is Timer t)
-          {
-            t.Delay += TimeSpan.FromSeconds(2.0);
-
-            buffTime = t.Next - DateTime.UtcNow;
-          }
+          m_Table[m] = timer = new InternalTimer(m, damage);
+          timer.Start();
         }
         else
         {
-          new InternalTimer(m, damage).Start();
+          damage = Utility.RandomMinMax(3, 7);
+          timer.Delay += TimeSpan.FromSeconds(2.0);
+          buffTime = timer.Next - DateTime.UtcNow;
         }
 
         BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.PainSpike, 1075667, buffTime, m, Convert.ToString((int)damage)));
@@ -100,8 +99,6 @@ namespace Server.Spells.Necromancy
 
         m_Mobile = m;
         m_ToRestore = (int)toRestore;
-
-        m_Table[m] = this;
       }
 
       protected override void OnTick()

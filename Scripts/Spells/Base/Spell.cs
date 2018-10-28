@@ -89,9 +89,9 @@ namespace Server.Spells
 
       if (IsCasting)
       {
-        object o = ProtectionSpell.Registry[Caster];
+        double d = ProtectionSpell.Registry[Caster];
 
-        if (!(o is double d) || d <= Utility.RandomDouble() * 100.0)
+        if (d <= Utility.RandomDouble() * 100.0)
           Disturb(DisturbType.Hurt, false, true);
       }
     }
@@ -653,7 +653,7 @@ namespace Server.Spells
       if (fc > fcMax)
         fc = fcMax;
 
-      if (ProtectionSpell.Registry.Contains(Caster))
+      if (ProtectionSpell.Registry.ContainsKey(Caster))
         fc -= 2;
 
       if (EssenceOfWindSpell.IsDebuffed(Caster))

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Factions;
 using Server.Gumps;
 using Server.Items;
@@ -19,17 +20,13 @@ namespace Server.Spells.Seventh
       Reagent.MandrakeRoot
     );
 
-    private static Hashtable m_Timers = new Hashtable();
+    private static Dictionary<Mobile, InternalTimer> m_Timers = new Dictionary<Mobile, InternalTimer>();
 
     private int m_NewBody;
 
-    public PolymorphSpell(Mobile caster, Item scroll, int body) : base(caster, scroll, m_Info)
+    public PolymorphSpell(Mobile caster, Item scroll, int body = 0) : base(caster, scroll, m_Info)
     {
       m_NewBody = body;
-    }
-
-    public PolymorphSpell(Mobile caster, Item scroll) : this(caster, scroll, 0)
-    {
     }
 
     public override SpellCircle Circle => SpellCircle.Seventh;
@@ -77,11 +74,7 @@ namespace Server.Spells.Seventh
 
       if (m_NewBody == 0)
       {
-        Gump gump;
-        if (Core.SE)
-          gump = new NewPolymorphGump(Caster, Scroll);
-        else
-          gump = new PolymorphGump(Caster, Scroll);
+        Gump gump = Core.SE ? (Gump)new NewPolymorphGump(Caster, Scroll) : new PolymorphGump(Caster, Scroll);
 
         Caster.SendGump(gump);
         return false;
@@ -152,11 +145,11 @@ namespace Server.Spells.Seventh
             {
               StopTimer(Caster);
 
-              Timer t = new InternalTimer(Caster);
+              InternalTimer timer = new InternalTimer(Caster);
 
-              m_Timers[Caster] = t;
+              m_Timers[Caster] = timer;
 
-              t.Start();
+              timer.Start();
             }
           }
         }
@@ -169,17 +162,14 @@ namespace Server.Spells.Seventh
       FinishSequence();
     }
 
-    public static bool StopTimer(Mobile m)
+    public static void StopTimer(Mobile m)
     {
-      Timer t = (Timer)m_Timers[m];
+      InternalTimer timer = m_Timers[m];
+      if (timer == null)
+        return;
 
-      if (t != null)
-      {
-        t.Stop();
-        m_Timers.Remove(m);
-      }
-
-      return t != null;
+      timer.Stop();
+      m_Timers.Remove(m);
     }
 
     private static void EndPolymorph(Mobile m)

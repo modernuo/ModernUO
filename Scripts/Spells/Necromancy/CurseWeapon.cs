@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Spells.Necromancy
@@ -13,7 +14,7 @@ namespace Server.Spells.Necromancy
       Reagent.PigIron
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<BaseWeapon, ExpireTimer> m_Table = new Dictionary<BaseWeapon, ExpireTimer>();
 
     public CurseWeaponSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -50,15 +51,14 @@ namespace Server.Spells.Necromancy
         TimeSpan duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 3.4 + 1.0);
 
 
-        Timer t = (Timer)m_Table[weapon];
-
-        t?.Stop();
+        ExpireTimer timer = m_Table[weapon];
+        timer?.Stop();
 
         weapon.Cursed = true;
 
-        m_Table[weapon] = t = new ExpireTimer(weapon, duration);
+        m_Table[weapon] = timer = new ExpireTimer(weapon, duration);
 
-        t.Start();
+        timer.Start();
       }
 
       FinishSequence();
@@ -78,7 +78,7 @@ namespace Server.Spells.Necromancy
       {
         m_Weapon.Cursed = false;
         Effects.PlaySound(m_Weapon.GetWorldLocation(), m_Weapon.Map, 0xFA);
-        m_Table.Remove(this);
+        m_Table.Remove(m_Weapon);
       }
     }
 

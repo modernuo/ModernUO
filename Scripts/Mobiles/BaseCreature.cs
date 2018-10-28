@@ -415,20 +415,7 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual bool IsNecroFamiliar
-    {
-      get
-      {
-        if (!Summoned)
-          return false;
-
-        if (m_ControlMaster != null && SummonFamiliarSpell.Table.Contains(m_ControlMaster))
-          return SummonFamiliarSpell.Table[m_ControlMaster] == this;
-
-        return false;
-      }
-    }
-
+    public virtual bool IsNecroFamiliar => Summoned && m_ControlMaster != null && SummonFamiliarSpell.Table[m_ControlMaster] == this;
     public virtual bool DeleteCorpseOnDeath => !Core.AOS && m_bSummoned;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -3312,7 +3299,7 @@ namespace Server.Mobiles
         if (!(SummonFamiliarSpell.Table[from] is DeathAdder da) || da.Deleted)
           return;
 
-        if (!(targeted is Mobile targ) || !from.CanBeHarmful(targ, false))
+        if (!(targeted is Mobile targ && from.CanBeHarmful(targ, false)))
           return;
 
         from.RevealingAction();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 using Server.SkillHandlers;
 
@@ -7,7 +8,7 @@ namespace Server.Spells.Ninjitsu
 {
   public class DeathStrike : NinjaMove
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, DeathStrikeInfo> m_Table = new Dictionary<Mobile, DeathStrikeInfo>();
 
     public override int BaseMana => 30;
     public override double RequiredSkill => 85.0;
@@ -48,15 +49,13 @@ namespace Server.Spells.Ninjitsu
       }
 
 
-      DeathStrikeInfo info;
+      DeathStrikeInfo info = m_Table[defender];
 
       int damageBonus = 0;
 
-      if (m_Table.Contains(defender))
+      if (info != null)
       {
         defender.SendLocalizedMessage(1063092); // Your opponent lands another Death Strike!
-
-        info = (DeathStrikeInfo)m_Table[defender];
 
         if (info.m_Steps > 0)
           damageBonus = attacker.Skills.Ninjitsu.Fixed / 150;
@@ -87,7 +86,8 @@ namespace Server.Spells.Ninjitsu
 
     public static void AddStep(Mobile m)
     {
-      if (!(m_Table[m] is DeathStrikeInfo info))
+      DeathStrikeInfo info = m_Table[m];
+      if (info == null)
         return;
 
       if (++info.m_Steps >= 5)
@@ -96,7 +96,8 @@ namespace Server.Spells.Ninjitsu
 
     private static void ProcessDeathStrike(Mobile defender)
     {
-      if (!(m_Table[defender] is DeathStrikeInfo info)) //sanity
+      DeathStrikeInfo info = m_Table[defender];
+      if (info == null)
         return;
 
       int damage;

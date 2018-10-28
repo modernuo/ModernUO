@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy
@@ -14,7 +15,7 @@ namespace Server.Spells.Necromancy
       Reagent.NoxCrystal
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     public StrangleSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -58,12 +59,12 @@ namespace Server.Spells.Necromancy
         m.FixedParticles(0x36CB, 1, 9, 9911, 67, 5, EffectLayer.Head);
         m.FixedParticles(0x374A, 1, 17, 9502, 1108, 4, (EffectLayer)255);
 
-        if (!m_Table.Contains(m))
-        {
-          Timer t = new InternalTimer(m, Caster);
-          t.Start();
+        InternalTimer timer = m_Table[m];
 
-          m_Table[m] = t;
+        if (timer == null)
+        {
+          m_Table[m] = timer = new InternalTimer(m, Caster);
+          timer.Start();
         }
 
         HarmfulSpell(m);
@@ -95,10 +96,7 @@ namespace Server.Spells.Necromancy
           {
             int delay = (int)Math.Ceiling((1.0 + 5 * i_Count) / i_MaxCount);
 
-            if (delay <= 5)
-              i_HitDelay = delay;
-            else
-              i_HitDelay = 5;
+            i_HitDelay = delay <= 5 ? delay : 5;
           }
         }
 
@@ -113,12 +111,12 @@ namespace Server.Spells.Necromancy
 
     public static bool RemoveCurse(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
+      Timer timer = m_Table[m];
 
-      if (t == null)
+      if (timer == null)
         return false;
 
-      t.Stop();
+      timer.Stop();
       m.SendLocalizedMessage(1061687); // You can breath normally again.
 
       m_Table.Remove(m);
