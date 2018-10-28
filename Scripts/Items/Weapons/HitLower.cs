@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -8,13 +9,12 @@ namespace Server.Items
     public static readonly TimeSpan AttackEffectDuration = TimeSpan.FromSeconds(10.0);
     public static readonly TimeSpan DefenseEffectDuration = TimeSpan.FromSeconds(8.0);
 
-    private static Hashtable m_AttackTable = new Hashtable();
-
-    private static Hashtable m_DefenseTable = new Hashtable();
+    private static Dictionary<Mobile, AttackTimer> m_AttackTable = new Dictionary<Mobile, AttackTimer>();
+    private static Dictionary<Mobile, DefenseTimer> m_DefenseTable = new Dictionary<Mobile, DefenseTimer>();
 
     public static bool IsUnderAttackEffect(Mobile m)
     {
-      return m_AttackTable.Contains(m);
+      return m_AttackTable.ContainsKey(m);
     }
 
     public static bool ApplyAttack(Mobile m)
@@ -35,7 +35,7 @@ namespace Server.Items
 
     public static bool IsUnderDefenseEffect(Mobile m)
     {
-      return m_DefenseTable.Contains(m);
+      return m_DefenseTable.ContainsKey(m);
     }
 
     public static bool ApplyDefense(Mobile m)

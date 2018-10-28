@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
 
@@ -82,47 +83,33 @@ namespace Server.Mobiles
       if (map == null)
         return;
 
-      Bogling spawned = new Bogling();
+      Bogling spawned = new Bogling { Team = Team };
 
-      spawned.Team = Team;
-
-      bool validLocation = false;
-      Point3D loc = Location;
-
-      for (int j = 0; !validLocation && j < 10; ++j)
-      {
-        int x = X + Utility.Random(3) - 1;
-        int y = Y + Utility.Random(3) - 1;
-        int z = map.GetAverageZ(x, y);
-
-        if (validLocation = map.CanFit(x, y, Z, 16, false, false))
-          loc = new Point3D(x, y, Z);
-        else if (validLocation = map.CanFit(x, y, z, 16, false, false))
-          loc = new Point3D(x, y, z);
-      }
-
-      spawned.MoveToWorld(loc, map);
+      spawned.MoveToWorld(map.GetRandomNearbyLocation(Location), map);
       spawned.Combatant = m;
     }
 
     public void EatBoglings()
     {
-      ArrayList toEat = new ArrayList();
+      IPooledEnumerable<Bogling> eable = GetMobilesInRange<Bogling>(2);
+      bool sound = true;
 
-      foreach (Mobile m in GetMobilesInRange(2))
-        if (m is Bogling)
-          toEat.Add(m);
-
-      if (toEat.Count > 0)
+      foreach (Bogling bogling in eable)
       {
-        PlaySound(Utility.Random(0x3B, 2)); // Eat sound
+        if (Hits >= HitsMax)
+          break;
 
-        foreach (Mobile m in toEat)
+        if (sound)
         {
-          Hits += m.Hits / 2;
-          m.Delete();
+          PlaySound(Utility.Random(0x3B, 2)); // Eat sound
+          sound = false;
         }
+
+        Hits += bogling.Hits / 2;
+        bogling.Delete();
       }
+
+      eable.Free();
     }
 
     public override void OnGotMeleeAttack(Mobile attacker)
@@ -135,9 +122,7 @@ namespace Server.Mobiles
           SpawnBogling(attacker);
       }
       else if (0.25 >= Utility.RandomDouble())
-      {
         EatBoglings();
-      }
     }
   }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Server.Regions;
 using Server.Targeting;
 
@@ -138,7 +139,7 @@ namespace Server.Multis.Deeds
       else
       {
         Point3D center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-        HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out ArrayList toMove);
+        HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out List<IEntity> toMove);
 
         switch (res)
         {

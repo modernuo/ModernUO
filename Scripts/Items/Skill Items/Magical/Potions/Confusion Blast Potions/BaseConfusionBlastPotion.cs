@@ -149,19 +149,18 @@ namespace Server.Items
 
     #region Delay
 
-    private static Hashtable m_Delay = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Delay = new Dictionary<Mobile, Timer>();
 
     public static void AddDelay(Mobile m)
     {
-      if (m_Delay[m] is Timer timer)
-        timer.Stop();
-
+      m_Delay[m]?.Stop();
       m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(60), EndDelay, m);
     }
 
     public static int GetDelay(Mobile m)
     {
-      if (m_Delay[m] is Timer timer && timer.Next > DateTime.UtcNow)
+      Timer timer = m_Delay[m];
+      if (timer?.Next > DateTime.UtcNow)
         return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
 
       return 0;
@@ -169,7 +168,8 @@ namespace Server.Items
 
     public static void EndDelay(Mobile m)
     {
-      if (m_Delay[m] is Timer timer)
+      Timer timer = m_Delay[m];
+      if (timer != null)
       {
         timer.Stop();
         m_Delay.Remove(m);

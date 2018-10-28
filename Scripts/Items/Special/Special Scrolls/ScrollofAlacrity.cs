@@ -1,39 +1,14 @@
-/***************************************************************************
-*							ScrollofAlacrity.cs
-*							-------------------
-*	begin				: June 1, 2009
-*	copyright			: (C) Shai'Tan Malkier aka Callandor2k
-*	email				: ShaiTanMalkier@gmail.com
-*
-*	$Id: ScrollofAlacrity.cs 1 2009-06-1 04:28:39Z Callandor2k $
-*
-***************************************************************************/
-
-/***************************************************************************
-*
-*	This Script/File is free software; you can redistribute it and/or modify
-*	it under the terms of the GNU General Public License as published by
-*	the Free Software Foundation; either version 2 of the License, or
-*	(at your option) any later version.
-*
-***************************************************************************/
-
 using System;
-using System.Collections;
+using Server.Engines.MLQuests;
+using Server.Engines.MLQuests.Objectives;
 using Server.Mobiles;
 
 namespace Server.Items
 {
   public class ScrollofAlacrity : SpecialScroll
   {
-    private static Hashtable m_Table = new Hashtable();
-
-    public ScrollofAlacrity() : this(SkillName.Alchemy)
-    {
-    }
-
     [Constructible]
-    public ScrollofAlacrity(SkillName skill) : base(skill, 0.0)
+    public ScrollofAlacrity(SkillName skill = SkillName.Alchemy) : base(skill, 0.0)
     {
       ItemID = 0x14EF;
       Hue = 0x4AB;
@@ -61,37 +36,28 @@ namespace Server.Items
 
     public override bool CanUse(Mobile from)
     {
-      if (!base.CanUse(from))
-        return false;
-
-      if (!(from is PlayerMobile pm))
+      if (!(base.CanUse(from) && from is PlayerMobile pm))
         return false;
 
       #region Mondain's Legacy
+      MLQuestContext context = MLQuestSystem.GetContext(pm);
 
-      /* to add when skillgain quests will be implemented
-
-      for (int i = pm.Quests.Count - 1; i >= 0; i--)
+      if (context != null)
       {
-        BaseQuest quest = pm.Quests[i];
-
-        for (int j = quest.Objectives.Count - 1; j >= 0; j--)
+        foreach (MLQuestInstance instance in context.QuestInstances)
         {
-          BaseObjective objective = quest.Objectives[j];
-
-          if (objective is ApprenticeObjective)
+          foreach (BaseObjectiveInstance objective in instance.Objectives)
           {
-            from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
-            return false;
+            if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
+                objectiveInstance.Handles(Skill))
+            {
+              from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
+              return false;
+            }
           }
         }
       }
-
-      */
-
       #endregion
-
-      #region Scroll of Alacrity
 
       if (pm.AcceleratedStart > DateTime.UtcNow)
       {
@@ -99,17 +65,12 @@ namespace Server.Items
         return false;
       }
 
-      #endregion
-
       return true;
     }
 
     public override void Use(Mobile from)
     {
-      if (!CanUse(from))
-        return;
-
-      if (!(from is PlayerMobile pm))
+      if (!(CanUse(from) && from is PlayerMobile pm))
         return;
 
       double tskill = from.Skills[Skill].Base;
@@ -130,19 +91,17 @@ namespace Server.Items
       Effects.SendTargetParticles(from, 0x373A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100);
 
       pm.AcceleratedStart = DateTime.UtcNow + TimeSpan.FromMinutes(15);
-      m_Table[from] = Timer.DelayCall(TimeSpan.FromMinutes(15), Expire_Callback, from);
+      Timer.DelayCall(TimeSpan.FromMinutes(15), Expire_Callback, from);
 
       pm.AcceleratedSkill = Skill;
 
       Delete();
     }
 
+    // TODO: Handle this upon deserialization. Create Dictionary and serialize Mobile/Timers?
     private static void Expire_Callback(Mobile m)
     {
-      m_Table.Remove(m);
-
       m.PlaySound(0x1F8);
-
       m.SendLocalizedMessage(
         1077957); // The intense energy dissipates. You are no longer under the effects of an accelerated skillgain scroll.
     }

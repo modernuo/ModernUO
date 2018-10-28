@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -8,7 +9,7 @@ namespace Server.Items
   /// </summary>
   public class Feint : WeaponAbility
   {
-    public static Hashtable Registry{ get; } = new Hashtable();
+    public static Dictionary<Mobile, FeintTimer> Registry{ get; } = new Dictionary<Mobile, FeintTimer>();
 
     public override int BaseMana => 30;
 
@@ -29,10 +30,10 @@ namespace Server.Items
       if (!Validate(attacker) || !CheckMana(attacker, true))
         return;
 
-      if (Registry.Contains(defender))
+      FeintTimer timer = Registry[defender];
+      if (timer != null)
       {
-        FeintTimer existingtimer = (FeintTimer)Registry[defender];
-        existingtimer.Stop();
+        timer.Stop();
         Registry.Remove(defender);
       }
 
@@ -43,12 +44,12 @@ namespace Server.Items
 
       attacker.FixedParticles(0x3728, 1, 13, 0x7F3, 0x962, 0, EffectLayer.Waist);
 
-      Timer t = new FeintTimer(defender,
+      timer = new FeintTimer(defender,
         (int)(20.0 + 3.0 * (Math.Max(attacker.Skills.Ninjitsu.Value,
                               attacker.Skills.Bushido.Value) - 50.0) / 7.0)); //20-50 % decrease
 
-      t.Start();
-      Registry.Add(defender, t);
+      timer.Start();
+      Registry.Add(defender, timer);
     }
 
     public class FeintTimer : Timer

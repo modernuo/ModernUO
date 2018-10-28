@@ -45,7 +45,7 @@ namespace Server
       CommandSystem.Register("UnfreezeMap", AccessLevel.Administrator, UnfreezeMap_OnCommand);
       CommandSystem.Register("UnfreezeWorld", AccessLevel.Administrator, UnfreezeWorld_OnCommand);
     }
-    
+
     public delegate void FreezeCallback( Mobile from, bool okay, StateInfo si );
 
     [Usage("Freeze")]
@@ -99,7 +99,7 @@ namespace Server
 
     public static void Freeze(Mobile from, Map targetMap, Point3D start3d, Point3D end3d)
     {
-      Hashtable mapTable = new Hashtable();
+      Dictionary<Map, Dictionary<Point2D, DeltaState>> mapTable = new Dictionary<Map, Dictionary<Point2D, DeltaState>>();
 
       if (start3d == NullP3D && end3d == NullP3D)
       {
@@ -125,14 +125,14 @@ namespace Server
             if (itemMap == null || itemMap == Map.Internal)
               continue;
 
-            Hashtable table = (Hashtable)mapTable[itemMap];
+            Dictionary<Point2D, DeltaState> table = mapTable[itemMap];
 
             if (table == null)
-              mapTable[itemMap] = table = new Hashtable();
+              mapTable[itemMap] = table = new Dictionary<Point2D, DeltaState>();
 
             Point2D p = new Point2D(item.X >> 3, item.Y >> 3);
 
-            DeltaState state = (DeltaState)table[p];
+            DeltaState state = table[p];
 
             if (state == null)
               table[p] = state = new DeltaState(p);
@@ -159,14 +159,14 @@ namespace Server
             if (itemMap == null || itemMap == Map.Internal)
               continue;
 
-            Hashtable table = (Hashtable)mapTable[itemMap];
+            Dictionary<Point2D, DeltaState> table = mapTable[itemMap];
 
             if (table == null)
-              mapTable[itemMap] = table = new Hashtable();
+              mapTable[itemMap] = table = new Dictionary<Point2D, DeltaState>();
 
             Point2D p = new Point2D(item.X >> 3, item.Y >> 3);
 
-            DeltaState state = (DeltaState)table[p];
+            DeltaState state = table[p];
 
             if (state == null)
               table[p] = state = new DeltaState(p);
@@ -189,10 +189,10 @@ namespace Server
 
       int totalFrozen = 0;
 
-      foreach (DictionaryEntry de in mapTable)
+      foreach (KeyValuePair<Map, Dictionary<Point2D, DeltaState>> de in mapTable)
       {
-        Map map = (Map)de.Key;
-        Hashtable table = (Hashtable)de.Value;
+        Map map = de.Key;
+        Dictionary<Point2D, DeltaState> table = de.Value;
 
         TileMatrix matrix = map.Tiles;
 

@@ -79,7 +79,7 @@ namespace Server.Commands
           }
           else
           {
-            Hashtable propertyChains = new Hashtable();
+            Dictionary<Type, PropertyInfo[]> propertyChains = new Dictionary<Type, PropertyInfo[]>();
 
             usedList = new List<object>(list.Count);
 
@@ -92,11 +92,11 @@ namespace Server.Commands
 
               Type type = obj.GetType();
 
-              PropertyInfo[] chain = (PropertyInfo[])propertyChains[type];
+              PropertyInfo[] chain = propertyChains[type];
 
               string failReason = "";
 
-              if (chain == null && !propertyChains.Contains(type))
+              if (chain == null)
                 propertyChains[type] = chain = Properties.GetPropertyInfoChain(e.Mobile, type, bc.Object,
                   PropertyAccess.Read, ref failReason);
 

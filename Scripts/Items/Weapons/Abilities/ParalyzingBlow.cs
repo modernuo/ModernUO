@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -13,7 +14,7 @@ namespace Server.Items
 
     public static readonly TimeSpan FreezeDelayDuration = TimeSpan.FromSeconds(8.0);
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     public override int BaseMana => 30;
 
@@ -38,10 +39,7 @@ namespace Server.Items
 
     public override bool RequiresTactics(Mobile from)
     {
-      if (!(from.Weapon is BaseWeapon weapon))
-        return true;
-
-      return weapon.Skill != SkillName.Wrestling;
+      return !(from.Weapon is BaseWeapon weapon && weapon.Skill == SkillName.Wrestling);
     }
 
     public override bool OnBeforeSwing(Mobile attacker, Mobile defender)
@@ -85,27 +83,22 @@ namespace Server.Items
 
     public static bool IsImmune(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public static void BeginImmunity(Mobile m, TimeSpan duration)
     {
-      Timer t = (Timer)m_Table[m];
+      InternalTimer timer = m_Table[m];
 
-      t?.Stop();
-
-      t = new InternalTimer(m, duration);
-      m_Table[m] = t;
-
-      t.Start();
+      timer?.Stop();
+      m_Table[m] = timer = new InternalTimer(m, duration);
+      timer.Start();
     }
 
     public static void EndImmunity(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
-
-      t?.Stop();
-
+      InternalTimer timer = m_Table[m];
+      timer?.Stop();
       m_Table.Remove(m);
     }
 

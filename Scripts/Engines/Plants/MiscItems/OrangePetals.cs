@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 
 namespace Server.Items
 {
   public class OrangePetals : Item
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, OrangePetalsContext> m_Table = new Dictionary<Mobile, OrangePetalsContext>();
 
     [Constructible]
     public OrangePetals() : this(1)

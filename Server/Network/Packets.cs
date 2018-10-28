@@ -298,7 +298,7 @@ namespace Server.Network
       m_Stream.Write((short)list.Count);
 
       //The client sorts these by their X/Y value.
-      //OSI sends these in wierd order.  X/Y highest to lowest and serial loest to highest
+      //OSI sends these in weird order.  X/Y highest to lowest and serial lowest to highest
       //These are already sorted by serial (done by the vendor class) but we have to send them by x/y
       //(the x74 packet is sent in 'correct' order.)
       for (int i = list.Count - 1; i >= 0; --i)
@@ -326,7 +326,7 @@ namespace Server.Network
       m_Stream.Write((short)list.Count);
 
       //The client sorts these by their X/Y value.
-      //OSI sends these in wierd order.  X/Y highest to lowest and serial loest to highest
+      //OSI sends these in weird order.  X/Y highest to lowest and serial loewst to highest
       //These are already sorted by serial (done by the vendor class) but we have to send them by x/y
       //(the x74 packet is sent in 'correct' order.)
       for (int i = list.Count - 1; i >= 0; --i)
@@ -1142,11 +1142,11 @@ namespace Server.Network
         m_Stream.Write((byte)0);
         /*} else if (  ) {
           m_Stream.Write( (byte) 0x01 );
-  
+
           m_Stream.Write( (int) item.Serial );
-  
+
           m_Stream.Write( (short) itemID );
-  
+
           m_Stream.Write( (byte) item.Direction );*/
       }
       else
@@ -1200,11 +1200,11 @@ namespace Server.Network
         m_Stream.Write((byte)0);
         /*} else if (  ) {
           m_Stream.Write( (byte) 0x01 );
-  
+
           m_Stream.Write( (int) item.Serial );
-  
+
           m_Stream.Write( (ushort) itemID );
-  
+
           m_Stream.Write( (byte) item.Direction );*/
       }
       else
@@ -3215,7 +3215,7 @@ namespace Server.Network
           m_Stream.Write((short)beheld.Luck); // Luck
 
           IWeapon weapon = beheld.Weapon;
-          
+
           if (weapon != null)
           {
             weapon.GetStatusDamage(beheld, out int min, out int max);
@@ -3776,17 +3776,7 @@ namespace Server.Network
 
   public sealed class MovementAck : Packet
   {
-    private static MovementAck[][] m_Cache = new MovementAck[8][]
-    {
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256]
-    };
+    private static MovementAck[] m_Cache = new MovementAck[8 * 256];
 
     private MovementAck(int seq, int noto) : base(0x22, 3)
     {
@@ -3798,11 +3788,11 @@ namespace Server.Network
     {
       int noto = Notoriety.Compute(m, m);
 
-      MovementAck p = m_Cache[noto][seq];
+      MovementAck p = m_Cache[noto * seq];
 
       if (p == null)
       {
-        m_Cache[noto][seq] = p = new MovementAck(seq, noto);
+        m_Cache[noto * seq] = p = new MovementAck(seq, noto);
         p.SetStatic();
       }
 

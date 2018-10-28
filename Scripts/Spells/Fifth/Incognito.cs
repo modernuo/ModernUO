@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Factions;
 using Server.Items;
 using Server.Mobiles;
@@ -18,22 +19,7 @@ namespace Server.Spells.Fifth
       Reagent.Nightshade
     );
 
-    private static Hashtable m_Timers = new Hashtable();
-
-    private static int[] m_HairIDs =
-    {
-      0x2044, 0x2045, 0x2046,
-      0x203C, 0x203B, 0x203D,
-      0x2047, 0x2048, 0x2049,
-      0x204A, 0x0000
-    };
-
-    private static int[] m_BeardIDs =
-    {
-      0x203E, 0x203F, 0x2040,
-      0x2041, 0x204B, 0x204C,
-      0x204D, 0x0000
-    };
+    private static Dictionary<Mobile, InternalTimer> m_Timers = new Dictionary<Mobile, InternalTimer>();
 
     public IncognitoSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -121,8 +107,7 @@ namespace Server.Spells.Fifth
           TimeSpan length = TimeSpan.FromSeconds(timeVal);
 
 
-          Timer t = new InternalTimer(Caster, length);
-
+          InternalTimer t = new InternalTimer(Caster, length);
           m_Timers[Caster] = t;
 
           t.Start();
@@ -138,18 +123,16 @@ namespace Server.Spells.Fifth
       FinishSequence();
     }
 
-    public static bool StopTimer(Mobile m)
+    public static void StopTimer(Mobile m)
     {
-      Timer t = (Timer)m_Timers[m];
+      Timer t = m_Timers[m];
 
-      if (t != null)
-      {
-        t.Stop();
-        m_Timers.Remove(m);
-        BuffInfo.RemoveBuff(m, BuffIcon.Incognito);
-      }
+      if (t == null)
+        return;
 
-      return t != null;
+      t.Stop();
+      m_Timers.Remove(m);
+      BuffInfo.RemoveBuff(m, BuffIcon.Incognito);
     }
 
     private class InternalTimer : Timer

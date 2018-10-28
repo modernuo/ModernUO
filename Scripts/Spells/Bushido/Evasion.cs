@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Spells.Bushido
@@ -12,7 +13,7 @@ namespace Server.Spells.Bushido
       9002
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public Evasion(Mobile caster, Item scroll)
       : base(caster, scroll, m_Info)
@@ -123,7 +124,7 @@ namespace Server.Spells.Bushido
 
     public static bool IsEvading(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public static TimeSpan GetEvadeDuration(Mobile m)
@@ -179,22 +180,17 @@ namespace Server.Spells.Bushido
 
     public static void BeginEvasion(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
+      Timer timer = m_Table[m];
+      timer?.Stop();
 
-      t?.Stop();
-
-      t = new InternalTimer(m, GetEvadeDuration(m));
-
-      m_Table[m] = t;
-
-      t.Start();
+      m_Table[m] = timer = new InternalTimer(m, GetEvadeDuration(m));
+      timer.Start();
     }
 
     public static void EndEvasion(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
-
-      t?.Stop();
+      Timer timer = m_Table[m];
+      timer?.Stop();
 
       m_Table.Remove(m);
 

@@ -133,7 +133,7 @@ namespace Server.Mobiles
     {
       if (!(obj is DamageStore ds))
         return -1;
-      
+
       return ds.m_Damage - m_Damage;
     }
   }
@@ -1961,7 +1961,7 @@ namespace Server.Mobiles
 
       #region Dueling
 
-      if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm && 
+      if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm &&
           (pm.DuelContext == null || pm.DuelPlayer == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
           pm.DuelPlayer.Eliminated))
         return true;
@@ -3799,41 +3799,30 @@ namespace Server.Mobiles
 
     #region Spill Acid
 
-    public void SpillAcid(int Amount)
+    public void SpillAcid(int amount)
     {
-      SpillAcid(null, Amount);
+      SpillAcid(null, amount);
     }
 
-    public void SpillAcid(Mobile target, int Amount)
+    public void SpillAcid(Mobile target, int amount)
     {
       if (target != null && target.Map == null || Map == null)
         return;
 
-      for (int i = 0; i < Amount; ++i)
+      for (int i = 0; i < amount; ++i)
       {
-        Point3D loc = Location;
+        Point3D loc;
         Map map = Map;
-        Item acid = NewHarmfulItem();
 
-        if (target?.Map != null && Amount == 1)
+        if (target != null && amount == 1)
         {
           loc = target.Location;
           map = target.Map;
         }
         else
-        {
-          bool validLocation = false;
-          for (int j = 0; !validLocation && j < 10; ++j)
-          {
-            loc = new Point3D(
-              loc.X + (Utility.Random(0, 3) - 2),
-              loc.Y + (Utility.Random(0, 3) - 2),
-              loc.Z);
-            loc.Z = map.GetAverageZ(loc.X, loc.Y);
-            validLocation = map.CanFit(loc, 16, false, false);
-          }
-        }
+          loc = map.GetRandomNearbyLocation(Location);
 
+        Item acid = NewHarmfulItem();
         acid.MoveToWorld(loc, map);
       }
     }

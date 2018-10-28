@@ -568,13 +568,13 @@ namespace Server.Engines.ConPVP
     public KHTeamInfo(int teamID)
     {
       TeamID = teamID;
-      Players = new Hashtable();
+      Players = new Dictionary<Mobile, KHPlayerInfo>();
     }
 
     public KHTeamInfo(int teamID, GenericReader ip)
     {
       TeamID = teamID;
-      Players = new Hashtable();
+      Players = new Dictionary<Mobile, KHPlayerInfo>();
 
       int version = ip.ReadEncodedInt();
 
@@ -595,7 +595,7 @@ namespace Server.Engines.ConPVP
 
     public KHPlayerInfo Leader{ get; set; }
 
-    public Hashtable Players{ get; }
+    public Dictionary<Mobile, KHPlayerInfo> Players{ get; }
 
     public KHPlayerInfo this[Mobile mob]
     {
@@ -1173,7 +1173,7 @@ namespace Server.Engines.ConPVP
               p.Players[j].Eliminated = true;
       }
 
-      if (winner != null) 
+      if (winner != null)
         m_Context.Finish(m_Context.Participants[winner.TeamID]);
     }
 

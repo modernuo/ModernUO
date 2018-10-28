@@ -117,22 +117,15 @@ namespace Server.Mobiles
 
         Animate(10, 4, 1, true, false, 0);
 
-        ArrayList targets = new ArrayList();
+        IPooledEnumerable<Mobile> eable = target.GetMobilesInRange<Mobile>(8);
 
-        foreach (Mobile m in target.GetMobilesInRange(8))
+        foreach (Mobile m in eable)
         {
-          if (m == this || !CanBeHarmful(m))
+          if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
             continue;
 
-          if (m is BaseCreature bc && (bc.Controlled || bc.Summoned || bc.Team != Team))
-            targets.Add(m);
-          else if (m.Player && m.Alive)
-            targets.Add(m);
-        }
-
-        for (int i = 0; i < targets.Count; ++i)
-        {
-          Mobile m = (Mobile)targets[i];
+          if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))
+            continue;
 
           DoHarmful(m);
 
@@ -141,6 +134,8 @@ namespace Server.Mobiles
           m.FixedParticles(0x36BD, 1, 10, 0x1F78, 0xA6, 0, (EffectLayer)255);
           m.ApplyPoison(this, Poison.Lethal);
         }
+
+        eable.Free();
       }
     }
 

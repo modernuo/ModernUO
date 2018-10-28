@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Craft;
 using Server.Mobiles;
 using Server.Network;
@@ -18,7 +19,7 @@ namespace Server.Items
 
   public abstract class BaseInstrument : Item, ICraftable, ISlayer
   {
-    private static Hashtable m_Instruments = new Hashtable();
+    private static Dictionary<Mobile, BaseInstrument> m_Instruments = new Dictionary<Mobile, BaseInstrument>();
     private Mobile m_Crafter;
 
     private DateTime m_LastReplenished;
@@ -150,12 +151,7 @@ namespace Server.Items
       }
     }
 
-    public void CheckReplenishUses()
-    {
-      CheckReplenishUses(true);
-    }
-
-    public void CheckReplenishUses(bool invalidate)
+    public void CheckReplenishUses(bool invalidate = true)
     {
       if (!m_ReplenishesCharges || m_UsesRemaining >= InitMaxUses)
         return;
@@ -186,10 +182,7 @@ namespace Server.Items
 
     public int GetUsesScalar()
     {
-      if (m_Quality == InstrumentQuality.Exceptional)
-        return 200;
-
-      return 100;
+      return m_Quality == InstrumentQuality.Exceptional ? 200 : 100;
     }
 
     public void ConsumeUse(Mobile from)
@@ -210,16 +203,15 @@ namespace Server.Items
 
     public static BaseInstrument GetInstrument(Mobile from)
     {
-      if (!(m_Instruments[from] is BaseInstrument item))
+      BaseInstrument item = m_Instruments[from];
+      if (item == null)
         return null;
 
-      if (!item.IsChildOf(from.Backpack))
-      {
-        m_Instruments.Remove(from);
-        return null;
-      }
+      if (item.IsChildOf(from.Backpack))
+        return item;
 
-      return item;
+      m_Instruments.Remove(from);
+      return null;
     }
 
     public static int GetBardRange(Mobile bard, SkillName skill)
@@ -395,7 +387,7 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      ArrayList attrs = new ArrayList();
+      List<EquipInfoAttribute> attrs = new List<EquipInfoAttribute>();
 
       if (DisplayLootType)
       {
@@ -442,7 +434,7 @@ namespace Server.Items
         return;
 
       EquipmentInfo eqInfo = new EquipmentInfo(number, m_Crafter, false,
-        (EquipInfoAttribute[])attrs.ToArray(typeof(EquipInfoAttribute)));
+        attrs.ToArray());
 
       from.Send(new DisplayEquipmentInfo(this, eqInfo));
     }

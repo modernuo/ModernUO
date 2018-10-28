@@ -457,7 +457,7 @@ namespace Server
   /// <summary>
   ///   Base class representing players, npcs, and creatures.
   /// </summary>
-  public class Mobile : IEntity, IHued, IComparable<Mobile>, ISerializable, ISpawnable
+  public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable
   {
     private const int
       WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
@@ -2992,7 +2992,7 @@ namespace Server
     public virtual void ComputeResistances()
     {
       if (Resistances == null)
-        Resistances = new int[5] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+        Resistances = new int[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
 
       for (int i = 0; i < Resistances.Length; ++i)
         Resistances[i] = 0;
@@ -3048,10 +3048,7 @@ namespace Server
 
     public virtual int GetMaxResistance(ResistanceType type)
     {
-      if (m_Player)
-        return MaxPlayerResistance;
-
-      return int.MaxValue;
+      return m_Player ? MaxPlayerResistance : int.MaxValue;
     }
 
     public int GetAOSStatus(int index)
@@ -3370,7 +3367,7 @@ namespace Server
 
       return m_Map.LineOfSight(this, target);
     }
-    
+
     public bool BeginAction<T>()
     {
       return BeginAction(typeof(T));
@@ -3392,7 +3389,7 @@ namespace Server
 
       return false;
     }
-    
+
     public bool CanBeginAction<T>()
     {
       return CanBeginAction(typeof(T));
@@ -4642,10 +4639,7 @@ namespace Server
         //Body = this.Female ? 0x193 : 0x192;
         Body = Race.GhostBody(this);
 
-        Item deathShroud = new Item(0x204E);
-
-        deathShroud.Movable = false;
-        deathShroud.Layer = Layer.OuterTorso;
+        Item deathShroud = new Item(0x204E) { Movable = false, Layer = Layer.OuterTorso };
 
         AddItem(deathShroud);
 
@@ -4712,11 +4706,9 @@ namespace Server
       }
       else if (!AllowItemUse(item))
       {
-        okay = false;
       }
       else if (!item.CheckItemUse(this, item))
       {
-        okay = false;
       }
       else if (root is Mobile mobile && mobile.IsSnoop(this))
       {
@@ -5337,7 +5329,7 @@ namespace Server
 
     public static Mobile GetDamagerFrom(DamageEntry de)
     {
-      return de == null ? null : de.Damager;
+      return de?.Damager;
     }
 
     public Mobile FindMostRecentDamager(bool allowSelf)
@@ -5466,10 +5458,7 @@ namespace Server
 
     public virtual DamageEntry RegisterDamage(int amount, Mobile from)
     {
-      DamageEntry de = FindDamageEntryFor(from);
-
-      if (de == null)
-        de = new DamageEntry(from);
+      DamageEntry de = FindDamageEntryFor(from) ?? new DamageEntry(from);
 
       de.DamageGiven += amount;
       de.LastDamage = DateTime.UtcNow;
@@ -5627,10 +5616,8 @@ namespace Server
 
         if (ourState != null)
         {
-          if (ourState.DamagePacket)
-            p = Packet.Acquire(new DamagePacket(this, amount));
-          else
-            p = Packet.Acquire(new DamagePacketOld(this, amount));
+          p = ourState.DamagePacket ? Packet.Acquire(new DamagePacket(this, amount)) :
+            Packet.Acquire(new DamagePacketOld(this, amount));
 
           ourState.Send(p);
         }
@@ -5699,7 +5686,7 @@ namespace Server
 
     public void SendVisibleDamageSelective(Mobile from, int amount)
     {
-      NetState ourState = m_NetState, theirState = from == null ? null : from.m_NetState;
+      NetState ourState = m_NetState, theirState = from?.m_NetState;
 
       Mobile damager = from;
       Mobile damaged = this;
@@ -6337,73 +6324,72 @@ namespace Server
     {
       Map map = m_Map;
 
-      if (map != null)
-      {
-        ProcessDelta();
+      if (map == null)
+        return;
+      ProcessDelta();
 
-        Packet p = null;
-        //Packet pNew = null;
+      Packet p = null;
+      //Packet pNew = null;
 
-        IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
+      IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this))
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this))
+        {
+          state.Mobile.ProcessDelta();
+
+          //if ( state.StygianAbyss ) {
+          //if ( pNew == null )
+          //pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
+
+          //state.Send( pNew );
+          //} else {
+          if (p == null)
           {
-            state.Mobile.ProcessDelta();
+            #region SA
 
-            //if ( state.StygianAbyss ) {
-            //if ( pNew == null )
-            //pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
-
-            //state.Send( pNew );
-            //} else {
-            if (p == null)
+            if (Body.IsGargoyle)
             {
-              #region SA
+              frameCount = 10;
 
-              if (Body.IsGargoyle)
+              if (Flying)
               {
-                frameCount = 10;
-
-                if (Flying)
-                {
-                  if (action >= 9 && action <= 11)
-                    action = 71;
-                  else if (action >= 12 && action <= 14)
-                    action = 72;
-                  else if (action == 20)
-                    action = 77;
-                  else if (action == 31)
-                    action = 71;
-                  else if (action == 34)
-                    action = 78;
-                  else if (action >= 200 && action <= 259)
-                    action = 75;
-                  else if (action >= 260 && action <= 270) action = 75;
-                }
-                else
-                {
-                  if (action >= 200 && action <= 259)
-                    action = 17;
-                  else if (action >= 260 && action <= 270) action = 16;
-                }
+                if (action >= 9 && action <= 11)
+                  action = 71;
+                else if (action >= 12 && action <= 14)
+                  action = 72;
+                else if (action == 20)
+                  action = 77;
+                else if (action == 31)
+                  action = 71;
+                else if (action == 34)
+                  action = 78;
+                else if (action >= 200 && action <= 259)
+                  action = 75;
+                else if (action >= 260 && action <= 270) action = 75;
               }
-
-              #endregion
-
-              p = Packet.Acquire(new MobileAnimation(this, action, frameCount, repeatCount, forward, repeat,
-                delay));
+              else
+              {
+                if (action >= 200 && action <= 259)
+                  action = 17;
+                else if (action >= 260 && action <= 270) action = 16;
+              }
             }
 
-            state.Send(p);
-            //}
+            #endregion
+
+            p = Packet.Acquire(new MobileAnimation(this, action, frameCount, repeatCount, forward, repeat,
+              delay));
           }
 
-        Packet.Release(p);
-        //Packet.Release( pNew );
+          state.Send(p);
+          //}
+        }
 
-        eable.Free();
-      }
+      Packet.Release(p);
+      //Packet.Release( pNew );
+
+      eable.Free();
     }
 
     public void SendSound(int soundID)
@@ -6420,23 +6406,20 @@ namespace Server
 
     public void PlaySound(int soundID)
     {
-      if (soundID == -1)
+      if (soundID == -1 || m_Map == null)
         return;
 
-      if (m_Map != null)
-      {
-        Packet p = Packet.Acquire(new PlaySound(soundID, this));
+      Packet p = Packet.Acquire(new PlaySound(soundID, this));
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this))
-            state.Send(p);
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this))
+          state.Send(p);
 
-        Packet.Release(p);
+      Packet.Release(p);
 
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public virtual void OnAccessLevelChanged(AccessLevel oldLevel)
@@ -6467,40 +6450,38 @@ namespace Server
 
     public void SendRemovePacket(bool everyone)
     {
-      if (m_Map != null)
-      {
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      if (m_Map == null)
+        return;
 
-        foreach (NetState state in eable)
-          if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
-            state.Send(RemovePacket);
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        eable.Free();
-      }
+      foreach (NetState state in eable)
+        if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
+          state.Send(RemovePacket);
+
+      eable.Free();
     }
 
     public void ClearScreen()
     {
-      NetState ns = m_NetState;
+      if (m_Map == null || m_NetState == null)
+        return;
 
-      if (m_Map != null && ns != null)
-      {
-        IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
+      IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
 
-        foreach (IEntity o in eable)
-          if (o is Mobile m)
-          {
-            if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
-              ns.Send(m.RemovePacket);
-          }
-          else if (o is Item item)
-          {
-            if (InRange(item.Location, item.GetUpdateRange(this)))
-              ns.Send(item.RemovePacket);
-          }
+      foreach (IEntity o in eable)
+        if (o is Mobile m)
+        {
+          if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
+            m_NetState.Send(m.RemovePacket);
+        }
+        else if (o is Item item)
+        {
+          if (InRange(item.Location, item.GetUpdateRange(this)))
+            m_NetState.Send(item.RemovePacket);
+        }
 
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public bool Send(Packet p)
@@ -6516,7 +6497,8 @@ namespace Server
         return true;
       }
 
-      if (throwOnOffline) throw new MobileNotConnectedException(this, "Packet could not be sent.");
+      if (throwOnOffline)
+        throw new MobileNotConnectedException(this, "Packet could not be sent.");
 
       return false;
     }
@@ -6626,10 +6608,7 @@ namespace Server
 
     public virtual int GetSeason()
     {
-      if (m_Map != null)
-        return m_Map.Season;
-
-      return 1;
+      return m_Map?.Season ?? 1;
     }
 
     public virtual int GetPacketFlags()
@@ -6702,27 +6681,27 @@ namespace Server
     {
       AllowedStealthSteps = 0;
 
-      if (m_Map != null)
-      {
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      if (m_Map == null)
+        return;
 
-        foreach (NetState state in eable)
-          if (!state.Mobile.CanSee(this))
-          {
-            state.Send(RemovePacket);
-          }
-          else
-          {
-            state.Send(MobileIncoming.Create(state, state.Mobile, this));
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-            if (IsDeadBondedPet)
-              state.Send(new BondedStatus(0, Serial, 1));
+      foreach (NetState state in eable)
+        if (!state.Mobile.CanSee(this))
+        {
+          state.Send(RemovePacket);
+        }
+        else
+        {
+          state.Send(MobileIncoming.Create(state, state.Mobile, this));
 
-            if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
-          }
+          if (IsDeadBondedPet)
+            state.Send(new BondedStatus(0, Serial, 1));
 
-        eable.Free();
-      }
+          if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
+        }
+
+      eable.Free();
     }
 
     public virtual void OnConnected()
@@ -6819,10 +6798,7 @@ namespace Server
       for (int i = 0; delta < 0 && i < m_InvalidBodies.Length; ++i)
         delta = m_InvalidBodies[i] - body;
 
-      if (delta != 0)
-        return body;
-
-      return 0;
+      return delta != 0 ? body : 0;
     }
 
     public void FreeCache()
@@ -7226,7 +7202,7 @@ namespace Server
 	  ///  			SendMessage( "That is too heavy for you to lift." );
 	  ///  			return false;
 	  ///  		}
-	  /// 
+	  ///
 	  ///  		return base.OnDragLift( item );
 	  ///   }</code>
 	  /// </example>
@@ -8529,7 +8505,7 @@ namespace Server
     {
       if (m_NetState == null)
         return false;
-      
+
       Gump gump = FindGump<T>();
 
       if (gump != null)
@@ -8549,7 +8525,7 @@ namespace Server
 
       if (ns == null)
         return false;
-      
+
       List<Gump> gumps = new List<Gump>(ns.Gumps);
 
       ns.ClearGumps();
@@ -8563,7 +8539,7 @@ namespace Server
 
       return true;
     }
-    
+
     public bool HasGump<T>() where T : Gump
     {
       return FindGump<T>() != null;
@@ -8573,7 +8549,7 @@ namespace Server
     {
       if (m_NetState == null)
         return false;
-      
+
       g.SendTo(m_NetState);
       return true;
     }
@@ -8582,7 +8558,7 @@ namespace Server
     {
       if (m_NetState == null)
         return false;
-      
+
       m.SendTo(m_NetState);
       return true;
     }

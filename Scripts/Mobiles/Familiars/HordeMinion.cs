@@ -73,7 +73,7 @@ namespace Server.Mobiles
       if (pack == null)
         return;
 
-      ArrayList list = new ArrayList();
+      List<Item> list = new List<Item>();
 
       foreach (Item item in GetItemsInRange(2))
         if (item.Movable && item.Stackable)
@@ -83,7 +83,7 @@ namespace Server.Mobiles
 
       for (int i = 0; i < list.Count; ++i)
       {
-        Item item = (Item)list[i];
+        Item item = list[i];
 
         if (!pack.CheckHold(this, item, false, true))
           return;

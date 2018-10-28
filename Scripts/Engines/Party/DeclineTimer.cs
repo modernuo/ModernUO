@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.PartySystem
 {
   public class DeclineTimer : Timer
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, DeclineTimer> m_Table = new Dictionary<Mobile, DeclineTimer>();
     private Mobile m_Mobile, m_Leader;
 
     private DeclineTimer(Mobile m, Mobile leader) : base(TimeSpan.FromSeconds(30.0))
@@ -16,7 +17,7 @@ namespace Server.Engines.PartySystem
 
     public static void Start(Mobile m, Mobile leader)
     {
-      DeclineTimer t = (DeclineTimer)m_Table[m];
+      DeclineTimer t = m_Table[m];
 
       t?.Stop();
 

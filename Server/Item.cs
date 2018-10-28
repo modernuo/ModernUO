@@ -658,7 +658,7 @@ namespace Server
     Spawner = 0x100
   }
 
-  public class Item : IEntity, IHued, IComparable<Item>, ISerializable, ISpawnable
+  public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable
   {
     public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
     public static readonly List<Item> EmptyItems = new List<Item>();
@@ -730,15 +730,7 @@ namespace Server
 
     public int TempFlags
     {
-      get
-      {
-        CompactInfo info = LookupCompactInfo();
-
-        if (info != null)
-          return info.m_TempFlags;
-
-        return 0;
-      }
+      get => LookupCompactInfo()?.m_TempFlags ?? 0;
       set
       {
         CompactInfo info = AcquireCompactInfo();
@@ -752,15 +744,7 @@ namespace Server
 
     public int SavedFlags
     {
-      get
-      {
-        CompactInfo info = LookupCompactInfo();
-
-        if (info != null)
-          return info.m_SavedFlags;
-
-        return 0;
-      }
+      get => LookupCompactInfo()?.m_SavedFlags ?? 0;
       set
       {
         CompactInfo info = AcquireCompactInfo();
@@ -777,12 +761,7 @@ namespace Server
     /// </summary>
     public Mobile HeldBy
     {
-      get
-      {
-        CompactInfo info = LookupCompactInfo();
-
-        return info?.m_HeldBy;
-      }
+      get => LookupCompactInfo()?.m_HeldBy;
       set
       {
         CompactInfo info = AcquireCompactInfo();
@@ -797,19 +776,7 @@ namespace Server
     /// <summary>
     ///   Overridable. Determines whether the item will show <see cref="AddWeightProperty" />.
     /// </summary>
-    public virtual bool DisplayWeight
-    {
-      get
-      {
-        if (!Core.ML)
-          return false;
-
-        if (!Movable && !(IsLockedDown || IsSecure) && ItemData.Weight == 255)
-          return false;
-
-        return true;
-      }
-    }
+    public virtual bool DisplayWeight => Core.ML && (Movable || IsLockedDown || IsSecure || ItemData.Weight != 255);
 
     [CommandProperty(AccessLevel.GameMaster)]
     public LootType LootType
@@ -1097,10 +1064,7 @@ namespace Server
       {
         CompactInfo info = LookupCompactInfo();
 
-        if (info != null && info.m_Weight != -1)
-          return info.m_Weight;
-
-        return DefaultWeight;
+        return info != null && info.m_Weight != -1 ? info.m_Weight : DefaultWeight;
       }
       set
       {
@@ -1161,18 +1125,7 @@ namespace Server
       }
     }
 
-    public List<Item> Items
-    {
-      get
-      {
-        List<Item> items = LookupItems();
-
-        if (items == null)
-          items = EmptyItems;
-
-        return items;
-      }
-    }
+    public List<Item> Items => LookupItems() ?? EmptyItems;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public IEntity RootParent
@@ -1230,15 +1183,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public string Name
     {
-      get
-      {
-        CompactInfo info = LookupCompactInfo();
-
-        if (info?.m_Name != null)
-          return info.m_Name;
-
-        return DefaultName;
-      }
+      get => LookupCompactInfo()?.m_Name ?? DefaultName;
       set
       {
         if (value == null || value != DefaultName)
@@ -1390,12 +1335,7 @@ namespace Server
 
     public Mobile BlessedFor
     {
-      get
-      {
-        CompactInfo info = LookupCompactInfo();
-
-        return info?.m_BlessedFor;
-      }
+      get => LookupCompactInfo()?.m_BlessedFor;
       set
       {
         CompactInfo info = AcquireCompactInfo();
@@ -1464,7 +1404,8 @@ namespace Server
             {
               Mobile m = state.Mobile;
 
-              if (m.InRange(oldLocation, GetUpdateRange(m))) state.Send(RemovePacket);
+              if (m.InRange(oldLocation, GetUpdateRange(m)))
+                state.Send(RemovePacket);
             }
 
             eable.Free();
@@ -2070,12 +2011,7 @@ namespace Server
 
     public ISpawner Spawner
     {
-      get
-      {
-        CompactInfo info = LookupCompactInfo();
-
-        return info?.m_Spawner;
-      }
+      get => LookupCompactInfo()?.m_Spawner;
       set
       {
         CompactInfo info = AcquireCompactInfo();
@@ -2141,10 +2077,7 @@ namespace Server
 
     private CompactInfo AcquireCompactInfo()
     {
-      if (m_CompactInfo == null)
-        m_CompactInfo = new CompactInfo();
-
-      return m_CompactInfo;
+      return m_CompactInfo ?? (m_CompactInfo = new CompactInfo());
     }
 
     private void ReleaseCompactInfo()
@@ -2178,27 +2111,16 @@ namespace Server
       if (this is Container container)
         return container.m_Items;
 
-      CompactInfo info = LookupCompactInfo();
-
-      return info?.m_Items;
+      return LookupCompactInfo()?.m_Items;
     }
 
     public List<Item> AcquireItems()
     {
       if (this is Container cont)
-      {
-        if (cont.m_Items == null)
-          cont.m_Items = new List<Item>();
-
-        return cont.m_Items;
-      }
+        return cont.m_Items ?? (cont.m_Items = new List<Item>());
 
       CompactInfo info = AcquireCompactInfo();
-
-      if (info.m_Items == null)
-        info.m_Items = new List<Item>();
-
-      return info.m_Items;
+      return info.m_Items ?? (info.m_Items = new List<Item>());
     }
 
     private void SetFlag(ImplFlag flag, bool value)
@@ -2216,16 +2138,12 @@ namespace Server
 
     public BounceInfo GetBounce()
     {
-      CompactInfo info = LookupCompactInfo();
-
-      return info?.m_Bounce;
+      return LookupCompactInfo()?.m_Bounce;
     }
 
     public void RecordBounce()
     {
-      CompactInfo info = AcquireCompactInfo();
-
-      info.m_Bounce = new BounceInfo(this);
+      AcquireCompactInfo().m_Bounce = new BounceInfo(this);
     }
 
     public void ClearBounce()
@@ -2234,23 +2152,23 @@ namespace Server
 
       BounceInfo bounce = info?.m_Bounce;
 
-      if (bounce != null)
+      if (bounce == null)
+        return;
+
+      info.m_Bounce = null;
+
+      if (bounce.m_Parent is Item parentItem)
       {
-        info.m_Bounce = null;
-
-        if (bounce.m_Parent is Item parentItem)
-        {
-          if (!parentItem.Deleted)
-            parentItem.OnItemBounceCleared(this);
-        }
-        else if (bounce.m_Parent is Mobile parentMobile)
-        {
-          if (!parentMobile.Deleted)
-            parentMobile.OnItemBounceCleared(this);
-        }
-
-        VerifyCompactInfo();
+        if (!parentItem.Deleted)
+          parentItem.OnItemBounceCleared(this);
       }
+      else if (bounce.m_Parent is Mobile parentMobile)
+      {
+        if (!parentMobile.Deleted)
+          parentMobile.OnItemBounceCleared(this);
+      }
+
+      VerifyCompactInfo();
     }
 
     /// <summary>
@@ -2560,7 +2478,7 @@ namespace Server
 	  /// 	{
 	  /// 		if ( from.Int &gt;= 100 )
 	  /// 			return true;
-	  /// 
+	  ///
 	  /// 		return base.AllowEquippedCast( from );
 	  ///  }</code>
 	  ///   When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more
@@ -2940,12 +2858,7 @@ namespace Server
 
     public bool GetTempFlag(int flag)
     {
-      CompactInfo info = LookupCompactInfo();
-
-      if (info == null)
-        return false;
-
-      return (info.m_TempFlags & flag) != 0;
+      return ((LookupCompactInfo()?.m_TempFlags ?? 0) & flag) != 0;
     }
 
     public void SetTempFlag(int flag, bool value)
@@ -2963,12 +2876,7 @@ namespace Server
 
     public bool GetSavedFlag(int flag)
     {
-      CompactInfo info = LookupCompactInfo();
-
-      if (info == null)
-        return false;
-
-      return (info.m_SavedFlags & flag) != 0;
+      return ((LookupCompactInfo()?.m_SavedFlags ?? 0) & flag) != 0;
     }
 
     public void SetSavedFlag(int flag, bool value)
@@ -3554,6 +3462,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
         else
           m_DeltaQueue.Remove(this);
@@ -3599,37 +3508,37 @@ namespace Server
 
     public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)
     {
-      if (m_Map != null)
+      if (m_Map == null)
+        return;
+
+      Packet p = null;
+      Point3D worldLoc = GetWorldLocation();
+
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
+
+      foreach (NetState state in eable)
       {
-        Packet p = null;
-        Point3D worldLoc = GetWorldLocation();
+        Mobile m = state.Mobile;
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
-
-        foreach (NetState state in eable)
+        if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
         {
-          Mobile m = state.Mobile;
-
-          if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
+          if (p == null)
           {
-            if (p == null)
-            {
-              if (ascii)
-                p = new AsciiMessage(Serial, m_ItemID, type, hue, 3, Name, text);
-              else
-                p = new UnicodeMessage(Serial, m_ItemID, type, hue, 3, "ENU", Name, text);
+            if (ascii)
+              p = new AsciiMessage(Serial, m_ItemID, type, hue, 3, Name, text);
+            else
+              p = new UnicodeMessage(Serial, m_ItemID, type, hue, 3, "ENU", Name, text);
 
-              p.Acquire();
-            }
-
-            state.Send(p);
+            p.Acquire();
           }
+
+          state.Send(p);
         }
-
-        Packet.Release(p);
-
-        eable.Free();
       }
+
+      Packet.Release(p);
+
+      eable.Free();
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, int number)
@@ -3639,30 +3548,30 @@ namespace Server
 
     public void PublicOverheadMessage(MessageType type, int hue, int number, string args)
     {
-      if (m_Map != null)
+      if (m_Map == null)
+        return;
+
+      Packet p = null;
+      Point3D worldLoc = GetWorldLocation();
+
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
+
+      foreach (NetState state in eable)
       {
-        Packet p = null;
-        Point3D worldLoc = GetWorldLocation();
+        Mobile m = state.Mobile;
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
-
-        foreach (NetState state in eable)
+        if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
         {
-          Mobile m = state.Mobile;
+          if (p == null)
+            p = Packet.Acquire(new MessageLocalized(Serial, m_ItemID, type, hue, 3, number, Name, args));
 
-          if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
-          {
-            if (p == null)
-              p = Packet.Acquire(new MessageLocalized(Serial, m_ItemID, type, hue, 3, number, Name, args));
-
-            state.Send(p);
-          }
+          state.Send(p);
         }
-
-        Packet.Release(p);
-
-        eable.Free();
       }
+
+      Packet.Release(p);
+
+      eable.Free();
     }
 
     public virtual void OnAfterDelete()
@@ -3673,7 +3582,7 @@ namespace Server
     {
       List<Item> items = LookupItems();
 
-      if (items != null && items.Contains(item))
+      if (items?.Contains(item) == true)
       {
         item.SendRemovePacket();
 
@@ -3728,26 +3637,16 @@ namespace Server
 
     public virtual bool DropToMobile(Mobile from, Mobile target, Point3D p)
     {
-      if (Deleted || from.Deleted || target.Deleted || from.Map != target.Map || from.Map == null ||
-          target.Map == null)
-        return false;
-      if (from.AccessLevel < AccessLevel.GameMaster && !from.InRange(target.Location, 2))
-        return false;
-      if (!from.CanSee(target) || !from.InLOS(target))
-        return false;
-      if (!from.OnDroppedItemToMobile(this, target))
-        return false;
-      if (!OnDroppedToMobile(from, target))
-        return false;
-      if (!target.OnDragDrop(from, this))
-        return false;
-
-      return true;
+      return !(Deleted || from.Deleted || target.Deleted) && from.Map == target.Map && from.Map != null &&
+             target.Map != null && (from.AccessLevel >= AccessLevel.GameMaster || from.InRange(target.Location, 2)) &&
+             from.CanSee(target) && from.InLOS(target) && from.OnDroppedItemToMobile(this, target) &&
+             OnDroppedToMobile(from, target) && target.OnDragDrop(from, this);
     }
 
     public virtual bool OnDroppedInto(Mobile from, Container target, Point3D p)
     {
-      if (!from.OnDroppedItemInto(this, target, p)) return false;
+      if (!from.OnDroppedItemInto(this, target, p))
+        return false;
 
       if (Nontransferable && from.Player && target != from.Backpack)
       {
@@ -4044,21 +3943,20 @@ namespace Server
 
     public void SendRemovePacket()
     {
-      if (!Deleted && m_Map != null)
+      if (Deleted || m_Map == null)
+        return;
+      Point3D worldLoc = GetWorldLocation();
+
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
+
+      foreach (NetState state in eable)
       {
-        Point3D worldLoc = GetWorldLocation();
+        Mobile m = state.Mobile;
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
-
-        foreach (NetState state in eable)
-        {
-          Mobile m = state.Mobile;
-
-          if (m.InRange(worldLoc, GetUpdateRange(m))) state.Send(RemovePacket);
-        }
-
-        eable.Free();
+        if (m.InRange(worldLoc, GetUpdateRange(m))) state.Send(RemovePacket);
       }
+
+      eable.Free();
     }
 
     public virtual int GetDropSound()
@@ -4090,12 +3988,7 @@ namespace Server
 
     public Point3D GetWorldTop()
     {
-      IEntity root = RootParent;
-
-      if (root == null)
-        return new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
-
-      return root.Location;
+      return RootParent?.Location ?? new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
     }
 
     public void SendLocalizedMessageTo(Mobile to, int number)
@@ -4550,65 +4443,56 @@ namespace Server
       {
         Point3D oldLocation = m_Location;
 
-        if (oldLocation != value)
+        if (oldLocation == value)
+          return;
+        if (m_Map != null)
         {
-          if (m_Map != null)
+          if (m_Parent == null)
           {
-            if (m_Parent == null)
+            IPooledEnumerable<NetState> eable;
+
+            if (m_Location.m_X != 0)
             {
-              IPooledEnumerable<NetState> eable;
-
-              if (m_Location.m_X != 0)
-              {
-                eable = m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange());
-
-                foreach (NetState state in eable)
-                {
-                  Mobile m = state.Mobile;
-
-                  if (!m.InRange(value, GetUpdateRange(m))) state.Send(RemovePacket);
-                }
-
-                eable.Free();
-              }
-
-              Point3D oldLoc = m_Location;
-              m_Location = value;
-              ReleaseWorldPackets();
-
-              SetLastMoved();
-
-              eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
+              eable = m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange());
 
               foreach (NetState state in eable)
               {
                 Mobile m = state.Mobile;
 
-                if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)) &&
-                    (!state.HighSeas || !NoMoveHS || (m_DeltaFlags & ItemDelta.Update) != 0 ||
-                     !m.InRange(oldLoc, GetUpdateRange(m))))
-                  SendInfoTo(state);
+                if (!m.InRange(value, GetUpdateRange(m))) state.Send(RemovePacket);
               }
 
               eable.Free();
-
-              RemDelta(ItemDelta.Update);
             }
-            else if (m_Parent is Item)
+
+            Point3D oldLoc = m_Location;
+            m_Location = value;
+            ReleaseWorldPackets();
+
+            SetLastMoved();
+
+            eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
+
+            foreach (NetState state in eable)
             {
-              m_Location = value;
-              ReleaseWorldPackets();
+              Mobile m = state.Mobile;
 
-              Delta(ItemDelta.Update);
-            }
-            else
-            {
-              m_Location = value;
-              ReleaseWorldPackets();
+              if (m.CanSee(this) && m.InRange(m_Location, GetUpdateRange(m)) &&
+                  (!state.HighSeas || !NoMoveHS || (m_DeltaFlags & ItemDelta.Update) != 0 ||
+                   !m.InRange(oldLoc, GetUpdateRange(m))))
+                SendInfoTo(state);
             }
 
-            if (m_Parent == null)
-              m_Map.OnMove(oldLocation, this);
+            eable.Free();
+
+            RemDelta(ItemDelta.Update);
+          }
+          else if (m_Parent is Item)
+          {
+            m_Location = value;
+            ReleaseWorldPackets();
+
+            Delta(ItemDelta.Update);
           }
           else
           {
@@ -4616,8 +4500,16 @@ namespace Server
             ReleaseWorldPackets();
           }
 
-          OnLocationChange(oldLocation);
+          if (m_Parent == null)
+            m_Map.OnMove(oldLocation, this);
         }
+        else
+        {
+          m_Location = value;
+          ReleaseWorldPackets();
+        }
+
+        OnLocationChange(oldLocation);
       }
     }
 

@@ -79,7 +79,9 @@ namespace Server.Items
             continue;
         }
 
-        new Blood().MoveToWorld(new Point3D(x, y, z), f);
+        Point3D loc = f.GetRandomNearbyLocation(p, 2, -2, 4, 1);
+
+        new Blood().MoveToWorld(loc, f);
       }
     }
 

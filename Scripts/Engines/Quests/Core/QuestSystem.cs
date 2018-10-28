@@ -178,12 +178,12 @@ namespace Server.Engines.Quests
       writer.WriteEncodedInt(Objectives.Count);
 
       for (int i = 0; i < Objectives.Count; ++i)
-        QuestSerializer.Serialize(referenceTable, (QuestObjective)Objectives[i], writer);
+        QuestSerializer.Serialize(referenceTable, Objectives[i], writer);
 
       writer.WriteEncodedInt(Conversations.Count);
 
       for (int i = 0; i < Conversations.Count; ++i)
-        QuestSerializer.Serialize(referenceTable, (QuestConversation)Conversations[i], writer);
+        QuestSerializer.Serialize(referenceTable, Conversations[i], writer);
 
       ChildSerialize(writer);
     }
@@ -204,7 +204,7 @@ namespace Server.Engines.Quests
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)Objectives[i];
+        QuestObjective obj = Objectives[i];
 
         if (obj is T t)
           return t;
@@ -212,12 +212,12 @@ namespace Server.Engines.Quests
 
       return null;
     }
-    
+
     public QuestObjective FindObjective(Type type)
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)Objectives[i];
+        QuestObjective obj = Objectives[i];
 
         if (obj.GetType() == type)
           return obj;
@@ -259,7 +259,7 @@ namespace Server.Engines.Quests
 
         From.SendGump(new QuestObjectivesGump(Objectives));
 
-        QuestObjective last = (QuestObjective)Objectives[Objectives.Count - 1];
+        QuestObjective last = Objectives[Objectives.Count - 1];
 
         if (last.Info != null)
           From.SendGump(new QuestItemInfoGump(last.Info));
@@ -363,11 +363,7 @@ namespace Server.Engines.Quests
       From.CloseGump<QuestItemInfoGump>();
       From.CloseGump<QuestObjectivesGump>();
       From.CloseGump<QuestConversationsGump>();
-
-      if (conv.Logged)
-        From.SendGump(new QuestConversationsGump(Conversations));
-      else
-        From.SendGump(new QuestConversationsGump(conv));
+      From.SendGump(conv.Logged ? new QuestConversationsGump(Conversations) : new QuestConversationsGump(conv));
 
       if (conv.Info != null)
         From.SendGump(new QuestItemInfoGump(conv.Info));

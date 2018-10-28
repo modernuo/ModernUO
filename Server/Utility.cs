@@ -693,17 +693,6 @@ namespace Server
       }
     }
 
-    public static ArrayList BuildArrayList(IEnumerable enumerable)
-    {
-      IEnumerator e = enumerable.GetEnumerator();
-
-      ArrayList list = new ArrayList();
-
-      while (e.MoveNext()) list.Add(e.Current);
-
-      return list;
-    }
-
     public static bool RangeCheck(IPoint2D p1, IPoint2D p2, int range)
     {
       return p1.X >= p2.X - range
@@ -860,7 +849,7 @@ namespace Server
       if (randomHue)
         m.FacialHairHue = m.Race.RandomHairHue();
     }
-    
+
     public static List<TOutput> CastListContravariant<TInput, TOutput>(List<TInput> list) where TInput : TOutput
     {
       return list.ConvertAll(value => (TOutput)value);
@@ -920,7 +909,7 @@ namespace Server
 
       return i;
     }
-    
+
     public static uint ToUInt32(string value)
     {
       uint i;
@@ -960,7 +949,7 @@ namespace Server
         return int.TryParse(intString, out int val) ? val : defaultValue;
       }
     }
-    
+
     public static uint GetXMLUInt32(string uintString, uint defaultValue)
     {
       try
@@ -1089,7 +1078,7 @@ namespace Server
       total += bonus;
       return total;
     }
-    
+
     public static void Shuffle<T>(IList<T> list)
     {
       int count = list.Count;
@@ -1101,7 +1090,7 @@ namespace Server
         list[i] = swap;
       }
     }
-    
+
     public static int RandomList(params int[] list) => RandomList<int>(list);
 
     public static T RandomList<T>(IList<T> list) => list[RandomImpl.Next(list.Count)];

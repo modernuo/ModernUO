@@ -874,15 +874,15 @@ namespace Server.Mobiles
 
       if (vi == null)
         return;
-      
+
       string name;
       if (!string.IsNullOrEmpty(item.Name))
         name = item.Name;
       else
         name = "#" + item.LabelNumber;
 
-      @from.SendLocalizedMessage(1043303, name); // Type in a price and description for ~1_ITEM~ (ESC=not for sale)
-      @from.Prompt = new VendorPricePrompt(this, vi);
+      from.SendLocalizedMessage(1043303, name); // Type in a price and description for ~1_ITEM~ (ESC=not for sale)
+      from.Prompt = new VendorPricePrompt(this, vi);
     }
 
     public override bool AllowEquipFrom(Mobile from)

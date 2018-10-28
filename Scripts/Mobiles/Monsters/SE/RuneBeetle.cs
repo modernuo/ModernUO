@@ -8,7 +8,7 @@ namespace Server.Mobiles
 {
   public class RuneBeetle : BaseCreature
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public RuneBeetle() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -146,7 +146,7 @@ namespace Server.Mobiles
          * End ASCII: "The corruption of your armor has worn off"
          */
 
-        ExpireTimer timer = (ExpireTimer)m_Table[defender];
+        ExpireTimer timer = m_Table[defender];
 
         if (timer != null)
         {

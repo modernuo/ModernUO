@@ -146,8 +146,8 @@ namespace Server.Engines.Help
 
   public class PageQueue
   {
-    private static Hashtable m_KeyedByHandler = new Hashtable();
-    private static Hashtable m_KeyedBySender = new Hashtable();
+    private static Dictionary<Mobile, PageEntry> m_KeyedByHandler = new Dictionary<Mobile, PageEntry>();
+    private static Dictionary<Mobile, PageEntry> m_KeyedBySender = new Dictionary<Mobile, PageEntry>();
 
     public static List<PageEntry> List{ get; } = new List<PageEntry>();
 

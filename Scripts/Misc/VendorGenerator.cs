@@ -34,8 +34,8 @@ namespace Server
       new Rectangle2D(new Point2D(0, 0), new Point2D(288 * 8, 200 * 8))
     };
 
-    private static Hashtable m_ShopTable;
-    private static ArrayList m_ShopList;
+    private static Dictionary<Point2D, ShopInfo> m_ShopTable;
+    private static List<ShopInfo> m_ShopList;
 
     public static void Initialize()
     {
@@ -122,19 +122,19 @@ namespace Server
 
     private static void Process(Map map, Rectangle2D[] regions)
     {
-      m_ShopTable = new Hashtable();
-      m_ShopList = new ArrayList();
+      m_ShopTable = new Dictionary<Point2D, ShopInfo>();
+      m_ShopList = new List<ShopInfo>();
 
       World.Broadcast(0x35, true, "Generating vendor spawns for {0}, please wait.", map);
 
       for (int i = 0; i < regions.Length; ++i)
-      for (int x = 0; x < map.Width; ++x)
-      for (int y = 0; y < map.Height; ++y)
-        CheckPoint(map, regions[i].X + x, regions[i].Y + y);
+        for (int x = 0; x < map.Width; ++x)
+          for (int y = 0; y < map.Height; ++y)
+            CheckPoint(map, regions[i].X + x, regions[i].Y + y);
 
       for (int i = 0; i < m_ShopList.Count; ++i)
       {
-        ShopInfo si = (ShopInfo)m_ShopList[i];
+        ShopInfo si = m_ShopList[i];
 
         int xTotal = 0;
         int yTotal = 0;
@@ -143,7 +143,7 @@ namespace Server
 
         for (int j = 0; j < si.m_Floor.Count; ++j)
         {
-          Point2D fp = (Point2D)si.m_Floor[j];
+          Point2D fp = si.m_Floor[j];
 
           xTotal += fp.X;
           yTotal += fp.Y;
@@ -162,7 +162,7 @@ namespace Server
         int xAvg = xTotal / si.m_Floor.Count;
         int yAvg = yTotal / si.m_Floor.Count;
 
-        ArrayList names = new ArrayList();
+        List<string> names = new List<string>();
         ShopFlags flags = si.m_Flags;
 
         if ((flags & ShopFlags.Armor) != 0)
@@ -212,7 +212,7 @@ namespace Server
 
           for (int k = 0; k < si.m_Floor.Count; ++k)
           {
-            Point2D fp = (Point2D)si.m_Floor[k];
+            Point2D fp = si.m_Floor[k];
 
             int rx = fp.X - xAvg;
             int ry = fp.Y - yAvg;
@@ -234,7 +234,7 @@ namespace Server
           if (!GetFloorZ(map, cp.X, cp.Y, out int z))
             continue;
 
-          new Spawner(1, 1, 1, 0, 4, (string)names[j]).MoveToWorld(new Point3D(cp.X, cp.Y, z), map);
+          new Spawner(1, 1, 1, 0, 4, names[j]).MoveToWorld(new Point3D(cp.X, cp.Y, z), map);
         }
       }
 
@@ -392,24 +392,22 @@ namespace Server
       if (flags != ShopFlags.None)
       {
         Point2D p = new Point2D(x, y);
-        ShopInfo si = (ShopInfo)m_ShopTable[p];
+        ShopInfo si = m_ShopTable[p];
 
         if (si == null)
         {
-          ArrayList floor = new ArrayList();
+          List<Point2D> floor = new List<Point2D>();
 
           RecurseFindFloor(map, x, y, floor);
 
           if (floor.Count == 0)
             return;
 
-          si = new ShopInfo();
-          si.m_Flags = flags;
-          si.m_Floor = floor;
+          si = new ShopInfo { m_Flags = flags, m_Floor = floor };
           m_ShopList.Add(si);
 
           for (int i = 0; i < floor.Count; ++i)
-            m_ShopTable[(Point2D)floor[i]] = si;
+            m_ShopTable[floor[i]] = si;
         }
         else
         {
@@ -476,7 +474,7 @@ namespace Server
       return hasSurface;
     }
 
-    private static void RecurseFindFloor(Map map, int x, int y, ArrayList floor)
+    private static void RecurseFindFloor(Map map, int x, int y, List<Point2D> floor)
     {
       Point2D p = new Point2D(x, y);
 
@@ -510,7 +508,7 @@ namespace Server
     private class ShopInfo
     {
       public ShopFlags m_Flags;
-      public ArrayList m_Floor;
+      public List<Point2D> m_Floor;
     }
   }
 }

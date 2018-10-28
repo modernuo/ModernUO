@@ -1199,20 +1199,20 @@ namespace Server.Engines.ConPVP
   }
 
   [PropertyObject]
-  public sealed class BRTeamInfo : IRankedCTF, IComparable
+  public sealed class BRTeamInfo : IRankedCTF, IComparable<BRTeamInfo>
   {
     private BRGoal m_Goal;
 
     public BRTeamInfo(int teamID)
     {
       TeamID = teamID;
-      Players = new Hashtable();
+      Players = new Dictionary<Mobile, BRPlayerInfo>();
     }
 
     public BRTeamInfo(int teamID, GenericReader ip)
     {
       TeamID = teamID;
-      Players = new Hashtable();
+      Players = new Dictionary<Mobile, BRPlayerInfo>();
 
       int version = ip.ReadEncodedInt();
 
@@ -1238,7 +1238,7 @@ namespace Server.Engines.ConPVP
     [CommandProperty(AccessLevel.GameMaster)]
     public BRBoard Board{ get; set; }
 
-    public Hashtable Players{ get; }
+    public Dictionary<Mobile, BRPlayerInfo> Players{ get; }
 
     public BRPlayerInfo this[Mobile mob]
     {
@@ -1272,9 +1272,8 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public int CompareTo(object obj)
+    public int CompareTo(BRTeamInfo ti)
     {
-      BRTeamInfo ti = (BRTeamInfo)obj;
       int res = ti.Captures.CompareTo(Captures);
       if (res == 0)
       {

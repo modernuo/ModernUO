@@ -87,22 +87,16 @@ namespace Server.Mobiles
       if (Map == null)
         return;
 
-      ArrayList list = new ArrayList();
+      IPooledEnumerable<Mobile> eable = GetMobilesInRange<Mobile>(2);
 
-      foreach (Mobile m in GetMobilesInRange(2))
+      foreach (Mobile m in eable)
       {
-        if (m == this || !CanBeHarmful(m))
+        if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
           continue;
 
-        if (m is BaseCreature creature && (creature.Controlled || creature.Summoned ||
-                                  creature.Team != Team))
-          list.Add(m);
-        else if (m.Player)
-          list.Add(m);
-      }
+        if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))
+          continue;
 
-      foreach (Mobile m in list)
-      {
         DoHarmful(m);
 
         m.FixedParticles(0x374A, 10, 15, 5013, 0x496, 0, EffectLayer.Waist);
@@ -115,6 +109,8 @@ namespace Server.Mobiles
         Hits += toDrain;
         m.Damage(toDrain, this);
       }
+
+      eable.Free();
     }
 
     public override void OnGaveMeleeAttack(Mobile defender)

@@ -314,28 +314,13 @@ namespace Server.Guilds
         m_Members[i].GuildMessage(number);
     }
 
-    public void AllianceMessage(int number, string args)
-    {
-      AllianceMessage(number, args, 0x3B2);
-    }
-
-    public void AllianceMessage(int number, string args, int hue)
+    public void AllianceMessage(int number, string args, int hue = 0x3B2)
     {
       for (int i = 0; i < m_Members.Count; ++i)
         m_Members[i].GuildMessage(number, args, hue);
     }
 
-    public void AllianceMessage(int number, bool append, string affix)
-    {
-      AllianceMessage(number, append, affix, "", 0x3B2);
-    }
-
-    public void AllianceMessage(int number, bool append, string affix, string args)
-    {
-      AllianceMessage(number, append, affix, args, 0x3B2);
-    }
-
-    public void AllianceMessage(int number, bool append, string affix, string args, int hue)
+    public void AllianceMessage(int number, bool append, string affix, string args = "", int hue = 0x3B2)
     {
       for (int i = 0; i < m_Members.Count; ++i)
         m_Members[i].GuildMessage(number, append, affix, args, hue);
@@ -483,9 +468,8 @@ namespace Server.Guilds
         {
           if (Kills > w.Kills)
             return WarStatus.Win;
-          if (Kills < w.Kills)
-            return WarStatus.Lose;
-          return WarStatus.Draw;
+
+          return Kills < w.Kills ? WarStatus.Lose : WarStatus.Draw;
         }
 
         if (MaxKills > 0)
@@ -534,8 +518,8 @@ namespace Server.Guilds
 
     protected override void OnTick()
     {
-      foreach (Guild g in BaseGuild.List.Values)
-        g.CheckExpiredWars();
+      foreach (BaseGuild g in BaseGuild.List.Values)
+        (g as Guild)?.CheckExpiredWars();
     }
   }
 
@@ -673,7 +657,6 @@ namespace Server.Guilds
     {
       RemoveMember(mob);
     }
-
 
     public void Disband()
     {
@@ -970,12 +953,7 @@ namespace Server.Guilds
       }
     }
 
-    public static void HandleDeath(Mobile victim)
-    {
-      HandleDeath(victim, null);
-    }
-
-    public static void HandleDeath(Mobile victim, Mobile killer)
+    public static void HandleDeath(Mobile victim, Mobile killer = null)
     {
       if (!NewGuildSystem)
         return;
@@ -1264,10 +1242,7 @@ namespace Server.Guilds
         Members.Add(m);
         m.Guild = this;
 
-        if (!NewGuildSystem)
-          m.GuildFealty = m_Leader;
-        else
-          m.GuildFealty = null;
+        m.GuildFealty = !NewGuildSystem ? m_Leader : null;
 
         if (m is PlayerMobile mobile)
           mobile.GuildRank = RankDefinition.Lowest;
@@ -1276,12 +1251,7 @@ namespace Server.Guilds
       }
     }
 
-    public void RemoveMember(Mobile m)
-    {
-      RemoveMember(m, 1018028); // You have been dismissed from your guild.
-    }
-
-    public void RemoveMember(Mobile m, int message)
+    public void RemoveMember(Mobile m, int message = 1018028) // You have been dismissed from your guild.
     {
       if (Members.Contains(m))
       {

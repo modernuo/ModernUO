@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.Reports
 {
@@ -7,11 +8,11 @@ namespace Server.Engines.Reports
 
   public sealed class PersistableTypeRegistry
   {
-    private static Hashtable m_Table;
+    private static Dictionary<string, PersistableType> m_Table;
 
     static PersistableTypeRegistry()
     {
-      m_Table = new Hashtable(StringComparer.OrdinalIgnoreCase);
+      m_Table = new Dictionary<string, PersistableType>(StringComparer.OrdinalIgnoreCase);
 
       Register(Report.ThisTypeID);
       Register(BarGraph.ThisTypeID);
@@ -31,7 +32,7 @@ namespace Server.Engines.Reports
 
     public static PersistableType Find(string name)
     {
-      return m_Table[name] as PersistableType;
+      return m_Table[name];
     }
 
     public static void Register(PersistableType type)

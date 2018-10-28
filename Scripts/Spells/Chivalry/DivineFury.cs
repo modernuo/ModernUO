@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Spells.Chivalry
 {
@@ -11,7 +12,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public DivineFurySpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -36,9 +37,8 @@ namespace Server.Spells.Chivalry
 
         Caster.Stam = Caster.StamMax;
 
-        Timer t = (Timer)m_Table[Caster];
-
-        t?.Stop();
+        Timer timer = m_Table[Caster];
+        timer?.Stop();
 
         int delay = ComputePowerValue(10);
 
@@ -60,7 +60,7 @@ namespace Server.Spells.Chivalry
 
     public static bool UnderEffect(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     private static void Expire_Callback(Mobile m)

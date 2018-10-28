@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.ConPVP;
 using Server.Mobiles;
 using Server.Network;
@@ -46,7 +47,7 @@ namespace Server.Items
       null,
       new Disrobe()
     };
-    
+
     public static readonly WeaponAbility ArmorIgnore = Abilities[1];
     public static readonly WeaponAbility BleedAttack = Abilities[2];
     public static readonly WeaponAbility ConcussionBlow = Abilities[3];
@@ -81,7 +82,7 @@ namespace Server.Items
 
     public static readonly WeaponAbility Disrobe = Abilities[30];
 
-    private static Hashtable m_PlayersTable = new Hashtable();
+    private static Dictionary<Mobile, WeaponAbilityContext> m_PlayersTable = new Dictionary<Mobile, WeaponAbilityContext>();
 
     public virtual int BaseMana => 0;
 
@@ -90,7 +91,7 @@ namespace Server.Items
 
     public virtual bool RequiresSE => false;
 
-    public static Hashtable Table{ get; } = new Hashtable();
+    public static Dictionary<Mobile, WeaponAbility> Table{ get; } = new Dictionary<Mobile, WeaponAbility>();
 
     public virtual bool ValidatesDuringHit => true;
 
@@ -120,12 +121,13 @@ namespace Server.Items
 
     public virtual double GetRequiredSkill(Mobile from)
     {
-      BaseWeapon weapon = from.Weapon as BaseWeapon;
-
-      if (weapon != null && weapon.PrimaryAbility == this)
-        return 70.0;
-      if (weapon != null && weapon.SecondaryAbility == this)
-        return 90.0;
+      if (from.Weapon is BaseWeapon weapon)
+      {
+        if (weapon.PrimaryAbility == this)
+          return 70.0;
+        if (weapon.SecondaryAbility == this)
+          return 90.0;
+      }
 
       return 200.0;
     }
@@ -336,13 +338,8 @@ namespace Server.Items
 
     public static bool IsWeaponAbility(Mobile m, WeaponAbility a)
     {
-      if (a == null)
-        return true;
-
-      if (!m.Player)
-        return true;
-
-      return m.Weapon is BaseWeapon weapon && (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a);
+      return a == null || !m.Player || m.Weapon is BaseWeapon weapon &&
+             (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a);
     }
 
     public static WeaponAbility GetCurrentAbility(Mobile m)
@@ -353,7 +350,7 @@ namespace Server.Items
         return null;
       }
 
-      WeaponAbility a = (WeaponAbility)Table[m];
+      WeaponAbility a = Table[m];
 
       if (!IsWeaponAbility(m, a))
       {
@@ -361,7 +358,7 @@ namespace Server.Items
         return null;
       }
 
-      if (a != null && a.ValidatesDuringHit && !a.Validate(m))
+      if (a?.ValidatesDuringHit == true && !a.Validate(m))
       {
         ClearCurrentAbility(m);
         return null;
@@ -449,7 +446,7 @@ namespace Server.Items
 
     private static WeaponAbilityContext GetContext(Mobile m)
     {
-      return m_PlayersTable[m] as WeaponAbilityContext;
+      return m_PlayersTable[m];
     }
 
     private class WeaponAbilityTimer : Timer

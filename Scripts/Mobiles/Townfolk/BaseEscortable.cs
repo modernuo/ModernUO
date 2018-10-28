@@ -127,7 +127,7 @@ namespace Server.Mobiles
       }
     }
 
-    public static Hashtable EscortTable{ get; } = new Hashtable();
+    public static Dictionary<Mobile, BaseEscortable> EscortTable{ get; } = new Dictionary<Mobile, BaseEscortable>();
 
     protected override List<MLQuest> ConstructQuestList()
     {
@@ -263,9 +263,9 @@ namespace Server.Mobiles
       if (escorter != null || !m.Alive)
         return false;
 
-      BaseEscortable escortable = (BaseEscortable)EscortTable[m];
+      BaseEscortable escortable = EscortTable[m];
 
-      if (escortable != null && !escortable.Deleted && escortable.GetEscorter() == m)
+      if (escortable?.Deleted == false && escortable.GetEscorter() == m)
       {
         Say("I see you already have an escort.");
         return false;
@@ -299,13 +299,7 @@ namespace Server.Mobiles
 
     public override bool HandlesOnSpeech(Mobile from)
     {
-      if (MLQuestSystem.Enabled)
-        return false;
-
-      if (from.InRange(Location, 3))
-        return true;
-
-      return base.HandlesOnSpeech(from);
+      return !MLQuestSystem.Enabled && (from.InRange(Location, 3) || base.HandlesOnSpeech(from));
     }
 
     public override void OnSpeech(SpeechEventArgs e)
@@ -454,10 +448,7 @@ namespace Server.Mobiles
         m_Destination = null;
         m_DestinationString = null;
 
-        Container cont = escorter.Backpack;
-
-        if (cont == null)
-          cont = escorter.BankBox;
+        Container cont = escorter.Backpack ?? escorter.BankBox;
 
         Gold gold = new Gold(500, 1000);
 
@@ -589,7 +580,7 @@ namespace Server.Mobiles
         }
 
         if (escorter == from)
-          list.Add(new AbandonEscortEntry(this, from));
+          list.Add(new AbandonEscortEntry(this));
       }
 
       base.AddCustomContextEntries(from, list);
@@ -597,9 +588,7 @@ namespace Server.Mobiles
 
     public virtual string[] GetPossibleDestinations()
     {
-      if (!Core.ML)
-        return m_TownNames;
-      return m_MLTownNames;
+      return Core.ML ? m_MLTownNames : m_TownNames;
     }
 
     public virtual string PickRandomDestination()
@@ -660,23 +649,17 @@ namespace Server.Mobiles
 
   public class EscortDestinationInfo
   {
-    private static Hashtable m_Table;
+    private static Dictionary<string, EscortDestinationInfo> m_Table;
 
     public EscortDestinationInfo(string name, Region region)
     {
       Name = name;
       Region = region;
     }
-    //private Rectangle2D[] m_Bounds;
 
     public string Name{ get; }
 
     public Region Region{ get; }
-
-    /*public Rectangle2D[] Bounds
-    {
-      get{ return m_Bounds; }
-    }*/
 
     public bool Contains(Point3D p)
     {
@@ -690,7 +673,7 @@ namespace Server.Mobiles
       if (list.Count == 0)
         return;
 
-      m_Table = new Hashtable();
+      m_Table = new Dictionary<string, EscortDestinationInfo>();
 
       foreach (Region r in list)
       {
@@ -710,7 +693,7 @@ namespace Server.Mobiles
       if (name == null || m_Table == null)
         return null;
 
-      return (EscortDestinationInfo)m_Table[name];
+      return m_Table[name];
     }
   }
 
@@ -752,14 +735,12 @@ namespace Server.Mobiles
 
   public class AbandonEscortEntry : ContextMenuEntry
   {
-    private Mobile m_From;
     private BaseEscortable m_Mobile;
 
-    public AbandonEscortEntry(BaseEscortable m, Mobile from)
+    public AbandonEscortEntry(BaseEscortable m)
       : base(6102, 3)
     {
       m_Mobile = m;
-      m_From = from;
     }
 
     public override void OnClick()

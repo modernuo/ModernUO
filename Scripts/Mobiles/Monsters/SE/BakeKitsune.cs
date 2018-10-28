@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
 
@@ -7,7 +8,7 @@ namespace Server.Mobiles
 {
   public class BakeKitsune : BaseCreature
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public BakeKitsune() : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -88,9 +89,10 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 > Utility.RandomDouble())
-      {
-        /* Blood Bath
+      if (!(0.1 > Utility.RandomDouble()))
+        return;
+
+      /* Blood Bath
          * Start cliloc 1070826
          * Sound: 0x52B
          * 2-3 blood spots
@@ -98,22 +100,21 @@ namespace Server.Mobiles
          * End cliloc: 1070824
          */
 
-        ExpireTimer timer = (ExpireTimer)m_Table[defender];
+      ExpireTimer timer = m_Table[defender];
 
-        if (timer != null)
-        {
-          timer.DoExpire();
-          defender.SendLocalizedMessage(1070825); // The creature continues to rage!
-        }
-        else
-        {
-          defender.SendLocalizedMessage(1070826); // The creature goes into a rage, inflicting heavy damage!
-        }
-
-        timer = new ExpireTimer(defender, this);
-        timer.Start();
-        m_Table[defender] = timer;
+      if (timer != null)
+      {
+        timer.DoExpire();
+        defender.SendLocalizedMessage(1070825); // The creature continues to rage!
       }
+      else
+      {
+        defender.SendLocalizedMessage(1070826); // The creature goes into a rage, inflicting heavy damage!
+      }
+
+      timer = new ExpireTimer(defender, this);
+      timer.Start();
+      m_Table[defender] = timer;
     }
 
     public override int GetAngerSound()

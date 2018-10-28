@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
 
@@ -7,7 +8,7 @@ namespace Server.Mobiles
 {
   public class LadyOfTheSnow : BaseCreature
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public LadyOfTheSnow()
@@ -90,7 +91,7 @@ namespace Server.Mobiles
          * Reset cliloc: 1070831
          */
 
-        ExpireTimer timer = (ExpireTimer)m_Table[defender];
+        ExpireTimer timer = m_Table[defender];
 
         if (timer != null)
         {

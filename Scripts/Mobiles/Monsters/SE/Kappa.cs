@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
 
@@ -7,7 +8,7 @@ namespace Server.Mobiles
 {
   public class Kappa : BaseCreature
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     [Constructible]
     public Kappa() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -110,19 +111,17 @@ namespace Server.Mobiles
 
     public static bool IsBeingDrained(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public static void BeginLifeDrain(Mobile m, Mobile from)
     {
-      Timer t = (Timer)m_Table[m];
+      InternalTimer timer = m_Table[m];
 
-      t?.Stop();
+      timer?.Stop();
+      m_Table[m] = timer = new InternalTimer(from, m);
 
-      t = new InternalTimer(from, m);
-      m_Table[m] = t;
-
-      t.Start();
+      timer.Start();
     }
 
     public static void DrainLife(Mobile m, Mobile from)
@@ -140,9 +139,8 @@ namespace Server.Mobiles
 
     public static void EndLifeDrain(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
-
-      t?.Stop();
+      Timer timer = m_Table[m];
+      timer?.Stop();
 
       m_Table.Remove(m);
 
@@ -169,7 +167,6 @@ namespace Server.Mobiles
           from.SendLocalizedMessage(1070820);
           if (Mana > 14)
             Mana -= 15;
-          amt ^= amt;
         }
       }
 

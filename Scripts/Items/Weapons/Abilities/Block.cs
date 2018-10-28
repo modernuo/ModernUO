@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -8,7 +9,7 @@ namespace Server.Items
   /// </summary>
   public class Block : WeaponAbility
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, BlockInfo> m_Table = new Dictionary<Mobile, BlockInfo>();
 
     public override int BaseMana => 30;
 
@@ -44,7 +45,8 @@ namespace Server.Items
 
     public static bool GetBonus(Mobile targ, ref int bonus)
     {
-      if (!(m_Table[targ] is BlockInfo info))
+      BlockInfo info = m_Table[targ];
+      if (info == null)
         return false;
 
       bonus = info.m_Bonus;
@@ -54,33 +56,29 @@ namespace Server.Items
     public static void BeginBlock(Mobile m, int bonus)
     {
       EndBlock(m);
-
-      BlockInfo info = new BlockInfo(m, bonus);
-      info.m_Timer = new InternalTimer(m);
-
-      m_Table[m] = info;
+      m_Table[m] = new BlockInfo(m, bonus);
     }
 
     public static void EndBlock(Mobile m)
     {
-      if (m_Table[m] is BlockInfo info)
-      {
-        info.m_Timer?.Stop();
+      BlockInfo info = m_Table[m];
 
-        m_Table.Remove(m);
-      }
+      if (info == null)
+        return;
+
+      info.m_Timer?.Stop();
+      m_Table.Remove(m);
     }
 
     private class BlockInfo
     {
       public int m_Bonus;
-      public Mobile m_Target;
       public Timer m_Timer;
 
       public BlockInfo(Mobile target, int bonus)
       {
-        m_Target = target;
         m_Bonus = bonus;
+        m_Timer = new InternalTimer(target);
       }
     }
 

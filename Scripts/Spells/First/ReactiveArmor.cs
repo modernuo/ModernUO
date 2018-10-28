@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Spells.First
 {
@@ -13,7 +14,7 @@ namespace Server.Spells.First
       Reagent.SulfurousAsh
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
     public ReactiveArmorSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -57,14 +58,14 @@ namespace Server.Spells.First
         {
           Mobile targ = Caster;
 
-          ResistanceMod[] mods = (ResistanceMod[])m_Table[targ];
+          ResistanceMod[] mods = m_Table[targ];
 
           if (mods == null)
           {
             targ.PlaySound(0x1E9);
             targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
 
-            mods = new ResistanceMod[5]
+            mods = new []
             {
               new ResistanceMod(ResistanceType.Physical,
                 15 + (int)(targ.Skills.Inscribe.Value / 20)),
@@ -140,13 +141,12 @@ namespace Server.Spells.First
 
     public static void EndArmor(Mobile m)
     {
-      if (m_Table.Contains(m))
-      {
-        ResistanceMod[] mods = (ResistanceMod[])m_Table[m];
+      ResistanceMod[] mods = m_Table[m];
 
-        if (mods != null)
-          for (int i = 0; i < mods.Length; ++i)
-            m.RemoveResistanceMod(mods[i]);
+      if (mods != null)
+      {
+        for (int i = 0; i < mods.Length; ++i)
+          m.RemoveResistanceMod(mods[i]);
 
         m_Table.Remove(m);
         BuffInfo.RemoveBuff(m, BuffIcon.ReactiveArmor);

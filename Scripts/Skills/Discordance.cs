@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
@@ -8,7 +9,7 @@ namespace Server.SkillHandlers
 {
   public class Discordance
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, DiscordanceInfo> m_Table = new Dictionary<Mobile, DiscordanceInfo>();
 
     public static void Initialize()
     {
@@ -34,7 +35,9 @@ namespace Server.SkillHandlers
 
     public static bool GetEffect(Mobile targ, ref int effect)
     {
-      if (!(m_Table[targ] is DiscordanceInfo info))
+      DiscordanceInfo info = m_Table[targ];
+
+      if (info == null)
         return false;
 
       effect = info.m_Effect;
@@ -47,7 +50,7 @@ namespace Server.SkillHandlers
       Mobile targ = info.m_Creature;
       bool ends = false;
 
-      // According to uoherald bard must remain alive, visible, and 
+      // According to uoherald bard must remain alive, visible, and
       // within range of the target or the effect ends in 15 seconds.
       if (!targ.Alive || targ.Deleted || !from.Alive || from.Hidden)
       {
@@ -93,10 +96,10 @@ namespace Server.SkillHandlers
       public bool m_Ending;
       public DateTime m_EndTime;
       public Mobile m_From;
-      public ArrayList m_Mods;
+      public List<object> m_Mods;
       public Timer m_Timer;
 
-      public DiscordanceInfo(Mobile from, Mobile creature, int effect, ArrayList mods)
+      public DiscordanceInfo(Mobile from, Mobile creature, int effect, List<object> mods)
       {
         m_From = from;
         m_Creature = creature;
@@ -167,7 +170,7 @@ namespace Server.SkillHandlers
           {
             from.SendLocalizedMessage(1049535); // A song of discord would have no effect on that.
           }
-          else if (m_Table.Contains(targ)) //Already discorded
+          else if (m_Table.ContainsKey(targ)) //Already discorded
           {
             from.SendLocalizedMessage(1049537); // Your target is already in discord.
           }
@@ -191,7 +194,7 @@ namespace Server.SkillHandlers
               m_Instrument.PlayInstrumentWell(from);
               m_Instrument.ConsumeUse(from);
 
-              ArrayList mods = new ArrayList();
+              List<object> mods = new List<object>();
               int effect;
               double scalar;
 

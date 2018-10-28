@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
   public class InvisibilityPotion : BasePotion
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     [Constructible]
     public InvisibilityPotion() : base(0xF0A, PotionEffect.Invisibility)
@@ -67,11 +68,11 @@ namespace Server.Items
 
     public static void RemoveTimer(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
+      Timer timer = m_Table[m];
 
-      if (t != null)
+      if (timer != null)
       {
-        t.Stop();
+        timer.Stop();
         m_Table.Remove(m);
       }
     }

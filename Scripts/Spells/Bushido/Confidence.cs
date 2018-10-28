@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Spells.Bushido
 {
@@ -11,9 +12,8 @@ namespace Server.Spells.Bushido
       9002
     );
 
-    private static Hashtable m_Table = new Hashtable();
-
-    private static Hashtable m_RegenTable = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static Dictionary<Mobile, Timer> m_RegenTable = new Dictionary<Mobile, Timer>();
 
     public Confidence(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -51,27 +51,22 @@ namespace Server.Spells.Bushido
 
     public static bool IsConfident(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public static void BeginConfidence(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
+      Timer timer = m_Table[m];
+      timer?.Stop();
+      m_Table[m] = timer = new InternalTimer(m);
 
-      t?.Stop();
-
-      t = new InternalTimer(m);
-
-      m_Table[m] = t;
-
-      t.Start();
+      timer.Start();
     }
 
     public static void EndConfidence(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
-
-      t?.Stop();
+      Timer timer = m_Table[m];
+      timer?.Stop();
 
       m_Table.Remove(m);
 
@@ -80,27 +75,23 @@ namespace Server.Spells.Bushido
 
     public static bool IsRegenerating(Mobile m)
     {
-      return m_RegenTable.Contains(m);
+      return m_RegenTable.ContainsKey(m);
     }
 
     public static void BeginRegenerating(Mobile m)
     {
-      Timer t = (Timer)m_RegenTable[m];
+      Timer timer = m_RegenTable[m];
+      timer?.Stop();
 
-      t?.Stop();
+      m_RegenTable[m] = timer = new RegenTimer(m);
 
-      t = new RegenTimer(m);
-
-      m_RegenTable[m] = t;
-
-      t.Start();
+      timer.Start();
     }
 
     public static void StopRegenerating(Mobile m)
     {
-      Timer t = (Timer)m_RegenTable[m];
-
-      t?.Stop();
+      Timer timer = m_RegenTable[m];
+      timer?.Stop();
 
       m_RegenTable.Remove(m);
     }

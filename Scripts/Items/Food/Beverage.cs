@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Hag;
@@ -1089,7 +1090,7 @@ namespace Server.Items
 
     #region Effects of achohol
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public static void Initialize()
     {
@@ -1105,7 +1106,7 @@ namespace Server.Items
     {
       if (from.BAC > 0 && from.Map != Map.Internal && !from.Deleted)
       {
-        Timer t = (Timer)m_Table[from];
+        Timer t = m_Table[from];
 
         if (t == null)
         {
@@ -1120,7 +1121,7 @@ namespace Server.Items
       }
       else
       {
-        Timer t = (Timer)m_Table[from];
+        Timer t = m_Table[from];
 
         if (t != null)
         {

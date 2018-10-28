@@ -27,8 +27,8 @@ namespace Server.Mobiles
 
     private static TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
 
-    private ArrayList m_ArmorBuyInfo = new ArrayList();
-    private ArrayList m_ArmorSellInfo = new ArrayList();
+    private List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
+    private List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
 
     public BaseVendor(string title)
       : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
@@ -39,18 +39,11 @@ namespace Server.Mobiles
       InitBody();
       InitOutfit();
 
-      Container pack;
       //these packs MUST exist, or the client will crash when the packets are sent
-      pack = new Backpack();
-      pack.Layer = Layer.ShopBuy;
-      pack.Movable = false;
-      pack.Visible = false;
+      Container pack = new Backpack { Layer = Layer.ShopBuy, Movable = false, Visible = false };
       AddItem(pack);
 
-      pack = new Backpack();
-      pack.Layer = Layer.ShopResale;
-      pack.Movable = false;
-      pack.Visible = false;
+      pack = new Backpack { Layer = Layer.ShopResale, Movable = false, Visible = false };
       AddItem(pack);
 
       LastRestock = DateTime.UtcNow;
@@ -133,8 +126,7 @@ namespace Server.Mobiles
       IShopSellInfo[] info = GetSellInfo();
       int totalCost = 0;
       List<BuyItemResponse> validBuy = new List<BuyItemResponse>(list.Count);
-      Container cont;
-      bool bought = false;
+      bool bought;
       bool fromBank = false;
       bool fullPurchase = true;
       int controlSlots = buyer.FollowersMax - buyer.Followers;
@@ -199,7 +191,7 @@ namespace Server.Mobiles
 
       bought = buyer.AccessLevel >= AccessLevel.GameMaster;
 
-      cont = buyer.Backpack;
+      Container cont = buyer.Backpack;
       if (!bought && cont != null)
       {
         if (cont.ConsumeTotal(typeof(Gold), totalCost))
@@ -211,7 +203,7 @@ namespace Server.Mobiles
       if (!bought && totalCost >= 2000)
       {
         cont = buyer.FindBankNoCreate();
-        if (cont != null && cont.ConsumeTotal(typeof(Gold), totalCost))
+        if (cont?.ConsumeTotal(typeof(Gold), totalCost) == true)
         {
           bought = true;
           fromBank = true;
@@ -268,10 +260,7 @@ namespace Server.Mobiles
                   }
                   else
                   {
-                    buyItem = LiftItemDupe(item, item.Amount - amount);
-
-                    if (buyItem == null)
-                      buyItem = item;
+                    buyItem = LiftItemDupe(item, item.Amount - amount) ?? item;
                   }
 
                   if (cont == null || !cont.TryDropItem(buyer, buyItem, false))
@@ -345,7 +334,6 @@ namespace Server.Mobiles
       IBuyItemInfo[] buyInfo = GetBuyInfo();
       int GiveGold = 0;
       int Sold = 0;
-      Container cont;
 
       foreach (SellItemResponse resp in list)
       {
@@ -398,7 +386,7 @@ namespace Server.Mobiles
 
               if (!found)
               {
-                cont = BuyPack;
+                Container cont = BuyPack;
 
                 if (amount < resp.Item.Amount)
                 {
@@ -551,10 +539,7 @@ namespace Server.Mobiles
 
     public virtual int GetShoeHue()
     {
-      if (0.1 > Utility.RandomDouble())
-        return 0;
-
-      return Utility.RandomNeutralHue();
+      return 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
     }
 
     public virtual void CheckMorph()
@@ -573,12 +558,7 @@ namespace Server.Mobiles
       if (Map != Map.Tokuno)
         return false;
 
-      NameList n;
-
-      if (Female)
-        n = NameList.GetNameList("tokuno female");
-      else
-        n = NameList.GetNameList("tokuno male");
+      NameList n = NameList.GetNameList(Female ? "tokuno female" : "tokuno male");
 
       if (!n.ContainsName(Name))
         TurnToTokuno();
@@ -588,10 +568,7 @@ namespace Server.Mobiles
 
     public virtual void TurnToTokuno()
     {
-      if (Female)
-        Name = NameList.RandomName("tokuno female");
-      else
-        Name = NameList.RandomName("tokuno male");
+      Name = NameList.RandomName(Female ? "tokuno female" : "tokuno male");
     }
 
     public virtual bool CheckGargoyle()
@@ -798,15 +775,13 @@ namespace Server.Mobiles
 
       UpdateBuyInfo();
 
-      int count = 0;
-      List<BuyItemState> list;
       IBuyItemInfo[] buyInfo = GetBuyInfo();
       IShopSellInfo[] sellInfo = GetSellInfo();
 
-      list = new List<BuyItemState>(buyInfo.Length);
+      List<BuyItemState> list = new List<BuyItemState>(buyInfo.Length);
       Container cont = BuyPack;
 
-      List<ObjectPropertyList> opls = null;
+      List<ObjectPropertyList> opls = new List<ObjectPropertyList>();
 
       for (int idx = 0; idx < buyInfo.Length; idx++)
       {
@@ -815,19 +790,18 @@ namespace Server.Mobiles
         if (buyItem.Amount <= 0 || list.Count >= 250)
           continue;
 
-        // NOTE: Only GBI supported; if you use another implementation of IBuyItemInfo, this will crash
-        GenericBuyInfo gbi = (GenericBuyInfo)buyItem;
+        if (!(buyItem is GenericBuyInfo gbi))
+          return;
+
         IEntity disp = gbi.GetDisplayEntity();
 
         list.Add(new BuyItemState(buyItem.Name, cont.Serial, disp?.Serial ?? (Serial)0x7FC0FFEE, buyItem.Price,
           buyItem.Amount, buyItem.ItemID, buyItem.Hue));
-        count++;
-
-        if (opls == null) opls = new List<ObjectPropertyList>();
 
         if (disp is Item item)
           opls.Add(item.PropertyList);
-        else if (disp is Mobile mobile) opls.Add(mobile.PropertyList);
+        else if (disp is Mobile mobile)
+          opls.Add(mobile.PropertyList);
       }
 
       List<Item> playerItems = cont.Items;
@@ -861,10 +835,6 @@ namespace Server.Mobiles
         if (name != null && list.Count < 250)
         {
           list.Add(new BuyItemState(name, cont.Serial, item.Serial, price, item.Amount, item.ItemID, item.Hue));
-          count++;
-
-          if (opls == null) opls = new List<ObjectPropertyList>();
-
           opls.Add(item.PropertyList);
         }
       }
@@ -873,37 +843,36 @@ namespace Server.Mobiles
       //if ( list.Count > 255 )
       //	Console.WriteLine( "Vendor Warning: Vendor {0} has more than 255 buy items, may cause client errors!", this );
 
-      if (list.Count > 0)
-      {
-        list.Sort(new BuyItemStateComparer());
+      if (list.Count <= 0)
+        return;
 
-        SendPacksTo(from);
+      list.Sort(new BuyItemStateComparer());
 
-        NetState ns = from.NetState;
+      SendPacksTo(from);
 
-        if (ns == null)
-          return;
+      NetState ns = from.NetState;
 
-        if (ns.ContainerGridLines)
-          from.Send(new VendorBuyContent6017(list));
-        else
-          from.Send(new VendorBuyContent(list));
+      if (ns == null)
+        return;
 
-        from.Send(new VendorBuyList(this, list));
+      if (ns.ContainerGridLines)
+        from.Send(new VendorBuyContent6017(list));
+      else
+        from.Send(new VendorBuyContent(list));
 
-        if (ns.HighSeas)
-          from.Send(new DisplayBuyListHS(this));
-        else
-          from.Send(new DisplayBuyList(this));
+      from.Send(new VendorBuyList(this, list));
 
-        from.Send(new MobileStatusExtended(from)); //make sure their gold amount is sent
+      if (ns.HighSeas)
+        from.Send(new DisplayBuyListHS(this));
+      else
+        from.Send(new DisplayBuyList(this));
 
-        if (opls != null)
-          for (int i = 0; i < opls.Count; ++i)
-            from.Send(opls[i]);
+      from.Send(new MobileStatusExtended(from)); //make sure their gold amount is sent
 
-        SayTo(from, 500186); // Greetings.  Have a look around.
-      }
+      for (int i = 0; i < opls.Count; ++i)
+        from.Send(opls[i]);
+
+      SayTo(from, 500186); // Greetings.  Have a look around.
     }
 
     public virtual void SendPacksTo(Mobile from)
@@ -912,10 +881,7 @@ namespace Server.Mobiles
 
       if (pack == null)
       {
-        pack = new Backpack();
-        pack.Layer = Layer.ShopBuy;
-        pack.Movable = false;
-        pack.Visible = false;
+        pack = new Backpack { Layer = Layer.ShopBuy, Movable = false, Visible = false };
         AddItem(pack);
       }
 
@@ -930,10 +896,7 @@ namespace Server.Mobiles
 
       if (pack == null)
       {
-        pack = new Backpack();
-        pack.Layer = Layer.ShopResale;
-        pack.Movable = false;
-        pack.Visible = false;
+        pack = new Backpack { Layer = Layer.ShopResale, Movable = false, Visible = false };
         AddItem(pack);
       }
 
@@ -956,36 +919,36 @@ namespace Server.Mobiles
 
       Container pack = from.Backpack;
 
-      if (pack != null)
+      if (pack == null)
+        return;
+
+      IShopSellInfo[] info = GetSellInfo();
+
+      Dictionary<Item, SellItemState> table = new Dictionary<Item, SellItemState>();
+
+      foreach (IShopSellInfo ssi in info)
       {
-        IShopSellInfo[] info = GetSellInfo();
+        Item[] items = pack.FindItemsByType(ssi.Types);
 
-        Dictionary<Item, SellItemState> table = new Dictionary<Item, SellItemState>();
-
-        foreach (IShopSellInfo ssi in info)
+        foreach (Item item in items)
         {
-          Item[] items = pack.FindItemsByType(ssi.Types);
+          if (item is Container container && container.Items.Count != 0)
+            continue;
 
-          foreach (Item item in items)
-          {
-            if (item is Container container && container.Items.Count != 0)
-              continue;
-
-            if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
-              table[item] = new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item));
-          }
+          if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
+            table[item] = new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item));
         }
+      }
 
-        if (table.Count > 0)
-        {
-          SendPacksTo(from);
+      if (table.Count > 0)
+      {
+        SendPacksTo(from);
 
-          from.Send(new VendorSellList(this, table.Values));
-        }
-        else
-        {
-          Say(true, "You have nothing I would be interested in.");
-        }
+        from.Send(new VendorSellList(this, table.Values));
+      }
+      else
+      {
+        Say(true, "You have nothing I would be interested in.");
       }
     }
 
@@ -1056,9 +1019,7 @@ namespace Server.Mobiles
 
       for (int i = 0; i < buyInfo.Length; ++i)
       {
-        GenericBuyInfo gbi = (GenericBuyInfo)buyInfo[i];
-
-        if (gbi.GetDisplayEntity() == obj)
+        if (buyInfo[i] is GenericBuyInfo gbi && gbi.GetDisplayEntity() == obj)
           return gbi;
       }
 
@@ -1122,14 +1083,12 @@ namespace Server.Mobiles
 
           for (int i = 1; i < amount; i++)
           {
-            item = bii.GetEntity() as Item;
-
-            if (item != null)
+            if (bii.GetEntity() is Item newItem)
             {
-              item.Amount = 1;
+              newItem.Amount = 1;
 
-              if (cont == null || !cont.TryDropItem(buyer, item, false))
-                item.MoveToWorld(buyer.Location, buyer.Map);
+              if (cont == null || !cont.TryDropItem(buyer, newItem, false))
+                newItem.MoveToWorld(buyer.Location, buyer.Map);
             }
           }
         }
@@ -1148,19 +1107,15 @@ namespace Server.Mobiles
 
         for (int i = 1; i < amount; ++i)
         {
-          m = bii.GetEntity() as Mobile;
-
-          if (m != null)
+          if (bii.GetEntity() is Mobile newMobile)
           {
-            m.Direction = (Direction)Utility.Random(8);
-            m.MoveToWorld(buyer.Location, buyer.Map);
+            newMobile.Direction = (Direction)Utility.Random(8);
+            newMobile.MoveToWorld(buyer.Location, buyer.Map);
 
-            bc = m as BaseCreature;
-
-            if (bc != null)
+            if (newMobile is BaseCreature newBc)
             {
-              bc.SetControlMaster(buyer);
-              bc.ControlOrder = OrderType.Stop;
+              newBc.SetControlMaster(buyer);
+              newBc.ControlOrder = OrderType.Stop;
             }
           }
         }
@@ -1320,12 +1275,12 @@ namespace Server.Mobiles
 
     public virtual IShopSellInfo[] GetSellInfo()
     {
-      return (IShopSellInfo[])m_ArmorSellInfo.ToArray(typeof(IShopSellInfo));
+      return m_ArmorSellInfo.ToArray();
     }
 
     public virtual IBuyItemInfo[] GetBuyInfo()
     {
-      return (IBuyItemInfo[])m_ArmorBuyInfo.ToArray(typeof(IBuyItemInfo));
+      return m_ArmorBuyInfo.ToArray();
     }
 
     private class BulkOrderInfoEntry : ContextMenuEntry
@@ -1386,21 +1341,14 @@ namespace Server.Mobiles
 
     public virtual int GetPriceScalar()
     {
-      Town town = Town.FromRegion(Region);
-
-      if (town != null)
-        return 100 + town.Tax;
-
-      return 100;
+      return 100 + Town.FromRegion(Region)?.Tax ?? 0;
     }
 
     public void UpdateBuyInfo()
     {
       int priceScalar = GetPriceScalar();
 
-      IBuyItemInfo[] buyinfo = (IBuyItemInfo[])m_ArmorBuyInfo.ToArray(typeof(IBuyItemInfo));
-
-      foreach (IBuyItemInfo info in buyinfo)
+      foreach (IBuyItemInfo info in m_ArmorBuyInfo.ToArray())
         info.PriceScalar = priceScalar;
     }
 

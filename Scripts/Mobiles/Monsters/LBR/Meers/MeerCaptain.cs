@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Spells;
 
@@ -136,17 +138,14 @@ namespace Server.Mobiles
       {
         m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(10, 15));
 
-        ArrayList list = new ArrayList();
+        IPooledEnumerable<Mobile> eable = GetMobilesInRange(8);
 
-        foreach (Mobile m in GetMobilesInRange(8))
-          if (m is MeerWarrior && IsFriend(m) && CanBeBeneficial(m) && m.Hits < m.HitsMax && !m.Poisoned &&
-              !MortalStrike.IsWounded(m))
-            list.Add(m);
-
-        for (int i = 0; i < list.Count; ++i)
+        foreach (Mobile m in eable)
         {
-          Mobile m = (Mobile)list[i];
-
+          if (!(m is MeerWarrior) || !IsFriend(m) || !CanBeBeneficial(m) || m.Hits >= m.HitsMax || m.Poisoned ||
+              MortalStrike.IsWounded(m))
+            continue;
+          
           DoBeneficial(m);
 
           int toHeal = Utility.RandomMinMax(20, 30);
@@ -158,6 +157,8 @@ namespace Server.Mobiles
           m.FixedParticles(0x376A, 9, 32, 5030, EffectLayer.Waist);
           m.PlaySound(0x202);
         }
+        
+        eable.Free();
       }
 
       base.OnThink();

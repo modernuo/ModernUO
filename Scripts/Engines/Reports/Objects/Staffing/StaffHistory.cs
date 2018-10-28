@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Server.Engines.Reports
@@ -15,17 +16,17 @@ namespace Server.Engines.Reports
       Pages = new PageInfoCollection();
       QueueStats = new QueueStatusCollection();
 
-      UserInfo = new Hashtable(StringComparer.OrdinalIgnoreCase);
-      StaffInfo = new Hashtable(StringComparer.OrdinalIgnoreCase);
+      UserInfo = new Dictionary<string, UserInfo>(StringComparer.OrdinalIgnoreCase);
+      StaffInfo = new Dictionary<string, StaffInfo>(StringComparer.OrdinalIgnoreCase);
     }
 
     public PageInfoCollection Pages{ get; set; }
 
     public QueueStatusCollection QueueStats{ get; set; }
 
-    public Hashtable UserInfo{ get; set; }
+    public Dictionary<string, UserInfo> UserInfo{ get; set; }
 
-    public Hashtable StaffInfo{ get; set; }
+    public Dictionary<string, StaffInfo> StaffInfo{ get; set; }
 
     public void AddPage(PageInfo info)
     {

@@ -1,16 +1,14 @@
 using System;
+using Server.Engines.MLQuests;
+using Server.Engines.MLQuests.Objectives;
 using Server.Mobiles;
 
 namespace Server.Items
 {
   public class ScrollofTranscendence : SpecialScroll
   {
-    public ScrollofTranscendence() : this(SkillName.Alchemy, 0.0)
-    {
-    }
-
     [Constructible]
-    public ScrollofTranscendence(SkillName skill, double value) : base(skill, value)
+    public ScrollofTranscendence(SkillName skill = SkillName.Alchemy, double value = 0.0) : base(skill, value)
     {
       ItemID = 0x14EF;
       Hue = 0x490;
@@ -49,45 +47,34 @@ namespace Server.Items
 
     public override bool CanUse(Mobile from)
     {
-      if (!base.CanUse(from))
-        return false;
-
-      if (!(from is PlayerMobile pm))
+      if (!(base.CanUse(from) && from is PlayerMobile pm))
         return false;
 
       #region Mondain's Legacy
+      MLQuestContext context = MLQuestSystem.GetContext(pm);
 
-      /* to add when skillgain quests will be implemented
-
-      for (int i = pm.Quests.Count - 1; i >= 0; i--)
+      if (context != null)
       {
-        BaseQuest quest = pm.Quests[i];
-
-        for (int j = quest.Objectives.Count - 1; j >= 0; j--)
+        foreach (MLQuestInstance instance in context.QuestInstances)
         {
-          BaseObjective objective = quest.Objectives[j];
-
-          if (objective is ApprenticeObjective)
+          foreach (BaseObjectiveInstance objective in instance.Objectives)
           {
-            from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
-            return false;
+            if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
+                objectiveInstance.Handles(Skill))
+            {
+              from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
+              return false;
+            }
           }
         }
       }
-
-      */
-
       #endregion
-
-      #region Scroll of Alacrity
 
       if (pm.AcceleratedStart > DateTime.UtcNow)
       {
         from.SendLocalizedMessage(1077951); // You are already under the effect of an accelerated skillgain scroll.
         return false;
       }
-
-      #endregion
 
       return true;
     }

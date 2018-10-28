@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Mobiles
 {
@@ -42,8 +44,7 @@ namespace Server.Mobiles
       ControlSlots = Core.SE ? 2 : 1;
     }
 
-    public BladeSpirits(Serial serial)
-      : base(serial)
+    public BladeSpirits(Serial serial) : base(serial)
     {
     }
 
@@ -83,18 +84,17 @@ namespace Server.Mobiles
     {
       if (Core.SE && Summoned)
       {
-        ArrayList spirtsOrVortexes = new ArrayList();
+        IPooledEnumerable<Mobile> eable = GetMobilesInRange(5);
+        List<Mobile> spiritsOrVortexes = eable
+          .Where(m => (m is EnergyVortex || m is BladeSpirits) && ((BaseCreature)m).Summoned).ToList();
 
-        foreach (Mobile m in GetMobilesInRange(5))
-          if (m is EnergyVortex || m is BladeSpirits)
-            if (((BaseCreature)m).Summoned)
-              spirtsOrVortexes.Add(m);
+        eable.Free();
 
-        while (spirtsOrVortexes.Count > 6)
+        while (spiritsOrVortexes.Count > 6)
         {
-          int index = Utility.Random(spirtsOrVortexes.Count);
-          Dispel((Mobile)spirtsOrVortexes[index]);
-          spirtsOrVortexes.RemoveAt(index);
+          int index = Utility.Random(spiritsOrVortexes.Count);
+          Dispel(spiritsOrVortexes[index]);
+          spiritsOrVortexes.RemoveAt(index);
         }
       }
 

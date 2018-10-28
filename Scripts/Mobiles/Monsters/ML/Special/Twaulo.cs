@@ -92,27 +92,9 @@ namespace Server.Mobiles
 
       for (int i = 0; i < newPixies; ++i)
       {
-        Pixie pixie = new Pixie();
+        Pixie pixie = new Pixie { Team = Team, FightMode = FightMode.Closest };
 
-        pixie.Team = Team;
-        pixie.FightMode = FightMode.Closest;
-
-        bool validLocation = false;
-        Point3D loc = Location;
-
-        for (int j = 0; !validLocation && j < 10; ++j)
-        {
-          int x = X + Utility.Random(3) - 1;
-          int y = Y + Utility.Random(3) - 1;
-          int z = map.GetAverageZ(x, y);
-
-          if (validLocation = map.CanFit(x, y, Z, 16, false, false))
-            loc = new Point3D(x, y, Z);
-          else if (validLocation = map.CanFit(x, y, z, 16, false, false))
-            loc = new Point3D(x, y, z);
-        }
-
-        pixie.MoveToWorld(loc, map);
+        pixie.MoveToWorld(map.GetRandomNearbyLocation(Location), map);
         pixie.Combatant = target;
       }
     }

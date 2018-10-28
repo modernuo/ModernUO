@@ -34,13 +34,13 @@ namespace Server.Regions
       MaxSpawnTime = maxSpawnTime;
       Running = false;
 
-      if (Table.Contains(id))
+      if (Table.ContainsKey(id))
         Console.WriteLine("Warning: double SpawnEntry ID '{0}'", id);
       else
         Table[id] = this;
     }
 
-    public static Hashtable Table{ get; } = new Hashtable();
+    public static Dictionary<int, SpawnEntry> Table{ get; } = new Dictionary<int, SpawnEntry>();
 
 
     // When a creature's AI is deactivated (PlayerRangeSensitive optimization) does it return home?

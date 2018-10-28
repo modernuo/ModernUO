@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -197,7 +198,7 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      ArrayList attrs = new ArrayList();
+      List<EquipInfoAttribute> attrs = new List<EquipInfoAttribute>();
 
       if (DisplayLootType)
       {
@@ -272,7 +273,7 @@ namespace Server.Items
         return;
 
       EquipmentInfo eqInfo = new EquipmentInfo(number, Crafter, false,
-        (EquipInfoAttribute[])attrs.ToArray(typeof(EquipInfoAttribute)));
+        attrs.ToArray());
 
       from.Send(new DisplayEquipmentInfo(this, eqInfo));
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
@@ -103,7 +104,7 @@ namespace Server.Mobiles
 
     private List<Mobile> m_AllFollowers;
 
-    private Hashtable m_AntiMacroTable;
+    private Dictionary<Skill, Dictionary<object, CountAndTimeStamp>> m_AntiMacroTable;
     private TimeSpan m_GameTime;
 
     /*
@@ -142,7 +143,7 @@ namespace Server.Mobiles
 
       VisibilityList = new List<Mobile>();
       PermaFlags = new List<Mobile>();
-      m_AntiMacroTable = new Hashtable();
+      m_AntiMacroTable = new Dictionary<Skill, Dictionary<object, CountAndTimeStamp>>();
       RecentlyReported = new List<Mobile>();
 
       BOBFilter = new BOBFilter();
@@ -162,7 +163,7 @@ namespace Server.Mobiles
     public PlayerMobile(Serial s) : base(s)
     {
       VisibilityList = new List<Mobile>();
-      m_AntiMacroTable = new Hashtable();
+      m_AntiMacroTable = new Dictionary<Skill, Dictionary<object, CountAndTimeStamp>>();
       InvalidateMyRunUO();
     }
 
@@ -2138,11 +2139,11 @@ namespace Server.Mobiles
       if (obj == null || m_AntiMacroTable == null || AccessLevel != AccessLevel.Player)
         return true;
 
-      Hashtable tbl = (Hashtable)m_AntiMacroTable[skill];
+      Dictionary<object, CountAndTimeStamp> tbl = m_AntiMacroTable[skill];
       if (tbl == null)
-        m_AntiMacroTable[skill] = tbl = new Hashtable();
+        m_AntiMacroTable[skill] = tbl = new Dictionary<object, CountAndTimeStamp>();
 
-      CountAndTimeStamp count = (CountAndTimeStamp)tbl[obj];
+      CountAndTimeStamp count = tbl[obj];
       if (count != null)
       {
         if (count.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
@@ -2152,9 +2153,7 @@ namespace Server.Mobiles
         }
 
         ++count.Count;
-        if (count.Count <= SkillCheck.Allowance)
-          return true;
-        return false;
+        return count.Count <= SkillCheck.Allowance;
       }
 
       tbl[obj] = count = new CountAndTimeStamp();
@@ -2461,15 +2460,13 @@ namespace Server.Mobiles
     public override void Serialize(GenericWriter writer)
     {
       //cleanup our anti-macro table
-      foreach (Hashtable t in m_AntiMacroTable.Values)
+      foreach (Dictionary<object, CountAndTimeStamp> t in m_AntiMacroTable.Values)
       {
-        ArrayList remove = new ArrayList();
-        foreach (CountAndTimeStamp time in t.Values)
-          if (time.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
-            remove.Add(time);
+        List<object> toRemove = t.Where(kvp => kvp.Value.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
+          .Select(kvp => kvp.Key).ToList();
 
-        for (int i = 0; i < remove.Count; ++i)
-          t.Remove(remove[i]);
+        foreach (object key in toRemove)
+          t.Remove(key);
       }
 
       CheckKillDecay();
@@ -2486,7 +2483,8 @@ namespace Server.Mobiles
 
         writer.Write(m_StuckMenuUses.Length);
 
-        for (int i = 0; i < m_StuckMenuUses.Length; ++i) writer.Write(m_StuckMenuUses[i]);
+        for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+          writer.Write(m_StuckMenuUses[i]);
       }
       else
       {
@@ -3170,7 +3168,7 @@ namespace Server.Mobiles
     {
       if (!Core.SE || !Alive)
         return;
-      
+
       foreach (KeyValuePair<Type, int> kvp in RecoverableAmmo)
         if (kvp.Value > 0)
         {

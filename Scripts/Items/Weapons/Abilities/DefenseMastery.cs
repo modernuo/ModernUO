@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -9,7 +9,7 @@ namespace Server.Items
   /// </summary>
   public class DefenseMastery : WeaponAbility
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, DefenseMasteryInfo> m_Table = new Dictionary<Mobile, DefenseMasteryInfo>();
 
     public override int BaseMana => 30;
 
@@ -41,7 +41,9 @@ namespace Server.Items
               ((Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value) -
                 50.0) / 70.0));
 
-      if (m_Table[attacker] is DefenseMasteryInfo info)
+      DefenseMasteryInfo info = m_Table[attacker];
+
+      if (info != null)
         EndDefense(info);
 
       ResistanceMod mod = new ResistanceMod(ResistanceType.Physical, 50 + modifier);
@@ -57,7 +59,9 @@ namespace Server.Items
 
     public static bool GetMalus(Mobile targ, ref int damageMalus)
     {
-      if (!(m_Table[targ] is DefenseMasteryInfo info))
+      DefenseMasteryInfo info = m_Table[targ];
+
+      if (info == null)
         return false;
 
       damageMalus = info.m_DamageMalus;

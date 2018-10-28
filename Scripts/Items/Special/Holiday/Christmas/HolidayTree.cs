@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Multis;
 
 namespace Server.Items
@@ -12,7 +13,7 @@ namespace Server.Items
 
   public class HolidayTree : Item, IAddon
   {
-    private ArrayList m_Components;
+    private List<Item> m_Components;
 
     public HolidayTree(Mobile from, HolidayTreeType type, Point3D loc) : base(1)
     {
@@ -20,7 +21,7 @@ namespace Server.Items
       MoveToWorld(loc, from.Map);
 
       Placer = from;
-      m_Components = new ArrayList();
+      m_Components = new List<Item>();
 
       switch (type)
       {
@@ -112,7 +113,7 @@ namespace Server.Items
     public override void OnAfterDelete()
     {
       for (int i = 0; i < m_Components.Count; ++i)
-        ((Item)m_Components[i]).Delete();
+        m_Components[i].Delete();
     }
 
     private void AddOrnament(int x, int y, int z, int itemID)
@@ -138,7 +139,7 @@ namespace Server.Items
       writer.Write(m_Components.Count);
 
       for (int i = 0; i < m_Components.Count; ++i)
-        writer.Write((Item)m_Components[i]);
+        writer.Write(m_Components[i]);
     }
 
     public override void Deserialize(GenericReader reader)
@@ -159,7 +160,7 @@ namespace Server.Items
         {
           int count = reader.ReadInt();
 
-          m_Components = new ArrayList(count);
+          m_Components = new List<Item>(count);
 
           for (int i = 0; i < count; ++i)
           {
@@ -178,9 +179,7 @@ namespace Server.Items
 
     public void ValidatePlacement()
     {
-      BaseHouse house = BaseHouse.FindHouseAt(this);
-
-      if (house == null)
+      if (BaseHouse.FindHouseAt(this) == null)
       {
         HolidayTreeDeed deed = new HolidayTreeDeed();
         deed.MoveToWorld(Location, Map);
@@ -201,7 +200,8 @@ namespace Server.Items
 
           BaseHouse house = BaseHouse.FindHouseAt(this);
 
-          if (house != null && house.Addons.Contains(this)) house.Addons.Remove(this);
+          if (house?.Addons.Contains(this) == true)
+            house.Addons.Remove(this);
 
           from.SendLocalizedMessage(503393); // A deed for the tree has been placed in your backpack.
         }

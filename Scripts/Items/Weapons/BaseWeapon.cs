@@ -704,11 +704,11 @@ namespace Server.Items
         // Bonus granted by successful use of Honorable Execution.
         bonus += HonorableExecution.GetSwingBonus(m);
 
-        if (DualWield.Registry.Contains(m))
-          bonus += ((DualWield.DualWieldTimer)DualWield.Registry[m]).BonusSwingSpeed;
+        if (DualWield.Registry.ContainsKey(m))
+          bonus += DualWield.Registry[m].BonusSwingSpeed;
 
-        if (Feint.Registry.Contains(m))
-          bonus -= ((Feint.FeintTimer)Feint.Registry[m]).SwingSpeedReduction;
+        if (Feint.Registry.ContainsKey(m))
+          bonus -= Feint.Registry[m].SwingSpeedReduction;
 
         TransformContext context = TransformationSpellHelper.GetContext(m);
 

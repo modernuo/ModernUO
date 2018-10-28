@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Ethics;
@@ -513,14 +514,10 @@ namespace Server.Multis
 
     public virtual void KillVendors()
     {
-      ArrayList list = new ArrayList(PlayerVendors);
-
-      foreach (PlayerVendor vendor in list)
+      foreach (PlayerVendor vendor in PlayerVendors.ToList())
         vendor.Destroy(true);
 
-      list = new ArrayList(PlayerBarkeepers);
-
-      foreach (PlayerBarkeeper barkeeper in list)
+      foreach (PlayerBarkeeper barkeeper in PlayerBarkeepers.ToList())
         barkeeper.Delete();
     }
 
@@ -1593,7 +1590,7 @@ namespace Server.Multis
         i.Movable = false;
       else
         i.Movable = !locked;
-      
+
       i.IsLockedDown = locked;
 
       if (locked)
@@ -2661,18 +2658,13 @@ namespace Server.Multis
 
     private void FixLockdowns_Sandbox()
     {
-      ArrayList lockDowns = new ArrayList();
+      List<Item> conts = LockDowns?.Where(item => item is Container).ToList();
 
-      for (int i = 0; LockDowns != null && i < LockDowns.Count; ++i)
-      {
-        Item item = LockDowns[i];
+      if (conts == null)
+        return;
 
-        if (item is Container)
-          lockDowns.Add(item);
-      }
-
-      for (int i = 0; i < lockDowns.Count; ++i)
-        SetLockdown((Item)lockDowns[i], true, true);
+      foreach (Item cont in conts)
+        SetLockdown(cont, true, true);
     }
 
     public static void HandleDeletion(Mobile mob)
@@ -2884,9 +2876,7 @@ namespace Server.Multis
         Addons.Clear();
       }
 
-      ArrayList inventories = new ArrayList(VendorInventories);
-
-      foreach (VendorInventory inventory in inventories)
+      foreach (VendorInventory inventory in VendorInventories.ToList())
         inventory.Delete();
 
       MovingCrate?.Delete();
@@ -3067,7 +3057,7 @@ namespace Server.Multis
 
     public bool HasLockedDownItem(Item check)
     {
-      return check != null && LockDowns != null && 
+      return check != null && LockDowns != null &&
              (LockDowns.Contains(check) || check is VendorRentalContract contract && VendorRentalContracts.Contains(contract));
     }
 

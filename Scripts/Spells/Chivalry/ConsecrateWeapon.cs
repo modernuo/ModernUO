@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Spells.Chivalry
@@ -12,7 +13,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<BaseWeapon, ExpireTimer> m_Table = new Dictionary<BaseWeapon, ExpireTimer>();
 
     public ConsecrateWeaponSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -77,15 +78,14 @@ namespace Server.Spells.Chivalry
 
         TimeSpan duration = TimeSpan.FromSeconds(seconds);
 
-        Timer t = (Timer)m_Table[weapon];
-
-        t?.Stop();
+        ExpireTimer timer = m_Table[weapon];
+        timer?.Stop();
 
         weapon.Consecrated = true;
 
-        m_Table[weapon] = t = new ExpireTimer(weapon, duration);
+        m_Table[weapon] = timer = new ExpireTimer(weapon, duration);
 
-        t.Start();
+        timer.Start();
       }
 
       FinishSequence();
@@ -105,7 +105,7 @@ namespace Server.Spells.Chivalry
       {
         m_Weapon.Consecrated = false;
         Effects.PlaySound(m_Weapon.GetWorldLocation(), m_Weapon.Map, 0x1F8);
-        m_Table.Remove(this);
+        m_Table.Remove(m_Weapon);
       }
     }
   }

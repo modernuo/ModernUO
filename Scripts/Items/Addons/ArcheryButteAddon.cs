@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Network;
 
 namespace Server.Items
@@ -87,14 +88,14 @@ namespace Server.Items
 			}
 		}
 
-		private Hashtable m_Entries;
+		private Dictionary<Mobile, ScoreEntry> m_Entries;
 
 		private ScoreEntry GetEntryFor( Mobile from )
 		{
 			if ( m_Entries == null )
-				m_Entries = new Hashtable();
+				m_Entries = new Dictionary<Mobile, ScoreEntry>();
 
-			ScoreEntry e = (ScoreEntry)m_Entries[from];
+			ScoreEntry e = m_Entries[from];
 
 			if ( e == null )
 				m_Entries[from] = e = new ScoreEntry();

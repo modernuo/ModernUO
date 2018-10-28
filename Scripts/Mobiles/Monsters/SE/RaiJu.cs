@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
   public class RaiJu : BaseCreature
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public RaiJu() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -86,7 +87,7 @@ namespace Server.Mobiles
 
     public bool IsStunned(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public override void Serialize(GenericWriter writer)

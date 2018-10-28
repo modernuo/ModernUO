@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Spells.Fifth
 {
@@ -13,7 +14,7 @@ namespace Server.Spells.Fifth
       Reagent.SpidersSilk
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
     public MagicReflectSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -56,7 +57,7 @@ namespace Server.Spells.Fifth
         {
           Mobile targ = Caster;
 
-          ResistanceMod[] mods = (ResistanceMod[])m_Table[targ];
+          ResistanceMod[] mods = m_Table[targ];
 
           if (mods == null)
           {
@@ -66,7 +67,7 @@ namespace Server.Spells.Fifth
             int physiMod = -25 + (int)(targ.Skills.Inscribe.Value / 20);
             int otherMod = 10;
 
-            mods = new ResistanceMod[5]
+            mods = new[]
             {
               new ResistanceMod(ResistanceType.Physical, physiMod),
               new ResistanceMod(ResistanceType.Fire, otherMod),
@@ -134,13 +135,12 @@ namespace Server.Spells.Fifth
 
     public static void EndReflect(Mobile m)
     {
-      if (m_Table.Contains(m))
-      {
-        ResistanceMod[] mods = (ResistanceMod[])m_Table[m];
+      ResistanceMod[] mods = m_Table[m];
 
-        if (mods != null)
-          for (int i = 0; i < mods.Length; ++i)
-            m.RemoveResistanceMod(mods[i]);
+      if (mods != null)
+      {
+        for (int i = 0; i < mods.Length; ++i)
+          m.RemoveResistanceMod(mods[i]);
 
         m_Table.Remove(m);
         BuffInfo.RemoveBuff(m, BuffIcon.MagicReflection);

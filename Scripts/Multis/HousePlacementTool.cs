@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Multis;
@@ -270,7 +272,7 @@ namespace Server.Items
 
   public class HousePlacementEntry
   {
-    private static Hashtable m_Table;
+    private static Dictionary<Type, object> m_Table;
     private int m_Lockdowns;
     private int m_NewLockdowns;
     private int m_NewStorage;
@@ -278,7 +280,7 @@ namespace Server.Items
 
     static HousePlacementEntry()
     {
-      m_Table = new Hashtable();
+      m_Table = new Dictionary<Type, object>();
 
       FillTable(ClassicHouses);
       FillTable(TwoStoryFoundations);
@@ -561,11 +563,11 @@ namespace Server.Items
         object[] args;
 
         if (Type == typeof(HouseFoundation))
-          args = new object[4] { from, MultiID, m_Storage, m_Lockdowns };
+          args = new object[] { from, MultiID, m_Storage, m_Lockdowns };
         else if (Type == typeof(SmallOldHouse) || Type == typeof(SmallShop) || Type == typeof(TwoStoryHouse))
-          args = new object[2] { from, MultiID };
+          args = new object[] { from, MultiID };
         else
-          args = new object[1] { from };
+          args = new object[] { from };
 
         return Activator.CreateInstance(Type, args) as BaseHouse;
       }
@@ -603,7 +605,7 @@ namespace Server.Items
       prevHouse.Delete();
 
       //Point3D center = new Point3D( p.X - m_Offset.X, p.Y - m_Offset.Y, p.Z - m_Offset.Z );
-      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out ArrayList toMove);
+      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out List<IEntity> toMove);
 
       switch (res)
       {
@@ -699,7 +701,7 @@ namespace Server.Items
         return false;
 
       Point3D center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out ArrayList toMove);
+      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out List<IEntity> toMove);
 
       switch (res)
       {
@@ -806,23 +808,13 @@ namespace Server.Items
       if (obj is HousePlacementEntry entry)
         return entry;
 
-      if (obj is ArrayList list)
+      if (obj is List<HousePlacementEntry> list)
       {
-        for (int i = 0; i < list.Count; ++i)
-        {
-          HousePlacementEntry e = (HousePlacementEntry)list[i];
-
-          if (e.MultiID == house.ItemID)
-            return e;
-        }
+        return list.FirstOrDefault(e => e.MultiID == house.ItemID);
       }
-      else if (obj is Hashtable table)
-      {
-        obj = table[house.ItemID];
 
-        if (obj is HousePlacementEntry placementEntry)
-          return placementEntry;
-      }
+      if (obj is Dictionary<int, HousePlacementEntry> table)
+        return table[house.ItemID];
 
       return null;
     }
@@ -839,36 +831,31 @@ namespace Server.Items
         {
           m_Table[e.Type] = e;
         }
-        else if (obj is HousePlacementEntry)
+        else if (obj is HousePlacementEntry entry)
         {
-          ArrayList list = new ArrayList();
-
-          list.Add(obj);
-          list.Add(e);
+          List<HousePlacementEntry> list = new List<HousePlacementEntry> { entry, e };
 
           m_Table[e.Type] = list;
         }
-        else if (obj is ArrayList list)
+        else if (obj is List<HousePlacementEntry> list)
         {
           if (list.Count == 8)
           {
-            Hashtable table = new Hashtable();
+            Dictionary<int, HousePlacementEntry> table = new Dictionary<int, HousePlacementEntry>();
 
-            for (int j = 0; j < list.Count; ++j)
-              table[((HousePlacementEntry)list[j]).MultiID] = list[j];
+            foreach (HousePlacementEntry t in list)
+              table[t.MultiID] = t;
 
             table[e.MultiID] = e;
 
             m_Table[e.Type] = table;
           }
           else
-          {
             list.Add(e);
-          }
         }
-        else if (obj is Hashtable hashtable)
+        else if (obj is Dictionary<int, HousePlacementEntry> table)
         {
-          hashtable[e.MultiID] = e;
+          table[e.MultiID] = e;
         }
       }
     }

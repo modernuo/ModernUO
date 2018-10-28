@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
 using Server.Network;
@@ -8,7 +9,7 @@ namespace Server.Mobiles
 {
   public class FanDancer : BaseCreature
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public FanDancer() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -148,7 +149,7 @@ namespace Server.Mobiles
 
     public bool IsFanned(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public override void Serialize(GenericWriter writer)

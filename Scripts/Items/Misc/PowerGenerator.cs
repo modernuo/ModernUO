@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
 
@@ -57,7 +58,7 @@ namespace Server.Items
   {
     private static readonly TimeSpan m_UseTimeout = TimeSpan.FromMinutes(2.0);
 
-    private Hashtable m_DamageTable = new Hashtable();
+    private Dictionary<Mobile, DamageTimer> m_DamageTable = new Dictionary<Mobile, DamageTimer>();
     private DateTime m_LastUse;
 
     private int m_SideLength;

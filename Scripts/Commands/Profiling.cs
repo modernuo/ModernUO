@@ -243,7 +243,7 @@ namespace Server.Commands
     public static void TraceInternal_OnCommand(CommandEventArgs e)
     {
       int totalCount = 0;
-      Hashtable table = new Hashtable();
+      Dictionary<Type, int[]> table = new Dictionary<Type, int[]>();
 
       foreach (Item item in World.Items.Values)
       {
@@ -253,7 +253,7 @@ namespace Server.Commands
         ++totalCount;
 
         Type type = item.GetType();
-        int[] parms = (int[])table[type];
+        int[] parms = table[type];
 
         if (parms == null)
           table[type] = parms = new[] { 0, 0 };
@@ -270,12 +270,11 @@ namespace Server.Commands
         op.WriteLine();
         op.WriteLine("Type\t\tCount\t\tAmount\t\tAvg. Amount");
 
-        foreach (DictionaryEntry de in table)
+        foreach (KeyValuePair<Type, int[]> de in table)
         {
-          Type type = (Type)de.Key;
-          int[] parms = (int[])de.Value;
+          int[] parms = de.Value;
 
-          op.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3:F2}", type.Name, parms[0], parms[1], (double)parms[1] / parms[0]);
+          op.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3:F2}", de.Key.Name, parms[0], parms[1], (double)parms[1] / parms[0]);
         }
       }
     }
@@ -343,8 +342,8 @@ namespace Server.Commands
           op.WriteLine("# Generated on {0}", DateTime.UtcNow);
           op.WriteLine();
           op.WriteLine();
-          
-          list.ForEach(kvp => 
+
+          list.ForEach(kvp =>
             op.WriteLine("{0}\t{1:F2}%\t{2}", kvp.Value, 100.0 * kvp.Value / total, kvp.Key));
         }
       }
@@ -369,7 +368,7 @@ namespace Server.Commands
         return x.Key.FullName.CompareTo(y.Key.FullName);
       }
     }
-    
+
     private class CountsSorter : IComparer<KeyValuePair<Type, int[]>>
     {
       public int Compare(KeyValuePair<Type, int[]> x, KeyValuePair<Type, int[]> y)
