@@ -21,7 +21,7 @@ namespace Server.Engines.Quests.Ninja
     {
       QuestSystem qs = player.Quest;
 
-      if (qs is EminosUndertakingQuest && qs.FindObjective(typeof(UseTeleporterObjective)) != null)
+      if (qs is EminosUndertakingQuest && qs.FindObjective<UseTeleporterObjective>() != null)
       {
         loc = new Point3D(410, 1125, 0);
         map = Map.Malas;

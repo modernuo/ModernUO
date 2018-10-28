@@ -68,9 +68,7 @@ namespace Server.Diagnostics
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static PacketSendProfile Acquire(Type type)
     {
-      PacketSendProfile prof;
-
-      if (!_profiles.TryGetValue(type, out prof)) _profiles.Add(type, prof = new PacketSendProfile(type));
+      if (!_profiles.TryGetValue(type, out PacketSendProfile prof)) _profiles.Add(type, prof = new PacketSendProfile(type));
 
       return prof;
     }
@@ -102,9 +100,7 @@ namespace Server.Diagnostics
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static PacketReceiveProfile Acquire(int packetId)
     {
-      PacketReceiveProfile prof;
-
-      if (!_profiles.TryGetValue(packetId, out prof))
+      if (!_profiles.TryGetValue(packetId, out PacketReceiveProfile prof))
         _profiles.Add(packetId, prof = new PacketReceiveProfile(packetId));
 
       return prof;

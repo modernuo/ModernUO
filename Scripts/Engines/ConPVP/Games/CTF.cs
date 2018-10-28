@@ -31,7 +31,7 @@ namespace Server.Engines.ConPVP
     {
       if (m_TeamInfo?.Game != null)
       {
-        from.CloseGump(typeof(CTFBoardGump));
+        from.CloseGump<CTFBoardGump>();
         from.SendGump(new CTFBoardGump(from, m_TeamInfo.Game));
       }
     }
@@ -58,12 +58,7 @@ namespace Server.Engines.ConPVP
 
     private CTFGame m_Game;
 
-    public CTFBoardGump(Mobile mob, CTFGame game)
-      : this(mob, game, null)
-    {
-    }
-
-    public CTFBoardGump(Mobile mob, CTFGame game, CTFTeamInfo section)
+    public CTFBoardGump(Mobile mob, CTFGame game, CTFTeamInfo section = null)
       : base(60, 60)
     {
       m_Game = game;
@@ -719,60 +714,28 @@ namespace Server.Engines.ConPVP
     public CTFTeamInfo[] TeamInfo{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team1
-    {
-      get => TeamInfo[0];
-      set { }
-    }
+    public CTFTeamInfo Team1 => TeamInfo[0];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team2
-    {
-      get => TeamInfo[1];
-      set { }
-    }
+    public CTFTeamInfo Team2 => TeamInfo[1];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team3
-    {
-      get => TeamInfo[2];
-      set { }
-    }
+    public CTFTeamInfo Team3 => TeamInfo[2];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team4
-    {
-      get => TeamInfo[3];
-      set { }
-    }
+    public CTFTeamInfo Team4 => TeamInfo[3];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team5
-    {
-      get => TeamInfo[4];
-      set { }
-    }
+    public CTFTeamInfo Team5 => TeamInfo[4];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team6
-    {
-      get => TeamInfo[5];
-      set { }
-    }
+    public CTFTeamInfo Team6 => TeamInfo[5];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team7
-    {
-      get => TeamInfo[6];
-      set { }
-    }
+    public CTFTeamInfo Team7 => TeamInfo[6];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public CTFTeamInfo Team8
-    {
-      get => TeamInfo[7];
-      set { }
-    }
+    public CTFTeamInfo Team8 => TeamInfo[7];
 
     [CommandProperty(AccessLevel.GameMaster)]
     public TimeSpan Duration{ get; set; }
@@ -876,7 +839,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        Participant p = m_Context.Participants[i] as Participant;
+        Participant p = m_Context.Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
           if (p.Players[j] != null)
@@ -932,19 +895,12 @@ namespace Server.Engines.ConPVP
 
     public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
     {
-      Timer.DelayCall(ts, new TimerStateCallback(DelayBounce_Callback), new object[] { mob, corpse });
+      Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
     }
 
-    private void DelayBounce_Callback(object state)
+    private void DelayBounce_Callback(Mobile mob, Container corpse)
     {
-      object[] states = (object[])state;
-      Mobile mob = (Mobile)states[0];
-      Container corpse = (Container)states[1];
-
-      DuelPlayer dp = null;
-
-      if (mob is PlayerMobile mobile)
-        dp = mobile.DuelPlayer;
+      DuelPlayer dp = mob is PlayerMobile mobile ? mobile.DuelPlayer : null;
 
       m_Context.RemoveAggressions(mob);
 
@@ -1027,7 +983,7 @@ namespace Server.Engines.ConPVP
         }
       }
 
-      mob.CloseGump(typeof(CTFBoardGump));
+      mob.CloseGump<CTFBoardGump>();
       mob.SendGump(new CTFBoardGump(mob, this));
 
       m_Context.Requip(mob, corpse);
@@ -1047,7 +1003,7 @@ namespace Server.Engines.ConPVP
       }
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
-        ApplyHues(m_Context.Participants[i] as Participant, Controller.TeamInfo[i % 8].Color);
+        ApplyHues(m_Context.Participants[i], Controller.TeamInfo[i % 8].Color);
 
       m_FinishTimer?.Stop();
 
@@ -1070,37 +1026,37 @@ namespace Server.Engines.ConPVP
 
       teams.Sort(delegate(CTFTeamInfo a, CTFTeamInfo b) { return b.Score - a.Score; });
 
-      Tournament tourny = m_Context.m_Tournament;
+      Tournament tourney = m_Context.m_Tournament;
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourny != null && tourny.TournyType == TournyType.FreeForAll)
+      if (tourney != null && tourney.TourneyType == TourneyType.FreeForAll)
       {
-        sb.Append(m_Context.Participants.Count * tourny.PlayersPerParticipant);
+        sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
         sb.Append("-man FFA");
       }
-      else if (tourny != null && tourny.TournyType == TournyType.RandomTeam)
+      else if (tourney != null && tourney.TourneyType == TourneyType.RandomTeam)
       {
-        sb.Append(tourny.ParticipantsPerMatch);
+        sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-team");
       }
-      else if (tourny != null && tourny.TournyType == TournyType.RedVsBlue)
+      else if (tourney != null && tourney.TourneyType == TourneyType.RedVsBlue)
       {
         sb.Append("Red v Blue");
       }
-      else if (tourny != null && tourny.TournyType == TournyType.Faction)
+      else if (tourney != null && tourney.TourneyType == TourneyType.Faction)
       {
-        sb.Append(tourny.ParticipantsPerMatch);
+        sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-team Faction");
       }
-      else if (tourny != null)
+      else if (tourney != null)
       {
-        for (int i = 0; i < tourny.ParticipantsPerMatch; ++i)
+        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
         {
           if (sb.Length > 0)
             sb.Append('v');
 
-          sb.Append(tourny.PlayersPerParticipant);
+          sb.Append(tourney.PlayersPerParticipant);
         }
       }
 
@@ -1193,7 +1149,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        Participant p = m_Context.Participants[i] as Participant;
+        Participant p = m_Context.Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -1201,7 +1157,7 @@ namespace Server.Engines.ConPVP
 
           if (dp?.Mobile != null)
           {
-            dp.Mobile.CloseGump(typeof(CTFBoardGump));
+            dp.Mobile.CloseGump<CTFBoardGump>();
             dp.Mobile.SendGump(new CTFBoardGump(dp.Mobile, this));
           }
         }
@@ -1214,7 +1170,7 @@ namespace Server.Engines.ConPVP
             p.Players[j].Eliminated = true;
       }
 
-      m_Context.Finish(m_Context.Participants[winner.TeamID] as Participant);
+      m_Context.Finish(m_Context.Participants[winner.TeamID]);
     }
 
     public override void OnStop()
@@ -1236,7 +1192,7 @@ namespace Server.Engines.ConPVP
       }
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
-        ApplyHues(m_Context.Participants[i] as Participant, -1);
+        ApplyHues(m_Context.Participants[i], -1);
 
       m_FinishTimer?.Stop();
 

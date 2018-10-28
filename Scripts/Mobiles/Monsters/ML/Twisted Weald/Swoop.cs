@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
   public class Swoop : Eagle
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public Swoop()
@@ -102,7 +103,7 @@ namespace Server.Mobiles
 
       if (0.1 > Utility.RandomDouble())
       {
-        ExpireTimer timer = (ExpireTimer)m_Table[defender];
+        ExpireTimer timer = m_Table[defender];
 
         if (timer != null)
         {

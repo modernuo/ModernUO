@@ -298,7 +298,7 @@ namespace Server.Network
       m_Stream.Write((short)list.Count);
 
       //The client sorts these by their X/Y value.
-      //OSI sends these in wierd order.  X/Y highest to lowest and serial loest to highest
+      //OSI sends these in weird order.  X/Y highest to lowest and serial lowest to highest
       //These are already sorted by serial (done by the vendor class) but we have to send them by x/y
       //(the x74 packet is sent in 'correct' order.)
       for (int i = list.Count - 1; i >= 0; --i)
@@ -326,7 +326,7 @@ namespace Server.Network
       m_Stream.Write((short)list.Count);
 
       //The client sorts these by their X/Y value.
-      //OSI sends these in wierd order.  X/Y highest to lowest and serial loest to highest
+      //OSI sends these in weird order.  X/Y highest to lowest and serial loewst to highest
       //These are already sorted by serial (done by the vendor class) but we have to send them by x/y
       //(the x74 packet is sent in 'correct' order.)
       for (int i = list.Count - 1; i >= 0; --i)
@@ -1142,11 +1142,11 @@ namespace Server.Network
         m_Stream.Write((byte)0);
         /*} else if (  ) {
           m_Stream.Write( (byte) 0x01 );
-  
+
           m_Stream.Write( (int) item.Serial );
-  
+
           m_Stream.Write( (short) itemID );
-  
+
           m_Stream.Write( (byte) item.Direction );*/
       }
       else
@@ -1200,11 +1200,11 @@ namespace Server.Network
         m_Stream.Write((byte)0);
         /*} else if (  ) {
           m_Stream.Write( (byte) 0x01 );
-  
+
           m_Stream.Write( (int) item.Serial );
-  
+
           m_Stream.Write( (ushort) itemID );
-  
+
           m_Stream.Write( (byte) item.Direction );*/
       }
       else
@@ -2346,6 +2346,7 @@ namespace Server.Network
 
     void AppendLayout(bool val);
     void AppendLayout(int val);
+    void AppendLayout(uint val);
     void AppendLayoutNS(int val);
     void AppendLayout(string text);
     void AppendLayout(byte[] buffer);
@@ -2397,6 +2398,14 @@ namespace Server.Network
     }
 
     public void AppendLayout(int val)
+    {
+      string toString = val.ToString();
+      int bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
+
+      m_Layout.Write(m_Buffer, 0, bytes);
+    }
+
+    public void AppendLayout(uint val)
     {
       string toString = val.ToString();
       int bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
@@ -2540,6 +2549,15 @@ namespace Server.Network
     }
 
     public void AppendLayout(int val)
+    {
+      string toString = val.ToString();
+      int bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
+
+      m_Stream.Write(m_Buffer, 0, bytes);
+      m_LayoutLength += bytes;
+    }
+
+    public void AppendLayout(uint val)
     {
       string toString = val.ToString();
       int bytes = Encoding.ASCII.GetBytes(toString, 0, toString.Length, m_Buffer, 1) + 1;
@@ -3094,12 +3112,17 @@ namespace Server.Network
 
         IWeapon weapon = m.Weapon;
 
-        int min = 0, max = 0;
-
-        weapon?.GetStatusDamage(m, out min, out max);
-
-        m_Stream.Write((short)min); // Damage min
-        m_Stream.Write((short)max); // Damage max
+        if (weapon != null)
+        {
+          weapon.GetStatusDamage(m, out int min, out int max);
+          m_Stream.Write((short)min); // Damage min
+          m_Stream.Write((short)max); // Damage max
+        }
+        else
+        {
+          m_Stream.Write((short)0); // Damage min
+          m_Stream.Write((short)0); // Damage max
+        }
 
         m_Stream.Write(m.TithingPoints);
       }
@@ -3193,12 +3216,17 @@ namespace Server.Network
 
           IWeapon weapon = beheld.Weapon;
 
-          int min = 0, max = 0;
-
-          weapon?.GetStatusDamage(beheld, out min, out max);
-
-          m_Stream.Write((short)min); // Damage min
-          m_Stream.Write((short)max); // Damage max
+          if (weapon != null)
+          {
+            weapon.GetStatusDamage(beheld, out int min, out int max);
+            m_Stream.Write((short)min); // Damage min
+            m_Stream.Write((short)max); // Damage max
+          }
+          else
+          {
+            m_Stream.Write((short)0); // Damage min
+            m_Stream.Write((short)0); // Damage max
+          }
 
           m_Stream.Write(beheld.TithingPoints);
         }
@@ -3748,17 +3776,7 @@ namespace Server.Network
 
   public sealed class MovementAck : Packet
   {
-    private static MovementAck[][] m_Cache = new MovementAck[8][]
-    {
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256],
-      new MovementAck[256]
-    };
+    private static MovementAck[] m_Cache = new MovementAck[8 * 256];
 
     private MovementAck(int seq, int noto) : base(0x22, 3)
     {
@@ -3770,11 +3788,11 @@ namespace Server.Network
     {
       int noto = Notoriety.Compute(m, m);
 
-      MovementAck p = m_Cache[noto][seq];
+      MovementAck p = m_Cache[noto * seq];
 
       if (p == null)
       {
-        m_Cache[noto][seq] = p = new MovementAck(seq, noto);
+        m_Cache[noto * seq] = p = new MovementAck(seq, noto);
         p.SetStatic();
       }
 
@@ -4183,6 +4201,7 @@ namespace Server.Network
     }
   }
 
+  [Flags]
   public enum AffixType : byte
   {
     Append = 0x00,

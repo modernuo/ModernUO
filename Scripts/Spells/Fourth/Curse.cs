@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Targeting;
 
 namespace Server.Spells.Fourth
@@ -15,7 +16,7 @@ namespace Server.Spells.Fourth
       Reagent.SulfurousAsh
     );
 
-    private static Hashtable m_UnderEffect = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_UnderEffect = new Dictionary<Mobile, Timer>();
 
     public CurseSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -28,10 +29,8 @@ namespace Server.Spells.Fourth
       Caster.Target = new InternalTarget(this);
     }
 
-    public static void RemoveEffect(object state)
+    public static void RemoveEffect(Mobile m)
     {
-      Mobile m = (Mobile)state;
-
       m_UnderEffect.Remove(m);
 
       m.UpdateResistances();
@@ -39,7 +38,7 @@ namespace Server.Spells.Fourth
 
     public static bool UnderEffect(Mobile m)
     {
-      return m_UnderEffect.Contains(m);
+      return m_UnderEffect.ContainsKey(m);
     }
 
     public void Target(Mobile m)
@@ -60,13 +59,13 @@ namespace Server.Spells.Fourth
         SpellHelper.AddStatCurse(Caster, m, StatType.Int);
         SpellHelper.DisableSkillCheck = false;
 
-        Timer t = (Timer)m_UnderEffect[m];
+        Timer t = m_UnderEffect[m];
 
         if (Caster.Player && m.Player /*&& Caster != m */ && t == null
         ) //On OSI you CAN curse yourself and get this effect.
         {
           TimeSpan duration = SpellHelper.GetDuration(Caster, m);
-          m_UnderEffect[m] = Timer.DelayCall(duration, new TimerStateCallback(RemoveEffect), m);
+          m_UnderEffect[m] = Timer.DelayCall(duration, RemoveEffect, m);
           m.UpdateResistances();
         }
 

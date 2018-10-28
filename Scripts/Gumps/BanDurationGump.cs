@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Accounting;
 using Server.Network;
 
@@ -7,13 +7,13 @@ namespace Server.Gumps
 {
   public class BanDurationGump : Gump
   {
-    private ArrayList m_List;
+    private List<Account> m_List;
 
-    public BanDurationGump(Account a) : this(MakeList(a))
+    public BanDurationGump(Account a) : this(new List<Account>{ a })
     {
     }
 
-    public BanDurationGump(ArrayList list) : base((640 - 500) / 2, (480 - 305) / 2)
+    public BanDurationGump(List<Account> list) : base((640 - 500) / 2, (480 - 305) / 2)
     {
       m_List = list;
 
@@ -55,13 +55,6 @@ namespace Server.Gumps
       AddTextEntry(x + 2, y + 2, width - 4, height - 4, 0, index, "");
     }
 
-    public static ArrayList MakeList(object obj)
-    {
-      ArrayList list = new ArrayList(1);
-      list.Add(obj);
-      return list;
-    }
-
     public void AddInput(int bid, int idx, string name)
     {
       int x = 15;
@@ -88,15 +81,13 @@ namespace Server.Gumps
       TimeSpan duration;
       bool shouldSet;
 
-      string fromString = from.ToString();
-
       switch (info.ButtonID)
       {
         case 0:
         {
           for (int i = 0; i < m_List.Count; ++i)
           {
-            Account a = (Account)m_List[i];
+            Account a = m_List[i];
 
             a.SetUnspecifiedBan(from);
           }
@@ -123,6 +114,7 @@ namespace Server.Gumps
             }
             catch
             {
+              // ignored
             }
 
           duration = TimeSpan.Zero;
@@ -142,6 +134,7 @@ namespace Server.Gumps
             }
             catch
             {
+              // ignored
             }
 
           duration = TimeSpan.Zero;
@@ -161,6 +154,7 @@ namespace Server.Gumps
             }
             catch
             {
+              // ignored
             }
 
           duration = TimeSpan.Zero;
@@ -180,6 +174,7 @@ namespace Server.Gumps
             }
             catch
             {
+              // ignored
             }
 
           duration = TimeSpan.Zero;
@@ -199,6 +194,7 @@ namespace Server.Gumps
             }
             catch
             {
+              // ignored
             }
 
           duration = TimeSpan.Zero;
@@ -223,7 +219,7 @@ namespace Server.Gumps
 
         for (int i = 0; i < m_List.Count; ++i)
         {
-          Account a = (Account)m_List[i];
+          Account a = m_List[i];
 
           a.SetBanTags(from, DateTime.UtcNow, duration);
 

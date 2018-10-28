@@ -1,5 +1,6 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Server.Mobiles;
 using Server.Network;
 
@@ -16,9 +17,9 @@ namespace Server.Items
   {
     public static readonly int SecureRange = 7;
 
-    private static readonly Hashtable m_Table = new Hashtable();
+    private static readonly Dictionary<Mobile, CampfireEntry> m_Table = new Dictionary<Mobile, CampfireEntry>();
 
-    private ArrayList m_Entries;
+    private List<CampfireEntry> m_Entries;
 
     private Timer m_Timer;
 
@@ -27,7 +28,7 @@ namespace Server.Items
       Movable = false;
       Light = LightType.Circle300;
 
-      m_Entries = new ArrayList();
+      m_Entries = new List<CampfireEntry>();
 
       Created = DateTime.UtcNow;
       m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick);
@@ -85,7 +86,7 @@ namespace Server.Items
 
     public static CampfireEntry GetEntry(Mobile player)
     {
-      return (CampfireEntry)m_Table[player];
+      return m_Table[player];
     }
 
     public static void RemoveEntry(CampfireEntry entry)
@@ -109,11 +110,9 @@ namespace Server.Items
       if (Status == CampfireStatus.Off || Deleted)
         return;
 
-      foreach (CampfireEntry entry in new ArrayList(m_Entries))
+      foreach (CampfireEntry entry in m_Entries.ToList())
         if (!entry.Valid || entry.Player.NetState == null)
-        {
           RemoveEntry(entry);
-        }
         else if (!entry.Safe && now - entry.Start >= TimeSpan.FromSeconds(30.0))
         {
           entry.Safe = true;
@@ -141,7 +140,8 @@ namespace Server.Items
       if (m_Entries == null)
         return;
 
-      foreach (CampfireEntry entry in new ArrayList(m_Entries)) RemoveEntry(entry);
+      foreach (CampfireEntry entry in m_Entries.ToList())
+        RemoveEntry(entry);
     }
 
     public override void OnAfterDelete()

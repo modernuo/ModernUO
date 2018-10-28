@@ -100,7 +100,7 @@ namespace Server.Items
         m_From = from;
         m_Deed = deed;
 
-        from.CloseGump(typeof(InternalGump));
+        from.CloseGump<InternalGump>();
 
         AddBackground(100, 10, 400, 385, 0xA28);
 

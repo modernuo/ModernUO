@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Accounting;
 using Server.Engines.Help;
@@ -91,7 +90,7 @@ namespace Server.Commands.Generic
       ListOptimized = true;
     }
 
-    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
       try
       {
@@ -184,7 +183,7 @@ namespace Server.Commands.Generic
       ListOptimized = true;
     }
 
-    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
       if (list.Count == 1)
         AddResponse("There is one matching object.");
@@ -205,13 +204,8 @@ namespace Server.Commands.Generic
       Description = "Opens the web browser of a targeted player to a specified url.";
     }
 
-    public static void OpenBrowser_Callback(Mobile from, bool okay, object state)
+    public static void OpenBrowser_Callback(Mobile from, bool okay, Mobile gm, string url, bool echo)
     {
-      object[] states = (object[])state;
-      Mobile gm = (Mobile)states[0];
-      string url = (string)states[1];
-      bool echo = (bool)states[2];
-
       if (okay)
       {
         if (echo)
@@ -257,7 +251,7 @@ namespace Server.Commands.Generic
 
             mob.SendGump(new WarningGump(1060637, 30720,
               $"A game master is requesting to open your web browser to the following URL:<br>{url}", 0xFFC000,
-              320, 240, OpenBrowser_Callback, new object[] { from, url, echo }));
+              320, 240, okay => OpenBrowser_Callback(mob, okay, from, url, echo)));
           }
         }
         else
@@ -276,7 +270,7 @@ namespace Server.Commands.Generic
       Execute(e, obj, true);
     }
 
-    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
       for (int i = 0; i < list.Count; ++i)
         Execute(e, list[i], false);
@@ -406,7 +400,7 @@ namespace Server.Commands.Generic
         "Adds an item by name to the backpack of a targeted player or npc, or a targeted container. Optional constructor parameters. Optional set property list.";
     }
 
-    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
       if (e.Arguments.Length == 0)
         return;
@@ -763,12 +757,8 @@ namespace Server.Commands.Generic
       Description = "Deletes a targeted item or mobile. Does not delete players.";
     }
 
-    private void OnConfirmCallback(Mobile from, bool okay, object state)
+    private void OnConfirmCallback(Mobile from, bool okay, CommandEventArgs e, List<object> list)
     {
-      object[] states = (object[])state;
-      CommandEventArgs e = (CommandEventArgs)states[0];
-      ArrayList list = (ArrayList)states[1];
-
       bool flushToLog = false;
 
       if (okay)
@@ -798,13 +788,14 @@ namespace Server.Commands.Generic
       Flush(from, flushToLog);
     }
 
-    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
       if (list.Count > 1)
       {
-        e.Mobile.SendGump(new WarningGump(1060637, 30720,
+        Mobile from = e.Mobile;
+        from.SendGump(new WarningGump(1060637, 30720,
           $"You are about to delete {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?",
-          0xFFC000, 420, 280, OnConfirmCallback, new object[] { e, list }));
+          0xFFC000, 420, 280, okay => OnConfirmCallback(from, okay, e, list)));
         AddResponse("Awaiting confirmation...");
       }
       else

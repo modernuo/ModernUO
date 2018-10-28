@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Items;
 
@@ -7,7 +8,7 @@ namespace Server.Mobiles
 {
   public class LesserHiryu : BaseMount
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public LesserHiryu()
@@ -102,7 +103,7 @@ namespace Server.Mobiles
 
     public override bool OverrideBondingReqs()
     {
-      if (ControlMaster.Skills[SkillName.Bushido].Base >= 90.0)
+      if (ControlMaster.Skills.Bushido.Base >= 90.0)
         return true;
       return false;
     }
@@ -169,7 +170,7 @@ namespace Server.Mobiles
          * Effect: Type: "3" - From: "0x57D4F5B" (player) - To: "0x0" - ItemId: "0x37B9" - ItemIdName: "glow" - FromLocation: "(1149 808, 32)" - ToLocation: "(1149 808, 32)" - Speed: "10" - Duration: "5" - FixedDirection: "True" - Explode: "False"
          */
 
-        ExpireTimer timer = (ExpireTimer)m_Table[defender];
+        ExpireTimer timer = m_Table[defender];
 
         if (timer != null)
         {

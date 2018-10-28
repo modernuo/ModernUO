@@ -59,9 +59,9 @@ namespace Server.Mobiles
 
     public static int GetMaxStabled(Mobile from)
     {
-      double taming = from.Skills[SkillName.AnimalTaming].Value;
-      double anlore = from.Skills[SkillName.AnimalLore].Value;
-      double vetern = from.Skills[SkillName.Veterinary].Value;
+      double taming = from.Skills.AnimalTaming.Value;
+      double anlore = from.Skills.AnimalLore.Value;
+      double vetern = from.Skills.Veterinary.Value;
       double sklsum = taming + anlore + vetern;
 
       int max;
@@ -89,7 +89,7 @@ namespace Server.Mobiles
 
     private void CloseClaimList(Mobile from)
     {
-      from.CloseGump(typeof(ClaimListGump));
+      from.CloseGump<ClaimListGump>();
     }
 
     public void BeginClaimList(Mobile from)
@@ -407,7 +407,7 @@ namespace Server.Mobiles
         m_From = from;
         m_List = list;
 
-        from.CloseGump(typeof(ClaimListGump));
+        from.CloseGump<ClaimListGump>();
 
         AddPage(0);
 

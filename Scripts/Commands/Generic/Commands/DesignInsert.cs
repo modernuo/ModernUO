@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Server.Gumps;
 using Server.Items;
@@ -103,8 +102,7 @@ namespace Server.Commands.Generic
 
       protected override void OnTarget(Mobile from, object obj)
       {
-        HouseFoundation house;
-        DesignInsertResult result = ProcessInsert(obj as Item, m_StaticsOnly, out house);
+        DesignInsertResult result = ProcessInsert(obj as Item, m_StaticsOnly, out HouseFoundation house);
 
         switch (result)
         {
@@ -142,21 +140,17 @@ namespace Server.Commands.Generic
 
     #region Area targeting mode
 
-    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
-      e.Mobile.SendGump(new WarningGump(1060637, 30720,
+      Mobile from = e.Mobile;
+      from.SendGump(new WarningGump(1060637, 30720,
         $"You are about to insert {list.Count} objects. This cannot be undone without a full server revert.<br><br>Continue?",
-        0xFFC000, 420, 280, OnConfirmCallback, new object[] { e, list, e.Length < 1 || !e.GetBoolean(0) }));
+        0xFFC000, 420, 280, okay => OnConfirmCallback(from, okay, list, e.Length < 1 || !e.GetBoolean(0))));
       AddResponse("Awaiting confirmation...");
     }
 
-    private void OnConfirmCallback(Mobile from, bool okay, object state)
+    private void OnConfirmCallback(Mobile from, bool okay, List<object> list, bool staticsOnly)
     {
-      object[] states = (object[])state;
-      CommandEventArgs e = (CommandEventArgs)states[0];
-      ArrayList list = (ArrayList)states[1];
-      bool staticsOnly = (bool)states[2];
-
       bool flushToLog = false;
 
       if (okay)
@@ -166,8 +160,7 @@ namespace Server.Commands.Generic
 
         for (int i = 0; i < list.Count; ++i)
         {
-          HouseFoundation house;
-          DesignInsertResult result = ProcessInsert(list[i] as Item, staticsOnly, out house);
+          DesignInsertResult result = ProcessInsert(list[i] as Item, staticsOnly, out HouseFoundation house);
 
           switch (result)
           {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands.Generic;
 using Server.Gumps;
@@ -13,18 +14,15 @@ namespace Server.Commands
     {
       Commands = new[] { "Batch" };
       ListOptimized = true;
-
-      BatchCommands = new ArrayList();
-      Condition = "";
     }
 
     public BaseCommandImplementor Scope{ get; set; }
 
-    public string Condition{ get; set; }
+    public string Condition{ get; set; } = "";
 
-    public ArrayList BatchCommands{ get; }
+    public List<BatchCommand> BatchCommands{ get; } = new List<BatchCommand>();
 
-    public override void ExecuteList(CommandEventArgs e, ArrayList list)
+    public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
       if (list.Count == 0)
       {
@@ -39,7 +37,7 @@ namespace Server.Commands
 
         for (int i = 0; i < BatchCommands.Count; ++i)
         {
-          BatchCommand bc = (BatchCommand)BatchCommands[i];
+          BatchCommand bc = BatchCommands[i];
 
           bc.GetDetails(out string commandString, out string argString, out string[] args);
 
@@ -68,12 +66,12 @@ namespace Server.Commands
         for (int i = 0; i < commands.Length; ++i)
         {
           BaseCommand command = commands[i];
-          BatchCommand bc = (BatchCommand)BatchCommands[i];
+          BatchCommand bc = BatchCommands[i];
 
           if (list.Count > 20)
             CommandLogging.Enabled = false;
 
-          ArrayList usedList;
+          List<object> usedList;
 
           if (Utility.InsensitiveCompare(bc.Object, "Current") == 0)
           {
@@ -81,9 +79,9 @@ namespace Server.Commands
           }
           else
           {
-            Hashtable propertyChains = new Hashtable();
+            Dictionary<Type, PropertyInfo[]> propertyChains = new Dictionary<Type, PropertyInfo[]>();
 
-            usedList = new ArrayList(list.Count);
+            usedList = new List<object>(list.Count);
 
             for (int j = 0; j < list.Count; ++j)
             {
@@ -94,11 +92,11 @@ namespace Server.Commands
 
               Type type = obj.GetType();
 
-              PropertyInfo[] chain = (PropertyInfo[])propertyChains[type];
+              PropertyInfo[] chain = propertyChains[type];
 
               string failReason = "";
 
-              if (chain == null && !propertyChains.Contains(type))
+              if (chain == null)
                 propertyChains[type] = chain = Properties.GetPropertyInfoChain(e.Mobile, type, bc.Object,
                   PropertyAccess.Read, ref failReason);
 
@@ -119,6 +117,7 @@ namespace Server.Commands
               }
               catch
               {
+                // ignored
               }
             }
           }
@@ -272,7 +271,7 @@ namespace Server.Commands
 
       for (int i = 0; i < m_Batch.BatchCommands.Count; ++i)
       {
-        BatchCommand bc = (BatchCommand)m_Batch.BatchCommands[i];
+        BatchCommand bc = m_Batch.BatchCommands[i];
 
         AddNewLine();
 

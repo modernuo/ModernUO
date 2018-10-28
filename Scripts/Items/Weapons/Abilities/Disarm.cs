@@ -21,7 +21,7 @@ namespace Server.Items
       if ( !(from.Weapon is Fists) )
         return true;
 
-      Skill skill = from.Skills[SkillName.ArmsLore];
+      Skill skill = from.Skills.ArmsLore;
 
       if ( skill != null && skill.Base >= 80.0 )
         return true;

@@ -48,60 +48,51 @@ namespace Server.Items
 
     public virtual void RunSequence(Mobile m, int message, bool freeze)
     {
-      object[] arg = null;
-
       if (freeze)
       {
         m.Frozen = true;
-        Timer.DelayCall(TimeSpan.FromSeconds(message == 1095162 ? 2.0 : 1.25),
-          new TimerStateCallback(EndFall_Callback), m);
+        Timer.DelayCall(TimeSpan.FromSeconds(message == 1095162 ? 2.0 : 1.25), EndFall_Callback, m);
       }
 
       m.SendLocalizedMessage(message);
+      
+      int action = 0;
+      int sound = 0;
 
       if (message == 1095162)
       {
-        if (m.Mounted) m.Mount.Rider = null;
+        if (m.Mounted)
+          m.Mount.Rider = null;
 
         Point3D p = new Point3D(Location);
 
         if (SpellHelper.FindValidSpawnLocation(Map, ref p, true))
-          Timer.DelayCall(TimeSpan.FromSeconds(0), new TimerStateCallback(Relocate_Callback),
-            new object[] { m, p });
+          Timer.DelayCall(TimeSpan.FromSeconds(0), () => m.MoveToWorld(p, m.Map));
 
-        arg = new object[] { m, 21 + Utility.Random(2), !m.Female ? 0x426 : 0x317 };
+        action = 21 + Utility.Random(2);
+        sound = m.Female ? 0x317 : 0x426;
       }
       else if (message == 1095161)
       {
-        arg = new object[] { m, 17, !m.Female ? 0x429 : 0x319 };
+        action = 17;
+        sound = m.Female ? 0x319 : 0x429;
       }
 
-      if (arg != null) Timer.DelayCall(TimeSpan.FromSeconds(.4), new TimerStateCallback(BeginFall_Callback), arg);
+      if (action > 0)
+        Timer.DelayCall(TimeSpan.FromSeconds(0.4), from => BeginFall_Callback(from, action, sound), m);
     }
 
-    private static void Relocate_Callback(object state)
+    private static void BeginFall_Callback(Mobile m, int action, int sound)
     {
-      object[] states = (object[])state;
-      Mobile m = (Mobile)states[0];
-      Point3D to = (Point3D)states[1];
-
-      m.MoveToWorld(to, m.Map);
-    }
-
-    private static void BeginFall_Callback(object state)
-    {
-      object[] states = (object[])state;
-
-      Mobile m = (Mobile)states[0];
-      int action = (int)states[1];
-      int sound = (int)states[2];
-      if (!m.Mounted) m.Animate(action, 1, 1, false, true, 0);
+      if (!m.Mounted)
+        m.Animate(action, 1, 1, false, true, 0);
+      
       m.PlaySound(sound);
     }
 
-    private static void EndFall_Callback(object state)
+    private static void EndFall_Callback(Mobile m)
     {
-      ((Mobile)state).Frozen = false;
+      m.Frozen = false;
     }
 
     public override void Serialize(GenericWriter writer)

@@ -80,10 +80,10 @@ namespace Server.Items
 
     public void BeginPlace(Mobile from, HolidayTreeType type)
     {
-      from.BeginTarget(-1, true, TargetFlags.None, new TargetStateCallback(Placement_OnTarget), type);
+      from.BeginTarget(-1, true, TargetFlags.None, Placement_OnTarget, type);
     }
 
-    public void Placement_OnTarget(Mobile from, object targeted, object state)
+    public void Placement_OnTarget(Mobile from, object targeted, HolidayTreeType type)
     {
       if (!(targeted is IPoint3D p))
         return;
@@ -98,7 +98,7 @@ namespace Server.Items
 													*/
 
       if (ValidatePlacement(from, loc))
-        EndPlace(from, (HolidayTreeType)state, loc);
+        EndPlace(from, type, loc);
     }
 
     public void EndPlace(Mobile from, HolidayTreeType type, Point3D loc)
@@ -110,7 +110,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      from.CloseGump(typeof(HolidayTreeChoiceGump));
+      from.CloseGump<HolidayTreeChoiceGump>();
       from.SendGump(new HolidayTreeChoiceGump(from, this));
     }
   }

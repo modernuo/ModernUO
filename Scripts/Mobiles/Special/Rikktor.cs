@@ -95,25 +95,17 @@ namespace Server.Mobiles
       if (map == null)
         return;
 
-      ArrayList targets = new ArrayList();
-
-      foreach (Mobile m in GetMobilesInRange(8))
-      {
-        if (m == this || !CanBeHarmful(m))
-          continue;
-
-        if (m is BaseCreature creature && (creature.Controlled || creature.Summoned ||
-                                  creature.Team != Team))
-          targets.Add(m);
-        else if (m.Player)
-          targets.Add(m);
-      }
-
       PlaySound(0x2F3);
 
-      for (int i = 0; i < targets.Count; ++i)
+      IPooledEnumerable<Mobile> eable = GetMobilesInRange<Mobile>(8);
+
+      foreach (Mobile m in eable)
       {
-        Mobile m = (Mobile)targets[i];
+        if (m == this || !(CanBeHarmful(m) || m.Player && m.Alive))
+          continue;
+
+        if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != Team))
+          continue;
 
         double damage = m.Hits * 0.6;
 
@@ -129,6 +121,8 @@ namespace Server.Mobiles
         if (m.Alive && m.Body.IsHuman && !m.Mounted)
           m.Animate(20, 7, 1, true, false, 0); // take hit
       }
+
+      eable.Free();
     }
 
     public override int GetAngerSound()

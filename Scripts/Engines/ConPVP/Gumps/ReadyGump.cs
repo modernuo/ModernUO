@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
 
@@ -16,7 +16,7 @@ namespace Server.Engines.ConPVP
       m_Context = context;
       m_Count = count;
 
-      ArrayList parts = context.Participants;
+      List<Participant> parts = context.Participants;
 
       int height = 25 + 20;
 
@@ -35,7 +35,7 @@ namespace Server.Engines.ConPVP
       height += 25;
 
       Closable = false;
-      Dragable = false;
+      Draggable = false;
 
       AddPage(0);
 

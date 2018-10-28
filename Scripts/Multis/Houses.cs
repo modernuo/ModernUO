@@ -568,8 +568,8 @@ namespace Server.Multis
       door.Locked = true;
       door.KeyValue = keyValue;
 
-      if (door is BaseHouseDoor)
-        ((BaseHouseDoor)door).Facing = DoorFacing.EastCCW;
+      if (door is BaseHouseDoor houseDoor)
+        houseDoor.Facing = DoorFacing.EastCCW;
 
       AddDoor(door, -2, 0, id == 0xA2 ? 24 : 27);
 

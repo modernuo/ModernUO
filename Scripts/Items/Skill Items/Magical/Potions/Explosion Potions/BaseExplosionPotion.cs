@@ -91,23 +91,21 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(500236); // You should throw it now!
 
+        int timer = 3;
+
         if (Core.ML)
           m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.25), 5,
-            new TimerStateCallback(Detonate_OnTick), new object[] { from, 3 }); // 3.6 seconds explosion delay
+            () => Detonate_OnTick(from, timer--)); // 3.6 seconds explosion delay
         else
           m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(0.75), TimeSpan.FromSeconds(1.0), 4,
-            new TimerStateCallback(Detonate_OnTick), new object[] { from, 3 }); // 2.6 seconds explosion delay
+            () => Detonate_OnTick(from, timer--)); // 2.6 seconds explosion delay
       }
     }
 
-    private void Detonate_OnTick(object state)
+    private void Detonate_OnTick(Mobile from, int timer)
     {
       if (Deleted)
         return;
-
-      object[] states = (object[])state;
-      Mobile from = (Mobile)states[0];
-      int timer = (int)states[1];
 
       object parent = FindParent(from);
 
@@ -140,22 +138,13 @@ namespace Server.Items
           item.PublicOverheadMessage(MessageType.Regular, 0x22, false, timer.ToString());
         else if (parent is Mobile mobile)
           mobile.PublicOverheadMessage(MessageType.Regular, 0x22, false, timer.ToString());
-
-        states[1] = timer - 1;
       }
     }
 
-    private void Reposition_OnTick(object state)
+    private void Reposition_OnTick(Mobile from, Point3D loc, Map map)
     {
       if (Deleted)
         return;
-
-      object[] states = (object[])state;
-      Mobile from = (Mobile)states[0];
-      IPoint3D p = (IPoint3D)states[1];
-      Map map = (Map)states[2];
-
-      Point3D loc = new Point3D(p);
 
       if (InstantExplosion)
         Explode(from, true, loc, map);
@@ -189,7 +178,7 @@ namespace Server.Items
       if (direct)
         alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
 
-      IPooledEnumerable<IEntity> eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion, true);
+      IPooledEnumerable<IEntity> eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion);
       List<IEntity> toExplode = new List<IEntity>();
 
       int toDamage = 0;
@@ -274,13 +263,12 @@ namespace Server.Items
             to = m;
         }
 
-        Effects.SendMovingEffect(from, to, Potion.ItemID, 7, 0, false, false, Potion.Hue, 0);
+        Effects.SendMovingEffect(from, to, Potion.ItemID, 7, 0, false, false, Potion.Hue);
 
         if (Potion.Amount > 1) Mobile.LiftItemDupe(Potion, 1);
 
         Potion.Internalize();
-        Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(Potion.Reposition_OnTick),
-          new object[] { from, p, map });
+        Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => Potion.Reposition_OnTick(from, new Point3D(p), map));
       }
     }
   }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Accounting;
 using Server.ContextMenus;
@@ -615,7 +614,7 @@ namespace Server.Mobiles
           m_Maker.Delete();
           statue.Sculpt(from);
 
-          from.CloseGump(typeof(CharacterStatueGump));
+          from.CloseGump<CharacterStatueGump>();
           from.SendGump(new CharacterStatueGump(m_Maker, statue, from));
         }
         else if (result == AddonFitResult.Blocked)
@@ -640,7 +639,7 @@ namespace Server.Mobiles
 
     public static AddonFitResult CouldFit(Point3D p, Map map, Mobile from, ref BaseHouse house)
     {
-      if (!map.CanFit(p.X, p.Y, p.Z, 20, true, true, true))
+      if (!map.CanFit(p.X, p.Y, p.Z, 20, true))
         return AddonFitResult.Blocked;
       if (!BaseAddon.CheckHouse(from, p, map, 20, ref house))
         return AddonFitResult.NotInHouse;
@@ -650,11 +649,11 @@ namespace Server.Mobiles
 
     public static AddonFitResult CheckDoors(Point3D p, int height, BaseHouse house)
     {
-      ArrayList doors = house.Doors;
+      List<BaseDoor> doors = house.Doors;
 
       for (int i = 0; i < doors.Count; i++)
       {
-        BaseDoor door = doors[i] as BaseDoor;
+        BaseDoor door = doors[i];
 
         Point3D doorLoc = door.GetWorldLocation();
         int doorHeight = door.ItemData.CalcHeight;

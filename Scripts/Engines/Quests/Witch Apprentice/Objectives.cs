@@ -58,13 +58,13 @@ namespace Server.Engines.Quests.Hag
         // * You see a strange imp stealing a scrap of paper from the bloodied corpse *
         Corpse.SendLocalizedMessageTo(player, 1055049);
 
-        Timer.DelayCall(TimeSpan.FromSeconds(3.0), new TimerStateCallback(DeleteImp), imp);
+        Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => DeleteImp(imp));
       }
     }
 
-    private void DeleteImp(object imp)
+    private void DeleteImp(Mobile m)
     {
-      if (imp is Mobile m && !m.Deleted)
+      if (m?.Deleted == false)
       {
         Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
         Effects.PlaySound(m.Location, m.Map, 0x1FE);
@@ -215,7 +215,7 @@ namespace Server.Engines.Quests.Hag
 
       imp.Direction = imp.GetDirectionTo(from);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(3.0), new TimerStateCallback(DeleteImp), imp);
+      Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => DeleteImp(imp));
     }
 
     private void DeleteImp(object imp)

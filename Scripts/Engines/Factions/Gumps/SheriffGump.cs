@@ -153,7 +153,6 @@ namespace Server.Factions
       if (index >= 0 && index < m_Town.GuardLists.Count)
       {
         GuardList guardList = m_Town.GuardLists[index];
-        Town town = Town.FromRegion(m_From.Region);
 
         if (Town.FromRegion(m_From.Region) != m_Town)
         {

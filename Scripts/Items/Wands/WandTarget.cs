@@ -13,7 +13,7 @@ namespace Server.Targeting
 
     private static int GetOffset(Mobile caster)
     {
-      return 5 + (int)(caster.Skills[SkillName.Magery].Value * 0.02);
+      return 5 + (int)(caster.Skills.Magery.Value * 0.02);
     }
 
     protected override void OnTarget(Mobile from, object targeted)

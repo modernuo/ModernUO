@@ -73,7 +73,7 @@ namespace Server.Mobiles
       if (pack == null)
         return;
 
-      ArrayList list = new ArrayList();
+      List<Item> list = new List<Item>();
 
       foreach (Item item in GetItemsInRange(2))
         if (item.Movable && item.Stackable)
@@ -83,17 +83,14 @@ namespace Server.Mobiles
 
       for (int i = 0; i < list.Count; ++i)
       {
-        Item item = (Item)list[i];
+        Item item = list[i];
 
         if (!pack.CheckHold(this, item, false, true))
           return;
 
-        bool rejected;
-        LRReason reject;
-
         NextActionTime = Core.TickCount;
 
-        Lift(item, item.Amount, out rejected, out reject);
+        Lift(item, item.Amount, out bool rejected, out LRReason _);
 
         if (rejected)
           continue;
@@ -105,7 +102,7 @@ namespace Server.Mobiles
       }
     }
 
-    private void ConfirmRelease_Callback(Mobile from, bool okay, object state)
+    private void ConfirmRelease_Callback(Mobile from, bool okay)
     {
       if (okay)
         EndRelease(from);
@@ -113,10 +110,8 @@ namespace Server.Mobiles
 
     public override void BeginRelease(Mobile from)
     {
-      Container pack = Backpack;
-
-      if (pack != null && pack.Items.Count > 0)
-        from.SendGump(new WarningGump(1060635, 30720, 1061672, 32512, 420, 280, ConfirmRelease_Callback, null));
+      if (Backpack?.Items.Count > 0)
+        from.SendGump(new WarningGump(1060635, 30720, 1061672, 32512, 420, 280, okay => ConfirmRelease_Callback(from, okay)));
       else
         EndRelease(from);
     }

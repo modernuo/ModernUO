@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -14,8 +15,8 @@ namespace Server.Spells.Necromancy
       Reagent.DaemonBlood
     );
 
-    private static Hashtable m_OathTable = new Hashtable();
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Mobile> m_OathTable = new Dictionary<Mobile, Mobile>();
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     public BloodOathSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -38,11 +39,11 @@ namespace Server.Spells.Necromancy
       {
         Caster.SendLocalizedMessage(1060508); // You can't curse that.
       }
-      else if (m_OathTable.Contains(Caster))
+      else if (m_OathTable.ContainsKey(Caster))
       {
         Caster.SendLocalizedMessage(1061607); // You are already bonded in a Blood Oath.
       }
-      else if (m_OathTable.Contains(m))
+      else if (m_OathTable.ContainsKey(m))
       {
         if (m.Player)
           Caster.SendLocalizedMessage(1061608); // That player is already bonded in a Blood Oath.
@@ -61,7 +62,7 @@ namespace Server.Spells.Necromancy
          * ((ss-rm)/8)+8
          */
 
-        ExpireTimer timer = (ExpireTimer)m_Table[m];
+        ExpireTimer timer = m_Table[m];
         timer?.DoExpire();
 
         m_OathTable[Caster] = Caster;
@@ -93,15 +94,10 @@ namespace Server.Spells.Necromancy
       FinishSequence();
     }
 
-    public static bool RemoveCurse(Mobile m)
+    public static void RemoveCurse(Mobile m)
     {
-      ExpireTimer t = (ExpireTimer)m_Table[m];
-
-      if (t == null)
-        return false;
-
-      t.DoExpire();
-      return true;
+      ExpireTimer t = m_Table[m];
+      t?.DoExpire();
     }
 
     public static Mobile GetBloodOath(Mobile m)
@@ -109,12 +105,8 @@ namespace Server.Spells.Necromancy
       if (m == null)
         return null;
 
-      Mobile oath = (Mobile)m_OathTable[m];
-
-      if (oath == m)
-        oath = null;
-
-      return oath;
+      Mobile oath = m_OathTable[m];
+      return oath == m ? null : oath;
     }
 
     private class ExpireTimer : Timer
@@ -141,13 +133,13 @@ namespace Server.Spells.Necromancy
 
       public void DoExpire()
       {
-        if (m_OathTable.Contains(m_Caster))
+        if (m_OathTable.ContainsKey(m_Caster))
         {
           m_Caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
           m_OathTable.Remove(m_Caster);
         }
 
-        if (m_OathTable.Contains(m_Target))
+        if (m_OathTable.ContainsKey(m_Target))
         {
           m_Target.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
           m_OathTable.Remove(m_Target);

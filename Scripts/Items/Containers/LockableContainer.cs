@@ -38,7 +38,7 @@ namespace Server.Items
         KeyValue = key.KeyValue;
         DropItem(key);
 
-        double tinkering = from.Skills[SkillName.Tinkering].Value;
+        double tinkering = from.Skills.Tinkering.Value;
         int level = (int)(tinkering * 0.8);
 
         RequiredSkill = level - 4;

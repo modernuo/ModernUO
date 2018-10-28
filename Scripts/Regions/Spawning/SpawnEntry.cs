@@ -34,13 +34,13 @@ namespace Server.Regions
       MaxSpawnTime = maxSpawnTime;
       Running = false;
 
-      if (Table.Contains(id))
+      if (Table.ContainsKey(id))
         Console.WriteLine("Warning: double SpawnEntry ID '{0}'", id);
       else
         Table[id] = this;
     }
 
-    public static Hashtable Table{ get; } = new Hashtable();
+    public static Dictionary<int, SpawnEntry> Table{ get; } = new Dictionary<int, SpawnEntry>();
 
 
     // When a creature's AI is deactivated (PlayerRangeSensitive optimization) does it return home?
@@ -122,8 +122,8 @@ namespace Server.Regions
 
       spawn.Spawner = this;
 
-      if (spawn is BaseCreature)
-        ((BaseCreature)spawn).RemoveIfUntamed = RemoveIfUntamed;
+      if (spawn is BaseCreature creature)
+        creature.RemoveIfUntamed = RemoveIfUntamed;
     }
 
     private TimeSpan RandomTime()
@@ -218,13 +218,7 @@ namespace Server.Regions
       writer.Write(SpawnedObjects.Count);
 
       for (int i = 0; i < SpawnedObjects.Count; i++)
-      {
-        ISpawnable spawn = SpawnedObjects[i];
-
-        int serial = spawn.Serial;
-
-        writer.Write(serial);
-      }
+        writer.Write(SpawnedObjects[i].Serial);
 
       writer.Write(Running);
 
@@ -245,10 +239,7 @@ namespace Server.Regions
 
       for (int i = 0; i < count; i++)
       {
-        int serial = reader.ReadInt();
-        ISpawnable spawnableEntity = World.FindEntity(serial) as ISpawnable;
-
-        if (spawnableEntity != null)
+        if (World.FindEntity(reader.ReadUInt()) is ISpawnable spawnableEntity)
           Add(spawnableEntity);
       }
 
@@ -276,8 +267,7 @@ namespace Server.Regions
 
       for (int i = 0; i < count; i++)
       {
-        int serial = reader.ReadInt();
-        IEntity entity = World.FindEntity(serial);
+        IEntity entity = World.FindEntity(reader.ReadUInt());
 
         if (entity != null)
         {

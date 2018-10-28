@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Engines.CannedEvil;
 using Server.Items;
 using Server.Spells.Fifth;
@@ -91,7 +92,7 @@ namespace Server.Mobiles
 
     public void Polymorph(Mobile m)
     {
-      if (!m.CanBeginAction(typeof(PolymorphSpell)) || !m.CanBeginAction(typeof(IncognitoSpell)) || m.IsBodyMod)
+      if (!m.CanBeginAction<PolymorphSpell>() || !m.CanBeginAction<IncognitoSpell>() || m.IsBodyMod)
         return;
 
       IMount mount = m.Mount;
@@ -102,7 +103,7 @@ namespace Server.Mobiles
       if (m.Mounted)
         return;
 
-      if (m.BeginAction(typeof(PolymorphSpell)))
+      if (m.BeginAction<PolymorphSpell>())
       {
         Item disarm = m.FindItemOnLayer(Layer.OneHanded);
 
@@ -128,58 +129,38 @@ namespace Server.Mobiles
       if (map == null)
         return;
 
-      int rats = 0;
+      IPooledEnumerable <BaseCreature> eable = GetMobilesInRange<BaseCreature>(10);
+      int rats = eable.Aggregate(0, (c, m) => c + (m is Ratman || m is RatmanArcher || m is RatmanMage ? 1 : 0));
+      eable.Free();
 
-      foreach (Mobile m in GetMobilesInRange(10))
-        if (m is Ratman || m is RatmanArcher || m is RatmanMage)
-          ++rats;
+      if (rats >= 16)
+        return;
 
-      if (rats < 16)
+      PlaySound(0x3D);
+
+      rats = Utility.RandomMinMax(3, 6);
+
+      for (int i = 0; i < rats; ++i)
       {
-        PlaySound(0x3D);
+        BaseCreature rat;
 
-        int newRats = Utility.RandomMinMax(3, 6);
-
-        for (int i = 0; i < newRats; ++i)
+        switch (Utility.Random(5))
         {
-          BaseCreature rat;
-
-          switch (Utility.Random(5))
-          {
-            default:
-            case 0:
-            case 1:
-              rat = new Ratman();
-              break;
-            case 2:
-            case 3:
-              rat = new RatmanArcher();
-              break;
-            case 4:
-              rat = new RatmanMage();
-              break;
-          }
-
-          rat.Team = Team;
-
-          bool validLocation = false;
-          Point3D loc = Location;
-
-          for (int j = 0; !validLocation && j < 10; ++j)
-          {
-            int x = X + Utility.Random(3) - 1;
-            int y = Y + Utility.Random(3) - 1;
-            int z = map.GetAverageZ(x, y);
-
-            if (validLocation = map.CanFit(x, y, Z, 16, false, false))
-              loc = new Point3D(x, y, Z);
-            else if (validLocation = map.CanFit(x, y, z, 16, false, false))
-              loc = new Point3D(x, y, z);
-          }
-
-          rat.MoveToWorld(loc, map);
-          rat.Combatant = target;
+          default:
+            rat = new Ratman();
+            break;
+          case 2:
+          case 3:
+            rat = new RatmanArcher();
+            break;
+          case 4:
+            rat = new RatmanMage();
+            break;
         }
+
+        rat.Team = Team;
+        rat.MoveToWorld(map.GetRandomNearbyLocation(Location), map);
+        rat.Combatant = target;
       }
     }
 
@@ -187,6 +168,7 @@ namespace Server.Mobiles
     {
       if (target == null || target.Deleted) //sanity
         return;
+
       if (0.6 >= Utility.RandomDouble()) // 60% chance to polymorph attacker into a ratman
         Polymorph(target);
 
@@ -238,11 +220,11 @@ namespace Server.Mobiles
 
       protected override void OnTick()
       {
-        if (!m_Owner.CanBeginAction(typeof(PolymorphSpell)))
+        if (!m_Owner.CanBeginAction<PolymorphSpell>())
         {
           m_Owner.BodyMod = 0;
           m_Owner.HueMod = -1;
-          m_Owner.EndAction(typeof(PolymorphSpell));
+          m_Owner.EndAction<PolymorphSpell>();
         }
       }
     }

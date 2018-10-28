@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Guilds;
 using Server.Items;
 using Server.Mobiles;
@@ -71,7 +71,7 @@ namespace Server.Gumps
     private static List<int> _HouseSigns = new List<int>();
     private BaseHouse m_House;
 
-    private ArrayList m_List;
+    private List<Mobile> m_List;
     private HouseGumpPageAOS m_Page;
 
     public HouseGumpAOS(HouseGumpPageAOS page, Mobile from, BaseHouse house) : base(50, 40)
@@ -79,7 +79,7 @@ namespace Server.Gumps
       m_House = house;
       m_Page = page;
 
-      from.CloseGump(typeof(HouseGumpAOS));
+      from.CloseGump<HouseGumpAOS>();
       //from.CloseGump( typeof( HouseListGump ) );
       //from.CloseGump( typeof( HouseRemoveGump ) );
 
@@ -114,15 +114,14 @@ namespace Server.Gumps
 
       if (m_House.Sign != null)
       {
-        ArrayList lines = Wrap(m_House.Sign.GetName());
+        List<string> lines = Wrap(m_House.Sign.GetName());
 
-        if (lines != null)
-          for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
-          {
-            string s = (string)lines[i];
+        for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
+        {
+          string s = (string)lines[i];
 
-            AddLabel(10 + (160 - s.Length * 8) / 2, y, 0, s);
-          }
+          AddLabel(10 + (160 - s.Length * 8) / 2, y, 0, s);
+        }
       }
 
       if (page == HouseGumpPageAOS.Vendors)
@@ -506,10 +505,7 @@ namespace Server.Gumps
 
     private string GetDateTime(DateTime val)
     {
-      if (val == DateTime.MinValue)
-        return "";
-
-      return val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");
+      return val == DateTime.MinValue ? "" : val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");
     }
 
     public void AddPageButton(int x, int y, int buttonID, int number, HouseGumpPageAOS page)
@@ -533,12 +529,12 @@ namespace Server.Gumps
       AddHtmlLocalized(x + 35, y, 240, 20, number, enabled ? LabelColor : DisabledColor, false, false);
     }
 
-    public void AddList(ArrayList list, int button, bool accountOf, bool leadingStar, Mobile from)
+    public void AddList(List<Mobile> list, int button, bool accountOf, bool leadingStar, Mobile from)
     {
       if (list == null)
         return;
 
-      m_List = new ArrayList(list);
+      m_List = new List<Mobile>(list);
 
       int lastPage = 0;
       int index = 0;
@@ -563,7 +559,7 @@ namespace Server.Gumps
         }
 
 
-        Mobile m = (Mobile)list[i];
+        Mobile m = list[i];
 
         string name;
         int labelHue = LabelHue;
@@ -606,26 +602,20 @@ namespace Server.Gumps
       return 1 + index * 15 + type;
     }
 
-    public static void PublicPrivateNotice_Callback(Mobile from, object state)
+    public static void PublicPrivateNotice_Callback(Mobile from, BaseHouse house)
     {
-      BaseHouse house = (BaseHouse)state;
-
       if (!house.Deleted)
         from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, house));
     }
 
-    public static void CustomizeNotice_Callback(Mobile from, object state)
+    public static void CustomizeNotice_Callback(Mobile from, BaseHouse house)
     {
-      BaseHouse house = (BaseHouse)state;
-
       if (!house.Deleted)
         from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, from, house));
     }
 
-    public static void ClearCoOwners_Callback(Mobile from, bool okay, object state)
+    public static void ClearCoOwners_Callback(Mobile from, bool okay, BaseHouse house)
     {
-      BaseHouse house = (BaseHouse)state;
-
       if (house.Deleted)
         return;
 
@@ -639,10 +629,8 @@ namespace Server.Gumps
       from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, house));
     }
 
-    public static void ClearFriends_Callback(Mobile from, bool okay, object state)
+    public static void ClearFriends_Callback(Mobile from, bool okay, BaseHouse house)
     {
-      BaseHouse house = (BaseHouse)state;
-
       if (house.Deleted)
         return;
 
@@ -656,10 +644,8 @@ namespace Server.Gumps
       from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, house));
     }
 
-    public static void ClearBans_Callback(Mobile from, bool okay, object state)
+    public static void ClearBans_Callback(Mobile from, bool okay, BaseHouse house)
     {
-      BaseHouse house = (BaseHouse)state;
-
       if (house.Deleted)
         return;
 
@@ -673,22 +659,20 @@ namespace Server.Gumps
       from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, house));
     }
 
-    public static void ClearAccess_Callback(Mobile from, bool okay, object state)
+    public static void ClearAccess_Callback(Mobile from, bool okay, BaseHouse house)
     {
-      BaseHouse house = (BaseHouse)state;
-
       if (house.Deleted)
         return;
 
       if (okay && house.IsFriend(from))
       {
-        ArrayList list = new ArrayList(house.Access);
+        List<Mobile> list = house.Access.ToList();
 
         house.Access?.Clear();
 
         for (int i = 0; i < list.Count; ++i)
         {
-          Mobile m = (Mobile)list[i];
+          Mobile m = list[i];
 
           if (!house.HasAccess(m) && house.IsInside(m))
           {
@@ -703,10 +687,8 @@ namespace Server.Gumps
       from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, house));
     }
 
-    public static void ConvertHouse_Callback(Mobile from, bool okay, object state)
+    public static void ConvertHouse_Callback(Mobile from, bool okay, BaseHouse house)
     {
-      BaseHouse house = (BaseHouse)state;
-
       if (house.Deleted)
         return;
 
@@ -714,8 +696,9 @@ namespace Server.Gumps
       {
         HousePlacementEntry e = house.ConvertEntry;
 
-        if (e != null)
-        {
+        if (e == null)
+          return;
+        
           int cost = e.Cost - house.Price;
 
           if (cost > 0)
@@ -749,10 +732,10 @@ namespace Server.Gumps
 
             house.MoveAllToCrate();
 
-            newHouse.Friends = new ArrayList(house.Friends);
-            newHouse.CoOwners = new ArrayList(house.CoOwners);
-            newHouse.Bans = new ArrayList(house.Bans);
-            newHouse.Access = new ArrayList(house.Access);
+            newHouse.Friends = new List<Mobile>(house.Friends);
+            newHouse.CoOwners = new List<Mobile>(house.CoOwners);
+            newHouse.Bans = new List<Mobile>(house.Bans);
+            newHouse.Access = new List<Mobile>(house.Access);
             newHouse.BuiltOn = house.BuiltOn;
             newHouse.LastTraded = house.LastTraded;
             newHouse.Public = house.Public;
@@ -799,10 +782,9 @@ namespace Server.Gumps
              * These containers can be used to re-create the vendor in a new location.
              * Any barkeepers have been converted into deeds.
              */
-            from.SendGump(new NoticeGump(1060637, 30720, 1060012, 32512, 420, 280, null, null));
+            from.SendGump(new NoticeGump(1060637, 30720, 1060012, 32512, 420, 280));
             return;
           }
-        }
       }
 
       from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Security, from, house));
@@ -971,7 +953,7 @@ namespace Server.Gumps
             {
               if (isOwner)
                 from.SendGump(new WarningGump(1060635, 30720, 1060736, 32512, 420, 280,
-                  ClearCoOwners_Callback, m_House));
+                  okay => ClearCoOwners_Callback(from, okay, m_House)));
 
               break;
             }
@@ -1003,7 +985,7 @@ namespace Server.Gumps
             {
               if (isCoOwner)
                 from.SendGump(new WarningGump(1060635, 30720, 1018039, 32512, 420, 280,
-                  ClearFriends_Callback, m_House));
+                  okay => ClearFriends_Callback(from, okay, m_House)));
 
               break;
             }
@@ -1015,8 +997,8 @@ namespace Server.Gumps
             }
             case 9: // Clear Ban List
             {
-              from.SendGump(new WarningGump(1060635, 30720, 1060753, 32512, 420, 280, ClearBans_Callback,
-                m_House));
+              from.SendGump(new WarningGump(1060635, 30720, 1060753, 32512, 420, 280,
+                okay => ClearBans_Callback(from, okay, m_House)));
 
               break;
             }
@@ -1028,8 +1010,8 @@ namespace Server.Gumps
             }
             case 11: // Clear Access List
             {
-              from.SendGump(new WarningGump(1060635, 30720, 1061842, 32512, 420, 280, ClearAccess_Callback,
-                m_House));
+              from.SendGump(new WarningGump(1060635, 30720, 1061842, 32512, 420, 280,
+                okay => ClearAccess_Callback(from, okay, m_House)));
 
               break;
             }
@@ -1041,7 +1023,7 @@ namespace Server.Gumps
                 {
                   // You have vendors working out of this building. It cannot be declared private until there are no vendors in place.
                   from.SendGump(new NoticeGump(1060637, 30720, 501887, 32512, 320, 180,
-                    PublicPrivateNotice_Callback, m_House));
+                    () => PublicPrivateNotice_Callback(from, m_House)));
                   break;
                 }
 
@@ -1049,7 +1031,7 @@ namespace Server.Gumps
                 {
                   // You cannot currently take this action because you have vendor contracts locked down in your home.  You must remove them first.
                   from.SendGump(new NoticeGump(1060637, 30720, 1062351, 32512, 320, 180,
-                    PublicPrivateNotice_Callback, m_House));
+                    () => PublicPrivateNotice_Callback(from, m_House)));
                   break;
                 }
 
@@ -1059,7 +1041,7 @@ namespace Server.Gumps
 
                 // This house is now private.
                 from.SendGump(new NoticeGump(1060637, 30720, 501888, 32512, 320, 180,
-                  PublicPrivateNotice_Callback, m_House));
+                  () => PublicPrivateNotice_Callback(from, m_House)));
 
                 Region r = m_House.Region;
                 List<Mobile> list = r.GetMobiles();
@@ -1086,11 +1068,11 @@ namespace Server.Gumps
 
                 if (BaseHouse.NewVendorSystem)
                   from.SendGump(new NoticeGump(1060637, 30720, 501886, 32512, 320, 180,
-                    PublicPrivateNotice_Callback, m_House));
+                    () => PublicPrivateNotice_Callback(from, m_House)));
                 else
                   from.SendGump(new NoticeGump(1060637, 30720,
                     "This house is now public. Friends of the house may now have vendors working out of this building.",
-                    0xF8C000, 320, 180, PublicPrivateNotice_Callback, m_House));
+                    0xF8C000, 320, 180, () => PublicPrivateNotice_Callback(from, m_House)));
 
                 Region r = m_House.Region;
                 List<Mobile> list = r.GetMobiles();
@@ -1122,7 +1104,7 @@ namespace Server.Gumps
                 {
                   // You cannot perform this action while you still have vendors rented out in this house.
                   from.SendGump(new NoticeGump(1060637, 30720, 1062395, 32512, 320, 180,
-                    CustomizeNotice_Callback, m_House));
+                    () => CustomizeNotice_Callback(from, m_House)));
                 }
                 else
                 {
@@ -1130,7 +1112,7 @@ namespace Server.Gumps
 
                   if (e != null)
                     from.SendGump(new WarningGump(1060635, 30720, 1060013, 32512, 420, 280,
-                      ConvertHouse_Callback, m_House));
+                      okay => ConvertHouse_Callback(from, okay, m_House)));
                 }
               }
 
@@ -1142,13 +1124,13 @@ namespace Server.Gumps
               {
                 if (m_House.HasRentedVendors)
                   from.SendGump(new NoticeGump(1060637, 30720, 1062395, 32512, 320, 180,
-                    CustomizeNotice_Callback, m_House));
+                    () => CustomizeNotice_Callback(from, m_House)));
 
                 #region Mondain's Legacy
 
                 else if (m_House.HasAddonContainers)
                   from.SendGump(new NoticeGump(1060637, 30720, 1074863, 32512, 320, 180,
-                    CustomizeNotice_Callback, m_House));
+                    () => CustomizeNotice_Callback(from, m_House)));
 
                 #endregion
 
@@ -1239,7 +1221,7 @@ namespace Server.Gumps
                 }
                 else
                 {
-                  from.CloseGump(typeof(HouseDemolishGump));
+                  from.CloseGump<HouseDemolishGump>();
                   from.SendGump(new HouseDemolishGump(from, m_House));
                 }
               }
@@ -1436,13 +1418,13 @@ namespace Server.Gumps
       }
     }
 
-    private ArrayList Wrap(string value)
+    private List<string> Wrap(string value)
     {
       if (value == null || (value = value.Trim()).Length <= 0)
         return null;
 
       string[] values = value.Split(' ');
-      ArrayList list = new ArrayList();
+      List<string> list = new List<string>();
       string current = "";
 
       for (int i = 0; i < values.Length; ++i)

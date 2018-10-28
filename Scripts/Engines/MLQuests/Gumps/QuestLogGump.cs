@@ -23,8 +23,8 @@ namespace Server.Engines.MLQuests.Gumps
 
       if (closeGumps)
       {
-        pm.CloseGump(typeof(QuestLogGump));
-        pm.CloseGump(typeof(QuestLogDetailedGump));
+        pm.CloseGump<QuestLogGump>();
+        pm.CloseGump<QuestLogDetailedGump>();
       }
 
       RegisterButton(ButtonPosition.Right, ButtonGraphic.Okay, 3);

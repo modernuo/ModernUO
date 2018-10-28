@@ -94,25 +94,25 @@ namespace Server.Engines.Quests.Haven
               qs.AddConversation(new FewReagentsConversation());
           }
 
-          QuestObjective obj = qs.FindObjective(typeof(FindUzeraanBeginObjective));
+          QuestObjective obj = qs.FindObjective<FindUzeraanBeginObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             obj.Complete();
           }
           else
           {
-            obj = qs.FindObjective(typeof(FindUzeraanFirstTaskObjective));
+            obj = qs.FindObjective<FindUzeraanFirstTaskObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               obj.Complete();
             }
             else
             {
-              obj = qs.FindObjective(typeof(FindUzeraanAboutReportObjective));
+              obj = qs.FindObjective<FindUzeraanAboutReportObjective>();
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
               {
                 Container cont = GetNewContainer();
 
@@ -145,36 +145,36 @@ namespace Server.Engines.Quests.Haven
               }
               else
               {
-                obj = qs.FindObjective(typeof(ReturnScrollOfPowerObjective));
+                obj = qs.FindObjective<ReturnScrollOfPowerObjective>();
 
-                if (obj != null && !obj.Completed)
+                if (obj?.Completed == false)
                 {
                   FocusTo(player);
                   SayTo(player, 1049378); // Hand me the scroll, if you have it.
                 }
                 else
                 {
-                  obj = qs.FindObjective(typeof(ReturnFertileDirtObjective));
+                  obj = qs.FindObjective<ReturnFertileDirtObjective>();
 
-                  if (obj != null && !obj.Completed)
+                  if (obj?.Completed == false)
                   {
                     FocusTo(player);
                     SayTo(player, 1049381); // Hand me the Fertile Dirt, if you have it.
                   }
                   else
                   {
-                    obj = qs.FindObjective(typeof(ReturnDaemonBloodObjective));
+                    obj = qs.FindObjective<ReturnDaemonBloodObjective>();
 
-                    if (obj != null && !obj.Completed)
+                    if (obj?.Completed == false)
                     {
                       FocusTo(player);
                       SayTo(player, 1049379); // Hand me the Vial of Blood, if you have it.
                     }
                     else
                     {
-                      obj = qs.FindObjective(typeof(ReturnDaemonBoneObjective));
+                      obj = qs.FindObjective<ReturnDaemonBoneObjective>();
 
-                      if (obj != null && !obj.Completed)
+                      if (obj?.Completed == false)
                       {
                         FocusTo(player);
                         SayTo(player, 1049380); // Hand me the Daemon Bone, if you have it.
@@ -225,9 +225,9 @@ namespace Server.Engines.Quests.Haven
 
           if (dropped is SchmendrickScrollOfPower)
           {
-            QuestObjective obj = qs.FindObjective(typeof(ReturnScrollOfPowerObjective));
+            QuestObjective obj = qs.FindObjective<ReturnScrollOfPowerObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               Container cont = GetNewContainer();
 
@@ -250,9 +250,9 @@ namespace Server.Engines.Quests.Haven
           }
           else if (dropped is QuestFertileDirt)
           {
-            QuestObjective obj = qs.FindObjective(typeof(ReturnFertileDirtObjective));
+            QuestObjective obj = qs.FindObjective<ReturnFertileDirtObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               Container cont = GetNewContainer();
 
@@ -294,9 +294,9 @@ namespace Server.Engines.Quests.Haven
           }
           else if (dropped is QuestDaemonBlood)
           {
-            QuestObjective obj = qs.FindObjective(typeof(ReturnDaemonBloodObjective));
+            QuestObjective obj = qs.FindObjective<ReturnDaemonBloodObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               Item reward;
 
@@ -365,9 +365,9 @@ namespace Server.Engines.Quests.Haven
           }
           else if (dropped is QuestDaemonBone)
           {
-            QuestObjective obj = qs.FindObjective(typeof(ReturnDaemonBoneObjective));
+            QuestObjective obj = qs.FindObjective<ReturnDaemonBoneObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               Container cont = GetNewContainer();
               cont.DropItem(new BankCheck(2000));
@@ -409,7 +409,7 @@ namespace Server.Engines.Quests.Haven
           m.PlaySound(0x214);
           m.FixedEffect(0x376A, 10, 16);
 
-          m.CloseGump(typeof(ResurrectGump));
+          m.CloseGump<ResurrectGump>();
           m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
         }
       }

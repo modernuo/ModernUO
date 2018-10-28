@@ -19,7 +19,7 @@ namespace Server.Engines.ConPVP
 
     public DuelContext Context{ get; }
 
-    public TournyParticipant TournyPart{ get; set; }
+    public TourneyParticipant TourneyPart{ get; set; }
 
     public int FilledSlots
     {

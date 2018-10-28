@@ -9,9 +9,7 @@ namespace Server.Mobiles
 {
   public class Ilhenir : BaseChampion
   {
-    private static Hashtable m_Table;
-
-    private DateTime m_NextDrop = DateTime.UtcNow;
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     [Constructible]
     public Ilhenir()
@@ -232,41 +230,25 @@ namespace Server.Mobiles
 
     public virtual void CacophonicAttack(Mobile to)
     {
-      if (m_Table == null)
-        m_Table = new Hashtable();
-
-      if (to.Alive && to.Player && m_Table[to] == null)
+      if (to.Alive && to.Player && !m_Table.ContainsKey(to))
       {
         to.Send(SpeedControl.WalkSpeed);
         to.SendLocalizedMessage(1072069); // A cacophonic sound lambastes you, suppressing your ability to move.
         to.PlaySound(0x584);
 
-        m_Table[to] = Timer.DelayCall(TimeSpan.FromSeconds(30), new TimerStateCallback(EndCacophonic_Callback), to);
+        m_Table[to] = Timer.DelayCall(TimeSpan.FromSeconds(30), CacophonicEnd, to);
       }
-    }
-
-    private void EndCacophonic_Callback(object state)
-    {
-      if (state is Mobile mobile)
-        CacophonicEnd(mobile);
     }
 
     public virtual void CacophonicEnd(Mobile from)
     {
-      if (m_Table == null)
-        m_Table = new Hashtable();
-
-      m_Table[from] = null;
-
+      m_Table.Remove(from);
       from.Send(SpeedControl.Disable);
     }
 
     public static bool UnderCacophonicAttack(Mobile from)
     {
-      if (m_Table == null)
-        m_Table = new Hashtable();
-
-      return m_Table[from] != null;
+      return m_Table.ContainsKey(from);
     }
 
     public virtual void DropOoze()
@@ -336,14 +318,7 @@ namespace Server.Mobiles
     private Timer m_Timer;
 
     [Constructible]
-    public StainedOoze()
-      : this(false)
-    {
-    }
-
-    [Constructible]
-    public StainedOoze(bool corrosive)
-      : base(0x122A)
+    public StainedOoze(bool corrosive = false) : base(0x122A)
     {
       Movable = false;
       Hue = 0x95;

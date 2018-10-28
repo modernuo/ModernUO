@@ -19,7 +19,7 @@ namespace Server.Guilds
 
     public GuildDiplomacyGump(PlayerMobile pm, Guild g)
       : this(pm, g, NameComparer.Instance, true, "", 0, GuildDisplayType.All,
-        Utility.CastConvertList<BaseGuild, Guild>(new List<BaseGuild>(BaseGuild.List.Values)),
+        Utility.CastListCovariant<BaseGuild, Guild>(new List<BaseGuild>(BaseGuild.List.Values)),
         1063136 + (int)GuildDisplayType.All)
     {
     }
@@ -27,7 +27,7 @@ namespace Server.Guilds
     public GuildDiplomacyGump(PlayerMobile pm, Guild g, IComparer<Guild> currentComparer, bool ascending, string filter,
       int startNumber, GuildDisplayType display)
       : this(pm, g, currentComparer, ascending, filter, startNumber, display,
-        Utility.CastConvertList<BaseGuild, Guild>(new List<BaseGuild>(BaseGuild.List.Values)),
+        Utility.CastListCovariant<BaseGuild, Guild>(new List<BaseGuild>(BaseGuild.List.Values)),
         1063136 + (int)display)
     {
     }

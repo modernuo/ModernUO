@@ -95,7 +95,7 @@ namespace Server.Guilds
         if (pm.GuildRank.GetFlag(RankFlags.CanInvitePlayer))
         {
           pm.SendLocalizedMessage(1063048); // Whom do you wish to invite into your guild?
-          pm.BeginTarget(-1, false, TargetFlags.None, new TargetStateCallback(InvitePlayer_Callback), guild);
+          pm.BeginTarget(-1, false, TargetFlags.None, InvitePlayer_Callback, guild);
         }
         else
         {
@@ -104,12 +104,10 @@ namespace Server.Guilds
       }
     }
 
-    public void InvitePlayer_Callback(Mobile from, object targeted, object state)
+    public void InvitePlayer_Callback(Mobile from, object targeted, Guild g)
     {
       PlayerMobile pm = from as PlayerMobile;
       PlayerMobile targ = targeted as PlayerMobile;
-
-      Guild g = state as Guild;
 
       PlayerState guildState = PlayerState.Find(g.Leader);
       PlayerState targetState = PlayerState.Find(targ);
@@ -137,7 +135,7 @@ namespace Server.Guilds
       {
         pm.SendLocalizedMessage(1063051, targ.Name); // ~1_val~ is already a member of a guild.
       }
-      else if (targ.HasGump(typeof(BaseGuildGump)) || targ.HasGump(typeof(CreateGuildGump))
+      else if (targ.HasGump<BaseGuildGump>() || targ.HasGump<CreateGuildGump>()
       ) //TODO: Check message if CreateGuildGump Open
       {
         pm.SendLocalizedMessage(1063052, targ.Name); // ~1_val~ is currently considering another guild invitation.

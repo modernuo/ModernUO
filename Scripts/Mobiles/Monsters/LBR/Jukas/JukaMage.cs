@@ -113,7 +113,7 @@ namespace Server.Mobiles
 
         foreach (Mobile m in GetMobilesInRange(8))
           if (m is JukaLord lord && IsFriend(lord) && lord.Combatant != null && CanBeBeneficial(lord) &&
-              lord.CanBeginAction(typeof(JukaMage)) && InLOS(lord))
+              lord.CanBeginAction<JukaMage>() && InLOS(lord))
           {
             toBuff = lord;
             break;
@@ -121,7 +121,7 @@ namespace Server.Mobiles
 
         if (toBuff != null)
         {
-          if (CanBeBeneficial(toBuff) && toBuff.BeginAction(typeof(JukaMage)))
+          if (CanBeBeneficial(toBuff) && toBuff.BeginAction<JukaMage>())
           {
             m_NextAbilityTime = DateTime.UtcNow + TimeSpan.FromSeconds(Utility.RandomMinMax(30, 60));
 
@@ -129,8 +129,6 @@ namespace Server.Mobiles
             Say(true, "Fight well my lord!");
 
             DoBeneficial(toBuff);
-
-            object[] state = { toBuff, toBuff.HitsMaxSeed, toBuff.RawStr, toBuff.RawDex };
 
             SpellHelper.Turn(this, toBuff);
 
@@ -161,7 +159,7 @@ namespace Server.Mobiles
             toBuff.FixedParticles(0x375A, 10, 15, 5017, EffectLayer.Waist);
             toBuff.PlaySound(0x1EE);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(20.0), new TimerStateCallback(Unbuff), state);
+            Timer.DelayCall(TimeSpan.FromSeconds(20.0), () => Unbuff(toBuff, toBuff.HitsMaxSeed, toBuff.RawStr, toBuff.RawDex));
           }
         }
         else
@@ -173,20 +171,16 @@ namespace Server.Mobiles
       base.OnThink();
     }
 
-    private void Unbuff(object state)
+    private void Unbuff(JukaLord toDebuff, int hitsMaxSeed, int rawStr, int rawDex)
     {
-      object[] states = (object[])state;
-
-      JukaLord toDebuff = (JukaLord)states[0];
-
-      toDebuff.EndAction(typeof(JukaMage));
+      toDebuff.EndAction<JukaMage>();
 
       if (toDebuff.Deleted)
         return;
 
-      toDebuff.HitsMaxSeed = (int)states[1];
-      toDebuff.RawStr = (int)states[2];
-      toDebuff.RawDex = (int)states[3];
+      toDebuff.HitsMaxSeed = hitsMaxSeed;
+      toDebuff.RawStr = rawStr;
+      toDebuff.RawDex = rawDex;
 
       toDebuff.Hits = toDebuff.Hits;
       toDebuff.Stam = toDebuff.Stam;

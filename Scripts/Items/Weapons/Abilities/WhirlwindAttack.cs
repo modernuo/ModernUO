@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Spells;
 
 namespace Server.Items
@@ -33,16 +34,16 @@ namespace Server.Items
       attacker.FixedEffect(0x3728, 10, 15);
       attacker.PlaySound(0x2A1);
 
-      ArrayList list = new ArrayList();
+      List<Mobile> list = new List<Mobile>();
 
       foreach (Mobile m in attacker.GetMobilesInRange(1))
         list.Add(m);
 
-      ArrayList targets = new ArrayList();
+      List<Mobile> targets = new List<Mobile>();
 
       for (int i = 0; i < list.Count; ++i)
       {
-        Mobile m = (Mobile)list[i];
+        Mobile m = list[i];
 
         if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m))
         {
@@ -70,7 +71,7 @@ namespace Server.Items
 
         for (int i = 0; i < targets.Count; ++i)
         {
-          Mobile m = (Mobile)targets[i];
+          Mobile m = targets[i];
 
           attacker.SendLocalizedMessage(1060161); // The whirling attack strikes a target!
           m.SendLocalizedMessage(1060162); // You are struck by the whirling attack and take damage!

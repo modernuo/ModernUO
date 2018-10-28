@@ -59,9 +59,9 @@ namespace Server.Items
       {
       }
 
-      public virtual void SetTubHue(Mobile from, object state, int hue)
+      public virtual void SetTubHue(Mobile from, DyeTub tub, int hue)
       {
-        if (state is DyeTub tub) tub.DyedHue = hue;
+        tub.DyedHue = hue;
       }
 
       protected override void OnTarget(Mobile from, object targeted)
@@ -71,9 +71,9 @@ namespace Server.Items
           if (tub.Redyable)
           {
             if (tub.MetallicHues) /* OSI has three metallic tubs now */
-              from.SendGump(new MetallicHuePicker(from, SetTubHue, tub));
+              from.SendGump(new MetallicHuePicker<DyeTub>(from, SetTubHue, tub));
             else if (tub.CustomHuePicker != null)
-              from.SendGump(new CustomHuePickerGump(from, tub.CustomHuePicker, SetTubHue, tub));
+              from.SendGump(new CustomHuePickerGump<DyeTub>(from, tub.CustomHuePicker, SetTubHue, tub));
             else
               from.SendHuePicker(new InternalPicker(tub));
           }

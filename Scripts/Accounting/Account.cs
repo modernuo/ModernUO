@@ -752,13 +752,14 @@ namespace Server.Accounting
 					try
 					{
 						int index = Utility.GetXMLInt32( Utility.GetAttribute( ele, "index", "0" ), 0 );
-						int serial = Utility.GetXMLInt32( Utility.GetText( ele, "0" ), 0 );
+						uint serial = Utility.GetXMLUInt32( Utility.GetText( ele, "0" ), 0 );
 
 						if ( index >= 0 && index < list.Length )
 							list[index] = World.FindMobile( serial );
 					}
 					catch
 					{
+						// ignored
 					}
 				}
 			}
@@ -783,7 +784,10 @@ namespace Server.Accounting
 				foreach ( XmlElement comment in comments.GetElementsByTagName( "comment" ) )
 				{
 					try { list.Add( new AccountComment( comment ) ); }
-					catch { }
+					catch
+					{
+						// ignored
+					}
 				}
 			}
 
@@ -807,7 +811,10 @@ namespace Server.Accounting
 				foreach ( XmlElement tag in tags.GetElementsByTagName( "tag" ) )
 				{
 					try { list.Add( new AccountTag( tag ) ); }
-					catch { }
+					catch
+					{
+						// ignored
+					}
 				}
 			}
 
@@ -1180,8 +1187,7 @@ namespace Server.Accounting
 		{
 			if (amount <= 0) { return false; }
 
-			int gold;
-			int plat = Math.DivRem(amount, AccountGold.CurrencyThreshold, out gold);
+			int plat = Math.DivRem(amount, AccountGold.CurrencyThreshold, out int gold);
 			TotalPlat += plat;
 			TotalGold += gold;
 

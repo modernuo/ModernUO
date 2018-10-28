@@ -521,7 +521,7 @@ namespace Server.Engines.Doom
 
       protected override void OnTick()
       {
-        if (m_Player == null || !(m_Player.Map == Map.Malas))
+        if (m_Player == null || m_Player.Map != Map.Malas)
         {
           Stop();
         }

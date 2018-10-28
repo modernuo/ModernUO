@@ -34,8 +34,8 @@ namespace Server.Engines.Craft
       m_CraftItem = craftItem;
       m_Tool = tool;
 
-      from.CloseGump(typeof(CraftGump));
-      from.CloseGump(typeof(CraftGumpItem));
+      from.CloseGump<CraftGump>();
+      from.CloseGump<CraftGumpItem>();
 
       AddPage(0);
       AddBackground(0, 0, 530, 417, 5054);
@@ -143,7 +143,7 @@ namespace Server.Engines.Craft
       for (int i = 0; i < m_CraftItem.Skills.Count; i++)
       {
         CraftSkill skill = m_CraftItem.Skills.GetAt(i);
-        double minSkill = skill.MinSkill, maxSkill = skill.MaxSkill;
+        double minSkill = skill.MinSkill;
 
         if (minSkill < 0)
           minSkill = 0;

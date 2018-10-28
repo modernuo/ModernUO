@@ -117,9 +117,9 @@ namespace Server.Engines.Mahjong
 
     private void BuildWalls()
     {
-      Tiles = new MahjongTile[17 * 8];
+      Tiles = new MahjongTile[136];
 
-      MahjongTileTypeGenerator typeGenerator = new MahjongTileTypeGenerator(4);
+      MahjongTileTypeGenerator typeGenerator = new MahjongTileTypeGenerator();
 
       int i = 0;
 

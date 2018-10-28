@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Accounting;
 using Server.Network;
 
@@ -59,7 +59,7 @@ namespace Server.RemoteAdmin
 
       term = term.ToUpper();
 
-      ArrayList list = new ArrayList();
+      List<Account> list = new List<Account>();
 
       foreach (Account a in Accounts.GetAccounts())
       {
@@ -212,7 +212,7 @@ namespace Server.RemoteAdmin
             "Editing Own Account"));
         }
 
-        ArrayList list = new ArrayList();
+        List<string> list = new List<string>();
         ushort length = pvSrc.ReadUInt16();
         bool invalid = false;
         for (int i = 0; i < length; i++)
@@ -224,10 +224,7 @@ namespace Server.RemoteAdmin
             invalid = true;
         }
 
-        if (list.Count > 0)
-          a.IPRestrictions = (string[])list.ToArray(typeof(string));
-        else
-          a.IPRestrictions = new string[0];
+        a.IPRestrictions = list.ToArray();
 
         if (invalid)
           state.Send(new MessageBoxMessage(

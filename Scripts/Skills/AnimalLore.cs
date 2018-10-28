@@ -34,20 +34,18 @@ namespace Server.SkillHandlers
         {
           from.SendLocalizedMessage(500331); // The spirits of the dead are not the province of animal lore.
         }
-        else if (targeted is BaseCreature)
+        else if (targeted is BaseCreature c)
         {
-          BaseCreature c = (BaseCreature)targeted;
-
           if (!c.IsDeadPet)
           {
             if (c.Body.IsAnimal || c.Body.IsMonster || c.Body.IsSea)
             {
-              if (!c.Controlled && from.Skills[SkillName.AnimalLore].Value < 100.0)
+              if (!c.Controlled && from.Skills.AnimalLore.Value < 100.0)
               {
                 from.SendLocalizedMessage(
                   1049674); // At your skill level, you can only lore tamed creatures.
               }
-              else if (!c.Controlled && !c.Tamable && from.Skills[SkillName.AnimalLore].Value < 110.0)
+              else if (!c.Controlled && !c.Tamable && from.Skills.AnimalLore.Value < 110.0)
               {
                 from.SendLocalizedMessage(
                   1049675); // At your skill level, you can only lore tamed or tameable creatures.
@@ -58,7 +56,7 @@ namespace Server.SkillHandlers
               }
               else
               {
-                from.CloseGump(typeof(AnimalLoreGump));
+                from.CloseGump<AnimalLoreGump>();
                 from.SendGump(new AnimalLoreGump(c));
               }
             }

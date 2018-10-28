@@ -20,7 +20,7 @@ namespace Server.Gumps
 
       Closable = true;
       Disposable = true;
-      Dragable = true;
+      Draggable = true;
       Resizable = false;
 
       AddPage(0);

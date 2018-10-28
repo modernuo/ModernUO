@@ -1376,11 +1376,9 @@ namespace Server.Multis
       {
         Point2D dest = MapItem.Pins[NextNavPoint];
 
-        int x, y;
-        MapItem.ConvertToWorld(dest.X, dest.Y, out x, out y);
+        MapItem.ConvertToWorld(dest.X, dest.Y, out int x, out int y);
 
-        int maxSpeed;
-        dir = GetMovementFor(x, y, out maxSpeed);
+        dir = GetMovementFor(x, y, out int maxSpeed);
 
         if (maxSpeed == 0)
         {

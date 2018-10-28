@@ -334,7 +334,7 @@ namespace Server.Items
 
         Closable = true;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         AddPage(0);
@@ -455,7 +455,7 @@ namespace Server.Items
 
       if (IsChildOf(from.Backpack))
       {
-        from.CloseGump(typeof(RewardOptionGump));
+        from.CloseGump<RewardOptionGump>();
         from.SendGump(new RewardOptionGump(this));
       }
       else

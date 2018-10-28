@@ -26,8 +26,7 @@ namespace Server.Items
           from.Location = Location;
           c.ItemID = 0x124A;
 
-          Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 3,
-            new TimerStateCallback(Activate), new object[] { c, from });
+          Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 3, () => Activate(c, from));
         }
         else
         {
@@ -55,58 +54,44 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
     }
 
-    private void Activate(object obj)
-    {
-      object[] param = (object[])obj;
-
-      if (param[0] is AddonComponent component && param[1] is Mobile mobile)
-        Activate(component, mobile);
-    }
-
     public virtual void Activate(AddonComponent c, Mobile from)
     {
       c.ItemID += 1;
 
-      if (c.ItemID >= 0x124D)
+      if (c.ItemID < 0x124D)
+        return;
+      
+      // blood
+      int amount = Utility.RandomMinMax(3, 7);
+
+      for (int i = 0; i < amount; i++)
       {
-        // blood
-        int amount = Utility.RandomMinMax(3, 7);
+        int x = c.X + Utility.RandomMinMax(-1, 1);
+        int y = c.Y + Utility.RandomMinMax(-1, 1);
+        int z = c.Z;
 
-        for (int i = 0; i < amount; i++)
+        if (!c.Map.CanFit(x, y, z, 1, false, false))
         {
-          int x = c.X + Utility.RandomMinMax(-1, 1);
-          int y = c.Y + Utility.RandomMinMax(-1, 1);
-          int z = c.Z;
+          z = c.Map.GetAverageZ(x, y);
 
-          if (!c.Map.CanFit(x, y, z, 1, false, false, true))
-          {
-            z = c.Map.GetAverageZ(x, y);
-
-            if (!c.Map.CanFit(x, y, z, 1, false, false, true))
-              continue;
-          }
-
-          Blood blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));
-          blood.MoveToWorld(new Point3D(x, y, z), c.Map);
+          if (!c.Map.CanFit(x, y, z, 1, false, false))
+            continue;
         }
 
-        if (from.Female)
-          from.PlaySound(Utility.RandomMinMax(0x150, 0x153));
-        else
-          from.PlaySound(Utility.RandomMinMax(0x15A, 0x15D));
-
-        from.LocalOverheadMessage(MessageType.Regular, 0,
-          501777); // Hmm... you suspect that if you used this again, it might hurt.
-        SpellHelper.Damage(TimeSpan.Zero, from, Utility.Dice(2, 10, 5));
-
-        Timer.DelayCall(TimeSpan.FromSeconds(1), new TimerStateCallback(Deactivate), c);
+        Blood blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));
+        blood.MoveToWorld(new Point3D(x, y, z), c.Map);
       }
-    }
 
-    private void Deactivate(object obj)
-    {
-      if (obj is AddonComponent component)
-        component.ItemID = 0x1249;
+      if (from.Female)
+        from.PlaySound(Utility.RandomMinMax(0x150, 0x153));
+      else
+        from.PlaySound(Utility.RandomMinMax(0x15A, 0x15D));
+
+      from.LocalOverheadMessage(MessageType.Regular, 0,
+        501777); // Hmm... you suspect that if you used this again, it might hurt.
+      SpellHelper.Damage(TimeSpan.Zero, from, Utility.Dice(2, 10, 5));
+
+      Timer.DelayCall(TimeSpan.FromSeconds(1), () => c.ItemID = 0x1249);
     }
   }
 

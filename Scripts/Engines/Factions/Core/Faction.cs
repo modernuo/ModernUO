@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Accounting;
 using Server.Commands;
@@ -677,11 +676,11 @@ namespace Server.Factions
 
     public static void FactionItemReset_OnCommand(CommandEventArgs e)
     {
-      ArrayList pots = new ArrayList();
+      List<Item> items = new List<Item>();
 
       foreach (Item item in World.Items.Values)
         if (item is IFactionItem && !(item is HoodedShroudOfShadows))
-          pots.Add(item);
+          items.Add(item);
 
       int[] hues = new int[Factions.Count * 2];
 
@@ -693,9 +692,9 @@ namespace Server.Factions
 
       int count = 0;
 
-      for (int i = 0; i < pots.Count; ++i)
+      for (int i = 0; i < items.Count; ++i)
       {
-        Item item = (Item)pots[i];
+        Item item = items[i];
         IFactionItem fci = (IFactionItem)item;
 
         if (fci.FactionItemState != null || item.LootType != LootType.Blessed)
@@ -918,7 +917,7 @@ namespace Server.Factions
       if (smallest == null)
         return true; // sanity
 
-      if (StabilityFactor > 0 && (Members.Count + influx) * 100 / StabilityFactor > smallest.Members.Count)
+      if ((Members.Count + influx) * 100 / StabilityFactor > smallest.Members.Count)
         return false;
 
       return true;
@@ -939,7 +938,7 @@ namespace Server.Factions
           return;
         }
 
-        if (killer.GetDistanceToSqrt(victim) > 64)
+        if (killer?.GetDistanceToSqrt(victim) > 64)
         {
           sigil.ReturnHome();
           killer.SendLocalizedMessage(1042230); // The sigil has gone back to its home location.
@@ -947,13 +946,13 @@ namespace Server.Factions
         else if (Sigil.ExistsOn(killer))
         {
           sigil.ReturnHome();
-          killer.SendLocalizedMessage(
+          killer?.SendLocalizedMessage(
             1010258); // The sigil has gone back to its home location because you already have a sigil.
         }
         else if (!killerPack.TryDropItem(killer, sigil, false))
         {
           sigil.ReturnHome();
-          killer.SendLocalizedMessage(1010259); // The sigil has gone home because your backpack is full.
+          killer?.SendLocalizedMessage(1010259); // The sigil has gone home because your backpack is full.
         }
       });
 
@@ -998,7 +997,7 @@ namespace Server.Factions
 
       #region Dueling
 
-      if (victim.Region.IsPartOf(typeof(SafeZone)))
+      if (victim.Region.IsPartOf<SafeZone>())
         return;
 
       #endregion
@@ -1231,12 +1230,7 @@ namespace Server.Factions
         }
       }
 
-      context.m_Timer = Timer.DelayCall(SkillLossPeriod, new TimerStateCallback(ClearSkillLoss_Callback), mob);
-    }
-
-    private static void ClearSkillLoss_Callback(object state)
-    {
-      ClearSkillLoss((Mobile)state);
+      context.m_Timer = Timer.DelayCall(SkillLossPeriod, () => ClearSkillLoss(mob));
     }
 
     public static bool ClearSkillLoss(Mobile mob)

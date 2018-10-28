@@ -30,7 +30,7 @@ namespace Server.Engines.Quests
         {
           QuestObjective obj = player.Quest.FindObjective(m_Objective);
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
             obj.Complete();
         }
     }

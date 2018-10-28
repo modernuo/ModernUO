@@ -48,29 +48,10 @@ namespace Server.Mobiles
       else
         AddItem(new Shoes(lowHue));
 
-      //if ( !Female )
-      //AddItem( new BodySash( lowHue ) );
+      int randomHair = Utility.Random(4);
+      HairItemID = randomHair == 4 ? 0x203B : 0x2048 + randomHair;
 
-      //AddItem( new Cloak( GetRandomHue() ) );
-
-      //if ( !Female )
-      //AddItem( new Longsword() );
-
-      switch (Utility.Random(4))
-      {
-        case 0:
-          AddItem(new ShortHair(Utility.RandomHairHue()));
-          break;
-        case 1:
-          AddItem(new TwoPigTails(Utility.RandomHairHue()));
-          break;
-        case 2:
-          AddItem(new ReceedingHair(Utility.RandomHairHue()));
-          break;
-        case 3:
-          AddItem(new KrisnaHair(Utility.RandomHairHue()));
-          break;
-      }
+      HairHue = Race.RandomHairHue();
 
       PackGold(200, 250);
     }

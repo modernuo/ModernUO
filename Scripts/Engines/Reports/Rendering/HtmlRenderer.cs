@@ -116,10 +116,11 @@ namespace Server.Engines.Reports
       {
         Process p = Process.Start(psi);
 
-        p.WaitForExit();
+        p?.WaitForExit();
       }
       catch
       {
+        // ignored
       }
 
       Console.WriteLine("Reports: {0}: Upload complete", m_Title);
@@ -130,6 +131,7 @@ namespace Server.Engines.Reports
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -192,8 +194,6 @@ namespace Server.Engines.Reports
 
       html.RenderBeginTag(HtmlTag.Center);
       TimeZone tz = TimeZone.CurrentTimeZone;
-      bool isDaylight = tz.IsDaylightSavingTime(m_TimeStamp);
-      TimeSpan utcOffset = tz.GetUtcOffset(m_TimeStamp);
 
       html.Write("Snapshot taken at {0:d} {0:t}. All times are {1}.", m_TimeStamp, tz.StandardName);
       html.RenderEndTag();
@@ -258,8 +258,6 @@ namespace Server.Engines.Reports
       html.Write("<br>");
 
       TimeZone tz = TimeZone.CurrentTimeZone;
-      bool isDaylight = tz.IsDaylightSavingTime(m_TimeStamp);
-      TimeSpan utcOffset = tz.GetUtcOffset(m_TimeStamp);
 
       html.Write("Snapshot taken at {0:d} {0:t}. All times are {1}.", m_TimeStamp, tz.StandardName);
       html.RenderEndTag();

@@ -29,7 +29,7 @@ namespace Server.Items
 
     public override void Drink(Mobile from)
     {
-      if (from.BeginAction(typeof(LightCycle)))
+      if (from.BeginAction<LightCycle>())
       {
         new LightCycle.NightSightTimer(from).Start();
         from.LightLevel = LightCycle.DungeonLevel / 2;

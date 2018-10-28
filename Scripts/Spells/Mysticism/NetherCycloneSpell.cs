@@ -85,7 +85,7 @@ namespace Server.Spells.Mysticism
           Caster.DoHarmful(m);
           SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100);
 
-          double resistedReduction = reduction - m.Skills[SkillName.MagicResist].Value / 800.0;
+          double resistedReduction = reduction - m.Skills.MagicResist.Value / 800.0;
 
           m.Stam -= (int)(m.StamMax * resistedReduction);
           m.Mana -= (int)(m.ManaMax * resistedReduction);

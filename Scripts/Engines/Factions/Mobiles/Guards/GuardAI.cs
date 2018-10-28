@@ -15,6 +15,7 @@ using Server.Targeting;
 
 namespace Server.Factions
 {
+  [Flags]
   public enum GuardAI
   {
     Bless = 0x01, // heal, cure, +stats
@@ -588,7 +589,7 @@ namespace Server.Factions
               m_Guard.Mana >= 11)
           {
             spell = new RecallSpell(m_Guard, null,
-              new RunebookEntry(m_Guard.Home, m_Guard.Map, "Guard's Home", null), null);
+              new RunebookEntry(m_Guard.Home, m_Guard.Map, "Guard's Home", null));
           }
           else if (IsAllowed(GuardAI.Bless))
           {
@@ -598,7 +599,7 @@ namespace Server.Factions
                      (m_Guard.Mana < 11 || m_Guard.NextCombatTime - Core.TickCount > 2000))
               spell = new HealSpell(m_Guard, null);
           }
-          else if (m_Guard.CanBeginAction(typeof(BaseHealPotion)))
+          else if (m_Guard.CanBeginAction<BaseHealPotion>())
           {
             UseItemByType(typeof(BaseHealPotion));
           }

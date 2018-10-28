@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
   public class KazeKemono : BaseCreature
   {
-    private static Hashtable m_FlurryOfTwigsTable = new Hashtable();
-    private static Hashtable m_ChlorophylBlastTable = new Hashtable();
+    private static Dictionary<Mobile, ExpireTimer> m_FlurryOfTwigsTable = new Dictionary<Mobile, ExpireTimer>();
+    private static Dictionary<Mobile, ExpireTimer> m_ChlorophylBlastTable = new Dictionary<Mobile, ExpireTimer>();
 
     [Constructible]
     public KazeKemono()
@@ -73,7 +74,7 @@ namespace Server.Mobiles
          * Effect: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(1048 779, 6)" ToLocation: "(1048 779, 6)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
          */
 
-        ExpireTimer timer = (ExpireTimer)m_FlurryOfTwigsTable[defender];
+        ExpireTimer timer = m_FlurryOfTwigsTable[defender];
 
         if (timer != null)
         {
@@ -106,7 +107,7 @@ namespace Server.Mobiles
          * Effect: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(1048 779, 6)" ToLocation: "(1048 779, 6)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
          */
 
-        ExpireTimer timer = (ExpireTimer)m_ChlorophylBlastTable[defender];
+        ExpireTimer timer = m_ChlorophylBlastTable[defender];
 
         if (timer != null)
         {
@@ -148,9 +149,9 @@ namespace Server.Mobiles
     {
       private Mobile m_Mobile;
       private ResistanceMod m_Mod;
-      private Hashtable m_Table;
+      private Dictionary<Mobile, ExpireTimer> m_Table;
 
-      public ExpireTimer(Mobile m, ResistanceMod mod, Hashtable table, TimeSpan delay)
+      public ExpireTimer(Mobile m, ResistanceMod mod, Dictionary<Mobile, ExpireTimer> table, TimeSpan delay)
         : base(delay)
       {
         m_Mobile = m;

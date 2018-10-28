@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.ConPVP
 {
@@ -18,7 +19,7 @@ namespace Server.Engines.ConPVP
 
     public Ruleset Base{ get; private set; }
 
-    public ArrayList Flavors{ get; } = new ArrayList();
+    public List<Ruleset> Flavors{ get; } = new List<Ruleset>();
 
     public bool Changed{ get; set; }
 
@@ -36,7 +37,7 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Flavors.Count; ++i)
       {
-        Ruleset flavor = (Ruleset)Flavors[i];
+        Ruleset flavor = Flavors[i];
 
         Options.Or(flavor.Options);
       }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Mobiles;
 
 namespace Server.Spells.Chivalry
@@ -12,7 +13,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public EnemyOfOneSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -35,9 +36,8 @@ namespace Server.Spells.Chivalry
         Caster.FixedParticles(0x375A, 1, 30, 9966, 33, 2, EffectLayer.Head);
         Caster.FixedParticles(0x37B9, 1, 30, 9502, 43, 3, EffectLayer.Head);
 
-        Timer t = (Timer)m_Table[Caster];
-
-        t?.Stop();
+        Timer timer = m_Table[Caster];
+        timer?.Stop();
 
         double delay = (double)ComputePowerValue(1) / 60;
 
@@ -47,8 +47,7 @@ namespace Server.Spells.Chivalry
         else if (delay > 3.5)
           delay = 3.5;
 
-        m_Table[Caster] = Timer.DelayCall(TimeSpan.FromMinutes(delay), new TimerStateCallback(Expire_Callback),
-          Caster);
+        m_Table[Caster] = Timer.DelayCall(TimeSpan.FromMinutes(delay), Expire_Callback, Caster);
 
         if (Caster is PlayerMobile mobile)
         {
@@ -63,10 +62,8 @@ namespace Server.Spells.Chivalry
       FinishSequence();
     }
 
-    private static void Expire_Callback(object state)
+    private static void Expire_Callback(Mobile m)
     {
-      Mobile m = (Mobile)state;
-
       m_Table.Remove(m);
 
       m.PlaySound(0x1F8);

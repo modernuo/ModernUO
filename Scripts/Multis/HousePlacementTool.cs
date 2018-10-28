@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Multis;
@@ -60,8 +62,8 @@ namespace Server.Items
     {
       m_From = from;
 
-      from.CloseGump(typeof(HousePlacementCategoryGump));
-      from.CloseGump(typeof(HousePlacementListGump));
+      from.CloseGump<HousePlacementCategoryGump>();
+      from.CloseGump<HousePlacementListGump>();
 
       AddPage(0);
 
@@ -123,8 +125,8 @@ namespace Server.Items
       m_From = from;
       m_Entries = entries;
 
-      from.CloseGump(typeof(HousePlacementCategoryGump));
-      from.CloseGump(typeof(HousePlacementListGump));
+      from.CloseGump<HousePlacementCategoryGump>();
+      from.CloseGump<HousePlacementListGump>();
 
       AddPage(0);
 
@@ -245,13 +247,13 @@ namespace Server.Items
 
         if (from.AccessLevel >= AccessLevel.GameMaster || reg.AllowHousing(from, p))
           m_Placed = m_Entry.OnPlacement(from, p);
-        else if (reg.IsPartOf(typeof(TempNoHousingRegion)))
+        else if (reg.IsPartOf<TempNoHousingRegion>())
           from.SendLocalizedMessage(
             501270); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
-        else if (reg.IsPartOf(typeof(TreasureRegion)) || reg.IsPartOf(typeof(HouseRegion)))
+        else if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
           from.SendLocalizedMessage(
             1043287); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
-        else if (reg.IsPartOf(typeof(HouseRaffleRegion)))
+        else if (reg.IsPartOf<HouseRaffleRegion>())
           from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
         else
           from.SendLocalizedMessage(501265); // Housing can not be created in this area.
@@ -270,7 +272,7 @@ namespace Server.Items
 
   public class HousePlacementEntry
   {
-    private static Hashtable m_Table;
+    private static Dictionary<Type, object> m_Table;
     private int m_Lockdowns;
     private int m_NewLockdowns;
     private int m_NewStorage;
@@ -278,7 +280,7 @@ namespace Server.Items
 
     static HousePlacementEntry()
     {
-      m_Table = new Hashtable();
+      m_Table = new Dictionary<Type, object>();
 
       FillTable(ClassicHouses);
       FillTable(TwoStoryFoundations);
@@ -561,27 +563,26 @@ namespace Server.Items
         object[] args;
 
         if (Type == typeof(HouseFoundation))
-          args = new object[4] { from, MultiID, m_Storage, m_Lockdowns };
+          args = new object[] { from, MultiID, m_Storage, m_Lockdowns };
         else if (Type == typeof(SmallOldHouse) || Type == typeof(SmallShop) || Type == typeof(TwoStoryHouse))
-          args = new object[2] { from, MultiID };
+          args = new object[] { from, MultiID };
         else
-          args = new object[1] { from };
+          args = new object[] { from };
 
         return Activator.CreateInstance(Type, args) as BaseHouse;
       }
       catch
       {
+        // ignored
       }
 
       return null;
     }
 
-    public void PlacementWarning_Callback(Mobile from, bool okay, object state)
+    public void PlacementWarning_Callback(Mobile from, bool okay, PreviewHouse prevHouse)
     {
       if (!from.CheckAlive() || from.Backpack?.FindItemByType<HousePlacementTool>() == null)
         return;
-
-      PreviewHouse prevHouse = (PreviewHouse)state;
 
       if (!okay)
       {
@@ -594,19 +595,17 @@ namespace Server.Items
         /* Too much time has passed and the test house you created has been deleted.
          * Please try again!
          */
-        from.SendGump(new NoticeGump(1060637, 30720, 1060647, 32512, 320, 180, null, null));
+        from.SendGump(new NoticeGump(1060637, 30720, 1060647, 32512, 320, 180));
 
         return;
       }
 
       Point3D center = prevHouse.Location;
-      Map map = prevHouse.Map;
 
       prevHouse.Delete();
 
-      ArrayList toMove;
       //Point3D center = new Point3D( p.X - m_Offset.X, p.Y - m_Offset.Y, p.Z - m_Offset.Z );
-      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out toMove);
+      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out List<IEntity> toMove);
 
       switch (res)
       {
@@ -653,10 +652,10 @@ namespace Server.Items
             {
               object o = toMove[i];
 
-              if (o is Mobile)
-                ((Mobile)o).Location = house.BanLocation;
-              else if (o is Item)
-                ((Item)o).Location = house.BanLocation;
+              if (o is Mobile mobile)
+                mobile.Location = house.BanLocation;
+              else if (o is Item item)
+                item.Location = house.BanLocation;
             }
           }
 
@@ -702,7 +701,7 @@ namespace Server.Items
         return false;
 
       Point3D center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out ArrayList toMove);
+      HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out List<IEntity> toMove);
 
       switch (res)
       {
@@ -739,10 +738,10 @@ namespace Server.Items
             {
               object o = toMove[i];
 
-              if (o is Mobile)
-                ((Mobile)o).Location = banLoc;
-              else if (o is Item)
-                ((Item)o).Location = banLoc;
+              if (o is Mobile mobile)
+                mobile.Location = banLoc;
+              else if (o is Item item)
+                item.Location = banLoc;
             }
 
             prev.MoveToWorld(center, from.Map);
@@ -759,8 +758,7 @@ namespace Server.Items
              * If you are absolutely certain you wish to proceed, click the button next to OKAY below.
              * If you do not wish to trade for this house, click CANCEL.
              */
-            from.SendGump(new WarningGump(1060635, 30720, 1049583, 32512, 420, 280, PlacementWarning_Callback,
-              prev));
+            from.SendGump(new WarningGump(1060635, 30720, 1049583, 32512, 420, 280, okay => PlacementWarning_Callback(from, okay, prev)));
 
             return true;
           }
@@ -807,29 +805,16 @@ namespace Server.Items
     {
       object obj = m_Table[house.GetType()];
 
-      if (obj is HousePlacementEntry) return (HousePlacementEntry)obj;
+      if (obj is HousePlacementEntry entry)
+        return entry;
 
-      if (obj is ArrayList)
+      if (obj is List<HousePlacementEntry> list)
       {
-        ArrayList list = (ArrayList)obj;
-
-        for (int i = 0; i < list.Count; ++i)
-        {
-          HousePlacementEntry e = (HousePlacementEntry)list[i];
-
-          if (e.MultiID == house.ItemID)
-            return e;
-        }
+        return list.FirstOrDefault(e => e.MultiID == house.ItemID);
       }
-      else if (obj is Hashtable)
-      {
-        Hashtable table = (Hashtable)obj;
 
-        obj = table[house.ItemID];
-
-        if (obj is HousePlacementEntry)
-          return (HousePlacementEntry)obj;
-      }
+      if (obj is Dictionary<int, HousePlacementEntry> table)
+        return table[house.ItemID];
 
       return null;
     }
@@ -846,38 +831,31 @@ namespace Server.Items
         {
           m_Table[e.Type] = e;
         }
-        else if (obj is HousePlacementEntry)
+        else if (obj is HousePlacementEntry entry)
         {
-          ArrayList list = new ArrayList();
-
-          list.Add(obj);
-          list.Add(e);
+          List<HousePlacementEntry> list = new List<HousePlacementEntry> { entry, e };
 
           m_Table[e.Type] = list;
         }
-        else if (obj is ArrayList)
+        else if (obj is List<HousePlacementEntry> list)
         {
-          ArrayList list = (ArrayList)obj;
-
           if (list.Count == 8)
           {
-            Hashtable table = new Hashtable();
+            Dictionary<int, HousePlacementEntry> table = new Dictionary<int, HousePlacementEntry>();
 
-            for (int j = 0; j < list.Count; ++j)
-              table[((HousePlacementEntry)list[j]).MultiID] = list[j];
+            foreach (HousePlacementEntry t in list)
+              table[t.MultiID] = t;
 
             table[e.MultiID] = e;
 
             m_Table[e.Type] = table;
           }
           else
-          {
             list.Add(e);
-          }
         }
-        else if (obj is Hashtable)
+        else if (obj is Dictionary<int, HousePlacementEntry> table)
         {
-          ((Hashtable)obj)[e.MultiID] = e;
+          table[e.MultiID] = e;
         }
       }
     }

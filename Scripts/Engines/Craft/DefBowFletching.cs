@@ -76,7 +76,7 @@ namespace Server.Engines.Craft
 
     public override void InitCraftList()
     {
-      int index = -1;
+      int index;
 
       // Materials
       AddCraft(typeof(Kindling), 1044457, 1023553, 0.0, 00.0, typeof(Log), 1044041, 1, 1044351);

@@ -16,7 +16,7 @@ namespace Server.Gumps
       m_Mobile = mobile;
       m_House = house;
 
-      mobile.CloseGump(typeof(HouseDemolishGump));
+      mobile.CloseGump<HouseDemolishGump>();
 
       Closable = false;
 

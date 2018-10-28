@@ -90,7 +90,7 @@ namespace Server.Engines.Quests.Necro
       if (!(to.Quest is DarkTidesQuest qs))
         return to.Quest == null && QuestSystem.CanOfferQuest(to, typeof(DarkTidesQuest));
 
-      return qs.FindObjective(typeof(FindMardothAboutVaultObjective)) != null;
+      return qs.FindObjective<FindMardothAboutVaultObjective>() != null;
     }
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
@@ -105,25 +105,25 @@ namespace Server.Engines.Quests.Necro
         }
         else
         {
-          QuestObjective obj = qs.FindObjective(typeof(FindMardothAboutVaultObjective));
+          QuestObjective obj = qs.FindObjective<FindMardothAboutVaultObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             obj.Complete();
           }
           else
           {
-            obj = qs.FindObjective(typeof(FindMardothAboutKronusObjective));
+            obj = qs.FindObjective<FindMardothAboutKronusObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               obj.Complete();
             }
             else
             {
-              obj = qs.FindObjective(typeof(FindMardothEndObjective));
+              obj = qs.FindObjective<FindMardothEndObjective>();
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
               {
                 Container cont = GetNewContainer();
 
@@ -196,7 +196,7 @@ namespace Server.Engines.Quests.Necro
           m.PlaySound(0x214);
           m.FixedEffect(0x376A, 10, 16);
 
-          m.CloseGump(typeof(ResurrectGump));
+          m.CloseGump<ResurrectGump>();
           m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
         }
       }

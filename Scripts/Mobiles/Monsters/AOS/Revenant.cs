@@ -16,7 +16,7 @@ namespace Server.Mobiles
       Hue = 1;
       // TODO: Sound values?
 
-      double scalar = caster.Skills[SkillName.SpiritSpeak].Value * 0.01;
+      double scalar = caster.Skills.SpiritSpeak.Value * 0.01;
 
       m_Target = target;
       m_ExpireTime = DateTime.UtcNow + duration;

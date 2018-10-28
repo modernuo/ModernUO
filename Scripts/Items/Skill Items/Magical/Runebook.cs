@@ -119,7 +119,7 @@ namespace Server.Items
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
       CraftItem craftItem, int resHue)
     {
-      int charges = 5 + quality + (int)(from.Skills[SkillName.Inscribe].Value / 30);
+      int charges = 5 + quality + (int)(from.Skills.Inscribe.Value / 30);
 
       if (charges > 10)
         charges = 10;
@@ -272,7 +272,7 @@ namespace Server.Items
 
     public override bool OnDragLift(Mobile from)
     {
-      if (from.HasGump(typeof(RunebookGump)))
+      if (from.HasGump<RunebookGump>())
       {
         from.SendLocalizedMessage(500169); // You cannot pick that up.
         return false;
@@ -280,7 +280,7 @@ namespace Server.Items
 
       foreach (Mobile m in Openers)
         if (IsOpen(m))
-          m.CloseGump(typeof(RunebookGump));
+          m.CloseGump<RunebookGump>();
 
       Openers.Clear();
 
@@ -314,7 +314,7 @@ namespace Server.Items
           return;
         }
 
-        from.CloseGump(typeof(RunebookGump));
+        from.CloseGump<RunebookGump>();
         from.SendGump(new RunebookGump(from, this));
 
         Openers.Add(from);

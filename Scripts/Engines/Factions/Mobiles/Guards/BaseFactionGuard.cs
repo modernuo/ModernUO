@@ -418,7 +418,7 @@ namespace Server.Factions
 
     public virtual void GenerateBody(bool isFemale, bool randomHair)
     {
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       if (isFemale)
       {
@@ -472,7 +472,7 @@ namespace Server.Factions
       m_Item = item;
     }
 
-    public Mobile Rider
+    Mobile IMount.Rider
     {
       get => m_Item.Rider;
       set { }

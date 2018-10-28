@@ -243,7 +243,6 @@ namespace Server.Commands
           m_List = list;
         }
 
-
         AddNewPage();
 
         if (m_Page > 0)
@@ -269,7 +268,6 @@ namespace Server.Commands
             if ((int)c.AccessLevel != last)
             {
               AddNewLine();
-
               AddEntryHtml(20 + OffsetSize + 160, Color(c.AccessLevel.ToString(), 0xFF0000));
               AddEntryHeader(20);
               line++;
@@ -278,9 +276,7 @@ namespace Server.Commands
             last = (int)c.AccessLevel;
 
             AddNewLine();
-
             AddEntryHtml(20 + OffsetSize + 160, c.Name);
-
             AddEntryButton(20, ArrowRightID1, ArrowRightID2, 3 + i, ArrowRightWidth, ArrowRightHeight);
           }
         }
@@ -295,7 +291,7 @@ namespace Server.Commands
         {
           case 0:
           {
-            m.CloseGump(typeof(CommandInfoGump));
+            m.CloseGump<CommandInfoGump>();
             break;
           }
           case 1:

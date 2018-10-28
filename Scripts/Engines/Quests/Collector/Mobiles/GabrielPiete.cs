@@ -60,9 +60,9 @@ namespace Server.Engines.Quests.Collector
       {
         Direction = GetDirectionTo(player);
 
-        QuestObjective obj = qs.FindObjective(typeof(FindGabrielObjective));
+        QuestObjective obj = qs.FindObjective<FindGabrielObjective>();
 
-        if (obj != null && !obj.Completed)
+        if (obj?.Completed == false)
         {
           obj.Complete();
         }
@@ -72,9 +72,9 @@ namespace Server.Engines.Quests.Collector
         }
         else
         {
-          obj = qs.FindObjective(typeof(ReturnSheetMusicObjective));
+          obj = qs.FindObjective<ReturnSheetMusicObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
             obj.Complete();
           else if (qs.IsObjectiveInProgress(typeof(ReturnAutographObjective)))
             qs.AddConversation(new GabrielIgnoreConversation());

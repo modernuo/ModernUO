@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Server.Engines.Quests.Haven;
@@ -47,10 +46,10 @@ namespace Server.Commands
 
       for (int i = 0; i < files.Length; ++i)
       {
-        ArrayList list = DecorationList.ReadAll(files[i]);
+        List<DecorationList> list = DecorationList.ReadAll(files[i]);
 
         for (int j = 0; j < list.Count; ++j)
-          m_Count += ((DecorationList)list[j]).Generate(maps);
+          m_Count += list[j].Generate(maps);
       }
     }
   }
@@ -70,10 +69,10 @@ namespace Server.Commands
     private static Type typeofCannon = typeof(Cannon);
     private static Type typeofSerpentPillar = typeof(SerpentPillar);
 
-    private static Queue m_DeleteQueue = new Queue();
+    private static Queue<Item> m_DeleteQueue = new Queue<Item>();
 
     private static string[] m_EmptyParams = new string[0];
-    private ArrayList m_Entries;
+    private List<DecorationEntry> m_Entries;
     private int m_ItemID;
     private string[] m_Params;
     private Type m_Type;
@@ -913,7 +912,7 @@ namespace Server.Commands
       eable.Free();
 
       while (m_DeleteQueue.Count > 0)
-        ((Item)m_DeleteQueue.Dequeue()).Delete();
+        m_DeleteQueue.Dequeue().Delete();
 
       return res;
     }
@@ -926,7 +925,7 @@ namespace Server.Commands
 
       for (int i = 0; i < m_Entries.Count; ++i)
       {
-        DecorationEntry entry = (DecorationEntry)m_Entries[i];
+        DecorationEntry entry = m_Entries[i];
         Point3D loc = entry.Location;
         string extra = entry.Extra;
 
@@ -970,6 +969,7 @@ namespace Server.Commands
               }
               catch
               {
+                // ignored
               }
             }
 
@@ -983,13 +983,14 @@ namespace Server.Commands
       return count;
     }
 
-    public static ArrayList ReadAll(string path)
+    public static List<DecorationList> ReadAll(string path)
     {
       using (StreamReader ip = new StreamReader(path))
       {
-        ArrayList list = new ArrayList();
-
-        for (DecorationList v = Read(ip); v != null; v = Read(ip))
+        List<DecorationList> list = new List<DecorationList>();
+        DecorationList v;
+        
+        while ((v = Read(ip)) != null)
           list.Add(v);
 
         return list;
@@ -1042,7 +1043,7 @@ namespace Server.Commands
         list.m_Params = m_EmptyParams;
       }
 
-      list.m_Entries = new ArrayList();
+      list.m_Entries = new List<DecorationEntry>();
 
       while ((line = ip.ReadLine()) != null)
       {

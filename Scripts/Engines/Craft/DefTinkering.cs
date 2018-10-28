@@ -146,7 +146,7 @@ namespace Server.Engines.Craft
 
     public override void InitCraftList()
     {
-      int index = -1;
+      int index;
 
       #region Wooden Items
 
@@ -489,9 +489,7 @@ namespace Server.Engines.Craft
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        int message;
-
-        if (m_TrapCraft.Acquire(targeted, out message))
+        if (m_TrapCraft.Acquire(targeted, out int message))
           m_TrapCraft.CraftItem.CompleteCraft(m_TrapCraft.Quality, false, m_TrapCraft.From,
             m_TrapCraft.CraftSystem, m_TrapCraft.TypeRes, m_TrapCraft.Tool, m_TrapCraft);
         else

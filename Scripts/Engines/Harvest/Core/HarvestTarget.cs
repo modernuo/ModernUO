@@ -31,10 +31,12 @@ namespace Server.Engines.Harvest
           if (from is PlayerMobile player)
           {
             QuestSystem qs = player.Quest;
+            if (!(qs is WitchApprenticeQuest))
+              return;
 
-            if (qs is WitchApprenticeQuest &&
-                qs.FindObjective(typeof(FindIngredientObjective)) is FindIngredientObjective obj &&
-                !obj.Completed && obj.Ingredient == Ingredient.Bones)
+            FindIngredientObjective obj = qs.FindObjective<FindIngredientObjective>();
+
+            if (obj?.Completed == false && obj.Ingredient == Ingredient.Bones)
             {
               player.SendLocalizedMessage(
                 1055037); // You finish your grim work, finding some of the specific bones listed in the Hag's recipe.

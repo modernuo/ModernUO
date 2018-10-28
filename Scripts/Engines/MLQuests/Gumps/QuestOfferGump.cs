@@ -16,7 +16,7 @@ namespace Server.Engines.MLQuests.Gumps
       m_Quester = quester;
 
       CloseOtherGumps(pm);
-      pm.CloseGump(typeof(QuestOfferGump));
+      pm.CloseGump<QuestOfferGump>();
 
       SetTitle(quest.Title);
       RegisterButton(ButtonPosition.Left, ButtonGraphic.Accept, 1);

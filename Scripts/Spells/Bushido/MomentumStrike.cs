@@ -40,7 +40,7 @@ namespace Server.Spells.Bushido
 
         Mobile target = targets[Utility.Random(targets.Count)];
 
-        double damageBonus = attacker.Skills[SkillName.Bushido].Value / 100.0;
+        double damageBonus = attacker.Skills.Bushido.Value / 100.0;
 
         if (!defender.Alive)
           damageBonus *= 1.5;

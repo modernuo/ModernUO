@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -11,7 +11,7 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000008;
 
-    private static Hashtable m_IgnoreLists = new Hashtable();
+    private static Dictionary<Mobile, List<IgnoreEntry>> m_IgnoreLists = new Dictionary<Mobile, List<IgnoreEntry>>();
 
     private bool m_Active = true;
     private Mobile m_Challenger, m_Challenged;
@@ -28,7 +28,7 @@ namespace Server.Engines.ConPVP
       m_Participant = p;
       m_Slot = slot;
 
-      challenged.CloseGump(typeof(AcceptDuelGump));
+      challenged.CloseGump<AcceptDuelGump>();
 
       Closable = false;
 
@@ -109,7 +109,7 @@ namespace Server.Engines.ConPVP
 
       m_Active = false;
 
-      m_Challenged.CloseGump(typeof(AcceptDuelGump));
+      m_Challenged.CloseGump<AcceptDuelGump>();
 
       m_Challenger.SendMessage("{0} seems unresponsive.", m_Challenged.Name);
       m_Challenged.SendMessage("You decline the challenge.");
@@ -117,14 +117,14 @@ namespace Server.Engines.ConPVP
 
     public static void BeginIgnore(Mobile source, Mobile toIgnore)
     {
-      ArrayList list = (ArrayList)m_IgnoreLists[source];
+      List<IgnoreEntry> list = m_IgnoreLists[source];
 
       if (list == null)
-        m_IgnoreLists[source] = list = new ArrayList();
+        m_IgnoreLists[source] = list = new List<IgnoreEntry>();
 
       for (int i = 0; i < list.Count; ++i)
       {
-        IgnoreEntry ie = (IgnoreEntry)list[i];
+        IgnoreEntry ie = list[i];
 
         if (ie.Ignored == toIgnore)
         {
@@ -132,7 +132,8 @@ namespace Server.Engines.ConPVP
           return;
         }
 
-        if (ie.Expired) list.RemoveAt(i--);
+        if (ie.Expired)
+          list.RemoveAt(i--);
       }
 
       list.Add(new IgnoreEntry(toIgnore));
@@ -140,14 +141,14 @@ namespace Server.Engines.ConPVP
 
     public static bool IsIgnored(Mobile source, Mobile check)
     {
-      ArrayList list = (ArrayList)m_IgnoreLists[source];
+      List<IgnoreEntry> list = m_IgnoreLists[source];
 
       if (list == null)
         return false;
 
       for (int i = 0; i < list.Count; ++i)
       {
-        IgnoreEntry ie = (IgnoreEntry)list[i];
+        IgnoreEntry ie = list[i];
 
         if (ie.Expired)
           list.RemoveAt(i--);

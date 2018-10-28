@@ -196,8 +196,7 @@ namespace Server.Items
         new List<SkillName>(attrs.Owner is Spellbook ? m_PossibleSpellbookSkills : m_PossibleBonusSkills);
       int count = Core.SE ? possibleSkills.Count : possibleSkills.Count - 2;
 
-      SkillName sk, check;
-      double bonus;
+      SkillName sk;
       bool found;
 
       do
@@ -207,7 +206,7 @@ namespace Server.Items
         possibleSkills.Remove(sk);
 
         for (int i = 0; !found && i < 5; ++i)
-          found = attrs.GetValues(i, out check, out bonus) && check == sk;
+          found = attrs.GetValues(i, out SkillName check, out _) && check == sk;
       } while (found && count > 0);
 
       attrs.SetValues(index, sk, Scale(min, max, low, high));
@@ -431,7 +430,7 @@ namespace Server.Items
 
     public static void GetElementalDamages(BaseWeapon weapon, bool randomizeOrder)
     {
-      weapon.GetDamageTypes(null, out int phys, out int fire, out int cold, out int pois, out int nrgy, out int chaos, out int direct);
+      weapon.GetDamageTypes(null, out int phys, out _, out _, out _, out _, out _, out _);
 
       int totalDamage = phys;
 

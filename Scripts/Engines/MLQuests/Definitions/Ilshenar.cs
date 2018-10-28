@@ -161,7 +161,7 @@ namespace Server.Engines.MLQuests.Definitions
       SetDex(70, 80);
       SetInt(80, 90);
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
       Female = true;
       Body = 401;
 

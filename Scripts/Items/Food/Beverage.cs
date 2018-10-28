@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Plants;
 using Server.Engines.Quests;
 using Server.Engines.Quests.Hag;
@@ -808,24 +809,27 @@ namespace Server.Items
         {
           QuestSystem qs = player.Quest;
 
-          if (qs is WitchApprenticeQuest)
-            if (qs.FindObjective(typeof(FindIngredientObjective)) is FindIngredientObjective obj &&
-                !obj.Completed && obj.Ingredient == Ingredient.SwampWater)
+          if (!(qs is WitchApprenticeQuest))
+            return;
+
+          FindIngredientObjective obj = qs.FindObjective<FindIngredientObjective>();
+
+          if (obj?.Completed == true && obj.Ingredient == Ingredient.SwampWater)
+          {
+            bool contains = false;
+
+            for (int i = 0; !contains && i < m_SwampTiles.Length; i += 2)
+              contains = tileID >= m_SwampTiles[i] && tileID <= m_SwampTiles[i + 1];
+
+            if (contains)
             {
-              bool contains = false;
+              Delete();
 
-              for (int i = 0; !contains && i < m_SwampTiles.Length; i += 2)
-                contains = tileID >= m_SwampTiles[i] && tileID <= m_SwampTiles[i + 1];
-
-              if (contains)
-              {
-                Delete();
-
-                player.SendLocalizedMessage(
-                  1055035); // You dip the container into the disgusting swamp water, collecting enough for the Hag's vile stew.
-                obj.Complete();
-              }
+              player.SendLocalizedMessage(
+                1055035); // You dip the container into the disgusting swamp water, collecting enough for the Hag's vile stew.
+              obj.Complete();
             }
+          }
         }
       }
     }
@@ -942,9 +946,9 @@ namespace Server.Items
         if (from is PlayerMobile player)
           if (player.Quest is SolenMatriarchQuest qs)
           {
-            QuestObjective obj = qs.FindObjective(typeof(GatherWaterObjective));
+            QuestObjective obj = qs.FindObjective<GatherWaterObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               BaseAddon vat = component.Addon;
 
@@ -1086,7 +1090,7 @@ namespace Server.Items
 
     #region Effects of achohol
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public static void Initialize()
     {
@@ -1102,7 +1106,7 @@ namespace Server.Items
     {
       if (from.BAC > 0 && from.Map != Map.Internal && !from.Deleted)
       {
-        Timer t = (Timer)m_Table[from];
+        Timer t = m_Table[from];
 
         if (t == null)
         {
@@ -1117,7 +1121,7 @@ namespace Server.Items
       }
       else
       {
-        Timer t = (Timer)m_Table[from];
+        Timer t = m_Table[from];
 
         if (t != null)
         {

@@ -67,7 +67,7 @@ namespace Server.Items
 
         if (house != null && house.IsOwner(from))
         {
-          from.CloseGump(typeof(RewardDemolitionGump));
+          from.CloseGump<RewardDemolitionGump>();
           from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
         }
         else
@@ -122,7 +122,7 @@ namespace Server.Items
 
         if (house != null && house.IsOwner(from))
         {
-          from.CloseGump(typeof(FacingGump));
+          from.CloseGump<FacingGump>();
 
           if (!from.SendGump(new FacingGump(this, from)))
             from.SendLocalizedMessage(1150062); // You fail to re-deed the holiday fireflies.
@@ -165,7 +165,7 @@ namespace Server.Items
 
         Closable = true;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         AddPage(0);

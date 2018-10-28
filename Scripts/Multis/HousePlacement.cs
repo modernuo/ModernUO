@@ -37,10 +37,10 @@ namespace Server.Multis
       0x0150, 0x015C // Furrows
     };
 
-    public static HousePlacementResult Check(Mobile from, int multiID, Point3D center, out ArrayList toMove)
+    public static HousePlacementResult Check(Mobile from, int multiID, Point3D center, out List<IEntity> toMove)
     {
       // If this spot is considered valid, every item and mobile in this list will be moved under the house sign
-      toMove = new ArrayList();
+      toMove = new List<IEntity>();
 
       Map map = from.Map;
 
@@ -56,9 +56,7 @@ namespace Server.Multis
       if (map == Map.Malas && (multiID == 0x007C || multiID == 0x007E))
         return HousePlacementResult.InvalidCastleKeep;
 
-      NoHousingRegion noHousingRegion = (NoHousingRegion)Region.Find(center, map).GetRegion(typeof(NoHousingRegion));
-
-      if (noHousingRegion != null)
+      if (Region.Find(center, map).IsPartOf<NoHousingRegion>())
         return HousePlacementResult.BadRegion;
 
       // This holds data describing the internal structure of the house
@@ -78,7 +76,7 @@ namespace Server.Multis
       List<Point2D> yard = new List<Point2D>(), borders = new List<Point2D>();
 
       /* RULES:
-       * 
+       *
        * 1) All tiles which are around the -outside- of the foundation must not have anything impassable.
        * 2) No impassable object or land tile may come in direct contact with any part of the house.
        * 3) Five tiles from the front and back of the house must be completely clear of all house tiles.
@@ -103,13 +101,13 @@ namespace Server.Multis
 
         if (!reg.AllowHousing(from, testPoint)) // Cannot place houses in dungeons, towns, treasure map areas etc
         {
-          if (reg.IsPartOf(typeof(TempNoHousingRegion)))
+          if (reg.IsPartOf<TempNoHousingRegion>())
             return HousePlacementResult.BadRegionTemp;
 
-          if (reg.IsPartOf(typeof(TreasureRegion)) || reg.IsPartOf(typeof(HouseRegion)))
+          if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
             return HousePlacementResult.BadRegionHidden;
 
-          if (reg.IsPartOf(typeof(HouseRaffleRegion)))
+          if (reg.IsPartOf<HouseRaffleRegion>())
             return HousePlacementResult.BadRegionRaffle;
 
           return HousePlacementResult.BadRegion;

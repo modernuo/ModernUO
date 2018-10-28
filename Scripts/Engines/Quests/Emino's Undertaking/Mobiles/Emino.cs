@@ -79,17 +79,17 @@ namespace Server.Engines.Quests.Ninja
         }
         else
         {
-          QuestObjective obj = qs.FindObjective(typeof(FindEminoBeginObjective));
+          QuestObjective obj = qs.FindObjective<FindEminoBeginObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             obj.Complete();
           }
           else
           {
-            obj = qs.FindObjective(typeof(UseTeleporterObjective));
+            obj = qs.FindObjective<UseTeleporterObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               Item note = new NoteForZoel();
 
@@ -109,9 +109,9 @@ namespace Server.Engines.Quests.Ninja
             }
             else
             {
-              obj = qs.FindObjective(typeof(ReturnFromInnObjective));
+              obj = qs.FindObjective<ReturnFromInnObjective>();
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
               {
                 Container cont = GetNewContainer();
 
@@ -140,9 +140,9 @@ namespace Server.Engines.Quests.Ninja
                 }
                 else
                 {
-                  obj = qs.FindObjective(typeof(GiveEminoSwordObjective));
+                  obj = qs.FindObjective<GiveEminoSwordObjective>();
 
-                  if (obj != null && !obj.Completed)
+                  if (obj?.Completed == false)
                   {
                     Item katana = null;
 
@@ -153,7 +153,9 @@ namespace Server.Engines.Quests.Ninja
                     {
                       bool stolenTreasure = false;
 
-                      if (qs.FindObjective(typeof(HallwayWalkObjective)) is HallwayWalkObjective walk)
+                      HallwayWalkObjective walk = qs.FindObjective<HallwayWalkObjective>();
+                      
+                      if (walk != null)
                         stolenTreasure = walk.StolenTreasure;
 
                       Kama kama = new Kama();
@@ -206,7 +208,7 @@ namespace Server.Engines.Quests.Ninja
           m.PlaySound(0x214);
           m.FixedEffect(0x376A, 10, 16);
 
-          m.CloseGump(typeof(ResurrectGump));
+          m.CloseGump<ResurrectGump>();
           m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
         }
       }

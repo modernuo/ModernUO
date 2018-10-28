@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
@@ -14,7 +15,7 @@ namespace Server.Items
   /// </summary>
   public class BleedAttack : WeaponAbility
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public override int BaseMana => 30;
 
@@ -53,17 +54,15 @@ namespace Server.Items
 
     public static bool IsBleeding(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public static void BeginBleed(Mobile m, Mobile from)
     {
-      Timer t = (Timer)m_Table[m];
-
+      Timer t = m_Table[m];
       t?.Stop();
 
-      t = new InternalTimer(from, m);
-      m_Table[m] = t;
+      m_Table[m] = t = new InternalTimer(from, m);
 
       t.Start();
     }
@@ -80,10 +79,7 @@ namespace Server.Items
         m.PlaySound(0x133);
         m.Damage(damage, from);
 
-        Blood blood = new Blood();
-
-        blood.ItemID = Utility.Random(0x122A, 5);
-
+        Blood blood = new Blood { ItemID = Utility.Random(0x122A, 5) };
         blood.MoveToWorld(m.Location, m.Map);
       }
       else
@@ -94,7 +90,7 @@ namespace Server.Items
 
     public static void EndBleed(Mobile m, bool message)
     {
-      Timer t = (Timer)m_Table[m];
+      Timer t = m_Table[m];
 
       if (t == null)
         return;

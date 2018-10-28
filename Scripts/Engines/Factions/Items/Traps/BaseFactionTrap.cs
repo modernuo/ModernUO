@@ -124,7 +124,7 @@ namespace Server.Factions
       {
         case AllowedPlacing.FactionStronghold:
         {
-          StrongholdRegion region = (StrongholdRegion)Region.Find(p, m).GetRegion(typeof(StrongholdRegion));
+          StrongholdRegion region = Region.Find(p, m).GetRegion<StrongholdRegion>();
 
           if (region != null && region.Faction == Faction)
             return 0;
@@ -160,7 +160,7 @@ namespace Server.Factions
 
       if (!CheckDecay() && CheckRange(m.Location, oldLocation, 6))
         if (Faction.Find(m) != null &&
-            (m.Skills[SkillName.DetectHidden].Value - 80.0) / 20.0 > Utility.RandomDouble())
+            (m.Skills.DetectHidden.Value - 80.0) / 20.0 > Utility.RandomDouble())
           PrivateOverheadLocalizedMessage(m, 1010154, MessageHue, "", ""); // [Faction Trap]
     }
 

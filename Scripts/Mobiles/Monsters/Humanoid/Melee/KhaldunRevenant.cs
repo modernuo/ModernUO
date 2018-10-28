@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Mobiles
 {
   public class KhaldunRevenant : BaseCreature
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static HashSet<Mobile> m_Set = new HashSet<Mobile>();
     private DateTime m_ExpireTime;
 
     private Mobile m_Target;
@@ -47,9 +48,7 @@ namespace Server.Mobiles
 
       VirtualArmor = 60;
 
-      Halberd weapon = new Halberd();
-      weapon.Hue = 0x41CE;
-      weapon.Movable = false;
+      Halberd weapon = new Halberd { Hue = 0x41CE, Movable = false };
 
       AddItem(weapon);
     }
@@ -81,7 +80,7 @@ namespace Server.Mobiles
       if (lastKiller is BaseCreature)
         lastKiller = ((BaseCreature)lastKiller).GetMaster();
 
-      if (IsInsideKhaldun(m) && IsInsideKhaldun(lastKiller) && lastKiller.Player && !m_Table.Contains(lastKiller))
+      if (IsInsideKhaldun(m) && IsInsideKhaldun(lastKiller) && lastKiller.Player && !m_Set.Contains(lastKiller))
         foreach (AggressorInfo ai in m.Aggressors)
           if (ai.Attacker == lastKiller && ai.CanReportMurder)
           {
@@ -99,12 +98,12 @@ namespace Server.Mobiles
       revenant.FixedParticles(0, 0, 0, 0x13A7, EffectLayer.Waist);
       Effects.PlaySound(revenant.Location, revenant.Map, 0x29);
 
-      m_Table.Add(killer, null);
+      m_Set.Add(killer);
     }
 
     public static bool IsInsideKhaldun(Mobile from)
     {
-      return from?.Region != null && from.Region.IsPartOf("Khaldun");
+      return from?.Region?.IsPartOf("Khaldun") == true;
     }
 
     public override void DisplayPaperdollTo(Mobile to)
@@ -152,7 +151,7 @@ namespace Server.Mobiles
     public override void OnDelete()
     {
       if (m_Target != null)
-        m_Table.Remove(m_Target);
+        m_Set.Remove(m_Target);
 
       base.OnDelete();
     }

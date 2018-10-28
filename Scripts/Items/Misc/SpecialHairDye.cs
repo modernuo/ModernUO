@@ -36,7 +36,7 @@ namespace Server.Items
     {
       if (from.InRange(GetWorldLocation(), 1))
       {
-        from.CloseGump(typeof(SpecialHairDyeGump));
+        from.CloseGump<SpecialHairDyeGump>();
         from.SendGump(new SpecialHairDyeGump(this));
       }
       else

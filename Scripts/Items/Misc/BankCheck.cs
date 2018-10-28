@@ -233,16 +233,16 @@ namespace Server.Items
 
         if (qs is DarkTidesQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(CashBankCheckObjective));
+          QuestObjective obj = qs.FindObjective<CashBankCheckObjective>();
 
-          if (obj != null && !obj.Completed) obj.Complete();
+          if (obj?.Completed == false) obj.Complete();
         }
 
         if (qs is UzeraanTurmoilQuest)
         {
           QuestObjective obj = qs.FindObjective(typeof(Engines.Quests.Haven.CashBankCheckObjective));
 
-          if (obj != null && !obj.Completed) obj.Complete();
+          if (obj?.Completed == false) obj.Complete();
         }
       }
     }

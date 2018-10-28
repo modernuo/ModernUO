@@ -8,6 +8,7 @@ using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Commands
 {
+  [Flags]
   public enum PropertyAccess
   {
     Read = 0x01,
@@ -54,12 +55,12 @@ namespace Server.Commands
     {
       if (e.Length == 1)
       {
-        IEntity ent = World.FindEntity(e.GetInt32(0));
+        IEntity ent = World.FindEntity(e.GetUInt32(0));
 
         if (ent == null)
           e.Mobile.SendMessage("No object with that serial was found.");
         else if (!BaseCommand.IsAccessible(e.Mobile, ent))
-          e.Mobile.SendMessage("That is not accessible.");
+          e.Mobile.SendLocalizedMessage(500447); // That is not accessible.
         else
           e.Mobile.SendGump(new PropertiesGump(e.Mobile, ent));
       }
@@ -394,7 +395,7 @@ namespace Server.Commands
 
       m_ParseParams[0] = value;
 
-      return method.Invoke(o, m_ParseParams);
+      return method?.Invoke(o, m_ParseParams);
     }
 
     private static bool IsNumeric(Type t)
@@ -465,7 +466,7 @@ namespace Server.Commands
         }
 
       if (isSerial) // mutate back
-        toSet = (Serial)(int)toSet;
+        toSet = (Serial)(toSet ?? Serial.MinusOne);
 
       constructed = toSet;
       return null;
@@ -549,7 +550,7 @@ namespace Server.Commands
       protected override void OnTarget(Mobile from, object o)
       {
         if (!BaseCommand.IsAccessible(from, o))
-          from.SendMessage("That is not accessible.");
+          from.SendLocalizedMessage(500447); // That is not accessible.
         else
           from.SendGump(new PropertiesGump(from, o));
       }

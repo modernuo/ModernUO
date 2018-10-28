@@ -69,9 +69,6 @@ namespace Server.Items
       1 // 1 property   : 1/4 : 25%
     };
 
-    private AosAttributes m_AosAttributes;
-    private AosSkillBonuses m_AosSkillBonuses;
-
     private ulong m_Content;
 
     private Mobile m_Crafter;
@@ -94,8 +91,8 @@ namespace Server.Items
 
     public Spellbook(ulong content, int itemID) : base(itemID)
     {
-      m_AosAttributes = new AosAttributes(this);
-      m_AosSkillBonuses = new AosSkillBonuses(this);
+      Attributes = new AosAttributes(this);
+      SkillBonuses = new AosSkillBonuses(this);
 
       Weight = 3.0;
       Layer = Layer.OneHanded;
@@ -133,18 +130,10 @@ namespace Server.Items
     public override bool DisplayWeight => false;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosAttributes Attributes
-    {
-      get => m_AosAttributes;
-      set { }
-    }
+    public AosAttributes Attributes{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosSkillBonuses SkillBonuses
-    {
-      get => m_AosSkillBonuses;
-      set { }
-    }
+    public AosSkillBonuses SkillBonuses{ get; private set; }
 
     public virtual SpellbookType SpellbookType => SpellbookType.Regular;
     public virtual int BookOffset => 0;
@@ -535,7 +524,7 @@ namespace Server.Items
     {
       if (!Ethic.CheckEquip(from, this)) return false;
 
-      if (!from.CanBeginAction(typeof(BaseWeapon))) return false;
+      if (!from.CanBeginAction<BaseWeapon>()) return false;
 
       return base.CanEquip(from);
     }
@@ -583,19 +572,19 @@ namespace Server.Items
       if (!(newItem is Spellbook book))
         return;
 
-      book.m_AosAttributes = new AosAttributes(newItem, m_AosAttributes);
-      book.m_AosSkillBonuses = new AosSkillBonuses(newItem, m_AosSkillBonuses);
+      book.Attributes = new AosAttributes(newItem, Attributes);
+      book.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
     }
 
     public override void OnAdded(IEntity parent)
     {
       if (Core.AOS && parent is Mobile from)
       {
-        m_AosSkillBonuses.AddTo(from);
+        SkillBonuses.AddTo(from);
 
-        int strBonus = m_AosAttributes.BonusStr;
-        int dexBonus = m_AosAttributes.BonusDex;
-        int intBonus = m_AosAttributes.BonusInt;
+        int strBonus = Attributes.BonusStr;
+        int dexBonus = Attributes.BonusDex;
+        int intBonus = Attributes.BonusInt;
 
         if (strBonus != 0 || dexBonus != 0 || intBonus != 0)
         {
@@ -619,7 +608,7 @@ namespace Server.Items
     {
       if (Core.AOS && parent is Mobile from)
       {
-        m_AosSkillBonuses.Remove();
+        SkillBonuses.Remove();
 
         string modName = Serial.ToString();
 
@@ -706,7 +695,7 @@ namespace Server.Items
       if (m_Crafter != null)
         list.Add(1050043, m_Crafter.Name); // crafted by ~1_NAME~
 
-      m_AosSkillBonuses.GetProperties(list);
+      SkillBonuses.GetProperties(list);
 
       if (m_Slayer != SlayerName.None)
       {
@@ -724,76 +713,76 @@ namespace Server.Items
 
       int prop;
 
-      if ((prop = m_AosAttributes.WeaponDamage) != 0)
+      if ((prop = Attributes.WeaponDamage) != 0)
         list.Add(1060401, prop.ToString()); // damage increase ~1_val~%
 
-      if ((prop = m_AosAttributes.DefendChance) != 0)
+      if ((prop = Attributes.DefendChance) != 0)
         list.Add(1060408, prop.ToString()); // defense chance increase ~1_val~%
 
-      if ((prop = m_AosAttributes.BonusDex) != 0)
+      if ((prop = Attributes.BonusDex) != 0)
         list.Add(1060409, prop.ToString()); // dexterity bonus ~1_val~
 
-      if ((prop = m_AosAttributes.EnhancePotions) != 0)
+      if ((prop = Attributes.EnhancePotions) != 0)
         list.Add(1060411, prop.ToString()); // enhance potions ~1_val~%
 
-      if ((prop = m_AosAttributes.CastRecovery) != 0)
+      if ((prop = Attributes.CastRecovery) != 0)
         list.Add(1060412, prop.ToString()); // faster cast recovery ~1_val~
 
-      if ((prop = m_AosAttributes.CastSpeed) != 0)
+      if ((prop = Attributes.CastSpeed) != 0)
         list.Add(1060413, prop.ToString()); // faster casting ~1_val~
 
-      if ((prop = m_AosAttributes.AttackChance) != 0)
+      if ((prop = Attributes.AttackChance) != 0)
         list.Add(1060415, prop.ToString()); // hit chance increase ~1_val~%
 
-      if ((prop = m_AosAttributes.BonusHits) != 0)
+      if ((prop = Attributes.BonusHits) != 0)
         list.Add(1060431, prop.ToString()); // hit point increase ~1_val~
 
-      if ((prop = m_AosAttributes.BonusInt) != 0)
+      if ((prop = Attributes.BonusInt) != 0)
         list.Add(1060432, prop.ToString()); // intelligence bonus ~1_val~
 
-      if ((prop = m_AosAttributes.LowerManaCost) != 0)
+      if ((prop = Attributes.LowerManaCost) != 0)
         list.Add(1060433, prop.ToString()); // lower mana cost ~1_val~%
 
-      if ((prop = m_AosAttributes.LowerRegCost) != 0)
+      if ((prop = Attributes.LowerRegCost) != 0)
         list.Add(1060434, prop.ToString()); // lower reagent cost ~1_val~%
 
-      if ((prop = m_AosAttributes.Luck) != 0)
+      if ((prop = Attributes.Luck) != 0)
         list.Add(1060436, prop.ToString()); // luck ~1_val~
 
-      if ((prop = m_AosAttributes.BonusMana) != 0)
+      if ((prop = Attributes.BonusMana) != 0)
         list.Add(1060439, prop.ToString()); // mana increase ~1_val~
 
-      if ((prop = m_AosAttributes.RegenMana) != 0)
+      if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = m_AosAttributes.NightSight) != 0)
+      if ((prop = Attributes.NightSight) != 0)
         list.Add(1060441); // night sight
 
-      if ((prop = m_AosAttributes.ReflectPhysical) != 0)
+      if ((prop = Attributes.ReflectPhysical) != 0)
         list.Add(1060442, prop.ToString()); // reflect physical damage ~1_val~%
 
-      if ((prop = m_AosAttributes.RegenStam) != 0)
+      if ((prop = Attributes.RegenStam) != 0)
         list.Add(1060443, prop.ToString()); // stamina regeneration ~1_val~
 
-      if ((prop = m_AosAttributes.RegenHits) != 0)
+      if ((prop = Attributes.RegenHits) != 0)
         list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
 
-      if ((prop = m_AosAttributes.SpellChanneling) != 0)
+      if ((prop = Attributes.SpellChanneling) != 0)
         list.Add(1060482); // spell channeling
 
-      if ((prop = m_AosAttributes.SpellDamage) != 0)
+      if ((prop = Attributes.SpellDamage) != 0)
         list.Add(1060483, prop.ToString()); // spell damage increase ~1_val~%
 
-      if ((prop = m_AosAttributes.BonusStam) != 0)
+      if ((prop = Attributes.BonusStam) != 0)
         list.Add(1060484, prop.ToString()); // stamina increase ~1_val~
 
-      if ((prop = m_AosAttributes.BonusStr) != 0)
+      if ((prop = Attributes.BonusStr) != 0)
         list.Add(1060485, prop.ToString()); // strength bonus ~1_val~
 
-      if ((prop = m_AosAttributes.WeaponSpeed) != 0)
+      if ((prop = Attributes.WeaponSpeed) != 0)
         list.Add(1060486, prop.ToString()); // swing speed increase ~1_val~%
 
-      if (Core.ML && (prop = m_AosAttributes.IncreasedKarmaLoss) != 0)
+      if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
         list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
 
       list.Add(1042886, SpellCount.ToString()); // ~1_NUMBERS_OF_SPELLS~ Spells
@@ -835,8 +824,8 @@ namespace Server.Items
       writer.Write((int)m_Slayer);
       writer.Write((int)m_Slayer2);
 
-      m_AosAttributes.Serialize(writer);
-      m_AosSkillBonuses.Serialize(writer);
+      Attributes.Serialize(writer);
+      SkillBonuses.Serialize(writer);
 
       writer.Write(m_Content);
       writer.Write(SpellCount);
@@ -875,8 +864,8 @@ namespace Server.Items
         }
         case 1:
         {
-          m_AosAttributes = new AosAttributes(this, reader);
-          m_AosSkillBonuses = new AosSkillBonuses(this, reader);
+          Attributes = new AosAttributes(this, reader);
+          SkillBonuses = new AosSkillBonuses(this, reader);
 
           goto case 0;
         }
@@ -889,18 +878,18 @@ namespace Server.Items
         }
       }
 
-      if (m_AosAttributes == null)
-        m_AosAttributes = new AosAttributes(this);
+      if (Attributes == null)
+        Attributes = new AosAttributes(this);
 
-      if (m_AosSkillBonuses == null)
-        m_AosSkillBonuses = new AosSkillBonuses(this);
+      if (SkillBonuses == null)
+        SkillBonuses = new AosSkillBonuses(this);
 
       if (Core.AOS && Parent is Mobile mobile)
-        m_AosSkillBonuses.AddTo(mobile);
+        SkillBonuses.AddTo(mobile);
 
-      int strBonus = m_AosAttributes.BonusStr;
-      int dexBonus = m_AosAttributes.BonusDex;
-      int intBonus = m_AosAttributes.BonusInt;
+      int strBonus = Attributes.BonusStr;
+      int dexBonus = Attributes.BonusDex;
+      int intBonus = Attributes.BonusInt;
 
       if (Parent is Mobile m)
       {

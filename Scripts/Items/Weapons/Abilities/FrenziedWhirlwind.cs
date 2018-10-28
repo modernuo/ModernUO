@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Spells;
 
 namespace Server.Items
@@ -11,7 +12,7 @@ namespace Server.Items
   {
     public override int BaseMana => 30;
 
-    public static Hashtable Registry{ get; } = new Hashtable();
+    public static Dictionary<Mobile, FrenziedWirlwindTimer> Registry{ get; } = new Dictionary<Mobile, FrenziedWirlwindTimer>();
 
     public override bool CheckSkills(Mobile from)
     {
@@ -34,22 +35,19 @@ namespace Server.Items
 
       Map map = attacker.Map;
 
-      if (map == null)
+      if (!(map != null && attacker.Weapon is BaseWeapon weapon))
         return;
 
-      if (!(attacker.Weapon is BaseWeapon weapon))
-        return;
-
-      ArrayList list = new ArrayList();
+      List<Mobile> list = new List<Mobile>();
 
       foreach (Mobile m in attacker.GetMobilesInRange(1))
         list.Add(m);
 
-      ArrayList targets = new ArrayList();
+      List<Mobile> targets = new List<Mobile>();
 
       for (int i = 0; i < list.Count; ++i)
       {
-        Mobile m = (Mobile)list[i];
+        Mobile m = list[i];
 
         if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m))
         {
@@ -65,47 +63,44 @@ namespace Server.Items
         }
       }
 
-      if (targets.Count > 0)
+      if (targets.Count == 0 || !CheckMana(attacker, true))
+        return;
+
+      attacker.FixedEffect(0x3728, 10, 15);
+      attacker.PlaySound(0x2A1);
+
+      // 5-15 damage
+      int amount = (int)(10.0 * ((Math.Max(attacker.Skills.Bushido.Value,
+                                    attacker.Skills.Ninjitsu.Value) - 50.0) / 70.0 + 5));
+
+      for (int i = 0; i < targets.Count; ++i)
       {
-        if (!CheckMana(attacker, true))
-          return;
+        Mobile m = targets[i];
+        attacker.DoHarmful(m, true);
 
-        attacker.FixedEffect(0x3728, 10, 15);
-        attacker.PlaySound(0x2A1);
+        FrenziedWirlwindTimer timer = Registry[m];
 
-        // 5-15 damage
-        int amount = (int)(10.0 * ((Math.Max(attacker.Skills[SkillName.Bushido].Value,
-                                      attacker.Skills[SkillName.Ninjitsu].Value) - 50.0) / 70.0 + 5));
-
-        for (int i = 0; i < targets.Count; ++i)
+        if (timer != null)
         {
-          Mobile m = (Mobile)targets[i];
-          attacker.DoHarmful(m, true);
-
-          if (Registry[m] is Timer t)
-          {
-            t.Stop();
-            Registry.Remove(m);
-          }
-
-          t = new InternalTimer(attacker, m, amount);
-          t.Start();
-          Registry.Add(m, t);
+          timer.Stop();
+          Registry.Remove(m);
         }
 
-        Timer.DelayCall(TimeSpan.FromSeconds(2.0), new TimerStateCallback(RepeatEffect), attacker);
+        timer = new FrenziedWirlwindTimer(attacker, m, amount);
+        timer.Start();
+        Registry.Add(m, timer);
       }
+
+      Timer.DelayCall(TimeSpan.FromSeconds(2.0), RepeatEffect, attacker);
     }
 
-    private void RepeatEffect(object state)
+    private void RepeatEffect(Mobile attacker)
     {
-      Mobile attacker = (Mobile)state;
-
       attacker.FixedEffect(0x3728, 10, 15);
       attacker.PlaySound(0x2A1);
     }
 
-    private class InternalTimer : Timer
+    public class FrenziedWirlwindTimer : Timer
     {
       private readonly double DamagePerTick;
       private Mobile m_Attacker;
@@ -113,9 +108,9 @@ namespace Server.Items
       private double m_DamageToDo;
       private Mobile m_Defender;
 
-      public InternalTimer(Mobile attacker, Mobile defender, int totalDamage)
+      public FrenziedWirlwindTimer(Mobile attacker, Mobile defender, int totalDamage)
         : base(TimeSpan.Zero, TimeSpan.FromSeconds(0.25),
-          12) // 3 seconds at .25 seconds apart = 12.  Confirm delay inbetween of .25 each.
+          12) // 3 seconds at .25 seconds apart = 12.  Confirm delay in between of .25 each.
       {
         m_Attacker = attacker;
         m_Defender = defender;

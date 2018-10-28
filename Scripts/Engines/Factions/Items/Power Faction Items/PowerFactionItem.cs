@@ -72,6 +72,7 @@ namespace Server
                   }
                   catch
                   {
+                    // ignored
                   }
                 }
 

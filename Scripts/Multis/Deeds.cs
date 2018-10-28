@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Server.Regions;
 using Server.Targeting;
 
@@ -26,13 +27,13 @@ namespace Server.Multis.Deeds
 
         if (from.AccessLevel >= AccessLevel.GameMaster || reg.AllowHousing(from, p))
           m_Deed.OnPlacement(from, p);
-        else if (reg.IsPartOf(typeof(TempNoHousingRegion)))
+        else if (reg.IsPartOf<TempNoHousingRegion>())
           from.SendLocalizedMessage(
             501270); // Lord British has decreed a 'no build' period, thus you cannot build this house at this time.
-        else if (reg.IsPartOf(typeof(TreasureRegion)) || reg.IsPartOf(typeof(HouseRegion)))
+        else if (reg.IsPartOf<TreasureRegion>() || reg.IsPartOf<HouseRegion>())
           from.SendLocalizedMessage(
             1043287); // The house could not be created here.  Either something is blocking the house, or the house would not be on valid terrain.
-        else if (reg.IsPartOf(typeof(HouseRaffleRegion)))
+        else if (reg.IsPartOf<HouseRaffleRegion>())
           from.SendLocalizedMessage(1150493); // You must have a deed for this plot of land in order to build here.
         else
           from.SendLocalizedMessage(501265); // Housing can not be created in this area.
@@ -138,7 +139,7 @@ namespace Server.Multis.Deeds
       else
       {
         Point3D center = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-        HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out ArrayList toMove);
+        HousePlacementResult res = HousePlacement.Check(from, MultiID, center, out List<IEntity> toMove);
 
         switch (res)
         {

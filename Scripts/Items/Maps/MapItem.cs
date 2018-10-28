@@ -196,9 +196,7 @@ namespace Server.Items
 
     public virtual void AddWorldPin(int x, int y)
     {
-      int mapX, mapY;
-      ConvertToMap(x, y, out mapX, out mapY);
-
+      ConvertToMap(x, y, out int mapX, out int mapY);
       AddPin(mapX, mapY);
     }
 
@@ -285,7 +283,7 @@ namespace Server.Items
     {
       Mobile from = state.Mobile;
 
-      if (!(World.FindItem(pvSrc.ReadInt32()) is MapItem map))
+      if (!(World.FindItem(pvSrc.ReadUInt32()) is MapItem map))
         return;
 
       int command = pvSrc.ReadByte();

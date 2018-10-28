@@ -52,8 +52,8 @@ namespace Server.Engines.Quests.Samurai
         QuestSystem qs = player.Quest;
         if (qs is HaochisTrialsQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(SecondTrialAttackObjective));
-          if (obj != null && !obj.Completed)
+          QuestObjective obj = qs.FindObjective<SecondTrialAttackObjective>();
+          if (obj?.Completed == false)
           {
             obj.Complete();
             qs.AddObjective(new SecondTrialReturnObjective(false));

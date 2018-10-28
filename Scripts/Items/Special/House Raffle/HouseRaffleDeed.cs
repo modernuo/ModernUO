@@ -118,7 +118,7 @@ namespace Server.Items
 
       if (IsChildOf(from.Backpack))
       {
-        from.CloseGump(typeof(WritOfLeaseGump));
+        from.CloseGump<WritOfLeaseGump>();
         from.SendGump(new WritOfLeaseGump(this));
       }
       else

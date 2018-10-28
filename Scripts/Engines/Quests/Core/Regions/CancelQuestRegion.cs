@@ -29,7 +29,7 @@ namespace Server.Engines.Quests
 
       if (m is PlayerMobile player && player.Quest != null && player.Quest.GetType() == m_Quest)
       {
-        if (!player.HasGump(typeof(QuestCancelGump)))
+        if (!player.HasGump<QuestCancelGump>())
           player.Quest.BeginCancelQuest();
 
         return false;

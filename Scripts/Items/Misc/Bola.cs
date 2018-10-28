@@ -31,7 +31,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1040019); // The bola must be in your pack to use it.
       }
-      else if (!from.CanBeginAction(typeof(Bola)))
+      else if (!from.CanBeginAction<Bola>())
       {
         from.SendLocalizedMessage(1049624); // You have to wait a few moments before you can use another bola!
       }
@@ -62,18 +62,8 @@ namespace Server.Items
       }
     }
 
-    private static void ReleaseBolaLock(object state)
+    private static void FinishThrow(Mobile from, Mobile to)
     {
-      ((Mobile)state).EndAction(typeof(Bola));
-    }
-
-    private static void FinishThrow(object state)
-    {
-      object[] states = (object[])state;
-
-      Mobile from = (Mobile)states[0];
-      Mobile to = (Mobile)states[1];
-
       if (Core.AOS)
         new Bola().MoveToWorld(to.Location, to.Map);
 
@@ -99,7 +89,7 @@ namespace Server.Items
 
       to.Damage(1);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(2.0), new TimerStateCallback(ReleaseBolaLock), from);
+      Timer.DelayCall(TimeSpan.FromSeconds(2.0), () => from.EndAction<Bola>());
     }
 
     private static bool HasFreeHands(Mobile from)
@@ -197,7 +187,7 @@ namespace Server.Items
           else if (!from.CanBeHarmful(to))
           {
           }
-          else if (from.BeginAction(typeof(Bola)))
+          else if (from.BeginAction<Bola>())
           {
             EtherealMount.StopMounting(from);
 
@@ -209,8 +199,7 @@ namespace Server.Items
             from.Animate(11, 5, 1, true, false, 0);
             from.MovingEffect(to, 0x26AC, 10, 0, false, false);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(0.5), new TimerStateCallback(FinishThrow),
-              new object[] { from, to });
+            Timer.DelayCall(TimeSpan.FromSeconds(0.5), () => FinishThrow(from, to));
           }
           else
           {

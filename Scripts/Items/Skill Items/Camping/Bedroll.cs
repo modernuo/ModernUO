@@ -42,7 +42,7 @@ namespace Server.Items
       {
         ItemID = 0xA57;
 
-        if (!from.HasGump(typeof(LogoutGump)))
+        if (!from.HasGump<LogoutGump>())
         {
           CampfireEntry entry = Campfire.GetEntry(from);
 
@@ -123,7 +123,7 @@ namespace Server.Items
       private void CloseGump()
       {
         Campfire.RemoveEntry(m_Entry);
-        m_Entry.Player.CloseGump(typeof(LogoutGump));
+        m_Entry.Player.CloseGump<LogoutGump>();
       }
     }
   }

@@ -77,49 +77,53 @@ namespace Server.Engines.Quests.Collector
         {
           QuestSystem qs = player.Quest;
 
-          if (qs is CollectorQuest)
-            if (qs.FindObjective(typeof(CaptureImagesObjective)) is CaptureImagesObjective obj && !obj.Completed)
+          if (!(qs is CollectorQuest))
+            return;
+
+          CaptureImagesObjective obj = qs.FindObjective<CaptureImagesObjective>();
+
+          if (obj?.Completed != false)
+            return;
+          
+          if (targeted is Mobile)
+          {
+            CaptureResponse response = obj.CaptureImage(
+              targeted.GetType().Name == "GreaterMongbat"
+                ? new Mongbat().GetType()
+                : targeted.GetType(), out ImageType image);
+
+            switch (response)
             {
-              if (targeted is Mobile)
+              case CaptureResponse.Valid:
               {
-                CaptureResponse response = obj.CaptureImage(
-                  targeted.GetType().Name == "GreaterMongbat"
-                    ? new Mongbat().GetType()
-                    : targeted.GetType(), out ImageType image);
+                player.SendLocalizedMessage(
+                  1055125); // The enchanted paints swirl for a moment then an image begins to take shape. *Click*
+                player.AddToBackpack(new PaintedImage(image));
 
-                switch (response)
-                {
-                  case CaptureResponse.Valid:
-                  {
-                    player.SendLocalizedMessage(
-                      1055125); // The enchanted paints swirl for a moment then an image begins to take shape. *Click*
-                    player.AddToBackpack(new PaintedImage(image));
-
-                    break;
-                  }
-                  case CaptureResponse.AlreadyDone:
-                  {
-                    player.SendAsciiMessage(0x2C,
-                      "You have already captured the image of this creature");
-
-                    break;
-                  }
-                  case CaptureResponse.Invalid:
-                  {
-                    player.SendLocalizedMessage(
-                      1055124); // You have no interest in capturing the image of this creature.
-
-                    break;
-                  }
-                }
+                break;
               }
-              else
+              case CaptureResponse.AlreadyDone:
               {
-                player.SendAsciiMessage(0x35, "You have no interest in that.");
-              }
+                player.SendAsciiMessage(0x2C,
+                  "You have already captured the image of this creature");
 
-              return;
+                break;
+              }
+              case CaptureResponse.Invalid:
+              {
+                player.SendLocalizedMessage(
+                  1055124); // You have no interest in capturing the image of this creature.
+
+                break;
+              }
             }
+          }
+          else
+          {
+            player.SendAsciiMessage(0x35, "You have no interest in that.");
+          }
+
+          return;
         }
 
         from.SendLocalizedMessage(1010085); // You cannot use this.

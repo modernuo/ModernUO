@@ -14,7 +14,7 @@ namespace Server.Engines.VeteranRewards
       m_From = from;
       m_Entry = entry;
 
-      from.CloseGump(typeof(RewardConfirmGump));
+      from.CloseGump<RewardConfirmGump>();
 
       AddPage(0);
 
@@ -61,9 +61,7 @@ namespace Server.Engines.VeteranRewards
         }
       }
 
-      int cur, max;
-
-      RewardSystem.ComputeRewardInfo(m_From, out cur, out max);
+      RewardSystem.ComputeRewardInfo(m_From, out int cur, out int max);
 
       if (cur < max)
         m_From.SendGump(new RewardNoticeGump(m_From));

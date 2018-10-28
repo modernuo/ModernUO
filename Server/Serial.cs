@@ -22,9 +22,9 @@ using System;
 
 namespace Server
 {
-  public struct Serial : IComparable, IComparable<Serial>
+  public struct Serial : IComparable, IComparable<Serial>, IComparable<uint>
   {
-    public static readonly Serial MinusOne = new Serial(-1);
+    public static readonly Serial MinusOne = new Serial(0xFFFFFFFF);
     public static readonly Serial Zero = new Serial(0);
 
     public static Serial LastMobile{ get; private set; } = Zero;
@@ -55,46 +55,52 @@ namespace Server
       }
     }
 
-    private Serial(int serial)
+    private Serial(uint serial)
     {
       Value = serial;
     }
 
-    public int Value{ get; }
+    public uint Value{ get; }
 
     public bool IsMobile => Value > 0 && Value < 0x40000000;
 
-    public bool IsItem => Value >= 0x40000000 && Value <= 0x7FFFFFFF;
+    public bool IsItem => Value >= 0x40000000 && Value < 0x80000000;
 
     public bool IsValid => Value > 0;
 
     public override int GetHashCode()
     {
-      return Value;
+      return Value.GetHashCode();
     }
-
+    
     public int CompareTo(Serial other)
     {
       return Value.CompareTo(other.Value);
     }
 
-    public int CompareTo(object other)
+    public int CompareTo(object obj)
     {
-      if (other is Serial serial)
-        return CompareTo(serial);
-
-      if (other == null)
-        return -1;
-
-      throw new ArgumentException();
+      return Value.CompareTo(obj);
     }
 
-    public override bool Equals(object o)
+    public int CompareTo(uint other)
     {
-      if (!(o is Serial serial))
-        return false;
+      return Value.CompareTo(other);
+    }
 
-      return serial.Value == Value;
+    public override bool Equals(object obj)
+    {
+      if (obj is Serial serial)
+      {
+        return this == serial;
+      }
+
+      if (obj is uint u)
+      {
+        return Value == u;
+      }
+
+      return false;
     }
 
     public static bool operator ==(Serial l, Serial r)
@@ -127,22 +133,17 @@ namespace Server
       return l.Value <= r.Value;
     }
 
-    /*public static Serial operator ++ ( Serial l )
-    {
-      return new Serial( l + 1 );
-    }*/
-
     public override string ToString()
     {
       return $"0x{Value:X8}";
     }
 
-    public static implicit operator int(Serial a)
+    public static implicit operator uint(Serial a)
     {
       return a.Value;
     }
 
-    public static implicit operator Serial(int a)
+    public static implicit operator Serial(uint a)
     {
       return new Serial(a);
     }

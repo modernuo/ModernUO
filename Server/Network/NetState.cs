@@ -449,8 +449,7 @@ namespace Server.Network
         return;
       }
 
-      int length;
-      byte[] buffer = p.Compile(CompressionEnabled, out length);
+      byte[] buffer = p.Compile(CompressionEnabled, out int length);
 
       if (buffer != null)
       {

@@ -86,9 +86,6 @@ namespace Server.Misc
     {
       private static Dictionary<Mobile, Timer> m_Dictionary = new Dictionary<Mobile, Timer>();
 
-      private static TimerStateCallback OnHandshakeTimeout_Callback = OnHandshakeTimeout;
-      private static TimerStateCallback OnForceDisconnect_Callback = OnForceDisconnect;
-
       public static void Initialize()
       {
         if (Settings.Enabled)
@@ -112,7 +109,7 @@ namespace Server.Misc
           if (m_Dictionary.TryGetValue(m, out Timer t))
             t?.Stop();
 
-          m_Dictionary[m] = t = Timer.DelayCall(Settings.HandshakeTimeout, OnHandshakeTimeout_Callback, m);
+          m_Dictionary[m] = t = Timer.DelayCall(Settings.HandshakeTimeout, OnHandshakeTimeout, m);
           t.Start();
         }
       }
@@ -133,9 +130,9 @@ namespace Server.Misc
         }
       }
 
-      private static void OnHandshakeTimeout(object state)
+      private static void OnHandshakeTimeout(Mobile m)
       {
-        if (!(state is Mobile m))
+        if (m == null)
           return;
 
         m_Dictionary.Remove(m);
@@ -145,30 +142,30 @@ namespace Server.Misc
 //					Console.WriteLine("Player '{0}' failed to negotiate features.", m);
 //				}
 
-        if (m.NetState != null && m.NetState.Running)
+        if (m.NetState?.Running == true)
         {
-          m.SendGump(new WarningGump(1060635, 30720, Settings.WarningMessage, 0xFFC000, 420, 250, null, null));
+          m.SendGump(new WarningGump(1060635, 30720, Settings.WarningMessage, 0xFFC000, 420, 250));
 
           if (m.AccessLevel <= AccessLevel.Player)
           {
             Timer t;
-            m_Dictionary[m] = t = Timer.DelayCall(Settings.DisconnectDelay, OnForceDisconnect_Callback, m);
+            m_Dictionary[m] = t = Timer.DelayCall(Settings.DisconnectDelay, OnForceDisconnect, m);
             t.Start();
           }
         }
       }
 
-      private static void OnForceDisconnect(object state)
+      private static void OnForceDisconnect(Mobile m)
       {
-        if (state is Mobile m)
-        {
-          if (m.NetState != null && m.NetState.Running)
-            m.NetState.Dispose();
+        if (m == null)
+          return;
+        
+        if (m.NetState != null && m.NetState.Running)
+          m.NetState.Dispose();
 
-          m_Dictionary.Remove(m);
+        m_Dictionary.Remove(m);
 
-          Console.WriteLine("Player {0} kicked (Failed assistant handshake)", m);
-        }
+        Console.WriteLine("Player {0} kicked (Failed assistant handshake)", m);
       }
 
       private sealed class BeginHandshake : ProtocolExtension

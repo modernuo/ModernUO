@@ -12,14 +12,12 @@ namespace Server.Movement
 
     private const TileFlag ImpassableSurface = TileFlag.Impassable | TileFlag.Surface;
 
-    private List<Mobile>[] m_MobPools = new List<Mobile>[3]
-    {
+    private List<Mobile>[] m_MobPools = {
       new List<Mobile>(), new List<Mobile>(),
       new List<Mobile>()
     };
 
-    private List<Item>[] m_Pools = new List<Item>[4]
-    {
+    private List<Item>[] m_Pools = {
       new List<Item>(), new List<Item>(),
       new List<Item>(), new List<Item>()
     };
@@ -63,8 +61,6 @@ namespace Server.Movement
         newZ = 0;
         return false;
       }
-
-      int startZ, startTop;
 
       List<Item> itemsStart = m_Pools[0];
       List<Item> itemsForward = m_Pools[1];
@@ -217,27 +213,25 @@ namespace Server.Movement
           }
       }
 
-      GetStartZ(m, map, loc, itemsStart, out startZ, out startTop);
+      GetStartZ(m, map, loc, itemsStart, out int startZ, out int startTop);
 
       bool moveIsOk = Check(map, m, itemsForward, mobsForward, xForward, yForward, startTop, startZ, m.CanSwim,
         m.CantWalk, out newZ);
 
       if (moveIsOk && checkDiagonals)
       {
-        int hold;
-
         if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
         {
           if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                out hold) || !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                m.CantWalk, out hold))
+                out _) || !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+                m.CantWalk, out _))
             moveIsOk = false;
         }
         else
         {
           if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                out hold) && !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                m.CantWalk, out hold))
+                out _) && !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+                m.CantWalk, out _))
             moveIsOk = false;
         }
       }
@@ -358,7 +352,6 @@ namespace Server.Movement
           int itemZ = tile.Z;
           int itemTop = itemZ;
           int ourZ = itemZ + itemData.CalcHeight;
-          int ourTop = ourZ + PersonHeight;
           int testTop = checkTop;
 
           if (moveIsOk)
@@ -415,7 +408,6 @@ namespace Server.Movement
           int itemZ = item.Z;
           int itemTop = itemZ;
           int ourZ = itemZ + itemData.CalcHeight;
-          int ourTop = ourZ + PersonHeight;
           int testTop = checkTop;
 
           if (moveIsOk)
@@ -458,7 +450,6 @@ namespace Server.Movement
       if (considerLand && !landBlocks && stepTop >= landZ)
       {
         int ourZ = landCenter;
-        int ourTop = ourZ + PersonHeight;
         int testTop = checkTop;
 
         if (ourZ + PersonHeight > testTop)

@@ -102,7 +102,7 @@ namespace Server.Engines.Reports
 
       try
       {
-        string renamed = null;
+        string renamed;
 
         if (File.Exists(m_RealFilePath))
         {

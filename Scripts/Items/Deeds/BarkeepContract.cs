@@ -66,8 +66,7 @@ namespace Server.Items
         }
         else
         {
-          bool vendor, contract;
-          BaseHouse.IsThereVendor(from.Location, from.Map, out vendor, out contract);
+          BaseHouse.IsThereVendor(from.Location, from.Map, out bool vendor, out bool contract);
 
           if (vendor)
           {

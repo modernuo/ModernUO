@@ -44,9 +44,7 @@ namespace Server.Diagnostics
     {
       if (!Core.Profiling) return null;
 
-      TimerProfile prof;
-
-      if (!_profiles.TryGetValue(name, out prof)) _profiles.Add(name, prof = new TimerProfile(name));
+      if (!_profiles.TryGetValue(name, out TimerProfile prof)) _profiles.Add(name, prof = new TimerProfile(name));
 
       return prof;
     }

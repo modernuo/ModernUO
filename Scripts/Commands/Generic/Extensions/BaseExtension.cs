@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Commands.Generic
@@ -48,7 +47,7 @@ namespace Server.Commands.Generic
       return true;
     }
 
-    public void Filter(ArrayList list)
+    public void Filter(List<object> list)
     {
       for (int i = 0; i < Count; ++i)
         this[i].Filter(list);
@@ -127,7 +126,7 @@ namespace Server.Commands.Generic
       return true;
     }
 
-    public virtual void Filter(ArrayList list)
+    public virtual void Filter(List<object> list)
     {
     }
   }

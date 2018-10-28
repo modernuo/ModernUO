@@ -17,20 +17,16 @@ namespace Server.Commands.Generic
     {
       if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
         from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
-          new TargetStateCallback(OnTarget), new object[] { command, args });
+          (m, targeted) => OnTarget(m, targeted, command, args));
     }
 
-    public void OnTarget(Mobile from, object targeted, object state)
+    public void OnTarget(Mobile from, object targeted, BaseCommand command, string[] args)
     {
-      object[] states = (object[])state;
-      BaseCommand command = (BaseCommand)states[0];
-      string[] args = (string[])states[1];
-
       if (!BaseCommand.IsAccessible(from, targeted))
       {
-        from.SendMessage("That is not accessible.");
+        from.SendLocalizedMessage(500447); // That is not accessible.
         from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
-          new TargetStateCallback(OnTarget), new object[] { command, args });
+          (m, t) => OnTarget(m, t, command, args));
         return;
       }
 
@@ -38,7 +34,7 @@ namespace Server.Commands.Generic
       {
         case ObjectTypes.Both:
         {
-          if (!(targeted is Item) && !(targeted is Mobile))
+          if (!(targeted is Item || targeted is Mobile))
           {
             from.SendMessage("This command does not work on that.");
             return;
@@ -70,8 +66,8 @@ namespace Server.Commands.Generic
 
       RunCommand(from, targeted, command, args);
 
-      from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None, new TargetStateCallback(OnTarget),
-        new object[] { command, args });
+      from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
+        (m, t) => OnTarget(m, t, command, args));
     }
   }
 }

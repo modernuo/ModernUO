@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
@@ -12,7 +11,7 @@ namespace Server.Gumps
     private string[] m_Names;
 
     public SetCustomEnumGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage,
-      ArrayList list, string[] names) : base(prop, mobile, o, stack, propspage, list, names, null)
+      List<object> list, string[] names) : base(prop, mobile, o, stack, propspage, list, names, null)
     {
       m_Names = names;
     }
@@ -26,7 +25,7 @@ namespace Server.Gumps
         {
           MethodInfo info = m_Property.PropertyType.GetMethod("Parse", new[] { typeof(string) });
 
-          string result = "";
+          string result;
 
           if (info != null)
             result = Properties.SetDirect(m_Mobile, m_Object, m_Object, m_Property, m_Property.Name,
@@ -34,6 +33,8 @@ namespace Server.Gumps
           else if (m_Property.PropertyType == typeof(Enum) || m_Property.PropertyType.IsSubclassOf(typeof(Enum)))
             result = Properties.SetDirect(m_Mobile, m_Object, m_Object, m_Property, m_Property.Name,
               Enum.Parse(m_Property.PropertyType, m_Names[index], false), true);
+          else
+            result = "";
 
           m_Mobile.SendMessage(result);
 

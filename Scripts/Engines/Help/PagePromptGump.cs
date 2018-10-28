@@ -13,7 +13,7 @@ namespace Server.Engines.Help
       m_From = from;
       m_Type = type;
 
-      from.CloseGump(typeof(PagePromptGump));
+      from.CloseGump<PagePromptGump>();
 
       AddBackground(50, 50, 540, 350, 2600);
 

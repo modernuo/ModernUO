@@ -38,9 +38,9 @@ namespace Server.Engines.Quests.Samurai
           }
           else
           {
-            QuestObjective obj = qs.FindObjective(typeof(FifthTrialIntroObjective));
+            QuestObjective obj = qs.FindObjective<FifthTrialIntroObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               Item katana = new HaochisKatana();
 

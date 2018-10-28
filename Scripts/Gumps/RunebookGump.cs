@@ -251,7 +251,7 @@ namespace Server.Gumps
             {
               if (Book.CurCharges <= 0)
               {
-                from.CloseGump(typeof(RunebookGump));
+                from.CloseGump<RunebookGump>();
                 from.SendGump(new RunebookGump(from, Book));
 
                 from.SendLocalizedMessage(502412); // There are no charges left on that item.
@@ -284,7 +284,7 @@ namespace Server.Gumps
               {
                 Book.DropRune(from, e, index);
 
-                from.CloseGump(typeof(RunebookGump));
+                from.CloseGump<RunebookGump>();
                 if (!Core.ML)
                   from.SendGump(new RunebookGump(from, Book));
               }
@@ -304,7 +304,7 @@ namespace Server.Gumps
               {
                 Book.Default = e;
 
-                from.CloseGump(typeof(RunebookGump));
+                from.CloseGump<RunebookGump>();
                 from.SendGump(new RunebookGump(from, Book));
 
                 from.SendLocalizedMessage(502417); // New default location set.
@@ -329,7 +329,7 @@ namespace Server.Gumps
                 }
 
                 Book.OnTravel();
-                new RecallSpell(from, null, e, null).Cast();
+                new RecallSpell(from, null, e).Cast();
               }
               else
               {
@@ -387,7 +387,7 @@ namespace Server.Gumps
                   }
 
                   Book.OnTravel();
-                  new SacredJourneySpell(from, null, e, null).Cast();
+                  new SacredJourneySpell(from, null, e).Cast();
                 }
                 else
                 {
@@ -426,7 +426,7 @@ namespace Server.Gumps
         {
           m_Book.Description = Utility.FixHtml(text.Trim());
 
-          from.CloseGump(typeof(RunebookGump));
+          from.CloseGump<RunebookGump>();
           from.SendGump(new RunebookGump(from, m_Book));
 
           from.SendMessage("The book's title has been changed.");
@@ -445,7 +445,7 @@ namespace Server.Gumps
 
         if (!m_Book.Deleted && from.InRange(m_Book.GetWorldLocation(), Core.ML ? 3 : 1))
         {
-          from.CloseGump(typeof(RunebookGump));
+          from.CloseGump<RunebookGump>();
           from.SendGump(new RunebookGump(from, m_Book));
         }
       }

@@ -181,9 +181,9 @@ namespace Server.Multis
 
           Region region = Region.Find(p, from.Map);
 
-          if (region.IsPartOf(typeof(DungeonRegion)))
+          if (region.IsPartOf<DungeonRegion>())
             from.SendLocalizedMessage(502488); // You can not place a ship inside a dungeon.
-          else if (region.IsPartOf(typeof(HouseRegion)) || region.IsPartOf(typeof(ChampionSpawnRegion)))
+          else if (region.IsPartOf<HouseRegion>() || region.IsPartOf<ChampionSpawnRegion>())
             from.SendLocalizedMessage(1042549); // A boat may not be placed in this area.
           else
             m_Model.OnPlacement(from, p);

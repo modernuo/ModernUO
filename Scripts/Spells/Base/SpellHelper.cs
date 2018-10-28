@@ -22,7 +22,7 @@ namespace Server
   {
     public static void Nullify(Mobile from)
     {
-      if (!from.CanBeginAction(typeof(DefensiveSpell)))
+      if (!from.CanBeginAction<DefensiveSpell>())
         new InternalTimer(from).Start();
     }
 
@@ -40,7 +40,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        m_Mobile.EndAction(typeof(DefensiveSpell));
+        m_Mobile.EndAction<DefensiveSpell>();
       }
     }
   }
@@ -333,7 +333,7 @@ namespace Server.Spells
       if (Core.AOS)
         return TimeSpan.FromSeconds(6 * caster.Skills.EvalInt.Fixed / 50 + 1);
 
-      return TimeSpan.FromSeconds(caster.Skills[SkillName.Magery].Value * 1.2);
+      return TimeSpan.FromSeconds(caster.Skills.Magery.Value * 1.2);
     }
 
     public static double GetOffsetScalar(Mobile caster, Mobile target, bool curse)
@@ -378,7 +378,7 @@ namespace Server.Spells
         }
       }
 
-      return 1 + (int)(caster.Skills[SkillName.Magery].Value * 0.1);
+      return 1 + (int)(caster.Skills.Magery.Value * 0.1);
     }
 
     public static Guild GetGuildFor(Mobile m)
@@ -484,7 +484,7 @@ namespace Server.Spells
       if (map == null)
         return;
 
-      double scale = 1.0 + (caster.Skills[SkillName.Magery].Value - 100.0) / 200.0;
+      double scale = 1.0 + (caster.Skills.Magery.Value - 100.0) / 200.0;
 
       if (scaleDuration)
         duration = TimeSpan.FromSeconds(duration.TotalSeconds * scale);
@@ -617,7 +617,7 @@ namespace Server.Spells
         return false;
       }
 
-      if (caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf(typeof(Jail)))
+      if (caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf<Jail>())
       {
         caster.SendLocalizedMessage(1114345); // You'll need a better jailbreak plan than that!
         return false;
@@ -698,7 +698,7 @@ namespace Server.Spells
     public static bool IsFeluccaDungeon(Map map, Point3D loc)
     {
       Region region = Region.Find(loc, map);
-      return region.IsPartOf(typeof(DungeonRegion)) && region.Map == Map.Felucca;
+      return region.IsPartOf<DungeonRegion>() && region.Map == Map.Felucca;
     }
 
     public static bool IsKhaldun(Map map, Point3D loc)
@@ -723,13 +723,11 @@ namespace Server.Spells
     {
       #region Duels
 
-      if (Region.Find(loc, map).IsPartOf(typeof(SafeZone)))
+      if (Region.Find(loc, map).IsPartOf<SafeZone>())
       {
         if (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
         {
-          PlayerMobile pm = m_TravelCaster as PlayerMobile;
-
-          if (pm?.DuelPlayer != null && !pm.DuelPlayer.Eliminated)
+          if (m_TravelCaster is PlayerMobile pm && pm.DuelPlayer != null && !pm.DuelPlayer.Eliminated)
             return true;
         }
 
@@ -750,12 +748,12 @@ namespace Server.Spells
           return false;
       }*/
 
-      return Region.Find(loc, map).IsPartOf(typeof(StrongholdRegion));
+      return Region.Find(loc, map).IsPartOf<StrongholdRegion>();
     }
 
     public static bool IsChampionSpawn(Map map, Point3D loc)
     {
-      return Region.Find(loc, map).IsPartOf(typeof(ChampionSpawnRegion));
+      return Region.Find(loc, map).IsPartOf<ChampionSpawnRegion>();
     }
 
     public static bool IsDoomFerry(Map map, Point3D loc)
@@ -858,11 +856,11 @@ namespace Server.Spells
 
       #region Dueling
 
-      SafeZone sz = (SafeZone)Region.Find(loc, map).GetRegion(typeof(SafeZone));
+      SafeZone sz = Region.Find(loc, map).GetRegion<SafeZone>();
 
       if (sz != null)
       {
-        PlayerMobile pm = (PlayerMobile)caster;
+        PlayerMobile pm = caster as PlayerMobile;
 
         if (pm?.DuelContext == null || !pm.DuelContext.Started || pm.DuelPlayer == null || pm.DuelPlayer.Eliminated)
           return true;
@@ -870,7 +868,7 @@ namespace Server.Spells
 
       #endregion
 
-      GuardedRegion reg = (GuardedRegion)Region.Find(loc, map).GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = Region.Find(loc, map).GetRegion<GuardedRegion>();
 
       return reg != null && !reg.IsDisabled();
     }
@@ -1176,7 +1174,7 @@ namespace Server.Spells
         return false;
       }
 
-      if (!caster.CanBeginAction(typeof(PolymorphSpell)))
+      if (!caster.CanBeginAction<PolymorphSpell>())
       {
         caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
         return false;
@@ -1200,7 +1198,7 @@ namespace Server.Spells
       {
         caster.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
       }
-      else if (!caster.CanBeginAction(typeof(PolymorphSpell)))
+      else if (!caster.CanBeginAction<PolymorphSpell>())
       {
         caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
       }
@@ -1213,7 +1211,7 @@ namespace Server.Spells
       {
         caster.SendLocalizedMessage(1061091); // You cannot cast that spell in this form.
       }
-      else if (!caster.CanBeginAction(typeof(IncognitoSpell)) || caster.IsBodyMod && GetContext(caster) == null)
+      else if (!caster.CanBeginAction<IncognitoSpell>() || caster.IsBodyMod && GetContext(caster) == null)
       {
         spell.DoFizzle();
       }

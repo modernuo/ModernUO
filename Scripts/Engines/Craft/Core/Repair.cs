@@ -37,11 +37,6 @@ namespace Server.Engines.Craft
         m_Deed = deed;
       }
 
-      private static void EndGolemRepair(object state)
-      {
-        ((Mobile)state).EndAction(typeof(Golem));
-      }
-
       private int GetWeakenChance(Mobile mob, SkillName skill, int curHits, int maxHits)
       {
         // 40% - (1% per hp lost) - (1% per 10 craft skill)
@@ -229,14 +224,14 @@ namespace Server.Engines.Craft
           }
           else
           {
-            double skillValue = usingDeed ? m_Deed.SkillLevel : from.Skills[SkillName.Tinkering].Value;
+            double skillValue = usingDeed ? m_Deed.SkillLevel : from.Skills.Tinkering.Value;
 
             if (skillValue < 60.0)
             {
               number =
                 1044153; // You don't have the required skills to attempt this item.	//TODO: How does OSI handle this with deeds with golems?
             }
-            else if (!from.CanBeginAction(typeof(Golem)))
+            else if (!from.CanBeginAction<Golem>())
             {
               number = 501789; // You must wait before trying again.
             }
@@ -263,9 +258,8 @@ namespace Server.Engines.Craft
                   number = 1044279; // You repair the item.
                   toDelete = true;
 
-                  from.BeginAction(typeof(Golem));
-                  Timer.DelayCall(TimeSpan.FromSeconds(12.0), new TimerStateCallback(EndGolemRepair),
-                    from);
+                  from.BeginAction<Golem>();
+                  Timer.DelayCall(TimeSpan.FromSeconds(12.0), from.EndAction<Golem>);
                 }
                 else
                 {

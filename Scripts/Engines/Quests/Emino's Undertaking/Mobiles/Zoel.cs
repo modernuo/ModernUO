@@ -62,9 +62,9 @@ namespace Server.Engines.Quests.Ninja
 
       if (qs is EminosUndertakingQuest)
       {
-        QuestObjective obj = qs.FindObjective(typeof(FindZoelObjective));
+        QuestObjective obj = qs.FindObjective<FindZoelObjective>();
 
-        if (obj != null && !obj.Completed)
+        if (obj?.Completed == false)
           obj.Complete();
       }
     }
@@ -78,9 +78,9 @@ namespace Server.Engines.Quests.Ninja
         if (qs is EminosUndertakingQuest)
           if (dropped is NoteForZoel)
           {
-            QuestObjective obj = qs.FindObjective(typeof(GiveZoelNoteObjective));
+            QuestObjective obj = qs.FindObjective<GiveZoelNoteObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               dropped.Delete();
               obj.Complete();
@@ -109,7 +109,7 @@ namespace Server.Engines.Quests.Ninja
           m.PlaySound(0x214);
           m.FixedEffect(0x376A, 10, 16);
 
-          m.CloseGump(typeof(ResurrectGump));
+          m.CloseGump<ResurrectGump>();
           m.SendGump(new ResurrectGump(m, ResurrectMessage.Healer));
         }
       }

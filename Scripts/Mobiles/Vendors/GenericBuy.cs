@@ -11,22 +11,12 @@ namespace Server.Mobiles
 
     private int m_Price;
 
-    public GenericBuyInfo(Type type, int price, int amount, int itemID, int hue) : this(null, type, price, amount,
-      itemID, hue, null)
-    {
-    }
-
-    public GenericBuyInfo(string name, Type type, int price, int amount, int itemID, int hue) : this(name, type, price,
-      amount, itemID, hue, null)
-    {
-    }
-
-    public GenericBuyInfo(Type type, int price, int amount, int itemID, int hue, object[] args) : this(null, type, price,
+    public GenericBuyInfo(Type type, int price, int amount, int itemID, int hue, object[] args = null) : this(null, type, price,
       amount, itemID, hue, args)
     {
     }
 
-    public GenericBuyInfo(string name, Type type, int price, int amount, int itemID, int hue, object[] args)
+    public GenericBuyInfo(string name, Type type, int price, int amount, int itemID, int hue, object[] args = null)
     {
       Type = type;
       m_Price = price;
@@ -35,14 +25,10 @@ namespace Server.Mobiles
       Hue = hue;
       Args = args;
 
-      if (name == null)
-        Name = itemID < 0x4000 ? (1020000 + itemID).ToString() : (1078872 + itemID).ToString();
-      else
-        Name = name;
+      Name = name ?? (itemID < 0x4000 ? (1020000 + itemID).ToString() : (1078872 + itemID).ToString());
     }
 
-    public virtual bool CanCacheDisplay //return ( m_Args == null || m_Args.Length == 0 ); }
-      => false;
+    public virtual bool CanCacheDisplay => false;
 
     public Type Type{ get; set; }
 

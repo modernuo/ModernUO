@@ -36,7 +36,7 @@ namespace Server.Items
     {
       if (RootParent == from)
       {
-        from.CloseGump(typeof(NameChangeDeedGump));
+        from.CloseGump<NameChangeDeedGump>();
         from.SendGump(new NameChangeDeedGump(this));
       }
       else
@@ -55,7 +55,7 @@ namespace Server.Items
       m_Sender = sender;
 
       Closable = true;
-      Dragable = true;
+      Draggable = true;
       Resizable = false;
 
       AddPage(0);

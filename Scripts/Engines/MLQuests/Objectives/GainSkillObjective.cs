@@ -4,6 +4,7 @@ using Server.Mobiles;
 
 namespace Server.Engines.MLQuests.Objectives
 {
+  [Flags]
   public enum GainSkillObjectiveFlags : byte
   {
     None = 0x00,
@@ -15,17 +16,7 @@ namespace Server.Engines.MLQuests.Objectives
   {
     private GainSkillObjectiveFlags m_Flags;
 
-    public GainSkillObjective()
-      : this(SkillName.Alchemy, 0)
-    {
-    }
-
-    public GainSkillObjective(SkillName skill, int thresholdFixed)
-      : this(skill, thresholdFixed, false, false)
-    {
-    }
-
-    public GainSkillObjective(SkillName skill, int thresholdFixed, bool useReal, bool accelerate)
+    public GainSkillObjective(SkillName skill = SkillName.Alchemy, int thresholdFixed = 0, bool useReal = false, bool accelerate = false)
     {
       Skill = skill;
       ThresholdFixed = thresholdFixed;
@@ -74,10 +65,7 @@ namespace Server.Engines.MLQuests.Objectives
       int skillLabel = AosSkillBonuses.GetLabel(Skill);
       string args;
 
-      if (ThresholdFixed % 10 == 0)
-        args = $"#{skillLabel}\t{ThresholdFixed / 10}"; // as seen on OSI
-      else
-        args = $"#{skillLabel}\t{(double)ThresholdFixed / 10:0.0}"; // for non-integer skill levels
+      args = ThresholdFixed % 10 == 0 ? $"#{skillLabel}\t{ThresholdFixed / 10}" : $"#{skillLabel}\t{(double)ThresholdFixed / 10:0.0}";
 
       g.AddHtmlLocalized(98, y, 312, 16, 1077485, args, 0x15F90, false, false); // Increase ~1_SKILL~ to ~2_VALUE~
       y += 16;

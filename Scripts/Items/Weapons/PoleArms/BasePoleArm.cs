@@ -115,8 +115,8 @@ namespace Server.Items
       base.OnHit(attacker, defender, damageBonus);
 
       if (!Core.AOS && (attacker.Player || attacker.Body.IsHuman) && Layer == Layer.TwoHanded &&
-          attacker.Skills[SkillName.Anatomy].Value >= 80 &&
-          attacker.Skills[SkillName.Anatomy].Value / 400.0 >= Utility.RandomDouble() &&
+          attacker.Skills.Anatomy.Value >= 80 &&
+          attacker.Skills.Anatomy.Value / 400.0 >= Utility.RandomDouble() &&
           DuelContext.AllowSpecialAbility(attacker, "Concussion Blow", false))
       {
         StatMod mod = defender.GetStatMod("Concussion");

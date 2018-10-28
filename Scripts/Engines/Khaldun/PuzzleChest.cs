@@ -259,8 +259,8 @@ namespace Server.Items
           solution = new PuzzleChestSolution(PuzzleChestCylinder.None, PuzzleChestCylinder.None,
             PuzzleChestCylinder.None, PuzzleChestCylinder.None, PuzzleChestCylinder.None);
 
-        from.CloseGump(typeof(PuzzleGump));
-        from.CloseGump(typeof(StatusGump));
+        from.CloseGump<PuzzleGump>();
+        from.CloseGump<StatusGump>();
         from.SendGump(new PuzzleGump(from, this, solution, 0));
 
         return true;
@@ -277,9 +277,7 @@ namespace Server.Items
 
     public void SubmitSolution(Mobile m, PuzzleChestSolution solution)
     {
-      int correctCylinders, correctColors;
-
-      if (solution.Matches(Solution, out correctCylinders, out correctColors))
+      if (solution.Matches(Solution, out int correctCylinders, out int correctColors))
       {
         LockPick(m);
 
@@ -553,7 +551,7 @@ namespace Server.Items
         m_Chest = chest;
         m_Solution = solution;
 
-        Dragable = false;
+        Draggable = false;
 
         AddBackground(25, 0, 500, 410, 0x53);
 

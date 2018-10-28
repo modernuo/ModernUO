@@ -95,7 +95,7 @@ namespace Server
     {
       return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o));
     }
-    
+
     public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
     {
       return s.Items.OfType<T>()
@@ -1572,5 +1572,47 @@ namespace Server
     }
 
     #endregion
+
+    public Point3D GetRandomNearbyLocation(Point3D loc, int maxRange = 2, int minRange = 0, int retryCount = 10, int height = 16, bool checkBlocksFit = false,
+      bool checkMobiles = false)
+    {
+      int j = 0;
+      int range = maxRange - minRange;
+      bool[,] locs = range <= 10 ? new bool[range + 1, range + 1] : null;
+
+      do
+      {
+        int xRand = Utility.Random(range);
+        int yRand = Utility.Random(range);
+
+        if (locs?[xRand, yRand] != true)
+        {
+          int x = loc.X + xRand + minRange;
+          int y = loc.Y + yRand + minRange;
+
+          if (CanFit(x, y, loc.Z, height, checkBlocksFit, checkMobiles))
+          {
+            loc = new Point3D(x, y, loc.Z);
+            break;
+          }
+
+          int z = GetAverageZ(x, y);
+
+          if (CanFit(x, y, z, height, checkBlocksFit, checkMobiles))
+          {
+            loc = new Point3D(x, y, z);
+            break;
+          }
+
+          if (locs != null)
+            locs[xRand, yRand] = true;
+        }
+
+        j++;
+      }
+      while (j < retryCount);
+
+      return loc;
+    }
   }
 }

@@ -25,10 +25,7 @@ namespace Server.Items
     {
       if (Utility.InRange(Location, from.Location, 2))
       {
-        int hours;
-        int minutes;
-
-        Clock.GetTime(Map, X, Y, out hours, out minutes);
+        Clock.GetTime(Map, X, Y, out int hours, out int _);
 
         if (hours < 4 || hours > 20)
           Effects.PlaySound(Location, Map, 0x569);
@@ -68,10 +65,7 @@ namespace Server.Items
 
     private void UpdateImage()
     {
-      int hours;
-      int minutes;
-
-      Clock.GetTime(Map, X, Y, out hours, out minutes);
+      Clock.GetTime(Map, X, Y, out int hours, out int _);
 
       if (FacingSouth)
       {

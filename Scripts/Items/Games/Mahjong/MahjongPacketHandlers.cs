@@ -40,7 +40,7 @@ namespace Server.Engines.Mahjong
 
     public static void OnPacket(NetState state, PacketReader pvSrc)
     {
-      MahjongGame game = World.FindItem(pvSrc.ReadInt32()) as MahjongGame;
+      MahjongGame game = World.FindItem(pvSrc.ReadUInt32()) as MahjongGame;
 
       game?.Players.CheckPlayers();
 

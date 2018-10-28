@@ -280,15 +280,15 @@ namespace Server
     {
       int z = map.GetAverageZ(x, y);
 
-      if (map.CanFit(x, y, z, 16, false, false, true))
+      if (map.CanFit(x, y, z, 16, false, false))
         return z;
 
       for (int i = 1; i <= 20; ++i)
       {
-        if (map.CanFit(x, y, z + i, 16, false, false, true))
+        if (map.CanFit(x, y, z + i, 16, false, false))
           return z + i;
 
-        if (map.CanFit(x, y, z - i, 16, false, false, true))
+        if (map.CanFit(x, y, z - i, 16, false, false))
           return z - i;
       }
 

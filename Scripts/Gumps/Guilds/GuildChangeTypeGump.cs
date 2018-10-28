@@ -16,7 +16,7 @@ namespace Server.Gumps
       m_Mobile = from;
       m_Guild = guild;
 
-      Dragable = false;
+      Draggable = false;
 
       AddPage(0);
       AddBackground(0, 0, 550, 400, 5054);

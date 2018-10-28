@@ -34,9 +34,9 @@ namespace Server.Engines.Quests.Necro
 
         if (qs is DarkTidesQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(RetrieveAbraxusScrollObjective));
+          QuestObjective obj = qs.FindObjective<RetrieveAbraxusScrollObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
             obj.Complete();
         }
       }
@@ -54,9 +54,9 @@ namespace Server.Engines.Quests.Necro
 
           if (qs is DarkTidesQuest)
           {
-            QuestObjective obj = qs.FindObjective(typeof(ReadAbraxusScrollObjective));
+            QuestObjective obj = qs.FindObjective<ReadAbraxusScrollObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
               obj.Complete();
           }
         }

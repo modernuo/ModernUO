@@ -86,10 +86,7 @@ namespace Server.Items
       if (map == null || map == Map.Internal)
         return Point3D.Zero;
 
-      int xCenter, yCenter;
-      int xWidth, yHeight;
-
-      if (!ComputeMapDetails(map, 0, 0, out xCenter, out yCenter, out xWidth, out yHeight))
+      if (!ComputeMapDetails(map, 0, 0, out int xCenter, out int yCenter, out int xWidth, out int yHeight))
         return Point3D.Zero;
 
       double absLong = xLong + (double)xMins / 60;
@@ -101,10 +98,8 @@ namespace Server.Items
       if (!ySouth)
         absLat = 360.0 - absLat;
 
-      int x, y, z;
-
-      x = xCenter + (int)(absLong * xWidth / 360);
-      y = yCenter + (int)(absLat * yHeight / 360);
+      int x = xCenter + (int)(absLong * xWidth / 360);
+      int y = yCenter + (int)(absLat * yHeight / 360);
 
       if (x < 0)
         x += xWidth;
@@ -116,7 +111,7 @@ namespace Server.Items
       else if (y >= yHeight)
         y -= yHeight;
 
-      z = map.GetAverageZ(x, y);
+      int z = map.GetAverageZ(x, y);
 
       return new Point3D(x, y, z);
     }
@@ -128,10 +123,8 @@ namespace Server.Items
         return false;
 
       int x = p.X, y = p.Y;
-      int xCenter, yCenter;
-      int xWidth, yHeight;
 
-      if (!ComputeMapDetails(map, x, y, out xCenter, out yCenter, out xWidth, out yHeight))
+      if (!ComputeMapDetails(map, x, y, out int xCenter, out int yCenter, out int xWidth, out int yHeight))
         return false;
 
       double absLong = (double)((x - xCenter) * 360) / xWidth;

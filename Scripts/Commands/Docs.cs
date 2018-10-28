@@ -214,7 +214,7 @@ namespace Server.Commands
       }
     }
 
-    public static void FormatGeneric(Type type, ref string typeName, ref string fileName, ref string linkName)
+    public static void FormatGeneric(Type type, out string typeName, out string fileName, out string linkName)
     {
       string name = null;
       string fnam = null;
@@ -274,8 +274,10 @@ namespace Server.Commands
         }
       }
 
-      if (name == null) typeName = type.Name;
-      else typeName = name;
+      if (name == null)
+        typeName = type.Name;
+      else
+        typeName = name;
 
       if (fnam == null) fileName = "docs/types/" + SanitizeType(type.Name) + ".html";
       else fileName = fnam + ".html";
@@ -466,12 +468,7 @@ namespace Server.Commands
         m_Declaring = type.DeclaringType;
         m_Interfaces = type.GetInterfaces();
 
-        FormatGeneric(m_Type, ref m_TypeName, ref m_FileName, ref m_LinkName);
-
-        //				Console.WriteLine( ">> inline typeinfo: "+m_TypeName );
-        //				m_TypeName = GetGenericTypeName( m_Type );
-        //				m_FileName = Docs.GetFileName( "docs/types/", GetGenericTypeName( m_Type, "-", "-" ), ".html" );
-        //				m_Writer = Docs.GetWriter( "docs/types/", m_FileName );
+        FormatGeneric(m_Type, out m_TypeName, out m_FileName, out m_LinkName);
       }
 
       public string FileName => m_FileName;
@@ -601,7 +598,7 @@ namespace Server.Commands
           append.Append(" *");
         }
       }
-      else if (realType.IsArray)
+      else if (realType?.IsArray == true)
       {
         do
         {
@@ -625,30 +622,16 @@ namespace Server.Commands
       string fullName = realType?.FullName ?? "(-null-)";
       string aliased = null; // = realType.Name;
 
-      TypeInfo info = null;
-
-      if (realType != null)
+      if (realType != null && m_Types.TryGetValue(realType, out TypeInfo info))
       {
-        m_Types.TryGetValue(realType, out info);
-      }
-
-      if (info != null)
-      {
-        aliased = "<!-- DBG-0 -->" + info.LinkName(null);
-        //aliased = String.Format( "<a href=\"{0}\">{1}</a>", info.m_FileName, info.m_TypeName );
+        aliased = $"<!-- DBG-0 -->{info.LinkName(null)}";
       }
       else
       {
-        //FormatGeneric( );
         if (realType?.IsGenericType == true)
         {
-          string typeName = "";
-          string fileName = "";
-          string linkName = "";
-
-          FormatGeneric(realType, ref typeName, ref fileName, ref linkName);
-          linkName = linkName.Replace("@directory@", null);
-          aliased = linkName;
+          FormatGeneric(realType, out _, out _, out string linkName);
+          aliased = linkName.Replace("@directory@", null);
         }
         else
         {
@@ -768,7 +751,7 @@ namespace Server.Commands
         AddIndexLink(html, "commands.html", "Commands",
           "Every available command. This contains command name, usage, aliases, and description.");
         AddIndexLink(html, "objects.html", "Constructible Objects",
-          "Every constructable item or npc. This contains object name and usage. Hover mouse over parameters to see type description.");
+          "Every constructible item or npc. This contains object name and usage. Hover mouse over parameters to see type description.");
         AddIndexLink(html, "keywords.html", "Speech Keywords",
           "Lists speech keyword numbers and associated match patterns. These are used in some scripts for multi-language matching of client speech.");
         AddIndexLink(html, "bodies.html", "Body List",
@@ -1861,7 +1844,8 @@ namespace Server.Commands
     {
       public int Compare(SpeechEntry x, SpeechEntry y)
       {
-        return x.Index.CompareTo(y.Index);
+        if (x == null && y == null) return 0;
+        return x?.Index.CompareTo(y?.Index) ?? 1;
       }
     }
 
@@ -1940,12 +1924,14 @@ namespace Server.Commands
     {
       public int Compare(DocCommandEntry a, DocCommandEntry b)
       {
-        int v = b.AccessLevel.CompareTo(a.AccessLevel);
+        if (a == null && b == null) return 0;
+        
+        int v = b?.AccessLevel.CompareTo(a?.AccessLevel) ?? 1;
 
-        if (v == 0)
-          v = a.Name.CompareTo(b.Name);
-
-        return v;
+        if (v != 0)
+          return v;
+        
+        return a?.Name.CompareTo(b?.Name) ?? 1;
       }
     }
 
@@ -2198,10 +2184,7 @@ namespace Server.Commands
 
     private static bool IsConstructible(Type t, out bool isItem)
     {
-      if (isItem = typeofItem.IsAssignableFrom(t))
-        return true;
-
-      return typeofMobile.IsAssignableFrom(t);
+      return (isItem = typeofItem.IsAssignableFrom(t)) || typeofMobile.IsAssignableFrom(t);
     }
 
     private static bool IsConstructible(ConstructorInfo ctor)
@@ -2214,14 +2197,14 @@ namespace Server.Commands
       List<TypeInfo> types = new List<TypeInfo>(m_Types.Values);
       types.Sort(new TypeComparer());
 
-      ArrayList items = new ArrayList(), mobiles = new ArrayList();
+      List<(Type, ConstructorInfo[])> items = new List<(Type, ConstructorInfo[])>();
+      List<(Type, ConstructorInfo[])> mobiles = new List<(Type, ConstructorInfo[])>();
 
       for (int i = 0; i < types.Count; ++i)
       {
         Type t = types[i].m_Type;
-        bool isItem;
 
-        if (t.IsAbstract || !IsConstructible(t, out isItem))
+        if (t.IsAbstract || !IsConstructible(t, out bool isItem))
           continue;
 
         ConstructorInfo[] ctors = t.GetConstructors();
@@ -2232,8 +2215,7 @@ namespace Server.Commands
 
         if (anyConstructible)
         {
-          (isItem ? items : mobiles).Add(t);
-          (isItem ? items : mobiles).Add(ctors);
+          (isItem ? items : mobiles).Add((t, ctors));
         }
       }
 
@@ -2255,8 +2237,11 @@ namespace Server.Commands
         html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
         html.WriteLine("         <tr><td class=\"header\">Item Name</td><td class=\"header\">Usage</td></tr>");
 
-        for (int i = 0; i < items.Count; i += 2)
-          DocumentConstructibleObject(html, (Type)items[i], (ConstructorInfo[])items[i + 1]);
+        items.ForEach(tuple =>
+        {
+          var (type, constructors) = tuple;
+          DocumentConstructibleObject(html, type, constructors);
+        });
 
         html.WriteLine("      </table></td></tr></table><br><br>");
 
@@ -2266,8 +2251,11 @@ namespace Server.Commands
         html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
         html.WriteLine("         <tr><td class=\"header\">Mobile Name</td><td class=\"header\">Usage</td></tr>");
 
-        for (int i = 0; i < mobiles.Count; i += 2)
-          DocumentConstructibleObject(html, (Type)mobiles[i], (ConstructorInfo[])mobiles[i + 1]);
+        mobiles.ForEach(tuple =>
+        {
+          var (type, constructors) = tuple;
+          DocumentConstructibleObject(html, type, constructors);
+        });
 
         html.WriteLine("      </table></td></tr></table>");
 
@@ -2513,12 +2501,8 @@ namespace Server.Commands
 
           if (ifaceInfo == null)
           {
-            string typeName = "";
-            string fileName = "";
-            string linkName = "";
-            FormatGeneric(iface, ref typeName, ref fileName, ref linkName);
-            linkName = linkName.Replace("@directory@", null);
-            typeHtml.Write("<!-- DBG-2.1 -->" + linkName);
+            FormatGeneric(iface, out _, out _, out string linkName);
+            typeHtml.Write($"<!-- DBG-2.1 -->{linkName.Replace("@directory@", null)}");
           }
           else
           {
@@ -2725,9 +2709,9 @@ namespace Server.Commands
 
     public override bool Equals(object obj)
     {
-      BodyEntry e = (BodyEntry)obj;
+      BodyEntry e = obj as BodyEntry;
 
-      return Body == e.Body && BodyType == e.BodyType && Name == e.Name;
+      return Body == e?.Body && BodyType == e.BodyType && Name == e.Name;
     }
 
     public override int GetHashCode()
@@ -2740,15 +2724,16 @@ namespace Server.Commands
   {
     public int Compare(BodyEntry a, BodyEntry b)
     {
-      int v = a.BodyType.CompareTo(b.BodyType);
+      if (a == null && b == null) return 0;
+      int v = a?.BodyType.CompareTo(b?.BodyType) ?? 1;
 
       if (v == 0)
-        v = a.Body.BodyID.CompareTo(b.Body.BodyID);
+        v = a?.Body.BodyID.CompareTo(b?.Body.BodyID) ?? 1;
 
-      if (v == 0)
-        v = a.Name.CompareTo(b.Name);
-
-      return v;
+      if (v != 0)
+        return v;
+      
+      return a?.Name.CompareTo(b?.Name) ?? 1;
     }
   }
 

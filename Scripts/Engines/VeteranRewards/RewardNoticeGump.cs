@@ -11,7 +11,7 @@ namespace Server.Engines.VeteranRewards
     {
       m_From = from;
 
-      from.CloseGump(typeof(RewardNoticeGump));
+      from.CloseGump<RewardNoticeGump>();
 
       AddPage(0);
 

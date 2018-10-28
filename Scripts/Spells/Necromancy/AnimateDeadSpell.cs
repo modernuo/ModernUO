@@ -140,7 +140,7 @@ namespace Server.Spells.Necromancy
 
         if (qs is DarkTidesQuest)
         {
-          QuestObjective objective = qs.FindObjective(typeof(AnimateMaabusCorpseObjective));
+          QuestObjective objective = qs.FindObjective<AnimateMaabusCorpseObjective>();
 
           if (objective != null && !objective.Completed)
           {
@@ -189,8 +189,8 @@ namespace Server.Spells.Necromancy
                 Effects.SendLocationParticles(EffectItem.Create(p, map, EffectItem.DefaultDuration), 0x3789,
                   1, 40, 0x3F, 3, 9907, 0);
 
-                Timer.DelayCall(TimeSpan.FromSeconds(2.0), new TimerStateCallback(SummonDelay_Callback),
-                  new object[] { Caster, c, p, map, group });
+                Timer.DelayCall(TimeSpan.FromSeconds(2.0),
+                  () => SummonDelay_Callback(Caster, c, p, map, group));
               }
             }
           }
@@ -242,30 +242,19 @@ namespace Server.Spells.Necromancy
       if (list.Count > 3)
         Timer.DelayCall(TimeSpan.Zero, list[0].Kill);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), new TimerStateCallback(Summoned_Damage),
-        summoned);
+      Timer.DelayCall(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), Summoned_Damage, summoned);
     }
 
-    private static void Summoned_Damage(object state)
+    private static void Summoned_Damage(Mobile mob)
     {
-      Mobile mob = (Mobile)state;
-
       if (mob.Hits > 0)
         --mob.Hits;
       else
         mob.Kill();
     }
 
-    private static void SummonDelay_Callback(object state)
+    private static void SummonDelay_Callback(Mobile caster, Corpse corpse, Point3D loc, Map map, CreatureGroup group)
     {
-      object[] states = (object[])state;
-
-      Mobile caster = (Mobile)states[0];
-      Corpse corpse = (Corpse)states[1];
-      Point3D loc = (Point3D)states[2];
-      Map map = (Map)states[3];
-      CreatureGroup group = (CreatureGroup)states[4];
-
       if (corpse.Animated)
         return;
 
@@ -274,8 +263,8 @@ namespace Server.Spells.Necromancy
       if (owner == null)
         return;
 
-      double necromancy = caster.Skills[SkillName.Necromancy].Value;
-      double spiritSpeak = caster.Skills[SkillName.SpiritSpeak].Value;
+      double necromancy = caster.Skills.Necromancy.Value;
+      double spiritSpeak = caster.Skills.SpiritSpeak.Value;
 
       int casterAbility = 0;
 

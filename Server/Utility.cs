@@ -166,11 +166,10 @@ namespace Server
 
     public static IPAddress Intern(IPAddress ipAddress)
     {
-      if (_ipAddressTable == null) _ipAddressTable = new Dictionary<IPAddress, IPAddress>();
+      if (_ipAddressTable == null)
+        _ipAddressTable = new Dictionary<IPAddress, IPAddress>();
 
-      IPAddress interned;
-
-      if (!_ipAddressTable.TryGetValue(ipAddress, out interned))
+      if (!_ipAddressTable.TryGetValue(ipAddress, out IPAddress interned))
       {
         interned = ipAddress;
         _ipAddressTable[ipAddress] = interned;
@@ -186,18 +185,14 @@ namespace Server
 
     public static bool IsValidIP(string text)
     {
-      bool valid = true;
-
-      IPMatch(text, IPAddress.None, ref valid);
+      IPMatch(text, IPAddress.None, out bool valid);
 
       return valid;
     }
 
     public static bool IPMatch(string val, IPAddress ip)
     {
-      bool valid = true;
-
-      return IPMatch(val, ip, ref valid);
+      return IPMatch(val, ip, out _);
     }
 
     public static string FixHtml(string str)
@@ -428,7 +423,7 @@ namespace Server
       return false;
     }
 
-    public static bool IPMatch(string val, IPAddress ip, ref bool valid)
+    public static bool IPMatch(string val, IPAddress ip, out bool valid)
     {
       valid = true;
 
@@ -698,17 +693,6 @@ namespace Server
       }
     }
 
-    public static ArrayList BuildArrayList(IEnumerable enumerable)
-    {
-      IEnumerator e = enumerable.GetEnumerator();
-
-      ArrayList list = new ArrayList();
-
-      while (e.MoveNext()) list.Add(e.Current);
-
-      return list;
-    }
-
     public static bool RangeCheck(IPoint2D p1, IPoint2D p2, int range)
     {
       return p1.X >= p2.X - range
@@ -800,6 +784,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -811,6 +796,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -864,9 +850,14 @@ namespace Server
         m.FacialHairHue = m.Race.RandomHairHue();
     }
 
-    public static List<TOutput> CastConvertList<TInput, TOutput>(List<TInput> list) where TOutput : TInput
+    public static List<TOutput> CastListContravariant<TInput, TOutput>(List<TInput> list) where TInput : TOutput
     {
-      return list.ConvertAll(delegate(TInput value) { return (TOutput)value; });
+      return list.ConvertAll(value => (TOutput)value);
+    }
+
+    public static List<TOutput> CastListCovariant<TInput, TOutput>(List<TInput> list) where TOutput : TInput
+    {
+      return list.ConvertAll(value => (TOutput)value);
     }
 
     public static List<TOutput> SafeConvertList<TInput, TOutput>(List<TInput> list) where TOutput : class
@@ -888,24 +879,21 @@ namespace Server
 
     public static bool ToBoolean(string value)
     {
-      bool b;
-      bool.TryParse(value, out b);
+      bool.TryParse(value, out bool b);
 
       return b;
     }
 
     public static double ToDouble(string value)
     {
-      double d;
-      double.TryParse(value, out d);
+      double.TryParse(value, out double d);
 
       return d;
     }
 
     public static TimeSpan ToTimeSpan(string value)
     {
-      TimeSpan t;
-      TimeSpan.TryParse(value, out t);
+      TimeSpan.TryParse(value, out TimeSpan t);
 
       return t;
     }
@@ -922,6 +910,18 @@ namespace Server
       return i;
     }
 
+    public static uint ToUInt32(string value)
+    {
+      uint i;
+
+      if (value.StartsWith("0x"))
+        uint.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
+      else
+        uint.TryParse(value, out i);
+
+      return i;
+    }
+
     #endregion
 
     #region Get[Something]
@@ -934,10 +934,7 @@ namespace Server
       }
       catch
       {
-        if (double.TryParse(doubleString, out double val))
-          return val;
-
-        return defaultValue;
+        return double.TryParse(doubleString, out double val) ? val : defaultValue;
       }
     }
 
@@ -949,10 +946,19 @@ namespace Server
       }
       catch
       {
-        if (int.TryParse(intString, out int val))
-          return val;
+        return int.TryParse(intString, out int val) ? val : defaultValue;
+      }
+    }
 
-        return defaultValue;
+    public static uint GetXMLUInt32(string uintString, uint defaultValue)
+    {
+      try
+      {
+        return XmlConvert.ToUInt32(uintString);
+      }
+      catch
+      {
+        return uint.TryParse(uintString, out uint val) ? val : defaultValue;
       }
     }
 
@@ -964,10 +970,7 @@ namespace Server
       }
       catch
       {
-        if (DateTime.TryParse(dateTimeString, out DateTime d))
-          return d;
-
-        return defaultValue;
+        return DateTime.TryParse(dateTimeString, out DateTime d) ? d : defaultValue;
       }
     }
 
@@ -979,10 +982,7 @@ namespace Server
       }
       catch
       {
-        if (DateTimeOffset.TryParse(dateTimeOffsetString, out DateTimeOffset d))
-          return d;
-
-        return defaultValue;
+        return DateTimeOffset.TryParse(dateTimeOffsetString, out DateTimeOffset d) ? d : defaultValue;
       }
     }
 
@@ -998,30 +998,19 @@ namespace Server
       }
     }
 
-    public static string GetAttribute(XmlElement node, string attributeName)
-    {
-      return GetAttribute(node, attributeName, null);
-    }
-
-    public static string GetAttribute(XmlElement node, string attributeName, string defaultValue)
+    public static string GetAttribute(XmlElement node, string attributeName, string defaultValue = null)
     {
       if (node == null)
         return defaultValue;
 
       XmlAttribute attr = node.Attributes[attributeName];
 
-      if (attr == null)
-        return defaultValue;
-
-      return attr.Value;
+      return attr == null ? defaultValue : attr.Value;
     }
 
     public static string GetText(XmlElement node, string defaultValue)
     {
-      if (node == null)
-        return defaultValue;
-
-      return node.InnerText;
+      return node == null ? defaultValue : node.InnerText;
     }
 
     public static int GetAddressValue(IPAddress address)
@@ -1090,15 +1079,23 @@ namespace Server
       return total;
     }
 
-    public static int RandomList(params int[] list)
+    public static void Shuffle<T>(IList<T> list)
     {
-      return list[RandomImpl.Next(list.Length)];
+      int count = list.Count;
+      for (int i = count - 1; i > 0; i--)
+      {
+        int r = RandomImpl.Next(count);
+        T swap = list[r];
+        list[r] = list[i];
+        list[i] = swap;
+      }
     }
 
-    public static bool RandomBool()
-    {
-      return RandomImpl.NextBool();
-    }
+    public static int RandomList(params int[] list) => RandomList<int>(list);
+
+    public static T RandomList<T>(IList<T> list) => list[RandomImpl.Next(list.Count)];
+
+    public static bool RandomBool() => RandomImpl.NextBool();
 
     public static int RandomMinMax(int min, int max)
     {
@@ -1283,38 +1280,6 @@ namespace Server
         return RandomList(0x62, 0x71);
 
       return RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
-    }
-
-    //[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
-    public static int ClipSkinHue(int hue)
-    {
-      if (hue < 1002)
-        return 1002;
-      if (hue > 1058)
-        return 1058;
-      return hue;
-    }
-
-    //[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
-    public static int RandomSkinHue()
-    {
-      return Random(1002, 57) | 0x8000;
-    }
-
-    //[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
-    public static int ClipHairHue(int hue)
-    {
-      if (hue < 1102)
-        return 1102;
-      if (hue > 1149)
-        return 1149;
-      return hue;
-    }
-
-    //[Obsolete( "Depreciated, use the methods for the Mobile's race", false )]
-    public static int RandomHairHue()
-    {
-      return Random(1102, 48);
     }
 
     #endregion

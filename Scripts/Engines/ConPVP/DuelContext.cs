@@ -33,19 +33,18 @@ namespace Server.Engines.ConPVP
 
     private Timer m_Countdown;
 
-    private ArrayList m_Entered = new ArrayList();
     public EventGame m_EventGame;
     private Map m_GateFacet;
 
     private Point3D m_GatePoint;
-    public TournyMatch m_Match;
+    public TourneyMatch m_Match;
 
     public Arena m_OverrideArena;
 
     private Timer m_SDWarnTimer, m_SDActivateTimer;
     public Tournament m_Tournament;
 
-    private ArrayList m_Walls = new ArrayList();
+    private List<Item> m_Walls = new List<Item>();
 
     private bool m_Yielding;
 
@@ -56,7 +55,7 @@ namespace Server.Engines.ConPVP
     public DuelContext(Mobile initiator, RulesetLayout layout, bool addNew)
     {
       Initiator = initiator;
-      Participants = new ArrayList();
+      Participants = new List<Participant>();
       Ruleset = new Ruleset(layout);
       Ruleset.ApplyDefault(layout.Defaults[0]);
 
@@ -64,8 +63,7 @@ namespace Server.Engines.ConPVP
       {
         Participants.Add(new Participant(this, 1));
         Participants.Add(new Participant(this, 1));
-
-        ((Participant)Participants[0]).Add(initiator);
+        Participants[0].Add(initiator);
       }
     }
 
@@ -83,7 +81,7 @@ namespace Server.Engines.ConPVP
 
     public Mobile Initiator{ get; }
 
-    public ArrayList Participants{ get; }
+    public List<Participant> Participants{ get; }
 
     public Ruleset Ruleset{ get; private set; }
 
@@ -93,22 +91,8 @@ namespace Server.Engines.ConPVP
 
     public bool IsSuddenDeath{ get; set; }
 
-    public bool IsOneVsOne
-    {
-      get
-      {
-        if (Participants.Count != 2)
-          return false;
-
-        if (((Participant)Participants[0]).Players.Length != 1)
-          return false;
-
-        if (((Participant)Participants[1]).Players.Length != 1)
-          return false;
-
-        return true;
-      }
-    }
+    public bool IsOneVsOne => Participants.Count == 2 && Participants[0].Players.Length == 1 &&
+                              Participants[1].Players.Length == 1;
 
     public bool StartedBeginCountdown{ get; private set; }
 
@@ -134,7 +118,7 @@ namespace Server.Engines.ConPVP
 
     public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
     {
-      Timer.DelayCall(ts, new TimerStateCallback(DelayBounce_Callback), new object[] { mob, corpse });
+      Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
     }
 
     public static bool AllowSpecialMove(Mobile from, string name, SpecialMove move)
@@ -183,7 +167,7 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(from);
 
-      if (pl == null || pl.Eliminated)
+      if (pl?.Eliminated != false)
         return true;
 
       if (CantDoAnything(from))
@@ -192,7 +176,8 @@ namespace Server.Engines.ConPVP
       if (spell is RecallSpell)
         from.SendMessage("You may not cast this spell.");
 
-      string title = null, option = null;
+      string title = null;
+      string option;
 
       if (spell is ArcanistSpell)
       {
@@ -492,12 +477,8 @@ namespace Server.Engines.ConPVP
       return false;
     }
 
-    private void DelayBounce_Callback(object state)
+    private void DelayBounce_Callback(Mobile mob, Container corpse)
     {
-      object[] states = (object[])state;
-      Mobile mob = (Mobile)states[0];
-      Container corpse = (Container)states[1];
-
       RemoveAggressions(mob);
       SendOutside(mob);
       Refresh(mob, corpse);
@@ -698,11 +679,11 @@ namespace Server.Engines.ConPVP
         winner.Players.Length == 1 ? "{0} has won the duel." : "{0} and {1} team have won the duel.",
         winner.Players.Length == 1 ? "You have won the duel." : "Your team has won the duel.");
 
-      if (m_Tournament != null && winner.TournyPart != null)
+      if (m_Tournament != null && winner.TourneyPart != null)
       {
-        m_Match.Winner = winner.TournyPart;
-        winner.TournyPart.WonMatch(m_Match);
-        m_Tournament.HandleWon(Arena, m_Match, winner.TournyPart);
+        m_Match.Winner = winner.TourneyPart;
+        winner.TourneyPart.WonMatch(m_Match);
+        m_Tournament.HandleWon(Arena, m_Match, winner.TourneyPart);
       }
 
       for (int i = 0; i < Participants.Count; ++i)
@@ -716,7 +697,7 @@ namespace Server.Engines.ConPVP
             loser.Players.Length == 1 ? "You have lost the duel." : "Your team has lost the duel.");
 
           if (m_Tournament != null)
-            loser.TournyPart?.LostMatch(m_Match);
+            loser.TourneyPart?.LostMatch(m_Match);
         }
 
         for (int j = 0; j < loser.Players.Length; ++j)
@@ -724,7 +705,7 @@ namespace Server.Engines.ConPVP
           {
             RemoveAggressions(loser.Players[j].Mobile);
             loser.Players[j].Mobile.Delta(MobileDelta.Noto);
-            loser.Players[j].Mobile.CloseGump(typeof(BeginGump));
+            loser.Players[j].Mobile.CloseGump<BeginGump>();
 
             if (m_Tournament != null)
               loser.Players[j].Mobile.SendEverything();
@@ -814,12 +795,6 @@ namespace Server.Engines.ConPVP
 
       StopSDTimers();
 
-      Type[] types =
-      {
-        typeof(BeginGump), typeof(DuelContextGump), typeof(ParticipantGump), typeof(PickRulesetGump),
-        typeof(ReadyGump), typeof(ReadyUpGump), typeof(RulesetGump)
-      };
-
       for (int i = 0; i < Participants.Count; ++i)
       {
         Participant p = (Participant)Participants[i];
@@ -834,8 +809,7 @@ namespace Server.Engines.ConPVP
           if (pl.Mobile is PlayerMobile mobile)
             mobile.DuelPlayer = null;
 
-          for (int k = 0; k < types.Length; ++k)
-            pl.Mobile.CloseGump(types[k]);
+          CloseAllGumps(pl);
         }
       }
 
@@ -936,33 +910,21 @@ namespace Server.Engines.ConPVP
     {
       cb(count);
       m_Countdown = Timer.DelayCall(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), count,
-        new TimerStateCallback(Countdown_Callback), new object[] { count - 1, cb });
+        () => Countdown_Callback(--count, cb));
     }
 
     public void StopCountdown()
     {
       m_Countdown?.Stop();
-
       m_Countdown = null;
     }
 
-    private void Countdown_Callback(object state)
+    private void Countdown_Callback(int count, CountdownCallback cb)
     {
-      object[] states = (object[])state;
-
-      int count = (int)states[0];
-      CountdownCallback cb = (CountdownCallback)states[1];
-
       if (count == 0)
-      {
-        m_Countdown?.Stop();
-
-        m_Countdown = null;
-      }
+        StopCountdown();
 
       cb(count);
-
-      states[0] = count - 1;
     }
 
     public void StopSDTimers()
@@ -1051,7 +1013,7 @@ namespace Server.Engines.ConPVP
     {
       m_AutoTieTimer?.Stop();
 
-      TimeSpan ts = m_Tournament == null || m_Tournament.TournyType == TournyType.Standard
+      TimeSpan ts = m_Tournament == null || m_Tournament.TourneyType == TourneyType.Standard
         ? AutoTieDelay
         : TimeSpan.FromMinutes(90.0);
 
@@ -1077,11 +1039,11 @@ namespace Server.Engines.ConPVP
 
       StopSDTimers();
 
-      ArrayList remaining = new ArrayList();
+      List<TourneyParticipant> remaining = new List<TourneyParticipant>();
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         if (p.Eliminated)
         {
@@ -1107,8 +1069,8 @@ namespace Server.Engines.ConPVP
               DelayBounce(TimeSpan.FromSeconds(8.0), pl.Mobile, null);
           }
 
-          if (p.TournyPart != null)
-            remaining.Add(p.TournyPart);
+          if (p.TourneyPart != null)
+            remaining.Add(p.TourneyPart);
         }
 
         for (int j = 0; j < p.Players.Length; ++j)
@@ -1204,12 +1166,10 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    private static void ViewLadder_OnTarget(Mobile from, object obj, object state)
+    private static void ViewLadder_OnTarget(Mobile from, object obj, Ladder ladder)
     {
       if (obj is PlayerMobile pm)
       {
-        Ladder ladder = (Ladder)state;
-
         LadderEntry entry = ladder.Find(pm);
 
         if (entry == null)
@@ -1249,7 +1209,7 @@ namespace Server.Engines.ConPVP
         if (!pm.CheckAlive())
         {
         }
-        else if (pm.Region.IsPartOf(typeof(Jail)))
+        else if (pm.Region.IsPartOf<Jail>())
         {
         }
         else if (CheckCombat(pm))
@@ -1285,7 +1245,7 @@ namespace Server.Engines.ConPVP
 
           if (prefs != null)
           {
-            e.Mobile.CloseGump(typeof(PreferencesGump));
+            e.Mobile.CloseGump<PreferencesGump>();
             e.Mobile.SendGump(new PreferencesGump(e.Mobile, prefs));
           }
         }
@@ -1341,7 +1301,7 @@ namespace Server.Engines.ConPVP
           else
           {
             pm.SendMessage("Target a player to view their ranking and level.");
-            pm.BeginTarget(16, false, TargetFlags.None, new TargetStateCallback(ViewLadder_OnTarget), instance);
+            pm.BeginTarget(16, false, TargetFlags.None, ViewLadder_OnTarget, instance);
           }
         }
       }
@@ -1551,12 +1511,20 @@ namespace Server.Engines.ConPVP
         }
       }
     }
+    
+    public void CloseAllGumps(DuelPlayer pl)
+    {
+      pl.Mobile.CloseGump<BeginGump>();
+      pl.Mobile.CloseGump<DuelContextGump>();
+      pl.Mobile.CloseGump<ParticipantGump>();
+      pl.Mobile.CloseGump<PickRulesetGump>();
+      pl.Mobile.CloseGump<ReadyGump>();
+      pl.Mobile.CloseGump<ReadyUpGump>();
+      pl.Mobile.CloseGump<RulesetGump>();
+    }
 
     public void CloseAllGumps()
     {
-      Type[] types = { typeof(DuelContextGump), typeof(ParticipantGump), typeof(RulesetGump) };
-      int[] defs = { -1, -1, -1 };
-
       for (int i = 0; i < Participants.Count; ++i)
       {
         Participant p = (Participant)Participants[i];
@@ -1565,14 +1533,8 @@ namespace Server.Engines.ConPVP
         {
           DuelPlayer pl = p.Players[j];
 
-          if (pl == null)
-            continue;
-
-          Mobile mob = pl.Mobile;
-
-          for (int k = 0; k < types.Length; ++k)
-            mob.CloseGump(types[k]);
-          //mob.CloseGump( types[k], defs[k] );
+          if (pl != null)
+            CloseAllGumps(pl);
         }
       }
     }
@@ -1581,9 +1543,6 @@ namespace Server.Engines.ConPVP
     {
       if (StartedReadyCountdown)
         return; // sanity
-
-      Type[] types = { typeof(DuelContextGump), typeof(ReadyUpGump), typeof(ReadyGump) };
-      int[] defs = { -1, -1, -1 };
 
       for (int i = 0; i < Participants.Count; ++i)
       {
@@ -1612,10 +1571,11 @@ namespace Server.Engines.ConPVP
             else
               mob.SendMessage(0x22, "{0} has rejected the {1}.", rejector.Name, Rematch ? "rematch" : page);
           }
-
-          for (int k = 0; k < types.Length; ++k)
-            mob.CloseGump(types[k]);
-          //mob.CloseGump( types[k], defs[k] );
+          
+          // Close all of them?
+          mob.CloseGump<DuelContextGump>();
+          mob.CloseGump<ReadyUpGump>();
+          mob.CloseGump<ReadyGump>();
         }
       }
 
@@ -1655,7 +1615,7 @@ namespace Server.Engines.ConPVP
 
         ArchProtectionSpell.RemoveEntry(mob);
 
-        mob.EndAction(typeof(DefensiveSpell));
+        mob.EndAction<DefensiveSpell>();
       }
 
       TransformationSpellHelper.RemoveContext(mob, true);
@@ -1664,11 +1624,11 @@ namespace Server.Engines.ConPVP
       if (DisguiseTimers.IsDisguised(mob))
         DisguiseTimers.StopTimer(mob);
 
-      if (!mob.CanBeginAction(typeof(PolymorphSpell)))
+      if (!mob.CanBeginAction<PolymorphSpell>())
       {
         mob.BodyMod = 0;
         mob.HueMod = -1;
-        mob.EndAction(typeof(PolymorphSpell));
+        mob.EndAction<PolymorphSpell>();
       }
 
       BaseArmor.ValidateMobile(mob);
@@ -1692,7 +1652,7 @@ namespace Server.Engines.ConPVP
     public void DestroyWall()
     {
       for (int i = 0; i < m_Walls.Count; ++i)
-        ((Item)m_Walls[i]).Delete();
+        m_Walls[i].Delete();
 
       m_Walls.Clear();
     }
@@ -1739,11 +1699,11 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         if (p.Players.Length > 1)
         {
-          ArrayList players = new ArrayList();
+          List<Mobile> players = new List<Mobile>();
 
           for (int j = 0; j < p.Players.Length; ++j)
           {
@@ -1758,7 +1718,7 @@ namespace Server.Engines.ConPVP
           if (players.Count > 1)
             for (int leaderIndex = 0; leaderIndex + 1 < players.Count; leaderIndex += Party.Capacity)
             {
-              Mobile leader = (Mobile)players[leaderIndex];
+              Mobile leader = players[leaderIndex];
               Party party = Party.Get(leader);
 
               if (party == null)
@@ -1774,7 +1734,7 @@ namespace Server.Engines.ConPVP
 
               for (int j = leaderIndex + 1; j < players.Count && j < leaderIndex + Party.Capacity; ++j)
               {
-                Mobile player = (Mobile)players[j];
+                Mobile player = players[j];
                 Party existing = Party.Get(player);
 
                 if (existing == party)
@@ -1807,7 +1767,7 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -1945,11 +1905,9 @@ namespace Server.Engines.ConPVP
         BeginAutoTie();
       }
 
-      Type[] types = { typeof(ReadyGump), typeof(ReadyUpGump), typeof(BeginGump) };
-
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -1963,13 +1921,18 @@ namespace Server.Engines.ConPVP
           if (count > 0)
           {
             if (count == 10)
-              CloseAndSendGump(mob, new BeginGump(count), types);
+            {
+              mob.CloseGump<ReadyGump>();
+              mob.CloseGump<ReadyUpGump>();
+              mob.CloseGump<BeginGump>();
+              mob.SendGump(new BeginGump(count));
+            }
 
             mob.Frozen = true;
           }
           else
           {
-            mob.CloseGump(typeof(BeginGump));
+            mob.CloseGump<BeginGump>();
             mob.Frozen = false;
           }
         }
@@ -1980,7 +1943,7 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -2005,11 +1968,9 @@ namespace Server.Engines.ConPVP
       ReadyWait = true;
       ReadyCount = -1;
 
-      Type[] types = { typeof(ReadyUpGump) };
-
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -2017,9 +1978,11 @@ namespace Server.Engines.ConPVP
 
           Mobile mob = pl?.Mobile;
 
-          if (mob != null)
-            if (m_Tournament == null)
-              CloseAndSendGump(mob, new ReadyUpGump(mob, this), types);
+          if (mob != null && m_Tournament == null)
+          {
+            mob.CloseGump<ReadyUpGump>();
+            mob.SendGump(new ReadyUpGump(mob, this));
+          }
         }
       }
     }
@@ -2031,7 +1994,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -2040,7 +2003,7 @@ namespace Server.Engines.ConPVP
           if (dp == null)
             return "a slot is empty";
 
-          if (dp.Mobile.Region.IsPartOf(typeof(Jail)))
+          if (dp.Mobile.Region.IsPartOf<Jail>())
             return $"{dp.Mobile.Name} is in jail";
 
           if (Sigil.ExistsOn(dp.Mobile))
@@ -2089,7 +2052,7 @@ namespace Server.Engines.ConPVP
         {
           for (int i = 0; i < Participants.Count; ++i)
           {
-            Participant p = (Participant)Participants[i];
+            Participant p = Participants[i];
 
             for (int j = 0; j < p.Players.Length; ++j)
             {
@@ -2110,7 +2073,7 @@ namespace Server.Engines.ConPVP
 
         for (int i = 0; i < Participants.Count; ++i)
         {
-          Participant p = (Participant)Participants[i];
+          Participant p = Participants[i];
 
           for (int j = 0; j < p.Players.Length; ++j)
           {
@@ -2130,7 +2093,7 @@ namespace Server.Engines.ConPVP
         {
           for (int i = 0; i < Participants.Count; ++i)
           {
-            Participant p = (Participant)Participants[i];
+            Participant p = Participants[i];
 
             for (int j = 0; j < p.Players.Length; ++j)
             {
@@ -2173,7 +2136,7 @@ namespace Server.Engines.ConPVP
 
           for (int i = 0; i < Participants.Count; ++i)
           {
-            Participant p = (Participant)Participants[i];
+            Participant p = Participants[i];
 
             for (int j = 0; j < p.Players.Length; ++j)
             {
@@ -2206,7 +2169,7 @@ namespace Server.Engines.ConPVP
         {
           for (int i = 0; i < Participants.Count; ++i)
           {
-            Participant p = (Participant)Participants[i];
+            Participant p = Participants[i];
 
             for (int j = 0; j < p.Players.Length; ++j)
             {
@@ -2227,11 +2190,9 @@ namespace Server.Engines.ConPVP
 
       bool isAllReady = true;
 
-      Type[] types = { typeof(ReadyGump) };
-
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -2245,7 +2206,10 @@ namespace Server.Engines.ConPVP
           if (pl.Ready)
           {
             if (m_Tournament == null)
-              CloseAndSendGump(mob, new ReadyGump(mob, this, count), types);
+            {
+              mob.CloseGump<ReadyGump>();
+              mob.SendGump(new ReadyGump(mob, this, count));
+            }
           }
           else
           {
@@ -2256,45 +2220,6 @@ namespace Server.Engines.ConPVP
 
       if (count == -1 && isAllReady)
         StartCountdown(3, SendReadyGump);
-    }
-
-    public static void CloseAndSendGump(Mobile mob, Gump g, params Type[] types)
-    {
-      CloseAndSendGump(mob.NetState, g, types);
-    }
-
-    public static void CloseAndSendGump(NetState ns, Gump g, params Type[] types)
-    {
-      Mobile mob = ns?.Mobile;
-
-      if (mob != null)
-      {
-        foreach (Type type in types) mob.CloseGump(type);
-
-        mob.SendGump(g);
-      }
-
-      /*if ( ns == null )
-        return;
-
-      for ( int i = 0; i < types.Length; ++i )
-        ns.Send( new CloseGump( Gump.GetTypeID( types[i] ), 0 ) );
-
-      g.SendTo( ns );
-
-      ns.AddGump( g );
-
-      Packet[] packets = new Packet[types.Length + 1];
-
-      for ( int i = 0; i < types.Length; ++i )
-        packets[i] = new CloseGump( Gump.GetTypeID( types[i] ), 0 );
-
-      packets[types.Length] = (Packet) typeof( Gump ).InvokeMember( "Compile", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod, null, g, null, null );
-
-      bool compress = ns.CompressionEnabled;
-      ns.CompressionEnabled = false;
-      ns.Send( BindPackets( compress, packets ) );
-      ns.CompressionEnabled = compress;*/
     }
 
     private class InternalWall : Item
@@ -2395,11 +2320,11 @@ namespace Server.Engines.ConPVP
 
     private class ExitTeleporter : Item
     {
-      private ArrayList m_Entries;
+      private List<ReturnEntry> m_Entries;
 
       public ExitTeleporter() : base(0x1822)
       {
-        m_Entries = new ArrayList();
+        m_Entries = new List<ReturnEntry>();
 
         Hue = 0x482;
         Movable = false;
@@ -2428,7 +2353,7 @@ namespace Server.Engines.ConPVP
       {
         for (int i = 0; i < m_Entries.Count; ++i)
         {
-          ReturnEntry entry = (ReturnEntry)m_Entries[i];
+          ReturnEntry entry = m_Entries[i];
 
           if (entry.Mobile == mob)
             return entry;
@@ -2472,7 +2397,7 @@ namespace Server.Engines.ConPVP
 
         for (int i = 0; i < m_Entries.Count; ++i)
         {
-          ReturnEntry entry = (ReturnEntry)m_Entries[i];
+          ReturnEntry entry = m_Entries[i];
 
           writer.Write(entry.Mobile);
           writer.Write(entry.Location);
@@ -2495,7 +2420,7 @@ namespace Server.Engines.ConPVP
           {
             int count = reader.ReadEncodedInt();
 
-            m_Entries = new ArrayList(count);
+            m_Entries = new List<ReturnEntry>(count);
 
             for (int i = 0; i < count; ++i)
             {
@@ -2586,35 +2511,5 @@ namespace Server.Engines.ConPVP
         Delete();
       }
     }
-
-    /*public static Packet BindPackets( bool compress, params Packet[] packets )
-    {
-      if ( packets.Length == 0 )
-        throw new ArgumentException( "No packets to bind", "packets" );
-
-      byte[][] compiled = new byte[packets.Length][];
-      int[] lengths = new int[packets.Length];
-
-      int length = 0;
-
-      for ( int i = 0; i < packets.Length; ++i )
-      {
-        compiled[i] = packets[i].Compile( compress, out lengths[i] );
-        length += lengths[i];
-      }
-
-      return new BoundPackets( length, compiled, lengths );
-    }
-
-    private class BoundPackets : Packet
-    {
-      public BoundPackets( int length, byte[][] compiled, int[] lengths ) : base( 0, length )
-      {
-        m_Stream.Seek( 0, System.IO.SeekOrigin.Begin );
-
-        for ( int i = 0; i < compiled.Length; ++i )
-          m_Stream.Write( compiled[i], 0, lengths[i] );
-      }
-    }*/
   }
 }

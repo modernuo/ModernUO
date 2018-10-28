@@ -194,7 +194,8 @@ namespace Server
 
       public override bool Equals(object obj)
       {
-        if (obj is IPAddress) return obj.Equals(m_Address);
+        if (obj is IPAddress)
+          return obj.Equals(m_Address);
         if (obj is string s)
         {
           if (IPAddress.TryParse(s, out IPAddress otherAddress))
@@ -264,7 +265,7 @@ namespace Server
     {
       private string m_Entry;
 
-      private bool m_Valid = true;
+      private bool m_Valid;
 
       public WildcardIPFirewallEntry(string entry)
       {
@@ -276,7 +277,9 @@ namespace Server
         if (!m_Valid)
           return false; //Why process if it's invalid?  it'll return false anyway after processing it.
 
-        return Utility.IPMatch(m_Entry, address, ref m_Valid);
+        bool matched = Utility.IPMatch(m_Entry, address, out bool valid);
+        m_Valid = valid;
+        return matched;
       }
 
       public override string ToString()

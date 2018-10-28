@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Spells.Ninjitsu
 {
   public class KiAttack : NinjaMove
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, KiAttackInfo> m_Table = new Dictionary<Mobile, KiAttackInfo>();
 
     public override int BaseMana => 25;
     public override double RequiredSkill => 80.0;
@@ -20,7 +21,7 @@ namespace Server.Spells.Ninjitsu
         return;
 
       KiAttackInfo info = new KiAttackInfo(from);
-      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2.0), new TimerStateCallback(EndKiAttack), info);
+      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(2.0), EndKiAttack, info);
 
       m_Table[from] = info;
     }
@@ -33,12 +34,12 @@ namespace Server.Spells.Ninjitsu
         return false;
       }
 
-      if (Core.ML && @from.Weapon is BaseRanged)
+      if (Core.ML && from.Weapon is BaseRanged)
       {
         from.SendLocalizedMessage(1075858); // You can only use this with melee attacks.
         return false;
       }
-      
+
       return base.Validate(from);
     }
 
@@ -80,18 +81,21 @@ namespace Server.Spells.Ninjitsu
 
     public override void OnClearMove(Mobile from)
     {
-      if (m_Table[@from] is KiAttackInfo info)
-      {
-        info.m_Timer?.Stop();
+      KiAttackInfo info = m_Table[from];
 
-        m_Table.Remove(info.m_Mobile);
-      }
+      if (info == null)
+        return;
+
+      info.m_Timer?.Stop();
+      m_Table.Remove(info.m_Mobile);
     }
 
     public static double GetBonus(Mobile from)
     {
-      if (!(m_Table[@from] is KiAttackInfo info))
-        return 0.0;
+      KiAttackInfo info = m_Table[from];
+
+      if (info == null)
+        return 0;
 
       int xDelta = info.m_Location.X - from.X;
       int yDelta = info.m_Location.Y - from.Y;
@@ -104,10 +108,8 @@ namespace Server.Spells.Ninjitsu
       return bonus;
     }
 
-    private static void EndKiAttack(object state)
+    private static void EndKiAttack(KiAttackInfo info)
     {
-      KiAttackInfo info = (KiAttackInfo)state;
-
       info.m_Timer?.Stop();
 
       ClearCurrentMove(info.m_Mobile);

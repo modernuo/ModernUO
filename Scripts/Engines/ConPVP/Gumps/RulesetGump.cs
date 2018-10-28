@@ -12,13 +12,8 @@ namespace Server.Engines.ConPVP
     private bool m_ReadOnly;
     private Ruleset m_Ruleset;
 
-    public RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext) : this(from, ruleset,
-      page, duelContext, false)
-    {
-    }
-
-    public RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext, bool readOnly) : base(
-      readOnly ? 310 : 50, 50)
+    public RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext, bool readOnly = false)
+      : base(readOnly ? 310 : 50, 50)
     {
       m_From = from;
       m_Ruleset = ruleset;
@@ -26,11 +21,11 @@ namespace Server.Engines.ConPVP
       m_DuelContext = duelContext;
       m_ReadOnly = readOnly;
 
-      Dragable = !readOnly;
+      Draggable = !readOnly;
 
-      from.CloseGump(typeof(RulesetGump));
-      from.CloseGump(typeof(DuelContextGump));
-      from.CloseGump(typeof(ParticipantGump));
+      from.CloseGump<RulesetGump>();
+      from.CloseGump<DuelContextGump>();
+      from.CloseGump<ParticipantGump>();
 
       RulesetLayout depthCounter = page;
       int depth = 0;

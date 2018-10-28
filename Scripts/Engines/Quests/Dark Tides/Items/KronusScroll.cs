@@ -58,9 +58,9 @@ namespace Server.Engines.Quests.Necro
           {
             if (pm.Map == m_WellOfTearsMap && m_WellOfTearsArea.Contains(pm))
             {
-              QuestObjective obj = qs.FindObjective(typeof(UseCallingScrollObjective));
+              QuestObjective obj = qs.FindObjective<UseCallingScrollObjective>();
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
                 obj.Complete();
 
               Delete();

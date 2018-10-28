@@ -31,9 +31,9 @@ namespace Server.Guilds
 
   public abstract class BaseGuild : ISerializable
   {
-    private static int m_NextID = 1;
+    private static uint m_NextID = 1;
 
-    protected BaseGuild(int Id) //serialization ctor
+    protected BaseGuild(uint Id) //serialization ctor
     {
       this.Id = Id;
       List.Add(this.Id, this);
@@ -48,28 +48,26 @@ namespace Server.Guilds
     }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public int Id{ get; }
+    public uint Id{ get; }
 
     public abstract string Abbreviation{ get; set; }
     public abstract string Name{ get; set; }
     public abstract GuildType Type{ get; set; }
     public abstract bool Disbanded{ get; }
 
-    public static Dictionary<int, BaseGuild> List{ get; } = new Dictionary<int, BaseGuild>();
+    public static Dictionary<uint, BaseGuild> List{ get; } = new Dictionary<uint, BaseGuild>();
 
     int ISerializable.TypeReference => 0;
 
-    int ISerializable.SerialIdentity => Id;
+    uint ISerializable.SerialIdentity => Id;
     public abstract void Serialize(GenericWriter writer);
 
     public abstract void Deserialize(GenericReader reader);
     public abstract void OnDelete(Mobile mob);
 
-    public static BaseGuild Find(int id)
+    public static BaseGuild Find(uint id)
     {
-      BaseGuild g;
-
-      List.TryGetValue(id, out g);
+      List.TryGetValue(id, out BaseGuild g);
 
       return g;
     }

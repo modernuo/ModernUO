@@ -77,7 +77,7 @@ namespace Server.Regions
     private static void CheckGuarded_OnCommand(CommandEventArgs e)
     {
       Mobile from = e.Mobile;
-      GuardedRegion reg = (GuardedRegion)from.Region.GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = from.Region.GetRegion<GuardedRegion>();
 
       if (reg == null)
         from.SendMessage("You are not in a guardable region.");
@@ -95,7 +95,7 @@ namespace Server.Regions
 
       if (e.Length == 1)
       {
-        GuardedRegion reg = (GuardedRegion)from.Region.GetRegion(typeof(GuardedRegion));
+        GuardedRegion reg = from.Region.GetRegion<GuardedRegion>();
 
         if (reg == null)
         {
@@ -122,7 +122,7 @@ namespace Server.Regions
     private static void ToggleGuarded_OnCommand(CommandEventArgs e)
     {
       Mobile from = e.Mobile;
-      GuardedRegion reg = (GuardedRegion)from.Region.GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = from.Region.GetRegion<GuardedRegion>();
 
       if (reg == null)
       {
@@ -342,7 +342,7 @@ namespace Server.Regions
     public bool IsGuardCandidate(Mobile m)
     {
       if (m is BaseGuard || !m.Alive || m.AccessLevel > AccessLevel.Player || m.Blessed ||
-          m is BaseCreature && ((BaseCreature)m).IsInvulnerable || IsDisabled())
+          m is BaseCreature creature && creature.IsInvulnerable || IsDisabled())
         return false;
 
       return !AllowReds && m.Kills >= 5 || m.Criminal;

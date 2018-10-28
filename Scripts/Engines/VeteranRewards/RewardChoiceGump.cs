@@ -13,7 +13,7 @@ namespace Server.Engines.VeteranRewards
     {
       m_From = from;
 
-      from.CloseGump(typeof(RewardChoiceGump));
+      from.CloseGump<RewardChoiceGump>();
 
       RenderBackground();
       RenderCategories();
@@ -59,9 +59,7 @@ namespace Server.Engines.VeteranRewards
                                "To read more about these rewards before making a selection, feel free to visit the uo.com site at " +
                                "<A HREF=\"http://www.uo.com/rewards\">http://www.uo.com/rewards</A>.", true, true);
 
-      int cur, max;
-
-      RewardSystem.ComputeRewardInfo(m_From, out cur, out max);
+      RewardSystem.ComputeRewardInfo(m_From, out int cur, out int max);
 
       AddHtmlLocalized(60, 105, 300, 35, 1006006, false, false); // Your current total of rewards to choose:
       AddLabel(370, 107, 50, (max - cur).ToString());
@@ -100,9 +98,9 @@ namespace Server.Engines.VeteranRewards
     private int PagesPerCategory(RewardCategory category)
     {
       List<RewardEntry> entries = category.Entries;
-      int j = 0, i = 0;
+      int i = 0;
 
-      for (j = 0; j < entries.Count; j++)
+      for (int j = 0; j < entries.Count; j++)
         if (RewardSystem.HasAccess(m_From, entries[j]))
           i++;
 
@@ -160,9 +158,7 @@ namespace Server.Engines.VeteranRewards
 
       if (buttonID == 0)
       {
-        int cur, max;
-
-        RewardSystem.ComputeRewardInfo(m_From, out cur, out max);
+        RewardSystem.ComputeRewardInfo(m_From, out int cur, out int max);
 
         if (cur < max)
           m_From.SendGump(new RewardNoticeGump(m_From));

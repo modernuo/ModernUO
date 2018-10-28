@@ -10,7 +10,7 @@ namespace Server.Mobiles
     [Constructible]
     public FrenziedOstard(string name) : base(name, 0xDA, 0x3EA4, AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
-      Hue = Utility.RandomHairHue() | 0x8000;
+      Hue = Race.Human.RandomHairHue() | 0x8000;
 
       BaseSoundID = 0x275;
 

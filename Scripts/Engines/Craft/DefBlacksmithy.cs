@@ -118,8 +118,7 @@ namespace Server.Engines.Craft
       if (!BaseTool.CheckAccessible(tool, from))
         return 1044263; // The tool must be on your person to use.
 
-      bool anvil, forge;
-      CheckAnvilAndForge(from, 2, out anvil, out forge);
+      CheckAnvilAndForge(from, 2, out bool anvil, out bool forge);
 
       if (anvil && forge)
         return 0;

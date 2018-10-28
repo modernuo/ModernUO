@@ -23,9 +23,9 @@ namespace Server.Engines.Quests.Haven
 
         if (qs is UzeraanTurmoilQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(GetDaemonBloodObjective));
+          QuestObjective obj = qs.FindObjective<GetDaemonBloodObjective>();
 
-          if (obj != null && !obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBlood(player))
+          if (obj?.Completed == false || UzeraanTurmoilQuest.HasLostDaemonBlood(player))
           {
             Item vial = new QuestDaemonBlood();
 
@@ -34,7 +34,7 @@ namespace Server.Engines.Quests.Haven
               player.SendLocalizedMessage(1049331, "",
                 0x22); // You take a vial of blood from the chest and put it in your pack.
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
                 obj.Complete();
             }
             else

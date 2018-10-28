@@ -2,17 +2,15 @@ using Server.Gumps;
 using Server.Network;
 
 namespace Server.Items
-{
-  public class MetallicHuePicker : Gump
+{ 
+  public class MetallicHuePicker<T> : Gump
   {
-    public delegate void MetallicHuePickerCallback(Mobile from, object state, int hue);
-
-    private MetallicHuePickerCallback m_Callback;
+    private CustomHuePickerCallback<T> m_Callback;
 
     private Mobile m_From;
-    private object m_State;
+    private T m_State;
 
-    public MetallicHuePicker(Mobile from, MetallicHuePickerCallback callback, object state)
+    public MetallicHuePicker(Mobile from, CustomHuePickerCallback<T> callback, T state)
       : base(450, 450)
     {
       m_From = from;

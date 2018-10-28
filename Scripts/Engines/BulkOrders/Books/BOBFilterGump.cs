@@ -74,8 +74,8 @@ namespace Server.Engines.BulkOrders
 
     public BOBFilterGump(PlayerMobile from, BulkOrderBook book) : base(12, 24)
     {
-      from.CloseGump(typeof(BOBGump));
-      from.CloseGump(typeof(BOBFilterGump));
+      from.CloseGump<BOBGump>();
+      from.CloseGump<BOBFilterGump>();
 
       m_From = from;
       m_Book = book;

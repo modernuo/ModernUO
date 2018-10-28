@@ -460,7 +460,7 @@ namespace Server.Mobiles
         if (version < 1)
         {
           m_ShopName = "Shop Not Yet Named";
-          Timer.DelayCall(TimeSpan.Zero, new TimerStateCallback(UpgradeFromVersion0), newVendorSystemActivated);
+          Timer.DelayCall(TimeSpan.Zero, UpgradeFromVersion0, newVendorSystemActivated);
         }
         else
         {
@@ -490,7 +490,7 @@ namespace Server.Mobiles
         NameHue = -1;
     }
 
-    private void UpgradeFromVersion0(object newVendorSystem)
+    private void UpgradeFromVersion0(bool newVendorSystem)
     {
       List<Item> toRemove = new List<Item>();
 
@@ -505,7 +505,7 @@ namespace Server.Mobiles
 
       House = BaseHouse.FindHouseAt(this);
 
-      if ((bool)newVendorSystem)
+      if (newVendorSystem)
         ActivateNewVendorSystem();
     }
 
@@ -519,7 +519,7 @@ namespace Server.Mobiles
 
     public void InitBody()
     {
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
       SpeechHue = 0x3B2;
 
       if (!Core.AOS)
@@ -859,8 +859,7 @@ namespace Server.Mobiles
       if (IsOwner(from))
       {
         if (GetVendorItem(item) == null)
-          Timer.DelayCall(TimeSpan.Zero, new TimerStateCallback(NonLocalDropCallback),
-            new object[] { from, item });
+          Timer.DelayCall(TimeSpan.Zero, () => OnItemGiven(from, item));
 
         return true;
       }
@@ -869,31 +868,21 @@ namespace Server.Mobiles
       return false;
     }
 
-    private void NonLocalDropCallback(object state)
-    {
-      object[] aState = (object[])state;
-
-      Mobile from = (Mobile)aState[0];
-      Item item = (Item)aState[1];
-
-      OnItemGiven(from, item);
-    }
-
     private void OnItemGiven(Mobile from, Item item)
     {
       VendorItem vi = GetVendorItem(item);
 
-      if (vi != null)
-      {
-        string name;
-        if (!string.IsNullOrEmpty(item.Name))
-          name = item.Name;
-        else
-          name = "#" + item.LabelNumber;
+      if (vi == null)
+        return;
 
-        from.SendLocalizedMessage(1043303, name); // Type in a price and description for ~1_ITEM~ (ESC=not for sale)
-        from.Prompt = new VendorPricePrompt(this, vi);
-      }
+      string name;
+      if (!string.IsNullOrEmpty(item.Name))
+        name = item.Name;
+      else
+        name = "#" + item.LabelNumber;
+
+      from.SendLocalizedMessage(1043303, name); // Type in a price and description for ~1_ITEM~ (ESC=not for sale)
+      from.Prompt = new VendorPricePrompt(this, vi);
     }
 
     public override bool AllowEquipFrom(Mobile from)
@@ -955,15 +944,15 @@ namespace Server.Mobiles
     {
       if (BaseHouse.NewVendorSystem)
       {
-        to.CloseGump(typeof(NewPlayerVendorOwnerGump));
-        to.CloseGump(typeof(NewPlayerVendorCustomizeGump));
+        to.CloseGump<NewPlayerVendorOwnerGump>();
+        to.CloseGump<NewPlayerVendorCustomizeGump>();
 
         to.SendGump(new NewPlayerVendorOwnerGump(this));
       }
       else
       {
-        to.CloseGump(typeof(PlayerVendorOwnerGump));
-        to.CloseGump(typeof(PlayerVendorCustomizeGump));
+        to.CloseGump<PlayerVendorOwnerGump>();
+        to.CloseGump<PlayerVendorCustomizeGump>();
 
         to.SendGump(new PlayerVendorOwnerGump(this));
       }
@@ -1006,7 +995,7 @@ namespace Server.Mobiles
       }
       else
       {
-        from.CloseGump(typeof(PlayerVendorBuyGump));
+        from.CloseGump<PlayerVendorBuyGump>();
         from.SendGump(new PlayerVendorBuyGump(vendor, vi));
       }
     }

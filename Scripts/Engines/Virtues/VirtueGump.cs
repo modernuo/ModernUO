@@ -10,8 +10,7 @@ namespace Server
   {
     private static Dictionary<int, OnVirtueUsed> m_Callbacks = new Dictionary<int, OnVirtueUsed>();
 
-    private static int[] m_Table = new int[24]
-    {
+    private static int[] m_Table = {
       0x0481, 0x0963, 0x0965,
       0x060A, 0x060F, 0x002A,
       0x08A4, 0x08A7, 0x0034,
@@ -70,7 +69,7 @@ namespace Server
       if (e.Beholder != e.Beheld)
         return;
 
-      e.Beholder.CloseGump(typeof(VirtueGump));
+      e.Beholder.CloseGump<VirtueGump>();
 
       if (e.Beholder.Kills >= 5)
       {
@@ -118,7 +117,7 @@ namespace Server
       }
       else if (beholder.Map == beheld.Map && beholder.InRange(beheld, 12))
       {
-        beholder.CloseGump(typeof(VirtueGump));
+        beholder.CloseGump<VirtueGump>();
         beholder.SendGump(new VirtueGump(beholder, beheld));
       }
     }

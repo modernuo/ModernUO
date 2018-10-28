@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
@@ -56,17 +55,17 @@ namespace Server.Gumps
 
     private static readonly int NextLabelOffsetX = -29;
     private static readonly int NextLabelOffsetY = 0;
-    protected ArrayList m_List;
+    protected List<object> m_List;
     protected Mobile m_Mobile;
     protected object m_Object;
     protected int m_Page;
     protected PropertyInfo m_Property;
     protected Stack<StackEntry> m_Stack;
 
-    protected object[] m_Values;
+    private object[] m_Values;
 
     public SetListOptionGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage,
-      ArrayList list, string[] names, object[] values) : base(GumpOffsetX, GumpOffsetY)
+      List<object> list, string[] names, object[] values) : base(GumpOffsetX, GumpOffsetY)
     {
       m_Property = prop;
       m_Mobile = mobile;

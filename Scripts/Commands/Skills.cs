@@ -22,8 +22,7 @@ namespace Server.Commands
       }
       else
       {
-        SkillName skill;
-        if (Enum.TryParse(arg.GetString(0), true, out skill))
+        if (Enum.TryParse(arg.GetString(0), true, out SkillName skill))
           arg.Mobile.Target = new SkillTarget(skill, arg.GetDouble(1));
         else
           arg.Mobile.SendLocalizedMessage(1005631); // You have specified an invalid skill to set.
@@ -50,8 +49,7 @@ namespace Server.Commands
       }
       else
       {
-        SkillName skill;
-        if (Enum.TryParse(arg.GetString(0), true, out skill))
+        if (Enum.TryParse(arg.GetString(0), true, out SkillName skill))
           arg.Mobile.Target = new SkillTarget(skill);
         else
           arg.Mobile.SendMessage("You have specified an invalid skill to get.");

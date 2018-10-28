@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Spells.Bushido
 {
   public class HonorableExecution : SamuraiMove
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, HonorableExecutionInfo> m_Table = new Dictionary<Mobile, HonorableExecutionInfo>();
 
     public override int BaseMana => 0;
     public override double RequiredSkill => 25.0;
@@ -15,7 +16,7 @@ namespace Server.Spells.Bushido
 
     public override double GetDamageScalar(Mobile attacker, Mobile defender)
     {
-      double bushido = attacker.Skills[SkillName.Bushido].Value;
+      double bushido = attacker.Skills.Bushido.Value;
 
       // TODO: 20 -> Perfection
       return 1.0 + bushido * 20 / 10000;
@@ -28,10 +29,11 @@ namespace Server.Spells.Bushido
 
       ClearCurrentMove(attacker);
 
-      if (m_Table[attacker] is HonorableExecutionInfo info)
+      HonorableExecutionInfo info = m_Table[attacker];
+
+      if (info != null)
       {
         info.Clear();
-
         info.m_Timer?.Stop();
       }
 
@@ -39,20 +41,20 @@ namespace Server.Spells.Bushido
       {
         attacker.FixedParticles(0x373A, 1, 17, 0x7E2, EffectLayer.Waist);
 
-        double bushido = attacker.Skills[SkillName.Bushido].Value;
+        double bushido = attacker.Skills.Bushido.Value;
 
         attacker.Hits += 20 + (int)(bushido * bushido / 480.0);
 
         int swingBonus = Math.Max(1, (int)(bushido * bushido / 720.0));
 
         info = new HonorableExecutionInfo(attacker, swingBonus);
-        info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(20.0), new TimerStateCallback(EndEffect), info);
+        info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(20.0), RemovePenalty, info.m_Mobile);
 
         m_Table[attacker] = info;
       }
       else
       {
-        ArrayList mods = new ArrayList
+        List<object> mods = new List<object>
         {
           new ResistanceMod(ResistanceType.Physical, -40),
           new ResistanceMod(ResistanceType.Fire, -40),
@@ -60,14 +62,14 @@ namespace Server.Spells.Bushido
           new ResistanceMod(ResistanceType.Poison, -40),
           new ResistanceMod(ResistanceType.Energy, -40)
         };
-        
-        double resSpells = attacker.Skills[SkillName.MagicResist].Value;
+
+        double resSpells = attacker.Skills.MagicResist.Value;
 
         if (resSpells > 0.0)
           mods.Add(new DefaultSkillMod(SkillName.MagicResist, true, -resSpells));
 
         info = new HonorableExecutionInfo(attacker, mods);
-        info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(7.0), new TimerStateCallback(EndEffect), info);
+        info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(7.0), RemovePenalty, info.m_Mobile);
 
         m_Table[attacker] = info;
       }
@@ -103,24 +105,19 @@ namespace Server.Spells.Bushido
       m_Table.Remove(target);
     }
 
-    public void EndEffect(object state)
-    {
-      RemovePenalty(((HonorableExecutionInfo)state).m_Mobile);
-    }
-
     private class HonorableExecutionInfo
     {
       public Mobile m_Mobile;
-      public ArrayList m_Mods;
+      public List<object> m_Mods;
       public bool m_Penalty;
       public int m_SwingBonus;
       public Timer m_Timer;
 
-      public HonorableExecutionInfo(Mobile from, ArrayList mods) : this(from, 0, mods, true)
+      public HonorableExecutionInfo(Mobile from, List<object> mods) : this(from, 0, mods, true)
       {
       }
 
-      public HonorableExecutionInfo(Mobile from, int swingBonus, ArrayList mods = null, bool penalty = false)
+      public HonorableExecutionInfo(Mobile from, int swingBonus, List<object> mods = null, bool penalty = false)
       {
         m_Mobile = from;
         m_SwingBonus = swingBonus;

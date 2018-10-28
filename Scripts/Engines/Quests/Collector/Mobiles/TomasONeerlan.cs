@@ -57,9 +57,9 @@ namespace Server.Engines.Quests.Collector
       {
         Direction = GetDirectionTo(player);
 
-        QuestObjective obj = qs.FindObjective(typeof(FindTomasObjective));
+        QuestObjective obj = qs.FindObjective<FindTomasObjective>();
 
-        if (obj != null && !obj.Completed)
+        if (obj?.Completed == false)
         {
           Item paints = new EnchantedPaints();
 
@@ -80,9 +80,9 @@ namespace Server.Engines.Quests.Collector
         }
         else
         {
-          obj = qs.FindObjective(typeof(ReturnImagesObjective));
+          obj = qs.FindObjective<ReturnImagesObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             player.Backpack?.ConsumeUpTo(typeof(EnchantedPaints), 1);
 

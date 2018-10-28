@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
@@ -52,7 +51,7 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-    private ArrayList m_List;
+    private List<object> m_List;
     private Mobile m_Mobile;
     private object m_Object;
     private int m_Page;
@@ -61,7 +60,7 @@ namespace Server.Gumps
     private Type m_Type;
 
     public SetObjectGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page,
-      ArrayList list) : base(GumpOffsetX, GumpOffsetY)
+      List<object> list) : base(GumpOffsetX, GumpOffsetY)
     {
       m_Property = prop;
       m_Mobile = mobile;
@@ -204,7 +203,7 @@ namespace Server.Gumps
 
     private class InternalPrompt : Prompt
     {
-      private ArrayList m_List;
+      private List<object> m_List;
       private Mobile m_Mobile;
       private object m_Object;
       private int m_Page;
@@ -213,7 +212,7 @@ namespace Server.Gumps
       private Type m_Type;
 
       public InternalPrompt(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, Type type, int page,
-        ArrayList list)
+        List<object> list)
       {
         m_Property = prop;
         m_Mobile = mobile;
@@ -233,7 +232,7 @@ namespace Server.Gumps
       {
         try
         {
-          int serial = Utility.ToInt32(text);
+          uint serial = Utility.ToUInt32(text);
 
           IEntity toSet = World.FindEntity(serial);
 

@@ -58,9 +58,9 @@ namespace Server.Engines.Quests.Collector
       {
         Direction = GetDirectionTo(player);
 
-        QuestObjective obj = qs.FindObjective(typeof(FindAlbertaObjective));
+        QuestObjective obj = qs.FindObjective<FindAlbertaObjective>();
 
-        if (obj != null && !obj.Completed)
+        if (obj?.Completed == false)
           obj.Complete();
         else if (qs.IsObjectiveInProgress(typeof(SitOnTheStoolObjective)))
           qs.AddConversation(new AlbertaStoolConversation());

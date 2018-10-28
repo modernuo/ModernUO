@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
   public class LordOaks : BaseChampion
   {
-    private Mobile m_Queen;
+    private BaseCreature m_Queen;
     private bool m_SpawnedQueen;
 
     [Constructible]
@@ -102,27 +102,9 @@ namespace Server.Mobiles
 
       for (int i = 0; i < newPixies; ++i)
       {
-        Pixie pixie = new Pixie();
+        Pixie pixie = new Pixie { Team = Team, FightMode = FightMode.Closest };
 
-        pixie.Team = Team;
-        pixie.FightMode = FightMode.Closest;
-
-        bool validLocation = false;
-        Point3D loc = Location;
-
-        for (int j = 0; !validLocation && j < 10; ++j)
-        {
-          int x = X + Utility.Random(3) - 1;
-          int y = Y + Utility.Random(3) - 1;
-          int z = map.GetAverageZ(x, y);
-
-          if (validLocation = map.CanFit(x, y, Z, 16, false, false))
-            loc = new Point3D(x, y, Z);
-          else if (validLocation = map.CanFit(x, y, z, 16, false, false))
-            loc = new Point3D(x, y, z);
-        }
-
-        pixie.MoveToWorld(loc, map);
+        pixie.MoveToWorld(map.GetRandomNearbyLocation(Location), map);
         pixie.Combatant = target;
       }
     }
@@ -161,18 +143,13 @@ namespace Server.Mobiles
       {
         Say(1042153); // Come forth my queen!
 
-        m_Queen = new Silvani();
-
-        ((BaseCreature)m_Queen).Team = Team;
-
+        m_Queen = new Silvani { Team = Team };
         m_Queen.MoveToWorld(Location, Map);
 
         m_SpawnedQueen = true;
       }
-      else if (m_Queen != null && m_Queen.Deleted)
-      {
+      else if (m_Queen?.Deleted != false)
         m_Queen = null;
-      }
     }
 
     public override void AlterDamageScalarFrom(Mobile caster, ref double scalar)
@@ -231,7 +208,7 @@ namespace Server.Mobiles
       {
         case 0:
         {
-          m_Queen = reader.ReadMobile();
+          m_Queen = reader.ReadMobile<BaseCreature>();
           m_SpawnedQueen = reader.ReadBool();
 
           break;

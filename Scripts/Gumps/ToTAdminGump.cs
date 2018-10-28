@@ -36,7 +36,7 @@ namespace Server.Gumps
     {
       Closable = true;
       Disposable = true;
-      Dragable = true;
+      Draggable = true;
       Resizable = false;
 
       m_ToTEras = Enum.GetValues(typeof(TreasuresOfTokunoEra)).Length - 1;
@@ -128,7 +128,7 @@ namespace Server.Gumps
       ToTAdminGump tg;
 
       tg = new ToTAdminGump();
-      e.Mobile.CloseGump(typeof(ToTAdminGump));
+      e.Mobile.CloseGump<ToTAdminGump>();
       e.Mobile.SendGump(tg);
     }
   }

@@ -35,7 +35,7 @@ namespace Server.Items
         return;
       }
 
-      if (!from.CanBeginAction(typeof(GreenThorns)))
+      if (!from.CanBeginAction<GreenThorns>())
       {
         from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
           1061908); // * You must wait a while before planting another thorn. *
@@ -80,7 +80,7 @@ namespace Server.Items
           return;
         }
 
-        if (!from.CanBeginAction(typeof(GreenThorns)))
+        if (!from.CanBeginAction<GreenThorns>())
         {
           from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
             1061908); // * You must wait a while before planting another thorn. *
@@ -117,7 +117,7 @@ namespace Server.Items
             from.NonlocalOverheadMessage(MessageType.Emote, 0x961, 1061915,
               from.Name); // * ~1_PLAYER_NAME~ pushes a strange green thorn into the ground. *
 
-            from.BeginAction(typeof(GreenThorns));
+            from.BeginAction<GreenThorns>();
             new EndActionTimer(from).Start();
 
             effect.Start();
@@ -143,7 +143,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        m_From.EndAction(typeof(GreenThorns));
+        m_From.EndAction<GreenThorns>();
       }
     }
   }

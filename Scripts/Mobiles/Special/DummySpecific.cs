@@ -23,10 +23,10 @@ namespace Server.Mobiles
 
       // Skills and Stats
       InitStats(125, 125, 90);
-      Skills[SkillName.Macing].Base = 120;
-      Skills[SkillName.Anatomy].Base = 120;
-      Skills[SkillName.Healing].Base = 120;
-      Skills[SkillName.Tactics].Base = 120;
+      Skills.Macing.Base = 120;
+      Skills.Anatomy.Base = 120;
+      Skills.Healing.Base = 120;
+      Skills.Tactics.Base = 120;
 
       // Equip
       WarHammer war = new WarHammer();
@@ -96,10 +96,10 @@ namespace Server.Mobiles
 
       // Skills and Stats
       InitStats(125, 125, 90);
-      Skills[SkillName.Fencing].Base = 120;
-      Skills[SkillName.Anatomy].Base = 120;
-      Skills[SkillName.Healing].Base = 120;
-      Skills[SkillName.Tactics].Base = 120;
+      Skills.Fencing.Base = 120;
+      Skills.Anatomy.Base = 120;
+      Skills.Healing.Base = 120;
+      Skills.Tactics.Base = 120;
 
       // Equip
       Spear ssp = new Spear();
@@ -170,11 +170,11 @@ namespace Server.Mobiles
 
       // Skills and Stats
       InitStats(125, 125, 90);
-      Skills[SkillName.Swords].Base = 120;
-      Skills[SkillName.Anatomy].Base = 120;
-      Skills[SkillName.Healing].Base = 120;
-      Skills[SkillName.Tactics].Base = 120;
-      Skills[SkillName.Parry].Base = 120;
+      Skills.Swords.Base = 120;
+      Skills.Anatomy.Base = 120;
+      Skills.Healing.Base = 120;
+      Skills.Tactics.Base = 120;
+      Skills.Parry.Base = 120;
 
       // Equip
       Katana kat = new Katana();
@@ -244,12 +244,12 @@ namespace Server.Mobiles
 
       // Skills and Stats
       InitStats(90, 90, 125);
-      Skills[SkillName.Magery].Base = 120;
-      Skills[SkillName.EvalInt].Base = 120;
-      Skills[SkillName.Inscribe].Base = 100;
-      Skills[SkillName.Wrestling].Base = 120;
-      Skills[SkillName.Meditation].Base = 120;
-      Skills[SkillName.Poisoning].Base = 100;
+      Skills.Magery.Base = 120;
+      Skills.EvalInt.Base = 120;
+      Skills.Inscribe.Base = 100;
+      Skills.Wrestling.Base = 120;
+      Skills.Meditation.Base = 120;
+      Skills.Poisoning.Base = 100;
 
       // Equip
       Spellbook book = new Spellbook();
@@ -311,12 +311,12 @@ namespace Server.Mobiles
 
       // Skills and Stats
       InitStats(90, 90, 125);
-      Skills[SkillName.Magery].Base = 100;
-      Skills[SkillName.EvalInt].Base = 120;
-      Skills[SkillName.Anatomy].Base = 80;
-      Skills[SkillName.Wrestling].Base = 80;
-      Skills[SkillName.Meditation].Base = 100;
-      Skills[SkillName.Poisoning].Base = 100;
+      Skills.Magery.Base = 100;
+      Skills.EvalInt.Base = 120;
+      Skills.Anatomy.Base = 80;
+      Skills.Wrestling.Base = 80;
+      Skills.Meditation.Base = 100;
+      Skills.Poisoning.Base = 100;
 
       // Equip
       Spellbook book = new Spellbook();
@@ -401,13 +401,13 @@ namespace Server.Mobiles
 
       // Skills and Stats
       InitStats(125, 125, 125);
-      Skills[SkillName.Magery].Base = 120;
-      Skills[SkillName.EvalInt].Base = 120;
-      Skills[SkillName.Anatomy].Base = 120;
-      Skills[SkillName.Wrestling].Base = 120;
-      Skills[SkillName.Meditation].Base = 120;
-      Skills[SkillName.Poisoning].Base = 100;
-      Skills[SkillName.Inscribe].Base = 100;
+      Skills.Magery.Base = 120;
+      Skills.EvalInt.Base = 120;
+      Skills.Anatomy.Base = 120;
+      Skills.Wrestling.Base = 120;
+      Skills.Meditation.Base = 120;
+      Skills.Poisoning.Base = 100;
+      Skills.Inscribe.Base = 100;
 
       // Equip
       Spellbook book = new Spellbook();
@@ -497,12 +497,12 @@ namespace Server.Mobiles
 
       // Skills and Stats
       InitStats(125, 125, 125);
-      Skills[SkillName.Magery].Base = 120;
-      Skills[SkillName.EvalInt].Base = 120;
-      Skills[SkillName.Anatomy].Base = 120;
-      Skills[SkillName.Wrestling].Base = 120;
-      Skills[SkillName.Meditation].Base = 120;
-      Skills[SkillName.Healing].Base = 100;
+      Skills.Magery.Base = 120;
+      Skills.EvalInt.Base = 120;
+      Skills.Anatomy.Base = 120;
+      Skills.Wrestling.Base = 120;
+      Skills.Meditation.Base = 120;
+      Skills.Healing.Base = 100;
 
       // Equip
       Spellbook book = new Spellbook();
@@ -585,12 +585,12 @@ namespace Server.Mobiles
 
       // Skills and Stats
       InitStats(105, 105, 105);
-      Skills[SkillName.Magery].Base = 120;
-      Skills[SkillName.EvalInt].Base = 120;
-      Skills[SkillName.Swords].Base = 120;
-      Skills[SkillName.Tactics].Base = 120;
-      Skills[SkillName.Meditation].Base = 120;
-      Skills[SkillName.Poisoning].Base = 100;
+      Skills.Magery.Base = 120;
+      Skills.EvalInt.Base = 120;
+      Skills.Swords.Base = 120;
+      Skills.Tactics.Base = 120;
+      Skills.Meditation.Base = 120;
+      Skills.Poisoning.Base = 100;
 
       // Equip
       Spellbook book = new Spellbook();
@@ -702,12 +702,12 @@ namespace Server.Mobiles
 
       // Skills and Stats
       InitStats(105, 105, 105);
-      Skills[SkillName.Healing].Base = 120;
-      Skills[SkillName.Anatomy].Base = 120;
-      Skills[SkillName.Stealing].Base = 120;
-      Skills[SkillName.ArmsLore].Base = 100;
-      Skills[SkillName.Meditation].Base = 120;
-      Skills[SkillName.Wrestling].Base = 120;
+      Skills.Healing.Base = 120;
+      Skills.Anatomy.Base = 120;
+      Skills.Stealing.Base = 120;
+      Skills.ArmsLore.Base = 100;
+      Skills.Meditation.Base = 120;
+      Skills.Wrestling.Base = 120;
 
       // Equip
       Spellbook book = new Spellbook();

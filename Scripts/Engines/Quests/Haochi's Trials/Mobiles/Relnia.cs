@@ -52,9 +52,9 @@ namespace Server.Engines.Quests.Samurai
 
         if (qs is HaochisTrialsQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(FourthTrialCatsObjective));
+          QuestObjective obj = qs.FindObjective<FourthTrialCatsObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
             if (dropped is Gold gold)
             {
               obj.Complete();

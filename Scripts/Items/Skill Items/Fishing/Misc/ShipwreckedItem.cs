@@ -38,7 +38,7 @@ namespace Server.Items
 
     #region IShipwreckedItem Members
 
-    public bool IsShipwreckedItem
+    bool IShipwreckedItem.IsShipwreckedItem
     {
       get => true;
       set { }

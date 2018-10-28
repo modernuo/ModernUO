@@ -18,15 +18,12 @@ namespace Server.Ethics.Hero
 
     public override void BeginInvoke(Player from)
     {
-      from.Mobile.BeginTarget(12, false, TargetFlags.None, new TargetStateCallback(Power_OnTarget), from);
+      from.Mobile.BeginTarget(12, false, TargetFlags.None, Power_OnTarget, from);
       from.Mobile.SendMessage("Which item do you wish to imbue?");
     }
 
-    private void Power_OnTarget(Mobile fromMobile, object obj, object state)
+    private void Power_OnTarget(Mobile fromMobile, object obj, Player from)
     {
-      if (!(state is Player from))
-        return;
-
       if (!(obj is Item item))
       {
         from.Mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, false, "You may not imbue that.");

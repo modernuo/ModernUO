@@ -9,7 +9,7 @@ namespace Server.Mobiles
       : base(AIType.AI_Mage, FightMode.Closest, 10, 1, 0.15, 0.4)
     {
       Body = 0x190;
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       SetStr(276, 350);
       SetDex(66, 90);

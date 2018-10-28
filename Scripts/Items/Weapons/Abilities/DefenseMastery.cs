@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -9,7 +9,7 @@ namespace Server.Items
   /// </summary>
   public class DefenseMastery : WeaponAbility
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, DefenseMasteryInfo> m_Table = new Dictionary<Mobile, DefenseMasteryInfo>();
 
     public override int BaseMana => 30;
 
@@ -38,17 +38,19 @@ namespace Server.Items
 
       int modifier =
         (int)(30.0 *
-              ((Math.Max(attacker.Skills[SkillName.Bushido].Value, attacker.Skills[SkillName.Ninjitsu].Value) -
+              ((Math.Max(attacker.Skills.Bushido.Value, attacker.Skills.Ninjitsu.Value) -
                 50.0) / 70.0));
 
-      if (m_Table[attacker] is DefenseMasteryInfo info)
+      DefenseMasteryInfo info = m_Table[attacker];
+
+      if (info != null)
         EndDefense(info);
 
       ResistanceMod mod = new ResistanceMod(ResistanceType.Physical, 50 + modifier);
       attacker.AddResistanceMod(mod);
 
       info = new DefenseMasteryInfo(attacker, 80 - modifier, mod);
-      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3.0), new TimerStateCallback(EndDefense), info);
+      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(3.0), EndDefense, info);
 
       m_Table[attacker] = info;
 
@@ -57,17 +59,17 @@ namespace Server.Items
 
     public static bool GetMalus(Mobile targ, ref int damageMalus)
     {
-      if (!(m_Table[targ] is DefenseMasteryInfo info))
+      DefenseMasteryInfo info = m_Table[targ];
+
+      if (info == null)
         return false;
 
       damageMalus = info.m_DamageMalus;
       return true;
     }
 
-    private static void EndDefense(object state)
+    private static void EndDefense(DefenseMasteryInfo info)
     {
-      DefenseMasteryInfo info = (DefenseMasteryInfo)state;
-
       if (info.m_Mod != null)
         info.m_From.RemoveResistanceMod(info.m_Mod);
 

@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Server.Items;
 using Server.Misc;
 
 namespace Server.Engines.Plants
@@ -428,12 +426,12 @@ namespace Server.Engines.Plants
 
     public static void GrowAll()
     {
-      ArrayList plants = PlantItem.Plants;
+      List<PlantItem> plants = PlantItem.Plants;
       DateTime now = DateTime.UtcNow;
 
       for (int i = plants.Count - 1; i >= 0; --i)
       {
-        PlantItem plant = (PlantItem)plants[i];
+        PlantItem plant = plants[i];
 
         if (plant.IsGrowable && !(plant.RootParent is Mobile) && now >= plant.PlantSystem.NextGrowth)
           plant.PlantSystem.DoGrowthCheck();
@@ -476,7 +474,7 @@ namespace Server.Engines.Plants
         return;
       }
 
-      ApplyBeneficEffects();
+      ApplyBeneficialEffects();
 
       if (!ApplyMaladiesEffects()) // Dead
         return;
@@ -486,7 +484,7 @@ namespace Server.Engines.Plants
       UpdateMaladies();
     }
 
-    private void ApplyBeneficEffects()
+    private void ApplyBeneficialEffects()
     {
       if (PoisonPotion >= Infestation)
       {

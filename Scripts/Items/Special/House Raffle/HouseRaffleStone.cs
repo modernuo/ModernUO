@@ -447,10 +447,10 @@ namespace Server.Items
       else
         from.SendGump(new WarningGump(1150470, 0x7F00,
           $"You are about to purchase a raffle ticket for the house plot located at {FormatLocation()}.  The ticket price is {FormatPrice()}.  Tickets are non-refundable and you can only purchase one ticket per account.  Do you wish to continue?",
-          0xFFFFFF, 420, 280, Purchase_Callback, null)); // CONFIRM TICKET PURCHASE
+          0xFFFFFF, 420, 280, okay => Purchase_Callback(from, okay))); // CONFIRM TICKET PURCHASE
     }
 
-    public void Purchase_Callback(Mobile from, bool okay, object state)
+    public void Purchase_Callback(Mobile from, bool okay)
     {
       if (Deleted || m_State != HouseRaffleState.Active || !from.CheckAlive() || HasEntered(from) || IsAtIPLimit(from))
         return;

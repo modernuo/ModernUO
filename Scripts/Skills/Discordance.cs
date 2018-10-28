@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
@@ -8,7 +9,7 @@ namespace Server.SkillHandlers
 {
   public class Discordance
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, DiscordanceInfo> m_Table = new Dictionary<Mobile, DiscordanceInfo>();
 
     public static void Initialize()
     {
@@ -34,7 +35,7 @@ namespace Server.SkillHandlers
 
     public static bool GetEffect(Mobile targ, ref int effect)
     {
-      DiscordanceInfo info = m_Table[targ] as DiscordanceInfo;
+      DiscordanceInfo info = m_Table[targ];
 
       if (info == null)
         return false;
@@ -49,7 +50,7 @@ namespace Server.SkillHandlers
       Mobile targ = info.m_Creature;
       bool ends = false;
 
-      // According to uoherald bard must remain alive, visible, and 
+      // According to uoherald bard must remain alive, visible, and
       // within range of the target or the effect ends in 15 seconds.
       if (!targ.Alive || targ.Deleted || !from.Alive || from.Hidden)
       {
@@ -95,10 +96,10 @@ namespace Server.SkillHandlers
       public bool m_Ending;
       public DateTime m_EndTime;
       public Mobile m_From;
-      public ArrayList m_Mods;
+      public List<object> m_Mods;
       public Timer m_Timer;
 
-      public DiscordanceInfo(Mobile from, Mobile creature, int effect, ArrayList mods)
+      public DiscordanceInfo(Mobile from, Mobile creature, int effect, List<object> mods)
       {
         m_From = from;
         m_Creature = creature;
@@ -116,12 +117,12 @@ namespace Server.SkillHandlers
         {
           object mod = m_Mods[i];
 
-          if (mod is ResistanceMod)
-            m_Creature.AddResistanceMod((ResistanceMod)mod);
-          else if (mod is StatMod)
-            m_Creature.AddStatMod((StatMod)mod);
-          else if (mod is SkillMod)
-            m_Creature.AddSkillMod((SkillMod)mod);
+          if (mod is ResistanceMod resistanceMod)
+            m_Creature.AddResistanceMod(resistanceMod);
+          else if (mod is StatMod statMod)
+            m_Creature.AddStatMod(statMod);
+          else if (mod is SkillMod skillMod)
+            m_Creature.AddSkillMod(skillMod);
         }
       }
 
@@ -131,12 +132,12 @@ namespace Server.SkillHandlers
         {
           object mod = m_Mods[i];
 
-          if (mod is ResistanceMod)
-            m_Creature.RemoveResistanceMod((ResistanceMod)mod);
-          else if (mod is StatMod)
-            m_Creature.RemoveStatMod(((StatMod)mod).Name);
-          else if (mod is SkillMod)
-            m_Creature.RemoveSkillMod((SkillMod)mod);
+          if (mod is ResistanceMod resistanceMod)
+            m_Creature.RemoveResistanceMod(resistanceMod);
+          else if (mod is StatMod statMod)
+            m_Creature.RemoveStatMod(statMod.Name);
+          else if (mod is SkillMod skillMod)
+            m_Creature.RemoveSkillMod(skillMod);
         }
       }
     }
@@ -161,24 +162,22 @@ namespace Server.SkillHandlers
           from.SendLocalizedMessage(
             1062488); // The instrument you are trying to play is no longer in your backpack!
         }
-        else if (target is Mobile)
+        else if (target is Mobile targ)
         {
-          Mobile targ = (Mobile)target;
-
-          if (targ == from || targ is BaseCreature &&
-              (((BaseCreature)targ).BardImmune || !from.CanBeHarmful(targ, false)) &&
-              ((BaseCreature)targ).ControlMaster != from)
+          if (targ == from || targ is BaseCreature bc &&
+              (bc.BardImmune || !from.CanBeHarmful(bc, false)) &&
+              bc.ControlMaster != from)
           {
             from.SendLocalizedMessage(1049535); // A song of discord would have no effect on that.
           }
-          else if (m_Table.Contains(targ)) //Already discorded
+          else if (m_Table.ContainsKey(targ)) //Already discorded
           {
             from.SendLocalizedMessage(1049537); // Your target is already in discord.
           }
           else if (!targ.Player)
           {
             double diff = m_Instrument.GetDifficultyFor(targ) - 10.0;
-            double music = from.Skills[SkillName.Musicianship].Value;
+            double music = from.Skills.Musicianship.Value;
 
             if (music > 100.0)
               diff -= (music - 100.0) * 0.5;
@@ -189,19 +188,19 @@ namespace Server.SkillHandlers
               m_Instrument.PlayInstrumentBadly(from);
               m_Instrument.ConsumeUse(from);
             }
-            else if (from.CheckTargetSkill(SkillName.Discordance, target, diff - 25.0, diff + 25.0))
+            else if (from.CheckTargetSkill(SkillName.Discordance, targ, diff - 25.0, diff + 25.0))
             {
               from.SendLocalizedMessage(1049539); // You play the song surpressing your targets strength
               m_Instrument.PlayInstrumentWell(from);
               m_Instrument.ConsumeUse(from);
 
-              ArrayList mods = new ArrayList();
+              List<object> mods = new List<object>();
               int effect;
               double scalar;
 
               if (Core.AOS)
               {
-                double discord = from.Skills[SkillName.Discordance].Value;
+                double discord = from.Skills.Discordance.Value;
 
                 if (discord > 100.0)
                   effect = -20 + (int)((discord - 100.0) / -2.5);
@@ -225,7 +224,7 @@ namespace Server.SkillHandlers
               }
               else
               {
-                effect = (int)(from.Skills[SkillName.Discordance].Value / -5.0);
+                effect = (int)(from.Skills.Discordance.Value / -5.0);
                 scalar = effect * 0.01;
 
                 mods.Add(new StatMod(StatType.Str, "DiscordanceStr", (int)(targ.RawStr * scalar),

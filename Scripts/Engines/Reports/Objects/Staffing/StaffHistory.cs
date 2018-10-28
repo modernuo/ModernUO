@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Server.Engines.Reports
@@ -15,17 +16,17 @@ namespace Server.Engines.Reports
       Pages = new PageInfoCollection();
       QueueStats = new QueueStatusCollection();
 
-      UserInfo = new Hashtable(StringComparer.OrdinalIgnoreCase);
-      StaffInfo = new Hashtable(StringComparer.OrdinalIgnoreCase);
+      UserInfo = new Dictionary<string, UserInfo>(StringComparer.OrdinalIgnoreCase);
+      StaffInfo = new Dictionary<string, StaffInfo>(StringComparer.OrdinalIgnoreCase);
     }
 
     public PageInfoCollection Pages{ get; set; }
 
     public QueueStatusCollection QueueStats{ get; set; }
 
-    public Hashtable UserInfo{ get; set; }
+    public Dictionary<string, UserInfo> UserInfo{ get; set; }
 
-    public Hashtable StaffInfo{ get; set; }
+    public Dictionary<string, StaffInfo> StaffInfo{ get; set; }
 
     public void AddPage(PageInfo info)
     {
@@ -221,7 +222,6 @@ namespace Server.Engines.Reports
 
         if (ts >= min && ts < max)
         {
-          DateTime date = ts.Date;
           TimeSpan time = ts.TimeOfDay;
 
           int hour = time.Hours;
@@ -232,9 +232,8 @@ namespace Server.Engines.Reports
       }
 
       BarGraph barGraph = new BarGraph("Average pages in queue", "graph_pagequeue_avg", 10, "Time", "Pages",
-        BarGraphRenderMode.Lines);
+        BarGraphRenderMode.Lines) { FontSize = 6 };
 
-      barGraph.FontSize = 6;
 
       for (int i = 7; i <= totals.Length + 7; ++i)
       {
@@ -303,9 +302,8 @@ namespace Server.Engines.Reports
         }
       }
 
-      BarGraph barGraph = new BarGraph(title, fname, 10, "Time", "Pages", BarGraphRenderMode.Lines);
+      BarGraph barGraph = new BarGraph(title, fname, 10, "Time", "Pages", BarGraphRenderMode.Lines) { FontSize = 6 };
 
-      barGraph.FontSize = 6;
 
       for (int i = 7; i <= totals.Length + 7; ++i)
       {
@@ -348,7 +346,7 @@ namespace Server.Engines.Reports
       return report;
     }
 
-    private PieChart[] ChartTotalPages(StaffInfo[] staff, TimeSpan ts, string title, string fname)
+    private PersistableObject[] ChartTotalPages(StaffInfo[] staff, TimeSpan ts, string title, string fname)
     {
       DateTime max = DateTime.UtcNow;
       DateTime min = max - ts;
@@ -385,7 +383,7 @@ namespace Server.Engines.Reports
       resChart.Items.Add("Logged Out", countLogged);
       resChart.Items.Add("Unresolved", countUnres);
 
-      return new[] { staffChart, resChart };
+      return new PersistableObject[] { staffChart, resChart };
     }
 
     #region Type Identification

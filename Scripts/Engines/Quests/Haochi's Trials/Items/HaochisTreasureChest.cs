@@ -57,14 +57,14 @@ namespace Server.Engines.Quests.Samurai
         return true;
 
       if (from is PlayerMobile player && player.Quest is HaochisTrialsQuest)
-        if (player.Quest.FindObjective(typeof(FifthTrialIntroObjective)) is FifthTrialIntroObjective obj)
-        {
-          if (obj.StolenTreasure)
-            from.SendLocalizedMessage(
-              1063247); // The guard is watching you carefully!  It would be unwise to remove another item from here.
-          else
-            return true;
-        }
+      {
+        FifthTrialIntroObjective obj = player.Quest.FindObjective<FifthTrialIntroObjective>();
+        if (obj?.StolenTreasure == true)
+          from.SendLocalizedMessage(
+            1063247); // The guard is watching you carefully!  It would be unwise to remove another item from here.
+        else
+          return true;
+      }
 
       return false;
     }
@@ -72,8 +72,11 @@ namespace Server.Engines.Quests.Samurai
     public override void OnItemLifted(Mobile from, Item item)
     {
       if (from is PlayerMobile player && player.Quest is HaochisTrialsQuest)
-        if (player.Quest.FindObjective(typeof(FifthTrialIntroObjective)) is FifthTrialIntroObjective obj)
+      {
+        FifthTrialIntroObjective obj = player.Quest.FindObjective<FifthTrialIntroObjective>();
+        if (obj != null)
           obj.StolenTreasure = true;
+      }
 
       Timer.DelayCall(TimeSpan.FromMinutes(2.0), GenerateTreasure);
     }

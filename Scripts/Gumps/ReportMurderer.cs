@@ -131,22 +131,15 @@ namespace Server.Gumps
 			AddHtmlLocalized( 400, 300, 300, 50, 1046363, false, false ); // No
 		}
 
-		public static void ReportedListExpiry_Callback( object state )
+		public static void ReportedListExpiry_Callback( PlayerMobile from, Mobile killer )
 		{
-			object[] states = (object[])state;
-
-			PlayerMobile from = (PlayerMobile)states[0];
-			Mobile killer = (Mobile)states[1];
-
 			if (from.RecentlyReported.Contains(killer))
-			{
 				from.RecentlyReported.Remove(killer);
-			}
 		}
 
 		public override void OnResponse( NetState state, RelayInfo info )
 		{
-			Mobile from = state.Mobile;
+			PlayerMobile from = (PlayerMobile)state.Mobile;
 
 			switch ( info.ButtonID )
 			{
@@ -160,8 +153,8 @@ namespace Server.Gumps
 
 						if (Core.SE)
 						{
-							((PlayerMobile)from).RecentlyReported.Add(killer);
-							Timer.DelayCall(TimeSpan.FromMinutes(10), new TimerStateCallback(ReportedListExpiry_Callback), new object[] { from, killer });
+							from.RecentlyReported.Add(killer);
+							Timer.DelayCall(TimeSpan.FromMinutes(10), () => ReportedListExpiry_Callback(from, killer));
 						}
 
 						if (killer is PlayerMobile pk)

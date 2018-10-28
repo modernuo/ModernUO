@@ -1,24 +1,29 @@
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.Mahjong
 {
   public class MahjongTileTypeGenerator
   {
-    public MahjongTileTypeGenerator(int count)
+    public MahjongTileTypeGenerator()
     {
-      LeftTileTypes = new ArrayList(34 * count);
+      LeftTileTypes = new List<MahjongTileType>(136);
 
       for (int i = 1; i <= 34; i++)
-      for (int j = 0; j < count; j++)
-        LeftTileTypes.Add((MahjongTileType)i);
+      {
+        MahjongTileType tile = (MahjongTileType)i;
+        LeftTileTypes.Add(tile);
+        LeftTileTypes.Add(tile);
+        LeftTileTypes.Add(tile);
+        LeftTileTypes.Add(tile);
+      }
     }
 
-    public ArrayList LeftTileTypes{ get; }
+    public List<MahjongTileType> LeftTileTypes{ get; }
 
     public MahjongTileType Next()
     {
       int random = Utility.Random(LeftTileTypes.Count);
-      MahjongTileType next = (MahjongTileType)LeftTileTypes[random];
+      MahjongTileType next = LeftTileTypes[random];
       LeftTileTypes.RemoveAt(random);
 
       return next;

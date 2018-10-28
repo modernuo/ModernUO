@@ -109,8 +109,8 @@ namespace Server.Commands.Generic
         }
         else
         {
-          MethodInfo parseMethod = null;
-          object[] parseArgs = null;
+          MethodInfo parseMethod;
+          object[] parseArgs;
 
           MethodInfo parseNumber = Type.GetMethod(
             "Parse",

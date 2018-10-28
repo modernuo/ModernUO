@@ -67,10 +67,6 @@ namespace Server
     public abstract T ReadMobile<T>() where T : Mobile;
     public abstract T ReadGuild<T>() where T : BaseGuild;
 
-    public abstract ArrayList ReadItemList();
-    public abstract ArrayList ReadMobileList();
-    public abstract ArrayList ReadGuildList();
-
     public abstract List<Item> ReadStrongItemList();
     public abstract List<T> ReadStrongItemList<T>() where T : Item;
 
@@ -138,15 +134,6 @@ namespace Server
     public abstract void WriteGuild<T>(T value) where T : BaseGuild;
 
     public abstract void Write(Race value);
-
-    public abstract void WriteItemList(ArrayList list);
-    public abstract void WriteItemList(ArrayList list, bool tidy);
-
-    public abstract void WriteMobileList(ArrayList list);
-    public abstract void WriteMobileList(ArrayList list, bool tidy);
-
-    public abstract void WriteGuildList(ArrayList list);
-    public abstract void WriteGuildList(ArrayList list, bool tidy);
 
     public abstract void Write(List<Item> list);
     public abstract void Write(List<Item> list, bool tidy);
@@ -370,8 +357,7 @@ namespace Server
       }
       catch
       {
-        if (ticks < now) d = TimeSpan.MaxValue;
-        else d = TimeSpan.MaxValue;
+        d = TimeSpan.MaxValue;
       }
 
       Write(d);
@@ -476,18 +462,12 @@ namespace Server
       if (m_Index + 8 > m_Buffer.Length)
         Flush();
 
-#if MONO
-			byte[] bytes = BitConverter.GetBytes(value);
-			for(int i = 0; i < bytes.Length; i++)
-				m_Buffer[m_Index++] = bytes[i];
-#else
       fixed (byte* pBuffer = m_Buffer)
       {
         *(double*)(pBuffer + m_Index) = value;
       }
 
       m_Index += 8;
-#endif
     }
 
     public override unsafe void Write(float value)
@@ -495,18 +475,12 @@ namespace Server
       if (m_Index + 4 > m_Buffer.Length)
         Flush();
 
-#if MONO
-			byte[] bytes = BitConverter.GetBytes(value);
-			for(int i = 0; i < bytes.Length; i++)
-				m_Buffer[m_Index++] = bytes[i];
-#else
       fixed (byte* pBuffer = m_Buffer)
       {
         *(float*)(pBuffer + m_Index) = value;
       }
 
       m_Index += 4;
-#endif
     }
 
     public override void Write(char value)
@@ -632,66 +606,6 @@ namespace Server
       Write(value);
     }
 
-    public override void WriteMobileList(ArrayList list)
-    {
-      WriteMobileList(list, false);
-    }
-
-    public override void WriteMobileList(ArrayList list, bool tidy)
-    {
-      if (tidy)
-        for (int i = 0; i < list.Count;)
-          if (((Mobile)list[i]).Deleted)
-            list.RemoveAt(i);
-          else
-            ++i;
-
-      Write(list.Count);
-
-      for (int i = 0; i < list.Count; ++i)
-        Write((Mobile)list[i]);
-    }
-
-    public override void WriteItemList(ArrayList list)
-    {
-      WriteItemList(list, false);
-    }
-
-    public override void WriteItemList(ArrayList list, bool tidy)
-    {
-      if (tidy)
-        for (int i = 0; i < list.Count;)
-          if (((Item)list[i]).Deleted)
-            list.RemoveAt(i);
-          else
-            ++i;
-
-      Write(list.Count);
-
-      for (int i = 0; i < list.Count; ++i)
-        Write((Item)list[i]);
-    }
-
-    public override void WriteGuildList(ArrayList list)
-    {
-      WriteGuildList(list, false);
-    }
-
-    public override void WriteGuildList(ArrayList list, bool tidy)
-    {
-      if (tidy)
-        for (int i = 0; i < list.Count;)
-          if (((BaseGuild)list[i]).Disbanded)
-            list.RemoveAt(i);
-          else
-            ++i;
-
-      Write(list.Count);
-
-      for (int i = 0; i < list.Count; ++i)
-        Write((BaseGuild)list[i]);
-    }
-
     public override void Write(List<Item> list)
     {
       Write(list, false);
@@ -757,7 +671,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (Item item in set) Write(item);
+      foreach (T item in set) Write(item);
     }
 
     public override void Write(List<Mobile> list)
@@ -825,7 +739,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (Mobile mob in set) Write(mob);
+      foreach (T mob in set) Write(mob);
     }
 
     public override void Write(List<BaseGuild> list)
@@ -893,7 +807,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (BaseGuild guild in set) Write(guild);
+      foreach (T guild in set) Write(guild);
     }
   }
 
@@ -920,9 +834,7 @@ namespace Server
 
     public override string ReadString()
     {
-      if (ReadByte() != 0)
-        return m_File.ReadString();
-      return null;
+      return ReadByte() != 0 ? m_File.ReadString() : null;
     }
 
     public override DateTime ReadDeltaTime()
@@ -1076,7 +988,7 @@ namespace Server
 
     public override IEntity ReadEntity()
     {
-      Serial serial = ReadInt();
+      Serial serial = ReadUInt();
       IEntity entity = World.FindEntity(serial);
       if (entity == null)
         return new Entity(serial, new Point3D(0, 0, 0), Map.Internal);
@@ -1085,17 +997,17 @@ namespace Server
 
     public override Item ReadItem()
     {
-      return World.FindItem(ReadInt());
+      return World.FindItem(ReadUInt());
     }
 
     public override Mobile ReadMobile()
     {
-      return World.FindMobile(ReadInt());
+      return World.FindMobile(ReadUInt());
     }
 
     public override BaseGuild ReadGuild()
     {
-      return BaseGuild.Find(ReadInt());
+      return BaseGuild.Find(ReadUInt());
     }
 
     public override T ReadItem<T>()
@@ -1111,69 +1023,6 @@ namespace Server
     public override T ReadGuild<T>()
     {
       return ReadGuild() as T;
-    }
-
-    public override ArrayList ReadItemList()
-    {
-      int count = ReadInt();
-
-      if (count > 0)
-      {
-        ArrayList list = new ArrayList(count);
-
-        for (int i = 0; i < count; ++i)
-        {
-          Item item = ReadItem();
-
-          if (item != null) list.Add(item);
-        }
-
-        return list;
-      }
-
-      return new ArrayList();
-    }
-
-    public override ArrayList ReadMobileList()
-    {
-      int count = ReadInt();
-
-      if (count > 0)
-      {
-        ArrayList list = new ArrayList(count);
-
-        for (int i = 0; i < count; ++i)
-        {
-          Mobile m = ReadMobile();
-
-          if (m != null) list.Add(m);
-        }
-
-        return list;
-      }
-
-      return new ArrayList();
-    }
-
-    public override ArrayList ReadGuildList()
-    {
-      int count = ReadInt();
-
-      if (count > 0)
-      {
-        ArrayList list = new ArrayList(count);
-
-        for (int i = 0; i < count; ++i)
-        {
-          BaseGuild g = ReadGuild();
-
-          if (g != null) list.Add(g);
-        }
-
-        return list;
-      }
-
-      return new ArrayList();
     }
 
     public override List<Item> ReadStrongItemList()
@@ -1384,10 +1233,9 @@ namespace Server
         m_WriteQueue.Enqueue(mem);
       }
 
-      if (m_WorkerThread == null || !m_WorkerThread.IsAlive)
+      if (m_WorkerThread.IsAlive != true)
       {
-        m_WorkerThread = new Thread(new WorkerThread(this).Worker);
-        m_WorkerThread.Priority = ThreadPriority.BelowNormal;
+        m_WorkerThread = new Thread(new WorkerThread(this).Worker) { Priority = ThreadPriority.BelowNormal };
         m_WorkerThread.Start();
       }
     }
@@ -1453,8 +1301,7 @@ namespace Server
       }
       catch
       {
-        if (ticks < now) d = TimeSpan.MaxValue;
-        else d = TimeSpan.MaxValue;
+        d = TimeSpan.MaxValue;
       }
 
       Write(d);
@@ -1659,66 +1506,6 @@ namespace Server
       Write(value);
     }
 
-    public override void WriteMobileList(ArrayList list)
-    {
-      WriteMobileList(list, false);
-    }
-
-    public override void WriteMobileList(ArrayList list, bool tidy)
-    {
-      if (tidy)
-        for (int i = 0; i < list.Count;)
-          if (((Mobile)list[i]).Deleted)
-            list.RemoveAt(i);
-          else
-            ++i;
-
-      Write(list.Count);
-
-      for (int i = 0; i < list.Count; ++i)
-        Write((Mobile)list[i]);
-    }
-
-    public override void WriteItemList(ArrayList list)
-    {
-      WriteItemList(list, false);
-    }
-
-    public override void WriteItemList(ArrayList list, bool tidy)
-    {
-      if (tidy)
-        for (int i = 0; i < list.Count;)
-          if (((Item)list[i]).Deleted)
-            list.RemoveAt(i);
-          else
-            ++i;
-
-      Write(list.Count);
-
-      for (int i = 0; i < list.Count; ++i)
-        Write((Item)list[i]);
-    }
-
-    public override void WriteGuildList(ArrayList list)
-    {
-      WriteGuildList(list, false);
-    }
-
-    public override void WriteGuildList(ArrayList list, bool tidy)
-    {
-      if (tidy)
-        for (int i = 0; i < list.Count;)
-          if (((BaseGuild)list[i]).Disbanded)
-            list.RemoveAt(i);
-          else
-            ++i;
-
-      Write(list.Count);
-
-      for (int i = 0; i < list.Count; ++i)
-        Write((BaseGuild)list[i]);
-    }
-
     public override void Write(List<Item> list)
     {
       Write(list, false);
@@ -1784,7 +1571,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (Item item in set) Write(item);
+      foreach (T item in set) Write(item);
     }
 
     public override void Write(List<Mobile> list)
@@ -1852,7 +1639,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (Mobile mob in set) Write(mob);
+      foreach (T mob in set) Write(mob);
     }
 
     public override void Write(List<BaseGuild> list)
@@ -1920,7 +1707,7 @@ namespace Server
 
       Write(set.Count);
 
-      foreach (BaseGuild guild in set) Write(guild);
+      foreach (T guild in set) Write(guild);
     }
 
     private class WorkerThread
@@ -1936,7 +1723,7 @@ namespace Server
       {
         ThreadCount++;
 
-        int lastCount = 0;
+        int lastCount;
 
         do
         {
@@ -1966,7 +1753,7 @@ namespace Server
   public interface ISerializable
   {
     int TypeReference{ get; }
-    int SerialIdentity{ get; }
+    uint SerialIdentity{ get; }
     void Serialize(GenericWriter writer);
   }
 }

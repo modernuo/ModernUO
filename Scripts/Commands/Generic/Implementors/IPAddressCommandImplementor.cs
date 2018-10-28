@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using Server.Network;
 
 namespace Server.Commands.Generic
@@ -24,9 +24,7 @@ namespace Server.Commands.Generic
       {
         Extensions ext = Extensions.Parse(from, ref args);
 
-        bool items, mobiles;
-
-        if (!CheckObjectTypes(from, command, ext, out items, out mobiles))
+        if (!CheckObjectTypes(from, command, ext, out bool _, out bool mobiles))
           return;
 
         if (!mobiles) // sanity check
@@ -35,8 +33,8 @@ namespace Server.Commands.Generic
           return;
         }
 
-        ArrayList list = new ArrayList();
-        ArrayList addresses = new ArrayList();
+        List<object> list = new List<object>();
+        List<IPAddress> addresses = new List<IPAddress>();
 
         List<NetState> states = NetState.Instances;
 

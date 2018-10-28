@@ -33,21 +33,19 @@ namespace Server.SkillHandlers
         {
           from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500910); // Hmm, that person looks really silly.
         }
-        else if (targeted is TownCrier)
+        else if (targeted is TownCrier crier)
         {
-          ((TownCrier)targeted).PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500907,
+          crier.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500907,
             from.NetState); // He looks smart enough to remember the news.  Ask him about it.
         }
-        else if (targeted is BaseVendor && ((BaseVendor)targeted).IsInvulnerable)
+        else if (targeted is BaseVendor vendor && vendor.IsInvulnerable)
         {
-          ((BaseVendor)targeted).PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500909,
+          vendor.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 500909,
             from.NetState); // That person could probably calculate the cost of what you buy from them.
         }
-        else if (targeted is Mobile)
+        else if (targeted is Mobile targ)
         {
-          Mobile targ = (Mobile)targeted;
-
-          int marginOfError = Math.Max(0, 20 - (int)(from.Skills[SkillName.EvalInt].Value / 5));
+          int marginOfError = Math.Max(0, 20 - (int)(from.Skills.EvalInt.Value / 5));
 
           int intel = targ.Int + Utility.RandomMinMax(-marginOfError, +marginOfError);
           int mana = targ.Mana * 100 / Math.Max(targ.ManaMax, 1) +
@@ -74,7 +72,7 @@ namespace Server.SkillHandlers
             targ.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1038169 + intMod + body,
               from.NetState); // He/She/It looks [slighly less intelligent than a rock.]  [Of Average intellect] [etc...]
 
-            if (from.Skills[SkillName.EvalInt].Base >= 76.0)
+            if (from.Skills.EvalInt.Base >= 76.0)
               targ.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1038202 + mnMod,
                 from.NetState); // That being is at [10,20,...] percent mental strength.
           }

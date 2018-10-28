@@ -127,9 +127,7 @@ namespace Server.Engines.Reports
 
     public void UpdateResolver()
     {
-      string resolvedBy;
-      DateTime timeResolved;
-      PageResolution res = GetResolution(out resolvedBy, out timeResolved);
+      PageResolution res = GetResolution(out string resolvedBy, out DateTime timeResolved);
 
       if (m_History != null && IsStaffResolution(res))
         Resolver = m_History.GetStaffInfo(resolvedBy);

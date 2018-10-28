@@ -39,7 +39,7 @@ namespace Server.Items
       base.OnHit(attacker, defender, damageBonus);
 
       if (!Core.AOS && Layer == Layer.TwoHanded &&
-          attacker.Skills[SkillName.Anatomy].Value / 400.0 >= Utility.RandomDouble() &&
+          attacker.Skills.Anatomy.Value / 400.0 >= Utility.RandomDouble() &&
           DuelContext.AllowSpecialAbility(attacker, "Paralyzing Blow", false))
       {
         defender.SendMessage("You receive a paralyzing blow!"); // Is this not localized?

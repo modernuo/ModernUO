@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Gumps;
 using Server.Multis;
@@ -24,7 +22,7 @@ namespace Server.Engines.BulkOrders
 		[CommandProperty( AccessLevel.GameMaster )]
 		public SecureLevel Level { get; set; }
 
-		public ArrayList Entries { get; private set; }
+		public List<IBOBEntry> Entries { get; private set; }
 
 		public BOBFilter Filter { get; private set; }
 
@@ -36,7 +34,7 @@ namespace Server.Engines.BulkOrders
 			Weight = 1.0;
 			LootType = LootType.Blessed;
 
-			Entries = new ArrayList();
+			Entries = new List<IBOBEntry>();
 			Filter = new BOBFilter();
 
 			Level = SecureLevel.CoOwners;
@@ -73,9 +71,9 @@ namespace Server.Engines.BulkOrders
 					SecureTrade trade = cont.Trade;
 
 					if ( trade != null && trade.From.Mobile == from )
-						trade.To.Mobile.SendGump( new BOBGump( (PlayerMobile)(trade.To.Mobile), this ) );
+						trade.To.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.To.Mobile, this ) );
 					else if ( trade != null && trade.To.Mobile == from )
-						trade.From.Mobile.SendGump( new BOBGump( (PlayerMobile)(trade.From.Mobile), this ) );
+						trade.From.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.From.Mobile, this ) );
 				}
 			}
 		}
@@ -216,7 +214,7 @@ namespace Server.Engines.BulkOrders
 
 					int count = reader.ReadEncodedInt();
 
-					Entries = new ArrayList( count );
+					Entries = new List<IBOBEntry>( count );
 
 					for ( int i = 0; i < count; ++i )
 					{
@@ -240,7 +238,7 @@ namespace Server.Engines.BulkOrders
 
 			list.Add( 1062344, Entries.Count.ToString() ); // Deeds in book: ~1_val~
 
-			if ( m_BookName != null && m_BookName.Length > 0 )
+			if ( !string.IsNullOrEmpty(m_BookName) )
 				list.Add( 1062481, m_BookName ); // Book Name: ~1_val~
 		}
 

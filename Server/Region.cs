@@ -398,6 +398,7 @@ namespace Server
       return false;
     }
 
+    // TODO: Memoize this
     public bool IsChildOf(Region region)
     {
       if (region == null)
@@ -414,6 +415,22 @@ namespace Server
       }
 
       return false;
+    }
+    
+    // TODO: Memoize this
+    public T GetRegion<T>() where T : Region
+    {
+      Region r = this;
+
+      do
+      {
+        if (r is T tr)
+          return tr;
+
+        r = r.Parent;
+      } while (r != null);
+
+      return null;
     }
 
     public Region GetRegion(Type regionType)
@@ -451,18 +468,15 @@ namespace Server
 
       return null;
     }
+    
+    public bool IsPartOf<T>() where T : Region
+    {
+      return GetRegion<T>() != null;
+    }
 
     public bool IsPartOf(Region region)
     {
-      if (this == region)
-        return true;
-
-      return IsChildOf(region);
-    }
-
-    public bool IsPartOf(Type regionType)
-    {
-      return GetRegion(regionType) != null;
+      return this == region || IsChildOf(region);
     }
 
     public bool IsPartOf(string regionName)
@@ -472,16 +486,7 @@ namespace Server
 
     public virtual bool AcceptsSpawnsFrom(Region region)
     {
-      if (!AllowSpawn())
-        return false;
-
-      if (region == this)
-        return true;
-
-      if (Parent != null)
-        return Parent.AcceptsSpawnsFrom(region);
-
-      return false;
+      return AllowSpawn() && (region == this || Parent?.AcceptsSpawnsFrom(region) == true);
     }
 
     public List<Mobile> GetPlayers()
@@ -554,9 +559,7 @@ namespace Server
 
     public override string ToString()
     {
-      if (m_Name != null)
-        return m_Name;
-      return GetType().Name;
+      return m_Name ?? GetType().Name;
     }
 
 
@@ -596,18 +599,12 @@ namespace Server
 
     public virtual Type GetResource(Type type)
     {
-      if (Parent != null)
-        return Parent.GetResource(type);
-
-      return type;
+      return Parent != null ? Parent.GetResource(type) : type;
     }
 
     public virtual bool CanUseStuckMenu(Mobile m)
     {
-      if (Parent != null)
-        return Parent.CanUseStuckMenu(m);
-
-      return true;
+      return Parent == null || Parent.CanUseStuckMenu(m);
     }
 
     public virtual void OnAggressed(Mobile aggressor, Mobile aggressed, bool criminal)
@@ -632,61 +629,39 @@ namespace Server
 
     public virtual bool OnTarget(Mobile m, Target t, object o)
     {
-      if (Parent != null)
-        return Parent.OnTarget(m, t, o);
-
-      return true;
+      return Parent == null || Parent.OnTarget(m, t, o);
     }
 
     public virtual bool OnCombatantChange(Mobile m, Mobile Old, Mobile New)
     {
-      if (Parent != null)
-        return Parent.OnCombatantChange(m, Old, New);
-
-      return true;
+      return Parent == null || Parent.OnCombatantChange(m, Old, New);
     }
 
     public virtual bool AllowHousing(Mobile from, Point3D p)
     {
-      if (Parent != null)
-        return Parent.AllowHousing(from, p);
-
-      return true;
+      return Parent == null || Parent.AllowHousing(from, p);
     }
 
     public virtual bool SendInaccessibleMessage(Item item, Mobile from)
     {
-      if (Parent != null)
-        return Parent.SendInaccessibleMessage(item, from);
-
-      return false;
+      return Parent != null && Parent.SendInaccessibleMessage(item, from);
     }
 
     public virtual bool CheckAccessibility(Item item, Mobile from)
     {
-      if (Parent != null)
-        return Parent.CheckAccessibility(item, from);
-
-      return true;
+      return Parent == null || Parent.CheckAccessibility(item, from);
     }
 
     public virtual bool OnDecay(Item item)
     {
-      if (Parent != null)
-        return Parent.OnDecay(item);
-
-      return true;
+      return Parent == null || Parent.OnDecay(item);
     }
 
     public virtual bool AllowHarmful(Mobile from, Mobile target)
     {
-      if (Parent != null)
-        return Parent.AllowHarmful(from, target);
-
-      if (Mobile.AllowHarmfulHandler != null)
-        return Mobile.AllowHarmfulHandler(from, target);
-
-      return true;
+      return Parent?.AllowHarmful(from, target) == true ||
+             Mobile.AllowHarmfulHandler == null ||
+             Mobile.AllowHarmfulHandler(from, target);
     }
 
     public virtual void OnCriminalAction(Mobile m, bool message)
@@ -699,13 +674,9 @@ namespace Server
 
     public virtual bool AllowBeneficial(Mobile from, Mobile target)
     {
-      if (Parent != null)
-        return Parent.AllowBeneficial(from, target);
-
-      if (Mobile.AllowBeneficialHandler != null)
-        return Mobile.AllowBeneficialHandler(from, target);
-
-      return true;
+      return Parent?.AllowBeneficial(from, target) == true ||
+             Mobile.AllowBeneficialHandler == null ||
+             Mobile.AllowBeneficialHandler(from, target);
     }
 
     public virtual void OnBeneficialAction(Mobile helper, Mobile target)
@@ -730,18 +701,12 @@ namespace Server
 
     public virtual bool OnSkillUse(Mobile m, int Skill)
     {
-      if (Parent != null)
-        return Parent.OnSkillUse(m, Skill);
-
-      return true;
+      return Parent == null || Parent.OnSkillUse(m, Skill);
     }
 
     public virtual bool OnBeginSpellCast(Mobile m, ISpell s)
     {
-      if (Parent != null)
-        return Parent.OnBeginSpellCast(m, s);
-
-      return true;
+      return Parent == null || Parent.OnBeginSpellCast(m, s);
     }
 
     public virtual void OnSpellCast(Mobile m, ISpell s)
@@ -751,18 +716,12 @@ namespace Server
 
     public virtual bool OnResurrect(Mobile m)
     {
-      if (Parent != null)
-        return Parent.OnResurrect(m);
-
-      return true;
+      return Parent == null || Parent.OnResurrect(m);
     }
 
     public virtual bool OnBeforeDeath(Mobile m)
     {
-      if (Parent != null)
-        return Parent.OnBeforeDeath(m);
-
-      return true;
+      return Parent == null || Parent.OnBeforeDeath(m);
     }
 
     public virtual void OnDeath(Mobile m)
@@ -772,42 +731,27 @@ namespace Server
 
     public virtual bool OnDamage(Mobile m, ref int Damage)
     {
-      if (Parent != null)
-        return Parent.OnDamage(m, ref Damage);
-
-      return true;
+      return Parent == null || Parent.OnDamage(m, ref Damage);
     }
 
     public virtual bool OnHeal(Mobile m, ref int Heal)
     {
-      if (Parent != null)
-        return Parent.OnHeal(m, ref Heal);
-
-      return true;
+      return Parent == null || Parent.OnHeal(m, ref Heal);
     }
 
     public virtual bool OnDoubleClick(Mobile m, object o)
     {
-      if (Parent != null)
-        return Parent.OnDoubleClick(m, o);
-
-      return true;
+      return Parent == null || Parent.OnDoubleClick(m, o);
     }
 
     public virtual bool OnSingleClick(Mobile m, object o)
     {
-      if (Parent != null)
-        return Parent.OnSingleClick(m, o);
-
-      return true;
+      return Parent == null || Parent.OnSingleClick(m, o);
     }
 
     public virtual bool AllowSpawn()
     {
-      if (Parent != null)
-        return Parent.AllowSpawn();
-
-      return true;
+      return Parent == null || Parent.AllowSpawn();
     }
 
     public virtual void AlterLightLevel(Mobile m, ref int global, ref int personal)
@@ -863,14 +807,14 @@ namespace Server
 
         if (oldRChild >= newRChild)
         {
-          oldR.OnExit(m);
-          oldR = oldR.Parent;
+          oldR?.OnExit(m);
+          oldR = oldR?.Parent;
         }
 
         if (newRChild >= oldRChild)
         {
-          newR.OnEnter(m);
-          newR = newR.Parent;
+          newR?.OnEnter(m);
+          newR = newR?.Parent;
         }
       }
     }
@@ -892,19 +836,22 @@ namespace Server
       XmlElement root = doc["ServerRegions"];
 
       if (root == null)
+      {
         Console.WriteLine("Could not find root element 'ServerRegions' in Regions.xml");
-      else
-        foreach (XmlElement facet in root.SelectNodes("Facet"))
+        return;
+      }
+      
+      foreach (XmlElement facet in root.SelectNodes("Facet"))
+      {
+        Map map = null;
+        if (ReadMap(facet, "name", ref map))
         {
-          Map map = null;
-          if (ReadMap(facet, "name", ref map))
-          {
-            if (map == Map.Internal)
-              Console.WriteLine("Invalid internal map in a facet element");
-            else
-              LoadRegions(facet, map, null);
-          }
+          if (map == Map.Internal)
+            Console.WriteLine("Invalid internal map in a facet element");
+          else
+            LoadRegions(facet, map, null);
         }
+      }
 
       Console.WriteLine("done");
     }
@@ -1088,9 +1035,7 @@ namespace Server
 
       Type type = typeof(T);
 
-      T tempVal;
-
-      if (type.IsEnum && Enum.TryParse(s, true, out tempVal))
+      if (type.IsEnum && Enum.TryParse(s, true, out T tempVal))
       {
         value = tempVal;
         return true;

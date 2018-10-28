@@ -20,8 +20,8 @@ namespace Server.SkillHandlers
     {
       m.SendLocalizedMessage(1011350); // What do you wish to track?
 
-      m.CloseGump(typeof(TrackWhatGump));
-      m.CloseGump(typeof(TrackWhoGump));
+      m.CloseGump<TrackWhatGump>();
+      m.CloseGump<TrackWhoGump>();
       m.SendGump(new TrackWhatGump(m));
 
       return TimeSpan.FromSeconds(10.0); // 10 second delay before beign able to re-use a skill
@@ -192,7 +192,7 @@ namespace Server.SkillHandlers
 
       from.CheckSkill(SkillName.Tracking, 21.1, 100.0); // Passive gain
 
-      int range = 10 + (int)(from.Skills[SkillName.Tracking].Value / 10);
+      int range = 10 + (int)(from.Skills.Tracking.Value / 10);
 
       List<Mobile> list = new List<Mobile>();
 
@@ -228,14 +228,14 @@ namespace Server.SkillHandlers
         return true;
 
 
-      int tracking = from.Skills[SkillName.Tracking].Fixed;
-      int detectHidden = from.Skills[SkillName.DetectHidden].Fixed;
+      int tracking = from.Skills.Tracking.Fixed;
+      int detectHidden = from.Skills.DetectHidden.Fixed;
 
       if (Core.ML && m.Race == Race.Elf)
         tracking /= 2; //The 'Guide' says that it requires twice as Much tracking SKILL to track an elf.  Not the total difficulty to track.
 
-      int hiding = m.Skills[SkillName.Hiding].Fixed;
-      int stealth = m.Skills[SkillName.Stealth].Fixed;
+      int hiding = m.Skills.Hiding.Fixed;
+      int stealth = m.Skills.Stealth.Fixed;
       int divisor = hiding + stealth;
 
       // Necromancy forms affect tracking difficulty

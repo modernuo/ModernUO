@@ -45,10 +45,8 @@ namespace Server.SkillHandlers
 
         int number = -1;
 
-        if (targeted is Mobile)
+        if (targeted is Mobile targ)
         {
-          Mobile targ = (Mobile)targeted;
-
           if (targ.Player) // We can't beg from players
           {
             number = 500398; // Perhaps just asking would work better.
@@ -71,7 +69,7 @@ namespace Server.SkillHandlers
           }
           else
           {
-            // Face eachother
+            // Face each other
             from.Direction = from.GetDirectionTo(targ);
             targ.Direction = targ.GetDirectionTo(from);
 

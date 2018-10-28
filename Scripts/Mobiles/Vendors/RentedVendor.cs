@@ -118,8 +118,7 @@ namespace Server.Mobiles
 
     public void SendRentalExpireMessage(Mobile to)
     {
-      int days, hours;
-      ComputeRentalExpireDelay(out days, out hours);
+      ComputeRentalExpireDelay(out int days, out int hours);
 
       to.SendLocalizedMessage(1062464,
         days + "\t" +
@@ -230,14 +229,14 @@ namespace Server.Mobiles
 
         if (m_Vendor.IsOwner(from))
         {
-          from.CloseGump(typeof(RenterVendorRentalGump));
+          from.CloseGump<RenterVendorRentalGump>();
           from.SendGump(new RenterVendorRentalGump(m_Vendor));
 
           m_Vendor.SendRentalExpireMessage(from);
         }
         else if (m_Vendor.IsLandlord(from))
         {
-          from.CloseGump(typeof(LandlordVendorRentalGump));
+          from.CloseGump<LandlordVendorRentalGump>();
           from.SendGump(new LandlordVendorRentalGump(m_Vendor));
 
           m_Vendor.SendRentalExpireMessage(from);
@@ -314,9 +313,7 @@ namespace Server.Mobiles
 
         text = text.Trim();
 
-        int amount;
-
-        if (!int.TryParse(text, out amount))
+        if (!int.TryParse(text, out int amount))
           amount = -1;
 
         Mobile owner = m_Vendor.Owner;
@@ -340,7 +337,7 @@ namespace Server.Mobiles
         {
           from.SendLocalizedMessage(1062504); // Please wait while the renter considers your offer.
 
-          owner.CloseGump(typeof(VendorRentalRefundGump));
+          owner.CloseGump<VendorRentalRefundGump>();
           owner.SendGump(new VendorRentalRefundGump(m_Vendor, from, amount));
         }
       }

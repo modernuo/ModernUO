@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Gumps;
@@ -150,14 +149,7 @@ namespace Server.Engines.Plants
         if (!(RootParent is Mobile owner))
           return false;
 
-        if (owner.Backpack != null && IsChildOf(owner.Backpack))
-          return true;
-
-        BankBox bank = owner.FindBankNoCreate();
-        if (bank != null && IsChildOf(bank))
-          return true;
-
-        return false;
+        return IsChildOf(owner.Backpack) || IsChildOf(owner.FindBankNoCreate());
       }
     }
 
@@ -170,7 +162,7 @@ namespace Server.Engines.Plants
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Reproduces => PlantHueInfo.CanReproduce(PlantHue) && PlantTypeInfo.CanReproduce(PlantType);
 
-    public static ArrayList Plants{ get; } = new ArrayList();
+    public static List<PlantItem> Plants{ get; } = new List<PlantItem>();
 
     [CommandProperty(AccessLevel.GameMaster)]
     public SecureLevel Level{ get; set; }

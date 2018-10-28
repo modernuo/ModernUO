@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using Server.Guilds;
 using Server.Multis;
 using Server.Network;
@@ -10,7 +10,7 @@ namespace Server.Gumps
   {
     private BaseHouse m_House;
 
-    public HouseListGump(int number, ArrayList list, BaseHouse house, bool accountOf) : base(20, 30)
+    public HouseListGump(int number, List<Mobile> list, BaseHouse house, bool accountOf) : base(20, 30)
     {
       if (house.Deleted)
         return;
@@ -27,29 +27,31 @@ namespace Server.Gumps
 
       AddHtmlLocalized(20, 20, 350, 20, number, false, false);
 
-      if (list != null)
-        for (int i = 0; i < list.Count; ++i)
+      if (list == null)
+        return;
+      
+      for (int i = 0; i < list.Count; ++i)
+      {
+        if (i % 16 == 0)
         {
-          if (i % 16 == 0)
-          {
-            if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 16 + 1);
+          if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 16 + 1);
 
-            AddPage(i / 16 + 1);
+          AddPage(i / 16 + 1);
 
-            if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 16);
-          }
-
-          Mobile m = (Mobile)list[i];
-
-          string name;
-
-          if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
-            continue;
-
-          AddLabel(55, 55 + i % 16 * 20, 0, accountOf && m.Player && m.Account != null
-            ? $"Account of {name}"
-            : name);
+          if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 16);
         }
+
+        Mobile m = list[i];
+
+        string name;
+
+        if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
+          continue;
+
+        AddLabel(55, 55 + i % 16 * 20, 0, accountOf && m.Player && m.Account != null
+          ? $"Account of {name}"
+          : name);
+      }
     }
 
     public override void OnResponse(NetState state, RelayInfo info)
@@ -67,10 +69,10 @@ namespace Server.Gumps
   {
     private bool m_AccountOf;
     private BaseHouse m_House;
-    private ArrayList m_List, m_Copy;
+    private List<Mobile> m_List, m_Copy;
     private int m_Number;
 
-    public HouseRemoveGump(int number, ArrayList list, BaseHouse house, bool accountOf) : base(20, 30)
+    public HouseRemoveGump(int number, List<Mobile> list, BaseHouse house, bool accountOf) : base(20, 30)
     {
       if (house.Deleted)
         return;
@@ -93,33 +95,33 @@ namespace Server.Gumps
 
       AddHtmlLocalized(20, 20, 350, 20, number, false, false);
 
-      if (list != null)
+      if (list == null)
+        return;
+      
+      m_Copy = new List<Mobile>(list);
+
+      for (int i = 0; i < list.Count; ++i)
       {
-        m_Copy = new ArrayList(list);
-
-        for (int i = 0; i < list.Count; ++i)
+        if (i % 15 == 0)
         {
-          if (i % 15 == 0)
-          {
-            if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 15 + 1);
+          if (i != 0) AddButton(370, 20, 4005, 4007, 0, GumpButtonType.Page, i / 15 + 1);
 
-            AddPage(i / 15 + 1);
+          AddPage(i / 15 + 1);
 
-            if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 15);
-          }
-
-          Mobile m = (Mobile)list[i];
-
-          string name;
-
-          if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
-            continue;
-
-          AddCheck(34, 52 + i % 15 * 20, 0xD2, 0xD3, false, i);
-          AddLabel(55, 52 + i % 15 * 20, 0, accountOf && m.Player && m.Account != null
-            ? $"Account of {name}"
-            : name);
+          if (i != 0) AddButton(340, 20, 4014, 4016, 0, GumpButtonType.Page, i / 15);
         }
+
+        Mobile m = list[i];
+
+        string name;
+
+        if (m == null || (name = m.Name) == null || (name = name.Trim()).Length <= 0)
+          continue;
+
+        AddCheck(34, 52 + i % 15 * 20, 0xD2, 0xD3, false, i);
+        AddLabel(55, 52 + i % 15 * 20, 0, accountOf && m.Player && m.Account != null
+          ? $"Account of {name}"
+          : name);
       }
     }
 
@@ -146,9 +148,9 @@ namespace Server.Gumps
 
           if (m_List.Count > 0)
           {
-            from.CloseGump(typeof(HouseGump));
-            from.CloseGump(typeof(HouseListGump));
-            from.CloseGump(typeof(HouseRemoveGump));
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
             from.SendGump(new HouseRemoveGump(m_Number, m_List, m_House, m_AccountOf));
             return;
           }
@@ -170,9 +172,9 @@ namespace Server.Gumps
 
       m_House = house;
 
-      from.CloseGump(typeof(HouseGump));
-      from.CloseGump(typeof(HouseListGump));
-      from.CloseGump(typeof(HouseRemoveGump));
+      from.CloseGump<HouseGump>();
+      from.CloseGump<HouseListGump>();
+      from.CloseGump<HouseRemoveGump>();
 
       bool isCombatRestricted = house.IsCombatRestricted(from);
 
@@ -195,15 +197,14 @@ namespace Server.Gumps
 
       if (m_House.Sign != null)
       {
-        ArrayList lines = Wrap(m_House.Sign.GetName());
+        List<string> lines = Wrap(m_House.Sign.GetName());
 
-        if (lines != null)
-          for (int i = 0, y = (101 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
-          {
-            string s = (string)lines[i];
+        for (int i = 0, y = (101 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
+        {
+          string s = lines[i];
 
-            AddLabel(130 + (143 - s.Length * 8) / 2, y, 0, s);
-          }
+          AddLabel(130 + (143 - s.Length * 8) / 2, y, 0, s);
+        }
       }
 
       if (!isFriend)
@@ -349,13 +350,13 @@ namespace Server.Gumps
       }
     }
 
-    private ArrayList Wrap(string value)
+    private List<string> Wrap(string value)
     {
       if (value == null || (value = value.Trim()).Length <= 0)
         return null;
 
       string[] values = value.Split(' ');
-      ArrayList list = new ArrayList();
+      List<string> list = new List<string>();
       string current = "";
 
       for (int i = 0; i < values.Length; ++i)
@@ -458,9 +459,9 @@ namespace Server.Gumps
         }
         case 2: // List of co-owners
         {
-          from.CloseGump(typeof(HouseGump));
-          from.CloseGump(typeof(HouseListGump));
-          from.CloseGump(typeof(HouseRemoveGump));
+          from.CloseGump<HouseGump>();
+          from.CloseGump<HouseListGump>();
+          from.CloseGump<HouseRemoveGump>();
           from.SendGump(new HouseListGump(1011275, m_House.CoOwners, m_House, false));
 
           break;
@@ -484,9 +485,9 @@ namespace Server.Gumps
         {
           if (isOwner)
           {
-            from.CloseGump(typeof(HouseGump));
-            from.CloseGump(typeof(HouseListGump));
-            from.CloseGump(typeof(HouseRemoveGump));
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
             from.SendGump(new HouseRemoveGump(1011274, m_House.CoOwners, m_House, false));
           }
           else
@@ -513,9 +514,9 @@ namespace Server.Gumps
         }
         case 6: // List friends
         {
-          from.CloseGump(typeof(HouseGump));
-          from.CloseGump(typeof(HouseListGump));
-          from.CloseGump(typeof(HouseRemoveGump));
+          from.CloseGump<HouseGump>();
+          from.CloseGump<HouseListGump>();
+          from.CloseGump<HouseRemoveGump>();
           from.SendGump(new HouseListGump(1011273, m_House.Friends, m_House, false));
 
           break;
@@ -538,9 +539,9 @@ namespace Server.Gumps
         {
           if (isCoOwner)
           {
-            from.CloseGump(typeof(HouseGump));
-            from.CloseGump(typeof(HouseListGump));
-            from.CloseGump(typeof(HouseRemoveGump));
+            from.CloseGump<HouseGump>();
+            from.CloseGump<HouseListGump>();
+            from.CloseGump<HouseRemoveGump>();
             from.SendGump(new HouseRemoveGump(1011272, m_House.Friends, m_House, false));
           }
           else
@@ -581,18 +582,18 @@ namespace Server.Gumps
         }
         case 12: // List bans
         {
-          from.CloseGump(typeof(HouseGump));
-          from.CloseGump(typeof(HouseListGump));
-          from.CloseGump(typeof(HouseRemoveGump));
+          from.CloseGump<HouseGump>();
+          from.CloseGump<HouseListGump>();
+          from.CloseGump<HouseRemoveGump>();
           from.SendGump(new HouseListGump(1011271, m_House.Bans, m_House, true));
 
           break;
         }
         case 13: // Remove ban
         {
-          from.CloseGump(typeof(HouseGump));
-          from.CloseGump(typeof(HouseListGump));
-          from.CloseGump(typeof(HouseRemoveGump));
+          from.CloseGump<HouseGump>();
+          from.CloseGump<HouseListGump>();
+          from.CloseGump<HouseRemoveGump>();
           from.SendGump(new HouseRemoveGump(1011269, m_House.Bans, m_House, true));
 
           break;
@@ -621,7 +622,7 @@ namespace Server.Gumps
             }
             else
             {
-              from.CloseGump(typeof(HouseDemolishGump));
+              from.CloseGump<HouseDemolishGump>();
               from.SendGump(new HouseDemolishGump(from, m_House));
             }
           }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -8,7 +7,7 @@ namespace Server.Commands.Generic
 {
   public static class DistinctCompiler
   {
-    public static IComparer Compile(AssemblyEmitter assembly, Type objectType, Property[] props)
+    public static IComparer<T> Compile<T>(AssemblyEmitter assembly, Type objectType, Property[] props)
     {
       TypeBuilder typeBuilder = assembly.DefineType(
         "__distinct",
@@ -29,7 +28,8 @@ namespace Server.Commands.Generic
 
         // : base()
         il.Emit(OpCodes.Ldarg_0);
-        il.Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
+        il.Emit(OpCodes.Call, typeof(T).GetConstructor(Type.EmptyTypes) ??
+                              throw new Exception($"Could not find empty constructor for type {typeof(T).FullName}"));
 
         // return;
         il.Emit(OpCodes.Ret);
@@ -39,7 +39,7 @@ namespace Server.Commands.Generic
 
       #region IComparer
 
-      typeBuilder.AddInterfaceImplementation(typeof(IComparer));
+      typeBuilder.AddInterfaceImplementation(typeof(IComparer<T>));
 
       MethodBuilder compareMethod;
 
@@ -52,7 +52,7 @@ namespace Server.Commands.Generic
           /*  name  */ "Compare",
           /*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
           /* return */ typeof(int),
-          /* params */ new[] { typeof(object), typeof(object) });
+          /* params */ new[] { typeof(T), typeof(T) });
 
         LocalBuilder a = emitter.CreateLocal(objectType);
         LocalBuilder b = emitter.CreateLocal(objectType);
@@ -105,14 +105,14 @@ namespace Server.Commands.Generic
 
         typeBuilder.DefineMethodOverride(
           emitter.Method,
-          typeof(IComparer).GetMethod(
+          typeof(IComparer<T>).GetMethod(
             "Compare",
             new[]
             {
-              typeof(object),
-              typeof(object)
+              typeof(T),
+              typeof(T)
             }
-          )
+          ) ?? throw new Exception($"No Compare method found for type {typeof(T).FullName}")
         );
 
         compareMethod = emitter.Method;
@@ -124,7 +124,7 @@ namespace Server.Commands.Generic
 
       #region IEqualityComparer
 
-      typeBuilder.AddInterfaceImplementation(typeof(IEqualityComparer<object>));
+      typeBuilder.AddInterfaceImplementation(typeof(IEqualityComparer<T>));
 
       #region Equals
 
@@ -135,7 +135,7 @@ namespace Server.Commands.Generic
           /*  name  */ "Equals",
           /*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
           /* return */ typeof(bool),
-          /* params */ new[] { typeof(object), typeof(object) });
+          /* params */ new[] { typeof(T), typeof(T) });
 
         emitter.Generator.Emit(OpCodes.Ldarg_0);
         emitter.Generator.Emit(OpCodes.Ldarg_1);
@@ -151,14 +151,14 @@ namespace Server.Commands.Generic
 
         typeBuilder.DefineMethodOverride(
           emitter.Method,
-          typeof(IEqualityComparer<object>).GetMethod(
+          typeof(IEqualityComparer<T>).GetMethod(
             "Equals",
             new[]
             {
-              typeof(object),
-              typeof(object)
+              typeof(T),
+              typeof(T)
             }
-          )
+          ) ?? throw new Exception($"No Equals method found for type {typeof(T).FullName}")
         );
       }
 
@@ -173,7 +173,7 @@ namespace Server.Commands.Generic
           /*  name  */ "GetHashCode",
           /*  attr  */ MethodAttributes.Public | MethodAttributes.Virtual,
           /* return */ typeof(int),
-          /* params */ new[] { typeof(object) });
+          /* params */ new[] { typeof(T) });
 
         LocalBuilder obj = emitter.CreateLocal(objectType);
 
@@ -193,7 +193,7 @@ namespace Server.Commands.Generic
           MethodInfo getHashCode = active.GetMethod("GetHashCode", Type.EmptyTypes);
 
           if (getHashCode == null)
-            getHashCode = typeof(object).GetMethod("GetHashCode", Type.EmptyTypes);
+            getHashCode = typeof(T).GetMethod("GetHashCode", Type.EmptyTypes);
 
           if (active != typeof(int))
           {
@@ -237,13 +237,13 @@ namespace Server.Commands.Generic
 
         typeBuilder.DefineMethodOverride(
           emitter.Method,
-          typeof(IEqualityComparer<object>).GetMethod(
+          typeof(IEqualityComparer<T>).GetMethod(
             "GetHashCode",
             new[]
             {
-              typeof(object)
+              typeof(T)
             }
-          )
+          ) ?? throw new Exception($"No GetHashCode method found for type {typeof(T).FullName}")
         );
       }
 
@@ -253,7 +253,7 @@ namespace Server.Commands.Generic
 
       Type comparerType = typeBuilder.CreateType();
 
-      return (IComparer)Activator.CreateInstance(comparerType);
+      return (IComparer<T>)Activator.CreateInstance(comparerType);
     }
   }
 }

@@ -38,7 +38,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
       }
-      else if (pm == null || from.Skills[SkillName.Mining].Base < 100.0)
+      else if (pm == null || from.Skills.Mining.Base < 100.0)
       {
         pm.SendMessage("Only a Grandmaster Miner can learn from this book.");
       }

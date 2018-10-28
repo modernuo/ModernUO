@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Network;
 
@@ -24,9 +23,7 @@ namespace Server.Commands.Generic
       {
         Extensions ext = Extensions.Parse(from, ref args);
 
-        bool items, mobiles;
-
-        if (!CheckObjectTypes(from, command, ext, out items, out mobiles))
+        if (!CheckObjectTypes(from, command, ext, out bool _, out bool mobiles))
           return;
 
         if (!mobiles) // sanity check
@@ -35,7 +32,7 @@ namespace Server.Commands.Generic
           return;
         }
 
-        ArrayList list = new ArrayList();
+        List<object> list = new List<object>();
 
         List<NetState> states = NetState.Instances;
 

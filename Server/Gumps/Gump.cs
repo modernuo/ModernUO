@@ -27,7 +27,7 @@ namespace Server.Gumps
 {
   public class Gump
   {
-    private static int m_NextSerial = 1;
+    private static uint m_NextSerial = 1;
 
     private static byte[] m_BeginLayout = StringToBuffer("{ ");
     private static byte[] m_EndLayout = StringToBuffer(" }");
@@ -39,10 +39,10 @@ namespace Server.Gumps
     private bool m_Closable = true;
     private bool m_Disposable = true;
 
-    private bool m_Dragable = true;
+    private bool m_Draggable = true;
     private bool m_Resizable = true;
 
-    private int m_Serial;
+    private uint m_Serial;
     private List<string> m_Strings;
 
     internal int m_TextEntries, m_Switches;
@@ -68,7 +68,7 @@ namespace Server.Gumps
 
     public List<GumpEntry> Entries{ get; }
 
-    public int Serial
+    public uint Serial
     {
       get => m_Serial;
       set
@@ -133,14 +133,14 @@ namespace Server.Gumps
       }
     }
 
-    public bool Dragable
+    public bool Draggable
     {
-      get => m_Dragable;
+      get => m_Draggable;
       set
       {
-        if (m_Dragable != value)
+        if (m_Draggable != value)
         {
-          m_Dragable = value;
+          m_Draggable = value;
           Invalidate();
         }
       }
@@ -161,7 +161,7 @@ namespace Server.Gumps
 
     public static int GetTypeID(Type type)
     {
-      return type.FullName.GetHashCode();
+      return type?.FullName?.GetHashCode() ?? -1;
     }
 
     public void Invalidate()
@@ -290,7 +290,7 @@ namespace Server.Gumps
       Add(new GumpTextEntryLimited(x, y, width, height, hue, entryID, initialText, size));
     }
 
-    public void AddItemProperty(int serial)
+    public void AddItemProperty(uint serial)
     {
       Add(new GumpItemProperty(serial));
     }
@@ -349,7 +349,7 @@ namespace Server.Gumps
       else
         disp = new DisplayGumpFast(this);
 
-      if (!m_Dragable)
+      if (!m_Draggable)
         disp.AppendLayout(m_NoMove);
 
       if (!m_Closable)
@@ -379,7 +379,7 @@ namespace Server.Gumps
       m_TextEntries = disp.TextEntries;
       m_Switches = disp.Switches;
 
-      return disp as Packet;
+      return (Packet)disp;
     }
 
     public virtual void OnResponse(NetState sender, RelayInfo info)

@@ -1,8 +1,8 @@
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.MyRunUO
 {
-  public class LayerComparer : IComparer
+  public class LayerComparer : IComparer<Item>
   {
     private static Layer PlateArms = (Layer)255;
     private static Layer ChainTunic = (Layer)254;
@@ -36,7 +36,7 @@ namespace Server.Engines.MyRunUO
       Layer.Talisman
     };
 
-    public static readonly IComparer Instance = new LayerComparer();
+    public static readonly IComparer<Item> Instance = new LayerComparer();
 
     static LayerComparer()
     {
@@ -48,16 +48,16 @@ namespace Server.Engines.MyRunUO
 
     public static int[] TranslationTable{ get; }
 
-    public int Compare(object x, object y)
+    public int Compare(Item a, Item b)
     {
-      Item a = (Item)x;
-      Item b = (Item)y;
-
-      Layer aLayer = a.Layer;
-      Layer bLayer = b.Layer;
-
-      aLayer = Fix(a.ItemID, aLayer);
-      bLayer = Fix(b.ItemID, bLayer);
+      if (a == null)
+        return b == null ? 0 : 1;
+      
+      if (b == null)
+        return -1;
+      
+      Layer aLayer = Fix(a.ItemID, a.Layer);
+      Layer bLayer = Fix(b.ItemID, b.Layer);
 
       return TranslationTable[(int)bLayer] - TranslationTable[(int)aLayer];
     }
@@ -75,10 +75,7 @@ namespace Server.Engines.MyRunUO
       if (itemID == 0x13BF || itemID == 0x13C4) // chainmail tunic
         return ChainTunic;
 
-      if (itemID == 0x1C08 || itemID == 0x1C09) // leather skirt
-        return LeatherShorts;
-
-      if (itemID == 0x1C00 || itemID == 0x1C01) // leather shorts
+      if (itemID == 0x1C08 || itemID == 0x1C09 || itemID == 0x1C00 || itemID == 0x1C01) // leather skirt/shorts
         return LeatherShorts;
 
       return oldLayer;

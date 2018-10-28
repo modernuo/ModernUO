@@ -35,7 +35,7 @@ namespace Server.Items
 
     public virtual void OnMushroomReset()
     {
-      if (Region.Find(Location, Map).IsPartOf(typeof(DungeonRegion)))
+      if (Region.Find(Location, Map).IsPartOf<DungeonRegion>())
         ItemID = 0x1125; // reset
       else
         Delete();

@@ -93,7 +93,7 @@ namespace Server.Mobiles
     public Type[] SharedList => new[] { typeof(TheRobeOfBritanniaAri) };
     public Type[] DecorativeList => new[] { typeof(EvilIdolSkull), typeof(SkullPole) };
 
-    public static ArrayList Instances{ get; } = new ArrayList();
+    public static List<Harrower> Instances{ get; } = new List<Harrower>();
 
     public static bool CanSpawn => Instances.Count == 0;
 
@@ -184,9 +184,7 @@ namespace Server.Mobiles
           if (!ok)
             continue;
 
-          HarrowerTentacles spawn = new HarrowerTentacles(this);
-
-          spawn.Team = Team;
+          HarrowerTentacles spawn = new HarrowerTentacles(this) { Team = Team };
 
           spawn.MoveToWorld(new Point3D(x, y, z), map);
 

@@ -52,7 +52,7 @@ namespace Server
       {
         protector.SendLocalizedMessage(1049610); // You must reach the first path in this virtue to invoke it.
       }
-      else if (!protector.CanBeginAction(typeof(JusticeVirtue)))
+      else if (!protector.CanBeginAction<JusticeVirtue>())
       {
         protector.SendLocalizedMessage(1049370); // You must wait a while before offering your protection again.
       }
@@ -81,7 +81,7 @@ namespace Server
 
       if (!VirtueHelper.IsSeeker(protector, VirtueName.Justice))
         protector.SendLocalizedMessage(1049610); // You must reach the first path in this virtue to invoke it.
-      else if (!protector.CanBeginAction(typeof(JusticeVirtue)))
+      else if (!protector.CanBeginAction<JusticeVirtue>())
         protector.SendLocalizedMessage(1049370); // You must wait a while before offering your protection again.
       else if (protector.JusticeProtectors.Count > 0)
         protector.SendLocalizedMessage(1049542); // You cannot protect someone while being protected.
@@ -95,7 +95,7 @@ namespace Server
         protector.SendLocalizedMessage(1049436); // That player cannot be protected.
       else if (pm.JusticeProtectors.Count > 0)
         protector.SendLocalizedMessage(1049369); // You cannot protect that player right now.
-      else if (pm.HasGump(typeof(AcceptProtectorGump)))
+      else if (pm.HasGump<AcceptProtectorGump>())
         protector.SendLocalizedMessage(1049369); // You cannot protect that player right now.
       else
         pm.SendGump(new AcceptProtectorGump(protector, pm));
@@ -107,7 +107,7 @@ namespace Server
       {
         protector.SendLocalizedMessage(1049610); // You must reach the first path in this virtue to invoke it.
       }
-      else if (!protector.CanBeginAction(typeof(JusticeVirtue)))
+      else if (!protector.CanBeginAction<JusticeVirtue>())
       {
         protector.SendLocalizedMessage(1049370); // You must wait a while before offering your protection again.
       }
@@ -149,14 +149,8 @@ namespace Server
       protectee.SendLocalizedMessage(1049453, args); // You have declined protection from ~1_NAME~.
       protector.SendLocalizedMessage(1049454, args); // ~2_NAME~ has declined your protection.
 
-      if (protector.BeginAction(typeof(JusticeVirtue)))
-        Timer.DelayCall(TimeSpan.FromMinutes(15.0), new TimerStateCallback(RejectDelay_Callback), protector);
-    }
-
-    public static void RejectDelay_Callback(object state)
-    {
-      if (state is Mobile m)
-        m.EndAction(typeof(JusticeVirtue));
+      if (protector.BeginAction<JusticeVirtue>())
+        Timer.DelayCall(TimeSpan.FromMinutes(15.0), protector.EndAction<JusticeVirtue>);
     }
 
     public static void CheckAtrophy(Mobile from)
@@ -176,6 +170,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
   }

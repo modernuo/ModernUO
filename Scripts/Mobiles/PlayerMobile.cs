@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
@@ -103,7 +104,7 @@ namespace Server.Mobiles
 
     private List<Mobile> m_AllFollowers;
 
-    private Hashtable m_AntiMacroTable;
+    private Dictionary<Skill, Dictionary<object, CountAndTimeStamp>> m_AntiMacroTable;
     private TimeSpan m_GameTime;
 
     /*
@@ -117,7 +118,6 @@ namespace Server.Mobiles
 
     private Mobile m_InsuranceAward;
     private int m_InsuranceBonus;
-    private int m_InsuranceCost;
 
     private int m_LastGlobalLight = -1, m_LastPersonalLight = -1;
 
@@ -143,7 +143,7 @@ namespace Server.Mobiles
 
       VisibilityList = new List<Mobile>();
       PermaFlags = new List<Mobile>();
-      m_AntiMacroTable = new Hashtable();
+      m_AntiMacroTable = new Dictionary<Skill, Dictionary<object, CountAndTimeStamp>>();
       RecentlyReported = new List<Mobile>();
 
       BOBFilter = new BOBFilter();
@@ -155,7 +155,7 @@ namespace Server.Mobiles
       JusticeProtectors = new List<Mobile>();
       m_GuildRank = RankDefinition.Lowest;
 
-      m_ChampionTitles = new ChampionTitleInfo();
+      ChampionTitles = new ChampionTitleInfo();
 
       InvalidateMyRunUO();
     }
@@ -163,7 +163,7 @@ namespace Server.Mobiles
     public PlayerMobile(Serial s) : base(s)
     {
       VisibilityList = new List<Mobile>();
-      m_AntiMacroTable = new Hashtable();
+      m_AntiMacroTable = new Dictionary<Skill, Dictionary<object, CountAndTimeStamp>>();
       InvalidateMyRunUO();
     }
 
@@ -657,7 +657,7 @@ namespace Server.Mobiles
 
     public override int GetMinResistance(ResistanceType type)
     {
-      int magicResist = (int)(Skills[SkillName.MagicResist].Value * 10);
+      int magicResist = (int)(Skills.MagicResist.Value * 10);
       int min = int.MinValue;
 
       if (magicResist >= 1000)
@@ -702,7 +702,7 @@ namespace Server.Mobiles
             notice =
               "The server is currently under lockdown. You do not have sufficient access level to connect.";
 
-          Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(Disconnect), from);
+          Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => from.NetState?.Dispose());
         }
         else if (from.AccessLevel >= AccessLevel.Administrator)
         {
@@ -714,7 +714,7 @@ namespace Server.Mobiles
           notice = "The server is currently under lockdown. You have sufficient access level to connect.";
         }
 
-        from.SendGump(new NoticeGump(1060637, 30720, notice, 0xFFC000, 300, 140, null, null));
+        from.SendGump(new NoticeGump(1060637, 30720, notice, 0xFFC000, 300, 140));
         return;
       }
 
@@ -959,12 +959,6 @@ namespace Server.Mobiles
         InvalidateMyRunUO();
     }
 
-    private static void Disconnect(object state)
-    {
-      NetState ns = ((Mobile)state).NetState;
-      ns?.Dispose();
-    }
-
     private static void OnLogout(LogoutEventArgs e)
     {
       if (e.Mobile is PlayerMobile mobile)
@@ -985,14 +979,7 @@ namespace Server.Mobiles
 
       DisguiseTimers.StartTimer(e.Mobile);
 
-      Timer.DelayCall(TimeSpan.Zero, new TimerStateCallback(ClearSpecialMovesCallback), e.Mobile);
-    }
-
-    private static void ClearSpecialMovesCallback(object state)
-    {
-      Mobile from = (Mobile)state;
-
-      SpecialMove.ClearAllMoves(from);
+      Timer.DelayCall(TimeSpan.Zero, SpecialMove.ClearAllMoves, e.Mobile);
     }
 
     private static void EventSink_Disconnected(DisconnectedEventArgs e)
@@ -1156,11 +1143,11 @@ namespace Server.Mobiles
       NetState ns = NetState;
 
       if (ns != null)
-        if (HasGump(typeof(ResurrectGump)))
+        if (HasGump<ResurrectGump>())
         {
           if (Alive)
           {
-            CloseGump(typeof(ResurrectGump));
+            CloseGump<ResurrectGump>();
           }
           else
           {
@@ -1246,8 +1233,8 @@ namespace Server.Mobiles
     {
       m_NextProtectionCheck = 10;
 
-      GuardedRegion reg = (GuardedRegion)Region.GetRegion(typeof(GuardedRegion));
-      bool isProtected = reg != null && !reg.IsDisabled();
+      GuardedRegion reg = Region.GetRegion<GuardedRegion>();
+      bool isProtected = reg?.IsDisabled() == false;
 
       if (isProtected != m_LastProtectedMessage)
       {
@@ -1323,7 +1310,7 @@ namespace Server.Mobiles
           if (Alive && house.InternalizedVendors.Count > 0 && house.IsOwner(this))
             list.Add(new CallbackEntry(6204, GetVendor));
 
-          if (house.IsAosRules && !Region.IsPartOf(typeof(SafeZone))) // Dueling
+          if (house.IsAosRules && !Region.IsPartOf<SafeZone>()) // Dueling
             list.Add(new CallbackEntry(6207, LeaveHouse));
         }
 
@@ -1365,9 +1352,8 @@ namespace Server.Mobiles
 
         BaseHouse curhouse = BaseHouse.FindHouseAt(this);
 
-        if (curhouse != null)
-          if (Alive && Core.Expansion >= Expansion.AOS && curhouse.IsAosRules && curhouse.IsFriend(from))
-            list.Add(new EjectPlayerEntry(from, this));
+        if (curhouse != null && Alive && Core.Expansion >= Expansion.AOS && curhouse.IsAosRules && curhouse.IsFriend(from))
+          list.Add(new EjectPlayerEntry(from, this));
       }
     }
 
@@ -1399,7 +1385,7 @@ namespace Server.Mobiles
 
       if (CheckAlive() && house != null && house.IsOwner(this) && house.InternalizedVendors.Count > 0)
       {
-        CloseGump(typeof(ReclaimVendorGump));
+        CloseGump<ReclaimVendorGump>();
         SendGump(new ReclaimVendorGump(house));
       }
     }
@@ -1414,7 +1400,8 @@ namespace Server.Mobiles
 
     public override void DisruptiveAction()
     {
-      if (Meditating) RemoveBuff(BuffIcon.ActiveMeditation);
+      if (Meditating)
+        RemoveBuff(BuffIcon.ActiveMeditation);
 
       base.DisruptiveAction();
     }
@@ -1654,7 +1641,7 @@ namespace Server.Mobiles
 
       #region Dueling
 
-      if (Region.IsPartOf(typeof(SafeZone)) && m is PlayerMobile pm)
+      if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm)
         if (pm.DuelContext == null || pm.DuelPlayer == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
             pm.DuelPlayer.Eliminated)
           return true;
@@ -1760,10 +1747,8 @@ namespace Server.Mobiles
 
     private bool FindItems_Callback(Item item)
     {
-      if (!item.Deleted && (item.LootType == LootType.Blessed || item.Insured))
-        if (Backpack != item.Parent)
-          return true;
-      return false;
+      return !item.Deleted && (item.LootType == LootType.Blessed || item.Insured) &&
+             Backpack != item.Parent;
     }
 
     public override bool OnBeforeDeath()
@@ -1782,7 +1767,6 @@ namespace Server.Mobiles
       EquipSnapshot = new List<Item>(Items);
 
       m_NonAutoreinsuredItems = 0;
-      m_InsuranceCost = 0;
       m_InsuranceAward = FindMostRecentDamager(false);
 
       if (m_InsuranceAward is BaseCreature creature)
@@ -1829,7 +1813,6 @@ namespace Server.Mobiles
 
         if (Banker.Withdraw(this, cost))
         {
-          m_InsuranceCost += cost;
           item.PaidInsurance = true;
           SendLocalizedMessage(1060398,
             cost.ToString()); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
@@ -1848,10 +1831,8 @@ namespace Server.Mobiles
         item.Insured = false;
       }
 
-      if (m_InsuranceAward != null)
-        if (Banker.Deposit(m_InsuranceAward, 300))
-          if (m_InsuranceAward is PlayerMobile mobile)
-            mobile.m_InsuranceBonus += 300;
+      if (m_InsuranceAward != null && Banker.Deposit(m_InsuranceAward, 300) && m_InsuranceAward is PlayerMobile pm)
+        pm.m_InsuranceBonus += 300;
 
       return true;
 
@@ -1909,8 +1890,8 @@ namespace Server.Mobiles
       IncognitoSpell.StopTimer(this);
       DisguiseTimers.RemoveTimer(this);
 
-      EndAction(typeof(PolymorphSpell));
-      EndAction(typeof(IncognitoSpell));
+      EndAction<PolymorphSpell>();
+      EndAction<IncognitoSpell>();
 
       MeerMage.StopEffect(this, false);
 
@@ -2019,7 +2000,7 @@ namespace Server.Mobiles
       if (Alive)
         return false;
 
-      if (Core.ML && Skills[SkillName.SpiritSpeak].Value >= 100.0)
+      if (Core.ML && Skills.SpiritSpeak.Value >= 100.0)
         return false;
 
       if (Core.AOS)
@@ -2027,7 +2008,7 @@ namespace Server.Mobiles
         {
           Mobile m = hears[i];
 
-          if (m != this && m.Skills[SkillName.SpiritSpeak].Value >= 100.0)
+          if (m != this && m.Skills.SpiritSpeak.Value >= 100.0)
             return false;
         }
 
@@ -2158,11 +2139,11 @@ namespace Server.Mobiles
       if (obj == null || m_AntiMacroTable == null || AccessLevel != AccessLevel.Player)
         return true;
 
-      Hashtable tbl = (Hashtable)m_AntiMacroTable[skill];
+      Dictionary<object, CountAndTimeStamp> tbl = m_AntiMacroTable[skill];
       if (tbl == null)
-        m_AntiMacroTable[skill] = tbl = new Hashtable();
+        m_AntiMacroTable[skill] = tbl = new Dictionary<object, CountAndTimeStamp>();
 
-      CountAndTimeStamp count = (CountAndTimeStamp)tbl[obj];
+      CountAndTimeStamp count = tbl[obj];
       if (count != null)
       {
         if (count.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
@@ -2172,9 +2153,7 @@ namespace Server.Mobiles
         }
 
         ++count.Count;
-        if (count.Count <= SkillCheck.Allowance)
-          return true;
-        return false;
+        return count.Count <= SkillCheck.Allowance;
       }
 
       tbl[obj] = count = new CountAndTimeStamp();
@@ -2239,7 +2218,7 @@ namespace Server.Mobiles
             for (int i = 0; i < recipeCount; i++)
             {
               int r = reader.ReadInt();
-              if (reader.ReadBool()) //Don't add in recipies which we haven't gotten or have been removed
+              if (reader.ReadBool()) //Don't add in recipes which we haven't gotten or have been removed
                 m_AcquiredRecipes.Add(r, true);
             }
           }
@@ -2253,7 +2232,7 @@ namespace Server.Mobiles
         }
         case 23:
         {
-          m_ChampionTitles = new ChampionTitleInfo(reader);
+          ChampionTitles = new ChampionTitleInfo(reader);
           goto case 22;
         }
         case 22:
@@ -2457,8 +2436,8 @@ namespace Server.Mobiles
       if (LastOnline == DateTime.MinValue && Account != null)
         LastOnline = ((Account)Account).LastLogin;
 
-      if (m_ChampionTitles == null)
-        m_ChampionTitles = new ChampionTitleInfo();
+      if (ChampionTitles == null)
+        ChampionTitles = new ChampionTitleInfo();
 
       if (AccessLevel > AccessLevel.Player)
         m_IgnoreMobiles = true;
@@ -2481,15 +2460,13 @@ namespace Server.Mobiles
     public override void Serialize(GenericWriter writer)
     {
       //cleanup our anti-macro table
-      foreach (Hashtable t in m_AntiMacroTable.Values)
+      foreach (Dictionary<object, CountAndTimeStamp> t in m_AntiMacroTable.Values)
       {
-        ArrayList remove = new ArrayList();
-        foreach (CountAndTimeStamp time in t.Values)
-          if (time.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
-            remove.Add(time);
+        List<object> toRemove = t.Where(kvp => kvp.Value.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
+          .Select(kvp => kvp.Key).ToList();
 
-        for (int i = 0; i < remove.Count; ++i)
-          t.Remove(remove[i]);
+        foreach (object key in toRemove)
+          t.Remove(key);
       }
 
       CheckKillDecay();
@@ -2506,7 +2483,8 @@ namespace Server.Mobiles
 
         writer.Write(m_StuckMenuUses.Length);
 
-        for (int i = 0; i < m_StuckMenuUses.Length; ++i) writer.Write(m_StuckMenuUses[i]);
+        for (int i = 0; i < m_StuckMenuUses.Length; ++i)
+          writer.Write(m_StuckMenuUses[i]);
       }
       else
       {
@@ -2534,7 +2512,7 @@ namespace Server.Mobiles
 
       writer.WriteDeltaTime(LastHonorLoss);
 
-      ChampionTitleInfo.Serialize(writer, m_ChampionTitles);
+      ChampionTitleInfo.Serialize(writer, ChampionTitles);
 
       writer.Write(LastValorLoss);
       writer.WriteEncodedInt(ToTItemsTurnedIn);
@@ -2680,12 +2658,8 @@ namespace Server.Mobiles
 
     public virtual void CheckedAnimate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
-      if (!Mounted) base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
-    }
-
-    public override void Animate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
-    {
-      base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
+      if (!Mounted)
+        base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
     }
 
     public override bool CanSee(Item item)
@@ -2891,7 +2865,7 @@ namespace Server.Mobiles
       {
         BaseCreature pet = AutoStabled[i] as BaseCreature;
 
-        if (pet == null || pet.Deleted)
+        if (pet?.Deleted == true)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
@@ -2963,7 +2937,8 @@ namespace Server.Mobiles
 
       private void RemoveBlock(Mobile mobile)
       {
-        (mobile as PlayerMobile).m_MountBlock = null;
+        if (mobile is PlayerMobile pm)
+          pm.m_MountBlock = null;
       }
     }
 
@@ -3191,47 +3166,47 @@ namespace Server.Mobiles
 
     public void RecoverAmmo()
     {
-      if (Core.SE && Alive)
-      {
-        foreach (KeyValuePair<Type, int> kvp in RecoverableAmmo)
-          if (kvp.Value > 0)
+      if (!Core.SE || !Alive)
+        return;
+
+      foreach (KeyValuePair<Type, int> kvp in RecoverableAmmo)
+        if (kvp.Value > 0)
+        {
+          Item ammo = null;
+
+          try
           {
-            Item ammo = null;
-
-            try
-            {
-              ammo = Activator.CreateInstance(kvp.Key) as Item;
-            }
-            catch
-            {
-            }
-
-            if (ammo != null)
-            {
-              string name = ammo.Name;
-              ammo.Amount = kvp.Value;
-
-              if (name == null)
-              {
-                if (ammo is Arrow)
-                  name = "arrow";
-                else if (ammo is Bolt)
-                  name = "bolt";
-              }
-
-              if (name != null && ammo.Amount > 1)
-                name = $"{name}s";
-
-              if (name == null)
-                name = $"#{ammo.LabelNumber}";
-
-              PlaceInBackpack(ammo);
-              SendLocalizedMessage(1073504, $"{ammo.Amount}\t{name}"); // You recover ~1_NUM~ ~2_AMMO~.
-            }
+            ammo = Activator.CreateInstance(kvp.Key) as Item;
+          }
+          catch
+          {
+            // ignored
           }
 
-        RecoverableAmmo.Clear();
-      }
+          if (ammo == null)
+            continue;
+          string name = ammo.Name;
+          ammo.Amount = kvp.Value;
+
+          if (name == null)
+          {
+            if (ammo is Arrow)
+              name = "arrow";
+            else if (ammo is Bolt)
+              name = "bolt";
+          }
+
+          if (name != null && ammo.Amount > 1)
+            name = $"{name}s";
+
+          if (name == null)
+            name = $"#{ammo.LabelNumber}";
+
+          PlaceInBackpack(ammo);
+          SendLocalizedMessage(1073504, $"{ammo.Amount}\t{name}"); // You recover ~1_NUM~ ~2_AMMO~.
+        }
+
+      RecoverableAmmo.Clear();
     }
 
     #endregion
@@ -3456,7 +3431,7 @@ namespace Server.Mobiles
 
       if (Core.SE)
       {
-        if (!HasGump(typeof(CancelRenewInventoryInsuranceGump)))
+        if (!HasGump<CancelRenewInventoryInsuranceGump>())
           SendGump(new CancelRenewInventoryInsuranceGump(this, null));
       }
       else
@@ -3532,7 +3507,7 @@ namespace Server.Mobiles
 
       // TODO: Investigate item sorting
 
-      CloseGump(typeof(ItemInsuranceMenuGump));
+      CloseGump<ItemInsuranceMenuGump>();
 
       if (items.Count == 0)
         SendLocalizedMessage(1114915, "", 0x35); // None of your current items meet the requirements for insurance.
@@ -3664,7 +3639,7 @@ namespace Server.Mobiles
           {
             if (m_From.AutoRenewInsurance)
             {
-              if (!m_From.HasGump(typeof(CancelRenewInventoryInsuranceGump)))
+              if (!m_From.HasGump<CancelRenewInventoryInsuranceGump>())
                 m_From.SendGump(new CancelRenewInventoryInsuranceGump(m_From, this));
             }
             else
@@ -3778,9 +3753,9 @@ namespace Server.Mobiles
     private void ToggleQuestItemTarget()
     {
       BaseQuestGump.CloseOtherGumps(this);
-      CloseGump(typeof(QuestLogDetailedGump));
-      CloseGump(typeof(QuestLogGump));
-      CloseGump(typeof(QuestOfferGump));
+      CloseGump<QuestLogDetailedGump>();
+      CloseGump<QuestLogGump>();
+      CloseGump<QuestOfferGump>();
       //CloseGump( typeof( UnknownGump802 ) );
       //CloseGump( typeof( UnknownGump804 ) );
 
@@ -3897,7 +3872,7 @@ namespace Server.Mobiles
       get => m_DuelPlayer;
       set
       {
-        bool wasInTourny = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
+        bool wasInTourney = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
 
         m_DuelPlayer = value;
 
@@ -3906,9 +3881,9 @@ namespace Server.Mobiles
         else
           DuelContext = m_DuelPlayer.Participant.Context;
 
-        bool isInTourny = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
+        bool isInTourney = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
 
-        if (wasInTourny != isInTourny)
+        if (wasInTourney != isInTourney)
           SendEverything();
       }
     }
@@ -4362,7 +4337,7 @@ namespace Server.Mobiles
 
     public bool YoungDeathTeleport()
     {
-      if (Region.IsPartOf(typeof(Jail))
+      if (Region.IsPartOf<Jail>()
           || Region.IsPartOf("Samurai start location")
           || Region.IsPartOf("Ninja start location")
           || Region.IsPartOf("Ninja cave"))
@@ -4371,7 +4346,7 @@ namespace Server.Mobiles
       Point3D loc;
       Map map;
 
-      DungeonRegion dungeon = (DungeonRegion)Region.GetRegion(typeof(DungeonRegion));
+      DungeonRegion dungeon = Region.GetRegion<DungeonRegion>();
       if (dungeon != null && dungeon.EntranceLocation != Point3D.Zero)
       {
         loc = dungeon.EntranceLocation;
@@ -4451,14 +4426,8 @@ namespace Server.Mobiles
       set => SetFlag(PlayerFlag.DisplayChampionTitle, value);
     }
 
-    private ChampionTitleInfo m_ChampionTitles;
-
     [CommandProperty(AccessLevel.GameMaster)]
-    public ChampionTitleInfo ChampionTitles
-    {
-      get => m_ChampionTitles;
-      set { }
-    }
+    public ChampionTitleInfo ChampionTitles{ get; private set; }
 
     private void ToggleChampionTitleDisplay()
     {
@@ -4687,7 +4656,7 @@ namespace Server.Mobiles
 
       public static void CheckAtrophy(PlayerMobile pm)
       {
-        ChampionTitleInfo t = pm.m_ChampionTitles;
+        ChampionTitleInfo t = pm.ChampionTitles;
         if (t == null)
           return;
 
@@ -4702,7 +4671,7 @@ namespace Server.Mobiles
       public static void
         AwardHarrowerTitle(PlayerMobile pm) //Called when killing a harrower.  Will give a minimum of 1 point.
       {
-        ChampionTitleInfo t = pm.m_ChampionTitles;
+        ChampionTitleInfo t = pm.ChampionTitles;
         if (t == null)
           return;
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 using Server.SkillHandlers;
 
@@ -7,7 +8,7 @@ namespace Server.Spells.Ninjitsu
 {
   public class DeathStrike : NinjaMove
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, DeathStrikeInfo> m_Table = new Dictionary<Mobile, DeathStrikeInfo>();
 
     public override int BaseMana => 30;
     public override double RequiredSkill => 85.0;
@@ -27,7 +28,7 @@ namespace Server.Spells.Ninjitsu
 
       ClearCurrentMove(attacker);
 
-      double ninjitsu = attacker.Skills[SkillName.Ninjitsu].Value;
+      double ninjitsu = attacker.Skills.Ninjitsu.Value;
 
       double chance;
       bool
@@ -48,18 +49,16 @@ namespace Server.Spells.Ninjitsu
       }
 
 
-      DeathStrikeInfo info;
+      DeathStrikeInfo info = m_Table[defender];
 
       int damageBonus = 0;
 
-      if (m_Table.Contains(defender))
+      if (info != null)
       {
         defender.SendLocalizedMessage(1063092); // Your opponent lands another Death Strike!
 
-        info = (DeathStrikeInfo)m_Table[defender];
-
         if (info.m_Steps > 0)
-          damageBonus = attacker.Skills[SkillName.Ninjitsu].Fixed / 150;
+          damageBonus = attacker.Skills.Ninjitsu.Fixed / 150;
 
         info.m_Timer?.Stop();
 
@@ -75,8 +74,10 @@ namespace Server.Spells.Ninjitsu
       defender.FixedParticles(0x374A, 1, 17, 0x26BC, EffectLayer.Waist);
       attacker.PlaySound(attacker.Female ? 0x50D : 0x50E);
 
-      info = new DeathStrikeInfo(defender, attacker, damageBonus, isRanged);
-      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerStateCallback(ProcessDeathStrike), defender);
+      info = new DeathStrikeInfo(defender, attacker, damageBonus, isRanged)
+      {
+        m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(5.0), ProcessDeathStrike, defender)
+      };
 
       m_Table[defender] = info;
 
@@ -85,29 +86,29 @@ namespace Server.Spells.Ninjitsu
 
     public static void AddStep(Mobile m)
     {
-      if (!(m_Table[m] is DeathStrikeInfo info))
+      DeathStrikeInfo info = m_Table[m];
+      if (info == null)
         return;
 
       if (++info.m_Steps >= 5)
         ProcessDeathStrike(m);
     }
 
-    private static void ProcessDeathStrike(object state)
+    private static void ProcessDeathStrike(Mobile defender)
     {
-      Mobile defender = (Mobile)state;
-
-      if (!(m_Table[defender] is DeathStrikeInfo info)) //sanity
+      DeathStrikeInfo info = m_Table[defender];
+      if (info == null)
         return;
 
       int damage;
 
-      double ninjitsu = info.m_Attacker.Skills[SkillName.Ninjitsu].Value;
+      double ninjitsu = info.m_Attacker.Skills.Ninjitsu.Value;
       double stalkingBonus = Tracking.GetStalkingBonus(info.m_Attacker, info.m_Target);
 
       if (Core.ML)
       {
-        double scalar = (info.m_Attacker.Skills[SkillName.Hiding].Value +
-                         info.m_Attacker.Skills[SkillName.Stealth].Value) / 220;
+        double scalar = (info.m_Attacker.Skills.Hiding.Value +
+                         info.m_Attacker.Skills.Stealth.Value) / 220;
 
         if (scalar > 1)
           scalar = 1;

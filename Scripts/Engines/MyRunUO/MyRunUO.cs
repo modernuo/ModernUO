@@ -25,11 +25,11 @@ namespace Server.Engines.MyRunUO
 
     private static DatabaseCommandQueue m_Command;
 
-    private static ArrayList m_MobilesToUpdate = new ArrayList();
+    private static List<Mobile> m_MobilesToUpdate = new List<Mobile>();
     private List<IAccount> m_Collecting;
     private int m_Index;
 
-    private ArrayList m_Items = new ArrayList();
+    private List<Item> m_Items = new List<Item>();
     private string m_LayersPath;
     private ArrayList m_List;
     private string m_MobilesPath;
@@ -182,7 +182,7 @@ namespace Server.Engines.MyRunUO
 
     protected override void OnTick()
     {
-      bool shouldExit = false;
+      bool shouldExit;
 
       try
       {
@@ -271,8 +271,8 @@ namespace Server.Engines.MyRunUO
       }
       else
       {
-        m_List = m_MobilesToUpdate;
-        m_MobilesToUpdate = new ArrayList();
+        m_List = new ArrayList(m_MobilesToUpdate);
+        m_MobilesToUpdate = new List<Mobile>();
         m_Stage = Stage.DumpingMobiles;
         m_Index = 0;
       }
@@ -282,7 +282,7 @@ namespace Server.Engines.MyRunUO
     {
       if (m_Command == null)
       {
-        m_Command = new DatabaseCommandQueue("MyRunUO: Characeter database updated in {0:F1} seconds",
+        m_Command = new DatabaseCommandQueue("MyRunUO: Character database updated in {0:F1} seconds",
           "MyRunUO Character Database Thread");
 
         if (Config.LoadDataInFile)
@@ -306,7 +306,7 @@ namespace Server.Engines.MyRunUO
       m_Command.Enqueue(text);
     }
 
-    public void ExecuteNonQuery(string format, params string[] args)
+    public void ExecuteNonQuery(string format, params object[] args)
     {
       ExecuteNonQuery(string.Format(format, args));
     }
@@ -320,10 +320,7 @@ namespace Server.Engines.MyRunUO
     {
       if (sb == null)
       {
-        if (charIndex > 0)
-          sb = new StringBuilder(input, 0, charIndex, input.Length + 20);
-        else
-          sb = new StringBuilder(input.Length + 20);
+        sb = charIndex > 0 ? new StringBuilder(input, 0, charIndex, input.Length + 20) : new StringBuilder(input.Length + 20);
       }
 
       sb.Append("&#");
@@ -335,10 +332,7 @@ namespace Server.Engines.MyRunUO
     {
       if (sb == null)
       {
-        if (charIndex > 0)
-          sb = new StringBuilder(input, 0, charIndex, input.Length + 20);
-        else
-          sb = new StringBuilder(input.Length + 20);
+        sb = charIndex > 0 ? new StringBuilder(input, 0, charIndex, input.Length + 20) : new StringBuilder(input.Length + 20);
       }
 
       sb.Append(ent);
@@ -387,10 +381,7 @@ namespace Server.Engines.MyRunUO
           }
       }
 
-      if (sb != null)
-        return sb.ToString();
-
-      return input;
+      return sb != null ? sb.ToString() : input;
     }
 
     public void InsertMobile(Mobile mob)
@@ -504,7 +495,7 @@ namespace Server.Engines.MyRunUO
 
     public void InsertItems(Mobile mob)
     {
-      ArrayList items = m_Items;
+      List<Item> items = m_Items;
       items.AddRange(mob.Items);
       string serial = mob.Serial.Value.ToString();
 
@@ -518,7 +509,7 @@ namespace Server.Engines.MyRunUO
 
       for (int i = 0; i < items.Count; ++i)
       {
-        Item item = (Item)items[i];
+        Item item = items[i];
 
         if (!LayerComparer.IsValid(item))
           break;
@@ -541,7 +532,7 @@ namespace Server.Engines.MyRunUO
         InsertItem(serial, index++, mob.FacialHairItemID, mob.FacialHairHue);
 
       if (mob.HairItemID != 0 && !hideHair)
-        InsertItem(serial, index++, mob.HairItemID, mob.HairHue);
+        InsertItem(serial, index, mob.HairItemID, mob.HairHue);
 
       items.Clear();
     }
@@ -573,6 +564,7 @@ namespace Server.Engines.MyRunUO
           }
           catch
           {
+            // ignored
           }
       }
 

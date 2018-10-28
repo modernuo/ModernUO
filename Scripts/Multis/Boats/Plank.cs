@@ -191,7 +191,7 @@ namespace Server.Items
             z = from.Z + j;
 
             if (map.CanFit(x, y, z, 16, false, false) && !SpellHelper.CheckMulti(new Point3D(x, y, z), map) &&
-                !Region.Find(new Point3D(x, y, z), map).IsPartOf(typeof(StrongholdRegion)))
+                !Region.Find(new Point3D(x, y, z), map).IsPartOf<StrongholdRegion>())
             {
               if (i == 1 && j >= -2 && j <= 2)
                 return true;
@@ -204,7 +204,7 @@ namespace Server.Items
           z = map.GetAverageZ(x, y);
 
           if (map.CanFit(x, y, z, 16, false, false) && !SpellHelper.CheckMulti(new Point3D(x, y, z), map) &&
-              !Region.Find(new Point3D(x, y, z), map).IsPartOf(typeof(StrongholdRegion)))
+              !Region.Find(new Point3D(x, y, z), map).IsPartOf<StrongholdRegion>())
           {
             if (i == 1)
               return true;

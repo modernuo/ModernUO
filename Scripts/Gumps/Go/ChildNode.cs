@@ -2,7 +2,7 @@ using System.Xml;
 
 namespace Server.Gumps
 {
-  public class ChildNode
+  public class ChildNode : IGoNode
   {
     public ChildNode(XmlTextReader xml, ParentNode parent)
     {
@@ -19,10 +19,7 @@ namespace Server.Gumps
 
     private void Parse(XmlTextReader xml)
     {
-      if (xml.MoveToAttribute("name"))
-        Name = xml.Value;
-      else
-        Name = "empty";
+      Name = xml.MoveToAttribute("name") ? xml.Value : "empty";
 
       int x = 0, y = 0, z = 0;
 

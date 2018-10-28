@@ -129,9 +129,7 @@ namespace Server.Engines.MLQuests
 
         while (checkQuest != null)
         {
-          DateTime nextAvailable;
-
-          if (context.HasDoneQuest(checkQuest, out nextAvailable))
+          if (context.HasDoneQuest(checkQuest, out DateTime nextAvailable))
           {
             if (checkQuest.OneTimeOnly)
             {

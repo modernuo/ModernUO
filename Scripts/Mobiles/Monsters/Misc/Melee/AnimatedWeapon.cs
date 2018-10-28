@@ -47,8 +47,8 @@ namespace Server.Mobiles
 
       SetSkill(SkillName.MagicResist, level);
       SetSkill(SkillName.Wrestling, level);
-      SetSkill(SkillName.Anatomy, caster.Skills[SkillName.Anatomy].Value / 2);
-      SetSkill(SkillName.Tactics, caster.Skills[SkillName.Tactics].Value / 2);
+      SetSkill(SkillName.Anatomy, caster.Skills.Anatomy.Value / 2);
+      SetSkill(SkillName.Tactics, caster.Skills.Tactics.Value / 2);
 
       Fame = 0;
       Karma = 0;

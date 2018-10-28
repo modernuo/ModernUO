@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
@@ -140,7 +141,6 @@ namespace Server.Mobiles
     public override void OnAfterDelete()
     {
       m_Timer?.Stop();
-
       m_Timer = null;
 
       base.OnAfterDelete();
@@ -148,7 +148,6 @@ namespace Server.Mobiles
 
     private class DrainTimer : Timer
     {
-      private static ArrayList m_ToDrain = new ArrayList();
       private HarrowerTentacles m_Owner;
 
       public DrainTimer(HarrowerTentacles owner) : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
@@ -165,24 +164,16 @@ namespace Server.Mobiles
           return;
         }
 
-        foreach (Mobile m in m_Owner.GetMobilesInRange(9))
+        IPooledEnumerable<Mobile> eable = m_Owner.GetMobilesInRange<Mobile>(9);
+
+        foreach (Mobile m in eable)
         {
-          if (m == m_Owner || m == m_Owner.Harrower || !m_Owner.CanBeHarmful(m))
+          if (m == m_Owner || !(m_Owner.CanBeHarmful(m) || m.Player && m.Alive))
             continue;
 
-          if (m is BaseCreature bc)
-          {
-            if (bc.Controlled || bc.Summoned)
-              m_ToDrain.Add(m);
-          }
-          else if (m.Player)
-          {
-            m_ToDrain.Add(m);
-          }
-        }
+          if (!(m is BaseCreature bc) || !(bc.Controlled || bc.Summoned || bc.Team != m_Owner.Team))
+            continue;
 
-        foreach (Mobile m in m_ToDrain)
-        {
           m_Owner.DoHarmful(m);
 
           m.FixedParticles(0x374A, 10, 15, 5013, 0x455, 0, EffectLayer.Waist);
@@ -198,7 +189,7 @@ namespace Server.Mobiles
           m.Damage(drain, m_Owner);
         }
 
-        m_ToDrain.Clear();
+        eable.Free();
       }
     }
   }

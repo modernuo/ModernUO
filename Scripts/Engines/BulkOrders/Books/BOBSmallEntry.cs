@@ -2,7 +2,7 @@ using System;
 
 namespace Server.Engines.BulkOrders
 {
-  public class BOBSmallEntry
+  public class BOBSmallEntry : IBOBEntry
   {
     public BOBSmallEntry(SmallBOD bod)
     {

@@ -65,17 +65,7 @@ namespace Server
 
     public static Poison Parse(string value)
     {
-      Poison p = null;
-
-      int plevel;
-
-      if (int.TryParse(value, out plevel))
-        p = GetPoison(plevel);
-
-      if (p == null)
-        p = GetPoison(value);
-
-      return p;
+      return (int.TryParse(value, out int plevel) ? GetPoison(plevel) : null) ?? GetPoison(value);
     }
 
     public static Poison GetPoison(int level)

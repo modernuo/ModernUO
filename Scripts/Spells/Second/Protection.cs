@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Spells.Second
 {
@@ -14,13 +15,13 @@ namespace Server.Spells.Second
       Reagent.SulfurousAsh
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> m_Table = new Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>>();
 
     public ProtectionSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
     }
 
-    public static Hashtable Registry{ get; } = new Hashtable();
+    public static Dictionary<Mobile, double> Registry{ get; } = new Dictionary<Mobile, double>();
 
     public override SpellCircle Circle => SpellCircle.Second;
 
@@ -35,7 +36,7 @@ namespace Server.Spells.Second
         return false;
       }
 
-      if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+      if (!Caster.CanBeginAction<DefensiveSpell>())
       {
         Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
         return false;
@@ -55,29 +56,28 @@ namespace Server.Spells.Second
        * even after dying�until you �turn them off� by casting them again.
        */
 
-      object[] mods = (object[])m_Table[target];
+      Tuple<ResistanceMod, DefaultSkillMod> mods = m_Table[target];
 
       if (mods == null)
       {
         target.PlaySound(0x1E9);
         target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
 
-        mods = new object[2]
-        {
+        mods = new Tuple<ResistanceMod, DefaultSkillMod>(
           new ResistanceMod(ResistanceType.Physical,
-            -15 + Math.Min((int)(caster.Skills[SkillName.Inscribe].Value / 20), 15)),
+            -15 + Math.Min((int)(caster.Skills.Inscribe.Value / 20), 15)),
           new DefaultSkillMod(SkillName.MagicResist, true,
-            -35 + Math.Min((int)(caster.Skills[SkillName.Inscribe].Value / 20), 35))
-        };
+            -35 + Math.Min((int)(caster.Skills.Inscribe.Value / 20), 35))
+        );
 
         m_Table[target] = mods;
         Registry[target] = 100.0;
 
-        target.AddResistanceMod((ResistanceMod)mods[0]);
-        target.AddSkillMod((SkillMod)mods[1]);
+        target.AddResistanceMod(mods.Item1);
+        target.AddSkillMod(mods.Item2);
 
-        int physloss = -15 + (int)(caster.Skills[SkillName.Inscribe].Value / 20);
-        int resistloss = -35 + (int)(caster.Skills[SkillName.Inscribe].Value / 20);
+        int physloss = -15 + (int)(caster.Skills.Inscribe.Value / 20);
+        int resistloss = -35 + (int)(caster.Skills.Inscribe.Value / 20);
         string args = $"{physloss}\t{resistloss}";
         BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Protection, 1075814, 1075815, args));
       }
@@ -89,8 +89,8 @@ namespace Server.Spells.Second
         m_Table.Remove(target);
         Registry.Remove(target);
 
-        target.RemoveResistanceMod((ResistanceMod)mods[0]);
-        target.RemoveSkillMod((SkillMod)mods[1]);
+        target.RemoveResistanceMod(mods.Item1);
+        target.RemoveSkillMod(mods.Item2);
 
         BuffInfo.RemoveBuff(target, BuffIcon.Protection);
       }
@@ -98,18 +98,18 @@ namespace Server.Spells.Second
 
     public static void EndProtection(Mobile m)
     {
-      if (m_Table.Contains(m))
-      {
-        object[] mods = (object[])m_Table[m];
+      Tuple<ResistanceMod, DefaultSkillMod> mods = m_Table[m];
 
-        m_Table.Remove(m);
-        Registry.Remove(m);
+      if (mods == null)
+        return;
 
-        m.RemoveResistanceMod((ResistanceMod)mods[0]);
-        m.RemoveSkillMod((SkillMod)mods[1]);
+      m_Table.Remove(m);
+      Registry.Remove(m);
 
-        BuffInfo.RemoveBuff(m, BuffIcon.Protection);
-      }
+      m.RemoveResistanceMod(mods.Item1);
+      m.RemoveSkillMod(mods.Item2);
+
+      BuffInfo.RemoveBuff(m, BuffIcon.Protection);
     }
 
     public override void OnCast()
@@ -127,17 +127,17 @@ namespace Server.Spells.Second
         {
           Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
         }
-        else if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+        else if (!Caster.CanBeginAction<DefensiveSpell>())
         {
           Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
         }
         else if (CheckSequence())
         {
-          if (Caster.BeginAction(typeof(DefensiveSpell)))
+          if (Caster.BeginAction<DefensiveSpell>())
           {
-            double value = (int)(Caster.Skills[SkillName.EvalInt].Value +
-                                 Caster.Skills[SkillName.Meditation].Value +
-                                 Caster.Skills[SkillName.Inscribe].Value);
+            double value = (int)(Caster.Skills.EvalInt.Value +
+                                 Caster.Skills.Meditation.Value +
+                                 Caster.Skills.Inscribe.Value);
             value /= 4;
 
             if (value < 0)
@@ -167,7 +167,7 @@ namespace Server.Spells.Second
 
       public InternalTimer(Mobile caster) : base(TimeSpan.FromSeconds(0))
       {
-        double val = caster.Skills[SkillName.Magery].Value * 2.0;
+        double val = caster.Skills.Magery.Value * 2.0;
         if (val < 15)
           val = 15;
         else if (val > 240)

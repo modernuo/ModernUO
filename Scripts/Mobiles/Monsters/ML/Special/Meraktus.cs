@@ -128,34 +128,35 @@ namespace Server.Mobiles
     {
       base.OnDeath(c);
 
-      if (Core.ML)
+      if (!Core.ML)
+        return;
+
+      c.DropItem(new MalletAndChisel());
+
+      switch (Utility.Random(3))
       {
-        c.DropItem(new MalletAndChisel());
-
-        switch (Utility.Random(3))
-        {
-          case 0:
-            c.DropItem(new MinotaurHedge());
-            break;
-          case 1:
-            c.DropItem(new BonePile());
-            break;
-          case 2:
-            c.DropItem(new LightYarn());
-            break;
-        }
-
-        if (Utility.RandomBool())
-          c.DropItem(new TormentedChains());
-
-        if (Utility.RandomDouble() < 0.025)
-          c.DropItem(new CrimsonCincture());
+        case 0:
+          c.DropItem(new MinotaurHedge());
+          break;
+        case 1:
+          c.DropItem(new BonePile());
+          break;
+        case 2:
+          c.DropItem(new LightYarn());
+          break;
       }
+
+      if (Utility.RandomBool())
+        c.DropItem(new TormentedChains());
+
+      if (Utility.RandomDouble() < 0.025)
+        c.DropItem(new CrimsonCincture());
     }
 
     public override void GenerateLoot()
     {
-      if (Core.ML) AddLoot(LootPack.AosSuperBoss, 5); // Need to verify
+      if (Core.ML)
+        AddLoot(LootPack.AosSuperBoss, 5); // Need to verify
     }
 
     public override int GetAngerSound()
@@ -186,43 +187,36 @@ namespace Server.Mobiles
     public override void OnGaveMeleeAttack(Mobile defender)
     {
       base.OnGaveMeleeAttack(defender);
+
       if (0.2 >= Utility.RandomDouble())
         Earthquake();
     }
 
     public void Earthquake()
     {
-      Map map = Map;
-      if (map == null)
-        return;
-      ArrayList targets = new ArrayList();
-      foreach (Mobile m in GetMobilesInRange(8))
-      {
-        if (m == this || !CanBeHarmful(m))
-          continue;
-        if (m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team))
-          targets.Add(m);
-        else if (m.Player)
-          targets.Add(m);
-      }
+      IPooledEnumerable<Mobile> eable = GetMobilesInRange(8);
 
-      PlaySound(0x2F3);
-      for (int i = 0; i < targets.Count; ++i)
+      foreach (Mobile m in eable)
       {
-        Mobile m = (Mobile)targets[i];
-        if (m != null && !m.Deleted && m is PlayerMobile pm)
-          if (pm.Mounted)
+        if (m == this || !CanBeHarmful(m) || m.Deleted || !m.Player &&
+            !(m is BaseCreature creature && (creature.Controlled || creature.Summoned || creature.Team != Team)))
+          continue;
+
+        if (m is PlayerMobile pm && pm.Mounted)
             pm.Mount.Rider = null;
-        double damage = m.Hits * 0.6; //was .6
-        if (damage < 10.0)
-          damage = 10.0;
-        else if (damage > 75.0)
-          damage = 75.0;
+
+        int damage = (int)(m.Hits * 0.6);
+        if (damage < 10)
+          damage = 10;
+        else if (damage > 75)
+          damage = 75;
         DoHarmful(m);
-        AOS.Damage(m, this, (int)damage, 100, 0, 0, 0, 0);
+        AOS.Damage(m, this, damage, 100, 0, 0, 0, 0);
         if (m.Alive && m.Body.IsHuman && !m.Mounted)
           m.Animate(20, 7, 1, true, false, 0); // take hit
       }
+
+      eable.Free();
     }
 
     public override void Serialize(GenericWriter writer)

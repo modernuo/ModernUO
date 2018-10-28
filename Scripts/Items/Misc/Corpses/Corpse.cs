@@ -861,10 +861,7 @@ namespace Server.Items
 
     public bool GetRestoreInfo(Item item, ref Point3D loc)
     {
-      if (m_RestoreTable == null || item == null)
-        return false;
-
-      return m_RestoreTable.TryGetValue(item, out loc);
+      return item != null && m_RestoreTable?.TryGetValue(item, out loc) == true;
     }
 
     public void SetRestoreInfo(Item item, Point3D loc)
@@ -1026,8 +1023,8 @@ namespace Server.Items
 
           if (qs is UzeraanTurmoilQuest)
           {
-            if (qs.FindObjective(typeof(GetDaemonBoneObjective)) is GetDaemonBoneObjective obj &&
-                obj.CorpseWithBone == this && (!obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone(player)))
+            GetDaemonBoneObjective obj = qs.FindObjective<GetDaemonBoneObjective>();
+            if (obj?.CorpseWithBone == this && (!obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone(player)))
             {
               Item bone = new QuestDaemonBone();
 
@@ -1052,8 +1049,8 @@ namespace Server.Items
           }
           else if (qs is TheSummoningQuest)
           {
-            if (qs.FindObjective(typeof(VanquishDaemonObjective)) is VanquishDaemonObjective obj &&
-                obj.Completed && obj.CorpseWithSkull == this)
+            VanquishDaemonObjective obj = qs.FindObjective<VanquishDaemonObjective>();
+            if (obj?.Completed == true && obj.CorpseWithSkull == this)
             {
               GoldenSkull sk = new GoldenSkull();
 

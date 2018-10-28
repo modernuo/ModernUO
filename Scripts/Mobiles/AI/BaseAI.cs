@@ -140,7 +140,7 @@ namespace Server.Mobiles
 
     public long NextMove{ get; set; }
 
-    public virtual bool CanDetectHidden => m_Mobile.Skills[SkillName.DetectHidden].Value > 0;
+    public virtual bool CanDetectHidden => m_Mobile.Skills.DetectHidden.Value > 0;
 
     public virtual bool WasNamed(string speech)
     {
@@ -1171,9 +1171,9 @@ namespace Server.Mobiles
 
             if (qs is DarkTidesQuest)
             {
-              QuestObjective obj = qs.FindObjective(typeof(FetchAbraxusScrollObjective));
+              QuestObjective obj = qs.FindObjective<FetchAbraxusScrollObjective>();
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
               {
                 m_Mobile.AddToBackpack(new ScrollOfAbraxus());
                 obj.Complete();
@@ -2380,7 +2380,7 @@ namespace Server.Mobiles
 
       m_Mobile.DebugSay("Checking for hidden players");
 
-      double srcSkill = m_Mobile.Skills[SkillName.DetectHidden].Value;
+      double srcSkill = m_Mobile.Skills.DetectHidden.Value;
 
       if (srcSkill <= 0)
         return;
@@ -2392,8 +2392,8 @@ namespace Server.Mobiles
         {
           m_Mobile.DebugSay("Trying to detect {0}", trg.Name);
 
-          double trgHiding = trg.Skills[SkillName.Hiding].Value / 2.9;
-          double trgStealth = trg.Skills[SkillName.Stealth].Value / 1.8;
+          double trgHiding = trg.Skills.Hiding.Value / 2.9;
+          double trgStealth = trg.Skills.Stealth.Value / 1.8;
 
           double chance = srcSkill / 1.2 - Math.Min(trgHiding, trgStealth);
 

@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Commands.Generic
 {
@@ -22,24 +22,18 @@ namespace Server.Commands.Generic
 
     public override void Process(Mobile from, BaseCommand command, string[] args)
     {
-      BoundingBoxPicker.Begin(from, OnTarget, new object[] { command, args });
+      BoundingBoxPicker.Begin(from, (map, start, end) => OnTarget(from, map, start, end, command, args));
     }
 
-    public void OnTarget(Mobile from, Map map, Point3D start, Point3D end, object state)
+    public void OnTarget(Mobile from, Map map, Point3D start, Point3D end, BaseCommand command, string[] args)
     {
       try
       {
-        object[] states = (object[])state;
-        BaseCommand command = (BaseCommand)states[0];
-        string[] args = (string[])states[1];
-
         Rectangle2D rect = new Rectangle2D(start.X, start.Y, end.X - start.X + 1, end.Y - start.Y + 1);
 
         Extensions ext = Extensions.Parse(from, ref args);
 
-        bool items, mobiles;
-
-        if (!CheckObjectTypes(from, command, ext, out items, out mobiles))
+        if (!CheckObjectTypes(from, command, ext, out bool items, out bool mobiles))
           return;
 
         IPooledEnumerable<IEntity> eable;
@@ -49,7 +43,9 @@ namespace Server.Commands.Generic
         else
           return;
 
-        ArrayList objs = new ArrayList();
+        eable.Free();
+
+        List<object> objs = new List<object>();
 
         foreach (IEntity obj in eable)
         {

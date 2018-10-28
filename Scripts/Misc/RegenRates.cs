@@ -74,7 +74,7 @@ namespace Server.Misc
         points += 20;
 
       if (CheckAnimal(from, typeof(Dog)) || CheckAnimal(from, typeof(Cat)))
-        points += from.Skills[SkillName.Ninjitsu].Fixed / 30;
+        points += from.Skills.Ninjitsu.Fixed / 30;
 
       return TimeSpan.FromSeconds(1.0 / (0.1 * (1 + points)));
     }
@@ -86,7 +86,7 @@ namespace Server.Misc
 
       CheckBonusSkill(from, from.Stam, from.StamMax, SkillName.Focus);
 
-      int points = (int)(from.Skills[SkillName.Focus].Value * 0.1);
+      int points = (int)(from.Skills.Focus.Value * 0.1);
 
       if (from is BaseCreature creature && creature.IsParagon || from is Leviathan)
         points += 40;
@@ -123,13 +123,13 @@ namespace Server.Misc
 
       if (Core.AOS)
       {
-        double medPoints = from.Int + from.Skills[SkillName.Meditation].Value * 3;
+        double medPoints = from.Int + from.Skills.Meditation.Value * 3;
 
-        medPoints *= from.Skills[SkillName.Meditation].Value < 100.0 ? 0.025 : 0.0275;
+        medPoints *= from.Skills.Meditation.Value < 100.0 ? 0.025 : 0.0275;
 
         CheckBonusSkill(from, from.Mana, from.ManaMax, SkillName.Focus);
 
-        double focusPoints = from.Skills[SkillName.Focus].Value * 0.05;
+        double focusPoints = from.Skills.Focus.Value * 0.05;
 
         if (armorPenalty > 0)
           medPoints = 0; // In AOS, wearing any meditation-blocking armor completely removes meditation bonus
@@ -161,7 +161,7 @@ namespace Server.Misc
       }
       else
       {
-        double medPoints = (from.Int + from.Skills[SkillName.Meditation].Value) * 0.5;
+        double medPoints = (from.Int + from.Skills.Meditation.Value) * 0.5;
 
         if (medPoints <= 0)
           rate = 7.0;

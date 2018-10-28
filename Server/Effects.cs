@@ -284,13 +284,7 @@ namespace Server
     }
 
     public static void SendMovingEffect(IEntity from, IEntity to, int itemID, int speed, int duration,
-      bool fixedDirection, bool explodes)
-    {
-      SendMovingEffect(from, to, itemID, speed, duration, fixedDirection, explodes, 0, 0);
-    }
-
-    public static void SendMovingEffect(IEntity from, IEntity to, int itemID, int speed, int duration,
-      bool fixedDirection, bool explodes, int hue, int renderMode)
+      bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0)
     {
       if (from is Mobile mobile)
         mobile.ProcessDelta();
@@ -328,11 +322,11 @@ namespace Server
       bool fixedDirection, bool explodes, int hue, int renderMode, int effect, int explodeEffect, int explodeSound,
       EffectLayer layer, int unknown)
     {
-      if (from is Mobile mobile)
-        mobile.ProcessDelta();
+      if (from is Mobile fromMob)
+        fromMob.ProcessDelta();
 
-      if (to is Mobile mobile1)
-        mobile1.ProcessDelta();
+      if (to is Mobile toMob)
+        toMob.ProcessDelta();
 
       Map map = from.Map;
 
@@ -376,42 +370,42 @@ namespace Server
 
     public static void SendPacket(Point3D origin, Map map, Packet p)
     {
-      if (map != null)
+      if (map == null)
+        return;
+      
+      IPooledEnumerable<NetState> eable = map.GetClientsInRange(origin);
+
+      p.Acquire();
+
+      foreach (NetState state in eable)
       {
-        IPooledEnumerable<NetState> eable = map.GetClientsInRange(origin);
-
-        p.Acquire();
-
-        foreach (NetState state in eable)
-        {
-          state.Mobile.ProcessDelta();
-          state.Send(p);
-        }
-
-        p.Release();
-
-        eable.Free();
+        state.Mobile.ProcessDelta();
+        state.Send(p);
       }
+
+      p.Release();
+
+      eable.Free();
     }
 
     public static void SendPacket(IPoint3D origin, Map map, Packet p)
     {
-      if (map != null)
+      if (map == null)
+        return;
+      
+      IPooledEnumerable<NetState> eable = map.GetClientsInRange(new Point3D(origin));
+
+      p.Acquire();
+
+      foreach (NetState state in eable)
       {
-        IPooledEnumerable<NetState> eable = map.GetClientsInRange(new Point3D(origin));
-
-        p.Acquire();
-
-        foreach (NetState state in eable)
-        {
-          state.Mobile.ProcessDelta();
-          state.Send(p);
-        }
-
-        p.Release();
-
-        eable.Free();
+        state.Mobile.ProcessDelta();
+        state.Send(p);
       }
+
+      p.Release();
+
+      eable.Free();
     }
   }
 }

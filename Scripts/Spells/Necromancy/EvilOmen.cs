@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -15,7 +16,7 @@ namespace Server.Spells.Necromancy
       Reagent.NoxCrystal
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, DefaultSkillMod> m_Table = new Dictionary<Mobile, DefaultSkillMod>();
 
     public EvilOmenSpell(Mobile caster, Item scroll)
       : base(caster, scroll, m_Info)
@@ -56,19 +57,19 @@ namespace Server.Spells.Necromancy
         m.FixedParticles(0x3728, 1, 13, 9912, 1150, 7, EffectLayer.Head);
         m.FixedParticles(0x3779, 1, 15, 9502, 67, 7, EffectLayer.Head);
 
-        if (!m_Table.Contains(m))
+        if (!m_Table.ContainsKey(m))
         {
-          SkillMod mod = new DefaultSkillMod(SkillName.MagicResist, false, 50.0);
+          DefaultSkillMod mod = new DefaultSkillMod(SkillName.MagicResist, false, 50.0);
 
-          if (m.Skills[SkillName.MagicResist].Base > 50.0)
+          if (m.Skills.MagicResist.Base > 50.0)
             m.AddSkillMod(mod);
 
           m_Table[m] = mod;
         }
 
-        TimeSpan duration = TimeSpan.FromSeconds(Caster.Skills[SkillName.SpiritSpeak].Value / 12 + 1.0);
+        TimeSpan duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 12 + 1.0);
 
-        Timer.DelayCall(duration, new TimerStateCallback(EffectExpire_Callback), m);
+        Timer.DelayCall(duration, () => TryEndEffect(m));
 
         HarmfulSpell(m);
 
@@ -78,14 +79,9 @@ namespace Server.Spells.Necromancy
       FinishSequence();
     }
 
-    private static void EffectExpire_Callback(object state)
-    {
-      TryEndEffect((Mobile)state);
-    }
-
     /*
      * The naming here was confusing. Its a 1-off effect spell.
-     * So, we dont actually "checkeffect"; we endeffect with bool
+     * So, we don't actually "checkeffect"; we endeffect with bool
      * return to determine external behaviors.
      *
      * -refactored.
@@ -93,7 +89,7 @@ namespace Server.Spells.Necromancy
 
     public static bool TryEndEffect(Mobile m)
     {
-      SkillMod mod = (SkillMod)m_Table[m];
+      DefaultSkillMod mod = m_Table[m];
 
       if (mod == null)
         return false;

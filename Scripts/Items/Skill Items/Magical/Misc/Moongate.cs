@@ -172,7 +172,7 @@ namespace Server.Items
       {
         if (from.AccessLevel == AccessLevel.Player || !from.Hidden)
           from.Send(new PlaySound(0x20E, from.Location));
-        from.CloseGump(typeof(MoongateConfirmGump));
+        from.CloseGump<MoongateConfirmGump>();
         from.SendGump(new MoongateConfirmGump(from, this));
       }
       else
@@ -205,7 +205,7 @@ namespace Server.Items
       if (map == null)
         return false;
 
-      GuardedRegion reg = (GuardedRegion)Region.Find(p, map).GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = Region.Find(p, map).GetRegion<GuardedRegion>();
 
       return reg != null && !reg.IsDisabled();
     }
@@ -267,7 +267,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public string MessageString{ get; set; }
 
-    public virtual void Warning_Callback(Mobile from, bool okay, object state)
+    public virtual void Warning_Callback(Mobile from, bool okay)
     {
       if (okay)
         EndConfirmation(from);
@@ -277,10 +277,10 @@ namespace Server.Items
     {
       if (GumpWidth > 0 && GumpHeight > 0 && TitleNumber > 0 && (MessageNumber > 0 || MessageString != null))
       {
-        from.CloseGump(typeof(WarningGump));
+        from.CloseGump<WarningGump>();
         from.SendGump(new WarningGump(TitleNumber, TitleColor,
           MessageString == null ? MessageNumber : (object)MessageString, MessageColor, GumpWidth, GumpHeight,
-          Warning_Callback, from));
+          okay => Warning_Callback(from, okay)));
       }
       else
       {

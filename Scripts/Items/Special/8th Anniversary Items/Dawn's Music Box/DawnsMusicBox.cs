@@ -144,7 +144,7 @@ namespace Server.Items
       }
       else
       {
-        from.CloseGump(typeof(DawnsMusicBoxGump));
+        from.CloseGump<DawnsMusicBoxGump>();
         from.SendGump(new DawnsMusicBoxGump(this));
       }
     }

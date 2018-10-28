@@ -144,18 +144,16 @@ namespace Server.Items
       }
       else
       {
-        from.BeginTarget(-1, false, TargetFlags.None, new TargetStateCallback(Link_OnSecondTarget), door);
+        from.BeginTarget(-1, false, TargetFlags.None, Link_OnSecondTarget, door);
         from.SendMessage("Target the second door to link.");
       }
     }
 
-    private static void Link_OnSecondTarget(Mobile from, object targeted, object state)
+    private static void Link_OnSecondTarget(Mobile from, object targeted, BaseDoor first)
     {
-      BaseDoor first = (BaseDoor)state;
-
       if (!(targeted is BaseDoor second))
       {
-        from.BeginTarget(-1, false, TargetFlags.None, new TargetStateCallback(Link_OnSecondTarget), first);
+        from.BeginTarget(-1, false, TargetFlags.None, Link_OnSecondTarget, first);
         from.SendMessage("That is not a door. Try again.");
       }
       else
@@ -170,22 +168,19 @@ namespace Server.Items
     [Description("Chain-links two or more targeted doors together.")]
     private static void ChainLink_OnCommand(CommandEventArgs e)
     {
-      e.Mobile.BeginTarget(-1, false, TargetFlags.None, new TargetStateCallback(ChainLink_OnTarget),
-        new List<BaseDoor>());
+      e.Mobile.BeginTarget(-1, false, TargetFlags.None, ChainLink_OnTarget, new List<BaseDoor>());
       e.Mobile.SendMessage("Target the first of a sequence of doors to link.");
     }
 
-    private static void ChainLink_OnTarget(Mobile from, object targeted, object state)
+    private static void ChainLink_OnTarget(Mobile from, object targeted, List<BaseDoor> list)
     {
       if (!(targeted is BaseDoor door))
       {
-        from.BeginTarget(-1, false, TargetFlags.None, new TargetStateCallback(ChainLink_OnTarget), state);
+        from.BeginTarget(-1, false, TargetFlags.None, ChainLink_OnTarget, list);
         from.SendMessage("That is not a door. Try again.");
       }
       else
       {
-        List<BaseDoor> list = (List<BaseDoor>)state;
-
         if (list.Count > 0 && list[0] == door)
         {
           if (list.Count >= 2)
@@ -197,13 +192,13 @@ namespace Server.Items
           }
           else
           {
-            from.BeginTarget(-1, false, TargetFlags.None, new TargetStateCallback(ChainLink_OnTarget), state);
+            from.BeginTarget(-1, false, TargetFlags.None, ChainLink_OnTarget, list);
             from.SendMessage("You have not yet targeted two unique doors. Target the second door to link.");
           }
         }
         else if (list.Contains(door))
         {
-          from.BeginTarget(-1, false, TargetFlags.None, new TargetStateCallback(ChainLink_OnTarget), state);
+          from.BeginTarget(-1, false, TargetFlags.None, ChainLink_OnTarget, list);
           from.SendMessage(
             "You have already targeted that door. Target another door, or retarget the first door to complete the chain.");
         }
@@ -211,7 +206,7 @@ namespace Server.Items
         {
           list.Add(door);
 
-          from.BeginTarget(-1, false, TargetFlags.None, new TargetStateCallback(ChainLink_OnTarget), state);
+          from.BeginTarget(-1, false, TargetFlags.None, ChainLink_OnTarget, list);
 
           if (list.Count == 1)
             from.SendMessage("Target the second door to link.");

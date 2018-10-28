@@ -199,7 +199,7 @@ namespace Server.Items
 
         if (item == null)
           continue;
-        
+
         List<Item> list = Items;
 
         for (int j = 0; j < list.Count; ++j)
@@ -1430,7 +1430,7 @@ namespace Server.Items
         new FillableEntry(1, typeof(Arrow))
       });
 
-    private static Hashtable m_AcquireTable;
+    private static Dictionary<Type, FillableContent> m_AcquireTable;
 
     private static FillableContent[] m_ContentTypes =
     {
@@ -1509,7 +1509,7 @@ namespace Server.Items
 
       if (m_AcquireTable == null)
       {
-        m_AcquireTable = new Hashtable();
+        m_AcquireTable = new Dictionary<Type, FillableContent>();
 
         for (int i = 0; i < m_ContentTypes.Length; ++i)
         {

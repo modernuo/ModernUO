@@ -19,7 +19,7 @@ namespace Server.Engines.Quests.Naturalist
     {
       InitStats(100, 100, 25);
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       Female = false;
       Body = 0x190;
@@ -41,119 +41,119 @@ namespace Server.Engines.Quests.Naturalist
     {
       if (player.Quest is StudyOfSolenQuest qs && qs.Naturalist == this)
       {
-        if (qs.FindObjective(typeof(StudyNestsObjective)) is StudyNestsObjective study)
+        StudyNestsObjective study = qs.FindObjective<StudyNestsObjective>();
+        if (study == null)
+          return;
+        
+        if (!study.Completed)
         {
-          if (!study.Completed)
+          PlaySound(0x41F);
+          qs.AddConversation(new NaturalistDuringStudyConversation());
+          return;
+        }
+
+        QuestObjective obj = qs.FindObjective<ReturnToNaturalistObjective>();
+
+        if (obj?.Completed == false)
+        {
+          Seed reward;
+
+          PlantType type;
+          switch (Utility.Random(17))
           {
-            PlaySound(0x41F);
-            qs.AddConversation(new NaturalistDuringStudyConversation());
+            case 0:
+              type = PlantType.CampionFlowers;
+              break;
+            case 1:
+              type = PlantType.Poppies;
+              break;
+            case 2:
+              type = PlantType.Snowdrops;
+              break;
+            case 3:
+              type = PlantType.Bulrushes;
+              break;
+            case 4:
+              type = PlantType.Lilies;
+              break;
+            case 5:
+              type = PlantType.PampasGrass;
+              break;
+            case 6:
+              type = PlantType.Rushes;
+              break;
+            case 7:
+              type = PlantType.ElephantEarPlant;
+              break;
+            case 8:
+              type = PlantType.Fern;
+              break;
+            case 9:
+              type = PlantType.PonytailPalm;
+              break;
+            case 10:
+              type = PlantType.SmallPalm;
+              break;
+            case 11:
+              type = PlantType.CenturyPlant;
+              break;
+            case 12:
+              type = PlantType.WaterPlant;
+              break;
+            case 13:
+              type = PlantType.SnakePlant;
+              break;
+            case 14:
+              type = PlantType.PricklyPearCactus;
+              break;
+            case 15:
+              type = PlantType.BarrelCactus;
+              break;
+            default:
+              type = PlantType.TribarrelCactus;
+              break;
+          }
+
+          if (study.StudiedSpecialNest)
+          {
+            reward = new Seed(type, PlantHue.FireRed, false);
           }
           else
           {
-            QuestObjective obj = qs.FindObjective(typeof(ReturnToNaturalistObjective));
-
-            if (obj != null && !obj.Completed)
+            PlantHue hue;
+            switch (Utility.Random(3))
             {
-              Seed reward;
-
-              PlantType type;
-              switch (Utility.Random(17))
-              {
-                case 0:
-                  type = PlantType.CampionFlowers;
-                  break;
-                case 1:
-                  type = PlantType.Poppies;
-                  break;
-                case 2:
-                  type = PlantType.Snowdrops;
-                  break;
-                case 3:
-                  type = PlantType.Bulrushes;
-                  break;
-                case 4:
-                  type = PlantType.Lilies;
-                  break;
-                case 5:
-                  type = PlantType.PampasGrass;
-                  break;
-                case 6:
-                  type = PlantType.Rushes;
-                  break;
-                case 7:
-                  type = PlantType.ElephantEarPlant;
-                  break;
-                case 8:
-                  type = PlantType.Fern;
-                  break;
-                case 9:
-                  type = PlantType.PonytailPalm;
-                  break;
-                case 10:
-                  type = PlantType.SmallPalm;
-                  break;
-                case 11:
-                  type = PlantType.CenturyPlant;
-                  break;
-                case 12:
-                  type = PlantType.WaterPlant;
-                  break;
-                case 13:
-                  type = PlantType.SnakePlant;
-                  break;
-                case 14:
-                  type = PlantType.PricklyPearCactus;
-                  break;
-                case 15:
-                  type = PlantType.BarrelCactus;
-                  break;
-                default:
-                  type = PlantType.TribarrelCactus;
-                  break;
-              }
-
-              if (study.StudiedSpecialNest)
-              {
-                reward = new Seed(type, PlantHue.FireRed, false);
-              }
-              else
-              {
-                PlantHue hue;
-                switch (Utility.Random(3))
-                {
-                  case 0:
-                    hue = PlantHue.Pink;
-                    break;
-                  case 1:
-                    hue = PlantHue.Magenta;
-                    break;
-                  default:
-                    hue = PlantHue.Aqua;
-                    break;
-                }
-
-                reward = new Seed(type, hue, false);
-              }
-
-              if (player.PlaceInBackpack(reward))
-              {
-                obj.Complete();
-
-                PlaySound(0x449);
-                PlaySound(0x41B);
-
-                if (study.StudiedSpecialNest)
-                  qs.AddConversation(new SpecialEndConversation());
-                else
-                  qs.AddConversation(new EndConversation());
-              }
-              else
-              {
-                reward.Delete();
-
-                qs.AddConversation(new FullBackpackConversation());
-              }
+              case 0:
+                hue = PlantHue.Pink;
+                break;
+              case 1:
+                hue = PlantHue.Magenta;
+                break;
+              default:
+                hue = PlantHue.Aqua;
+                break;
             }
+
+            reward = new Seed(type, hue, false);
+          }
+
+          if (player.PlaceInBackpack(reward))
+          {
+            obj.Complete();
+
+            PlaySound(0x449);
+            PlaySound(0x41B);
+
+            if (study.StudiedSpecialNest)
+              qs.AddConversation(new SpecialEndConversation());
+            else
+              qs.AddConversation(new EndConversation());
+          }
+          else
+          {
+            reward.Delete();
+
+            qs.AddConversation(new FullBackpackConversation());
           }
         }
       }

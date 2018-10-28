@@ -30,14 +30,8 @@ namespace Server.Spells.Fifth
       Caster.Target = new InternalTarget(this);
     }
 
-    private void AosDelay_Callback(object state)
+    private void AosDelay_Callback(Mobile caster, Mobile target, Mobile defender, int damage)
     {
-      object[] states = (object[])state;
-      Mobile caster = (Mobile)states[0];
-      Mobile target = (Mobile)states[1];
-      Mobile defender = (Mobile)states[2];
-      int damage = (int)states[3];
-
       if (caster.HarmfulCheck(defender))
       {
         SpellHelper.Damage(this, target, Utility.RandomMinMax(damage, damage + 4), 0, 0, 100, 0, 0);
@@ -63,14 +57,13 @@ namespace Server.Spells.Fifth
 
           SpellHelper.CheckReflect((int)Circle, ref from, ref target);
 
-          int damage = (int)((Caster.Skills[SkillName.Magery].Value + Caster.Int) / 5);
+          int damage = (int)((Caster.Skills.Magery.Value + Caster.Int) / 5);
 
           if (damage > 60)
             damage = 60;
 
           Timer.DelayCall(TimeSpan.FromSeconds(1.0),
-            new TimerStateCallback(AosDelay_Callback),
-            new object[] { Caster, target, m, damage });
+            () => AosDelay_Callback(Caster, target, m, damage));
         }
       }
       else if (CheckHSequence(m))

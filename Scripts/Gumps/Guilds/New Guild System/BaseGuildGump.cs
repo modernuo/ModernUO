@@ -16,7 +16,7 @@ namespace Server.Guilds
       guild = g;
       player = pm;
 
-      pm.CloseGump(typeof(BaseGuildGump));
+      pm.CloseGump<BaseGuildGump>();
     }
 
     protected Guild guild{ get; }

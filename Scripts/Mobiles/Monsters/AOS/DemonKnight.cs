@@ -235,15 +235,14 @@ namespace Server.Mobiles
         PlaySound(0x491);
 
         if (0.05 > Utility.RandomDouble())
-          Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(CreateBones_Callback), from);
+          Timer.DelayCall(TimeSpan.FromSeconds(1.0), CreateBones_Callback, from);
 
         m_InHere = false;
       }
     }
 
-    public virtual void CreateBones_Callback(object state)
+    public virtual void CreateBones_Callback(Mobile from)
     {
-      Mobile from = (Mobile)state;
       Map map = from.Map;
 
       if (map == null)
@@ -257,11 +256,11 @@ namespace Server.Mobiles
         int y = from.Y + Utility.RandomMinMax(-1, 1);
         int z = from.Z;
 
-        if (!map.CanFit(x, y, z, 16, false, true))
+        if (!map.CanFit(x, y, z, 16))
         {
           z = map.GetAverageZ(x, y);
 
-          if (z == from.Z || !map.CanFit(x, y, z, 16, false, true))
+          if (z == from.Z || !map.CanFit(x, y, z, 16))
             continue;
         }
 

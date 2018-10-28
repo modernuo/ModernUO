@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -54,14 +54,6 @@ namespace Server.Commands
       e.Mobile.SendMessage("Categorization menu rebuilt.");
     }
 
-    public static void RecurseFindCategories(CategoryEntry ce, ArrayList list)
-    {
-      list.Add(ce);
-
-      for (int i = 0; i < ce.SubCategories.Length; ++i)
-        RecurseFindCategories(ce.SubCategories[i], list);
-    }
-
     public static void Export(CategoryEntry ce, string fileName, string title)
     {
       XmlTextWriter xml = new XmlTextWriter(fileName, Encoding.UTF8);
@@ -84,18 +76,18 @@ namespace Server.Commands
 
       xml.WriteAttributeString("title", ce.Title);
 
-      ArrayList subCats = new ArrayList(ce.SubCategories);
+      List<CategoryEntry> subCats = new List<CategoryEntry>(ce.SubCategories);
 
       subCats.Sort(new CategorySorter());
 
       for (int i = 0; i < subCats.Count; ++i)
-        RecurseExport(xml, (CategoryEntry)subCats[i]);
+        RecurseExport(xml, subCats[i]);
 
-      ce.Matched.Sort(new CategorySorter());
+      ce.Matched.Sort(new CategoryTypeSorter());
 
       for (int i = 0; i < ce.Matched.Count; ++i)
       {
-        CategoryTypeEntry cte = (CategoryTypeEntry)ce.Matched[i];
+        CategoryTypeEntry cte = ce.Matched[i];
 
         xml.WriteStartElement("object");
 
@@ -148,7 +140,7 @@ namespace Server.Commands
 
     public static void Load()
     {
-      ArrayList types = new ArrayList();
+      List<Type> types = new List<Type>();
 
       AddTypes(Core.Assembly, types);
 
@@ -159,7 +151,7 @@ namespace Server.Commands
       m_RootMobiles = Load(types, "Data/mobiles.cfg");
     }
 
-    private static CategoryEntry Load(ArrayList types, string config)
+    private static CategoryEntry Load(List<Type> types, string config)
     {
       CategoryLine[] lines = CategoryLine.Load(config);
 
@@ -186,7 +178,7 @@ namespace Server.Commands
       return ctor != null && ctor.IsDefined(typeofConstructible, false);
     }
 
-    private static void AddTypes(Assembly asm, ArrayList types)
+    private static void AddTypes(Assembly asm, List<Type> types)
     {
       Type[] allTypes = asm.GetTypes();
 
@@ -202,11 +194,11 @@ namespace Server.Commands
       }
     }
 
-    private static void Fill(CategoryEntry root, ArrayList list)
+    private static void Fill(CategoryEntry root, List<Type> list)
     {
       for (int i = 0; i < list.Count; ++i)
       {
-        Type type = (Type)list[i];
+        Type type = list[i];
         CategoryEntry match = GetDeepestMatch(root, type);
 
         if (match == null)
@@ -218,6 +210,7 @@ namespace Server.Commands
         }
         catch
         {
+          // ignored
         }
       }
     }
@@ -239,21 +232,12 @@ namespace Server.Commands
     }
   }
 
-  public class CategorySorter : IComparer
+  public class CategorySorter : IComparer<CategoryEntry>
   {
-    public int Compare(object x, object y)
+    public int Compare(CategoryEntry x, CategoryEntry y)
     {
-      string a = null, b = null;
-
-      if (x is CategoryEntry entry)
-        a = entry.Title;
-      else if (x is CategoryTypeEntry xTypeEntry)
-        a = xTypeEntry.Type.Name;
-
-      if (y is CategoryEntry categoryEntry)
-        b = categoryEntry.Title;
-      else if (y is CategoryTypeEntry yTypeEntry)
-        b = yTypeEntry.Type.Name;
+      string a = x?.Title;
+      string b = y?.Title;
 
       if (a == null && b == null)
         return 0;
@@ -261,11 +245,25 @@ namespace Server.Commands
       if (a == null)
         return 1;
 
-      if (b == null)
-        return -1;
-
       return a.CompareTo(b);
     }
+  }
+
+  public class CategoryTypeSorter : IComparer<CategoryTypeEntry>
+    {
+      public int Compare(CategoryTypeEntry x, CategoryTypeEntry y)
+      {
+        string a = x?.Type.Name;
+        string b = y?.Type.Name;
+
+        if (a == null && b == null)
+          return 0;
+
+        if (a == null)
+          return 1;
+
+        return a.CompareTo(b);
+      }
   }
 
   public class CategoryTypeEntry
@@ -283,21 +281,13 @@ namespace Server.Commands
 
   public class CategoryEntry
   {
-    public CategoryEntry()
-    {
-      Title = "(empty)";
-      Matches = new Type[0];
-      SubCategories = new CategoryEntry[0];
-      Matched = new ArrayList();
-    }
-
-    public CategoryEntry(CategoryEntry parent, string title, CategoryEntry[] subCats)
+    public CategoryEntry(CategoryEntry parent = null, string title = "(empty)", CategoryEntry[] subCats = null)
     {
       Parent = parent;
       Title = title;
-      SubCategories = subCats;
+      SubCategories = subCats ?? new CategoryEntry[0];
       Matches = new Type[0];
-      Matched = new ArrayList();
+      Matched = new List<CategoryTypeEntry>();
     }
 
     public CategoryEntry(CategoryEntry parent, CategoryLine[] lines, ref int index)
@@ -321,7 +311,7 @@ namespace Server.Commands
       text = text.Substring(start, end - start);
       string[] split = text.Split(';');
 
-      ArrayList list = new ArrayList();
+      List<Type> list = new List<Type>();
 
       for (int i = 0; i < split.Length; ++i)
       {
@@ -333,20 +323,22 @@ namespace Server.Commands
           list.Add(type);
       }
 
-      Matches = (Type[])list.ToArray(typeof(Type));
+      Matches = list.ToArray();
       list.Clear();
 
       int ourIndentation = lines[index].Indentation;
 
       ++index;
 
+      List<CategoryEntry> entryList = new List<CategoryEntry>();
+
       while (index < lines.Length && lines[index].Indentation > ourIndentation)
-        list.Add(new CategoryEntry(this, lines, ref index));
+        entryList.Add(new CategoryEntry(this, lines, ref index));
 
-      SubCategories = (CategoryEntry[])list.ToArray(typeof(CategoryEntry));
-      list.Clear();
+      SubCategories = entryList.ToArray();
+      entryList.Clear();
 
-      Matched = list;
+      Matched = new List<CategoryTypeEntry>();
     }
 
     public string Title{ get; }
@@ -357,7 +349,7 @@ namespace Server.Commands
 
     public CategoryEntry[] SubCategories{ get; }
 
-    public ArrayList Matched{ get; }
+    public List<CategoryTypeEntry> Matched{ get; }
 
     public bool IsMatch(Type type)
     {
@@ -393,7 +385,7 @@ namespace Server.Commands
 
     public static CategoryLine[] Load(string path)
     {
-      ArrayList list = new ArrayList();
+      List<CategoryLine> list = new List<CategoryLine>();
 
       if (File.Exists(path))
         using (StreamReader ip = new StreamReader(path))
@@ -404,7 +396,7 @@ namespace Server.Commands
             list.Add(new CategoryLine(line));
         }
 
-      return (CategoryLine[])list.ToArray(typeof(CategoryLine));
+      return list.ToArray();
     }
   }
 }

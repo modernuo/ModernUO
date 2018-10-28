@@ -44,7 +44,6 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        case 0x00: // null
         {
           return null;
         }
@@ -76,7 +75,6 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        case 0x00: // null
         {
           return null;
         }
@@ -116,7 +114,6 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        case 0x00: // null
         {
           return null;
         }
@@ -156,7 +153,6 @@ namespace Server.Engines.Quests
       switch (encoding)
       {
         default:
-        case 0x00: // null
         {
           return null;
         }

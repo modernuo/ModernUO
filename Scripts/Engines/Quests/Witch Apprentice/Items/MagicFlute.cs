@@ -31,7 +31,9 @@ namespace Server.Engines.Quests.Hag
         QuestSystem qs = player.Quest;
 
         if (qs is WitchApprenticeQuest)
-          if (qs.FindObjective(typeof(FindZeefzorpulObjective)) is FindZeefzorpulObjective obj && !obj.Completed)
+        {
+          FindZeefzorpulObjective obj = qs.FindObjective<FindZeefzorpulObjective>();
+          if (obj?.Completed == false)
           {
             if (player.Map != Map.Trammel && player.Map != Map.Felucca || !player.InRange(obj.ImpLocation, 8))
             {
@@ -50,6 +52,7 @@ namespace Server.Engines.Quests.Hag
                 1055052); // The flute sparkles. Zeefzorpul must be in a good hiding place nearby.
             }
           }
+        }
       }
     }
 

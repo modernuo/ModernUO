@@ -80,6 +80,7 @@ namespace Server.Accounting
         }
         catch
         {
+          // ignored
         }
     }
 

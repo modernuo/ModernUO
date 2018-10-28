@@ -99,7 +99,7 @@ namespace Server.Mobiles
     {
       if (from is PlayerMobile pm && pm.NextSmithBulkOrder == TimeSpan.Zero && (fromContextMenu || 0.2 > Utility.RandomDouble()))
       {
-        double theirSkill = pm.Skills[SkillName.Blacksmith].Base;
+        double theirSkill = pm.Skills.Blacksmith.Base;
 
         if (theirSkill >= 70.1)
           pm.NextSmithBulkOrder = TimeSpan.FromHours(6.0);
@@ -124,7 +124,7 @@ namespace Server.Mobiles
 
     public override bool SupportsBulkOrders(Mobile from)
     {
-      return from is PlayerMobile && from.Skills[SkillName.Blacksmith].Base > 0;
+      return from is PlayerMobile && from.Skills.Blacksmith.Base > 0;
     }
 
     public override TimeSpan GetNextBulkOrder(Mobile from)

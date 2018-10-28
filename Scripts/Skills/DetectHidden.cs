@@ -32,16 +32,16 @@ namespace Server.SkillHandlers
         bool foundAnyone = false;
 
         Point3D p;
-        if (targ is Mobile)
-          p = ((Mobile)targ).Location;
-        else if (targ is Item)
-          p = ((Item)targ).Location;
-        else if (targ is IPoint3D)
-          p = new Point3D((IPoint3D)targ);
+        if (targ is Mobile mobile)
+          p = mobile.Location;
+        else if (targ is Item item)
+          p = item.Location;
+        else if (targ is IPoint3D d)
+          p = new Point3D(d);
         else
           p = src.Location;
 
-        double srcSkill = src.Skills[SkillName.DetectHidden].Value;
+        double srcSkill = src.Skills.DetectHidden.Value;
         int range = (int)(srcSkill / 10.0);
 
         if (!src.CheckSkill(SkillName.DetectHidden, 0.0, 100.0))
@@ -62,7 +62,7 @@ namespace Server.SkillHandlers
             if (trg.Hidden && src != trg)
             {
               double ss = srcSkill + Utility.Random(21) - 10;
-              double ts = trg.Skills[SkillName.Hiding].Value + Utility.Random(21) - 10;
+              double ts = trg.Skills.Hiding.Value + Utility.Random(21) - 10;
 
               if (src.AccessLevel >= trg.AccessLevel && (ss >= ts || inHouse && house.IsInside(trg)))
               {

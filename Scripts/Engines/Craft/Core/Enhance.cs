@@ -80,18 +80,18 @@ namespace Server.Engines.Craft
         }
 
       int phys = 0, fire = 0, cold = 0, pois = 0, nrgy = 0;
-      int dura = 0, luck = 0, lreq = 0, dinc = 0;
-      int baseChance = 0;
+      int dura, luck, lreq, dinc = 0;
+      int baseChance;
 
       bool physBonus = false;
-      bool fireBonus = false;
-      bool coldBonus = false;
-      bool nrgyBonus = false;
-      bool poisBonus = false;
-      bool duraBonus = false;
-      bool luckBonus = false;
-      bool lreqBonus = false;
-      bool dincBonus = false;
+      bool fireBonus;
+      bool coldBonus;
+      bool nrgyBonus;
+      bool poisBonus;
+      bool duraBonus;
+      bool luckBonus;
+      bool lreqBonus;
+      bool dincBonus;
 
       if (item is BaseWeapon weapon)
       {

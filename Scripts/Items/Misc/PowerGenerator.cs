@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
 
@@ -57,7 +58,7 @@ namespace Server.Items
   {
     private static readonly TimeSpan m_UseTimeout = TimeSpan.FromMinutes(2.0);
 
-    private Hashtable m_DamageTable = new Hashtable();
+    private Dictionary<Mobile, DamageTimer> m_DamageTable = new Dictionary<Mobile, DamageTimer>();
     private DateTime m_LastUse;
 
     private int m_SideLength;
@@ -167,7 +168,7 @@ namespace Server.Items
 
       if (m_User != null)
       {
-        m_User.CloseGump(typeof(GameGump));
+        m_User.CloseGump<GameGump>();
         m_User = null;
       }
     }
@@ -188,7 +189,7 @@ namespace Server.Items
         if (m_User.Deleted || m_User.Map != Map || !m_User.InRange(this, 3)
             || m_User.NetState == null || DateTime.UtcNow - m_LastUse >= m_UseTimeout)
         {
-          m_User.CloseGump(typeof(GameGump));
+          m_User.CloseGump<GameGump>();
         }
         else
         {

@@ -713,6 +713,12 @@ namespace Server
 
       public int Compare(UOPEntry x, UOPEntry y)
       {
+        if (x == null)
+          return y == null ? 0 : 1;
+
+        if (y == null)
+          return -1;
+        
         return x.m_Offset.CompareTo(y.m_Offset);
       }
     }

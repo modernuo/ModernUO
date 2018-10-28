@@ -15,7 +15,7 @@ namespace Server.Items
 
     public override BaseAddonDeed Deed => new WaterTroughEastDeed();
 
-    public int Quantity
+    int IHasQuantity.Quantity
     {
       get => 500;
       set { }

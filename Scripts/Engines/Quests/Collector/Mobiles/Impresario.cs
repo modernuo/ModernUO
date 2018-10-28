@@ -20,7 +20,7 @@ namespace Server.Engines.Quests.Collector
     {
       InitStats(100, 100, 25);
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       Female = false;
       Body = 0x190;
@@ -51,21 +51,25 @@ namespace Server.Engines.Quests.Collector
     {
       QuestSystem qs = player.Quest;
 
-      if (qs is CollectorQuest)
-        if (qs.FindObjective(typeof(FindSheetMusicObjective)) is FindSheetMusicObjective obj && !obj.Completed)
-        {
-          Direction = GetDirectionTo(player);
+      if (!(qs is CollectorQuest))
+        return;
 
-          if (obj.IsInRightTheater())
-          {
-            player.CloseGump(typeof(SheetMusicOfferGump));
-            player.SendGump(new SheetMusicOfferGump());
-          }
-          else
-          {
-            qs.AddConversation(new NoSheetMusicConversation());
-          }
+      FindSheetMusicObjective obj = qs.FindObjective<FindSheetMusicObjective>();
+
+      if (obj?.Completed == false)
+      {
+        Direction = GetDirectionTo(player);
+
+        if (obj.IsInRightTheater())
+        {
+          player.CloseGump<SheetMusicOfferGump>();
+          player.SendGump(new SheetMusicOfferGump());
         }
+        else
+        {
+          qs.AddConversation(new NoSheetMusicConversation());
+        }
+      }
     }
 
     public override void Serialize(GenericWriter writer)
@@ -132,25 +136,28 @@ namespace Server.Engines.Quests.Collector
         {
           QuestSystem qs = player.Quest;
 
-          if (qs is CollectorQuest)
-            if (qs.FindObjective(typeof(FindSheetMusicObjective)) is FindSheetMusicObjective obj &&
-                !obj.Completed)
-            {
-              if (player.Backpack != null && player.Backpack.ConsumeTotal(typeof(Gold), 10))
-              {
-                obj.Complete();
-              }
-              else
-              {
-                BankBox bank = player.FindBankNoCreate();
-                if (bank != null && bank.ConsumeTotal(typeof(Gold), 10))
-                  obj.Complete();
+          if (!(qs is CollectorQuest))
+            return;
 
-                else
-                  player.SendLocalizedMessage(
-                    1055108); // You don't have enough gold to buy the sheet music.
-              }
-            }
+          FindSheetMusicObjective obj = qs.FindObjective<FindSheetMusicObjective>();
+
+          if (obj?.Completed != false)
+            return;
+          
+          if (player.Backpack != null && player.Backpack.ConsumeTotal(typeof(Gold), 10))
+          {
+            obj.Complete();
+          }
+          else
+          {
+            BankBox bank = player.FindBankNoCreate();
+            if (bank != null && bank.ConsumeTotal(typeof(Gold), 10))
+              obj.Complete();
+
+            else
+              player.SendLocalizedMessage(
+                1055108); // You don't have enough gold to buy the sheet music.
+          }
         }
     }
   }

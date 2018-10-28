@@ -36,7 +36,7 @@ namespace Server.Regions
           if (!Region.ReadString(xml, "name", ref group))
             return null;
 
-          SpawnDefinition def = (SpawnDefinition)SpawnGroup.Table[group];
+          SpawnDefinition def = SpawnGroup.Table[@group];
 
           if (def == null)
           {
@@ -121,12 +121,12 @@ namespace Server.Regions
 
   public class SpawnMobile : SpawnType
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Type, SpawnMobile> m_Table = new Dictionary<Type, SpawnMobile>();
 
-    protected bool m_Land;
-    protected bool m_Water;
+    private bool m_Land;
+    private bool m_Water;
 
-    protected SpawnMobile(Type type) : base(type)
+    public SpawnMobile(Type type) : base(type)
     {
     }
 
@@ -152,13 +152,10 @@ namespace Server.Regions
 
     public static SpawnMobile Get(Type type)
     {
-      SpawnMobile sm = (SpawnMobile)m_Table[type];
+      SpawnMobile sm = m_Table[type];
 
       if (sm == null)
-      {
-        sm = new SpawnMobile(type);
-        m_Table[type] = sm;
-      }
+        m_Table[type] = sm = new SpawnMobile(type);
 
       return sm;
     }
@@ -177,9 +174,7 @@ namespace Server.Regions
     {
       Mobile mobile = CreateMobile();
 
-      BaseCreature creature = mobile as BaseCreature;
-
-      if (creature != null)
+      if (mobile is BaseCreature creature)
       {
         creature.Home = entry.HomeLocation;
         creature.HomeMap = map;
@@ -204,7 +199,7 @@ namespace Server.Regions
 
   public class SpawnItem : SpawnType
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Type, SpawnItem> m_Table = new Dictionary<Type, SpawnItem>();
 
     protected int m_Height;
 
@@ -226,13 +221,10 @@ namespace Server.Regions
 
     public static SpawnItem Get(Type type)
     {
-      SpawnItem si = (SpawnItem)m_Table[type];
+      SpawnItem si = m_Table[type];
 
       if (si == null)
-      {
-        si = new SpawnItem(type);
-        m_Table[type] = si;
-      }
+        m_Table[type] = si = new SpawnItem(type);
 
       return si;
     }
@@ -327,9 +319,7 @@ namespace Server.Regions
           List<SpawnGroupElement> list = new List<SpawnGroupElement>();
           foreach (XmlNode node in xmlDef.ChildNodes)
           {
-            XmlElement el = node as XmlElement;
-
-            if (el != null)
+            if (node is XmlElement el)
             {
               SpawnDefinition def = GetSpawnDefinition(el);
               if (def == null)
@@ -364,7 +354,7 @@ namespace Server.Regions
         m_TotalWeight += elements[i].Weight;
     }
 
-    public static Hashtable Table{ get; } = new Hashtable();
+    public static Dictionary<string, SpawnGroup> Table{ get; } = new Dictionary<string, SpawnGroup>();
 
     public string Name{ get; }
 
@@ -372,7 +362,7 @@ namespace Server.Regions
 
     public static void Register(SpawnGroup group)
     {
-      if (Table.Contains(group.Name))
+      if (Table.ContainsKey(group.Name))
         Console.WriteLine("Warning: Double SpawnGroup name '{0}'", group.Name);
       else
         Table[group.Name] = group;

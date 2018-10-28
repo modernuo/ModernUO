@@ -1019,12 +1019,10 @@ namespace Server
 
     public void GetProperties(ObjectPropertyList list)
     {
+      SkillName skill;
       for (int i = 0; i < 5; ++i)
       {
-        SkillName skill;
-        double bonus;
-
-        if (!GetValues(i, out skill, out bonus))
+        if (!GetValues(i, out skill, out double bonus))
           continue;
 
         list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus);
@@ -1123,10 +1121,7 @@ namespace Server
 
     public SkillName GetSkill(int index)
     {
-      SkillName skill;
-      double bonus;
-
-      GetValues(index, out skill, out bonus);
+      GetValues(index, out SkillName skill, out double _);
 
       return skill;
     }
@@ -1138,10 +1133,7 @@ namespace Server
 
     public double GetBonus(int index)
     {
-      SkillName skill;
-      double bonus;
-
-      GetValues(index, out skill, out bonus);
+      GetValues(index, out SkillName _, out double bonus);
 
       return bonus;
     }
@@ -1161,15 +1153,12 @@ namespace Server
       if (m == null)
         return;
 
-      double minSkill, maxSkill;
-
       AnimalFormContext acontext = AnimalForm.GetContext(m);
       TransformContext context = TransformationSpellHelper.GetContext(m);
 
-      if (context != null)
+      if (context?.Spell is Spell spell)
       {
-        Spell spell = context.Spell as Spell;
-        spell.GetCastSkills(out minSkill, out maxSkill);
+        spell.GetCastSkills(out double minSkill, out _);
         if (m.Skills[spell.CastSkill].Value < minSkill)
           TransformationSpellHelper.RemoveContext(m, context, true);
       }
@@ -1180,28 +1169,28 @@ namespace Server
         for (i = 0; i < AnimalForm.Entries.Length; ++i)
           if (AnimalForm.Entries[i].Type == acontext.Type)
             break;
-        if (m.Skills[SkillName.Ninjitsu].Value < AnimalForm.Entries[i].ReqSkill)
+        if (m.Skills.Ninjitsu.Value < AnimalForm.Entries[i].ReqSkill)
           AnimalForm.RemoveContext(m, true);
       }
 
-      if (!m.CanBeginAction(typeof(PolymorphSpell)) && m.Skills[SkillName.Magery].Value < 66.1)
+      if (!m.CanBeginAction<PolymorphSpell>() && m.Skills.Magery.Value < 66.1)
       {
         m.BodyMod = 0;
         m.HueMod = -1;
         m.NameMod = null;
-        m.EndAction(typeof(PolymorphSpell));
+        m.EndAction<PolymorphSpell>();
         BaseArmor.ValidateMobile(m);
         BaseClothing.ValidateMobile(m);
       }
 
-      if (!m.CanBeginAction(typeof(IncognitoSpell)) && m.Skills[SkillName.Magery].Value < 38.1)
+      if (!m.CanBeginAction<IncognitoSpell>() && m.Skills.Magery.Value < 38.1)
       {
         if (m is PlayerMobile mobile)
           mobile.SetHairMods(-1, -1);
         m.BodyMod = 0;
         m.HueMod = -1;
         m.NameMod = null;
-        m.EndAction(typeof(IncognitoSpell));
+        m.EndAction<IncognitoSpell>();
         BaseArmor.ValidateMobile(m);
         BaseClothing.ValidateMobile(m);
         BuffInfo.RemoveBuff(m, BuffIcon.Incognito);

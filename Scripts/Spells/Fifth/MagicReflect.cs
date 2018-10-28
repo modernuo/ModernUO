@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Spells.Fifth
 {
@@ -13,7 +14,7 @@ namespace Server.Spells.Fifth
       Reagent.SpidersSilk
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
     public MagicReflectSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -32,7 +33,7 @@ namespace Server.Spells.Fifth
         return false;
       }
 
-      if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+      if (!Caster.CanBeginAction<DefensiveSpell>())
       {
         Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
         return false;
@@ -56,17 +57,17 @@ namespace Server.Spells.Fifth
         {
           Mobile targ = Caster;
 
-          ResistanceMod[] mods = (ResistanceMod[])m_Table[targ];
+          ResistanceMod[] mods = m_Table[targ];
 
           if (mods == null)
           {
             targ.PlaySound(0x1E9);
             targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
 
-            int physiMod = -25 + (int)(targ.Skills[SkillName.Inscribe].Value / 20);
+            int physiMod = -25 + (int)(targ.Skills.Inscribe.Value / 20);
             int otherMod = 10;
 
-            mods = new ResistanceMod[5]
+            mods = new[]
             {
               new ResistanceMod(ResistanceType.Physical, physiMod),
               new ResistanceMod(ResistanceType.Fire, otherMod),
@@ -106,15 +107,15 @@ namespace Server.Spells.Fifth
         {
           Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
         }
-        else if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+        else if (!Caster.CanBeginAction<DefensiveSpell>())
         {
           Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
         }
         else if (CheckSequence())
         {
-          if (Caster.BeginAction(typeof(DefensiveSpell)))
+          if (Caster.BeginAction<DefensiveSpell>())
           {
-            int value = (int)(Caster.Skills[SkillName.Magery].Value + Caster.Skills[SkillName.Inscribe].Value);
+            int value = (int)(Caster.Skills.Magery.Value + Caster.Skills.Inscribe.Value);
             value = (int)(8 + value / 200 * 7.0); //absorb from 8 to 15 "circles"
 
             Caster.MagicDamageAbsorb = value;
@@ -134,13 +135,12 @@ namespace Server.Spells.Fifth
 
     public static void EndReflect(Mobile m)
     {
-      if (m_Table.Contains(m))
-      {
-        ResistanceMod[] mods = (ResistanceMod[])m_Table[m];
+      ResistanceMod[] mods = m_Table[m];
 
-        if (mods != null)
-          for (int i = 0; i < mods.Length; ++i)
-            m.RemoveResistanceMod(mods[i]);
+      if (mods != null)
+      {
+        for (int i = 0; i < mods.Length; ++i)
+          m.RemoveResistanceMod(mods[i]);
 
         m_Table.Remove(m);
         BuffInfo.RemoveBuff(m, BuffIcon.MagicReflection);

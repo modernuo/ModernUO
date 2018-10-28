@@ -54,7 +54,8 @@ namespace Server.Targets
 
             if (qs is WitchApprenticeQuest)
             {
-              if (qs.FindObjective(typeof(FindIngredientObjective)) is FindIngredientObjective obj && !obj.Completed && obj.Ingredient == Ingredient.RedMushrooms)
+              FindIngredientObjective obj = qs.FindObjective<FindIngredientObjective>();
+              if (obj?.Completed == false && obj.Ingredient == Ingredient.RedMushrooms)
               {
                 player.SendLocalizedMessage(1055036); // You slice a red cap mushroom from its stem.
                 obj.Complete();

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands;
@@ -50,14 +49,14 @@ namespace Server.Gumps
 
     private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
     private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
-    private ArrayList m_List;
+    private List<object> m_List;
     private Mobile m_Mobile;
     private object m_Object;
     private int m_Page;
     private PropertyInfo m_Property;
     private Stack<StackEntry> m_Stack;
 
-    public SetTimeSpanGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, ArrayList list)
+    public SetTimeSpanGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int page, List<object> list)
       : base(GumpOffsetX, GumpOffsetY)
     {
       m_Property = prop;
@@ -127,7 +126,7 @@ namespace Server.Gumps
         {
           bool successfulParse = false;
           if (h != null && m != null && s != null)
-            successfulParse = TimeSpan.TryParse(h.Text + ":" + m.Text + ":" + s.Text, out toSet);
+            successfulParse = TimeSpan.TryParse($"{h.Text}:{m.Text}:{s.Text}", out toSet);
           else
             toSet = TimeSpan.Zero;
 
@@ -148,6 +147,7 @@ namespace Server.Gumps
             }
             catch
             {
+              // ignored
             }
 
           toSet = TimeSpan.Zero;
@@ -169,6 +169,7 @@ namespace Server.Gumps
             }
             catch
             {
+              // ignored
             }
 
           toSet = TimeSpan.Zero;
@@ -190,6 +191,7 @@ namespace Server.Gumps
             }
             catch
             {
+              // ignored
             }
 
           toSet = TimeSpan.Zero;

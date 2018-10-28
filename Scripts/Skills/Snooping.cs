@@ -23,7 +23,7 @@ namespace Server.SkillHandlers
       if (map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0)
         return true; // felucca you can snoop anybody
 
-      GuardedRegion reg = (GuardedRegion)to.Region.GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = to.Region.GetRegion<GuardedRegion>();
 
       if (reg == null || reg.IsDisabled())
         return true; // not in town? we can snoop any npc
@@ -56,7 +56,7 @@ namespace Server.SkillHandlers
         }
 
         if (root != null && from.AccessLevel == AccessLevel.Player &&
-            from.Skills[SkillName.Snooping].Value < Utility.Random(100))
+            from.Skills.Snooping.Value < Utility.Random(100))
         {
           Map map = from.Map;
 
@@ -88,7 +88,7 @@ namespace Server.SkillHandlers
         {
           from.SendLocalizedMessage(500210); // You failed to peek into the container.
 
-          if (from.Skills[SkillName.Hiding].Value / 2 < Utility.Random(100))
+          if (from.Skills.Hiding.Value / 2 < Utility.Random(100))
             from.RevealingAction();
         }
       }

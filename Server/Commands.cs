@@ -61,6 +61,14 @@ namespace Server.Commands
 
       return Utility.ToInt32(Arguments[index]);
     }
+    
+    public uint GetUInt32(int index)
+    {
+      if (index < 0 || index >= Arguments.Length)
+        return 0;
+
+      return Utility.ToUInt32(Arguments[index]);
+    }
 
     public bool GetBoolean(int index)
     {

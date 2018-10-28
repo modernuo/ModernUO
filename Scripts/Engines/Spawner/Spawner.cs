@@ -593,7 +593,7 @@ namespace Server.Mobiles
         }
         catch (Exception e)
         {
-          Console.WriteLine("EXCEPTION CAUGHT: {0:X}", Serial);
+          Console.WriteLine($"EXCEPTION CAUGHT: {Serial}");
           Console.WriteLine(e);
           return false;
         }
@@ -639,8 +639,7 @@ namespace Server.Mobiles
       {
         int x = Location.X + (Utility.Random(m_HomeRange * 2 + 1) - m_HomeRange);
         int y = Location.Y + (Utility.Random(m_HomeRange * 2 + 1) - m_HomeRange);
-        int z = Map.GetAverageZ(x, y);
-
+        
         int mapZ = map.GetAverageZ(x, y);
 
         if (waterMob)

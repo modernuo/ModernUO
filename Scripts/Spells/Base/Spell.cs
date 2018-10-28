@@ -89,9 +89,9 @@ namespace Server.Spells
 
       if (IsCasting)
       {
-        object o = ProtectionSpell.Registry[Caster];
+        double d = ProtectionSpell.Registry[Caster];
 
-        if (!(o is double d) || d <= Utility.RandomDouble() * 100.0)
+        if (d <= Utility.RandomDouble() * 100.0)
           Disturb(DisturbType.Hurt, false, true);
       }
     }
@@ -242,7 +242,7 @@ namespace Server.Spells
       // There is no chance to gain
       // m.CheckSkill( SkillName.Inscribe, 0.0, 120.0 );
 
-      return m.Skills[SkillName.Inscribe].Value;
+      return m.Skills.Inscribe.Value;
     }
 
     public virtual int GetInscribeFixed(Mobile m)
@@ -250,7 +250,7 @@ namespace Server.Spells
       // There is no chance to gain
       // m.CheckSkill( SkillName.Inscribe, 0.0, 120.0 );
 
-      return m.Skills[SkillName.Inscribe].Fixed;
+      return m.Skills.Inscribe.Fixed;
     }
 
     public virtual int GetDamageFixed(Mobile m)
@@ -269,7 +269,7 @@ namespace Server.Spells
 
     public virtual double GetResistSkill(Mobile m)
     {
-      return m.Skills[SkillName.MagicResist].Value;
+      return m.Skills.MagicResist.Value;
     }
 
     public virtual double GetDamageScalar(Mobile target)
@@ -279,7 +279,7 @@ namespace Server.Spells
       if (!Core.AOS) //EvalInt stuff for AoS is handled elsewhere
       {
         double casterEI = Caster.Skills[DamageSkill].Value;
-        double targetRS = target.Skills[SkillName.MagicResist].Value;
+        double targetRS = target.Skills.MagicResist.Value;
 
         /*
         if ( Core.AOS )
@@ -645,7 +645,7 @@ namespace Server.Spells
       int fcMax = 4;
 
       if (CastSkill == SkillName.Magery || CastSkill == SkillName.Necromancy ||
-          CastSkill == SkillName.Chivalry && Caster.Skills[SkillName.Magery].Value >= 70.0)
+          CastSkill == SkillName.Chivalry && Caster.Skills.Magery.Value >= 70.0)
         fcMax = 2;
 
       int fc = AosAttributes.GetValue(Caster, AosAttribute.CastSpeed);
@@ -653,7 +653,7 @@ namespace Server.Spells
       if (fc > fcMax)
         fc = fcMax;
 
-      if (ProtectionSpell.Registry.Contains(Caster))
+      if (ProtectionSpell.Registry.ContainsKey(Caster))
         fc -= 2;
 
       if (EssenceOfWindSpell.IsDebuffed(Caster))

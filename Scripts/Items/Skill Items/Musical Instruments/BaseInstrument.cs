@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.Craft;
 using Server.Mobiles;
 using Server.Network;
@@ -18,7 +19,7 @@ namespace Server.Items
 
   public abstract class BaseInstrument : Item, ICraftable, ISlayer
   {
-    private static Hashtable m_Instruments = new Hashtable();
+    private static Dictionary<Mobile, BaseInstrument> m_Instruments = new Dictionary<Mobile, BaseInstrument>();
     private Mobile m_Crafter;
 
     private DateTime m_LastReplenished;
@@ -150,12 +151,7 @@ namespace Server.Items
       }
     }
 
-    public void CheckReplenishUses()
-    {
-      CheckReplenishUses(true);
-    }
-
-    public void CheckReplenishUses(bool invalidate)
+    public void CheckReplenishUses(bool invalidate = true)
     {
       if (!m_ReplenishesCharges || m_UsesRemaining >= InitMaxUses)
         return;
@@ -186,10 +182,7 @@ namespace Server.Items
 
     public int GetUsesScalar()
     {
-      if (m_Quality == InstrumentQuality.Exceptional)
-        return 200;
-
-      return 100;
+      return m_Quality == InstrumentQuality.Exceptional ? 200 : 100;
     }
 
     public void ConsumeUse(Mobile from)
@@ -210,16 +203,15 @@ namespace Server.Items
 
     public static BaseInstrument GetInstrument(Mobile from)
     {
-      if (!(m_Instruments[from] is BaseInstrument item))
+      BaseInstrument item = m_Instruments[from];
+      if (item == null)
         return null;
 
-      if (!item.IsChildOf(from.Backpack))
-      {
-        m_Instruments.Remove(from);
-        return null;
-      }
+      if (item.IsChildOf(from.Backpack))
+        return item;
 
-      return item;
+      m_Instruments.Remove(from);
+      return null;
     }
 
     public static int GetBardRange(Mobile bard, SkillName skill)
@@ -238,11 +230,11 @@ namespace Server.Items
       else
       {
         from.SendLocalizedMessage(500617); // What instrument shall you play?
-        from.BeginTarget(1, false, TargetFlags.None, new TargetStateCallback(OnPickedInstrument), callback);
+        from.BeginTarget(1, false, TargetFlags.None, OnPickedInstrument, callback);
       }
     }
 
-    public static void OnPickedInstrument(Mobile from, object targeted, object state)
+    public static void OnPickedInstrument(Mobile from, object targeted, InstrumentPickedCallback callback)
     {
       if (!(targeted is BaseInstrument instrument))
       {
@@ -251,24 +243,18 @@ namespace Server.Items
       else
       {
         SetInstrument(from, instrument);
-
-        InstrumentPickedCallback callback = state as InstrumentPickedCallback;
-
         callback?.Invoke(from, instrument);
       }
     }
 
     public static bool IsMageryCreature(BaseCreature bc)
     {
-      return bc != null && bc.AI == AIType.AI_Mage && bc.Skills[SkillName.Magery].Base > 5.0;
+      return bc?.AI == AIType.AI_Mage && bc.Skills.Magery.Base > 5.0;
     }
 
     public static bool IsFireBreathingCreature(BaseCreature bc)
     {
-      if (bc == null)
-        return false;
-
-      return bc.HasBreath;
+      return bc?.HasBreath == true;
     }
 
     public static bool IsPoisonImmune(BaseCreature bc)
@@ -278,12 +264,7 @@ namespace Server.Items
 
     public static int GetPoisonLevel(BaseCreature bc)
     {
-      Poison p = bc?.HitPoison;
-
-      if (p == null)
-        return 0;
-
-      return p.Level + 1;
+      return (bc?.HitPoison.Level ?? -1) + 1;
     }
 
     public static double GetBaseDifficulty(Mobile targ)
@@ -295,7 +276,7 @@ namespace Server.Items
 
       double val = targ.HitsMax * 1.6 + targ.StamMax + targ.ManaMax;
 
-      val += targ.SkillsTotal / 10;
+      val += targ.SkillsTotal / 10.0;
 
       if (val > 700)
         val = 700 + (int)((val - 700) * (3.0 / 11));
@@ -406,7 +387,7 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      ArrayList attrs = new ArrayList();
+      List<EquipInfoAttribute> attrs = new List<EquipInfoAttribute>();
 
       if (DisplayLootType)
       {
@@ -453,7 +434,7 @@ namespace Server.Items
         return;
 
       EquipmentInfo eqInfo = new EquipmentInfo(number, m_Crafter, false,
-        (EquipInfoAttribute[])attrs.ToArray(typeof(EquipInfoAttribute)));
+        attrs.ToArray());
 
       from.Send(new DisplayEquipmentInfo(this, eqInfo));
     }
@@ -546,7 +527,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(500446); // That is too far away.
       }
-      else if (from.BeginAction(typeof(BaseInstrument)))
+      else if (from.BeginAction<BaseInstrument>())
       {
         SetInstrument(from, this);
 
@@ -568,7 +549,7 @@ namespace Server.Items
     {
       m.CheckSkill(SkillName.Musicianship, 0.0, 120.0);
 
-      return m.Skills[SkillName.Musicianship].Value / 100 > Utility.RandomDouble();
+      return m.Skills.Musicianship.Value / 100 > Utility.RandomDouble();
     }
 
     public void PlayInstrumentWell(Mobile from)
@@ -593,7 +574,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        m_From.EndAction(typeof(BaseInstrument));
+        m_From.EndAction<BaseInstrument>();
       }
     }
   }

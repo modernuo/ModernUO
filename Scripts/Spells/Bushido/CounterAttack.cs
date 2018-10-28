@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 
 namespace Server.Spells.Bushido
@@ -12,7 +13,7 @@ namespace Server.Spells.Bushido
       9002
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     public CounterAttack(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -28,13 +29,13 @@ namespace Server.Spells.Bushido
       if (!base.CheckCast())
         return false;
 
-      if (Caster.FindItemOnLayer(Layer.TwoHanded) as BaseShield != null)
+      if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseShield)
         return true;
 
-      if (Caster.FindItemOnLayer(Layer.OneHanded) as BaseWeapon != null)
+      if (Caster.FindItemOnLayer(Layer.OneHanded) is BaseWeapon)
         return true;
 
-      if (Caster.FindItemOnLayer(Layer.TwoHanded) as BaseWeapon != null)
+      if (Caster.FindItemOnLayer(Layer.TwoHanded) is BaseWeapon)
         return true;
 
       Caster.SendLocalizedMessage(1062944); // You must have a weapon or a shield equipped to use this ability!
@@ -64,27 +65,23 @@ namespace Server.Spells.Bushido
 
     public static bool IsCountering(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public static void StartCountering(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
+      Timer timer = m_Table[m];
+      timer?.Stop();
 
-      t?.Stop();
+      m_Table[m] = timer = new InternalTimer(m);
 
-      t = new InternalTimer(m);
-
-      m_Table[m] = t;
-
-      t.Start();
+      timer.Start();
     }
 
     public static void StopCountering(Mobile m)
     {
-      Timer t = (Timer)m_Table[m];
-
-      t?.Stop();
+      Timer timer = m_Table[m];
+      timer?.Stop();
 
       m_Table.Remove(m);
 

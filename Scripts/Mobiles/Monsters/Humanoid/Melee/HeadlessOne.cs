@@ -6,7 +6,7 @@ namespace Server.Mobiles
     public HeadlessOne() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
       Body = 31;
-      Hue = Utility.RandomSkinHue() & 0x7FFF;
+      Hue = Race.Human.RandomSkinHue() & 0x7FFF;
       BaseSoundID = 0x39D;
 
       SetStr(26, 50);

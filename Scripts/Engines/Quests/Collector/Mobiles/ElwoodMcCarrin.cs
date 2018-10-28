@@ -55,9 +55,9 @@ namespace Server.Engines.Quests.Collector
         }
         else
         {
-          QuestObjective obj = qs.FindObjective(typeof(ReturnPearlsObjective));
+          QuestObjective obj = qs.FindObjective<ReturnPearlsObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             obj.Complete();
           }
@@ -71,9 +71,9 @@ namespace Server.Engines.Quests.Collector
           }
           else
           {
-            obj = qs.FindObjective(typeof(ReturnPaintingObjective));
+            obj = qs.FindObjective<ReturnPaintingObjective>();
 
-            if (obj != null && !obj.Completed)
+            if (obj?.Completed == false)
             {
               obj.Complete();
             }
@@ -91,9 +91,9 @@ namespace Server.Engines.Quests.Collector
             }
             else
             {
-              obj = qs.FindObjective(typeof(ReturnAutographObjective));
+              obj = qs.FindObjective<ReturnAutographObjective>();
 
-              if (obj != null && !obj.Completed)
+              if (obj?.Completed == false)
               {
                 obj.Complete();
               }
@@ -111,9 +111,9 @@ namespace Server.Engines.Quests.Collector
               }
               else
               {
-                obj = qs.FindObjective(typeof(ReturnToysObjective));
+                obj = qs.FindObjective<ReturnToysObjective>();
 
-                if (obj != null && !obj.Completed)
+                if (obj?.Completed == false)
                 {
                   obj.Complete();
 
@@ -124,9 +124,9 @@ namespace Server.Engines.Quests.Collector
                 }
                 else
                 {
-                  obj = qs.FindObjective(typeof(MakeRoomObjective));
+                  obj = qs.FindObjective<MakeRoomObjective>();
 
-                  if (obj != null && !obj.Completed)
+                  if (obj?.Completed == false)
                   {
                     if (GiveReward(player))
                     {

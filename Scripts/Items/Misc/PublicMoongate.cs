@@ -50,7 +50,7 @@ namespace Server.Items
     {
       if (m is PlayerMobile)
         if (!Utility.InRange(m.Location, Location, 1) && Utility.InRange(oldLocation, Location, 1))
-          m.CloseGump(typeof(MoongateGump));
+          m.CloseGump<MoongateGump>();
     }
 
     public bool UseGate(Mobile m)
@@ -73,7 +73,7 @@ namespace Server.Items
         return false;
       }
 
-      m.CloseGump(typeof(MoongateGump));
+      m.CloseGump<MoongateGump>();
       m.SendGump(new MoongateGump(m, this));
 
       if (!m.Hidden || m.AccessLevel == AccessLevel.Player)

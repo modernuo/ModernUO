@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Mobiles
 {
@@ -92,11 +94,11 @@ namespace Server.Mobiles
 
     private void DoAreaLeech_Finish()
     {
-      ArrayList list = new ArrayList();
+      IPooledEnumerable<Mobile> eable = GetMobilesInRange(6);
 
-      foreach (Mobile m in GetMobilesInRange(6))
-        if (CanBeHarmful(m) && IsEnemy(m))
-          list.Add(m);
+      List<Mobile> list = eable.Where(m => CanBeHarmful(m) && IsEnemy(m)).ToList();
+
+      eable.Free();
 
       if (list.Count == 0)
       {
@@ -115,20 +117,15 @@ namespace Server.Mobiles
 
         for (int i = 0; i < list.Count; ++i)
         {
-          Mobile m = (Mobile)list[i];
+          Mobile m = list[i];
 
-          int damage = (int)(m.Hits * scalar);
-
-          damage += Utility.RandomMinMax(-5, 5);
-
-          if (damage < 1)
-            damage = 1;
+          int damage = (int)(m.Hits * scalar) + Utility.RandomMinMax(-5, 5);
 
           m.MovingParticles(this, 0x36F4, 1, 0, false, false, 32, 0, 9535, 1, 0, (EffectLayer)255, 0x100);
           m.MovingParticles(this, 0x0001, 1, 0, false, true, 32, 0, 9535, 9536, 0, (EffectLayer)255, 0);
 
           DoHarmful(m);
-          Hits += AOS.Damage(m, this, damage, 100, 0, 0, 0, 0);
+          Hits += AOS.Damage(m, this, Math.Max(damage, 1), 100, 0, 0, 0, 0);
         }
 
         Say(true, "If I cannot cleanse thy soul, I will destroy it!");
@@ -139,27 +136,23 @@ namespace Server.Mobiles
     {
       Say(true, message);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(0.5), new TimerStateCallback(DoFocusedLeech_Stage1), combatant);
+      Timer.DelayCall(TimeSpan.FromSeconds(0.5), DoFocusedLeech_Stage1, combatant);
     }
 
-    private void DoFocusedLeech_Stage1(object state)
+    private void DoFocusedLeech_Stage1(Mobile combatant)
     {
-      Mobile combatant = (Mobile)state;
-
       if (CanBeHarmful(combatant))
       {
         MovingParticles(combatant, 0x36FA, 1, 0, false, false, 1108, 0, 9533, 1, 0, (EffectLayer)255, 0x100);
         MovingParticles(combatant, 0x0001, 1, 0, false, true, 1108, 0, 9533, 9534, 0, (EffectLayer)255, 0);
         PlaySound(0x1FB);
 
-        Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(DoFocusedLeech_Stage2), combatant);
+        Timer.DelayCall(TimeSpan.FromSeconds(1.0), DoFocusedLeech_Stage2, combatant);
       }
     }
 
-    private void DoFocusedLeech_Stage2(object state)
+    private void DoFocusedLeech_Stage2(Mobile combatant)
     {
-      Mobile combatant = (Mobile)state;
-
       if (CanBeHarmful(combatant))
       {
         combatant.MovingParticles(this, 0x36F4, 1, 0, false, false, 32, 0, 9535, 1, 0, (EffectLayer)255, 0x100);

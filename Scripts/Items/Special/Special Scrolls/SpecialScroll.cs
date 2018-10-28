@@ -74,7 +74,7 @@ namespace Server.Items
       if (!CanUse(from))
         return;
 
-      from.CloseGump(typeof(InternalGump));
+      from.CloseGump<InternalGump>();
       from.SendGump(new InternalGump(from, this));
     }
 

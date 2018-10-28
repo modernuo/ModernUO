@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Engines.Mahjong
 {
@@ -8,12 +8,12 @@ namespace Server.Engines.Mahjong
     private Mobile[] m_Players;
     private bool[] m_PublicHand;
     private int[] m_Scores;
-    private ArrayList m_Spectators;
+    private List<Mobile> m_Spectators;
 
     public MahjongPlayers(MahjongGame game, int maxPlayers, int baseScore)
     {
       Game = game;
-      m_Spectators = new ArrayList();
+      m_Spectators = new List<Mobile>();
 
       m_Players = new Mobile[maxPlayers];
       m_InGame = new bool[maxPlayers];
@@ -27,7 +27,7 @@ namespace Server.Engines.Mahjong
     public MahjongPlayers(MahjongGame game, GenericReader reader)
     {
       Game = game;
-      m_Spectators = new ArrayList();
+      m_Spectators = new List<Mobile>();
 
       int version = reader.ReadInt();
 
@@ -121,16 +121,17 @@ namespace Server.Engines.Mahjong
         m_Players[index].SendLocalizedMessage(value ? 1062775 : 1062776); // Your hand is [not] publicly viewable.
     }
 
-    public ArrayList GetInGameMobiles(bool players, bool spectators)
+    public List<Mobile> GetInGameMobiles(bool players, bool spectators)
     {
-      ArrayList list = new ArrayList();
+      List<Mobile> list = new List<Mobile>();
 
       if (players)
         for (int i = 0; i < m_Players.Length; i++)
           if (IsInGamePlayer(i))
             list.Add(m_Players[i]);
 
-      if (spectators) list.AddRange(m_Spectators);
+      if (spectators)
+        list.AddRange(m_Spectators);
 
       return list;
     }
@@ -429,7 +430,7 @@ namespace Server.Engines.Mahjong
 
     public void SendGeneralPacket(bool players, bool spectators)
     {
-      ArrayList mobiles = GetInGameMobiles(players, spectators);
+      List<Mobile> mobiles = GetInGameMobiles(players, spectators);
 
       if (mobiles.Count == 0)
         return;
@@ -438,24 +439,27 @@ namespace Server.Engines.Mahjong
 
       generalInfo.Acquire();
 
-      foreach (Mobile mobile in mobiles) mobile.Send(generalInfo);
+      foreach (Mobile mobile in mobiles)
+        mobile.Send(generalInfo);
 
       generalInfo.Release();
     }
 
     public void SendTilesPacket(bool players, bool spectators)
     {
-      foreach (Mobile mobile in GetInGameMobiles(players, spectators)) mobile.Send(new MahjongTilesInfo(Game, mobile));
+      foreach (Mobile mobile in GetInGameMobiles(players, spectators))
+        mobile.Send(new MahjongTilesInfo(Game, mobile));
     }
 
     public void SendTilePacket(MahjongTile tile, bool players, bool spectators)
     {
-      foreach (Mobile mobile in GetInGameMobiles(players, spectators)) mobile.Send(new MahjongTileInfo(tile, mobile));
+      foreach (Mobile mobile in GetInGameMobiles(players, spectators))
+        mobile.Send(new MahjongTileInfo(tile, mobile));
     }
 
     public void SendRelievePacket(bool players, bool spectators)
     {
-      ArrayList mobiles = GetInGameMobiles(players, spectators);
+      List<Mobile> mobiles = GetInGameMobiles(players, spectators);
 
       if (mobiles.Count == 0)
         return;
@@ -464,19 +468,22 @@ namespace Server.Engines.Mahjong
 
       relieve.Acquire();
 
-      foreach (Mobile mobile in mobiles) mobile.Send(relieve);
+      foreach (Mobile mobile in mobiles)
+        mobile.Send(relieve);
 
       relieve.Release();
     }
 
     public void SendLocalizedMessage(int number)
     {
-      foreach (Mobile mobile in GetInGameMobiles(true, true)) mobile.SendLocalizedMessage(number);
+      foreach (Mobile mobile in GetInGameMobiles(true, true))
+        mobile.SendLocalizedMessage(number);
     }
 
     public void SendLocalizedMessage(int number, string args)
     {
-      foreach (Mobile mobile in GetInGameMobiles(true, true)) mobile.SendLocalizedMessage(number, args);
+      foreach (Mobile mobile in GetInGameMobiles(true, true))
+        mobile.SendLocalizedMessage(number, args);
     }
 
     public void Save(GenericWriter writer)

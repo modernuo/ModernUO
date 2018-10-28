@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -170,12 +171,10 @@ namespace Server.Engines.ConPVP
 
     private void ReKingify(Mobile m)
     {
-      KHTeamInfo ti = null;
       if (m_Game == null || m == null)
         return;
 
-      ti = m_Game.GetTeamInfo(m);
-      if (ti == null)
+      if (m_Game.GetTeamInfo(m) == null)
         return;
 
       King = m;
@@ -216,7 +215,6 @@ namespace Server.Engines.ConPVP
 
       protected override void OnTick()
       {
-        KHTeamInfo ti = null;
         KHPlayerInfo pi = null;
 
         if (m_Hill == null || m_Hill.Deleted || m_Hill.Game == null)
@@ -232,7 +230,7 @@ namespace Server.Engines.ConPVP
           return;
         }
 
-        ti = m_Hill.Game.GetTeamInfo(m_Hill.King);
+        KHTeamInfo ti = m_Hill.Game.GetTeamInfo(m_Hill.King);
         if (ti != null)
           pi = ti[m_Hill.King];
 
@@ -251,11 +249,9 @@ namespace Server.Engines.ConPVP
         if (m_Counter >= m_Hill.ScoreInterval)
         {
           string hill = m_Hill.Name;
-          string king = m_Hill.King.Name;
-          if (king == null)
-            king = "";
+          string king = m_Hill.King.Name ?? "";
 
-          if (hill == null || hill == "")
+          if (string.IsNullOrEmpty(hill))
             hill = "the hill";
 
           m_Hill.Game.Alert("{0} ({1}) is king of {2}!", king, ti.Name, hill);
@@ -315,7 +311,7 @@ namespace Server.Engines.ConPVP
     {
       if (m_Game != null)
       {
-        from.CloseGump(typeof(KHBoardGump));
+        from.CloseGump<KHBoardGump>();
         from.SendGump(new KHBoardGump(from, m_Game));
       }
       else
@@ -364,16 +360,14 @@ namespace Server.Engines.ConPVP
 
       KHTeamInfo ourTeam = game.GetTeamInfo(mob);
 
-      ArrayList entries = new ArrayList();
+      List<KHTeamInfo> entries = new List<KHTeamInfo>();
 
       for (int i = 0; i < game.Context.Participants.Count; ++i)
       {
         KHTeamInfo teamInfo = game.Controller.TeamInfo[i % game.Controller.TeamInfo.Length];
 
-        if (teamInfo == null)
-          continue;
-
-        entries.Add(teamInfo);
+        if (teamInfo != null)
+          entries.Add(teamInfo);
       }
 
       entries.Sort();
@@ -408,7 +402,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < entries.Count; ++i)
       {
-        KHTeamInfo teamInfo = entries[i] as KHTeamInfo;
+        KHTeamInfo teamInfo = entries[i];
 
         AddImage(30, 70 + i * 75, 10152);
         AddImage(30, 85 + i * 75, 10151);
@@ -505,7 +499,7 @@ namespace Server.Engines.ConPVP
     }
   }
 
-  public sealed class KHPlayerInfo : IRankedCTF, IComparable
+  public sealed class KHPlayerInfo : IRankedCTF, IComparable<KHPlayerInfo>
   {
     private int m_Captures;
 
@@ -521,30 +515,18 @@ namespace Server.Engines.ConPVP
 
     public Mobile Player{ get; }
 
-    public int CompareTo(object obj)
+    public int CompareTo(KHPlayerInfo pi)
     {
-      KHPlayerInfo pi = (KHPlayerInfo)obj;
       int res = pi.Score.CompareTo(Score);
-      if (res == 0)
-      {
-        res = pi.Captures.CompareTo(Captures);
+      if (res != 0)
+        return res;
 
-        if (res == 0)
-          res = pi.Kills.CompareTo(Kills);
-      }
+      res = pi.Captures.CompareTo(Captures);
 
-      return res;
+      return res != 0 ? res : pi.Kills.CompareTo(Kills);
     }
 
-    public string Name
-    {
-      get
-      {
-        if (Player?.Name == null)
-          return "";
-        return Player.Name;
-      }
-    }
+    public string Name => Player.Name ?? "";
 
     public int Kills
     {
@@ -586,13 +568,13 @@ namespace Server.Engines.ConPVP
     public KHTeamInfo(int teamID)
     {
       TeamID = teamID;
-      Players = new Hashtable();
+      Players = new Dictionary<Mobile, KHPlayerInfo>();
     }
 
     public KHTeamInfo(int teamID, GenericReader ip)
     {
       TeamID = teamID;
-      Players = new Hashtable();
+      Players = new Dictionary<Mobile, KHPlayerInfo>();
 
       int version = ip.ReadEncodedInt();
 
@@ -613,7 +595,7 @@ namespace Server.Engines.ConPVP
 
     public KHPlayerInfo Leader{ get; set; }
 
-    public Hashtable Players{ get; }
+    public Dictionary<Mobile, KHPlayerInfo> Players{ get; }
 
     public KHPlayerInfo this[Mobile mob]
     {
@@ -706,7 +688,7 @@ namespace Server.Engines.ConPVP
       Name = "King of the Hill Controller";
 
       Duration = TimeSpan.FromMinutes(30.0);
-      Boards = new ArrayList();
+      Boards = new List<KHBoard>();
       Hills = new HillOfTheKing[4];
       TeamInfo = new KHTeamInfo[8];
 
@@ -722,60 +704,28 @@ namespace Server.Engines.ConPVP
     public KHTeamInfo[] TeamInfo{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team1_W
-    {
-      get => TeamInfo[0];
-      set { }
-    }
+    public KHTeamInfo Team1_W => TeamInfo[0];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team2_E
-    {
-      get => TeamInfo[1];
-      set { }
-    }
+    public KHTeamInfo Team2_E => TeamInfo[1];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team3_N
-    {
-      get => TeamInfo[2];
-      set { }
-    }
+    public KHTeamInfo Team3_N => TeamInfo[2];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team4_S
-    {
-      get => TeamInfo[3];
-      set { }
-    }
+    public KHTeamInfo Team4_S => TeamInfo[3];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team5_NW
-    {
-      get => TeamInfo[4];
-      set { }
-    }
+    public KHTeamInfo Team5_NW => TeamInfo[4];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team6_SE
-    {
-      get => TeamInfo[5];
-      set { }
-    }
+    public KHTeamInfo Team6_SE => TeamInfo[5];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team7_SW
-    {
-      get => TeamInfo[6];
-      set { }
-    }
+    public KHTeamInfo Team7_SW => TeamInfo[6];
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public KHTeamInfo Team8_NE
-    {
-      get => TeamInfo[7];
-      set { }
-    }
+    public KHTeamInfo Team8_NE => TeamInfo[7];
 
     public HillOfTheKing[] Hills{ get; private set; }
 
@@ -807,7 +757,7 @@ namespace Server.Engines.ConPVP
       set => Hills[3] = value;
     }
 
-    public ArrayList Boards{ get; private set; }
+    public List<KHBoard> Boards{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public TimeSpan Duration{ get; set; }
@@ -873,7 +823,7 @@ namespace Server.Engines.ConPVP
 
           Duration = reader.ReadTimeSpan();
 
-          Boards = reader.ReadItemList();
+          Boards = reader.ReadStrongItemList<KHBoard>();
 
           Hills = new HillOfTheKing[reader.ReadEncodedInt()];
           for (int i = 0; i < Hills.Length; ++i)
@@ -893,8 +843,7 @@ namespace Server.Engines.ConPVP
   {
     private Timer m_FinishTimer;
 
-    public KHGame(KHController controller, DuelContext context)
-      : base(context)
+    public KHGame(KHController controller, DuelContext context) : base(context)
     {
       Controller = controller;
     }
@@ -928,7 +877,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        Participant p = m_Context.Participants[i] as Participant;
+        Participant p = m_Context.Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
           if (p.Players[j] != null)
@@ -979,19 +928,12 @@ namespace Server.Engines.ConPVP
 
     public void DelayBounce(TimeSpan ts, Mobile mob, Container corpse)
     {
-      Timer.DelayCall(ts, new TimerStateCallback(DelayBounce_Callback), new object[] { mob, corpse });
+      Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
     }
 
-    private void DelayBounce_Callback(object state)
+    private void DelayBounce_Callback(Mobile mob, Container corpse)
     {
-      object[] states = (object[])state;
-      Mobile mob = (Mobile)states[0];
-      Container corpse = (Container)states[1];
-
-      DuelPlayer dp = null;
-
-      if (mob is PlayerMobile mobile)
-        dp = mobile.DuelPlayer;
+      DuelPlayer dp = mob is PlayerMobile mobile ? mobile.DuelPlayer : null;
 
       m_Context.RemoveAggressions(mob);
 
@@ -1045,7 +987,7 @@ namespace Server.Engines.ConPVP
         }
       }
 
-      mob.CloseGump(typeof(KHBoardGump));
+      mob.CloseGump<KHBoardGump>();
       mob.SendGump(new KHBoardGump(mob, this));
 
       m_Context.Requip(mob, corpse);
@@ -1065,7 +1007,7 @@ namespace Server.Engines.ConPVP
       }
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
-        ApplyHues(m_Context.Participants[i] as Participant,
+        ApplyHues(m_Context.Participants[i],
           Controller.TeamInfo[i % Controller.TeamInfo.Length].Color);
 
       m_FinishTimer?.Stop();
@@ -1083,46 +1025,44 @@ namespace Server.Engines.ConPVP
 
     private void Finish_Callback()
     {
-      ArrayList teams = new ArrayList();
+      List<KHTeamInfo> teams = new List<KHTeamInfo>();
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
         KHTeamInfo teamInfo = Controller.TeamInfo[i % Controller.TeamInfo.Length];
 
-        if (teamInfo == null)
-          continue;
-
-        teams.Add(teamInfo);
+        if (teamInfo != null)
+          teams.Add(teamInfo);
       }
 
       teams.Sort();
 
-      Tournament tourny = m_Context.m_Tournament;
+      Tournament tourney = m_Context.m_Tournament;
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourny != null && tourny.TournyType == TournyType.FreeForAll)
+      if (tourney != null && tourney.TourneyType == TourneyType.FreeForAll)
       {
-        sb.Append(m_Context.Participants.Count * tourny.PlayersPerParticipant);
+        sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
         sb.Append("-man FFA");
       }
-      else if (tourny != null && tourny.TournyType == TournyType.RandomTeam)
+      else if (tourney != null && tourney.TourneyType == TourneyType.RandomTeam)
       {
-        sb.Append(tourny.ParticipantsPerMatch);
+        sb.Append(tourney.ParticipantsPerMatch);
         sb.Append("-team");
       }
-      else if (tourny != null && tourny.TournyType == TournyType.RedVsBlue)
+      else if (tourney != null && tourney.TourneyType == TourneyType.RedVsBlue)
       {
         sb.Append("Red v Blue");
       }
-      else if (tourny != null)
+      else if (tourney != null)
       {
-        for (int i = 0; i < tourny.ParticipantsPerMatch; ++i)
+        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
         {
           if (sb.Length > 0)
             sb.Append('v');
 
-          sb.Append(tourny.PlayersPerParticipant);
+          sb.Append(tourney.PlayersPerParticipant);
         }
       }
 
@@ -1131,7 +1071,7 @@ namespace Server.Engines.ConPVP
 
       string title = sb.ToString();
 
-      KHTeamInfo winner = (KHTeamInfo)(teams.Count > 0 ? teams[0] : null);
+      KHTeamInfo winner = teams.Count > 0 ? teams[0] : null;
 
       for (int i = 0; i < teams.Count; ++i)
       {
@@ -1142,9 +1082,9 @@ namespace Server.Engines.ConPVP
         else if (i == 1)
           rank = TrophyRank.Silver;
 
-        KHPlayerInfo leader = ((KHTeamInfo)teams[i]).Leader;
+        KHPlayerInfo leader = teams[i].Leader;
 
-        foreach (KHPlayerInfo pl in ((KHTeamInfo)teams[i]).Players.Values)
+        foreach (KHPlayerInfo pl in teams[i].Players.Values)
         {
           Mobile mob = pl.Player;
 
@@ -1182,7 +1122,7 @@ namespace Server.Engines.ConPVP
           if (pl == leader)
             item.ItemID = 4810;
 
-          item.Name = $"{item.Name}, {((KHTeamInfo)teams[i]).Name.ToLower()}";
+          item.Name = $"{item.Name}, {teams[i].Name.ToLower()}";
 
           if (!mob.PlaceInBackpack(item))
             mob.BankBox.DropItem(item);
@@ -1219,21 +1159,22 @@ namespace Server.Engines.ConPVP
 
           if (dp?.Mobile != null)
           {
-            dp.Mobile.CloseGump(typeof(KHBoardGump));
+            dp.Mobile.CloseGump<KHBoardGump>();
             dp.Mobile.SendGump(new KHBoardGump(dp.Mobile, this));
           }
         }
 
-        if (i == winner.TeamID)
+        if (i == winner?.TeamID)
           continue;
 
-        if (p?.Players != null)
+        if (p.Players != null)
           for (int j = 0; j < p.Players.Length; ++j)
             if (p.Players[j] != null)
               p.Players[j].Eliminated = true;
       }
 
-      m_Context.Finish(m_Context.Participants[winner.TeamID] as Participant);
+      if (winner != null)
+        m_Context.Finish(m_Context.Participants[winner.TeamID]);
     }
 
     public override void OnStop()
@@ -1250,7 +1191,7 @@ namespace Server.Engines.ConPVP
           board.m_Game = null;
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
-        ApplyHues(m_Context.Participants[i] as Participant, -1);
+        ApplyHues(m_Context.Participants[i], -1);
 
       m_FinishTimer?.Stop();
       m_FinishTimer = null;

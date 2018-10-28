@@ -30,7 +30,7 @@ namespace Server.Engines.Quests.Necro
 
         if (qs is DarkTidesQuest)
         {
-          QuestObjective obj = qs.FindObjective(typeof(SpeakCavePasswordObjective));
+          QuestObjective obj = qs.FindObjective<SpeakCavePasswordObjective>();
 
           if (obj != null && obj.Completed)
           {

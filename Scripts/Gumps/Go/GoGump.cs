@@ -67,7 +67,7 @@ namespace Server.Gumps
 
     private GoGump(int page, Mobile from, LocationTree tree, ParentNode node) : base(50, 50)
     {
-      from.CloseGump(typeof(GoGump));
+      from.CloseGump<GoGump>();
 
       tree.LastBranch[from] = node;
 
@@ -151,13 +151,8 @@ namespace Server.Gumps
         x = BorderSize + OffsetSize;
         y += EntryHeight + OffsetSize;
 
-        object child = node.Children[index];
-        string name = "";
-
-        if (child is ParentNode parentNode)
-          name = parentNode.Name;
-        else if (child is ChildNode childNode)
-          name = childNode.Name;
+        IGoNode child = node.Children[index];
+        string name = child.Name;
 
         AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
         AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, name);
@@ -228,7 +223,7 @@ namespace Server.Gumps
 
           if (index >= 0 && index < m_Node.Children.Length)
           {
-            object o = m_Node.Children[index];
+            IGoNode o = m_Node.Children[index];
 
             if (o is ParentNode node)
               from.SendGump(new GoGump(0, from, m_Tree, node));

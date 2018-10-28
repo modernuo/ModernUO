@@ -1,4 +1,5 @@
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Server.Multis;
 using Server.Network;
 
@@ -7,12 +8,12 @@ namespace Server.Gumps
   public class ReclaimVendorGump : Gump
   {
     private BaseHouse m_House;
-    private ArrayList m_Vendors;
+    private List<Mobile> m_Vendors;
 
     public ReclaimVendorGump(BaseHouse house) : base(50, 50)
     {
       m_House = house;
-      m_Vendors = new ArrayList(house.InternalizedVendors);
+      m_Vendors = house.InternalizedVendors.ToList();
 
       AddBackground(0, 0, 170, 50 + m_Vendors.Count * 20, 0x13BE);
 
@@ -23,7 +24,7 @@ namespace Server.Gumps
 
       for (int i = 0; i < m_Vendors.Count; i++)
       {
-        Mobile m = (Mobile)m_Vendors[i];
+        Mobile m = m_Vendors[i];
 
         int y = 40 + i * 20;
 
@@ -45,7 +46,7 @@ namespace Server.Gumps
       if (index < 0 || index >= m_Vendors.Count)
         return;
 
-      Mobile mob = (Mobile)m_Vendors[index];
+      Mobile mob = m_Vendors[index];
 
       if (!m_House.InternalizedVendors.Contains(mob))
         return;
@@ -56,8 +57,7 @@ namespace Server.Gumps
       }
       else
       {
-        bool vendor, contract;
-        BaseHouse.IsThereVendor(from.Location, from.Map, out vendor, out contract);
+        BaseHouse.IsThereVendor(from.Location, from.Map, out bool vendor, out bool contract);
 
         if (vendor)
         {

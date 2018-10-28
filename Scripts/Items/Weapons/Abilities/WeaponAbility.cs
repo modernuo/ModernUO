@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Engines.ConPVP;
 using Server.Mobiles;
 using Server.Network;
@@ -12,52 +13,7 @@ namespace Server.Items
 {
   public abstract class WeaponAbility
   {
-    public static readonly WeaponAbility ArmorIgnore = Abilities[1];
-    public static readonly WeaponAbility BleedAttack = Abilities[2];
-    public static readonly WeaponAbility ConcussionBlow = Abilities[3];
-    public static readonly WeaponAbility CrushingBlow = Abilities[4];
-    public static readonly WeaponAbility Disarm = Abilities[5];
-    public static readonly WeaponAbility Dismount = Abilities[6];
-    public static readonly WeaponAbility DoubleStrike = Abilities[7];
-    public static readonly WeaponAbility InfectiousStrike = Abilities[8];
-    public static readonly WeaponAbility MortalStrike = Abilities[9];
-    public static readonly WeaponAbility MovingShot = Abilities[10];
-    public static readonly WeaponAbility ParalyzingBlow = Abilities[11];
-    public static readonly WeaponAbility ShadowStrike = Abilities[12];
-    public static readonly WeaponAbility WhirlwindAttack = Abilities[13];
-
-    public static readonly WeaponAbility RidingSwipe = Abilities[14];
-    public static readonly WeaponAbility FrenziedWhirlwind = Abilities[15];
-    public static readonly WeaponAbility Block = Abilities[16];
-    public static readonly WeaponAbility DefenseMastery = Abilities[17];
-    public static readonly WeaponAbility NerveStrike = Abilities[18];
-    public static readonly WeaponAbility TalonStrike = Abilities[19];
-    public static readonly WeaponAbility Feint = Abilities[20];
-    public static readonly WeaponAbility DualWield = Abilities[21];
-    public static readonly WeaponAbility DoubleShot = Abilities[22];
-    public static readonly WeaponAbility ArmorPierce = Abilities[23];
-
-    public static readonly WeaponAbility Bladeweave = Abilities[24];
-    public static readonly WeaponAbility ForceArrow = Abilities[25];
-    public static readonly WeaponAbility LightningArrow = Abilities[26];
-    public static readonly WeaponAbility PsychicAttack = Abilities[27];
-    public static readonly WeaponAbility SerpentArrow = Abilities[28];
-    public static readonly WeaponAbility ForceOfNature = Abilities[29];
-
-    public static readonly WeaponAbility Disrobe = Abilities[30];
-
-
-    private static Hashtable m_PlayersTable = new Hashtable();
-
-    public virtual int BaseMana => 0;
-
-    public virtual int AccuracyBonus => 0;
-    public virtual double DamageScalar => 1.0;
-
-    public virtual bool RequiresSE => false;
-
-    public static WeaponAbility[] Abilities{ get; } = new WeaponAbility[31]
-    {
+    public static WeaponAbility[] Abilities{ get; } = {
       null,
       new ArmorIgnore(),
       new BleedAttack(),
@@ -92,7 +48,50 @@ namespace Server.Items
       new Disrobe()
     };
 
-    public static Hashtable Table{ get; } = new Hashtable();
+    public static readonly WeaponAbility ArmorIgnore = Abilities[1];
+    public static readonly WeaponAbility BleedAttack = Abilities[2];
+    public static readonly WeaponAbility ConcussionBlow = Abilities[3];
+    public static readonly WeaponAbility CrushingBlow = Abilities[4];
+    public static readonly WeaponAbility Disarm = Abilities[5];
+    public static readonly WeaponAbility Dismount = Abilities[6];
+    public static readonly WeaponAbility DoubleStrike = Abilities[7];
+    public static readonly WeaponAbility InfectiousStrike = Abilities[8];
+    public static readonly WeaponAbility MortalStrike = Abilities[9];
+    public static readonly WeaponAbility MovingShot = Abilities[10];
+    public static readonly WeaponAbility ParalyzingBlow = Abilities[11];
+    public static readonly WeaponAbility ShadowStrike = Abilities[12];
+    public static readonly WeaponAbility WhirlwindAttack = Abilities[13];
+
+    public static readonly WeaponAbility RidingSwipe = Abilities[14];
+    public static readonly WeaponAbility FrenziedWhirlwind = Abilities[15];
+    public static readonly WeaponAbility Block = Abilities[16];
+    public static readonly WeaponAbility DefenseMastery = Abilities[17];
+    public static readonly WeaponAbility NerveStrike = Abilities[18];
+    public static readonly WeaponAbility TalonStrike = Abilities[19];
+    public static readonly WeaponAbility Feint = Abilities[20];
+    public static readonly WeaponAbility DualWield = Abilities[21];
+    public static readonly WeaponAbility DoubleShot = Abilities[22];
+    public static readonly WeaponAbility ArmorPierce = Abilities[23];
+
+    public static readonly WeaponAbility Bladeweave = Abilities[24];
+    public static readonly WeaponAbility ForceArrow = Abilities[25];
+    public static readonly WeaponAbility LightningArrow = Abilities[26];
+    public static readonly WeaponAbility PsychicAttack = Abilities[27];
+    public static readonly WeaponAbility SerpentArrow = Abilities[28];
+    public static readonly WeaponAbility ForceOfNature = Abilities[29];
+
+    public static readonly WeaponAbility Disrobe = Abilities[30];
+
+    private static Dictionary<Mobile, WeaponAbilityContext> m_PlayersTable = new Dictionary<Mobile, WeaponAbilityContext>();
+
+    public virtual int BaseMana => 0;
+
+    public virtual int AccuracyBonus => 0;
+    public virtual double DamageScalar => 1.0;
+
+    public virtual bool RequiresSE => false;
+
+    public static Dictionary<Mobile, WeaponAbility> Table{ get; } = new Dictionary<Mobile, WeaponAbility>();
 
     public virtual bool ValidatesDuringHit => true;
 
@@ -122,12 +121,13 @@ namespace Server.Items
 
     public virtual double GetRequiredSkill(Mobile from)
     {
-      BaseWeapon weapon = from.Weapon as BaseWeapon;
-
-      if (weapon != null && weapon.PrimaryAbility == this)
-        return 70.0;
-      if (weapon != null && weapon.SecondaryAbility == this)
-        return 90.0;
+      if (from.Weapon is BaseWeapon weapon)
+      {
+        if (weapon.PrimaryAbility == this)
+          return 70.0;
+        if (weapon.SecondaryAbility == this)
+          return 90.0;
+      }
 
       return 200.0;
     }
@@ -177,7 +177,7 @@ namespace Server.Items
       double reqSkill = GetRequiredSkill(from);
       bool reqTactics = Core.ML && RequiresTactics(from);
 
-      if (Core.ML && reqTactics && from.Skills[SkillName.Tactics].Base < reqSkill)
+      if (Core.ML && reqTactics && from.Skills.Tactics.Base < reqSkill)
       {
         from.SendLocalizedMessage(1079308,
           reqSkill.ToString()); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
@@ -188,9 +188,9 @@ namespace Server.Items
         return true;
 
       /* <UBWS> */
-      if (weapon.WeaponAttributes.UseBestSkill > 0 && (from.Skills[SkillName.Swords].Base >= reqSkill ||
-                                                       from.Skills[SkillName.Macing].Base >= reqSkill ||
-                                                       from.Skills[SkillName.Fencing].Base >= reqSkill))
+      if (weapon.WeaponAttributes.UseBestSkill > 0 && (from.Skills.Swords.Base >= reqSkill ||
+                                                       from.Skills.Macing.Base >= reqSkill ||
+                                                       from.Skills.Fencing.Base >= reqSkill))
         return true;
       /* </UBWS> */
 
@@ -338,13 +338,8 @@ namespace Server.Items
 
     public static bool IsWeaponAbility(Mobile m, WeaponAbility a)
     {
-      if (a == null)
-        return true;
-
-      if (!m.Player)
-        return true;
-
-      return m.Weapon is BaseWeapon weapon && (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a);
+      return a == null || !m.Player || m.Weapon is BaseWeapon weapon &&
+             (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a);
     }
 
     public static WeaponAbility GetCurrentAbility(Mobile m)
@@ -355,7 +350,7 @@ namespace Server.Items
         return null;
       }
 
-      WeaponAbility a = (WeaponAbility)Table[m];
+      WeaponAbility a = Table[m];
 
       if (!IsWeaponAbility(m, a))
       {
@@ -363,7 +358,7 @@ namespace Server.Items
         return null;
       }
 
-      if (a != null && a.ValidatesDuringHit && !a.Validate(m))
+      if (a?.ValidatesDuringHit == true && !a.Validate(m))
       {
         ClearCurrentAbility(m);
         return null;
@@ -451,7 +446,7 @@ namespace Server.Items
 
     private static WeaponAbilityContext GetContext(Mobile m)
     {
-      return m_PlayersTable[m] as WeaponAbilityContext;
+      return m_PlayersTable[m];
     }
 
     private class WeaponAbilityTimer : Timer

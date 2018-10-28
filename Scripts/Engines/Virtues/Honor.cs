@@ -93,7 +93,7 @@ namespace Server
     private static void Honor(PlayerMobile source, Mobile target)
     {
       IHonorTarget honorTarget = target as IHonorTarget;
-      GuardedRegion reg = (GuardedRegion)source.Region.GetRegion(typeof(GuardedRegion));
+      GuardedRegion reg = source.Region.GetRegion<GuardedRegion>();
       Map map = source.Map;
 
       if (honorTarget == null)
@@ -343,7 +343,7 @@ namespace Server
         return;
 
       double dGain =
-        targetFame / 100 * (m_HonorDamage / m_TotalDamage); //Initial honor gain is 100th of the monsters honor
+        targetFame / 100.0 * (m_HonorDamage / m_TotalDamage); //Initial honor gain is 100th of the monsters honor
 
       if (m_HonorDamage == m_TotalDamage && m_FirstHit == FirstHit.Granted)
         dGain = dGain * 1.5; //honor gain is increased alot more if the combat was fully honorable

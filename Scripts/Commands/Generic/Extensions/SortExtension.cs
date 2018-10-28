@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Commands.Generic
@@ -8,7 +7,7 @@ namespace Server.Commands.Generic
   {
     public static ExtensionInfo ExtInfo = new ExtensionInfo(40, "Order", -1, () => new SortExtension());
 
-    private IComparer m_Comparer;
+    private IComparer<object> m_Comparer;
 
     private List<OrderInfo> m_Orders;
 
@@ -38,7 +37,7 @@ namespace Server.Commands.Generic
       if (assembly == null)
         assembly = new AssemblyEmitter("__dynamic", false);
 
-      m_Comparer = SortCompiler.Compile(assembly, baseType, m_Orders.ToArray());
+      m_Comparer = SortCompiler.Compile<object>(assembly, baseType, m_Orders.ToArray());
     }
 
     public override void Parse(Mobile from, string[] arguments, int offset, int size)
@@ -93,7 +92,7 @@ namespace Server.Commands.Generic
       }
     }
 
-    public override void Filter(ArrayList list)
+    public override void Filter(List<object> list)
     {
       if (m_Comparer == null)
         throw new InvalidOperationException("The extension must first be optimized.");

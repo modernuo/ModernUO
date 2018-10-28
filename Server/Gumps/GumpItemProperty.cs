@@ -25,14 +25,14 @@ namespace Server.Gumps
   public class GumpItemProperty : GumpEntry
   {
     private static byte[] m_LayoutName = Gump.StringToBuffer("itemproperty");
-    private int m_Serial;
+    private uint m_Serial;
 
-    public GumpItemProperty(int serial)
+    public GumpItemProperty(uint serial)
     {
       m_Serial = serial;
     }
 
-    public int Serial
+    public uint Serial
     {
       get => m_Serial;
       set => Delta(ref m_Serial, value);

@@ -100,7 +100,7 @@ namespace Server.Items
             item is BaseWeapon weapon && weapon.PlayerConstructed ||
             item is BaseClothing clothing && clothing.PlayerConstructed)
         {
-          double mining = from.Skills[SkillName.Mining].Value;
+          double mining = from.Skills.Mining.Value;
           if (mining > 100.0)
             mining = 100.0;
           double amount = ((4 + mining) * craftResource.Amount - 4) * 0.0068;
@@ -114,7 +114,7 @@ namespace Server.Items
           ingot.Amount = 2;
         }
 
-        if (difficulty > from.Skills[SkillName.Mining].Value)
+        if (difficulty > from.Skills.Mining.Value)
         {
           m_Failure = true;
           ingot.Delete();

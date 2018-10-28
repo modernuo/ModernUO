@@ -39,8 +39,6 @@ namespace Server.Targeting
       CheckLOS = true;
     }
 
-    public static bool TargetIDValidation{ get; set; } = true;
-
     public DateTime TimeoutTime{ get; private set; }
 
     public bool CheckLOS{ get; set; }
@@ -59,13 +57,8 @@ namespace Server.Targeting
 
     public static void Cancel(Mobile m)
     {
-      NetState ns = m.NetState;
-
-      ns?.Send(CancelTarget.Instance);
-
-      Target targ = m.Target;
-
-      targ?.OnTargetCancel(m, TargetCancelType.Canceled);
+      m.NetState?.Send(CancelTarget.Instance);
+      m.Target?.OnTargetCancel(m, TargetCancelType.Canceled);
     }
 
     public void BeginTimeout(Mobile from, TimeSpan delay)
@@ -81,7 +74,6 @@ namespace Server.Targeting
     public void CancelTimeout()
     {
       m_TimeoutTimer?.Stop();
-
       m_TimeoutTimer = null;
     }
 
@@ -204,11 +196,11 @@ namespace Server.Targeting
           OnTargetOutOfLOS(from, targeted);
         else if (item?.InSecureTrade == true)
           OnTargetInSecureTrade(from, targeted);
-        else if (item?.IsAccessibleTo(from) == true)
+        else if (item?.IsAccessibleTo(from) == false)
           OnTargetNotAccessible(from, targeted);
-        else if (item?.CheckTarget(from, this, targeted) == true)
+        else if (item?.CheckTarget(from, this, targeted) == false)
           OnTargetUntargetable(from, targeted);
-        else if (mobile?.CheckTarget(from, this, mobile) != true)
+        else if (mobile?.CheckTarget(from, this, mobile) == false)
           OnTargetUntargetable(from, mobile);
         else if (from.Region.OnTarget(from, this, targeted))
           OnTarget(from, targeted);

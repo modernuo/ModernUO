@@ -28,13 +28,8 @@ namespace Server.Spells.Fourth
       Caster.Target = new InternalTarget(this);
     }
 
-    private void AosDelay_Callback(object state)
+    private void AosDelay_Callback(Mobile m, int mana)
     {
-      object[] states = (object[])state;
-
-      Mobile m = (Mobile)states[0];
-      int mana = (int)states[1];
-
       if (m.Alive && !m.IsDeadBondedPet)
       {
         m.Mana += mana;
@@ -81,8 +76,7 @@ namespace Server.Spells.Fourth
           {
             m.Mana -= toDrain;
 
-            m_Table[m] = Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerStateCallback(AosDelay_Callback),
-              new object[] { m, toDrain });
+            m_Table[m] = Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => AosDelay_Callback(m, toDrain));
           }
         }
         else

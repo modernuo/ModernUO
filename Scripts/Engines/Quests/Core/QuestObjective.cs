@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -164,13 +164,13 @@ namespace Server.Engines.Quests
 
   public class QuestObjectivesGump : BaseQuestGump
   {
-    private ArrayList m_Objectives;
+    private List<QuestObjective> m_Objectives;
 
-    public QuestObjectivesGump(QuestObjective obj) : this(BuildList(obj))
+    public QuestObjectivesGump(QuestObjective obj) : this(new List<QuestObjective>{ obj })
     {
     }
 
-    public QuestObjectivesGump(ArrayList objectives) : base(90, 50)
+    public QuestObjectivesGump(List<QuestObjective> objectives) : base(90, 50)
     {
       m_Objectives = objectives;
 
@@ -217,7 +217,7 @@ namespace Server.Engines.Quests
 
       for (int i = 0; i < objectives.Count; ++i)
       {
-        QuestObjective obj = (QuestObjective)objectives[objectives.Count - 1 - i];
+        QuestObjective obj = objectives[objectives.Count - 1 - i];
 
         if (i > 0)
         {
@@ -242,7 +242,7 @@ namespace Server.Engines.Quests
     {
       for (int i = m_Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)m_Objectives[i];
+        QuestObjective obj = m_Objectives[i];
 
         if (!obj.HasBeenRead)
         {

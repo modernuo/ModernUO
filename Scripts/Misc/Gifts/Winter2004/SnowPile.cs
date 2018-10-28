@@ -51,7 +51,7 @@ namespace Server.Items
         from.SendLocalizedMessage(1010097); // You cannot use this while mounted.
       }
 
-      else if (from.CanBeginAction(typeof(SnowPile)))
+      else if (from.CanBeginAction<SnowPile>())
       {
         from.SendLocalizedMessage(1005575); // You carefully pack the snow into a ball...
         from.Target = new SnowTarget(from, this);
@@ -73,7 +73,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        m_From.EndAction(typeof(SnowPile));
+        m_From.EndAction<SnowPile>();
       }
     }
 
@@ -98,13 +98,13 @@ namespace Server.Items
         {
           Container pack = targ.Backpack;
 
-          if (from.Region.IsPartOf(typeof(SafeZone)) || targ.Region.IsPartOf(typeof(SafeZone)))
+          if (from.Region.IsPartOf<SafeZone>() || targ.Region.IsPartOf<SafeZone>())
           {
             from.SendMessage("You may not throw snow here.");
           }
           else if (pack?.FindItemByType(new[] { typeof(SnowPile), typeof(PileOfGlacialSnow) }) != null)
           {
-            if (from.BeginAction(typeof(SnowPile)))
+            if (from.BeginAction<SnowPile>())
             {
               new InternalTimer(from).Start();
 
@@ -115,7 +115,7 @@ namespace Server.Items
               targ.SendLocalizedMessage(1010572); // You have just been hit by a snowball!
               from.SendLocalizedMessage(1010573); // You throw the snowball and hit the target!
 
-              Effects.SendMovingEffect(from, targ, 0x36E4, 7, 0, false, true, 0x480, 0);
+              Effects.SendMovingEffect(from, targ, 0x36E4, 7, 0, false, true, 0x480);
             }
             else
             {

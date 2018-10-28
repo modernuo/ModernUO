@@ -87,7 +87,7 @@ namespace Server.Spells.Ninjitsu
       {
         Caster.SendLocalizedMessage(502831); // Cannot teleport to that spot.
       }
-      else if (Region.Find(to, map).GetRegion(typeof(HouseRegion)) != null)
+      else if (Region.Find(to, map).IsPartOf<HouseRegion>())
       {
         Caster.SendLocalizedMessage(502829); // Cannot teleport to that spot.
       }

@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -8,7 +8,7 @@ namespace Server.Items
   /// </summary>
   public class TalonStrike : WeaponAbility
   {
-    public static Hashtable Registry{ get; } = new Hashtable();
+    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     public override int BaseMana => 30;
     public override double DamageScalar => 1.2;
@@ -27,7 +27,7 @@ namespace Server.Items
 
     public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {
-      if (Registry.Contains(defender) || !Validate(attacker) || !CheckMana(attacker, true))
+      if (m_Table.ContainsKey(defender) || !Validate(attacker) || !CheckMana(attacker, true))
         return;
 
       ClearCurrentAbility(attacker);
@@ -37,31 +37,28 @@ namespace Server.Items
 
       defender.FixedParticles(0x373A, 1, 17, 0x26BC, 0x662, 0, EffectLayer.Waist);
 
-      Timer t = new InternalTimer(defender,
-        (int)(10.0 * (attacker.Skills[SkillName.Ninjitsu].Value - 50.0) / 70.0 + 5), attacker); //5 - 15 damage
+      InternalTimer timer = new InternalTimer(defender,
+        (int)(10.0 * (attacker.Skills.Ninjitsu.Value - 50.0) / 70.0 + 5)); //5 - 15 damage
 
-      t.Start();
+      timer.Start();
 
-      Registry.Add(defender, t);
+      m_Table.Add(defender, timer);
     }
 
     private class InternalTimer : Timer
     {
       private readonly double DamagePerTick;
-      private Mobile m_Attacker;
       private double m_DamageRemaining;
       private double m_DamageToDo;
       private Mobile m_Defender;
 
-      public InternalTimer(Mobile defender, int totalDamage, Mobile attacker)
+      public InternalTimer(Mobile defender, int totalDamage)
         : base(TimeSpan.Zero, TimeSpan.FromSeconds(0.25),
           12) // 3 seconds at .25 seconds apart = 12.  Confirm delay inbetween of .25 each.
       {
         m_Defender = defender;
         m_DamageRemaining = totalDamage;
         Priority = TimerPriority.TwentyFiveMS;
-
-        m_Attacker = attacker;
 
         DamagePerTick = (double)totalDamage / 12 + .01;
       }
@@ -71,7 +68,7 @@ namespace Server.Items
         if (!m_Defender.Alive || m_DamageRemaining <= 0)
         {
           Stop();
-          Registry.Remove(m_Defender);
+          m_Table.Remove(m_Defender);
           return;
         }
 
@@ -93,7 +90,7 @@ namespace Server.Items
         if (!m_Defender.Alive || m_DamageRemaining <= 0)
         {
           Stop();
-          Registry.Remove(m_Defender);
+          m_Table.Remove(m_Defender);
         }
       }
     }

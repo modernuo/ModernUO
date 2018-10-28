@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Network;
 
@@ -7,7 +8,7 @@ namespace Server.Mobiles
 {
   public class MeerMage : BaseCreature
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     private DateTime m_NextAbilityTime;
 
@@ -145,9 +146,11 @@ namespace Server.Mobiles
           }
           else if (combatant.Player)
           {
+            int count = 0;
+
             Say(true, "I call a plague of insects to sting your flesh!");
             m_Table[combatant] = Timer.DelayCall(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(7.0),
-              new TimerStateCallback(DoEffect), new object[] { combatant, 0 });
+              () => DoEffect(combatant, count++));
           }
         }
       }
@@ -157,29 +160,26 @@ namespace Server.Mobiles
 
     public static bool UnderEffect(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public static void StopEffect(Mobile m, bool message)
     {
-      if (m_Table[m] is Timer t)
+      Timer timer = m_Table[m];
+
+      if (timer != null)
       {
         if (message)
           m.PublicOverheadMessage(MessageType.Emote, m.SpeechHue, true,
             "* The open flame begins to scatter the swarm of insects *");
 
-        t.Stop();
+        timer.Stop();
         m_Table.Remove(m);
       }
     }
 
-    public void DoEffect(object state)
+    public void DoEffect(Mobile m, int count)
     {
-      object[] states = (object[])state;
-
-      Mobile m = (Mobile)states[0];
-      int count = (int)states[1];
-
       if (!m.Alive)
       {
         StopEffect(m, false);
@@ -205,8 +205,6 @@ namespace Server.Mobiles
           m.PlaySound(0x1BC);
 
           AOS.Damage(m, this, Utility.RandomMinMax(30, 40) - (Core.AOS ? 0 : 10), 100, 0, 0, 0, 0);
-
-          states[1] = count + 1;
 
           if (!m.Alive)
             StopEffect(m, false);

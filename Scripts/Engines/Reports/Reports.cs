@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Server.Accounting;
@@ -132,24 +131,24 @@ namespace Server.Engines.Reports
 
       Ladder ladder = Ladder.Instance;
 
-      if (ladder != null)
+      if (ladder == null)
+        return chart;
+      
+      List<LadderEntry> entries = ladder.Entries;
+
+      for (int i = entries.Count - 1; i >= 0; --i)
       {
-        ArrayList entries = ladder.ToArrayList();
+        LadderEntry entry = entries[i];
+        int level = Ladder.GetLevel(entry.Experience);
 
-        for (int i = entries.Count - 1; i >= 0; --i)
+        if (lastItem == null || level != lastLevel)
         {
-          LadderEntry entry = (LadderEntry)entries[i];
-          int level = Ladder.GetLevel(entry.Experience);
-
-          if (lastItem == null || level != lastLevel)
-          {
-            chart.Items.Add(lastItem = new ChartItem(level.ToString(), 1));
-            lastLevel = level;
-          }
-          else
-          {
-            lastItem.Value++;
-          }
+          chart.Items.Add(lastItem = new ChartItem(level.ToString(), 1));
+          lastLevel = level;
+        }
+        else
+        {
+          lastItem.Value++;
         }
       }
 
@@ -171,11 +170,11 @@ namespace Server.Engines.Reports
 
       if (ladder != null)
       {
-        ArrayList entries = ladder.ToArrayList();
+        List<LadderEntry> entries = ladder.Entries;
 
         for (int i = 0; i < entries.Count && i < 15; ++i)
         {
-          LadderEntry entry = (LadderEntry)entries[i];
+          LadderEntry entry = entries[i];
           int level = Ladder.GetLevel(entry.Experience);
           string guild = "";
 
@@ -204,40 +203,40 @@ namespace Server.Engines.Reports
 
       Preferences prefs = Preferences.Instance;
 
-      if (prefs != null)
+      if (prefs == null)
+        return chart;
+      
+      List<Arena> arenas = Arena.Arenas;
+
+      for (int i = 0; i < arenas.Count; ++i)
       {
-        List<Arena> arenas = Arena.Arenas;
+        Arena arena = arenas[i];
 
-        for (int i = 0; i < arenas.Count; ++i)
+        string name = arena.Name;
+
+        if (name != null)
+          chart.Items.Add(name, 0);
+      }
+
+      List<PreferencesEntry> entries = prefs.Entries;
+
+      for (int i = 0; i < entries.Count; ++i)
+      {
+        PreferencesEntry entry = entries[i];
+        List<string> list = entry.Disliked;
+
+        for (int j = 0; j < list.Count; ++j)
         {
-          Arena arena = arenas[i];
+          string disliked = list[j];
 
-          string name = arena.Name;
-
-          if (name != null)
-            chart.Items.Add(name, 0);
-        }
-
-        ArrayList entries = prefs.Entries;
-
-        for (int i = 0; i < entries.Count; ++i)
-        {
-          PreferencesEntry entry = (PreferencesEntry)entries[i];
-          ArrayList list = entry.Disliked;
-
-          for (int j = 0; j < list.Count; ++j)
+          for (int k = 0; k < chart.Items.Count; ++k)
           {
-            string disliked = (string)list[j];
+            ChartItem item = chart.Items[k];
 
-            for (int k = 0; k < chart.Items.Count; ++k)
+            if (item.Name == disliked)
             {
-              ChartItem item = chart.Items[k];
-
-              if (item.Name == disliked)
-              {
-                ++item.Value;
-                break;
-              }
+              ++item.Value;
+              break;
             }
           }
         }
@@ -364,7 +363,7 @@ namespace Server.Engines.Reports
       report.Columns.Add("28%", "center", "Office");
       report.Columns.Add("16%", "center", "Kill Points");
 
-      ArrayList list = new ArrayList();
+      List<PlayerState> list = new List<PlayerState>();
 
       List<Faction> factions = Faction.Factions;
 
@@ -380,7 +379,7 @@ namespace Server.Engines.Reports
 
       for (int i = 0; i < list.Count && i < 15; ++i)
       {
-        PlayerState pl = (PlayerState)list[i];
+        PlayerState pl = list[i];
 
         string office;
 

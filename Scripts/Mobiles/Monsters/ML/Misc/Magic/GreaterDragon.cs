@@ -96,8 +96,8 @@ namespace Server.Mobiles
       {
         AnimalTaming.ScaleStats(this, 0.50);
         AnimalTaming.ScaleSkills(this, 0.80, 0.90); // 90% * 80% = 72% of original skills trainable to 90%
-        Skills[SkillName.Magery].Base =
-          Skills[SkillName.Magery]
+        Skills.Magery.Base =
+          Skills.Magery
             .Cap; // Greater dragons have a 90% cap reduction and 90% skill reduction on magery
       }
     }

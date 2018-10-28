@@ -13,7 +13,7 @@ namespace Server.Multis
       m_From = from;
       m_Boat = boat;
 
-      m_From.CloseGump(typeof(ConfirmDryDockGump));
+      m_From.CloseGump<ConfirmDryDockGump>();
 
       AddPage(0);
 

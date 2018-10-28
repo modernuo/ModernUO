@@ -32,7 +32,7 @@ namespace Server.Items
         return false;
       }
 
-      if (!from.CanBeginAction(typeof(FireHorn)))
+      if (!from.CanBeginAction<FireHorn>())
       {
         from.SendLocalizedMessage(1049615); // You must take a moment to catch your breath.
         return false;
@@ -62,11 +62,10 @@ namespace Server.Items
       if (!CheckUse(from))
         return;
 
-      from.BeginAction(typeof(FireHorn));
-      Timer.DelayCall(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0),
-        new TimerStateCallback(EndAction), from);
+      from.BeginAction<FireHorn>();
+      Timer.DelayCall(Core.AOS ? TimeSpan.FromSeconds(6.0) : TimeSpan.FromSeconds(12.0), EndAction, from);
 
-      int music = from.Skills[SkillName.Musicianship].Fixed;
+      int music = from.Skills.Musicianship.Fixed;
 
       int sucChance = 500 + (music - 775) * 2;
       double dSucChance = sucChance / 1000.0;
@@ -107,9 +106,9 @@ namespace Server.Items
 
       if (targets.Count > 0)
       {
-        int prov = from.Skills[SkillName.Provocation].Fixed;
-        int disc = from.Skills[SkillName.Discordance].Fixed;
-        int peace = from.Skills[SkillName.Peacemaking].Fixed;
+        int prov = from.Skills.Provocation.Fixed;
+        int disc = from.Skills.Discordance.Fixed;
+        int peace = from.Skills.Peacemaking.Fixed;
 
         int minDamage, maxDamage;
 
@@ -176,12 +175,10 @@ namespace Server.Items
       }
     }
 
-    private static void EndAction(object state)
+    private static void EndAction(Mobile m)
     {
-      Mobile m = (Mobile)state;
-
-      m.EndAction(typeof(FireHorn));
-      m.SendLocalizedMessage(1049621); // You catch your breath.
+      m?.EndAction<FireHorn>();
+      m?.SendLocalizedMessage(1049621); // You catch your breath.
     }
 
     public override void Serialize(GenericWriter writer)

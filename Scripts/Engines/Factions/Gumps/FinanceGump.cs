@@ -190,9 +190,7 @@ namespace Server.Factions
         return;
       }
 
-      int type, index;
-
-      if (!FromButtonID(info.ButtonID, out type, out index))
+      if (!FromButtonID(info.ButtonID, out int type, out int index))
         return;
 
       switch (type)
@@ -258,8 +256,6 @@ namespace Server.Factions
           if (index >= 0 && index < vendorLists.Count)
           {
             VendorList vendorList = vendorLists[index];
-
-            Town town = Town.FromRegion(m_From.Region);
 
             if (Town.FromRegion(m_From.Region) != m_Town)
             {

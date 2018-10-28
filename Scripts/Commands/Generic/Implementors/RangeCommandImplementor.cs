@@ -73,7 +73,7 @@ namespace Server.Commands.Generic
       Point3D start = new Point3D(from.X - range, from.Y - range, from.Z);
       Point3D end = new Point3D(from.X + range, from.Y + range, from.Z);
 
-      impl.OnTarget(from, map, start, end, new object[] { command, args });
+      impl.OnTarget(from, map, start, end, command, args);
     }
   }
 }

@@ -119,7 +119,8 @@ namespace Server.Engines.Quests.Hag
 
     public override void OnRead()
     {
-      if (System.FindObjective(typeof(FindIngredientObjective)) is FindIngredientObjective obj)
+      FindIngredientObjective obj = System.FindObjective<FindIngredientObjective>();
+      if (obj != null)
         System.AddObjective(new FindIngredientObjective(obj.Ingredients, true));
     }
   }
@@ -253,8 +254,7 @@ namespace Server.Engines.Quests.Hag
 
     public override void OnRead()
     {
-      if (System.FindObjective(typeof(FindIngredientObjective)) is FindIngredientObjective obj)
-        obj.NextStep();
+      System.FindObjective<FindIngredientObjective>()?.NextStep();
     }
 
     public override void ChildDeserialize(GenericReader reader)

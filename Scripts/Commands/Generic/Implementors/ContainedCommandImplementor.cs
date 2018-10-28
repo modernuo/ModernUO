@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 using Server.Targeting;
 
@@ -23,20 +21,16 @@ namespace Server.Commands.Generic
     {
       if (command.ValidateArgs(this, new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args)))
         from.BeginTarget(-1, command.ObjectTypes == ObjectTypes.All, TargetFlags.None,
-          new TargetStateCallback(OnTarget), new object[] { command, args });
+          (m, targeted) => OnTarget(m, targeted, command, args));
     }
 
-    public void OnTarget(Mobile from, object targeted, object state)
+    public void OnTarget(Mobile from, object targeted, BaseCommand command, string[] args)
     {
       if (!BaseCommand.IsAccessible(from, targeted))
       {
-        from.SendMessage("That is not accessible.");
+        from.SendLocalizedMessage(500447); // That is not accessible.
         return;
       }
-
-      object[] states = (object[])state;
-      BaseCommand command = (BaseCommand)states[0];
-      string[] args = (string[])states[1];
 
       if (command.ObjectTypes == ObjectTypes.Mobiles)
         return; // sanity check
@@ -60,10 +54,15 @@ namespace Server.Commands.Generic
           return;
         }
 
-        List<Item> list = cont.FindItemsByType<Item>().Where(item => ext.IsValid(item)).ToList();
+        List<object> list = new List<object>();
 
-        // TODO: Is there a way to avoid using ArrayList?
-        ext.Filter(new ArrayList(list));
+        foreach (Item item in cont.FindItemsByType<Item>())
+        {
+          if (ext.IsValid(item))
+            list.Add(item);
+        }
+
+        ext.Filter(list);
 
         RunCommand(from, list, command, args);
       }

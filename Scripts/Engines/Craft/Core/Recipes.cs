@@ -56,7 +56,7 @@ namespace Server.Engines.Craft
     private static void LearnAllRecipes_OnCommand(CommandEventArgs e)
     {
       Mobile m = e.Mobile;
-      m.SendMessage("Target a player to teach them all of the recipies.");
+      m.SendMessage("Target a player to teach them all of the recipes.");
 
       m.BeginTarget(-1, false, TargetFlags.None, delegate(Mobile from, object targeted)
       {
@@ -65,7 +65,7 @@ namespace Server.Engines.Craft
           foreach (KeyValuePair<int, Recipe> kvp in Recipes)
             mobile.AcquireRecipe(kvp.Key);
 
-          m.SendMessage("You teach them all of the recipies.");
+          m.SendMessage("You teach them all of the recipes.");
         }
         else
         {
@@ -75,11 +75,11 @@ namespace Server.Engines.Craft
     }
 
     [Usage("ForgetAllRecipes")]
-    [Description("Makes a player forget all the recipies they've learned.")]
+    [Description("Makes a player forget all the recipes they've learned.")]
     private static void ForgetAllRecipes_OnCommand(CommandEventArgs e)
     {
       Mobile m = e.Mobile;
-      m.SendMessage("Target a player to have them forget all of the recipies they've learned.");
+      m.SendMessage("Target a player to have them forget all of the recipes they've learned.");
 
       m.BeginTarget(-1, false, TargetFlags.None, delegate(Mobile from, object targeted)
       {
@@ -87,7 +87,7 @@ namespace Server.Engines.Craft
         {
           mobile.ResetRecipes();
 
-          m.SendMessage("They forget all their recipies.");
+          m.SendMessage("They forget all their recipes.");
         }
         else
         {

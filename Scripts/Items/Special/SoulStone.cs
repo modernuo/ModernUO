@@ -248,11 +248,11 @@ namespace Server.Items
       if (!CheckUse(from))
         return;
 
-      from.CloseGump(typeof(SelectSkillGump));
-      from.CloseGump(typeof(ConfirmSkillGump));
-      from.CloseGump(typeof(ConfirmTransferGump));
-      from.CloseGump(typeof(ConfirmRemovalGump));
-      from.CloseGump(typeof(ErrorGump));
+      from.CloseGump<SelectSkillGump>();
+      from.CloseGump<ConfirmSkillGump>();
+      from.CloseGump<ConfirmTransferGump>();
+      from.CloseGump<ConfirmRemovalGump>();
+      from.CloseGump<ErrorGump>();
 
       if (IsEmpty)
         from.SendGump(new SelectSkillGump(this, from));
@@ -877,7 +877,7 @@ namespace Server.Items
     }
 
 
-    public bool ShowUsesRemaining
+    bool IUsesRemaining.ShowUsesRemaining
     {
       get => true;
       set { }

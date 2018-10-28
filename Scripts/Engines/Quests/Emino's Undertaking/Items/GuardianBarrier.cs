@@ -32,19 +32,21 @@ namespace Server.Engines.Quests.Ninja
         return master != null && Y >= master.Y && master.InRange(this, 4);
       }
 
-      if (m is PlayerMobile pm)
-        if (pm.Quest is EminosUndertakingQuest qs)
-          if (qs.FindObjective(typeof(SneakPastGuardiansObjective)) is SneakPastGuardiansObjective obj)
-          {
-            if (m.Hidden)
-              return true; // Hidden ninjas can pass
+      if (m is PlayerMobile pm && pm.Quest is EminosUndertakingQuest qs)
+      {
+        SneakPastGuardiansObjective obj = qs.FindObjective<SneakPastGuardiansObjective>();
+        if (obj != null)
+        {
+          if (m.Hidden)
+            return true; // Hidden ninjas can pass
 
-            if (!obj.TaughtHowToUseSkills)
-            {
-              obj.TaughtHowToUseSkills = true;
-              qs.AddConversation(new NeedToHideConversation());
-            }
+          if (!obj.TaughtHowToUseSkills)
+          {
+            obj.TaughtHowToUseSkills = true;
+            qs.AddConversation(new NeedToHideConversation());
           }
+        }
+      }
 
       return false;
     }

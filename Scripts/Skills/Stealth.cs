@@ -60,12 +60,12 @@ namespace Server.SkillHandlers
       {
         m.SendLocalizedMessage(502725); // You must hide first
       }
-      else if (m.Skills[SkillName.Hiding].Base < HidingRequirement)
+      else if (m.Skills.Hiding.Base < HidingRequirement)
       {
         m.SendLocalizedMessage(502726); // You are not hidden well enough.  Become better at hiding.
         m.RevealingAction();
       }
-      else if (!m.CanBeginAction(typeof(Stealth)))
+      else if (!m.CanBeginAction<Stealth>())
       {
         m.SendLocalizedMessage(1063086); // You cannot use this skill right now.
         m.RevealingAction();
@@ -82,7 +82,7 @@ namespace Server.SkillHandlers
         else if (m.CheckSkill(SkillName.Stealth, -20.0 + armorRating * 2,
           (Core.AOS ? 60.0 : 80.0) + armorRating * 2))
         {
-          int steps = (int)(m.Skills[SkillName.Stealth].Value / (Core.AOS ? 5.0 : 10.0));
+          int steps = (int)(m.Skills.Stealth.Value / (Core.AOS ? 5.0 : 10.0));
 
           if (steps < 1)
             steps = 1;

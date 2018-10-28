@@ -30,10 +30,10 @@ namespace Server.SkillHandlers
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (targeted is BasePoisonPotion)
+        if (targeted is BasePoisonPotion potion)
         {
           from.SendLocalizedMessage(502142); // To what do you wish to apply the poison?
-          from.Target = new InternalTarget((BasePoisonPotion)targeted);
+          from.Target = new InternalTarget(potion);
         }
         else // Not a Poison Potion
         {
@@ -61,10 +61,8 @@ namespace Server.SkillHandlers
           {
             startTimer = true;
           }
-          else if (targeted is BaseWeapon)
+          else if (targeted is BaseWeapon weapon)
           {
-            BaseWeapon weapon = (BaseWeapon)targeted;
-
             if (Core.AOS)
               startTimer = weapon.PrimaryAbility == WeaponAbility.InfectiousStrike ||
                            weapon.SecondaryAbility == WeaponAbility.InfectiousStrike;
@@ -116,26 +114,26 @@ namespace Server.SkillHandlers
           {
             if (m_From.CheckTargetSkill(SkillName.Poisoning, m_Target, m_MinSkill, m_MaxSkill))
             {
-              if (m_Target is Food)
+              if (m_Target is Food food)
               {
-                ((Food)m_Target).Poison = m_Poison;
+                food.Poison = m_Poison;
               }
-              else if (m_Target is BaseWeapon)
+              else if (m_Target is BaseWeapon weapon)
               {
-                ((BaseWeapon)m_Target).Poison = m_Poison;
-                ((BaseWeapon)m_Target).PoisonCharges = 18 - m_Poison.Level * 2;
+                weapon.Poison = m_Poison;
+                weapon.PoisonCharges = 18 - m_Poison.Level * 2;
               }
-              else if (m_Target is FukiyaDarts)
+              else if (m_Target is FukiyaDarts darts)
               {
-                ((FukiyaDarts)m_Target).Poison = m_Poison;
-                ((FukiyaDarts)m_Target).PoisonCharges = Math.Min(18 - m_Poison.Level * 2,
-                  ((FukiyaDarts)m_Target).UsesRemaining);
+                darts.Poison = m_Poison;
+                darts.PoisonCharges = Math.Min(18 - m_Poison.Level * 2,
+                  darts.UsesRemaining);
               }
-              else if (m_Target is Shuriken)
+              else if (m_Target is Shuriken shuriken)
               {
-                ((Shuriken)m_Target).Poison = m_Poison;
-                ((Shuriken)m_Target).PoisonCharges = Math.Min(18 - m_Poison.Level * 2,
-                  ((Shuriken)m_Target).UsesRemaining);
+                shuriken.Poison = m_Poison;
+                shuriken.PoisonCharges = Math.Min(18 - m_Poison.Level * 2,
+                  shuriken.UsesRemaining);
               }
 
               m_From.SendLocalizedMessage(1010517); // You apply the poison
@@ -145,17 +143,15 @@ namespace Server.SkillHandlers
             else // Failed
             {
               // 5% of chance of getting poisoned if failed
-              if (m_From.Skills[SkillName.Poisoning].Base < 80.0 && Utility.Random(20) == 0)
+              if (m_From.Skills.Poisoning.Base < 80.0 && Utility.Random(20) == 0)
               {
                 m_From.SendLocalizedMessage(502148); // You make a grave mistake while applying the poison.
                 m_From.ApplyPoison(m_From, m_Poison);
               }
               else
               {
-                if (m_Target is BaseWeapon)
+                if (m_Target is BaseWeapon weapon)
                 {
-                  BaseWeapon weapon = (BaseWeapon)m_Target;
-
                   if (weapon.Type == WeaponType.Slashing)
                     m_From.SendLocalizedMessage(
                       1010516); // You fail to apply a sufficient dose of poison on the blade

@@ -42,8 +42,8 @@ namespace Server.Items
       m_Protection = new TalismanAttribute();
       m_Killer = new TalismanAttribute();
       m_Summoner = new TalismanAttribute();
-      m_AosAttributes = new AosAttributes(this);
-      m_AosSkillBonuses = new AosSkillBonuses(this);
+      Attributes = new AosAttributes(this);
+      SkillBonuses = new AosSkillBonuses(this);
     }
 
     public BaseTalisman(Serial serial)
@@ -135,8 +135,8 @@ namespace Server.Items
       talisman.m_Summoner = new TalismanAttribute(m_Summoner);
       talisman.m_Protection = new TalismanAttribute(m_Protection);
       talisman.m_Killer = new TalismanAttribute(m_Killer);
-      talisman.m_AosAttributes = new AosAttributes(newItem, m_AosAttributes);
-      talisman.m_AosSkillBonuses = new AosSkillBonuses(newItem, m_AosSkillBonuses);
+      talisman.Attributes = new AosAttributes(newItem, Attributes);
+      talisman.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
     }
 
     public override bool CanEquip(Mobile from)
@@ -154,8 +154,8 @@ namespace Server.Items
     {
       if (parent is Mobile from)
       {
-        m_AosSkillBonuses.AddTo(from);
-        m_AosAttributes.AddStatBonuses(from);
+        SkillBonuses.AddTo(from);
+        Attributes.AddStatBonuses(from);
 
         if (m_Blessed && BlessedFor == null)
         {
@@ -177,8 +177,8 @@ namespace Server.Items
     {
       if (parent is Mobile from)
       {
-        m_AosSkillBonuses.Remove();
-        m_AosAttributes.RemoveStatBonuses(from);
+        SkillBonuses.Remove();
+        Attributes.RemoveStatBonuses(from);
 
         if (m_Creature != null && !m_Creature.Deleted)
         {
@@ -348,80 +348,80 @@ namespace Server.Items
         list.Add(1072394, "#{0}\t{1}", AosSkillBonuses.GetLabel(m_Skill),
           m_SuccessBonus); // ~1_NAME~ Bonus: ~2_val~%
 
-      m_AosSkillBonuses.GetProperties(list);
+      SkillBonuses.GetProperties(list);
 
       int prop;
 
-      if ((prop = m_AosAttributes.WeaponDamage) != 0)
+      if ((prop = Attributes.WeaponDamage) != 0)
         list.Add(1060401, prop.ToString()); // damage increase ~1_val~%
 
-      if ((prop = m_AosAttributes.DefendChance) != 0)
+      if ((prop = Attributes.DefendChance) != 0)
         list.Add(1060408, prop.ToString()); // defense chance increase ~1_val~%
 
-      if ((prop = m_AosAttributes.BonusDex) != 0)
+      if ((prop = Attributes.BonusDex) != 0)
         list.Add(1060409, prop.ToString()); // dexterity bonus ~1_val~
 
-      if ((prop = m_AosAttributes.EnhancePotions) != 0)
+      if ((prop = Attributes.EnhancePotions) != 0)
         list.Add(1060411, prop.ToString()); // enhance potions ~1_val~%
 
-      if ((prop = m_AosAttributes.CastRecovery) != 0)
+      if ((prop = Attributes.CastRecovery) != 0)
         list.Add(1060412, prop.ToString()); // faster cast recovery ~1_val~
 
-      if ((prop = m_AosAttributes.CastSpeed) != 0)
+      if ((prop = Attributes.CastSpeed) != 0)
         list.Add(1060413, prop.ToString()); // faster casting ~1_val~
 
-      if ((prop = m_AosAttributes.AttackChance) != 0)
+      if ((prop = Attributes.AttackChance) != 0)
         list.Add(1060415, prop.ToString()); // hit chance increase ~1_val~%
 
-      if ((prop = m_AosAttributes.BonusHits) != 0)
+      if ((prop = Attributes.BonusHits) != 0)
         list.Add(1060431, prop.ToString()); // hit point increase ~1_val~
 
-      if ((prop = m_AosAttributes.BonusInt) != 0)
+      if ((prop = Attributes.BonusInt) != 0)
         list.Add(1060432, prop.ToString()); // intelligence bonus ~1_val~
 
-      if ((prop = m_AosAttributes.LowerManaCost) != 0)
+      if ((prop = Attributes.LowerManaCost) != 0)
         list.Add(1060433, prop.ToString()); // lower mana cost ~1_val~%
 
-      if ((prop = m_AosAttributes.LowerRegCost) != 0)
+      if ((prop = Attributes.LowerRegCost) != 0)
         list.Add(1060434, prop.ToString()); // lower reagent cost ~1_val~%
 
-      if ((prop = m_AosAttributes.Luck) != 0)
+      if ((prop = Attributes.Luck) != 0)
         list.Add(1060436, prop.ToString()); // luck ~1_val~
 
-      if ((prop = m_AosAttributes.BonusMana) != 0)
+      if ((prop = Attributes.BonusMana) != 0)
         list.Add(1060439, prop.ToString()); // mana increase ~1_val~
 
-      if ((prop = m_AosAttributes.RegenMana) != 0)
+      if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = m_AosAttributes.NightSight) != 0)
+      if ((prop = Attributes.NightSight) != 0)
         list.Add(1060441); // night sight
 
-      if ((prop = m_AosAttributes.ReflectPhysical) != 0)
+      if ((prop = Attributes.ReflectPhysical) != 0)
         list.Add(1060442, prop.ToString()); // reflect physical damage ~1_val~%
 
-      if ((prop = m_AosAttributes.RegenStam) != 0)
+      if ((prop = Attributes.RegenStam) != 0)
         list.Add(1060443, prop.ToString()); // stamina regeneration ~1_val~
 
-      if ((prop = m_AosAttributes.RegenHits) != 0)
+      if ((prop = Attributes.RegenHits) != 0)
         list.Add(1060444, prop.ToString()); // hit point regeneration ~1_val~
 
-      if ((prop = m_AosAttributes.SpellChanneling) != 0)
+      if ((prop = Attributes.SpellChanneling) != 0)
         list.Add(1060482); // spell channeling
 
-      if ((prop = m_AosAttributes.SpellDamage) != 0)
+      if ((prop = Attributes.SpellDamage) != 0)
         list.Add(1060483, prop.ToString()); // spell damage increase ~1_val~%
 
-      if ((prop = m_AosAttributes.BonusStam) != 0)
+      if ((prop = Attributes.BonusStam) != 0)
         list.Add(1060484, prop.ToString()); // stamina increase ~1_val~
 
-      if ((prop = m_AosAttributes.BonusStr) != 0)
+      if ((prop = Attributes.BonusStr) != 0)
         list.Add(1060485, prop.ToString()); // strength bonus ~1_val~
 
-      if ((prop = m_AosAttributes.WeaponSpeed) != 0)
+      if ((prop = Attributes.WeaponSpeed) != 0)
         list.Add(1060486, prop.ToString()); // swing speed increase ~1_val~%
 
-      if (Core.ML && (prop = m_AosAttributes.IncreasedKarmaLoss) != 0)
+      if (Core.ML && (prop = Attributes.IncreasedKarmaLoss) != 0)
         list.Add(1075210, prop.ToString()); // Increased Karma Loss ~1val~%
 
       if (m_MaxCharges > 0)
@@ -450,8 +450,8 @@ namespace Server.Items
 
       SaveFlag flags = SaveFlag.None;
 
-      SetSaveFlag(ref flags, SaveFlag.Attributes, !m_AosAttributes.IsEmpty);
-      SetSaveFlag(ref flags, SaveFlag.SkillBonuses, !m_AosSkillBonuses.IsEmpty);
+      SetSaveFlag(ref flags, SaveFlag.Attributes, !Attributes.IsEmpty);
+      SetSaveFlag(ref flags, SaveFlag.SkillBonuses, !SkillBonuses.IsEmpty);
       SetSaveFlag(ref flags, SaveFlag.Protection, m_Protection != null && !m_Protection.IsEmpty);
       SetSaveFlag(ref flags, SaveFlag.Killer, m_Killer != null && !m_Killer.IsEmpty);
       SetSaveFlag(ref flags, SaveFlag.Summoner, m_Summoner != null && !m_Summoner.IsEmpty);
@@ -469,10 +469,10 @@ namespace Server.Items
       writer.WriteEncodedInt((int)flags);
 
       if (GetSaveFlag(flags, SaveFlag.Attributes))
-        m_AosAttributes.Serialize(writer);
+        Attributes.Serialize(writer);
 
       if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
-        m_AosSkillBonuses.Serialize(writer);
+        SkillBonuses.Serialize(writer);
 
       if (GetSaveFlag(flags, SaveFlag.Protection))
         m_Protection.Serialize(writer);
@@ -524,14 +524,14 @@ namespace Server.Items
           SaveFlag flags = (SaveFlag)reader.ReadEncodedInt();
 
           if (GetSaveFlag(flags, SaveFlag.Attributes))
-            m_AosAttributes = new AosAttributes(this, reader);
+            Attributes = new AosAttributes(this, reader);
           else
-            m_AosAttributes = new AosAttributes(this);
+            Attributes = new AosAttributes(this);
 
           if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
-            m_AosSkillBonuses = new AosSkillBonuses(this, reader);
+            SkillBonuses = new AosSkillBonuses(this, reader);
           else
-            m_AosSkillBonuses = new AosSkillBonuses(this);
+            SkillBonuses = new AosSkillBonuses(this);
 
           // Backward compatibility
           if (GetSaveFlag(flags, SaveFlag.Owner))
@@ -556,7 +556,7 @@ namespace Server.Items
             m_Removal = (TalismanRemoval)reader.ReadEncodedInt();
 
           if (GetSaveFlag(flags, SaveFlag.OldKarmaLoss))
-            m_AosAttributes.IncreasedKarmaLoss = reader.ReadEncodedInt();
+            Attributes.IncreasedKarmaLoss = reader.ReadEncodedInt();
 
           if (GetSaveFlag(flags, SaveFlag.Skill))
             m_Skill = (SkillName)reader.ReadEncodedInt();
@@ -590,8 +590,8 @@ namespace Server.Items
 
       if (Parent is Mobile m)
       {
-        m_AosAttributes.AddStatBonuses(m);
-        m_AosSkillBonuses.AddTo(m);
+        Attributes.AddStatBonuses(m);
+        SkillBonuses.AddTo(m);
 
         if (m_ChargeTime > 0)
           StartTimer();
@@ -898,22 +898,11 @@ namespace Server.Items
 
     #region AOS bonuses
 
-    private AosAttributes m_AosAttributes;
-    private AosSkillBonuses m_AosSkillBonuses;
+    [CommandProperty(AccessLevel.GameMaster)]
+    public AosAttributes Attributes{ get; private set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public AosAttributes Attributes
-    {
-      get => m_AosAttributes;
-      set { }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public AosSkillBonuses SkillBonuses
-    {
-      get => m_AosSkillBonuses;
-      set { }
-    }
+    public AosSkillBonuses SkillBonuses{ get; private set; }
 
     #endregion
 
@@ -1150,26 +1139,17 @@ namespace Server.Items
 
     public static bool GetRandomBlessed()
     {
-      if (0.02 > Utility.RandomDouble())
-        return true;
-
-      return false;
+      return 0.02 > Utility.RandomDouble();
     }
 
     public static TalismanSlayerName GetRandomSlayer()
     {
-      if (0.01 > Utility.RandomDouble())
-        return (TalismanSlayerName)Utility.RandomMinMax(1, 9);
-
-      return TalismanSlayerName.None;
+        return 0.01 > Utility.RandomDouble() ? (TalismanSlayerName)Utility.RandomMinMax(1, 9) : TalismanSlayerName.None;
     }
 
     public static int GetRandomCharges()
     {
-      if (0.5 > Utility.RandomDouble())
-        return Utility.RandomMinMax(10, 50);
-
-      return 0;
+      return 0.5 > Utility.RandomDouble() ? Utility.RandomMinMax(10, 50) : 0;
     }
 
     #endregion

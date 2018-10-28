@@ -54,7 +54,7 @@ namespace Server.Items
       }
     }
 
-    public virtual bool ShowUsesRemaining
+    public bool ShowUsesRemaining
     {
       get => true;
       set { }
@@ -211,7 +211,7 @@ namespace Server.Items
 
         if (targeted is BaseWeapon item)
         {
-          from.CloseGump(typeof(InternalGump));
+          from.CloseGump<InternalGump>();
           from.SendGump(new InternalGump(m_Tool, item));
         }
         else
@@ -233,7 +233,7 @@ namespace Server.Items
 
         Closable = true;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         AddBackground(50, 50, 400, 300, 0xA28);
@@ -310,7 +310,7 @@ namespace Server.Items
 
         Closable = false;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         AddPage(0);

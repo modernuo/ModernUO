@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Engines.Quests.Ambitious;
@@ -44,8 +43,8 @@ namespace Server.Engines.Quests
     public QuestSystem(PlayerMobile from)
     {
       From = from;
-      Objectives = new ArrayList();
-      Conversations = new ArrayList();
+      Objectives = new List<QuestObjective>();
+      Conversations = new List<QuestConversation>();
     }
 
     public QuestSystem()
@@ -64,9 +63,9 @@ namespace Server.Engines.Quests
 
     public PlayerMobile From{ get; set; }
 
-    public ArrayList Objectives{ get; set; }
+    public List<QuestObjective> Objectives{ get; set; }
 
-    public ArrayList Conversations{ get; set; }
+    public List<QuestConversation> Conversations{ get; set; }
 
     public virtual void StartTimer()
     {
@@ -87,7 +86,7 @@ namespace Server.Engines.Quests
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)Objectives[i];
+        QuestObjective obj = Objectives[i];
 
         if (obj.GetTimerEvent())
           obj.CheckProgress();
@@ -98,7 +97,7 @@ namespace Server.Engines.Quests
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)Objectives[i];
+        QuestObjective obj = Objectives[i];
 
         if (obj.GetKillEvent(creature, corpse))
           obj.OnKill(creature, corpse);
@@ -109,7 +108,7 @@ namespace Server.Engines.Quests
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)Objectives[i];
+        QuestObjective obj = Objectives[i];
 
         if (obj.IgnoreYoungProtection(from))
           return true;
@@ -130,7 +129,7 @@ namespace Server.Engines.Quests
         {
           int count = reader.ReadEncodedInt();
 
-          Objectives = new ArrayList(count);
+          Objectives = new List<QuestObjective>(count);
 
           for (int i = 0; i < count; ++i)
           {
@@ -145,7 +144,7 @@ namespace Server.Engines.Quests
 
           count = reader.ReadEncodedInt();
 
-          Conversations = new ArrayList(count);
+          Conversations = new List<QuestConversation>(count);
 
           for (int i = 0; i < count; ++i)
           {
@@ -179,12 +178,12 @@ namespace Server.Engines.Quests
       writer.WriteEncodedInt(Objectives.Count);
 
       for (int i = 0; i < Objectives.Count; ++i)
-        QuestSerializer.Serialize(referenceTable, (QuestObjective)Objectives[i], writer);
+        QuestSerializer.Serialize(referenceTable, Objectives[i], writer);
 
       writer.WriteEncodedInt(Conversations.Count);
 
       for (int i = 0; i < Conversations.Count; ++i)
-        QuestSerializer.Serialize(referenceTable, (QuestConversation)Conversations[i], writer);
+        QuestSerializer.Serialize(referenceTable, Conversations[i], writer);
 
       ChildSerialize(writer);
     }
@@ -198,14 +197,27 @@ namespace Server.Engines.Quests
     {
       QuestObjective obj = FindObjective(type);
 
-      return obj != null && !obj.Completed;
+      return obj?.Completed == false;
+    }
+
+    public T FindObjective<T>() where T : QuestObjective
+    {
+      for (int i = Objectives.Count - 1; i >= 0; --i)
+      {
+        QuestObjective obj = Objectives[i];
+
+        if (obj is T t)
+          return t;
+      }
+
+      return null;
     }
 
     public QuestObjective FindObjective(Type type)
     {
       for (int i = Objectives.Count - 1; i >= 0; --i)
       {
-        QuestObjective obj = (QuestObjective)Objectives[i];
+        QuestObjective obj = Objectives[i];
 
         if (obj.GetType() == type)
           return obj;
@@ -232,7 +244,7 @@ namespace Server.Engines.Quests
 
     public virtual void ShowQuestLogUpdated()
     {
-      From.CloseGump(typeof(QuestLogUpdatedGump));
+      From.CloseGump<QuestLogUpdatedGump>();
       From.SendGump(new QuestLogUpdatedGump(this));
     }
 
@@ -240,14 +252,14 @@ namespace Server.Engines.Quests
     {
       if (Objectives.Count > 0)
       {
-        From.CloseGump(typeof(QuestItemInfoGump));
-        From.CloseGump(typeof(QuestLogUpdatedGump));
-        From.CloseGump(typeof(QuestObjectivesGump));
-        From.CloseGump(typeof(QuestConversationsGump));
+        From.CloseGump<QuestItemInfoGump>();
+        From.CloseGump<QuestLogUpdatedGump>();
+        From.CloseGump<QuestObjectivesGump>();
+        From.CloseGump<QuestConversationsGump>();
 
         From.SendGump(new QuestObjectivesGump(Objectives));
 
-        QuestObjective last = (QuestObjective)Objectives[Objectives.Count - 1];
+        QuestObjective last = Objectives[Objectives.Count - 1];
 
         if (last.Info != null)
           From.SendGump(new QuestItemInfoGump(last.Info));
@@ -258,13 +270,13 @@ namespace Server.Engines.Quests
     {
       if (Conversations.Count > 0)
       {
-        From.CloseGump(typeof(QuestItemInfoGump));
-        From.CloseGump(typeof(QuestObjectivesGump));
-        From.CloseGump(typeof(QuestConversationsGump));
+        From.CloseGump<QuestItemInfoGump>();
+        From.CloseGump<QuestObjectivesGump>();
+        From.CloseGump<QuestConversationsGump>();
 
         From.SendGump(new QuestConversationsGump(Conversations));
 
-        QuestConversation last = (QuestConversation)Conversations[Conversations.Count - 1];
+        QuestConversation last = Conversations[Conversations.Count - 1];
 
         if (last.Info != null)
           From.SendGump(new QuestItemInfoGump(last.Info));
@@ -348,14 +360,10 @@ namespace Server.Engines.Quests
       if (conv.Logged)
         Conversations.Add(conv);
 
-      From.CloseGump(typeof(QuestItemInfoGump));
-      From.CloseGump(typeof(QuestObjectivesGump));
-      From.CloseGump(typeof(QuestConversationsGump));
-
-      if (conv.Logged)
-        From.SendGump(new QuestConversationsGump(Conversations));
-      else
-        From.SendGump(new QuestConversationsGump(conv));
+      From.CloseGump<QuestItemInfoGump>();
+      From.CloseGump<QuestObjectivesGump>();
+      From.CloseGump<QuestConversationsGump>();
+      From.SendGump(conv.Logged ? new QuestConversationsGump(Conversations) : new QuestConversationsGump(conv));
 
       if (conv.Info != null)
         From.SendGump(new QuestItemInfoGump(conv.Info));
@@ -387,9 +395,7 @@ namespace Server.Engines.Quests
 
     public static bool CanOfferQuest(Mobile check, Type questType)
     {
-      bool inRestartPeriod;
-
-      return CanOfferQuest(check, questType, out inRestartPeriod);
+      return CanOfferQuest(check, questType, out _);
     }
 
     public static bool CanOfferQuest(Mobile check, Type questType, out bool inRestartPeriod)
@@ -399,7 +405,7 @@ namespace Server.Engines.Quests
       if (!(check is PlayerMobile pm))
         return false;
 
-      if (pm.HasGump(typeof(QuestOfferGump)))
+      if (pm.HasGump<QuestOfferGump>())
         return false;
 
       if (questType == typeof(DarkTidesQuest) && pm.Profession != 4) // necromancer
@@ -651,11 +657,6 @@ namespace Server.Engines.Quests
     public static string Color(string text, int color)
     {
       return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
-
-    public static ArrayList BuildList(object obj)
-    {
-      return new ArrayList { obj };
     }
 
     public void AddHtmlObject(int x, int y, int width, int height, object message, int color, bool back, bool scroll)

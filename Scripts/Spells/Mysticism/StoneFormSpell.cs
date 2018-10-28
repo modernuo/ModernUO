@@ -20,7 +20,7 @@ namespace Server.Spells.Mysticism
       Reagent.Garlic
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
     public StoneFormSpell(Mobile caster, Item scroll)
       : base(caster, scroll, m_Info)
@@ -39,7 +39,7 @@ namespace Server.Spells.Mysticism
 
     public static bool UnderEffect(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public override bool CheckCast()
@@ -50,7 +50,7 @@ namespace Server.Spells.Mysticism
         return false;
       }
 
-      if (!Caster.CanBeginAction(typeof(PolymorphSpell)))
+      if (!Caster.CanBeginAction<PolymorphSpell>())
       {
         Caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
         return false;
@@ -77,11 +77,11 @@ namespace Server.Spells.Mysticism
       {
         Caster.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
       }
-      else if (!Caster.CanBeginAction(typeof(PolymorphSpell)))
+      else if (!Caster.CanBeginAction<PolymorphSpell>())
       {
         Caster.SendLocalizedMessage(1061628); // You can't do that while polymorphed.
       }
-      else if (!Caster.CanBeginAction(typeof(IncognitoSpell)) || Caster.IsBodyMod && !UnderEffect(Caster))
+      else if (!Caster.CanBeginAction<IncognitoSpell>() || Caster.IsBodyMod && !UnderEffect(Caster))
       {
         Caster.SendLocalizedMessage(1063218); // You cannot use that ability in this form.
       }
@@ -106,8 +106,7 @@ namespace Server.Spells.Mysticism
 
           int offset = (int)((GetBaseSkill(Caster) + GetBoostSkill(Caster)) / 24.0);
 
-          List<ResistanceMod> mods = new List<ResistanceMod>
-          {
+          ResistanceMod[] mods = {
             new ResistanceMod(ResistanceType.Physical, offset),
             new ResistanceMod(ResistanceType.Fire, offset),
             new ResistanceMod(ResistanceType.Cold, offset),
@@ -115,8 +114,8 @@ namespace Server.Spells.Mysticism
             new ResistanceMod(ResistanceType.Energy, offset)
           };
 
-          foreach (ResistanceMod mod in mods)
-            Caster.AddResistanceMod(mod);
+          for (int i = 0; i < mods.Length; ++i)
+            Caster.AddResistanceMod(mods[i]);
 
           m_Table[Caster] = mods;
 
@@ -143,10 +142,10 @@ namespace Server.Spells.Mysticism
 
     public static void RemoveEffects(Mobile m)
     {
-      List<ResistanceMod> mods = (List<ResistanceMod>)m_Table[m];
+      ResistanceMod[] mods = m_Table[m];
 
-      foreach (ResistanceMod mod in mods)
-        m.RemoveResistanceMod(mod);
+      for (int i = 0; i < mods.Length; ++i)
+        m.RemoveResistanceMod(mods[i]);
 
       m.BodyMod = 0;
       m.HueMod = -1;

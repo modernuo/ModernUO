@@ -15,7 +15,7 @@ namespace Server.Gumps
 
     public PetResurrectGump(Mobile from, BaseCreature pet, double hitsScalar) : base(50, 50)
     {
-      from.CloseGump(typeof(PetResurrectGump));
+      from.CloseGump<PetResurrectGump>();
 
       m_Pet = pet;
       m_HitsScalar = hitsScalar;
@@ -54,8 +54,7 @@ namespace Server.Gumps
           return;
         }
 
-        if (m_Pet.Region != null && m_Pet.Region.IsPartOf("Khaldun")
-        ) //TODO: Confirm for pets, as per Bandage's script.
+        if (m_Pet.Region?.IsPartOf("Khaldun") == true) //TODO: Confirm for pets, as per Bandage's script.
         {
           from.SendLocalizedMessage(
             1010395); // The veil of death in this area is too strong and resists thy efforts to restore life.

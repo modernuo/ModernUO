@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Commands.Generic
 {
@@ -24,7 +24,7 @@ namespace Server.Commands.Generic
         throw new Exception("Limit cannot be less than zero.");
     }
 
-    public override void Filter(ArrayList list)
+    public override void Filter(List<object> list)
     {
       if (list.Count > Limit)
         list.RemoveRange(Limit, list.Count - Limit);

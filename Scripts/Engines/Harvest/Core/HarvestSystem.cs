@@ -96,11 +96,7 @@ namespace Server.Engines.Harvest
       if (!CheckHarvest(from, tool))
         return;
 
-      int tileID;
-      Map map;
-      Point3D loc;
-
-      if (!GetHarvestDetails(from, tool, toHarvest, out tileID, out map, out loc))
+      if (!GetHarvestDetails(from, tool, toHarvest, out int tileID, out Map map, out Point3D loc))
       {
         OnBadHarvestTarget(from, tool, toHarvest);
         return;
@@ -340,11 +336,7 @@ namespace Server.Engines.Harvest
         return false;
       }
 
-      int tileID;
-      Map map;
-      Point3D loc;
-
-      if (!GetHarvestDetails(from, tool, toHarvest, out tileID, out map, out loc))
+      if (!GetHarvestDetails(from, tool, toHarvest, out int tileID, out Map map, out Point3D loc))
       {
         from.EndAction(locked);
         OnBadHarvestTarget(from, tool, toHarvest);
@@ -417,11 +409,7 @@ namespace Server.Engines.Harvest
       if (!CheckHarvest(from, tool))
         return;
 
-      int tileID;
-      Map map;
-      Point3D loc;
-
-      if (!GetHarvestDetails(from, tool, toHarvest, out tileID, out map, out loc))
+      if (!GetHarvestDetails(from, tool, toHarvest, out int tileID, out Map map, out Point3D loc))
       {
         OnBadHarvestTarget(from, tool, toHarvest);
         return;

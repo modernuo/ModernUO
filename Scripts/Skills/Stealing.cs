@@ -50,7 +50,7 @@ namespace Server.SkillHandlers
       {
         m.SendLocalizedMessage(1005584); // Both hands must be free to steal.
       }
-      else if (m.Region.IsPartOf(typeof(SafeZone)))
+      else if (m.Region.IsPartOf<SafeZone>())
       {
         m.SendMessage("You may not steal in this area.");
       }
@@ -90,7 +90,7 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(1005584); // Both hands must be free to steal.
         }
-        else if (m_Thief.Region.IsPartOf(typeof(SafeZone)))
+        else if (m_Thief.Region.IsPartOf<SafeZone>())
         {
           m_Thief.SendMessage("You may not steal in this area.");
         }
@@ -137,7 +137,7 @@ namespace Server.SkillHandlers
           }
           else if (faction != null)
           {
-            if (!m_Thief.CanBeginAction(typeof(IncognitoSpell)))
+            if (!m_Thief.CanBeginAction<IncognitoSpell>())
             {
               m_Thief.SendLocalizedMessage(1010581); //	You cannot steal the sigil when you are incognito
             }
@@ -145,7 +145,7 @@ namespace Server.SkillHandlers
             {
               m_Thief.SendLocalizedMessage(1010583); //	You cannot steal the sigil while disguised
             }
-            else if (!m_Thief.CanBeginAction(typeof(PolymorphSpell)))
+            else if (!m_Thief.CanBeginAction<PolymorphSpell>())
             {
               m_Thief.SendLocalizedMessage(1010582); //	You cannot steal the sigil while polymorphed
             }
@@ -227,7 +227,7 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(502703); // You must be standing next to an item to steal it.
         }
-        else if (si != null && m_Thief.Skills[SkillName.Stealing].Value < 100.0)
+        else if (si != null && m_Thief.Skills.Stealing.Value < 100.0)
         {
           m_Thief.SendLocalizedMessage(1060025, "",
             0x66D); // You're not skilled enough to attempt the theft of this item.
@@ -263,7 +263,7 @@ namespace Server.SkillHandlers
           {
             if (toSteal.Stackable && toSteal.Amount > 1)
             {
-              int maxAmount = (int)(m_Thief.Skills[SkillName.Stealing].Value / 10.0 / toSteal.Weight);
+              int maxAmount = (int)(m_Thief.Skills.Stealing.Value / 10.0 / toSteal.Weight);
 
               if (maxAmount < 1)
                 maxAmount = 1;
@@ -320,7 +320,7 @@ namespace Server.SkillHandlers
               m_Thief.SendLocalizedMessage(502723); // You fail to steal the item.
             }
 
-            caught = m_Thief.Skills[SkillName.Stealing].Value < Utility.Random(150);
+            caught = m_Thief.Skills.Stealing.Value < Utility.Random(150);
           }
         }
 

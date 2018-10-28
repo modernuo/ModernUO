@@ -43,15 +43,11 @@ namespace Server
 
   public delegate void TargetCallback(Mobile from, object targeted);
 
-  public delegate void TargetStateCallback(Mobile from, object targeted, object state);
-
-  public delegate void TargetStateCallback<T>(Mobile from, object targeted, T state);
+  public delegate void TargetStateCallback<in T>(Mobile from, object targeted, T state);
 
   public delegate void PromptCallback(Mobile from, string text);
 
-  public delegate void PromptStateCallback(Mobile from, string text, object state);
-
-  public delegate void PromptStateCallback<T>(Mobile from, string text, T state);
+  public delegate void PromptStateCallback<in T>(Mobile from, string text, T state);
 
   #endregion
 
@@ -461,7 +457,7 @@ namespace Server
   /// <summary>
   ///   Base class representing players, npcs, and creatures.
   /// </summary>
-  public class Mobile : IEntity, IHued, IComparable<Mobile>, ISerializable, ISpawnable
+  public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable
   {
     private const int
       WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
@@ -677,11 +673,7 @@ namespace Server
     public List<Mobile> Stabled{ get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public VirtueInfo Virtues
-    {
-      get => m_Virtues;
-      set { }
-    }
+    public VirtueInfo Virtues{ get; private set; }
 
     public object Party{ get; set; }
 
@@ -709,16 +701,16 @@ namespace Server
     public int MagicDamageAbsorb{ get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int SkillsTotal => m_Skills?.Total ?? 0;
+    public int SkillsTotal => Skills?.Total ?? 0;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int SkillsCap
     {
-      get => m_Skills?.Cap ?? 0;
+      get => Skills?.Cap ?? 0;
       set
       {
-        if (m_Skills != null)
-          m_Skills.Cap = value;
+        if (Skills != null)
+          Skills.Cap = value;
       }
     }
 
@@ -1250,11 +1242,7 @@ namespace Server
     public static IWeapon DefaultWeapon{ get; set; }
 
     [CommandProperty(AccessLevel.Counselor)]
-    public Skills Skills
-    {
-      get => m_Skills;
-      set { }
-    }
+    public Skills Skills{ get; private set; }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.Administrator)]
     public AccessLevel AccessLevel
@@ -2786,7 +2774,7 @@ namespace Server
 
     int ISerializable.TypeReference => m_TypeRef;
 
-    int ISerializable.SerialIdentity => Serial;
+    uint ISerializable.SerialIdentity => Serial;
 
     public virtual void Serialize(GenericWriter writer)
     {
@@ -2822,7 +2810,7 @@ namespace Server
 
       writer.Write(CantWalk);
 
-      VirtueInfo.Serialize(writer, m_Virtues);
+      VirtueInfo.Serialize(writer, Virtues);
 
       writer.Write(Thirst);
       writer.Write(BAC);
@@ -2892,7 +2880,7 @@ namespace Server
       writer.Write(m_Fame);
       writer.Write(m_Karma);
       writer.Write((byte)m_AccessLevel);
-      m_Skills.Serialize(writer);
+      Skills.Serialize(writer);
 
       writer.Write(Items);
 
@@ -3004,7 +2992,7 @@ namespace Server
     public virtual void ComputeResistances()
     {
       if (Resistances == null)
-        Resistances = new int[5] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+        Resistances = new int[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
 
       for (int i = 0; i < Resistances.Length; ++i)
         Resistances[i] = 0;
@@ -3060,10 +3048,7 @@ namespace Server
 
     public virtual int GetMaxResistance(ResistanceType type)
     {
-      if (m_Player)
-        return MaxPlayerResistance;
-
-      return int.MaxValue;
+      return m_Player ? MaxPlayerResistance : int.MaxValue;
     }
 
     public int GetAOSStatus(int index)
@@ -3253,7 +3238,7 @@ namespace Server
       for (int i = 0; i < SkillMods.Count; ++i)
       {
         SkillMod mod = SkillMods[i];
-        Skill sk = m_Skills[mod.Skill];
+        Skill sk = Skills[mod.Skill];
         sk?.Update();
       }
     }
@@ -3283,7 +3268,7 @@ namespace Server
         SkillMods.Add(mod);
         mod.Owner = this;
 
-        Skill sk = m_Skills[mod.Skill];
+        Skill sk = Skills[mod.Skill];
         sk?.Update();
       }
     }
@@ -3305,7 +3290,7 @@ namespace Server
         SkillMods.Remove(mod);
         mod.Owner = null;
 
-        Skill sk = m_Skills[mod.Skill];
+        Skill sk = Skills[mod.Skill];
         sk?.Update();
       }
     }
@@ -3383,30 +3368,41 @@ namespace Server
       return m_Map.LineOfSight(this, target);
     }
 
+    public bool BeginAction<T>()
+    {
+      return BeginAction(typeof(T));
+    }
+
     public bool BeginAction(object toLock)
     {
       if (_actions == null)
       {
-        _actions = new List<object>();
-
-        _actions.Add(toLock);
-
+        _actions = new List<object> { toLock };
         return true;
       }
 
       if (!_actions.Contains(toLock))
       {
         _actions.Add(toLock);
-
         return true;
       }
 
       return false;
     }
 
+    public bool CanBeginAction<T>()
+    {
+      return CanBeginAction(typeof(T));
+    }
+
     public bool CanBeginAction(object toLock)
     {
       return _actions == null || !_actions.Contains(toLock);
+    }
+
+    public void EndAction<T>()
+    {
+      EndAction(typeof(T));
     }
 
     public void EndAction(object toLock)
@@ -3794,30 +3790,13 @@ namespace Server
 
     public Target BeginTarget(int range, bool allowGround, TargetFlags flags, TargetCallback callback)
     {
-      Target t = new SimpleTarget(range, flags, allowGround, callback);
-
-      Target = t;
-
-      return t;
-    }
-
-    public Target BeginTarget(int range, bool allowGround, TargetFlags flags, TargetStateCallback callback, object state)
-    {
-      Target t = new SimpleStateTarget(range, flags, allowGround, callback, state);
-
-      Target = t;
-
-      return t;
+      return Target = new SimpleTarget(range, flags, allowGround, callback);
     }
 
     public Target BeginTarget<T>(int range, bool allowGround, TargetFlags flags, TargetStateCallback<T> callback,
       T state)
     {
-      Target t = new SimpleStateTarget<T>(range, flags, allowGround, callback, state);
-
-      Target = t;
-
-      return t;
+      return Target = new SimpleStateTarget<T>(range, flags, allowGround, callback, state);
     }
 
     /// <summary>
@@ -4660,10 +4639,7 @@ namespace Server
         //Body = this.Female ? 0x193 : 0x192;
         Body = Race.GhostBody(this);
 
-        Item deathShroud = new Item(0x204E);
-
-        deathShroud.Movable = false;
-        deathShroud.Layer = Layer.OuterTorso;
+        Item deathShroud = new Item(0x204E) { Movable = false, Layer = Layer.OuterTorso };
 
         AddItem(deathShroud);
 
@@ -4730,11 +4706,9 @@ namespace Server
       }
       else if (!AllowItemUse(item))
       {
-        okay = false;
       }
       else if (!item.CheckItemUse(this, item))
       {
-        okay = false;
       }
       else if (root is Mobile mobile && mobile.IsSnoop(this))
       {
@@ -5355,7 +5329,7 @@ namespace Server
 
     public static Mobile GetDamagerFrom(DamageEntry de)
     {
-      return de == null ? null : de.Damager;
+      return de?.Damager;
     }
 
     public Mobile FindMostRecentDamager(bool allowSelf)
@@ -5484,10 +5458,7 @@ namespace Server
 
     public virtual DamageEntry RegisterDamage(int amount, Mobile from)
     {
-      DamageEntry de = FindDamageEntryFor(from);
-
-      if (de == null)
-        de = new DamageEntry(from);
+      DamageEntry de = FindDamageEntryFor(from) ?? new DamageEntry(from);
 
       de.DamageGiven += amount;
       de.LastDamage = DateTime.UtcNow;
@@ -5645,10 +5616,8 @@ namespace Server
 
         if (ourState != null)
         {
-          if (ourState.DamagePacket)
-            p = Packet.Acquire(new DamagePacket(this, amount));
-          else
-            p = Packet.Acquire(new DamagePacketOld(this, amount));
+          p = ourState.DamagePacket ? Packet.Acquire(new DamagePacket(this, amount)) :
+            Packet.Acquire(new DamagePacketOld(this, amount));
 
           ourState.Send(p);
         }
@@ -5717,7 +5686,7 @@ namespace Server
 
     public void SendVisibleDamageSelective(Mobile from, int amount)
     {
-      NetState ourState = m_NetState, theirState = from == null ? null : from.m_NetState;
+      NetState ourState = m_NetState, theirState = from?.m_NetState;
 
       Mobile damager = from;
       Mobile damaged = this;
@@ -5878,7 +5847,7 @@ namespace Server
         case 19: // Just removed variables
         case 18:
         {
-          m_Virtues = new VirtueInfo(reader);
+          Virtues = new VirtueInfo(reader);
 
           goto case 17;
         }
@@ -6001,7 +5970,7 @@ namespace Server
             Stabled = new List<Mobile>();
 
           if (version < 18)
-            m_Virtues = new VirtueInfo();
+            Virtues = new VirtueInfo();
 
           if (version < 11)
             m_DisplayGuildTitle = true;
@@ -6043,7 +6012,7 @@ namespace Server
           m_Karma = reader.ReadInt();
           m_AccessLevel = (AccessLevel)reader.ReadByte();
 
-          m_Skills = new Skills(this, reader);
+          Skills = new Skills(this, reader);
 
           Items = reader.ReadStrongItemList();
 
@@ -6355,73 +6324,72 @@ namespace Server
     {
       Map map = m_Map;
 
-      if (map != null)
-      {
-        ProcessDelta();
+      if (map == null)
+        return;
+      ProcessDelta();
 
-        Packet p = null;
-        //Packet pNew = null;
+      Packet p = null;
+      //Packet pNew = null;
 
-        IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
+      IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this))
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this))
+        {
+          state.Mobile.ProcessDelta();
+
+          //if ( state.StygianAbyss ) {
+          //if ( pNew == null )
+          //pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
+
+          //state.Send( pNew );
+          //} else {
+          if (p == null)
           {
-            state.Mobile.ProcessDelta();
+            #region SA
 
-            //if ( state.StygianAbyss ) {
-            //if ( pNew == null )
-            //pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
-
-            //state.Send( pNew );
-            //} else {
-            if (p == null)
+            if (Body.IsGargoyle)
             {
-              #region SA
+              frameCount = 10;
 
-              if (Body.IsGargoyle)
+              if (Flying)
               {
-                frameCount = 10;
-
-                if (Flying)
-                {
-                  if (action >= 9 && action <= 11)
-                    action = 71;
-                  else if (action >= 12 && action <= 14)
-                    action = 72;
-                  else if (action == 20)
-                    action = 77;
-                  else if (action == 31)
-                    action = 71;
-                  else if (action == 34)
-                    action = 78;
-                  else if (action >= 200 && action <= 259)
-                    action = 75;
-                  else if (action >= 260 && action <= 270) action = 75;
-                }
-                else
-                {
-                  if (action >= 200 && action <= 259)
-                    action = 17;
-                  else if (action >= 260 && action <= 270) action = 16;
-                }
+                if (action >= 9 && action <= 11)
+                  action = 71;
+                else if (action >= 12 && action <= 14)
+                  action = 72;
+                else if (action == 20)
+                  action = 77;
+                else if (action == 31)
+                  action = 71;
+                else if (action == 34)
+                  action = 78;
+                else if (action >= 200 && action <= 259)
+                  action = 75;
+                else if (action >= 260 && action <= 270) action = 75;
               }
-
-              #endregion
-
-              p = Packet.Acquire(new MobileAnimation(this, action, frameCount, repeatCount, forward, repeat,
-                delay));
+              else
+              {
+                if (action >= 200 && action <= 259)
+                  action = 17;
+                else if (action >= 260 && action <= 270) action = 16;
+              }
             }
 
-            state.Send(p);
-            //}
+            #endregion
+
+            p = Packet.Acquire(new MobileAnimation(this, action, frameCount, repeatCount, forward, repeat,
+              delay));
           }
 
-        Packet.Release(p);
-        //Packet.Release( pNew );
+          state.Send(p);
+          //}
+        }
 
-        eable.Free();
-      }
+      Packet.Release(p);
+      //Packet.Release( pNew );
+
+      eable.Free();
     }
 
     public void SendSound(int soundID)
@@ -6438,23 +6406,20 @@ namespace Server
 
     public void PlaySound(int soundID)
     {
-      if (soundID == -1)
+      if (soundID == -1 || m_Map == null)
         return;
 
-      if (m_Map != null)
-      {
-        Packet p = Packet.Acquire(new PlaySound(soundID, this));
+      Packet p = Packet.Acquire(new PlaySound(soundID, this));
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this))
-            state.Send(p);
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this))
+          state.Send(p);
 
-        Packet.Release(p);
+      Packet.Release(p);
 
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public virtual void OnAccessLevelChanged(AccessLevel oldLevel)
@@ -6485,40 +6450,38 @@ namespace Server
 
     public void SendRemovePacket(bool everyone)
     {
-      if (m_Map != null)
-      {
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      if (m_Map == null)
+        return;
 
-        foreach (NetState state in eable)
-          if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
-            state.Send(RemovePacket);
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        eable.Free();
-      }
+      foreach (NetState state in eable)
+        if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
+          state.Send(RemovePacket);
+
+      eable.Free();
     }
 
     public void ClearScreen()
     {
-      NetState ns = m_NetState;
+      if (m_Map == null || m_NetState == null)
+        return;
 
-      if (m_Map != null && ns != null)
-      {
-        IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
+      IPooledEnumerable<IEntity> eable = m_Map.GetObjectsInRange(m_Location, Core.GlobalMaxUpdateRange);
 
-        foreach (IEntity o in eable)
-          if (o is Mobile m)
-          {
-            if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
-              ns.Send(m.RemovePacket);
-          }
-          else if (o is Item item)
-          {
-            if (InRange(item.Location, item.GetUpdateRange(this)))
-              ns.Send(item.RemovePacket);
-          }
+      foreach (IEntity o in eable)
+        if (o is Mobile m)
+        {
+          if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
+            m_NetState.Send(m.RemovePacket);
+        }
+        else if (o is Item item)
+        {
+          if (InRange(item.Location, item.GetUpdateRange(this)))
+            m_NetState.Send(item.RemovePacket);
+        }
 
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public bool Send(Packet p)
@@ -6534,7 +6497,8 @@ namespace Server
         return true;
       }
 
-      if (throwOnOffline) throw new MobileNotConnectedException(this, "Packet could not be sent.");
+      if (throwOnOffline)
+        throw new MobileNotConnectedException(this, "Packet could not be sent.");
 
       return false;
     }
@@ -6644,10 +6608,7 @@ namespace Server
 
     public virtual int GetSeason()
     {
-      if (m_Map != null)
-        return m_Map.Season;
-
-      return 1;
+      return m_Map?.Season ?? 1;
     }
 
     public virtual int GetPacketFlags()
@@ -6720,27 +6681,27 @@ namespace Server
     {
       AllowedStealthSteps = 0;
 
-      if (m_Map != null)
-      {
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      if (m_Map == null)
+        return;
 
-        foreach (NetState state in eable)
-          if (!state.Mobile.CanSee(this))
-          {
-            state.Send(RemovePacket);
-          }
-          else
-          {
-            state.Send(MobileIncoming.Create(state, state.Mobile, this));
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-            if (IsDeadBondedPet)
-              state.Send(new BondedStatus(0, Serial, 1));
+      foreach (NetState state in eable)
+        if (!state.Mobile.CanSee(this))
+        {
+          state.Send(RemovePacket);
+        }
+        else
+        {
+          state.Send(MobileIncoming.Create(state, state.Mobile, this));
 
-            if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
-          }
+          if (IsDeadBondedPet)
+            state.Send(new BondedStatus(0, Serial, 1));
 
-        eable.Free();
-      }
+          if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
+        }
+
+      eable.Free();
     }
 
     public virtual void OnConnected()
@@ -6757,9 +6718,11 @@ namespace Server
 
     public virtual bool CanSee(object o)
     {
-      if (o is Item item) return CanSee(item);
+      if (o is Item item)
+        return CanSee(item);
 
-      if (o is Mobile mobile) return CanSee(mobile);
+      if (o is Mobile mobile)
+        return CanSee(mobile);
 
       return true;
     }
@@ -6835,10 +6798,7 @@ namespace Server
       for (int i = 0; delta < 0 && i < m_InvalidBodies.Length; ++i)
         delta = m_InvalidBodies[i] - body;
 
-      if (delta != 0)
-        return body;
-
-      return 0;
+      return delta != 0 ? body : 0;
     }
 
     public void FreeCache()
@@ -7242,7 +7202,7 @@ namespace Server
 	  ///  			SendMessage( "That is too heavy for you to lift." );
 	  ///  			return false;
 	  ///  		}
-	  /// 
+	  ///
 	  ///  		return base.OnDragLift( item );
 	  ///   }</code>
 	  /// </example>
@@ -7372,7 +7332,7 @@ namespace Server
     {
       m_StatCap = 225;
       m_FollowersMax = 5;
-      m_Skills = new Skills(this);
+      Skills = new Skills(this);
       Items = new List<Item>();
       StatMods = new List<StatMod>();
       SkillMods = new List<SkillMod>();
@@ -7380,7 +7340,7 @@ namespace Server
       AutoPageNotify = true;
       Aggressors = new List<AggressorInfo>();
       Aggressed = new List<AggressorInfo>();
-      m_Virtues = new VirtueInfo();
+      Virtues = new VirtueInfo();
       Stabled = new List<Mobile>();
       DamageEntries = new List<DamageEntry>();
 
@@ -7519,7 +7479,7 @@ namespace Server
     public virtual void OnSkillsQuery(Mobile from)
     {
       if (from == this)
-        Send(new SkillUpdate(m_Skills));
+        Send(new SkillUpdate(Skills));
     }
 
     /// <summary>
@@ -7735,25 +7695,6 @@ namespace Server
       }
     }
 
-    private class SimpleStateTarget : Target
-    {
-      private TargetStateCallback m_Callback;
-      private object m_State;
-
-      public SimpleStateTarget(int range, TargetFlags flags, bool allowGround, TargetStateCallback callback,
-        object state)
-        : base(range, allowGround, flags)
-      {
-        m_Callback = callback;
-        m_State = state;
-      }
-
-      protected override void OnTarget(Mobile from, object targeted)
-      {
-        m_Callback?.Invoke(from, targeted, m_State);
-      }
-    }
-
     private class SimpleStateTarget<T> : Target
     {
       private TargetStateCallback<T> m_Callback;
@@ -7930,7 +7871,6 @@ namespace Server
     private int m_Hits, m_Stam, m_Mana;
     private int m_Fame, m_Karma;
     private AccessLevel m_AccessLevel;
-    private Skills m_Skills;
     private bool m_Player;
     private string m_Title;
     private int m_LightLevel;
@@ -7957,13 +7897,12 @@ namespace Server
     private Region m_Region;
     private int m_VirtualArmor;
     private int m_Followers, m_FollowersMax;
-    private List<object> _actions; // prefer List<object> over ArrayList for more specific profiling information
+    private List<object> _actions;
     private Queue<MovementRecord> m_MoveRecords;
     private int m_WarmodeChanges;
     private DateTime m_NextWarmodeChange;
     private WarmodeTimer m_WarmodeTimer;
     private int m_VirtualArmorMod;
-    private VirtueInfo m_Virtues;
     private Body m_BodyMod;
     private Race m_Race;
 
@@ -8231,95 +8170,17 @@ namespace Server
 
     public Prompt BeginPrompt(PromptCallback callback, PromptCallback cancelCallback)
     {
-      Prompt p = new SimplePrompt(callback, cancelCallback);
-
-      Prompt = p;
-      return p;
+      return Prompt = new SimplePrompt(callback, cancelCallback);
     }
 
-    public Prompt BeginPrompt(PromptCallback callback, bool callbackHandlesCancel)
+    public Prompt BeginPrompt(PromptCallback callback, bool callbackHandlesCancel = false)
     {
-      Prompt p = new SimplePrompt(callback, callbackHandlesCancel);
-
-      Prompt = p;
-      return p;
-    }
-
-    public Prompt BeginPrompt(PromptCallback callback)
-    {
-      return BeginPrompt(callback, false);
-    }
-
-    private class SimpleStatePrompt : Prompt
-    {
-      private PromptStateCallback m_Callback;
-
-      private bool m_CallbackHandlesCancel;
-      private PromptStateCallback m_CancelCallback;
-
-      private object m_State;
-
-      public SimpleStatePrompt(PromptStateCallback callback, PromptStateCallback cancelCallback, object state)
-      {
-        m_Callback = callback;
-        m_CancelCallback = cancelCallback;
-        m_State = state;
-      }
-
-      public SimpleStatePrompt(PromptStateCallback callback, bool callbackHandlesCancel, object state)
-      {
-        m_Callback = callback;
-        m_State = state;
-        m_CallbackHandlesCancel = callbackHandlesCancel;
-      }
-
-      public SimpleStatePrompt(PromptStateCallback callback, object state)
-        : this(callback, false, state)
-      {
-      }
-
-      public override void OnResponse(Mobile from, string text)
-      {
-        m_Callback?.Invoke(from, text, m_State);
-      }
-
-      public override void OnCancel(Mobile from)
-      {
-        if (m_CallbackHandlesCancel && m_Callback != null)
-          m_Callback(from, "", m_State);
-        else
-        {
-          m_CancelCallback?.Invoke(from, "", m_State);
-        }
-      }
-    }
-
-    public Prompt BeginPrompt(PromptStateCallback callback, PromptStateCallback cancelCallback, object state)
-    {
-      Prompt p = new SimpleStatePrompt(callback, cancelCallback, state);
-
-      Prompt = p;
-      return p;
-    }
-
-    public Prompt BeginPrompt(PromptStateCallback callback, bool callbackHandlesCancel, object state)
-    {
-      Prompt p = new SimpleStatePrompt(callback, callbackHandlesCancel, state);
-
-      Prompt = p;
-      return p;
-    }
-
-    public Prompt BeginPrompt(PromptStateCallback callback, object state)
-    {
-      return BeginPrompt(callback, false, state);
+      return Prompt = new SimplePrompt(callback, callbackHandlesCancel);
     }
 
     private class SimpleStatePrompt<T> : Prompt
     {
       private PromptStateCallback<T> m_Callback;
-
-      private bool m_CallbackHandlesCancel;
       private PromptStateCallback<T> m_CancelCallback;
 
       private T m_State;
@@ -8335,11 +8196,10 @@ namespace Server
       {
         m_Callback = callback;
         m_State = state;
-        m_CallbackHandlesCancel = callbackHandlesCancel;
+        m_CancelCallback = callbackHandlesCancel ? callback : null;
       }
 
-      public SimpleStatePrompt(PromptStateCallback<T> callback, T state)
-        : this(callback, false, state)
+      public SimpleStatePrompt(PromptStateCallback<T> callback, T state) : this(callback, false, state)
       {
       }
 
@@ -8350,29 +8210,18 @@ namespace Server
 
       public override void OnCancel(Mobile from)
       {
-        if (m_CallbackHandlesCancel && m_Callback != null)
-          m_Callback(from, "", m_State);
-        else
-        {
-          m_CancelCallback?.Invoke(from, "", m_State);
-        }
+        m_CancelCallback?.Invoke(from, "", m_State);
       }
     }
 
     public Prompt BeginPrompt<T>(PromptStateCallback<T> callback, PromptStateCallback<T> cancelCallback, T state)
     {
-      Prompt p = new SimpleStatePrompt<T>(callback, cancelCallback, state);
-
-      Prompt = p;
-      return p;
+      return Prompt = new SimpleStatePrompt<T>(callback, cancelCallback, state);
     }
 
     public Prompt BeginPrompt<T>(PromptStateCallback<T> callback, bool callbackHandlesCancel, T state)
     {
-      Prompt p = new SimpleStatePrompt<T>(callback, callbackHandlesCancel, state);
-
-      Prompt = p;
-      return p;
+      return Prompt = new SimpleStatePrompt<T>(callback, callbackHandlesCancel, state);
     }
 
     public Prompt BeginPrompt<T>(PromptStateCallback<T> callback, T state)
@@ -8647,123 +8496,71 @@ namespace Server
       return false;
     }
 
-    public Gump FindGump(Type type)
+    public Gump FindGump<T>() where T : Gump
     {
-      NetState ns = m_NetState;
-
-      if (ns != null)
-        foreach (Gump gump in ns.Gumps)
-          if (type.IsInstanceOfType(gump))
-            return gump;
-
-      return null;
+      return m_NetState?.Gumps.Find(g => g is T);
     }
 
-    public bool CloseGump(Type type)
+    public bool CloseGump<T>() where T : Gump
     {
-      if (m_NetState != null)
+      if (m_NetState == null)
+        return false;
+
+      Gump gump = FindGump<T>();
+
+      if (gump != null)
       {
-        Gump gump = FindGump(type);
-
-        if (gump != null)
-        {
-          m_NetState.Send(new CloseGump(gump.TypeID, 0));
-
-          m_NetState.RemoveGump(gump);
-
-          gump.OnServerClose(m_NetState);
-        }
-
-        return true;
+        // TODO: Recycle CloseGump
+        m_NetState.Send(new CloseGump(gump.TypeID, 0));
+        m_NetState.RemoveGump(gump);
+        gump.OnServerClose(m_NetState);
       }
 
-      return false;
-    }
-
-    [Obsolete("Use CloseGump( Type ) instead.")]
-    public bool CloseGump(Type type, int buttonID)
-    {
-      return CloseGump(type);
-    }
-
-    [Obsolete("Use CloseGump( Type ) instead.")]
-    public bool CloseGump(Type type, int buttonID, bool throwOnOffline)
-    {
-      return CloseGump(type);
+      return true;
     }
 
     public bool CloseAllGumps()
     {
       NetState ns = m_NetState;
 
-      if (ns != null)
+      if (ns == null)
+        return false;
+
+      List<Gump> gumps = new List<Gump>(ns.Gumps);
+
+      ns.ClearGumps();
+
+      foreach (Gump gump in gumps)
       {
-        List<Gump> gumps = new List<Gump>(ns.Gumps);
+        ns.Send(new CloseGump(gump.TypeID, 0));
 
-        ns.ClearGumps();
-
-        foreach (Gump gump in gumps)
-        {
-          ns.Send(new CloseGump(gump.TypeID, 0));
-
-          gump.OnServerClose(ns);
-        }
-
-        return true;
+        gump.OnServerClose(ns);
       }
 
-      return false;
+      return true;
     }
 
-    [Obsolete("Use CloseAllGumps() instead.", false)]
-    public bool CloseAllGumps(bool throwOnOffline)
+    public bool HasGump<T>() where T : Gump
     {
-      return CloseAllGumps();
-    }
-
-    public bool HasGump(Type type)
-    {
-      return FindGump(type) != null;
-    }
-
-    [Obsolete("Use HasGump( Type ) instead.", false)]
-    public bool HasGump(Type type, bool throwOnOffline)
-    {
-      return HasGump(type);
+      return FindGump<T>() != null;
     }
 
     public bool SendGump(Gump g)
     {
-      return SendGump(g, false);
-    }
+      if (m_NetState == null)
+        return false;
 
-    public bool SendGump(Gump g, bool throwOnOffline)
-    {
-      if (m_NetState != null)
-      {
-        g.SendTo(m_NetState);
-        return true;
-      }
-
-      if (throwOnOffline) throw new MobileNotConnectedException(this, "Gump could not be sent.");
-      return false;
+      g.SendTo(m_NetState);
+      return true;
     }
 
     public bool SendMenu(IMenu m)
     {
-      return SendMenu(m, false);
-    }
+      if (m_NetState == null)
+        return false;
 
-    public bool SendMenu(IMenu m, bool throwOnOffline)
-    {
-      if (m_NetState != null)
-      {
-        m.SendTo(m_NetState);
-        return true;
-      }
-
-      if (throwOnOffline) throw new MobileNotConnectedException(this, "Menu could not be sent.");
-      return false;
+      m.SendTo(m_NetState);
+      return true;
     }
 
     #endregion
@@ -9830,7 +9627,7 @@ namespace Server
 
     public void MovingEffect(IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes)
     {
-      Effects.SendMovingEffect(this, to, itemID, speed, duration, fixedDirection, explodes, 0, 0);
+      Effects.SendMovingEffect(this, to, itemID, speed, duration, fixedDirection, explodes);
     }
 
     public void MovingParticles(IEntity to, int itemID, int speed, int duration, bool fixedDirection, bool explodes,

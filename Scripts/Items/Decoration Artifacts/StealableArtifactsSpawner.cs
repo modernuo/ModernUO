@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Commands;
 
 namespace Server.Items
@@ -10,16 +11,17 @@ namespace Server.Items
     private StealableInstance[] m_Artifacts;
 
     private Timer m_RespawnTimer;
-    private Hashtable m_Table;
+    private Dictionary<Item, StealableInstance> m_Table;
 
     private StealableArtifactsSpawner() : base(1)
     {
       Movable = false;
 
       m_Artifacts = new StealableInstance[Entries.Length];
-      m_Table = new Hashtable(Entries.Length);
+      m_Table = new Dictionary<Item, StealableInstance>(Entries.Length);
 
-      for (int i = 0; i < Entries.Length; i++) m_Artifacts[i] = new StealableInstance(Entries[i]);
+      for (int i = 0; i < Entries.Length; i++)
+        m_Artifacts[i] = new StealableInstance(Entries[i]);
 
       m_RespawnTimer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn);
     }
@@ -264,7 +266,7 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
 
       m_Artifacts = new StealableInstance[Entries.Length];
-      m_Table = new Hashtable(Entries.Length);
+      m_Table = new Dictionary<Item, StealableInstance>(Entries.Length);
 
       int length = reader.ReadEncodedInt();
 
@@ -290,12 +292,7 @@ namespace Server.Items
 
     public class StealableEntry
     {
-      public StealableEntry(Map map, Point3D location, int minDelay, int maxDelay, Type type) : this(map, location,
-        minDelay, maxDelay, type, 0)
-      {
-      }
-
-      public StealableEntry(Map map, Point3D location, int minDelay, int maxDelay, Type type, int hue)
+      public StealableEntry(Map map, Point3D location, int minDelay, int maxDelay, Type type, int hue = 0)
       {
         Map = map;
         Location = location;

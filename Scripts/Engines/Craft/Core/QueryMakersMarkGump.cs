@@ -17,7 +17,7 @@ namespace Server.Engines.Craft
     public QueryMakersMarkGump(int quality, Mobile from, CraftItem craftItem, CraftSystem craftSystem, Type typeRes,
       BaseTool tool) : base(100, 200)
     {
-      from.CloseGump(typeof(QueryMakersMarkGump));
+      from.CloseGump<QueryMakersMarkGump>();
 
       m_Quality = quality;
       m_From = from;

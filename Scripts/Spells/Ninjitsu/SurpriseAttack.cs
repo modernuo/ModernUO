@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.SkillHandlers;
 
 namespace Server.Spells.Ninjitsu
 {
   public class SurpriseAttack : NinjaMove
   {
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, SurpriseAttackInfo> m_Table = new Dictionary<Mobile, SurpriseAttackInfo>();
 
     public override int BaseMana => 20;
     public override double RequiredSkill => Core.ML ? 60.0 : 30.0;
@@ -32,8 +33,8 @@ namespace Server.Spells.Ninjitsu
 
       if (valid)
       {
-        attacker.BeginAction(typeof(Stealth));
-        Timer.DelayCall(TimeSpan.FromSeconds(5.0), delegate { attacker.EndAction(typeof(Stealth)); });
+        attacker.BeginAction<Stealth>();
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), delegate { attacker.EndAction<Stealth>(); });
       }
 
       return valid;
@@ -52,23 +53,21 @@ namespace Server.Spells.Ninjitsu
 
       attacker.RevealingAction();
 
-      SurpriseAttackInfo info;
+      SurpriseAttackInfo info = m_Table[defender];
 
-      if (m_Table.Contains(defender))
+      if (info != null)
       {
-        info = (SurpriseAttackInfo)m_Table[defender];
-
         info.m_Timer?.Stop();
 
         m_Table.Remove(defender);
       }
 
-      int ninjitsu = attacker.Skills[SkillName.Ninjitsu].Fixed;
+      int ninjitsu = attacker.Skills.Ninjitsu.Fixed;
 
       int malus = ninjitsu / 60 + (int)Tracking.GetStalkingBonus(attacker, defender);
 
       info = new SurpriseAttackInfo(defender, malus);
-      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(8.0), new TimerStateCallback(EndSurprise), info);
+      info.m_Timer = Timer.DelayCall(TimeSpan.FromSeconds(8.0), EndSurprise, info);
 
       m_Table[defender] = info;
 
@@ -86,19 +85,18 @@ namespace Server.Spells.Ninjitsu
 
     public static bool GetMalus(Mobile target, ref int malus)
     {
-      if (!(m_Table[target] is SurpriseAttackInfo info))
+      SurpriseAttackInfo info = m_Table[target];
+
+      if (info == null)
         return false;
 
       malus = info.m_Malus;
       return true;
     }
 
-    private static void EndSurprise(object state)
+    private static void EndSurprise(SurpriseAttackInfo info)
     {
-      SurpriseAttackInfo info = (SurpriseAttackInfo)state;
-
       info.m_Timer?.Stop();
-
       info.m_Target.SendLocalizedMessage(1063131); // Your defenses have returned to normal.
 
       m_Table.Remove(info.m_Target);

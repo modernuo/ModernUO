@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -13,18 +13,14 @@ namespace Server.Engines.BulkOrders
     private const int LabelColor = 0x7FFF;
     private BulkOrderBook m_Book;
     private PlayerMobile m_From;
-    private ArrayList m_List;
+    private List<IBOBEntry> m_List;
 
     private int m_Page;
 
-    public BOBGump(PlayerMobile from, BulkOrderBook book) : this(from, book, 0, null)
+    public BOBGump(PlayerMobile from, BulkOrderBook book, int page = 0, List<IBOBEntry> list = null) : base(12, 24)
     {
-    }
-
-    public BOBGump(PlayerMobile from, BulkOrderBook book, int page, ArrayList list) : base(12, 24)
-    {
-      from.CloseGump(typeof(BOBGump));
-      from.CloseGump(typeof(BOBFilterGump));
+      from.CloseGump<BOBGump>();
+      from.CloseGump<BOBFilterGump>();
 
       m_From = from;
       m_Book = book;
@@ -32,14 +28,14 @@ namespace Server.Engines.BulkOrders
 
       if (list == null)
       {
-        list = new ArrayList(book.Entries.Count);
+        list = new List<IBOBEntry>(book.Entries.Count);
 
         for (int i = 0; i < book.Entries.Count; ++i)
         {
-          object obj = book.Entries[i];
+          IBOBEntry entry = book.Entries[i];
 
-          if (CheckFilter(obj))
-            list.Add(obj);
+          if (CheckFilter(entry))
+            list.Add(entry);
         }
       }
 
@@ -92,17 +88,13 @@ namespace Server.Engines.BulkOrders
 
       for (int i = index; i < index + count && i >= 0 && i < list.Count; ++i)
       {
-        object obj = list[i];
+        IBOBEntry entry = list[i];
 
-        if (!CheckFilter(obj))
+        if (!CheckFilter(entry))
           continue;
 
         AddImageTiled(24, 94 + tableIndex * 32, canPrice ? 573 : 489, 2, 2624);
-
-        if (obj is BOBLargeEntry entry)
-          tableIndex += entry.Entries.Length;
-        else
-          ++tableIndex;
+        tableIndex += entry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
       }
 
       AddAlphaRegion(18, 20, width - 17, 420);
@@ -169,12 +161,12 @@ namespace Server.Engines.BulkOrders
 
       for (int i = index; i < index + count && i >= 0 && i < list.Count; ++i)
       {
-        object obj = list[i];
+        IBOBEntry entry = list[i];
 
-        if (!CheckFilter(obj))
+        if (!CheckFilter(entry))
           continue;
 
-        if (obj is BOBLargeEntry entry)
+        if (entry is BOBLargeEntry largeEntry)
         {
           int y = 96 + tableIndex * 32;
 
@@ -189,9 +181,9 @@ namespace Server.Engines.BulkOrders
 
           AddHtmlLocalized(61, y, 50, 32, 1062225, LabelColor, false, false); // Large
 
-          for (int j = 0; j < entry.Entries.Length; ++j)
+          for (int j = 0; j < largeEntry.Entries.Length; ++j)
           {
-            BOBLargeSubEntry sub = entry.Entries[j];
+            BOBLargeSubEntry sub = largeEntry.Entries[j];
 
             AddHtmlLocalized(103, y, 130, 32, sub.Number, LabelColor, false, false);
 
@@ -215,7 +207,7 @@ namespace Server.Engines.BulkOrders
         }
         else
         {
-          BOBSmallEntry smallEntry = (BOBSmallEntry)obj;
+          BOBSmallEntry smallEntry = (BOBSmallEntry)entry;
 
           int y = 96 + tableIndex++ * 32;
 
@@ -249,26 +241,15 @@ namespace Server.Engines.BulkOrders
       }
     }
 
-    public Item Reconstruct(object obj)
-    {
-      Item item = null;
-
-      if (obj is BOBLargeEntry entry)
-        item = entry.Reconstruct();
-      else
-        item = ((BOBSmallEntry)obj).Reconstruct();
-
-      return item;
-    }
-
-    public bool CheckFilter(object obj)
-    {
-      if (obj is BOBLargeEntry entry)
+    public bool CheckFilter(IBOBEntry entry)
+    { 
+      if (entry is BOBLargeEntry largeEntry)
         return CheckFilter(entry.Material, entry.AmountMax, true, entry.RequireExceptional, entry.DeedType,
-          entry.Entries.Length > 0 ? entry.Entries[0].ItemType : null);
-      if (obj is BOBSmallEntry smallEntry)
-        return CheckFilter(smallEntry.Material, smallEntry.AmountMax, false, smallEntry.RequireExceptional,
-          smallEntry.DeedType, smallEntry.ItemType);
+          largeEntry.Entries.Length > 0 ? largeEntry.Entries[0].ItemType : null);
+      
+      if (entry is BOBSmallEntry smallEntry)
+        return CheckFilter(entry.Material, entry.AmountMax, false, entry.RequireExceptional,
+          entry.DeedType, smallEntry.ItemType);
 
       return false;
     }
@@ -344,20 +325,15 @@ namespace Server.Engines.BulkOrders
       int slots = 0;
       int count = 0;
 
-      ArrayList list = m_List;
+      List<IBOBEntry> list = m_List;
 
       for (int i = index; i >= 0 && i < list.Count; ++i)
       {
-        object obj = list[i];
+        IBOBEntry entry = list[i];
 
-        if (CheckFilter(obj))
+        if (CheckFilter(entry))
         {
-          int add;
-
-          if (obj is BOBLargeEntry entry)
-            add = entry.Entries.Length;
-          else
-            add = 1;
+          int add = entry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
 
           if (slots + add > 10)
             break;
@@ -377,52 +353,42 @@ namespace Server.Engines.BulkOrders
         return 0;
 
       int count = 0;
-      int add = 0;
       int page = 0;
-      ArrayList list = m_List;
       int i;
-      object obj;
-
+      
+      List<IBOBEntry> list = m_List;
       for (i = 0; i < index && i < list.Count; i++)
       {
-        obj = list[i];
-        if (CheckFilter(obj))
+        IBOBEntry entry = list[i];
+        if (!CheckFilter(entry))
+          continue;
+
+        int add = entry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
+        count += add;
+        if (count > 10)
         {
-          if (obj is BOBLargeEntry entry)
-            add = entry.Entries.Length;
-          else
-            add = 1;
-          count += add;
-          if (count > 10)
-          {
-            page++;
-            count = add;
-          }
+          page++;
+          count = add;
         }
       }
 
-      /* now we are on the page of the bod preceeding the dropped one.
+      /* now we are on the page of the bod preceding the dropped one.
        * next step: checking whether we have to remain where we are.
        * The counter i needs to be incremented as the bod to this very moment
        * has not yet been removed from m_List */
       i++;
 
       /* if, for instance, a big bod of size 6 has been removed, smaller bods
-       * might fall back into this page. Depending on their sizes, the page eeds
+       * might fall back into this page. Depending on their sizes, the page needs
        * to be adjusted accordingly. This is done now.
        */
       if (count + sizeDropped > 10)
       {
         while (i < list.Count && count <= 10)
         {
-          obj = list[i];
-          if (CheckFilter(obj))
-          {
-            if (obj is BOBLargeEntry entry)
-              count += entry.Entries.Length;
-            else
-              count += 1;
-          }
+          IBOBEntry entry = list[i];
+          if (CheckFilter(entry))
+            count += entry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
 
           i++;
         }
@@ -521,9 +487,6 @@ namespace Server.Engines.BulkOrders
         }
         default:
         {
-          bool canDrop = m_Book.IsChildOf(m_From.Backpack);
-          bool canPrice = canDrop || m_Book.RootParent is PlayerVendor;
-
           index -= 5;
 
           int type = index % 2;
@@ -532,9 +495,9 @@ namespace Server.Engines.BulkOrders
           if (index < 0 || index >= m_List.Count)
             break;
 
-          object obj = m_List[index];
+          IBOBEntry bobEntry = m_List[index];
 
-          if (!m_Book.Entries.Contains(obj))
+          if (!m_Book.Entries.Contains(bobEntry))
           {
             m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
             break;
@@ -544,54 +507,43 @@ namespace Server.Engines.BulkOrders
           {
             if (m_Book.IsChildOf(m_From.Backpack))
             {
-              Item item = Reconstruct(obj);
+              Item item = bobEntry.Reconstruct();
 
-              if (item != null)
+              Container pack = m_From.Backpack;
+              if (pack == null || !pack.CheckHold(m_From, item, true, true, 0,
+                    item.PileWeight + item.TotalWeight))
               {
-                Container pack = m_From.Backpack;
-                if (pack == null || !pack.CheckHold(m_From, item, true, true, 0,
-                      item.PileWeight + item.TotalWeight))
-                {
-                  m_From.SendLocalizedMessage(503204); // You do not have room in your backpack for this
-                  m_From.SendGump(new BOBGump(m_From, m_Book, m_Page, null));
-                }
-                else
-                {
-                  if (m_Book.IsChildOf(m_From.Backpack))
-                  {
-                    int sizeOfDroppedBod;
-                    if (obj is BOBLargeEntry entry)
-                      sizeOfDroppedBod = entry.Entries.Length;
-                    else
-                      sizeOfDroppedBod = 1;
-
-                    m_From.AddToBackpack(item);
-                    m_From.SendLocalizedMessage(
-                      1045152); // The bulk order deed has been placed in your backpack.
-                    m_Book.Entries.Remove(obj);
-                    m_Book.InvalidateProperties();
-
-                    if (m_Book.Entries.Count / 5 < m_Book.ItemCount)
-                    {
-                      m_Book.ItemCount--;
-                      m_Book.InvalidateItems();
-                    }
-
-                    if (m_Book.Entries.Count > 0)
-                    {
-                      m_Page = GetPageForIndex(index, sizeOfDroppedBod);
-                      m_From.SendGump(new BOBGump(m_From, m_Book, m_Page, null));
-                    }
-                    else
-                    {
-                      m_From.SendLocalizedMessage(1062381); // The book is empty.
-                    }
-                  }
-                }
+                m_From.SendLocalizedMessage(503204); // You do not have room in your backpack for this
+                m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
               }
               else
               {
-                m_From.SendMessage("Internal error. The bulk order deed could not be reconstructed.");
+                if (m_Book.IsChildOf(m_From.Backpack))
+                {
+                  int sizeOfDroppedBod = bobEntry is BOBLargeEntry entry ? entry.Entries.Length : 1;
+
+                  m_From.AddToBackpack(item);
+                  m_From.SendLocalizedMessage(
+                    1045152); // The bulk order deed has been placed in your backpack.
+                  m_Book.Entries.Remove(bobEntry);
+                  m_Book.InvalidateProperties();
+
+                  if (m_Book.Entries.Count / 5 < m_Book.ItemCount)
+                  {
+                    m_Book.ItemCount--;
+                    m_Book.InvalidateItems();
+                  }
+
+                  if (m_Book.Entries.Count > 0)
+                  {
+                    m_Page = GetPageForIndex(index, sizeOfDroppedBod);
+                    m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
+                  }
+                  else
+                  {
+                    m_From.SendLocalizedMessage(1062381); // The book is empty.
+                  }
+                }
               }
             }
           }
@@ -599,7 +551,7 @@ namespace Server.Engines.BulkOrders
           {
             if (m_Book.IsChildOf(m_From.Backpack))
             {
-              m_From.Prompt = new SetPricePrompt(m_Book, obj, m_Page, m_List);
+              m_From.Prompt = new SetPricePrompt(m_Book, bobEntry, m_Page, m_List);
               m_From.SendLocalizedMessage(1062383); // Type in a price for the deed:
             }
             else if (m_Book.RootParent is PlayerVendor pv)
@@ -608,18 +560,8 @@ namespace Server.Engines.BulkOrders
 
               if (vi != null && !vi.IsForSale)
               {
-                int sizeOfDroppedBod;
-                int price = 0;
-                if (obj is BOBLargeEntry entry)
-                {
-                  price = entry.Price;
-                  sizeOfDroppedBod = entry.Entries.Length;
-                }
-                else
-                {
-                  price = ((BOBSmallEntry)obj).Price;
-                  sizeOfDroppedBod = 1;
-                }
+                int sizeOfDroppedBod = bobEntry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
+                int price = bobEntry.Price;
 
                 if (price == 0)
                 {
@@ -630,7 +572,7 @@ namespace Server.Engines.BulkOrders
                   if (m_Book.Entries.Count > 0)
                   {
                     m_Page = GetPageForIndex(index, sizeOfDroppedBod);
-                    m_From.SendGump(new BODBuyGump(m_From, m_Book, obj, m_Page, price));
+                    m_From.SendGump(new BODBuyGump(m_From, m_Book, bobEntry, m_Page, price));
                   }
                   else
                   {
@@ -649,21 +591,21 @@ namespace Server.Engines.BulkOrders
     private class SetPricePrompt : Prompt
     {
       private BulkOrderBook m_Book;
-      private ArrayList m_List;
-      private object m_Object;
+      private List<IBOBEntry> m_List;
+      private IBOBEntry m_Entry;
       private int m_Page;
 
-      public SetPricePrompt(BulkOrderBook book, object obj, int page, ArrayList list)
+      public SetPricePrompt(BulkOrderBook book, IBOBEntry entry, int page, List<IBOBEntry> list)
       {
         m_Book = book;
-        m_Object = obj;
+        m_Entry = entry;
         m_Page = page;
         m_List = list;
       }
 
       public override void OnResponse(Mobile from, string text)
       {
-        if (m_Object != null && !m_Book.Entries.Contains(m_Object))
+        if (m_Entry != null && !m_Book.Entries.Contains(m_Entry))
         {
           from.SendLocalizedMessage(1062382); // The deed selected is not available.
           return;
@@ -675,19 +617,16 @@ namespace Server.Engines.BulkOrders
         {
           from.SendLocalizedMessage(1062390); // The price you requested is outrageous!
         }
-        else if (m_Object == null)
+        else if (m_Entry == null)
         {
           for (int i = 0; i < m_List.Count; ++i)
           {
-            object obj = m_List[i];
+            IBOBEntry entry = m_List[i];
 
-            if (!m_Book.Entries.Contains(obj))
+            if (!m_Book.Entries.Contains(entry))
               continue;
-
-            if (obj is BOBLargeEntry entry)
-              entry.Price = price;
-            else
-              ((BOBSmallEntry)obj).Price = price;
+            
+            entry.Price = price;
           }
 
           from.SendMessage("Deed prices set.");
@@ -695,21 +634,10 @@ namespace Server.Engines.BulkOrders
           if (from is PlayerMobile mobile)
             mobile.SendGump(new BOBGump(mobile, m_Book, m_Page, m_List));
         }
-        else if (m_Object is BOBLargeEntry entry)
-        {
-          entry.Price = price;
-
-          from.SendLocalizedMessage(1062384); // Deed price set.
-
-          if (from is PlayerMobile mobile)
-            mobile.SendGump(new BOBGump(mobile, m_Book, m_Page, m_List));
-        }
         else
         {
-          ((BOBSmallEntry)m_Object).Price = price;
-
+          m_Entry.Price = price;
           from.SendLocalizedMessage(1062384); // Deed price set.
-
           if (from is PlayerMobile mobile)
             mobile.SendGump(new BOBGump(mobile, m_Book, m_Page, m_List));
         }

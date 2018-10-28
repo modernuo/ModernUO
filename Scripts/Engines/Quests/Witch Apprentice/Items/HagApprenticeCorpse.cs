@@ -13,18 +13,20 @@ namespace Server.Engines.Quests.Hag
     {
       Direction = Direction.South;
 
-      foreach (Item item in EquipItems) DropItem(item);
+      foreach (Item item in EquipItems)
+        DropItem(item);
     }
 
     public HagApprenticeCorpse(Serial serial) : base(serial)
     {
     }
 
+    // TODO: What is this? Why are we creating a mobile and deleting it?
     private static Mobile GetOwner()
     {
       Mobile apprentice = new Mobile();
 
-      apprentice.Hue = Utility.RandomSkinHue();
+      apprentice.Hue = Race.Human.RandomSkinHue();
       apprentice.Female = false;
       apprentice.Body = 0x190;
 
@@ -60,7 +62,9 @@ namespace Server.Engines.Quests.Hag
         QuestSystem qs = player.Quest;
 
         if (qs is WitchApprenticeQuest)
-          if (qs.FindObjective(typeof(FindApprenticeObjective)) is FindApprenticeObjective obj && !obj.Completed)
+        {
+          FindApprenticeObjective obj = qs.FindObjective<FindApprenticeObjective>();
+          if (obj?.Completed == false)
           {
             if (obj.Corpse == this)
             {
@@ -75,6 +79,7 @@ namespace Server.Engines.Quests.Hag
 
             return;
           }
+        }
       }
 
       SendLocalizedMessageTo(from, 1055048); // You examine the corpse, but find nothing of interest.

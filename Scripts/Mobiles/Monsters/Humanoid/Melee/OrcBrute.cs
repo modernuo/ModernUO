@@ -1,3 +1,4 @@
+using System.Linq;
 using Server.Items;
 
 namespace Server.Mobiles
@@ -108,35 +109,15 @@ namespace Server.Mobiles
       if (map == null)
         return;
 
-      int orcs = 0;
-
-      foreach (Mobile m in GetMobilesInRange(10))
-        if (m is OrcishLord)
-          ++orcs;
+      IPooledEnumerable<OrcishLord> eable = GetMobilesInRange<OrcishLord>(10);
+      int orcs = eable.Count();
+      eable.Free();
 
       if (orcs < 10)
       {
-        BaseCreature orc = new SpawnedOrcishLord();
+        BaseCreature orc = new SpawnedOrcishLord{ Team = Team };
 
-        orc.Team = Team;
-
-        Point3D loc = target.Location;
-        bool validLocation = false;
-
-        for (int j = 0; !validLocation && j < 10; ++j)
-        {
-          int x = target.X + Utility.Random(3) - 1;
-          int y = target.Y + Utility.Random(3) - 1;
-          int z = map.GetAverageZ(x, y);
-
-          if (validLocation = map.CanFit(x, y, Z, 16, false, false))
-            loc = new Point3D(x, y, Z);
-          else if (validLocation = map.CanFit(x, y, z, 16, false, false))
-            loc = new Point3D(x, y, z);
-        }
-
-        orc.MoveToWorld(loc, map);
-
+        orc.MoveToWorld(map.GetRandomNearbyLocation(target.Location), map);
         orc.Combatant = target;
       }
     }

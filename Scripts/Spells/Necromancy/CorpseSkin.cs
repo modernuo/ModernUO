@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy
@@ -14,7 +15,7 @@ namespace Server.Spells.Necromancy
       Reagent.GraveDust
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
     public CorpseSkinSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -48,7 +49,7 @@ namespace Server.Spells.Necromancy
          * NOTE: Resistance is not checked if targeting yourself
          */
 
-        ExpireTimer timer = (ExpireTimer)m_Table[m];
+        ExpireTimer timer = m_Table[m];
 
         if (timer != null)
           timer.DoExpire();
@@ -66,8 +67,7 @@ namespace Server.Spells.Necromancy
 
         TimeSpan duration = TimeSpan.FromSeconds((ss - mr) / 2.5 + 40.0);
 
-        ResistanceMod[] mods = new ResistanceMod[4]
-        {
+        ResistanceMod[] mods = {
           new ResistanceMod(ResistanceType.Fire, -15),
           new ResistanceMod(ResistanceType.Poison, -15),
           new ResistanceMod(ResistanceType.Cold, +10),
@@ -92,7 +92,7 @@ namespace Server.Spells.Necromancy
 
     public static bool RemoveCurse(Mobile m)
     {
-      ExpireTimer t = (ExpireTimer)m_Table[m];
+      ExpireTimer t = m_Table[m];
 
       if (t == null)
         return false;

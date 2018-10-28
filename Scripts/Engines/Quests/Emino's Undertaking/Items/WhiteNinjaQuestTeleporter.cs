@@ -23,7 +23,7 @@ namespace Server.Engines.Quests.Ninja
 
       if (qs is EminosUndertakingQuest)
       {
-        QuestObjective obj = qs.FindObjective(typeof(SearchForSwordObjective));
+        QuestObjective obj = qs.FindObjective<SearchForSwordObjective>();
 
         if (obj != null)
         {

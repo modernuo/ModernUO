@@ -71,15 +71,17 @@ namespace Server.Items
         int y = p.Y - 2 + Utility.Random(5);
         int z = p.Z;
 
-        if (!f.CanFit(x, y, z, 1, false, false, true))
+        if (!f.CanFit(x, y, z, 1, false, false))
         {
           z = f.GetAverageZ(x, y);
 
-          if (!f.CanFit(x, y, z, 1, false, false, true))
+          if (!f.CanFit(x, y, z, 1, false, false))
             continue;
         }
 
-        new Blood().MoveToWorld(new Point3D(x, y, z), f);
+        Point3D loc = f.GetRandomNearbyLocation(p, 2, -2, 4, 1);
+
+        new Blood().MoveToWorld(loc, f);
       }
     }
 

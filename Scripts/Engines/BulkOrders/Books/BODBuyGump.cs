@@ -9,15 +9,15 @@ namespace Server.Engines.BulkOrders
   {
     private BulkOrderBook m_Book;
     private PlayerMobile m_From;
-    private object m_Object;
+    private IBOBEntry m_Entry;
     private int m_Page;
     private int m_Price;
 
-    public BODBuyGump(PlayerMobile from, BulkOrderBook book, object obj, int page, int price) : base(100, 200)
+    public BODBuyGump(PlayerMobile from, BulkOrderBook book, IBOBEntry entry, int page, int price) : base(100, 200)
     {
       m_From = from;
       m_Book = book;
-      m_Object = obj;
+      m_Entry = entry;
       m_Price = price;
       m_Page = page;
 
@@ -40,100 +40,83 @@ namespace Server.Engines.BulkOrders
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (info.ButtonID == 2)
+      if (info.ButtonID != 2)
       {
-        PlayerVendor pv = m_Book.RootParent as PlayerVendor;
+        m_From.SendLocalizedMessage(503207); // Cancelled purchase.
+        return;
+      }
 
-        if (m_Book.Entries.Contains(m_Object) && pv != null)
-        {
-          int price = 0;
+      if (!(m_Book.RootParent is PlayerVendor pv))
+      {
+        m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
+        return;
+      }
 
-          VendorItem vi = pv.GetVendorItem(m_Book);
+      if (!m_Book.Entries.Contains(m_Entry))
+      {
+        pv.SayTo(m_From, 1062382); // The deed selected is not available.
+        return;
+      }
+      
+      int price = 0;
 
-          if (vi != null && !vi.IsForSale)
-          {
-            if (m_Object is BOBLargeEntry entry)
-              price = entry.Price;
-            else
-              price = ((BOBSmallEntry)m_Object).Price;
-          }
+      VendorItem vi = pv.GetVendorItem(m_Book);
 
-          if (price != m_Price)
-          {
-            pv.SayTo(m_From,
-              "The price has been been changed. If you like, you may offer to purchase the item again.");
-          }
-          else if (price == 0)
-          {
-            pv.SayTo(m_From, 1062382); // The deed selected is not available.
-          }
-          else
-          {
-            Item item = null;
+      if (vi != null && !vi.IsForSale)
+        price = m_Entry.Price;
 
-            if (m_Object is BOBLargeEntry entry)
-              item = entry.Reconstruct();
-            else
-              item = ((BOBSmallEntry)m_Object).Reconstruct();
+      if (price != m_Price)
+      {
+        pv.SayTo(m_From,
+          "The price has been been changed. If you like, you may offer to purchase the item again.");
+        return;
+      }
 
-            if (item == null)
-            {
-              m_From.SendMessage("Internal error. The bulk order deed could not be reconstructed.");
-            }
-            else
-            {
-              pv.Say(m_From.Name);
+      if (price == 0)
+      {
+        pv.SayTo(m_From, 1062382); // The deed selected is not available.
+        return;
+      }
 
-              Container pack = m_From.Backpack;
+      Item item = m_Entry.Reconstruct();
+      
+      pv.Say(m_From.Name);
 
-              if (pack == null || !pack.CheckHold(m_From, item, true, true, 0,
-                    item.PileWeight + item.TotalWeight))
-              {
-                pv.SayTo(m_From, 503204); // You do not have room in your backpack for this
-                m_From.SendGump(new BOBGump(m_From, m_Book, m_Page, null));
-              }
-              else
-              {
-                if (pack.ConsumeTotal(typeof(Gold), price) || Banker.Withdraw(m_From, price))
-                {
-                  m_Book.Entries.Remove(m_Object);
-                  m_Book.InvalidateProperties();
-                  pv.HoldGold += price;
-                  m_From.AddToBackpack(item);
-                  m_From.SendLocalizedMessage(
-                    1045152); // The bulk order deed has been placed in your backpack.
+      Container pack = m_From.Backpack;
 
-                  if (m_Book.Entries.Count / 5 < m_Book.ItemCount)
-                  {
-                    m_Book.ItemCount--;
-                    m_Book.InvalidateItems();
-                  }
-
-                  if (m_Book.Entries.Count > 0)
-                    m_From.SendGump(new BOBGump(m_From, m_Book, m_Page, null));
-                  else
-                    m_From.SendLocalizedMessage(1062381); // The book is empty.
-                }
-                else
-                {
-                  pv.SayTo(m_From, 503205); // You cannot afford this item.
-                  item.Delete();
-                }
-              }
-            }
-          }
-        }
-        else
-        {
-          if (pv == null)
-            m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
-          else
-            pv.SayTo(m_From, 1062382); // The deed selected is not available.
-        }
+      if (pack == null || !pack.CheckHold(m_From, item, true, true, 0,
+            item.PileWeight + item.TotalWeight))
+      {
+        pv.SayTo(m_From, 503204); // You do not have room in your backpack for this
+        m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
       }
       else
       {
-        m_From.SendLocalizedMessage(503207); // Cancelled purchase.
+        if (pack.ConsumeTotal(typeof(Gold), price) || Banker.Withdraw(m_From, price))
+        {
+          m_Book.Entries.Remove(m_Entry);
+          m_Book.InvalidateProperties();
+          pv.HoldGold += price;
+          m_From.AddToBackpack(item);
+          m_From.SendLocalizedMessage(
+            1045152); // The bulk order deed has been placed in your backpack.
+
+          if (m_Book.Entries.Count / 5 < m_Book.ItemCount)
+          {
+            m_Book.ItemCount--;
+            m_Book.InvalidateItems();
+          }
+
+          if (m_Book.Entries.Count > 0)
+            m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
+          else
+            m_From.SendLocalizedMessage(1062381); // The book is empty.
+        }
+        else
+        {
+          pv.SayTo(m_From, 503205); // You cannot afford this item.
+          item.Delete();
+        }
       }
     }
   }

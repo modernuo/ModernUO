@@ -140,11 +140,12 @@ namespace Server.Items
               int y = m_Mobile.Y + Utility.RandomMinMax(-1, 1);
               int z = m_Mobile.Z;
 
-              if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false, true))
+              if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false))
               {
                 z = m_Mobile.Map.GetAverageZ(x, y);
 
-                if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false, true)) continue;
+                if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false))
+                  continue;
               }
 
               Blood blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));

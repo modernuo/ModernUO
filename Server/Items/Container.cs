@@ -845,7 +845,6 @@ namespace Server.Items
       for (int i = 0; i < groups.Count; ++i)
       {
         items[i] = groups[i].ToArray();
-        //items[i] = (Item[])(((ArrayList)groups[i]).ToArray( typeof( Item ) ));
 
         for (int j = 0; j < items[i].Length; ++j)
           totals[i] += items[i][j].Amount;
@@ -939,7 +938,6 @@ namespace Server.Items
         for (int j = 0; j < groups.Count; ++j)
         {
           items[i][j] = groups[j].ToArray();
-          //items[i][j] = (Item[])(((ArrayList)groups[j]).ToArray( typeof( Item ) ));
 
           for (int k = 0; k < items[i][j].Length; ++k)
             totals[i][j] += items[i][j][k].Amount;
@@ -1341,7 +1339,6 @@ namespace Server.Items
       {
         Item[] items = groups[i].ToArray();
 
-        //Item[] items = (Item[])(((ArrayList)groups[i]).ToArray( typeof( Item ) ));
         int total = 0;
 
         for (int j = 0; j < items.Length; ++j)
@@ -1392,7 +1389,6 @@ namespace Server.Items
       for (int j = 0; j < groups.Count; ++j)
       {
         Item[] items = groups[j].ToArray();
-        //Item[] items = (Item[])(((ArrayList)groups[j]).ToArray( typeof( Item ) ));
         int total = 0;
 
         for (int k = 0; k < items.Length; ++k)
@@ -1445,7 +1441,6 @@ namespace Server.Items
         for (int j = 0; j < groups.Count; ++j)
         {
           Item[] items = groups[j].ToArray();
-          //Item[] items = (Item[])(((ArrayList)groups[j]).ToArray( typeof( Item ) ));
           int total = 0;
 
           for (int k = 0; k < items.Length; ++k)
@@ -1501,7 +1496,7 @@ namespace Server.Items
     {
       if (current == null || current.Items.Count == 0)
         return;
-      
+
       List<Item> items = current.Items;
 
       for (int i = 0; i < items.Count; ++i)
@@ -1530,7 +1525,7 @@ namespace Server.Items
     {
       if (current == null || current.Items.Count == 0)
         return;
-      
+
       List<Item> items = current.Items;
 
       for (int i = 0; i < items.Count; ++i)
@@ -1554,7 +1549,7 @@ namespace Server.Items
     {
       if (current == null || current.Items.Count == 0)
         return null;
-      
+
       List<Item> list = current.Items;
 
       for (int i = 0; i < list.Count; ++i)
@@ -1585,7 +1580,7 @@ namespace Server.Items
     {
       if (current == null || current.Items.Count <= 0)
         return null;
-      
+
       List<Item> list = current.Items;
 
       for (int i = 0; i < list.Count; ++i)
@@ -1619,7 +1614,7 @@ namespace Server.Items
     {
       List<T> list = new List<T>();
       RecurseFindItemsByType(this, recurse, list, predicate);
-      
+
       return list;
     }
 
@@ -1628,7 +1623,7 @@ namespace Server.Items
     {
       if (current == null || current.Items.Count == 0)
         return;
-      
+
       List<Item> items = current.Items;
 
       for (int i = 0; i < items.Count; ++i)
@@ -1655,7 +1650,7 @@ namespace Server.Items
     {
       if (current == null || current.Items.Count == 0)
         return null;
-      
+
       List<Item> list = current.Items;
 
       for (int i = 0; i < list.Count; ++i)
@@ -1777,12 +1772,8 @@ namespace Server.Items
 
     public static ContainerData GetData(int itemID)
     {
-      ContainerData data = null;
-      m_Table.TryGetValue(itemID, out data);
-
-      if (data != null)
-        return data;
-      return Default;
+      m_Table.TryGetValue(itemID, out ContainerData data);
+      return data ?? Default;
     }
   }
 }

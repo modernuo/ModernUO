@@ -12,7 +12,7 @@ namespace Server.Mobiles
 
       SpeechHue = Utility.RandomDyedHue();
 
-      Hue = Utility.RandomSkinHue();
+      Hue = Race.Human.RandomSkinHue();
 
       if (Female = Utility.RandomBool())
       {
@@ -80,11 +80,11 @@ namespace Server.Mobiles
 
       PackGold(250, 500);
 
-      Skills[SkillName.Anatomy].Base = 120.0;
-      Skills[SkillName.Tactics].Base = 120.0;
-      Skills[SkillName.Swords].Base = 120.0;
-      Skills[SkillName.MagicResist].Base = 120.0;
-      Skills[SkillName.DetectHidden].Base = 100.0;
+      Skills.Anatomy.Base = 120.0;
+      Skills.Tactics.Base = 120.0;
+      Skills.Swords.Base = 120.0;
+      Skills.MagicResist.Base = 120.0;
+      Skills.DetectHidden.Base = 100.0;
     }
 
     public BaseShieldGuard(Serial serial) : base(serial)

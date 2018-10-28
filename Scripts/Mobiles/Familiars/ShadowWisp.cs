@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
@@ -69,7 +70,7 @@ namespace Server.Mobiles
       if (caster == null)
         return;
 
-      ArrayList list = new ArrayList();
+      List<Mobile> list = new List<Mobile>();
 
       foreach (Mobile m in GetMobilesInRange(5))
         if (m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor)
@@ -77,7 +78,7 @@ namespace Server.Mobiles
 
       for (int i = 0; i < list.Count; ++i)
       {
-        Mobile m = (Mobile)list[i];
+        Mobile m = list[i];
         bool friendly = true;
 
         for (int j = 0; friendly && j < caster.Aggressors.Count; ++j)

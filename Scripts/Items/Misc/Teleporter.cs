@@ -392,11 +392,6 @@ namespace Server.Items
       }
     }
 
-    private void EndMessageLock(object state)
-    {
-      ((Mobile)state).EndAction(this);
-    }
-
     public override bool CanTeleport(Mobile m)
     {
       if (!base.CanTeleport(m))
@@ -415,7 +410,7 @@ namespace Server.Items
             m.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber, null,
               ""));
 
-          Timer.DelayCall(TimeSpan.FromSeconds(5.0), new TimerStateCallback(EndMessageLock), m);
+          Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
         }
 
         return false;

@@ -35,7 +35,7 @@ namespace Server.Spells.Spellweaving
       {
         Caster.SendLocalizedMessage(501775); // This spell is already in effect.
       }
-      else if (!Caster.CanBeginAction(typeof(GiftOfRenewalSpell)))
+      else if (!Caster.CanBeginAction<GiftOfRenewalSpell>())
       {
         Caster.SendLocalizedMessage(501789); // You must wait before trying again.
       }
@@ -52,7 +52,7 @@ namespace Server.Spells.Spellweaving
         }
         else
         {
-          double skill = Caster.Skills[SkillName.Spellweaving].Value;
+          double skill = Caster.Skills.Spellweaving.Value;
 
           int hitsPerRound = 5 + (int)(skill / 24) + FocusLevel;
           TimeSpan duration = TimeSpan.FromSeconds(30 + FocusLevel * 10);
@@ -72,7 +72,7 @@ namespace Server.Spells.Spellweaving
 
           m_Table[m] = info;
 
-          Caster.BeginAction(typeof(GiftOfRenewalSpell));
+          Caster.BeginAction<GiftOfRenewalSpell>();
 
           BuffInfo.AddBuff(m,
             new BuffInfo(BuffIcon.GiftOfRenewal, 1031602, 1075797, duration, m, hitsPerRound.ToString()));
@@ -91,7 +91,7 @@ namespace Server.Spells.Spellweaving
         info.m_Timer.Stop();
         BuffInfo.RemoveBuff(m, BuffIcon.GiftOfRenewal);
 
-        Timer.DelayCall(TimeSpan.FromSeconds(60), delegate { info.m_Caster.EndAction(typeof(GiftOfRenewalSpell)); });
+        Timer.DelayCall(TimeSpan.FromSeconds(60), delegate { info.m_Caster.EndAction<GiftOfRenewalSpell>(); });
 
         return true;
       }

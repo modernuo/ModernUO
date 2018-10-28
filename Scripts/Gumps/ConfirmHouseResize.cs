@@ -15,7 +15,7 @@ namespace Server.Gumps
       m_Mobile = mobile;
       m_House = house;
 
-      mobile.CloseGump(typeof(ConfirmHouseResize));
+      mobile.CloseGump<ConfirmHouseResize>();
 
       Closable = false;
 
@@ -150,7 +150,7 @@ namespace Server.Gumps
       }
       else if (info.ButtonID == 0)
       {
-        m_Mobile.CloseGump(typeof(ConfirmHouseResize));
+        m_Mobile.CloseGump<ConfirmHouseResize>();
         m_Mobile.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, m_Mobile, m_House));
       }
     }

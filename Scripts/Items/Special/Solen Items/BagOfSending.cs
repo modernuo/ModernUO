@@ -143,7 +143,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (from.Region.IsPartOf(typeof(Jail)))
+      if (from.Region.IsPartOf<Jail>())
         from.SendMessage("You may not do that in jail.");
       else if (!IsChildOf(from.Backpack))
         MessageHelper.SendLocalizedMessageTo(this, from, 1062334,
@@ -226,7 +226,7 @@ namespace Server.Items
         if (m_Bag.Deleted)
           return;
 
-        if (from.Region.IsPartOf(typeof(Jail)))
+        if (from.Region.IsPartOf<Jail>())
         {
           from.SendMessage("You may not do that in jail.");
         }

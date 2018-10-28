@@ -65,20 +65,19 @@ namespace Server.PathAlgorithms.SlowAStar
       PathNode[] closed = m_Closed, open = m_Open, successors = m_Successors;
       Direction[] path = m_Path;
 
-      int closedCount = 0, openCount = 0, sucCount = 0, pathCount = 0;
-      int popIndex, curF;
-      int x, y, z;
+      int closedCount = 0, openCount = 0;
+      int pathCount = 0;
       int depth = 0;
 
-      int xBacktrack, yBacktrack, zBacktrack, iBacktrack = 0;
+      int iBacktrack = 0;
 
       open[openCount++] = startNode;
 
       while (openCount > 0)
       {
         curNode = open[0];
-        curF = curNode.g + curNode.h;
-        popIndex = 0;
+        int curF = curNode.g + curNode.h;
+        int popIndex = 0;
 
         for (int i = 1; i < openCount; ++i)
           if (open[i].g + open[i].h < curF)
@@ -95,9 +94,9 @@ namespace Server.PathAlgorithms.SlowAStar
 
           closed[closedCount++] = curNode;
 
-          xBacktrack = curNode.px;
-          yBacktrack = curNode.py;
-          zBacktrack = curNode.pz;
+          int xBacktrack = curNode.px;
+          int yBacktrack = curNode.py;
+          int zBacktrack = curNode.pz;
 
           if (pathCount == MaxNodes)
             break;
@@ -148,7 +147,7 @@ namespace Server.PathAlgorithms.SlowAStar
         for (int i = popIndex; i < openCount; ++i)
           open[i] = open[i + 1];
 
-        sucCount = 0;
+        int sucCount = 0;
 
         if (bc != null)
         {
@@ -158,6 +157,9 @@ namespace Server.PathAlgorithms.SlowAStar
 
         MoveImpl.Goal = goal;
 
+        int x;
+        int y;
+        int z;
         for (int i = 0; i < 8; ++i)
         {
           switch (i)

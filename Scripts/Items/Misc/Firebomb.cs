@@ -173,21 +173,16 @@ namespace Server.Items
 
       IEntity to = p as IEntity ?? new Entity(Serial.Zero, new Point3D(p), Map);
 
-      Effects.SendMovingEffect(from, to, ItemID, 7, 0, false, false, Hue, 0);
+      Effects.SendMovingEffect(from, to, ItemID, 7, 0, false, false, Hue);
 
-      Timer.DelayCall(TimeSpan.FromSeconds(1.0), new TimerStateCallback(FirebombReposition_OnTick),
-        new object[] { p, Map });
+      Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => FirebombReposition_OnTick(p, Map));
       Internalize();
     }
 
-    private void FirebombReposition_OnTick(object state)
+    private void FirebombReposition_OnTick(IPoint3D p, Map map)
     {
       if (Deleted)
         return;
-
-      object[] states = (object[])state;
-      IPoint3D p = (IPoint3D)states[0];
-      Map map = (Map)states[1];
 
       MoveToWorld(new Point3D(p), map);
     }

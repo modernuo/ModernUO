@@ -148,7 +148,7 @@ namespace Server.Items
     {
       if (IsChildOf(from.Backpack))
       {
-        from.CloseGump(typeof(InternalGump));
+        from.CloseGump<InternalGump>();
         from.SendGump(new InternalGump(this));
       }
       else
@@ -181,7 +181,7 @@ namespace Server.Items
 
         Closable = true;
         Disposable = true;
-        Dragable = true;
+        Draggable = true;
         Resizable = false;
 
         AddPage(0);

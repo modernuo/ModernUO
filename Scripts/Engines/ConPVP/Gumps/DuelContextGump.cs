@@ -10,9 +10,9 @@ namespace Server.Engines.ConPVP
       From = from;
       Context = context;
 
-      from.CloseGump(typeof(RulesetGump));
-      from.CloseGump(typeof(DuelContextGump));
-      from.CloseGump(typeof(ParticipantGump));
+      from.CloseGump<RulesetGump>();
+      from.CloseGump<DuelContextGump>();
+      from.CloseGump<ParticipantGump>();
 
       int count = context.Participants.Count;
 

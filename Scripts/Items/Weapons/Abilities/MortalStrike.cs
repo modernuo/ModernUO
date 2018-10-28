@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Items
 {
@@ -13,7 +13,7 @@ namespace Server.Items
     public static readonly TimeSpan PlayerDuration = TimeSpan.FromSeconds(6.0);
     public static readonly TimeSpan NPCDuration = TimeSpan.FromSeconds(12.0);
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     public override int BaseMana => 30;
 
@@ -36,33 +36,29 @@ namespace Server.Items
 
     public static bool IsWounded(Mobile m)
     {
-      return m_Table.Contains(m);
+      return m_Table.ContainsKey(m);
     }
 
     public static void BeginWound(Mobile m, TimeSpan duration)
     {
-      Timer t = (Timer)m_Table[m];
+      InternalTimer timer = m_Table[m];
+      timer?.Stop();
 
-      t?.Stop();
-
-      t = new InternalTimer(m, duration);
-      m_Table[m] = t;
-
-      t.Start();
+      m_Table[m] = timer = new InternalTimer(m, duration);
+      timer.Start();
 
       m.YellowHealthbar = true;
     }
 
     public static void EndWound(Mobile m)
     {
-      if (!IsWounded(m))
-        return;
+      Timer timer = m_Table[m];
 
-      Timer t = (Timer)m_Table[m];
-
-      t?.Stop();
-
-      m_Table.Remove(m);
+      if (timer != null)
+      {
+        timer.Stop();
+        m_Table.Remove(m);
+      }
 
       m.YellowHealthbar = false;
       m.SendLocalizedMessage(1060208); // You are no longer mortally wounded.

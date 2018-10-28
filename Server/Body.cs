@@ -54,10 +54,7 @@ namespace Server
 
             string[] split = line.Split('\t');
 
-            BodyType type;
-            int bodyID;
-
-            if (int.TryParse(split[0], out bodyID) && Enum.TryParse(split[1], true, out type) && bodyID >= 0 &&
+            if (int.TryParse(split[0], out int bodyID) && Enum.TryParse(split[1], true, out BodyType type) && bodyID >= 0 &&
                 bodyID < m_Types.Length)
             {
               m_Types[bodyID] = type;

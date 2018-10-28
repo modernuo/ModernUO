@@ -44,9 +44,9 @@ namespace Server.Engines.Quests.Ambitious
         }
         else
         {
-          QuestObjective obj = qs.FindObjective(typeof(ReturnAfterKillsObjective));
+          QuestObjective obj = qs.FindObjective<ReturnAfterKillsObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             obj.Complete();
           }
@@ -56,7 +56,9 @@ namespace Server.Engines.Quests.Ambitious
           }
           else
           {
-            if (qs.FindObjective(typeof(GetRewardObjective)) is GetRewardObjective lastObj && !lastObj.Completed)
+            GetRewardObjective lastObj = qs.FindObjective<GetRewardObjective>();
+            
+            if (lastObj?.Completed == false)
             {
               bool bagOfSending = lastObj.BagOfSending;
               bool powderOfTranslocation = lastObj.PowderOfTranslocation;
@@ -95,9 +97,9 @@ namespace Server.Engines.Quests.Ambitious
       if (from is PlayerMobile player)
         if (player.Quest is AmbitiousQueenQuest qs && qs.RedSolen == RedSolen)
         {
-          QuestObjective obj = qs.FindObjective(typeof(GatherFungiObjective));
+          QuestObjective obj = qs.FindObjective<GatherFungiObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
             if (dropped is ZoogiFungus fungi)
             {
               if (fungi.Amount >= 50)

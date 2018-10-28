@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Accounting;
 using Server.Items;
 using Server.Network;
@@ -89,7 +89,7 @@ namespace Server.RemoteAdmin
 
   public sealed class AccountSearchResults : Packet
   {
-    public AccountSearchResults(ArrayList results) : base(0x05)
+    public AccountSearchResults(List<Account> results) : base(0x05)
     {
       EnsureCapacity(1 + 2 + 2);
 

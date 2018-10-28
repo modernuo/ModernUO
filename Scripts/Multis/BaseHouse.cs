@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Ethics;
@@ -46,18 +47,18 @@ namespace Server.Multis
       BuiltOn = DateTime.UtcNow;
       LastTraded = DateTime.MinValue;
 
-      Doors = new ArrayList();
-      LockDowns = new ArrayList();
-      Secures = new ArrayList();
-      Addons = new ArrayList();
+      Doors = new List<BaseDoor>();
+      LockDowns = new List<Item>();
+      Secures = new List<SecureInfo>();
+      Addons = new List<Item>();
 
-      CoOwners = new ArrayList();
-      Friends = new ArrayList();
-      Bans = new ArrayList();
-      Access = new ArrayList();
+      CoOwners = new List<Mobile>();
+      Friends = new List<Mobile>();
+      Bans = new List<Mobile>();
+      Access = new List<Mobile>();
 
-      VendorRentalContracts = new ArrayList();
-      InternalizedVendors = new ArrayList();
+      VendorRentalContracts = new List<VendorRentalContract>();
+      InternalizedVendors = new List<Mobile>();
 
       m_Owner = owner;
 
@@ -356,15 +357,15 @@ namespace Server.Multis
     public int MaxLockDowns{ get; set; }
 
     public Region Region => m_Region;
-    public ArrayList CoOwners{ get; set; }
+    public List<Mobile> CoOwners{ get; set; }
 
-    public ArrayList Friends{ get; set; }
+    public List<Mobile> Friends{ get; set; }
 
-    public ArrayList Access{ get; set; }
+    public List<Mobile> Access{ get; set; }
 
-    public ArrayList Bans{ get; set; }
+    public List<Mobile> Bans{ get; set; }
 
-    public ArrayList Doors{ get; set; }
+    public List<BaseDoor> Doors{ get; set; }
 
     public int LockDownCount
     {
@@ -377,7 +378,7 @@ namespace Server.Multis
         if (Secures != null)
           for (int i = 0; i < Secures.Count; ++i)
           {
-            SecureInfo info = (SecureInfo)Secures[i];
+            SecureInfo info = Secures[i];
 
             if (info.Item.Deleted)
               continue;
@@ -400,7 +401,7 @@ namespace Server.Multis
         if (Secures != null)
           for (int i = 0; i < Secures.Count; i++)
           {
-            SecureInfo info = (SecureInfo)Secures[i];
+            SecureInfo info = Secures[i];
 
             if (info.Item.Deleted)
               continue;
@@ -412,27 +413,27 @@ namespace Server.Multis
       }
     }
 
-    public ArrayList Addons{ get; set; }
+    public List<Item> Addons{ get; set; }
 
-    public ArrayList LockDowns{ get; private set; }
+    public List<Item> LockDowns{ get; private set; }
 
-    public ArrayList Secures{ get; private set; }
+    public List<SecureInfo> Secures{ get; private set; }
 
     public HouseSign Sign{ get; set; }
 
-    public ArrayList PlayerVendors{ get; } = new ArrayList();
+    public List<PlayerVendor> PlayerVendors{ get; } = new List<PlayerVendor>();
 
-    public ArrayList PlayerBarkeepers{ get; } = new ArrayList();
+    public List<PlayerBarkeeper> PlayerBarkeepers{ get; } = new List<PlayerBarkeeper>();
 
-    public ArrayList VendorRentalContracts{ get; private set; }
+    public List<VendorRentalContract> VendorRentalContracts{ get; private set; }
 
-    public ArrayList VendorInventories{ get; } = new ArrayList();
+    public List<VendorInventory> VendorInventories{ get; } = new List<VendorInventory>();
 
-    public ArrayList RelocatedEntities{ get; } = new ArrayList();
+    public List<RelocatedEntity> RelocatedEntities{ get; } = new List<RelocatedEntity>();
 
     public MovingCrate MovingCrate{ get; set; }
 
-    public ArrayList InternalizedVendors{ get; private set; }
+    public List<Mobile> InternalizedVendors{ get; private set; }
 
     public DateTime BuiltOn{ get; set; }
 
@@ -513,14 +514,10 @@ namespace Server.Multis
 
     public virtual void KillVendors()
     {
-      ArrayList list = new ArrayList(PlayerVendors);
-
-      foreach (PlayerVendor vendor in list)
+      foreach (PlayerVendor vendor in PlayerVendors.ToList())
         vendor.Destroy(true);
 
-      list = new ArrayList(PlayerBarkeepers);
-
-      foreach (PlayerBarkeeper barkeeper in list)
+      foreach (PlayerBarkeeper barkeeper in PlayerBarkeepers.ToList())
         barkeeper.Delete();
     }
 
@@ -569,13 +566,13 @@ namespace Server.Multis
       fromLockdowns = 0;
       fromMovingCrate = 0;
 
-      ArrayList list = Secures;
+      List<SecureInfo> list = Secures;
 
       if (list != null)
       {
         for (int i = 0; i < list.Count; ++i)
         {
-          SecureInfo si = (SecureInfo)list[i];
+          SecureInfo si = list[i];
 
           fromSecures += si.Item.TotalItems;
         }
@@ -667,9 +664,9 @@ namespace Server.Multis
       eable.Free();
     }
 
-    public ArrayList AvailableVendorsFor(Mobile m)
+    public List<Mobile> AvailableVendorsFor(Mobile m)
     {
-      ArrayList list = new ArrayList();
+      List<Mobile> list = new List<Mobile>();
 
       foreach (PlayerVendor vendor in PlayerVendors)
         if (vendor.CanInteractWith(m, false))
@@ -811,7 +808,7 @@ namespace Server.Multis
         InternalizedVendors.Add(mobile);
       }
 
-      foreach (Mobile mobile in PlayerBarkeepers)
+      foreach (PlayerBarkeeper mobile in PlayerBarkeepers)
       {
         mobile.Internalize();
         InternalizedVendors.Add(mobile);
@@ -990,10 +987,11 @@ namespace Server.Multis
             m_Trash = null;
 
           LockDowns.Remove(item);
-          VendorRentalContracts.Remove(item);
+          if (item is VendorRentalContract contract)
+            VendorRentalContracts.Remove(contract);
           Addons.Remove(item);
           for (int i = Secures.Count - 1; i >= 0; i--)
-            if (((SecureInfo)Secures[i]).Item == item)
+            if (Secures[i].Item == item)
               Secures.RemoveAt(i);
         }
         else if (entity is Mobile mobile && !mobile.Deleted)
@@ -1059,9 +1057,7 @@ namespace Server.Multis
 
     public virtual bool CheckAosStorage(int need)
     {
-      int fromSecures, fromVendors, fromLockdowns, fromMovingCrate;
-
-      return GetAosCurSecures(out fromSecures, out fromVendors, out fromLockdowns, out fromMovingCrate) + need <=
+      return GetAosCurSecures(out int fromSecures, out int fromVendors, out int fromLockdowns, out int fromMovingCrate) + need <=
              GetAosMaxSecures();
     }
 
@@ -1317,7 +1313,7 @@ namespace Server.Multis
 
       for (int i = 0; i < Secures.Count; ++i)
       {
-        SecureInfo info = (SecureInfo)Secures[i];
+        SecureInfo info = Secures[i];
 
         if (info.Item == item)
           return HasSecureAccess(m, info.Level) ? SecureAccessResult.Accessible : SecureAccessResult.Inaccessible;
@@ -1594,15 +1590,15 @@ namespace Server.Multis
         i.Movable = false;
       else
         i.Movable = !locked;
-      
+
       i.IsLockedDown = locked;
 
       if (locked)
       {
-        if (i is VendorRentalContract)
+        if (i is VendorRentalContract contract)
         {
-          if (!VendorRentalContracts.Contains(i))
-            VendorRentalContracts.Add(i);
+          if (!VendorRentalContracts.Contains(contract))
+            VendorRentalContracts.Add(contract);
         }
         else
         {
@@ -1612,7 +1608,8 @@ namespace Server.Multis
       }
       else
       {
-        VendorRentalContracts.Remove(i);
+        if (i is VendorRentalContract contract)
+          VendorRentalContracts.Remove(contract);
         LockDowns.Remove(i);
       }
 
@@ -1756,11 +1753,11 @@ namespace Server.Multis
              * contract vendor in the house.
              */
             to.SendGump(
-              new WarningGump(1060635, 30720, 1062487, 32512, 420, 280, ConfirmTransfer_Callback, from));
+              new WarningGump(1060635, 30720, 1062487, 32512, 420, 280, okay => ConfirmTransfer_Callback(to, okay, from)));
           }
           else
           {
-            to.CloseGump(typeof(HouseTransferGump));
+            to.CloseGump<HouseTransferGump>();
             to.SendGump(new HouseTransferGump(from, to, this));
           }
         }
@@ -1771,16 +1768,14 @@ namespace Server.Multis
       }
     }
 
-    private void ConfirmTransfer_Callback(Mobile to, bool ok, object state)
+    private void ConfirmTransfer_Callback(Mobile to, bool ok, Mobile from)
     {
-      Mobile from = (Mobile)state;
-
       if (!ok || Deleted || !from.CheckAlive() || !IsOwner(from))
         return;
 
       if (CheckTransferPosition(from, to))
       {
-        to.CloseGump(typeof(HouseTransferGump));
+        to.CloseGump<HouseTransferGump>();
         to.SendGump(new HouseTransferGump(from, to, this));
       }
     }
@@ -1891,12 +1886,12 @@ namespace Server.Multis
         SecureInfo info = null;
 
         for (int i = 0; info == null && i < Secures.Count; ++i)
-          if (((SecureInfo)Secures[i]).Item == item)
-            info = (SecureInfo)Secures[i];
+          if (Secures[i].Item == item)
+            info = Secures[i];
 
         if (info != null)
         {
-          m.CloseGump(typeof(SetSecureLevelGump));
+          m.CloseGump<SetSecureLevelGump>();
           m.SendGump(new SetSecureLevelGump(m_Owner, info, this));
         }
         else if (item.Parent != null)
@@ -1932,7 +1927,7 @@ namespace Server.Multis
           LockDowns.Remove(item);
           item.Movable = false;
 
-          m.CloseGump(typeof(SetSecureLevelGump));
+          m.CloseGump<SetSecureLevelGump>();
           m.SendGump(new SetSecureLevelGump(m_Owner, info, this));
         }
       }
@@ -1985,7 +1980,7 @@ namespace Server.Multis
 
       for (int i = 0; i < Secures.Count; ++i)
       {
-        SecureInfo info = (SecureInfo)Secures[i];
+        SecureInfo info = Secures[i];
 
         if (info.Item == item && HasSecureAccess(m, info.Level))
         {
@@ -2363,7 +2358,7 @@ namespace Server.Multis
       writer.WriteEncodedInt(VendorInventories.Count);
       for (int i = 0; i < VendorInventories.Count; i++)
       {
-        VendorInventory inventory = (VendorInventory)VendorInventories[i];
+        VendorInventory inventory = VendorInventories[i];
         inventory.Serialize(writer);
       }
 
@@ -2384,7 +2379,7 @@ namespace Server.Multis
       writer.Write(Secures.Count);
 
       for (int i = 0; i < Secures.Count; ++i)
-        ((SecureInfo)Secures[i]).Serialize(writer);
+        Secures[i].Serialize(writer);
 
       writer.Write(m_Public);
 
@@ -2416,7 +2411,7 @@ namespace Server.Multis
       // Items in locked down containers that aren't locked down themselves must decay!
       for (int i = 0; i < LockDowns.Count; ++i)
       {
-        Item item = (Item)LockDowns[i];
+        Item item = LockDowns[i];
 
         if (item is Container cont && !(cont is BaseBoard || cont is Aquarium || cont is FishBowl))
         {
@@ -2465,14 +2460,14 @@ namespace Server.Multis
         case 13: // removed ban location serialization
         case 12:
         {
-          VendorRentalContracts = reader.ReadItemList();
-          InternalizedVendors = reader.ReadMobileList();
+          VendorRentalContracts = reader.ReadStrongItemList<VendorRentalContract>();
+          InternalizedVendors = reader.ReadStrongMobileList();
 
           int relocatedCount = reader.ReadEncodedInt();
           for (int i = 0; i < relocatedCount; i++)
           {
             Point3D relLocation = reader.ReadPoint3D();
-            IEntity entity = World.FindEntity(reader.ReadInt());
+            IEntity entity = World.FindEntity(reader.ReadUInt());
 
             if (entity != null)
               RelocatedEntities.Add(new RelocatedEntity(entity, relLocation));
@@ -2506,7 +2501,7 @@ namespace Server.Multis
         }
         case 7:
         {
-          Access = reader.ReadMobileList();
+          Access = reader.ReadStrongMobileList();
           goto case 6;
         }
         case 6:
@@ -2518,13 +2513,13 @@ namespace Server.Multis
         case 5: // just removed fields
         case 4:
         {
-          Addons = reader.ReadItemList();
+          Addons = reader.ReadStrongItemList();
           goto case 3;
         }
         case 3:
         {
           count = reader.ReadInt();
-          Secures = new ArrayList(count);
+          Secures = new List<SecureInfo>(count);
 
           for (int i = 0; i < count; ++i)
           {
@@ -2557,15 +2552,15 @@ namespace Server.Multis
 
           if (version < 12)
           {
-            VendorRentalContracts = new ArrayList();
-            InternalizedVendors = new ArrayList();
+            VendorRentalContracts = new List<VendorRentalContract>();
+            InternalizedVendors = new List<Mobile>();
           }
 
           if (version < 4)
-            Addons = new ArrayList();
+            Addons = new List<Item>();
 
           if (version < 7)
-            Access = new ArrayList();
+            Access = new List<Mobile>();
 
           if (version < 8)
             Price = DefaultPrice;
@@ -2582,26 +2577,26 @@ namespace Server.Multis
 
           UpdateRegion();
 
-          CoOwners = reader.ReadMobileList();
-          Friends = reader.ReadMobileList();
-          Bans = reader.ReadMobileList();
+          CoOwners = reader.ReadStrongMobileList();
+          Friends = reader.ReadStrongMobileList();
+          Bans = reader.ReadStrongMobileList();
 
           Sign = reader.ReadItem() as HouseSign;
           m_Trash = reader.ReadItem() as TrashBarrel;
 
-          Doors = reader.ReadItemList();
-          LockDowns = reader.ReadItemList();
+          Doors = reader.ReadStrongItemList<BaseDoor>();
+          LockDowns = reader.ReadStrongItemList();
 
           for (int i = 0; i < LockDowns.Count; ++i)
-            ((Item)LockDowns[i]).IsLockedDown = true;
+            LockDowns[i].IsLockedDown = true;
 
           for (int i = 0; i < VendorRentalContracts.Count; ++i)
-            ((Item)VendorRentalContracts[i]).IsLockedDown = true;
+            VendorRentalContracts[i].IsLockedDown = true;
 
           if (version < 3)
           {
-            ArrayList items = reader.ReadItemList();
-            Secures = new ArrayList(items.Count);
+            List<Item> items = reader.ReadStrongItemList();
+            Secures = new List<SecureInfo>(items.Count);
 
             for (int i = 0; i < items.Count; ++i)
             {
@@ -2663,18 +2658,13 @@ namespace Server.Multis
 
     private void FixLockdowns_Sandbox()
     {
-      ArrayList lockDowns = new ArrayList();
+      List<Item> conts = LockDowns?.Where(item => item is Container).ToList();
 
-      for (int i = 0; LockDowns != null && i < LockDowns.Count; ++i)
-      {
-        Item item = (Item)LockDowns[i];
+      if (conts == null)
+        return;
 
-        if (item is Container)
-          lockDowns.Add(item);
-      }
-
-      for (int i = 0; i < lockDowns.Count; ++i)
-        SetLockdown((Item)lockDowns[i], true, true);
+      foreach (Item cont in conts)
+        SetLockdown(cont, true, true);
     }
 
     public static void HandleDeletion(Mobile mob)
@@ -2726,9 +2716,9 @@ namespace Server.Multis
       if (LockDowns != null)
         for (int i = 0; i < LockDowns.Count; ++i)
         {
-          if (LockDowns[i] is Item)
+          if (LockDowns[i] != null)
           {
-            Item item = (Item)LockDowns[i];
+            Item item = LockDowns[i];
 
             if (!(item is Container))
               count += item.TotalItems;
@@ -2777,7 +2767,7 @@ namespace Server.Multis
       {
         for (int i = 0; i < Doors.Count; ++i)
         {
-          Item item = (Item)Doors[i];
+          Item item = Doors[i];
 
           item?.Delete();
         }
@@ -2789,7 +2779,7 @@ namespace Server.Multis
       {
         for (int i = 0; i < LockDowns.Count; ++i)
         {
-          Item item = (Item)LockDowns[i];
+          Item item = LockDowns[i];
 
           if (item != null)
           {
@@ -2807,7 +2797,7 @@ namespace Server.Multis
       {
         for (int i = 0; i < VendorRentalContracts.Count; ++i)
         {
-          Item item = (Item)VendorRentalContracts[i];
+          Item item = VendorRentalContracts[i];
 
           if (item != null)
           {
@@ -2825,7 +2815,7 @@ namespace Server.Multis
       {
         for (int i = 0; i < Secures.Count; ++i)
         {
-          SecureInfo info = (SecureInfo)Secures[i];
+          SecureInfo info = Secures[i];
 
           if (info.Item is StrongBox)
           {
@@ -2847,7 +2837,7 @@ namespace Server.Multis
       {
         for (int i = 0; i < Addons.Count; ++i)
         {
-          Item item = (Item)Addons[i];
+          Item item = Addons[i];
 
           if (item != null)
           {
@@ -2886,9 +2876,7 @@ namespace Server.Multis
         Addons.Clear();
       }
 
-      ArrayList inventories = new ArrayList(VendorInventories);
-
-      foreach (VendorInventory inventory in inventories)
+      foreach (VendorInventory inventory in VendorInventories.ToList())
         inventory.Delete();
 
       MovingCrate?.Delete();
@@ -3024,7 +3012,7 @@ namespace Server.Multis
 
       for (int i = 0; i < Bans.Count; ++i)
       {
-        Mobile c = (Mobile)Bans[i];
+        Mobile c = Bans[i];
 
         if (c == m)
           return true;
@@ -3069,13 +3057,8 @@ namespace Server.Multis
 
     public bool HasLockedDownItem(Item check)
     {
-      if (check == null)
-        return false;
-
-      if (LockDowns == null)
-        return false;
-
-      return LockDowns.Contains(check) || VendorRentalContracts.Contains(check);
+      return check != null && LockDowns != null &&
+             (LockDowns.Contains(check) || check is VendorRentalContract contract && VendorRentalContracts.Contains(contract));
     }
 
     public bool HasSecureItem(Item item)
@@ -3089,7 +3072,7 @@ namespace Server.Multis
       bool contains = false;
 
       for (int i = 0; !contains && i < Secures.Count; ++i)
-        contains = ((SecureInfo)Secures[i]).Item == item;
+        contains = Secures[i].Item == item;
 
       return contains;
     }
@@ -3678,7 +3661,7 @@ namespace Server.Multis
 
       if (item is ISecurable securable)
       {
-        bool isOwned = house.Doors.Contains(item);
+        bool isOwned = item is BaseDoor door && house.Doors.Contains(door);
 
         if (!isOwned)
           isOwned = house is HouseFoundation foundation && foundation.IsFixture(item);
@@ -3691,11 +3674,11 @@ namespace Server.Multis
       }
       else
       {
-        ArrayList list = house.Secures;
+        List<SecureInfo> list = house.Secures;
 
         for (int i = 0; sec == null && list != null && i < list.Count; ++i)
         {
-          SecureInfo si = (SecureInfo)list[i];
+          SecureInfo si = list[i];
 
           if (si.Item == item)
             sec = si;
@@ -3719,7 +3702,7 @@ namespace Server.Multis
 
       if (sec != null)
       {
-        Owner.From.CloseGump(typeof(SetSecureLevelGump));
+        Owner.From.CloseGump<SetSecureLevelGump>();
         Owner.From.SendGump(new SetSecureLevelGump(Owner.From, sec, BaseHouse.FindHouseAt(m_Item)));
       }
     }

@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Network;
 
@@ -41,7 +41,7 @@ namespace Server.Engines.ConPVP
       {
         case 1:
         {
-          Ladder = reader.ReadItem() as LadderController;
+          Ladder = reader.ReadItem<LadderController>();
           break;
         }
       }
@@ -51,15 +51,12 @@ namespace Server.Engines.ConPVP
     {
       if (from.InRange(GetWorldLocation(), 2))
       {
-        Ladder ladder = ConPVP.Ladder.Instance;
-
-        if (Ladder != null)
-          ladder = Ladder.Ladder;
+        Ladder ladder = ConPVP.Ladder.Instance ?? Ladder.Ladder;
 
         if (ladder != null)
         {
-          from.CloseGump(typeof(LadderGump));
-          from.SendGump(new LadderGump(ladder, 0));
+          from.CloseGump<LadderGump>();
+          from.SendGump(new LadderGump(ladder));
         }
       }
       else
@@ -74,24 +71,19 @@ namespace Server.Engines.ConPVP
     private int m_ColumnX = 12;
     private Ladder m_Ladder;
 
-    private ArrayList m_List;
+    private List<LadderEntry> m_List;
     private int m_Page;
 
-    public LadderGump(Ladder ladder) : this(ladder, 0)
-    {
-    }
-
-    public LadderGump(Ladder ladder, int page) : base(50, 50)
+    public LadderGump(Ladder ladder, int page = 0) : base(50, 50)
     {
       m_Ladder = ladder;
       m_Page = page;
 
       AddPage(0);
 
-      ArrayList list = ladder.ToArrayList();
-      m_List = list;
+      m_List = new List<LadderEntry>(ladder.Entries);
 
-      int lc = Math.Min(list.Count, 150);
+      int lc = Math.Min(m_List.Count, 150);
 
       int start = page * 15;
       int end = start + 15;
@@ -121,7 +113,7 @@ namespace Server.Engines.ConPVP
         AddImage(466, height - 12 - 2 - 16, 0x2622);
 
       AddHtml(16, height - 12 - 2 - 18, 400, 20,
-        Color(string.Format("Top {3} of {0:N0} duelists, page {1} of {2}", list.Count, page + 1, (lc + 14) / 15, lc),
+        Color(string.Format("Top {3} of {0:N0} duelists, page {1} of {2}", m_List.Count, page + 1, (lc + 14) / 15, lc),
           0xFFC000), false, false);
 
       AddColumnHeader(75, "Rank");
@@ -133,7 +125,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = start; i < end && i < lc; ++i)
       {
-        LadderEntry entry = (LadderEntry)list[i];
+        LadderEntry entry = m_List[i];
 
         int y = 32 + (i - start) * 20;
         int x = 12;
@@ -153,8 +145,7 @@ namespace Server.Engines.ConPVP
         int xp = entry.Experience;
         int level = Ladder.GetLevel(xp);
 
-        int xpBase, xpAdvance;
-        Ladder.GetLevelInfo(level, out xpBase, out xpAdvance);
+        Ladder.GetLevelInfo(level, out int xpBase, out int xpAdvance);
 
         int width;
 

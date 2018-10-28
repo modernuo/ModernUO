@@ -1,6 +1,6 @@
 namespace Server.Engines.BulkOrders
 {
-  public class BOBLargeEntry
+  public class BOBLargeEntry: IBOBEntry
   {
     public BOBLargeEntry(LargeBOD bod)
     {
@@ -80,8 +80,7 @@ namespace Server.Engines.BulkOrders
       for (int i = 0; i < Entries.Length; ++i)
       {
         entries[i] = new LargeBulkEntry(null,
-          new SmallBulkEntry(Entries[i].ItemType, Entries[i].Number, Entries[i].Graphic));
-        entries[i].Amount = Entries[i].AmountCur;
+          new SmallBulkEntry(Entries[i].ItemType, Entries[i].Number, Entries[i].Graphic)) { Amount = Entries[i].AmountCur };
       }
 
       return entries;

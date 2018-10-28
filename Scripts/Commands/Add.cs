@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Server.Items;
-using Server.Targeting;
 using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Commands
@@ -54,18 +54,8 @@ namespace Server.Commands
       CommandSystem.Register("OutlineAvg", AccessLevel.GameMaster, OutlineAvg_OnCommand);
     }
 
-    public static void Invoke(Mobile from, Point3D start, Point3D end, string[] args)
-    {
-      Invoke(from, start, end, args, null, false, false);
-    }
-
-    public static void Invoke(Mobile from, Point3D start, Point3D end, string[] args, List<Container> packs)
-    {
-      Invoke(from, start, end, args, packs, false, false);
-    }
-
-    public static void Invoke(Mobile from, Point3D start, Point3D end, string[] args, List<Container> packs,
-      bool outline, bool mapAvg)
+    public static void Invoke(Mobile from, Point3D start, Point3D end, string[] args, List<Container> packs = null,
+      bool outline = false, bool mapAvg = false)
     {
       StringBuilder sb = new StringBuilder();
 
@@ -148,13 +138,7 @@ namespace Server.Commands
     }
 
     public static int BuildObjects(Mobile from, Type type, Point3D start, Point3D end, string[] args, string[,] props,
-      List<Container> packs)
-    {
-      return BuildObjects(from, type, start, end, args, props, packs, false, false);
-    }
-
-    public static int BuildObjects(Mobile from, Type type, Point3D start, Point3D end, string[] args, string[,] props,
-      List<Container> packs, bool outline, bool mapAvg)
+      List<Container> packs, bool outline = false, bool mapAvg = false)
     {
       Utility.FixPoints(ref start, ref end);
 
@@ -206,10 +190,19 @@ namespace Server.Commands
 
         if (!IsConstructible(ctor, from.AccessLevel))
           continue;
+        
+        int totalParams = 0;
 
-        ParameterInfo[] paramList = ctor.GetParameters();
+        // Handle optional constructors
+        ParameterInfo[] paramList = ctor.GetParameters().Select(param =>
+        {
+          if (param.DefaultValue is DBNull)
+            totalParams += 1;
 
-        if (args.Length == paramList.Length)
+          return param;
+        }).ToArray();
+
+        if (args.Length == totalParams)
         {
           object[] paramValues = ParseValues(paramList, args);
 
@@ -228,27 +221,31 @@ namespace Server.Commands
 
     public static object[] ParseValues(ParameterInfo[] paramList, string[] args)
     {
-      object[] values = new object[args.Length];
+      object[] values = new object[paramList.Length];
 
-      for (int i = 0; i < args.Length; ++i)
+      for (int i = 0, a = 0; i < paramList.Length; ++i)
       {
-        object value = ParseValue(paramList[i].ParameterType, args[i]);
+        ParameterInfo param = paramList[i];
+        if (param.DefaultValue is DBNull)
+        {
+          object value = ParseValue(param.ParameterType, args[a++], param.DefaultValue);
+          if (value == null)
+            return null;
 
-        if (value != null)
           values[i] = value;
+        }
         else
-          return null;
+          values[i] = Type.Missing;
       }
 
       return values;
     }
 
-    public static object ParseValue(Type type, string value)
+    public static object ParseValue(Type type, string value, object defaultValue)
     {
       try
       {
         if (IsEnum(type)) return Enum.Parse(type, value, true);
-
         if (IsType(type)) return ScriptCompiler.FindTypeByName(value);
         if (IsParsable(type)) return ParseParsable(type, value);
         object obj = value;
@@ -259,12 +256,13 @@ namespace Server.Commands
             obj = Convert.ToInt64(value.Substring(2), 16);
           else if (IsUnsignedNumeric(type))
             obj = Convert.ToUInt64(value.Substring(2), 16);
-
-          obj = Convert.ToInt32(value.Substring(2), 16);
+          else
+            obj = Convert.ToInt32(value.Substring(2), 16);
         }
 
         if (obj == null && !type.IsValueType)
           return null;
+        
         return Convert.ChangeType(obj, type);
       }
       catch
@@ -307,13 +305,7 @@ namespace Server.Commands
     }
 
     public static int Build(Mobile from, Point3D start, Point3D end, ConstructorInfo ctor, object[] values,
-      string[,] props, PropertyInfo[] realProps, List<Container> packs)
-    {
-      return Build(from, start, end, ctor, values, props, realProps, packs, false, false);
-    }
-
-    public static int Build(Mobile from, Point3D start, Point3D end, ConstructorInfo ctor, object[] values,
-      string[,] props, PropertyInfo[] realProps, List<Container> packs, bool outline, bool mapAvg)
+      string[,] props, PropertyInfo[] realProps, List<Container> packs, bool outline = false, bool mapAvg = false)
     {
       try
       {
@@ -352,7 +344,8 @@ namespace Server.Commands
 
             if (built is Item item)
               packs[i].DropItem(item);
-            else if (built is Mobile m) m.MoveToWorld(new Point3D(start.X, start.Y, start.Z), map);
+            else if (built is Mobile m)
+              m.MoveToWorld(new Point3D(start.X, start.Y, start.Z), map);
           }
         }
         else
@@ -374,7 +367,8 @@ namespace Server.Commands
 
             if (built is Item item)
               item.MoveToWorld(new Point3D(x, y, z), map);
-            else if (built is Mobile m) m.MoveToWorld(new Point3D(x, y, z), map);
+            else if (built is Mobile m)
+              m.MoveToWorld(new Point3D(x, y, z), map);
           }
         }
 
@@ -437,9 +431,8 @@ namespace Server.Commands
       from.SendMessage(sb.ToString());
     }
 
-    private static void TileBox_Callback(Mobile from, Map map, Point3D start, Point3D end, object state)
+    private static void TileBox_Callback(Mobile from, Map map, Point3D start, Point3D end, TileState ts)
     {
-      TileState ts = (TileState)state;
       bool mapAvg = false;
 
       switch (ts.m_ZType)
@@ -461,10 +454,13 @@ namespace Server.Commands
 
     private static void Internal_OnCommand(CommandEventArgs e, bool outline)
     {
+      Mobile from = e.Mobile;
+      
       if (e.Length >= 1)
-        BoundingBoxPicker.Begin(e.Mobile, TileBox_Callback, new TileState(TileZType.Start, 0, e.Arguments, outline));
+        BoundingBoxPicker.Begin(from, (map, start, end) =>
+          TileBox_Callback(from, map, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline)));
       else
-        e.Mobile.SendMessage("Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]",
+        from.SendMessage("Format: {0} <type> [params] [set {{<propertyName> <value> ...}}]",
           outline ? "Outline" : "Tile");
     }
 
@@ -480,7 +476,7 @@ namespace Server.Commands
         for (int i = 0; i < subArgs.Length; ++i)
           subArgs[i] = e.Arguments[i + 5];
 
-        Invoke(e.Mobile, p, p2, subArgs, null, outline, false);
+        Invoke(e.Mobile, p, p2, subArgs, null, outline);
       }
       else
       {
@@ -502,7 +498,7 @@ namespace Server.Commands
         for (int i = 0; i < subArgs.Length; ++i)
           subArgs[i] = e.Arguments[i + 5];
 
-        Invoke(e.Mobile, p, p2, subArgs, null, outline, false);
+        Invoke(e.Mobile, p, p2, subArgs, null, outline);
       }
       else
       {
@@ -514,6 +510,8 @@ namespace Server.Commands
 
     private static void InternalZ_OnCommand(CommandEventArgs e, bool outline)
     {
+      Mobile from = e.Mobile;
+      
       if (e.Length >= 2)
       {
         string[] subArgs = new string[e.Length - 1];
@@ -521,23 +519,25 @@ namespace Server.Commands
         for (int i = 0; i < subArgs.Length; ++i)
           subArgs[i] = e.Arguments[i + 1];
 
-        BoundingBoxPicker.Begin(e.Mobile, TileBox_Callback,
-          new TileState(TileZType.Fixed, e.GetInt32(0), subArgs, outline));
+        BoundingBoxPicker.Begin(from, (map, start, end) =>
+          TileBox_Callback(from, map, start, end, new TileState(TileZType.Fixed, e.GetInt32(0), subArgs, outline)));
       }
       else
       {
-        e.Mobile.SendMessage("Format: {0}Z <z> <type> [params] [set {{<propertyName> <value> ...}}]",
+        from.SendMessage("Format: {0}Z <z> <type> [params] [set {{<propertyName> <value> ...}}]",
           outline ? "Outline" : "Tile");
       }
     }
 
     private static void InternalAvg_OnCommand(CommandEventArgs e, bool outline)
     {
+      Mobile from = e.Mobile;
+      
       if (e.Length >= 1)
-        BoundingBoxPicker.Begin(e.Mobile, TileBox_Callback,
-          new TileState(TileZType.MapAverage, 0, e.Arguments, outline));
+        BoundingBoxPicker.Begin(from, (map, start, end) =>
+          TileBox_Callback(from, map, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline)));
       else
-        e.Mobile.SendMessage("Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]",
+        from.SendMessage("Format: {0}Avg <type> [params] [set {{<propertyName> <value> ...}}]",
           outline ? "Outline" : "Tile");
     }
 
@@ -657,7 +657,7 @@ namespace Server.Commands
 
       m_ParseArgs[0] = value;
 
-      return method.Invoke(null, m_ParseArgs);
+      return method?.Invoke(null, m_ParseArgs);
     }
 
     public static bool IsSignedNumeric(Type type)
@@ -676,30 +676,6 @@ namespace Server.Commands
           return true;
 
       return false;
-    }
-
-    public class AddTarget : Target
-    {
-      private string[] m_Args;
-
-      public AddTarget(string[] args) : base(-1, true, TargetFlags.None)
-      {
-        m_Args = args;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-        {
-          if (p is Item item)
-            p = item.GetWorldTop();
-          else if (p is Mobile m)
-            p = m.Location;
-
-          Point3D point = new Point3D(p);
-          Add.Invoke(from, point, point, m_Args);
-        }
-      }
     }
 
     private enum TileZType

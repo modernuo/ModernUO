@@ -34,13 +34,13 @@ namespace Server
               Point3D origin = new Point3D(pt);
               Map facet = from.Map;
 
-              if (facet != null && facet.CanFit(pt.X, pt.Y, pt.Z, 16, false, false, true))
+              if (facet != null && facet.CanFit(pt.X, pt.Y, pt.Z, 16, false, false))
               {
                 Movable = false;
 
                 Effects.SendMovingEffect(
                   from, new Entity(Serial.Zero, origin, facet),
-                  ItemID & 0x3FFF, 7, 0, false, false, Hue - 1, 0
+                  ItemID & 0x3FFF, 7, 0, false, false, Hue - 1
                 );
 
                 Timer.DelayCall(TimeSpan.FromSeconds(0.5), delegate
@@ -80,11 +80,11 @@ namespace Server
 
                       from.DoHarmful(mob);
 
-                      SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, from, damage / 3, 0, 0, 0, 0,
+                      SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, from, damage / 3.0, 0, 0, 0, 0,
                         100);
-                      SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, from, damage / 3, 0, 0, 0, 0,
+                      SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, from, damage / 3.0, 0, 0, 0, 0,
                         100);
-                      SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, from, damage / 3, 0, 0, 0, 0,
+                      SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, from, damage / 3.0, 0, 0, 0, 0,
                         100);
 
                       Timer.DelayCall(TimeSpan.FromSeconds(0.50), delegate { mob.PlaySound(0x1FB); });

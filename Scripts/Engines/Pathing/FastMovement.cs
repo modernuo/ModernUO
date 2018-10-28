@@ -53,8 +53,6 @@ namespace Server.Movement
         return false;
       }
 
-      int startZ, startTop;
-
       IEnumerable<Item> itemsStart, itemsForward, itemsLeft, itemsRight;
 
       bool ignoreMovableImpassables = MovementImpl.IgnoreMovableImpassables;
@@ -85,7 +83,7 @@ namespace Server.Movement
         itemsRight = Enumerable.Empty<Item>();
       }
 
-      GetStartZ(m, map, loc, itemsStart, out startZ, out startTop);
+      GetStartZ(m, map, loc, itemsStart, out int startZ, out int startTop);
 
       List<Item> list = null;
 
@@ -95,13 +93,11 @@ namespace Server.Movement
 
       if (moveIsOk && checkDiagonals)
       {
-        int hold;
-
         if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
         {
           MovementPool.AcquireMoveCache(ref list, itemsLeft);
 
-          if (!Check(map, m, list, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out hold))
+          if (!Check(map, m, list, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out _))
           {
             moveIsOk = false;
           }
@@ -109,7 +105,7 @@ namespace Server.Movement
           {
             MovementPool.AcquireMoveCache(ref list, itemsRight);
 
-            if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out hold))
+            if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out _))
               moveIsOk = false;
           }
         }
@@ -117,11 +113,11 @@ namespace Server.Movement
         {
           MovementPool.AcquireMoveCache(ref list, itemsLeft);
 
-          if (!Check(map, m, list, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out hold))
+          if (!Check(map, m, list, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk, out _))
           {
             MovementPool.AcquireMoveCache(ref list, itemsRight);
 
-            if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out hold))
+            if (!Check(map, m, list, xRight, yRight, startTop, startZ, m.CanSwim, m.CantWalk, out _))
               moveIsOk = false;
           }
         }
@@ -136,7 +132,8 @@ namespace Server.Movement
 
     public bool CheckMovement(Mobile m, Direction d, out int newZ)
     {
-      if (!Enabled && _Successor != null) return _Successor.CheckMovement(m, d, out newZ);
+      if (!Enabled && _Successor != null)
+        return _Successor.CheckMovement(m, d, out newZ);
 
       return CheckMovement(m, m.Map, m.Location, d, out newZ);
     }

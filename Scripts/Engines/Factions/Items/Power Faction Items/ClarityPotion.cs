@@ -19,7 +19,7 @@ namespace Server
 
     public override bool Use(Mobile from)
     {
-      if (from.BeginAction(typeof(ClarityPotion)))
+      if (from.BeginAction<ClarityPotion>())
       {
         int amount = Utility.Dice(3, 3, 3);
         int time = Utility.RandomMinMax(5, 30);
@@ -42,7 +42,7 @@ namespace Server
         from.PlaySound(0x1EE);
         from.AddStatMod(new StatMod(StatType.Int, "clarity-potion", amount, TimeSpan.FromMinutes(time)));
 
-        Timer.DelayCall(TimeSpan.FromMinutes(time), delegate { from.EndAction(typeof(ClarityPotion)); });
+        Timer.DelayCall(TimeSpan.FromMinutes(time), delegate { from.EndAction<ClarityPotion>(); });
 
         return true;
       }

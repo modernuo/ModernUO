@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Items;
 using Server.Misc;
@@ -110,7 +110,7 @@ namespace Server.Misc
     {
       Region r = m.Region;
 
-      if (r.IsPartOf(typeof(HouseRegion)) || BaseBoat.FindBoatAt(m, m.Map) != null)
+      if (r.IsPartOf<HouseRegion>() || BaseBoat.FindBoatAt(m, m.Map) != null)
         return false;
       //TODO: a CanReach of something check as opposed to above?
 
@@ -159,6 +159,7 @@ namespace Server.Misc
         }
         catch
         {
+          // ignored
         }
 
         if (i != null)
@@ -261,9 +262,9 @@ namespace Server.Mobiles
             SayTo(pm,
               1070980); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
 
-            pm.CloseGump(typeof(ToTTurnInGump)); //Sanity
+            pm.CloseGump<ToTTurnInGump>(); //Sanity
 
-            if (!pm.HasGump(typeof(ToTRedeemGump)))
+            if (!pm.HasGump<ToTRedeemGump>())
               pm.SendGump(new ToTRedeemGump(this, false));
           }
           else
@@ -275,9 +276,9 @@ namespace Server.Mobiles
               SayTo(pm, 1070981,
                 $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
 
-            ArrayList buttons = ToTTurnInGump.FindRedeemableItems(pm);
+            List<ItemTileButtonInfo> buttons = ToTTurnInGump.FindRedeemableItems(pm);
 
-            if (buttons.Count > 0 && !pm.HasGump(typeof(ToTTurnInGump)))
+            if (buttons.Count > 0 && !pm.HasGump<ToTTurnInGump>())
               pm.SendGump(new ToTTurnInGump(this, buttons));
           }
         }
@@ -286,8 +287,8 @@ namespace Server.Mobiles
 
         if (!InRange(m, leaveRange) && InRange(oldLocation, leaveRange))
         {
-          pm.CloseGump(typeof(ToTRedeemGump));
-          pm.CloseGump(typeof(ToTTurnInGump));
+          pm.CloseGump<ToTRedeemGump>();
+          pm.CloseGump<ToTTurnInGump>();
         }
       }
     }
@@ -315,30 +316,25 @@ namespace Server.Gumps
   {
     private Mobile m_Collector;
 
-    public ToTTurnInGump(Mobile collector, ArrayList buttons) :
-      base(1071012, buttons) // Click a minor artifact to give it to Ihara Soko.
+    public ToTTurnInGump(Mobile collector, List<ItemTileButtonInfo> buttons) :
+      base(1071012, Utility.CastListContravariant<ItemTileButtonInfo, ImageTileButtonInfo>(buttons)) // Click a minor artifact to give it to Ihara Soko.
     {
       m_Collector = collector;
     }
 
-    public ToTTurnInGump(Mobile collector, ItemTileButtonInfo[] buttons) :
-      base(1071012, buttons) // Click a minor artifact to give it to Ihara Soko.
+    public static List<ItemTileButtonInfo> FindRedeemableItems(Mobile m)
     {
-      m_Collector = collector;
-    }
-
-    public static ArrayList FindRedeemableItems(Mobile m)
-    {
-      Backpack pack = (Backpack)m.Backpack;
+      Container pack = m.Backpack;
       if (pack == null)
-        return new ArrayList();
+        return new List<ItemTileButtonInfo>();
 
-      ArrayList items = new ArrayList(pack.FindItemsByType(TreasuresOfTokuno.LesserArtifactsTotal));
-      ArrayList buttons = new ArrayList();
+      List<ItemTileButtonInfo> buttons = new List<ItemTileButtonInfo>();
 
-      for (int i = 0; i < items.Count; i++)
+      Item[] items = pack.FindItemsByType(TreasuresOfTokuno.LesserArtifactsTotal);
+      
+      for (int i = 0; i < items.Length; i++)
       {
-        Item item = (Item)items[i];
+        Item item = items[i];
         if (item is ChestOfHeirlooms heirlooms && !heirlooms.Locked)
           continue;
 
@@ -370,9 +366,9 @@ namespace Server.Gumps
         m_Collector.SayTo(pm,
           1070980); // Congratulations! You have turned in enough minor treasures to earn a greater reward.
 
-        pm.CloseGump(typeof(ToTTurnInGump)); //Sanity
+        pm.CloseGump<ToTTurnInGump>(); //Sanity
 
-        if (!pm.HasGump(typeof(ToTRedeemGump)))
+        if (!pm.HasGump<ToTRedeemGump>())
           pm.SendGump(new ToTRedeemGump(m_Collector, false));
       }
       else
@@ -380,9 +376,9 @@ namespace Server.Gumps
         m_Collector.SayTo(pm, 1070981,
           $"{pm.ToTItemsTurnedIn}\t{TreasuresOfTokuno.ItemsPerReward}"); // You have turned in ~1_COUNT~ minor artifacts. Turn in ~2_NUM~ to receive a reward.
 
-        ArrayList buttons = FindRedeemableItems(pm);
+        List<ItemTileButtonInfo> buttons = FindRedeemableItems(pm);
 
-        pm.CloseGump(typeof(ToTTurnInGump)); //Sanity
+        pm.CloseGump<ToTTurnInGump>(); //Sanity
 
         if (buttons.Count > 0)
           pm.SendGump(new ToTTurnInGump(m_Collector, buttons));
@@ -415,8 +411,9 @@ namespace Server.Gumps
 
     public ToTRedeemGump(Mobile collector, bool pigments) : base(pigments ? 1070986 : 1070985,
       pigments
-        ? PigmentRewards[(int)TreasuresOfTokuno.RewardEra - 1]
-        : (ImageTileButtonInfo[])NormalRewards[(int)TreasuresOfTokuno.RewardEra - 1])
+        ? PigmentRewards[(int)TreasuresOfTokuno.RewardEra - 1].ToArray<ImageTileButtonInfo>()
+        : NormalRewards[(int)TreasuresOfTokuno.RewardEra - 1].ToArray<ImageTileButtonInfo>()
+    )
     {
       m_Collector = collector;
     }
@@ -517,24 +514,20 @@ namespace Server.Gumps
           !(pm.ToTItemsTurnedIn >= TreasuresOfTokuno.ItemsPerReward))
         return;
 
-      bool pigments = buttonInfo is PigmentsTileButtonInfo;
-
       Item item = null;
 
-      if (pigments)
+      if (buttonInfo is PigmentsTileButtonInfo p)
       {
-        PigmentsTileButtonInfo p = (PigmentsTileButtonInfo)buttonInfo;
-
         item = new PigmentsOfTokuno(p.Pigment);
       }
       else
       {
-        TypeTileButtonInfo t = buttonInfo as TypeTileButtonInfo;
+        TypeTileButtonInfo t = (TypeTileButtonInfo)buttonInfo;
 
         if (t.Type == typeof(PigmentsOfTokuno)) //Special case of course.
         {
-          pm.CloseGump(typeof(ToTTurnInGump)); //Sanity
-          pm.CloseGump(typeof(ToTRedeemGump));
+          pm.CloseGump<ToTTurnInGump>(); //Sanity
+          pm.CloseGump<ToTRedeemGump>();
 
           pm.SendGump(new ToTRedeemGump(m_Collector, true));
 
@@ -547,6 +540,7 @@ namespace Server.Gumps
         }
         catch
         {
+          // ignored
         }
       }
 

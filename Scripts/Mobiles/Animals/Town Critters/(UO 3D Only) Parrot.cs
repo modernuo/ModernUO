@@ -10,9 +10,9 @@ namespace Server.Mobiles
 
       InitStats(10, Utility.Random(25, 16), 10);
 
-      Skills[SkillName.Wrestling].Base = 6;
-      Skills[SkillName.Tactics].Base = 6;
-      Skills[SkillName.MagicResist].Base = 5;
+      Skills.Wrestling.Base = 6;
+      Skills.Tactics.Base = 6;
+      Skills.MagicResist.Base = 5;
 
       Fame = Utility.Random(0, 1249);
       Karma = Utility.Random(0, -624);

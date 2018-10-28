@@ -1,5 +1,6 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
@@ -9,12 +10,12 @@ namespace Server.Gumps
   public class VendorInventoryGump : Gump
   {
     private BaseHouse m_House;
-    private ArrayList m_Inventories;
+    private List<VendorInventory> m_Inventories;
 
     public VendorInventoryGump(BaseHouse house, Mobile from) : base(50, 50)
     {
       m_House = house;
-      m_Inventories = new ArrayList(house.VendorInventories);
+      m_Inventories = house.VendorInventories.ToList();
 
       AddBackground(0, 0, 420, 50 + 20 * m_Inventories.Count, 0x13BE);
 
@@ -26,7 +27,7 @@ namespace Server.Gumps
 
       for (int i = 0; i < m_Inventories.Count; i++)
       {
-        VendorInventory inventory = (VendorInventory)m_Inventories[i];
+        VendorInventory inventory = m_Inventories[i];
 
         int y = 40 + 20 * i;
 
@@ -64,7 +65,7 @@ namespace Server.Gumps
       if (index < 0 || index >= m_Inventories.Count)
         return;
 
-      VendorInventory inventory = (VendorInventory)m_Inventories[index];
+      VendorInventory inventory = m_Inventories[index];
 
       if (inventory.Owner != from || !m_House.VendorInventories.Contains(inventory))
         return;

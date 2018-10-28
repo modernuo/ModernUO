@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Server.Spells.First
 {
@@ -13,7 +14,7 @@ namespace Server.Spells.First
       Reagent.SulfurousAsh
     );
 
-    private static Hashtable m_Table = new Hashtable();
+    private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
     public ReactiveArmorSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -32,7 +33,7 @@ namespace Server.Spells.First
         return false;
       }
 
-      if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+      if (!Caster.CanBeginAction<DefensiveSpell>())
       {
         Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
         return false;
@@ -57,17 +58,17 @@ namespace Server.Spells.First
         {
           Mobile targ = Caster;
 
-          ResistanceMod[] mods = (ResistanceMod[])m_Table[targ];
+          ResistanceMod[] mods = m_Table[targ];
 
           if (mods == null)
           {
             targ.PlaySound(0x1E9);
             targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
 
-            mods = new ResistanceMod[5]
+            mods = new []
             {
               new ResistanceMod(ResistanceType.Physical,
-                15 + (int)(targ.Skills[SkillName.Inscribe].Value / 20)),
+                15 + (int)(targ.Skills.Inscribe.Value / 20)),
               new ResistanceMod(ResistanceType.Fire, -5),
               new ResistanceMod(ResistanceType.Cold, -5),
               new ResistanceMod(ResistanceType.Poison, -5),
@@ -79,7 +80,7 @@ namespace Server.Spells.First
             for (int i = 0; i < mods.Length; ++i)
               targ.AddResistanceMod(mods[i]);
 
-            int physresist = 15 + (int)(targ.Skills[SkillName.Inscribe].Value / 20);
+            int physresist = 15 + (int)(targ.Skills.Inscribe.Value / 20);
             string args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
 
             BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args));
@@ -106,16 +107,16 @@ namespace Server.Spells.First
         {
           Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
         }
-        else if (!Caster.CanBeginAction(typeof(DefensiveSpell)))
+        else if (!Caster.CanBeginAction<DefensiveSpell>())
         {
           Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
         }
         else if (CheckSequence())
         {
-          if (Caster.BeginAction(typeof(DefensiveSpell)))
+          if (Caster.BeginAction<DefensiveSpell>())
           {
-            int value = (int)(Caster.Skills[SkillName.Magery].Value + Caster.Skills[SkillName.Meditation].Value +
-                              Caster.Skills[SkillName.Inscribe].Value);
+            int value = (int)(Caster.Skills.Magery.Value + Caster.Skills.Meditation.Value +
+                              Caster.Skills.Inscribe.Value);
             value /= 3;
 
             if (value < 0)
@@ -140,13 +141,12 @@ namespace Server.Spells.First
 
     public static void EndArmor(Mobile m)
     {
-      if (m_Table.Contains(m))
-      {
-        ResistanceMod[] mods = (ResistanceMod[])m_Table[m];
+      ResistanceMod[] mods = m_Table[m];
 
-        if (mods != null)
-          for (int i = 0; i < mods.Length; ++i)
-            m.RemoveResistanceMod(mods[i]);
+      if (mods != null)
+      {
+        for (int i = 0; i < mods.Length; ++i)
+          m.RemoveResistanceMod(mods[i]);
 
         m_Table.Remove(m);
         BuffInfo.RemoveBuff(m, BuffIcon.ReactiveArmor);

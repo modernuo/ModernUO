@@ -46,7 +46,7 @@ namespace Server
     public static readonly string GuildIndexPath = Path.Combine("Saves/Guilds/", "Guilds.idx");
     public static readonly string GuildDataPath = Path.Combine("Saves/Guilds/", "Guilds.bin");
 
-    private static readonly Type[] m_SerialTypeArray = new Type[1] { typeof(Serial) };
+    private static readonly Type[] m_SerialTypeArray = new Type[] { typeof(Serial) };
 
     internal static int m_Saves;
 
@@ -181,7 +181,7 @@ namespace Server
       _addQueue = new Queue<IEntity>();
       _deleteQueue = new Queue<IEntity>();
 
-      int mobileCount = 0, itemCount = 0, guildCount = 0;
+      int mobileCount, itemCount, guildCount;
 
       object[] ctorArgs = new object[1];
 
@@ -207,7 +207,7 @@ namespace Server
             for (int i = 0; i < mobileCount; ++i)
             {
               int typeID = idxReader.ReadInt32();
-              int serial = idxReader.ReadInt32();
+              uint serial = idxReader.ReadUInt32();
               long pos = idxReader.ReadInt64();
               int length = idxReader.ReadInt32();
 
@@ -227,6 +227,7 @@ namespace Server
               }
               catch
               {
+                // ignored
               }
 
               if (m != null)
@@ -262,7 +263,7 @@ namespace Server
             for (int i = 0; i < itemCount; ++i)
             {
               int typeID = idxReader.ReadInt32();
-              int serial = idxReader.ReadInt32();
+              uint serial = idxReader.ReadUInt32();
               long pos = idxReader.ReadInt64();
               int length = idxReader.ReadInt32();
 
@@ -282,6 +283,7 @@ namespace Server
               }
               catch
               {
+                // ignored
               }
 
               if (item != null)
@@ -306,11 +308,11 @@ namespace Server
 
           guildCount = idxReader.ReadInt32();
 
-          CreateGuildEventArgs createEventArgs = new CreateGuildEventArgs(-1);
+          CreateGuildEventArgs createEventArgs = new CreateGuildEventArgs(0xFFFFFFFF);
           for (int i = 0; i < guildCount; ++i)
           {
             idxReader.ReadInt32(); //no typeid for guilds
-            int id = idxReader.ReadInt32();
+            uint id = idxReader.ReadUInt32();
             long pos = idxReader.ReadInt64();
             int length = idxReader.ReadInt32();
 
@@ -440,7 +442,7 @@ namespace Server
                 failed = e;
                 failedGuilds = true;
                 failedType = typeof(BaseGuild);
-                failedTypeID = g.Id;
+                failedTypeID = (int)g.Id;
                 failedSerial = g.Id;
 
                 break;
@@ -576,6 +578,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -694,9 +697,7 @@ namespace Server
 
     public static Mobile FindMobile(Serial serial)
     {
-      Mobile mob;
-
-      Mobiles.TryGetValue(serial, out mob);
+      Mobiles.TryGetValue(serial, out Mobile mob);
 
       return mob;
     }
@@ -716,9 +717,7 @@ namespace Server
 
     public static Item FindItem(Serial serial)
     {
-      Item item;
-
-      Items.TryGetValue(serial, out item);
+      Items.TryGetValue(serial, out Item item);
 
       return item;
     }

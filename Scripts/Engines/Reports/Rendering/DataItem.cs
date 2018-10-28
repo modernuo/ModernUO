@@ -3,16 +3,6 @@ using System.Drawing;
 
 namespace Server.Engines.Reports
 {
-  // Modified from MS sample
-
-  //*********************************************************************
-  //
-  // ChartItem Class
-  //
-  // This class represents a data point in a chart
-  //
-  //*********************************************************************
-
   public class DataItem
   {
     private DataItem()
@@ -41,12 +31,6 @@ namespace Server.Engines.Reports
 
     public float SweepSize{ get; set; }
   }
-
-  //*********************************************************************
-  //
-  // Custom Collection for ChartItems
-  //
-  //*********************************************************************
 
   public class ChartItemsCollection : CollectionBase
   {

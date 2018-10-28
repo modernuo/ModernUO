@@ -30,7 +30,7 @@ namespace Server.Spells.Spellweaving
         return false;
       }
 
-      if (!Caster.CanBeginAction(typeof(AttuneWeaponSpell)))
+      if (!Caster.CanBeginAction<AttuneWeaponSpell>())
       {
         Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
         return false;
@@ -47,7 +47,7 @@ namespace Server.Spells.Spellweaving
         Caster.FixedParticles(0x3728, 1, 13, 0x26B8, 0x455, 7, EffectLayer.Waist);
         Caster.FixedParticles(0x3779, 1, 15, 0x251E, 0x3F, 7, EffectLayer.Waist);
 
-        double skill = Caster.Skills[SkillName.Spellweaving].Value;
+        double skill = Caster.Skills.Spellweaving.Value;
 
         int damageAbsorb = (int)(18 + (skill - 10) / 10 * 3 + FocusLevel * 6);
         Caster.MeleeDamageAbsorb = damageAbsorb;
@@ -59,7 +59,7 @@ namespace Server.Spells.Spellweaving
 
         m_Table[Caster] = t;
 
-        Caster.BeginAction(typeof(AttuneWeaponSpell));
+        Caster.BeginAction<AttuneWeaponSpell>();
 
         BuffInfo.AddBuff(Caster,
           new BuffInfo(BuffIcon.AttuneWeapon, 1075798, duration, Caster, damageAbsorb.ToString()));
@@ -124,7 +124,7 @@ namespace Server.Spells.Spellweaving
 
         m_Table.Remove(m_Mobile);
 
-        DelayCall(TimeSpan.FromSeconds(120), delegate { m_Mobile.EndAction(typeof(AttuneWeaponSpell)); });
+        DelayCall(TimeSpan.FromSeconds(120), delegate { m_Mobile.EndAction<AttuneWeaponSpell>(); });
         BuffInfo.RemoveBuff(m_Mobile, BuffIcon.AttuneWeapon);
       }
     }

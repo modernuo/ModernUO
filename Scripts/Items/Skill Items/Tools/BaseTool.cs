@@ -85,10 +85,12 @@ namespace Server.Items
       }
     }
 
-    public bool ShowUsesRemaining
+    private bool ShowUsesRemaining{ get; set; } = true;
+
+    bool IUsesRemaining.ShowUsesRemaining
     {
-      get => true;
-      set { }
+      get => ShowUsesRemaining;
+      set => ShowUsesRemaining = value;
     }
 
     public void ScaleUses()

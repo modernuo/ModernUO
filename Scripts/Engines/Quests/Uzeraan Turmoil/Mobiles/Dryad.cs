@@ -63,7 +63,7 @@ namespace Server.Engines.Quests.Haven
 
     public override bool CanTalkTo(PlayerMobile to)
     {
-      return to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective(typeof(FindDryadObjective)) != null;
+      return to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective<FindDryadObjective>() != null;
     }
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
@@ -79,9 +79,9 @@ namespace Server.Engines.Quests.Haven
         }
         else
         {
-          QuestObjective obj = qs.FindObjective(typeof(FindDryadObjective));
+          QuestObjective obj = qs.FindObjective<FindDryadObjective>();
 
-          if (obj != null && !obj.Completed)
+          if (obj?.Completed == false)
           {
             FocusTo(player);
 

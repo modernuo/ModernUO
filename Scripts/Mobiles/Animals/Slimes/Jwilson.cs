@@ -11,10 +11,10 @@ namespace Server.Mobiles
 
       InitStats(Utility.Random(22, 13), Utility.Random(16, 6), Utility.Random(16, 5));
 
-      Skills[SkillName.Wrestling].Base = Utility.Random(24, 17);
-      Skills[SkillName.Tactics].Base = Utility.Random(18, 14);
-      Skills[SkillName.MagicResist].Base = Utility.Random(15, 6);
-      Skills[SkillName.Poisoning].Base = Utility.Random(31, 20);
+      Skills.Wrestling.Base = Utility.Random(24, 17);
+      Skills.Tactics.Base = Utility.Random(18, 14);
+      Skills.MagicResist.Base = Utility.Random(15, 6);
+      Skills.Poisoning.Base = Utility.Random(31, 20);
 
       Fame = Utility.Random(0, 1249);
       Karma = Utility.Random(0, -624);

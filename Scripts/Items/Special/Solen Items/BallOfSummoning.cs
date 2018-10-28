@@ -201,8 +201,8 @@ namespace Server.Items
         MessageHelper.SendLocalizedMessageTo(this, from, 1054127,
           0x22); // The Crystal Ball fills with a red mist. You appear to have let your bond to your pet deteriorate.
       }
-      else if (from.Map == Map.Ilshenar || from.Region.IsPartOf(typeof(DungeonRegion)) ||
-               from.Region.IsPartOf(typeof(Jail)) || from.Region.IsPartOf(typeof(SafeZone)))
+      else if (from.Map == Map.Ilshenar || from.Region.IsPartOf<DungeonRegion>() ||
+               from.Region.IsPartOf<Jail>() || from.Region.IsPartOf<SafeZone>())
       {
         from.Send(new AsciiMessage(Serial, ItemID, MessageType.Regular, 0x22, 3, "",
           "You cannot summon your pet to this location."));
@@ -438,7 +438,7 @@ namespace Server.Items
       public void Stop()
       {
         m_Stop = true;
-        Disturb(DisturbType.Hurt, false, false);
+        Disturb(DisturbType.Hurt, false);
       }
 
       public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable)

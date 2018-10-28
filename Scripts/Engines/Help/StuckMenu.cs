@@ -120,7 +120,7 @@ namespace Server.Menus.Questions
       m_MarkUse = markUse;
 
       Closable = false;
-      Dragable = false;
+      Draggable = false;
       Disposable = false;
 
       AddBackground(0, 0, 270, 320, 2600);
@@ -228,7 +228,7 @@ namespace Server.Menus.Questions
         if (m_Mobile.NetState == null || DateTime.UtcNow > m_End)
         {
           m_Mobile.Frozen = false;
-          m_Mobile.CloseGump(typeof(StuckMenu));
+          m_Mobile.CloseGump<StuckMenu>();
 
           Stop();
         }

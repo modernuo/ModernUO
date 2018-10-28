@@ -8,7 +8,7 @@ namespace Server.Gumps
     {
       Closable = false;
       Disposable = true;
-      Dragable = true;
+      Draggable = true;
       Resizable = false;
 
       AddPage(0);

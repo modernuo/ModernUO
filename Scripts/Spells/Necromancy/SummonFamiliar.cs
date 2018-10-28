@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -26,7 +27,7 @@ namespace Server.Spells.Necromancy
     public override double RequiredSkill => 30.0;
     public override int RequiredMana => 17;
 
-    public static Hashtable Table{ get; } = new Hashtable();
+    public static Dictionary<Mobile, BaseCreature> Table{ get; } = new Dictionary<Mobile, BaseCreature>();
 
     public static SummonFamiliarEntry[] Entries{ get; } =
     {
@@ -39,9 +40,9 @@ namespace Server.Spells.Necromancy
 
     public override bool CheckCast()
     {
-      BaseCreature check = (BaseCreature)Table[Caster];
+      BaseCreature check = Table[Caster];
 
-      if (check != null && !check.Deleted)
+      if (check?.Deleted == false)
       {
         Caster.SendLocalizedMessage(1061605); // You already have a familiar.
         return false;
@@ -54,7 +55,7 @@ namespace Server.Spells.Necromancy
     {
       if (CheckSequence())
       {
-        Caster.CloseGump(typeof(SummonFamiliarGump));
+        Caster.CloseGump<SummonFamiliarGump>();
         Caster.SendGump(new SummonFamiliarGump(Caster, Entries, this));
       }
 
@@ -89,7 +90,6 @@ namespace Server.Spells.Necromancy
     private const int EnabledColor32 = 0x18CD00;
     private const int DisabledColor32 = 0x4A8B52;
 
-    private static Hashtable m_Table = new Hashtable();
     private SummonFamiliarEntry[] m_Entries;
     private Mobile m_From;
 
@@ -117,8 +117,8 @@ namespace Server.Spells.Necromancy
 
       AddHtmlLocalized(30, 26, 200, 20, 1060147, EnabledColor16, false, false); // Chose thy familiar...
 
-      double necro = from.Skills[SkillName.Necromancy].Value;
-      double spirit = from.Skills[SkillName.SpiritSpeak].Value;
+      double necro = from.Skills.Necromancy.Value;
+      double spirit = from.Skills.SpiritSpeak.Value;
 
       for (int i = 0; i < entries.Length; ++i)
       {
@@ -146,10 +146,10 @@ namespace Server.Spells.Necromancy
       {
         SummonFamiliarEntry entry = m_Entries[index];
 
-        double necro = m_From.Skills[SkillName.Necromancy].Value;
-        double spirit = m_From.Skills[SkillName.SpiritSpeak].Value;
+        double necro = m_From.Skills.Necromancy.Value;
+        double spirit = m_From.Skills.SpiritSpeak.Value;
 
-        BaseCreature check = (BaseCreature)SummonFamiliarSpell.Table[m_From];
+        BaseCreature check = SummonFamiliarSpell.Table[m_From];
 
         #region Dueling
 
@@ -160,7 +160,7 @@ namespace Server.Spells.Necromancy
 
         #endregion
 
-        else if (check != null && !check.Deleted)
+        else if (check?.Deleted == false)
         {
           m_From.SendLocalizedMessage(1061605); // You already have a familiar.
         }
@@ -169,14 +169,14 @@ namespace Server.Spells.Necromancy
           // That familiar requires ~1_NECROMANCY~ Necromancy and ~2_SPIRIT~ Spirit Speak.
           m_From.SendLocalizedMessage(1061606, $"{entry.ReqNecromancy:F1}\t{entry.ReqSpiritSpeak:F1}");
 
-          m_From.CloseGump(typeof(SummonFamiliarGump));
+          m_From.CloseGump<SummonFamiliarGump>();
           m_From.SendGump(new SummonFamiliarGump(m_From, SummonFamiliarSpell.Entries, m_Spell));
         }
         else if (entry.Type == null)
         {
           m_From.SendMessage("That familiar has not yet been defined.");
 
-          m_From.CloseGump(typeof(SummonFamiliarGump));
+          m_From.CloseGump<SummonFamiliarGump>();
           m_From.SendGump(new SummonFamiliarGump(m_From, SummonFamiliarSpell.Entries, m_Spell));
         }
         else
@@ -185,7 +185,8 @@ namespace Server.Spells.Necromancy
           {
             BaseCreature bc = (BaseCreature)Activator.CreateInstance(entry.Type);
 
-            bc.Skills.MagicResist = m_From.Skills.MagicResist;
+            // TODO: Is this right?
+            bc.Skills.MagicResist.Base = m_From.Skills.MagicResist.Base;
 
             if (BaseCreature.Summon(bc, m_From, m_From.Location, -1, TimeSpan.FromDays(1.0)))
             {
@@ -196,6 +197,7 @@ namespace Server.Spells.Necromancy
           }
           catch
           {
+            // ignored
           }
         }
       }

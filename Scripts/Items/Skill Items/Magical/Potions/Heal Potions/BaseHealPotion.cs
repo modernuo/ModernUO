@@ -51,7 +51,7 @@ namespace Server.Items
         }
         else
         {
-          if (from.BeginAction(typeof(BaseHealPotion)))
+          if (from.BeginAction<BaseHealPotion>())
           {
             DoHeal(from);
 
@@ -60,7 +60,7 @@ namespace Server.Items
             if (!DuelContext.IsFreeConsume(from))
               Consume();
 
-            Timer.DelayCall(TimeSpan.FromSeconds(Delay), new TimerStateCallback(ReleaseHealLock), from);
+            Timer.DelayCall(TimeSpan.FromSeconds(Delay), from.EndAction<BaseHealPotion>);
           }
           else
           {
@@ -74,11 +74,6 @@ namespace Server.Items
         from.SendLocalizedMessage(
           1049547); // You decide against drinking this potion, as you are already at full health.
       }
-    }
-
-    private static void ReleaseHealLock(object state)
-    {
-      ((Mobile)state).EndAction(typeof(BaseHealPotion));
     }
   }
 }

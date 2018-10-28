@@ -114,7 +114,7 @@ namespace Server.Items
       if (IsAccessibleTo(from) && from.InRange(GetWorldLocation(), 3))
       {
         from.SendLocalizedMessage(1070929); // Select the artifact or enhanced magic item to dye.
-        from.BeginTarget(3, false, TargetFlags.None, new TargetStateCallback(InternalCallback), this);
+        from.BeginTarget(3, false, TargetFlags.None, InternalCallback);
       }
       else
       {
@@ -122,12 +122,11 @@ namespace Server.Items
       }
     }
 
-    private void InternalCallback(Mobile from, object targeted, object state)
+    private void InternalCallback(Mobile from, object targeted)
     {
-      BasePigmentsOfTokuno pigment = (BasePigmentsOfTokuno)state;
-
-      if (pigment.Deleted || pigment.UsesRemaining <= 0 || !from.InRange(pigment.GetWorldLocation(), 3) ||
-          !pigment.IsAccessibleTo(from))
+      
+      if (Deleted || UsesRemaining <= 0 || !from.InRange(GetWorldLocation(), 3) ||
+          !IsAccessibleTo(from))
         return;
 
       if (!(targeted is Item i))
@@ -173,8 +172,8 @@ namespace Server.Items
         //Notes: on OSI there IS no hue check to see if it's already hued.  and no messages on successful hue either
         i.Hue = Hue;
 
-        if (--pigment.UsesRemaining <= 0)
-          pigment.Delete();
+        if (--UsesRemaining <= 0)
+          Delete();
 
         from.PlaySound(0x23E); // As per OSI TC1
       }
@@ -278,7 +277,7 @@ namespace Server.Items
       }
     }
 
-    public bool ShowUsesRemaining
+    bool IUsesRemaining.ShowUsesRemaining
     {
       get => true;
       set { }
