@@ -22,3 +22,9 @@ ModernUO
 
 ### Running on Mac/Linux (MONO)
 `mono RunUO.exe`
+
+### Troubleshooting / FAQ
+
+#### Scripts fail to compile on Windows
+This is usually caused nuget packages not being installed. Install the required packages and rebuild the Server project.
+Note: The required nuget packages can be set to automatically restore on build with this [setting](https://docs.microsoft.com/en-us/nuget/consume-packages/media/restore-01-autorestoreoptions.png)
