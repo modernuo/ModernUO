@@ -351,7 +351,8 @@ namespace Server.Mobiles
         if (BaseHouse.NewVendorSystem) return ChargePerRealWorldDay / 12;
 
         long total = 0;
-        foreach (VendorItem vi in m_SellItems.Values) total += vi.Price;
+        foreach (VendorItem vi in m_SellItems.Values)
+          total += vi.Price;
 
         total -= 500;
 
@@ -369,7 +370,8 @@ namespace Server.Mobiles
         if (BaseHouse.NewVendorSystem)
         {
           long total = 0;
-          foreach (VendorItem vi in m_SellItems.Values) total += vi.Price;
+          foreach (VendorItem vi in m_SellItems.Values)
+            total += vi.Price;
 
           return (int)(60 + total / 500 * 3);
         }

@@ -35,9 +35,9 @@ namespace Server.SkillHandlers
 
     public static double GetStalkingBonus(Mobile tracker, Mobile target)
     {
-      m_Table.TryGetValue(tracker, out TrackingInfo info);
+      ;
 
-      if (info == null || info.m_Target != target || info.m_Map != target.Map)
+      if (!m_Table.TryGetValue(tracker, out TrackingInfo info) || info.m_Target != target || info.m_Map != target.Map)
         return 0.0;
 
       int xDelta = info.m_Location.X - target.X;
@@ -47,10 +47,7 @@ namespace Server.SkillHandlers
 
       m_Table.Remove(tracker); //Reset as of Pub 40, counting it as bug for Core.SE.
 
-      if (Core.ML)
-        return Math.Min(bonus, 10 + tracker.Skills.Tracking.Value / 10);
-
-      return bonus;
+      return Core.ML ? Math.Min(bonus, 10 + tracker.Skills.Tracking.Value / 10) : bonus;
     }
 
 

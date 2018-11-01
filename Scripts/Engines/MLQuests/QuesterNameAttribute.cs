@@ -26,12 +26,7 @@ namespace Server.Engines.MLQuests
 
       object[] attributes = t.GetCustomAttributes(m_Type, false);
 
-      if (attributes.Length != 0)
-        result = ((QuesterNameAttribute)attributes[0]).QuesterName;
-      else
-        result = t.Name;
-
-      return m_Cache[t] = result;
+      return m_Cache[t] = attributes.Length != 0 ? ((QuesterNameAttribute)attributes[0]).QuesterName : t.Name;
     }
   }
 }

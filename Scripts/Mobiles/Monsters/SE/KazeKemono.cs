@@ -74,9 +74,7 @@ namespace Server.Mobiles
          * Effect: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(1048 779, 6)" ToLocation: "(1048 779, 6)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
          */
 
-        ExpireTimer timer = m_FlurryOfTwigsTable[defender];
-
-        if (timer != null)
+        if (m_FlurryOfTwigsTable.TryGetValue(defender, out ExpireTimer timer))
         {
           timer.DoExpire();
           defender.SendLocalizedMessage(1070851); // The creature lands another blow in your weakened state.
@@ -97,8 +95,10 @@ namespace Server.Mobiles
         timer = new ExpireTimer(defender, mod, m_FlurryOfTwigsTable, TimeSpan.FromSeconds(5.0));
         timer.Start();
         m_FlurryOfTwigsTable[defender] = timer;
+        return;
       }
-      else if (0.05 > Utility.RandomDouble())
+
+      if (0.05 > Utility.RandomDouble())
       {
         /* Chlorophyl Blast
          * Start cliloc: 1070827
@@ -107,9 +107,7 @@ namespace Server.Mobiles
          * Effect: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(1048 779, 6)" ToLocation: "(1048 779, 6)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
          */
 
-        ExpireTimer timer = m_ChlorophylBlastTable[defender];
-
-        if (timer != null)
+        if (m_ChlorophylBlastTable.TryGetValue(defender, out ExpireTimer timer))
         {
           timer.DoExpire();
           defender.SendLocalizedMessage(1070828); // The creature continues to hinder your energy resistance!

@@ -109,9 +109,8 @@ namespace Server.Spells.Fourth
 
     public static void RemoveEntry(Mobile m)
     {
-      if (_Table.ContainsKey(m))
+      if (_Table.TryGetValue(m, out int v))
       {
-        int v = _Table[m];
         _Table.Remove(m);
         m.EndAction<ArchProtectionSpell>();
         m.VirtualArmorMod -= v;

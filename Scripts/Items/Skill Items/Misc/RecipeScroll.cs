@@ -42,10 +42,8 @@ namespace Server.Items
     {
       get
       {
-        if (Recipe.Recipes.ContainsKey(m_RecipeID))
-          return Recipe.Recipes[m_RecipeID];
-
-        return null;
+        Recipe.Recipes.TryGetValue(m_RecipeID, out Recipe recipe);
+        return recipe;
       }
     }
 

@@ -125,9 +125,7 @@ namespace Server.Spells.Fifth
 
     public static void StopTimer(Mobile m)
     {
-      Timer t = m_Timers[m];
-
-      if (t == null)
+      if (!m_Timers.TryGetValue(m, out InternalTimer t))
         return;
 
       t.Stop();
@@ -156,18 +154,18 @@ namespace Server.Spells.Fifth
 
       protected override void OnTick()
       {
-        if (!m_Owner.CanBeginAction<IncognitoSpell>())
-        {
-          (m_Owner as PlayerMobile)?.SetHairMods(-1, -1);
+        if (m_Owner.CanBeginAction<IncognitoSpell>())
+          return;
 
-          m_Owner.BodyMod = 0;
-          m_Owner.HueMod = -1;
-          m_Owner.NameMod = null;
-          m_Owner.EndAction<IncognitoSpell>();
+        (m_Owner as PlayerMobile)?.SetHairMods(-1, -1);
 
-          BaseArmor.ValidateMobile(m_Owner);
-          BaseClothing.ValidateMobile(m_Owner);
-        }
+        m_Owner.BodyMod = 0;
+        m_Owner.HueMod = -1;
+        m_Owner.NameMod = null;
+        m_Owner.EndAction<IncognitoSpell>();
+
+        BaseArmor.ValidateMobile(m_Owner);
+        BaseClothing.ValidateMobile(m_Owner);
       }
     }
   }

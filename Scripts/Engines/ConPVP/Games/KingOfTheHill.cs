@@ -604,7 +604,7 @@ namespace Server.Engines.ConPVP
         if (mob == null)
           return null;
 
-        if (!(Players[mob] is KHPlayerInfo val))
+        if (!Players.TryGetValue(mob, out KHPlayerInfo val))
           Players[mob] = val = new KHPlayerInfo(this, mob);
 
         return val;

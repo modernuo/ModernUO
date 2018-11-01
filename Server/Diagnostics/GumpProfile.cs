@@ -27,8 +27,7 @@ namespace Server.Diagnostics
   {
     private static Dictionary<Type, GumpProfile> _profiles = new Dictionary<Type, GumpProfile>();
 
-    public GumpProfile(Type type)
-      : base(type.FullName)
+    public GumpProfile(Type type) : base(type.FullName)
     {
     }
 
@@ -36,9 +35,11 @@ namespace Server.Diagnostics
 
     public static GumpProfile Acquire(Type type)
     {
-      if (!Core.Profiling) return null;
+      if (!Core.Profiling)
+        return null;
 
-      if (!_profiles.TryGetValue(type, out GumpProfile prof)) _profiles.Add(type, prof = new GumpProfile(type));
+      if (!_profiles.TryGetValue(type, out GumpProfile prof))
+        _profiles.Add(type, prof = new GumpProfile(type));
 
       return prof;
     }

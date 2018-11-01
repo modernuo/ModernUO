@@ -30,8 +30,7 @@ namespace Server.Items
       if (!Validate(attacker) || !CheckMana(attacker, true))
         return;
 
-      FeintTimer timer = Registry[defender];
-      if (timer != null)
+      if (Registry.TryGetValue(defender, out FeintTimer timer))
       {
         timer.Stop();
         Registry.Remove(defender);

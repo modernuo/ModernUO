@@ -36,7 +36,7 @@ namespace Server.Spells.Chivalry
         Caster.FixedParticles(0x375A, 1, 30, 9966, 33, 2, EffectLayer.Head);
         Caster.FixedParticles(0x37B9, 1, 30, 9502, 43, 3, EffectLayer.Head);
 
-        Timer timer = m_Table[Caster];
+        m_Table.TryGetValue(Caster, out Timer timer);
         timer?.Stop();
 
         double delay = (double)ComputePowerValue(1) / 60;

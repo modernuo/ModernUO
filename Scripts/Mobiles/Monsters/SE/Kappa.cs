@@ -116,8 +116,7 @@ namespace Server.Mobiles
 
     public static void BeginLifeDrain(Mobile m, Mobile from)
     {
-      InternalTimer timer = m_Table[m];
-
+      m_Table.TryGetValue(m, out InternalTimer timer);
       timer?.Stop();
       m_Table[m] = timer = new InternalTimer(from, m);
 
@@ -139,12 +138,12 @@ namespace Server.Mobiles
 
     public static void EndLifeDrain(Mobile m)
     {
-      Timer timer = m_Table[m];
-      timer?.Stop();
-
-      m_Table.Remove(m);
-
-      m.SendLocalizedMessage(1070849); // The drain on your life force is gone.
+      if (m_Table.TryGetValue(m, out InternalTimer timer))
+      {
+        timer?.Stop();
+        m_Table.Remove(m);
+        m.SendLocalizedMessage(1070849); // The drain on your life force is gone.
+      }
     }
 
     public override void OnDamage(int amount, Mobile from, bool willKill)

@@ -209,7 +209,7 @@ namespace Server.Regions
         m_SpawnTimer = null;
       }
 
-      if (Table[ID] == this)
+      if (Table.TryGetValue(ID, out SpawnEntry entry) && entry == this)
         Table.Remove(ID);
     }
 
@@ -310,6 +310,7 @@ namespace Server.Regions
       Mobile from = args.Mobile;
 
       Region reg;
+
       if (args.Length == 0)
       {
         reg = from.Region;
@@ -317,29 +318,26 @@ namespace Server.Regions
       else
       {
         string name = args.GetString(0);
-        //reg = if (!from.Map.Regions.TryGetValue( name, out (Region) from.Map.Regions[name] ))
+        if (!from.Map.Regions.TryGetValue(name, out reg))
         {
           from.SendMessage("Could not find region '{0}'.", name);
           return null;
         }
       }
 
-      BaseRegion br = reg as BaseRegion;
+      if (reg is BaseRegion br && br.Spawns != null)
+        return br;
 
-      if (br?.Spawns == null)
-      {
-        from.SendMessage("There are no spawners in region '{0}'.", reg);
-        return null;
-      }
-
-      return br;
+      from.SendMessage("There are no spawners in region '{0}'.", reg);
+      return null;
     }
 
     [Usage("RespawnAllRegions")]
     [Description("Respawns all regions and sets the spawners as running.")]
     private static void RespawnAllRegions_OnCommand(CommandEventArgs args)
     {
-      foreach (SpawnEntry entry in Table.Values) entry.Respawn();
+      foreach (SpawnEntry entry in Table.Values)
+        entry.Respawn();
 
       args.Mobile.SendMessage("All regions have respawned.");
     }
@@ -363,7 +361,8 @@ namespace Server.Regions
     [Description("Deletes all spawned objects of every regions and sets the spawners as not running.")]
     private static void DelAllRegionSpawns_OnCommand(CommandEventArgs args)
     {
-      foreach (SpawnEntry entry in Table.Values) entry.DeleteSpawnedObjects();
+      foreach (SpawnEntry entry in Table.Values)
+        entry.DeleteSpawnedObjects();
 
       args.Mobile.SendMessage("All region spawned objects have been deleted.");
     }
@@ -388,7 +387,8 @@ namespace Server.Regions
     [Description("Sets the region spawners of all regions as running.")]
     private static void StartAllRegionSpawns_OnCommand(CommandEventArgs args)
     {
-      foreach (SpawnEntry entry in Table.Values) entry.Start();
+      foreach (SpawnEntry entry in Table.Values)
+        entry.Start();
 
       args.Mobile.SendMessage("All region spawners have started.");
     }
@@ -412,7 +412,8 @@ namespace Server.Regions
     [Description("Sets the region spawners of all regions as not running.")]
     private static void StopAllRegionSpawns_OnCommand(CommandEventArgs args)
     {
-      foreach (SpawnEntry entry in Table.Values) entry.Stop();
+      foreach (SpawnEntry entry in Table.Values)
+        entry.Stop();
 
       args.Mobile.SendMessage("All region spawners have stopped.");
     }

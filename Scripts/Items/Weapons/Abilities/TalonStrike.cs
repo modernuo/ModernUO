@@ -8,7 +8,7 @@ namespace Server.Items
   /// </summary>
   public class TalonStrike : WeaponAbility
   {
-    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     public override int BaseMana => 30;
     public override double DamageScalar => 1.2;
@@ -27,7 +27,7 @@ namespace Server.Items
 
     public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {
-      if (m_Table.ContainsKey(defender) || !Validate(attacker) || !CheckMana(attacker, true))
+      if (m_Table.Contains(defender) || !Validate(attacker) || !CheckMana(attacker, true))
         return;
 
       ClearCurrentAbility(attacker);
@@ -42,7 +42,7 @@ namespace Server.Items
 
       timer.Start();
 
-      m_Table.Add(defender, timer);
+      m_Table.Add(defender);
     }
 
     private class InternalTimer : Timer

@@ -58,8 +58,7 @@ namespace Server.Diagnostics
 
     private long _created;
 
-    public PacketSendProfile(Type type)
-      : base(type.FullName)
+    public PacketSendProfile(Type type) : base(type.FullName)
     {
     }
 
@@ -68,7 +67,8 @@ namespace Server.Diagnostics
     [MethodImpl(MethodImplOptions.Synchronized)]
     public static PacketSendProfile Acquire(Type type)
     {
-      if (!_profiles.TryGetValue(type, out PacketSendProfile prof)) _profiles.Add(type, prof = new PacketSendProfile(type));
+      if (!_profiles.TryGetValue(type, out PacketSendProfile prof))
+        _profiles.Add(type, prof = new PacketSendProfile(type));
 
       return prof;
     }

@@ -54,9 +54,8 @@ namespace Server.Misc
         from.Location = dest.Location;
         from.Map = dest.Map;
       }
-      else if (m_MoveHistory.ContainsKey(from))
+      else if (m_MoveHistory.TryGetValue(from, out LocationInfo orig))
       {
-        LocationInfo orig = m_MoveHistory[from];
         from.SendMessage("Your character was moved from {0} ({1}) due to a detected client crash.", orig.Location,
           orig.Map);
 

@@ -5,11 +5,6 @@ namespace Server.Engines.Harvest
 {
   public class HarvestDefinition
   {
-    public HarvestDefinition()
-    {
-      Banks = new Dictionary<Map, Dictionary<Point2D, HarvestBank>>();
-    }
-
     public int BankWidth{ get; set; }
 
     public int BankHeight{ get; set; }
@@ -70,7 +65,8 @@ namespace Server.Engines.Harvest
 
     public bool RandomizeVeins{ get; set; }
 
-    public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks{ get; set; }
+    public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks{ get; }
+      = new Dictionary<Map, Dictionary<Point2D, HarvestBank>>();
 
     public void SendMessageTo(Mobile from, object message)
     {
@@ -88,15 +84,12 @@ namespace Server.Engines.Harvest
       x /= BankWidth;
       y /= BankHeight;
 
-      Banks.TryGetValue(map, out Dictionary<Point2D, HarvestBank> banks);
-
-      if (banks == null)
+      if (!Banks.TryGetValue(map, out Dictionary<Point2D, HarvestBank> banks))
         Banks[map] = banks = new Dictionary<Point2D, HarvestBank>();
 
       Point2D key = new Point2D(x, y);
-      banks.TryGetValue(key, out HarvestBank bank);
 
-      if (bank == null)
+      if (!banks.TryGetValue(key, out HarvestBank bank))
         banks[key] = bank = new HarvestBank(this, GetVeinAt(map, x, y));
 
       return bank;

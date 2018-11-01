@@ -23,12 +23,7 @@ namespace Server.Multis
 
     public static void Register(DecayLevel level, TimeSpan min, TimeSpan max)
     {
-      DecayStageInfo info = new DecayStageInfo(min, max);
-
-      if (m_Stages.ContainsKey(level))
-        m_Stages[level] = info;
-      else
-        m_Stages.Add(level, info);
+      m_Stages[level] = new DecayStageInfo(min, max);
     }
 
     public static bool Decays(DecayLevel level)
@@ -38,10 +33,9 @@ namespace Server.Multis
 
     public static TimeSpan GetRandomDuration(DecayLevel level)
     {
-      if (!m_Stages.ContainsKey(level))
+      if (!m_Stages.TryGetValue(level, out DecayStageInfo info))
         return TimeSpan.Zero;
 
-      DecayStageInfo info = m_Stages[level];
       long min = info.MinDuration.Ticks;
       long max = info.MaxDuration.Ticks;
 

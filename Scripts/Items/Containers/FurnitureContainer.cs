@@ -390,9 +390,7 @@ namespace Server.Items
 
     public static void Close(Container c)
     {
-      m_Table.TryGetValue(c, out Timer t);
-
-      if (t != null)
+      if (m_Table.TryGetValue(c, out Timer t))
       {
         t.Stop();
         m_Table.Remove(c);

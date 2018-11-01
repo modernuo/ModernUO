@@ -114,14 +114,14 @@ namespace Server
 			if (!m_Temps.TryGetValue( localType, out Queue<LocalBuilder> list ))
 				m_Temps[localType] = list = new Queue<LocalBuilder>();
 
-			if ( list.Count > 0 )
-				return list.Dequeue();
-
-			return CreateLocal( localType );
+			return list.Count > 0 ? list.Dequeue() : CreateLocal( localType );
 		}
 
 		public void ReleaseTemp( LocalBuilder local )
 		{
+			if (local.LocalType == null)
+				return;
+
 			if (!m_Temps.TryGetValue( local.LocalType, out Queue<LocalBuilder> list ))
 				m_Temps[local.LocalType] = list = new Queue<LocalBuilder>();
 

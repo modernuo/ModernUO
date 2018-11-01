@@ -140,7 +140,10 @@ namespace Server.Mobiles
 
     public static void SuppressRemove(Mobile target)
     {
-      if (target != null && m_Suppressed[target] is Timer t)
+      if (target == null)
+        return;
+
+      if (m_Suppressed.TryGetValue(target, out Timer t))
       {
         if (t.Running)
           t.Stop();
@@ -199,7 +202,7 @@ namespace Server.Mobiles
     {
       Item item = m.FindItemOnLayer(layer);
 
-      if (item != null && item.Movable)
+      if (item?.Movable == true)
         m.PlaceInBackpack(item);
     }
 

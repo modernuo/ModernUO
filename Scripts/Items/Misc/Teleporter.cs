@@ -690,7 +690,7 @@ namespace Server.Items
               m.SendLocalizedMessage(ProgressNumber);
 
             if (ShowTimeRemaining)
-              m.SendMessage("Time remaining: {0}", FormatTime(m_Table[m].Timer.Next - DateTime.UtcNow));
+              m.SendMessage("Time remaining: {0}", FormatTime(info.Timer.Next - DateTime.UtcNow));
 
             Timer.DelayCall(TimeSpan.FromSeconds(5), EndLock, m);
           }
@@ -764,19 +764,12 @@ namespace Server.Items
     private Dictionary<Mobile, Timer> m_Teleporting;
 
     [Constructible]
-    public TimeoutTeleporter()
-      : this(new Point3D(0, 0, 0), null, false)
+    public TimeoutTeleporter() : this(new Point3D(0, 0, 0))
     {
     }
 
     [Constructible]
-    public TimeoutTeleporter(Point3D pointDest, Map mapDest)
-      : this(pointDest, mapDest, false)
-    {
-    }
-
-    [Constructible]
-    public TimeoutTeleporter(Point3D pointDest, Map mapDest, bool creatures)
+    public TimeoutTeleporter(Point3D pointDest, Map mapDest = null, bool creatures = false)
       : base(pointDest, mapDest, creatures)
     {
       m_Teleporting = new Dictionary<Mobile, Timer>();

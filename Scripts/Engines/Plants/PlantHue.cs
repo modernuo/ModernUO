@@ -43,27 +43,29 @@ namespace Server.Engines.Plants
 
     static PlantHueInfo()
     {
-      m_Table = new Dictionary<PlantHue, PlantHueInfo>();
+      m_Table = new Dictionary<PlantHue, PlantHueInfo>
+      {
+        [PlantHue.Plain] = new PlantHueInfo(0, 1060813, PlantHue.Plain, 0x835),
+        [PlantHue.Red] = new PlantHueInfo(0x66D, 1060814, PlantHue.Red, 0x24),
+        [PlantHue.Blue] = new PlantHueInfo(0x53D, 1060815, PlantHue.Blue, 0x6),
+        [PlantHue.Yellow] = new PlantHueInfo(0x8A5, 1060818, PlantHue.Yellow, 0x38),
+        [PlantHue.BrightRed] = new PlantHueInfo(0x21, 1060814, PlantHue.BrightRed, 0x21),
+        [PlantHue.BrightBlue] = new PlantHueInfo(0x5, 1060815, PlantHue.BrightBlue, 0x6),
+        [PlantHue.BrightYellow] = new PlantHueInfo(0x38, 1060818, PlantHue.BrightYellow, 0x35),
+        [PlantHue.Purple] = new PlantHueInfo(0xD, 1060816, PlantHue.Purple, 0x10),
+        [PlantHue.Green] = new PlantHueInfo(0x59B, 1060819, PlantHue.Green, 0x42),
+        [PlantHue.Orange] = new PlantHueInfo(0x46F, 1060817, PlantHue.Orange, 0x2E),
+        [PlantHue.BrightPurple] = new PlantHueInfo(0x10, 1060816, PlantHue.BrightPurple, 0xD),
+        [PlantHue.BrightGreen] = new PlantHueInfo(0x42, 1060819, PlantHue.BrightGreen, 0x3F),
+        [PlantHue.BrightOrange] = new PlantHueInfo(0x2B, 1060817, PlantHue.BrightOrange, 0x2B),
+        [PlantHue.Black] = new PlantHueInfo(0x455, 1060820, PlantHue.Black, 0),
+        [PlantHue.White] = new PlantHueInfo(0x481, 1060821, PlantHue.White, 0x481),
+        [PlantHue.Pink] = new PlantHueInfo(0x48E, 1061854, PlantHue.Pink),
+        [PlantHue.Magenta] = new PlantHueInfo(0x486, 1061852, PlantHue.Magenta),
+        [PlantHue.Aqua] = new PlantHueInfo(0x495, 1061853, PlantHue.Aqua),
+        [PlantHue.FireRed] = new PlantHueInfo(0x489, 1061855, PlantHue.FireRed)
+      };
 
-      m_Table[PlantHue.Plain] = new PlantHueInfo(0, 1060813, PlantHue.Plain, 0x835);
-      m_Table[PlantHue.Red] = new PlantHueInfo(0x66D, 1060814, PlantHue.Red, 0x24);
-      m_Table[PlantHue.Blue] = new PlantHueInfo(0x53D, 1060815, PlantHue.Blue, 0x6);
-      m_Table[PlantHue.Yellow] = new PlantHueInfo(0x8A5, 1060818, PlantHue.Yellow, 0x38);
-      m_Table[PlantHue.BrightRed] = new PlantHueInfo(0x21, 1060814, PlantHue.BrightRed, 0x21);
-      m_Table[PlantHue.BrightBlue] = new PlantHueInfo(0x5, 1060815, PlantHue.BrightBlue, 0x6);
-      m_Table[PlantHue.BrightYellow] = new PlantHueInfo(0x38, 1060818, PlantHue.BrightYellow, 0x35);
-      m_Table[PlantHue.Purple] = new PlantHueInfo(0xD, 1060816, PlantHue.Purple, 0x10);
-      m_Table[PlantHue.Green] = new PlantHueInfo(0x59B, 1060819, PlantHue.Green, 0x42);
-      m_Table[PlantHue.Orange] = new PlantHueInfo(0x46F, 1060817, PlantHue.Orange, 0x2E);
-      m_Table[PlantHue.BrightPurple] = new PlantHueInfo(0x10, 1060816, PlantHue.BrightPurple, 0xD);
-      m_Table[PlantHue.BrightGreen] = new PlantHueInfo(0x42, 1060819, PlantHue.BrightGreen, 0x3F);
-      m_Table[PlantHue.BrightOrange] = new PlantHueInfo(0x2B, 1060817, PlantHue.BrightOrange, 0x2B);
-      m_Table[PlantHue.Black] = new PlantHueInfo(0x455, 1060820, PlantHue.Black, 0);
-      m_Table[PlantHue.White] = new PlantHueInfo(0x481, 1060821, PlantHue.White, 0x481);
-      m_Table[PlantHue.Pink] = new PlantHueInfo(0x48E, 1061854, PlantHue.Pink);
-      m_Table[PlantHue.Magenta] = new PlantHueInfo(0x486, 1061852, PlantHue.Magenta);
-      m_Table[PlantHue.Aqua] = new PlantHueInfo(0x495, 1061853, PlantHue.Aqua);
-      m_Table[PlantHue.FireRed] = new PlantHueInfo(0x489, 1061855, PlantHue.FireRed);
     }
 
     private PlantHueInfo(int hue, int name, PlantHue plantHue) : this(hue, name, plantHue, hue)
@@ -88,9 +90,7 @@ namespace Server.Engines.Plants
 
     public static PlantHueInfo GetInfo(PlantHue plantHue)
     {
-      if (m_Table.TryGetValue(plantHue, out PlantHueInfo info))
-        return info;
-      return m_Table[PlantHue.Plain];
+      return m_Table.TryGetValue(plantHue, out PlantHueInfo info) ? info : m_Table[PlantHue.Plain];
     }
 
     public static PlantHue RandomFirstGeneration()

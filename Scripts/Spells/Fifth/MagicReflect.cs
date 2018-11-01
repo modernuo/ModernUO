@@ -57,9 +57,7 @@ namespace Server.Spells.Fifth
         {
           Mobile targ = Caster;
 
-          ResistanceMod[] mods = m_Table[targ];
-
-          if (mods == null)
+          if (!m_Table.TryGetValue(targ, out ResistanceMod[] mods))
           {
             targ.PlaySound(0x1E9);
             targ.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
@@ -116,7 +114,7 @@ namespace Server.Spells.Fifth
           if (Caster.BeginAction<DefensiveSpell>())
           {
             int value = (int)(Caster.Skills.Magery.Value + Caster.Skills.Inscribe.Value);
-            value = (int)(8 + value / 200 * 7.0); //absorb from 8 to 15 "circles"
+            value = (int)(8 + value / 200.0 * 7.0); //absorb from 8 to 15 "circles"
 
             Caster.MagicDamageAbsorb = value;
 

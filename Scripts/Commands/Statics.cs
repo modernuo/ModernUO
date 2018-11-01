@@ -125,16 +125,12 @@ namespace Server
             if (itemMap == null || itemMap == Map.Internal)
               continue;
 
-            Dictionary<Point2D, DeltaState> table = mapTable[itemMap];
-
-            if (table == null)
+            if (!mapTable.TryGetValue(itemMap, out Dictionary<Point2D, DeltaState> table))
               mapTable[itemMap] = table = new Dictionary<Point2D, DeltaState>();
 
             Point2D p = new Point2D(item.X >> 3, item.Y >> 3);
 
-            DeltaState state = table[p];
-
-            if (state == null)
+            if (!table.TryGetValue(p, out DeltaState state))
               table[p] = state = new DeltaState(p);
 
             state.m_List.Add(item);
@@ -159,16 +155,12 @@ namespace Server
             if (itemMap == null || itemMap == Map.Internal)
               continue;
 
-            Dictionary<Point2D, DeltaState> table = mapTable[itemMap];
-
-            if (table == null)
+            if (!mapTable.TryGetValue(itemMap, out Dictionary<Point2D, DeltaState> table))
               mapTable[itemMap] = table = new Dictionary<Point2D, DeltaState>();
 
             Point2D p = new Point2D(item.X >> 3, item.Y >> 3);
 
-            DeltaState state = table[p];
-
-            if (state == null)
+            if (!table.TryGetValue(p, out DeltaState state))
               table[p] = state = new DeltaState(p);
 
             state.m_List.Add(item);

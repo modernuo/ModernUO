@@ -58,9 +58,7 @@ namespace Server.Spells.First
         {
           Mobile targ = Caster;
 
-          ResistanceMod[] mods = m_Table[targ];
-
-          if (mods == null)
+          if (!m_Table.TryGetValue(targ, out ResistanceMod[] mods))
           {
             targ.PlaySound(0x1E9);
             targ.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);

@@ -84,16 +84,9 @@ namespace Server.Spells
     public virtual void OnCasterHurt()
     {
       //Confirm: Monsters and pets cannot be disturbed.
-      if (!Caster.Player)
-        return;
-
-      if (IsCasting)
-      {
-        double d = ProtectionSpell.Registry[Caster];
-
-        if (d <= Utility.RandomDouble() * 100.0)
-          Disturb(DisturbType.Hurt, false, true);
-      }
+      if (Caster.Player && IsCasting && ProtectionSpell.Registry.TryGetValue(Caster, out double d) &&
+          d <= Utility.RandomDouble() * 100.0)
+        Disturb(DisturbType.Hurt, false, true);
     }
 
     public virtual void OnCasterKilled()
@@ -144,20 +137,15 @@ namespace Server.Spells
         return; //Sanity
 
       if (!m_ContextTable.TryGetValue(GetType(), out DelayedDamageContextWrapper contexts))
-      {
-        contexts = new DelayedDamageContextWrapper();
-        m_ContextTable.Add(GetType(), contexts);
-      }
+        m_ContextTable[GetType()] = contexts = new DelayedDamageContextWrapper();
 
       contexts.Add(m, t);
     }
 
     public void RemoveDelayedDamageContext(Mobile m)
     {
-      if (!m_ContextTable.TryGetValue(GetType(), out DelayedDamageContextWrapper contexts))
-        return;
-
-      contexts.Remove(m);
+      if (m_ContextTable.TryGetValue(GetType(), out DelayedDamageContextWrapper contexts))
+        contexts.Remove(m);
     }
 
     public void HarmfulSpell(Mobile m)

@@ -6,7 +6,7 @@ namespace Server.Mobiles
 {
   public class RaiJu : BaseCreature
   {
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     [Constructible]
     public RaiJu() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -61,33 +61,28 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 > Utility.RandomDouble() && !IsStunned(defender))
-      {
-        /* Lightning Fist
-         * Cliloc: 1070839
-         * Effect: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(884 715, 10)" ToLocation: "(884 715, 10)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
-         * Damage: 35-65, 100% energy, resistable
-         * Freezes for 4 seconds
-         * Effect cannot stack
-         */
+      if (0.1 <= Utility.RandomDouble() || m_Table.Contains(defender))
+        return;
 
-        defender.FixedEffect(0x37B9, 10, 5);
-        defender.SendLocalizedMessage(1070839); // The creature attacks with stunning force!
+      /* Lightning Fist
+       * Cliloc: 1070839
+       * Effect: Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(884 715, 10)" ToLocation: "(884 715, 10)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
+       * Damage: 35-65, 100% energy, resistable
+       * Freezes for 4 seconds
+       * Effect cannot stack
+       */
 
-        // This should be done in place of the normal attack damage.
-        //AOS.Damage( defender, this, Utility.RandomMinMax( 35, 65 ), 0, 0, 0, 0, 100 );
+      defender.FixedEffect(0x37B9, 10, 5);
+      defender.SendLocalizedMessage(1070839); // The creature attacks with stunning force!
 
-        defender.Frozen = true;
+      // This should be done in place of the normal attack damage.
+      //AOS.Damage( defender, this, Utility.RandomMinMax( 35, 65 ), 0, 0, 0, 0, 100 );
 
-        ExpireTimer timer = new ExpireTimer(defender, TimeSpan.FromSeconds(4.0));
-        timer.Start();
-        m_Table[defender] = timer;
-      }
-    }
+      defender.Frozen = true;
 
-    public bool IsStunned(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
+      ExpireTimer timer = new ExpireTimer(defender, TimeSpan.FromSeconds(4.0));
+      timer.Start();
+      m_Table.Add(defender);
     }
 
     public override void Serialize(GenericWriter writer)

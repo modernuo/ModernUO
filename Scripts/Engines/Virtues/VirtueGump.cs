@@ -77,9 +77,7 @@ namespace Server
         return;
       }
 
-      m_Callbacks.TryGetValue(e.GumpID, out OnVirtueUsed callback);
-
-      if (callback != null)
+      if (m_Callbacks.TryGetValue(e.GumpID, out OnVirtueUsed callback))
         callback(e.Beholder);
       else
         e.Beholder.SendLocalizedMessage(1052066); // That virtue is not active yet.

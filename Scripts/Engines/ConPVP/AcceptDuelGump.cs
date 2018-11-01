@@ -117,9 +117,7 @@ namespace Server.Engines.ConPVP
 
     public static void BeginIgnore(Mobile source, Mobile toIgnore)
     {
-      List<IgnoreEntry> list = m_IgnoreLists[source];
-
-      if (list == null)
+      if (!m_IgnoreLists.TryGetValue(source, out List<IgnoreEntry> list))
         m_IgnoreLists[source] = list = new List<IgnoreEntry>();
 
       for (int i = 0; i < list.Count; ++i)
@@ -141,9 +139,7 @@ namespace Server.Engines.ConPVP
 
     public static bool IsIgnored(Mobile source, Mobile check)
     {
-      List<IgnoreEntry> list = m_IgnoreLists[source];
-
-      if (list == null)
+      if (!m_IgnoreLists.TryGetValue(source, out List<IgnoreEntry> list))
         return false;
 
       for (int i = 0; i < list.Count; ++i)

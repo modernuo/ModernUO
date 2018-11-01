@@ -99,10 +99,7 @@ namespace Server.Commands
         {
           Type type = item.GetType();
 
-          if (table.ContainsKey(type))
-            table[type] = 1 + table[type];
-          else
-            table[type] = 1;
+          table[type] = (table.TryGetValue(type, out int value) ? value : 0) + 1;
         }
 
         List<KeyValuePair<Type, int>> items = table.ToList();
@@ -112,10 +109,7 @@ namespace Server.Commands
         {
           Type type = m.GetType();
 
-          if (table.ContainsKey(type))
-            table[type] = 1 + table[type];
-          else
-            table[type] = 1;
+          table[type] = (table.TryGetValue(type, out int value) ? value : 0) + 1;
         }
 
         List<KeyValuePair<Type, int>> mobiles = table.ToList();
@@ -161,10 +155,8 @@ namespace Server.Commands
 
         do
         {
-          typeTable.TryGetValue(itemType, out int[] countTable);
-
-          if (countTable == null)
-            countTable = new int[9];
+          if (!typeTable.TryGetValue(itemType, out int[] countTable))
+            typeTable[itemType] = countTable = new int[9];
 
           if ((flags & ExpandFlag.Name) != 0)
             ++countTable[0];
@@ -253,13 +245,13 @@ namespace Server.Commands
         ++totalCount;
 
         Type type = item.GetType();
-        int[] parms = table[type];
 
-        if (parms == null)
-          table[type] = parms = new[] { 0, 0 };
-
-        parms[0]++;
-        parms[1] += item.Amount;
+        if (table.TryGetValue(type, out int[] parms))
+        {
+          parms[0]++;
+          parms[1] += item.Amount;
+        } else
+          table[type] = new[] { 1, item.Amount };
       }
 
       using (StreamWriter op = new StreamWriter("internal.log"))
@@ -319,13 +311,9 @@ namespace Server.Commands
             int length = bin.ReadInt32();
             Type objType = types[typeID];
 
-            while (objType != typeof(object))
+            while (objType != null && objType != typeof(object))
             {
-              if (table.ContainsKey(objType))
-                table[objType] = length + table[objType];
-              else
-                table[objType] = length;
-
+              table[objType] = length + (table.TryGetValue(objType, out int value) ? value : 0);
               objType = objType.BaseType;
               total += length;
             }
@@ -362,10 +350,7 @@ namespace Server.Commands
 
         int v = -aCount.CompareTo(bCount);
 
-        if (v != 0)
-          return v;
-
-        return x.Key.FullName.CompareTo(y.Key.FullName);
+        return v != 0 ? v : x.Key.FullName.CompareTo(y.Key.FullName);
       }
     }
 
@@ -378,10 +363,7 @@ namespace Server.Commands
 
         int v = -aCount.CompareTo(bCount);
 
-        if (v != 0)
-          return v;
-
-        return x.Key.FullName.CompareTo(y.Key.FullName);
+        return v != 0 ? v : x.Key.FullName.CompareTo(y.Key.FullName);
       }
     }
   }

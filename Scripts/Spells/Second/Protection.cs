@@ -36,13 +36,12 @@ namespace Server.Spells.Second
         return false;
       }
 
-      if (!Caster.CanBeginAction<DefensiveSpell>())
-      {
-        Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
-        return false;
-      }
+      if (Caster.CanBeginAction<DefensiveSpell>())
+        return true;
 
-      return true;
+      Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
+      return false;
+
     }
 
     public static void Toggle(Mobile caster, Mobile target)
@@ -56,9 +55,7 @@ namespace Server.Spells.Second
        * even after dying�until you �turn them off� by casting them again.
        */
 
-      Tuple<ResistanceMod, DefaultSkillMod> mods = m_Table[target];
-
-      if (mods == null)
+      if (m_Table.TryGetValue(target, out Tuple<ResistanceMod, DefaultSkillMod> mods))
       {
         target.PlaySound(0x1E9);
         target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
@@ -98,9 +95,7 @@ namespace Server.Spells.Second
 
     public static void EndProtection(Mobile m)
     {
-      Tuple<ResistanceMod, DefaultSkillMod> mods = m_Table[m];
-
-      if (mods == null)
+      if (!m_Table.TryGetValue(m, out Tuple<ResistanceMod, DefaultSkillMod> mods))
         return;
 
       m_Table.Remove(m);

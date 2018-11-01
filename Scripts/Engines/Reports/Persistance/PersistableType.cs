@@ -32,7 +32,8 @@ namespace Server.Engines.Reports
 
     public static PersistableType Find(string name)
     {
-      return m_Table[name];
+      m_Table.TryGetValue(name, out PersistableType value);
+      return value;
     }
 
     public static void Register(PersistableType type)

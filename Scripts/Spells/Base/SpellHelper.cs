@@ -1041,7 +1041,7 @@ namespace Server.Spells
 
       if (context == null) /* cleanup */
         return;
-      
+
       if (context.Type == typeof(WraithFormSpell))
       {
         int wraithLeech =
@@ -1137,7 +1137,7 @@ namespace Server.Spells
       {
         BaseCreature bcFrom = m_From as BaseCreature;
         BaseCreature bcTarg = m_Target as BaseCreature;
-        
+
         if (bcFrom != null && m_Target != null)
           bcFrom.AlterSpellDamageTo(m_Target, ref m_Damage);
 
@@ -1299,24 +1299,24 @@ namespace Server.Spells
 
     public static void RemoveContext(Mobile m, TransformContext context, bool resetGraphics)
     {
-      if (m_Table.ContainsKey(m))
+      if (!m_Table.ContainsKey(m))
+        return;
+
+      m_Table.Remove(m);
+
+      List<ResistanceMod> mods = context.Mods;
+
+      for (int i = 0; i < mods.Count; ++i)
+        m.RemoveResistanceMod(mods[i]);
+
+      if (resetGraphics)
       {
-        m_Table.Remove(m);
-
-        List<ResistanceMod> mods = context.Mods;
-
-        for (int i = 0; i < mods.Count; ++i)
-          m.RemoveResistanceMod(mods[i]);
-
-        if (resetGraphics)
-        {
-          m.HueMod = -1;
-          m.BodyMod = 0;
-        }
-
-        context.Timer.Stop();
-        context.Spell.RemoveEffect(m);
+        m.HueMod = -1;
+        m.BodyMod = 0;
       }
+
+      context.Timer.Stop();
+      context.Spell.RemoveEffect(m);
     }
 
     public static TransformContext GetContext(Mobile m)

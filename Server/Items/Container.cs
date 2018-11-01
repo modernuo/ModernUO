@@ -1747,6 +1747,7 @@ namespace Server.Items
           }
           catch
           {
+            // ignored
           }
         }
       }

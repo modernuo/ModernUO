@@ -53,9 +53,7 @@ namespace Server.Spells.Ninjitsu
 
       attacker.RevealingAction();
 
-      SurpriseAttackInfo info = m_Table[defender];
-
-      if (info != null)
+      if (m_Table.TryGetValue(defender, out SurpriseAttackInfo info))
       {
         info.m_Timer?.Stop();
 
@@ -85,9 +83,7 @@ namespace Server.Spells.Ninjitsu
 
     public static bool GetMalus(Mobile target, ref int malus)
     {
-      SurpriseAttackInfo info = m_Table[target];
-
-      if (info == null)
+      if (!m_Table.TryGetValue(target, out SurpriseAttackInfo info))
         return false;
 
       malus = info.m_Malus;

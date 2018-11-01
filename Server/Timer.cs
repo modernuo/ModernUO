@@ -250,8 +250,7 @@ namespace Server
 
       private static long[] m_NextPriorities = new long[8];
 
-      private static long[] m_PriorityDelays = new long[8]
-      {
+      private static long[] m_PriorityDelays = {
         0,
         10,
         25,
@@ -291,9 +290,7 @@ namespace Server
 
             string key = t.ToString();
 
-            hash.TryGetValue(key, out List<Timer> list);
-
-            if (list == null)
+            if (!hash.TryGetValue(key, out List<Timer> list))
               hash[key] = list = new List<Timer>();
 
             list.Add(t);

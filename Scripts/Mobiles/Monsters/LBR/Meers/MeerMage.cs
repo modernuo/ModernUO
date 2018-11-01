@@ -165,9 +165,7 @@ namespace Server.Mobiles
 
     public static void StopEffect(Mobile m, bool message)
     {
-      Timer timer = m_Table[m];
-
-      if (timer != null)
+      if (m_Table.TryGetValue(m, out Timer timer))
       {
         if (message)
           m.PublicOverheadMessage(MessageType.Emote, m.SpeechHue, true,
@@ -181,15 +179,11 @@ namespace Server.Mobiles
     public void DoEffect(Mobile m, int count)
     {
       if (!m.Alive)
-      {
         StopEffect(m, false);
-      }
       else
       {
         if (m.FindItemOnLayer(Layer.TwoHanded) is Torch torch && torch.Burning)
-        {
           StopEffect(m, true);
-        }
         else
         {
           if (count % 4 == 0)

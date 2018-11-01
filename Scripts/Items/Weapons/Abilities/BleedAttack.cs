@@ -59,11 +59,10 @@ namespace Server.Items
 
     public static void BeginBleed(Mobile m, Mobile from)
     {
-      Timer t = m_Table[m];
+      m_Table.TryGetValue(m, out Timer t);
       t?.Stop();
 
       m_Table[m] = t = new InternalTimer(from, m);
-
       t.Start();
     }
 
@@ -90,9 +89,7 @@ namespace Server.Items
 
     public static void EndBleed(Mobile m, bool message)
     {
-      Timer t = m_Table[m];
-
-      if (t == null)
+      if (!m_Table.TryGetValue(m, out Timer t))
         return;
 
       t.Stop();

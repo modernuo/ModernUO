@@ -70,10 +70,7 @@ namespace Server.Spells.Spellweaving
 
     public static int GetImmolatingDamage(BaseWeapon weapon)
     {
-      if (m_WeaponDamageTable.TryGetValue(weapon, out ImmolatingWeaponEntry entry))
-        return entry.m_Damage;
-
-      return 0;
+      return m_WeaponDamageTable.TryGetValue(weapon, out ImmolatingWeaponEntry entry) ? entry.m_Damage : 0;
     }
 
     public static void DoEffect(BaseWeapon weapon, Mobile target)
@@ -89,16 +86,14 @@ namespace Server.Spells.Spellweaving
 
     public static void StopImmolating(BaseWeapon weapon)
     {
-      if (m_WeaponDamageTable.TryGetValue(weapon, out ImmolatingWeaponEntry entry))
-      {
-        entry.m_Caster?.PlaySound(0x27);
+      if (!m_WeaponDamageTable.TryGetValue(weapon, out ImmolatingWeaponEntry entry))
+        return;
 
-        entry.m_Timer.Stop();
+      entry.m_Caster?.PlaySound(0x27);
+      entry.m_Timer.Stop();
+      m_WeaponDamageTable.Remove(weapon);
 
-        m_WeaponDamageTable.Remove(weapon);
-
-        weapon.InvalidateProperties();
-      }
+      weapon.InvalidateProperties();
     }
 
     private class ImmolatingWeaponEntry

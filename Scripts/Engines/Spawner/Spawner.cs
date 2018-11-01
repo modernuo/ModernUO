@@ -209,12 +209,7 @@ namespace Server.Mobiles
             false);
     }
 
-    public SpawnerEntry AddEntry(string creaturename, int probability, int amount)
-    {
-      return AddEntry(creaturename, probability, amount, true);
-    }
-
-    public SpawnerEntry AddEntry(string creaturename, int probability, int amount, bool dotimer)
+    public SpawnerEntry AddEntry(string creaturename, int probability, int amount, bool dotimer = true)
     {
       SpawnerEntry entry = new SpawnerEntry(creaturename, probability, amount);
       Entries.Add(entry);
@@ -356,7 +351,7 @@ namespace Server.Mobiles
 
       if (Entries.Count <= 0 || IsFull)
         return;
-      
+
       int probsum = 0;
 
       for (int i = 0; i < Entries.Count; i++)
@@ -365,7 +360,7 @@ namespace Server.Mobiles
 
       if (probsum <= 0)
         return;
-      
+
       int rand = Utility.RandomMinMax(1, probsum);
 
       for (int i = 0; i < Entries.Count; i++)
@@ -639,7 +634,7 @@ namespace Server.Mobiles
       {
         int x = Location.X + (Utility.Random(m_HomeRange * 2 + 1) - m_HomeRange);
         int y = Location.Y + (Utility.Random(m_HomeRange * 2 + 1) - m_HomeRange);
-        
+
         int mapZ = map.GetAverageZ(x, y);
 
         if (waterMob)

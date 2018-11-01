@@ -86,7 +86,8 @@ namespace Server.Items
 
     public static CampfireEntry GetEntry(Mobile player)
     {
-      return m_Table[player];
+      m_Table.TryGetValue(player, out CampfireEntry value);
+      return value;
     }
 
     public static void RemoveEntry(CampfireEntry entry)

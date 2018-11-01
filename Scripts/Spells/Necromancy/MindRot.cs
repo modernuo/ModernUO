@@ -58,10 +58,7 @@ namespace Server.Spells.Necromancy
             ((GetDamageSkill(Caster) - GetResistSkill(m)) / 5.0 + 20.0) * (m.Player ? 1.0 : 2.0));
         m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); //Skill check for gain
 
-        if (m.Player)
-          SetMindRotScalar(Caster, m, 1.25, duration);
-        else
-          SetMindRotScalar(Caster, m, 2.00, duration);
+        SetMindRotScalar(Caster, m, m.Player ? 1.25 : 2.00, duration);
 
         HarmfulSpell(m);
       }
@@ -71,9 +68,7 @@ namespace Server.Spells.Necromancy
 
     public static void ClearMindRotScalar(Mobile m)
     {
-      MRBucket tmpB = m_Table[m];
-
-      if (tmpB == null)
+      if (!m_Table.TryGetValue(m, out MRBucket tmpB))
         return;
 
       BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
@@ -89,13 +84,13 @@ namespace Server.Spells.Necromancy
 
     public static bool GetMindRotScalar(Mobile m, ref double scalar)
     {
-      MRBucket tmpB = m_Table[m];
+      if (m_Table.TryGetValue(m, out MRBucket tmpB))
+      {
+        scalar = tmpB.m_Scalar;
+        return true;
+      }
 
-      if (tmpB == null)
-        return false;
-
-      scalar = tmpB.m_Scalar;
-      return true;
+      return false;
     }
 
     public static void SetMindRotScalar(Mobile caster, Mobile target, double scalar, TimeSpan duration)

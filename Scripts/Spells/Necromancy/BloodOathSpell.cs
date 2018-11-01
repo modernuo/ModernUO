@@ -62,7 +62,7 @@ namespace Server.Spells.Necromancy
          * ((ss-rm)/8)+8
          */
 
-        ExpireTimer timer = m_Table[m];
+        m_Table.TryGetValue(m, out ExpireTimer timer);
         timer?.DoExpire();
 
         m_OathTable[Caster] = Caster;
@@ -96,17 +96,13 @@ namespace Server.Spells.Necromancy
 
     public static void RemoveCurse(Mobile m)
     {
-      ExpireTimer t = m_Table[m];
+      m_Table.TryGetValue(m, out ExpireTimer t);
       t?.DoExpire();
     }
 
     public static Mobile GetBloodOath(Mobile m)
     {
-      if (m == null)
-        return null;
-
-      Mobile oath = m_OathTable[m];
-      return oath == m ? null : oath;
+      return m == null || m_OathTable.TryGetValue(m, out Mobile oath) && oath == m ? null : oath;
     }
 
     private class ExpireTimer : Timer

@@ -107,9 +107,7 @@ namespace Server.Engines.ConPVP
 
     public PreferencesEntry Find(Mobile mob)
     {
-      PreferencesEntry entry = m_Table[mob];
-
-      if (entry == null)
+      if (m_Table.TryGetValue(mob, out PreferencesEntry entry))
       {
         m_Table[mob] = entry = new PreferencesEntry(mob);
         Entries.Add(entry);

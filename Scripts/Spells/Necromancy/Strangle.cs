@@ -59,9 +59,7 @@ namespace Server.Spells.Necromancy
         m.FixedParticles(0x36CB, 1, 9, 9911, 67, 5, EffectLayer.Head);
         m.FixedParticles(0x374A, 1, 17, 9502, 1108, 4, (EffectLayer)255);
 
-        InternalTimer timer = m_Table[m];
-
-        if (timer == null)
+        if (!m_Table.TryGetValue(m, out InternalTimer timer))
         {
           m_Table[m] = timer = new InternalTimer(m, Caster);
           timer.Start();
@@ -111,9 +109,7 @@ namespace Server.Spells.Necromancy
 
     public static bool RemoveCurse(Mobile m)
     {
-      Timer timer = m_Table[m];
-
-      if (timer == null)
+      if (!m_Table.TryGetValue(m, out InternalTimer timer))
         return false;
 
       timer.Stop();

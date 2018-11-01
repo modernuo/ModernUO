@@ -73,22 +73,22 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (Utility.RandomDouble() < 0.1)
-      {
-        if (m_Table.TryGetValue(defender, out ExpireTimer timer))
-          timer.DoExpire();
+      if (Utility.RandomDouble() >= 0.1)
+        return;
 
-        defender.FixedParticles(0x3709, 10, 30, 5052, EffectLayer.LeftFoot);
-        defender.PlaySound(0x208);
-        defender.SendLocalizedMessage(
-          1070833); // The creature fans you with fire, reducing your resistance to fire attacks.
+      if (m_Table.TryGetValue(defender, out ExpireTimer timer))
+        timer.DoExpire();
 
-        ResistanceMod mod = new ResistanceMod(ResistanceType.Fire, -10);
-        defender.AddResistanceMod(mod);
+      defender.FixedParticles(0x3709, 10, 30, 5052, EffectLayer.LeftFoot);
+      defender.PlaySound(0x208);
+      defender.SendLocalizedMessage(
+        1070833); // The creature fans you with fire, reducing your resistance to fire attacks.
 
-        m_Table[defender] = timer = new ExpireTimer(defender, mod);
-        timer.Start();
-      }
+      ResistanceMod mod = new ResistanceMod(ResistanceType.Fire, -10);
+      defender.AddResistanceMod(mod);
+
+      m_Table[defender] = timer = new ExpireTimer(defender, mod);
+      timer.Start();
     }
 
     public override void Serialize(GenericWriter writer)

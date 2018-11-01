@@ -1529,7 +1529,7 @@ namespace Server.Items
             !(nearest is Cobbler && mob is Provisioner))
           continue;
 
-        if (m_AcquireTable[mob.GetType()] is FillableContent check)
+        if (m_AcquireTable.TryGetValue(mob.GetType(), out FillableContent check))
         {
           nearest = mob;
           content = check;

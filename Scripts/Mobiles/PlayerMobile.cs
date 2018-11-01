@@ -2139,12 +2139,10 @@ namespace Server.Mobiles
       if (obj == null || m_AntiMacroTable == null || AccessLevel != AccessLevel.Player)
         return true;
 
-      Dictionary<object, CountAndTimeStamp> tbl = m_AntiMacroTable[skill];
-      if (tbl == null)
+      if (!m_AntiMacroTable.TryGetValue(skill, out Dictionary<object, CountAndTimeStamp> tbl))
         m_AntiMacroTable[skill] = tbl = new Dictionary<object, CountAndTimeStamp>();
 
-      CountAndTimeStamp count = tbl[obj];
-      if (count != null)
+      if (tbl.TryGetValue(obj, out CountAndTimeStamp count))
       {
         if (count.TimeStamp + SkillCheck.AntiMacroExpire <= DateTime.UtcNow)
         {
@@ -4738,10 +4736,8 @@ namespace Server.Mobiles
 
     public virtual bool HasRecipe(int recipeID)
     {
-      if (m_AcquiredRecipes != null && m_AcquiredRecipes.ContainsKey(recipeID))
-        return m_AcquiredRecipes[recipeID];
-
-      return false;
+      m_AcquiredRecipes?.TryGetValue(recipeID, out bool value);
+      return value;
     }
 
     public virtual void AcquireRecipe(Recipe r)
@@ -4764,16 +4760,7 @@ namespace Server.Mobiles
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int KnownRecipes
-    {
-      get
-      {
-        if (m_AcquiredRecipes == null)
-          return 0;
-
-        return m_AcquiredRecipes.Count;
-      }
-    }
+    public int KnownRecipes => m_AcquiredRecipes?.Count ?? 0;
 
     #endregion
 
@@ -4784,11 +4771,9 @@ namespace Server.Mobiles
       if (!BuffInfo.Enabled || m_BuffTable == null)
         return;
 
-      NetState state = NetState;
-
-      if (state != null && state.BuffIcon)
+      if (NetState?.BuffIcon == true)
         foreach (BuffInfo info in m_BuffTable.Values)
-          state.Send(new AddBuffPacket(this, info));
+          NetState.Send(new AddBuffPacket(this, info));
     }
 
     private Dictionary<BuffIcon, BuffInfo> m_BuffTable;
@@ -4805,9 +4790,8 @@ namespace Server.Mobiles
 
       m_BuffTable.Add(b.ID, b);
 
-      NetState state = NetState;
-
-      if (state != null && state.BuffIcon) state.Send(new AddBuffPacket(this, b));
+      if (NetState?.BuffIcon == true)
+        NetState.Send(new AddBuffPacket(this, b));
     }
 
     public void RemoveBuff(BuffInfo b)
@@ -4830,9 +4814,8 @@ namespace Server.Mobiles
 
       m_BuffTable.Remove(b);
 
-      NetState state = NetState;
-
-      if (state != null && state.BuffIcon) state.Send(new RemoveBuffPacket(this, b));
+      if (NetState?.BuffIcon == true)
+        NetState.Send(new RemoveBuffPacket(this, b));
 
       if (m_BuffTable.Count <= 0)
         m_BuffTable = null;

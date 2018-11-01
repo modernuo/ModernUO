@@ -63,24 +63,18 @@ namespace Server.Items
 
     public static bool HasTimer(Mobile m)
     {
-      return m_Table[m] != null;
+      return m_Table.ContainsKey(m);
     }
 
-    public static void RemoveTimer(Mobile m)
+    public static void RemoveTimer(Mobile m, bool interrupted = false)
     {
-      Timer timer = m_Table[m];
-
-      if (timer != null)
+      if (m_Table.TryGetValue(m, out Timer timer))
       {
+        if (interrupted)
+          m.SendLocalizedMessage(1073187); // The invisibility effect is interrupted.
         timer.Stop();
         m_Table.Remove(m);
       }
-    }
-
-    public static void Iterrupt(Mobile m)
-    {
-      m.SendLocalizedMessage(1073187); // The invisibility effect is interrupted.
-      RemoveTimer(m);
     }
 
     public override void Serialize(GenericWriter writer)

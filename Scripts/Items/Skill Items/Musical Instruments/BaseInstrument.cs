@@ -203,12 +203,8 @@ namespace Server.Items
 
     public static BaseInstrument GetInstrument(Mobile from)
     {
-      BaseInstrument item = m_Instruments[from];
-      if (item == null)
-        return null;
-
-      if (item.IsChildOf(from.Backpack))
-        return item;
+      if (m_Instruments.TryGetValue(from, out BaseInstrument instrument) && instrument.IsChildOf(from.Backpack))
+        return instrument;
 
       m_Instruments.Remove(from);
       return null;
@@ -222,7 +218,6 @@ namespace Server.Items
     public static void PickInstrument(Mobile from, InstrumentPickedCallback callback)
     {
       BaseInstrument instrument = GetInstrument(from);
-
       if (instrument != null)
       {
         callback?.Invoke(from, instrument);
@@ -531,7 +526,7 @@ namespace Server.Items
       {
         SetInstrument(from, this);
 
-        // Delay of 7 second before beign able to play another instrument again
+        // Delay of 7 second before being able to play another instrument again
         new InternalTimer(from).Start();
 
         if (CheckMusicianship(from))

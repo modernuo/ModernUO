@@ -269,9 +269,7 @@ namespace Server.Engines.ConPVP
 
     public LadderEntry Find(Mobile mob)
     {
-      LadderEntry entry = m_Table[mob];
-
-      if (entry == null)
+      if (m_Table.TryGetValue(mob, out LadderEntry entry))
       {
         m_Table[mob] = entry = new LadderEntry(mob, this);
         entry.Index = Entries.Count;
@@ -283,7 +281,8 @@ namespace Server.Engines.ConPVP
 
     public LadderEntry FindNoCreate(Mobile mob)
     {
-      return m_Table[mob];
+      m_Table.TryGetValue(mob, out LadderEntry entry);
+      return entry;
     }
 
     public void Serialize(GenericWriter writer)

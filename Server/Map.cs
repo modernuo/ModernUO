@@ -907,13 +907,13 @@ namespace Server
     {
       string regName = reg.Name;
 
-      if (regName != null)
-      {
-        if (Regions.ContainsKey(regName))
-          Console.WriteLine("Warning: Duplicate region name '{0}' for map '{1}'", regName, Name);
-        else
-          Regions[regName] = reg;
-      }
+      if (regName == null)
+        return;
+
+      if (Regions.ContainsKey(regName))
+        Console.WriteLine("Warning: Duplicate region name '{0}' for map '{1}'", regName, Name);
+      else
+        Regions[regName] = reg;
     }
 
     public void UnregisterRegion(Region reg)

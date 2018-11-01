@@ -119,27 +119,8 @@ namespace Server
 
     private static Stack<ConsoleColor> m_ConsoleColors = new Stack<ConsoleColor>();
 
-    public static Encoding UTF8
-    {
-      get
-      {
-        if (m_UTF8 == null)
-          m_UTF8 = new UTF8Encoding(false, false);
-
-        return m_UTF8;
-      }
-    }
-
-    public static Encoding UTF8WithEncoding
-    {
-      get
-      {
-        if (m_UTF8WithEncoding == null)
-          m_UTF8WithEncoding = new UTF8Encoding(true, false);
-
-        return m_UTF8WithEncoding;
-      }
-    }
+    public static Encoding UTF8 => m_UTF8 ?? (m_UTF8 = new UTF8Encoding(false, false));
+    public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ?? (m_UTF8WithEncoding = new UTF8Encoding(true, false));
 
     public static void Separate(StringBuilder sb, string value, string separator)
     {
@@ -153,10 +134,8 @@ namespace Server
     {
       if (str == null)
         return null;
-      if (str.Length == 0)
-        return string.Empty;
 
-      return string.Intern(str);
+      return str.Length == 0 ? string.Empty : string.Intern(str);
     }
 
     public static void Intern(ref string str)

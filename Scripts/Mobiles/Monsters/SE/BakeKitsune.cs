@@ -89,7 +89,7 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (!(0.1 > Utility.RandomDouble()))
+      if (0.1 <= Utility.RandomDouble())
         return;
 
       /* Blood Bath
@@ -100,9 +100,7 @@ namespace Server.Mobiles
          * End cliloc: 1070824
          */
 
-      ExpireTimer timer = m_Table[defender];
-
-      if (timer != null)
+      if (m_Table.TryGetValue(defender, out ExpireTimer timer))
       {
         timer.DoExpire();
         defender.SendLocalizedMessage(1070825); // The creature continues to rage!
@@ -254,7 +252,6 @@ namespace Server.Mobiles
 
       AddItem(new Robe(Utility.RandomNondyedHue()));
 
-      m_DisguiseTimer = null;
       m_DisguiseTimer = Timer.DelayCall(TimeSpan.FromSeconds(75), RemoveDisguise);
     }
 
@@ -280,9 +277,7 @@ namespace Server.Mobiles
 
     public void DeleteItemOnLayer(Layer layer)
     {
-      Item item = FindItemOnLayer(layer);
-
-      item?.Delete();
+      FindItemOnLayer(layer)?.Delete();
     }
 
     #endregion

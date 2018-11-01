@@ -9,10 +9,6 @@ namespace Server.Mobiles
 		private Dictionary<Type, int> m_Table = new Dictionary<Type, int>();
 		private Type[] m_Types;
 
-		public GenericSellInfo()
-		{
-		}
-
 		public void Add( Type type, int price )
 		{
 			m_Table[type] = price;

@@ -197,10 +197,7 @@ namespace Server.Spells.Ninjitsu
 
     public int GetLastAnimalForm(Mobile m)
     {
-      if (m_LastAnimalForms.ContainsKey(m))
-        return m_LastAnimalForms[m];
-
-      return -1;
+      return m_LastAnimalForms.TryGetValue(m, out int value) ? value : -1;
     }
 
     public static MorphResult Morph(Mobile m, int entryID)
@@ -323,7 +320,7 @@ namespace Server.Spells.Ninjitsu
 
     public static AnimalFormContext GetContext(Mobile m)
     {
-      return m_Table[m];
+      return m_Table.TryGetValue(m, out AnimalFormContext context) ? context : null;
     }
 
     public static bool UnderTransformation(Mobile m)
@@ -445,19 +442,19 @@ namespace Server.Spells.Ninjitsu
             }
           }
 
-          if (enabled)
-          {
-            int x = pos % 2 == 0 ? 14 : 264;
-            int y = pos / 2 * 64 + 44;
+          if (!enabled)
+            continue;
 
-            Rectangle2D b = ItemBounds.Table[entries[i].ItemID];
+          int x = pos % 2 == 0 ? 14 : 264;
+          int y = pos / 2 * 64 + 44;
 
-            AddImageTiledButton(x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entries[i].ItemID,
-              entries[i].Hue, 40 - b.Width / 2 - b.X, 30 - b.Height / 2 - b.Y, entries[i].Tooltip);
-            AddHtmlLocalized(x + 84, y, 250, 60, entries[i].Name, 0x7FFF, false, false);
+          Rectangle2D b = ItemBounds.Table[entries[i].ItemID];
 
-            current++;
-          }
+          AddImageTiledButton(x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entries[i].ItemID,
+            entries[i].Hue, 40 - b.Width / 2 - b.X, 30 - b.Height / 2 - b.Y, entries[i].Tooltip);
+          AddHtmlLocalized(x + 84, y, 250, 60, entries[i].Name, 0x7FFF, false, false);
+
+          current++;
         }
       }
 
@@ -484,8 +481,7 @@ namespace Server.Spells.Ninjitsu
         {
           #region Dueling
 
-          if ((m_Caster as PlayerMobile)?.DuelContext != null &&
-              !((PlayerMobile)m_Caster).DuelContext.AllowSpellCast(m_Caster, m_Spell))
+          if ((m_Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(m_Caster, m_Spell) == false)
           {
           }
 

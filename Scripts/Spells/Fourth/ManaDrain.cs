@@ -15,7 +15,7 @@ namespace Server.Spells.Fourth
       Reagent.SpidersSilk
     );
 
-    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     public ManaDrainSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
     {
@@ -66,7 +66,7 @@ namespace Server.Spells.Fourth
           else if (toDrain > m.Mana)
             toDrain = m.Mana;
 
-          if (m_Table.ContainsKey(m))
+          if (m_Table.Contains(m))
             toDrain = 0;
 
           m.FixedParticles(0x3789, 10, 25, 5032, EffectLayer.Head);
@@ -76,7 +76,8 @@ namespace Server.Spells.Fourth
           {
             m.Mana -= toDrain;
 
-            m_Table[m] = Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => AosDelay_Callback(m, toDrain));
+            m_Table.Add(m);
+            Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => AosDelay_Callback(m, toDrain));
           }
         }
         else

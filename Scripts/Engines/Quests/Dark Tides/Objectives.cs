@@ -118,14 +118,14 @@ namespace Server.Engines.Quests.Necro
 
     public override void CheckProgress()
     {
-      if (System.From.Map == Map.Malas && System.From.InRange(new Point3D(1076, 450, -84), 5))
-        if (SummonFamiliarSpell.Table[System.From] is HordeMinionFamiliar hmf && hmf.InRange(System.From, 5) &&
-            hmf.TargetLocation == null)
-        {
-          System.From.SendLocalizedMessage(
-            1060113); // You instinctively will your familiar to fetch the scroll for you.
-          hmf.TargetLocation = new Point2D(1076, 450);
-        }
+      if (System.From.Map != Map.Malas || !System.From.InRange(new Point3D(1076, 450, -84), 5) ||
+          !SummonFamiliarSpell.Table.TryGetValue(System.From, out BaseCreature bc) || !(bc is HordeMinionFamiliar hmf) ||
+          !hmf.InRange(System.From, 5) || hmf.TargetLocation != null)
+        return;
+
+      System.From.SendLocalizedMessage(
+        1060113); // You instinctively will your familiar to fetch the scroll for you.
+      hmf.TargetLocation = new Point2D(1076, 450);
     }
 
     public override void OnComplete()

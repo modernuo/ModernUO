@@ -288,14 +288,14 @@ namespace Server.Items
 
     public static void AddDelay(Mobile m)
     {
-      m_Delay[m]?.Stop();
+      m_Delay.TryGetValue(m, out Timer timer);
+      timer?.Stop();
       m_Delay[m] = Timer.DelayCall(TimeSpan.FromSeconds(30), EndDelay, m);
     }
 
     public static int GetDelay(Mobile m)
     {
-      Timer timer = m_Delay[m];
-      if (timer?.Next > DateTime.UtcNow)
+      if (m_Delay.TryGetValue(m, out Timer timer) && timer.Next > DateTime.UtcNow)
         return (int)(timer.Next - DateTime.UtcNow).TotalSeconds;
 
       return 0;
@@ -303,9 +303,7 @@ namespace Server.Items
 
     public static void EndDelay(Mobile m)
     {
-      Timer timer = m_Delay[m];
-
-      if (timer != null)
+      if (m_Delay.TryGetValue(m, out Timer timer))
       {
         timer.Stop();
         m_Delay.Remove(m);

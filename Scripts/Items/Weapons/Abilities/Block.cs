@@ -45,8 +45,7 @@ namespace Server.Items
 
     public static bool GetBonus(Mobile targ, ref int bonus)
     {
-      BlockInfo info = m_Table[targ];
-      if (info == null)
+      if (!m_Table.TryGetValue(targ, out BlockInfo info))
         return false;
 
       bonus = info.m_Bonus;
@@ -61,9 +60,7 @@ namespace Server.Items
 
     public static void EndBlock(Mobile m)
     {
-      BlockInfo info = m_Table[m];
-
-      if (info == null)
+      if (!m_Table.TryGetValue(m, out BlockInfo info))
         return;
 
       info.m_Timer?.Stop();

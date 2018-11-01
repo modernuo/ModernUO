@@ -199,9 +199,7 @@ namespace Server.Engines.Help
     [Description("Opens the page queue menu.")]
     private static void Pages_OnCommand(CommandEventArgs e)
     {
-      PageEntry entry = (PageEntry)m_KeyedByHandler[e.Mobile];
-
-      if (entry != null)
+      if (m_KeyedByHandler.TryGetValue(e.Mobile, out PageEntry entry))
         e.Mobile.SendGump(new PageEntryGump(e.Mobile, entry));
       else if (List.Count > 0)
         e.Mobile.SendGump(new PageQueueGump());
@@ -224,11 +222,6 @@ namespace Server.Engines.Help
       return List.IndexOf(e);
     }
 
-    public static void Cancel(Mobile sender)
-    {
-      Remove((PageEntry)m_KeyedBySender[sender]);
-    }
-
     public static void Remove(PageEntry e)
     {
       if (e == null)
@@ -245,7 +238,8 @@ namespace Server.Engines.Help
 
     public static PageEntry GetEntry(Mobile sender)
     {
-      return (PageEntry)m_KeyedBySender[sender];
+      m_KeyedBySender.TryGetValue(sender, out PageEntry entry);
+      return entry;
     }
 
     public static void Remove(Mobile sender)
@@ -285,9 +279,10 @@ namespace Server.Engines.Help
       Mobile sender = entry.Sender;
       DateTime time = DateTime.UtcNow;
 
-      MailMessage mail = new MailMessage(Email.FromAddress, Email.SpeechLogPageAddresses);
-
-      mail.Subject = "RunUO Speech Log Page Forwarding";
+      MailMessage mail = new MailMessage(Email.FromAddress, Email.SpeechLogPageAddresses)
+      {
+        Subject = "RunUO Speech Log Page Forwarding"
+      };
 
       using (StringWriter writer = new StringWriter())
       {

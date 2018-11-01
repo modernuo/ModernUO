@@ -205,9 +205,7 @@ namespace Server.Spells.Necromancy
       if (master == null)
         return;
 
-      m_Table.TryGetValue(master, out List<Mobile> list);
-
-      if (list == null)
+      if (!m_Table.TryGetValue(master, out List<Mobile> list))
         return;
 
       list.Remove(summoned);
@@ -221,9 +219,7 @@ namespace Server.Spells.Necromancy
       if (master == null)
         return;
 
-      m_Table.TryGetValue(master, out List<Mobile> list);
-
-      if (list == null)
+      if (!m_Table.TryGetValue(master, out List<Mobile> list))
         m_Table[master] = list = new List<Mobile>();
 
       for (int i = list.Count - 1; i >= 0; --i)
@@ -306,6 +302,7 @@ namespace Server.Spells.Necromancy
       }
       catch
       {
+        // ignored
       }
 
       if (summoned == null)

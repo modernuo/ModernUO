@@ -78,7 +78,7 @@ namespace Server.Spells.Chivalry
 
         TimeSpan duration = TimeSpan.FromSeconds(seconds);
 
-        ExpireTimer timer = m_Table[weapon];
+        m_Table.TryGetValue(weapon, out ExpireTimer timer);
         timer?.Stop();
 
         weapon.Consecrated = true;

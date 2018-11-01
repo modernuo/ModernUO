@@ -101,32 +101,30 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 > Utility.RandomDouble())
+      if (0.1 <= Utility.RandomDouble())
+        return;
+
+      if (m_Table.TryGetValue(defender, out ExpireTimer timer))
       {
-        ExpireTimer timer = m_Table[defender];
-
-        if (timer != null)
-        {
-          timer.DoExpire();
-          defender.SendLocalizedMessage(1070837); // The creature lands another blow in your weakened state.
-        }
-        else
-        {
-          defender.SendLocalizedMessage(
-            1070836); // The blow from the creature's claws has made you more susceptible to physical attacks.
-        }
-
-        int effect = -(defender.PhysicalResistance * 15 / 100);
-
-        ResistanceMod mod = new ResistanceMod(ResistanceType.Physical, effect);
-
-        defender.FixedEffect(0x37B9, 10, 5);
-        defender.AddResistanceMod(mod);
-
-        timer = new ExpireTimer(defender, mod, TimeSpan.FromSeconds(5.0));
-        timer.Start();
-        m_Table[defender] = timer;
+        timer.DoExpire();
+        defender.SendLocalizedMessage(1070837); // The creature lands another blow in your weakened state.
       }
+      else
+      {
+        defender.SendLocalizedMessage(
+          1070836); // The blow from the creature's claws has made you more susceptible to physical attacks.
+      }
+
+      int effect = -(defender.PhysicalResistance * 15 / 100);
+
+      ResistanceMod mod = new ResistanceMod(ResistanceType.Physical, effect);
+
+      defender.FixedEffect(0x37B9, 10, 5);
+      defender.AddResistanceMod(mod);
+
+      timer = new ExpireTimer(defender, mod, TimeSpan.FromSeconds(5.0));
+      timer.Start();
+      m_Table[defender] = timer;
     }
 
     public override void Serialize(GenericWriter writer)

@@ -45,9 +45,7 @@ namespace Server.Misc
 			if ( facet == null )
 				return null;
 
-			m_WeatherByFacet.TryGetValue( facet, out List<Weather> list );
-
-			if ( list == null )
+			if (!m_WeatherByFacet.TryGetValue( facet, out List<Weather> list ))
 				m_WeatherByFacet[facet] = list = new List<Weather>();
 
 			return list;
@@ -74,10 +72,8 @@ namespace Server.Misc
 				if ( !isValid )
 					continue;
 
-				Weather w = new Weather( m_Facets[i], new[]{ area }, temperature, chanceOfPercipitation, chanceOfExtremeTemperature, TimeSpan.FromSeconds( 30.0 ) );
-
-				w.Bounds = bounds;
-				w.MoveSpeed = moveSpeed;
+				new Weather(m_Facets[i], new[] { area }, temperature, chanceOfPercipitation, chanceOfExtremeTemperature,
+					TimeSpan.FromSeconds(30.0)) { Bounds = bounds, MoveSpeed = moveSpeed };
 			}
 		}
 
@@ -127,36 +123,13 @@ namespace Server.Misc
 
 		public static bool CheckIntersection( Rectangle2D r1, Rectangle2D r2 )
 		{
-			if ( r1.X >= (r2.X + r2.Width) )
-				return false;
-
-			if ( r2.X >= (r1.X + r1.Width) )
-				return false;
-
-			if ( r1.Y >= (r2.Y + r2.Height) )
-				return false;
-
-			if ( r2.Y >= (r1.Y + r1.Height) )
-				return false;
-
-			return true;
+			return r1.X < r2.X + r2.Width && r2.X < r1.X + r1.Width && r1.Y < r2.Y + r2.Height && r2.Y < r1.Y + r1.Height;
 		}
 
 		public static bool CheckContains( Rectangle2D big, Rectangle2D small )
 		{
-			if ( small.X < big.X )
-				return false;
-
-			if ( small.Y < big.Y )
-				return false;
-
-			if ( (small.X + small.Width) > (big.X + big.Width) )
-				return false;
-
-			if ( (small.Y + small.Height) > (big.Y + big.Height) )
-				return false;
-
-			return true;
+			return small.X >= big.X && small.Y >= big.Y && small.X + small.Width <= big.X + big.Width
+			       && small.Y + small.Height <= big.Y + big.Height;
 		}
 
 		public virtual bool IntersectsWith( Rectangle2D area )
@@ -182,7 +155,7 @@ namespace Server.Misc
 
 			list?.Add( this );
 
-			Timer.DelayCall( TimeSpan.FromSeconds( (0.2+(Utility.RandomDouble()*0.8)) * interval.TotalSeconds ), interval, OnTick );
+			Timer.DelayCall( TimeSpan.FromSeconds( (0.2+Utility.RandomDouble()*0.8) * interval.TotalSeconds ), interval, OnTick );
 		}
 
 		public virtual void Reposition()
@@ -231,8 +204,8 @@ namespace Server.Misc
 
 			for ( int i = 0; i < 5; ++i ) // try 5 times to find a valid spot
 			{
-				int xOffset = (MoveSpeed * MoveAngleX) / 100;
-				int yOffset = (MoveSpeed * MoveAngleY) / 100;
+				int xOffset = MoveSpeed * MoveAngleX / 100;
+				int yOffset = MoveSpeed * MoveAngleY / 100;
 
 				Rectangle2D oldArea = Area[0];
 				Rectangle2D newArea = new Rectangle2D( oldArea.X + xOffset, oldArea.Y + yOffset, oldArea.Width, oldArea.Height );
@@ -255,8 +228,8 @@ namespace Server.Misc
 		{
 			if ( m_Stage == 0 )
 			{
-				m_Active = ( ChanceOfPercipitation > Utility.Random( 100 ) );
-				m_ExtremeTemperature = ( ChanceOfExtremeTemperature > Utility.Random( 100 ) );
+				m_Active = ChanceOfPercipitation > Utility.Random( 100 );
+				m_ExtremeTemperature = ChanceOfExtremeTemperature > Utility.Random( 100 );
 
 				if ( MoveSpeed > 0 )
 				{
@@ -270,9 +243,8 @@ namespace Server.Misc
 				if ( m_Stage > 0 && MoveSpeed > 0 )
 					MoveForward();
 
-				int type, density, temperature;
-
-				temperature = Temperature;
+				int type, density;
+				int temperature = Temperature;
 
 				if ( m_ExtremeTemperature )
 					temperature *= -1;
@@ -283,7 +255,7 @@ namespace Server.Misc
 				}
 				else
 				{
-					density = 150 - (m_Stage * 5);
+					density = 150 - m_Stage * 5;
 
 					if ( density < 10 )
 						density = 10;
@@ -310,7 +282,7 @@ namespace Server.Misc
 					if ( mob == null || mob.Map != Facet )
 						continue;
 
-					bool contains = ( Area.Length == 0 );
+					bool contains = Area.Length == 0;
 
 					for ( int j = 0; !contains && j < Area.Length; ++j )
 						contains = Area[j].Contains( mob.Location );
@@ -358,7 +330,7 @@ namespace Server.Misc
 				Weather w = list[i];
 
 				for ( int j = 0; j < w.Area.Length; ++j )
-					AddWorldPin( w.Area[j].X + (w.Area[j].Width/2), w.Area[j].Y + (w.Area[j].Height/2) );
+					AddWorldPin( w.Area[j].X + w.Area[j].Width/2, w.Area[j].Y + w.Area[j].Height/2 );
 			}
 
 			base.OnDoubleClick( from );

@@ -95,45 +95,45 @@ namespace Server.Spells.Spellweaving
 
     private static void HandleDeath_OnCallback(Mobile m)
     {
-      if (m_Table.TryGetValue(m, out ExpireTimer timer))
+      if (!m_Table.TryGetValue(m, out ExpireTimer timer))
+        return;
+
+      double hitsScalar = timer.Spell.HitsScalar;
+
+      if (m is BaseCreature pet && pet.IsDeadBondedPet)
       {
-        double hitsScalar = timer.Spell.HitsScalar;
+        Mobile master = pet.GetMaster();
 
-        if (m is BaseCreature pet && pet.IsDeadBondedPet)
+        if (master?.NetState != null && Utility.InUpdateRange(pet, master))
         {
-          Mobile master = pet.GetMaster();
-
-          if (master?.NetState != null && Utility.InUpdateRange(pet, master))
-          {
-            master.CloseGump<PetResurrectGump>();
-            master.SendGump(new PetResurrectGump(master, pet, hitsScalar));
-          }
-          else
-          {
-            List<Mobile> friends = pet.Friends;
-
-            for (int i = 0; friends != null && i < friends.Count; i++)
-            {
-              Mobile friend = friends[i];
-
-              if (friend.NetState != null && Utility.InUpdateRange(pet, friend))
-              {
-                friend.CloseGump<PetResurrectGump>();
-                friend.SendGump(new PetResurrectGump(friend, pet));
-                break;
-              }
-            }
-          }
+          master.CloseGump<PetResurrectGump>();
+          master.SendGump(new PetResurrectGump(master, pet, hitsScalar));
         }
         else
         {
-          m.CloseGump<ResurrectGump>();
-          m.SendGump(new ResurrectGump(m, hitsScalar));
-        }
+          List<Mobile> friends = pet.Friends;
 
-        //Per OSI, buff is removed when gump sent, irregardless of online status or acceptence
-        timer.DoExpire();
+          for (int i = 0; friends != null && i < friends.Count; i++)
+          {
+            Mobile friend = friends[i];
+
+            if (friend.NetState != null && Utility.InUpdateRange(pet, friend))
+            {
+              friend.CloseGump<PetResurrectGump>();
+              friend.SendGump(new PetResurrectGump(friend, pet));
+              break;
+            }
+          }
+        }
       }
+      else
+      {
+        m.CloseGump<ResurrectGump>();
+        m.SendGump(new ResurrectGump(m, hitsScalar));
+      }
+
+      //Per OSI, buff is removed when gump sent, irregardless of online status or acceptence
+      timer.DoExpire();
     }
 
     public static void OnLogin(LoginEventArgs e)

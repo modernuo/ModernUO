@@ -110,49 +110,49 @@ namespace Server.Engines.Craft
 
     public static int ItemIDOf(Type type)
     {
-      if (!_itemIds.TryGetValue(type, out int itemId))
+      if (_itemIds.TryGetValue(type, out int itemId))
+        return itemId;
+
+      if (type == typeof(FactionExplosionTrap))
+        itemId = 14034;
+      else if (type == typeof(FactionGasTrap))
+        itemId = 4523;
+      else if (type == typeof(FactionSawTrap))
+        itemId = 4359;
+      else if (type == typeof(FactionSpikeTrap)) itemId = 4517;
+
+      if (itemId == 0)
       {
-        if (type == typeof(FactionExplosionTrap))
-          itemId = 14034;
-        else if (type == typeof(FactionGasTrap))
-          itemId = 4523;
-        else if (type == typeof(FactionSawTrap))
-          itemId = 4359;
-        else if (type == typeof(FactionSpikeTrap)) itemId = 4517;
+        object[] attrs = type.GetCustomAttributes(typeof(CraftItemIDAttribute), false);
 
-        if (itemId == 0)
+        if (attrs.Length > 0)
         {
-          object[] attrs = type.GetCustomAttributes(typeof(CraftItemIDAttribute), false);
-
-          if (attrs.Length > 0)
-          {
-            CraftItemIDAttribute craftItemID = (CraftItemIDAttribute)attrs[0];
-            itemId = craftItemID.ItemID;
-          }
+          CraftItemIDAttribute craftItemID = (CraftItemIDAttribute)attrs[0];
+          itemId = craftItemID.ItemID;
         }
-
-        if (itemId == 0)
-        {
-          Item item = null;
-
-          try
-          {
-            item = Activator.CreateInstance(type) as Item;
-          }
-          catch
-          {
-            // ignored
-          }
-
-          if (item != null)
-          {
-            itemId = item.ItemID;
-            item.Delete();
-          }
-        }
-
-        _itemIds[type] = itemId;
       }
+
+      if (itemId == 0)
+      {
+        Item item = null;
+
+        try
+        {
+          item = Activator.CreateInstance(type) as Item;
+        }
+        catch
+        {
+          // ignored
+        }
+
+        if (item != null)
+        {
+          itemId = item.ItemID;
+          item.Delete();
+        }
+      }
+
+      _itemIds[type] = itemId;
 
       return itemId;
     }

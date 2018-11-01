@@ -219,7 +219,11 @@ namespace Server.Items
 
     public static StealableInstance GetStealableInstance(Item item)
     {
-      return (StealableInstance)Instance?.m_Table[item];
+      if (Instance == null)
+        return null;
+
+      Instance.m_Table.TryGetValue(item, out StealableInstance value);
+      return value;
     }
 
     public override void OnDelete()

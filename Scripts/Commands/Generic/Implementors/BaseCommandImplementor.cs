@@ -251,9 +251,7 @@ namespace Server.Commands.Generic
     {
       if (e.Length >= 1)
       {
-        Commands.TryGetValue(e.GetString(0), out BaseCommand command);
-
-        if (command == null)
+        if (!Commands.TryGetValue(e.GetString(0), out BaseCommand command))
         {
           e.Mobile.SendMessage(
             "That is either an invalid command name or one that does not support this modifier.");
