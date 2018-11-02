@@ -65,7 +65,7 @@ namespace Server.Items
           ConsumeUse(weapon);
 
           if (CombatCheck(from, target))
-            Timer.DelayCall(TimeSpan.FromSeconds(1.0), OnHit, new object[] { from, target, weapon });
+            Timer.DelayCall(TimeSpan.FromSeconds(1.0), () => OnHit(from, target, weapon));
 
           Timer.DelayCall(TimeSpan.FromSeconds(2.5), ResetUsing, from);
         }
@@ -187,14 +187,14 @@ namespace Server.Items
       BaseWeapon defWeapon = defender.Weapon as BaseWeapon;
 
       Skill atkSkill = defender.Skills.Ninjitsu;
-      Skill defSkill = defender.Skills[defWeapon.Skill];
+      // Skill defSkill = defender.Skills[defWeapon.Skill];
 
       double atSkillValue = attacker.Skills.Ninjitsu.Value;
-      double defSkillValue = defWeapon.GetDefendSkillValue(attacker, defender);
-
-      double attackValue = AosAttributes.GetValue(attacker, AosAttribute.AttackChance);
+      double defSkillValue = defWeapon?.GetDefendSkillValue(attacker, defender) ?? 0.0;
 
       if (defSkillValue <= -20.0) defSkillValue = -19.9;
+
+      double attackValue = AosAttributes.GetValue(attacker, AosAttribute.AttackChance);
 
       if (DivineFurySpell.UnderEffect(attacker)) attackValue += 10;
 
@@ -230,29 +230,24 @@ namespace Server.Items
       return attacker.CheckSkill(atkSkill.SkillName, chance);
     }
 
-    private static void OnHit(object[] states)
+    private static void OnHit(Mobile from, Mobile target, INinjaWeapon weapon)
     {
-      Mobile from = states[0] as Mobile;
-      Mobile target = states[1] as Mobile;
-      INinjaWeapon weapon = states[2] as INinjaWeapon;
+      if (!from.CanBeHarmful(target))
+        return;
+      from.DoHarmful(target);
 
-      if (from.CanBeHarmful(target))
+      AOS.Damage(target, from, weapon.WeaponDamage, 100, 0, 0, 0, 0);
+
+      if (weapon.Poison != null && weapon.PoisonCharges > 0)
       {
-        from.DoHarmful(target);
+        if (EvilOmenSpell.TryEndEffect(target))
+          target.ApplyPoison(from, Poison.GetPoison(weapon.Poison.Level + 1));
+        else
+          target.ApplyPoison(from, weapon.Poison);
 
-        AOS.Damage(target, from, weapon.WeaponDamage, 100, 0, 0, 0, 0);
+        weapon.PoisonCharges--;
 
-        if (weapon.Poison != null && weapon.PoisonCharges > 0)
-        {
-          if (EvilOmenSpell.TryEndEffect(target))
-            target.ApplyPoison(from, Poison.GetPoison(weapon.Poison.Level + 1));
-          else
-            target.ApplyPoison(from, weapon.Poison);
-
-          weapon.PoisonCharges--;
-
-          if (weapon.PoisonCharges < 1) weapon.Poison = null;
-        }
+        if (weapon.PoisonCharges < 1) weapon.Poison = null;
       }
     }
 

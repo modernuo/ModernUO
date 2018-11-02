@@ -350,7 +350,7 @@ namespace Server.Items
         return null;
       }
 
-      WeaponAbility a = Table[m];
+      Table.TryGetValue(m, out WeaponAbility a);
 
       if (!IsWeaponAbility(m, a))
       {
@@ -446,7 +446,8 @@ namespace Server.Items
 
     private static WeaponAbilityContext GetContext(Mobile m)
     {
-      return m_PlayersTable[m];
+      m_PlayersTable.TryGetValue(m, out WeaponAbilityContext context);
+      return context;
     }
 
     private class WeaponAbilityTimer : Timer

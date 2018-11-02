@@ -181,9 +181,7 @@ namespace Server.Gumps
       else
         tree = Tokuno;
 
-      tree.LastBranch.TryGetValue(from, out ParentNode branch);
-
-      if (branch == null)
+      if (!tree.LastBranch.TryGetValue(from, out ParentNode branch))
         branch = tree.Root;
 
       if (branch != null)

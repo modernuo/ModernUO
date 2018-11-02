@@ -803,7 +803,7 @@ namespace Server.Items
 
     public static HousePlacementEntry Find(BaseHouse house)
     {
-      object obj = m_Table[house.GetType()];
+      m_Table.TryGetValue(house.GetType(), out object obj);
 
       if (obj is HousePlacementEntry entry)
         return entry;
@@ -825,9 +825,7 @@ namespace Server.Items
       {
         HousePlacementEntry e = entries[i];
 
-        object obj = m_Table[e.Type];
-
-        if (obj == null)
+        if (!m_Table.TryGetValue(e.Type, out object obj))
         {
           m_Table[e.Type] = e;
         }

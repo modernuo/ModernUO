@@ -46,7 +46,7 @@ namespace Server.Items
         {
           CampfireEntry entry = Campfire.GetEntry(from);
 
-          if (entry != null && entry.Safe)
+          if (entry?.Safe == true)
             from.SendGump(new LogoutGump(entry, this));
         }
       }

@@ -103,9 +103,10 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 > Utility.RandomDouble())
-      {
-        /* Blood Bath
+      if (0.1 <= Utility.RandomDouble())
+        return;
+
+      /* Blood Bath
          * Start cliloc 1070826
          * Sound: 0x52B
          * 2-3 blood spots
@@ -113,22 +114,19 @@ namespace Server.Mobiles
          * End cliloc: 1070824
          */
 
-        ExpireTimer timer = m_Table[defender];
-
-        if (timer != null)
-        {
-          timer.DoExpire();
-          defender.SendLocalizedMessage(1070825); // The creature continues to rage!
-        }
-        else
-        {
-          defender.SendLocalizedMessage(1070826); // The creature goes into a rage, inflicting heavy damage!
-        }
-
-        timer = new ExpireTimer(defender, this);
-        timer.Start();
-        m_Table[defender] = timer;
+      if (m_Table.TryGetValue(defender, out ExpireTimer timer))
+      {
+        timer.DoExpire();
+        defender.SendLocalizedMessage(1070825); // The creature continues to rage!
       }
+      else
+      {
+        defender.SendLocalizedMessage(1070826); // The creature goes into a rage, inflicting heavy damage!
+      }
+
+      timer = new ExpireTimer(defender, this);
+      timer.Start();
+      m_Table[defender] = timer;
     }
 
     public override void Serialize(GenericWriter writer)

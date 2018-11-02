@@ -953,10 +953,7 @@ namespace Server.Engines.CannedEvil
       if (from == null || !from.Player)
         return;
 
-      if (m_DamageEntries.ContainsKey(from))
-        m_DamageEntries[from] += amount;
-      else
-        m_DamageEntries.Add(from, amount);
+      m_DamageEntries[from] = amount + (m_DamageEntries.TryGetValue(from, out int value) ? value : 0);
     }
 
     public void AwardArtifact(Item artifact)
@@ -1073,12 +1070,10 @@ namespace Server.Engines.CannedEvil
         case 5:
         {
           int entries = reader.ReadInt();
-          Mobile m;
-          int damage;
           for (int i = 0; i < entries; ++i)
           {
-            m = reader.ReadMobile();
-            damage = reader.ReadInt();
+            Mobile m = reader.ReadMobile();
+            int damage = reader.ReadInt();
 
             if (m == null)
               continue;

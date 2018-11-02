@@ -50,12 +50,10 @@ namespace Server.Spells.Necromancy
 
         TimeSpan duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 3.4 + 1.0);
 
-
-        ExpireTimer timer = m_Table[weapon];
+        m_Table.TryGetValue(weapon, out ExpireTimer timer);
         timer?.Stop();
 
         weapon.Cursed = true;
-
         m_Table[weapon] = timer = new ExpireTimer(weapon, duration);
 
         timer.Start();

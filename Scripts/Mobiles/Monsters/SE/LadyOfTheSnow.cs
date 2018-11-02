@@ -81,32 +81,30 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.1 > Utility.RandomDouble())
+      if (0.1 <= Utility.RandomDouble())
+        return;
+
+      /* Cold Wind
+       * Graphics: Message - Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(928 164, 34)" ToLocation: "(928 164, 34)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
+       * Start cliloc: 1070832
+       * Damage: 1hp per second for 5 seconds
+       * End cliloc: 1070830
+       * Reset cliloc: 1070831
+       */
+
+      if (m_Table.TryGetValue(defender, out ExpireTimer timer))
       {
-        /* Cold Wind
-         * Graphics: Message - Type: "3" From: "0x57D4F5B" To: "0x0" ItemId: "0x37B9" ItemIdName: "glow" FromLocation: "(928 164, 34)" ToLocation: "(928 164, 34)" Speed: "10" Duration: "5" FixedDirection: "True" Explode: "False"
-         * Start cliloc: 1070832
-         * Damage: 1hp per second for 5 seconds
-         * End cliloc: 1070830
-         * Reset cliloc: 1070831
-         */
-
-        ExpireTimer timer = m_Table[defender];
-
-        if (timer != null)
-        {
-          timer.DoExpire();
-          defender.SendLocalizedMessage(1070831); // The freezing wind continues to blow!
-        }
-        else
-        {
-          defender.SendLocalizedMessage(1070832); // An icy wind surrounds you, freezing your lungs as you breathe!
-        }
-
-        timer = new ExpireTimer(defender, this);
-        timer.Start();
-        m_Table[defender] = timer;
+        timer.DoExpire();
+        defender.SendLocalizedMessage(1070831); // The freezing wind continues to blow!
       }
+      else
+      {
+        defender.SendLocalizedMessage(1070832); // An icy wind surrounds you, freezing your lungs as you breathe!
+      }
+
+      timer = new ExpireTimer(defender, this);
+      timer.Start();
+      m_Table[defender] = timer;
     }
 
     public override void Serialize(GenericWriter writer)

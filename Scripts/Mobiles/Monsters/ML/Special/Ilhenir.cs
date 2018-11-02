@@ -9,7 +9,7 @@ namespace Server.Mobiles
 {
   public class Ilhenir : BaseChampion
   {
-    private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
+    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     [Constructible]
     public Ilhenir()
@@ -230,13 +230,14 @@ namespace Server.Mobiles
 
     public virtual void CacophonicAttack(Mobile to)
     {
-      if (to.Alive && to.Player && !m_Table.ContainsKey(to))
+      if (to.Alive && to.Player && !UnderCacophonicAttack(to))
       {
         to.Send(SpeedControl.WalkSpeed);
         to.SendLocalizedMessage(1072069); // A cacophonic sound lambastes you, suppressing your ability to move.
         to.PlaySound(0x584);
 
-        m_Table[to] = Timer.DelayCall(TimeSpan.FromSeconds(30), CacophonicEnd, to);
+        m_Table.Add(to);
+        Timer.DelayCall(TimeSpan.FromSeconds(30), CacophonicEnd, to);
       }
     }
 
@@ -248,7 +249,7 @@ namespace Server.Mobiles
 
     public static bool UnderCacophonicAttack(Mobile from)
     {
-      return m_Table.ContainsKey(from);
+      return m_Table.Contains(from);
     }
 
     public virtual void DropOoze()

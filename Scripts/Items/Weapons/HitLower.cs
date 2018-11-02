@@ -9,12 +9,12 @@ namespace Server.Items
     public static readonly TimeSpan AttackEffectDuration = TimeSpan.FromSeconds(10.0);
     public static readonly TimeSpan DefenseEffectDuration = TimeSpan.FromSeconds(8.0);
 
-    private static Dictionary<Mobile, AttackTimer> m_AttackTable = new Dictionary<Mobile, AttackTimer>();
-    private static Dictionary<Mobile, DefenseTimer> m_DefenseTable = new Dictionary<Mobile, DefenseTimer>();
+    private static HashSet<Mobile> m_AttackTable = new HashSet<Mobile>();
+    private static HashSet<Mobile> m_DefenseTable = new HashSet<Mobile>();
 
     public static bool IsUnderAttackEffect(Mobile m)
     {
-      return m_AttackTable.ContainsKey(m);
+      return m_AttackTable.Contains(m);
     }
 
     public static bool ApplyAttack(Mobile m)
@@ -22,7 +22,9 @@ namespace Server.Items
       if (IsUnderAttackEffect(m))
         return false;
 
-      m_AttackTable[m] = new AttackTimer(m);
+      m_AttackTable.Add(m);
+      AttackTimer timer = new AttackTimer(m);
+      timer.Start();
       m.SendLocalizedMessage(1062319); // Your attack chance has been reduced!
       return true;
     }
@@ -35,7 +37,7 @@ namespace Server.Items
 
     public static bool IsUnderDefenseEffect(Mobile m)
     {
-      return m_DefenseTable.ContainsKey(m);
+      return m_DefenseTable.Contains(m);
     }
 
     public static bool ApplyDefense(Mobile m)
@@ -43,7 +45,9 @@ namespace Server.Items
       if (IsUnderDefenseEffect(m))
         return false;
 
-      m_DefenseTable[m] = new DefenseTimer(m);
+      m_DefenseTable.Add(m);
+      DefenseTimer timer = new DefenseTimer(m);
+      timer.Start();
       m.SendLocalizedMessage(1062318); // Your defense chance has been reduced!
       return true;
     }
@@ -61,10 +65,7 @@ namespace Server.Items
       public AttackTimer(Mobile player) : base(AttackEffectDuration)
       {
         m_Player = player;
-
         Priority = TimerPriority.TwoFiftyMS;
-
-        Start();
       }
 
       protected override void OnTick()
@@ -80,10 +81,7 @@ namespace Server.Items
       public DefenseTimer(Mobile player) : base(DefenseEffectDuration)
       {
         m_Player = player;
-
         Priority = TimerPriority.TwoFiftyMS;
-
-        Start();
       }
 
       protected override void OnTick()

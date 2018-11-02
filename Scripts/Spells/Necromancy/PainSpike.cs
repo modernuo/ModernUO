@@ -59,9 +59,7 @@ namespace Server.Spells.Necromancy
 
         TimeSpan buffTime = TimeSpan.FromSeconds(10.0);
 
-        InternalTimer timer = m_Table[m];
-
-        if (timer == null)
+        if (!m_Table.TryGetValue(m, out InternalTimer timer))
         {
           m_Table[m] = timer = new InternalTimer(m, damage);
           timer.Start();

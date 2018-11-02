@@ -35,9 +35,7 @@ namespace Server.SkillHandlers
 
     public static bool GetEffect(Mobile targ, ref int effect)
     {
-      DiscordanceInfo info = m_Table[targ];
-
-      if (info == null)
+      if (!m_Table.TryGetValue(targ, out DiscordanceInfo info))
         return false;
 
       effect = info.m_Effect;

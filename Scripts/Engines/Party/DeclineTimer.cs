@@ -17,8 +17,7 @@ namespace Server.Engines.PartySystem
 
     public static void Start(Mobile m, Mobile leader)
     {
-      DeclineTimer t = m_Table[m];
-
+      m_Table.TryGetValue(m, out DeclineTimer t);
       t?.Stop();
 
       m_Table[m] = t = new DeclineTimer(m, leader);

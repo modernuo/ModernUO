@@ -258,14 +258,10 @@ namespace Server.Mobiles
       if (dest == null)
         return false;
 
-      Mobile escorter = GetEscorter();
-
-      if (escorter != null || !m.Alive)
+      if (GetEscorter() != null || !m.Alive)
         return false;
 
-      BaseEscortable escortable = EscortTable[m];
-
-      if (escortable?.Deleted == false && escortable.GetEscorter() == m)
+      if (EscortTable.TryGetValue(m, out BaseEscortable escortable) && escortable?.Deleted == false && escortable.GetEscorter() == m)
       {
         Say("I see you already have an escort.");
         return false;
@@ -693,7 +689,8 @@ namespace Server.Mobiles
       if (name == null || m_Table == null)
         return null;
 
-      return m_Table[name];
+      m_Table.TryGetValue(name, out EscortDestinationInfo info);
+      return info;
     }
   }
 

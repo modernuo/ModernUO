@@ -43,9 +43,9 @@ namespace Server.SkillHandlers
     public static bool IsEmpty(BaseBook book)
     {
       foreach (BookPageInfo page in book.Pages)
-      foreach (string line in page.Lines)
-        if (line.Trim().Length != 0)
-          return false;
+        foreach (string line in page.Lines)
+          if (line.Trim().Length != 0)
+            return false;
       return true;
     }
 

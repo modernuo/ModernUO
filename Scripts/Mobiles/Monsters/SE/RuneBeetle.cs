@@ -138,77 +138,75 @@ namespace Server.Mobiles
     {
       base.OnGaveMeleeAttack(defender);
 
-      if (0.05 > Utility.RandomDouble())
+      if (0.05 <= Utility.RandomDouble())
+        return;
+
+      /* Rune Corruption
+       * Start cliloc: 1070846 "The creature magically corrupts your armor!"
+       * Effect: All resistances -70 (lowest 0) for 5 seconds
+       * End ASCII: "The corruption of your armor has worn off"
+       */
+
+      if (m_Table.TryGetValue(defender, out ExpireTimer timer))
       {
-        /* Rune Corruption
-         * Start cliloc: 1070846 "The creature magically corrupts your armor!"
-         * Effect: All resistances -70 (lowest 0) for 5 seconds
-         * End ASCII: "The corruption of your armor has worn off"
-         */
-
-        ExpireTimer timer = m_Table[defender];
-
-        if (timer != null)
-        {
-          timer.DoExpire();
-          defender.SendLocalizedMessage(1070845); // The creature continues to corrupt your armor!
-        }
-        else
-        {
-          defender.SendLocalizedMessage(1070846); // The creature magically corrupts your armor!
-        }
-
-        List<ResistanceMod> mods = new List<ResistanceMod>();
-
-        if (Core.ML)
-        {
-          if (defender.PhysicalResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Physical, -(defender.PhysicalResistance / 2)));
-
-          if (defender.FireResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Fire, -(defender.FireResistance / 2)));
-
-          if (defender.ColdResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Cold, -(defender.ColdResistance / 2)));
-
-          if (defender.PoisonResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Poison, -(defender.PoisonResistance / 2)));
-
-          if (defender.EnergyResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Energy, -(defender.EnergyResistance / 2)));
-        }
-        else
-        {
-          if (defender.PhysicalResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Physical,
-              defender.PhysicalResistance > 70 ? -70 : -defender.PhysicalResistance));
-
-          if (defender.FireResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Fire,
-              defender.FireResistance > 70 ? -70 : -defender.FireResistance));
-
-          if (defender.ColdResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Cold,
-              defender.ColdResistance > 70 ? -70 : -defender.ColdResistance));
-
-          if (defender.PoisonResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Poison,
-              defender.PoisonResistance > 70 ? -70 : -defender.PoisonResistance));
-
-          if (defender.EnergyResistance > 0)
-            mods.Add(new ResistanceMod(ResistanceType.Energy,
-              defender.EnergyResistance > 70 ? -70 : -defender.EnergyResistance));
-        }
-
-        for (int i = 0; i < mods.Count; ++i)
-          defender.AddResistanceMod(mods[i]);
-
-        defender.FixedEffect(0x37B9, 10, 5);
-
-        timer = new ExpireTimer(defender, mods, TimeSpan.FromSeconds(5.0));
-        timer.Start();
-        m_Table[defender] = timer;
+        timer.DoExpire();
+        defender.SendLocalizedMessage(1070845); // The creature continues to corrupt your armor!
       }
+      else
+      {
+        defender.SendLocalizedMessage(1070846); // The creature magically corrupts your armor!
+      }
+
+      List<ResistanceMod> mods = new List<ResistanceMod>();
+
+      if (Core.ML)
+      {
+        if (defender.PhysicalResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Physical, -(defender.PhysicalResistance / 2)));
+
+        if (defender.FireResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Fire, -(defender.FireResistance / 2)));
+
+        if (defender.ColdResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Cold, -(defender.ColdResistance / 2)));
+
+        if (defender.PoisonResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Poison, -(defender.PoisonResistance / 2)));
+
+        if (defender.EnergyResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Energy, -(defender.EnergyResistance / 2)));
+      }
+      else
+      {
+        if (defender.PhysicalResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Physical,
+            defender.PhysicalResistance > 70 ? -70 : -defender.PhysicalResistance));
+
+        if (defender.FireResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Fire,
+            defender.FireResistance > 70 ? -70 : -defender.FireResistance));
+
+        if (defender.ColdResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Cold,
+            defender.ColdResistance > 70 ? -70 : -defender.ColdResistance));
+
+        if (defender.PoisonResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Poison,
+            defender.PoisonResistance > 70 ? -70 : -defender.PoisonResistance));
+
+        if (defender.EnergyResistance > 0)
+          mods.Add(new ResistanceMod(ResistanceType.Energy,
+            defender.EnergyResistance > 70 ? -70 : -defender.EnergyResistance));
+      }
+
+      for (int i = 0; i < mods.Count; ++i)
+        defender.AddResistanceMod(mods[i]);
+
+      defender.FixedEffect(0x37B9, 10, 5);
+
+      timer = new ExpireTimer(defender, mods, TimeSpan.FromSeconds(5.0));
+      timer.Start();
+      m_Table[defender] = timer;
     }
 
     public override void Serialize(GenericWriter writer)

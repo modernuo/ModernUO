@@ -30,8 +30,7 @@ namespace Server.Items
       if (!Validate(attacker) || !CheckMana(attacker, true))
         return;
 
-      DualWieldTimer timer = Registry[attacker];
-      if (timer != null)
+      if (Registry.TryGetValue(attacker, out DualWieldTimer timer))
       {
         timer.Stop();
         Registry.Remove(attacker);

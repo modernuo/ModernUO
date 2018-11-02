@@ -81,9 +81,7 @@ namespace Server.Engines.Craft
         return null;
       }
 
-      m_ContextTable.TryGetValue(m, out CraftContext c);
-
-      if (c == null)
+      if (!m_ContextTable.TryGetValue(m, out CraftContext c))
         m_ContextTable[m] = c = new CraftContext();
 
       return c;
@@ -91,9 +89,7 @@ namespace Server.Engines.Craft
 
     public void OnMade(Mobile m, CraftItem item)
     {
-      CraftContext c = GetContext(m);
-
-      c?.OnMade(item);
+      GetContext(m)?.OnMade(item);
     }
 
     public virtual bool ConsumeOnFailure(Mobile from, Type resourceType, CraftItem craftItem)
@@ -104,8 +100,8 @@ namespace Server.Engines.Craft
     public void CreateItem(Mobile from, Type type, Type typeRes, BaseTool tool, CraftItem realCraftItem)
     {
       // Verify if the type is in the list of the craftable item
-      CraftItem craftItem = CraftItems.SearchFor(type);
-      if (craftItem != null) realCraftItem.Craft(from, this, typeRes, tool);
+      if (CraftItems.SearchFor(type) != null)
+        realCraftItem.Craft(from, this, typeRes, tool);
     }
 
     public int RandomRecipe()

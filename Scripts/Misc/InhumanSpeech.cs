@@ -405,9 +405,7 @@ namespace Server.Misc
 
 			for ( int i = 0; i < split.Length; ++i )
 			{
-				m_KeywordHash.TryGetValue( split[i], out string keyword );
-
-				if ( keyword != null )
+				if (m_KeywordHash.TryGetValue( split[i], out string keyword ))
 					keywordsFound.Add( keyword );
 			}
 

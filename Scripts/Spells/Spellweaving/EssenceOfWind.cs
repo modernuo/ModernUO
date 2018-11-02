@@ -64,18 +64,12 @@ namespace Server.Spells.Spellweaving
 
     public static int GetFCMalus(Mobile m)
     {
-      if (m_Table.TryGetValue(m, out EssenceOfWindInfo info))
-        return info.FCMalus;
-
-      return 0;
+      return m_Table.TryGetValue(m, out EssenceOfWindInfo info) ? info.FCMalus : 0;
     }
 
     public static int GetSSIMalus(Mobile m)
     {
-      if (m_Table.TryGetValue(m, out EssenceOfWindInfo info))
-        return info.SSIMalus;
-
-      return 0;
+      return m_Table.TryGetValue(m, out EssenceOfWindInfo info) ? info.SSIMalus : 0;
     }
 
     public static bool IsDebuffed(Mobile m)
@@ -127,11 +121,6 @@ namespace Server.Spells.Spellweaving
       public void DoExpire(bool message)
       {
         Stop();
-        /*
-        if ( message )
-        {
-        }
-        */
         m_Table.Remove(m_Mobile);
 
         BuffInfo.RemoveBuff(m_Mobile, BuffIcon.EssenceOfWind);

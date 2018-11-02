@@ -61,7 +61,7 @@ namespace Server.Commands
 
       return Utility.ToInt32(Arguments[index]);
     }
-    
+
     public uint GetUInt32(int index)
     {
       if (index < 0 || index >= Arguments.Length)
@@ -126,14 +126,10 @@ namespace Server.Commands
 
   public static class CommandSystem
   {
-    static CommandSystem()
-    {
-      Entries = new Dictionary<string, CommandEntry>(StringComparer.OrdinalIgnoreCase);
-    }
-
     public static string Prefix{ get; set; } = "[";
 
-    public static Dictionary<string, CommandEntry> Entries{ get; }
+    public static Dictionary<string, CommandEntry> Entries{ get; } =
+      new Dictionary<string, CommandEntry>(StringComparer.OrdinalIgnoreCase);
 
     public static AccessLevel BadCommandIgnoreLevel{ get; set; } = AccessLevel.Player;
 
@@ -191,71 +187,64 @@ namespace Server.Commands
       Entries[command] = new CommandEntry(command, handler, access);
     }
 
-    public static bool Handle(Mobile from, string text)
+    public static bool Handle(Mobile from, string text, MessageType type = MessageType.Regular)
     {
-      return Handle(from, text, MessageType.Regular);
-    }
+      if (!text.StartsWith(Prefix) && type != MessageType.Command)
+        return false;
 
-    public static bool Handle(Mobile from, string text, MessageType type)
-    {
-      if (text.StartsWith(Prefix) || type == MessageType.Command)
+      if (type != MessageType.Command)
+        text = text.Substring(Prefix.Length);
+
+      int indexOf = text.IndexOf(' ');
+
+      string command;
+      string[] args;
+      string argString;
+
+      if (indexOf >= 0)
       {
-        if (type != MessageType.Command)
-          text = text.Substring(Prefix.Length);
+        argString = text.Substring(indexOf + 1);
 
-        int indexOf = text.IndexOf(' ');
-
-        string command;
-        string[] args;
-        string argString;
-
-        if (indexOf >= 0)
-        {
-          argString = text.Substring(indexOf + 1);
-
-          command = text.Substring(0, indexOf);
-          args = Split(argString);
-        }
-        else
-        {
-          argString = "";
-          command = text.ToLower();
-          args = new string[0];
-        }
-
-        Entries.TryGetValue(command, out CommandEntry entry);
-
-        if (entry != null)
-        {
-          if (from.AccessLevel >= entry.AccessLevel)
-          {
-            if (entry.Handler != null)
-            {
-              CommandEventArgs e = new CommandEventArgs(from, command, argString, args);
-              entry.Handler(e);
-              EventSink.InvokeCommand(e);
-            }
-          }
-          else
-          {
-            if (from.AccessLevel <= BadCommandIgnoreLevel)
-              return false;
-
-            from.SendMessage("You do not have access to that command.");
-          }
-        }
-        else
-        {
-          if (from.AccessLevel <= BadCommandIgnoreLevel)
-            return false;
-
-          from.SendMessage("That is not a valid command.");
-        }
-
-        return true;
+        command = text.Substring(0, indexOf);
+        args = Split(argString);
+      }
+      else
+      {
+        argString = "";
+        command = text.ToLower();
+        args = new string[0];
       }
 
-      return false;
+      Entries.TryGetValue(command, out CommandEntry entry);
+
+      if (entry != null)
+      {
+        if (@from.AccessLevel >= entry.AccessLevel)
+        {
+          if (entry.Handler != null)
+          {
+            CommandEventArgs e = new CommandEventArgs(@from, command, argString, args);
+            entry.Handler(e);
+            EventSink.InvokeCommand(e);
+          }
+        }
+        else
+        {
+          if (@from.AccessLevel <= BadCommandIgnoreLevel)
+            return false;
+
+          @from.SendMessage("You do not have access to that command.");
+        }
+      }
+      else
+      {
+        if (@from.AccessLevel <= BadCommandIgnoreLevel)
+          return false;
+
+        @from.SendMessage("That is not a valid command.");
+      }
+
+      return true;
     }
   }
 }

@@ -48,12 +48,9 @@ namespace Server.Spells.Ninjitsu
         return;
       }
 
-
-      DeathStrikeInfo info = m_Table[defender];
-
       int damageBonus = 0;
 
-      if (info != null)
+      if (m_Table.TryGetValue(defender, out DeathStrikeInfo info))
       {
         defender.SendLocalizedMessage(1063092); // Your opponent lands another Death Strike!
 
@@ -86,18 +83,13 @@ namespace Server.Spells.Ninjitsu
 
     public static void AddStep(Mobile m)
     {
-      DeathStrikeInfo info = m_Table[m];
-      if (info == null)
-        return;
-
-      if (++info.m_Steps >= 5)
+      if (m_Table.TryGetValue(m, out DeathStrikeInfo info) && ++info.m_Steps >= 5)
         ProcessDeathStrike(m);
     }
 
     private static void ProcessDeathStrike(Mobile defender)
     {
-      DeathStrikeInfo info = m_Table[defender];
-      if (info == null)
+      if (!m_Table.TryGetValue(defender, out DeathStrikeInfo info))
         return;
 
       int damage;

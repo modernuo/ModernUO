@@ -342,9 +342,9 @@ namespace Server.Items
       if (!m.Player || m.AccessLevel > AccessLevel.Player) //Staff and creatures not subject to instancing.
         return true;
 
-      if (m_InstancedItems != null)
-        if (m_InstancedItems.TryGetValue(child, out InstancedItemInfo info) && (InstancedCorpse || info.Perpetual))
-          return info.IsOwner(m); //IsOwner checks Party stuff.
+      if (m_InstancedItems != null && m_InstancedItems.TryGetValue(child, out InstancedItemInfo info)
+                                   && (InstancedCorpse || info.Perpetual))
+        return info.IsOwner(m); //IsOwner checks Party stuff.
 
       return true;
     }
@@ -495,7 +495,7 @@ namespace Server.Items
         c = new Corpse(owner, hair, facialhair, equipItems);
 
       owner.Corpse = c;
-      
+
       for (int i = 0; i < initialContent.Count; ++i)
       {
         Item item = initialContent[i];
@@ -830,7 +830,7 @@ namespace Server.Items
       if (!Looters.Contains(from))
         Looters.Add(from);
 
-      if (m_InstancedItems != null && m_InstancedItems.ContainsKey(item))
+      if (m_InstancedItems?.ContainsKey(item) == true)
         m_InstancedItems.Remove(item);
     }
 
@@ -847,7 +847,7 @@ namespace Server.Items
       if (!Looters.Contains(from))
         Looters.Add(from);
 
-      if (m_InstancedItems != null && m_InstancedItems.ContainsKey(item))
+      if (m_InstancedItems?.ContainsKey(item) == true)
         m_InstancedItems.Remove(item);
     }
 
@@ -891,12 +891,7 @@ namespace Server.Items
       if (!IsCriminalAction(from))
         return true;
 
-      Map map = Map;
-
-      if (map == null || (map.Rules & MapRules.HarmfulRestrictions) != 0)
-        return false;
-
-      return true;
+      return Map != null && (Map.Rules & MapRules.HarmfulRestrictions) == 0;
     }
 
     public bool CheckLoot(Mobile from, Item item)

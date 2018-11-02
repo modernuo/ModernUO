@@ -58,7 +58,7 @@ namespace Server.Items
   {
     private static readonly TimeSpan m_UseTimeout = TimeSpan.FromMinutes(2.0);
 
-    private Dictionary<Mobile, DamageTimer> m_DamageTable = new Dictionary<Mobile, DamageTimer>();
+    private HashSet<Mobile> m_DamageTable = new HashSet<Mobile>();
     private DateTime m_LastUse;
 
     private int m_SideLength;
@@ -217,12 +217,12 @@ namespace Server.Items
       if (!to.Alive)
         return;
 
-      if (m_DamageTable[to] == null)
+      if (!m_DamageTable.Contains(to))
       {
         to.Frozen = true;
 
         DamageTimer timer = new DamageTimer(this, to);
-        m_DamageTable[to] = timer;
+        m_DamageTable.Add(to);
 
         timer.Start();
       }

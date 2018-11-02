@@ -78,9 +78,7 @@ namespace Server.Items
         Mobile m = targets[i];
         attacker.DoHarmful(m, true);
 
-        FrenziedWirlwindTimer timer = Registry[m];
-
-        if (timer != null)
+        if (Registry.TryGetValue(m, out FrenziedWirlwindTimer timer))
         {
           timer.Stop();
           Registry.Remove(m);

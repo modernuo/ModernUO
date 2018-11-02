@@ -27,10 +27,7 @@ namespace Server.Spells.Bushido
 
     public override bool CheckCast()
     {
-      if (VerifyCast(Caster, true))
-        return base.CheckCast();
-
-      return false;
+      return VerifyCast(Caster, true) && base.CheckCast();
     }
 
     public static bool VerifyCast(Mobile Caster, bool messages)
@@ -180,7 +177,7 @@ namespace Server.Spells.Bushido
 
     public static void BeginEvasion(Mobile m)
     {
-      Timer timer = m_Table[m];
+      m_Table.TryGetValue(m, out Timer timer);
       timer?.Stop();
 
       m_Table[m] = timer = new InternalTimer(m, GetEvadeDuration(m));
@@ -189,10 +186,11 @@ namespace Server.Spells.Bushido
 
     public static void EndEvasion(Mobile m)
     {
-      Timer timer = m_Table[m];
-      timer?.Stop();
-
-      m_Table.Remove(m);
+      if (m_Table.TryGetValue(m, out Timer timer))
+      {
+        timer.Stop();
+        m_Table.Remove(m);
+      }
 
       OnEffectEnd(m, typeof(Evasion));
     }

@@ -391,10 +391,7 @@ namespace Server.Mobiles
       if (from == null || !from.Player)
         return;
 
-      if (m_DamageEntries.ContainsKey(from))
-        m_DamageEntries[from] += amount;
-      else
-        m_DamageEntries.Add(from, amount);
+      m_DamageEntries[from] = amount + (m_DamageEntries.TryGetValue(from, out int value) ? value : 0);
 
       from.SendMessage($"Total Damage: {m_DamageEntries[from]}");
     }

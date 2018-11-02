@@ -108,7 +108,7 @@ namespace Server.Engines.MLQuests.Gumps
 
     private static void Timeout(NetState ns)
     {
-      if (m_Pending.ContainsKey(ns))
+      if (IsPending(ns))
       {
         m_Pending.Remove(ns);
         ns.Send(CloseRaceChanger.Instance);

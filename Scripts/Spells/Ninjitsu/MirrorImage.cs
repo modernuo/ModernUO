@@ -39,24 +39,18 @@ namespace Server.Spells.Ninjitsu
       if (m == null)
         return;
 
-      if (m_CloneCount.ContainsKey(m))
-        m_CloneCount[m]++;
-      else
-        m_CloneCount[m] = 1;
+      m_CloneCount[m] = 1 + (m_CloneCount.TryGetValue(m, out int count) ? count : 0);
     }
 
     public static void RemoveClone(Mobile m)
     {
-      if (m == null)
+      if (m == null || !m_CloneCount.TryGetValue(m, out int count))
         return;
 
-      if (m_CloneCount.ContainsKey(m))
-      {
+      if (count <= 1)
+        m_CloneCount.Remove(m);
+      else
         m_CloneCount[m]--;
-
-        if (m_CloneCount[m] == 0)
-          m_CloneCount.Remove(m);
-      }
     }
 
     public override bool CheckCast()

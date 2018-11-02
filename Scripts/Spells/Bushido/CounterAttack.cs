@@ -70,7 +70,7 @@ namespace Server.Spells.Bushido
 
     public static void StartCountering(Mobile m)
     {
-      Timer timer = m_Table[m];
+      m_Table.TryGetValue(m, out Timer timer);
       timer?.Stop();
 
       m_Table[m] = timer = new InternalTimer(m);
@@ -80,10 +80,11 @@ namespace Server.Spells.Bushido
 
     public static void StopCountering(Mobile m)
     {
-      Timer timer = m_Table[m];
-      timer?.Stop();
-
-      m_Table.Remove(m);
+      if (m_Table.TryGetValue(m, out Timer timer))
+      {
+        timer.Stop();
+        m_Table.Remove(m);
+      }
 
       OnEffectEnd(m, typeof(CounterAttack));
     }

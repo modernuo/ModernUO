@@ -30,13 +30,12 @@ namespace Server.Spells.Spellweaving
         return false;
       }
 
-      if (!Caster.CanBeginAction<AttuneWeaponSpell>())
-      {
-        Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
-        return false;
-      }
+      if (Caster.CanBeginAction<AttuneWeaponSpell>())
+        return base.CheckCast();
 
-      return base.CheckCast();
+      Caster.SendLocalizedMessage(1075124); // You must wait before casting that spell again.
+      return false;
+
     }
 
     public override void OnCast()
@@ -92,7 +91,8 @@ namespace Server.Spells.Spellweaving
 
     public static void StopAbsorbing(Mobile m, bool message)
     {
-      if (m_Table.TryGetValue(m, out ExpireTimer t)) t.DoExpire(message);
+      if (m_Table.TryGetValue(m, out ExpireTimer t))
+        t.DoExpire(message);
     }
 
     private class ExpireTimer : Timer

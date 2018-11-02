@@ -12,7 +12,7 @@ namespace Server.SkillHandlers
 {
   public class AnimalTaming
   {
-    private static Dictionary<Mobile, Mobile> m_BeingTamed = new Dictionary<Mobile, Mobile>();
+    private static HashSet<Mobile> m_BeingTamed = new HashSet<Mobile>();
 
     public static bool DisableMessage{ get; set; }
 
@@ -36,12 +36,10 @@ namespace Server.SkillHandlers
 
     public static bool CheckMastery(Mobile tamer, BaseCreature creature)
     {
-      if (SummonFamiliarSpell.Table[tamer] is DarkWolfFamiliar familiar && !familiar.Deleted)
-        if (creature is DireWolf || creature is GreyWolf || creature is TimberWolf || creature is WhiteWolf ||
-            creature is BakeKitsune)
-          return true;
-
-      return false;
+      return SummonFamiliarSpell.Table.TryGetValue(tamer, out BaseCreature bc) && bc is DarkWolfFamiliar familiar &&
+             !familiar.Deleted && (creature is DireWolf || creature is GreyWolf || creature is TimberWolf ||
+                                   creature is WhiteWolf ||
+                                   creature is BakeKitsune);
     }
 
     public static bool MustBeSubdued(BaseCreature bc)
@@ -194,7 +192,7 @@ namespace Server.SkillHandlers
           }
         }
 
-        if (m_BeingTamed.ContainsKey(creature))
+        if (m_BeingTamed.Contains(creature))
         {
           creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502802,
             from.NetState); // Someone else is already taming this.
@@ -222,7 +220,7 @@ namespace Server.SkillHandlers
         }
         else
         {
-          m_BeingTamed[creature] = from;
+          m_BeingTamed.Add(creature);
 
           from.LocalOverheadMessage(MessageType.Emote, 0x59,
             1010597); // You start to tame the creature.

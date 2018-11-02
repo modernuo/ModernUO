@@ -40,15 +40,11 @@ namespace Server.Spells.Necromancy
 
     public override bool CheckCast()
     {
-      BaseCreature check = Table[Caster];
+      if (!(Table.TryGetValue(Caster, out BaseCreature check) && check?.Deleted == false))
+        return base.CheckCast();
 
-      if (check?.Deleted == false)
-      {
-        Caster.SendLocalizedMessage(1061605); // You already have a familiar.
-        return false;
-      }
-
-      return base.CheckCast();
+      Caster.SendLocalizedMessage(1061605); // You already have a familiar.
+      return false;
     }
 
     public override void OnCast()
@@ -149,18 +145,12 @@ namespace Server.Spells.Necromancy
         double necro = m_From.Skills.Necromancy.Value;
         double spirit = m_From.Skills.SpiritSpeak.Value;
 
-        BaseCreature check = SummonFamiliarSpell.Table[m_From];
-
         #region Dueling
-
-        if ((m_From as PlayerMobile)?.DuelContext != null &&
-            !((PlayerMobile)m_From).DuelContext.AllowSpellCast(m_From, m_Spell))
+        if ((m_From as PlayerMobile)?.DuelContext?.AllowSpellCast(m_From, m_Spell) == false)
         {
         }
-
         #endregion
-
-        else if (check?.Deleted == false)
+        else if (SummonFamiliarSpell.Table.TryGetValue(m_From, out BaseCreature check) && check?.Deleted == false)
         {
           m_From.SendLocalizedMessage(1061605); // You already have a familiar.
         }

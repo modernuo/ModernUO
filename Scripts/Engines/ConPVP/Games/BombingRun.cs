@@ -1247,7 +1247,7 @@ namespace Server.Engines.ConPVP
         if (mob == null)
           return null;
 
-        if (!(Players[mob] is BRPlayerInfo val))
+        if (!Players.TryGetValue(mob, out BRPlayerInfo val))
           Players[mob] = val = new BRPlayerInfo(this, mob);
 
         return val;

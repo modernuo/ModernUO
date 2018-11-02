@@ -392,9 +392,10 @@ namespace Server
       if (flags != ShopFlags.None)
       {
         Point2D p = new Point2D(x, y);
-        ShopInfo si = m_ShopTable[p];
 
-        if (si == null)
+        if (m_ShopTable.TryGetValue(p, out ShopInfo si))
+          si.m_Flags |= flags;
+        else
         {
           List<Point2D> floor = new List<Point2D>();
 
@@ -408,10 +409,6 @@ namespace Server
 
           for (int i = 0; i < floor.Count; ++i)
             m_ShopTable[floor[i]] = si;
-        }
-        else
-        {
-          si.m_Flags |= flags;
         }
       }
     }

@@ -107,7 +107,7 @@ namespace Server.Misc
             m.Send(new BeginHandshake());
 
           if (m_Dictionary.TryGetValue(m, out Timer t))
-            t?.Stop();
+            t.Stop();
 
           m_Dictionary[m] = t = Timer.DelayCall(Settings.HandshakeTimeout, OnHandshakeTimeout, m);
           t.Start();
@@ -124,7 +124,7 @@ namespace Server.Misc
         Mobile m = state.Mobile;
         if (m_Dictionary.TryGetValue(m, out Timer t))
         {
-          t?.Stop();
+          t.Stop();
 
           m_Dictionary.Remove(m);
         }
@@ -159,7 +159,7 @@ namespace Server.Misc
       {
         if (m == null)
           return;
-        
+
         if (m.NetState != null && m.NetState.Running)
           m.NetState.Dispose();
 

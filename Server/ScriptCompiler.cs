@@ -397,19 +397,14 @@ namespace Server
 
           Dictionary<string, List<CompilerError>> table = e.IsWarning ? warnings : errors;
 
-          List<CompilerError> list = null;
-          table.TryGetValue(file, out list);
-
-          if (list == null)
+          if (!table.TryGetValue(file, out List<CompilerError> list))
             table[file] = list = new List<CompilerError>();
 
           list.Add(e);
         }
 
-        if (errors.Count > 0)
-          Console.WriteLine("failed ({0} errors, {1} warnings)", errors.Count, warnings.Count);
-        else
-          Console.WriteLine("done ({0} errors, {1} warnings)", errors.Count, warnings.Count);
+        Console.WriteLine(errors.Count > 0 ? "failed ({0} errors, {1} warnings)" : "done ({0} errors, {1} warnings)",
+          errors.Count, warnings.Count);
 
         string scriptRoot =
           Path.GetFullPath(Path.Combine(Core.BaseDirectory, "Scripts" + Path.DirectorySeparatorChar));
@@ -496,24 +491,16 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
       }
       catch
       {
+        // ignored
       }
     }
 
-    public static bool Compile()
-    {
-      return Compile(false);
-    }
-
-    public static bool Compile(bool debug)
-    {
-      return Compile(debug, true);
-    }
-
-    public static bool Compile(bool debug, bool cache)
+    public static bool Compile(bool debug, bool cache = true)
     {
       EnsureDirectory("Scripts/");
       EnsureDirectory("Scripts/Output/");
@@ -596,15 +583,9 @@ namespace Server
     {
       if (asm == null)
       {
-        if (m_NullCache == null)
-          m_NullCache = new TypeCache(null);
-
-        return m_NullCache;
+        return m_NullCache ?? (m_NullCache = new TypeCache(null));
       }
-
-      m_TypeCaches.TryGetValue(asm, out TypeCache c);
-
-      if (c == null)
+      if (!m_TypeCaches.TryGetValue(asm, out TypeCache c))
         m_TypeCaches[asm] = c = new TypeCache(asm);
 
       return c;
@@ -622,10 +603,7 @@ namespace Server
       for (int i = 0; type == null && i < Assemblies.Length; ++i)
         type = GetTypeCache(Assemblies[i]).GetTypeByFullName(fullName, ignoreCase);
 
-      if (type == null)
-        type = GetTypeCache(Core.Assembly).GetTypeByFullName(fullName, ignoreCase);
-
-      return type;
+      return type ?? GetTypeCache(Core.Assembly).GetTypeByFullName(fullName, ignoreCase);
     }
 
     public static Type FindTypeByName(string name)
@@ -640,10 +618,7 @@ namespace Server
       for (int i = 0; type == null && i < Assemblies.Length; ++i)
         type = GetTypeCache(Assemblies[i]).GetTypeByName(name, ignoreCase);
 
-      if (type == null)
-        type = GetTypeCache(Core.Assembly).GetTypeByName(name, ignoreCase);
-
-      return type;
+      return type ?? GetTypeCache(Core.Assembly).GetTypeByName(name, ignoreCase);
     }
 
     public static void EnsureDirectory(string dir)
@@ -678,10 +653,7 @@ namespace Server
   {
     public TypeCache(Assembly asm)
     {
-      if (asm == null)
-        Types = Type.EmptyTypes;
-      else
-        Types = asm.GetTypes();
+      Types = asm == null ? Type.EmptyTypes : asm.GetTypes();
 
       Names = new TypeTable(Types.Length);
       FullNames = new TypeTable(Types.Length);

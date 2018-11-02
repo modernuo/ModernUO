@@ -56,7 +56,7 @@ namespace Server.Spells.Bushido
 
     public static void BeginConfidence(Mobile m)
     {
-      Timer timer = m_Table[m];
+      m_Table.TryGetValue(m, out Timer timer);
       timer?.Stop();
       m_Table[m] = timer = new InternalTimer(m);
 
@@ -65,10 +65,11 @@ namespace Server.Spells.Bushido
 
     public static void EndConfidence(Mobile m)
     {
-      Timer timer = m_Table[m];
-      timer?.Stop();
-
-      m_Table.Remove(m);
+      if (m_Table.TryGetValue(m, out Timer timer))
+      {
+        timer.Stop();
+        m_Table.Remove(m);
+      }
 
       OnEffectEnd(m, typeof(Confidence));
     }
@@ -80,7 +81,7 @@ namespace Server.Spells.Bushido
 
     public static void BeginRegenerating(Mobile m)
     {
-      Timer timer = m_RegenTable[m];
+      m_RegenTable.TryGetValue(m, out Timer timer);
       timer?.Stop();
 
       m_RegenTable[m] = timer = new RegenTimer(m);
@@ -90,10 +91,11 @@ namespace Server.Spells.Bushido
 
     public static void StopRegenerating(Mobile m)
     {
-      Timer timer = m_RegenTable[m];
-      timer?.Stop();
-
-      m_RegenTable.Remove(m);
+      if (m_RegenTable.TryGetValue(m, out Timer timer))
+      {
+        timer.Stop();
+        m_RegenTable.Remove(m);
+      }
     }
 
     private class InternalTimer : Timer

@@ -259,15 +259,13 @@ namespace Server.Items
 
     public static void CreateTimer(Mobile m, TimeSpan delay)
     {
-      if (m != null)
-        if (!Timers.ContainsKey(m))
-          Timers[m] = new InternalTimer(m, delay);
+      if (m != null && !IsDisguised(m))
+        Timers[m] = new InternalTimer(m, delay);
     }
 
     public static void StartTimer(Mobile m)
     {
       Timers.TryGetValue(m, out Timer t);
-
       t?.Start();
     }
 
@@ -276,43 +274,31 @@ namespace Server.Items
       return Timers.ContainsKey(m);
     }
 
-    public static bool StopTimer(Mobile m)
+    public static void StopTimer(Mobile m)
     {
-      Timers.TryGetValue(m, out Timer t);
+      if (!Timers.TryGetValue(m, out Timer t))
+        return;
 
-      if (t != null)
-      {
-        TimeSpan ts = t.Next - DateTime.UtcNow;
-        if (ts < TimeSpan.Zero)
-          ts = TimeSpan.Zero;
+      TimeSpan ts = t.Next - DateTime.UtcNow;
+      if (ts < TimeSpan.Zero)
+        ts = TimeSpan.Zero;
 
-        t.Delay = ts;
-        t.Stop();
-      }
-
-      return t != null;
+      t.Delay = ts;
+      t.Stop();
     }
 
-    public static bool RemoveTimer(Mobile m)
+    public static void RemoveTimer(Mobile m)
     {
-      Timers.TryGetValue(m, out Timer t);
-
-      if (t != null)
+      if (Timers.TryGetValue(m, out Timer t))
       {
         t.Stop();
         Timers.Remove(m);
       }
-
-      return t != null;
     }
 
     public static TimeSpan TimeRemaining(Mobile m)
     {
-      Timers.TryGetValue(m, out Timer t);
-
-      if (t != null) return t.Next - DateTime.UtcNow;
-
-      return TimeSpan.Zero;
+      return Timers.TryGetValue(m, out Timer t) ? t.Next - DateTime.UtcNow : TimeSpan.Zero;
     }
 
     private class InternalTimer : Timer

@@ -435,11 +435,9 @@ namespace Server.Items
         return null;
       }
 
-      m_Table.TryGetValue(from, out List<Spellbook> list);
-
       bool searchAgain = false;
 
-      if (list == null)
+      if (!m_Table.TryGetValue(from, out List<Spellbook> list))
         m_Table[from] = list = FindAllSpellbooks(from);
       else
         searchAgain = true;

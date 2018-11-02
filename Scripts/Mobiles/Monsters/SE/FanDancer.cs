@@ -9,7 +9,7 @@ namespace Server.Mobiles
 {
   public class FanDancer : BaseCreature
   {
-    private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
+    private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
     [Constructible]
     public FanDancer() : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
@@ -143,13 +143,13 @@ namespace Server.Mobiles
 
         ExpireTimer timer = new ExpireTimer(defender, mod, TimeSpan.FromSeconds(10.0));
         timer.Start();
-        m_Table[defender] = timer;
+        m_Table.Add(defender);
       }
     }
 
     public bool IsFanned(Mobile m)
     {
-      return m_Table.ContainsKey(m);
+      return m_Table.Contains(m);
     }
 
     public override void Serialize(GenericWriter writer)

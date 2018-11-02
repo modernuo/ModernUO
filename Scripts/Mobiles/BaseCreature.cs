@@ -415,7 +415,10 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual bool IsNecroFamiliar => Summoned && m_ControlMaster != null && SummonFamiliarSpell.Table[m_ControlMaster] == this;
+    public virtual bool IsNecroFamiliar => Summoned && m_ControlMaster != null &&
+        SummonFamiliarSpell.Table.TryGetValue(m_ControlMaster, out BaseCreature bc) &&
+        bc == this;
+
     public virtual bool DeleteCorpseOnDeath => !Core.AOS && m_bSummoned;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -2317,7 +2320,7 @@ namespace Server.Mobiles
       }
 
       if (DeathAdderCharmable && from.CanBeHarmful(this, false))
-        if (SummonFamiliarSpell.Table[from] is DeathAdder da && !da.Deleted)
+        if (SummonFamiliarSpell.Table.TryGetValue(from, out BaseCreature bc) && (bc as DeathAdder)?.Deleted == false)
         {
           from.SendAsciiMessage("You charm the snake.  Select a target to attack.");
           from.Target = new DeathAdderCharmTarget(this);
@@ -2345,7 +2348,7 @@ namespace Server.Mobiles
           list.Add(1080078); // guarding
       }
 
-      if (Summoned && !IsAnimatedDead && !IsNecroFamiliar && !(this is Clone))
+      if (Summoned && !(IsAnimatedDead || IsNecroFamiliar || this is Clone))
       {
         list.Add(1049646); // (summoned)
       }
@@ -3296,7 +3299,7 @@ namespace Server.Mobiles
         if (!m_Charmed.DeathAdderCharmable || m_Charmed.Combatant != null || !from.CanBeHarmful(m_Charmed, false))
           return;
 
-        if (!(SummonFamiliarSpell.Table[from] is DeathAdder da) || da.Deleted)
+        if (!(SummonFamiliarSpell.Table.TryGetValue(from, out BaseCreature bc) && (bc as DeathAdder)?.Deleted == false))
           return;
 
         if (!(targeted is Mobile targ && from.CanBeHarmful(targ, false)))

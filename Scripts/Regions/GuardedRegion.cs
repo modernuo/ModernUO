@@ -258,57 +258,52 @@ namespace Server.Regions
 
     public void CheckGuardCandidate(Mobile m)
     {
-      if (IsDisabled())
+      if (IsDisabled() || !IsGuardCandidate(m))
         return;
 
-      if (IsGuardCandidate(m))
+      if (!m_GuardCandidates.TryGetValue(m, out GuardTimer timer))
       {
-        m_GuardCandidates.TryGetValue(m, out GuardTimer timer);
+        timer = new GuardTimer(m, m_GuardCandidates);
+        timer.Start();
 
-        if (timer == null)
-        {
-          timer = new GuardTimer(m, m_GuardCandidates);
-          timer.Start();
+        m_GuardCandidates[m] = timer;
+        m.SendLocalizedMessage(502275); // Guards can now be called on you!
 
-          m_GuardCandidates[m] = timer;
-          m.SendLocalizedMessage(502275); // Guards can now be called on you!
+        Map map = m.Map;
 
-          Map map = m.Map;
+        if (map == null)
+          return;
 
-          if (map != null)
+        Mobile fakeCall = null;
+        double prio = 0.0;
+
+        foreach (Mobile v in m.GetMobilesInRange(8))
+          if (!v.Player && v != m && !IsGuardCandidate(v) &&
+              ((v as BaseCreature)?.IsHumanInTown() ?? v.Body.IsHuman && v.Region.IsPartOf(this)))
           {
-            Mobile fakeCall = null;
-            double prio = 0.0;
+            double dist = m.GetDistanceToSqrt(v);
 
-            foreach (Mobile v in m.GetMobilesInRange(8))
-              if (!v.Player && v != m && !IsGuardCandidate(v) &&
-                  ((v as BaseCreature)?.IsHumanInTown() ?? v.Body.IsHuman && v.Region.IsPartOf(this)))
-              {
-                double dist = m.GetDistanceToSqrt(v);
-
-                if (fakeCall == null || dist < prio)
-                {
-                  fakeCall = v;
-                  prio = dist;
-                }
-              }
-
-            if (fakeCall != null)
+            if (fakeCall == null || dist < prio)
             {
-              fakeCall.Say(Utility.RandomList(1007037, 501603, 1013037, 1013038, 1013039, 1013041, 1013042,
-                1013043, 1013052));
-              MakeGuard(m);
-              timer.Stop();
-              m_GuardCandidates.Remove(m);
-              m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
+              fakeCall = v;
+              prio = dist;
             }
           }
-        }
-        else
+
+        if (fakeCall != null)
         {
+          fakeCall.Say(Utility.RandomList(1007037, 501603, 1013037, 1013038, 1013039, 1013041, 1013042,
+            1013043, 1013052));
+          MakeGuard(m);
           timer.Stop();
-          timer.Start();
+          m_GuardCandidates.Remove(m);
+          m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
         }
+      }
+      else
+      {
+        timer.Stop();
+        timer.Start();
       }
     }
 
@@ -323,9 +318,7 @@ namespace Server.Regions
         if (IsGuardCandidate(m) &&
             (!AllowReds && m.Kills >= 5 && m.Region.IsPartOf(this) || m_GuardCandidates.ContainsKey(m)))
         {
-          m_GuardCandidates.TryGetValue(m, out GuardTimer timer);
-
-          if (timer != null)
+          if (m_GuardCandidates.TryGetValue(m, out GuardTimer timer))
           {
             timer.Stop();
             m_GuardCandidates.Remove(m);

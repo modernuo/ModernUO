@@ -71,9 +71,7 @@ namespace Server.Multis
 
       if (owner != null)
       {
-        m_Table.TryGetValue(owner, out List<BaseHouse> list);
-
-        if (list == null)
+        if (!m_Table.TryGetValue(owner, out List<BaseHouse> list))
           m_Table[owner] = list = new List<BaseHouse>();
 
         list.Add(this);
@@ -276,9 +274,7 @@ namespace Server.Multis
       {
         if (m_Owner != null)
         {
-          m_Table.TryGetValue(m_Owner, out List<BaseHouse> list);
-
-          if (list == null)
+          if (!m_Table.TryGetValue(m_Owner, out List<BaseHouse> list))
             m_Table[m_Owner] = list = new List<BaseHouse>();
 
           list.Remove(this);
@@ -289,9 +285,7 @@ namespace Server.Multis
 
         if (m_Owner != null)
         {
-          m_Table.TryGetValue(m_Owner, out List<BaseHouse> list);
-
-          if (list == null)
+          if (!m_Table.TryGetValue(m_Owner, out List<BaseHouse> list))
             m_Table[m_Owner] = list = new List<BaseHouse>();
 
           list.Add(this);
@@ -1111,9 +1105,7 @@ namespace Server.Multis
 
       if (m != null)
       {
-        m_Table.TryGetValue(m, out List<BaseHouse> exists);
-
-        if (exists != null)
+        if (m_Table.TryGetValue(m, out List<BaseHouse> exists))
           for (int i = 0; i < exists.Count; ++i)
           {
             BaseHouse house = exists[i];
@@ -2616,9 +2608,7 @@ namespace Server.Multis
 
           if (m_Owner != null)
           {
-            m_Table.TryGetValue(m_Owner, out List<BaseHouse> list);
-
-            if (list == null)
+            if (!m_Table.TryGetValue(m_Owner, out List<BaseHouse> list))
               m_Table[m_Owner] = list = new List<BaseHouse>();
 
             list.Add(this);
@@ -2745,9 +2735,7 @@ namespace Server.Multis
 
       if (m_Owner != null)
       {
-        m_Table.TryGetValue(m_Owner, out List<BaseHouse> list);
-
-        if (list == null)
+        if (!m_Table.TryGetValue(m_Owner, out List<BaseHouse> list))
           m_Table[m_Owner] = list = new List<BaseHouse>();
 
         list.Remove(this);
@@ -2888,12 +2876,7 @@ namespace Server.Multis
 
     public static bool HasHouse(Mobile m)
     {
-      if (m == null)
-        return false;
-
-      m_Table.TryGetValue(m, out List<BaseHouse> list);
-
-      if (list == null)
+      if (m == null || !m_Table.TryGetValue(m, out List<BaseHouse> list))
         return false;
 
       for (int i = 0; i < list.Count; ++i)

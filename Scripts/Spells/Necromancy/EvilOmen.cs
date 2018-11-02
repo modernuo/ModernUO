@@ -69,7 +69,7 @@ namespace Server.Spells.Necromancy
 
         TimeSpan duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 12 + 1.0);
 
-        Timer.DelayCall(duration, () => TryEndEffect(m));
+        Timer.DelayCall(duration, TryEndEffect_Callback, m);
 
         HarmfulSpell(m);
 
@@ -86,6 +86,10 @@ namespace Server.Spells.Necromancy
      *
      * -refactored.
      */
+    private static void TryEndEffect_Callback(Mobile m)
+    {
+      TryEndEffect(m);
+    }
 
     public static bool TryEndEffect(Mobile m)
     {

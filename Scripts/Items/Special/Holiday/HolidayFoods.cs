@@ -23,27 +23,19 @@ namespace Server.Items
     {
     }
 
-    public static Dictionary<Mobile, CandyCaneTimer> ToothAches{ get; set; }
-
-    public static void Initialize()
-    {
-      ToothAches = new Dictionary<Mobile, CandyCaneTimer>();
-    }
+    private static Dictionary<Mobile, CandyCaneTimer> m_ToothAches = new Dictionary<Mobile, CandyCaneTimer>();
 
     private static CandyCaneTimer EnsureTimer(Mobile from)
     {
-      if (!ToothAches.TryGetValue(from, out CandyCaneTimer timer))
-        ToothAches[from] = timer = new CandyCaneTimer(from);
+      if (!m_ToothAches.TryGetValue(from, out CandyCaneTimer timer))
+        m_ToothAches[from] = timer = new CandyCaneTimer(from);
 
       return timer;
     }
 
     public static int GetToothAche(Mobile from)
     {
-      if (ToothAches.TryGetValue(from, out CandyCaneTimer timer))
-        return timer.Eaten;
-
-      return 0;
+      return m_ToothAches.TryGetValue(from, out CandyCaneTimer timer) ? timer.Eaten : 0;
     }
 
     public static void SetToothAche(Mobile from, int value)
@@ -92,7 +84,7 @@ namespace Server.Items
         if (Eater == null || Eater.Deleted || Eaten <= 0)
         {
           Stop();
-          ToothAches.Remove(Eater);
+          m_ToothAches.Remove(Eater);
         }
         else if (Eater.Map != Map.Internal && Eater.Alive)
         {

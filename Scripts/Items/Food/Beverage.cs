@@ -1106,30 +1106,23 @@ namespace Server.Items
     {
       if (from.BAC > 0 && from.Map != Map.Internal && !from.Deleted)
       {
-        Timer t = m_Table[from];
+        if (m_Table.ContainsKey(from))
+          return;
 
-        if (t == null)
-        {
-          if (from.BAC > 60)
-            from.BAC = 60;
+        if (from.BAC > 60)
+          from.BAC = 60;
 
-          t = new HeaveTimer(from);
-          t.Start();
+        Timer t = new HeaveTimer(from);
+        t.Start();
 
-          m_Table[from] = t;
-        }
+        m_Table[from] = t;
       }
-      else
+      else if (m_Table.TryGetValue(from, out Timer t))
       {
-        Timer t = m_Table[from];
+        t.Stop();
+        m_Table.Remove(from);
 
-        if (t != null)
-        {
-          t.Stop();
-          m_Table.Remove(from);
-
-          from.SendLocalizedMessage(500850); // You feel sober.
-        }
+        from.SendLocalizedMessage(500850); // You feel sober.
       }
     }
 

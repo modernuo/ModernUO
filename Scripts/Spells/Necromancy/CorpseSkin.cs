@@ -49,9 +49,7 @@ namespace Server.Spells.Necromancy
          * NOTE: Resistance is not checked if targeting yourself
          */
 
-        ExpireTimer timer = m_Table[m];
-
-        if (timer != null)
+        if (m_Table.TryGetValue(m, out ExpireTimer timer))
           timer.DoExpire();
         else
           m.SendLocalizedMessage(1061689); // Your skin turns dry and corpselike.

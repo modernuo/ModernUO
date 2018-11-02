@@ -95,9 +95,7 @@ namespace Server.Items
 			if ( m_Entries == null )
 				m_Entries = new Dictionary<Mobile, ScoreEntry>();
 
-			ScoreEntry e = m_Entries[from];
-
-			if ( e == null )
+			if (!m_Entries.TryGetValue(from, out ScoreEntry e))
 				m_Entries[from] = e = new ScoreEntry();
 
 			return e;

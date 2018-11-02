@@ -45,7 +45,7 @@ namespace Server.Engines.Reports
         if (string.IsNullOrEmpty(account))
           return null;
 
-        if (!(StaffInfo[account] is StaffInfo info))
+        if (!StaffInfo.TryGetValue(account, out StaffInfo info))
           StaffInfo[account] = info = new StaffInfo(account);
 
         return info;
@@ -57,7 +57,7 @@ namespace Server.Engines.Reports
       if (string.IsNullOrEmpty(account))
         return null;
 
-      if (!(UserInfo[account] is UserInfo info))
+      if (!UserInfo.TryGetValue(account, out UserInfo info))
         UserInfo[account] = info = new UserInfo(account);
 
       return info;

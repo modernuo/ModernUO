@@ -208,7 +208,6 @@
     <Compile Include="Engines\ConPVP\Ruleset.cs" />
     <Compile Include="Engines\ConPVP\RulesetLayout.cs" />
     <Compile Include="Engines\ConPVP\SafeZone.cs" />
-    <Compile Include="Engines\ConPVP\StakesContainer.cs" />
     <Compile Include="Engines\ConPVP\Tournament.cs" />
     <Compile Include="Engines\ConPVP\TournamentBracketItem.cs" />
     <Compile Include="Engines\ConPVP\TournamentController.cs" />

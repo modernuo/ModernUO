@@ -219,9 +219,7 @@ namespace Server.Spells
         return null;
       }
 
-      Table.TryGetValue(m, out SpecialMove move);
-
-      if (move != null && move.ValidatesDuringHit && !move.Validate(m))
+      if (Table.TryGetValue(m, out SpecialMove move) && move.ValidatesDuringHit && !move.Validate(m))
       {
         ClearCurrentMove(m);
         return null;
@@ -272,9 +270,9 @@ namespace Server.Spells
 
     public static void ClearCurrentMove(Mobile m)
     {
-      Table.TryGetValue(m, out SpecialMove move);
+      ;
 
-      if (move != null)
+      if (Table.TryGetValue(m, out SpecialMove move))
       {
         move.OnClearMove(m);
 
@@ -306,17 +304,7 @@ namespace Server.Spells
 
     private static SpecialMoveContext GetContext(Mobile m)
     {
-      return m_PlayersTable.ContainsKey(m) ? m_PlayersTable[m] : null;
-    }
-
-    public static bool GetContext(Mobile m, Type type)
-    {
-      m_PlayersTable.TryGetValue(m, out SpecialMoveContext context);
-
-      if (context == null)
-        return false;
-
-      return context.Type == type;
+      return m_PlayersTable.TryGetValue(m, out SpecialMoveContext context) ? context : null;
     }
 
     private class SpecialMoveTimer : Timer

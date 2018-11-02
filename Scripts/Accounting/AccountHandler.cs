@@ -79,11 +79,7 @@ namespace Server.Misc
             if (a.LoginIPs.Length > 0)
             {
               IPAddress ip = a.LoginIPs[0];
-
-              if (m_IPTable.ContainsKey(ip))
-                m_IPTable[ip]++;
-              else
-                m_IPTable[ip] = 1;
+              m_IPTable[ip] = (m_IPTable.TryGetValue(ip, out int value) ? value : 0) + 1;
             }
         }
 

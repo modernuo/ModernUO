@@ -242,18 +242,11 @@ namespace Server.Guilds
       for (int i = 0; i < m_Members.Count; i++)
         m_Members[i].Alliance = null;
 
-      Alliances.TryGetValue(Name.ToLower(), out AllianceInfo aInfo);
-
-      if (aInfo == this)
+      if (Alliances.TryGetValue(Name.ToLower(), out AllianceInfo aInfo) && aInfo == this)
         Alliances.Remove(Name.ToLower());
     }
 
-    public void InvalidateMemberProperties()
-    {
-      InvalidateMemberProperties(false);
-    }
-
-    public void InvalidateMemberProperties(bool onlyOPL)
+    public void InvalidateMemberProperties(bool onlyOPL = false)
     {
       for (int i = 0; i < m_Members.Count; i++)
       {
@@ -1449,11 +1442,7 @@ namespace Server.Guilds
         if (m == null)
           continue;
 
-        if (!votes.TryGetValue(m, out int v))
-          votes[m] = 1;
-        else
-          votes[m] = v + 1;
-
+        votes[m] = 1 + (votes.TryGetValue(m, out int v) ? v : 0);
         votingMembers++;
       }
 

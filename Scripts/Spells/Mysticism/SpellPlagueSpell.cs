@@ -67,11 +67,8 @@ namespace Server.Spells.Mysticism
 
         SpellPlagueContext context = new SpellPlagueContext(this, targeted);
 
-        if (m_Table.ContainsKey(targeted))
-        {
-          SpellPlagueContext oldContext = m_Table[targeted];
+        if (m_Table.TryGetValue(targeted, out SpellPlagueContext oldContext))
           oldContext.SetNext(context);
-        }
         else
         {
           m_Table[targeted] = context;
@@ -89,22 +86,14 @@ namespace Server.Spells.Mysticism
 
     public static void RemoveEffect(Mobile m)
     {
-      if (!m_Table.ContainsKey(m))
-        return;
-
-      SpellPlagueContext context = m_Table[m];
-
-      context.EndPlague(false);
+      if (m_Table.TryGetValue(m, out SpellPlagueContext context))
+        context.EndPlague(false);
     }
 
     public static void CheckPlague(Mobile m)
     {
-      if (!m_Table.ContainsKey(m))
-        return;
-
-      SpellPlagueContext context = m_Table[m];
-
-      context.OnDamage();
+      if (m_Table.TryGetValue(m, out SpellPlagueContext context))
+        context.OnDamage();
     }
 
     private static void OnPlayerDeath(PlayerDeathEventArgs e)

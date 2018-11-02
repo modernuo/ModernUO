@@ -29,9 +29,7 @@ namespace Server.Spells.Bushido
 
       ClearCurrentMove(attacker);
 
-      HonorableExecutionInfo info = m_Table[attacker];
-
-      if (info != null)
+      if (m_Table.TryGetValue(attacker, out HonorableExecutionInfo info))
       {
         info.Clear();
         info.m_Timer?.Stop();
@@ -79,29 +77,21 @@ namespace Server.Spells.Bushido
 
     public static int GetSwingBonus(Mobile target)
     {
-      if (!(m_Table[target] is HonorableExecutionInfo info))
-        return 0;
-
-      return info.m_SwingBonus;
+      return m_Table.TryGetValue(target, out HonorableExecutionInfo info) ? info.m_SwingBonus : 0;
     }
 
     public static bool IsUnderPenalty(Mobile target)
     {
-      if (!(m_Table[target] is HonorableExecutionInfo info))
-        return false;
-
-      return info.m_Penalty;
+      return m_Table.TryGetValue(target, out HonorableExecutionInfo info) && info.m_Penalty;
     }
 
     public static void RemovePenalty(Mobile target)
     {
-      if (!(m_Table[target] is HonorableExecutionInfo info) || !info.m_Penalty)
+      if (!m_Table.TryGetValue(target, out HonorableExecutionInfo info) || !info.m_Penalty)
         return;
 
       info.Clear();
-
       info.m_Timer?.Stop();
-
       m_Table.Remove(target);
     }
 

@@ -8,15 +8,15 @@ namespace Server.Misc
   /**
    * This file requires to be saved in a Unicode
    * compatible format.
-   * 
+   *
    * Warning: if you change String.Format methods,
    * please note that the following character
    * is suggested before any left-to-right text
    * in order to prevent undesired formatting
    * resulting from mixing LR and RL text: ‎
-   * 
+   *
    * Use this one if you need to force RL: ‏
-   * 
+   *
    * If you do not see the above chars, please
    * enable showing of unicode control chars
    **/
@@ -199,17 +199,17 @@ namespace Server.Misc
 
               string lang = mob?.Language;
 
-              if (lang != null)
-              {
-                lang = lang.ToUpper();
+              if (lang == null)
+                continue;
 
-                if (!ht.ContainsKey(lang))
-                  ht[lang] = new InternationalCodeCounter(lang);
-                else
-                  ht[lang].Increase();
+              lang = lang.ToUpper();
 
-                break;
-              }
+              if (ht.TryGetValue(lang, out InternationalCodeCounter codes))
+                codes.Increase();
+              else
+                ht[lang] = new InternationalCodeCounter(lang);
+
+              break;
             }
         else
           foreach (Mobile mob in World.Mobiles.Values)
@@ -217,15 +217,15 @@ namespace Server.Misc
             {
               string lang = mob.Language;
 
-              if (lang != null)
-              {
-                lang = lang.ToUpper();
+              if (lang == null)
+                continue;
 
-                if (!ht.ContainsKey(lang))
-                  ht[lang] = new InternationalCodeCounter(lang);
-                else
-                  ht[lang].Increase();
-              }
+              lang = lang.ToUpper();
+
+              if (ht.TryGetValue(lang, out InternationalCodeCounter codes))
+                codes.Increase();
+              else
+                ht[lang] = new InternationalCodeCounter(lang);
             }
 
         writer.WriteLine(

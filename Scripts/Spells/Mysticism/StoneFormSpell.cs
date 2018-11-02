@@ -142,7 +142,8 @@ namespace Server.Spells.Mysticism
 
     public static void RemoveEffects(Mobile m)
     {
-      ResistanceMod[] mods = m_Table[m];
+      if (!m_Table.TryGetValue(m, out ResistanceMod[] mods))
+        return;
 
       for (int i = 0; i < mods.Length; ++i)
         m.RemoveResistanceMod(mods[i]);
@@ -157,10 +158,7 @@ namespace Server.Spells.Mysticism
 
     private static void OnPlayerDeath(PlayerDeathEventArgs e)
     {
-      Mobile m = e.Mobile;
-
-      if (UnderEffect(m))
-        RemoveEffects(m);
+      RemoveEffects(e.Mobile);
     }
   }
 }

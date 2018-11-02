@@ -164,8 +164,7 @@ namespace Server.Spells.Seventh
 
     public static void StopTimer(Mobile m)
     {
-      InternalTimer timer = m_Timers[m];
-      if (timer == null)
+      if (!m_Timers.TryGetValue(m, out InternalTimer timer))
         return;
 
       timer.Stop();
@@ -174,15 +173,15 @@ namespace Server.Spells.Seventh
 
     private static void EndPolymorph(Mobile m)
     {
-      if (!m.CanBeginAction<PolymorphSpell>())
-      {
-        m.BodyMod = 0;
-        m.HueMod = -1;
-        m.EndAction<PolymorphSpell>();
+      if (m.CanBeginAction<PolymorphSpell>())
+        return;
 
-        BaseArmor.ValidateMobile(m);
-        BaseClothing.ValidateMobile(m);
-      }
+      m.BodyMod = 0;
+      m.HueMod = -1;
+      m.EndAction<PolymorphSpell>();
+
+      BaseArmor.ValidateMobile(m);
+      BaseClothing.ValidateMobile(m);
     }
 
     private class InternalTimer : Timer

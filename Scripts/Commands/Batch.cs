@@ -91,12 +91,9 @@ namespace Server.Commands
                 continue;
 
               Type type = obj.GetType();
-
-              PropertyInfo[] chain = propertyChains[type];
-
               string failReason = "";
 
-              if (chain == null)
+              if (!propertyChains.TryGetValue(type, out PropertyInfo[] chain))
                 propertyChains[type] = chain = Properties.GetPropertyInfoChain(e.Mobile, type, bc.Object,
                   PropertyAccess.Read, ref failReason);
 

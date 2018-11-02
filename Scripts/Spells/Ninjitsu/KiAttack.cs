@@ -81,20 +81,16 @@ namespace Server.Spells.Ninjitsu
 
     public override void OnClearMove(Mobile from)
     {
-      KiAttackInfo info = m_Table[from];
-
-      if (info == null)
+      if (!m_Table.TryGetValue(from, out KiAttackInfo info))
         return;
 
-      info.m_Timer?.Stop();
+      info.m_Timer.Stop();
       m_Table.Remove(info.m_Mobile);
     }
 
     public static double GetBonus(Mobile from)
     {
-      KiAttackInfo info = m_Table[from];
-
-      if (info == null)
+      if (!m_Table.TryGetValue(from, out KiAttackInfo info))
         return 0;
 
       int xDelta = info.m_Location.X - from.X;

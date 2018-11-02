@@ -87,12 +87,13 @@ namespace Server.Items
 
     private static OrangePetalsContext GetContext(Mobile m)
     {
-      return m_Table[m] as OrangePetalsContext;
+      m_Table.TryGetValue(m, out OrangePetalsContext context);
+      return context;
     }
 
     public static bool UnderEffect(Mobile m)
     {
-      return GetContext(m) != null;
+      return m_Table.ContainsKey(m);
     }
 
     public override void Serialize(GenericWriter writer)

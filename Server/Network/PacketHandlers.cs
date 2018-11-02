@@ -1612,7 +1612,7 @@ namespace Server.Network
         pvSrc.Trace(state);
         return;
       }
-      
+
       if (ph.Ingame && state.Mobile?.Deleted != false)
       {
         if (state.Mobile == null)
@@ -2491,9 +2491,8 @@ namespace Server.Network
 
       int authID = pvSrc.ReadInt32();
 
-      if (m_AuthIDWindow.ContainsKey(authID))
+      if (m_AuthIDWindow.TryGetValue(authID, out AuthIDPersistence ap))
       {
-        AuthIDPersistence ap = m_AuthIDWindow[authID];
         m_AuthIDWindow.Remove(authID);
 
         state.Version = ap.Version;
@@ -2685,6 +2684,7 @@ namespace Server.Network
       {
         if (m_State == null)
           Stop();
+
         if (m_State.Version != null)
         {
           m_State.BlockAllPackets = false;

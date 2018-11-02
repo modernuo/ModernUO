@@ -169,9 +169,9 @@ namespace Server
       if (m_Table == null)
         LoadTable();
 
-      m_Table.TryGetValue(obj.GetType(), out SpeedInfo sp);
+      ;
 
-      return sp != null;
+      return m_Table.ContainsKey(obj.GetType());
     }
 
     public static bool GetSpeeds(object obj, ref double activeSpeed, ref double passiveSpeed)
@@ -182,9 +182,7 @@ namespace Server
       if (m_Table == null)
         LoadTable();
 
-      m_Table.TryGetValue(obj.GetType(), out SpeedInfo sp);
-
-      if (sp == null)
+      if (!m_Table.TryGetValue(obj.GetType(), out SpeedInfo sp))
         return false;
 
       activeSpeed = sp.ActiveSpeed;

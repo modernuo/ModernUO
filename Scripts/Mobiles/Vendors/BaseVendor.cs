@@ -924,27 +924,25 @@ namespace Server.Mobiles
 
       IShopSellInfo[] info = GetSellInfo();
 
-      Dictionary<Item, SellItemState> table = new Dictionary<Item, SellItemState>();
+      List<SellItemState> list = new List<SellItemState>();
 
       foreach (IShopSellInfo ssi in info)
       {
-        Item[] items = pack.FindItemsByType(ssi.Types);
-
-        foreach (Item item in items)
+        foreach (Item item in pack.FindItemsByType(ssi.Types))
         {
           if (item is Container container && container.Items.Count != 0)
             continue;
 
           if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
-            table[item] = new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item));
+            list.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
         }
       }
 
-      if (table.Count > 0)
+      if (list.Count > 0)
       {
         SendPacksTo(from);
 
-        from.Send(new VendorSellList(this, table.Values));
+        from.Send(new VendorSellList(this, list));
       }
       else
       {

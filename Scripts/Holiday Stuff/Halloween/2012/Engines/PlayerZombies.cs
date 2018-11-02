@@ -250,10 +250,8 @@ namespace Server.Engines.Events
 			{
 				if ( m_DeadPlayer != null && !m_DeadPlayer.Deleted )
 				{
-					if ( HalloweenHauntings.ReAnimated.Count > 0 && HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
-					{
+					if ( HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
 						HalloweenHauntings.ReAnimated.Remove( m_DeadPlayer );
-					}
 				}
 			}
 		}
@@ -261,7 +259,7 @@ namespace Server.Engines.Events
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( ( int )0 );
+			writer.Write( 0 );
 
 			writer.WriteMobile( m_DeadPlayer );
 		}
@@ -271,7 +269,7 @@ namespace Server.Engines.Events
 			base.Deserialize( reader );
 			int version = reader.ReadInt();
 
-			m_DeadPlayer = ( PlayerMobile )reader.ReadMobile();
+			m_DeadPlayer = reader.ReadMobile<PlayerMobile>();
 		}
 	}
 }

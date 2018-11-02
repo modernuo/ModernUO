@@ -70,10 +70,7 @@ namespace Server.Spells
 
     public static int GetRegistryNumber(Type type)
     {
-      if (m_IDsFromTypes.ContainsKey(type))
-        return m_IDsFromTypes[type];
-
-      return -1;
+      return m_IDsFromTypes.TryGetValue(type, out int value) ? value : -1;
     }
 
     public static void Register(int spellID, Type type)
@@ -99,6 +96,7 @@ namespace Server.Spells
         }
         catch
         {
+          // ignored
         }
 
         if (spm != null)
@@ -113,10 +111,11 @@ namespace Server.Spells
 
       Type t = m_Types[spellID];
 
-      if (t == null || !t.IsSubclassOf(typeof(SpecialMove)) || !SpecialMoves.ContainsKey(spellID))
+      if (t == null || !t.IsSubclassOf(typeof(SpecialMove)))
         return null;
 
-      return SpecialMoves[spellID];
+      SpecialMoves.TryGetValue(spellID, out SpecialMove move);
+      return move;
     }
 
     public static Spell NewSpell(int spellID, Mobile caster, Item scroll)

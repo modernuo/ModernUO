@@ -63,14 +63,13 @@ namespace Server.Spells.Spellweaving
 
           SpellHelper.Damage(this, m, m.Player && Caster.Player ? pvpDamage : pvmDamage, 0, 0, 0, 0, 100);
 
-          if (oldSpell != null && oldSpell != m.Spell)
-            if (!CheckResisted(m))
-            {
-              m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
+          if (oldSpell != null && oldSpell != m.Spell && !CheckResisted(m))
+          {
+            m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
 
-              BuffInfo.AddBuff(m,
-                new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m)));
-            }
+            BuffInfo.AddBuff(m,
+              new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m)));
+          }
         }
       }
 
@@ -84,13 +83,13 @@ namespace Server.Spells.Spellweaving
 
     public static void DoExpire(Mobile m)
     {
-      if (m_Table.TryGetValue(m, out Timer t))
-      {
-        t.Stop();
-        m_Table.Remove(m);
+      if (!m_Table.TryGetValue(m, out Timer t))
+        return;
 
-        BuffInfo.RemoveBuff(m, BuffIcon.Thunderstorm);
-      }
+      t.Stop();
+      m_Table.Remove(m);
+
+      BuffInfo.RemoveBuff(m, BuffIcon.Thunderstorm);
     }
   }
 }

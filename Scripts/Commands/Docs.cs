@@ -69,9 +69,7 @@ namespace Server.Commands
         TypeInfo info = new TypeInfo(type);
         m_Types[type] = info;
 
-        m_Namespaces.TryGetValue(nspace, out List<TypeInfo> nspaces);
-
-        if (nspaces == null)
+        if (!m_Namespaces.TryGetValue(nspace, out List<TypeInfo> nspaces))
           m_Namespaces[nspace] = nspaces = new List<TypeInfo>();
 
         nspaces.Add(info);
@@ -682,9 +680,8 @@ namespace Server.Commands
       m_Types = new Dictionary<Type, TypeInfo>();
       m_Namespaces = new Dictionary<string, List<TypeInfo>>();
 
-      List<Assembly> assemblies = new List<Assembly>();
+      List<Assembly> assemblies = new List<Assembly> { Core.Assembly };
 
-      assemblies.Add(Core.Assembly);
 
       foreach (Assembly asm in ScriptCompiler.Assemblies)
         assemblies.Add(asm);
@@ -1882,9 +1879,7 @@ namespace Server.Commands
 
             lastIndex = index;
 
-            table.TryGetValue(index, out SpeechEntry entry);
-
-            if (entry == null)
+            if (!table.TryGetValue(index, out SpeechEntry entry))
               table[index] = entry = new SpeechEntry(index);
 
             entry.Strings.Add(text);
@@ -1925,12 +1920,12 @@ namespace Server.Commands
       public int Compare(DocCommandEntry a, DocCommandEntry b)
       {
         if (a == null && b == null) return 0;
-        
+
         int v = b?.AccessLevel.CompareTo(a?.AccessLevel) ?? 1;
 
         if (v != 0)
           return v;
-        
+
         return a?.Name.CompareTo(b?.Name) ?? 1;
       }
     }
@@ -2290,9 +2285,7 @@ namespace Server.Commands
         {
           html.Write(" <a ");
 
-          m_Types.TryGetValue(parms[j].ParameterType, out TypeInfo typeInfo);
-
-          if (typeInfo != null)
+          if (m_Types.TryGetValue(parms[j].ParameterType, out TypeInfo typeInfo))
             html.Write("href=\"types/{0}\" ", typeInfo.FileName);
 
           html.Write("title=\"{0}\">{1}</a>", GetTooltipFor(parms[j]), parms[j].Name);
@@ -2732,7 +2725,7 @@ namespace Server.Commands
 
       if (v != 0)
         return v;
-      
+
       return a?.Name.CompareTo(b?.Name) ?? 1;
     }
   }

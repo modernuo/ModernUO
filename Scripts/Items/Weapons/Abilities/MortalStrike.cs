@@ -41,8 +41,8 @@ namespace Server.Items
 
     public static void BeginWound(Mobile m, TimeSpan duration)
     {
-      InternalTimer timer = m_Table[m];
-      timer?.Stop();
+      if (m_Table.TryGetValue(m, out InternalTimer timer))
+        timer?.Stop();
 
       m_Table[m] = timer = new InternalTimer(m, duration);
       timer.Start();
@@ -52,9 +52,7 @@ namespace Server.Items
 
     public static void EndWound(Mobile m)
     {
-      Timer timer = m_Table[m];
-
-      if (timer != null)
+      if (m_Table.TryGetValue(m, out InternalTimer timer))
       {
         timer.Stop();
         m_Table.Remove(m);

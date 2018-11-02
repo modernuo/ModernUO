@@ -36,9 +36,7 @@ namespace Server.Regions
           if (!Region.ReadString(xml, "name", ref group))
             return null;
 
-          SpawnDefinition def = SpawnGroup.Table[@group];
-
-          if (def == null)
+          if (!SpawnGroup.Table.TryGetValue(group, out SpawnGroup def))
           {
             Console.WriteLine("Could not find group '{0}' in a SpawnDefinition", group);
             return null;
@@ -152,9 +150,7 @@ namespace Server.Regions
 
     public static SpawnMobile Get(Type type)
     {
-      SpawnMobile sm = m_Table[type];
-
-      if (sm == null)
+      if (!m_Table.TryGetValue(type, out SpawnMobile sm))
         m_Table[type] = sm = new SpawnMobile(type);
 
       return sm;
@@ -221,9 +217,7 @@ namespace Server.Regions
 
     public static SpawnItem Get(Type type)
     {
-      SpawnItem si = m_Table[type];
-
-      if (si == null)
+      if (!m_Table.TryGetValue(type, out SpawnItem si))
         m_Table[type] = si = new SpawnItem(type);
 
       return si;

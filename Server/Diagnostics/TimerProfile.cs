@@ -42,9 +42,11 @@ namespace Server.Diagnostics
 
     public static TimerProfile Acquire(string name)
     {
-      if (!Core.Profiling) return null;
+      if (!Core.Profiling)
+        return null;
 
-      if (!_profiles.TryGetValue(name, out TimerProfile prof)) _profiles.Add(name, prof = new TimerProfile(name));
+      if (!_profiles.TryGetValue(name, out TimerProfile prof))
+        _profiles.Add(name, prof = new TimerProfile(name));
 
       return prof;
     }

@@ -37,7 +37,7 @@ namespace Server.Spells.Chivalry
 
         Caster.Stam = Caster.StamMax;
 
-        Timer timer = m_Table[Caster];
+        m_Table.TryGetValue(Caster, out Timer timer);
         timer?.Stop();
 
         int delay = ComputePowerValue(10);

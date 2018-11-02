@@ -84,19 +84,17 @@ namespace Server.Spells.Spellweaving
 
     public static bool StopEffect(Mobile m)
     {
-      if (m_Table.TryGetValue(m, out GiftOfRenewalInfo info))
-      {
-        m_Table.Remove(m);
+      if (!m_Table.TryGetValue(m, out GiftOfRenewalInfo info))
+        return false;
 
-        info.m_Timer.Stop();
-        BuffInfo.RemoveBuff(m, BuffIcon.GiftOfRenewal);
+      m_Table.Remove(m);
 
-        Timer.DelayCall(TimeSpan.FromSeconds(60), delegate { info.m_Caster.EndAction<GiftOfRenewalSpell>(); });
+      info.m_Timer.Stop();
+      BuffInfo.RemoveBuff(m, BuffIcon.GiftOfRenewal);
 
-        return true;
-      }
+      Timer.DelayCall(TimeSpan.FromSeconds(60), delegate { info.m_Caster.EndAction<GiftOfRenewalSpell>(); });
 
-      return false;
+      return true;
     }
 
     private class GiftOfRenewalInfo
@@ -119,17 +117,17 @@ namespace Server.Spells.Spellweaving
 
     private class InternalTimer : Timer
     {
-      public GiftOfRenewalInfo m_Info;
+      private GiftOfRenewalInfo m_GiftInfo;
 
       public InternalTimer(GiftOfRenewalInfo info)
         : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0))
       {
-        m_Info = info;
+        m_GiftInfo = info;
       }
 
       protected override void OnTick()
       {
-        Mobile m = m_Info.m_Mobile;
+        Mobile m = m_GiftInfo.m_Mobile;
 
         if (!m_Table.ContainsKey(m))
         {
@@ -147,14 +145,14 @@ namespace Server.Spells.Spellweaving
         if (m.Hits >= m.HitsMax)
           return;
 
-        int toHeal = m_Info.m_HitsPerRound;
+        int toHeal = m_GiftInfo.m_HitsPerRound;
 
-        SpellHelper.Heal(toHeal, m, m_Info.m_Caster);
+        SpellHelper.Heal(toHeal, m, m_GiftInfo.m_Caster);
         m.FixedParticles(0x376A, 9, 32, 5005, EffectLayer.Waist);
       }
     }
 
-    public class InternalTarget : Target
+    private class InternalTarget : Target
     {
       private GiftOfRenewalSpell m_Owner;
 

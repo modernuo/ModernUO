@@ -88,18 +88,20 @@ namespace Server.Items
 
     public static void BeginImmunity(Mobile m, TimeSpan duration)
     {
-      InternalTimer timer = m_Table[m];
+      if (m_Table.TryGetValue(m, out InternalTimer timer))
+        timer?.Stop();
 
-      timer?.Stop();
       m_Table[m] = timer = new InternalTimer(m, duration);
       timer.Start();
     }
 
     public static void EndImmunity(Mobile m)
     {
-      InternalTimer timer = m_Table[m];
-      timer?.Stop();
-      m_Table.Remove(m);
+      if (m_Table.TryGetValue(m, out InternalTimer timer))
+      {
+        timer?.Stop();
+        m_Table.Remove(m);
+      }
     }
 
     private class InternalTimer : Timer
