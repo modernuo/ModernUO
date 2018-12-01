@@ -91,7 +91,7 @@ namespace Server.Regions
       if (bc?.NoHouseRestrictions == true)
       {
       }
-      else if (bc.IsHouseSummonable == true &&
+      else if (bc?.IsHouseSummonable == true &&
                !(BaseCreature.Summoning || House.IsInside(oldLocation, 16)))
       {
       }
