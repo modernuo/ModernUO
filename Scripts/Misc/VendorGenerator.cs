@@ -132,8 +132,6 @@ namespace Server
           for (int y = 0; y < map.Height; ++y)
             CheckPoint(map, regions[i].X + x, regions[i].Y + y);
 
-      Console.WriteLine("We checked points");
-
       for (int i = 0; i < m_ShopList.Count; ++i)
       {
         ShopInfo si = m_ShopList[i];
