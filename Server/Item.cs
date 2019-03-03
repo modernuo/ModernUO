@@ -1134,10 +1134,8 @@ namespace Server
       {
         IEntity p = m_Parent;
 
-        while (p is Item)
+        while (p is Item item)
         {
-          Item item = (Item)p;
-
           if (item.m_Parent == null) break;
 
           p = item.m_Parent;
@@ -3349,12 +3347,10 @@ namespace Server
     {
       IEntity p = m_Parent;
 
-      while (p is Item)
+      while (p is Item item)
       {
-        if (p is T)
+        if (item is T)
           return true;
-
-        Item item = (Item)p;
 
         if (item.m_Parent == null) break;
 
@@ -4024,12 +4020,12 @@ namespace Server
     {
       object p = this;
 
-      while (p is Item)
+      while (p is Item item)
       {
-        if (p is SecureTradeContainer container)
+        if (item is SecureTradeContainer container)
           return container;
 
-        p = ((Item)p).m_Parent;
+        p = item.m_Parent;
       }
 
       return null;
@@ -4125,10 +4121,8 @@ namespace Server
       if (p == o)
         return true;
 
-      while (p is Item)
+      while (p is Item item)
       {
-        Item item = (Item)p;
-
         if (item.m_Parent == null)
           break;
 
@@ -4214,22 +4208,22 @@ namespace Server
 
       NetState ns = from.NetState;
 
-      if (ns != null)
+      if (ns == null)
+        return;
+
+      if (Name == null)
       {
-        if (Name == null)
-        {
-          if (m_Amount <= 1)
-            ns.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", ""));
-          else
-            ns.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "",
-              AffixType.Append,
-              $" : {m_Amount}", ""));
-        }
+        if (m_Amount <= 1)
+          ns.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", ""));
         else
-        {
-          ns.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
-            Name + (m_Amount > 1 ? " : " + m_Amount : "")));
-        }
+          ns.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "",
+            AffixType.Append,
+            $" : {m_Amount}", ""));
+      }
+      else
+      {
+        ns.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
+          Name + (m_Amount > 1 ? " : " + m_Amount : "")));
       }
     }
 

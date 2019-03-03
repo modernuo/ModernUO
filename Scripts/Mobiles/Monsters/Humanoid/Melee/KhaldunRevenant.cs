@@ -77,8 +77,8 @@ namespace Server.Mobiles
       Mobile m = e.Mobile;
       Mobile lastKiller = m.LastKiller;
 
-      if (lastKiller is BaseCreature)
-        lastKiller = ((BaseCreature)lastKiller).GetMaster();
+      if (lastKiller is BaseCreature creature)
+        lastKiller = creature.GetMaster();
 
       if (IsInsideKhaldun(m) && IsInsideKhaldun(lastKiller) && lastKiller.Player && !m_Set.Contains(lastKiller))
         foreach (AggressorInfo ai in m.Aggressors)
