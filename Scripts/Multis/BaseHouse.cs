@@ -722,8 +722,8 @@ namespace Server.Multis
 
         if (!item.Deleted)
         {
-          if (item is StrongBox)
-            item = ((StrongBox)item).ConvertToStandardContainer();
+          if (item is StrongBox box)
+            item = box.ConvertToStandardContainer();
 
           item.IsLockedDown = false;
           item.IsSecure = false;

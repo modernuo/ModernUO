@@ -219,29 +219,29 @@ namespace Server.Commands
 
       if (entry != null)
       {
-        if (@from.AccessLevel >= entry.AccessLevel)
+        if (from.AccessLevel >= entry.AccessLevel)
         {
           if (entry.Handler != null)
           {
-            CommandEventArgs e = new CommandEventArgs(@from, command, argString, args);
+            CommandEventArgs e = new CommandEventArgs(from, command, argString, args);
             entry.Handler(e);
             EventSink.InvokeCommand(e);
           }
         }
         else
         {
-          if (@from.AccessLevel <= BadCommandIgnoreLevel)
+          if (from.AccessLevel <= BadCommandIgnoreLevel)
             return false;
 
-          @from.SendMessage("You do not have access to that command.");
+          from.SendMessage("You do not have access to that command.");
         }
       }
       else
       {
-        if (@from.AccessLevel <= BadCommandIgnoreLevel)
+        if (from.AccessLevel <= BadCommandIgnoreLevel)
           return false;
 
-        @from.SendMessage("That is not a valid command.");
+        from.SendMessage("That is not a valid command.");
       }
 
       return true;

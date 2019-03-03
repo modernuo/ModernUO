@@ -96,11 +96,13 @@ namespace Server.Items
         if (m_Kit.Deleted)
           return;
 
-        if (!(targeted is Corpse) && !(targeted is BigFish))
+        Corpse corpse = targeted as Corpse;
+
+        if (!(corpse != null || targeted is BigFish))
         {
           from.SendLocalizedMessage(1042600); // That is not a corpse!
         }
-        else if (targeted is Corpse corpse && corpse.VisitedByTaxidermist)
+        else if (corpse?.VisitedByTaxidermist == true)
         {
           from.SendLocalizedMessage(1042596); // That corpse seems to have been visited by a taxidermist already.
         }
@@ -114,47 +116,45 @@ namespace Server.Items
         }
         else
         {
-          object obj = targeted;
+          object obj = corpse?.Owner ?? targeted;
 
-          if (obj is Corpse)
-            obj = ((Corpse)obj).Owner;
+          foreach (TrophyInfo t in m_Table)
+          {
+            if (t.CreatureType != obj.GetType())
+              continue;
 
-          if (obj != null)
-            for (int i = 0; i < m_Table.Length; i++)
-              if (m_Table[i].CreatureType == obj.GetType())
+            Container pack = from.Backpack;
+
+            if (pack?.ConsumeTotal(typeof(Board), 10) == true)
+            {
+              from.SendLocalizedMessage(
+                1042278); // You review the corpse and find it worthy of a trophy.
+              from.SendLocalizedMessage(1042602); // You use your kit up making the trophy.
+
+              Mobile hunter = null;
+              int weight = 0;
+
+              if (targeted is BigFish fish)
               {
-                Container pack = from.Backpack;
+                hunter = fish.Fisher;
+                weight = (int)fish.Weight;
 
-                if (pack != null && pack.ConsumeTotal(typeof(Board), 10))
-                {
-                  from.SendLocalizedMessage(
-                    1042278); // You review the corpse and find it worthy of a trophy.
-                  from.SendLocalizedMessage(1042602); // You use your kit up making the trophy.
-
-                  Mobile hunter = null;
-                  int weight = 0;
-
-                  if (targeted is BigFish fish)
-                  {
-                    hunter = fish.Fisher;
-                    weight = (int)fish.Weight;
-
-                    fish.Consume();
-                  }
-
-
-                  from.AddToBackpack(new TrophyDeed(m_Table[i], hunter, weight));
-
-                  if (targeted is Corpse corpse1)
-                    corpse1.VisitedByTaxidermist = true;
-
-                  m_Kit.Delete();
-                  return;
-                }
-
-                from.SendLocalizedMessage(1042598); // You do not have enough boards.
-                return;
+                fish.Consume();
               }
+
+
+              from.AddToBackpack(new TrophyDeed(t, hunter, weight));
+
+              if (corpse != null)
+                corpse.VisitedByTaxidermist = true;
+
+              m_Kit.Delete();
+              return;
+            }
+
+            from.SendLocalizedMessage(1042598); // You do not have enough boards.
+            return;
+          }
 
           from.SendLocalizedMessage(1042599); // That does not look like something you want hanging on a wall.
         }
