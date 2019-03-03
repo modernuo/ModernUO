@@ -79,7 +79,7 @@ namespace Server.SkillHandlers
       {
         Item stolen = null;
 
-        object root = toSteal.RootParent;
+        IEntity root = toSteal.RootParent;
         Mobile mobRoot = root as Mobile;
 
         StealableArtifactsSpawner.StealableInstance si = null;
@@ -215,7 +215,7 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(502710); // You can't steal that!
         }
-        else if (toSteal.LootType == LootType.Newbied || toSteal.CheckBlessed(root))
+        else if (toSteal.LootType == LootType.Newbied || toSteal.CheckBlessed(mobRoot))
         {
           m_Thief.SendLocalizedMessage(502710); // You can't steal that!
         }
@@ -244,7 +244,7 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(502710); // You can't steal that!
         }
-        else if (mobRoot != null && !m_Thief.CanBeHarmful((Mobile)root))
+        else if (mobRoot != null && !m_Thief.CanBeHarmful(mobRoot))
         {
         }
         else if (root is Corpse)
@@ -332,7 +332,7 @@ namespace Server.SkillHandlers
         from.RevealingAction();
 
         Item stolen = null;
-        object root = null;
+        IEntity root = null;
         bool caught = false;
 
         if (target is Item item)
@@ -356,7 +356,7 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(502710); // You can't steal that!
         }
-        
+
         Mobile mobRoot = root as Mobile;
 
         if (stolen != null)
@@ -395,7 +395,7 @@ namespace Server.SkillHandlers
         if (mobRoot?.Player == true && m_Thief is PlayerMobile pm &&
             IsInnocentTo(pm, mobRoot) && !IsInGuild(mobRoot))
         {
-          pm.PermaFlags.Add((Mobile)root);
+          pm.PermaFlags.Add(mobRoot);
           pm.Delta(MobileDelta.Noto);
         }
       }

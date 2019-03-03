@@ -47,15 +47,12 @@ namespace Server.Items
 
     public bool Validate()
     {
-      object root = RootParent;
+      if (!(RootParent is Mobile mobile) || mobile.AccessLevel >= AccessLevel)
+        return true;
 
-      if (root is Mobile mobile && mobile.AccessLevel < AccessLevel)
-      {
-        Delete();
-        return false;
-      }
+      Delete();
+      return false;
 
-      return true;
     }
 
     public override void OnSingleClick(Mobile from)

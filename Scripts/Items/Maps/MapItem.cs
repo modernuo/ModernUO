@@ -174,12 +174,7 @@ namespace Server.Items
       if (!Movable || Protected || !from.InRange(GetWorldLocation(), 2))
         return false;
 
-      object root = RootParent;
-
-      if (root is Mobile && root != from)
-        return false;
-
-      return true;
+      return !(RootParent is Mobile && RootParent != from);
     }
 
     public void ConvertToWorld(int x, int y, out int worldX, out int worldY)

@@ -42,8 +42,6 @@ namespace Server.Spells.Third
       {
         SpellHelper.Turn(Caster, item);
 
-        object root = item.RootParent;
-
         if (!item.IsAccessibleTo(Caster))
         {
           item.OnDoubleClickNotAccessible(Caster);
@@ -51,7 +49,7 @@ namespace Server.Spells.Third
         else if (!item.CheckItemUse(Caster, item))
         {
         }
-        else if (root is Mobile && root != Caster)
+        else if (item.RootParent is Mobile && item.RootParent != Caster)
         {
           item.OnSnoop(Caster);
         }

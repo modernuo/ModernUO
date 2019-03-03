@@ -233,7 +233,7 @@ namespace Server.Items
         }
       }
 
-      object parent = Parent;
+      IEntity parent = Parent;
 
       while (parent != null)
       {
@@ -627,15 +627,9 @@ namespace Server.Items
 
     public virtual bool CheckContentDisplay(Mobile from)
     {
-      if (DisplaysContent)
-      {
-        object root = RootParent;
-
-        if (root == null || root is Item || root == from || from.AccessLevel > AccessLevel.Player)
-          return true;
-      }
-
-      return false;
+      return DisplaysContent && RootParent == null ||
+             RootParent is Item || RootParent == from ||
+             from.AccessLevel > AccessLevel.Player;
     }
 
     public override void OnSingleClick(Mobile from)

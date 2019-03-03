@@ -44,7 +44,7 @@ namespace Server.Engines.ConPVP
 
     public Mobile Thrower{ get; private set; }
 
-    private Mobile FindOwner(object parent)
+    private Mobile FindOwner(IEntity parent)
     {
       if (parent is Item item)
         return item.RootParent as Mobile;

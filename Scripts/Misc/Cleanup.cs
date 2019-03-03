@@ -66,9 +66,7 @@ namespace Server.Misc
         }
         else if (item.Layer == Layer.Hair || item.Layer == Layer.FacialHair)
         {
-          object rootParent = item.RootParent;
-
-          if (rootParent is Mobile rootMobile)
+          if (item.RootParent is Mobile rootMobile)
           {
             if (item.Parent != rootMobile && rootMobile.AccessLevel == AccessLevel.Player)
             {
