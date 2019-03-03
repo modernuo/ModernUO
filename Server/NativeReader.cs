@@ -51,7 +51,6 @@ namespace Server
   {
     public unsafe void Read(IntPtr ptr, void* buffer, int length)
     {
-      //UnsafeNativeMethods._lread( ptr, buffer, length );
       uint lpNumberOfBytesRead = 0;
       UnsafeNativeMethods.ReadFile(ptr, buffer, (uint)length, ref lpNumberOfBytesRead, null);
     }

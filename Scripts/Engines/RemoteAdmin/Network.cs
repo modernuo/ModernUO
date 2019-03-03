@@ -22,10 +22,7 @@ namespace Server.RemoteAdmin
     public static void Configure()
     {
       PacketHandlers.Register(0xF1, 0, false, OnReceive);
-
-#if !MONO
       Core.MultiConsoleOut.Add(new EventTextWriter(OnConsoleChar, OnConsoleLine, OnConsoleString));
-#endif
       Timer.DelayCall(TimeSpan.FromMinutes(2.5), TimeSpan.FromMinutes(2.5), CleanUp);
     }
 
