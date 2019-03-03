@@ -165,9 +165,7 @@ namespace Server.Targeting
           return;
         }
 
-        object root = item.RootParent;
-
-        if (!AllowNonlocal && root is Mobile && root != from && from.AccessLevel == AccessLevel.Player)
+        if (!AllowNonlocal && item.RootParent is Mobile && item.RootParent != from && from.AccessLevel == AccessLevel.Player)
         {
           OnNonlocalTarget(from, item);
           OnTargetFinish(from);

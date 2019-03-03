@@ -45,17 +45,13 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public virtual object FindParent(Mobile from)
+    public virtual IEntity FindParent(Mobile from)
     {
-      Mobile m = HeldBy;
+      if (HeldBy?.Holding == this)
+        return HeldBy;
 
-      if (m != null && m.Holding == this)
-        return m;
-
-      object obj = RootParent;
-
-      if (obj != null)
-        return obj;
+      if (RootParent != null)
+        return RootParent;
 
       if (Map == Map.Internal)
         return from;
@@ -74,7 +70,7 @@ namespace Server.Items
       ThrowTarget targ = from.Target as ThrowTarget;
       Stackable = false; // Scavenged explosion potions won't stack with those ones in backpack, and still will explode.
 
-      if (targ != null && targ.Potion == this)
+      if (targ?.Potion == this)
         return;
 
       from.RevealingAction();
@@ -107,7 +103,7 @@ namespace Server.Items
       if (Deleted)
         return;
 
-      object parent = FindParent(from);
+      IEntity parent = FindParent(from);
 
       if (timer == 0)
       {

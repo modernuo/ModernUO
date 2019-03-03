@@ -84,7 +84,7 @@ namespace Server
     void OnConnectionChanged();
     bool OnCasterMoving(Direction d);
     bool OnCasterEquipping(Item item);
-    bool OnCasterUsingObject(object o);
+    bool OnCasterUsingObject(IEntity entity);
     bool OnCastInTown(Region r);
   }
 

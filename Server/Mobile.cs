@@ -4667,7 +4667,7 @@ namespace Server
       if (m_Spell != null && !m_Spell.OnCasterUsingObject(item))
         return;
 
-      object root = item.RootParent;
+      IEntity root = item.RootParent;
       bool okay = false;
 
       if (!Utility.InUpdateRange(this, item.GetWorldLocation()))
@@ -4789,7 +4789,7 @@ namespace Server
           }
           else
           {
-            object root = item.RootParent;
+            IEntity root = item.RootParent;
 
             if (root is Mobile mobile && !mobile.CheckNonlocalLift(from, item))
             {
@@ -4964,7 +4964,7 @@ namespace Server
       if (DragEffects && !item.Deleted)
       {
         Map map = m_Map;
-        object root = item.RootParent;
+        IEntity root = item.RootParent;
 
         if (map != null && (root == null || root is Item))
         {

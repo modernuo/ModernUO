@@ -44,11 +44,7 @@ namespace Server.Items
       UpdateTotal(this, TotalType.Gold, newValue - oldValue);
     }
 
-#if NEWPARENT
     public override void OnAdded(IEntity parent)
-#else
-		public override void OnAdded(object parent)
-#endif
     {
       base.OnAdded(parent);
 
@@ -59,7 +55,8 @@ namespace Server.Items
 
       Container root = parent as Container;
 
-      while (root?.Parent is Container) root = (Container)root.Parent;
+      while (root?.Parent is Container container)
+        root = container;
 
       parent = root ?? parent;
 
