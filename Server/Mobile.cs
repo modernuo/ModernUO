@@ -1789,18 +1789,7 @@ namespace Server
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public Map LogoutMap{ get; set; }
 
-    public Region Region
-    {
-      get
-      {
-        if (m_Region == null)
-          if (Map == null)
-            return Map.Internal.DefaultRegion;
-          else
-            return Map.DefaultRegion;
-        return m_Region;
-      }
-    }
+    public Region Region => m_Region ?? (Map == null ? Map.Internal.DefaultRegion : Map.DefaultRegion);
 
     public Packet RemovePacket
     {

@@ -416,7 +416,7 @@ namespace Server
 
       return false;
     }
-    
+
     // TODO: Memoize this
     public T GetRegion<T>() where T : Region
     {
@@ -468,7 +468,7 @@ namespace Server
 
       return null;
     }
-    
+
     public bool IsPartOf<T>() where T : Region
     {
       return GetRegion<T>() != null;
@@ -840,7 +840,7 @@ namespace Server
         Console.WriteLine("Could not find root element 'ServerRegions' in Regions.xml");
         return;
       }
-      
+
       foreach (XmlElement facet in root.SelectNodes("Facet"))
       {
         Map map = null;
