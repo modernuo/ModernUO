@@ -3681,15 +3681,13 @@ namespace Server
           target.Map == null)
         return false;
 
-      object root = target.RootParent;
-
       if (from.AccessLevel < AccessLevel.GameMaster && !from.InRange(target.GetWorldLocation(), 2))
         return false;
       if (!from.CanSee(target) || !from.InLOS(target))
         return false;
       if (!target.IsAccessibleTo(from))
         return false;
-      if (root is Mobile mobile && !mobile.CheckNonlocalDrop(from, this, target))
+      if (target.RootParent is Mobile mobile && !mobile.CheckNonlocalDrop(from, this, target))
         return false;
       if (!from.OnDroppedItemToItem(this, target, p))
         return false;
@@ -4288,11 +4286,6 @@ namespace Server
       }
 
       Delete();
-    }
-
-    public virtual bool CheckBlessed(object obj)
-    {
-      return CheckBlessed(obj as Mobile);
     }
 
     public virtual bool CheckBlessed(Mobile m)

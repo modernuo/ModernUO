@@ -142,7 +142,7 @@ namespace Server.Engines.BulkOrders
 			}
 		}
 
-		public void InvalidateContainers( object parent )
+		public void InvalidateContainers(IEntity parent)
 		{
 			if ( parent is Container c )
 			{

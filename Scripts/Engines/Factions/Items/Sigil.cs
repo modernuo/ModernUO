@@ -181,7 +181,7 @@ namespace Server.Factions
       return false;
     }
 
-    private Mobile FindOwner(object parent)
+    private Mobile FindOwner(IEntity parent)
     {
       if (parent is Item item)
         return item.RootParent as Mobile;

@@ -234,9 +234,7 @@ namespace Server.Gumps
     public object FindHouseName(BaseHouse house)
     {
       int multiID = house.ItemID;
-      HousePlacementEntry[] entries;
-
-      entries = HousePlacementEntry.ClassicHouses;
+      HousePlacementEntry[] entries = HousePlacementEntry.ClassicHouses;
 
       for (int i = 0; i < entries.Length; ++i)
         if (entries[i].MultiID == multiID)

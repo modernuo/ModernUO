@@ -114,7 +114,7 @@ namespace Server.Items
       if (board.IsChildOf(from.Backpack))
         return true;
 
-      object root = board.RootParent;
+      IEntity root = board.RootParent;
 
       if (root is Mobile && root != from)
         return false;
@@ -122,9 +122,7 @@ namespace Server.Items
       if (board.Deleted || board.Map != from.Map || !from.InRange(board.GetWorldLocation(), 1))
         return false;
 
-      BaseHouse house = BaseHouse.FindHouseAt(board);
-
-      return house != null && house.IsOwner(from);
+      return BaseHouse.FindHouseAt(board)?.IsOwner(from) == true;
     }
 
     public class DefaultEntry : ContextMenuEntry

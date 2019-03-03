@@ -53,7 +53,7 @@ namespace Server.Items
         }
         else if (targeted is Item item)
         {
-          object root = item.RootParent;
+          IEntity root = item.RootParent;
 
           if (root != null && root != from || item.Parent == from)
           {
@@ -61,10 +61,7 @@ namespace Server.Items
           }
           else if (item.Movable)
           {
-            if (item.Amount > 1)
-              message = "You place one item on the scale. ";
-            else
-              message = "You place that item on the scale. ";
+            message = item.Amount > 1 ? "You place one item on the scale. " : "You place that item on the scale. ";
 
             double weight = item.Weight;
 

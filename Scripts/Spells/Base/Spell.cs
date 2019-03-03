@@ -118,7 +118,7 @@ namespace Server.Spells
       return true;
     }
 
-    public virtual bool OnCasterUsingObject(object o)
+    public virtual bool OnCasterUsingObject(IEntity entity)
     {
       if (State == SpellState.Sequencing)
         Disturb(DisturbType.UseRequest);
