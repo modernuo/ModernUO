@@ -114,7 +114,6 @@
     <Compile Include="Diagnostics\TargetProfile.cs" />
     <Compile Include="Diagnostics\TimerProfile.cs" />
     <Compile Include="Effects.cs" />
-    <Compile Include="EventLog.cs" />
     <Compile Include="EventSink.cs" />
     <Compile Include="ExpansionInfo.cs" />
     <Compile Include="Geometry.cs" />
