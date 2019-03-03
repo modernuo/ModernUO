@@ -123,13 +123,13 @@ namespace Server.Items
             if (t.CreatureType != obj.GetType())
               continue;
 
-            Container pack = @from.Backpack;
+            Container pack = from.Backpack;
 
             if (pack?.ConsumeTotal(typeof(Board), 10) == true)
             {
-              @from.SendLocalizedMessage(
+              from.SendLocalizedMessage(
                 1042278); // You review the corpse and find it worthy of a trophy.
-              @from.SendLocalizedMessage(1042602); // You use your kit up making the trophy.
+              from.SendLocalizedMessage(1042602); // You use your kit up making the trophy.
 
               Mobile hunter = null;
               int weight = 0;
@@ -143,7 +143,7 @@ namespace Server.Items
               }
 
 
-              @from.AddToBackpack(new TrophyDeed(t, hunter, weight));
+              from.AddToBackpack(new TrophyDeed(t, hunter, weight));
 
               if (corpse != null)
                 corpse.VisitedByTaxidermist = true;
@@ -152,7 +152,7 @@ namespace Server.Items
               return;
             }
 
-            @from.SendLocalizedMessage(1042598); // You do not have enough boards.
+            from.SendLocalizedMessage(1042598); // You do not have enough boards.
             return;
           }
 
