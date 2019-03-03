@@ -572,12 +572,14 @@ namespace Server.Gumps
 
               if (baseType == typeofObject || baseType?.GetProperty(prop.Name, prop.PropertyType) == null)
                 break;
-              
+
               type = baseType;
             }
-            
+
             if (type != null && !groups.ContainsKey(type))
               groups[type] = new List<PropertyInfo>{ prop };
+            else
+              groups[type].Add(prop);
           }
         }
       }
@@ -657,13 +659,13 @@ namespace Server.Gumps
           return 0;
         if (x == null)
           return -1;
-        
+
         return y == null ? 1 : x.Name.CompareTo(x.Name);
       }
     }
 
     private class GroupComparer : IComparer<KeyValuePair<Type, List<PropertyInfo>>>
-    { 
+    {
       private Type m_Start;
 
       public GroupComparer(Type start)

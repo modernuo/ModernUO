@@ -4728,16 +4728,12 @@ namespace Server.Mobiles
 
     public virtual bool HasRecipe(Recipe r)
     {
-      if (r == null)
-        return false;
-
-      return HasRecipe(r.ID);
+      return r != null && HasRecipe(r.ID);
     }
 
     public virtual bool HasRecipe(int recipeID)
     {
-      m_AcquiredRecipes?.TryGetValue(recipeID, out bool value);
-      return value;
+      return m_AcquiredRecipes.TryGetValue(recipeID, out bool value) && value;
     }
 
     public virtual void AcquireRecipe(Recipe r)
