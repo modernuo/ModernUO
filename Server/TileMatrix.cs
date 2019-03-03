@@ -388,11 +388,7 @@ namespace Server
 
         fixed (StaticTile* pTiles = staTiles)
         {
-#if !MONO
           NativeReader.Read(DataStream.SafeFileHandle.DangerousGetHandle(), pTiles, length);
-#else
-						NativeReader.Read( m_Statics.Handle, pTiles, length );
-#endif
           if (m_Lists == null)
           {
             m_Lists = new TileList[8][];
@@ -463,11 +459,7 @@ namespace Server
 
         fixed (LandTile* pTiles = tiles)
         {
-#if !MONO
           NativeReader.Read(MapStream.SafeFileHandle.DangerousGetHandle(), pTiles, 192);
-#else
-					NativeReader.Read( m_Map.Handle, pTiles, 192 );
-#endif
         }
 
         return tiles;
@@ -718,7 +710,7 @@ namespace Server
 
         if (y == null)
           return -1;
-        
+
         return x.m_Offset.CompareTo(y.m_Offset);
       }
     }
