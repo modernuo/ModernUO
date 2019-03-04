@@ -33,12 +33,7 @@ namespace Server.Items
   public class BodySash : BaseMiddleTorso
   {
     [Constructible]
-    public BodySash() : this(0)
-    {
-    }
-
-    [Constructible]
-    public BodySash(int hue) : base(0x1541, hue)
+    public BodySash(int hue = 0) : base(0x1541, hue)
     {
       Weight = 1.0;
     }
@@ -66,12 +61,7 @@ namespace Server.Items
   public class FullApron : BaseMiddleTorso
   {
     [Constructible]
-    public FullApron() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FullApron(int hue) : base(0x153d, hue)
+    public FullApron(int hue = 0) : base(0x153d, hue)
     {
       Weight = 4.0;
     }
@@ -99,12 +89,7 @@ namespace Server.Items
   public class Doublet : BaseMiddleTorso
   {
     [Constructible]
-    public Doublet() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Doublet(int hue) : base(0x1F7B, hue)
+    public Doublet(int hue = 0) : base(0x1F7B, hue)
     {
       Weight = 2.0;
     }
@@ -132,12 +117,7 @@ namespace Server.Items
   public class Surcoat : BaseMiddleTorso
   {
     [Constructible]
-    public Surcoat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Surcoat(int hue) : base(0x1FFD, hue)
+    public Surcoat(int hue = 0) : base(0x1FFD, hue)
     {
       Weight = 6.0;
     }
@@ -168,12 +148,7 @@ namespace Server.Items
   public class Tunic : BaseMiddleTorso
   {
     [Constructible]
-    public Tunic() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Tunic(int hue) : base(0x1FA1, hue)
+    public Tunic(int hue = 0) : base(0x1FA1, hue)
     {
       Weight = 5.0;
     }
@@ -201,12 +176,7 @@ namespace Server.Items
   public class FormalShirt : BaseMiddleTorso
   {
     [Constructible]
-    public FormalShirt() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FormalShirt(int hue) : base(0x2310, hue)
+    public FormalShirt(int hue = 0) : base(0x2310, hue)
     {
       Weight = 1.0;
     }
@@ -237,12 +207,7 @@ namespace Server.Items
   public class JesterSuit : BaseMiddleTorso
   {
     [Constructible]
-    public JesterSuit() : this(0)
-    {
-    }
-
-    [Constructible]
-    public JesterSuit(int hue) : base(0x1F9F, hue)
+    public JesterSuit(int hue = 0) : base(0x1F9F, hue)
     {
       Weight = 4.0;
     }
@@ -270,12 +235,7 @@ namespace Server.Items
   public class JinBaori : BaseMiddleTorso
   {
     [Constructible]
-    public JinBaori() : this(0)
-    {
-    }
-
-    [Constructible]
-    public JinBaori(int hue) : base(0x27A1, hue)
+    public JinBaori(int hue = 0) : base(0x27A1, hue)
     {
       Weight = 3.0;
     }

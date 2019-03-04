@@ -35,12 +35,7 @@ namespace Server.Items
   public class Cloak : BaseCloak, IArcaneEquip
   {
     [Constructible]
-    public Cloak() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Cloak(int hue) : base(0x1515, hue)
+    public Cloak(int hue = 0) : base(0x1515, hue)
     {
       Weight = 5.0;
     }
@@ -169,12 +164,7 @@ namespace Server.Items
     private int m_LabelNumber;
 
     [Constructible]
-    public RewardCloak() : this(0)
-    {
-    }
-
-    [Constructible]
-    public RewardCloak(int hue) : this(hue, 0)
+    public RewardCloak(int hue = 0) : this(hue, 0)
     {
     }
 
@@ -292,12 +282,7 @@ namespace Server.Items
   public class FurCape : BaseCloak
   {
     [Constructible]
-    public FurCape() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FurCape(int hue) : base(0x230A, hue)
+    public FurCape(int hue = 0) : base(0x230A, hue)
     {
       Weight = 4.0;
     }
