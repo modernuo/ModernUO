@@ -45,17 +45,10 @@ namespace Server.Network
     private MemoryStream m_Stream;
 
     /// <summary>
-    ///   Instantiates a new PacketWriter instance with the default capacity of 4 bytes.
-    /// </summary>
-    public PacketWriter() : this(32)
-    {
-    }
-
-    /// <summary>
     ///   Instantiates a new PacketWriter instance with a given capacity.
     /// </summary>
     /// <param name="capacity">Initial capacity for the internal stream.</param>
-    public PacketWriter(int capacity)
+    public PacketWriter(int capacity = 32)
     {
       m_Stream = new MemoryStream(capacity);
       m_Capacity = capacity;

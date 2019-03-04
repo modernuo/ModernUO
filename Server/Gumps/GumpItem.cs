@@ -30,11 +30,7 @@ namespace Server.Gumps
     private int m_ItemID;
     private int m_X, m_Y;
 
-    public GumpItem(int x, int y, int itemID) : this(x, y, itemID, 0)
-    {
-    }
-
-    public GumpItem(int x, int y, int itemID, int hue)
+    public GumpItem(int x, int y, int itemID, int hue = 0)
     {
       m_X = x;
       m_Y = y;

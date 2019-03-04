@@ -34,11 +34,7 @@ namespace Server
 
   public class ClientVersion : IComparable, IComparer
   {
-    public ClientVersion(int maj, int min, int rev, int pat) : this(maj, min, rev, pat, ClientType.Regular)
-    {
-    }
-
-    public ClientVersion(int maj, int min, int rev, int pat, ClientType type)
+    public ClientVersion(int maj, int min, int rev, int pat, ClientType type = ClientType.Regular)
     {
       Major = maj;
       Minor = min;

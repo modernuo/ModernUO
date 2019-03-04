@@ -62,11 +62,7 @@ namespace Server
     {
     }
 
-    public Timer(TimeSpan delay, TimeSpan interval) : this(delay, interval, 0)
-    {
-    }
-
-    public Timer(TimeSpan delay, TimeSpan interval, int count)
+    public Timer(TimeSpan delay, TimeSpan interval, int count = 0)
     {
       m_Delay = (long)delay.TotalMilliseconds;
       m_Interval = (long)interval.TotalMilliseconds;

@@ -466,11 +466,7 @@ namespace Server.Network
       m_Stream.Write(m.Serial);
       m_Stream.Write((byte)0);
 
-      int lockBits = 0;
-
-      lockBits |= (int)m.StrLock << 4;
-      lockBits |= (int)m.DexLock << 2;
-      lockBits |= (int)m.IntLock;
+      int lockBits = (int)m.StrLock << 4 | (int)m.DexLock << 2 | (int)m.IntLock;
 
       m_Stream.Write((byte)lockBits);
     }
@@ -478,11 +474,7 @@ namespace Server.Network
 
   public class EquipInfoAttribute
   {
-    public EquipInfoAttribute(int number) : this(number, -1)
-    {
-    }
-
-    public EquipInfoAttribute(int number, int charges)
+    public EquipInfoAttribute(int number, int charges = -1)
     {
       Number = number;
       Charges = charges;
@@ -2774,11 +2766,7 @@ namespace Server.Network
       new SeasonChange[2]
     };
 
-    public SeasonChange(int season) : this(season, true)
-    {
-    }
-
-    public SeasonChange(int season, bool playSound) : base(0xBC, 3)
+    public SeasonChange(int season, bool playSound = true) : base(0xBC, 3)
     {
       m_Stream.Write((byte)season);
       m_Stream.Write(playSound);
@@ -3044,17 +3032,16 @@ namespace Server.Network
 
     public MobileStatusExtended(Mobile m, NetState ns) : base(0x11)
     {
-      string name = m.Name;
-      if (name == null) name = "";
+      string name = m.Name ?? "";
 
       int type;
 
-      if (Core.HS && ns != null && ns.ExtendedStatus)
+      if (Core.HS && ns?.ExtendedStatus == true)
       {
         type = 6;
         EnsureCapacity(121);
       }
-      else if (Core.ML && ns != null && ns.SupportsExpansion(Expansion.ML))
+      else if (Core.ML && ns?.SupportsExpansion(Expansion.ML) == true)
       {
         type = 5;
         EnsureCapacity(91);
@@ -3141,8 +3128,7 @@ namespace Server.Network
 
     public MobileStatus(Mobile beholder, Mobile beheld, NetState ns) : base(0x11)
     {
-      string name = beheld.Name;
-      if (name == null) name = "";
+      string name = beheld.Name ?? "";
 
       int type;
 
@@ -3151,12 +3137,12 @@ namespace Server.Network
         type = 0;
         EnsureCapacity(43);
       }
-      else if (Core.HS && ns != null && ns.ExtendedStatus)
+      else if (Core.HS && ns?.ExtendedStatus == true)
       {
         type = 6;
         EnsureCapacity(121);
       }
-      else if (Core.ML && ns != null && ns.SupportsExpansion(Expansion.ML))
+      else if (Core.ML && ns?.SupportsExpansion(Expansion.ML) == true)
       {
         type = 5;
         EnsureCapacity(91);
@@ -3180,61 +3166,61 @@ namespace Server.Network
 
       m_Stream.Write((byte)type);
 
-      if (type > 0)
+      if (type <= 0)
+        return;
+
+      m_Stream.Write(beheld.Female);
+
+      m_Stream.Write((short)beheld.Str);
+      m_Stream.Write((short)beheld.Dex);
+      m_Stream.Write((short)beheld.Int);
+
+      WriteAttr(beheld.Stam, beheld.StamMax);
+      WriteAttr(beheld.Mana, beheld.ManaMax);
+
+      m_Stream.Write(beheld.TotalGold);
+      m_Stream.Write((short)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)));
+      m_Stream.Write((short)(Mobile.BodyWeight + beheld.TotalWeight));
+
+      if (type >= 5)
       {
-        m_Stream.Write(beheld.Female);
-
-        m_Stream.Write((short)beheld.Str);
-        m_Stream.Write((short)beheld.Dex);
-        m_Stream.Write((short)beheld.Int);
-
-        WriteAttr(beheld.Stam, beheld.StamMax);
-        WriteAttr(beheld.Mana, beheld.ManaMax);
-
-        m_Stream.Write(beheld.TotalGold);
-        m_Stream.Write((short)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)));
-        m_Stream.Write((short)(Mobile.BodyWeight + beheld.TotalWeight));
-
-        if (type >= 5)
-        {
-          m_Stream.Write((short)beheld.MaxWeight);
-          m_Stream.Write((byte)(beheld.Race.RaceID + 1)); // Would be 0x00 if it's a non-ML enabled account but...
-        }
-
-        m_Stream.Write((short)beheld.StatCap);
-
-        m_Stream.Write((byte)beheld.Followers);
-        m_Stream.Write((byte)beheld.FollowersMax);
-
-        if (type >= 4)
-        {
-          m_Stream.Write((short)beheld.FireResistance); // Fire
-          m_Stream.Write((short)beheld.ColdResistance); // Cold
-          m_Stream.Write((short)beheld.PoisonResistance); // Poison
-          m_Stream.Write((short)beheld.EnergyResistance); // Energy
-          m_Stream.Write((short)beheld.Luck); // Luck
-
-          IWeapon weapon = beheld.Weapon;
-
-          if (weapon != null)
-          {
-            weapon.GetStatusDamage(beheld, out int min, out int max);
-            m_Stream.Write((short)min); // Damage min
-            m_Stream.Write((short)max); // Damage max
-          }
-          else
-          {
-            m_Stream.Write((short)0); // Damage min
-            m_Stream.Write((short)0); // Damage max
-          }
-
-          m_Stream.Write(beheld.TithingPoints);
-        }
-
-        if (type >= 6)
-          for (int i = 0; i < 15; ++i)
-            m_Stream.Write((short)beheld.GetAOSStatus(i));
+        m_Stream.Write((short)beheld.MaxWeight);
+        m_Stream.Write((byte)(beheld.Race.RaceID + 1)); // Would be 0x00 if it's a non-ML enabled account but...
       }
+
+      m_Stream.Write((short)beheld.StatCap);
+
+      m_Stream.Write((byte)beheld.Followers);
+      m_Stream.Write((byte)beheld.FollowersMax);
+
+      if (type >= 4)
+      {
+        m_Stream.Write((short)beheld.FireResistance); // Fire
+        m_Stream.Write((short)beheld.ColdResistance); // Cold
+        m_Stream.Write((short)beheld.PoisonResistance); // Poison
+        m_Stream.Write((short)beheld.EnergyResistance); // Energy
+        m_Stream.Write((short)beheld.Luck); // Luck
+
+        IWeapon weapon = beheld.Weapon;
+
+        if (weapon != null)
+        {
+          weapon.GetStatusDamage(beheld, out int min, out int max);
+          m_Stream.Write((short)min); // Damage min
+          m_Stream.Write((short)max); // Damage max
+        }
+        else
+        {
+          m_Stream.Write((short)0); // Damage min
+          m_Stream.Write((short)0); // Damage max
+        }
+
+        m_Stream.Write(beheld.TithingPoints);
+      }
+
+      if (type >= 6)
+        for (int i = 0; i < 15; ++i)
+          m_Stream.Write((short)beheld.GetAOSStatus(i));
     }
 
     private void WriteAttr(int current, int maximum)

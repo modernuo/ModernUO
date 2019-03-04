@@ -7,11 +7,8 @@ namespace Server.Mobiles
 {
   public abstract class BaseChampion : BaseCreature
   {
-    public BaseChampion(AIType aiType) : this(aiType, FightMode.Closest)
-    {
-    }
-
-    public BaseChampion(AIType aiType, FightMode mode) : base(aiType, mode, 18, 1, 0.1, 0.2)
+    public BaseChampion(AIType aiType, FightMode mode = FightMode.Closest) :
+      base(aiType, mode, 18, 1, 0.1, 0.2)
     {
     }
 

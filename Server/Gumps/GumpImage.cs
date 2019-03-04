@@ -30,11 +30,7 @@ namespace Server.Gumps
     private int m_Hue;
     private int m_X, m_Y;
 
-    public GumpImage(int x, int y, int gumpID) : this(x, y, gumpID, 0)
-    {
-    }
-
-    public GumpImage(int x, int y, int gumpID, int hue)
+    public GumpImage(int x, int y, int gumpID, int hue= 0)
     {
       m_X = x;
       m_Y = y;

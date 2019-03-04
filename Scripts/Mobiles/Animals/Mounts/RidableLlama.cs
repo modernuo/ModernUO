@@ -3,12 +3,8 @@ namespace Server.Mobiles
   public class RidableLlama : BaseMount
   {
     [Constructible]
-    public RidableLlama() : this("a ridable llama")
-    {
-    }
-
-    [Constructible]
-    public RidableLlama(string name) : base(name, 0xDC, 0x3EA6, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    public RidableLlama(string name = "a ridable llama") :
+		  base(name, 0xDC, 0x3EA6, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = 0x3F3;
 

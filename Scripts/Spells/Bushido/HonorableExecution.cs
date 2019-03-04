@@ -102,7 +102,7 @@ namespace Server.Spells.Bushido
       public int m_SwingBonus;
       public Timer m_Timer;
 
-      public HonorableExecutionInfo(Mobile from, List<object> mods) : this(from, 0, mods, true)
+      public HonorableExecutionInfo(Mobile from, List<object> mods) : this(from, 0, mods, mods != null)
       {
       }
 

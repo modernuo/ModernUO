@@ -11,12 +11,8 @@ namespace Server.Mobiles
     private bool m_HasBarding;
 
     [Constructible]
-    public SwampDragon() : this("a swamp dragon")
-    {
-    }
-
-    [Constructible]
-    public SwampDragon(string name) : base(name, 0x31A, 0x3EBD, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    public SwampDragon(string name = "a swamp dragon") :
+		  base(name, 0x31A, 0x3EBD, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = 0x16A;
 

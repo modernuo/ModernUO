@@ -364,7 +364,7 @@ namespace Server
 
       Mobile.AddItem(Container);
 
-      VirtualCheck = new VirtualCheck(0, 0);
+      VirtualCheck = new VirtualCheck();
       Container.DropItem(VirtualCheck);
     }
 

@@ -25,12 +25,7 @@ namespace Server
 
     private int _Plat;
 
-    public VirtualCheck()
-      : this(0, 0)
-    {
-    }
-
-    public VirtualCheck(int plat, int gold)
+    public VirtualCheck(int plat = 0, int gold = 0)
       : base(0x14F0)
     {
       Plat = plat;

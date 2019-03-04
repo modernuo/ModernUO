@@ -3,12 +3,7 @@ namespace Server.Items
   public class SmithBag : Bag
   {
     [Constructible]
-    public SmithBag() : this(5000)
-    {
-    }
-
-    [Constructible]
-    public SmithBag(int amount)
+    public SmithBag(int amount = 5000)
     {
       DropItem(new DullCopperIngot(amount));
       DropItem(new ShadowIronIngot(amount));
@@ -31,7 +26,7 @@ namespace Server.Items
     {
       base.Serialize(writer);
 
-      writer.Write(0); // version 
+      writer.Write(0); // version
     }
 
     public override void Deserialize(GenericReader reader)

@@ -626,12 +626,7 @@ namespace Server
 
     private bool _NewLine;
 
-    public FileLogger(string file)
-      : this(file, false)
-    {
-    }
-
-    public FileLogger(string file, bool append)
+    public FileLogger(string file, bool append = false)
     {
       FileName = file;
 

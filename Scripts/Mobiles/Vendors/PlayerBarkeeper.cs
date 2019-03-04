@@ -303,7 +303,7 @@ namespace Server.Mobiles
     {
       if (!(dropped is Gold g))
         return false;
-      
+
       if (g.Amount > 50)
       {
         PrivateOverheadMessage(MessageType.Regular, 0x3B2, false, "I cannot accept so large a tip!",
@@ -604,7 +604,7 @@ namespace Server.Mobiles
       new Entry("Waiter", true),
       new Entry("Warrior"),
       new Entry("Watchman"),
-      new Entry("No Title", null, false)
+      new Entry("No Title", null)
     };
 
     private PlayerBarkeeper m_Barkeeper;
@@ -732,15 +732,11 @@ namespace Server.Mobiles
       public string m_Title;
       public bool m_Vendor;
 
-      public Entry(string desc) : this(desc, $"the {desc.ToLower()}", false)
+      public Entry(string desc, bool vendor = false) : this(desc, $"the {desc.ToLower()}", vendor)
       {
       }
 
-      public Entry(string desc, bool vendor) : this(desc, $"the {desc.ToLower()}", vendor)
-      {
-      }
-
-      public Entry(string desc, string title, bool vendor)
+      public Entry(string desc, string title, bool vendor = false)
       {
         m_Description = desc;
         m_Title = title;
