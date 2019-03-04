@@ -10,7 +10,7 @@ namespace Server.Items
 
   public class CommodityDeed : Item
   {
-    public CommodityDeed(Item commodity) : base(0x14F0)
+    public CommodityDeed(Item commodity = null) : base(0x14F0)
     {
       Weight = 1.0;
       Hue = 0x47;
@@ -18,11 +18,6 @@ namespace Server.Items
       Commodity = commodity;
 
       LootType = LootType.Blessed;
-    }
-
-    [Constructible]
-    public CommodityDeed() : this(null)
-    {
     }
 
     public CommodityDeed(Serial serial) : base(serial)

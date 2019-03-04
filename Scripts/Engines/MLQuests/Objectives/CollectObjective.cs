@@ -7,12 +7,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class CollectObjective : BaseObjective
   {
-    public CollectObjective()
-      : this(0, null, null)
-    {
-    }
-
-    public CollectObjective(int amount, Type type, TextDefinition name)
+    public CollectObjective(int amount = 0, Type type = null, TextDefinition name = null)
     {
       DesiredAmount = amount;
       AcceptedType = type;

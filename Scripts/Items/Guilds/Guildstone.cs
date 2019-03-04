@@ -278,17 +278,8 @@ namespace Server.Items
 
     private string m_GuildName;
 
-    [Constructible]
-    public GuildstoneDeed() : this(null, null)
-    {
-    }
-
-    [Constructible]
-    public GuildstoneDeed(string guildName, string abbrev) : this(null, guildName, abbrev)
-    {
-    }
-
-    public GuildstoneDeed(Guild g, string guildName, string abbrev) : base(0x14F0)
+    public GuildstoneDeed(Guild g = null, string guildName = null, string abbrev = null) :
+      base(0x14F0)
     {
       Guild = g;
       m_GuildName = guildName;

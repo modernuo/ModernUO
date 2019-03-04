@@ -9,12 +9,7 @@ namespace Server.Mobiles
 
     private Mobile m_Focus;
 
-    [Constructible]
-    public ArcherGuard() : this(null)
-    {
-    }
-
-    public ArcherGuard(Mobile target) : base(target)
+    public ArcherGuard(Mobile target = null) : base(target)
     {
       InitStats(100, 125, 25);
       Title = "the guard";

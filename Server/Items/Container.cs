@@ -1122,17 +1122,7 @@ namespace Server.Items
       return -1;
     }
 
-    public int ConsumeTotal(Type[] types, int[] amounts)
-    {
-      return ConsumeTotal(types, amounts, true, null);
-    }
-
-    public int ConsumeTotal(Type[] types, int[] amounts, bool recurse)
-    {
-      return ConsumeTotal(types, amounts, recurse, null);
-    }
-
-    public int ConsumeTotal(Type[] types, int[] amounts, bool recurse, OnItemConsumed callback)
+    public int ConsumeTotal(Type[] types, int[] amounts, bool recurse = true, OnItemConsumed callback = null)
     {
       if (types.Length != amounts.Length)
         throw new ArgumentException();
@@ -1181,17 +1171,7 @@ namespace Server.Items
       return -1;
     }
 
-    public bool ConsumeTotal(Type type, int amount)
-    {
-      return ConsumeTotal(type, amount, true, null);
-    }
-
-    public bool ConsumeTotal(Type type, int amount, bool recurse)
-    {
-      return ConsumeTotal(type, amount, recurse, null);
-    }
-
-    public bool ConsumeTotal(Type type, int amount, bool recurse, OnItemConsumed callback)
+    public bool ConsumeTotal(Type type, int amount, bool recurse = true, OnItemConsumed callback = null)
     {
       Item[] items = FindItemsByType(type, recurse);
 
@@ -1234,12 +1214,7 @@ namespace Server.Items
       return false;
     }
 
-    public int ConsumeUpTo(Type type, int amount)
-    {
-      return ConsumeUpTo(type, amount, true);
-    }
-
-    public int ConsumeUpTo(Type type, int amount, bool recurse)
+    public int ConsumeUpTo(Type type, int amount, bool recurse = true)
     {
       int consumed = 0;
 

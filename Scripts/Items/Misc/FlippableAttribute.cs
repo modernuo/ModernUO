@@ -56,11 +56,6 @@ namespace Server.Items
   [AttributeUsage(AttributeTargets.Class)]
   public class FlippableAttribute : Attribute
   {
-    public FlippableAttribute()
-      : this(null)
-    {
-    }
-
     public FlippableAttribute(params int[] itemIDs)
     {
       ItemIDs = itemIDs;
@@ -74,9 +69,7 @@ namespace Server.Items
       {
         try
         {
-          MethodInfo flipMethod = item.GetType().GetMethod("Flip", Type.EmptyTypes);
-          if (flipMethod != null)
-            flipMethod.Invoke(item, new object[0]);
+          item.GetType().GetMethod("Flip", Type.EmptyTypes)?.Invoke(item, new object[0]);
         }
         catch
         {

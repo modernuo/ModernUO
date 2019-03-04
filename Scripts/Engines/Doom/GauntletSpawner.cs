@@ -27,12 +27,7 @@ namespace Server.Engines.Doom
     private Timer m_Timer;
 
     [Constructible]
-    public GauntletSpawner() : this(null)
-    {
-    }
-
-    [Constructible]
-    public GauntletSpawner(string typeName) : base(0x36FE)
+    public GauntletSpawner(string typeName = null) : base(0x36FE)
     {
       Visible = false;
       Movable = false;

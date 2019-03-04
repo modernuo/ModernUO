@@ -237,13 +237,7 @@ namespace Server.Items
   public class StValentinesPanda : StValentinesBear
   {
     [Constructible]
-    public StValentinesPanda()
-      : this(null)
-    {
-    }
-
-    [Constructible]
-    public StValentinesPanda(string name)
+    public StValentinesPanda(string name = null)
       : base(0x48E0, name)
     {
     }
@@ -272,13 +266,7 @@ namespace Server.Items
   public class StValentinesPolarBear : StValentinesBear
   {
     [Constructible]
-    public StValentinesPolarBear()
-      : this(null)
-    {
-    }
-
-    [Constructible]
-    public StValentinesPolarBear(string name)
+    public StValentinesPolarBear(string name = null)
       : base(0x48E2, name)
     {
     }

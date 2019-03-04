@@ -30,7 +30,7 @@ namespace Server.Mobiles
     private List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
     private List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
 
-    public BaseVendor(string title)
+    public BaseVendor(string title = null)
       : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
     {
       LoadSBInfo();

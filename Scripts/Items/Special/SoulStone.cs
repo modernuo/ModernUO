@@ -21,22 +21,8 @@ namespace Server.Items
     private double m_SkillValue;
 
     [Constructible]
-    public SoulStone() : this(null)
-    {
-    }
-
-    [Constructible]
-    public SoulStone(string account)
-      : this(account, 0x2A93, 0x2A94)
-    {
-    }
-
-    public SoulStone(string account, int itemID)
-      : this(account, itemID, itemID)
-    {
-    }
-
-    public SoulStone(string account, int inactiveItemID, int activeItemID) : base(inactiveItemID)
+    public SoulStone(string account = null, int inactiveItemID = 0x2A93, int activeItemID = 0x2A94) :
+      base(inactiveItemID)
     {
       Light = LightType.Circle300;
       LootType = LootType.Blessed;
@@ -839,22 +825,13 @@ namespace Server.Items
     private int m_UsesRemaining;
 
     [Constructible]
-    public SoulstoneFragment() : this(5, null)
-    {
-    }
-
-    [Constructible]
-    public SoulstoneFragment(int usesRemaining) : this(usesRemaining, null)
-    {
-    }
-
-    [Constructible]
     public SoulstoneFragment(string account) : this(5, account)
     {
     }
 
     [Constructible]
-    public SoulstoneFragment(int usesRemaining, string account) : base(account, Utility.Random(0x2AA1, 9))
+    public SoulstoneFragment(int usesRemaining = 5, string account = null) :
+      base(account, Utility.Random(0x2AA1, 9))
     {
       m_UsesRemaining = usesRemaining;
     }
@@ -940,13 +917,7 @@ namespace Server.Items
   public class BlueSoulstone : SoulStone
   {
     [Constructible]
-    public BlueSoulstone()
-      : this(null)
-    {
-    }
-
-    [Constructible]
-    public BlueSoulstone(string account)
+    public BlueSoulstone(string account = null)
       : base(account, 0x2ADC, 0x2ADD)
     {
     }
@@ -995,13 +966,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public RedSoulstone()
-      : this(null)
-    {
-    }
-
-    [Constructible]
-    public RedSoulstone(string account)
+    public RedSoulstone(string account = null)
       : base(account, 0x32F3, 0x32F4)
     {
     }

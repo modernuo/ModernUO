@@ -7,12 +7,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class EscortObjective : BaseObjective
   {
-    public EscortObjective()
-      : this(null)
-    {
-    }
-
-    public EscortObjective(QuestArea destination)
+    public EscortObjective(QuestArea destination = null)
     {
       Destination = destination;
     }

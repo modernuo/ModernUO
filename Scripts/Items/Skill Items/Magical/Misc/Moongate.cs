@@ -11,26 +11,22 @@ namespace Server.Items
   [DispellableField]
   public class Moongate : Item
   {
+
     [Constructible]
-    public Moongate() : this(Point3D.Zero, null)
+    public Moongate(bool dispellable = true) :
+      this(Point3D.Zero, null, dispellable)
     {
-      Dispellable = true;
     }
 
     [Constructible]
-    public Moongate(bool bDispellable) : this(Point3D.Zero, null)
-    {
-      Dispellable = bDispellable;
-    }
-
-    [Constructible]
-    public Moongate(Point3D target, Map targetMap) : base(0xF6C)
+    public Moongate(Point3D target, Map targetMap = null, bool dispellable = true) : base(0xF6C)
     {
       Movable = false;
       Light = LightType.Circle300;
 
       Target = target;
       TargetMap = targetMap;
+      Dispellable = dispellable;
     }
 
     public Moongate(Serial serial) : base(serial)

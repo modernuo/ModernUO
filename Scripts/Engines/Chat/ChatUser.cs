@@ -190,32 +190,12 @@ namespace Server.Engines.Chat
       return null;
     }
 
-    public static void GlobalSendCommand(ChatCommand command)
-    {
-      GlobalSendCommand(command, null, null, null);
-    }
-
-    public static void GlobalSendCommand(ChatCommand command, string param1)
-    {
-      GlobalSendCommand(command, null, param1, null);
-    }
-
-    public static void GlobalSendCommand(ChatCommand command, string param1, string param2)
+    public static void GlobalSendCommand(ChatCommand command, string param1, string param2 = null)
     {
       GlobalSendCommand(command, null, param1, param2);
     }
 
-    public static void GlobalSendCommand(ChatCommand command, ChatUser initiator)
-    {
-      GlobalSendCommand(command, initiator, null, null);
-    }
-
-    public static void GlobalSendCommand(ChatCommand command, ChatUser initiator, string param1)
-    {
-      GlobalSendCommand(command, initiator, param1, null);
-    }
-
-    public static void GlobalSendCommand(ChatCommand command, ChatUser initiator, string param1, string param2)
+    public static void GlobalSendCommand(ChatCommand command, ChatUser initiator = null, string param1 = null, string param2 = null)
     {
       for (int i = 0; i < m_Users.Count; ++i)
       {

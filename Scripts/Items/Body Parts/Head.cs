@@ -10,13 +10,7 @@ namespace Server.Items
   public class Head : Item
   {
     [Constructible]
-    public Head()
-      : this(null)
-    {
-    }
-
-    [Constructible]
-    public Head(string playerName)
+    public Head(string playerName = null)
       : this(HeadType.Regular, playerName)
     {
     }

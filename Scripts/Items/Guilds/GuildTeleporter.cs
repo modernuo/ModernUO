@@ -7,12 +7,7 @@ namespace Server.Items
   {
     private Item m_Stone;
 
-    [Constructible]
-    public GuildTeleporter() : this(null)
-    {
-    }
-
-    public GuildTeleporter(Item stone) : base(0x1869)
+    public GuildTeleporter(Item stone = null) : base(0x1869)
     {
       Weight = 1.0;
       LootType = LootType.Blessed;

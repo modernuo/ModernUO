@@ -6,17 +6,9 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class KillObjective : BaseObjective
   {
-    public KillObjective()
-      : this(0, null, null, null)
-    {
-    }
 
-    public KillObjective(int amount, Type[] types, TextDefinition name)
-      : this(amount, types, name, null)
-    {
-    }
-
-    public KillObjective(int amount, Type[] types, TextDefinition name, QuestArea area)
+    public KillObjective(
+      int amount = 0, Type[] types = null, TextDefinition name = null, QuestArea area = null)
     {
       DesiredAmount = amount;
       AcceptedTypes = types;
@@ -73,12 +65,7 @@ namespace Server.Engines.MLQuests.Objectives
 
   public class TimedKillObjective : KillObjective
   {
-    public TimedKillObjective(TimeSpan duration, int amount, Type[] types, TextDefinition name)
-      : this(duration, amount, types, name, null)
-    {
-    }
-
-    public TimedKillObjective(TimeSpan duration, int amount, Type[] types, TextDefinition name, QuestArea area)
+    public TimedKillObjective(TimeSpan duration, int amount, Type[] types, TextDefinition name, QuestArea area = null)
       : base(amount, types, name, area)
     {
       Duration = duration;

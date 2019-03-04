@@ -10,18 +10,13 @@ namespace Server.Engines.MLQuests.Items
 
     [Constructible]
     public MLQuestTeleporter()
-      : this(Point3D.Zero, null, null, null)
+      : this(Point3D.Zero)
     {
     }
 
     [Constructible]
-    public MLQuestTeleporter(Point3D pointDest, Map mapDest)
-      : this(pointDest, mapDest, null, null)
-    {
-    }
-
-    [Constructible]
-    public MLQuestTeleporter(Point3D pointDest, Map mapDest, Type questType, TextDefinition message)
+    public MLQuestTeleporter(
+      Point3D pointDest, Map mapDest = null, Type questType = null, TextDefinition message = null)
       : base(pointDest, mapDest)
     {
       m_QuestType = questType;
@@ -110,18 +105,13 @@ namespace Server.Engines.MLQuests.Items
 
     [Constructible]
     public TicketTeleporter()
-      : this(Point3D.Zero, null, null, null)
+      : this(Point3D.Zero)
     {
     }
 
     [Constructible]
-    public TicketTeleporter(Point3D pointDest, Map mapDest)
-      : this(pointDest, mapDest, null, null)
-    {
-    }
-
-    [Constructible]
-    public TicketTeleporter(Point3D pointDest, Map mapDest, Type ticketType, TextDefinition message)
+    public TicketTeleporter(
+      Point3D pointDest, Map mapDest = null, Type ticketType = null, TextDefinition message = null)
       : base(pointDest, mapDest)
     {
       m_TicketType = ticketType;
@@ -154,7 +144,7 @@ namespace Server.Engines.MLQuests.Items
 
       if (m_TicketType == null)
         return true;
-      
+
       Container pack = m.Backpack;
       Item ticket = pack?.FindItemByType(m_TicketType, false) ?? m.Items.Find(item => m_TicketType.IsInstanceOfType(item));
 

@@ -8,7 +8,7 @@ namespace Server.Factions
     private Sigil m_Sigil;
     private Town m_Town;
 
-    public BaseMonolith(Town town, Faction faction) : base(0x1183)
+    public BaseMonolith(Town town = null, Faction faction = null) : base(0x1183)
     {
       Movable = false;
       Town = town;
