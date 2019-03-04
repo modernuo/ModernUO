@@ -46,12 +46,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public StoneAnkh() : this(true)
-    {
-    }
-
-    [Constructible]
-    public StoneAnkh(bool east)
+    public StoneAnkh(bool east = true)
     {
       if (east)
       {

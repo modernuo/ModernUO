@@ -4,11 +4,7 @@ namespace Server.Items
   {
     private CraftResource m_Resource;
 
-    public BaseLeather(CraftResource resource) : this(resource, 1)
-    {
-    }
-
-    public BaseLeather(CraftResource resource, int amount) : base(0x1081)
+    public BaseLeather(CraftResource resource, int amount = 1) : base(0x1081)
     {
       Stackable = true;
       Weight = 1.0;
@@ -107,12 +103,7 @@ namespace Server.Items
   public class Leather : BaseLeather
   {
     [Constructible]
-    public Leather() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Leather(int amount) : base(CraftResource.RegularLeather, amount)
+    public Leather(int amount = 1) : base(CraftResource.RegularLeather, amount)
     {
     }
 
@@ -139,12 +130,7 @@ namespace Server.Items
   public class SpinedLeather : BaseLeather
   {
     [Constructible]
-    public SpinedLeather() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SpinedLeather(int amount) : base(CraftResource.SpinedLeather, amount)
+    public SpinedLeather(int amount = 1) : base(CraftResource.SpinedLeather, amount)
     {
     }
 
@@ -171,12 +157,7 @@ namespace Server.Items
   public class HornedLeather : BaseLeather
   {
     [Constructible]
-    public HornedLeather() : this(1)
-    {
-    }
-
-    [Constructible]
-    public HornedLeather(int amount) : base(CraftResource.HornedLeather, amount)
+    public HornedLeather(int amount = 1) : base(CraftResource.HornedLeather, amount)
     {
     }
 
@@ -203,12 +184,7 @@ namespace Server.Items
   public class BarbedLeather : BaseLeather
   {
     [Constructible]
-    public BarbedLeather() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BarbedLeather(int amount) : base(CraftResource.BarbedLeather, amount)
+    public BarbedLeather(int amount = 1) : base(CraftResource.BarbedLeather, amount)
     {
     }
 

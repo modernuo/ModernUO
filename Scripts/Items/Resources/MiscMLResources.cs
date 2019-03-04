@@ -3,13 +3,7 @@ namespace Server.Items
   public class Blight : Item
   {
     [Constructible]
-    public Blight()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public Blight(int amount)
+    public Blight(int amount = 1)
       : base(0x3183)
     {
       Stackable = true;
@@ -39,13 +33,7 @@ namespace Server.Items
   public class LuminescentFungi : Item
   {
     [Constructible]
-    public LuminescentFungi()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public LuminescentFungi(int amount)
+    public LuminescentFungi(int amount = 1)
       : base(0x3191)
     {
       Stackable = true;
@@ -76,13 +64,7 @@ namespace Server.Items
   public class CapturedEssence : Item
   {
     [Constructible]
-    public CapturedEssence()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public CapturedEssence(int amount)
+    public CapturedEssence(int amount = 1)
       : base(0x318E)
     {
       Stackable = true;

@@ -3,12 +3,7 @@ namespace Server.Items
   public class ResurrectionScroll : SpellScroll
   {
     [Constructible]
-    public ResurrectionScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ResurrectionScroll(int amount) : base(58, 0x1F67, amount)
+    public ResurrectionScroll(int amount = 1) : base(58, 0x1F67, amount)
     {
     }
 

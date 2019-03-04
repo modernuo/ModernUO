@@ -13,12 +13,7 @@ namespace Server.Items
     private int m_UsesRemaining;
 
     [Constructible]
-    public WeaponEngravingTool() : this(10)
-    {
-    }
-
-    [Constructible]
-    public WeaponEngravingTool(int uses) : base(0x32F8)
+    public WeaponEngravingTool(int uses = 10) : base(0x32F8)
     {
       LootType = LootType.Blessed;
       Weight = 1.0;
@@ -130,7 +125,7 @@ namespace Server.Items
     {
       if (from.Backpack == null)
         return;
-      
+
       BlueDiamond diamond = from.Backpack.FindItemByType<BlueDiamond>();
 
       if (guildmaster != null)

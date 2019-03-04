@@ -76,11 +76,7 @@ namespace Server.Items
 
   public class PlagueBeastComponent : PlagueBeastInnard
   {
-    public PlagueBeastComponent(int itemID, int hue) : this(itemID, hue, false)
-    {
-    }
-
-    public PlagueBeastComponent(int itemID, int hue, bool movable) : base(itemID, hue)
+    public PlagueBeastComponent(int itemID, int hue, bool movable = false) : base(itemID, hue)
     {
       Movable = movable;
     }

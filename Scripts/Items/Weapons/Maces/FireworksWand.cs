@@ -7,12 +7,7 @@ namespace Server.Items
     private int m_Charges;
 
     [Constructible]
-    public FireworksWand() : this(100)
-    {
-    }
-
-    [Constructible]
-    public FireworksWand(int charges)
+    public FireworksWand(int charges = 100)
     {
       m_Charges = charges;
       LootType = LootType.Blessed;

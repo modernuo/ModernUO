@@ -11,12 +11,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public DecorativeShield() : this(0x156C)
-    {
-    }
-
-    [Constructible]
-    public DecorativeShield(int itemID) : base(itemID)
+    public DecorativeShield(int itemID = 0x156C) : base(itemID)
     {
       Movable = false;
     }

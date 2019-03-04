@@ -3,12 +3,7 @@ namespace Server.Items
   public class VampiricEmbraceScroll : SpellScroll
   {
     [Constructible]
-    public VampiricEmbraceScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public VampiricEmbraceScroll(int amount) : base(112, 0x226C, amount)
+    public VampiricEmbraceScroll(int amount = 1) : base(112, 0x226C, amount)
     {
     }
 

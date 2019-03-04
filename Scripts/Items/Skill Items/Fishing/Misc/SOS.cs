@@ -52,12 +52,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public SOS() : this(Map.Trammel)
-    {
-    }
-
-    [Constructible]
-    public SOS(Map map) : this(map, MessageInABottle.GetRandomLevel())
+    public SOS(Map map = null) : this(map, MessageInABottle.GetRandomLevel())
     {
     }
 
@@ -68,7 +63,7 @@ namespace Server.Items
 
       m_Level = level;
       MessageIndex = Utility.Random(MessageEntry.Entries.Length);
-      TargetMap = map;
+      TargetMap = map ?? Map.Trammel;
       TargetLocation = FindLocation(TargetMap);
 
       UpdateHue();

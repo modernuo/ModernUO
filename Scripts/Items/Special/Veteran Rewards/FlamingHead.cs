@@ -11,12 +11,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public FlamingHead() : this(StoneFaceTrapType.NorthWall)
-    {
-    }
-
-    [Constructible]
-    public FlamingHead(StoneFaceTrapType type)
+    public FlamingHead(StoneFaceTrapType type = StoneFaceTrapType.NorthWall)
     {
       LootType = LootType.Blessed;
       Movable = false;
@@ -240,7 +235,7 @@ namespace Server.Items
                 if (north && west)
                   head = new FlamingHead(StoneFaceTrapType.NorthWestWall);
                 else if (north)
-                  head = new FlamingHead(StoneFaceTrapType.NorthWall);
+                  head = new FlamingHead();
                 else if (west)
                   head = new FlamingHead(StoneFaceTrapType.WestWall);
 

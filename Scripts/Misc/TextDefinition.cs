@@ -7,19 +7,11 @@ namespace Server
   [Parsable]
   public class TextDefinition
   {
-    public TextDefinition() : this(0, null)
-    {
-    }
-
-    public TextDefinition(int number) : this(number, null)
-    {
-    }
-
     public TextDefinition(string text) : this(0, text)
     {
     }
 
-    public TextDefinition(int number, string text)
+    public TextDefinition(int number = 0, string text = null)
     {
       Number = number;
       String = text;

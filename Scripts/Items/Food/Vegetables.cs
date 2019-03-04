@@ -4,12 +4,7 @@ namespace Server.Items
   public class Carrot : Food
   {
     [Constructible]
-    public Carrot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Carrot(int amount) : base(amount, 0xc78)
+    public Carrot(int amount = 1) : base(amount, 0xc78)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -38,12 +33,7 @@ namespace Server.Items
   public class Cabbage : Food
   {
     [Constructible]
-    public Cabbage() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Cabbage(int amount) : base(amount, 0xc7b)
+    public Cabbage(int amount = 1) : base(amount, 0xc7b)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -72,12 +62,7 @@ namespace Server.Items
   public class Onion : Food
   {
     [Constructible]
-    public Onion() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Onion(int amount) : base(amount, 0xc6d)
+    public Onion(int amount = 1) : base(amount, 0xc6d)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -106,12 +91,7 @@ namespace Server.Items
   public class Lettuce : Food
   {
     [Constructible]
-    public Lettuce() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Lettuce(int amount) : base(amount, 0xc70)
+    public Lettuce(int amount = 1) : base(amount, 0xc70)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -140,12 +120,7 @@ namespace Server.Items
   public class Pumpkin : Food
   {
     [Constructible]
-    public Pumpkin() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Pumpkin(int amount) : base(amount, 0xC6A)
+    public Pumpkin(int amount = 1) : base(amount, 0xC6A)
     {
       Weight = 1.0;
       FillFactor = 8;
@@ -182,12 +157,7 @@ namespace Server.Items
   public class SmallPumpkin : Food
   {
     [Constructible]
-    public SmallPumpkin() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SmallPumpkin(int amount) : base(amount, 0xC6C)
+    public SmallPumpkin(int amount = 1) : base(amount, 0xC6C)
     {
       Weight = 1.0;
       FillFactor = 8;

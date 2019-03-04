@@ -423,16 +423,11 @@ namespace Server.Items
   public class IronOre : BaseOre
   {
     [Constructible]
-    public IronOre() : this(1)
+    public IronOre(int amount = 1) : base(CraftResource.Iron, amount)
     {
     }
 
-    [Constructible]
-    public IronOre(int amount) : base(CraftResource.Iron, amount)
-    {
-    }
-
-    public IronOre(bool fixedSize) : this(1)
+    public IronOre(bool fixedSize) : this()
     {
       if (fixedSize)
         ItemID = 0x19B8;
@@ -465,12 +460,7 @@ namespace Server.Items
   public class DullCopperOre : BaseOre
   {
     [Constructible]
-    public DullCopperOre() : this(1)
-    {
-    }
-
-    [Constructible]
-    public DullCopperOre(int amount) : base(CraftResource.DullCopper, amount)
+    public DullCopperOre(int amount = 1) : base(CraftResource.DullCopper, amount)
     {
     }
 
@@ -501,12 +491,7 @@ namespace Server.Items
   public class ShadowIronOre : BaseOre
   {
     [Constructible]
-    public ShadowIronOre() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ShadowIronOre(int amount) : base(CraftResource.ShadowIron, amount)
+    public ShadowIronOre(int amount = 1) : base(CraftResource.ShadowIron, amount)
     {
     }
 
@@ -537,12 +522,7 @@ namespace Server.Items
   public class CopperOre : BaseOre
   {
     [Constructible]
-    public CopperOre() : this(1)
-    {
-    }
-
-    [Constructible]
-    public CopperOre(int amount) : base(CraftResource.Copper, amount)
+    public CopperOre(int amount = 1) : base(CraftResource.Copper, amount)
     {
     }
 
@@ -573,12 +553,7 @@ namespace Server.Items
   public class BronzeOre : BaseOre
   {
     [Constructible]
-    public BronzeOre() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BronzeOre(int amount) : base(CraftResource.Bronze, amount)
+    public BronzeOre(int amount = 1) : base(CraftResource.Bronze, amount)
     {
     }
 
@@ -609,12 +584,7 @@ namespace Server.Items
   public class GoldOre : BaseOre
   {
     [Constructible]
-    public GoldOre() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GoldOre(int amount) : base(CraftResource.Gold, amount)
+    public GoldOre(int amount = 1) : base(CraftResource.Gold, amount)
     {
     }
 
@@ -645,12 +615,7 @@ namespace Server.Items
   public class AgapiteOre : BaseOre
   {
     [Constructible]
-    public AgapiteOre() : this(1)
-    {
-    }
-
-    [Constructible]
-    public AgapiteOre(int amount) : base(CraftResource.Agapite, amount)
+    public AgapiteOre(int amount = 1) : base(CraftResource.Agapite, amount)
     {
     }
 
@@ -681,12 +646,7 @@ namespace Server.Items
   public class VeriteOre : BaseOre
   {
     [Constructible]
-    public VeriteOre() : this(1)
-    {
-    }
-
-    [Constructible]
-    public VeriteOre(int amount) : base(CraftResource.Verite, amount)
+    public VeriteOre(int amount = 1) : base(CraftResource.Verite, amount)
     {
     }
 
@@ -717,12 +677,7 @@ namespace Server.Items
   public class ValoriteOre : BaseOre
   {
     [Constructible]
-    public ValoriteOre() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ValoriteOre(int amount) : base(CraftResource.Valorite, amount)
+    public ValoriteOre(int amount = 1) : base(CraftResource.Valorite, amount)
     {
     }
 

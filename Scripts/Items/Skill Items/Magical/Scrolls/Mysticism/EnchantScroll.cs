@@ -3,13 +3,7 @@ namespace Server.Items
   public class EnchantScroll : SpellScroll
   {
     [Constructible]
-    public EnchantScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public EnchantScroll(int amount)
+    public EnchantScroll(int amount = 1)
       : base(680, 0x2DA1, amount)
     {
     }

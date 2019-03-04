@@ -2,11 +2,7 @@ namespace Server.Items
 {
   public abstract class BaseReagent : Item
   {
-    public BaseReagent(int itemID) : this(itemID, 1)
-    {
-    }
-
-    public BaseReagent(int itemID, int amount) : base(itemID)
+    public BaseReagent(int itemID, int amount = 1) : base(itemID)
     {
       Stackable = true;
       Amount = amount;

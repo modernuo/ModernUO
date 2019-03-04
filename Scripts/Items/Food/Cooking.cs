@@ -598,12 +598,7 @@ namespace Server.Items
   public class WheatSheaf : Item
   {
     [Constructible]
-    public WheatSheaf() : this(1)
-    {
-    }
-
-    [Constructible]
-    public WheatSheaf(int amount) : base(7869)
+    public WheatSheaf(int amount = 1) : base(7869)
     {
       Weight = 1.0;
       Stackable = true;

@@ -3,12 +3,7 @@ namespace Server.Items
   public class Bolt : Item, ICommodity
   {
     [Constructible]
-    public Bolt() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Bolt(int amount) : base(0x1BFB)
+    public Bolt(int amount = 1) : base(0x1BFB)
     {
       Stackable = true;
       Amount = amount;

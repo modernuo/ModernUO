@@ -3,12 +3,7 @@ namespace Server.Items
   public class DaemonBlood : BaseReagent, ICommodity
   {
     [Constructible]
-    public DaemonBlood() : this(1)
-    {
-    }
-
-    [Constructible]
-    public DaemonBlood(int amount) : base(0xF7D, amount)
+    public DaemonBlood(int amount = 1) : base(0xF7D, amount)
     {
     }
 

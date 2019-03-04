@@ -3,12 +3,7 @@ namespace Server.Items
   public class AgilityScroll : SpellScroll
   {
     [Constructible]
-    public AgilityScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public AgilityScroll(int amount) : base(8, 0x1F35, amount)
+    public AgilityScroll(int amount = 1) : base(8, 0x1F35, amount)
     {
     }
 

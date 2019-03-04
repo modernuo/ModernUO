@@ -11,12 +11,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public HangingSkeleton() : this(0x1596)
-    {
-    }
-
-    [Constructible]
-    public HangingSkeleton(int itemID) : base(itemID)
+    public HangingSkeleton(int itemID = 0x1596) : base(itemID)
     {
       LootType = LootType.Blessed;
       Movable = false;

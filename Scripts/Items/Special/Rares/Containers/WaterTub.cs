@@ -6,13 +6,7 @@
     private static int fItemID = 0xe7b;
 
     [Constructible]
-    public Tub()
-      : this(false)
-    {
-    }
-
-    [Constructible]
-    public Tub(bool filled)
+    public Tub(bool filled = false)
       : base(filled ? fItemID : vItemID, filled)
     {
     }

@@ -3,13 +3,7 @@
   public class DragonsBlood : BaseReagent, ICommodity
   {
     [Constructible]
-    public DragonsBlood()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public DragonsBlood(int amount)
+    public DragonsBlood(int amount = 1)
       : base(0x4077, amount)
     {
     }

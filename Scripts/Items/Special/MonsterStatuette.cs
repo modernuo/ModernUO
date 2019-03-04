@@ -132,12 +132,8 @@ namespace Server.Items
     private MonsterStatuetteType m_Type;
 
     [Constructible]
-    public MonsterStatuette() : this(MonsterStatuetteType.Crocodile)
-    {
-    }
-
-    [Constructible]
-    public MonsterStatuette(MonsterStatuetteType type) : base(MonsterStatuetteInfo.GetInfo(type).ItemID)
+    public MonsterStatuette(MonsterStatuetteType type = MonsterStatuetteType.Crocodile) :
+      base(MonsterStatuetteInfo.GetInfo(type).ItemID)
     {
       LootType = LootType.Blessed;
 

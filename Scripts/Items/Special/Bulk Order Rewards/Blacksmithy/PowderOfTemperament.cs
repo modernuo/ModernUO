@@ -8,12 +8,7 @@ namespace Server.Items
     private int m_UsesRemaining;
 
     [Constructible]
-    public PowderOfTemperament() : this(10)
-    {
-    }
-
-    [Constructible]
-    public PowderOfTemperament(int charges) : base(4102)
+    public PowderOfTemperament(int charges = 10) : base(4102)
     {
       Weight = 1.0;
       Hue = 2419;

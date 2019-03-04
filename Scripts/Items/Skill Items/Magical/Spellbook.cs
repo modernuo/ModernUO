@@ -79,17 +79,7 @@ namespace Server.Items
     private SlayerName m_Slayer;
     private SlayerName m_Slayer2;
 
-    [Constructible]
-    public Spellbook() : this((ulong)0)
-    {
-    }
-
-    [Constructible]
-    public Spellbook(ulong content) : this(content, 0xEFA)
-    {
-    }
-
-    public Spellbook(ulong content, int itemID) : base(itemID)
+    public Spellbook(ulong content = 0, int itemID = 0xEFA) : base(itemID)
     {
       Attributes = new AosAttributes(this);
       SkillBonuses = new AosSkillBonuses(this);

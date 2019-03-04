@@ -6,12 +6,7 @@ namespace Server.Items
   public class Cloth : Item, IScissorable, IDyable, ICommodity
   {
     [Constructible]
-    public Cloth() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Cloth(int amount) : base(0x1766)
+    public Cloth(int amount = 1) : base(0x1766)
     {
       Stackable = true;
       Amount = amount;

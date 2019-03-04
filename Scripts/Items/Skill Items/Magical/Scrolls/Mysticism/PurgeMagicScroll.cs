@@ -3,13 +3,7 @@ namespace Server.Items
   public class PurgeMagicScroll : SpellScroll
   {
     [Constructible]
-    public PurgeMagicScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public PurgeMagicScroll(int amount)
+    public PurgeMagicScroll(int amount = 1)
       : base(679, 0x2DA0, amount)
     {
     }

@@ -23,12 +23,8 @@ namespace Server.Gumps
 
     private HouseRaffleStone m_Stone;
 
-    public HouseRaffleManagementGump(HouseRaffleStone stone)
-      : this(stone, SortMethod.Default, 0)
-    {
-    }
-
-    public HouseRaffleManagementGump(HouseRaffleStone stone, SortMethod sort, int page) : base(40, 40)
+    public HouseRaffleManagementGump(HouseRaffleStone stone, SortMethod sort = SortMethod.Default,
+      int page = 0) : base(40, 40)
     {
       m_Stone = stone;
       m_Page = page;
@@ -190,19 +186,19 @@ namespace Server.Gumps
         }
         case 3: // Sort by name
         {
-          from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Name, 0));
+          from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Name));
 
           break;
         }
         case 4: // Sort by account
         {
-          from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Account, 0));
+          from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Account));
 
           break;
         }
         case 5: // Sort by address
         {
-          from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Address, 0));
+          from.SendGump(new HouseRaffleManagementGump(m_Stone, SortMethod.Address));
 
           break;
         }

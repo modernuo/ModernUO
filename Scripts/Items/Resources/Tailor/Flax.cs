@@ -5,12 +5,7 @@ namespace Server.Items
   public class Flax : Item
   {
     [Constructible]
-    public Flax() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Flax(int amount) : base(0x1A9C)
+    public Flax(int amount = 1) : base(0x1A9C)
     {
       Stackable = true;
       Weight = 1.0;

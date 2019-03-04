@@ -5,12 +5,7 @@ namespace Server.Mobiles
   public class PricedHealer : BaseHealer
   {
     [Constructible]
-    public PricedHealer() : this(5000)
-    {
-    }
-
-    [Constructible]
-    public PricedHealer(int price)
+    public PricedHealer(int price = 5000)
     {
       Price = price;
 

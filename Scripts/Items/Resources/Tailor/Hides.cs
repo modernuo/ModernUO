@@ -4,11 +4,7 @@ namespace Server.Items
   {
     private CraftResource m_Resource;
 
-    public BaseHides(CraftResource resource) : this(resource, 1)
-    {
-    }
-
-    public BaseHides(CraftResource resource, int amount) : base(0x1079)
+    public BaseHides(CraftResource resource, int amount = 1) : base(0x1079)
     {
       Stackable = true;
       Weight = 5.0;
@@ -107,12 +103,7 @@ namespace Server.Items
   public class Hides : BaseHides, IScissorable
   {
     [Constructible]
-    public Hides() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Hides(int amount) : base(CraftResource.RegularLeather, amount)
+    public Hides(int amount = 1) : base(CraftResource.RegularLeather, amount)
     {
     }
 
@@ -154,12 +145,7 @@ namespace Server.Items
   public class SpinedHides : BaseHides, IScissorable
   {
     [Constructible]
-    public SpinedHides() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SpinedHides(int amount) : base(CraftResource.SpinedLeather, amount)
+    public SpinedHides(int amount = 1) : base(CraftResource.SpinedLeather, amount)
     {
     }
 
@@ -201,12 +187,7 @@ namespace Server.Items
   public class HornedHides : BaseHides, IScissorable
   {
     [Constructible]
-    public HornedHides() : this(1)
-    {
-    }
-
-    [Constructible]
-    public HornedHides(int amount) : base(CraftResource.HornedLeather, amount)
+    public HornedHides(int amount = 1) : base(CraftResource.HornedLeather, amount)
     {
     }
 
@@ -248,12 +229,7 @@ namespace Server.Items
   public class BarbedHides : BaseHides, IScissorable
   {
     [Constructible]
-    public BarbedHides() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BarbedHides(int amount) : base(CraftResource.BarbedLeather, amount)
+    public BarbedHides(int amount = 1) : base(CraftResource.BarbedLeather, amount)
     {
     }
 

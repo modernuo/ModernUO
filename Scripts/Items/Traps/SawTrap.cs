@@ -15,12 +15,7 @@ namespace Server.Items
   public class SawTrap : BaseTrap
   {
     [Constructible]
-    public SawTrap() : this(SawTrapType.NorthFloor)
-    {
-    }
-
-    [Constructible]
-    public SawTrap(SawTrapType type) : base(GetBaseID(type))
+    public SawTrap(SawTrapType type = SawTrapType.NorthFloor) : base(GetBaseID(type))
     {
     }
 

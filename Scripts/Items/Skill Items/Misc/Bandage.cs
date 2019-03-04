@@ -13,12 +13,7 @@ namespace Server.Items
     public static int Range = Core.AOS ? 2 : 1;
 
     [Constructible]
-    public Bandage() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Bandage(int amount) : base(0xE21)
+    public Bandage(int amount = 1) : base(0xE21)
     {
       Stackable = true;
       Amount = amount;

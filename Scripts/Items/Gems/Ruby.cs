@@ -3,12 +3,7 @@ namespace Server.Items
   public class Ruby : Item
   {
     [Constructible]
-    public Ruby() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Ruby(int amount) : base(0xF13)
+    public Ruby(int amount = 1) : base(0xF13)
     {
       Stackable = true;
       Amount = amount;

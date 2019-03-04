@@ -6,13 +6,7 @@
     private static int fItemID = 0x2004;
 
     [Constructible]
-    public Bucket()
-      : this(false)
-    {
-    }
-
-    [Constructible]
-    public Bucket(bool filled)
+    public Bucket(bool filled = false)
       : base(filled ? fItemID : vItemID, filled)
     {
     }

@@ -3,12 +3,7 @@ namespace Server.Items
   public class FireballScroll : SpellScroll
   {
     [Constructible]
-    public FireballScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public FireballScroll(int amount) : base(17, 0x1F3E, amount)
+    public FireballScroll(int amount = 1) : base(17, 0x1F3E, amount)
     {
     }
 

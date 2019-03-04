@@ -3,12 +3,7 @@ namespace Server.Items
   public class MeteorSwarmScroll : SpellScroll
   {
     [Constructible]
-    public MeteorSwarmScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public MeteorSwarmScroll(int amount) : base(54, 0x1F63, amount)
+    public MeteorSwarmScroll(int amount = 1) : base(54, 0x1F63, amount)
     {
     }
 

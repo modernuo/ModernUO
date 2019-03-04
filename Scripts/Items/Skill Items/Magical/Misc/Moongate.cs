@@ -229,12 +229,12 @@ namespace Server.Items
   public class ConfirmationMoongate : Moongate
   {
     [Constructible]
-    public ConfirmationMoongate() : this(Point3D.Zero, null)
+    public ConfirmationMoongate() : this(Point3D.Zero)
     {
     }
 
     [Constructible]
-    public ConfirmationMoongate(Point3D target, Map targetMap) : base(target, targetMap)
+    public ConfirmationMoongate(Point3D target, Map targetMap = null) : base(target, targetMap)
     {
     }
 

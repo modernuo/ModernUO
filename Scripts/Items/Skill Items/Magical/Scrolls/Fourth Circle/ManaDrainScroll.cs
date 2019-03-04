@@ -3,12 +3,7 @@ namespace Server.Items
   public class ManaDrainScroll : SpellScroll
   {
     [Constructible]
-    public ManaDrainScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ManaDrainScroll(int amount) : base(30, 0x1F4B, amount)
+    public ManaDrainScroll(int amount = 1) : base(30, 0x1F4B, amount)
     {
     }
 

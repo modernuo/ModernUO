@@ -3,12 +3,7 @@ namespace Server.Items
   public class SpellweavingBook : Spellbook
   {
     [Constructible]
-    public SpellweavingBook() : this((ulong)0)
-    {
-    }
-
-    [Constructible]
-    public SpellweavingBook(ulong content) : base(content, 0x2D50)
+    public SpellweavingBook(ulong content = 0) : base(content, 0x2D50)
     {
       Hue = 0x8A2;
 

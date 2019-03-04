@@ -222,7 +222,7 @@ namespace Server.Misc
 
       PlaceItemIn(cont, 45, 105, new Spellbook(ulong.MaxValue));
       PlaceItemIn(cont, 65, 105, new NecromancerSpellbook((ulong)0xFFFF));
-      PlaceItemIn(cont, 85, 105, new BookOfChivalry((ulong)0x3FF));
+      PlaceItemIn(cont, 85, 105, new BookOfChivalry());
       PlaceItemIn(cont, 105, 105, new BookOfBushido()); //Default ctor = full
       PlaceItemIn(cont, 125, 105, new BookOfNinjitsu()); //Default ctor = full
 
@@ -1076,7 +1076,7 @@ namespace Server.Misc
             EquipItem(new BodySash(0xCF));
           }
 
-          Spellbook book = new BookOfChivalry((ulong)0x3FF);
+          Spellbook book = new BookOfChivalry();
 
           PackItem(book);
 
@@ -1472,7 +1472,7 @@ namespace Server.Misc
         case SkillName.Chivalry:
         {
           if (Core.ML)
-            PackItem(new BookOfChivalry((ulong)0x3FF));
+            PackItem(new BookOfChivalry());
 
           break;
         }

@@ -3,12 +3,7 @@ namespace Server.Items
   public class GateTravelScroll : SpellScroll
   {
     [Constructible]
-    public GateTravelScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GateTravelScroll(int amount) : base(51, 0x1F60, amount)
+    public GateTravelScroll(int amount = 1) : base(51, 0x1F60, amount)
     {
     }
 

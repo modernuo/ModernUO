@@ -3,12 +3,7 @@ namespace Server.Items
   public class InvisibilityScroll : SpellScroll
   {
     [Constructible]
-    public InvisibilityScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public InvisibilityScroll(int amount) : base(43, 0x1F58, amount)
+    public InvisibilityScroll(int amount = 1) : base(43, 0x1F58, amount)
     {
     }
 

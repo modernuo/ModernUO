@@ -3,13 +3,7 @@ namespace Server.Items
   public class EagleStrikeScroll : SpellScroll
   {
     [Constructible]
-    public EagleStrikeScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public EagleStrikeScroll(int amount)
+    public EagleStrikeScroll(int amount = 1)
       : base(682, 0x2DA3, amount)
     {
     }

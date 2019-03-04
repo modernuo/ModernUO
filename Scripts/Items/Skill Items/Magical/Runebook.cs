@@ -20,6 +20,11 @@ namespace Server.Items
     private BookQuality m_Quality;
 
     [Constructible]
+    public Runebook() : this(Core.SE ? 12 : 6)
+    {
+    }
+
+    [Constructible]
     public Runebook(int maxCharges) : base(Core.AOS ? 0x22C5 : 0xEFA)
     {
       Weight = Core.SE ? 1.0 : 3.0;
@@ -35,11 +40,6 @@ namespace Server.Items
       m_DefaultIndex = -1;
 
       Level = SecureLevel.CoOwners;
-    }
-
-    [Constructible]
-    public Runebook() : this(Core.SE ? 12 : 6)
-    {
     }
 
     public Runebook(Serial serial) : base(serial)

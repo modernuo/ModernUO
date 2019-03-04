@@ -3,12 +3,7 @@ namespace Server.Items
   public class NightSightScroll : SpellScroll
   {
     [Constructible]
-    public NightSightScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public NightSightScroll(int amount) : base(5, 0x1F33, amount)
+    public NightSightScroll(int amount = 1) : base(5, 0x1F33, amount)
     {
     }
 
