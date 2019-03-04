@@ -175,17 +175,12 @@ namespace Server.Engines.Events
 
 		private PlayerMobile m_DeadPlayer;
 
-		public ZombieSkeleton()
-			: this( null )
-		{
-		}
-
-		public ZombieSkeleton( PlayerMobile player )
+		public ZombieSkeleton(PlayerMobile player = null)
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			m_DeadPlayer = player;
 
-			Name = ( player != null ) ? $"{player.Name}'s {m_Name}" : m_Name;
+			Name = player != null ? $"{player.Name}'s {m_Name}" : m_Name;
 
 			Body = 0x93;
 			BaseSoundID = 0x1c3;

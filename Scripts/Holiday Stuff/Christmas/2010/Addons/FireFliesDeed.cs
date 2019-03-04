@@ -8,13 +8,7 @@ namespace Server.Items
   public class Fireflies : Item, IAddon
   {
     [Constructible]
-    public Fireflies()
-      : this(0x1596)
-    {
-    }
-
-    [Constructible]
-    public Fireflies(int itemID)
+    public Fireflies(int itemID = 0x1596)
       : base(itemID)
     {
       LootType = LootType.Blessed;

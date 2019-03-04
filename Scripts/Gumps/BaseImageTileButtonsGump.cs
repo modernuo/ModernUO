@@ -11,16 +11,12 @@ namespace Server.Gumps
     private TextDefinition m_Label;
     private int m_LocalizedTooltip;
 
-    public ImageTileButtonInfo(int itemID, int hue, TextDefinition label, int localizedTooltip)
+    public ImageTileButtonInfo(int itemID, int hue, TextDefinition label, int localizedTooltip = -1)
     {
       m_Hue = hue;
       m_ItemID = itemID;
       m_Label = label;
       m_LocalizedTooltip = localizedTooltip;
-    }
-
-    public ImageTileButtonInfo(int itemID, int hue, TextDefinition label) : this(itemID, hue, label, -1)
-    {
     }
 
     public virtual int ItemID

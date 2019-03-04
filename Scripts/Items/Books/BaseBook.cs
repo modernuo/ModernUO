@@ -48,23 +48,18 @@ namespace Server.Items
     private string m_Title;
 
     [Constructible]
-    public BaseBook(int itemID) : this(itemID, 20, true)
-    {
-    }
-
-    [Constructible]
-    public BaseBook(int itemID, int pageCount, bool writable) : this(itemID, null, null, pageCount, writable)
+    public BaseBook(int itemID, int pageCount = 20, bool writable = true) : this(itemID, null, null, pageCount, writable)
     {
     }
 
     [Constructible]
     public BaseBook(int itemID, string title, string author, int pageCount, bool writable) : base(itemID)
     {
-      m_Title = title;
-      m_Author = author;
-      Writable = writable;
-
       BookContent content = DefaultContent;
+
+      m_Title = title ?? content?.Title;
+      m_Author = author ?? content?.Author;
+      Writable = writable;
 
       if (content == null)
       {
@@ -80,22 +75,8 @@ namespace Server.Items
     }
 
     // Intended for defined books only
-    public BaseBook(int itemID, bool writable) : base(itemID)
+    public BaseBook(int itemID, bool writable) : this(itemID, 0)
     {
-      Writable = writable;
-
-      BookContent content = DefaultContent;
-
-      if (content == null)
-      {
-        Pages = new BookPageInfo[0];
-      }
-      else
-      {
-        m_Title = content.Title;
-        m_Author = content.Author;
-        Pages = content.Copy();
-      }
     }
 
     public BaseBook(Serial serial) : base(serial)

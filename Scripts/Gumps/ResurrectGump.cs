@@ -20,42 +20,22 @@ namespace Server.Gumps
 		private bool m_FromSacrifice;
 		private double m_HitsScalar;
 
-		public ResurrectGump( Mobile owner )
-			: this( owner, owner, ResurrectMessage.Generic, false )
+		public ResurrectGump(Mobile owner, double hitsScalar)
+			: this(owner, owner, ResurrectMessage.Generic, false, hitsScalar)
 		{
 		}
 
-		public ResurrectGump( Mobile owner, double hitsScalar )
-			: this( owner, owner, ResurrectMessage.Generic, false, hitsScalar )
+		public ResurrectGump(Mobile owner, ResurrectMessage msg) : this(owner, owner, msg)
 		{
 		}
 
-		public ResurrectGump( Mobile owner, bool fromSacrifice )
-			: this( owner, owner, ResurrectMessage.Generic, fromSacrifice )
+		public ResurrectGump(Mobile owner, bool fromSacrifice = false)
+			: this(owner, owner, ResurrectMessage.Generic, fromSacrifice)
 		{
 		}
 
-		public ResurrectGump( Mobile owner, Mobile healer )
-			: this( owner, healer, ResurrectMessage.Generic, false )
-		{
-		}
-
-		public ResurrectGump( Mobile owner, ResurrectMessage msg )
-			: this( owner, owner, msg, false )
-		{
-		}
-
-		public ResurrectGump( Mobile owner, Mobile healer, ResurrectMessage msg )
-			: this( owner, healer, msg, false )
-		{
-		}
-
-		public ResurrectGump( Mobile owner, Mobile healer, ResurrectMessage msg, bool fromSacrifice )
-			: this( owner, healer, msg, fromSacrifice, 0.0 )
-		{
-		}
-
-		public ResurrectGump( Mobile owner, Mobile healer, ResurrectMessage msg, bool fromSacrifice, double hitsScalar )
+		public ResurrectGump(Mobile owner, Mobile healer, ResurrectMessage msg = ResurrectMessage.Generic,
+			bool fromSacrifice = false, double hitsScalar = 0.0)
 			: base( 100, 0 )
 		{
 			m_Healer = healer;

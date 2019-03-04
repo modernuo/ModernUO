@@ -131,7 +131,7 @@ namespace Server.Items
 
     private class AnkhResurrectGump : ResurrectGump
     {
-      public AnkhResurrectGump(Mobile owner, ResurrectMessage msg) : base(owner, owner, msg, false)
+      public AnkhResurrectGump(Mobile owner, ResurrectMessage msg) : base(owner, owner, msg)
       {
       }
 

@@ -196,11 +196,7 @@ namespace Server.Gumps
     private SkillsGumpGroup m_Selected;
     private Mobile m_Target;
 
-    public SkillsGump(Mobile from, Mobile target) : this(from, target, null)
-    {
-    }
-
-    public SkillsGump(Mobile from, Mobile target, SkillsGumpGroup selected) : base(GumpOffsetX, GumpOffsetY)
+    public SkillsGump(Mobile from, Mobile target, SkillsGumpGroup selected = null) : base(GumpOffsetX, GumpOffsetY)
     {
       m_From = from;
       m_Target = target;
@@ -378,7 +374,7 @@ namespace Server.Gumps
             if (m_Selected != newSelection)
               m_From.SendGump(new SkillsGump(m_From, m_Target, newSelection));
             else
-              m_From.SendGump(new SkillsGump(m_From, m_Target, null));
+              m_From.SendGump(new SkillsGump(m_From, m_Target));
           }
 
           break;

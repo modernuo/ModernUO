@@ -4,11 +4,7 @@ namespace Server.Items
 {
   public abstract class BaseCloak : BaseClothing
   {
-    public BaseCloak(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BaseCloak(int itemID, int hue) : base(itemID, Layer.Cloak, hue)
+    public BaseCloak(int itemID, int hue = 0) : base(itemID, Layer.Cloak, hue)
     {
     }
 
@@ -164,12 +160,7 @@ namespace Server.Items
     private int m_LabelNumber;
 
     [Constructible]
-    public RewardCloak(int hue = 0) : this(hue, 0)
-    {
-    }
-
-    [Constructible]
-    public RewardCloak(int hue, int labelNumber) : base(0x1515, hue)
+    public RewardCloak(int hue = 0, int labelNumber = 0) : base(0x1515, hue)
     {
       Weight = 5.0;
       LootType = LootType.Blessed;

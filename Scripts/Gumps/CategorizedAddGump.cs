@@ -111,20 +111,11 @@ namespace Server.Gumps
 
     public override string Caption => Title;
 
-    public static CAGCategory Root
-    {
-      get
-      {
-        if (m_Root == null)
-          m_Root = Load("Data/objects.xml");
-
-        return m_Root;
-      }
-    }
+    public static CAGCategory Root => m_Root ?? (m_Root = Load("Data/objects.xml"));
 
     public override void OnClick(Mobile from, int page)
     {
-      from.SendGump(new CategorizedAddGump(from, this, 0));
+      from.SendGump(new CategorizedAddGump(from, this));
     }
 
     public static CAGCategory Load(string path)
@@ -215,11 +206,11 @@ namespace Server.Gumps
     private Mobile m_Owner;
     private int m_Page;
 
-    public CategorizedAddGump(Mobile owner) : this(owner, CAGCategory.Root, 0)
+    public CategorizedAddGump(Mobile owner) : this(owner, CAGCategory.Root)
     {
     }
 
-    public CategorizedAddGump(Mobile owner, CAGCategory category, int page) : base(GumpOffsetX, GumpOffsetY)
+    public CategorizedAddGump(Mobile owner, CAGCategory category, int page = 0) : base(GumpOffsetX, GumpOffsetY)
     {
       owner.CloseGump<WhoGump>();
 

@@ -12,11 +12,7 @@ namespace Server.Gumps
     private const int LabelColor32 = 0xFFFFFF;
     private NetState m_State;
 
-    public ClientGump(Mobile from, NetState state) : this(from, state, "")
-    {
-    }
-
-    public ClientGump(Mobile from, NetState state, string initialText) : base(30, 20)
+    public ClientGump(Mobile from, NetState state, string initialText = "") : base(30, 20)
     {
       if (state == null)
         return;

@@ -90,11 +90,7 @@ namespace Server.Gumps
 			}
 		}
 
-		public ReportMurdererGump( Mobile victum, List<Mobile> killers ) : this( victum, killers, 0 )
-		{
-		}
-
-		private ReportMurdererGump( Mobile victum, List<Mobile> killers, int idx ) : base( 0, 0 )
+		private ReportMurdererGump(Mobile victum, List<Mobile> killers, int idx = 0) : base( 0, 0 )
 		{
 			m_Killers = killers;
 			m_Victum = victum;

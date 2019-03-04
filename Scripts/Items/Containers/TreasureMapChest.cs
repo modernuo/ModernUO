@@ -14,11 +14,11 @@ namespace Server.Items
     private Timer m_Timer;
 
     [Constructible]
-    public TreasureMapChest(int level) : this(null, level, false)
+    public TreasureMapChest(int level) : this(null, level)
     {
     }
 
-    public TreasureMapChest(Mobile owner, int level, bool temporary) : base(0xE40)
+    public TreasureMapChest(Mobile owner, int level, bool temporary = false) : base(0xE40)
     {
       Owner = owner;
       Level = level;

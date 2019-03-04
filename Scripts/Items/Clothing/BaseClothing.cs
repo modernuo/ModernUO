@@ -31,11 +31,7 @@ namespace Server.Items
     protected CraftResource m_Resource;
     private int m_StrReq = -1;
 
-    public BaseClothing(int itemID, Layer layer) : this(itemID, layer, 0)
-    {
-    }
-
-    public BaseClothing(int itemID, Layer layer, int hue) : base(itemID)
+    public BaseClothing(int itemID, Layer layer, int hue = 0) : base(itemID)
     {
       Layer = layer;
       Hue = hue;

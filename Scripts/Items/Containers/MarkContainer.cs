@@ -9,17 +9,7 @@ namespace Server.Items
     private InternalTimer m_RelockTimer;
 
     [Constructible]
-    public MarkContainer() : this(false)
-    {
-    }
-
-    [Constructible]
-    public MarkContainer(bool bone) : this(bone, false)
-    {
-    }
-
-    [Constructible]
-    public MarkContainer(bool bone, bool locked) : base(bone ? 0xECA : 0xE79)
+    public MarkContainer(bool bone = false, bool locked = false) : base(bone ? 0xECA : 0xE79)
     {
       Movable = false;
 

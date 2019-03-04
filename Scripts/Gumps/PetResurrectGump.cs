@@ -8,12 +8,7 @@ namespace Server.Gumps
     private double m_HitsScalar;
     private BaseCreature m_Pet;
 
-    public PetResurrectGump(Mobile from, BaseCreature pet)
-      : this(from, pet, 0.0)
-    {
-    }
-
-    public PetResurrectGump(Mobile from, BaseCreature pet, double hitsScalar) : base(50, 50)
+    public PetResurrectGump(Mobile from, BaseCreature pet, double hitsScalar = 0.0) : base(50, 50)
     {
       from.CloseGump<PetResurrectGump>();
 
