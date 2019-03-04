@@ -84,9 +84,9 @@ namespace Server
     {
       IEnumerable<IEntity> eable = Enumerable.Empty<IEntity>();
       if (mobiles)
-        eable = eable.Union(s.Mobiles.Where(o => o != null && !o.Deleted));
+        eable = eable.Union(s.Mobiles.Where(o => o?.Deleted == false));
       if (items)
-        eable = eable.Union(s.Items.Where(o => o != null && !o.Deleted && o.Parent == null));
+        eable = eable.Union(s.Items.Where(o => o?.Deleted == false && o.Parent == null));
 
       return eable.Where(bounds.Contains);
     }
@@ -99,17 +99,17 @@ namespace Server
     public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
     {
       return s.Items.OfType<T>()
-        .Where(o => !o.Deleted && o.Parent == null && bounds.Contains(o));
+        .Where(o => o.Deleted == false && o.Parent == null && bounds.Contains(o));
     }
 
     public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds)
     {
-      return s.Multis.Where(o => o != null && !o.Deleted && bounds.Contains(o.Location));
+      return s.Multis.Where(o => o?.Deleted == false && bounds.Contains(o.Location));
     }
 
     public static IEnumerable<StaticTile[]> SelectMultiTiles(Sector s, Rectangle2D bounds)
     {
-      foreach (BaseMulti o in s.Multis.Where(o => o != null && !o.Deleted))
+      foreach (BaseMulti o in s.Multis.Where(o => o?.Deleted == false))
       {
         MultiComponentList c = o.Components;
 
@@ -354,13 +354,8 @@ namespace Server
 
     public Region DefaultRegion
     {
-      get
-      {
-        if (m_DefaultRegion == null)
-          m_DefaultRegion = new Region(null, this, 0, new Rectangle3D[0]);
-
-        return m_DefaultRegion;
-      }
+      get => m_DefaultRegion ??
+             (m_DefaultRegion = new Region(null, this, 0, new Rectangle3D[0]));
       set => m_DefaultRegion = value;
     }
 

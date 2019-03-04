@@ -1404,7 +1404,7 @@ namespace Server.Guilds
         if (!(m is PlayerMobile pm) || !pm.GuildRank.GetFlag(RankFlags.CanVote))
           return false;
 
-      return m != null && !m.Deleted && m.Guild == this;
+      return m?.Deleted == false && m.Guild == this;
     }
 
     public bool CanBeVotedFor(Mobile m)
@@ -1413,7 +1413,7 @@ namespace Server.Guilds
         if (!(m is PlayerMobile pm) || pm.LastOnline + InactiveTime < DateTime.UtcNow)
           return false;
 
-      return m != null && !m.Deleted && m.Guild == this;
+      return m?.Deleted == false && m.Guild == this;
     }
 
     public void CalculateGuildmaster()

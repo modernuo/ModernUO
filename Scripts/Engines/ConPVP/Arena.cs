@@ -407,7 +407,8 @@ namespace Server.Engines.ConPVP
       set
       {
         m_GateOut = value;
-        if (Teleporter != null) Teleporter.Location = m_GateOut;
+        if (Teleporter != null)
+          Teleporter.Location = m_GateOut;
       }
     }
 
@@ -664,7 +665,7 @@ namespace Server.Engines.ConPVP
         {
           ArenaController controller = allControllers[i];
 
-          if (controller != null && !controller.Deleted && controller.Arena != null && controller.IsPrivate &&
+          if (controller?.Deleted == false && controller.Arena != null && controller.IsPrivate &&
               controller.Map == first.Map && first.InRange(controller, 24))
           {
             BaseHouse house = BaseHouse.FindHouseAt(controller);

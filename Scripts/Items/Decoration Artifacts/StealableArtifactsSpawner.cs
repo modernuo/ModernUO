@@ -200,7 +200,7 @@ namespace Server.Items
 
     public static bool Create()
     {
-      if (Instance != null && !Instance.Deleted)
+      if (Instance?.Deleted == false)
         return false;
 
       Instance = new StealableArtifactsSpawner();
@@ -243,7 +243,8 @@ namespace Server.Items
 
     public void CheckRespawn()
     {
-      foreach (StealableInstance si in m_Artifacts) si.CheckRespawn();
+      foreach (StealableInstance si in m_Artifacts)
+        si.CheckRespawn();
     }
 
     public override void Serialize(GenericWriter writer)

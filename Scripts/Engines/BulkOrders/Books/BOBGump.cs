@@ -56,7 +56,7 @@ namespace Server.Engines.BulkOrders
       {
         VendorItem vi = pv.GetVendorItem(book);
 
-        canBuy = vi != null && !vi.IsForSale;
+        canBuy = vi?.IsForSale == false;
       }
 
       int width = 600;
@@ -242,11 +242,11 @@ namespace Server.Engines.BulkOrders
     }
 
     public bool CheckFilter(IBOBEntry entry)
-    { 
+    {
       if (entry is BOBLargeEntry largeEntry)
         return CheckFilter(entry.Material, entry.AmountMax, true, entry.RequireExceptional, entry.DeedType,
           largeEntry.Entries.Length > 0 ? largeEntry.Entries[0].ItemType : null);
-      
+
       if (entry is BOBSmallEntry smallEntry)
         return CheckFilter(entry.Material, entry.AmountMax, false, entry.RequireExceptional,
           entry.DeedType, smallEntry.ItemType);
@@ -355,7 +355,7 @@ namespace Server.Engines.BulkOrders
       int count = 0;
       int page = 0;
       int i;
-      
+
       List<IBOBEntry> list = m_List;
       for (i = 0; i < index && i < list.Count; i++)
       {
@@ -558,26 +558,26 @@ namespace Server.Engines.BulkOrders
             {
               VendorItem vi = pv.GetVendorItem(m_Book);
 
-              if (vi != null && !vi.IsForSale)
-              {
-                int sizeOfDroppedBod = bobEntry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
-                int price = bobEntry.Price;
+              if (vi?.IsForSale != false)
+                return;
 
-                if (price == 0)
+              int sizeOfDroppedBod = bobEntry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
+              int price = bobEntry.Price;
+
+              if (price == 0)
+              {
+                m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
+              }
+              else
+              {
+                if (m_Book.Entries.Count > 0)
                 {
-                  m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
+                  m_Page = GetPageForIndex(index, sizeOfDroppedBod);
+                  m_From.SendGump(new BODBuyGump(m_From, m_Book, bobEntry, m_Page, price));
                 }
                 else
                 {
-                  if (m_Book.Entries.Count > 0)
-                  {
-                    m_Page = GetPageForIndex(index, sizeOfDroppedBod);
-                    m_From.SendGump(new BODBuyGump(m_From, m_Book, bobEntry, m_Page, price));
-                  }
-                  else
-                  {
-                    m_From.SendLocalizedMessage(1062381); // The book is emptz
-                  }
+                  m_From.SendLocalizedMessage(1062381); // The book is emptz
                 }
               }
             }
@@ -625,7 +625,7 @@ namespace Server.Engines.BulkOrders
 
             if (!m_Book.Entries.Contains(entry))
               continue;
-            
+
             entry.Price = price;
           }
 

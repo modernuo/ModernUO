@@ -47,7 +47,7 @@ namespace Server.Gumps
             {
               Mobile m = m_List[index];
 
-              if (m != null && !m.Deleted)
+              if (m?.Deleted == false)
               {
                 #region Factions
 
@@ -109,7 +109,7 @@ namespace Server.Gumps
             {
               Mobile m = m_List[index];
 
-              if (m != null && !m.Deleted)
+              if (m?.Deleted == false)
               {
                 m_Guild.Candidates.Remove(m);
 

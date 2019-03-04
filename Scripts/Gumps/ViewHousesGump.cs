@@ -30,7 +30,7 @@ namespace Server.Gumps
       AddBackground(0, 0, 240, 360, 5054);
       AddBlackAlpha(10, 10, 220, 340);
 
-      if (sel == null || sel.Deleted)
+      if (sel?.Deleted != false)
       {
         m_Selection = null;
 
@@ -208,7 +208,7 @@ namespace Server.Gumps
 
             HouseSign sign = m_Selection.Sign;
 
-            if (sign != null && !sign.Deleted)
+            if (sign?.Deleted == false)
               sign.OnDoubleClick(m_From);
 
             break;

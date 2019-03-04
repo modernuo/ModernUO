@@ -74,9 +74,7 @@ namespace Server.Spells.Ninjitsu
 
     public static void OnLogin(LoginEventArgs e)
     {
-      AnimalFormContext context = GetContext(e.Mobile);
-
-      if (context != null && context.SpeedBoost)
+      if (GetContext(e.Mobile)?.SpeedBoost == true)
         e.Mobile.Send(SpeedControl.MountSpeed);
     }
 
@@ -579,7 +577,7 @@ namespace Server.Spells.Ninjitsu
             m_LastTarget = m_Mobile.Combatant;
           }
 
-          if (m_Mobile.Warmode && m_LastTarget != null && m_LastTarget.Alive && !m_LastTarget.Deleted &&
+          if (m_Mobile.Warmode && m_LastTarget?.Alive == true && m_LastTarget?.Deleted != true &&
               m_Counter-- <= 0)
           {
             if (m_Mobile.CanBeHarmful(m_LastTarget) && m_LastTarget.Map == m_Mobile.Map &&

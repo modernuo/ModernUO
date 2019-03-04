@@ -98,7 +98,7 @@ namespace Server.Engines.Events
 					}
 				}
 
-				if ( player != null && !player.Deleted && ReAnimated.Count < m_TotalZombieLimit )
+				if (player?.Deleted == false && ReAnimated.Count < m_TotalZombieLimit )
 				{
 					Map map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
 

@@ -32,24 +32,24 @@ namespace Server.Items
         return;
       }
 
-      if (RaisableItem != null && RaisableItem.Deleted)
+      if (RaisableItem?.Deleted == true)
         RaisableItem = null;
 
       Flip();
 
-      if (RaisableItem != null)
+      if (RaisableItem == null)
+        return;
+
+      if (RaisableItem.IsRaisable)
       {
-        if (RaisableItem.IsRaisable)
-        {
-          RaisableItem.Raise();
-          m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
-            "You hear a grinding noise echoing in the distance.");
-        }
-        else
-        {
-          m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
-            "You flip the switch again, but nothing happens.");
-        }
+        RaisableItem.Raise();
+        m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
+          "You hear a grinding noise echoing in the distance.");
+      }
+      else
+      {
+        m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
+          "You flip the switch again, but nothing happens.");
       }
     }
 
@@ -198,7 +198,7 @@ namespace Server.Items
 
     public override void Serialize(GenericWriter writer)
     {
-      if (RaisableItem != null && RaisableItem.Deleted)
+      if (RaisableItem?.Deleted == true)
         RaisableItem = null;
 
       base.Serialize(writer);

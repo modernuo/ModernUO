@@ -334,7 +334,7 @@ namespace Server.Engines.Doom
       {
         State = GauntletSpawnerState.InSequence;
 
-        if (Sequence != null && !Sequence.Deleted)
+        if (Sequence?.Deleted == false)
           Sequence.RecurseReset();
       }
     }
@@ -353,7 +353,7 @@ namespace Server.Engines.Doom
       {
         State = GauntletSpawnerState.Completed;
 
-        if (Sequence != null && !Sequence.Deleted)
+        if (Sequence?.Deleted == false)
         {
           if (Sequence.State == GauntletSpawnerState.Completed)
             RecurseReset();

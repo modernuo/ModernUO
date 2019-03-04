@@ -758,7 +758,7 @@ namespace Server.Engines.Craft
       if (from.BeginAction<CraftSystem>())
       {
         if (RequiredExpansion == Expansion.None ||
-            from.NetState != null && from.NetState.SupportsExpansion(RequiredExpansion))
+            from.NetState?.SupportsExpansion(RequiredExpansion) == true)
         {
           bool allRequiredSkills = true;
           double chance = GetSuccessChance(from, typeRes, craftSystem, false, ref allRequiredSkills);
@@ -860,7 +860,7 @@ namespace Server.Engines.Craft
 
       if (badCraft > 0)
       {
-        if (tool != null && !tool.Deleted && tool.UsesRemaining > 0)
+        if (tool?.Deleted == false && tool.UsesRemaining > 0)
           from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
         else
           from.SendLocalizedMessage(badCraft);
@@ -876,7 +876,7 @@ namespace Server.Engines.Craft
               ref checkMessage)
             && ConsumeAttributes(from, ref checkMessage, false)))
       {
-        if (tool != null && !tool.Deleted && tool.UsesRemaining > 0)
+        if (tool?.Deleted == false && tool.UsesRemaining > 0)
           from.SendGump(new CraftGump(from, craftSystem, tool, checkMessage));
         else if (checkMessage is int messageInt && messageInt > 0)
           from.SendLocalizedMessage(messageInt);
@@ -905,7 +905,7 @@ namespace Server.Engines.Craft
         if (!(ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.All, ref message)
               && ConsumeAttributes(from, ref message, true)))
         {
-          if (tool != null && !tool.Deleted && tool.UsesRemaining > 0)
+          if (tool?.Deleted == false && tool.UsesRemaining > 0)
             from.SendGump(new CraftGump(from, craftSystem, tool, message));
           else if (message is int messageIn && messageIn > 0)
             from.SendLocalizedMessage(messageIn);
@@ -1013,14 +1013,14 @@ namespace Server.Engines.Craft
         if (queryFactionImbue)
           from.SendGump(new FactionImbueGump(quality, item, from, craftSystem, tool, num, availableSilver, faction,
             def));
-        else if (tool != null && !tool.Deleted && tool.UsesRemaining > 0)
+        else if (tool?.Deleted == false && tool.UsesRemaining > 0)
           from.SendGump(new CraftGump(from, craftSystem, tool, num));
         else if (num > 0)
           from.SendLocalizedMessage(num);
       }
       else if (!allRequiredSkills)
       {
-        if (tool != null && !tool.Deleted && tool.UsesRemaining > 0)
+        if (tool?.Deleted == false && tool.UsesRemaining > 0)
           from.SendGump(new CraftGump(from, craftSystem, tool, 1044153));
         else
           from.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
@@ -1036,7 +1036,7 @@ namespace Server.Engines.Craft
         // Not enough resource to craft it
         if (!ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, consumeType, ref message, true))
         {
-          if (tool != null && !tool.Deleted && tool.UsesRemaining > 0)
+          if (tool?.Deleted == false && tool.UsesRemaining > 0)
             from.SendGump(new CraftGump(from, craftSystem, tool, message));
           else if (message is int messageInt && messageInt > 0)
             from.SendLocalizedMessage(messageInt);

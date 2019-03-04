@@ -190,7 +190,7 @@ namespace Server.Commands
 
         if (!IsConstructible(ctor, from.AccessLevel))
           continue;
-        
+
         int totalParams = 0;
 
         // Handle optional constructors
@@ -250,7 +250,7 @@ namespace Server.Commands
         if (IsParsable(type)) return ParseParsable(type, value);
         object obj = value;
 
-        if (value != null && value.StartsWith("0x"))
+        if (value?.StartsWith("0x") == true)
         {
           if (IsSignedNumeric(type))
             obj = Convert.ToInt64(value.Substring(2), 16);
@@ -262,7 +262,7 @@ namespace Server.Commands
 
         if (obj == null && !type.IsValueType)
           return null;
-        
+
         return Convert.ChangeType(obj, type);
       }
       catch
@@ -455,7 +455,7 @@ namespace Server.Commands
     private static void Internal_OnCommand(CommandEventArgs e, bool outline)
     {
       Mobile from = e.Mobile;
-      
+
       if (e.Length >= 1)
         BoundingBoxPicker.Begin(from, (map, start, end) =>
           TileBox_Callback(from, map, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline)));
@@ -511,7 +511,7 @@ namespace Server.Commands
     private static void InternalZ_OnCommand(CommandEventArgs e, bool outline)
     {
       Mobile from = e.Mobile;
-      
+
       if (e.Length >= 2)
       {
         string[] subArgs = new string[e.Length - 1];
@@ -532,7 +532,7 @@ namespace Server.Commands
     private static void InternalAvg_OnCommand(CommandEventArgs e, bool outline)
     {
       Mobile from = e.Mobile;
-      
+
       if (e.Length >= 1)
         BoundingBoxPicker.Begin(from, (map, start, end) =>
           TileBox_Callback(from, map, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline)));

@@ -663,33 +663,36 @@ namespace Server.Engines.ConPVP
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourney != null && tourney.TourneyType == TourneyType.FreeForAll)
+      if (tourney != null)
       {
-        sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
-        sb.Append("-man FFA");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RandomTeam)
-      {
-        sb.Append(tourney.ParticipantsPerMatch);
-        sb.Append("-team");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RedVsBlue)
-      {
-        sb.Append("Red v Blue");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.Faction)
-      {
-        sb.Append(tourney.ParticipantsPerMatch);
-        sb.Append("-team Faction");
-      }
-      else if (tourney != null)
-      {
-        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+        if (tourney.TourneyType == TourneyType.FreeForAll)
         {
-          if (sb.Length > 0)
-            sb.Append('v');
+          sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
+          sb.Append("-man FFA");
+        }
+        else if (tourney.TourneyType == TourneyType.RandomTeam)
+        {
+          sb.Append(tourney.ParticipantsPerMatch);
+          sb.Append("-team");
+        }
+        else if (tourney.TourneyType == TourneyType.RedVsBlue)
+        {
+          sb.Append("Red v Blue");
+        }
+        else if (tourney.TourneyType == TourneyType.Faction)
+        {
+          sb.Append(tourney.ParticipantsPerMatch);
+          sb.Append("-team Faction");
+        }
+        else
+        {
+          for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+          {
+            if (sb.Length > 0)
+              sb.Append('v');
 
-          sb.Append(tourney.PlayersPerParticipant);
+            sb.Append(tourney.PlayersPerParticipant);
+          }
         }
       }
 
@@ -850,14 +853,12 @@ namespace Server.Engines.ConPVP
       if (point == null || from == null || team == null || !m_Capturable)
         return;
 
-      bool wasDom = Controller.PointA != null && Controller.PointB != null &&
-                    Controller.PointA.TeamOwner == Controller.PointB.TeamOwner && Controller.PointA.TeamOwner != null;
+      bool wasDom = Controller.PointA?.TeamOwner == Controller.PointB?.TeamOwner && Controller.PointA?.TeamOwner != null;
 
       point.TeamOwner = team;
       Alert("{0} has captured {1}!", team.Name, point.Name);
 
-      bool isDom = Controller.PointA != null && Controller.PointB != null &&
-                   Controller.PointA.TeamOwner == Controller.PointB.TeamOwner && Controller.PointA.TeamOwner != null;
+      bool isDom = Controller.PointA?.TeamOwner == Controller.PointB?.TeamOwner && Controller.PointA?.TeamOwner != null;
 
       if (wasDom && !isDom)
       {
@@ -879,12 +880,7 @@ namespace Server.Engines.ConPVP
 
     private void CaptureTick()
     {
-      DDTeamInfo team = null;
-
-      if (Controller.PointA?.TeamOwner != null)
-        team = Controller.PointA.TeamOwner;
-      else if (Controller.PointB?.TeamOwner != null)
-        team = Controller.PointB.TeamOwner;
+      DDTeamInfo team = Controller.PointA?.TeamOwner ?? Controller.PointB?.TeamOwner;
 
       if (team == null)
       {

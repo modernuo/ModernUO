@@ -348,7 +348,7 @@ namespace Server.Engines.CannedEvil
       }
       else
       {
-        if (killer.Corpse != null && !killer.Corpse.Deleted)
+        if (killer?.Corpse.Deleted == false)
           killer.Corpse.DropItem(scroll);
         else
           killer.AddToBackpack(scroll);
@@ -440,7 +440,9 @@ namespace Server.Engines.CannedEvil
 
           if (m.Deleted)
           {
-            if (m.Corpse != null && !m.Corpse.Deleted) ((Corpse)m.Corpse).BeginDecay(TimeSpan.FromMinutes(1));
+            if (m.Corpse?.Deleted == false)
+              ((Corpse)m.Corpse).BeginDecay(TimeSpan.FromMinutes(1));
+
             m_Creatures.RemoveAt(i);
             --i;
             ++m_Kills;
@@ -919,7 +921,7 @@ namespace Server.Engines.CannedEvil
         m_Creatures.Clear();
       }
 
-      if (Champion != null && !Champion.Player)
+      if (Champion?.Player == false)
         Champion.Delete();
 
       Stop();
@@ -1006,8 +1008,8 @@ namespace Server.Engines.CannedEvil
 
     public bool IsEligible(Mobile m, Item Artifact)
     {
-      return m.Player && m.Alive && m.Region != null && m.Region == m_Region && m.Backpack != null &&
-             m.Backpack.CheckHold(m, Artifact, false);
+      return m.Player && m.Alive && m.Region != null && m.Region == m_Region &&
+             m.Backpack?.CheckHold(m, Artifact, false) == true;
     }
 
     public override void Serialize(GenericWriter writer)

@@ -365,7 +365,7 @@ namespace Server.Commands
 
         string[] aliases = info.Aliases;
 
-        if (aliases != null && aliases.Length != 0)
+        if (aliases?.Length > 0)
         {
           sb.Append($"Alias{(aliases.Length == 1 ? "" : "es")}: ");
 

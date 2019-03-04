@@ -45,7 +45,7 @@ namespace Server.Items
 
     public override bool OnMoveOver(Mobile m)
     {
-      if (Target != null && !Target.Deleted)
+      if (Target?.Deleted == false)
       {
         if (CheckAccess(m))
         {
@@ -145,32 +145,32 @@ namespace Server.Items
       {
         Item target = m_Teleporter.Target;
 
-        if (target != null && !target.Deleted)
+        if (target?.Deleted != false)
+          return;
+
+        Mobile m = m_Mobile;
+
+        if (m.Location == m_Teleporter.Location && m.Map == m_Teleporter.Map)
         {
-          Mobile m = m_Mobile;
+          Point3D p = target.GetWorldTop();
+          Map map = target.Map;
 
-          if (m.Location == m_Teleporter.Location && m.Map == m_Teleporter.Map)
+          BaseCreature.TeleportPets(m, p, map);
+
+          m.MoveToWorld(p, map);
+
+          if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
           {
-            Point3D p = target.GetWorldTop();
-            Map map = target.Map;
+            Effects.PlaySound(target.Location, target.Map, 0x1FE);
 
-            BaseCreature.TeleportPets(m, p, map);
+            Effects.SendLocationParticles(
+              EffectItem.Create(m_Teleporter.Location, m_Teleporter.Map, EffectItem.DefaultDuration),
+              0x3728, 10, 10, 2023, 0);
+            Effects.SendLocationParticles(
+              EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+              5023, 0);
 
-            m.MoveToWorld(p, map);
-
-            if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
-            {
-              Effects.PlaySound(target.Location, target.Map, 0x1FE);
-
-              Effects.SendLocationParticles(
-                EffectItem.Create(m_Teleporter.Location, m_Teleporter.Map, EffectItem.DefaultDuration),
-                0x3728, 10, 10, 2023, 0);
-              Effects.SendLocationParticles(
-                EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
-                5023, 0);
-
-              new EffectTimer(target.Location, target.Map, 2023, -1, TimeSpan.FromSeconds(0.4)).Start();
-            }
+            new EffectTimer(target.Location, target.Map, 2023, -1, TimeSpan.FromSeconds(0.4)).Start();
           }
         }
       }

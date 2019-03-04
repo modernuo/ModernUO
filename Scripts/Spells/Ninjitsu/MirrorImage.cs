@@ -251,7 +251,7 @@ namespace Server.Mobiles
       // Clones only follow their owners
       Mobile master = m_Mobile.SummonMaster;
 
-      if (master != null && master.Map == m_Mobile.Map && master.InRange(m_Mobile, m_Mobile.RangePerception))
+      if (master?.Map == m_Mobile.Map && master?.InRange(m_Mobile, m_Mobile.RangePerception) == true)
       {
         int iCurrDist = (int)m_Mobile.GetDistanceToSqrt(master);
         bool bRun = iCurrDist > 5;

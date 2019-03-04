@@ -67,7 +67,7 @@ namespace Server.Engines.BulkOrders
       else if (DeedType == BODType.Tailor)
         bod = new LargeTailorBOD(AmountMax, RequireExceptional, Material, ReconstructEntries());
 
-      for (int i = 0; bod != null && i < bod.Entries.Length; ++i)
+      for (int i = 0; bod?.Entries.Length >= i; ++i)
         bod.Entries[i].Owner = bod;
 
       return bod;

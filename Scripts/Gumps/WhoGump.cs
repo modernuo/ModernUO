@@ -227,14 +227,9 @@ namespace Server.Gumps
 				case AccessLevel.Seer: return 0x144;
 				case AccessLevel.GameMaster: return 0x21;
 				case AccessLevel.Counselor: return 0x2;
-				case AccessLevel.Player: default:
+				default:
 				{
-					if ( m.Kills >= 5 )
-						return 0x21;
-					if ( m.Criminal )
-						return 0x3B1;
-
-					return 0x58;
+					return m.Kills >= 5 ? 0x21 : m.Criminal ? 0x3B1 : 0x58;
 				}
 			}
 		}

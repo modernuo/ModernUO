@@ -229,7 +229,7 @@ namespace Server.Engines.Doom
     {
       if (list != null && list.Count != 0)
         foreach (Item item in list)
-          if (item != null && !item.Deleted)
+          if (item?.Deleted == false)
             item.Delete();
     }
 
@@ -245,8 +245,7 @@ namespace Server.Engines.Doom
     {
       LeverPuzzleStatue statue = (LeverPuzzleStatue)m_Statues[index];
 
-      if (statue != null && !statue.Deleted) return statue;
-      return null;
+      return statue?.Deleted == false ? statue : null;
     }
 
     public virtual LeverPuzzleLever GetLever(int index)
@@ -375,15 +374,9 @@ namespace Server.Engines.Doom
 
     private static bool IsValidDamagable(Mobile m)
     {
-      if (m != null && !m.Deleted)
-      {
-        if (m.Player && m.Alive)
-          return true;
-
-        return m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet;
-      }
-
-      return false;
+      return m?.Deleted == false &&
+             (m.Player && m.Alive ||
+              m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet);
     }
 
     public static void MoveMobileOut(Mobile m)
@@ -401,7 +394,7 @@ namespace Server.Engines.Doom
 
     public static bool AniSafe(Mobile m)
     {
-      return m != null && !TransformationSpellHelper.UnderTransformation(m) && m.BodyMod == 0 && m.Alive;
+      return  m?.BodyMod == 0 && m.Alive && !TransformationSpellHelper.UnderTransformation(m);
     }
 
     public static IEntity ZAdjustedIEFromMobile(Mobile m, int ZDelta)
@@ -411,7 +404,7 @@ namespace Server.Engines.Doom
 
     public static void DoDamage(Mobile m, int min, int max, bool poison)
     {
-      if (m != null && !m.Deleted && m.Alive)
+      if (m?.Deleted == false && m.Alive)
       {
         int damage = Utility.Random(min, max);
         AOS.Damage(m, damage, poison ? 0 : 100, 0, 0, poison ? 100 : 0, 0);
@@ -615,7 +608,7 @@ namespace Server.Engines.Doom
         if (ticks >= 71 || m_Controller.m_LampRoom.GetPlayerCount() == 0)
         {
           foreach (Mobile mobile in mobiles)
-            if (mobile != null && !mobile.Deleted && !mobile.IsDeadBondedPet)
+            if (mobile?.Deleted == false && !mobile.IsDeadBondedPet)
               mobile.Kill();
           m_Controller.Enabled = true;
           Stop();
@@ -637,7 +630,8 @@ namespace Server.Engines.Doom
                 DoDamage(mobile, 15, 20, true);
               }
 
-              if (Utility.Random((int)(level & ~0xfffffffc), 3) == 3) mobile.ApplyPoison(mobile, PA2[level]);
+              if (Utility.Random((int)(level & ~0xfffffffc), 3) == 3)
+                mobile.ApplyPoison(mobile, PA2[level]);
               if (ticks % 12 == 0 && level > 0 && mobile.Player)
                 mobile.SendLocalizedMessage(PA[level][0], null, PA[level][1]);
             }

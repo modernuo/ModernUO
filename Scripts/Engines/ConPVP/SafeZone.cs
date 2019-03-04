@@ -35,12 +35,11 @@ namespace Server.Engines.ConPVP
         return false;
       }
 
-      PlayerMobile pm = m as PlayerMobile;
+      PlayerMobile pm = m as PlayerMobile ??
+                        (m is BaseCreature bc && bc.Summoned ?
+        bc.SummonMaster as PlayerMobile : null);
 
-      if (pm == null && m is BaseCreature bc && bc.Summoned)
-        pm = bc.SummonMaster as PlayerMobile;
-
-      if (pm?.DuelContext != null && pm.DuelContext.StartedBeginCountdown)
+      if (pm?.DuelContext?.StartedBeginCountdown == true)
         return true;
 
       if (DuelContext.CheckCombat(m))

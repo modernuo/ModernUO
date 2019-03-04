@@ -49,17 +49,12 @@ namespace Server.Engines.Chat
 
     public bool IgnorePrivateMessage{ get; set; }
 
-    public bool IsModerator => CurrentChannel != null && CurrentChannel.IsModerator(this);
+    public bool IsModerator => CurrentChannel?.IsModerator(this) == true;
 
     public char GetColorCharacter()
     {
-      if (CurrentChannel != null && CurrentChannel.IsModerator(this))
-        return ModeratorColorCharacter;
-
-      if (CurrentChannel != null && CurrentChannel.IsVoiced(this))
-        return VoicedColorCharacter;
-
-      return NormalColorCharacter;
+      return IsModerator ? ModeratorColorCharacter :
+        CurrentChannel?.IsVoiced(this) == true ? VoicedColorCharacter : NormalColorCharacter;
     }
 
     public bool CheckOnline()
@@ -71,17 +66,7 @@ namespace Server.Engines.Chat
       return false;
     }
 
-    public void SendMessage(int number)
-    {
-      SendMessage(number, null, null);
-    }
-
-    public void SendMessage(int number, string param1)
-    {
-      SendMessage(number, param1, null);
-    }
-
-    public void SendMessage(int number, string param1, string param2)
+    public void SendMessage(int number, string param1 = null, string param2 = null)
     {
       if (Mobile.NetState != null)
         Mobile.Send(new ChatMessagePacket(Mobile, number, param1, param2));
@@ -135,27 +120,27 @@ namespace Server.Engines.Chat
     {
       ChatUser user = GetChatUser(from);
 
-      if (user == null)
+      if (user != null)
+        return user;
+
+      user = new ChatUser(@from);
+
+      m_Users.Add(user);
+      m_Table[@from] = user;
+
+      Channel.SendChannelsTo(user);
+
+      List<Channel> list = Channel.Channels;
+
+      for (int i = 0; i < list.Count; ++i)
       {
-        user = new ChatUser(from);
+        Channel c = list[i];
 
-        m_Users.Add(user);
-        m_Table[from] = user;
-
-        Channel.SendChannelsTo(user);
-
-        List<Channel> list = Channel.Channels;
-
-        for (int i = 0; i < list.Count; ++i)
-        {
-          Channel c = list[i];
-
-          if (c.AddUser(user))
-            break;
-        }
-
-        //ChatSystem.SendCommandTo( user.m_Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
+        if (c.AddUser(user))
+          break;
       }
+
+      //ChatSystem.SendCommandTo( user.m_Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
 
       return user;
     }

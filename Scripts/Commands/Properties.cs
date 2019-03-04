@@ -16,7 +16,7 @@ namespace Server.Commands
     ReadWrite = Read | Write
   }
 
-  public class Properties
+  public static class Properties
   {
     private static Type typeofCPA = typeof(CPA);
 
@@ -174,10 +174,7 @@ namespace Server.Commands
     {
       PropertyInfo[] chain = GetPropertyInfoChain(from, obj.GetType(), propertyName, access, ref failReason);
 
-      if (chain == null)
-        return null;
-
-      return GetPropertyInfo(ref obj, chain, ref failReason);
+      return chain == null ? null : GetPropertyInfo(ref obj, chain, ref failReason);
     }
 
     public static PropertyInfo GetPropertyInfo(ref object obj, PropertyInfo[] chain, ref string failReason)
@@ -216,21 +213,19 @@ namespace Server.Commands
 
       PropertyInfo p = GetPropertyInfo(ref o, chain, ref failReason);
 
-      if (p == null)
-        return failReason;
-
-      return InternalGetValue(o, p, chain);
+      return p == null ? failReason : InternalGetValue(o, p, chain);
     }
 
     public static string IncreaseValue(Mobile from, object o, string[] args)
     {
-      Type type = o.GetType();
+      // Type type = o.GetType();
 
       object[] realObjs = new object[args.Length / 2];
       PropertyInfo[] realProps = new PropertyInfo[args.Length / 2];
       int[] realValues = new int[args.Length / 2];
 
-      bool positive = false, negative = false;
+      bool positive = false;
+      bool negative = false;
 
       for (int i = 0; i < realProps.Length; ++i)
       {
@@ -348,10 +343,7 @@ namespace Server.Commands
       string failReason = "";
       PropertyInfo p = GetPropertyInfo(from, ref o, name, PropertyAccess.Write, ref failReason);
 
-      if (p == null)
-        return failReason;
-
-      return InternalSetValue(from, logObject, o, p, name, value, true);
+      return p == null ? failReason : InternalSetValue(@from, logObject, o, p, name, value, true);
     }
 
     private static bool IsSerial(Type t)
@@ -524,10 +516,7 @@ namespace Server.Commands
       object toSet = null;
       string result = ConstructFromString(p.PropertyType, o, value, ref toSet);
 
-      if (result != null)
-        return result;
-
-      return SetDirect(from, logobj, o, p, pname, toSet, shouldLog);
+      return result ?? SetDirect(@from, logobj, o, p, pname, toSet, shouldLog);
     }
 
     public static string InternalSetValue(object o, PropertyInfo p, string value)
@@ -535,10 +524,7 @@ namespace Server.Commands
       object toSet = null;
       string result = ConstructFromString(p.PropertyType, o, value, ref toSet);
 
-      if (result != null)
-        return result;
-
-      return SetDirect(o, p, toSet);
+      return result ?? SetDirect(o, p, toSet);
     }
 
     private class PropsTarget : Target
@@ -639,18 +625,14 @@ namespace Server
 
   public abstract class ClearanceException : AccessException
   {
-    protected AccessLevel m_NeededAccess;
-    protected AccessLevel m_PlayerAccess;
-
     public ClearanceException(Property property, AccessLevel playerAccess, AccessLevel neededAccess, string accessType)
       : base(property,
         $"You must be at least {Mobile.GetAccessLevelName(neededAccess)} to {accessType} this property.")
     {
     }
 
-    public AccessLevel PlayerAccess => m_PlayerAccess;
-
-    public AccessLevel NeededAccess => m_NeededAccess;
+    public AccessLevel PlayerAccess{ get; set; }
+    public AccessLevel NeededAccess{ get; set; }
   }
 
   public sealed class ReadAccessException : ClearanceException

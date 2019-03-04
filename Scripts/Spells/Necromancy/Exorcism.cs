@@ -126,7 +126,7 @@ namespace Server.Spells.Necromancy
       Corpse c = m.Corpse as Corpse;
       Map map = m.Map;
 
-      if (c != null && !c.Deleted && map != null && c.Map == map)
+      if (c?.Deleted == false && map != null && c.Map == map)
       {
         if (SpellHelper.IsAnyT2A(map, c.Location) && SpellHelper.IsAnyT2A(map, m.Location))
           return false; //Same Map, both in T2A, ie, same 'sub server'.
@@ -134,7 +134,7 @@ namespace Server.Spells.Necromancy
         if (m.Region.IsPartOf<DungeonRegion>() == Region.Find(c.Location, map).IsPartOf<DungeonRegion>())
           return false; //Same Map, both in Dungeon region OR They're both NOT in a dungeon region.
 
-        //Just an approximation cause RunUO doens't divide up the world the same way OSI does ;p
+        //Just an approximation cause RunUO doesn't divide up the world the same way OSI does ;p
       }
 
       Party p = Party.Get(m);

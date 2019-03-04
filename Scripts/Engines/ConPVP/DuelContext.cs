@@ -139,7 +139,7 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(from);
 
-      if (pl == null || pl.Eliminated)
+      if (pl?.Eliminated != false)
         return true;
 
       if (CantDoAnything(from))
@@ -256,7 +256,7 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(from);
 
-      if (pl == null || pl.Eliminated)
+      if (pl?.Eliminated != false)
         return true;
 
       if (item is Dagger || CheckItemEquip(from, item))
@@ -350,7 +350,7 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(from);
 
-      if (pl == null || pl.Eliminated)
+      if (pl?.Eliminated != false)
         return true;
 
       if (CantDoAnything(from))
@@ -373,7 +373,7 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(from);
 
-      if (pl == null || pl.Eliminated)
+      if (pl?.Eliminated != false)
         return true;
 
       if (!(item is BaseRefreshPotion))
@@ -507,7 +507,7 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(mob);
 
-      if (pl == null || pl.Eliminated)
+      if (pl?.Eliminated != false)
         return;
 
       if (mob.Map == Map.Internal)
@@ -533,30 +533,27 @@ namespace Server.Engines.ConPVP
 
       DuelPlayer pl = Find(mob);
 
-      if (pl != null && !pl.Eliminated)
+      if (pl?.Eliminated == true || m_EventGame != null && !m_EventGame.OnDeath(mob, corpse))
+        return;
+
+      pl.Eliminated = true;
+
+      if (mob.Poison != null)
+        mob.Poison = null;
+
+      Requip(mob, corpse);
+      DelayBounce(TimeSpan.FromSeconds(4.0), mob, corpse);
+
+      Participant winner = CheckCompletion();
+
+      if (winner != null)
       {
-        if (m_EventGame != null && !m_EventGame.OnDeath(mob, corpse))
-          return;
-
-        pl.Eliminated = true;
-
-        if (mob.Poison != null)
-          mob.Poison = null;
-
-        Requip(mob, corpse);
-        DelayBounce(TimeSpan.FromSeconds(4.0), mob, corpse);
-
-        Participant winner = CheckCompletion();
-
-        if (winner != null)
-        {
-          Finish(winner);
-        }
-        else if (!m_Yielding)
-        {
-          mob.LocalOverheadMessage(MessageType.Regular, 0x22, false, "You have been defeated.");
-          mob.NonlocalOverheadMessage(MessageType.Regular, 0x22, false, $"{mob.Name} has been defeated.");
-        }
+        Finish(winner);
+      }
+      else if (!m_Yielding)
+      {
+        mob.LocalOverheadMessage(MessageType.Regular, 0x22, false, "You have been defeated.");
+        mob.NonlocalOverheadMessage(MessageType.Regular, 0x22, false, $"{mob.Name} has been defeated.");
       }
     }
 
@@ -564,7 +561,7 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         if (p.HasOpenSlot)
           return false;
@@ -609,7 +606,7 @@ namespace Server.Engines.ConPVP
 
         Mobile killer = from.FindMostRecentDamager(false);
 
-        if (killer != null && killer.Player)
+        if (killer?.Player == true)
           killer.AddToBackpack(new Head(m_Tournament == null ? HeadType.Duel : HeadType.Tournament, from.Name));
       }
 
@@ -671,7 +668,7 @@ namespace Server.Engines.ConPVP
       {
         DuelPlayer pl = winner.Players[i];
 
-        if (pl != null && !pl.Eliminated)
+        if (pl?.Eliminated == false)
           DelayBounce(TimeSpan.FromSeconds(8.0), pl.Mobile, null);
       }
 
@@ -688,7 +685,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant loser = (Participant)Participants[i];
+        Participant loser = Participants[i];
 
         if (loser != winner)
         {
@@ -714,8 +711,8 @@ namespace Server.Engines.ConPVP
 
       if (IsOneVsOne)
       {
-        DuelPlayer dp1 = ((Participant)Participants[0]).Players[0];
-        DuelPlayer dp2 = ((Participant)Participants[1]).Players[0];
+        DuelPlayer dp1 = Participants[0].Players[0];
+        DuelPlayer dp2 = Participants[1].Players[0];
 
         if (dp1 != null && dp2 != null)
         {
@@ -873,7 +870,7 @@ namespace Server.Engines.ConPVP
       DuelPlayer pl1 = Find(m1);
       DuelPlayer pl2 = Find(m2);
 
-      return pl1 != null && pl2 != null && pl1.Participant == pl2.Participant;
+      return pl1 != null && pl1.Participant == pl2?.Participant;
     }
 
     public Participant CheckCompletion()
@@ -885,7 +882,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         if (p.Eliminated)
         {
@@ -900,10 +897,7 @@ namespace Server.Engines.ConPVP
         }
       }
 
-      if (hasWinner)
-        return winner ?? (Participant)Participants[0];
-
-      return null;
+      return hasWinner ? winner ?? Participants[0] : null;
     }
 
     public void StartCountdown(int count, CountdownCallback cb)
@@ -953,13 +947,13 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
           DuelPlayer pl = p.Players[j];
 
-          if (pl == null || pl.Eliminated)
+          if (pl?.Eliminated != false)
             continue;
 
           pl.Mobile.SendSound(0x1E1);
@@ -984,13 +978,13 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
           DuelPlayer pl = p.Players[j];
 
-          if (pl == null || pl.Eliminated)
+          if (pl?.Eliminated != false)
             continue;
 
           pl.Mobile.SendSound(0x1E1);
@@ -1065,7 +1059,7 @@ namespace Server.Engines.ConPVP
           {
             DuelPlayer pl = p.Players[j];
 
-            if (pl != null && !pl.Eliminated)
+            if (pl?.Eliminated == false)
               DelayBounce(TimeSpan.FromSeconds(8.0), pl.Mobile, null);
           }
 
@@ -1511,7 +1505,7 @@ namespace Server.Engines.ConPVP
         }
       }
     }
-    
+
     public void CloseAllGumps(DuelPlayer pl)
     {
       pl.Mobile.CloseGump<BeginGump>();
@@ -1571,7 +1565,7 @@ namespace Server.Engines.ConPVP
             else
               mob.SendMessage(0x22, "{0} has rejected the {1}.", rejector.Name, Rematch ? "rematch" : page);
           }
-          
+
           // Close all of them?
           mob.CloseGump<DuelContextGump>();
           mob.CloseGump<ReadyUpGump>();
@@ -2482,7 +2476,7 @@ namespace Server.Engines.ConPVP
         }
         else
         {
-          if (m_Teleporter != null && !m_Teleporter.Deleted)
+          if (m_Teleporter?.Deleted == false)
             m_Teleporter.Register(m);
 
           base.UseGate(m);

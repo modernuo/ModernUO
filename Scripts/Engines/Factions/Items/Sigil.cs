@@ -425,10 +425,10 @@ namespace Server.Factions
       if (monolith == null && m_Town != null)
         monolith = m_Town.Monolith;
 
-      if (monolith != null && !monolith.Deleted)
+      if (monolith?.Deleted == false)
         monolith.Sigil = this;
 
-      return monolith != null && !monolith.Deleted;
+      return monolith?.Deleted == false;
     }
 
     public override void OnParentDeleted(IEntity parent)

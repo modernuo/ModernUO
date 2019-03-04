@@ -44,7 +44,8 @@ namespace Server.Engines.Events
 
     public static void RemoveHueMod(Mobile target)
     {
-      if (target != null && !target.Deleted) target.SolidHueOverride = -1;
+      if (target?.Deleted == false)
+        target.SolidHueOverride = -1;
     }
 
     public static void SolidHueMobile(Mobile target)
@@ -67,7 +68,7 @@ namespace Server.Engines.Events
 
         if (twin.Deleted)
           return;
-        
+
         foreach (Item item in m_From.Items)
           if (item.Layer != Layer.Backpack && item.Layer != Layer.Mount && item.Layer != Layer.Bank)
             m_Items.Add(item);
@@ -287,7 +288,7 @@ namespace Server.Engines.Events
 
           target.SendLocalizedMessage(1113967); /* Your naughty twin steals some of your candy. */
 
-          if (item != null && !item.Deleted)
+          if (item?.Deleted == false)
             item.Delete();
         }
         else

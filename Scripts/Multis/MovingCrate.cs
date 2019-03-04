@@ -141,12 +141,12 @@ namespace Server.Multis
 
     public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
     {
-      return base.CheckLift(from, item, ref reject) && House != null && !House.Deleted && House.IsOwner(from);
+      return House?.Deleted == false && base.CheckLift(from, item, ref reject) && House.IsOwner(from);
     }
 
     public override bool CheckItemUse(Mobile from, Item item)
     {
-      return base.CheckItemUse(from, item) && House != null && !House.Deleted && House.IsOwner(from);
+      return House?.Deleted == false && base.CheckItemUse(from, item) && House.IsOwner(from);
     }
 
     public override void OnItemRemoved(Item item)

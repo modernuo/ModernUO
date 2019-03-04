@@ -170,7 +170,7 @@ namespace Server.Factions
     public bool EquipWeapon()
     {
       Item weapon = m_Guard.Backpack?.FindItemByType<BaseWeapon>();
-      
+
       return weapon != null && m_Guard.EquipItem(weapon);
     }
 
@@ -255,7 +255,7 @@ namespace Server.Factions
 
         Mobile comb = m_Mobile.Combatant;
 
-        if (comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && m_Mobile.InRange(comb, 12) &&
+        if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet && m_Mobile.InRange(comb, 12) &&
             CanDispel(comb))
         {
           active = comb;
@@ -317,7 +317,7 @@ namespace Server.Factions
 
         Mobile comb = m_Mobile.Combatant;
 
-        if (comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && CanDispel(comb))
+        if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet && CanDispel(comb))
         {
           active = inactive = comb;
           actPrio = inactPrio = m_Mobile.GetDistanceToSqrt(comb);

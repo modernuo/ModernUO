@@ -507,7 +507,7 @@ namespace Server.Engines.Craft
         Mobile from = m_TrapCraft.From;
         BaseTool tool = m_TrapCraft.Tool;
 
-        if (tool != null && !tool.Deleted && tool.UsesRemaining > 0)
+        if (tool?.Deleted == false && tool.UsesRemaining > 0)
           from.SendGump(new CraftGump(from, m_TrapCraft.CraftSystem, tool, message));
         else if (message > 0)
           from.SendLocalizedMessage(message);

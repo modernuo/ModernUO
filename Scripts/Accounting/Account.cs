@@ -991,7 +991,7 @@ namespace Server.Accounting
 			{
 				Mobile m = m_Mobiles[i];
 
-				if ( m != null && !m.Deleted )
+				if (m?.Deleted == false)
 				{
 					xml.WriteStartElement( "char" );
 					xml.WriteAttributeString( "index", i.ToString() );
@@ -1002,7 +1002,7 @@ namespace Server.Accounting
 
 			xml.WriteEndElement();
 
-			if ( m_Comments != null && m_Comments.Count > 0 )
+			if (m_Comments?.Count > 0)
 			{
 				xml.WriteStartElement( "comments" );
 
@@ -1012,7 +1012,7 @@ namespace Server.Accounting
 				xml.WriteEndElement();
 			}
 
-			if ( m_Tags != null && m_Tags.Count > 0 )
+			if (m_Tags?.Count > 0)
 			{
 				xml.WriteStartElement( "tags" );
 
@@ -1103,7 +1103,7 @@ namespace Server.Accounting
 				{
 					Mobile m = m_Mobiles[index];
 
-					if ( m != null && m.Deleted )
+					if (m?.Deleted == true)
 					{
 						m.Account = null;
 						m_Mobiles[index] = m = null;

@@ -1110,7 +1110,7 @@ namespace Server.Multis
           {
             BaseHouse house = exists[i];
 
-            if (house != null && !house.Deleted && house.Owner == m)
+            if (house?.Deleted == false && house.Owner == m)
               list.Add(house);
           }
       }
@@ -1321,11 +1321,11 @@ namespace Server.Multis
 
       UpdateRegion();
 
-      if (Sign != null && !Sign.Deleted)
+      if (Sign?.Deleted == false)
         Sign.Map = Map;
 
       if (Doors != null)
-        foreach (Item item in Doors)
+        foreach (BaseDoor item in Doors)
           item.Map = Map;
 
       foreach (IEntity entity in GetHouseEntities())
@@ -1365,13 +1365,13 @@ namespace Server.Multis
       int y = base.Location.Y - oldLocation.Y;
       int z = base.Location.Z - oldLocation.Z;
 
-      if (Sign != null && !Sign.Deleted)
+      if (Sign?.Deleted == false)
         Sign.Location = new Point3D(Sign.X + x, Sign.Y + y, Sign.Z + z);
 
       UpdateRegion();
 
       if (Doors != null)
-        foreach (Item item in Doors)
+        foreach (BaseDoor item in Doors)
           if (!item.Deleted)
             item.Location = new Point3D(item.X + x, item.Y + y, item.Z + z);
 

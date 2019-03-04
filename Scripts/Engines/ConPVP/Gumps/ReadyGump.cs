@@ -75,7 +75,7 @@ namespace Server.Engines.ConPVP
         {
           DuelPlayer pl = p.Players[j];
 
-          if (pl != null && pl.Ready)
+          if (pl?.Ready == true)
           {
             AddImage(35 + offset, y + 4, 0x939);
           }

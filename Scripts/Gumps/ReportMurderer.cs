@@ -146,7 +146,7 @@ namespace Server.Gumps
 				case 1:
 				{
 					Mobile killer = m_Killers[m_Idx];
-					if ( killer != null && !killer.Deleted )
+					if (killer?.Deleted == false)
 					{
 						killer.Kills++;
 						killer.ShortTermMurders++;

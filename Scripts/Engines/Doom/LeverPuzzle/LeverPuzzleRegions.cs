@@ -5,12 +5,12 @@ namespace Server.Engines.Doom
 {
   public class LampRoomRegion : BaseRegion
   {
-    private LeverPuzzleController Controller;
+    private LeverPuzzleController m_Controller;
 
     public LampRoomRegion(LeverPuzzleController controller)
       : base(null, Map.Malas, Find(LeverPuzzleController.lr_Enter, Map.Malas), LeverPuzzleController.lr_Rect)
     {
-      Controller = controller;
+      m_Controller = controller;
       Register();
     }
 
@@ -38,13 +38,13 @@ namespace Server.Engines.Doom
       if (m.AccessLevel > AccessLevel.Player)
         return;
 
-      if (Controller.Successful != null)
+      if (m_Controller.Successful != null)
       {
         if (m is PlayerMobile)
         {
-          if (m == Controller.Successful) return;
+          if (m == m_Controller.Successful) return;
         }
-        else if (m is BaseCreature bc && (bc.Controlled && bc.ControlMaster == Controller.Successful ||
+        else if (m is BaseCreature bc && (bc.Controlled && bc.ControlMaster == m_Controller.Successful ||
                                           bc.Summoned))
         {
           return;
@@ -57,13 +57,13 @@ namespace Server.Engines.Doom
 
     public override void OnExit(Mobile m)
     {
-      if (m != null && m == Controller.Successful)
-        Controller.RemoveSuccessful();
+      if (m != null && m == m_Controller.Successful)
+        m_Controller.RemoveSuccessful();
     }
 
     public override void OnDeath(Mobile m)
     {
-      if (m != null && !m.Deleted && !(m is WandererOfTheVoid))
+      if (m?.Deleted == false && !(m is WandererOfTheVoid))
       {
         Timer kick = new LeverPuzzleController.LampRoomKickTimer(m);
         kick.Start();
@@ -72,21 +72,17 @@ namespace Server.Engines.Doom
 
     public override bool OnSkillUse(Mobile m, int Skill) /* just in case */
     {
-      if (Controller.Successful == null || m.AccessLevel == AccessLevel.Player && m != Controller.Successful)
-        return false;
-      return true;
+      return m_Controller.Successful != null && (m.AccessLevel != AccessLevel.Player || m == m_Controller.Successful);
     }
   }
 
   public class LeverPuzzleRegion : BaseRegion
   {
-    private LeverPuzzleController Controller;
     public Mobile m_Occupant;
 
     public LeverPuzzleRegion(LeverPuzzleController controller, int[] loc)
       : base(null, Map.Malas, Find(LeverPuzzleController.lr_Enter, Map.Malas), new Rectangle2D(loc[0], loc[1], 1, 1))
     {
-      Controller = controller;
       Register();
     }
 

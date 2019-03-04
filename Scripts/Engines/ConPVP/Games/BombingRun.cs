@@ -85,7 +85,8 @@ namespace Server.Engines.ConPVP
 
       Mobile mob = FindOwner(parent);
 
-      if (mob != null) mob.SolidHueOverride = 0x0499;
+      if (mob != null)
+        mob.SolidHueOverride = 0x0499;
     }
 
     public override void OnRemoved(IEntity parent)
@@ -100,9 +101,9 @@ namespace Server.Engines.ConPVP
 
     public void DropTo(Mobile mob, Mobile killer)
     {
-      if (mob != null && !mob.Deleted)
+      if (mob?.Deleted == false)
         MoveToWorld(mob.Location, mob.Map);
-      else if (killer != null && !killer.Deleted)
+      else if (killer?.Deleted == false)
         MoveToWorld(killer.Location, killer.Map);
       else
         m_Game?.ReturnBomb();
@@ -110,14 +111,11 @@ namespace Server.Engines.ConPVP
 
     public override bool OnMoveOver(Mobile m)
     {
-      if (m_Flying || !Visible || m_Game == null || m == null || !m.Alive)
+      if (m_Flying || !Visible || m_Game == null || m?.Alive != true)
         return true;
 
       BRTeamInfo useTeam = m_Game.GetTeamInfo(m);
-      if (useTeam == null)
-        return true;
-
-      return TakeBomb(m, useTeam, "picked up");
+      return useTeam == null || TakeBomb(m, useTeam, "picked up");
     }
 
     public override void OnLocationChange(Point3D oldLocation)
@@ -150,7 +148,7 @@ namespace Server.Engines.ConPVP
 
     public override void OnDoubleClick(Mobile m)
     {
-      if (m_Game == null || !Visible || m == null || !m.Alive)
+      if (m_Game == null || !Visible || m?.Alive != true)
         return;
 
       if (!m_Flying && IsChildOf(m.Backpack))
@@ -747,9 +745,8 @@ namespace Server.Engines.ConPVP
       private void ResendBombTarget()
       {
         // Make sure they still have the bomb, then give them the target back
-        if (m_Bomb != null && !m_Bomb.Deleted && m_Mob != null && !m_Mob.Deleted && m_Mob.Alive)
-          if (m_Bomb.IsChildOf(m_Mob))
-            m_Mob.Target = new BombTarget(m_Bomb, m_Mob);
+        if (m_Bomb?.Deleted == false && m_Mob?.Deleted == false && m_Mob.Alive && m_Bomb.IsChildOf(m_Mob))
+          m_Mob.Target = new BombTarget(m_Bomb, m_Mob);
       }
     }
   }
@@ -1549,7 +1546,7 @@ namespace Server.Engines.ConPVP
 
       m_Context.RemoveAggressions(mob);
 
-      if (dp != null && !dp.Eliminated)
+      if (dp?.Eliminated == false)
         mob.MoveToWorld(m_Context.Arena.GetBaseStartPoint(GetTeamID(mob)), Facet);
       else
         m_Context.SendOutside(mob);
@@ -1578,7 +1575,7 @@ namespace Server.Engines.ConPVP
         bomb.DropTo(mob, killer);
       });
 
-      if (killer != null && killer.Player)
+      if (killer?.Player == true)
       {
         BRTeamInfo teamInfo = GetTeamInfo(killer);
         BRTeamInfo victInfo = GetTeamInfo(mob);
@@ -1647,33 +1644,36 @@ namespace Server.Engines.ConPVP
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourney != null && tourney.TourneyType == TourneyType.FreeForAll)
+      if (tourney != null)
       {
-        sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
-        sb.Append("-man FFA");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RandomTeam)
-      {
-        sb.Append(tourney.ParticipantsPerMatch);
-        sb.Append("-team");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RedVsBlue)
-      {
-        sb.Append("Red v Blue");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.Faction)
-      {
-        sb.Append(tourney.ParticipantsPerMatch);
-        sb.Append("-team Faction");
-      }
-      else if (tourney != null)
-      {
-        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+        if (tourney.TourneyType == TourneyType.FreeForAll)
         {
-          if (sb.Length > 0)
-            sb.Append('v');
+          sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
+          sb.Append("-man FFA");
+        }
+        else if (tourney.TourneyType == TourneyType.RandomTeam)
+        {
+          sb.Append(tourney.ParticipantsPerMatch);
+          sb.Append("-team");
+        }
+        else if (tourney.TourneyType == TourneyType.RedVsBlue)
+        {
+          sb.Append("Red v Blue");
+        }
+        else if (tourney.TourneyType == TourneyType.Faction)
+        {
+          sb.Append(tourney.ParticipantsPerMatch);
+          sb.Append("-team Faction");
+        }
+        else
+        {
+          for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+          {
+            if (sb.Length > 0)
+              sb.Append('v');
 
-          sb.Append(tourney.PlayersPerParticipant);
+            sb.Append(tourney.PlayersPerParticipant);
+          }
         }
       }
 

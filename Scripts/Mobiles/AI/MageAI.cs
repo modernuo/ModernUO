@@ -855,7 +855,7 @@ namespace Server.Mobiles
 
         Mobile comb = m_Mobile.Combatant;
 
-        if (comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet &&
+        if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet &&
             m_Mobile.InRange(comb, Core.ML ? 10 : 12) && CanDispel(comb))
         {
           active = comb;
@@ -917,7 +917,7 @@ namespace Server.Mobiles
 
         Mobile comb = m_Mobile.Combatant;
 
-        if (comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && CanDispel(comb))
+        if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet && CanDispel(comb))
         {
           active = inactive = comb;
           actPrio = inactPrio = m_Mobile.GetDistanceToSqrt(comb);

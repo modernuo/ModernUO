@@ -1759,7 +1759,7 @@ namespace Server.Mobiles
 
       DropHolding();
 
-      if (Core.AOS && Backpack != null && !Backpack.Deleted)
+      if (Core.AOS && Backpack?.Deleted == false)
       {
         Backpack.FindItemsByType<Item>(FindItems_Callback).ForEach(item => Backpack.AddItem(item));
       }

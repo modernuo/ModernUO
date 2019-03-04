@@ -25,7 +25,7 @@ namespace Server.Mobiles
 
     public virtual void RangeCheck()
     {
-      if (!Deleted && ControlMaster != null && !ControlMaster.Deleted)
+      if (!Deleted && ControlMaster?.Deleted == false)
       {
         int range = RangeHome - 2;
 
@@ -52,7 +52,8 @@ namespace Server.Mobiles
               m_Loc = master.Location;
             }
 
-            if (!Deleted) SetLocation(m_Loc, true);
+            if (!Deleted)
+              SetLocation(m_Loc, true);
           }
         }
       }

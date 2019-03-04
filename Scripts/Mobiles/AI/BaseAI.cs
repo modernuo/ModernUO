@@ -1374,7 +1374,7 @@ namespace Server.Mobiles
           AggressorInfo info = aggressors[i];
           Mobile attacker = info.Attacker;
 
-          if (attacker != null && !attacker.Deleted &&
+          if (attacker?.Deleted == false &&
               attacker.GetDistanceToSqrt(m_Mobile) <= m_Mobile.RangePerception)
             if (combatant == null || attacker.GetDistanceToSqrt(controlMaster) <
                 combatant.GetDistanceToSqrt(controlMaster))
@@ -1385,7 +1385,7 @@ namespace Server.Mobiles
           m_Mobile.DebugSay("Crap, my master has been attacked! I will attack one of those bastards!");
       }
 
-      if (combatant != null && combatant != m_Mobile && combatant != m_Mobile.ControlMaster && !combatant.Deleted &&
+      if (combatant?.Deleted == false && combatant != m_Mobile && combatant != m_Mobile.ControlMaster &&
           combatant.Alive && !combatant.IsDeadBondedPet && m_Mobile.CanSee(combatant) &&
           m_Mobile.CanBeHarmful(combatant, false) && combatant.Map == m_Mobile.Map)
       {
@@ -1553,7 +1553,7 @@ namespace Server.Mobiles
       Mobile from = m_Mobile.ControlMaster;
       Mobile to = m_Mobile.ControlTarget;
 
-      if (from != to && from != null && !from.Deleted && to != null && !to.Deleted && to.Player)
+      if (from?.Deleted == false && to?.Deleted == false && from != to && to.Player)
       {
         m_Mobile.DebugSay("Begin transfer with {0}", to.Name);
 

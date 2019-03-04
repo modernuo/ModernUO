@@ -180,7 +180,7 @@ namespace Server.Engines.Chat
 
       password = password?.Trim();
 
-      if (password != null && password.Length == 0)
+      if (password?.Length == 0)
         password = null;
 
       Channel joined = Channel.FindChannelByName(name);
@@ -217,7 +217,7 @@ namespace Server.Engines.Chat
 
       password = password?.Trim();
 
-      if (password != null && password.Length == 0)
+      if (password?.Length == 0)
         password = null;
 
       Channel.AddChannel(name, password).AddUser(from, password);

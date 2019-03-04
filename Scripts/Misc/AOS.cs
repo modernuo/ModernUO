@@ -172,7 +172,7 @@ namespace Server
       if (keepAlive && totalDamage > m.Hits)
         totalDamage = m.Hits;
 
-      if (from != null && !from.Deleted && from.Alive)
+      if (from?.Deleted == false && from.Alive)
       {
         int reflectPhys = AosAttributes.GetValue(m, AosAttribute.ReflectPhysical);
 

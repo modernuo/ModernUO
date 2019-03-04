@@ -252,7 +252,7 @@ namespace Server.Engines.Help
         {
           BaseHouse house = BaseHouse.FindHouseAt(from);
 
-          if (house != null && house.IsAosRules && !from.Region.IsPartOf<SafeZone>()) // Dueling
+          if (house?.IsAosRules == true && !from.Region.IsPartOf<SafeZone>()) // Dueling
           {
             from.Location = house.BanLocation;
           }

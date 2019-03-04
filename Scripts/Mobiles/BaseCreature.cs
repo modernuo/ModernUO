@@ -2176,9 +2176,10 @@ namespace Server.Mobiles
     {
       base.OnCombatantChange();
 
-      Warmode = Combatant != null && !Combatant.Deleted && Combatant.Alive;
+      Warmode = Combatant?.Deleted == false && Combatant.Alive;
 
-      if (CanFly && Warmode) Flying = false;
+      if (CanFly && Warmode)
+        Flying = false;
     }
 
     protected override void OnMapChange(Map oldMap)

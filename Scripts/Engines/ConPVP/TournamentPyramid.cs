@@ -70,7 +70,8 @@ namespace Server.Engines.ConPVP
               {
                 Faction fac = Faction.Find(mob);
 
-                if (fac != null) index = fac.Definition.Sort;
+                if (fac != null)
+                  index = fac.Definition.Sort;
               }
               else if (partsPerMatch == 2)
               {

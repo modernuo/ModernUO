@@ -1553,7 +1553,7 @@ namespace Server.Mobiles
 
     public override void OnDelete()
     {
-      if (Vendor != null && !Vendor.Deleted)
+      if (Vendor?.Deleted == false)
       {
         Vendor.MoveToWorld(Location, Map);
         Vendor.Placeholder = null;

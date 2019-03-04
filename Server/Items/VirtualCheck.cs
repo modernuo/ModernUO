@@ -196,14 +196,15 @@ namespace Server
       {
         base.OnServerClose(owner);
 
-        if (Check != null && !Check.Deleted) Check.UpdateTrade(User);
+        if (Check?.Deleted == false)
+          Check.UpdateTrade(User);
       }
 
       public void Close()
       {
         User.CloseGump<EditGump>();
 
-        if (Check != null && !Check.Deleted)
+        if (Check?.Deleted == false)
           Check.UpdateTrade(User);
         else
           Check = null;
@@ -211,7 +212,7 @@ namespace Server
 
       public void Send()
       {
-        if (Check != null && !Check.Deleted)
+        if (Check?.Deleted == false)
           User.SendGump(this);
         else
           Close();
@@ -219,13 +220,14 @@ namespace Server
 
       public void Refresh(bool recompile)
       {
-        if (Check == null || Check.Deleted)
+        if (Check?.Deleted != false)
         {
           Close();
           return;
         }
 
-        if (recompile) CompileLayout();
+        if (recompile)
+          CompileLayout();
 
         Close();
         Send();
@@ -233,7 +235,8 @@ namespace Server
 
       private void CompileLayout()
       {
-        if (Check == null || Check.Deleted) return;
+        if (Check?.Deleted != false)
+          return;
 
         Entries.ForEach(e => e.Parent = null);
         Entries.Clear();
@@ -284,7 +287,7 @@ namespace Server
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (Check == null || Check.Deleted || sender.Mobile != User)
+        if (Check?.Deleted != false || sender.Mobile != User)
         {
           Close();
           return;
@@ -354,7 +357,7 @@ namespace Server
 
         if (updated) User.SendMessage("Your offer has been updated.");
 
-        if (refresh && Check != null && !Check.Deleted)
+        if (refresh && Check?.Deleted == false)
         {
           Refresh(true);
           return;

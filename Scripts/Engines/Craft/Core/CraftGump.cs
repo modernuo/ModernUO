@@ -184,7 +184,7 @@ namespace Server.Engines.Craft
         CreateResList(false, from);
       else if (page == CraftPage.PickResource2)
         CreateResList(true, from);
-      else if (context != null && context.LastGroupIndex > -1)
+      else if (context?.LastGroupIndex > -1)
         CreateItemList(context.LastGroupIndex);
     }
 

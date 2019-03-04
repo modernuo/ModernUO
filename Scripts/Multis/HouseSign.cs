@@ -49,7 +49,7 @@ namespace Server.Multis
     {
       base.OnAfterDelete();
 
-      if (Owner != null && !Owner.Deleted)
+      if (Owner?.Deleted == false)
         Owner.Delete();
     }
 

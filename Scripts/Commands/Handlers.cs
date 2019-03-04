@@ -676,7 +676,7 @@ namespace Server.Commands
       {
         Mobile m = state.Mobile;
 
-        if (m != null && m.AccessLevel >= ac)
+        if (m?.AccessLevel >= ac)
           m.SendMessage(hue, message);
       }
     }

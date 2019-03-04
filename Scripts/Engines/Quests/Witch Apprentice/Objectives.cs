@@ -102,7 +102,7 @@ namespace Server.Engines.Quests.Hag
 
     public override void ChildSerialize(GenericWriter writer)
     {
-      if (Corpse != null && Corpse.Deleted)
+      if (Corpse?.Deleted == true)
         Corpse = null;
 
       writer.WriteEncodedInt(1); // version

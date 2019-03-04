@@ -77,7 +77,7 @@ namespace Server.Engines.ConPVP
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_Context != null && !m_Context.Registered)
+      if (m_Context?.Registered == false)
         return;
 
       switch (info.ButtonID)

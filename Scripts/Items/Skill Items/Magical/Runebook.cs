@@ -467,7 +467,7 @@ namespace Server.Items
 
     public void Serialize(GenericWriter writer)
     {
-      if (House != null && !House.Deleted)
+      if (House?.Deleted == false)
       {
         writer.Write((byte)1); // version
 

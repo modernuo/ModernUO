@@ -34,7 +34,7 @@ namespace Server.Engines.ConPVP
         {
           TournamentController controller = m_Instances[i];
 
-          if (controller != null && !controller.Deleted && controller.Tournament != null &&
+          if (controller?.Deleted == false && controller.Tournament != null &&
               controller.Tournament.Stage != TournamentStage.Inactive)
             return true;
         }

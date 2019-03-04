@@ -70,9 +70,9 @@ namespace Server.Engines.BulkOrders
 				{
 					SecureTrade trade = cont.Trade;
 
-					if ( trade != null && trade.From.Mobile == from )
+					if (trade?.From.Mobile == from )
 						trade.To.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.To.Mobile, this ) );
-					else if ( trade != null && trade.To.Mobile == from )
+					else if (trade?.To.Mobile == from )
 						trade.From.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.From.Mobile, this ) );
 				}
 			}

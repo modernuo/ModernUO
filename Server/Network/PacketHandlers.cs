@@ -1478,14 +1478,14 @@ namespace Server.Network
           {
             Mobile m = World.FindMobile(s);
 
-            if (m != null && !m.Deleted)
+            if (m?.Deleted == false)
               from.Use(m);
           }
           else if (s.IsItem)
           {
             Item item = World.FindItem(s);
 
-            if (item != null && !item.Deleted)
+            if (item?.Deleted == false)
               from.Use(item);
           }
         }
@@ -1525,7 +1525,7 @@ namespace Server.Network
       {
         Item item = World.FindItem(s);
 
-        if (item != null && !item.Deleted && from.CanSee(item) &&
+        if (item?.Deleted == false && from.CanSee(item) &&
             Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
         {
           if (SingleClickProps)
@@ -1705,7 +1705,7 @@ namespace Server.Network
         {
           Item item = World.FindItem(s);
 
-          if (item != null && !item.Deleted && from.CanSee(item) &&
+          if (item?.Deleted == false && from.CanSee(item) &&
               Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
             item.SendPropertiesTo(from);
         }
@@ -1732,7 +1732,7 @@ namespace Server.Network
       {
         Item item = World.FindItem(s);
 
-        if (item != null && !item.Deleted && from.CanSee(item) &&
+        if (item?.Deleted == false && from.CanSee(item) &&
             Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
           item.SendPropertiesTo(from);
       }

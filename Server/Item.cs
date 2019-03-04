@@ -2323,7 +2323,7 @@ namespace Server
 
       Mobile blessedFor = BlessedFor;
 
-      if (blessedFor != null && !blessedFor.Deleted)
+      if (blessedFor?.Deleted == false)
         AddBlessedForProperty(list, blessedFor);
 
       if (DisplayLootType)

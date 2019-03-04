@@ -86,7 +86,7 @@ namespace Server.Engines.ConPVP
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_DuelContext != null && !m_DuelContext.Registered)
+      if (m_DuelContext?.Registered == false)
         return;
 
       if (!m_ReadOnly)

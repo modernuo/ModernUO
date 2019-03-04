@@ -247,7 +247,7 @@ namespace Server.Engines.ConPVP
       sb.Append(remaining.Count == 2 ? "between " : "among ");
 
       sb.Append(remaining.Count);
-      
+
       sb.Append(remaining[0].Players.Count == 1 ? " players: " : " teams: ");
 
       bool hasAppended = false;
@@ -370,9 +370,7 @@ namespace Server.Engines.ConPVP
 
         for (int i = 0; i < part.Context.Participants.Count; ++i)
         {
-          Participant check = part.Context.Participants[i];
-
-          if (check != null && !check.Eliminated)
+          if (part.Context.Participants[i]?.Eliminated == false)
             ++rem;
         }
 
@@ -794,7 +792,7 @@ namespace Server.Engines.ConPVP
 
               if (!bad)
                 continue;
-              
+
               for (int j = 0; j < part.Players.Count; ++j)
                   part.Players[j].SendMessage("You have been disqualified from the tournament.");
 
@@ -882,7 +880,7 @@ namespace Server.Engines.ConPVP
                   Undefeated.Clear();
                   break;
                 }
-              
+
             }
 
             if (Undefeated.Count > 1)

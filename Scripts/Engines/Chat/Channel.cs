@@ -116,21 +116,15 @@ namespace Server.Engines.Chat
 
     public bool ValidateAccess(ChatUser from, ChatUser target)
     {
-      if (from != null && target != null && from.Mobile.AccessLevel < target.Mobile.AccessLevel)
-      {
-        from.Mobile.SendMessage("Your access level is too low to do this.");
-        return false;
-      }
+      if (@from == null || target == null || @from.Mobile.AccessLevel >= target.Mobile.AccessLevel)
+        return true;
 
-      return true;
+      @from.Mobile.SendMessage("Your access level is too low to do this.");
+      return false;
+
     }
 
-    public bool AddUser(ChatUser user)
-    {
-      return AddUser(user, null);
-    }
-
-    public bool AddUser(ChatUser user, string password)
+    public bool AddUser(ChatUser user, string password = null)
     {
       if (Contains(user))
       {
@@ -188,12 +182,7 @@ namespace Server.Engines.Chat
       }
     }
 
-    public void AdBan(ChatUser user)
-    {
-      AddBan(user, null);
-    }
-
-    public void AddBan(ChatUser user, ChatUser moderator)
+    public void AddBan(ChatUser user, ChatUser moderator = null)
     {
       if (!ValidateModerator(moderator) || !ValidateAccess(moderator, user))
         return;
@@ -210,12 +199,7 @@ namespace Server.Engines.Chat
         m_Banned.Remove(user);
     }
 
-    public void Kick(ChatUser user)
-    {
-      Kick(user, null);
-    }
-
-    public void Kick(ChatUser user, ChatUser moderator)
+    public void Kick(ChatUser user, ChatUser moderator = null)
     {
       Kick(user, moderator, false);
     }
@@ -248,12 +232,7 @@ namespace Server.Engines.Chat
         moderator?.SendMessage(62, user.Username); // You are banning %1 from this conference.
     }
 
-    public void AddVoiced(ChatUser user)
-    {
-      AddVoiced(user, null);
-    }
-
-    public void AddVoiced(ChatUser user, ChatUser moderator)
+    public void AddVoiced(ChatUser user, ChatUser moderator = null)
     {
       if (!ValidateModerator(moderator))
         return;
@@ -291,12 +270,7 @@ namespace Server.Engines.Chat
       }
     }
 
-    public void AddModerator(ChatUser user)
-    {
-      AddModerator(user, null);
-    }
-
-    public void AddModerator(ChatUser user, ChatUser moderator)
+    public void AddModerator(ChatUser user, ChatUser moderator = null)
     {
       if (!ValidateModerator(moderator))
         return;
@@ -316,12 +290,7 @@ namespace Server.Engines.Chat
       SendCommand(ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username);
     }
 
-    public void RemoveModerator(ChatUser user)
-    {
-      RemoveModerator(user, null);
-    }
-
-    public void RemoveModerator(ChatUser user, ChatUser moderator)
+    public void RemoveModerator(ChatUser user, ChatUser moderator = null)
     {
       if (!ValidateModerator(moderator) || !ValidateAccess(moderator, user))
         return;
@@ -338,32 +307,12 @@ namespace Server.Engines.Chat
       }
     }
 
-    public void SendMessage(int number)
+    public void SendMessage(int number, string param1 = null)
     {
-      SendMessage(number, null, null, null);
+      SendMessage(number, null, param1);
     }
 
-    public void SendMessage(int number, string param1)
-    {
-      SendMessage(number, null, param1, null);
-    }
-
-    public void SendMessage(int number, string param1, string param2)
-    {
-      SendMessage(number, null, param1, param2);
-    }
-
-    public void SendMessage(int number, ChatUser initiator)
-    {
-      SendMessage(number, initiator, null, null);
-    }
-
-    public void SendMessage(int number, ChatUser initiator, string param1)
-    {
-      SendMessage(number, initiator, param1, null);
-    }
-
-    public void SendMessage(int number, ChatUser initiator, string param1, string param2)
+    public void SendMessage(int number, ChatUser initiator, string param1 = null, string param2 = null)
     {
       for (int i = 0; i < m_Users.Count; ++i)
       {
@@ -395,32 +344,12 @@ namespace Server.Engines.Chat
       }
     }
 
-    public void SendCommand(ChatCommand command)
-    {
-      SendCommand(command, null, null, null);
-    }
-
-    public void SendCommand(ChatCommand command, string param1)
-    {
-      SendCommand(command, null, param1, null);
-    }
-
-    public void SendCommand(ChatCommand command, string param1, string param2)
+    public void SendCommand(ChatCommand command, string param1 = null, string param2 = null)
     {
       SendCommand(command, null, param1, param2);
     }
 
-    public void SendCommand(ChatCommand command, ChatUser initiator)
-    {
-      SendCommand(command, initiator, null, null);
-    }
-
-    public void SendCommand(ChatCommand command, ChatUser initiator, string param1)
-    {
-      SendCommand(command, initiator, param1, null);
-    }
-
-    public void SendCommand(ChatCommand command, ChatUser initiator, string param1, string param2)
+    public void SendCommand(ChatCommand command, ChatUser initiator, string param1 = null, string param2 = null)
     {
       for (int i = 0; i < m_Users.Count; ++i)
       {
@@ -457,12 +386,7 @@ namespace Server.Engines.Chat
       }
     }
 
-    public static Channel AddChannel(string name)
-    {
-      return AddChannel(name, null);
-    }
-
-    public static Channel AddChannel(string name, string password)
+    public static Channel AddChannel(string name, string password = null)
     {
       Channel channel = FindChannelByName(name);
 

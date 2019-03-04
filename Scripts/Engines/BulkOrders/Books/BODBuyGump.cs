@@ -57,12 +57,12 @@ namespace Server.Engines.BulkOrders
         pv.SayTo(m_From, 1062382); // The deed selected is not available.
         return;
       }
-      
+
       int price = 0;
 
       VendorItem vi = pv.GetVendorItem(m_Book);
 
-      if (vi != null && !vi.IsForSale)
+      if (vi?.IsForSale == false)
         price = m_Entry.Price;
 
       if (price != m_Price)
@@ -79,7 +79,7 @@ namespace Server.Engines.BulkOrders
       }
 
       Item item = m_Entry.Reconstruct();
-      
+
       pv.Say(m_From.Name);
 
       Container pack = m_From.Backpack;
