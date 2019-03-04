@@ -86,13 +86,9 @@ namespace Server.Engines.ConPVP
   [PropertyObject]
   public class ArenaStartPoints
   {
-    public ArenaStartPoints() : this(new Point3D[8])
+    public ArenaStartPoints(Point3D[] points = null)
     {
-    }
-
-    public ArenaStartPoints(Point3D[] points)
-    {
-      Points = points;
+      Points = points ?? new Point3D[8];
     }
 
     public ArenaStartPoints(GenericReader reader)

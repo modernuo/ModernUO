@@ -9,12 +9,7 @@ namespace Server.Items
 {
   public class HouseTeleporter : Item, ISecurable
   {
-    [Constructible]
-    public HouseTeleporter(int itemID) : this(itemID, null)
-    {
-    }
-
-    public HouseTeleporter(int itemID, Item target) : base(itemID)
+    public HouseTeleporter(int itemID, Item target = null) : base(itemID)
     {
       Movable = false;
 

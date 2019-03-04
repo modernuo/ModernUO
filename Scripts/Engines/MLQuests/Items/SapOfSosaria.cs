@@ -3,12 +3,7 @@ namespace Server.Items
   public class SapOfSosaria : Item
   {
     [Constructible]
-    public SapOfSosaria() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SapOfSosaria(int amount) : base(0x1848)
+    public SapOfSosaria(int amount = 1) : base(0x1848)
     {
       LootType = LootType.Blessed;
       Stackable = true;

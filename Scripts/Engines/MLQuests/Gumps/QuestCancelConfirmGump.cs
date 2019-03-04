@@ -8,12 +8,7 @@ namespace Server.Engines.MLQuests.Gumps
     private bool m_CloseGumps;
     private MLQuestInstance m_Instance;
 
-    public QuestCancelConfirmGump(MLQuestInstance instance)
-      : this(instance, true)
-    {
-    }
-
-    public QuestCancelConfirmGump(MLQuestInstance instance, bool closeGumps)
+    public QuestCancelConfirmGump(MLQuestInstance instance, bool closeGumps = true)
       : base(120, 50)
     {
       m_Instance = instance;

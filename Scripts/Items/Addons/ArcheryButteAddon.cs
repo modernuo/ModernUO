@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Network;
 
@@ -20,7 +19,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool FacingEast
 		{
-			get => ( ItemID == 0x100A );
+			get => ItemID == 0x100A;
 			set => ItemID = value ? 0x100A : 0x100B;
 		}
 
@@ -30,12 +29,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Bolts { get; set; }
 
-		[Constructible]
-		public ArcheryButte() : this( 0x100A )
-		{
-		}
-
-		public ArcheryButte( int itemID ) : base( itemID )
+		public ArcheryButte(int itemID = 0x100A) : base(itemID)
 		{
 			MinSkill = -25.0;
 			MaxSkill = +25.0;
@@ -283,7 +277,7 @@ namespace Server.Items
 		[Constructible]
 		public ArcheryButteAddon()
 		{
-			AddComponent( new ArcheryButte( 0x100A ), 0, 0, 0 );
+			AddComponent( new ArcheryButte(), 0, 0, 0 );
 		}
 
 		public ArcheryButteAddon( Serial serial ) : base( serial )

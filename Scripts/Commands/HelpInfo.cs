@@ -337,12 +337,7 @@ namespace Server.Commands
 
     public class CommandInfoGump : Gump
     {
-      public CommandInfoGump(CommandInfo info)
-        : this(info, 320, 200)
-      {
-      }
-
-      public CommandInfoGump(CommandInfo info, int width, int height)
+      public CommandInfoGump(CommandInfo info, int width = 320, int height = 200)
         : base(300, 50)
       {
         AddPage(0);

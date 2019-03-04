@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Server.Gumps;
@@ -965,16 +964,11 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
-    private BRGame m_Game;
+//    private BRGame m_Game;
 
-    public BRBoardGump(Mobile mob, BRGame game)
-      : this(mob, game, null)
+    public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section = null) : base(60, 60)
     {
-    }
-
-    public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section) : base(60, 60)
-    {
-      m_Game = game;
+//      m_Game = game;
 
       BRTeamInfo ourTeam = game.GetTeamInfo(mob);
 

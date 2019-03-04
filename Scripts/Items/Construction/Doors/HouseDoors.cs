@@ -63,13 +63,7 @@ namespace Server.Items
   public class GenericHouseDoor : BaseHouseDoor
   {
     [Constructible]
-    public GenericHouseDoor(DoorFacing facing, int baseItemID, int openedSound, int closedSound) : this(facing,
-      baseItemID, openedSound, closedSound, true)
-    {
-    }
-
-    [Constructible]
-    public GenericHouseDoor(DoorFacing facing, int baseItemID, int openedSound, int closedSound, bool autoAdjust)
+    public GenericHouseDoor(DoorFacing facing, int baseItemID, int openedSound, int closedSound, bool autoAdjust = true)
       : base(facing, baseItemID + (autoAdjust ? 2 * (int)facing : 0),
         baseItemID + 1 + (autoAdjust ? 2 * (int)facing : 0), openedSound, closedSound, GetOffset(facing))
     {
@@ -250,7 +244,7 @@ namespace Server.Items
           h = bs;
           break;
 
-        //No way to test the 'insideness' of SE Sliding doors on OSI, so leaving them default to false until furthur information gained
+        //No way to test the 'insideness' of SE Sliding doors on OSI, so leaving them default to false until further information gained
 
         default: return false;
       }

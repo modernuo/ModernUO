@@ -13,11 +13,7 @@ namespace Server.Factions
     private Election m_Election;
     private int m_Page;
 
-    public ElectionManagementGump(Election election) : this(election, null, 0)
-    {
-    }
-
-    public ElectionManagementGump(Election election, Candidate candidate, int page) : base(40, 40)
+    public ElectionManagementGump(Election election, Candidate candidate = null, int page = 0) : base(40, 40)
     {
       m_Election = election;
       m_Candidate = candidate;
@@ -181,7 +177,7 @@ namespace Server.Factions
           bid -= 2;
 
           if (bid >= 0 && bid < m_Election.Candidates.Count)
-            from.SendGump(new ElectionManagementGump(m_Election, m_Election.Candidates[bid], 0));
+            from.SendGump(new ElectionManagementGump(m_Election, m_Election.Candidates[bid]));
         }
       }
       else

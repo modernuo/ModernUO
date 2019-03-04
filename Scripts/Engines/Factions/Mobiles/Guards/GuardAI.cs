@@ -27,11 +27,7 @@ namespace Server.Factions
 
   public class ComboEntry
   {
-    public ComboEntry(Type spell) : this(spell, 100, TimeSpan.Zero)
-    {
-    }
-
-    public ComboEntry(Type spell, int chance) : this(spell, chance, TimeSpan.Zero)
+    public ComboEntry(Type spell, int chance = 100) : this(spell, chance, TimeSpan.Zero)
     {
     }
 

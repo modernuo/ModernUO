@@ -9,12 +9,7 @@ namespace Server.Engines.MLQuests.Gumps
     private bool m_CloseGumps;
     private MLQuestInstance m_Instance;
 
-    public QuestLogDetailedGump(MLQuestInstance instance)
-      : this(instance, true)
-    {
-    }
-
-    public QuestLogDetailedGump(MLQuestInstance instance, bool closeGumps)
+    public QuestLogDetailedGump(MLQuestInstance instance, bool closeGumps = true)
       : base(1046026) // Quest Log
     {
       m_Instance = instance;

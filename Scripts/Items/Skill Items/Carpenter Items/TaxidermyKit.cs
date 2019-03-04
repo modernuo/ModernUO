@@ -169,14 +169,8 @@ namespace Server.Items
 
     private Mobile m_Hunter;
 
-    [Constructible]
-    public TrophyAddon(Mobile from, int itemID, int westID, int northID, int deedNumber, int addonNumber) : this(from,
-      itemID, westID, northID, deedNumber, addonNumber, null, 0)
-    {
-    }
-
-    public TrophyAddon(Mobile from, int itemID, int westID, int northID, int deedNumber, int addonNumber, Mobile hunter,
-      int animalWeight) : base(itemID)
+    public TrophyAddon(Mobile from, int itemID, int westID, int northID, int deedNumber,
+      int addonNumber, Mobile hunter = null, int animalWeight = 0) : base(itemID)
     {
       WestID = westID;
       NorthID = northID;
@@ -358,14 +352,8 @@ namespace Server.Items
 
     private Mobile m_Hunter;
 
-    [Constructible]
-    public TrophyDeed(int westID, int northID, int deedNumber, int addonNumber) : this(westID, northID, deedNumber,
-      addonNumber, null, 0)
-    {
-    }
-
-    public TrophyDeed(int westID, int northID, int deedNumber, int addonNumber, Mobile hunter, int animalWeight) :
-      base(0x14F0)
+    public TrophyDeed(int westID, int northID, int deedNumber, int addonNumber,
+      Mobile hunter = null, int animalWeight = 0) : base(0x14F0)
     {
       WestID = westID;
       NorthID = northID;
@@ -497,14 +485,12 @@ namespace Server.Items
             {
               case Direction.North:
               case Direction.South:
-                northWall = true;
                 westWall = false;
                 break;
 
               case Direction.East:
               case Direction.West:
                 northWall = false;
-                westWall = true;
                 break;
 
               default:

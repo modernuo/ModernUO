@@ -54,17 +54,12 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
-    private DDGame m_Game;
+//    private DDGame m_Game;
 
-    public DDBoardGump(Mobile mob, DDGame game)
-      : this(mob, game, null)
-    {
-    }
-
-    public DDBoardGump(Mobile mob, DDGame game, DDTeamInfo section)
+    public DDBoardGump(Mobile mob, DDGame game, DDTeamInfo section = null)
       : base(60, 60)
     {
-      m_Game = game;
+//      m_Game = game;
 
       DDTeamInfo ourTeam = game.GetTeamInfo(mob);
 

@@ -18,11 +18,7 @@ namespace Server.Items
     private ClothingQuality m_Quality;
     private int m_WeightReduction;
 
-    public BaseQuiver() : this(0x2FB7)
-    {
-    }
-
-    public BaseQuiver(int itemID) : base(itemID)
+    public BaseQuiver(int itemID = 0x2FB7) : base(itemID)
     {
       Weight = 2.0;
       Capacity = 500;

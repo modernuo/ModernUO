@@ -5,7 +5,7 @@ namespace Server.Items
   [PropertyObject]
   public class TalismanAttribute
   {
-    public TalismanAttribute() : this(null, 0, 0)
+    public TalismanAttribute() : this(null, 0)
     {
     }
 
@@ -19,11 +19,7 @@ namespace Server.Items
       }
     }
 
-    public TalismanAttribute(Type type, TextDefinition name) : this(type, name, 0)
-    {
-    }
-
-    public TalismanAttribute(Type type, TextDefinition name, int amount)
+    public TalismanAttribute(Type type, TextDefinition name, int amount = 0)
     {
       Type = type;
       Name = name;

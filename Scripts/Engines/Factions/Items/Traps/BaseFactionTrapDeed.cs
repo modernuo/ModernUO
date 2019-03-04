@@ -8,14 +8,10 @@ namespace Server.Factions
   {
     private Faction m_Faction;
 
-    public BaseFactionTrapDeed(int itemID) : base(itemID)
+    public BaseFactionTrapDeed(int itemID= 0x14F0) : base(itemID)
     {
       Weight = 1.0;
       LootType = LootType.Blessed;
-    }
-
-    public BaseFactionTrapDeed(bool createdFromDeed) : this(0x14F0)
-    {
     }
 
     public BaseFactionTrapDeed(Serial serial) : base(serial)

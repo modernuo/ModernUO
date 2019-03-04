@@ -5,12 +5,7 @@ namespace Server.Items
   public class SturdyShovel : BaseHarvestTool
   {
     [Constructible]
-    public SturdyShovel() : this(180)
-    {
-    }
-
-    [Constructible]
-    public SturdyShovel(int uses) : base(uses, 0xF39)
+    public SturdyShovel(int uses = 180) : base(0xF39, uses)
     {
       Weight = 5.0;
       Hue = 0x973;

@@ -1004,7 +1004,7 @@ namespace Server.Misc
         }
         case 4: // Necromancer
         {
-          Container regs = new BagOfNecroReagents(50);
+          Container regs = new BagOfNecroReagents();
 
           if (!Core.AOS)
             foreach (Item item in regs.Items)
@@ -1620,7 +1620,7 @@ namespace Server.Misc
         {
           if (Core.ML)
           {
-            Container regs = new BagOfNecroReagents(50);
+            Container regs = new BagOfNecroReagents();
 
             PackItem(regs);
 

@@ -17,16 +17,7 @@ namespace Server.Engines.Craft
     private CraftPage m_Page;
     private BaseTool m_Tool;
 
-    /*public CraftGump( Mobile from, CraftSystem craftSystem, BaseTool tool ): this( from, craftSystem, -1, -1, tool, null )
-    {
-    }*/
-
-    public CraftGump(Mobile from, CraftSystem craftSystem, BaseTool tool, object notice) : this(from, craftSystem, tool,
-      notice, CraftPage.None)
-    {
-    }
-
-    private CraftGump(Mobile from, CraftSystem craftSystem, BaseTool tool, object notice, CraftPage page) : base(40, 40)
+    public CraftGump(Mobile from, CraftSystem craftSystem, BaseTool tool, object notice, CraftPage page = CraftPage.None) : base(40, 40)
     {
       m_From = from;
       m_CraftSystem = craftSystem;
@@ -608,7 +599,7 @@ namespace Server.Engines.Craft
       }
     }
 
-    private enum CraftPage
+    public enum CraftPage
     {
       None,
       PickResource,

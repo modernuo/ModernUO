@@ -7,12 +7,7 @@ namespace Server.Items
   {
     private ResetTimer m_ResetTimer;
 
-    [Constructible]
-    public RaiseSwitch() : this(0x1093)
-    {
-    }
-
-    protected RaiseSwitch(int itemID) : base(itemID)
+    public RaiseSwitch(int itemID = 0x1093) : base(itemID)
     {
       Movable = false;
     }

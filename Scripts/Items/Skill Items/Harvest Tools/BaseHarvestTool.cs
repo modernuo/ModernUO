@@ -20,11 +20,7 @@ namespace Server.Items
     private ToolQuality m_Quality;
     private int m_UsesRemaining;
 
-    public BaseHarvestTool(int itemID) : this(50, itemID)
-    {
-    }
-
-    public BaseHarvestTool(int usesRemaining, int itemID) : base(itemID)
+    public BaseHarvestTool(int itemID, int usesRemaining = 50) : base(itemID)
     {
       m_UsesRemaining = usesRemaining;
       m_Quality = ToolQuality.Regular;

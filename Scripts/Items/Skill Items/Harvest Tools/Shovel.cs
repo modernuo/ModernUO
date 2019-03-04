@@ -5,12 +5,7 @@ namespace Server.Items
   public class Shovel : BaseHarvestTool
   {
     [Constructible]
-    public Shovel() : this(50)
-    {
-    }
-
-    [Constructible]
-    public Shovel(int uses) : base(uses, 0xF39)
+    public Shovel(int uses = 50) : base(0xF39, uses)
     {
       Weight = 5.0;
     }

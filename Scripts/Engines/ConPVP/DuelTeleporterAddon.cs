@@ -15,12 +15,7 @@ namespace Server.Engines.ConPVP
   public class DuelTeleporterAddon : BaseAddon
   {
     [Constructible]
-    public DuelTeleporterAddon() : this(DuelTeleporterType.Squares)
-    {
-    }
-
-    [Constructible]
-    public DuelTeleporterAddon(DuelTeleporterType type)
+    public DuelTeleporterAddon(DuelTeleporterType type = DuelTeleporterType.Squares)
     {
       int itemID = (int)type;
 

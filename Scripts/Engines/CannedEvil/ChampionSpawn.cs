@@ -421,7 +421,8 @@ namespace Server.Engines.CannedEvil
           {
             m_Altar.Hue = 0;
 
-            if (!Core.ML || Map == Map.Felucca) new StarRoomGate(true, m_Altar.Location, m_Altar.Map);
+            if (!Core.ML || Map == Map.Felucca)
+              new StarRoomGate(m_Altar.Location, m_Altar.Map, true);
           }
 
           Champion = null;

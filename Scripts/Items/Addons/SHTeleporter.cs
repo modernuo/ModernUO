@@ -10,12 +10,7 @@ namespace Server.Items
     private SHTeleComponent m_TeleDest;
 
     [Constructible]
-    public SHTeleComponent() : this(0x1775)
-    {
-    }
-
-    [Constructible]
-    public SHTeleComponent(int itemID) : this(itemID, new Point3D(0, 0, 0))
+    public SHTeleComponent(int itemID = 0x1775) : this(itemID, new Point3D(0, 0, 0))
     {
     }
 
@@ -124,12 +119,7 @@ namespace Server.Items
     private bool m_Changing;
 
     [Constructible]
-    public SHTeleporter() : this(true)
-    {
-    }
-
-    [Constructible]
-    public SHTeleporter(bool external)
+    public SHTeleporter(bool external = true)
     {
       m_Changing = false;
       External = external;

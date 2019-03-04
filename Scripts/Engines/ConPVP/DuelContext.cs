@@ -48,11 +48,7 @@ namespace Server.Engines.ConPVP
 
     private bool m_Yielding;
 
-    public DuelContext(Mobile initiator, RulesetLayout layout) : this(initiator, layout, true)
-    {
-    }
-
-    public DuelContext(Mobile initiator, RulesetLayout layout, bool addNew)
+    public DuelContext(Mobile initiator, RulesetLayout layout, bool addNew = true)
     {
       Initiator = initiator;
       Participants = new List<Participant>();
