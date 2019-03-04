@@ -33,12 +33,7 @@ namespace Server.Items
   public class HalfApron : BaseWaist
   {
     [Constructible]
-    public HalfApron() : this(0)
-    {
-    }
-
-    [Constructible]
-    public HalfApron(int hue) : base(0x153b, hue)
+    public HalfApron(int hue = 0) : base(0x153b, hue)
     {
       Weight = 2.0;
     }
@@ -66,12 +61,7 @@ namespace Server.Items
   public class Obi : BaseWaist
   {
     [Constructible]
-    public Obi() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Obi(int hue) : base(0x27A0, hue)
+    public Obi(int hue = 0) : base(0x27A0, hue)
     {
       Weight = 1.0;
     }
@@ -99,12 +89,7 @@ namespace Server.Items
   public class WoodlandBelt : BaseWaist
   {
     [Constructible]
-    public WoodlandBelt() : this(0)
-    {
-    }
-
-    [Constructible]
-    public WoodlandBelt(int hue) : base(0x2B68, hue)
+    public WoodlandBelt(int hue = 0) : base(0x2B68, hue)
     {
       Weight = 4.0;
     }

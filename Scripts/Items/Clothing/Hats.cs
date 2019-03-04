@@ -676,7 +676,10 @@ namespace Server.Items
   public class SavageMask : BaseHat
   {
     [Constructible]
-    public SavageMask(int hue = GetRandomHue()) : base(0x154B, hue)
+    public SavageMask() : this(GetRandomHue()) {}
+
+    [Constructible]
+    public SavageMask(int hue) : base(0x154B, hue)
     {
       Weight = 2.0;
     }

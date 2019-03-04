@@ -33,12 +33,7 @@ namespace Server.Items
   public class FurSarong : BaseOuterLegs
   {
     [Constructible]
-    public FurSarong() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FurSarong(int hue) : base(0x230C, hue)
+    public FurSarong(int hue = 0) : base(0x230C, hue)
     {
       Weight = 3.0;
     }
@@ -69,12 +64,7 @@ namespace Server.Items
   public class Skirt : BaseOuterLegs
   {
     [Constructible]
-    public Skirt() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Skirt(int hue) : base(0x1516, hue)
+    public Skirt(int hue = 0) : base(0x1516, hue)
     {
       Weight = 4.0;
     }
@@ -102,12 +92,7 @@ namespace Server.Items
   public class Kilt : BaseOuterLegs
   {
     [Constructible]
-    public Kilt() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Kilt(int hue) : base(0x1537, hue)
+    public Kilt(int hue = 0) : base(0x1537, hue)
     {
       Weight = 2.0;
     }
@@ -135,12 +120,7 @@ namespace Server.Items
   public class Hakama : BaseOuterLegs
   {
     [Constructible]
-    public Hakama() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Hakama(int hue) : base(0x279A, hue)
+    public Hakama(int hue = 0) : base(0x279A, hue)
     {
       Weight = 2.0;
     }

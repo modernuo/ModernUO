@@ -161,12 +161,7 @@ namespace Server.Items
   public class MistletoeDeed : Item
   {
     [Constructible]
-    public MistletoeDeed() : this(0)
-    {
-    }
-
-    [Constructible]
-    public MistletoeDeed(int hue) : base(0x14F0)
+    public MistletoeDeed(int hue = 0) : base(0x14F0)
     {
       Hue = hue;
       Weight = 1.0;
