@@ -10,12 +10,7 @@ namespace Server
     private string m_Page;
     private VirtueName m_Virtue;
 
-    public VirtueInfoGump(Mobile beholder, VirtueName virtue, int description) : this(beholder, virtue, description,
-      null)
-    {
-    }
-
-    public VirtueInfoGump(Mobile beholder, VirtueName virtue, int description, string webPage) : base(0, 0)
+    public VirtueInfoGump(Mobile beholder, VirtueName virtue, int description, string webPage = null) : base(0, 0)
     {
       m_Beholder = beholder;
       m_Virtue = virtue;

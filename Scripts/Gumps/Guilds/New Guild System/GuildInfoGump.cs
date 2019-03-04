@@ -9,11 +9,7 @@ namespace Server.Guilds
   {
     private bool m_IsResigning;
 
-    public GuildInfoGump(PlayerMobile pm, Guild g) : this(pm, g, false)
-    {
-    }
-
-    public GuildInfoGump(PlayerMobile pm, Guild g, bool isResigning) : base(pm, g)
+    public GuildInfoGump(PlayerMobile pm, Guild g, bool isResigning = false) : base(pm, g)
     {
       m_IsResigning = isResigning;
       PopulateGump();

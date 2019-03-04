@@ -331,7 +331,7 @@ namespace Server.Gumps
       List<ItemTileButtonInfo> buttons = new List<ItemTileButtonInfo>();
 
       Item[] items = pack.FindItemsByType(TreasuresOfTokuno.LesserArtifactsTotal);
-      
+
       for (int i = 0; i < items.Length; i++)
       {
         Item item = items[i];
@@ -582,19 +582,15 @@ namespace Server.Gumps
 
     public class TypeTileButtonInfo : ImageTileButtonInfo
     {
-      public TypeTileButtonInfo(Type type, int itemID, int hue, TextDefinition label, int localizedToolTip) : base(
+      public TypeTileButtonInfo(Type type, int itemID, TextDefinition label, int localizedToolTip = -1) : this(type, itemID,
+        0, label, localizedToolTip)
+      {
+      }
+
+      public TypeTileButtonInfo(Type type, int itemID, int hue, TextDefinition label, int localizedToolTip = -1) : base(
         itemID, hue, label, localizedToolTip)
       {
         Type = type;
-      }
-
-      public TypeTileButtonInfo(Type type, int itemID, TextDefinition label) : this(type, itemID, 0, label, -1)
-      {
-      }
-
-      public TypeTileButtonInfo(Type type, int itemID, TextDefinition label, int localizedToolTip) : this(type, itemID,
-        0, label, localizedToolTip)
-      {
       }
 
       public Type Type{ get; }

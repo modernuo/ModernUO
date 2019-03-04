@@ -7,11 +7,7 @@ namespace Server.Guilds
 {
   public abstract class BaseGuildGump : Gump
   {
-    public BaseGuildGump(PlayerMobile pm, Guild g) : this(pm, g, 10, 10)
-    {
-    }
-
-    public BaseGuildGump(PlayerMobile pm, Guild g, int x, int y) : base(x, y)
+    public BaseGuildGump(PlayerMobile pm, Guild g, int x = 10, int y = 10) : base(x, y)
     {
       guild = g;
       player = pm;

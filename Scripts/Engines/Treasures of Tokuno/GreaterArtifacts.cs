@@ -479,12 +479,7 @@ namespace Server.Items
     private PigmentType m_Type;
 
     [Constructible]
-    public PigmentsOfTokuno() : this(PigmentType.None, 10)
-    {
-    }
-
-    [Constructible]
-    public PigmentsOfTokuno(PigmentType type) : this(type,
+    public PigmentsOfTokuno(PigmentType type = PigmentType.None) : this(type,
       type == PigmentType.None || type >= PigmentType.FadedCoal ? 10 : 50)
     {
     }

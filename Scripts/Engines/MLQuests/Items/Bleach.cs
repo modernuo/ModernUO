@@ -3,7 +3,7 @@ namespace Server.Items
   public class Bleach : PigmentsOfTokuno
   {
     [Constructible]
-    public Bleach() : base(PigmentType.None)
+    public Bleach()
     {
       LootType = LootType.Blessed;
     }

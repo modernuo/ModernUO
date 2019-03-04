@@ -260,11 +260,7 @@ namespace Server.Engines.Quests.Hag
 
   public class FindIngredientObjective : QuestObjective
   {
-    public FindIngredientObjective(Ingredient[] oldIngredients) : this(oldIngredients, false)
-    {
-    }
-
-    public FindIngredientObjective(Ingredient[] oldIngredients, bool blackheartMet)
+    public FindIngredientObjective(Ingredient[] oldIngredients, bool blackheartMet = false)
     {
       if (!blackheartMet)
       {

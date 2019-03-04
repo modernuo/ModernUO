@@ -3,12 +3,7 @@ namespace Server.Items
   public class UnicornRibs : Item
   {
     [Constructible]
-    public UnicornRibs() : this(1)
-    {
-    }
-
-    [Constructible]
-    public UnicornRibs(int amount) : base(0x9F1)
+    public UnicornRibs(int amount = 1) : base(0x9F1)
     {
       LootType = LootType.Blessed;
       Hue = 0x14B;

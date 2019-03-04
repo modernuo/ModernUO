@@ -4,11 +4,7 @@ namespace Server.Engines.Quests
 {
   public abstract class DynamicTeleporter : Item
   {
-    public DynamicTeleporter() : this(0x1822, 0x482)
-    {
-    }
-
-    public DynamicTeleporter(int itemID, int hue) : base(itemID)
+    public DynamicTeleporter(int itemID = 0x1822, int hue = 0x482) : base(itemID)
     {
       Movable = false;
       Hue = hue;

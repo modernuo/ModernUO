@@ -8,12 +8,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class DeliverObjective : BaseObjective
   {
-    public DeliverObjective(Type delivery, int amount, TextDefinition name, Type destination)
-      : this(delivery, amount, name, destination, true)
-    {
-    }
-
-    public DeliverObjective(Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery)
+    public DeliverObjective(Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery = true)
     {
       Delivery = delivery;
       Amount = amount;
@@ -100,13 +95,8 @@ namespace Server.Engines.MLQuests.Objectives
 
   public class TimedDeliverObjective : DeliverObjective
   {
-    public TimedDeliverObjective(TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination)
-      : this(duration, delivery, amount, name, destination, true)
-    {
-    }
-
     public TimedDeliverObjective(TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination,
-      bool spawnsDelivery)
+      bool spawnsDelivery = true)
       : base(delivery, amount, name, destination, spawnsDelivery)
     {
       Duration = duration;

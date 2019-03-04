@@ -14,11 +14,7 @@ namespace Server.Gumps
     private IRewardOption m_Option;
     private RewardOptionList m_Options = new RewardOptionList();
 
-    public RewardOptionGump(IRewardOption option) : this(option, 0)
-    {
-    }
-
-    public RewardOptionGump(IRewardOption option, int title) : base(60, 36)
+    public RewardOptionGump(IRewardOption option, int title = 0) : base(60, 36)
     {
       m_Option = option;
 

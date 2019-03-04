@@ -17,12 +17,12 @@ namespace Server.Guilds
       new InfoField<PlayerMobile>(1062953, 150, TitleComparer.Instance) //Guild Title
     };
 
-    public GuildRosterGump(PlayerMobile pm, Guild g) : this(pm, g, LastOnComparer.Instance, false, "", 0)
+    public GuildRosterGump(PlayerMobile pm, Guild g) : this(pm, g, LastOnComparer.Instance)
     {
     }
 
-    public GuildRosterGump(PlayerMobile pm, Guild g, IComparer<PlayerMobile> currentComparer, bool ascending,
-      string filter, int startNumber)
+    public GuildRosterGump(PlayerMobile pm, Guild g, IComparer<PlayerMobile> currentComparer, bool ascending = false,
+      string filter = "", int startNumber = 0)
       : base(pm, g, Utility.SafeConvertList<Mobile, PlayerMobile>(g.Members), currentComparer, ascending, filter,
         startNumber, m_Fields)
     {

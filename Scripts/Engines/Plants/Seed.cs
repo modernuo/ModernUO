@@ -9,12 +9,12 @@ namespace Server.Engines.Plants
     private bool m_ShowType;
 
     [Constructible]
-    public Seed() : this(PlantTypeInfo.RandomFirstGeneration(), PlantHueInfo.RandomFirstGeneration(), false)
+    public Seed() : this(PlantTypeInfo.RandomFirstGeneration(), PlantHueInfo.RandomFirstGeneration())
     {
     }
 
     [Constructible]
-    public Seed(PlantType plantType, PlantHue plantHue, bool showType) : base(0xDCF)
+    public Seed(PlantType plantType, PlantHue plantHue, bool showType = false) : base(0xDCF)
     {
       Weight = 1.0;
       Stackable = Core.SA;
@@ -75,17 +75,17 @@ namespace Server.Engines.Plants
 
     public static Seed RandomBonsaiSeed(double increaseRatio)
     {
-      return new Seed(PlantTypeInfo.RandomBonsai(increaseRatio), PlantHue.Plain, false);
+      return new Seed(PlantTypeInfo.RandomBonsai(increaseRatio), PlantHue.Plain);
     }
 
     public static Seed RandomPeculiarSeed(int group)
     {
       switch (group)
       {
-        case 1: return new Seed(PlantTypeInfo.RandomPeculiarGroupOne(), PlantHue.Plain, false);
-        case 2: return new Seed(PlantTypeInfo.RandomPeculiarGroupTwo(), PlantHue.Plain, false);
-        case 3: return new Seed(PlantTypeInfo.RandomPeculiarGroupThree(), PlantHue.Plain, false);
-        default: return new Seed(PlantTypeInfo.RandomPeculiarGroupFour(), PlantHue.Plain, false);
+        case 1: return new Seed(PlantTypeInfo.RandomPeculiarGroupOne(), PlantHue.Plain);
+        case 2: return new Seed(PlantTypeInfo.RandomPeculiarGroupTwo(), PlantHue.Plain);
+        case 3: return new Seed(PlantTypeInfo.RandomPeculiarGroupThree(), PlantHue.Plain);
+        default: return new Seed(PlantTypeInfo.RandomPeculiarGroupFour(), PlantHue.Plain);
       }
     }
 

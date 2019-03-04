@@ -42,12 +42,7 @@ namespace Server.Engines.Plants
     private bool m_ShowType;
 
     [Constructible]
-    public PlantItem() : this(false)
-    {
-    }
-
-    [Constructible]
-    public PlantItem(bool fertileDirt) : base(0x1602)
+    public PlantItem(bool fertileDirt = false) : base(0x1602)
     {
       Weight = 1.0;
 

@@ -18,11 +18,7 @@ namespace Server.Gumps
 
     private int m_Type;
 
-    public AddDoorGump() : this(-1)
-    {
-    }
-
-    public AddDoorGump(int type) : base(50, 40)
+    public AddDoorGump(int type = -1) : base(50, 40)
     {
       m_Type = type;
 
