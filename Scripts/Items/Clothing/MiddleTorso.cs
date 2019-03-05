@@ -2,11 +2,7 @@ namespace Server.Items
 {
   public abstract class BaseMiddleTorso : BaseClothing
   {
-    public BaseMiddleTorso(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BaseMiddleTorso(int itemID, int hue) : base(itemID, Layer.MiddleTorso, hue)
+    public BaseMiddleTorso(int itemID, int hue = 0) : base(itemID, Layer.MiddleTorso, hue)
     {
     }
 

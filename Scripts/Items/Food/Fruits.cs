@@ -3,7 +3,7 @@ namespace Server.Items
   public class FruitBasket : Food
   {
     [Constructible]
-    public FruitBasket() : base(1, 0x993)
+    public FruitBasket() : base(0x993, 1)
     {
       Weight = 2.0;
       FillFactor = 5;
@@ -42,7 +42,7 @@ namespace Server.Items
   public class Banana : Food
   {
     [Constructible]
-    public Banana(int amount = 1) : base(amount, 0x171f)
+    public Banana(int amount = 1) : base(0x171f, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -71,7 +71,7 @@ namespace Server.Items
   public class Bananas : Food
   {
     [Constructible]
-    public Bananas(int amount = 1) : base(amount, 0x1721)
+    public Bananas(int amount = 1) : base(0x1721, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -99,7 +99,7 @@ namespace Server.Items
   public class SplitCoconut : Food
   {
     [Constructible]
-    public SplitCoconut(int amount = 1) : base(amount, 0x1725)
+    public SplitCoconut(int amount = 1) : base(0x1725, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -127,7 +127,7 @@ namespace Server.Items
   public class Lemon : Food
   {
     [Constructible]
-    public Lemon(int amount = 1) : base(amount, 0x1728)
+    public Lemon(int amount = 1) : base(0x1728, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -155,7 +155,7 @@ namespace Server.Items
   public class Lemons : Food
   {
     [Constructible]
-    public Lemons(int amount = 1) : base(amount, 0x1729)
+    public Lemons(int amount = 1) : base(0x1729, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -183,7 +183,7 @@ namespace Server.Items
   public class Lime : Food
   {
     [Constructible]
-    public Lime(int amount = 1) : base(amount, 0x172a)
+    public Lime(int amount = 1) : base(0x172a, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -211,7 +211,7 @@ namespace Server.Items
   public class Limes : Food
   {
     [Constructible]
-    public Limes(int amount = 1) : base(amount, 0x172B)
+    public Limes(int amount = 1) : base(0x172B, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -239,7 +239,7 @@ namespace Server.Items
   public class Coconut : Food
   {
     [Constructible]
-    public Coconut(int amount = 1) : base(amount, 0x1726)
+    public Coconut(int amount = 1) : base(0x1726, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -267,7 +267,7 @@ namespace Server.Items
   public class OpenCoconut : Food
   {
     [Constructible]
-    public OpenCoconut(int amount = 1) : base(amount, 0x1723)
+    public OpenCoconut(int amount = 1) : base(0x1723, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -295,7 +295,7 @@ namespace Server.Items
   public class Dates : Food
   {
     [Constructible]
-    public Dates(int amount = 1) : base(amount, 0x1727)
+    public Dates(int amount = 1) : base(0x1727, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -323,7 +323,7 @@ namespace Server.Items
   public class Grapes : Food
   {
     [Constructible]
-    public Grapes(int amount = 1) : base(amount, 0x9D1)
+    public Grapes(int amount = 1) : base(0x9D1, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -351,7 +351,7 @@ namespace Server.Items
   public class Peach : Food
   {
     [Constructible]
-    public Peach(int amount = 1) : base(amount, 0x9D2)
+    public Peach(int amount = 1) : base(0x9D2, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -379,7 +379,7 @@ namespace Server.Items
   public class Pear : Food
   {
     [Constructible]
-    public Pear(int amount = 1) : base(amount, 0x994)
+    public Pear(int amount = 1) : base(0x994, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -407,7 +407,7 @@ namespace Server.Items
   public class Apple : Food
   {
     [Constructible]
-    public Apple(int amount = 1) : base(amount, 0x9D0)
+    public Apple(int amount = 1) : base(0x9D0, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -435,7 +435,7 @@ namespace Server.Items
   public class Watermelon : Food
   {
     [Constructible]
-    public Watermelon(int amount = 1) : base(amount, 0xC5C)
+    public Watermelon(int amount = 1) : base(0xC5C, amount)
     {
       Weight = 5.0;
       FillFactor = 5;
@@ -472,7 +472,7 @@ namespace Server.Items
   public class SmallWatermelon : Food
   {
     [Constructible]
-    public SmallWatermelon(int amount = 1) : base(amount, 0xC5D)
+    public SmallWatermelon(int amount = 1) : base(0xC5D, amount)
     {
       Weight = 5.0;
       FillFactor = 5;
@@ -501,7 +501,7 @@ namespace Server.Items
   public class Squash : Food
   {
     [Constructible]
-    public Squash(int amount = 1) : base(amount, 0xc72)
+    public Squash(int amount = 1) : base(0xc72, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -530,7 +530,7 @@ namespace Server.Items
   public class Cantaloupe : Food
   {
     [Constructible]
-    public Cantaloupe(int amount = 1) : base(amount, 0xc79)
+    public Cantaloupe(int amount = 1) : base(0xc79, amount)
     {
       Weight = 1.0;
       FillFactor = 1;

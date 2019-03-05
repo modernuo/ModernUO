@@ -5,11 +5,7 @@ namespace Server.Items
 {
   public abstract class BaseOuterTorso : BaseClothing
   {
-    public BaseOuterTorso(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BaseOuterTorso(int itemID, int hue) : base(itemID, Layer.OuterTorso, hue)
+    public BaseOuterTorso(int itemID, int hue = 0) : base(itemID, Layer.OuterTorso, hue)
     {
     }
 
@@ -223,12 +219,7 @@ namespace Server.Items
     private int m_LabelNumber;
 
     [Constructible]
-    public RewardRobe(int hue = 0) : this(hue, 0)
-    {
-    }
-
-    [Constructible]
-    public RewardRobe(int hue, int labelNumber) : base(0x1F03, hue)
+    public RewardRobe(int hue = 0, int labelNumber = 0) : base(0x1F03, hue)
     {
       Weight = 3.0;
       LootType = LootType.Blessed;
@@ -343,12 +334,7 @@ namespace Server.Items
     private int m_LabelNumber;
 
     [Constructible]
-    public RewardDress(int hue = 0) : this(hue, 0)
-    {
-    }
-
-    [Constructible]
-    public RewardDress(int hue, int labelNumber) : base(0x1F01, hue)
+    public RewardDress(int hue = 0, int labelNumber = 0) : base(0x1F01, hue)
     {
       Weight = 2.0;
       LootType = LootType.Blessed;
@@ -584,12 +570,7 @@ namespace Server.Items
   public class MonkRobe : BaseOuterTorso
   {
     [Constructible]
-    public MonkRobe() : this(0x21E)
-    {
-    }
-
-    [Constructible]
-    public MonkRobe(int hue) : base(0x2687, hue)
+    public MonkRobe(int hue = 0x21E) : base(0x2687, hue)
     {
       Weight = 1.0;
       StrRequirement = 0;

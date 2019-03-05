@@ -2,11 +2,7 @@ namespace Server.Items
 {
   public abstract class BaseShirt : BaseClothing
   {
-    public BaseShirt(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BaseShirt(int itemID, int hue) : base(itemID, Layer.Shirt, hue)
+    public BaseShirt(int itemID, int hue = 0) : base(itemID, Layer.Shirt, hue)
     {
     }
 

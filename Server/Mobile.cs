@@ -8022,8 +8022,7 @@ namespace Server
     {
       private Mobile m_Mobile;
 
-      public CombatTimer(Mobile m)
-        : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01), 0)
+      public CombatTimer(Mobile m) : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01))
       {
         m_Mobile = m;
 
@@ -8033,32 +8032,32 @@ namespace Server
 
       protected override void OnTick()
       {
-        if (Core.TickCount - m_Mobile.NextCombatTime >= 0)
+        if (Core.TickCount - m_Mobile.NextCombatTime < 0)
+          return;
+
+        Mobile combatant = m_Mobile.Combatant;
+
+        // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
+        if (combatant?.Deleted != false || m_Mobile.Deleted || combatant.m_Map != m_Mobile.m_Map ||
+            !combatant.Alive || !m_Mobile.Alive || !m_Mobile.CanSee(combatant) || combatant.IsDeadBondedPet ||
+            m_Mobile.IsDeadBondedPet)
         {
-          Mobile combatant = m_Mobile.Combatant;
+          m_Mobile.Combatant = null;
+          return;
+        }
 
-          // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
-          if (combatant == null || combatant.Deleted || m_Mobile.Deleted || combatant.m_Map != m_Mobile.m_Map ||
-              !combatant.Alive || !m_Mobile.Alive || !m_Mobile.CanSee(combatant) || combatant.IsDeadBondedPet ||
-              m_Mobile.IsDeadBondedPet)
-          {
-            m_Mobile.Combatant = null;
-            return;
-          }
+        IWeapon weapon = m_Mobile.Weapon;
 
-          IWeapon weapon = m_Mobile.Weapon;
+        if (!m_Mobile.InRange(combatant, weapon.MaxRange))
+          return;
 
-          if (!m_Mobile.InRange(combatant, weapon.MaxRange))
-            return;
-
-          if (m_Mobile.InLOS(combatant))
-          {
-            weapon.OnBeforeSwing(m_Mobile,
-              combatant); //OnBeforeSwing for checking in regards to being hidden and whatnot
-            m_Mobile.RevealingAction();
-            m_Mobile.NextCombatTime =
-              Core.TickCount + (int)weapon.OnSwing(m_Mobile, combatant).TotalMilliseconds;
-          }
+        if (m_Mobile.InLOS(combatant))
+        {
+          weapon.OnBeforeSwing(m_Mobile,
+            combatant); //OnBeforeSwing for checking in regards to being hidden and whatnot
+          m_Mobile.RevealingAction();
+          m_Mobile.NextCombatTime =
+            Core.TickCount + (int)weapon.OnSwing(m_Mobile, combatant).TotalMilliseconds;
         }
       }
     }
