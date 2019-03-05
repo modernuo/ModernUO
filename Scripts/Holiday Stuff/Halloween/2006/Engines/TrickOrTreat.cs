@@ -123,78 +123,80 @@ namespace Server.Engines.Events
 
       protected override void OnTarget(Mobile from, object targ)
       {
-        if (targ != null && CheckMobile(from))
+        if (targ == null || !CheckMobile(from))
+          return;
+
+        if (!(targ is Mobile))
         {
-          if (!(targ is Mobile))
+          from.SendLocalizedMessage(1076781); /* There is little chance of getting candy from that! */
+          return;
+        }
+
+        BaseVendor begged = targ as BaseVendor;
+
+        if (begged?.Deleted != false)
+        {
+          from.SendLocalizedMessage(1076765); /* That doesn't look friendly. */
+          return;
+        }
+
+        DateTime now = DateTime.UtcNow;
+
+
+
+        if (CheckMobile(begged))
+        {
+          if (begged.NextTrickOrTreat > now)
           {
-            from.SendLocalizedMessage(1076781); /* There is little chance of getting candy from that! */
+            from.SendLocalizedMessage(1076767); /* That doesn't appear to have any more candy. */
             return;
           }
 
-          if (!(targ is BaseVendor) || ((BaseVendor)targ).Deleted)
-          {
-            from.SendLocalizedMessage(1076765); /* That doesn't look friendly. */
+          begged.NextTrickOrTreat = now + TimeSpan.FromMinutes(Utility.RandomMinMax(5, 10));
+
+          if (from.Backpack?.Deleted != false)
             return;
-          }
 
-          DateTime now = DateTime.UtcNow;
-
-          BaseVendor m_Begged = targ as BaseVendor;
-
-          if (CheckMobile(m_Begged))
+          if (Utility.RandomDouble() > .10)
           {
-            if (m_Begged.NextTrickOrTreat > now)
+            switch (Utility.Random(3))
             {
-              from.SendLocalizedMessage(1076767); /* That doesn't appear to have any more candy. */
-              return;
+              case 0:
+                begged.Say(1076768);
+                break; /* Oooooh, aren't you cute! */
+              case 1:
+                begged.Say(1076779);
+                break; /* All right...This better not spoil your dinner! */
+              case 2:
+                begged.Say(1076778);
+                break; /* Here you go! Enjoy! */
             }
 
-            m_Begged.NextTrickOrTreat = now + TimeSpan.FromMinutes(Utility.RandomMinMax(5, 10));
-
-            if (from.Backpack != null && !from.Backpack.Deleted)
+            if (Utility.RandomDouble() <= .01 && from.Skills.Begging.Value >= 100)
             {
-              if (Utility.RandomDouble() > .10)
-              {
-                switch (Utility.Random(3))
-                {
-                  case 0:
-                    m_Begged.Say(1076768);
-                    break; /* Oooooh, aren't you cute! */
-                  case 1:
-                    m_Begged.Say(1076779);
-                    break; /* All right...This better not spoil your dinner! */
-                  case 2:
-                    m_Begged.Say(1076778);
-                    break; /* Here you go! Enjoy! */
-                }
+              from.AddToBackpack(HolidaySettings.RandomGMBeggerItem);
 
-                if (Utility.RandomDouble() <= .01 && from.Skills.Begging.Value >= 100)
-                {
-                  from.AddToBackpack(HolidaySettings.RandomGMBeggerItem);
-
-                  from.SendLocalizedMessage(1076777); /* You receive a special treat! */
-                }
-                else
-                {
-                  from.AddToBackpack(HolidaySettings.RandomTreat);
-
-                  from.SendLocalizedMessage(1076769); /* You receive some candy. */
-                }
-              }
-              else
-              {
-                m_Begged.Say(1076770); /* TRICK! */
-
-                int action = Utility.Random(4);
-
-                if (action == 0)
-                  Timer.DelayCall(OneSecond, OneSecond, 10, Bleeding, from);
-                else if (action == 1)
-                  Timer.DelayCall(TimeSpan.FromSeconds(2), SolidHueMobile, from);
-                else
-                  Timer.DelayCall(TimeSpan.FromSeconds(2), MakeTwin, from);
-              }
+              from.SendLocalizedMessage(1076777); /* You receive a special treat! */
             }
+            else
+            {
+              from.AddToBackpack(HolidaySettings.RandomTreat);
+
+              from.SendLocalizedMessage(1076769); /* You receive some candy. */
+            }
+          }
+          else
+          {
+            begged.Say(1076770); /* TRICK! */
+
+            int action = Utility.Random(4);
+
+            if (action == 0)
+              Timer.DelayCall(OneSecond, OneSecond, 10, Bleeding, from);
+            else if (action == 1)
+              Timer.DelayCall(TimeSpan.FromSeconds(2), SolidHueMobile, from);
+            else
+              Timer.DelayCall(TimeSpan.FromSeconds(2), MakeTwin, from);
           }
         }
       }
@@ -264,7 +266,8 @@ namespace Server.Engines.Events
 
     public override void OnThink()
     {
-      if (m_From == null || m_From.Deleted) Delete();
+      if (m_From?.Deleted != false)
+        Delete();
     }
 
     public static Item FindCandyTypes(Mobile target)

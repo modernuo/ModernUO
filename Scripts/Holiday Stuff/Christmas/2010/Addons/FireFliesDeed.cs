@@ -213,14 +213,14 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_FirefliesDeed == null || m_FirefliesDeed.Deleted)
+        if (m_FirefliesDeed?.Deleted != false)
           return;
 
         if (m_FirefliesDeed.IsChildOf(from.Backpack))
         {
           BaseHouse house = BaseHouse.FindHouseAt(from);
 
-          if (house != null && house.IsOwner(from))
+          if (house?.IsOwner(from) == true)
           {
             IPoint3D p = targeted as IPoint3D;
             Map map = from.Map;

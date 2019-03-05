@@ -176,14 +176,10 @@ namespace Server.Items
 
     public virtual bool HasAccess(Mobile from)
     {
-      if (from == null || from.Deleted)
-        return false;
-      if (from.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      BaseHouse house = BaseHouse.FindHouseAt(this);
-
-      return house != null && house.IsCoOwner(from);
+      return from?.Deleted == false && (
+               from.AccessLevel >= AccessLevel.GameMaster ||
+               BaseHouse.FindHouseAt(this)?.IsCoOwner(from) == true
+      );
     }
 
     public override bool OnDragDrop(Mobile from, Item dropped)

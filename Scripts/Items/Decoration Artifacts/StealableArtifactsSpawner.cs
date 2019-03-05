@@ -381,7 +381,8 @@ namespace Server.Items
         if (Item != null && (Item.Deleted || Item.Movable || Item.Parent != null))
           Item = null;
 
-        if (Item == null && DateTime.UtcNow >= NextRespawn) Item = Entry.CreateInstance();
+        if (Item == null && DateTime.UtcNow >= NextRespawn)
+          Item = Entry.CreateInstance();
       }
     }
   }

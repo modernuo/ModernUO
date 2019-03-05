@@ -116,10 +116,10 @@ namespace Server.Engines.Chat
 
     public bool ValidateAccess(ChatUser from, ChatUser target)
     {
-      if (@from == null || target == null || @from.Mobile.AccessLevel >= target.Mobile.AccessLevel)
+      if (from == null || target == null || from.Mobile.AccessLevel >= target.Mobile.AccessLevel)
         return true;
 
-      @from.Mobile.SendMessage("Your access level is too low to do this.");
+      from.Mobile.SendMessage("Your access level is too low to do this.");
       return false;
 
     }

@@ -123,10 +123,10 @@ namespace Server.Engines.Chat
       if (user != null)
         return user;
 
-      user = new ChatUser(@from);
+      user = new ChatUser(from);
 
       m_Users.Add(user);
-      m_Table[@from] = user;
+      m_Table[from] = user;
 
       Channel.SendChannelsTo(user);
 

@@ -74,7 +74,7 @@ namespace Server.Items
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_Aquarium == null || m_Aquarium.Deleted)
+      if (m_Aquarium?.Deleted != false)
         return;
 
       bool edit = m_Aquarium.HasAccess(sender.Mobile);

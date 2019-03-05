@@ -95,7 +95,7 @@ namespace Server.Items
         {
           Mobile them = theirTicket.Owner;
 
-          if (them == null || them.Deleted)
+          if (them?.Deleted != false)
           {
             from.SendLocalizedMessage(501930); // That is not a valid ticket.
           }

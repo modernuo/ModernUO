@@ -68,7 +68,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile m)
     {
-      if (!m_Active || m_TeleDest == null || m_TeleDest.Deleted || m_TeleDest.Map == Map.Internal)
+      if (!m_Active || m_TeleDest?.Deleted != false || m_TeleDest.Map == Map.Internal)
         return;
 
       if (m.InRange(this, 3))

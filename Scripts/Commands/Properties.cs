@@ -343,7 +343,7 @@ namespace Server.Commands
       string failReason = "";
       PropertyInfo p = GetPropertyInfo(from, ref o, name, PropertyAccess.Write, ref failReason);
 
-      return p == null ? failReason : InternalSetValue(@from, logObject, o, p, name, value, true);
+      return p == null ? failReason : InternalSetValue(from, logObject, o, p, name, value, true);
     }
 
     private static bool IsSerial(Type t)
@@ -516,7 +516,7 @@ namespace Server.Commands
       object toSet = null;
       string result = ConstructFromString(p.PropertyType, o, value, ref toSet);
 
-      return result ?? SetDirect(@from, logobj, o, p, pname, toSet, shouldLog);
+      return result ?? SetDirect(from, logobj, o, p, pname, toSet, shouldLog);
     }
 
     public static string InternalSetValue(object o, PropertyInfo p, string value)

@@ -25,15 +25,15 @@ namespace Server.Gumps
       if (summon == null)
         return;
 
-      if (!summon.SetControlMaster(@from))
+      if (!summon.SetControlMaster(from))
       {
         summon.Delete();
       }
       else
       {
-        @from.SendLocalizedMessage(1049666); // Your pet has bonded with you!
+        from.SendLocalizedMessage(1049666); // Your pet has bonded with you!
 
-        summon.MoveToWorld(@from.Location, @from.Map);
+        summon.MoveToWorld(from.Location, from.Map);
         summon.IsBonded = true;
 
         summon.Skills.Wrestling.Base = 100;
@@ -45,7 +45,7 @@ namespace Server.Gumps
         Effects.SendLocationParticles(EffectItem.Create(summon.Location, summon.Map, EffectItem.DefaultDuration),
           0x3728, 1, 10, 0x26B6);
 
-        m_Item.Release(@from, summon);
+        m_Item.Release(from, summon);
         m_Item.Delete();
       }
     }

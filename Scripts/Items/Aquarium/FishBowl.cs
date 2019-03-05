@@ -142,27 +142,27 @@ namespace Server.Items
 
       public override void OnClick()
       {
-        if (m_Bowl == null || m_Bowl.Deleted || !m_Bowl.IsAccessibleTo(Owner.From))
+        if (m_Bowl?.Deleted != false || !m_Bowl.IsAccessibleTo(Owner.From))
           return;
 
         BaseFish fish = m_Bowl.Fish;
 
-        if (fish != null)
+        if (fish == null)
+          return;
+
+        if (fish.IsLockedDown) // for legacy fish bowls
         {
-          if (fish.IsLockedDown) // for legacy fish bowls
-          {
-            Owner.From.SendLocalizedMessage(1010449); // You may not use this object while it is locked down.
-          }
-          else if (!Owner.From.PlaceInBackpack(fish))
-          {
-            Owner.From.SendLocalizedMessage(1074496); // There is no room in your pack for the creature.
-          }
-          else
-          {
-            Owner.From.SendLocalizedMessage(1074495); // The creature has been removed from the fish bowl.
-            fish.StartTimer();
-            m_Bowl.InvalidateProperties();
-          }
+          Owner.From.SendLocalizedMessage(1010449); // You may not use this object while it is locked down.
+        }
+        else if (!Owner.From.PlaceInBackpack(fish))
+        {
+          Owner.From.SendLocalizedMessage(1074496); // There is no room in your pack for the creature.
+        }
+        else
+        {
+          Owner.From.SendLocalizedMessage(1074495); // The creature has been removed from the fish bowl.
+          fish.StartTimer();
+          m_Bowl.InvalidateProperties();
         }
       }
     }

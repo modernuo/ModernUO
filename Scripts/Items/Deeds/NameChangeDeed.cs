@@ -100,7 +100,7 @@ namespace Server.Items
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_Sender == null || m_Sender.Deleted || info.ButtonID != 1 || m_Sender.RootParent != sender.Mobile)
+      if (m_Sender?.Deleted != false || info.ButtonID != 1 || m_Sender.RootParent != sender.Mobile)
         return;
 
       Mobile m = sender.Mobile;

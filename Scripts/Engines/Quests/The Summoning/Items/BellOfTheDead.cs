@@ -83,7 +83,7 @@ namespace Server.Engines.Quests.Doom
           2023, 0);
         Effects.PlaySound(loc, Map, 0x1FE);
 
-        Chyloth = new Chyloth { Direction = (Direction)(7 & (4 + (int)@from.GetDirectionTo(loc))) };
+        Chyloth = new Chyloth { Direction = (Direction)(7 & (4 + (int)from.GetDirectionTo(loc))) };
 
         Chyloth.MoveToWorld(loc, Map);
 
