@@ -299,7 +299,7 @@ namespace Server.Commands
 
           for (int i = 0; i < pets.Count; ++i)
           {
-            Mobile pet = (Mobile)pets[i];
+            Mobile pet = pets[i];
 
             if (pet is IMount mount)
               mount.Rider = null; // make sure it's dismounted

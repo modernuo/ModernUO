@@ -307,7 +307,7 @@ namespace Server.Commands
 
       for (int i = m_Batch.BatchCommands.Count - 1; i >= 0; --i)
       {
-        BatchCommand sc = (BatchCommand)m_Batch.BatchCommands[i];
+        BatchCommand sc = m_Batch.BatchCommands[i];
 
         entry = info.GetTextEntry(1 + i * 2);
 

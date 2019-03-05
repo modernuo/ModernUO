@@ -22,7 +22,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < parts.Count; ++i)
       {
-        Participant p = (Participant)parts[i];
+        Participant p = parts[i];
 
         height += 4;
 
@@ -56,7 +56,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < parts.Count; ++i)
       {
-        Participant p = (Participant)parts[i];
+        Participant p = parts[i];
 
         y += 4;
 

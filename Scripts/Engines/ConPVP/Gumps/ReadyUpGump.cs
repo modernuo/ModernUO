@@ -118,7 +118,7 @@ namespace Server.Engines.ConPVP
           defs = new BitArray(basedef.Options);
 
           for (int i = 0; i < ruleset.Flavors.Count; ++i)
-            defs.Or(((Ruleset)ruleset.Flavors[i]).Options);
+            defs.Or(ruleset.Flavors[i].Options);
 
           height += ruleset.Flavors.Count * 18;
         }
@@ -147,7 +147,7 @@ namespace Server.Engines.ConPVP
         y = 70;
 
         for (int i = 0; i < ruleset.Flavors.Count; ++i, y += 18)
-          AddHtml(35, y, 190, 20, $" + {((Ruleset)ruleset.Flavors[i]).Title}", false, false);
+          AddHtml(35, y, 190, 20, $" + {ruleset.Flavors[i].Title}", false, false);
 
         y += 4;
 

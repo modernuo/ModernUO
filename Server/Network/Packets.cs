@@ -1062,7 +1062,7 @@ namespace Server.Network
       // +2 - Hue
       // +1 - Flags
 
-      uint serial = (uint)item.Serial.Value;
+      uint serial = item.Serial.Value;
       int itemID = item.ItemID & 0x3FFF;
       int amount = item.Amount;
       Point3D loc = item.Location;

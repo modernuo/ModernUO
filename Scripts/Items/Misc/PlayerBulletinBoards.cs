@@ -27,7 +27,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( 0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -56,7 +56,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( 0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -99,7 +99,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 );
+			writer.Write( 1 );
 
 			writer.Write( (int) Level );
 
@@ -441,7 +441,7 @@ namespace Server.Items
 					{
 						if ( page >= 1 && page <= board.Messages.Count )
 						{
-							PlayerBBMessage message = (PlayerBBMessage)board.Messages[page - 1];
+							PlayerBBMessage message = board.Messages[page - 1];
 							Mobile poster = message.Poster;
 
 							if ( poster == null )
@@ -510,7 +510,7 @@ namespace Server.Items
 						PlayerBBMessage message = board.Greeting;
 
 						if ( page >= 1 && page <= board.Messages.Count )
-							message = (PlayerBBMessage)board.Messages[page - 1];
+							message = board.Messages[page - 1];
 
 						from.SendGump( new PlayerBBGump( from, house, board, page ) );
 						from.SendGump( new PropertiesGump( from, message ) );
@@ -562,7 +562,7 @@ namespace Server.Items
 			PlayerBBMessage message = board.Greeting;
 
 			if ( page >= 1 && page <= board.Messages.Count )
-				message = (PlayerBBMessage)board.Messages[page - 1];
+				message = board.Messages[page - 1];
 
 			AddImageTiled( 150, 220, 240, 1, 2700 ); // Separator
 

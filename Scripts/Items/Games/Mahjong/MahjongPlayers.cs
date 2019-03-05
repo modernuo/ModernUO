@@ -184,7 +184,7 @@ namespace Server.Engines.Mahjong
 
       for (int i = 0; i < m_Spectators.Count;)
       {
-        Mobile mobile = (Mobile)m_Spectators[i];
+        Mobile mobile = m_Spectators[i];
 
         if (mobile.NetState == null || mobile.Deleted)
         {
@@ -257,7 +257,7 @@ namespace Server.Engines.Mahjong
 
       if (nextSeat >= 0)
       {
-        Mobile newPlayer = (Mobile)m_Spectators[0];
+        Mobile newPlayer = m_Spectators[0];
 
         m_Spectators.RemoveAt(0);
 

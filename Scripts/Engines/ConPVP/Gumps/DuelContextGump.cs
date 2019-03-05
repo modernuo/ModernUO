@@ -43,7 +43,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < context.Participants.Count; ++i)
       {
-        Participant p = (Participant)context.Participants[i];
+        Participant p = context.Participants[i];
 
         AddGoldenButtonLabeled(x, y, 4 + i,
           string.Format(p.Count == 1 ? "Player {0}: {3}" : "Team {0}: {1}/{2}: {3}", 1 + i, p.FilledSlots, p.Count,
@@ -129,7 +129,7 @@ namespace Server.Engines.ConPVP
           index -= 4;
 
           if (index >= 0 && index < Context.Participants.Count)
-            From.SendGump(new ParticipantGump(From, Context, (Participant)Context.Participants[index]));
+            From.SendGump(new ParticipantGump(From, Context, Context.Participants[index]));
 
           break;
         }

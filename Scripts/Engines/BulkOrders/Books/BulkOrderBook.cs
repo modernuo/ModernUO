@@ -159,9 +159,9 @@ namespace Server.Engines.BulkOrders
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 ); // version
+			writer.Write( 2 ); // version
 
-			writer.Write( (int) ItemCount );
+			writer.Write( ItemCount );
 
 			writer.Write( (int) Level );
 
@@ -169,7 +169,7 @@ namespace Server.Engines.BulkOrders
 
 			Filter.Serialize( writer );
 
-			writer.WriteEncodedInt( (int) Entries.Count );
+			writer.WriteEncodedInt( Entries.Count );
 
 			for ( int i = 0; i < Entries.Count; ++i )
 			{

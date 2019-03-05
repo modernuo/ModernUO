@@ -760,7 +760,7 @@ namespace Server.Engines.ConPVP
               if (!match.InProgress)
                 for (int j = 0; j < Arenas.Count; ++j)
                 {
-                  Arena arena = (Arena)Arenas[j];
+                  Arena arena = Arenas[j];
 
                   if (!arena.IsOccupied)
                   {
@@ -893,7 +893,7 @@ namespace Server.Engines.ConPVP
     public void Alert(params string[] alerts)
     {
       for (int i = 0; i < Arenas.Count; ++i)
-        Alert((Arena)Arenas[i], alerts);
+        Alert(Arenas[i], alerts);
     }
 
     public void Alert(Arena arena, params string[] alerts)

@@ -790,7 +790,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -821,7 +821,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant oldPart = (Participant)Participants[i];
+        Participant oldPart = Participants[i];
         Participant newPart = new Participant(dc, oldPart.Players.Length);
 
         for (int j = 0; j < oldPart.Players.Length; ++j)
@@ -851,7 +851,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
         DuelPlayer pl = p.Find(mob);
 
         if (pl != null)
@@ -1517,7 +1517,7 @@ namespace Server.Engines.ConPVP
     {
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -1536,7 +1536,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < Participants.Count; ++i)
       {
-        Participant p = (Participant)Participants[i];
+        Participant p = Participants[i];
 
         for (int j = 0; j < p.Players.Length; ++j)
         {
@@ -1841,9 +1841,9 @@ namespace Server.Engines.ConPVP
 
         for (int i = 0; i < ruleset.Flavors.Count; ++i)
         {
-          defs.Or(((Ruleset)ruleset.Flavors[i]).Options);
+          defs.Or(ruleset.Flavors[i].Options);
 
-          mob.SendMessage(" + {0}", ((Ruleset)ruleset.Flavors[i]).Title);
+          mob.SendMessage(" + {0}", ruleset.Flavors[i].Title);
         }
       }
       else
