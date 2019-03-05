@@ -100,7 +100,7 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Powder.Deleted || m_Powder.UsesRemaining <= 0)
+        if (m_Powder?.Deleted != false || m_Powder.UsesRemaining <= 0)
         {
           from.SendLocalizedMessage(1049086); // You have used up your powder of temperament.
           return;

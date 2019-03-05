@@ -157,14 +157,11 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_Deed == null || m_Deed.Deleted || info.ButtonID == 0)
+        if (m_Deed?.Deleted != false || info.ButtonID == 0 || info.ButtonID < 1 || info.ButtonID > 8)
           return;
 
-        if (info.ButtonID >= 1 && info.ButtonID <= 8)
-        {
-          m_Deed.m_Type = info.ButtonID - 1;
-          m_Deed.SendTarget(sender.Mobile);
-        }
+        m_Deed.m_Type = info.ButtonID - 1;
+        m_Deed.SendTarget(sender.Mobile);
       }
     }
   }

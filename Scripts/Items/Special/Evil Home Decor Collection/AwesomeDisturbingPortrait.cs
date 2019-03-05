@@ -117,7 +117,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        if (m_Component != null && !m_Component.Deleted)
+        if (m_Component?.Deleted == false)
           m_Component.UpdateImage();
       }
     }

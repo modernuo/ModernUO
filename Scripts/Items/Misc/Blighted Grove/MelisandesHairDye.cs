@@ -66,7 +66,7 @@ namespace Server.Items
 
       public override void Confirm(Mobile from)
       {
-        if (m_Item != null && !m_Item.Deleted && m_Item.IsChildOf(from.Backpack))
+        if (m_Item?.Deleted == false && m_Item.IsChildOf(from.Backpack))
         {
           if (from.HairItemID != 0)
           {

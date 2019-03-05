@@ -79,16 +79,13 @@ namespace Server.Items
 
       if (from.InRange(b.GetWorldLocation(), Range))
       {
-        Target t = from.Target;
-
-        if (t != null)
+        if (from.Target != null)
         {
           Target.Cancel(from);
           from.Target = null;
         }
 
         from.RevealingAction();
-
         from.SendLocalizedMessage(500948); // Who will you use the bandages on?
 
         new InternalTarget(b).Invoke(from, e.Target);
@@ -117,9 +114,8 @@ namespace Server.Items
         {
           if (from.InRange(m_Bandage.GetWorldLocation(), Bandage.Range))
           {
-            if (BandageContext.BeginHeal(from, mobile) != null)
-              if (!DuelContext.IsFreeConsume(from))
-                m_Bandage.Consume();
+            if (!(BandageContext.BeginHeal(from, mobile) == null || DuelContext.IsFreeConsume(from)))
+              m_Bandage.Consume();
           }
           else
           {
@@ -182,9 +178,7 @@ namespace Server.Items
     public void StopHeal()
     {
       m_Table.Remove(Healer);
-
       Timer?.Stop();
-
       Timer = null;
     }
 

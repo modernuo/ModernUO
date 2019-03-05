@@ -469,22 +469,17 @@ namespace Server.Items
     {
       List<Spellbook> list = new List<Spellbook>();
 
-      Item item = from.FindItemOnLayer(Layer.OneHanded);
+      Spellbook spellbook = FindEquippedSpellbook(from);
 
-      if (item is Spellbook spellbook)
+      if (spellbook != null)
         list.Add(spellbook);
 
       Container pack = from.Backpack;
 
-      if (pack == null)
-        return list;
-
-      for (int i = 0; i < pack.Items.Count; ++i)
+      for (int i = 0; i < pack?.Items.Count; ++i)
       {
-        item = pack.Items[i];
-
-        if (item is Spellbook spellbook1)
-          list.Add(spellbook1);
+        if (pack.Items[i] is Spellbook sp)
+          list.Add(sp);
       }
 
       return list;

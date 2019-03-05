@@ -757,8 +757,8 @@ namespace Server.Items
 
     public bool DevourCorpse()
     {
-      if (Devoured || Deleted || Killer == null || Killer.Deleted || !Killer.Alive || !(Killer is IDevourer devourer) ||
-          Owner == null || Owner.Deleted)
+      if (Devoured || Deleted || Killer?.Deleted != false || !Killer.Alive || !(Killer is IDevourer devourer) ||
+          Owner?.Deleted != false)
         return false;
 
       m_Devourer = devourer; // Set the devourer the killer
@@ -769,15 +769,15 @@ namespace Server.Items
     {
       base.SendInfoTo(state, sendOplPacket);
 
-      if (((Body)Amount).IsHuman && ItemID == 0x2006)
-      {
-        if (state.ContainerGridLines)
-          state.Send(new CorpseContent6017(state.Mobile, this));
-        else
-          state.Send(new CorpseContent(state.Mobile, this));
+      if (!(((Body)Amount).IsHuman && ItemID == 0x2006))
+        return;
 
-        state.Send(new CorpseEquip(state.Mobile, this));
-      }
+      if (state.ContainerGridLines)
+        state.Send(new CorpseContent6017(state.Mobile, this));
+      else
+        state.Send(new CorpseContent(state.Mobile, this));
+
+      state.Send(new CorpseEquip(state.Mobile, this));
     }
 
     public bool IsCriminalAction(Mobile from)
@@ -787,7 +787,7 @@ namespace Server.Items
 
       Party p = Party.Get(Owner);
 
-      if (p != null && p.Contains(from))
+      if (p?.Contains(from) == true)
       {
         PartyMemberInfo pmi = p[Owner];
 
@@ -800,21 +800,12 @@ namespace Server.Items
 
     public override bool CheckItemUse(Mobile from, Item item)
     {
-      if (!base.CheckItemUse(from, item))
-        return false;
-
-      if (item != this)
-        return CanLoot(from, item);
-
-      return true;
+      return base.CheckItemUse(from, item) && (item == this || CanLoot(from, item));
     }
 
     public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
     {
-      if (!base.CheckLift(from, item, ref reject))
-        return false;
-
-      return CanLoot(from, item);
+      return base.CheckLift(from, item, ref reject) && CanLoot(from, item);
     }
 
     public override void OnItemUsed(Mobile from, Item item)
@@ -888,10 +879,7 @@ namespace Server.Items
 
     public bool CanLoot(Mobile from, Item item)
     {
-      if (!IsCriminalAction(from))
-        return true;
-
-      return Map != null && (Map.Rules & MapRules.HarmfulRestrictions) == 0;
+      return !IsCriminalAction(from) || (Map.Rules & MapRules.HarmfulRestrictions) == 0;
     }
 
     public bool CheckLoot(Mobile from, Item item)
@@ -908,7 +896,7 @@ namespace Server.Items
 
       if (IsCriminalAction(from))
       {
-        if (Owner == null || !Owner.Player)
+        if (Owner?.Player != true)
           from.SendLocalizedMessage(1005036); // Looting this monster corpse will be a criminal act!
         else
           from.SendLocalizedMessage(1005038); // Looting this corpse will be a criminal act!

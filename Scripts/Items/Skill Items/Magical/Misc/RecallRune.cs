@@ -29,7 +29,7 @@ namespace Server.Items
     {
       get
       {
-        if (m_House != null && m_House.Deleted)
+        if (m_House?.Deleted == true)
           House = null;
 
         return m_House;
@@ -90,7 +90,7 @@ namespace Server.Items
     {
       base.Serialize(writer);
 
-      if (m_House != null && !m_House.Deleted)
+      if (m_House?.Deleted == false)
       {
         writer.Write(1); // version
 

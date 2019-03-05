@@ -128,32 +128,29 @@ namespace Server.Items
         {
           Stop();
         }
-        else
+        else if (m_Location != m_Mobile.Location)
         {
-          if (m_Location != m_Mobile.Location)
-          {
-            int amount = Utility.RandomMinMax(0, 7);
+          int amount = Utility.RandomMinMax(0, 7);
 
-            for (int i = 0; i < amount; i++)
+          for (int i = 0; i < amount; i++)
+          {
+            int x = m_Mobile.X + Utility.RandomMinMax(-1, 1);
+            int y = m_Mobile.Y + Utility.RandomMinMax(-1, 1);
+            int z = m_Mobile.Z;
+
+            if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false))
             {
-              int x = m_Mobile.X + Utility.RandomMinMax(-1, 1);
-              int y = m_Mobile.Y + Utility.RandomMinMax(-1, 1);
-              int z = m_Mobile.Z;
+              z = m_Mobile.Map.GetAverageZ(x, y);
 
               if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false))
-              {
-                z = m_Mobile.Map.GetAverageZ(x, y);
-
-                if (!m_Mobile.Map.CanFit(x, y, z, 1, false, false))
-                  continue;
-              }
-
-              Blood blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));
-              blood.MoveToWorld(new Point3D(x, y, z), m_Mobile.Map);
+                continue;
             }
 
-            m_Location = m_Mobile.Location;
+            Blood blood = new Blood(Utility.RandomMinMax(0x122C, 0x122F));
+            blood.MoveToWorld(new Point3D(x, y, z), m_Mobile.Map);
           }
+
+          m_Location = m_Mobile.Location;
         }
       }
     }
