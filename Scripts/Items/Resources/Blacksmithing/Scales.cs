@@ -4,11 +4,7 @@ namespace Server.Items
   {
     private CraftResource m_Resource;
 
-    public BaseScales(CraftResource resource) : this(resource, 1)
-    {
-    }
-
-    public BaseScales(CraftResource resource, int amount) : base(0x26B4)
+    public BaseScales(CraftResource resource, int amount = 1) : base(0x26B4)
     {
       Stackable = true;
       Amount = amount;

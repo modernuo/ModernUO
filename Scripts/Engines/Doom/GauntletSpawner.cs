@@ -423,7 +423,7 @@ namespace Server.Engines.Doom
     public static void CreateTeleporter(int xFrom, int yFrom, int xTo, int yTo)
     {
       Static telePad = new Static(0x1822);
-      Teleporter teleItem = new Teleporter(new Point3D(xTo, yTo, -1), Map.Malas, false);
+      Teleporter teleItem = new Teleporter(new Point3D(xTo, yTo, -1), Map.Malas);
 
       telePad.Hue = 0x482;
       telePad.MoveToWorld(new Point3D(xFrom, yFrom, -1), Map.Malas);

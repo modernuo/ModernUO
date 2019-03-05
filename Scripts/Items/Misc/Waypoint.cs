@@ -9,15 +9,11 @@ namespace Server.Items
     private WayPoint m_Next;
 
     [Constructible]
-    public WayPoint() : base(0x1f14)
+    public WayPoint(WayPoint prev = null) : base(0x1f14)
     {
       Hue = 0x498;
       Visible = false;
       //this.Movable = false;
-    }
-
-    public WayPoint(WayPoint prev) : this()
-    {
       if (prev != null)
         prev.NextPoint = this;
     }

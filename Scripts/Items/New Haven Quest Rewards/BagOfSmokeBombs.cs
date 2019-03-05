@@ -3,12 +3,7 @@ namespace Server.Items
   public class BagOfSmokeBombs : Bag
   {
     [Constructible]
-    public BagOfSmokeBombs() : this(20)
-    {
-    }
-
-    [Constructible]
-    public BagOfSmokeBombs(int amount)
+    public BagOfSmokeBombs(int amount = 20)
     {
       for (int i = 0; i < amount; ++i)
         DropItem(new SmokeBomb());

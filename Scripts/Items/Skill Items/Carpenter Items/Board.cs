@@ -17,12 +17,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public Board(CraftResource resource) : this(resource, 1)
-    {
-    }
-
-    [Constructible]
-    public Board(CraftResource resource, int amount)
+    public Board(CraftResource resource, int amount = 1)
       : base(0x1BD7)
     {
       Stackable = true;

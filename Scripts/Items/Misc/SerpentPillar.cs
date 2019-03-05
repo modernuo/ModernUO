@@ -9,11 +9,7 @@ namespace Server.Items
     {
     }
 
-    public SerpentPillar(string word, Rectangle2D destination) : this(word, destination, true)
-    {
-    }
-
-    public SerpentPillar(string word, Rectangle2D destination, bool active) : base(0x233F)
+    public SerpentPillar(string word, Rectangle2D destination, bool active = true) : base(0x233F)
     {
       Movable = false;
 

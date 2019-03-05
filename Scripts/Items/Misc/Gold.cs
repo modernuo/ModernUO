@@ -6,17 +6,12 @@ namespace Server.Items
   public class Gold : Item
   {
     [Constructible]
-    public Gold() : this(1)
-    {
-    }
-
-    [Constructible]
     public Gold(int amountFrom, int amountTo) : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public Gold(int amount) : base(0xEED)
+    public Gold(int amount = 1) : base(0xEED)
     {
       Stackable = true;
       Amount = amount;

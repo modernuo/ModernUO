@@ -462,7 +462,7 @@ namespace Server.Misc
       bank.DropItem(new TreasureMap(5, Map.Trammel));
 
       // Bag containing 50 of each reagent
-      bank.DropItem(new BagOfReagents(50));
+      bank.DropItem(new BagOfReagents());
 
       // Craft tools
       bank.DropItem(MakeNewbie(new Scissors()));

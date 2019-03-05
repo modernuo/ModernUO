@@ -408,7 +408,7 @@ namespace Server.Items
         DropItem(gem);
 
       if (0.2 > Utility.RandomDouble())
-        DropItem(new BagOfReagents(50));
+        DropItem(new BagOfReagents());
 
       for (int i = 0; i < 2; i++)
       {

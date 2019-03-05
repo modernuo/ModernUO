@@ -14,12 +14,7 @@ namespace Server.Items
     private List<Mobile> m_Users;
 
     [Constructible]
-    public Firebomb() : this(0x99B)
-    {
-    }
-
-    [Constructible]
-    public Firebomb(int itemID) : base(itemID)
+    public Firebomb(int itemID = 0x99B) : base(itemID)
     {
       //Name = "a firebomb";
       Weight = 2.0;

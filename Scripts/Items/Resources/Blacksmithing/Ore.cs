@@ -8,11 +8,7 @@ namespace Server.Items
   {
     private CraftResource m_Resource;
 
-    public BaseOre(CraftResource resource) : this(resource, 1)
-    {
-    }
-
-    public BaseOre(CraftResource resource, int amount) : base(RandomSize())
+    public BaseOre(CraftResource resource, int amount = 1) : base(RandomSize())
     {
       Stackable = true;
       Amount = amount;
