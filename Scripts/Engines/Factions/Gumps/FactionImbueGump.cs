@@ -89,7 +89,7 @@ namespace Server.Factions
         }
       }
 
-      if (m_Tool != null && !m_Tool.Deleted && m_Tool.UsesRemaining > 0)
+      if (m_Tool?.Deleted == false && m_Tool.UsesRemaining > 0)
         m_Mobile.SendGump(new CraftGump(m_Mobile, m_CraftSystem, m_Tool, m_Notice));
       else if (m_Notice is string s)
         m_Mobile.SendMessage(s);

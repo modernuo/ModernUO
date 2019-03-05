@@ -44,7 +44,7 @@ namespace Server.Engines.Doom
 
     public override void OnAfterDelete()
     {
-      if (m_Controller != null && !m_Controller.Deleted)
+      if (m_Controller?.Deleted == false)
         m_Controller.Delete();
     }
 
@@ -80,7 +80,7 @@ namespace Server.Engines.Doom
 
     public override void OnAfterDelete()
     {
-      if (m_Controller != null && !m_Controller.Deleted)
+      if (m_Controller?.Deleted == false)
         m_Controller.Delete();
     }
 
@@ -134,7 +134,7 @@ namespace Server.Engines.Doom
 
     public override void OnAfterDelete()
     {
-      if (m_Controller != null && !m_Controller.Deleted)
+      if (m_Controller?.Deleted == false)
         m_Controller.Delete();
     }
 

@@ -80,7 +80,7 @@ namespace Server.Factions
 
     public virtual void UpdateSigil()
     {
-      if (m_Sigil == null || m_Sigil.Deleted)
+      if (m_Sigil?.Deleted != false)
         return;
 
       m_Sigil.MoveToWorld(new Point3D(X, Y, Z + 18), Map);

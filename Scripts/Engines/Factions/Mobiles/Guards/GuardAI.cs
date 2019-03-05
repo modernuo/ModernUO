@@ -423,7 +423,7 @@ namespace Server.Factions
 
       Mobile combatant = m_Guard.Combatant;
 
-      if (combatant == null || combatant.Deleted || !combatant.Alive || combatant.IsDeadBondedPet ||
+      if (combatant?.Deleted != false || !combatant.Alive || combatant.IsDeadBondedPet ||
           !m_Mobile.CanSee(combatant) || !m_Mobile.CanBeHarmful(combatant, false) || combatant.Map != m_Mobile.Map)
       {
         // Our combatant is deleted, dead, hidden, or we cannot hurt them

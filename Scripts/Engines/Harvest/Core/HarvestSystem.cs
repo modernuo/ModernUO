@@ -16,7 +16,7 @@ namespace Server.Engines.Harvest
 
     public virtual bool CheckTool(Mobile from, Item tool)
     {
-      bool wornOut = tool == null || tool.Deleted || tool is IUsesRemaining remaining && remaining.UsesRemaining <= 0;
+      bool wornOut = tool?.Deleted != false || tool is IUsesRemaining remaining && remaining.UsesRemaining <= 0;
 
       if (wornOut)
         from.SendLocalizedMessage(1044038); // You have worn out your tool!

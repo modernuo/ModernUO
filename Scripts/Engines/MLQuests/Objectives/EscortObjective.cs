@@ -207,7 +207,7 @@ namespace Server.Engines.MLQuests.Objectives
       MLQuestInstance instance = Instance;
       PlayerMobile pm = instance.Player;
 
-      if (m_Escort != null && !m_Escort.Deleted)
+      if (m_Escort?.Deleted == false)
       {
         if (!pm.Alive)
           m_Escort.Say(500901); // Ack!  My escort has come to haunt me!

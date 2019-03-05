@@ -130,7 +130,7 @@ namespace Server.Gumps
 
       Item stone = g.Guildstone;
 
-      return stone == null || stone.Deleted || !m.InRange(stone.GetWorldLocation(), 2);
+      return stone?.Deleted != false || !m.InRange(stone.GetWorldLocation(), 2);
     }
 
     public static bool BadMember(Mobile m, Guild g)
@@ -140,7 +140,7 @@ namespace Server.Gumps
 
       Item stone = g.Guildstone;
 
-      return stone == null || stone.Deleted || !m.InRange(stone.GetWorldLocation(), 2);
+      return stone?.Deleted != false || !m.InRange(stone.GetWorldLocation(), 2);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

@@ -111,7 +111,7 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState state, RelayInfo info)
     {
-      if (m_Statue == null || m_Statue.Deleted)
+      if (m_Statue?.Deleted != false)
         return;
 
       bool sendGump = false;

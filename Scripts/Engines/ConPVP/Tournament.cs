@@ -557,7 +557,7 @@ namespace Server.Engines.ConPVP
       {
         Mobile mob = players[i];
 
-        if (mob == null || mob.Deleted)
+        if (mob?.Deleted != false)
           continue;
 
         Item item = new Trophy(title, rank);

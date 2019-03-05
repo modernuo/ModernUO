@@ -17,36 +17,36 @@ namespace Server.Gumps
 
     public override void Confirm(Mobile from)
     {
-      if (m_Item == null || m_Item.Deleted)
+      if (m_Item?.Deleted != false)
         return;
 
       BaseCreature summon = m_Item.Summon;
 
-      if (summon != null)
+      if (summon == null)
+        return;
+
+      if (!summon.SetControlMaster(@from))
       {
-        if (!summon.SetControlMaster(from))
-        {
-          summon.Delete();
-        }
-        else
-        {
-          from.SendLocalizedMessage(1049666); // Your pet has bonded with you!
+        summon.Delete();
+      }
+      else
+      {
+        @from.SendLocalizedMessage(1049666); // Your pet has bonded with you!
 
-          summon.MoveToWorld(from.Location, from.Map);
-          summon.IsBonded = true;
+        summon.MoveToWorld(@from.Location, @from.Map);
+        summon.IsBonded = true;
 
-          summon.Skills.Wrestling.Base = 100;
-          summon.Skills.Tactics.Base = 100;
-          summon.Skills.MagicResist.Base = 100;
-          summon.Skills.Anatomy.Base = 100;
+        summon.Skills.Wrestling.Base = 100;
+        summon.Skills.Tactics.Base = 100;
+        summon.Skills.MagicResist.Base = 100;
+        summon.Skills.Anatomy.Base = 100;
 
-          Effects.PlaySound(summon.Location, summon.Map, summon.BaseSoundID);
-          Effects.SendLocationParticles(EffectItem.Create(summon.Location, summon.Map, EffectItem.DefaultDuration),
-            0x3728, 1, 10, 0x26B6);
+        Effects.PlaySound(summon.Location, summon.Map, summon.BaseSoundID);
+        Effects.SendLocationParticles(EffectItem.Create(summon.Location, summon.Map, EffectItem.DefaultDuration),
+          0x3728, 1, 10, 0x26B6);
 
-          m_Item.Release(from, summon);
-          m_Item.Delete();
-        }
+        m_Item.Release(@from, summon);
+        m_Item.Delete();
       }
     }
   }

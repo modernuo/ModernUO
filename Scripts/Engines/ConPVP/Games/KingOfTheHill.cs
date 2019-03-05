@@ -91,7 +91,7 @@ namespace Server.Engines.ConPVP
         return false;
 
       // Mobile exists and is alive and is a player?
-      if (m == null || m.Deleted || !m.Alive || !m.Player)
+      if (m?.Deleted != false || !m.Alive || !m.Player)
         return false;
 
       // Not current king (or they are the current king)
@@ -209,13 +209,13 @@ namespace Server.Engines.ConPVP
       {
         KHPlayerInfo pi = null;
 
-        if (m_Hill == null || m_Hill.Deleted || m_Hill.Game == null)
+        if (m_Hill?.Deleted != false || m_Hill.Game == null)
         {
           Stop();
           return;
         }
 
-        if (m_Hill.King == null || m_Hill.King.Deleted || !m_Hill.King.Alive)
+        if (m_Hill.King?.Deleted != false || !m_Hill.King.Alive)
         {
           m_Hill.DeKingify();
           Stop();

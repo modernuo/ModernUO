@@ -63,11 +63,10 @@ namespace Server.Engines.Doom
 
     public override void OnDeath(Mobile m)
     {
-      if (m?.Deleted == false && !(m is WandererOfTheVoid))
-      {
-        Timer kick = new LeverPuzzleController.LampRoomKickTimer(m);
-        kick.Start();
-      }
+      if (m?.Deleted != false || m is WandererOfTheVoid)
+        return;
+      Timer kick = new LeverPuzzleController.LampRoomKickTimer(m);
+      kick.Start();
     }
 
     public override bool OnSkillUse(Mobile m, int Skill) /* just in case */

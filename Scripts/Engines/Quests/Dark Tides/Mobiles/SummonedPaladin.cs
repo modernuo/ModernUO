@@ -65,7 +65,7 @@ namespace Server.Engines.Quests.Necro
     {
       if (!m_ToDelete && !Frozen)
       {
-        if (m_Necromancer == null || m_Necromancer.Deleted || m_Necromancer.Map == Map.Internal)
+        if (m_Necromancer?.Deleted != false || m_Necromancer.Map == Map.Internal)
         {
           Delete();
           return;

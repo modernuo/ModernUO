@@ -43,23 +43,23 @@ namespace Server.Engines.Quests.Hag
       PlayerMobile player = System.From;
       Map map = player.Map;
 
-      if ((Corpse == null || Corpse.Deleted) && (map == Map.Trammel || map == Map.Felucca) &&
-          player.InRange(m_CorpseLocation, 8))
-      {
-        Corpse = new HagApprenticeCorpse();
-        Corpse.MoveToWorld(m_CorpseLocation, map);
+      if (Corpse?.Deleted == false || map != Map.Trammel && map != Map.Felucca ||
+          !player.InRange(m_CorpseLocation, 8))
+        return;
 
-        Effects.SendLocationEffect(m_CorpseLocation, map, 0x3728, 10, 10);
-        Effects.PlaySound(m_CorpseLocation, map, 0x1FE);
+      Corpse = new HagApprenticeCorpse();
+      Corpse.MoveToWorld(m_CorpseLocation, map);
 
-        Mobile imp = new Zeefzorpul();
-        imp.MoveToWorld(m_CorpseLocation, map);
+      Effects.SendLocationEffect(m_CorpseLocation, map, 0x3728, 10, 10);
+      Effects.PlaySound(m_CorpseLocation, map, 0x1FE);
 
-        // * You see a strange imp stealing a scrap of paper from the bloodied corpse *
-        Corpse.SendLocalizedMessageTo(player, 1055049);
+      Mobile imp = new Zeefzorpul();
+      imp.MoveToWorld(m_CorpseLocation, map);
 
-        Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => DeleteImp(imp));
-      }
+      // * You see a strange imp stealing a scrap of paper from the bloodied corpse *
+      Corpse.SendLocalizedMessageTo(player, 1055049);
+
+      Timer.DelayCall(TimeSpan.FromSeconds(3.0), () => DeleteImp(imp));
     }
 
     private void DeleteImp(Mobile m)

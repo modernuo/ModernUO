@@ -77,12 +77,7 @@ namespace Server.Guilds
                m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m));
     }
 
-    public static bool CheckProfanity(string s)
-    {
-      return CheckProfanity(s, 50);
-    }
-
-    public static bool CheckProfanity(string s, int maxLength)
+    public static bool CheckProfanity(string s, int maxLength = 50)
     {
       //return NameVerification.Validate( s, 1, 50, true, true, false, int.MaxValue, ProfanityProtection.Exceptions, ProfanityProtection.Disallowed, ProfanityProtection.StartDisallowed );	//What am I doing wrong, this still allows chars like the <3 symbol... 3 AM.  someone change this to use this
 

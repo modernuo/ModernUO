@@ -52,7 +52,7 @@ namespace Server.Gumps
       Mobile from = sender.Mobile;
       HouseSign sign = m_House.Sign;
 
-      if (m_House.Deleted || sign == null || sign.Deleted || !from.CheckAlive())
+      if (m_House.Deleted || sign?.Deleted != false || !from.CheckAlive())
         return;
 
       if (from.Map != sign.Map || !from.InRange(sign, 5))

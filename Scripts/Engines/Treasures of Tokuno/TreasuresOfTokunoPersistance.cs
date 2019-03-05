@@ -6,7 +6,7 @@ namespace Server.Misc
     {
       Movable = false;
 
-      if (Instance == null || Instance.Deleted)
+      if (Instance?.Deleted != false)
         Instance = this;
       else
         base.Delete();

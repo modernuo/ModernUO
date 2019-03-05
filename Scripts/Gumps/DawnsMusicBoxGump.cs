@@ -67,7 +67,7 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_Box == null || m_Box.Deleted)
+      if (m_Box?.Deleted != false)
         return;
 
       Mobile m = sender.Mobile;

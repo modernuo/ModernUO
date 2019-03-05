@@ -273,7 +273,7 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_Token == null || m_Token.Deleted || info.ButtonID == 0)
+      if (m_Token?.Deleted != false || info.ButtonID == 0)
         return;
 
       List<Type> types = new List<Type>();

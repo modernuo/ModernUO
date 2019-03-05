@@ -47,7 +47,7 @@ namespace Server.Items
     {
       base.OnAfterDelete();
 
-      if (m_Statue != null && !m_Statue.Deleted)
+      if (m_Statue?.Deleted == false)
         m_Statue.Delete();
     }
 

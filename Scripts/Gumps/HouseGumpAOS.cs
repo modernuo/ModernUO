@@ -492,15 +492,10 @@ namespace Server.Gumps
     {
       Mobile m = m_House.Owner;
 
-      if (m == null || m.Deleted)
+      if (m?.Deleted != false)
         return "(unowned)";
 
-      string name;
-
-      if ((name = m.Name) == null || (name = name.Trim()).Length <= 0)
-        name = "(no name)";
-
-      return name;
+      return String.IsNullOrWhiteSpace(m.Name) ? "(no name)" : m.Name.Trim();
     }
 
     private string GetDateTime(DateTime val)
@@ -516,12 +511,7 @@ namespace Server.Gumps
       AddHtmlLocalized(x + 45, y, 200, 20, number, isSelection ? SelectedColor : LabelColor, false, false);
     }
 
-    public void AddButtonLabeled(int x, int y, int buttonID, int number)
-    {
-      AddButtonLabeled(x, y, buttonID, number, true);
-    }
-
-    public void AddButtonLabeled(int x, int y, int buttonID, int number, bool enabled)
+    public void AddButtonLabeled(int x, int y, int buttonID, int number, bool enabled = true)
     {
       if (enabled)
         AddButton(x, y, 4005, 4007, buttonID, GumpButtonType.Reply, 0);

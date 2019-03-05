@@ -44,7 +44,7 @@ namespace Server.Factions
     {
       get
       {
-        if (Item == null || Item.Deleted)
+        if (Item?.Deleted != false)
           return true;
 
         return Expiration != DateTime.MinValue && DateTime.UtcNow >= Expiration;
@@ -93,13 +93,7 @@ namespace Server.Factions
     {
       PlayerState pl = PlayerState.Find(mob);
 
-      if (pl == null)
-        return 0;
-
-      if (pl.Faction.IsCommander(mob))
-        return 9;
-
-      return pl.Rank.MaxWearables;
+      return pl == null ? 0 : pl.Faction.IsCommander(mob) ? 9 : pl.Rank.MaxWearables;
     }
 
     public static FactionItem Find(Item item)

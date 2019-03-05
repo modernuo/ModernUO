@@ -136,7 +136,7 @@ namespace Server.Factions
     {
       return Definition.Sort - other.Definition.Sort;
     }
-    
+
     public int CompareTo(object obj)
     {
       return Definition.Sort - ((Town)obj).Definition.Sort;
@@ -386,18 +386,14 @@ namespace Server.Factions
 
     public bool IsSheriff(Mobile mob)
     {
-      if (mob == null || mob.Deleted)
-        return false;
-
-      return mob.AccessLevel >= AccessLevel.GameMaster || mob == Sheriff;
+      return mob?.Deleted == false &&
+             (mob.AccessLevel >= AccessLevel.GameMaster || mob == Sheriff);
     }
 
     public bool IsFinance(Mobile mob)
     {
-      if (mob == null || mob.Deleted)
-        return false;
-
-      return mob.AccessLevel >= AccessLevel.GameMaster || mob == Finance;
+      return mob?.Deleted == false &&
+             (mob.AccessLevel >= AccessLevel.GameMaster || mob == Finance);
     }
 
     public void Capture(Faction f)

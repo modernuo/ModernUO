@@ -54,7 +54,7 @@ namespace Server.Engines.Craft
 
     public override int CanCraft(Mobile from, BaseTool tool, Type typeItem)
     {
-      if (tool == null || tool.Deleted || tool.UsesRemaining < 0)
+      if (tool?.Deleted != false || tool.UsesRemaining < 0)
         return 1044038; // You have worn out your tool!
       if (!BaseTool.CheckAccessible(tool, from))
         return 1044263; // The tool must be on your person to use.

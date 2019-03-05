@@ -571,7 +571,7 @@ namespace Server.Mobiles
       IPoint3D p = targeted as IPoint3D;
       Map map = from.Map;
 
-      if (p == null || map == null || m_Maker == null || m_Maker.Deleted)
+      if (p == null || map == null || m_Maker?.Deleted != false)
         return;
 
       if (m_Maker.IsChildOf(from.Backpack))

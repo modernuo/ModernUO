@@ -133,13 +133,13 @@ namespace Server.Engines.Quests.Haven
 
     public override void OnLocationChange(Point3D oldLoc)
     {
-      if (m_Lantern != null && !m_Lantern.Deleted)
+      if (m_Lantern?.Deleted == false)
         m_Lantern.Location = new Point3D(X, Y + 1, Z);
     }
 
     public override void OnMapChange()
     {
-      if (m_Lantern != null && !m_Lantern.Deleted)
+      if (m_Lantern?.Deleted == false)
         m_Lantern.Map = Map;
     }
 
@@ -147,13 +147,13 @@ namespace Server.Engines.Quests.Haven
     {
       base.OnAfterDelete();
 
-      if (m_Lantern != null && !m_Lantern.Deleted)
+      if (m_Lantern?.Deleted == false)
         m_Lantern.Delete();
     }
 
     public override void Serialize(GenericWriter writer)
     {
-      if (m_Lantern != null && m_Lantern.Deleted)
+      if (m_Lantern?.Deleted == true)
         m_Lantern = null;
 
       base.Serialize(writer);

@@ -1104,7 +1104,7 @@ namespace Server.Engines.Craft
 
           if (badCraft > 0)
           {
-            if (m_Tool != null && !m_Tool.Deleted && m_Tool.UsesRemaining > 0)
+            if (m_Tool?.Deleted == false && m_Tool.UsesRemaining > 0)
               m_From.SendGump(new CraftGump(m_From, m_CraftSystem, m_Tool, badCraft));
             else
               m_From.SendLocalizedMessage(badCraft);
