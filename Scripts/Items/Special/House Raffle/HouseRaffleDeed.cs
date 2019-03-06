@@ -76,7 +76,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
-    public bool IsExpired => m_Stone == null || m_Stone.Deleted || m_Stone.IsExpired;
+    public bool IsExpired => m_Stone?.Deleted != false || m_Stone.IsExpired;
 
     public override string DefaultName => "a writ of lease";
 

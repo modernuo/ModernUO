@@ -205,7 +205,7 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_Deed == null || m_Deed.Deleted)
+        if (m_Deed?.Deleted != false)
           return;
 
         Mobile from = sender.Mobile;
@@ -216,10 +216,12 @@ namespace Server.Items
           return;
         }
 
-        Item statue = null;
+        Item statue;
 
         switch (info.ButtonID)
         {
+          default:
+            return;
           case 1:
             statue = new SnowStatuePegasus();
             break;
@@ -233,9 +235,6 @@ namespace Server.Items
             statue = new SnowStatueGriffon();
             break;
         }
-
-        if (statue == null)
-          return;
 
         if (!from.PlaceInBackpack(statue))
         {

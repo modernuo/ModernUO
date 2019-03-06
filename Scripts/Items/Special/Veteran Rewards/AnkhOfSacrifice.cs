@@ -91,7 +91,7 @@ namespace Server.Items
 
       public override void OnClick()
       {
-        if (m_Ankh == null || m_Ankh.Deleted)
+        if (m_Ankh?.Deleted != false)
           return;
 
         Resurrect(m_Mobile as PlayerMobile, m_Ankh);

@@ -80,7 +80,7 @@ namespace Server.Items
       {
         --Eaten;
 
-        if (Eater == null || Eater.Deleted || Eaten <= 0)
+        if (Eater?.Deleted != false || Eaten <= 0)
         {
           Stop();
           m_ToothAches.Remove(Eater);
