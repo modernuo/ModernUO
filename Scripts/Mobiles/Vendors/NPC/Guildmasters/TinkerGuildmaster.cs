@@ -62,12 +62,12 @@ namespace Server.Mobiles
 
       public override void OnClick()
       {
-        if (!Core.ML || m_Vendor == null || m_Vendor.Deleted)
+        if (!Core.ML || m_Vendor?.Deleted != false)
           return;
 
         WeaponEngravingTool tool = WeaponEngravingTool.Find(m_From);
 
-        if (tool != null && tool.UsesRemaining <= 0)
+        if (tool?.UsesRemaining <= 0)
         {
           if (Banker.GetBalance(m_From) >= 100000)
             m_From.SendGump(new WeaponEngravingTool.ConfirmGump(tool, m_Vendor));

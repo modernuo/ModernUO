@@ -899,7 +899,7 @@ namespace Server.Multis
         return false;
       }
 
-      if (MapItem == null || MapItem.Deleted)
+      if (MapItem?.Deleted != false)
       {
         if (message)
           TillerMan?.Say(502513); // I have seen no map, sir.
@@ -1351,7 +1351,7 @@ namespace Server.Multis
         speed = Speed;
         clientSpeed = m_ClientSpeed;
       }
-      else if (MapItem == null || MapItem.Deleted)
+      else if (MapItem?.Deleted != false)
       {
         if (message)
           TillerMan?.Say(502513); // I have seen no map, sir.

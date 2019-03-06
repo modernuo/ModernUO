@@ -287,7 +287,7 @@ namespace Server.Mobiles
                 {
                   Say(500381); // Thou canst not withdraw so much at one time!
                 }
-                else if (pack == null || pack.Deleted || !(pack.TotalWeight < pack.MaxWeight) ||
+                else if (pack?.Deleted != false || !(pack.TotalWeight < pack.MaxWeight) ||
                          !(pack.TotalItems < pack.MaxItems))
                 {
                   Say(1048147); // Your backpack can't hold anything else.

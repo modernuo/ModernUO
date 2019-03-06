@@ -166,7 +166,7 @@ namespace Server.Mobiles
 
     public void DoSpecialAbility(Mobile target)
     {
-      if (target == null || target.Deleted) //sanity
+      if (target?.Deleted != false) //sanity
         return;
 
       if (0.6 >= Utility.RandomDouble()) // 60% chance to polymorph attacker into a ratman

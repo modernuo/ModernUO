@@ -4659,7 +4659,7 @@ namespace Server
 
     public virtual void Use(Item item)
     {
-      if (item == null || item.Deleted || item.QuestItem || Deleted)
+      if (item?.Deleted != false || item.QuestItem || Deleted)
         return;
 
       DisruptiveAction();
@@ -4722,7 +4722,7 @@ namespace Server
 
     public virtual void Use(Mobile m)
     {
-      if (m == null || m.Deleted || Deleted)
+      if (m?.Deleted != false || Deleted)
         return;
 
       DisruptiveAction();
@@ -6244,7 +6244,7 @@ namespace Server
 
     public void AddItem(Item item)
     {
-      if (item == null || item.Deleted)
+      if (item?.Deleted != false)
         return;
 
       if (item.Parent == this)
@@ -7299,7 +7299,7 @@ namespace Server
 
     public virtual bool EquipItem(Item item)
     {
-      if (item == null || item.Deleted || !item.CanEquip(this))
+      if (item?.Deleted != false || !item.CanEquip(this))
         return false;
 
       if (CheckEquip(item) && OnEquip(item) && item.OnEquip(this))

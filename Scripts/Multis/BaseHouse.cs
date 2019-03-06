@@ -1163,7 +1163,7 @@ namespace Server.Multis
 
     public static BaseHouse FindHouseAt(Mobile m)
     {
-      if (m == null || m.Deleted)
+      if (m?.Deleted != false)
         return null;
 
       return FindHouseAt(m.Location, m.Map, 16);
@@ -1171,10 +1171,8 @@ namespace Server.Multis
 
     public static BaseHouse FindHouseAt(Item item)
     {
-      if (item == null || item.Deleted)
-        return null;
-
-      return FindHouseAt(item.GetWorldLocation(), item.Map, item.ItemData.Height);
+      return item?.Deleted != false ? null :
+        FindHouseAt(item.GetWorldLocation(), item.Map, item.ItemData.Height);
     }
 
     public static BaseHouse FindHouseAt(Point3D loc, Map map, int height)
@@ -1195,18 +1193,12 @@ namespace Server.Multis
 
     public bool IsInside(Mobile m)
     {
-      if (m == null || m.Deleted || m.Map != Map)
-        return false;
-
-      return IsInside(m.Location, 16);
+      return m?.Deleted == false && m.Map == Map && IsInside(m.Location, 16);
     }
 
     public bool IsInside(Item item)
     {
-      if (item == null || item.Deleted || item.Map != Map)
-        return false;
-
-      return IsInside(item.Location, item.ItemData.Height);
+      return item?.Deleted == false && item.Map == Map && IsInside(item.Location, item.ItemData.Height);
     }
 
     public bool CheckAccessibility(Item item, Mobile from)
@@ -1537,7 +1529,7 @@ namespace Server.Multis
 
       for (int i = 0; Doors != null && i < Doors.Count; ++i)
       {
-        BaseDoor door = Doors[i] as BaseDoor;
+        BaseDoor door = Doors[i];
         Point3D p = door.Location;
 
         if (door.Open)
@@ -1551,7 +1543,7 @@ namespace Server.Multis
           }
       }
 
-      if (m_Trash == null || m_Trash.Deleted)
+      if (m_Trash?.Deleted != false)
       {
         m_Trash = new TrashBarrel { Movable = false };
         m_Trash.MoveToWorld(from.Location, from.Map);
@@ -2027,7 +2019,7 @@ namespace Server.Multis
 
       for (int i = 0; Doors != null && i < Doors.Count; ++i)
       {
-        BaseDoor door = Doors[i] as BaseDoor;
+        BaseDoor door = Doors[i];
         Point3D p = door.Location;
 
         if (door.Open)

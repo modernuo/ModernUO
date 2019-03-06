@@ -2529,7 +2529,7 @@ namespace Server.Mobiles
 
         Mobile m = de.Damager;
 
-        if (m == null || m.Deleted || !m.Player)
+        if (m?.Deleted != false || !m.Player)
           continue;
 
         if (damage <= 0)
@@ -2655,7 +2655,7 @@ namespace Server.Mobiles
 
         Mobile owner = ControlMaster;
 
-        if (owner == null || owner.Deleted || owner.Map != Map || !owner.InRange(this, 12) || !CanSee(owner) ||
+        if (owner?.Deleted != false || owner.Map != Map || !owner.InRange(this, 12) || !CanSee(owner) ||
             !InLOS(owner))
         {
           if (OwnerAbandonTime == DateTime.MinValue)
@@ -3194,7 +3194,7 @@ namespace Server.Mobiles
 
       Mobile owner = ControlMaster;
 
-      if (owner == null || owner.Deleted || owner.Map != Map || !owner.InRange(this, 12) || !CanSee(owner) ||
+      if (owner?.Deleted != false || owner.Map != Map || !owner.InRange(this, 12) || !CanSee(owner) ||
           !InLOS(owner))
       {
         if (OwnerAbandonTime == DateTime.MinValue)
@@ -5285,7 +5285,7 @@ namespace Server.Mobiles
         {
           Mobile owner = c.ControlMaster;
 
-          if (!c.IsStabled && (owner == null || owner.Deleted || owner.Map != c.Map ||
+          if (!c.IsStabled && (owner?.Deleted != false || owner.Map != c.Map ||
                                !owner.InRange(c, 12) || !c.CanSee(owner) || !c.InLOS(owner)))
           {
             if (c.OwnerAbandonTime == DateTime.MinValue)

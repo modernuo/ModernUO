@@ -103,7 +103,7 @@ namespace Server.Mobiles
       {
         BaseCreature pet = from.Stabled[i] as BaseCreature;
 
-        if (pet == null || pet.Deleted)
+        if (pet?.Deleted != false)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
@@ -123,7 +123,7 @@ namespace Server.Mobiles
 
     public void EndClaimList(Mobile from, BaseCreature pet)
     {
-      if (pet == null || pet.Deleted || from.Map != Map || !from.Stabled.Contains(pet) || !from.CheckAlive())
+      if (pet?.Deleted != false || from.Map != Map || !from.Stabled.Contains(pet) || !from.CheckAlive())
         return;
 
       if (!from.InRange(this, 14))
@@ -267,7 +267,7 @@ namespace Server.Mobiles
       {
         BaseCreature pet = from.Stabled[i] as BaseCreature;
 
-        if (pet == null || pet.Deleted)
+        if (pet?.Deleted != false)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
@@ -421,7 +421,7 @@ namespace Server.Mobiles
         {
           BaseCreature pet = list[i];
 
-          if (pet == null || pet.Deleted)
+          if (pet?.Deleted != false)
             continue;
 
           AddButton(15, 39 + i * 20, 10006, 10006, i + 1, GumpButtonType.Reply, 0);

@@ -163,54 +163,56 @@ namespace Server.Mobiles
       }
       else
       {
-        if (m.Corpse != null && !m.Corpse.Deleted)
+        if (m.Corpse?.Deleted == false)
           m.Corpse.DropItem(ps);
         else
           m.AddToBackpack(ps);
       }
 
-      if (m is PlayerMobile pm)
-        for (int j = 0; j < pm.JusticeProtectors.Count; ++j)
+      if (!(m is PlayerMobile pm))
+        return;
+
+      for (int j = 0; j < pm.JusticeProtectors.Count; ++j)
+      {
+        Mobile prot = pm.JusticeProtectors[j];
+
+        if (prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion(pm, prot))
+          continue;
+
+        int chance = 0;
+
+        switch (VirtueHelper.GetLevel(prot, VirtueName.Justice))
         {
-          Mobile prot = pm.JusticeProtectors[j];
+          case VirtueLevel.Seeker:
+            chance = 60;
+            break;
+          case VirtueLevel.Follower:
+            chance = 80;
+            break;
+          case VirtueLevel.Knight:
+            chance = 100;
+            break;
+        }
 
-          if (prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal || !JusticeVirtue.CheckMapRegion(pm, prot))
-            continue;
+        if (chance > Utility.Random(100))
+        {
+          PowerScroll powerScroll = new PowerScroll(ps.Skill, ps.Value);
 
-          int chance = 0;
+          prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
 
-          switch (VirtueHelper.GetLevel(prot, VirtueName.Justice))
+          if (!Core.SE || prot.Alive)
           {
-            case VirtueLevel.Seeker:
-              chance = 60;
-              break;
-            case VirtueLevel.Follower:
-              chance = 80;
-              break;
-            case VirtueLevel.Knight:
-              chance = 100;
-              break;
+            prot.AddToBackpack(powerScroll);
           }
-
-          if (chance > Utility.Random(100))
+          else
           {
-            PowerScroll powerScroll = new PowerScroll(ps.Skill, ps.Value);
-
-            prot.SendLocalizedMessage(1049368); // You have been rewarded for your dedication to Justice!
-
-            if (!Core.SE || prot.Alive)
-            {
-              prot.AddToBackpack(powerScroll);
-            }
+            if (prot.Corpse != null && !prot.Corpse.Deleted)
+              prot.Corpse.DropItem(powerScroll);
             else
-            {
-              if (prot.Corpse != null && !prot.Corpse.Deleted)
-                prot.Corpse.DropItem(powerScroll);
-              else
-                prot.AddToBackpack(powerScroll);
-            }
+              prot.AddToBackpack(powerScroll);
           }
         }
+      }
     }
 
     public override bool OnBeforeDeath()

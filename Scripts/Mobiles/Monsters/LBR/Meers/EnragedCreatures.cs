@@ -217,7 +217,7 @@ namespace Server.Mobiles
 
     public override void OnThink()
     {
-      if (SummonMaster == null || SummonMaster.Deleted)
+      if (SummonMaster?.Deleted != false)
       {
         Delete();
       }
@@ -252,10 +252,7 @@ namespace Server.Mobiles
     private bool Combat(Mobile mobile)
     {
       Mobile combatant = mobile.Combatant;
-      if (combatant?.Deleted != false || combatant.IsDeadBondedPet || !combatant.Alive)
-        return false;
-
-      return true;
+      return combatant?.Deleted == false && !combatant.IsDeadBondedPet && combatant.Alive;
     }
 
     public override void OnSingleClick(Mobile from)

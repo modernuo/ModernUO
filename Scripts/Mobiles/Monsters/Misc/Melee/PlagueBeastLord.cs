@@ -305,7 +305,7 @@ namespace Server.Mobiles
 
       protected override void OnTick()
       {
-        if (m_Lord == null || m_Lord.Deleted)
+        if (m_Lord?.Deleted != false)
         {
           Stop();
           return;

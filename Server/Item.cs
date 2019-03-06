@@ -3362,7 +3362,7 @@ namespace Server
 
     public virtual void AddItem(Item item)
     {
-      if (item == null || item.Deleted || item.m_Parent == this) return;
+      if (item?.Deleted != false || item.m_Parent == this) return;
 
       if (item == this)
       {
