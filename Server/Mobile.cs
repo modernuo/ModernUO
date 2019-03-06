@@ -7534,22 +7534,22 @@ namespace Server
 
     public bool CheckSkill(SkillName skill, double minSkill, double maxSkill)
     {
-      return SkillCheckLocationHandler?(this, skill, minSkill, maxSkill) == true;
+      return SkillCheckLocationHandler?.Invoke(this, skill, minSkill, maxSkill) == true;
     }
 
     public bool CheckSkill(SkillName skill, double chance)
     {
-      return SkillCheckDirectLocationHandler?(this, skill, chance) == true;
+      return SkillCheckDirectLocationHandler?.Invoke(this, skill, chance) == true;
     }
 
     public bool CheckTargetSkill(SkillName skill, object target, double minSkill, double maxSkill)
     {
-      return SkillCheckTargetHandler != null && SkillCheckTargetHandler(this, skill, target, minSkill, maxSkill);
+      return SkillCheckTargetHandler?.Invoke(this, skill, target, minSkill, maxSkill) == true;
     }
 
     public bool CheckTargetSkill(SkillName skill, object target, double chance)
     {
-      return SkillCheckDirectTargetHandler != null && SkillCheckDirectTargetHandler(this, skill, target, chance);
+      return SkillCheckDirectTargetHandler?.Invoke(this, skill, target, chance) == true;
     }
 
     public virtual void DisruptiveAction()
@@ -8360,12 +8360,7 @@ namespace Server
       PublicOverheadMessage(MessageType.Regular, SpeechHue, number, type, affix, args);
     }
 
-    public void Say(int number)
-    {
-      Say(number, "");
-    }
-
-    public void Say(int number, string args)
+    public void Say(int number, string args = "")
     {
       PublicOverheadMessage(MessageType.Regular, SpeechHue, number, args);
     }
@@ -8380,12 +8375,7 @@ namespace Server
       Emote(string.Format(format, args));
     }
 
-    public void Emote(int number)
-    {
-      Emote(number, "");
-    }
-
-    public void Emote(int number, string args)
+    public void Emote(int number, string args = "")
     {
       PublicOverheadMessage(MessageType.Emote, EmoteHue, number, args);
     }
@@ -8400,12 +8390,7 @@ namespace Server
       Whisper(string.Format(format, args));
     }
 
-    public void Whisper(int number)
-    {
-      Whisper(number, "");
-    }
-
-    public void Whisper(int number, string args)
+    public void Whisper(int number, string args = "")
     {
       PublicOverheadMessage(MessageType.Whisper, WhisperHue, number, args);
     }
@@ -8420,12 +8405,7 @@ namespace Server
       Yell(string.Format(format, args));
     }
 
-    public void Yell(int number)
-    {
-      Yell(number, "");
-    }
-
-    public void Yell(int number, string args)
+    public void Yell(int number, string args = "")
     {
       PublicOverheadMessage(MessageType.Yell, YellHue, number, args);
     }
@@ -8434,12 +8414,7 @@ namespace Server
 
     #region Gumps/Menus
 
-    public bool SendHuePicker(HuePicker p)
-    {
-      return SendHuePicker(p, false);
-    }
-
-    public bool SendHuePicker(HuePicker p, bool throwOnOffline)
+    public bool SendHuePicker(HuePicker p, bool throwOnOffline = false)
     {
       if (m_NetState != null)
       {
@@ -9706,16 +9681,11 @@ namespace Server
 
     #region Overhead messages
 
-    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)
-    {
-      PublicOverheadMessage(type, hue, ascii, text, true);
-    }
-
-    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight)
+    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true)
     {
       if (m_Map != null)
       {
-        Packet p = null;
+        Packet p;
 
         if (ascii)
           p = new AsciiMessage(Serial, Body, type, hue, 3, Name, text);
@@ -9736,58 +9706,42 @@ namespace Server
       }
     }
 
-    public void PublicOverheadMessage(MessageType type, int hue, int number)
+    public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "", bool noLineOfSight = true)
     {
-      PublicOverheadMessage(type, hue, number, "", true);
-    }
+      if (m_Map == null)
+        return;
 
-    public void PublicOverheadMessage(MessageType type, int hue, int number, string args)
-    {
-      PublicOverheadMessage(type, hue, number, args, true);
-    }
+      Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
 
-    public void PublicOverheadMessage(MessageType type, int hue, int number, string args, bool noLineOfSight)
-    {
-      if (m_Map != null)
-      {
-        Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+          state.Send(p);
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-            state.Send(p);
+      Packet.Release(p);
 
-        Packet.Release(p);
-
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, int number, AffixType affixType, string affix,
-      string args)
+      string args = "", bool noLineOfSight = false)
     {
-      PublicOverheadMessage(type, hue, number, affixType, affix, args, true);
-    }
+      if (m_Map == null)
+        return;
 
-    public void PublicOverheadMessage(MessageType type, int hue, int number, AffixType affixType, string affix,
-      string args, bool noLineOfSight)
-    {
-      if (m_Map != null)
-      {
-        Packet p = Packet.Acquire(new MessageLocalizedAffix(Serial, Body, type, hue, 3, number, Name, affixType,
-          affix, args));
+      Packet p = Packet.Acquire(new MessageLocalizedAffix(Serial, Body, type, hue, 3, number, Name, affixType,
+        affix, args));
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-            state.Send(p);
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+          state.Send(p);
 
-        Packet.Release(p);
+      Packet.Release(p);
 
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public void PrivateOverheadMessage(MessageType type, int hue, bool ascii, string text, NetState state)
@@ -9815,73 +9769,61 @@ namespace Server
     {
       NetState ns = m_NetState;
 
-      if (ns != null)
-      {
-        if (ascii)
-          ns.Send(new AsciiMessage(Serial, Body, type, hue, 3, Name, text));
-        else
-          ns.Send(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text));
-      }
+      if (ns == null)
+        return;
+
+      if (ascii)
+        ns.Send(new AsciiMessage(Serial, Body, type, hue, 3, Name, text));
+      else
+        ns.Send(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text));
     }
 
-    public void LocalOverheadMessage(MessageType type, int hue, int number)
+    public void LocalOverheadMessage(MessageType type, int hue, int number, string args = "")
     {
-      LocalOverheadMessage(type, hue, number, "");
+      m_NetState?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
     }
 
-    public void LocalOverheadMessage(MessageType type, int hue, int number, string args)
+    public void NonlocalOverheadMessage(MessageType type, int hue, int number, string args = "")
     {
-      NetState ns = m_NetState;
+      if (m_Map == null)
+        return;
 
-      ns?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
-    }
+      Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
 
-    public void NonlocalOverheadMessage(MessageType type, int hue, int number)
-    {
-      NonlocalOverheadMessage(type, hue, number, "");
-    }
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-    public void NonlocalOverheadMessage(MessageType type, int hue, int number, string args)
-    {
-      if (m_Map != null)
-      {
-        Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
+      foreach (NetState state in eable)
+        if (state != m_NetState && state.Mobile.CanSee(this))
+          state.Send(p);
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      Packet.Release(p);
 
-        foreach (NetState state in eable)
-          if (state != m_NetState && state.Mobile.CanSee(this))
-            state.Send(p);
-
-        Packet.Release(p);
-
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public void NonlocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
     {
-      if (m_Map != null)
-      {
-        Packet p = null;
+      if (m_Map == null)
+        return;
 
-        if (ascii)
-          p = new AsciiMessage(Serial, Body, type, hue, 3, Name, text);
-        else
-          p = new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text);
+      Packet p;
 
-        p.Acquire();
+      if (ascii)
+        p = new AsciiMessage(Serial, Body, type, hue, 3, Name, text);
+      else
+        p = new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text);
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      p.Acquire();
 
-        foreach (NetState state in eable)
-          if (state != m_NetState && state.Mobile.CanSee(this))
-            state.Send(p);
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        Packet.Release(p);
+      foreach (NetState state in eable)
+        if (state != m_NetState && state.Mobile.CanSee(this))
+          state.Send(p);
 
-        eable.Free();
-      }
+      Packet.Release(p);
+
+      eable.Free();
     }
 
     #endregion
@@ -9895,38 +9837,15 @@ namespace Server
       ns?.Send(MessageLocalized.InstantiateGeneric(number));
     }
 
-    public void SendLocalizedMessage(int number, string args)
+    public void SendLocalizedMessage(int number, string args, int hue = 0x3B2)
     {
-      SendLocalizedMessage(number, args, 0x3B2);
-    }
-
-    public void SendLocalizedMessage(int number, string args, int hue)
-    {
-      if (hue == 0x3B2 && (args == null || args.Length == 0))
-      {
-        NetState ns = m_NetState;
-
-        ns?.Send(MessageLocalized.InstantiateGeneric(number));
-      }
+      if (hue == 0x3B2 && string.IsNullOrEmpty(args))
+        m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
       else
-      {
-        NetState ns = m_NetState;
-
-        ns?.Send(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
-      }
+        m_NetState?.Send(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
     }
 
-    public void SendLocalizedMessage(int number, bool append, string affix)
-    {
-      SendLocalizedMessage(number, append, affix, "", 0x3B2);
-    }
-
-    public void SendLocalizedMessage(int number, bool append, string affix, string args)
-    {
-      SendLocalizedMessage(number, append, affix, args, 0x3B2);
-    }
-
-    public void SendLocalizedMessage(int number, bool append, string affix, string args, int hue)
+    public void SendLocalizedMessage(int number, bool append, string affix, string args = "", int hue = 0x3B2)
     {
       NetState ns = m_NetState;
 
