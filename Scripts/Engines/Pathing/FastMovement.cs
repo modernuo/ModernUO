@@ -235,7 +235,7 @@ namespace Server.Movement
         }
 
         // Stygian Dragon
-        if (m.Body == 826 && map != null && map.MapID == 5)
+        if (m.Body == 826 && map?.MapID == 5)
         {
           if (x >= 307 && x <= 354 && y >= 126 && y <= 192)
           {
@@ -384,20 +384,13 @@ namespace Server.Movement
 
     private static bool Verify(Item item, int x, int y)
     {
-      return item != null && item.AtWorldPoint(x, y);
+      return item.AtWorldPoint(x, y) == true;
     }
 
     private static bool Verify(Item item, TileFlag reqFlags, bool ignoreMovableImpassables)
     {
-      if (item == null) return false;
-
-      if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable) return false;
-
-      if ((item.ItemData.Flags & reqFlags) == 0) return false;
-
-      if (item is BaseMulti || item.ItemID > TileData.MaxItemValue) return false;
-
-      return true;
+      return item != null && (!ignoreMovableImpassables || !item.Movable || !item.ItemData.Impassable) &&
+             (item.ItemData.Flags & reqFlags) != 0 && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue;
     }
 
     private static bool Verify(Item item, TileFlag reqFlags, bool ignoreMovableImpassables, int x, int y)

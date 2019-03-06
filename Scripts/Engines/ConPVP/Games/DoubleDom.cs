@@ -563,7 +563,7 @@ namespace Server.Engines.ConPVP
     {
       Mobile killer = mob.FindMostRecentDamager(false);
 
-      if (killer != null && killer.Player)
+      if (killer?.Player == true)
       {
         DDTeamInfo teamInfo = GetTeamInfo(killer);
         DDTeamInfo victInfo = GetTeamInfo(mob);

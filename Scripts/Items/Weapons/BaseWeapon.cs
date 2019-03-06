@@ -117,7 +117,7 @@ namespace Server.Items
 
         CraftContext context = craftSystem.GetContext(from);
 
-        if (context != null && context.DoNotColor)
+        if (context?.DoNotColor == true)
           Hue = 0;
 
         if (tool is BaseRunicTool runicTool)
@@ -151,7 +151,7 @@ namespace Server.Items
 
           CraftContext context = craftSystem.GetContext(from);
 
-          if (context != null && context.DoNotColor)
+          if (context?.DoNotColor == true)
             Hue = 0;
 
           switch (thisResource)
@@ -852,11 +852,11 @@ namespace Server.Items
       double parry = defender.Skills.Parry.Value;
       double bushidoNonRacial = defender.Skills.Bushido.NonRacialValue;
       double bushido = defender.Skills.Bushido.Value;
+      double chance;
 
       if (shield != null)
       {
-        double
-          chance = (parry - bushidoNonRacial) /
+        chance = (parry - bushidoNonRacial) /
                    400.0; // As per OSI, no genitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
 
         if (chance < 0) // chance shouldn't go below 0
@@ -877,44 +877,42 @@ namespace Server.Items
         return defender.CheckSkill(SkillName.Parry, chance);
       }
 
-      if (!(defender.Weapon is Fists) && !(defender.Weapon is BaseRanged))
+      if (defender.Weapon is Fists || defender.Weapon is BaseRanged)
+        return false;
+
+      BaseWeapon weapon = defender.Weapon as BaseWeapon;
+
+      double divisor = weapon.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
+
+      chance = parry * bushido / divisor;
+
+      double aosChance = parry / 800.0;
+
+      // Parry or Bushido over 100 grant a 5% bonus.
+      if (parry >= 100.0)
       {
-        BaseWeapon weapon = defender.Weapon as BaseWeapon;
-
-        double divisor = weapon.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
-
-        double chance = parry * bushido / divisor;
-
-        double aosChance = parry / 800.0;
-
-        // Parry or Bushido over 100 grant a 5% bonus.
-        if (parry >= 100.0)
-        {
-          chance += 0.05;
-          aosChance += 0.05;
-        }
-        else if (bushido >= 100.0)
-        {
-          chance += 0.05;
-        }
-
-        // Evasion grants a variable bonus post ML. 50% prior.
-        if (Evasion.IsEvading(defender))
-          chance *= Evasion.GetParryScalar(defender);
-
-        // Low dexterity lowers the chance.
-        if (defender.Dex < 80)
-          chance = chance * (20 + defender.Dex) / 100;
-
-        if (chance > aosChance)
-          return defender.CheckSkill(SkillName.Parry, chance);
-
-        return
-          aosChance > Utility
-            .RandomDouble(); // Only skillcheck if wielding a shield & there's no effect from Bushido
+        chance += 0.05;
+        aosChance += 0.05;
+      }
+      else if (bushido >= 100.0)
+      {
+        chance += 0.05;
       }
 
-      return false;
+      // Evasion grants a variable bonus post ML. 50% prior.
+      if (Evasion.IsEvading(defender))
+        chance *= Evasion.GetParryScalar(defender);
+
+      // Low dexterity lowers the chance.
+      if (defender.Dex < 80)
+        chance = chance * (20 + defender.Dex) / 100;
+
+      if (chance > aosChance)
+        return defender.CheckSkill(SkillName.Parry, chance);
+
+      return
+        aosChance > Utility
+          .RandomDouble(); // Only skillcheck if wielding a shield & there's no effect from Bushido
     }
 
     public virtual int AbsorbDamageAOS(Mobile attacker, Mobile defender, int damage)
@@ -1049,10 +1047,7 @@ namespace Server.Items
       if (!(attacker is BaseCreature bc) || bc.PackInstinct == PackInstinct.None || !bc.Controlled && !bc.Summoned)
         return 0;
 
-      Mobile master = bc.ControlMaster;
-
-      if (master == null)
-        master = bc.SummonMaster;
+      Mobile master = bc.ControlMaster ?? bc.SummonMaster;
 
       if (master == null)
         return 0;
@@ -1066,12 +1061,7 @@ namespace Server.Items
           if ((m.PackInstinct & bc.PackInstinct) == 0 || !m.Controlled && !m.Summoned)
             continue;
 
-          Mobile theirMaster = m.ControlMaster;
-
-          if (theirMaster == null)
-            theirMaster = m.SummonMaster;
-
-          if (master == theirMaster && m.Combatant == defender)
+          if (master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender)
             ++inPack;
         }
 
@@ -1524,18 +1514,15 @@ namespace Server.Items
 
       if (!Core.SE)
       {
-        ISlayer defISlayer = Spellbook.FindEquippedSpellbook(defender);
-
-        if (defISlayer == null)
-          defISlayer = defender.Weapon as ISlayer;
+        ISlayer defISlayer = Spellbook.FindEquippedSpellbook(defender) ?? defender.Weapon as ISlayer;
 
         if (defISlayer != null)
         {
           SlayerEntry defSlayer = SlayerGroup.GetEntryByName(defISlayer.Slayer);
           SlayerEntry defSlayer2 = SlayerGroup.GetEntryByName(defISlayer.Slayer2);
 
-          if (defSlayer != null && defSlayer.Group.OppositionSuperSlays(attacker) ||
-              defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays(attacker))
+          if (defSlayer?.Group.OppositionSuperSlays(attacker) == true ||
+              defSlayer2?.Group.OppositionSuperSlays(attacker) == true)
             return CheckSlayerResult.Opposition;
         }
       }
@@ -1545,18 +1532,18 @@ namespace Server.Items
 
     public virtual void AddBlood(Mobile attacker, Mobile defender, int damage)
     {
-      if (damage > 0)
-      {
-        new Blood().MoveToWorld(defender.Location, defender.Map);
+      if (damage <= 0)
+        return;
 
-        int extraBlood = Core.SE ? Utility.RandomMinMax(3, 4) : Utility.RandomMinMax(0, 1);
+      new Blood().MoveToWorld(defender.Location, defender.Map);
 
-        for (int i = 0; i < extraBlood; i++)
-          new Blood().MoveToWorld(new Point3D(
-            defender.X + Utility.RandomMinMax(-1, 1),
-            defender.Y + Utility.RandomMinMax(-1, 1),
-            defender.Z), defender.Map);
-      }
+      int extraBlood = Core.SE ? Utility.RandomMinMax(3, 4) : Utility.RandomMinMax(0, 1);
+
+      for (int i = 0; i < extraBlood; i++)
+        new Blood().MoveToWorld(new Point3D(
+          defender.X + Utility.RandomMinMax(-1, 1),
+          defender.Y + Utility.RandomMinMax(-1, 1),
+          defender.Z), defender.Map);
     }
 
     public virtual void GetDamageTypes(Mobile wielder, out int phys, out int fire, out int cold, out int pois,
@@ -2024,12 +2011,7 @@ namespace Server.Items
 
     private string GetNameString()
     {
-      string name = Name;
-
-      if (name == null)
-        name = $"#{LabelNumber}";
-
-      return name;
+      return Name ?? $"#{LabelNumber}";
     }
 
     public int GetElementalDamageHue()

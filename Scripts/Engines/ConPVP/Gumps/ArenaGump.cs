@@ -112,11 +112,6 @@ namespace Server.Engines.ConPVP
       {
         Arena ar = list[i];
 
-        string name = ar.Name;
-
-        if (name == null)
-          name = "(no name)";
-
         int x = 12;
         int y = 32 + i * 31;
 
@@ -125,7 +120,7 @@ namespace Server.Engines.ConPVP
         AddRadio(x + 3, y + 1, 9727, 9730, false, i);
         x += 35;
 
-        AddBorderedText(x + 5, y + 5, 115 - 5, name, color, 0);
+        AddBorderedText(x + 5, y + 5, 115 - 5, ar.Name ?? "(no name)", color, 0);
         x += 115;
 
         StringBuilder sb = new StringBuilder();

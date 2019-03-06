@@ -32,7 +32,7 @@ namespace Server.Engines.MLQuests.Objectives
 
     public bool CheckType(Type type)
     {
-      return AcceptedType != null && AcceptedType.IsAssignableFrom(type);
+      return AcceptedType?.IsAssignableFrom(type) == true;
     }
 
     public virtual bool CheckItem(Item item)

@@ -188,12 +188,9 @@ namespace Server.Mobiles
     {
       if (Controlled || Summoned)
       {
-        Mobile master = ControlMaster;
+        Mobile master = ControlMaster ?? SummonMaster;
 
-        if (master == null)
-          master = SummonMaster;
-
-        if (master != null && master.Player && master.Map == Map && master.InRange(Location, 20))
+        if (master?.Player == true && master.Map == Map && master.InRange(Location, 20))
         {
           if (master.Mana >= amount)
           {

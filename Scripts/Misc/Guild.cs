@@ -443,10 +443,10 @@ namespace Server.Guilds
     {
       get
       {
-        if (Opponent == null || Opponent.Disbanded)
+        if (Opponent?.Disbanded != false)
           return WarStatus.Win;
 
-        if (Guild == null || Guild.Disbanded)
+        if (Guild?.Disbanded != false)
           return WarStatus.Lose;
 
         WarDeclaration w = Opponent.FindActiveWar(Guild);
@@ -733,7 +733,7 @@ namespace Server.Guilds
 
         if (o is Guildstone stone)
         {
-          if (stone.Guild == null || stone.Guild.Disbanded)
+          if (stone?.Guild.Disbanded != false)
           {
             from.SendMessage("The guild associated with that Guildstone no longer exists");
             return;
@@ -908,24 +908,24 @@ namespace Server.Guilds
 
           AcceptedWars.Remove(w);
 
-          if (g != null)
+          if (g == null)
+            continue;
+
+          if (status != WarStatus.Draw)
+            status = (WarStatus)((int)status + 1 % 2);
+
+          if (otherInAlliance)
           {
-            if (status != WarStatus.Draw)
-              status = (WarStatus)((int)status + 1 % 2);
-
-            if (otherInAlliance)
-            {
-              otherAlliance.AllianceMessage(1070739 + (int)status, inAlliance ? Alliance.Name : Name);
-              otherAlliance.InvalidateMemberProperties();
-            }
-            else
-            {
-              g.GuildMessage(1070739 + (int)status, inAlliance ? Alliance.Name : Name);
-              g.InvalidateMemberProperties();
-            }
-
-            g.AcceptedWars.Remove(g.FindActiveWar(this));
+            otherAlliance.AllianceMessage(1070739 + (int)status, inAlliance ? Alliance.Name : Name);
+            otherAlliance.InvalidateMemberProperties();
           }
+          else
+          {
+            g.GuildMessage(1070739 + (int)status, inAlliance ? Alliance.Name : Name);
+            g.InvalidateMemberProperties();
+          }
+
+          g.AcceptedWars.Remove(g.FindActiveWar(this));
         }
       }
 

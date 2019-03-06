@@ -72,20 +72,14 @@ namespace Server.Accounting
 		/// <summary>
 		/// List of account comments. Type of contained objects is AccountComment.
 		/// </summary>
-		public List<AccountComment> Comments
-		{
-			get { if ( m_Comments == null ) m_Comments = new List<AccountComment>(); return m_Comments; }
-		}
+		public List<AccountComment> Comments => m_Comments ?? (m_Comments = new List<AccountComment>());
 
-		/// <summary>
+    /// <summary>
 		/// List of account tags. Type of contained objects is AccountTag.
 		/// </summary>
-		public List<AccountTag> Tags
-		{
-			get { if ( m_Tags == null ) m_Tags = new List<AccountTag>(); return m_Tags; }
-		}
+		public List<AccountTag> Tags => m_Tags ?? (m_Tags = new List<AccountTag>());
 
-		/// <summary>
+    /// <summary>
 		/// Account username. Case insensitive validation.
 		/// </summary>
 		public string Username { get; set; }
@@ -164,11 +158,8 @@ namespace Server.Accounting
 			{
 				SetFlag( 1, !value );
 
-				if ( m_YoungTimer != null )
-				{
-					m_YoungTimer.Stop();
-					m_YoungTimer = null;
-				}
+        m_YoungTimer?.Stop();
+        m_YoungTimer = null;
 			}
 		}
 
@@ -848,7 +839,7 @@ namespace Server.Accounting
 					{
 						Mobile m = this[i];
 
-						if ( m != null && m.AccessLevel >= level )
+						if ( m?.AccessLevel >= level )
 							hasAccess = true;
 					}
 				}

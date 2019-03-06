@@ -105,7 +105,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(this);
 
-        if (house != null && house.IsOwner(from))
+        if (house?.IsOwner(from) == true)
         {
           from.CloseGump<RewardDemolitionGump>();
           from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?

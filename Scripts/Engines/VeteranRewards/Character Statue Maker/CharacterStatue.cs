@@ -150,7 +150,7 @@ namespace Server.Mobiles
       {
         BaseHouse house = BaseHouse.FindHouseAt(this);
 
-        if (house != null && house.IsCoOwner(from) || (int)from.AccessLevel > (int)AccessLevel.Counselor)
+        if (house?.IsCoOwner(from) == true || from.AccessLevel > AccessLevel.Counselor)
           list.Add(new DemolishEntry(this));
       }
     }

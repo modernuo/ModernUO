@@ -391,7 +391,7 @@ namespace Server.Engines.PartySystem
       {
         Mobile mob = ns.Mobile;
 
-        if (mob != null && mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel &&
+        if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel &&
             mob.Party != this && !m_Listeners.Contains(mob))
         {
           if (p == null)

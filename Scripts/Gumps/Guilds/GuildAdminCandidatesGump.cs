@@ -72,7 +72,7 @@ namespace Server.Gumps
                   break;
                 }
 
-                if (targetState != null && targetState.IsLeaving)
+                if (targetState?.IsLeaving == true)
                 {
                   // OSI does this quite strangely, so we'll just do it this way
                   m_Mobile.SendMessage(

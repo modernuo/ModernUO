@@ -64,7 +64,7 @@ namespace Server.Items
         return true;
 
       BaseHouse house = BaseHouse.FindHouseAt(this);
-      return house != null && house.IsOwner(from);
+      return house?.IsOwner(from) == true;
     }
 
     public bool HasVoted(Mobile from)

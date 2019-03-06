@@ -21,16 +21,7 @@ namespace Server.Mobiles
   {
     private static GlobalTownCrierEntryList m_Instance;
 
-    public static GlobalTownCrierEntryList Instance
-    {
-      get
-      {
-        if (m_Instance == null)
-          m_Instance = new GlobalTownCrierEntryList();
-
-        return m_Instance;
-      }
-    }
+    public static GlobalTownCrierEntryList Instance => m_Instance ?? (m_Instance = new GlobalTownCrierEntryList());
 
     public bool IsEmpty => Entries == null || Entries.Count == 0;
 

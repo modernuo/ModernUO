@@ -229,7 +229,7 @@ namespace Server.Guilds
               war.WarBeginning = DateTime.UtcNow;
               guild.AcceptedWars.Add(war);
 
-              if (alliance != null && alliance.IsMember(guild))
+              if (alliance?.IsMember(guild) == true)
               {
                 alliance.AllianceMessage(1070769,
                   otherAlliance != null
@@ -338,7 +338,7 @@ namespace Server.Guilds
           {
             if (activeWar != null)
             {
-              if (alliance != null && alliance.IsMember(guild))
+              if (alliance?.IsMember(guild) == true)
               {
                 alliance.AllianceMessage(1070740,
                   otherAlliance != null
@@ -521,7 +521,7 @@ namespace Server.Guilds
           {
             pm.SendLocalizedMessage(1063436); // You don't have permission to negotiate an alliance.
           }
-          else if (alliance != null && alliance.IsMember(guild))
+          else if (alliance?.IsMember(guild) == true)
           {
             guild.Alliance = null; //Calls alliance.Removeguild
 //						alliance.RemoveGuild( guild );
@@ -544,7 +544,7 @@ namespace Server.Guilds
             pm.SendLocalizedMessage(1063239,
               $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
           }
-          else if (alliance != null && alliance.IsMember(guild) && alliance.IsMember(m_Other))
+          else if (alliance?.IsMember(guild) == true && alliance.IsMember(m_Other))
           {
             m_Other.Alliance = null;
 
@@ -566,7 +566,7 @@ namespace Server.Guilds
             pm.SendLocalizedMessage(1063239,
               $"{guild.Name}\t{alliance.Name}"); // ~1_val~ is not the leader of the ~2_val~ alliance.
           }
-          else if (alliance != null && alliance.IsMember(guild) && alliance.IsMember(m_Other))
+          else if (alliance?.IsMember(guild) == true && alliance.IsMember(m_Other))
           {
             pm.SendLocalizedMessage(1063434,
               $"{m_Other.Name}\t{alliance.Name}"); // ~1_val~ is now the leader of ~2_val~.

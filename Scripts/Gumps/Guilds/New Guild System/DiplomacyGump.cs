@@ -137,7 +137,7 @@ namespace Server.Guilds
       //AddHtmlLocalized( 66, 153 + itemNumber * 28, 280, 26, 1063136 + (int)m_Display, 0xF, false, false ); // Showing All Guilds/Awaiting Action/ w/Relation Ship
       //AddHtmlText( 66, 153 + itemNumber * 28, 280, 26, m_LowerText, false, false );
 
-      if (m_LowerText != null && m_LowerText.Number > 0)
+      if (m_LowerText?.Number > 0)
         AddHtmlLocalized(66, 153 + itemNumber * 28, 280, 26, m_LowerText.Number, 0xF, false, false);
       else if (m_LowerText?.String != null)
         AddHtml(66, 153 + itemNumber * 28, 280, 26, Color(m_LowerText.String, 0x99), false, false);

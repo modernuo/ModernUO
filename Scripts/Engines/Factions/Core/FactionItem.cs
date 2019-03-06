@@ -77,7 +77,7 @@ namespace Server.Factions
       if (Item is IFactionItem item)
         item.FactionItemState = null;
 
-      if (Faction != null && Faction.State.FactionItems.Contains(this))
+      if (Faction?.State.FactionItems.Contains(this) == true)
         Faction.State.FactionItems.Remove(this);
     }
 

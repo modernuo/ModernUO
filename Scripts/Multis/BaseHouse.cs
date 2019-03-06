@@ -118,7 +118,7 @@ namespace Server.Multis
         {
           Mobile mob = acct[i];
 
-          if (mob != null && mob.AccessLevel >= AccessLevel.GameMaster)
+          if (mob?.AccessLevel >= AccessLevel.GameMaster)
             return DecayType.Ageless;
         }
 
@@ -3003,36 +3003,27 @@ namespace Server.Multis
       if (m == null)
         return false;
 
-      if (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access != null && Access.Contains(m))
+      if (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access?.Contains(m) == true)
         return true;
 
-      if (m is BaseCreature bc)
-      {
-        if (bc.NoHouseRestrictions)
-          return true;
+      if (!(m is BaseCreature bc))
+        return false;
 
-        if (bc.Controlled || bc.Summoned)
-        {
-          m = bc.ControlMaster;
+      if (bc.NoHouseRestrictions)
+        return true;
 
-          if (m == null)
-            m = bc.SummonMaster;
+      if (!(bc.Controlled || bc.Summoned))
+        return false;
 
-          if (m == null)
-            return false;
+      m = bc.ControlMaster ?? bc.SummonMaster;
 
-          if (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access != null && Access.Contains(m))
-            return true;
-        }
-      }
-
-      return false;
+      return m != null && (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access?.Contains(m) == true);
     }
 
     public bool HasLockedDownItem(Item check)
     {
-      return check != null && LockDowns != null &&
-             (LockDowns.Contains(check) || check is VendorRentalContract contract && VendorRentalContracts.Contains(contract));
+      return LockDowns?.Contains(check) == true ||
+             check is VendorRentalContract contract && VendorRentalContracts.Contains(contract);
     }
 
     public bool HasSecureItem(Item item)
@@ -3040,15 +3031,11 @@ namespace Server.Multis
       if (item == null)
         return false;
 
-      if (Secures == null)
-        return false;
+      for (int i = 0; i < Secures?.Count; ++i)
+        if (Secures[i].Item == item)
+          return true;
 
-      bool contains = false;
-
-      for (int i = 0; !contains && i < Secures.Count; ++i)
-        contains = Secures[i].Item == item;
-
-      return contains;
+      return false;
     }
 
     public virtual Guildstone FindGuildstone()

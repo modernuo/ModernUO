@@ -23,7 +23,7 @@ namespace Server.Items
 
     public virtual void Flip(Mobile from, Item addon)
     {
-      if (Directions != null && Directions.Length > 1)
+      if (Directions?.Length > 1)
         try
         {
           MethodInfo flipMethod = addon.GetType().GetMethod(m_MethodName, m_Params);
@@ -44,7 +44,7 @@ namespace Server.Items
 
             ClearComponents(addon);
 
-            flipMethod.Invoke(addon, new object[2] { from, Directions[index] });
+            flipMethod.Invoke(addon, new object[] { from, Directions[index] });
 
             BaseHouse house = null;
             AddonFitResult result = AddonFitResult.Valid;

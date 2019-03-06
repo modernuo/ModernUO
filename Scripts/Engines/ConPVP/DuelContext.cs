@@ -2074,10 +2074,7 @@ namespace Server.Engines.ConPVP
           }
         }
 
-        Arena arena = m_OverrideArena;
-
-        if (arena == null)
-          arena = Arena.FindArena(players);
+        Arena arena = m_OverrideArena ?? Arena.FindArena(players);
 
         if (arena == null)
         {

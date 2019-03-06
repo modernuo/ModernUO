@@ -581,12 +581,7 @@ namespace Server.Items
 
 				AddHtml( 255, 200, 150, 20, name, false, false );
 
-				string body = message.Message;
-
-				if ( body == null )
-					body = "";
-
-				AddHtml( 150, 240, 250, 100, body, false, false );
+        AddHtml( 150, 240, 250, 100, message.Message ?? "", false, false );
 
 				if ( message != board.Greeting && house.IsOwner( from ) )
 				{

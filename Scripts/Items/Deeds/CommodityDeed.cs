@@ -210,7 +210,7 @@ namespace Server.Items
 
           // Veteran Rewards mods
           if (box != null && m_Deed.IsChildOf(box) && item.IsChildOf(box) ||
-              cox != null && cox.IsSecure && item.IsChildOf(cox))
+              cox?.IsSecure != true && item.IsChildOf(cox))
           {
             if (m_Deed.SetCommodity(item))
             {

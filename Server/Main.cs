@@ -563,7 +563,7 @@ namespace Server
           warningSb.AppendLine("       - No Deserialize() method");
         }
 
-        if (warningSb != null && warningSb.Length > 0) Console.WriteLine("Warning: {0}\n{1}", t, warningSb);
+        if (warningSb?.Length > 0) Console.WriteLine("Warning: {0}\n{1}", t, warningSb);
       }
       catch
       {

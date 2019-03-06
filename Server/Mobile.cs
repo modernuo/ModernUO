@@ -614,21 +614,12 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public Race Race
     {
-      get
-      {
-        if (m_Race == null)
-          m_Race = Race.DefaultRace;
-
-        return m_Race;
-      }
+      get => m_Race ?? (m_Race = Race.DefaultRace);
       set
       {
         Race oldRace = Race;
 
-        m_Race = value;
-
-        if (m_Race == null)
-          m_Race = Race.DefaultRace;
+        m_Race = value ?? Race.DefaultRace;
 
         Body = m_Race.Body(this);
         UpdateResistances();
@@ -1465,7 +1456,8 @@ namespace Server
     {
       get
       {
-        if (m_NetState != null && m_NetState.Socket == null && !m_NetState.IsDisposing) NetState = null;
+        if (m_NetState != null && m_NetState.Socket == null && !m_NetState.IsDisposing)
+          NetState = null;
 
         return m_NetState;
       }
@@ -1591,7 +1583,7 @@ namespace Server
         {
           m_GuildTitle = value;
 
-          if (m_Guild != null && !m_Guild.Disbanded && m_GuildTitle != null)
+          if (m_Guild?.Disbanded == false && m_GuildTitle != null)
             SendLocalizedMessage(1018026, true, m_GuildTitle); // Your guild title has changed :
 
           InvalidateProperties();
@@ -3076,10 +3068,7 @@ namespace Server
 
     public virtual void AddNameProperties(ObjectPropertyList list)
     {
-      string name = Name;
-
-      if (name == null)
-        name = string.Empty;
+      string name = Name ?? string.Empty;
 
       string prefix = "";
 
@@ -3095,10 +3084,8 @@ namespace Server
 
       if (guild != null && (m_Player || m_DisplayGuildTitle))
       {
-        if (suffix.Length > 0)
-          suffix = string.Format("{0} [{1}]", suffix, Utility.FixHtml(guild.Abbreviation));
-        else
-          suffix = string.Format("[{0}]", Utility.FixHtml(guild.Abbreviation));
+        suffix = suffix.Length > 0 ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
+          : $"[{Utility.FixHtml(guild.Abbreviation)}]";
       }
 
       suffix = ApplyNameSuffix(suffix);
@@ -3114,12 +3101,7 @@ namespace Server
         else
           type = "";
 
-        string title = GuildTitle;
-
-        if (title == null)
-          title = "";
-        else
-          title = title.Trim();
+        string title = GuildTitle?.Trim() ?? "";
 
         if (NewGuildDisplay && title.Length > 0)
         {
@@ -3349,12 +3331,7 @@ namespace Server
 
     public bool InLOS(Point3D target)
     {
-      if (Deleted || m_Map == null)
-        return false;
-      if (m_AccessLevel > AccessLevel.Player)
-        return true;
-
-      return m_Map.LineOfSight(this, target);
+      return !Deleted && m_Map != null && (m_AccessLevel > AccessLevel.Player || m_Map.LineOfSight(this, target));
     }
 
     public bool BeginAction<T>()
@@ -3433,7 +3410,7 @@ namespace Server
 
     public override string ToString()
     {
-      return string.Format("0x{0:X} \"{1}\"", Serial.Value, Name);
+      return $"0x{Serial.Value:X} \"{Name}\"";
     }
 
     public virtual void SendSkillMessage()
@@ -7085,7 +7062,7 @@ namespace Server
 
     public virtual bool CheckNonlocalLift(Mobile from, Item item)
     {
-      return @from == this || @from.AccessLevel > AccessLevel && @from.AccessLevel >= AccessLevel.GameMaster;
+      return from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
     }
 
     public virtual bool CheckTrade(Mobile to, Item item, SecureTradeContainer cont, bool message, bool checkItems,
@@ -7126,10 +7103,10 @@ namespace Server
       if (from == this)
       {
         Container pack = Backpack;
-        return pack != null && dropped.DropToItem(@from, pack, new Point3D(-1, -1, 0));
+        return pack != null && dropped.DropToItem(from, pack, new Point3D(-1, -1, 0));
       }
 
-      return @from.InRange(Location, 2) && OpenTrade(@from, dropped);
+      return from.InRange(Location, 2) && OpenTrade(from, dropped);
     }
 
     public virtual bool CheckEquip(Item item)
@@ -7250,7 +7227,7 @@ namespace Server
 
     public virtual bool CheckNonlocalDrop(Mobile from, Item item, Item target)
     {
-      return @from == this || @from.AccessLevel > AccessLevel && @from.AccessLevel >= AccessLevel.GameMaster;
+      return from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
     }
 
     public virtual bool CheckItemUse(Mobile from, Item item)
@@ -7501,10 +7478,7 @@ namespace Server
       else
         hue = Notoriety.GetHue(Notoriety.Compute(from, this));
 
-      string name = Name;
-
-      if (name == null)
-        name = string.Empty;
+      string name = Name ?? string.Empty;
 
       string prefix = "";
 

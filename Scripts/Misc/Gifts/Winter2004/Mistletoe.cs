@@ -43,7 +43,7 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house != null && house.IsCoOwner(from))
+      if (house?.IsCoOwner(from) == true)
       {
         if (from.InRange(GetWorldLocation(), 1))
         {
@@ -101,7 +101,7 @@ namespace Server.Items
     {
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house != null && house.IsCoOwner(from))
+      if (house?.IsCoOwner(from) == true)
       {
         if (from.InRange(GetWorldLocation(), 3))
         {
@@ -205,7 +205,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house != null && house.IsCoOwner(from))
+        if (house?.IsCoOwner(from) == true)
         {
           from.SendLocalizedMessage(1062838); // Where would you like to place this decoration?
           from.BeginTarget(-1, true, TargetFlags.None, Placement_OnTarget);
@@ -230,7 +230,7 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(loc, from.Map, 16);
 
-      if (house != null && house.IsCoOwner(from))
+      if (house?.IsCoOwner(from) == true)
       {
         bool northWall = BaseAddon.IsWall(loc.X, loc.Y - 1, loc.Z, from.Map);
         bool westWall = BaseAddon.IsWall(loc.X - 1, loc.Y, loc.Z, from.Map);

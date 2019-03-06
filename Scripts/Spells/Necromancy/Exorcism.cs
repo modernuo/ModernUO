@@ -137,9 +137,7 @@ namespace Server.Spells.Necromancy
         //Just an approximation cause RunUO doesn't divide up the world the same way OSI does ;p
       }
 
-      Party p = Party.Get(m);
-
-      if (p != null && p.Contains(Caster))
+      if (Party.Get(m)?.Contains(Caster) == true)
         return false;
 
       if (m.Guild != null && Caster.Guild != null)
@@ -156,10 +154,7 @@ namespace Server.Spells.Necromancy
 
       Faction f = Faction.Find(m);
 
-      if (Faction.Facet == m.Map && f != null && f == Faction.Find(Caster))
-        return false;
-
-      return true;
+      return Faction.Facet != m.Map || f == null || f != Faction.Find(Caster);
     }
 
     private static Point3D GetNearestShrine(Mobile m)

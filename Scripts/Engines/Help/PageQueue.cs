@@ -257,10 +257,10 @@ namespace Server.Engines.Help
       {
         Mobile m = ns.Mobile;
 
-        if (m != null && m.AccessLevel >= AccessLevel.Counselor && m.AutoPageNotify && !IsHandling(m))
+        if (m?.AccessLevel >= AccessLevel.Counselor && m.AutoPageNotify && !IsHandling(m))
           m.SendMessage("A new page has been placed in the queue.");
 
-        if (m != null && m.AccessLevel >= AccessLevel.Counselor && m.AutoPageNotify &&
+        if (m?.AccessLevel >= AccessLevel.Counselor && m.AutoPageNotify &&
             Core.TickCount - m.LastMoveTime < 600000)
           isStaffOnline = true;
       }

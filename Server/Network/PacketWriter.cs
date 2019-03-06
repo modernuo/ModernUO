@@ -96,10 +96,7 @@ namespace Server.Network
         }
       }
 
-      if (pw == null)
-        pw = new PacketWriter(capacity);
-
-      return pw;
+      return pw ?? new PacketWriter(capacity);
     }
 
     public static void ReleaseInstance(PacketWriter pw)

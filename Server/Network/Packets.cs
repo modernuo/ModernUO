@@ -382,10 +382,7 @@ namespace Server.Network
 
         m_Stream.Write(bis.Price);
 
-        string desc = bis.Description;
-
-        if (desc == null)
-          desc = "";
+        string desc = bis.Description ?? "";
 
         m_Stream.Write((byte)(desc.Length + 1));
         m_Stream.WriteAsciiNull(desc);
@@ -2433,10 +2430,7 @@ namespace Server.Network
 
       for (int i = 0; i < strings.Count; ++i)
       {
-        string v = strings[i];
-
-        if (v == null)
-          v = string.Empty;
+        string v = strings[i] ?? "";
 
         m_Strings.Write((ushort)v.Length);
         m_Strings.WriteBigUniFixed(v, v.Length);
@@ -2595,10 +2589,7 @@ namespace Server.Network
 
       for (int i = 0; i < text.Count; ++i)
       {
-        string v = text[i];
-
-        if (v == null)
-          v = string.Empty;
+        string v = text[i] ?? "";
 
         int length = (ushort)v.Length;
 
@@ -2631,13 +2622,11 @@ namespace Server.Network
 
       for (int i = 0; i < text.Length; ++i)
       {
-        string v = text[i];
+        string v = text[i] ?? "";
 
-        if (v == null) v = "";
+        ushort length = (ushort)v.Length;
 
-        int length = (ushort)v.Length;
-
-        m_Stream.Write((ushort)length);
+        m_Stream.Write(length);
         m_Stream.WriteBigUniFixed(v, length);
       }
     }
@@ -2967,14 +2956,10 @@ namespace Server.Network
   {
     public MobileName(Mobile m) : base(0x98)
     {
-      string name = m.Name;
-
-      if (name == null) name = "";
-
       EnsureCapacity(37);
 
       m_Stream.Write(m.Serial);
-      m_Stream.WriteAsciiFixed(name, 30);
+      m_Stream.WriteAsciiFixed(m.Name ?? "", 30);
     }
   }
 
@@ -3008,13 +2993,10 @@ namespace Server.Network
   {
     public MobileStatusCompact(bool canBeRenamed, Mobile m) : base(0x11)
     {
-      string name = m.Name;
-      if (name == null) name = "";
-
       EnsureCapacity(43);
 
       m_Stream.Write(m.Serial);
-      m_Stream.WriteAsciiFixed(name, 30);
+      m_Stream.WriteAsciiFixed(m.Name ?? "", 30);
 
       AttributeNormalizer.WriteReverse(m_Stream, m.Hits, m.HitsMax);
 

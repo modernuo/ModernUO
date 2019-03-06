@@ -77,7 +77,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(this);
 
-        if (house != null && house.IsOwner(from))
+        if (house?.IsOwner(from) == true)
         {
           from.CloseGump<RewardDemolitionGump>();
           from.SendGump(new RewardDemolitionGump(this, 1018329)); // Do you wish to re-deed this skull?
@@ -158,7 +158,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house != null && house.IsOwner(from))
+        if (house?.IsOwner(from) == true)
         {
           from.SendLocalizedMessage(1042264); // Where would you like to place this head?
           from.Target = new InternalTarget(this);

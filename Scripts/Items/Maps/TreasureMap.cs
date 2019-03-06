@@ -820,7 +820,7 @@ namespace Server.Items
           Effects.PlaySound(m_Chest, m_Map, 0x33B);
         }
 
-        if (m_Chest != null && m_Chest.Location.Z >= m_Location.Z)
+        if (m_Chest?.Location.Z >= m_Location.Z)
         {
           Stop();
           m_From.EndAction<TreasureMap>();

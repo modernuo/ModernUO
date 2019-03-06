@@ -55,8 +55,8 @@ namespace Server.Mobiles
     }
 
     public override string DefaultName => "Spawner";
-    public bool IsFull => Spawned != null && Spawned.Count >= m_Count;
-    public bool IsEmpty => Spawned != null && Spawned.Count == 0;
+    public bool IsFull => Spawned?.Count >= m_Count;
+    public bool IsEmpty => Spawned?.Count == 0;
     public DateTime End{ get; set; }
 
     public List<SpawnerEntry> Entries{ get; private set; }
@@ -144,12 +144,7 @@ namespace Server.Mobiles
     [CommandProperty(AccessLevel.Developer)]
     public TimeSpan NextSpawn
     {
-      get
-      {
-        if (m_Running && m_Timer != null && m_Timer.Running)
-          return End - DateTime.UtcNow;
-        return TimeSpan.FromSeconds(0);
-      }
+      get => m_Running && m_Timer?.Running == true ? End - DateTime.UtcNow : TimeSpan.FromSeconds(0);
       set
       {
         Start();

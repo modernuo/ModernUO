@@ -818,12 +818,7 @@ namespace Server.Mobiles
 
             if (drop)
             {
-              string name = weapon.Name;
-
-              if (name == null)
-                name = $"#{weapon.LabelNumber}";
-
-              from.SendLocalizedMessage(1062001, name); // You can no longer wield your ~1_WEAPON~
+              from.SendLocalizedMessage(1062001, weapon.Name ?? $"#{weapon.LabelNumber}"); // You can no longer wield your ~1_WEAPON~
               from.AddToBackpack(weapon);
               moved = true;
             }
@@ -860,10 +855,7 @@ namespace Server.Mobiles
 
             if (drop)
             {
-              string name = armor.Name;
-
-              if (name == null)
-                name = $"#{armor.LabelNumber}";
+              string name = armor.Name ?? $"#{armor.LabelNumber}";
 
               if (armor is BaseShield)
                 from.SendLocalizedMessage(1062003, name); // You can no longer equip your ~1_SHIELD~
@@ -901,12 +893,7 @@ namespace Server.Mobiles
 
             if (drop)
             {
-              string name = clothing.Name;
-
-              if (name == null)
-                name = $"#{clothing.LabelNumber}";
-
-              from.SendLocalizedMessage(1062002, name); // You can no longer wear your ~1_ARMOR~
+              from.SendLocalizedMessage(1062002, clothing.Name ?? $"#{clothing.LabelNumber}"); // You can no longer wear your ~1_ARMOR~
 
               from.AddToBackpack(clothing);
               moved = true;
@@ -2059,7 +2046,7 @@ namespace Server.Mobiles
       {
         Mobile mob = ns.Mobile;
 
-        if (mob != null && mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel)
+        if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel)
         {
           if (p == null)
             p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3,
@@ -2968,24 +2955,11 @@ namespace Server.Mobiles
 
     public bool NinjaWepCooldown{ get; set; }
 
-    public List<Mobile> AllFollowers
-    {
-      get
-      {
-        if (m_AllFollowers == null)
-          m_AllFollowers = new List<Mobile>();
-        return m_AllFollowers;
-      }
-    }
+    public List<Mobile> AllFollowers => m_AllFollowers ?? (m_AllFollowers = new List<Mobile>());
 
     public RankDefinition GuildRank
     {
-      get
-      {
-        if (AccessLevel >= AccessLevel.GameMaster)
-          return RankDefinition.Leader;
-        return m_GuildRank;
-      }
+      get => AccessLevel >= AccessLevel.GameMaster ? RankDefinition.Leader : m_GuildRank;
       set => m_GuildRank = value;
     }
 

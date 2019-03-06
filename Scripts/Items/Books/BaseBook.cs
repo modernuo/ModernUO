@@ -279,7 +279,7 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      if (m_Title != null && m_Title.Length > 0)
+      if (!string.IsNullOrEmpty(m_Title))
         list.Add(m_Title);
       else
         base.AddNameProperty(list);
@@ -289,13 +289,13 @@ namespace Server.Items
     {
       base.GetProperties( list );
 
-      if ( m_Title != null && m_Title.Length > 0 )
+      if ( m_Title?.Length > 0 )
         list.Add( 1060658, "Title\t{0}", m_Title ); // ~1_val~: ~2_val~
 
-      if ( m_Author != null && m_Author.Length > 0 )
+      if ( m_Author?.Length > 0 )
         list.Add( 1060659, "Author\t{0}", m_Author ); // ~1_val~: ~2_val~
 
-      if ( m_Pages != null && m_Pages.Length > 0 )
+      if ( m_Pages?.Length > 0 )
         list.Add( 1060660, "Pages\t{0}", m_Pages.Length ); // ~1_val~: ~2_val~
     }*/
 

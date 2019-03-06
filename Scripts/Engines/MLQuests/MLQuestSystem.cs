@@ -555,7 +555,7 @@ namespace Server.Engines.MLQuests
 
       foreach (MLQuest quest in quests)
       {
-        if (quest.IsChainTriggered || context != null && context.IsDoingQuest(quest))
+        if (quest.IsChainTriggered || context?.IsDoingQuest(quest) == true)
           continue;
 
         /*
@@ -569,10 +569,7 @@ namespace Server.Engines.MLQuests
           m_EligiblePool.Add(quest);
       }
 
-      if (m_EligiblePool.Count == 0)
-        return fallback;
-
-      return m_EligiblePool[Utility.Random(m_EligiblePool.Count)];
+      return m_EligiblePool.Count == 0 ? fallback : m_EligiblePool[Utility.Random(m_EligiblePool.Count)];
     }
 
     public static void TurnToFace(IQuestGiver quester, Mobile mob)
@@ -630,7 +627,7 @@ namespace Server.Engines.MLQuests
 
     public static void WriteQuestRef(GenericWriter writer, MLQuest quest)
     {
-      writer.Write(quest != null && quest.SaveEnabled ? quest.GetType().FullName : null);
+      writer.Write(quest?.SaveEnabled == true ? quest.GetType().FullName : null);
     }
 
     public static MLQuest ReadQuestRef(GenericReader reader)

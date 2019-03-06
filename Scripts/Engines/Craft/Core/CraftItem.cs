@@ -992,7 +992,7 @@ namespace Server.Engines.Craft
             {
               Town town = Town.FromRegion(from.Region);
 
-              if (town != null && town.Owner == faction)
+              if (town?.Owner == faction)
               {
                 Container pack = from.Backpack;
 

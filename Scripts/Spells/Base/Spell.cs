@@ -330,18 +330,15 @@ namespace Server.Spells
           return scalar;
       }
 
-      ISlayer defISlayer = Spellbook.FindEquippedSpellbook(defender);
-
-      if (defISlayer == null)
-        defISlayer = defender.Weapon as ISlayer;
+      ISlayer defISlayer = Spellbook.FindEquippedSpellbook(defender) ?? defender.Weapon as ISlayer;
 
       if (defISlayer != null)
       {
         SlayerEntry defSlayer = SlayerGroup.GetEntryByName(defISlayer.Slayer);
         SlayerEntry defSlayer2 = SlayerGroup.GetEntryByName(defISlayer.Slayer2);
 
-        if (defSlayer != null && defSlayer.Group.OppositionSuperSlays(Caster) ||
-            defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays(Caster))
+        if (defSlayer?.Group.OppositionSuperSlays(Caster) == true ||
+            defSlayer2?.Group.OppositionSuperSlays(Caster) == true)
           scalar = 2.0;
       }
 

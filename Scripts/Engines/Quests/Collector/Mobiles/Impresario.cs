@@ -143,15 +143,14 @@ namespace Server.Engines.Quests.Collector
 
           if (obj?.Completed != false)
             return;
-          
+
           if (player.Backpack != null && player.Backpack.ConsumeTotal(typeof(Gold), 10))
           {
             obj.Complete();
           }
           else
           {
-            BankBox bank = player.FindBankNoCreate();
-            if (bank != null && bank.ConsumeTotal(typeof(Gold), 10))
+            if (player.FindBankNoCreate()?.ConsumeTotal(typeof(Gold), 10) == true)
               obj.Complete();
 
             else

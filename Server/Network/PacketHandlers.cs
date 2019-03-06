@@ -1025,10 +1025,7 @@ namespace Server.Network
       if (!valid) return;
 
       pvSrc.Seek(5, SeekOrigin.Current);
-      Mobile to = World.FindMobile(pvSrc.ReadUInt32());
-
-      if (to == null)
-        to = from;
+      Mobile to = World.FindMobile(pvSrc.ReadUInt32()) ?? from;
 
       if (!to.AllowEquipFrom(from) || !to.EquipItem(item))
         item.Bounce(from);
@@ -2374,13 +2371,10 @@ namespace Server.Network
 
       bool female = genderRace % 2 != 0;
 
-      Race race = null;
+      Race race;
 
       byte raceID = (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1);
-      race = Race.Races[raceID];
-
-      if (race == null)
-        race = Race.DefaultRace;
+      race = Race.Races[raceID] ?? Race.DefaultRace;
 
       CityInfo[] info = state.CityInfo;
       IAccount a = state.Account;

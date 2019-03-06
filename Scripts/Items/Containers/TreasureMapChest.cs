@@ -346,9 +346,7 @@ namespace Server.Items
       if (m.AccessLevel >= AccessLevel.GameMaster || Owner == null || m == Owner)
         return true;
 
-      Party p = Party.Get(Owner);
-
-      if (p != null && p.Contains(m))
+      if (Party.Get(Owner)?.Contains(m) == true)
         return true;
 
       Map map = Map;

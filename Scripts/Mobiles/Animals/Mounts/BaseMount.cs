@@ -111,19 +111,16 @@ namespace Server.Mobiles
       if (m_Rider == null)
         return;
 
-      Mobile attacker = from;
-      if (attacker == null)
-        attacker = m_Rider.FindMostRecentDamager(true);
+      Mobile attacker = from ?? m_Rider.FindMostRecentDamager(true);
 
-      if (!(attacker == this || attacker == m_Rider || willKill || DateTime.UtcNow < NextMountAbility))
-        if (DoMountAbility(amount, from))
+      if (!(attacker == this || attacker == m_Rider || willKill || DateTime.UtcNow < NextMountAbility)
+          && DoMountAbility(amount, from))
           NextMountAbility = DateTime.UtcNow + MountAbilityDelay;
     }
 
     public override bool OnBeforeDeath()
     {
       Rider = null;
-
       return base.OnBeforeDeath();
     }
 

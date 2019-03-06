@@ -31,16 +31,7 @@ namespace Server.Engines.Craft
 
     public override int GumpTitleNumber => 1044007;
 
-    public static CraftSystem CraftSystem
-    {
-      get
-      {
-        if (m_CraftSystem == null)
-          m_CraftSystem = new DefTinkering();
-
-        return m_CraftSystem;
-      }
-    }
+    public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefTinkering());
 
     public override double GetChanceAtMin(CraftItem item)
     {

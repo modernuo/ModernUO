@@ -329,7 +329,7 @@ namespace Server.Items
     {
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house != null && house.IsCoOwner(from))
+      if (house?.IsCoOwner(from) == true)
       {
         if (from.InRange(GetWorldLocation(), 1))
         {
@@ -475,7 +475,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house != null && house.IsCoOwner(from))
+        if (house?.IsCoOwner(from) == true)
         {
           bool northWall = BaseAddon.IsWall(from.X, from.Y - 1, from.Z, from.Map);
           bool westWall = BaseAddon.IsWall(from.X - 1, from.Y, from.Z, from.Map);

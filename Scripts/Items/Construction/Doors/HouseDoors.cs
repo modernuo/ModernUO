@@ -145,18 +145,16 @@ namespace Server.Items
     {
       BaseHouse house = FindHouse();
 
-      if (house != null && house.IsFriend(from) && from.AccessLevel == AccessLevel.Player && house.RefreshDecay())
+      if (house?.IsFriend(from) == true && from.AccessLevel == AccessLevel.Player && house.RefreshDecay())
         from.SendLocalizedMessage(1043293); // Your house's age and contents have been refreshed.
 
-      if (house != null && house.Public && !house.IsFriend(from))
+      if (house?.Public == true && !house.IsFriend(from))
         house.Visits++;
     }
 
     public override bool UseLocks()
     {
-      BaseHouse house = FindHouse();
-
-      return house == null || !house.IsAosRules;
+      return FindHouse()?.IsAosRules != true;
     }
 
     public override void Use(Mobile from)

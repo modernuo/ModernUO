@@ -36,7 +36,7 @@ namespace Server
     public string Format(bool propsGump)
     {
       if (Number > 0)
-        return string.Format("{0} (0x{0:X})", Number);
+        return $"{Number} (0x{Number:X})";
       if (String != null)
         return $"\"{String}\"";
 

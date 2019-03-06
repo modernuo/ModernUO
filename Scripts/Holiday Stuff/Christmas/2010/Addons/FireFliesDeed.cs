@@ -1,3 +1,4 @@
+using System.Linq;
 using Server.Gumps;
 using Server.Multis;
 using Server.Network;
@@ -59,7 +60,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(this);
 
-        if (house != null && house.IsOwner(from))
+        if (house?.IsOwner(from) == true)
         {
           from.CloseGump<RewardDemolitionGump>();
           from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
@@ -114,7 +115,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house != null && house.IsOwner(from))
+        if (house?.IsOwner(from) == true)
         {
           from.CloseGump<FacingGump>();
 
@@ -235,16 +236,12 @@ namespace Server.Items
             {
               house = BaseHouse.FindHouseAt(p3d, map, id.Height);
 
-              if (house != null && house.IsOwner(from))
+              if (house?.IsOwner(from) == true)
               {
                 bool north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
                 bool west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
 
-                bool isclear = true;
-
-                foreach (Item item in Map.Malas.GetItemsInRange(p3d, 0))
-                  if (item is Fireflies)
-                    isclear = false;
+                bool isclear = !Map.Malas.GetItemsInRange(p3d, 0).OfType<Fireflies>().Any();
 
                 if ((m_ItemID == 0x2336 && north || m_ItemID == 0x2332 && west) && isclear)
                 {

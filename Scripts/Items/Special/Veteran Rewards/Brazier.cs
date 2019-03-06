@@ -81,7 +81,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house != null && house.IsCoOwner(from))
+        if (house?.IsCoOwner(from) == true)
         {
           if (m_Fire != null)
             TurnOff();

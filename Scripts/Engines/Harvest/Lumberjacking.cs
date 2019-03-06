@@ -145,16 +145,7 @@ namespace Server.Engines.Harvest
       #endregion
     }
 
-    public static Lumberjacking System
-    {
-      get
-      {
-        if (m_System == null)
-          m_System = new Lumberjacking();
-
-        return m_System;
-      }
-    }
+    public static Lumberjacking System => m_System ?? (m_System = new Lumberjacking());
 
     public HarvestDefinition Definition{ get; }
 

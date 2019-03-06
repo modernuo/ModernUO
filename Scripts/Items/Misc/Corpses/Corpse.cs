@@ -339,14 +339,9 @@ namespace Server.Items
 
     public override bool IsChildVisibleTo(Mobile m, Item child)
     {
-      if (!m.Player || m.AccessLevel > AccessLevel.Player) //Staff and creatures not subject to instancing.
-        return true;
-
-      if (m_InstancedItems != null && m_InstancedItems.TryGetValue(child, out InstancedItemInfo info)
-                                   && (InstancedCorpse || info.Perpetual))
-        return info.IsOwner(m); //IsOwner checks Party stuff.
-
-      return true;
+      return !m.Player || m.AccessLevel > AccessLevel.Player || m_InstancedItems == null ||
+             !m_InstancedItems.TryGetValue(child, out InstancedItemInfo info) || !InstancedCorpse && !info.Perpetual
+             || info.IsOwner(m);
     }
 
     private void AssignInstancedLoot()
@@ -364,7 +359,7 @@ namespace Server.Items
       {
         Item item = Items[i];
 
-        if (item.LootType != LootType.Cursed) //Don't have curesd items take up someone's item spot.. (?)
+        if (item.LootType != LootType.Cursed) //Don't have cursed items take up someone's item spot.. (?)
         {
           if (item.Stackable)
             m_Stackables.Add(item);
@@ -384,7 +379,7 @@ namespace Server.Items
         attackers[i] = temp;
       }
 
-      //stackables first, for the remaining stackables, have those be randomly added after
+      // stackables first, for the remaining stackables, have those be randomly added after
 
       for (int i = 0; i < m_Stackables.Count; i++)
       {
@@ -488,11 +483,9 @@ namespace Server.Items
     public static Container Mobile_CreateCorpseHandler(Mobile owner, HairInfo hair, FacialHairInfo facialhair,
       List<Item> initialContent, List<Item> equipItems)
     {
-      Corpse c;
-      if (owner is MilitiaFighter)
-        c = new MilitiaFighterCorpse(owner, hair, facialhair, equipItems);
-      else
-        c = new Corpse(owner, hair, facialhair, equipItems);
+      Corpse c = owner is MilitiaFighter ?
+        new MilitiaFighterCorpse(owner, hair, facialhair, equipItems) :
+        new Corpse(owner, hair, facialhair, equipItems);
 
       owner.Corpse = c;
 
@@ -958,7 +951,7 @@ namespace Server.Items
               item.Location = loc;
               pack.AddItem(item);
 
-              if (RestoreEquip != null && RestoreEquip.Contains(item))
+              if (RestoreEquip?.Contains(item) == true)
                 from.EquipItem(item);
             }
             else

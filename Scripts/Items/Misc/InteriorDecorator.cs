@@ -79,7 +79,7 @@ namespace Server.Items
     {
       BaseHouse house = BaseHouse.FindHouseAt(from);
 
-      return house != null && house.IsCoOwner(from);
+      return house?.IsCoOwner(from) == true;
     }
 
     public static bool CheckUse(InteriorDecorator tool, Mobile from)

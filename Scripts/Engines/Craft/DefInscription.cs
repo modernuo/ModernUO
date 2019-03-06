@@ -36,16 +36,7 @@ namespace Server.Engines.Craft
 
     public override int GumpTitleNumber => 1044009;
 
-    public static CraftSystem CraftSystem
-    {
-      get
-      {
-        if (m_CraftSystem == null)
-          m_CraftSystem = new DefInscription();
-
-        return m_CraftSystem;
-      }
-    }
+    public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefInscription());
 
     public override double GetChanceAtMin(CraftItem item)
     {
@@ -65,9 +56,7 @@ namespace Server.Engines.Craft
 
         if (o is SpellScroll scroll)
         {
-          Spellbook book = Spellbook.Find(from, scroll.SpellID);
-
-          bool hasSpell = book != null && book.HasSpell(scroll.SpellID);
+          bool hasSpell = Spellbook.Find(from, scroll.SpellID)?.HasSpell(scroll.SpellID) == true;
 
           scroll.Delete();
 
@@ -121,7 +110,6 @@ namespace Server.Engines.Craft
       switch (m_Circle)
       {
         default:
-        case 0:
           minSkill = -25.0;
           maxSkill = 25.0;
           break;

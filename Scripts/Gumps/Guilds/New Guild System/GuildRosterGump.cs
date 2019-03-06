@@ -156,7 +156,7 @@ namespace Server.Guilds
         else
           pm.SendLocalizedMessage(1013028); // That person has a different faction affiliation.
       }
-      else if (targetState != null && targetState.IsLeaving)
+      else if (targetState?.IsLeaving == true)
       {
         // OSI does this quite strangely, so we'll just do it this way
         pm.SendMessage("That person is quitting their faction and so you may not recruit them.");

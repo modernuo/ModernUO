@@ -289,7 +289,7 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      if (m_Description != null && m_Description.Length > 0)
+      if (m_Description?.Length > 0)
         LabelTo(from, m_Description);
 
       base.OnSingleClick(from);

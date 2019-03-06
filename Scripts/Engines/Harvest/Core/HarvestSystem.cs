@@ -47,7 +47,7 @@ namespace Server.Engines.Harvest
     public virtual bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
     {
       HarvestBank bank = def.GetBank(map, loc.X, loc.Y);
-      bool available = bank != null && bank.Current >= def.ConsumedPerHarvest;
+      bool available = bank?.Current >= def.ConsumedPerHarvest;
 
       if (!available)
         def.SendMessageTo(from, timed ? def.DoubleHarvestMessage : def.NoResourcesMessage);
@@ -194,7 +194,7 @@ namespace Server.Engines.Harvest
 
             BonusHarvestResource bonus = def.GetBonusResource();
 
-            if (bonus != null && bonus.Type != null && skillBase >= bonus.ReqSkill)
+            if (bonus?.Type != null && skillBase >= bonus.ReqSkill)
             {
               Item bonusItem = Construct(bonus.Type, from);
 
@@ -488,7 +488,7 @@ namespace Server
   {
     public static bool Check(Item item)
     {
-      return item != null && item.GetType().IsDefined(typeof(FurnitureAttribute), false);
+      return item?.GetType().IsDefined(typeof(FurnitureAttribute), false) == true;
     }
   }
 }

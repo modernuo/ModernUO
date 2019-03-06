@@ -327,10 +327,10 @@ namespace Server.Items
       Spellbook book = e.Spellbook as Spellbook;
       int spellID = e.SpellID;
 
-      if (book == null || !book.HasSpell(spellID))
+      if (book?.HasSpell(spellID) != true)
         book = Find(from, spellID);
 
-      if (book != null && book.HasSpell(spellID))
+      if (book?.HasSpell(spellID) == true)
       {
         SpecialMove move = SpellRegistry.GetSpecialMove(spellID);
 

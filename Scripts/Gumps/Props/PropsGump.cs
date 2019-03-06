@@ -296,10 +296,9 @@ namespace Server.Gumps
       {
         case 0: // Closed
         {
-          if (m_Stack != null && m_Stack.Count > 0)
+          if (m_Stack?.Count > 0)
           {
             StackEntry entry = m_Stack.Pop();
-
             from.SendGump(new PropertiesGump(from, entry.m_Object, m_Stack, null));
           }
 
@@ -504,7 +503,7 @@ namespace Server.Gumps
       }
 
       if (o is byte || o is sbyte || o is short || o is ushort || o is int || o is uint || o is long || o is ulong)
-        return string.Format("{0} (0x{0:X})", o);
+        return $"{o} (0x{o:X})";
       if (o is Mobile mobile) return $"(M) 0x{mobile.Serial.Value:X} \"{mobile.Name}\"";
       if (o is Item item) return $"(I) 0x{item.Serial.Value:X}";
       if (o is Type type) return type.Name;
@@ -637,7 +636,7 @@ namespace Server.Gumps
       }
 
       if (o is byte || o is sbyte || o is short || o is ushort || o is int || o is uint || o is long || o is ulong)
-        return string.Format("{0} (0x{0:X})", o);
+        return $"{o} (0x{o:X})";
       if (o is Mobile mobile) return $"(M) 0x{mobile.Serial.Value:X} \"{mobile.Name}\"";
       if (o is Item item) return $"(I) 0x{item.Serial.Value:X}";
       if (o is Type type) return type.Name;

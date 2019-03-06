@@ -433,7 +433,7 @@ namespace Server.Misc
         {
           double perc = option.Votes / (double)totalVotes;
 
-          text = string.Format("[{1}: {2}%] {0}", text, option.Votes, (int)(perc * 100));
+          text = $"[{option.Votes}: {(int)(perc * 100)}%] {text}";
         }
 
         int optHeight = option.ComputeHeight();
@@ -568,7 +568,7 @@ namespace Server.Misc
       }
       else if (m.Groups[2].Success)
       {
-        return string.Format("<a href=\"{0}\">{0}</a>", m.Groups[2].Value);
+        return $"<a href=\"{m.Groups[2].Value}\">{m.Groups[2].Value}</a>";
       }
 
       return m.Value;

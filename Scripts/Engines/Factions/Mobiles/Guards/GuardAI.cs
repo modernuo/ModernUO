@@ -508,10 +508,7 @@ namespace Server.Factions
 
         if (m_Guard.Town != null && m_Guard.Orders.Movement == MovementType.Follow)
         {
-          toFollow = m_Guard.Orders.Follow;
-
-          if (toFollow == null)
-            toFollow = m_Guard.Town.Sheriff;
+          toFollow = m_Guard.Orders.Follow ?? m_Guard.Town.Sheriff;
         }
 
         if (toFollow != null && toFollow.Map == m_Guard.Map &&

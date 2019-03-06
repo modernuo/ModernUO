@@ -203,9 +203,7 @@ namespace Server.Gumps
 
     public static bool HasSpell(Mobile from, int spellID)
     {
-      Spellbook book = Spellbook.Find(from, spellID);
-
-      return book != null && book.HasSpell(spellID);
+      return Spellbook.Find(from, spellID)?.HasSpell(spellID) == true;
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

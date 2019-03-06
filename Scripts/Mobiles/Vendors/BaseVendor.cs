@@ -218,9 +218,7 @@ namespace Server.Mobiles
 
       buyer.PlaySound(0x32);
 
-      cont = buyer.Backpack;
-      if (cont == null)
-        cont = buyer.BankBox;
+      cont = buyer.Backpack ?? buyer.BankBox;
 
       foreach (BuyItemResponse buy in validBuy)
       {

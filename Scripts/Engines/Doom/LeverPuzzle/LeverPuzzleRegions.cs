@@ -86,15 +86,7 @@ namespace Server.Engines.Doom
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Occupant
-    {
-      get
-      {
-        if (m_Occupant != null && m_Occupant.Alive)
-          return m_Occupant;
-        return null;
-      }
-    }
+    public Mobile Occupant => m_Occupant?.Alive == true ? m_Occupant : null;
 
     public override void OnEnter(Mobile m)
     {

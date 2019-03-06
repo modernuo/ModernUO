@@ -107,7 +107,7 @@ namespace Server.Engines.MyRunUO
     [Description("Initially creates the database schema.")]
     public static void InitMyRunUO_OnCommand(CommandEventArgs e)
     {
-      if (m_Command != null && m_Command.HasCompleted)
+      if (m_Command?.HasCompleted == true)
       {
         TableCreation();
         e.Mobile.SendMessage("MyRunUO table creation process has been started.");
@@ -154,7 +154,7 @@ namespace Server.Engines.MyRunUO
     [Description("Starts the process of updating the MyRunUO character and guild database.")]
     public static void UpdateMyRunUO_OnCommand(CommandEventArgs e)
     {
-      if (m_Command != null && m_Command.HasCompleted)
+      if (m_Command?.HasCompleted == true)
         m_Command = null;
 
       if (m_Timer == null && m_Command == null)
@@ -170,7 +170,7 @@ namespace Server.Engines.MyRunUO
 
     public static void Begin()
     {
-      if (m_Command != null && m_Command.HasCompleted)
+      if (m_Command?.HasCompleted == true)
         m_Command = null;
 
       if (m_Timer != null || m_Command != null)
@@ -252,7 +252,7 @@ namespace Server.Engines.MyRunUO
           {
             Mobile mob = acct[j];
 
-            if (mob != null && mob.AccessLevel < Config.HiddenAccessLevel)
+            if (mob?.AccessLevel < Config.HiddenAccessLevel)
               m_List.Add(mob);
           }
 

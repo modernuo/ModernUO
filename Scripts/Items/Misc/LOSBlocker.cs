@@ -26,7 +26,7 @@ namespace Server.Items
     {
       Mobile mob = state.Mobile;
 
-      if (mob != null && mob.AccessLevel >= AccessLevel.GameMaster) return new GMItemPacket(this);
+      if (mob?.AccessLevel >= AccessLevel.GameMaster) return new GMItemPacket(this);
 
       return base.GetWorldPacketFor(state);
     }

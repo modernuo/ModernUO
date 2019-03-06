@@ -26,14 +26,8 @@ namespace Server.Mobiles
     {
       Item = item;
       Price = price;
-
-      if (description != null)
-        m_Description = description;
-      else
-        m_Description = "";
-
+      m_Description = description ?? "";
       Created = created;
-
       Valid = true;
     }
 
@@ -57,10 +51,7 @@ namespace Server.Mobiles
       get => m_Description;
       set
       {
-        if (value != null)
-          m_Description = value;
-        else
-          m_Description = "";
+        m_Description = value ?? "";
 
         if (Valid)
           Item.InvalidateProperties();
@@ -317,10 +308,7 @@ namespace Server.Mobiles
       get => m_ShopName;
       set
       {
-        if (value == null)
-          m_ShopName = "";
-        else
-          m_ShopName = value;
+        m_ShopName = value ?? "";
 
         InvalidateProperties();
       }

@@ -28,11 +28,9 @@ namespace Server
 
       try
       {
-        PathAlgorithm alg = OverrideAlgorithm;
+        PathAlgorithm alg = OverrideAlgorithm ?? FastAStarAlgorithm.Instance;
 
-        if (alg == null) alg = FastAStarAlgorithm.Instance;
-
-        if (alg != null && alg.CheckCondition(m, map, start, goal))
+        if (alg?.CheckCondition(m, map, start, goal) == true)
           Directions = alg.Find(m, map, start, goal);
       }
       catch (Exception e)
@@ -49,7 +47,7 @@ namespace Server
 
     public Direction[] Directions{ get; }
 
-    public bool Success => Directions != null && Directions.Length > 0;
+    public bool Success => Directions?.Length > 0;
 
     public static PathAlgorithm OverrideAlgorithm{ get; set; }
 

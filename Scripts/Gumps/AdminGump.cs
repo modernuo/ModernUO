@@ -1342,7 +1342,7 @@ namespace Server.Gumps
         for (int i = 0; i < theirAddresses.Length; ++i)
         {
           if (!table.ContainsKey(theirAddresses[i]))
-            table[theirAddresses[i]] = new List<Account>{ acct };            
+            table[theirAddresses[i]] = new List<Account>{ acct };
         }
       }
 
@@ -1352,7 +1352,7 @@ namespace Server.Gumps
       {
         KeyValuePair<IPAddress, List<Account>> kvp = tableEntries[i];
         List<Account> list = kvp.Value;
-        
+
         if (kvp.Value.Count == 1)
           list.RemoveAt(i--);
         else
@@ -1372,7 +1372,7 @@ namespace Server.Gumps
       foreach (IAccount account in Accounts.GetAccounts())
       {
         Account acct = (Account)account;
-        
+
         IPAddress[] theirAddresses = acct.LoginIPs;
         bool contains = false;
 
@@ -2004,7 +2004,7 @@ namespace Server.Gumps
                     {
                       Mobile m = a[j];
 
-                      if (m != null && m.AccessLevel >= level)
+                      if (m?.AccessLevel >= level)
                         hasAccess = true;
                     }
 
@@ -2085,8 +2085,8 @@ namespace Server.Gumps
                     Mobile m = ns.Mobile;
                     IAccount a = ns.Account;
 
-                    isMatch = m != null && m.Name.ToLower().IndexOf(match) >= 0
-                              || a != null && a.Username.ToLower().IndexOf(match) >= 0;
+                    isMatch = m?.Name.ToLower().IndexOf(match) >= 0
+                              || a?.Username.ToLower().IndexOf(match) >= 0;
                   }
                   else
                   {
@@ -2103,10 +2103,7 @@ namespace Server.Gumps
               if (results.Count == 1)
               {
                 NetState ns = results[0];
-                object state = ns.Mobile;
-                
-                if (state == null)
-                  state = ns.Account;
+                object state = ns.Mobile ?? (object)ns.Account;
 
                 if (state is Mobile)
                   from.SendGump(new AdminGump(from, AdminGumpPage.ClientInfo, 0, null, "One match found.",
@@ -2327,7 +2324,7 @@ namespace Server.Gumps
               List<Account> list = GetSharedAccounts(a.LoginIPs);
 
               if (list.Count > 1 || list.Count == 1 && !list.Contains(a))
-                from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0, 
+                from.SendGump(new AdminGump(from, AdminGumpPage.Accounts, 0,
                   Utility.CastListContravariant<Account, object>(list), null, new List<object>()));
               else if (a.LoginIPs.Length > 0)
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Access_ClientIPs, 0, null,
@@ -3183,7 +3180,7 @@ namespace Server.Gumps
           return 1;
         if (aLevel > bLevel)
           return -1;
-        
+
         return aLevel < bLevel ? 1 : Insensitive.Compare(x.Username, y.Username);
       }
     }

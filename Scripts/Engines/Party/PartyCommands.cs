@@ -47,7 +47,7 @@ namespace Server.Engines.PartySystem
 
       Party p = Party.Get(from);
 
-      if (p != null && p.Contains(target))
+      if (p?.Contains(target) == true)
         p.SendPrivateMessage(from, target, text);
       else
         from.SendLocalizedMessage(3000211); // You are not in a party.

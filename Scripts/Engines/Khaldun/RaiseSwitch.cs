@@ -60,10 +60,7 @@ namespace Server.Items
       {
         ItemID = 0x1095;
 
-        if (RaisableItem != null && RaisableItem.CloseDelay >= TimeSpan.Zero)
-          StartResetTimer(RaisableItem.CloseDelay);
-        else
-          StartResetTimer(TimeSpan.FromMinutes(2.0));
+        StartResetTimer(RaisableItem?.CloseDelay >= TimeSpan.Zero ? RaisableItem.CloseDelay : TimeSpan.FromMinutes(2.0));
       }
 
       Effects.PlaySound(Location, Map, 0x3E8);

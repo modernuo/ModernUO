@@ -121,12 +121,7 @@ namespace Server.Items
         list.Add(1070721, "#{0}\t{1:0.0}", AosSkillBonuses.GetLabel(Skill),
           SkillValue); // Skill stored: ~1_skillname~ ~2_skillamount~
 
-      string name = LastUserName;
-
-      if (name == null)
-        name = $"#{1074235}"; // Unknown
-
-      list.Add(1041602, "{0}", name); // Owner: ~1_val~
+      list.Add(1041602, "{0}", LastUserName ?? $"#{1074235}"); // Owner: ~1_val~
     }
 
     private static bool CheckCombat(Mobile m, TimeSpan time)

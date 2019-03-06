@@ -111,16 +111,7 @@ namespace Server.Engines.Harvest
       #endregion
     }
 
-    public static Fishing System
-    {
-      get
-      {
-        if (m_System == null)
-          m_System = new Fishing();
-
-        return m_System;
-      }
-    }
+    public static Fishing System => m_System ?? (m_System = new Fishing());
 
     public HarvestDefinition Definition{ get; }
 

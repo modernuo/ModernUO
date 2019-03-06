@@ -933,7 +933,7 @@ namespace Server.Engines.ConPVP
         flag.DropTo(mob, killer);
       });
 
-      if (killer != null && killer.Player)
+      if (killer?.Player == true)
       {
         CTFTeamInfo teamInfo = GetTeamInfo(killer);
         CTFTeamInfo victInfo = GetTeamInfo(mob);

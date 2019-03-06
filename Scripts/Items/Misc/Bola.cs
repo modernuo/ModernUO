@@ -98,13 +98,13 @@ namespace Server.Items
 
         if (pack != null)
         {
-          if (one != null && one.Movable)
+          if (one?.Movable == true)
           {
             pack.DropItem(one);
             one = null;
           }
 
-          if (two != null && two.Movable)
+          if (two?.Movable == true)
           {
             pack.DropItem(two);
             two = null;
@@ -113,13 +113,13 @@ namespace Server.Items
       }
       else if (Core.AOS)
       {
-        if (one != null && one.Movable)
+        if (one?.Movable == true)
         {
           from.AddToBackpack(one);
           one = null;
         }
 
-        if (two != null && two.Movable)
+        if (two?.Movable == true)
         {
           from.AddToBackpack(two);
           two = null;

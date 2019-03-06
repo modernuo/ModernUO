@@ -310,9 +310,9 @@ namespace Server.Commands
       if (value == null)
         toString = "null";
       else if (IsNumeric(type))
-        toString = string.Format("{0} (0x{0:X})", value);
+        toString = $"{value} (0x{value:X})";
       else if (IsChar(type))
-        toString = string.Format("'{0}' ({1} [0x{1:X}])", value, (int)value);
+        toString = $"'{value}' ({(int)value} [0x{(int)value:X}])";
       else if (IsString(type))
         toString = (string)value == "null" ? @"@""null""" : $"\"{value}\"";
       else if (IsText(type))

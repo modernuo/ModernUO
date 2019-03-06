@@ -499,7 +499,7 @@ namespace Server.Items
 
       CraftContext context = craftSystem.GetContext(from);
 
-      if (context != null && context.DoNotColor)
+      if (context?.DoNotColor == true)
         Hue = 0;
 
       if (Quality == ArmorQuality.Exceptional)
@@ -563,7 +563,7 @@ namespace Server.Items
 
       CraftItem item = system.CraftItems.SearchFor(GetType());
 
-      if (item != null && item.Resources.Count == 1 && item.Resources.GetAt(0).Amount >= 2)
+      if (item?.Resources.Count == 1 && item.Resources.GetAt(0).Amount >= 2)
         try
         {
           Item res = (Item)Activator.CreateInstance(CraftResources.GetInfo(m_Resource).ResourceTypes[0]);
@@ -1461,12 +1461,7 @@ namespace Server.Items
 
     private string GetNameString()
     {
-      string name = Name;
-
-      if (name == null)
-        name = $"#{LabelNumber}";
-
-      return name;
+      return Name ?? $"#{LabelNumber}";
     }
 
     public override void AddNameProperty(ObjectPropertyList list)

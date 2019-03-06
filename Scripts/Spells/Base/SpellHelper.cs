@@ -445,7 +445,7 @@ namespace Server.Spells
 
       Party p = Party.Get(from);
 
-      if (p != null && p.Contains(to))
+      if (p?.Contains(to) == true)
         return false;
 
       if (bcTarg != null && (bcTarg.Controlled || bcTarg.Summoned))

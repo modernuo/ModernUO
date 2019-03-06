@@ -229,11 +229,9 @@ namespace Server.Commands
           StringBuilder nameBuilder = new StringBuilder(rootType);
           StringBuilder fnamBuilder = new StringBuilder("docs/types/" + SanitizeType(rootType));
           StringBuilder linkBuilder;
-          if (DontLink(type)) //if ( DontLink( rootType ) )
-            linkBuilder = new StringBuilder("<font color=\"blue\">" + rootType + "</font>");
-          else
-            linkBuilder =
-              new StringBuilder("<a href=\"" + "@directory@" + rootType + "-T-.html\">" + rootType + "</a>");
+          linkBuilder = DontLink(type) ?
+            new StringBuilder("<font color=\"blue\">" + rootType + "</font>") :
+            new StringBuilder("<a href=\"" + "@directory@" + rootType + "-T-.html\">" + rootType + "</a>");
 
           nameBuilder.Append("&lt;");
           fnamBuilder.Append("-");
@@ -272,10 +270,7 @@ namespace Server.Commands
         }
       }
 
-      if (name == null)
-        typeName = type.Name;
-      else
-        typeName = name;
+      typeName = name ?? type.Name;
 
       if (fnam == null) fileName = "docs/types/" + SanitizeType(type.Name) + ".html";
       else fileName = fnam + ".html";
@@ -300,7 +295,8 @@ namespace Server.Commands
     {
       bool anonymousType = name.Contains("<");
       StringBuilder sb = new StringBuilder(name);
-      for (int i = 0; i < ReplaceChars.Length; ++i) sb.Replace(ReplaceChars[i], '-');
+      for (int i = 0; i < ReplaceChars.Length; ++i)
+        sb.Replace(ReplaceChars[i], '-');
 
       if (anonymousType) return "(Anonymous-Type)" + sb;
       return sb.ToString();

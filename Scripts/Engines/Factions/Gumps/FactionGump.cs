@@ -37,7 +37,7 @@ namespace Server.Factions
 
     public void AddHtmlText(int x, int y, int width, int height, TextDefinition text, bool back, bool scroll)
     {
-      if (text != null && text.Number > 0)
+      if (text?.Number > 0)
         AddHtmlLocalized(x, y, width, height, text.Number, back, scroll);
       else if (text?.String != null)
         AddHtml(x, y, width, height, text.String, back, scroll);

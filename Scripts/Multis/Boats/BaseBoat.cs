@@ -751,7 +751,7 @@ namespace Server.Multis
       if (CheckDecay())
         return;
 
-      if (newName != null && newName.Length > 40)
+      if (newName?.Length > 40)
         newName = newName.Substring(0, 40);
 
       if (m_ShipName == newName)

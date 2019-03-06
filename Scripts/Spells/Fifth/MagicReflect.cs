@@ -78,7 +78,7 @@ namespace Server.Spells.Fifth
             for (int i = 0; i < mods.Length; ++i)
               targ.AddResistanceMod(mods[i]);
 
-            string buffFormat = string.Format("{0}\t+{1}\t+{1}\t+{1}\t+{1}", physiMod, otherMod);
+            string buffFormat = $"{physiMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}";
 
             BuffInfo.AddBuff(targ, new BuffInfo(BuffIcon.MagicReflection, 1075817, buffFormat, true));
           }

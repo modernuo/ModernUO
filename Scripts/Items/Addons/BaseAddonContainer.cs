@@ -79,7 +79,7 @@ namespace Server.Items
     {
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house != null && house.IsOwner(from))
+      if (house?.IsOwner(from) == true)
       {
         if (!IsSecure)
         {
@@ -255,16 +255,17 @@ namespace Server.Items
         {
           BaseDoor door = doors[i];
 
-          if (door != null && door.Open)
+          if (door?.Open == true)
             return AddonFitResult.DoorsNotClosed;
 
           Point3D doorLoc = door.GetWorldLocation();
           int doorHeight = door.ItemData.CalcHeight;
+          int addonHeight;
 
           foreach (AddonContainerComponent c in Components)
           {
             Point3D addonLoc = new Point3D(p.X + c.Offset.X, p.Y + c.Offset.Y, p.Z + c.Offset.Z);
-            int addonHeight = c.ItemData.CalcHeight;
+            addonHeight = c.ItemData.CalcHeight;
 
             if (Utility.InRange(doorLoc, addonLoc, 1) &&
                 (addonLoc.Z == doorLoc.Z ||
@@ -273,10 +274,10 @@ namespace Server.Items
           }
 
           Point3D addonLo = new Point3D(p.X, p.Y, p.Z);
-          int addonHeigh = ItemData.CalcHeight;
+          addonHeight = ItemData.CalcHeight;
 
           if (Utility.InRange(doorLoc, addonLo, 1) &&
-              (addonLo.Z == doorLoc.Z || addonLo.Z + addonHeigh > doorLoc.Z && doorLoc.Z + doorHeight > addonLo.Z))
+              (addonLo.Z == doorLoc.Z || addonLo.Z + addonHeight > doorLoc.Z && doorLoc.Z + doorHeight > addonLo.Z))
             return AddonFitResult.DoorTooClose;
         }
       }
