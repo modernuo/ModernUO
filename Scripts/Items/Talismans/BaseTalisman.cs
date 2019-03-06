@@ -240,7 +240,7 @@ namespace Server.Items
         {
           int count = 1;
 
-          if (m_Summoner != null && m_Summoner.Amount > 1)
+          if (m_Summoner?.Amount > 1)
           {
             if (item.Stackable)
               item.Amount = m_Summoner.Amount;
@@ -303,9 +303,9 @@ namespace Server.Items
     {
       if (ForceShowName)
         base.AddNameProperty(list);
-      else if (m_Summoner != null && !m_Summoner.IsEmpty)
+      else if (m_Summoner?.IsEmpty == false)
         list.Add(1072400,
-          m_Summoner.Name != null ? m_Summoner.Name.ToString() : "Unknown"); // Talisman of ~1_name~ Summoning
+          m_Summoner?.Name.ToString() ?? "Unknown"); // Talisman of ~1_name~ Summoning
       else if (m_Removal != TalismanRemoval.None)
         list.Add(1072389, "#" + (1072000 + (int)m_Removal)); // Talisman of ~1_name~
       else

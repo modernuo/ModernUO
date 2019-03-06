@@ -55,14 +55,11 @@ namespace Server.Items
     public bool IsEmpty => Type == null;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsItem => Type != null && Type.Namespace.Equals("Server.Items");
+    public bool IsItem => Type?.Namespace.Equals("Server.Items") == true;
 
     public override string ToString()
     {
-      if (Type != null)
-        return Type.Name;
-
-      return "None";
+      return Type?.Name ?? "None";
     }
 
     private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
@@ -100,10 +97,7 @@ namespace Server.Items
 
     public int DamageBonus(Mobile to)
     {
-      if (to != null && to.GetType() == Type) // Verified: only works on the exact type
-        return Amount;
-
-      return 0;
+      return to?.GetType() == Type ? Amount : 0;
     }
 
     [Flags]

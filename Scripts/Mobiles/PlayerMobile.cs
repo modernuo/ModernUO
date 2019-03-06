@@ -3972,7 +3972,7 @@ namespace Server.Mobiles
 
       TransformContext context = TransformationSpellHelper.GetContext(this);
 
-      if (context != null && context.Type == typeof(ReaperFormSpell))
+      if (context?.Type == typeof(ReaperFormSpell))
         return WalkFoot;
 
       bool running = (dir & Direction.Running) != 0;

@@ -1987,7 +1987,7 @@ namespace Server.Mobiles
           Skill skill = ourSkills[i];
           Skill theirSkill = theirSkills[i];
 
-          if (skill != null && theirSkill != null && skill.Base >= 60.0 && CheckTeach(skill.SkillName, from))
+          if (skill?.Base >= 60.0 && CheckTeach(skill.SkillName, from))
           {
             int toTeach = skill.BaseFixedPoint / 3;
 
@@ -2022,16 +2022,9 @@ namespace Server.Mobiles
 
     public override bool IsHarmfulCriminal(Mobile target)
     {
-      if (Controlled && target == m_ControlMaster || Summoned && target == m_SummonMaster)
-        return false;
-
-      if (target is BaseCreature creature && creature.InitialInnocent && !creature.Controlled)
-        return false;
-
-      if (target is PlayerMobile mobile && mobile.PermaFlags.Count > 0)
-        return false;
-
-      return base.IsHarmfulCriminal(target);
+      return (!Controlled || target != m_ControlMaster) && (!Summoned || target != m_SummonMaster) &&
+             (!(target is BaseCreature creature) || !creature.InitialInnocent || creature.Controlled) &&
+             (!(target is PlayerMobile mobile) || mobile.PermaFlags.Count <= 0) && base.IsHarmfulCriminal(target);
     }
 
     public override void CriminalAction(bool message)

@@ -313,12 +313,11 @@ namespace Server.Spells
         SlayerEntry atkSlayer = SlayerGroup.GetEntryByName(atkBook.Slayer);
         SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName(atkBook.Slayer2);
 
-        if (atkSlayer != null && atkSlayer.Slays(defender) || atkSlayer2 != null && atkSlayer2.Slays(defender))
+        if (atkSlayer?.Slays(defender) == true || atkSlayer2?.Slays(defender) == true)
         {
           defender.FixedEffect(0x37B9, 10, 5); //TODO: Confirm this displays on OSIs
           scalar = 2.0;
         }
-
 
         TransformContext context = TransformationSpellHelper.GetContext(defender);
 

@@ -247,14 +247,10 @@ namespace Server.Items
 
     public virtual void OnBeforeSwing(Mobile attacker, Mobile defender)
     {
-      WeaponAbility a = WeaponAbility.GetCurrentAbility(attacker);
-
-      if (a != null && !a.OnBeforeSwing(attacker, defender))
+      if (WeaponAbility.GetCurrentAbility(attacker)?.OnBeforeSwing(attacker, defender) == false)
         WeaponAbility.ClearCurrentAbility(attacker);
 
-      SpecialMove move = SpecialMove.GetCurrentMove(attacker);
-
-      if (move != null && !move.OnBeforeSwing(attacker, defender))
+      if (SpecialMove.GetCurrentMove(attacker)?.OnBeforeSwing(attacker, defender) == false)
         SpecialMove.ClearCurrentMove(attacker);
     }
 
@@ -1085,7 +1081,7 @@ namespace Server.Items
       {
         IPooledEnumerable<Clone> eable = defender.GetMobilesInRange<Clone>(4);
         foreach (Clone m in eable)
-          if (m != null && m.Summoned && m.SummonMaster == defender)
+          if (m?.Summoned == true && m.SummonMaster == defender)
           {
             attacker.SendLocalizedMessage(
               1063141); // Your attack has been diverted to a nearby mirror image of your target!
@@ -1204,7 +1200,7 @@ namespace Server.Items
       if (!Core.AOS && damage < 1)
         damage = 1;
       else if (Core.AOS && damage == 0) // parried
-        if (a != null && a.Validate(attacker) /*&& a.CheckMana( attacker, true )*/
+        if (a?.Validate(attacker) == true /*&& a.CheckMana( attacker, true )*/
         ) // Parried special moves have no mana cost
         {
           a = null;
@@ -1269,19 +1265,19 @@ namespace Server.Items
 
       int damageGiven = damage;
 
-      if (a != null && !a.OnBeforeDamage(attacker, defender))
+      if (a?.OnBeforeDamage(attacker, defender) == false)
       {
         WeaponAbility.ClearCurrentAbility(attacker);
         a = null;
       }
 
-      if (move != null && !move.OnBeforeDamage(attacker, defender))
+      if (move?.OnBeforeDamage(attacker, defender) == false)
       {
         SpecialMove.ClearCurrentMove(attacker);
         move = null;
       }
 
-      bool ignoreArmor = a is ArmorIgnore || move != null && move.IgnoreArmor(attacker);
+      bool ignoreArmor = a is ArmorIgnore || move?.IgnoreArmor(attacker) == true;
 
       damageGiven = AOS.Damage(defender, attacker, damage, ignoreArmor, phys, fire, cold, pois, nrgy, chaos, direct,
         false, this is BaseRanged);
@@ -1312,10 +1308,10 @@ namespace Server.Items
 
         context = TransformationSpellHelper.GetContext(attacker);
 
-        if (context != null && context.Type == typeof(VampiricEmbraceSpell))
+        if (context?.Type == typeof(VampiricEmbraceSpell))
           lifeLeech += 20; // Vampiric embrace gives an additional 20% life leech
 
-        if (context != null && context.Type == typeof(WraithFormSpell))
+        if (context?.Type == typeof(WraithFormSpell))
         {
           wraithLeech =
             5 + (int)(15 * attacker.Skills.SpiritSpeak.Value /
@@ -1506,7 +1502,7 @@ namespace Server.Items
       if (atkWeapon is ButchersWarCleaver && TalismanSlayer.Slays(TalismanSlayerName.Bovine, defender))
         return CheckSlayerResult.Slayer;
 
-      if (atkSlayer != null && atkSlayer.Slays(defender) || atkSlayer2 != null && atkSlayer2.Slays(defender))
+      if (atkSlayer?.Slays(defender) == true || atkSlayer2?.Slays(defender) == true)
         return CheckSlayerResult.Slayer;
 
       if (attacker.Talisman is BaseTalisman talisman && TalismanSlayer.Slays(talisman.Slayer, defender))

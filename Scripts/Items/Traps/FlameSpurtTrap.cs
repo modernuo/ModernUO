@@ -35,7 +35,7 @@ namespace Server.Items
     {
       Map map = Map;
 
-      if (map != null && map.GetSector(GetWorldLocation()).Active)
+      if (map?.GetSector(GetWorldLocation()).Active == true)
         StartTimer();
       else
         StopTimer();

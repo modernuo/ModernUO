@@ -23,34 +23,17 @@ namespace Server
 
     public bool IsEmpty => Number <= 0 && String == null;
 
-    public override string ToString()
-    {
-      if (Number > 0)
-        return string.Concat("#", Number.ToString());
-      if (String != null)
-        return String;
-
-      return "";
-    }
+    public override string ToString() => Number > 0 ? $"#{Number}" : String ?? "";
 
     public string Format(bool propsGump)
     {
-      if (Number > 0)
-        return $"{Number} (0x{Number:X})";
-      if (String != null)
-        return $"\"{String}\"";
-
-      return propsGump ? "-empty-" : "empty";
+      return Number > 0 ? $"{Number} (0x{Number:X})" :
+        String != null ? $"\"{String}\"" : propsGump ? "-empty-" : "empty";
     }
 
     public string GetValue()
     {
-      if (Number > 0)
-        return Number.ToString();
-      if (String != null)
-        return String;
-
-      return "";
+      return Number > 0 ? Number.ToString() : String ?? "";
     }
 
     public static void Serialize(GenericWriter writer, TextDefinition def)
@@ -112,10 +95,7 @@ namespace Server
 
     public static implicit operator int(TextDefinition m)
     {
-      if (m == null)
-        return 0;
-
-      return m.Number;
+      return m?.Number ?? 0;
     }
 
     public static implicit operator string(TextDefinition m)
@@ -193,14 +173,11 @@ namespace Server
       int i;
       bool isInteger;
 
-      if (value.StartsWith("0x"))
-        isInteger = int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i);
-      else
-        isInteger = int.TryParse(value, out i);
+      isInteger = value.StartsWith("0x") ?
+        int.TryParse(value.Substring(2), NumberStyles.HexNumber, null, out i) :
+        int.TryParse(value, out i);
 
-      if (isInteger)
-        return new TextDefinition(i);
-      return new TextDefinition(value);
+      return isInteger ? new TextDefinition(i) : new TextDefinition(value);
     }
 
     public static bool IsNullOrEmpty(TextDefinition def)

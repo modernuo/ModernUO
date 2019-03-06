@@ -340,7 +340,7 @@ namespace Server.Mobiles
               Skill skill = ourSkills[i];
               Skill theirSkill = theirSkills[i];
 
-              if (skill != null && theirSkill != null && skill.Base >= 60.0 &&
+              if (skill != null && skill?.Base >= 60.0 &&
                   m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
               {
                 double toTeach = skill.Base / 3.0;

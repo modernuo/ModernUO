@@ -227,7 +227,7 @@ namespace Server.Items
         patientNumber = -1;
         playSound = false;
       }
-      else if (!Patient.Alive || petPatient != null && petPatient.IsDeadPet)
+      else if (!Patient.Alive || petPatient?.IsDeadPet == true)
       {
         double healing = Healer.Skills[primarySkill].Value;
         double anatomy = Healer.Skills[secondarySkill].Value;
@@ -256,7 +256,7 @@ namespace Server.Items
             Patient.PlaySound(0x214);
             Patient.FixedEffect(0x376A, 10, 16);
 
-            if (petPatient != null && petPatient.IsDeadPet)
+            if (petPatient?.IsDeadPet == true)
             {
               Mobile master = petPatient.ControlMaster;
 
@@ -308,7 +308,7 @@ namespace Server.Items
         }
         else
         {
-          if (petPatient != null && petPatient.IsDeadPet)
+          if (petPatient?.IsDeadPet == true)
             healerNumber = 503256; // You fail to resurrect the creature.
           else
             healerNumber = 500966; // You are unable to resurrect your patient.

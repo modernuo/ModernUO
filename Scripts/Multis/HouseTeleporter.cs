@@ -32,10 +32,8 @@ namespace Server.Items
     {
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house != null && (house.Public ? house.IsBanned(m) : !house.HasAccess(m)))
-        return false;
-
-      return house != null && house.HasSecureAccess(m, Level);
+      return (house == null || house.Public && !house.IsBanned(m) || house.HasAccess(m)) &&
+             house?.HasSecureAccess(m, Level) == true;
     }
 
     public override bool OnMoveOver(Mobile m)
@@ -145,29 +143,29 @@ namespace Server.Items
 
         Mobile m = m_Mobile;
 
-        if (m.Location == m_Teleporter.Location && m.Map == m_Teleporter.Map)
-        {
-          Point3D p = target.GetWorldTop();
-          Map map = target.Map;
+        if (m.Location != m_Teleporter.Location || m.Map != m_Teleporter.Map)
+          return;
 
-          BaseCreature.TeleportPets(m, p, map);
+        Point3D p = target.GetWorldTop();
+        Map map = target.Map;
 
-          m.MoveToWorld(p, map);
+        BaseCreature.TeleportPets(m, p, map);
 
-          if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
-          {
-            Effects.PlaySound(target.Location, target.Map, 0x1FE);
+        m.MoveToWorld(p, map);
 
-            Effects.SendLocationParticles(
-              EffectItem.Create(m_Teleporter.Location, m_Teleporter.Map, EffectItem.DefaultDuration),
-              0x3728, 10, 10, 2023, 0);
-            Effects.SendLocationParticles(
-              EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
-              5023, 0);
+        if (m.Hidden && m.AccessLevel != AccessLevel.Player)
+          return;
 
-            new EffectTimer(target.Location, target.Map, 2023, -1, TimeSpan.FromSeconds(0.4)).Start();
-          }
-        }
+        Effects.PlaySound(target.Location, target.Map, 0x1FE);
+
+        Effects.SendLocationParticles(
+          EffectItem.Create(m_Teleporter.Location, m_Teleporter.Map, EffectItem.DefaultDuration),
+          0x3728, 10, 10, 2023, 0);
+        Effects.SendLocationParticles(
+          EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+          5023, 0);
+
+        new EffectTimer(target.Location, target.Map, 2023, -1, TimeSpan.FromSeconds(0.4)).Start();
       }
     }
   }

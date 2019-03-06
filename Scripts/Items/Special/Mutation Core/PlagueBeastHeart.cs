@@ -18,7 +18,7 @@ namespace Server.Items
 
     public override void OnAfterDelete()
     {
-      if (m_Timer != null && m_Timer.Running)
+      if (m_Timer?.Running == true)
         m_Timer.Stop();
     }
 

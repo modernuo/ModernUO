@@ -293,7 +293,7 @@ namespace Server.Items
 
       val /= 10;
 
-      if (bc != null && bc.IsParagon)
+      if (bc?.IsParagon == true)
         val += 40.0;
 
       if (Core.SE && val > 160.0)

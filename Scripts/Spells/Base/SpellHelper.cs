@@ -1333,9 +1333,7 @@ namespace Server.Spells
 
     public static bool UnderTransformation(Mobile m, Type type)
     {
-      TransformContext context = GetContext(m);
-
-      return context != null && context.Type == type;
+      return GetContext(m)?.Type == type;
     }
 
     #endregion

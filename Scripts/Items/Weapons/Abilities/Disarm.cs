@@ -23,7 +23,7 @@ namespace Server.Items
 
       Skill skill = from.Skills.ArmsLore;
 
-      if ( skill != null && skill.Base >= 80.0 )
+      if ( skill?.Base >= 80.0 )
         return true;
 
       from.SendLocalizedMessage( 1061812 ); // You lack the required skill in armslore to perform that attack!

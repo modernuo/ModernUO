@@ -1161,7 +1161,7 @@ namespace Server.Misc
       if (!Core.AOS)
         item.LootType = LootType.Newbied;
 
-      if (m_Mobile != null && m_Mobile.EquipItem(item))
+      if (m_Mobile?.EquipItem(item) == true)
         return;
 
       Container pack = m_Mobile.Backpack;
