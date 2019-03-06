@@ -45,13 +45,13 @@ namespace Server.Spells.Seventh
 
         if (map != null)
         {
-          IEnumerable<BaseCreature> eable = map.GetMobilesInRange<BaseCreature>(new Point3D(p), 8)
-            .Where(m => m.IsDispellable && Caster.CanBeHarmful(m, false));
-
-          // eable.Free(); Needed?
+          IPooledEnumerable<BaseCreature> eable = map.GetMobilesInRange<BaseCreature>(new Point3D(p), 8);
 
           foreach (BaseCreature bc in eable)
           {
+            if (!(bc.IsDispellable && Caster.CanBeHarmful(bc, false)))
+              continue;
+
             double dispelChance =
               (50.0 + 100 * (Caster.Skills.Magery.Value - bc.DispelDifficulty) / (bc.DispelFocus * 2)) / 100;
 
@@ -70,6 +70,8 @@ namespace Server.Spells.Seventh
               bc.FixedEffect(0x3779, 10, 20);
             }
           }
+
+          eable.Free();
         }
       }
 

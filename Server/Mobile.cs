@@ -4067,9 +4067,8 @@ namespace Server
           {
             if (ns.StygianAbyss)
             {
-              Packet p;
               int noto = Notoriety.Compute(m, this);
-              p = cache[0][noto];
+              Packet p = cache[0][noto];
 
               if (p == null)
                 cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
@@ -4078,9 +4077,8 @@ namespace Server
             }
             else
             {
-              Packet p;
               int noto = Notoriety.Compute(m, this);
-              p = cache[1][noto];
+              Packet p = cache[1][noto];
 
               if (p == null)
                 cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
@@ -4091,8 +4089,8 @@ namespace Server
         }
 
         for (int i = 0; i < cache.Length; ++i)
-        for (int j = 0; j < cache[i].Length; ++j)
-          Packet.Release(ref cache[i][j]);
+          for (int j = 0; j < cache[i].Length; ++j)
+            Packet.Release(ref cache[i][j]);
 
         for (int i = 0; i < m_MoveList.Count; ++i)
         {
@@ -5179,24 +5177,24 @@ namespace Server
         foreach (IEntity o in eable)
           if (o is Mobile heard)
           {
-            if (heard.CanSee(this) && (NoSpeechLOS || !heard.Player || heard.InLOS(this)))
+            if (!heard.CanSee(this) || !NoSpeechLOS && heard.Player && !heard.InLOS(this))
+              continue;
+
+            if (heard.m_NetState != null)
+              hears.Add(heard);
+
+            if (heard.HandlesOnSpeech(this))
+              onSpeech.Add(heard);
+
+            for (int i = 0; i < heard.Items.Count; ++i)
             {
-              if (heard.m_NetState != null)
-                hears.Add(heard);
+              Item item = heard.Items[i];
 
-              if (heard.HandlesOnSpeech(this))
-                onSpeech.Add(heard);
+              if (item.HandlesOnSpeech)
+                onSpeech.Add(item);
 
-              for (int i = 0; i < heard.Items.Count; ++i)
-              {
-                Item item = heard.Items[i];
-
-                if (item.HandlesOnSpeech)
-                  onSpeech.Add(item);
-
-                if (item is Container container)
-                  AddSpeechItemsFrom(onSpeech, container);
-              }
+              if (item is Container container)
+                AddSpeechItemsFrom(onSpeech, container);
             }
           }
           else if (o is Item item)
@@ -6896,24 +6894,24 @@ namespace Server
                   if (ObjectPropertyList.Enabled) m.m_NetState.Send(OPLPacket);
                 }
 
-                if (!inOldRange && CanSee(m))
+                if (inOldRange || !CanSee(m))
+                  continue;
+
+                ourState.Send(MobileIncoming.Create(ourState, this, m));
+
+                if (ourState.StygianAbyss)
                 {
-                  ourState.Send(MobileIncoming.Create(ourState, this, m));
+                  //if ( m.Poisoned )
+                  ourState.Send(new HealthbarPoison(m));
 
-                  if (ourState.StygianAbyss)
-                  {
-                    //if ( m.Poisoned )
-                    ourState.Send(new HealthbarPoison(m));
-
-                    //if ( m.Blessed || m.YellowHealthbar )
-                    ourState.Send(new HealthbarYellow(m));
-                  }
-
-                  if (m.IsDeadBondedPet)
-                    ourState.Send(new BondedStatus(0, m.Serial, 1));
-
-                  if (ObjectPropertyList.Enabled) ourState.Send(m.OPLPacket);
+                  //if ( m.Blessed || m.YellowHealthbar )
+                  ourState.Send(new HealthbarYellow(m));
                 }
+
+                if (m.IsDeadBondedPet)
+                  ourState.Send(new BondedStatus(0, m.Serial, 1));
+
+                if (ObjectPropertyList.Enabled) ourState.Send(m.OPLPacket);
               }
 
             eeable.Free();
@@ -9657,27 +9655,24 @@ namespace Server
 
     public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true)
     {
-      if (m_Map != null)
-      {
-        Packet p;
+      if (m_Map == null)
+        return;
 
-        if (ascii)
-          p = new AsciiMessage(Serial, Body, type, hue, 3, Name, text);
-        else
-          p = new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text);
+      Packet p = ascii
+        ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
+        : new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text);
 
-        p.Acquire();
+      p.Acquire();
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-            state.Send(p);
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+          state.Send(p);
 
-        Packet.Release(p);
+      Packet.Release(p);
 
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "", bool noLineOfSight = true)
@@ -9780,12 +9775,9 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p;
-
-      if (ascii)
-        p = new AsciiMessage(Serial, Body, type, hue, 3, Name, text);
-      else
-        p = new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text);
+      Packet p = ascii
+        ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
+        : new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text);
 
       p.Acquire();
 
@@ -9806,9 +9798,7 @@ namespace Server
 
     public void SendLocalizedMessage(int number)
     {
-      NetState ns = m_NetState;
-
-      ns?.Send(MessageLocalized.InstantiateGeneric(number));
+      m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
     }
 
     public void SendLocalizedMessage(int number, string args, int hue = 0x3B2)
@@ -9821,9 +9811,7 @@ namespace Server
 
     public void SendLocalizedMessage(int number, bool append, string affix, string args = "", int hue = 0x3B2)
     {
-      NetState ns = m_NetState;
-
-      ns?.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System",
+      m_NetState?.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System",
         (append ? AffixType.Append : AffixType.Prepend) | AffixType.System, affix, args));
     }
 
@@ -9843,9 +9831,7 @@ namespace Server
 
     public void SendMessage(int hue, string text)
     {
-      NetState ns = m_NetState;
-
-      ns?.Send(new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text));
+      m_NetState?.Send(new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text));
     }
 
     public void SendMessage(int hue, string format, params object[] args)
@@ -9865,9 +9851,7 @@ namespace Server
 
     public void SendAsciiMessage(int hue, string text)
     {
-      NetState ns = m_NetState;
-
-      ns?.Send(new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text));
+      m_NetState?.Send(new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text));
     }
 
     public void SendAsciiMessage(int hue, string format, params object[] args)

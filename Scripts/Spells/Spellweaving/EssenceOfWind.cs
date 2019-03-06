@@ -35,23 +35,28 @@ namespace Server.Spells.Spellweaving
         int fcMalus = FocusLevel + 1;
         int ssiMalus = 2 * (FocusLevel + 1);
 
-        IEnumerable<Mobile> eable = Caster.GetMobilesInRange(range)
-          .Where(m => Caster != m && Caster.InLOS(m) && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false));
+        IPooledEnumerable<Mobile> eable = Caster.GetMobilesInRange(range);
 
         foreach (Mobile m in eable)
         {
+          if (Caster == m || !Caster.InLOS(m) || !SpellHelper.ValidIndirectTarget(Caster, m) ||
+              !Caster.CanBeHarmful(m, false))
+            continue;
+
           Caster.DoHarmful(m);
 
           SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
 
-          if (!CheckResisted(m)) //No message on resist
-          {
-            m_Table[m] = new EssenceOfWindInfo(m, fcMalus, ssiMalus, duration);
+          if (CheckResisted(m))
+            continue;
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.EssenceOfWind, 1075802, duration, m,
-              $"{fcMalus.ToString()}\t{ssiMalus.ToString()}"));
-          }
+          m_Table[m] = new EssenceOfWindInfo(m, fcMalus, ssiMalus, duration);
+
+          BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.EssenceOfWind, 1075802, duration, m,
+            $"{fcMalus.ToString()}\t{ssiMalus.ToString()}"));
         }
+
+        eable.Free();
       }
 
       FinishSequence();

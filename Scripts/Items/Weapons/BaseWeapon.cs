@@ -3079,8 +3079,8 @@ namespace Server.Items
 
       IPooledEnumerable<Mobile> eable = from.GetMobilesInRange(range);
       List<Mobile> list = eable.Where(m =>
-        @from != m && defender != m && SpellHelper.ValidIndirectTarget(@from, m)
-        && @from.CanBeHarmful(m, false) && (!Core.ML || @from.InLOS(m))).ToList();
+        from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m)
+        && from.CanBeHarmful(m, false) && (!Core.ML || from.InLOS(m))).ToList();
       eable.Free();
 
       if (list.Count == 0)

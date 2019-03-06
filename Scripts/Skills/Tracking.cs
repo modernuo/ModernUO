@@ -192,8 +192,8 @@ namespace Server.SkillHandlers
 
       int range = 10 + (int)(from.Skills.Tracking.Value / 10);
 
-      List<Mobile> list = @from.GetMobilesInRange(range)
-        .Where(m => m != @from && (!Core.AOS || m.Alive) && (!m.Hidden || m.AccessLevel == AccessLevel.Player || @from.AccessLevel > m.AccessLevel) && check(m) && CheckDifficulty(@from, m))
+      List<Mobile> list = from.GetMobilesInRange(range)
+        .Where(m => m != from && (!Core.AOS || m.Alive) && (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) && check(m) && CheckDifficulty(from, m))
         .ToList();
 
       if (list.Count > 0)

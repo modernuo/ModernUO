@@ -47,26 +47,30 @@ namespace Server.Spells.Spellweaving
         int range = 2 + FocusLevel;
         TimeSpan duration = TimeSpan.FromSeconds(5 + FocusLevel);
 
-        IEnumerable<Mobile> eable = Caster.GetMobilesInRange(range)
-          .Where(m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
-                      Caster.InLOS(m));
+        IPooledEnumerable<Mobile> eable = Caster.GetMobilesInRange(range);
 
         foreach (Mobile m in eable)
         {
+          if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
+              !Caster.InLOS(m))
+            continue;
+
           Caster.DoHarmful(m);
 
           Spell oldSpell = m.Spell as Spell;
 
           SpellHelper.Damage(this, m, m.Player && Caster.Player ? pvpDamage : pvmDamage, 0, 0, 0, 0, 100);
 
-          if (oldSpell != null && oldSpell != m.Spell && !CheckResisted(m))
-          {
-            m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
+          if (oldSpell == null || oldSpell == m.Spell || CheckResisted(m))
+            continue;
 
-            BuffInfo.AddBuff(m,
-              new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m)));
-          }
+          m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
+
+          BuffInfo.AddBuff(m,
+            new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m)));
         }
+
+        eable.Free();
       }
 
       FinishSequence();

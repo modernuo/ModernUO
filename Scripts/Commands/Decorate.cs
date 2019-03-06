@@ -989,7 +989,7 @@ namespace Server.Commands
       {
         List<DecorationList> list = new List<DecorationList>();
         DecorationList v;
-        
+
         while ((v = Read(ip)) != null)
           list.Add(v);
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Commands;
 using Server.Mobiles;
 
@@ -308,16 +309,9 @@ namespace Server.Items
       public static SHTeleporter FindSHTeleporter(Map map, Point3D p)
       {
         IPooledEnumerable<SHTeleporter> eable = map.GetItemsInRange<SHTeleporter>(p, 0);
-
-        foreach (SHTeleporter item in eable)
-          if (item.Z == p.Z)
-          {
-            eable.Free();
-            return item;
-          }
-
+        SHTeleporter teleporter = eable.FirstOrDefault(item => item.Z == p.Z);
         eable.Free();
-        return null;
+        return teleporter;
       }
 
       public SHTeleporter AddSHT(Map map, bool ext, int x, int y, int z)

@@ -2384,6 +2384,7 @@ namespace Server.Mobiles
         return;
 
       IPooledEnumerable<Mobile> eable = m_Mobile.GetMobilesInRange(m_Mobile.RangePerception);
+
       foreach (Mobile trg in eable)
         if (trg != m_Mobile && trg.Player && trg.Alive && trg.Hidden && trg.AccessLevel == AccessLevel.Player &&
             m_Mobile.InLOS(trg))

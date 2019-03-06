@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Server.ContextMenus;
 using Server.Items;
@@ -965,7 +966,8 @@ namespace Server
             {
               Mobile m = state.Mobile;
 
-              if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m))) state.Send(RemovePacket);
+              if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
+                state.Send(RemovePacket);
             }
 
             eable.Free();
@@ -3759,29 +3761,24 @@ namespace Server
         z = top;
       }
 
-      List<Item> items = new List<Item>();
-
       IPooledEnumerable<Item> eable = map.GetItemsInRange(p, 0);
 
-      foreach (Item item in eable)
+      List<Item> items = eable.Where(item =>
       {
         if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
-          continue;
-
-        items.Add(item);
+          return false;
 
         ItemData id = item.ItemData;
 
-        if (!id.Surface)
-          continue;
+        if (id.Surface)
+        {
+          int top = item.Z + id.CalcHeight;
+          if (top <= maxZ && top >= z)
+            z = top;
+        }
 
-        int top = item.Z + id.CalcHeight;
-
-        if (top > maxZ || top < z)
-          continue;
-
-        z = top;
-      }
+        return true;
+      }).ToList();
 
       eable.Free();
 

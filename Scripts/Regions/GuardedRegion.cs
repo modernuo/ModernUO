@@ -187,6 +187,7 @@ namespace Server.Regions
         }
         catch
         {
+          // ignored
         }
       }
       else

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -175,22 +176,17 @@ namespace Server.Items
         alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
 
       IPooledEnumerable<IEntity> eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion);
-      List<IEntity> toExplode = new List<IEntity>();
-
       int toDamage = 0;
 
-      foreach (IEntity o in eable)
-        if (o is Mobile mobile && (from == null ||
-                                   SpellHelper.ValidIndirectTarget(from, mobile) &&
-                                   from.CanBeHarmful(mobile, false)))
-        {
-          toExplode.Add(mobile);
-          ++toDamage;
-        }
-        else if (o is BaseExplosionPotion && o != this)
-        {
-          toExplode.Add(o);
-        }
+      List<IEntity> toExplode = eable.Where(o =>
+      {
+        if (!(o is Mobile mobile) || from != null &&
+            (!SpellHelper.ValidIndirectTarget(from, mobile) || !from.CanBeHarmful(mobile, false)))
+          return o is BaseExplosionPotion && o != this;
+
+        ++toDamage;
+        return true;
+      }).ToList();
 
       eable.Free();
 
@@ -199,7 +195,7 @@ namespace Server.Items
 
       for (int i = 0; i < toExplode.Count; ++i)
       {
-        object o = toExplode[i];
+        IEntity o = toExplode[i];
 
         if (o is Mobile m)
         {

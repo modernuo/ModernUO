@@ -35,26 +35,29 @@ namespace Server.Spells.Sixth
       else if (CheckSequence())
       {
         SpellHelper.Turn(Caster, p);
-
         SpellHelper.GetSurfaceTop(ref p);
-
         Map map = Caster.Map;
 
         if (map != null)
         {
-          IEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p),
-            1 + (int)(Caster.Skills.Magery.Value / 20.0))
-            .Where(m => !(m is ShadowKnight) || (m.X == p.X && m.Y == p.Y)).Where(m => m.Hidden && (m.AccessLevel == AccessLevel.Player || Caster.AccessLevel > m.AccessLevel) && CheckDifficulty(Caster, m));
-
-          // eable.Free();
+          IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p),
+            1 + (int)(Caster.Skills.Magery.Value / 20.0));
 
           foreach (Mobile m in eable)
           {
+            if (m is ShadowKnight &&
+                (m.X != p.X || m.Y != p.Y || !m.Hidden || m.AccessLevel != AccessLevel.Player &&
+                 Caster.AccessLevel <= m.AccessLevel ||
+                 !CheckDifficulty(Caster, m)))
+              continue;
+
             m.RevealingAction();
 
             m.FixedParticles(0x375A, 9, 20, 5049, EffectLayer.Head);
             m.PlaySound(0x1FD);
           }
+
+          eable.Free();
         }
       }
 

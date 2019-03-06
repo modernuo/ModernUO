@@ -491,16 +491,19 @@ namespace Server
 
     private static List<Item> AcquireFixItems(Map map, int x, int y)
     {
-      if (map == null || map == Internal || x < 0 || x > map.Width || y < 0 || y > map.Height) return _EmptyFixItems;
+      if (map == null || map == Internal || x < 0 || x > map.Width || y < 0 || y > map.Height)
+        return _EmptyFixItems;
 
       List<Item> pool = null;
 
       lock (_FixPool)
       {
-        if (_FixPool.Count > 0) pool = _FixPool.Dequeue();
+        if (_FixPool.Count > 0)
+          pool = _FixPool.Dequeue();
       }
 
-      if (pool == null) pool = new List<Item>(128); // Arbitrary limit
+      if (pool == null)
+        pool = new List<Item>(128); // Arbitrary limit
 
       IPooledEnumerable<Item> eable = map.GetItemsInRange(new Point3D(x, y, 0), 0);
 
@@ -523,7 +526,8 @@ namespace Server
 
       lock (_FixPool)
       {
-        if (_FixPool.Count < 128) _FixPool.Enqueue(pool);
+        if (_FixPool.Count < 128)
+          _FixPool.Enqueue(pool);
       }
     }
 
@@ -1059,13 +1063,12 @@ namespace Server
 
         IEnumerable<T> pool = PooledEnumeration.EnumerateSectors(map, bounds).SelectMany(s => selector(s, bounds));
 
-        if (e != null)
-        {
-          e._Pool.AddRange(pool);
-          return e;
-        }
+        if (e == null)
+          return new PooledEnumerable<T>(pool);
 
-        return new PooledEnumerable<T>(pool);
+        e._Pool.AddRange(pool);
+        return e;
+
       }
     }
 
@@ -1431,14 +1434,7 @@ namespace Server
         {
           IPooledEnumerable<Item> eable = GetItemsInRange(point, 0);
 
-          foreach (Item item in eable)
-          {
-            if (item.Visible)
-              contains = false;
-
-            if (!contains)
-              break;
-          }
+          contains = !eable.Any(item => item.Visible);
 
           eable.Free();
 

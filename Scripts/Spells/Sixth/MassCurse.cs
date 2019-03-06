@@ -40,19 +40,18 @@ namespace Server.Spells.Sixth
 
         SpellHelper.GetSurfaceTop(ref p);
 
-        List<Mobile> targets = new List<Mobile>();
-
         Map map = Caster.Map;
 
         if (map != null)
         {
-          IEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), 2)
-          .Where(m => !Core.AOS || m != Caster).Where(m => SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanSee(m) && Caster.CanBeHarmful(m, false));
-
-          // eable.Free();
+          IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), 2);
 
           foreach (Mobile m in eable)
           {
+            if (Core.AOS && (m == Caster || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanSee(m) ||
+                             !Caster.CanBeHarmful(m, false)))
+              continue;
+
             Caster.DoHarmful(m);
 
             SpellHelper.AddStatCurse(Caster, m, StatType.Str);
@@ -66,6 +65,8 @@ namespace Server.Spells.Sixth
 
             HarmfulSpell(m);
           }
+
+          eable.Free();
         }
       }
 

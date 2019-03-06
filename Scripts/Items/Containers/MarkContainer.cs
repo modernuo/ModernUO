@@ -115,17 +115,19 @@ namespace Server.Items
     }
 
     private static void CreateMalasPassage(int x, int y, int z, int xTarget, int yTarget, int zTarget, bool bone,
-      bool locked)
+bool locked)
     {
       Point3D location = new Point3D(x, y, z);
 
       if (FindMarkContainer(location, Map.Malas))
         return;
 
-      MarkContainer cont = new MarkContainer(bone, locked);
-      cont.TargetMap = Map.Malas;
-      cont.Target = new Point3D(xTarget, yTarget, zTarget);
-      cont.Description = "strange location";
+      MarkContainer cont = new MarkContainer(bone, locked)
+      {
+        TargetMap = Map.Malas,
+        Target = new Point3D(xTarget, yTarget, zTarget),
+        Description = "strange location"
+      };
 
       cont.MoveToWorld(location, Map.Malas);
     }
@@ -133,7 +135,6 @@ namespace Server.Items
     public void StopTimer()
     {
       m_RelockTimer?.Stop();
-
       m_RelockTimer = null;
     }
 

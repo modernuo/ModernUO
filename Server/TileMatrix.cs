@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -262,34 +263,27 @@ namespace Server
     {
       StaticTile[][][] tiles = GetStaticBlock(x >> 3, y >> 3);
 
-      if (multis)
-      {
-        IPooledEnumerable<StaticTile[]> eable = m_Owner.GetMultiTilesAt(x, y);
+      if (!multis)
+        return tiles[x & 0x7][y & 0x7];
 
-        if (eable == Map.NullEnumerable<StaticTile[]>.Instance)
-          return tiles[x & 0x7][y & 0x7];
+      IPooledEnumerable<StaticTile[]> eable = m_Owner.GetMultiTilesAt(x, y);
 
-        bool any = false;
+      if (eable == Map.NullEnumerable<StaticTile[]>.Instance)
+        return tiles[x & 0x7][y & 0x7];
 
-        foreach (StaticTile[] multiTiles in eable)
-        {
-          if (!any)
-            any = true;
+      bool any = false;
 
-          m_TilesList.AddRange(multiTiles);
-        }
+      m_TilesList.AddRange(eable.SelectMany(t => { any = true; return t; }).ToArray());
 
-        eable.Free();
+      eable.Free();
 
-        if (!any)
-          return tiles[x & 0x7][y & 0x7];
+      if (!any)
+        return tiles[x & 0x7][y & 0x7];
 
-        m_TilesList.AddRange(tiles[x & 0x7][y & 0x7]);
+      m_TilesList.AddRange(tiles[x & 0x7][y & 0x7]);
 
-        return m_TilesList.ToArray();
-      }
+      return m_TilesList.ToArray();
 
-      return tiles[x & 0x7][y & 0x7];
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)]

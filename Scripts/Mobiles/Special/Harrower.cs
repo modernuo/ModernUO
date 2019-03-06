@@ -567,7 +567,7 @@ namespace Server.Mobiles
 
         m.ProcessDelta();
 
-        Effects.SendLocationParticles(EffectItem.Create(@from, m.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+        Effects.SendLocationParticles(EffectItem.Create(from, m.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
           2023);
         Effects.SendLocationParticles(EffectItem.Create(to, m.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
           5023);

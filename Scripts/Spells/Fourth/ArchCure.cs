@@ -57,7 +57,6 @@ namespace Server.Spells.Fourth
             targets.Add(directTarget);
 
           IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), 2);
-
           targets.AddRange(eable.Where(m => m != directTarget).Where(m => AreaCanTarget(m, feluccaRules)));
 
           eable.Free();

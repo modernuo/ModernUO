@@ -3039,15 +3039,9 @@ namespace Server.Multis
       IPooledEnumerable<Guildstone> eable =
         map.GetItemsInBounds<Guildstone>(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
 
-      foreach (Guildstone item in eable)
-        if (Contains(item))
-        {
-          eable.Free();
-          return item;
-        }
-
+      Guildstone item = eable.FirstOrDefault(Contains);
       eable.Free();
-      return null;
+      return item;
     }
 
     private class TransferItem : Item

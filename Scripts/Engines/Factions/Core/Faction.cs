@@ -249,21 +249,9 @@ namespace Server.Factions
     public static bool IsNearType(Mobile mob, Type[] types, int range)
     {
       IPooledEnumerable<IEntity> eable = mob.GetObjectsInRange(range);
-
-      foreach (IEntity obj in eable)
-      {
-        Type objType = obj.GetType();
-
-        for (int i = 0; i < types.Length; i++)
-          if (types[i].IsAssignableFrom(objType))
-          {
-            eable.Free();
-            return true;
-          }
-      }
-
+      bool found = eable.Any(obj => types.Any(t => t.IsInstanceOfType(obj)));
       eable.Free();
-      return false;
+      return found;
     }
 
     public void RemovePlayerState(PlayerState pl)

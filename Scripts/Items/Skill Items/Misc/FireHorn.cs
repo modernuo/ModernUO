@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -85,22 +86,21 @@ namespace Server.Items
         new HuedEffect(EffectType.Moving, from.Serial, Serial.Zero, 0x36D4, from.Location, loc, 5, 0, false, true, 0,
           0));
 
-      List<Mobile> targets = new List<Mobile>();
-      bool playerVsPlayer = false;
-
       IPooledEnumerable<Mobile> eable = from.Map.GetMobilesInRange(new Point3D(loc), 2);
 
-      foreach (Mobile m in eable)
-        if (from != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false))
-        {
-          if (Core.AOS && !from.InLOS(m))
-            continue;
+      bool playerVsPlayer = false;
+      List<Mobile> targets = eable.Where(m =>
+      {
+        if (from == m || !SpellHelper.ValidIndirectTarget(from, m) || !from.CanBeHarmful(m, false)
+            || Core.AOS && !from.InLOS(m))
+          return false;
 
-          targets.Add(m);
+        if (m.Player)
+          playerVsPlayer = true;
 
-          if (m.Player)
-            playerVsPlayer = true;
-        }
+        return true;
+
+      }).ToList();
 
       eable.Free();
 
