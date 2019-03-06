@@ -572,7 +572,7 @@ namespace Server.Guilds
     {
       get
       {
-        if (m_Leader == null || m_Leader.Deleted || m_Leader.Guild != this)
+        if (Disbanded || m_Leader.Guild != this)
           CalculateGuildmaster();
 
         return m_Leader;
@@ -582,7 +582,7 @@ namespace Server.Guilds
         if (value != null)
           AddMember(value); //Also removes from old guild.
 
-        if (m_Leader is PlayerMobile leader && leader?.Guild == this)
+        if (m_Leader is PlayerMobile leader && leader.Guild == this)
           leader.GuildRank = RankDefinition.Member;
 
         m_Leader = value;
@@ -593,7 +593,7 @@ namespace Server.Guilds
     }
 
 
-    public override bool Disbanded => m_Leader == null || m_Leader.Deleted;
+    public override bool Disbanded => m_Leader?.Deleted != false;
 
     public static void Configure()
     {
@@ -605,22 +605,20 @@ namespace Server.Guilds
 
     public void InvalidateMemberProperties(bool onlyOPL = false)
     {
-      if (Members != null)
-        for (int i = 0; i < Members.Count; i++)
-        {
-          Mobile m = Members[i];
-          m.InvalidateProperties();
+      for (int i = 0; i < Members?.Count; i++)
+      {
+        Mobile m = Members[i];
+        m.InvalidateProperties();
 
-          if (!onlyOPL)
-            m.Delta(MobileDelta.Noto);
-        }
+        if (!onlyOPL)
+          m.Delta(MobileDelta.Noto);
+      }
     }
 
     public void InvalidateMemberNotoriety()
     {
-      if (Members != null)
-        for (int i = 0; i < Members.Count; i++)
-          Members[i].Delta(MobileDelta.Noto);
+      for (int i = 0; i < Members?.Count; i++)
+        Members[i].Delta(MobileDelta.Noto);
     }
 
     public void InvalidateWarNotoriety()
@@ -1433,7 +1431,7 @@ namespace Server.Guilds
 
         if (!CanBeVotedFor(m))
         {
-          if (m_Leader != null && !m_Leader.Deleted && m_Leader.Guild == this)
+          if (!Disbanded && m_Leader.Guild == this)
             m = m_Leader;
           else
             m = memb;
@@ -1461,8 +1459,8 @@ namespace Server.Guilds
         }
       }
 
-      if (NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage && m_Leader != null &&
-          winner != m_Leader && !m_Leader.Deleted && m_Leader.Guild == this)
+      if (NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage && !Disbanded &&
+          winner != m_Leader && m_Leader.Guild == this)
         winner = m_Leader;
 
       if (m_Leader != winner && winner != null)

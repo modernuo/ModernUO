@@ -252,7 +252,7 @@ namespace Server.Mobiles
     private bool Combat(Mobile mobile)
     {
       Mobile combatant = mobile.Combatant;
-      if (combatant == null || combatant.Deleted || combatant.IsDeadBondedPet || !combatant.Alive)
+      if (combatant?.Deleted != false || combatant.IsDeadBondedPet || !combatant.Alive)
         return false;
 
       return true;

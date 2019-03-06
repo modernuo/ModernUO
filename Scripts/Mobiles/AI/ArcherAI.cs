@@ -30,7 +30,7 @@ namespace Server.Mobiles
 
     public override bool DoActionCombat()
     {
-      if (m_Mobile.Combatant == null || m_Mobile.Combatant.Deleted || !m_Mobile.Combatant.Alive ||
+      if (m_Mobile.Combatant?.Deleted != false || !m_Mobile.Combatant.Alive ||
           m_Mobile.Combatant.IsDeadBondedPet)
       {
         m_Mobile.DebugSay("My combatant is deleted");

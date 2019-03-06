@@ -25,38 +25,38 @@ namespace Server.Mobiles
 
     public virtual void RangeCheck()
     {
-      if (!Deleted && ControlMaster?.Deleted == false)
+      if (Deleted || ControlMaster?.Deleted != false)
+        return;
+
+      int range = RangeHome - 2;
+
+      if (InRange(ControlMaster.Location, RangeHome))
+        return;
+
+      Mobile master = ControlMaster;
+
+      Point3D m_Loc = Point3D.Zero;
+
+      if (Map != master.Map)
+        return;
+
+      int x = X > master.X ? master.X + range : master.X - range;
+      int y = Y > master.Y ? master.Y + range : master.Y - range;
+
+      for (int i = 0; i < 10; i++)
       {
-        int range = RangeHome - 2;
+        m_Loc.X = x + Utility.RandomMinMax(-1, 1);
+        m_Loc.Y = y + Utility.RandomMinMax(-1, 1);
 
-        if (!InRange(ControlMaster.Location, RangeHome))
-        {
-          Mobile master = ControlMaster;
+        m_Loc.Z = Map.GetAverageZ(m_Loc.X, m_Loc.Y);
 
-          Point3D m_Loc = Point3D.Zero;
+        if (Map.CanSpawnMobile(m_Loc)) break;
 
-          if (Map == master.Map)
-          {
-            int x = X > master.X ? master.X + range : master.X - range;
-            int y = Y > master.Y ? master.Y + range : master.Y - range;
-
-            for (int i = 0; i < 10; i++)
-            {
-              m_Loc.X = x + Utility.RandomMinMax(-1, 1);
-              m_Loc.Y = y + Utility.RandomMinMax(-1, 1);
-
-              m_Loc.Z = Map.GetAverageZ(m_Loc.X, m_Loc.Y);
-
-              if (Map.CanSpawnMobile(m_Loc)) break;
-
-              m_Loc = master.Location;
-            }
-
-            if (!Deleted)
-              SetLocation(m_Loc, true);
-          }
-        }
+        m_Loc = master.Location;
       }
+
+      if (!Deleted)
+        SetLocation(m_Loc, true);
     }
 
     public override void OnThink()
@@ -64,7 +64,7 @@ namespace Server.Mobiles
       Mobile master = ControlMaster;
 
       if (Deleted) return;
-      if (master == null || master.Deleted)
+      if (master?.Deleted != false)
       {
         DropPackContents();
         EndRelease(null);

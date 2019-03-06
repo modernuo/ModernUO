@@ -138,20 +138,17 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_Addon.Deleted)
+        if (m_Addon.Deleted || info.ButtonID != 1)
           return;
 
-        if (info.ButtonID == 1)
+        if (m_From.InRange(m_Addon.GetWorldLocation(), 3))
         {
-          if (m_From.InRange(m_Addon.GetWorldLocation(), 3))
-          {
-            m_From.AddToBackpack(m_Addon.Deed);
-            m_Addon.Delete();
-          }
-          else
-          {
-            m_From.SendLocalizedMessage(500295); // You are too far away to do that.
-          }
+          m_From.AddToBackpack(m_Addon.Deed);
+          m_Addon.Delete();
+        }
+        else
+        {
+          m_From.SendLocalizedMessage(500295); // You are too far away to do that.
         }
       }
     }

@@ -101,7 +101,7 @@ namespace Server.Items
 
         m_Spurt = null;
       }
-      else if (m_Spurt == null || m_Spurt.Deleted)
+      else if (m_Spurt?.Deleted != false)
       {
         m_Spurt = new Static(0x3709);
         m_Spurt.MoveToWorld(Location, Map);
@@ -115,13 +115,13 @@ namespace Server.Items
       if (m.AccessLevel > AccessLevel.Player)
         return true;
 
-      if (m.Player && m.Alive)
-      {
-        CheckTimer();
+      if (!(m.Player && m.Alive))
+        return false;
 
-        SpellHelper.Damage(TimeSpan.FromTicks(1), m, m, Utility.RandomMinMax(1, 30));
-        m.PlaySound(m.Female ? 0x327 : 0x437);
-      }
+      CheckTimer();
+
+      SpellHelper.Damage(TimeSpan.FromTicks(1), m, m, Utility.RandomMinMax(1, 30));
+      m.PlaySound(m.Female ? 0x327 : 0x437);
 
       return false;
     }
@@ -130,19 +130,17 @@ namespace Server.Items
     {
       base.OnMovement(m, oldLocation);
 
-      if (m.Location == oldLocation || !m.Player || !m.Alive || m.AccessLevel > AccessLevel.Player)
+      if (m.Location == oldLocation || !m.Player || !m.Alive || m.AccessLevel > AccessLevel.Player
+          || !CheckRange(m.Location, oldLocation, 1))
         return;
 
-      if (CheckRange(m.Location, oldLocation, 1))
-      {
-        CheckTimer();
+      CheckTimer();
 
-        SpellHelper.Damage(TimeSpan.FromTicks(1), m, m, Utility.RandomMinMax(1, 10));
-        m.PlaySound(m.Female ? 0x327 : 0x437);
+      SpellHelper.Damage(TimeSpan.FromTicks(1), m, m, Utility.RandomMinMax(1, 10));
+      m.PlaySound(m.Female ? 0x327 : 0x437);
 
-        if (m.Body.IsHuman)
-          m.Animate(20, 1, 1, true, false, 0);
-      }
+      if (m.Body.IsHuman)
+        m.Animate(20, 1, 1, true, false, 0);
     }
 
     public override void Serialize(GenericWriter writer)

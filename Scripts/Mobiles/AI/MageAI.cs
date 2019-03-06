@@ -607,7 +607,7 @@ namespace Server.Mobiles
       Mobile c = m_Mobile.Combatant;
       m_Mobile.Warmode = true;
 
-      if (c == null || c.Deleted || !c.Alive || c.IsDeadBondedPet || !m_Mobile.CanSee(c) ||
+      if (c?.Deleted != false || !c.Alive || c.IsDeadBondedPet || !m_Mobile.CanSee(c) ||
           !m_Mobile.CanBeHarmful(c, false) || c.Map != m_Mobile.Map)
       {
         // Our combatant is deleted, dead, hidden, or we cannot hurt them

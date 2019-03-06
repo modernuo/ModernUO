@@ -334,7 +334,7 @@ namespace Server.Mobiles
 
     public bool IsOwner(Mobile from)
     {
-      if (from == null || from.Deleted || Deleted)
+      if (from?.Deleted != false || Deleted)
         return false;
 
       if (from.AccessLevel > AccessLevel.GameMaster)

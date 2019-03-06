@@ -2505,7 +2505,7 @@ namespace Server.Mobiles
             DamageEntry subEntry = respList[j];
             Mobile master = subEntry.Damager;
 
-            if (master == null || master.Deleted || !master.Player)
+            if (master?.Deleted != false || !master.Player)
               continue;
 
             bool needNewSubEntry = true;

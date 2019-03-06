@@ -54,7 +54,7 @@ namespace Server
     public static int Damage(Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois,
       int nrgy, int chaos = 0, int direct = 0, bool keepAlive = false, bool archer = false, bool deathStrike = false)
     {
-      if (m == null || m.Deleted || !m.Alive || damage <= 0)
+      if (m?.Deleted != false || !m.Alive || damage <= 0)
         return 0;
 
       if (phys == 0 && fire == 100 && cold == 0 && pois == 0 && nrgy == 0)
@@ -178,8 +178,8 @@ namespace Server
 
         if (reflectPhys != 0)
         {
-          if (from is ExodusMinion minion && minion.FieldActive ||
-              from is ExodusOverseer overseer && overseer.FieldActive)
+          if ((from as ExodusMinion)?.FieldActive == true ||
+              (from as ExodusOverseer)?.FieldActive == true)
           {
             from.FixedParticles(0x376A, 20, 10, 0x2530, EffectLayer.Waist);
             from.PlaySound(0x2F4);

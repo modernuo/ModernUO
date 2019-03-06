@@ -107,7 +107,7 @@ namespace Server.Misc
 
       if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
         return false;
-      
+
       #endregion
 
       Map map = from.Map;
@@ -427,7 +427,7 @@ namespace Server.Misc
     {
       BaseHouse house = BaseHouse.FindHouseAt(p, map, 16);
 
-      if (house == null || house.Public || !house.IsFriend(from))
+      if (house?.Public != false || !house.IsFriend(from))
         return false;
 
       if (m != null && house.IsFriend(m))

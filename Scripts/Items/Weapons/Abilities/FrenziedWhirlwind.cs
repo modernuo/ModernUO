@@ -48,18 +48,10 @@ namespace Server.Items
       {
         Mobile m = list[i];
 
-        if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m))
-        {
-          if (m == null || m.Deleted || m.Map != attacker.Map || !m.Alive || !attacker.CanSee(m) ||
-              !attacker.CanBeHarmful(m))
-            continue;
-
-          if (!attacker.InRange(m, weapon.MaxRange))
-            continue;
-
-          if (attacker.InLOS(m))
+        if (m?.Deleted == false && m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) &&
+            m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
+            attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m))
             targets.Add(m);
-        }
       }
 
       if (targets.Count == 0 || !CheckMana(attacker, true))
