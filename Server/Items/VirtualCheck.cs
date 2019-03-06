@@ -85,7 +85,7 @@ namespace Server
     {
       if (UseEditGump && IsAccessibleTo(from))
       {
-        if (Editor?.Check == null || Editor.Check.Deleted)
+        if (Editor?.Check?.Deleted != false)
         {
           Editor = new EditGump(from, this);
           Editor.Send();

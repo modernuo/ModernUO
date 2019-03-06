@@ -3135,7 +3135,7 @@ namespace Server.Multis
         if (!accepted)
           return true;
 
-        if (Deleted || m_House == null || m_House.Deleted || !m_House.IsOwner(from) || !from.CheckAlive() ||
+        if (Deleted || m_House?.Deleted != false || !m_House.IsOwner(from) || !from.CheckAlive() ||
             !to.CheckAlive())
           return false;
 
@@ -3155,7 +3155,7 @@ namespace Server.Multis
 
         Delete();
 
-        if (m_House == null || m_House.Deleted || !m_House.IsOwner(from) || !from.CheckAlive() || !to.CheckAlive())
+        if (m_House?.Deleted != false || !m_House.IsOwner(from) || !from.CheckAlive() || !to.CheckAlive())
           return;
 
 

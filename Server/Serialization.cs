@@ -560,7 +560,7 @@ namespace Server
 
     public override void WriteEntity(IEntity value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -568,7 +568,7 @@ namespace Server
 
     public override void Write(Item value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -576,7 +576,7 @@ namespace Server
 
     public override void Write(Mobile value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -1460,7 +1460,7 @@ namespace Server
 
     public override void WriteEntity(IEntity value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -1468,7 +1468,7 @@ namespace Server
 
     public override void Write(Item value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -1476,7 +1476,7 @@ namespace Server
 
     public override void Write(Mobile value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);

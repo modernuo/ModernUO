@@ -664,20 +664,20 @@ namespace Server.Items
 
         if (!(o is Mobile target))
         {
-          @from.SendLocalizedMessage(1046439); // That is not a valid target.
+          from.SendLocalizedMessage(1046439); // That is not a valid target.
           return;
         }
 
         if (m_Talisman.ChargeTime > 0)
         {
-          @from.SendLocalizedMessage(1074882,
+          from.SendLocalizedMessage(1074882,
             m_Talisman.ChargeTime.ToString()); // You must wait ~1_val~ seconds for this to recharge.
           return;
         }
 
         if (m_Talisman.Charges == 0 && m_Talisman.MaxCharges > 0)
         {
-          @from.SendLocalizedMessage(1042544); // This item is out of charges.
+          from.SendLocalizedMessage(1042544); // This item is out of charges.
           return;
         }
 
@@ -689,8 +689,8 @@ namespace Server.Items
             target.FixedParticles(0x3709, 1, 30, 9963, 13, 3, EffectLayer.Head);
 
             IEntity mfrom = new Entity(Serial.Zero, new Point3D(target.X, target.Y, target.Z - 10),
-              @from.Map);
-            IEntity mto = new Entity(Serial.Zero, new Point3D(target.X, target.Y, target.Z + 50), @from.Map);
+              from.Map);
+            IEntity mto = new Entity(Serial.Zero, new Point3D(target.X, target.Y, target.Z + 50), from.Map);
             Effects.SendMovingParticles(mfrom, mto, 0x2255, 1, 0, false, false, 13, 3, 9501, 1, 0,
               EffectLayer.Head, 0x100);
 
@@ -722,8 +722,8 @@ namespace Server.Items
 
             target.SendLocalizedMessage(1072408); // Any curses on you have been lifted
 
-            if (target != @from)
-              @from.SendLocalizedMessage(1072409); // Your targets curses have been lifted
+            if (target != from)
+              from.SendLocalizedMessage(1072409); // Your targets curses have been lifted
 
             break;
           case TalismanRemoval.Damage:
@@ -740,8 +740,8 @@ namespace Server.Items
 
             target.SendLocalizedMessage(1072405); // Your lasting damage effects have been removed!
 
-            if (target != @from)
-              @from.SendLocalizedMessage(1072406); // Your Targets lasting damage effects have been removed!
+            if (target != from)
+              from.SendLocalizedMessage(1072406); // Your Targets lasting damage effects have been removed!
 
             break;
           case TalismanRemoval.Ward:
@@ -756,8 +756,8 @@ namespace Server.Items
 
             target.SendLocalizedMessage(1072402); // Your wards have been removed!
 
-            if (target != @from)
-              @from.SendLocalizedMessage(1072403); // Your target's wards have been removed!
+            if (target != from)
+              from.SendLocalizedMessage(1072403); // Your target's wards have been removed!
 
             break;
           case TalismanRemoval.Wildfire:
@@ -765,7 +765,7 @@ namespace Server.Items
             break;
         }
 
-        m_Talisman.OnAfterUse(@from);
+        m_Talisman.OnAfterUse(from);
       }
     }
 

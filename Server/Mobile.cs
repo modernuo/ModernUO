@@ -1881,7 +1881,7 @@ namespace Server
     {
       get
       {
-        if (m_BankBox != null && !m_BankBox.Deleted && m_BankBox.Parent == this)
+        if (m_BankBox?.Deleted == false && m_BankBox.Parent == this)
           return m_BankBox;
 
         m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
@@ -1898,10 +1898,10 @@ namespace Server
     {
       get
       {
-        if (m_Backpack != null && !m_Backpack.Deleted && m_Backpack.Parent == this)
-          return m_Backpack;
+        if (m_Backpack?.Deleted != false || m_Backpack.Parent != this)
+          m_Backpack = FindItemOnLayer(Layer.Backpack) as Container;
 
-        return m_Backpack = FindItemOnLayer(Layer.Backpack) as Container;
+        return m_Backpack;
       }
     }
 
@@ -6996,10 +6996,8 @@ namespace Server
 
     public BankBox FindBankNoCreate()
     {
-      if (m_BankBox != null && !m_BankBox.Deleted && m_BankBox.Parent == this)
-        return m_BankBox;
-
-      m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
+      if (m_BankBox?.Deleted != false || m_BankBox.Parent != this)
+         m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
 
       return m_BankBox;
     }
@@ -7021,32 +7019,32 @@ namespace Server
 
     public void SendIncomingPacket()
     {
-      if (m_Map != null)
-      {
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      if (m_Map == null)
+        return;
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this))
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this))
+        {
+          state.Send(MobileIncoming.Create(state, state.Mobile, this));
+
+          if (state.StygianAbyss)
           {
-            state.Send(MobileIncoming.Create(state, state.Mobile, this));
+            if (m_Poison != null)
+              state.Send(new HealthbarPoison(this));
 
-            if (state.StygianAbyss)
-            {
-              if (m_Poison != null)
-                state.Send(new HealthbarPoison(this));
-
-              if (m_Blessed || m_YellowHealthbar)
-                state.Send(new HealthbarYellow(this));
-            }
-
-            if (IsDeadBondedPet)
-              state.Send(new BondedStatus(0, Serial, 1));
-
-            if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
+            if (m_Blessed || m_YellowHealthbar)
+              state.Send(new HealthbarYellow(this));
           }
 
-        eable.Free();
-      }
+          if (IsDeadBondedPet)
+            state.Send(new BondedStatus(0, Serial, 1));
+
+          if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
+        }
+
+      eable.Free();
     }
 
     public bool PlaceInBackpack(Item item)
@@ -7054,9 +7052,7 @@ namespace Server
       if (item.Deleted)
         return false;
 
-      Container pack = Backpack;
-
-      return pack != null && pack.TryDropItem(this, item, false);
+      return Backpack?.TryDropItem(this, item, false) == true;
     }
 
     public bool AddToBackpack(Item item)
@@ -7089,10 +7085,7 @@ namespace Server
 
     public virtual bool CheckNonlocalLift(Mobile from, Item item)
     {
-      if (from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      return false;
+      return @from == this || @from.AccessLevel > AccessLevel && @from.AccessLevel >= AccessLevel.GameMaster;
     }
 
     public virtual bool CheckTrade(Mobile to, Item item, SecureTradeContainer cont, bool message, bool checkItems,
@@ -7101,12 +7094,7 @@ namespace Server
       return true;
     }
 
-    public bool OpenTrade(Mobile from)
-    {
-      return OpenTrade(from, null);
-    }
-
-    public virtual bool OpenTrade(Mobile from, Item offer)
+    public virtual bool OpenTrade(Mobile from, Item offer = null)
     {
       if (!from.Player || !Player || !from.Alive || !Alive) return false;
 
@@ -7138,15 +7126,10 @@ namespace Server
       if (from == this)
       {
         Container pack = Backpack;
-
-        if (pack != null)
-          return dropped.DropToItem(from, pack, new Point3D(-1, -1, 0));
-
-        return false;
+        return pack != null && dropped.DropToItem(@from, pack, new Point3D(-1, -1, 0));
       }
 
-      if (from.InRange(Location, 2)) return OpenTrade(from, dropped);
-      return false;
+      return @from.InRange(Location, 2) && OpenTrade(@from, dropped);
     }
 
     public virtual bool CheckEquip(Item item)
@@ -7267,10 +7250,7 @@ namespace Server
 
     public virtual bool CheckNonlocalDrop(Mobile from, Item item, Item target)
     {
-      if (from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      return false;
+      return @from == this || @from.AccessLevel > AccessLevel && @from.AccessLevel >= AccessLevel.GameMaster;
     }
 
     public virtual bool CheckItemUse(Mobile from, Item item)
@@ -7403,15 +7383,14 @@ namespace Server
 
     public bool CheckAlive(bool message)
     {
-      if (!Alive)
-      {
-        if (message)
-          LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019048); // I am dead and cannot do that.
+      if (Alive)
+        return true;
 
-        return false;
-      }
+      if (message)
+        LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019048); // I am dead and cannot do that.
 
-      return true;
+      return false;
+
     }
 
     public void LaunchBrowser(string url)
@@ -7483,9 +7462,8 @@ namespace Server
     /// </summary>
     public virtual void OnSingleClick(Mobile from)
     {
-      if (Deleted)
-        return;
-      if (AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
+      if (Deleted ||
+          AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
         return;
 
       if (GuildClickMessage)
@@ -7535,7 +7513,7 @@ namespace Server
 
       string suffix = "";
 
-      if (ClickTitle && Title != null && Title.Length > 0)
+      if (ClickTitle && !string.IsNullOrEmpty(Title))
         suffix = Title;
 
       suffix = ApplyNameSuffix(suffix);
@@ -7556,32 +7534,22 @@ namespace Server
 
     public bool CheckSkill(SkillName skill, double minSkill, double maxSkill)
     {
-      if (SkillCheckLocationHandler == null)
-        return false;
-      return SkillCheckLocationHandler(this, skill, minSkill, maxSkill);
+      return SkillCheckLocationHandler?(this, skill, minSkill, maxSkill) == true;
     }
 
     public bool CheckSkill(SkillName skill, double chance)
     {
-      if (SkillCheckDirectLocationHandler == null)
-        return false;
-      return SkillCheckDirectLocationHandler(this, skill, chance);
+      return SkillCheckDirectLocationHandler?(this, skill, chance) == true;
     }
 
     public bool CheckTargetSkill(SkillName skill, object target, double minSkill, double maxSkill)
     {
-      if (SkillCheckTargetHandler == null)
-        return false;
-
-      return SkillCheckTargetHandler(this, skill, target, minSkill, maxSkill);
+      return SkillCheckTargetHandler != null && SkillCheckTargetHandler(this, skill, target, minSkill, maxSkill);
     }
 
     public bool CheckTargetSkill(SkillName skill, object target, double chance)
     {
-      if (SkillCheckDirectTargetHandler == null)
-        return false;
-
-      return SkillCheckDirectTargetHandler(this, skill, target, chance);
+      return SkillCheckDirectTargetHandler != null && SkillCheckDirectTargetHandler(this, skill, target, chance);
     }
 
     public virtual void DisruptiveAction()

@@ -27,10 +27,7 @@ namespace Server.Spells.Spellweaving
     {
       ArcaneFocus focus = FindArcaneFocus(from);
 
-      if (focus == null || focus.Deleted)
-        return 0;
-
-      return focus.StrengthBonus;
+      return focus?.Deleted != false ? 0 : focus.StrengthBonus;
     }
 
     public static ArcaneFocus FindArcaneFocus(Mobile from)
@@ -46,13 +43,7 @@ namespace Server.Spells.Spellweaving
 
     public static bool CheckExpansion(Mobile from)
     {
-      if (!(from is PlayerMobile))
-        return true;
-
-      if (from.NetState == null)
-        return false;
-
-      return from.NetState.SupportsExpansion(Expansion.ML);
+      return !(from is PlayerMobile) || from.NetState != null && from.NetState.SupportsExpansion(Expansion.ML);
     }
 
     public override bool CheckCast()

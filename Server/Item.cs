@@ -1864,15 +1864,15 @@ namespace Server
 
       if (info != null)
       {
-        if (info.m_BlessedFor != null && !info.m_BlessedFor.Deleted)
+        if (info.m_BlessedFor?.Deleted == false)
           flags |= SaveFlag.BlessedFor;
-        if (info.m_HeldBy != null && !info.m_HeldBy.Deleted)
+        if (info.m_HeldBy?.Deleted == false)
           flags |= SaveFlag.HeldBy;
         if (info.m_SavedFlags != 0)
           flags |= SaveFlag.SavedFlags;
       }
 
-      if (info == null || info.m_Weight == -1)
+      if (info == null || info.m_Weight == -1.0)
       {
         flags |= SaveFlag.NullWeight;
       }
@@ -1974,7 +1974,7 @@ namespace Server
 
       if (GetSaveFlag(flags, SaveFlag.Parent))
       {
-        if (m_Parent != null && !m_Parent.Deleted)
+        if (m_Parent?.Deleted == false)
           writer.Write(m_Parent.Serial);
         else
           writer.Write(Serial.MinusOne);
@@ -2428,7 +2428,7 @@ namespace Server
       {
         IEntity parent = bounce.m_Parent;
 
-        if (parent == null || parent.Deleted)
+        if (parent?.Deleted != false)
         {
           MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
         }
