@@ -950,7 +950,7 @@ namespace Server.Gumps
 
           for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < ipRestrictions.Count; ++i, ++index)
           {
-            AddHtml(18, 243 + i * 22, 114, 20, Color(ipRestrictions[index].ToString(), LabelColor32), false, false);
+            AddHtml(18, 243 + i * 22, 114, 20, Color(ipRestrictions[index], LabelColor32), false, false);
             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(8, index), GumpButtonType.Reply, 0);
           }
 

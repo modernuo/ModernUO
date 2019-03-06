@@ -274,7 +274,7 @@ namespace Server.Engines.Craft
         return false;
 
       IPooledEnumerable<Item> eable = map.GetItemsInRange(from.Location, 2);
-      bool found = eable.Any(item => item.Z + 16 > .Z && .Z + 16 > item.Z && Find(item.ItemID, itemIDs));
+      bool found = eable.Any(item => item.Z + 16 > item.Z && item.Z + 16 > item.Z && Find(item.ItemID, itemIDs));
       eable.Free();
 
       if (found)
