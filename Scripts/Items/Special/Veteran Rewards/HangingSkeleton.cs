@@ -268,22 +268,22 @@ namespace Server.Items
         if (m_Skeleton?.Deleted != false)
           return;
 
-        if (!m_Skeleton.IsChildOf(@from.Backpack))
+        if (!m_Skeleton.IsChildOf(from.Backpack))
         {
-          @from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+          from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
           return;
         }
 
-        BaseHouse house = BaseHouse.FindHouseAt(@from);
+        BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house?.IsOwner(@from) != true)
+        if (house?.IsOwner(from) != true)
         {
-          @from.SendLocalizedMessage(502092); // You must be in your house to do this.
+          from.SendLocalizedMessage(502092); // You must be in your house to do this.
           return;
         }
 
         IPoint3D p = targeted as IPoint3D;
-        Map map = @from.Map;
+        Map map = from.Map;
 
         if (p == null || map == null)
           return;
@@ -293,15 +293,15 @@ namespace Server.Items
 
         if (!map.CanFit(p3d, id.Height))
         {
-          @from.SendLocalizedMessage(500269); // You cannot build that there.
+          from.SendLocalizedMessage(500269); // You cannot build that there.
           return;
         }
 
         house = BaseHouse.FindHouseAt(p3d, map, id.Height);
 
-        if (house?.IsOwner(@from) != true)
+        if (house?.IsOwner(from) != true)
         {
-          @from.SendLocalizedMessage(1042036); // That location is not in your house.
+          from.SendLocalizedMessage(1042036); // That location is not in your house.
           return;
         }
 
@@ -310,8 +310,8 @@ namespace Server.Items
 
         if (north && west)
         {
-          @from.CloseGump<FacingGump>();
-          @from.SendGump(new FacingGump(m_Skeleton, m_ItemID, p3d, house));
+          from.CloseGump<FacingGump>();
+          from.SendGump(new FacingGump(m_Skeleton, m_ItemID, p3d, house));
         }
         else if (north || west)
         {
@@ -326,7 +326,7 @@ namespace Server.Items
         }
         else
         {
-          @from.SendLocalizedMessage(1042039); // The banner must be placed next to a wall.
+          from.SendLocalizedMessage(1042039); // The banner must be placed next to a wall.
         }
       }
 

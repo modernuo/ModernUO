@@ -239,7 +239,7 @@ namespace Server.Items
 
         if (!map.CanFit(p3d, id.Height))
         {
-          @from.SendLocalizedMessage(1042266); // The head must be placed next to a wall.
+          from.SendLocalizedMessage(1042266); // The head must be placed next to a wall.
           return;
         }
 
@@ -266,7 +266,7 @@ namespace Server.Items
         }
         else
         {
-          @from.SendLocalizedMessage(1042266); // The head must be placed next to a wall.
+          from.SendLocalizedMessage(1042266); // The head must be placed next to a wall.
         }
       }
     }

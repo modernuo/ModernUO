@@ -201,7 +201,7 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Tool == null || m_Tool.Deleted)
+        if (m_Tool?.Deleted != false)
           return;
 
         if (targeted is BaseWeapon item)
@@ -251,38 +251,34 @@ namespace Server.Items
 
       public override void OnResponse(NetState state, RelayInfo info)
       {
-        if (m_Tool == null || m_Tool.Deleted || m_Target == null || m_Target.Deleted)
+          if (m_Tool?.Deleted != false || m_Target?.Deleted != false)
           return;
 
-        if (info.ButtonID == (int)Buttons.Okay)
-        {
+          if (info.ButtonID != (int)Buttons.Okay)
+          {
+              state.Mobile.SendLocalizedMessage(1072363); // The object was not engraved.
+              return;
+          }
+
           TextRelay relay = info.GetTextEntry((int)Buttons.Text);
 
-          if (relay != null)
+          if (relay == null)
+              return;
+
+          if (string.IsNullOrEmpty(relay.Text))
           {
-            if (string.IsNullOrEmpty(relay.Text))
-            {
               m_Target.EngravedText = null;
               state.Mobile.SendLocalizedMessage(1072362); // You remove the engraving from the object.
-            }
-            else
-            {
-              if (relay.Text.Length > 64)
-                m_Target.EngravedText = Utility.FixHtml(relay.Text.Substring(0, 64));
-              else
-                m_Target.EngravedText = Utility.FixHtml(relay.Text);
-
+          }
+          else
+          {
+              m_Target.EngravedText = Utility.FixHtml(relay.Text.Length > 64 ?
+                  relay.Text.Substring(0, 64) : relay.Text);
               state.Mobile.SendLocalizedMessage(1072361); // You engraved the object.
               m_Target.InvalidateProperties();
               m_Tool.UsesRemaining -= 1;
               m_Tool.InvalidateProperties();
-            }
           }
-        }
-        else
-        {
-          state.Mobile.SendLocalizedMessage(1072363); // The object was not engraved.
-        }
       }
 
       private enum Buttons
@@ -333,11 +329,10 @@ namespace Server.Items
 
       public override void OnResponse(NetState state, RelayInfo info)
       {
-        if (m_Engraver == null || m_Engraver.Deleted)
+        if (m_Engraver?.Deleted != false || info.ButtonID != (int)Buttons.Confirm)
           return;
 
-        if (info.ButtonID == (int)Buttons.Confirm)
-          m_Engraver.Recharge(state.Mobile, m_Guildmaster);
+        m_Engraver.Recharge(state.Mobile, m_Guildmaster);
       }
 
       private enum Buttons
