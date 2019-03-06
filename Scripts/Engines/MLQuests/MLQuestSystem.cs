@@ -590,7 +590,7 @@ namespace Server.Engines.MLQuests
       else if (quester is Item item)
         MessageHelper.SendLocalizedMessageTo(item, pm, cliloc, SpeechColor);
       else
-        pm.SendLocalizedMessage(cliloc, "", SpeechColor);
+        pm.SendLocalizedMessage(cliloc);
     }
 
     public static void Tell(IQuestGiver quester, PlayerMobile pm, int cliloc, string args)
@@ -602,7 +602,7 @@ namespace Server.Engines.MLQuests
       else if (quester is Item item)
         MessageHelper.SendLocalizedMessageTo(item, pm, cliloc, args, SpeechColor);
       else
-        pm.SendLocalizedMessage(cliloc, args, SpeechColor);
+        pm.SendLocalizedMessage(cliloc, args);
     }
 
     public static void Tell(IQuestGiver quester, PlayerMobile pm, string message)
