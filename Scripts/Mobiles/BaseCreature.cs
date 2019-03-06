@@ -840,7 +840,7 @@ namespace Server.Mobiles
       Ethic ourEthic = EthicAllegiance;
       Player pl = Ethics.Player.Find(m, true);
 
-      if (pl != null && pl.IsShielded && (ourEthic == null || ourEthic == pl.Ethic))
+      if (pl?.IsShielded == true && (ourEthic == null || ourEthic == pl.Ethic))
         return false;
 
       if (m is PlayerMobile mobile && mobile.HonorActive)
@@ -1008,15 +1008,8 @@ namespace Server.Mobiles
 
     public override bool CheckPoisonImmunity(Mobile from, Poison poison)
     {
-      if (base.CheckPoisonImmunity(from, poison))
-        return true;
-
-      Poison p = PoisonImmune;
-
-      if (m_Paragon)
-        p = PoisonImpl.IncreaseLevel(p);
-
-      return p != null && p.Level >= poison.Level;
+      return base.CheckPoisonImmunity(from, poison) ||
+             (m_Paragon ? PoisonImpl.IncreaseLevel(PoisonImmune) : PoisonImmune)?.Level >= poison.Level;
     }
 
     public void Unpacify()
@@ -1353,9 +1346,9 @@ namespace Server.Mobiles
       writer.Write(m_Paragon);
 
       // Version 13
-      writer.Write(Friends != null && Friends.Count > 0);
+      writer.Write(Friends?.Count > 0);
 
-      if (Friends != null && Friends.Count > 0)
+      if (Friends?.Count > 0)
         writer.Write(Friends, true);
 
       // Version 14
@@ -1735,13 +1728,13 @@ namespace Server.Mobiles
       else if (m_SummonMaster != null)
       {
         m_SummonMaster.Followers -= ControlSlots;
-        if (m_SummonMaster is PlayerMobile mobile) mobile.AllFollowers.Remove(this);
+        (m_SummonMaster as PlayerMobile)?.AllFollowers.Remove(this);
       }
 
-      if (m_ControlMaster != null && m_ControlMaster.Followers < 0)
+      if (m_ControlMaster?.Followers < 0)
         m_ControlMaster.Followers = 0;
 
-      if (m_SummonMaster != null && m_SummonMaster.Followers < 0)
+      if (m_SummonMaster?.Followers < 0)
         m_SummonMaster.Followers = 0;
     }
 
@@ -1750,12 +1743,14 @@ namespace Server.Mobiles
       if (m_ControlMaster != null)
       {
         m_ControlMaster.Followers += ControlSlots;
-        if (m_ControlMaster is PlayerMobile mobile) mobile.AllFollowers.Add(this);
+        if (m_ControlMaster is PlayerMobile mobile)
+          mobile.AllFollowers.Add(this);
       }
       else if (m_SummonMaster != null)
       {
         m_SummonMaster.Followers += ControlSlots;
-        if (m_SummonMaster is PlayerMobile mobile) mobile.AllFollowers.Add(this);
+        if (m_SummonMaster is PlayerMobile mobile)
+          mobile.AllFollowers.Add(this);
       }
     }
 
@@ -1839,20 +1834,20 @@ namespace Server.Mobiles
 
     public virtual double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly)
     {
-      if (bPlayerOnly && m.Player || !bPlayerOnly)
-        switch (acqType)
-        {
-          case FightMode.Strongest:
-            return m.Skills.Tactics.Value + m.Str; //returns strongest mobile
+      if (bPlayerOnly && !m.Player)
+        return double.MinValue;
 
-          case FightMode.Weakest:
-            return -m.Hits; // returns weakest mobile
+      switch (acqType)
+      {
+        case FightMode.Strongest:
+          return m.Skills.Tactics.Value + m.Str; //returns strongest mobile
 
-          default:
-            return -GetDistanceToSqrt(m); // returns closest mobile
-        }
+        case FightMode.Weakest:
+          return -m.Hits; // returns weakest mobile
 
-      return double.MinValue;
+        default:
+          return -GetDistanceToSqrt(m); // returns closest mobile
+      }
     }
 
     // Turn, - for left, + for right
@@ -3863,7 +3858,7 @@ namespace Server.Mobiles
 
     public virtual bool IsPetFriend(Mobile m)
     {
-      return Friends != null && Friends.Contains(m);
+      return Friends.Contains(m) == true;
     }
 
     public virtual void AddPetFriend(Mobile m)

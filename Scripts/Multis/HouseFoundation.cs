@@ -189,7 +189,7 @@ namespace Server.Multis
 
     public bool IsFixture(Item item)
     {
-      return Fixtures != null && Fixtures.Contains(item);
+      return Fixtures.Contains(item) == true;
     }
 
     public override int GetMaxUpdateRange()
@@ -294,7 +294,7 @@ namespace Server.Multis
       {
         Item item = Fixtures[i];
         item.Delete();
-        
+
         if (item is BaseDoor door)
           Doors.Remove(door);
       }
@@ -2514,7 +2514,7 @@ namespace Server.Multis
 
       m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
     }
-    
+
     public void Write(uint value)
     {
       m_PrimBuffer[0] = (byte)(value >> 24);

@@ -2063,7 +2063,7 @@ namespace Server.Mobiles
         return true;
       }
 
-      if (m_Path != null && m_Path.Goal == m)
+      if (m_Path?.Goal == m)
       {
         if (m_Path.Follow(run, 1))
         {

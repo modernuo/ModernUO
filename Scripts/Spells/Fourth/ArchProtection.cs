@@ -66,7 +66,7 @@ namespace Server.Spells.Fourth
           {
             Mobile m = targets[i];
 
-            if (m == Caster || party != null && party.Contains(m))
+            if (m == Caster || party.Contains(m) == true)
             {
               Caster.DoBeneficial(m);
               ProtectionSpell.Toggle(Caster, m);

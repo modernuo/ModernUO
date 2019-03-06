@@ -102,7 +102,7 @@ namespace Server.Mobiles
       {
         BaseHouse house = vendor.House;
 
-        if (house != null && house.IsAosRules && !house.CheckAosStorage(1 + item.TotalItems + plusItems))
+        if (house?.IsAosRules == true && !house.CheckAosStorage(1 + item.TotalItems + plusItems))
         {
           if (message)
             m.SendLocalizedMessage(1061839); // This action would exceed the secure storage limit of the house.
@@ -133,13 +133,9 @@ namespace Server.Mobiles
 
     public override bool CheckTarget(Mobile from, Target targ, object targeted)
     {
-      if (!base.CheckTarget(from, targ, targeted))
-        return false;
-
-      if (from.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      return targ.GetType().IsDefined(typeof(PlayerVendorTargetAttribute), false);
+      return base.CheckTarget(from, targ, targeted) &&
+             (from.AccessLevel >= AccessLevel.GameMaster ||
+              targ.GetType().IsDefined(typeof(PlayerVendorTargetAttribute), false));
     }
 
     public override void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
@@ -592,7 +588,7 @@ namespace Server.Mobiles
 
       if (list.Count > 0 || HoldGold > 0) // No case 1
       {
-        if ((!toBackpack || Map == Map.Internal) && House != null && House.IsAosRules) // Case 2
+        if ((!toBackpack || Map == Map.Internal) && House?.IsAosRules == true) // Case 2
         {
           if (House.IsOwner(Owner)) // Move to moving crate
           {
@@ -906,7 +902,7 @@ namespace Server.Mobiles
       if (ownerOnly)
         return IsOwner(from);
 
-      if (House != null && House.IsBanned(from) && !IsOwner(from))
+      if (House?.IsBanned(from) == true && !IsOwner(from))
       {
         from.SendLocalizedMessage(
           1062674); // You can't shop from this home as you have been banned from this establishment.
@@ -1039,7 +1035,7 @@ namespace Server.Mobiles
     {
       Container pack = Backpack;
 
-      if (pack != null && pack.Items.Count > 0)
+      if (pack?.Items.Count > 0)
       {
         SayTo(from, 1038325); // You cannot dismiss me while I am holding your goods.
         return;
@@ -1144,7 +1140,7 @@ namespace Server.Mobiles
       }
       else if (e.HasKeyword(0x3D) || e.HasKeyword(0x172) && WasNamed(e.Speech)) // vendor browse, *browse
       {
-        if (House != null && House.IsBanned(from) && !IsOwner(from))
+        if (House?.IsBanned(from) == true && !IsOwner(from))
         {
           SayTo(from, 1062674); // You can't shop from this home as you have been banned from this establishment.
         }

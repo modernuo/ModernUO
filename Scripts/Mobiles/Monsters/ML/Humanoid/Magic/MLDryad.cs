@@ -116,11 +116,8 @@ namespace Server.Mobiles
 
     public bool IsValidTarget(PlayerMobile m)
     {
-      if (m != null && m.PeacedUntil < DateTime.UtcNow && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
-          CanBeHarmful(m))
-        return true;
-
-      return false;
+      return m?.PeacedUntil < DateTime.UtcNow && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
+             CanBeHarmful(m);
     }
 
     #endregion
@@ -135,7 +132,7 @@ namespace Server.Mobiles
         return;
 
       foreach (Mobile m in GetMobilesInRange(RangePerception))
-        if (m != null && m.Player && !m.Female && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
+        if (m?.Player == true && !m.Female && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
             CanBeHarmful(m))
         {
           UndressItem(m, Layer.OuterTorso);

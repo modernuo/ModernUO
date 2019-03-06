@@ -600,7 +600,7 @@ namespace Server.Mobiles
         picked = possible[Utility.Random(possible.Length)];
         EDI test = EDI.Find(picked);
 
-        if (test != null && test.Contains(Location))
+        if (test.Contains(Location) == true)
           picked = null;
       }
 

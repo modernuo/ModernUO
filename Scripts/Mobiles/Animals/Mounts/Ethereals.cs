@@ -143,7 +143,7 @@ namespace Server.Mobiles
       if (m_Rider != null)
         m_Rider.Followers -= FollowerSlots;
 
-      if (m_Rider != null && m_Rider.Followers < 0)
+      if (m_Rider?.Followers < 0)
         m_Rider.Followers = 0;
     }
 

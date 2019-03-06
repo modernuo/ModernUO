@@ -76,7 +76,7 @@ namespace Server.Mobiles
       if (m_LastHidden != master.Hidden)
         Hidden = m_LastHidden = master.Hidden;
 
-      if (AIObject != null && AIObject.WalkMobileRange(master, 5, true, 1, 1))
+      if (AIObject?.WalkMobileRange(master, 5, true, 1, 1) == true)
       {
         Warmode = master.Warmode;
         Combatant = master.Combatant;

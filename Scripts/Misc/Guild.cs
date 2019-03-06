@@ -891,7 +891,7 @@ namespace Server.Guilds
           bool inAlliance = myAlliance?.IsMember(this) == true;
 
           AllianceInfo otherAlliance = g?.Alliance;
-          bool otherInAlliance = otherAlliance != null && otherAlliance.IsMember(this);
+          bool otherInAlliance = otherAlliance?.IsMember(this) == true;
 
           if (inAlliance)
           {
@@ -996,17 +996,12 @@ namespace Server.Guilds
 
     public bool IsAlly(Guild g)
     {
-      if (NewGuildSystem) return Alliance != null && Alliance.IsMember(this) && Alliance.IsMember(g);
-
-      return Allies.Contains(g);
+      return NewGuildSystem ? Alliance?.IsMember(this) == true && Alliance.IsMember(g) : Allies.Contains(g);
     }
 
     public bool IsEnemy(Guild g)
     {
-      if (Type != GuildType.Regular && g.Type != GuildType.Regular && Type != g.Type)
-        return true;
-
-      return IsWar(g);
+      return Type != GuildType.Regular && g.Type != GuildType.Regular && Type != g.Type || IsWar(g);
     }
 
     public bool IsWar(Guild g)
@@ -1014,18 +1009,14 @@ namespace Server.Guilds
       if (g == null)
         return false;
 
-      if (NewGuildSystem)
-      {
-        Guild guild = GetAllianceLeader(this);
-        Guild otherGuild = GetAllianceLeader(g);
+      if (!NewGuildSystem)
+        return Enemies.Contains(g);
 
-        if (guild.FindActiveWar(otherGuild) != null)
-          return true;
+      Guild guild = GetAllianceLeader(this);
+      Guild otherGuild = GetAllianceLeader(g);
 
-        return false;
-      }
+      return guild.FindActiveWar(otherGuild) != null;
 
-      return Enemies.Contains(g);
     }
 
     #endregion
@@ -1307,7 +1298,7 @@ namespace Server.Guilds
 
     public void RemoveEnemy(Guild g)
     {
-      if (Enemies != null && Enemies.Contains(g))
+      if (Enemies.Contains(g) == true)
       {
         Enemies.Remove(g);
 

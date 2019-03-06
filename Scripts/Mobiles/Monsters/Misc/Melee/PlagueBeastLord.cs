@@ -92,7 +92,7 @@ namespace Server.Mobiles
         {
           Mobile m = state.Mobile;
 
-          if (m != null && m.Player && m != from)
+          if (m?.Player == true && m != from)
             PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1071919, from.Name,
               m.NetState); // * ~1_VAL~ slices through the plague beast's amorphous tissue *
         }

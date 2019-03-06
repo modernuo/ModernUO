@@ -764,7 +764,7 @@ namespace Server.Mobiles
 
     public override bool DoActionGuard()
     {
-      if (m_LastTarget != null && m_LastTarget.Hidden)
+      if (m_LastTarget?.Hidden == true)
       {
         Map map = m_Mobile.Map;
 

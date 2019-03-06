@@ -344,7 +344,7 @@ namespace Server.Misc
       {
         Mobile master = bcTarg.GetMaster();
 
-        if (master != null && master.AccessLevel > AccessLevel.Player)
+        if (master?.AccessLevel > AccessLevel.Player)
           return Notoriety.CanBeAttacked;
 
         master = bcTarg.ControlMaster;
@@ -407,7 +407,7 @@ namespace Server.Misc
       if (CheckAggressed(source.Aggressed, target))
         return Notoriety.CanBeAttacked;
 
-      if (bcTarg != null && bcTarg.Controlled && bcTarg.ControlOrder == OrderType.Guard &&
+      if (bcTarg?.Controlled == true && bcTarg.ControlOrder == OrderType.Guard &&
           bcTarg.ControlTarget == source)
         return Notoriety.CanBeAttacked;
 
@@ -433,20 +433,18 @@ namespace Server.Misc
       if (m != null && house.IsFriend(m))
         return false;
 
-      if (m is BaseCreature c && !c.Deleted && c.Controlled && c.ControlMaster != null)
-        return !house.IsFriend(c.ControlMaster);
-
-      return true;
+      return !(m is BaseCreature c) || c.Deleted || !c.Controlled || c.ControlMaster == null ||
+             !house.IsFriend(c.ControlMaster);
     }
 
     public static bool IsPet(BaseCreature c)
     {
-      return c != null && c.Controlled;
+      return c?.Controlled == true;
     }
 
     public static bool IsSummoned(BaseCreature c)
     {
-      return c != null && /*c.Controlled &&*/ c.Summoned;
+      return c?.Summoned == true;
     }
 
     public static bool CheckAggressor(List<AggressorInfo> list, Mobile target)

@@ -170,7 +170,7 @@ namespace Server.Mobiles
 
     public override bool OnBeforeDeath()
     {
-      if (m_Focus != null && m_Focus.Alive)
+      if (m_Focus?.Alive == true)
         new AvengeTimer(m_Focus).Start(); // If a guard dies, three more guards will spawn
 
       return base.OnBeforeDeath();

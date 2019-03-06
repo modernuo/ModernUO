@@ -107,12 +107,12 @@ namespace Server.Mobiles
       {
         Item disarm = m.FindItemOnLayer(Layer.OneHanded);
 
-        if (disarm != null && disarm.Movable)
+        if (disarm?.Movable == true)
           m.AddToBackpack(disarm);
 
         disarm = m.FindItemOnLayer(Layer.TwoHanded);
 
-        if (disarm != null && disarm.Movable)
+        if (disarm?.Movable == true)
           m.AddToBackpack(disarm);
 
         m.BodyMod = 42;
