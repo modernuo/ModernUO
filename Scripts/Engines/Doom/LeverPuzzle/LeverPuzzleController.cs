@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Commands;
 using Server.Mobiles;
 using Server.Network;
@@ -181,12 +182,11 @@ namespace Server.Engines.Doom
     [Description("Generates lamp room and lever puzzle in doom.")]
     public static void GenLampPuzzle_OnCommand(CommandEventArgs e)
     {
-      foreach (Item item in Map.Malas.GetItemsInRange(lp_Center, 0))
-        if (item is LeverPuzzleController)
-        {
-          e.Mobile.SendMessage("Lamp room puzzle already exists: please delete the existing controller first ...");
-          return;
-        }
+      if (Map.Malas.GetItemsInRange(lp_Center, 0).OfType<LeverPuzzleController>().Any())
+      {
+        e.Mobile.SendMessage("Lamp room puzzle already exists: please delete the existing controller first ...");
+        return;
+      }
 
       e.Mobile.SendMessage("Generating Lamp Room puzzle...");
       new LeverPuzzleController().MoveToWorld(lp_Center, Map.Malas);
@@ -548,8 +548,8 @@ namespace Server.Engines.Doom
             {
               IEntity m_IEntity = new Entity(Serial.Zero, RandomPointIn(m_Player.Location, 10), m_Player.Map);
 
-              List<Mobile> mobiles = new List<Mobile>();
-              foreach (Mobile m in m_IEntity.Map.GetMobilesInRange(m_IEntity.Location, 2)) mobiles.Add(m);
+              List<Mobile> mobiles = m_IEntity.Map.GetMobilesInRange(m_IEntity.Location, 2).ToList();
+
               for (int k = 0; k < mobiles.Count; k++)
                 if (IsValidDamagable(mobiles[k]) && mobiles[k] != m_Player)
                 {

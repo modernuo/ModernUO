@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Commands;
 
 namespace Server.Items
@@ -107,16 +108,10 @@ namespace Server.Items
     private static bool FindMarkContainer(Point3D p, Map map)
     {
       IPooledEnumerable<MarkContainer> eable = map.GetItemsInRange<MarkContainer>(p, 0);
-
-      foreach (Item item in eable)
-        if (item.Z == p.Z)
-        {
-          eable.Free();
-          return true;
-        }
-
+      bool found = eable.Any(item => item.Z == p.Z);
       eable.Free();
-      return false;
+
+      return found;
     }
 
     private static void CreateMalasPassage(int x, int y, int z, int xTarget, int yTarget, int zTarget, bool bone,

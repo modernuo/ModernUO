@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 
@@ -91,23 +92,14 @@ namespace Server.Spells.Spellweaving
           return true;
       }
 
-      IPooledEnumerable<Item> eable = map.GetItemsInRange(location, 0); // Added  Tiles
+      IPooledEnumerable<Item> eable = map.GetItemsInRange(location, 0);
 
-      foreach (Item item in eable)
-      {
-        ItemData id = item.ItemData;
-
-        if (item.Z + id.CalcHeight != location.Z)
-          continue;
-        if (IsValidTile(item.ItemID))
-        {
-          eable.Free();
-          return true;
-        }
-      }
+      bool found = eable.Any(item =>
+        item.Z + item.ItemData.CalcHeight == location.Z && IsValidTile(item.ItemID));
 
       eable.Free();
-      return false;
+
+      return found;
     }
 
     public static bool IsValidTile(int itemID)
@@ -123,11 +115,10 @@ namespace Server.Spells.Spellweaving
       List<Mobile> weavers = new List<Mobile> { Caster };
 
       //OSI Verified: Even enemies/combatants count
-      foreach (Mobile m in Caster.GetMobilesInRange(1)) //Range verified as 1
-        if (m != Caster && m is PlayerMobile && Caster.CanBeBeneficial(m, false) &&
-            Math.Abs(Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value) <= 20)
-          weavers.Add(m);
       // Everyone gets the Arcane Focus, power capped elsewhere
+      weavers.AddRange(Caster.GetMobilesInRange(1)
+        .Where(m => m != Caster && m is PlayerMobile && Caster.CanBeBeneficial(m, false) &&
+          Math.Abs(Caster.Skills.Spellweaving.Value - m.Skills.Spellweaving.Value) <= 20));
 
       return weavers;
     }

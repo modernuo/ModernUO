@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -123,11 +124,8 @@ namespace Server.Items
           }
           else if (RootParent == null)
           {
-            List<Mobile> toDamage = new List<Mobile>();
             IPooledEnumerable<Mobile> eable = Map.GetMobilesInRange(Location, 1);
-
-            foreach (Mobile m in eable)
-              toDamage.Add(m);
+            List<Mobile> toDamage = eable.ToList();
 
             eable.Free();
 

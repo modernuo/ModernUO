@@ -493,15 +493,14 @@ namespace Server
     {
       List<Mobile> list = new List<Mobile>();
 
-      if (Sectors != null)
-        for (int i = 0; i < Sectors.Length; i++)
-        {
-          Sector sector = Sectors[i];
+      for (int i = 0; i < Sectors?.Length; i++)
+      {
+        Sector sector = Sectors[i];
 
-          foreach (Mobile player in sector.Players)
-            if (player.Region.IsPartOf(this))
-              list.Add(player);
-        }
+        foreach (Mobile player in sector.Players)
+          if (player.Region.IsPartOf(this))
+            list.Add(player);
+      }
 
       return list;
     }
@@ -510,16 +509,14 @@ namespace Server
     {
       int count = 0;
 
-      if (Sectors != null)
-        for (int i = 0; i < Sectors.Length; i++)
-        {
-          Sector sector = Sectors[i];
+      for (int i = 0; i < Sectors?.Length; i++)
+      {
+        Sector sector = Sectors[i];
 
-          foreach (Mobile player in sector.Players)
-            if (player.Region.IsPartOf(this))
-              count++;
-        }
-
+        foreach (Mobile player in sector.Players)
+          if (player.Region.IsPartOf(this))
+            count++;
+      }
       return count;
     }
 
@@ -527,16 +524,14 @@ namespace Server
     {
       List<Mobile> list = new List<Mobile>();
 
-      if (Sectors != null)
-        for (int i = 0; i < Sectors.Length; i++)
-        {
-          Sector sector = Sectors[i];
+      for (int i = 0; i < Sectors?.Length; i++)
+      {
+        Sector sector = Sectors[i];
 
-          foreach (Mobile mobile in sector.Mobiles)
-            if (mobile.Region.IsPartOf(this))
-              list.Add(mobile);
-        }
-
+        foreach (Mobile mobile in sector.Mobiles)
+          if (mobile.Region.IsPartOf(this))
+            list.Add(mobile);
+      }
       return list;
     }
 
@@ -544,15 +539,14 @@ namespace Server
     {
       int count = 0;
 
-      if (Sectors != null)
-        for (int i = 0; i < Sectors.Length; i++)
-        {
-          Sector sector = Sectors[i];
+      for (int i = 0; i < Sectors?.Length; i++)
+      {
+        Sector sector = Sectors[i];
 
-          foreach (Mobile mobile in sector.Mobiles)
-            if (mobile.Region.IsPartOf(this))
-              count++;
-        }
+        foreach (Mobile mobile in sector.Mobiles)
+          if (mobile.Region.IsPartOf(this))
+            count++;
+      }
 
       return count;
     }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -37,36 +38,23 @@ namespace Server.Spells.Sixth
 
         SpellHelper.GetSurfaceTop(ref p);
 
-        List<Mobile> targets = new List<Mobile>();
-
         Map map = Caster.Map;
 
         if (map != null)
         {
-          IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p),
-            1 + (int)(Caster.Skills.Magery.Value / 20.0));
+          IEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p),
+            1 + (int)(Caster.Skills.Magery.Value / 20.0))
+            .Where(m => !(m is ShadowKnight) || (m.X == p.X && m.Y == p.Y)).Where(m => m.Hidden && (m.AccessLevel == AccessLevel.Player || Caster.AccessLevel > m.AccessLevel) && CheckDifficulty(Caster, m));
+
+          // eable.Free();
 
           foreach (Mobile m in eable)
           {
-            if (m is ShadowKnight && (m.X != p.X || m.Y != p.Y))
-              continue;
+            m.RevealingAction();
 
-            if (m.Hidden && (m.AccessLevel == AccessLevel.Player || Caster.AccessLevel > m.AccessLevel) &&
-                CheckDifficulty(Caster, m))
-              targets.Add(m);
+            m.FixedParticles(0x375A, 9, 20, 5049, EffectLayer.Head);
+            m.PlaySound(0x1FD);
           }
-
-          eable.Free();
-        }
-
-        for (int i = 0; i < targets.Count; ++i)
-        {
-          Mobile m = targets[i];
-
-          m.RevealingAction();
-
-          m.FixedParticles(0x375A, 9, 20, 5049, EffectLayer.Head);
-          m.PlaySound(0x1FD);
         }
       }
 

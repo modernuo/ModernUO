@@ -130,10 +130,7 @@ namespace Server.Accounting
 				if ( !isBanned )
 					return false;
 
-				DateTime banTime;
-				TimeSpan banDuration;
-
-				if ( GetBanTags( out banTime, out banDuration ) )
+        if ( GetBanTags( out DateTime banTime, out TimeSpan banDuration ) )
 				{
 					if ( banDuration != TimeSpan.MaxValue && DateTime.UtcNow >= ( banTime + banDuration ) )
 					{
@@ -695,9 +692,7 @@ namespace Server.Accounting
 				{
 					if ( count < list.Length )
 					{
-						IPAddress address;
-
-						if ( IPAddress.TryParse( Utility.GetText( ip, null ), out address ) )
+            if ( IPAddress.TryParse( Utility.GetText( ip, null ), out IPAddress address ) )
 						{
 							list[count] = Utility.Intern( address );
 							count++;

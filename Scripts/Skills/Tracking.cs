@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Network;
 using Server.Spells;
@@ -191,14 +192,9 @@ namespace Server.SkillHandlers
 
       int range = 10 + (int)(from.Skills.Tracking.Value / 10);
 
-      List<Mobile> list = new List<Mobile>();
-
-      foreach (Mobile m in from.GetMobilesInRange(range))
-        // Ghosts can no longer be tracked
-        if (m != from && (!Core.AOS || m.Alive) &&
-            (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) && check(m) &&
-            CheckDifficulty(from, m))
-          list.Add(m);
+      List<Mobile> list = @from.GetMobilesInRange(range)
+        .Where(m => m != @from && (!Core.AOS || m.Alive) && (!m.Hidden || m.AccessLevel == AccessLevel.Player || @from.AccessLevel > m.AccessLevel) && check(m) && CheckDifficulty(@from, m))
+        .ToList();
 
       if (list.Count > 0)
       {

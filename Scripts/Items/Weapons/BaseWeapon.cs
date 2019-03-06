@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
@@ -1048,31 +1049,13 @@ namespace Server.Items
       if (master == null)
         return 0;
 
-      int inPack = 1;
-
       IPooledEnumerable<BaseCreature> eable = defender.GetMobilesInRange<BaseCreature>(1);
-      foreach (BaseCreature m in eable)
-        if (m != attacker)
-        {
-          if ((m.PackInstinct & bc.PackInstinct) == 0 || !m.Controlled && !m.Summoned)
-            continue;
-
-          if (master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender)
-            ++inPack;
-        }
+      int inPack = 1 + eable.Where(m => m != attacker && (m.PackInstinct & bc.PackInstinct) != 0 && (m.Controlled || m.Summoned))
+                     .Count(m => master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender);
 
       eable.Free();
 
-      if (inPack >= 5)
-        return 100;
-      if (inPack >= 4)
-        return 75;
-      if (inPack >= 3)
-        return 50;
-      if (inPack >= 2)
-        return 25;
-
-      return 0;
+      return inPack >= 5 ? 100 : inPack >= 4 ? 75 : inPack >= 3 ? 50 : inPack >= 2 ? 25 : 0;
     }
 
     public virtual void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1.0)
@@ -3092,15 +3075,12 @@ namespace Server.Items
       if (map == null)
         return;
 
-      List<Mobile> list = new List<Mobile>();
-
       int range = Core.ML ? 5 : 10;
 
       IPooledEnumerable<Mobile> eable = from.GetMobilesInRange(range);
-      foreach (Mobile m in eable)
-        if (from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false) &&
-            (!Core.ML || from.InLOS(m)))
-          list.Add(m);
+      List<Mobile> list = eable.Where(m =>
+        @from != m && defender != m && SpellHelper.ValidIndirectTarget(@from, m)
+        && @from.CanBeHarmful(m, false) && (!Core.ML || @from.InLOS(m))).ToList();
       eable.Free();
 
       if (list.Count == 0)

@@ -280,10 +280,8 @@ namespace Server.Gumps
 
 				text = text.Trim();
 
-				int price;
-
-                if ( !int.TryParse( text, out price ) )
-                    price = -1;
+        if ( !int.TryParse( text, out int price ) )
+          price = -1;
 
 				if ( price < 0 )
 				{
@@ -500,10 +498,8 @@ namespace Server.Gumps
 
 				text = text.Trim();
 
-				int price;
-
-                if ( !int.TryParse( text, out price ) )
-                    price = -1;
+        if ( !int.TryParse( text, out int price ) )
+          price = -1;
 
 				if ( price < 0 )
 				{

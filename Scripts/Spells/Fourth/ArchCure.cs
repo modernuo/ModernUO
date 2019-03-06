@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -57,14 +58,7 @@ namespace Server.Spells.Fourth
 
           IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), 2);
 
-          foreach (Mobile m in eable)
-          {
-            if (m == directTarget)
-              continue;
-
-            if (AreaCanTarget(m, feluccaRules))
-              targets.Add(m);
-          }
+          targets.AddRange(eable.Where(m => m != directTarget).Where(m => AreaCanTarget(m, feluccaRules)));
 
           eable.Free();
         }

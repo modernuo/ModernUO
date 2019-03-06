@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Spells;
 
 namespace Server.Items
@@ -33,42 +34,30 @@ namespace Server.Items
       attacker.FixedEffect(0x3728, 10, 15);
       attacker.PlaySound(0x2A1);
 
-      List<Mobile> list = new List<Mobile>();
+      List<Mobile> targets = attacker.GetMobilesInRange(1).Where(m =>
+        m?.Deleted == false && m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) &&
+        m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
+        attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m)).ToList();
 
-      foreach (Mobile m in attacker.GetMobilesInRange(1))
-        list.Add(m);
+      if (targets.Count <= 0)
+        return;
 
-      List<Mobile> targets = new List<Mobile>();
+      double bushido = attacker.Skills.Bushido.Value;
+      double damageBonus = 1.0 + Math.Pow(targets.Count * bushido / 60, 2) / 100;
 
-      for (int i = 0; i < list.Count; ++i)
+      if (damageBonus > 2.0)
+        damageBonus = 2.0;
+
+      attacker.RevealingAction();
+
+      for (int i = 0; i < targets.Count; ++i)
       {
-        Mobile m = list[i];
+        Mobile m = targets[i];
 
-        if (m?.Deleted == false && m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) &&
-            m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
-            attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m))
-          targets.Add(m);
-      }
+        attacker.SendLocalizedMessage(1060161); // The whirling attack strikes a target!
+        m.SendLocalizedMessage(1060162); // You are struck by the whirling attack and take damage!
 
-      if (targets.Count > 0)
-      {
-        double bushido = attacker.Skills.Bushido.Value;
-        double damageBonus = 1.0 + Math.Pow(targets.Count * bushido / 60, 2) / 100;
-
-        if (damageBonus > 2.0)
-          damageBonus = 2.0;
-
-        attacker.RevealingAction();
-
-        for (int i = 0; i < targets.Count; ++i)
-        {
-          Mobile m = targets[i];
-
-          attacker.SendLocalizedMessage(1060161); // The whirling attack strikes a target!
-          m.SendLocalizedMessage(1060162); // You are struck by the whirling attack and take damage!
-
-          weapon.OnHit(attacker, m, damageBonus);
-        }
+        weapon.OnHit(attacker, m, damageBonus);
       }
     }
   }

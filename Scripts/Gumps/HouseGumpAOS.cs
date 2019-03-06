@@ -258,11 +258,9 @@ namespace Server.Gumps
           AddHtmlLocalized( 10, 230, 275, 20, 1011240, LabelColor, false, false ); // Maximum number of secure containers:
           AddLabel( 310, 230, LabelHue, m_House.MaxSecures.ToString() );*/
 
-          int fromSecures, fromVendors, fromLockdowns, fromMovingCrate;
-
           int maxSecures = house.GetAosMaxSecures();
-          int curSecures = house.GetAosCurSecures(out fromSecures, out fromVendors, out fromLockdowns,
-            out fromMovingCrate);
+          int curSecures = house.GetAosCurSecures(out int fromSecures, out int fromVendors, out int fromLockdowns,
+            out int fromMovingCrate);
 
           int maxLockdowns = house.GetAosMaxLockdowns();
           int curLockdowns = house.GetAosCurLockdowns();

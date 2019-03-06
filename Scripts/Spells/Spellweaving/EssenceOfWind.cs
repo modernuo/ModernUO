@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Spells.Spellweaving
 {
@@ -34,17 +35,11 @@ namespace Server.Spells.Spellweaving
         int fcMalus = FocusLevel + 1;
         int ssiMalus = 2 * (FocusLevel + 1);
 
-        List<Mobile> targets = new List<Mobile>();
+        IEnumerable<Mobile> eable = Caster.GetMobilesInRange(range)
+          .Where(m => Caster != m && Caster.InLOS(m) && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false));
 
-        foreach (Mobile m in Caster.GetMobilesInRange(range))
-          if (Caster != m && Caster.InLOS(m) && SpellHelper.ValidIndirectTarget(Caster, m) &&
-              Caster.CanBeHarmful(m, false))
-            targets.Add(m);
-
-        for (int i = 0; i < targets.Count; i++)
+        foreach (Mobile m in eable)
         {
-          Mobile m = targets[i];
-
           Caster.DoHarmful(m);
 
           SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);

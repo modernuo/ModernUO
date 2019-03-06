@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -405,15 +406,9 @@ namespace Server.Engines.ConPVP
 
           if (landTile.ID == 0x244 && statics.Length == 0) // 0x244 = invalid land tile
           {
-            bool empty = true;
             IPooledEnumerable<Item> eable = Map.GetItemsInRange(point, 0);
 
-            foreach (Item item in eable)
-              if (item != this)
-              {
-                empty = false;
-                break;
-              }
+            bool empty = eable.All(item => item == this);
 
             eable.Free();
 

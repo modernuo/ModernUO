@@ -125,14 +125,12 @@ namespace Server.Engines.Plants
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      string args;
-      list.Add(GetLabel(out args), args);
+      list.Add(GetLabel(out string args), args);
     }
 
     public override void OnSingleClick(Mobile from)
     {
-      string args;
-      LabelTo(from, GetLabel(out args), args);
+      LabelTo(from, GetLabel(out string args), args);
     }
 
     public override void OnDoubleClick(Mobile from)

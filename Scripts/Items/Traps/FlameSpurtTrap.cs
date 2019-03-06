@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Spells;
 
 namespace Server.Items
@@ -81,24 +82,13 @@ namespace Server.Items
       if (Deleted)
         return;
 
-      bool foundPlayer = false;
-
-      foreach (Mobile mob in GetMobilesInRange(3))
-      {
-        if (!mob.Player || !mob.Alive || mob.AccessLevel > AccessLevel.Player)
-          continue;
-
-        if (Z + 8 >= mob.Z && mob.Z + 16 > Z)
-        {
-          foundPlayer = true;
-          break;
-        }
-      }
+      bool foundPlayer = GetMobilesInRange(3)
+        .Where(mob => mob.Player && mob.Alive && mob.AccessLevel <= AccessLevel.Player)
+        .Any(mob => Z + 8 >= mob.Z && mob.Z + 16 > Z);
 
       if (!foundPlayer)
       {
         m_Spurt?.Delete();
-
         m_Spurt = null;
       }
       else if (m_Spurt?.Deleted != false)

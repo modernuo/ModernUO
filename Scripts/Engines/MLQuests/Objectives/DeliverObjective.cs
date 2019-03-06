@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -148,12 +149,7 @@ namespace Server.Engines.MLQuests.Objectives
         return 0;
 
       Item[] items = pack.FindItemsByType(Objective.Delivery, false); // Note: subclasses are included
-      int total = 0;
-
-      foreach (Item item in items)
-        total += item.Amount;
-
-      return total;
+      return items.Sum(item => item.Amount);
     }
 
     public override bool OnBeforeClaimReward()

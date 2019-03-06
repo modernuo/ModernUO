@@ -1016,13 +1016,8 @@ namespace Server.Multis
       Point2D end = new Point2D(X + Components.Max.X + 1, Y + Components.Max.Y + 1);
       Rectangle2D rect = new Rectangle2D(start, end);
 
-      List<Item> list = new List<Item>();
-
       IPooledEnumerable<Item> eable = Map.GetItemsInBounds(rect);
-
-      foreach (Item item in eable)
-        if (item.Movable && IsInside(item))
-          list.Add(item);
+      List<Item> list = eable.Where(item => item.Movable && IsInside(item)).ToList();
 
       eable.Free();
 

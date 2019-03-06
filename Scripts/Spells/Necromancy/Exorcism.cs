@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.CannedEvil;
 using Server.Engines.PartySystem;
 using Server.Factions;
@@ -98,17 +99,11 @@ namespace Server.Spells.Necromancy
 
         if (map != null)
         {
-          List<Mobile> targets = new List<Mobile>();
+          IEnumerable<Mobile> targets = r.ChampionSpawn.GetMobilesInRange(Range).Where(IsValidTarget);
 
-          foreach (Mobile m in r.ChampionSpawn.GetMobilesInRange(Range))
-            if (IsValidTarget(m))
-              targets.Add(m);
-
-          for (int i = 0; i < targets.Count; ++i)
+          foreach (Mobile m in targets)
           {
-            Mobile m = targets[i];
-
-            //Suprisingly, no sparkle type effects
+            //Surprisingly, no sparkle type effects
 
             m.Location = GetNearestShrine(m);
           }

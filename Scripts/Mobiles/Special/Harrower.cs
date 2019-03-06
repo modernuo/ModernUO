@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Spells;
 
@@ -525,61 +526,55 @@ namespace Server.Mobiles
         if (0.25 < Utility.RandomDouble())
           return;
 
-        Mobile toTeleport = null;
+        Mobile toTeleport = m_Owner.GetMobilesInRange(16)
+          .FirstOrDefault(m => m != m_Owner && m.Player && m_Owner.CanBeHarmful(m) && m_Owner.CanSee(m));
 
-        foreach (Mobile m in m_Owner.GetMobilesInRange(16))
-          if (m != m_Owner && m.Player && m_Owner.CanBeHarmful(m) && m_Owner.CanSee(m))
+        if (toTeleport == null)
+          return;
+
+        int offset = Utility.Random(8) * 2;
+
+        Point3D to = m_Owner.Location;
+
+        for (int i = 0; i < m_Offsets.Length; i += 2)
+        {
+          int x = m_Owner.X + m_Offsets[(offset + i) % m_Offsets.Length];
+          int y = m_Owner.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
+
+          if (map.CanSpawnMobile(x, y, m_Owner.Z))
           {
-            toTeleport = m;
+            to = new Point3D(x, y, m_Owner.Z);
             break;
           }
 
-        if (toTeleport != null)
-        {
-          int offset = Utility.Random(8) * 2;
+          int z = map.GetAverageZ(x, y);
 
-          Point3D to = m_Owner.Location;
-
-          for (int i = 0; i < m_Offsets.Length; i += 2)
+          if (map.CanSpawnMobile(x, y, z))
           {
-            int x = m_Owner.X + m_Offsets[(offset + i) % m_Offsets.Length];
-            int y = m_Owner.Y + m_Offsets[(offset + i + 1) % m_Offsets.Length];
-
-            if (map.CanSpawnMobile(x, y, m_Owner.Z))
-            {
-              to = new Point3D(x, y, m_Owner.Z);
-              break;
-            }
-
-            int z = map.GetAverageZ(x, y);
-
-            if (map.CanSpawnMobile(x, y, z))
-            {
-              to = new Point3D(x, y, z);
-              break;
-            }
+            to = new Point3D(x, y, z);
+            break;
           }
-
-          Mobile m = toTeleport;
-
-          Point3D from = m.Location;
-
-          m.Location = to;
-
-          SpellHelper.Turn(m_Owner, toTeleport);
-          SpellHelper.Turn(toTeleport, m_Owner);
-
-          m.ProcessDelta();
-
-          Effects.SendLocationParticles(EffectItem.Create(from, m.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
-            2023);
-          Effects.SendLocationParticles(EffectItem.Create(to, m.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
-            5023);
-
-          m.PlaySound(0x1FE);
-
-          m_Owner.Combatant = toTeleport;
         }
+
+        Mobile m = toTeleport;
+
+        Point3D from = m.Location;
+
+        m.Location = to;
+
+        SpellHelper.Turn(m_Owner, toTeleport);
+        SpellHelper.Turn(toTeleport, m_Owner);
+
+        m.ProcessDelta();
+
+        Effects.SendLocationParticles(EffectItem.Create(@from, m.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+          2023);
+        Effects.SendLocationParticles(EffectItem.Create(to, m.Map, EffectItem.DefaultDuration), 0x3728, 10, 10,
+          5023);
+
+        m.PlaySound(0x1FE);
+
+        m_Owner.Combatant = toTeleport;
       }
     }
 

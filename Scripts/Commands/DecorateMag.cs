@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
 using Server.Items;
@@ -899,12 +900,11 @@ namespace Server.Commands
       {
         eable = map.GetItemsInRange(new Point3D(x, y, z), 0);
 
-        foreach (Item item in eable)
-          if (item.Z == z && item.ItemID == itemID)
-          {
-            eable.Free();
-            return true;
-          }
+        if (eable.Any(item => item.Z == z && item.ItemID == itemID))
+        {
+          eable.Free();
+          return true;
+        }
       }
 
       eable.Free();
@@ -1064,11 +1064,9 @@ namespace Server.Commands
   {
     public DecorationEntryMag(string line)
     {
-      string x, y, z;
-
-      Pop(out x, ref line);
-      Pop(out y, ref line);
-      Pop(out z, ref line);
+      Pop(out string x, ref line);
+      Pop(out string y, ref line);
+      Pop(out string z, ref line);
 
       Location = new Point3D(Utility.ToInt32(x), Utility.ToInt32(y), Utility.ToInt32(z));
       Extra = line;

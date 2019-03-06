@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Targeting;
 
 namespace Server.Spells.Sixth
@@ -45,36 +46,26 @@ namespace Server.Spells.Sixth
 
         if (map != null)
         {
-          IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), 2);
+          IEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), 2)
+          .Where(m => !Core.AOS || m != Caster).Where(m => SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanSee(m) && Caster.CanBeHarmful(m, false));
+
+          // eable.Free();
 
           foreach (Mobile m in eable)
           {
-            if (Core.AOS && m == Caster)
-              continue;
+            Caster.DoHarmful(m);
 
-            if (SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanSee(m) && Caster.CanBeHarmful(m, false))
-              targets.Add(m);
+            SpellHelper.AddStatCurse(Caster, m, StatType.Str);
+            SpellHelper.DisableSkillCheck = true;
+            SpellHelper.AddStatCurse(Caster, m, StatType.Dex);
+            SpellHelper.AddStatCurse(Caster, m, StatType.Int);
+            SpellHelper.DisableSkillCheck = false;
+
+            m.FixedParticles(0x374A, 10, 15, 5028, EffectLayer.Waist);
+            m.PlaySound(0x1FB);
+
+            HarmfulSpell(m);
           }
-
-          eable.Free();
-        }
-
-        for (int i = 0; i < targets.Count; ++i)
-        {
-          Mobile m = targets[i];
-
-          Caster.DoHarmful(m);
-
-          SpellHelper.AddStatCurse(Caster, m, StatType.Str);
-          SpellHelper.DisableSkillCheck = true;
-          SpellHelper.AddStatCurse(Caster, m, StatType.Dex);
-          SpellHelper.AddStatCurse(Caster, m, StatType.Int);
-          SpellHelper.DisableSkillCheck = false;
-
-          m.FixedParticles(0x374A, 10, 15, 5028, EffectLayer.Waist);
-          m.PlaySound(0x1FB);
-
-          HarmfulSpell(m);
         }
       }
 

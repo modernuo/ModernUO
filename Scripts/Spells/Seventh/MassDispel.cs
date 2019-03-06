@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
@@ -40,44 +41,34 @@ namespace Server.Spells.Seventh
 
         SpellHelper.GetSurfaceTop(ref p);
 
-        List<Mobile> targets = new List<Mobile>();
-
         Map map = Caster.Map;
 
         if (map != null)
         {
-          IPooledEnumerable<BaseCreature> eable = map.GetMobilesInRange<BaseCreature>(new Point3D(p), 8);
+          IEnumerable<BaseCreature> eable = map.GetMobilesInRange<BaseCreature>(new Point3D(p), 8)
+            .Where(m => m.IsDispellable && Caster.CanBeHarmful(m, false));
 
-          foreach (BaseCreature m in eable)
-            if (m.IsDispellable && Caster.CanBeHarmful(m, false))
-              targets.Add(m);
+          // eable.Free(); Needed?
 
-          eable.Free();
-        }
-
-        for (int i = 0; i < targets.Count; ++i)
-        {
-          Mobile m = targets[i];
-
-          if (!(m is BaseCreature bc))
-            continue;
-
-          double dispelChance =
-            (50.0 + 100 * (Caster.Skills.Magery.Value - bc.DispelDifficulty) / (bc.DispelFocus * 2)) / 100;
-
-          if (dispelChance > Utility.RandomDouble())
+          foreach (BaseCreature bc in eable)
           {
-            Effects.SendLocationParticles(EffectItem.Create(m.Location, m.Map, EffectItem.DefaultDuration),
-              0x3728, 8, 20, 5042);
-            Effects.PlaySound(m, m.Map, 0x201);
+            double dispelChance =
+              (50.0 + 100 * (Caster.Skills.Magery.Value - bc.DispelDifficulty) / (bc.DispelFocus * 2)) / 100;
 
-            m.Delete();
-          }
-          else
-          {
-            Caster.DoHarmful(m);
+            if (dispelChance > Utility.RandomDouble())
+            {
+              Effects.SendLocationParticles(EffectItem.Create(bc.Location, bc.Map, EffectItem.DefaultDuration),
+                0x3728, 8, 20, 5042);
+              Effects.PlaySound(bc, bc.Map, 0x201);
 
-            m.FixedEffect(0x3779, 10, 20);
+              bc.Delete();
+            }
+            else
+            {
+              Caster.DoHarmful(bc);
+
+              bc.FixedEffect(0x3779, 10, 20);
+            }
           }
         }
       }

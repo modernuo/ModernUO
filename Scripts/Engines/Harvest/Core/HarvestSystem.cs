@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Targeting;
 
@@ -279,18 +280,8 @@ namespace Server.Engines.Harvest
       if (map == null)
         return false;
 
-      List<Item> atFeet = new List<Item>();
-
-      foreach (Item obj in m.GetItemsInRange(0))
-        atFeet.Add(obj);
-
-      for (int i = 0; i < atFeet.Count; ++i)
-      {
-        Item check = atFeet[i];
-
-        if (check.StackWith(m, item, false))
-          return true;
-      }
+      if (m.GetItemsInRange(0).Any(t => t.StackWith(m, item, false)))
+        return true;
 
       item.MoveToWorld(m.Location, map);
       return true;

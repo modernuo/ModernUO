@@ -444,12 +444,13 @@ namespace Server.Mobiles
       {
         IPooledEnumerable<Mobile> mobiles = Map.GetMobilesInRange(location, 0);
 
-        foreach (Mobile m in mobiles)
-          if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
-          {
-            mobiles.Free();
-            return false;
-          }
+        bool found = mobiles.Any(m =>
+          m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player));
+
+        mobiles.Free();
+
+        if (found)
+          return false;
 
         mobiles.Free();
       }

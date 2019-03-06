@@ -1255,7 +1255,6 @@ namespace Server.Multis
       }
 
       eable.Free();
-
       return true;
     }
 

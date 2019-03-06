@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
@@ -3004,15 +3005,8 @@ namespace Server.Mobiles
 
     public virtual bool Rummage()
     {
-      Corpse toRummage = null;
-
       IPooledEnumerable<Corpse> eable = GetItemsInRange<Corpse>(2);
-      foreach (Corpse item in eable)
-        if (item.Items.Count > 0)
-        {
-          toRummage = item;
-          break;
-        }
+      Corpse toRummage = eable.FirstOrDefault(item => item.Items.Count > 0);
 
       eable.Free();
 
@@ -3030,7 +3024,7 @@ namespace Server.Mobiles
       {
         Item item = items[Utility.Random(items.Count)];
 
-        Lift(item, item.Amount, out bool rejected, out LRReason reason);
+        Lift(item, item.Amount, out bool rejected, out LRReason _);
 
         if (!rejected && Drop(this, new Point3D(-1, -1, 0)))
         {

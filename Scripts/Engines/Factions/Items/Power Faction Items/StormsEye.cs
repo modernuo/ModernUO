@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Factions;
 using Server.Spells;
 using Server.Targeting;
@@ -58,13 +59,9 @@ namespace Server
 
                 Timer.DelayCall(TimeSpan.FromSeconds(1.0), delegate
                 {
-                  List<Mobile> targets = new List<Mobile>();
-
-                  foreach (Mobile mob in facet.GetMobilesInRange(origin, 12))
-                    if (from.CanBeHarmful(mob, false) &&
-                        mob.InLOS(new Point3D(origin, origin.Z + 1)))
-                      if (Faction.Find(mob) != null)
-                        targets.Add(mob);
+                  List<Mobile> targets = facet.GetMobilesInRange(origin, 12).Where(mob =>
+                    from.CanBeHarmful(mob, false) && mob.InLOS(new Point3D(origin, origin.Z + 1)) &&
+                    Faction.Find(mob) != null).ToList();
 
                   foreach (Mobile mob in targets)
                   {
@@ -72,7 +69,8 @@ namespace Server
 
                     if (!mob.Player && damage < 10)
                       damage = 10;
-                    else if (damage > 75) damage = 75;
+                    else if (damage > 75)
+                      damage = 75;
 
                     Effects.SendMovingEffect(
                       new Entity(Serial.Zero, new Point3D(origin, origin.Z + 4), facet), mob,

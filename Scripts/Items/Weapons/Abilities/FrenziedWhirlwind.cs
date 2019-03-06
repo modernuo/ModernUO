@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Spells;
 
 namespace Server.Items
@@ -37,22 +38,10 @@ namespace Server.Items
       if (!(map != null && attacker.Weapon is BaseWeapon weapon))
         return;
 
-      List<Mobile> list = new List<Mobile>();
-
-      foreach (Mobile m in attacker.GetMobilesInRange(1))
-        list.Add(m);
-
-      List<Mobile> targets = new List<Mobile>();
-
-      for (int i = 0; i < list.Count; ++i)
-      {
-        Mobile m = list[i];
-
-        if (m?.Deleted == false && m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) &&
-            m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
-            attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m))
-            targets.Add(m);
-      }
+      List<Mobile> targets = attacker.GetMobilesInRange(1).Where(m =>
+        m?.Deleted == false && m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) &&
+        m.Map == attacker.Map && m.Alive && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&
+        attacker.InRange(m, weapon.MaxRange) && attacker.InLOS(m)).ToList();
 
       if (targets.Count == 0 || !CheckMana(attacker, true))
         return;

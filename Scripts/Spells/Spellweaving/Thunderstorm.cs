@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Spells.Spellweaving
 {
@@ -46,17 +47,12 @@ namespace Server.Spells.Spellweaving
         int range = 2 + FocusLevel;
         TimeSpan duration = TimeSpan.FromSeconds(5 + FocusLevel);
 
-        List<Mobile> targets = new List<Mobile>();
+        IEnumerable<Mobile> eable = Caster.GetMobilesInRange(range)
+          .Where(m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
+                      Caster.InLOS(m));
 
-        foreach (Mobile m in Caster.GetMobilesInRange(range))
-          if (Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
-              Caster.InLOS(m))
-            targets.Add(m);
-
-        for (int i = 0; i < targets.Count; i++)
+        foreach (Mobile m in eable)
         {
-          Mobile m = targets[i];
-
           Caster.DoHarmful(m);
 
           Spell oldSpell = m.Spell as Spell;

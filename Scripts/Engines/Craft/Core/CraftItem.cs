@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Commands;
 using Server.Factions;
 using Server.Items;
@@ -273,15 +274,11 @@ namespace Server.Engines.Craft
         return false;
 
       IPooledEnumerable<Item> eable = map.GetItemsInRange(from.Location, 2);
-
-      foreach (Item item in eable)
-        if (item.Z + 16 > from.Z && from.Z + 16 > item.Z && Find(item.ItemID, itemIDs))
-        {
-          eable.Free();
-          return true;
-        }
-
+      bool found = eable.Any(item => item.Z + 16 > .Z && .Z + 16 > item.Z && Find(item.ItemID, itemIDs));
       eable.Free();
+
+      if (found)
+        return true;
 
       for (int x = -2; x <= 2; ++x)
       for (int y = -2; y <= 2; ++y)

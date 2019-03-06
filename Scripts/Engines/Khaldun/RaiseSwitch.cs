@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Network;
 
 namespace Server.Items
@@ -175,17 +176,7 @@ namespace Server.Items
 
     public void Refresh()
     {
-      bool found = false;
-      foreach (Mobile mob in GetMobilesInRange(CurrentRange))
-      {
-        if (mob.Hidden && mob.AccessLevel > AccessLevel.Player)
-          continue;
-
-        found = true;
-        break;
-      }
-
-      Visible = found;
+      Visible = GetMobilesInRange(CurrentRange).Any(mob => !mob.Hidden || mob.AccessLevel <= AccessLevel.Player);
     }
 
     public override void Serialize(GenericWriter writer)

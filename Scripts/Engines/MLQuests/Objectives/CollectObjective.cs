@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -117,13 +118,7 @@ namespace Server.Engines.MLQuests.Objectives
         return 0;
 
       Item[] items = pack.FindItemsByType(Objective.AcceptedType, false); // Note: subclasses are included
-      int total = 0;
-
-      foreach (Item item in items)
-        if (item.QuestItem && Objective.CheckItem(item))
-          total += item.Amount;
-
-      return total;
+      return items.Where(item => item.QuestItem && Objective.CheckItem(item)).Sum(item => item.Amount);
     }
 
     public override bool AllowsQuestItem(Item item, Type type)

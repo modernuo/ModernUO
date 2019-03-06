@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Accounting;
 using Server.Commands;
 using Server.Commands.Generic;
@@ -239,16 +240,10 @@ namespace Server.Factions
         return false;
 
       IPooledEnumerable<IEntity> eable = mob.Map.GetObjectsInRange(mob.Location, range, items, mobs);
-
-      foreach (IEntity obj in eable)
-        if (type.IsInstanceOfType(obj))
-        {
-          eable.Free();
-          return true;
-        }
-
+      bool isInstance = eable.Any(type.IsInstanceOfType);
       eable.Free();
-      return false;
+
+      return isInstance;
     }
 
     public static bool IsNearType(Mobile mob, Type[] types, int range)
