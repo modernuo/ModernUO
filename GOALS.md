@@ -44,7 +44,7 @@
 - [ ] Naked corpses (container display issue)
 - [X] Rounding errors with new bank system
 - [ ] Replace `double` with `int` for skills to fix rounding errors and optimize code
-- [ ] Replace specific checks for `Item`/`Mobile` by extended `IEntity` and mainstreaming the `NEWPARENT` code
+- [X] Replace specific checks for `Item`/`Mobile` by extended `IEntity` and mainstreaming the `NEWPARENT` code
 - [ ] TryDropItem dropping items until it fails when it should be all-or-nothing
 - [ ] Consuming items are deleted directly in several places instead of using `Item.Consume()`
 - [ ] Content displaying for newer clients is not working properly in several situations
