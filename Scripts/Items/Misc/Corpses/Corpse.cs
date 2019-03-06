@@ -946,7 +946,7 @@ namespace Server.Items
                 !GetRestoreInfo(item, ref loc))
               continue;
 
-            if (pack != null && pack.CheckHold(from, item, false, true))
+            if (pack?.CheckHold(from, item, false, true) == true)
             {
               item.Location = loc;
               pack.AddItem(item);

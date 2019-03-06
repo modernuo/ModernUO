@@ -47,7 +47,7 @@ namespace Server.Items
     {
       Container pack = from.Backpack;
 
-      if (pack != null && pack.ConsumeTotal(typeof(Gold), 250))
+      if (pack?.ConsumeTotal(typeof(Gold), 250) == true)
       {
         m_GamblePot += 150;
         InvalidateProperties();

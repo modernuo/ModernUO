@@ -139,7 +139,7 @@ namespace Server.Items
 			bool isBolt = ( ammoType == typeof( Bolt ) );
 			bool isKnown = ( isArrow || isBolt );
 
-			if ( pack == null || !pack.ConsumeTotal( ammoType, 1 ) )
+			if ( pack == null || !pack.ConsumeTotal( ammoType ) )
 			{
 				if ( isArrow )
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500594 ); // You do not have any arrows with which to practice.

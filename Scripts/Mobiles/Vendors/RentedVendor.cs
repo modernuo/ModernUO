@@ -97,7 +97,7 @@ namespace Server.Mobiles
 
     public bool IsLandlord(Mobile m)
     {
-      return House != null && House.IsOwner(m);
+      return House?.IsOwner(m) == true;
     }
 
     public void ComputeRentalExpireDelay(out int days, out int hours)

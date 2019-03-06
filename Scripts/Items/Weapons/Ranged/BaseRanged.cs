@@ -175,9 +175,9 @@ namespace Server.Items
         if (quiver == null || Utility.Random(100) >= quiver.LowerAmmoCost)
         {
           // consume ammo
-          if (quiver != null && quiver.ConsumeTotal(AmmoType, 1))
+          if (quiver != null && quiver.ConsumeTotal(AmmoType))
             quiver.InvalidateWeight();
-          else if (pack == null || !pack.ConsumeTotal(AmmoType, 1))
+          else if (pack == null || !pack.ConsumeTotal(AmmoType))
             return false;
         }
         else if (quiver.FindItemByType(AmmoType) == null && pack?.FindItemByType(AmmoType) == null)

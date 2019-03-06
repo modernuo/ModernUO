@@ -222,9 +222,7 @@ namespace Server.Items
 
     public bool IsOwner(Mobile mob)
     {
-      BaseHouse house = BaseHouse.FindHouseAt(this);
-
-      return house != null && house.IsOwner(mob);
+      return BaseHouse.FindHouseAt(this)?.IsOwner(mob) == true;
     }
 
     public override void OnDoubleClick(Mobile from)

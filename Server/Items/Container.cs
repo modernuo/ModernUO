@@ -1171,7 +1171,7 @@ namespace Server.Items
       return -1;
     }
 
-    public bool ConsumeTotal(Type type, int amount, bool recurse = true, OnItemConsumed callback = null)
+    public bool ConsumeTotal(Type type, int amount = 1, bool recurse = true, OnItemConsumed callback = null)
     {
       Item[] items = FindItemsByType(type, recurse);
 

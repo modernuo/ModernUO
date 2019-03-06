@@ -1369,7 +1369,7 @@ namespace Server.Mobiles
     {
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (CheckAlive() && house != null && house.IsOwner(this) && house.InternalizedVendors.Count > 0)
+      if (CheckAlive() && house?.IsOwner(this) == true && house.InternalizedVendors.Count > 0)
       {
         CloseGump<ReclaimVendorGump>();
         SendGump(new ReclaimVendorGump(house));
