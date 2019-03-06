@@ -40,22 +40,22 @@ namespace Server.SkillHandlers
       {
         Mobile root = cont.RootParent as Mobile;
 
-        if (root != null && !root.Alive)
+        if (root?.Alive == false)
           return;
 
-        if (root != null && root.AccessLevel > AccessLevel.Player && from.AccessLevel == AccessLevel.Player)
+        if (root?.AccessLevel > AccessLevel.Player && from.AccessLevel == AccessLevel.Player)
         {
           from.SendLocalizedMessage(500209); // You can not peek into the container.
           return;
         }
 
-        if (root != null && from.AccessLevel == AccessLevel.Player && !CheckSnoopAllowed(from, root))
+        if (root?.AccessLevel == AccessLevel.Player && !CheckSnoopAllowed(from, root))
         {
           from.SendLocalizedMessage(1001018); // You cannot perform negative acts on your target.
           return;
         }
 
-        if (root != null && from.AccessLevel == AccessLevel.Player &&
+        if (root?.AccessLevel == AccessLevel.Player &&
             from.Skills.Snooping.Value < Utility.Random(100))
         {
           Map map = from.Map;

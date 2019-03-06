@@ -1016,7 +1016,7 @@ namespace Server.Factions
           Player killerEPL = Player.Find(killer);
           Player victimEPL = Player.Find(victim);
 
-          if (killerEPL != null && victimEPL != null && victimEPL.Power > 0 && victimState.CanGiveSilverTo(killer))
+          if (killerEPL != null && victimEPL?.Power > 0 && victimState.CanGiveSilverTo(killer))
           {
             int powerTransfer = Math.Max(1, victimEPL.Power / 5);
 
@@ -1078,7 +1078,7 @@ namespace Server.Factions
             Player killerEPL = Player.Find(killer);
             Player victimEPL = Player.Find(victim);
 
-            if (killerEPL != null && victimEPL != null && victimEPL.Power > 0)
+            if (killerEPL != null && victimEPL?.Power > 0)
             {
               int powerTransfer = Math.Max(1, victimEPL.Power / 5);
 

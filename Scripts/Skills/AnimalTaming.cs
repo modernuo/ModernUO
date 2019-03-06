@@ -315,7 +315,7 @@ namespace Server.SkillHandlers
               m_Tamer.NetState); // You must subdue this creature before you can tame it!
             Stop();
           }
-          else if (de != null && de.LastDamage > m_StartTime)
+          else if (de?.LastDamage > m_StartTime)
           {
             m_BeingTamed.Remove(m_Creature);
             m_Tamer.NextSkillTime = Core.TickCount;

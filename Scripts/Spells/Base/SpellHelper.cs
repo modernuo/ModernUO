@@ -286,7 +286,7 @@ namespace Server.Spells
 
       StatMod mod = target.GetStatMod(name);
 
-      if (mod != null && mod.Offset < 0)
+      if (mod?.Offset < 0)
       {
         target.AddStatMod(new StatMod(type, name, mod.Offset + offset, duration));
         return true;
@@ -313,7 +313,7 @@ namespace Server.Spells
 
       StatMod mod = target.GetStatMod(name);
 
-      if (mod != null && mod.Offset > 0)
+      if (mod?.Offset > 0)
       {
         target.AddStatMod(new StatMod(type, name, mod.Offset + offset, duration));
         return true;
@@ -420,20 +420,19 @@ namespace Server.Spells
       PlayerMobile pmFrom;
       PlayerMobile pmTarg;
 
-      if (bcFrom != null && bcFrom.Summoned)
+      if (bcFrom?.Summoned == true)
         pmFrom = bcFrom.SummonMaster as PlayerMobile;
       else
         pmFrom = from as PlayerMobile;
 
-      if (bcTarg != null && bcTarg.Summoned)
+      if (bcTarg?.Summoned == true)
         pmTarg = bcTarg.SummonMaster as PlayerMobile;
       else
         pmTarg = to as PlayerMobile;
 
-      if (pmFrom != null && pmTarg != null)
-        if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext && pmFrom.DuelContext.Started &&
-            pmFrom.DuelPlayer != null && pmTarg.DuelPlayer != null)
-          return pmFrom.DuelPlayer.Participant != pmTarg.DuelPlayer.Participant;
+      if (pmFrom?.DuelContext != null && pmFrom.DuelContext == pmTarg?.DuelContext && pmFrom.DuelContext.Started &&
+          pmFrom.DuelPlayer != null && pmTarg?.DuelPlayer != null)
+        return pmFrom.DuelPlayer.Participant != pmTarg.DuelPlayer.Participant;
 
       #endregion
 
@@ -617,7 +616,7 @@ namespace Server.Spells
         return false;
       }
 
-      if (caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf<Jail>())
+      if (caster?.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf<Jail>())
       {
         caster.SendLocalizedMessage(1114345); // You'll need a better jailbreak plan than that!
         return false;

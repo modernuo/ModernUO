@@ -266,7 +266,7 @@ namespace Server.Items
 
                 for (int i = 0; i < petPatient.Skills.Length; ++i) petPatient.Skills[i].Base -= 0.1;
               }
-              else if (master != null && master.InRange(petPatient, 3))
+              else if (master?.InRange(petPatient, 3) == true)
               {
                 healerNumber = 503255; // You are able to resurrect the creature.
 

@@ -341,7 +341,7 @@ namespace Server.SkillHandlers
         {
           Container pack = mobile.Backpack;
 
-          if (pack != null && pack.Items.Count > 0)
+          if (pack?.Items.Count > 0)
           {
             int randomIndex = Utility.Random(pack.Items.Count);
 

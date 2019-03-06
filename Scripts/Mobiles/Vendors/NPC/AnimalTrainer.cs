@@ -218,7 +218,7 @@ namespace Server.Mobiles
       {
         Container bank = from.FindBankNoCreate();
 
-        if (from.Backpack != null && from.Backpack.ConsumeTotal(typeof(Gold), 30) ||
+        if (from.Backpack?.ConsumeTotal(typeof(Gold), 30) == true ||
             bank?.ConsumeTotal(typeof(Gold), 30) == true)
         {
           pet.ControlTarget = null;

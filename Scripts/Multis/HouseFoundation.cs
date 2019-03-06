@@ -849,14 +849,7 @@ namespace Server.Multis
     {
       base.SendInfoTo(state, sendOplPacket);
 
-      DesignContext context = DesignContext.Find(state.Mobile);
-      DesignState stateToSend;
-
-      if (context != null && context.Foundation == this)
-        stateToSend = DesignState;
-      else
-        stateToSend = CurrentState;
-
+      DesignState stateToSend = DesignContext.Find(state.Mobile)?.Foundation == this ? DesignState : CurrentState;
       stateToSend.SendGeneralInfoTo(state);
     }
 
@@ -1690,18 +1683,11 @@ namespace Server.Multis
     public static void QueryDesignDetails(NetState state, PacketReader pvSrc)
     {
       Mobile from = state.Mobile;
-      DesignContext context = DesignContext.Find(from);
 
       if (World.FindItem(pvSrc.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map && from.InRange(foundation.GetWorldLocation(), 24) &&
           from.CanSee(foundation))
       {
-        DesignState stateToSend;
-
-        if (context != null && context.Foundation == foundation)
-          stateToSend = foundation.DesignState;
-        else
-          stateToSend = foundation.CurrentState;
-
+        DesignState stateToSend = DesignContext.Find(from)?.Foundation == foundation ? foundation.DesignState : foundation.CurrentState;
         stateToSend.SendDetailedInfoTo(state);
       }
     }

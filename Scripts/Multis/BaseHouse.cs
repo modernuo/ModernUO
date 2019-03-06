@@ -1079,22 +1079,17 @@ namespace Server.Multis
 
     public static bool CheckLockedDown(Item item)
     {
-      BaseHouse house = FindHouseAt(item);
-
-      return house != null && house.HasLockedDownItem(item);
+      return FindHouseAt(item)?.HasLockedDownItem(item) == true;
     }
 
     public static bool CheckSecured(Item item)
     {
-      BaseHouse house = FindHouseAt(item);
-
-      return house != null && house.HasSecureItem(item);
+      return FindHouseAt(item)?.HasSecureItem(item) == true;
     }
 
     public static bool CheckLockedDownOrSecured(Item item)
     {
       BaseHouse house = FindHouseAt(item);
-
       return house != null && (house.HasSecureItem(item) || house.HasLockedDownItem(item));
     }
 

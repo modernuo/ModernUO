@@ -28,23 +28,17 @@ namespace Server.SkillHandlers
 
       BaseHouse house = BaseHouse.FindHouseAt(m);
 
-      if (house != null && house.IsFriend(m))
+      if (house?.IsFriend(m) == true)
       {
         bonus = 100.0;
       }
       else if (!Core.AOS)
       {
         if (house == null)
-          house = BaseHouse.FindHouseAt(new Point3D(m.X - 1, m.Y, 127), m.Map, 16);
-
-        if (house == null)
-          house = BaseHouse.FindHouseAt(new Point3D(m.X + 1, m.Y, 127), m.Map, 16);
-
-        if (house == null)
-          house = BaseHouse.FindHouseAt(new Point3D(m.X, m.Y - 1, 127), m.Map, 16);
-
-        if (house == null)
-          house = BaseHouse.FindHouseAt(new Point3D(m.X, m.Y + 1, 127), m.Map, 16);
+          house = BaseHouse.FindHouseAt(new Point3D(m.X - 1, m.Y, 127), m.Map, 16) ??
+                  BaseHouse.FindHouseAt(new Point3D(m.X + 1, m.Y, 127), m.Map, 16) ??
+                  BaseHouse.FindHouseAt(new Point3D(m.X, m.Y - 1, 127), m.Map, 16) ??
+                  BaseHouse.FindHouseAt(new Point3D(m.X, m.Y + 1, 127), m.Map, 16);
 
         if (house != null)
           bonus = 50.0;
@@ -65,7 +59,6 @@ namespace Server.SkillHandlers
             if (check.InLOS(m) && check.Combatant == m)
             {
               badCombat = true;
-              ok = false;
               break;
             }
 

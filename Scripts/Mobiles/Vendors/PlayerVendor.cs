@@ -828,7 +828,7 @@ namespace Server.Mobiles
 
       bool newItem = GetVendorItem(item) == null;
 
-      if (Backpack != null && Backpack.TryDropItem(from, item, false))
+      if (Backpack?.TryDropItem(from, item, false) == true)
       {
         if (newItem)
           OnItemGiven(from, item);

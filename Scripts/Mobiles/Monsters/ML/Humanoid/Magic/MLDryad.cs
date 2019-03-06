@@ -152,7 +152,7 @@ namespace Server.Mobiles
     {
       Item item = m.FindItemOnLayer(layer);
 
-      if (item != null && item.Movable)
+      if (item?.Movable == true)
         m.PlaceInBackpack(item);
     }
 

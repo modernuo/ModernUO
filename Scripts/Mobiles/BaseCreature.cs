@@ -1038,7 +1038,7 @@ namespace Server.Mobiles
       //NPCs can use bandages too!
       if (!Core.AOS)
         disruptThreshold = 0;
-      else if (from != null && from.Player)
+      else if (from?.Player == true)
         disruptThreshold = 18;
       else
         disruptThreshold = 25;
@@ -1920,7 +1920,7 @@ namespace Server.Mobiles
       {
         Player pl = Ethics.Player.Find(aggressor, true);
 
-        if (pl != null && pl.IsShielded)
+        if (pl?.IsShielded == true)
           pl.FinishShield();
       }
 
@@ -1947,8 +1947,8 @@ namespace Server.Mobiles
       #region Dueling
 
       if (Region.IsPartOf<SafeZone>() && m is PlayerMobile pm &&
-          (pm.DuelContext == null || pm.DuelPlayer == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
-          pm.DuelPlayer.Eliminated))
+          (pm.DuelContext?.Started != true || pm.DuelContext.Finished ||
+          pm.DuelPlayer?.Eliminated != false))
         return true;
 
       #endregion
@@ -1997,19 +1997,15 @@ namespace Server.Mobiles
 
     public override bool HandlesOnSpeech(Mobile from)
     {
-      InhumanSpeech speechType = SpeechType;
-
-      if (speechType != null && (speechType.Flags & IHSFlags.OnSpeech) != 0 && from.InRange(this, 3))
-        return true;
-
-      return AIObject != null && AIObject.HandlesOnSpeech(from) && from.InRange(this, RangePerception);
+      return (SpeechType?.Flags & IHSFlags.OnSpeech) != 0 && from.InRange(this, 3) ||
+             AIObject?.HandlesOnSpeech(from) == true && from.InRange(this, RangePerception);
     }
 
     public override void OnSpeech(SpeechEventArgs e)
     {
       InhumanSpeech speechType = SpeechType;
 
-      if (speechType != null && speechType.OnSpeech(this, e.Mobile, e.Speech))
+      if (speechType?.OnSpeech(this, e.Mobile, e.Speech) == true)
         e.Handled = true;
       else if (!e.Handled && AIObject != null && e.Mobile.InRange(this, RangePerception))
         AIObject.OnSpeech(e);
@@ -2156,7 +2152,7 @@ namespace Server.Mobiles
     {
       Map map = Map;
 
-      if (PlayerRangeSensitive && AIObject != null && map != null && map.GetSector(Location).Active)
+      if (PlayerRangeSensitive && AIObject != null && map?.GetSector(Location).Active == true)
         AIObject.Activate();
     }
 
@@ -2950,15 +2946,12 @@ namespace Server.Mobiles
       {
         Mobile target = Combatant;
 
-        if (target != null && target.Alive && !target.IsDeadBondedPet && CanBeHarmful(target) && target.Map == Map &&
+        if (target?.Alive == true && !target.IsDeadBondedPet && CanBeHarmful(target) && target.Map == Map &&
             !IsDeadBondedPet && target.InRange(this, BreathRange) && InLOS(target) && !BardPacified)
         {
           if (Core.TickCount - m_NextBreathTime < 30000 && Utility.RandomBool()) BreathStart(target);
 
-          m_NextBreathTime = tc + (int)TimeSpan
-                               .FromSeconds(BreathMinDelay +
-                                            Utility.RandomDouble() * (BreathMaxDelay - BreathMinDelay))
-                               .TotalMilliseconds;
+          m_NextBreathTime = tc + (int)TimeSpan.FromSeconds(BreathMinDelay + Utility.RandomDouble() * (BreathMaxDelay - BreathMinDelay)).TotalMilliseconds;
         }
       }
 
@@ -3401,12 +3394,12 @@ namespace Server.Mobiles
 
       MLQuestContext context = MLQuestSystem.GetContext(pm);
 
-      if (context != null && context.IsFull)
+      if (context?.IsFull == true)
         return;
 
       MLQuest quest = MLQuestSystem.RandomStarterQuest(this, pm, context);
 
-      if (quest == null || !quest.Activated || context != null && context.IsDoingQuest(quest))
+      if (quest?.Activated != true || context?.IsDoingQuest(quest) == true)
         return;
 
       Shout(pm);
@@ -3876,15 +3869,8 @@ namespace Server.Mobiles
 
     public virtual bool IsFriend(Mobile m)
     {
-      OppositionGroup g = OppositionGroup;
-
-      if (g != null && g.IsEnemy(this, m))
-        return false;
-
-      if (!(m is BaseCreature c))
-        return false;
-
-      return m_Team == c.m_Team && (m_bSummoned || m_Controlled) == (c.m_bSummoned || c.m_Controlled);
+      return OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && m_Team == c.m_Team
+             && (m_bSummoned || m_Controlled) == (c.m_bSummoned || c.m_Controlled);
     }
 
     #endregion
@@ -4655,12 +4641,7 @@ namespace Server.Mobiles
       PackItem(Loot.RandomScroll(min, min + 7, SpellbookType.Regular));
     }
 
-    public void PackMagicItems(int minLevel, int maxLevel)
-    {
-      PackMagicItems(minLevel, maxLevel, 0.30, 0.15);
-    }
-
-    public void PackMagicItems(int minLevel, int maxLevel, double armorChance, double weaponChance)
+    public void PackMagicItems(int minLevel, int maxLevel, double armorChance = 0.30, double weaponChance = 0.15)
     {
       if (!PackArmor(minLevel, maxLevel, armorChance))
         PackWeapon(minLevel, maxLevel, weaponChance);
@@ -4863,12 +4844,7 @@ namespace Server.Mobiles
       return val;
     }
 
-    public bool PackSlayer()
-    {
-      return PackSlayer(0.05);
-    }
-
-    public bool PackSlayer(double chance)
+    public bool PackSlayer(double chance = 0.05)
     {
       if (chance <= Utility.RandomDouble())
         return false;
@@ -4897,12 +4873,7 @@ namespace Server.Mobiles
       return true;
     }
 
-    public bool PackWeapon(int minLevel, int maxLevel)
-    {
-      return PackWeapon(minLevel, maxLevel, 1.0);
-    }
-
-    public bool PackWeapon(int minLevel, int maxLevel, double chance)
+    public bool PackWeapon(int minLevel, int maxLevel, double chance = 1.0)
     {
       if (chance <= Utility.RandomDouble())
         return false;
@@ -4973,17 +4944,12 @@ namespace Server.Mobiles
       PackItem(Loot.RandomStatue());
     }
 
-    public void PackGem()
-    {
-      PackGem(1);
-    }
-
     public void PackGem(int min, int max)
     {
       PackGem(Utility.RandomMinMax(min, max));
     }
 
-    public void PackGem(int amount)
+    public void PackGem(int amount = 1)
     {
       if (amount <= 0)
         return;

@@ -197,7 +197,7 @@ namespace Server.Multis
     {
       base.OnAfterDelete();
 
-      if (House != null && House.MovingCrate == this)
+      if (House?.MovingCrate == this)
         House.MovingCrate = null;
 
       m_InternalizeTimer?.Stop();

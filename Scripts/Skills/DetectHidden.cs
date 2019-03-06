@@ -49,7 +49,7 @@ namespace Server.SkillHandlers
 
         BaseHouse house = BaseHouse.FindHouseAt(p, src.Map, 16);
 
-        bool inHouse = house != null && house.IsFriend(src);
+        bool inHouse = house?.IsFriend(src) == true;
 
         if (inHouse)
           range = 22;

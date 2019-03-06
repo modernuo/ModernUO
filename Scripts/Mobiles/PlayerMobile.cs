@@ -1310,7 +1310,7 @@ namespace Server.Mobiles
         {
           NetState ns = from.NetState;
 
-          if (ns != null && ns.ExtendedStatus)
+          if (ns?.ExtendedStatus == true)
             list.Add(new CallbackEntry(RefuseTrades ? 1154112 : 1154113,
               ToggleTrades)); // Allow Trades / Refuse Trades
         }
@@ -1684,7 +1684,7 @@ namespace Server.Mobiles
 
       if (!Core.AOS)
         disruptThreshold = 0;
-      else if (from != null && from.Player)
+      else if (from?.Player == true)
         disruptThreshold = 18;
       else
         disruptThreshold = 25;
@@ -1784,8 +1784,8 @@ namespace Server.Mobiles
 
       #region Dueling
 
-      if (m_DuelPlayer != null && DuelContext != null && DuelContext.Registered && DuelContext.Started &&
-          !m_DuelPlayer.Eliminated)
+      if (DuelContext?.Registered == true && DuelContext.Started &&
+          m_DuelPlayer?.Eliminated != true)
         return true;
 
       #endregion
@@ -2648,10 +2648,7 @@ namespace Server.Mobiles
 
     public override bool CanSee(Item item)
     {
-      if (DesignContext != null && DesignContext.Foundation.IsHiddenToCustomizer(item))
-        return false;
-
-      return base.CanSee(item);
+      return DesignContext?.Foundation.IsHiddenToCustomizer(item) != true && base.CanSee(item);
     }
 
     public override void OnAfterDelete()
@@ -3981,7 +3978,7 @@ namespace Server.Mobiles
 
       AnimalFormContext animalContext = AnimalForm.GetContext(this);
 
-      if (onHorse || animalContext != null && animalContext.SpeedBoost)
+      if (onHorse || animalContext?.SpeedBoost == true)
         return running ? RunMount : WalkMount;
 
       return running ? RunFoot : WalkFoot;
@@ -4235,7 +4232,7 @@ namespace Server.Mobiles
       if (from is BaseCreature creature && creature.IgnoreYoungProtection)
         return false;
 
-      if (Quest != null && Quest.IgnoreYoungProtection(from))
+      if (Quest?.IgnoreYoungProtection(from) == true)
         return false;
 
       if (DateTime.UtcNow - m_LastYoungMessage > TimeSpan.FromMinutes(1.0))

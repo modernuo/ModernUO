@@ -466,13 +466,7 @@ namespace Server.Multis
 
     public bool CheckKey(uint keyValue)
     {
-      if (SPlank != null && SPlank.KeyValue == keyValue)
-        return true;
-
-      if (PPlank != null && PPlank.KeyValue == keyValue)
-        return true;
-
-      return false;
+      return SPlank?.KeyValue == keyValue || PPlank?.KeyValue == keyValue;
     }
 
     public void Refresh()
