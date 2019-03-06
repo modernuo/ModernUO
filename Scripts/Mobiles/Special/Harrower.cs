@@ -527,7 +527,7 @@ namespace Server.Mobiles
           return;
 
         Mobile toTeleport = m_Owner.GetMobilesInRange(16)
-          .FirstOrDefault(m => m != m_Owner && m.Player && m_Owner.CanBeHarmful(m) && m_Owner.CanSee(m));
+          .FirstOrDefault(mob => mob != m_Owner && mob.Player && m_Owner.CanBeHarmful(mob) && m_Owner.CanSee(mob));
 
         if (toTeleport == null)
           return;
