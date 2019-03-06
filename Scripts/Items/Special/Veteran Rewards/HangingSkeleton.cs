@@ -243,17 +243,12 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if ((m_Skeleton == null) | m_Skeleton.Deleted)
+        if (m_Skeleton?.Deleted != false || info.ButtonID != 0x1A03 && info.ButtonID != 0x1A05 &&
+            info.ButtonID != 0x1A09 && info.ButtonID != 0x1B1E && info.ButtonID != 0x1B7F)
           return;
 
-        Mobile m = sender.Mobile;
-
-        if (info.ButtonID == 0x1A03 || info.ButtonID == 0x1A05 || info.ButtonID == 0x1A09 ||
-            info.ButtonID == 0x1B1E || info.ButtonID == 0x1B7F)
-        {
-          m.SendLocalizedMessage(1049780); // Where would you like to place this decoration?
-          m.Target = new InternalTarget(m_Skeleton, info.ButtonID);
-        }
+        sender.Mobile.SendLocalizedMessage(1049780); // Where would you like to place this decoration?
+        sender.Mobile.Target = new InternalTarget(m_Skeleton, info.ButtonID);
       }
     }
 
@@ -270,72 +265,68 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Skeleton == null || m_Skeleton.Deleted)
+        if (m_Skeleton?.Deleted != false)
           return;
 
-        if (m_Skeleton.IsChildOf(from.Backpack))
+        if (!m_Skeleton.IsChildOf(@from.Backpack))
         {
-          BaseHouse house = BaseHouse.FindHouseAt(from);
+          @from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+          return;
+        }
 
-          if (house != null && house.IsOwner(from))
-          {
-            IPoint3D p = targeted as IPoint3D;
-            Map map = from.Map;
+        BaseHouse house = BaseHouse.FindHouseAt(@from);
 
-            if (p == null || map == null)
-              return;
+        if (house?.IsOwner(@from) != true)
+        {
+          @from.SendLocalizedMessage(502092); // You must be in your house to do this.
+          return;
+        }
 
-            Point3D p3d = new Point3D(p);
-            ItemData id = TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
+        IPoint3D p = targeted as IPoint3D;
+        Map map = @from.Map;
 
-            if (map.CanFit(p3d, id.Height))
-            {
-              house = BaseHouse.FindHouseAt(p3d, map, id.Height);
+        if (p == null || map == null)
+          return;
 
-              if (house != null && house.IsOwner(from))
-              {
-                bool north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
-                bool west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
+        Point3D p3d = new Point3D(p);
+        ItemData id = TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
 
-                if (north && west)
-                {
-                  from.CloseGump<FacingGump>();
-                  from.SendGump(new FacingGump(m_Skeleton, m_ItemID, p3d, house));
-                }
-                else if (north || west)
-                {
-                  HangingSkeleton banner = new HangingSkeleton(west ? GetWestItemID(m_ItemID) : m_ItemID);
+        if (!map.CanFit(p3d, id.Height))
+        {
+          @from.SendLocalizedMessage(500269); // You cannot build that there.
+          return;
+        }
 
-                  house.Addons.Add(banner);
+        house = BaseHouse.FindHouseAt(p3d, map, id.Height);
 
-                  banner.IsRewardItem = m_Skeleton.IsRewardItem;
-                  banner.MoveToWorld(p3d, map);
+        if (house?.IsOwner(@from) != true)
+        {
+          @from.SendLocalizedMessage(1042036); // That location is not in your house.
+          return;
+        }
 
-                  m_Skeleton.Delete();
-                }
-                else
-                {
-                  from.SendLocalizedMessage(1042039); // The banner must be placed next to a wall.
-                }
-              }
-              else
-              {
-                from.SendLocalizedMessage(1042036); // That location is not in your house.
-              }
-            }
-            else
-            {
-              from.SendLocalizedMessage(500269); // You cannot build that there.
-            }
-          }
-          else
-          {
-            from.SendLocalizedMessage(502092); // You must be in your house to do this.
-          }
+        bool north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
+        bool west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
+
+        if (north && west)
+        {
+          @from.CloseGump<FacingGump>();
+          @from.SendGump(new FacingGump(m_Skeleton, m_ItemID, p3d, house));
+        }
+        else if (north || west)
+        {
+          HangingSkeleton banner = new HangingSkeleton(west ? GetWestItemID(m_ItemID) : m_ItemID);
+
+          house.Addons.Add(banner);
+
+          banner.IsRewardItem = m_Skeleton.IsRewardItem;
+          banner.MoveToWorld(p3d, map);
+
+          m_Skeleton.Delete();
         }
         else
         {
-          from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+          @from.SendLocalizedMessage(1042039); // The banner must be placed next to a wall.
         }
       }
 
@@ -371,7 +362,7 @@ namespace Server.Items
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-          if (m_Skeleton == null || m_Skeleton.Deleted || m_House == null)
+          if (m_Skeleton?.Deleted != false || m_House == null)
             return;
 
           HangingSkeleton banner = null;

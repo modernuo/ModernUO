@@ -499,11 +499,10 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_WallBanner == null || m_WallBanner.Deleted)
+        if (m_WallBanner?.Deleted != false || info.ButtonID <= 0 || info.ButtonID >= 31)
           return;
 
-        if (info.ButtonID > 0 && info.ButtonID < 31)
-          m_WallBanner.Use(sender.Mobile, info.ButtonID);
+        m_WallBanner.Use(sender.Mobile, info.ButtonID);
       }
     }
   }

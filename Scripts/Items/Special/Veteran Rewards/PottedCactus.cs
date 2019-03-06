@@ -171,25 +171,22 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if ((m_Cactus == null) | m_Cactus.Deleted)
+        if (m_Cactus?.Deleted != false || info.ButtonID < 0x1E0F || info.ButtonID > 0x1E14)
           return;
 
-        Mobile m = sender.Mobile;
-
-        if (info.ButtonID >= 0x1E0F && info.ButtonID <= 0x1E14)
+        RewardPottedCactus cactus = new RewardPottedCactus(info.ButtonID)
         {
-          RewardPottedCactus cactus = new RewardPottedCactus(info.ButtonID);
-          cactus.IsRewardItem = m_Cactus.IsRewardItem;
+          IsRewardItem = m_Cactus.IsRewardItem
+        };
 
-          if (!m.PlaceInBackpack(cactus))
-          {
-            cactus.Delete();
-            m.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
-          }
-          else
-          {
-            m_Cactus.Delete();
-          }
+        if (!sender.Mobile.PlaceInBackpack(cactus))
+        {
+          cactus.Delete();
+          sender.Mobile.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
+        }
+        else
+        {
+          m_Cactus.Delete();
         }
       }
     }

@@ -255,14 +255,11 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_Deed == null || m_Deed.Deleted)
+        if (m_Deed?.Deleted != false || info.ButtonID == (int)Buttons.Cancel)
           return;
 
-        if (info.ButtonID != (int)Buttons.Cancel)
-        {
-          m_Deed.m_East = info.ButtonID == (int)Buttons.East;
-          m_Deed.SendTarget(sender.Mobile);
-        }
+        m_Deed.m_East = info.ButtonID == (int)Buttons.East;
+        m_Deed.SendTarget(sender.Mobile);
       }
 
       private enum Buttons

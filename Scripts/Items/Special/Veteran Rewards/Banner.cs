@@ -240,17 +240,15 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if ((m_Banner == null) | m_Banner.Deleted)
+        if (m_Banner?.Deleted != false)
           return;
 
         Mobile m = sender.Mobile;
 
-        if (info.ButtonID >= Start && info.ButtonID <= End)
-          if ((info.ButtonID & 0x1) == 0)
-          {
-            m.SendLocalizedMessage(1042037); // Where would you like to place this banner?
-            m.Target = new InternalTarget(m_Banner, info.ButtonID);
-          }
+        if (info.ButtonID < Start || info.ButtonID > End || (info.ButtonID & 0x1) != 0) return;
+
+        m.SendLocalizedMessage(1042037); // Where would you like to place this banner?
+        m.Target = new InternalTarget(m_Banner, info.ButtonID);
       }
     }
 
@@ -267,14 +265,14 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Banner == null || m_Banner.Deleted)
+        if (m_Banner?.Deleted != false)
           return;
 
         if (m_Banner.IsChildOf(from.Backpack))
         {
           BaseHouse house = BaseHouse.FindHouseAt(from);
 
-          if (house != null && house.IsOwner(from))
+          if (house?.IsOwner(from) == true)
           {
             IPoint3D p = targeted as IPoint3D;
             Map map = from.Map;
@@ -289,7 +287,7 @@ namespace Server.Items
             {
               house = BaseHouse.FindHouseAt(p3d, map, id.Height);
 
-              if (house != null && house.IsOwner(from))
+              if (house?.IsOwner(from) == true)
               {
                 bool north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
                 bool west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
@@ -368,14 +366,14 @@ namespace Server.Items
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-          if (m_Banner == null || m_Banner.Deleted || m_House == null)
+          if (m_Banner?.Deleted != false || m_House == null)
             return;
 
           Banner banner = null;
 
           if (info.ButtonID == (int)Buttons.East)
             banner = new Banner(m_ItemID + 1);
-          if (info.ButtonID == (int)Buttons.South)
+          else if (info.ButtonID == (int)Buttons.South)
             banner = new Banner(m_ItemID);
 
           if (banner != null)

@@ -231,25 +231,24 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if ((m_Brazier == null) | m_Brazier.Deleted)
+        if (m_Brazier?.Deleted != false)
           return;
 
         Mobile m = sender.Mobile;
 
-        if (info.ButtonID == 0x19AA || info.ButtonID == 0x19BB)
-        {
-          RewardBrazier brazier = new RewardBrazier(info.ButtonID);
-          brazier.IsRewardItem = m_Brazier.IsRewardItem;
+        if (info.ButtonID != 0x19AA && info.ButtonID != 0x19BB)
+          return;
 
-          if (!m.PlaceInBackpack(brazier))
-          {
-            brazier.Delete();
-            m.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
-          }
-          else
-          {
-            m_Brazier.Delete();
-          }
+        RewardBrazier brazier = new RewardBrazier(info.ButtonID) { IsRewardItem = m_Brazier.IsRewardItem };
+
+        if (!m.PlaceInBackpack(brazier))
+        {
+          brazier.Delete();
+          m.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
+        }
+        else
+        {
+          m_Brazier.Delete();
         }
       }
     }

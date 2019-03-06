@@ -46,12 +46,9 @@ namespace Server.Items
 
     public bool CouldFit(IPoint3D p, Map map)
     {
-      if (map == null || !map.CanFit(p.X, p.Y, p.Z, ItemData.Height))
-        return false;
-
-      if (FacingSouth)
-        return BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map); // north wall
-      return BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map); // west wall
+      return map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) == true && (FacingSouth
+               && BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map)
+               || BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map));
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -250,18 +247,13 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if ((m_Shield == null) | m_Shield.Deleted)
+        if (m_Shield?.Deleted != false || info.ButtonID < Start || info.ButtonID > End ||
+            ((info.ButtonID & 0x1) != 0 || info.ButtonID >= 0x1582) &&
+            (info.ButtonID < 0x1582 || info.ButtonID > 0x1585))
           return;
 
-        Mobile m = sender.Mobile;
-
-        if (info.ButtonID >= Start && info.ButtonID <= End)
-          if ((info.ButtonID & 0x1) == 0 && info.ButtonID < 0x1582 ||
-              info.ButtonID >= 0x1582 && info.ButtonID <= 0x1585)
-          {
-            m.SendLocalizedMessage(1049780); // Where would you like to place this decoration?
-            m.Target = new InternalTarget(m_Shield, info.ButtonID);
-          }
+        sender.Mobile.SendLocalizedMessage(1049780); // Where would you like to place this decoration?
+        sender.Mobile.Target = new InternalTarget(m_Shield, info.ButtonID);
       }
     }
 
@@ -278,72 +270,68 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Shield == null || m_Shield.Deleted)
+        if (m_Shield?.Deleted != false)
           return;
 
-        if (m_Shield.IsChildOf(from.Backpack))
+        if (!m_Shield.IsChildOf(from.Backpack))
         {
-          BaseHouse house = BaseHouse.FindHouseAt(from);
+          from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+          return;
+        }
 
-          if (house != null && house.IsOwner(from))
-          {
-            IPoint3D p = targeted as IPoint3D;
-            Map map = from.Map;
+        BaseHouse house = BaseHouse.FindHouseAt(from);
 
-            if (p == null || map == null)
-              return;
+        if (house?.IsOwner(from) != true)
+        {
+          from.SendLocalizedMessage(502092); // You must be in your house to do this.
+          return;
+        }
 
-            Point3D p3d = new Point3D(p);
-            ItemData id = TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
+        IPoint3D p = targeted as IPoint3D;
+        Map map = from.Map;
 
-            if (map.CanFit(p3d, id.Height))
-            {
-              house = BaseHouse.FindHouseAt(p3d, map, id.Height);
+        if (p == null || map == null)
+          return;
 
-              if (house != null && house.IsOwner(from))
-              {
-                bool north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
-                bool west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
+        Point3D p3d = new Point3D(p);
+        ItemData id = TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
 
-                if (north && west)
-                {
-                  from.CloseGump<FacingGump>();
-                  from.SendGump(new FacingGump(m_Shield, m_ItemID, p3d, house));
-                }
-                else if (north || west)
-                {
-                  DecorativeShield shield = new DecorativeShield(west ? GetWestItemID(m_ItemID) : m_ItemID);
+        if (!map.CanFit(p3d, id.Height))
+        {
+          from.SendLocalizedMessage(500269); // You cannot build that there.
+          return;
+        }
 
-                  house.Addons.Add(shield);
+        house = BaseHouse.FindHouseAt(p3d, map, id.Height);
 
-                  shield.IsRewardItem = m_Shield.IsRewardItem;
-                  shield.MoveToWorld(p3d, map);
+        if (house?.IsOwner(from) != true)
+        {
+          from.SendLocalizedMessage(1042036); // That location is not in your house.
+          return;
+        }
 
-                  m_Shield.Delete();
-                }
-                else
-                {
-                  from.SendLocalizedMessage(1049781); // This decoration must be placed next to a wall.
-                }
-              }
-              else
-              {
-                from.SendLocalizedMessage(1042036); // That location is not in your house.
-              }
-            }
-            else
-            {
-              from.SendLocalizedMessage(500269); // You cannot build that there.
-            }
-          }
-          else
-          {
-            from.SendLocalizedMessage(502092); // You must be in your house to do this.
-          }
+        bool north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
+        bool west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
+
+        if (north && west)
+        {
+          from.CloseGump<FacingGump>();
+          from.SendGump(new FacingGump(m_Shield, m_ItemID, p3d, house));
+        }
+        else if (north || west)
+        {
+          DecorativeShield shield = new DecorativeShield(west ? GetWestItemID(m_ItemID) : m_ItemID);
+
+          house.Addons.Add(shield);
+
+          shield.IsRewardItem = m_Shield.IsRewardItem;
+          shield.MoveToWorld(p3d, map);
+
+          m_Shield.Delete();
         }
         else
         {
-          from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+          from.SendLocalizedMessage(1049781); // This decoration must be placed next to a wall.
         }
       }
 
@@ -378,7 +366,7 @@ namespace Server.Items
 
         public override void OnResponse(NetState sender, RelayInfo info)
         {
-          if (m_Shield == null || m_Shield.Deleted || m_House == null)
+          if (m_Shield?.Deleted != false || m_House == null)
             return;
 
           DecorativeShield shield = null;

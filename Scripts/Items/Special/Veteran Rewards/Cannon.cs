@@ -175,9 +175,9 @@ namespace Server.Items
 
     public int Validate(PotionKeg keg)
     {
-      if (keg == null || keg.Deleted || keg.Held != 100)
+      if (keg?.Deleted != false || keg.Held != 100)
         return 0;
-      
+
       switch (keg.Type)
       {
         case PotionEffect.ExplosionLesser:
@@ -261,7 +261,7 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Cannon == null || m_Cannon.Deleted)
+        if (m_Cannon?.Deleted != false)
           return;
 
         if (!(targeted is IPoint3D p))
@@ -354,10 +354,7 @@ namespace Server.Items
 
       public override void OnResponse(NetState state, RelayInfo info)
       {
-        if (m_Cannon == null || m_Cannon.Deleted)
-          return;
-
-        if (info.ButtonID == (int)Buttons.Recharge)
+        if (m_Cannon?.Deleted == false && info.ButtonID == (int)Buttons.Recharge)
           m_Cannon.Fill(state.Mobile, m_Keg);
       }
 
@@ -388,17 +385,10 @@ namespace Server.Items
 
     public override int LabelNumber => 1076195; // A deed for a cannon
 
-    public override BaseAddon Addon
+    public override BaseAddon Addon => new CannonAddon(m_Direction)
     {
-      get
-      {
-        CannonAddon addon = new CannonAddon(m_Direction);
-        addon.Charges = m_Charges;
-        addon.IsRewardItem = m_IsRewardItem;
-
-        return addon;
-      }
-    }
+      Charges = m_Charges, IsRewardItem = m_IsRewardItem
+    };
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Charges

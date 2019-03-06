@@ -203,74 +203,70 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Head == null || m_Head.Deleted)
+        if (m_Head?.Deleted != false)
           return;
 
-        if (m_Head.IsChildOf(from.Backpack))
+        if (!m_Head.IsChildOf(from.Backpack))
         {
-          BaseHouse house = BaseHouse.FindHouseAt(from);
+          from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+          return;
+        }
 
-          if (house != null && house.IsOwner(from))
-          {
-            IPoint3D p = targeted as IPoint3D;
-            Map map = from.Map;
+        BaseHouse house = BaseHouse.FindHouseAt(from);
 
-            if (p == null || map == null)
-              return;
+        if (house?.IsOwner(from) != true)
+        {
+          from.SendLocalizedMessage(502115); // You must be in your house to do this.
+          return;
+        }
 
-            Point3D p3d = new Point3D(p);
-            ItemData id = TileData.ItemTable[0x10F5];
+        IPoint3D p = targeted as IPoint3D;
+        Map map = from.Map;
 
-            house = BaseHouse.FindHouseAt(p3d, map, id.Height);
+        if (p == null || map == null)
+          return;
 
-            if (house != null && house.IsOwner(from))
-            {
-              if (map.CanFit(p3d, id.Height))
-              {
-                bool north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
-                bool west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
+        Point3D p3d = new Point3D(p);
+        ItemData id = TileData.ItemTable[0x10F5];
 
-                FlamingHead head = null;
+        house = BaseHouse.FindHouseAt(p3d, map, id.Height);
 
-                if (north && west)
-                  head = new FlamingHead(StoneFaceTrapType.NorthWestWall);
-                else if (north)
-                  head = new FlamingHead();
-                else if (west)
-                  head = new FlamingHead(StoneFaceTrapType.WestWall);
+        if (house?.IsOwner(from) != true)
+        {
+          from.SendLocalizedMessage(1042036); // That location is not in your house.
+          return;
+        }
 
-                if (north || west)
-                {
-                  house.Addons.Add(head);
+        if (!map.CanFit(p3d, id.Height))
+        {
+          @from.SendLocalizedMessage(1042266); // The head must be placed next to a wall.
+          return;
+        }
 
-                  head.IsRewardItem = m_Head.IsRewardItem;
-                  head.MoveToWorld(p3d, map);
+        bool north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
+        bool west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
 
-                  m_Head.Delete();
-                }
-                else
-                {
-                  from.SendLocalizedMessage(1042266); // The head must be placed next to a wall.
-                }
-              }
-              else
-              {
-                from.SendLocalizedMessage(1042266); // The head must be placed next to a wall.
-              }
-            }
-            else
-            {
-              from.SendLocalizedMessage(1042036); // That location is not in your house.
-            }
-          }
-          else
-          {
-            from.SendLocalizedMessage(502115); // You must be in your house to do this.
-          }
+        FlamingHead head = null;
+
+        if (north && west)
+          head = new FlamingHead(StoneFaceTrapType.NorthWestWall);
+        else if (north)
+          head = new FlamingHead();
+        else if (west)
+          head = new FlamingHead(StoneFaceTrapType.WestWall);
+
+        if (north || west)
+        {
+          house.Addons.Add(head);
+
+          head.IsRewardItem = m_Head.IsRewardItem;
+          head.MoveToWorld(p3d, map);
+
+          m_Head.Delete();
         }
         else
         {
-          from.SendLocalizedMessage(1042038); // You must have the object in your backpack to use it.
+          @from.SendLocalizedMessage(1042266); // The head must be placed next to a wall.
         }
       }
     }
