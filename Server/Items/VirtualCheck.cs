@@ -1,19 +1,6 @@
-#region Header
-
-// **********
-// ServUO - VirtualCheck.cs
-// **********
-
-#endregion
-
-#region References
-
-using System.Drawing;
 using Server.Gumps;
 using Server.Items;
 using Server.Network;
-
-#endregion
 
 namespace Server
 {
@@ -246,7 +233,7 @@ namespace Server
         AddImage(360, 8, 113);
 
         string title =
-          $"<BASEFONT COLOR=#{Color.DarkSlateGray.ToArgb():X}><CENTER>BANK OF {User.RawName.ToUpper()}</CENTER>";
+          $"<BASEFONT COLOR=#FF2F4F4F><CENTER>BANK OF {User.RawName.ToUpper()}</CENTER>";
 
         AddHtml(40, 15, 320, 20, title, false, false);
 
