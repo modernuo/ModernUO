@@ -1,6 +1,9 @@
 ModernUO
 =====
 
+### Contacts
+[Join Discord Channel](https://discord.gg/VdyCpjQ)
+
 ### Goals
 - See [Goals](./GOALS.md)
 
