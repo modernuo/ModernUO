@@ -23,55 +23,36 @@ namespace Server.Engines.Harvest
 
     private Mining()
     {
-      HarvestResource[] res;
-      HarvestVein[] veins;
-
       #region Mining for ore and stone
 
-      HarvestDefinition oreAndStone = OreAndStone = new HarvestDefinition();
-
-      // Resource banks are every 8x8 tiles
-      oreAndStone.BankWidth = 8;
-      oreAndStone.BankHeight = 8;
-
-      // Every bank holds from 10 to 34 ore
-      oreAndStone.MinTotal = 10;
-      oreAndStone.MaxTotal = 34;
-
-      // A resource bank will respawn its content every 10 to 20 minutes
-      oreAndStone.MinRespawn = TimeSpan.FromMinutes(10.0);
-      oreAndStone.MaxRespawn = TimeSpan.FromMinutes(20.0);
-
-      // Skill checking is done on the Mining skill
-      oreAndStone.Skill = SkillName.Mining;
-
-      // Set the list of harvestable tiles
-      oreAndStone.Tiles = m_MountainAndCaveTiles;
-
-      // Players must be within 2 tiles to harvest
-      oreAndStone.MaxRange = 2;
-
-      // One ore per harvest action
-      oreAndStone.ConsumedPerHarvest = 1;
-      oreAndStone.ConsumedPerFeluccaHarvest = 2;
-
-      // The digging effect
-      oreAndStone.EffectActions = new[] { 11 };
-      oreAndStone.EffectSounds = new[] { 0x125, 0x126 };
-      oreAndStone.EffectCounts = new[] { 1 };
-      oreAndStone.EffectDelay = TimeSpan.FromSeconds(1.6);
-      oreAndStone.EffectSoundDelay = TimeSpan.FromSeconds(0.9);
-
-      oreAndStone.NoResourcesMessage = 503040; // There is no metal here to mine.
-      oreAndStone.DoubleHarvestMessage = 503042; // Someone has gotten to the metal before you.
-      oreAndStone.TimedOutOfRangeMessage = 503041; // You have moved too far away to continue mining.
-      oreAndStone.OutOfRangeMessage = 500446; // That is too far away.
-      oreAndStone.FailMessage = 503043; // You loosen some rocks but fail to find any useable ore.
-      oreAndStone.PackFullMessage = 1010481; // Your backpack is full, so the ore you mined is lost.
-      oreAndStone.ToolBrokeMessage = 1044038; // You have worn out your tool!
-
-      res = new[]
+      OreAndStone = new HarvestDefinition
       {
+        BankWidth = 8,
+        BankHeight = 8,
+        MinTotal = 10,
+        MaxTotal = 34,
+        MinRespawn = TimeSpan.FromMinutes(10.0),
+        MaxRespawn = TimeSpan.FromMinutes(20.0),
+        Skill = SkillName.Mining,
+        Tiles = m_MountainAndCaveTiles,
+        MaxRange = 2,
+        ConsumedPerHarvest = 1,
+        ConsumedPerFeluccaHarvest = 2,
+        EffectActions = new[] { 11 },
+        EffectSounds = new[] { 0x125, 0x126 },
+        EffectCounts = new[] { 1 },
+        EffectDelay = TimeSpan.FromSeconds(1.6),
+        EffectSoundDelay = TimeSpan.FromSeconds(0.9),
+        NoResourcesMessage = 503040, // There is no metal here to mine.
+        DoubleHarvestMessage = 503042, // Someone has gotten to the metal before you.
+        TimedOutOfRangeMessage = 503041, // You have moved too far away to continue mining.
+        OutOfRangeMessage = 500446, // That is too far away.
+        FailMessage = 503043, // You loosen some rocks but fail to find any useable ore.
+        PackFullMessage = 1010481, // Your backpack is full, so the ore you mined is lost.
+        ToolBrokeMessage = 1044038, // You have worn out your tool!
+      };
+
+      HarvestResource[] res = {
         new HarvestResource(00.0, 00.0, 100.0, 1007072, typeof(IronOre), typeof(Granite)),
         new HarvestResource(65.0, 25.0, 105.0, 1007073, typeof(DullCopperOre), typeof(DullCopperGranite),
           typeof(DullCopperElemental)),
@@ -91,8 +72,7 @@ namespace Server.Engines.Harvest
           typeof(ValoriteElemental))
       };
 
-      veins = new[]
-      {
+      HarvestVein[] veins = {
         new HarvestVein(49.6, 0.0, res[0], null), // Iron
         new HarvestVein(11.2, 0.5, res[1], res[0]), // Dull Copper
         new HarvestVein(09.8, 0.5, res[2], res[0]), // Shadow Iron
@@ -104,11 +84,11 @@ namespace Server.Engines.Harvest
         new HarvestVein(01.4, 0.5, res[8], res[0]) // Valorite
       };
 
-      oreAndStone.Resources = res;
-      oreAndStone.Veins = veins;
+      OreAndStone.Resources = res;
+      OreAndStone.Veins = veins;
 
       if (Core.ML)
-        oreAndStone.BonusResources = new[]
+        OreAndStone.BonusResources = new[]
         {
           new BonusHarvestResource(0, 99.4, null, null), //Nothing
           new BonusHarvestResource(100, .1, 1072562, typeof(BlueDiamond)),
@@ -119,56 +99,41 @@ namespace Server.Engines.Harvest
           new BonusHarvestResource(100, .1, 1072568, typeof(Turquoise))
         };
 
-      oreAndStone.RaceBonus = Core.ML;
-      oreAndStone.RandomizeVeins = Core.ML;
+      OreAndStone.RaceBonus = Core.ML;
+      OreAndStone.RandomizeVeins = Core.ML;
 
-      Definitions.Add(oreAndStone);
+      Definitions.Add(OreAndStone);
 
       #endregion
 
       #region Mining for sand
 
-      HarvestDefinition sand = Sand = new HarvestDefinition();
-
-      // Resource banks are every 8x8 tiles
-      sand.BankWidth = 8;
-      sand.BankHeight = 8;
-
-      // Every bank holds from 6 to 12 sand
-      sand.MinTotal = 6;
-      sand.MaxTotal = 12;
-
-      // A resource bank will respawn its content every 10 to 20 minutes
-      sand.MinRespawn = TimeSpan.FromMinutes(10.0);
-      sand.MaxRespawn = TimeSpan.FromMinutes(20.0);
-
-      // Skill checking is done on the Mining skill
-      sand.Skill = SkillName.Mining;
-
-      // Set the list of harvestable tiles
-      sand.Tiles = m_SandTiles;
-
-      // Players must be within 2 tiles to harvest
-      sand.MaxRange = 2;
-
-      // One sand per harvest action
-      sand.ConsumedPerHarvest = 1;
-      sand.ConsumedPerFeluccaHarvest = 1;
-
-      // The digging effect
-      sand.EffectActions = new[] { 11 };
-      sand.EffectSounds = new[] { 0x125, 0x126 };
-      sand.EffectCounts = new[] { 6 };
-      sand.EffectDelay = TimeSpan.FromSeconds(1.6);
-      sand.EffectSoundDelay = TimeSpan.FromSeconds(0.9);
-
-      sand.NoResourcesMessage = 1044629; // There is no sand here to mine.
-      sand.DoubleHarvestMessage = 1044629; // There is no sand here to mine.
-      sand.TimedOutOfRangeMessage = 503041; // You have moved too far away to continue mining.
-      sand.OutOfRangeMessage = 500446; // That is too far away.
-      sand.FailMessage = 1044630; // You dig for a while but fail to find any of sufficient quality for glassblowing.
-      sand.PackFullMessage = 1044632; // Your backpack can't hold the sand, and it is lost!
-      sand.ToolBrokeMessage = 1044038; // You have worn out your tool!
+      Sand = new HarvestDefinition
+      {
+        BankWidth = 8,
+        BankHeight = 8,
+        MinTotal = 6,
+        MaxTotal = 12,
+        MinRespawn = TimeSpan.FromMinutes(10.0),
+        MaxRespawn = TimeSpan.FromMinutes(20.0),
+        Skill = SkillName.Mining,
+        Tiles = m_SandTiles,
+        MaxRange = 2,
+        ConsumedPerHarvest = 1,
+        ConsumedPerFeluccaHarvest = 1,
+        EffectActions = new[] { 11 },
+        EffectSounds = new[] { 0x125, 0x126 },
+        EffectCounts = new[] { 6 },
+        EffectDelay = TimeSpan.FromSeconds(1.6),
+        EffectSoundDelay = TimeSpan.FromSeconds(0.9),
+        NoResourcesMessage = 1044629, // There is no sand here to mine.
+        DoubleHarvestMessage = 1044629, // There is no sand here to mine.
+        TimedOutOfRangeMessage = 503041, // You have moved too far away to continue mining.
+        OutOfRangeMessage = 500446, // That is too far away.
+        FailMessage = 1044630, // You dig for a while but fail to find any of sufficient quality for glassblowing.
+        PackFullMessage = 1044632, // Your backpack can't hold the sand, and it is lost!
+        ToolBrokeMessage = 1044038, // You have worn out your tool!
+      };
 
       res = new[]
       {
@@ -180,10 +145,10 @@ namespace Server.Engines.Harvest
         new HarvestVein(100.0, 0.0, res[0], null)
       };
 
-      sand.Resources = res;
-      sand.Veins = veins;
+      Sand.Resources = res;
+      Sand.Veins = veins;
 
-      Definitions.Add(sand);
+      Definitions.Add(Sand);
 
       #endregion
     }
@@ -328,6 +293,7 @@ namespace Server.Engines.Harvest
           }
           catch
           {
+            // ignored
           }
       }
     }

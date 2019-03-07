@@ -43,47 +43,30 @@ namespace Server.Engines.Harvest
       HarvestResource[] res;
       HarvestVein[] veins;
 
-      #region Lumberjacking
-
-      HarvestDefinition lumber = new HarvestDefinition();
-
-      // Resource banks are every 4x3 tiles
-      lumber.BankWidth = 4;
-      lumber.BankHeight = 3;
-
-      // Every bank holds from 20 to 45 logs
-      lumber.MinTotal = 20;
-      lumber.MaxTotal = 45;
-
-      // A resource bank will respawn its content every 20 to 30 minutes
-      lumber.MinRespawn = TimeSpan.FromMinutes(20.0);
-      lumber.MaxRespawn = TimeSpan.FromMinutes(30.0);
-
-      // Skill checking is done on the Lumberjacking skill
-      lumber.Skill = SkillName.Lumberjacking;
-
-      // Set the list of harvestable tiles
-      lumber.Tiles = m_TreeTiles;
-
-      // Players must be within 2 tiles to harvest
-      lumber.MaxRange = 2;
-
-      // Ten logs per harvest action
-      lumber.ConsumedPerHarvest = 10;
-      lumber.ConsumedPerFeluccaHarvest = 20;
-
-      // The chopping effect
-      lumber.EffectActions = new[] { 13 };
-      lumber.EffectSounds = new[] { 0x13E };
-      lumber.EffectCounts = Core.AOS ? new[] { 1 } : new[] { 1, 2, 2, 2, 3 };
-      lumber.EffectDelay = TimeSpan.FromSeconds(1.6);
-      lumber.EffectSoundDelay = TimeSpan.FromSeconds(0.9);
-
-      lumber.NoResourcesMessage = 500493; // There's not enough wood here to harvest.
-      lumber.FailMessage = 500495; // You hack at the tree for a while, but fail to produce any useable wood.
-      lumber.OutOfRangeMessage = 500446; // That is too far away.
-      lumber.PackFullMessage = 500497; // You can't place any wood into your backpack!
-      lumber.ToolBrokeMessage = 500499; // You broke your axe.
+      HarvestDefinition lumber = new HarvestDefinition
+      {
+        BankWidth = 4,
+        BankHeight = 3,
+        MinTotal = 20,
+        MaxTotal = 45,
+        MinRespawn = TimeSpan.FromMinutes(20.0),
+        MaxRespawn = TimeSpan.FromMinutes(30.0),
+        Skill = SkillName.Lumberjacking,
+        Tiles = m_TreeTiles,
+        MaxRange = 2,
+        ConsumedPerHarvest = 10,
+        ConsumedPerFeluccaHarvest = 20,
+        EffectActions = new[] { 13 },
+        EffectSounds = new[] { 0x13E },
+        EffectCounts = Core.AOS ? new[] { 1 } : new[] { 1, 2, 2, 2, 3 },
+        EffectDelay = TimeSpan.FromSeconds(1.6),
+        EffectSoundDelay = TimeSpan.FromSeconds(0.9),
+        NoResourcesMessage = 500493, // There's not enough wood here to harvest.
+        FailMessage = 500495, // You hack at the tree for a while, but fail to produce any useable wood.
+        OutOfRangeMessage = 500446, // That is too far away.
+        PackFullMessage = 500497, // You can't place any wood into your backpack!
+        ToolBrokeMessage = 500499, // You broke your axe.
+      };
 
       if (Core.ML)
       {
@@ -141,8 +124,6 @@ namespace Server.Engines.Harvest
 
       Definition = lumber;
       Definitions.Add(lumber);
-
-      #endregion
     }
 
     public static Lumberjacking System => m_System ?? (m_System = new Lumberjacking());

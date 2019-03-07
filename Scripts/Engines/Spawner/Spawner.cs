@@ -515,8 +515,7 @@ namespace Server.Mobiles
                       {
                         flags = EntryFlags.InvalidProps;
 
-                        if (o is ISpawnable spawnable)
-                          spawnable.Delete();
+                        (o as ISpawnable)?.Delete();
 
                         return false;
                       }
@@ -544,11 +543,7 @@ namespace Server.Mobiles
             {
               int walkrange = GetWalkingRange();
 
-              if (walkrange >= 0)
-                c.RangeHome = walkrange;
-              else
-                c.RangeHome = m_HomeRange;
-
+              c.RangeHome = walkrange >= 0 ? walkrange : m_HomeRange;
               c.CurrentWayPoint = GetWayPoint();
 
               if (m_Team > 0)

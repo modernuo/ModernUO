@@ -1019,13 +1019,10 @@ namespace Server
 
     public void GetProperties(ObjectPropertyList list)
     {
-      SkillName skill;
       for (int i = 0; i < 5; ++i)
       {
-        if (!GetValues(i, out skill, out double bonus))
-          continue;
-
-        list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus);
+        if (GetValues(i, out SkillName skill, out double bonus))
+          list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus);
       }
     }
 

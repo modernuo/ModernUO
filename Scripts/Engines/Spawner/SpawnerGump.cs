@@ -145,64 +145,63 @@ namespace Server.Mobiles
         TextRelay parmte = info.GetTextEntry(index + 3);
         TextRelay propte = info.GetTextEntry(index + 4);
 
-        if (cte != null)
+        if (cte == null)
+          continue;
+
+        string str = cte.Text.Trim().ToLower();
+
+        if (str.Length > 0)
         {
-          string str = cte.Text.Trim().ToLower();
+          Type type = SpawnerType.GetType(str);
 
-          if (str.Length > 0)
+          if (type != null)
           {
-            Type type = SpawnerType.GetType(str);
+            SpawnerEntry entry;
 
-            if (type != null)
+            if (entryindex < ocount)
             {
-              SpawnerEntry entry;
+              entry = spawner.Entries[entryindex];
+              entry.SpawnedName = str;
 
-              if (entryindex < ocount)
-              {
-                entry = spawner.Entries[entryindex];
-                entry.SpawnedName = str;
+              if (mte != null)
+                entry.SpawnedMaxCount = Utility.ToInt32(mte.Text.Trim());
 
-                if (mte != null)
-                  entry.SpawnedMaxCount = Utility.ToInt32(mte.Text.Trim());
-
-                if (poste != null)
-                  entry.SpawnedProbability = Utility.ToInt32(poste.Text.Trim());
-              }
-              else
-              {
-                int maxcount = 1;
-                int probcount = 100;
-
-                if (mte != null)
-                  maxcount = Utility.ToInt32(mte.Text.Trim());
-
-                if (poste != null)
-                  probcount = Utility.ToInt32(poste.Text.Trim());
-
-                entry = spawner.AddEntry(str, probcount, maxcount);
-              }
-
-              if (parmte != null)
-                entry.Parameters = parmte.Text.Trim();
-
-              if (propte != null)
-                entry.Properties = propte.Text.Trim();
+              if (poste != null)
+                entry.SpawnedProbability = Utility.ToInt32(poste.Text.Trim());
             }
             else
             {
-              from.SendMessage("{0} is not a valid type name for entry #{1}.", str, i);
+              int maxcount = 1;
+              int probcount = 100;
+
+              if (mte != null)
+                maxcount = Utility.ToInt32(mte.Text.Trim());
+
+              if (poste != null)
+                probcount = Utility.ToInt32(poste.Text.Trim());
+
+              entry = spawner.AddEntry(str, probcount, maxcount);
             }
+
+            if (parmte != null)
+              entry.Parameters = parmte.Text.Trim();
+
+            if (propte != null)
+              entry.Properties = propte.Text.Trim();
           }
-          else if (entryindex < ocount && spawner.Entries[entryindex] != null)
+          else
           {
-            rementries.Add(spawner.Entries[entryindex]);
+            @from.SendMessage("{0} is not a valid type name for entry #{1}.", str, i);
           }
+        }
+        else if (entryindex < ocount && spawner.Entries[entryindex] != null)
+        {
+          rementries.Add(spawner.Entries[entryindex]);
         }
       }
 
-      if (rementries.Count > 0)
-        for (int i = 0; i < rementries.Count; i++)
-          spawner.RemoveEntry(rementries[i]);
+      for (int i = 0; i < rementries.Count; i++)
+        spawner.RemoveEntry(rementries[i]);
 
       if (ocount == 0 && spawner.Entries.Count > 0)
         spawner.Start();
@@ -241,7 +240,7 @@ namespace Server.Mobiles
             }
             case 1:
             {
-              if (m_Spawner.Entries != null && (m_Page + 1) * 13 <= m_Spawner.Entries.Count)
+              if ((m_Page + 1) * 13 <= m_Spawner.Entries?.Count)
               {
                 m_Page++;
                 m_Entry = null;
@@ -282,16 +281,9 @@ namespace Server.Mobiles
           {
             SpawnerEntry entry = m_Spawner.Entries[entryindex];
             if (buttontype == 0) // Spawn creature
-            {
-              if (m_Entry != null && m_Entry == entry)
-                m_Entry = null;
-              else
-                m_Entry = entry;
-            }
+              m_Entry = m_Entry != entry ? entry : null;
             else // Remove creatures
-            {
               m_Spawner.RemoveSpawn(entryindex);
-            }
           }
 
           CreateArray(info, state.Mobile, m_Spawner);

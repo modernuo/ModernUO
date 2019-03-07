@@ -143,16 +143,8 @@ namespace Server.Menus.Questions
 
     private static bool IsInSecondAgeArea(Mobile m)
     {
-      if (m.Map != Map.Trammel && m.Map != Map.Felucca)
-        return false;
-
-      if (m.X >= 5120 && m.Y >= 2304)
-        return true;
-
-      if (m.Region.IsPartOf("Terathan Keep"))
-        return true;
-
-      return false;
+      return (m.Map == Map.Trammel || m.Map == Map.Felucca) &&
+             (m.X >= 5120 && m.Y >= 2304 || m.Region.IsPartOf("Terathan Keep"));
     }
 
     public void BeginClose()

@@ -46,7 +46,7 @@ namespace Server
     public static readonly string GuildIndexPath = Path.Combine("Saves/Guilds/", "Guilds.idx");
     public static readonly string GuildDataPath = Path.Combine("Saves/Guilds/", "Guilds.bin");
 
-    private static readonly Type[] m_SerialTypeArray = new Type[] { typeof(Serial) };
+    private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
 
     internal static int m_Saves;
 

@@ -137,7 +137,7 @@ namespace Server.Engines.Harvest
       HarvestResource resource = MutateResource(from, tool, def, map, loc, vein, primary, fallback);
 
       double skillBase = from.Skills[def.Skill].Base;
-      double skillValue = from.Skills[def.Skill].Value;
+      // double skillValue = from.Skills[def.Skill].Value;
 
       Type type = null;
 
@@ -296,10 +296,7 @@ namespace Server.Engines.Harvest
     public virtual Type GetResourceType(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
       HarvestResource resource)
     {
-      if (resource.Types.Length > 0)
-        return resource.Types[Utility.Random(resource.Types.Length)];
-
-      return null;
+      return resource.Types.Length > 0 ? resource.Types[Utility.Random(resource.Types.Length)] : null;
     }
 
     public virtual HarvestResource MutateResource(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
@@ -382,17 +379,7 @@ namespace Server.Engines.Harvest
 
     public virtual HarvestDefinition GetDefinition(int tileID)
     {
-      HarvestDefinition def = null;
-
-      for (int i = 0; def == null && i < Definitions.Count; ++i)
-      {
-        HarvestDefinition check = Definitions[i];
-
-        if (check.Validate(tileID))
-          def = check;
-      }
-
-      return def;
+      return Definitions.FirstOrDefault(check => check.Validate(tileID));
     }
 
     public virtual void StartHarvesting(Mobile from, Item tool, object toHarvest)
