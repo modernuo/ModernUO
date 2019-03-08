@@ -7351,12 +7351,7 @@ namespace Server
     {
     }
 
-    public bool CheckAlive()
-    {
-      return CheckAlive(true);
-    }
-
-    public bool CheckAlive(bool message)
+    public bool CheckAlive(bool message = true)
     {
       if (Alive)
         return true;
@@ -7365,7 +7360,6 @@ namespace Server
         LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019048); // I am dead and cannot do that.
 
       return false;
-
     }
 
     public void LaunchBrowser(string url)

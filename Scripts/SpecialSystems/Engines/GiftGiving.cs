@@ -36,7 +36,7 @@ namespace Server.Misc
         GiftGiver giver = m_Givers[i];
 
         if (now < giver.Start || now >= giver.Finish)
-          continue; // not in the correct timefream
+          continue; // not in the correct time frame
 
         if (acct.Created > giver.Start - giver.MinimumAge)
           continue; // newly created account
@@ -66,9 +66,8 @@ namespace Server.Misc
 
     public virtual GiftResult GiveGift(Mobile mob, Item item)
     {
-      if (mob.PlaceInBackpack(item))
-        if (!WeightOverloading.IsOverloaded(mob))
-          return GiftResult.Backpack;
+      if (mob.PlaceInBackpack(item) && !WeightOverloading.IsOverloaded(mob))
+        return GiftResult.Backpack;
 
       mob.BankBox.DropItem(item);
       return GiftResult.BankBox;

@@ -953,7 +953,7 @@ namespace Server.Engines.CannedEvil
 
     public void RegisterDamage(Mobile from, int amount)
     {
-      if (from == null || !from.Player)
+      if (from?.Player != true)
         return;
 
       m_DamageEntries[from] = amount + (m_DamageEntries.TryGetValue(from, out int value) ? value : 0);

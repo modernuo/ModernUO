@@ -108,7 +108,7 @@ namespace Server.Mobiles
 
     public virtual void EndRelease(Mobile from)
     {
-      if (from == null || !Deleted && Controlled && from == ControlMaster && from.CheckAlive())
+      if (from?.CheckAlive() != false && !Deleted && Controlled && from == ControlMaster)
       {
         Effects.SendLocationParticles(EffectItem.Create(Location, Map, EffectItem.DefaultDuration), 0x3728, 1, 13,
           2100, 3, 5042, 0);

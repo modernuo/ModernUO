@@ -20,39 +20,38 @@ namespace Server.Misc
 
     private static void EventSink_Speech(SpeechEventArgs args)
     {
-      if (!args.Handled)
+      if (args.Handled)
+        return;
+
+      if (Insensitive.StartsWith(args.Speech, "set"))
       {
-        if (Insensitive.StartsWith(args.Speech, "set"))
-        {
-          Mobile from = args.Mobile;
+        Mobile from = args.Mobile;
 
-          string[] split = args.Speech.Split(' ');
+        string[] split = args.Speech.Split(' ');
 
-          if (split.Length == 3)
-            try
-            {
-              string name = split[1];
-              double value = Convert.ToDouble(split[2]);
+        if (split.Length == 3)
+          try
+          {
+            string name = split[1];
+            double value = Convert.ToDouble(split[2]);
 
-              if (Insensitive.Equals(name, "str"))
-                ChangeStrength(from, (int)value);
-              else if (Insensitive.Equals(name, "dex"))
-                ChangeDexterity(from, (int)value);
-              else if (Insensitive.Equals(name, "int"))
-                ChangeIntelligence(from, (int)value);
-              else
-                ChangeSkill(from, name, value);
-            }
-            catch
-            {
-            }
-        }
-        else if (Insensitive.Equals(args.Speech, "help"))
-        {
-          args.Mobile.SendGump(new TCHelpGump());
-
-          args.Handled = true;
-        }
+            if (Insensitive.Equals(name, "str"))
+              ChangeStrength(from, (int)value);
+            else if (Insensitive.Equals(name, "dex"))
+              ChangeDexterity(from, (int)value);
+            else if (Insensitive.Equals(name, "int"))
+              ChangeIntelligence(from, (int)value);
+            else
+              ChangeSkill(from, name, value);
+          }
+          catch
+          {
+          }
+      }
+      else if (Insensitive.Equals(args.Speech, "help"))
+      {
+        args.Mobile.SendGump(new TCHelpGump());
+        args.Handled = true;
       }
     }
 

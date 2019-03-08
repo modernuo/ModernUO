@@ -149,7 +149,7 @@ namespace Server
 
       #region Dragon Barding
 
-      if ((from == null || !from.Player) && m.Player && m.Mount is SwampDragon pet)
+      if ((from?.Player != true) && m.Player && m.Mount is SwampDragon pet)
         if (pet.HasBarding)
         {
           int percent = pet.BardingExceptional ? 20 : 10;

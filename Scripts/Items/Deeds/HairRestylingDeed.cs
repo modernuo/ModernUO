@@ -127,7 +127,7 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_From == null || !m_From.Alive)
+        if (m_From?.Alive != true)
           return;
 
         if (m_Deed.Deleted)
