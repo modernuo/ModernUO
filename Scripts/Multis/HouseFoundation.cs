@@ -189,7 +189,7 @@ namespace Server.Multis
 
     public bool IsFixture(Item item)
     {
-      return Fixtures.Contains(item) == true;
+      return Fixtures.Contains(item);
     }
 
     public override int GetMaxUpdateRange()

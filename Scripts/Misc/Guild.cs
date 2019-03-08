@@ -1298,7 +1298,7 @@ namespace Server.Guilds
 
     public void RemoveEnemy(Guild g)
     {
-      if (Enemies.Contains(g) == true)
+      if (Enemies.Contains(g))
       {
         Enemies.Remove(g);
 

@@ -162,16 +162,16 @@ namespace Server.Engines.Harvest
     public override Type GetResourceType(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
       HarvestResource resource)
     {
-      if (def == OreAndStone)
-      {
-        if (from is PlayerMobile pm && pm.StoneMining && pm.ToggleMiningStone &&
-            from.Skills.Mining.Base >= 100.0 && 0.1 > Utility.RandomDouble())
-          return resource.Types[1];
+      if (def != OreAndStone)
+        return base.GetResourceType(from, tool, def, map, loc, resource);
 
-        return resource.Types[0];
-      }
 
-      return base.GetResourceType(from, tool, def, map, loc, resource);
+      if (from.Skills.Mining.Base >= 100.0 && from is PlayerMobile pm && pm.StoneMining && pm.ToggleMiningStone
+          && 0.1 > Utility.RandomDouble())
+        return resource.Types[1];
+
+      return resource.Types[0];
+
     }
 
     public override bool CheckHarvest(Mobile from, Item tool)

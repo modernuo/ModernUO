@@ -3845,7 +3845,7 @@ namespace Server.Mobiles
 
     public virtual bool IsPetFriend(Mobile m)
     {
-      return Friends.Contains(m) == true;
+      return Friends.Contains(m);
     }
 
     public virtual void AddPetFriend(Mobile m)

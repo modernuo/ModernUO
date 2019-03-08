@@ -132,10 +132,9 @@ namespace Server.Movement
 
     public bool CheckMovement(Mobile m, Direction d, out int newZ)
     {
-      if (!Enabled && _Successor != null)
-        return _Successor.CheckMovement(m, d, out newZ);
-
-      return CheckMovement(m, m.Map, m.Location, d, out newZ);
+      return !Enabled && _Successor != null
+        ? _Successor.CheckMovement(m, d, out newZ)
+        : CheckMovement(m, m.Map, m.Location, d, out newZ);
     }
 
     public static void Initialize()
@@ -384,7 +383,7 @@ namespace Server.Movement
 
     private static bool Verify(Item item, int x, int y)
     {
-      return item.AtWorldPoint(x, y) == true;
+      return item.AtWorldPoint(x, y);
     }
 
     private static bool Verify(Item item, TileFlag reqFlags, bool ignoreMovableImpassables)
