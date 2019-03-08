@@ -452,11 +452,9 @@ namespace Server.Movement
         isSet = true;
       }
 
-      ItemData itemData;
-
       foreach (Item item in itemList)
       {
-        itemData = item.ItemData;
+        ItemData itemData = item.ItemData;
 
         int calcTop = item.Z + itemData.CalcHeight;
 
@@ -481,7 +479,8 @@ namespace Server.Movement
 
       if (!isSet)
         zLow = zTop = loc.Z;
-      else if (loc.Z > zTop) zTop = loc.Z;
+      else if (loc.Z > zTop)
+        zTop = loc.Z;
     }
 
     public void Offset(Direction d, ref int x, ref int y)
