@@ -249,7 +249,7 @@ namespace Server
     public bool IsDefault => Map.DefaultRegion == this;
     public virtual MusicName DefaultMusic => Parent?.Music ?? MusicName.Invalid;
 
-    int IComparable<Region>.CompareTo(Region reg)
+    public int CompareTo(Region reg)
     {
       if (reg == null)
         return 1;
