@@ -153,8 +153,8 @@ namespace Server.Mobiles
 
       Container bank = from.FindBankNoCreate();
 
-      if ((from.Backpack == null || from.Backpack.GetAmount(typeof(Gold)) < 30) &&
-          (bank == null || bank.GetAmount(typeof(Gold)) < 30))
+      if (!(from.Backpack?.GetAmount(typeof(Gold)) >= 30) &&
+          !(bank?.GetAmount(typeof(Gold)) >= 30))
       {
         SayTo(from, 1042556); // Thou dost not have enough gold, not even in thy bank account.
       }
@@ -248,12 +248,7 @@ namespace Server.Mobiles
       }
     }
 
-    public void Claim(Mobile from)
-    {
-      Claim(from, null);
-    }
-
-    public void Claim(Mobile from, string petName)
+    public void Claim(Mobile from, string petName = null)
     {
       if (Deleted || !from.CheckAlive())
         return;

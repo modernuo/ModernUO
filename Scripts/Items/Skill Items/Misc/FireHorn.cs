@@ -39,14 +39,11 @@ namespace Server.Items
         return false;
       }
 
-      int sulfAsh = Core.AOS ? 4 : 15;
-      if (from.Backpack == null || from.Backpack.GetAmount(typeof(SulfurousAsh)) < sulfAsh)
-      {
-        from.SendLocalizedMessage(1049617); // You do not have enough sulfurous ash.
-        return false;
-      }
+      if (from.Backpack?.GetAmount(typeof(SulfurousAsh)) >= (Core.AOS ? 4 : 15))
+        return true;
 
-      return true;
+      from.SendLocalizedMessage(1049617); // You do not have enough sulfurous ash.
+      return false;
     }
 
     public override void OnDoubleClick(Mobile from)

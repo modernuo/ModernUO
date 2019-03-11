@@ -510,8 +510,8 @@ namespace Server.Engines.BulkOrders
               Item item = bobEntry.Reconstruct();
 
               Container pack = m_From.Backpack;
-              if (pack == null || !pack.CheckHold(m_From, item, true, true, 0,
-                    item.PileWeight + item.TotalWeight))
+              if (pack?.CheckHold(m_From, item, true, true, 0,
+                    item.PileWeight + item.TotalWeight) != true)
               {
                 m_From.SendLocalizedMessage(503204); // You do not have room in your backpack for this
                 m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));

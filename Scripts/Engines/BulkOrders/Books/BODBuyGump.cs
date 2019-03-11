@@ -84,8 +84,8 @@ namespace Server.Engines.BulkOrders
 
       Container pack = m_From.Backpack;
 
-      if (pack == null || !pack.CheckHold(m_From, item, true, true, 0,
-            item.PileWeight + item.TotalWeight))
+      if (pack?.CheckHold(m_From, item, true, true, 0,
+            item.PileWeight + item.TotalWeight) != true)
       {
         pv.SayTo(m_From, 503204); // You do not have room in your backpack for this
         m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));

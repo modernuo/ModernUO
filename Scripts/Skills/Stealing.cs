@@ -115,7 +115,7 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(500237); // Target can not be seen.
         }
-        else if (m_Thief.Backpack == null || !m_Thief.Backpack.CheckHold(m_Thief, toSteal, false, true))
+        else if (m_Thief.Backpack?.CheckHold(m_Thief, toSteal, false, true) != true)
         {
           m_Thief.SendLocalizedMessage(1048147); // Your backpack can't hold anything else.
         }
@@ -177,7 +177,7 @@ namespace Server.SkillHandlers
                 m_Thief.SendLocalizedMessage(
                   1010258); //	The sigil has gone back to its home location because you already have a sigil.
               }
-              else if (m_Thief.Backpack == null || !m_Thief.Backpack.CheckHold(m_Thief, sig, false, true))
+              else if (m_Thief?.Backpack.CheckHold(m_Thief, sig, false, true) != true)
               {
                 m_Thief.SendLocalizedMessage(
                   1010259); //	The sigil has gone home because your backpack is full

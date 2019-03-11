@@ -284,7 +284,7 @@ namespace Server.Items
 
       Bottle bottle = new Bottle(amount);
 
-      if (pack == null || !pack.TryDropItem(m, bottle, false))
+      if (pack?.TryDropItem(m, bottle, false) != true)
       {
         bottle.Delete();
         return false;

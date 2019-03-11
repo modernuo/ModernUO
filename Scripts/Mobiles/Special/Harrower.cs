@@ -437,7 +437,7 @@ namespace Server.Mobiles
 
       Container pack = to.Backpack;
 
-      if (pack == null || !pack.TryDropItem(to, artifact, false))
+      if (pack?.TryDropItem(to, artifact, false) != true)
         artifact.Delete();
       else
         to.SendLocalizedMessage(
@@ -446,8 +446,8 @@ namespace Server.Mobiles
 
     public bool IsEligible(Mobile m, Item Artifact)
     {
-      return m.Player && m.Alive && m.InRange(Location, 32) && m.Backpack != null &&
-             m.Backpack.CheckHold(m, Artifact, false);
+      return m.Player && m.Alive && m.InRange(Location, 32) &&
+             m.Backpack?.CheckHold(m, Artifact, false) == true;
     }
 
     public Item GetArtifact()

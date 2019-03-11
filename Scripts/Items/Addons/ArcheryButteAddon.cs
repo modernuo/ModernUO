@@ -135,11 +135,11 @@ namespace Server.Items
 			Container pack = from.Backpack;
 			Type ammoType = bow.AmmoType;
 
-			bool isArrow = ( ammoType == typeof( Arrow ) );
-			bool isBolt = ( ammoType == typeof( Bolt ) );
-			bool isKnown = ( isArrow || isBolt );
+			bool isArrow = ammoType == typeof( Arrow );
+			bool isBolt = ammoType == typeof( Bolt );
+			bool isKnown = isArrow || isBolt;
 
-			if ( pack == null || !pack.ConsumeTotal( ammoType ) )
+			if (pack?.ConsumeTotal( ammoType ) != true)
 			{
 				if ( isArrow )
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500594 ); // You do not have any arrows with which to practice.

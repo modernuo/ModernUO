@@ -1511,7 +1511,7 @@ namespace Server.Mobiles
           plusWeight += cont.TotalWeight;
         }
 
-        if (Backpack == null || !Backpack.CheckHold(this, item, false, checkItems, plusItems, plusWeight))
+        if (Backpack?.CheckHold(this, item, false, checkItems, plusItems, plusWeight) != true)
           msgNum = 1004040; // You would not be able to hold this if the trade failed.
         else if (to.Backpack == null || !to.Backpack.CheckHold(to, item, false, checkItems, plusItems, plusWeight))
           msgNum = 1004039; // The recipient of this trade would not be able to carry this.

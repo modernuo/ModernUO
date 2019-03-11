@@ -115,12 +115,12 @@ namespace Server.Items
               {
                 Item toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
-                if (toDisarm == null || !toDisarm.Movable)
+                if (toDisarm?.Movable == false)
                   toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
 
                 Container pack = defender.Backpack;
 
-                if (pack == null || toDisarm == null || !toDisarm.Movable)
+                if (pack == null || toDisarm?.Movable == false)
                 {
                   attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
                 }

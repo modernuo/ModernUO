@@ -896,7 +896,7 @@ namespace Server.Engines.ConPVP
       if (!Visible)
         return true;
 
-      if (m == null || !m.Player || !m.Alive || m.Backpack == null || m_Team?.Game == null)
+      if (m?.Player != true || !m.Alive || m.Backpack == null || m_Team?.Game == null)
         return true;
 
       if (!base.OnMoveOver(m))
@@ -1442,10 +1442,7 @@ namespace Server.Engines.ConPVP
 
     public override bool CantDoAnything(Mobile mob)
     {
-      if (mob?.Backpack == null || GetTeamInfo(mob) == null)
-        return false;
-
-      return mob.Backpack.FindItemByType<BRBomb>() != null;
+      return mob.Backpack?.FindItemByType<BRBomb>() != null && GetTeamInfo(mob) != null;
     }
 
     public void ReturnBomb()

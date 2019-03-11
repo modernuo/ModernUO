@@ -1000,7 +1000,7 @@ namespace Server.Engines.CannedEvil
 
       Container pack = to.Backpack;
 
-      if (pack == null || !pack.TryDropItem(to, artifact, false))
+      if (pack?.TryDropItem(to, artifact, false) != true)
         artifact.Delete();
       else
         to.SendLocalizedMessage(

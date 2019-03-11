@@ -299,10 +299,7 @@ namespace Server.Items
 
     public static bool HasDiggingTool(Mobile m)
     {
-      if (m.Backpack == null)
-        return false;
-
-      return m.Backpack.FindItemsByType<BaseHarvestTool>().Any(tool => tool.HarvestSystem == Mining.System);
+      return m.Backpack?.FindItemsByType<BaseHarvestTool>().Any(tool => tool.HarvestSystem == Mining.System) == true;
     }
 
     public void OnBeginDig(Mobile from)
