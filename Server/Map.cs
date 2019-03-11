@@ -419,16 +419,16 @@ namespace Server
 
     public static Map Parse(string value)
     {
-      if (string.IsNullOrWhiteSpace(value)) return null;
+      if (string.IsNullOrWhiteSpace(value))
+        return null;
 
-      if (Insensitive.Equals(value, "Internal")) return Internal;
+      if (Insensitive.Equals(value, "Internal"))
+        return Internal;
 
       if (!int.TryParse(value, out int index))
         return Maps.FirstOrDefault(m => m != null && Insensitive.Equals(m.Name, value));
 
-      if (index == 127) return Internal;
-
-      return Maps.FirstOrDefault(m => m != null && m.MapIndex == index);
+      return index == 127 ? Internal : Maps.FirstOrDefault(m => m != null && m.MapIndex == index);
     }
 
     public override string ToString()
@@ -468,10 +468,8 @@ namespace Server
       if (zBottom > top)
         top = zBottom;
 
-      if (Math.Abs(zTop - zBottom) > Math.Abs(zLeft - zRight))
-        avg = FloorAverage(zLeft, zRight);
-      else
-        avg = FloorAverage(zTop, zBottom);
+      avg = Math.Abs(zTop - zBottom) > Math.Abs(zLeft - zRight) ?
+        FloorAverage(zLeft, zRight) : FloorAverage(zTop, zBottom);
     }
 
     private static int FloorAverage(int a, int b)

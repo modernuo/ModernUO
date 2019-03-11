@@ -204,7 +204,7 @@ namespace Server.Mobiles
             false);
     }
 
-    public SpawnerEntry AddEntry(string creaturename, int probability, int amount, bool dotimer = true)
+    public SpawnerEntry AddEntry(string creaturename, int probability = 100, int amount = 1, bool dotimer = true)
     {
       SpawnerEntry entry = new SpawnerEntry(creaturename, probability, amount);
       Entries.Add(entry);

@@ -410,18 +410,20 @@ namespace Server.Commands
 
     private static bool FixMap(ref Map map, ref Point3D loc, Item item)
     {
-      return map == null || map == Map.Internal && item.RootParent is Mobile m && FixMap(ref map, ref loc, m);
+      return map != null && map != Map.Internal || item.RootParent is Mobile m && FixMap(ref map, ref loc, m);
     }
 
     private static bool FixMap(ref Map map, ref Point3D loc, Mobile m)
     {
-      if (map == null || map == Map.Internal)
+      bool validMap = map != null && map != Map.Internal;
+
+      if (!validMap)
       {
         map = m.LogoutMap;
         loc = m.LogoutLocation;
       }
 
-      return map != null && map != Map.Internal;
+      return validMap;
     }
 
     [Usage("Go [name | serial | (x y [z]) | (deg min (N | S) deg min (E | W))]")]

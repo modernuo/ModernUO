@@ -53,7 +53,7 @@ namespace Server
     private StaticTile[] m_TileBuffer = new StaticTile[128];
 
     private TileList m_TilesList = new TileList();
-    private int m_Width, m_Height;
+    // private int m_Width, m_Height;
 
     public TileMatrix(Map owner, int fileIndex, int mapID, int width, int height)
     {
@@ -78,8 +78,8 @@ namespace Server
       }
 
       m_FileIndex = fileIndex;
-      m_Width = width;
-      m_Height = height;
+//      m_Width = width;
+//      m_Height = height;
       BlockWidth = width >> 3;
       BlockHeight = height >> 3;
 
@@ -369,7 +369,8 @@ namespace Server
         int lookup = IndexReader.ReadInt32();
         int length = IndexReader.ReadInt32();
 
-        if (lookup < 0 || length <= 0) return EmptyStaticBlock;
+        if (lookup < 0 || length <= 0)
+          return EmptyStaticBlock;
 
         int count = length / 7;
 

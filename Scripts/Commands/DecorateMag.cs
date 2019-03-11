@@ -428,7 +428,7 @@ namespace Server.Commands
             int indexOf = m_Params[i].IndexOf('=');
 
             if (indexOf >= 0)
-              sp.AddEntry(m_Params[i].Substring(++indexOf), 100, 1);
+              sp.AddEntry(m_Params[i].Substring(++indexOf));
           }
           else if (m_Params[i].StartsWith("MinDelay"))
           {
