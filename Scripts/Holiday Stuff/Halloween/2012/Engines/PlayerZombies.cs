@@ -37,7 +37,7 @@ namespace Server.Engines.Events
 			new Rectangle2D(4528,1314,28,20), // Moonglow
 			new Rectangle2D(712,1104,22,30), // Yew
 			new Rectangle2D(5824,1464,6,22), // Fire Dungeon
-			new Rectangle2D(5224,3655,5,14), // T2A
+			new Rectangle2D(5224,3655,5,14) // T2A
 		};
 
 		public static void Initialize()

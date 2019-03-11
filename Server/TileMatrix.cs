@@ -213,42 +213,37 @@ namespace Server
 
       StaticTile[][][] tiles = m_StaticTiles[x][y];
 
-      if (tiles == null)
+      if (tiles != null)
+        return tiles;
+
+      lock (m_FileShare)
       {
-        lock (m_FileShare)
+        for (int i = 0; tiles == null && i < m_FileShare.Count; ++i)
         {
-          for (int i = 0; tiles == null && i < m_FileShare.Count; ++i)
+          TileMatrix shared = m_FileShare[i];
+
+          lock (shared)
           {
-            TileMatrix shared = m_FileShare[i];
-
-            lock (shared)
+            if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
             {
-              if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+              StaticTile[][][][] theirTiles = shared.m_StaticTiles[x];
+
+              if (theirTiles != null)
+                tiles = theirTiles[y];
+
+              if (tiles != null)
               {
-                StaticTile[][][][] theirTiles = shared.m_StaticTiles[x];
+                int[] theirBits = shared.m_StaticPatches[x];
 
-                if (theirTiles != null)
-                  tiles = theirTiles[y];
-
-                if (tiles != null)
-                {
-                  int[] theirBits = shared.m_StaticPatches[x];
-
-                  if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
-                    tiles = null;
-                }
+                if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
+                  tiles = null;
               }
             }
           }
         }
-
-        if (tiles == null)
-          tiles = ReadStaticBlock(x, y);
-
-        m_StaticTiles[x][y] = tiles;
       }
 
-      return tiles;
+      return m_StaticTiles[x][y] = tiles ?? ReadStaticBlock(x, y);
     }
 
     public StaticTile[] GetStaticTiles(int x, int y)
@@ -314,49 +309,42 @@ namespace Server
 
       LandTile[] tiles = m_LandTiles[x][y];
 
-      if (tiles == null)
+      if (tiles != null)
+        return tiles;
+
+      lock (m_FileShare)
       {
-        lock (m_FileShare)
+        for (int i = 0; tiles == null && i < m_FileShare.Count; ++i)
         {
-          for (int i = 0; tiles == null && i < m_FileShare.Count; ++i)
+          TileMatrix shared = m_FileShare[i];
+
+          lock (shared)
           {
-            TileMatrix shared = m_FileShare[i];
-
-            lock (shared)
+            if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
             {
-              if (x >= 0 && x < shared.BlockWidth && y >= 0 && y < shared.BlockHeight)
+              LandTile[][] theirTiles = shared.m_LandTiles[x];
+
+              if (theirTiles != null)
+                tiles = theirTiles[y];
+
+              if (tiles != null)
               {
-                LandTile[][] theirTiles = shared.m_LandTiles[x];
+                int[] theirBits = shared.m_LandPatches[x];
 
-                if (theirTiles != null)
-                  tiles = theirTiles[y];
-
-                if (tiles != null)
-                {
-                  int[] theirBits = shared.m_LandPatches[x];
-
-                  if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
-                    tiles = null;
-                }
+                if (theirBits != null && (theirBits[y >> 5] & (1 << (y & 0x1F))) != 0)
+                  tiles = null;
               }
             }
           }
         }
-
-        if (tiles == null)
-          tiles = ReadLandBlock(x, y);
-
-        m_LandTiles[x][y] = tiles;
       }
 
-      return tiles;
+      return m_LandTiles[x][y] = tiles ?? ReadLandBlock(x, y);
     }
 
     public LandTile GetLandTile(int x, int y)
     {
-      LandTile[] tiles = GetLandBlock(x >> 3, y >> 3);
-
-      return tiles[((y & 0x7) << 3) + (x & 0x7)];
+      return GetLandBlock(x >> 3, y >> 3)[((y & 0x7) << 3) + (x & 0x7)];
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)]

@@ -49,7 +49,7 @@ namespace Server.Engines.Harvest
         OutOfRangeMessage = 500446, // That is too far away.
         FailMessage = 503043, // You loosen some rocks but fail to find any useable ore.
         PackFullMessage = 1010481, // Your backpack is full, so the ore you mined is lost.
-        ToolBrokeMessage = 1044038, // You have worn out your tool!
+        ToolBrokeMessage = 1044038 // You have worn out your tool!
       };
 
       HarvestResource[] res = {
@@ -132,7 +132,7 @@ namespace Server.Engines.Harvest
         OutOfRangeMessage = 500446, // That is too far away.
         FailMessage = 1044630, // You dig for a while but fail to find any of sufficient quality for glassblowing.
         PackFullMessage = 1044632, // Your backpack can't hold the sand, and it is lost!
-        ToolBrokeMessage = 1044038, // You have worn out your tool!
+        ToolBrokeMessage = 1044038 // You have worn out your tool!
       };
 
       res = new[]

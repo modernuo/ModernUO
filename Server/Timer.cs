@@ -374,10 +374,6 @@ namespace Server
 
       public void TimerMain()
       {
-        long now;
-        int i, j;
-        bool loaded;
-
         while (!Core.Closing)
         {
           if (World.Loading || World.Saving)
@@ -388,17 +384,17 @@ namespace Server
 
           ProcessChanged();
 
-          loaded = false;
+          bool loaded = false;
 
-          for (i = 0; i < m_Timers.Length; i++)
+          for (int i = 0; i < m_Timers.Length; i++)
           {
-            now = Core.TickCount;
+            long now = Core.TickCount;
             if (now < m_NextPriorities[i])
               break;
 
             m_NextPriorities[i] = now + m_PriorityDelays[i];
 
-            for (j = 0; j < m_Timers[i].Count; j++)
+            for (int j = 0; j < m_Timers[i].Count; j++)
             {
               Timer t = m_Timers[i][j];
 
@@ -497,11 +493,7 @@ namespace Server
     {
       Timer t = new DelayCallTimer(delay, interval, count, callback);
 
-      if (count == 1)
-        t.Priority = ComputePriority(delay);
-      else
-        t.Priority = ComputePriority(interval);
-
+      t.Priority = ComputePriority(count == 1 ? delay : interval);
       t.Start();
 
       return t;

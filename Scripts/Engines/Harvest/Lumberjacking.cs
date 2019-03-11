@@ -65,7 +65,7 @@ namespace Server.Engines.Harvest
         FailMessage = 500495, // You hack at the tree for a while, but fail to produce any useable wood.
         OutOfRangeMessage = 500446, // That is too far away.
         PackFullMessage = 500497, // You can't place any wood into your backpack!
-        ToolBrokeMessage = 500499, // You broke your axe.
+        ToolBrokeMessage = 500499 // You broke your axe.
       };
 
       if (Core.ML)

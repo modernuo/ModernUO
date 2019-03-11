@@ -62,7 +62,7 @@ namespace Server.Engines.Harvest
         TimedOutOfRangeMessage = 500976, // You need to be closer to the water to fish!
         OutOfRangeMessage = 500976, // You need to be closer to the water to fish!
         PackFullMessage = 503176, // You do not have room in your backpack for a fish.
-        ToolBrokeMessage = 503174, // You broke your fishing pole.
+        ToolBrokeMessage = 503174 // You broke your fishing pole.
       };
 
       HarvestResource[] res = {
