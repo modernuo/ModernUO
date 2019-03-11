@@ -95,7 +95,7 @@ namespace Server.Commands
     }
   }
 
-  public class CommandEntry : IComparable
+  public class CommandEntry : IComparable<CommandEntry>
   {
     public CommandEntry(string command, CommandEventHandler handler, AccessLevel accessLevel)
     {
@@ -110,17 +110,9 @@ namespace Server.Commands
 
     public AccessLevel AccessLevel{ get; }
 
-    public int CompareTo(object obj)
+    public int CompareTo(CommandEntry e)
     {
-      if (obj == this)
-        return 0;
-      if (obj == null)
-        return 1;
-
-      if (!(obj is CommandEntry e))
-        throw new ArgumentException();
-
-      return Command.CompareTo(e.Command);
+      return e == null ? 1 : Command.CompareTo(e.Command);
     }
   }
 

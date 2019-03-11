@@ -173,15 +173,9 @@ namespace Server
 
     public override bool Equals(object obj)
     {
-      if (obj == null)
-        return false;
-
       ClientVersion v = obj as ClientVersion;
 
-      if (v == null)
-        return false;
-
-      return Major == v.Major
+      return Major == v?.Major
              && Minor == v.Minor
              && Revision == v.Revision
              && Patch == v.Patch

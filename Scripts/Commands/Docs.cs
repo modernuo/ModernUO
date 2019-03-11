@@ -392,7 +392,8 @@ namespace Server.Commands
           v = 1;
         }
 
-        if (v == 0) v = GetNameFrom(aCtor, aProp, aMethod).CompareTo(GetNameFrom(bCtor, bProp, bMethod));
+        if (v == 0)
+          v = GetNameFrom(aCtor, aProp, aMethod).CompareTo(GetNameFrom(bCtor, bProp, bMethod));
 
         if (v == 0 && aCtor != null && bCtor != null)
           v = aCtor.GetParameters().Length.CompareTo(bCtor.GetParameters().Length);

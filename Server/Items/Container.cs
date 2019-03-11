@@ -754,7 +754,7 @@ namespace Server.Items
         from.SendLocalizedMessage(500446); // That is too far away.
     }
 
-    private class GroupComparer : IComparer
+    private class GroupComparer : IComparer<Item>
     {
       private CheckItemGroup m_Grouper;
 
@@ -763,11 +763,8 @@ namespace Server.Items
         m_Grouper = grouper;
       }
 
-      public int Compare(object x, object y)
+      public int Compare(Item a, Item b)
       {
-        Item a = (Item)x;
-        Item b = (Item)y;
-
         return m_Grouper(a, b);
       }
     }

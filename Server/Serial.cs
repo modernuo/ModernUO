@@ -22,7 +22,7 @@ using System;
 
 namespace Server
 {
-  public struct Serial : IComparable, IComparable<Serial>, IComparable<uint>
+  public struct Serial : IComparable<Serial>, IComparable<uint>
   {
     public static readonly Serial MinusOne = new Serial(0xFFFFFFFF);
     public static readonly Serial Zero = new Serial(0);
@@ -72,15 +72,10 @@ namespace Server
     {
       return Value.GetHashCode();
     }
-    
+
     public int CompareTo(Serial other)
     {
       return Value.CompareTo(other.Value);
-    }
-
-    public int CompareTo(object obj)
-    {
-      return Value.CompareTo(obj);
     }
 
     public int CompareTo(uint other)

@@ -1116,7 +1116,7 @@ namespace Server.Engines.ConPVP
     }
   }
 
-  public sealed class BRPlayerInfo : IRankedCTF, IComparable
+  public sealed class BRPlayerInfo : IRankedCTF, IComparable<BRPlayerInfo>
   {
     private int m_Captures;
 
@@ -1133,17 +1133,16 @@ namespace Server.Engines.ConPVP
 
     public Mobile Player{ get; }
 
-    public int CompareTo(object obj)
+    public int CompareTo(BRPlayerInfo pi)
     {
-      BRPlayerInfo pi = (BRPlayerInfo)obj;
       int res = pi.Captures.CompareTo(Captures);
-      if (res == 0)
-      {
-        res = pi.Score.CompareTo(Score);
+      if (res != 0)
+        return res;
 
-        if (res == 0)
-          res = pi.Kills.CompareTo(Kills);
-      }
+      res = pi.Score.CompareTo(Score);
+
+      if (res == 0)
+        res = pi.Kills.CompareTo(Kills);
 
       return res;
     }

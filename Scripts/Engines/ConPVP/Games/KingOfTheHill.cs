@@ -555,7 +555,7 @@ namespace Server.Engines.ConPVP
   }
 
   [PropertyObject]
-  public sealed class KHTeamInfo : IRankedCTF, IComparable
+  public sealed class KHTeamInfo : IRankedCTF, IComparable<KHTeamInfo>
   {
     public KHTeamInfo(int teamID)
     {
@@ -609,30 +609,21 @@ namespace Server.Engines.ConPVP
     [CommandProperty(AccessLevel.GameMaster)]
     public string TeamName{ get; set; }
 
-    public int CompareTo(object obj)
+    public int CompareTo(KHTeamInfo ti)
     {
-      KHTeamInfo ti = (KHTeamInfo)obj;
       int res = ti.Score.CompareTo(Score);
-      if (res == 0)
-      {
-        res = ti.Captures.CompareTo(Captures);
+      if (res != 0)
+        return res;
 
-        if (res == 0)
-          res = ti.Kills.CompareTo(Kills);
-      }
+      res = ti.Captures.CompareTo(Captures);
+
+      if (res == 0)
+        res = ti.Kills.CompareTo(Kills);
 
       return res;
     }
 
-    public string Name
-    {
-      get
-      {
-        if (TeamName == null)
-          return "(null) Team";
-        return $"{TeamName} Team";
-      }
-    }
+    public string Name => $"{TeamName ?? "(none)"} Team";
 
     public int Kills{ get; set; }
 
@@ -661,9 +652,7 @@ namespace Server.Engines.ConPVP
 
     public override string ToString()
     {
-      if (TeamName != null)
-        return $"({Name}) ...";
-      return "...";
+      return TeamName != null ? $"({Name}) ..." : "...";
     }
   }
 

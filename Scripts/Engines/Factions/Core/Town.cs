@@ -6,7 +6,7 @@ using Server.Targeting;
 namespace Server.Factions
 {
   [CustomEnum(new[] { "Britain", "Magincia", "Minoc", "Moonglow", "Skara Brae", "Trinsic", "Vesper", "Yew" })]
-  public abstract class Town : IComparable, IComparable<Town>
+  public abstract class Town : IComparable<Town>
   {
     public const int SilverCaptureBonus = 10000;
 
@@ -134,12 +134,7 @@ namespace Server.Factions
 
     public int CompareTo(Town other)
     {
-      return Definition.Sort - other.Definition.Sort;
-    }
-
-    public int CompareTo(object obj)
-    {
-      return Definition.Sort - ((Town)obj).Definition.Sort;
+      return Definition.Sort - (other?.Definition.Sort ?? 0);
     }
 
     public static Town FromRegion(Region reg)

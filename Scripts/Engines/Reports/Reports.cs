@@ -133,7 +133,7 @@ namespace Server.Engines.Reports
 
       if (ladder == null)
         return chart;
-      
+
       List<LadderEntry> entries = ladder.Entries;
 
       for (int i = entries.Count - 1; i >= 0; --i)
@@ -205,7 +205,7 @@ namespace Server.Engines.Reports
 
       if (prefs == null)
         return chart;
-      
+
       List<Arena> arenas = Arena.Arenas;
 
       for (int i = 0; i < arenas.Count; ++i)
@@ -528,7 +528,7 @@ namespace Server.Engines.Reports
       return report;
     }
 
-    public class SkillDistribution : IComparable
+    public class SkillDistribution : IComparable<SkillDistribution>
     {
       public int m_NumberOfGMs;
       public SkillInfo m_Skill;
@@ -538,9 +538,9 @@ namespace Server.Engines.Reports
         m_Skill = skill;
       }
 
-      public int CompareTo(object obj)
+      public int CompareTo(SkillDistribution sd)
       {
-        return ((SkillDistribution)obj).m_NumberOfGMs - m_NumberOfGMs;
+        return sd?.m_NumberOfGMs ?? 0 - m_NumberOfGMs;
       }
     }
   }

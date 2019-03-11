@@ -118,7 +118,7 @@ namespace Server.Mobiles
 
   #endregion
 
-  public class DamageStore : IComparable
+  public class DamageStore : IComparable<DamageStore>
   {
     public int m_Damage;
     public bool m_HasRight;
@@ -130,12 +130,9 @@ namespace Server.Mobiles
       m_Damage = damage;
     }
 
-    public int CompareTo(object obj)
+    public int CompareTo(DamageStore ds)
     {
-      if (!(obj is DamageStore ds))
-        return -1;
-
-      return ds.m_Damage - m_Damage;
+      return ds?.m_Damage ?? 0 - m_Damage;
     }
   }
 
@@ -157,11 +154,7 @@ namespace Server.Mobiles
         object[] objs = t.GetCustomAttributes(typeof(FriendlyNameAttribute), false);
 
         if (objs.Length > 0)
-        {
-          FriendlyNameAttribute friendly = objs[0] as FriendlyNameAttribute;
-
-          return friendly?.FriendlyName ?? "";
-        }
+          return (objs[0] as FriendlyNameAttribute)?.FriendlyName ?? "";
       }
 
       return t.Name;

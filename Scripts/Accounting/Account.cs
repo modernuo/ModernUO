@@ -11,7 +11,7 @@ using Server.Network;
 
 namespace Server.Accounting
 {
-	public class Account : IAccount, IComparable, IComparable<Account>
+	public class Account : IAccount, IComparable<Account>
 	{
 		public static readonly TimeSpan YoungDuration = TimeSpan.FromHours( 40.0 );
 
@@ -1121,28 +1121,14 @@ namespace Server.Accounting
 		}
 
 		public int CompareTo( Account other )
-		{
-			if ( other == null )
-				return 1;
-
-			return Username.CompareTo( other.Username );
-		}
+    {
+      return other == null ? 1 : Username.CompareTo( other.Username );
+    }
 
 		public int CompareTo( IAccount other )
-		{
-			if ( other == null )
-				return 1;
-
-			return Username.CompareTo( other.Username );
-		}
-
-		public int CompareTo( object obj )
-		{
-			if ( obj is Account account )
-				return CompareTo( account );
-
-			throw new ArgumentException();
-		}
+    {
+      return other == null ? 1 : Username.CompareTo( other.Username );
+    }
 
 		#region Gold Account
 		/// <summary>
