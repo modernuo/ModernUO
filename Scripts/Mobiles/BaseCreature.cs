@@ -2991,9 +2991,7 @@ namespace Server.Mobiles
       if (toRummage == null)
         return false;
 
-      Container pack = Backpack;
-
-      if (pack == null)
+      if (Backpack == null)
         return false;
 
       List<Item> items = toRummage.Items;
