@@ -22,9 +22,8 @@ using System;
 
 namespace Server.Items
 {
-  public class BaseMulti : Item
+  public abstract class BaseMulti : Item
   {
-    [Constructible]
     public BaseMulti(int itemID) : base(itemID)
     {
       Movable = false;

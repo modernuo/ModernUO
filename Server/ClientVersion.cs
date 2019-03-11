@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Server
@@ -32,7 +32,7 @@ namespace Server
     SA
   }
 
-  public class ClientVersion : IComparable, IComparer
+  public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion>
   {
     public ClientVersion(int maj, int min, int rev, int pat, ClientType type = ClientType.Regular)
     {
@@ -107,15 +107,10 @@ namespace Server
 
     public string SourceString{ get; }
 
-    public int CompareTo(object obj)
+    public int CompareTo(ClientVersion o)
     {
-      if (obj == null)
-        return 1;
-
-      ClientVersion o = obj as ClientVersion;
-
       if (o == null)
-        throw new ArgumentException();
+        return 1;
 
       if (Major > o.Major)
         return 1;
@@ -134,24 +129,6 @@ namespace Server
       if (Patch < o.Patch)
         return -1;
       return 0;
-    }
-
-    public int Compare(object x, object y)
-    {
-      if (IsNull(x) && IsNull(y))
-        return 0;
-      if (IsNull(x))
-        return -1;
-      if (IsNull(y))
-        return 1;
-
-      ClientVersion a = x as ClientVersion;
-      ClientVersion b = y as ClientVersion;
-
-      if (IsNull(a) || IsNull(b))
-        throw new ArgumentException();
-
-      return a.CompareTo(b);
     }
 
     public static bool operator ==(ClientVersion l, ClientVersion r)
@@ -184,9 +161,14 @@ namespace Server
       return Compare(l, r) < 0;
     }
 
-    public override int GetHashCode()
+//    public override int GetHashCode()
+//    {
+//      return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
+//    }
+
+    int IComparer<ClientVersion>.Compare(ClientVersion x, ClientVersion y)
     {
-      return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
+      return Compare(x, y);
     }
 
     public override bool Equals(object obj)

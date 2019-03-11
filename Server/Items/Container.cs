@@ -607,15 +607,13 @@ namespace Server.Items
       {
         DisplayTo(from);
 
-        SecureTradeContainer cont = GetSecureTradeCont();
+        SecureTrade trade = GetSecureTradeCont()?.Trade;
 
-        if (cont != null)
+        if (trade != null)
         {
-          SecureTrade trade = cont.Trade;
-
-          if (trade != null && trade.From.Mobile == from)
+          if (trade.From.Mobile == from)
             DisplayTo(trade.To.Mobile);
-          else if (trade != null && trade.To.Mobile == from)
+          else if (trade.To.Mobile == from)
             DisplayTo(trade.From.Mobile);
         }
       }
@@ -675,50 +673,50 @@ namespace Server.Items
 
     public void ProcessOpeners(Mobile opener)
     {
-      if (!IsPublicContainer)
+      if (IsPublicContainer)
+        return;
+
+      bool contains = false;
+
+      if (Openers != null)
       {
-        bool contains = false;
+        Point3D worldLoc = GetWorldLocation();
+        Map map = Map;
 
-        if (Openers != null)
+        for (int i = 0; i < Openers.Count; ++i)
         {
-          Point3D worldLoc = GetWorldLocation();
-          Map map = Map;
+          Mobile mob = Openers[i];
 
-          for (int i = 0; i < Openers.Count; ++i)
+          if (mob == opener)
           {
-            Mobile mob = Openers[i];
+            contains = true;
+          }
+          else
+          {
+            int range = GetUpdateRange(mob);
 
-            if (mob == opener)
-            {
-              contains = true;
-            }
-            else
-            {
-              int range = GetUpdateRange(mob);
-
-              if (mob.Map != map || !mob.InRange(worldLoc, range))
-                Openers.RemoveAt(i--);
-            }
+            if (mob.Map != map || !mob.InRange(worldLoc, range))
+              Openers.RemoveAt(i--);
           }
         }
+      }
 
-        if (!contains)
-        {
-          if (Openers == null)
-            Openers = new List<Mobile>();
+      if (!contains)
+      {
+        if (Openers == null)
+          Openers = new List<Mobile>();
 
-          Openers.Add(opener);
-        }
-        else if (Openers != null && Openers.Count == 0)
-        {
-          Openers = null;
-        }
+        Openers.Add(opener);
+      }
+      else if (Openers?.Count == 0)
+      {
+        Openers = null;
       }
     }
 
     public virtual void SendContentTo(NetState state)
     {
-      if (state != null && state.ContainerGridLines)
+      if (state?.ContainerGridLines == true)
         state.Send(new ContainerContent6017(state.Mobile, this));
       else
         state.Send(new ContainerContent(state.Mobile, this));
@@ -1231,36 +1229,36 @@ namespace Server.Items
     private static void RecurseConsumeUpTo(Item current, Type type, int amount, bool recurse, ref int consumed,
       Queue<Item> toDelete)
     {
-      if (current != null && current.Items.Count > 0)
+      if (current == null || current.Items.Count == 0)
+        return;
+
+      List<Item> list = current.Items;
+
+      for (int i = 0; i < list.Count; ++i)
       {
-        List<Item> list = current.Items;
+        Item item = list[i];
 
-        for (int i = 0; i < list.Count; ++i)
+        if (type.IsInstanceOfType(item))
         {
-          Item item = list[i];
+          int need = amount - consumed;
+          int theirAmount = item.Amount;
 
-          if (type.IsInstanceOfType(item))
+          if (theirAmount <= need)
           {
-            int need = amount - consumed;
-            int theirAmount = item.Amount;
-
-            if (theirAmount <= need)
-            {
-              toDelete.Enqueue(item);
-              consumed += theirAmount;
-            }
-            else
-            {
-              item.Amount -= need;
-              consumed += need;
-
-              return;
-            }
+            toDelete.Enqueue(item);
+            consumed += theirAmount;
           }
-          else if (recurse && item is Container)
+          else
           {
-            RecurseConsumeUpTo(item, type, amount, true, ref consumed, toDelete);
+            item.Amount -= need;
+            consumed += need;
+
+            return;
           }
+        }
+        else if (recurse && item is Container)
+        {
+          RecurseConsumeUpTo(item, type, amount, true, ref consumed, toDelete);
         }
       }
     }
@@ -1547,7 +1545,7 @@ namespace Server.Items
 
     private static Item RecurseFindItemByType(Item current, Type[] types, bool recurse)
     {
-      if (current == null || current.Items.Count <= 0)
+      if (current == null || current.Items.Count == 0)
         return null;
 
       List<Item> list = current.Items;
@@ -1610,12 +1608,12 @@ namespace Server.Items
       }
     }
 
-    public T FindItemByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
+    public T FindItemByType<T>(bool recurse = true) where T : Item
     {
-      return RecurseFindItemByType(this, recurse, predicate);
+      return RecurseFindItemByType<T>(this, recurse);
     }
 
-    private static T RecurseFindItemByType<T>(Item current, bool recurse, Predicate<T> predicate) where T : Item
+    private static T RecurseFindItemByType<T>(Item current, bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
       if (current == null || current.Items.Count == 0)
         return null;

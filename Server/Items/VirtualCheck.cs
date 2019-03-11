@@ -337,7 +337,8 @@ namespace Server
             break;
         }
 
-        if (updated) User.SendMessage("Your offer has been updated.");
+        if (updated)
+          User.SendMessage("Your offer has been updated.");
 
         if (refresh && Check?.Deleted == false)
         {

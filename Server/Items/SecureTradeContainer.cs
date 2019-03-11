@@ -42,12 +42,7 @@ namespace Server.Items
     {
       if (item == Trade.From.VirtualCheck || item == Trade.To.VirtualCheck) return true;
 
-      Mobile to;
-
-      if (Trade.From.Container != this)
-        to = Trade.From.Mobile;
-      else
-        to = Trade.To.Mobile;
+      Mobile to = Trade.From.Container != this ? Trade.From.Mobile : Trade.To.Mobile;
 
       return m.CheckTrade(to, item, this, message, checkItems, plusItems, plusWeight);
     }
@@ -60,44 +55,45 @@ namespace Server.Items
 
     public override bool IsAccessibleTo(Mobile check)
     {
-      if (!IsChildOf(check) || Trade == null || !Trade.Valid)
-        return false;
-
-      return base.IsAccessibleTo(check);
+      return IsChildOf(check) && Trade?.Valid == true && base.IsAccessibleTo(check);
     }
 
     public override void OnItemAdded(Item item)
     {
-      if (!(item is VirtualCheck)) ClearChecks();
+      if (!(item is VirtualCheck))
+        ClearChecks();
     }
 
     public override void OnItemRemoved(Item item)
     {
-      if (!(item is VirtualCheck)) ClearChecks();
+      if (!(item is VirtualCheck))
+        ClearChecks();
     }
 
     public override void OnSubItemAdded(Item item)
     {
-      if (!(item is VirtualCheck)) ClearChecks();
+      if (!(item is VirtualCheck))
+        ClearChecks();
     }
 
     public override void OnSubItemRemoved(Item item)
     {
-      if (!(item is VirtualCheck)) ClearChecks();
+      if (!(item is VirtualCheck))
+        ClearChecks();
     }
 
     public void ClearChecks()
     {
-      if (Trade != null)
-      {
-        if (Trade.From?.IsDisposed == false)
-          Trade.From.Accepted = false;
+      if (Trade == null)
+        return;
 
-        if (Trade.To?.IsDisposed == false)
-          Trade.To.Accepted = false;
+      if (Trade.From?.IsDisposed == false)
+        Trade.From.Accepted = false;
 
-        Trade.Update();
-      }
+      if (Trade.To?.IsDisposed == false)
+        Trade.To.Accepted = false;
+
+      Trade.Update();
     }
 
     public override bool IsChildVisibleTo(Mobile m, Item child)
