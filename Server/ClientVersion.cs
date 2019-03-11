@@ -161,10 +161,10 @@ namespace Server
       return Compare(l, r) < 0;
     }
 
-//    public override int GetHashCode()
-//    {
-//      return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
-//    }
+    public override int GetHashCode()
+    {
+      return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
+    }
 
     int IComparer<ClientVersion>.Compare(ClientVersion x, ClientVersion y)
     {
@@ -173,15 +173,9 @@ namespace Server
 
     public override bool Equals(object obj)
     {
-      if (obj == null)
-        return false;
-
       ClientVersion v = obj as ClientVersion;
 
-      if (v == null)
-        return false;
-
-      return Major == v.Major
+      return Major == v?.Major
              && Minor == v.Minor
              && Revision == v.Revision
              && Patch == v.Patch

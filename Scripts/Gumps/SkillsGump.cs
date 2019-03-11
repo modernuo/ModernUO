@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Commands;
 using Server.Network;
 
@@ -542,13 +542,10 @@ namespace Server.Gumps
       })
     };
 
-    private class SkillNameComparer : IComparer
+    private class SkillNameComparer : IComparer<SkillName>
     {
-      public int Compare(object x, object y)
+      public int Compare(SkillName a, SkillName b)
       {
-        SkillName a = (SkillName)x;
-        SkillName b = (SkillName)y;
-
         string aName = SkillInfo.Table[(int)a].Name;
         string bName = SkillInfo.Table[(int)b].Name;
 

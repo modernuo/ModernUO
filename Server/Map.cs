@@ -275,7 +275,7 @@ namespace Server
 
   [Parsable]
   //[CustomEnum( new string[]{ "Felucca", "Trammel", "Ilshenar", "Malas", "Internal" } )]
-  public sealed class Map : IComparable, IComparable<Map>
+  public sealed class Map : IComparable<Map>
   {
     public const int SectorSize = 16;
     public const int SectorShift = 4;
@@ -391,20 +391,9 @@ namespace Server
 
     public static int[] InvalidLandTiles{ get; set; } = { 0x244 };
 
-    public int CompareTo(object other)
-    {
-      if (other == null || other is Map)
-        return CompareTo(other);
-
-      throw new ArgumentException();
-    }
-
     public int CompareTo(Map other)
     {
-      if (other == null)
-        return -1;
-
-      return MapID.CompareTo(other.MapID);
+      return other == null ? -1 : MapID.CompareTo(other.MapID);
     }
 
     public static string[] GetMapNames()
@@ -428,7 +417,7 @@ namespace Server
       if (!int.TryParse(value, out int index))
         return Maps.FirstOrDefault(m => m != null && Insensitive.Equals(m.Name, value));
 
-      return index == 127 ? Internal : Maps.FirstOrDefault(m => m != null && m.MapIndex == index);
+      return index == 127 ? Internal : Maps.FirstOrDefault(m => m?.MapIndex == index);
     }
 
     public override string ToString()
@@ -965,16 +954,6 @@ namespace Server
       }
 
       return p;
-    }
-
-    private class ZComparer : IComparer<Item>
-    {
-      public static readonly ZComparer Default = new ZComparer();
-
-      public int Compare(Item x, Item y)
-      {
-        return x.Z.CompareTo(y.Z);
-      }
     }
 
     public class NullEnumerable<T> : IPooledEnumerable<T>

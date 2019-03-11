@@ -15,10 +15,10 @@ using Server.Targeting;
 namespace Server.Factions
 {
   [CustomEnum(new[] { "Minax", "Council of Mages", "True Britannians", "Shadowlords" })]
-  public abstract class Faction : IComparable
+  public abstract class Faction : IComparable<Faction>
   {
     public const int StabilityFactor = 300; // 300% greater (3 times) than smallest faction
-    public const int StabilityActivation = 200; // Stablity code goes into effect when largest faction has > 200 people
+    public const int StabilityActivation = 200; // Stability code goes into effect when largest faction has > 200 people
 
     public static readonly TimeSpan LeavePeriod = TimeSpan.FromDays(3.0);
 
@@ -88,9 +88,9 @@ namespace Server.Factions
 
     public static List<Faction> Factions => Reflector.Factions;
 
-    public int CompareTo(object obj)
+    public int CompareTo(Faction f)
     {
-      return m_Definition.Sort - ((Faction)obj).m_Definition.Sort;
+      return m_Definition.Sort - (f?.m_Definition.Sort ?? 0);
     }
 
     public void Broadcast(string text)

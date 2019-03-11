@@ -296,7 +296,7 @@ namespace Server.Engines.ConPVP
     }
   }
 
-  public class LadderEntry : IComparable
+  public class LadderEntry : IComparable<LadderEntry>
   {
     private int m_Experience;
     private Ladder m_Ladder;
@@ -350,9 +350,9 @@ namespace Server.Engines.ConPVP
     [CommandProperty(AccessLevel.GameMaster)]
     public int Rank => Index;
 
-    public int CompareTo(object obj)
+    public int CompareTo(LadderEntry l)
     {
-      return ((LadderEntry)obj).m_Experience - m_Experience;
+      return (l?.m_Experience ?? 0) - m_Experience;
     }
 
     public void Serialize(GenericWriter writer)

@@ -4,7 +4,7 @@ using Server.Mobiles;
 
 namespace Server.Factions
 {
-  public class PlayerState : IComparable
+  public class PlayerState : IComparable<PlayerState>
   {
     private Town m_Finance;
 
@@ -241,17 +241,14 @@ namespace Server.Factions
 
     public bool IsActive{ get; set; }
 
-    public int CompareTo(object obj)
+    public int CompareTo(PlayerState ps)
     {
-      return ((PlayerState)obj).m_KillPoints - m_KillPoints;
+      return (ps?.m_KillPoints ?? 0) - m_KillPoints;
     }
 
     public bool CanGiveSilverTo(Mobile mob)
     {
-      if (SilverGiven == null)
-        return true;
-
-      for (int i = 0; i < SilverGiven.Count; ++i)
+      for (int i = 0; i < SilverGiven?.Count; ++i)
       {
         SilverGivenEntry sge = SilverGiven[i];
 
