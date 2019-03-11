@@ -17,7 +17,7 @@ namespace Server.Spells.Fifth
       Reagent.Garlic
     );
 
-    public DispelFieldSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public DispelFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

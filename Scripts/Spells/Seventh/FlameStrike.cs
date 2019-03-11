@@ -12,7 +12,7 @@ namespace Server.Spells.Seventh
       Reagent.SulfurousAsh
     );
 
-    public FlameStrikeSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public FlameStrikeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

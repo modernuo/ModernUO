@@ -16,7 +16,7 @@ namespace Server.Spells.Necromancy
       Reagent.PigIron
     );
 
-    public WitherSpell(Mobile caster, Item scroll)
+    public WitherSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

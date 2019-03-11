@@ -13,7 +13,7 @@ namespace Server.Spells.Necromancy
       Reagent.NoxCrystal
     );
 
-    public LichFormSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public LichFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

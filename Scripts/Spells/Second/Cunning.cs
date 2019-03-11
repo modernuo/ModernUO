@@ -14,7 +14,7 @@ namespace Server.Spells.Second
       Reagent.Nightshade
     );
 
-    public CunningSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public CunningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

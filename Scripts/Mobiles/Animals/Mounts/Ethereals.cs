@@ -161,8 +161,9 @@ namespace Server.Mobiles
         return false;
       }
 
-      if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null)) return false;
-      if (!BaseMount.CheckMountAllowed(from)) return false;
+      if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this) || !BaseMount.CheckMountAllowed(from))
+        return false;
+
       if (from.Mounted)
       {
         from.SendLocalizedMessage(1005583); // Please dismount first.
@@ -187,9 +188,7 @@ namespace Server.Mobiles
         return false;
       }
 
-      if (!DesignContext.Check(from)) return false;
-
-      return true;
+      return DesignContext.Check(@from);
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -202,10 +201,7 @@ namespace Server.Mobiles
     {
       base.OnSingleClick(from);
 
-      if (m_IsDonationItem)
-        LabelTo(from, "Donation Ethereal");
-      else
-        LabelTo(from, "Veteran Reward");
+      LabelTo(from, m_IsDonationItem ? "Donation Ethereal" : "Veteran Reward");
     }
 
     public override void Serialize(GenericWriter writer)

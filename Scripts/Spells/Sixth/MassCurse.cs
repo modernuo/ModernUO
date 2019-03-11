@@ -17,7 +17,7 @@ namespace Server.Spells.Sixth
       Reagent.SulfurousAsh
     );
 
-    public MassCurseSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MassCurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

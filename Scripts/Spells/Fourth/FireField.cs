@@ -19,7 +19,7 @@ namespace Server.Spells.Fourth
       Reagent.SulfurousAsh
     );
 
-    public FireFieldSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public FireFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -243,7 +243,7 @@ namespace Server.Spells.Fourth
 
             if (map == null || caster == null)
               return;
-            
+
             foreach (Mobile m in m_Item.GetMobilesInRange(0))
               if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                   SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))

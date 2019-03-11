@@ -15,7 +15,7 @@ namespace Server.Spells.Eighth
       Reagent.SpidersSilk
     );
 
-    public WaterElementalSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public WaterElementalSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

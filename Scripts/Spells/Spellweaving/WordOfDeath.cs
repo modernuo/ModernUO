@@ -7,7 +7,7 @@ namespace Server.Spells.Spellweaving
   {
     private static SpellInfo m_Info = new SpellInfo("Word of Death", "Nyraxle", -1);
 
-    public WordOfDeathSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public WordOfDeathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

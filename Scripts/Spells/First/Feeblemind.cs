@@ -13,7 +13,7 @@ namespace Server.Spells.First
       Reagent.Nightshade
     );
 
-    public FeeblemindSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public FeeblemindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

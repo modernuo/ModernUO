@@ -13,7 +13,7 @@ namespace Server.Spells.Spellweaving
       false
     );
 
-    public NatureFurySpell(Mobile caster, Item scroll)
+    public NatureFurySpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

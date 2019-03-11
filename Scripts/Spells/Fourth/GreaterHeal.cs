@@ -18,7 +18,7 @@ namespace Server.Spells.Fourth
       Reagent.SpidersSilk
     );
 
-    public GreaterHealSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public GreaterHealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

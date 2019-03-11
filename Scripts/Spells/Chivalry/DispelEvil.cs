@@ -15,7 +15,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public DispelEvilSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public DispelEvilSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

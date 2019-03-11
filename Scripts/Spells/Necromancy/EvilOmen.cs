@@ -17,7 +17,7 @@ namespace Server.Spells.Necromancy
 
     private static Dictionary<Mobile, DefaultSkillMod> m_Table = new Dictionary<Mobile, DefaultSkillMod>();
 
-    public EvilOmenSpell(Mobile caster, Item scroll)
+    public EvilOmenSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

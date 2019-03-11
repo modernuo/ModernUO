@@ -17,7 +17,7 @@ namespace Server.Spells.Necromancy
 
     private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
-    public PainSpikeSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public PainSpikeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

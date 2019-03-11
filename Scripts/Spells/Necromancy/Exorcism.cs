@@ -58,7 +58,7 @@ namespace Server.Spells.Necromancy
       new Point3D(295, 712, 55)
     };
 
-    public ExorcismSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ExorcismSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

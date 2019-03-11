@@ -16,7 +16,7 @@ namespace Server.Spells.Necromancy
 
     private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
-    public StrangleSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public StrangleSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

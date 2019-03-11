@@ -19,7 +19,7 @@ namespace Server.Spells.Third
       Reagent.MandrakeRoot
     );
 
-    public TeleportSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public TeleportSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

@@ -15,7 +15,7 @@ namespace Server.Spells.Mysticism
       Reagent.MandrakeRoot
     );
 
-    public EagleStrikeSpell(Mobile caster, Item scroll)
+    public EagleStrikeSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

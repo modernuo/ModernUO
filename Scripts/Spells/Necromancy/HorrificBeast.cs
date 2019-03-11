@@ -12,7 +12,7 @@ namespace Server.Spells.Necromancy
       Reagent.DaemonBlood
     );
 
-    public HorrificBeastSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public HorrificBeastSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

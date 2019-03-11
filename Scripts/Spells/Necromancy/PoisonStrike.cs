@@ -16,7 +16,7 @@ namespace Server.Spells.Necromancy
       Reagent.NoxCrystal
     );
 
-    public PoisonStrikeSpell(Mobile caster, Item scroll)
+    public PoisonStrikeSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

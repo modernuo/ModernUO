@@ -94,7 +94,7 @@ namespace Server.Spells.Necromancy
 
     private static Dictionary<Mobile, List<Mobile>> m_Table = new Dictionary<Mobile, List<Mobile>>();
 
-    public AnimateDeadSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public AnimateDeadSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

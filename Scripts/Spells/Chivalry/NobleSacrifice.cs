@@ -14,7 +14,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public NobleSacrificeSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public NobleSacrificeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

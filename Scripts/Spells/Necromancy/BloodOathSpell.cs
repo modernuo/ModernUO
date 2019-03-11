@@ -17,7 +17,7 @@ namespace Server.Spells.Necromancy
     private static Dictionary<Mobile, Mobile> m_OathTable = new Dictionary<Mobile, Mobile>();
     private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
-    public BloodOathSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

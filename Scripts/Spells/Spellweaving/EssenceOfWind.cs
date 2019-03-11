@@ -10,7 +10,7 @@ namespace Server.Spells.Spellweaving
 
     private static Dictionary<Mobile, EssenceOfWindInfo> m_Table = new Dictionary<Mobile, EssenceOfWindInfo>();
 
-    public EssenceOfWindSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public EssenceOfWindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

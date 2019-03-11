@@ -20,7 +20,7 @@ namespace Server.Spells.Fifth
       Reagent.SpidersSilk
     );
 
-    public PoisonFieldSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

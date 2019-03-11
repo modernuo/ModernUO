@@ -17,7 +17,7 @@ namespace Server.Spells.Mysticism
       Reagent.Bloodmoss
     );
 
-    public NetherCycloneSpell(Mobile caster, Item scroll)
+    public NetherCycloneSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

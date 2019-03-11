@@ -17,7 +17,7 @@ namespace Server.Spells.Eighth
       Reagent.SulfurousAsh
     );
 
-    public EarthquakeSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public EarthquakeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

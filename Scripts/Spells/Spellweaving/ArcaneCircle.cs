@@ -13,7 +13,7 @@ namespace Server.Spells.Spellweaving
       -1
     );
 
-    public ArcaneCircleSpell(Mobile caster, Item scroll)
+    public ArcaneCircleSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

@@ -13,7 +13,7 @@ namespace Server.Spells.Third
       Reagent.MandrakeRoot
     );
 
-    public TelekinesisSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public TelekinesisSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

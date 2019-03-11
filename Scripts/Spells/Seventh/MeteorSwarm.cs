@@ -17,7 +17,7 @@ namespace Server.Spells.Seventh
       Reagent.SpidersSilk
     );
 
-    public MeteorSwarmSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MeteorSwarmSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

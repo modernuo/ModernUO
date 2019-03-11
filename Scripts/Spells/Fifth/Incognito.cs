@@ -20,7 +20,7 @@ namespace Server.Spells.Fifth
 
     private static Dictionary<Mobile, InternalTimer> m_Timers = new Dictionary<Mobile, InternalTimer>();
 
-    public IncognitoSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public IncognitoSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

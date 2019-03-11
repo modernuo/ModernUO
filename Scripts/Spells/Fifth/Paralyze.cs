@@ -16,7 +16,7 @@ namespace Server.Spells.Fifth
       Reagent.SpidersSilk
     );
 
-    public ParalyzeSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ParalyzeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

@@ -17,7 +17,7 @@ namespace Server.Spells.Fourth
 
     private static HashSet<Mobile> m_UnderEffect = new HashSet<Mobile>();
 
-    public CurseSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public CurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

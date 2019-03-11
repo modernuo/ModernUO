@@ -17,7 +17,7 @@ namespace Server.Spells.Eighth
       Reagent.Nightshade
     );
 
-    public EnergyVortexSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public EnergyVortexSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

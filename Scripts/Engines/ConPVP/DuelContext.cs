@@ -119,13 +119,8 @@ namespace Server.Engines.ConPVP
 
     public static bool AllowSpecialMove(Mobile from, string name, SpecialMove move)
     {
-      if (!(from is PlayerMobile pm))
-        return true;
-
-      DuelContext dc = pm.DuelContext;
-
       // No DuelContext, or InstaAllowSpecialMove
-      return dc?.InstAllowSpecialMove(from, name, move) != false;
+      return (from as PlayerMobile)?.DuelContext?.InstAllowSpecialMove(from, name, move) != false;
     }
 
     public bool InstAllowSpecialMove(Mobile from, string name, SpecialMove move)
@@ -161,9 +156,7 @@ namespace Server.Engines.ConPVP
       if (!StartedBeginCountdown)
         return true;
 
-      DuelPlayer pl = Find(from);
-
-      if (pl?.Eliminated != false)
+      if (Find(from)?.Eliminated != false)
         return true;
 
       if (CantDoAnything(from))

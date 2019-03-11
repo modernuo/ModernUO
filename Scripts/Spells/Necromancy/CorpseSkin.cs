@@ -16,7 +16,7 @@ namespace Server.Spells.Necromancy
 
     private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
-    public CorpseSkinSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public CorpseSkinSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

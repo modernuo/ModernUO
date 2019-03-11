@@ -15,7 +15,7 @@ namespace Server.Spells.Third
       Reagent.SulfurousAsh
     );
 
-    public UnlockSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public UnlockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

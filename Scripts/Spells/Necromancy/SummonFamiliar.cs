@@ -17,7 +17,7 @@ namespace Server.Spells.Necromancy
       Reagent.DaemonBlood
     );
 
-    public SummonFamiliarSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public SummonFamiliarSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

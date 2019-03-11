@@ -12,7 +12,7 @@ namespace Server.Spells.Second
       Reagent.SpidersSilk
     );
 
-    public HarmSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public HarmSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

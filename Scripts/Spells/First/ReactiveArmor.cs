@@ -15,7 +15,7 @@ namespace Server.Spells.First
 
     private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
-    public ReactiveArmorSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

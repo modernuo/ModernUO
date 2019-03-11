@@ -11,7 +11,7 @@ namespace Server.Spells.Third
       Reagent.BlackPearl
     );
 
-    public FireballSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public FireballSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

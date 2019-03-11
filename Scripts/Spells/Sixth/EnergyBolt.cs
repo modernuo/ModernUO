@@ -12,7 +12,7 @@ namespace Server.Spells.Sixth
       Reagent.Nightshade
     );
 
-    public EnergyBoltSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public EnergyBoltSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

@@ -15,7 +15,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public CloseWoundsSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public CloseWoundsSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

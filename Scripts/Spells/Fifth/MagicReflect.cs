@@ -15,7 +15,7 @@ namespace Server.Spells.Fifth
 
     private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
-    public MagicReflectSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MagicReflectSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

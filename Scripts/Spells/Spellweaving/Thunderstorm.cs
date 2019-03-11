@@ -13,7 +13,7 @@ namespace Server.Spells.Spellweaving
 
     private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
-    public ThunderstormSpell(Mobile caster, Item scroll)
+    public ThunderstormSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

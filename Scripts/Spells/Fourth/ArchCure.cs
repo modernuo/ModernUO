@@ -17,7 +17,7 @@ namespace Server.Spells.Fourth
       Reagent.MandrakeRoot
     );
 
-    public ArchCureSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ArchCureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

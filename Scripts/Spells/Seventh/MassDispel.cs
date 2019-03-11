@@ -18,7 +18,7 @@ namespace Server.Spells.Seventh
       Reagent.SulfurousAsh
     );
 
-    public MassDispelSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MassDispelSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

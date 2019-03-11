@@ -17,7 +17,7 @@ namespace Server.Spells.Seventh
       Reagent.SulfurousAsh
     );
 
-    public ChainLightningSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ChainLightningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

@@ -7,7 +7,7 @@ namespace Server.Spells.Spellweaving
   {
     private static SpellInfo m_Info = new SpellInfo("Reaper Form", "Tarisstree", -1);
 
-    public ReaperFormSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ReaperFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

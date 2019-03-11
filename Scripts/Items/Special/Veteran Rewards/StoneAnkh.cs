@@ -182,7 +182,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         return;
 
       if (IsChildOf(from.Backpack))

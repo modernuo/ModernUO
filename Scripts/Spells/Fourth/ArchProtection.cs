@@ -21,7 +21,7 @@ namespace Server.Spells.Fourth
 
     private static Dictionary<Mobile, int> _Table = new Dictionary<Mobile, int>();
 
-    public ArchProtectionSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

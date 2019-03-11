@@ -14,7 +14,7 @@ namespace Server.Spells.Spellweaving
     private static Dictionary<BaseWeapon, ImmolatingWeaponEntry> m_WeaponDamageTable =
       new Dictionary<BaseWeapon, ImmolatingWeaponEntry>();
 
-    public ImmolatingWeaponSpell(Mobile caster, Item scroll)
+    public ImmolatingWeaponSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }
