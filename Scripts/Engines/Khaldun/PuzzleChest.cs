@@ -408,7 +408,7 @@ namespace Server.Items
         DropItem(gem);
 
       if (0.2 > Utility.RandomDouble())
-        DropItem(new BagOfReagents(50));
+        DropItem(new BagOfReagents());
 
       for (int i = 0; i < 2; i++)
       {
@@ -557,7 +557,7 @@ namespace Server.Items
 
         AddImage(62, 20, 0x67);
 
-        AddHtmlLocalized(80, 36, 110, 70, 1018309, true, false); // A Puzzle Lock
+        AddHtmlLocalized(80, 36, 110, 70, 1018309, true); // A Puzzle Lock
 
         /* Correctly choose the sequence of cylinders needed to open the latch.  Each cylinder
          * may potentially be used more than once.  Beware!  A false attempt could be deadly!
@@ -577,16 +577,16 @@ namespace Server.Items
         double lockpicking = from.Skills.Lockpicking.Base;
         if (lockpicking >= 60.0)
         {
-          AddHtmlLocalized(160, 125, 230, 24, 1018308, false, false); // Lockpicking hint:
+          AddHtmlLocalized(160, 125, 230, 24, 1018308); // Lockpicking hint:
 
           AddBackground(159, 150, 230, 95, 0x13EC);
 
           if (lockpicking >= 80.0)
           {
-            AddHtmlLocalized(165, 157, 200, 40, 1018312, false, false); // In the first slot:
+            AddHtmlLocalized(165, 157, 200, 40, 1018312); // In the first slot:
             AddCylinder(350, 165, chest.Solution.First);
 
-            AddHtmlLocalized(165, 197, 200, 40, 1018313, false, false); // Used in unknown slot:
+            AddHtmlLocalized(165, 197, 200, 40, 1018313); // Used in unknown slot:
             AddCylinder(350, 200, chest.FirstHint);
 
             if (lockpicking >= 90.0)
@@ -597,7 +597,7 @@ namespace Server.Items
           }
           else
           {
-            AddHtmlLocalized(165, 157, 200, 40, 1018313, false, false); // Used in unknown slot:
+            AddHtmlLocalized(165, 157, 200, 40, 1018313); // Used in unknown slot:
             AddCylinder(350, 160, chest.FirstHint);
 
             if (lockpicking >= 70.0)
@@ -608,7 +608,7 @@ namespace Server.Items
         PuzzleChestSolution lastGuess = chest.GetLastGuess(from);
         if (lastGuess != null)
         {
-          AddHtmlLocalized(127, 249, 170, 20, 1018311, false, false); // Thy previous guess:
+          AddHtmlLocalized(127, 249, 170, 20, 1018311); // Thy previous guess:
 
           AddBackground(290, 247, 115, 25, 0x13EC);
 
@@ -625,21 +625,21 @@ namespace Server.Items
         AddPedestal(305, 270, solution.Fourth, 3, check == 3);
         AddPedestal(360, 270, solution.Fifth, 4, check == 4);
 
-        AddButton(258, 370, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddButton(258, 370, 0xFA5, 0xFA7, 1);
       }
 
       private void AddLeftCylinderButton(int x, int y, PuzzleChestCylinder cylinder, int buttonID)
       {
         AddBackground(x, y, 30, 30, 0x13EC);
         AddCylinder(x - 7, y + 10, cylinder);
-        AddButton(x + 38, y + 9, 0x13A8, 0x4B9, buttonID, GumpButtonType.Reply, 0);
+        AddButton(x + 38, y + 9, 0x13A8, 0x4B9, buttonID);
       }
 
       private void AddRightCylinderButton(int x, int y, PuzzleChestCylinder cylinder, int buttonID)
       {
         AddBackground(x, y, 30, 30, 0x13EC);
         AddCylinder(x - 7, y + 10, cylinder);
-        AddButton(x - 26, y + 9, 0x13A8, 0x4B9, buttonID, GumpButtonType.Reply, 0);
+        AddButton(x - 26, y + 9, 0x13A8, 0x4B9, buttonID);
       }
 
       private void AddPedestal(int x, int y, PuzzleChestCylinder cylinder, int switchID, bool initialState)
@@ -739,15 +739,15 @@ namespace Server.Items
         AddBackground(15, 250, 305, 163, 0x53);
         AddBackground(28, 265, 280, 133, 0xBB8);
 
-        AddHtmlLocalized(35, 271, 270, 24, 1018314, false, false); // Thou hast failed to solve the puzzle!
+        AddHtmlLocalized(35, 271, 270, 24, 1018314); // Thou hast failed to solve the puzzle!
 
-        AddHtmlLocalized(35, 297, 250, 24, 1018315, false, false); // Correctly placed colors:
+        AddHtmlLocalized(35, 297, 250, 24, 1018315); // Correctly placed colors:
         AddLabel(285, 297, 0x44, correctCylinders.ToString());
 
-        AddHtmlLocalized(35, 323, 250, 24, 1018316, false, false); // Used colors in wrong slots:
+        AddHtmlLocalized(35, 323, 250, 24, 1018316); // Used colors in wrong slots:
         AddLabel(285, 323, 0x44, correctColors.ToString());
 
-        AddButton(152, 369, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
+        AddButton(152, 369, 0xFA5, 0xFA7, 0);
       }
     }
   }

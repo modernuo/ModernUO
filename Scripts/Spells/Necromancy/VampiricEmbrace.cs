@@ -14,7 +14,7 @@ namespace Server.Spells.Necromancy
       Reagent.PigIron
     );
 
-    public VampiricEmbraceSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public VampiricEmbraceSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

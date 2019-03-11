@@ -3,12 +3,7 @@ namespace Server.Items
   public class Arrow : Item, ICommodity
   {
     [Constructible]
-    public Arrow() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Arrow(int amount) : base(0xF3F)
+    public Arrow(int amount = 1) : base(0xF3F)
     {
       Stackable = true;
       Amount = amount;

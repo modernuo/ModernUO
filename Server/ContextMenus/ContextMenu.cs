@@ -49,13 +49,15 @@ namespace Server.ContextMenus
 
       if (target is Mobile mobile)
         mobile.GetContextMenuEntries(from, list);
-      else if (target is Item item) item.GetContextMenuEntries(from, list);
+      else if (target is Item item)
+        item.GetContextMenuEntries(from, list);
 
       //m_Entries = (ContextMenuEntry[])list.ToArray( typeof( ContextMenuEntry ) );
 
       Entries = list.ToArray();
 
-      for (int i = 0; i < Entries.Length; ++i) Entries[i].Owner = this;
+      for (int i = 0; i < Entries.Length; ++i)
+        Entries[i].Owner = this;
     }
 
     /// <summary>

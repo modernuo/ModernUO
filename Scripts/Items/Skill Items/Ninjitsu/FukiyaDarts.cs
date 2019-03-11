@@ -10,12 +10,7 @@ namespace Server.Items
     private int m_UsesRemaining;
 
     [Constructible]
-    public FukiyaDarts() : this(1)
-    {
-    }
-
-    [Constructible]
-    public FukiyaDarts(int amount) : base(0x2806)
+    public FukiyaDarts(int amount = 1) : base(0x2806)
     {
       Weight = 1.0;
 

@@ -3,12 +3,7 @@ namespace Server.Items
   public class EarthquakeScroll : SpellScroll
   {
     [Constructible]
-    public EarthquakeScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public EarthquakeScroll(int amount) : base(56, 0x1F65, amount)
+    public EarthquakeScroll(int amount = 1) : base(56, 0x1F65, amount)
     {
     }
 

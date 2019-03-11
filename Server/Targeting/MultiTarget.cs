@@ -24,12 +24,7 @@ namespace Server.Targeting
 {
   public abstract class MultiTarget : Target
   {
-    protected MultiTarget(int multiID, Point3D offset)
-      : this(multiID, offset, 10, true, TargetFlags.None)
-    {
-    }
-
-    protected MultiTarget(int multiID, Point3D offset, int range, bool allowGround, TargetFlags flags)
+    protected MultiTarget(int multiID, Point3D offset, int range = 10, bool allowGround = true, TargetFlags flags = TargetFlags.None)
       : base(range, allowGround, flags)
     {
       MultiID = multiID;

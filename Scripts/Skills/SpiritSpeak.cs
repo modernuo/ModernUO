@@ -136,22 +136,21 @@ namespace Server.SkillHandlers
       public override void OnCast()
       {
         IPooledEnumerable<Corpse> eable = Caster.GetItemsInRange<Corpse>(3);
-        Corpse toChannel = eable.ToList().Find(item => item is Corpse corpse && !corpse.Channeled);
+        Corpse toChannel = eable.FirstOrDefault(item => item is Corpse corpse && !corpse.Channeled);
         eable.Free();
 
-        int max, min, mana, number;
+        int min = 1 + (int)(Caster.Skills.SpiritSpeak.Value * 0.25);
+        int max = min + 4;
+
+        int mana, number;
 
         if (toChannel != null)
         {
-          min = 1 + (int)(Caster.Skills.SpiritSpeak.Value * 0.25);
-          max = min + 4;
           mana = 0;
           number = 1061287; // You channel energy from a nearby corpse to heal your wounds.
         }
         else
         {
-          min = 1 + (int)(Caster.Skills.SpiritSpeak.Value * 0.25);
-          max = min + 4;
           mana = 10;
           number = 1061286; // You channel your own spiritual energy to heal your wounds.
         }

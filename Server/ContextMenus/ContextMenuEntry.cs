@@ -29,18 +29,6 @@ namespace Server.ContextMenus
 	public class ContextMenuEntry
   {
 	  /// <summary>
-	  ///   Instantiates a new ContextMenuEntry with a given <see cref="Number">localization number</see> (<paramref name="number" />
-	  ///   ). No <see cref="Range">maximum range</see> is used.
-	  /// </summary>
-	  /// <param name="number">
-	  ///   The localization number containing the name of this entry.
-	  ///   <seealso cref="Number" />
-	  /// </param>
-	  public ContextMenuEntry(int number) : this(number, -1)
-    {
-    }
-
-	  /// <summary>
 	  ///   Instantiates a new ContextMenuEntry with a given <see cref="Number">localization number</see> (<paramref name="number" />)
 	  ///   and <see cref="Range">maximum range</see> (<paramref name="range" />).
 	  /// </summary>
@@ -52,7 +40,7 @@ namespace Server.ContextMenus
 	  ///   The maximum range at which this entry can be used.
 	  ///   <seealso cref="Range" />
 	  /// </param>
-	  public ContextMenuEntry(int number, int range)
+	  public ContextMenuEntry(int number, int range = -1)
     {
       if (number <= 0x7FFF) // Legacy code support
         Number = 3000000 + number;

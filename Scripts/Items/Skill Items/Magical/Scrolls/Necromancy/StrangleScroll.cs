@@ -3,12 +3,7 @@ namespace Server.Items
   public class StrangleScroll : SpellScroll
   {
     [Constructible]
-    public StrangleScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public StrangleScroll(int amount) : base(110, 0x226A, amount)
+    public StrangleScroll(int amount = 1) : base(110, 0x226A, amount)
     {
     }
 

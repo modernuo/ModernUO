@@ -3,12 +3,7 @@ namespace Server.Items
   public class FireFieldScroll : SpellScroll
   {
     [Constructible]
-    public FireFieldScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public FireFieldScroll(int amount) : base(27, 0x1F48, amount)
+    public FireFieldScroll(int amount = 1) : base(27, 0x1F48, amount)
     {
     }
 

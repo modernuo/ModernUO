@@ -3,12 +3,7 @@ namespace Server.Items
   public class Beeswax : Item
   {
     [Constructible]
-    public Beeswax() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Beeswax(int amount) : base(0x1422)
+    public Beeswax(int amount = 1) : base(0x1422)
     {
       Weight = 1.0;
       Stackable = true;

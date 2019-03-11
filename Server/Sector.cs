@@ -25,7 +25,7 @@ using Server.Network;
 
 namespace Server
 {
-  public class RegionRect : IComparable
+  public class RegionRect : IComparable<RegionRect>
   {
     private Rectangle3D m_Rect;
 
@@ -39,15 +39,9 @@ namespace Server
 
     public Rectangle3D Rect => m_Rect;
 
-    int IComparable.CompareTo(object obj)
+    public int CompareTo(RegionRect regRect)
     {
-      if (obj == null)
-        return 1;
-
-      if (!(obj is RegionRect regRect))
-        throw new ArgumentException("obj is not a RegionRect", nameof(obj));
-
-      return ((IComparable)Region).CompareTo(regRect.Region);
+      return regRect == null ? 1 : Region.CompareTo(regRect.Region);
     }
 
     public bool Contains(Point3D loc)
@@ -81,71 +75,17 @@ namespace Server
       m_Active = false;
     }
 
-    public List<RegionRect> RegionRects
-    {
-      get
-      {
-        if (m_RegionRects == null)
-          return m_DefaultRectList;
+    public List<RegionRect> RegionRects => m_RegionRects ?? m_DefaultRectList;
 
-        return m_RegionRects;
-      }
-    }
+    public List<BaseMulti> Multis => m_Multis ?? m_DefaultMultiList;
 
-    public List<BaseMulti> Multis
-    {
-      get
-      {
-        if (m_Multis == null)
-          return m_DefaultMultiList;
+    public List<Mobile> Mobiles => m_Mobiles ?? m_DefaultMobileList;
 
-        return m_Multis;
-      }
-    }
+    public List<Item> Items => m_Items ?? m_DefaultItemList;
 
-    public List<Mobile> Mobiles
-    {
-      get
-      {
-        if (m_Mobiles == null)
-          return m_DefaultMobileList;
+    public List<NetState> Clients => m_Clients ?? m_DefaultClientList;
 
-        return m_Mobiles;
-      }
-    }
-
-    public List<Item> Items
-    {
-      get
-      {
-        if (m_Items == null)
-          return m_DefaultItemList;
-
-        return m_Items;
-      }
-    }
-
-    public List<NetState> Clients
-    {
-      get
-      {
-        if (m_Clients == null)
-          return m_DefaultClientList;
-
-        return m_Clients;
-      }
-    }
-
-    public List<Mobile> Players
-    {
-      get
-      {
-        if (m_Players == null)
-          return m_DefaultMobileList;
-
-        return m_Players;
-      }
-    }
+    public List<Mobile> Players => m_Players ?? m_DefaultMobileList;
 
     public bool Active => m_Active && Owner != Map.Internal;
 

@@ -629,15 +629,15 @@ namespace Server.Items
     private string m_UrnName;
 
     [Constructible]
+    public AncientUrn() : this(Names[Utility.Random(Names.Length)])
+    {
+    }
+
+    [Constructible]
     public AncientUrn(string urnName) : base(0x241D)
     {
       m_UrnName = urnName;
       Weight = 1.0;
-    }
-
-    [Constructible]
-    public AncientUrn() : this(Names[Utility.Random(Names.Length)])
-    {
     }
 
     public AncientUrn(Serial serial) : base(serial)
@@ -726,16 +726,16 @@ namespace Server.Items
     private string m_SwordsName;
 
     [Constructible]
+    public HonorableSwords() : this(AncientUrn.Names[Utility.Random(AncientUrn.Names.Length)])
+    {
+    }
+
+    [Constructible]
     public HonorableSwords(string swordsName) : base(0x2853)
     {
       m_SwordsName = swordsName;
 
       Weight = 5.0;
-    }
-
-    [Constructible]
-    public HonorableSwords() : this(AncientUrn.Names[Utility.Random(AncientUrn.Names.Length)])
-    {
     }
 
     public HonorableSwords(Serial serial) : base(serial)

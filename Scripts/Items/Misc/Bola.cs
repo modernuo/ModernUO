@@ -9,12 +9,7 @@ namespace Server.Items
   public class Bola : Item
   {
     [Constructible]
-    public Bola() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Bola(int amount) : base(0x26AC)
+    public Bola(int amount = 1) : base(0x26AC)
     {
       Weight = 4.0;
       Stackable = true;
@@ -103,13 +98,13 @@ namespace Server.Items
 
         if (pack != null)
         {
-          if (one != null && one.Movable)
+          if (one?.Movable == true)
           {
             pack.DropItem(one);
             one = null;
           }
 
-          if (two != null && two.Movable)
+          if (two?.Movable == true)
           {
             pack.DropItem(two);
             two = null;
@@ -118,13 +113,13 @@ namespace Server.Items
       }
       else if (Core.AOS)
       {
-        if (one != null && one.Movable)
+        if (one?.Movable == true)
         {
           from.AddToBackpack(one);
           one = null;
         }
 
-        if (two != null && two.Movable)
+        if (two?.Movable == true)
         {
           from.AddToBackpack(two);
           two = null;

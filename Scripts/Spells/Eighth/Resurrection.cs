@@ -15,7 +15,7 @@ namespace Server.Spells.Eighth
       Reagent.Ginseng
     );
 
-    public ResurrectionSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ResurrectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

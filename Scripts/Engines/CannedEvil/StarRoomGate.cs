@@ -9,19 +9,14 @@ namespace Server.Items
     private Timer m_Timer;
 
     [Constructible]
-    public StarRoomGate() : this(false)
-    {
-    }
-
-    [Constructible]
-    public StarRoomGate(bool decays, Point3D loc, Map map) : this(decays)
+    public StarRoomGate(Point3D loc, Map map, bool decays) : this(decays)
     {
       MoveToWorld(loc, map);
       Effects.PlaySound(loc, map, 0x20E);
     }
 
     [Constructible]
-    public StarRoomGate(bool decays) : base(new Point3D(5143, 1774, 0), Map.Felucca)
+    public StarRoomGate(bool decays = false) : base(new Point3D(5143, 1774, 0), Map.Felucca)
     {
       Dispellable = false;
       ItemID = 0x1FD4;

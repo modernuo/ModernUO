@@ -16,11 +16,8 @@ namespace Server.Items
 
     private TreasureResetTimer m_ResetTimer;
 
-    public BaseTreasureChest(int itemID) : this(itemID, TreasureLevel.Level2)
-    {
-    }
-
-    public BaseTreasureChest(int itemID, TreasureLevel level) : base(itemID)
+    public BaseTreasureChest(int itemID, TreasureLevel level = TreasureLevel.Level2)
+      : base(itemID)
     {
       Level = level;
       Locked = true;

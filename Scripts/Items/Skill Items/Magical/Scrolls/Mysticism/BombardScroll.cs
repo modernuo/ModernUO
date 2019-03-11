@@ -3,13 +3,7 @@ namespace Server.Items
   public class BombardScroll : SpellScroll
   {
     [Constructible]
-    public BombardScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public BombardScroll(int amount)
+    public BombardScroll(int amount = 1)
       : base(688, 0x2DA9, amount)
     {
     }

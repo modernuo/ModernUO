@@ -15,7 +15,7 @@ namespace Server.Spells.Sixth
       Reagent.MandrakeRoot
     );
 
-    public MarkSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MarkSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

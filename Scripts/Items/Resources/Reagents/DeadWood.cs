@@ -3,12 +3,7 @@ namespace Server.Items
   public class DeadWood : BaseReagent, ICommodity
   {
     [Constructible]
-    public DeadWood() : this(1)
-    {
-    }
-
-    [Constructible]
-    public DeadWood(int amount) : base(0xF90, amount)
+    public DeadWood(int amount = 1) : base(0xF90, amount)
     {
     }
 

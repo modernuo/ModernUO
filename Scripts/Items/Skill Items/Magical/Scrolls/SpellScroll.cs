@@ -7,23 +7,18 @@ namespace Server.Items
 {
   public class SpellScroll : Item, ICommodity
   {
-    public SpellScroll(Serial serial) : base(serial)
-    {
-    }
-
     [Constructible]
-    public SpellScroll(int spellID, int itemID) : this(spellID, itemID, 1)
-    {
-    }
-
-    [Constructible]
-    public SpellScroll(int spellID, int itemID, int amount) : base(itemID)
+    public SpellScroll(int spellID, int itemID, int amount = 1) : base(itemID)
     {
       Stackable = true;
       Weight = 1.0;
       Amount = amount;
 
       SpellID = spellID;
+    }
+
+    public SpellScroll(Serial serial) : base(serial)
+    {
     }
 
     public int SpellID{ get; private set; }

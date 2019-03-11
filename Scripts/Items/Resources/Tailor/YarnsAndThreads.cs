@@ -4,11 +4,7 @@ namespace Server.Items
 {
   public abstract class BaseClothMaterial : Item, IDyable
   {
-    public BaseClothMaterial(int itemID) : this(itemID, 1)
-    {
-    }
-
-    public BaseClothMaterial(int itemID, int amount) : base(itemID)
+    public BaseClothMaterial(int itemID, int amount = 1) : base(itemID)
     {
       Stackable = true;
       Weight = 1.0;
@@ -110,12 +106,7 @@ namespace Server.Items
   public class DarkYarn : BaseClothMaterial
   {
     [Constructible]
-    public DarkYarn() : this(1)
-    {
-    }
-
-    [Constructible]
-    public DarkYarn(int amount) : base(0xE1D, amount)
+    public DarkYarn(int amount = 1) : base(0xE1D, amount)
     {
     }
 
@@ -141,12 +132,7 @@ namespace Server.Items
   public class LightYarn : BaseClothMaterial
   {
     [Constructible]
-    public LightYarn() : this(1)
-    {
-    }
-
-    [Constructible]
-    public LightYarn(int amount) : base(0xE1E, amount)
+    public LightYarn(int amount = 1) : base(0xE1E, amount)
     {
     }
 
@@ -172,12 +158,7 @@ namespace Server.Items
   public class LightYarnUnraveled : BaseClothMaterial
   {
     [Constructible]
-    public LightYarnUnraveled() : this(1)
-    {
-    }
-
-    [Constructible]
-    public LightYarnUnraveled(int amount) : base(0xE1F, amount)
+    public LightYarnUnraveled(int amount = 1) : base(0xE1F, amount)
     {
     }
 
@@ -203,12 +184,7 @@ namespace Server.Items
   public class SpoolOfThread : BaseClothMaterial
   {
     [Constructible]
-    public SpoolOfThread() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SpoolOfThread(int amount) : base(0xFA0, amount)
+    public SpoolOfThread(int amount = 1) : base(0xFA0, amount)
     {
     }
 

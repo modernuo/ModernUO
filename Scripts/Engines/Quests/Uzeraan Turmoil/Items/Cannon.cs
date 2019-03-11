@@ -64,7 +64,7 @@ namespace Server.Engines.Quests.Haven
     [CommandProperty(AccessLevel.GameMaster)]
     public MilitiaCanoneer Canoneer{ get; set; }
 
-    public override bool HandlesOnMovement => Canoneer != null && !Canoneer.Deleted && Canoneer.Active;
+    public override bool HandlesOnMovement => Canoneer?.Deleted == false && Canoneer.Active;
 
     public void DoFireEffect(IPoint3D target)
     {
@@ -101,7 +101,7 @@ namespace Server.Engines.Quests.Haven
 
     public override void OnMovement(Mobile m, Point3D oldLocation)
     {
-      if (Canoneer == null || Canoneer.Deleted || !Canoneer.Active)
+      if (!(Canoneer?.Deleted == false && Canoneer.Active))
         return;
 
       bool canFire;
@@ -127,7 +127,7 @@ namespace Server.Engines.Quests.Haven
 
     public override void Serialize(GenericWriter writer)
     {
-      if (Canoneer != null && Canoneer.Deleted)
+      if (Canoneer?.Deleted == true)
         Canoneer = null;
 
       base.Serialize(writer);

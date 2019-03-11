@@ -39,11 +39,11 @@ namespace Server
       From = new SecureTradeInfo(this, from, new SecureTradeContainer(this));
       To = new SecureTradeInfo(this, to, new SecureTradeContainer(this));
 
-      bool from6017 = from.NetState != null && from.NetState.ContainerGridLines;
-      bool to6017 = to.NetState != null && to.NetState.ContainerGridLines;
+      bool from6017 = from.NetState?.ContainerGridLines == true;
+      bool to6017 = to.NetState?.ContainerGridLines == true;
 
-      bool from704565 = from.NetState != null && from.NetState.NewSecureTrading;
-      bool to704565 = to.NetState != null && to.NetState.NewSecureTrading;
+      bool from704565 = from.NetState?.NewSecureTrading == true;
+      bool to704565 = to.NetState?.NewSecureTrading == true;
 
       from.Send(new MobileStatus(from, to));
       from.Send(new UpdateSecureTrade(From.Container, false, false));
@@ -364,7 +364,7 @@ namespace Server
 
       Mobile.AddItem(Container);
 
-      VirtualCheck = new VirtualCheck(0, 0);
+      VirtualCheck = new VirtualCheck();
       Container.DropItem(VirtualCheck);
     }
 

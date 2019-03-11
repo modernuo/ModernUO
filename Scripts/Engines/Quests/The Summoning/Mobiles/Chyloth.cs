@@ -254,16 +254,14 @@ namespace Server.Engines.Quests.Doom
       AddImageTiled(15, 15, 365, 190, 2624);
 
       AddRadio(30, 140, 9727, 9730, true, 1);
-      AddHtmlLocalized(65, 145, 300, 25, 1050050, 0x7FFF, false, false); // Yes, let's go!
+      AddHtmlLocalized(65, 145, 300, 25, 1050050, 0x7FFF); // Yes, let's go!
 
       AddRadio(30, 175, 9727, 9730, false, 0);
-      AddHtmlLocalized(65, 178, 300, 25, 1050049, 0x7FFF, false, false); // No thanks, I'd rather stay here.
+      AddHtmlLocalized(65, 178, 300, 25, 1050049, 0x7FFF); // No thanks, I'd rather stay here.
 
-      AddHtmlLocalized(30, 20, 360, 35, 1050047, 0x7FFF, false,
-        false); // Another player has paid Chyloth for your passage across lake Mortis:
+      AddHtmlLocalized(30, 20, 360, 35, 1050047, 0x7FFF); // Another player has paid Chyloth for your passage across lake Mortis:
 
-      AddHtmlLocalized(30, 105, 345, 40, 1050048, 0x5B2D, false,
-        false); // Do you wish to accept their invitation at this time?
+      AddHtmlLocalized(30, 105, 345, 40, 1050048, 0x5B2D); // Do you wish to accept their invitation at this time?
 
       AddImage(65, 72, 5605);
 
@@ -272,7 +270,7 @@ namespace Server.Engines.Quests.Doom
 
       AddLabel(90, 70, 1645, leader.Name);
 
-      AddButton(290, 175, 247, 248, 2, GumpButtonType.Reply, 0);
+      AddButton(290, 175, 247, 248, 2);
 
       AddImageTiled(15, 14, 365, 1, 9107);
       AddImageTiled(380, 14, 1, 190, 9105);

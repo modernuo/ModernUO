@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Factions;
 using Server.Mobiles;
@@ -22,7 +21,7 @@ namespace Server.Spells.Mysticism
 
     private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
-    public StoneFormSpell(Mobile caster, Item scroll)
+    public StoneFormSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

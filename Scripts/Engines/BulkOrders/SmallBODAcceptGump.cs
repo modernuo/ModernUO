@@ -28,36 +28,35 @@ namespace Server.Engines.BulkOrders
       AddImage(20, 249, 10460);
       AddImage(430, 249, 10460);
 
-      AddHtmlLocalized(190, 25, 120, 20, 1045133, 0x7FFF, false, false); // A bulk order
-      AddHtmlLocalized(40, 48, 350, 20, 1045135, 0x7FFF, false,
-        false); // Ah!  Thanks for the goods!  Would you help me out?
+      AddHtmlLocalized(190, 25, 120, 20, 1045133, 0x7FFF); // A bulk order
+      AddHtmlLocalized(40, 48, 350, 20, 1045135, 0x7FFF); // Ah!  Thanks for the goods!  Would you help me out?
 
-      AddHtmlLocalized(40, 72, 210, 20, 1045138, 0x7FFF, false, false); // Amount to make:
+      AddHtmlLocalized(40, 72, 210, 20, 1045138, 0x7FFF); // Amount to make:
       AddLabel(250, 72, 1152, deed.AmountMax.ToString());
 
-      AddHtmlLocalized(40, 96, 120, 20, 1045136, 0x7FFF, false, false); // Item requested:
+      AddHtmlLocalized(40, 96, 120, 20, 1045136, 0x7FFF); // Item requested:
       AddItem(385, 96, deed.Graphic);
-      AddHtmlLocalized(40, 120, 210, 20, deed.Number, 0xFFFFFF, false, false);
+      AddHtmlLocalized(40, 120, 210, 20, deed.Number, 0xFFFFFF);
 
       if (deed.RequireExceptional || deed.Material != BulkMaterialType.None)
       {
-        AddHtmlLocalized(40, 144, 210, 20, 1045140, 0x7FFF, false, false); // Special requirements to meet:
+        AddHtmlLocalized(40, 144, 210, 20, 1045140, 0x7FFF); // Special requirements to meet:
 
         if (deed.RequireExceptional)
-          AddHtmlLocalized(40, 168, 350, 20, 1045141, 0x7FFF, false, false); // All items must be exceptional.
+          AddHtmlLocalized(40, 168, 350, 20, 1045141, 0x7FFF); // All items must be exceptional.
 
         if (deed.Material != BulkMaterialType.None)
           AddHtmlLocalized(40, deed.RequireExceptional ? 192 : 168, 350, 20, GetMaterialNumberFor(deed.Material),
-            0x7FFF, false, false); // All items must be made with x material.
+            0x7FFF); // All items must be made with x material.
       }
 
-      AddHtmlLocalized(40, 216, 350, 20, 1045139, 0x7FFF, false, false); // Do you want to accept this order?
+      AddHtmlLocalized(40, 216, 350, 20, 1045139, 0x7FFF); // Do you want to accept this order?
 
-      AddButton(100, 240, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(135, 240, 120, 20, 1006044, 0x7FFF, false, false); // Ok
+      AddButton(100, 240, 4005, 4007, 1);
+      AddHtmlLocalized(135, 240, 120, 20, 1006044, 0x7FFF); // Ok
 
-      AddButton(275, 240, 4005, 4007, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(310, 240, 120, 20, 1011012, 0x7FFF, false, false); // CANCEL
+      AddButton(275, 240, 4005, 4007, 0);
+      AddHtmlLocalized(310, 240, 120, 20, 1011012, 0x7FFF); // CANCEL
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

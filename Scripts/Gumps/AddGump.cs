@@ -32,10 +32,10 @@ namespace Server.Gumps
       AddImageTiled(42, 12, 182, 16, 2624);
       AddAlphaRegion(42, 12, 182, 16);
 
-      AddButton(10, 9, 4011, 4013, 1, GumpButtonType.Reply, 0);
+      AddButton(10, 9, 4011, 4013, 1);
       AddTextEntry(44, 10, 180, 20, 0x480, 0, searchString);
 
-      AddHtmlLocalized(230, 10, 100, 20, 3010005, 0x7FFF, false, false);
+      AddHtmlLocalized(230, 10, 100, 20, 3010005, 0x7FFF);
 
       AddImageTiled(10, 40, 400, 200, 2624);
       AddAlphaRegion(10, 40, 400, 200);
@@ -46,7 +46,7 @@ namespace Server.Gumps
           int index = i % 10;
 
           AddLabel(44, 39 + index * 20, 0x480, searchResults[i].Name);
-          AddButton(10, 39 + index * 20, 4023, 4025, 4 + i, GumpButtonType.Reply, 0);
+          AddButton(10, 39 + index * 20, 4023, 4025, 4 + i);
         }
       else
         AddLabel(15, 44, 0x480, explicitSearch ? "Nothing matched your search terms." : "No results to display.");
@@ -55,19 +55,18 @@ namespace Server.Gumps
       AddAlphaRegion(10, 250, 400, 20);
 
       if (m_Page > 0)
-        AddButton(10, 249, 4014, 4016, 2, GumpButtonType.Reply, 0);
+        AddButton(10, 249, 4014, 4016, 2);
       else
         AddImage(10, 249, 4014);
 
-      AddHtmlLocalized(44, 250, 170, 20, 1061028, m_Page > 0 ? 0x7FFF : 0x5EF7, false, false); // Previous page
+      AddHtmlLocalized(44, 250, 170, 20, 1061028, m_Page > 0 ? 0x7FFF : 0x5EF7); // Previous page
 
       if ((m_Page + 1) * 10 < searchResults.Length)
-        AddButton(210, 249, 4005, 4007, 3, GumpButtonType.Reply, 0);
+        AddButton(210, 249, 4005, 4007, 3);
       else
         AddImage(210, 249, 4005);
 
-      AddHtmlLocalized(244, 250, 170, 20, 1061027, (m_Page + 1) * 10 < searchResults.Length ? 0x7FFF : 0x5EF7, false,
-        false); // Next page
+      AddHtmlLocalized(244, 250, 170, 20, 1061027, (m_Page + 1) * 10 < searchResults.Length ? 0x7FFF : 0x5EF7); // Next page
     }
 
     public static void Initialize()

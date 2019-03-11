@@ -2,13 +2,7 @@
 {
   public class Taffy : CandyCane
   {
-    [Constructible]
-    public Taffy()
-      : this(1)
-    {
-    }
-
-    public Taffy(int amount)
+    public Taffy(int amount = 1)
       : base(0x469D)
     {
       Stackable = true;

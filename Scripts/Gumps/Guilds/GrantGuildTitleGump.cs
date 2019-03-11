@@ -11,13 +11,13 @@ namespace Server.Gumps
 
     protected override void Design()
     {
-      AddHtmlLocalized(20, 10, 400, 35, 1011118, false, false); // Grant a title to another member.
+      AddHtmlLocalized(20, 10, 400, 35, 1011118); // Grant a title to another member.
 
-      AddButton(20, 400, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(55, 400, 245, 30, 1011127, false, false); // I dub thee...
+      AddButton(20, 400, 4005, 4007, 1);
+      AddHtmlLocalized(55, 400, 245, 30, 1011127); // I dub thee...
 
-      AddButton(300, 400, 4005, 4007, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(335, 400, 100, 35, 1011012, false, false); // CANCEL
+      AddButton(300, 400, 4005, 4007, 2);
+      AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
     }
 
     public override void OnResponse(NetState state, RelayInfo info)
@@ -37,7 +37,7 @@ namespace Server.Gumps
           {
             Mobile m = m_List[index];
 
-            if (m != null && !m.Deleted)
+            if (m?.Deleted == false)
             {
               m_Mobile.SendLocalizedMessage(1013074); // New title (20 characters max):
               m_Mobile.Prompt = new GuildTitlePrompt(m_Mobile, m, m_Guild);

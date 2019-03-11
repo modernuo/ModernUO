@@ -3,12 +3,7 @@ namespace Server.Items
   public class FlamestrikeScroll : SpellScroll
   {
     [Constructible]
-    public FlamestrikeScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public FlamestrikeScroll(int amount) : base(50, 0x1F5F, amount)
+    public FlamestrikeScroll(int amount = 1) : base(50, 0x1F5F, amount)
     {
     }
 

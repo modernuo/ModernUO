@@ -320,7 +320,7 @@ namespace Server.Misc
     {
       Skill highest = GetHighestSkill(mob); // beheld.Skills.Highest;
 
-      if (highest != null && highest.BaseFixedPoint >= 300)
+      if (highest?.BaseFixedPoint >= 300)
       {
         string skillLevel = GetSkillLevel(highest);
         string skillTitle = highest.Info.Title;

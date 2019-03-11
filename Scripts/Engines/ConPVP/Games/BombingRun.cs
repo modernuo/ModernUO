@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -85,7 +85,8 @@ namespace Server.Engines.ConPVP
 
       Mobile mob = FindOwner(parent);
 
-      if (mob != null) mob.SolidHueOverride = 0x0499;
+      if (mob != null)
+        mob.SolidHueOverride = 0x0499;
     }
 
     public override void OnRemoved(IEntity parent)
@@ -100,9 +101,9 @@ namespace Server.Engines.ConPVP
 
     public void DropTo(Mobile mob, Mobile killer)
     {
-      if (mob != null && !mob.Deleted)
+      if (mob?.Deleted == false)
         MoveToWorld(mob.Location, mob.Map);
-      else if (killer != null && !killer.Deleted)
+      else if (killer?.Deleted == false)
         MoveToWorld(killer.Location, killer.Map);
       else
         m_Game?.ReturnBomb();
@@ -110,14 +111,11 @@ namespace Server.Engines.ConPVP
 
     public override bool OnMoveOver(Mobile m)
     {
-      if (m_Flying || !Visible || m_Game == null || m == null || !m.Alive)
+      if (m_Flying || !Visible || m_Game == null || m?.Alive != true)
         return true;
 
       BRTeamInfo useTeam = m_Game.GetTeamInfo(m);
-      if (useTeam == null)
-        return true;
-
-      return TakeBomb(m, useTeam, "picked up");
+      return useTeam == null || TakeBomb(m, useTeam, "picked up");
     }
 
     public override void OnLocationChange(Point3D oldLocation)
@@ -150,7 +148,7 @@ namespace Server.Engines.ConPVP
 
     public override void OnDoubleClick(Mobile m)
     {
-      if (m_Game == null || !Visible || m == null || !m.Alive)
+      if (m_Game == null || !Visible || m?.Alive != true)
         return;
 
       if (!m_Flying && IsChildOf(m.Backpack))
@@ -408,15 +406,9 @@ namespace Server.Engines.ConPVP
 
           if (landTile.ID == 0x244 && statics.Length == 0) // 0x244 = invalid land tile
           {
-            bool empty = true;
             IPooledEnumerable<Item> eable = Map.GetItemsInRange(point, 0);
 
-            foreach (Item item in eable)
-              if (item != this)
-              {
-                empty = false;
-                break;
-              }
+            bool empty = eable.All(item => item == this);
 
             eable.Free();
 
@@ -747,9 +739,8 @@ namespace Server.Engines.ConPVP
       private void ResendBombTarget()
       {
         // Make sure they still have the bomb, then give them the target back
-        if (m_Bomb != null && !m_Bomb.Deleted && m_Mob != null && !m_Mob.Deleted && m_Mob.Alive)
-          if (m_Bomb.IsChildOf(m_Mob))
-            m_Mob.Target = new BombTarget(m_Bomb, m_Mob);
+        if (m_Bomb?.Deleted == false && m_Mob?.Deleted == false && m_Mob.Alive && m_Bomb.IsChildOf(m_Mob))
+          m_Mob.Target = new BombTarget(m_Bomb, m_Mob);
       }
     }
   }
@@ -905,7 +896,7 @@ namespace Server.Engines.ConPVP
       if (!Visible)
         return true;
 
-      if (m == null || !m.Player || !m.Alive || m.Backpack == null || m_Team?.Game == null)
+      if (m?.Player != true || !m.Alive || m.Backpack == null || m_Team?.Game == null)
         return true;
 
       if (!base.OnMoveOver(m))
@@ -968,16 +959,11 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
-    private BRGame m_Game;
+//    private BRGame m_Game;
 
-    public BRBoardGump(Mobile mob, BRGame game)
-      : this(mob, game, null)
+    public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section = null) : base(60, 60)
     {
-    }
-
-    public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section) : base(60, 60)
-    {
-      m_Game = game;
+//      m_Game = game;
 
       BRTeamInfo ourTeam = game.GetTeamInfo(mob);
 
@@ -1099,7 +1085,7 @@ namespace Server.Engines.ConPVP
             AddBorderedText(235 + 15, 105 + i * 75, 250, 20, pl.Player.Name, 0xFFC000, BlackColor32);
         }
 
-      AddButton(314, height - 42, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(314, height - 42, 247, 248, 1);
     }
 
     public string Center(string text)
@@ -1124,9 +1110,9 @@ namespace Server.Engines.ConPVP
     private void AddColoredText(int x, int y, int width, int height, string text, int color)
     {
       if (color == 0)
-        AddHtml(x, y, width, height, text, false, false);
+        AddHtml(x, y, width, height, text);
       else
-        AddHtml(x, y, width, height, Color(text, color), false, false);
+        AddHtml(x, y, width, height, Color(text, color));
     }
   }
 
@@ -1456,10 +1442,7 @@ namespace Server.Engines.ConPVP
 
     public override bool CantDoAnything(Mobile mob)
     {
-      if (mob?.Backpack == null || GetTeamInfo(mob) == null)
-        return false;
-
-      return mob.Backpack.FindItemByType<BRBomb>() != null;
+      return mob.Backpack?.FindItemByType<BRBomb>() != null && GetTeamInfo(mob) != null;
     }
 
     public void ReturnBomb()
@@ -1549,7 +1532,7 @@ namespace Server.Engines.ConPVP
 
       m_Context.RemoveAggressions(mob);
 
-      if (dp != null && !dp.Eliminated)
+      if (dp?.Eliminated == false)
         mob.MoveToWorld(m_Context.Arena.GetBaseStartPoint(GetTeamID(mob)), Facet);
       else
         m_Context.SendOutside(mob);
@@ -1578,7 +1561,7 @@ namespace Server.Engines.ConPVP
         bomb.DropTo(mob, killer);
       });
 
-      if (killer != null && killer.Player)
+      if (killer?.Player == true)
       {
         BRTeamInfo teamInfo = GetTeamInfo(killer);
         BRTeamInfo victInfo = GetTeamInfo(mob);
@@ -1647,33 +1630,36 @@ namespace Server.Engines.ConPVP
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourney != null && tourney.TourneyType == TourneyType.FreeForAll)
+      if (tourney != null)
       {
-        sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
-        sb.Append("-man FFA");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RandomTeam)
-      {
-        sb.Append(tourney.ParticipantsPerMatch);
-        sb.Append("-team");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RedVsBlue)
-      {
-        sb.Append("Red v Blue");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.Faction)
-      {
-        sb.Append(tourney.ParticipantsPerMatch);
-        sb.Append("-team Faction");
-      }
-      else if (tourney != null)
-      {
-        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+        if (tourney.TourneyType == TourneyType.FreeForAll)
         {
-          if (sb.Length > 0)
-            sb.Append('v');
+          sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
+          sb.Append("-man FFA");
+        }
+        else if (tourney.TourneyType == TourneyType.RandomTeam)
+        {
+          sb.Append(tourney.ParticipantsPerMatch);
+          sb.Append("-team");
+        }
+        else if (tourney.TourneyType == TourneyType.RedVsBlue)
+        {
+          sb.Append("Red v Blue");
+        }
+        else if (tourney.TourneyType == TourneyType.Faction)
+        {
+          sb.Append(tourney.ParticipantsPerMatch);
+          sb.Append("-team Faction");
+        }
+        else
+        {
+          for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+          {
+            if (sb.Length > 0)
+              sb.Append('v');
 
-          sb.Append(tourney.PlayersPerParticipant);
+            sb.Append(tourney.PlayersPerParticipant);
+          }
         }
       }
 

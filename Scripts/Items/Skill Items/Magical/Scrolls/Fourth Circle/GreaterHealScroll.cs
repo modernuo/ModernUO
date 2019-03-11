@@ -3,12 +3,7 @@ namespace Server.Items
   public class GreaterHealScroll : SpellScroll
   {
     [Constructible]
-    public GreaterHealScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GreaterHealScroll(int amount) : base(28, 0x1F49, amount)
+    public GreaterHealScroll(int amount = 1) : base(28, 0x1F49, amount)
     {
     }
 

@@ -23,10 +23,11 @@ namespace Server.Multis
     [CommandProperty(AccessLevel.GameMaster)]
     public bool RestrictDecay
     {
-      get => Owner != null && Owner.RestrictDecay;
+      get => Owner?.RestrictDecay == true;
       set
       {
-        if (Owner != null) Owner.RestrictDecay = value;
+        if (Owner != null)
+          Owner.RestrictDecay = value;
       }
     }
 
@@ -39,17 +40,14 @@ namespace Server.Multis
 
     public string GetName()
     {
-      if (Name == null)
-        return "An Unnamed House";
-
-      return Name;
+      return Name ?? "An Unnamed House";
     }
 
     public override void OnAfterDelete()
     {
       base.OnAfterDelete();
 
-      if (Owner != null && !Owner.Deleted)
+      if (Owner?.Deleted == false)
         Owner.Delete();
     }
 
@@ -152,12 +150,7 @@ namespace Server.Multis
     {
       if (okay && Owner != null && Owner.Owner == null && Owner.DecayLevel != DecayLevel.DemolitionPending)
       {
-        bool canClaim;
-
-        if (Owner.CoOwners == null || Owner.CoOwners.Count == 0)
-          canClaim = Owner.IsFriend(from);
-        else
-          canClaim = Owner.IsCoOwner(from);
+        bool canClaim = Owner.CoOwners?.Count > 0 && Owner.IsCoOwner(from) || Owner.IsFriend(from);
 
         if (canClaim && !BaseHouse.HasAccountHouse(from))
         {
@@ -177,12 +170,7 @@ namespace Server.Multis
       if (m.AccessLevel < AccessLevel.GameMaster && Owner.Owner == null &&
           Owner.DecayLevel != DecayLevel.DemolitionPending)
       {
-        bool canClaim = false;
-
-        if (Owner.CoOwners == null || Owner.CoOwners.Count == 0)
-          canClaim = Owner.IsFriend(m);
-        else
-          canClaim = Owner.IsCoOwner(m);
+        bool canClaim = Owner?.CoOwners.Count > 0 && Owner.IsCoOwner(m) || Owner.IsFriend(m);
 
         if (canClaim && !BaseHouse.HasAccountHouse(m))
           m.SendGump(new WarningGump(501036, 32512, 1049719, 32512, 420, 280, okay => ClaimGump_Callback(m, okay)));
@@ -195,14 +183,14 @@ namespace Server.Multis
     {
       base.GetContextMenuEntries(from, list);
 
-      if (BaseHouse.NewVendorSystem && from.Alive && Owner != null && Owner.IsAosRules)
-      {
-        if (Owner.AreThereAvailableVendorsFor(from))
-          list.Add(new VendorsEntry(this));
+      if (!BaseHouse.NewVendorSystem || !from.Alive || Owner?.IsAosRules != true)
+        return;
 
-        if (Owner.VendorInventories.Count > 0)
-          list.Add(new ReclaimVendorInventoryEntry(this));
-      }
+      if (Owner.AreThereAvailableVendorsFor(from))
+        list.Add(new VendorsEntry(this));
+
+      if (Owner.VendorInventories.Count > 0)
+        list.Add(new ReclaimVendorInventoryEntry(this));
     }
 
     public override void Serialize(GenericWriter writer)

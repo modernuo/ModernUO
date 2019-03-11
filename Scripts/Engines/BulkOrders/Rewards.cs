@@ -29,11 +29,7 @@ namespace Server.Engines.BulkOrders
 
   public sealed class RewardItem
   {
-    public RewardItem(int weight, ConstructCallback constructor) : this(weight, constructor, 0)
-    {
-    }
-
-    public RewardItem(int weight, ConstructCallback constructor, int type)
+    public RewardItem(int weight, ConstructCallback constructor, int type = 0)
     {
       Weight = weight;
       Constructor = constructor;
@@ -583,7 +579,7 @@ namespace Server.Engines.BulkOrders
     {
       Groups = new[]
       {
-        new RewardGroup(0, new RewardItem(1, Cloth, 0)),
+        new RewardGroup(0, new RewardItem(1, Cloth)),
         new RewardGroup(50, new RewardItem(1, Cloth, 1)),
         new RewardGroup(100, new RewardItem(1, Cloth, 2)),
         new RewardGroup(150, new RewardItem(9, Cloth, 3), new RewardItem(1, Sandals)),

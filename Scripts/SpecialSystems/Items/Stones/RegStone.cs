@@ -17,7 +17,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      BagOfReagents regBag = new BagOfReagents(50);
+      BagOfReagents regBag = new BagOfReagents();
 
       if (!from.AddToBackpack(regBag))
         regBag.Delete();

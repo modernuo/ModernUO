@@ -3,13 +3,7 @@ namespace Server.Items
   public class NetherCycloneScroll : SpellScroll
   {
     [Constructible]
-    public NetherCycloneScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public NetherCycloneScroll(int amount)
+    public NetherCycloneScroll(int amount = 1)
       : base(691, 0x2DAC, amount)
     {
     }

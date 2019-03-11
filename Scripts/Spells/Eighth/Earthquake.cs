@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Spells.Eighth
 {
@@ -16,7 +17,7 @@ namespace Server.Spells.Eighth
       Reagent.SulfurousAsh
     );
 
-    public EarthquakeSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public EarthquakeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -28,22 +29,19 @@ namespace Server.Spells.Eighth
     {
       if (SpellHelper.CheckTown(Caster, Caster) && CheckSequence())
       {
-        List<Mobile> targets = new List<Mobile>();
-
-        Map map = Caster.Map;
-
-        if (map != null)
-          foreach (Mobile m in Caster.GetMobilesInRange(1 + (int)(Caster.Skills.Magery.Value / 15.0)))
-            if (Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
-                (!Core.AOS || Caster.InLOS(m)))
-              targets.Add(m);
-
         Caster.PlaySound(0x220);
 
-        for (int i = 0; i < targets.Count; ++i)
+        if (Caster.Map == null)
         {
-          Mobile m = targets[i];
+          FinishSequence();
+          return;
+        }
 
+        IEnumerable<Mobile> targets = Caster.GetMobilesInRange(1 + (int)(Caster.Skills.Magery.Value / 15.0))
+            .Where(m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) && (!Core.AOS || Caster.InLOS(m)));
+
+        foreach (Mobile m in targets)
+        {
           int damage;
 
           if (Core.AOS)

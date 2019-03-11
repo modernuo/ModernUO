@@ -14,7 +14,7 @@ namespace Server.Spells.Second
       Reagent.SulfurousAsh
     );
 
-    public MagicTrapSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MagicTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

@@ -3,13 +3,7 @@ namespace Server.Items
   public class Blight : Item
   {
     [Constructible]
-    public Blight()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public Blight(int amount)
+    public Blight(int amount = 1)
       : base(0x3183)
     {
       Stackable = true;
@@ -39,13 +33,7 @@ namespace Server.Items
   public class LuminescentFungi : Item
   {
     [Constructible]
-    public LuminescentFungi()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public LuminescentFungi(int amount)
+    public LuminescentFungi(int amount = 1)
       : base(0x3191)
     {
       Stackable = true;
@@ -76,13 +64,7 @@ namespace Server.Items
   public class CapturedEssence : Item
   {
     [Constructible]
-    public CapturedEssence()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public CapturedEssence(int amount)
+    public CapturedEssence(int amount = 1)
       : base(0x318E)
     {
       Stackable = true;
@@ -113,19 +95,13 @@ namespace Server.Items
   public class EyeOfTheTravesty : Item
   {
     [Constructible]
-    public EyeOfTheTravesty()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public EyeOfTheTravesty(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public EyeOfTheTravesty(int amount)
+    public EyeOfTheTravesty(int amount = 1)
       : base(0x318D)
     {
       Stackable = true;
@@ -156,19 +132,13 @@ namespace Server.Items
   public class Corruption : Item
   {
     [Constructible]
-    public Corruption()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public Corruption(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public Corruption(int amount)
+    public Corruption(int amount = 1)
       : base(0x3184)
     {
       Stackable = true;
@@ -199,19 +169,13 @@ namespace Server.Items
   public class DreadHornMane : Item
   {
     [Constructible]
-    public DreadHornMane()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public DreadHornMane(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public DreadHornMane(int amount)
+    public DreadHornMane(int amount = 1)
       : base(0x318A)
     {
       Stackable = true;
@@ -242,19 +206,13 @@ namespace Server.Items
   public class ParasiticPlant : Item
   {
     [Constructible]
-    public ParasiticPlant()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public ParasiticPlant(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public ParasiticPlant(int amount)
+    public ParasiticPlant(int amount = 1)
       : base(0x3190)
     {
       Stackable = true;
@@ -285,19 +243,13 @@ namespace Server.Items
   public class Muculent : Item
   {
     [Constructible]
-    public Muculent()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public Muculent(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public Muculent(int amount)
+    public Muculent(int amount = 1)
       : base(0x3188)
     {
       Stackable = true;
@@ -328,19 +280,13 @@ namespace Server.Items
   public class DiseasedBark : Item
   {
     [Constructible]
-    public DiseasedBark()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public DiseasedBark(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public DiseasedBark(int amount)
+    public DiseasedBark(int amount = 1)
       : base(0x318B)
     {
       Stackable = true;
@@ -371,19 +317,13 @@ namespace Server.Items
   public class BarkFragment : Item
   {
     [Constructible]
-    public BarkFragment()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public BarkFragment(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public BarkFragment(int amount)
+    public BarkFragment(int amount = 1)
       : base(0x318F)
     {
       Stackable = true;
@@ -414,19 +354,13 @@ namespace Server.Items
   public class GrizzledBones : Item
   {
     [Constructible]
-    public GrizzledBones()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public GrizzledBones(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public GrizzledBones(int amount)
+    public GrizzledBones(int amount = 1)
       : base(0x318C)
     {
       Stackable = true;
@@ -460,19 +394,13 @@ namespace Server.Items
   public class LardOfParoxysmus : Item
   {
     [Constructible]
-    public LardOfParoxysmus()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public LardOfParoxysmus(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public LardOfParoxysmus(int amount)
+    public LardOfParoxysmus(int amount = 1)
       : base(0x3189)
     {
       Stackable = true;
@@ -502,19 +430,13 @@ namespace Server.Items
   public class PerfectEmerald : Item
   {
     [Constructible]
-    public PerfectEmerald()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public PerfectEmerald(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public PerfectEmerald(int amount)
+    public PerfectEmerald(int amount = 1)
       : base(0x3194)
     {
       Stackable = true;
@@ -544,19 +466,13 @@ namespace Server.Items
   public class DarkSapphire : Item
   {
     [Constructible]
-    public DarkSapphire()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public DarkSapphire(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public DarkSapphire(int amount)
+    public DarkSapphire(int amount = 1)
       : base(0x3192)
     {
       Stackable = true;
@@ -587,19 +503,13 @@ namespace Server.Items
   public class Turquoise : Item
   {
     [Constructible]
-    public Turquoise()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public Turquoise(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public Turquoise(int amount)
+    public Turquoise(int amount = 1)
       : base(0x3193)
     {
       Stackable = true;
@@ -630,19 +540,13 @@ namespace Server.Items
   public class EcruCitrine : Item
   {
     [Constructible]
-    public EcruCitrine()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public EcruCitrine(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public EcruCitrine(int amount)
+    public EcruCitrine(int amount = 1)
       : base(0x3195)
     {
       Stackable = true;
@@ -673,19 +577,13 @@ namespace Server.Items
   public class WhitePearl : Item
   {
     [Constructible]
-    public WhitePearl()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public WhitePearl(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public WhitePearl(int amount)
+    public WhitePearl(int amount = 1)
       : base(0x3196)
     {
       Stackable = true;
@@ -716,19 +614,13 @@ namespace Server.Items
   public class FireRuby : Item
   {
     [Constructible]
-    public FireRuby()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public FireRuby(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public FireRuby(int amount)
+    public FireRuby(int amount = 1)
       : base(0x3197)
     {
       Stackable = true;
@@ -759,19 +651,13 @@ namespace Server.Items
   public class BlueDiamond : Item
   {
     [Constructible]
-    public BlueDiamond()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public BlueDiamond(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public BlueDiamond(int amount)
+    public BlueDiamond(int amount = 1)
       : base(0x3198)
     {
       Stackable = true;
@@ -802,19 +688,13 @@ namespace Server.Items
   public class BrilliantAmber : Item
   {
     [Constructible]
-    public BrilliantAmber()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public BrilliantAmber(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public BrilliantAmber(int amount)
+    public BrilliantAmber(int amount = 1)
       : base(0x3199)
     {
       Stackable = true;
@@ -844,19 +724,13 @@ namespace Server.Items
   public class Scourge : Item
   {
     [Constructible]
-    public Scourge()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public Scourge(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public Scourge(int amount)
+    public Scourge(int amount = 1)
       : base(0x3185)
     {
       Stackable = true;
@@ -888,19 +762,13 @@ namespace Server.Items
   public class Putrefication : Item
   {
     [Constructible]
-    public Putrefication()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public Putrefication(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public Putrefication(int amount)
+    public Putrefication(int amount = 1)
       : base(0x3186)
     {
       Stackable = true;
@@ -932,19 +800,13 @@ namespace Server.Items
   public class Taint : Item
   {
     [Constructible]
-    public Taint()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public Taint(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public Taint(int amount)
+    public Taint(int amount = 1)
       : base(0x3187)
     {
       Stackable = true;
@@ -1004,19 +866,13 @@ namespace Server.Items
   public class SwitchItem : Item
   {
     [Constructible]
-    public SwitchItem()
-      : this(1)
-    {
-    }
-
-    [Constructible]
     public SwitchItem(int amountFrom, int amountTo)
       : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public SwitchItem(int amount)
+    public SwitchItem(int amount = 1)
       : base(0x2F5F)
     {
       Stackable = true;

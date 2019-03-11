@@ -13,7 +13,7 @@ namespace Server.Spells.Spellweaving
 
     private static Dictionary<Mobile, GiftOfRenewalInfo> m_Table = new Dictionary<Mobile, GiftOfRenewalInfo>();
 
-    public GiftOfRenewalSpell(Mobile caster, Item scroll)
+    public GiftOfRenewalSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

@@ -5,12 +5,8 @@ namespace Server.Mobiles
   public class GoldenElemental : BaseCreature
   {
     [Constructible]
-    public GoldenElemental() : this(2)
-    {
-    }
-
-    [Constructible]
-    public GoldenElemental(int oreAmount) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public GoldenElemental(int oreAmount = 2) :
+      base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
       Body = 166;
       BaseSoundID = 268;

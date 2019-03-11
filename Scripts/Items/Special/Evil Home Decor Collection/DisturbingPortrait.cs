@@ -31,7 +31,7 @@ namespace Server.Items
     {
       base.OnAfterDelete();
 
-      if (m_Timer != null && m_Timer.Running)
+      if (m_Timer?.Running == true)
         m_Timer.Stop();
     }
 

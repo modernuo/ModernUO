@@ -87,17 +87,17 @@ namespace Server.Gumps
       AddPage(0);
       AddBackground(0, 0, 585, 393, 5054);
       AddBackground(195, 36, 387, 275, 3000);
-      AddHtmlLocalized(0, 0, 510, 18, 1015234, false, false); // <center>Polymorph Selection Menu</center>
-      AddHtmlLocalized(60, 355, 150, 18, 1011036, false, false); // OKAY
+      AddHtmlLocalized(0, 0, 510, 18, 1015234); // <center>Polymorph Selection Menu</center>
+      AddHtmlLocalized(60, 355, 150, 18, 1011036); // OKAY
       AddButton(25, 355, 4005, 4007, 1, GumpButtonType.Reply, 1);
-      AddHtmlLocalized(320, 355, 150, 18, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(320, 355, 150, 18, 1011012); // CANCEL
       AddButton(285, 355, 4005, 4007, 0, GumpButtonType.Reply, 2);
 
       y = 35;
       for (int i = 0; i < Categories.Length; i++)
       {
         PolymorphCategory cat = Categories[i];
-        AddHtmlLocalized(5, y, 150, 25, cat.LocNumber, true, false);
+        AddHtmlLocalized(5, y, 150, 25, cat.LocNumber, true);
         AddButton(155, y, 4005, 4007, 0, GumpButtonType.Page, i + 1);
         y += 25;
       }
@@ -113,7 +113,7 @@ namespace Server.Gumps
           x = 198 + c % 3 * 129;
           y = 38 + c / 3 * 67;
 
-          AddHtmlLocalized(x, y, 100, 18, entry.LocNumber, false, false);
+          AddHtmlLocalized(x, y, 100, 18, entry.LocNumber);
           AddItem(x + 20, y + 25, entry.ArtID);
           AddRadio(x, y + 20, 210, 211, false, (c << 8) + i);
         }
@@ -191,10 +191,10 @@ namespace Server.Gumps
       AddImageTiled(10, 374, 500, 20, 0xA40);
       AddAlphaRegion(10, 10, 500, 384);
 
-      AddHtmlLocalized(14, 12, 500, 20, 1015234, 0x7FFF, false, false); // <center>Polymorph Selection Menu</center>
+      AddHtmlLocalized(14, 12, 500, 20, 1015234, 0x7FFF); // <center>Polymorph Selection Menu</center>
 
-      AddButton(10, 374, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 376, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+      AddButton(10, 374, 0xFB1, 0xFB2, 0);
+      AddHtmlLocalized(45, 376, 450, 20, 1060051, 0x7FFF); // CANCEL
 
       for (int i = 0; i < m_Entries.Length; i++)
       {
@@ -208,7 +208,7 @@ namespace Server.Gumps
           if (page > 1)
           {
             AddButton(400, 374, 0xFA5, 0xFA7, 0, GumpButtonType.Page, page);
-            AddHtmlLocalized(440, 376, 60, 20, 1043353, 0x7FFF, false, false); // Next
+            AddHtmlLocalized(440, 376, 60, 20, 1043353, 0x7FFF); // Next
           }
 
           AddPage(page);
@@ -216,7 +216,7 @@ namespace Server.Gumps
           if (page > 1)
           {
             AddButton(300, 374, 0xFAE, 0xFB0, 0, GumpButtonType.Page, 1);
-            AddHtmlLocalized(340, 376, 60, 20, 1011393, 0x7FFF, false, false); // Back
+            AddHtmlLocalized(340, 376, 60, 20, 1011393, 0x7FFF); // Back
           }
         }
 
@@ -224,7 +224,7 @@ namespace Server.Gumps
         int y = pos / 2 * 64 + 44;
 
         AddImageTiledButton(x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entry.ArtID, 0x0, entry.X, entry.Y);
-        AddHtmlLocalized(x + 84, y, 250, 60, entry.LocNumber, 0x7FFF, false, false);
+        AddHtmlLocalized(x + 84, y, 250, 60, entry.LocNumber, 0x7FFF);
       }
     }
 

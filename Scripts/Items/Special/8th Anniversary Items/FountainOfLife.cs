@@ -5,13 +5,7 @@ namespace Server.Items
   public class EnhancedBandage : Bandage
   {
     [Constructible]
-    public EnhancedBandage()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public EnhancedBandage(int amount)
+    public EnhancedBandage(int amount = 1)
       : base(amount)
     {
       Hue = 0x8A5;
@@ -61,13 +55,7 @@ namespace Server.Items
     private Timer m_Timer;
 
     [Constructible]
-    public FountainOfLife()
-      : this(10)
-    {
-    }
-
-    [Constructible]
-    public FountainOfLife(int charges)
+    public FountainOfLife(int charges = 10)
       : base(0x2AC0)
     {
       m_Charges = charges;
@@ -222,13 +210,7 @@ namespace Server.Items
     private int m_Charges;
 
     [Constructible]
-    public FountainOfLifeDeed()
-      : this(10)
-    {
-    }
-
-    [Constructible]
-    public FountainOfLifeDeed(int charges)
+    public FountainOfLifeDeed(int charges = 10)
     {
       LootType = LootType.Blessed;
       m_Charges = charges;

@@ -128,7 +128,7 @@ namespace Server.Mobiles
     {
       Mobile combatant = Combatant;
 
-      if (combatant == null || combatant.Deleted || combatant.Map != Map || !InRange(combatant, 12) ||
+      if (combatant?.Deleted != false || combatant.Map != Map || !InRange(combatant, 12) ||
           !CanBeHarmful(combatant) || !InLOS(combatant))
         return;
 

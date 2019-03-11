@@ -7,12 +7,7 @@ namespace Server.Items
   public class Kindling : Item
   {
     [Constructible]
-    public Kindling() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Kindling(int amount) : base(0xDE1)
+    public Kindling(int amount = 1) : base(0xDE1)
     {
       Stackable = true;
       Weight = 5.0;

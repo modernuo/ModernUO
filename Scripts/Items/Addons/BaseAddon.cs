@@ -72,7 +72,7 @@ namespace Server.Items
     {
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house != null && house.IsOwner(from) && house.Addons.Contains(this))
+      if (house?.IsOwner(from) == true && house.Addons.Contains(this))
       {
         Effects.PlaySound(GetWorldLocation(), Map, 0x3B3);
         from.SendLocalizedMessage(500461); // You destroy the item.
@@ -165,12 +165,7 @@ namespace Server.Items
 
     public static bool CheckHouse(Mobile from, Point3D p, Map map, int height, ref BaseHouse house)
     {
-      house = BaseHouse.FindHouseAt(p, map, height);
-
-      if (house == null || from != null && !house.IsOwner(from))
-        return false;
-
-      return true;
+      return from == null || BaseHouse.FindHouseAt(p, map, height)?.IsOwner(from) == true;
     }
 
     public static bool IsWall(int x, int y, int z, Map map)

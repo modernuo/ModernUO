@@ -19,9 +19,9 @@ namespace Server.Gumps
       AddImageTiled(10, 40, 253, 244, 0xA40);
       AddImageTiled(10, 294, 253, 20, 0xA40);
       AddAlphaRegion(10, 10, 253, 304);
-      AddButton(10, 294, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
-      AddHtmlLocalized(14, 12, 273, 20, 1075130, 0x7FFF, false, false); // Choose a track to play
+      AddButton(10, 294, 0xFB1, 0xFB2, 0);
+      AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF); // CANCEL
+      AddHtmlLocalized(14, 12, 273, 20, 1075130, 0x7FFF); // Choose a track to play
 
       int page = 1;
       int i, y = 49;
@@ -47,8 +47,8 @@ namespace Server.Gumps
         if (info == null)
           continue;
 
-        AddButton(19, y, 0x845, 0x846, 100 + i, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, y - 2, 213, 20, info.Name, 0x7FFF, false, false);
+        AddButton(19, y, 0x845, 0x846, 100 + i);
+        AddHtmlLocalized(44, y - 2, 213, 20, info.Name, 0x7FFF);
       }
 
       if (i % 10 == 0)
@@ -61,13 +61,13 @@ namespace Server.Gumps
         AddButton(193, 294, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page);
       }
 
-      AddButton(19, y, 0x845, 0x846, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(44, y - 2, 213, 20, 1075207, 0x7FFF, false, false); // Stop Song
+      AddButton(19, y, 0x845, 0x846, 1);
+      AddHtmlLocalized(44, y - 2, 213, 20, 1075207, 0x7FFF); // Stop Song
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_Box == null || m_Box.Deleted)
+      if (m_Box?.Deleted != false)
         return;
 
       Mobile m = sender.Mobile;

@@ -161,12 +161,7 @@ namespace Server.Items
   public class RawRibs : CookableFood
   {
     [Constructible]
-    public RawRibs() : this(1)
-    {
-    }
-
-    [Constructible]
-    public RawRibs(int amount) : base(0x9F1, 10)
+    public RawRibs(int amount = 1) : base(0x9F1, 10)
     {
       Weight = 1.0;
       Stackable = true;
@@ -202,12 +197,7 @@ namespace Server.Items
   public class RawLambLeg : CookableFood
   {
     [Constructible]
-    public RawLambLeg() : this(1)
-    {
-    }
-
-    [Constructible]
-    public RawLambLeg(int amount) : base(0x1609, 10)
+    public RawLambLeg(int amount = 1) : base(0x1609, 10)
     {
       Stackable = true;
       Amount = amount;
@@ -279,12 +269,7 @@ namespace Server.Items
   public class RawBird : CookableFood
   {
     [Constructible]
-    public RawBird() : this(1)
-    {
-    }
-
-    [Constructible]
-    public RawBird(int amount) : base(0x9B9, 10)
+    public RawBird(int amount = 1) : base(0x9B9, 10)
     {
       Weight = 1.0;
       Stackable = true;
@@ -648,12 +633,7 @@ namespace Server.Items
   public class Eggs : CookableFood
   {
     [Constructible]
-    public Eggs() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Eggs(int amount) : base(0x9B5, 15)
+    public Eggs(int amount = 1) : base(0x9B5, 15)
     {
       Weight = 1.0;
       Stackable = true;
@@ -835,12 +815,7 @@ namespace Server.Items
   public class RawFishSteak : CookableFood
   {
     [Constructible]
-    public RawFishSteak() : this(1)
-    {
-    }
-
-    [Constructible]
-    public RawFishSteak(int amount) : base(0x097A, 10)
+    public RawFishSteak(int amount = 1) : base(0x097A, 10)
     {
       Stackable = true;
       Amount = amount;

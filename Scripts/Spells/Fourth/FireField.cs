@@ -19,7 +19,7 @@ namespace Server.Spells.Fourth
       Reagent.SulfurousAsh
     );
 
-    public FireFieldSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public FireFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -88,13 +88,8 @@ namespace Server.Spells.Fourth
       private DateTime m_End;
       private Timer m_Timer;
 
-      public FireFieldItem(int itemID, Point3D loc, Mobile caster, Map map, TimeSpan duration, int val)
-        : this(itemID, loc, caster, map, duration, val, 2)
-      {
-      }
-
       public FireFieldItem(int itemID, Point3D loc, Mobile caster, Map map, TimeSpan duration, int val,
-        int damage) : base(itemID)
+        int damage = 2) : base(itemID)
       {
         bool canFit = SpellHelper.AdjustField(ref loc, map, 12, false);
 
@@ -248,7 +243,7 @@ namespace Server.Spells.Fourth
 
             if (map == null || caster == null)
               return;
-            
+
             foreach (Mobile m in m_Item.GetMobilesInRange(0))
               if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                   SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))

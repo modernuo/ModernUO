@@ -19,7 +19,7 @@ namespace Server.Spells.Sixth
 
     private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
-    public InvisibilitySpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public InvisibilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

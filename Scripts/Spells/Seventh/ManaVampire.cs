@@ -14,7 +14,7 @@ namespace Server.Spells.Seventh
       Reagent.SpidersSilk
     );
 
-    public ManaVampireSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ManaVampireSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

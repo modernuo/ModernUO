@@ -34,9 +34,8 @@ namespace Server.RemoteAdmin
       {
         Output = new StreamWriter(
           Path.Combine(directory,
-            string.Format(LogSubDirectory + "{0}.log", DateTime.UtcNow.ToString("yyyyMMdd"))), true);
+            string.Format(LogSubDirectory + "{0}.log", DateTime.UtcNow.ToString("yyyyMMdd"))), true) { AutoFlush = true };
 
-        Output.AutoFlush = true;
 
         Output.WriteLine("##############################");
         Output.WriteLine("Log started on {0}", DateTime.UtcNow);

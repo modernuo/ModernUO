@@ -4,11 +4,7 @@ namespace Server.Items
 {
   public abstract class BaseCloak : BaseClothing
   {
-    public BaseCloak(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BaseCloak(int itemID, int hue) : base(itemID, Layer.Cloak, hue)
+    public BaseCloak(int itemID, int hue = 0) : base(itemID, Layer.Cloak, hue)
     {
     }
 
@@ -35,12 +31,7 @@ namespace Server.Items
   public class Cloak : BaseCloak, IArcaneEquip
   {
     [Constructible]
-    public Cloak() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Cloak(int hue) : base(0x1515, hue)
+    public Cloak(int hue = 0) : base(0x1515, hue)
     {
       Weight = 5.0;
     }
@@ -169,17 +160,7 @@ namespace Server.Items
     private int m_LabelNumber;
 
     [Constructible]
-    public RewardCloak() : this(0)
-    {
-    }
-
-    [Constructible]
-    public RewardCloak(int hue) : this(hue, 0)
-    {
-    }
-
-    [Constructible]
-    public RewardCloak(int hue, int labelNumber) : base(0x1515, hue)
+    public RewardCloak(int hue = 0, int labelNumber = 0) : base(0x1515, hue)
     {
       Weight = 5.0;
       LootType = LootType.Blessed;
@@ -292,12 +273,7 @@ namespace Server.Items
   public class FurCape : BaseCloak
   {
     [Constructible]
-    public FurCape() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FurCape(int hue) : base(0x230A, hue)
+    public FurCape(int hue = 0) : base(0x230A, hue)
     {
       Weight = 4.0;
     }

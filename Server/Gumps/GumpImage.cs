@@ -30,11 +30,7 @@ namespace Server.Gumps
     private int m_Hue;
     private int m_X, m_Y;
 
-    public GumpImage(int x, int y, int gumpID) : this(x, y, gumpID, 0)
-    {
-    }
-
-    public GumpImage(int x, int y, int gumpID, int hue)
+    public GumpImage(int x, int y, int gumpID, int hue = 0)
     {
       m_X = x;
       m_Y = y;
@@ -68,9 +64,8 @@ namespace Server.Gumps
 
     public override string Compile(NetState ns)
     {
-      if (m_Hue == 0)
-        return $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}";
-      return $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
+      return m_Hue == 0 ? $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}" :
+        $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
     }
 
     public override void AppendTo(NetState ns, IGumpWriter disp)

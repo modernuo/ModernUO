@@ -25,10 +25,10 @@ namespace Server.Engines.VeteranRewards
 
       AddBackground(10, 10, 600, 450, 2600);
 
-      AddButton(530, 415, 4017, 4019, 0, GumpButtonType.Reply, 0);
+      AddButton(530, 415, 4017, 4019, 0);
 
       AddButton(60, 415, 4014, 4016, 0, GumpButtonType.Page, 1);
-      AddHtmlLocalized(95, 415, 200, 20, 1049755, false, false); // Main Menu
+      AddHtmlLocalized(95, 415, 200, 20, 1049755); // Main Menu
     }
 
     private void RenderCategories()
@@ -61,10 +61,10 @@ namespace Server.Engines.VeteranRewards
 
       RewardSystem.ComputeRewardInfo(m_From, out int cur, out int max);
 
-      AddHtmlLocalized(60, 105, 300, 35, 1006006, false, false); // Your current total of rewards to choose:
+      AddHtmlLocalized(60, 105, 300, 35, 1006006); // Your current total of rewards to choose:
       AddLabel(370, 107, 50, (max - cur).ToString());
 
-      AddHtmlLocalized(60, 140, 300, 35, 1006007, false, false); // You have already chosen:
+      AddHtmlLocalized(60, 140, 300, 35, 1006007); // You have already chosen:
       AddLabel(370, 142, 50, cur.ToString());
 
       RewardCategory[] categories = RewardSystem.Categories;
@@ -84,9 +84,9 @@ namespace Server.Engines.VeteranRewards
         page += PagesPerCategory(categories[i]);
 
         if (categories[i].NameString != null)
-          AddHtml(135, 180 + i * 40, 300, 20, categories[i].NameString, false, false);
+          AddHtml(135, 180 + i * 40, 300, 20, categories[i].NameString);
         else
-          AddHtmlLocalized(135, 180 + i * 40, 300, 20, categories[i].Name, false, false);
+          AddHtmlLocalized(135, 180 + i * 40, 300, 20, categories[i].Name);
       }
 
       page = 2;
@@ -130,22 +130,22 @@ namespace Server.Engines.VeteranRewards
         if (i == 24)
         {
           AddButton(305, 415, 0xFA5, 0xFA7, 0, GumpButtonType.Page, ++page);
-          AddHtmlLocalized(340, 415, 200, 20, 1011066, false, false); // Next page
+          AddHtmlLocalized(340, 415, 200, 20, 1011066); // Next page
 
           AddPage(page);
 
           AddButton(270, 415, 0xFAE, 0xFB0, 0, GumpButtonType.Page, page - 1);
-          AddHtmlLocalized(185, 415, 200, 20, 1011067, false, false); // Previous page
+          AddHtmlLocalized(185, 415, 200, 20, 1011067); // Previous page
 
           i = 0;
         }
 
-        AddButton(55 + i / 12 * 250, 80 + i % 12 * 25, 5540, 5541, GetButtonID(index, j), GumpButtonType.Reply, 0);
+        AddButton(55 + i / 12 * 250, 80 + i % 12 * 25, 5540, 5541, GetButtonID(index, j));
 
         if (entry.NameString != null)
-          AddHtml(80 + i / 12 * 250, 80 + i % 12 * 25, 250, 20, entry.NameString, false, false);
+          AddHtml(80 + i / 12 * 250, 80 + i % 12 * 25, 250, 20, entry.NameString);
         else
-          AddHtmlLocalized(80 + i / 12 * 250, 80 + i % 12 * 25, 250, 20, entry.Name, false, false);
+          AddHtmlLocalized(80 + i / 12 * 250, 80 + i % 12 * 25, 250, 20, entry.Name);
         ++i;
       }
 

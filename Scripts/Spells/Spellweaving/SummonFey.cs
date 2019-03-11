@@ -11,7 +11,7 @@ namespace Server.Spells.Spellweaving
       -1
     );
 
-    public SummonFeySpell(Mobile caster, Item scroll)
+    public SummonFeySpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

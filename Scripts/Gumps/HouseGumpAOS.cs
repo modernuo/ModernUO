@@ -118,7 +118,7 @@ namespace Server.Gumps
 
         for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
         {
-          string s = (string)lines[i];
+          string s = lines[i];
 
           AddLabel(10 + (160 - s.Length * 8) / 2, y, 0, s);
         }
@@ -126,7 +126,7 @@ namespace Server.Gumps
 
       if (page == HouseGumpPageAOS.Vendors)
       {
-        AddHtmlLocalized(10, 120, 400, 20, 1062428, LabelColor, false, false); // <CENTER>SHOPS</CENTER>
+        AddHtmlLocalized(10, 120, 400, 20, 1062428, LabelColor); // <CENTER>SHOPS</CENTER>
 
         AddList(house.AvailableVendorsFor(from), 1, false, false, from);
         return;
@@ -156,52 +156,44 @@ namespace Server.Gumps
       {
         case HouseGumpPageAOS.Information:
         {
-          AddHtmlLocalized(20, 130, 200, 20, 1011242, LabelColor, false, false); // Owned By:
+          AddHtmlLocalized(20, 130, 200, 20, 1011242, LabelColor); // Owned By:
           AddLabel(210, 130, LabelHue, GetOwnerName());
 
-          AddHtmlLocalized(20, 170, 380, 20, 1018032, SelectedColor, false,
-            false); // This house is properly placed.
-          AddHtmlLocalized(20, 190, 380, 20, 1018035, SelectedColor, false,
-            false); // This house is of modern design.
-          AddHtmlLocalized(20, 210, 380, 20, house is HouseFoundation ? 1060681 : 1060680, SelectedColor, false,
-            false); // This is a (pre | custom)-built house.
-          AddHtmlLocalized(20, 230, 380, 20, house.Public ? 1060678 : 1060679, SelectedColor, false,
-            false); // This house is (private | open to the public).
+          AddHtmlLocalized(20, 170, 380, 20, 1018032, SelectedColor); // This house is properly placed.
+          AddHtmlLocalized(20, 190, 380, 20, 1018035, SelectedColor); // This house is of modern design.
+          AddHtmlLocalized(20, 210, 380, 20, house is HouseFoundation ? 1060681 : 1060680, SelectedColor); // This is a (pre | custom)-built house.
+          AddHtmlLocalized(20, 230, 380, 20, house.Public ? 1060678 : 1060679, SelectedColor); // This house is (private | open to the public).
 
           switch (house.DecayType)
           {
             case DecayType.Ageless:
             case DecayType.AutoRefresh:
             {
-              AddHtmlLocalized(20, 250, 380, 20, 1062209, SelectedColor, false,
-                false); // This house is <a href = "?ForceTopic97">Automatically</a> refreshed.
+              AddHtmlLocalized(20, 250, 380, 20, 1062209, SelectedColor); // This house is <a href = "?ForceTopic97">Automatically</a> refreshed.
               break;
             }
             case DecayType.ManualRefresh:
             {
-              AddHtmlLocalized(20, 250, 380, 20, 1062208, SelectedColor, false,
-                false); // This house is <a href = "?ForceTopic97">Grandfathered</a>.
+              AddHtmlLocalized(20, 250, 380, 20, 1062208, SelectedColor); // This house is <a href = "?ForceTopic97">Grandfathered</a>.
               break;
             }
             case DecayType.Condemned:
             {
-              AddHtmlLocalized(20, 250, 380, 20, 1062207, WarningColor, false,
-                false); // This house is <a href = "?ForceTopic97">Condemned</a>.
+              AddHtmlLocalized(20, 250, 380, 20, 1062207, WarningColor); // This house is <a href = "?ForceTopic97">Condemned</a>.
               break;
             }
           }
 
-          AddHtmlLocalized(20, 290, 200, 20, 1060692, SelectedColor, false, false); // Built On:
+          AddHtmlLocalized(20, 290, 200, 20, 1060692, SelectedColor); // Built On:
           AddLabel(250, 290, LabelHue, GetDateTime(house.BuiltOn));
 
-          AddHtmlLocalized(20, 310, 200, 20, 1060693, SelectedColor, false, false); // Last Traded:
+          AddHtmlLocalized(20, 310, 200, 20, 1060693, SelectedColor); // Last Traded:
           AddLabel(250, 310, LabelHue, GetDateTime(house.LastTraded));
 
-          AddHtmlLocalized(20, 330, 200, 20, 1061793, SelectedColor, false, false); // House Value
+          AddHtmlLocalized(20, 330, 200, 20, 1061793, SelectedColor); // House Value
           AddLabel(250, 330, LabelHue, house.Price.ToString());
 
-          AddHtmlLocalized(20, 360, 300, 20, 1011241, SelectedColor, false,
-            false); // Number of visits this building has had:
+          AddHtmlLocalized(20, 360, 300, 20, 1011241, SelectedColor); // Number of visits this building has had:
           AddLabel(350, 360, LabelHue, house.Visits.ToString());
 
           break;
@@ -225,14 +217,14 @@ namespace Server.Gumps
 
             AddButtonLabeled(210, 130, GetButtonID(3, 12), 1060695, isOwner); // Change to Private
 
-            AddHtmlLocalized(245, 150, 240, 20, 1060694, SelectedColor, false, false); // Change to Public
+            AddHtmlLocalized(245, 150, 240, 20, 1060694, SelectedColor); // Change to Public
           }
           else
           {
             AddButtonLabeled(10, 310, GetButtonID(3, 10), 1060699); // View Access List
             AddButtonLabeled(10, 330, GetButtonID(3, 11), 1060700); // Clear Access List
 
-            AddHtmlLocalized(245, 130, 240, 20, 1060695, SelectedColor, false, false); // Change to Private
+            AddHtmlLocalized(245, 130, 240, 20, 1060695, SelectedColor); // Change to Private
 
             AddButtonLabeled(210, 150, GetButtonID(3, 13), 1060694, isOwner); // Change to Public
           }
@@ -241,8 +233,7 @@ namespace Server.Gumps
         }
         case HouseGumpPageAOS.Storage:
         {
-          AddHtmlLocalized(10, 130, 400, 20, 1060682, LabelColor, false,
-            false); // <CENTER>HOUSE STORAGE SUMMARY</CENTER>
+          AddHtmlLocalized(10, 130, 400, 20, 1060682, LabelColor); // <CENTER>HOUSE STORAGE SUMMARY</CENTER>
 
           // This is not as OSI; storage changes not yet implemented
 
@@ -258,11 +249,9 @@ namespace Server.Gumps
           AddHtmlLocalized( 10, 230, 275, 20, 1011240, LabelColor, false, false ); // Maximum number of secure containers:
           AddLabel( 310, 230, LabelHue, m_House.MaxSecures.ToString() );*/
 
-          int fromSecures, fromVendors, fromLockdowns, fromMovingCrate;
-
           int maxSecures = house.GetAosMaxSecures();
-          int curSecures = house.GetAosCurSecures(out fromSecures, out fromVendors, out fromLockdowns,
-            out fromMovingCrate);
+          int curSecures = house.GetAosCurSecures(out int fromSecures, out int fromVendors, out int fromLockdowns,
+            out int fromMovingCrate);
 
           int maxLockdowns = house.GetAosMaxLockdowns();
           int curLockdowns = house.GetAosCurLockdowns();
@@ -271,54 +260,54 @@ namespace Server.Gumps
 
           if (bonusStorage > 0)
           {
-            AddHtmlLocalized(10, 150, 300, 20, 1072519, LabelColor, false, false); // Increased Storage
+            AddHtmlLocalized(10, 150, 300, 20, 1072519, LabelColor); // Increased Storage
             AddLabel(310, 150, LabelHue, $"{bonusStorage}%");
           }
 
-          AddHtmlLocalized(10, 170, 300, 20, 1060683, LabelColor, false, false); // Maximum Secure Storage
+          AddHtmlLocalized(10, 170, 300, 20, 1060683, LabelColor); // Maximum Secure Storage
           AddLabel(310, 170, LabelHue, maxSecures.ToString());
 
-          AddHtmlLocalized(10, 190, 300, 20, 1060685, LabelColor, false, false); // Used by Moving Crate
+          AddHtmlLocalized(10, 190, 300, 20, 1060685, LabelColor); // Used by Moving Crate
           AddLabel(310, 190, LabelHue, fromMovingCrate.ToString());
 
-          AddHtmlLocalized(10, 210, 300, 20, 1060686, LabelColor, false, false); // Used by Lockdowns
+          AddHtmlLocalized(10, 210, 300, 20, 1060686, LabelColor); // Used by Lockdowns
           AddLabel(310, 210, LabelHue, fromLockdowns.ToString());
 
           if (BaseHouse.NewVendorSystem)
           {
-            AddHtmlLocalized(10, 230, 300, 20, 1060688, LabelColor, false, false); // Used by Secure Containers
+            AddHtmlLocalized(10, 230, 300, 20, 1060688, LabelColor); // Used by Secure Containers
             AddLabel(310, 230, LabelHue, fromSecures.ToString());
 
-            AddHtmlLocalized(10, 250, 300, 20, 1060689, LabelColor, false, false); // Available Storage
+            AddHtmlLocalized(10, 250, 300, 20, 1060689, LabelColor); // Available Storage
             AddLabel(310, 250, LabelHue, Math.Max(maxSecures - curSecures, 0).ToString());
 
-            AddHtmlLocalized(10, 290, 300, 20, 1060690, LabelColor, false, false); // Maximum Lockdowns
+            AddHtmlLocalized(10, 290, 300, 20, 1060690, LabelColor); // Maximum Lockdowns
             AddLabel(310, 290, LabelHue, maxLockdowns.ToString());
 
-            AddHtmlLocalized(10, 310, 300, 20, 1060691, LabelColor, false, false); // Available Lockdowns
+            AddHtmlLocalized(10, 310, 300, 20, 1060691, LabelColor); // Available Lockdowns
             AddLabel(310, 310, LabelHue, Math.Max(maxLockdowns - curLockdowns, 0).ToString());
 
             int maxVendors = house.GetNewVendorSystemMaxVendors();
             int vendors = house.PlayerVendors.Count + house.VendorRentalContracts.Count;
 
-            AddHtmlLocalized(10, 350, 300, 20, 1062391, LabelColor, false, false); // Vendor Count
+            AddHtmlLocalized(10, 350, 300, 20, 1062391, LabelColor); // Vendor Count
             AddLabel(310, 350, LabelHue, vendors + " / " + maxVendors);
           }
           else
           {
-            AddHtmlLocalized(10, 230, 300, 20, 1060687, LabelColor, false, false); // Used by Vendors
+            AddHtmlLocalized(10, 230, 300, 20, 1060687, LabelColor); // Used by Vendors
             AddLabel(310, 230, LabelHue, fromVendors.ToString());
 
-            AddHtmlLocalized(10, 250, 300, 20, 1060688, LabelColor, false, false); // Used by Secure Containers
+            AddHtmlLocalized(10, 250, 300, 20, 1060688, LabelColor); // Used by Secure Containers
             AddLabel(310, 250, LabelHue, fromSecures.ToString());
 
-            AddHtmlLocalized(10, 270, 300, 20, 1060689, LabelColor, false, false); // Available Storage
+            AddHtmlLocalized(10, 270, 300, 20, 1060689, LabelColor); // Available Storage
             AddLabel(310, 270, LabelHue, Math.Max(maxSecures - curSecures, 0).ToString());
 
-            AddHtmlLocalized(10, 330, 300, 20, 1060690, LabelColor, false, false); // Maximum Lockdowns
+            AddHtmlLocalized(10, 330, 300, 20, 1060690, LabelColor); // Maximum Lockdowns
             AddLabel(310, 330, LabelHue, maxLockdowns.ToString());
 
-            AddHtmlLocalized(10, 350, 300, 20, 1060691, LabelColor, false, false); // Available Lockdowns
+            AddHtmlLocalized(10, 350, 300, 20, 1060691, LabelColor); // Available Lockdowns
             AddLabel(310, 350, LabelHue, Math.Max(maxLockdowns - curLockdowns, 0).ToString());
           }
 
@@ -360,7 +349,7 @@ namespace Server.Gumps
             int x = 50 + i % 3 * 100;
             int y = 180 + i / 3 * 80;
 
-            AddButton(x, y, 4005, 4007, GetButtonID(7, i), GumpButtonType.Reply, 0);
+            AddButton(x, y, 4005, 4007, GetButtonID(7, i));
             AddItem(x + 20, y, m_HangerNumbers[i]);
           }
 
@@ -373,7 +362,7 @@ namespace Server.Gumps
             int x = 15 + i % 5 * 80;
             int y = 180 + i / 5 * 100;
 
-            AddButton(x, y, 4005, 4007, GetButtonID(8, i), GumpButtonType.Reply, 0);
+            AddButton(x, y, 4005, 4007, GetButtonID(8, i));
             AddItem(x + 25, y, m_FoundationNumbers[i]);
           }
 
@@ -408,7 +397,7 @@ namespace Server.Gumps
               int x = 30 + j % 6 * 60;
               int y = 130 + j / 6 * 60;
 
-              AddButton(x, y, 4005, 4007, GetButtonID(9, index), GumpButtonType.Reply, 0);
+              AddButton(x, y, 4005, 4007, GetButtonID(9, index));
               AddItem(x + 20, y, _HouseSigns[index++]);
             }
           }
@@ -417,49 +406,49 @@ namespace Server.Gumps
         }
         case HouseGumpPageAOS.RemoveCoOwner:
         {
-          AddHtmlLocalized(10, 120, 400, 20, 1060730, LabelColor, false, false); // <CENTER>CO-OWNER LIST</CENTER>
+          AddHtmlLocalized(10, 120, 400, 20, 1060730, LabelColor); // <CENTER>CO-OWNER LIST</CENTER>
           AddList(house.CoOwners, 10, false, true, from);
           break;
         }
         case HouseGumpPageAOS.ListCoOwner:
         {
-          AddHtmlLocalized(10, 120, 400, 20, 1060730, LabelColor, false, false); // <CENTER>CO-OWNER LIST</CENTER>
+          AddHtmlLocalized(10, 120, 400, 20, 1060730, LabelColor); // <CENTER>CO-OWNER LIST</CENTER>
           AddList(house.CoOwners, -1, false, true, from);
           break;
         }
         case HouseGumpPageAOS.RemoveFriend:
         {
-          AddHtmlLocalized(10, 120, 400, 20, 1060731, LabelColor, false, false); // <CENTER>FRIENDS LIST</CENTER>
+          AddHtmlLocalized(10, 120, 400, 20, 1060731, LabelColor); // <CENTER>FRIENDS LIST</CENTER>
           AddList(house.Friends, 11, false, true, from);
           break;
         }
         case HouseGumpPageAOS.ListFriend:
         {
-          AddHtmlLocalized(10, 120, 400, 20, 1060731, LabelColor, false, false); // <CENTER>FRIENDS LIST</CENTER>
+          AddHtmlLocalized(10, 120, 400, 20, 1060731, LabelColor); // <CENTER>FRIENDS LIST</CENTER>
           AddList(house.Friends, -1, false, true, from);
           break;
         }
         case HouseGumpPageAOS.RemoveBan:
         {
-          AddHtmlLocalized(10, 120, 400, 20, 1060733, LabelColor, false, false); // <CENTER>BAN LIST</CENTER>
+          AddHtmlLocalized(10, 120, 400, 20, 1060733, LabelColor); // <CENTER>BAN LIST</CENTER>
           AddList(house.Bans, 12, true, true, from);
           break;
         }
         case HouseGumpPageAOS.ListBan:
         {
-          AddHtmlLocalized(10, 120, 400, 20, 1060733, LabelColor, false, false); // <CENTER>BAN LIST</CENTER>
+          AddHtmlLocalized(10, 120, 400, 20, 1060733, LabelColor); // <CENTER>BAN LIST</CENTER>
           AddList(house.Bans, -1, true, true, from);
           break;
         }
         case HouseGumpPageAOS.RemoveAccess:
         {
-          AddHtmlLocalized(10, 120, 400, 20, 1060732, LabelColor, false, false); // <CENTER>ACCESS LIST</CENTER>
+          AddHtmlLocalized(10, 120, 400, 20, 1060732, LabelColor); // <CENTER>ACCESS LIST</CENTER>
           AddList(house.Access, 13, false, true, from);
           break;
         }
         case HouseGumpPageAOS.ListAccess:
         {
-          AddHtmlLocalized(10, 120, 400, 20, 1060732, LabelColor, false, false); // <CENTER>ACCESS LIST</CENTER>
+          AddHtmlLocalized(10, 120, 400, 20, 1060732, LabelColor); // <CENTER>ACCESS LIST</CENTER>
           AddList(house.Access, -1, false, true, from);
           break;
         }
@@ -478,7 +467,7 @@ namespace Server.Gumps
               int x = 15 + j % 8 * 50;
               int y = 130 + j / 8 * 110;
 
-              AddButton(x, y, 4005, 4007, GetButtonID(14, index), GumpButtonType.Reply, 0);
+              AddButton(x, y, 4005, 4007, GetButtonID(14, index));
               AddItem(x + 10, y, m_PostNumbers[index++]);
             }
           }
@@ -492,15 +481,10 @@ namespace Server.Gumps
     {
       Mobile m = m_House.Owner;
 
-      if (m == null || m.Deleted)
+      if (m?.Deleted != false)
         return "(unowned)";
 
-      string name;
-
-      if ((name = m.Name) == null || (name = name.Trim()).Length <= 0)
-        name = "(no name)";
-
-      return name;
+      return String.IsNullOrWhiteSpace(m.Name) ? "(no name)" : m.Name.Trim();
     }
 
     private string GetDateTime(DateTime val)
@@ -512,21 +496,16 @@ namespace Server.Gumps
     {
       bool isSelection = m_Page == page;
 
-      AddButton(x, y, isSelection ? 4006 : 4005, 4007, buttonID, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(x + 45, y, 200, 20, number, isSelection ? SelectedColor : LabelColor, false, false);
+      AddButton(x, y, isSelection ? 4006 : 4005, 4007, buttonID);
+      AddHtmlLocalized(x + 45, y, 200, 20, number, isSelection ? SelectedColor : LabelColor);
     }
 
-    public void AddButtonLabeled(int x, int y, int buttonID, int number)
-    {
-      AddButtonLabeled(x, y, buttonID, number, true);
-    }
-
-    public void AddButtonLabeled(int x, int y, int buttonID, int number, bool enabled)
+    public void AddButtonLabeled(int x, int y, int buttonID, int number, bool enabled = true)
     {
       if (enabled)
-        AddButton(x, y, 4005, 4007, buttonID, GumpButtonType.Reply, 0);
+        AddButton(x, y, 4005, 4007, buttonID);
 
-      AddHtmlLocalized(x + 35, y, 240, 20, number, enabled ? LabelColor : DisabledColor, false, false);
+      AddHtmlLocalized(x + 35, y, 240, 20, number, enabled ? LabelColor : DisabledColor);
     }
 
     public void AddList(List<Mobile> list, int button, bool accountOf, bool leadingStar, Mobile from)
@@ -584,7 +563,7 @@ namespace Server.Gumps
           continue;
 
         if (button != -1)
-          AddButton(10 + xoffset, 150 + yoffset, 4005, 4007, GetButtonID(button, i), GumpButtonType.Reply, 0);
+          AddButton(10 + xoffset, 150 + yoffset, 4005, 4007, GetButtonID(button, i));
 
         if (accountOf && m.Player && m.Account != null)
           name = "Account of " + name;
@@ -698,7 +677,7 @@ namespace Server.Gumps
 
         if (e == null)
           return;
-        
+
           int cost = e.Cost - house.Price;
 
           if (cost > 0)
@@ -1351,7 +1330,7 @@ namespace Server.Gumps
         {
           if (isOwner && m_List != null && index >= 0 && index < m_List.Count)
           {
-            m_House.RemoveCoOwner(from, (Mobile)m_List[index]);
+            m_House.RemoveCoOwner(from, m_List[index]);
 
             if (m_House.CoOwners.Count > 0)
               from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveCoOwner, from, m_House));
@@ -1365,7 +1344,7 @@ namespace Server.Gumps
         {
           if (isCoOwner && m_List != null && index >= 0 && index < m_List.Count)
           {
-            m_House.RemoveFriend(from, (Mobile)m_List[index]);
+            m_House.RemoveFriend(from, m_List[index]);
 
             if (m_House.Friends.Count > 0)
               from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveFriend, from, m_House));
@@ -1379,7 +1358,7 @@ namespace Server.Gumps
         {
           if (m_List != null && index >= 0 && index < m_List.Count)
           {
-            m_House.RemoveBan(from, (Mobile)m_List[index]);
+            m_House.RemoveBan(from, m_List[index]);
 
             if (m_House.Bans.Count > 0)
               from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveBan, from, m_House));
@@ -1393,7 +1372,7 @@ namespace Server.Gumps
         {
           if (m_List != null && index >= 0 && index < m_List.Count)
           {
-            m_House.RemoveAccess(from, (Mobile)m_List[index]);
+            m_House.RemoveAccess(from, m_List[index]);
 
             if (m_House.Access.Count > 0)
               from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.RemoveAccess, from, m_House));

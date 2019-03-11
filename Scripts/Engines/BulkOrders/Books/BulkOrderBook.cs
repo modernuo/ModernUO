@@ -70,9 +70,9 @@ namespace Server.Engines.BulkOrders
 				{
 					SecureTrade trade = cont.Trade;
 
-					if ( trade != null && trade.From.Mobile == from )
+					if (trade?.From.Mobile == from )
 						trade.To.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.To.Mobile, this ) );
-					else if ( trade != null && trade.To.Mobile == from )
+					else if (trade?.To.Mobile == from )
 						trade.From.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.From.Mobile, this ) );
 				}
 			}
@@ -159,9 +159,9 @@ namespace Server.Engines.BulkOrders
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 ); // version
+			writer.Write( 2 ); // version
 
-			writer.Write( (int) ItemCount );
+			writer.Write( ItemCount );
 
 			writer.Write( (int) Level );
 
@@ -169,7 +169,7 @@ namespace Server.Engines.BulkOrders
 
 			Filter.Serialize( writer );
 
-			writer.WriteEncodedInt( (int) Entries.Count );
+			writer.WriteEncodedInt( Entries.Count );
 
 			for ( int i = 0; i < Entries.Count; ++i )
 			{

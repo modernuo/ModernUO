@@ -39,12 +39,12 @@ namespace Server.Engines.Quests.Doom
 
     public virtual void BeginSummon(Mobile from)
     {
-      if (Chyloth != null && !Chyloth.Deleted)
+      if (Chyloth?.Deleted == false)
       {
         from.SendLocalizedMessage(
           1050010); // The ferry man has already been summoned.  There is no need to ring for him again.
       }
-      else if (Dragon != null && !Dragon.Deleted)
+      else if (Dragon?.Deleted == false)
       {
         from.SendLocalizedMessage(
           1050017); // The ferryman has recently been summoned already.  You decide against ringing the bell again so soon.
@@ -83,9 +83,8 @@ namespace Server.Engines.Quests.Doom
           2023, 0);
         Effects.PlaySound(loc, Map, 0x1FE);
 
-        Chyloth = new Chyloth();
+        Chyloth = new Chyloth { Direction = (Direction)(7 & (4 + (int)from.GetDirectionTo(loc))) };
 
-        Chyloth.Direction = (Direction)(7 & (4 + (int)from.GetDirectionTo(loc)));
         Chyloth.MoveToWorld(loc, Map);
 
         Chyloth.Bell = this;

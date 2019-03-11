@@ -17,44 +17,44 @@ namespace Server.Engines.Plants
 
       DrawPlant();
 
-      AddButton(71, 67, 0xD4, 0xD4, 1, GumpButtonType.Reply, 0); // Reproduction menu
+      AddButton(71, 67, 0xD4, 0xD4, 1); // Reproduction menu
       AddItem(59, 68, 0xD08);
 
       PlantSystem system = plant.PlantSystem;
 
-      AddButton(71, 91, 0xD4, 0xD4, 2, GumpButtonType.Reply, 0); // Infestation
+      AddButton(71, 91, 0xD4, 0xD4, 2); // Infestation
       AddItem(8, 96, 0x372);
       AddPlus(95, 92, system.Infestation);
 
-      AddButton(71, 115, 0xD4, 0xD4, 3, GumpButtonType.Reply, 0); // Fungus
+      AddButton(71, 115, 0xD4, 0xD4, 3); // Fungus
       AddItem(58, 115, 0xD16);
       AddPlus(95, 116, system.Fungus);
 
-      AddButton(71, 139, 0xD4, 0xD4, 4, GumpButtonType.Reply, 0); // Poison
+      AddButton(71, 139, 0xD4, 0xD4, 4); // Poison
       AddItem(59, 143, 0x1AE4);
       AddPlus(95, 140, system.Poison);
 
-      AddButton(71, 163, 0xD4, 0xD4, 5, GumpButtonType.Reply, 0); // Disease
+      AddButton(71, 163, 0xD4, 0xD4, 5); // Disease
       AddItem(55, 167, 0x1727);
       AddPlus(95, 164, system.Disease);
 
-      AddButton(209, 67, 0xD2, 0xD2, 6, GumpButtonType.Reply, 0); // Water
+      AddButton(209, 67, 0xD2, 0xD2, 6); // Water
       AddItem(193, 67, 0x1F9D);
       AddPlusMinus(196, 67, system.Water);
 
-      AddButton(209, 91, 0xD4, 0xD4, 7, GumpButtonType.Reply, 0); // Poison potion
+      AddButton(209, 91, 0xD4, 0xD4, 7); // Poison potion
       AddItem(201, 91, 0xF0A);
       AddLevel(196, 91, system.PoisonPotion);
 
-      AddButton(209, 115, 0xD4, 0xD4, 8, GumpButtonType.Reply, 0); // Cure potion
+      AddButton(209, 115, 0xD4, 0xD4, 8); // Cure potion
       AddItem(201, 115, 0xF07);
       AddLevel(196, 115, system.CurePotion);
 
-      AddButton(209, 139, 0xD4, 0xD4, 9, GumpButtonType.Reply, 0); // Heal potion
+      AddButton(209, 139, 0xD4, 0xD4, 9); // Heal potion
       AddItem(201, 139, 0xF0C);
       AddLevel(196, 139, system.HealPotion);
 
-      AddButton(209, 163, 0xD4, 0xD4, 10, GumpButtonType.Reply, 0); // Strength potion
+      AddButton(209, 163, 0xD4, 0xD4, 10); // Strength potion
       AddItem(201, 163, 0xF09);
       AddLevel(196, 163, system.StrengthPotion);
 
@@ -64,10 +64,10 @@ namespace Server.Engines.Plants
       AddImage(232, 47, 0xD2);
       AddGrowthIndicator(239, 47);
 
-      AddButton(48, 183, 0xD2, 0xD2, 11, GumpButtonType.Reply, 0); // Help
+      AddButton(48, 183, 0xD2, 0xD2, 11); // Help
       AddLabel(54, 183, 0x835, "?");
 
-      AddButton(232, 183, 0xD4, 0xD4, 12, GumpButtonType.Reply, 0); // Empty the bowl
+      AddButton(232, 183, 0xD4, 0xD4, 12); // Empty the bowl
       AddItem(219, 180, 0x15FD);
     }
 
@@ -142,7 +142,7 @@ namespace Server.Engines.Plants
             AddItem(92, 167, 0x1B9D);
             AddItem(161, 167, 0x1B9D);
 
-            AddHtmlLocalized(136, 167, 42, 20, message, 0x00FC00, false, false);
+            AddHtmlLocalized(136, 167, 42, 20, message, 0x00FC00);
 
             break;
           }
@@ -151,7 +151,7 @@ namespace Server.Engines.Plants
             AddItem(91, 164, 0x18E6);
             AddItem(161, 164, 0x18E6);
 
-            AddHtmlLocalized(132, 167, 42, 20, message, 0x00C207, false, false);
+            AddHtmlLocalized(132, 167, 42, 20, message, 0x00C207);
 
             break;
           }
@@ -160,7 +160,7 @@ namespace Server.Engines.Plants
             AddItem(96, 168, 0xC61);
             AddItem(162, 168, 0xC61);
 
-            AddHtmlLocalized(129, 167, 42, 20, message, 0x008200, false, false);
+            AddHtmlLocalized(129, 167, 42, 20, message, 0x008200);
 
             break;
           }
@@ -169,7 +169,7 @@ namespace Server.Engines.Plants
             AddItem(93, 162, 0x1A99);
             AddItem(162, 162, 0x1A99);
 
-            AddHtmlLocalized(129, 167, 42, 20, message, 0x0083E0, false, false);
+            AddHtmlLocalized(129, 167, 42, 20, message, 0x0083E0);
 
             break;
           }

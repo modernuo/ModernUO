@@ -105,7 +105,7 @@ namespace Server.Mobiles
 
     public override void OnDamagedBySpell(Mobile from)
     {
-      if (from != null && from.Alive && 0.4 > Utility.RandomDouble()) SendEBolt(from);
+      if (from?.Alive == true && 0.4 > Utility.RandomDouble()) SendEBolt(from);
 
       if (!FieldActive)
       {
@@ -134,7 +134,7 @@ namespace Server.Mobiles
         attacker.SendAsciiMessage("Your weapon cannot penetrate the creature's magical barrier");
       }
 
-      if (attacker != null && attacker.Alive && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble())
+      if (attacker?.Alive == true && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble())
         SendEBolt(attacker);
     }
 

@@ -99,12 +99,7 @@ namespace Server.RemoteAdmin
       {
         m_Stream.WriteAsciiNull(a.Username);
 
-        string pwToSend = a.PlainPassword;
-
-        if (pwToSend == null)
-          pwToSend = "(hidden)";
-
-        m_Stream.WriteAsciiNull(pwToSend);
+        m_Stream.WriteAsciiNull(a.PlainPassword ?? "(hidden)");
         m_Stream.Write((byte)a.AccessLevel);
         m_Stream.Write(a.Banned);
         unchecked

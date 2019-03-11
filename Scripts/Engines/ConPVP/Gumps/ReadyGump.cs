@@ -22,7 +22,7 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < parts.Count; ++i)
       {
-        Participant p = (Participant)parts[i];
+        Participant p = parts[i];
 
         height += 4;
 
@@ -44,19 +44,19 @@ namespace Server.Engines.ConPVP
 
       if (count == -1)
       {
-        AddHtml(35, 25, 190, 20, Center("Ready"), false, false);
+        AddHtml(35, 25, 190, 20, Center("Ready"));
       }
       else
       {
-        AddHtml(35, 25, 190, 20, Center("Starting"), false, false);
-        AddHtml(35, 25, 190, 20, "<DIV ALIGN=RIGHT>" + count, false, false);
+        AddHtml(35, 25, 190, 20, Center("Starting"));
+        AddHtml(35, 25, 190, 20, "<DIV ALIGN=RIGHT>" + count);
       }
 
       int y = 25 + 20;
 
       for (int i = 0; i < parts.Count; ++i)
       {
-        Participant p = (Participant)parts[i];
+        Participant p = parts[i];
 
         y += 4;
 
@@ -66,7 +66,7 @@ namespace Server.Engines.ConPVP
 
         if (p.Players.Length > 1)
         {
-          AddHtml(35 + 14, y, 176, 20, $"Participant #{i + 1}", false, false);
+          AddHtml(35 + 14, y, 176, 20, $"Participant #{i + 1}");
           y += 22;
           offset = 10;
         }
@@ -75,7 +75,7 @@ namespace Server.Engines.ConPVP
         {
           DuelPlayer pl = p.Players[j];
 
-          if (pl != null && pl.Ready)
+          if (pl?.Ready == true)
           {
             AddImage(35 + offset, y + 4, 0x939);
           }
@@ -87,7 +87,7 @@ namespace Server.Engines.ConPVP
 
           string name = pl == null ? "(Empty)" : pl.Mobile.Name;
 
-          AddHtml(35 + offset + 14, y, 166, 20, name, false, false);
+          AddHtml(35 + offset + 14, y, 166, 20, name);
 
           y += 22;
         }

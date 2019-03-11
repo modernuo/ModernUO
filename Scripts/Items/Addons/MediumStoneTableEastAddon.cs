@@ -3,12 +3,7 @@ namespace Server.Items
   public class MediumStoneTableEastAddon : BaseAddon
   {
     [Constructible]
-    public MediumStoneTableEastAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public MediumStoneTableEastAddon(int hue)
+    public MediumStoneTableEastAddon(int hue = 0)
     {
       AddComponent(new AddonComponent(0x1202), 0, 0, 0);
       AddComponent(new AddonComponent(0x1201), 0, 1, 0);

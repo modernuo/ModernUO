@@ -3,17 +3,11 @@ namespace Server.Items
   public class ScribeBag : Bag
   {
     [Constructible]
-    public ScribeBag() : this(1)
+    public ScribeBag(int amount = 5000)
     {
-      Movable = true;
       Hue = 0x105;
-    }
-
-    [Constructible]
-    public ScribeBag(int amount)
-    {
-      DropItem(new BagOfReagents(5000));
-      DropItem(new BlankScroll(500));
+      DropItem(new BagOfReagents(amount));
+      DropItem(new BlankScroll(amount));
     }
 
     public ScribeBag(Serial serial) : base(serial)

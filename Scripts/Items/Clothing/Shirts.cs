@@ -2,11 +2,7 @@ namespace Server.Items
 {
   public abstract class BaseShirt : BaseClothing
   {
-    public BaseShirt(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BaseShirt(int itemID, int hue) : base(itemID, Layer.Shirt, hue)
+    public BaseShirt(int itemID, int hue = 0) : base(itemID, Layer.Shirt, hue)
     {
     }
 
@@ -33,12 +29,7 @@ namespace Server.Items
   public class FancyShirt : BaseShirt
   {
     [Constructible]
-    public FancyShirt() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FancyShirt(int hue) : base(0x1EFD, hue)
+    public FancyShirt(int hue = 0) : base(0x1EFD, hue)
     {
       Weight = 2.0;
     }
@@ -66,12 +57,7 @@ namespace Server.Items
   public class Shirt : BaseShirt
   {
     [Constructible]
-    public Shirt() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Shirt(int hue) : base(0x1517, hue)
+    public Shirt(int hue = 0) : base(0x1517, hue)
     {
       Weight = 1.0;
     }
@@ -102,12 +88,7 @@ namespace Server.Items
   public class ClothNinjaJacket : BaseShirt
   {
     [Constructible]
-    public ClothNinjaJacket() : this(0)
-    {
-    }
-
-    [Constructible]
-    public ClothNinjaJacket(int hue) : base(0x2794, hue)
+    public ClothNinjaJacket(int hue = 0) : base(0x2794, hue)
     {
       Weight = 5.0;
       Layer = Layer.InnerTorso;
@@ -135,12 +116,7 @@ namespace Server.Items
   public class ElvenShirt : BaseShirt
   {
     [Constructible]
-    public ElvenShirt() : this(0)
-    {
-    }
-
-    [Constructible]
-    public ElvenShirt(int hue) : base(0x3175, hue)
+    public ElvenShirt(int hue = 0) : base(0x3175, hue)
     {
       Weight = 2.0;
     }
@@ -170,12 +146,7 @@ namespace Server.Items
   public class ElvenDarkShirt : BaseShirt
   {
     [Constructible]
-    public ElvenDarkShirt() : this(0)
-    {
-    }
-
-    [Constructible]
-    public ElvenDarkShirt(int hue) : base(0x3176, hue)
+    public ElvenDarkShirt(int hue = 0) : base(0x3176, hue)
     {
       Weight = 2.0;
     }

@@ -3,12 +3,7 @@ namespace Server.Items
   public class HorrificBeastScroll : SpellScroll
   {
     [Constructible]
-    public HorrificBeastScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public HorrificBeastScroll(int amount) : base(105, 0x2265, amount)
+    public HorrificBeastScroll(int amount = 1) : base(105, 0x2265, amount)
     {
     }
 

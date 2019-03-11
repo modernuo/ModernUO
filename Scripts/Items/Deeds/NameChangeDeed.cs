@@ -61,7 +61,7 @@ namespace Server.Items
       AddPage(0);
 
       AddBlackAlpha(10, 120, 250, 85);
-      AddHtml(10, 125, 250, 20, Color(Center("Name Change Deed"), 0xFFFFFF), false, false);
+      AddHtml(10, 125, 250, 20, Color(Center("Name Change Deed"), 0xFFFFFF));
 
       AddLabel(73, 15, 1152, "");
       AddLabel(20, 150, 0x480, "New Name:");
@@ -94,13 +94,13 @@ namespace Server.Items
 
     public void AddButtonLabeled(int x, int y, int buttonID, string text)
     {
-      AddButton(x, y - 1, 4005, 4007, buttonID, GumpButtonType.Reply, 0);
-      AddHtml(x + 35, y, 240, 20, Color(text, 0xFFFFFF), false, false);
+      AddButton(x, y - 1, 4005, 4007, buttonID);
+      AddHtml(x + 35, y, 240, 20, Color(text, 0xFFFFFF));
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_Sender == null || m_Sender.Deleted || info.ButtonID != 1 || m_Sender.RootParent != sender.Mobile)
+      if (m_Sender?.Deleted != false || info.ButtonID != 1 || m_Sender.RootParent != sender.Mobile)
         return;
 
       Mobile m = sender.Mobile;

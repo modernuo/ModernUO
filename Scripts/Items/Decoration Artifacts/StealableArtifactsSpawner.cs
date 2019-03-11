@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Commands;
 
@@ -200,7 +199,7 @@ namespace Server.Items
 
     public static bool Create()
     {
-      if (Instance != null && !Instance.Deleted)
+      if (Instance?.Deleted == false)
         return false;
 
       Instance = new StealableArtifactsSpawner();
@@ -243,7 +242,8 @@ namespace Server.Items
 
     public void CheckRespawn()
     {
-      foreach (StealableInstance si in m_Artifacts) si.CheckRespawn();
+      foreach (StealableInstance si in m_Artifacts)
+        si.CheckRespawn();
     }
 
     public override void Serialize(GenericWriter writer)
@@ -381,7 +381,8 @@ namespace Server.Items
         if (Item != null && (Item.Deleted || Item.Movable || Item.Parent != null))
           Item = null;
 
-        if (Item == null && DateTime.UtcNow >= NextRespawn) Item = Entry.CreateInstance();
+        if (Item == null && DateTime.UtcNow >= NextRespawn)
+          Item = Entry.CreateInstance();
       }
     }
   }

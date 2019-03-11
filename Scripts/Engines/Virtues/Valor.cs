@@ -47,7 +47,7 @@ namespace Server
 
     public static void Valor(Mobile from, object targ)
     {
-      if (!(targ is IdolOfTheChampion idol) || idol.Deleted || idol.Spawn == null || idol.Spawn.Deleted)
+      if (!(targ is IdolOfTheChampion idol) || idol.Deleted || idol.Spawn?.Deleted != false)
       {
         from.SendLocalizedMessage(1054035); // You must target a Champion Idol to challenge the Champion's spawn!
       }

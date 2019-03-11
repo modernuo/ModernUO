@@ -125,7 +125,7 @@ namespace Server.Menus.Questions
 
       AddBackground(0, 0, 270, 320, 2600);
 
-      AddHtmlLocalized(50, 20, 250, 35, 1011027, false, false); // Chose a town:
+      AddHtmlLocalized(50, 20, 250, 35, 1011027); // Chose a town:
 
       StuckMenuEntry[] entries = IsInSecondAgeArea(beheld) ? m_T2AEntries : m_Entries;
 
@@ -133,26 +133,18 @@ namespace Server.Menus.Questions
       {
         StuckMenuEntry entry = entries[i];
 
-        AddButton(50, 55 + 35 * i, 208, 209, i + 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(75, 55 + 35 * i, 335, 40, entry.Name, false, false);
+        AddButton(50, 55 + 35 * i, 208, 209, i + 1);
+        AddHtmlLocalized(75, 55 + 35 * i, 335, 40, entry.Name);
       }
 
-      AddButton(55, 263, 4005, 4007, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(90, 265, 200, 35, 1011012, false, false); // CANCEL
+      AddButton(55, 263, 4005, 4007, 0);
+      AddHtmlLocalized(90, 265, 200, 35, 1011012); // CANCEL
     }
 
     private static bool IsInSecondAgeArea(Mobile m)
     {
-      if (m.Map != Map.Trammel && m.Map != Map.Felucca)
-        return false;
-
-      if (m.X >= 5120 && m.Y >= 2304)
-        return true;
-
-      if (m.Region.IsPartOf("Terathan Keep"))
-        return true;
-
-      return false;
+      return (m.Map == Map.Trammel || m.Map == Map.Felucca) &&
+             (m.X >= 5120 && m.Y >= 2304 || m.Region.IsPartOf("Terathan Keep"));
     }
 
     public void BeginClose()

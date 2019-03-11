@@ -19,7 +19,7 @@ namespace Server.Spells.Seventh
       Reagent.SulfurousAsh
     );
 
-    public EnergyFieldSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public EnergyFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

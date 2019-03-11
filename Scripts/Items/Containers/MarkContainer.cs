@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Commands;
 
 namespace Server.Items
@@ -9,17 +10,7 @@ namespace Server.Items
     private InternalTimer m_RelockTimer;
 
     [Constructible]
-    public MarkContainer() : this(false)
-    {
-    }
-
-    [Constructible]
-    public MarkContainer(bool bone) : this(bone, false)
-    {
-    }
-
-    [Constructible]
-    public MarkContainer(bool bone, bool locked) : base(bone ? 0xECA : 0xE79)
+    public MarkContainer(bool bone = false, bool locked = false) : base(bone ? 0xECA : 0xE79)
     {
       Movable = false;
 
@@ -117,30 +108,26 @@ namespace Server.Items
     private static bool FindMarkContainer(Point3D p, Map map)
     {
       IPooledEnumerable<MarkContainer> eable = map.GetItemsInRange<MarkContainer>(p, 0);
-
-      foreach (Item item in eable)
-        if (item.Z == p.Z)
-        {
-          eable.Free();
-          return true;
-        }
-
+      bool found = eable.Any(item => item.Z == p.Z);
       eable.Free();
-      return false;
+
+      return found;
     }
 
     private static void CreateMalasPassage(int x, int y, int z, int xTarget, int yTarget, int zTarget, bool bone,
-      bool locked)
+bool locked)
     {
       Point3D location = new Point3D(x, y, z);
 
       if (FindMarkContainer(location, Map.Malas))
         return;
 
-      MarkContainer cont = new MarkContainer(bone, locked);
-      cont.TargetMap = Map.Malas;
-      cont.Target = new Point3D(xTarget, yTarget, zTarget);
-      cont.Description = "strange location";
+      MarkContainer cont = new MarkContainer(bone, locked)
+      {
+        TargetMap = Map.Malas,
+        Target = new Point3D(xTarget, yTarget, zTarget),
+        Description = "strange location"
+      };
 
       cont.MoveToWorld(location, Map.Malas);
     }
@@ -148,7 +135,6 @@ namespace Server.Items
     public void StopTimer()
     {
       m_RelockTimer?.Stop();
-
       m_RelockTimer = null;
     }
 

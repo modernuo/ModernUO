@@ -302,7 +302,7 @@ namespace Server.Engines.MLQuests
 
     public void ClaimRewards()
     {
-      if (Quest == null || Player == null || Player.Deleted || !ClaimReward || Removed)
+      if (Quest == null || Player?.Deleted != false || !ClaimReward || Removed)
         return;
 
       List<Item> rewards = new List<Item>();
@@ -400,11 +400,10 @@ namespace Server.Engines.MLQuests
 
     private void StopTimer()
     {
-      if (m_Timer != null)
-      {
-        m_Timer.Stop();
-        m_Timer = null;
-      }
+      if (m_Timer == null)
+        return;
+      m_Timer.Stop();
+      m_Timer = null;
     }
 
     public void OnQuesterDeleted()
@@ -442,10 +441,7 @@ namespace Server.Engines.MLQuests
 
       MLQuestSystem.WriteQuestRef(writer, Quest);
 
-      if (m_Quester == null || m_Quester.Deleted)
-        writer.Write(Serial.MinusOne);
-      else
-        writer.Write(m_Quester.Serial);
+      writer.Write(m_Quester?.Deleted != false ? Serial.MinusOne : m_Quester.Serial);
 
       writer.Write(ClaimReward);
       writer.Write(Objectives.Length);

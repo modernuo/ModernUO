@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Events.Halloween;
 using Server.Items;
 
@@ -41,18 +42,10 @@ namespace Server.Engines.Events
         Rectangle2D rect = m_PumpkinFields[i];
 
         int spawncount = rect.Height * rect.Width / 20;
-        int pumpkins = 0;
-
-        foreach (Item item in map.GetItemsInBounds(rect))
-          if (item is HalloweenPumpkin)
-            pumpkins++;
+        int pumpkins = map.GetItemsInBounds(rect).OfType<HalloweenPumpkin>().Count();
 
         if (spawncount > pumpkins)
-        {
-          Item item = new HalloweenPumpkin();
-
-          item.MoveToWorld(RandomPointIn(rect, map), map);
-        }
+          new HalloweenPumpkin().MoveToWorld(RandomPointIn(rect, map), map);
       }
     }
 

@@ -225,7 +225,7 @@ namespace Server.Mobiles
       {
         get
         {
-          if (m_Cache == null || m_Cache.Deleted)
+          if (m_Cache?.Deleted != false)
             m_Cache = new DisplayCache();
 
           return m_Cache;

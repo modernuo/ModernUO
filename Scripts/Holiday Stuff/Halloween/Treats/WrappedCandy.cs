@@ -2,13 +2,7 @@
 {
   public class WrappedCandy : CandyCane
   {
-    [Constructible]
-    public WrappedCandy()
-      : this(1)
-    {
-    }
-
-    public WrappedCandy(int amount)
+    public WrappedCandy(int amount = 1)
       : base(0x469e)
     {
       Stackable = true;

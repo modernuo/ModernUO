@@ -252,7 +252,7 @@ namespace Server.Network
 
             ThrottlePacketCallback throttler = handler.ThrottleCallback;
 
-            if (throttler != null && !throttler(ns))
+            if (throttler?.Invoke(ns) == false)
             {
               m_Throttled.Enqueue(ns);
               return;
@@ -260,7 +260,8 @@ namespace Server.Network
 
             PacketReceiveProfile prof = null;
 
-            if (Core.Profiling) prof = PacketReceiveProfile.Acquire(packetID);
+            if (Core.Profiling)
+              prof = PacketReceiveProfile.Acquire(packetID);
 
             prof?.Start();
 

@@ -185,20 +185,11 @@ namespace Server.Multis
       }
     }
 
-    public static ComponentVerification Verification
-    {
-      get
-      {
-        if (m_Verification == null)
-          m_Verification = new ComponentVerification();
-
-        return m_Verification;
-      }
-    }
+    public static ComponentVerification Verification => m_Verification ?? (m_Verification = new ComponentVerification());
 
     public bool IsFixture(Item item)
     {
-      return Fixtures != null && Fixtures.Contains(item);
+      return Fixtures.Contains(item);
     }
 
     public override int GetMaxUpdateRange()
@@ -303,7 +294,7 @@ namespace Server.Multis
       {
         Item item = Fixtures[i];
         item.Delete();
-        
+
         if (item is BaseDoor door)
           Doors.Remove(door);
       }
@@ -858,14 +849,7 @@ namespace Server.Multis
     {
       base.SendInfoTo(state, sendOplPacket);
 
-      DesignContext context = DesignContext.Find(state.Mobile);
-      DesignState stateToSend;
-
-      if (context != null && context.Foundation == this)
-        stateToSend = DesignState;
-      else
-        stateToSend = CurrentState;
-
+      DesignState stateToSend = DesignContext.Find(state.Mobile)?.Foundation == this ? DesignState : CurrentState;
       stateToSend.SendGeneralInfoTo(state);
     }
 
@@ -985,19 +969,13 @@ namespace Server.Multis
     public static void Designer_Sync(NetState state, IEntity e, EncodedReader pvSrc)
     {
       Mobile from = state.Mobile;
-      DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client requested state synchronization
+      /* Client requested state synchronization
          *  - Resend full house state
          */
 
-        DesignState design = context.Foundation.DesignState;
-
-        // Resend full house state
-        design.SendDetailedInfoTo(state);
-      }
+      // Resend full house state
+      DesignContext.Find(from)?.Foundation.DesignState.SendDetailedInfoTo(state);
     }
 
     public static void Designer_Clear(NetState state, IEntity e, EncodedReader pvSrc)
@@ -1005,9 +983,10 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client chose to clear the design
+      if (context == null)
+        return;
+
+      /* Client chose to clear the design
          *  - Restore empty foundation
          *     - Construct new design state from empty foundation
          *     - Assign constructed state to foundation
@@ -1015,19 +994,18 @@ namespace Server.Multis
          *  - Update client with new state
          */
 
-        // Restore empty foundation : Construct new design state from empty foundation
-        DesignState newDesign = new DesignState(context.Foundation, context.Foundation.GetEmptyFoundation());
+      // Restore empty foundation : Construct new design state from empty foundation
+      DesignState newDesign = new DesignState(context.Foundation, context.Foundation.GetEmptyFoundation());
 
-        // Restore empty foundation : Assign constructed state to foundation
-        context.Foundation.DesignState = newDesign;
+      // Restore empty foundation : Assign constructed state to foundation
+      context.Foundation.DesignState = newDesign;
 
-        // Update revision
-        newDesign.OnRevised();
+      // Update revision
+      newDesign.OnRevised();
 
-        // Update client with new state
-        context.Foundation.SendInfoTo(state);
-        newDesign.SendDetailedInfoTo(state);
-      }
+      // Update client with new state
+      context.Foundation.SendInfoTo(state);
+      newDesign.SendDetailedInfoTo(state);
     }
 
     public static void Designer_Restore(NetState state, IEntity e, EncodedReader pvSrc)
@@ -1035,9 +1013,10 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client chose to restore design to the last backup state
+      if (context == null)
+        return;
+
+      /* Client chose to restore design to the last backup state
          *  - Restore backup
          *     - Construct new design state from backup state
          *     - Assign constructed state to foundation
@@ -1045,19 +1024,18 @@ namespace Server.Multis
          *  - Update client with new state
          */
 
-        // Restore backup : Construct new design state from backup state
-        DesignState backupDesign = new DesignState(context.Foundation.BackupState);
+      // Restore backup : Construct new design state from backup state
+      DesignState backupDesign = new DesignState(context.Foundation.BackupState);
 
-        // Restore backup : Assign constructed state to foundation
-        context.Foundation.DesignState = backupDesign;
+      // Restore backup : Assign constructed state to foundation
+      context.Foundation.DesignState = backupDesign;
 
-        // Update revision;
-        backupDesign.OnRevised();
+      // Update revision;
+      backupDesign.OnRevised();
 
-        // Update client with new state
-        context.Foundation.SendInfoTo(state);
-        backupDesign.SendDetailedInfoTo(state);
-      }
+      // Update client with new state
+      context.Foundation.SendInfoTo(state);
+      backupDesign.SendDetailedInfoTo(state);
     }
 
     public static void Designer_Backup(NetState state, IEntity e, EncodedReader pvSrc)
@@ -1065,19 +1043,19 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client chose to backup design state
+      if (context == null)
+        return;
+
+      /* Client chose to backup design state
          *  - Construct a copy of the current design state
          *  - Assign constructed state to backup state field
          */
 
-        // Construct a copy of the current design state
-        DesignState copyState = new DesignState(context.Foundation.DesignState);
+      // Construct a copy of the current design state
+      DesignState copyState = new DesignState(context.Foundation.DesignState);
 
-        // Assign constructed state to backup state field
-        context.Foundation.BackupState = copyState;
-      }
+      // Assign constructed state to backup state field
+      context.Foundation.BackupState = copyState;
     }
 
     public static void Designer_Revert(NetState state, IEntity e, EncodedReader pvSrc)
@@ -1085,9 +1063,10 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client chose to revert design state to currently visible state
+      if (context == null)
+        return;
+
+      /* Client chose to revert design state to currently visible state
          *  - Revert design state
          *     - Construct a copy of the current visible state
          *     - Freeze fixtures in constructed state
@@ -1097,25 +1076,24 @@ namespace Server.Multis
          *  - Update client with new state
          */
 
-        // Revert design state : Construct a copy of the current visible state
-        DesignState copyState = new DesignState(context.Foundation.CurrentState);
+      // Revert design state : Construct a copy of the current visible state
+      DesignState copyState = new DesignState(context.Foundation.CurrentState);
 
-        // Revert design state : Freeze fixtures in constructed state
-        copyState.FreezeFixtures();
+      // Revert design state : Freeze fixtures in constructed state
+      copyState.FreezeFixtures();
 
-        // Revert design state : Assign constructed state to foundation
-        context.Foundation.DesignState = copyState;
+      // Revert design state : Assign constructed state to foundation
+      context.Foundation.DesignState = copyState;
 
-        // Revert design state : If a signpost is needed, add it
-        context.Foundation.CheckSignpost();
+      // Revert design state : If a signpost is needed, add it
+      context.Foundation.CheckSignpost();
 
-        // Update revision
-        copyState.OnRevised();
+      // Update revision
+      copyState.OnRevised();
 
-        // Update client with new state
-        context.Foundation.SendInfoTo(state);
-        copyState.SendDetailedInfoTo(state);
-      }
+      // Update client with new state
+      context.Foundation.SendInfoTo(state);
+      copyState.SendDetailedInfoTo(state);
     }
 
     public void EndConfirmCommit(Mobile from)
@@ -1246,17 +1224,6 @@ namespace Server.Multis
         level = 1;
 
       return (level - 1) * 20 + 7;
-
-      /*
-      switch( level )
-      {
-        default:
-        case 1: return 07;
-        case 2: return 27;
-        case 3: return 47;
-        case 4: return 67;
-      }
-       * */
     }
 
     public static int GetZLevel(int z, HouseFoundation house)
@@ -1269,21 +1236,10 @@ namespace Server.Multis
       return level;
     }
 
-    public static bool ValidPiece(int itemID)
-    {
-      return ValidPiece(itemID, false);
-    }
-
-    public static bool ValidPiece(int itemID, bool roof)
+    public static bool ValidPiece(int itemID, bool roof = false)
     {
       itemID &= TileData.MaxItemValue;
-
-      if (!roof && (TileData.ItemTable[itemID].Flags & TileFlag.Roof) != 0)
-        return false;
-      if (roof && (TileData.ItemTable[itemID].Flags & TileFlag.Roof) == 0)
-        return false;
-
-      return Verification.IsItemValid(itemID);
+      return roof != ((TileData.ItemTable[itemID].Flags & TileFlag.Roof) == 0) && Verification.IsItemValid(itemID);
     }
 
     public static bool IsStairBlock(int id)
@@ -1432,9 +1388,10 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client chose to delete a component
+      if (context == null)
+        return;
+
+      /* Client chose to delete a component
          *  - Read data detailing which component to delete
          *  - Verify component is deletable
          *  - Remove the component
@@ -1442,66 +1399,65 @@ namespace Server.Multis
          *  - Update revision
          */
 
-        // Read data detailing which component to delete
-        int itemID = pvSrc.ReadInt32();
-        int x = pvSrc.ReadInt32();
-        int y = pvSrc.ReadInt32();
-        int z = pvSrc.ReadInt32();
+      // Read data detailing which component to delete
+      int itemID = pvSrc.ReadInt32();
+      int x = pvSrc.ReadInt32();
+      int y = pvSrc.ReadInt32();
+      int z = pvSrc.ReadInt32();
 
-        // Verify component is deletable
-        DesignState design = context.Foundation.DesignState;
-        MultiComponentList mcl = design.Components;
+      // Verify component is deletable
+      DesignState design = context.Foundation.DesignState;
+      MultiComponentList mcl = design.Components;
 
-        int ax = x + mcl.Center.X;
-        int ay = y + mcl.Center.Y;
+      int ax = x + mcl.Center.X;
+      int ay = y + mcl.Center.Y;
 
-        if (z == 0 && ax >= 0 && ax < mcl.Width && ay >= 0 && ay < mcl.Height - 1)
-        {
-          /* Component is not deletable
+      if (z == 0 && ax >= 0 && ax < mcl.Width && ay >= 0 && ay < mcl.Height - 1)
+      {
+        /* Component is not deletable
            *  - Resend design state
            *  - Return without further processing
            */
 
-          design.SendDetailedInfoTo(state);
-          return;
-        }
-
-        bool fixState = false;
-
-        // Remove the component
-        if (AllowStairSectioning)
-        {
-          if (DeleteStairs(mcl, itemID, x, y, z))
-            fixState = true; // The client removes the entire set of stairs locally, resend state
-
-          mcl.Remove(itemID, x, y, z);
-        }
-        else
-        {
-          if (!DeleteStairs(mcl, itemID, x, y, z))
-            mcl.Remove(itemID, x, y, z);
-        }
-
-        // If needed, replace removed component with a dirt tile
-        if (ax >= 1 && ax < mcl.Width && ay >= 1 && ay < mcl.Height - 1)
-        {
-          StaticTile[] tiles = mcl.Tiles[ax][ay];
-
-          bool hasBaseFloor = false;
-
-          for (int i = 0; !hasBaseFloor && i < tiles.Length; ++i)
-            hasBaseFloor = tiles[i].Z == 7 && tiles[i].ID != 1;
-
-          if (!hasBaseFloor) mcl.Add(0x31F4, x, y, 7);
-        }
-
-        // Update revision
-        design.OnRevised();
-
-        // Resend design state
-        if (fixState)
-          design.SendDetailedInfoTo(state);
+        design.SendDetailedInfoTo(state);
+        return;
       }
+
+      bool fixState = false;
+
+      // Remove the component
+      if (AllowStairSectioning)
+      {
+        if (DeleteStairs(mcl, itemID, x, y, z))
+          fixState = true; // The client removes the entire set of stairs locally, resend state
+
+        mcl.Remove(itemID, x, y, z);
+      }
+      else
+      {
+        if (!DeleteStairs(mcl, itemID, x, y, z))
+          mcl.Remove(itemID, x, y, z);
+      }
+
+      // If needed, replace removed component with a dirt tile
+      if (ax >= 1 && ax < mcl.Width && ay >= 1 && ay < mcl.Height - 1)
+      {
+        StaticTile[] tiles = mcl.Tiles[ax][ay];
+
+        bool hasBaseFloor = false;
+
+        for (int i = 0; !hasBaseFloor && i < tiles.Length; ++i)
+          hasBaseFloor = tiles[i].Z == 7 && tiles[i].ID != 1;
+
+        if (!hasBaseFloor) mcl.Add(0x31F4, x, y, 7);
+      }
+
+      // Update revision
+      design.OnRevised();
+
+      // Resend design state
+      if (fixState)
+        design.SendDetailedInfoTo(state);
     }
 
     public static void Designer_Stairs(NetState state, IEntity e, EncodedReader pvSrc)
@@ -1509,9 +1465,10 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client chose to add stairs
+      if (context == null)
+        return;
+
+      /* Client chose to add stairs
          *  - Read data detailing stair type and location
          *  - Validate stair multi ID
          *  - Add the stairs
@@ -1520,46 +1477,45 @@ namespace Server.Multis
          *  - Update revision
          */
 
-        // Read data detailing stair type and location
-        int itemID = pvSrc.ReadInt32();
-        int x = pvSrc.ReadInt32();
-        int y = pvSrc.ReadInt32();
+      // Read data detailing stair type and location
+      int itemID = pvSrc.ReadInt32();
+      int x = pvSrc.ReadInt32();
+      int y = pvSrc.ReadInt32();
 
-        // Validate stair multi ID
-        DesignState design = context.Foundation.DesignState;
+      // Validate stair multi ID
+      DesignState design = context.Foundation.DesignState;
 
-        if (!Verification.IsMultiValid(itemID))
-        {
-          /* Specified multi ID is not a stair
+      if (!Verification.IsMultiValid(itemID))
+      {
+        /* Specified multi ID is not a stair
            *  - Resend design state
            *  - Return without further processing
            */
 
-          TraceValidity(state, itemID);
-          design.SendDetailedInfoTo(state);
-          return;
-        }
-
-        // Add the stairs
-        MultiComponentList mcl = design.Components;
-
-        // Add the stairs : Load data describing stair components
-        MultiComponentList stairs = MultiData.GetComponents(itemID);
-
-        // Add the stairs : Insert described components
-        int z = GetLevelZ(context.Level, context.Foundation);
-
-        for (int i = 0; i < stairs.List.Length; ++i)
-        {
-          MultiTileEntry entry = stairs.List[i];
-
-          if (entry.m_ItemID != 1)
-            mcl.Add(entry.m_ItemID, x + entry.m_OffsetX, y + entry.m_OffsetY, z + entry.m_OffsetZ);
-        }
-
-        // Update revision
-        design.OnRevised();
+        TraceValidity(state, itemID);
+        design.SendDetailedInfoTo(state);
+        return;
       }
+
+      // Add the stairs
+      MultiComponentList mcl = design.Components;
+
+      // Add the stairs : Load data describing stair components
+      MultiComponentList stairs = MultiData.GetComponents(itemID);
+
+      // Add the stairs : Insert described components
+      int z = GetLevelZ(context.Level, context.Foundation);
+
+      for (int i = 0; i < stairs.List.Length; ++i)
+      {
+        MultiTileEntry entry = stairs.List[i];
+
+        if (entry.m_ItemID != 1)
+          mcl.Add(entry.m_ItemID, x + entry.m_OffsetX, y + entry.m_OffsetY, z + entry.m_OffsetZ);
+      }
+
+      // Update revision
+      design.OnRevised();
     }
 
     private static void TraceValidity(NetState state, int itemID)
@@ -1582,41 +1538,41 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client chose to add a component
+      if (context == null)
+        return;
+
+      /* Client chose to add a component
          *  - Read data detailing component graphic and location
          *  - Add component
          *  - Update revision
          */
 
-        // Read data detailing component graphic and location
-        int itemID = pvSrc.ReadInt32();
-        int x = pvSrc.ReadInt32();
-        int y = pvSrc.ReadInt32();
+      // Read data detailing component graphic and location
+      int itemID = pvSrc.ReadInt32();
+      int x = pvSrc.ReadInt32();
+      int y = pvSrc.ReadInt32();
 
-        // Add component
-        DesignState design = context.Foundation.DesignState;
+      // Add component
+      DesignState design = context.Foundation.DesignState;
 
-        if (from.AccessLevel < AccessLevel.GameMaster && !ValidPiece(itemID))
-        {
-          TraceValidity(state, itemID);
-          design.SendDetailedInfoTo(state);
-          return;
-        }
-
-        MultiComponentList mcl = design.Components;
-
-        int z = GetLevelZ(context.Level, context.Foundation);
-
-        if (y + mcl.Center.Y == mcl.Height - 1)
-          z = 0; // Tiles placed on the far-south of the house are at 0 Z
-
-        mcl.Add(itemID, x, y, z);
-
-        // Update revision
-        design.OnRevised();
+      if (from.AccessLevel < AccessLevel.GameMaster && !ValidPiece(itemID))
+      {
+        TraceValidity(state, itemID);
+        design.SendDetailedInfoTo(state);
+        return;
       }
+
+      MultiComponentList mcl = design.Components;
+
+      int z = GetLevelZ(context.Level, context.Foundation);
+
+      if (y + mcl.Center.Y == mcl.Height - 1)
+        z = 0; // Tiles placed on the far-south of the house are at 0 Z
+
+      mcl.Add(itemID, x, y, z);
+
+      // Update revision
+      design.OnRevised();
     }
 
     public static void Designer_Close(NetState state, IEntity e, EncodedReader pvSrc)
@@ -1624,9 +1580,10 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client closed his house design window
+      if (context == null)
+        return;
+
+      /* Client closed his house design window
          *  - Remove design context
          *  - Notify the client that customization has ended
          *  - Refresh client with current visible design state
@@ -1635,31 +1592,30 @@ namespace Server.Multis
          *  - Restore relocated entities
          */
 
-        // Remove design context
-        DesignContext.Remove(from);
+      // Remove design context
+      DesignContext.Remove(from);
 
-        // Notify the client that customization has ended
-        from.Send(new EndHouseCustomization(context.Foundation));
+      // Notify the client that customization has ended
+      from.Send(new EndHouseCustomization(context.Foundation));
 
-        // Refresh client with current visible design state
-        context.Foundation.SendInfoTo(state);
-        context.Foundation.CurrentState.SendDetailedInfoTo(state);
+      // Refresh client with current visible design state
+      context.Foundation.SendInfoTo(state);
+      context.Foundation.CurrentState.SendDetailedInfoTo(state);
 
-        // If a signpost is needed, add it
-        context.Foundation.CheckSignpost();
+      // If a signpost is needed, add it
+      context.Foundation.CheckSignpost();
 
-        // Eject all from house
-        from.RevealingAction();
+      // Eject all from house
+      from.RevealingAction();
 
-        foreach (Item item in context.Foundation.GetItems())
-          item.Location = context.Foundation.BanLocation;
+      foreach (Item item in context.Foundation.GetItems())
+        item.Location = context.Foundation.BanLocation;
 
-        foreach (Mobile mobile in context.Foundation.GetMobiles())
-          mobile.Location = context.Foundation.BanLocation;
+      foreach (Mobile mobile in context.Foundation.GetMobiles())
+        mobile.Location = context.Foundation.BanLocation;
 
-        // Restore relocated entities
-        context.Foundation.RestoreRelocatedEntities();
-      }
+      // Restore relocated entities
+      context.Foundation.RestoreRelocatedEntities();
     }
 
     public static void Designer_Level(NetState state, IEntity e, EncodedReader pvSrc)
@@ -1667,9 +1623,10 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null)
-      {
-        /* Client is moving to a new floor level
+      if (context == null)
+        return;
+
+      /* Client is moving to a new floor level
          *  - Read data detailing the target level
          *  - Validate target level
          *  - Update design context with new level
@@ -1678,39 +1635,31 @@ namespace Server.Multis
          *
          */
 
-        // Read data detailing the target level
-        int newLevel = pvSrc.ReadInt32();
+      // Read data detailing the target level
+      int newLevel = pvSrc.ReadInt32();
 
-        // Validate target level
-        if (newLevel < 1 || newLevel > context.MaxLevels)
-          newLevel = 1;
+      // Validate target level
+      if (newLevel < 1 || newLevel > context.MaxLevels)
+        newLevel = 1;
 
-        // Update design context with new level
-        context.Level = newLevel;
+      // Update design context with new level
+      context.Level = newLevel;
 
-        // Teleport mobile to new level
-        from.Location = new Point3D(from.X, from.Y, context.Foundation.Z + GetLevelZ(newLevel, context.Foundation));
+      // Teleport mobile to new level
+      from.Location = new Point3D(from.X, from.Y, context.Foundation.Z + GetLevelZ(newLevel, context.Foundation));
 
-        // Update client
-        context.Foundation.SendInfoTo(state);
-      }
+      // Update client
+      context.Foundation.SendInfoTo(state);
     }
 
     public static void QueryDesignDetails(NetState state, PacketReader pvSrc)
     {
       Mobile from = state.Mobile;
-      DesignContext context = DesignContext.Find(from);
 
       if (World.FindItem(pvSrc.ReadUInt32()) is HouseFoundation foundation && from.Map == foundation.Map && from.InRange(foundation.GetWorldLocation(), 24) &&
           from.CanSee(foundation))
       {
-        DesignState stateToSend;
-
-        if (context != null && context.Foundation == foundation)
-          stateToSend = foundation.DesignState;
-        else
-          stateToSend = foundation.CurrentState;
-
+        DesignState stateToSend = DesignContext.Find(from)?.Foundation == foundation ? foundation.DesignState : foundation.CurrentState;
         stateToSend.SendDetailedInfoTo(state);
       }
     }
@@ -1720,46 +1669,46 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null && (Core.SE || from.AccessLevel >= AccessLevel.GameMaster))
+      if (context == null || !Core.SE && from.AccessLevel < AccessLevel.GameMaster)
+        return;
+
+      // Read data detailing component graphic and location
+      int itemID = pvSrc.ReadInt32();
+      int x = pvSrc.ReadInt32();
+      int y = pvSrc.ReadInt32();
+      int z = pvSrc.ReadInt32();
+
+      // Add component
+      DesignState design = context.Foundation.DesignState;
+
+      if (from.AccessLevel < AccessLevel.GameMaster && !ValidPiece(itemID, true))
       {
-        // Read data detailing component graphic and location
-        int itemID = pvSrc.ReadInt32();
-        int x = pvSrc.ReadInt32();
-        int y = pvSrc.ReadInt32();
-        int z = pvSrc.ReadInt32();
-
-        // Add component
-        DesignState design = context.Foundation.DesignState;
-
-        if (from.AccessLevel < AccessLevel.GameMaster && !ValidPiece(itemID, true))
-        {
-          TraceValidity(state, itemID);
-          design.SendDetailedInfoTo(state);
-          return;
-        }
-
-        MultiComponentList mcl = design.Components;
-
-        if (z < -3 || z > 12 || z % 3 != 0)
-          z = -3;
-        z += GetLevelZ(context.Level, context.Foundation);
-
-        MultiTileEntry[] list = mcl.List;
-        for (int i = 0; i < list.Length; i++)
-        {
-          MultiTileEntry mte = list[i];
-
-          if (mte.m_OffsetX == x && mte.m_OffsetY == y &&
-              GetZLevel(mte.m_OffsetZ, context.Foundation) == context.Level &&
-              (TileData.ItemTable[mte.m_ItemID & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0)
-            mcl.Remove(mte.m_ItemID, x, y, mte.m_OffsetZ);
-        }
-
-        mcl.Add(itemID, x, y, z);
-
-        // Update revision
-        design.OnRevised();
+        TraceValidity(state, itemID);
+        design.SendDetailedInfoTo(state);
+        return;
       }
+
+      MultiComponentList mcl = design.Components;
+
+      if (z < -3 || z > 12 || z % 3 != 0)
+        z = -3;
+      z += GetLevelZ(context.Level, context.Foundation);
+
+      MultiTileEntry[] list = mcl.List;
+      for (int i = 0; i < list.Length; i++)
+      {
+        MultiTileEntry mte = list[i];
+
+        if (mte.m_OffsetX == x && mte.m_OffsetY == y &&
+            GetZLevel(mte.m_OffsetZ, context.Foundation) == context.Level &&
+            (TileData.ItemTable[mte.m_ItemID & TileData.MaxItemValue].Flags & TileFlag.Roof) != 0)
+          mcl.Remove(mte.m_ItemID, x, y, mte.m_OffsetZ);
+      }
+
+      mcl.Add(itemID, x, y, z);
+
+      // Update revision
+      design.OnRevised();
     }
 
     public static void Designer_RoofDelete(NetState state, IEntity e, EncodedReader pvSrc)
@@ -1767,29 +1716,29 @@ namespace Server.Multis
       Mobile from = state.Mobile;
       DesignContext context = DesignContext.Find(from);
 
-      if (context != null
-      ) // No need to check for Core.SE if trying to remove something that shouldn't be able to be placed anyways
+      // No need to check for Core.SE if trying to remove something that shouldn't be able to be placed anyways
+      if (context == null)
+        return;
+
+      // Read data detailing which component to delete
+      int itemID = pvSrc.ReadInt32();
+      int x = pvSrc.ReadInt32();
+      int y = pvSrc.ReadInt32();
+      int z = pvSrc.ReadInt32();
+
+      // Verify component is deletable
+      DesignState design = context.Foundation.DesignState;
+      MultiComponentList mcl = design.Components;
+
+      if ((TileData.ItemTable[itemID & TileData.MaxItemValue].Flags & TileFlag.Roof) == 0)
       {
-        // Read data detailing which component to delete
-        int itemID = pvSrc.ReadInt32();
-        int x = pvSrc.ReadInt32();
-        int y = pvSrc.ReadInt32();
-        int z = pvSrc.ReadInt32();
-
-        // Verify component is deletable
-        DesignState design = context.Foundation.DesignState;
-        MultiComponentList mcl = design.Components;
-
-        if ((TileData.ItemTable[itemID & TileData.MaxItemValue].Flags & TileFlag.Roof) == 0)
-        {
-          design.SendDetailedInfoTo(state);
-          return;
-        }
-
-        mcl.Remove(itemID, x, y, z);
-
-        design.OnRevised();
+        design.SendDetailedInfoTo(state);
+        return;
       }
+
+      mcl.Remove(itemID, x, y, z);
+
+      design.OnRevised();
     }
   }
 
@@ -2022,10 +1971,8 @@ namespace Server.Multis
       // TOL doors
       if (itemID >= 0x9AD7 && itemID < 0x9AE7)
         return true;
-      if (itemID >= 0x9B3C && itemID < 0x9B4C)
-        return true;
 
-      return false;
+      return itemID >= 0x9B3C && itemID < 0x9B4C;
     }
   }
 
@@ -2048,35 +1995,35 @@ namespace Server.Multis
 
       AddAlphaRegion(10, 10, 300, 300);
 
-      AddHtmlLocalized(10, 10, 300, 20, 1062060, 32736, false, false); // <CENTER>COMMIT DESIGN</CENTER>
+      AddHtmlLocalized(10, 10, 300, 20, 1062060, 32736); // <CENTER>COMMIT DESIGN</CENTER>
 
       AddHtmlLocalized(10, 40, 300, 140, newPrice - oldPrice <= bankBalance ? 1061898 : 1061903, 1023, false, true);
 
-      AddHtmlLocalized(10, 190, 150, 20, 1061902, 32736, false, false); // Bank Balance:
+      AddHtmlLocalized(10, 190, 150, 20, 1061902, 32736); // Bank Balance:
       AddLabel(170, 190, 55, bankBalance.ToString());
 
-      AddHtmlLocalized(10, 215, 150, 20, 1061899, 1023, false, false); // Old Value:
+      AddHtmlLocalized(10, 215, 150, 20, 1061899, 1023); // Old Value:
       AddLabel(170, 215, 90, oldPrice.ToString());
 
-      AddHtmlLocalized(10, 235, 150, 20, 1061900, 1023, false, false); // Cost To Commit:
+      AddHtmlLocalized(10, 235, 150, 20, 1061900, 1023); // Cost To Commit:
       AddLabel(170, 235, 90, newPrice.ToString());
 
       if (newPrice - oldPrice < 0)
       {
-        AddHtmlLocalized(10, 260, 150, 20, 1062059, 992, false, false); // Your Refund:
+        AddHtmlLocalized(10, 260, 150, 20, 1062059, 992); // Your Refund:
         AddLabel(170, 260, 70, (oldPrice - newPrice).ToString());
       }
       else
       {
-        AddHtmlLocalized(10, 260, 150, 20, 1061901, 31744, false, false); // Your Cost:
+        AddHtmlLocalized(10, 260, 150, 20, 1061901, 31744); // Your Cost:
         AddLabel(170, 260, 40, (newPrice - oldPrice).ToString());
       }
 
-      AddButton(10, 290, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 290, 55, 20, 1011036, 32767, false, false); // OKAY
+      AddButton(10, 290, 4005, 4007, 1);
+      AddHtmlLocalized(45, 290, 55, 20, 1011036, 32767); // OKAY
 
-      AddButton(170, 290, 4005, 4007, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(195, 290, 55, 20, 1011012, 32767, false, false); // CANCEL
+      AddButton(170, 290, 4005, 4007, 0);
+      AddHtmlLocalized(195, 290, 55, 20, 1011012, 32767); // CANCEL
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -2114,13 +2061,12 @@ namespace Server.Multis
 
     public static bool Check(Mobile m)
     {
-      if (Find(m) != null)
-      {
-        m.SendLocalizedMessage(1062206); // You cannot do that while customizing a house.
-        return false;
-      }
+      if (Find(m) == null)
+        return true;
 
-      return true;
+      m.SendLocalizedMessage(1062206); // You cannot do that while customizing a house.
+      return false;
+
     }
 
     public static void Add(Mobile from, HouseFoundation foundation)
@@ -2523,7 +2469,7 @@ namespace Server.Multis
 
       m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
     }
-    
+
     public void Write(uint value)
     {
       m_PrimBuffer[0] = (byte)(value >> 24);
@@ -2617,6 +2563,7 @@ namespace Server.Multis
             }
             catch
             {
+              // ignored
             }
           }
           finally

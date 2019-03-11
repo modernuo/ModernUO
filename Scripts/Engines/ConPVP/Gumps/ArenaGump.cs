@@ -105,17 +105,12 @@ namespace Server.Engines.ConPVP
       AddColumnHeader(325, "Participants");
       AddColumnHeader(40, "Obs");
 
-      AddButton(499 + 40 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1, GumpButtonType.Reply, 0);
-      AddButton(499 + 40 - 12 - 63, height - 12 - 24, 241, 242, 2, GumpButtonType.Reply, 0);
+      AddButton(499 + 40 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
+      AddButton(499 + 40 - 12 - 63, height - 12 - 24, 241, 242, 2);
 
       for (int i = 0; i < list.Count; ++i)
       {
         Arena ar = list[i];
-
-        string name = ar.Name;
-
-        if (name == null)
-          name = "(no name)";
 
         int x = 12;
         int y = 32 + i * 31;
@@ -125,7 +120,7 @@ namespace Server.Engines.ConPVP
         AddRadio(x + 3, y + 1, 9727, 9730, false, i);
         x += 35;
 
-        AddBorderedText(x + 5, y + 5, 115 - 5, name, color, 0);
+        AddBorderedText(x + 5, y + 5, 115 - 5, ar.Name ?? "(no name)", color, 0);
         x += 115;
 
         StringBuilder sb = new StringBuilder();
@@ -271,9 +266,9 @@ namespace Server.Engines.ConPVP
     private void AddColoredText(int x, int y, int width, string text, int color)
     {
       if (color == 0)
-        AddHtml(x, y, width, 20, text, false, false);
+        AddHtml(x, y, width, 20, text);
       else
-        AddHtml(x, y, width, 20, Color(text, color), false, false);
+        AddHtml(x, y, width, 20, Color(text, color));
     }
 
     private void AddColumnHeader(int width, string name)

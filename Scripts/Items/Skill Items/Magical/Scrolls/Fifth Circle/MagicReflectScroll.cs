@@ -3,12 +3,7 @@ namespace Server.Items
   public class MagicReflectScroll : SpellScroll
   {
     [Constructible]
-    public MagicReflectScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public MagicReflectScroll(int amount) : base(35, 0x1F50, amount)
+    public MagicReflectScroll(int amount = 1) : base(35, 0x1F50, amount)
     {
     }
 

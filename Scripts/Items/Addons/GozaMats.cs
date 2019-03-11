@@ -3,12 +3,7 @@ namespace Server.Items
   public class GozaMatEastAddon : BaseAddon
   {
     [Constructible]
-    public GozaMatEastAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public GozaMatEastAddon(int hue)
+    public GozaMatEastAddon(int hue = 0)
     {
       AddComponent(new LocalizedAddonComponent(0x28a4, 1030688), 1, 0, 0);
       AddComponent(new LocalizedAddonComponent(0x28a5, 1030688), 0, 0, 0);
@@ -70,12 +65,7 @@ namespace Server.Items
   public class GozaMatSouthAddon : BaseAddon
   {
     [Constructible]
-    public GozaMatSouthAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public GozaMatSouthAddon(int hue)
+    public GozaMatSouthAddon(int hue = 0)
     {
       AddComponent(new LocalizedAddonComponent(0x28a6, 1030688), 0, 1, 0);
       AddComponent(new LocalizedAddonComponent(0x28a7, 1030688), 0, 0, 0);
@@ -137,12 +127,7 @@ namespace Server.Items
   public class SquareGozaMatEastAddon : BaseAddon
   {
     [Constructible]
-    public SquareGozaMatEastAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public SquareGozaMatEastAddon(int hue)
+    public SquareGozaMatEastAddon(int hue = 0)
     {
       AddComponent(new LocalizedAddonComponent(0x28a8, 1030688), 0, 0, 0);
       Hue = hue;
@@ -204,12 +189,7 @@ namespace Server.Items
   public class SquareGozaMatSouthAddon : BaseAddon
   {
     [Constructible]
-    public SquareGozaMatSouthAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public SquareGozaMatSouthAddon(int hue)
+    public SquareGozaMatSouthAddon(int hue = 0)
     {
       AddComponent(new LocalizedAddonComponent(0x28a9, 1030688), 0, 0, 0);
       Hue = hue;
@@ -270,12 +250,7 @@ namespace Server.Items
   public class BrocadeGozaMatEastAddon : BaseAddon
   {
     [Constructible]
-    public BrocadeGozaMatEastAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public BrocadeGozaMatEastAddon(int hue)
+    public BrocadeGozaMatEastAddon(int hue = 0)
     {
       AddComponent(new LocalizedAddonComponent(0x28AB, 1030688), 0, 0, 0);
       AddComponent(new LocalizedAddonComponent(0x28AA, 1030688), 1, 0, 0);
@@ -337,12 +312,7 @@ namespace Server.Items
   public class BrocadeGozaMatSouthAddon : BaseAddon
   {
     [Constructible]
-    public BrocadeGozaMatSouthAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public BrocadeGozaMatSouthAddon(int hue)
+    public BrocadeGozaMatSouthAddon(int hue = 0)
     {
       AddComponent(new LocalizedAddonComponent(0x28AD, 1030688), 0, 0, 0);
       AddComponent(new LocalizedAddonComponent(0x28AC, 1030688), 0, 1, 0);
@@ -404,12 +374,7 @@ namespace Server.Items
   public class BrocadeSquareGozaMatEastAddon : BaseAddon
   {
     [Constructible]
-    public BrocadeSquareGozaMatEastAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public BrocadeSquareGozaMatEastAddon(int hue)
+    public BrocadeSquareGozaMatEastAddon(int hue = 0)
     {
       AddComponent(new LocalizedAddonComponent(0x28AE, 1030688), 0, 0, 0);
       Hue = hue;
@@ -470,12 +435,7 @@ namespace Server.Items
   public class BrocadeSquareGozaMatSouthAddon : BaseAddon
   {
     [Constructible]
-    public BrocadeSquareGozaMatSouthAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public BrocadeSquareGozaMatSouthAddon(int hue)
+    public BrocadeSquareGozaMatSouthAddon(int hue = 0)
     {
       AddComponent(new LocalizedAddonComponent(0x28AF, 1030688), 0, 0, 0);
       Hue = hue;

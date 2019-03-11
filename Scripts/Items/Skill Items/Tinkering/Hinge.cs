@@ -4,12 +4,7 @@ namespace Server.Items
   public class Hinge : Item
   {
     [Constructible]
-    public Hinge() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Hinge(int amount) : base(0x1055)
+    public Hinge(int amount = 1) : base(0x1055)
     {
       Stackable = true;
       Amount = amount;

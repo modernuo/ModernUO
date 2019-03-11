@@ -49,7 +49,7 @@ namespace Server.Engines.ConPVP
 
     public DuelContext Context{ get; set; }
 
-    public bool InProgress => Context != null && Context.Registered;
+    public bool InProgress => Context?.Registered == true;
 
     public void Start(Arena arena, Tournament tourney)
     {

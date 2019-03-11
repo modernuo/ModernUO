@@ -198,8 +198,8 @@ namespace Server.Engines.ConPVP
       AddColumnHeader(35, null);
       AddColumnHeader(115, "Arena");
 
-      AddButton(499 + 40 - 365 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1, GumpButtonType.Reply, 0);
-      AddButton(499 + 40 - 365 - 12 - 63, height - 12 - 24, 241, 242, 2, GumpButtonType.Reply, 0);
+      AddButton(499 + 40 - 365 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
+      AddButton(499 + 40 - 365 - 12 - 63, height - 12 - 24, 241, 242, 2);
 
       for (int i = 0; i < arenas.Count; ++i)
       {
@@ -258,9 +258,9 @@ namespace Server.Engines.ConPVP
     private void AddColoredText(int x, int y, int width, string text, int color)
     {
       if (color == 0)
-        AddHtml(x, y, width, 20, text, false, false);
+        AddHtml(x, y, width, 20, text);
       else
-        AddHtml(x, y, width, 20, Color(text, color), false, false);
+        AddHtml(x, y, width, 20, Color(text, color));
     }
 
     private void AddColumnHeader(int width, string name)

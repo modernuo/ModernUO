@@ -26,7 +26,7 @@ namespace Server.Items
     {
       Mobile mob = state.Mobile;
 
-      if (mob != null && mob.AccessLevel >= AccessLevel.GameMaster) return new GMItemPacket(this);
+      if (mob?.AccessLevel >= AccessLevel.GameMaster) return new GMItemPacket(this);
 
       return base.GetWorldPacketFor(state);
     }
@@ -59,7 +59,7 @@ namespace Server.Items
         // +2 - Hue
         // +1 - Flags
 
-        uint serial = (uint)item.Serial.Value;
+        uint serial = item.Serial.Value;
         int itemID = 0x36FF;
         int amount = item.Amount;
         Point3D loc = item.Location;

@@ -115,12 +115,12 @@ namespace Server.Items
               {
                 Item toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
-                if (toDisarm == null || !toDisarm.Movable)
+                if (toDisarm?.Movable == false)
                   toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
 
                 Container pack = defender.Backpack;
 
-                if (pack == null || toDisarm == null || !toDisarm.Movable)
+                if (pack == null || toDisarm?.Movable == false)
                 {
                   attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
                 }
@@ -213,10 +213,7 @@ namespace Server.Items
     {
       Item item = m.FindItemOnLayer(Layer.OneHanded);
 
-      if (item != null && !(item is Spellbook))
-        return false;
-
-      return m.FindItemOnLayer(Layer.TwoHanded) == null;
+      return (item == null || item is Spellbook) && m.FindItemOnLayer(Layer.TwoHanded) == null;
     }
 
     private static void EventSink_DisarmRequest(DisarmRequestEventArgs e)

@@ -3,12 +3,7 @@ namespace Server.Items
   public class Diamond : Item
   {
     [Constructible]
-    public Diamond() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Diamond(int amount) : base(0xF26)
+    public Diamond(int amount = 1) : base(0xF26)
     {
       Stackable = true;
       Amount = amount;

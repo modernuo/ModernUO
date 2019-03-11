@@ -11,26 +11,22 @@ namespace Server.Items
   [DispellableField]
   public class Moongate : Item
   {
+
     [Constructible]
-    public Moongate() : this(Point3D.Zero, null)
+    public Moongate(bool dispellable = true) :
+      this(Point3D.Zero, null, dispellable)
     {
-      Dispellable = true;
     }
 
     [Constructible]
-    public Moongate(bool bDispellable) : this(Point3D.Zero, null)
-    {
-      Dispellable = bDispellable;
-    }
-
-    [Constructible]
-    public Moongate(Point3D target, Map targetMap) : base(0xF6C)
+    public Moongate(Point3D target, Map targetMap = null, bool dispellable = true) : base(0xF6C)
     {
       Movable = false;
       Light = LightType.Circle300;
 
       Target = target;
       TargetMap = targetMap;
+      Dispellable = dispellable;
     }
 
     public Moongate(Serial serial) : base(serial)
@@ -202,12 +198,7 @@ namespace Server.Items
 
     public static bool IsInTown(Point3D p, Map map)
     {
-      if (map == null)
-        return false;
-
-      GuardedRegion reg = Region.Find(p, map).GetRegion<GuardedRegion>();
-
-      return reg != null && !reg.IsDisabled();
+      return map != null && Region.Find(p, map).GetRegion<GuardedRegion>()?.IsDisabled() == false;
     }
 
     private class DelayTimer : Timer
@@ -233,12 +224,12 @@ namespace Server.Items
   public class ConfirmationMoongate : Moongate
   {
     [Constructible]
-    public ConfirmationMoongate() : this(Point3D.Zero, null)
+    public ConfirmationMoongate() : this(Point3D.Zero)
     {
     }
 
     [Constructible]
-    public ConfirmationMoongate(Point3D target, Map targetMap) : base(target, targetMap)
+    public ConfirmationMoongate(Point3D target, Map targetMap = null) : base(target, targetMap)
     {
     }
 
@@ -354,7 +345,7 @@ namespace Server.Items
         AddImageTiled(10, 10, 400, 20, 2624);
         AddAlphaRegion(10, 10, 400, 20);
 
-        AddHtmlLocalized(10, 10, 400, 20, 1062051, 30720, false, false); // Gate Warning
+        AddHtmlLocalized(10, 10, 400, 20, 1062051, 30720); // Gate Warning
 
         AddImageTiled(10, 40, 400, 200, 2624);
         AddAlphaRegion(10, 40, 400, 200);
@@ -369,11 +360,11 @@ namespace Server.Items
         AddImageTiled(10, 250, 400, 20, 2624);
         AddAlphaRegion(10, 250, 400, 20);
 
-        AddButton(10, 250, 4005, 4007, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(40, 250, 170, 20, 1011036, 32767, false, false); // OKAY
+        AddButton(10, 250, 4005, 4007, 1);
+        AddHtmlLocalized(40, 250, 170, 20, 1011036, 32767); // OKAY
 
-        AddButton(210, 250, 4005, 4007, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(240, 250, 170, 20, 1011012, 32767, false, false); // CANCEL
+        AddButton(210, 250, 4005, 4007, 0);
+        AddHtmlLocalized(240, 250, 170, 20, 1011012, 32767); // CANCEL
       }
       else
       {
@@ -383,14 +374,13 @@ namespace Server.Items
         AddBackground(10, 10, 400, 380, 3000);
 
         AddHtml(20, 40, 380, 60,
-          @"Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here", false,
-          false);
+          @"Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here");
 
-        AddHtmlLocalized(55, 110, 290, 20, 1011012, false, false); // CANCEL
-        AddButton(20, 110, 4005, 4007, 0, GumpButtonType.Reply, 0);
+        AddHtmlLocalized(55, 110, 290, 20, 1011012); // CANCEL
+        AddButton(20, 110, 4005, 4007, 0);
 
-        AddHtmlLocalized(55, 140, 290, 40, 1011011, false, false); // CONTINUE
-        AddButton(20, 140, 4005, 4007, 1, GumpButtonType.Reply, 0);
+        AddHtmlLocalized(55, 140, 290, 40, 1011011); // CONTINUE
+        AddButton(20, 140, 4005, 4007, 1);
       }
     }
 

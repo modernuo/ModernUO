@@ -47,7 +47,7 @@ namespace Server.Items
     {
       Container pack = from.Backpack;
 
-      if (pack != null && pack.ConsumeTotal(typeof(Gold), 250))
+      if (pack?.ConsumeTotal(typeof(Gold), 250) == true)
       {
         m_GamblePot += 150;
         InvalidateProperties();
@@ -74,7 +74,7 @@ namespace Server.Items
         else if (roll <= 20) // Chance for a regbag
         {
           from.SendMessage(0x35, "You win a bag of reagents!");
-          from.AddToBackpack(new BagOfReagents(50));
+          from.AddToBackpack(new BagOfReagents());
         }
         else if (roll <= 40) // Chance for gold
         {

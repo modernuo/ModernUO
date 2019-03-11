@@ -4,11 +4,7 @@ namespace Server.Items
   {
     private CraftResource m_Resource;
 
-    public BaseScales(CraftResource resource) : this(resource, 1)
-    {
-    }
-
-    public BaseScales(CraftResource resource, int amount) : base(0x26B4)
+    public BaseScales(CraftResource resource, int amount = 1) : base(0x26B4)
     {
       Stackable = true;
       Amount = amount;
@@ -68,12 +64,7 @@ namespace Server.Items
   public class RedScales : BaseScales
   {
     [Constructible]
-    public RedScales() : this(1)
-    {
-    }
-
-    [Constructible]
-    public RedScales(int amount) : base(CraftResource.RedScales, amount)
+    public RedScales(int amount = 1) : base(CraftResource.RedScales, amount)
     {
     }
 
@@ -99,12 +90,7 @@ namespace Server.Items
   public class YellowScales : BaseScales
   {
     [Constructible]
-    public YellowScales() : this(1)
-    {
-    }
-
-    [Constructible]
-    public YellowScales(int amount) : base(CraftResource.YellowScales, amount)
+    public YellowScales(int amount = 1) : base(CraftResource.YellowScales, amount)
     {
     }
 
@@ -130,12 +116,7 @@ namespace Server.Items
   public class BlackScales : BaseScales
   {
     [Constructible]
-    public BlackScales() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BlackScales(int amount) : base(CraftResource.BlackScales, amount)
+    public BlackScales(int amount = 1) : base(CraftResource.BlackScales, amount)
     {
     }
 
@@ -161,12 +142,7 @@ namespace Server.Items
   public class GreenScales : BaseScales
   {
     [Constructible]
-    public GreenScales() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GreenScales(int amount) : base(CraftResource.GreenScales, amount)
+    public GreenScales(int amount = 1) : base(CraftResource.GreenScales, amount)
     {
     }
 
@@ -192,12 +168,7 @@ namespace Server.Items
   public class WhiteScales : BaseScales
   {
     [Constructible]
-    public WhiteScales() : this(1)
-    {
-    }
-
-    [Constructible]
-    public WhiteScales(int amount) : base(CraftResource.WhiteScales, amount)
+    public WhiteScales(int amount = 1) : base(CraftResource.WhiteScales, amount)
     {
     }
 
@@ -223,12 +194,7 @@ namespace Server.Items
   public class BlueScales : BaseScales
   {
     [Constructible]
-    public BlueScales() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BlueScales(int amount) : base(CraftResource.BlueScales, amount)
+    public BlueScales(int amount = 1) : base(CraftResource.BlueScales, amount)
     {
     }
 

@@ -15,7 +15,7 @@ namespace Server.Spells.Fifth
       Reagent.SulfurousAsh
     );
 
-    public MindBlastSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MindBlastSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
       if (Core.AOS)
         m_Info.LeftHandEffect = m_Info.RightHandEffect = 9002;

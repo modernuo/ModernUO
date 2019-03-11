@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Targeting;
 
 namespace Server.Spells.Seventh
@@ -16,7 +17,7 @@ namespace Server.Spells.Seventh
       Reagent.SulfurousAsh
     );
 
-    public ChainLightningSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ChainLightningSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -52,32 +53,25 @@ namespace Server.Spells.Seventh
         {
           IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), 2);
 
-          foreach (Mobile m in eable)
+          targets.AddRange(eable.Where(m =>
           {
-            if (Core.AOS && m == Caster)
-              continue;
+            if (Core.AOS && (m == Caster || !Caster.InLOS(m)) || !SpellHelper.ValidIndirectTarget(Caster, m) ||
+                !Caster.CanBeHarmful(m, false))
+              return false;
 
-            if (SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false))
-            {
-              if (Core.AOS && !Caster.InLOS(m))
-                continue;
+            if (m.Player)
+              playerVsPlayer = true;
 
-              targets.Add(m);
-
-              if (m.Player)
-                playerVsPlayer = true;
-            }
-          }
+            return true;
+          }).ToList());
 
           eable.Free();
         }
 
         double damage;
 
-        if (Core.AOS)
-          damage = GetNewAosDamage(51, 1, 5, playerVsPlayer);
-        else
-          damage = Utility.Random(27, 22);
+        damage = Core.AOS ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
+          : Utility.Random(27, 22);
 
         if (targets.Count > 0)
         {

@@ -4,16 +4,7 @@ namespace Server.Factions
 {
   public class FactionGasTrap : BaseFactionTrap
   {
-    [Constructible]
-    public FactionGasTrap() : this(null)
-    {
-    }
-
-    public FactionGasTrap(Faction f) : this(f, null)
-    {
-    }
-
-    public FactionGasTrap(Faction f, Mobile m) : base(f, m, 0x113C)
+    public FactionGasTrap(Faction f = null, Mobile m = null) : base(f, m, 0x113C)
     {
     }
 

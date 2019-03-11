@@ -6,13 +6,7 @@ namespace Server.Items
     private CraftResource m_Resource;
 
     [Constructible]
-    public Board()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public Board(int amount)
+    public Board(int amount = 1)
       : this(CraftResource.RegularWood, amount)
     {
     }
@@ -23,12 +17,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public Board(CraftResource resource) : this(resource, 1)
-    {
-    }
-
-    [Constructible]
-    public Board(CraftResource resource, int amount)
+    public Board(CraftResource resource, int amount = 1)
       : base(0x1BD7)
     {
       Stackable = true;
@@ -122,13 +111,7 @@ namespace Server.Items
   public class HeartwoodBoard : Board
   {
     [Constructible]
-    public HeartwoodBoard()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public HeartwoodBoard(int amount)
+    public HeartwoodBoard(int amount = 1)
       : base(CraftResource.Heartwood, amount)
     {
     }
@@ -156,13 +139,7 @@ namespace Server.Items
   public class BloodwoodBoard : Board
   {
     [Constructible]
-    public BloodwoodBoard()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public BloodwoodBoard(int amount)
+    public BloodwoodBoard(int amount = 1)
       : base(CraftResource.Bloodwood, amount)
     {
     }
@@ -190,13 +167,7 @@ namespace Server.Items
   public class FrostwoodBoard : Board
   {
     [Constructible]
-    public FrostwoodBoard()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public FrostwoodBoard(int amount)
+    public FrostwoodBoard(int amount = 1)
       : base(CraftResource.Frostwood, amount)
     {
     }
@@ -224,13 +195,7 @@ namespace Server.Items
   public class OakBoard : Board
   {
     [Constructible]
-    public OakBoard()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public OakBoard(int amount)
+    public OakBoard(int amount = 1)
       : base(CraftResource.OakWood, amount)
     {
     }
@@ -258,13 +223,7 @@ namespace Server.Items
   public class AshBoard : Board
   {
     [Constructible]
-    public AshBoard()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public AshBoard(int amount)
+    public AshBoard(int amount = 1)
       : base(CraftResource.AshWood, amount)
     {
     }
@@ -292,13 +251,7 @@ namespace Server.Items
   public class YewBoard : Board
   {
     [Constructible]
-    public YewBoard()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public YewBoard(int amount)
+    public YewBoard(int amount = 1)
       : base(CraftResource.YewWood, amount)
     {
     }

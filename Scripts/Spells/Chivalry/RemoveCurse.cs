@@ -15,7 +15,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public RemoveCurseSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public RemoveCurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -77,15 +77,15 @@ namespace Server.Spells.Chivalry
             0x100);
 
           StatMod mod = m.GetStatMod("[Magic] Str Offset");
-          if (mod != null && mod.Offset < 0)
+          if (mod?.Offset < 0)
             m.RemoveStatMod("[Magic] Str Offset");
 
           mod = m.GetStatMod("[Magic] Dex Offset");
-          if (mod != null && mod.Offset < 0)
+          if (mod?.Offset < 0)
             m.RemoveStatMod("[Magic] Dex Offset");
 
           mod = m.GetStatMod("[Magic] Int Offset");
-          if (mod != null && mod.Offset < 0)
+          if (mod?.Offset < 0)
             m.RemoveStatMod("[Magic] Int Offset");
 
           m.Paralyzed = false;

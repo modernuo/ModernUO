@@ -3,13 +3,7 @@ namespace Server.Items
   public class SleepScroll : SpellScroll
   {
     [Constructible]
-    public SleepScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public SleepScroll(int amount)
+    public SleepScroll(int amount = 1)
       : base(681, 0x2DA2, amount)
     {
     }

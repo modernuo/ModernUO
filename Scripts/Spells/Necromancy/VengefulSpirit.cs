@@ -15,7 +15,7 @@ namespace Server.Spells.Necromancy
       Reagent.PigIron
     );
 
-    public VengefulSpiritSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public VengefulSpiritSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

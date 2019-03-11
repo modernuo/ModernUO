@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Targeting;
 
@@ -18,7 +17,7 @@ namespace Server.Spells.Necromancy
 
     private static Dictionary<Mobile, MRBucket> m_Table = new Dictionary<Mobile, MRBucket>();
 
-    public MindRotSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MindRotSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

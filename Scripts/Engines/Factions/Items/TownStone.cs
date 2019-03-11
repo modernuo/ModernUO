@@ -7,12 +7,7 @@ namespace Server.Factions
     private Town m_Town;
 
     [Constructible]
-    public TownStone() : this(null)
-    {
-    }
-
-    [Constructible]
-    public TownStone(Town town) : base(0xEDE)
+    public TownStone(Town town = null) : base(0xEDE)
     {
       Movable = false;
       Town = town;

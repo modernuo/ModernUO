@@ -48,23 +48,23 @@ namespace Server.Mobiles
             if (m_Mobile.Debug)
               m_Mobile.DebugSay("{0} needs a cure", toHelp.Name);
 
-            if (!new CureSpell(m_Mobile, null).Cast())
-              new CureSpell(m_Mobile, null).Cast();
+            if (!new CureSpell(m_Mobile).Cast())
+              new CureSpell(m_Mobile).Cast();
           }
           else if (NeedGHeal(toHelp))
           {
             if (m_Mobile.Debug)
               m_Mobile.DebugSay("{0} needs a greater heal", toHelp.Name);
 
-            if (!new GreaterHealSpell(m_Mobile, null).Cast())
-              new HealSpell(m_Mobile, null).Cast();
+            if (!new GreaterHealSpell(m_Mobile).Cast())
+              new HealSpell(m_Mobile).Cast();
           }
           else if (NeedLHeal(toHelp))
           {
             if (m_Mobile.Debug)
               m_Mobile.DebugSay("{0} needs a lesser heal", toHelp.Name);
 
-            new HealSpell(m_Mobile, null).Cast();
+            new HealSpell(m_Mobile).Cast();
           }
         }
         else

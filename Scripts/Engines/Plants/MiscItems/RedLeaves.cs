@@ -5,12 +5,7 @@ namespace Server.Items
   public class RedLeaves : Item
   {
     [Constructible]
-    public RedLeaves() : this(1)
-    {
-    }
-
-    [Constructible]
-    public RedLeaves(int amount) : base(0x1E85)
+    public RedLeaves(int amount = 1) : base(0x1E85)
     {
       Stackable = true;
       Hue = 0x21;

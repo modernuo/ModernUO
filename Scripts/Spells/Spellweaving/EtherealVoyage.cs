@@ -9,7 +9,7 @@ namespace Server.Spells.Spellweaving
       -1
     );
 
-    public EtherealVoyageSpell(Mobile caster, Item scroll)
+    public EtherealVoyageSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

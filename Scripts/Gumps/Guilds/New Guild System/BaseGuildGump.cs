@@ -7,11 +7,7 @@ namespace Server.Guilds
 {
   public abstract class BaseGuildGump : Gump
   {
-    public BaseGuildGump(PlayerMobile pm, Guild g) : this(pm, g, 10, 10)
-    {
-    }
-
-    public BaseGuildGump(PlayerMobile pm, Guild g, int x, int y) : base(x, y)
+    public BaseGuildGump(PlayerMobile pm, Guild g, int x = 10, int y = 10) : base(x, y)
     {
       guild = g;
       player = pm;
@@ -31,14 +27,14 @@ namespace Server.Guilds
 
       AddBackground(0, 0, 600, 440, 0x24AE);
       AddBackground(66, 40, 150, 26, 0x2486);
-      AddButton(71, 45, 0x845, 0x846, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(96, 43, 110, 26, 1063014, 0x0, false, false); // My Guild
+      AddButton(71, 45, 0x845, 0x846, 1);
+      AddHtmlLocalized(96, 43, 110, 26, 1063014, 0x0); // My Guild
       AddBackground(236, 40, 150, 26, 0x2486);
-      AddButton(241, 45, 0x845, 0x846, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(266, 43, 110, 26, 1062974, 0x0, false, false); // Guild Roster
+      AddButton(241, 45, 0x845, 0x846, 2);
+      AddHtmlLocalized(266, 43, 110, 26, 1062974, 0x0); // Guild Roster
       AddBackground(401, 40, 150, 26, 0x2486);
-      AddButton(406, 45, 0x845, 0x846, 3, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(431, 43, 110, 26, 1062978, 0x0, false, false); // Diplomacy
+      AddButton(406, 45, 0x845, 0x846, 3);
+      AddHtmlLocalized(431, 43, 110, 26, 1062978, 0x0); // Diplomacy
       AddPage(1);
     }
 
@@ -81,12 +77,7 @@ namespace Server.Guilds
                m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m));
     }
 
-    public static bool CheckProfanity(string s)
-    {
-      return CheckProfanity(s, 50);
-    }
-
-    public static bool CheckProfanity(string s, int maxLength)
+    public static bool CheckProfanity(string s, int maxLength = 50)
     {
       //return NameVerification.Validate( s, 1, 50, true, true, false, int.MaxValue, ProfanityProtection.Exceptions, ProfanityProtection.Disallowed, ProfanityProtection.StartDisallowed );	//What am I doing wrong, this still allows chars like the <3 symbol... 3 AM.  someone change this to use this
 
@@ -126,7 +117,7 @@ namespace Server.Guilds
 
     public void AddHtmlText(int x, int y, int width, int height, TextDefinition text, bool back, bool scroll)
     {
-      if (text != null && text.Number > 0)
+      if (text?.Number > 0)
         AddHtmlLocalized(x, y, width, height, text.Number, back, scroll);
       else if (text?.String != null)
         AddHtml(x, y, width, height, text.String, back, scroll);

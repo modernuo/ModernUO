@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Ambitious
       {
         // Red/Black Solen Queens killed:
         gump.AddHtmlLocalized(70, 260, 270, 100, ((AmbitiousQueenQuest)System).RedSolen ? 1054064 : 1054065,
-          BaseQuestGump.Blue, false, false);
+          BaseQuestGump.Blue);
         gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
         gump.AddLabel(100, 280, 0x64, "/");
         gump.AddLabel(130, 280, 0x64, MaxProgress.ToString());

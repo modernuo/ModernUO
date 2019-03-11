@@ -12,7 +12,7 @@ namespace Server.Spells.Third
       Reagent.Nightshade
     );
 
-    public PoisonSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public PoisonSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

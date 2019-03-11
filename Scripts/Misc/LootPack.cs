@@ -534,12 +534,12 @@ namespace Server
     private bool m_AtSpawnTime;
 
     public LootPackEntry(bool atSpawnTime, LootPackItem[] items, double chance, string quantity) : this(atSpawnTime,
-      items, chance, new LootPackDice(quantity), 0, 0, 0)
+      items, chance, new LootPackDice(quantity))
     {
     }
 
     public LootPackEntry(bool atSpawnTime, LootPackItem[] items, double chance, int quantity) : this(atSpawnTime, items,
-      chance, new LootPackDice(0, 0, quantity), 0, 0, 0)
+      chance, new LootPackDice(0, 0, quantity))
     {
     }
 
@@ -555,8 +555,8 @@ namespace Server
     {
     }
 
-    public LootPackEntry(bool atSpawnTime, LootPackItem[] items, double chance, LootPackDice quantity, int maxProps,
-      int minIntensity, int maxIntensity)
+    public LootPackEntry(bool atSpawnTime, LootPackItem[] items, double chance, LootPackDice quantity, int maxProps = 0,
+      int minIntensity = 0, int maxIntensity = 0)
     {
       m_AtSpawnTime = atSpawnTime;
       Items = items;
@@ -901,6 +901,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
 
       return null;

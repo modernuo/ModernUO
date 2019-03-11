@@ -8,12 +8,7 @@ namespace Server.Factions
     private Faction m_Faction;
 
     [Constructible]
-    public FactionStone() : this(null)
-    {
-    }
-
-    [Constructible]
-    public FactionStone(Faction faction) : base(0xEDC)
+    public FactionStone(Faction faction = null) : base(0xEDC)
     {
       Movable = false;
       Faction = faction;

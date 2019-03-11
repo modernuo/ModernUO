@@ -4,13 +4,7 @@
   public class Lollipops : CandyCane
   {
     [Constructible]
-    public Lollipops()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public Lollipops(int amount)
+    public Lollipops(int amount = 1)
       : base(0x468D + Utility.Random(3))
     {
       Stackable = true;

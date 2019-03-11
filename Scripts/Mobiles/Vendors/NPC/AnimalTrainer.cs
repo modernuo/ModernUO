@@ -103,7 +103,7 @@ namespace Server.Mobiles
       {
         BaseCreature pet = from.Stabled[i] as BaseCreature;
 
-        if (pet == null || pet.Deleted)
+        if (pet?.Deleted != false)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
@@ -123,7 +123,7 @@ namespace Server.Mobiles
 
     public void EndClaimList(Mobile from, BaseCreature pet)
     {
-      if (pet == null || pet.Deleted || from.Map != Map || !from.Stabled.Contains(pet) || !from.CheckAlive())
+      if (pet?.Deleted != false || from.Map != Map || !from.Stabled.Contains(pet) || !from.CheckAlive())
         return;
 
       if (!from.InRange(this, 14))
@@ -153,8 +153,8 @@ namespace Server.Mobiles
 
       Container bank = from.FindBankNoCreate();
 
-      if ((from.Backpack == null || from.Backpack.GetAmount(typeof(Gold)) < 30) &&
-          (bank == null || bank.GetAmount(typeof(Gold)) < 30))
+      if (!(from.Backpack?.GetAmount(typeof(Gold)) >= 30) &&
+          !(bank?.GetAmount(typeof(Gold)) >= 30))
       {
         SayTo(from, 1042556); // Thou dost not have enough gold, not even in thy bank account.
       }
@@ -201,8 +201,7 @@ namespace Server.Mobiles
 				SayTo( from, 1048053 ); // You can't stable that!
 			}
 */
-      else if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack != null &&
-               pet.Backpack.Items.Count > 0)
+      else if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
       {
         SayTo(from, 1042563); // You need to unload your pet.
       }
@@ -218,8 +217,8 @@ namespace Server.Mobiles
       {
         Container bank = from.FindBankNoCreate();
 
-        if (from.Backpack != null && from.Backpack.ConsumeTotal(typeof(Gold), 30) ||
-            bank != null && bank.ConsumeTotal(typeof(Gold), 30))
+        if (from.Backpack?.ConsumeTotal(typeof(Gold), 30) == true ||
+            bank?.ConsumeTotal(typeof(Gold), 30) == true)
         {
           pet.ControlTarget = null;
           pet.ControlOrder = OrderType.Stay;
@@ -248,12 +247,7 @@ namespace Server.Mobiles
       }
     }
 
-    public void Claim(Mobile from)
-    {
-      Claim(from, null);
-    }
-
-    public void Claim(Mobile from, string petName)
+    public void Claim(Mobile from, string petName = null)
     {
       if (Deleted || !from.CheckAlive())
         return;
@@ -267,7 +261,7 @@ namespace Server.Mobiles
       {
         BaseCreature pet = from.Stabled[i] as BaseCreature;
 
-        if (pet == null || pet.Deleted)
+        if (pet?.Deleted != false)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
@@ -414,18 +408,17 @@ namespace Server.Mobiles
         AddBackground(0, 0, 325, 50 + list.Count * 20, 9250);
         AddAlphaRegion(5, 5, 315, 40 + list.Count * 20);
 
-        AddHtml(15, 15, 275, 20, "<BASEFONT COLOR=#FFFFFF>Select a pet to retrieve from the stables:</BASEFONT>",
-          false, false);
+        AddHtml(15, 15, 275, 20, "<BASEFONT COLOR=#FFFFFF>Select a pet to retrieve from the stables:</BASEFONT>");
 
         for (int i = 0; i < list.Count; ++i)
         {
           BaseCreature pet = list[i];
 
-          if (pet == null || pet.Deleted)
+          if (pet?.Deleted != false)
             continue;
 
-          AddButton(15, 39 + i * 20, 10006, 10006, i + 1, GumpButtonType.Reply, 0);
-          AddHtml(32, 35 + i * 20, 275, 18, $"<BASEFONT COLOR=#C0C0EE>{pet.Name}</BASEFONT>", false, false);
+          AddButton(15, 39 + i * 20, 10006, 10006, i + 1);
+          AddHtml(32, 35 + i * 20, 275, 18, $"<BASEFONT COLOR=#C0C0EE>{pet.Name}</BASEFONT>");
         }
       }
 

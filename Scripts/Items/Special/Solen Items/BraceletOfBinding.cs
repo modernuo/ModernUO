@@ -49,7 +49,7 @@ namespace Server.Items
     {
       get
       {
-        if (m_Bound != null && m_Bound.Deleted)
+        if (m_Bound?.Deleted == true)
           m_Bound = null;
 
         return m_Bound;
@@ -380,20 +380,18 @@ namespace Server.Items
         m_Bracelet.m_Timer = null;
         m_From.Frozen = false;
 
-        if (m_Bracelet.Deleted || m_From.Deleted)
+        if (m_Bracelet.Deleted || m_From.Deleted ||
+            !m_Bracelet.CheckUse(m_From, false) ||
+            !(m_Bracelet.Bound.RootParent is Mobile boundRoot))
           return;
 
-        if (m_Bracelet.CheckUse(m_From, false))
-          if (m_Bracelet.Bound.RootParent is Mobile boundRoot)
-          {
-            m_Bracelet.Charges--;
+        m_Bracelet.Charges--;
 
-            BaseCreature.TeleportPets(m_From, boundRoot.Location, boundRoot.Map, true);
+        BaseCreature.TeleportPets(m_From, boundRoot.Location, boundRoot.Map, true);
 
-            m_From.PlaySound(0x1FC);
-            m_From.MoveToWorld(boundRoot.Location, boundRoot.Map);
-            m_From.PlaySound(0x1FC);
-          }
+        m_From.PlaySound(0x1FC);
+        m_From.MoveToWorld(boundRoot.Location, boundRoot.Map);
+        m_From.PlaySound(0x1FC);
       }
     }
 

@@ -247,7 +247,7 @@ namespace Server.Engines.ConPVP
       sb.Append(remaining.Count == 2 ? "between " : "among ");
 
       sb.Append(remaining.Count);
-      
+
       sb.Append(remaining[0].Players.Count == 1 ? " players: " : " teams: ");
 
       bool hasAppended = false;
@@ -370,9 +370,7 @@ namespace Server.Engines.ConPVP
 
         for (int i = 0; i < part.Context.Participants.Count; ++i)
         {
-          Participant check = part.Context.Participants[i];
-
-          if (check != null && !check.Eliminated)
+          if (part.Context.Participants[i]?.Eliminated == false)
             ++rem;
         }
 
@@ -559,7 +557,7 @@ namespace Server.Engines.ConPVP
       {
         Mobile mob = players[i];
 
-        if (mob == null || mob.Deleted)
+        if (mob?.Deleted != false)
           continue;
 
         Item item = new Trophy(title, rank);
@@ -762,7 +760,7 @@ namespace Server.Engines.ConPVP
               if (!match.InProgress)
                 for (int j = 0; j < Arenas.Count; ++j)
                 {
-                  Arena arena = (Arena)Arenas[j];
+                  Arena arena = Arenas[j];
 
                   if (!arena.IsOccupied)
                   {
@@ -794,7 +792,7 @@ namespace Server.Engines.ConPVP
 
               if (!bad)
                 continue;
-              
+
               for (int j = 0; j < part.Players.Count; ++j)
                   part.Players[j].SendMessage("You have been disqualified from the tournament.");
 
@@ -882,7 +880,7 @@ namespace Server.Engines.ConPVP
                   Undefeated.Clear();
                   break;
                 }
-              
+
             }
 
             if (Undefeated.Count > 1)
@@ -895,7 +893,7 @@ namespace Server.Engines.ConPVP
     public void Alert(params string[] alerts)
     {
       for (int i = 0; i < Arenas.Count; ++i)
-        Alert((Arena)Arenas[i], alerts);
+        Alert(Arenas[i], alerts);
     }
 
     public void Alert(Arena arena, params string[] alerts)

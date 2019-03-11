@@ -46,12 +46,7 @@ namespace Server.Items
     private int m_Charges;
 
     [Constructible]
-    public BroadcastCrystal() : this(2000)
-    {
-    }
-
-    [Constructible]
-    public BroadcastCrystal(int charges) : base(0x1ED0)
+    public BroadcastCrystal(int charges = 2000) : base(0x1ED0)
     {
       Light = LightType.Circle150;
 

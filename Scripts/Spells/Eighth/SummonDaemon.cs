@@ -16,7 +16,7 @@ namespace Server.Spells.Eighth
       Reagent.SulfurousAsh
     );
 
-    public SummonDaemonSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public SummonDaemonSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

@@ -38,29 +38,14 @@ namespace Server.Items
 
     public override int DefaultMaxWeight => 0;
 
-    public override bool Decays
-    {
-      get
-      {
-        if (m_House != null && m_Owner != null && !m_Owner.Deleted)
-          return !m_House.IsCoOwner(m_Owner);
-        return true;
-      }
-    }
+    public override bool Decays => m_House == null ||  m_Owner?.Deleted != false || !m_House.IsCoOwner(m_Owner);
 
     public override TimeSpan DecayTime => TimeSpan.FromMinutes(30.0);
 
     public void OnChop(Mobile from)
     {
-      if (m_House != null && !m_House.Deleted && m_Owner != null && !m_Owner.Deleted)
-      {
-        if (from == m_Owner || m_House.IsOwner(from))
-          Chop(from);
-      }
-      else
-      {
+      if (m_House?.Deleted != false || m_Owner?.Deleted != false || from == m_Owner || m_House.IsOwner(from))
         Chop(from);
-      }
     }
 
     public override void Serialize(GenericWriter writer)
@@ -95,7 +80,7 @@ namespace Server.Items
 
     private void Validate()
     {
-      if (m_Owner != null && m_House != null && !m_House.IsCoOwner(m_Owner))
+      if (m_Owner != null && m_House?.IsCoOwner(m_Owner) == false)
       {
         Console.WriteLine("Warning: Destroying strongbox of {0}", m_Owner.Name);
         Destroy();
@@ -127,11 +112,9 @@ namespace Server.Items
 
     public override bool IsAccessibleTo(Mobile m)
     {
-      if (m_Owner == null || m_Owner.Deleted || m_House == null || m_House.Deleted ||
-          m.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      return m == m_Owner && m_House.IsCoOwner(m) && base.IsAccessibleTo(m);
+      return m_Owner?.Deleted != false || m_House?.Deleted != false ||
+             m.AccessLevel >= AccessLevel.GameMaster ||
+             m == m_Owner && m_House.IsCoOwner(m) && base.IsAccessibleTo(m);
     }
 
     private void Chop(Mobile from)

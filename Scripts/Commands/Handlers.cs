@@ -299,7 +299,7 @@ namespace Server.Commands
 
           for (int i = 0; i < pets.Count; ++i)
           {
-            Mobile pet = (Mobile)pets[i];
+            Mobile pet = pets[i];
 
             if (pet is IMount mount)
               mount.Rider = null; // make sure it's dismounted
@@ -410,18 +410,20 @@ namespace Server.Commands
 
     private static bool FixMap(ref Map map, ref Point3D loc, Item item)
     {
-      return map == null || map == Map.Internal && item.RootParent is Mobile m && FixMap(ref map, ref loc, m);
+      return map != null && map != Map.Internal || item.RootParent is Mobile m && FixMap(ref map, ref loc, m);
     }
 
     private static bool FixMap(ref Map map, ref Point3D loc, Mobile m)
     {
-      if (map == null || map == Map.Internal)
+      bool validMap = map != null && map != Map.Internal;
+
+      if (!validMap)
       {
         map = m.LogoutMap;
         loc = m.LogoutLocation;
       }
 
-      return map != null && map != Map.Internal;
+      return validMap;
     }
 
     [Usage("Go [name | serial | (x y [z]) | (deg min (N | S) deg min (E | W))]")]
@@ -676,7 +678,7 @@ namespace Server.Commands
       {
         Mobile m = state.Mobile;
 
-        if (m != null && m.AccessLevel >= ac)
+        if (m?.AccessLevel >= ac)
           m.SendMessage(hue, message);
       }
     }

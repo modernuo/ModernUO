@@ -54,7 +54,7 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (m_Item == null || m_Item.Deleted)
+        if (m_Item?.Deleted != false)
           return;
 
         if (o is BaseTalisman talisman)

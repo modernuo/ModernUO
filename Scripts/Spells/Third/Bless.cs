@@ -14,7 +14,7 @@ namespace Server.Spells.Third
       Reagent.MandrakeRoot
     );
 
-    public BlessSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public BlessSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

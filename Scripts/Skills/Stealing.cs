@@ -115,7 +115,7 @@ namespace Server.SkillHandlers
         {
           m_Thief.SendLocalizedMessage(500237); // Target can not be seen.
         }
-        else if (m_Thief.Backpack == null || !m_Thief.Backpack.CheckHold(m_Thief, toSteal, false, true))
+        else if (m_Thief.Backpack?.CheckHold(m_Thief, toSteal, false, true) != true)
         {
           m_Thief.SendLocalizedMessage(1048147); // Your backpack can't hold anything else.
         }
@@ -177,7 +177,7 @@ namespace Server.SkillHandlers
                 m_Thief.SendLocalizedMessage(
                   1010258); //	The sigil has gone back to its home location because you already have a sigil.
               }
-              else if (m_Thief.Backpack == null || !m_Thief.Backpack.CheckHold(m_Thief, sig, false, true))
+              else if (m_Thief?.Backpack.CheckHold(m_Thief, sig, false, true) != true)
               {
                 m_Thief.SendLocalizedMessage(
                   1010259); //	The sigil has gone home because your backpack is full
@@ -289,10 +289,7 @@ namespace Server.SkillHandlers
                 if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, pileWeight - 22.5,
                   pileWeight + 27.5))
                 {
-                  stolen = Mobile.LiftItemDupe(toSteal, toSteal.Amount - amount);
-
-                  if (stolen == null)
-                    stolen = toSteal;
+                  stolen = Mobile.LiftItemDupe(toSteal, toSteal.Amount - amount) ?? toSteal;
                 }
               }
             }
@@ -344,7 +341,7 @@ namespace Server.SkillHandlers
         {
           Container pack = mobile.Backpack;
 
-          if (pack != null && pack.Items.Count > 0)
+          if (pack?.Items.Count > 0)
           {
             int randomIndex = Utility.Random(pack.Items.Count);
 

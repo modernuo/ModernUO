@@ -130,11 +130,11 @@ namespace Server.Items
       AddBackground(0, 0, 220, 120, 5054);
       AddBackground(10, 10, 200, 100, 3000);
 
-      AddButton(20, 35, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(55, 35, 145, 25, 1018322, false, false); // Classic
+      AddButton(20, 35, 4005, 4007, 1);
+      AddHtmlLocalized(55, 35, 145, 25, 1018322); // Classic
 
-      AddButton(20, 65, 4005, 4007, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(55, 65, 145, 25, 1018321, false, false); // Modern
+      AddButton(20, 65, 4005, 4007, 2);
+      AddHtmlLocalized(55, 65, 145, 25, 1018321); // Modern
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

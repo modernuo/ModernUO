@@ -3,12 +3,7 @@ namespace Server.Items
   public class BlackPearl : BaseReagent, ICommodity
   {
     [Constructible]
-    public BlackPearl() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BlackPearl(int amount) : base(0xF7A, amount)
+    public BlackPearl(int amount = 1) : base(0xF7A, amount)
     {
     }
 

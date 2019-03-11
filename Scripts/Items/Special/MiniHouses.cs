@@ -7,12 +7,7 @@ namespace Server.Items
     private MiniHouseType m_Type;
 
     [Constructible]
-    public MiniHouseAddon() : this(MiniHouseType.StoneAndPlaster)
-    {
-    }
-
-    [Constructible]
-    public MiniHouseAddon(MiniHouseType type)
+    public MiniHouseAddon(MiniHouseType type = MiniHouseType.StoneAndPlaster)
     {
       m_Type = type;
 
@@ -88,12 +83,7 @@ namespace Server.Items
     private MiniHouseType m_Type;
 
     [Constructible]
-    public MiniHouseDeed() : this(MiniHouseType.StoneAndPlaster)
-    {
-    }
-
-    [Constructible]
-    public MiniHouseDeed(MiniHouseType type)
+    public MiniHouseDeed(MiniHouseType type = MiniHouseType.StoneAndPlaster)
     {
       m_Type = type;
 

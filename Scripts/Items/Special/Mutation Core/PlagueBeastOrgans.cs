@@ -8,17 +8,12 @@ namespace Server.Items
   {
     private Timer m_Timer;
 
-    public PlagueBeastOrgan() : this(1, 0)
-    {
-      Visible = false;
-    }
-
-    public PlagueBeastOrgan(int itemID, int hue) : base(itemID, hue)
+    public PlagueBeastOrgan(int itemID = 1, int hue = 0) : base(itemID, hue)
     {
       Components = new List<PlagueBeastComponent>();
       Opened = false;
-
       Movable = false;
+      Visible = itemID <= 1;
 
       Timer.DelayCall(TimeSpan.Zero, Initialize);
     }
@@ -70,7 +65,7 @@ namespace Server.Items
 
     public override void OnAfterDelete()
     {
-      if (m_Timer != null && m_Timer.Running)
+      if (m_Timer?.Running == true)
         m_Timer.Stop();
     }
 
@@ -116,7 +111,7 @@ namespace Server.Items
 
   public class PlagueBeastMaidenOrgan : PlagueBeastOrgan
   {
-    public PlagueBeastMaidenOrgan() : base(0x124D, 0x0)
+    public PlagueBeastMaidenOrgan() : base(0x124D)
     {
     }
 

@@ -3,12 +3,7 @@ namespace Server.Items
   public class ParalyzeScroll : SpellScroll
   {
     [Constructible]
-    public ParalyzeScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ParalyzeScroll(int amount) : base(37, 0x1F52, amount)
+    public ParalyzeScroll(int amount = 1) : base(37, 0x1F52, amount)
     {
     }
 

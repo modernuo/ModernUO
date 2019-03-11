@@ -39,9 +39,7 @@ namespace Server.Items.Holiday
     {
       get
       {
-        if (m_Staffer != null) return $"{MaskName} hand painted by {m_Staffer}";
-
-        return MaskName;
+        return m_Staffer != null ? $"{MaskName} hand painted by {m_Staffer}" : MaskName;
       }
     }
 

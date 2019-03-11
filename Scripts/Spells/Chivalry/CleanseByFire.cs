@@ -12,7 +12,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public CleanseByFireSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public CleanseByFireSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

@@ -16,7 +16,7 @@ namespace Server.Spells.Third
       Reagent.Garlic
     );
 
-    public WallOfStoneSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public WallOfStoneSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

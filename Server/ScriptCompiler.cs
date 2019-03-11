@@ -364,6 +364,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
 
         assembly = results.CompiledAssembly;

@@ -18,11 +18,7 @@ namespace Server.Items
     private ClothingQuality m_Quality;
     private int m_WeightReduction;
 
-    public BaseQuiver() : this(0x2FB7)
-    {
-    }
-
-    public BaseQuiver(int itemID) : base(itemID)
+    public BaseQuiver(int itemID = 0x2FB7) : base(itemID)
     {
       Weight = 2.0;
       Capacity = 500;
@@ -175,32 +171,15 @@ namespace Server.Items
 
     public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
     {
-      if (!CheckType(item))
+      if (CheckType(item))
       {
-        if (message)
-          m.SendLocalizedMessage(1074836); // The container can not hold that type of object.
-
-        return false;
+        return Items.Count >= DefaultMaxItems && !checkItems && Ammo?.Deleted == false &&
+               Ammo.Amount + item.Amount <= m_Capacity || item.Amount <= m_Capacity &&
+               base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
       }
 
-      if (Items.Count < DefaultMaxItems)
-      {
-        if (item.Amount <= m_Capacity)
-          return base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
-
-        return false;
-      }
-
-      if (checkItems)
-        return false;
-
-      Item ammo = Ammo;
-
-      if (ammo == null || ammo.Deleted)
-        return false;
-
-      if (ammo.Amount + item.Amount <= m_Capacity)
-        return true;
+      if (message)
+        m.SendLocalizedMessage(1074836); // The container can not hold that type of object.
 
       return false;
     }
@@ -352,10 +331,7 @@ namespace Server.Items
       if ((prop = m_LowerAmmoCost) > 0)
         list.Add(1075208, prop.ToString()); // Lower Ammo Cost ~1_Percentage~%
 
-      double weight = 0;
-
-      if (ammo != null)
-        weight = ammo.Weight * ammo.Amount;
+      double weight = ammo != null ? ammo.Weight + ammo.Amount : 0;
 
       list.Add(1072241, "{0}\t{1}\t{2}\t{3}", Items.Count, DefaultMaxItems, (int)weight,
         DefaultMaxWeight); // Contents: ~1_COUNT~/~2_MAXCOUNT items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones

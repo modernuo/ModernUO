@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
@@ -19,7 +20,7 @@ namespace Server.Spells.Fifth
       Reagent.SpidersSilk
     );
 
-    public PoisonFieldSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -197,7 +198,7 @@ namespace Server.Spells.Fifth
 
       private class InternalTimer : Timer
       {
-        private static Queue m_Queue = new Queue();
+        private static Queue<Mobile> m_Queue = new Queue<Mobile>();
         private bool m_InLOS, m_CanFit;
         private InternalItem m_Item;
 
@@ -257,7 +258,7 @@ namespace Server.Spells.Fifth
 
               while (m_Queue.Count > 0)
               {
-                Mobile m = (Mobile)m_Queue.Dequeue();
+                Mobile m = m_Queue.Dequeue();
 
                 caster.DoHarmful(m);
 

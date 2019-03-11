@@ -3,12 +3,7 @@ namespace Server.Items
   public class BagOfReagents : Bag
   {
     [Constructible]
-    public BagOfReagents() : this(50)
-    {
-    }
-
-    [Constructible]
-    public BagOfReagents(int amount)
+    public BagOfReagents(int amount = 50)
     {
       DropItem(new BlackPearl(amount));
       DropItem(new Bloodmoss(amount));

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Network;
 
@@ -20,7 +19,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public bool FacingEast
 		{
-			get => ( ItemID == 0x100A );
+			get => ItemID == 0x100A;
 			set => ItemID = value ? 0x100A : 0x100B;
 		}
 
@@ -30,12 +29,7 @@ namespace Server.Items
 		[CommandProperty( AccessLevel.GameMaster )]
 		public int Bolts { get; set; }
 
-		[Constructible]
-		public ArcheryButte() : this( 0x100A )
-		{
-		}
-
-		public ArcheryButte( int itemID ) : base( itemID )
+		public ArcheryButte(int itemID = 0x100A) : base(itemID)
 		{
 			MinSkill = -25.0;
 			MaxSkill = +25.0;
@@ -141,11 +135,11 @@ namespace Server.Items
 			Container pack = from.Backpack;
 			Type ammoType = bow.AmmoType;
 
-			bool isArrow = ( ammoType == typeof( Arrow ) );
-			bool isBolt = ( ammoType == typeof( Bolt ) );
-			bool isKnown = ( isArrow || isBolt );
+			bool isArrow = ammoType == typeof( Arrow );
+			bool isBolt = ammoType == typeof( Bolt );
+			bool isKnown = isArrow || isBolt;
 
-			if ( pack == null || !pack.ConsumeTotal( ammoType, 1 ) )
+			if (pack?.ConsumeTotal( ammoType ) != true)
 			{
 				if ( isArrow )
 					from.LocalOverheadMessage( MessageType.Regular, 0x3B2, 500594 ); // You do not have any arrows with which to practice.
@@ -241,7 +235,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 );
+			writer.Write( 0 );
 
 			writer.Write( MinSkill );
 			writer.Write( MaxSkill );
@@ -283,7 +277,7 @@ namespace Server.Items
 		[Constructible]
 		public ArcheryButteAddon()
 		{
-			AddComponent( new ArcheryButte( 0x100A ), 0, 0, 0 );
+			AddComponent( new ArcheryButte(), 0, 0, 0 );
 		}
 
 		public ArcheryButteAddon( Serial serial ) : base( serial )
@@ -294,7 +288,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( 0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -323,7 +317,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( 0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )

@@ -3,8 +3,7 @@
   public class MrPlainsCookies : Food
   {
     [Constructible]
-    public MrPlainsCookies()
-      : base(0x160C)
+    public MrPlainsCookies() : base(0x160C, 1)
     {
       Weight = 1.0;
       FillFactor = 4;

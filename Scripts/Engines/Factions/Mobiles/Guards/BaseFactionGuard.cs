@@ -241,68 +241,68 @@ namespace Server.Factions
         }
         else if (DateTime.UtcNow < m_OrdersEnd)
         {
-          if (m_Town != null && m_Town.IsSheriff(from) && Town.FromRegion(Region) == m_Town)
+          if (m_Town?.IsSheriff(from) != true || Town.FromRegion(Region) != m_Town)
+            return;
+
+          m_OrdersEnd = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
+
+          bool understood = true;
+          ReactionType newType = 0;
+
+          if (Insensitive.Contains(e.Speech, "attack"))
+            newType = ReactionType.Attack;
+          else if (Insensitive.Contains(e.Speech, "warn"))
+            newType = ReactionType.Warn;
+          else if (Insensitive.Contains(e.Speech, "ignore"))
+            newType = ReactionType.Ignore;
+          else
+            understood = false;
+
+          if (understood)
           {
-            m_OrdersEnd = DateTime.UtcNow + TimeSpan.FromSeconds(10.0);
+            understood = false;
 
-            bool understood = true;
-            ReactionType newType = 0;
-
-            if (Insensitive.Contains(e.Speech, "attack"))
-              newType = ReactionType.Attack;
-            else if (Insensitive.Contains(e.Speech, "warn"))
-              newType = ReactionType.Warn;
-            else if (Insensitive.Contains(e.Speech, "ignore"))
-              newType = ReactionType.Ignore;
-            else
-              understood = false;
-
-            if (understood)
+            if (Insensitive.Contains(e.Speech, "civil"))
             {
-              understood = false;
+              ChangeReaction(null, newType);
+              understood = true;
+            }
 
-              if (Insensitive.Contains(e.Speech, "civil"))
+            List<Faction> factions = Faction.Factions;
+
+            for (int i = 0; i < factions.Count; ++i)
+            {
+              Faction faction = factions[i];
+
+              if (faction != m_Faction && Insensitive.Contains(e.Speech, faction.Definition.Keyword))
               {
-                ChangeReaction(null, newType);
+                ChangeReaction(faction, newType);
                 understood = true;
               }
-
-              List<Faction> factions = Faction.Factions;
-
-              for (int i = 0; i < factions.Count; ++i)
-              {
-                Faction faction = factions[i];
-
-                if (faction != m_Faction && Insensitive.Contains(e.Speech, faction.Definition.Keyword))
-                {
-                  ChangeReaction(faction, newType);
-                  understood = true;
-                }
-              }
             }
-            else if (Insensitive.Contains(e.Speech, "patrol"))
-            {
-              Home = Location;
-              RangeHome = 6;
-              Combatant = null;
-              Orders.Movement = MovementType.Patrol;
-              Say(1005146); // This spot looks like it needs protection!  I shall guard it with my life.
-              understood = true;
-            }
-            else if (Insensitive.Contains(e.Speech, "follow"))
-            {
-              Home = Location;
-              RangeHome = 6;
-              Combatant = null;
-              Orders.Follow = from;
-              Orders.Movement = MovementType.Follow;
-              Say(1005144); // Yes, Sire.
-              understood = true;
-            }
-
-            if (!understood)
-              Say(1042183); // I'm sorry, I don't understand your orders...
           }
+          else if (Insensitive.Contains(e.Speech, "patrol"))
+          {
+            Home = Location;
+            RangeHome = 6;
+            Combatant = null;
+            Orders.Movement = MovementType.Patrol;
+            Say(1005146); // This spot looks like it needs protection!  I shall guard it with my life.
+            understood = true;
+          }
+          else if (Insensitive.Contains(e.Speech, "follow"))
+          {
+            Home = Location;
+            RangeHome = 6;
+            Combatant = null;
+            Orders.Follow = from;
+            Orders.Movement = MovementType.Follow;
+            Say(1005144); // Yes, Sire.
+            understood = true;
+          }
+
+          if (!understood)
+            Say(1042183); // I'm sorry, I don't understand your orders...
         }
       }
     }

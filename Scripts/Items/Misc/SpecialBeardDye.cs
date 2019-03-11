@@ -69,9 +69,9 @@ namespace Server.Items
       AddPage(0);
       AddBackground(150, 60, 350, 358, 2600);
       AddBackground(170, 104, 110, 270, 5100);
-      AddHtmlLocalized(230, 75, 200, 20, 1011013, false, false); // Hair Color Selection Menu
-      AddHtmlLocalized(235, 380, 300, 20, 1013007, false, false); // Dye my beard this color!
-      AddButton(200, 380, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0); // DYE HAIR
+      AddHtmlLocalized(230, 75, 200, 20, 1011013); // Hair Color Selection Menu
+      AddHtmlLocalized(235, 380, 300, 20, 1013007); // Dye my beard this color!
+      AddButton(200, 380, 0xFA5, 0xFA7, 1); // DYE HAIR
 
       for (int i = 0; i < m_Entries.Length; ++i)
       {

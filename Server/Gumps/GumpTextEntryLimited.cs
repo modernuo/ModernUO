@@ -32,7 +32,7 @@ namespace Server.Gumps
     private int m_Width, m_Height;
     private int m_X, m_Y;
 
-    public GumpTextEntryLimited(int x, int y, int width, int height, int hue, int entryID, string initialText, int size)
+    public GumpTextEntryLimited(int x, int y, int width, int height, int hue, int entryID, string initialText, int size = 0)
     {
       m_X = x;
       m_Y = y;

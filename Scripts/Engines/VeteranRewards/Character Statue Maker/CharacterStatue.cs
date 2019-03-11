@@ -150,7 +150,7 @@ namespace Server.Mobiles
       {
         BaseHouse house = BaseHouse.FindHouseAt(this);
 
-        if (house != null && house.IsCoOwner(from) || (int)from.AccessLevel > (int)AccessLevel.Counselor)
+        if (house?.IsCoOwner(from) == true || from.AccessLevel > AccessLevel.Counselor)
           list.Add(new DemolishEntry(this));
       }
     }
@@ -159,7 +159,7 @@ namespace Server.Mobiles
     {
       base.OnAfterDelete();
 
-      if (Plinth != null && !Plinth.Deleted)
+      if (Plinth?.Deleted == false)
         Plinth.Delete();
     }
 
@@ -309,12 +309,14 @@ namespace Server.Mobiles
 
     public Item CloneItem(Item item)
     {
-      Item cloned = new Item(item.ItemID);
-      cloned.Layer = item.Layer;
-      cloned.Name = item.Name;
-      cloned.Hue = item.Hue;
-      cloned.Weight = item.Weight;
-      cloned.Movable = false;
+      Item cloned = new Item(item.ItemID)
+      {
+        Layer = item.Layer,
+        Name = item.Name,
+        Hue = item.Hue,
+        Weight = item.Weight,
+        Movable = false
+      };
 
       return cloned;
     }
@@ -569,7 +571,7 @@ namespace Server.Mobiles
       IPoint3D p = targeted as IPoint3D;
       Map map = from.Map;
 
-      if (p == null || map == null || m_Maker == null || m_Maker.Deleted)
+      if (p == null || map == null || m_Maker?.Deleted != false)
         return;
 
       if (m_Maker.IsChildOf(from.Backpack))

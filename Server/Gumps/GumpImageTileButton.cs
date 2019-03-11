@@ -41,13 +41,7 @@ namespace Server.Gumps
     private int m_X, m_Y;
 
     public GumpImageTileButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param,
-      int itemID, int hue, int width, int height) : this(x, y, normalID, pressedID, buttonID, type, param, itemID, hue,
-      width, height, -1)
-    {
-    }
-
-    public GumpImageTileButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param,
-      int itemID, int hue, int width, int height, int localizedTooltip)
+      int itemID, int hue, int width, int height, int localizedTooltip = -1)
     {
       m_X = x;
       m_Y = y;

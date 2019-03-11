@@ -21,16 +21,7 @@ namespace Server.Mobiles
   {
     private static GlobalTownCrierEntryList m_Instance;
 
-    public static GlobalTownCrierEntryList Instance
-    {
-      get
-      {
-        if (m_Instance == null)
-          m_Instance = new GlobalTownCrierEntryList();
-
-        return m_Instance;
-      }
-    }
+    public static GlobalTownCrierEntryList Instance => m_Instance ?? (m_Instance = new GlobalTownCrierEntryList());
 
     public bool IsEmpty => Entries == null || Entries.Count == 0;
 
@@ -225,13 +216,12 @@ namespace Server.Mobiles
       AddImageTiled(0, 0, 300, 38 + (count == 0 ? 20 : count * 85), 0xA40);
       AddAlphaRegion(1, 1, 298, 36 + (count == 0 ? 20 : count * 85));
 
-      AddHtml(8, 8, 300 - 8 - 30, 20, "<basefont color=#FFFFFF><center>TOWN CRIER MESSAGES</center></basefont>", false,
-        false);
+      AddHtml(8, 8, 300 - 8 - 30, 20, "<basefont color=#FFFFFF><center>TOWN CRIER MESSAGES</center></basefont>");
 
-      AddButton(300 - 8 - 30, 8, 0xFAB, 0xFAD, 1, GumpButtonType.Reply, 0);
+      AddButton(300 - 8 - 30, 8, 0xFAB, 0xFAD, 1);
 
       if (count == 0)
-        AddHtml(8, 30, 284, 20, "<basefont color=#FFFFFF>The crier has no news.</basefont>", false, false);
+        AddHtml(8, 30, 284, 20, "<basefont color=#FFFFFF>The crier has no news.</basefont>");
       else
         for (int i = 0; i < entries.Count; ++i)
         {
@@ -272,7 +262,7 @@ namespace Server.Mobiles
 
           AddHtml(8, 35 + i * 85, 254, 80, sb.ToString(), true, true);
 
-          AddButton(300 - 8 - 26, 35 + i * 85, 0x15E1, 0x15E5, 2 + i, GumpButtonType.Reply, 0);
+          AddButton(300 - 8 - 26, 35 + i * 85, 0x15E1, 0x15E5, 2 + i);
         }
     }
 

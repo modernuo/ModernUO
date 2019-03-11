@@ -13,7 +13,7 @@ namespace Server.Spells.Sixth
       Reagent.MandrakeRoot
     );
 
-    public ExplosionSpell(Mobile caster, Item scroll)
+    public ExplosionSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

@@ -124,7 +124,8 @@ namespace Server.Items
       Mobile m = e.Mobile;
       int count = e.GetInt32(0);
 
-      for (int i = 0; i < count; i++) m.AddToBackpack(Loot.RandomTalisman());
+      for (int i = 0; i < count; i++)
+        m.AddToBackpack(Loot.RandomTalisman());
     }
 
     public override void OnAfterDuped(Item newItem)
@@ -180,7 +181,7 @@ namespace Server.Items
         SkillBonuses.Remove();
         Attributes.RemoveStatBonuses(from);
 
-        if (m_Creature != null && !m_Creature.Deleted)
+        if (m_Creature?.Deleted == false)
         {
           Effects.SendLocationParticles(
             EffectItem.Create(m_Creature.Location, m_Creature.Map, EffectItem.DefaultDuration), 0x3728, 8, 20,
@@ -201,108 +202,110 @@ namespace Server.Items
       if (from.Talisman != this)
       {
         from.SendLocalizedMessage(502641); // You must equip this item to use it.
+        return;
       }
-      else if (m_ChargeTime > 0)
+
+      if (m_ChargeTime > 0)
       {
         from.SendLocalizedMessage(1074882,
           m_ChargeTime.ToString()); // You must wait ~1_val~ seconds for this to recharge.
+        return;
       }
-      else if (m_Charges == 0 && m_MaxCharges > 0)
+
+      if (m_Charges == 0 && m_MaxCharges > 0)
       {
         from.SendLocalizedMessage(1042544); // This item is out of charges.
+        return;
       }
-      else
+
+      Type type = GetSummoner();
+
+      if (m_Summoner?.IsEmpty == false)
+        type = m_Summoner.Type;
+
+      if (type != null)
       {
-        Type type = GetSummoner();
+        object obj;
 
-        if (m_Summoner != null && !m_Summoner.IsEmpty)
-          type = m_Summoner.Type;
-
-        if (type != null)
+        try
         {
-          object obj;
-
-          try
-          {
-            obj = Activator.CreateInstance(type);
-          }
-          catch
-          {
-            obj = null;
-          }
-
-          if (obj is Item item)
-          {
-            int count = 1;
-
-            if (m_Summoner != null && m_Summoner.Amount > 1)
-            {
-              if (item.Stackable)
-                item.Amount = m_Summoner.Amount;
-              else
-                count = m_Summoner.Amount;
-            }
-
-            if (from.Backpack == null || count * item.Weight > from.Backpack.MaxWeight ||
-                from.Backpack.Items.Count + count > from.Backpack.MaxItems)
-            {
-              from.SendLocalizedMessage(500720); // You don't have enough room in your backpack!
-              item.Delete();
-              item = null;
-              return;
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-              from.PlaceInBackpack(item);
-
-              if (i + 1 < count)
-                item = Activator.CreateInstance(type) as Item;
-            }
-
-            if (item is Board)
-              from.SendLocalizedMessage(1075000); // You have been given some wooden boards.
-            else if (item is IronIngot)
-              from.SendLocalizedMessage(1075001); // You have been given some ingots.
-            else if (item is Bandage)
-              from.SendLocalizedMessage(1075002); // You have been given some clean bandages.
-            else if (m_Summoner?.Name != null)
-              from.SendLocalizedMessage(1074853, m_Summoner.Name.ToString()); // You have been given ~1_name~
-          }
-          else if (obj is BaseCreature mob)
-          {
-            if (m_Creature != null && !m_Creature.Deleted ||
-                from.Followers + mob.ControlSlots > from.FollowersMax)
-            {
-              from.SendLocalizedMessage(1074270); // You have too many followers to summon another one.
-              mob.Delete();
-              return;
-            }
-
-            BaseCreature.Summon(mob, from, from.Location, mob.BaseSoundID, TimeSpan.FromMinutes(10));
-            Effects.SendLocationParticles(EffectItem.Create(mob.Location, mob.Map, EffectItem.DefaultDuration),
-              0x3728, 1, 10, 0x26B6);
-
-            mob.Summoned = false;
-            mob.ControlOrder = OrderType.Friend;
-
-            m_Creature = mob;
-          }
-
-          OnAfterUse(from);
+          obj = Activator.CreateInstance(type);
+        }
+        catch
+        {
+          obj = null;
         }
 
-        if (m_Removal != TalismanRemoval.None) from.Target = new TalismanTarget(this);
+        if (obj is Item item)
+        {
+          int count = 1;
+
+          if (m_Summoner?.Amount > 1)
+          {
+            if (item.Stackable)
+              item.Amount = m_Summoner.Amount;
+            else
+              count = m_Summoner.Amount;
+          }
+
+          if (from.Backpack == null || count * item.Weight > from.Backpack.MaxWeight ||
+              from.Backpack.Items.Count + count > from.Backpack.MaxItems)
+          {
+            from.SendLocalizedMessage(500720); // You don't have enough room in your backpack!
+            item.Delete();
+            return;
+          }
+
+          for (int i = 0; i < count; i++)
+          {
+            from.PlaceInBackpack(item);
+
+            if (i + 1 < count)
+              item = Activator.CreateInstance(type) as Item;
+          }
+
+          if (item is Board)
+            from.SendLocalizedMessage(1075000); // You have been given some wooden boards.
+          else if (item is IronIngot)
+            from.SendLocalizedMessage(1075001); // You have been given some ingots.
+          else if (item is Bandage)
+            from.SendLocalizedMessage(1075002); // You have been given some clean bandages.
+          else if (m_Summoner?.Name != null)
+            from.SendLocalizedMessage(1074853, m_Summoner.Name.ToString()); // You have been given ~1_name~
+        }
+        else if (obj is BaseCreature mob)
+        {
+          if (m_Creature?.Deleted == false || from.Followers + mob.ControlSlots > from.FollowersMax)
+          {
+            from.SendLocalizedMessage(1074270); // You have too many followers to summon another one.
+            mob.Delete();
+            return;
+          }
+
+          BaseCreature.Summon(mob, from, from.Location, mob.BaseSoundID, TimeSpan.FromMinutes(10));
+          Effects.SendLocationParticles(EffectItem.Create(mob.Location, mob.Map, EffectItem.DefaultDuration),
+            0x3728, 1, 10, 0x26B6);
+
+          mob.Summoned = false;
+          mob.ControlOrder = OrderType.Friend;
+
+          m_Creature = mob;
+        }
+
+        OnAfterUse(from);
       }
+
+      if (m_Removal != TalismanRemoval.None)
+        from.Target = new TalismanTarget(this);
     }
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
       if (ForceShowName)
         base.AddNameProperty(list);
-      else if (m_Summoner != null && !m_Summoner.IsEmpty)
+      else if (m_Summoner?.IsEmpty == false)
         list.Add(1072400,
-          m_Summoner.Name != null ? m_Summoner.Name.ToString() : "Unknown"); // Talisman of ~1_name~ Summoning
+          m_Summoner?.Name ?? "Unknown"); // Talisman of ~1_name~ Summoning
       else if (m_Removal != TalismanRemoval.None)
         list.Add(1072389, "#" + (1072000 + (int)m_Removal)); // Talisman of ~1_name~
       else
@@ -332,7 +335,7 @@ namespace Server.Items
 
       list.Add(1075085); // Requirement: Mondain's Legacy
 
-      if (m_Killer != null && !m_Killer.IsEmpty && m_Killer.Amount > 0)
+      if (m_Killer?.IsEmpty == false && m_Killer.Amount > 0)
         list.Add(1072388, "{0}\t{1}", m_Killer.Name != null ? m_Killer.Name.ToString() : "Unknown",
           m_Killer.Amount); // ~1_NAME~ Killer: +~2_val~%
 
@@ -452,9 +455,9 @@ namespace Server.Items
 
       SetSaveFlag(ref flags, SaveFlag.Attributes, !Attributes.IsEmpty);
       SetSaveFlag(ref flags, SaveFlag.SkillBonuses, !SkillBonuses.IsEmpty);
-      SetSaveFlag(ref flags, SaveFlag.Protection, m_Protection != null && !m_Protection.IsEmpty);
-      SetSaveFlag(ref flags, SaveFlag.Killer, m_Killer != null && !m_Killer.IsEmpty);
-      SetSaveFlag(ref flags, SaveFlag.Summoner, m_Summoner != null && !m_Summoner.IsEmpty);
+      SetSaveFlag(ref flags, SaveFlag.Protection, m_Protection?.IsEmpty == false);
+      SetSaveFlag(ref flags, SaveFlag.Killer, m_Killer?.IsEmpty == false);
+      SetSaveFlag(ref flags, SaveFlag.Summoner, m_Summoner?.IsEmpty == false);
       SetSaveFlag(ref flags, SaveFlag.Removal, m_Removal != TalismanRemoval.None);
       SetSaveFlag(ref flags, SaveFlag.Skill, (int)m_Skill != 0);
       SetSaveFlag(ref flags, SaveFlag.SuccessBonus, m_SuccessBonus != 0);
@@ -523,34 +526,18 @@ namespace Server.Items
         {
           SaveFlag flags = (SaveFlag)reader.ReadEncodedInt();
 
-          if (GetSaveFlag(flags, SaveFlag.Attributes))
-            Attributes = new AosAttributes(this, reader);
-          else
-            Attributes = new AosAttributes(this);
-
-          if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
-            SkillBonuses = new AosSkillBonuses(this, reader);
-          else
-            SkillBonuses = new AosSkillBonuses(this);
+          Attributes = GetSaveFlag(flags, SaveFlag.Attributes) ? new AosAttributes(this, reader) : new AosAttributes(this);
+          SkillBonuses = GetSaveFlag(flags, SaveFlag.SkillBonuses)
+            ? new AosSkillBonuses(this, reader)
+            : new AosSkillBonuses(this);
 
           // Backward compatibility
           if (GetSaveFlag(flags, SaveFlag.Owner))
             BlessedFor = reader.ReadMobile();
 
-          if (GetSaveFlag(flags, SaveFlag.Protection))
-            m_Protection = new TalismanAttribute(reader);
-          else
-            m_Protection = new TalismanAttribute();
-
-          if (GetSaveFlag(flags, SaveFlag.Killer))
-            m_Killer = new TalismanAttribute(reader);
-          else
-            m_Killer = new TalismanAttribute();
-
-          if (GetSaveFlag(flags, SaveFlag.Summoner))
-            m_Summoner = new TalismanAttribute(reader);
-          else
-            m_Summoner = new TalismanAttribute();
+          m_Protection = GetSaveFlag(flags, SaveFlag.Protection) ? new TalismanAttribute(reader) : new TalismanAttribute();
+          m_Killer = GetSaveFlag(flags, SaveFlag.Killer) ? new TalismanAttribute(reader) : new TalismanAttribute();
+          m_Summoner = GetSaveFlag(flags, SaveFlag.Summoner) ? new TalismanAttribute(reader) : new TalismanAttribute();
 
           if (GetSaveFlag(flags, SaveFlag.Removal))
             m_Removal = (TalismanRemoval)reader.ReadEncodedInt();
@@ -666,116 +653,119 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object o)
       {
-        if (m_Talisman == null || m_Talisman.Deleted)
+        if (m_Talisman?.Deleted != false)
           return;
-
-        Mobile target = o as Mobile;
 
         if (from.Talisman != m_Talisman)
         {
           from.SendLocalizedMessage(502641); // You must equip this item to use it.
+          return;
         }
-        else if (target == null)
+
+        if (!(o is Mobile target))
         {
           from.SendLocalizedMessage(1046439); // That is not a valid target.
+          return;
         }
-        else if (m_Talisman.ChargeTime > 0)
+
+        if (m_Talisman.ChargeTime > 0)
         {
           from.SendLocalizedMessage(1074882,
             m_Talisman.ChargeTime.ToString()); // You must wait ~1_val~ seconds for this to recharge.
+          return;
         }
-        else if (m_Talisman.Charges == 0 && m_Talisman.MaxCharges > 0)
+
+        if (m_Talisman.Charges == 0 && m_Talisman.MaxCharges > 0)
         {
           from.SendLocalizedMessage(1042544); // This item is out of charges.
+          return;
         }
-        else
+
+        switch (m_Talisman.Removal)
         {
-          switch (m_Talisman.Removal)
-          {
-            case TalismanRemoval.Curse:
-              target.PlaySound(0xF6);
-              target.PlaySound(0x1F7);
-              target.FixedParticles(0x3709, 1, 30, 9963, 13, 3, EffectLayer.Head);
+          case TalismanRemoval.Curse:
+            target.PlaySound(0xF6);
+            target.PlaySound(0x1F7);
+            target.FixedParticles(0x3709, 1, 30, 9963, 13, 3, EffectLayer.Head);
 
-              IEntity mfrom = new Entity(Serial.Zero, new Point3D(target.X, target.Y, target.Z - 10),
-                from.Map);
-              IEntity mto = new Entity(Serial.Zero, new Point3D(target.X, target.Y, target.Z + 50), from.Map);
-              Effects.SendMovingParticles(mfrom, mto, 0x2255, 1, 0, false, false, 13, 3, 9501, 1, 0,
-                EffectLayer.Head, 0x100);
+            IEntity mfrom = new Entity(Serial.Zero, new Point3D(target.X, target.Y, target.Z - 10),
+              from.Map);
+            IEntity mto = new Entity(Serial.Zero, new Point3D(target.X, target.Y, target.Z + 50), from.Map);
+            Effects.SendMovingParticles(mfrom, mto, 0x2255, 1, 0, false, false, 13, 3, 9501, 1, 0,
+              EffectLayer.Head, 0x100);
 
-              StatMod mod;
+            StatMod mod;
 
-              mod = target.GetStatMod("[Magic] Str Offset");
-              if (mod != null && mod.Offset < 0)
-                target.RemoveStatMod("[Magic] Str Offset");
+            mod = target.GetStatMod("[Magic] Str Offset");
+            if (mod?.Offset < 0)
+              target.RemoveStatMod("[Magic] Str Offset");
 
-              mod = target.GetStatMod("[Magic] Dex Offset");
-              if (mod != null && mod.Offset < 0)
-                target.RemoveStatMod("[Magic] Dex Offset");
+            mod = target.GetStatMod("[Magic] Dex Offset");
+            if (mod?.Offset < 0)
+              target.RemoveStatMod("[Magic] Dex Offset");
 
-              mod = target.GetStatMod("[Magic] Int Offset");
-              if (mod != null && mod.Offset < 0)
-                target.RemoveStatMod("[Magic] Int Offset");
+            mod = target.GetStatMod("[Magic] Int Offset");
+            if (mod?.Offset < 0)
+              target.RemoveStatMod("[Magic] Int Offset");
 
-              target.Paralyzed = false;
+            target.Paralyzed = false;
 
-              EvilOmenSpell.TryEndEffect(target);
-              StrangleSpell.RemoveCurse(target);
-              CorpseSkinSpell.RemoveCurse(target);
-              CurseSpell.RemoveEffect(target);
+            EvilOmenSpell.TryEndEffect(target);
+            StrangleSpell.RemoveCurse(target);
+            CorpseSkinSpell.RemoveCurse(target);
+            CurseSpell.RemoveEffect(target);
 
-              BuffInfo.RemoveBuff(target, BuffIcon.Clumsy);
-              BuffInfo.RemoveBuff(target, BuffIcon.FeebleMind);
-              BuffInfo.RemoveBuff(target, BuffIcon.Weaken);
-              BuffInfo.RemoveBuff(target, BuffIcon.MassCurse);
+            BuffInfo.RemoveBuff(target, BuffIcon.Clumsy);
+            BuffInfo.RemoveBuff(target, BuffIcon.FeebleMind);
+            BuffInfo.RemoveBuff(target, BuffIcon.Weaken);
+            BuffInfo.RemoveBuff(target, BuffIcon.MassCurse);
 
-              target.SendLocalizedMessage(1072408); // Any curses on you have been lifted
+            target.SendLocalizedMessage(1072408); // Any curses on you have been lifted
 
-              if (target != from)
-                from.SendLocalizedMessage(1072409); // Your targets curses have been lifted
+            if (target != from)
+              from.SendLocalizedMessage(1072409); // Your targets curses have been lifted
 
-              break;
-            case TalismanRemoval.Damage:
-              target.PlaySound(0x201);
-              Effects.SendLocationParticles(
-                EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration), 0x3728, 1, 13,
-                0x834, 0, 0x13B2, 0);
+            break;
+          case TalismanRemoval.Damage:
+            target.PlaySound(0x201);
+            Effects.SendLocationParticles(
+              EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration), 0x3728, 1, 13,
+              0x834, 0, 0x13B2, 0);
 
-              BleedAttack.EndBleed(target, true);
-              MortalStrike.EndWound(target);
+            BleedAttack.EndBleed(target, true);
+            MortalStrike.EndWound(target);
 
-              BuffInfo.RemoveBuff(target, BuffIcon.Bleed);
-              BuffInfo.RemoveBuff(target, BuffIcon.MortalStrike);
+            BuffInfo.RemoveBuff(target, BuffIcon.Bleed);
+            BuffInfo.RemoveBuff(target, BuffIcon.MortalStrike);
 
-              target.SendLocalizedMessage(1072405); // Your lasting damage effects have been removed!
+            target.SendLocalizedMessage(1072405); // Your lasting damage effects have been removed!
 
-              if (target != from)
-                from.SendLocalizedMessage(1072406); // Your Targets lasting damage effects have been removed!
+            if (target != from)
+              from.SendLocalizedMessage(1072406); // Your Targets lasting damage effects have been removed!
 
-              break;
-            case TalismanRemoval.Ward:
-              target.PlaySound(0x201);
-              Effects.SendLocationParticles(
-                EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration), 0x3728, 1, 13,
-                0x834, 0, 0x13B2, 0);
+            break;
+          case TalismanRemoval.Ward:
+            target.PlaySound(0x201);
+            Effects.SendLocationParticles(
+              EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration), 0x3728, 1, 13,
+              0x834, 0, 0x13B2, 0);
 
-              MagicReflectSpell.EndReflect(target);
-              ReactiveArmorSpell.EndArmor(target);
-              ProtectionSpell.EndProtection(target);
+            MagicReflectSpell.EndReflect(target);
+            ReactiveArmorSpell.EndArmor(target);
+            ProtectionSpell.EndProtection(target);
 
-              target.SendLocalizedMessage(1072402); // Your wards have been removed!
+            target.SendLocalizedMessage(1072402); // Your wards have been removed!
 
-              if (target != from)
-                from.SendLocalizedMessage(1072403); // Your target's wards have been removed!
+            if (target != from)
+              from.SendLocalizedMessage(1072403); // Your target's wards have been removed!
 
-              break;
-            case TalismanRemoval.Wildfire:
-              // TODO
-              break;
-          }
-
-          m_Talisman.OnAfterUse(from);
+            break;
+          case TalismanRemoval.Wildfire:
+            // TODO
+            break;
         }
+
+        m_Talisman.OnAfterUse(from);
       }
     }
 
@@ -919,7 +909,6 @@ namespace Server.Items
     public virtual void StopTimer()
     {
       m_Timer?.Stop();
-
       m_Timer = null;
     }
 
@@ -1010,16 +999,14 @@ namespace Server.Items
 
     public static TalismanAttribute GetRandomSummoner()
     {
-      if (0.025 > Utility.RandomDouble())
-      {
-        int num = Utility.Random(m_Summons.Length);
+      if (0.025 <= Utility.RandomDouble())
+        return new TalismanAttribute();
 
-        if (num > 14)
-          return new TalismanAttribute(m_Summons[num], m_SummonLabels[num], 10);
-        return new TalismanAttribute(m_Summons[num], m_SummonLabels[num]);
-      }
+      int num = Utility.Random(m_Summons.Length);
 
-      return new TalismanAttribute();
+      return num > 14
+        ? new TalismanAttribute(m_Summons[num], m_SummonLabels[num], 10)
+        : new TalismanAttribute(m_Summons[num], m_SummonLabels[num]);
     }
 
     public static TalismanRemoval GetRandomRemoval()
@@ -1144,7 +1131,7 @@ namespace Server.Items
 
     public static TalismanSlayerName GetRandomSlayer()
     {
-        return 0.01 > Utility.RandomDouble() ? (TalismanSlayerName)Utility.RandomMinMax(1, 9) : TalismanSlayerName.None;
+      return 0.01 > Utility.RandomDouble() ? (TalismanSlayerName)Utility.RandomMinMax(1, 9) : TalismanSlayerName.None;
     }
 
     public static int GetRandomCharges()

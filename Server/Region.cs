@@ -99,7 +99,7 @@ namespace Server
     ValoriaShips
   }
 
-  public class Region : IComparable
+  public class Region : IComparable<Region>
   {
     public static readonly int DefaultPriority = 50;
 
@@ -249,13 +249,10 @@ namespace Server
     public bool IsDefault => Map.DefaultRegion == this;
     public virtual MusicName DefaultMusic => Parent?.Music ?? MusicName.Invalid;
 
-    int IComparable.CompareTo(object obj)
+    public int CompareTo(Region reg)
     {
-      if (obj == null)
+      if (reg == null)
         return 1;
-
-      if (!(obj is Region reg))
-        throw new ArgumentException("obj is not a Region", nameof(obj));
 
       // Dynamic regions go first
       if (Dynamic)
@@ -493,15 +490,14 @@ namespace Server
     {
       List<Mobile> list = new List<Mobile>();
 
-      if (Sectors != null)
-        for (int i = 0; i < Sectors.Length; i++)
-        {
-          Sector sector = Sectors[i];
+      for (int i = 0; i < Sectors?.Length; i++)
+      {
+        Sector sector = Sectors[i];
 
-          foreach (Mobile player in sector.Players)
-            if (player.Region.IsPartOf(this))
-              list.Add(player);
-        }
+        foreach (Mobile player in sector.Players)
+          if (player.Region.IsPartOf(this))
+            list.Add(player);
+      }
 
       return list;
     }
@@ -510,16 +506,14 @@ namespace Server
     {
       int count = 0;
 
-      if (Sectors != null)
-        for (int i = 0; i < Sectors.Length; i++)
-        {
-          Sector sector = Sectors[i];
+      for (int i = 0; i < Sectors?.Length; i++)
+      {
+        Sector sector = Sectors[i];
 
-          foreach (Mobile player in sector.Players)
-            if (player.Region.IsPartOf(this))
-              count++;
-        }
-
+        foreach (Mobile player in sector.Players)
+          if (player.Region.IsPartOf(this))
+            count++;
+      }
       return count;
     }
 
@@ -527,16 +521,14 @@ namespace Server
     {
       List<Mobile> list = new List<Mobile>();
 
-      if (Sectors != null)
-        for (int i = 0; i < Sectors.Length; i++)
-        {
-          Sector sector = Sectors[i];
+      for (int i = 0; i < Sectors?.Length; i++)
+      {
+        Sector sector = Sectors[i];
 
-          foreach (Mobile mobile in sector.Mobiles)
-            if (mobile.Region.IsPartOf(this))
-              list.Add(mobile);
-        }
-
+        foreach (Mobile mobile in sector.Mobiles)
+          if (mobile.Region.IsPartOf(this))
+            list.Add(mobile);
+      }
       return list;
     }
 
@@ -544,15 +536,14 @@ namespace Server
     {
       int count = 0;
 
-      if (Sectors != null)
-        for (int i = 0; i < Sectors.Length; i++)
-        {
-          Sector sector = Sectors[i];
+      for (int i = 0; i < Sectors?.Length; i++)
+      {
+        Sector sector = Sectors[i];
 
-          foreach (Mobile mobile in sector.Mobiles)
-            if (mobile.Region.IsPartOf(this))
-              count++;
-        }
+        foreach (Mobile mobile in sector.Mobiles)
+          if (mobile.Region.IsPartOf(this))
+            count++;
+      }
 
       return count;
     }
@@ -599,12 +590,12 @@ namespace Server
 
     public virtual Type GetResource(Type type)
     {
-      return Parent != null ? Parent.GetResource(type) : type;
+      return Parent?.GetResource(type) ?? type;
     }
 
     public virtual bool CanUseStuckMenu(Mobile m)
     {
-      return Parent == null || Parent.CanUseStuckMenu(m);
+      return Parent?.CanUseStuckMenu(m) != false;
     }
 
     public virtual void OnAggressed(Mobile aggressor, Mobile aggressed, bool criminal)
@@ -629,39 +620,37 @@ namespace Server
 
     public virtual bool OnTarget(Mobile m, Target t, object o)
     {
-      return Parent == null || Parent.OnTarget(m, t, o);
+      return Parent?.OnTarget(m, t, o) != false;
     }
 
     public virtual bool OnCombatantChange(Mobile m, Mobile Old, Mobile New)
     {
-      return Parent == null || Parent.OnCombatantChange(m, Old, New);
+      return Parent?.OnCombatantChange(m, Old, New) != false;
     }
 
     public virtual bool AllowHousing(Mobile from, Point3D p)
     {
-      return Parent == null || Parent.AllowHousing(from, p);
+      return Parent?.AllowHousing(from, p) != false;
     }
 
     public virtual bool SendInaccessibleMessage(Item item, Mobile from)
     {
-      return Parent != null && Parent.SendInaccessibleMessage(item, from);
+      return Parent?.SendInaccessibleMessage(item, from) == true;
     }
 
     public virtual bool CheckAccessibility(Item item, Mobile from)
     {
-      return Parent == null || Parent.CheckAccessibility(item, from);
+      return Parent?.CheckAccessibility(item, from) != false;
     }
 
     public virtual bool OnDecay(Item item)
     {
-      return Parent == null || Parent.OnDecay(item);
+      return Parent?.OnDecay(item) != false;
     }
 
     public virtual bool AllowHarmful(Mobile from, Mobile target)
     {
-      return Parent?.AllowHarmful(from, target) == true ||
-             Mobile.AllowHarmfulHandler == null ||
-             Mobile.AllowHarmfulHandler(from, target);
+      return Parent?.AllowHarmful(from, target) ?? Mobile.AllowHarmfulHandler?.Invoke(from, target) ?? true;
     }
 
     public virtual void OnCriminalAction(Mobile m, bool message)
@@ -674,9 +663,8 @@ namespace Server
 
     public virtual bool AllowBeneficial(Mobile from, Mobile target)
     {
-      return Parent?.AllowBeneficial(from, target) == true ||
-             Mobile.AllowBeneficialHandler == null ||
-             Mobile.AllowBeneficialHandler(from, target);
+      return Parent?.AllowBeneficial(from, target) ??
+             Mobile.AllowBeneficialHandler?.Invoke(from, target) ?? true;
     }
 
     public virtual void OnBeneficialAction(Mobile helper, Mobile target)
@@ -701,12 +689,12 @@ namespace Server
 
     public virtual bool OnSkillUse(Mobile m, int Skill)
     {
-      return Parent == null || Parent.OnSkillUse(m, Skill);
+      return Parent?.OnSkillUse(m, Skill) != false;
     }
 
     public virtual bool OnBeginSpellCast(Mobile m, ISpell s)
     {
-      return Parent == null || Parent.OnBeginSpellCast(m, s);
+      return Parent?.OnBeginSpellCast(m, s) != false;
     }
 
     public virtual void OnSpellCast(Mobile m, ISpell s)
@@ -716,12 +704,12 @@ namespace Server
 
     public virtual bool OnResurrect(Mobile m)
     {
-      return Parent == null || Parent.OnResurrect(m);
+      return Parent?.OnResurrect(m) != false;
     }
 
     public virtual bool OnBeforeDeath(Mobile m)
     {
-      return Parent == null || Parent.OnBeforeDeath(m);
+      return Parent?.OnBeforeDeath(m) != false;
     }
 
     public virtual void OnDeath(Mobile m)
@@ -731,27 +719,27 @@ namespace Server
 
     public virtual bool OnDamage(Mobile m, ref int Damage)
     {
-      return Parent == null || Parent.OnDamage(m, ref Damage);
+      return Parent?.OnDamage(m, ref Damage) != false;
     }
 
     public virtual bool OnHeal(Mobile m, ref int Heal)
     {
-      return Parent == null || Parent.OnHeal(m, ref Heal);
+      return Parent?.OnHeal(m, ref Heal) != false;
     }
 
     public virtual bool OnDoubleClick(Mobile m, object o)
     {
-      return Parent == null || Parent.OnDoubleClick(m, o);
+      return Parent?.OnDoubleClick(m, o) != false;
     }
 
     public virtual bool OnSingleClick(Mobile m, object o)
     {
-      return Parent == null || Parent.OnSingleClick(m, o);
+      return Parent?.OnSingleClick(m, o) != false;
     }
 
     public virtual bool AllowSpawn()
     {
-      return Parent == null || Parent.AllowSpawn();
+      return Parent?.AllowSpawn() != false;
     }
 
     public virtual void AlterLightLevel(Mobile m, ref int global, ref int personal)
@@ -763,9 +751,8 @@ namespace Server
     {
       if (Parent != null)
         return Parent.GetLogoutDelay(m);
-      if (m.AccessLevel > AccessLevel.Player)
-        return StaffLogoutDelay;
-      return DefaultLogoutDelay;
+
+      return m.AccessLevel > AccessLevel.Player ? StaffLogoutDelay : DefaultLogoutDelay;
     }
 
 

@@ -35,7 +35,7 @@ namespace Server.Mobiles
     {
       Mobile combatant = m_Mobile.Combatant;
 
-      if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+      if (combatant?.Deleted != false || combatant.Map != m_Mobile.Map || !combatant.Alive ||
           combatant.IsDeadBondedPet)
       {
         m_Mobile.DebugSay("My combatant is gone, so my guard is up");

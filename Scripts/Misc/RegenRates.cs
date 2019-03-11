@@ -55,7 +55,7 @@ namespace Server.Misc
 
       BaseCreature bc = from as BaseCreature;
 
-      if (bc != null && !bc.IsAnimatedDead)
+      if (bc?.IsAnimatedDead == false)
         points += 4;
 
       if (bc?.IsParagon == true || from is Leviathan)

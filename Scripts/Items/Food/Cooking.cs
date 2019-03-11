@@ -81,36 +81,29 @@ namespace Server.Items
 
         if (targeted is Eggs)
         {
-          targetItem.Consume();
-
           from.AddToBackpack(new UnbakedQuiche());
           from.AddToBackpack(new Eggshells());
         }
         else if (targeted is CheeseWheel)
         {
-          targetItem.Consume();
-
           from.AddToBackpack(new CheesePizza());
         }
         else if (targeted is Sausage)
         {
-          targetItem.Consume();
-
           from.AddToBackpack(new SausagePizza());
         }
         else if (targeted is Apple)
         {
-          targetItem.Consume();
-
           from.AddToBackpack(new UnbakedApplePie());
         }
-
         else if (targeted is Peach)
         {
-          targetItem.Consume();
-
           from.AddToBackpack(new UnbakedPeachCobbler());
         }
+        else
+          return;
+
+        targetItem.Consume();
       }
     }
   }
@@ -598,12 +591,7 @@ namespace Server.Items
   public class WheatSheaf : Item
   {
     [Constructible]
-    public WheatSheaf() : this(1)
-    {
-    }
-
-    [Constructible]
-    public WheatSheaf(int amount) : base(7869)
+    public WheatSheaf(int amount = 1) : base(7869)
     {
       Weight = 1.0;
       Stackable = true;

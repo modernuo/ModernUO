@@ -80,7 +80,7 @@ namespace Server.Factions
       {
         PlayerState victimState = PlayerState.Find(from);
 
-        if (victimState != null && victimState.CanGiveSilverTo(Placer) && victimState.KillPoints > 0)
+        if (victimState?.CanGiveSilverTo(Placer) == true && victimState.KillPoints > 0)
         {
           int silverGiven = Faction.AwardSilver(Placer, silverToAward);
 
@@ -236,7 +236,7 @@ namespace Server.Factions
 
     public override void OnDelete()
     {
-      if (Faction != null && Faction.Traps.Contains(this))
+      if (Faction?.Traps.Contains(this) == true)
         Faction.Traps.Remove(this);
 
       base.OnDelete();

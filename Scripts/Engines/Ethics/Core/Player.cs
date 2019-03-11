@@ -104,7 +104,7 @@ namespace Server.Ethics
 
       Player pl = pm.EthicPlayer;
 
-      if (pl != null && !pl.Ethic.IsEligible(pl.Mobile))
+      if (pl?.Ethic.IsEligible(pl.Mobile) == false)
         pm.EthicPlayer = pl = null;
 
       return pl;

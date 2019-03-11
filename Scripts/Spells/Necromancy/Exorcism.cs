@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.CannedEvil;
 using Server.Engines.PartySystem;
 using Server.Factions;
@@ -57,7 +58,7 @@ namespace Server.Spells.Necromancy
       new Point3D(295, 712, 55)
     };
 
-    public ExorcismSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ExorcismSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -98,17 +99,11 @@ namespace Server.Spells.Necromancy
 
         if (map != null)
         {
-          List<Mobile> targets = new List<Mobile>();
+          IEnumerable<Mobile> targets = r.ChampionSpawn.GetMobilesInRange(Range).Where(IsValidTarget);
 
-          foreach (Mobile m in r.ChampionSpawn.GetMobilesInRange(Range))
-            if (IsValidTarget(m))
-              targets.Add(m);
-
-          for (int i = 0; i < targets.Count; ++i)
+          foreach (Mobile m in targets)
           {
-            Mobile m = targets[i];
-
-            //Suprisingly, no sparkle type effects
+            //Surprisingly, no sparkle type effects
 
             m.Location = GetNearestShrine(m);
           }
@@ -126,7 +121,7 @@ namespace Server.Spells.Necromancy
       Corpse c = m.Corpse as Corpse;
       Map map = m.Map;
 
-      if (c != null && !c.Deleted && map != null && c.Map == map)
+      if (c?.Deleted == false && map != null && c.Map == map)
       {
         if (SpellHelper.IsAnyT2A(map, c.Location) && SpellHelper.IsAnyT2A(map, m.Location))
           return false; //Same Map, both in T2A, ie, same 'sub server'.
@@ -134,12 +129,10 @@ namespace Server.Spells.Necromancy
         if (m.Region.IsPartOf<DungeonRegion>() == Region.Find(c.Location, map).IsPartOf<DungeonRegion>())
           return false; //Same Map, both in Dungeon region OR They're both NOT in a dungeon region.
 
-        //Just an approximation cause RunUO doens't divide up the world the same way OSI does ;p
+        //Just an approximation cause RunUO doesn't divide up the world the same way OSI does ;p
       }
 
-      Party p = Party.Get(m);
-
-      if (p != null && p.Contains(Caster))
+      if (Party.Get(m)?.Contains(Caster) == true)
         return false;
 
       if (m.Guild != null && Caster.Guild != null)
@@ -156,10 +149,7 @@ namespace Server.Spells.Necromancy
 
       Faction f = Faction.Find(m);
 
-      if (Faction.Facet == m.Map && f != null && f == Faction.Find(Caster))
-        return false;
-
-      return true;
+      return Faction.Facet != m.Map || f == null || f != Faction.Find(Caster);
     }
 
     private static Point3D GetNearestShrine(Mobile m)

@@ -3,12 +3,7 @@ namespace Server.Items
   public class LargeStoneTableEastAddon : BaseAddon
   {
     [Constructible]
-    public LargeStoneTableEastAddon() : this(0)
-    {
-    }
-
-    [Constructible]
-    public LargeStoneTableEastAddon(int hue)
+    public LargeStoneTableEastAddon(int hue = 0)
     {
       AddComponent(new AddonComponent(0x1202), 0, 0, 0);
       AddComponent(new AddonComponent(0x1203), 0, 1, 0);

@@ -3,12 +3,7 @@ namespace Server.Items
   public class MindRotScroll : SpellScroll
   {
     [Constructible]
-    public MindRotScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public MindRotScroll(int amount) : base(107, 0x2267, amount)
+    public MindRotScroll(int amount = 1) : base(107, 0x2267, amount)
     {
     }
 

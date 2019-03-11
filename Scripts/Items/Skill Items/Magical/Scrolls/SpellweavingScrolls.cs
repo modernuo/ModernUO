@@ -3,13 +3,7 @@ namespace Server.Items
   public class ArcaneCircleScroll : SpellScroll
   {
     [Constructible]
-    public ArcaneCircleScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public ArcaneCircleScroll(int amount)
+    public ArcaneCircleScroll(int amount = 1)
       : base(600, 0x2D51, amount)
     {
       Hue = 0x8FD;
@@ -38,13 +32,7 @@ namespace Server.Items
   public class GiftOfRenewalScroll : SpellScroll
   {
     [Constructible]
-    public GiftOfRenewalScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public GiftOfRenewalScroll(int amount)
+    public GiftOfRenewalScroll(int amount = 1)
       : base(601, 0x2D52, amount)
     {
       Hue = 0x8FD;
@@ -73,13 +61,7 @@ namespace Server.Items
   public class ImmolatingWeaponScroll : SpellScroll
   {
     [Constructible]
-    public ImmolatingWeaponScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public ImmolatingWeaponScroll(int amount)
+    public ImmolatingWeaponScroll(int amount = 1)
       : base(602, 0x2D53, amount)
     {
       Hue = 0x8FD;
@@ -108,13 +90,7 @@ namespace Server.Items
   public class AttuneWeaponScroll : SpellScroll
   {
     [Constructible]
-    public AttuneWeaponScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public AttuneWeaponScroll(int amount)
+    public AttuneWeaponScroll(int amount = 1)
       : base(603, 0x2D54, amount)
     {
       Hue = 0x8FD;
@@ -143,13 +119,7 @@ namespace Server.Items
   public class ThunderstormScroll : SpellScroll
   {
     [Constructible]
-    public ThunderstormScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public ThunderstormScroll(int amount)
+    public ThunderstormScroll(int amount = 1)
       : base(604, 0x2D55, amount)
     {
       Hue = 0x8FD;
@@ -178,13 +148,7 @@ namespace Server.Items
   public class NatureFuryScroll : SpellScroll
   {
     [Constructible]
-    public NatureFuryScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public NatureFuryScroll(int amount)
+    public NatureFuryScroll(int amount = 1)
       : base(605, 0x2D56, amount)
     {
       Hue = 0x8FD;
@@ -213,13 +177,7 @@ namespace Server.Items
   public class SummonFeyScroll : SpellScroll
   {
     [Constructible]
-    public SummonFeyScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public SummonFeyScroll(int amount)
+    public SummonFeyScroll(int amount = 1)
       : base(606, 0x2D57, amount)
     {
       Hue = 0x8FD;
@@ -248,13 +206,7 @@ namespace Server.Items
   public class SummonFiendScroll : SpellScroll
   {
     [Constructible]
-    public SummonFiendScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public SummonFiendScroll(int amount)
+    public SummonFiendScroll(int amount = 1)
       : base(607, 0x2D58, amount)
     {
       Hue = 0x8FD;
@@ -283,13 +235,7 @@ namespace Server.Items
   public class ReaperFormScroll : SpellScroll
   {
     [Constructible]
-    public ReaperFormScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public ReaperFormScroll(int amount)
+    public ReaperFormScroll(int amount = 1)
       : base(608, 0x2D59, amount)
     {
       Hue = 0x8FD;
@@ -318,13 +264,7 @@ namespace Server.Items
   public class WildfireScroll : SpellScroll
   {
     [Constructible]
-    public WildfireScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public WildfireScroll(int amount)
+    public WildfireScroll(int amount = 1)
       : base(609, 0x2D5A, amount)
     {
       Hue = 0x8FD;
@@ -353,13 +293,7 @@ namespace Server.Items
   public class EssenceOfWindScroll : SpellScroll
   {
     [Constructible]
-    public EssenceOfWindScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public EssenceOfWindScroll(int amount)
+    public EssenceOfWindScroll(int amount = 1)
       : base(610, 0x2D5B, amount)
     {
       Hue = 0x8FD;
@@ -388,13 +322,7 @@ namespace Server.Items
   public class DryadAllureScroll : SpellScroll
   {
     [Constructible]
-    public DryadAllureScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public DryadAllureScroll(int amount)
+    public DryadAllureScroll(int amount = 1)
       : base(611, 0x2D5C, amount)
     {
       Hue = 0x8FD;
@@ -423,13 +351,7 @@ namespace Server.Items
   public class EtherealVoyageScroll : SpellScroll
   {
     [Constructible]
-    public EtherealVoyageScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public EtherealVoyageScroll(int amount)
+    public EtherealVoyageScroll(int amount = 1)
       : base(612, 0x2D5D, amount)
     {
       Hue = 0x8FD;
@@ -458,13 +380,7 @@ namespace Server.Items
   public class WordOfDeathScroll : SpellScroll
   {
     [Constructible]
-    public WordOfDeathScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public WordOfDeathScroll(int amount)
+    public WordOfDeathScroll(int amount = 1)
       : base(613, 0x2D5E, amount)
     {
       Hue = 0x8FD;
@@ -493,13 +409,7 @@ namespace Server.Items
   public class GiftOfLifeScroll : SpellScroll
   {
     [Constructible]
-    public GiftOfLifeScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public GiftOfLifeScroll(int amount)
+    public GiftOfLifeScroll(int amount = 1)
       : base(614, 0x2D5F, amount)
     {
       Hue = 0x8FD;
@@ -528,13 +438,7 @@ namespace Server.Items
   public class ArcaneEmpowermentScroll : SpellScroll
   {
     [Constructible]
-    public ArcaneEmpowermentScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public ArcaneEmpowermentScroll(int amount)
+    public ArcaneEmpowermentScroll(int amount = 1)
       : base(615, 0x2D60, amount)
     {
       Hue = 0x8FD;

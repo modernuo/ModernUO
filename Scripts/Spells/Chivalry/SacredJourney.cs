@@ -21,8 +21,8 @@ namespace Server.Spells.Chivalry
 
     private RunebookEntry m_Entry;
 
-    public SacredJourneySpell(Mobile caster, Item scroll, RunebookEntry entry = null, Runebook book = null) : base(caster, scroll,
-      m_Info)
+    public SacredJourneySpell(Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null) :
+      base(caster, scroll, m_Info)
     {
       m_Entry = entry;
       m_Book = book;

@@ -120,7 +120,7 @@ namespace Server.Mobiles
     {
       // If I'm poisoned, always attempt to cure.
       if (m_Mobile.Poisoned)
-        return new CureSpell(m_Mobile, null);
+        return new CureSpell(m_Mobile);
 
       // Summoned creatures never heal themselves.
       if (m_Mobile.Summoned)
@@ -150,11 +150,11 @@ namespace Server.Mobiles
           m_Mobile.UseSkill(SkillName.SpiritSpeak);
         }
         else
-          spell = new GreaterHealSpell(m_Mobile, null);
+          spell = new GreaterHealSpell(m_Mobile);
       }
       else if (m_Mobile.Hits < m_Mobile.HitsMax - 10)
       {
-        spell = new HealSpell(m_Mobile, null);
+        spell = new HealSpell(m_Mobile);
       }
 
       double delay;
@@ -213,7 +213,7 @@ namespace Server.Mobiles
       {
         m_Mobile.Target?.Cancel(m_Mobile, TargetCancelType.Canceled);
 
-        new TeleportSpell(m_Mobile, null).Cast();
+        new TeleportSpell(m_Mobile).Cast();
 
         m_Mobile.DebugSay("I am stuck, I'm going to try teleporting away");
       }
@@ -265,19 +265,19 @@ namespace Server.Mobiles
       {
         case 0:
           m_Mobile.DebugSay("Pain Spike");
-          return new PainSpikeSpell(m_Mobile, null);
+          return new PainSpikeSpell(m_Mobile);
         case 1:
           m_Mobile.DebugSay("Poison Strike");
-          return new PoisonStrikeSpell(m_Mobile, null);
+          return new PoisonStrikeSpell(m_Mobile);
         case 2:
           m_Mobile.DebugSay("Strangle");
-          return new StrangleSpell(m_Mobile, null);
+          return new StrangleSpell(m_Mobile);
         case 3:
           m_Mobile.DebugSay("Wither");
-          return new WitherSpell(m_Mobile, null);
+          return new WitherSpell(m_Mobile);
         default:
           m_Mobile.DebugSay("Vengeful Spirit");
-          return new VengefulSpiritSpell(m_Mobile, null);
+          return new VengefulSpiritSpell(m_Mobile);
       }
     }
 
@@ -293,18 +293,18 @@ namespace Server.Mobiles
       switch (Utility.Random(maxCircle * 2))
       {
         case 0:
-        case 1: return new MagicArrowSpell(m_Mobile, null);
+        case 1: return new MagicArrowSpell(m_Mobile);
         case 2:
-        case 3: return new HarmSpell(m_Mobile, null);
+        case 3: return new HarmSpell(m_Mobile);
         case 4:
-        case 5: return new FireballSpell(m_Mobile, null);
+        case 5: return new FireballSpell(m_Mobile);
         case 6:
-        case 7: return new LightningSpell(m_Mobile, null);
+        case 7: return new LightningSpell(m_Mobile);
         case 8:
-        case 9: return new MindBlastSpell(m_Mobile, null);
-        case 10: return new EnergyBoltSpell(m_Mobile, null);
-        case 11: return new ExplosionSpell(m_Mobile, null);
-        default: return new FlameStrikeSpell(m_Mobile, null);
+        case 9: return new MindBlastSpell(m_Mobile);
+        case 10: return new EnergyBoltSpell(m_Mobile);
+        case 11: return new ExplosionSpell(m_Mobile);
+        default: return new FlameStrikeSpell(m_Mobile);
       }
     }
 
@@ -319,38 +319,38 @@ namespace Server.Mobiles
       {
         case 0:
           m_Mobile.DebugSay("Blood Oath");
-          return new BloodOathSpell(m_Mobile, null);
+          return new BloodOathSpell(m_Mobile);
         case 1:
           m_Mobile.DebugSay("Corpse Skin");
-          return new CorpseSkinSpell(m_Mobile, null);
+          return new CorpseSkinSpell(m_Mobile);
         case 2:
           m_Mobile.DebugSay("Evil Omen");
-          return new EvilOmenSpell(m_Mobile, null);
+          return new EvilOmenSpell(m_Mobile);
         default:
           m_Mobile.DebugSay("Mind Rot");
-          return new MindRotSpell(m_Mobile, null);
+          return new MindRotSpell(m_Mobile);
       }
     }
 
     public virtual Spell GetRandomCurseSpellMage()
     {
       if (m_Mobile.Skills.Magery.Value >= 40.0 && Utility.Random(4) == 0)
-        return new CurseSpell(m_Mobile, null);
+        return new CurseSpell(m_Mobile);
 
       switch (Utility.Random(3))
       {
-        case 0: return new WeakenSpell(m_Mobile, null);
-        case 1: return new ClumsySpell(m_Mobile, null);
-        default: return new FeeblemindSpell(m_Mobile, null);
+        case 0: return new WeakenSpell(m_Mobile);
+        case 1: return new ClumsySpell(m_Mobile);
+        default: return new FeeblemindSpell(m_Mobile);
       }
     }
 
     public virtual Spell GetRandomManaDrainSpell()
     {
       if (m_Mobile.Skills.Magery.Value >= 80.0 && Utility.RandomBool())
-        return new ManaVampireSpell(m_Mobile, null);
+        return new ManaVampireSpell(m_Mobile);
 
-      return new ManaDrainSpell(m_Mobile, null);
+      return new ManaDrainSpell(m_Mobile);
     }
 
     public virtual Spell DoDispel(Mobile toDispel)
@@ -358,7 +358,7 @@ namespace Server.Mobiles
       if (!SmartAI)
       {
         if (ScaleBySkill(DispelChance, SkillName.Magery) > Utility.RandomDouble())
-          return new DispelSpell(m_Mobile, null);
+          return new DispelSpell(m_Mobile);
 
         return ChooseSpell(toDispel);
       }
@@ -368,11 +368,11 @@ namespace Server.Mobiles
       if (spell == null)
       {
         if (!m_Mobile.DisallowAllMoves && Utility.Random((int)m_Mobile.GetDistanceToSqrt(toDispel)) == 0)
-          spell = new TeleportSpell(m_Mobile, null);
+          spell = new TeleportSpell(m_Mobile);
         else if (Utility.Random(3) == 0 && !m_Mobile.InRange(toDispel, 3) && !toDispel.Paralyzed && !toDispel.Frozen)
-          spell = new ParalyzeSpell(m_Mobile, null);
+          spell = new ParalyzeSpell(m_Mobile);
         else
-          spell = new DispelSpell(m_Mobile, null);
+          spell = new DispelSpell(m_Mobile);
       }
 
       return spell;
@@ -380,7 +380,7 @@ namespace Server.Mobiles
 
     public virtual Spell ChooseSpell(Mobile c)
     {
-      Spell spell = null;
+      Spell spell;
 
       if (!SmartAI)
       {
@@ -396,7 +396,7 @@ namespace Server.Mobiles
             (c.Player ? 18 : 30);
 
           if (psDamage > c.Hits)
-            return new PainSpikeSpell(m_Mobile, null);
+            return new PainSpikeSpell(m_Mobile);
         }
 
         switch (Utility.Random(16))
@@ -409,14 +409,14 @@ namespace Server.Mobiles
 
             m_Mobile.DebugSay("Attempting to poison");
 
-            spell = new PoisonSpell(m_Mobile, null);
+            spell = new PoisonSpell(m_Mobile);
             break;
           }
           case 2: // Bless ourselves
           {
             m_Mobile.DebugSay("Blessing myself");
 
-            spell = new BlessSpell(m_Mobile, null);
+            spell = new BlessSpell(m_Mobile);
             break;
           }
           case 3:
@@ -434,7 +434,7 @@ namespace Server.Mobiles
 
             m_Mobile.DebugSay("Attempting to paralyze");
 
-            spell = new ParalyzeSpell(m_Mobile, null);
+            spell = new ParalyzeSpell(m_Mobile);
             break;
           }
           case 6: // Drain mana
@@ -451,7 +451,7 @@ namespace Server.Mobiles
 
             m_Mobile.DebugSay("Attempting to invis myself");
 
-            spell = new InvisibilitySpell(m_Mobile, null);
+            spell = new InvisibilitySpell(m_Mobile);
             break;
           }
           default: // Damage them
@@ -478,7 +478,7 @@ namespace Server.Mobiles
           if (c.Poisoned)
             goto case 1;
 
-          spell = new PoisonSpell(m_Mobile, null);
+          spell = new PoisonSpell(m_Mobile);
           break;
         }
         case 1: // Deal some damage
@@ -499,7 +499,7 @@ namespace Server.Mobiles
             }
             else if (!c.Poisoned)
             {
-              spell = new ParalyzeSpell(m_Mobile, null);
+              spell = new ParalyzeSpell(m_Mobile);
             }
           }
           else if (m_Mobile.Mana > 60)
@@ -507,12 +507,12 @@ namespace Server.Mobiles
             if (Utility.RandomBool() && !c.Paralyzed && !c.Frozen && !c.Poisoned)
             {
               m_Combo = 0;
-              spell = new ParalyzeSpell(m_Mobile, null);
+              spell = new ParalyzeSpell(m_Mobile);
             }
             else
             {
               m_Combo = 1;
-              spell = new ExplosionSpell(m_Mobile, null);
+              spell = new ExplosionSpell(m_Mobile);
             }
           }
 
@@ -529,20 +529,20 @@ namespace Server.Mobiles
 
       if (m_Combo == 0)
       {
-        spell = new ExplosionSpell(m_Mobile, null);
+        spell = new ExplosionSpell(m_Mobile);
         ++m_Combo; // Move to next spell
       }
       else if (m_Combo == 1)
       {
-        spell = new WeakenSpell(m_Mobile, null);
+        spell = new WeakenSpell(m_Mobile);
         ++m_Combo; // Move to next spell
       }
       else if (m_Combo == 2)
       {
         if (!c.Poisoned)
-          spell = new PoisonSpell(m_Mobile, null);
+          spell = new PoisonSpell(m_Mobile);
         else if (IsNecromancer)
-          spell = new StrangleSpell(m_Mobile, null);
+          spell = new StrangleSpell(m_Mobile);
 
         ++m_Combo; // Move to next spell
       }
@@ -554,9 +554,9 @@ namespace Server.Mobiles
           case 0:
           {
             if (c.Int < c.Dex)
-              spell = new FeeblemindSpell(m_Mobile, null);
+              spell = new FeeblemindSpell(m_Mobile);
             else
-              spell = new ClumsySpell(m_Mobile, null);
+              spell = new ClumsySpell(m_Mobile);
 
             ++m_Combo; // Move to next spell
 
@@ -564,19 +564,19 @@ namespace Server.Mobiles
           }
           case 1:
           {
-            spell = new EnergyBoltSpell(m_Mobile, null);
+            spell = new EnergyBoltSpell(m_Mobile);
             m_Combo = -1; // Reset combo state
             break;
           }
           case 2:
           {
-            spell = new FlameStrikeSpell(m_Mobile, null);
+            spell = new FlameStrikeSpell(m_Mobile);
             m_Combo = -1; // Reset combo state
             break;
           }
           default:
           {
-            spell = new PainSpikeSpell(m_Mobile, null);
+            spell = new PainSpikeSpell(m_Mobile);
             m_Combo = -1; // Reset combo state
             break;
           }
@@ -584,7 +584,7 @@ namespace Server.Mobiles
       }
       else if (m_Combo == 4 && spell == null)
       {
-        spell = new MindBlastSpell(m_Mobile, null);
+        spell = new MindBlastSpell(m_Mobile);
         m_Combo = -1;
       }
 
@@ -607,7 +607,7 @@ namespace Server.Mobiles
       Mobile c = m_Mobile.Combatant;
       m_Mobile.Warmode = true;
 
-      if (c == null || c.Deleted || !c.Alive || c.IsDeadBondedPet || !m_Mobile.CanSee(c) ||
+      if (c?.Deleted != false || !c.Alive || c.IsDeadBondedPet || !m_Mobile.CanSee(c) ||
           !m_Mobile.CanBeHarmful(c, false) || c.Map != m_Mobile.Map)
       {
         // Our combatant is deleted, dead, hidden, or we cannot hurt them
@@ -710,7 +710,7 @@ namespace Server.Mobiles
         {
           m_Mobile.DebugSay("I am going to cure myself");
 
-          spell = new CureSpell(m_Mobile, null);
+          spell = new CureSpell(m_Mobile);
         }
         else if (toDispel != null) // Something dispellable is attacking us
         {
@@ -725,7 +725,7 @@ namespace Server.Mobiles
         else if (SmartAI && (c.Spell is HealSpell || c.Spell is GreaterHealSpell) && !c.Poisoned
         ) // They have a heal spell out
         {
-          spell = new PoisonSpell(m_Mobile, null);
+          spell = new PoisonSpell(m_Mobile);
         }
         else
         {
@@ -764,7 +764,7 @@ namespace Server.Mobiles
 
     public override bool DoActionGuard()
     {
-      if (m_LastTarget != null && m_LastTarget.Hidden)
+      if (m_LastTarget?.Hidden == true)
       {
         Map map = m_Mobile.Map;
 
@@ -777,7 +777,7 @@ namespace Server.Mobiles
           m_Mobile.DebugSay("I am going to reveal my last target");
 
           m_RevealTarget = new LandTarget(m_LastTargetLoc, map);
-          Spell spell = new RevealSpell(m_Mobile, null);
+          Spell spell = new RevealSpell(m_Mobile);
 
           if (spell.Cast())
             m_LastTarget = null; // only do it once
@@ -827,7 +827,7 @@ namespace Server.Mobiles
         m_Mobile.FocusMob = null;
 
         if (m_Mobile.Poisoned && Utility.Random(0, 5) == 0)
-          new CureSpell(m_Mobile, null).Cast();
+          new CureSpell(m_Mobile).Cast();
       }
       else
       {
@@ -855,7 +855,7 @@ namespace Server.Mobiles
 
         Mobile comb = m_Mobile.Combatant;
 
-        if (comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet &&
+        if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet &&
             m_Mobile.InRange(comb, Core.ML ? 10 : 12) && CanDispel(comb))
         {
           active = comb;
@@ -917,7 +917,7 @@ namespace Server.Mobiles
 
         Mobile comb = m_Mobile.Combatant;
 
-        if (comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && CanDispel(comb))
+        if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet && CanDispel(comb))
         {
           active = inactive = comb;
           actPrio = inactPrio = m_Mobile.GetDistanceToSqrt(comb);

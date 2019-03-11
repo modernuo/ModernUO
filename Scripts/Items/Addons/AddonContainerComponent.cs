@@ -35,7 +35,7 @@ namespace Server.Items
       {
         base.Hue = value;
 
-        if (Addon != null && Addon.ShareHue)
+        if (Addon?.ShareHue == true)
           Addon.Hue = value;
       }
     }

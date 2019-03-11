@@ -8,11 +8,7 @@ namespace Server.Items
 {
   public abstract class BaseHat : BaseClothing, IShipwreckedItem
   {
-    public BaseHat(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BaseHat(int itemID, int hue) : base(itemID, Layer.Helm, hue)
+    public BaseHat(int itemID, int hue = 0) : base(itemID, Layer.Helm, hue)
     {
     }
 
@@ -81,12 +77,7 @@ namespace Server.Items
   public class Kasa : BaseHat
   {
     [Constructible]
-    public Kasa() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Kasa(int hue) : base(0x2798, hue)
+    public Kasa(int hue = 0) : base(0x2798, hue)
     {
       Weight = 3.0;
     }
@@ -123,12 +114,7 @@ namespace Server.Items
   public class ClothNinjaHood : BaseHat
   {
     [Constructible]
-    public ClothNinjaHood() : this(0)
-    {
-    }
-
-    [Constructible]
-    public ClothNinjaHood(int hue) : base(0x278F, hue)
+    public ClothNinjaHood(int hue = 0) : base(0x278F, hue)
     {
       Weight = 2.0;
     }
@@ -165,12 +151,7 @@ namespace Server.Items
   public class FlowerGarland : BaseHat
   {
     [Constructible]
-    public FlowerGarland() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FlowerGarland(int hue) : base(0x2306, hue)
+    public FlowerGarland(int hue = 0) : base(0x2306, hue)
     {
       Weight = 1.0;
     }
@@ -206,12 +187,7 @@ namespace Server.Items
   public class FloppyHat : BaseHat
   {
     [Constructible]
-    public FloppyHat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FloppyHat(int hue) : base(0x1713, hue)
+    public FloppyHat(int hue = 0) : base(0x1713, hue)
     {
       Weight = 1.0;
     }
@@ -247,12 +223,7 @@ namespace Server.Items
   public class WideBrimHat : BaseHat
   {
     [Constructible]
-    public WideBrimHat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public WideBrimHat(int hue) : base(0x1714, hue)
+    public WideBrimHat(int hue = 0) : base(0x1714, hue)
     {
       Weight = 1.0;
     }
@@ -288,12 +259,7 @@ namespace Server.Items
   public class Cap : BaseHat
   {
     [Constructible]
-    public Cap() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Cap(int hue) : base(0x1715, hue)
+    public Cap(int hue = 0) : base(0x1715, hue)
     {
       Weight = 1.0;
     }
@@ -329,12 +295,7 @@ namespace Server.Items
   public class SkullCap : BaseHat
   {
     [Constructible]
-    public SkullCap() : this(0)
-    {
-    }
-
-    [Constructible]
-    public SkullCap(int hue) : base(0x1544, hue)
+    public SkullCap(int hue = 0) : base(0x1544, hue)
     {
       Weight = 1.0;
     }
@@ -370,12 +331,7 @@ namespace Server.Items
   public class Bandana : BaseHat
   {
     [Constructible]
-    public Bandana() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Bandana(int hue) : base(0x1540, hue)
+    public Bandana(int hue = 0) : base(0x1540, hue)
     {
       Weight = 1.0;
     }
@@ -411,12 +367,7 @@ namespace Server.Items
   public class BearMask : BaseHat
   {
     [Constructible]
-    public BearMask() : this(0)
-    {
-    }
-
-    [Constructible]
-    public BearMask(int hue) : base(0x1545, hue)
+    public BearMask(int hue = 0) : base(0x1545, hue)
     {
       Weight = 5.0;
     }
@@ -458,12 +409,7 @@ namespace Server.Items
   public class DeerMask : BaseHat
   {
     [Constructible]
-    public DeerMask() : this(0)
-    {
-    }
-
-    [Constructible]
-    public DeerMask(int hue) : base(0x1547, hue)
+    public DeerMask(int hue = 0) : base(0x1547, hue)
     {
       Weight = 4.0;
     }
@@ -505,12 +451,7 @@ namespace Server.Items
   public class HornedTribalMask : BaseHat
   {
     [Constructible]
-    public HornedTribalMask() : this(0)
-    {
-    }
-
-    [Constructible]
-    public HornedTribalMask(int hue) : base(0x1549, hue)
+    public HornedTribalMask(int hue = 0) : base(0x1549, hue)
     {
       Weight = 2.0;
     }
@@ -552,12 +493,7 @@ namespace Server.Items
   public class TribalMask : BaseHat
   {
     [Constructible]
-    public TribalMask() : this(0)
-    {
-    }
-
-    [Constructible]
-    public TribalMask(int hue) : base(0x154B, hue)
+    public TribalMask(int hue = 0) : base(0x154B, hue)
     {
       Weight = 2.0;
     }
@@ -599,12 +535,7 @@ namespace Server.Items
   public class TallStrawHat : BaseHat
   {
     [Constructible]
-    public TallStrawHat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public TallStrawHat(int hue) : base(0x1716, hue)
+    public TallStrawHat(int hue = 0) : base(0x1716, hue)
     {
       Weight = 1.0;
     }
@@ -640,12 +571,7 @@ namespace Server.Items
   public class StrawHat : BaseHat
   {
     [Constructible]
-    public StrawHat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public StrawHat(int hue) : base(0x1717, hue)
+    public StrawHat(int hue = 0) : base(0x1717, hue)
     {
       Weight = 1.0;
     }
@@ -681,12 +607,7 @@ namespace Server.Items
   public class OrcishKinMask : BaseHat
   {
     [Constructible]
-    public OrcishKinMask() : this(0x8A4)
-    {
-    }
-
-    [Constructible]
-    public OrcishKinMask(int hue) : base(0x141B, hue)
+    public OrcishKinMask(int hue = 0x8A4) : base(0x141B, hue)
     {
       Weight = 2.0;
     }
@@ -755,9 +676,7 @@ namespace Server.Items
   public class SavageMask : BaseHat
   {
     [Constructible]
-    public SavageMask() : this(GetRandomHue())
-    {
-    }
+    public SavageMask() : this(GetRandomHue()) {}
 
     [Constructible]
     public SavageMask(int hue) : base(0x154B, hue)
@@ -815,12 +734,7 @@ namespace Server.Items
   public class WizardsHat : BaseHat
   {
     [Constructible]
-    public WizardsHat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public WizardsHat(int hue) : base(0x1718, hue)
+    public WizardsHat(int hue = 0) : base(0x1718, hue)
     {
       Weight = 1.0;
     }
@@ -856,12 +770,7 @@ namespace Server.Items
   public class MagicWizardsHat : BaseHat
   {
     [Constructible]
-    public MagicWizardsHat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public MagicWizardsHat(int hue) : base(0x1718, hue)
+    public MagicWizardsHat(int hue = 0) : base(0x1718, hue)
     {
       Weight = 1.0;
     }
@@ -903,12 +812,7 @@ namespace Server.Items
   public class Bonnet : BaseHat
   {
     [Constructible]
-    public Bonnet() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Bonnet(int hue) : base(0x1719, hue)
+    public Bonnet(int hue = 0) : base(0x1719, hue)
     {
       Weight = 1.0;
     }
@@ -944,12 +848,7 @@ namespace Server.Items
   public class FeatheredHat : BaseHat
   {
     [Constructible]
-    public FeatheredHat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FeatheredHat(int hue) : base(0x171A, hue)
+    public FeatheredHat(int hue = 0) : base(0x171A, hue)
     {
       Weight = 1.0;
     }
@@ -985,12 +884,7 @@ namespace Server.Items
   public class TricorneHat : BaseHat
   {
     [Constructible]
-    public TricorneHat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public TricorneHat(int hue) : base(0x171B, hue)
+    public TricorneHat(int hue = 0) : base(0x171B, hue)
     {
       Weight = 1.0;
     }
@@ -1026,12 +920,7 @@ namespace Server.Items
   public class JesterHat : BaseHat
   {
     [Constructible]
-    public JesterHat() : this(0)
-    {
-    }
-
-    [Constructible]
-    public JesterHat(int hue) : base(0x171C, hue)
+    public JesterHat(int hue = 0) : base(0x171C, hue)
     {
       Weight = 1.0;
     }

@@ -8,7 +8,7 @@ namespace Server.Factions
     {
       Movable = false;
 
-      if (Instance == null || Instance.Deleted)
+      if (Instance?.Deleted == true)
         Instance = this;
       else
         base.Delete();

@@ -3,12 +3,7 @@ namespace Server.Items
   public class HarmScroll : SpellScroll
   {
     [Constructible]
-    public HarmScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public HarmScroll(int amount) : base(11, 0x1F38, amount)
+    public HarmScroll(int amount = 1) : base(11, 0x1F38, amount)
     {
     }
 

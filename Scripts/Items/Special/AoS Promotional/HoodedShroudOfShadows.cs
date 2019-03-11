@@ -4,12 +4,7 @@ namespace Server.Items
   public class HoodedShroudOfShadows : BaseOuterTorso
   {
     [Constructible]
-    public HoodedShroudOfShadows() : this(0x455)
-    {
-    }
-
-    [Constructible]
-    public HoodedShroudOfShadows(int hue) : base(0x2684, hue)
+    public HoodedShroudOfShadows(int hue = 0x455) : base(0x2684, hue)
     {
       LootType = LootType.Blessed;
       Weight = 3.0;

@@ -47,7 +47,7 @@ namespace Server.Engines.ConPVP
         defs = new BitArray(basedef.Options);
 
         for (int i = 0; i < ruleset.Flavors.Count; ++i)
-          defs.Or(((Ruleset)ruleset.Flavors[i]).Options);
+          defs.Or(ruleset.Flavors[i].Options);
 
         height += ruleset.Flavors.Count * 18;
       }
@@ -194,7 +194,7 @@ namespace Server.Engines.ConPVP
       y += 20;
 
       for (int i = 0; i < ruleset.Flavors.Count; ++i, y += 18)
-        AddBorderedText(35, y, 190, 20, $" + {((Ruleset)ruleset.Flavors[i]).Title}", LabelColor32, BlackColor32);
+        AddBorderedText(35, y, 190, 20, $" + {ruleset.Flavors[i].Title}", LabelColor32, BlackColor32);
 
       y += 4;
 
@@ -243,7 +243,7 @@ namespace Server.Engines.ConPVP
       y += 35;
 
       y -= 3;
-      AddButton(314, y, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(314, y, 247, 248, 1);
 
       Timer.DelayCall(TimeSpan.FromSeconds(15.0), AutoReject);
     }
@@ -270,9 +270,9 @@ namespace Server.Engines.ConPVP
     private void AddColoredText(int x, int y, int width, int height, string text, int color)
     {
       if (color == 0)
-        AddHtml(x, y, width, height, text, false, false);
+        AddHtml(x, y, width, height, text);
       else
-        AddHtml(x, y, width, height, Color(text, color), false, false);
+        AddHtml(x, y, width, height, Color(text, color));
     }
 
     public void AutoReject()

@@ -27,32 +27,17 @@ namespace Server.Spells.Spellweaving
     {
       ArcaneFocus focus = FindArcaneFocus(from);
 
-      if (focus == null || focus.Deleted)
-        return 0;
-
-      return focus.StrengthBonus;
+      return focus?.Deleted != false ? 0 : focus.StrengthBonus;
     }
 
     public static ArcaneFocus FindArcaneFocus(Mobile from)
     {
-      if (from?.Backpack == null)
-        return null;
-
-      if (from.Holding is ArcaneFocus focus)
-        return focus;
-
-      return from.Backpack.FindItemByType<ArcaneFocus>();
+      return from.Holding as ArcaneFocus ?? from.Backpack?.FindItemByType<ArcaneFocus>();
     }
 
     public static bool CheckExpansion(Mobile from)
     {
-      if (!(from is PlayerMobile))
-        return true;
-
-      if (from.NetState == null)
-        return false;
-
-      return from.NetState.SupportsExpansion(Expansion.ML);
+      return !(from is PlayerMobile) || from.NetState?.SupportsExpansion(Expansion.ML) == true;
     }
 
     public override bool CheckCast()

@@ -56,7 +56,7 @@ namespace Server.Engines.BulkOrders
       {
         VendorItem vi = pv.GetVendorItem(book);
 
-        canBuy = vi != null && !vi.IsForSale;
+        canBuy = vi?.IsForSale == false;
       }
 
       int width = 600;
@@ -103,45 +103,45 @@ namespace Server.Engines.BulkOrders
       AddImage(5, 424, 10460);
       AddImage(width - 15, 424, 10460);
 
-      AddHtmlLocalized(canPrice ? 266 : 224, 32, 200, 32, 1062220, LabelColor, false, false); // Bulk Order Book
-      AddHtmlLocalized(63, 64, 200, 32, 1062213, LabelColor, false, false); // Type
-      AddHtmlLocalized(147, 64, 200, 32, 1062214, LabelColor, false, false); // Item
-      AddHtmlLocalized(246, 64, 200, 32, 1062215, LabelColor, false, false); // Quality
-      AddHtmlLocalized(336, 64, 200, 32, 1062216, LabelColor, false, false); // Material
-      AddHtmlLocalized(429, 64, 200, 32, 1062217, LabelColor, false, false); // Amount
+      AddHtmlLocalized(canPrice ? 266 : 224, 32, 200, 32, 1062220, LabelColor); // Bulk Order Book
+      AddHtmlLocalized(63, 64, 200, 32, 1062213, LabelColor); // Type
+      AddHtmlLocalized(147, 64, 200, 32, 1062214, LabelColor); // Item
+      AddHtmlLocalized(246, 64, 200, 32, 1062215, LabelColor); // Quality
+      AddHtmlLocalized(336, 64, 200, 32, 1062216, LabelColor); // Material
+      AddHtmlLocalized(429, 64, 200, 32, 1062217, LabelColor); // Amount
 
-      AddButton(35, 32, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(70, 32, 200, 32, 1062476, LabelColor, false, false); // Set Filter
+      AddButton(35, 32, 4005, 4007, 1);
+      AddHtmlLocalized(70, 32, 200, 32, 1062476, LabelColor); // Set Filter
 
       BOBFilter f = from.UseOwnFilter ? from.BOBFilter : book.Filter;
 
       if (f.IsDefault)
-        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062475, 16927, false, false); // Using No Filter
+        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062475, 16927); // Using No Filter
       else if (from.UseOwnFilter)
-        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062451, 16927, false, false); // Using Your Filter
+        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062451, 16927); // Using Your Filter
       else
-        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062230, 16927, false, false); // Using Book Filter
+        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062230, 16927); // Using Book Filter
 
-      AddButton(375, 416, 4017, 4018, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(410, 416, 120, 20, 1011441, LabelColor, false, false); // EXIT
+      AddButton(375, 416, 4017, 4018, 0);
+      AddHtmlLocalized(410, 416, 120, 20, 1011441, LabelColor); // EXIT
 
       if (canDrop)
-        AddHtmlLocalized(26, 64, 50, 32, 1062212, LabelColor, false, false); // Drop
+        AddHtmlLocalized(26, 64, 50, 32, 1062212, LabelColor); // Drop
 
       if (canPrice)
       {
-        AddHtmlLocalized(516, 64, 200, 32, 1062218, LabelColor, false, false); // Price
+        AddHtmlLocalized(516, 64, 200, 32, 1062218, LabelColor); // Price
 
         if (canBuy)
         {
-          AddHtmlLocalized(576, 64, 200, 32, 1062219, LabelColor, false, false); // Buy
+          AddHtmlLocalized(576, 64, 200, 32, 1062219, LabelColor); // Buy
         }
         else
         {
-          AddHtmlLocalized(576, 64, 200, 32, 1062227, LabelColor, false, false); // Set
+          AddHtmlLocalized(576, 64, 200, 32, 1062227, LabelColor); // Set
 
-          AddButton(450, 416, 4005, 4007, 4, GumpButtonType.Reply, 0);
-          AddHtml(485, 416, 120, 20, "<BASEFONT COLOR=#FFFFFF>Price all</FONT>", false, false);
+          AddButton(450, 416, 4005, 4007, 4);
+          AddHtml(485, 416, 120, 20, "<BASEFONT COLOR=#FFFFFF>Price all</FONT>");
         }
       }
 
@@ -149,14 +149,14 @@ namespace Server.Engines.BulkOrders
 
       if (page > 0)
       {
-        AddButton(75, 416, 4014, 4016, 2, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(110, 416, 150, 20, 1011067, LabelColor, false, false); // Previous page
+        AddButton(75, 416, 4014, 4016, 2);
+        AddHtmlLocalized(110, 416, 150, 20, 1011067, LabelColor); // Previous page
       }
 
       if (GetIndexForPage(page + 1) < list.Count)
       {
-        AddButton(225, 416, 4005, 4007, 3, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(260, 416, 150, 20, 1011066, LabelColor, false, false); // Next page
+        AddButton(225, 416, 4005, 4007, 3);
+        AddHtmlLocalized(260, 416, 150, 20, 1011066, LabelColor); // Next page
       }
 
       for (int i = index; i < index + count && i >= 0 && i < list.Count; ++i)
@@ -171,31 +171,31 @@ namespace Server.Engines.BulkOrders
           int y = 96 + tableIndex * 32;
 
           if (canDrop)
-            AddButton(35, y + 2, 5602, 5606, 5 + i * 2, GumpButtonType.Reply, 0);
+            AddButton(35, y + 2, 5602, 5606, 5 + i * 2);
 
           if (canDrop || canBuy && entry.Price > 0)
           {
-            AddButton(579, y + 2, 2117, 2118, 6 + i * 2, GumpButtonType.Reply, 0);
+            AddButton(579, y + 2, 2117, 2118, 6 + i * 2);
             AddLabel(495, y, 1152, entry.Price.ToString());
           }
 
-          AddHtmlLocalized(61, y, 50, 32, 1062225, LabelColor, false, false); // Large
+          AddHtmlLocalized(61, y, 50, 32, 1062225, LabelColor); // Large
 
           for (int j = 0; j < largeEntry.Entries.Length; ++j)
           {
             BOBLargeSubEntry sub = largeEntry.Entries[j];
 
-            AddHtmlLocalized(103, y, 130, 32, sub.Number, LabelColor, false, false);
+            AddHtmlLocalized(103, y, 130, 32, sub.Number, LabelColor);
 
             if (entry.RequireExceptional)
-              AddHtmlLocalized(235, y, 80, 20, 1060636, LabelColor, false, false); // exceptional
+              AddHtmlLocalized(235, y, 80, 20, 1060636, LabelColor); // exceptional
             else
-              AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor, false, false); // normal
+              AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor); // normal
 
             object name = GetMaterialName(entry.Material, entry.DeedType, sub.ItemType);
 
             if (name is int intName)
-              AddHtmlLocalized(316, y, 100, 20, intName, LabelColor, false, false);
+              AddHtmlLocalized(316, y, 100, 20, intName, LabelColor);
             else
               AddLabel(316, y, 1152, name.ToString());
 
@@ -212,27 +212,27 @@ namespace Server.Engines.BulkOrders
           int y = 96 + tableIndex++ * 32;
 
           if (canDrop)
-            AddButton(35, y + 2, 5602, 5606, 5 + i * 2, GumpButtonType.Reply, 0);
+            AddButton(35, y + 2, 5602, 5606, 5 + i * 2);
 
           if (canDrop || canBuy && smallEntry.Price > 0)
           {
-            AddButton(579, y + 2, 2117, 2118, 6 + i * 2, GumpButtonType.Reply, 0);
+            AddButton(579, y + 2, 2117, 2118, 6 + i * 2);
             AddLabel(495, y, 1152, smallEntry.Price.ToString());
           }
 
-          AddHtmlLocalized(61, y, 50, 32, 1062224, LabelColor, false, false); // Small
+          AddHtmlLocalized(61, y, 50, 32, 1062224, LabelColor); // Small
 
-          AddHtmlLocalized(103, y, 130, 32, smallEntry.Number, LabelColor, false, false);
+          AddHtmlLocalized(103, y, 130, 32, smallEntry.Number, LabelColor);
 
           if (smallEntry.RequireExceptional)
-            AddHtmlLocalized(235, y, 80, 20, 1060636, LabelColor, false, false); // exceptional
+            AddHtmlLocalized(235, y, 80, 20, 1060636, LabelColor); // exceptional
           else
-            AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor, false, false); // normal
+            AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor); // normal
 
           object name = GetMaterialName(smallEntry.Material, smallEntry.DeedType, smallEntry.ItemType);
 
           if (name is int intName)
-            AddHtmlLocalized(316, y, 100, 20, intName, LabelColor, false, false);
+            AddHtmlLocalized(316, y, 100, 20, intName, LabelColor);
           else
             AddLabel(316, y, 1152, name.ToString());
 
@@ -242,11 +242,11 @@ namespace Server.Engines.BulkOrders
     }
 
     public bool CheckFilter(IBOBEntry entry)
-    { 
+    {
       if (entry is BOBLargeEntry largeEntry)
         return CheckFilter(entry.Material, entry.AmountMax, true, entry.RequireExceptional, entry.DeedType,
           largeEntry.Entries.Length > 0 ? largeEntry.Entries[0].ItemType : null);
-      
+
       if (entry is BOBSmallEntry smallEntry)
         return CheckFilter(entry.Material, entry.AmountMax, false, entry.RequireExceptional,
           entry.DeedType, smallEntry.ItemType);
@@ -355,7 +355,7 @@ namespace Server.Engines.BulkOrders
       int count = 0;
       int page = 0;
       int i;
-      
+
       List<IBOBEntry> list = m_List;
       for (i = 0; i < index && i < list.Count; i++)
       {
@@ -510,8 +510,8 @@ namespace Server.Engines.BulkOrders
               Item item = bobEntry.Reconstruct();
 
               Container pack = m_From.Backpack;
-              if (pack == null || !pack.CheckHold(m_From, item, true, true, 0,
-                    item.PileWeight + item.TotalWeight))
+              if (pack?.CheckHold(m_From, item, true, true, 0,
+                    item.PileWeight + item.TotalWeight) != true)
               {
                 m_From.SendLocalizedMessage(503204); // You do not have room in your backpack for this
                 m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
@@ -558,26 +558,26 @@ namespace Server.Engines.BulkOrders
             {
               VendorItem vi = pv.GetVendorItem(m_Book);
 
-              if (vi != null && !vi.IsForSale)
-              {
-                int sizeOfDroppedBod = bobEntry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
-                int price = bobEntry.Price;
+              if (vi?.IsForSale != false)
+                return;
 
-                if (price == 0)
+              int sizeOfDroppedBod = bobEntry is BOBLargeEntry largeEntry ? largeEntry.Entries.Length : 1;
+              int price = bobEntry.Price;
+
+              if (price == 0)
+              {
+                m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
+              }
+              else
+              {
+                if (m_Book.Entries.Count > 0)
                 {
-                  m_From.SendLocalizedMessage(1062382); // The deed selected is not available.
+                  m_Page = GetPageForIndex(index, sizeOfDroppedBod);
+                  m_From.SendGump(new BODBuyGump(m_From, m_Book, bobEntry, m_Page, price));
                 }
                 else
                 {
-                  if (m_Book.Entries.Count > 0)
-                  {
-                    m_Page = GetPageForIndex(index, sizeOfDroppedBod);
-                    m_From.SendGump(new BODBuyGump(m_From, m_Book, bobEntry, m_Page, price));
-                  }
-                  else
-                  {
-                    m_From.SendLocalizedMessage(1062381); // The book is emptz
-                  }
+                  m_From.SendLocalizedMessage(1062381); // The book is emptz
                 }
               }
             }
@@ -625,7 +625,7 @@ namespace Server.Engines.BulkOrders
 
             if (!m_Book.Entries.Contains(entry))
               continue;
-            
+
             entry.Price = price;
           }
 

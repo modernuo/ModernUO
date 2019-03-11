@@ -3,12 +3,7 @@ namespace Server.Items
   public class Shaft : Item, ICommodity
   {
     [Constructible]
-    public Shaft() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Shaft(int amount) : base(0x1BD4)
+    public Shaft(int amount = 1) : base(0x1BD4)
     {
       Stackable = true;
       Amount = amount;

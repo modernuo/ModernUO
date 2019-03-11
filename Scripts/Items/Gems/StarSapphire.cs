@@ -3,12 +3,7 @@ namespace Server.Items
   public class StarSapphire : Item
   {
     [Constructible]
-    public StarSapphire() : this(1)
-    {
-    }
-
-    [Constructible]
-    public StarSapphire(int amount) : base(0xF21)
+    public StarSapphire(int amount = 1) : base(0xF21)
     {
       Stackable = true;
       Amount = amount;

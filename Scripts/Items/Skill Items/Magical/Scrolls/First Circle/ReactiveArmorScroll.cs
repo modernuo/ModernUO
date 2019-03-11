@@ -3,12 +3,7 @@ namespace Server.Items
   public class ReactiveArmorScroll : SpellScroll
   {
     [Constructible]
-    public ReactiveArmorScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ReactiveArmorScroll(int amount) : base(6, 0x1F2D, amount)
+    public ReactiveArmorScroll(int amount = 1) : base(6, 0x1F2D, amount)
     {
     }
 

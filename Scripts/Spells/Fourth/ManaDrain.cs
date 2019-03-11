@@ -17,7 +17,7 @@ namespace Server.Spells.Fourth
 
     private static HashSet<Mobile> m_Table = new HashSet<Mobile>();
 
-    public ManaDrainSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ManaDrainSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

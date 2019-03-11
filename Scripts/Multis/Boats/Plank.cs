@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Factions;
 using Server.Multis;
 using Server.Network;
@@ -161,7 +162,7 @@ namespace Server.Items
         if (from is BaseFactionGuard)
           return false;
 
-        if ((from.Direction & Direction.Running) != 0 || Boat != null && !Boat.Contains(from))
+        if ((from.Direction & Direction.Running) != 0 || Boat?.Contains(from) == false)
           return true;
 
         Map map = Map;
@@ -222,16 +223,7 @@ namespace Server.Items
 
     public bool CanClose()
     {
-      Map map = Map;
-
-      if (map == null || Deleted)
-        return false;
-
-      foreach (object o in GetObjectsInRange(0))
-        if (o != this)
-          return false;
-
-      return true;
+      return Map != null && !Deleted && GetObjectsInRange(0).Cast<object>().All(o => o == this);
     }
 
     public void Close()

@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Spells;
 using Server.Targeting;
 
@@ -260,19 +260,12 @@ namespace Server.Items
           if (m_Item.Map == null || from == null)
             return;
 
-          List<Mobile> mobiles = new List<Mobile>();
-
-          foreach (Mobile mobile in m_Item.GetMobilesInRange(0))
-            mobiles.Add(mobile);
-
-          for (int i = 0; i < mobiles.Count; i++)
+          foreach (Mobile m in m_Item.GetMobilesInRange(0))
           {
-            Mobile m = mobiles[i];
-
             if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != from) &&
                 SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false))
             {
-              from?.DoHarmful(m);
+              from.DoHarmful(m);
 
               AOS.Damage(m, from, m_Item.GetDamage(), 0, 100, 0, 0, 0);
               m.PlaySound(0x208);

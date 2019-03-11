@@ -82,7 +82,7 @@ namespace Server.Items
 
         AddBackground(0, 0, 400, 350, 0xA28);
 
-        AddHtmlLocalized(100, 20, 200, 35, 1011015, false, false); // <center>Logging out via camping</center>
+        AddHtmlLocalized(100, 20, 200, 35, 1011015); // <center>Logging out via camping</center>
 
         /* Using a bedroll in the safety of a camp will log you out of the game safely.
          * If this is what you wish to do choose CONTINUE and you will be logged out.
@@ -92,11 +92,11 @@ namespace Server.Items
          */
         AddHtmlLocalized(50, 55, 300, 140, 1011016, true, true);
 
-        AddButton(45, 298, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(80, 300, 110, 35, 1011011, false, false); // CONTINUE
+        AddButton(45, 298, 0xFA5, 0xFA7, 1);
+        AddHtmlLocalized(80, 300, 110, 35, 1011011); // CONTINUE
 
-        AddButton(200, 298, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(235, 300, 110, 35, 1011012, false, false); // CANCEL
+        AddButton(200, 298, 0xFA5, 0xFA7, 0);
+        AddHtmlLocalized(235, 300, 110, 35, 1011012); // CANCEL
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

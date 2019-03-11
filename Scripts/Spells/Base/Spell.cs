@@ -313,12 +313,11 @@ namespace Server.Spells
         SlayerEntry atkSlayer = SlayerGroup.GetEntryByName(atkBook.Slayer);
         SlayerEntry atkSlayer2 = SlayerGroup.GetEntryByName(atkBook.Slayer2);
 
-        if (atkSlayer != null && atkSlayer.Slays(defender) || atkSlayer2 != null && atkSlayer2.Slays(defender))
+        if (atkSlayer?.Slays(defender) == true || atkSlayer2?.Slays(defender) == true)
         {
           defender.FixedEffect(0x37B9, 10, 5); //TODO: Confirm this displays on OSIs
           scalar = 2.0;
         }
-
 
         TransformContext context = TransformationSpellHelper.GetContext(defender);
 
@@ -330,18 +329,15 @@ namespace Server.Spells
           return scalar;
       }
 
-      ISlayer defISlayer = Spellbook.FindEquippedSpellbook(defender);
-
-      if (defISlayer == null)
-        defISlayer = defender.Weapon as ISlayer;
+      ISlayer defISlayer = Spellbook.FindEquippedSpellbook(defender) ?? defender.Weapon as ISlayer;
 
       if (defISlayer != null)
       {
         SlayerEntry defSlayer = SlayerGroup.GetEntryByName(defISlayer.Slayer);
         SlayerEntry defSlayer2 = SlayerGroup.GetEntryByName(defISlayer.Slayer2);
 
-        if (defSlayer != null && defSlayer.Group.OppositionSuperSlays(Caster) ||
-            defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays(Caster))
+        if (defSlayer?.Group.OppositionSuperSlays(Caster) == true ||
+            defSlayer2?.Group.OppositionSuperSlays(Caster) == true)
           scalar = 2.0;
       }
 

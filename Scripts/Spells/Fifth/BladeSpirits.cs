@@ -16,7 +16,7 @@ namespace Server.Spells.Fifth
       Reagent.Nightshade
     );
 
-    public BladeSpiritsSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public BladeSpiritsSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

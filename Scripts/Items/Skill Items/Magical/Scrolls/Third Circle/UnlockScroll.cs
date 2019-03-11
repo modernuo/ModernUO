@@ -3,12 +3,7 @@ namespace Server.Items
   public class UnlockScroll : SpellScroll
   {
     [Constructible]
-    public UnlockScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public UnlockScroll(int amount) : base(22, 0x1F43, amount)
+    public UnlockScroll(int amount = 1) : base(22, 0x1F43, amount)
     {
     }
 

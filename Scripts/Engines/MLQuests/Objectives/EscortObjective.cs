@@ -7,12 +7,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class EscortObjective : BaseObjective
   {
-    public EscortObjective()
-      : this(null)
-    {
-    }
-
-    public EscortObjective(QuestArea destination)
+    public EscortObjective(QuestArea destination = null)
     {
       Destination = destination;
     }
@@ -60,10 +55,10 @@ namespace Server.Engines.MLQuests.Objectives
 
     public override void WriteToGump(Gump g, ref int y)
     {
-      g.AddHtmlLocalized(98, y, 312, 16, 1072206, 0x15F90, false, false); // Escort to
+      g.AddHtmlLocalized(98, y, 312, 16, 1072206, 0x15F90); // Escort to
 
       if (Destination.Name.Number > 0)
-        g.AddHtmlLocalized(173, y, 312, 20, Destination.Name.Number, 0xFFFFFF, false, false);
+        g.AddHtmlLocalized(173, y, 312, 20, Destination.Name.Number, 0xFFFFFF);
       else if (Destination.Name.String != null)
         g.AddLabel(173, y, 0x481, Destination.Name.String);
 
@@ -212,7 +207,7 @@ namespace Server.Engines.MLQuests.Objectives
       MLQuestInstance instance = Instance;
       PlayerMobile pm = instance.Player;
 
-      if (m_Escort != null && !m_Escort.Deleted)
+      if (m_Escort?.Deleted == false)
       {
         if (!pm.Alive)
           m_Escort.Say(500901); // Ack!  My escort has come to haunt me!

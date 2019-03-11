@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -8,12 +9,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class DeliverObjective : BaseObjective
   {
-    public DeliverObjective(Type delivery, int amount, TextDefinition name, Type destination)
-      : this(delivery, amount, name, destination, true)
-    {
-    }
-
-    public DeliverObjective(Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery)
+    public DeliverObjective(Type delivery, int amount, TextDefinition name, Type destination, bool spawnsDelivery = true)
     {
       Delivery = delivery;
       Amount = amount;
@@ -69,12 +65,12 @@ namespace Server.Engines.MLQuests.Objectives
     {
       string amount = Amount.ToString();
 
-      g.AddHtmlLocalized(98, y, 312, 16, 1072207, 0x15F90, false, false); // Deliver
+      g.AddHtmlLocalized(98, y, 312, 16, 1072207, 0x15F90); // Deliver
       g.AddLabel(143, y, 0x481, amount);
 
       if (Name.Number > 0)
       {
-        g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF, false, false);
+        g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
         g.AddItem(350, y, CollectObjective.LabelToItemID(Name.Number));
       }
       else if (Name.String != null)
@@ -84,7 +80,7 @@ namespace Server.Engines.MLQuests.Objectives
 
       y += 32;
 
-      g.AddHtmlLocalized(103, y, 120, 16, 1072379, 0x15F90, false, false); // Deliver to
+      g.AddHtmlLocalized(103, y, 120, 16, 1072379, 0x15F90); // Deliver to
       g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Destination));
 
       y += 16;
@@ -100,13 +96,8 @@ namespace Server.Engines.MLQuests.Objectives
 
   public class TimedDeliverObjective : DeliverObjective
   {
-    public TimedDeliverObjective(TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination)
-      : this(duration, delivery, amount, name, destination, true)
-    {
-    }
-
     public TimedDeliverObjective(TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination,
-      bool spawnsDelivery)
+      bool spawnsDelivery = true)
       : base(delivery, amount, name, destination, spawnsDelivery)
     {
       Duration = duration;
@@ -158,12 +149,7 @@ namespace Server.Engines.MLQuests.Objectives
         return 0;
 
       Item[] items = pack.FindItemsByType(Objective.Delivery, false); // Note: subclasses are included
-      int total = 0;
-
-      foreach (Item item in items)
-        total += item.Amount;
-
-      return total;
+      return items.Sum(item => item.Amount);
     }
 
     public override bool OnBeforeClaimReward()

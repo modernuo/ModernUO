@@ -130,41 +130,37 @@ namespace Server.Items
         AddImageTiled(10, 40, 253, 244, 0xA40);
         AddImageTiled(10, 294, 253, 20, 0xA40);
         AddAlphaRegion(10, 10, 253, 304);
-        AddButton(10, 294, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
-        AddHtmlLocalized(14, 12, 273, 20, 1076780, 0x7FFF, false,
-          false); // Please select your ladder position.  <br>Use the ladders marked (castle) <br> for accessing the tops of keeps <br> and castles.
+        AddButton(10, 294, 0xFB1, 0xFB2, 0);
+        AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF); // CANCEL
+        AddHtmlLocalized(14, 12, 273, 20, 1076780, 0x7FFF); // Please select your ladder position.  <br>Use the ladders marked (castle) <br> for accessing the tops of keeps <br> and castles.
 
         AddPage(1);
 
-        AddButton(19, 49, 0x845, 0x846, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, 47, 213, 20, 1076794, 0x7FFF, false, false); // South (Castle)
-        AddButton(19, 73, 0x845, 0x846, 2, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, 71, 213, 20, 1076795, 0x7FFF, false, false); // East (Castle)
-        AddButton(19, 97, 0x845, 0x846, 3, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, 95, 213, 20, 1076792, 0x7FFF, false, false); // North (Castle)
-        AddButton(19, 121, 0x845, 0x846, 4, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, 119, 213, 20, 1076793, 0x7FFF, false, false); // West (Castle)
-        AddButton(19, 145, 0x845, 0x846, 5, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, 143, 213, 20, 1075386, 0x7FFF, false, false); // South
-        AddButton(19, 169, 0x845, 0x846, 6, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, 167, 213, 20, 1075387, 0x7FFF, false, false); // East
-        AddButton(19, 193, 0x845, 0x846, 7, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, 191, 213, 20, 1075389, 0x7FFF, false, false); // North
-        AddButton(19, 217, 0x845, 0x846, 8, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, 215, 213, 20, 1075390, 0x7FFF, false, false); // West
+        AddButton(19, 49, 0x845, 0x846, 1);
+        AddHtmlLocalized(44, 47, 213, 20, 1076794, 0x7FFF); // South (Castle)
+        AddButton(19, 73, 0x845, 0x846, 2);
+        AddHtmlLocalized(44, 71, 213, 20, 1076795, 0x7FFF); // East (Castle)
+        AddButton(19, 97, 0x845, 0x846, 3);
+        AddHtmlLocalized(44, 95, 213, 20, 1076792, 0x7FFF); // North (Castle)
+        AddButton(19, 121, 0x845, 0x846, 4);
+        AddHtmlLocalized(44, 119, 213, 20, 1076793, 0x7FFF); // West (Castle)
+        AddButton(19, 145, 0x845, 0x846, 5);
+        AddHtmlLocalized(44, 143, 213, 20, 1075386, 0x7FFF); // South
+        AddButton(19, 169, 0x845, 0x846, 6);
+        AddHtmlLocalized(44, 167, 213, 20, 1075387, 0x7FFF); // East
+        AddButton(19, 193, 0x845, 0x846, 7);
+        AddHtmlLocalized(44, 191, 213, 20, 1075389, 0x7FFF); // North
+        AddButton(19, 217, 0x845, 0x846, 8);
+        AddHtmlLocalized(44, 215, 213, 20, 1075390, 0x7FFF); // West
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_Deed == null || m_Deed.Deleted || info.ButtonID == 0)
+        if (m_Deed?.Deleted != false || info.ButtonID == 0 || info.ButtonID < 1 || info.ButtonID > 8)
           return;
 
-        if (info.ButtonID >= 1 && info.ButtonID <= 8)
-        {
-          m_Deed.m_Type = info.ButtonID - 1;
-          m_Deed.SendTarget(sender.Mobile);
-        }
+        m_Deed.m_Type = info.ButtonID - 1;
+        m_Deed.SendTarget(sender.Mobile);
       }
     }
   }

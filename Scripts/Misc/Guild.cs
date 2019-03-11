@@ -443,10 +443,10 @@ namespace Server.Guilds
     {
       get
       {
-        if (Opponent == null || Opponent.Disbanded)
+        if (Opponent?.Disbanded != false)
           return WarStatus.Win;
 
-        if (Guild == null || Guild.Disbanded)
+        if (Guild?.Disbanded != false)
           return WarStatus.Lose;
 
         WarDeclaration w = Opponent.FindActiveWar(Guild);
@@ -572,7 +572,7 @@ namespace Server.Guilds
     {
       get
       {
-        if (m_Leader == null || m_Leader.Deleted || m_Leader.Guild != this)
+        if (Disbanded || m_Leader.Guild != this)
           CalculateGuildmaster();
 
         return m_Leader;
@@ -582,7 +582,7 @@ namespace Server.Guilds
         if (value != null)
           AddMember(value); //Also removes from old guild.
 
-        if (m_Leader is PlayerMobile leader && leader?.Guild == this)
+        if (m_Leader is PlayerMobile leader && leader.Guild == this)
           leader.GuildRank = RankDefinition.Member;
 
         m_Leader = value;
@@ -593,7 +593,7 @@ namespace Server.Guilds
     }
 
 
-    public override bool Disbanded => m_Leader == null || m_Leader.Deleted;
+    public override bool Disbanded => m_Leader?.Deleted != false;
 
     public static void Configure()
     {
@@ -605,22 +605,20 @@ namespace Server.Guilds
 
     public void InvalidateMemberProperties(bool onlyOPL = false)
     {
-      if (Members != null)
-        for (int i = 0; i < Members.Count; i++)
-        {
-          Mobile m = Members[i];
-          m.InvalidateProperties();
+      for (int i = 0; i < Members?.Count; i++)
+      {
+        Mobile m = Members[i];
+        m.InvalidateProperties();
 
-          if (!onlyOPL)
-            m.Delta(MobileDelta.Noto);
-        }
+        if (!onlyOPL)
+          m.Delta(MobileDelta.Noto);
+      }
     }
 
     public void InvalidateMemberNotoriety()
     {
-      if (Members != null)
-        for (int i = 0; i < Members.Count; i++)
-          Members[i].Delta(MobileDelta.Noto);
+      for (int i = 0; i < Members?.Count; i++)
+        Members[i].Delta(MobileDelta.Noto);
     }
 
     public void InvalidateWarNotoriety()
@@ -735,7 +733,7 @@ namespace Server.Guilds
 
         if (o is Guildstone stone)
         {
-          if (stone.Guild == null || stone.Guild.Disbanded)
+          if (stone?.Guild.Disbanded != false)
           {
             from.SendMessage("The guild associated with that Guildstone no longer exists");
             return;
@@ -893,7 +891,7 @@ namespace Server.Guilds
           bool inAlliance = myAlliance?.IsMember(this) == true;
 
           AllianceInfo otherAlliance = g?.Alliance;
-          bool otherInAlliance = otherAlliance != null && otherAlliance.IsMember(this);
+          bool otherInAlliance = otherAlliance?.IsMember(this) == true;
 
           if (inAlliance)
           {
@@ -910,24 +908,24 @@ namespace Server.Guilds
 
           AcceptedWars.Remove(w);
 
-          if (g != null)
+          if (g == null)
+            continue;
+
+          if (status != WarStatus.Draw)
+            status = (WarStatus)((int)status + 1 % 2);
+
+          if (otherInAlliance)
           {
-            if (status != WarStatus.Draw)
-              status = (WarStatus)((int)status + 1 % 2);
-
-            if (otherInAlliance)
-            {
-              otherAlliance.AllianceMessage(1070739 + (int)status, inAlliance ? Alliance.Name : Name);
-              otherAlliance.InvalidateMemberProperties();
-            }
-            else
-            {
-              g.GuildMessage(1070739 + (int)status, inAlliance ? Alliance.Name : Name);
-              g.InvalidateMemberProperties();
-            }
-
-            g.AcceptedWars.Remove(g.FindActiveWar(this));
+            otherAlliance.AllianceMessage(1070739 + (int)status, inAlliance ? Alliance.Name : Name);
+            otherAlliance.InvalidateMemberProperties();
           }
+          else
+          {
+            g.GuildMessage(1070739 + (int)status, inAlliance ? Alliance.Name : Name);
+            g.InvalidateMemberProperties();
+          }
+
+          g.AcceptedWars.Remove(g.FindActiveWar(this));
         }
       }
 
@@ -998,17 +996,12 @@ namespace Server.Guilds
 
     public bool IsAlly(Guild g)
     {
-      if (NewGuildSystem) return Alliance != null && Alliance.IsMember(this) && Alliance.IsMember(g);
-
-      return Allies.Contains(g);
+      return NewGuildSystem ? Alliance?.IsMember(this) == true && Alliance.IsMember(g) : Allies.Contains(g);
     }
 
     public bool IsEnemy(Guild g)
     {
-      if (Type != GuildType.Regular && g.Type != GuildType.Regular && Type != g.Type)
-        return true;
-
-      return IsWar(g);
+      return Type != GuildType.Regular && g.Type != GuildType.Regular && Type != g.Type || IsWar(g);
     }
 
     public bool IsWar(Guild g)
@@ -1016,18 +1009,14 @@ namespace Server.Guilds
       if (g == null)
         return false;
 
-      if (NewGuildSystem)
-      {
-        Guild guild = GetAllianceLeader(this);
-        Guild otherGuild = GetAllianceLeader(g);
+      if (!NewGuildSystem)
+        return Enemies.Contains(g);
 
-        if (guild.FindActiveWar(otherGuild) != null)
-          return true;
+      Guild guild = GetAllianceLeader(this);
+      Guild otherGuild = GetAllianceLeader(g);
 
-        return false;
-      }
+      return guild.FindActiveWar(otherGuild) != null;
 
-      return Enemies.Contains(g);
     }
 
     #endregion
@@ -1216,7 +1205,7 @@ namespace Server.Guilds
 
       alliance = Alliance; //CheckLeader could possibly change the value of this.Alliance
 
-      if (alliance != null && !alliance.IsMember(this) && !alliance.IsPendingMember(this)
+      if (alliance?.IsMember(this) == false && !alliance.IsPendingMember(this)
       ) //This block is there to fix a bug in the code in an older version.
         Alliance = null; //Will call Alliance.RemoveGuild which will set it null & perform all the pertient checks as far as alliacne disbanding
     }
@@ -1309,7 +1298,7 @@ namespace Server.Guilds
 
     public void RemoveEnemy(Guild g)
     {
-      if (Enemies != null && Enemies.Contains(g))
+      if (Enemies.Contains(g))
       {
         Enemies.Remove(g);
 
@@ -1389,9 +1378,7 @@ namespace Server.Guilds
 
     public void GuildChat(Mobile from, string text)
     {
-      PlayerMobile pm = from as PlayerMobile;
-
-      GuildChat(from, pm?.GuildMessageHue ?? 0x3B2, text);
+      GuildChat(from, (from as PlayerMobile)?.GuildMessageHue ?? 0x3B2, text);
     }
 
     #endregion
@@ -1400,20 +1387,13 @@ namespace Server.Guilds
 
     public bool CanVote(Mobile m)
     {
-      if (NewGuildSystem)
-        if (!(m is PlayerMobile pm) || !pm.GuildRank.GetFlag(RankFlags.CanVote))
-          return false;
-
-      return m != null && !m.Deleted && m.Guild == this;
+      return (!NewGuildSystem || m is PlayerMobile pm && pm.GuildRank.GetFlag(RankFlags.CanVote)) &&
+             m?.Deleted == false && m.Guild == this;
     }
 
     public bool CanBeVotedFor(Mobile m)
     {
-      if (NewGuildSystem)
-        if (!(m is PlayerMobile pm) || pm.LastOnline + InactiveTime < DateTime.UtcNow)
-          return false;
-
-      return m != null && !m.Deleted && m.Guild == this;
+      return (!NewGuildSystem || m is PlayerMobile pm && pm.LastOnline + InactiveTime >= DateTime.UtcNow) && m?.Deleted == false && m.Guild == this;
     }
 
     public void CalculateGuildmaster()
@@ -1433,7 +1413,7 @@ namespace Server.Guilds
 
         if (!CanBeVotedFor(m))
         {
-          if (m_Leader != null && !m_Leader.Deleted && m_Leader.Guild == this)
+          if (!Disbanded && m_Leader.Guild == this)
             m = m_Leader;
           else
             m = memb;
@@ -1461,8 +1441,8 @@ namespace Server.Guilds
         }
       }
 
-      if (NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage && m_Leader != null &&
-          winner != m_Leader && !m_Leader.Deleted && m_Leader.Guild == this)
+      if (NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage && !Disbanded &&
+          winner != m_Leader && m_Leader.Guild == this)
         winner = m_Leader;
 
       if (m_Leader != winner && winner != null)

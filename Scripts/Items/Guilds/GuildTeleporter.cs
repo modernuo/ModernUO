@@ -7,12 +7,7 @@ namespace Server.Items
   {
     private Item m_Stone;
 
-    [Constructible]
-    public GuildTeleporter() : this(null)
-    {
-    }
-
-    public GuildTeleporter(Item stone) : base(0x1869)
+    public GuildTeleporter(Item stone = null) : base(0x1869)
     {
       Weight = 1.0;
       LootType = LootType.Blessed;
@@ -69,7 +64,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
       }
-      else if (stone == null || stone.Deleted || stone.Guild == null || stone.Guild.Teleporter != this)
+      else if (stone?.Deleted != false || stone.Guild?.Teleporter != this)
       {
         from.SendLocalizedMessage(501197); // This teleporting object can not determine what guildstone to teleport
       }

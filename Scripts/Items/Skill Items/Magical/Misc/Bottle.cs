@@ -3,12 +3,7 @@ namespace Server.Items
   public class Bottle : Item, ICommodity
   {
     [Constructible]
-    public Bottle() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Bottle(int amount) : base(0xF0E)
+    public Bottle(int amount = 1) : base(0xF0E)
     {
       Stackable = true;
       Weight = 1.0;

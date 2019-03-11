@@ -22,11 +22,7 @@ namespace Server.Spells.Seventh
 
     private RunebookEntry m_Entry;
 
-    public GateTravelSpell(Mobile caster, Item scroll) : this(caster, scroll, null)
-    {
-    }
-
-    public GateTravelSpell(Mobile caster, Item scroll, RunebookEntry entry) : base(caster, scroll, m_Info)
+    public GateTravelSpell(Mobile caster, RunebookEntry entry = null, Item scroll = null) : base(caster, scroll, m_Info)
     {
       m_Entry = entry;
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Network;
 
 namespace Server.Items
@@ -7,12 +8,7 @@ namespace Server.Items
   {
     private ResetTimer m_ResetTimer;
 
-    [Constructible]
-    public RaiseSwitch() : this(0x1093)
-    {
-    }
-
-    protected RaiseSwitch(int itemID) : base(itemID)
+    public RaiseSwitch(int itemID = 0x1093) : base(itemID)
     {
       Movable = false;
     }
@@ -32,24 +28,24 @@ namespace Server.Items
         return;
       }
 
-      if (RaisableItem != null && RaisableItem.Deleted)
+      if (RaisableItem?.Deleted == true)
         RaisableItem = null;
 
       Flip();
 
-      if (RaisableItem != null)
+      if (RaisableItem == null)
+        return;
+
+      if (RaisableItem.IsRaisable)
       {
-        if (RaisableItem.IsRaisable)
-        {
-          RaisableItem.Raise();
-          m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
-            "You hear a grinding noise echoing in the distance.");
-        }
-        else
-        {
-          m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
-            "You flip the switch again, but nothing happens.");
-        }
+        RaisableItem.Raise();
+        m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
+          "You hear a grinding noise echoing in the distance.");
+      }
+      else
+      {
+        m.LocalOverheadMessage(MessageType.Regular, 0x5A, true,
+          "You flip the switch again, but nothing happens.");
       }
     }
 
@@ -65,10 +61,7 @@ namespace Server.Items
       {
         ItemID = 0x1095;
 
-        if (RaisableItem != null && RaisableItem.CloseDelay >= TimeSpan.Zero)
-          StartResetTimer(RaisableItem.CloseDelay);
-        else
-          StartResetTimer(TimeSpan.FromMinutes(2.0));
+        StartResetTimer(RaisableItem?.CloseDelay >= TimeSpan.Zero ? RaisableItem.CloseDelay : TimeSpan.FromMinutes(2.0));
       }
 
       Effects.PlaySound(Location, Map, 0x3E8);
@@ -183,22 +176,12 @@ namespace Server.Items
 
     public void Refresh()
     {
-      bool found = false;
-      foreach (Mobile mob in GetMobilesInRange(CurrentRange))
-      {
-        if (mob.Hidden && mob.AccessLevel > AccessLevel.Player)
-          continue;
-
-        found = true;
-        break;
-      }
-
-      Visible = found;
+      Visible = GetMobilesInRange(CurrentRange).Any(mob => !mob.Hidden || mob.AccessLevel <= AccessLevel.Player);
     }
 
     public override void Serialize(GenericWriter writer)
     {
-      if (RaisableItem != null && RaisableItem.Deleted)
+      if (RaisableItem?.Deleted == true)
         RaisableItem = null;
 
       base.Serialize(writer);

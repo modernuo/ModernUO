@@ -3,13 +3,7 @@ namespace Server.Items
   public class SpellPlagueScroll : SpellScroll
   {
     [Constructible]
-    public SpellPlagueScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public SpellPlagueScroll(int amount)
+    public SpellPlagueScroll(int amount = 1)
       : base(689, 0x2DAA, amount)
     {
     }

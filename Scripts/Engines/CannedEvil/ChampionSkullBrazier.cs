@@ -61,7 +61,7 @@ namespace Server.Engines.CannedEvil
       if (Deleted)
         return;
 
-      if (m_Skull != null && m_Skull.Deleted)
+      if (m_Skull?.Deleted == true)
         Skull = null;
 
       if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))
@@ -88,7 +88,7 @@ namespace Server.Engines.CannedEvil
       if (Deleted)
         return;
 
-      if (m_Skull != null && m_Skull.Deleted)
+      if (m_Skull?.Deleted == true)
         Skull = null;
 
       if (from.Map != Map || !from.InRange(GetWorldLocation(), 3))

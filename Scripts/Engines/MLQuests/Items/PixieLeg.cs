@@ -3,12 +3,7 @@ namespace Server.Items
   public class PixieLeg : ChickenLeg
   {
     [Constructible]
-    public PixieLeg() : this(1)
-    {
-    }
-
-    [Constructible]
-    public PixieLeg(int amount) : base(amount)
+    public PixieLeg(int amount = 1) : base(amount)
     {
       LootType = LootType.Blessed;
       Hue = 0x1C2;

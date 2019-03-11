@@ -16,17 +16,7 @@ namespace Server.Engines.Chat
       PacketHandlers.Register(0xB3, 0, true, ChatAction);
     }
 
-    public static void SendCommandTo(Mobile to, ChatCommand type)
-    {
-      SendCommandTo(to, type, null, null);
-    }
-
-    public static void SendCommandTo(Mobile to, ChatCommand type, string param1)
-    {
-      SendCommandTo(to, type, param1, null);
-    }
-
-    public static void SendCommandTo(Mobile to, ChatCommand type, string param1, string param2)
+    public static void SendCommandTo(Mobile to, ChatCommand type, string param1 = null, string param2 = null)
     {
       to?.Send(new ChatMessagePacket(null, (int)type + 20, param1, param2));
     }

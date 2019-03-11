@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Commands;
 using Server.Mobiles;
 using Server.Network;
@@ -181,12 +182,11 @@ namespace Server.Engines.Doom
     [Description("Generates lamp room and lever puzzle in doom.")]
     public static void GenLampPuzzle_OnCommand(CommandEventArgs e)
     {
-      foreach (Item item in Map.Malas.GetItemsInRange(lp_Center, 0))
-        if (item is LeverPuzzleController)
-        {
-          e.Mobile.SendMessage("Lamp room puzzle already exists: please delete the existing controller first ...");
-          return;
-        }
+      if (Map.Malas.GetItemsInRange(lp_Center, 0).OfType<LeverPuzzleController>().Any())
+      {
+        e.Mobile.SendMessage("Lamp room puzzle already exists: please delete the existing controller first ...");
+        return;
+      }
 
       e.Mobile.SendMessage("Generating Lamp Room puzzle...");
       new LeverPuzzleController().MoveToWorld(lp_Center, Map.Malas);
@@ -199,10 +199,11 @@ namespace Server.Engines.Doom
 
     public static Item AddLeverPuzzlePart(int[] Loc, Item newitem)
     {
-      if (newitem == null || newitem.Deleted)
+      if (newitem?.Deleted != false)
         installed = false;
       else
         newitem.MoveToWorld(new Point3D(Loc[0], Loc[1], Loc[2]), Map.Malas);
+
       return newitem;
     }
 
@@ -220,16 +221,17 @@ namespace Server.Engines.Doom
 
       m_LampRoom?.Unregister();
       if (m_Tiles != null)
-        foreach (Region region in m_Tiles)
+        foreach (LeverPuzzleRegion region in m_Tiles)
           region.Unregister();
-      if (m_Box != null && !m_Box.Deleted) m_Box.Delete();
+      if (m_Box?.Deleted == false)
+        m_Box.Delete();
     }
 
     public static void NukeItemList(List<Item> list)
     {
-      if (list != null && list.Count != 0)
+      if (list?.Count > 0)
         foreach (Item item in list)
-          if (item != null && !item.Deleted)
+          if (item?.Deleted == false)
             item.Delete();
     }
 
@@ -244,31 +246,29 @@ namespace Server.Engines.Doom
     public virtual LeverPuzzleStatue GetStatue(int index)
     {
       LeverPuzzleStatue statue = (LeverPuzzleStatue)m_Statues[index];
-
-      if (statue != null && !statue.Deleted) return statue;
-      return null;
+      return statue?.Deleted == false ? statue : null;
     }
 
     public virtual LeverPuzzleLever GetLever(int index)
     {
       LeverPuzzleLever lever = (LeverPuzzleLever)m_Levers[index];
 
-      if (lever != null && !lever.Deleted) return lever;
-      return null;
+      return lever?.Deleted == false ? lever : null;
     }
 
-    public virtual void PuzzleStatus(int message, string fstring)
+    public virtual void PuzzleStatus(int message, string fstring = null)
     {
       for (int i = 0; i < 2; i++)
       {
         Item s;
-        if ((s = GetStatue(i)) != null) s.PublicOverheadMessage(MessageType.Regular, 0x3B2, message, fstring);
+        if ((s = GetStatue(i)) != null)
+          s.PublicOverheadMessage(MessageType.Regular, 0x3B2, message, fstring);
       }
     }
 
     public virtual void ResetPuzzle()
     {
-      PuzzleStatus(1062053, null);
+      PuzzleStatus(1062053);
       ResetLevers();
     }
 
@@ -289,8 +289,8 @@ namespace Server.Engines.Doom
 
     public virtual void KillTimers()
     {
-      if (l_Timer != null && l_Timer.Running) l_Timer.Stop();
-      if (m_Timer != null && m_Timer.Running) m_Timer.Stop();
+      if (l_Timer?.Running == true) l_Timer.Stop();
+      if (m_Timer?.Running == true) m_Timer.Stop();
     }
 
     public virtual void RemoveSuccessful()
@@ -300,8 +300,7 @@ namespace Server.Engines.Doom
 
     public virtual void LeverPulled(ushort code)
     {
-      int Correct = 0;
-      Mobile m_Player;
+      int correct = 0;
 
       KillTimers();
 
@@ -315,20 +314,21 @@ namespace Server.Engines.Doom
 
       if (!CircleComplete)
       {
-        PuzzleStatus(1050004, null); // The circle is the key...
+        PuzzleStatus(1050004); // The circle is the key...
       }
       else
       {
+        Mobile player;
         if (TheirKey == MyKey)
         {
           GenKey();
-          if ((Successful = m_Player = GetOccupant(0)) != null)
+          if ((Successful = player = GetOccupant(0)) != null)
           {
             SendLocationEffect(lp_Center, 0x1153, 0, 60, 1);
             PlaySounds(lp_Center, cs1);
 
-            Effects.SendBoltEffect(m_Player, true);
-            m_Player.MoveToWorld(lr_Enter, Map.Malas);
+            Effects.SendBoltEffect(player, true);
+            player.MoveToWorld(lr_Enter, Map.Malas);
 
             m_Timer = new LampRoomTimer(this);
             m_Timer.Start();
@@ -339,16 +339,13 @@ namespace Server.Engines.Doom
         {
           for (int i = 0; i < 16; i++) /* Count matching SET bits, ie correct codes */
             if (((MyKey >> i) & 1) == 1 && ((TheirKey >> i) & 1) == 1)
-              Correct++;
+              correct++;
 
-          PuzzleStatus(Statue_Msg[Correct], Correct > 0 ? Correct.ToString() : null);
+          PuzzleStatus(Statue_Msg[correct], correct > 0 ? correct.ToString() : null);
 
           for (int i = 0; i < 5; i++)
-            if ((m_Player = GetOccupant(i)) != null)
-            {
-              Timer smash = new RockTimer(m_Player, this);
-              smash.Start();
-            }
+            if ((player = GetOccupant(i)) != null)
+              new RockTimer(player, this).Start();
         }
       }
 
@@ -357,33 +354,25 @@ namespace Server.Engines.Doom
 
     public virtual void GenKey() /* Shuffle & build key */
     {
-      ushort tmp;
-      int n, i;
       ushort[] CA = { 1, 2, 4, 8 };
-      for (i = 0; i < 4; i++)
+      for (int i = 0; i < 4; i++)
       {
-        n = (n = Utility.Random(0, 3)) == i ? n & ~i : n; /* if (i==n) { return pointless; } */
-        tmp = CA[i];
+        int n = (n = Utility.Random(0, 3)) == i ? n & ~i : n;
+        ushort tmp = CA[i];
         CA[i] = CA[n];
         CA[n] = tmp;
       }
 
-      for (i = 0; i < 4; MyKey = (ushort)(CA[i++] | (MyKey <<= 4)))
+      for (int i = 0; i < 4; MyKey = (ushort)(CA[i++] | (MyKey <<= 4)))
       {
       }
     }
 
     private static bool IsValidDamagable(Mobile m)
     {
-      if (m != null && !m.Deleted)
-      {
-        if (m.Player && m.Alive)
-          return true;
-
-        return m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet;
-      }
-
-      return false;
+      return m?.Deleted == false &&
+             (m.Player && m.Alive ||
+              m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet);
     }
 
     public static void MoveMobileOut(Mobile m)
@@ -391,7 +380,7 @@ namespace Server.Engines.Doom
       if (m != null)
       {
         if (m is PlayerMobile && !m.Alive)
-          if (m.Corpse != null && !m.Corpse.Deleted)
+          if (m.Corpse?.Deleted == false)
             m.Corpse.MoveToWorld(lr_Exit, Map.Malas);
         BaseCreature.TeleportPets(m, lr_Exit, Map.Malas);
         m.Location = lr_Exit;
@@ -401,7 +390,7 @@ namespace Server.Engines.Doom
 
     public static bool AniSafe(Mobile m)
     {
-      return m != null && !TransformationSpellHelper.UnderTransformation(m) && m.BodyMod == 0 && m.Alive;
+      return  m?.BodyMod == 0 && m.Alive && !TransformationSpellHelper.UnderTransformation(m);
     }
 
     public static IEntity ZAdjustedIEFromMobile(Mobile m, int ZDelta)
@@ -411,7 +400,7 @@ namespace Server.Engines.Doom
 
     public static void DoDamage(Mobile m, int min, int max, bool poison)
     {
-      if (m != null && !m.Deleted && m.Alive)
+      if (m?.Deleted == false && m.Alive)
       {
         int damage = Utility.Random(min, max);
         AOS.Damage(m, damage, poison ? 0 : 100, 0, 0, poison ? 100 : 0, 0);
@@ -559,8 +548,8 @@ namespace Server.Engines.Doom
             {
               IEntity m_IEntity = new Entity(Serial.Zero, RandomPointIn(m_Player.Location, 10), m_Player.Map);
 
-              List<Mobile> mobiles = new List<Mobile>();
-              foreach (Mobile m in m_IEntity.Map.GetMobilesInRange(m_IEntity.Location, 2)) mobiles.Add(m);
+              List<Mobile> mobiles = m_IEntity.Map.GetMobilesInRange(m_IEntity.Location, 2).ToList();
+
               for (int k = 0; k < mobiles.Count; k++)
                 if (IsValidDamagable(mobiles[k]) && mobiles[k] != m_Player)
                 {
@@ -615,7 +604,7 @@ namespace Server.Engines.Doom
         if (ticks >= 71 || m_Controller.m_LampRoom.GetPlayerCount() == 0)
         {
           foreach (Mobile mobile in mobiles)
-            if (mobile != null && !mobile.Deleted && !mobile.IsDeadBondedPet)
+            if (mobile?.Deleted == false && !mobile.IsDeadBondedPet)
               mobile.Kill();
           m_Controller.Enabled = true;
           Stop();
@@ -637,7 +626,8 @@ namespace Server.Engines.Doom
                 DoDamage(mobile, 15, 20, true);
               }
 
-              if (Utility.Random((int)(level & ~0xfffffffc), 3) == 3) mobile.ApplyPoison(mobile, PA2[level]);
+              if (Utility.Random((int)(level & ~0xfffffffc), 3) == 3)
+                mobile.ApplyPoison(mobile, PA2[level]);
               if (ticks % 12 == 0 && level > 0 && mobile.Player)
                 mobile.SendLocalizedMessage(PA[level][0], null, PA[level][1]);
             }

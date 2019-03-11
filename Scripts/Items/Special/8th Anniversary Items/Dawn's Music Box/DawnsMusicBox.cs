@@ -151,17 +151,12 @@ namespace Server.Items
 
     public bool HasAccces(Mobile m)
     {
-      if (m.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      BaseHouse house = BaseHouse.FindHouseAt(this);
-
-      return house != null && house.HasAccess(m);
+      return m.AccessLevel >= AccessLevel.GameMaster || BaseHouse.FindHouseAt(this)?.HasAccess(m) == true;
     }
 
     public void PlayMusic(Mobile m, MusicName music)
     {
-      if (m_Timer != null && m_Timer.Running)
+      if (m_Timer?.Running == true)
         EndMusic(m);
       else
         m_ItemID = ItemID;
@@ -172,7 +167,7 @@ namespace Server.Items
 
     public void EndMusic(Mobile m)
     {
-      if (m_Timer != null && m_Timer.Running)
+      if (m_Timer?.Running == true)
         m_Timer.Stop();
 
       m.Send(StopMusic.Instance);

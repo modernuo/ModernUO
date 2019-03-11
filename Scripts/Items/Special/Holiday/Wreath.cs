@@ -43,7 +43,7 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house != null && house.IsCoOwner(from))
+      if (house?.IsCoOwner(from) == true)
       {
         if (from.InRange(GetWorldLocation(), 1))
         {
@@ -101,7 +101,7 @@ namespace Server.Items
     {
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house != null && house.IsCoOwner(from))
+      if (house?.IsCoOwner(from) == true)
       {
         if (from.InRange(GetWorldLocation(), 3))
         {
@@ -129,11 +129,11 @@ namespace Server.Items
 
         AddBackground(0, 0, 220, 170, 0x13BE);
         AddBackground(10, 10, 200, 150, 0xBB8);
-        AddHtmlLocalized(20, 30, 180, 60, 1062839, false, false); // Do you wish to re-deed this decoration?
-        AddHtmlLocalized(55, 100, 160, 25, 1011011, false, false); // CONTINUE
-        AddButton(20, 100, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(55, 125, 160, 25, 1011012, false, false); // CANCEL
-        AddButton(20, 125, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
+        AddHtmlLocalized(20, 30, 180, 60, 1062839); // Do you wish to re-deed this decoration?
+        AddHtmlLocalized(55, 100, 160, 25, 1011011); // CONTINUE
+        AddButton(20, 100, 0xFA5, 0xFA7, 1);
+        AddHtmlLocalized(55, 125, 160, 25, 1011012); // CANCEL
+        AddButton(20, 125, 0xFA5, 0xFA7, 0);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -199,7 +199,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house != null && house.IsCoOwner(from))
+        if (house?.IsCoOwner(from) == true)
         {
           from.SendLocalizedMessage(1062838); // Where would you like to place this decoration?
           from.BeginTarget(-1, true, TargetFlags.None, Placement_OnTarget);
@@ -224,7 +224,7 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(loc, from.Map, 16);
 
-      if (house != null && house.IsCoOwner(from))
+      if (house?.IsCoOwner(from) == true)
       {
         bool northWall = BaseAddon.IsWall(loc.X, loc.Y - 1, loc.Z, from.Map);
         bool westWall = BaseAddon.IsWall(loc.X - 1, loc.Y, loc.Z, from.Map);
@@ -292,8 +292,8 @@ namespace Server.Items
 
         AddItem(90, 30, 0x232D);
         AddItem(180, 30, 0x232C);
-        AddButton(50, 35, 0x868, 0x869, 1, GumpButtonType.Reply, 0);
-        AddButton(145, 35, 0x868, 0x869, 2, GumpButtonType.Reply, 0);
+        AddButton(50, 35, 0x868, 0x869, 1);
+        AddButton(145, 35, 0x868, 0x869, 2);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

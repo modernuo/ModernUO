@@ -178,7 +178,7 @@ namespace Server.Engines.ConPVP
             AddBorderedText(235 + 15, 105 + i * 75, 250, 20, pl.Player.Name, 0xFFC000, BlackColor32);
         }
 
-      AddButton(314, height - 42, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(314, height - 42, 247, 248, 1);
     }
 
     public string Center(string text)
@@ -203,9 +203,9 @@ namespace Server.Engines.ConPVP
     private void AddColoredText(int x, int y, int width, int height, string text, int color)
     {
       if (color == 0)
-        AddHtml(x, y, width, height, text, false, false);
+        AddHtml(x, y, width, height, text);
       else
-        AddHtml(x, y, width, height, Color(text, color), false, false);
+        AddHtml(x, y, width, height, Color(text, color));
     }
   }
 
@@ -904,7 +904,7 @@ namespace Server.Engines.ConPVP
 
       m_Context.RemoveAggressions(mob);
 
-      if (dp != null && !dp.Eliminated)
+      if (dp?.Eliminated == false)
         mob.MoveToWorld(m_Context.Arena.GetBaseStartPoint(GetTeamID(mob)), Facet);
       else
         m_Context.SendOutside(mob);
@@ -933,7 +933,7 @@ namespace Server.Engines.ConPVP
         flag.DropTo(mob, killer);
       });
 
-      if (killer != null && killer.Player)
+      if (killer?.Player == true)
       {
         CTFTeamInfo teamInfo = GetTeamInfo(killer);
         CTFTeamInfo victInfo = GetTeamInfo(mob);
@@ -1030,33 +1030,36 @@ namespace Server.Engines.ConPVP
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourney != null && tourney.TourneyType == TourneyType.FreeForAll)
+      if (tourney != null)
       {
-        sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
-        sb.Append("-man FFA");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RandomTeam)
-      {
-        sb.Append(tourney.ParticipantsPerMatch);
-        sb.Append("-team");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RedVsBlue)
-      {
-        sb.Append("Red v Blue");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.Faction)
-      {
-        sb.Append(tourney.ParticipantsPerMatch);
-        sb.Append("-team Faction");
-      }
-      else if (tourney != null)
-      {
-        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+        if (tourney.TourneyType == TourneyType.FreeForAll)
         {
-          if (sb.Length > 0)
-            sb.Append('v');
+          sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
+          sb.Append("-man FFA");
+        }
+        else if (tourney.TourneyType == TourneyType.RandomTeam)
+        {
+          sb.Append(tourney.ParticipantsPerMatch);
+          sb.Append("-team");
+        }
+        else if (tourney.TourneyType == TourneyType.RedVsBlue)
+        {
+          sb.Append("Red v Blue");
+        }
+        else if (tourney.TourneyType == TourneyType.Faction)
+        {
+          sb.Append(tourney.ParticipantsPerMatch);
+          sb.Append("-team Faction");
+        }
+        else
+        {
+          for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+          {
+            if (sb.Length > 0)
+              sb.Append('v');
 
-          sb.Append(tourney.PlayersPerParticipant);
+            sb.Append(tourney.PlayersPerParticipant);
+          }
         }
       }
 

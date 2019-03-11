@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Server.ContextMenus;
 using Server.Items;
@@ -965,7 +966,8 @@ namespace Server
             {
               Mobile m = state.Mobile;
 
-              if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m))) state.Send(RemovePacket);
+              if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
+                state.Send(RemovePacket);
             }
 
             eable.Free();
@@ -1864,15 +1866,15 @@ namespace Server
 
       if (info != null)
       {
-        if (info.m_BlessedFor != null && !info.m_BlessedFor.Deleted)
+        if (info.m_BlessedFor?.Deleted == false)
           flags |= SaveFlag.BlessedFor;
-        if (info.m_HeldBy != null && !info.m_HeldBy.Deleted)
+        if (info.m_HeldBy?.Deleted == false)
           flags |= SaveFlag.HeldBy;
         if (info.m_SavedFlags != 0)
           flags |= SaveFlag.SavedFlags;
       }
 
-      if (info == null || info.m_Weight == -1)
+      if (info == null || info.m_Weight == -1.0)
       {
         flags |= SaveFlag.NullWeight;
       }
@@ -1974,7 +1976,7 @@ namespace Server
 
       if (GetSaveFlag(flags, SaveFlag.Parent))
       {
-        if (m_Parent != null && !m_Parent.Deleted)
+        if (m_Parent?.Deleted == false)
           writer.Write(m_Parent.Serial);
         else
           writer.Write(Serial.MinusOne);
@@ -2323,7 +2325,7 @@ namespace Server
 
       Mobile blessedFor = BlessedFor;
 
-      if (blessedFor != null && !blessedFor.Deleted)
+      if (blessedFor?.Deleted == false)
         AddBlessedForProperty(list, blessedFor);
 
       if (DisplayLootType)
@@ -2428,7 +2430,7 @@ namespace Server
       {
         IEntity parent = bounce.m_Parent;
 
-        if (parent == null || parent.Deleted)
+        if (parent?.Deleted != false)
         {
           MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
         }
@@ -3362,7 +3364,7 @@ namespace Server
 
     public virtual void AddItem(Item item)
     {
-      if (item == null || item.Deleted || item.m_Parent == this) return;
+      if (item?.Deleted != false || item.m_Parent == this) return;
 
       if (item == this)
       {
@@ -3430,6 +3432,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
         else
           m_DeltaQueue.Add(this);
@@ -3759,29 +3762,24 @@ namespace Server
         z = top;
       }
 
-      List<Item> items = new List<Item>();
-
       IPooledEnumerable<Item> eable = map.GetItemsInRange(p, 0);
 
-      foreach (Item item in eable)
+      List<Item> items = eable.Where(item =>
       {
         if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
-          continue;
-
-        items.Add(item);
+          return false;
 
         ItemData id = item.ItemData;
 
-        if (!id.Surface)
-          continue;
+        if (id.Surface)
+        {
+          int top = item.Z + id.CalcHeight;
+          if (top <= maxZ && top >= z)
+            z = top;
+        }
 
-        int top = item.Z + id.CalcHeight;
-
-        if (top > maxZ || top < z)
-          continue;
-
-        z = top;
-      }
+        return true;
+      }).ToList();
 
       eable.Free();
 

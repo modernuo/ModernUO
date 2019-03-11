@@ -3,12 +3,7 @@ namespace Server.Items
   public class DispelFieldScroll : SpellScroll
   {
     [Constructible]
-    public DispelFieldScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public DispelFieldScroll(int amount) : base(33, 0x1F4E, amount)
+    public DispelFieldScroll(int amount = 1) : base(33, 0x1F4E, amount)
     {
     }
 

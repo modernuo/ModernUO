@@ -13,7 +13,7 @@ namespace Server.Spells.Second
       Reagent.Ginseng
     );
 
-    public CureSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public CureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

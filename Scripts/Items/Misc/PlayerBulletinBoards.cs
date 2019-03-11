@@ -27,7 +27,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( 0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -56,7 +56,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 0 ); // version
+			writer.Write( 0 ); // version
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -99,7 +99,7 @@ namespace Server.Items
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 1 );
+			writer.Write( 1 );
 
 			writer.Write( (int) Level );
 
@@ -441,7 +441,7 @@ namespace Server.Items
 					{
 						if ( page >= 1 && page <= board.Messages.Count )
 						{
-							PlayerBBMessage message = (PlayerBBMessage)board.Messages[page - 1];
+							PlayerBBMessage message = board.Messages[page - 1];
 							Mobile poster = message.Poster;
 
 							if ( poster == null )
@@ -510,7 +510,7 @@ namespace Server.Items
 						PlayerBBMessage message = board.Greeting;
 
 						if ( page >= 1 && page <= board.Messages.Count )
-							message = (PlayerBBMessage)board.Messages[page - 1];
+							message = board.Messages[page - 1];
 
 						from.SendGump( new PlayerBBGump( from, house, board, page ) );
 						from.SendGump( new PropertiesGump( from, message ) );
@@ -534,26 +534,26 @@ namespace Server.Items
 
 			AddImage( 30, 30, 5400 );
 
-			AddButton( 393, 145, 2084, 2084, 4, GumpButtonType.Reply, 0 ); // Scroll up
-			AddButton( 390, 371, 2085, 2085, 5, GumpButtonType.Reply, 0 ); // Scroll down
+			AddButton( 393, 145, 2084, 2084, 4); // Scroll up
+			AddButton( 390, 371, 2085, 2085, 5); // Scroll down
 
-			AddButton( 32, 183, 5412, 5413, 1, GumpButtonType.Reply, 0 ); // Post message
+			AddButton( 32, 183, 5412, 5413, 1); // Post message
 
 			if ( house.IsOwner( from ) )
 			{
-				AddButton( 63, 90, 5601, 5605, 2, GumpButtonType.Reply, 0 );
-				AddHtmlLocalized( 81, 89, 230, 20, 1062400, LabelColor, false, false ); // Set title
+				AddButton( 63, 90, 5601, 5605, 2);
+				AddHtmlLocalized( 81, 89, 230, 20, 1062400, LabelColor ); // Set title
 
-				AddButton( 63, 109, 5601, 5605, 3, GumpButtonType.Reply, 0 );
-				AddHtmlLocalized( 81, 108, 230, 20, 1062401, LabelColor, false, false ); // Post greeting
+				AddButton( 63, 109, 5601, 5605, 3);
+				AddHtmlLocalized( 81, 108, 230, 20, 1062401, LabelColor ); // Post greeting
 			}
 
 			string title = board.Title;
 
 			if ( title != null )
-				AddHtml( 183, 68, 180, 23, title, false, false );
+				AddHtml( 183, 68, 180, 23, title );
 
-			AddHtmlLocalized( 385, 89, 60, 20, 1062409, LabelColor, false, false ); // Post
+			AddHtmlLocalized( 385, 89, 60, 20, 1062409, LabelColor ); // Post
 
 			AddLabel( 440, 89, LabelHue, page.ToString() );
 			AddLabel( 455, 89, LabelHue, "/" );
@@ -562,16 +562,16 @@ namespace Server.Items
 			PlayerBBMessage message = board.Greeting;
 
 			if ( page >= 1 && page <= board.Messages.Count )
-				message = (PlayerBBMessage)board.Messages[page - 1];
+				message = board.Messages[page - 1];
 
 			AddImageTiled( 150, 220, 240, 1, 2700 ); // Separator
 
-			AddHtmlLocalized( 150, 180, 100, 20, 1062405, 16715, false, false ); // Posted On:
-			AddHtmlLocalized( 150, 200, 100, 20, 1062406, 16715, false, false ); // Posted By:
+			AddHtmlLocalized( 150, 180, 100, 20, 1062405, 16715 ); // Posted On:
+			AddHtmlLocalized( 150, 200, 100, 20, 1062406, 16715 ); // Posted By:
 
 			if ( message != null )
 			{
-				AddHtml( 255, 180, 150, 20, message.Time.ToString( "yyyy-MM-dd HH:mm:ss" ), false, false );
+				AddHtml( 255, 180, 150, 20, message.Time.ToString( "yyyy-MM-dd HH:mm:ss" ) );
 
 				Mobile poster = message.Poster;
 				string name = poster?.Name;
@@ -579,26 +579,21 @@ namespace Server.Items
 				if ( name == null || (name = name.Trim()).Length == 0 )
 					name = "Someone";
 
-				AddHtml( 255, 200, 150, 20, name, false, false );
+				AddHtml( 255, 200, 150, 20, name );
 
-				string body = message.Message;
-
-				if ( body == null )
-					body = "";
-
-				AddHtml( 150, 240, 250, 100, body, false, false );
+        AddHtml( 150, 240, 250, 100, message.Message ?? "" );
 
 				if ( message != board.Greeting && house.IsOwner( from ) )
 				{
-					AddButton( 130, 395, 1209, 1210, 6, GumpButtonType.Reply, 0 );
-					AddHtmlLocalized( 150, 393, 150, 20, 1062410, LabelColor, false, false ); // Banish Poster
+					AddButton( 130, 395, 1209, 1210, 6);
+					AddHtmlLocalized( 150, 393, 150, 20, 1062410, LabelColor ); // Banish Poster
 
-					AddButton( 310, 395, 1209, 1210, 7, GumpButtonType.Reply, 0 );
-					AddHtmlLocalized( 330, 393, 150, 20, 1062411, LabelColor, false, false ); // Delete Message
+					AddButton( 310, 395, 1209, 1210, 7);
+					AddHtmlLocalized( 330, 393, 150, 20, 1062411, LabelColor ); // Delete Message
 				}
 
 				if ( from.AccessLevel >= AccessLevel.GameMaster )
-					AddButton( 135, 242, 1209, 1210, 8, GumpButtonType.Reply, 0 ); // Post props
+					AddButton( 135, 242, 1209, 1210, 8); // Post props
 			}
 		}
 	}

@@ -103,24 +103,24 @@ namespace Server.Items
         AddLabel(45, 15, 0, "Choose a Potted Plant:");
 
         AddItem(45, 75, 0x11C8);
-        AddButton(55, 50, 0x845, 0x846, 1, GumpButtonType.Reply, 0);
+        AddButton(55, 50, 0x845, 0x846, 1);
 
         AddItem(100, 75, 0x11C9);
-        AddButton(115, 50, 0x845, 0x846, 2, GumpButtonType.Reply, 0);
+        AddButton(115, 50, 0x845, 0x846, 2);
 
         AddItem(160, 75, 0x11CA);
-        AddButton(175, 50, 0x845, 0x846, 3, GumpButtonType.Reply, 0);
+        AddButton(175, 50, 0x845, 0x846, 3);
 
         AddItem(225, 75, 0x11CB);
-        AddButton(235, 50, 0x845, 0x846, 4, GumpButtonType.Reply, 0);
+        AddButton(235, 50, 0x845, 0x846, 4);
 
         AddItem(280, 75, 0x11CC);
-        AddButton(295, 50, 0x845, 0x846, 5, GumpButtonType.Reply, 0);
+        AddButton(295, 50, 0x845, 0x846, 5);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_Deed == null || m_Deed.Deleted)
+        if (m_Deed?.Deleted != false)
           return;
 
         Mobile from = sender.Mobile;

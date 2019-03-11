@@ -24,7 +24,8 @@ namespace Server.Spells.Fourth
 
     private RunebookEntry m_Entry;
 
-    public RecallSpell(Mobile caster, Item scroll, RunebookEntry entry = null, Runebook book = null) : base(caster, scroll, m_Info)
+    public RecallSpell(Mobile caster, RunebookEntry entry = null, Runebook book = null, Item scroll = null) :
+      base(caster, scroll, m_Info)
     {
       m_Entry = entry;
       m_Book = book;

@@ -20,8 +20,8 @@ namespace Server.Gumps
       AddBackground(0, 0, 420, 50 + 20 * m_Inventories.Count, 0x13BE);
 
       AddImageTiled(10, 10, 400, 20, 0xA40);
-      AddHtmlLocalized(15, 10, 200, 20, 1062435, 0x7FFF, false, false); // Reclaim Vendor Inventory
-      AddHtmlLocalized(330, 10, 50, 20, 1062465, 0x7FFF, false, false); // Expires
+      AddHtmlLocalized(15, 10, 200, 20, 1062435, 0x7FFF); // Reclaim Vendor Inventory
+      AddHtmlLocalized(330, 10, 50, 20, 1062465, 0x7FFF); // Expires
 
       AddImageTiled(10, 40, 400, 20 * m_Inventories.Count, 0xA40);
 
@@ -32,7 +32,7 @@ namespace Server.Gumps
         int y = 40 + 20 * i;
 
         if (inventory.Owner == from)
-          AddButton(10, y, 0xFA5, 0xFA7, i + 1, GumpButtonType.Reply, 0);
+          AddButton(10, y, 0xFA5, 0xFA7, i + 1);
 
         AddLabel(45, y, 0x481, $"{inventory.ShopName} ({inventory.VendorName})");
 
@@ -40,7 +40,7 @@ namespace Server.Gumps
         int hours = (int)expire.TotalHours;
 
         AddLabel(320, y, 0x481, hours.ToString());
-        AddHtmlLocalized(350, y, 50, 20, 1062466, 0x7FFF, false, false); // hour(s)
+        AddHtmlLocalized(350, y, 50, 20, 1062466, 0x7FFF); // hour(s)
       }
     }
 
@@ -52,7 +52,7 @@ namespace Server.Gumps
       Mobile from = sender.Mobile;
       HouseSign sign = m_House.Sign;
 
-      if (m_House.Deleted || sign == null || sign.Deleted || !from.CheckAlive())
+      if (m_House.Deleted || sign?.Deleted != false || !from.CheckAlive())
         return;
 
       if (from.Map != sign.Map || !from.InRange(sign, 5))

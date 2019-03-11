@@ -462,8 +462,8 @@ namespace Server.Items
       {
         Container bank = from.FindBankNoCreate();
 
-        if (m_TicketPrice == 0 || from.Backpack != null && from.Backpack.ConsumeTotal(typeof(Gold), m_TicketPrice) ||
-            bank != null && bank.ConsumeTotal(typeof(Gold), m_TicketPrice))
+        if (m_TicketPrice == 0 || from.Backpack?.ConsumeTotal(typeof(Gold), m_TicketPrice) == true ||
+            bank?.ConsumeTotal(typeof(Gold), m_TicketPrice) == true)
         {
           Entries.Add(new RaffleEntry(from));
 

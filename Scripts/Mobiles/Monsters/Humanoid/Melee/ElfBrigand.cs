@@ -94,7 +94,7 @@ namespace Server.Mobiles
           break;
       }
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
     }
 
     public ElfBrigand(Serial serial) : base(serial)

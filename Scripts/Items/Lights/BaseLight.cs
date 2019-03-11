@@ -208,7 +208,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        if (m_Light != null && !m_Light.Deleted)
+        if (m_Light?.Deleted == false)
           m_Light.Burn();
       }
     }

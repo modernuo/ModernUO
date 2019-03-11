@@ -12,7 +12,7 @@ namespace Server.Spells.First
       Reagent.SpidersSilk
     );
 
-    public NightSightSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public NightSightSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

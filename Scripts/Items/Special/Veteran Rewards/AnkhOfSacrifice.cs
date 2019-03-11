@@ -91,7 +91,7 @@ namespace Server.Items
 
       public override void OnClick()
       {
-        if (m_Ankh == null || m_Ankh.Deleted)
+        if (m_Ankh?.Deleted != false)
           return;
 
         Resurrect(m_Mobile as PlayerMobile, m_Ankh);
@@ -131,7 +131,7 @@ namespace Server.Items
 
     private class AnkhResurrectGump : ResurrectGump
     {
-      public AnkhResurrectGump(Mobile owner, ResurrectMessage msg) : base(owner, owner, msg, false)
+      public AnkhResurrectGump(Mobile owner, ResurrectMessage msg) : base(owner, owner, msg)
       {
       }
 
@@ -141,7 +141,7 @@ namespace Server.Items
 
         if (info.ButtonID == 1 || info.ButtonID == 2)
         {
-          if (from.Map == null || !from.Map.CanFit(from.Location, 16, false, false))
+          if (from.Map?.CanFit(from.Location, 16, false, false) != true)
           {
             from.SendLocalizedMessage(502391); // Thou can not be resurrected there!
             return;
@@ -241,12 +241,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public AnkhOfSacrificeDeed() : this(false)
-    {
-    }
-
-    [Constructible]
-    public AnkhOfSacrificeDeed(bool isRewardItem)
+    public AnkhOfSacrificeDeed(bool isRewardItem = false)
     {
       LootType = LootType.Blessed;
 
@@ -305,7 +300,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         return;
 
       if (IsChildOf(from.Backpack))

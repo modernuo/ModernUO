@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Targeting;
 
@@ -16,7 +17,7 @@ namespace Server.Engines.Harvest
 
     public virtual bool CheckTool(Mobile from, Item tool)
     {
-      bool wornOut = tool == null || tool.Deleted || tool is IUsesRemaining remaining && remaining.UsesRemaining <= 0;
+      bool wornOut = tool?.Deleted != false || tool is IUsesRemaining remaining && remaining.UsesRemaining <= 0;
 
       if (wornOut)
         from.SendLocalizedMessage(1044038); // You have worn out your tool!
@@ -47,7 +48,7 @@ namespace Server.Engines.Harvest
     public virtual bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
     {
       HarvestBank bank = def.GetBank(map, loc.X, loc.Y);
-      bool available = bank != null && bank.Current >= def.ConsumedPerHarvest;
+      bool available = bank?.Current >= def.ConsumedPerHarvest;
 
       if (!available)
         def.SendMessageTo(from, timed ? def.DoubleHarvestMessage : def.NoResourcesMessage);
@@ -136,7 +137,7 @@ namespace Server.Engines.Harvest
       HarvestResource resource = MutateResource(from, tool, def, map, loc, vein, primary, fallback);
 
       double skillBase = from.Skills[def.Skill].Base;
-      double skillValue = from.Skills[def.Skill].Value;
+      // double skillValue = from.Skills[def.Skill].Value;
 
       Type type = null;
 
@@ -194,7 +195,7 @@ namespace Server.Engines.Harvest
 
             BonusHarvestResource bonus = def.GetBonusResource();
 
-            if (bonus != null && bonus.Type != null && skillBase >= bonus.ReqSkill)
+            if (bonus?.Type != null && skillBase >= bonus.ReqSkill)
             {
               Item bonusItem = Construct(bonus.Type, from);
 
@@ -279,18 +280,8 @@ namespace Server.Engines.Harvest
       if (map == null)
         return false;
 
-      List<Item> atFeet = new List<Item>();
-
-      foreach (Item obj in m.GetItemsInRange(0))
-        atFeet.Add(obj);
-
-      for (int i = 0; i < atFeet.Count; ++i)
-      {
-        Item check = atFeet[i];
-
-        if (check.StackWith(m, item, false))
-          return true;
-      }
+      if (m.GetItemsInRange(0).Any(t => t.StackWith(m, item, false)))
+        return true;
 
       item.MoveToWorld(m.Location, map);
       return true;
@@ -305,10 +296,7 @@ namespace Server.Engines.Harvest
     public virtual Type GetResourceType(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
       HarvestResource resource)
     {
-      if (resource.Types.Length > 0)
-        return resource.Types[Utility.Random(resource.Types.Length)];
-
-      return null;
+      return resource.Types.Length > 0 ? resource.Types[Utility.Random(resource.Types.Length)] : null;
     }
 
     public virtual HarvestResource MutateResource(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
@@ -391,17 +379,7 @@ namespace Server.Engines.Harvest
 
     public virtual HarvestDefinition GetDefinition(int tileID)
     {
-      HarvestDefinition def = null;
-
-      for (int i = 0; def == null && i < Definitions.Count; ++i)
-      {
-        HarvestDefinition check = Definitions[i];
-
-        if (check.Validate(tileID))
-          def = check;
-      }
-
-      return def;
+      return Definitions.FirstOrDefault(check => check.Validate(tileID));
     }
 
     public virtual void StartHarvesting(Mobile from, Item tool, object toHarvest)
@@ -488,7 +466,7 @@ namespace Server
   {
     public static bool Check(Item item)
     {
-      return item != null && item.GetType().IsDefined(typeof(FurnitureAttribute), false);
+      return item?.GetType().IsDefined(typeof(FurnitureAttribute), false) == true;
     }
   }
 }

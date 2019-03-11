@@ -3,12 +3,7 @@ namespace Server.Items
   public class Amethyst : Item
   {
     [Constructible]
-    public Amethyst() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Amethyst(int amount) : base(0xF16)
+    public Amethyst(int amount = 1) : base(0xF16)
     {
       Stackable = true;
       Amount = amount;

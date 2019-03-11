@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -33,26 +34,17 @@ namespace Server.Multis
 
     public bool IsItemValid(int itemID)
     {
-      if (itemID <= 0 || itemID >= m_ItemTable.Length)
-        return false;
-
-      return CheckValidity(m_ItemTable[itemID]);
+      return itemID > 0 && itemID < m_ItemTable.Length && CheckValidity(m_ItemTable[itemID]);
     }
 
     public bool IsMultiValid(int multiID)
     {
-      if (multiID <= 0 || multiID >= m_MultiTable.Length)
-        return false;
-
-      return CheckValidity(m_MultiTable[multiID]);
+      return multiID > 0 && multiID < m_MultiTable.Length && CheckValidity(m_MultiTable[multiID]);
     }
 
     public bool CheckValidity(int val)
     {
-      if (val == -1)
-        return false;
-
-      return val == 0 || ((int)ExpansionInfo.CoreExpansion.CustomHousingFlag & val) != 0;
+      return val != -1 && (val == 0 || ((int)ExpansionInfo.CoreExpansion.CustomHousingFlag & val) != 0);
     }
 
     private int[] CreateTable(int length)
@@ -172,10 +164,8 @@ namespace Server.Multis
 
       while ((line = ip.ReadLine()) != null)
       {
-        if (line.Length == 0)
-          continue;
-
-        return line.Split('\t');
+        if (line.Length > 0)
+          return line.Split('\t');
       }
 
       return null;
@@ -212,16 +202,7 @@ namespace Server.Multis
 
     public object this[string name] => this[Spreadsheet.GetColumnID(name)];
 
-    public object this[int id]
-    {
-      get
-      {
-        if (id < 0)
-          return null;
-
-        return Data[id];
-      }
-    }
+    public object this[int id] => id < 0 ? null : Data[id];
 
     public int GetInt32(string name)
     {
@@ -235,10 +216,7 @@ namespace Server.Multis
 
     public int GetInt32(object obj)
     {
-      if (obj is int i)
-        return i;
-
-      return 0;
+      return Convert.ToInt32(obj);
     }
 
     public string GetString(string name)

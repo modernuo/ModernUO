@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Server.Gumps;
@@ -92,7 +91,7 @@ namespace Server.Engines.ConPVP
         return false;
 
       // Mobile exists and is alive and is a player?
-      if (m == null || m.Deleted || !m.Alive || !m.Player)
+      if (m?.Deleted != false || !m.Alive || !m.Player)
         return false;
 
       // Not current king (or they are the current king)
@@ -100,10 +99,7 @@ namespace Server.Engines.ConPVP
         return false;
 
       // They are on a team
-      if (m_Game.GetTeamInfo(m) == null)
-        return false;
-
-      return true;
+      return m_Game.GetTeamInfo(m) != null;
     }
 
     public override bool OnMoveOver(Mobile m)
@@ -147,12 +143,8 @@ namespace Server.Engines.ConPVP
       if (m_Game != null && CapturesSoFar > 0 && killer != null && king != null && kingTeam != null &&
           killerTeam != null)
       {
-        string kingName = king.Name;
-        if (kingName == null)
-          kingName = "";
-        string killerName = killer.Name;
-        if (killerName == null)
-          killerName = "";
+        string kingName = king.Name ?? "";
+        string killerName = killer.Name ?? "";
 
         m_Game.Alert("{0} ({1}) was dethroned by {2} ({3})!", kingName, kingTeam.Name, killerName, killerTeam.Name);
       }
@@ -217,13 +209,13 @@ namespace Server.Engines.ConPVP
       {
         KHPlayerInfo pi = null;
 
-        if (m_Hill == null || m_Hill.Deleted || m_Hill.Game == null)
+        if (m_Hill?.Deleted != false || m_Hill.Game == null)
         {
           Stop();
           return;
         }
 
-        if (m_Hill.King == null || m_Hill.King.Deleted || !m_Hill.King.Alive)
+        if (m_Hill.King?.Deleted != false || !m_Hill.King.Alive)
         {
           m_Hill.DeKingify();
           Stop();
@@ -468,7 +460,7 @@ namespace Server.Engines.ConPVP
         AddBorderedText(235 + 15, 105 + i * 75, 250, 20, leader, 0xFFC000, BlackColor32);
       }
 
-      AddButton(314, height - 42, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(314, height - 42, 247, 248, 1);
     }
 
     public string Center(string text)
@@ -493,9 +485,9 @@ namespace Server.Engines.ConPVP
     private void AddColoredText(int x, int y, int width, int height, string text, int color)
     {
       if (color == 0)
-        AddHtml(x, y, width, height, text, false, false);
+        AddHtml(x, y, width, height, text);
       else
-        AddHtml(x, y, width, height, Color(text, color), false, false);
+        AddHtml(x, y, width, height, Color(text, color));
     }
   }
 
@@ -865,7 +857,7 @@ namespace Server.Engines.ConPVP
     {
       if (mob != null && GetTeamInfo(mob) != null && Controller != null)
         for (int i = 0; i < Controller.Hills.Length; i++)
-          if (Controller.Hills[i] != null && Controller.Hills[i].King == mob)
+          if (Controller.Hills[i]?.King == mob)
             return true;
 
       return false;
@@ -937,7 +929,7 @@ namespace Server.Engines.ConPVP
 
       m_Context.RemoveAggressions(mob);
 
-      if (dp != null && !dp.Eliminated)
+      if (dp?.Eliminated == false)
         mob.MoveToWorld(m_Context.Arena.GetBaseStartPoint(GetTeamID(mob)), Facet);
       else
         m_Context.SendOutside(mob);
@@ -947,7 +939,7 @@ namespace Server.Engines.ConPVP
       DuelContext.CancelSpell(mob);
       mob.Frozen = false;
 
-      if (corpse != null && !corpse.Deleted)
+      if (corpse?.Deleted == false)
         Timer.DelayCall(TimeSpan.FromSeconds(30), corpse.Delete);
     }
 
@@ -958,7 +950,7 @@ namespace Server.Engines.ConPVP
       KHTeamInfo victInfo = GetTeamInfo(mob);
       int bonus = 0;
 
-      if (killer != null && killer.Player)
+      if (killer?.Player == true)
         teamInfo = GetTeamInfo(killer);
 
       for (int i = 0; i < Controller.Hills.Length; i++)
@@ -1017,7 +1009,7 @@ namespace Server.Engines.ConPVP
           Controller.Hills[i].Game = this;
 
       foreach (KHBoard board in Controller.Boards)
-        if (board != null && !board.Deleted)
+        if (board?.Deleted == false)
           board.m_Game = this;
 
       m_FinishTimer = Timer.DelayCall(Controller.Duration, Finish_Callback);
@@ -1041,28 +1033,31 @@ namespace Server.Engines.ConPVP
 
       StringBuilder sb = new StringBuilder();
 
-      if (tourney != null && tourney.TourneyType == TourneyType.FreeForAll)
+      if (tourney != null)
       {
-        sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
-        sb.Append("-man FFA");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RandomTeam)
-      {
-        sb.Append(tourney.ParticipantsPerMatch);
-        sb.Append("-team");
-      }
-      else if (tourney != null && tourney.TourneyType == TourneyType.RedVsBlue)
-      {
-        sb.Append("Red v Blue");
-      }
-      else if (tourney != null)
-      {
-        for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+        if (tourney.TourneyType == TourneyType.FreeForAll)
         {
-          if (sb.Length > 0)
-            sb.Append('v');
+          sb.Append(m_Context.Participants.Count * tourney.PlayersPerParticipant);
+          sb.Append("-man FFA");
+        }
+        else if (tourney.TourneyType == TourneyType.RandomTeam)
+        {
+          sb.Append(tourney.ParticipantsPerMatch);
+          sb.Append("-team");
+        }
+        else if (tourney.TourneyType == TourneyType.RedVsBlue)
+        {
+          sb.Append("Red v Blue");
+        }
+        else
+        {
+          for (int i = 0; i < tourney.ParticipantsPerMatch; ++i)
+          {
+            if (sb.Length > 0)
+              sb.Append('v');
 
-          sb.Append(tourney.PlayersPerParticipant);
+            sb.Append(tourney.PlayersPerParticipant);
+          }
         }
       }
 

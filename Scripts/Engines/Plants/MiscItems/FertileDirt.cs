@@ -3,12 +3,7 @@ namespace Server.Items
   public class FertileDirt : Item
   {
     [Constructible]
-    public FertileDirt() : this(1)
-    {
-    }
-
-    [Constructible]
-    public FertileDirt(int amount) : base(0xF81)
+    public FertileDirt(int amount = 1) : base(0xF81)
     {
       Stackable = true;
       Weight = 1.0;

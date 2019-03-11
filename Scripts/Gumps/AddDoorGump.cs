@@ -18,11 +18,7 @@ namespace Server.Gumps
 
     private int m_Type;
 
-    public AddDoorGump() : this(-1)
-    {
-    }
-
-    public AddDoorGump(int type) : base(50, 40)
+    public AddDoorGump(int type = -1) : base(50, 40)
     {
       m_Type = type;
 
@@ -35,18 +31,18 @@ namespace Server.Gumps
         int baseID = m_Types[m_Type].m_BaseID;
 
         AddItem(25, 24, baseID);
-        AddButton(26, 37, 0x5782, 0x5782, 1, GumpButtonType.Reply, 0);
+        AddButton(26, 37, 0x5782, 0x5782, 1);
 
         AddItem(47, 45, baseID + 2);
-        AddButton(43, 57, 0x5783, 0x5783, 2, GumpButtonType.Reply, 0);
+        AddButton(43, 57, 0x5783, 0x5783, 2);
 
         AddItem(87, 22, baseID + 10);
-        AddButton(116, 35, 0x5785, 0x5785, 6, GumpButtonType.Reply, 0);
+        AddButton(116, 35, 0x5785, 0x5785, 6);
 
         AddItem(65, 45, baseID + 8);
-        AddButton(96, 55, 0x5784, 0x5784, 5, GumpButtonType.Reply, 0);
+        AddButton(96, 55, 0x5784, 0x5784, 5);
 
-        AddButton(73, 36, 0x2716, 0x2716, 9, GumpButtonType.Reply, 0);
+        AddButton(73, 36, 0x2716, 0x2716, 9);
       }
       else
       {
@@ -54,7 +50,7 @@ namespace Server.Gumps
 
         for (int i = 0; i < m_Types.Length; ++i)
         {
-          AddButton(30 + i * 49, 13, 0x2624, 0x2625, i + 1, GumpButtonType.Reply, 0);
+          AddButton(30 + i * 49, 13, 0x2624, 0x2625, i + 1);
           AddItem(22 + i * 49, 20, m_Types[i].m_BaseID);
         }
       }

@@ -62,7 +62,7 @@ namespace Server.Engines.MLQuests
       {
         MLQuest quest = MLQuestSystem.ReadQuestRef(reader);
 
-        if (quest != null && quest.IsChainTriggered)
+        if (quest?.IsChainTriggered == true)
           ChainOffers.Add(quest);
       }
 

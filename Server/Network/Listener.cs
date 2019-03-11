@@ -35,11 +35,7 @@ namespace Server.Network
     private Queue<Socket> m_Accepted;
     private object m_AcceptedSyncRoot;
 
-#if NewAsyncSockets
     private SocketAsyncEventArgs m_EventArgs;
-#else
-		private AsyncCallback m_OnAccept;
-#endif
 
     private static Socket[] m_EmptySockets = new Socket[0];
 
@@ -57,19 +53,9 @@ namespace Server.Network
 
       DisplayListener();
 
-#if NewAsyncSockets
       m_EventArgs = new SocketAsyncEventArgs();
       m_EventArgs.Completed += Accept_Completion;
       Accept_Start();
-#else
-			m_OnAccept = new AsyncCallback( OnAccept );
-			try {
-				IAsyncResult res = m_Listener.BeginAccept( m_OnAccept, m_Listener );
-			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			} catch ( ObjectDisposedException ) {
-			}
-#endif
     }
 
     private Socket Bind(IPEndPoint ipep)
@@ -144,10 +130,9 @@ namespace Server.Network
       }
     }
 
-#if NewAsyncSockets
     private void Accept_Start()
     {
-      bool result = false;
+      bool result;
 
       do
       {
@@ -187,36 +172,6 @@ namespace Server.Network
       e.AcceptSocket = null;
     }
 
-#else
-		private void OnAccept( IAsyncResult asyncResult ) {
-			Socket listener = (Socket) asyncResult.AsyncState;
-
-			Socket accepted = null;
-
-			try {
-				accepted = listener.EndAccept( asyncResult );
-			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			} catch ( ObjectDisposedException ) {
-				return;
-			}
-
-			if ( accepted != null ) {
-				if ( VerifySocket( accepted ) ) {
-					Enqueue( accepted );
-				} else {
-					Release( accepted );
-				}
-			}
-
-			try {
-				listener.BeginAccept( m_OnAccept, listener );
-			} catch ( SocketException ex ) {
-				NetState.TraceException( ex );
-			} catch ( ObjectDisposedException ) {
-			}
-		}
-#endif
 
     private bool VerifySocket(Socket socket)
     {

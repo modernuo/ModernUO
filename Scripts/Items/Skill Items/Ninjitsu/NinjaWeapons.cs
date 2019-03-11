@@ -270,8 +270,7 @@ namespace Server.Items
     {
       Item item = weapon as Item;
 
-      if (!item.Deleted && item.RootParent == from) return true;
-      return false;
+      return !item.Deleted && item.RootParent == from;
     }
 
     public class LoadEntry : ContextMenuEntry

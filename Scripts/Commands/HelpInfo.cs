@@ -337,12 +337,7 @@ namespace Server.Commands
 
     public class CommandInfoGump : Gump
     {
-      public CommandInfoGump(CommandInfo info)
-        : this(info, 320, 200)
-      {
-      }
-
-      public CommandInfoGump(CommandInfo info, int width, int height)
+      public CommandInfoGump(CommandInfo info, int width = 320, int height = 200)
         : base(300, 50)
       {
         AddPage(0);
@@ -352,7 +347,7 @@ namespace Server.Commands
         //AddImageTiled( 10, 10, width - 20, 20, 2624 );
         //AddAlphaRegion( 10, 10, width - 20, 20 );
         //AddHtmlLocalized( 10, 10, width - 20, 20, header, headerColor, false, false );
-        AddHtml(10, 10, width - 20, 20, Color(Center(info.Name), 0xFF0000), false, false);
+        AddHtml(10, 10, width - 20, 20, Color(Center(info.Name), 0xFF0000));
 
         //AddImageTiled( 10, 40, width - 20, height - 80, 2624 );
         //AddAlphaRegion( 10, 40, width - 20, height - 80 );
@@ -365,7 +360,7 @@ namespace Server.Commands
 
         string[] aliases = info.Aliases;
 
-        if (aliases != null && aliases.Length != 0)
+        if (aliases?.Length > 0)
         {
           sb.Append($"Alias{(aliases.Length == 1 ? "" : "es")}: ");
 

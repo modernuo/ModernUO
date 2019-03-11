@@ -23,7 +23,7 @@ using System;
 namespace Server
 {
   [Parsable]
-  public struct Point2D : IPoint2D, IComparable, IComparable<Point2D>
+  public struct Point2D : IPoint2D, IComparable<Point2D>
   {
     internal int m_X;
     internal int m_Y;
@@ -96,11 +96,7 @@ namespace Server
 
     public override bool Equals(object o)
     {
-      if (!(o is IPoint2D)) return false;
-
-      IPoint2D p = (IPoint2D)o;
-
-      return m_X == p.X && m_Y == p.Y;
+      return o is IPoint2D p && m_X == p.X && m_Y == p.Y;
     }
 
     public override int GetHashCode()
@@ -120,18 +116,12 @@ namespace Server
 
     public static bool operator ==(Point2D l, IPoint2D r)
     {
-      if (ReferenceEquals(r, null))
-        return false;
-
-      return l.m_X == r.X && l.m_Y == r.Y;
+      return !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y;
     }
 
     public static bool operator !=(Point2D l, IPoint2D r)
     {
-      if (ReferenceEquals(r, null))
-        return false;
-
-      return l.m_X != r.X || l.m_Y != r.Y;
+      return !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y);
     }
 
     public static bool operator >(Point2D l, Point2D r)
@@ -146,10 +136,7 @@ namespace Server
 
     public static bool operator >(Point2D l, IPoint2D r)
     {
-      if (ReferenceEquals(r, null))
-        return false;
-
-      return l.m_X > r.X && l.m_Y > r.Y;
+      return !ReferenceEquals(r, null) && l.m_X > r.X && l.m_Y > r.Y;
     }
 
     public static bool operator <(Point2D l, Point2D r)
@@ -164,10 +151,7 @@ namespace Server
 
     public static bool operator <(Point2D l, IPoint2D r)
     {
-      if (ReferenceEquals(r, null))
-        return false;
-
-      return l.m_X < r.X && l.m_Y < r.Y;
+      return !ReferenceEquals(r, null) && l.m_X < r.X && l.m_Y < r.Y;
     }
 
     public static bool operator >=(Point2D l, Point2D r)
@@ -182,10 +166,7 @@ namespace Server
 
     public static bool operator >=(Point2D l, IPoint2D r)
     {
-      if (ReferenceEquals(r, null))
-        return false;
-
-      return l.m_X >= r.X && l.m_Y >= r.Y;
+      return !ReferenceEquals(r, null) && l.m_X >= r.X && l.m_Y >= r.Y;
     }
 
     public static bool operator <=(Point2D l, Point2D r)
@@ -200,15 +181,12 @@ namespace Server
 
     public static bool operator <=(Point2D l, IPoint2D r)
     {
-      if (ReferenceEquals(r, null))
-        return false;
-
-      return l.m_X <= r.X && l.m_Y <= r.Y;
+      return !ReferenceEquals(r, null) && l.m_X <= r.X && l.m_Y <= r.Y;
     }
   }
 
   [Parsable]
-  public struct Point3D : IPoint3D, IComparable, IComparable<Point3D>
+  public struct Point3D : IPoint3D, IComparable<Point3D>
   {
     internal int m_X;
     internal int m_Y;
@@ -261,12 +239,7 @@ namespace Server
 
     public override bool Equals(object o)
     {
-      if (!(o is IPoint3D))
-        return false;
-
-      IPoint3D p = (IPoint3D)o;
-
-      return m_X == p.X && m_Y == p.Y && m_Z == p.Z;
+      return o is IPoint3D p && m_X == p.X && m_Y == p.Y && m_Z == p.Z;
     }
 
     public override int GetHashCode()
@@ -306,18 +279,12 @@ namespace Server
 
     public static bool operator ==(Point3D l, IPoint3D r)
     {
-      if (ReferenceEquals(r, null))
-        return false;
-
-      return l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
+      return !ReferenceEquals(r, null) && l.m_X == r.X && l.m_Y == r.Y && l.m_Z == r.Z;
     }
 
     public static bool operator !=(Point3D l, IPoint3D r)
     {
-      if (ReferenceEquals(r, null))
-        return false;
-
-      return l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z;
+      return !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z);
     }
 
     public int CompareTo(Point3D other)

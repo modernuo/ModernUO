@@ -3,12 +3,7 @@ namespace Server.Items
   public class BlessScroll : SpellScroll
   {
     [Constructible]
-    public BlessScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BlessScroll(int amount) : base(16, 0x1F3D, amount)
+    public BlessScroll(int amount = 1) : base(16, 0x1F3D, amount)
     {
     }
 

@@ -222,7 +222,7 @@ namespace Server.Misc
 
       PlaceItemIn(cont, 45, 105, new Spellbook(ulong.MaxValue));
       PlaceItemIn(cont, 65, 105, new NecromancerSpellbook((ulong)0xFFFF));
-      PlaceItemIn(cont, 85, 105, new BookOfChivalry((ulong)0x3FF));
+      PlaceItemIn(cont, 85, 105, new BookOfChivalry());
       PlaceItemIn(cont, 105, 105, new BookOfBushido()); //Default ctor = full
       PlaceItemIn(cont, 125, 105, new BookOfNinjitsu()); //Default ctor = full
 
@@ -462,7 +462,7 @@ namespace Server.Misc
       bank.DropItem(new TreasureMap(5, Map.Trammel));
 
       // Bag containing 50 of each reagent
-      bank.DropItem(new BagOfReagents(50));
+      bank.DropItem(new BagOfReagents());
 
       // Craft tools
       bank.DropItem(MakeNewbie(new Scissors()));
@@ -1004,7 +1004,7 @@ namespace Server.Misc
         }
         case 4: // Necromancer
         {
-          Container regs = new BagOfNecroReagents(50);
+          Container regs = new BagOfNecroReagents();
 
           if (!Core.AOS)
             foreach (Item item in regs.Items)
@@ -1076,7 +1076,7 @@ namespace Server.Misc
             EquipItem(new BodySash(0xCF));
           }
 
-          Spellbook book = new BookOfChivalry((ulong)0x3FF);
+          Spellbook book = new BookOfChivalry();
 
           PackItem(book);
 
@@ -1161,7 +1161,7 @@ namespace Server.Misc
       if (!Core.AOS)
         item.LootType = LootType.Newbied;
 
-      if (m_Mobile != null && m_Mobile.EquipItem(item))
+      if (m_Mobile?.EquipItem(item) == true)
         return;
 
       Container pack = m_Mobile.Backpack;
@@ -1472,7 +1472,7 @@ namespace Server.Misc
         case SkillName.Chivalry:
         {
           if (Core.ML)
-            PackItem(new BookOfChivalry((ulong)0x3FF));
+            PackItem(new BookOfChivalry());
 
           break;
         }
@@ -1620,7 +1620,7 @@ namespace Server.Misc
         {
           if (Core.ML)
           {
-            Container regs = new BagOfNecroReagents(50);
+            Container regs = new BagOfNecroReagents();
 
             PackItem(regs);
 

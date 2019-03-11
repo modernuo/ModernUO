@@ -13,12 +13,7 @@ namespace Server.Items
     private int m_UsesRemaining;
 
     [Constructible]
-    public WeaponEngravingTool() : this(10)
-    {
-    }
-
-    [Constructible]
-    public WeaponEngravingTool(int uses) : base(0x32F8)
+    public WeaponEngravingTool(int uses = 10) : base(0x32F8)
     {
       LootType = LootType.Blessed;
       Weight = 1.0;
@@ -62,7 +57,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         return;
 
       if (m_UsesRemaining > 0)
@@ -130,7 +125,7 @@ namespace Server.Items
     {
       if (from.Backpack == null)
         return;
-      
+
       BlueDiamond diamond = from.Backpack.FindItemByType<BlueDiamond>();
 
       if (guildmaster != null)
@@ -206,7 +201,7 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Tool == null || m_Tool.Deleted)
+        if (m_Tool?.Deleted != false)
           return;
 
         if (targeted is BaseWeapon item)
@@ -240,11 +235,11 @@ namespace Server.Items
 
         AddPage(0);
 
-        AddHtmlLocalized(50, 70, 400, 20, 1072359, 0x0, false, false); // <CENTER>Engraving Tool</CENTER>
+        AddHtmlLocalized(50, 70, 400, 20, 1072359, 0x0); // <CENTER>Engraving Tool</CENTER>
         AddHtmlLocalized(75, 95, 350, 145, 1076229, 0x0, true,
           true); // Please enter the text to add to the selected object. Leave the text area blank to remove any existing text.  Removing text does not use a charge.
-        AddButton(125, 300, 0x81A, 0x81B, (int)Buttons.Okay, GumpButtonType.Reply, 0);
-        AddButton(320, 300, 0x819, 0x818, (int)Buttons.Cancel, GumpButtonType.Reply, 0);
+        AddButton(125, 300, 0x81A, 0x81B, (int)Buttons.Okay);
+        AddButton(320, 300, 0x819, 0x818, (int)Buttons.Cancel);
         AddImageTiled(75, 245, 350, 40, 0xDB0);
         AddImageTiled(76, 245, 350, 2, 0x23C5);
         AddImageTiled(75, 245, 2, 40, 0x23C3);
@@ -256,38 +251,34 @@ namespace Server.Items
 
       public override void OnResponse(NetState state, RelayInfo info)
       {
-        if (m_Tool == null || m_Tool.Deleted || m_Target == null || m_Target.Deleted)
+          if (m_Tool?.Deleted != false || m_Target?.Deleted != false)
           return;
 
-        if (info.ButtonID == (int)Buttons.Okay)
-        {
+          if (info.ButtonID != (int)Buttons.Okay)
+          {
+              state.Mobile.SendLocalizedMessage(1072363); // The object was not engraved.
+              return;
+          }
+
           TextRelay relay = info.GetTextEntry((int)Buttons.Text);
 
-          if (relay != null)
+          if (relay == null)
+              return;
+
+          if (string.IsNullOrEmpty(relay.Text))
           {
-            if (string.IsNullOrEmpty(relay.Text))
-            {
               m_Target.EngravedText = null;
               state.Mobile.SendLocalizedMessage(1072362); // You remove the engraving from the object.
-            }
-            else
-            {
-              if (relay.Text.Length > 64)
-                m_Target.EngravedText = Utility.FixHtml(relay.Text.Substring(0, 64));
-              else
-                m_Target.EngravedText = Utility.FixHtml(relay.Text);
-
+          }
+          else
+          {
+              m_Target.EngravedText = Utility.FixHtml(relay.Text.Length > 64 ?
+                  relay.Text.Substring(0, 64) : relay.Text);
               state.Mobile.SendLocalizedMessage(1072361); // You engraved the object.
               m_Target.InvalidateProperties();
               m_Tool.UsesRemaining -= 1;
               m_Tool.InvalidateProperties();
-            }
           }
-        }
-        else
-        {
-          state.Mobile.SendLocalizedMessage(1072363); // The object was not engraved.
-        }
       }
 
       private enum Buttons
@@ -320,29 +311,26 @@ namespace Server.Items
 
         if (guildmaster != null)
         {
-          AddHtmlLocalized(9, 9, 272, 100, 1076169, 0x7FFF, false,
-            false); // It will cost you 100,000 gold and a blue diamond to recharge your weapon engraver with 10 charges.
-          AddHtmlLocalized(195, 109, 120, 20, 1076172, 0x7FFF, false, false); // Recharge it
+          AddHtmlLocalized(9, 9, 272, 100, 1076169, 0x7FFF); // It will cost you 100,000 gold and a blue diamond to recharge your weapon engraver with 10 charges.
+          AddHtmlLocalized(195, 109, 120, 20, 1076172, 0x7FFF); // Recharge it
         }
         else
         {
-          AddHtmlLocalized(9, 9, 272, 100, 1076176, 0x7FFF, false,
-            false); // You will need a blue diamond to repair the tip of the engraver.  A successful repair will give the engraver 10 charges.
-          AddHtmlLocalized(195, 109, 120, 20, 1076177, 0x7FFF, false, false); // Replace the tip.
+          AddHtmlLocalized(9, 9, 272, 100, 1076176, 0x7FFF); // You will need a blue diamond to repair the tip of the engraver.  A successful repair will give the engraver 10 charges.
+          AddHtmlLocalized(195, 109, 120, 20, 1076177, 0x7FFF); // Replace the tip.
         }
 
-        AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Confirm, GumpButtonType.Reply, 0);
-        AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Confirm);
+        AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
+        AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
       }
 
       public override void OnResponse(NetState state, RelayInfo info)
       {
-        if (m_Engraver == null || m_Engraver.Deleted)
+        if (m_Engraver?.Deleted != false || info.ButtonID != (int)Buttons.Confirm)
           return;
 
-        if (info.ButtonID == (int)Buttons.Confirm)
-          m_Engraver.Recharge(state.Mobile, m_Guildmaster);
+        m_Engraver.Recharge(state.Mobile, m_Guildmaster);
       }
 
       private enum Buttons

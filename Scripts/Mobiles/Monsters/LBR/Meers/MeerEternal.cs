@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -95,9 +94,7 @@ namespace Server.Mobiles
     private void DoAreaLeech_Finish()
     {
       IPooledEnumerable<Mobile> eable = GetMobilesInRange(6);
-
       List<Mobile> list = eable.Where(m => CanBeHarmful(m) && IsEnemy(m)).ToList();
-
       eable.Free();
 
       if (list.Count == 0)

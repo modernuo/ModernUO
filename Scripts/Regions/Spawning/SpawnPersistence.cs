@@ -51,7 +51,7 @@ namespace Server.Regions
       {
         int id = reader.ReadInt();
 
-        SpawnEntry entry = (SpawnEntry)SpawnEntry.Table[id];
+        SpawnEntry entry = SpawnEntry.Table[id];
 
         if (entry != null)
           entry.Deserialize(reader, version);

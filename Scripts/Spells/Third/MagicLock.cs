@@ -16,7 +16,7 @@ namespace Server.Spells.Third
       Reagent.SulfurousAsh
     );
 
-    public MagicLockSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MagicLockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

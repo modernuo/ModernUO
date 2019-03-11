@@ -12,7 +12,7 @@ namespace Server.Spells.Spellweaving
 
     private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
-    public AttuneWeaponSpell(Mobile caster, Item scroll)
+    public AttuneWeaponSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }

@@ -81,7 +81,7 @@ namespace Server.Commands
               break; // Tokuno Islands
           }
 
-          for (int j = 0; maps != null && j < maps.Length; ++j)
+          for (int j = 0; maps?.Length >= j; ++j)
             Add_Static(e.m_ItemID, e.m_Location, maps[j], e.m_Text);
         }
 
