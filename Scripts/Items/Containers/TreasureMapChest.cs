@@ -351,7 +351,7 @@ namespace Server.Items
 
       Map map = Map;
 
-      if (map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0)
+      if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
       {
         if (criminalAction)
           m.CriminalAction(true);

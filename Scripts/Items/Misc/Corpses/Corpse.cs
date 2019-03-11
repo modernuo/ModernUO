@@ -289,9 +289,9 @@ namespace Server.Items
 
     public void Carve(Mobile from, Item item)
     {
-      if (IsCriminalAction(from) && Map != null && (Map.Rules & MapRules.HarmfulRestrictions) != 0)
+      if (IsCriminalAction(from) && (Map?.Rules & MapRules.HarmfulRestrictions) != 0)
       {
-        if (Owner == null || !Owner.Player)
+        if (Owner?.Player != true)
           from.SendLocalizedMessage(1005035); // You did not earn the right to loot this creature!
         else
           from.SendLocalizedMessage(1010049); // You may not loot this corpse.
@@ -879,7 +879,7 @@ namespace Server.Items
     {
       if (!CanLoot(from, item))
       {
-        if (Owner == null || !Owner.Player)
+        if (Owner?.Player != true)
           from.SendLocalizedMessage(1005035); // You did not earn the right to loot this creature!
         else
           from.SendLocalizedMessage(1010049); // You may not loot this corpse.

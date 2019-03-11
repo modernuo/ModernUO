@@ -239,9 +239,7 @@ namespace Server.Gumps
 
         int result = Insensitive.Compare(x.From.Name, y.From.Name);
 
-        if (result == 0)
-          return x.Date.CompareTo(y.Date);
-        return result;
+        return result == 0 ? x.Date.CompareTo(y.Date) : result;
       }
     }
 
@@ -273,9 +271,7 @@ namespace Server.Gumps
 
         int result = Insensitive.Compare(a.Username, b.Username);
 
-        if (result == 0)
-          return x.Date.CompareTo(y.Date);
-        return result;
+        return result == 0 ? x.Date.CompareTo(y.Date) : result;
       }
     }
 

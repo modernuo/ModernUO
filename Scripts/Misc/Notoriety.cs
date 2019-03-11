@@ -121,7 +121,7 @@ namespace Server.Misc
       #endregion
 
 
-      if (map != null && (map.Rules & MapRules.BeneficialRestrictions) == 0)
+      if ((map?.Rules & MapRules.BeneficialRestrictions) == 0)
         return true; // In felucca, anything goes
 
       if (!from.Player)
@@ -189,7 +189,7 @@ namespace Server.Misc
 
       Map map = from.Map;
 
-      if (map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0)
+      if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
         return true; // In felucca, anything goes
 
       if (!from.Player && !(from is BaseCreature bc && bc.GetMaster() != null &&

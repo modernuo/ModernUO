@@ -48,11 +48,8 @@ namespace Server.Network
     private byte[] m_RecvBuffer;
     private SendQueue m_SendQueue;
 
-#if NewAsyncSockets
-    private SocketAsyncEventArgs m_ReceiveEventArgs, m_SendEventArgs;
-#else
-		private AsyncCallback m_OnReceive, m_OnSend;
-#endif
+    private SocketAsyncEventArgs m_ReceiveEventArgs;
+    private SocketAsyncEventArgs m_SendEventArgs;
 
     private MessagePump m_MessagePump;
     private string m_ToString;
@@ -451,62 +448,7 @@ namespace Server.Network
 
       byte[] buffer = p.Compile(CompressionEnabled, out int length);
 
-      if (buffer != null)
-      {
-        if (buffer.Length <= 0 || length <= 0)
-        {
-          p.OnSend();
-          return;
-        }
-
-        PacketSendProfile prof = null;
-
-        if (Core.Profiling) prof = PacketSendProfile.Acquire(p.GetType());
-
-        prof?.Start();
-
-        PacketEncoder?.EncodeOutgoingPacket(this, ref buffer, ref length);
-
-        try
-        {
-          SendQueue.Gram gram;
-
-          lock (_sendL)
-          {
-            lock (m_SendQueue)
-            {
-              gram = m_SendQueue.Enqueue(buffer, length);
-            }
-
-            if (gram != null && !_sending)
-            {
-              _sending = true;
-#if NewAsyncSockets
-              m_SendEventArgs.SetBuffer(gram.Buffer, 0, gram.Length);
-              Send_Start();
-#else
-							try {
-									m_Socket.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket);
-							}
-							catch (Exception ex) {
-								TraceException(ex);
-								Dispose(false);
-							}
-#endif
-            }
-          }
-        }
-        catch (CapacityExceededException)
-        {
-          Console.WriteLine("Client: {0}: Too much data pending, disconnecting...", this);
-          Dispose(false);
-        }
-
-        p.OnSend();
-
-        prof?.Finish(length);
-      }
-      else
+      if (buffer == null)
       {
         Console.WriteLine("Client: {0}: null buffer send, disconnecting...", this);
         using (StreamWriter op = new StreamWriter("null_send.log", true))
@@ -516,10 +458,53 @@ namespace Server.Network
         }
 
         Dispose();
+        return;
       }
+
+      if (buffer.Length <= 0 || length <= 0)
+      {
+        p.OnSend();
+        return;
+      }
+
+      PacketSendProfile prof = null;
+
+      if (Core.Profiling)
+        prof = PacketSendProfile.Acquire(p.GetType());
+
+      prof?.Start();
+
+      PacketEncoder?.EncodeOutgoingPacket(this, ref buffer, ref length);
+
+      try
+      {
+        lock (_sendL)
+        {
+          SendQueue.Gram gram;
+          lock (m_SendQueue)
+          {
+            gram = m_SendQueue.Enqueue(buffer, length);
+          }
+
+          if (gram != null && !_sending)
+          {
+            _sending = true;
+            m_SendEventArgs.SetBuffer(gram.Buffer, 0, gram.Length);
+            Send_Start();
+          }
+        }
+      }
+      catch (CapacityExceededException)
+      {
+        Console.WriteLine("Client: {0}: Too much data pending, disconnecting...", this);
+        Dispose(false);
+      }
+
+      p.OnSend();
+
+      prof?.Finish(length);
     }
 
-#if NewAsyncSockets
     public void Start()
     {
       m_ReceiveEventArgs = new SocketAsyncEventArgs();
@@ -582,7 +567,8 @@ namespace Server.Network
         return;
       }
 
-      if (IsDisposing) return;
+      if (IsDisposing)
+        return;
 
       m_NextCheckActivity = Core.TickCount + 90000;
 
@@ -607,7 +593,7 @@ namespace Server.Network
     {
       try
       {
-        bool result = false;
+        bool result;
 
         do
         {
@@ -736,190 +722,10 @@ namespace Server.Network
       return false;
     }
 
-#else
-		public void Start() {
-			m_OnReceive = new AsyncCallback( OnReceive );
-			m_OnSend = new AsyncCallback( OnSend );
-
-			m_Running = true;
-
-			if ( m_Socket == null || m_Paused ) {
-				return;
-			}
-
-			try {
-				lock ( m_AsyncLock ) {
-					if ( ( m_AsyncState & ( AsyncState.Pending | AsyncState.Paused ) ) == 0 ) {
-						InternalBeginReceive();
-					}
-				}
-			} catch ( Exception ex ) {
-				TraceException( ex );
-				Dispose( false );
-			}
-		}
-
-		private void InternalBeginReceive() {
-			m_AsyncState |= AsyncState.Pending;
-
-			m_Socket.BeginReceive( m_RecvBuffer, 0, m_RecvBuffer.Length, SocketFlags.None, m_OnReceive, m_Socket );
-		}
-
-		private void OnReceive( IAsyncResult asyncResult ) {
-			Socket s = (Socket)asyncResult.AsyncState;
-
-			try {
-				int byteCount = s.EndReceive( asyncResult );
-
-				if ( byteCount > 0 ) {
-					m_NextCheckActivity = Core.TickCount + 90000;
-
-					byte[] buffer = m_RecvBuffer;
-
-					if ( m_Encoder != null )
-						m_Encoder.DecodeIncomingPacket( this, ref buffer, ref byteCount );
-
-					lock ( m_Buffer )
-						m_Buffer.Enqueue( buffer, 0, byteCount );
-
-					m_MessagePump.OnReceive( this );
-
-					lock ( m_AsyncLock ) {
-						m_AsyncState &= ~AsyncState.Pending;
-
-						if ( ( m_AsyncState & AsyncState.Paused ) == 0 ) {
-							try {
-								InternalBeginReceive();
-							} catch ( Exception ex ) {
-								TraceException( ex );
-								Dispose( false );
-							}
-						}
-					}
-				} else {
-					Dispose( false );
-				}
-			} catch {
-				Dispose( false );
-			}
-		}
-
-		private void OnSend( IAsyncResult asyncResult ) {
-			Socket s = (Socket)asyncResult.AsyncState;
-
-			try {
-				int bytes = s.EndSend( asyncResult );
-
-				if ( bytes <= 0 ) {
-					Dispose( false );
-					return;
-				}
-
-				m_NextCheckActivity = Core.TickCount + 90000;
-
-				if (m_CoalesceSleep >= 0) {
-					Thread.Sleep(m_CoalesceSleep);
-				}
-
-				SendQueue.Gram gram;
-
-				lock (m_SendQueue) {
-					gram = m_SendQueue.Dequeue();
-
-					if (gram == null && m_SendQueue.IsFlushReady)
-						gram = m_SendQueue.CheckFlushReady();
-				}
-
-				if (gram != null) {
-					try {
-						s.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, s);
-					} catch (Exception ex) {
-						TraceException(ex);
-						Dispose(false);
-					}
-				} else {
-					lock (_sendL)
-						_sending = false;
-				}
-			} catch ( Exception ){
-				Dispose( false );
-			}
-		}
-
-		public static void Pause() {
-			m_Paused = true;
-
-			for ( int i = 0; i < m_Instances.Count; ++i ) {
-				NetState ns = m_Instances[i];
-
-				lock ( ns.m_AsyncLock ) {
-					ns.m_AsyncState |= AsyncState.Paused;
-				}
-			}
-		}
-
-		public static void Resume() {
-			m_Paused = false;
-
-			for ( int i = 0; i < m_Instances.Count; ++i ) {
-				NetState ns = m_Instances[i];
-
-				if ( ns.m_Socket == null ) {
-					continue;
-				}
-
-				lock ( ns.m_AsyncLock ) {
-					ns.m_AsyncState &= ~AsyncState.Paused;
-
-					try {
-						if ( ( ns.m_AsyncState & AsyncState.Pending ) == 0 )
-							ns.InternalBeginReceive();
-					} catch ( Exception ex ) {
-						TraceException( ex );
-						ns.Dispose( false );
-					}
-				}
-			}
-		}
-
-		public bool Flush() {
-			if (m_Socket == null)
-				return false;
-
-			lock (_sendL) {
-				if (_sending)
-					return false;
-
-				SendQueue.Gram gram;
-
-				lock (m_SendQueue) {
-					if (!m_SendQueue.IsFlushReady)
-						return false;
-
-					gram = m_SendQueue.CheckFlushReady();
-				}
-
-				if (gram != null) {
-					try {
-						_sending = true;
-						m_Socket.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket);
-						return true;
-					} catch (Exception ex) {
-						TraceException(ex);
-						Dispose(false);
-					}
-				}
-			}
-
-			return false;
-		}
-#endif
-
     public PacketHandler GetHandler(int packetID)
     {
-      if (ContainerGridLines)
-        return PacketHandlers.Get6017Handler(packetID);
-      return PacketHandlers.GetHandler(packetID);
+      return ContainerGridLines ? PacketHandlers.Get6017Handler(packetID) :
+        PacketHandlers.GetHandler(packetID);
     }
 
     public static void FlushAll()
@@ -937,13 +743,10 @@ namespace Server.Network
 
     public void CheckAlive(long curTicks)
     {
-      if (Socket == null)
+      if (Socket == null || m_NextCheckActivity - curTicks >= 0)
         return;
 
-      if (m_NextCheckActivity - curTicks >= 0) return;
-
       Console.WriteLine("Client: {0}: Disconnecting due to inactivity...", this);
-
       Dispose();
     }
 
@@ -966,6 +769,7 @@ namespace Server.Network
       }
       catch
       {
+        // ignored
       }
 
       try
@@ -974,19 +778,16 @@ namespace Server.Network
       }
       catch
       {
+        // ignored
       }
     }
 
     public bool IsDisposing{ get; private set; }
 
-    public void Dispose()
+    public virtual void Dispose(bool flush = true)
     {
-      Dispose(true);
-    }
-
-    public virtual void Dispose(bool flush)
-    {
-      if (Socket == null || IsDisposing) return;
+      if (Socket == null || IsDisposing)
+        return;
 
       IsDisposing = true;
 
@@ -1022,13 +823,8 @@ namespace Server.Network
       Buffer = null;
       m_RecvBuffer = null;
 
-#if NewAsyncSockets
       m_ReceiveEventArgs = null;
       m_SendEventArgs = null;
-#else
-			m_OnReceive = null;
-			m_OnSend = null;
-#endif
 
       Running = false;
 
@@ -1132,38 +928,22 @@ namespace Server.Network
 
     public Expansion Expansion => (Expansion)ExpansionInfo.ID;
 
-    public bool SupportsExpansion(ExpansionInfo info, bool checkCoreExpansion)
+    public bool SupportsExpansion(ExpansionInfo info, bool checkCoreExpansion = true)
     {
       if (info == null || checkCoreExpansion && (int)Core.Expansion < info.ID)
         return false;
 
-      if (info.RequiredClient != null)
-        return Version >= info.RequiredClient;
-
-      return (Flags & info.ClientFlags) != 0;
+      return info.RequiredClient != null ? Version >= info.RequiredClient : (Flags & info.ClientFlags) != 0;
     }
 
-    public bool SupportsExpansion(Expansion ex, bool checkCoreExpansion)
+    public bool SupportsExpansion(Expansion ex, bool checkCoreExpansion = true)
     {
       return SupportsExpansion(ExpansionInfo.GetInfo(ex), checkCoreExpansion);
     }
 
-    public bool SupportsExpansion(Expansion ex)
-    {
-      return SupportsExpansion(ex, true);
-    }
-
-    public bool SupportsExpansion(ExpansionInfo info)
-    {
-      return SupportsExpansion(info, true);
-    }
-
     public int CompareTo(NetState other)
     {
-      if (other == null)
-        return 1;
-
-      return m_ToString.CompareTo(other.m_ToString);
+      return other == null ? 1 : m_ToString.CompareTo(other.m_ToString);
     }
   }
 }
