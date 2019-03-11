@@ -1349,7 +1349,12 @@ namespace Server
       }
     }
 
-    public int CompareTo(IEntity other)
+    int IComparable<IEntity>.CompareTo(IEntity other)
+    {
+      return other == null ? -1 : Serial.CompareTo(other.Serial);
+    }
+
+    public int CompareTo(Item other)
     {
       return other == null ? -1 : Serial.CompareTo(other.Serial);
     }

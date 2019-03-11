@@ -161,10 +161,10 @@ namespace Server
       return Compare(l, r) < 0;
     }
 
-//    public override int GetHashCode()
-//    {
-//      return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
-//    }
+    public override int GetHashCode()
+    {
+      return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
+    }
 
     int IComparer<ClientVersion>.Compare(ClientVersion x, ClientVersion y)
     {
