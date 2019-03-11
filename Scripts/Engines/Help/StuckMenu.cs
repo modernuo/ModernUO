@@ -133,11 +133,11 @@ namespace Server.Menus.Questions
       {
         StuckMenuEntry entry = entries[i];
 
-        AddButton(50, 55 + 35 * i, 208, 209, i + 1, GumpButtonType.Reply, 0);
+        AddButton(50, 55 + 35 * i, 208, 209, i + 1);
         AddHtmlLocalized(75, 55 + 35 * i, 335, 40, entry.Name, false, false);
       }
 
-      AddButton(55, 263, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(55, 263, 4005, 4007, 0);
       AddHtmlLocalized(90, 265, 200, 35, 1011012, false, false); // CANCEL
     }
 

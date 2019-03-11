@@ -109,7 +109,7 @@ namespace Server.Gumps
       if (SetGumpID != 0)
         AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1, GumpButtonType.Reply, 0);
+      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
 
       if (canNull)
       {
@@ -123,7 +123,7 @@ namespace Server.Gumps
         if (SetGumpID != 0)
           AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2, GumpButtonType.Reply, 0);
+        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2);
       }
 
       if (canDye)
@@ -138,7 +138,7 @@ namespace Server.Gumps
         if (SetGumpID != 0)
           AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3, GumpButtonType.Reply, 0);
+        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
       }
 
       if (isBody)
@@ -153,7 +153,7 @@ namespace Server.Gumps
         if (SetGumpID != 0)
           AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4, GumpButtonType.Reply, 0);
+        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4);
       }
     }
 

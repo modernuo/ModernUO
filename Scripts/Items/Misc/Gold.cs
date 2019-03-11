@@ -77,7 +77,7 @@ namespace Server.Items
 
       if (tradeInfo != null)
       {
-        if (owner.NetState != null && !owner.NetState.NewSecureTrading)
+        if (owner.NetState?.NewSecureTrading == false)
         {
           int plat = Math.DivRem(Amount, AccountGold.CurrencyThreshold, out int gold);
 

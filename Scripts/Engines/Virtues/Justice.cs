@@ -208,7 +208,7 @@ namespace Server
       AddRadio(30, 145, 9727, 9730, false, 0);
       AddHtmlLocalized(65, 148, 300, 25, 1049445, 0x7FFF, false, false); // No thanks, I can take care of myself.
 
-      AddButton(160, 175, 247, 248, 2, GumpButtonType.Reply, 0);
+      AddButton(160, 175, 247, 248, 2);
 
       AddImage(215, 0, 50581);
 

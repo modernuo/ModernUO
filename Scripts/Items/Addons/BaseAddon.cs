@@ -165,12 +165,7 @@ namespace Server.Items
 
     public static bool CheckHouse(Mobile from, Point3D p, Map map, int height, ref BaseHouse house)
     {
-      house = BaseHouse.FindHouseAt(p, map, height);
-
-      if (house == null || from != null && !house.IsOwner(from))
-        return false;
-
-      return true;
+      return from == null || BaseHouse.FindHouseAt(p, map, height)?.IsOwner(from) == true;
     }
 
     public static bool IsWall(int x, int y, int z, Map map)

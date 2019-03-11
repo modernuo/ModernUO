@@ -327,7 +327,7 @@ namespace Server.Items
         AddHtmlLocalized(10, 12, 500, 20, 1061087, 0x7FFF, false,
           false); // Which skill do you wish to transfer to the Soulstone?
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
         AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
 
         for (int i = 0, n = 0; i < from.Skills.Length; i++)
@@ -360,7 +360,7 @@ namespace Server.Items
             int x = p % 2 == 0 ? 10 : 260;
             int y = p / 2 * 20 + 40;
 
-            AddButton(x, y, 0xFA5, 0xFA6, i + 1, GumpButtonType.Reply, 0);
+            AddButton(x, y, 0xFA5, 0xFA6, i + 1);
             AddHtmlLocalized(x + 45, y + 2, 200, 20, AosSkillBonuses.GetLabel(skill.SkillName), 0x7FFF, false,
               false);
 
@@ -441,14 +441,14 @@ namespace Server.Items
         AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF, false, false); // New Value:
         AddLabel(210, 260, 0x481, "0.0");
 
-        AddButton(10, 360, 0xFA5, 0xFA6, 2, GumpButtonType.Reply, 0);
+        AddButton(10, 360, 0xFA5, 0xFA6, 2);
         AddHtmlLocalized(45, 362, 450, 20, 1070720, 0x7FFF, false,
           false); // Activate the stone.  I am ready to transfer the skill points to it.
 
-        AddButton(10, 380, 0xFA5, 0xFA6, 1, GumpButtonType.Reply, 0);
+        AddButton(10, 380, 0xFA5, 0xFA6, 1);
         AddHtmlLocalized(45, 382, 450, 20, 1062279, 0x7FFF, false, false); // No, let me make another selection.
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
         AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
       }
 
@@ -558,15 +558,15 @@ namespace Server.Items
         AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF, false, false); // New Value:
         AddLabel(210, 260, 0x481, stone.SkillValue.ToString("0.0"));
 
-        AddButton(10, 360, 0xFA5, 0xFA6, 2, GumpButtonType.Reply, 0);
+        AddButton(10, 360, 0xFA5, 0xFA6, 2);
         AddHtmlLocalized(45, 362, 450, 20, 1070719, 0x7FFF, false,
           false); // Activate the stone.  I am ready to retrieve the skill points from it.
 
-        AddButton(10, 380, 0xFA5, 0xFA6, 1, GumpButtonType.Reply, 0);
+        AddButton(10, 380, 0xFA5, 0xFA6, 1);
         AddHtmlLocalized(45, 382, 450, 20, 1070723, 0x7FFF, false,
           false); // Remove all skill points from this stone and DO NOT absorb them.
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
         AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
       }
 
@@ -748,10 +748,10 @@ namespace Server.Items
          */
         AddHtmlLocalized(10, 42, 500, 110, 1070724, 0x7FFF, false, true);
 
-        AddButton(10, 380, 0xFA5, 0xFA6, 1, GumpButtonType.Reply, 0);
+        AddButton(10, 380, 0xFA5, 0xFA6, 1);
         AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF, false, false); // Continue
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
         AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
       }
 
@@ -790,10 +790,10 @@ namespace Server.Items
 
         AddHtmlLocalized(10, 42, 500, 110, message, 0x7FFF, false, true);
 
-        AddButton(10, 380, 0xFA5, 0xFA6, 1, GumpButtonType.Reply, 0);
+        AddButton(10, 380, 0xFA5, 0xFA6, 1);
         AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF, false, false); // Continue
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
         AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
       }
 

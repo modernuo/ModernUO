@@ -272,7 +272,7 @@ namespace Server.Engines.Quests.Doom
 
       AddLabel(90, 70, 1645, leader.Name);
 
-      AddButton(290, 175, 247, 248, 2, GumpButtonType.Reply, 0);
+      AddButton(290, 175, 247, 248, 2);
 
       AddImageTiled(15, 14, 365, 1, 9107);
       AddImageTiled(380, 14, 1, 190, 9105);

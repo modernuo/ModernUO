@@ -63,7 +63,7 @@ namespace Server.Engines.Craft
       else
         AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString, false, false);
 
-      AddButton(15, 387, 4014, 4016, 0, GumpButtonType.Reply, 0);
+      AddButton(15, 387, 4014, 4016, 0);
       AddHtmlLocalized(50, 390, 150, 18, 1044150, LabelColor, false, false); // BACK
 
       bool needsRecipe = craftItem.Recipe != null && from is PlayerMobile mobile &&
@@ -71,12 +71,12 @@ namespace Server.Engines.Craft
 
       if (needsRecipe)
       {
-        AddButton(270, 387, 4005, 4007, 0, GumpButtonType.Page, 0);
+        AddButton(270, 387, 4005, 4007, 0, GumpButtonType.Page);
         AddHtmlLocalized(305, 390, 150, 18, 1044151, GreyLabelColor, false, false); // MAKE NOW
       }
       else
       {
-        AddButton(270, 387, 4005, 4007, 1, GumpButtonType.Reply, 0);
+        AddButton(270, 387, 4005, 4007, 1);
         AddHtmlLocalized(305, 390, 150, 18, 1044151, LabelColor, false, false); // MAKE NOW
       }
 

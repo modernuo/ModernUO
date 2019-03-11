@@ -24,9 +24,9 @@ namespace Server.Engines.Help
 
       AddHtmlLocalized(80, 390, 480, 40, 1062611, false,
         false); // Clicking the OKAY button will remove the reponse you have received.
-      AddButton(400, 417, 2074, 2075, 1, GumpButtonType.Reply, 0); // OKAY
+      AddButton(400, 417, 2074, 2075, 1); // OKAY
 
-      AddButton(475, 417, 2073, 2072, 0, GumpButtonType.Reply, 0); // CANCEL
+      AddButton(475, 417, 2073, 2072, 0); // CANCEL
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

@@ -20,7 +20,7 @@ namespace Server.Gumps
       AddImageTiled(10, 40, 500, 324, 0xA40);
       AddImageTiled(10, 374, 500, 20, 0xA40);
       AddAlphaRegion(10, 10, 500, 384);
-      AddButton(10, 374, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+      AddButton(10, 374, 0xFB1, 0xFB2, 0);
       AddHtmlLocalized(45, 376, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
       AddHtmlLocalized(14, 12, 500, 20, 1075576, 0x7FFF, false, false); // Choose your item from the following pages
 

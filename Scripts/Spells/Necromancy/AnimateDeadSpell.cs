@@ -142,7 +142,7 @@ namespace Server.Spells.Necromancy
         {
           QuestObjective objective = qs.FindObjective<AnimateMaabusCorpseObjective>();
 
-          if (objective != null && !objective.Completed)
+          if (objective?.Completed == false)
           {
             addon.Awake(Caster);
             objective.Complete();

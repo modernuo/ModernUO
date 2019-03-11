@@ -48,7 +48,7 @@ namespace Server.Factions
       AddButton(20, 150, 4005, 4007, 0, GumpButtonType.Page, 4);
 
       AddHtmlLocalized(55, 360, 200, 25, 1011441, false, false); // EXIT
-      AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(20, 360, 4005, 4007, 0);
 
       #endregion
 
@@ -77,7 +77,7 @@ namespace Server.Factions
       AddHtmlLocalized(55, 270, 90, 25, 1011542, false, false); // normal
 
       AddHtmlLocalized(55, 330, 200, 25, 1011509, false, false); // Set Prices
-      AddButton(20, 330, 4005, 4007, ToButtonID(0, 0), GumpButtonType.Reply, 0);
+      AddButton(20, 330, 4005, 4007, ToButtonID(0, 0));
 
       AddHtmlLocalized(55, 360, 200, 25, 1011067, false, false); // Previous page
       AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 1);
@@ -169,7 +169,7 @@ namespace Server.Factions
 
         AddHtmlText(55, 300, 200, 25, vendorList.Definition.Label, false, false);
         if (town.Silver >= vendorList.Definition.Price)
-          AddButton(20, 300, 4005, 4007, ToButtonID(1, i), GumpButtonType.Reply, 0);
+          AddButton(20, 300, 4005, 4007, ToButtonID(1, i));
         else
           AddImage(20, 300, 4020);
 

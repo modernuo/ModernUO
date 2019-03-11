@@ -1205,7 +1205,7 @@ namespace Server.Guilds
 
       alliance = Alliance; //CheckLeader could possibly change the value of this.Alliance
 
-      if (alliance != null && !alliance.IsMember(this) && !alliance.IsPendingMember(this)
+      if (alliance?.IsMember(this) == false && !alliance.IsPendingMember(this)
       ) //This block is there to fix a bug in the code in an older version.
         Alliance = null; //Will call Alliance.RemoveGuild which will set it null & perform all the pertient checks as far as alliacne disbanding
     }
@@ -1378,9 +1378,7 @@ namespace Server.Guilds
 
     public void GuildChat(Mobile from, string text)
     {
-      PlayerMobile pm = from as PlayerMobile;
-
-      GuildChat(from, pm?.GuildMessageHue ?? 0x3B2, text);
+      GuildChat(from, (from as PlayerMobile)?.GuildMessageHue ?? 0x3B2, text);
     }
 
     #endregion
@@ -1389,20 +1387,13 @@ namespace Server.Guilds
 
     public bool CanVote(Mobile m)
     {
-      if (NewGuildSystem)
-        if (!(m is PlayerMobile pm) || !pm.GuildRank.GetFlag(RankFlags.CanVote))
-          return false;
-
-      return m?.Deleted == false && m.Guild == this;
+      return (!NewGuildSystem || m is PlayerMobile pm && pm.GuildRank.GetFlag(RankFlags.CanVote)) &&
+             m?.Deleted == false && m.Guild == this;
     }
 
     public bool CanBeVotedFor(Mobile m)
     {
-      if (NewGuildSystem)
-        if (!(m is PlayerMobile pm) || pm.LastOnline + InactiveTime < DateTime.UtcNow)
-          return false;
-
-      return m?.Deleted == false && m.Guild == this;
+      return (!NewGuildSystem || m is PlayerMobile pm && pm.LastOnline + InactiveTime >= DateTime.UtcNow) && m?.Deleted == false && m.Guild == this;
     }
 
     public void CalculateGuildmaster()

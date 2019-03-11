@@ -1481,7 +1481,7 @@ namespace Server
 
           BankBox box = FindBankNoCreate();
 
-          if (box != null && box.Opened)
+          if (box?.Opened == true)
             box.Close();
 
           // REMOVED:
@@ -3826,7 +3826,7 @@ namespace Server
 
       BankBox box = FindBankNoCreate();
 
-      if (box != null && box.Opened)
+      if (box?.Opened == true)
         box.Close();
 
       Point3D newLocation = m_Location;
@@ -3836,7 +3836,7 @@ namespace Server
       {
         // We are actually moving (not just a direction change)
 
-        if (m_Spell != null && !m_Spell.OnCasterMoving(d))
+        if (m_Spell?.OnCasterMoving(d) == false)
           return false;
 
         if (m_Paralyzed || m_Frozen)
@@ -4261,7 +4261,7 @@ namespace Server
 
         BankBox box = FindBankNoCreate();
 
-        if (box != null && box.Opened)
+        if (box?.Opened == true)
           box.Close();
 
         Poison = null;
@@ -4422,7 +4422,7 @@ namespace Server
 
       BankBox box = FindBankNoCreate();
 
-      if (box != null && box.Opened)
+      if (box?.Opened == true)
         box.Close();
 
       m_NetState?.CancelAllTrades();
@@ -4639,7 +4639,7 @@ namespace Server
 
       DisruptiveAction();
 
-      if (m_Spell != null && !m_Spell.OnCasterUsingObject(item))
+      if (m_Spell?.OnCasterUsingObject(item) == false)
         return;
 
       IEntity root = item.RootParent;
@@ -4702,7 +4702,7 @@ namespace Server
 
       DisruptiveAction();
 
-      if (m_Spell != null && !m_Spell.OnCasterUsingObject(m))
+      if (m_Spell?.OnCasterUsingObject(m) == false)
         return;
 
       if (!Utility.InUpdateRange(this, m))
@@ -6815,7 +6815,7 @@ namespace Server
 
         BankBox box = FindBankNoCreate();
 
-        if (box != null && box.Opened)
+        if (box?.Opened == true)
           box.Close();
 
         m_NetState?.ValidateAllTrades();
@@ -7259,7 +7259,7 @@ namespace Server
 
       if (CheckEquip(item) && OnEquip(item) && item.OnEquip(this))
       {
-        if (m_Spell != null && !m_Spell.OnCasterEquipping(item))
+        if (m_Spell?.OnCasterEquipping(item) == false)
           return false;
 
         //if ( m_Spell != null && m_Spell.State == SpellState.Casting )
@@ -7319,6 +7319,7 @@ namespace Server
             }
             catch
             {
+              // ignored
             }
           }
         else

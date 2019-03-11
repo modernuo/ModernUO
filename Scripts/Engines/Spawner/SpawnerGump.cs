@@ -41,13 +41,12 @@ namespace Server.Mobiles
 
         if (entry == null || m_Entry != entry)
           AddButton(5, 22 * i + 21 + offset, entry != null ? 0xFBA : 0xFA5, entry != null ? 0xFBC : 0xFA7,
-            GetButtonID(2, i * 2), GumpButtonType.Reply, 0); //Expand
+            GetButtonID(2, i * 2)); //Expand
         else
           AddButton(5, 22 * i + 21 + offset, 0xFBB, 0xFBC,
-            GetButtonID(2, i * 2), GumpButtonType.Reply, 0); //Unexpand
+            GetButtonID(2, i * 2)); //Unexpand
 
-        AddButton(38, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2), GumpButtonType.Reply,
-          0); //Delete
+        AddButton(38, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); //Delete
 
         AddImageTiled(71, 22 * i + 20 + offset, 161, 23, 0xA40); //creature text box
         AddImageTiled(72, 22 * i + 21 + offset, 159, 21, 0xBBC); //creature text box
@@ -97,28 +96,28 @@ namespace Server.Mobiles
         }
       }
 
-      AddButton(5, 347 + offset, 0xFB1, 0xFB3, 0, GumpButtonType.Reply, 0);
+      AddButton(5, 347 + offset, 0xFB1, 0xFB3, 0);
       AddLabel(38, 347 + offset, 0x384, "Cancel");
 
-      AddButton(5, 325 + offset, 0xFB7, 0xFB9, GetButtonID(1, 2), GumpButtonType.Reply, 0);
+      AddButton(5, 325 + offset, 0xFB7, 0xFB9, GetButtonID(1, 2));
       AddLabel(38, 325 + offset, 0x384, "Okay");
 
-      AddButton(110, 325 + offset, 0xFB4, 0xFB6, GetButtonID(1, 3), GumpButtonType.Reply, 0);
+      AddButton(110, 325 + offset, 0xFB4, 0xFB6, GetButtonID(1, 3));
       AddLabel(143, 325 + offset, 0x384, "Bring to Home");
 
-      AddButton(110, 347 + offset, 0xFA8, 0xFAA, GetButtonID(1, 4), GumpButtonType.Reply, 0);
+      AddButton(110, 347 + offset, 0xFA8, 0xFAA, GetButtonID(1, 4));
       AddLabel(143, 347 + offset, 0x384, "Total Respawn");
 
-      AddButton(253, 325 + offset, 0xFB7, 0xFB9, GetButtonID(1, 5), GumpButtonType.Reply, 0);
+      AddButton(253, 325 + offset, 0xFB7, 0xFB9, GetButtonID(1, 5));
       AddLabel(286, 325 + offset, 0x384, "Apply");
 
       if (m_Page > 0)
-        AddButton(276, 308 + offset, 0x15E3, 0x15E7, GetButtonID(1, 0), GumpButtonType.Reply, 0);
+        AddButton(276, 308 + offset, 0x15E3, 0x15E7, GetButtonID(1, 0));
       else
         AddImage(276, 308 + offset, 0x25EA);
 
       if ((m_Page + 1) * 13 <= m_Spawner.Entries.Count)
-        AddButton(293, 308 + offset, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
+        AddButton(293, 308 + offset, 0x15E1, 0x15E5, GetButtonID(1, 1));
       else
         AddImage(293, 308 + offset, 0x25E6);
     }

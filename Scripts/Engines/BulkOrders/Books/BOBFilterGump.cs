@@ -110,17 +110,17 @@ namespace Server.Engines.BulkOrders
 
       AddHtmlLocalized(75, 416, 120, 32, 1062477, from.UseOwnFilter ? LabelColor : 16927, false,
         false); // Set Book Filter
-      AddButton(40, 416, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(40, 416, 4005, 4007, 1);
 
       AddHtmlLocalized(235, 416, 120, 32, 1062478, from.UseOwnFilter ? 16927 : LabelColor, false,
         false); // Set Your Filter
-      AddButton(200, 416, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(200, 416, 4005, 4007, 2);
 
       AddHtmlLocalized(405, 416, 120, 32, 1062231, LabelColor, false, false); // Clear Filter
-      AddButton(370, 416, 4005, 4007, 3, GumpButtonType.Reply, 0);
+      AddButton(370, 416, 4005, 4007, 3);
 
       AddHtmlLocalized(540, 416, 50, 32, 1011046, LabelColor, false, false); // APPLY
-      AddButton(505, 416, 4017, 4018, 0, GumpButtonType.Reply, 0);
+      AddButton(505, 416, 4017, 4018, 0);
     }
 
     private void AddFilterList(int x, int y, int[] xOffsets, int yOffset, int[,] filters, int[] xWidths, int filterValue,
@@ -141,7 +141,7 @@ namespace Server.Engines.BulkOrders
         AddHtmlLocalized(x + 35 + xOffsets[i % xOffsets.Length], y + i / xOffsets.Length * yOffset,
           xWidths[i % xOffsets.Length], 32, number, isSelected ? 16927 : LabelColor, false, false);
         AddButton(x + xOffsets[i % xOffsets.Length], y + i / xOffsets.Length * yOffset, 4005, 4007,
-          4 + filterIndex + i * 4, GumpButtonType.Reply, 0);
+          4 + filterIndex + i * 4);
       }
     }
 

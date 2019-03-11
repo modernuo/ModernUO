@@ -119,10 +119,10 @@ namespace Server.Items
       // <center>THIEF DISGUISE KIT</center>
       AddHtmlLocalized(100, 25, 400, 35, 1011045, false, false);
 
-      AddButton(140, 353, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(140, 353, 4005, 4007, 0);
       AddHtmlLocalized(172, 355, 90, 35, 1011036, false, false); // OKAY
 
-      AddButton(257, 353, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(257, 353, 4005, 4007, 1);
       AddHtmlLocalized(289, 355, 90, 35, 1011046, false, false); // APPLY
 
       if (from.Female || from.Body.IsFemale)

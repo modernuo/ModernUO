@@ -80,7 +80,7 @@ namespace Server.Items
 
     private void Validate()
     {
-      if (m_Owner != null && m_House != null && !m_House.IsCoOwner(m_Owner))
+      if (m_Owner != null && m_House?.IsCoOwner(m_Owner) == false)
       {
         Console.WriteLine("Warning: Destroying strongbox of {0}", m_Owner.Name);
         Destroy();

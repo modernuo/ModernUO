@@ -141,12 +141,12 @@ namespace Server.Items
       else if (m_Definition.Title > 0)
         AddHtmlLocalized(20, 30, 400, 25, m_Definition.Title, false, false);
 
-      AddButton(20, 400, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 400, 4005, 4007, 1);
       AddHtmlLocalized(55, 400, 200, 25, 1011036, false, false); // OKAY
 
       if (m_Definition.DefaultSupported)
       {
-        AddButton(200, 400, 4005, 4007, 2, GumpButtonType.Reply, 0);
+        AddButton(200, 400, 4005, 4007, 2);
         AddLabel(235, 400, 0, "DEFAULT");
       }
     }

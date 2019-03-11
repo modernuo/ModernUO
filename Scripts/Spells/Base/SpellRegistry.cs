@@ -125,7 +125,7 @@ namespace Server.Spells
 
       Type t = m_Types[spellID];
 
-      if (t != null && !t.IsSubclassOf(typeof(SpecialMove)))
+      if (t?.IsSubclassOf(typeof(SpecialMove)) == false)
       {
         m_Params[0] = caster;
         m_Params[1] = scroll;
@@ -136,6 +136,7 @@ namespace Server.Spells
         }
         catch
         {
+          // ignored
         }
       }
 
@@ -148,7 +149,7 @@ namespace Server.Spells
       {
         Type t = ScriptCompiler.FindTypeByFullName($"Server.Spells.{m_CircleNames[i]}.{name}");
 
-        if (t != null && !t.IsSubclassOf(typeof(SpecialMove)))
+        if (t?.IsSubclassOf(typeof(SpecialMove)) == false)
         {
           m_Params[0] = caster;
           m_Params[1] = scroll;
@@ -159,6 +160,7 @@ namespace Server.Spells
           }
           catch
           {
+            // ignored
           }
         }
       }

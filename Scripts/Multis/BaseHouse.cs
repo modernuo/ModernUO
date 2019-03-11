@@ -201,7 +201,7 @@ namespace Server.Multis
         {
           m_LastDecayLevel = result;
 
-          if (Sign != null && !Sign.GettingProperties)
+          if (Sign?.GettingProperties == false)
             Sign.InvalidateProperties();
         }
 

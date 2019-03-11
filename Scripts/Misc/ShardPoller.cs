@@ -153,7 +153,7 @@ namespace Server.Misc
     private static void EventSink_Login_Callback(Mobile from)
     {
       NetState ns = from.NetState;
-      
+
       if (ns == null)
         return;
 
@@ -414,7 +414,7 @@ namespace Server.Misc
       if (editing)
       {
         AddHtml(22, 22, 294, 20, Color($"{totalVotes} total", LabelColor32), false, false);
-        AddButton(287, 23, 0x2622, 0x2623, 2, GumpButtonType.Reply, 0);
+        AddButton(287, 23, 0x2622, 0x2623, 2);
       }
 
       AddHtml(22, 50, 294, 40, Color(poller.Title, 0x99CC66), false, false);
@@ -457,8 +457,8 @@ namespace Server.Misc
         AddHtml(60, y + 15 - 9, 250, 18, Color("Create new option.", 0x99CC66), false, false);
       }
 
-      AddButton(314, height - 73, 247, 248, 1, GumpButtonType.Reply, 0);
-      AddButton(314, height - 47, 242, 241, 0, GumpButtonType.Reply, 0);
+      AddButton(314, height - 73, 247, 248, 1);
+      AddButton(314, height - 47, 242, 241, 0);
     }
 
     public bool Editing{ get; }

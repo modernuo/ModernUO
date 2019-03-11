@@ -65,7 +65,7 @@ namespace Server.Factions
 
           if (m_Election.CanBeCandidate(m_From))
           {
-            AddButton(20, 110, 4005, 4007, 2, GumpButtonType.Reply, 0);
+            AddButton(20, 110, 4005, 4007, 2);
             AddHtmlLocalized(55, 110, 350, 20, 1011427, false, false); // CAMPAIGN FOR LEADERSHIP
           }
           else
@@ -90,13 +90,13 @@ namespace Server.Factions
           AddLabel(300, 60, 0, days.ToString());
 
           AddHtmlLocalized(55, 100, 380, 20, 1011428, false, false); // VOTE FOR LEADERSHIP
-          AddButton(20, 100, 4005, 4007, 1, GumpButtonType.Reply, 0);
+          AddButton(20, 100, 4005, 4007, 1);
 
           break;
         }
       }
 
-      AddButton(20, 140, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(20, 140, 4005, 4007, 0);
       AddHtmlLocalized(55, 140, 350, 20, 1011012, false, false); // CANCEL
     }
 

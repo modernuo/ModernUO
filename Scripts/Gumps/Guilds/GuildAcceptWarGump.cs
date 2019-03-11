@@ -11,12 +11,12 @@ namespace Server.Gumps
 
     protected override void Design()
     {
-      AddHtmlLocalized(20, 10, 400, 35, 1011147, false, false); // Select the guild to accept the invitations: 
+      AddHtmlLocalized(20, 10, 400, 35, 1011147, false, false); // Select the guild to accept the invitations:
 
-      AddButton(20, 400, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 400, 4005, 4007, 1);
       AddHtmlLocalized(55, 400, 245, 30, 1011100, false, false); // Accept war invitations.
 
-      AddButton(300, 400, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(300, 400, 4005, 4007, 2);
       AddHtmlLocalized(335, 400, 100, 35, 1011012, false, false); // CANCEL
     }
 

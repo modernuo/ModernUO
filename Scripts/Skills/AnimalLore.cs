@@ -94,7 +94,7 @@ namespace Server.SkillHandlers
 
       AddHtml(147, 108, 210, 18, $"<center><i>{c.Name}</i></center>", false, false);
 
-      AddButton(240, 77, 2093, 2093, 2, GumpButtonType.Reply, 0);
+      AddButton(240, 77, 2093, 2093, 2);
 
       AddImage(140, 138, 2091);
       AddImage(140, 335, 2091);

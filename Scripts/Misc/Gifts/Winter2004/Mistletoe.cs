@@ -131,9 +131,9 @@ namespace Server.Items
         AddBackground(10, 10, 200, 150, 0xBB8);
         AddHtmlLocalized(20, 30, 180, 60, 1062839, false, false); // Do you wish to re-deed this decoration?
         AddHtmlLocalized(55, 100, 160, 25, 1011011, false, false); // CONTINUE
-        AddButton(20, 100, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddButton(20, 100, 0xFA5, 0xFA7, 1);
         AddHtmlLocalized(55, 125, 160, 25, 1011012, false, false); // CANCEL
-        AddButton(20, 125, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
+        AddButton(20, 125, 0xFA5, 0xFA7, 0);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -298,8 +298,8 @@ namespace Server.Items
 
         AddItem(90, 30, 0x2375);
         AddItem(180, 30, 0x2374);
-        AddButton(50, 35, 0x868, 0x869, 1, GumpButtonType.Reply, 0);
-        AddButton(145, 35, 0x868, 0x869, 2, GumpButtonType.Reply, 0);
+        AddButton(50, 35, 0x868, 0x869, 1);
+        AddButton(145, 35, 0x868, 0x869, 2);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

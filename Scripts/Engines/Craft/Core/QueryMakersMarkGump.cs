@@ -34,10 +34,10 @@ namespace Server.Engines.Craft
       AddHtmlLocalized(20, 20, 180, 80, 1018317, false, false); // Do you wish to place your maker's mark on this item?
 
       AddHtmlLocalized(55, 100, 140, 25, 1011011, false, false); // CONTINUE
-      AddButton(20, 100, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 100, 4005, 4007, 1);
 
       AddHtmlLocalized(55, 125, 140, 25, 1011012, false, false); // CANCEL
-      AddButton(20, 125, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(20, 125, 4005, 4007, 0);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

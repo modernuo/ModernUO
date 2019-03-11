@@ -90,9 +90,11 @@ namespace Server.Items
     {
       if (Trade != null)
       {
-        if (Trade.From != null && !Trade.From.IsDisposed) Trade.From.Accepted = false;
+        if (Trade.From?.IsDisposed == false)
+          Trade.From.Accepted = false;
 
-        if (Trade.To != null && !Trade.To.IsDisposed) Trade.To.Accepted = false;
+        if (Trade.To?.IsDisposed == false)
+          Trade.To.Accepted = false;
 
         Trade.Update();
       }
@@ -100,9 +102,9 @@ namespace Server.Items
 
     public override bool IsChildVisibleTo(Mobile m, Item child)
     {
-      if (child is VirtualCheck) return AccountGold.Enabled && (m.NetState == null || !m.NetState.NewSecureTrading);
-
-      return base.IsChildVisibleTo(m, child);
+      return child is VirtualCheck
+        ? AccountGold.Enabled && m.NetState?.NewSecureTrading != true
+        : base.IsChildVisibleTo(m, child);
     }
 
     public override void Serialize(GenericWriter writer)

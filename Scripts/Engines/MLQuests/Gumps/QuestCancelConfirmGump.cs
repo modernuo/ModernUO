@@ -72,7 +72,7 @@ namespace Server.Engines.MLQuests.Gumps
       AddRadio(25, 215, 0x25F8, 0x25FB, false, 0);
       AddHtmlLocalized(60, 220, 280, 20, 1049006, 0xFFFFFF, false, false); // No, I don't want to quit.
 
-      AddButton(265, 220, 0xF7, 0xF8, 7, GumpButtonType.Reply, 0);
+      AddButton(265, 220, 0xF7, 0xF8, 7);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

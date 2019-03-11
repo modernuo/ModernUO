@@ -2049,10 +2049,10 @@ namespace Server.Multis
         AddLabel(170, 260, 40, (newPrice - oldPrice).ToString());
       }
 
-      AddButton(10, 290, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(10, 290, 4005, 4007, 1);
       AddHtmlLocalized(45, 290, 55, 20, 1011036, 32767, false, false); // OKAY
 
-      AddButton(170, 290, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(170, 290, 4005, 4007, 0);
       AddHtmlLocalized(195, 290, 55, 20, 1011012, 32767, false, false); // CANCEL
     }
 
@@ -2594,6 +2594,7 @@ namespace Server.Multis
             }
             catch
             {
+              // ignored
             }
           }
           finally

@@ -219,7 +219,7 @@ namespace Server.Mobiles
       AddHtml(8, 8, 300 - 8 - 30, 20, "<basefont color=#FFFFFF><center>TOWN CRIER MESSAGES</center></basefont>", false,
         false);
 
-      AddButton(300 - 8 - 30, 8, 0xFAB, 0xFAD, 1, GumpButtonType.Reply, 0);
+      AddButton(300 - 8 - 30, 8, 0xFAB, 0xFAD, 1);
 
       if (count == 0)
         AddHtml(8, 30, 284, 20, "<basefont color=#FFFFFF>The crier has no news.</basefont>", false, false);
@@ -263,7 +263,7 @@ namespace Server.Mobiles
 
           AddHtml(8, 35 + i * 85, 254, 80, sb.ToString(), true, true);
 
-          AddButton(300 - 8 - 26, 35 + i * 85, 0x15E1, 0x15E5, 2 + i, GumpButtonType.Reply, 0);
+          AddButton(300 - 8 - 26, 35 + i * 85, 0x15E1, 0x15E5, 2 + i);
         }
     }
 

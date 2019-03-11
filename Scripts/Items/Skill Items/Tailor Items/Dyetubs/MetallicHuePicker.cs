@@ -2,7 +2,7 @@ using Server.Gumps;
 using Server.Network;
 
 namespace Server.Items
-{ 
+{
   public class MetallicHuePicker<T> : Gump
   {
     private CustomHuePickerCallback<T> m_Callback;
@@ -29,8 +29,8 @@ namespace Server.Items
 
       AddHtmlLocalized(55, 400, 200, 25, 1011036, false, false); // OKAY
 
-      AddButton(20, 400, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddButton(200, 400, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(20, 400, 4005, 4007, 1);
+      AddButton(200, 400, 4005, 4007, 2);
       AddLabel(235, 400, 0, "DEFAULT");
 
       AddHtmlLocalized(55, 25, 200, 25, 1150063, false, false); // Base/Shadow Color

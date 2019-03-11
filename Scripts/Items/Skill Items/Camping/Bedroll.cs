@@ -92,10 +92,10 @@ namespace Server.Items
          */
         AddHtmlLocalized(50, 55, 300, 140, 1011016, true, true);
 
-        AddButton(45, 298, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddButton(45, 298, 0xFA5, 0xFA7, 1);
         AddHtmlLocalized(80, 300, 110, 35, 1011011, false, false); // CONTINUE
 
-        AddButton(200, 298, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
+        AddButton(200, 298, 0xFA5, 0xFA7, 0);
         AddHtmlLocalized(235, 300, 110, 35, 1011012, false, false); // CANCEL
       }
 

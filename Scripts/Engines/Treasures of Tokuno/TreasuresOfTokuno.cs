@@ -169,7 +169,7 @@ namespace Server.Misc
 
           if (!pm.PlaceInBackpack(i))
           {
-            if (pm.BankBox != null && pm.BankBox.TryDropItem(killer, i, false))
+            if (pm.BankBox?.TryDropItem(killer, i, false) == true)
             {
               pm.SendLocalizedMessage(1079730); // The item has been placed into your bank box.
             }

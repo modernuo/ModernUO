@@ -20,7 +20,7 @@ namespace Server.Gumps
       AddBackground(0, 0, 550, 400, 5054);
       AddBackground(10, 10, 530, 380, 3000);
 
-      AddButton(20, 360, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 360, 4005, 4007, 1);
       AddHtmlLocalized(55, 360, 300, 35, 1011120, false, false); // Return to the main menu.
 
       string charter;
@@ -30,8 +30,8 @@ namespace Server.Gumps
       else
         AddHtml(20, 20, 510, 75, charter, true, true);
 
-      AddButton(20, 200, 4005, 4007, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(55, 200, 300, 20, 1011122, false, false); // Visit the guild website : 
+      AddButton(20, 200, 4005, 4007, 2);
+      AddHtmlLocalized(55, 200, 300, 20, 1011122, false, false); // Visit the guild website :
 
       string website;
 

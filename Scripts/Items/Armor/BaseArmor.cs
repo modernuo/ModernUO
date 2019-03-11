@@ -573,6 +573,7 @@ namespace Server.Items
         }
         catch
         {
+          // ignored
         }
 
       from.SendLocalizedMessage(502440); // Scissors can not be used on that to produce anything.

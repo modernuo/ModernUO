@@ -39,10 +39,10 @@ namespace Server.Guilds
       AddHtmlLocalized(105, 200, 200, 26, 1063007, 0x0, false, false); // Show All Guilds
 
       AddBackground(450, 370, 100, 26, 0x2486);
-      AddButton(455, 375, 0x845, 0x846, 5, GumpButtonType.Reply, 0);
+      AddButton(455, 375, 0x845, 0x846, 5);
       AddHtmlLocalized(480, 373, 60, 26, 1006044, 0x0, false, false); // OK
       AddBackground(340, 370, 100, 26, 0x2486);
-      AddButton(345, 375, 0x845, 0x846, 0, GumpButtonType.Reply, 0);
+      AddButton(345, 375, 0x845, 0x846, 0);
       AddHtmlLocalized(370, 373, 60, 26, 1006045, 0x0, false, false); // Cancel
     }
 

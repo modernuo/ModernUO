@@ -36,16 +36,16 @@ namespace Server
       AddHtmlLocalized(75, 224, 220, 60, 1052062, false,
         false); // Click on a blue gem to view your status in that virtue.
 
-      AddButton(60, 100, 1210, 1210, 1, GumpButtonType.Reply, 0);
-      AddButton(60, 129, 1210, 1210, 2, GumpButtonType.Reply, 0);
-      AddButton(60, 159, 1210, 1210, 3, GumpButtonType.Reply, 0);
-      AddButton(60, 189, 1210, 1210, 4, GumpButtonType.Reply, 0);
-      AddButton(180, 100, 1210, 1210, 5, GumpButtonType.Reply, 0);
-      AddButton(180, 129, 1210, 1210, 6, GumpButtonType.Reply, 0);
-      AddButton(180, 159, 1210, 1210, 7, GumpButtonType.Reply, 0);
-      AddButton(180, 189, 1210, 1210, 8, GumpButtonType.Reply, 0);
+      AddButton(60, 100, 1210, 1210, 1);
+      AddButton(60, 129, 1210, 1210, 2);
+      AddButton(60, 159, 1210, 1210, 3);
+      AddButton(60, 189, 1210, 1210, 4);
+      AddButton(180, 100, 1210, 1210, 5);
+      AddButton(180, 129, 1210, 1210, 6);
+      AddButton(180, 159, 1210, 1210, 7);
+      AddButton(180, 189, 1210, 1210, 8);
 
-      AddButton(280, 43, 4014, 4014, 9, GumpButtonType.Reply, 0);
+      AddButton(280, 43, 4014, 4014, 9);
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

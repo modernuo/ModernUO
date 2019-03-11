@@ -75,6 +75,7 @@ namespace Server.Misc
       }
       catch
       {
+        // ignored
       }
 
       Listen();

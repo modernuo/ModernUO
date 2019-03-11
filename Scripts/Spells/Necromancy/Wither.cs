@@ -44,7 +44,7 @@ namespace Server.Spells.Necromancy
           List<Mobile> targets = new List<Mobile>();
 
           BaseCreature cbc = Caster as BaseCreature;
-          bool isMonster = cbc != null && !cbc.Controlled && !cbc.Summoned;
+          bool isMonster = cbc?.Controlled == false && !cbc.Summoned;
 
           foreach (Mobile m in Caster.GetMobilesInRange(Core.ML ? 4 : 5))
             if (Caster != m && Caster.InLOS(m) && (isMonster || SpellHelper.ValidIndirectTarget(Caster, m)) &&

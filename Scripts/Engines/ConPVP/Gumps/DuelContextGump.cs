@@ -63,8 +63,8 @@ namespace Server.Engines.ConPVP
 
     public void AddGoldenButton(int x, int y, int bid)
     {
-      AddButton(x, y, 0xD2, 0xD2, bid, GumpButtonType.Reply, 0);
-      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid, GumpButtonType.Reply, 0);
+      AddButton(x, y, 0xD2, 0xD2, bid);
+      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid);
     }
 
     public void AddGoldenButtonLabeled(int x, int y, int bid, string text)

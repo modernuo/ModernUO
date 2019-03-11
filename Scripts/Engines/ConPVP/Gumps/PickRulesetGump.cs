@@ -39,15 +39,15 @@ namespace Server.Engines.ConPVP
         if (ruleset.Base == cur && !ruleset.Changed)
           AddImage(35, y + 4, 0x939);
         else if (ruleset.Base == cur)
-          AddButton(35, y + 4, 0x93A, 0x939, 2 + i, GumpButtonType.Reply, 0);
+          AddButton(35, y + 4, 0x93A, 0x939, 2 + i);
         else
-          AddButton(35, y + 4, 0x938, 0x939, 2 + i, GumpButtonType.Reply, 0);
+          AddButton(35, y + 4, 0x938, 0x939, 2 + i);
 
         y += 22;
       }
 
       AddHtml(35 + 14, y, 176, 20, "Custom", false, false);
-      AddButton(35, y + 4, ruleset.Changed ? 0x939 : 0x938, 0x939, 1, GumpButtonType.Reply, 0);
+      AddButton(35, y + 4, ruleset.Changed ? 0x939 : 0x938, 0x939, 1);
 
       y += 22;
       y += 6;
@@ -62,9 +62,9 @@ namespace Server.Engines.ConPVP
         AddHtml(35 + 14, y, 176, 20, cur.Title, false, false);
 
         if (ruleset.Flavors.Contains(cur))
-          AddButton(35, y + 4, 0x939, 0x938, 2 + m_Defaults.Length + i, GumpButtonType.Reply, 0);
+          AddButton(35, y + 4, 0x939, 0x938, 2 + m_Defaults.Length + i);
         else
-          AddButton(35, y + 4, 0x938, 0x939, 2 + m_Defaults.Length + i, GumpButtonType.Reply, 0);
+          AddButton(35, y + 4, 0x938, 0x939, 2 + m_Defaults.Length + i);
 
         y += 22;
       }

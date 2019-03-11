@@ -94,7 +94,7 @@ namespace Server.Mobiles
 
           Combatant = value;
 
-          if (oldFocus != null && !oldFocus.Alive)
+          if (oldFocus?.Alive == false)
             Say("Thou hast suffered thy punishment, scoundrel.");
 
           if (value != null)

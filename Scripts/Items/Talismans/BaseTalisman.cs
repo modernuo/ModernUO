@@ -335,7 +335,7 @@ namespace Server.Items
 
       list.Add(1075085); // Requirement: Mondain's Legacy
 
-      if (m_Killer != null && !m_Killer.IsEmpty && m_Killer.Amount > 0)
+      if (m_Killer?.IsEmpty == false && m_Killer.Amount > 0)
         list.Add(1072388, "{0}\t{1}", m_Killer.Name != null ? m_Killer.Name.ToString() : "Unknown",
           m_Killer.Amount); // ~1_NAME~ Killer: +~2_val~%
 
@@ -455,9 +455,9 @@ namespace Server.Items
 
       SetSaveFlag(ref flags, SaveFlag.Attributes, !Attributes.IsEmpty);
       SetSaveFlag(ref flags, SaveFlag.SkillBonuses, !SkillBonuses.IsEmpty);
-      SetSaveFlag(ref flags, SaveFlag.Protection, m_Protection != null && !m_Protection.IsEmpty);
-      SetSaveFlag(ref flags, SaveFlag.Killer, m_Killer != null && !m_Killer.IsEmpty);
-      SetSaveFlag(ref flags, SaveFlag.Summoner, m_Summoner != null && !m_Summoner.IsEmpty);
+      SetSaveFlag(ref flags, SaveFlag.Protection, m_Protection?.IsEmpty == false);
+      SetSaveFlag(ref flags, SaveFlag.Killer, m_Killer?.IsEmpty == false);
+      SetSaveFlag(ref flags, SaveFlag.Summoner, m_Summoner?.IsEmpty == false);
       SetSaveFlag(ref flags, SaveFlag.Removal, m_Removal != TalismanRemoval.None);
       SetSaveFlag(ref flags, SaveFlag.Skill, (int)m_Skill != 0);
       SetSaveFlag(ref flags, SaveFlag.SuccessBonus, m_SuccessBonus != 0);

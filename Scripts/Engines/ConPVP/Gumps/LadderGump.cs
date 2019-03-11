@@ -103,12 +103,12 @@ namespace Server.Engines.ConPVP
       AddAlphaRegion(10, 10, 479, height - 20);
 
       if (page > 0)
-        AddButton(446, height - 12 - 2 - 16, 0x15E3, 0x15E7, 1, GumpButtonType.Reply, 0);
+        AddButton(446, height - 12 - 2 - 16, 0x15E3, 0x15E7, 1);
       else
         AddImage(446, height - 12 - 2 - 16, 0x2626);
 
       if ((page + 1) * 15 < lc)
-        AddButton(466, height - 12 - 2 - 16, 0x15E1, 0x15E5, 2, GumpButtonType.Reply, 0);
+        AddButton(466, height - 12 - 2 - 16, 0x15E1, 0x15E5, 2);
       else
         AddImage(466, height - 12 - 2 - 16, 0x2622);
 

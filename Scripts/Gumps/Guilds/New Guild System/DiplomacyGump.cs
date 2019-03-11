@@ -145,7 +145,7 @@ namespace Server.Guilds
       if (AllowAdvancedSearch)
       {
         AddBackground(350, 148 + itemNumber * 28, 200, 26, 0x2486);
-        AddButton(355, 153 + itemNumber * 28, 0x845, 0x846, 8, GumpButtonType.Reply, 0);
+        AddButton(355, 153 + itemNumber * 28, 0x845, 0x846, 8);
         AddHtmlLocalized(380, 151 + itemNumber * 28, 160, 26, 1063083, 0x0, false, false); // Advanced Search
       }
     }

@@ -110,7 +110,7 @@ namespace Server.Engines.BulkOrders
       AddHtmlLocalized(336, 64, 200, 32, 1062216, LabelColor, false, false); // Material
       AddHtmlLocalized(429, 64, 200, 32, 1062217, LabelColor, false, false); // Amount
 
-      AddButton(35, 32, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(35, 32, 4005, 4007, 1);
       AddHtmlLocalized(70, 32, 200, 32, 1062476, LabelColor, false, false); // Set Filter
 
       BOBFilter f = from.UseOwnFilter ? from.BOBFilter : book.Filter;
@@ -122,7 +122,7 @@ namespace Server.Engines.BulkOrders
       else
         AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062230, 16927, false, false); // Using Book Filter
 
-      AddButton(375, 416, 4017, 4018, 0, GumpButtonType.Reply, 0);
+      AddButton(375, 416, 4017, 4018, 0);
       AddHtmlLocalized(410, 416, 120, 20, 1011441, LabelColor, false, false); // EXIT
 
       if (canDrop)
@@ -140,7 +140,7 @@ namespace Server.Engines.BulkOrders
         {
           AddHtmlLocalized(576, 64, 200, 32, 1062227, LabelColor, false, false); // Set
 
-          AddButton(450, 416, 4005, 4007, 4, GumpButtonType.Reply, 0);
+          AddButton(450, 416, 4005, 4007, 4);
           AddHtml(485, 416, 120, 20, "<BASEFONT COLOR=#FFFFFF>Price all</FONT>", false, false);
         }
       }
@@ -149,13 +149,13 @@ namespace Server.Engines.BulkOrders
 
       if (page > 0)
       {
-        AddButton(75, 416, 4014, 4016, 2, GumpButtonType.Reply, 0);
+        AddButton(75, 416, 4014, 4016, 2);
         AddHtmlLocalized(110, 416, 150, 20, 1011067, LabelColor, false, false); // Previous page
       }
 
       if (GetIndexForPage(page + 1) < list.Count)
       {
-        AddButton(225, 416, 4005, 4007, 3, GumpButtonType.Reply, 0);
+        AddButton(225, 416, 4005, 4007, 3);
         AddHtmlLocalized(260, 416, 150, 20, 1011066, LabelColor, false, false); // Next page
       }
 
@@ -171,11 +171,11 @@ namespace Server.Engines.BulkOrders
           int y = 96 + tableIndex * 32;
 
           if (canDrop)
-            AddButton(35, y + 2, 5602, 5606, 5 + i * 2, GumpButtonType.Reply, 0);
+            AddButton(35, y + 2, 5602, 5606, 5 + i * 2);
 
           if (canDrop || canBuy && entry.Price > 0)
           {
-            AddButton(579, y + 2, 2117, 2118, 6 + i * 2, GumpButtonType.Reply, 0);
+            AddButton(579, y + 2, 2117, 2118, 6 + i * 2);
             AddLabel(495, y, 1152, entry.Price.ToString());
           }
 
@@ -212,11 +212,11 @@ namespace Server.Engines.BulkOrders
           int y = 96 + tableIndex++ * 32;
 
           if (canDrop)
-            AddButton(35, y + 2, 5602, 5606, 5 + i * 2, GumpButtonType.Reply, 0);
+            AddButton(35, y + 2, 5602, 5606, 5 + i * 2);
 
           if (canDrop || canBuy && smallEntry.Price > 0)
           {
-            AddButton(579, y + 2, 2117, 2118, 6 + i * 2, GumpButtonType.Reply, 0);
+            AddButton(579, y + 2, 2117, 2118, 6 + i * 2);
             AddLabel(495, y, 1152, smallEntry.Price.ToString());
           }
 

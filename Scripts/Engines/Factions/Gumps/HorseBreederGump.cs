@@ -32,10 +32,10 @@ namespace Server.Factions
       AddLabel(190, 152, 0x3E3, FactionWarHorse.GoldPrice.ToString("N0")); // NOTE: Added 'N0'
 
       AddHtmlLocalized(55, 210, 200, 25, 1011011, false, false); // CONTINUE
-      AddButton(20, 210, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 210, 4005, 4007, 1);
 
       AddHtmlLocalized(55, 240, 200, 25, 1011012, false, false); // CANCEL
-      AddButton(20, 240, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(20, 240, 4005, 4007, 0);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

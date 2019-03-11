@@ -22,10 +22,10 @@ namespace Server.Gumps
 
       AddHtmlLocalized(20, 15, 230, 60, 1046257, true, true); // Are you sure you want to release your pet?
 
-      AddButton(20, 80, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(20, 80, 4005, 4007, 2);
       AddHtmlLocalized(55, 80, 75, 20, 1011011, false, false); // CONTINUE
 
-      AddButton(135, 80, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(135, 80, 4005, 4007, 1);
       AddHtmlLocalized(170, 80, 75, 20, 1011012, false, false); // CANCEL
     }
 

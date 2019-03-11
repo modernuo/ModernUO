@@ -23,9 +23,9 @@ namespace Server.Guilds
       AddHtmlLocalized(25, 20, 300, 45, 1062946, 0x0, true,
         false); // <center>You have been invited to join a guild! (Warning: Accepting will make you attackable!)</center>
       AddHtml(25, 75, 300, 25, $"<center>{guild.Name}</center>", true, false);
-      AddButton(265, 130, 0xF7, 0xF8, 1, GumpButtonType.Reply, 0);
-      AddButton(195, 130, 0xF2, 0xF1, 0, GumpButtonType.Reply, 0);
-      AddButton(20, 130, 0xD2, 0xD3, 2, GumpButtonType.Reply, 0);
+      AddButton(265, 130, 0xF7, 0xF8, 1);
+      AddButton(195, 130, 0xF2, 0xF1, 0);
+      AddButton(20, 130, 0xD2, 0xD3, 2);
       AddHtmlLocalized(45, 130, 150, 30, 1062943, 0x0, false, false); // <i>Ignore Guild Invites</i>
     }
 

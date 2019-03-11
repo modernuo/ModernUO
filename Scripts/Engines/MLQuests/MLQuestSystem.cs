@@ -66,6 +66,7 @@ namespace Server.Engines.MLQuests
             }
             catch
             {
+              // ignored
             }
 
             if (quest == null)
@@ -128,7 +129,7 @@ namespace Server.Engines.MLQuests
 
       if (AutoGenerateNew)
         foreach (MLQuest quest in Quests.Values)
-          if (quest != null && !quest.Deserialized)
+          if (quest?.Deserialized == false)
             quest.Generate();
 
       MLQuestPersistence.EnsureExistence();

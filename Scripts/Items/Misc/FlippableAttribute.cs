@@ -72,6 +72,7 @@ namespace Server.Items
         }
         catch
         {
+          // ignored
         }
       }
       else

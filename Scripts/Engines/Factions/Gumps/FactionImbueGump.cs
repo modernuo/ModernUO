@@ -55,10 +55,10 @@ namespace Server.Factions
 
 
       AddHtmlLocalized(55, 200, 200, 25, 1011011, false, false); // CONTINUE
-      AddButton(20, 200, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 200, 4005, 4007, 1);
 
       AddHtmlLocalized(55, 230, 200, 25, 1011012, false, false); // CANCEL
-      AddButton(20, 230, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(20, 230, 4005, 4007, 0);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

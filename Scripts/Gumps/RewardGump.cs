@@ -78,7 +78,7 @@ namespace Server.Gumps
         int half = offset + height / 2;
 
         if (available)
-          AddButton(35, half - 6, 0x837, 0x838, 100 + i, GumpButtonType.Reply, 0);
+          AddButton(35, half - 6, 0x837, 0x838, 100 + i);
 
         AddItem(83 - bounds.Width / 2 - bounds.X, half - bounds.Height / 2 - bounds.Y, entry.ItemID,
           available ? entry.Hue : 995);
@@ -173,7 +173,7 @@ namespace Server.Gumps
       AddRadio(25, 210, 0x25F8, 0x25FB, false, 0);
       AddHtmlLocalized(60, 180, 280, 20, 1074976, 0xFFFFFF, false, false); // Yes
       AddHtmlLocalized(60, 215, 280, 20, 1074977, 0xFFFFFF, false, false); // No
-      AddButton(265, 220, 0xF7, 0xF8, 7, GumpButtonType.Reply, 0);
+      AddButton(265, 220, 0xF7, 0xF8, 7);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

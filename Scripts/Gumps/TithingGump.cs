@@ -33,23 +33,23 @@ namespace Server.Gumps
       AddLabel(137, 274, 0, "Tithe:");
       AddLabel(172, 274, 53, offer.ToString());
 
-      AddButton(105, 230, 5220, 5220, 2, GumpButtonType.Reply, 0);
-      AddButton(113, 230, 5222, 5222, 2, GumpButtonType.Reply, 0);
+      AddButton(105, 230, 5220, 5220, 2);
+      AddButton(113, 230, 5222, 5222, 2);
       AddLabel(108, 228, 0, "<");
       AddLabel(112, 228, 0, "<");
 
-      AddButton(127, 230, 5223, 5223, 1, GumpButtonType.Reply, 0);
+      AddButton(127, 230, 5223, 5223, 1);
       AddLabel(131, 228, 0, "<");
 
-      AddButton(147, 230, 5224, 5224, 3, GumpButtonType.Reply, 0);
+      AddButton(147, 230, 5224, 5224, 3);
       AddLabel(153, 228, 0, ">");
 
-      AddButton(168, 230, 5220, 5220, 4, GumpButtonType.Reply, 0);
-      AddButton(176, 230, 5222, 5222, 4, GumpButtonType.Reply, 0);
+      AddButton(168, 230, 5220, 5220, 4);
+      AddButton(176, 230, 5222, 5222, 4);
       AddLabel(172, 228, 0, ">");
       AddLabel(176, 228, 0, ">");
 
-      AddButton(217, 272, 4023, 4024, 5, GumpButtonType.Reply, 0);
+      AddButton(217, 272, 4023, 4024, 5);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

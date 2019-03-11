@@ -11,7 +11,7 @@ namespace Server.Gumps
 
 			AddHtmlLocalized( 20, 43, 215, 70, 1018030, true, true ); // Warning: monsters may attack you on site down here in the dungeons!
 
-			AddButton( 70, 123, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0 );
+			AddButton( 70, 123, 0xFA5, 0xFA7, 0);
 			AddHtmlLocalized( 105, 125, 100, 35, 1011036, false, false ); // OKAY
 		}
 	}
@@ -42,7 +42,7 @@ namespace Server.Gumps
 			// To rejoin the world of the living simply walk near one of the NPC healers, and they will resurrect you as long as you are not marked as a criminal.
 			AddHtmlLocalized( 50, 334, 380, 70, 1046294, 0xFFFFFF, false, false );
 
-			AddButton( 195, 410, 0xF8, 0xF9, 0, GumpButtonType.Reply, 0 );
+			AddButton( 195, 410, 0xF8, 0xF9, 0);
 		}
 	}
 
@@ -66,10 +66,10 @@ namespace Server.Gumps
 			 */
 			AddHtmlLocalized( 30, 70, 390, 210, 1013005, true, true );
 
-			AddButton( 45, 298, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0 );
+			AddButton( 45, 298, 0xFA5, 0xFA7, 1);
 			AddHtmlLocalized( 78, 300, 100, 35, 1011036, false, false ); // OKAY
 
-			AddButton( 178, 298, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0 );
+			AddButton( 178, 298, 0xFA5, 0xFA7, 0);
 			AddHtmlLocalized( 211, 300, 100, 35, 1011012, false, false ); // CANCEL
 		}
 

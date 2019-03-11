@@ -28,8 +28,8 @@ namespace Server.Engines.ConPVP
 
         AddHtml(35, 25, 140, 20, Center("Rematch?"), false, false);
 
-        AddButton(35, 55, 247, 248, 1, GumpButtonType.Reply, 0);
-        AddButton(115, 55, 242, 241, 2, GumpButtonType.Reply, 0);
+        AddButton(35, 55, 247, 248, 1);
+        AddButton(115, 55, 242, 241, 2);
       }
       else
       {
@@ -96,7 +96,7 @@ namespace Server.Engines.ConPVP
         y -= 2;
 
         AddButton(102, y, 247, 248, 0, GumpButtonType.Page, 2);
-        AddButton(169, y, 242, 241, 2, GumpButtonType.Reply, 0);
+        AddButton(169, y, 242, 241, 2);
 
         #endregion
 
@@ -182,8 +182,8 @@ namespace Server.Engines.ConPVP
 
         y -= 2;
 
-        AddButton(102, y, 247, 248, 1, GumpButtonType.Reply, 0);
-        AddButton(169, y, 242, 241, 3, GumpButtonType.Reply, 0);
+        AddButton(102, y, 247, 248, 1);
+        AddButton(169, y, 242, 241, 3);
 
         #endregion
       }
@@ -196,8 +196,8 @@ namespace Server.Engines.ConPVP
 
     public void AddGoldenButton(int x, int y, int bid)
     {
-      AddButton(x, y, 0xD2, 0xD2, bid, GumpButtonType.Reply, 0);
-      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid, GumpButtonType.Reply, 0);
+      AddButton(x, y, 0xD2, 0xD2, bid);
+      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

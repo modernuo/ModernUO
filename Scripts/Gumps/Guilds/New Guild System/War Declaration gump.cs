@@ -30,10 +30,10 @@ namespace Server.Guilds
       AddBackground(65, 250, 40, 30, 0x2486);
       AddTextEntry(70, 254, 50, 30, 0x481, 11, war != null ? war.MaxKills.ToString() : "0");
       AddBackground(190, 270, 130, 26, 0x2486);
-      AddButton(195, 275, 0x845, 0x846, 0, GumpButtonType.Reply, 0);
+      AddButton(195, 275, 0x845, 0x846, 0);
       AddHtmlLocalized(220, 273, 90, 26, 1006045, 0x0, false, false); // Cancel
       AddBackground(330, 270, 130, 26, 0x2486);
-      AddButton(335, 275, 0x845, 0x846, 1, GumpButtonType.Reply, 0);
+      AddButton(335, 275, 0x845, 0x846, 1);
       AddHtmlLocalized(360, 273, 90, 26, 1062989, 0x5000, false, false); // Declare War!
     }
 

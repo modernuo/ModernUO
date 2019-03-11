@@ -801,6 +801,7 @@ namespace Server.Network
             }
             catch
             {
+              // ignored
             }
 
           break;

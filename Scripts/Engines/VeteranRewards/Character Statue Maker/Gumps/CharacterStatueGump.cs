@@ -35,34 +35,34 @@ namespace Server.Gumps
       // pose
       AddHtmlLocalized(133, 41, 120, 20, 1076168, 0x7FFF, false, false); // Choose Pose
       AddHtmlLocalized(133, 61, 120, 20, 1076208 + (int)m_Statue.Pose, 0x77E, false, false);
-      AddButton(163, 81, 0xFA5, 0xFA7, (int)Buttons.PoseNext, GumpButtonType.Reply, 0);
-      AddButton(133, 81, 0xFAE, 0xFB0, (int)Buttons.PosePrev, GumpButtonType.Reply, 0);
+      AddButton(163, 81, 0xFA5, 0xFA7, (int)Buttons.PoseNext);
+      AddButton(133, 81, 0xFAE, 0xFB0, (int)Buttons.PosePrev);
 
       // direction
       AddHtmlLocalized(133, 126, 120, 20, 1076170, 0x7FFF, false, false); // Choose Direction
       AddHtmlLocalized(133, 146, 120, 20, GetDirectionNumber(m_Statue.Direction), 0x77E, false, false);
-      AddButton(163, 167, 0xFA5, 0xFA7, (int)Buttons.DirNext, GumpButtonType.Reply, 0);
-      AddButton(133, 167, 0xFAE, 0xFB0, (int)Buttons.DirPrev, GumpButtonType.Reply, 0);
+      AddButton(163, 167, 0xFA5, 0xFA7, (int)Buttons.DirNext);
+      AddButton(133, 167, 0xFAE, 0xFB0, (int)Buttons.DirPrev);
 
       // material
       AddHtmlLocalized(133, 211, 120, 20, 1076171, 0x7FFF, false, false); // Choose Material
       AddHtmlLocalized(133, 231, 120, 20, GetMaterialNumber(m_Statue.StatueType, m_Statue.Material), 0x77E, false,
         false);
-      AddButton(163, 253, 0xFA5, 0xFA7, (int)Buttons.MatNext, GumpButtonType.Reply, 0);
-      AddButton(133, 253, 0xFAE, 0xFB0, (int)Buttons.MatPrev, GumpButtonType.Reply, 0);
+      AddButton(163, 253, 0xFA5, 0xFA7, (int)Buttons.MatNext);
+      AddButton(133, 253, 0xFAE, 0xFB0, (int)Buttons.MatPrev);
 
       // cancel
-      AddButton(10, 294, 0xFB1, 0xFB2, (int)Buttons.Close, GumpButtonType.Reply, 0);
+      AddButton(10, 294, 0xFB1, 0xFB2, (int)Buttons.Close);
       AddHtmlLocalized(45, 294, 80, 20, 1006045, 0x7FFF, false, false); // Cancel
 
       // sculpt
-      AddButton(234, 294, 0xFB7, 0xFB9, (int)Buttons.Sculpt, GumpButtonType.Reply, 0);
+      AddButton(234, 294, 0xFB7, 0xFB9, (int)Buttons.Sculpt);
       AddHtmlLocalized(269, 294, 80, 20, 1076174, 0x7FFF, false, false); // Sculpt
 
       // restore
       if (m_Maker is CharacterStatueDeed)
       {
-        AddButton(107, 294, 0xFAB, 0xFAD, (int)Buttons.Restore, GumpButtonType.Reply, 0);
+        AddButton(107, 294, 0xFAB, 0xFAD, (int)Buttons.Restore);
         AddHtmlLocalized(142, 294, 80, 20, 1076193, 0x7FFF, false, false); // Restore
       }
     }

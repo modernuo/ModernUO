@@ -31,10 +31,10 @@ namespace Server.Engines.BulkOrders
       AddHtmlLocalized(125, 70, 250, 24, 1019071, false, false); // for the amount of:
       AddLabel(125, 95, 0, price.ToString());
 
-      AddButton(250, 130, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(250, 130, 4005, 4007, 1);
       AddHtmlLocalized(282, 130, 100, 24, 1011012, false, false); // CANCEL
 
-      AddButton(120, 130, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(120, 130, 4005, 4007, 2);
       AddHtmlLocalized(152, 130, 100, 24, 1011036, false, false); // OKAY
     }
 

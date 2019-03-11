@@ -258,6 +258,7 @@ namespace Server.Mobiles
         }
         catch
         {
+          // ignored
         }
       }
     }
@@ -282,6 +283,7 @@ namespace Server.Mobiles
         }
         catch
         {
+          // ignored
         }
       }
     }
@@ -1187,10 +1189,8 @@ namespace Server.Mobiles
     public override bool AllowItemUse(Item item)
     {
       #region Dueling
-
-      if (DuelContext != null && !DuelContext.AllowItemUse(this, item))
+      if (DuelContext?.AllowItemUse(this, item) == false)
         return false;
-
       #endregion
 
       return DesignContext.Check(this);
@@ -1207,10 +1207,8 @@ namespace Server.Mobiles
           }
 
       #region Dueling
-
-      if (DuelContext != null && !DuelContext.AllowSkillUse(this, skill))
+      if (DuelContext?.AllowSkillUse(this, skill) == false)
         return false;
-
       #endregion
 
       return DesignContext.Check(this);
@@ -1419,7 +1417,7 @@ namespace Server.Mobiles
 
       #region Dueling
 
-      if (DuelContext != null && !DuelContext.AllowItemEquip(this, item))
+      if (DuelContext?.AllowItemEquip(this, item) == false)
         return false;
 
       #endregion
@@ -1513,7 +1511,7 @@ namespace Server.Mobiles
 
         if (Backpack?.CheckHold(this, item, false, checkItems, plusItems, plusWeight) != true)
           msgNum = 1004040; // You would not be able to hold this if the trade failed.
-        else if (to.Backpack == null || !to.Backpack.CheckHold(to, item, false, checkItems, plusItems, plusWeight))
+        else if (to.Backpack?.CheckHold(to, item, false, checkItems, plusItems, plusWeight) != true)
           msgNum = 1004039; // The recipient of this trade would not be able to carry this.
         else
           msgNum = CheckContentForTrade(item);
@@ -2621,8 +2619,7 @@ namespace Server.Mobiles
       if (m is PlayerMobile mobile && mobile.VisibilityList.Contains(this))
         return true;
 
-      if (DuelContext != null && m_DuelPlayer != null && !DuelContext.Finished && DuelContext.m_Tournament != null &&
-          !m_DuelPlayer.Eliminated)
+      if (DuelContext?.Finished == false && DuelContext.m_Tournament != null && m_DuelPlayer?.Eliminated == false)
       {
         Mobile owner = m;
 
@@ -2804,11 +2801,10 @@ namespace Server.Mobiles
             continue;
           }
 
-          if (pet is IMount mount && mount.Rider != null)
+          if ((pet as IMount)?.Rider != null)
             continue;
 
-          if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack != null &&
-              pet.Backpack.Items.Count > 0)
+          if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
             continue;
 
           if (pet is BaseEscortable)
@@ -3430,10 +3426,10 @@ namespace Server.Mobiles
         AddHtmlLocalized(8, 8, 228, 100, 1071021, 0x7FFF, false,
           false); // You are about to disable inventory insurance auto-renewal.
 
-        AddButton(6, 116, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+        AddButton(6, 116, 0xFB1, 0xFB2, 0);
         AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
 
-        AddButton(114, 116, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddButton(114, 116, 0xFA5, 0xFA7, 1);
         AddHtmlLocalized(148, 118, 450, 20, 1071022, 0x7FFF, false, false); // DISABLE IT!
       }
 
@@ -3521,17 +3517,17 @@ namespace Server.Mobiles
         AddImageTiled(10, 415, 500, 80, 0xA40);
         AddAlphaRegion(10, 10, 500, 485);
 
-        AddButton(15, 470, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+        AddButton(15, 470, 0xFB1, 0xFB2, 0);
         AddHtmlLocalized(50, 472, 80, 20, 1011012, 0x7FFF, false, false); // CANCEL
 
         if (from.AutoRenewInsurance)
-          AddButton(360, 10, 9723, 9724, 1, GumpButtonType.Reply, 0);
+          AddButton(360, 10, 9723, 9724, 1);
         else
-          AddButton(360, 10, 9720, 9722, 1, GumpButtonType.Reply, 0);
+          AddButton(360, 10, 9720, 9722, 1);
 
         AddHtmlLocalized(395, 14, 105, 20, 1114122, 0x7FFF, false, false); // AUTO REINSURE
 
-        AddButton(395, 470, 0xFA5, 0xFA6, 2, GumpButtonType.Reply, 0);
+        AddButton(395, 470, 0xFA5, 0xFA6, 2);
         AddHtmlLocalized(430, 472, 50, 20, 1006044, 0x7FFF, false, false); // OK
 
         AddHtmlLocalized(10, 14, 150, 20, 1114121, 0x7FFF, false, false); // <CENTER>ITEM INSURANCE MENU</CENTER>
@@ -3569,25 +3565,25 @@ namespace Server.Mobiles
 
           if (insure[i])
           {
-            AddButton(400, y, 9723, 9724, 100 + i, GumpButtonType.Reply, 0);
+            AddButton(400, y, 9723, 9724, 100 + i);
             AddLabel(250, y, 0x481, GetInsuranceCost(item).ToString());
           }
           else
           {
-            AddButton(400, y, 9720, 9722, 100 + i, GumpButtonType.Reply, 0);
+            AddButton(400, y, 9720, 9722, 100 + i);
             AddLabel(250, y, 0x66C, GetInsuranceCost(item).ToString());
           }
         }
 
         if (page >= 1)
         {
-          AddButton(15, 380, 0xFAE, 0xFAF, 3, GumpButtonType.Reply, 0);
+          AddButton(15, 380, 0xFAE, 0xFAF, 3);
           AddHtmlLocalized(50, 380, 450, 20, 1044044, 0x7FFF, false, false); // PREV PAGE
         }
 
         if ((page + 1) * 4 < items.Length)
         {
-          AddButton(400, 380, 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0);
+          AddButton(400, 380, 0xFA5, 0xFA7, 4);
           AddHtmlLocalized(435, 380, 70, 20, 1044045, 0x7FFF, false, false); // NEXT PAGE
         }
       }
@@ -3677,10 +3673,10 @@ namespace Server.Mobiles
         AddHtmlLocalized(8, 8, 228, 100, 1114300, 0x7FFF, false,
           false); // Do you wish to insure all newly selected items?
 
-        AddButton(6, 116, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+        AddButton(6, 116, 0xFB1, 0xFB2, 0);
         AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
 
-        AddButton(114, 116, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddButton(114, 116, 0xFA5, 0xFA7, 1);
         AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF, false, false); // ACCEPT
       }
 
@@ -3841,7 +3837,7 @@ namespace Server.Mobiles
       get => m_DuelPlayer;
       set
       {
-        bool wasInTourney = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
+        bool wasInTourney = DuelContext?.Finished == false && DuelContext.m_Tournament != null;
 
         m_DuelPlayer = value;
 
@@ -3850,7 +3846,7 @@ namespace Server.Mobiles
         else
           DuelContext = m_DuelPlayer.Participant.Context;
 
-        bool isInTourney = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
+        bool isInTourney = DuelContext?.Finished == false && DuelContext.m_Tournament != null;
 
         if (wasInTourney != isInTourney)
           SendEverything();

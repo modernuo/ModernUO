@@ -70,13 +70,13 @@ namespace Server.Gumps
       AddHtml(45, 75, 100, 20, Color("Total Entries:", LabelColor), false, false);
       AddHtml(145, 75, 250, 20, Color(m_Stone.Entries.Count.ToString(), LabelColor), false, false);
 
-      AddButton(440, 33, 0xFA5, 0xFA7, 3, GumpButtonType.Reply, 0);
+      AddButton(440, 33, 0xFA5, 0xFA7, 3);
       AddHtml(474, 35, 120, 20, Color("Sort by name", LabelColor), false, false);
 
-      AddButton(440, 53, 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0);
+      AddButton(440, 53, 0xFA5, 0xFA7, 4);
       AddHtml(474, 55, 120, 20, Color("Sort by account", LabelColor), false, false);
 
-      AddButton(440, 73, 0xFA5, 0xFA7, 5, GumpButtonType.Reply, 0);
+      AddButton(440, 73, 0xFA5, 0xFA7, 5);
       AddHtml(474, 75, 120, 20, Color("Sort by address", LabelColor), false, false);
 
       AddImageTiled(13, 99, 592, 242, 9264);
@@ -86,12 +86,12 @@ namespace Server.Gumps
       AddHtml(14, 100, 590, 20, Color(Center("Entries"), LabelColor), false, false);
 
       if (page > 0)
-        AddButton(567, 104, 0x15E3, 0x15E7, 1, GumpButtonType.Reply, 0);
+        AddButton(567, 104, 0x15E3, 0x15E7, 1);
       else
         AddImage(567, 104, 0x25EA);
 
       if ((page + 1) * 10 < m_List.Count)
-        AddButton(584, 104, 0x15E1, 0x15E5, 2, GumpButtonType.Reply, 0);
+        AddButton(584, 104, 0x15E1, 0x15E5, 2);
       else
         AddImage(584, 104, 0x25E6);
 
@@ -111,7 +111,7 @@ namespace Server.Gumps
         if (entry == null)
           continue;
 
-        AddButton(13, 138 + idx * 20, 4002, 4004, 6 + i, GumpButtonType.Reply, 0);
+        AddButton(13, 138 + idx * 20, 4002, 4004, 6 + i);
 
         int x = 45;
         int color = winner != null && entry.From == winner ? HighlightColor : LabelColor;

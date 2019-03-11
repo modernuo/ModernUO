@@ -198,8 +198,8 @@ namespace Server.Engines.ConPVP
       AddColumnHeader(35, null);
       AddColumnHeader(115, "Arena");
 
-      AddButton(499 + 40 - 365 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1, GumpButtonType.Reply, 0);
-      AddButton(499 + 40 - 365 - 12 - 63, height - 12 - 24, 241, 242, 2, GumpButtonType.Reply, 0);
+      AddButton(499 + 40 - 365 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
+      AddButton(499 + 40 - 365 - 12 - 63, height - 12 - 24, 241, 242, 2);
 
       for (int i = 0; i < arenas.Count; ++i)
       {

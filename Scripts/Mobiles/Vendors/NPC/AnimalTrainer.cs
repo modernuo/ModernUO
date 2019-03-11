@@ -201,8 +201,7 @@ namespace Server.Mobiles
 				SayTo( from, 1048053 ); // You can't stable that!
 			}
 */
-      else if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack != null &&
-               pet.Backpack.Items.Count > 0)
+      else if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
       {
         SayTo(from, 1042563); // You need to unload your pet.
       }
@@ -419,7 +418,7 @@ namespace Server.Mobiles
           if (pet?.Deleted != false)
             continue;
 
-          AddButton(15, 39 + i * 20, 10006, 10006, i + 1, GumpButtonType.Reply, 0);
+          AddButton(15, 39 + i * 20, 10006, 10006, i + 1);
           AddHtml(32, 35 + i * 20, 275, 18, $"<BASEFONT COLOR=#C0C0EE>{pet.Name}</BASEFONT>", false, false);
         }
       }

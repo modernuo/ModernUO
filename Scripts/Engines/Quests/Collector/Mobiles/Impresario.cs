@@ -126,7 +126,7 @@ namespace Server.Engines.Quests.Collector
       AddRadio(85, 385, 0x25F8, 0x25FB, false, 0);
       AddHtmlLocalized(120, 391, 280, 20, 1049012, White, false, false); // No thanks, I decline.
 
-      AddButton(340, 390, 0xF7, 0xF8, 1, GumpButtonType.Reply, 0);
+      AddButton(340, 390, 0xF7, 0xF8, 1);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -144,7 +144,7 @@ namespace Server.Engines.Quests.Collector
           if (obj?.Completed != false)
             return;
 
-          if (player.Backpack != null && player.Backpack.ConsumeTotal(typeof(Gold), 10))
+          if (player.Backpack?.ConsumeTotal(typeof(Gold), 10) == true)
           {
             obj.Complete();
           }

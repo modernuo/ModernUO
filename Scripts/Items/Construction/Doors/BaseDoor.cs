@@ -435,7 +435,7 @@ namespace Server.Items
 
         BaseDoor link = Link;
 
-        if (m_Open && link != null && !link.Open)
+        if (m_Open && link?.Open == false)
           link.Open = true;
       }
     }

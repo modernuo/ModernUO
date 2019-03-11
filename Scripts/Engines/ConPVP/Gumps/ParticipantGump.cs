@@ -29,9 +29,9 @@ namespace Server.Engines.ConPVP
       AddBackground(0, 0, 300, height, 9250);
       AddBackground(10, 10, 280, height - 20, 0xDAC);
 
-      AddButton(240, 25, 0xFB1, 0xFB3, 3, GumpButtonType.Reply, 0);
+      AddButton(240, 25, 0xFB1, 0xFB3, 3);
 
-      //AddButton( 223, 54, 0x265A, 0x265A, 4, GumpButtonType.Reply, 0 );
+      //AddButton( 223, 54, 0x265A, 0x265A, 4, );
 
       AddHtml(35, 25, 230, 20, Center("Participant Setup"), false, false);
 
@@ -71,8 +71,8 @@ namespace Server.Engines.ConPVP
 
     public void AddGoldenButton(int x, int y, int bid)
     {
-      AddButton(x, y, 0xD2, 0xD2, bid, GumpButtonType.Reply, 0);
-      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid, GumpButtonType.Reply, 0);
+      AddButton(x, y, 0xD2, 0xD2, bid);
+      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid);
     }
 
     public void AddGoldenButtonLabeled(int x, int y, int bid, string text)

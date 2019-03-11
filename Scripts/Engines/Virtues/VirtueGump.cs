@@ -47,8 +47,8 @@ namespace Server
 
       if (m_Beholder == m_Beheld)
       {
-        AddButton(57, 269, 2027, 2027, 1, GumpButtonType.Reply, 0);
-        AddButton(186, 269, 2071, 2071, 2, GumpButtonType.Reply, 0);
+        AddButton(57, 269, 2027, 2027, 1);
+        AddButton(186, 269, 2071, 2071, 2);
       }
     }
 

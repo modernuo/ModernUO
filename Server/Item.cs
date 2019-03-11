@@ -3432,6 +3432,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
         else
           m_DeltaQueue.Add(this);

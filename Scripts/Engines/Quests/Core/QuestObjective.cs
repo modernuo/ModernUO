@@ -152,7 +152,7 @@ namespace Server.Engines.Quests
       AddImageTiled(0, 78, 120, 40, 2624);
       AddAlphaRegion(0, 78, 120, 40);
 
-      AddButton(30, 15, 5575, 5576, 1, GumpButtonType.Reply, 0);
+      AddButton(30, 15, 5575, 5576, 1);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -206,7 +206,7 @@ namespace Server.Engines.Quests
       AddHtmlLocalized(79, 237, 230, 20, 1049076, Blue, false, false); // Progress details:
 
       AddImageTiled(68, 255, 120, 1, 9101);
-      AddButton(175, 355, 2313, 2312, 1, GumpButtonType.Reply, 0);
+      AddButton(175, 355, 2313, 2312, 1);
 
       AddImage(341, 15, 10450);
       AddImage(341, 330, 10450);

@@ -53,10 +53,10 @@ namespace Server.Engines.BulkOrders
 
       AddHtmlLocalized(40, 216, 350, 20, 1045139, 0x7FFF, false, false); // Do you want to accept this order?
 
-      AddButton(100, 240, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(100, 240, 4005, 4007, 1);
       AddHtmlLocalized(135, 240, 120, 20, 1006044, 0x7FFF, false, false); // Ok
 
-      AddButton(275, 240, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(275, 240, 4005, 4007, 0);
       AddHtmlLocalized(310, 240, 120, 20, 1011012, 0x7FFF, false, false); // CANCEL
     }
 

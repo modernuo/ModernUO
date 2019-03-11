@@ -577,6 +577,7 @@ namespace Server.Engines.CannedEvil
       }
       catch
       {
+        // ignored
       }
 
       Champion?.MoveToWorld(new Point3D(X, Y, Z - 15), Map);

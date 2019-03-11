@@ -32,7 +32,7 @@ namespace Server.Gumps
         int y = 40 + 20 * i;
 
         if (inventory.Owner == from)
-          AddButton(10, y, 0xFA5, 0xFA7, i + 1, GumpButtonType.Reply, 0);
+          AddButton(10, y, 0xFA5, 0xFA7, i + 1);
 
         AddLabel(45, y, 0x481, $"{inventory.ShopName} ({inventory.VendorName})");
 

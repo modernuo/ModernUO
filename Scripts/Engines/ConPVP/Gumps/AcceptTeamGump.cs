@@ -243,7 +243,7 @@ namespace Server.Engines.ConPVP
       y += 35;
 
       y -= 3;
-      AddButton(314, y, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(314, y, 247, 248, 1);
 
       Timer.DelayCall(TimeSpan.FromSeconds(15.0), AutoReject);
     }

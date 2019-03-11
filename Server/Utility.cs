@@ -131,10 +131,7 @@ namespace Server
 
     public static string Intern(string str)
     {
-      if (str == null)
-        return null;
-
-      return str.Length == 0 ? string.Empty : string.Intern(str);
+      return str == null ? null : str.Length == 0 ? string.Empty : string.Intern(str);
     }
 
     public static void Intern(ref string str)
@@ -500,7 +497,7 @@ namespace Server
               }
               else
               {
-                valid = false; //high & lowpart would be 0 if it got to here.
+                valid = false; //high & lowp art would be 0 if it got to here.
               }
             }
           }
@@ -559,9 +556,7 @@ namespace Server
         return Direction.Right;
       }
 
-      if (dy > 0)
-        return Direction.Left;
-      return Direction.Up;
+      return dy > 0 ? Direction.Left : Direction.Up;
     }
 
     /* Should probably be rewritten to use an ITile interface
@@ -613,12 +608,7 @@ namespace Server
 		}
 		*/
 
-    public static object GetArrayCap(Array array, int index)
-    {
-      return GetArrayCap(array, index, null);
-    }
-
-    public static object GetArrayCap(Array array, int index, object emptyValue)
+    public static object GetArrayCap(Array array, int index, object emptyValue = null)
     {
       if (array.Length > 0)
       {
@@ -790,28 +780,18 @@ namespace Server
       return num < bound2 + allowance && num > bound1 - allowance;
     }
 
-    public static void AssignRandomHair(Mobile m)
-    {
-      AssignRandomHair(m, true);
-    }
-
     public static void AssignRandomHair(Mobile m, int hue)
     {
       m.HairItemID = m.Race.RandomHair(m);
       m.HairHue = hue;
     }
 
-    public static void AssignRandomHair(Mobile m, bool randomHue)
+    public static void AssignRandomHair(Mobile m, bool randomHue = true)
     {
       m.HairItemID = m.Race.RandomHair(m);
 
       if (randomHue)
         m.HairHue = m.Race.RandomHairHue();
-    }
-
-    public static void AssignRandomFacialHair(Mobile m)
-    {
-      AssignRandomFacialHair(m, true);
     }
 
     public static void AssignRandomFacialHair(Mobile m, int hue)
@@ -820,7 +800,7 @@ namespace Server
       m.FacialHairHue = hue;
     }
 
-    public static void AssignRandomFacialHair(Mobile m, bool randomHue)
+    public static void AssignRandomFacialHair(Mobile m, bool randomHue = true)
     {
       m.FacialHairItemID = m.Race.RandomFacialHair(m);
 
@@ -978,12 +958,7 @@ namespace Server
 
     public static string GetAttribute(XmlElement node, string attributeName, string defaultValue = null)
     {
-      if (node == null)
-        return defaultValue;
-
-      XmlAttribute attr = node.Attributes[attributeName];
-
-      return attr == null ? defaultValue : attr.Value;
+      return node?.Attributes[attributeName]?.Value ?? defaultValue;
     }
 
     public static string GetText(XmlElement node, string defaultValue)
@@ -1236,9 +1211,8 @@ namespace Server
     {
       if (hue < 2)
         return 2;
-      if (hue > 1001)
-        return 1001;
-      return hue;
+
+      return hue > 1001 ? 1001 : hue;
     }
 
     /// <summary>
@@ -1254,10 +1228,8 @@ namespace Server
     /// </summary>
     public static int RandomBrightHue()
     {
-      if (RandomDouble() < 0.1)
-        return RandomList(0x62, 0x71);
-
-      return RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
+      return RandomDouble() < 0.1 ? RandomList(0x62, 0x71) :
+        RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
     }
 
     #endregion

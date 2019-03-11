@@ -226,19 +226,19 @@ namespace Server.Items
         AddPage(1);
 
         AddItem(130, 70, 0x1A03);
-        AddButton(150, 50, 0x845, 0x846, 0x1A03, GumpButtonType.Reply, 0);
+        AddButton(150, 50, 0x845, 0x846, 0x1A03);
 
         AddItem(190, 70, 0x1A05);
-        AddButton(210, 50, 0x845, 0x846, 0x1A05, GumpButtonType.Reply, 0);
+        AddButton(210, 50, 0x845, 0x846, 0x1A05);
 
         AddItem(250, 70, 0x1A09);
-        AddButton(270, 50, 0x845, 0x846, 0x1A09, GumpButtonType.Reply, 0);
+        AddButton(270, 50, 0x845, 0x846, 0x1A09);
 
         AddItem(310, 70, 0x1B1E);
-        AddButton(330, 50, 0x845, 0x846, 0x1B1E, GumpButtonType.Reply, 0);
+        AddButton(330, 50, 0x845, 0x846, 0x1B1E);
 
         AddItem(370, 70, 0x1B7F);
-        AddButton(390, 50, 0x845, 0x846, 0x1B7F, GumpButtonType.Reply, 0);
+        AddButton(390, 50, 0x845, 0x846, 0x1B7F);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -356,8 +356,8 @@ namespace Server.Items
           AddItem(90, 30, GetWestItemID(itemID));
           AddItem(180, 30, itemID);
 
-          AddButton(50, 35, 0x868, 0x869, (int)Buttons.East, GumpButtonType.Reply, 0);
-          AddButton(145, 35, 0x868, 0x869, (int)Buttons.South, GumpButtonType.Reply, 0);
+          AddButton(50, 35, 0x868, 0x869, (int)Buttons.East);
+          AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)

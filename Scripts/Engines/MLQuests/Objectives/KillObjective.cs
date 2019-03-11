@@ -99,7 +99,7 @@ namespace Server.Engines.MLQuests.Objectives
       foreach (Type acceptedType in Objective.AcceptedTypes)
         if (acceptedType.IsAssignableFrom(type))
         {
-          if (Objective.Area != null && !Objective.Area.Contains(mob))
+          if (Objective.Area?.Contains(mob) == false)
             return false;
 
           PlayerMobile pm = Instance.Player;

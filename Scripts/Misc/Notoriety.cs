@@ -76,8 +76,7 @@ namespace Server.Misc
       if (pmFrom != null && pmTarg != null)
       {
         if (pmFrom.DuelContext != pmTarg.DuelContext &&
-            (pmFrom.DuelContext != null && pmFrom.DuelContext.Started ||
-             pmTarg.DuelContext != null && pmTarg.DuelContext.Started))
+            (pmFrom.DuelContext?.Started == true || pmTarg.DuelContext?.Started == true))
           return false;
 
         if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext &&
@@ -85,22 +84,20 @@ namespace Server.Misc
              pmFrom.DuelPlayer.Eliminated || pmTarg.DuelPlayer.Eliminated))
           return false;
 
-        if (pmFrom.DuelPlayer != null && !pmFrom.DuelPlayer.Eliminated && pmFrom.DuelContext != null &&
-            pmFrom.DuelContext.IsSuddenDeath)
+        if (pmFrom.DuelPlayer?.Eliminated == false && pmFrom.DuelContext?.IsSuddenDeath == true)
           return false;
 
         if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext &&
-            pmFrom.DuelContext.m_Tournament != null && pmFrom.DuelContext.m_Tournament.IsNotoRestricted &&
+            pmFrom.DuelContext.m_Tournament?.IsNotoRestricted == true &&
             pmFrom.DuelPlayer != null && pmTarg.DuelPlayer != null &&
             pmFrom.DuelPlayer.Participant != pmTarg.DuelPlayer.Participant)
           return false;
 
-        if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext && pmFrom.DuelContext.Started)
+        if (pmFrom.DuelContext?.Started == true && pmFrom.DuelContext == pmTarg.DuelContext)
           return true;
       }
 
-      if (pmFrom?.DuelContext != null && pmFrom.DuelContext.Started ||
-          pmTarg?.DuelContext != null && pmTarg.DuelContext.Started)
+      if (pmFrom?.DuelContext?.Started == true || pmTarg?.DuelContext?.Started == true)
         return false;
 
       if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())

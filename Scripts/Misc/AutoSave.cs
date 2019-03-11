@@ -126,6 +126,7 @@ namespace Server.Misc
             }
             catch
             {
+              // ignored
             }
         }
         else
@@ -136,6 +137,7 @@ namespace Server.Misc
           }
           catch
           {
+            // ignored
           }
         }
       }

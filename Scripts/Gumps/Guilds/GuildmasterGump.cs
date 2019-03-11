@@ -22,15 +22,15 @@ namespace Server.Gumps
 
       AddHtmlLocalized(20, 15, 510, 35, 1011121, false, false); // <center>GUILDMASTER FUNCTIONS</center>
 
-      AddButton(20, 40, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(20, 40, 4005, 4007, 2);
       AddHtmlLocalized(55, 40, 470, 30, 1011107, false, false); // Set the guild name.
 
-      AddButton(20, 70, 4005, 4007, 3, GumpButtonType.Reply, 0);
+      AddButton(20, 70, 4005, 4007, 3);
       AddHtmlLocalized(55, 70, 470, 30, 1011109, false, false); // Set the guild's abbreviation.
 
       if (Guild.OrderChaos)
       {
-        AddButton(20, 100, 4005, 4007, 4, GumpButtonType.Reply, 0);
+        AddButton(20, 100, 4005, 4007, 4);
 
         switch (m_Guild.Type)
         {
@@ -46,18 +46,18 @@ namespace Server.Gumps
         }
       }
 
-      AddButton(20, 130, 4005, 4007, 5, GumpButtonType.Reply, 0);
+      AddButton(20, 130, 4005, 4007, 5);
       AddHtmlLocalized(55, 130, 470, 30, 1011112, false, false); // Set the guild's charter.
 
-      AddButton(20, 160, 4005, 4007, 6, GumpButtonType.Reply, 0);
+      AddButton(20, 160, 4005, 4007, 6);
       AddHtmlLocalized(55, 160, 470, 30, 1011113, false, false); // Dismiss a member.
 
-      AddButton(20, 190, 4005, 4007, 7, GumpButtonType.Reply, 0);
+      AddButton(20, 190, 4005, 4007, 7);
       AddHtmlLocalized(55, 190, 470, 30, 1011114, false, false); // Go to the WAR menu.
 
       if (m_Guild.Candidates.Count > 0)
       {
-        AddButton(20, 220, 4005, 4007, 8, GumpButtonType.Reply, 0);
+        AddButton(20, 220, 4005, 4007, 8);
         AddHtmlLocalized(55, 220, 470, 30, 1013056, false, false); // Administer the list of candidates
       }
       else
@@ -67,19 +67,19 @@ namespace Server.Gumps
           false); // There are currently no candidates for membership.
       }
 
-      AddButton(20, 250, 4005, 4007, 9, GumpButtonType.Reply, 0);
+      AddButton(20, 250, 4005, 4007, 9);
       AddHtmlLocalized(55, 250, 470, 30, 1011117, false, false); // Set the guildmaster's title.
 
-      AddButton(20, 280, 4005, 4007, 10, GumpButtonType.Reply, 0);
+      AddButton(20, 280, 4005, 4007, 10);
       AddHtmlLocalized(55, 280, 470, 30, 1011118, false, false); // Grant a title to another member.
 
-      AddButton(20, 310, 4005, 4007, 11, GumpButtonType.Reply, 0);
+      AddButton(20, 310, 4005, 4007, 11);
       AddHtmlLocalized(55, 310, 470, 30, 1011119, false, false); // Move this guildstone.
 
-      AddButton(20, 360, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 360, 4005, 4007, 1);
       AddHtmlLocalized(55, 360, 245, 30, 1011120, false, false); // Return to the main menu.
 
-      AddButton(300, 360, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(300, 360, 4005, 4007, 0);
       AddHtmlLocalized(335, 360, 100, 30, 1011441, false, false); // EXIT
     }
 

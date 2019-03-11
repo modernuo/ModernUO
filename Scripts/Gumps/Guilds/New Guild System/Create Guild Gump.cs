@@ -25,13 +25,13 @@ namespace Server.Guilds
       AddHtmlLocalized(25, 191, 120, 26, 1063035, 0x0, false, false); // Abbreviation:
       AddBackground(155, 186, 320, 26, 0xBB8);
       AddTextEntry(160, 189, 315, 21, 0x481, 6, guildAbbrev);
-      AddButton(415, 217, 0xF7, 0xF8, 1, GumpButtonType.Reply, 0);
-      AddButton(345, 217, 0xF2, 0xF1, 0, GumpButtonType.Reply, 0);
+      AddButton(415, 217, 0xF7, 0xF8, 1);
+      AddButton(345, 217, 0xF2, 0xF1, 0);
 
       if (pm.AcceptGuildInvites)
-        AddButton(20, 260, 0xD2, 0xD3, 2, GumpButtonType.Reply, 0);
+        AddButton(20, 260, 0xD2, 0xD3, 2);
       else
-        AddButton(20, 260, 0xD3, 0xD2, 2, GumpButtonType.Reply, 0);
+        AddButton(20, 260, 0xD3, 0xD2, 2);
 
       AddHtmlLocalized(45, 260, 200, 30, 1062943, 0x0, false, false); // <i>Ignore Guild Invites</i>
     }

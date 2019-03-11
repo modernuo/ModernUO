@@ -91,7 +91,7 @@ namespace Server.Gumps
       if (SetGumpID != 0)
         AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1, GumpButtonType.Reply, 0);
+      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -166,7 +166,7 @@ namespace Server.Gumps
     private static bool PrevLabel = OldStyle, NextLabel = OldStyle;
 
     private static readonly int PrevLabelOffsetX = PrevWidth + 1;
-    
+
     private static readonly int PrevLabelOffsetY = 0;
 
     private static readonly int NextLabelOffsetX = -29;
@@ -248,9 +248,9 @@ namespace Server.Gumps
         AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
 
         if (group == selected)
-          AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E2, 0x15E6, GetButtonID(0, i), GumpButtonType.Reply, 0);
+          AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E2, 0x15E6, GetButtonID(0, i));
         else
-          AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E1, 0x15E5, GetButtonID(0, i), GumpButtonType.Reply, 0);
+          AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E1, 0x15E5, GetButtonID(0, i));
 
         x += PrevWidth + OffsetSize;
 
@@ -282,8 +282,7 @@ namespace Server.Gumps
 
             AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
 
-            AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E1, 0x15E5, GetButtonID(1, j), GumpButtonType.Reply,
-              0);
+            AddButton(x + PrevOffsetX, y + PrevOffsetY, 0x15E1, 0x15E5, GetButtonID(1, j));
 
             x += PrevWidth + OffsetSize;
 
@@ -327,8 +326,7 @@ namespace Server.Gumps
                   break;
               }
 
-              AddButton(x + xOffset, y + yOffset, buttonID1, buttonID2, GetButtonID(2, j),
-                GumpButtonType.Reply, 0);
+              AddButton(x + xOffset, y + yOffset, buttonID1, buttonID2, GetButtonID(2, j));
 
               y += 1;
               x -= OffsetSize;

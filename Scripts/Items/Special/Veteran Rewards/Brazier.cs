@@ -223,10 +223,10 @@ namespace Server.Items
         AddLabel(45, 15, 0, "Choose a Brazier:");
 
         AddItem(40, 75, 0x19AA);
-        AddButton(55, 50, 0x845, 0x846, 0x19AA, GumpButtonType.Reply, 0);
+        AddButton(55, 50, 0x845, 0x846, 0x19AA);
 
         AddItem(100, 75, 0x19BB);
-        AddButton(115, 50, 0x845, 0x846, 0x19BB, GumpButtonType.Reply, 0);
+        AddButton(115, 50, 0x845, 0x846, 0x19BB);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

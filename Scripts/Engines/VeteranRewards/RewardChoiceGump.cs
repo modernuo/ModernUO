@@ -25,7 +25,7 @@ namespace Server.Engines.VeteranRewards
 
       AddBackground(10, 10, 600, 450, 2600);
 
-      AddButton(530, 415, 4017, 4019, 0, GumpButtonType.Reply, 0);
+      AddButton(530, 415, 4017, 4019, 0);
 
       AddButton(60, 415, 4014, 4016, 0, GumpButtonType.Page, 1);
       AddHtmlLocalized(95, 415, 200, 20, 1049755, false, false); // Main Menu
@@ -140,7 +140,7 @@ namespace Server.Engines.VeteranRewards
           i = 0;
         }
 
-        AddButton(55 + i / 12 * 250, 80 + i % 12 * 25, 5540, 5541, GetButtonID(index, j), GumpButtonType.Reply, 0);
+        AddButton(55 + i / 12 * 250, 80 + i % 12 * 25, 5540, 5541, GetButtonID(index, j));
 
         if (entry.NameString != null)
           AddHtml(80 + i / 12 * 250, 80 + i % 12 * 25, 250, 20, entry.NameString, false, false);

@@ -686,7 +686,7 @@ namespace Server.Mobiles
       {
         Entry entry = entries[i];
 
-        AddButton(80 + count / 10 * 260, 100 + count % 10 * 30, 4005, 4007, 2 + i, GumpButtonType.Reply, 0);
+        AddButton(80 + count / 10 * 260, 100 + count % 10 * 30, 4005, 4007, 2 + i);
         AddHtml(120 + count / 10 * 260, 100 + count % 10 * 30, entry.m_Vendor ? 148 : 180, 25, entry.m_Description,
           true, false);
 
@@ -700,7 +700,7 @@ namespace Server.Mobiles
       AddButton(340, 400, 4005, 4007, 0, GumpButtonType.Page, 1 + (page + 1) % ((entries.Length + 19) / 20));
       AddHtml(380, 400, 180, 25, "More Job Titles", false, false);
 
-      AddButton(338, 437, 4014, 4016, 1, GumpButtonType.Reply, 0);
+      AddButton(338, 437, 4014, 4016, 1);
       AddHtml(290, 440, 35, 40, "Back", false, false);
     }
 
@@ -823,7 +823,7 @@ namespace Server.Mobiles
       AddButton(130, 280, 4005, 4007, 0, GumpButtonType.Page, 3);
       AddHtml(170, 280, 200, 40, "Dismiss your barkeep", false, false);
 
-      AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Reply, 0);
+      AddButton(338, 437, 4014, 4016, 0);
       AddHtml(290, 440, 35, 40, "Back", false, false);
 
       AddItem(574, 43, 5360);
@@ -857,10 +857,10 @@ namespace Server.Mobiles
 
       AddHtml(170, 160, 380, 20, "Are you sure you want to dismiss your barkeeper?", false, false);
 
-      AddButton(205, 280, 4005, 4007, GetButtonID(0, 0), GumpButtonType.Reply, 0);
+      AddButton(205, 280, 4005, 4007, GetButtonID(0, 0));
       AddHtml(240, 280, 100, 20, @"Yes", false, false);
 
-      AddButton(395, 280, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(395, 280, 4005, 4007, 0);
       AddHtml(430, 280, 100, 20, "No", false, false);
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 1);
@@ -887,7 +887,7 @@ namespace Server.Mobiles
         AddHtml(100, 130 + i * 120, 50, 20, "Keyword", false, false);
         AddHtml(100, 150 + i * 120, 450, 40, rumor == null ? "None" : rumor.Keyword, true, false);
 
-        AddButton(60, 90 + i * 120, 4005, 4007, GetButtonID(1, i), GumpButtonType.Reply, 0);
+        AddButton(60, 90 + i * 120, 4005, 4007, GetButtonID(1, i));
       }
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 2);
@@ -913,7 +913,7 @@ namespace Server.Mobiles
         AddHtml(100, 130 + i * 120, 50, 20, "Keyword", false, false);
         AddHtml(100, 150 + i * 120, 450, 40, rumor == null ? "None" : rumor.Keyword, true, false);
 
-        AddButton(60, 90 + i * 120, 4005, 4007, GetButtonID(2, i), GumpButtonType.Reply, 0);
+        AddButton(60, 90 + i * 120, 4005, 4007, GetButtonID(2, i));
       }
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 2);
@@ -935,7 +935,7 @@ namespace Server.Mobiles
       AddHtml(100, 190, 50, 20, "Message", false, false);
       AddHtml(100, 210, 450, 40, m_Barkeeper.TipMessage ?? "No current message", true, false);
 
-      AddButton(60, 210, 4005, 4007, GetButtonID(3, 0), GumpButtonType.Reply, 0);
+      AddButton(60, 210, 4005, 4007, GetButtonID(3, 0));
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 2);
       AddHtml(290, 440, 35, 40, "Back", false, false);
@@ -951,7 +951,7 @@ namespace Server.Mobiles
       AddHtml(100, 190, 50, 20, "Message", false, false);
       AddHtml(100, 210, 450, 40, m_Barkeeper.TipMessage ?? "No current message", true, false);
 
-      AddButton(60, 210, 4005, 4007, GetButtonID(4, 0), GumpButtonType.Reply, 0);
+      AddButton(60, 210, 4005, 4007, GetButtonID(4, 0));
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 2);
       AddHtml(290, 440, 35, 40, "Back", false, false);
@@ -963,15 +963,15 @@ namespace Server.Mobiles
     {
       AddPage(8);
 
-      AddButton(130, 120, 4005, 4007, GetButtonID(5, 0), GumpButtonType.Reply, 0);
+      AddButton(130, 120, 4005, 4007, GetButtonID(5, 0));
       AddHtml(170, 120, 120, 20, "Title", false, false);
 
       if (m_Barkeeper.BodyValue != 0x340 && m_Barkeeper.BodyValue != 0x402)
       {
-        AddButton(130, 200, 4005, 4007, GetButtonID(5, 1), GumpButtonType.Reply, 0);
+        AddButton(130, 200, 4005, 4007, GetButtonID(5, 1));
         AddHtml(170, 200, 120, 20, "Appearance", false, false);
 
-        AddButton(130, 280, 4005, 4007, GetButtonID(5, 2), GumpButtonType.Reply, 0);
+        AddButton(130, 280, 4005, 4007, GetButtonID(5, 2));
         AddHtml(170, 280, 120, 20, "Male / Female", false, false);
 
         AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 1);

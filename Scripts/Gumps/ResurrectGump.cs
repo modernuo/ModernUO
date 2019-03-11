@@ -53,10 +53,10 @@ namespace Server.Gumps
 																				   * CANCEL - You prefer to remain a ghost for now.
 																				   */
 
-			AddButton( 200, 227, 4005, 4007, 0, GumpButtonType.Reply, 0 );
+			AddButton( 200, 227, 4005, 4007, 0);
 			AddHtmlLocalized( 235, 230, 110, 35, 1011012, false, false ); // CANCEL
 
-			AddButton( 65, 227, 4005, 4007, 1, GumpButtonType.Reply, 0 );
+			AddButton( 65, 227, 4005, 4007, 1);
 			AddHtmlLocalized( 100, 230, 110, 35, 1011011, false, false ); // CONTINUE
 		}
 
@@ -104,7 +104,7 @@ namespace Server.Gumps
 			AddLabel( 90, 70, 1645, price.ToString() );
 			AddHtmlLocalized( 140, 70, 100, 25, 1023823, 0x7FFF, false, false ); // gold coins
 
-			AddButton( 290, 175, 247, 248, 2, GumpButtonType.Reply, 0 );
+			AddButton( 290, 175, 247, 248, 2 );
 
 			AddImageTiled( 15, 14, 365, 1, 9107 );
 			AddImageTiled( 380, 14, 1, 190, 9105 );

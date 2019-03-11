@@ -98,7 +98,7 @@ namespace Server.Gumps
       if (SetGumpID != 0)
         AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1, GumpButtonType.Reply, 0);
+      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
 
       x = BorderSize + OffsetSize;
       y += EntryHeight + OffsetSize;
@@ -110,7 +110,7 @@ namespace Server.Gumps
       if (SetGumpID != 0)
         AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2, GumpButtonType.Reply, 0);
+      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2);
 
       x = BorderSize + OffsetSize;
       y += EntryHeight + OffsetSize;
@@ -122,7 +122,7 @@ namespace Server.Gumps
       if (SetGumpID != 0)
         AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3, GumpButtonType.Reply, 0);
+      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
 
       x = BorderSize + OffsetSize;
       y += EntryHeight + OffsetSize;
@@ -134,7 +134,7 @@ namespace Server.Gumps
       if (SetGumpID != 0)
         AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4, GumpButtonType.Reply, 0);
+      AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

@@ -80,12 +80,12 @@ namespace Server.Engines.Help
       AddHtml(10, 40, 280, 350, sLog, false, true);
 
       if (page > 0)
-        AddButton(10, 395, 0xFAE, 0xFB0, 1, GumpButtonType.Reply, 0); // Previous page
+        AddButton(10, 395, 0xFAE, 0xFB0, 1); // Previous page
 
       AddLabel(45, 395, 0x481, $"Current page: {page + 1}/{lastPage + 1}");
 
       if (page < lastPage)
-        AddButton(261, 395, 0xFA5, 0xFA7, 2, GumpButtonType.Reply, 0); // Next page
+        AddButton(261, 395, 0xFA5, 0xFA7, 2); // Next page
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

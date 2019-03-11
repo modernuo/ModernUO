@@ -460,7 +460,7 @@ namespace Server.Engines.ConPVP
         AddBorderedText(235 + 15, 105 + i * 75, 250, 20, leader, 0xFFC000, BlackColor32);
       }
 
-      AddButton(314, height - 42, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(314, height - 42, 247, 248, 1);
     }
 
     public string Center(string text)

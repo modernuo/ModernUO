@@ -263,6 +263,7 @@ namespace Server
         }
         catch
         {
+          // ignored
         }
 
         if (!close && !Service)
@@ -273,6 +274,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
 
           Console.WriteLine("This exception is fatal, press return to exit");
@@ -374,6 +376,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
 
       Thread = Thread.CurrentThread;

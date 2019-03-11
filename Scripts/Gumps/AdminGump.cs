@@ -427,12 +427,12 @@ namespace Server.Gumps
           AddLabelCropped(273, 120, 109, 20, LabelHue, "IP Address");
 
           if (listPage > 0)
-            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0), GumpButtonType.Reply, 0);
+            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
           else
             AddImage(375, 122, 0x25EA);
 
           if ((listPage + 1) * 12 < m_List.Count)
-            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
+            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
           else
             AddImage(392, 122, 0x25E6);
 
@@ -461,7 +461,7 @@ namespace Server.Gumps
             AddLabelCropped(273, offset, 109, 20, LabelHue, ns.ToString());
 
             if (a != null || m != null)
-              AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(4, index + 2), GumpButtonType.Reply, 0);
+              AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(4, index + 2));
           }
 
           break;
@@ -485,7 +485,7 @@ namespace Server.Gumps
 
           AddLabel(20, y, LabelHue, "Account:");
           AddLabel(200, y, a != null && a.Banned ? RedHue : LabelHue, a == null ? "(no account)" : a.Username);
-          AddButton(380, y, 0xFA5, 0xFA7, GetButtonID(7, 14), GumpButtonType.Reply, 0);
+          AddButton(380, y, 0xFA5, 0xFA7, GetButtonID(7, 14));
           y += 20;
 
           NetState ns = m.NetState;
@@ -565,12 +565,12 @@ namespace Server.Gumps
           AddLabelCropped(192, 120, 180, 20, LabelHue, "Accounts");
 
           if (listPage > 0)
-            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0), GumpButtonType.Reply, 0);
+            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
           else
             AddImage(375, 122, 0x25EA);
 
           if ((listPage + 1) * 12 < sharedAccounts.Count)
-            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
+            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
           else
             AddImage(392, 122, 0x25E6);
 
@@ -614,7 +614,7 @@ namespace Server.Gumps
 
             AddLabelCropped(192, offset, 180, 20, LabelHue, sb.ToString());
 
-            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56), GumpButtonType.Reply, 0);
+            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56));
           }
 
           break;
@@ -637,12 +637,12 @@ namespace Server.Gumps
           AddLabelCropped(252, 120, 120, 20, LabelHue, "Status");
 
           if (listPage > 0)
-            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0), GumpButtonType.Reply, 0);
+            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
           else
             AddImage(375, 122, 0x25EA);
 
           if ((listPage + 1) * 12 < m_List.Count)
-            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
+            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
           else
             AddImage(392, 122, 0x25E6);
 
@@ -686,7 +686,7 @@ namespace Server.Gumps
             else
               AddLabelCropped(252, offset, 120, 20, RedHue, "Offline");
 
-            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56), GumpButtonType.Reply, 0);
+            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56));
           }
 
           break;
@@ -881,12 +881,12 @@ namespace Server.Gumps
           AddHtml(18, 221, 114, 20, Color("IP Address", LabelColor32), false, false);
 
           if (listPage > 0)
-            AddButton(184, 223, 0x15E3, 0x15E7, GetButtonID(1, 0), GumpButtonType.Reply, 0);
+            AddButton(184, 223, 0x15E3, 0x15E7, GetButtonID(1, 0));
           else
             AddImage(184, 223, 0x25EA);
 
           if ((listPage + 1) * 6 < ipAddresses.Count)
-            AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
+            AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1));
           else
             AddImage(201, 223, 0x25E6);
 
@@ -897,9 +897,9 @@ namespace Server.Gumps
           for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < ipAddresses.Count; ++i, ++index)
           {
             AddHtml(18, 243 + i * 22, 114, 20, Color(ipAddresses[index].ToString(), LabelColor32), false, false);
-            AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index), GumpButtonType.Reply, 0);
-            AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index), GumpButtonType.Reply, 0);
-            AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index), GumpButtonType.Reply, 0);
+            AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index));
+            AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index));
+            AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index));
           }
 
           goto case AdminGumpPage.AccountDetails_Access;
@@ -936,12 +936,12 @@ namespace Server.Gumps
           AddHtml(18, 221, 114, 20, Color("IP Address", LabelColor32), false, false);
 
           if (listPage > 0)
-            AddButton(184, 223, 0x15E3, 0x15E7, GetButtonID(1, 0), GumpButtonType.Reply, 0);
+            AddButton(184, 223, 0x15E3, 0x15E7, GetButtonID(1, 0));
           else
             AddImage(184, 223, 0x25EA);
 
           if ((listPage + 1) * 6 < ipRestrictions.Count)
-            AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
+            AddButton(201, 223, 0x15E1, 0x15E5, GetButtonID(1, 1));
           else
             AddImage(201, 223, 0x25E6);
 
@@ -951,7 +951,7 @@ namespace Server.Gumps
           for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < ipRestrictions.Count; ++i, ++index)
           {
             AddHtml(18, 243 + i * 22, 114, 20, Color(ipRestrictions[index], LabelColor32), false, false);
-            AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(8, index), GumpButtonType.Reply, 0);
+            AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(8, index));
           }
 
           goto case AdminGumpPage.AccountDetails_Access;
@@ -986,7 +986,7 @@ namespace Server.Gumps
             else
               AddLabelCropped(252, offset, 120, 20, RedHue, "Offline");
 
-            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, i + 50), GumpButtonType.Reply, 0);
+            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, i + 50));
 
             ++index;
           }
@@ -1069,12 +1069,12 @@ namespace Server.Gumps
           AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
 
           if (listPage > 0)
-            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0), GumpButtonType.Reply, 0);
+            AddButton(375, 122, 0x15E3, 0x15E7, GetButtonID(1, 0));
           else
             AddImage(375, 122, 0x25EA);
 
           if ((listPage + 1) * 12 < firewallEntries.Count)
-            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
+            AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
           else
             AddImage(392, 122, 0x25E6);
 
@@ -1088,7 +1088,7 @@ namespace Server.Gumps
             int offset = 140 + i * 20;
 
             AddLabelCropped(12, offset, 358, 20, LabelHue, firewallEntry.ToString());
-            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(6, index + 4), GumpButtonType.Reply, 0);
+            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(6, index + 4));
           }
 
           break;
@@ -1135,12 +1135,12 @@ namespace Server.Gumps
             blockedAccts = Utility.CastListCovariant<object, Account>(m_List);
 
           if (listPage > 0)
-            AddButton(375, 177, 0x15E3, 0x15E7, GetButtonID(1, 0), GumpButtonType.Reply, 0);
+            AddButton(375, 177, 0x15E3, 0x15E7, GetButtonID(1, 0));
           else
             AddImage(375, 177, 0x25EA);
 
           if ((listPage + 1) * 12 < blockedAccts.Count)
-            AddButton(392, 177, 0x15E1, 0x15E5, GetButtonID(1, 1), GumpButtonType.Reply, 0);
+            AddButton(392, 177, 0x15E1, 0x15E5, GetButtonID(1, 1));
           else
             AddImage(392, 177, 0x25E6);
 
@@ -1165,7 +1165,7 @@ namespace Server.Gumps
             else
               AddLabelCropped(252, offset, 120, 20, RedHue, "Offline");
 
-            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56), GumpButtonType.Reply, 0);
+            AddButton(380, offset - 1, 0xFA5, 0xFA7, GetButtonID(5, index + 56));
           }
 
           break;
@@ -1186,13 +1186,13 @@ namespace Server.Gumps
 
     public void AddSelectedButton(int x, int y, int buttonID, string text, bool isSelection)
     {
-      AddButton(x, y - 1, isSelection ? 4006 : 4005, 4007, buttonID, GumpButtonType.Reply, 0);
+      AddButton(x, y - 1, isSelection ? 4006 : 4005, 4007, buttonID);
       AddHtml(x + 35, y, 200, 20, Color(text, isSelection ? SelectedColor32 : LabelColor32), false, false);
     }
 
     public void AddButtonLabeled(int x, int y, int buttonID, string text)
     {
-      AddButton(x, y - 1, 4005, 4007, buttonID, GumpButtonType.Reply, 0);
+      AddButton(x, y - 1, 4005, 4007, buttonID);
       AddHtml(x + 35, y, 240, 20, Color(text, LabelColor32), false, false);
     }
 

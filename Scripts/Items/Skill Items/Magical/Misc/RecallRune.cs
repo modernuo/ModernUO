@@ -184,7 +184,7 @@ namespace Server.Items
 
           Map map = m_House.Map;
 
-          if (map != null && !map.CanFit(x, y, z, 16, false, false))
+          if (map?.CanFit(x, y, z, 16, false, false) == false)
             z = map.GetAverageZ(x, y);
 
           Target = new Point3D(x, y, z);

@@ -50,9 +50,7 @@ namespace Server.Spells.Spellweaving
       if (map == null)
         return;
 
-      HouseRegion r = Region.Find(p, map).GetRegion<HouseRegion>();
-
-      if (r?.House != null && !r.House.IsFriend(Caster))
+      if (Region.Find(p, map).GetRegion<HouseRegion>()?.House?.IsFriend(Caster) == false)
         return;
 
       if (!map.CanSpawnMobile(p.X, p.Y, p.Z))

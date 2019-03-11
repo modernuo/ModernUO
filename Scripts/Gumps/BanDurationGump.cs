@@ -45,7 +45,7 @@ namespace Server.Gumps
 
     public void AddButtonLabeled(int x, int y, int buttonID, string text)
     {
-      AddButton(x, y - 1, 4005, 4007, buttonID, GumpButtonType.Reply, 0);
+      AddButton(x, y - 1, 4005, 4007, buttonID);
       AddHtml(x + 35, y, 240, 20, text, false, false);
     }
 

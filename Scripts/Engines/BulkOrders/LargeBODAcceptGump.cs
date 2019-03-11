@@ -67,10 +67,10 @@ namespace Server.Engines.BulkOrders
       AddHtmlLocalized(40, 192 + entries.Length * 24, 350, 20, 1045139, 0x7FFF, false,
         false); // Do you want to accept this order?
 
-      AddButton(100, 216 + entries.Length * 24, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(100, 216 + entries.Length * 24, 4005, 4007, 1);
       AddHtmlLocalized(135, 216 + entries.Length * 24, 120, 20, 1006044, 0x7FFF, false, false); // Ok
 
-      AddButton(275, 216 + entries.Length * 24, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(275, 216 + entries.Length * 24, 4005, 4007, 0);
       AddHtmlLocalized(310, 216 + entries.Length * 24, 120, 20, 1011012, 0x7FFF, false, false); // CANCEL
     }
 

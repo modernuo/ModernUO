@@ -521,10 +521,10 @@ namespace Server.Items
         AddHtmlLocalized(45, 95, 200, 60, 1048126, 0xFFFFFF, false,
           false); // Are you certain you're ready to remove this chest?
 
-        AddButton(40, 153, 4005, 4007, 1, GumpButtonType.Reply, 0);
+        AddButton(40, 153, 4005, 4007, 1);
         AddHtmlLocalized(75, 155, 180, 40, 1048127, 0xFFFFFF, false, false); // Remove the Treasure Chest
 
-        AddButton(40, 195, 4005, 4007, 2, GumpButtonType.Reply, 0);
+        AddButton(40, 195, 4005, 4007, 2);
         AddHtmlLocalized(75, 197, 180, 35, 1006045, 0xFFFFFF, false, false); // Cancel
       }
 

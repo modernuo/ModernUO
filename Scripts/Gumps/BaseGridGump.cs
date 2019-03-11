@@ -163,7 +163,7 @@ namespace Server.Gumps
         HeaderGumpID);
       AddButton(CurrentX + (width - buttonWidth) / 2,
         CurrentY + (EntryHeight * spannedEntries + OffsetSize * (spannedEntries - 1) - buttonHeight) / 2, normalID,
-        pressedID, buttonID, GumpButtonType.Reply, 0);
+        pressedID, buttonID);
 
       IncreaseX(width);
     }

@@ -13,10 +13,10 @@ namespace Server.Gumps
     {
       AddHtmlLocalized(20, 10, 400, 35, 1011124, false, false); // Whom do you wish to dismiss?
 
-      AddButton(20, 400, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 400, 4005, 4007, 1);
       AddHtmlLocalized(55, 400, 245, 30, 1011125, false, false); // Kick them out!
 
-      AddButton(300, 400, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(300, 400, 4005, 4007, 2);
       AddHtmlLocalized(335, 400, 100, 35, 1011012, false, false); // CANCEL
     }
 

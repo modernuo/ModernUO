@@ -39,7 +39,7 @@ namespace Server.Factions
       AddHtml(125, 100, 50, 20, faction.Traps.Count.ToString(), false, false);
 
       AddHtmlLocalized(55, 225, 200, 20, 1011428, false, false); // VOTE FOR LEADERSHIP
-      AddButton(20, 225, 4005, 4007, ToButtonID(0, 0), GumpButtonType.Reply, 0);
+      AddButton(20, 225, 4005, 4007, ToButtonID(0, 0));
 
       AddHtmlLocalized(55, 150, 100, 20, 1011430, false, false); // CITY STATUS
       AddButton(20, 150, 4005, 4007, 0, GumpButtonType.Page, 2);
@@ -54,7 +54,7 @@ namespace Server.Factions
       if (pl != null && pl.MerchantTitle != MerchantTitle.None)
       {
         AddHtmlLocalized(55, 200, 250, 20, 1011460, false, false); // UNDECLARE FACTION MERCHANT
-        AddButton(20, 200, 4005, 4007, ToButtonID(1, 0), GumpButtonType.Reply, 0);
+        AddButton(20, 200, 4005, 4007, ToButtonID(1, 0));
       }
       else if (isMerchantQualified)
       {
@@ -74,10 +74,10 @@ namespace Server.Factions
         AddImage(20, 250, 4020);
 
       AddHtmlLocalized(55, 275, 300, 20, 1011426, false, false); // LEAVE THIS FACTION
-      AddButton(20, 275, 4005, 4007, ToButtonID(0, 1), GumpButtonType.Reply, 0);
+      AddButton(20, 275, 4005, 4007, ToButtonID(0, 1));
 
       AddHtmlLocalized(55, 300, 200, 20, 1011441, false, false); // EXIT
-      AddButton(20, 300, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(20, 300, 4005, 4007, 0);
 
       #endregion
 
@@ -158,7 +158,7 @@ namespace Server.Factions
           MerchantTitleInfo info = infos[i];
 
           if (MerchantTitles.IsQualified(from, info))
-            AddButton(20, 100 + i * 30, 4005, 4007, ToButtonID(1, i + 1), GumpButtonType.Reply, 0);
+            AddButton(20, 100 + i * 30, 4005, 4007, ToButtonID(1, i + 1));
           else
             AddImage(20, 100 + i * 30, 4020);
 
@@ -221,7 +221,7 @@ namespace Server.Factions
             AddHtmlText(55, 75 + i * 30, 200, 20, town.Definition.TownName, false, false);
 
             if (town.Owner == faction)
-              AddButton(20, 75 + i * 30, 4005, 4007, ToButtonID(2, i), GumpButtonType.Reply, 0);
+              AddButton(20, 75 + i * 30, 4005, 4007, ToButtonID(2, i));
             else
               AddImage(20, 75 + i * 30, 4020);
           }
@@ -246,7 +246,7 @@ namespace Server.Factions
             y += 5;
 
           AddHtmlLocalized(55, y, 300, 20, 1011480 + i, false, false);
-          AddButton(20, y, 4005, 4007, ToButtonID(3, i), GumpButtonType.Reply, 0);
+          AddButton(20, y, 4005, 4007, ToButtonID(3, i));
 
           y += 20;
 

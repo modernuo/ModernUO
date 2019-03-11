@@ -16,12 +16,12 @@ namespace Server.Engines.Plants
       AddLabel(115, 85, 0x44, "Set plant");
       AddLabel(82, 105, 0x44, "to decorative mode?");
 
-      AddButton(98, 140, 0x47E, 0x480, 1, GumpButtonType.Reply, 0); // Cancel
+      AddButton(98, 140, 0x47E, 0x480, 1); // Cancel
 
-      AddButton(138, 141, 0xD2, 0xD2, 2, GumpButtonType.Reply, 0); // Help
+      AddButton(138, 141, 0xD2, 0xD2, 2); // Help
       AddLabel(143, 141, 0x835, "?");
 
-      AddButton(168, 140, 0x481, 0x483, 3, GumpButtonType.Reply, 0); // Ok
+      AddButton(168, 140, 0x481, 0x483, 3); // Ok
     }
 
     private void DrawBackground()

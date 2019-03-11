@@ -93,7 +93,7 @@ namespace Server.Engines.MLQuests.Gumps
 				AddButton( 275, 430, (int)ButtonGraphic.Continue, (int)ButtonGraphic.Continue + 2, 0, GumpButtonType.Page, m_Page + 1 );
 
 			foreach ( ButtonInfo button in m_Buttons )
-				AddButton( button.Position == ButtonPosition.Left ? 95 : 313, 455, (int)button.Graphic, (int)button.Graphic + 2, button.ButtonID, GumpButtonType.Reply, 0 );
+				AddButton( button.Position == ButtonPosition.Left ? 95 : 313, 455, (int)button.Graphic, (int)button.Graphic + 2, button.ButtonID, );
 
 			if ( m_Title != null )
 				AddHtmlLocalized( 130, 68, 220, 48, 1114513, m_Title, 0x2710, false, false ); // <DIV ALIGN=CENTER>~1_TOKEN~</DIV>
@@ -149,7 +149,7 @@ namespace Server.Engines.MLQuests.Gumps
 
       foreach (ButtonInfo button in m_Buttons)
         AddButton(button.Position == ButtonPosition.Left ? 95 : 313, 455, (int)button.Graphic,
-          (int)button.Graphic + 2, button.ButtonID, GumpButtonType.Reply, 0);
+          (int)button.Graphic + 2, button.ButtonID);
 
       if (m_Title != null)
         AddHtmlLocalized(130, 68, 220, 48, 1114513, m_Title, 0x2710, false,

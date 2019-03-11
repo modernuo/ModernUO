@@ -87,7 +87,7 @@ namespace Server.Engines.ConPVP
       AddHtml(60, 175 + 1, 250, 20, Color("No, knave. Do not ask again.", BlackColor32), false, false);
       AddHtml(60, 175, 250, 20, Color("No, knave. Do not ask again.", LabelColor32), false, false);
 
-      AddButton(314, 173, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(314, 173, 247, 248, 1);
 
       Timer.DelayCall(TimeSpan.FromSeconds(15.0), AutoReject);
     }

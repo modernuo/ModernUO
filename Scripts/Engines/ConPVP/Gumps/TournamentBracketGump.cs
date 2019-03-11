@@ -19,7 +19,7 @@ namespace Server.Engines.ConPVP
     Match_Info,
     Player_Info
   }
-  
+
   public class TournamentBracketGump : Gump
   {
     private const int BlackColor32 = 0x000008;
@@ -393,7 +393,7 @@ namespace Server.Engines.ConPVP
 
           if (!(m_Object is PyramidLevel level))
             break;
-          
+
           List<TourneyMatch> matchesList = m_List != null
             ? Utility.CastListCovariant<object, TourneyMatch>(m_List)
             : new List<TourneyMatch>(level.Matches);
@@ -649,7 +649,7 @@ namespace Server.Engines.ConPVP
 
     public void AddRightArrow(int x, int y, int bid, string text)
     {
-      AddButton(x, y, 0x15E1, 0x15E5, bid, GumpButtonType.Reply, 0);
+      AddButton(x, y, 0x15E1, 0x15E5, bid);
 
       if (text != null)
         AddHtml(x + 20, y - 1, 230, 20, text, false, false);
@@ -662,7 +662,7 @@ namespace Server.Engines.ConPVP
 
     public void AddLeftArrow(int x, int y, int bid, string text)
     {
-      AddButton(x, y, 0x15E3, 0x15E7, bid, GumpButtonType.Reply, 0);
+      AddButton(x, y, 0x15E3, 0x15E7, bid);
 
       if (text != null)
         AddHtml(x + 20, y - 1, 230, 20, text, false, false);

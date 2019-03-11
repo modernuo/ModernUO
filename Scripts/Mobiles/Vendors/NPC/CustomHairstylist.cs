@@ -165,7 +165,7 @@ namespace Server.Mobiles
           else
             AddHtmlLocalized(140, 75 + index * 25, 300, 20, sellList[i].Title, false, false);
 
-          AddButton(100, 75 + index++ * 25, 4005, 4007, 1 + i, GumpButtonType.Reply, 0);
+          AddButton(100, 75 + index++ * 25, 4005, 4007, 1 + i);
         }
     }
 
@@ -205,6 +205,7 @@ namespace Server.Mobiles
           }
           catch
           {
+            // ignored
           }
         else
           m_Vendor.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 1042293, m_From.NetState);
@@ -294,7 +295,7 @@ namespace Server.Mobiles
       AddHtmlLocalized(155, 25, 240, 30, 1011013, false, false); // <center>Hair Color Selection Menu</center>
 
       AddHtmlLocalized(150, 330, 220, 35, 1011014, false, false); // Dye my hair this color!
-      AddButton(380, 330, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(380, 330, 4005, 4007, 1);
 
       for (int i = 0; i < entries.Length; ++i)
       {
@@ -447,11 +448,10 @@ namespace Server.Mobiles
 
       AddBackground(0, 0, 81 + tableWidth * offsetWidth, 105 + tableHeight * offsetHeight, 2600);
 
-      AddButton(45, 45 + tableHeight * offsetHeight, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(45, 45 + tableHeight * offsetHeight, 4005, 4007, 1);
       AddHtmlLocalized(77, 45 + tableHeight * offsetHeight, 90, 35, 1006044, false, false); // Ok
 
-      AddButton(81 + tableWidth * offsetWidth - 180, 45 + tableHeight * offsetHeight, 4005, 4007, 0,
-        GumpButtonType.Reply, 0);
+      AddButton(81 + tableWidth * offsetWidth - 180, 45 + tableHeight * offsetHeight, 4005, 4007, 0);
       AddHtmlLocalized(81 + tableWidth * offsetWidth - 148, 45 + tableHeight * offsetHeight, 90, 35, 1006045, false,
         false); // Cancel
 

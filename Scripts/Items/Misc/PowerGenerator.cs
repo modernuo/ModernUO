@@ -340,10 +340,10 @@ namespace Server.Items
         AddImage(414, 189, 0x589);
         AddImage(435, 210, 0xA52);
 
-        AddButton(408, 222, 0x29EA, 0x29EC, 1, GumpButtonType.Reply, 0); // Left
-        AddButton(448, 185, 0x29CC, 0x29CE, 2, GumpButtonType.Reply, 0); // Up
-        AddButton(473, 222, 0x29D6, 0x29D8, 3, GumpButtonType.Reply, 0); // Right
-        AddButton(448, 243, 0x29E0, 0x29E2, 4, GumpButtonType.Reply, 0); // Down
+        AddButton(408, 222, 0x29EA, 0x29EC, 1); // Left
+        AddButton(448, 185, 0x29CC, 0x29CE, 2); // Up
+        AddButton(473, 222, 0x29D6, 0x29D8, 3); // Right
+        AddButton(448, 243, 0x29E0, 0x29E2, 4); // Down
 
         AddBackground(90, 115, 30 + 40 * sideLength, 30 + 40 * sideLength, 0xA28);
         AddBackground(100, 125, 10 + 40 * sideLength, 10 + 40 * sideLength, 0x1400);
@@ -384,7 +384,7 @@ namespace Server.Items
 
         if (from.Skills.Lockpicking.Value >= 65.0)
         {
-          AddButton(365, 350, 0xFA6, 0xFA7, 5, GumpButtonType.Reply, 0);
+          AddButton(365, 350, 0xFA6, 0xFA7, 5);
           AddHtml(405, 345, 140, 40, "Attempt to Decipher the Circuit Path", false, false);
         }
       }

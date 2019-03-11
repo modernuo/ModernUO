@@ -22,14 +22,14 @@ namespace Server.Gumps
       AddBackground(0, 0, 420, 430, 5054);
       AddBackground(10, 10, 400, 410, 3000);
 
-      AddButton(20, 388, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(20, 388, 4005, 4007, 0);
       AddHtmlLocalized(55, 388, 300, 20, 1011104, false, false); // Return to previous menu
 
       AddHtmlLocalized(20, 20, 350, 20, number, false, false);
 
       if (list == null)
         return;
-      
+
       for (int i = 0; i < list.Count; ++i)
       {
         if (i % 16 == 0)
@@ -87,17 +87,17 @@ namespace Server.Gumps
       AddBackground(0, 0, 420, 430, 5054);
       AddBackground(10, 10, 400, 410, 3000);
 
-      AddButton(20, 388, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(20, 388, 4005, 4007, 0);
       AddHtmlLocalized(55, 388, 300, 20, 1011104, false, false); // Return to previous menu
 
-      AddButton(20, 365, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 365, 4005, 4007, 1);
       AddHtmlLocalized(55, 365, 300, 20, 1011270, false, false); // Remove now!
 
       AddHtmlLocalized(20, 20, 350, 20, number, false, false);
 
       if (list == null)
         return;
-      
+
       m_Copy = new List<Mobile>(list);
 
       for (int i = 0; i < list.Count; ++i)
@@ -220,10 +220,10 @@ namespace Server.Gumps
       AddButton(260, 103, 4005, 4007, 0, GumpButtonType.Page, 3);
 
       AddHtmlLocalized(295, 390, 75, 20, 1011441, false, false); // EXIT
-      AddButton(260, 390, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(260, 390, 4005, 4007, 0);
 
       AddHtmlLocalized(55, 390, 200, 20, 1011236, false, false); // Change this house's name!
-      AddButton(20, 390, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 390, 4005, 4007, 1);
 
       // Info page
       AddPage(1);
@@ -257,58 +257,58 @@ namespace Server.Gumps
       AddPage(2);
 
       AddHtmlLocalized(45, 130, 150, 20, 1011266, false, false); // List of co-owners
-      AddButton(20, 130, 2714, 2715, 2, GumpButtonType.Reply, 0);
+      AddButton(20, 130, 2714, 2715, 2);
 
       AddHtmlLocalized(45, 150, 150, 20, 1011267, false, false); // Add a co-owner
-      AddButton(20, 150, 2714, 2715, 3, GumpButtonType.Reply, 0);
+      AddButton(20, 150, 2714, 2715, 3);
 
       AddHtmlLocalized(45, 170, 150, 20, 1018036, false, false); // Remove a co-owner
-      AddButton(20, 170, 2714, 2715, 4, GumpButtonType.Reply, 0);
+      AddButton(20, 170, 2714, 2715, 4);
 
       AddHtmlLocalized(45, 190, 150, 20, 1011268, false, false); // Clear co-owner list
-      AddButton(20, 190, 2714, 2715, 5, GumpButtonType.Reply, 0);
+      AddButton(20, 190, 2714, 2715, 5);
 
       AddHtmlLocalized(225, 130, 155, 20, 1011243, false, false); // List of Friends
-      AddButton(200, 130, 2714, 2715, 6, GumpButtonType.Reply, 0);
+      AddButton(200, 130, 2714, 2715, 6);
 
       AddHtmlLocalized(225, 150, 155, 20, 1011244, false, false); // Add a Friend
-      AddButton(200, 150, 2714, 2715, 7, GumpButtonType.Reply, 0);
+      AddButton(200, 150, 2714, 2715, 7);
 
       AddHtmlLocalized(225, 170, 155, 20, 1018037, false, false); // Remove a Friend
-      AddButton(200, 170, 2714, 2715, 8, GumpButtonType.Reply, 0);
+      AddButton(200, 170, 2714, 2715, 8);
 
       AddHtmlLocalized(225, 190, 155, 20, 1011245, false, false); // Clear Friends list
-      AddButton(200, 190, 2714, 2715, 9, GumpButtonType.Reply, 0);
+      AddButton(200, 190, 2714, 2715, 9);
 
       AddHtmlLocalized(120, 215, 280, 20, 1011258, false, false); // Ban someone from the house
-      AddButton(95, 215, 2714, 2715, 10, GumpButtonType.Reply, 0);
+      AddButton(95, 215, 2714, 2715, 10);
 
       AddHtmlLocalized(120, 235, 280, 20, 1011259, false, false); // Eject someone from the house
-      AddButton(95, 235, 2714, 2715, 11, GumpButtonType.Reply, 0);
+      AddButton(95, 235, 2714, 2715, 11);
 
       AddHtmlLocalized(120, 255, 280, 20, 1011260, false, false); // View a list of banned people
-      AddButton(95, 255, 2714, 2715, 12, GumpButtonType.Reply, 0);
+      AddButton(95, 255, 2714, 2715, 12);
 
       AddHtmlLocalized(120, 275, 280, 20, 1011261, false, false); // Lift a ban
-      AddButton(95, 275, 2714, 2715, 13, GumpButtonType.Reply, 0);
+      AddButton(95, 275, 2714, 2715, 13);
 
       // Options page
       AddPage(3);
 
       AddHtmlLocalized(45, 150, 355, 30, 1011248, false, false); // Transfer ownership of the house
-      AddButton(20, 150, 2714, 2715, 14, GumpButtonType.Reply, 0);
+      AddButton(20, 150, 2714, 2715, 14);
 
       AddHtmlLocalized(45, 180, 355, 30, 1011249, false, false); // Demolish house and get deed back
-      AddButton(20, 180, 2714, 2715, 15, GumpButtonType.Reply, 0);
+      AddButton(20, 180, 2714, 2715, 15);
 
       if (!m_House.Public)
       {
         AddHtmlLocalized(45, 210, 355, 30, 1011247, false, false); // Change the house locks
-        AddButton(20, 210, 2714, 2715, 16, GumpButtonType.Reply, 0);
+        AddButton(20, 210, 2714, 2715, 16);
 
         AddHtmlLocalized(45, 240, 350, 90, 1011253, false,
           false); // Declare this building to be public. This will make your front door unlockable.
-        AddButton(20, 240, 2714, 2715, 17, GumpButtonType.Reply, 0);
+        AddButton(20, 240, 2714, 2715, 17);
       }
       else
       {
@@ -317,7 +317,7 @@ namespace Server.Gumps
         AddButton(20, 210, 2714, 2715, 0, GumpButtonType.Page, 4);
 
         AddHtmlLocalized(45, 240, 350, 30, 1011252, false, false); // Declare this building to be private.
-        AddButton(20, 240, 2714, 2715, 17, GumpButtonType.Reply, 0);
+        AddButton(20, 240, 2714, 2715, 17);
 
         // Change the sign type
         AddPage(4);
@@ -332,7 +332,7 @@ namespace Server.Gumps
         AddButton(350, 305, 252, 253, 0, GumpButtonType.Page, 5);
 
         AddHtmlLocalized(200, 340, 355, 30, 1011277, false, false); // Okay that is fine.
-        AddButton(350, 340, 4005, 4007, 18, GumpButtonType.Reply, 0);
+        AddButton(350, 340, 4005, 4007, 18);
 
         AddPage(5);
 
@@ -346,7 +346,7 @@ namespace Server.Gumps
         AddButton(350, 305, 250, 251, 0, GumpButtonType.Page, 4);
 
         AddHtmlLocalized(200, 340, 355, 30, 1011277, false, false); // Okay that is fine.
-        AddButton(350, 340, 4005, 4007, 18, GumpButtonType.Reply, 0);
+        AddButton(350, 340, 4005, 4007, 18);
       }
     }
 

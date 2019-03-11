@@ -22,7 +22,7 @@ namespace Server.Gumps
 
       AddHtmlLocalized(20, 10, 500, 35, 1011133, false, false); // <center>WARFARE STATUS</center>
 
-      AddButton(20, 400, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 400, 4005, 4007, 1);
       AddHtmlLocalized(55, 400, 300, 35, 1011120, false, false); // Return to the main menu.
 
       AddPage(1);
@@ -52,7 +52,7 @@ namespace Server.Gumps
       AddButton(30, 375, 5223, 5223, 0, GumpButtonType.Page, 1);
       AddHtmlLocalized(65, 373, 150, 25, 1011067, false, false); // Previous page
 
-      AddHtmlLocalized(20, 45, 400, 20, 1011136, false, false); // Guilds that we have declared war on: 
+      AddHtmlLocalized(20, 45, 400, 20, 1011136, false, false); // Guilds that we have declared war on:
 
       List<Guild> declared = guild.WarDeclarations;
 
@@ -71,7 +71,7 @@ namespace Server.Gumps
       AddButton(30, 375, 5223, 5223, 0, GumpButtonType.Page, 2);
       AddHtmlLocalized(65, 373, 150, 25, 1011067, false, false); // Previous page
 
-      AddHtmlLocalized(20, 45, 400, 20, 1011135, false, false); // Guilds that have declared war on us: 
+      AddHtmlLocalized(20, 45, 400, 20, 1011135, false, false); // Guilds that have declared war on us:
 
       List<Guild> invites = guild.WarInvitations;
 

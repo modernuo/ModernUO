@@ -30,8 +30,8 @@ namespace Server.Gumps
         false); // <div align=center>Wilt thou sanctify the resurrection of:</div>
       AddHtml(30, 70, 150, 25, $"<div align=CENTER>{pet.Name}</div>", true, false);
 
-      AddButton(40, 105, 0x81A, 0x81B, 0x1, GumpButtonType.Reply, 0); // Okay
-      AddButton(110, 105, 0x819, 0x818, 0x2, GumpButtonType.Reply, 0); // Cancel
+      AddButton(40, 105, 0x81A, 0x81B, 0x1); // Okay
+      AddButton(110, 105, 0x819, 0x818, 0x2); // Cancel
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

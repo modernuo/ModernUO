@@ -499,7 +499,7 @@ namespace Server.Mobiles
     {
       FixDresswear();
 
-      if (House != null && !House.IsOwner(Owner))
+      if (House?.IsOwner(Owner) == false)
         Destroy(false);
     }
 

@@ -67,11 +67,11 @@ namespace Server.Engines.BulkOrders
         AddHtmlLocalized(75, y, 300, 20, GetMaterialNumberFor(deed.Material), 0x7FFF, false,
           false); // All items must be made with x material.
 
-      AddButton(125, 168 + entries.Length * 24, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(125, 168 + entries.Length * 24, 4005, 4007, 2);
       AddHtmlLocalized(160, 168 + entries.Length * 24, 300, 20, 1045155, 0x7FFF, false,
         false); // Combine this deed with another deed.
 
-      AddButton(125, 192 + entries.Length * 24, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(125, 192 + entries.Length * 24, 4005, 4007, 1);
       AddHtmlLocalized(160, 192 + entries.Length * 24, 120, 20, 1011441, 0x7FFF, false, false); // EXIT
     }
 

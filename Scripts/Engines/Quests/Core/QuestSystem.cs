@@ -539,7 +539,7 @@ namespace Server.Engines.Quests
       AddRadio(25, 210, 9720, 9723, false, 0);
       AddHtmlLocalized(60, 215, 280, 20, 1049006, White, false, false); // No, I don't want to quit.
 
-      AddButton(265, 220, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(265, 220, 247, 248, 1);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -579,7 +579,7 @@ namespace Server.Engines.Quests
       AddRadio(85, 385, 9720, 9723, false, 0);
       AddHtmlLocalized(120, 391, 280, 20, 1049012, White, false, false); // No thanks, I decline.
 
-      AddButton(340, 390, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(340, 390, 247, 248, 1);
 
       AddImageTiled(50, 29, 30, 390, 10460);
       AddImageTiled(34, 140, 17, 279, 9263);

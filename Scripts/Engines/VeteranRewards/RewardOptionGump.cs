@@ -28,7 +28,7 @@ namespace Server.Gumps
       AddImageTiled(10, 294, 253, 20, 0xA40);
       AddAlphaRegion(10, 10, 253, 304);
 
-      AddButton(10, 294, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+      AddButton(10, 294, 0xFB1, 0xFB2, 0);
       AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
 
       if (title > 0)
@@ -40,7 +40,7 @@ namespace Server.Gumps
 
       for (int i = 0; i < m_Options.Count; i++)
       {
-        AddButton(19, 49 + i * 24, 0x845, 0x846, m_Options[i].ID, GumpButtonType.Reply, 0);
+        AddButton(19, 49 + i * 24, 0x845, 0x846, m_Options[i].ID);
         AddHtmlLocalized(44, 47 + i * 24, 213, 20, m_Options[i].Cliloc, 0x7FFF, false, false);
       }
     }

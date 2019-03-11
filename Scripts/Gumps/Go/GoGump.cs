@@ -100,7 +100,7 @@ namespace Server.Gumps
 
       if (node.Parent != null)
       {
-        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1, GumpButtonType.Reply, 0);
+        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
 
         if (PrevLabel)
           AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
@@ -127,7 +127,7 @@ namespace Server.Gumps
 
       if (page > 0)
       {
-        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 2, GumpButtonType.Reply, 0);
+        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 2);
 
         if (PrevLabel)
           AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
@@ -162,7 +162,7 @@ namespace Server.Gumps
         if (SetGumpID != 0)
           AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, index + 4, GumpButtonType.Reply, 0);
+        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, index + 4);
       }
     }
 

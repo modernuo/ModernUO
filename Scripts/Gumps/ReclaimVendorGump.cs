@@ -28,7 +28,7 @@ namespace Server.Gumps
 
         int y = 40 + i * 20;
 
-        AddButton(10, y, 0xFA5, 0xFA7, i + 1, GumpButtonType.Reply, 0);
+        AddButton(10, y, 0xFA5, 0xFA7, i + 1);
         AddLabel(45, y, 0x481, m.Name);
       }
     }

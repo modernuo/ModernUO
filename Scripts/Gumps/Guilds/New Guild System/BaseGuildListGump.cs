@@ -54,7 +54,7 @@ namespace Server.Guilds
 
       AddBackground(130, 75, 385, 30, 0xBB8);
       AddTextEntry(135, 80, 375, 30, 0x481, 1, m_Filter);
-      AddButton(520, 75, 0x867, 0x868, 5, GumpButtonType.Reply, 0); //Filter Button
+      AddButton(520, 75, 0x867, 0x868, 5); //Filter Button
 
       int width = 0;
       for (int i = 0; i < m_Fields.Length; i++)
@@ -69,21 +69,20 @@ namespace Server.Guilds
 
         int ButtonID = isComparer ? m_Ascending ? 0x983 : 0x985 : 0x2716;
 
-        AddButton(59 + width + f.Width, 117, ButtonID, ButtonID + (isComparer ? 1 : 0), 100 + i,
-          GumpButtonType.Reply, 0);
+        AddButton(59 + width + f.Width, 117, ButtonID, ButtonID + (isComparer ? 1 : 0), 100 + i);
 
         width += f.Width + 12;
       }
 
       if (m_StartNumber <= 0)
-        AddButton(65, 80, 0x15E3, 0x15E7, 0, GumpButtonType.Page, 0);
+        AddButton(65, 80, 0x15E3, 0x15E7, 0, GumpButtonType.Page);
       else
-        AddButton(65, 80, 0x15E3, 0x15E7, 6, GumpButtonType.Reply, 0); // Back
+        AddButton(65, 80, 0x15E3, 0x15E7, 6); // Back
 
       if (m_StartNumber + itemsPerPage > m_List.Count)
-        AddButton(95, 80, 0x15E1, 0x15E5, 0, GumpButtonType.Page, 0);
+        AddButton(95, 80, 0x15E1, 0x15E5, 0, GumpButtonType.Page);
       else
-        AddButton(95, 80, 0x15E1, 0x15E5, 7, GumpButtonType.Reply, 0); // Forward
+        AddButton(95, 80, 0x15E1, 0x15E5, 7); // Forward
 
 
       int itemNumber = 0;
@@ -125,9 +124,9 @@ namespace Server.Guilds
       }
 
       if (HasRelationship(o))
-        AddButton(40, 143 + itemNumber * 28, 0x8AF, 0x8AF, 200 + index, GumpButtonType.Reply, 0); //Info Button
+        AddButton(40, 143 + itemNumber * 28, 0x8AF, 0x8AF, 200 + index); //Info Button
       else
-        AddButton(40, 143 + itemNumber * 28, 0x4B9, 0x4BA, 200 + index, GumpButtonType.Reply, 0); //Info Button
+        AddButton(40, 143 + itemNumber * 28, 0x4B9, 0x4BA, 200 + index); //Info Button
     }
 
     protected abstract TextDefinition[] GetValuesFor(T o, int aryLength);

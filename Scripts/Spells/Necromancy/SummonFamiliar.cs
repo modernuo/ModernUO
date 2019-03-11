@@ -121,7 +121,7 @@ namespace Server.Spells.Necromancy
 
         bool enabled = necro >= entries[i].ReqNecromancy && spirit >= entries[i].ReqSpiritSpeak;
 
-        AddButton(27, 53 + i * 21, 9702, 9703, i + 1, GumpButtonType.Reply, 0);
+        AddButton(27, 53 + i * 21, 9702, 9703, i + 1);
 
         if (name is int intName)
           AddHtmlLocalized(50, 51 + i * 21, 150, 20, intName, enabled ? EnabledColor16 : DisabledColor16, false,

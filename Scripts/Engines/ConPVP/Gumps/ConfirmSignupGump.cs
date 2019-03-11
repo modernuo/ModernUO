@@ -278,7 +278,7 @@ public class ConfirmSignupGump : Gump
       y += 35;
 
       y -= 3;
-      AddButton(314, y, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(314, y, 247, 248, 1);
     }
 
     public string Center(string text)
@@ -310,8 +310,8 @@ public class ConfirmSignupGump : Gump
 
     public void AddGoldenButton(int x, int y, int bid)
     {
-      AddButton(x, y, 0xD2, 0xD2, bid, GumpButtonType.Reply, 0);
-      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid, GumpButtonType.Reply, 0);
+      AddButton(x, y, 0xD2, 0xD2, bid);
+      AddButton(x + 3, y + 3, 0xD8, 0xD8, bid);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

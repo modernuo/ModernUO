@@ -30,10 +30,10 @@ namespace Server.Gumps
       AddHtmlLocalized(125, 70, 250, 24, 1019071, false, false); // for the amount of:
       AddLabel(125, 95, 0, vi.Price.ToString());
 
-      AddButton(250, 130, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(250, 130, 4005, 4007, 0);
       AddHtmlLocalized(282, 130, 100, 24, 1011012, false, false); // CANCEL
 
-      AddButton(120, 130, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(120, 130, 4005, 4007, 1);
       AddHtmlLocalized(152, 130, 100, 24, 1011036, false, false); // OKAY
     }
 
@@ -111,11 +111,11 @@ namespace Server.Gumps
       AddBackground(25, 10, 530, 140, 5054);
 
       AddHtmlLocalized(425, 25, 120, 20, 1019068, false, false); // See goods
-      AddButton(390, 25, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(390, 25, 4005, 4007, 1);
       AddHtmlLocalized(425, 48, 120, 20, 1019069, false, false); // Customize
-      AddButton(390, 48, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(390, 48, 4005, 4007, 2);
       AddHtmlLocalized(425, 72, 120, 20, 1011012, false, false); // CANCEL
-      AddButton(390, 71, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(390, 71, 4005, 4007, 0);
 
       AddHtmlLocalized(40, 72, 260, 20, 1038321, false, false); // Gold held for you:
       AddLabel(300, 72, 0, m_Vendor.HoldGold.ToString());
@@ -213,28 +213,28 @@ namespace Server.Gumps
           $"Location rental will expire in {days} day{(days != 1 ? "s" : "")} and {hours} hour{(hours != 1 ? "s" : "")}.");
       }
 
-      AddButton(390, 24, 0x15E1, 0x15E5, 1, GumpButtonType.Reply, 0);
+      AddButton(390, 24, 0x15E1, 0x15E5, 1);
       AddHtmlLocalized(408, 21, 120, 20, 1019068, 0x7FFF, false, false); // See goods
 
-      AddButton(390, 44, 0x15E1, 0x15E5, 2, GumpButtonType.Reply, 0);
+      AddButton(390, 44, 0x15E1, 0x15E5, 2);
       AddHtmlLocalized(408, 41, 120, 20, 1019069, 0x7FFF, false, false); // Customize
 
-      AddButton(390, 64, 0x15E1, 0x15E5, 3, GumpButtonType.Reply, 0);
+      AddButton(390, 64, 0x15E1, 0x15E5, 3);
       AddHtmlLocalized(408, 61, 120, 20, 1062434, 0x7FFF, false, false); // Rename Shop
 
-      AddButton(390, 84, 0x15E1, 0x15E5, 4, GumpButtonType.Reply, 0);
+      AddButton(390, 84, 0x15E1, 0x15E5, 4);
       AddHtmlLocalized(408, 81, 120, 20, 3006217, 0x7FFF, false, false); // Rename Vendor
 
-      AddButton(390, 104, 0x15E1, 0x15E5, 5, GumpButtonType.Reply, 0);
+      AddButton(390, 104, 0x15E1, 0x15E5, 5);
       AddHtmlLocalized(408, 101, 120, 20, 3006123, 0x7FFF, false, false); // Open Paperdoll
 
-      AddButton(390, 124, 0x15E1, 0x15E5, 6, GumpButtonType.Reply, 0);
+      AddButton(390, 124, 0x15E1, 0x15E5, 6);
       AddLabel(408, 121, 0x480, "Collect Gold");
 
-      AddButton(390, 144, 0x15E1, 0x15E5, 7, GumpButtonType.Reply, 0);
+      AddButton(390, 144, 0x15E1, 0x15E5, 7);
       AddLabel(408, 141, 0x480, "Dismiss Vendor");
 
-      AddButton(390, 162, 0x15E1, 0x15E5, 0, GumpButtonType.Reply, 0);
+      AddButton(390, 162, 0x15E1, 0x15E5, 0);
       AddHtmlLocalized(408, 161, 120, 20, 1011012, 0x7FFF, false, false); // CANCEL
     }
 
@@ -433,9 +433,9 @@ namespace Server.Gumps
       AddBackground(195, 36, 387, 275, 3000);
       AddHtmlLocalized(10, 10, 565, 18, 1011356, false, false); // <center>VENDOR CUSTOMIZATION MENU</center>
       AddHtmlLocalized(60, 355, 150, 18, 1011036, false, false); // OKAY
-      AddButton(25, 355, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(25, 355, 4005, 4007, 1);
       AddHtmlLocalized(320, 355, 150, 18, 1011012, false, false); // CANCEL
-      AddButton(285, 355, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(285, 355, 4005, 4007, 0);
 
       y = 35;
       for (int i = 0; i < Categories.Length; i++)
@@ -832,19 +832,19 @@ namespace Server.Gumps
       {
         HairOrBeard hair = m_HairStyles[i];
 
-        AddButton(10, 70 + i * 20, 0xFA5, 0xFA7, 0x100 | i, GumpButtonType.Reply, 0);
+        AddButton(10, 70 + i * 20, 0xFA5, 0xFA7, 0x100 | i);
         AddHtmlLocalized(45, 72 + i * 20, 110, 18, hair.Name, 0x7FFF, false, false);
       }
 
-      AddButton(10, 70 + m_HairStyles.Length * 20, 0xFB1, 0xFB3, 2, GumpButtonType.Reply, 0);
+      AddButton(10, 70 + m_HairStyles.Length * 20, 0xFB1, 0xFB3, 2);
       AddHtmlLocalized(45, 72 + m_HairStyles.Length * 20, 110, 18, 1011403, 0x7FFF, false, false); // Remove
 
-      AddButton(10, 70 + (m_HairStyles.Length + 1) * 20, 0xFA5, 0xFA7, 3, GumpButtonType.Reply, 0);
+      AddButton(10, 70 + (m_HairStyles.Length + 1) * 20, 0xFA5, 0xFA7, 3);
       AddHtmlLocalized(45, 72 + (m_HairStyles.Length + 1) * 20, 110, 18, 1011402, 0x7FFF, false, false); // Color
 
       if (vendor.Female)
       {
-        AddButton(160, 290, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddButton(160, 290, 0xFA5, 0xFA7, 1);
         AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x7FFF, false, false); // Male
 
         AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x421F, false, false); // Female
@@ -857,23 +857,23 @@ namespace Server.Gumps
         {
           HairOrBeard beard = m_BeardStyles[i];
 
-          AddButton(160, 70 + i * 20, 0xFA5, 0xFA7, 0x200 | i, GumpButtonType.Reply, 0);
+          AddButton(160, 70 + i * 20, 0xFA5, 0xFA7, 0x200 | i);
           AddHtmlLocalized(195, 72 + i * 20, 160, 18, beard.Name, 0x7FFF, false, false);
         }
 
-        AddButton(160, 70 + m_BeardStyles.Length * 20, 0xFB1, 0xFB3, 4, GumpButtonType.Reply, 0);
+        AddButton(160, 70 + m_BeardStyles.Length * 20, 0xFB1, 0xFB3, 4);
         AddHtmlLocalized(195, 72 + m_BeardStyles.Length * 20, 160, 18, 1011403, 0x7FFF, false, false); // Remove
 
-        AddButton(160, 70 + (m_BeardStyles.Length + 1) * 20, 0xFA5, 0xFA7, 5, GumpButtonType.Reply, 0);
+        AddButton(160, 70 + (m_BeardStyles.Length + 1) * 20, 0xFA5, 0xFA7, 5);
         AddHtmlLocalized(195, 72 + (m_BeardStyles.Length + 1) * 20, 160, 18, 1011402, 0x7FFF, false, false); // Color
 
         AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x421F, false, false); // Male
 
-        AddButton(160, 310, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddButton(160, 310, 0xFA5, 0xFA7, 1);
         AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x7FFF, false, false); // Female
       }
 
-      AddButton(10, 340, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
+      AddButton(10, 340, 0xFA5, 0xFA7, 0);
       AddHtmlLocalized(45, 342, 305, 18, 1060675, 0x7FFF, false, false); // CLOSE
     }
 

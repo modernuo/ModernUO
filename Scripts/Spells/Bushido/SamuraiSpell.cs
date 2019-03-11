@@ -27,13 +27,7 @@ namespace Server.Spells.Bushido
 
     public static bool CheckExpansion(Mobile from)
     {
-      if (!(from is PlayerMobile))
-        return true;
-
-      if (from.NetState == null)
-        return false;
-
-      return from.NetState.SupportsExpansion(Expansion.SE);
+      return (from as PlayerMobile)?.NetState?.SupportsExpansion(Expansion.SE) == true;
     }
 
     public override bool CheckCast()

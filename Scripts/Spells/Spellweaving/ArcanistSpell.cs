@@ -32,18 +32,12 @@ namespace Server.Spells.Spellweaving
 
     public static ArcaneFocus FindArcaneFocus(Mobile from)
     {
-      if (from?.Backpack == null)
-        return null;
-
-      if (from.Holding is ArcaneFocus focus)
-        return focus;
-
-      return from.Backpack.FindItemByType<ArcaneFocus>();
+      return from.Holding as ArcaneFocus ?? from.Backpack?.FindItemByType<ArcaneFocus>();
     }
 
     public static bool CheckExpansion(Mobile from)
     {
-      return !(from is PlayerMobile) || from.NetState != null && from.NetState.SupportsExpansion(Expansion.ML);
+      return !(from is PlayerMobile) || from.NetState?.SupportsExpansion(Expansion.ML) == true;
     }
 
     public override bool CheckCast()

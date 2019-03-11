@@ -103,9 +103,9 @@ namespace Server.Items
         AddBackground(0, 0, 300, 150, 0xA28);
         AddHtmlLocalized(45, 20, 300, 35, chimes.TurnedOn ? 1011035 : 1011034, false,
           false); // [De]Activate this item
-        AddButton(40, 53, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddButton(40, 53, 0xFA5, 0xFA7, 1);
         AddHtmlLocalized(80, 55, 65, 35, 1011036, false, false); // OKAY
-        AddButton(150, 53, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
+        AddButton(150, 53, 0xFA5, 0xFA7, 0);
         AddHtmlLocalized(190, 55, 100, 35, 1011012, false, false); // CANCEL
       }
 

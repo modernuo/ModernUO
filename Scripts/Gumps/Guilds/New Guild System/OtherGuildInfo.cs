@@ -22,7 +22,7 @@ namespace Server.Guilds
     public void AddButtonAndBackground(int x, int y, int buttonID, int locNum)
     {
       AddBackground(x, y, 225, 26, 0x2486);
-      AddButton(x + 5, y + 5, 0x845, 0x846, buttonID, GumpButtonType.Reply, 0);
+      AddButton(x + 5, y + 5, 0x845, 0x846, buttonID);
       AddHtmlLocalized(x + 30, y + 3, 185, 26, locNum, 0x0, false, false);
     }
 
@@ -209,7 +209,7 @@ namespace Server.Guilds
 
         case 5: //Accept the war
         {
-          if (war != null && !war.WarRequester && activeWar == null)
+          if (war?.WarRequester == false && activeWar == null)
           {
             if (!playerRank.GetFlag(RankFlags.ControlWarStatus))
             {
@@ -274,7 +274,7 @@ namespace Server.Guilds
         }
         case 6: //Modify war terms
         {
-          if (war != null && !war.WarRequester && activeWar == null)
+          if (war?.WarRequester == false && activeWar == null)
           {
             if (!playerRank.GetFlag(RankFlags.ControlWarStatus))
             {

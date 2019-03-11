@@ -18,7 +18,8 @@ namespace Server
     {
       file.Refresh();
 
-      if (file.Directory != null && !file.Directory.Exists) file.Directory.Create();
+      if (file.Directory?.Exists == false)
+        file.Directory.Create();
 
       if (!file.Exists) file.Create().Close();
 
@@ -59,9 +60,10 @@ namespace Server
     {
       file.Refresh();
 
-      if (file.Directory != null && !file.Directory.Exists)
+      if (file.Directory?.Exists == false)
       {
-        if (!ensure) throw new DirectoryNotFoundException();
+        if (!ensure)
+          throw new DirectoryNotFoundException();
 
         file.Directory.Create();
       }

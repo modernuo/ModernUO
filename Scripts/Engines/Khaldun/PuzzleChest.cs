@@ -625,21 +625,21 @@ namespace Server.Items
         AddPedestal(305, 270, solution.Fourth, 3, check == 3);
         AddPedestal(360, 270, solution.Fifth, 4, check == 4);
 
-        AddButton(258, 370, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+        AddButton(258, 370, 0xFA5, 0xFA7, 1);
       }
 
       private void AddLeftCylinderButton(int x, int y, PuzzleChestCylinder cylinder, int buttonID)
       {
         AddBackground(x, y, 30, 30, 0x13EC);
         AddCylinder(x - 7, y + 10, cylinder);
-        AddButton(x + 38, y + 9, 0x13A8, 0x4B9, buttonID, GumpButtonType.Reply, 0);
+        AddButton(x + 38, y + 9, 0x13A8, 0x4B9, buttonID);
       }
 
       private void AddRightCylinderButton(int x, int y, PuzzleChestCylinder cylinder, int buttonID)
       {
         AddBackground(x, y, 30, 30, 0x13EC);
         AddCylinder(x - 7, y + 10, cylinder);
-        AddButton(x - 26, y + 9, 0x13A8, 0x4B9, buttonID, GumpButtonType.Reply, 0);
+        AddButton(x - 26, y + 9, 0x13A8, 0x4B9, buttonID);
       }
 
       private void AddPedestal(int x, int y, PuzzleChestCylinder cylinder, int switchID, bool initialState)
@@ -747,7 +747,7 @@ namespace Server.Items
         AddHtmlLocalized(35, 323, 250, 24, 1018316, false, false); // Used colors in wrong slots:
         AddLabel(285, 323, 0x44, correctColors.ToString());
 
-        AddButton(152, 369, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
+        AddButton(152, 369, 0xFA5, 0xFA7, 0);
       }
     }
   }

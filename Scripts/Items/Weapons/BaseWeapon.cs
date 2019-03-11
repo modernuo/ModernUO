@@ -803,11 +803,8 @@ namespace Server.Items
       }
 
       #region Dueling
-
-      if (attacker is PlayerMobile pm)
-        if (pm.DuelContext != null && !pm.DuelContext.CheckItemEquip(attacker, this))
-          canSwing = false;
-
+      if ((attacker as PlayerMobile)?.DuelContext?.CheckItemEquip(attacker, this) == false)
+        canSwing = false;
       #endregion
 
       if (canSwing && attacker.HarmfulCheck(defender))

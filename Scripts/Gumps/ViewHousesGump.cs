@@ -66,7 +66,7 @@ namespace Server.Gumps
           else
             AddHtml(35, 40 + i % 15 * 20, 160, 20, Color(name.ToString(), White), false, false);
 
-          AddButton(198, 39 + i % 15 * 20, 4005, 4007, i + 1, GumpButtonType.Reply, 0);
+          AddButton(198, 39 + i % 15 * 20, 4005, 4007, i + 1);
         }
       }
       else
@@ -120,16 +120,16 @@ namespace Server.Gumps
         AddHtml(15, 220, 210, 20, Color("Decay Level:", White), false, false);
         AddHtml(15, 220, 210, 20, Color(Right(sel.DecayLevel.ToString()), White), false, false);
 
-        AddButton(15, 245, 4005, 4007, 1, GumpButtonType.Reply, 0);
+        AddButton(15, 245, 4005, 4007, 1);
         AddHtml(50, 245, 120, 20, Color("Go to house", White), false, false);
 
-        AddButton(15, 265, 4005, 4007, 2, GumpButtonType.Reply, 0);
+        AddButton(15, 265, 4005, 4007, 2);
         AddHtml(50, 265, 120, 20, Color("Open house menu", White), false, false);
 
-        AddButton(15, 285, 4005, 4007, 3, GumpButtonType.Reply, 0);
+        AddButton(15, 285, 4005, 4007, 3);
         AddHtml(50, 285, 120, 20, Color("Demolish house", White), false, false);
 
-        AddButton(15, 305, 4005, 4007, 4, GumpButtonType.Reply, 0);
+        AddButton(15, 305, 4005, 4007, 4);
         AddHtml(50, 305, 120, 20, Color("Refresh house", White), false, false);
       }
     }

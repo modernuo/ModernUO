@@ -105,14 +105,13 @@ namespace Server.Items
 
         AddBackground(0, 0, 200, 200, 2600);
 
-        AddButton(50, 45, decorator.Command == DecorateCommand.Turn ? 2154 : 2152, 2154, 1, GumpButtonType.Reply, 0);
+        AddButton(50, 45, decorator.Command == DecorateCommand.Turn ? 2154 : 2152, 2154, 1);
         AddHtmlLocalized(90, 50, 70, 40, 1018323, false, false); // Turn
 
-        AddButton(50, 95, decorator.Command == DecorateCommand.Up ? 2154 : 2152, 2154, 2, GumpButtonType.Reply, 0);
+        AddButton(50, 95, decorator.Command == DecorateCommand.Up ? 2154 : 2152, 2154, 2);
         AddHtmlLocalized(90, 100, 70, 40, 1018324, false, false); // Up
 
-        AddButton(50, 145, decorator.Command == DecorateCommand.Down ? 2154 : 2152, 2154, 3, GumpButtonType.Reply,
-          0);
+        AddButton(50, 145, decorator.Command == DecorateCommand.Down ? 2154 : 2152, 2154, 3);
         AddHtmlLocalized(90, 150, 70, 40, 1018325, false, false); // Down
       }
 

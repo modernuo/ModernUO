@@ -156,12 +156,12 @@ namespace Server.Items
         AddHtmlLocalized(0, 215, 400, 35, 1011003, false, false); // <center>votes</center>
 
         if (!isOwner)
-          AddButton(20, 240, 0xFA5, 0xFA7, 3, GumpButtonType.Reply, 0);
+          AddButton(20, 240, 0xFA5, 0xFA7, 3);
         AddHtmlLocalized(55, 242, 25, 35, 1011004, false, false); // aye:
         AddLabel(78, 242, 0x0, $"[{yesCount}]");
 
         if (!isOwner)
-          AddButton(20, 275, 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0);
+          AddButton(20, 275, 0xFA5, 0xFA7, 4);
         AddHtmlLocalized(55, 277, 25, 35, 1011005, false, false); // nay:
         AddLabel(78, 277, 0x0, $"[{noCount}]");
 
@@ -171,15 +171,15 @@ namespace Server.Items
           AddImageTiled(130, 277, noCount * 225 / totalVotes, 10, 0xD6);
         }
 
-        AddButton(45, 305, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
+        AddButton(45, 305, 0xFA5, 0xFA7, 0);
         AddHtmlLocalized(80, 308, 40, 35, 1011008, false, false); // done
 
         if (isOwner)
         {
-          AddButton(120, 305, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
+          AddButton(120, 305, 0xFA5, 0xFA7, 1);
           AddHtmlLocalized(155, 308, 100, 35, 1011006, false, false); // change topic
 
-          AddButton(240, 305, 0xFA5, 0xFA7, 2, GumpButtonType.Reply, 0);
+          AddButton(240, 305, 0xFA5, 0xFA7, 2);
           AddHtmlLocalized(275, 308, 300, 100, 1011007, false, false); // reset votes
         }
       }

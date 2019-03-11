@@ -162,7 +162,7 @@ namespace Server.Items
             number = 1047024; // To claim the resources ....
         }
       }
-      else if (cox != null && !cox.IsSecure)
+      else if (cox?.IsSecure == false)
       {
         number = 1080525; // The commodity deed box must be secured before you can use it.
       }

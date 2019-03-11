@@ -358,7 +358,7 @@ namespace Server.Gumps
             int x = 50 + i % 3 * 100;
             int y = 180 + i / 3 * 80;
 
-            AddButton(x, y, 4005, 4007, GetButtonID(7, i), GumpButtonType.Reply, 0);
+            AddButton(x, y, 4005, 4007, GetButtonID(7, i));
             AddItem(x + 20, y, m_HangerNumbers[i]);
           }
 
@@ -371,7 +371,7 @@ namespace Server.Gumps
             int x = 15 + i % 5 * 80;
             int y = 180 + i / 5 * 100;
 
-            AddButton(x, y, 4005, 4007, GetButtonID(8, i), GumpButtonType.Reply, 0);
+            AddButton(x, y, 4005, 4007, GetButtonID(8, i));
             AddItem(x + 25, y, m_FoundationNumbers[i]);
           }
 
@@ -406,7 +406,7 @@ namespace Server.Gumps
               int x = 30 + j % 6 * 60;
               int y = 130 + j / 6 * 60;
 
-              AddButton(x, y, 4005, 4007, GetButtonID(9, index), GumpButtonType.Reply, 0);
+              AddButton(x, y, 4005, 4007, GetButtonID(9, index));
               AddItem(x + 20, y, _HouseSigns[index++]);
             }
           }
@@ -476,7 +476,7 @@ namespace Server.Gumps
               int x = 15 + j % 8 * 50;
               int y = 130 + j / 8 * 110;
 
-              AddButton(x, y, 4005, 4007, GetButtonID(14, index), GumpButtonType.Reply, 0);
+              AddButton(x, y, 4005, 4007, GetButtonID(14, index));
               AddItem(x + 10, y, m_PostNumbers[index++]);
             }
           }
@@ -505,14 +505,14 @@ namespace Server.Gumps
     {
       bool isSelection = m_Page == page;
 
-      AddButton(x, y, isSelection ? 4006 : 4005, 4007, buttonID, GumpButtonType.Reply, 0);
+      AddButton(x, y, isSelection ? 4006 : 4005, 4007, buttonID);
       AddHtmlLocalized(x + 45, y, 200, 20, number, isSelection ? SelectedColor : LabelColor, false, false);
     }
 
     public void AddButtonLabeled(int x, int y, int buttonID, int number, bool enabled = true)
     {
       if (enabled)
-        AddButton(x, y, 4005, 4007, buttonID, GumpButtonType.Reply, 0);
+        AddButton(x, y, 4005, 4007, buttonID);
 
       AddHtmlLocalized(x + 35, y, 240, 20, number, enabled ? LabelColor : DisabledColor, false, false);
     }
@@ -572,7 +572,7 @@ namespace Server.Gumps
           continue;
 
         if (button != -1)
-          AddButton(10 + xoffset, 150 + yoffset, 4005, 4007, GetButtonID(button, i), GumpButtonType.Reply, 0);
+          AddButton(10 + xoffset, 150 + yoffset, 4005, 4007, GetButtonID(button, i));
 
         if (accountOf && m.Player && m.Account != null)
           name = "Account of " + name;
@@ -686,7 +686,7 @@ namespace Server.Gumps
 
         if (e == null)
           return;
-        
+
           int cost = e.Cost - house.Price;
 
           if (cost > 0)

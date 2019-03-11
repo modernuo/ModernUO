@@ -35,7 +35,7 @@ namespace Server.Factions
         AddHtml(45, 55, 100, 20, Color("Vote Count:", LabelColor), false, false);
         AddHtml(145, 55, 100, 20, Color(candidate.Votes.ToString(), LabelColor), false, false);
 
-        AddButton(12, 73, 4005, 4007, 1, GumpButtonType.Reply, 0);
+        AddButton(12, 73, 4005, 4007, 1);
         AddHtml(45, 75, 100, 20, Color("Drop Candidate", LabelColor), false, false);
 
         AddImageTiled(13, 99, 422, 242, 9264);
@@ -45,12 +45,12 @@ namespace Server.Factions
         AddHtml(14, 100, 420, 20, Color(Center("Voters"), LabelColor), false, false);
 
         if (page > 0)
-          AddButton(397, 104, 0x15E3, 0x15E7, 2, GumpButtonType.Reply, 0);
+          AddButton(397, 104, 0x15E3, 0x15E7, 2);
         else
           AddImage(397, 104, 0x25EA);
 
         if ((page + 1) * 10 < candidate.Voters.Count)
-          AddButton(414, 104, 0x15E1, 0x15E5, 3, GumpButtonType.Reply, 0);
+          AddButton(414, 104, 0x15E1, 0x15E5, 3);
         else
           AddImage(414, 104, 0x25E6);
 
@@ -67,7 +67,7 @@ namespace Server.Factions
         {
           Voter voter = candidate.Voters[i];
 
-          AddButton(13, 138 + idx * 20, 4002, 4004, 4 + i, GumpButtonType.Reply, 0);
+          AddButton(13, 138 + idx * 20, 4002, 4004, 4 + i);
 
           object[] fields = voter.AcquireFields();
 
@@ -111,7 +111,7 @@ namespace Server.Factions
         AddHtml(45, 35, 100, 20, Color("Current State:", LabelColor), false, false);
         AddHtml(145, 35, 100, 20, Color(election.State.ToString(), LabelColor), false, false);
 
-        AddButton(12, 53, 4005, 4007, 1, GumpButtonType.Reply, 0);
+        AddButton(12, 53, 4005, 4007, 1);
         AddHtml(45, 55, 100, 20, Color("Transition Time:", LabelColor), false, false);
         AddHtml(145, 55, 100, 20, Color(FormatTimeSpan(election.NextStateTime), LabelColor), false, false);
 
@@ -132,7 +132,7 @@ namespace Server.Factions
           if (mob == null)
             continue;
 
-          AddButton(13, 118 + i * 20, 4005, 4007, 2 + i, GumpButtonType.Reply, 0);
+          AddButton(13, 118 + i * 20, 4005, 4007, 2 + i);
           AddHtml(47, 120 + i * 20, 150, 20, Color(mob.Name, LabelColor), false, false);
           AddHtml(195, 120 + i * 20, 80, 20, Color(Center(cd.Votes.ToString()), LabelColor), false, false);
         }

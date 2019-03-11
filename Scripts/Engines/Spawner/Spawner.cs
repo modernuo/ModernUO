@@ -192,7 +192,7 @@ namespace Server.Mobiles
         Spawned.Remove(spawn);
       }
 
-      if (m_Running && !IsFull && m_Timer != null && !m_Timer.Running)
+      if (m_Running && !IsFull && m_Timer?.Running == false)
         DoTimer();
     }
 
@@ -722,7 +722,7 @@ namespace Server.Mobiles
 
       Entries.Remove(entry);
 
-      if (m_Running && !IsFull && m_Timer != null && !m_Timer.Running)
+      if (m_Running && !IsFull && m_Timer?.Running == false)
         DoTimer();
 
       InvalidateProperties();
@@ -771,7 +771,7 @@ namespace Server.Mobiles
         }
       }
 
-      if (m_Running && !IsFull && m_Timer != null && !m_Timer.Running)
+      if (m_Running && !IsFull && m_Timer?.Running == false)
         DoTimer();
 
       InvalidateProperties();
@@ -1040,6 +1040,7 @@ namespace Server.Mobiles
         }
         catch
         {
+          // ignored
         }
       }
 

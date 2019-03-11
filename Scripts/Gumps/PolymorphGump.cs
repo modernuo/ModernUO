@@ -193,7 +193,7 @@ namespace Server.Gumps
 
       AddHtmlLocalized(14, 12, 500, 20, 1015234, 0x7FFF, false, false); // <center>Polymorph Selection Menu</center>
 
-      AddButton(10, 374, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
+      AddButton(10, 374, 0xFB1, 0xFB2, 0);
       AddHtmlLocalized(45, 376, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
 
       for (int i = 0; i < m_Entries.Length; i++)

@@ -246,11 +246,11 @@ namespace Server.Items
 
         AddItem(90, 30, 0x4);
         AddItem(112, 30, 0x5);
-        AddButton(50, 35, 0x867, 0x869, (int)Buttons.South, GumpButtonType.Reply, 0); // South
+        AddButton(50, 35, 0x867, 0x869, (int)Buttons.South); // South
 
         AddItem(170, 30, 0x2);
         AddItem(192, 30, 0x3);
-        AddButton(145, 35, 0x867, 0x869, (int)Buttons.East, GumpButtonType.Reply, 0); // East
+        AddButton(145, 35, 0x867, 0x869, (int)Buttons.East); // East
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

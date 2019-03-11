@@ -185,7 +185,8 @@ namespace Server.Gumps
       Add(new GumpBackground(x, y, width, height, gumpID));
     }
 
-    public void AddButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param)
+    public void AddButton(int x, int y, int normalID, int pressedID, int buttonID,
+      GumpButtonType type = GumpButtonType.Reply, int param = 0)
     {
       Add(new GumpButton(x, y, normalID, pressedID, buttonID, type, param));
     }

@@ -372,7 +372,7 @@ namespace Server.Items
         return false;
       }
 
-      if (a != null && !a.Validate(m))
+      if (a?.Validate(m) == false)
       {
         ClearCurrentAbility(m);
         return false;
@@ -385,7 +385,6 @@ namespace Server.Items
       else
       {
         SpecialMove.ClearCurrentMove(m);
-
         Table[m] = a;
       }
 

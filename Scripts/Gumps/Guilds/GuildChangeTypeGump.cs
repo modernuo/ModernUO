@@ -27,18 +27,18 @@ namespace Server.Gumps
       AddHtmlLocalized(50, 50, 450, 30, 1013066, false,
         false); // Please select the type of guild you would like to change to
 
-      AddButton(20, 100, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 100, 4005, 4007, 1);
       AddHtmlLocalized(85, 100, 300, 30, 1013063, false, false); // Standard guild
 
-      AddButton(20, 150, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(20, 150, 4005, 4007, 2);
       AddItem(50, 143, 7109);
       AddHtmlLocalized(85, 150, 300, 300, 1013064, false, false); // Order guild
 
-      AddButton(20, 200, 4005, 4007, 3, GumpButtonType.Reply, 0);
+      AddButton(20, 200, 4005, 4007, 3);
       AddItem(45, 200, 7107);
       AddHtmlLocalized(85, 200, 300, 300, 1013065, false, false); // Chaos guild
 
-      AddButton(300, 360, 4005, 4007, 4, GumpButtonType.Reply, 0);
+      AddButton(300, 360, 4005, 4007, 4);
       AddHtmlLocalized(335, 360, 150, 30, 1011012, false, false); // CANCEL
     }
 

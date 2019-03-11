@@ -534,17 +534,17 @@ namespace Server.Items
 
 			AddImage( 30, 30, 5400 );
 
-			AddButton( 393, 145, 2084, 2084, 4, GumpButtonType.Reply, 0 ); // Scroll up
-			AddButton( 390, 371, 2085, 2085, 5, GumpButtonType.Reply, 0 ); // Scroll down
+			AddButton( 393, 145, 2084, 2084, 4); // Scroll up
+			AddButton( 390, 371, 2085, 2085, 5); // Scroll down
 
-			AddButton( 32, 183, 5412, 5413, 1, GumpButtonType.Reply, 0 ); // Post message
+			AddButton( 32, 183, 5412, 5413, 1); // Post message
 
 			if ( house.IsOwner( from ) )
 			{
-				AddButton( 63, 90, 5601, 5605, 2, GumpButtonType.Reply, 0 );
+				AddButton( 63, 90, 5601, 5605, 2);
 				AddHtmlLocalized( 81, 89, 230, 20, 1062400, LabelColor, false, false ); // Set title
 
-				AddButton( 63, 109, 5601, 5605, 3, GumpButtonType.Reply, 0 );
+				AddButton( 63, 109, 5601, 5605, 3);
 				AddHtmlLocalized( 81, 108, 230, 20, 1062401, LabelColor, false, false ); // Post greeting
 			}
 
@@ -585,15 +585,15 @@ namespace Server.Items
 
 				if ( message != board.Greeting && house.IsOwner( from ) )
 				{
-					AddButton( 130, 395, 1209, 1210, 6, GumpButtonType.Reply, 0 );
+					AddButton( 130, 395, 1209, 1210, 6);
 					AddHtmlLocalized( 150, 393, 150, 20, 1062410, LabelColor, false, false ); // Banish Poster
 
-					AddButton( 310, 395, 1209, 1210, 7, GumpButtonType.Reply, 0 );
+					AddButton( 310, 395, 1209, 1210, 7);
 					AddHtmlLocalized( 330, 393, 150, 20, 1062411, LabelColor, false, false ); // Delete Message
 				}
 
 				if ( from.AccessLevel >= AccessLevel.GameMaster )
-					AddButton( 135, 242, 1209, 1210, 8, GumpButtonType.Reply, 0 ); // Post props
+					AddButton( 135, 242, 1209, 1210, 8); // Post props
 			}
 		}
 	}

@@ -41,7 +41,7 @@ namespace Server.Gumps
       AddHtmlLocalized(60, 180, 280, 20, 1074976, 0xFFFFFF, false, false);
       AddHtmlLocalized(60, 215, 280, 20, 1074977, 0xFFFFFF, false, false);
 
-      AddButton(265, 220, 0xF7, 0xF8, (int)Buttons.Confirm, GumpButtonType.Reply, 0);
+      AddButton(265, 220, 0xF7, 0xF8, (int)Buttons.Confirm);
     }
 
     public virtual int TitleNumber // <center>Warning!</center>

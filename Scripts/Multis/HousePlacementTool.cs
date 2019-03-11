@@ -73,16 +73,16 @@ namespace Server.Items
 
       AddHtmlLocalized(10, 10, 250, 20, 1060239, LabelColor, false, false); // <CENTER>HOUSE PLACEMENT TOOL</CENTER>
 
-      AddButton(10, 110, 4017, 4019, 0, GumpButtonType.Reply, 0);
+      AddButton(10, 110, 4017, 4019, 0);
       AddHtmlLocalized(45, 110, 150, 20, 3000363, LabelColor, false, false); // Close
 
-      AddButton(10, 40, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(10, 40, 4005, 4007, 1);
       AddHtmlLocalized(45, 40, 200, 20, 1060390, LabelColor, false, false); // Classic Houses
 
-      AddButton(10, 60, 4005, 4007, 2, GumpButtonType.Reply, 0);
+      AddButton(10, 60, 4005, 4007, 2);
       AddHtmlLocalized(45, 60, 200, 20, 1060391, LabelColor, false, false); // 2-Story Customizable Houses
 
-      AddButton(10, 80, 4005, 4007, 3, GumpButtonType.Reply, 0);
+      AddButton(10, 80, 4005, 4007, 3);
       AddHtmlLocalized(45, 80, 200, 20, 1060392, LabelColor, false, false); // 3-Story Customizable Houses
     }
 
@@ -156,7 +156,7 @@ namespace Server.Items
       AddImageTiled(10, 390, 500, 20, 2624);
       AddAlphaRegion(10, 390, 500, 20);
 
-      AddButton(10, 390, 4017, 4019, 0, GumpButtonType.Reply, 0);
+      AddButton(10, 390, 4017, 4019, 0);
       AddHtmlLocalized(50, 390, 100, 20, 3000363, LabelColor, false, false); // Close
 
       for (int i = 0; i < entries.Length; ++i)
@@ -185,7 +185,7 @@ namespace Server.Items
 
         int y = 70 + index * 20;
 
-        AddButton(10, y, 4005, 4007, 1 + i, GumpButtonType.Reply, 0);
+        AddButton(10, y, 4005, 4007, 1 + i);
         AddHtmlLocalized(50, y, 225, 20, entry.Description, LabelColor, false, false);
         AddLabel(275, y, LabelHue, entry.Storage.ToString());
         AddLabel(350, y, LabelHue, entry.Lockdowns.ToString());

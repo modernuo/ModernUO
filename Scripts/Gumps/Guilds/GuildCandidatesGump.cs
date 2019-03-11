@@ -13,7 +13,7 @@ namespace Server.Gumps
     {
       AddHtmlLocalized(20, 10, 500, 35, 1013030, false, false); // <center> Candidates </center>
 
-      AddButton(20, 400, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 400, 4005, 4007, 1);
       AddHtmlLocalized(55, 400, 300, 35, 1011120, false, false); // Return to the main menu.
     }
 

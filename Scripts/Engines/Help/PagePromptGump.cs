@@ -26,8 +26,8 @@ namespace Server.Engines.Help
       AddBackground(100, 148, 440, 200, 3500);
       AddTextEntry(120, 168, 400, 200, 1153, 0, "");
 
-      AddButton(175, 355, 2074, 2075, 1, GumpButtonType.Reply, 0); // Okay
-      AddButton(405, 355, 2073, 2072, 0, GumpButtonType.Reply, 0); // Cancel
+      AddButton(175, 355, 2074, 2075, 1); // Okay
+      AddButton(405, 355, 2073, 2072, 0); // Cancel
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

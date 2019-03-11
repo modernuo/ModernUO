@@ -34,11 +34,11 @@ namespace Server.Guilds
       if (guild.Alliance != null && guild.Alliance.IsMember(guild))
       {
         AddHtml(233, 118, 320, 26, guild.Alliance.Name, false, false);
-        AddButton(40, 120, 0x4B9, 0x4BA, 6, GumpButtonType.Reply, 0); //Alliance Roster
+        AddButton(40, 120, 0x4B9, 0x4BA, 6); //Alliance Roster
       }
 
       if (Guild.OrderChaos && isLeader)
-        AddButton(40, 154, 0x4B9, 0x4BA, 100, GumpButtonType.Reply, 0); // Guild Faction
+        AddButton(40, 154, 0x4B9, 0x4BA, 100); // Guild Faction
 
       AddImageTiled(65, 148, 160, 26, 0xA40);
       AddImageTiled(67, 150, 156, 22, 0xBBC);
@@ -61,20 +61,20 @@ namespace Server.Guilds
 
       AddHtml(65, 216, 480, 80, s, true, true);
       if (isLeader)
-        AddButton(40, 251, 0x4B9, 0x4BA, 4, GumpButtonType.Reply, 0); //Charter Edit button
+        AddButton(40, 251, 0x4B9, 0x4BA, 4); //Charter Edit button
 
       s = guild.Website;
       if (string.IsNullOrEmpty(s))
         s = "Guild website not yet set.";
       AddHtml(65, 306, 480, 30, s, true, false);
       if (isLeader)
-        AddButton(40, 313, 0x4B9, 0x4BA, 5, GumpButtonType.Reply, 0); //Website Edit button
+        AddButton(40, 313, 0x4B9, 0x4BA, 5); //Website Edit button
 
       AddCheck(65, 370, 0xD2, 0xD3, player.DisplayGuildTitle, 0);
       AddHtmlLocalized(95, 370, 150, 26, 1063085, 0x0, false, false); // Show Guild Title
       AddBackground(450, 370, 100, 26, 0x2486);
 
-      AddButton(455, 375, 0x845, 0x846, 7, GumpButtonType.Reply, 0);
+      AddButton(455, 375, 0x845, 0x846, 7);
       AddHtmlLocalized(480, 373, 60, 26, 3006115, m_IsResigning ? 0x5000 : 0, false, false); // Resign
     }
 

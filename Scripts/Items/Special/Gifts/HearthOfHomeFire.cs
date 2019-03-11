@@ -110,11 +110,11 @@ namespace Server.Items
 
         AddItem(90, 52, 0x2367);
         AddItem(112, 35, 0x2360);
-        AddButton(70, 35, 0x868, 0x869, 1, GumpButtonType.Reply, 0); // South
+        AddButton(70, 35, 0x868, 0x869, 1); // South
 
         AddItem(220, 35, 0x2352);
         AddItem(242, 52, 0x2358);
-        AddButton(185, 35, 0x868, 0x869, 2, GumpButtonType.Reply, 0); // East
+        AddButton(185, 35, 0x868, 0x869, 2); // East
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

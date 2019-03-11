@@ -65,7 +65,7 @@ namespace Server.Gumps
       AddImageTiled(10, y + 54, x, 20, 0xA40);
       AddAlphaRegion(10, 10, x, y + 64);
 
-      AddButton(10, y + 54, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0); //Cancel Button
+      AddButton(10, y + 54, 0xFB1, 0xFB2, 0); //Cancel Button
       AddHtmlLocalized(45, y + 56, x - 50, 20, 1060051, 0x7FFF, false, false); // CANCEL
       TextDefinition.AddHtmlText(this, 14, 12, x, 20, header, false, false, 0x7FFF, 0xFFFFFF);
 

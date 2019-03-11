@@ -144,10 +144,10 @@ namespace Server.Items
 
         AddHtmlLocalized(125, 148, 200, 20, 1049478, 0xFFFFFF, false, false); // Do you wish to use this scroll?
 
-        AddButton(100, 172, 4005, 4007, 1, GumpButtonType.Reply, 0);
+        AddButton(100, 172, 4005, 4007, 1);
         AddHtmlLocalized(135, 172, 120, 20, 1046362, 0xFFFFFF, false, false); // Yes
 
-        AddButton(275, 172, 4005, 4007, 0, GumpButtonType.Reply, 0);
+        AddButton(275, 172, 4005, 4007, 0);
         AddHtmlLocalized(310, 172, 120, 20, 1046363, 0xFFFFFF, false, false); // No
 
         if (m_Scroll.Title != 0)

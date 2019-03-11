@@ -105,7 +105,7 @@ namespace Server.Items
         AddBackground(100, 10, 400, 385, 0xA28);
 
         AddHtmlLocalized(100, 25, 400, 35, 1013008, false, false);
-        AddButton(175, 340, 0xFA5, 0xFA7, 0x0, GumpButtonType.Reply, 0); // CANCEL
+        AddButton(175, 340, 0xFA5, 0xFA7, 0x0); // CANCEL
 
         AddHtmlLocalized(210, 342, 90, 35, 1011012, false, false); // <CENTER>HAIRSTYLE SELECTION MENU</center>
 
@@ -121,7 +121,7 @@ namespace Server.Items
             AddImage(LayoutArray[i][4], LayoutArray[i][5], m_From.Female ? RacialData[i][4] : RacialData[i][5]);
           }
 
-          AddButton(LayoutArray[i][6], LayoutArray[i][7], 0xFA5, 0xFA7, i, GumpButtonType.Reply, 0);
+          AddButton(LayoutArray[i][6], LayoutArray[i][7], 0xFA5, 0xFA7, i);
         }
       }
 

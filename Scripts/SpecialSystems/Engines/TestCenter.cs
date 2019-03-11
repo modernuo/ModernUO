@@ -46,6 +46,7 @@ namespace Server.Misc
           }
           catch
           {
+            // ignored
           }
       }
       else if (Insensitive.Equals(args.Speech, "help"))
@@ -159,16 +160,16 @@ namespace Server.Misc
         AddPage(0);
         AddBackground(0, 0, 160, 120, 5054);
 
-        AddButton(10, 10, 0xFB7, 0xFB9, 1, GumpButtonType.Reply, 0);
+        AddButton(10, 10, 0xFB7, 0xFB9, 1);
         AddLabel(45, 10, 0x34, "RunUO");
 
-        AddButton(10, 35, 0xFB7, 0xFB9, 2, GumpButtonType.Reply, 0);
+        AddButton(10, 35, 0xFB7, 0xFB9, 2);
         AddLabel(45, 35, 0x34, "List of skills");
 
-        AddButton(10, 60, 0xFB7, 0xFB9, 3, GumpButtonType.Reply, 0);
+        AddButton(10, 60, 0xFB7, 0xFB9, 3);
         AddLabel(45, 60, 0x34, "Command list");
 
-        AddButton(10, 85, 0xFB1, 0xFB3, 0, GumpButtonType.Reply, 0);
+        AddButton(10, 85, 0xFB1, 0xFB3, 0);
         AddLabel(45, 85, 0x34, "Close");
       }
 

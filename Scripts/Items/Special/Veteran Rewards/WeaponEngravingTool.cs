@@ -238,8 +238,8 @@ namespace Server.Items
         AddHtmlLocalized(50, 70, 400, 20, 1072359, 0x0, false, false); // <CENTER>Engraving Tool</CENTER>
         AddHtmlLocalized(75, 95, 350, 145, 1076229, 0x0, true,
           true); // Please enter the text to add to the selected object. Leave the text area blank to remove any existing text.  Removing text does not use a charge.
-        AddButton(125, 300, 0x81A, 0x81B, (int)Buttons.Okay, GumpButtonType.Reply, 0);
-        AddButton(320, 300, 0x819, 0x818, (int)Buttons.Cancel, GumpButtonType.Reply, 0);
+        AddButton(125, 300, 0x81A, 0x81B, (int)Buttons.Okay);
+        AddButton(320, 300, 0x819, 0x818, (int)Buttons.Cancel);
         AddImageTiled(75, 245, 350, 40, 0xDB0);
         AddImageTiled(76, 245, 350, 2, 0x23C5);
         AddImageTiled(75, 245, 2, 40, 0x23C3);
@@ -322,8 +322,8 @@ namespace Server.Items
           AddHtmlLocalized(195, 109, 120, 20, 1076177, 0x7FFF, false, false); // Replace the tip.
         }
 
-        AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Confirm, GumpButtonType.Reply, 0);
-        AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel, GumpButtonType.Reply, 0);
+        AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Confirm);
+        AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
         AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF, false, false); // CANCEL
       }
 

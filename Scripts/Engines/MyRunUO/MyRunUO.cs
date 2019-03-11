@@ -120,7 +120,7 @@ namespace Server.Engines.MyRunUO
 
     public static void TableCreation()
     {
-      if (m_Command != null && !m_Command.HasCompleted)
+      if (m_Command?.HasCompleted == false)
         return;
       // DateTime start = DateTime.Now;
       Console.WriteLine("MyRunUO: Creating tables");

@@ -302,15 +302,13 @@ namespace Server.Mobiles
     {
       base.OnSpeech(e);
 
-      EDI dest = GetDestination();
+      if (GetDestination() == null || e.Handled || !e.Mobile.InRange(Location, 3))
+        return;
 
-      if (dest != null && !e.Handled && e.Mobile.InRange(Location, 3))
-      {
-        if (e.HasKeyword(0x1D)) // *destination*
-          e.Handled = SayDestinationTo(e.Mobile);
-        else if (e.HasKeyword(0x1E)) // *i will take thee*
-          e.Handled = AcceptEscorter(e.Mobile);
-      }
+      if (e.HasKeyword(0x1D)) // *destination*
+        e.Handled = SayDestinationTo(e.Mobile);
+      else if (e.HasKeyword(0x1E)) // *i will take thee*
+        e.Handled = AcceptEscorter(e.Mobile);
     }
 
     public override void OnAfterDelete()

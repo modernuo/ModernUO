@@ -105,8 +105,8 @@ namespace Server.Engines.ConPVP
       AddColumnHeader(325, "Participants");
       AddColumnHeader(40, "Obs");
 
-      AddButton(499 + 40 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1, GumpButtonType.Reply, 0);
-      AddButton(499 + 40 - 12 - 63, height - 12 - 24, 241, 242, 2, GumpButtonType.Reply, 0);
+      AddButton(499 + 40 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
+      AddButton(499 + 40 - 12 - 63, height - 12 - 24, 241, 242, 2);
 
       for (int i = 0; i < list.Count; ++i)
       {

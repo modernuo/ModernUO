@@ -46,8 +46,8 @@ namespace Server.Engines.MLQuests.Gumps
       else
         AddHtml(15, 15, 210, 75, $"Are you sure you want to change your race to {targetRace.Name}?", false, false);
 
-      AddButton(160, 95, 0xF7, 0xF8, 1, GumpButtonType.Reply, 0);
-      AddButton(90, 95, 0xF2, 0xF1, 0, GumpButtonType.Reply, 0);
+      AddButton(160, 95, 0xF7, 0xF8, 1);
+      AddButton(90, 95, 0xF2, 0xF1, 0);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -186,7 +186,7 @@ namespace Server.Engines.MLQuests.Gumps
         return;
       }
 
-      if (!CanChange(pm, targetRace) || owner != null && !owner.CheckComplete(pm))
+      if (!CanChange(pm, targetRace) || owner?.CheckComplete(pm) == false)
         return;
 
       int hue = pvSrc.ReadUInt16();

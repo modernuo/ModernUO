@@ -53,7 +53,7 @@ namespace Server.Items
       if (edit)
       {
         AddBackground(230, 195, 100, 26, 0x13BE);
-        AddButton(235, 200, 0x845, 0x846, page, GumpButtonType.Reply, 0);
+        AddButton(235, 200, 0x845, 0x846, page);
         AddHtmlLocalized(260, 198, 60, 26, 1073838, 0x0, false, false); // Remove
       }
 

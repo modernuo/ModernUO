@@ -72,9 +72,9 @@ namespace Server
       AddHtmlLocalized(75, 95, 220, 140, description, false, false);
       AddHtmlLocalized(70, 224, 229, 60, valueDesc, false, false);
 
-      AddButton(65, 277, 1209, 1209, 1, GumpButtonType.Reply, 0);
+      AddButton(65, 277, 1209, 1209, 1);
 
-      AddButton(280, 43, 4014, 4014, 2, GumpButtonType.Reply, 0);
+      AddButton(280, 43, 4014, 4014, 2);
 
       AddHtmlLocalized(83, 275, 400, 40, webPage == null ? 1052055 : 1052052, false,
         false); // This virtue is not yet defined. OR -click to learn more (opens webpage)

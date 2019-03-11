@@ -94,7 +94,7 @@ namespace Server.Engines.Quests
       AddImage(75, 58, 9781);
       AddImage(380, 45, 223);
 
-      AddButton(220, 335, 2313, 2312, 1, GumpButtonType.Reply, 0);
+      AddButton(220, 335, 2313, 2312, 1);
       AddImage(0, 0, 10440);
 
       AddPage(1);

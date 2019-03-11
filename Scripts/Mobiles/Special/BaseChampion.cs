@@ -206,7 +206,7 @@ namespace Server.Mobiles
           }
           else
           {
-            if (prot.Corpse != null && !prot.Corpse.Deleted)
+            if (prot.Corpse?.Deleted == false)
               prot.Corpse.DropItem(powerScroll);
             else
               prot.AddToBackpack(powerScroll);

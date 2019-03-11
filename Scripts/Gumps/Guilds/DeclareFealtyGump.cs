@@ -13,10 +13,10 @@ namespace Server.Gumps
     {
       AddHtmlLocalized(20, 10, 400, 35, 1011097, false, false); // Declare your fealty
 
-      AddButton(20, 400, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(20, 400, 4005, 4007, 1);
       AddHtmlLocalized(55, 400, 250, 35, 1011098, false, false); // I have selected my new lord.
 
-      AddButton(300, 400, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddButton(300, 400, 4005, 4007, 0);
       AddHtmlLocalized(335, 400, 100, 35, 1011012, false, false); // CANCEL
     }
 

@@ -227,7 +227,7 @@ namespace Server.Items
           for (int j = 0; j < 8; j++, itemID += 2)
           {
             AddItem(50 + 60 * j, 70, itemID);
-            AddButton(50 + 60 * j, 50, 0x845, 0x846, itemID, GumpButtonType.Reply, 0);
+            AddButton(50 + 60 * j, 50, 0x845, 0x846, itemID);
           }
 
           if (i > 1)
@@ -360,8 +360,8 @@ namespace Server.Items
           AddItem(90, 30, itemID + 1);
           AddItem(180, 30, itemID);
 
-          AddButton(50, 35, 0x868, 0x869, (int)Buttons.East, GumpButtonType.Reply, 0);
-          AddButton(145, 35, 0x868, 0x869, (int)Buttons.South, GumpButtonType.Reply, 0);
+          AddButton(50, 35, 0x868, 0x869, (int)Buttons.East);
+          AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
         }
 
         public override void OnResponse(NetState sender, RelayInfo info)

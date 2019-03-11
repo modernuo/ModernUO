@@ -63,7 +63,7 @@ namespace Server.Engines.Help
       AddPage(0);
 
       AddHtmlLocalized(150, 50, 360, 40, 1001002, false, false); // <CENTER><U>Ultima Online Help Menu</U></CENTER>
-      AddButton(425, 415, 2073, 2072, 0, GumpButtonType.Reply, 0); // Close
+      AddButton(425, 415, 2073, 2072, 0); // Close
 
       AddPage(1);
 
@@ -79,7 +79,7 @@ namespace Server.Engines.Help
           @"<u>General question about Ultima Online.</u> Select this option if you have a general gameplay question, need help learning to use a skill, or if you would like to search the UO Knowledge Base.",
           true, true);
 
-        AddButton(80, 205, 5540, 5541, 2, GumpButtonType.Reply, 0);
+        AddButton(80, 205, 5540, 5541, 2);
         AddHtml(110, 205, 450, 58,
           @"<u>My character is physically stuck in the game.</u> This choice only covers cases where your character is physically stuck in a location they cannot move out of. This option will only work two times in 24 hours.",
           true, true);
@@ -101,7 +101,7 @@ namespace Server.Engines.Help
           @"<u>General question about Ultima Online.</u> Select this option if you have a general gameplay question, need help learning to use a skill, or if you would like to search the UO Knowledge Base.",
           true, true);
 
-        AddButton(80, 170, 5540, 5541, 2, GumpButtonType.Reply, 0);
+        AddButton(80, 170, 5540, 5541, 2);
         AddHtml(110, 170, 450, 74,
           @"<u>My character is physically stuck in the game.</u> This choice only covers cases where your character is physically stuck in a location they cannot move out of. This option will only work two times in 24 hours.",
           true, true);
@@ -119,29 +119,29 @@ namespace Server.Engines.Help
 
       AddPage(2);
 
-      AddButton(80, 90, 5540, 5541, 3, GumpButtonType.Reply, 0);
+      AddButton(80, 90, 5540, 5541, 3);
       AddHtml(110, 90, 450, 74,
         @"<u>Report a bug or contact Origin.</u> Use this option to launch your web browser and mail in a bug report. Your report will be read by our Quality Assurance Staff. We apologize for not being able to reply to individual reports. ",
         true, true);
 
-      AddButton(80, 170, 5540, 5541, 4, GumpButtonType.Reply, 0);
+      AddButton(80, 170, 5540, 5541, 4);
       AddHtml(110, 170, 450, 74,
         @"<u>Suggestion for the Game.</u> If you'd like to make a suggestion for the game, it should be directed to the Development Team Members who participate in the discussion forums on the UO.Com web site. Choosing this option will take you to the Discussion Forums. ",
         true, true);
 
-      AddButton(80, 250, 5540, 5541, 5, GumpButtonType.Reply, 0);
+      AddButton(80, 250, 5540, 5541, 5);
       AddHtml(110, 250, 450, 74,
         @"<u>Account Management</u> For questions regarding your account such as forgotten passwords, payment options, account activation, and account transfer, please choose this option.",
         true, true);
 
-      AddButton(80, 330, 5540, 5541, 6, GumpButtonType.Reply, 0);
+      AddButton(80, 330, 5540, 5541, 6);
       AddHtml(110, 330, 450, 74,
         @"<u>Other.</u> If you are experiencing a problem in the game that does not fall into one of the other categories or is not addressed on the Support web page (located at http://support.uo.com), and requires in-game assistance, use this option. ",
         true, true);
 
       AddPage(3);
 
-      AddButton(80, 90, 5540, 5541, 7, GumpButtonType.Reply, 0);
+      AddButton(80, 90, 5540, 5541, 7);
       AddHtmlLocalized(110, 90, 450, 145, 1062572, true,
         true); /* <U><CENTER>Another player is harassing me (or Exploiting).</CENTER></U><BR>
 																		 * VERBAL HARASSMENT<BR>
@@ -165,7 +165,7 @@ namespace Server.Engines.Help
 																		 * <A HREF="http://uo.custhelp.com/cgi-bin/uo.cfg/php/enduser/std_adp.php?p_faqid=41">� What constitutes an exploit?</a>
 																		 */
 
-      AddButton(80, 240, 5540, 5541, 8, GumpButtonType.Reply, 0);
+      AddButton(80, 240, 5540, 5541, 8);
       AddHtmlLocalized(110, 240, 450, 145, 1062573, true,
         true); /* <U><CENTER>Another player is harassing me using game mechanics.</CENTER></U><BR>
 																		  * <BR>

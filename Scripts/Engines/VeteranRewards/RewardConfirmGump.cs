@@ -33,10 +33,10 @@ namespace Server.Engines.VeteranRewards
       AddHtmlLocalized(35, 160, 450, 90, 1006002, true,
         true); // Are you sure you wish to select this reward for this character?  You will not be able to transfer this reward to another character on another shard.  Click 'ok' below to confirm your selection or 'cancel' to go back to the selection screen.
 
-      AddButton(60, 265, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(60, 265, 4005, 4007, 1);
       AddHtmlLocalized(95, 266, 150, 35, 1006044, false, false); // Ok
 
-      AddButton(295, 265, 4017, 4019, 0, GumpButtonType.Reply, 0);
+      AddButton(295, 265, 4017, 4019, 0);
       AddHtmlLocalized(330, 266, 150, 35, 1006045, false, false); // Cancel
     }
 

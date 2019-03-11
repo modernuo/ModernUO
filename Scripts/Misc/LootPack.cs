@@ -901,6 +901,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
 
       return null;

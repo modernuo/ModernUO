@@ -76,7 +76,7 @@ namespace Server.Items
 
       AddHtmlLocalized(70, 25, 400, 35, 1011013, false, false); // <center>Hair Color Selection Menu</center>
 
-      AddButton(149, 328, 4005, 4007, 1, GumpButtonType.Reply, 0);
+      AddButton(149, 328, 4005, 4007, 1);
       AddHtmlLocalized(185, 329, 250, 35, 1011014, false, false); // Dye my hair this color!
 
       for (int i = 0; i < m_Entries.Length; ++i)

@@ -78,6 +78,7 @@ namespace Server.Spells.Fifth
         }
         catch
         {
+          // ignored
         }
 
       FinishSequence();

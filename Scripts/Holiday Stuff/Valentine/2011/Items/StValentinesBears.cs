@@ -183,8 +183,8 @@ namespace Server.Items
         AddBackground(10, 250, 400, 24, 9350);
         AddTextEntry(15, 252, 390, 20, 0, 2, "", 25);
 
-        AddButton(15, 285, 242, 241, 0, GumpButtonType.Reply, 0);
-        AddButton(335, 285, 247, 248, 1, GumpButtonType.Reply, 0);
+        AddButton(15, 285, 242, 241, 0);
+        AddButton(335, 285, 247, 248, 1);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
