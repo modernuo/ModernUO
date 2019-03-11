@@ -84,16 +84,6 @@ namespace Server
       return v;
     }
 
-    public int CompareTo(object other)
-    {
-      if (other is Point2D d)
-        return CompareTo(d);
-      if (other == null)
-        return -1;
-
-      throw new ArgumentException();
-    }
-
     public override bool Equals(object o)
     {
       return o is IPoint2D p && m_X == p.X && m_Y == p.Y;
@@ -300,16 +290,6 @@ namespace Server
       }
 
       return v;
-    }
-
-    public int CompareTo(object other)
-    {
-      if (other is Point3D d)
-        return CompareTo(d);
-      if (other == null)
-        return -1;
-
-      throw new ArgumentException();
     }
   }
 
