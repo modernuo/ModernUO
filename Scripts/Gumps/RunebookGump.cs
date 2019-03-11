@@ -269,7 +269,7 @@ namespace Server.Gumps
                 }
 
                 Book.OnTravel();
-                new RecallSpell(from, Book, e, Book).Cast();
+                new RecallSpell(from, e, Book, Book).Cast();
 
                 Book.Openers.Remove(from);
               }
@@ -327,7 +327,7 @@ namespace Server.Gumps
                 }
 
                 Book.OnTravel();
-                new RecallSpell(from, null, e).Cast();
+                new RecallSpell(from, e).Cast();
               }
               else
               {
@@ -355,7 +355,7 @@ namespace Server.Gumps
                 }
 
                 Book.OnTravel();
-                new GateTravelSpell(from, null, e).Cast();
+                new GateTravelSpell(from, e).Cast();
               }
               else
               {
@@ -385,7 +385,7 @@ namespace Server.Gumps
                   }
 
                   Book.OnTravel();
-                  new SacredJourneySpell(from, null, e).Cast();
+                  new SacredJourneySpell(from, e).Cast();
                 }
                 else
                 {

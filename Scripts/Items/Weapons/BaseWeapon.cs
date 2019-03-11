@@ -377,10 +377,8 @@ namespace Server.Items
 
     public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
     {
-      if (!Ethic.CheckTrade(from, to, newOwner, this))
-        return false;
-
-      return base.AllowSecureTrade(from, to, newOwner, accepted);
+      return Ethic.CheckTrade(from, to, newOwner, this) &&
+             base.AllowSecureTrade(from, to, newOwner, accepted);
     }
 
     public override bool CanEquip(Mobile from)
@@ -416,9 +414,7 @@ namespace Server.Items
         return false;
       }
 
-      if (!from.CanBeginAction<BaseWeapon>()) return false;
-
-      return base.CanEquip(from);
+      return from.CanBeginAction<BaseWeapon>() && base.CanEquip(from);
     }
 
     public override bool OnEquip(Mobile from)
@@ -3030,7 +3026,7 @@ namespace Server.Items
 
       attacker.DoHarmful(defender);
 
-      MagerySpell sp = new DispelSpell(attacker, null);
+      MagerySpell sp = new DispelSpell(attacker);
 
       if (sp.CheckResisted(defender))
       {

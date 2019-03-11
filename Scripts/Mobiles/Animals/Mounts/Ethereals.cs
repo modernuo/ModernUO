@@ -188,7 +188,7 @@ namespace Server.Mobiles
         return false;
       }
 
-      return DesignContext.Check(@from);
+      return DesignContext.Check(from);
     }
 
     public override void OnDoubleClick(Mobile from)

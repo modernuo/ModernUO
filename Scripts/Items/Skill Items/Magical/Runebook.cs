@@ -425,7 +425,7 @@ namespace Server.Items
 
   public class RunebookEntry
   {
-    public RunebookEntry(Point3D loc, Map map, string desc, BaseHouse house)
+    public RunebookEntry(Point3D loc, Map map, string desc, BaseHouse house = null)
     {
       Location = loc;
       Map = map;

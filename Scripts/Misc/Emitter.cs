@@ -503,9 +503,9 @@ namespace Server
 				 * Bleh.
 				 */
 
-				Type[] ifaces = active.FindInterfaces((type, obj) => (type.IsGenericType)
-				                                                     && (type.GetGenericTypeDefinition() == typeof(IComparable<>))
-				                                                     && (type.GetGenericArguments()[0].IsAssignableFrom(active)), null );
+				Type[] ifaces = active.FindInterfaces((type, obj) => type.IsGenericType
+          && type.GetGenericTypeDefinition() == typeof(IComparable<>)
+          && type.GetGenericArguments()[0].IsAssignableFrom(active), null );
 
 				if ( ifaces.Length > 0 )
 				{
@@ -513,10 +513,7 @@ namespace Server
 				}
 				else
 				{
-					ifaces = active.FindInterfaces( delegate( Type type, object obj )
-					{
-						return ( type == typeof( IComparable ) );
-					}, null );
+					ifaces = active.FindInterfaces((type, obj) => type == typeof(IComparable), null );
 
 					if ( ifaces.Length > 0 )
 						compareTo = ifaces[0].GetMethod( "CompareTo", new[] { active } );
@@ -668,7 +665,7 @@ namespace Server
 			if ( ( call.type.IsValueType || call.type.IsByRef ) && call.method.DeclaringType != call.type )
 				Generator.Emit( OpCodes.Constrained, call.type );
 
-			if ( call.method.DeclaringType.IsValueType || call.method.IsStatic )
+			if ( call.method.DeclaringType?.IsValueType == true || call.method.IsStatic )
 				Generator.Emit( OpCodes.Call, call.method );
 			else
 				Generator.Emit( OpCodes.Callvirt, call.method );
