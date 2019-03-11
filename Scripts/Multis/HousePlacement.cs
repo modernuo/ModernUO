@@ -324,13 +324,12 @@ namespace Server.Multis
         {
           _sectors.Add(sector);
 
-          if (sector.Multis != null)
-            for (int j = 0; j < sector.Multis.Count; j++)
-              if (sector.Multis[j] is BaseHouse)
-              {
-                BaseHouse _house = (BaseHouse)sector.Multis[j];
-                if (!_houses.Contains(_house)) _houses.Add(_house);
-              }
+          for (int j = 0; j < sector.Multis?.Count; j++)
+            if (sector.Multis[j] is BaseHouse)
+            {
+              BaseHouse _house = (BaseHouse)sector.Multis[j];
+              if (!_houses.Contains(_house)) _houses.Add(_house);
+            }
         }
       }
 

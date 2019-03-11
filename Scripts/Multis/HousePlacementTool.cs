@@ -808,9 +808,7 @@ namespace Server.Items
         return entry;
 
       if (obj is List<HousePlacementEntry> list)
-      {
         return list.FirstOrDefault(e => e.MultiID == house.ItemID);
-      }
 
       if (obj is Dictionary<int, HousePlacementEntry> table)
         return table[house.ItemID];

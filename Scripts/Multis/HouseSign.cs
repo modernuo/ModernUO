@@ -40,10 +40,7 @@ namespace Server.Multis
 
     public string GetName()
     {
-      if (Name == null)
-        return "An Unnamed House";
-
-      return Name;
+      return Name ?? "An Unnamed House";
     }
 
     public override void OnAfterDelete()

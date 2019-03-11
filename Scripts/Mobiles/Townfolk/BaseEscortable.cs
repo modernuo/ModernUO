@@ -671,10 +671,7 @@ namespace Server.Mobiles
 
       foreach (Region r in list)
       {
-        if (r.Name == null)
-          continue;
-
-        if (r is DungeonRegion || r is TownRegion)
+        if (r.Name != null && (r is DungeonRegion || r is TownRegion))
           m_Table[r.Name] = new EscortDestinationInfo(r.Name, r);
       }
     }

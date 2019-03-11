@@ -294,7 +294,7 @@ namespace Server.Mobiles
 
         return base.Name;
       }
-      set { base.Name = value == DefaultName ? null : value; }
+      set => base.Name = value == DefaultName ? null : value;
     }
 
     public virtual InhumanSpeech SpeechType => null;
@@ -464,19 +464,17 @@ namespace Server.Mobiles
     {
       get
       {
-        if (HitsMaxSeed > 0)
-        {
-          int value = HitsMaxSeed + GetStatOffset(StatType.Str);
+        if (HitsMaxSeed <= 0)
+          return Str;
 
-          if (value < 1)
-            value = 1;
-          else if (value > 65000)
-            value = 65000;
+        int value = HitsMaxSeed + GetStatOffset(StatType.Str);
 
-          return value;
-        }
+        if (value < 1)
+          value = 1;
+        else if (value > 65000)
+          value = 65000;
 
-        return Str;
+        return value;
       }
     }
 
@@ -488,19 +486,18 @@ namespace Server.Mobiles
     {
       get
       {
-        if (StamMaxSeed > 0)
-        {
-          int value = StamMaxSeed + GetStatOffset(StatType.Dex);
+        if (StamMaxSeed <= 0)
+          return Dex;
 
-          if (value < 1)
-            value = 1;
-          else if (value > 65000)
-            value = 65000;
+        int value = StamMaxSeed + GetStatOffset(StatType.Dex);
 
-          return value;
-        }
+        if (value < 1)
+          value = 1;
+        else if (value > 65000)
+          value = 65000;
 
-        return Dex;
+        return value;
+
       }
     }
 
@@ -512,19 +509,18 @@ namespace Server.Mobiles
     {
       get
       {
-        if (ManaMaxSeed > 0)
-        {
-          int value = ManaMaxSeed + GetStatOffset(StatType.Int);
+        if (ManaMaxSeed <= 0)
+          return Int;
 
-          if (value < 1)
-            value = 1;
-          else if (value > 65000)
-            value = 65000;
+        int value = ManaMaxSeed + GetStatOffset(StatType.Int);
 
-          return value;
-        }
+        if (value < 1)
+          value = 1;
+        else if (value > 65000)
+          value = 65000;
 
-        return Int;
+        return value;
+
       }
     }
 
@@ -538,7 +534,6 @@ namespace Server.Mobiles
     public virtual bool CanDestroyObstacles => false;
 
     /*
-
     Seems this actually was removed on OSI somewhere between the original bug report and now.
     We will call it ML, until we can get better information. I suspect it was on the OSI TC when
     originally it taken out of RunUO, and not implemented on OSIs production shards until more
@@ -581,7 +576,6 @@ namespace Server.Mobiles
       set
       {
         m_Team = value;
-
         OnTeamChange();
       }
     }
@@ -610,19 +604,12 @@ namespace Server.Mobiles
     [CommandProperty(AccessLevel.GameMaster)]
     public double CurrentSpeed
     {
-      get
-      {
-        if (TargetLocation != null)
-          return 0.3;
-
-        return m_CurrentSpeed;
-      }
+      get => TargetLocation != null ? 0.3 : m_CurrentSpeed;
       set
       {
         if (m_CurrentSpeed != value)
         {
           m_CurrentSpeed = value;
-
           AIObject?.OnCurrentSpeedChanged();
         }
       }
@@ -907,7 +894,7 @@ namespace Server.Mobiles
         (int)((useBaseSkill ? m.Skills.AnimalTaming.Base : m.Skills.AnimalTaming.Value) * 10);
       int lore =
         (int)((useBaseSkill ? m.Skills.AnimalLore.Base : m.Skills.AnimalLore.Value) * 10);
-      int bonus = 0, chance = 700;
+      int bonus, chance = 700;
 
       if (Core.ML)
       {
@@ -1793,7 +1780,6 @@ namespace Server.Mobiles
       if (AIObject != null)
       {
         AIObject.m_Timer?.Stop();
-
         AIObject = null;
       }
 
@@ -1893,9 +1879,8 @@ namespace Server.Mobiles
     {
       base.AggressiveAction(aggressor, criminal);
 
-      if (ControlMaster != null)
-        if (NotorietyHandlers.CheckAggressor(ControlMaster.Aggressors, aggressor))
-          aggressor.Aggressors.Add(AggressorInfo.Create(this, aggressor, true));
+      if (ControlMaster != null && NotorietyHandlers.CheckAggressor(ControlMaster.Aggressors, aggressor))
+        aggressor.Aggressors.Add(AggressorInfo.Create(this, aggressor, true));
 
       OrderType ct = m_ControlOrder;
 
@@ -2146,7 +2131,8 @@ namespace Server.Mobiles
 
     public virtual void CheckedAnimate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
-      if (!Mounted) base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
+      if (!Mounted)
+        base.Animate(action, frameCount, repeatCount, forward, repeat, delay);
     }
 
     private void CheckAIActive()
@@ -2190,15 +2176,13 @@ namespace Server.Mobiles
     {
       if (AcquireOnApproach && !Controlled && !Summoned && FightMode != FightMode.Aggressor)
       {
-        if (InRange(m.Location, AcquireOnApproachRange) && !InRange(oldLocation, AcquireOnApproachRange))
-          if (CanBeHarmful(m) && IsEnemy(m))
-          {
-            Combatant = FocusMob = m;
-
-            AIObject?.MoveTo(m, true, 1);
-
-            DoHarmful(m);
-          }
+        if (InRange(m.Location, AcquireOnApproachRange) && !InRange(oldLocation, AcquireOnApproachRange) &&
+            CanBeHarmful(m) && IsEnemy(m))
+        {
+          Combatant = FocusMob = m;
+          AIObject?.MoveTo(m, true, 1);
+          DoHarmful(m);
+        }
       }
       else if (ReacquireOnMovement)
       {
@@ -2211,14 +2195,14 @@ namespace Server.Mobiles
 
       /* Begin notice sound */
       if ((!m.Hidden || m.AccessLevel == AccessLevel.Player) && m.Player && FightMode != FightMode.Aggressor &&
-          FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned)
-        if (InRange(m.Location, 18) && !InRange(oldLocation, 18))
-        {
-          if (Body.IsMonster)
-            Animate(11, 5, 1, true, false, 1);
+          FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned &&
+          InRange(m.Location, 18) && !InRange(oldLocation, 18))
+      {
+        if (Body.IsMonster)
+          Animate(11, 5, 1, true, false, 1);
 
-          PlaySound(GetAngerSound());
-        }
+        PlaySound(GetAngerSound());
+      }
       /* End notice sound */
 
       if (MLQuestSystem.Enabled && CanShout && m is PlayerMobile mobile)
@@ -2427,9 +2411,7 @@ namespace Server.Mobiles
         Effects.SendLocationEffect(Location, Map, 0x3728, 13, 1, 0x461, 4);
 
       InhumanSpeech speechType = SpeechType;
-
       speechType?.OnDeath(this);
-
       ReceivedHonorContext?.OnTargetKilled();
 
       return base.OnBeforeDeath();
@@ -2484,33 +2466,32 @@ namespace Server.Mobiles
 
         List<DamageEntry> respList = de.Responsible;
 
-        if (respList != null)
-          for (int j = 0; j < respList.Count; ++j)
+        for (int j = 0; j < respList?.Count; ++j)
+        {
+          DamageEntry subEntry = respList[j];
+          Mobile master = subEntry.Damager;
+
+          if (master?.Deleted != false || !master.Player)
+            continue;
+
+          bool needNewSubEntry = true;
+
+          for (int k = 0; needNewSubEntry && k < rights.Count; ++k)
           {
-            DamageEntry subEntry = respList[j];
-            Mobile master = subEntry.Damager;
+            DamageStore ds = rights[k];
 
-            if (master?.Deleted != false || !master.Player)
-              continue;
-
-            bool needNewSubEntry = true;
-
-            for (int k = 0; needNewSubEntry && k < rights.Count; ++k)
+            if (ds.m_Mobile == master)
             {
-              DamageStore ds = rights[k];
-
-              if (ds.m_Mobile == master)
-              {
-                ds.m_Damage += subEntry.DamageGiven;
-                needNewSubEntry = false;
-              }
+              ds.m_Damage += subEntry.DamageGiven;
+              needNewSubEntry = false;
             }
-
-            if (needNewSubEntry)
-              rights.Add(new DamageStore(master, subEntry.DamageGiven));
-
-            damage -= subEntry.DamageGiven;
           }
+
+          if (needNewSubEntry)
+            rights.Add(new DamageStore(master, subEntry.DamageGiven));
+
+          damage -= subEntry.DamageGiven;
+        }
 
         Mobile m = de.Damager;
 
@@ -2771,14 +2752,11 @@ namespace Server.Mobiles
     public override void OnDelete()
     {
       Mobile m = m_ControlMaster;
-
       SetControlMaster(null);
+
       SummonMaster = null;
-
       ReceivedHonorContext?.Cancel();
-
       base.OnDelete();
-
       m?.InvalidateProperties();
     }
 
@@ -5156,23 +5134,11 @@ namespace Server.Mobiles
       if (!Alive || IsDeadBondedPet)
         return;
 
-      List<Mobile> list = new List<Mobile>();
+      IPooledEnumerable<Mobile> eable = GetMobilesInRange(AuraRange);
 
-      foreach (Mobile m in GetMobilesInRange(AuraRange))
-      {
-        if (m == this || !CanBeHarmful(m, false) || Core.AOS && !InLOS(m))
-          continue;
-
-        if (m is BaseCreature bc)
-        {
-          if (bc.Controlled || bc.Summoned || bc.Team != Team)
-            list.Add(bc);
-        }
-        else if (m.Player)
-        {
-          list.Add(m);
-        }
-      }
+      IEnumerable<Mobile> list = eable.Where(m =>
+        m != this && CanBeHarmful(m, false) && (Core.AOS || InLOS(m)) &&
+        (m is BaseCreature bc && (bc.Controlled || bc.Summoned || bc.Team != Team) || m.Player));
 
       foreach (Mobile m in list)
       {
@@ -5180,6 +5146,8 @@ namespace Server.Mobiles
           AuraEnergyDamage, AuraChaosDamage);
         AuraEffect(m);
       }
+
+      eable.Free();
     }
 
     public virtual void AuraEffect(Mobile m)
