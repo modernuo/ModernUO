@@ -20,8 +20,8 @@ namespace Server.Gumps
       AddBackground(0, 0, 420, 50 + 20 * m_Inventories.Count, 0x13BE);
 
       AddImageTiled(10, 10, 400, 20, 0xA40);
-      AddHtmlLocalized(15, 10, 200, 20, 1062435, 0x7FFF, false, false); // Reclaim Vendor Inventory
-      AddHtmlLocalized(330, 10, 50, 20, 1062465, 0x7FFF, false, false); // Expires
+      AddHtmlLocalized(15, 10, 200, 20, 1062435, 0x7FFF); // Reclaim Vendor Inventory
+      AddHtmlLocalized(330, 10, 50, 20, 1062465, 0x7FFF); // Expires
 
       AddImageTiled(10, 40, 400, 20 * m_Inventories.Count, 0xA40);
 
@@ -40,7 +40,7 @@ namespace Server.Gumps
         int hours = (int)expire.TotalHours;
 
         AddLabel(320, y, 0x481, hours.ToString());
-        AddHtmlLocalized(350, y, 50, 20, 1062466, 0x7FFF, false, false); // hour(s)
+        AddHtmlLocalized(350, y, 50, 20, 1062466, 0x7FFF); // hour(s)
       }
     }
 

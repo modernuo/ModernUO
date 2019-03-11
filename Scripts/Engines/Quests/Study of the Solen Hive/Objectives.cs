@@ -114,7 +114,7 @@ namespace Server.Engines.Quests.Naturalist
     {
       if (!Completed)
       {
-        gump.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue, false, false); // Solen Nests Studied :
+        gump.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue); // Solen Nests Studied :
         gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
         gump.AddLabel(100, 280, 0x64, "/");
         gump.AddLabel(130, 280, 0x64, MaxProgress.ToString());
@@ -171,7 +171,7 @@ namespace Server.Engines.Quests.Naturalist
     {
       string count = NestArea.NonSpecialCount.ToString();
 
-      gump.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue, false, false); // Solen Nests Studied :
+      gump.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue); // Solen Nests Studied :
       gump.AddLabel(70, 280, 0x64, count);
       gump.AddLabel(100, 280, 0x64, "/");
       gump.AddLabel(130, 280, 0x64, count);

@@ -129,10 +129,10 @@ namespace Server.Items
 
         AddBackground(0, 0, 220, 170, 0x13BE);
         AddBackground(10, 10, 200, 150, 0xBB8);
-        AddHtmlLocalized(20, 30, 180, 60, 1062839, false, false); // Do you wish to re-deed this decoration?
-        AddHtmlLocalized(55, 100, 160, 25, 1011011, false, false); // CONTINUE
+        AddHtmlLocalized(20, 30, 180, 60, 1062839); // Do you wish to re-deed this decoration?
+        AddHtmlLocalized(55, 100, 160, 25, 1011011); // CONTINUE
         AddButton(20, 100, 0xFA5, 0xFA7, 1);
-        AddHtmlLocalized(55, 125, 160, 25, 1011012, false, false); // CANCEL
+        AddHtmlLocalized(55, 125, 160, 25, 1011012); // CANCEL
         AddButton(20, 125, 0xFA5, 0xFA7, 0);
       }
 

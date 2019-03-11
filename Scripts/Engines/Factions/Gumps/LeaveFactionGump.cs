@@ -25,10 +25,10 @@ namespace Server.Factions
       else
         AddHtmlLocalized(20, 15, 230, 60, 1018063, true, true); // Are you sure you want to leave this faction?
 
-      AddHtmlLocalized(55, 80, 75, 20, 1011011, false, false); // CONTINUE
+      AddHtmlLocalized(55, 80, 75, 20, 1011011); // CONTINUE
       AddButton(20, 80, 4005, 4007, 1);
 
-      AddHtmlLocalized(170, 80, 75, 20, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(170, 80, 75, 20, 1011012); // CANCEL
       AddButton(135, 80, 4005, 4007, 2);
     }
 

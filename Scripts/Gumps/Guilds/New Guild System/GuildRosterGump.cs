@@ -33,14 +33,14 @@ namespace Server.Guilds
     {
       base.PopulateGump();
 
-      AddHtmlLocalized(266, 43, 110, 26, 1062974, 0xF, false, false); // Guild Roster
+      AddHtmlLocalized(266, 43, 110, 26, 1062974, 0xF); // Guild Roster
     }
 
     public override void DrawEndingEntry(int itemNumber)
     {
       AddBackground(225, 148 + itemNumber * 28, 150, 26, 0x2486);
       AddButton(230, 153 + itemNumber * 28, 0x845, 0x846, 8);
-      AddHtmlLocalized(255, 151 + itemNumber * 28, 110, 26, 1062992, 0x0, false, false); // Invite Player
+      AddHtmlLocalized(255, 151 + itemNumber * 28, 110, 26, 1062992, 0x0); // Invite Player
     }
 
     protected override TextDefinition[] GetValuesFor(PlayerMobile pm, int aryLength)

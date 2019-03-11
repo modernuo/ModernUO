@@ -341,7 +341,7 @@ namespace Server.Engines.Quests.Hag
       {
         IngredientInfo info = IngredientInfo.Get(Ingredient);
 
-        gump.AddHtmlLocalized(70, 260, 270, 100, info.Name, BaseQuestGump.Blue, false, false);
+        gump.AddHtmlLocalized(70, 260, 270, 100, info.Name, BaseQuestGump.Blue);
         gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
         gump.AddLabel(100, 280, 0x64, "/");
         gump.AddLabel(130, 280, 0x64, info.Quantity.ToString());

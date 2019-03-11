@@ -46,7 +46,7 @@ namespace Server.Gumps
 
 			AddBackground( 0, 0, 400, 350, 2600 );
 
-			AddHtmlLocalized( 0, 20, 400, 35, 1011022, false, false ); // <center>Resurrection</center>
+			AddHtmlLocalized( 0, 20, 400, 35, 1011022 ); // <center>Resurrection</center>
 
 			AddHtmlLocalized( 50, 55, 300, 140, 1011023 + (int)msg, true, true ); /* It is possible for you to be resurrected here by this healer. Do you wish to try?<br>
 																				   * CONTINUE - You chose to try to come back to life now.<br>
@@ -54,10 +54,10 @@ namespace Server.Gumps
 																				   */
 
 			AddButton( 200, 227, 4005, 4007, 0);
-			AddHtmlLocalized( 235, 230, 110, 35, 1011012, false, false ); // CANCEL
+			AddHtmlLocalized( 235, 230, 110, 35, 1011012 ); // CANCEL
 
 			AddButton( 65, 227, 4005, 4007, 1);
-			AddHtmlLocalized( 100, 230, 110, 35, 1011011, false, false ); // CONTINUE
+			AddHtmlLocalized( 100, 230, 110, 35, 1011011 ); // CONTINUE
 		}
 
 		public ResurrectGump( Mobile owner, Mobile healer, int price )
@@ -87,14 +87,14 @@ namespace Server.Gumps
 			AddImageTiled( 15, 15, 365, 190, 2624 );
 
 			AddRadio( 30, 140, 9727, 9730, true, 1 );
-			AddHtmlLocalized( 65, 145, 300, 25, 1060015, 0x7FFF, false, false ); // Grudgingly pay the money
+			AddHtmlLocalized( 65, 145, 300, 25, 1060015, 0x7FFF ); // Grudgingly pay the money
 
 			AddRadio( 30, 175, 9727, 9730, false, 0 );
-			AddHtmlLocalized( 65, 178, 300, 25, 1060016, 0x7FFF, false, false ); // I'd rather stay dead, you scoundrel!!!
+			AddHtmlLocalized( 65, 178, 300, 25, 1060016, 0x7FFF ); // I'd rather stay dead, you scoundrel!!!
 
-			AddHtmlLocalized( 30, 20, 360, 35, 1060017, 0x7FFF, false, false ); // Wishing to rejoin the living, are you?  I can restore your body... for a price of course...
+			AddHtmlLocalized( 30, 20, 360, 35, 1060017, 0x7FFF ); // Wishing to rejoin the living, are you?  I can restore your body... for a price of course...
 
-			AddHtmlLocalized( 30, 105, 345, 40, 1060018, 0x5B2D, false, false ); // Do you accept the fee, which will be withdrawn from your bank?
+			AddHtmlLocalized( 30, 105, 345, 40, 1060018, 0x5B2D ); // Do you accept the fee, which will be withdrawn from your bank?
 
 			AddImage( 65, 72, 5605 );
 
@@ -102,7 +102,7 @@ namespace Server.Gumps
 			AddImageTiled( 95, 92, 200, 1, 9157 );
 
 			AddLabel( 90, 70, 1645, price.ToString() );
-			AddHtmlLocalized( 140, 70, 100, 25, 1023823, 0x7FFF, false, false ); // gold coins
+			AddHtmlLocalized( 140, 70, 100, 25, 1023823, 0x7FFF ); // gold coins
 
 			AddButton( 290, 175, 247, 248, 2 );
 

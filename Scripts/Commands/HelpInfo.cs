@@ -347,7 +347,7 @@ namespace Server.Commands
         //AddImageTiled( 10, 10, width - 20, 20, 2624 );
         //AddAlphaRegion( 10, 10, width - 20, 20 );
         //AddHtmlLocalized( 10, 10, width - 20, 20, header, headerColor, false, false );
-        AddHtml(10, 10, width - 20, 20, Color(Center(info.Name), 0xFF0000), false, false);
+        AddHtml(10, 10, width - 20, 20, Color(Center(info.Name), 0xFF0000));
 
         //AddImageTiled( 10, 40, width - 20, height - 80, 2624 );
         //AddAlphaRegion( 10, 40, width - 20, height - 80 );

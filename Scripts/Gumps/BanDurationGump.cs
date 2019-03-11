@@ -26,7 +26,7 @@ namespace Server.Gumps
 
       //AddImageTiled( 10, 10, width - 20, 20, 2624 );
       //AddAlphaRegion( 10, 10, width - 20, 20 );
-      AddHtml(10, 10, width - 20, 20, "<CENTER>Ban Duration</CENTER>", false, false);
+      AddHtml(10, 10, width - 20, 20, "<CENTER>Ban Duration</CENTER>");
 
       //AddImageTiled( 10, 40, width - 20, height - 50, 2624 );
       //AddAlphaRegion( 10, 40, width - 20, height - 50 );
@@ -39,14 +39,14 @@ namespace Server.Gumps
       AddInput(5, 2, "Minutes");
       AddInput(6, 3, "Seconds");
 
-      AddHtml(170, 45, 240, 20, "Comments:", false, false);
+      AddHtml(170, 45, 240, 20, "Comments:");
       AddTextField(170, 65, 315, height - 80, 10);
     }
 
     public void AddButtonLabeled(int x, int y, int buttonID, string text)
     {
       AddButton(x, y - 1, 4005, 4007, buttonID);
-      AddHtml(x + 35, y, 240, 20, text, false, false);
+      AddHtml(x + 35, y, 240, 20, text);
     }
 
     public void AddTextField(int x, int y, int width, int height, int index)

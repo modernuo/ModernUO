@@ -25,17 +25,17 @@ namespace Server.Engines.BulkOrders
 
       AddBackground(100, 10, 300, 150, 5054);
 
-      AddHtmlLocalized(125, 20, 250, 24, 1019070, false, false); // You have agreed to purchase:
-      AddHtmlLocalized(125, 45, 250, 24, 1045151, false, false); // a bulk order deed
+      AddHtmlLocalized(125, 20, 250, 24, 1019070); // You have agreed to purchase:
+      AddHtmlLocalized(125, 45, 250, 24, 1045151); // a bulk order deed
 
-      AddHtmlLocalized(125, 70, 250, 24, 1019071, false, false); // for the amount of:
+      AddHtmlLocalized(125, 70, 250, 24, 1019071); // for the amount of:
       AddLabel(125, 95, 0, price.ToString());
 
       AddButton(250, 130, 4005, 4007, 1);
-      AddHtmlLocalized(282, 130, 100, 24, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(282, 130, 100, 24, 1011012); // CANCEL
 
       AddButton(120, 130, 4005, 4007, 2);
-      AddHtmlLocalized(152, 130, 100, 24, 1011036, false, false); // OKAY
+      AddHtmlLocalized(152, 130, 100, 24, 1011036); // OKAY
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

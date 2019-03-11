@@ -277,14 +277,13 @@ namespace Server.Items
 
         AddBackground(0, 0, 300, 150, 0xA28);
 
-        AddHtmlLocalized(45, 20, 300, 35, statuette.TurnedOn ? 1011035 : 1011034, false,
-          false); // [De]Activate this item
+        AddHtmlLocalized(45, 20, 300, 35, statuette.TurnedOn ? 1011035 : 1011034); // [De]Activate this item
 
         AddButton(40, 53, 0xFA5, 0xFA7, 1);
-        AddHtmlLocalized(80, 55, 65, 35, 1011036, false, false); // OKAY
+        AddHtmlLocalized(80, 55, 65, 35, 1011036); // OKAY
 
         AddButton(150, 53, 0xFA5, 0xFA7, 0);
-        AddHtmlLocalized(190, 55, 100, 35, 1011012, false, false); // CANCEL
+        AddHtmlLocalized(190, 55, 100, 35, 1011012); // CANCEL
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

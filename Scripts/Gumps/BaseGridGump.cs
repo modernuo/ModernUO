@@ -126,7 +126,7 @@ namespace Server.Gumps
     public void AddEntryHtml(int width, string text)
     {
       AddImageTiled(CurrentX, CurrentY, width, EntryHeight, EntryGumpID);
-      AddHtml(CurrentX + TextOffsetX, CurrentY, width - TextOffsetX, EntryHeight, text, false, false);
+      AddHtml(CurrentX + TextOffsetX, CurrentY, width - TextOffsetX, EntryHeight, text);
 
       IncreaseX(width);
     }

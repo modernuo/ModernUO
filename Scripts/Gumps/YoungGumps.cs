@@ -12,7 +12,7 @@ namespace Server.Gumps
 			AddHtmlLocalized( 20, 43, 215, 70, 1018030, true, true ); // Warning: monsters may attack you on site down here in the dungeons!
 
 			AddButton( 70, 123, 0xFA5, 0xFA7, 0);
-			AddHtmlLocalized( 105, 125, 100, 35, 1011036, false, false ); // OKAY
+			AddHtmlLocalized( 105, 125, 100, 35, 1011036 ); // OKAY
 		}
 	}
 
@@ -27,20 +27,20 @@ namespace Server.Gumps
 			AddImageTiled( 33, 20, 407, 425, 0xA40 );
 			AddAlphaRegion( 33, 20, 407, 425 );
 
-			AddHtmlLocalized( 190, 24, 120, 20, 1046287, 0x7D00, false, false ); // You have died.
+			AddHtmlLocalized( 190, 24, 120, 20, 1046287, 0x7D00 ); // You have died.
 
 			// As a ghost you cannot interact with the world. You cannot touch items nor can you use them.
-			AddHtmlLocalized( 50, 50, 380, 40, 1046288, 0xFFFFFF, false, false );
+			AddHtmlLocalized( 50, 50, 380, 40, 1046288, 0xFFFFFF );
 			// You can pass through doors as though they do not exist.  However, you cannot pass through walls.
-			AddHtmlLocalized( 50, 100, 380, 45, 1046289, 0xFFFFFF, false, false );
+			AddHtmlLocalized( 50, 100, 380, 45, 1046289, 0xFFFFFF );
 			// Since you are a new player, any items you had on your person at the time of your death will be in your backpack upon resurrection.
-			AddHtmlLocalized( 50, 140, 380, 60, 1046291, 0xFFFFFF, false, false );
+			AddHtmlLocalized( 50, 140, 380, 60, 1046291, 0xFFFFFF );
 			// To be resurrected you must find a healer in town or wandering in the wilderness.  Some powerful players may also be able to resurrect you.
-			AddHtmlLocalized( 50, 204, 380, 65, 1046292, 0xFFFFFF, false, false );
+			AddHtmlLocalized( 50, 204, 380, 65, 1046292, 0xFFFFFF );
 			// While you are still in young status, you will be transported to the nearest healer (along with your items) at the time of your death.
-			AddHtmlLocalized( 50, 269, 380, 65, 1046293, 0xFFFFFF, false, false );
+			AddHtmlLocalized( 50, 269, 380, 65, 1046293, 0xFFFFFF );
 			// To rejoin the world of the living simply walk near one of the NPC healers, and they will resurrect you as long as you are not marked as a criminal.
-			AddHtmlLocalized( 50, 334, 380, 70, 1046294, 0xFFFFFF, false, false );
+			AddHtmlLocalized( 50, 334, 380, 70, 1046294, 0xFFFFFF );
 
 			AddButton( 195, 410, 0xF8, 0xF9, 0);
 		}
@@ -52,7 +52,7 @@ namespace Server.Gumps
 		{
 			AddBackground( 0, 0, 450, 400, 0xA28 );
 
-			AddHtmlLocalized( 0, 30, 450, 35, 1013004, false, false ); // <center> Renouncing 'Young Player' Status</center>
+			AddHtmlLocalized( 0, 30, 450, 35, 1013004 ); // <center> Renouncing 'Young Player' Status</center>
 
 			/* As a 'Young' player, you are currently under a system of protection that prevents
 			 * you from being attacked by other players and certain monsters.<br><br>
@@ -67,10 +67,10 @@ namespace Server.Gumps
 			AddHtmlLocalized( 30, 70, 390, 210, 1013005, true, true );
 
 			AddButton( 45, 298, 0xFA5, 0xFA7, 1);
-			AddHtmlLocalized( 78, 300, 100, 35, 1011036, false, false ); // OKAY
+			AddHtmlLocalized( 78, 300, 100, 35, 1011036 ); // OKAY
 
 			AddButton( 178, 298, 0xFA5, 0xFA7, 0);
-			AddHtmlLocalized( 211, 300, 100, 35, 1011012, false, false ); // CANCEL
+			AddHtmlLocalized( 211, 300, 100, 35, 1011012 ); // CANCEL
 		}
 
 		public override void OnResponse( NetState sender, RelayInfo info )

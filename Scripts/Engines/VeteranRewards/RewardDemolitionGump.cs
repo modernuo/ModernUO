@@ -20,12 +20,12 @@ namespace Server.Gumps
       AddBackground(0, 0, 220, 170, 0x13BE);
       AddBackground(10, 10, 200, 150, 0xBB8);
 
-      AddHtmlLocalized(20, 30, 180, 60, question, false, false); // Do you wish to re-deed this decoration?
+      AddHtmlLocalized(20, 30, 180, 60, question); // Do you wish to re-deed this decoration?
 
-      AddHtmlLocalized(55, 100, 150, 25, 1011011, false, false); // CONTINUE
+      AddHtmlLocalized(55, 100, 150, 25, 1011011); // CONTINUE
       AddButton(20, 100, 0xFA5, 0xFA7, (int)Buttons.Confirm);
 
-      AddHtmlLocalized(55, 125, 150, 25, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(55, 125, 150, 25, 1011012); // CANCEL
       AddButton(20, 125, 0xFA5, 0xFA7, (int)Buttons.Cancel);
     }
 

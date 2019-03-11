@@ -24,8 +24,7 @@ namespace Server.Gumps
 
       AddImage(30, 30, 102);
 
-      AddHtmlLocalized(95, 100, 120, 100, 1060198, 0, false,
-        false); // May your wealth bring blessings to those in need, if tithed upon this most sacred site.
+      AddHtmlLocalized(95, 100, 120, 100, 1060198, 0); // May your wealth bring blessings to those in need, if tithed upon this most sacred site.
 
       AddLabel(57, 274, 0, "Gold:");
       AddLabel(87, 274, 53, (totalGold - offer).ToString());

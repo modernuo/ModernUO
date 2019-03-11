@@ -20,20 +20,20 @@ namespace Server.Guilds
       bool isLeader = IsLeader(player, guild);
       base.PopulateGump();
 
-      AddHtmlLocalized(96, 43, 110, 26, 1063014, 0xF, false, false); // My Guild
+      AddHtmlLocalized(96, 43, 110, 26, 1063014, 0xF); // My Guild
 
       AddImageTiled(65, 80, 160, 26, 0xA40);
       AddImageTiled(67, 82, 156, 22, 0xBBC);
-      AddHtmlLocalized(70, 83, 150, 20, 1062954, 0x0, false, false); // <i>Guild Name</i>
-      AddHtml(233, 84, 320, 26, guild.Name, false, false);
+      AddHtmlLocalized(70, 83, 150, 20, 1062954, 0x0); // <i>Guild Name</i>
+      AddHtml(233, 84, 320, 26, guild.Name);
 
       AddImageTiled(65, 114, 160, 26, 0xA40);
       AddImageTiled(67, 116, 156, 22, 0xBBC);
-      AddHtmlLocalized(70, 117, 150, 20, 1063025, 0x0, false, false); // <i>Alliance</i>
+      AddHtmlLocalized(70, 117, 150, 20, 1063025, 0x0); // <i>Alliance</i>
 
       if (guild.Alliance != null && guild.Alliance.IsMember(guild))
       {
-        AddHtml(233, 118, 320, 26, guild.Alliance.Name, false, false);
+        AddHtml(233, 118, 320, 26, guild.Alliance.Name);
         AddButton(40, 120, 0x4B9, 0x4BA, 6); //Alliance Roster
       }
 
@@ -42,15 +42,15 @@ namespace Server.Guilds
 
       AddImageTiled(65, 148, 160, 26, 0xA40);
       AddImageTiled(67, 150, 156, 22, 0xBBC);
-      AddHtmlLocalized(70, 151, 150, 20, 1063084, 0x0, false, false); // <i>Guild Faction</i>
+      AddHtmlLocalized(70, 151, 150, 20, 1063084, 0x0); // <i>Guild Faction</i>
 
       GuildType gt;
       Faction f;
 
       if ((gt = guild.Type) != GuildType.Regular)
-        AddHtml(233, 152, 320, 26, gt.ToString(), false, false);
+        AddHtml(233, 152, 320, 26, gt.ToString());
       else if ((f = Faction.Find(guild.Leader)) != null)
-        AddHtml(233, 152, 320, 26, f.ToString(), false, false);
+        AddHtml(233, 152, 320, 26, f.ToString());
 
       AddImageTiled(65, 196, 480, 4, 0x238D);
 
@@ -66,16 +66,16 @@ namespace Server.Guilds
       s = guild.Website;
       if (string.IsNullOrEmpty(s))
         s = "Guild website not yet set.";
-      AddHtml(65, 306, 480, 30, s, true, false);
+      AddHtml(65, 306, 480, 30, s, true);
       if (isLeader)
         AddButton(40, 313, 0x4B9, 0x4BA, 5); //Website Edit button
 
       AddCheck(65, 370, 0xD2, 0xD3, player.DisplayGuildTitle, 0);
-      AddHtmlLocalized(95, 370, 150, 26, 1063085, 0x0, false, false); // Show Guild Title
+      AddHtmlLocalized(95, 370, 150, 26, 1063085, 0x0); // Show Guild Title
       AddBackground(450, 370, 100, 26, 0x2486);
 
       AddButton(455, 375, 0x845, 0x846, 7);
-      AddHtmlLocalized(480, 373, 60, 26, 3006115, m_IsResigning ? 0x5000 : 0, false, false); // Resign
+      AddHtmlLocalized(480, 373, 60, 26, 3006115, m_IsResigning ? 0x5000 : 0); // Resign
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

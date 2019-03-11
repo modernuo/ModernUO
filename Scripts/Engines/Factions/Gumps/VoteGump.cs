@@ -24,9 +24,9 @@ namespace Server.Factions
       AddHtmlText(20, 20, 380, 20, election.Faction.Definition.Header, false, false);
 
       if (canVote)
-        AddHtmlLocalized(20, 60, 380, 20, 1011428, false, false); // VOTE FOR LEADERSHIP
+        AddHtmlLocalized(20, 60, 380, 20, 1011428); // VOTE FOR LEADERSHIP
       else
-        AddHtmlLocalized(20, 60, 380, 20, 1038032, false, false); // You have already voted in this election.
+        AddHtmlLocalized(20, 60, 380, 20, 1038032); // You have already voted in this election.
 
       for (int i = 0; i < election.Candidates.Count; ++i)
       {
@@ -40,7 +40,7 @@ namespace Server.Factions
       }
 
       AddButton(20, 310, 4005, 4007, 0);
-      AddHtmlLocalized(55, 310, 100, 20, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(55, 310, 100, 20, 1011012); // CANCEL
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

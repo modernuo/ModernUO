@@ -27,34 +27,34 @@ namespace Server.Engines.BulkOrders
       AddImage(45, 245, 10460);
       AddImage(480, 245, 10460);
 
-      AddHtmlLocalized(225, 25, 120, 20, 1045133, 0x7FFF, false, false); // A bulk order
+      AddHtmlLocalized(225, 25, 120, 20, 1045133, 0x7FFF); // A bulk order
 
-      AddHtmlLocalized(75, 48, 250, 20, 1045138, 0x7FFF, false, false); // Amount to make:
+      AddHtmlLocalized(75, 48, 250, 20, 1045138, 0x7FFF); // Amount to make:
       AddLabel(275, 48, 1152, deed.AmountMax.ToString());
 
-      AddHtmlLocalized(275, 76, 200, 20, 1045153, 0x7FFF, false, false); // Amount finished:
-      AddHtmlLocalized(75, 72, 120, 20, 1045136, 0x7FFF, false, false); // Item requested:
+      AddHtmlLocalized(275, 76, 200, 20, 1045153, 0x7FFF); // Amount finished:
+      AddHtmlLocalized(75, 72, 120, 20, 1045136, 0x7FFF); // Item requested:
 
       AddItem(410, 72, deed.Graphic);
 
-      AddHtmlLocalized(75, 96, 210, 20, deed.Number, 0x7FFF, false, false);
+      AddHtmlLocalized(75, 96, 210, 20, deed.Number, 0x7FFF);
       AddLabel(275, 96, 0x480, deed.AmountCur.ToString());
 
       if (deed.RequireExceptional || deed.Material != BulkMaterialType.None)
-        AddHtmlLocalized(75, 120, 200, 20, 1045140, 0x7FFF, false, false); // Special requirements to meet:
+        AddHtmlLocalized(75, 120, 200, 20, 1045140, 0x7FFF); // Special requirements to meet:
 
       if (deed.RequireExceptional)
-        AddHtmlLocalized(75, 144, 300, 20, 1045141, 0x7FFF, false, false); // All items must be exceptional.
+        AddHtmlLocalized(75, 144, 300, 20, 1045141, 0x7FFF); // All items must be exceptional.
 
       if (deed.Material != BulkMaterialType.None)
         AddHtmlLocalized(75, deed.RequireExceptional ? 168 : 144, 300, 20, GetMaterialNumberFor(deed.Material),
-          0x7FFF, false, false); // All items must be made with x material.
+          0x7FFF); // All items must be made with x material.
 
       AddButton(125, 192, 4005, 4007, 2);
-      AddHtmlLocalized(160, 192, 300, 20, 1045154, 0x7FFF, false, false); // Combine this deed with the item requested.
+      AddHtmlLocalized(160, 192, 300, 20, 1045154, 0x7FFF); // Combine this deed with the item requested.
 
       AddButton(125, 216, 4005, 4007, 1);
-      AddHtmlLocalized(160, 216, 120, 20, 1011441, 0x7FFF, false, false); // EXIT
+      AddHtmlLocalized(160, 216, 120, 20, 1011441, 0x7FFF); // EXIT
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

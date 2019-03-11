@@ -324,10 +324,10 @@ namespace Server.Items
 
         AddBackground(95, 20, 442, 90, 0xA28);
 
-        AddHtml(229, 35, 300, 45, "GENERATOR CONTROL PANEL", false, false);
+        AddHtml(229, 35, 300, 45, "GENERATOR CONTROL PANEL");
 
-        AddHtml(223, 60, 300, 70, "Use the Directional Controls to", false, false);
-        AddHtml(253, 75, 300, 85, "Close the Grid Circuit", false, false);
+        AddHtml(223, 60, 300, 70, "Use the Directional Controls to");
+        AddHtml(253, 75, 300, 85, "Close the Grid Circuit");
 
         AddImage(140, 40, 0x28D3);
         AddImage(420, 40, 0x28D3);
@@ -385,7 +385,7 @@ namespace Server.Items
         if (from.Skills.Lockpicking.Value >= 65.0)
         {
           AddButton(365, 350, 0xFA6, 0xFA7, 5);
-          AddHtml(405, 345, 140, 40, "Attempt to Decipher the Circuit Path", false, false);
+          AddHtml(405, 345, 140, 40, "Attempt to Decipher the Circuit Path");
         }
       }
 

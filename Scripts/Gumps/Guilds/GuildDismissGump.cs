@@ -11,13 +11,13 @@ namespace Server.Gumps
 
     protected override void Design()
     {
-      AddHtmlLocalized(20, 10, 400, 35, 1011124, false, false); // Whom do you wish to dismiss?
+      AddHtmlLocalized(20, 10, 400, 35, 1011124); // Whom do you wish to dismiss?
 
       AddButton(20, 400, 4005, 4007, 1);
-      AddHtmlLocalized(55, 400, 245, 30, 1011125, false, false); // Kick them out!
+      AddHtmlLocalized(55, 400, 245, 30, 1011125); // Kick them out!
 
       AddButton(300, 400, 4005, 4007, 2);
-      AddHtmlLocalized(335, 400, 100, 35, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

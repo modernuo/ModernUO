@@ -40,14 +40,14 @@ namespace Server.Gumps
       AddImageTiled(70, 55, 230, 2, 0x23C5);
 
       if (Title.String != null)
-        AddHtml(70, 35, 270, 20, Title.String, false, false);
+        AddHtml(70, 35, 270, 20, Title.String);
       else if (Title.Number != 0)
-        AddHtmlLocalized(70, 35, 270, 20, Title.Number, 1, false, false);
+        AddHtmlLocalized(70, 35, 270, 20, Title.Number, 1);
 
-      AddHtmlLocalized(50, 65, 150, 20, 1072843, 1, false, false); // Your Reward Points:
+      AddHtmlLocalized(50, 65, 150, 20, 1072843, 1); // Your Reward Points:
       AddLabel(230, 65, 0x64, Points.ToString());
       AddImageTiled(35, 85, 270, 2, 0x23C5);
-      AddHtmlLocalized(35, 90, 270, 20, 1072844, 1, false, false); // Please Choose a Reward:
+      AddHtmlLocalized(35, 90, 270, 20, 1072844, 1); // Please Choose a Reward:
 
       AddPage(1);
 
@@ -63,13 +63,13 @@ namespace Server.Gumps
 
         if (offset + height > 320)
         {
-          AddHtmlLocalized(240, 335, 60, 20, 1072854, 1, false, false); // <div align=right>Next</div>
+          AddHtmlLocalized(240, 335, 60, 20, 1072854, 1); // <div align=right>Next</div>
           AddButton(300, 335, 0x15E1, 0x15E5, 51, GumpButtonType.Page, page + 1);
 
           AddPage(++page);
 
           AddButton(150, 335, 0x15E3, 0x15E7, 52, GumpButtonType.Page, page - 1);
-          AddHtmlLocalized(170, 335, 60, 20, 1074880, 1, false, false); // Previous
+          AddHtmlLocalized(170, 335, 60, 20, 1074880, 1); // Previous
 
           offset = 110;
         }
@@ -91,9 +91,9 @@ namespace Server.Gumps
         if (entry.Description != null)
         {
           if (entry.Description.String != null)
-            AddHtml(190, offset, 114, height, entry.Description.String, false, false);
+            AddHtml(190, offset, 114, height, entry.Description.String);
           else if (entry.Description.Number != 0)
-            AddHtmlLocalized(190, offset, 114, height, entry.Description.Number, 1, false, false);
+            AddHtmlLocalized(190, offset, 114, height, entry.Description.Number, 1);
         }
 
         offset += height + 10;
@@ -166,13 +166,13 @@ namespace Server.Gumps
       if (entry.Tooltip != 0)
         AddTooltip(entry.Tooltip);
 
-      AddHtmlLocalized(25, 22, 200, 20, 1074974, 0x7D00, false, false); // Confirm Selection
+      AddHtmlLocalized(25, 22, 200, 20, 1074974, 0x7D00); // Confirm Selection
       AddImage(25, 40, 0xBBF);
-      AddHtmlLocalized(25, 55, 300, 120, 1074975, 0xFFFFFF, false, false); // Are you sure you wish to select this?
+      AddHtmlLocalized(25, 55, 300, 120, 1074975, 0xFFFFFF); // Are you sure you wish to select this?
       AddRadio(25, 175, 0x25F8, 0x25FB, true, 1);
       AddRadio(25, 210, 0x25F8, 0x25FB, false, 0);
-      AddHtmlLocalized(60, 180, 280, 20, 1074976, 0xFFFFFF, false, false); // Yes
-      AddHtmlLocalized(60, 215, 280, 20, 1074977, 0xFFFFFF, false, false); // No
+      AddHtmlLocalized(60, 180, 280, 20, 1074976, 0xFFFFFF); // Yes
+      AddHtmlLocalized(60, 215, 280, 20, 1074977, 0xFFFFFF); // No
       AddButton(265, 220, 0xF7, 0xF8, 7);
     }
 

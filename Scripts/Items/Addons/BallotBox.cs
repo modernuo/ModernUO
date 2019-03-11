@@ -132,11 +132,11 @@ namespace Server.Items
         AddBackground(0, 0, 400, 350, 0xA28);
 
         if (isOwner)
-          AddHtmlLocalized(0, 15, 400, 35, 1011000, false, false); // <center>Ballot Box Owner's Menu</center>
+          AddHtmlLocalized(0, 15, 400, 35, 1011000); // <center>Ballot Box Owner's Menu</center>
         else
-          AddHtmlLocalized(0, 15, 400, 35, 1011001, false, false); // <center>Ballot Box -- Vote Here!</center>
+          AddHtmlLocalized(0, 15, 400, 35, 1011001); // <center>Ballot Box -- Vote Here!</center>
 
-        AddHtmlLocalized(0, 50, 400, 35, 1011002, false, false); // <center>Topic</center>
+        AddHtmlLocalized(0, 50, 400, 35, 1011002); // <center>Topic</center>
 
         int lineCount = box.Topic.Length;
         AddBackground(25, 90, 350, Math.Max(20 * lineCount, 20), 0x1400);
@@ -153,16 +153,16 @@ namespace Server.Items
         int noCount = box.No.Count;
         int totalVotes = yesCount + noCount;
 
-        AddHtmlLocalized(0, 215, 400, 35, 1011003, false, false); // <center>votes</center>
+        AddHtmlLocalized(0, 215, 400, 35, 1011003); // <center>votes</center>
 
         if (!isOwner)
           AddButton(20, 240, 0xFA5, 0xFA7, 3);
-        AddHtmlLocalized(55, 242, 25, 35, 1011004, false, false); // aye:
+        AddHtmlLocalized(55, 242, 25, 35, 1011004); // aye:
         AddLabel(78, 242, 0x0, $"[{yesCount}]");
 
         if (!isOwner)
           AddButton(20, 275, 0xFA5, 0xFA7, 4);
-        AddHtmlLocalized(55, 277, 25, 35, 1011005, false, false); // nay:
+        AddHtmlLocalized(55, 277, 25, 35, 1011005); // nay:
         AddLabel(78, 277, 0x0, $"[{noCount}]");
 
         if (totalVotes > 0)
@@ -172,15 +172,15 @@ namespace Server.Items
         }
 
         AddButton(45, 305, 0xFA5, 0xFA7, 0);
-        AddHtmlLocalized(80, 308, 40, 35, 1011008, false, false); // done
+        AddHtmlLocalized(80, 308, 40, 35, 1011008); // done
 
         if (isOwner)
         {
           AddButton(120, 305, 0xFA5, 0xFA7, 1);
-          AddHtmlLocalized(155, 308, 100, 35, 1011006, false, false); // change topic
+          AddHtmlLocalized(155, 308, 100, 35, 1011006); // change topic
 
           AddButton(240, 305, 0xFA5, 0xFA7, 2);
-          AddHtmlLocalized(275, 308, 300, 100, 1011007, false, false); // reset votes
+          AddHtmlLocalized(275, 308, 300, 100, 1011007); // reset votes
         }
       }
 

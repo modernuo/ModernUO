@@ -21,24 +21,24 @@ namespace Server.Gumps
       AddBackground(10, 10, 530, 380, 3000);
 
       AddButton(20, 360, 4005, 4007, 1);
-      AddHtmlLocalized(55, 360, 300, 35, 1011120, false, false); // Return to the main menu.
+      AddHtmlLocalized(55, 360, 300, 35, 1011120); // Return to the main menu.
 
       string charter;
 
       if ((charter = guild.Charter) == null || (charter = charter.Trim()).Length <= 0)
-        AddHtmlLocalized(20, 20, 400, 35, 1013032, false, false); // No charter has been defined.
+        AddHtmlLocalized(20, 20, 400, 35, 1013032); // No charter has been defined.
       else
         AddHtml(20, 20, 510, 75, charter, true, true);
 
       AddButton(20, 200, 4005, 4007, 2);
-      AddHtmlLocalized(55, 200, 300, 20, 1011122, false, false); // Visit the guild website :
+      AddHtmlLocalized(55, 200, 300, 20, 1011122); // Visit the guild website :
 
       string website;
 
       if ((website = guild.Website) == null || (website = website.Trim()).Length <= 0)
         website = DefaultWebsite;
 
-      AddHtml(55, 220, 300, 20, website, false, false);
+      AddHtml(55, 220, 300, 20, website);
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

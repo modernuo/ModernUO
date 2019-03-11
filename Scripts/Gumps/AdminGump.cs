@@ -109,7 +109,7 @@ namespace Server.Gumps
       AddPageButton(10, 90, GetButtonID(0, 4), "FIREWALL", AdminGumpPage.Firewall, AdminGumpPage.FirewallInfo);
 
       if (notice != null)
-        AddHtml(12, 392, 396, 36, Color(notice, LabelColor32), false, false);
+        AddHtml(12, 392, 396, 36, Color(notice, LabelColor32));
 
       switch (pageType)
       {
@@ -251,7 +251,7 @@ namespace Server.Gumps
         }
         case AdminGumpPage.Administer_WorldBuilding:
         {
-          AddHtml(10, 125, 400, 20, Color(Center("Generating"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Generating"), LabelColor32));
 
           AddButtonLabeled(20, 150, GetButtonID(3, 100), "Documentation");
           AddButtonLabeled(220, 150, GetButtonID(3, 107), "Rebuild Categorization");
@@ -265,7 +265,7 @@ namespace Server.Gumps
           AddButtonLabeled(20, 225, GetButtonID(3, 104), "Doors");
           AddButtonLabeled(220, 225, GetButtonID(3, 105), "Signs");
 
-          AddHtml(20, 275, 400, 30, Color(Center("Statics"), LabelColor32), false, false);
+          AddHtml(20, 275, 400, 30, Color(Center("Statics"), LabelColor32));
 
           AddButtonLabeled(20, 300, GetButtonID(3, 110), "Freeze (Target)");
           AddButtonLabeled(20, 325, GetButtonID(3, 111), "Freeze (World)");
@@ -279,7 +279,7 @@ namespace Server.Gumps
         }
         case AdminGumpPage.Administer_Server:
         {
-          AddHtml(10, 125, 400, 20, Color(Center("Server"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Server"), LabelColor32));
 
           AddButtonLabeled(20, 150, GetButtonID(3, 200), "Save");
 
@@ -296,7 +296,7 @@ namespace Server.Gumps
             AddLabel( 20, 215, LabelHue, "Shutdown/Restart not available." );
           }*/
 
-          AddHtml(10, 295, 400, 20, Color(Center("Broadcast"), LabelColor32), false, false);
+          AddHtml(10, 295, 400, 20, Color(Center("Broadcast"), LabelColor32));
 
           AddTextField(20, 320, 380, 20, 0);
           AddButtonLabeled(20, 350, GetButtonID(3, 210), "To Everyone");
@@ -306,12 +306,12 @@ namespace Server.Gumps
         }
         case AdminGumpPage.Administer_Access_Lockdown:
         {
-          AddHtml(10, 125, 400, 20, Color(Center("Server Lockdown"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Server Lockdown"), LabelColor32));
 
           AddHtml(20, 150, 380, 80,
             Color(
               "When enabled, only clients with an access level equal to or greater than the specified lockdown level may access the server. After setting a lockdown level, use the <em>Purge Invalid Clients</em> button to disconnect those clients without access.",
-              LabelColor32), false, false);
+              LabelColor32));
 
           AccessLevel level = AccountHandler.LockdownLevel;
           bool isLockedDown = level > AccessLevel.Player;
@@ -331,9 +331,9 @@ namespace Server.Gumps
         }
         case AdminGumpPage.Administer_Access:
         {
-          AddHtml(10, 125, 400, 20, Color(Center("Access"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Access"), LabelColor32));
 
-          AddHtml(10, 155, 400, 20, Color(Center("Connectivity"), LabelColor32), false, false);
+          AddHtml(10, 155, 400, 20, Color(Center("Connectivity"), LabelColor32));
 
           AddButtonLabeled(20, 180, GetButtonID(3, 300), "Kick");
           AddButtonLabeled(220, 180, GetButtonID(3, 301), "Ban");
@@ -341,7 +341,7 @@ namespace Server.Gumps
           AddButtonLabeled(20, 210, GetButtonID(3, 302), "Firewall");
           AddButtonLabeled(220, 210, GetButtonID(3, 303), "Lockdown");
 
-          AddHtml(10, 245, 400, 20, Color(Center("Staff"), LabelColor32), false, false);
+          AddHtml(10, 245, 400, 20, Color(Center("Staff"), LabelColor32));
 
           AddButtonLabeled(20, 270, GetButtonID(3, 310), "Make Player");
           AddButtonLabeled(20, 290, GetButtonID(3, 311), "Make Counselor");
@@ -365,7 +365,7 @@ namespace Server.Gumps
         }
         case AdminGumpPage.Administer_Commands:
         {
-          AddHtml(10, 125, 400, 20, Color(Center("Commands"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Commands"), LabelColor32));
 
           AddButtonLabeled(20, 150, GetButtonID(3, 400), "Add");
           AddButtonLabeled(220, 150, GetButtonID(3, 401), "Remove");
@@ -473,7 +473,7 @@ namespace Server.Gumps
 
           AddClientHeader();
 
-          AddHtml(10, 125, 400, 20, Color(Center("Information"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Information"), LabelColor32));
 
           int y = 146;
 
@@ -707,7 +707,7 @@ namespace Server.Gumps
           if (!(state is Account a))
             break;
 
-          AddHtml(10, 125, 400, 20, Color(Center("Change Password"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Change Password"), LabelColor32));
 
           AddLabel(20, 150, LabelHue, "Username:");
           AddLabel(200, 150, LabelHue, a.Username);
@@ -727,7 +727,7 @@ namespace Server.Gumps
           if (!(state is Account a))
             break;
 
-          AddHtml(10, 125, 400, 20, Color(Center("Change Access Level"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Change Access Level"), LabelColor32));
 
           AddLabel(20, 150, LabelHue, "Username:");
           AddLabel(200, 150, LabelHue, a.Username);
@@ -766,7 +766,7 @@ namespace Server.Gumps
             if (a[i] != null)
               ++charCount;
 
-          AddHtml(10, 125, 400, 20, Color(Center("Information"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Information"), LabelColor32));
 
           AddLabel(20, 150, LabelHue, "Username:");
           AddLabel(200, 150, LabelHue, a.Username);
@@ -841,7 +841,7 @@ namespace Server.Gumps
           if (!(state is Account a))
             break;
 
-          AddHtml(10, 125, 400, 20, Color(Center("Access"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Access"), LabelColor32));
 
           AddPageButton(20, 150, GetButtonID(5, 14), "View client addresses",
             AdminGumpPage.AccountDetails_Access_ClientIPs);
@@ -865,20 +865,19 @@ namespace Server.Gumps
           else
             ipAddresses = Utility.CastListCovariant<object, IPAddress>(m_List);
 
-          AddHtml(10, 195, 400, 20, Color(Center("Client Addresses"), LabelColor32), false, false);
+          AddHtml(10, 195, 400, 20, Color(Center("Client Addresses"), LabelColor32));
 
           AddButtonLabeled(227, 225, GetButtonID(5, 16), "View all shared accounts");
           AddButtonLabeled(227, 245, GetButtonID(5, 17), "Ban all shared accounts");
           AddButtonLabeled(227, 265, GetButtonID(5, 18), "Firewall all addresses");
           AddButtonLabeled(227, 285, GetButtonID(5, 36), "Clear all addresses");
 
-          AddHtml(225, 315, 180, 80, Color("List of IP addresses which have accessed this account.", LabelColor32),
-            false, false);
+          AddHtml(225, 315, 180, 80, Color("List of IP addresses which have accessed this account.", LabelColor32));
 
           AddImageTiled(15, 219, 206, 156, 0xBBC);
           AddBlackAlpha(16, 220, 204, 154);
 
-          AddHtml(18, 221, 114, 20, Color("IP Address", LabelColor32), false, false);
+          AddHtml(18, 221, 114, 20, Color("IP Address", LabelColor32));
 
           if (listPage > 0)
             AddButton(184, 223, 0x15E3, 0x15E7, GetButtonID(1, 0));
@@ -891,12 +890,11 @@ namespace Server.Gumps
             AddImage(201, 223, 0x25E6);
 
           if (ipAddresses.Count == 0)
-            AddHtml(18, 243, 200, 60, Color("This account has not yet been accessed.", LabelColor32), false,
-              false);
+            AddHtml(18, 243, 200, 60, Color("This account has not yet been accessed.", LabelColor32));
 
           for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < ipAddresses.Count; ++i, ++index)
           {
-            AddHtml(18, 243 + i * 22, 114, 20, Color(ipAddresses[index].ToString(), LabelColor32), false, false);
+            AddHtml(18, 243 + i * 22, 114, 20, Color(ipAddresses[index].ToString(), LabelColor32));
             AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index));
             AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index));
             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index));
@@ -919,7 +917,7 @@ namespace Server.Gumps
           else
             ipRestrictions = Utility.CastListCovariant<object, string>(m_List);
 
-          AddHtml(10, 195, 400, 20, Color(Center("Address Restrictions"), LabelColor32), false, false);
+          AddHtml(10, 195, 400, 20, Color(Center("Address Restrictions"), LabelColor32));
 
           AddTextField(227, 225, 120, 20, 0);
 
@@ -928,12 +926,12 @@ namespace Server.Gumps
           AddHtml(225, 255, 180, 120,
             Color(
               "Any clients connecting from an address not in this list will be rejected. Or, if the list is empty, any client may connect.",
-              LabelColor32), false, false);
+              LabelColor32));
 
           AddImageTiled(15, 219, 206, 156, 0xBBC);
           AddBlackAlpha(16, 220, 204, 154);
 
-          AddHtml(18, 221, 114, 20, Color("IP Address", LabelColor32), false, false);
+          AddHtml(18, 221, 114, 20, Color("IP Address", LabelColor32));
 
           if (listPage > 0)
             AddButton(184, 223, 0x15E3, 0x15E7, GetButtonID(1, 0));
@@ -946,11 +944,11 @@ namespace Server.Gumps
             AddImage(201, 223, 0x25E6);
 
           if (ipRestrictions.Count == 0)
-            AddHtml(18, 243, 200, 60, Color("There are no addresses in this list.", LabelColor32), false, false);
+            AddHtml(18, 243, 200, 60, Color("There are no addresses in this list.", LabelColor32));
 
           for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < ipRestrictions.Count; ++i, ++index)
           {
-            AddHtml(18, 243 + i * 22, 114, 20, Color(ipRestrictions[index], LabelColor32), false, false);
+            AddHtml(18, 243 + i * 22, 114, 20, Color(ipRestrictions[index], LabelColor32));
             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(8, index));
           }
 
@@ -961,7 +959,7 @@ namespace Server.Gumps
           if (!(state is Account a))
             break;
 
-          AddHtml(10, 125, 400, 20, Color(Center("Characters"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Characters"), LabelColor32));
 
           AddLabelCropped(12, 150, 120, 20, LabelHue, "Name");
           AddLabelCropped(132, 150, 120, 20, LabelHue, "Access Level");
@@ -1001,7 +999,7 @@ namespace Server.Gumps
           if (!(state is Account a))
             break;
 
-          AddHtml(10, 125, 400, 20, Color(Center("Comments"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Comments"), LabelColor32));
 
           AddButtonLabeled(20, 150, GetButtonID(5, 4), "Add Comment");
 
@@ -1029,7 +1027,7 @@ namespace Server.Gumps
           if (!(state is Account a))
             break;
 
-          AddHtml(10, 125, 400, 20, Color(Center("Tags"), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center("Tags"), LabelColor32));
 
           AddButtonLabeled(20, 150, GetButtonID(5, 5), "Add Tag");
 
@@ -1100,11 +1098,11 @@ namespace Server.Gumps
           if (!(state is Firewall.IFirewallEntry firewallEntry))
             break;
 
-          AddHtml(10, 125, 400, 20, Color(Center(firewallEntry.ToString()), LabelColor32), false, false);
+          AddHtml(10, 125, 400, 20, Color(Center(firewallEntry.ToString()), LabelColor32));
 
           AddButtonLabeled(20, 150, GetButtonID(6, 3), "Remove");
 
-          AddHtml(10, 175, 400, 20, Color(Center("Potentially Affected Accounts"), LabelColor32), false, false);
+          AddHtml(10, 175, 400, 20, Color(Center("Potentially Affected Accounts"), LabelColor32));
 
           List<Account> blockedAccts;
 
@@ -1187,13 +1185,13 @@ namespace Server.Gumps
     public void AddSelectedButton(int x, int y, int buttonID, string text, bool isSelection)
     {
       AddButton(x, y - 1, isSelection ? 4006 : 4005, 4007, buttonID);
-      AddHtml(x + 35, y, 200, 20, Color(text, isSelection ? SelectedColor32 : LabelColor32), false, false);
+      AddHtml(x + 35, y, 200, 20, Color(text, isSelection ? SelectedColor32 : LabelColor32));
     }
 
     public void AddButtonLabeled(int x, int y, int buttonID, string text)
     {
       AddButton(x, y - 1, 4005, 4007, buttonID);
-      AddHtml(x + 35, y, 240, 20, Color(text, LabelColor32), false, false);
+      AddHtml(x + 35, y, 240, 20, Color(text, LabelColor32));
     }
 
     public string Center(string text)

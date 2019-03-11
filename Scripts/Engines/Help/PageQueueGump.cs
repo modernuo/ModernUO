@@ -29,7 +29,7 @@ namespace Server.Engines.Help
       AddImageTiled(9, 11, 21, 53, 0xBBC);
 
       AddButton(10, 12, 0x7D2, 0x7D2, 0);
-      AddHtmlLocalized(34, 28, 65, 24, 3001002, 0xFFFFFF, false, false); // Message
+      AddHtmlLocalized(34, 28, 65, 24, 3001002, 0xFFFFFF); // Message
     }
 
     public override void OnResponse(NetState state, RelayInfo info)
@@ -229,7 +229,7 @@ namespace Server.Engines.Help
         AddImageTiled(0, 0, 410, 448, 0xA40);
         AddAlphaRegion(1, 1, 408, 446);
 
-        AddHtml(10, 10, 390, 20, Color(Center("Predefined Responses"), LabelColor32), false, false);
+        AddHtml(10, 10, 390, 20, Color(Center("Predefined Responses"), LabelColor32));
 
         List<PredefinedResponse> list = PredefinedResponse.List;
 
@@ -282,7 +282,7 @@ namespace Server.Engines.Help
           }
 
           AddButton(12, 44 + i % 5 * 80, 0xFAB, 0xFAD, 1);
-          AddHtml(45, 44 + i % 5 * 80, 200, 20, Color("New Response", LabelColor32), false, false);
+          AddHtml(45, 44 + i % 5 * 80, 200, 20, Color("New Response", LabelColor32));
         }
       }
       else if (canEdit)
@@ -290,17 +290,17 @@ namespace Server.Engines.Help
         AddImageTiled(0, 0, 410, 250, 0xA40);
         AddAlphaRegion(1, 1, 408, 248);
 
-        AddHtml(10, 10, 390, 20, Color(Center("Predefined Response Editor"), LabelColor32), false, false);
+        AddHtml(10, 10, 390, 20, Color(Center("Predefined Response Editor"), LabelColor32));
 
         AddButton(10, 40, 0xFB1, 0xFB3, 1);
-        AddHtml(45, 40, 200, 20, Color("Remove", LabelColor32), false, false);
+        AddHtml(45, 40, 200, 20, Color("Remove", LabelColor32));
 
         AddButton(10, 70, 0xFA5, 0xFA7, 2);
-        AddHtml(45, 70, 200, 20, Color("Title:", LabelColor32), false, false);
+        AddHtml(45, 70, 200, 20, Color("Title:", LabelColor32));
         AddTextInput(10, 90, 300, 20, 0, response.Title);
 
         AddButton(10, 120, 0xFA5, 0xFA7, 3);
-        AddHtml(45, 120, 200, 20, Color("Message:", LabelColor32), false, false);
+        AddHtml(45, 120, 200, 20, Color("Message:", LabelColor32));
         AddTextInput(10, 140, 390, 100, 1, response.Message);
       }
     }

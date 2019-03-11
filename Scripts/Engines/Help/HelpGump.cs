@@ -62,7 +62,7 @@ namespace Server.Engines.Help
 
       AddPage(0);
 
-      AddHtmlLocalized(150, 50, 360, 40, 1001002, false, false); // <CENTER><U>Ultima Online Help Menu</U></CENTER>
+      AddHtmlLocalized(150, 50, 360, 40, 1001002); // <CENTER><U>Ultima Online Help Menu</U></CENTER>
       AddButton(425, 415, 2073, 2072, 0); // Close
 
       AddPage(1);
@@ -188,7 +188,7 @@ namespace Server.Engines.Help
 																		  */
 
       AddButton(150, 390, 5540, 5541, 0, GumpButtonType.Page, 1);
-      AddHtmlLocalized(180, 390, 335, 40, 1001015, false, false); // NO  - I meant to ask for help with another matter.
+      AddHtmlLocalized(180, 390, 335, 40, 1001015); // NO  - I meant to ask for help with another matter.
     }
 
     public static void Initialize()

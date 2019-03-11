@@ -88,12 +88,12 @@ namespace Server.Gumps
         AddButton(xOffset, 187, gumpID, gumpID, 0, GumpButtonType.Page, 6 + i);
 
       // Charges
-      AddHtmlLocalized(140, 40, 80, 18, 1011296, false, false); // Charges:
-      AddHtml(220, 40, 30, 18, Book.CurCharges.ToString(), false, false);
+      AddHtmlLocalized(140, 40, 80, 18, 1011296); // Charges:
+      AddHtml(220, 40, 30, 18, Book.CurCharges.ToString());
 
       // Max charges
-      AddHtmlLocalized(300, 40, 100, 18, 1011297, false, false); // Max Charges:
-      AddHtml(400, 40, 30, 18, Book.MaxCharges.ToString(), false, false);
+      AddHtmlLocalized(300, 40, 100, 18, 1011297); // Max Charges:
+      AddHtml(400, 40, 30, 18, Book.MaxCharges.ToString());
     }
 
     private void AddIndex()
@@ -103,7 +103,7 @@ namespace Server.Gumps
 
       // Rename button
       AddButton(125, 15, 2472, 2473, 1);
-      AddHtmlLocalized(158, 22, 100, 18, 1011299, false, false); // Rename book
+      AddHtmlLocalized(158, 22, 100, 18, 1011299); // Rename book
 
       // List of entries
       List<RunebookEntry> entries = Book.Entries;
@@ -163,24 +163,24 @@ namespace Server.Gumps
 
         // Drop rune button
         AddButton(135 + half * 160, 115, 2437, 2438, 2 + index * 6 + 1);
-        AddHtmlLocalized(150 + half * 160, 115, 100, 18, 1011298, false, false); // Drop rune
+        AddHtmlLocalized(150 + half * 160, 115, 100, 18, 1011298); // Drop rune
 
         // Set as default button
         int defButtonID = e != Book.Default ? 2361 : 2360;
 
         AddButton(160 + half * 140, 20, defButtonID, defButtonID, 2 + index * 6 + 2);
-        AddHtmlLocalized(175 + half * 140, 15, 100, 18, 1011300, false, false); // Set default
+        AddHtmlLocalized(175 + half * 140, 15, 100, 18, 1011300); // Set default
 
         if (Core.AOS)
         {
           AddButton(135 + half * 160, 140, 2103, 2104, 2 + index * 6 + 3);
-          AddHtmlLocalized(150 + half * 160, 136, 110, 20, 1062722, false, false); // Recall
+          AddHtmlLocalized(150 + half * 160, 136, 110, 20, 1062722); // Recall
 
           AddButton(135 + half * 160, 158, 2103, 2104, 2 + index * 6 + 4);
-          AddHtmlLocalized(150 + half * 160, 154, 110, 20, 1062723, false, false); // Gate Travel
+          AddHtmlLocalized(150 + half * 160, 154, 110, 20, 1062723); // Gate Travel
 
           AddButton(135 + half * 160, 176, 2103, 2104, 2 + index * 6 + 5);
-          AddHtmlLocalized(150 + half * 160, 172, 110, 20, 1062724, false, false); // Sacred Journey
+          AddHtmlLocalized(150 + half * 160, 172, 110, 20, 1062724); // Sacred Journey
         }
         else
         {

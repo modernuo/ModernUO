@@ -27,14 +27,14 @@ namespace Server.Items
       AddBackground(0, 0, 450, 450, 0x13BE);
       AddBackground(10, 10, 430, 430, 0xBB8);
 
-      AddHtmlLocalized(55, 400, 200, 25, 1011036, false, false); // OKAY
+      AddHtmlLocalized(55, 400, 200, 25, 1011036); // OKAY
 
       AddButton(20, 400, 4005, 4007, 1);
       AddButton(200, 400, 4005, 4007, 2);
       AddLabel(235, 400, 0, "DEFAULT");
 
-      AddHtmlLocalized(55, 25, 200, 25, 1150063, false, false); // Base/Shadow Color
-      AddHtmlLocalized(260, 25, 200, 25, 1150064, false, false); // Highlight Color
+      AddHtmlLocalized(55, 25, 200, 25, 1150063); // Base/Shadow Color
+      AddHtmlLocalized(260, 25, 200, 25, 1150064); // Highlight Color
 
       for (int row = 0; row < 13; row++)
       {

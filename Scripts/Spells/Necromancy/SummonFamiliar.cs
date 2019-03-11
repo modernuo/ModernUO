@@ -110,7 +110,7 @@ namespace Server.Spells.Necromancy
       AddItem(8, 15, 6882);
       AddItem(2, 168, 6880);
 
-      AddHtmlLocalized(30, 26, 200, 20, 1060147, EnabledColor16, false, false); // Chose thy familiar...
+      AddHtmlLocalized(30, 26, 200, 20, 1060147, EnabledColor16); // Chose thy familiar...
 
       double necro = from.Skills.Necromancy.Value;
       double spirit = from.Skills.SpiritSpeak.Value;
@@ -124,12 +124,10 @@ namespace Server.Spells.Necromancy
         AddButton(27, 53 + i * 21, 9702, 9703, i + 1);
 
         if (name is int intName)
-          AddHtmlLocalized(50, 51 + i * 21, 150, 20, intName, enabled ? EnabledColor16 : DisabledColor16, false,
-            false);
+          AddHtmlLocalized(50, 51 + i * 21, 150, 20, intName, enabled ? EnabledColor16 : DisabledColor16);
         else if (name is string strName)
           AddHtml(50, 51 + i * 21, 150, 20,
-            $"<BASEFONT COLOR=#{(enabled ? EnabledColor32 : DisabledColor32):X6}>{strName}</BASEFONT>", false,
-            false);
+            $"<BASEFONT COLOR=#{(enabled ? EnabledColor32 : DisabledColor32):X6}>{strName}</BASEFONT>");
       }
     }
 

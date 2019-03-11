@@ -102,7 +102,7 @@ namespace Server.Engines.Quests.Collector
       AddImageTiled(35, 150, 120, 100, 0x24B1);
       AddImage(35, 300, 0x24B4);
 
-      AddHtmlLocalized(110, 60, 200, 20, 1049069, White, false, false); // <STRONG>Conversation Event</STRONG>
+      AddHtmlLocalized(110, 60, 200, 20, 1049069, White); // <STRONG>Conversation Event</STRONG>
 
       AddImage(65, 14, 0x2776);
       AddImageTiled(81, 14, 349, 17, 0x2775);
@@ -121,10 +121,10 @@ namespace Server.Engines.Quests.Collector
         true); // Sure, I have some sheet music for a Gabriel Piete song. I'd be happy to sell you a copy for 10 gold.
 
       AddRadio(85, 350, 0x25F8, 0x25FB, true, 1);
-      AddHtmlLocalized(120, 356, 280, 20, 1014088, White, false, false); // I accept.
+      AddHtmlLocalized(120, 356, 280, 20, 1014088, White); // I accept.
 
       AddRadio(85, 385, 0x25F8, 0x25FB, false, 0);
-      AddHtmlLocalized(120, 391, 280, 20, 1049012, White, false, false); // No thanks, I decline.
+      AddHtmlLocalized(120, 391, 280, 20, 1049012, White); // No thanks, I decline.
 
       AddButton(340, 390, 0xF7, 0xF8, 1);
     }

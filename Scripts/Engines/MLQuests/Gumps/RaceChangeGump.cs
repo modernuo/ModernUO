@@ -38,13 +38,11 @@ namespace Server.Engines.MLQuests.Gumps
       AddBackground(0, 0, 240, 135, 0x2422);
 
       if (targetRace == Race.Human)
-        AddHtmlLocalized(15, 15, 210, 75, 1073643, 0, false,
-          false); // Are you sure you wish to embrace your humanity?
+        AddHtmlLocalized(15, 15, 210, 75, 1073643, 0); // Are you sure you wish to embrace your humanity?
       else if (targetRace == Race.Elf)
-        AddHtmlLocalized(15, 15, 210, 75, 1073642, 0, false,
-          false); // Are you sure you want to follow the elven ways?
+        AddHtmlLocalized(15, 15, 210, 75, 1073642, 0); // Are you sure you want to follow the elven ways?
       else
-        AddHtml(15, 15, 210, 75, $"Are you sure you want to change your race to {targetRace.Name}?", false, false);
+        AddHtml(15, 15, 210, 75, $"Are you sure you want to change your race to {targetRace.Name}?");
 
       AddButton(160, 95, 0xF7, 0xF8, 1);
       AddButton(90, 95, 0xF2, 0xF1, 0);

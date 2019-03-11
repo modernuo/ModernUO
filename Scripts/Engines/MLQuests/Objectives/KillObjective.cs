@@ -28,11 +28,11 @@ namespace Server.Engines.MLQuests.Objectives
     {
       string amount = DesiredAmount.ToString();
 
-      g.AddHtmlLocalized(98, y, 312, 16, 1072204, 0x15F90, false, false); // Slay
+      g.AddHtmlLocalized(98, y, 312, 16, 1072204, 0x15F90); // Slay
       g.AddLabel(133, y, 0x481, amount);
 
       if (Name.Number > 0)
-        g.AddHtmlLocalized(133 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF, false, false);
+        g.AddHtmlLocalized(133 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
       else if (Name.String != null)
         g.AddLabel(133 + amount.Length * 15, y, 0x481, Name.String);
 
@@ -42,10 +42,10 @@ namespace Server.Engines.MLQuests.Objectives
 
       if (Area != null)
       {
-        g.AddHtmlLocalized(103, y, 312, 20, 1018327, 0x15F90, false, false); // Location
+        g.AddHtmlLocalized(103, y, 312, 20, 1018327, 0x15F90); // Location
 
         if (Area.Name.Number > 0)
-          g.AddHtmlLocalized(223, y, 312, 20, Area.Name.Number, 0xFFFFFF, false, false);
+          g.AddHtmlLocalized(223, y, 312, 20, Area.Name.Number, 0xFFFFFF);
         else if (Area.Name.String != null)
           g.AddLabel(223, y, 0x481, Area.Name.String);
 
@@ -127,11 +127,11 @@ namespace Server.Engines.MLQuests.Objectives
 
       base.WriteToGump(g, ref y);
 
-      g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x15F90, false, false); // Total
+      g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x15F90); // Total
       g.AddLabel(223, y, 0x481, Slain.ToString());
       y += 16;
 
-      g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x15F90, false, false); // Return to
+      g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x15F90); // Return to
       g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Instance.QuesterType));
       y += 16;
     }

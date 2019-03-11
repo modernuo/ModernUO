@@ -39,8 +39,7 @@ namespace Server.Engines.Help
       string playerAccount = player.Account is Account ? player.Account.Username : "???";
 
       AddHtml(10, 10, 280, 20,
-        $"<basefont color=#A0A0FF><center>SPEECH LOG - {playerName} (<i>{Utility.FixHtml(playerAccount)}</i>)</center></basefont>",
-        false, false);
+        $"<basefont color=#A0A0FF><center>SPEECH LOG - {playerName} (<i>{Utility.FixHtml(playerAccount)}</i>)</center></basefont>");
 
       int lastPage = (log.Count - 1) / MaxEntriesPerPage;
 

@@ -226,7 +226,7 @@ namespace Server.Gumps
 
       if (TypeLabel && m_Type != null)
         AddHtml(x, y, emptyWidth, EntryHeight,
-          $"<BASEFONT COLOR=#FAFAFA><CENTER>{m_Type.Name}</CENTER></BASEFONT>", false, false);
+          $"<BASEFONT COLOR=#FAFAFA><CENTER>{m_Type.Name}</CENTER></BASEFONT>");
 
       x += emptyWidth + OffsetSize;
 

@@ -2025,35 +2025,35 @@ namespace Server.Multis
 
       AddAlphaRegion(10, 10, 300, 300);
 
-      AddHtmlLocalized(10, 10, 300, 20, 1062060, 32736, false, false); // <CENTER>COMMIT DESIGN</CENTER>
+      AddHtmlLocalized(10, 10, 300, 20, 1062060, 32736); // <CENTER>COMMIT DESIGN</CENTER>
 
       AddHtmlLocalized(10, 40, 300, 140, newPrice - oldPrice <= bankBalance ? 1061898 : 1061903, 1023, false, true);
 
-      AddHtmlLocalized(10, 190, 150, 20, 1061902, 32736, false, false); // Bank Balance:
+      AddHtmlLocalized(10, 190, 150, 20, 1061902, 32736); // Bank Balance:
       AddLabel(170, 190, 55, bankBalance.ToString());
 
-      AddHtmlLocalized(10, 215, 150, 20, 1061899, 1023, false, false); // Old Value:
+      AddHtmlLocalized(10, 215, 150, 20, 1061899, 1023); // Old Value:
       AddLabel(170, 215, 90, oldPrice.ToString());
 
-      AddHtmlLocalized(10, 235, 150, 20, 1061900, 1023, false, false); // Cost To Commit:
+      AddHtmlLocalized(10, 235, 150, 20, 1061900, 1023); // Cost To Commit:
       AddLabel(170, 235, 90, newPrice.ToString());
 
       if (newPrice - oldPrice < 0)
       {
-        AddHtmlLocalized(10, 260, 150, 20, 1062059, 992, false, false); // Your Refund:
+        AddHtmlLocalized(10, 260, 150, 20, 1062059, 992); // Your Refund:
         AddLabel(170, 260, 70, (oldPrice - newPrice).ToString());
       }
       else
       {
-        AddHtmlLocalized(10, 260, 150, 20, 1061901, 31744, false, false); // Your Cost:
+        AddHtmlLocalized(10, 260, 150, 20, 1061901, 31744); // Your Cost:
         AddLabel(170, 260, 40, (newPrice - oldPrice).ToString());
       }
 
       AddButton(10, 290, 4005, 4007, 1);
-      AddHtmlLocalized(45, 290, 55, 20, 1011036, 32767, false, false); // OKAY
+      AddHtmlLocalized(45, 290, 55, 20, 1011036, 32767); // OKAY
 
       AddButton(170, 290, 4005, 4007, 0);
-      AddHtmlLocalized(195, 290, 55, 20, 1011012, 32767, false, false); // CANCEL
+      AddHtmlLocalized(195, 290, 55, 20, 1011012, 32767); // CANCEL
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

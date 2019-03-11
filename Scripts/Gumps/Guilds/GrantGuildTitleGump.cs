@@ -11,13 +11,13 @@ namespace Server.Gumps
 
     protected override void Design()
     {
-      AddHtmlLocalized(20, 10, 400, 35, 1011118, false, false); // Grant a title to another member.
+      AddHtmlLocalized(20, 10, 400, 35, 1011118); // Grant a title to another member.
 
       AddButton(20, 400, 4005, 4007, 1);
-      AddHtmlLocalized(55, 400, 245, 30, 1011127, false, false); // I dub thee...
+      AddHtmlLocalized(55, 400, 245, 30, 1011127); // I dub thee...
 
       AddButton(300, 400, 4005, 4007, 2);
-      AddHtmlLocalized(335, 400, 100, 35, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

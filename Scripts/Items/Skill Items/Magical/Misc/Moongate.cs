@@ -345,7 +345,7 @@ namespace Server.Items
         AddImageTiled(10, 10, 400, 20, 2624);
         AddAlphaRegion(10, 10, 400, 20);
 
-        AddHtmlLocalized(10, 10, 400, 20, 1062051, 30720, false, false); // Gate Warning
+        AddHtmlLocalized(10, 10, 400, 20, 1062051, 30720); // Gate Warning
 
         AddImageTiled(10, 40, 400, 200, 2624);
         AddAlphaRegion(10, 40, 400, 200);
@@ -361,10 +361,10 @@ namespace Server.Items
         AddAlphaRegion(10, 250, 400, 20);
 
         AddButton(10, 250, 4005, 4007, 1);
-        AddHtmlLocalized(40, 250, 170, 20, 1011036, 32767, false, false); // OKAY
+        AddHtmlLocalized(40, 250, 170, 20, 1011036, 32767); // OKAY
 
         AddButton(210, 250, 4005, 4007, 0);
-        AddHtmlLocalized(240, 250, 170, 20, 1011012, 32767, false, false); // CANCEL
+        AddHtmlLocalized(240, 250, 170, 20, 1011012, 32767); // CANCEL
       }
       else
       {
@@ -374,13 +374,12 @@ namespace Server.Items
         AddBackground(10, 10, 400, 380, 3000);
 
         AddHtml(20, 40, 380, 60,
-          @"Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here", false,
-          false);
+          @"Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here");
 
-        AddHtmlLocalized(55, 110, 290, 20, 1011012, false, false); // CANCEL
+        AddHtmlLocalized(55, 110, 290, 20, 1011012); // CANCEL
         AddButton(20, 110, 4005, 4007, 0);
 
-        AddHtmlLocalized(55, 140, 290, 40, 1011011, false, false); // CONTINUE
+        AddHtmlLocalized(55, 140, 290, 40, 1011011); // CONTINUE
         AddButton(20, 140, 4005, 4007, 1);
       }
     }

@@ -26,7 +26,7 @@ namespace Server.Engines.ConPVP
       AddBackground(0, 0, 260, height, 9250);
       AddBackground(10, 10, 240, height - 20, 0xDAC);
 
-      AddHtml(35, 25, 190, 20, Center("Rules"), false, false);
+      AddHtml(35, 25, 190, 20, Center("Rules"));
 
       int y = 25 + 20;
 
@@ -34,7 +34,7 @@ namespace Server.Engines.ConPVP
       {
         Ruleset cur = m_Defaults[i];
 
-        AddHtml(35 + 14, y, 176, 20, cur.Title, false, false);
+        AddHtml(35 + 14, y, 176, 20, cur.Title);
 
         if (ruleset.Base == cur && !ruleset.Changed)
           AddImage(35, y + 4, 0x939);
@@ -46,20 +46,20 @@ namespace Server.Engines.ConPVP
         y += 22;
       }
 
-      AddHtml(35 + 14, y, 176, 20, "Custom", false, false);
+      AddHtml(35 + 14, y, 176, 20, "Custom");
       AddButton(35, y + 4, ruleset.Changed ? 0x939 : 0x938, 0x939, 1);
 
       y += 22;
       y += 6;
 
-      AddHtml(35, y, 190, 20, Center("Flavors"), false, false);
+      AddHtml(35, y, 190, 20, Center("Flavors"));
       y += 20;
 
       for (int i = 0; i < m_Flavors.Length; ++i)
       {
         Ruleset cur = m_Flavors[i];
 
-        AddHtml(35 + 14, y, 176, 20, cur.Title, false, false);
+        AddHtml(35 + 14, y, 176, 20, cur.Title);
 
         if (ruleset.Flavors.Contains(cur))
           AddButton(35, y + 4, 0x939, 0x938, 2 + m_Defaults.Length + i);

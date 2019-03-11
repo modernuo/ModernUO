@@ -26,23 +26,22 @@ namespace Server.Factions
         AddBackground(0, 0, 448, 354, 9270);
         AddAlphaRegion(10, 10, 428, 334);
 
-        AddHtml(10, 10, 428, 20, Color(Center("Candidate Management"), LabelColor), false, false);
+        AddHtml(10, 10, 428, 20, Color(Center("Candidate Management"), LabelColor));
 
-        AddHtml(45, 35, 100, 20, Color("Player Name:", LabelColor), false, false);
-        AddHtml(145, 35, 100, 20, Color(candidate.Mobile == null ? "null" : candidate.Mobile.Name, LabelColor),
-          false, false);
+        AddHtml(45, 35, 100, 20, Color("Player Name:", LabelColor));
+        AddHtml(145, 35, 100, 20, Color(candidate.Mobile == null ? "null" : candidate.Mobile.Name, LabelColor));
 
-        AddHtml(45, 55, 100, 20, Color("Vote Count:", LabelColor), false, false);
-        AddHtml(145, 55, 100, 20, Color(candidate.Votes.ToString(), LabelColor), false, false);
+        AddHtml(45, 55, 100, 20, Color("Vote Count:", LabelColor));
+        AddHtml(145, 55, 100, 20, Color(candidate.Votes.ToString(), LabelColor));
 
         AddButton(12, 73, 4005, 4007, 1);
-        AddHtml(45, 75, 100, 20, Color("Drop Candidate", LabelColor), false, false);
+        AddHtml(45, 75, 100, 20, Color("Drop Candidate", LabelColor));
 
         AddImageTiled(13, 99, 422, 242, 9264);
         AddImageTiled(14, 100, 420, 240, 9274);
         AddAlphaRegion(14, 100, 420, 240);
 
-        AddHtml(14, 100, 420, 20, Color(Center("Voters"), LabelColor), false, false);
+        AddHtml(14, 100, 420, 20, Color(Center("Voters"), LabelColor));
 
         if (page > 0)
           AddButton(397, 104, 0x15E3, 0x15E7, 2);
@@ -55,11 +54,11 @@ namespace Server.Factions
           AddImage(414, 104, 0x25E6);
 
 
-        AddHtml(14, 120, 30, 20, Color(Center("DEL"), LabelColor), false, false);
-        AddHtml(47, 120, 150, 20, Color("Name", LabelColor), false, false);
-        AddHtml(195, 120, 100, 20, Color(Center("Address"), LabelColor), false, false);
-        AddHtml(295, 120, 80, 20, Color(Center("Time"), LabelColor), false, false);
-        AddHtml(355, 120, 60, 20, Color(Center("Legit"), LabelColor), false, false);
+        AddHtml(14, 120, 30, 20, Color(Center("DEL"), LabelColor));
+        AddHtml(47, 120, 150, 20, Color("Name", LabelColor));
+        AddHtml(195, 120, 100, 20, Color(Center("Address"), LabelColor));
+        AddHtml(295, 120, 80, 20, Color(Center("Time"), LabelColor));
+        AddHtml(355, 120, 60, 20, Color(Center("Legit"), LabelColor));
 
         int idx = 0;
 
@@ -79,23 +78,23 @@ namespace Server.Factions
 
             if (obj is Mobile mobile)
             {
-              AddHtml(x + 2, 140 + idx * 20, 150, 20, Color(mobile.Name, LabelColor), false, false);
+              AddHtml(x + 2, 140 + idx * 20, 150, 20, Color(mobile.Name, LabelColor));
               x += 150;
             }
             else if (obj is IPAddress)
             {
-              AddHtml(x, 140 + idx * 20, 100, 20, Color(Center(obj.ToString()), LabelColor), false, false);
+              AddHtml(x, 140 + idx * 20, 100, 20, Color(Center(obj.ToString()), LabelColor));
               x += 100;
             }
             else if (obj is DateTime time)
             {
               AddHtml(x, 140 + idx * 20, 80, 20,
-                Color(Center(FormatTimeSpan(time - election.LastStateTime)), LabelColor), false, false);
+                Color(Center(FormatTimeSpan(time - election.LastStateTime)), LabelColor));
               x += 80;
             }
             else if (obj is int i1)
             {
-              AddHtml(x, 140 + idx * 20, 60, 20, Color(Center(i1 + "%"), LabelColor), false, false);
+              AddHtml(x, 140 + idx * 20, 60, 20, Color(Center(i1 + "%"), LabelColor));
               x += 60;
             }
           }
@@ -106,23 +105,23 @@ namespace Server.Factions
         AddBackground(0, 0, 288, 334, 9270);
         AddAlphaRegion(10, 10, 268, 314);
 
-        AddHtml(10, 10, 268, 20, Color(Center("Election Management"), LabelColor), false, false);
+        AddHtml(10, 10, 268, 20, Color(Center("Election Management"), LabelColor));
 
-        AddHtml(45, 35, 100, 20, Color("Current State:", LabelColor), false, false);
-        AddHtml(145, 35, 100, 20, Color(election.State.ToString(), LabelColor), false, false);
+        AddHtml(45, 35, 100, 20, Color("Current State:", LabelColor));
+        AddHtml(145, 35, 100, 20, Color(election.State.ToString(), LabelColor));
 
         AddButton(12, 53, 4005, 4007, 1);
-        AddHtml(45, 55, 100, 20, Color("Transition Time:", LabelColor), false, false);
-        AddHtml(145, 55, 100, 20, Color(FormatTimeSpan(election.NextStateTime), LabelColor), false, false);
+        AddHtml(45, 55, 100, 20, Color("Transition Time:", LabelColor));
+        AddHtml(145, 55, 100, 20, Color(FormatTimeSpan(election.NextStateTime), LabelColor));
 
         AddImageTiled(13, 79, 262, 242, 9264);
         AddImageTiled(14, 80, 260, 240, 9274);
         AddAlphaRegion(14, 80, 260, 240);
 
-        AddHtml(14, 80, 260, 20, Color(Center("Candidates"), LabelColor), false, false);
-        AddHtml(14, 100, 30, 20, Color(Center("-->"), LabelColor), false, false);
-        AddHtml(47, 100, 150, 20, Color("Name", LabelColor), false, false);
-        AddHtml(195, 100, 80, 20, Color(Center("Votes"), LabelColor), false, false);
+        AddHtml(14, 80, 260, 20, Color(Center("Candidates"), LabelColor));
+        AddHtml(14, 100, 30, 20, Color(Center("-->"), LabelColor));
+        AddHtml(47, 100, 150, 20, Color("Name", LabelColor));
+        AddHtml(195, 100, 80, 20, Color(Center("Votes"), LabelColor));
 
         for (int i = 0; i < election.Candidates.Count; ++i)
         {
@@ -133,8 +132,8 @@ namespace Server.Factions
             continue;
 
           AddButton(13, 118 + i * 20, 4005, 4007, 2 + i);
-          AddHtml(47, 120 + i * 20, 150, 20, Color(mob.Name, LabelColor), false, false);
-          AddHtml(195, 120 + i * 20, 80, 20, Color(Center(cd.Votes.ToString()), LabelColor), false, false);
+          AddHtml(47, 120 + i * 20, 150, 20, Color(mob.Name, LabelColor));
+          AddHtml(195, 120 + i * 20, 80, 20, Color(Center(cd.Votes.ToString()), LabelColor));
         }
       }
     }

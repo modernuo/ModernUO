@@ -37,7 +37,7 @@ namespace Server.Gumps
 			AddImageTiled( 70, 55, 230, 2, 0x23C5 );
 
 			AddImage( 32, 33, 0x2635 );
-			AddHtmlLocalized( 70, 35, 270, 20, 1062353, 0x1, false, false ); // Vendor Rental Contract
+			AddHtmlLocalized( 70, 35, 270, 20, 1062353, 0x1 ); // Vendor Rental Contract
 
 
 			AddPage( 1 );
@@ -45,7 +45,7 @@ namespace Server.Gumps
 			if ( type != GumpType.UnlockedContract )
 			{
 				AddImage( 65, 60, 0x827 );
-				AddHtmlLocalized( 79, 58, 270, 20, 1062370, 0x1, false, false ); // Landlord:
+				AddHtmlLocalized( 79, 58, 270, 20, 1062370, 0x1 ); // Landlord:
 				AddLabel( 150, 58, 0x64, landlord != null ? landlord.Name : "" );
 
 				AddImageTiled( 70, 80, 230, 2, 0x23C5 );
@@ -53,12 +53,12 @@ namespace Server.Gumps
 
 			if ( type == GumpType.UnlockedContract || type == GumpType.LockedContract )
 				AddButton( 30, 96, 0x15E1, 0x15E5, 0, GumpButtonType.Page, 2 );
-			AddHtmlLocalized( 50, 95, 150, 20, 1062354, 0x1, false, false ); // Contract Length
-			AddHtmlLocalized( 230, 95, 270, 20, duration.Name, 0x1, false, false );
+			AddHtmlLocalized( 50, 95, 150, 20, 1062354, 0x1 ); // Contract Length
+			AddHtmlLocalized( 230, 95, 270, 20, duration.Name, 0x1 );
 
 			if ( type == GumpType.UnlockedContract || type == GumpType.LockedContract )
 				AddButton( 30, 116, 0x15E1, 0x15E5, 1);
-			AddHtmlLocalized( 50, 115, 150, 20, 1062356, 0x1, false, false ); // Price Per Rental
+			AddHtmlLocalized( 50, 115, 150, 20, 1062356, 0x1 ); // Price Per Rental
 			AddLabel( 230, 115, 0x64, price > 0 ? price.ToString() : "FREE" );
 
 			AddImageTiled( 50, 160, 250, 2, 0x23BF );
@@ -66,35 +66,35 @@ namespace Server.Gumps
 			if ( type == GumpType.Offer )
 			{
 				AddButton( 67, 180, 0x482, 0x483, 2);
-				AddHtmlLocalized( 100, 180, 270, 20, 1049011, 0x28, false, false ); // I accept!
+				AddHtmlLocalized( 100, 180, 270, 20, 1049011, 0x28 ); // I accept!
 
 				AddButton( 67, 210, 0x47F, 0x480, 0);
-				AddHtmlLocalized( 100, 210, 270, 20, 1049012, 0x28, false, false ); // No thanks, I decline.
+				AddHtmlLocalized( 100, 210, 270, 20, 1049012, 0x28 ); // No thanks, I decline.
 			}
 			else
 			{
 				AddImage( 49, 170, 0x61 );
-				AddHtmlLocalized( 60, 170, 250, 20, 1062355, 0x1, false, false ); // Renew On Expiration?
+				AddHtmlLocalized( 60, 170, 250, 20, 1062355, 0x1 ); // Renew On Expiration?
 
 				if ( type == GumpType.LockedContract || type == GumpType.UnlockedContract || type == GumpType.VendorLandlord )
 					AddButton( 30, 192, 0x15E1, 0x15E5, 3);
-				AddHtmlLocalized( 85, 190, 250, 20, 1062359, 0x1, false, false ); // Landlord:
-				AddHtmlLocalized( 230, 190, 270, 20, landlordRenew ? 1049717 : 1049718, 0x1, false, false ); // YES / NO
+				AddHtmlLocalized( 85, 190, 250, 20, 1062359, 0x1 ); // Landlord:
+				AddHtmlLocalized( 230, 190, 270, 20, landlordRenew ? 1049717 : 1049718, 0x1 ); // YES / NO
 
 				if ( type == GumpType.VendorRenter )
 					AddButton( 30, 212, 0x15E1, 0x15E5, 4);
-				AddHtmlLocalized( 85, 210, 250, 20, 1062360, 0x1, false, false ); // Renter:
-				AddHtmlLocalized( 230, 210, 270, 20, renterRenew ? 1049717 : 1049718, 0x1, false, false ); // YES / NO
+				AddHtmlLocalized( 85, 210, 250, 20, 1062360, 0x1 ); // Renter:
+				AddHtmlLocalized( 230, 210, 270, 20, renterRenew ? 1049717 : 1049718, 0x1 ); // YES / NO
 
 				if ( renew )
 				{
 					AddImage( 49, 233, 0x939 );
-					AddHtmlLocalized( 70, 230, 250, 20, 1062482, 0x1, false, false ); // Contract WILL renew
+					AddHtmlLocalized( 70, 230, 250, 20, 1062482, 0x1 ); // Contract WILL renew
 				}
 				else
 				{
 					AddImage( 49, 233, 0x938 );
-					AddHtmlLocalized( 70, 230, 250, 20, 1062483, 0x1, false, false ); // Contract WILL NOT renew
+					AddHtmlLocalized( 70, 230, 250, 20, 1062483, 0x1 ); // Contract WILL NOT renew
 				}
 			}
 
@@ -105,16 +105,16 @@ namespace Server.Gumps
 			if ( type == GumpType.LockedContract )
 			{
 				AddButton( 67, 295, 0x15E1, 0x15E5, 5);
-				AddHtmlLocalized( 85, 294, 270, 20, 1062358, 0x28, false, false ); // Offer Contract To Someone
+				AddHtmlLocalized( 85, 294, 270, 20, 1062358, 0x28 ); // Offer Contract To Someone
 			}
 			else if ( type == GumpType.VendorLandlord || type == GumpType.VendorRenter )
 			{
 				if ( type == GumpType.VendorLandlord )
 					AddButton( 30, 250, 0x15E1, 0x15E1, 6);
-				AddHtmlLocalized( 85, 250, 250, 20, 1062499, 0x1, false, false ); // Renewal Price
+				AddHtmlLocalized( 85, 250, 250, 20, 1062499, 0x1 ); // Renewal Price
 				AddLabel( 230, 250, 0x64, renewalPrice.ToString() );
 
-				AddHtmlLocalized( 60, 294, 270, 20, 1062369, 0x1, false, false ); // Renter:
+				AddHtmlLocalized( 60, 294, 270, 20, 1062369, 0x1 ); // Renter:
 				AddLabel( 120, 293, 0x64, renter != null ? renter.Name : "" );
 			}
 
@@ -128,7 +128,7 @@ namespace Server.Gumps
 					VendorRentalDuration durationItem = VendorRentalDuration.Instances[i];
 
 					AddButton( 30, 76 + i * 20, 0x15E1, 0x15E5, 0x10 | i, GumpButtonType.Reply, 1 );
-					AddHtmlLocalized( 50, 75 + i * 20, 150, 20, durationItem.Name, 0x1, false, false );
+					AddHtmlLocalized( 50, 75 + i * 20, 150, 20, durationItem.Name, 0x1 );
 				}
 			}
 		}
@@ -554,20 +554,20 @@ namespace Server.Gumps
 			 */
 			AddHtmlLocalized( 10, 10, 400, 150, 1062501, 0x7FFF, false, true );
 
-			AddHtmlLocalized( 10, 180, 150, 20, 1062508, 0x7FFF, false, false ); // Vendor Name:
+			AddHtmlLocalized( 10, 180, 150, 20, 1062508, 0x7FFF ); // Vendor Name:
 			AddLabel( 160, 180, 0x480, vendor.Name );
 
-			AddHtmlLocalized( 10, 200, 150, 20, 1062509, 0x7FFF, false, false ); // Shop Name:
+			AddHtmlLocalized( 10, 200, 150, 20, 1062509, 0x7FFF ); // Shop Name:
 			AddLabel( 160, 200, 0x480, vendor.ShopName );
 
-			AddHtmlLocalized( 10, 220, 150, 20, 1062510, 0x7FFF, false, false ); // Refund Amount:
+			AddHtmlLocalized( 10, 220, 150, 20, 1062510, 0x7FFF ); // Refund Amount:
 			AddLabel( 160, 220, 0x480, refundAmount.ToString() );
 
 			AddButton( 10, 268, 0xFA5, 0xFA7, 1);
-			AddHtmlLocalized( 45, 268, 350, 20, 1062511, 0x7FFF, false, false ); // Agree, and <strong>dismiss vendor</strong>
+			AddHtmlLocalized( 45, 268, 350, 20, 1062511, 0x7FFF ); // Agree, and <strong>dismiss vendor</strong>
 
 			AddButton( 10, 288, 0xFA5, 0xFA7, 0);
-			AddHtmlLocalized( 45, 288, 350, 20, 1062512, 0x7FFF, false, false ); // No, I want to <strong>keep my vendor</strong>
+			AddHtmlLocalized( 45, 288, 350, 20, 1062512, 0x7FFF ); // No, I want to <strong>keep my vendor</strong>
 		}
 
 		public override void OnResponse( NetState sender, RelayInfo info )

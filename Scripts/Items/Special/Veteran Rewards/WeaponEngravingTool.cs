@@ -235,7 +235,7 @@ namespace Server.Items
 
         AddPage(0);
 
-        AddHtmlLocalized(50, 70, 400, 20, 1072359, 0x0, false, false); // <CENTER>Engraving Tool</CENTER>
+        AddHtmlLocalized(50, 70, 400, 20, 1072359, 0x0); // <CENTER>Engraving Tool</CENTER>
         AddHtmlLocalized(75, 95, 350, 145, 1076229, 0x0, true,
           true); // Please enter the text to add to the selected object. Leave the text area blank to remove any existing text.  Removing text does not use a charge.
         AddButton(125, 300, 0x81A, 0x81B, (int)Buttons.Okay);
@@ -311,20 +311,18 @@ namespace Server.Items
 
         if (guildmaster != null)
         {
-          AddHtmlLocalized(9, 9, 272, 100, 1076169, 0x7FFF, false,
-            false); // It will cost you 100,000 gold and a blue diamond to recharge your weapon engraver with 10 charges.
-          AddHtmlLocalized(195, 109, 120, 20, 1076172, 0x7FFF, false, false); // Recharge it
+          AddHtmlLocalized(9, 9, 272, 100, 1076169, 0x7FFF); // It will cost you 100,000 gold and a blue diamond to recharge your weapon engraver with 10 charges.
+          AddHtmlLocalized(195, 109, 120, 20, 1076172, 0x7FFF); // Recharge it
         }
         else
         {
-          AddHtmlLocalized(9, 9, 272, 100, 1076176, 0x7FFF, false,
-            false); // You will need a blue diamond to repair the tip of the engraver.  A successful repair will give the engraver 10 charges.
-          AddHtmlLocalized(195, 109, 120, 20, 1076177, 0x7FFF, false, false); // Replace the tip.
+          AddHtmlLocalized(9, 9, 272, 100, 1076176, 0x7FFF); // You will need a blue diamond to repair the tip of the engraver.  A successful repair will give the engraver 10 charges.
+          AddHtmlLocalized(195, 109, 120, 20, 1076177, 0x7FFF); // Replace the tip.
         }
 
         AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Confirm);
         AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
-        AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
       }
 
       public override void OnResponse(NetState state, RelayInfo info)

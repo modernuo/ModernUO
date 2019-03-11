@@ -81,11 +81,11 @@ namespace Server.Gumps
           x += 6;
           y += 67;
 
-          AddHtml(x + 0, y - 1, 108, 21, Center(entry.DisplayName), false, false);
-          AddHtml(x + 0, y + 1, 108, 21, Center(entry.DisplayName), false, false);
-          AddHtml(x - 1, y + 0, 108, 21, Center(entry.DisplayName), false, false);
-          AddHtml(x + 1, y + 0, 108, 21, Center(entry.DisplayName), false, false);
-          AddHtml(x + 0, y + 0, 108, 21, Color(Center(entry.DisplayName), TextColor32), false, false);
+          AddHtml(x + 0, y - 1, 108, 21, Center(entry.DisplayName));
+          AddHtml(x + 0, y + 1, 108, 21, Center(entry.DisplayName));
+          AddHtml(x - 1, y + 0, 108, 21, Center(entry.DisplayName));
+          AddHtml(x + 1, y + 0, 108, 21, Center(entry.DisplayName));
+          AddHtml(x + 0, y + 0, 108, 21, Color(Center(entry.DisplayName), TextColor32));
         }
 
         if (ourPage > 0)
@@ -111,7 +111,7 @@ namespace Server.Gumps
       bool isSelection = m_OurType == type;
 
       AddButton(x, y - 1, isSelection ? 4006 : 4005, 4007, buttonID);
-      AddHtml(x + 35, y, 200, 20, Color(text, isSelection ? SelectedColor32 : LabelColor32), false, false);
+      AddHtml(x + 35, y, 200, 20, Color(text, isSelection ? SelectedColor32 : LabelColor32));
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

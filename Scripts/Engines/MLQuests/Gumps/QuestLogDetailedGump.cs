@@ -34,7 +34,7 @@ namespace Server.Engines.MLQuests.Gumps
       AddDescription(quest);
 
       if (instance.Failed) // only displayed on the first page
-        AddHtmlLocalized(160, 80, 250, 16, 500039, 0x3C00, false, false); // Failed!
+        AddHtmlLocalized(160, 80, 250, 16, 500039, 0x3C00); // Failed!
 
       BuildPage();
       AddObjectivesProgress(instance);

@@ -33,12 +33,12 @@ namespace Server.Engines.ConPVP
 
       //AddButton( 223, 54, 0x265A, 0x265A, 4, );
 
-      AddHtml(35, 25, 230, 20, Center("Participant Setup"), false, false);
+      AddHtml(35, 25, 230, 20, Center("Participant Setup"));
 
       int x = 35;
       int y = 47;
 
-      AddHtml(x, y, 200, 20, $"Team Size: {p.Players.Length}", false, false);
+      AddHtml(x, y, 200, 20, $"Team Size: {p.Players.Length}");
       y += 22;
 
       AddGoldenButtonLabeled(x + 20, y, 1, "Increase");
@@ -46,7 +46,7 @@ namespace Server.Engines.ConPVP
       AddGoldenButtonLabeled(x + 20, y, 2, "Decrease");
       y += 30;
 
-      AddHtml(35, y, 230, 20, Center("Players"), false, false);
+      AddHtml(35, y, 230, 20, Center("Players"));
       y += 22;
 
       for (int i = 0; i < p.Players.Length; ++i)
@@ -78,7 +78,7 @@ namespace Server.Engines.ConPVP
     public void AddGoldenButtonLabeled(int x, int y, int bid, string text)
     {
       AddGoldenButton(x, y, bid);
-      AddHtml(x + 25, y, 200, 20, text, false, false);
+      AddHtml(x + 25, y, 200, 20, text);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

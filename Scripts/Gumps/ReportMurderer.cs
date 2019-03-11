@@ -117,14 +117,14 @@ namespace Server.Gumps
 
 			AddPage( 1 );
 
-			AddHtml( 260, 234, 300, 140, m_Killers[m_Idx].Name, false, false ); // Player's Name
-			AddHtmlLocalized( 260, 254, 300, 140, 1049066, false, false ); // Would you like to report...
+			AddHtml( 260, 234, 300, 140, m_Killers[m_Idx].Name ); // Player's Name
+			AddHtmlLocalized( 260, 254, 300, 140, 1049066 ); // Would you like to report...
 
 			AddButton( 260, 300, 0xFA5, 0xFA7, 1 );
-			AddHtmlLocalized( 300, 300, 300, 50, 1046362, false, false ); // Yes
+			AddHtmlLocalized( 300, 300, 300, 50, 1046362 ); // Yes
 
 			AddButton( 360, 300, 0xFA5, 0xFA7, 2 );
-			AddHtmlLocalized( 400, 300, 300, 50, 1046363, false, false ); // No
+			AddHtmlLocalized( 400, 300, 300, 50, 1046363 ); // No
 		}
 
 		public static void ReportedListExpiry_Callback( PlayerMobile from, Mobile killer )

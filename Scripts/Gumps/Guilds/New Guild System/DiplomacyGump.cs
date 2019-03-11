@@ -76,7 +76,7 @@ namespace Server.Guilds
     {
       base.PopulateGump();
 
-      AddHtmlLocalized(431, 43, 110, 26, 1062978, 0xF, false, false); // Diplomacy
+      AddHtmlLocalized(431, 43, 110, 26, 1062978, 0xF); // Diplomacy
     }
 
     protected override TextDefinition[] GetValuesFor(Guild g, int aryLength)
@@ -138,15 +138,15 @@ namespace Server.Guilds
       //AddHtmlText( 66, 153 + itemNumber * 28, 280, 26, m_LowerText, false, false );
 
       if (m_LowerText?.Number > 0)
-        AddHtmlLocalized(66, 153 + itemNumber * 28, 280, 26, m_LowerText.Number, 0xF, false, false);
+        AddHtmlLocalized(66, 153 + itemNumber * 28, 280, 26, m_LowerText.Number, 0xF);
       else if (m_LowerText?.String != null)
-        AddHtml(66, 153 + itemNumber * 28, 280, 26, Color(m_LowerText.String, 0x99), false, false);
+        AddHtml(66, 153 + itemNumber * 28, 280, 26, Color(m_LowerText.String, 0x99));
 
       if (AllowAdvancedSearch)
       {
         AddBackground(350, 148 + itemNumber * 28, 200, 26, 0x2486);
         AddButton(355, 153 + itemNumber * 28, 0x845, 0x846, 8);
-        AddHtmlLocalized(380, 151 + itemNumber * 28, 160, 26, 1063083, 0x0, false, false); // Advanced Search
+        AddHtmlLocalized(380, 151 + itemNumber * 28, 160, 26, 1063083, 0x0); // Advanced Search
       }
     }
 

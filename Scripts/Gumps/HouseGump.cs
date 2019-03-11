@@ -23,9 +23,9 @@ namespace Server.Gumps
       AddBackground(10, 10, 400, 410, 3000);
 
       AddButton(20, 388, 4005, 4007, 0);
-      AddHtmlLocalized(55, 388, 300, 20, 1011104, false, false); // Return to previous menu
+      AddHtmlLocalized(55, 388, 300, 20, 1011104); // Return to previous menu
 
-      AddHtmlLocalized(20, 20, 350, 20, number, false, false);
+      AddHtmlLocalized(20, 20, 350, 20, number);
 
       if (list == null)
         return;
@@ -88,12 +88,12 @@ namespace Server.Gumps
       AddBackground(10, 10, 400, 410, 3000);
 
       AddButton(20, 388, 4005, 4007, 0);
-      AddHtmlLocalized(55, 388, 300, 20, 1011104, false, false); // Return to previous menu
+      AddHtmlLocalized(55, 388, 300, 20, 1011104); // Return to previous menu
 
       AddButton(20, 365, 4005, 4007, 1);
-      AddHtmlLocalized(55, 365, 300, 20, 1011270, false, false); // Remove now!
+      AddHtmlLocalized(55, 365, 300, 20, 1011270); // Remove now!
 
-      AddHtmlLocalized(20, 20, 350, 20, number, false, false);
+      AddHtmlLocalized(20, 20, 350, 20, number);
 
       if (list == null)
         return;
@@ -210,113 +210,112 @@ namespace Server.Gumps
       if (!isFriend)
         return;
 
-      AddHtmlLocalized(55, 103, 75, 20, 1011233, false, false); // INFO
+      AddHtmlLocalized(55, 103, 75, 20, 1011233); // INFO
       AddButton(20, 103, 4005, 4007, 0, GumpButtonType.Page, 1);
 
-      AddHtmlLocalized(170, 103, 75, 20, 1011234, false, false); // FRIENDS
+      AddHtmlLocalized(170, 103, 75, 20, 1011234); // FRIENDS
       AddButton(135, 103, 4005, 4007, 0, GumpButtonType.Page, 2);
 
-      AddHtmlLocalized(295, 103, 75, 20, 1011235, false, false); // OPTIONS
+      AddHtmlLocalized(295, 103, 75, 20, 1011235); // OPTIONS
       AddButton(260, 103, 4005, 4007, 0, GumpButtonType.Page, 3);
 
-      AddHtmlLocalized(295, 390, 75, 20, 1011441, false, false); // EXIT
+      AddHtmlLocalized(295, 390, 75, 20, 1011441); // EXIT
       AddButton(260, 390, 4005, 4007, 0);
 
-      AddHtmlLocalized(55, 390, 200, 20, 1011236, false, false); // Change this house's name!
+      AddHtmlLocalized(55, 390, 200, 20, 1011236); // Change this house's name!
       AddButton(20, 390, 4005, 4007, 1);
 
       // Info page
       AddPage(1);
 
-      AddHtmlLocalized(20, 135, 100, 20, 1011242, false, false); // Owned by:
-      AddHtml(120, 135, 100, 20, GetOwnerName(), false, false);
+      AddHtmlLocalized(20, 135, 100, 20, 1011242); // Owned by:
+      AddHtml(120, 135, 100, 20, GetOwnerName());
 
-      AddHtmlLocalized(20, 170, 275, 20, 1011237, false, false); // Number of locked down items:
-      AddHtml(320, 170, 50, 20, m_House.LockDownCount.ToString(), false, false);
+      AddHtmlLocalized(20, 170, 275, 20, 1011237); // Number of locked down items:
+      AddHtml(320, 170, 50, 20, m_House.LockDownCount.ToString());
 
-      AddHtmlLocalized(20, 190, 275, 20, 1011238, false, false); // Maximum locked down items:
-      AddHtml(320, 190, 50, 20, m_House.MaxLockDowns.ToString(), false, false);
+      AddHtmlLocalized(20, 190, 275, 20, 1011238); // Maximum locked down items:
+      AddHtml(320, 190, 50, 20, m_House.MaxLockDowns.ToString());
 
-      AddHtmlLocalized(20, 210, 275, 20, 1011239, false, false); // Number of secure containers:
-      AddHtml(320, 210, 50, 20, m_House.SecureCount.ToString(), false, false);
+      AddHtmlLocalized(20, 210, 275, 20, 1011239); // Number of secure containers:
+      AddHtml(320, 210, 50, 20, m_House.SecureCount.ToString());
 
-      AddHtmlLocalized(20, 230, 275, 20, 1011240, false, false); // Maximum number of secure containers:
-      AddHtml(320, 230, 50, 20, m_House.MaxSecures.ToString(), false, false);
+      AddHtmlLocalized(20, 230, 275, 20, 1011240); // Maximum number of secure containers:
+      AddHtml(320, 230, 50, 20, m_House.MaxSecures.ToString());
 
-      AddHtmlLocalized(20, 260, 400, 20, 1018032, false, false); // This house is properly placed.
-      AddHtmlLocalized(20, 280, 400, 20, 1018035, false, false); // This house is of modern design.
+      AddHtmlLocalized(20, 260, 400, 20, 1018032); // This house is properly placed.
+      AddHtmlLocalized(20, 280, 400, 20, 1018035); // This house is of modern design.
 
       if (m_House.Public)
       {
         // TODO: Validate exact placement
-        AddHtmlLocalized(20, 305, 275, 20, 1011241, false, false); // Number of visits this building has had
-        AddHtml(320, 305, 50, 20, m_House.Visits.ToString(), false, false);
+        AddHtmlLocalized(20, 305, 275, 20, 1011241); // Number of visits this building has had
+        AddHtml(320, 305, 50, 20, m_House.Visits.ToString());
       }
 
       // Friends page
       AddPage(2);
 
-      AddHtmlLocalized(45, 130, 150, 20, 1011266, false, false); // List of co-owners
+      AddHtmlLocalized(45, 130, 150, 20, 1011266); // List of co-owners
       AddButton(20, 130, 2714, 2715, 2);
 
-      AddHtmlLocalized(45, 150, 150, 20, 1011267, false, false); // Add a co-owner
+      AddHtmlLocalized(45, 150, 150, 20, 1011267); // Add a co-owner
       AddButton(20, 150, 2714, 2715, 3);
 
-      AddHtmlLocalized(45, 170, 150, 20, 1018036, false, false); // Remove a co-owner
+      AddHtmlLocalized(45, 170, 150, 20, 1018036); // Remove a co-owner
       AddButton(20, 170, 2714, 2715, 4);
 
-      AddHtmlLocalized(45, 190, 150, 20, 1011268, false, false); // Clear co-owner list
+      AddHtmlLocalized(45, 190, 150, 20, 1011268); // Clear co-owner list
       AddButton(20, 190, 2714, 2715, 5);
 
-      AddHtmlLocalized(225, 130, 155, 20, 1011243, false, false); // List of Friends
+      AddHtmlLocalized(225, 130, 155, 20, 1011243); // List of Friends
       AddButton(200, 130, 2714, 2715, 6);
 
-      AddHtmlLocalized(225, 150, 155, 20, 1011244, false, false); // Add a Friend
+      AddHtmlLocalized(225, 150, 155, 20, 1011244); // Add a Friend
       AddButton(200, 150, 2714, 2715, 7);
 
-      AddHtmlLocalized(225, 170, 155, 20, 1018037, false, false); // Remove a Friend
+      AddHtmlLocalized(225, 170, 155, 20, 1018037); // Remove a Friend
       AddButton(200, 170, 2714, 2715, 8);
 
-      AddHtmlLocalized(225, 190, 155, 20, 1011245, false, false); // Clear Friends list
+      AddHtmlLocalized(225, 190, 155, 20, 1011245); // Clear Friends list
       AddButton(200, 190, 2714, 2715, 9);
 
-      AddHtmlLocalized(120, 215, 280, 20, 1011258, false, false); // Ban someone from the house
+      AddHtmlLocalized(120, 215, 280, 20, 1011258); // Ban someone from the house
       AddButton(95, 215, 2714, 2715, 10);
 
-      AddHtmlLocalized(120, 235, 280, 20, 1011259, false, false); // Eject someone from the house
+      AddHtmlLocalized(120, 235, 280, 20, 1011259); // Eject someone from the house
       AddButton(95, 235, 2714, 2715, 11);
 
-      AddHtmlLocalized(120, 255, 280, 20, 1011260, false, false); // View a list of banned people
+      AddHtmlLocalized(120, 255, 280, 20, 1011260); // View a list of banned people
       AddButton(95, 255, 2714, 2715, 12);
 
-      AddHtmlLocalized(120, 275, 280, 20, 1011261, false, false); // Lift a ban
+      AddHtmlLocalized(120, 275, 280, 20, 1011261); // Lift a ban
       AddButton(95, 275, 2714, 2715, 13);
 
       // Options page
       AddPage(3);
 
-      AddHtmlLocalized(45, 150, 355, 30, 1011248, false, false); // Transfer ownership of the house
+      AddHtmlLocalized(45, 150, 355, 30, 1011248); // Transfer ownership of the house
       AddButton(20, 150, 2714, 2715, 14);
 
-      AddHtmlLocalized(45, 180, 355, 30, 1011249, false, false); // Demolish house and get deed back
+      AddHtmlLocalized(45, 180, 355, 30, 1011249); // Demolish house and get deed back
       AddButton(20, 180, 2714, 2715, 15);
 
       if (!m_House.Public)
       {
-        AddHtmlLocalized(45, 210, 355, 30, 1011247, false, false); // Change the house locks
+        AddHtmlLocalized(45, 210, 355, 30, 1011247); // Change the house locks
         AddButton(20, 210, 2714, 2715, 16);
 
-        AddHtmlLocalized(45, 240, 350, 90, 1011253, false,
-          false); // Declare this building to be public. This will make your front door unlockable.
+        AddHtmlLocalized(45, 240, 350, 90, 1011253); // Declare this building to be public. This will make your front door unlockable.
         AddButton(20, 240, 2714, 2715, 17);
       }
       else
       {
         //AddHtmlLocalized( 45, 280, 350, 30, 1011250, false, false ); // Change the sign type
-        AddHtmlLocalized(45, 210, 350, 30, 1011250, false, false); // Change the sign type
+        AddHtmlLocalized(45, 210, 350, 30, 1011250); // Change the sign type
         AddButton(20, 210, 2714, 2715, 0, GumpButtonType.Page, 4);
 
-        AddHtmlLocalized(45, 240, 350, 30, 1011252, false, false); // Declare this building to be private.
+        AddHtmlLocalized(45, 240, 350, 30, 1011252); // Declare this building to be private.
         AddButton(20, 240, 2714, 2715, 17);
 
         // Change the sign type
@@ -328,10 +327,10 @@ namespace Server.Gumps
           AddItem(60 + i / 4 * 50, 130 + i % 4 * 35, 2980 + i * 2);
         }
 
-        AddHtmlLocalized(200, 305, 129, 20, 1011254, false, false); // Guild sign choices
+        AddHtmlLocalized(200, 305, 129, 20, 1011254); // Guild sign choices
         AddButton(350, 305, 252, 253, 0, GumpButtonType.Page, 5);
 
-        AddHtmlLocalized(200, 340, 355, 30, 1011277, false, false); // Okay that is fine.
+        AddHtmlLocalized(200, 340, 355, 30, 1011277); // Okay that is fine.
         AddButton(350, 340, 4005, 4007, 18);
 
         AddPage(5);
@@ -342,10 +341,10 @@ namespace Server.Gumps
           AddItem(60 + i / 5 * 50, 130 + i % 5 * 35, 3028 + i * 2);
         }
 
-        AddHtmlLocalized(200, 305, 129, 20, 1011255, false, false); // Shop sign choices
+        AddHtmlLocalized(200, 305, 129, 20, 1011255); // Shop sign choices
         AddButton(350, 305, 250, 251, 0, GumpButtonType.Page, 4);
 
-        AddHtmlLocalized(200, 340, 355, 30, 1011277, false, false); // Okay that is fine.
+        AddHtmlLocalized(200, 340, 355, 30, 1011277); // Okay that is fine.
         AddButton(350, 340, 4005, 4007, 18);
       }
     }

@@ -18,7 +18,7 @@ namespace Server.Gumps
       AddBackground(0, 0, 170, 50 + m_Vendors.Count * 20, 0x13BE);
 
       AddImageTiled(10, 10, 150, 20, 0xA40);
-      AddHtmlLocalized(10, 10, 150, 20, 1061827, 0x7FFF, false, false); // <CENTER>Reclaim Vendor</CENTER>
+      AddHtmlLocalized(10, 10, 150, 20, 1061827, 0x7FFF); // <CENTER>Reclaim Vendor</CENTER>
 
       AddImageTiled(10, 40, 150, m_Vendors.Count * 20, 0xA40);
 

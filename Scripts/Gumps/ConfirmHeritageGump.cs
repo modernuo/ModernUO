@@ -18,14 +18,13 @@ namespace Server.Gumps
 
       AddBackground(0, 0, 291, 99, 0x13BE);
       AddImageTiled(5, 6, 280, 20, 0xA40);
-      AddHtmlLocalized(9, 8, 280, 20, 1070972, 0x7FFF, false,
-        false); // Click "OKAY" to redeem the following promotional item:
+      AddHtmlLocalized(9, 8, 280, 20, 1070972, 0x7FFF); // Click "OKAY" to redeem the following promotional item:
       AddImageTiled(5, 31, 280, 40, 0xA40);
-      AddHtmlLocalized(9, 35, 272, 40, cliloc, 0x7FFF, false, false);
+      AddHtmlLocalized(9, 35, 272, 40, cliloc, 0x7FFF);
       AddButton(180, 73, 0xFB7, 0xFB8, (int)Buttons.Okay);
-      AddHtmlLocalized(215, 75, 100, 20, 1011036, 0x7FFF, false, false); // OKAY
+      AddHtmlLocalized(215, 75, 100, 20, 1011036, 0x7FFF); // OKAY
       AddButton(5, 73, 0xFB1, 0xFB2, (int)Buttons.Cancel);
-      AddHtmlLocalized(40, 75, 100, 20, 1060051, 0x7FFF, false, false); // CANCEL
+      AddHtmlLocalized(40, 75, 100, 20, 1060051, 0x7FFF); // CANCEL
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

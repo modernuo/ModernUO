@@ -24,19 +24,19 @@ namespace Server.Factions
 
       AddHtmlText(25, 30, 250, 25, town.Definition.TownStoneHeader, false, false);
 
-      AddHtmlLocalized(55, 60, 150, 25, 1011557, false, false); // Hire Sheriff
+      AddHtmlLocalized(55, 60, 150, 25, 1011557); // Hire Sheriff
       AddButton(20, 60, 4005, 4007, 1);
 
-      AddHtmlLocalized(55, 90, 150, 25, 1011559, false, false); // Hire Finance Minister
+      AddHtmlLocalized(55, 90, 150, 25, 1011559); // Hire Finance Minister
       AddButton(20, 90, 4005, 4007, 2);
 
-      AddHtmlLocalized(55, 120, 150, 25, 1011558, false, false); // Fire Sheriff
+      AddHtmlLocalized(55, 120, 150, 25, 1011558); // Fire Sheriff
       AddButton(20, 120, 4005, 4007, 3);
 
-      AddHtmlLocalized(55, 150, 150, 25, 1011560, false, false); // Fire Finance Minister
+      AddHtmlLocalized(55, 150, 150, 25, 1011560); // Fire Finance Minister
       AddButton(20, 150, 4005, 4007, 4);
 
-      AddHtmlLocalized(55, 210, 150, 25, 1011441, false, false); // EXIT
+      AddHtmlLocalized(55, 210, 150, 25, 1011441); // EXIT
       AddButton(20, 210, 4005, 4007, 0);
     }
 

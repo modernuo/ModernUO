@@ -19,49 +19,48 @@ namespace Server.Gumps
       AddBackground(0, 0, 550, 440, 5054);
       AddBackground(10, 10, 530, 420, 3000);
 
-      AddHtmlLocalized(20, 10, 510, 35, 1011105, false, false); // <center>WAR FUNCTIONS</center>
+      AddHtmlLocalized(20, 10, 510, 35, 1011105); // <center>WAR FUNCTIONS</center>
 
       AddButton(20, 40, 4005, 4007, 1);
-      AddHtmlLocalized(55, 40, 400, 30, 1011099, false, false); // Declare war through guild name search.
+      AddHtmlLocalized(55, 40, 400, 30, 1011099); // Declare war through guild name search.
 
       int count = 0;
 
       if (guild.Enemies.Count > 0)
       {
         AddButton(20, 160 + count * 30, 4005, 4007, 2);
-        AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011103, false, false); // Declare peace.
+        AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011103); // Declare peace.
       }
       else
       {
-        AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1013033, false, false); // No current wars
+        AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1013033); // No current wars
       }
 
       if (guild.WarInvitations.Count > 0)
       {
         AddButton(20, 160 + count * 30, 4005, 4007, 3);
-        AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011100, false, false); // Accept war invitations.
+        AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011100); // Accept war invitations.
 
         AddButton(20, 160 + count * 30, 4005, 4007, 4);
-        AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011101, false, false); // Reject war invitations.
+        AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011101); // Reject war invitations.
       }
       else
       {
-        AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1018012, false,
-          false); // No current invitations received for war.
+        AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1018012); // No current invitations received for war.
       }
 
       if (guild.WarDeclarations.Count > 0)
       {
         AddButton(20, 160 + count * 30, 4005, 4007, 5);
-        AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011102, false, false); // Rescind your war declarations.
+        AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011102); // Rescind your war declarations.
       }
       else
       {
-        AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1013055, false, false); // No current war declarations
+        AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1013055); // No current war declarations
       }
 
       AddButton(20, 400, 4005, 4007, 6);
-      AddHtmlLocalized(55, 400, 400, 35, 1011104, false, false); // Return to the previous menu.
+      AddHtmlLocalized(55, 400, 400, 35, 1011104); // Return to the previous menu.
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

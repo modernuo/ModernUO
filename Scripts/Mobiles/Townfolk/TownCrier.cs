@@ -216,13 +216,12 @@ namespace Server.Mobiles
       AddImageTiled(0, 0, 300, 38 + (count == 0 ? 20 : count * 85), 0xA40);
       AddAlphaRegion(1, 1, 298, 36 + (count == 0 ? 20 : count * 85));
 
-      AddHtml(8, 8, 300 - 8 - 30, 20, "<basefont color=#FFFFFF><center>TOWN CRIER MESSAGES</center></basefont>", false,
-        false);
+      AddHtml(8, 8, 300 - 8 - 30, 20, "<basefont color=#FFFFFF><center>TOWN CRIER MESSAGES</center></basefont>");
 
       AddButton(300 - 8 - 30, 8, 0xFAB, 0xFAD, 1);
 
       if (count == 0)
-        AddHtml(8, 30, 284, 20, "<basefont color=#FFFFFF>The crier has no news.</basefont>", false, false);
+        AddHtml(8, 30, 284, 20, "<basefont color=#FFFFFF>The crier has no news.</basefont>");
       else
         for (int i = 0; i < entries.Count; ++i)
         {

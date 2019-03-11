@@ -235,7 +235,7 @@ namespace Server
         string title =
           $"<BASEFONT COLOR=#FF2F4F4F><CENTER>BANK OF {User.RawName.ToUpper()}</CENTER>";
 
-        AddHtml(40, 15, 320, 20, title, false, false);
+        AddHtml(40, 15, 320, 20, title);
 
         // Platinum Row
         AddBackground(15, 60, 175, 20, 9300);

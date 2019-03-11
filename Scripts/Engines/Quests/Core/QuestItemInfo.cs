@@ -37,7 +37,7 @@ namespace Server.Engines.Quests
       AddImageTiled(131, 20, 10, height - 30, 2624);
       AddAlphaRegion(131, 20, 10, height - 30);
 
-      AddHtmlLocalized(67, 35, 120, 20, 1011233, White, false, false); // INFO
+      AddHtmlLocalized(67, 35, 120, 20, 1011233, White); // INFO
 
       AddImage(62, 52, 9157);
       AddImage(72, 52, 9157);

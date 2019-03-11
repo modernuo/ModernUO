@@ -59,31 +59,31 @@ namespace Server.Gumps
       AddBackground(0, 0, 618, 354, 9270);
       AddAlphaRegion(10, 10, 598, 334);
 
-      AddHtml(10, 10, 598, 20, Color(Center("Raffle Management"), LabelColor), false, false);
+      AddHtml(10, 10, 598, 20, Color(Center("Raffle Management"), LabelColor));
 
-      AddHtml(45, 35, 100, 20, Color("Location:", LabelColor), false, false);
-      AddHtml(145, 35, 250, 20, Color(m_Stone.FormatLocation(), LabelColor), false, false);
+      AddHtml(45, 35, 100, 20, Color("Location:", LabelColor));
+      AddHtml(145, 35, 250, 20, Color(m_Stone.FormatLocation(), LabelColor));
 
-      AddHtml(45, 55, 100, 20, Color("Ticket Price:", LabelColor), false, false);
-      AddHtml(145, 55, 250, 20, Color(m_Stone.FormatPrice(), LabelColor), false, false);
+      AddHtml(45, 55, 100, 20, Color("Ticket Price:", LabelColor));
+      AddHtml(145, 55, 250, 20, Color(m_Stone.FormatPrice(), LabelColor));
 
-      AddHtml(45, 75, 100, 20, Color("Total Entries:", LabelColor), false, false);
-      AddHtml(145, 75, 250, 20, Color(m_Stone.Entries.Count.ToString(), LabelColor), false, false);
+      AddHtml(45, 75, 100, 20, Color("Total Entries:", LabelColor));
+      AddHtml(145, 75, 250, 20, Color(m_Stone.Entries.Count.ToString(), LabelColor));
 
       AddButton(440, 33, 0xFA5, 0xFA7, 3);
-      AddHtml(474, 35, 120, 20, Color("Sort by name", LabelColor), false, false);
+      AddHtml(474, 35, 120, 20, Color("Sort by name", LabelColor));
 
       AddButton(440, 53, 0xFA5, 0xFA7, 4);
-      AddHtml(474, 55, 120, 20, Color("Sort by account", LabelColor), false, false);
+      AddHtml(474, 55, 120, 20, Color("Sort by account", LabelColor));
 
       AddButton(440, 73, 0xFA5, 0xFA7, 5);
-      AddHtml(474, 75, 120, 20, Color("Sort by address", LabelColor), false, false);
+      AddHtml(474, 75, 120, 20, Color("Sort by address", LabelColor));
 
       AddImageTiled(13, 99, 592, 242, 9264);
       AddImageTiled(14, 100, 590, 240, 9274);
       AddAlphaRegion(14, 100, 590, 240);
 
-      AddHtml(14, 100, 590, 20, Color(Center("Entries"), LabelColor), false, false);
+      AddHtml(14, 100, 590, 20, Color(Center("Entries"), LabelColor));
 
       if (page > 0)
         AddButton(567, 104, 0x15E3, 0x15E7, 1);
@@ -95,11 +95,11 @@ namespace Server.Gumps
       else
         AddImage(584, 104, 0x25E6);
 
-      AddHtml(14, 120, 30, 20, Color(Center("DEL"), LabelColor), false, false);
-      AddHtml(47, 120, 250, 20, Color("Name", LabelColor), false, false);
-      AddHtml(295, 120, 100, 20, Color(Center("Address"), LabelColor), false, false);
-      AddHtml(395, 120, 150, 20, Color(Center("Date"), LabelColor), false, false);
-      AddHtml(545, 120, 60, 20, Color(Center("Num"), LabelColor), false, false);
+      AddHtml(14, 120, 30, 20, Color(Center("DEL"), LabelColor));
+      AddHtml(47, 120, 250, 20, Color("Name", LabelColor));
+      AddHtml(295, 120, 100, 20, Color(Center("Address"), LabelColor));
+      AddHtml(395, 120, 150, 20, Color(Center("Date"), LabelColor));
+      AddHtml(545, 120, 60, 20, Color(Center("Num"), LabelColor));
 
       int idx = 0;
       Mobile winner = m_Stone.Winner;
@@ -127,19 +127,19 @@ namespace Server.Gumps
         }
 
         if (name != null)
-          AddHtml(x + 2, 140 + idx * 20, 250, 20, Color(name, color), false, false);
+          AddHtml(x + 2, 140 + idx * 20, 250, 20, Color(name, color));
 
         x += 250;
 
         if (entry.Address != null)
-          AddHtml(x, 140 + idx * 20, 100, 20, Color(Center(entry.Address.ToString()), color), false, false);
+          AddHtml(x, 140 + idx * 20, 100, 20, Color(Center(entry.Address.ToString()), color));
 
         x += 100;
 
-        AddHtml(x, 140 + idx * 20, 150, 20, Color(Center(entry.Date.ToString()), color), false, false);
+        AddHtml(x, 140 + idx * 20, 150, 20, Color(Center(entry.Date.ToString()), color));
         x += 150;
 
-        AddHtml(x, 140 + idx * 20, 60, 20, Color(Center("1"), color), false, false);
+        AddHtml(x, 140 + idx * 20, 60, 20, Color(Center("1"), color));
         x += 60;
       }
     }

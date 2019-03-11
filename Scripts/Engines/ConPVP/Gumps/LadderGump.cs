@@ -114,7 +114,7 @@ namespace Server.Engines.ConPVP
 
       AddHtml(16, height - 12 - 2 - 18, 400, 20,
         Color(string.Format("Top {3} of {0:N0} duelists, page {1} of {2}", m_List.Count, page + 1, (lc + 14) / 15, lc),
-          0xFFC000), false, false);
+          0xFFC000));
 
       AddColumnHeader(75, "Rank");
       AddColumnHeader(115, "Level");
@@ -231,9 +231,9 @@ namespace Server.Engines.ConPVP
     private void AddColoredText(int x, int y, int width, string text, int color)
     {
       if (color == 0)
-        AddHtml(x, y, width, 20, text, false, false);
+        AddHtml(x, y, width, 20, text);
       else
-        AddHtml(x, y, width, 20, Color(text, color), false, false);
+        AddHtml(x, y, width, 20, Color(text, color));
     }
 
     private void AddColumnHeader(int width, string name)

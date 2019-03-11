@@ -342,14 +342,13 @@ namespace Server.Items
         AddBackground(0, 0, 291, 133, 0x13BE);
         AddImageTiled(5, 5, 280, 100, 0xA40);
 
-        AddHtmlLocalized(9, 9, 272, 100, 1076196, cannon.Validate(keg).ToString(), 0x7FFF, false,
-          false); // You will need a full keg of explosion potions to recharge the cannon.  Your keg will provide ~1_CHARGES~ charges.
+        AddHtmlLocalized(9, 9, 272, 100, 1076196, cannon.Validate(keg).ToString(), 0x7FFF); // You will need a full keg of explosion potions to recharge the cannon.  Your keg will provide ~1_CHARGES~ charges.
 
         AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
-        AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
 
         AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Recharge);
-        AddHtmlLocalized(195, 109, 120, 20, 1076197, 0x7FFF, false, false); // Recharge
+        AddHtmlLocalized(195, 109, 120, 20, 1076197, 0x7FFF); // Recharge
       }
 
       public override void OnResponse(NetState state, RelayInfo info)

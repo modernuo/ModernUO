@@ -28,13 +28,13 @@ namespace Server.Guilds
       AddBackground(0, 0, 600, 440, 0x24AE);
       AddBackground(66, 40, 150, 26, 0x2486);
       AddButton(71, 45, 0x845, 0x846, 1);
-      AddHtmlLocalized(96, 43, 110, 26, 1063014, 0x0, false, false); // My Guild
+      AddHtmlLocalized(96, 43, 110, 26, 1063014, 0x0); // My Guild
       AddBackground(236, 40, 150, 26, 0x2486);
       AddButton(241, 45, 0x845, 0x846, 2);
-      AddHtmlLocalized(266, 43, 110, 26, 1062974, 0x0, false, false); // Guild Roster
+      AddHtmlLocalized(266, 43, 110, 26, 1062974, 0x0); // Guild Roster
       AddBackground(401, 40, 150, 26, 0x2486);
       AddButton(406, 45, 0x845, 0x846, 3);
-      AddHtmlLocalized(431, 43, 110, 26, 1062978, 0x0, false, false); // Diplomacy
+      AddHtmlLocalized(431, 43, 110, 26, 1062978, 0x0); // Diplomacy
       AddPage(1);
     }
 

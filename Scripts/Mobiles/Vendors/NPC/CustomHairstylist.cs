@@ -153,7 +153,7 @@ namespace Server.Mobiles
 
       AddBackground(50, 10, 450, 100 + canAfford * 25, 2600);
 
-      AddHtmlLocalized(100, 40, 350, 20, 1018356, false, false); // Choose your hairstyle change:
+      AddHtmlLocalized(100, 40, 350, 20, 1018356); // Choose your hairstyle change:
 
       int index = 0;
 
@@ -161,9 +161,9 @@ namespace Server.Mobiles
         if (balance >= sellList[i].Price && (!sellList[i].FacialHair || !isFemale))
         {
           if (sellList[i].TitleString != null)
-            AddHtml(140, 75 + index * 25, 300, 20, sellList[i].TitleString, false, false);
+            AddHtml(140, 75 + index * 25, 300, 20, sellList[i].TitleString);
           else
-            AddHtmlLocalized(140, 75 + index * 25, 300, 20, sellList[i].Title, false, false);
+            AddHtmlLocalized(140, 75 + index * 25, 300, 20, sellList[i].Title);
 
           AddButton(100, 75 + index++ * 25, 4005, 4007, 1 + i);
         }
@@ -292,9 +292,9 @@ namespace Server.Mobiles
       AddBackground(100, 10, 350, 370, 2600);
       AddBackground(120, 54, 110, 270, 5100);
 
-      AddHtmlLocalized(155, 25, 240, 30, 1011013, false, false); // <center>Hair Color Selection Menu</center>
+      AddHtmlLocalized(155, 25, 240, 30, 1011013); // <center>Hair Color Selection Menu</center>
 
-      AddHtmlLocalized(150, 330, 220, 35, 1011014, false, false); // Dye my hair this color!
+      AddHtmlLocalized(150, 330, 220, 35, 1011014); // Dye my hair this color!
       AddButton(380, 330, 4005, 4007, 1);
 
       for (int i = 0; i < entries.Length; ++i)
@@ -449,16 +449,15 @@ namespace Server.Mobiles
       AddBackground(0, 0, 81 + tableWidth * offsetWidth, 105 + tableHeight * offsetHeight, 2600);
 
       AddButton(45, 45 + tableHeight * offsetHeight, 4005, 4007, 1);
-      AddHtmlLocalized(77, 45 + tableHeight * offsetHeight, 90, 35, 1006044, false, false); // Ok
+      AddHtmlLocalized(77, 45 + tableHeight * offsetHeight, 90, 35, 1006044); // Ok
 
       AddButton(81 + tableWidth * offsetWidth - 180, 45 + tableHeight * offsetHeight, 4005, 4007, 0);
-      AddHtmlLocalized(81 + tableWidth * offsetWidth - 148, 45 + tableHeight * offsetHeight, 90, 35, 1006045, false,
-        false); // Cancel
+      AddHtmlLocalized(81 + tableWidth * offsetWidth - 148, 45 + tableHeight * offsetHeight, 90, 35, 1006045); // Cancel
 
       if (!facialHair)
-        AddHtmlLocalized(50, 15, 350, 20, 1018353, false, false); // <center>New Hairstyle</center>
+        AddHtmlLocalized(50, 15, 350, 20, 1018353); // <center>New Hairstyle</center>
       else
-        AddHtmlLocalized(55, 15, 200, 20, 1018354, false, false); // <center>New Beard</center>
+        AddHtmlLocalized(55, 15, 200, 20, 1018354); // <center>New Beard</center>
 
       for (int i = 0; i < entries.Length; ++i)
       {
@@ -475,13 +474,12 @@ namespace Server.Mobiles
         else if (!facialHair)
         {
           AddRadio(40 + (xTable + 1) * offsetWidth, 240, 208, 209, false, i);
-          AddHtmlLocalized(60 + (xTable + 1) * offsetWidth, 240, 85, 35, 1011064, false, false); // Bald
+          AddHtmlLocalized(60 + (xTable + 1) * offsetWidth, 240, 85, 35, 1011064); // Bald
         }
         else
         {
           AddRadio(40 + xTable * offsetWidth, 70 + yTable * offsetHeight, 208, 209, false, i);
-          AddHtmlLocalized(60 + xTable * offsetWidth, 70 + yTable * offsetHeight, 85, 35, 1011064, false,
-            false); // Bald
+          AddHtmlLocalized(60 + xTable * offsetWidth, 70 + yTable * offsetHeight, 85, 35, 1011064); // Bald
         }
       }
     }

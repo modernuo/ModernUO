@@ -11,13 +11,13 @@ namespace Server.Gumps
 
     protected override void Design()
     {
-      AddHtmlLocalized(20, 10, 400, 35, 1011097, false, false); // Declare your fealty
+      AddHtmlLocalized(20, 10, 400, 35, 1011097); // Declare your fealty
 
       AddButton(20, 400, 4005, 4007, 1);
-      AddHtmlLocalized(55, 400, 250, 35, 1011098, false, false); // I have selected my new lord.
+      AddHtmlLocalized(55, 400, 250, 35, 1011098); // I have selected my new lord.
 
       AddButton(300, 400, 4005, 4007, 0);
-      AddHtmlLocalized(335, 400, 100, 35, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

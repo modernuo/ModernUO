@@ -110,15 +110,15 @@ namespace Server.Items
         AddImageTiled(10, 294, 253, 20, 0xA40);
         AddAlphaRegion(10, 10, 253, 304);
         AddButton(10, 294, 0xFB1, 0xFB2, 0);
-        AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
-        AddHtmlLocalized(14, 12, 273, 20, 1076580, 0x7FFF, false, false); // Pleae select your unmade bed position
+        AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF); // CANCEL
+        AddHtmlLocalized(14, 12, 273, 20, 1076580, 0x7FFF); // Pleae select your unmade bed position
 
         AddPage(1);
 
         AddButton(19, 49, 0x845, 0x846, 1);
-        AddHtmlLocalized(44, 47, 213, 20, 1075386, 0x7FFF, false, false); // South
+        AddHtmlLocalized(44, 47, 213, 20, 1075386, 0x7FFF); // South
         AddButton(19, 73, 0x845, 0x846, 2);
-        AddHtmlLocalized(44, 71, 213, 20, 1075387, 0x7FFF, false, false); // East
+        AddHtmlLocalized(44, 71, 213, 20, 1075387, 0x7FFF); // East
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

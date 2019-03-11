@@ -41,26 +41,25 @@ namespace Server.Engines.Craft
       AddAlphaRegion(10, 10, 510, 417);
 
       if (craftSystem.GumpTitleNumber > 0)
-        AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor, false, false);
+        AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor);
       else
-        AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString, false, false);
+        AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString);
 
-      AddHtmlLocalized(10, 37, 200, 22, 1044010, LabelColor, false, false); // <CENTER>CATEGORIES</CENTER>
-      AddHtmlLocalized(215, 37, 305, 22, 1044011, LabelColor, false, false); // <CENTER>SELECTIONS</CENTER>
-      AddHtmlLocalized(10, 302, 150, 25, 1044012, LabelColor, false, false); // <CENTER>NOTICES</CENTER>
+      AddHtmlLocalized(10, 37, 200, 22, 1044010, LabelColor); // <CENTER>CATEGORIES</CENTER>
+      AddHtmlLocalized(215, 37, 305, 22, 1044011, LabelColor); // <CENTER>SELECTIONS</CENTER>
+      AddHtmlLocalized(10, 302, 150, 25, 1044012, LabelColor); // <CENTER>NOTICES</CENTER>
 
       AddButton(15, 402, 4017, 4019, 0);
-      AddHtmlLocalized(50, 405, 150, 18, 1011441, LabelColor, false, false); // EXIT
+      AddHtmlLocalized(50, 405, 150, 18, 1011441, LabelColor); // EXIT
 
       AddButton(270, 402, 4005, 4007, GetButtonID(6, 2));
-      AddHtmlLocalized(305, 405, 150, 18, 1044013, LabelColor, false, false); // MAKE LAST
+      AddHtmlLocalized(305, 405, 150, 18, 1044013, LabelColor); // MAKE LAST
 
       // Mark option
       if (craftSystem.MarkOption)
       {
         AddButton(270, 362, 4005, 4007, GetButtonID(6, 6));
-        AddHtmlLocalized(305, 365, 150, 18, 1044017 + (context == null ? 0 : (int)context.MarkOption), LabelColor,
-          false, false); // MARK ITEM
+        AddHtmlLocalized(305, 365, 150, 18, 1044017 + (context == null ? 0 : (int)context.MarkOption), LabelColor); // MARK ITEM
       }
       // ****************************************
 
@@ -68,7 +67,7 @@ namespace Server.Engines.Craft
       if (craftSystem.Resmelt)
       {
         AddButton(15, 342, 4005, 4007, GetButtonID(6, 1));
-        AddHtmlLocalized(50, 345, 150, 18, 1044259, LabelColor, false, false); // SMELT ITEM
+        AddHtmlLocalized(50, 345, 150, 18, 1044259, LabelColor); // SMELT ITEM
       }
       // ****************************************
 
@@ -76,7 +75,7 @@ namespace Server.Engines.Craft
       if (craftSystem.Repair)
       {
         AddButton(270, 342, 4005, 4007, GetButtonID(6, 5));
-        AddHtmlLocalized(305, 345, 150, 18, 1044260, LabelColor, false, false); // REPAIR ITEM
+        AddHtmlLocalized(305, 345, 150, 18, 1044260, LabelColor); // REPAIR ITEM
       }
       // ****************************************
 
@@ -84,14 +83,14 @@ namespace Server.Engines.Craft
       if (craftSystem.CanEnhance)
       {
         AddButton(270, 382, 4005, 4007, GetButtonID(6, 8));
-        AddHtmlLocalized(305, 385, 150, 18, 1061001, LabelColor, false, false); // ENHANCE ITEM
+        AddHtmlLocalized(305, 385, 150, 18, 1061001, LabelColor); // ENHANCE ITEM
       }
       // ****************************************
 
       if (notice is int noticeInt && noticeInt > 0)
-        AddHtmlLocalized(170, 295, 350, 40, noticeInt, LabelColor, false, false);
+        AddHtmlLocalized(170, 295, 350, 40, noticeInt, LabelColor);
       else if (notice is string)
-        AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice}</BASEFONT>", false, false);
+        AddHtml(170, 295, 350, 40, $"<BASEFONT COLOR=#{FontColor:X6}>{notice}</BASEFONT>");
 
       // If the system has more than one resource
       if (craftSystem.CraftSubRes.Init)
@@ -125,7 +124,7 @@ namespace Server.Engines.Craft
         AddButton(15, 362, 4005, 4007, GetButtonID(6, 0));
 
         if (nameNumber > 0)
-          AddHtmlLocalized(50, 365, 250, 18, nameNumber, resourceCount.ToString(), LabelColor, false, false);
+          AddHtmlLocalized(50, 365, 250, 18, nameNumber, resourceCount.ToString(), LabelColor);
         else
           AddLabel(50, 362, LabelHue, $"{nameString} ({resourceCount} Available)");
       }
@@ -163,7 +162,7 @@ namespace Server.Engines.Craft
         AddButton(15, 382, 4005, 4007, GetButtonID(6, 7));
 
         if (nameNumber > 0)
-          AddHtmlLocalized(50, 385, 250, 18, nameNumber, resourceCount.ToString(), LabelColor, false, false);
+          AddHtmlLocalized(50, 385, 250, 18, nameNumber, resourceCount.ToString(), LabelColor);
         else
           AddLabel(50, 385, LabelHue, $"{nameString} ({resourceCount} Available)");
       }
@@ -203,7 +202,7 @@ namespace Server.Engines.Craft
 
           AddButton(220, 260, 4005, 4007, GetButtonID(6, 4));
           AddHtmlLocalized(255, 263, 200, 18, context == null || !context.DoNotColor ? 1061591 : 1061590,
-            LabelColor, false, false);
+            LabelColor);
         }
 
         int resourceCount = 0;
@@ -220,7 +219,7 @@ namespace Server.Engines.Craft
 
         if (subResource.NameNumber > 0)
           AddHtmlLocalized(255, 63 + index * 20, 250, 18, subResource.NameNumber, resourceCount.ToString(),
-            LabelColor, false, false);
+            LabelColor);
         else
           AddLabel(255, 60 + index * 20, LabelHue, $"{subResource.NameString} ({resourceCount})");
       }
@@ -247,7 +246,7 @@ namespace Server.Engines.Craft
             if (i > 0)
             {
               AddButton(370, 260, 4005, 4007, 0, GumpButtonType.Page, i / 10 + 1);
-              AddHtmlLocalized(405, 263, 100, 18, 1044045, LabelColor, false, false); // NEXT PAGE
+              AddHtmlLocalized(405, 263, 100, 18, 1044045, LabelColor); // NEXT PAGE
             }
 
             AddPage(i / 10 + 1);
@@ -255,21 +254,21 @@ namespace Server.Engines.Craft
             if (i > 0)
             {
               AddButton(220, 260, 4014, 4015, 0, GumpButtonType.Page, i / 10);
-              AddHtmlLocalized(255, 263, 100, 18, 1044044, LabelColor, false, false); // PREV PAGE
+              AddHtmlLocalized(255, 263, 100, 18, 1044044, LabelColor); // PREV PAGE
             }
           }
 
           AddButton(220, 60 + index * 20, 4005, 4007, GetButtonID(3, i));
 
           if (craftItem.NameNumber > 0)
-            AddHtmlLocalized(255, 63 + index * 20, 220, 18, craftItem.NameNumber, LabelColor, false, false);
+            AddHtmlLocalized(255, 63 + index * 20, 220, 18, craftItem.NameNumber, LabelColor);
           else
             AddLabel(255, 60 + index * 20, LabelHue, craftItem.NameString);
 
           AddButton(480, 60 + index * 20, 4011, 4012, GetButtonID(4, i));
         }
       else
-        AddHtmlLocalized(230, 62, 200, 22, 1044165, LabelColor, false, false); // You haven't made anything yet.
+        AddHtmlLocalized(230, 62, 200, 22, 1044165, LabelColor); // You haven't made anything yet.
     }
 
     public void CreateItemList(int selectedGroup)
@@ -295,7 +294,7 @@ namespace Server.Engines.Craft
           if (i > 0)
           {
             AddButton(370, 260, 4005, 4007, 0, GumpButtonType.Page, i / 10 + 1);
-            AddHtmlLocalized(405, 263, 100, 18, 1044045, LabelColor, false, false); // NEXT PAGE
+            AddHtmlLocalized(405, 263, 100, 18, 1044045, LabelColor); // NEXT PAGE
           }
 
           AddPage(i / 10 + 1);
@@ -303,14 +302,14 @@ namespace Server.Engines.Craft
           if (i > 0)
           {
             AddButton(220, 260, 4014, 4015, 0, GumpButtonType.Page, i / 10);
-            AddHtmlLocalized(255, 263, 100, 18, 1044044, LabelColor, false, false); // PREV PAGE
+            AddHtmlLocalized(255, 263, 100, 18, 1044044, LabelColor); // PREV PAGE
           }
         }
 
         AddButton(220, 60 + index * 20, 4005, 4007, GetButtonID(1, i));
 
         if (craftItem.NameNumber > 0)
-          AddHtmlLocalized(255, 63 + index * 20, 220, 18, craftItem.NameNumber, LabelColor, false, false);
+          AddHtmlLocalized(255, 63 + index * 20, 220, 18, craftItem.NameNumber, LabelColor);
         else
           AddLabel(255, 60 + index * 20, LabelHue, craftItem.NameString);
 
@@ -323,7 +322,7 @@ namespace Server.Engines.Craft
       CraftGroupCol craftGroupCol = m_CraftSystem.CraftGroups;
 
       AddButton(15, 60, 4005, 4007, GetButtonID(6, 3));
-      AddHtmlLocalized(50, 63, 150, 18, 1044014, LabelColor, false, false); // LAST TEN
+      AddHtmlLocalized(50, 63, 150, 18, 1044014, LabelColor); // LAST TEN
 
       for (int i = 0; i < craftGroupCol.Count; i++)
       {
@@ -332,7 +331,7 @@ namespace Server.Engines.Craft
         AddButton(15, 80 + i * 20, 4005, 4007, GetButtonID(0, i));
 
         if (craftGroup.NameNumber > 0)
-          AddHtmlLocalized(50, 83 + i * 20, 150, 18, craftGroup.NameNumber, LabelColor, false, false);
+          AddHtmlLocalized(50, 83 + i * 20, 150, 18, craftGroup.NameNumber, LabelColor);
         else
           AddLabel(50, 80 + i * 20, LabelHue, craftGroup.NameString);
       }

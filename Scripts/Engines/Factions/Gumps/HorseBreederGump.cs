@@ -22,7 +22,7 @@ namespace Server.Factions
 
       AddHtmlText(20, 30, 300, 25, faction.Definition.Header, false, false);
 
-      AddHtmlLocalized(20, 60, 300, 25, 1018306, false, false); // Purchase a Faction War Horse
+      AddHtmlLocalized(20, 60, 300, 25, 1018306); // Purchase a Faction War Horse
       AddItem(70, 120, 0x3FFE);
 
       AddItem(150, 120, 0xEF2);
@@ -31,10 +31,10 @@ namespace Server.Factions
       AddItem(150, 150, 0xEEF);
       AddLabel(190, 152, 0x3E3, FactionWarHorse.GoldPrice.ToString("N0")); // NOTE: Added 'N0'
 
-      AddHtmlLocalized(55, 210, 200, 25, 1011011, false, false); // CONTINUE
+      AddHtmlLocalized(55, 210, 200, 25, 1011011); // CONTINUE
       AddButton(20, 210, 4005, 4007, 1);
 
-      AddHtmlLocalized(55, 240, 200, 25, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(55, 240, 200, 25, 1011012); // CANCEL
       AddButton(20, 240, 4005, 4007, 0);
     }
 

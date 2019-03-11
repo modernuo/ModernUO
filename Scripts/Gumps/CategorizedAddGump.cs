@@ -267,7 +267,7 @@ namespace Server.Gumps
           EntryGumpID);
 
       AddHtml(x + TextOffsetX, y + (EntryHeight - 20) / 2, emptyWidth - TextOffsetX, EntryHeight,
-        $"<center>{m_Category.Caption}</center>", false, false);
+        $"<center>{m_Category.Caption}</center>");
 
       x += emptyWidth + OffsetSize;
 

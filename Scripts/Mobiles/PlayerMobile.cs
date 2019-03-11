@@ -3423,14 +3423,13 @@ namespace Server.Mobiles
         AddImageTiled(6, 116, 228, 20, 0xA40);
         AddAlphaRegion(6, 6, 228, 142);
 
-        AddHtmlLocalized(8, 8, 228, 100, 1071021, 0x7FFF, false,
-          false); // You are about to disable inventory insurance auto-renewal.
+        AddHtmlLocalized(8, 8, 228, 100, 1071021, 0x7FFF); // You are about to disable inventory insurance auto-renewal.
 
         AddButton(6, 116, 0xFB1, 0xFB2, 0);
-        AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
 
         AddButton(114, 116, 0xFA5, 0xFA7, 1);
-        AddHtmlLocalized(148, 118, 450, 20, 1071022, 0x7FFF, false, false); // DISABLE IT!
+        AddHtmlLocalized(148, 118, 450, 20, 1071022, 0x7FFF); // DISABLE IT!
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -3518,23 +3517,23 @@ namespace Server.Mobiles
         AddAlphaRegion(10, 10, 500, 485);
 
         AddButton(15, 470, 0xFB1, 0xFB2, 0);
-        AddHtmlLocalized(50, 472, 80, 20, 1011012, 0x7FFF, false, false); // CANCEL
+        AddHtmlLocalized(50, 472, 80, 20, 1011012, 0x7FFF); // CANCEL
 
         if (from.AutoRenewInsurance)
           AddButton(360, 10, 9723, 9724, 1);
         else
           AddButton(360, 10, 9720, 9722, 1);
 
-        AddHtmlLocalized(395, 14, 105, 20, 1114122, 0x7FFF, false, false); // AUTO REINSURE
+        AddHtmlLocalized(395, 14, 105, 20, 1114122, 0x7FFF); // AUTO REINSURE
 
         AddButton(395, 470, 0xFA5, 0xFA6, 2);
-        AddHtmlLocalized(430, 472, 50, 20, 1006044, 0x7FFF, false, false); // OK
+        AddHtmlLocalized(430, 472, 50, 20, 1006044, 0x7FFF); // OK
 
-        AddHtmlLocalized(10, 14, 150, 20, 1114121, 0x7FFF, false, false); // <CENTER>ITEM INSURANCE MENU</CENTER>
+        AddHtmlLocalized(10, 14, 150, 20, 1114121, 0x7FFF); // <CENTER>ITEM INSURANCE MENU</CENTER>
 
-        AddHtmlLocalized(45, 54, 70, 20, 1062214, 0x7FFF, false, false); // Item
-        AddHtmlLocalized(250, 54, 70, 20, 1061038, 0x7FFF, false, false); // Cost
-        AddHtmlLocalized(400, 54, 70, 20, 1114311, 0x7FFF, false, false); // Insured
+        AddHtmlLocalized(45, 54, 70, 20, 1062214, 0x7FFF); // Item
+        AddHtmlLocalized(250, 54, 70, 20, 1061038, 0x7FFF); // Cost
+        AddHtmlLocalized(400, 54, 70, 20, 1114311, 0x7FFF); // Insured
 
         int balance = Banker.GetBalance(from);
         int cost = 0;
@@ -3543,14 +3542,14 @@ namespace Server.Mobiles
           if (insure[i])
             cost += GetInsuranceCost(items[i]);
 
-        AddHtmlLocalized(15, 420, 300, 20, 1114310, 0x7FFF, false, false); // GOLD AVAILABLE:
+        AddHtmlLocalized(15, 420, 300, 20, 1114310, 0x7FFF); // GOLD AVAILABLE:
         AddLabel(215, 420, 0x481, balance.ToString());
-        AddHtmlLocalized(15, 435, 300, 20, 1114123, 0x7FFF, false, false); // TOTAL COST OF INSURANCE:
+        AddHtmlLocalized(15, 435, 300, 20, 1114123, 0x7FFF); // TOTAL COST OF INSURANCE:
         AddLabel(215, 435, 0x481, cost.ToString());
 
         if (cost != 0)
         {
-          AddHtmlLocalized(15, 450, 300, 20, 1114125, 0x7FFF, false, false); // NUMBER OF DEATHS PAYABLE:
+          AddHtmlLocalized(15, 450, 300, 20, 1114125, 0x7FFF); // NUMBER OF DEATHS PAYABLE:
           AddLabel(215, 450, 0x481, (balance / cost).ToString());
         }
 
@@ -3578,13 +3577,13 @@ namespace Server.Mobiles
         if (page >= 1)
         {
           AddButton(15, 380, 0xFAE, 0xFAF, 3);
-          AddHtmlLocalized(50, 380, 450, 20, 1044044, 0x7FFF, false, false); // PREV PAGE
+          AddHtmlLocalized(50, 380, 450, 20, 1044044, 0x7FFF); // PREV PAGE
         }
 
         if ((page + 1) * 4 < items.Length)
         {
           AddButton(400, 380, 0xFA5, 0xFA7, 4);
-          AddHtmlLocalized(435, 380, 70, 20, 1044045, 0x7FFF, false, false); // NEXT PAGE
+          AddHtmlLocalized(435, 380, 70, 20, 1044045, 0x7FFF); // NEXT PAGE
         }
       }
 
@@ -3670,14 +3669,13 @@ namespace Server.Mobiles
         AddImageTiled(6, 116, 228, 20, 0xA40);
         AddAlphaRegion(6, 6, 228, 142);
 
-        AddHtmlLocalized(8, 8, 228, 100, 1114300, 0x7FFF, false,
-          false); // Do you wish to insure all newly selected items?
+        AddHtmlLocalized(8, 8, 228, 100, 1114300, 0x7FFF); // Do you wish to insure all newly selected items?
 
         AddButton(6, 116, 0xFB1, 0xFB2, 0);
-        AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
 
         AddButton(114, 116, 0xFA5, 0xFA7, 1);
-        AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF, false, false); // ACCEPT
+        AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF); // ACCEPT
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

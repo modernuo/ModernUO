@@ -66,7 +66,7 @@ namespace Server.Gumps
       AddAlphaRegion(10, 10, x, y + 64);
 
       AddButton(10, y + 54, 0xFB1, 0xFB2, 0); //Cancel Button
-      AddHtmlLocalized(45, y + 56, x - 50, 20, 1060051, 0x7FFF, false, false); // CANCEL
+      AddHtmlLocalized(45, y + 56, x - 50, 20, 1060051, 0x7FFF); // CANCEL
       TextDefinition.AddHtmlText(this, 14, 12, x, 20, header, false, false, 0x7FFF, 0xFFFFFF);
 
       AddPage(1);
@@ -85,12 +85,12 @@ namespace Server.Gumps
         if (position == 0 && i != 0)
         {
           AddButton(x - 100, y + 54, 0xFA5, 0xFA7, 0, GumpButtonType.Page, pageNum);
-          AddHtmlLocalized(x - 60, y + 56, 60, 20, 1043353, 0x7FFF, false, false); // Next
+          AddHtmlLocalized(x - 60, y + 56, 60, 20, 1043353, 0x7FFF); // Next
 
           AddPage(pageNum);
 
           AddButton(x - 200, y + 54, 0xFAE, 0xFB0, 0, GumpButtonType.Page, pageNum - 1);
-          AddHtmlLocalized(x - 160, y + 56, 60, 20, 1011393, 0x7FFF, false, false); // Back
+          AddHtmlLocalized(x - 160, y + 56, 60, 20, 1011393, 0x7FFF); // Back
         }
 
         ImageTileButtonInfo b = buttons[i];

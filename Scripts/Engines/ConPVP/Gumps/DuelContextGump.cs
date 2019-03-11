@@ -26,7 +26,7 @@ namespace Server.Engines.ConPVP
       AddBackground(0, 0, 300, height, 9250);
       AddBackground(10, 10, 280, height - 20, 0xDAC);
 
-      AddHtml(35, 25, 230, 20, Center("Duel Setup"), false, false);
+      AddHtml(35, 25, 230, 20, Center("Duel Setup"));
 
       int x = 35;
       int y = 47;
@@ -38,7 +38,7 @@ namespace Server.Engines.ConPVP
       AddGoldenButtonLabeled(x, y, 3, "Add Participant");
       y += 30;
 
-      AddHtml(35, y, 230, 20, Center("Participants"), false, false);
+      AddHtml(35, y, 230, 20, Center("Participants"));
       y += 22;
 
       for (int i = 0; i < context.Participants.Count; ++i)
@@ -70,7 +70,7 @@ namespace Server.Engines.ConPVP
     public void AddGoldenButtonLabeled(int x, int y, int bid, string text)
     {
       AddGoldenButton(x, y, bid);
-      AddHtml(x + 25, y, 200, 20, text, false, false);
+      AddHtml(x + 25, y, 200, 20, text);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

@@ -147,7 +147,7 @@ namespace Server.Engines.Quests
 
       AddImage(20, 5, 1417);
 
-      AddHtmlLocalized(0, 78, 120, 40, 1049079, White, false, false); // Quest Log Updated
+      AddHtmlLocalized(0, 78, 120, 40, 1049079, White); // Quest Log Updated
 
       AddImageTiled(0, 78, 120, 40, 2624);
       AddAlphaRegion(0, 78, 120, 40);
@@ -193,17 +193,17 @@ namespace Server.Engines.Quests
       AddImage(20, 87, 1231);
       AddImage(75, 62, 9307);
 
-      AddHtmlLocalized(117, 35, 230, 20, 1046026, Blue, false, false); // Quest Log
+      AddHtmlLocalized(117, 35, 230, 20, 1046026, Blue); // Quest Log
 
       AddImage(77, 33, 9781);
       AddImage(65, 110, 2104);
 
-      AddHtmlLocalized(79, 106, 230, 20, 1049073, Blue, false, false); // Objective:
+      AddHtmlLocalized(79, 106, 230, 20, 1049073, Blue); // Objective:
 
       AddImageTiled(68, 125, 120, 1, 9101);
       AddImage(65, 240, 2104);
 
-      AddHtmlLocalized(79, 237, 230, 20, 1049076, Blue, false, false); // Progress details:
+      AddHtmlLocalized(79, 237, 230, 20, 1049076, Blue); // Progress details:
 
       AddImageTiled(68, 255, 120, 1, 9101);
       AddButton(175, 355, 2313, 2312, 1);
@@ -222,7 +222,7 @@ namespace Server.Engines.Quests
         if (i > 0)
         {
           AddButton(55, 346, 9909, 9911, 0, GumpButtonType.Page, 1 + i);
-          AddHtmlLocalized(82, 347, 50, 20, 1043354, White, false, false); // Previous
+          AddHtmlLocalized(82, 347, 50, 20, 1043354, White); // Previous
 
           AddPage(1 + i);
         }
@@ -233,7 +233,7 @@ namespace Server.Engines.Quests
         if (i > 0)
         {
           AddButton(317, 346, 9903, 9905, 0, GumpButtonType.Page, i);
-          AddHtmlLocalized(278, 347, 50, 20, 1043353, White, false, false); // Next
+          AddHtmlLocalized(278, 347, 50, 20, 1043353, White); // Next
         }
       }
     }

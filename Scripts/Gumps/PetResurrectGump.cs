@@ -26,9 +26,8 @@ namespace Server.Gumps
       AddItem(195, 90, 0xCAD);
       AddItem(218, 95, 0xCB0);
 
-      AddHtmlLocalized(30, 30, 150, 75, 1049665, false,
-        false); // <div align=center>Wilt thou sanctify the resurrection of:</div>
-      AddHtml(30, 70, 150, 25, $"<div align=CENTER>{pet.Name}</div>", true, false);
+      AddHtmlLocalized(30, 30, 150, 75, 1049665); // <div align=center>Wilt thou sanctify the resurrection of:</div>
+      AddHtml(30, 70, 150, 25, $"<div align=CENTER>{pet.Name}</div>", true);
 
       AddButton(40, 105, 0x81A, 0x81B, 0x1); // Okay
       AddButton(110, 105, 0x819, 0x818, 0x2); // Cancel

@@ -34,10 +34,10 @@ namespace Server.Gumps
       {
         m_Selection = null;
 
-        AddHtml(35, 15, 120, 20, Color("House Type", White), false, false);
+        AddHtml(35, 15, 120, 20, Color("House Type", White));
 
         if (list.Count == 0)
-          AddHtml(35, 40, 160, 40, Color("There were no houses found for that player.", White), false, false);
+          AddHtml(35, 40, 160, 40, Color("There were no houses found for that player.", White));
 
         AddImage(190, 17, 0x25EA);
         AddImage(207, 17, 0x25E6);
@@ -59,12 +59,12 @@ namespace Server.Gumps
 
           object name = FindHouseName(list[i]);
 
-          AddHtml(15, 40 + i % 15 * 20, 20, 20, Color($"{i + 1}.", White), false, false);
+          AddHtml(15, 40 + i % 15 * 20, 20, 20, Color($"{i + 1}.", White));
 
           if (name is int nameInt)
-            AddHtmlLocalized(35, 40 + i % 15 * 20, 160, 20, nameInt, White16, false, false);
+            AddHtmlLocalized(35, 40 + i % 15 * 20, 160, 20, nameInt, White16);
           else
-            AddHtml(35, 40 + i % 15 * 20, 160, 20, Color(name.ToString(), White), false, false);
+            AddHtml(35, 40 + i % 15 * 20, 160, 20, Color(name.ToString(), White));
 
           AddButton(198, 39 + i % 15 * 20, 4005, 4007, i + 1);
         }
@@ -88,49 +88,49 @@ namespace Server.Gumps
         else
           location = "unknown";
 
-        AddHtml(10, 15, 220, 20, Color(Center("House Properties"), White), false, false);
+        AddHtml(10, 15, 220, 20, Color(Center("House Properties"), White));
 
-        AddHtml(15, 40, 210, 20, Color("Facet:", White), false, false);
-        AddHtml(15, 40, 210, 20, Color(Right(map == null ? "(null)" : map.Name), White), false, false);
+        AddHtml(15, 40, 210, 20, Color("Facet:", White));
+        AddHtml(15, 40, 210, 20, Color(Right(map == null ? "(null)" : map.Name), White));
 
-        AddHtml(15, 60, 210, 20, Color("Location:", White), false, false);
-        AddHtml(15, 60, 210, 20, Color(Right(sel.Location.ToString()), White), false, false);
+        AddHtml(15, 60, 210, 20, Color("Location:", White));
+        AddHtml(15, 60, 210, 20, Color(Right(sel.Location.ToString()), White));
 
-        AddHtml(15, 80, 210, 20, Color("Sextant:", White), false, false);
-        AddHtml(15, 80, 210, 20, Color(Right(location), White), false, false);
+        AddHtml(15, 80, 210, 20, Color("Sextant:", White));
+        AddHtml(15, 80, 210, 20, Color(Right(location), White));
 
-        AddHtml(15, 100, 210, 20, Color("Owner:", White), false, false);
-        AddHtml(15, 100, 210, 20, Color(Right(owner), White), false, false);
+        AddHtml(15, 100, 210, 20, Color("Owner:", White));
+        AddHtml(15, 100, 210, 20, Color(Right(owner), White));
 
-        AddHtml(15, 120, 210, 20, Color("Name:", White), false, false);
-        AddHtml(15, 120, 210, 20, Color(Right(houseName), White), false, false);
+        AddHtml(15, 120, 210, 20, Color("Name:", White));
+        AddHtml(15, 120, 210, 20, Color(Right(houseName), White));
 
-        AddHtml(15, 140, 210, 20, Color("Friends:", White), false, false);
-        AddHtml(15, 140, 210, 20, Color(Right(sel.Friends.Count.ToString()), White), false, false);
+        AddHtml(15, 140, 210, 20, Color("Friends:", White));
+        AddHtml(15, 140, 210, 20, Color(Right(sel.Friends.Count.ToString()), White));
 
-        AddHtml(15, 160, 210, 20, Color("Co-Owners:", White), false, false);
-        AddHtml(15, 160, 210, 20, Color(Right(sel.CoOwners.Count.ToString()), White), false, false);
+        AddHtml(15, 160, 210, 20, Color("Co-Owners:", White));
+        AddHtml(15, 160, 210, 20, Color(Right(sel.CoOwners.Count.ToString()), White));
 
-        AddHtml(15, 180, 210, 20, Color("Bans:", White), false, false);
-        AddHtml(15, 180, 210, 20, Color(Right(sel.Bans.Count.ToString()), White), false, false);
+        AddHtml(15, 180, 210, 20, Color("Bans:", White));
+        AddHtml(15, 180, 210, 20, Color(Right(sel.Bans.Count.ToString()), White));
 
-        AddHtml(15, 200, 210, 20, Color("Decays:", White), false, false);
-        AddHtml(15, 200, 210, 20, Color(Right(sel.CanDecay ? "Yes" : "No"), White), false, false);
+        AddHtml(15, 200, 210, 20, Color("Decays:", White));
+        AddHtml(15, 200, 210, 20, Color(Right(sel.CanDecay ? "Yes" : "No"), White));
 
-        AddHtml(15, 220, 210, 20, Color("Decay Level:", White), false, false);
-        AddHtml(15, 220, 210, 20, Color(Right(sel.DecayLevel.ToString()), White), false, false);
+        AddHtml(15, 220, 210, 20, Color("Decay Level:", White));
+        AddHtml(15, 220, 210, 20, Color(Right(sel.DecayLevel.ToString()), White));
 
         AddButton(15, 245, 4005, 4007, 1);
-        AddHtml(50, 245, 120, 20, Color("Go to house", White), false, false);
+        AddHtml(50, 245, 120, 20, Color("Go to house", White));
 
         AddButton(15, 265, 4005, 4007, 2);
-        AddHtml(50, 265, 120, 20, Color("Open house menu", White), false, false);
+        AddHtml(50, 265, 120, 20, Color("Open house menu", White));
 
         AddButton(15, 285, 4005, 4007, 3);
-        AddHtml(50, 285, 120, 20, Color("Demolish house", White), false, false);
+        AddHtml(50, 285, 120, 20, Color("Demolish house", White));
 
         AddButton(15, 305, 4005, 4007, 4);
-        AddHtml(50, 305, 120, 20, Color("Refresh house", White), false, false);
+        AddHtml(50, 305, 120, 20, Color("Refresh house", White));
       }
     }
 

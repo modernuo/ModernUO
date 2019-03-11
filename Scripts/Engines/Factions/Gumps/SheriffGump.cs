@@ -28,15 +28,15 @@ namespace Server.Factions
 
       AddPage(1);
 
-      AddHtmlLocalized(20, 30, 260, 25, 1011431, false, false); // Sheriff
+      AddHtmlLocalized(20, 30, 260, 25, 1011431); // Sheriff
 
-      AddHtmlLocalized(55, 90, 200, 25, 1011494, false, false); // HIRE GUARDS
+      AddHtmlLocalized(55, 90, 200, 25, 1011494); // HIRE GUARDS
       AddButton(20, 90, 4005, 4007, 0, GumpButtonType.Page, 3);
 
-      AddHtmlLocalized(55, 120, 200, 25, 1011495, false, false); // VIEW FINANCES
+      AddHtmlLocalized(55, 120, 200, 25, 1011495); // VIEW FINANCES
       AddButton(20, 120, 4005, 4007, 0, GumpButtonType.Page, 2);
 
-      AddHtmlLocalized(55, 360, 200, 25, 1011441, false, false); // Exit
+      AddHtmlLocalized(55, 360, 200, 25, 1011441); // Exit
       AddButton(20, 360, 4005, 4007, 0);
 
       #endregion
@@ -50,24 +50,24 @@ namespace Server.Factions
       int dailyIncome = town.DailyIncome;
       int netCashFlow = town.NetCashFlow;
 
-      AddHtmlLocalized(20, 30, 300, 25, 1011524, false, false); // FINANCE STATEMENT
+      AddHtmlLocalized(20, 30, 300, 25, 1011524); // FINANCE STATEMENT
 
-      AddHtmlLocalized(20, 80, 300, 25, 1011538, false, false); // Current total money for town :
+      AddHtmlLocalized(20, 80, 300, 25, 1011538); // Current total money for town :
       AddLabel(20, 100, 0x44, town.Silver.ToString("N0")); // NOTE: Added 'N0'
 
-      AddHtmlLocalized(20, 130, 300, 25, 1011520, false, false); // Finance Minister Upkeep :
+      AddHtmlLocalized(20, 130, 300, 25, 1011520); // Finance Minister Upkeep :
       AddLabel(20, 150, 0x44, financeUpkeep.ToString("N0")); // NOTE: Added 'N0'
 
-      AddHtmlLocalized(20, 180, 300, 25, 1011521, false, false); // Sheriff Upkeep :
+      AddHtmlLocalized(20, 180, 300, 25, 1011521); // Sheriff Upkeep :
       AddLabel(20, 200, 0x44, sheriffUpkeep.ToString("N0")); // NOTE: Added 'N0'
 
-      AddHtmlLocalized(20, 230, 300, 25, 1011522, false, false); // Town Income :
+      AddHtmlLocalized(20, 230, 300, 25, 1011522); // Town Income :
       AddLabel(20, 250, 0x44, dailyIncome.ToString("N0")); // NOTE: Added 'N0'
 
-      AddHtmlLocalized(20, 280, 300, 25, 1011523, false, false); // Net Cash flow per day :
+      AddHtmlLocalized(20, 280, 300, 25, 1011523); // Net Cash flow per day :
       AddLabel(20, 300, 0x44, netCashFlow.ToString("N0")); // NOTE: Added 'N0'
 
-      AddHtmlLocalized(55, 360, 200, 25, 1011067, false, false); // Previous page
+      AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
       AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 1);
 
       #endregion
@@ -76,7 +76,7 @@ namespace Server.Factions
 
       AddPage(3);
 
-      AddHtmlLocalized(20, 30, 300, 25, 1011494, false, false); // HIRE GUARDS
+      AddHtmlLocalized(20, 30, 300, 25, 1011494); // HIRE GUARDS
 
       List<GuardList> guardLists = town.GuardLists;
 
@@ -90,7 +90,7 @@ namespace Server.Factions
         AddHtmlText(120, y, 200, 25, guardList.Definition.Header, false, false);
       }
 
-      AddHtmlLocalized(55, 360, 200, 25, 1011067, false, false); // Previous page
+      AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
       AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 1);
 
       #endregion
@@ -106,28 +106,28 @@ namespace Server.Factions
         AddHtmlText(90, 30, 300, 25, guardList.Definition.Header, false, false);
         CenterItem(guardList.Definition.ItemID, 10, 10, 80, 80);
 
-        AddHtmlLocalized(20, 90, 200, 25, 1011514, false, false); // You have :
+        AddHtmlLocalized(20, 90, 200, 25, 1011514); // You have :
         AddLabel(230, 90, 0x26, guardList.Guards.Count.ToString());
 
-        AddHtmlLocalized(20, 120, 200, 25, 1011515, false, false); // Maximum :
+        AddHtmlLocalized(20, 120, 200, 25, 1011515); // Maximum :
         AddLabel(230, 120, 0x12A, guardList.Definition.Maximum.ToString());
 
-        AddHtmlLocalized(20, 150, 200, 25, 1011516, false, false); // Cost :
+        AddHtmlLocalized(20, 150, 200, 25, 1011516); // Cost :
         AddLabel(230, 150, 0x44, guardList.Definition.Price.ToString("N0")); // NOTE: Added 'N0'
 
-        AddHtmlLocalized(20, 180, 200, 25, 1011517, false, false); // Daily Pay :
+        AddHtmlLocalized(20, 180, 200, 25, 1011517); // Daily Pay :
         AddLabel(230, 180, 0x37, guardList.Definition.Upkeep.ToString("N0")); // NOTE: Added 'N0'
 
-        AddHtmlLocalized(20, 210, 200, 25, 1011518, false, false); // Current Silver :
+        AddHtmlLocalized(20, 210, 200, 25, 1011518); // Current Silver :
         AddLabel(230, 210, 0x44, town.Silver.ToString("N0")); // NOTE: Added 'N0'
 
-        AddHtmlLocalized(20, 240, 200, 25, 1011519, false, false); // Current Payroll :
+        AddHtmlLocalized(20, 240, 200, 25, 1011519); // Current Payroll :
         AddLabel(230, 240, 0x44, sheriffUpkeep.ToString("N0")); // NOTE: Added 'N0'
 
         AddHtmlText(55, 300, 200, 25, guardList.Definition.Label, false, false);
         AddButton(20, 300, 4005, 4007, 1 + i);
 
-        AddHtmlLocalized(55, 360, 200, 25, 1011067, false, false); // Previous page
+        AddHtmlLocalized(55, 360, 200, 25, 1011067); // Previous page
         AddButton(20, 360, 4005, 4007, 0, GumpButtonType.Page, 3);
       }
 

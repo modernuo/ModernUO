@@ -271,10 +271,10 @@ namespace Server.Items
 																			* The message gives the ship's last known sextant co-ordinates.
 																			*/
 
-        AddHtml(35, 240, 230, 20, fmt, false, false);
+        AddHtml(35, 240, 230, 20, fmt);
 
         AddButton(35, 265, 4005, 4007, 0);
-        AddHtmlLocalized(70, 265, 100, 20, 1011036, false, false); // OKAY
+        AddHtmlLocalized(70, 265, 100, 20, 1011036); // OKAY
       }
     }
 #endif

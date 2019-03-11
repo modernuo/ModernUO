@@ -516,16 +516,14 @@ namespace Server.Items
 
         AddBackground(30, 0, 240, 240, 2620);
 
-        AddHtmlLocalized(45, 15, 200, 80, 1048125, 0xFFFFFF, false,
-          false); // When this treasure chest is removed, any items still inside of it will be lost.
-        AddHtmlLocalized(45, 95, 200, 60, 1048126, 0xFFFFFF, false,
-          false); // Are you certain you're ready to remove this chest?
+        AddHtmlLocalized(45, 15, 200, 80, 1048125, 0xFFFFFF); // When this treasure chest is removed, any items still inside of it will be lost.
+        AddHtmlLocalized(45, 95, 200, 60, 1048126, 0xFFFFFF); // Are you certain you're ready to remove this chest?
 
         AddButton(40, 153, 4005, 4007, 1);
-        AddHtmlLocalized(75, 155, 180, 40, 1048127, 0xFFFFFF, false, false); // Remove the Treasure Chest
+        AddHtmlLocalized(75, 155, 180, 40, 1048127, 0xFFFFFF); // Remove the Treasure Chest
 
         AddButton(40, 195, 4005, 4007, 2);
-        AddHtmlLocalized(75, 197, 180, 35, 1006045, 0xFFFFFF, false, false); // Cancel
+        AddHtmlLocalized(75, 197, 180, 35, 1006045, 0xFFFFFF); // Cancel
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

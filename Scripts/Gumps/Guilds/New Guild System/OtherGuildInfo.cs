@@ -23,7 +23,7 @@ namespace Server.Guilds
     {
       AddBackground(x, y, 225, 26, 0x2486);
       AddButton(x + 5, y + 5, 0x845, 0x846, buttonID);
-      AddHtmlLocalized(x + 30, y + 3, 185, 26, locNum, 0x0, false, false);
+      AddHtmlLocalized(x + 30, y + 3, 185, 26, locNum, 0x0);
     }
 
     public override void PopulateGump()
@@ -43,20 +43,19 @@ namespace Server.Guilds
       AddPage(0);
 
       AddBackground(0, 0, 520, 335, 0x242C);
-      AddHtmlLocalized(20, 15, 480, 26, 1062975, 0x0, false,
-        false); // <div align=center><i>Guild Relationship</i></div>
+      AddHtmlLocalized(20, 15, 480, 26, 1062975, 0x0); // <div align=center><i>Guild Relationship</i></div>
       AddImageTiled(20, 40, 480, 2, 0x2711);
-      AddHtmlLocalized(20, 50, 120, 26, 1062954, 0x0, true, false); // <i>Guild Name</i>
-      AddHtml(150, 53, 360, 26, m_Other.Name, false, false);
+      AddHtmlLocalized(20, 50, 120, 26, 1062954, 0x0, true); // <i>Guild Name</i>
+      AddHtml(150, 53, 360, 26, m_Other.Name);
 
-      AddHtmlLocalized(20, 80, 120, 26, 1063025, 0x0, true, false); // <i>Alliance</i>
+      AddHtmlLocalized(20, 80, 120, 26, 1063025, 0x0, true); // <i>Alliance</i>
 
       if (otherAlliance != null)
         if (otherAlliance.IsMember(m_Other))
-          AddHtml(150, 83, 360, 26, otherAlliance.Name, false, false);
+          AddHtml(150, 83, 360, 26, otherAlliance.Name);
 
-      AddHtmlLocalized(20, 110, 120, 26, 1063139, 0x0, true, false); // <i>Abbreviation</i>
-      AddHtml(150, 113, 120, 26, m_Other.Abbreviation, false, false);
+      AddHtmlLocalized(20, 110, 120, 26, 1063139, 0x0, true); // <i>Abbreviation</i>
+      AddHtml(150, 113, 120, 26, m_Other.Abbreviation);
 
 
       string kills = "0/0";
@@ -92,14 +91,14 @@ namespace Server.Guilds
           otherKills = Color($"{otherWar.Kills}/{otherWar.MaxKills}", 0x990000);
       }
 
-      AddHtmlLocalized(280, 110, 120, 26, 1062966, 0x0, true, false); // <i>Your Kills</i>
-      AddHtml(410, 113, 120, 26, kills, false, false);
+      AddHtmlLocalized(280, 110, 120, 26, 1062966, 0x0, true); // <i>Your Kills</i>
+      AddHtml(410, 113, 120, 26, kills);
 
-      AddHtmlLocalized(20, 140, 120, 26, 1062968, 0x0, true, false); // <i>Time Remaining</i>
-      AddHtml(150, 143, 120, 26, time, false, false);
+      AddHtmlLocalized(20, 140, 120, 26, 1062968, 0x0, true); // <i>Time Remaining</i>
+      AddHtml(150, 143, 120, 26, time);
 
-      AddHtmlLocalized(280, 140, 120, 26, 1062967, 0x0, true, false); // <i>Their Kills</i>
-      AddHtml(410, 143, 120, 26, otherKills, false, false);
+      AddHtmlLocalized(280, 140, 120, 26, 1062967, 0x0, true); // <i>Their Kills</i>
+      AddHtml(410, 143, 120, 26, otherKills);
 
       AddImageTiled(20, 172, 480, 2, 0x2711);
 
@@ -155,7 +154,7 @@ namespace Server.Guilds
           //Withdraw Request
           AddButtonAndBackground(20, 290, 14, 1062986); // Withdraw Request
 
-          AddHtml(150, 83, 360, 26, Color(alliance.Name, 0x99), false, false);
+          AddHtml(150, 83, 360, 26, Color(alliance.Name, 0x99));
         }
         else if (alliance.Leader == m_Other && alliance.IsPendingMember(guild))
         {
@@ -168,7 +167,7 @@ namespace Server.Guilds
           AddButtonAndBackground(20, 260, 15, 1062988); // Deny Request
           AddButtonAndBackground(20, 290, 16, 1062987); // Accept Request
 
-          AddHtml(150, 83, 360, 26, Color(alliance.Name, 0x99), false, false);
+          AddHtml(150, 83, 360, 26, Color(alliance.Name, 0x99));
         }
       }
       else
@@ -179,7 +178,7 @@ namespace Server.Guilds
 
       AddButtonAndBackground(275, 290, 0, 3000091); //Cancel
 
-      AddHtmlLocalized(20, 180, 480, 30, number, 0x0, true, false);
+      AddHtmlLocalized(20, 180, 480, 30, number, 0x0, true);
       AddImageTiled(20, 245, 480, 2, 0x2711);
     }
 

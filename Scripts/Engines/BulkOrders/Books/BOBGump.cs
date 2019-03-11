@@ -103,45 +103,45 @@ namespace Server.Engines.BulkOrders
       AddImage(5, 424, 10460);
       AddImage(width - 15, 424, 10460);
 
-      AddHtmlLocalized(canPrice ? 266 : 224, 32, 200, 32, 1062220, LabelColor, false, false); // Bulk Order Book
-      AddHtmlLocalized(63, 64, 200, 32, 1062213, LabelColor, false, false); // Type
-      AddHtmlLocalized(147, 64, 200, 32, 1062214, LabelColor, false, false); // Item
-      AddHtmlLocalized(246, 64, 200, 32, 1062215, LabelColor, false, false); // Quality
-      AddHtmlLocalized(336, 64, 200, 32, 1062216, LabelColor, false, false); // Material
-      AddHtmlLocalized(429, 64, 200, 32, 1062217, LabelColor, false, false); // Amount
+      AddHtmlLocalized(canPrice ? 266 : 224, 32, 200, 32, 1062220, LabelColor); // Bulk Order Book
+      AddHtmlLocalized(63, 64, 200, 32, 1062213, LabelColor); // Type
+      AddHtmlLocalized(147, 64, 200, 32, 1062214, LabelColor); // Item
+      AddHtmlLocalized(246, 64, 200, 32, 1062215, LabelColor); // Quality
+      AddHtmlLocalized(336, 64, 200, 32, 1062216, LabelColor); // Material
+      AddHtmlLocalized(429, 64, 200, 32, 1062217, LabelColor); // Amount
 
       AddButton(35, 32, 4005, 4007, 1);
-      AddHtmlLocalized(70, 32, 200, 32, 1062476, LabelColor, false, false); // Set Filter
+      AddHtmlLocalized(70, 32, 200, 32, 1062476, LabelColor); // Set Filter
 
       BOBFilter f = from.UseOwnFilter ? from.BOBFilter : book.Filter;
 
       if (f.IsDefault)
-        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062475, 16927, false, false); // Using No Filter
+        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062475, 16927); // Using No Filter
       else if (from.UseOwnFilter)
-        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062451, 16927, false, false); // Using Your Filter
+        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062451, 16927); // Using Your Filter
       else
-        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062230, 16927, false, false); // Using Book Filter
+        AddHtmlLocalized(canPrice ? 470 : 386, 32, 120, 32, 1062230, 16927); // Using Book Filter
 
       AddButton(375, 416, 4017, 4018, 0);
-      AddHtmlLocalized(410, 416, 120, 20, 1011441, LabelColor, false, false); // EXIT
+      AddHtmlLocalized(410, 416, 120, 20, 1011441, LabelColor); // EXIT
 
       if (canDrop)
-        AddHtmlLocalized(26, 64, 50, 32, 1062212, LabelColor, false, false); // Drop
+        AddHtmlLocalized(26, 64, 50, 32, 1062212, LabelColor); // Drop
 
       if (canPrice)
       {
-        AddHtmlLocalized(516, 64, 200, 32, 1062218, LabelColor, false, false); // Price
+        AddHtmlLocalized(516, 64, 200, 32, 1062218, LabelColor); // Price
 
         if (canBuy)
         {
-          AddHtmlLocalized(576, 64, 200, 32, 1062219, LabelColor, false, false); // Buy
+          AddHtmlLocalized(576, 64, 200, 32, 1062219, LabelColor); // Buy
         }
         else
         {
-          AddHtmlLocalized(576, 64, 200, 32, 1062227, LabelColor, false, false); // Set
+          AddHtmlLocalized(576, 64, 200, 32, 1062227, LabelColor); // Set
 
           AddButton(450, 416, 4005, 4007, 4);
-          AddHtml(485, 416, 120, 20, "<BASEFONT COLOR=#FFFFFF>Price all</FONT>", false, false);
+          AddHtml(485, 416, 120, 20, "<BASEFONT COLOR=#FFFFFF>Price all</FONT>");
         }
       }
 
@@ -150,13 +150,13 @@ namespace Server.Engines.BulkOrders
       if (page > 0)
       {
         AddButton(75, 416, 4014, 4016, 2);
-        AddHtmlLocalized(110, 416, 150, 20, 1011067, LabelColor, false, false); // Previous page
+        AddHtmlLocalized(110, 416, 150, 20, 1011067, LabelColor); // Previous page
       }
 
       if (GetIndexForPage(page + 1) < list.Count)
       {
         AddButton(225, 416, 4005, 4007, 3);
-        AddHtmlLocalized(260, 416, 150, 20, 1011066, LabelColor, false, false); // Next page
+        AddHtmlLocalized(260, 416, 150, 20, 1011066, LabelColor); // Next page
       }
 
       for (int i = index; i < index + count && i >= 0 && i < list.Count; ++i)
@@ -179,23 +179,23 @@ namespace Server.Engines.BulkOrders
             AddLabel(495, y, 1152, entry.Price.ToString());
           }
 
-          AddHtmlLocalized(61, y, 50, 32, 1062225, LabelColor, false, false); // Large
+          AddHtmlLocalized(61, y, 50, 32, 1062225, LabelColor); // Large
 
           for (int j = 0; j < largeEntry.Entries.Length; ++j)
           {
             BOBLargeSubEntry sub = largeEntry.Entries[j];
 
-            AddHtmlLocalized(103, y, 130, 32, sub.Number, LabelColor, false, false);
+            AddHtmlLocalized(103, y, 130, 32, sub.Number, LabelColor);
 
             if (entry.RequireExceptional)
-              AddHtmlLocalized(235, y, 80, 20, 1060636, LabelColor, false, false); // exceptional
+              AddHtmlLocalized(235, y, 80, 20, 1060636, LabelColor); // exceptional
             else
-              AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor, false, false); // normal
+              AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor); // normal
 
             object name = GetMaterialName(entry.Material, entry.DeedType, sub.ItemType);
 
             if (name is int intName)
-              AddHtmlLocalized(316, y, 100, 20, intName, LabelColor, false, false);
+              AddHtmlLocalized(316, y, 100, 20, intName, LabelColor);
             else
               AddLabel(316, y, 1152, name.ToString());
 
@@ -220,19 +220,19 @@ namespace Server.Engines.BulkOrders
             AddLabel(495, y, 1152, smallEntry.Price.ToString());
           }
 
-          AddHtmlLocalized(61, y, 50, 32, 1062224, LabelColor, false, false); // Small
+          AddHtmlLocalized(61, y, 50, 32, 1062224, LabelColor); // Small
 
-          AddHtmlLocalized(103, y, 130, 32, smallEntry.Number, LabelColor, false, false);
+          AddHtmlLocalized(103, y, 130, 32, smallEntry.Number, LabelColor);
 
           if (smallEntry.RequireExceptional)
-            AddHtmlLocalized(235, y, 80, 20, 1060636, LabelColor, false, false); // exceptional
+            AddHtmlLocalized(235, y, 80, 20, 1060636, LabelColor); // exceptional
           else
-            AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor, false, false); // normal
+            AddHtmlLocalized(235, y, 80, 20, 1011542, LabelColor); // normal
 
           object name = GetMaterialName(smallEntry.Material, smallEntry.DeedType, smallEntry.ItemType);
 
           if (name is int intName)
-            AddHtmlLocalized(316, y, 100, 20, intName, LabelColor, false, false);
+            AddHtmlLocalized(316, y, 100, 20, intName, LabelColor);
           else
             AddLabel(316, y, 1152, name.ToString());
 

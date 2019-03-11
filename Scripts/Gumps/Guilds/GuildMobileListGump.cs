@@ -32,7 +32,7 @@ namespace Server.Gumps
           if (i != 0)
           {
             AddButton(300, 370, 4005, 4007, 0, GumpButtonType.Page, i / 11 + 1);
-            AddHtmlLocalized(335, 370, 300, 35, 1011066, false, false); // Next page
+            AddHtmlLocalized(335, 370, 300, 35, 1011066); // Next page
           }
 
           AddPage(i / 11 + 1);
@@ -40,7 +40,7 @@ namespace Server.Gumps
           if (i != 0)
           {
             AddButton(20, 370, 4014, 4016, 0, GumpButtonType.Page, i / 11);
-            AddHtmlLocalized(55, 370, 300, 35, 1011067, false, false); // Previous page
+            AddHtmlLocalized(55, 370, 300, 35, 1011067); // Previous page
           }
         }
 

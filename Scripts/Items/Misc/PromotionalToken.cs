@@ -82,7 +82,7 @@ namespace Server.Items
 				AddPage( 0 );
 
 				AddBackground( 0, 0, 240, 135, 0x2422 );
-				AddHtmlLocalized( 15, 15, 210, 75, 1070972, 0x0, true, false ); // Click "OKAY" to redeem the following promotional item:
+				AddHtmlLocalized( 15, 15, 210, 75, 1070972, 0x0, true ); // Click "OKAY" to redeem the following promotional item:
 				TextDefinition.AddHtmlText( this, 15, 60, 210, 75, m_Token.ItemGumpName, false, false );
 
 				AddButton( 160, 95, 0xF7, 0xF8, 1);	//Okay

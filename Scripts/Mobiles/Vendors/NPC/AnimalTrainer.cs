@@ -408,8 +408,7 @@ namespace Server.Mobiles
         AddBackground(0, 0, 325, 50 + list.Count * 20, 9250);
         AddAlphaRegion(5, 5, 315, 40 + list.Count * 20);
 
-        AddHtml(15, 15, 275, 20, "<BASEFONT COLOR=#FFFFFF>Select a pet to retrieve from the stables:</BASEFONT>",
-          false, false);
+        AddHtml(15, 15, 275, 20, "<BASEFONT COLOR=#FFFFFF>Select a pet to retrieve from the stables:</BASEFONT>");
 
         for (int i = 0; i < list.Count; ++i)
         {
@@ -419,7 +418,7 @@ namespace Server.Mobiles
             continue;
 
           AddButton(15, 39 + i * 20, 10006, 10006, i + 1);
-          AddHtml(32, 35 + i * 20, 275, 18, $"<BASEFONT COLOR=#C0C0EE>{pet.Name}</BASEFONT>", false, false);
+          AddHtml(32, 35 + i * 20, 275, 18, $"<BASEFONT COLOR=#C0C0EE>{pet.Name}</BASEFONT>");
         }
       }
 

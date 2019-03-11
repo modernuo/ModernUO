@@ -26,7 +26,7 @@ namespace Server.Engines.ConPVP
         AddBackground(0, 0, 210, height, 9250);
         AddBackground(10, 10, 190, height - 20, 0xDAC);
 
-        AddHtml(35, 25, 140, 20, Center("Rematch?"), false, false);
+        AddHtml(35, 25, 140, 20, Center("Rematch?"));
 
         AddButton(35, 55, 247, 248, 1);
         AddButton(115, 55, 242, 241, 2);
@@ -58,7 +58,7 @@ namespace Server.Engines.ConPVP
         AddBackground(0, 0, 260, height, 9250);
         AddBackground(10, 10, 240, height - 20, 0xDAC);
 
-        AddHtml(35, 25, 190, 20, Center("Participants"), false, false);
+        AddHtml(35, 25, 190, 20, Center("Participants"));
 
         int y = 20 + 25;
 
@@ -72,7 +72,7 @@ namespace Server.Engines.ConPVP
 
           if (p.Players.Length > 1)
           {
-            AddHtml(35, y, 176, 20, $"Team #{i + 1}", false, false);
+            AddHtml(35, y, 176, 20, $"Team #{i + 1}");
             y += 22;
             offset = 10;
           }
@@ -83,7 +83,7 @@ namespace Server.Engines.ConPVP
 
             string name = pl == null ? "(Empty)" : pl.Mobile.Name;
 
-            AddHtml(35 + offset, y, 166, 20, name, false, false);
+            AddHtml(35 + offset, y, 166, 20, name);
 
             y += 22;
           }
@@ -91,7 +91,7 @@ namespace Server.Engines.ConPVP
 
         y += 8;
 
-        AddHtml(35, y, 176, 20, "Continue?", false, false);
+        AddHtml(35, y, 176, 20, "Continue?");
 
         y -= 2;
 
@@ -140,20 +140,20 @@ namespace Server.Engines.ConPVP
         AddBackground(0, 0, 260, height, 9250);
         AddBackground(10, 10, 240, height - 20, 0xDAC);
 
-        AddHtml(35, 25, 190, 20, Center("Rules"), false, false);
+        AddHtml(35, 25, 190, 20, Center("Rules"));
 
-        AddHtml(35, 50, 190, 20, $"Set: {basedef.Title}", false, false);
+        AddHtml(35, 50, 190, 20, $"Set: {basedef.Title}");
 
         y = 70;
 
         for (int i = 0; i < ruleset.Flavors.Count; ++i, y += 18)
-          AddHtml(35, y, 190, 20, $" + {ruleset.Flavors[i].Title}", false, false);
+          AddHtml(35, y, 190, 20, $" + {ruleset.Flavors[i].Title}");
 
         y += 4;
 
         if (changes > 0)
         {
-          AddHtml(35, y, 190, 20, "Modifications:", false, false);
+          AddHtml(35, y, 190, 20, "Modifications:");
           y += 20;
 
           for (int i = 0; i < opts.Length; ++i)
@@ -164,7 +164,7 @@ namespace Server.Engines.ConPVP
               if (name != null) // sanity
               {
                 AddImage(35, y, opts[i] ? 0xD3 : 0xD2);
-                AddHtml(60, y, 165, 22, name, false, false);
+                AddHtml(60, y, 165, 22, name);
               }
 
               y += 22;
@@ -172,13 +172,13 @@ namespace Server.Engines.ConPVP
         }
         else
         {
-          AddHtml(35, y, 190, 20, "Modifications: None", false, false);
+          AddHtml(35, y, 190, 20, "Modifications: None");
           y += 20;
         }
 
         y += 8;
 
-        AddHtml(35, y, 176, 20, "Continue?", false, false);
+        AddHtml(35, y, 176, 20, "Continue?");
 
         y -= 2;
 

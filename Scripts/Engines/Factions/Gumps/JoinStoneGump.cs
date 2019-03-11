@@ -24,21 +24,21 @@ namespace Server.Factions
       AddHtmlText(20, 130, 510, 100, faction.Definition.About, true, true);
 
 
-      AddHtmlLocalized(20, 60, 100, 20, 1011429, false, false); // Led By :
-      AddHtml(125, 60, 200, 20, faction.Commander != null ? faction.Commander.Name : "Nobody", false, false);
+      AddHtmlLocalized(20, 60, 100, 20, 1011429); // Led By :
+      AddHtml(125, 60, 200, 20, faction.Commander != null ? faction.Commander.Name : "Nobody");
 
-      AddHtmlLocalized(20, 80, 100, 20, 1011457, false, false); // Tithe rate :
+      AddHtmlLocalized(20, 80, 100, 20, 1011457); // Tithe rate :
       if (faction.Tithe >= 0 && faction.Tithe <= 100 && faction.Tithe % 10 == 0)
-        AddHtmlLocalized(125, 80, 350, 20, 1011480 + faction.Tithe / 10, false, false);
+        AddHtmlLocalized(125, 80, 350, 20, 1011480 + faction.Tithe / 10);
       else
-        AddHtml(125, 80, 350, 20, faction.Tithe + "%", false, false);
+        AddHtml(125, 80, 350, 20, faction.Tithe + "%");
 
 
       AddButton(20, 400, 4005, 4007, 1);
-      AddHtmlLocalized(55, 400, 200, 20, 1011425, false, false); // JOIN THIS FACTION
+      AddHtmlLocalized(55, 400, 200, 20, 1011425); // JOIN THIS FACTION
 
       AddButton(300, 400, 4005, 4007, 0);
-      AddHtmlLocalized(335, 400, 200, 20, 1011012, false, false); // CANCEL
+      AddHtmlLocalized(335, 400, 200, 20, 1011012); // CANCEL
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

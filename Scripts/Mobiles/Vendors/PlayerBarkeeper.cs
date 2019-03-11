@@ -664,7 +664,7 @@ namespace Server.Mobiles
       AddImage(180, 25, 10460);
       AddImage(434, 25, 10460);
 
-      AddHtml(223, 32, 200, 40, "BARKEEP CUSTOMIZATION MENU", false, false);
+      AddHtml(223, 32, 200, 40, "BARKEEP CUSTOMIZATION MENU");
       AddBackground(243, 433, 150, 30, 5054);
 
       AddImage(240, 433, 10460);
@@ -673,14 +673,14 @@ namespace Server.Mobiles
       AddImage(80, 398, 2151);
       AddItem(72, 406, 2543);
 
-      AddHtml(110, 412, 180, 25, "sells food and drink", false, false);
+      AddHtml(110, 412, 180, 25, "sells food and drink");
     }
 
     private void RenderPage(Entry[] entries, int page)
     {
       AddPage(1 + page);
 
-      AddHtml(430, 70, 180, 25, $"Page {page + 1} of {(entries.Length + 19) / 20}", false, false);
+      AddHtml(430, 70, 180, 25, $"Page {page + 1} of {(entries.Length + 19) / 20}");
 
       for (int count = 0, i = page * 20; count < 20 && i < entries.Length; ++count, ++i)
       {
@@ -688,7 +688,7 @@ namespace Server.Mobiles
 
         AddButton(80 + count / 10 * 260, 100 + count % 10 * 30, 4005, 4007, 2 + i);
         AddHtml(120 + count / 10 * 260, 100 + count % 10 * 30, entry.m_Vendor ? 148 : 180, 25, entry.m_Description,
-          true, false);
+          true);
 
         if (entry.m_Vendor)
         {
@@ -698,10 +698,10 @@ namespace Server.Mobiles
       }
 
       AddButton(340, 400, 4005, 4007, 0, GumpButtonType.Page, 1 + (page + 1) % ((entries.Length + 19) / 20));
-      AddHtml(380, 400, 180, 25, "More Job Titles", false, false);
+      AddHtml(380, 400, 180, 25, "More Job Titles");
 
       AddButton(338, 437, 4014, 4016, 1);
-      AddHtml(290, 440, 35, 40, "Back", false, false);
+      AddHtml(290, 440, 35, 40, "Back");
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -803,7 +803,7 @@ namespace Server.Mobiles
       AddImage(434, 25, 10460);
       AddImage(560, 20, 1417);
 
-      AddHtml(223, 32, 200, 40, "BARKEEP CUSTOMIZATION MENU", false, false);
+      AddHtml(223, 32, 200, 40, "BARKEEP CUSTOMIZATION MENU");
       AddBackground(243, 433, 150, 30, 5054);
 
       AddImage(240, 433, 10460);
@@ -815,16 +815,16 @@ namespace Server.Mobiles
       AddPage(1);
 
       AddButton(130, 120, 4005, 4007, 0, GumpButtonType.Page, 2);
-      AddHtml(170, 120, 200, 40, "Message Control", false, false);
+      AddHtml(170, 120, 200, 40, "Message Control");
 
       AddButton(130, 200, 4005, 4007, 0, GumpButtonType.Page, 8);
-      AddHtml(170, 200, 200, 40, "Customize your barkeep", false, false);
+      AddHtml(170, 200, 200, 40, "Customize your barkeep");
 
       AddButton(130, 280, 4005, 4007, 0, GumpButtonType.Page, 3);
-      AddHtml(170, 280, 200, 40, "Dismiss your barkeep", false, false);
+      AddHtml(170, 280, 200, 40, "Dismiss your barkeep");
 
       AddButton(338, 437, 4014, 4016, 0);
-      AddHtml(290, 440, 35, 40, "Back", false, false);
+      AddHtml(290, 440, 35, 40, "Back");
 
       AddItem(574, 43, 5360);
     }
@@ -834,19 +834,19 @@ namespace Server.Mobiles
       AddPage(2);
 
       AddButton(130, 120, 4005, 4007, 0, GumpButtonType.Page, 4);
-      AddHtml(170, 120, 380, 20, "Add or change a message and keyword", false, false);
+      AddHtml(170, 120, 380, 20, "Add or change a message and keyword");
 
       AddButton(130, 200, 4005, 4007, 0, GumpButtonType.Page, 5);
-      AddHtml(170, 200, 380, 20, "Remove a message and keyword from your barkeep", false, false);
+      AddHtml(170, 200, 380, 20, "Remove a message and keyword from your barkeep");
 
       AddButton(130, 280, 4005, 4007, 0, GumpButtonType.Page, 6);
-      AddHtml(170, 280, 380, 20, "Add or change your barkeeper's tip message", false, false);
+      AddHtml(170, 280, 380, 20, "Add or change your barkeeper's tip message");
 
       AddButton(130, 360, 4005, 4007, 0, GumpButtonType.Page, 7);
-      AddHtml(170, 360, 380, 20, "Delete your barkeepers tip message", false, false);
+      AddHtml(170, 360, 380, 20, "Delete your barkeepers tip message");
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 1);
-      AddHtml(290, 440, 35, 40, "Back", false, false);
+      AddHtml(290, 440, 35, 40, "Back");
 
       AddItem(580, 46, 4030);
     }
@@ -855,16 +855,16 @@ namespace Server.Mobiles
     {
       AddPage(3);
 
-      AddHtml(170, 160, 380, 20, "Are you sure you want to dismiss your barkeeper?", false, false);
+      AddHtml(170, 160, 380, 20, "Are you sure you want to dismiss your barkeeper?");
 
       AddButton(205, 280, 4005, 4007, GetButtonID(0, 0));
-      AddHtml(240, 280, 100, 20, @"Yes", false, false);
+      AddHtml(240, 280, 100, 20, @"Yes");
 
       AddButton(395, 280, 4005, 4007, 0);
-      AddHtml(430, 280, 100, 20, "No", false, false);
+      AddHtml(430, 280, 100, 20, "No");
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 1);
-      AddHtml(290, 440, 35, 40, "Back", false, false);
+      AddHtml(290, 440, 35, 40, "Back");
 
       AddItem(574, 43, 5360);
       AddItem(584, 34, 6579);
@@ -874,7 +874,7 @@ namespace Server.Mobiles
     {
       AddPage(4);
 
-      AddHtml(250, 60, 500, 25, "Add or change a message", false, false);
+      AddHtml(250, 60, 500, 25, "Add or change a message");
 
       BarkeeperRumor[] rumors = m_Barkeeper.Rumors;
 
@@ -882,16 +882,16 @@ namespace Server.Mobiles
       {
         BarkeeperRumor rumor = rumors[i];
 
-        AddHtml(100, 70 + i * 120, 50, 20, "Message", false, false);
-        AddHtml(100, 90 + i * 120, 450, 40, rumor == null ? "No current message" : rumor.Message, true, false);
-        AddHtml(100, 130 + i * 120, 50, 20, "Keyword", false, false);
-        AddHtml(100, 150 + i * 120, 450, 40, rumor == null ? "None" : rumor.Keyword, true, false);
+        AddHtml(100, 70 + i * 120, 50, 20, "Message");
+        AddHtml(100, 90 + i * 120, 450, 40, rumor == null ? "No current message" : rumor.Message, true);
+        AddHtml(100, 130 + i * 120, 50, 20, "Keyword");
+        AddHtml(100, 150 + i * 120, 450, 40, rumor == null ? "None" : rumor.Keyword, true);
 
         AddButton(60, 90 + i * 120, 4005, 4007, GetButtonID(1, i));
       }
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 2);
-      AddHtml(290, 440, 35, 40, "Back", false, false);
+      AddHtml(290, 440, 35, 40, "Back");
 
       AddItem(580, 46, 4030);
     }
@@ -900,7 +900,7 @@ namespace Server.Mobiles
     {
       AddPage(5);
 
-      AddHtml(190, 60, 500, 25, "Choose the message you would like to remove", false, false);
+      AddHtml(190, 60, 500, 25, "Choose the message you would like to remove");
 
       BarkeeperRumor[] rumors = m_Barkeeper.Rumors;
 
@@ -908,16 +908,16 @@ namespace Server.Mobiles
       {
         BarkeeperRumor rumor = rumors[i];
 
-        AddHtml(100, 70 + i * 120, 50, 20, "Message", false, false);
-        AddHtml(100, 90 + i * 120, 450, 40, rumor == null ? "No current message" : rumor.Message, true, false);
-        AddHtml(100, 130 + i * 120, 50, 20, "Keyword", false, false);
-        AddHtml(100, 150 + i * 120, 450, 40, rumor == null ? "None" : rumor.Keyword, true, false);
+        AddHtml(100, 70 + i * 120, 50, 20, "Message");
+        AddHtml(100, 90 + i * 120, 450, 40, rumor == null ? "No current message" : rumor.Message, true);
+        AddHtml(100, 130 + i * 120, 50, 20, "Keyword");
+        AddHtml(100, 150 + i * 120, 450, 40, rumor == null ? "None" : rumor.Keyword, true);
 
         AddButton(60, 90 + i * 120, 4005, 4007, GetButtonID(2, i));
       }
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 2);
-      AddHtml(290, 440, 35, 40, "Back", false, false);
+      AddHtml(290, 440, 35, 40, "Back");
 
       AddItem(580, 46, 4030);
     }
@@ -931,14 +931,14 @@ namespace Server.Mobiles
     {
       AddPage(6);
 
-      AddHtml(250, 95, 500, 20, "Change this tip message", false, false);
-      AddHtml(100, 190, 50, 20, "Message", false, false);
-      AddHtml(100, 210, 450, 40, m_Barkeeper.TipMessage ?? "No current message", true, false);
+      AddHtml(250, 95, 500, 20, "Change this tip message");
+      AddHtml(100, 190, 50, 20, "Message");
+      AddHtml(100, 210, 450, 40, m_Barkeeper.TipMessage ?? "No current message", true);
 
       AddButton(60, 210, 4005, 4007, GetButtonID(3, 0));
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 2);
-      AddHtml(290, 440, 35, 40, "Back", false, false);
+      AddHtml(290, 440, 35, 40, "Back");
 
       AddItem(580, 46, 4030);
     }
@@ -947,14 +947,14 @@ namespace Server.Mobiles
     {
       AddPage(7);
 
-      AddHtml(250, 95, 500, 20, "Remove this tip message", false, false);
-      AddHtml(100, 190, 50, 20, "Message", false, false);
-      AddHtml(100, 210, 450, 40, m_Barkeeper.TipMessage ?? "No current message", true, false);
+      AddHtml(250, 95, 500, 20, "Remove this tip message");
+      AddHtml(100, 190, 50, 20, "Message");
+      AddHtml(100, 210, 450, 40, m_Barkeeper.TipMessage ?? "No current message", true);
 
       AddButton(60, 210, 4005, 4007, GetButtonID(4, 0));
 
       AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 2);
-      AddHtml(290, 440, 35, 40, "Back", false, false);
+      AddHtml(290, 440, 35, 40, "Back");
 
       AddItem(580, 46, 4030);
     }
@@ -964,18 +964,18 @@ namespace Server.Mobiles
       AddPage(8);
 
       AddButton(130, 120, 4005, 4007, GetButtonID(5, 0));
-      AddHtml(170, 120, 120, 20, "Title", false, false);
+      AddHtml(170, 120, 120, 20, "Title");
 
       if (m_Barkeeper.BodyValue != 0x340 && m_Barkeeper.BodyValue != 0x402)
       {
         AddButton(130, 200, 4005, 4007, GetButtonID(5, 1));
-        AddHtml(170, 200, 120, 20, "Appearance", false, false);
+        AddHtml(170, 200, 120, 20, "Appearance");
 
         AddButton(130, 280, 4005, 4007, GetButtonID(5, 2));
-        AddHtml(170, 280, 120, 20, "Male / Female", false, false);
+        AddHtml(170, 280, 120, 20, "Male / Female");
 
         AddButton(338, 437, 4014, 4016, 0, GumpButtonType.Page, 1);
-        AddHtml(290, 440, 35, 40, "Back", false, false);
+        AddHtml(290, 440, 35, 40, "Back");
       }
 
       AddItem(580, 44, 4033);

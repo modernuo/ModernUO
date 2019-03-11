@@ -74,10 +74,10 @@ namespace Server.Items
       AddBackground(100, 10, 350, 355, 2600);
       AddBackground(120, 54, 110, 270, 5100);
 
-      AddHtmlLocalized(70, 25, 400, 35, 1011013, false, false); // <center>Hair Color Selection Menu</center>
+      AddHtmlLocalized(70, 25, 400, 35, 1011013); // <center>Hair Color Selection Menu</center>
 
       AddButton(149, 328, 4005, 4007, 1);
-      AddHtmlLocalized(185, 329, 250, 35, 1011014, false, false); // Dye my hair this color!
+      AddHtmlLocalized(185, 329, 250, 35, 1011014); // Dye my hair this color!
 
       for (int i = 0; i < m_Entries.Length; ++i)
       {

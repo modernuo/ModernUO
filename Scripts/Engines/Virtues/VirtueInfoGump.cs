@@ -68,16 +68,15 @@ namespace Server
         valueDesc = 1052050; // You have achieved the highest path in this Virtue.
 
 
-      AddHtmlLocalized(157, 73, 200, 40, 1051000 + (int)virtue, false, false);
-      AddHtmlLocalized(75, 95, 220, 140, description, false, false);
-      AddHtmlLocalized(70, 224, 229, 60, valueDesc, false, false);
+      AddHtmlLocalized(157, 73, 200, 40, 1051000 + (int)virtue);
+      AddHtmlLocalized(75, 95, 220, 140, description);
+      AddHtmlLocalized(70, 224, 229, 60, valueDesc);
 
       AddButton(65, 277, 1209, 1209, 1);
 
       AddButton(280, 43, 4014, 4014, 2);
 
-      AddHtmlLocalized(83, 275, 400, 40, webPage == null ? 1052055 : 1052052, false,
-        false); // This virtue is not yet defined. OR -click to learn more (opens webpage)
+      AddHtmlLocalized(83, 275, 400, 40, webPage == null ? 1052055 : 1052052); // This virtue is not yet defined. OR -click to learn more (opens webpage)
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

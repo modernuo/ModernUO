@@ -20,13 +20,13 @@ namespace Server.Gumps
       AddBackground(0, 0, 550, 400, 5054);
       AddBackground(10, 10, 530, 380, 3000);
 
-      AddHtmlLocalized(20, 15, 510, 35, 1011121, false, false); // <center>GUILDMASTER FUNCTIONS</center>
+      AddHtmlLocalized(20, 15, 510, 35, 1011121); // <center>GUILDMASTER FUNCTIONS</center>
 
       AddButton(20, 40, 4005, 4007, 2);
-      AddHtmlLocalized(55, 40, 470, 30, 1011107, false, false); // Set the guild name.
+      AddHtmlLocalized(55, 40, 470, 30, 1011107); // Set the guild name.
 
       AddButton(20, 70, 4005, 4007, 3);
-      AddHtmlLocalized(55, 70, 470, 30, 1011109, false, false); // Set the guild's abbreviation.
+      AddHtmlLocalized(55, 70, 470, 30, 1011109); // Set the guild's abbreviation.
 
       if (Guild.OrderChaos)
       {
@@ -35,52 +35,51 @@ namespace Server.Gumps
         switch (m_Guild.Type)
         {
           case GuildType.Regular:
-            AddHtmlLocalized(55, 100, 470, 30, 1013059, false, false); // Change guild type: Currently Standard
+            AddHtmlLocalized(55, 100, 470, 30, 1013059); // Change guild type: Currently Standard
             break;
           case GuildType.Order:
-            AddHtmlLocalized(55, 100, 470, 30, 1013057, false, false); // Change guild type: Currently Order
+            AddHtmlLocalized(55, 100, 470, 30, 1013057); // Change guild type: Currently Order
             break;
           case GuildType.Chaos:
-            AddHtmlLocalized(55, 100, 470, 30, 1013058, false, false); // Change guild type: Currently Chaos
+            AddHtmlLocalized(55, 100, 470, 30, 1013058); // Change guild type: Currently Chaos
             break;
         }
       }
 
       AddButton(20, 130, 4005, 4007, 5);
-      AddHtmlLocalized(55, 130, 470, 30, 1011112, false, false); // Set the guild's charter.
+      AddHtmlLocalized(55, 130, 470, 30, 1011112); // Set the guild's charter.
 
       AddButton(20, 160, 4005, 4007, 6);
-      AddHtmlLocalized(55, 160, 470, 30, 1011113, false, false); // Dismiss a member.
+      AddHtmlLocalized(55, 160, 470, 30, 1011113); // Dismiss a member.
 
       AddButton(20, 190, 4005, 4007, 7);
-      AddHtmlLocalized(55, 190, 470, 30, 1011114, false, false); // Go to the WAR menu.
+      AddHtmlLocalized(55, 190, 470, 30, 1011114); // Go to the WAR menu.
 
       if (m_Guild.Candidates.Count > 0)
       {
         AddButton(20, 220, 4005, 4007, 8);
-        AddHtmlLocalized(55, 220, 470, 30, 1013056, false, false); // Administer the list of candidates
+        AddHtmlLocalized(55, 220, 470, 30, 1013056); // Administer the list of candidates
       }
       else
       {
         AddImage(20, 220, 4020);
-        AddHtmlLocalized(55, 220, 470, 30, 1013031, false,
-          false); // There are currently no candidates for membership.
+        AddHtmlLocalized(55, 220, 470, 30, 1013031); // There are currently no candidates for membership.
       }
 
       AddButton(20, 250, 4005, 4007, 9);
-      AddHtmlLocalized(55, 250, 470, 30, 1011117, false, false); // Set the guildmaster's title.
+      AddHtmlLocalized(55, 250, 470, 30, 1011117); // Set the guildmaster's title.
 
       AddButton(20, 280, 4005, 4007, 10);
-      AddHtmlLocalized(55, 280, 470, 30, 1011118, false, false); // Grant a title to another member.
+      AddHtmlLocalized(55, 280, 470, 30, 1011118); // Grant a title to another member.
 
       AddButton(20, 310, 4005, 4007, 11);
-      AddHtmlLocalized(55, 310, 470, 30, 1011119, false, false); // Move this guildstone.
+      AddHtmlLocalized(55, 310, 470, 30, 1011119); // Move this guildstone.
 
       AddButton(20, 360, 4005, 4007, 1);
-      AddHtmlLocalized(55, 360, 245, 30, 1011120, false, false); // Return to the main menu.
+      AddHtmlLocalized(55, 360, 245, 30, 1011120); // Return to the main menu.
 
       AddButton(300, 360, 4005, 4007, 0);
-      AddHtmlLocalized(335, 360, 100, 30, 1011441, false, false); // EXIT
+      AddHtmlLocalized(335, 360, 100, 30, 1011441); // EXIT
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

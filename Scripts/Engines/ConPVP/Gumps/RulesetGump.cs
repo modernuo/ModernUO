@@ -45,7 +45,7 @@ namespace Server.Engines.ConPVP
       AddBackground(0, 0, 260, height, 9250);
       AddBackground(10, 10, 240, height - 20, 0xDAC);
 
-      AddHtml(35, 25, 190, 20, Center(page.Title), false, false);
+      AddHtml(35, 25, 190, 20, Center(page.Title));
 
       int x = 35;
       int y = 47;
@@ -53,7 +53,7 @@ namespace Server.Engines.ConPVP
       for (int i = 0; i < page.Children.Length; ++i)
       {
         AddGoldenButton(x, y, 1 + i);
-        AddHtml(x + 25, y, 250, 22, page.Children[i].Title, false, false);
+        AddHtml(x + 25, y, 250, 22, page.Children[i].Title);
 
         y += 22;
       }
@@ -67,7 +67,7 @@ namespace Server.Engines.ConPVP
         else
           AddCheck(x, y, 0xD2, 0xD3, enabled, i);
 
-        AddHtml(x + 25, y, 250, 22, page.Options[i], false, false);
+        AddHtml(x + 25, y, 250, 22, page.Options[i]);
 
         y += 22;
       }

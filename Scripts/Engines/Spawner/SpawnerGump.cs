@@ -21,9 +21,9 @@ namespace Server.Mobiles
 
       AddBackground(0, 0, 343, 371 + (m_Entry != null ? 44 : 0), 5054);
 
-      AddHtml(95, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Creatures List</BASEFONT>", false, false);
-      AddHtml(245, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>", false, false);
-      AddHtml(282, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>", false, false);
+      AddHtml(95, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Creatures List</BASEFONT>");
+      AddHtml(245, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>");
+      AddHtml(282, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>");
 
       //AddLabel( 95, 1, 0, "Creatures List" );
 

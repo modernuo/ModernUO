@@ -117,13 +117,13 @@ namespace Server.Items
       AddBackground(100, 10, 400, 385, 2600);
 
       // <center>THIEF DISGUISE KIT</center>
-      AddHtmlLocalized(100, 25, 400, 35, 1011045, false, false);
+      AddHtmlLocalized(100, 25, 400, 35, 1011045);
 
       AddButton(140, 353, 4005, 4007, 0);
-      AddHtmlLocalized(172, 355, 90, 35, 1011036, false, false); // OKAY
+      AddHtmlLocalized(172, 355, 90, 35, 1011036); // OKAY
 
       AddButton(257, 353, 4005, 4007, 1);
-      AddHtmlLocalized(289, 355, 90, 35, 1011046, false, false); // APPLY
+      AddHtmlLocalized(289, 355, 90, 35, 1011046); // APPLY
 
       if (from.Female || from.Body.IsFemale)
       {
@@ -148,7 +148,7 @@ namespace Server.Items
       if (nextPage != -1)
       {
         AddButton(155, 320, 250 + index * 2, 251 + index * 2, 0, GumpButtonType.Page, nextPage);
-        AddHtmlLocalized(180, 320, 150, 35, nextNumber, false, false);
+        AddHtmlLocalized(180, 320, 150, 35, nextNumber);
       }
 
       for (int i = 0; i < entries.Length; ++i)
@@ -167,7 +167,7 @@ namespace Server.Items
           AddImage(153 + x + entry.m_OffsetX, 15 + y + entry.m_OffsetY, entry.m_GumpID);
         }
 
-        AddHtmlLocalized(140 + x, 72 + y, 80, 35, entry.m_Number, false, false);
+        AddHtmlLocalized(140 + x, 72 + y, 80, 35, entry.m_Number);
         AddRadio(118 + x, 73 + y, 208, 209, false, i * 2 + index);
       }
     }

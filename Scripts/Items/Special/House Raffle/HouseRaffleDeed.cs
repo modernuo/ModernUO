@@ -180,7 +180,7 @@ namespace Server.Items
         AddImage(114, 266, 9387);
         AddImage(171, 266, 9388);
 
-        AddHtmlLocalized(30, 48, 229, 20, 1150484, 200, false, false); // WRIT OF LEASE
+        AddHtmlLocalized(30, 48, 229, 20, 1150484, 200); // WRIT OF LEASE
         AddHtml(28, 75, 231, 280, FormatDescription(deed), false, true);
       }
 
