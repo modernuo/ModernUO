@@ -55,43 +55,12 @@ namespace Server.Engines.BulkOrders
     {
     }
 
-    public override int ComputeFame()
-    {
-      return TailorRewardCalculator.Instance.ComputeFame(this);
-    }
+    public override int ComputeFame() => TailorRewardCalculator.Instance.ComputeFame(this);
 
-    public override int ComputeGold()
-    {
-      return TailorRewardCalculator.Instance.ComputeGold(this);
-    }
+    public override int ComputeGold() => TailorRewardCalculator.Instance.ComputeGold(this);
 
-    public override List<Item> ComputeRewards(bool full)
-    {
-      RewardGroup rewardGroup =
-        TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
-
-      List<Item> list = new List<Item>();
-
-      if (full)
-      {
-        for (int i = 0; i < rewardGroup?.Items.Length; ++i)
-        {
-          Item item = rewardGroup.Items[i].Construct();
-
-          if (item != null)
-            list.Add(item);
-        }
-      }
-      else
-      {
-        Item item = rewardGroup?.AcquireItem()?.Construct();
-
-        if (item != null)
-          list.Add(item);
-      }
-
-      return list;
-    }
+    public override RewardGroup GetRewardGroup() =>
+      TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
 
     public static SmallTailorBOD CreateRandomFor(Mobile m)
     {
@@ -99,8 +68,9 @@ namespace Server.Engines.BulkOrders
       bool useMaterials = Utility.RandomBool();
 
       double theirSkill = m.Skills.Tailoring.Base;
-      if (useMaterials && theirSkill >= 6.2
-      ) // Ugly, but the easiest leather BOD is Leather Cap which requires at least 6.2 skill.
+
+      // Ugly, but the easiest leather BOD is Leather Cap which requires at least 6.2 skill.
+      if (useMaterials && theirSkill >= 6.2)
         entries = SmallBulkEntry.TailorLeather;
       else
         entries = SmallBulkEntry.TailorCloth;

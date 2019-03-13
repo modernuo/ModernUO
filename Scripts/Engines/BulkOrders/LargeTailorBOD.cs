@@ -104,33 +104,8 @@ namespace Server.Engines.BulkOrders
       return TailorRewardCalculator.Instance.ComputeGold(this);
     }
 
-    public override List<Item> ComputeRewards(bool full)
-    {
-      RewardGroup rewardGroup =
-        TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
-
-      List<Item> list = new List<Item>();
-
-      if (full)
-      {
-        for (int i = 0; i < rewardGroup?.Items.Length; ++i)
-        {
-          Item item = rewardGroup.Items[i].Construct();
-
-          if (item != null)
-            list.Add(item);
-        }
-      }
-      else
-      {
-        Item item = rewardGroup?.AcquireItem()?.Construct();
-
-        if (item != null)
-          list.Add(item);
-      }
-
-      return list;
-    }
+    public override RewardGroup GetRewardGroup() =>
+      TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
 
     public override void Serialize(GenericWriter writer)
     {

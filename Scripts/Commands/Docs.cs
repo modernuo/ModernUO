@@ -1179,14 +1179,14 @@ namespace Server.Commands
       html.WriteLine("      </table></td></tr></table>");
     }
 
-    private static void DocumentTailorBOD(StreamWriter html, List<Item> items, string amt, BulkMaterialType material,
+    private static void DocumentTailorBOD(StreamWriter html, List<RewardItem> items, string amt, BulkMaterialType material,
       Type type)
     {
       bool[] rewards = new bool[20];
 
       for (int i = 0; i < items.Count; ++i)
       {
-        Item item = items[i];
+        Item item = items[i].Construct();
 
         if (item is Sandals)
         {
@@ -1456,13 +1456,13 @@ namespace Server.Commands
       html.WriteLine("      </table></td></tr></table>");
     }
 
-    private static void DocumentSmithBOD(StreamWriter html, List<Item> items, string amt, BulkMaterialType material)
+    private static void DocumentSmithBOD(StreamWriter html, List<RewardItem> items, string amt, BulkMaterialType material)
     {
       bool[] rewards = new bool[24];
 
       for (int i = 0; i < items.Count; ++i)
       {
-        Item item = items[i];
+        Item item = items[i].Construct();
 
         if (item is SturdyPickaxe || item is SturdyShovel)
         {

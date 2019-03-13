@@ -64,50 +64,18 @@ namespace Server.Engines.BulkOrders
     {
     }
 
-    public override int ComputeFame()
-    {
-      return SmithRewardCalculator.Instance.ComputeFame(this);
-    }
+    public override int ComputeFame() => SmithRewardCalculator.Instance.ComputeFame(this);
 
-    public override int ComputeGold()
-    {
-      return SmithRewardCalculator.Instance.ComputeGold(this);
-    }
+    public override int ComputeGold() => SmithRewardCalculator.Instance.ComputeGold(this);
 
-    public override List<Item> ComputeRewards(bool full)
-    {
-      RewardGroup rewardGroup =
-        SmithRewardCalculator.Instance.LookupRewards(SmithRewardCalculator.Instance.ComputePoints(this));
-
-      List<Item> list = new List<Item>();
-
-      if (full)
-      {
-        for (int i = 0; i < rewardGroup?.Items.Length; ++i)
-        {
-          Item item = rewardGroup.Items[i].Construct();
-
-          if (item != null)
-            list.Add(item);
-        }
-      }
-      else
-      {
-        Item item = rewardGroup?.AcquireItem()?.Construct();
-
-        if (item != null)
-          list.Add(item);
-      }
-
-      return list;
-    }
+    public override RewardGroup GetRewardGroup() =>
+      SmithRewardCalculator.Instance.LookupRewards(SmithRewardCalculator.Instance.ComputePoints(this));
 
     public static SmallSmithBOD CreateRandomFor(Mobile m)
     {
-      SmallBulkEntry[] entries;
       bool useMaterials = Utility.RandomBool();
 
-      entries = useMaterials ? SmallBulkEntry.BlacksmithArmor :
+      SmallBulkEntry[] entries = useMaterials ? SmallBulkEntry.BlacksmithArmor :
         SmallBulkEntry.BlacksmithWeapons;
 
       if (entries.Length <= 0)

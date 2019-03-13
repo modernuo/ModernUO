@@ -67,27 +67,47 @@ namespace Server.Engines.BulkOrders
       set{ m_Material = value; InvalidateProperties(); }
     }
 
-    public abstract List<Item> ComputeRewards(bool full);
+    public abstract RewardGroup GetRewardGroup();
+
     public abstract int ComputeGold();
     public abstract int ComputeFame();
     public abstract void EndCombine(Mobile from, Item item);
 
     public virtual void GetRewards(out Item reward, out int gold, out int fame)
     {
-      reward = null;
       gold = ComputeGold();
       fame = ComputeFame();
 
-      List<Item> rewards = ComputeRewards(false);
+      List<RewardItem> rewards = ComputeRewards(false);
 
-      if (rewards.Count <= 0)
-        return;
+      reward = rewards.Count <= 0 ? null : rewards[Utility.Random(rewards.Count)].Construct();
+    }
 
-      reward = rewards[Utility.Random(rewards.Count)];
+    public virtual List<RewardItem> ComputeRewards(bool full)
+    {
+      RewardGroup rewardGroup = GetRewardGroup();
 
-      for ( int i = 0; i < rewards.Count; ++i )
-        if ( rewards[i] != reward )
-          rewards[i].Delete();
+      List<RewardItem> list = new List<RewardItem>();
+
+      if (full)
+      {
+        for (int i = 0; i < rewardGroup?.Items.Length; ++i)
+        {
+          RewardItem reward = rewardGroup.Items[i];
+
+          if (reward != null)
+            list.Add(reward);
+        }
+      }
+      else
+      {
+        RewardItem reward = rewardGroup.AcquireItem();
+
+        if (reward != null)
+          list.Add(reward);
+      }
+
+      return list;
     }
 
     public virtual void BeginCombine(Mobile from)
