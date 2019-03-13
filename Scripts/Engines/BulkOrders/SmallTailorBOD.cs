@@ -67,32 +67,27 @@ namespace Server.Engines.BulkOrders
 
     public override List<Item> ComputeRewards(bool full)
     {
-      List<Item> list = new List<Item>();
-
       RewardGroup rewardGroup =
         TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
 
-      if (rewardGroup != null)
+      List<Item> list = new List<Item>();
+
+      if (full)
       {
-        if (full)
+        for (int i = 0; i < rewardGroup?.Items.Length; ++i)
         {
-          for (int i = 0; i < rewardGroup.Items.Length; ++i)
-          {
-            Item item = rewardGroup.Items[i].Construct();
-
-            if (item != null)
-              list.Add(item);
-          }
-        }
-        else
-        {
-          RewardItem rewardItem = rewardGroup.AcquireItem();
-
-          Item item = rewardItem?.Construct();
+          Item item = rewardGroup.Items[i].Construct();
 
           if (item != null)
             list.Add(item);
         }
+      }
+      else
+      {
+        Item item = rewardGroup?.AcquireItem()?.Construct();
+
+        if (item != null)
+          list.Add(item);
       }
 
       return list;

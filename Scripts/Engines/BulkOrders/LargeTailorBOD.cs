@@ -109,14 +109,11 @@ namespace Server.Engines.BulkOrders
       RewardGroup rewardGroup =
         TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
 
-      if (rewardGroup == null)
-        return new List<Item>();
-
       List<Item> list = new List<Item>();
 
       if (full)
       {
-        for (int i = 0; i < rewardGroup.Items.Length; ++i)
+        for (int i = 0; i < rewardGroup?.Items.Length; ++i)
         {
           Item item = rewardGroup.Items[i].Construct();
 
@@ -126,9 +123,7 @@ namespace Server.Engines.BulkOrders
       }
       else
       {
-        RewardItem rewardItem = rewardGroup.AcquireItem();
-
-        Item item = rewardItem?.Construct();
+        Item item = rewardGroup?.AcquireItem()?.Construct();
 
         if (item != null)
           list.Add(item);

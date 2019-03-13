@@ -96,14 +96,11 @@ namespace Server.Engines.BulkOrders
       RewardGroup rewardGroup =
         SmithRewardCalculator.Instance.LookupRewards(SmithRewardCalculator.Instance.ComputePoints(this));
 
-      if (rewardGroup == null)
-        return new List<Item>();
-
       List<Item> list = new List<Item>();
 
       if (full)
       {
-        for (int i = 0; i < rewardGroup.Items.Length; ++i)
+        for (int i = 0; i < rewardGroup?.Items.Length; ++i)
         {
           Item item = rewardGroup.Items[i].Construct();
 
