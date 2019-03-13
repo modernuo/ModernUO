@@ -14,9 +14,30 @@ namespace Server.Engines.BulkOrders
       0.001953125 // Barbed
     };
 
-    private SmallTailorBOD(SmallBulkEntry entry, BulkMaterialType material, int amountMax, bool reqExceptional)
+    private SmallTailorBOD(SmallBulkEntry entry, BulkMaterialType mat, int amountMax, bool reqExceptional)
+      : base(0x483, 0, amountMax, entry.Type, entry.Number, entry.Graphic, reqExceptional, mat)
     {
-      Hue = 0x483;
+    }
+
+    [Constructible]
+    public SmallTailorBOD()
+    {
+      bool useMaterials = Utility.RandomBool();
+      SmallBulkEntry[] entries = useMaterials ? SmallBulkEntry.TailorLeather : SmallBulkEntry.TailorCloth;
+
+      if (entries.Length <= 0)
+        return;
+
+      int hue = 0x483;
+      int amountMax = Utility.RandomList(10, 15, 20);
+
+      BulkMaterialType material = useMaterials ? GetRandomMaterial(BulkMaterialType.Spined, m_TailoringMaterialChances)
+        : BulkMaterialType.None;
+
+      bool reqExceptional = Utility.RandomBool() || material == BulkMaterialType.None;
+      SmallBulkEntry entry = entries[Utility.Random(entries.Length)];
+
+      Hue = hue;
       AmountMax = amountMax;
       Type = entry.Type;
       Number = entry.Number;
@@ -25,54 +46,9 @@ namespace Server.Engines.BulkOrders
       Material = material;
     }
 
-    [Constructible]
-    public SmallTailorBOD()
-    {
-      SmallBulkEntry[] entries;
-      bool useMaterials;
-
-      if (useMaterials = Utility.RandomBool())
-        entries = SmallBulkEntry.TailorLeather;
-      else
-        entries = SmallBulkEntry.TailorCloth;
-
-      if (entries.Length > 0)
-      {
-        int hue = 0x483;
-        int amountMax = Utility.RandomList(10, 15, 20);
-
-        BulkMaterialType material;
-
-        if (useMaterials)
-          material = GetRandomMaterial(BulkMaterialType.Spined, m_TailoringMaterialChances);
-        else
-          material = BulkMaterialType.None;
-
-        bool reqExceptional = Utility.RandomBool() || material == BulkMaterialType.None;
-
-        SmallBulkEntry entry = entries[Utility.Random(entries.Length)];
-
-        Hue = hue;
-        AmountMax = amountMax;
-        Type = entry.Type;
-        Number = entry.Number;
-        Graphic = entry.Graphic;
-        RequireExceptional = reqExceptional;
-        Material = material;
-      }
-    }
-
     public SmallTailorBOD(int amountCur, int amountMax, Type type, int number, int graphic, bool reqExceptional,
-      BulkMaterialType mat)
+      BulkMaterialType mat) : base(0x483, amountCur, amountMax, type, number, graphic, reqExceptional, mat)
     {
-      Hue = 0x483;
-      AmountMax = amountMax;
-      AmountCur = amountCur;
-      Type = type;
-      Number = number;
-      Graphic = graphic;
-      RequireExceptional = reqExceptional;
-      Material = mat;
     }
 
     public SmallTailorBOD(Serial serial) : base(serial)

@@ -107,14 +107,12 @@ namespace Server.Engines.BulkOrders
     public virtual int ComputeFame(SmallBOD bod)
     {
       int points = ComputePoints(bod) / 50;
-
       return points * points;
     }
 
     public virtual int ComputeFame(LargeBOD bod)
     {
       int points = ComputePoints(bod) / 50;
-
       return points * points;
     }
 
@@ -350,10 +348,10 @@ namespace Server.Engines.BulkOrders
       if (itemCount == 1)
         return 0;
 
-      int typeIdx;
+      int typeIdx = 0;
 
       // Loop through the RewardTypes defined earlier and find the correct one.
-      for (typeIdx = 0; typeIdx < 7; ++typeIdx)
+      for (; typeIdx < 7; ++typeIdx)
         if (m_Types[typeIdx].Contains(type))
           break;
 
@@ -399,14 +397,17 @@ namespace Server.Engines.BulkOrders
 
     private static Item CreateMiningGloves(int type)
     {
-      if (type == 1)
-        return new LeatherGlovesOfMining(1);
-      if (type == 3)
-        return new StuddedGlovesOfMining(3);
-      if (type == 5)
-        return new RingmailGlovesOfMining(5);
-
-      throw new InvalidOperationException();
+      switch (type)
+      {
+        case 1:
+          return new LeatherGlovesOfMining(1);
+        case 3:
+          return new StuddedGlovesOfMining(3);
+        case 5:
+          return new RingmailGlovesOfMining(5);
+        default:
+          throw new InvalidOperationException();
+      }
     }
 
     private static Item CreateGargoylesPickaxe(int type)

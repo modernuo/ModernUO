@@ -685,8 +685,10 @@ namespace Server
 
     internal int m_TypeRef;
 
-    public Item()
+    [Constructible]
+    public Item(int itemID = 0)
     {
+      m_ItemID = itemID;
       Serial = Serial.NewItem;
 
       //m_Items = new ArrayList( 1 );
@@ -707,12 +709,6 @@ namespace Server
         World.m_ItemTypes.Add(ourType);
         m_TypeRef = World.m_ItemTypes.Count - 1;
       }
-    }
-
-    [Constructible]
-    public Item(int itemID) : this()
-    {
-      m_ItemID = itemID;
     }
 
     public Item(Serial serial)

@@ -131,10 +131,8 @@ namespace Server.Engines.BulkOrders
         if (number == 0)
           continue;
 
-        bool isSelected = filters[i, 1] == filterValue;
-
-        if (!isSelected && i % xOffsets.Length == 0)
-          isSelected = filterValue == 0;
+        bool isSelected = filters[i, 1] == filterValue ||
+                          i % xOffsets.Length == 0 && filterValue == 0;
 
         AddHtmlLocalized(x + 35 + xOffsets[i % xOffsets.Length], y + i / xOffsets.Length * yOffset,
           xWidths[i % xOffsets.Length], 32, number, isSelected ? 16927 : LabelColor);
