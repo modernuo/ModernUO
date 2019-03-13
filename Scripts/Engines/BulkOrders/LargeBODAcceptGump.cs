@@ -93,7 +93,8 @@ namespace Server.Engines.BulkOrders
 
     public override void OnServerClose(NetState owner)
     {
-      m_Deed.Delete();
+      if (m_Deed?.Deleted == false)
+        m_Deed.Delete();
     }
 
     public static int GetMaterialNumberFor(BulkMaterialType material)
