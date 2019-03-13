@@ -60,9 +60,7 @@ namespace Server.Engines.BulkOrders
 
       int price = 0;
 
-      VendorItem vi = pv.GetVendorItem(m_Book);
-
-      if (vi?.IsForSale == false)
+      if (pv.GetVendorItem(m_Book)?.IsForSale == false)
         price = m_Entry.Price;
 
       if (price != m_Price)
@@ -89,6 +87,7 @@ namespace Server.Engines.BulkOrders
       {
         pv.SayTo(m_From, 503204); // You do not have room in your backpack for this
         m_From.SendGump(new BOBGump(m_From, m_Book, m_Page));
+        item.Delete();
       }
       else
       {

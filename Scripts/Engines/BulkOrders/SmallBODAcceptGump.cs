@@ -79,6 +79,12 @@ namespace Server.Engines.BulkOrders
       }
     }
 
+    public override void OnServerClose(NetState owner)
+    {
+      if (m_Deed?.Deleted == false)
+        m_Deed.Delete();
+    }
+
     public static int GetMaterialNumberFor(BulkMaterialType material)
     {
       if (material >= BulkMaterialType.DullCopper && material <= BulkMaterialType.Valorite)

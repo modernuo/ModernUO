@@ -64,23 +64,18 @@ namespace Server.Engines.BulkOrders
 			{
 				from.SendGump( new BOBGump( (PlayerMobile)from, this ) );
 
-				SecureTradeContainer cont = GetSecureTradeCont();
+        SecureTrade trade = GetSecureTradeCont()?.Trade;
 
-				if ( cont != null )
-				{
-					SecureTrade trade = cont.Trade;
-
-					if (trade?.From.Mobile == from )
-						trade.To.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.To.Mobile, this ) );
-					else if (trade?.To.Mobile == from )
-						trade.From.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.From.Mobile, this ) );
-				}
+        if (trade?.From.Mobile == from )
+          trade.To.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.To.Mobile, this ) );
+        else if (trade?.To.Mobile == from )
+          trade.From.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.From.Mobile, this ) );
 			}
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			if ( dropped is LargeBOD || dropped is SmallBOD )
+			if ( dropped is BaseBOD )
 			{
 				if ( !IsChildOf( from.Backpack ) )
 				{
