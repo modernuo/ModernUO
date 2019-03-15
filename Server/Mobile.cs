@@ -4845,7 +4845,7 @@ namespace Server
       catch
       {
         Console.WriteLine(
-          "Warning: 0x{0:X}: Item must have a zero paramater constructor to be separated from a stack. '{1}'.",
+          "Warning: 0x{0:X}: Item must have a zero parameter constructor to be separated from a stack. '{1}'.",
           oldItem.Serial.Value, oldItem.GetType().Name);
         return null;
       }
