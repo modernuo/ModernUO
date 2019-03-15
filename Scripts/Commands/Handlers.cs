@@ -79,7 +79,7 @@ namespace Server.Commands
     }
 
     [Usage("SpeedBoost [true|false]")]
-    [Description("Enables a speed boost for the invoker.  Disable with paramaters.")]
+    [Description("Enables a speed boost for the invoker.  Disable with parameters.")]
     private static void SpeedBoost_OnCommand(CommandEventArgs e)
     {
       Mobile from = e.Mobile;
