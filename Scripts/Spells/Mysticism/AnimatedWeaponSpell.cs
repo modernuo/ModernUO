@@ -1,6 +1,5 @@
 ﻿using System;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Mysticism
 {

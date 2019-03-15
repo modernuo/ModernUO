@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Server.Targeting;
 
 namespace Server.Spells.Sixth

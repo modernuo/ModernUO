@@ -2,7 +2,6 @@ using Server.Spells;
 using Server.Spells.First;
 using Server.Spells.Fourth;
 using Server.Spells.Second;
-using Server.Spells.Sixth;
 using Server.Targeting;
 
 namespace Server.Mobiles
