@@ -1035,9 +1035,8 @@ namespace Server.Network
 
       int hue = item.Hue;
 
-      if (parent != null)
-        if (parent.SolidHueOverride >= 0)
-          hue = parent.SolidHueOverride;
+      if (parent?.SolidHueOverride >= 0)
+        hue = parent.SolidHueOverride;
 
       m_Stream.Write(item.Serial);
       m_Stream.Write((short)item.ItemID);
@@ -2019,19 +2018,11 @@ namespace Server.Network
     }
   }
 
-  public sealed class RemoveItem : Packet
+  public sealed class RemoveEntity : Packet
   {
-    public RemoveItem(Item item) : base(0x1D, 5)
+    public RemoveEntity(IEntity entity) : base(0x1D, 5)
     {
-      m_Stream.Write(item.Serial);
-    }
-  }
-
-  public sealed class RemoveMobile : Packet
-  {
-    public RemoveMobile(Mobile m) : base(0x1D, 5)
-    {
-      m_Stream.Write(m.Serial);
+      m_Stream.Write(entity.Serial);
     }
   }
 
@@ -4363,38 +4354,9 @@ namespace Server.Network
       return p;
     }
 
-    public static void Release(ref ObjectPropertyList p)
-    {
-      p?.Release();
-
-      p = null;
-    }
-
-    public static void Release(ref RemoveItem p)
-    {
-      p?.Release();
-
-      p = null;
-    }
-
-    public static void Release(ref RemoveMobile p)
-    {
-      p?.Release();
-
-      p = null;
-    }
-
-    public static void Release(ref OPLInfo p)
-    {
-      p?.Release();
-
-      p = null;
-    }
-
     public static void Release(ref Packet p)
     {
       p?.Release();
-
       p = null;
     }
 

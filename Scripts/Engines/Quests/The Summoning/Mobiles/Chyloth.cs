@@ -177,21 +177,20 @@ namespace Server.Engines.Quests.Doom
 
         Party p = PartySystem.Party.Get(from);
 
-        if (p != null)
-          for (int i = 0; i < p.Members.Count; ++i)
+        for (int i = 0; i < p?.Members.Count; ++i)
+        {
+          PartyMemberInfo pmi = p.Members[i];
+          Mobile member = pmi.Mobile;
+
+          if (member != from && member.Map == Map.Malas && member.Region.IsPartOf("Doom"))
           {
-            PartyMemberInfo pmi = p.Members[i];
-            Mobile member = pmi.Mobile;
+            if (AngryAt == member)
+              AngryAt = null;
 
-            if (member != from && member.Map == Map.Malas && member.Region.IsPartOf("Doom"))
-            {
-              if (AngryAt == member)
-                AngryAt = null;
-
-              member.CloseGump<ChylothPartyGump>();
-              member.SendGump(new ChylothPartyGump(from, member));
-            }
+            member.CloseGump<ChylothPartyGump>();
+            member.SendGump(new ChylothPartyGump(from, member));
           }
+        }
 
         if (AngryAt == from)
           AngryAt = null;
