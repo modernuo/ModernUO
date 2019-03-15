@@ -1,3 +1,4 @@
+using Server.Spells;
 using Server.Spells.First;
 using Server.Spells.Fourth;
 using Server.Spells.Second;
@@ -28,11 +29,13 @@ namespace Server.Mobiles
 
       if (targ != null)
       {
-        if (targ is CureSpell.InternalTarget)
+        ISpellTarget spellTarg = targ as ISpellTarget;
+
+        if (spellTarg?.Spell is CureSpell)
           ProcessTarget(targ, m_ACure);
-        else if (targ is GreaterHealSpell.InternalTarget)
+        else if (spellTarg?.Spell is GreaterHealSpell)
           ProcessTarget(targ, m_AGHeal);
-        else if (targ is HealSpell.InternalTarget)
+        else if (spellTarg?.Spell is HealSpell)
           ProcessTarget(targ, m_ALHeal);
         else
           targ.Cancel(m_Mobile, TargetCancelType.Canceled);

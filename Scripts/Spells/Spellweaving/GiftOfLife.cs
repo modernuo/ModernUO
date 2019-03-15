@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Spellweaving
 {
-  public class GiftOfLifeSpell : ArcanistSpell
+  public class GiftOfLifeSpell : ArcanistSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Gift of Life", "Illorae",
@@ -34,27 +34,23 @@ namespace Server.Spells.Spellweaving
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, 10);
     }
 
     public void Target(Mobile m)
     {
-      if (!Caster.CanSee(m))
-      {
+      if (m == null)
+        Caster.SendLocalizedMessage(1072077); // You may only cast this spell on yourself or a bonded pet.
+      else if (!Caster.CanSee(m))
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
-      }
       else if (m.IsDeadBondedPet || !m.Alive)
       {
         // As per Osi: Nothing happens.
       }
       else if (m != Caster && !(m is BaseCreature bc && bc.IsBonded && bc.ControlMaster == Caster))
-      {
         Caster.SendLocalizedMessage(1072077); // You may only cast this spell on yourself or a bonded pet.
-      }
       else if (m_Table.ContainsKey(m))
-      {
         Caster.SendLocalizedMessage(501775); // This spell is already in effect.
-      }
       else if (CheckBSequence(m))
       {
         if (Caster == m)
@@ -132,7 +128,7 @@ namespace Server.Spells.Spellweaving
         m.SendGump(new ResurrectGump(m, hitsScalar));
       }
 
-      //Per OSI, buff is removed when gump sent, irregardless of online status or acceptence
+      //Per OSI, buff is removed when gump sent, irregardless of online status or acceptance
       timer.DoExpire();
     }
 
@@ -172,30 +168,6 @@ namespace Server.Spells.Spellweaving
         m_Table.Remove(m_Mobile);
 
         BuffInfo.RemoveBuff(m_Mobile, BuffIcon.GiftOfLife);
-      }
-    }
-
-    public class InternalTarget : Target
-    {
-      private GiftOfLifeSpell m_Owner;
-
-      public InternalTarget(GiftOfLifeSpell owner)
-        : base(10, false, TargetFlags.Beneficial)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile m, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-        else
-          m.SendLocalizedMessage(1072077); // You may only cast this spell on yourself or a bonded pet.
-      }
-
-      protected override void OnTargetFinish(Mobile m)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

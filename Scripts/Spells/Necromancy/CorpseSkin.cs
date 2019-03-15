@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-  public class CorpseSkinSpell : NecromancerSpell
+  public class CorpseSkinSpell : NecromancerSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Corpse Skin", "In Agle Corp Ylem",
@@ -27,11 +27,14 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (CheckHSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -89,13 +92,11 @@ namespace Server.Spells.Necromancy
 
     public static bool RemoveCurse(Mobile m)
     {
-      ExpireTimer t = m_Table[m];
-
-      if (t == null)
+      if (!m_Table.TryGetValue(m, out ExpireTimer t))
         return false;
 
       m.SendLocalizedMessage(1061688); // Your skin returns to normal.
-      t.DoExpire();
+      t?.DoExpire();
       return true;
     }
 
@@ -124,27 +125,6 @@ namespace Server.Spells.Necromancy
       {
         m_Mobile.SendLocalizedMessage(1061688); // Your skin returns to normal.
         DoExpire();
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private CorpseSkinSpell m_Owner;
-
-      public InternalTarget(CorpseSkinSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

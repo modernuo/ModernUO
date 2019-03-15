@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Third
 {
-  public class UnlockSpell : MagerySpell
+  public class UnlockSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Unlock Spell", "Ex Por",
@@ -23,85 +23,53 @@ namespace Server.Spells.Third
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
-    private class InternalTarget : Target
+    public void Target(IPoint3D p)
     {
-      private UnlockSpell m_Owner;
-
-      public InternalTarget(UnlockSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
+      if (CheckSequence())
       {
-        m_Owner = owner;
-      }
+        SpellHelper.Turn(Caster, p);
 
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (!(o is IPoint3D loc))
-          return;
+        Effects.SendLocationParticles(EffectItem.Create(new Point3D(p), Caster.Map, EffectItem.DefaultDuration),
+          0x376A, 9, 32, 5024);
 
-        if (m_Owner.CheckSequence())
+        Effects.PlaySound(p, Caster.Map, 0x1FF);
+
+        if (p is Mobile)
+          Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 503101); // That did not need to be unlocked.
+        else if (!(p is LockableContainer cont))
+          Caster.SendLocalizedMessage(501666); // You can't unlock that!
+        else
         {
-          SpellHelper.Turn(from, o);
-
-          Effects.SendLocationParticles(EffectItem.Create(new Point3D(loc), from.Map, EffectItem.DefaultDuration),
-            0x376A, 9, 32, 5024);
-
-          Effects.PlaySound(loc, from.Map, 0x1FF);
-
-          if (o is Mobile)
-          {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 503101); // That did not need to be unlocked.
-          }
-          else if (!(o is LockableContainer))
-          {
-            from.SendLocalizedMessage(501666); // You can't unlock that!
-          }
+          if (BaseHouse.CheckSecured(cont))
+            Caster.SendLocalizedMessage(503098); // You cannot cast this on a secure item.
+          else if (!cont.Locked)
+            Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2,
+              503101); // That did not need to be unlocked.
+          else if (cont.LockLevel == 0)
+            Caster.SendLocalizedMessage(501666); // You can't unlock that!
           else
           {
-            LockableContainer cont = (LockableContainer)o;
+            int level = (int)(Caster.Skills.Magery.Value * 0.8) - 4;
 
-            if (BaseHouse.CheckSecured(cont))
+            if (level >= cont.RequiredSkill &&
+                !(cont is TreasureMapChest chest && chest.Level > 2))
             {
-              from.SendLocalizedMessage(503098); // You cannot cast this on a secure item.
-            }
-            else if (!cont.Locked)
-            {
-              from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
-                503101); // That did not need to be unlocked.
-            }
-            else if (cont.LockLevel == 0)
-            {
-              from.SendLocalizedMessage(501666); // You can't unlock that!
+              cont.Locked = false;
+
+              if (cont.LockLevel == -255)
+                cont.LockLevel = cont.RequiredSkill - 10;
             }
             else
-            {
-              int level = (int)(from.Skills.Magery.Value * 0.8) - 4;
-
-              if (level >= cont.RequiredSkill &&
-                  !(cont is TreasureMapChest chest && chest.Level > 2))
-              {
-                cont.Locked = false;
-
-                if (cont.LockLevel == -255)
-                  cont.LockLevel = cont.RequiredSkill - 10;
-              }
-              else
-              {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2,
-                  503099); // My spell does not seem to have an effect on that lock.
-              }
-            }
+              Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2,
+                503099); // My spell does not seem to have an effect on that lock.
           }
         }
-
-        m_Owner.FinishSequence();
       }
 
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
+      FinishSequence();
     }
   }
 }

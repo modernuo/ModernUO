@@ -1,10 +1,9 @@
 using System;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
-  public class BladeSpiritsSpell : MagerySpell
+  public class BladeSpiritsSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Blade Spirits", "In Jux Hur Ylem",
@@ -46,7 +45,7 @@ namespace Server.Spells.Fifth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this);
     }
 
     public void Target(IPoint3D p)
@@ -72,35 +71,6 @@ namespace Server.Spells.Fifth
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private BladeSpiritsSpell m_Owner;
-
-      public InternalTarget(BladeSpiritsSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D d)
-          m_Owner.Target(d);
-      }
-
-      protected override void OnTargetOutOfLOS(Mobile from, object o)
-      {
-        from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
-        from.Target = new InternalTarget(m_Owner);
-        from.Target.BeginTimeout(from, TimeoutTime - DateTime.UtcNow);
-        m_Owner = null;
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner?.FinishSequence();
-      }
     }
   }
 }

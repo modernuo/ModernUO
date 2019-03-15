@@ -8,7 +8,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-  public class AnimateDeadSpell : NecromancerSpell
+  public class AnimateDeadSpell : NecromancerSpell, ISpellTargetingItem
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Animate Dead", "Uus Corp",
@@ -105,7 +105,7 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
       Caster.SendLocalizedMessage(1061083); // Animate what corpse?
     }
 
@@ -128,9 +128,9 @@ namespace Server.Spells.Necromancy
       return null;
     }
 
-    public void Target(object obj)
+    public void Target(Item item)
     {
-      MaabusCoffinComponent comp = obj as MaabusCoffinComponent;
+      MaabusCoffinComponent comp = item as MaabusCoffinComponent;
 
       if (comp?.Addon is MaabusCoffin addon)
       {
@@ -152,7 +152,7 @@ namespace Server.Spells.Necromancy
         return;
       }
 
-      if (!(obj is Corpse c))
+      if (!(item is Corpse c))
       {
         Caster.SendLocalizedMessage(1061084); // You cannot animate that.
       }
@@ -368,26 +368,6 @@ namespace Server.Spells.Necromancy
       {
         m_ToSummon = toSummon;
         m_Requirement = requirement;
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private AnimateDeadSpell m_Owner;
-
-      public InternalTarget(AnimateDeadSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        m_Owner.Target(o);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

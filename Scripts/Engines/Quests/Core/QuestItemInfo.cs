@@ -1,5 +1,3 @@
-using Server.Gumps;
-
 namespace Server.Engines.Quests
 {
   public class QuestItemInfo

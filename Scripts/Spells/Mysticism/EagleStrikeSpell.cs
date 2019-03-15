@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Mysticism
 {
-  public class EagleStrikeSpell : MysticSpell
+  public class EagleStrikeSpell : MysticSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Eagle Strike", "Kal Por Xen",
@@ -27,11 +27,14 @@ namespace Server.Spells.Mysticism
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (CheckHSequence(m))
       {
         /* Conjures a magical eagle that assaults the Target with
@@ -61,28 +64,6 @@ namespace Server.Spells.Mysticism
       SpellHelper.Damage(this, to, damage, 0, 0, 0, 0, 100);
 
       to.PlaySound(0x64D);
-    }
-
-    private class InternalTarget : Target
-    {
-      private EagleStrikeSpell m_Owner;
-
-      public InternalTarget(EagleStrikeSpell owner)
-        : base(12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

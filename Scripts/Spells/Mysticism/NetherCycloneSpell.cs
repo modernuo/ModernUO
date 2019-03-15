@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Server.Network;
-using Server.Targeting;
 
 namespace Server.Spells.Mysticism
 {
-  public class NetherCycloneSpell : MysticSpell
+  public class NetherCycloneSpell : MysticSpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Nether Cyclone", "Grav Hur",
@@ -29,7 +28,7 @@ namespace Server.Spells.Mysticism
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this);
     }
 
     public void Target(IPoint3D p)
@@ -126,28 +125,6 @@ namespace Server.Spells.Mysticism
       Effects.SendPacket(p, map,
         new HuedEffect(EffectType.Moving, Serial.Zero, Serial.Zero, 0x375A, orig, dest, 0, 0, false, false, 0x49A,
           0x4));
-    }
-
-    private class InternalTarget : Target
-    {
-      private NetherCycloneSpell m_Owner;
-
-      public InternalTarget(NetherCycloneSpell owner)
-        : base(12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

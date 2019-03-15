@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
-  public class ChainLightningSpell : MagerySpell
+  public class ChainLightningSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Chain Lightning", "Vas Ort Grav",
@@ -27,7 +27,7 @@ namespace Server.Spells.Seventh
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -106,27 +106,6 @@ namespace Server.Spells.Seventh
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private ChainLightningSpell m_Owner;
-
-      public InternalTarget(ChainLightningSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

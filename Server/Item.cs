@@ -1090,10 +1090,10 @@ namespace Server
           } else if (ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0)
             state.Send(OPLPacket);
         }
-
-        Packet.Release(p);
-        eable.Free();
       }
+
+      Packet.Release(p);
+      eable.Free();
     }
 
     public virtual void Delete()

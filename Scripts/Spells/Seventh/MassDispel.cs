@@ -1,12 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
-  public class MassDispelSpell : MagerySpell
+  public class MassDispelSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Mass Dispel", "Vas An Ort",
@@ -26,7 +24,7 @@ namespace Server.Spells.Seventh
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -76,27 +74,6 @@ namespace Server.Spells.Seventh
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private MassDispelSpell m_Owner;
-
-      public InternalTarget(MassDispelSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

@@ -9,7 +9,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Ninjitsu
 {
-  public class Shadowjump : NinjaSpell
+  public class Shadowjump : NinjaSpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Shadowjump", null,
@@ -48,7 +48,7 @@ namespace Server.Spells.Ninjitsu
     public override void OnCast()
     {
       Caster.SendLocalizedMessage(1063088); // You prepare to perform a Shadowjump.
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, 11);
     }
 
     public void Target(IPoint3D p)
@@ -109,27 +109,6 @@ namespace Server.Spells.Ninjitsu
       }
 
       FinishSequence();
-    }
-
-    public class InternalTarget : Target
-    {
-      private Shadowjump m_Owner;
-
-      public InternalTarget(Shadowjump owner) : base(11, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

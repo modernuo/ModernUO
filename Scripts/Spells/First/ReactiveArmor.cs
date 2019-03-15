@@ -138,16 +138,14 @@ namespace Server.Spells.First
 
     public static void EndArmor(Mobile m)
     {
-      ResistanceMod[] mods = m_Table[m];
+      if (!m_Table.TryGetValue(m, out ResistanceMod[] mods))
+        return;
 
-      if (mods != null)
-      {
-        for (int i = 0; i < mods.Length; ++i)
-          m.RemoveResistanceMod(mods[i]);
+      for (int i = 0; i < mods?.Length; ++i)
+        m.RemoveResistanceMod(mods[i]);
 
-        m_Table.Remove(m);
-        BuffInfo.RemoveBuff(m, BuffIcon.ReactiveArmor);
-      }
+      m_Table.Remove(m);
+      BuffInfo.RemoveBuff(m, BuffIcon.ReactiveArmor);
     }
   }
 }

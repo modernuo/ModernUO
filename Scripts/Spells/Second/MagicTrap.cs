@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Second
 {
-  public class MagicTrapSpell : MagerySpell
+  public class MagicTrapSpell : MagerySpell, ISpellTargetingItem
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Magic Trap", "In Jux",
@@ -22,16 +22,18 @@ namespace Server.Spells.Second
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
-    public void Target(TrappableContainer item)
+    public void Target(Item item)
     {
-      if (!Caster.CanSee(item))
+      if (!(item is TrappableContainer cont))
+        Caster.SendMessage("You can't trap that"); // TODO: Localization for this?
+      else if (!Caster.CanSee(item))
       {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
       }
-      else if (item.TrapType != TrapType.None && item.TrapType != TrapType.MagicTrap)
+      else if (cont.TrapType != TrapType.None && cont.TrapType != TrapType.MagicTrap)
       {
         base.DoFizzle();
       }
@@ -39,9 +41,9 @@ namespace Server.Spells.Second
       {
         SpellHelper.Turn(Caster, item);
 
-        item.TrapType = TrapType.MagicTrap;
-        item.TrapPower = Core.AOS ? Utility.RandomMinMax(10, 50) : 1;
-        item.TrapLevel = 0;
+        cont.TrapType = TrapType.MagicTrap;
+        cont.TrapPower = Core.AOS ? Utility.RandomMinMax(10, 50) : 1;
+        cont.TrapLevel = 0;
 
         Point3D loc = item.GetWorldLocation();
 
@@ -65,29 +67,6 @@ namespace Server.Spells.Second
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private MagicTrapSpell m_Owner;
-
-      public InternalTarget(MagicTrapSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is TrappableContainer container)
-          m_Owner.Target(container);
-        else
-          from.SendMessage("You can't trap that");
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }
