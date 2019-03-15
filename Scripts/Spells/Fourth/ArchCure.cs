@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-  public class ArchCureSpell : MagerySpell
+  public class ArchCureSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Arch Cure", "Vas An Nox",
@@ -28,7 +28,7 @@ namespace Server.Spells.Fourth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -150,27 +150,6 @@ namespace Server.Spells.Fourth
     private static bool IsAllyTo(Mobile from, Mobile to)
     {
       return Notoriety.Compute(from, to) == Notoriety.Ally;
-    }
-
-    private class InternalTarget : Target
-    {
-      private ArchCureSpell m_Owner;
-
-      public InternalTarget(ArchCureSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

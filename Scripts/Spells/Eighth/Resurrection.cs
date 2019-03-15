@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Eighth
 {
-  public class ResurrectionSpell : MagerySpell
+  public class ResurrectionSpell : MagerySpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Resurrection", "An Corp",
@@ -34,7 +34,7 @@ namespace Server.Spells.Eighth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, 1);
     }
 
     public void Target(Mobile m)
@@ -85,27 +85,6 @@ namespace Server.Spells.Eighth
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private ResurrectionSpell m_Owner;
-
-      public InternalTarget(ResurrectionSpell owner) : base(1, false, TargetFlags.Beneficial)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

@@ -7,7 +7,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Chivalry
 {
-  public class CloseWoundsSpell : PaladinSpell
+  public class CloseWoundsSpell : PaladinSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Close Wounds", "Obsu Vulni",
@@ -39,7 +39,7 @@ namespace Server.Spells.Chivalry
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial);
     }
 
     public void Target(Mobile m)
@@ -89,27 +89,6 @@ namespace Server.Spells.Chivalry
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private CloseWoundsSpell m_Owner;
-
-      public InternalTarget(CloseWoundsSpell owner) : base(12, false, TargetFlags.Beneficial)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

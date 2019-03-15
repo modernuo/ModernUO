@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
-  public class MindBlastSpell : MagerySpell
+  public class MindBlastSpell : MagerySpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Mind Blast", "Por Corp Wis",
@@ -27,7 +27,7 @@ namespace Server.Spells.Fifth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     private void AosDelay_Callback(Mobile caster, Mobile target, Mobile defender, int damage)
@@ -121,27 +121,6 @@ namespace Server.Spells.Fifth
     public override double GetSlayerDamageScalar(Mobile target)
     {
       return 1.0; //This spell isn't affected by slayer spellbooks
-    }
-
-    private class InternalTarget : Target
-    {
-      private MindBlastSpell m_Owner;
-
-      public InternalTarget(MindBlastSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

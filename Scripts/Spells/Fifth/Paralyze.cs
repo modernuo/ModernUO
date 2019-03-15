@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
-  public class ParalyzeSpell : MagerySpell
+  public class ParalyzeSpell : MagerySpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Paralyze", "An Ex Por",
@@ -24,7 +24,7 @@ namespace Server.Spells.Fifth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
@@ -86,27 +86,6 @@ namespace Server.Spells.Fifth
       }
 
       FinishSequence();
-    }
-
-    public class InternalTarget : Target
-    {
-      private ParalyzeSpell m_Owner;
-
-      public InternalTarget(ParalyzeSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

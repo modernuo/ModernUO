@@ -9,7 +9,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Chivalry
 {
-  public class SacredJourneySpell : PaladinSpell
+  public class SacredJourneySpell : PaladinSpell, IRecallSpell
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Sacred Journey", "Sanctum Viatas",
@@ -39,7 +39,7 @@ namespace Server.Spells.Chivalry
     public override void OnCast()
     {
       if (m_Entry == null)
-        Caster.Target = new InternalTarget(this);
+        Caster.Target = new RecallSpellTarget(this);
       else
         Effect(m_Entry.Location, m_Entry.Map, true);
     }
@@ -140,62 +140,6 @@ namespace Server.Spells.Chivalry
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private SacredJourneySpell m_Owner;
-
-      public InternalTarget(SacredJourneySpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is RecallRune rune)
-        {
-          if (rune.Marked)
-            m_Owner.Effect(rune.Target, rune.TargetMap, true);
-          else
-            from.SendLocalizedMessage(501805); // That rune is not yet marked.
-        }
-        else if (o is Runebook runebook)
-        {
-          RunebookEntry e = runebook.Default;
-
-          if (e != null)
-            m_Owner.Effect(e.Location, e.Map, true);
-          else
-            from.SendLocalizedMessage(502354); // Target is not marked.
-        }
-        else if (o is Key key && key.KeyValue != 0 && key.Link is BaseBoat boat)
-        {
-          if (!boat.Deleted && boat.CheckKey(key.KeyValue))
-            m_Owner.Effect(boat.GetMarkedLocation(), boat.Map, false);
-          else
-            from.Send(new MessageLocalized(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 502357,
-              from.Name, "")); // I can not recall from that object.
-        }
-        else if (o is HouseRaffleDeed deed && deed.ValidLocation())
-        {
-          m_Owner.Effect(deed.PlotLocation, deed.PlotFacet, true);
-        }
-        else
-        {
-          from.Send(new MessageLocalized(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 502357, from.Name,
-            "")); // I can not recall from that object.
-        }
-      }
-
-      protected override void OnNonlocalTarget(Mobile from, object o)
-      {
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

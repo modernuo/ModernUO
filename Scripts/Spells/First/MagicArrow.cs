@@ -2,7 +2,7 @@ using Server.Targeting;
 
 namespace Server.Spells.First
 {
-  public class MagicArrowSpell : MagerySpell
+  public class MagicArrowSpell : MagerySpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Magic Arrow", "In Por Ylem",
@@ -23,7 +23,7 @@ namespace Server.Spells.First
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
@@ -67,27 +67,6 @@ namespace Server.Spells.First
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private MagicArrowSpell m_Owner;
-
-      public InternalTarget(MagicArrowSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

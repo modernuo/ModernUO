@@ -3269,6 +3269,11 @@
     <Compile Include="Spells\Sixth\MassCurse.cs" />
     <Compile Include="Spells\Sixth\ParalyzeField.cs" />
     <Compile Include="Spells\Sixth\Reveal.cs" />
+    <Compile Include="Spells\Targeting\IRecallSpell.cs" />
+    <Compile Include="Spells\Targeting\SpellTargetPoint3D.cs" />
+    <Compile Include="Spells\Targeting\SpellTargetItem.cs" />
+    <Compile Include="Spells\Targeting\SpellTargetMobile.cs" />
+    <Compile Include="Spells\Targeting\RecallSpellTarget.cs" />
     <Compile Include="Spells\Spellweaving\ArcaneCircle.cs" />
     <Compile Include="Spells\Spellweaving\ArcaneForm.cs" />
     <Compile Include="Spells\Spellweaving\ArcaneSummon.cs" />

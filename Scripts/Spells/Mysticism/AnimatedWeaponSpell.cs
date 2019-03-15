@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Mysticism
 {
-  public class AnimatedWeaponSpell : MysticSpell
+  public class AnimatedWeaponSpell : MysticSpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Animated Weapon", "In Jux Por Ylem",
@@ -28,7 +28,7 @@ namespace Server.Spells.Mysticism
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this);
     }
 
     public void Target(IPoint3D p)
@@ -62,28 +62,6 @@ namespace Server.Spells.Mysticism
       }
 
       FinishSequence();
-    }
-
-    public class InternalTarget : Target
-    {
-      private AnimatedWeaponSpell m_Owner;
-
-      public InternalTarget(AnimatedWeaponSpell owner)
-        : base(12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D d)
-          m_Owner.Target(d);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

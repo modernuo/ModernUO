@@ -7,7 +7,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-  public class FireFieldSpell : MagerySpell
+  public class FireFieldSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Fire Field", "In Flam Grav",
@@ -27,7 +27,7 @@ namespace Server.Spells.Fourth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -274,27 +274,6 @@ namespace Server.Spells.Fourth
             }
           }
         }
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private FireFieldSpell m_Owner;
-
-      public InternalTarget(FireFieldSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D d)
-          m_Owner.Target(d);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }
