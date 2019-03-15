@@ -960,11 +960,13 @@ namespace Server.Mobiles
       if (targ == null)
         return false;
 
-      bool isReveal = targ is RevealSpell.InternalTarget;
-      bool isDispel = targ is DispelSpell.InternalTarget;
-      bool isParalyze = targ is ParalyzeSpell.InternalTarget;
-      bool isTeleport = targ is TeleportSpell.InternalTarget;
-      bool isInvisible = targ is InvisibilitySpell.InternalTarget;
+      ISpellTarget spellTarg = targ as ISpellTarget;
+
+      bool isReveal = spellTarg?.Spell is RevealSpell;
+      bool isDispel = spellTarg?.Spell is DispelSpell;
+      bool isParalyze = spellTarg?.Spell is ParalyzeSpell;
+      bool isTeleport = spellTarg?.Spell is TeleportSpell;
+      bool isInvisible = spellTarg?.Spell is InvisibilitySpell;
       bool teleportAway = false;
 
       Mobile toTarget;

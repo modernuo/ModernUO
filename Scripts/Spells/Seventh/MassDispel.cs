@@ -77,4 +77,5 @@ namespace Server.Spells.Seventh
 
       FinishSequence();
     }
+  }
 }

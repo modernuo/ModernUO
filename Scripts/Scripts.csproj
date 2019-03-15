@@ -3270,6 +3270,7 @@
     <Compile Include="Spells\Sixth\ParalyzeField.cs" />
     <Compile Include="Spells\Sixth\Reveal.cs" />
     <Compile Include="Spells\Targeting\IRecallSpell.cs" />
+    <Compile Include="Spells\Targeting\ISpellTarget.cs" />
     <Compile Include="Spells\Targeting\SpellTargetPoint3D.cs" />
     <Compile Include="Spells\Targeting\SpellTargetItem.cs" />
     <Compile Include="Spells\Targeting\SpellTargetMobile.cs" />

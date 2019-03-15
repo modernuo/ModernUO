@@ -7,23 +7,24 @@ namespace Server.Spells
     void Target(Mobile from);
   }
 
-  public class SpellTargetMobile : Target
+  public class SpellTargetMobile : Target, ISpellTarget
   {
-    public ISpellTargetingMobile Spell{ get; }
+    private ISpellTargetingMobile m_Spell;
+    public ISpell Spell => m_Spell;
 
     public SpellTargetMobile(ISpellTargetingMobile spell, TargetFlags flags, int range = 12) : base(range, false, flags)
     {
-      Spell = spell;
+      m_Spell = spell;
     }
 
     protected override void OnTarget(Mobile from, object o)
     {
-      Spell.Target(o as Mobile);
+      m_Spell.Target(o as Mobile);
     }
 
     protected override void OnTargetFinish(Mobile from)
     {
-      Spell?.FinishSequence();
+      m_Spell?.FinishSequence();
     }
   }
 }

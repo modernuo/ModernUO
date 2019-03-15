@@ -469,7 +469,7 @@ namespace Server.Factions
           if (m_Guard.Map == toHarm.Map && (targ.Range < 0 || m_Guard.InRange(toHarm, targ.Range)) &&
               m_Guard.CanSee(toHarm) && m_Guard.InLOS(toHarm))
             targ.Invoke(m_Guard, toHarm);
-          else if (targ is DispelSpell.InternalTarget)
+          else if ((targ as ISpellTarget)?.Spell is DispelSpell)
             targ.Cancel(m_Guard, TargetCancelType.Canceled);
         }
         else if ((targ.Flags & TargetFlags.Beneficial) != 0)
