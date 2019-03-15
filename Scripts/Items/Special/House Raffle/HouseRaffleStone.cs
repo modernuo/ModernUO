@@ -16,10 +16,7 @@ namespace Server.Items
     {
       From = from;
 
-      if (From.NetState != null)
-        Address = From.NetState.Address;
-      else
-        Address = IPAddress.None;
+      Address = From.NetState?.Address ?? IPAddress.None;
 
       Date = DateTime.UtcNow;
     }
@@ -367,9 +364,7 @@ namespace Server.Items
 
     public string FormatPrice()
     {
-      if (m_TicketPrice == 0)
-        return "FREE";
-      return $"{m_TicketPrice} gold";
+      return m_TicketPrice == 0 ? "FREE" : $"{m_TicketPrice} gold";
     }
 
     public override void GetProperties(ObjectPropertyList list)

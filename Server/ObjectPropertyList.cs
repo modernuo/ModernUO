@@ -24,6 +24,14 @@ using Server.Network;
 
 namespace Server
 {
+  public interface IPropertyListObject : IEntity
+  {
+    ObjectPropertyList PropertyList{ get; }
+    OPLInfo OPLPacket{ get;  }
+
+    void GetProperties(ObjectPropertyList list);
+  }
+
   public sealed class ObjectPropertyList : Packet
   {
     private static byte[] m_Buffer = new byte[1024];

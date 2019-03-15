@@ -155,6 +155,8 @@
     <Compile Include="Items\VirtualCheck.cs" />
     <Compile Include="Items\VirtualHair.cs" />
     <Compile Include="KeywordList.cs" />
+    <Compile Include="Layer.cs" />
+    <Compile Include="LightType.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Menus\IMenu.cs" />
@@ -169,6 +171,7 @@
     <Compile Include="Network\Compression.cs" />
     <Compile Include="Network\EncodedPacketHandler.cs" />
     <Compile Include="Network\EncodedReader.cs" />
+    <Compile Include="Network\StaticPacketHandlers.cs" />
     <Compile Include="Network\Listener.cs" />
     <Compile Include="Network\MessagePump.cs" />
     <Compile Include="Network\NetState.cs" />
