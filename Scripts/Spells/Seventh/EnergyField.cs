@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
-  public class EnergyFieldSpell : MagerySpell
+  public class EnergyFieldSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Energy Field", "In Sanct Grav",
@@ -27,7 +27,7 @@ namespace Server.Spells.Seventh
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -63,7 +63,7 @@ namespace Server.Spells.Seventh
         TimeSpan duration;
 
         if (Core.AOS)
-          duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5) / 7);
+          duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5) / 7.0);
         else
           duration = TimeSpan.FromSeconds(Caster.Skills.Magery.Value * 0.28 +
                                           2.0); // (28% of magery) + 2.0 seconds
@@ -141,16 +141,11 @@ namespace Server.Spells.Seventh
 
       public override bool OnMoveOver(Mobile m)
       {
-        int noto;
-
-        if (m is PlayerMobile)
-        {
-          noto = Notoriety.Compute(m_Caster, m);
-          if (noto == Notoriety.Enemy || noto == Notoriety.Ally)
-            return false;
-        }
-
-        return base.OnMoveOver(m);
+        if (!(m is PlayerMobile))
+          return base.OnMoveOver(m);
+        
+        int noto = Notoriety.Compute(m_Caster, m);
+        return noto != Notoriety.Enemy && noto != Notoriety.Ally && base.OnMoveOver(m);
       }
 
       public override void OnAfterDelete()
@@ -174,27 +169,6 @@ namespace Server.Spells.Seventh
         {
           m_Item.Delete();
         }
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private EnergyFieldSpell m_Owner;
-
-      public InternalTarget(EnergyFieldSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D d)
-          m_Owner.Target(d);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

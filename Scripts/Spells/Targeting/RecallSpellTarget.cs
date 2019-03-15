@@ -8,11 +8,12 @@ namespace Server.Spells
   public class RecallSpellTarget : Target
   {
     private IRecallSpell m_Spell;
+    private bool m_ToBoat;
 
-    public RecallSpellTarget(IRecallSpell spell) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
+    public RecallSpellTarget(IRecallSpell spell, bool toBoat = true) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
     {
       m_Spell = spell;
-
+      m_ToBoat = toBoat;
       m_Spell.Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501029); // Select Marked item.
     }
 
@@ -34,7 +35,7 @@ namespace Server.Spells
         else
           from.SendLocalizedMessage(502354); // Target is not marked.
       }
-      else if (o is Key key && key.KeyValue != 0 && key.Link is BaseBoat boat)
+      else if (m_ToBoat && o is Key key && key.KeyValue != 0 && key.Link is BaseBoat boat)
       {
         if (!boat.Deleted && boat.CheckKey(key.KeyValue))
           m_Spell.Effect(boat.GetMarkedLocation(), boat.Map, false);

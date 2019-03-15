@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-  public class MarkSpell : MagerySpell
+  public class MarkSpell : MagerySpell, ISpellTargetingItem
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Mark", "Kal Por Ylem",
@@ -23,35 +23,29 @@ namespace Server.Spells.Sixth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public override bool CheckCast()
     {
-      if (!base.CheckCast())
-        return false;
-
-      return SpellHelper.CheckTravel(Caster, TravelCheckType.Mark);
+      return base.CheckCast() && SpellHelper.CheckTravel(Caster, TravelCheckType.Mark);
     }
 
-    public void Target(RecallRune rune)
+    public void Target(Item item)
     {
-      if (!Caster.CanSee(rune))
-      {
+      if (!(item is RecallRune rune))
+        Caster.Send(new MessageLocalized(Caster.Serial, Caster.Body, MessageType.Regular, 0x3B2, 3, 501797, Caster.Name,
+          "")); // I cannot mark that object.
+      else if (!Caster.CanSee(rune))
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
-      }
       else if (!SpellHelper.CheckTravel(Caster, TravelCheckType.Mark))
       {
       }
       else if (SpellHelper.CheckMulti(Caster.Location, Caster.Map, !Core.AOS))
-      {
         Caster.SendLocalizedMessage(501942); // That location is blocked.
-      }
       else if (!rune.IsChildOf(Caster.Backpack))
-      {
         Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2,
           1062422); // You must have this rune in your backpack in order to mark it.
-      }
       else if (CheckSequence())
       {
         rune.Mark(Caster);
@@ -61,30 +55,6 @@ namespace Server.Spells.Sixth
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private MarkSpell m_Owner;
-
-      public InternalTarget(MarkSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is RecallRune rune)
-          m_Owner.Target(rune);
-        else
-          from.Send(new MessageLocalized(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 501797, from.Name,
-            "")); // I cannot mark that object.
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

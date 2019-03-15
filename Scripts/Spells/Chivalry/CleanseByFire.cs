@@ -41,10 +41,11 @@ namespace Server.Spells.Chivalry
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (!m.Poisoned)
-      {
         Caster.SendLocalizedMessage(1060176); // That creature is not poisoned!
-      }
       else if (CheckBSequence(m))
       {
         SpellHelper.Turn(Caster, m);

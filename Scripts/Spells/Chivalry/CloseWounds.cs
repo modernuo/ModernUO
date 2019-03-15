@@ -44,26 +44,19 @@ namespace Server.Spells.Chivalry
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (!Caster.InRange(m, 2))
-      {
         Caster.SendLocalizedMessage(1060178); // You are too far away to perform that action!
-      }
       else if (m is BaseCreature creature && creature.IsAnimatedDead)
-      {
         Caster.SendLocalizedMessage(1061654); // You cannot heal that which is not alive.
-      }
       else if (m.IsDeadBondedPet)
-      {
         Caster.SendLocalizedMessage(1060177); // You cannot heal a creature that is already dead!
-      }
       else if (m.Hits >= m.HitsMax)
-      {
         Caster.SendLocalizedMessage(500955); // That being is not damaged!
-      }
       else if (m.Poisoned || MortalStrike.IsWounded(m))
-      {
         Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, Caster == m ? 1005000 : 1010398);
-      }
       else if (CheckBSequence(m))
       {
         SpellHelper.Turn(Caster, m);

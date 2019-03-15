@@ -18,8 +18,7 @@ namespace Server.Spells
 
     protected override void OnTarget(Mobile from, object o)
     {
-      if (o is Mobile mobile)
-        Spell.Target(mobile);
+      Spell.Target(o as Mobile);
     }
 
     protected override void OnTargetFinish(Mobile from)

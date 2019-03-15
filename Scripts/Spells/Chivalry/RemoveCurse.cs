@@ -44,6 +44,9 @@ namespace Server.Spells.Chivalry
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (CheckBSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -54,7 +57,7 @@ namespace Server.Spells.Chivalry
          * Chance of removing curse is affected by Caster's Karma.
          */
 
-        int chance = 0;
+        int chance;
 
         if (Caster.Karma < -5000)
           chance = 0;

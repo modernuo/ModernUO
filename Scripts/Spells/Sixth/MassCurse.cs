@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-  public class MassCurseSpell : MagerySpell
+  public class MassCurseSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Mass Curse", "Vas Des Sanct",
@@ -25,7 +25,7 @@ namespace Server.Spells.Sixth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -71,27 +71,6 @@ namespace Server.Spells.Sixth
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private MassCurseSpell m_Owner;
-
-      public InternalTarget(MassCurseSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

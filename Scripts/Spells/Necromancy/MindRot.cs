@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-  public class MindRotSpell : NecromancerSpell
+  public class MindRotSpell : NecromancerSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Mind Rot", "Wis An Ben",
@@ -28,15 +28,15 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
-      if (HasMindRotScalar(m))
-      {
+      if (m == null)
+        Caster.SendLocalizedMessage(1060508); // You can't curse that.
+      else if (HasMindRotScalar(m))
         Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
-      }
       else if (CheckHSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -101,29 +101,6 @@ namespace Server.Spells.Necromancy
         BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
         tmpB.m_MRExpireTimer.Start();
         target.SendLocalizedMessage(1074384);
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private MindRotSpell m_Owner;
-
-      public InternalTarget(MindRotSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-        else
-          from.SendLocalizedMessage(1060508); // You can't curse that.
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-  public class EvilOmenSpell : NecromancerSpell
+  public class EvilOmenSpell : NecromancerSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Evil Omen", "Pas Tym An Sanct",
@@ -29,15 +29,13 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
       if (!(m is BaseCreature || m is PlayerMobile))
-      {
         Caster.SendLocalizedMessage(1060508); // You can't curse that.
-      }
       else if (CheckHSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -101,30 +99,6 @@ namespace Server.Spells.Necromancy
       mod.Remove();
 
       return true;
-    }
-
-    private class InternalTarget : Target
-    {
-      private EvilOmenSpell m_Owner;
-
-      public InternalTarget(EvilOmenSpell owner)
-        : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-        else
-          from.SendLocalizedMessage(1060508); // You can't curse that.
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

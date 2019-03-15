@@ -32,6 +32,9 @@ namespace Server.Spells.Mysticism
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (CheckHSequence(m))
       {
         /* Conjures a magical eagle that assaults the Target with
