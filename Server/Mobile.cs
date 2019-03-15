@@ -2333,9 +2333,7 @@ namespace Server
     public virtual void ProcessDelta()
     {
       Mobile m = this;
-      MobileDelta delta;
-
-      delta = m.m_DeltaFlags;
+      MobileDelta delta = m.m_DeltaFlags;
 
       if (delta == MobileDelta.None)
         return;
@@ -7282,12 +7280,14 @@ namespace Server
       }
       else
       {
-        while (m_DeltaQueue.Count > 0) m_DeltaQueue.Dequeue().ProcessDelta();
+        while (m_DeltaQueue.Count > 0)
+          m_DeltaQueue.Dequeue().ProcessDelta();
       }
 
       _processing = false;
 
-      while (m_DeltaQueueR.Count > 0) m_DeltaQueueR.Dequeue().ProcessDelta();
+      while (m_DeltaQueueR.Count > 0)
+        m_DeltaQueueR.Dequeue().ProcessDelta();
     }
 
     public virtual void OnKillsChange(int oldValue)
