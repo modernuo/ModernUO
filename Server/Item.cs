@@ -3736,8 +3736,6 @@ namespace Server
 
     #endregion
 
-    private ObjectPropertyList m_PropertyList;
-
     #region Location Location Location!
 
     public virtual void OnLocationChange(Point3D oldLocation)

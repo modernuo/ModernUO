@@ -4354,24 +4354,6 @@ namespace Server.Network
       return p;
     }
 
-    public static void Release(ref ObjectPropertyList p)
-    {
-      p?.Release();
-      p = null;
-    }
-
-    public static void Release(ref RemoveEntity p)
-    {
-      p?.Release();
-      p = null;
-    }
-
-    public static void Release(ref OPLInfo p)
-    {
-      p?.Release();
-      p = null;
-    }
-
     public static void Release(ref Packet p)
     {
       p?.Release();
