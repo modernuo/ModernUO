@@ -1035,9 +1035,8 @@ namespace Server.Network
 
       int hue = item.Hue;
 
-      if (parent != null)
-        if (parent.SolidHueOverride >= 0)
-          hue = parent.SolidHueOverride;
+      if (parent?.SolidHueOverride >= 0)
+        hue = parent.SolidHueOverride;
 
       m_Stream.Write(item.Serial);
       m_Stream.Write((short)item.ItemID);

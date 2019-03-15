@@ -6787,9 +6787,8 @@ namespace Server
       {
         ObjectPropertyList oldList = m_PropertyList;
         Packet.Release(ref m_PropertyList);
-        ObjectPropertyList newList = PropertyList;
 
-        if (oldList == null || oldList.Hash != newList.Hash)
+        if (oldList?.Hash != PropertyList.Hash)
         {
           Packet.Release(ref m_OPLPacket);
           Delta(MobileDelta.Properties);
