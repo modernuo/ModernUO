@@ -92,13 +92,11 @@ namespace Server.Spells.Necromancy
 
     public static bool RemoveCurse(Mobile m)
     {
-      ExpireTimer t = m_Table[m];
-
-      if (t == null)
+      if (!m_Table.TryGetValue(m, out ExpireTimer t))
         return false;
 
       m.SendLocalizedMessage(1061688); // Your skin returns to normal.
-      t.DoExpire();
+      t?.DoExpire();
       return true;
     }
 

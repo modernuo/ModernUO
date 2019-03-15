@@ -66,7 +66,7 @@ namespace Server.Spells.Necromancy
 
         TimeSpan duration = TimeSpan.FromSeconds(Caster.Skills.SpiritSpeak.Value / 12 + 1.0);
 
-        Timer.DelayCall(duration, TryEndEffect_Callback, m);
+        Timer.DelayCall(duration, mob => TryEndEffect(mob), m);
 
         HarmfulSpell(m);
 
@@ -76,27 +76,13 @@ namespace Server.Spells.Necromancy
       FinishSequence();
     }
 
-    /*
-     * The naming here was confusing. Its a 1-off effect spell.
-     * So, we don't actually "checkeffect"; we endeffect with bool
-     * return to determine external behaviors.
-     *
-     * -refactored.
-     */
-    private static void TryEndEffect_Callback(Mobile m)
-    {
-      TryEndEffect(m);
-    }
-
     public static bool TryEndEffect(Mobile m)
     {
-      DefaultSkillMod mod = m_Table[m];
-
-      if (mod == null)
+      if (!m_Table.TryGetValue(m, out DefaultSkillMod mod))
         return false;
 
       m_Table.Remove(m);
-      mod.Remove();
+      mod?.Remove();
 
       return true;
     }
