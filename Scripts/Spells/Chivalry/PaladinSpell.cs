@@ -9,7 +9,7 @@ namespace Server.Spells.Chivalry
     {
     }
 
-    public abstract double RequiredSkill{ get; }
+    public abstract int RequiredSkill{ get; }
     public abstract int RequiredMana{ get; }
     public abstract int RequiredTithing{ get; }
     public abstract int MantraNumber{ get; }

@@ -36,7 +36,7 @@ namespace Server.Spells.Ninjitsu
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.0);
 
-    public override double RequiredSkill => 0.0;
+    public override int RequiredSkill => 0;
     public override int RequiredMana => Core.ML ? 10 : 0;
     public override int CastRecoveryBase => Core.ML ? 10 : base.CastRecoveryBase;
 
@@ -247,7 +247,7 @@ namespace Server.Spells.Ninjitsu
 
       if (entry.StealthBonus)
       {
-        mod = new DefaultSkillMod(SkillName.Stealth, true, 20.0) { ObeyCap = true };
+        mod = new DefaultSkillMod(SkillName.Stealth, true, 200) { ObeyCap = true };
         m.AddSkillMod(mod);
       }
 
@@ -255,7 +255,7 @@ namespace Server.Spells.Ninjitsu
 
       if (entry.StealingBonus)
       {
-        stealingMod = new DefaultSkillMod(SkillName.Stealing, true, 10.0) { ObeyCap = true };
+        stealingMod = new DefaultSkillMod(SkillName.Stealing, true, 100) { ObeyCap = true };
         m.AddSkillMod(stealingMod);
       }
 

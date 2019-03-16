@@ -24,7 +24,7 @@ namespace Server.Spells.Necromancy
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(0.75);
 
-    public override double RequiredSkill => 20.0;
+    public override int RequiredSkill => 200;
     public override int RequiredMana => 11;
 
     public override void OnCast()
@@ -56,7 +56,7 @@ namespace Server.Spells.Necromancy
 
         if (!m_Table.ContainsKey(m))
         {
-          DefaultSkillMod mod = new DefaultSkillMod(SkillName.MagicResist, false, 50.0);
+          DefaultSkillMod mod = new DefaultSkillMod(SkillName.MagicResist, false, 500);
 
           if (m.Skills.MagicResist.Base > 50.0)
             m.AddSkillMod(mod);

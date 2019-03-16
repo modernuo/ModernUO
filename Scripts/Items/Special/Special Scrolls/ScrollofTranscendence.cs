@@ -8,7 +8,7 @@ namespace Server.Items
   public class ScrollofTranscendence : SpecialScroll
   {
     [Constructible]
-    public ScrollofTranscendence(SkillName skill = SkillName.Alchemy, double value = 0.0) : base(skill, value)
+    public ScrollofTranscendence(SkillName skill = SkillName.Alchemy, int value = 0) : base(skill, value)
     {
       ItemID = 0x14EF;
       Hue = 0x490;
@@ -32,7 +32,7 @@ namespace Server.Items
     {
       SkillName skill = (SkillName)Utility.Random(SkillInfo.Table.Length);
 
-      return new ScrollofTranscendence(skill, Utility.RandomMinMax(min, max) * 0.1);
+      return new ScrollofTranscendence(skill, Utility.RandomMinMax(min, max));
     }
 
     public override void GetProperties(ObjectPropertyList list)
@@ -84,26 +84,26 @@ namespace Server.Items
       if (!CanUse(from))
         return;
 
-      double tskill = from.Skills[Skill].Base; // value of skill without item bonuses etc
-      double tcap = from.Skills[Skill].Cap; // maximum value permitted
+      int tskill = from.Skills[Skill].BaseFixedPoint; // value of skill without item bonuses etc
+      int tcap = from.Skills[Skill].CapFixedPoint; // maximum value permitted
       bool canGain = false;
 
-      double newValue = Value;
+      int newValue = Value;
 
       if (tskill + newValue > tcap)
         newValue = tcap - tskill;
 
       if (tskill < tcap && from.Skills[Skill].Lock == SkillLock.Up)
       {
-        if (from.SkillsTotal + newValue * 10 > from.SkillsCap)
+        if (from.SkillsTotal + newValue > from.SkillsCap)
         {
           int ns = from.Skills.Length; // number of items in from.Skills[]
 
           for (int i = 0; i < ns; i++)
             // skill must point down and its value must be enough
-            if (from.Skills[i].Lock == SkillLock.Down && from.Skills[i].Base >= newValue)
+            if (from.Skills[i].Lock == SkillLock.Down && from.Skills[i].BaseFixedPoint >= newValue)
             {
-              from.Skills[i].Base -= newValue;
+              from.Skills[i].BaseFixedPoint -= newValue;
               canGain = true;
               break;
             }
@@ -125,7 +125,7 @@ namespace Server.Items
       from.SendLocalizedMessage(1049513,
         GetNameLocalized()); // You feel a surge of magic as the scroll enhances your ~1_type~!
 
-      from.Skills[Skill].Base += newValue;
+      from.Skills[Skill].BaseFixedPoint += newValue;
 
       Effects.PlaySound(from.Location, from.Map, 0x1F7);
       Effects.SendTargetParticles(from, 0x373A, 35, 45, 0x00, 0x00, 9502, (EffectLayer)255, 0x100);

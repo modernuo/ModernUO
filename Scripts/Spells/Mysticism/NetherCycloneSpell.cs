@@ -23,7 +23,7 @@ namespace Server.Spells.Mysticism
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.5);
 
-    public override double RequiredSkill => 83.0;
+    public override int RequiredSkill => 830;
     public override int RequiredMana => 50;
 
     public override void OnCast()

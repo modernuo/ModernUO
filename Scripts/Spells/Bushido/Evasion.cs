@@ -21,7 +21,7 @@ namespace Server.Spells.Bushido
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(0.25);
 
-    public override double RequiredSkill => 60.0;
+    public override int RequiredSkill => 600;
     public override int RequiredMana => 10;
 
     public override bool CheckCast()

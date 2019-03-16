@@ -23,7 +23,7 @@ namespace Server.Spells.Necromancy
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.0);
 
-    public override double RequiredSkill => 30.0;
+    public override int RequiredSkill => 300;
     public override int RequiredMana => 17;
 
     public static Dictionary<Mobile, BaseCreature> Table{ get; } = new Dictionary<Mobile, BaseCreature>();

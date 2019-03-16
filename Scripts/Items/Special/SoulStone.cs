@@ -18,7 +18,7 @@ namespace Server.Items
     private DateTime m_NextUse; // TODO: unused, it's here not to break serialize/deserialize
 
     private SkillName m_Skill;
-    private double m_SkillValue;
+    private int m_SkillValue;
 
     [Constructible]
     public SoulStone(string account = null, int inactiveItemID = 0x2A93, int activeItemID = 0x2A94) :
@@ -91,24 +91,20 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double SkillValue
+    public int SkillValue
     {
       get => m_SkillValue;
       set
       {
         m_SkillValue = value;
-
-        if (!IsEmpty)
-          ItemID = m_ActiveItemID;
-        else
-          ItemID = m_InactiveItemID;
+        ItemID = !IsEmpty ? m_ActiveItemID : m_InactiveItemID;
 
         InvalidateProperties();
       }
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsEmpty => m_SkillValue <= 0.0;
+    public bool IsEmpty => m_SkillValue <= 0;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public SecureLevel Level{ get; set; }
@@ -119,7 +115,7 @@ namespace Server.Items
 
       if (!IsEmpty)
         list.Add(1070721, "#{0}\t{1:0.0}", AosSkillBonuses.GetLabel(Skill),
-          SkillValue); // Skill stored: ~1_skillname~ ~2_skillamount~
+          SkillValue / 10.0); // Skill stored: ~1_skillname~ ~2_skillamount~
 
       list.Add(1041602, "{0}", LastUserName ?? $"#{1074235}"); // Owner: ~1_val~
     }
@@ -139,8 +135,7 @@ namespace Server.Items
 
     protected virtual bool CheckUse(Mobile from)
     {
-      DateTime now = DateTime.UtcNow;
-
+      // DateTime now = DateTime.UtcNow;
       PlayerMobile pm = from as PlayerMobile;
 
       if (Deleted || !IsAccessibleTo(from)) return false;
@@ -260,7 +255,7 @@ namespace Server.Items
       writer.Write(m_NextUse); //TODO: delete it in a harmless way
 
       writer.WriteEncodedInt((int)m_Skill);
-      writer.Write(m_SkillValue);
+      writer.WriteEncodedInt(m_SkillValue);
     }
 
     public override void Deserialize(GenericReader reader)
@@ -294,7 +289,7 @@ namespace Server.Items
           m_NextUse = reader.ReadDateTime(); //TODO: delete it in a harmless way
 
           m_Skill = (SkillName)reader.ReadEncodedInt();
-          m_SkillValue = reader.ReadDouble();
+          m_SkillValue = reader.ReadEncodedInt();
           break;
         }
       }
@@ -333,7 +328,7 @@ namespace Server.Items
         {
           Skill skill = from.Skills[i];
 
-          if (skill.Base > 0.0)
+          if (skill.BaseFixedPoint > 0)
           {
             int p = n % 30;
 
@@ -379,7 +374,7 @@ namespace Server.Items
           return;
 
         Skill skill = from.Skills[iSkill];
-        if (skill.Base <= 0.0)
+        if (skill.BaseFixedPoint <= 0)
           return;
 
         if (!m_Stone.CheckUse(from))
@@ -421,7 +416,7 @@ namespace Server.Items
          * skill points from a Soulstone, the Soulstone WILL REPLACE any existing skill points
          * already on your character!<BR><BR>
          *
-         * This is an Account Bound Soulstone.  Skill pointsstored inside can be retrieved by any
+         * This is an Account Bound Soulstone.  Skill points stored inside can be retrieved by any
          * character on the same account as the character who placed them into the stone.
          */
         AddHtmlLocalized(10, 42, 500, 110, 1061067, 0x7FFF, false, true);
@@ -430,10 +425,10 @@ namespace Server.Items
         AddHtmlLocalized(210, 200, 390, 20, AosSkillBonuses.GetLabel(skill.SkillName), 0x7FFF);
 
         AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF); // Current Value:
-        AddLabel(210, 220, 0x481, skill.Base.ToString("0.0"));
+        AddLabel(210, 220, 0x481, skill.Base.ToString("F1"));
 
         AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF); // Current Cap:
-        AddLabel(210, 240, 0x481, skill.Cap.ToString("0.0"));
+        AddLabel(210, 240, 0x481, skill.Cap.ToString("F1"));
 
         AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF); // New Value:
         AddLabel(210, 260, 0x481, "0.0");
@@ -464,7 +459,7 @@ namespace Server.Items
           return;
         }
 
-        if (m_Skill.Base <= 0.0)
+        if (m_Skill.BaseFixedPoint <= 0)
           return;
 
         if (m_Skill.Lock != SkillLock.Down)
@@ -483,9 +478,9 @@ namespace Server.Items
         }
 
         m_Stone.Skill = m_Skill.SkillName;
-        m_Stone.SkillValue = m_Skill.Base;
+        m_Stone.SkillValue = m_Skill.BaseFixedPoint;
 
-        m_Skill.Base = 0.0;
+        m_Skill.BaseFixedPoint = 0;
 
         from.SendLocalizedMessage(
           1070712); // You have successfully transferred your skill points into the Soulstone.
@@ -545,13 +540,13 @@ namespace Server.Items
         Skill fromSkill = from.Skills[stone.Skill];
 
         AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF); // Current Value:
-        AddLabel(210, 220, 0x481, fromSkill.Base.ToString("0.0"));
+        AddLabel(210, 220, 0x481, fromSkill.Base.ToString("F1"));
 
         AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF); // Current Cap:
-        AddLabel(210, 240, 0x481, fromSkill.Cap.ToString("0.0"));
+        AddLabel(210, 240, 0x481, fromSkill.Cap.ToString("F1"));
 
         AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF); // New Value:
-        AddLabel(210, 260, 0x481, stone.SkillValue.ToString("0.0"));
+        AddLabel(210, 260, 0x481, (stone.SkillValue / 10.0).ToString("F1"));
 
         AddButton(10, 360, 0xFA5, 0xFA6, 2);
         AddHtmlLocalized(45, 362, 450, 20, 1070719, 0x7FFF); // Activate the stone.  I am ready to retrieve the skill points from it.
@@ -579,15 +574,15 @@ namespace Server.Items
           return;
         }
 
-        SkillName skill = m_Stone.Skill;
-        double skillValue = m_Stone.SkillValue;
+        // SkillName skill = m_Stone.Skill;
+        int skillValue = m_Stone.SkillValue;
         Skill fromSkill = from.Skills[m_Stone.Skill];
 
         /* If we have, say, 88.4 in our skill and the stone holds 100, we need
          * 11.6 free points. Also, if we're below our skillcap by, say, 8.2 points,
          * we only need 11.6 - 8.2 = 3.4 points.
          */
-        int requiredAmount = (int)(skillValue * 10) - fromSkill.BaseFixedPoint - (from.SkillsCap - from.SkillsTotal);
+        int requiredAmount = skillValue - fromSkill.BaseFixedPoint - (from.SkillsCap - from.SkillsTotal);
 
         bool cannotAbsorb = false;
 
@@ -627,7 +622,7 @@ namespace Server.Items
           return;
         }
 
-        if (skillValue > fromSkill.Cap)
+        if (skillValue > fromSkill.CapFixedPoint)
         {
           // <CENTER>Unable to Absorb Selected Skill from Soulstone</CENTER>
 
@@ -641,7 +636,7 @@ namespace Server.Items
           return;
         }
 
-        if (fromSkill.Base >= skillValue)
+        if (fromSkill.BaseFixedPoint >= skillValue)
         {
           // <CENTER>Unable to Absorb Selected Skill from Soulstone</CENTER>
 
@@ -681,7 +676,7 @@ namespace Server.Items
             if (requiredAmount >= from.Skills[i].BaseFixedPoint)
             {
               requiredAmount -= from.Skills[i].BaseFixedPoint;
-              from.Skills[i].Base = 0.0;
+              from.Skills[i].BaseFixedPoint = 0;
             }
             else
             {
@@ -690,8 +685,8 @@ namespace Server.Items
             }
           }
 
-        fromSkill.Base = skillValue;
-        m_Stone.SkillValue = 0.0;
+        fromSkill.BaseFixedPoint = skillValue;
+        m_Stone.SkillValue = 0;
 
         from.SendLocalizedMessage(1070713); // You have successfully absorbed the Soulstone's skill points.
 
@@ -757,7 +752,7 @@ namespace Server.Items
         if (!m_Stone.CheckUse(from))
           return;
 
-        m_Stone.SkillValue = 0.0;
+        m_Stone.SkillValue = 0;
         from.SendLocalizedMessage(1070726); // You have successfully deleted the Soulstone's skill points.
       }
     }
@@ -889,12 +884,11 @@ namespace Server.Items
     {
       bool canUse = base.CheckUse(from);
 
-      if (canUse)
-        if (m_UsesRemaining <= 0)
-        {
-          from.SendLocalizedMessage(1070975); // That soulstone fragment has no more uses.
-          return false;
-        }
+      if (canUse && m_UsesRemaining <= 0)
+      {
+        from.SendLocalizedMessage(1070975); // That soulstone fragment has no more uses.
+        return false;
+      }
 
       return canUse;
     }

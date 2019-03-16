@@ -5,7 +5,7 @@ namespace Server.Spells.Bushido
   public class LightningStrike : SamuraiMove
   {
     public override int BaseMana => 5;
-    public override double RequiredSkill => 50.0;
+    public override int RequiredSkill => 500;
 
     public override TextDefinition AbilityMessage => new TextDefinition(1063167); // You prepare to strike quickly.
 

@@ -574,14 +574,14 @@ namespace Server.Items
         AddRightCylinderButton(451, 230, PuzzleChestCylinder.DarkBlue, 16);
         AddRightCylinderButton(451, 280, PuzzleChestCylinder.Yellow, 17);
 
-        double lockpicking = from.Skills.Lockpicking.Base;
-        if (lockpicking >= 60.0)
+        int lockpicking = from.Skills.Lockpicking.BaseFixedPoint;
+        if (lockpicking >= 600)
         {
           AddHtmlLocalized(160, 125, 230, 24, 1018308); // Lockpicking hint:
 
           AddBackground(159, 150, 230, 95, 0x13EC);
 
-          if (lockpicking >= 80.0)
+          if (lockpicking >= 800)
           {
             AddHtmlLocalized(165, 157, 200, 40, 1018312); // In the first slot:
             AddCylinder(350, 165, chest.Solution.First);
@@ -589,10 +589,10 @@ namespace Server.Items
             AddHtmlLocalized(165, 197, 200, 40, 1018313); // Used in unknown slot:
             AddCylinder(350, 200, chest.FirstHint);
 
-            if (lockpicking >= 90.0)
+            if (lockpicking >= 900)
               AddCylinder(350, 212, chest.SecondHint);
 
-            if (lockpicking >= 100.0)
+            if (lockpicking >= 1000)
               AddCylinder(350, 224, chest.ThirdHint);
           }
           else
@@ -600,7 +600,7 @@ namespace Server.Items
             AddHtmlLocalized(165, 157, 200, 40, 1018313); // Used in unknown slot:
             AddCylinder(350, 160, chest.FirstHint);
 
-            if (lockpicking >= 70.0)
+            if (lockpicking >= 700)
               AddCylinder(350, 172, chest.SecondHint);
           }
         }

@@ -538,14 +538,14 @@ namespace Server.Commands
             int indexOf = m_Params[i].IndexOf('=');
 
             if (indexOf >= 0)
-              st.Required = Utility.ToInt32(m_Params[i].Substring(++indexOf)) * 0.1;
+              st.Required = Utility.ToInt32(m_Params[i].Substring(++indexOf));
           }
           else if (m_Params[i].StartsWith("Required"))
           {
             int indexOf = m_Params[i].IndexOf('=');
 
             if (indexOf >= 0)
-              st.Required = Utility.ToDouble(m_Params[i].Substring(++indexOf));
+              st.Required = (int)(Utility.ToDouble(m_Params[i].Substring(++indexOf)) * 10);
           }
           else if (m_Params[i].StartsWith("MessageString"))
           {

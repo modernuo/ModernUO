@@ -546,7 +546,7 @@ namespace Server.Factions
         m_Guard.Warmode = false;
       }
 
-      if ((IsDamaged || IsPoisoned) && m_Guard.Skills.Healing.Base > 20.0)
+      if ((IsDamaged || IsPoisoned) && m_Guard.Skills.Healing.BaseFixedPoint > 200)
       {
         TimeSpan ts = TimeUntilBandage;
 

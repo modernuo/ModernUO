@@ -21,7 +21,7 @@ namespace Server.Spells.Chivalry
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
 
-    public override double RequiredSkill => 0.0;
+    public override int RequiredSkill => 0;
     public override int RequiredMana => 10;
     public override int RequiredTithing => 10;
     public override int MantraNumber => 1060719; // Obsu Vulni

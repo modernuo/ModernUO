@@ -20,7 +20,7 @@ namespace Server.Spells.Chivalry
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.5);
 
-    public override double RequiredSkill => 65.0;
+    public override int RequiredSkill => 650;
     public override int RequiredMana => 20;
     public override int RequiredTithing => 30;
     public override int MantraNumber => 1060725; // Dium Prostra

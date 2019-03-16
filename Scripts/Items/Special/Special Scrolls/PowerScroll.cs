@@ -68,11 +68,11 @@ namespace Server.Items
     private static List<SkillName> _Skills = new List<SkillName>();
 
     [Constructible]
-    public PowerScroll(SkillName skill = SkillName.Alchemy, double value = 0.0) : base(skill, value)
+    public PowerScroll(SkillName skill = SkillName.Alchemy, int value = 0) : base(skill, value)
     {
       Hue = 0x481;
 
-      if (Value == 105.0 || skill == SkillName.Blacksmith || skill == SkillName.Tailoring)
+      if (Value == 1050 || skill == SkillName.Blacksmith || skill == SkillName.Tailoring)
         LootType = LootType.Regular;
     }
 
@@ -90,9 +90,9 @@ namespace Server.Items
     {
       get
       {
-        double level = (Value - 105.0) / 5.0;
+        double level = (Value - 1050) / 5.0;
 
-        if (level >= 0.0 && level <= 3.0 && Value % 5.0 == 0.0)
+        if (level >= 0.0 && level <= 3.0 && Value % 50 == 00)
           return 1049635 + (int)level; /* Wonderous Scroll (105 Skill): OR
 													* Exalted Scroll (110 Skill): OR
 													* Mythical Scroll (115 Skill): OR
@@ -151,9 +151,9 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      double level = (Value - 105.0) / 5.0;
+      double level = (Value - 1050) / 5.0;
 
-      if (level >= 0.0 && level <= 3.0 && Value % 5.0 == 0.0)
+      if (level >= 0.0 && level <= 3.0 && Value % 50 == 0)
         list.Add(1049639 + (int)level, GetNameLocalized()); /* a wonderous scroll of ~1_type~ (105 Skill) OR
 																		* an exalted scroll of ~1_type~ (110 Skill) OR
 																		* a mythical scroll of ~1_type~ (115 Skill) OR
@@ -164,9 +164,9 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      double level = (Value - 105.0) / 5.0;
+      double level = (Value - 1050) / 5.0;
 
-      if (level >= 0.0 && level <= 3.0 && Value % 5.0 == 0.0)
+      if (level >= 0.0 && level <= 3.0 && Value % 50 == 0)
         LabelTo(from, 1049639 + (int)level, GetNameLocalized());
       else
         LabelTo(from, "a power scroll of {0} ({1} Skill)", GetName(), Value);
@@ -199,7 +199,7 @@ namespace Server.Items
       from.SendLocalizedMessage(1049513,
         GetNameLocalized()); // You feel a surge of magic as the scroll enhances your ~1_type~!
 
-      from.Skills[Skill].Cap = Value;
+      from.Skills[Skill].CapFixedPoint = Value;
 
       Effects.SendLocationParticles(EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration), 0, 0, 0, 0,
         0, 5060, 0);
@@ -230,7 +230,7 @@ namespace Server.Items
 
       int version = InheritsItem ? 0 : reader.ReadInt(); // Required for SpecialScroll insertion
 
-      if (Value == 105.0 || Skill == SkillName.Blacksmith || Skill == SkillName.Tailoring)
+      if (Value == 1050 || Skill == SkillName.Blacksmith || Skill == SkillName.Tailoring)
       {
         LootType = LootType.Regular;
       }

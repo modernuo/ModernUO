@@ -16,7 +16,7 @@ namespace Server.Spells
     public virtual int BaseMana => 0;
 
     public virtual SkillName MoveSkill => SkillName.Bushido;
-    public virtual double RequiredSkill => 0.0;
+    public virtual int RequiredSkill => 0;
 
     public virtual TextDefinition AbilityMessage => 0;
 

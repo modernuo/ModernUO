@@ -13,7 +13,7 @@ namespace Server.Spells.Spellweaving
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(3.5);
 
-    public override double RequiredSkill => 80.0;
+    public override int RequiredSkill => 800;
     public override int RequiredMana => 50;
 
     public override void OnCast()

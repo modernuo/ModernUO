@@ -5,7 +5,7 @@ namespace Server.Items
 {
   public abstract class SpecialScroll : Item
   {
-    public SpecialScroll(SkillName skill, double value) : base(0x14F0)
+    public SpecialScroll(SkillName skill, int value) : base(0x14F0)
     {
       LootType = LootType.Cursed;
       Weight = 1.0;
@@ -34,7 +34,7 @@ namespace Server.Items
     public SkillName Skill{ get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double Value{ get; set; }
+    public int Value{ get; set; }
 
     public virtual string GetNameLocalized()
     {
@@ -85,7 +85,7 @@ namespace Server.Items
       writer.Write(1); // version
 
       writer.Write((int)Skill);
-      writer.Write(Value);
+      writer.WriteEncodedInt(Value);
     }
 
     public override void Deserialize(GenericReader reader)
@@ -99,7 +99,7 @@ namespace Server.Items
         case 1:
         {
           Skill = (SkillName)reader.ReadInt();
-          Value = reader.ReadDouble();
+          Value = reader.ReadEncodedInt();
           break;
         }
         case 0:
@@ -112,11 +112,11 @@ namespace Server.Items
             Skill = SkillName.Alchemy;
 
           if (this is ScrollofAlacrity)
-            Value = 0.0;
+            Value = 0;
           else if (this is StatCapScroll)
             Value = reader.ReadInt();
           else
-            Value = reader.ReadDouble();
+            Value = (int)(reader.ReadDouble() * 10);
 
           break;
         }

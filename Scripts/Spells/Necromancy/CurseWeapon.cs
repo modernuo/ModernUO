@@ -21,7 +21,7 @@ namespace Server.Spells.Necromancy
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(0.75);
 
-    public override double RequiredSkill => 0.0;
+    public override int RequiredSkill => 0;
     public override int RequiredMana => 7;
 
     public override void OnCast()

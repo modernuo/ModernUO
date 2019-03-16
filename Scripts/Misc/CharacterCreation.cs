@@ -534,7 +534,7 @@ namespace Server.Misc
       Bag bag = new Bag();
 
       for (int i = 0; i < PowerScroll.Skills.Count; ++i)
-        bag.DropItem(new PowerScroll(PowerScroll.Skills[i], 120.0));
+        bag.DropItem(new PowerScroll(PowerScroll.Skills[i], 1200));
 
       bag.DropItem(new StatCapScroll(250));
 

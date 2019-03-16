@@ -22,7 +22,7 @@ namespace Server.Spells.Spellweaving
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(4.0);
 
-    public override double RequiredSkill => 38.0;
+    public override int RequiredSkill => 380;
     public override int RequiredMana => 70;
 
     public double HitsScalar => (Caster.Skills.Spellweaving.Value / 2.4 + FocusLevel) / 100;

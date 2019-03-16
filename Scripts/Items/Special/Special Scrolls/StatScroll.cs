@@ -24,7 +24,7 @@ namespace Server.Items
     {
       get
       {
-        int level = ((int)Value - 230) / 5;
+        int level = (Value - 230) / 5;
 
         if (level >= 0 && level <= 4 && Value % 5 == 0)
           return 1049458 + level; /* Wonderous Scroll (+5 Maximum Stats): OR
@@ -38,13 +38,13 @@ namespace Server.Items
     }
 
     public override string DefaultTitle =>
-      $"<basefont color=#FFFFFF>Power Scroll ({((int)Value - 225 >= 0 ? "+" : "")}{(int)Value - 225} Maximum Stats):</basefont>";
+      $"<basefont color=#FFFFFF>Power Scroll ({(Value - 225 >= 0 ? "+" : "")}{Value - 225} Maximum Stats):</basefont>";
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      int level = ((int)Value - 230) / 5;
+      int level = (Value - 230) / 5;
 
-      if (level >= 0 && level <= 4 && (int)Value % 5 == 0)
+      if (level >= 0 && level <= 4 && Value % 5 == 0)
         list.Add(1049463 + level, "#1049476"); /* a wonderous scroll of ~1_type~ (+5 Maximum Stats) OR
 															* an exalted scroll of ~1_type~ (+10 Maximum Stats) OR
 															* a mythical scroll of ~1_type~ (+15 Maximum Stats) OR
@@ -56,9 +56,9 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      int level = ((int)Value - 230) / 5;
+      int level = (Value - 230) / 5;
 
-      if (level >= 0 && level <= 4 && (int)Value % 5 == 0)
+      if (level >= 0 && level <= 4 && Value % 5 == 0)
         LabelTo(from, 1049463 + level, "#1049476");
       else
         LabelTo(from, "a scroll of power ({0}{1} Maximum Stats)", Value - 225 >= 0 ? "+" : "", Value - 225);
@@ -69,7 +69,7 @@ namespace Server.Items
       if (!base.CanUse(from))
         return false;
 
-      int newValue = (int)Value;
+      int newValue = Value;
 
       if (from is PlayerMobile mobile && mobile.HasStatReward)
         newValue += 5;
@@ -91,9 +91,9 @@ namespace Server.Items
       from.SendLocalizedMessage(1049512); // You feel a surge of magic as the scroll enhances your powers!
 
       if (from is PlayerMobile mobile && mobile.HasStatReward)
-        mobile.StatCap = (int)Value + 5;
+        mobile.StatCap = Value + 5;
       else
-        from.StatCap = (int)Value;
+        from.StatCap = Value;
 
       Effects.SendLocationParticles(EffectItem.Create(from.Location, from.Map, EffectItem.DefaultDuration), 0, 0, 0, 0,
         0, 5060, 0);

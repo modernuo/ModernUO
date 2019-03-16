@@ -20,21 +20,18 @@ namespace Server.Items
     private Mobile m_Crafter;
 
     private RepairSkillType m_Skill;
-    private double m_SkillLevel;
+    private int m_SkillLevel;
 
     [Constructible]
-    public RepairDeed(RepairSkillType skill, double level, bool normalizeLevel) :
+    public RepairDeed(RepairSkillType skill, int level, bool normalizeLevel) :
       this(skill, level, null, normalizeLevel)
     {
     }
 
-    public RepairDeed(RepairSkillType skill = RepairSkillType.Smithing, double level = 100.0,
+    public RepairDeed(RepairSkillType skill = RepairSkillType.Smithing, int level = 1000,
       Mobile crafter = null, bool normalizeLevel = true) : base(0x14F0)
     {
-      if (normalizeLevel)
-        SkillLevel = (int)(level / 10) * 10;
-      else
-        SkillLevel = level;
+      SkillLevel = level;
 
       m_Skill = skill;
       m_Crafter = crafter;
@@ -60,12 +57,12 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double SkillLevel
+    public int SkillLevel
     {
       get => m_SkillLevel;
       set
       {
-        m_SkillLevel = Math.Max(Math.Min(value, 120.0), 0);
+        m_SkillLevel = Math.Max(Math.Min(value, 1200), 0);
         InvalidateProperties();
       }
     }
@@ -169,7 +166,7 @@ namespace Server.Items
       writer.Write(0); // version
 
       writer.Write((int)m_Skill);
-      writer.Write(m_SkillLevel);
+      writer.WriteEncodedInt(m_SkillLevel);
       writer.Write(m_Crafter);
     }
 
@@ -184,7 +181,7 @@ namespace Server.Items
         case 0:
         {
           m_Skill = (RepairSkillType)reader.ReadInt();
-          m_SkillLevel = reader.ReadDouble();
+          m_SkillLevel = reader.ReadEncodedInt();
           m_Crafter = reader.ReadMobile();
 
           break;

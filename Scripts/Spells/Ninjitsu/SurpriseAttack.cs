@@ -9,7 +9,7 @@ namespace Server.Spells.Ninjitsu
     private static Dictionary<Mobile, SurpriseAttackInfo> m_Table = new Dictionary<Mobile, SurpriseAttackInfo>();
 
     public override int BaseMana => 20;
-    public override double RequiredSkill => Core.ML ? 60.0 : 30.0;
+    public override int RequiredSkill => Core.ML ? 600 : 300;
 
     public override TextDefinition AbilityMessage => new TextDefinition(1063128); // You prepare to surprise your prey.
 

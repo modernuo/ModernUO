@@ -10,8 +10,8 @@ namespace Server.Items
     [Constructible]
     public TrainingDummy(int itemID = 0x1074) : base(itemID)
     {
-      MinSkill = -25.0;
-      MaxSkill = +25.0;
+      MinSkill = -250;
+      MaxSkill = +250;
     }
 
     public TrainingDummy(Serial serial) : base(serial)
@@ -19,10 +19,10 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double MinSkill{ get; set; }
+    public int MinSkill{ get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double MaxSkill{ get; set; }
+    public int MaxSkill{ get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Swinging => m_Timer != null;
@@ -77,7 +77,7 @@ namespace Server.Items
         SendLocalizedMessageTo(from, 501816); // You are too far away to do that.
       else if (Swinging)
         SendLocalizedMessageTo(from, 501815); // You have to wait until it stops swinging.
-      else if (from.Skills[weapon.Skill].Base >= MaxSkill)
+      else if (from.Skills[weapon.Skill].BaseFixedPoint >= MaxSkill)
         SendLocalizedMessageTo(from,
           501828); // Your skill cannot improve any further by simply practicing with a dummy.
       else if (from.Mounted)
@@ -106,13 +106,13 @@ namespace Server.Items
       {
         case 0:
         {
-          MinSkill = reader.ReadDouble();
-          MaxSkill = reader.ReadDouble();
+          MinSkill = reader.ReadEncodedInt();
+          MaxSkill = reader.ReadEncodedInt();
 
-          if (MinSkill == 0.0 && MaxSkill == 30.0)
+          if (MinSkill == 0 && MaxSkill == 300)
           {
-            MinSkill = -25.0;
-            MaxSkill = +25.0;
+            MinSkill = -250;
+            MaxSkill = +250;
           }
 
           break;

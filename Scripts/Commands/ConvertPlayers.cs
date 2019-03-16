@@ -38,7 +38,7 @@ namespace Server.Commands
 
           for (int i = 0; i < m.Skills.Length; i++)
           {
-            pm.Skills[i].Base = m.Skills[i].Base;
+            pm.Skills[i].BaseFixedPoint = m.Skills[i].BaseFixedPoint;
             pm.Skills[i].SetLockNoRelay(m.Skills[i].Lock);
           }
 

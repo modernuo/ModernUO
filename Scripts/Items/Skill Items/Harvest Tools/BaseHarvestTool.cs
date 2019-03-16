@@ -211,7 +211,7 @@ namespace Server.Items
         m_Mobile = mobile;
         m_Value = value;
 
-        bool stoneMining = mobile.StoneMining && mobile.Skills.Mining.Base >= 100.0;
+        bool stoneMining = mobile.StoneMining && mobile.Skills.Mining.BaseFixedPoint >= 1000;
 
         if (mobile.ToggleMiningStone == value || value && !stoneMining)
           Flags |= CMEFlags.Disabled;
@@ -227,7 +227,7 @@ namespace Server.Items
           {
             m_Mobile.SendLocalizedMessage(1054023); // You are already set to mine both ore and stone!
           }
-          else if (!m_Mobile.StoneMining || m_Mobile.Skills.Mining.Base < 100.0)
+          else if (!m_Mobile.StoneMining || m_Mobile.Skills.Mining.BaseFixedPoint < 1000)
           {
             m_Mobile.SendLocalizedMessage(
               1054024); // You have not learned how to mine stone or you do not have enough skill!

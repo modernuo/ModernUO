@@ -136,7 +136,7 @@ namespace Server.Engines.Harvest
       HarvestResource fallback = vein.FallbackResource;
       HarvestResource resource = MutateResource(from, tool, def, map, loc, vein, primary, fallback);
 
-      double skillBase = from.Skills[def.Skill].Base;
+      int skillBase = from.Skills[def.Skill].BaseFixedPoint;
       // double skillValue = from.Skills[def.Skill].Value;
 
       Type type = null;

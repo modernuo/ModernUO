@@ -166,7 +166,7 @@ namespace Server.Engines.Harvest
         return base.GetResourceType(from, tool, def, map, loc, resource);
 
 
-      if (from.Skills.Mining.Base >= 100.0 && from is PlayerMobile pm && pm.StoneMining && pm.ToggleMiningStone
+      if (from.Skills.Mining.BaseFixedPoint >= 1000 && from is PlayerMobile pm && pm.StoneMining && pm.ToggleMiningStone
           && 0.1 > Utility.RandomDouble())
         return resource.Types[1];
 
@@ -207,7 +207,7 @@ namespace Server.Engines.Harvest
       if (!base.CheckHarvest(from, tool, def, toHarvest))
         return false;
 
-      if (def == Sand && !(from is PlayerMobile mobile && mobile.Skills.Mining.Base >= 100.0 &&
+      if (def == Sand && !(from is PlayerMobile mobile && mobile.Skills.Mining.BaseFixedPoint >= 1000 &&
                            mobile.SandMining))
       {
         OnBadHarvestTarget(from, tool, toHarvest);

@@ -318,7 +318,6 @@ namespace Server.Items
       else if (this is ArmorPierce)
         option = "Armor Pierce";
 
-
       if (option != null && !DuelContext.AllowSpecialAbility(from, option, true))
         return false;
 

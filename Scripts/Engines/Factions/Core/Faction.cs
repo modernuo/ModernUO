@@ -1202,11 +1202,11 @@ namespace Server.Factions
       for (int i = 0; i < mob.Skills.Length; ++i)
       {
         Skill sk = mob.Skills[i];
-        double baseValue = sk.Base;
+        int baseValue = sk.BaseFixedPoint;
 
         if (baseValue > 0)
         {
-          SkillMod mod = new DefaultSkillMod(sk.SkillName, true, -(baseValue * SkillLossFactor));
+          SkillMod mod = new DefaultSkillMod(sk.SkillName, true, (int)-(baseValue * SkillLossFactor));
 
           mods.Add(mod);
           mob.AddSkillMod(mod);

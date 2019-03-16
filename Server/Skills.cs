@@ -135,10 +135,7 @@ namespace Server
             if ((version & 0x1) != 0)
               m_Base = reader.ReadUShort();
 
-            if ((version & 0x2) != 0)
-              m_Cap = reader.ReadUShort();
-            else
-              m_Cap = 1000;
+            m_Cap = (version & 0x2) != 0 ? reader.ReadUShort() : (ushort)1000;
 
             if ((version & 0x4) != 0)
               Lock = (SkillLock)reader.ReadByte();
@@ -199,10 +196,7 @@ namespace Server
           m_Base = sv;
 
           Owner.OnSkillChange(this);
-
-          Mobile m = Owner.Owner;
-
-          m?.OnSkillChange(SkillName, (double)oldBase / 10);
+          Owner.Owner?.OnSkillChange(SkillName, (double)oldBase / 10);
         }
       }
     }
@@ -271,7 +265,8 @@ namespace Server
         double baseValue = Base;
         double inv = 100.0 - baseValue;
 
-        if (inv < 0.0) inv = 0.0;
+        if (inv < 0.0)
+          inv = 0.0;
 
         inv /= 100.0;
 

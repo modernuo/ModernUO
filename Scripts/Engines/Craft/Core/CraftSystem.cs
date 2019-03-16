@@ -295,19 +295,19 @@ namespace Server.Engines.Craft
       CraftSubRes.Init = true;
     }
 
-    public void AddSubRes(Type type, int name, double reqSkill, object message)
+    public void AddSubRes(Type type, int name, int reqSkill, object message)
     {
       CraftSubRes craftSubRes = new CraftSubRes(type, name, reqSkill, message);
       CraftSubRes.Add(craftSubRes);
     }
 
-    public void AddSubRes(Type type, int name, double reqSkill, int genericName, object message)
+    public void AddSubRes(Type type, int name, int reqSkill, int genericName, object message)
     {
       CraftSubRes craftSubRes = new CraftSubRes(type, name, reqSkill, genericName, message);
       CraftSubRes.Add(craftSubRes);
     }
 
-    public void AddSubRes(Type type, string name, double reqSkill, object message)
+    public void AddSubRes(Type type, string name, int reqSkill, object message)
     {
       CraftSubRes craftSubRes = new CraftSubRes(type, name, reqSkill, message);
       CraftSubRes.Add(craftSubRes);
@@ -328,19 +328,19 @@ namespace Server.Engines.Craft
       CraftSubRes2.Init = true;
     }
 
-    public void AddSubRes2(Type type, int name, double reqSkill, object message)
+    public void AddSubRes2(Type type, int name, int reqSkill, object message)
     {
       CraftSubRes craftSubRes = new CraftSubRes(type, name, reqSkill, message);
       CraftSubRes2.Add(craftSubRes);
     }
 
-    public void AddSubRes2(Type type, int name, double reqSkill, int genericName, object message)
+    public void AddSubRes2(Type type, int name, int reqSkill, int genericName, object message)
     {
       CraftSubRes craftSubRes = new CraftSubRes(type, name, reqSkill, genericName, message);
       CraftSubRes2.Add(craftSubRes);
     }
 
-    public void AddSubRes2(Type type, string name, double reqSkill, object message)
+    public void AddSubRes2(Type type, string name, int reqSkill, object message)
     {
       CraftSubRes craftSubRes = new CraftSubRes(type, name, reqSkill, message);
       CraftSubRes2.Add(craftSubRes);

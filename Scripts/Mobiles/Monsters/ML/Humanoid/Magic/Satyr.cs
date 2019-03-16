@@ -124,7 +124,7 @@ namespace Server.Mobiles
         {
           Skill s = target.Skills[i];
 
-          target.AddSkillMod(new TimedSkillMod(s.SkillName, true, s.Base * -0.28, delay));
+          target.AddSkillMod(new TimedSkillMod(s.SkillName, true, (int)(s.BaseFixedPoint * -0.28), delay));
         }
 
         int count = (int)Math.Round(delay.TotalSeconds / 1.25);

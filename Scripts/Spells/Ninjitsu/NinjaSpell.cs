@@ -8,7 +8,7 @@ namespace Server.Spells.Ninjitsu
     {
     }
 
-    public abstract double RequiredSkill{ get; }
+    public abstract int RequiredSkill{ get; }
     public abstract int RequiredMana{ get; }
 
     public override SkillName CastSkill => SkillName.Ninjitsu;

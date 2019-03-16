@@ -474,7 +474,7 @@ namespace Server.Engines.Craft
 
           CraftSubRes subResource = resCol.SearchFor(baseType);
 
-          if (subResource != null && from.Skills[craftSystem.MainSkill].Base < subResource.RequiredSkill)
+          if (subResource != null && from.Skills[craftSystem.MainSkill].BaseFixedPoint < subResource.RequiredSkill)
           {
             message = subResource.Message;
             return false;
@@ -1140,7 +1140,7 @@ namespace Server.Engines.Craft
 
           bool makersMark = false;
 
-          if (quality == 2 && m_From.Skills[m_CraftSystem.MainSkill].Base >= 100.0)
+          if (quality == 2 && m_From.Skills[m_CraftSystem.MainSkill].BaseFixedPoint >= 1000)
             makersMark = m_CraftItem.IsMarkable(m_CraftItem.ItemType);
 
           if (makersMark && context.MarkOption == CraftMarkOption.PromptForMark)

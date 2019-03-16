@@ -1021,8 +1021,8 @@ namespace Server
     {
       for (int i = 0; i < 5; ++i)
       {
-        if (GetValues(i, out SkillName skill, out double bonus))
-          list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus);
+        if (GetValues(i, out SkillName skill, out int bonus))
+          list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus / 10.0);
       }
     }
 
@@ -1043,7 +1043,7 @@ namespace Server
 
       for (int i = 0; i < 5; ++i)
       {
-        if (!GetValues(i, out SkillName skill, out double bonus))
+        if (!GetValues(i, out SkillName skill, out int bonus))
           continue;
 
         if (m_Mods == null)
@@ -1073,11 +1073,11 @@ namespace Server
       m_Mods = null;
     }
 
-    public bool GetValues(int index, out SkillName skill, out double bonus)
+    public bool GetValues(int index, out SkillName skill, out int bonus)
     {
       int v = GetValue(1 << index);
       int vSkill = 0;
-      int vBonus = 0;
+      bonus = 0;
 
       for (int i = 0; i < 16; ++i)
       {
@@ -1085,13 +1085,12 @@ namespace Server
         vSkill |= v & 1;
         v >>= 1;
 
-        vBonus <<= 1;
-        vBonus |= v & 1;
+        bonus <<= 1;
+        bonus |= v & 1;
         v >>= 1;
       }
 
       skill = (SkillName)vSkill;
-      bonus = (double)vBonus / 10;
 
       return bonus != 0;
     }
@@ -1118,7 +1117,7 @@ namespace Server
 
     public SkillName GetSkill(int index)
     {
-      GetValues(index, out SkillName skill, out double _);
+      GetValues(index, out SkillName skill, out _);
 
       return skill;
     }
@@ -1128,9 +1127,9 @@ namespace Server
       SetValues(index, skill, GetBonus(index));
     }
 
-    public double GetBonus(int index)
+    public int GetBonus(int index)
     {
-      GetValues(index, out SkillName _, out double bonus);
+      GetValues(index, out SkillName _, out int bonus);
 
       return bonus;
     }

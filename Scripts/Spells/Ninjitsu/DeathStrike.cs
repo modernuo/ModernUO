@@ -10,7 +10,7 @@ namespace Server.Spells.Ninjitsu
     private static Dictionary<Mobile, DeathStrikeInfo> m_Table = new Dictionary<Mobile, DeathStrikeInfo>();
 
     public override int BaseMana => 30;
-    public override double RequiredSkill => 85.0;
+    public override int RequiredSkill => 850;
 
     public override TextDefinition AbilityMessage =>
       new TextDefinition(1063091); // You prepare to hit your opponent with a Death Strike.

@@ -67,61 +67,58 @@ namespace Server.Engines.BulkOrders
       SmallBulkEntry[] entries;
       bool useMaterials = Utility.RandomBool();
 
-      double theirSkill = m.Skills.Tailoring.Base;
+      int theirSkill = m.Skills.Tailoring.BaseFixedPoint;
 
       // Ugly, but the easiest leather BOD is Leather Cap which requires at least 6.2 skill.
-      if (useMaterials && theirSkill >= 6.2)
-        entries = SmallBulkEntry.TailorLeather;
-      else
-        entries = SmallBulkEntry.TailorCloth;
+      entries = useMaterials && theirSkill >= 62 ? SmallBulkEntry.TailorLeather : SmallBulkEntry.TailorCloth;
 
       if (entries.Length > 0)
       {
         int amountMax;
 
-        if (theirSkill >= 70.1)
+        if (theirSkill >= 701)
           amountMax = Utility.RandomList(10, 15, 20, 20);
-        else if (theirSkill >= 50.1)
+        else if (theirSkill >= 501)
           amountMax = Utility.RandomList(10, 15, 15, 20);
         else
           amountMax = Utility.RandomList(10, 10, 15, 20);
 
         BulkMaterialType material = BulkMaterialType.None;
 
-        if (useMaterials && theirSkill >= 70.1)
+        if (useMaterials && theirSkill >= 701)
           for (int i = 0; i < 20; ++i)
           {
             BulkMaterialType check = GetRandomMaterial(BulkMaterialType.Spined, m_TailoringMaterialChances);
-            double skillReq = 0.0;
+            int skillReq = 0;
 
             switch (check)
             {
               case BulkMaterialType.DullCopper:
-                skillReq = 65.0;
+                skillReq = 650;
                 break;
               case BulkMaterialType.Bronze:
-                skillReq = 80.0;
+                skillReq = 800;
                 break;
               case BulkMaterialType.Gold:
-                skillReq = 85.0;
+                skillReq = 850;
                 break;
               case BulkMaterialType.Agapite:
-                skillReq = 90.0;
+                skillReq = 900;
                 break;
               case BulkMaterialType.Verite:
-                skillReq = 95.0;
+                skillReq = 950;
                 break;
               case BulkMaterialType.Valorite:
-                skillReq = 100.0;
+                skillReq = 1000;
                 break;
               case BulkMaterialType.Spined:
-                skillReq = 65.0;
+                skillReq = 650;
                 break;
               case BulkMaterialType.Horned:
-                skillReq = 80.0;
+                skillReq = 800;
                 break;
               case BulkMaterialType.Barbed:
-                skillReq = 99.0;
+                skillReq = 990;
                 break;
             }
 
@@ -132,13 +129,9 @@ namespace Server.Engines.BulkOrders
             }
           }
 
-        double excChance = 0.0;
-
-        if (theirSkill >= 70.1)
-          excChance = (theirSkill + 80.0) / 200.0;
+        double excChance = theirSkill >= 701 ? (theirSkill + 800) / 2000.0 : 0.0;
 
         bool reqExceptional = excChance > Utility.RandomDouble();
-
 
         CraftSystem system = DefTailoring.CraftSystem;
 

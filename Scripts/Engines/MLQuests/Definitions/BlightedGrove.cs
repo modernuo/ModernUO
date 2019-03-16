@@ -148,7 +148,7 @@ namespace Server.Engines.MLQuests.Definitions
         // The ability is awarded regardless of blacksmithy skill
         pm.AcquireRecipe(32);
 
-        if (pm.Skills.Blacksmith.Base < 45.0) // TODO: Verify threshold
+        if (pm.Skills.Blacksmith.BaseFixedPoint < 450) // TODO: Verify threshold
           pm.SendLocalizedMessage(
             1075005); // You observe carefully but you can't grasp the complexities of smithing a bone handled machete.
         else

@@ -57,12 +57,12 @@ namespace Server
   {
     private DateTime m_Expire;
 
-    public TimedSkillMod(SkillName skill, bool relative, double value, TimeSpan delay)
+    public TimedSkillMod(SkillName skill, bool relative, int value, TimeSpan delay)
       : this(skill, relative, value, DateTime.UtcNow + delay)
     {
     }
 
-    public TimedSkillMod(SkillName skill, bool relative, double value, DateTime expire)
+    public TimedSkillMod(SkillName skill, bool relative, int value, DateTime expire)
       : base(skill, relative, value)
     {
       m_Expire = expire;
@@ -79,7 +79,7 @@ namespace Server
     private Item m_Item;
     private Mobile m_Mobile;
 
-    public EquippedSkillMod(SkillName skill, bool relative, double value, Item item, Mobile mobile)
+    public EquippedSkillMod(SkillName skill, bool relative, int value, Item item, Mobile mobile)
       : base(skill, relative, value)
     {
       m_Item = item;
@@ -94,7 +94,7 @@ namespace Server
 
   public class DefaultSkillMod : SkillMod
   {
-    public DefaultSkillMod(SkillName skill, bool relative, double value)
+    public DefaultSkillMod(SkillName skill, bool relative, int value)
       : base(skill, relative, value)
     {
     }
@@ -111,9 +111,9 @@ namespace Server
     private Mobile m_Owner;
     private bool m_Relative;
     private SkillName m_Skill;
-    private double m_Value;
+    private int m_Value;
 
-    protected SkillMod(SkillName skill, bool relative, double value)
+    protected SkillMod(SkillName skill, bool relative, int value)
     {
       m_Skill = skill;
       m_Relative = relative;
@@ -126,9 +126,7 @@ namespace Server
       set
       {
         m_ObeyCap = value;
-
-        Skill sk = m_Owner?.Skills[m_Skill];
-        sk?.Update();
+        m_Owner?.Skills[m_Skill]?.Update();
       }
     }
 
@@ -160,8 +158,7 @@ namespace Server
 
           m_Skill = value;
 
-          Skill sk = m_Owner?.Skills[m_Skill];
-          sk?.Update();
+          m_Owner?.Skills[m_Skill]?.Update();
           oldUpdate?.Update();
         }
       }
@@ -175,9 +172,7 @@ namespace Server
         if (m_Relative != value)
         {
           m_Relative = value;
-
-          Skill sk = m_Owner?.Skills[m_Skill];
-          sk?.Update();
+          m_Owner?.Skills[m_Skill]?.Update();
         }
       }
     }
@@ -190,14 +185,12 @@ namespace Server
         if (m_Relative == value)
         {
           m_Relative = !value;
-
-          Skill sk = m_Owner?.Skills[m_Skill];
-          sk?.Update();
+          m_Owner?.Skills[m_Skill]?.Update();
         }
       }
     }
 
-    public double Value
+    public int Value
     {
       get => m_Value;
       set
@@ -205,9 +198,7 @@ namespace Server
         if (m_Value != value)
         {
           m_Value = value;
-
-          Skill sk = m_Owner?.Skills[m_Skill];
-          sk?.Update();
+          m_Owner?.Skills[m_Skill]?.Update();
         }
       }
     }

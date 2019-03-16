@@ -29,7 +29,7 @@ namespace Server.Engines.Craft
         return 1044038; // You have worn out your tool!
       if (!BaseTool.CheckTool(tool, from))
         return 1048146; // If you have a tool equipped, you must use that tool.
-      if (!(from is PlayerMobile mobile && mobile.Glassblowing && mobile.Skills.Alchemy.Base >= 100.0))
+      if (!(from is PlayerMobile mobile && mobile.Glassblowing && mobile.Skills.Alchemy.BaseFixedPoint >= 1000))
         return 1044634; // You havent learned glassblowing.
       if (!BaseTool.CheckAccessible(tool, from))
         return 1044263; // The tool must be on your person to use.

@@ -23,7 +23,7 @@ namespace Server.Spells.Ninjitsu
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(1.0);
 
-    public override double RequiredSkill => 50.0;
+    public override int RequiredSkill => 500;
     public override int RequiredMana => 15;
 
     public override bool BlockedByAnimalForm => false;

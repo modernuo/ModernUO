@@ -2100,12 +2100,6 @@ namespace Server.Network
       m_Stream.Write((ushort)skill.BaseFixedPoint);
       m_Stream.Write((byte)skill.Lock);
       m_Stream.Write((ushort)skill.CapFixedPoint);
-
-      /*m_Stream.Write( (short) skill.Info.SkillID );
-      m_Stream.Write( (short) (skill.Value * 10.0) );
-      m_Stream.Write( (short) (skill.Base * 10.0) );
-      m_Stream.Write( (byte) skill.Lock );
-      m_Stream.Write( (short) skill.CapFixedPoint );*/
     }
   }
 
@@ -2113,7 +2107,8 @@ namespace Server.Network
   {
     public LaunchBrowser(string url) : base(0xA5)
     {
-      if (url == null) url = "";
+      if (url == null)
+        url = "";
 
       EnsureCapacity(4 + url.Length);
 
@@ -2130,8 +2125,10 @@ namespace Server.Network
     public MessageLocalized(Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
       string args) : base(0xC1)
     {
-      if (name == null) name = "";
-      if (args == null) args = "";
+      if (name == null)
+        name = "";
+      if (args == null)
+        args = "";
 
       if (hue == 0)
         hue = 0x3B2;
@@ -2253,8 +2250,6 @@ namespace Server.Network
       m_Stream.Write((short)t.Offset.X);
       m_Stream.Write((short)t.Offset.Y);
       m_Stream.Write((short)t.Offset.Z);
-
-      // DWORD Hue
     }
   }
 

@@ -8,7 +8,7 @@ namespace Server.Items
   public class ScrollofAlacrity : SpecialScroll
   {
     [Constructible]
-    public ScrollofAlacrity(SkillName skill = SkillName.Alchemy) : base(skill, 0.0)
+    public ScrollofAlacrity(SkillName skill = SkillName.Alchemy) : base(skill, 0)
     {
       ItemID = 0x14EF;
       Hue = 0x4AB;
@@ -73,8 +73,8 @@ namespace Server.Items
       if (!(CanUse(from) && from is PlayerMobile pm))
         return;
 
-      double tskill = from.Skills[Skill].Base;
-      double tcap = from.Skills[Skill].Cap;
+      int tskill = from.Skills[Skill].BaseFixedPoint;
+      int tcap = from.Skills[Skill].CapFixedPoint;
 
       if (tskill >= tcap || from.Skills[Skill].Lock != SkillLock.Up)
       {

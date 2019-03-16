@@ -326,7 +326,7 @@ namespace Server.Items
   {
     private int m_MessageNumber;
     private string m_MessageString;
-    private double m_Required;
+    private int m_Required;
     private SkillName m_Skill;
 
     [Constructible]
@@ -351,7 +351,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double Required
+    public int Required
     {
       get => m_Required;
       set
@@ -390,24 +390,22 @@ namespace Server.Items
 
       Skill sk = m.Skills[m_Skill];
 
-      if (sk == null || sk.Base < m_Required)
+      if (sk?.BaseFixedPoint >= m_Required)
+        return true;
+
+      if (m.BeginAction(this))
       {
-        if (m.BeginAction(this))
-        {
-          if (m_MessageString != null)
-            m.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", null,
-              m_MessageString));
-          else if (m_MessageNumber != 0)
-            m.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber, null,
-              ""));
+        if (m_MessageString != null)
+          m.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", null,
+            m_MessageString));
+        else if (m_MessageNumber != 0)
+          m.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber, null,
+            ""));
 
-          Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
-        }
-
-        return false;
+        Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
       }
 
-      return true;
+      return false;
     }
 
     public override void GetProperties(ObjectPropertyList list)
@@ -437,7 +435,7 @@ namespace Server.Items
       writer.Write(0); // version
 
       writer.Write((int)m_Skill);
-      writer.Write(m_Required);
+      writer.WriteEncodedInt(m_Required);
       writer.Write(m_MessageString);
       writer.Write(m_MessageNumber);
     }
@@ -453,7 +451,7 @@ namespace Server.Items
         case 0:
         {
           m_Skill = (SkillName)reader.ReadInt();
-          m_Required = reader.ReadDouble();
+          m_Required = reader.ReadEncodedInt();
           m_MessageString = reader.ReadString();
           m_MessageNumber = reader.ReadInt();
 

@@ -34,8 +34,8 @@ namespace Server.Engines.Craft
         return 1044038; // You have worn out your tool!
       if (!BaseTool.CheckTool(tool, from))
         return 1048146; // If you have a tool equipped, you must use that tool.
-      if (!(from is PlayerMobile mobile && mobile.Masonry && mobile.Skills.Carpentry.Base >= 100.0))
-        return 1044633; // You havent learned stonecraft.
+      if (!(from is PlayerMobile mobile && mobile.Masonry && mobile.Skills.Carpentry.BaseFixedPoint >= 1000))
+        return 1044633; // You haven't learned stonecraft.
       if (!BaseTool.CheckAccessible(tool, from))
         return 1044263; // The tool must be on your person to use.
 
@@ -103,15 +103,15 @@ namespace Server.Engines.Craft
 
       SetSubRes(typeof(Granite), 1044525);
 
-      AddSubRes(typeof(Granite), 1044525, 00.0, 1044514, 1044526);
-      AddSubRes(typeof(DullCopperGranite), 1044023, 65.0, 1044514, 1044527);
-      AddSubRes(typeof(ShadowIronGranite), 1044024, 70.0, 1044514, 1044527);
-      AddSubRes(typeof(CopperGranite), 1044025, 75.0, 1044514, 1044527);
-      AddSubRes(typeof(BronzeGranite), 1044026, 80.0, 1044514, 1044527);
-      AddSubRes(typeof(GoldGranite), 1044027, 85.0, 1044514, 1044527);
-      AddSubRes(typeof(AgapiteGranite), 1044028, 90.0, 1044514, 1044527);
-      AddSubRes(typeof(VeriteGranite), 1044029, 95.0, 1044514, 1044527);
-      AddSubRes(typeof(ValoriteGranite), 1044030, 99.0, 1044514, 1044527);
+      AddSubRes(typeof(Granite), 1044525, 0, 1044514, 1044526);
+      AddSubRes(typeof(DullCopperGranite), 1044023, 650, 1044514, 1044527);
+      AddSubRes(typeof(ShadowIronGranite), 1044024, 700, 1044514, 1044527);
+      AddSubRes(typeof(CopperGranite), 1044025, 750, 1044514, 1044527);
+      AddSubRes(typeof(BronzeGranite), 1044026, 800, 1044514, 1044527);
+      AddSubRes(typeof(GoldGranite), 1044027, 850, 1044514, 1044527);
+      AddSubRes(typeof(AgapiteGranite), 1044028, 900, 1044514, 1044527);
+      AddSubRes(typeof(VeriteGranite), 1044029, 950, 1044514, 1044527);
+      AddSubRes(typeof(ValoriteGranite), 1044030, 990, 1044514, 1044527);
     }
 
     // Delay to synchronize the sound with the hit on the anvil

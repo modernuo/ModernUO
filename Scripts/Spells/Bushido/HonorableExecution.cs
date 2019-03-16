@@ -8,7 +8,7 @@ namespace Server.Spells.Bushido
     private static Dictionary<Mobile, HonorableExecutionInfo> m_Table = new Dictionary<Mobile, HonorableExecutionInfo>();
 
     public override int BaseMana => 0;
-    public override double RequiredSkill => 25.0;
+    public override int RequiredSkill => 250;
 
     public override TextDefinition AbilityMessage =>
       new TextDefinition(1063122); // You better kill your enemy with your next hit or you'll be rather sorry...
@@ -60,9 +60,9 @@ namespace Server.Spells.Bushido
           new ResistanceMod(ResistanceType.Energy, -40)
         };
 
-        double resSpells = attacker.Skills.MagicResist.Value;
+        int resSpells = attacker.Skills.MagicResist.Fixed;
 
-        if (resSpells > 0.0)
+        if (resSpells > 0)
           mods.Add(new DefaultSkillMod(SkillName.MagicResist, true, -resSpells));
 
         info = new HonorableExecutionInfo(attacker, mods);

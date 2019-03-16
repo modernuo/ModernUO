@@ -217,7 +217,7 @@ namespace Server.SkillHandlers
 
                 for (int i = 0; i < targ.Skills.Length; ++i)
                   if (targ.Skills[i].Value > 0)
-                    mods.Add(new DefaultSkillMod((SkillName)i, true, targ.Skills[i].Value * scalar));
+                    mods.Add(new DefaultSkillMod((SkillName)i, true, (int)(targ.Skills[i].Fixed * scalar)));
               }
               else
               {
@@ -233,7 +233,7 @@ namespace Server.SkillHandlers
 
                 for (int i = 0; i < targ.Skills.Length; ++i)
                   if (targ.Skills[i].Value > 0)
-                    mods.Add(new DefaultSkillMod((SkillName)i, true, targ.Skills[i].Value * scalar));
+                    mods.Add(new DefaultSkillMod((SkillName)i, true, (int)(targ.Skills[i].Fixed * scalar)));
               }
 
               DiscordanceInfo info = new DiscordanceInfo(from, targ, Math.Abs(effect), mods);

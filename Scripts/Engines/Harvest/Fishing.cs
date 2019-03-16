@@ -16,14 +16,14 @@ namespace Server.Engines.Harvest
 
     private static MutateEntry[] m_MutateTable =
     {
-      new MutateEntry(80.0, 80.0, 4080.0, true, typeof(SpecialFishingNet)),
-      new MutateEntry(80.0, 80.0, 4080.0, true, typeof(BigFish)),
-      new MutateEntry(90.0, 80.0, 4080.0, true, typeof(TreasureMap)),
-      new MutateEntry(100.0, 80.0, 4080.0, true, typeof(MessageInABottle)),
-      new MutateEntry(0.0, 125.0, -2375.0, false, typeof(PrizedFish), typeof(WondrousFish), typeof(TrulyRareFish),
+      new MutateEntry(800, 800, 40800, true, typeof(SpecialFishingNet)),
+      new MutateEntry(800, 800, 40800, true, typeof(BigFish)),
+      new MutateEntry(900, 800, 40800, true, typeof(TreasureMap)),
+      new MutateEntry(1000, 800, 40800, true, typeof(MessageInABottle)),
+      new MutateEntry(0, 1250, -23750, false, typeof(PrizedFish), typeof(WondrousFish), typeof(TrulyRareFish),
         typeof(PeculiarFish)),
-      new MutateEntry(0.0, 105.0, -420.0, false, typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots)),
-      new MutateEntry(0.0, 200.0, -200.0, false, new Type[1] { null })
+      new MutateEntry(0, 1050, -4200, false, typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots)),
+      new MutateEntry(0, 2000, -2000, false, new Type[] { null })
     };
 
     private static int[] m_WaterTiles =
@@ -134,8 +134,8 @@ namespace Server.Engines.Harvest
     {
       bool deepWater = SpecialFishingNet.FullValidation(map, loc.X, loc.Y);
 
-      double skillBase = from.Skills.Fishing.Base;
-      double skillValue = from.Skills.Fishing.Value;
+      int skillBase = from.Skills.Fishing.BaseFixedPoint;
+      int skillValue = from.Skills.Fishing.Fixed;
 
       for (int i = 0; i < m_MutateTable.Length; ++i)
       {
@@ -146,7 +146,7 @@ namespace Server.Engines.Harvest
 
         if (skillBase >= entry.m_ReqSkill)
         {
-          double chance = (skillValue - entry.m_MinSkill) / (entry.m_MaxSkill - entry.m_MinSkill);
+          double chance = 1.0 * (skillValue - entry.m_MinSkill) / (entry.m_MaxSkill - entry.m_MinSkill);
 
           if (chance > Utility.RandomDouble())
             return entry.m_Types[Utility.Random(entry.m_Types.Length)];
@@ -492,10 +492,10 @@ namespace Server.Engines.Harvest
     private class MutateEntry
     {
       public bool m_DeepWater;
-      public double m_ReqSkill, m_MinSkill, m_MaxSkill;
+      public int m_ReqSkill, m_MinSkill, m_MaxSkill;
       public Type[] m_Types;
 
-      public MutateEntry(double reqSkill, double minSkill, double maxSkill, bool deepWater, params Type[] types)
+      public MutateEntry(int reqSkill, int minSkill, int maxSkill, bool deepWater, params Type[] types)
       {
         m_ReqSkill = reqSkill;
         m_MinSkill = minSkill;

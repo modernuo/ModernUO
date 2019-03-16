@@ -9,7 +9,7 @@ namespace Server.Spells.Mysticism
     {
     }
 
-    public abstract double RequiredSkill{ get; }
+    public abstract int RequiredSkill{ get; }
     public abstract int RequiredMana{ get; }
 
     public override SkillName CastSkill => SkillName.Mysticism;

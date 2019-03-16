@@ -19,7 +19,7 @@ namespace Server.Spells.Necromancy
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.0);
 
-    public override double RequiredSkill => 20.0;
+    public override int RequiredSkill => 200;
     public override int RequiredMana => 17;
 
     public override int Body => Caster.Female ? 747 : 748;

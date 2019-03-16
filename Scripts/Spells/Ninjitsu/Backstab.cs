@@ -6,7 +6,7 @@ namespace Server.Spells.Ninjitsu
   public class Backstab : NinjaMove
   {
     public override int BaseMana => 30;
-    public override double RequiredSkill => Core.ML ? 40.0 : 20.0;
+    public override int RequiredSkill => Core.ML ? 400 : 200;
 
     public override TextDefinition AbilityMessage =>
       new TextDefinition(1063089); // You prepare to Backstab your opponent.

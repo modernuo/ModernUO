@@ -284,11 +284,11 @@ namespace Server.Engines.Craft
           }
           else if (skill != SkillName.Tailoring)
           {
-            double skillLevel = usingDeed ? m_Deed.SkillLevel : from.Skills[skill].Base;
+            int skillLevel = usingDeed ? m_Deed.SkillLevel : from.Skills[skill].BaseFixedPoint;
 
-            if (skillLevel >= 90.0)
+            if (skillLevel >= 900)
               toWeaken = 1;
-            else if (skillLevel >= 70.0)
+            else if (skillLevel >= 700)
               toWeaken = 2;
             else
               toWeaken = 3;
@@ -352,11 +352,11 @@ namespace Server.Engines.Craft
           }
           else if (skill != SkillName.Tailoring)
           {
-            double skillLevel = usingDeed ? m_Deed.SkillLevel : from.Skills[skill].Base;
+            int skillLevel = usingDeed ? m_Deed.SkillLevel : from.Skills[skill].BaseFixedPoint;
 
-            if (skillLevel >= 90.0)
+            if (skillLevel >= 900)
               toWeaken = 1;
-            else if (skillLevel >= 70.0)
+            else if (skillLevel >= 700)
               toWeaken = 2;
             else
               toWeaken = 3;
@@ -416,11 +416,11 @@ namespace Server.Engines.Craft
           }
           else if (skill != SkillName.Tailoring)
           {
-            double skillLevel = usingDeed ? m_Deed.SkillLevel : from.Skills[skill].Base;
+            int skillLevel = usingDeed ? m_Deed.SkillLevel : from.Skills[skill].BaseFixedPoint;
 
-            if (skillLevel >= 90.0)
+            if (skillLevel >= 900)
               toWeaken = 1;
-            else if (skillLevel >= 70.0)
+            else if (skillLevel >= 700)
               toWeaken = 2;
             else
               toWeaken = 3;
@@ -477,8 +477,7 @@ namespace Server.Engines.Craft
           if (from.Skills[skill].Value >= 50.0)
           {
             scroll.Consume(1);
-            RepairDeed deed = new RepairDeed(RepairDeed.GetTypeFor(m_CraftSystem), from.Skills[skill].Value,
-              from);
+            RepairDeed deed = new RepairDeed(RepairDeed.GetTypeFor(m_CraftSystem), from.Skills[skill].Fixed, from);
             from.AddToBackpack(deed);
 
             number = 500442; // You create the item and put it in your backpack.

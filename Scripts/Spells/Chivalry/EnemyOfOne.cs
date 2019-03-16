@@ -20,7 +20,7 @@ namespace Server.Spells.Chivalry
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(0.5);
 
-    public override double RequiredSkill => 45.0;
+    public override int RequiredSkill => 450;
     public override int RequiredMana => 20;
     public override int RequiredTithing => 10;
     public override int MantraNumber => 1060723; // Forul Solum
