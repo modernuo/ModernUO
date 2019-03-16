@@ -1022,7 +1022,7 @@ namespace Server
       for (int i = 0; i < 5; ++i)
       {
         if (GetValues(i, out SkillName skill, out int bonus))
-          list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus / 10.0);
+          list.Add(1060451 + i, "#{0}\t{1:F1}", GetLabel(skill), bonus / 10.0);
       }
     }
 
