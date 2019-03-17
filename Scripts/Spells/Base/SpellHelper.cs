@@ -359,10 +359,10 @@ namespace Server.Spells
       {
         if (!DisableSkillCheck)
         {
-          caster.CheckSkill(SkillName.EvalInt, 0.0, 120.0);
+          caster.CheckSkill(SkillName.EvalInt, 0, 1200);
 
           if (curse)
-            target.CheckSkill(SkillName.MagicResist, 0.0, 120.0);
+            target.CheckSkill(SkillName.MagicResist, 0, 1200);
         }
 
         double percent = GetOffsetScalar(caster, target, curse);

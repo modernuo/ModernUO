@@ -19,7 +19,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 0.0;
+      MinTameSkill = 0;
     }
 
     public Parrot(Serial serial) : base(serial)

@@ -95,14 +95,14 @@ namespace Server.Misc
       Mobile.SkillCheckDirectTargetHandler = Mobile_SkillCheckDirectTarget;
     }
 
-    public static bool Mobile_SkillCheckLocation(Mobile from, SkillName skillName, double minSkill, double maxSkill)
+    public static bool Mobile_SkillCheckLocation(Mobile from, SkillName skillName, int minSkill, int maxSkill)
     {
       Skill skill = from.Skills[skillName];
 
       if (skill == null)
         return false;
 
-      double value = skill.Value;
+      double value = skill.Fixed;
 
       if (value < minSkill)
         return false; // Too difficult
@@ -138,7 +138,7 @@ namespace Server.Misc
 
       bool success = chance >= Utility.RandomDouble();
       double gc = (double)(from.Skills.Cap - from.Skills.Total) / from.Skills.Cap;
-      gc += (skill.Cap - skill.Base) / skill.Cap;
+      gc += 1.0 * (skill.CapFixedPoint - skill.BaseFixedPoint) / skill.CapFixedPoint;
       gc /= 2;
 
       gc += (1.0 - chance) * (success ? 0.5 : Core.AOS ? 0.0 : 0.2);
@@ -152,21 +152,21 @@ namespace Server.Misc
       if (from is BaseCreature creature && creature.Controlled)
         gc *= 2;
 
-      if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj) || skill.Base < 10.0))
+      if (from.Alive && (gc >= Utility.RandomDouble() && AllowGain(from, skill, amObj) || skill.BaseFixedPoint < 100))
         Gain(from, skill);
 
       return success;
     }
 
-    public static bool Mobile_SkillCheckTarget(Mobile from, SkillName skillName, object target, double minSkill,
-      double maxSkill)
+    public static bool Mobile_SkillCheckTarget(Mobile from, SkillName skillName, object target, int minSkill,
+      int maxSkill)
     {
       Skill skill = from.Skills[skillName];
 
       if (skill == null)
         return false;
 
-      double value = skill.Value;
+      double value = skill.Fixed;
 
       if (value < minSkill)
         return false; // Too difficult
@@ -215,16 +215,16 @@ namespace Server.Misc
       if (skill.SkillName == SkillName.Focus && from is BaseCreature)
         return;
 
-      if (skill.Base < skill.Cap && skill.Lock == SkillLock.Up)
+      if (skill.BaseFixedPoint < skill.CapFixedPoint && skill.Lock == SkillLock.Up)
       {
-        int toGain = 1;
+        int toGain = 10;
 
-        if (skill.Base <= 10.0)
-          toGain = Utility.Random(4) + 1;
+        if (skill.BaseFixedPoint <= 100)
+          toGain = Utility.Random(40) + 10;
 
         Skills skills = from.Skills;
 
-        if (from.Player && skills.Total / skills.Cap >= Utility.RandomDouble()) //( skills.Total >= skills.Cap )
+        if (from.Player && (double)skills.Total / skills.Cap >= Utility.RandomDouble()) //( skills.Total >= skills.Cap )
           for (int i = 0; i < skills.Length; ++i)
           {
             Skill toLower = skills[i];
@@ -244,7 +244,8 @@ namespace Server.Misc
 
         #endregion
 
-        if (!from.Player || skills.Total + toGain <= skills.Cap) skill.BaseFixedPoint += toGain;
+        if (!from.Player || skills.Total + toGain <= skills.Cap)
+          skill.BaseFixedPoint += toGain;
       }
 
       if (skill.Lock == SkillLock.Up)

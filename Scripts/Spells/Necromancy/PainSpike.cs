@@ -54,7 +54,7 @@ namespace Server.Spells.Necromancy
         m.PlaySound(0x210);
 
         double damage = (GetDamageSkill(Caster) - GetResistSkill(m)) / 10 + (m.Player ? 18 : 30);
-        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); //Skill check for gain
+        m.CheckSkill(SkillName.MagicResist, 0, 1200); //Skill check for gain
 
         if (damage < 1)
           damage = 1;

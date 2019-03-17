@@ -105,41 +105,41 @@ namespace Server.Engines.Craft
 
     private void AddSpell(Type type, params Reg[] regs)
     {
-      double minSkill, maxSkill;
+      int minSkill, maxSkill;
 
       switch (m_Circle)
       {
         default:
-          minSkill = -25.0;
-          maxSkill = 25.0;
+          minSkill = -250;
+          maxSkill = 250;
           break;
         case 1:
-          minSkill = -10.8;
-          maxSkill = 39.2;
+          minSkill = -108;
+          maxSkill = 392;
           break;
         case 2:
-          minSkill = 03.5;
-          maxSkill = 53.5;
+          minSkill = 35;
+          maxSkill = 535;
           break;
         case 3:
-          minSkill = 17.8;
-          maxSkill = 67.8;
+          minSkill = 178;
+          maxSkill = 678;
           break;
         case 4:
-          minSkill = 32.1;
-          maxSkill = 82.1;
+          minSkill = 321;
+          maxSkill = 821;
           break;
         case 5:
-          minSkill = 46.4;
-          maxSkill = 96.4;
+          minSkill = 464;
+          maxSkill = 964;
           break;
         case 6:
-          minSkill = 60.7;
-          maxSkill = 110.7;
+          minSkill = 607;
+          maxSkill = 1107;
           break;
         case 7:
-          minSkill = 75.0;
-          maxSkill = 125.0;
+          minSkill = 750;
+          maxSkill = 1250;
           break;
       }
 
@@ -154,9 +154,9 @@ namespace Server.Engines.Craft
       SetManaReq(index, m_Mana);
     }
 
-    private void AddNecroSpell(int spell, int mana, double minSkill, Type type, params Type[] regs)
+    private void AddNecroSpell(int spell, int mana, int minSkill, Type type, params Type[] regs)
     {
-      int index = AddCraft(type, 1061677, 1060509 + spell, minSkill, minSkill + 1.0, regs[0],
+      int index = AddCraft(type, 1061677, 1060509 + spell, minSkill, minSkill + 10, regs[0],
         CraftItem.LabelNumber(regs[0]), 1,
         501627); //Yes, on OSI it's only 1.0 skill diff'.  Don't blame me, blame OSI.
 
@@ -167,7 +167,7 @@ namespace Server.Engines.Craft
       SetManaReq(index, mana);
     }
 
-    private void AddMysticismSpell(int spell, int mana, double minSkill, double maxSkill, Type type, params Type[] regs)
+    private void AddMysticismSpell(int spell, int mana, int minSkill, int maxSkill, Type type, params Type[] regs)
     {
       int index = AddCraft(type, 1111671, 1031678 + spell, minSkill, maxSkill, regs[0], CraftItem.LabelNumber(regs[0]),
         1, 501627);
@@ -279,34 +279,34 @@ namespace Server.Engines.Craft
 
       if (Core.SE)
       {
-        AddNecroSpell(0, 23, 39.6, typeof(AnimateDeadScroll), Reagent.GraveDust, Reagent.DaemonBlood);
-        AddNecroSpell(1, 13, 19.6, typeof(BloodOathScroll), Reagent.DaemonBlood);
-        AddNecroSpell(2, 11, 19.6, typeof(CorpseSkinScroll), Reagent.BatWing, Reagent.GraveDust);
-        AddNecroSpell(3, 7, 19.6, typeof(CurseWeaponScroll), Reagent.PigIron);
-        AddNecroSpell(4, 11, 19.6, typeof(EvilOmenScroll), Reagent.BatWing, Reagent.NoxCrystal);
-        AddNecroSpell(5, 11, 39.6, typeof(HorrificBeastScroll), Reagent.BatWing, Reagent.DaemonBlood);
-        AddNecroSpell(6, 23, 69.6, typeof(LichFormScroll), Reagent.GraveDust, Reagent.DaemonBlood,
+        AddNecroSpell(0, 23, 396, typeof(AnimateDeadScroll), Reagent.GraveDust, Reagent.DaemonBlood);
+        AddNecroSpell(1, 13, 196, typeof(BloodOathScroll), Reagent.DaemonBlood);
+        AddNecroSpell(2, 11, 196, typeof(CorpseSkinScroll), Reagent.BatWing, Reagent.GraveDust);
+        AddNecroSpell(3, 7, 196, typeof(CurseWeaponScroll), Reagent.PigIron);
+        AddNecroSpell(4, 11, 196, typeof(EvilOmenScroll), Reagent.BatWing, Reagent.NoxCrystal);
+        AddNecroSpell(5, 11, 396, typeof(HorrificBeastScroll), Reagent.BatWing, Reagent.DaemonBlood);
+        AddNecroSpell(6, 23, 696, typeof(LichFormScroll), Reagent.GraveDust, Reagent.DaemonBlood,
           Reagent.NoxCrystal);
-        AddNecroSpell(7, 17, 29.6, typeof(MindRotScroll), Reagent.BatWing, Reagent.DaemonBlood, Reagent.PigIron);
-        AddNecroSpell(8, 5, 19.6, typeof(PainSpikeScroll), Reagent.GraveDust, Reagent.PigIron);
-        AddNecroSpell(9, 17, 49.6, typeof(PoisonStrikeScroll), Reagent.NoxCrystal);
-        AddNecroSpell(10, 29, 64.6, typeof(StrangleScroll), Reagent.DaemonBlood, Reagent.NoxCrystal);
-        AddNecroSpell(11, 17, 29.6, typeof(SummonFamiliarScroll), Reagent.BatWing, Reagent.GraveDust,
+        AddNecroSpell(7, 17, 296, typeof(MindRotScroll), Reagent.BatWing, Reagent.DaemonBlood, Reagent.PigIron);
+        AddNecroSpell(8, 5, 196, typeof(PainSpikeScroll), Reagent.GraveDust, Reagent.PigIron);
+        AddNecroSpell(9, 17, 496, typeof(PoisonStrikeScroll), Reagent.NoxCrystal);
+        AddNecroSpell(10, 29, 646, typeof(StrangleScroll), Reagent.DaemonBlood, Reagent.NoxCrystal);
+        AddNecroSpell(11, 17, 296, typeof(SummonFamiliarScroll), Reagent.BatWing, Reagent.GraveDust,
           Reagent.DaemonBlood);
-        AddNecroSpell(12, 23, 98.6, typeof(VampiricEmbraceScroll), Reagent.BatWing, Reagent.NoxCrystal,
+        AddNecroSpell(12, 23, 986, typeof(VampiricEmbraceScroll), Reagent.BatWing, Reagent.NoxCrystal,
           Reagent.PigIron);
-        AddNecroSpell(13, 41, 79.6, typeof(VengefulSpiritScroll), Reagent.BatWing, Reagent.GraveDust,
+        AddNecroSpell(13, 41, 796, typeof(VengefulSpiritScroll), Reagent.BatWing, Reagent.GraveDust,
           Reagent.PigIron);
-        AddNecroSpell(14, 23, 59.6, typeof(WitherScroll), Reagent.GraveDust, Reagent.NoxCrystal, Reagent.PigIron);
-        AddNecroSpell(15, 17, 79.6, typeof(WraithFormScroll), Reagent.NoxCrystal, Reagent.PigIron);
-        AddNecroSpell(16, 40, 79.6, typeof(ExorcismScroll), Reagent.NoxCrystal, Reagent.GraveDust);
+        AddNecroSpell(14, 23, 596, typeof(WitherScroll), Reagent.GraveDust, Reagent.NoxCrystal, Reagent.PigIron);
+        AddNecroSpell(15, 17, 796, typeof(WraithFormScroll), Reagent.NoxCrystal, Reagent.PigIron);
+        AddNecroSpell(16, 40, 796, typeof(ExorcismScroll), Reagent.NoxCrystal, Reagent.GraveDust);
       }
 
       int index;
 
       if (Core.ML)
       {
-        index = AddCraft(typeof(EnchantedSwitch), 1044294, 1072893, 45.0, 95.0, typeof(BlankScroll), 1044377, 1,
+        index = AddCraft(typeof(EnchantedSwitch), 1044294, 1072893, 450, 950, typeof(BlankScroll), 1044377, 1,
           1044378);
         AddRes(index, typeof(SpidersSilk), 1044360, 1, 1044253);
         AddRes(index, typeof(BlackPearl), 1044353, 1, 1044253);
@@ -314,7 +314,7 @@ namespace Server.Engines.Craft
         ForceNonExceptional(index);
         SetNeededExpansion(index, Expansion.ML);
 
-        index = AddCraft(typeof(RunedPrism), 1044294, 1073465, 45.0, 95.0, typeof(BlankScroll), 1044377, 1, 1044378);
+        index = AddCraft(typeof(RunedPrism), 1044294, 1073465, 450, 950, typeof(BlankScroll), 1044377, 1, 1044378);
         AddRes(index, typeof(SpidersSilk), 1044360, 1, 1044253);
         AddRes(index, typeof(BlackPearl), 1044353, 1, 1044253);
         AddRes(index, typeof(HollowPrism), 1072895, 1, 1044253);
@@ -323,14 +323,15 @@ namespace Server.Engines.Craft
       }
 
       // Runebook
-      index = AddCraft(typeof(Runebook), 1044294, 1041267, 45.0, 95.0, typeof(BlankScroll), 1044377, 8, 1044378);
+      index = AddCraft(typeof(Runebook), 1044294, 1041267, 450, 950, typeof(BlankScroll), 1044377, 8, 1044378);
       AddRes(index, typeof(RecallScroll), 1044445, 1, 1044253);
       AddRes(index, typeof(GateTravelScroll), 1044446, 1, 1044253);
 
       if (Core.AOS)
-        AddCraft(typeof(BulkOrderBook), 1044294, 1028793, 65.0, 115.0, typeof(BlankScroll), 1044377, 10, 1044378);
+        AddCraft(typeof(BulkOrderBook), 1044294, 1028793, 650, 1150, typeof(BlankScroll), 1044377, 10, 1044378);
 
-      if (Core.SE) AddCraft(typeof(Spellbook), 1044294, 1023834, 50.0, 126, typeof(BlankScroll), 1044377, 10, 1044378);
+      if (Core.SE)
+        AddCraft(typeof(Spellbook), 1044294, 1023834, 500, 1260, typeof(BlankScroll), 1044377, 10, 1044378);
 
       /* TODO
       if ( Core.ML )
@@ -347,38 +348,38 @@ namespace Server.Engines.Craft
 
       if (Core.SA)
       {
-        AddCraft(typeof(MysticSpellbook), 1044294, 1031677, 50.0, 150.0, typeof(BlankScroll), 1044377, 10, 1044378);
+        AddCraft(typeof(MysticSpellbook), 1044294, 1031677, 500, 1500, typeof(BlankScroll), 1044377, 10, 1044378);
 
-        AddMysticismSpell(0, 4, -25.0, 25.0, typeof(NetherBoltScroll), Reagent.BlackPearl, Reagent.SulfurousAsh);
-        AddMysticismSpell(1, 4, -25.0, 25.0, typeof(HealingStoneScroll), Reagent.Bone, Reagent.Garlic,
+        AddMysticismSpell(0, 4, -250, 250, typeof(NetherBoltScroll), Reagent.BlackPearl, Reagent.SulfurousAsh);
+        AddMysticismSpell(1, 4, -250, 250, typeof(HealingStoneScroll), Reagent.Bone, Reagent.Garlic,
           Reagent.Ginseng, Reagent.SpidersSilk);
-        AddMysticismSpell(2, 6, -10.8, 39.2, typeof(PurgeMagicScroll), Reagent.FertileDirt, Reagent.Garlic,
+        AddMysticismSpell(2, 6, -108, 392, typeof(PurgeMagicScroll), Reagent.FertileDirt, Reagent.Garlic,
           Reagent.MandrakeRoot, Reagent.SulfurousAsh);
-        AddMysticismSpell(3, 6, -10.8, 39.2, typeof(EnchantScroll), Reagent.SpidersSilk, Reagent.MandrakeRoot,
+        AddMysticismSpell(3, 6, -108, 392, typeof(EnchantScroll), Reagent.SpidersSilk, Reagent.MandrakeRoot,
           Reagent.SulfurousAsh);
-        AddMysticismSpell(4, 9, 3.5, 53.5, typeof(SleepScroll), Reagent.Nightshade, Reagent.SpidersSilk,
+        AddMysticismSpell(4, 9, 35, 535, typeof(SleepScroll), Reagent.Nightshade, Reagent.SpidersSilk,
           Reagent.BlackPearl);
-        AddMysticismSpell(5, 9, 3.5, 53.5, typeof(EagleStrikeScroll), Reagent.Bloodmoss, Reagent.Bone,
+        AddMysticismSpell(5, 9, 35, 535, typeof(EagleStrikeScroll), Reagent.Bloodmoss, Reagent.Bone,
           Reagent.SpidersSilk, Reagent.MandrakeRoot);
-        AddMysticismSpell(6, 11, 17.8, 67.8, typeof(AnimatedWeaponScroll), Reagent.Bone, Reagent.BlackPearl,
+        AddMysticismSpell(6, 11, 178, 678, typeof(AnimatedWeaponScroll), Reagent.Bone, Reagent.BlackPearl,
           Reagent.MandrakeRoot, Reagent.Nightshade);
-        AddMysticismSpell(7, 11, 17.8, 67.8, typeof(StoneFormScroll), Reagent.Bloodmoss, Reagent.FertileDirt,
+        AddMysticismSpell(7, 11, 178, 678, typeof(StoneFormScroll), Reagent.Bloodmoss, Reagent.FertileDirt,
           Reagent.Garlic);
-        AddMysticismSpell(8, 14, 32.1, 82.1, typeof(SpellTriggerScroll), Reagent.DragonsBlood, Reagent.Garlic,
+        AddMysticismSpell(8, 14, 321, 821, typeof(SpellTriggerScroll), Reagent.DragonsBlood, Reagent.Garlic,
           Reagent.MandrakeRoot, Reagent.SpidersSilk);
-        AddMysticismSpell(9, 14, 32.1, 82.1, typeof(MassSleepScroll), Reagent.Ginseng, Reagent.Nightshade,
+        AddMysticismSpell(9, 14, 321, 821, typeof(MassSleepScroll), Reagent.Ginseng, Reagent.Nightshade,
           Reagent.SpidersSilk);
-        AddMysticismSpell(10, 20, 46.4, 96.4, typeof(CleansingWindsScroll), Reagent.DragonsBlood, Reagent.Garlic,
+        AddMysticismSpell(10, 20, 464, 964, typeof(CleansingWindsScroll), Reagent.DragonsBlood, Reagent.Garlic,
           Reagent.Ginseng, Reagent.MandrakeRoot);
-        AddMysticismSpell(11, 20, 46.4, 96.4, typeof(BombardScroll), Reagent.Bloodmoss, Reagent.DragonsBlood,
+        AddMysticismSpell(11, 20, 464, 964, typeof(BombardScroll), Reagent.Bloodmoss, Reagent.DragonsBlood,
           Reagent.Garlic, Reagent.SulfurousAsh);
-        AddMysticismSpell(12, 40, 60.7, 110.7, typeof(SpellPlagueScroll), Reagent.DaemonBone, Reagent.DragonsBlood,
+        AddMysticismSpell(12, 40, 607, 1107, typeof(SpellPlagueScroll), Reagent.DaemonBone, Reagent.DragonsBlood,
           Reagent.Nightshade, Reagent.SulfurousAsh);
-        AddMysticismSpell(13, 40, 60.7, 110.7, typeof(HailStormScroll), Reagent.DragonsBlood, Reagent.Bloodmoss,
+        AddMysticismSpell(13, 40, 607, 1107, typeof(HailStormScroll), Reagent.DragonsBlood, Reagent.Bloodmoss,
           Reagent.BlackPearl, Reagent.MandrakeRoot);
-        AddMysticismSpell(14, 50, 75.0, 125.0, typeof(NetherCycloneScroll), Reagent.MandrakeRoot, Reagent.Nightshade,
+        AddMysticismSpell(14, 50, 750, 1250, typeof(NetherCycloneScroll), Reagent.MandrakeRoot, Reagent.Nightshade,
           Reagent.SulfurousAsh, Reagent.Bloodmoss);
-        AddMysticismSpell(15, 50, 75.0, 125.0, typeof(RisingColossusScroll), Reagent.DaemonBone,
+        AddMysticismSpell(15, 50, 750, 1250, typeof(RisingColossusScroll), Reagent.DaemonBone,
           Reagent.DragonsBlood, Reagent.FertileDirt, Reagent.Nightshade);
       }
 

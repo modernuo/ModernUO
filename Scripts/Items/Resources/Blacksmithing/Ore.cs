@@ -302,43 +302,43 @@ namespace Server.Items
 
         if (IsForge(targeted))
         {
-          double difficulty;
+          int difficulty;
 
           switch (m_Ore.Resource)
           {
             default:
-              difficulty = 50.0;
+              difficulty = 500;
               break;
             case CraftResource.DullCopper:
-              difficulty = 65.0;
+              difficulty = 650;
               break;
             case CraftResource.ShadowIron:
-              difficulty = 70.0;
+              difficulty = 700;
               break;
             case CraftResource.Copper:
-              difficulty = 75.0;
+              difficulty = 750;
               break;
             case CraftResource.Bronze:
-              difficulty = 80.0;
+              difficulty = 800;
               break;
             case CraftResource.Gold:
-              difficulty = 85.0;
+              difficulty = 850;
               break;
             case CraftResource.Agapite:
-              difficulty = 90.0;
+              difficulty = 900;
               break;
             case CraftResource.Verite:
-              difficulty = 95.0;
+              difficulty = 950;
               break;
             case CraftResource.Valorite:
-              difficulty = 99.0;
+              difficulty = 990;
               break;
           }
 
-          double minSkill = difficulty - 25.0;
-          double maxSkill = difficulty + 25.0;
+          int minSkill = difficulty - 250;
+          int maxSkill = difficulty + 250;
 
-          if (difficulty > 50.0 && difficulty > from.Skills.Mining.Value)
+          if (difficulty > 500 && difficulty > from.Skills.Mining.Fixed)
           {
             from.SendLocalizedMessage(501986); // You have no idea how to smelt this strange ore!
             return;

@@ -34,7 +34,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = -18.9;
+      MinTameSkill = -189;
     }
 
     public Rabbit(Serial serial) : base(serial)

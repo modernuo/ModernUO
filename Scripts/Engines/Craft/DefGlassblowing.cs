@@ -75,24 +75,24 @@ namespace Server.Engines.Craft
 
     public override void InitCraftList()
     {
-      int index = AddCraft(typeof(Bottle), 1044050, 1023854, 52.5, 102.5, typeof(Sand), 1044625, 1, 1044627);
+      int index = AddCraft(typeof(Bottle), 1044050, 1023854, 525, 1025, typeof(Sand), 1044625, 1, 1044627);
       SetUseAllRes(index, true);
 
-      AddCraft(typeof(SmallFlask), 1044050, 1044610, 52.5, 102.5, typeof(Sand), 1044625, 2, 1044627);
-      AddCraft(typeof(MediumFlask), 1044050, 1044611, 52.5, 102.5, typeof(Sand), 1044625, 3, 1044627);
-      AddCraft(typeof(CurvedFlask), 1044050, 1044612, 55.0, 105.0, typeof(Sand), 1044625, 2, 1044627);
-      AddCraft(typeof(LongFlask), 1044050, 1044613, 57.5, 107.5, typeof(Sand), 1044625, 4, 1044627);
-      AddCraft(typeof(LargeFlask), 1044050, 1044623, 60.0, 110.0, typeof(Sand), 1044625, 5, 1044627);
-      AddCraft(typeof(AniSmallBlueFlask), 1044050, 1044614, 60.0, 110.0, typeof(Sand), 1044625, 5, 1044627);
-      AddCraft(typeof(AniLargeVioletFlask), 1044050, 1044615, 60.0, 110.0, typeof(Sand), 1044625, 5, 1044627);
-      AddCraft(typeof(AniRedRibbedFlask), 1044050, 1044624, 60.0, 110.0, typeof(Sand), 1044625, 7, 1044627);
-      AddCraft(typeof(EmptyVialsWRack), 1044050, 1044616, 65.0, 115.0, typeof(Sand), 1044625, 8, 1044627);
-      AddCraft(typeof(FullVialsWRack), 1044050, 1044617, 65.0, 115.0, typeof(Sand), 1044625, 9, 1044627);
-      AddCraft(typeof(SpinningHourglass), 1044050, 1044618, 75.0, 125.0, typeof(Sand), 1044625, 10, 1044627);
+      AddCraft(typeof(SmallFlask), 1044050, 1044610, 525, 1025, typeof(Sand), 1044625, 2, 1044627);
+      AddCraft(typeof(MediumFlask), 1044050, 1044611, 525, 1025, typeof(Sand), 1044625, 3, 1044627);
+      AddCraft(typeof(CurvedFlask), 1044050, 1044612, 550, 1050, typeof(Sand), 1044625, 2, 1044627);
+      AddCraft(typeof(LongFlask), 1044050, 1044613, 575, 1075, typeof(Sand), 1044625, 4, 1044627);
+      AddCraft(typeof(LargeFlask), 1044050, 1044623, 600, 1100, typeof(Sand), 1044625, 5, 1044627);
+      AddCraft(typeof(AniSmallBlueFlask), 1044050, 1044614, 600, 1100, typeof(Sand), 1044625, 5, 1044627);
+      AddCraft(typeof(AniLargeVioletFlask), 1044050, 1044615, 600, 1100, typeof(Sand), 1044625, 5, 1044627);
+      AddCraft(typeof(AniRedRibbedFlask), 1044050, 1044624, 600, 1100, typeof(Sand), 1044625, 7, 1044627);
+      AddCraft(typeof(EmptyVialsWRack), 1044050, 1044616, 650, 1150, typeof(Sand), 1044625, 8, 1044627);
+      AddCraft(typeof(FullVialsWRack), 1044050, 1044617, 650, 1150, typeof(Sand), 1044625, 9, 1044627);
+      AddCraft(typeof(SpinningHourglass), 1044050, 1044618, 750, 1250, typeof(Sand), 1044625, 10, 1044627);
 
       if (Core.ML)
       {
-        index = AddCraft(typeof(HollowPrism), 1044050, 1072895, 100.0, 150.0, typeof(Sand), 1044625, 8, 1044627);
+        index = AddCraft(typeof(HollowPrism), 1044050, 1072895, 1000, 1500, typeof(Sand), 1044625, 8, 1044627);
         SetNeededExpansion(index, Expansion.ML);
       }
     }

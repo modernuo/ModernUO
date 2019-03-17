@@ -151,7 +151,7 @@ namespace Server.Items
 
           double toDeal = damage;
 
-          if (!Core.AOS && m.CheckSkill(SkillName.MagicResist, 0.0, 120.0))
+          if (!Core.AOS && m.CheckSkill(SkillName.MagicResist, 0, 1200))
           {
             toDeal *= 0.5;
             m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.

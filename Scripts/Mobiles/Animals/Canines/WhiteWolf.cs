@@ -37,7 +37,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 65.1;
+      MinTameSkill = 651;
     }
 
     public WhiteWolf(Serial serial) : base(serial)

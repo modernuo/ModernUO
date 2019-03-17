@@ -37,7 +37,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 83.1;
+      MinTameSkill = 831;
     }
 
     public DireWolf(Serial serial) : base(serial)

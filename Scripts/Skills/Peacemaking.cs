@@ -83,7 +83,7 @@ namespace Server.SkillHandlers
               m_Instrument.PlayInstrumentBadly(from);
               m_Instrument.ConsumeUse(from);
             }
-            else if (!from.CheckSkill(SkillName.Peacemaking, 0.0, 120.0))
+            else if (!from.CheckSkill(SkillName.Peacemaking, 0, 1200))
             {
               from.SendLocalizedMessage(500613); // You attempt to calm everyone, but fail.
               m_Instrument.PlayInstrumentBadly(from);
@@ -158,13 +158,13 @@ namespace Server.SkillHandlers
             }
             else
             {
-              double diff = m_Instrument.GetDifficultyFor(targ) - 10.0;
-              double music = from.Skills.Musicianship.Value;
+              int diff = m_Instrument.GetDifficultyFor(targ) - 100;
+              int music = from.Skills.Musicianship.Fixed;
 
-              if (music > 100.0)
-                diff -= (music - 100.0) * 0.5;
+              if (music > 1000)
+                diff -= (music - 1000) / 2;
 
-              if (!from.CheckTargetSkill(SkillName.Peacemaking, targ, diff - 25.0, diff + 25.0))
+              if (!from.CheckTargetSkill(SkillName.Peacemaking, targ, diff - 250, diff + 250))
               {
                 from.SendLocalizedMessage(1049531); // You attempt to calm your target, but fail.
                 m_Instrument.PlayInstrumentBadly(from);
@@ -178,7 +178,7 @@ namespace Server.SkillHandlers
                 from.NextSkillTime = Core.TickCount + 5000;
                 targ.Combatant = null;
                 targ.Warmode = false;
-                
+
                 if (bc != null)
                 {
                   from.SendLocalizedMessage(1049532); // You play hypnotic music, calming your target.

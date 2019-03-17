@@ -33,7 +33,7 @@ namespace Server.SkillHandlers
       {
         if (target is Mobile)
         {
-          if (from.CheckTargetSkill(SkillName.Forensics, target, 40.0, 100.0))
+          if (from.CheckTargetSkill(SkillName.Forensics, target, 400, 1000))
           {
             if (target is PlayerMobile pm && pm.NpcGuild == NpcGuild.ThievesGuild)
               from.SendLocalizedMessage(501004); //That individual is a thief!
@@ -47,7 +47,7 @@ namespace Server.SkillHandlers
         }
         else if (target is Corpse c)
         {
-          if (from.CheckTargetSkill(SkillName.Forensics, c, 0.0, 100.0))
+          if (from.CheckTargetSkill(SkillName.Forensics, c, 0, 1000))
           {
             if (c.m_Forensicist != null)
               from.SendLocalizedMessage(1042750,

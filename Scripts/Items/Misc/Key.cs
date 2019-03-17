@@ -357,7 +357,7 @@ namespace Server.Items
           {
             number = 501675; // This key is also blank.
           }
-          else if (from.CheckTargetSkill(SkillName.Tinkering, k, 0, 75.0))
+          else if (from.CheckTargetSkill(SkillName.Tinkering, k, 0, 750))
           {
             number = 501676; // You make a copy of the key.
 

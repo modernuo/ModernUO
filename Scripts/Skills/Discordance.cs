@@ -173,11 +173,11 @@ namespace Server.SkillHandlers
           }
           else if (!targ.Player)
           {
-            double diff = m_Instrument.GetDifficultyFor(targ) - 10.0;
-            double music = from.Skills.Musicianship.Value;
+            int diff = m_Instrument.GetDifficultyFor(targ) - 100;
+            int music = from.Skills.Musicianship.Fixed;
 
-            if (music > 100.0)
-              diff -= (music - 100.0) * 0.5;
+            if (music > 1000)
+              diff -= (music - 1000) / 2;
 
             if (!BaseInstrument.CheckMusicianship(from))
             {
@@ -185,7 +185,7 @@ namespace Server.SkillHandlers
               m_Instrument.PlayInstrumentBadly(from);
               m_Instrument.ConsumeUse(from);
             }
-            else if (from.CheckTargetSkill(SkillName.Discordance, targ, diff - 25.0, diff + 25.0))
+            else if (from.CheckTargetSkill(SkillName.Discordance, targ, diff - 250, diff + 250))
             {
               from.SendLocalizedMessage(1049539); // You play the song surpressing your targets strength
               m_Instrument.PlayInstrumentWell(from);

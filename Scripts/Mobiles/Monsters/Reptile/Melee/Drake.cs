@@ -36,7 +36,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 2;
-      MinTameSkill = 84.3;
+      MinTameSkill = 843;
 
       PackReg(3);
     }

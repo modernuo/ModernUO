@@ -14,8 +14,8 @@ namespace Server.Items
 
     public abstract Poison Poison{ get; }
 
-    public abstract double MinPoisoningSkill{ get; }
-    public abstract double MaxPoisoningSkill{ get; }
+    public abstract int MinPoisoningSkill{ get; }
+    public abstract int MaxPoisoningSkill{ get; }
 
     public override void Serialize(GenericWriter writer)
     {

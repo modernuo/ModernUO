@@ -15,8 +15,8 @@ namespace Server.Items
     /* public override Poison Poison => Poison.Darkglow;  MUST be restored when prerequisites are done */
     public override Poison Poison => Poison.Greater;
 
-    public override double MinPoisoningSkill => 95.0;
-    public override double MaxPoisoningSkill => 100.0;
+    public override int MinPoisoningSkill => 950;
+    public override int MaxPoisoningSkill => 1000;
 
     public override int LabelNumber => 1072848; // Parasitic Poison
 

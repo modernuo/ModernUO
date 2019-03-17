@@ -341,7 +341,7 @@ namespace Server.SkillHandlers
             }
 
             if (!alreadyOwned) // Passively check animal lore for gain
-              m_Tamer.CheckTargetSkill(SkillName.AnimalLore, m_Creature, 0.0, 120.0);
+              m_Tamer.CheckTargetSkill(SkillName.AnimalLore, m_Creature, 0, 1200);
 
             if (m_Creature.Paralyzed)
               m_Paralyzed = true;
@@ -356,17 +356,17 @@ namespace Server.SkillHandlers
               m_Paralyzed = true;
 
             if (!alreadyOwned) // Passively check animal lore for gain
-              m_Tamer.CheckTargetSkill(SkillName.AnimalLore, m_Creature, 0.0, 120.0);
+              m_Tamer.CheckTargetSkill(SkillName.AnimalLore, m_Creature, 0, 1200);
 
-            double minSkill = m_Creature.MinTameSkill + m_Creature.Owners.Count * 6.0;
+            int minSkill = m_Creature.MinTameSkill + m_Creature.Owners.Count * 6;
 
-            if (minSkill > -24.9 && CheckMastery(m_Tamer, m_Creature))
-              minSkill = -24.9; // 50% at 0.0?
+            if (minSkill > -249 && CheckMastery(m_Tamer, m_Creature))
+              minSkill = -249; // 50% at 0.0?
 
-            minSkill += 24.9;
+            minSkill += 249;
 
             if (CheckMastery(m_Tamer, m_Creature) || alreadyOwned ||
-                m_Tamer.CheckTargetSkill(SkillName.AnimalTaming, m_Creature, minSkill - 25.0, minSkill + 25.0))
+                m_Tamer.CheckTargetSkill(SkillName.AnimalTaming, m_Creature, minSkill - 250, minSkill + 250))
             {
               if (m_Creature.Owners.Count == 0) // First tame
               {

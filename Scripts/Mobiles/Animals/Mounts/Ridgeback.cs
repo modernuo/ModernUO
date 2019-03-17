@@ -34,7 +34,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 83.1;
+      MinTameSkill = 831;
     }
 
     public Ridgeback(Serial serial) : base(serial)

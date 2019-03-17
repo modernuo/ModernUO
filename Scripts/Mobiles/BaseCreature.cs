@@ -708,7 +708,7 @@ namespace Server.Mobiles
     public DateTime BardEndTime{ get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public double MinTameSkill{ get; set; }
+    public int MinTameSkill{ get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Tamable
@@ -875,13 +875,13 @@ namespace Server.Mobiles
 
     public virtual double GetControlChance(Mobile m, bool useBaseSkill = false)
     {
-      if (MinTameSkill <= 29.1 || m_bSummoned || m.AccessLevel >= AccessLevel.GameMaster)
+      if (MinTameSkill <= 291 || m_bSummoned || m.AccessLevel >= AccessLevel.GameMaster)
         return 1.0;
 
-      double dMinTameSkill = MinTameSkill;
+      int dMinTameSkill = MinTameSkill;
 
-      if (dMinTameSkill > -24.9 && AnimalTaming.CheckMastery(m, this))
-        dMinTameSkill = -24.9;
+      if (dMinTameSkill > -249 && AnimalTaming.CheckMastery(m, this))
+        dMinTameSkill = -249;
 
       int taming =
         (int)((useBaseSkill ? m.Skills.AnimalTaming.Base : m.Skills.AnimalTaming.Value) * 10);
@@ -891,8 +891,8 @@ namespace Server.Mobiles
 
       if (Core.ML)
       {
-        int SkillBonus = taming - (int)(dMinTameSkill * 10);
-        int LoreBonus = lore - (int)(dMinTameSkill * 10);
+        int SkillBonus = taming - dMinTameSkill;
+        int LoreBonus = lore - dMinTameSkill;
 
         int SkillMod = 6, LoreMod = 6;
 
@@ -908,7 +908,7 @@ namespace Server.Mobiles
       }
       else
       {
-        int difficulty = (int)(dMinTameSkill * 10);
+        int difficulty = dMinTameSkill;
         int weighted = (taming * 4 + lore) / 5;
         bonus = weighted - difficulty;
 
@@ -1268,7 +1268,7 @@ namespace Server.Mobiles
       writer.Write(ControlTarget);
       writer.Write(ControlDest);
       writer.Write((int)m_ControlOrder);
-      writer.Write(MinTameSkill);
+      writer.WriteEncodedInt(MinTameSkill);
       // Removed in version 9
       //writer.Write( (double) m_dMaxTameSkill );
       writer.Write(m_bTamable);
@@ -1411,7 +1411,7 @@ namespace Server.Mobiles
         ControlDest = reader.ReadPoint3D();
         m_ControlOrder = (OrderType)reader.ReadInt();
 
-        MinTameSkill = reader.ReadDouble();
+        MinTameSkill = reader.ReadEncodedInt();
 
         if (version < 9)
           reader.ReadDouble();
@@ -1760,7 +1760,7 @@ namespace Server.Mobiles
         defender.ApplyPoison(this, p);
 
         if (Controlled)
-          CheckSkill(SkillName.Poisoning, 0, Skills.Poisoning.Cap);
+          CheckSkill(SkillName.Poisoning, 0, Skills.Poisoning.CapFixedPoint);
       }
 
       if (AutoDispel && defender is BaseCreature creature && creature.IsDispellable &&
@@ -4039,9 +4039,9 @@ namespace Server.Mobiles
 
               if (master != null && master == from) //So friends can't start the bonding process
               {
-                if (MinTameSkill <= 29.1 || master.Skills.AnimalTaming.Base >= MinTameSkill ||
+                if (MinTameSkill <= 291 || master.Skills.AnimalTaming.BaseFixedPoint >= MinTameSkill ||
                     OverrideBondingReqs() ||
-                    Core.ML && master.Skills.AnimalTaming.Value >= MinTameSkill)
+                    Core.ML && master.Skills.AnimalTaming.Fixed >= MinTameSkill)
                 {
                   if (BondingBegin == DateTime.MinValue)
                   {
@@ -5038,17 +5038,17 @@ namespace Server.Mobiles
       {
         int poisonLevel = patient.Poison.Level;
 
-        double healing = Skills.Healing.Value;
-        double anatomy = Skills.Anatomy.Value;
-        double chance = (healing - 30.0) / 50.0 - poisonLevel * 0.1;
+        int healing = Skills.Healing.Fixed;
+        int anatomy = Skills.Anatomy.Fixed;
+        double chance = (healing - 300) / 500 - poisonLevel;
 
-        if (healing >= 60.0 && anatomy >= 60.0 && chance > Utility.RandomDouble())
+        if (healing >= 600 && anatomy >= 600 && chance > Utility.RandomDouble())
           if (patient.CurePoison(this))
           {
             patient.SendLocalizedMessage(1010059); // You have been cured of all poisons.
 
-            CheckSkill(SkillName.Healing, 0.0, 60.0 + poisonLevel * 10.0); // TODO: Verify formula
-            CheckSkill(SkillName.Anatomy, 0.0, 100.0);
+            CheckSkill(SkillName.Healing, 0, 600 + poisonLevel * 100); // TODO: Verify formula
+            CheckSkill(SkillName.Anatomy, 0, 1000);
           }
       }
       else if (BleedAttack.IsBleeding(patient))
@@ -5058,26 +5058,26 @@ namespace Server.Mobiles
       }
       else
       {
-        double healing = Skills.Healing.Value;
-        double anatomy = Skills.Anatomy.Value;
-        double chance = (healing + 10.0) / 100.0;
+        int healing = Skills.Healing.Fixed;
+        int anatomy = Skills.Anatomy.Fixed;
+        double chance = (healing + 100) / 1000;
 
         if (chance > Utility.RandomDouble())
         {
-          double min = anatomy / 10.0 + healing / 6.0 + 4.0;
-          double max = anatomy / 8.0 + healing / 3.0 + 4.0;
+          int min = anatomy / 100 + healing / 60 + 40;
+          int max = anatomy / 80 + healing / 30 + 40;
 
           if (onSelf)
-            max += 10;
+            max += 100;
 
-          double toHeal = min + Utility.RandomDouble() * (max - min);
+          double toHeal = min + Utility.RandomDouble() * (max - min) / 10.0;
 
           toHeal *= HealScalar;
 
           patient.Heal((int)toHeal);
 
-          CheckSkill(SkillName.Healing, 0.0, 90.0);
-          CheckSkill(SkillName.Anatomy, 0.0, 100.0);
+          CheckSkill(SkillName.Healing, 0, 900);
+          CheckSkill(SkillName.Anatomy, 0, 1000);
         }
       }
 

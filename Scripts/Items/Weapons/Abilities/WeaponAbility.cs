@@ -118,17 +118,17 @@ namespace Server.Items
       return true;
     }
 
-    public virtual double GetRequiredSkill(Mobile from)
+    public virtual int GetRequiredSkill(Mobile from)
     {
-      if (from.Weapon is BaseWeapon weapon)
-      {
-        if (weapon.PrimaryAbility == this)
-          return 70.0;
-        if (weapon.SecondaryAbility == this)
-          return 90.0;
-      }
+      if (!(from.Weapon is BaseWeapon weapon))
+        return 2000;
 
-      return 200.0;
+      if (weapon.PrimaryAbility == this)
+        return 700;
+      if (weapon.SecondaryAbility == this)
+        return 900;
+
+      return 2000;
     }
 
     public virtual int CalculateMana(Mobile from)
@@ -173,23 +173,24 @@ namespace Server.Items
         return false;
 
       Skill skill = from.Skills[weapon.Skill];
-      double reqSkill = GetRequiredSkill(from);
+      int reqSkill = GetRequiredSkill(from);
       bool reqTactics = Core.ML && RequiresTactics(from);
 
-      if (Core.ML && reqTactics && from.Skills.Tactics.Base < reqSkill)
+      if (Core.ML && reqTactics && from.Skills.Tactics.BaseFixedPoint < reqSkill)
       {
         from.SendLocalizedMessage(1079308,
-          reqSkill.ToString()); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
+          (reqSkill / 10.0).ToString()); // You need ~1_SKILL_REQUIREMENT~ weapon and tactics skill to perform that attack
         return false;
       }
 
-      if (skill?.Base >= reqSkill)
+      if (skill?.BaseFixedPoint >= reqSkill)
         return true;
 
       /* <UBWS> */
-      if (weapon.WeaponAttributes.UseBestSkill > 0 && (from.Skills.Swords.Base >= reqSkill ||
-                                                       from.Skills.Macing.Base >= reqSkill ||
-                                                       from.Skills.Fencing.Base >= reqSkill))
+      if (weapon.WeaponAttributes.UseBestSkill > 0 &&
+          (from.Skills.Swords.BaseFixedPoint >= reqSkill ||
+           from.Skills.Macing.BaseFixedPoint >= reqSkill ||
+           from.Skills.Fencing.BaseFixedPoint >= reqSkill))
         return true;
       /* </UBWS> */
 

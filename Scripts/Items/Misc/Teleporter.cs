@@ -420,7 +420,7 @@ namespace Server.Items
       else
         skillName = "(Invalid)";
 
-      list.Add(1060661, "{0}\t{1:F1}", skillName, m_Required);
+      list.Add(1060661, "{0}\t{1:F1}", skillName, m_Required / 10.0);
 
       if (m_MessageString != null)
         list.Add(1060662, "Message\t{0}", m_MessageString);

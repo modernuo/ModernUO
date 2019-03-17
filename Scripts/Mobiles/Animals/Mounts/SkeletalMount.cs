@@ -58,7 +58,7 @@ namespace Server.Mobiles
         case 0:
         {
           Tamable = false;
-          MinTameSkill = 0.0;
+          MinTameSkill = 0;
           ControlSlots = 0;
           break;
         }

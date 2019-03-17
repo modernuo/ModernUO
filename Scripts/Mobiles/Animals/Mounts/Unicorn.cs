@@ -41,7 +41,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 2;
-      MinTameSkill = 95.1;
+      MinTameSkill = 951;
     }
 
     public Unicorn(Serial serial) : base(serial)

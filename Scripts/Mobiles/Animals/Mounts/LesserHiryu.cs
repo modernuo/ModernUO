@@ -42,7 +42,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 3;
-      MinTameSkill = 98.7;
+      MinTameSkill = 987;
 
       if (Utility.RandomDouble() < .33)
         PackItem(Seed.RandomBonsaiSeed());

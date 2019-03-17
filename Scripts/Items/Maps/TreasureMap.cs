@@ -371,24 +371,24 @@ namespace Server.Items
       return false;
     }
 
-    private double GetMinSkillLevel()
+    private int GetMinSkillLevel()
     {
       switch (m_Level)
       {
-        case 1: return -3.0;
-        case 2: return 41.0;
-        case 3: return 51.0;
-        case 4: return 61.0;
-        case 5: return 70.0;
-        case 6: return 70.0;
+        case 1: return -30;
+        case 2: return 410;
+        case 3: return 510;
+        case 4: return 610;
+        case 5: return 700;
+        case 6: return 700;
 
-        default: return 0.0;
+        default: return 00;
       }
     }
 
     private bool HasRequiredSkill(Mobile from)
     {
-      return from.Skills.Cartography.Value >= GetMinSkillLevel();
+      return from.Skills.Cartography.Fixed >= GetMinSkillLevel();
     }
 
     public void Decode(Mobile from)
@@ -406,14 +406,12 @@ namespace Server.Items
       }
       else
       {
-        double minSkill = GetMinSkillLevel();
+        int minSkill = GetMinSkillLevel();
 
-        if (from.Skills.Cartography.Value < minSkill)
+        if (from.Skills.Cartography.Fixed < minSkill)
           from.SendLocalizedMessage(503013); // The map is too difficult to attempt to decode.
 
-        double maxSkill = minSkill + 60.0;
-
-        if (!from.CheckSkill(SkillName.Cartography, minSkill, maxSkill))
+        if (!from.CheckSkill(SkillName.Cartography, minSkill, minSkill + 600))
         {
           from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 503018); // You fail to make anything of the map.
           return;

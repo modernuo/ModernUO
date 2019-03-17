@@ -36,7 +36,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 17.1;
+      MinTameSkill = 171;
     }
 
     public Eagle(Serial serial) : base(serial)

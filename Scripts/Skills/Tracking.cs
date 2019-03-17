@@ -82,7 +82,7 @@ namespace Server.SkillHandlers
     public TrackWhatGump(Mobile from) : base(20, 30)
     {
       m_From = from;
-      m_Success = from.CheckSkill(SkillName.Tracking, 0.0, 21.1);
+      m_Success = from.CheckSkill(SkillName.Tracking, 0, 211);
 
       AddPage(0);
 
@@ -188,9 +188,9 @@ namespace Server.SkillHandlers
 
       TrackTypeDelegate check = m_Delegates[type];
 
-      from.CheckSkill(SkillName.Tracking, 21.1, 100.0); // Passive gain
+      from.CheckSkill(SkillName.Tracking, 211, 1000); // Passive gain
 
-      int range = 10 + (int)(from.Skills.Tracking.Value / 10);
+      int range = 10 + from.Skills.Tracking.Fixed / 100;
 
       List<Mobile> list = from.GetMobilesInRange(range)
         .Where(m => m != from && (!Core.AOS || m.Alive) && (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) && check(m) && CheckDifficulty(from, m))

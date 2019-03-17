@@ -35,7 +35,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 23.1;
+      MinTameSkill = 231;
     }
 
     public Slime(Serial serial) : base(serial)

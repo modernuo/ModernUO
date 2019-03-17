@@ -106,9 +106,9 @@ namespace Server.Items
         LabelTo(from, 1050043, m_Crafter.Name); // crafted by ~1_NAME~
     }
 
-    private static TextDefinition GetSkillTitle(double skillLevel)
+    private static TextDefinition GetSkillTitle(int skillLevel)
     {
-      int skill = (int)(skillLevel / 10);
+      int skill = skillLevel / 100;
 
       if (skill >= 11)
         return 1062008 + skill - 11;

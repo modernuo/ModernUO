@@ -206,7 +206,7 @@ namespace Server.Items
     {
       StopHeal();
 
-      int healerNumber = -1, patientNumber = -1;
+      int healerNumber, patientNumber;
       bool playSound = true;
       bool checkSkills = false;
 
@@ -229,11 +229,11 @@ namespace Server.Items
       }
       else if (!Patient.Alive || petPatient?.IsDeadPet == true)
       {
-        double healing = Healer.Skills[primarySkill].Value;
-        double anatomy = Healer.Skills[secondarySkill].Value;
-        double chance = (healing - 68.0) / 50.0 - Slips * 0.02;
+        int healing = Healer.Skills[primarySkill].Fixed;
+        int anatomy = Healer.Skills[secondarySkill].Fixed;
+        double chance = (double)(healing - 680) / 500 - Slips * 0.02;
 
-        if ((checkSkills = healing >= 80.0 && anatomy >= 80.0) && chance > Utility.RandomDouble()
+        if ((checkSkills = healing >= 800 && anatomy >= 800) && chance > Utility.RandomDouble()
             || Core.SE && petPatient is FactionWarHorse && petPatient.ControlMaster == Healer
         ) //TODO: Dbl check doesn't check for faction of the horse here?
         {
@@ -320,11 +320,11 @@ namespace Server.Items
       {
         Healer.SendLocalizedMessage(500969); // You finish applying the bandages.
 
-        double healing = Healer.Skills[primarySkill].Value;
-        double anatomy = Healer.Skills[secondarySkill].Value;
-        double chance = (healing - 30.0) / 50.0 - Patient.Poison.Level * 0.1 - Slips * 0.02;
+        int healing = Healer.Skills[primarySkill].Fixed;
+        int anatomy = Healer.Skills[secondarySkill].Fixed;
+        double chance = (double)(healing - 300) / 500 - Patient.Poison.Level * 0.1 - Slips * 0.02;
 
-        if ((checkSkills = healing >= 60.0 && anatomy >= 60.0) && chance > Utility.RandomDouble())
+        if ((checkSkills = healing >= 600 && anatomy >= 600) && chance > Utility.RandomDouble())
         {
           if (Patient.CurePoison(Healer))
           {
@@ -366,31 +366,31 @@ namespace Server.Items
         checkSkills = true;
         patientNumber = -1;
 
-        double healing = Healer.Skills[primarySkill].Value;
-        double anatomy = Healer.Skills[secondarySkill].Value;
-        double chance = (healing + 10.0) / 100.0 - Slips * 0.02;
+        int healing = Healer.Skills[primarySkill].Fixed;
+        int anatomy = Healer.Skills[secondarySkill].Fixed;
+        double chance = (double)(healing + 100) / 1000 - Slips * 0.02;
 
         if (chance > Utility.RandomDouble())
         {
           healerNumber = 500969; // You finish applying the bandages.
 
-          double min, max;
+          int min, max;
 
           if (Core.AOS)
           {
-            min = anatomy / 8.0 + healing / 5.0 + 4.0;
-            max = anatomy / 6.0 + healing / 2.5 + 4.0;
+            min = anatomy / 80 + healing / 50 + 40;
+            max = anatomy / 60 + healing / 25 + 40;
           }
           else
           {
-            min = anatomy / 5.0 + healing / 5.0 + 3.0;
-            max = anatomy / 5.0 + healing / 2.0 + 10.0;
+            min = anatomy / 50 + healing / 50 + 30;
+            max = anatomy / 50 + healing / 20 + 100;
           }
 
-          double toHeal = min + Utility.RandomDouble() * (max - min);
+          double toHeal = min + Utility.RandomDouble() * (max - min) / 10.0;
 
           if (Patient.Body.IsMonster || Patient.Body.IsAnimal)
-            toHeal += Patient.HitsMax / 100;
+            toHeal += Patient.HitsMax / 100.0;
 
           if (Core.AOS)
             toHeal -= toHeal * Slips * 0.35; // TODO: Verify algorithm
@@ -423,8 +423,8 @@ namespace Server.Items
 
       if (checkSkills)
       {
-        Healer.CheckSkill(secondarySkill, 0.0, 120.0);
-        Healer.CheckSkill(primarySkill, 0.0, 120.0);
+        Healer.CheckSkill(secondarySkill, 0, 1200);
+        Healer.CheckSkill(primarySkill, 0, 1200);
       }
     }
 

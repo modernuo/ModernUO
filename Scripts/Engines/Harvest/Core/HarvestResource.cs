@@ -4,7 +4,7 @@ namespace Server.Engines.Harvest
 {
   public class HarvestResource
   {
-    public HarvestResource(double reqSkill, double minSkill, double maxSkill, object message, params Type[] types)
+    public HarvestResource(int reqSkill, int minSkill, int maxSkill, object message, params Type[] types)
     {
       ReqSkill = reqSkill;
       MinSkill = minSkill;
@@ -15,11 +15,11 @@ namespace Server.Engines.Harvest
 
     public Type[] Types{ get; set; }
 
-    public double ReqSkill{ get; set; }
+    public int ReqSkill{ get; set; }
 
-    public double MinSkill{ get; set; }
+    public int MinSkill{ get; set; }
 
-    public double MaxSkill{ get; set; }
+    public int MaxSkill{ get; set; }
 
     public object SuccessMessage{ get; }
 

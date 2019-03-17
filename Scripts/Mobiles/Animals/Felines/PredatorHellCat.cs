@@ -35,7 +35,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 89.1;
+      MinTameSkill = 891;
     }
 
     public PredatorHellCat(Serial serial) : base(serial)

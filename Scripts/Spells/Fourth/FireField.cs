@@ -179,7 +179,7 @@ namespace Server.Spells.Fourth
 
           int damage = m_Damage;
 
-          if (!Core.AOS && m.CheckSkill(SkillName.MagicResist, 0.0, 30.0))
+          if (!Core.AOS && m.CheckSkill(SkillName.MagicResist, 0, 300))
           {
             damage = 1;
 
@@ -260,7 +260,7 @@ namespace Server.Spells.Fourth
 
               int damage = m_Item.m_Damage;
 
-              if (!Core.AOS && m.CheckSkill(SkillName.MagicResist, 0.0, 30.0))
+              if (!Core.AOS && m.CheckSkill(SkillName.MagicResist, 0, 300))
               {
                 damage = 1;
 

@@ -25,13 +25,13 @@ namespace Server.SkillHandlers
 
       if (Core.ML && m.Target != null) Target.Cancel(m);
 
-      double bonus = 0.0;
+      int bonus = 0;
 
       BaseHouse house = BaseHouse.FindHouseAt(m);
 
       if (house?.IsFriend(m) == true)
       {
-        bonus = 100.0;
+        bonus = 1000;
       }
       else if (!Core.AOS)
       {
@@ -42,7 +42,7 @@ namespace Server.SkillHandlers
                   BaseHouse.FindHouseAt(new Point3D(m.X, m.Y + 1, 127), m.Map, 16);
 
         if (house != null)
-          bonus = 50.0;
+          bonus = 500;
       }
 
       //int range = 18 - (int)(m.Skills.Hiding.Value / 10);
@@ -61,7 +61,7 @@ namespace Server.SkillHandlers
             badCombat = true;
           }
 
-        ok = !badCombat && m.CheckSkill(SkillName.Hiding, 0.0 - bonus, 100.0 - bonus);
+        ok = !badCombat && m.CheckSkill(SkillName.Hiding, 0 - bonus, 1000 - bonus);
       }
 
       if (badCombat)

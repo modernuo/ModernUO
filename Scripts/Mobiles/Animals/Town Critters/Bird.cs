@@ -50,7 +50,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = -6.9;
+      MinTameSkill = -69;
     }
 
     public Bird(Serial serial) : base(serial)
@@ -111,7 +111,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = -6.9;
+      MinTameSkill = -69;
     }
 
     public TropicalBird(Serial serial) : base(serial)

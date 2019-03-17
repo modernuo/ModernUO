@@ -165,30 +165,24 @@ namespace Server.Engines.Craft
 
     public void AddRes(Type type, TextDefinition name, int amount, TextDefinition message)
     {
-      CraftRes craftRes = new CraftRes(type, name, amount, message);
-      Resources.Add(craftRes);
+      Resources.Add(new CraftRes(type, name, amount, message));
     }
 
 
-    public void AddSkill(SkillName skillToMake, double minSkill, double maxSkill)
+    public void AddSkill(SkillName skillToMake, int minSkill, int maxSkill)
     {
-      CraftSkill craftSkill = new CraftSkill(skillToMake, minSkill, maxSkill);
-      Skills.Add(craftSkill);
+      Skills.Add(new CraftSkill(skillToMake, minSkill, maxSkill));
     }
 
     public bool ConsumeAttributes(Mobile from, ref object message, bool consume)
     {
-      bool consumMana;
-      bool consumHits;
-      bool consumStam;
-
       if (Hits > 0 && from.Hits < Hits)
       {
         message = "You lack the required hit points to make that.";
         return false;
       }
 
-      consumHits = consume;
+      bool consumHits = consume;
 
       if (Mana > 0 && from.Mana < Mana)
       {
@@ -196,7 +190,7 @@ namespace Server.Engines.Craft
         return false;
       }
 
-      consumMana = consume;
+      bool consumMana = consume;
 
       if (Stam > 0 && from.Stam < Stam)
       {
@@ -204,7 +198,7 @@ namespace Server.Engines.Craft
         return false;
       }
 
-      consumStam = consume;
+      bool consumStam = consume;
 
       if (consumMana)
         from.Mana -= Mana;
@@ -705,9 +699,9 @@ namespace Server.Engines.Craft
     public double GetSuccessChance(Mobile from, Type typeRes, CraftSystem craftSystem, bool gainSkills,
       ref bool allRequiredSkills)
     {
-      double minMainSkill = 0.0;
-      double maxMainSkill = 0.0;
-      double valMainSkill = 0.0;
+      int minMainSkill = 0;
+      int maxMainSkill = 0;
+      int valMainSkill = 0;
 
       allRequiredSkills = true;
 
@@ -715,9 +709,9 @@ namespace Server.Engines.Craft
       {
         CraftSkill craftSkill = Skills.GetAt(i);
 
-        double minSkill = craftSkill.MinSkill;
-        double maxSkill = craftSkill.MaxSkill;
-        double valSkill = from.Skills[craftSkill.SkillToMake].Value;
+        int minSkill = craftSkill.MinSkill;
+        int maxSkill = craftSkill.MaxSkill;
+        int valSkill = from.Skills[craftSkill.SkillToMake].Fixed;
 
         if (valSkill < minSkill)
           allRequiredSkills = false;
@@ -736,8 +730,10 @@ namespace Server.Engines.Craft
       double chance;
 
       if (allRequiredSkills)
-        chance = craftSystem.GetChanceAtMin(this) + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) *
-                 (1.0 - craftSystem.GetChanceAtMin(this));
+      {
+        double minChance = craftSystem.GetChanceAtMin(this);
+        chance = minChance + (double)(valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) * (1.0 - minChance);
+      }
       else
         chance = 0.0;
 

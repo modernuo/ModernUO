@@ -72,13 +72,13 @@ namespace Server.Engines.Harvest
       {
         res = new[]
         {
-          new HarvestResource(00.0, 00.0, 100.0, 1072540, typeof(Log)),
-          new HarvestResource(65.0, 25.0, 105.0, 1072541, typeof(OakLog)),
-          new HarvestResource(80.0, 40.0, 120.0, 1072542, typeof(AshLog)),
-          new HarvestResource(95.0, 55.0, 135.0, 1072543, typeof(YewLog)),
-          new HarvestResource(100.0, 60.0, 140.0, 1072544, typeof(HeartwoodLog)),
-          new HarvestResource(100.0, 60.0, 140.0, 1072545, typeof(BloodwoodLog)),
-          new HarvestResource(100.0, 60.0, 140.0, 1072546, typeof(FrostwoodLog))
+          new HarvestResource(0, 0, 1000, 1072540, typeof(Log)),
+          new HarvestResource(650, 250, 1050, 1072541, typeof(OakLog)),
+          new HarvestResource(800, 400, 1200, 1072542, typeof(AshLog)),
+          new HarvestResource(950, 550, 1350, 1072543, typeof(YewLog)),
+          new HarvestResource(1000, 600, 1400, 1072544, typeof(HeartwoodLog)),
+          new HarvestResource(1000, 600, 1400, 1072545, typeof(BloodwoodLog)),
+          new HarvestResource(1000, 600, 1400, 1072546, typeof(FrostwoodLog))
         };
 
 
@@ -107,7 +107,7 @@ namespace Server.Engines.Harvest
       {
         res = new[]
         {
-          new HarvestResource(00.0, 00.0, 100.0, 500498, typeof(Log))
+          new HarvestResource(0, 0, 1000, 500498, typeof(Log))
         };
 
         veins = new[]

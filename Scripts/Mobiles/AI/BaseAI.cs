@@ -340,15 +340,15 @@ namespace Server.Mobiles
               Skill skill = ourSkills[i];
               Skill theirSkill = theirSkills[i];
 
-              if (skill != null && skill?.Base >= 60.0 &&
+              if (skill?.BaseFixedPoint >= 600 &&
                   m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
               {
-                double toTeach = skill.Base / 3.0;
+                int toTeach = skill.BaseFixedPoint / 30;
 
-                if (toTeach > 42.0)
-                  toTeach = 42.0;
+                if (toTeach > 420)
+                  toTeach = 420;
 
-                if (toTeach > theirSkill.Base)
+                if (toTeach > theirSkill.BaseFixedPoint)
                 {
                   int number = 1043059 + i;
 
@@ -402,7 +402,7 @@ namespace Server.Mobiles
               Skills skills = m_Mobile.Skills;
               Skill skill = skills[toTrain];
 
-              if (skill == null || skill.Base < 60.0 || !m_Mobile.CheckTeach(toTrain, e.Mobile))
+              if (skill == null || skill.BaseFixedPoint < 600 || !m_Mobile.CheckTeach(toTrain, e.Mobile))
                 m_Mobile.Say(501507); // 'Tis not something I can teach thee of.
               else
                 m_Mobile.Teach(toTrain, e.Mobile, 0, false);

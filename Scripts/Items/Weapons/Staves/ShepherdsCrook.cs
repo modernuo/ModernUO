@@ -142,10 +142,10 @@ namespace Server.Items
         {
           if (targ is IPoint2D p)
           {
-            double min = m_Creature.MinTameSkill - 30;
-            double max = m_Creature.MinTameSkill + 30 + Utility.Random(10);
+            int min = m_Creature.MinTameSkill - 300;
+            int max = m_Creature.MinTameSkill + 300 + Utility.Random(100);
 
-            if (max <= from.Skills.Herding.Value)
+            if (max <= from.Skills.Herding.Fixed)
               m_Creature.PrivateOverheadMessage(MessageType.Regular, 0x3B2, 502471,
                 from.NetState); // That wasn't even challenging.
 

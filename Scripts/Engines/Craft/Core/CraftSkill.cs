@@ -2,7 +2,7 @@ namespace Server.Engines.Craft
 {
   public class CraftSkill
   {
-    public CraftSkill(SkillName skillToMake, double minSkill, double maxSkill)
+    public CraftSkill(SkillName skillToMake, int minSkill, int maxSkill)
     {
       SkillToMake = skillToMake;
       MinSkill = minSkill;
@@ -11,8 +11,8 @@ namespace Server.Engines.Craft
 
     public SkillName SkillToMake{ get; }
 
-    public double MinSkill{ get; }
+    public int MinSkill{ get; }
 
-    public double MaxSkill{ get; }
+    public int MaxSkill{ get; }
   }
 }

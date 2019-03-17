@@ -55,33 +55,28 @@ namespace Server.Engines.Craft
 
       private bool CheckRepairDifficulty(Mobile mob, SkillName skill, int curHits, int maxHits)
       {
-        double difficulty = GetRepairDifficulty(curHits, maxHits) * 0.1;
-
+        int difficulty = GetRepairDifficulty(curHits, maxHits);
+        int minSkill = difficulty - 250;
+        int maxSkill = difficulty + 250;
 
         if (m_Deed != null)
         {
-          double value = m_Deed.SkillLevel;
-          double minSkill = difficulty - 25.0;
-          double maxSkill = difficulty + 25;
+          int value = m_Deed.SkillLevel;
 
           if (value < minSkill)
             return false; // Too difficult
           if (value >= maxSkill)
             return true; // No challenge
 
-          double chance = (value - minSkill) / (maxSkill - minSkill);
-
-          return chance >= Utility.RandomDouble();
+          return (double)(value - minSkill) / (maxSkill - minSkill) >= Utility.RandomDouble();
         }
 
-        return mob.CheckSkill(skill, difficulty - 25.0, difficulty + 25.0);
+        return mob.CheckSkill(skill, minSkill, maxSkill);
       }
 
       private bool CheckDeed(Mobile from)
       {
-        if (m_Deed != null) return m_Deed.Check(from);
-
-        return true;
+        return m_Deed?.Check(from) ?? true;
       }
 
       private bool IsSpecialClothing(BaseClothing clothing)
@@ -242,7 +237,7 @@ namespace Server.Engines.Craft
 
               damage += 30;
 
-              if (!from.CheckSkill(SkillName.Tinkering, 0.0, 100.0))
+              if (!from.CheckSkill(SkillName.Tinkering, 0, 1000))
                 damage /= 2;
 
               Container pack = from.Backpack;

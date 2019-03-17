@@ -227,7 +227,7 @@ namespace Server.Spells.Ninjitsu
           return MorphResult.Fail;
       }
 
-      m.CheckSkill(SkillName.Ninjitsu, 0.0, 37.5);
+      m.CheckSkill(SkillName.Ninjitsu, 0, 375);
 
       if (!BaseFormTalisman.EntryEnabled(m, entry.Type))
         return MorphResult.Success; // Still consumes mana, just no effect

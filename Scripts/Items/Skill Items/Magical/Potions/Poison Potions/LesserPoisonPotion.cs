@@ -13,8 +13,8 @@ namespace Server.Items
 
     public override Poison Poison => Poison.Lesser;
 
-    public override double MinPoisoningSkill => 0.0;
-    public override double MaxPoisoningSkill => 60.0;
+    public override int MinPoisoningSkill => 0;
+    public override int MaxPoisoningSkill => 600;
 
     public override void Serialize(GenericWriter writer)
     {

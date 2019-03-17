@@ -61,10 +61,10 @@ namespace Server.Engines.Craft
 
     public override void InitCraftList()
     {
-      AddCraft(typeof(LocalMap), 1044448, 1015230, 10.0, 70.0, typeof(BlankMap), 1044449, 1, 1044450);
-      AddCraft(typeof(CityMap), 1044448, 1015231, 25.0, 85.0, typeof(BlankMap), 1044449, 1, 1044450);
-      AddCraft(typeof(SeaChart), 1044448, 1015232, 35.0, 95.0, typeof(BlankMap), 1044449, 1, 1044450);
-      AddCraft(typeof(WorldMap), 1044448, 1015233, 39.5, 99.5, typeof(BlankMap), 1044449, 1, 1044450);
+      AddCraft(typeof(LocalMap), 1044448, 1015230, 100, 700, typeof(BlankMap), 1044449, 1, 1044450);
+      AddCraft(typeof(CityMap), 1044448, 1015231, 250, 850, typeof(BlankMap), 1044449, 1, 1044450);
+      AddCraft(typeof(SeaChart), 1044448, 1015232, 350, 950, typeof(BlankMap), 1044449, 1, 1044450);
+      AddCraft(typeof(WorldMap), 1044448, 1015233, 395, 995, typeof(BlankMap), 1044449, 1, 1044450);
     }
   }
 }

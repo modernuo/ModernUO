@@ -37,7 +37,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 3;
-      MinTameSkill = 93.9;
+      MinTameSkill = 939;
     }
 
     public Dragon(Serial serial) : base(serial)

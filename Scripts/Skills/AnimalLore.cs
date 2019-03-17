@@ -50,7 +50,7 @@ namespace Server.SkillHandlers
                 from.SendLocalizedMessage(
                   1049675); // At your skill level, you can only lore tamed or tameable creatures.
               }
-              else if (!from.CheckTargetSkill(SkillName.AnimalLore, c, 0.0, 120.0))
+              else if (!from.CheckTargetSkill(SkillName.AnimalLore, c, 0, 1200))
               {
                 from.SendLocalizedMessage(500334); // You can't think of anything you know offhand.
               }

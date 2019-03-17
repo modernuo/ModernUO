@@ -33,7 +33,7 @@ namespace Server.Items
       {
         from.SendMessage("This must be in your backpack to modify it.");
       }
-      else if (from.Skills.Fletching.Base < 100.0)
+      else if (from.Skills.Fletching.BaseFixedPoint < 1000)
       {
         from.SendMessage("Only a grandmaster bowcrafter can modify this weapon.");
       }
@@ -59,7 +59,7 @@ namespace Server.Items
       {
         from.SendMessage("This must be in your backpack to modify it.");
       }
-      else if (from.Skills.Fletching.Base < 100.0)
+      else if (from.Skills.Fletching.BaseFixedPoint < 1000)
       {
         from.SendMessage("Only a grandmaster bowcrafter can modify this weapon.");
       }

@@ -423,10 +423,10 @@ namespace Server
 
   #region Delegates
 
-  public delegate bool SkillCheckTargetHandler(Mobile from, SkillName skill, object target, double minSkill,
-    double maxSkill);
+  public delegate bool SkillCheckTargetHandler(Mobile from, SkillName skill, object target, int minSkill,
+    int maxSkill);
 
-  public delegate bool SkillCheckLocationHandler(Mobile from, SkillName skill, double minSkill, double maxSkill);
+  public delegate bool SkillCheckLocationHandler(Mobile from, SkillName skill, int minSkill, int maxSkill);
 
   public delegate bool SkillCheckDirectTargetHandler(Mobile from, SkillName skill, object target, double chance);
 
@@ -7432,7 +7432,7 @@ namespace Server
       PrivateOverheadMessage(MessageType.Label, hue, AsciiClickMessage, val, from.NetState);
     }
 
-    public bool CheckSkill(SkillName skill, double minSkill, double maxSkill)
+    public bool CheckSkill(SkillName skill, int minSkill, int maxSkill)
     {
       return SkillCheckLocationHandler?.Invoke(this, skill, minSkill, maxSkill) == true;
     }
@@ -7442,7 +7442,7 @@ namespace Server
       return SkillCheckDirectLocationHandler?.Invoke(this, skill, chance) == true;
     }
 
-    public bool CheckTargetSkill(SkillName skill, object target, double minSkill, double maxSkill)
+    public bool CheckTargetSkill(SkillName skill, object target, int minSkill, int maxSkill)
     {
       return SkillCheckTargetHandler?.Invoke(this, skill, target, minSkill, maxSkill) == true;
     }

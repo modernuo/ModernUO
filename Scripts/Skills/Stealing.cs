@@ -170,7 +170,7 @@ namespace Server.SkillHandlers
             {
               m_Thief.SendLocalizedMessage(1005592); // You cannot steal this sigil until it has been purified
             }
-            else if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, 80.0, 80.0))
+            else if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, 800, 800))
             {
               if (Sigil.ExistsOn(m_Thief))
               {
@@ -274,20 +274,18 @@ namespace Server.SkillHandlers
 
               if (amount >= toSteal.Amount)
               {
-                int pileWeight = (int)Math.Ceiling(toSteal.Weight * toSteal.Amount);
-                pileWeight *= 10;
+                int pileWeight = (int)Math.Ceiling(toSteal.Weight * toSteal.Amount) * 100;
 
-                if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, pileWeight - 22.5,
-                  pileWeight + 27.5))
+                if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, pileWeight - 225,
+                  pileWeight + 275))
                   stolen = toSteal;
               }
               else
               {
-                int pileWeight = (int)Math.Ceiling(toSteal.Weight * amount);
-                pileWeight *= 10;
+                int pileWeight = (int)Math.Ceiling(toSteal.Weight * amount) * 100;
 
-                if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, pileWeight - 22.5,
-                  pileWeight + 27.5))
+                if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, pileWeight - 225,
+                  pileWeight + 275))
                 {
                   stolen = Mobile.LiftItemDupe(toSteal, toSteal.Amount - amount) ?? toSteal;
                 }
@@ -295,10 +293,9 @@ namespace Server.SkillHandlers
             }
             else
             {
-              int iw = (int)Math.Ceiling(w);
-              iw *= 10;
+              int iw = (int)Math.Ceiling(w) * 100;
 
-              if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, iw - 22.5, iw + 27.5))
+              if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, iw - 225, iw + 275))
                 stolen = toSteal;
             }
 

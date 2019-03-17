@@ -1722,13 +1722,13 @@ namespace Server.Items
     {
       if (checkSkills)
       {
-        attacker.CheckSkill(SkillName.Tactics, 0.0,
-          attacker.Skills.Tactics.Cap); // Passively check tactics for gain
-        attacker.CheckSkill(SkillName.Anatomy, 0.0,
-          attacker.Skills.Anatomy.Cap); // Passively check Anatomy for gain
+        attacker.CheckSkill(SkillName.Tactics, 00,
+          attacker.Skills.Tactics.CapFixedPoint); // Passively check tactics for gain
+        attacker.CheckSkill(SkillName.Anatomy, 00,
+          attacker.Skills.Anatomy.CapFixedPoint); // Passively check Anatomy for gain
 
         if (Type == WeaponType.Axe)
-          attacker.CheckSkill(SkillName.Lumberjacking, 0.0, 100.0); // Passively check Lumberjacking for gain
+          attacker.CheckSkill(SkillName.Lumberjacking, 0, 1000); // Passively check Lumberjacking for gain
       }
 
       #region Physical bonuses
@@ -1795,13 +1795,13 @@ namespace Server.Items
     {
       if (checkSkills)
       {
-        attacker.CheckSkill(SkillName.Tactics, 0.0,
-          attacker.Skills.Tactics.Cap); // Passively check tactics for gain
-        attacker.CheckSkill(SkillName.Anatomy, 0.0,
-          attacker.Skills.Anatomy.Cap); // Passively check Anatomy for gain
+        attacker.CheckSkill(SkillName.Tactics, 0,
+          attacker.Skills.Tactics.CapFixedPoint); // Passively check tactics for gain
+        attacker.CheckSkill(SkillName.Anatomy, 0,
+          attacker.Skills.Anatomy.CapFixedPoint); // Passively check Anatomy for gain
 
         if (Type == WeaponType.Axe)
-          attacker.CheckSkill(SkillName.Lumberjacking, 0.0, 100.0); // Passively check Lumberjacking for gain
+          attacker.CheckSkill(SkillName.Lumberjacking, 0, 1000); // Passively check Lumberjacking for gain
       }
 
       /* Compute tactics modifier

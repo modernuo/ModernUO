@@ -74,15 +74,15 @@ namespace Server.SkillHandlers
       {
         int armorRating = GetArmorRating(m);
 
-        if (armorRating >= (Core.AOS ? 42 : 26)) //I have a hunch '42' was chosen cause someone's a fan of DNA
+        if (armorRating >= (Core.AOS ? 42 : 26)) //I have a hunch '42' was chosen cause someone is a fan of DNA
         {
           m.SendLocalizedMessage(502727); // You could not hope to move quietly wearing this much armor.
           m.RevealingAction();
         }
-        else if (m.CheckSkill(SkillName.Stealth, -20.0 + armorRating * 2,
-          (Core.AOS ? 60.0 : 80.0) + armorRating * 2))
+        else if (m.CheckSkill(SkillName.Stealth, -200 + armorRating * 20,
+          (Core.AOS ? 600 : 800) + armorRating * 20))
         {
-          int steps = (int)(m.Skills.Stealth.Value / (Core.AOS ? 5.0 : 10.0));
+          int steps = m.Skills.Stealth.Fixed / (Core.AOS ? 50 : 100);
 
           if (steps < 1)
             steps = 1;

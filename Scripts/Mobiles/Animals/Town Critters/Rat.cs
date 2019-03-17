@@ -33,7 +33,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = -0.9;
+      MinTameSkill = -9;
     }
 
     public Rat(Serial serial) : base(serial)

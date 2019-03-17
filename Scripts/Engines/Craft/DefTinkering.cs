@@ -110,27 +110,27 @@ namespace Server.Engines.Craft
     {
       int offset = (int)gemType - 1;
 
-      int index = AddCraft(typeof(GoldRing), 1044049, 1044176 + offset, 40.0, 90.0, typeof(IronIngot), 1044036, 2,
+      int index = AddCraft(typeof(GoldRing), 1044049, 1044176 + offset, 400, 900, typeof(IronIngot), 1044036, 2,
         1044037);
       AddRes(index, itemType, 1044231 + offset, 1, 1044240);
 
-      index = AddCraft(typeof(SilverBeadNecklace), 1044049, 1044185 + offset, 40.0, 90.0, typeof(IronIngot), 1044036,
+      index = AddCraft(typeof(SilverBeadNecklace), 1044049, 1044185 + offset, 400, 900, typeof(IronIngot), 1044036,
         2, 1044037);
       AddRes(index, itemType, 1044231 + offset, 1, 1044240);
 
-      index = AddCraft(typeof(GoldNecklace), 1044049, 1044194 + offset, 40.0, 90.0, typeof(IronIngot), 1044036, 2,
+      index = AddCraft(typeof(GoldNecklace), 1044049, 1044194 + offset, 400, 900, typeof(IronIngot), 1044036, 2,
         1044037);
       AddRes(index, itemType, 1044231 + offset, 1, 1044240);
 
-      index = AddCraft(typeof(GoldEarrings), 1044049, 1044203 + offset, 40.0, 90.0, typeof(IronIngot), 1044036, 2,
+      index = AddCraft(typeof(GoldEarrings), 1044049, 1044203 + offset, 400, 900, typeof(IronIngot), 1044036, 2,
         1044037);
       AddRes(index, itemType, 1044231 + offset, 1, 1044240);
 
-      index = AddCraft(typeof(GoldBeadNecklace), 1044049, 1044212 + offset, 40.0, 90.0, typeof(IronIngot), 1044036, 2,
+      index = AddCraft(typeof(GoldBeadNecklace), 1044049, 1044212 + offset, 400, 900, typeof(IronIngot), 1044036, 2,
         1044037);
       AddRes(index, itemType, 1044231 + offset, 1, 1044240);
 
-      index = AddCraft(typeof(GoldBracelet), 1044049, 1044221 + offset, 40.0, 90.0, typeof(IronIngot), 1044036, 2,
+      index = AddCraft(typeof(GoldBracelet), 1044049, 1044221 + offset, 400, 900, typeof(IronIngot), 1044036, 2,
         1044037);
       AddRes(index, itemType, 1044231 + offset, 1, 1044240);
     }
@@ -141,16 +141,16 @@ namespace Server.Engines.Craft
 
       #region Wooden Items
 
-      AddCraft(typeof(JointingPlane), 1044042, 1024144, 0.0, 50.0, typeof(Log), 1044041, 4, 1044351);
-      AddCraft(typeof(MouldingPlane), 1044042, 1024140, 0.0, 50.0, typeof(Log), 1044041, 4, 1044351);
-      AddCraft(typeof(SmoothingPlane), 1044042, 1024146, 0.0, 50.0, typeof(Log), 1044041, 4, 1044351);
-      AddCraft(typeof(ClockFrame), 1044042, 1024173, 0.0, 50.0, typeof(Log), 1044041, 6, 1044351);
-      AddCraft(typeof(Axle), 1044042, 1024187, -25.0, 25.0, typeof(Log), 1044041, 2, 1044351);
-      AddCraft(typeof(RollingPin), 1044042, 1024163, 0.0, 50.0, typeof(Log), 1044041, 5, 1044351);
+      AddCraft(typeof(JointingPlane), 1044042, 1024144, 00, 500, typeof(Log), 1044041, 4, 1044351);
+      AddCraft(typeof(MouldingPlane), 1044042, 1024140, 00, 500, typeof(Log), 1044041, 4, 1044351);
+      AddCraft(typeof(SmoothingPlane), 1044042, 1024146, 00, 500, typeof(Log), 1044041, 4, 1044351);
+      AddCraft(typeof(ClockFrame), 1044042, 1024173, 00, 500, typeof(Log), 1044041, 6, 1044351);
+      AddCraft(typeof(Axle), 1044042, 1024187, -250, 250, typeof(Log), 1044041, 2, 1044351);
+      AddCraft(typeof(RollingPin), 1044042, 1024163, 00, 500, typeof(Log), 1044041, 5, 1044351);
 
       if (Core.SE)
       {
-        index = AddCraft(typeof(Nunchaku), 1044042, 1030158, 70.0, 120.0, typeof(IronIngot), 1044036, 3, 1044037);
+        index = AddCraft(typeof(Nunchaku), 1044042, 1030158, 700, 1200, typeof(IronIngot), 1044036, 3, 1044037);
         AddRes(index, typeof(Log), 1044041, 8, 1044351);
         SetNeededExpansion(index, Expansion.SE);
       }
@@ -159,46 +159,46 @@ namespace Server.Engines.Craft
 
       #region Tools
 
-      AddCraft(typeof(Scissors), 1044046, 1023998, 5.0, 55.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(MortarPestle), 1044046, 1023739, 20.0, 70.0, typeof(IronIngot), 1044036, 3, 1044037);
-      AddCraft(typeof(Scorp), 1044046, 1024327, 30.0, 80.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(TinkerTools), 1044046, 1044164, 10.0, 60.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(Hatchet), 1044046, 1023907, 30.0, 80.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(DrawKnife), 1044046, 1024324, 30.0, 80.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(SewingKit), 1044046, 1023997, 10.0, 70.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(Saw), 1044046, 1024148, 30.0, 80.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(DovetailSaw), 1044046, 1024136, 30.0, 80.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(Froe), 1044046, 1024325, 30.0, 80.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(Shovel), 1044046, 1023898, 40.0, 90.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(Hammer), 1044046, 1024138, 30.0, 80.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(Tongs), 1044046, 1024028, 35.0, 85.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(SmithHammer), 1044046, 1025091, 40.0, 90.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(SledgeHammer), 1044046, 1024021, 40.0, 90.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(Inshave), 1044046, 1024326, 30.0, 80.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(Pickaxe), 1044046, 1023718, 40.0, 90.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(Lockpick), 1044046, 1025371, 45.0, 95.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(Skillet), 1044046, 1044567, 30.0, 80.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(FlourSifter), 1044046, 1024158, 50.0, 100.0, typeof(IronIngot), 1044036, 3, 1044037);
-      AddCraft(typeof(FletcherTools), 1044046, 1044166, 35.0, 85.0, typeof(IronIngot), 1044036, 3, 1044037);
-      AddCraft(typeof(MapmakersPen), 1044046, 1044167, 25.0, 75.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(ScribesPen), 1044046, 1044168, 25.0, 75.0, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(Scissors), 1044046, 1023998, 50, 550, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(MortarPestle), 1044046, 1023739, 200, 700, typeof(IronIngot), 1044036, 3, 1044037);
+      AddCraft(typeof(Scorp), 1044046, 1024327, 300, 800, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(TinkerTools), 1044046, 1044164, 100, 600, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(Hatchet), 1044046, 1023907, 300, 800, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(DrawKnife), 1044046, 1024324, 300, 800, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(SewingKit), 1044046, 1023997, 100, 700, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(Saw), 1044046, 1024148, 300, 800, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(DovetailSaw), 1044046, 1024136, 300, 800, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(Froe), 1044046, 1024325, 300, 800, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(Shovel), 1044046, 1023898, 400, 900, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(Hammer), 1044046, 1024138, 300, 800, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(Tongs), 1044046, 1024028, 350, 850, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(SmithHammer), 1044046, 1025091, 400, 900, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(SledgeHammer), 1044046, 1024021, 400, 900, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(Inshave), 1044046, 1024326, 300, 800, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(Pickaxe), 1044046, 1023718, 400, 900, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(Lockpick), 1044046, 1025371, 450, 950, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(Skillet), 1044046, 1044567, 300, 800, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(FlourSifter), 1044046, 1024158, 500, 1000, typeof(IronIngot), 1044036, 3, 1044037);
+      AddCraft(typeof(FletcherTools), 1044046, 1044166, 350, 850, typeof(IronIngot), 1044036, 3, 1044037);
+      AddCraft(typeof(MapmakersPen), 1044046, 1044167, 250, 750, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(ScribesPen), 1044046, 1044168, 250, 750, typeof(IronIngot), 1044036, 1, 1044037);
 
       #endregion
 
       #region Parts
 
-      AddCraft(typeof(Gears), 1044047, 1024179, 5.0, 55.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(ClockParts), 1044047, 1024175, 25.0, 75.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(BarrelTap), 1044047, 1024100, 35.0, 85.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(Springs), 1044047, 1024189, 5.0, 55.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(SextantParts), 1044047, 1024185, 30.0, 80.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(BarrelHoops), 1044047, 1024321, -15.0, 35.0, typeof(IronIngot), 1044036, 5, 1044037);
-      AddCraft(typeof(Hinge), 1044047, 1024181, 5.0, 55.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(BolaBall), 1044047, 1023699, 45.0, 95.0, typeof(IronIngot), 1044036, 10, 1044037);
+      AddCraft(typeof(Gears), 1044047, 1024179, 50, 550, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(ClockParts), 1044047, 1024175, 250, 750, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(BarrelTap), 1044047, 1024100, 350, 850, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(Springs), 1044047, 1024189, 50, 550, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(SextantParts), 1044047, 1024185, 300, 800, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(BarrelHoops), 1044047, 1024321, -150, 350, typeof(IronIngot), 1044036, 5, 1044037);
+      AddCraft(typeof(Hinge), 1044047, 1024181, 50, 550, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(BolaBall), 1044047, 1023699, 450, 950, typeof(IronIngot), 1044036, 10, 1044037);
 
       if (Core.ML)
       {
-        index = AddCraft(typeof(JeweledFiligree), 1044047, 1072894, 70.0, 110.0, typeof(IronIngot), 1044036, 2,
+        index = AddCraft(typeof(JeweledFiligree), 1044047, 1072894, 700, 1100, typeof(IronIngot), 1044036, 2,
           1044037);
         AddRes(index, typeof(StarSapphire), 1044231, 1, 1044253);
         AddRes(index, typeof(Ruby), 1044234, 1, 1044253);
@@ -209,53 +209,53 @@ namespace Server.Engines.Craft
 
       #region Utensils
 
-      AddCraft(typeof(ButcherKnife), 1044048, 1025110, 25.0, 75.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(SpoonLeft), 1044048, 1044158, 0.0, 50.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(SpoonRight), 1044048, 1044159, 0.0, 50.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(Plate), 1044048, 1022519, 0.0, 50.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(ForkLeft), 1044048, 1044160, 0.0, 50.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(ForkRight), 1044048, 1044161, 0.0, 50.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(Cleaver), 1044048, 1023778, 20.0, 70.0, typeof(IronIngot), 1044036, 3, 1044037);
-      AddCraft(typeof(KnifeLeft), 1044048, 1044162, 0.0, 50.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(KnifeRight), 1044048, 1044163, 0.0, 50.0, typeof(IronIngot), 1044036, 1, 1044037);
-      AddCraft(typeof(Goblet), 1044048, 1022458, 10.0, 60.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(PewterMug), 1044048, 1024097, 10.0, 60.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(SkinningKnife), 1044048, 1023781, 25.0, 75.0, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(ButcherKnife), 1044048, 1025110, 250, 750, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(SpoonLeft), 1044048, 1044158, 00, 500, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(SpoonRight), 1044048, 1044159, 00, 500, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(Plate), 1044048, 1022519, 00, 500, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(ForkLeft), 1044048, 1044160, 00, 500, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(ForkRight), 1044048, 1044161, 00, 500, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(Cleaver), 1044048, 1023778, 200, 700, typeof(IronIngot), 1044036, 3, 1044037);
+      AddCraft(typeof(KnifeLeft), 1044048, 1044162, 00, 500, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(KnifeRight), 1044048, 1044163, 00, 500, typeof(IronIngot), 1044036, 1, 1044037);
+      AddCraft(typeof(Goblet), 1044048, 1022458, 100, 600, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(PewterMug), 1044048, 1024097, 100, 600, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(SkinningKnife), 1044048, 1023781, 250, 750, typeof(IronIngot), 1044036, 2, 1044037);
 
       #endregion
 
       #region Misc
 
-      AddCraft(typeof(KeyRing), 1044050, 1024113, 10.0, 60.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(Candelabra), 1044050, 1022599, 55.0, 105.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(Scales), 1044050, 1026225, 60.0, 110.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(Key), 1044050, 1024112, 20.0, 70.0, typeof(IronIngot), 1044036, 3, 1044037);
-      AddCraft(typeof(Globe), 1044050, 1024167, 55.0, 105.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(Spyglass), 1044050, 1025365, 60.0, 110.0, typeof(IronIngot), 1044036, 4, 1044037);
-      AddCraft(typeof(Lantern), 1044050, 1022597, 30.0, 80.0, typeof(IronIngot), 1044036, 2, 1044037);
-      AddCraft(typeof(HeatingStand), 1044050, 1026217, 60.0, 110.0, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(KeyRing), 1044050, 1024113, 100, 600, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(Candelabra), 1044050, 1022599, 550, 1050, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(Scales), 1044050, 1026225, 600, 1100, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(Key), 1044050, 1024112, 200, 700, typeof(IronIngot), 1044036, 3, 1044037);
+      AddCraft(typeof(Globe), 1044050, 1024167, 550, 1050, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(Spyglass), 1044050, 1025365, 600, 1100, typeof(IronIngot), 1044036, 4, 1044037);
+      AddCraft(typeof(Lantern), 1044050, 1022597, 300, 800, typeof(IronIngot), 1044036, 2, 1044037);
+      AddCraft(typeof(HeatingStand), 1044050, 1026217, 600, 1100, typeof(IronIngot), 1044036, 4, 1044037);
 
       if (Core.SE)
       {
-        index = AddCraft(typeof(ShojiLantern), 1044050, 1029404, 65.0, 115.0, typeof(IronIngot), 1044036, 10,
+        index = AddCraft(typeof(ShojiLantern), 1044050, 1029404, 650, 1150, typeof(IronIngot), 1044036, 10,
           1044037);
         AddRes(index, typeof(Log), 1044041, 5, 1044351);
         SetNeededExpansion(index, Expansion.SE);
 
-        index = AddCraft(typeof(PaperLantern), 1044050, 1029406, 65.0, 115.0, typeof(IronIngot), 1044036, 10,
+        index = AddCraft(typeof(PaperLantern), 1044050, 1029406, 650, 1150, typeof(IronIngot), 1044036, 10,
           1044037);
         AddRes(index, typeof(Log), 1044041, 5, 1044351);
         SetNeededExpansion(index, Expansion.SE);
 
-        index = AddCraft(typeof(RoundPaperLantern), 1044050, 1029418, 65.0, 115.0, typeof(IronIngot), 1044036, 10,
+        index = AddCraft(typeof(RoundPaperLantern), 1044050, 1029418, 650, 1150, typeof(IronIngot), 1044036, 10,
           1044037);
         AddRes(index, typeof(Log), 1044041, 5, 1044351);
         SetNeededExpansion(index, Expansion.SE);
 
-        index = AddCraft(typeof(WindChimes), 1044050, 1030290, 80.0, 130.0, typeof(IronIngot), 1044036, 15, 1044037);
+        index = AddCraft(typeof(WindChimes), 1044050, 1030290, 800, 1300, typeof(IronIngot), 1044036, 15, 1044037);
         SetNeededExpansion(index, Expansion.SE);
 
-        index = AddCraft(typeof(FancyWindChimes), 1044050, 1030291, 80.0, 130.0, typeof(IronIngot), 1044036, 15,
+        index = AddCraft(typeof(FancyWindChimes), 1044050, 1030291, 800, 1300, typeof(IronIngot), 1044036, 15,
           1044037);
         SetNeededExpansion(index, Expansion.SE);
       }
@@ -278,27 +278,27 @@ namespace Server.Engines.Craft
 
       #region Multi-Component Items
 
-      index = AddCraft(typeof(AxleGears), 1044051, 1024177, 0.0, 0.0, typeof(Axle), 1044169, 1, 1044253);
+      index = AddCraft(typeof(AxleGears), 1044051, 1024177, 00, 00, typeof(Axle), 1044169, 1, 1044253);
       AddRes(index, typeof(Gears), 1044254, 1, 1044253);
 
-      index = AddCraft(typeof(ClockParts), 1044051, 1024175, 0.0, 0.0, typeof(AxleGears), 1044170, 1, 1044253);
+      index = AddCraft(typeof(ClockParts), 1044051, 1024175, 00, 00, typeof(AxleGears), 1044170, 1, 1044253);
       AddRes(index, typeof(Springs), 1044171, 1, 1044253);
 
-      index = AddCraft(typeof(SextantParts), 1044051, 1024185, 0.0, 0.0, typeof(AxleGears), 1044170, 1, 1044253);
+      index = AddCraft(typeof(SextantParts), 1044051, 1024185, 00, 00, typeof(AxleGears), 1044170, 1, 1044253);
       AddRes(index, typeof(Hinge), 1044172, 1, 1044253);
 
-      index = AddCraft(typeof(ClockRight), 1044051, 1044257, 0.0, 0.0, typeof(ClockFrame), 1044174, 1, 1044253);
+      index = AddCraft(typeof(ClockRight), 1044051, 1044257, 00, 00, typeof(ClockFrame), 1044174, 1, 1044253);
       AddRes(index, typeof(ClockParts), 1044173, 1, 1044253);
 
-      index = AddCraft(typeof(ClockLeft), 1044051, 1044256, 0.0, 0.0, typeof(ClockFrame), 1044174, 1, 1044253);
+      index = AddCraft(typeof(ClockLeft), 1044051, 1044256, 00, 00, typeof(ClockFrame), 1044174, 1, 1044253);
       AddRes(index, typeof(ClockParts), 1044173, 1, 1044253);
 
-      AddCraft(typeof(Sextant), 1044051, 1024183, 0.0, 0.0, typeof(SextantParts), 1044175, 1, 1044253);
+      AddCraft(typeof(Sextant), 1044051, 1024183, 00, 00, typeof(SextantParts), 1044175, 1, 1044253);
 
-      index = AddCraft(typeof(Bola), 1044051, 1046441, 60.0, 80.0, typeof(BolaBall), 1046440, 4, 1042613);
+      index = AddCraft(typeof(Bola), 1044051, 1046441, 600, 800, typeof(BolaBall), 1046440, 4, 1042613);
       AddRes(index, typeof(Leather), 1044462, 3, 1044463);
 
-      index = AddCraft(typeof(PotionKeg), 1044051, 1044258, 75.0, 100.0, typeof(Keg), 1044255, 1, 1044253);
+      index = AddCraft(typeof(PotionKeg), 1044051, 1044258, 750, 1000, typeof(Keg), 1044255, 1, 1044253);
       AddRes(index, typeof(Bottle), 1044250, 10, 1044253);
       AddRes(index, typeof(BarrelLid), 1044251, 1, 1044253);
       AddRes(index, typeof(BarrelTap), 1044252, 1, 1044253);
@@ -308,44 +308,44 @@ namespace Server.Engines.Craft
       #region Traps
 
       // Dart Trap
-      index = AddCraft(typeof(DartTrapCraft), 1044052, 1024396, 30.0, 80.0, typeof(IronIngot), 1044036, 1, 1044037);
+      index = AddCraft(typeof(DartTrapCraft), 1044052, 1024396, 300, 800, typeof(IronIngot), 1044036, 1, 1044037);
       AddRes(index, typeof(Bolt), 1044570, 1, 1044253);
 
       // Poison Trap
-      index = AddCraft(typeof(PoisonTrapCraft), 1044052, 1044593, 30.0, 80.0, typeof(IronIngot), 1044036, 1, 1044037);
+      index = AddCraft(typeof(PoisonTrapCraft), 1044052, 1044593, 300, 800, typeof(IronIngot), 1044036, 1, 1044037);
       AddRes(index, typeof(BasePoisonPotion), 1044571, 1, 1044253);
 
       // Explosion Trap
-      index = AddCraft(typeof(ExplosionTrapCraft), 1044052, 1044597, 55.0, 105.0, typeof(IronIngot), 1044036, 1,
+      index = AddCraft(typeof(ExplosionTrapCraft), 1044052, 1044597, 550, 1050, typeof(IronIngot), 1044036, 1,
         1044037);
       AddRes(index, typeof(BaseExplosionPotion), 1044569, 1, 1044253);
 
       // Faction Gas Trap
-      index = AddCraft(typeof(FactionGasTrapDeed), 1044052, 1044598, 65.0, 115.0, typeof(Silver), 1044572,
+      index = AddCraft(typeof(FactionGasTrapDeed), 1044052, 1044598, 650, 1150, typeof(Silver), 1044572,
         Core.AOS ? 250 : 1000, 1044253);
       AddRes(index, typeof(IronIngot), 1044036, 10, 1044037);
       AddRes(index, typeof(BasePoisonPotion), 1044571, 1, 1044253);
 
       // Faction explosion Trap
-      index = AddCraft(typeof(FactionExplosionTrapDeed), 1044052, 1044599, 65.0, 115.0, typeof(Silver), 1044572,
+      index = AddCraft(typeof(FactionExplosionTrapDeed), 1044052, 1044599, 650, 1150, typeof(Silver), 1044572,
         Core.AOS ? 250 : 1000, 1044253);
       AddRes(index, typeof(IronIngot), 1044036, 10, 1044037);
       AddRes(index, typeof(BaseExplosionPotion), 1044569, 1, 1044253);
 
       // Faction Saw Trap
-      index = AddCraft(typeof(FactionSawTrapDeed), 1044052, 1044600, 65.0, 115.0, typeof(Silver), 1044572,
+      index = AddCraft(typeof(FactionSawTrapDeed), 1044052, 1044600, 650, 1150, typeof(Silver), 1044572,
         Core.AOS ? 250 : 1000, 1044253);
       AddRes(index, typeof(IronIngot), 1044036, 10, 1044037);
       AddRes(index, typeof(Gears), 1044254, 1, 1044253);
 
       // Faction Spike Trap
-      index = AddCraft(typeof(FactionSpikeTrapDeed), 1044052, 1044601, 65.0, 115.0, typeof(Silver), 1044572,
+      index = AddCraft(typeof(FactionSpikeTrapDeed), 1044052, 1044601, 650, 1150, typeof(Silver), 1044572,
         Core.AOS ? 250 : 1000, 1044253);
       AddRes(index, typeof(IronIngot), 1044036, 10, 1044037);
       AddRes(index, typeof(Springs), 1044171, 1, 1044253);
 
       // Faction trap removal kit
-      index = AddCraft(typeof(FactionTrapRemovalKit), 1044052, 1046445, 90.0, 115.0, typeof(Silver), 1044572, 500,
+      index = AddCraft(typeof(FactionTrapRemovalKit), 1044052, 1046445, 900, 1150, typeof(Silver), 1044572, 500,
         1044253);
       AddRes(index, typeof(IronIngot), 1044036, 10, 1044037);
 
@@ -354,7 +354,7 @@ namespace Server.Engines.Craft
       // Magic Jewelry
       if (Core.ML)
       {
-        index = AddCraft(typeof(ResilientBracer), 1073107, 1072933, 100.0, 125.0, typeof(IronIngot), 1044036, 2,
+        index = AddCraft(typeof(ResilientBracer), 1073107, 1072933, 1000, 1250, typeof(IronIngot), 1044036, 2,
           1044037);
         AddRes(index, typeof(CapturedEssence), 1032686, 1, 1044253);
         AddRes(index, typeof(BlueDiamond), 1032696, 10, 1044253);
@@ -363,7 +363,7 @@ namespace Server.Engines.Craft
         ForceNonExceptional(index);
         SetNeededExpansion(index, Expansion.ML);
 
-        index = AddCraft(typeof(EssenceOfBattle), 1073107, 1072935, 100.0, 125.0, typeof(IronIngot), 1044036, 2,
+        index = AddCraft(typeof(EssenceOfBattle), 1073107, 1072935, 1000, 1250, typeof(IronIngot), 1044036, 2,
           1044037);
         AddRes(index, typeof(CapturedEssence), 1032686, 1, 1044253);
         AddRes(index, typeof(FireRuby), 1032695, 10, 1044253);
@@ -372,7 +372,7 @@ namespace Server.Engines.Craft
         ForceNonExceptional(index);
         SetNeededExpansion(index, Expansion.ML);
 
-        index = AddCraft(typeof(PendantOfTheMagi), 1073107, 1072937, 100.0, 125.0, typeof(IronIngot), 1044036, 2,
+        index = AddCraft(typeof(PendantOfTheMagi), 1073107, 1072937, 1000, 1250, typeof(IronIngot), 1044036, 2,
           1044037);
         AddRes(index, typeof(EyeOfTheTravesty), 1032685, 1, 1044253);
         AddRes(index, typeof(WhitePearl), 1032694, 10, 1044253);
@@ -438,7 +438,8 @@ namespace Server.Engines.Craft
 
       message = Verify(container);
 
-      if (message > 0) return false;
+      if (message > 0)
+        return false;
 
       Container = container;
       return true;

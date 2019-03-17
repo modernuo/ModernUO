@@ -37,7 +37,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 53.1;
+      MinTameSkill = 531;
     }
 
     public GreyWolf(Serial serial) : base(serial)

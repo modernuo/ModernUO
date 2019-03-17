@@ -35,7 +35,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 3;
-      MinTameSkill = 93.9;
+      MinTameSkill = 939;
 
       PackItem(new SulfurousAsh(Utility.RandomMinMax(16, 25)));
       PackItem(new IronIngot(2));

@@ -36,7 +36,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 71.1;
+      MinTameSkill = 711;
     }
 
     public HellCat(Serial serial) : base(serial)

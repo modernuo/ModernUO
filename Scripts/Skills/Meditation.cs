@@ -78,12 +78,12 @@ namespace Server.SkillHandlers
         return TimeSpan.FromSeconds(2.5);
       }
 
-      double skillVal = m.Skills.Meditation.Value;
-      double chance = (50.0 + (skillVal - (m.ManaMax - m.Mana)) * 2) / 100;
+      double skillVal = m.Skills.Meditation.Fixed;
+      double chance = (500 + (skillVal - (m.ManaMax - m.Mana) * 10) * 2) / 100;
 
       if (chance > Utility.RandomDouble())
       {
-        m.CheckSkill(SkillName.Meditation, 0.0, 100.0);
+        m.CheckSkill(SkillName.Meditation, 0, 1000);
 
         m.SendLocalizedMessage(501851); // You enter a meditative trance.
         m.Meditating = true;

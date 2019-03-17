@@ -37,7 +37,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 71.1;
+      MinTameSkill = 711;
     }
 
     public GiantIceWorm(Serial serial) : base(serial)

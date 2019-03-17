@@ -8,10 +8,10 @@ namespace Server.Items
 	public class ArcheryButte : AddonComponent
 	{
 		[CommandProperty( AccessLevel.GameMaster )]
-		public double MinSkill { get; set; }
+		public int MinSkill { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public double MaxSkill { get; set; }
+		public int MaxSkill { get; set; }
 
 		[CommandProperty( AccessLevel.GameMaster )]
 		public DateTime LastUse { get; set; }
@@ -31,8 +31,8 @@ namespace Server.Items
 
 		public ArcheryButte(int itemID = 0x100A) : base(itemID)
 		{
-			MinSkill = -25.0;
-			MaxSkill = +25.0;
+			MinSkill = -250;
+			MaxSkill = +250;
 		}
 
 		public ArcheryButte( Serial serial ) : base( serial )
@@ -237,8 +237,8 @@ namespace Server.Items
 
 			writer.Write( 0 );
 
-			writer.Write( MinSkill );
-			writer.Write( MaxSkill );
+			writer.WriteEncodedInt( MinSkill );
+			writer.WriteEncodedInt( MaxSkill );
 			writer.Write( Arrows );
 			writer.Write( Bolts );
 		}
@@ -253,15 +253,15 @@ namespace Server.Items
 			{
 				case 0:
 				{
-					MinSkill = reader.ReadDouble();
-					MaxSkill = reader.ReadDouble();
+					MinSkill = reader.ReadEncodedInt();
+					MaxSkill = reader.ReadEncodedInt();
 					Arrows = reader.ReadInt();
 					Bolts = reader.ReadInt();
 
-					if ( MinSkill == 0.0 && MaxSkill == 30.0 )
+					if ( MinSkill == 00 && MaxSkill == 300 )
 					{
-						MinSkill = -25.0;
-						MaxSkill = +25.0;
+						MinSkill = -250;
+						MaxSkill = +250;
 					}
 
 					break;

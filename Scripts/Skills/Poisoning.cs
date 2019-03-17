@@ -96,7 +96,7 @@ namespace Server.SkillHandlers
         private class InternalTimer : Timer
         {
           private Mobile m_From;
-          private double m_MinSkill, m_MaxSkill;
+          private int m_MinSkill, m_MaxSkill;
           private Poison m_Poison;
           private Item m_Target;
 
@@ -126,14 +126,12 @@ namespace Server.SkillHandlers
               else if (m_Target is FukiyaDarts darts)
               {
                 darts.Poison = m_Poison;
-                darts.PoisonCharges = Math.Min(18 - m_Poison.Level * 2,
-                  darts.UsesRemaining);
+                darts.PoisonCharges = Math.Min(18 - m_Poison.Level * 2, darts.UsesRemaining);
               }
               else if (m_Target is Shuriken shuriken)
               {
                 shuriken.Poison = m_Poison;
-                shuriken.PoisonCharges = Math.Min(18 - m_Poison.Level * 2,
-                  shuriken.UsesRemaining);
+                shuriken.PoisonCharges = Math.Min(18 - m_Poison.Level * 2, shuriken.UsesRemaining);
               }
 
               m_From.SendLocalizedMessage(1010517); // You apply the poison
@@ -143,7 +141,7 @@ namespace Server.SkillHandlers
             else // Failed
             {
               // 5% of chance of getting poisoned if failed
-              if (m_From.Skills.Poisoning.Base < 80.0 && Utility.Random(20) == 0)
+              if (m_From.Skills.Poisoning.BaseFixedPoint < 800 && Utility.Random(20) == 0)
               {
                 m_From.SendLocalizedMessage(502148); // You make a grave mistake while applying the poison.
                 m_From.ApplyPoison(m_From, m_Poison);

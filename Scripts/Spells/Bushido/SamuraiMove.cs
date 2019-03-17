@@ -6,7 +6,7 @@ namespace Server.Spells
 
     public override void CheckGain(Mobile m)
     {
-      m.CheckSkill(MoveSkill, RequiredSkill - 12.5, RequiredSkill + 37.5); //Per five on friday 02/16/07
+      m.CheckSkill(MoveSkill, RequiredSkill - 125, RequiredSkill + 375); //Per five on friday 02/16/07
     }
   }
 }

@@ -121,26 +121,26 @@ namespace Server.Engines.Craft
     }
 
 
-    public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, double minSkill, double maxSkill,
+    public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, int minSkill, int maxSkill,
       Type typeRes, TextDefinition nameRes, int amount)
     {
       return AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, "");
     }
 
-    public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, double minSkill, double maxSkill,
+    public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, int minSkill, int maxSkill,
       Type typeRes, TextDefinition nameRes, int amount, TextDefinition message)
     {
       return AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, message);
     }
 
-    public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, double minSkill,
-      double maxSkill, Type typeRes, TextDefinition nameRes, int amount)
+    public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, int minSkill,
+      int maxSkill, Type typeRes, TextDefinition nameRes, int amount)
     {
       return AddCraft(typeItem, group, name, skillToMake, minSkill, maxSkill, typeRes, nameRes, amount, "");
     }
 
-    public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, double minSkill,
-      double maxSkill, Type typeRes, TextDefinition nameRes, int amount, TextDefinition message)
+    public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, int minSkill,
+      int maxSkill, Type typeRes, TextDefinition nameRes, int amount, TextDefinition message)
     {
       CraftItem craftItem = new CraftItem(typeItem, group, name);
       craftItem.AddRes(typeRes, nameRes, amount, message);
@@ -239,7 +239,7 @@ namespace Server.Engines.Craft
       craftItem.AddRes(type, name, amount, message);
     }
 
-    public void AddSkill(int index, SkillName skillToMake, double minSkill, double maxSkill)
+    public void AddSkill(int index, SkillName skillToMake, int minSkill, int maxSkill)
     {
       CraftItem craftItem = CraftItems.GetAt(index);
       craftItem.AddSkill(skillToMake, minSkill, maxSkill);

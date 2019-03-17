@@ -55,7 +55,7 @@ namespace Server.Spells.Necromancy
         TimeSpan duration =
           TimeSpan.FromSeconds(
             ((GetDamageSkill(Caster) - GetResistSkill(m)) / 5.0 + 20.0) * (m.Player ? 1.0 : 2.0));
-        m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); //Skill check for gain
+        m.CheckSkill(SkillName.MagicResist, 0, 1200); //Skill check for gain
 
         SetMindRotScalar(Caster, m, m.Player ? 1.25 : 2.00, duration);
 

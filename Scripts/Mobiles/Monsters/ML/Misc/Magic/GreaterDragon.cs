@@ -44,7 +44,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 5;
-      MinTameSkill = 104.7;
+      MinTameSkill = 1047;
     }
 
     public GreaterDragon(Serial serial) : base(serial)

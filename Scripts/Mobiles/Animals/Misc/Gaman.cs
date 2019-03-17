@@ -35,7 +35,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 68.7;
+      MinTameSkill = 687;
     }
 
     public Gaman(Serial serial) : base(serial)

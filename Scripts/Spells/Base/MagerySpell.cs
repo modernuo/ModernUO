@@ -43,13 +43,12 @@ namespace Server.Spells
 
     public override double GetResistSkill(Mobile m)
     {
-      int maxSkill = (1 + (int)Circle) * 10;
-      maxSkill += (1 + (int)Circle / 6) * 25;
+      int maxSkill = (1 + (int)Circle) * 100 + (1 + (int)Circle / 6) * 250;
 
-      if (m.Skills.MagicResist.Value < maxSkill)
-        m.CheckSkill(SkillName.MagicResist, 0.0, m.Skills.MagicResist.Cap);
+      if (m.Skills.MagicResist.Fixed < maxSkill)
+        m.CheckSkill(SkillName.MagicResist, 0, m.Skills.MagicResist.CapFixedPoint);
 
-      return m.Skills.MagicResist.Value;
+      return m.Skills.MagicResist.Fixed / 10.0;
     }
 
     public virtual bool CheckResisted(Mobile target)
@@ -64,23 +63,22 @@ namespace Server.Spells
       if (n >= 1.0)
         return true;
 
-      int maxSkill = (1 + (int)Circle) * 10;
-      maxSkill += (1 + (int)Circle / 6) * 25;
+      int maxSkill = (1 + (int)Circle) * 100 + (1 + (int)Circle / 6) * 250;
 
-      if (target.Skills.MagicResist.Value < maxSkill)
-        target.CheckSkill(SkillName.MagicResist, 0.0, target.Skills.MagicResist.Cap);
+      if (target.Skills.MagicResist.Fixed < maxSkill)
+        target.CheckSkill(SkillName.MagicResist, 0, target.Skills.MagicResist.CapFixedPoint);
 
       return n >= Utility.RandomDouble();
     }
 
     public virtual double GetResistPercentForCircle(Mobile target, SpellCircle circle)
     {
-      double firstPercent = target.Skills.MagicResist.Value / 5.0;
-      double secondPercent = target.Skills.MagicResist.Value -
-                             ((Caster.Skills[CastSkill].Value - 20.0) / 5.0 + (1 + (int)circle) * 5.0);
+      int firstPercent = target.Skills.MagicResist.Fixed / 50;
+      int secondPercent = target.Skills.MagicResist.Fixed -
+                             ((Caster.Skills[CastSkill].Fixed - 200) / 50 + (1 + (int)circle) * 50);
 
       return (firstPercent > secondPercent ? firstPercent : secondPercent) /
-             2.0; // Seems should be about half of what stratics says.
+             20.0; // Seems should be about half of what stratics says.
     }
 
     public virtual double GetResistPercent(Mobile target)

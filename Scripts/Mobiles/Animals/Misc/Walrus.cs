@@ -36,7 +36,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 35.1;
+      MinTameSkill = 351;
     }
 
     public Walrus(Serial serial) : base(serial)

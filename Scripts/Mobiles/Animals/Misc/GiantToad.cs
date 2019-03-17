@@ -35,7 +35,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 77.1;
+      MinTameSkill = 771;
     }
 
     public GiantToad(Serial serial) : base(serial)

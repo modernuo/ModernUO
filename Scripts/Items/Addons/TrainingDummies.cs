@@ -92,8 +92,8 @@ namespace Server.Items
 
       writer.Write(0);
 
-      writer.Write(MinSkill);
-      writer.Write(MaxSkill);
+      writer.WriteEncodedInt(MinSkill);
+      writer.WriteEncodedInt(MaxSkill);
     }
 
     public override void Deserialize(GenericReader reader)

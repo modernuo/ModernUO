@@ -38,7 +38,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 3;
-      MinTameSkill = 96.3;
+      MinTameSkill = 963;
     }
 
     public WhiteWyrm(Serial serial) : base(serial)

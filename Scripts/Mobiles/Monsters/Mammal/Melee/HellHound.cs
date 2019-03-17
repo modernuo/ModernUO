@@ -33,7 +33,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 85.5;
+      MinTameSkill = 855;
 
       PackItem(new SulfurousAsh(5));
     }

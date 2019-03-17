@@ -33,7 +33,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 59.1;
+      MinTameSkill = 591;
     }
 
     public GreatHart(Serial serial) : base(serial)

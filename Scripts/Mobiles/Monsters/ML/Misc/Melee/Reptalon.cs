@@ -34,7 +34,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 4;
-      MinTameSkill = 101.1;
+      MinTameSkill = 1011;
     }
 
     public Reptalon(Serial serial) : base(serial)

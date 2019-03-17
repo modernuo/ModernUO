@@ -44,7 +44,7 @@ namespace Server.SkillHandlers
         double srcSkill = src.Skills.DetectHidden.Value;
         int range = (int)(srcSkill / 10.0);
 
-        if (!src.CheckSkill(SkillName.DetectHidden, 0.0, 100.0))
+        if (!src.CheckSkill(SkillName.DetectHidden, 0, 1000))
           range /= 2;
 
         BaseHouse house = BaseHouse.FindHouseAt(p, src.Map, 16);
@@ -82,7 +82,7 @@ namespace Server.SkillHandlers
             IPooledEnumerable<BaseFactionTrap> itemsInRange = src.Map.GetItemsInRange<BaseFactionTrap>(p, range);
 
             foreach (BaseFactionTrap trap in itemsInRange)
-              if (src.CheckTargetSkill(SkillName.DetectHidden, trap, 80.0, 100.0))
+              if (src.CheckTargetSkill(SkillName.DetectHidden, trap, 800, 1000))
               {
                 src.SendLocalizedMessage(1042712, true,
                   " " + (trap.Faction == null

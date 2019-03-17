@@ -37,7 +37,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 53.1;
+      MinTameSkill = 531;
     }
 
     public SnowLeopard(Serial serial) : base(serial)

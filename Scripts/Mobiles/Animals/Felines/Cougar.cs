@@ -35,7 +35,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 41.1;
+      MinTameSkill = 411;
     }
 
     public Cougar(Serial serial) : base(serial)

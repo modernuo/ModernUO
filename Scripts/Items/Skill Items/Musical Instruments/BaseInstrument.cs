@@ -261,53 +261,50 @@ namespace Server.Items
       return (bc?.HitPoison.Level ?? -1) + 1;
     }
 
-    public static double GetBaseDifficulty(Mobile targ)
+    public static int GetBaseDifficulty(Mobile targ)
     {
       /* Difficulty TODO: Add another 100 points for each of the following abilities:
         - Radiation or Aura Damage (Heat, Cold etc.)
         - Summoning Undead
       */
 
-      double val = targ.HitsMax * 1.6 + targ.StamMax + targ.ManaMax;
+      int val = targ.HitsMax * 16 + targ.StamMax + targ.ManaMax;
 
-      val += targ.SkillsTotal / 10.0;
+      val += targ.SkillsTotal;
 
-      if (val > 700)
-        val = 700 + (int)((val - 700) * (3.0 / 11));
+      if (val > 7000)
+        val = 7000 + (int)((val - 7000) * (3.0 / 11));
 
       BaseCreature bc = targ as BaseCreature;
 
       if (IsMageryCreature(bc))
-        val += 100;
+        val += 1000;
 
       if (IsFireBreathingCreature(bc))
-        val += 100;
+        val += 1000;
 
       if (IsPoisonImmune(bc))
-        val += 100;
+        val += 1000;
 
       if (targ is VampireBat || targ is VampireBatFamiliar)
-        val += 100;
+        val += 1000;
 
-      val += GetPoisonLevel(bc) * 20;
+      val += GetPoisonLevel(bc) * 200;
 
       val /= 10;
 
       if (bc?.IsParagon == true)
-        val += 40.0;
+        val += 400;
 
-      if (Core.SE && val > 160.0)
-        val = 160.0;
-
-      return val;
+      return Core.SE && val > 1600 ? 1600 : val;
     }
 
-    public double GetDifficultyFor(Mobile targ)
+    public int GetDifficultyFor(Mobile targ)
     {
-      double val = GetBaseDifficulty(targ);
+      int val = GetBaseDifficulty(targ);
 
       if (m_Quality == InstrumentQuality.Exceptional)
-        val -= 5.0; // 10%
+        val -= 50; // 10%
 
       if (m_Slayer != SlayerName.None)
       {
@@ -316,9 +313,9 @@ namespace Server.Items
         if (entry != null)
         {
           if (entry.Slays(targ))
-            val -= 10.0; // 20%
+            val -= 100; // 20%
           else if (entry.Group.OppositionSuperSlays(targ))
-            val += 10.0; // -20%
+            val += 100; // -20%
         }
       }
 
@@ -329,9 +326,9 @@ namespace Server.Items
         if (entry != null)
         {
           if (entry.Slays(targ))
-            val -= 10.0; // 20%
+            val -= 100; // 20%
           else if (entry.Group.OppositionSuperSlays(targ))
-            val += 10.0; // -20%
+            val += 100; // -20%
         }
       }
 
@@ -541,7 +538,7 @@ namespace Server.Items
 
     public static bool CheckMusicianship(Mobile m)
     {
-      m.CheckSkill(SkillName.Musicianship, 0.0, 120.0);
+      m.CheckSkill(SkillName.Musicianship, 0, 1200);
 
       return m.Skills.Musicianship.Value / 100 > Utility.RandomDouble();
     }

@@ -114,12 +114,11 @@ namespace Server.SkillHandlers
           {
             from.NextSkillTime = Core.TickCount + 10000;
 
-            double diff = (m_Instrument.GetDifficultyFor(m_Creature) + m_Instrument.GetDifficultyFor(creature)) *
-                          0.5 - 5.0;
-            double music = from.Skills.Musicianship.Value;
+            int diff = (m_Instrument.GetDifficultyFor(m_Creature) + m_Instrument.GetDifficultyFor(creature)) / 2 - 50;
+            int music = from.Skills.Musicianship.Fixed;
 
-            if (music > 100.0)
-              diff -= (music - 100.0) * 0.5;
+            if (music > 1000)
+              diff -= (music - 1000) / 2;
 
             if (from.CanBeHarmful(m_Creature, true) && from.CanBeHarmful(creature, true))
             {
@@ -135,7 +134,7 @@ namespace Server.SkillHandlers
                 //from.DoHarmful( m_Creature );
                 //from.DoHarmful( creature );
 
-                if (!from.CheckTargetSkill(SkillName.Provocation, creature, diff - 25.0, diff + 25.0))
+                if (!from.CheckTargetSkill(SkillName.Provocation, creature, diff - 250, diff + 250))
                 {
                   from.NextSkillTime = Core.TickCount + 5000;
                   from.SendLocalizedMessage(501599); // Your music fails to incite enough anger.

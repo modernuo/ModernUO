@@ -37,7 +37,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 2;
-      MinTameSkill = 106.0;
+      MinTameSkill = 1060;
     }
 
     public FireSteed(Serial serial) : base(serial)

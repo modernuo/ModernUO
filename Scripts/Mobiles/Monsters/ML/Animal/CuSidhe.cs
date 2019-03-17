@@ -46,7 +46,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 4;
-      MinTameSkill = 101.1;
+      MinTameSkill = 1011;
 
       if (Utility.RandomDouble() < 0.2)
         PackItem(new TreasureMap(5, Map.Trammel));

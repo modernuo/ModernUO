@@ -40,7 +40,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = 47.1;
+      MinTameSkill = 471;
 
       PackItem(new LesserPoisonPotion());
     }

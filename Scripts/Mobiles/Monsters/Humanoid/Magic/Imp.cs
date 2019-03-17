@@ -39,7 +39,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 2;
-      MinTameSkill = 83.1;
+      MinTameSkill = 831;
     }
 
     public Imp(Serial serial) : base(serial)

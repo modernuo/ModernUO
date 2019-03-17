@@ -33,7 +33,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 1;
-      MinTameSkill = -15.3;
+      MinTameSkill = -153;
     }
 
     public Dog(Serial serial) : base(serial)

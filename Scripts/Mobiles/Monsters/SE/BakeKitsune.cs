@@ -42,7 +42,7 @@ namespace Server.Mobiles
 
       Tamable = true;
       ControlSlots = 2;
-      MinTameSkill = 80.7;
+      MinTameSkill = 807;
 
 
       if (Utility.RandomDouble() < .25)
