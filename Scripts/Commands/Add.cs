@@ -190,19 +190,17 @@ namespace Server.Commands
 
         if (!IsConstructible(ctor, from.AccessLevel))
           continue;
-        
+
         int totalParams = 0;
 
         // Handle optional constructors
-        ParameterInfo[] paramList = ctor.GetParameters().Select(param =>
-        {
-          if (param.DefaultValue is DBNull)
+        ParameterInfo[] paramList = ctor.GetParameters();
+        for (int j = 0; j < paramList.Length; j++)
+          if (!paramList[j].HasDefaultValue)
             totalParams += 1;
 
-          return param;
-        }).ToArray();
 
-        if (args.Length == totalParams)
+        if (args.Length >= totalParams && args.Length <= paramList.Length)
         {
           object[] paramValues = ParseValues(paramList, args);
 
@@ -223,25 +221,23 @@ namespace Server.Commands
     {
       object[] values = new object[paramList.Length];
 
-      for (int i = 0, a = 0; i < paramList.Length; ++i)
+      for (int i = 0, a = 0; i < paramList.Length; i++)
       {
         ParameterInfo param = paramList[i];
-        if (param.DefaultValue is DBNull)
-        {
-          object value = ParseValue(param.ParameterType, args[a++], param.DefaultValue);
-          if (value == null)
-            return null;
+        object value = ParseValue(param.ParameterType, a < args.Length ? args[a++] : null);
 
+        if (value != null)
           values[i] = value;
-        }
-        else
+        else if (param.HasDefaultValue)
           values[i] = Type.Missing;
+        else
+          return null;
       }
 
       return values;
     }
 
-    public static object ParseValue(Type type, string value, object defaultValue)
+    public static object ParseValue(Type type, string value)
     {
       try
       {
@@ -250,7 +246,7 @@ namespace Server.Commands
         if (IsParsable(type)) return ParseParsable(type, value);
         object obj = value;
 
-        if (value != null && value.StartsWith("0x"))
+        if (value?.StartsWith("0x") == true)
         {
           if (IsSignedNumeric(type))
             obj = Convert.ToInt64(value.Substring(2), 16);
@@ -262,7 +258,7 @@ namespace Server.Commands
 
         if (obj == null && !type.IsValueType)
           return null;
-        
+
         return Convert.ChangeType(obj, type);
       }
       catch
@@ -455,7 +451,7 @@ namespace Server.Commands
     private static void Internal_OnCommand(CommandEventArgs e, bool outline)
     {
       Mobile from = e.Mobile;
-      
+
       if (e.Length >= 1)
         BoundingBoxPicker.Begin(from, (map, start, end) =>
           TileBox_Callback(from, map, start, end, new TileState(TileZType.Start, 0, e.Arguments, outline)));
@@ -511,7 +507,7 @@ namespace Server.Commands
     private static void InternalZ_OnCommand(CommandEventArgs e, bool outline)
     {
       Mobile from = e.Mobile;
-      
+
       if (e.Length >= 2)
       {
         string[] subArgs = new string[e.Length - 1];
@@ -532,7 +528,7 @@ namespace Server.Commands
     private static void InternalAvg_OnCommand(CommandEventArgs e, bool outline)
     {
       Mobile from = e.Mobile;
-      
+
       if (e.Length >= 1)
         BoundingBoxPicker.Begin(from, (map, start, end) =>
           TileBox_Callback(from, map, start, end, new TileState(TileZType.MapAverage, 0, e.Arguments, outline)));
@@ -630,10 +626,7 @@ namespace Server.Commands
     {
       object[] attrs = ctor.GetCustomAttributes(m_ConstructibleType, false);
 
-      if (attrs.Length == 0)
-        return false;
-
-      return accessLevel >= ((ConstructibleAttribute)attrs[0]).AccessLevel;
+      return attrs.Length != 0 && accessLevel >= ((ConstructibleAttribute)attrs[0]).AccessLevel;
     }
 
     public static bool IsEnum(Type type)

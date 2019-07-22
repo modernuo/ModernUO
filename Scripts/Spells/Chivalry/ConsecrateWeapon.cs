@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Items;
 
@@ -15,7 +14,7 @@ namespace Server.Spells.Chivalry
 
     private static Dictionary<BaseWeapon, ExpireTimer> m_Table = new Dictionary<BaseWeapon, ExpireTimer>();
 
-    public ConsecrateWeaponSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ConsecrateWeaponSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

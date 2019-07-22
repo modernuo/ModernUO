@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-  public class ExplosionSpell : MagerySpell
+  public class ExplosionSpell : MagerySpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Explosion", "Vas Ort Flam",
@@ -13,7 +13,7 @@ namespace Server.Spells.Sixth
       Reagent.MandrakeRoot
     );
 
-    public ExplosionSpell(Mobile caster, Item scroll)
+    public ExplosionSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }
@@ -26,11 +26,14 @@ namespace Server.Spells.Sixth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (!Caster.CanSee(m))
       {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
@@ -100,28 +103,6 @@ namespace Server.Spells.Sixth
 
           m_Spell?.RemoveDelayedDamageContext(m_Attacker);
         }
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private ExplosionSpell m_Owner;
-
-      public InternalTarget(ExplosionSpell owner)
-        : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

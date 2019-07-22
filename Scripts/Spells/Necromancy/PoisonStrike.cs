@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-  public class PoisonStrikeSpell : NecromancerSpell
+  public class PoisonStrikeSpell : NecromancerSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Poison Strike", "In Vas Nox",
@@ -15,7 +16,7 @@ namespace Server.Spells.Necromancy
       Reagent.NoxCrystal
     );
 
-    public PoisonStrikeSpell(Mobile caster, Item scroll)
+    public PoisonStrikeSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }
@@ -29,11 +30,14 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (CheckHSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -67,11 +71,8 @@ namespace Server.Spells.Necromancy
           if (Caster.CanBeHarmful(m, false))
             targets.Add(m);
 
-          foreach (Mobile targ in m.GetMobilesInRange(2))
-            if (!(Caster is BaseCreature && targ is BaseCreature))
-              if (targ != Caster && m != targ && SpellHelper.ValidIndirectTarget(Caster, targ) &&
-                  Caster.CanBeHarmful(targ, false))
-                targets.Add(targ);
+          targets.AddRange(m.GetMobilesInRange(2)
+            .Where(targ => !(Caster is BaseCreature && targ is BaseCreature && targ != Caster && m != targ && SpellHelper.ValidIndirectTarget(Caster, targ) && Caster.CanBeHarmful(targ, false))));
 
           for (int i = 0; i < targets.Count; ++i)
           {
@@ -93,28 +94,6 @@ namespace Server.Spells.Necromancy
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private PoisonStrikeSpell m_Owner;
-
-      public InternalTarget(PoisonStrikeSpell owner)
-        : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

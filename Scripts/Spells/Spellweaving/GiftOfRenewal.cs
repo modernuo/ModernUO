@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Spellweaving
 {
-  public class GiftOfRenewalSpell : ArcanistSpell
+  public class GiftOfRenewalSpell : ArcanistSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Gift of Renewal", "Olorisstra",
@@ -13,7 +13,7 @@ namespace Server.Spells.Spellweaving
 
     private static Dictionary<Mobile, GiftOfRenewalInfo> m_Table = new Dictionary<Mobile, GiftOfRenewalInfo>();
 
-    public GiftOfRenewalSpell(Mobile caster, Item scroll)
+    public GiftOfRenewalSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }
@@ -25,20 +25,20 @@ namespace Server.Spells.Spellweaving
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, 10);
     }
 
     public void Target(Mobile m)
     {
-      if (!Caster.CanSee(m)) Caster.SendLocalizedMessage(500237); // Target can not be seen.
-      if (m_Table.ContainsKey(m))
-      {
+      if (m == null)
+        return;
+
+      if (!Caster.CanSee(m))
+        Caster.SendLocalizedMessage(500237); // Target can not be seen.
+      else if (m_Table.ContainsKey(m))
         Caster.SendLocalizedMessage(501775); // This spell is already in effect.
-      }
       else if (!Caster.CanBeginAction<GiftOfRenewalSpell>())
-      {
         Caster.SendLocalizedMessage(501789); // You must wait before trying again.
-      }
       else if (CheckBSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -149,28 +149,6 @@ namespace Server.Spells.Spellweaving
 
         SpellHelper.Heal(toHeal, m, m_GiftInfo.m_Caster);
         m.FixedParticles(0x376A, 9, 32, 5005, EffectLayer.Waist);
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private GiftOfRenewalSpell m_Owner;
-
-      public InternalTarget(GiftOfRenewalSpell owner)
-        : base(10, false, TargetFlags.Beneficial)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile m, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile m)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

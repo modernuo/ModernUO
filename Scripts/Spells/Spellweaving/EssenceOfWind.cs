@@ -9,7 +9,7 @@ namespace Server.Spells.Spellweaving
 
     private static Dictionary<Mobile, EssenceOfWindInfo> m_Table = new Dictionary<Mobile, EssenceOfWindInfo>();
 
-    public EssenceOfWindSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public EssenceOfWindSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -34,29 +34,28 @@ namespace Server.Spells.Spellweaving
         int fcMalus = FocusLevel + 1;
         int ssiMalus = 2 * (FocusLevel + 1);
 
-        List<Mobile> targets = new List<Mobile>();
+        IPooledEnumerable<Mobile> eable = Caster.GetMobilesInRange(range);
 
-        foreach (Mobile m in Caster.GetMobilesInRange(range))
-          if (Caster != m && Caster.InLOS(m) && SpellHelper.ValidIndirectTarget(Caster, m) &&
-              Caster.CanBeHarmful(m, false))
-            targets.Add(m);
-
-        for (int i = 0; i < targets.Count; i++)
+        foreach (Mobile m in eable)
         {
-          Mobile m = targets[i];
+          if (Caster == m || !Caster.InLOS(m) || !SpellHelper.ValidIndirectTarget(Caster, m) ||
+              !Caster.CanBeHarmful(m, false))
+            continue;
 
           Caster.DoHarmful(m);
 
           SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
 
-          if (!CheckResisted(m)) //No message on resist
-          {
-            m_Table[m] = new EssenceOfWindInfo(m, fcMalus, ssiMalus, duration);
+          if (CheckResisted(m))
+            continue;
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.EssenceOfWind, 1075802, duration, m,
-              $"{fcMalus.ToString()}\t{ssiMalus.ToString()}"));
-          }
+          m_Table[m] = new EssenceOfWindInfo(m, fcMalus, ssiMalus, duration);
+
+          BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.EssenceOfWind, 1075802, duration, m,
+            $"{fcMalus.ToString()}\t{ssiMalus.ToString()}"));
         }
+
+        eable.Free();
       }
 
       FinishSequence();

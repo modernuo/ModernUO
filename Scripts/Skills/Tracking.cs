@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Network;
 using Server.Spells;
@@ -91,20 +92,20 @@ namespace Server.SkillHandlers
       AddBackground(10, 85, 420, 25, 3000);
 
       AddItem(20, 20, 9682);
-      AddButton(20, 110, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(20, 90, 100, 20, 1018087, false, false); // Animals
+      AddButton(20, 110, 4005, 4007, 1);
+      AddHtmlLocalized(20, 90, 100, 20, 1018087); // Animals
 
       AddItem(120, 20, 9607);
-      AddButton(120, 110, 4005, 4007, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(120, 90, 100, 20, 1018088, false, false); // Monsters
+      AddButton(120, 110, 4005, 4007, 2);
+      AddHtmlLocalized(120, 90, 100, 20, 1018088); // Monsters
 
       AddItem(220, 20, 8454);
-      AddButton(220, 110, 4005, 4007, 3, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(220, 90, 100, 20, 1018089, false, false); // Human NPCs
+      AddButton(220, 110, 4005, 4007, 3);
+      AddHtmlLocalized(220, 90, 100, 20, 1018089); // Human NPCs
 
       AddItem(320, 20, 8455);
-      AddButton(320, 110, 4005, 4007, 4, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(320, 90, 100, 20, 1018090, false, false); // Players
+      AddButton(320, 110, 4005, 4007, 4);
+      AddHtmlLocalized(320, 90, 100, 20, 1018090); // Players
     }
 
     public override void OnResponse(NetState state, RelayInfo info)
@@ -165,10 +166,10 @@ namespace Server.SkillHandlers
         Mobile m = list[i];
 
         AddItem(20 + i % 4 * 100, 20 + i / 4 * 155, ShrinkTable.Lookup(m));
-        AddButton(20 + i % 4 * 100, 130 + i / 4 * 155, 4005, 4007, i + 1, GumpButtonType.Reply, 0);
+        AddButton(20 + i % 4 * 100, 130 + i / 4 * 155, 4005, 4007, i + 1);
 
         if (m.Name != null)
-          AddHtml(20 + i % 4 * 100, 90 + i / 4 * 155, 90, 40, m.Name, false, false);
+          AddHtml(20 + i % 4 * 100, 90 + i / 4 * 155, 90, 40, m.Name);
       }
     }
 
@@ -191,14 +192,9 @@ namespace Server.SkillHandlers
 
       int range = 10 + (int)(from.Skills.Tracking.Value / 10);
 
-      List<Mobile> list = new List<Mobile>();
-
-      foreach (Mobile m in from.GetMobilesInRange(range))
-        // Ghosts can no longer be tracked
-        if (m != from && (!Core.AOS || m.Alive) &&
-            (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) && check(m) &&
-            CheckDifficulty(from, m))
-          list.Add(m);
+      List<Mobile> list = from.GetMobilesInRange(range)
+        .Where(m => m != from && (!Core.AOS || m.Alive) && (!m.Hidden || m.AccessLevel == AccessLevel.Player || from.AccessLevel > m.AccessLevel) && check(m) && CheckDifficulty(from, m))
+        .ToList();
 
       if (list.Count > 0)
       {

@@ -4,7 +4,7 @@
 // More your close, the more it can panic
 /*
  * AnimalHunterAI, AnimalHidingAI, AnimalDomesticAI...
- * 
+ *
  */
 
 namespace Server.Mobiles
@@ -26,7 +26,7 @@ namespace Server.Mobiles
 			}
 			else if ( m_Mobile.IsHurt() || m_Mobile.Combatant != null )
 			{
-				m_Mobile.DebugSay( "I am hurt or being attacked, I flee" );						
+				m_Mobile.DebugSay( "I am hurt or being attacked, I flee" );
 				Action = ActionType.Flee;
 			}
 			else
@@ -66,7 +66,7 @@ namespace Server.Mobiles
     {
       Mobile combatant = m_Mobile.Combatant;
 
-      if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map)
+      if (combatant?.Deleted != false || combatant.Map != m_Mobile.Map)
       {
         m_Mobile.DebugSay("My combatant is gone..");
 

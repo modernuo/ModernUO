@@ -157,12 +157,7 @@ namespace Server.Items
   public class RoseOfTrinsicPetal : Item
   {
     [Constructible]
-    public RoseOfTrinsicPetal() : this(1)
-    {
-    }
-
-    [Constructible]
-    public RoseOfTrinsicPetal(int amount) : base(0x1021)
+    public RoseOfTrinsicPetal(int amount = 1) : base(0x1021)
     {
       Stackable = true;
       Amount = amount;

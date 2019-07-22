@@ -31,17 +31,17 @@ namespace Server.Gumps
       AddImage(315, 248, 0x2716);
       AddImage(2, 248, 0x2716);
       AddImage(2, 2, 0x2716);
-      AddHtmlLocalized(25, 25, 200, 20, TitleNumber, 0x7D00, false, false);
+      AddHtmlLocalized(25, 25, 200, 20, TitleNumber, 0x7D00);
       AddImage(25, 40, 0xBBF);
-      AddHtmlLocalized(25, 55, 300, 120, LabelNumber, 0xFFFFFF, false, false);
+      AddHtmlLocalized(25, 55, 300, 120, LabelNumber, 0xFFFFFF);
 
       AddRadio(25, 175, 0x25F8, 0x25FB, true, (int)Buttons.Break);
       AddRadio(25, 210, 0x25F8, 0x25FB, false, (int)Buttons.Close);
 
-      AddHtmlLocalized(60, 180, 280, 20, 1074976, 0xFFFFFF, false, false);
-      AddHtmlLocalized(60, 215, 280, 20, 1074977, 0xFFFFFF, false, false);
+      AddHtmlLocalized(60, 180, 280, 20, 1074976, 0xFFFFFF);
+      AddHtmlLocalized(60, 215, 280, 20, 1074977, 0xFFFFFF);
 
-      AddButton(265, 220, 0xF7, 0xF8, (int)Buttons.Confirm, GumpButtonType.Reply, 0);
+      AddButton(265, 220, 0xF7, 0xF8, (int)Buttons.Confirm);
     }
 
     public virtual int TitleNumber // <center>Warning!</center>

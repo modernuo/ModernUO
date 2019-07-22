@@ -28,7 +28,7 @@ namespace Server.Mobiles
 
     public override bool DoActionCombat()
     {
-      if (m_Mobile.Combatant == null || m_Mobile.Combatant.Deleted)
+      if (m_Mobile.Combatant?.Deleted != false)
       {
         m_Mobile.DebugSay("My combatant is deleted");
         Action = ActionType.Guard;

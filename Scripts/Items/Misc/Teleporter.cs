@@ -18,20 +18,12 @@ namespace Server.Items
     private bool m_SourceEffect;
 
     [Constructible]
-    public Teleporter()
-      : this(new Point3D(0, 0, 0), null, false)
+    public Teleporter() : this(new Point3D(0, 0, 0))
     {
     }
 
     [Constructible]
-    public Teleporter(Point3D pointDest, Map mapDest)
-      : this(pointDest, mapDest, false)
-    {
-    }
-
-    [Constructible]
-    public Teleporter(Point3D pointDest, Map mapDest, bool creatures)
-      : base(0x1BC3)
+    public Teleporter(Point3D pointDest, Map mapDest = null, bool creatures = false) : base(0x1BC3)
     {
       Movable = false;
       Visible = false;
@@ -45,8 +37,7 @@ namespace Server.Items
       m_CriminalCheck = false;
     }
 
-    public Teleporter(Serial serial)
-      : base(serial)
+    public Teleporter(Serial serial) : base(serial)
     {
     }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Gumps;
@@ -72,19 +71,19 @@ namespace Server.Items
       AddImageTiled(10, 10, 250, 125, 2624);
       AddAlphaRegion(10, 10, 250, 125);
 
-      AddHtmlLocalized(10, 10, 250, 20, 1060239, LabelColor, false, false); // <CENTER>HOUSE PLACEMENT TOOL</CENTER>
+      AddHtmlLocalized(10, 10, 250, 20, 1060239, LabelColor); // <CENTER>HOUSE PLACEMENT TOOL</CENTER>
 
-      AddButton(10, 110, 4017, 4019, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 110, 150, 20, 3000363, LabelColor, false, false); // Close
+      AddButton(10, 110, 4017, 4019, 0);
+      AddHtmlLocalized(45, 110, 150, 20, 3000363, LabelColor); // Close
 
-      AddButton(10, 40, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 40, 200, 20, 1060390, LabelColor, false, false); // Classic Houses
+      AddButton(10, 40, 4005, 4007, 1);
+      AddHtmlLocalized(45, 40, 200, 20, 1060390, LabelColor); // Classic Houses
 
-      AddButton(10, 60, 4005, 4007, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 60, 200, 20, 1060391, LabelColor, false, false); // 2-Story Customizable Houses
+      AddButton(10, 60, 4005, 4007, 2);
+      AddHtmlLocalized(45, 60, 200, 20, 1060391, LabelColor); // 2-Story Customizable Houses
 
-      AddButton(10, 80, 4005, 4007, 3, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 80, 200, 20, 1060392, LabelColor, false, false); // 3-Story Customizable Houses
+      AddButton(10, 80, 4005, 4007, 3);
+      AddHtmlLocalized(45, 80, 200, 20, 1060392, LabelColor); // 3-Story Customizable Houses
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -135,15 +134,15 @@ namespace Server.Items
       AddImageTiled(10, 10, 500, 20, 2624);
       AddAlphaRegion(10, 10, 500, 20);
 
-      AddHtmlLocalized(10, 10, 500, 20, 1060239, LabelColor, false, false); // <CENTER>HOUSE PLACEMENT TOOL</CENTER>
+      AddHtmlLocalized(10, 10, 500, 20, 1060239, LabelColor); // <CENTER>HOUSE PLACEMENT TOOL</CENTER>
 
       AddImageTiled(10, 40, 500, 20, 2624);
       AddAlphaRegion(10, 40, 500, 20);
 
-      AddHtmlLocalized(50, 40, 225, 20, 1060235, LabelColor, false, false); // House Description
-      AddHtmlLocalized(275, 40, 75, 20, 1060236, LabelColor, false, false); // Storage
-      AddHtmlLocalized(350, 40, 75, 20, 1060237, LabelColor, false, false); // Lockdowns
-      AddHtmlLocalized(425, 40, 75, 20, 1060034, LabelColor, false, false); // Cost
+      AddHtmlLocalized(50, 40, 225, 20, 1060235, LabelColor); // House Description
+      AddHtmlLocalized(275, 40, 75, 20, 1060236, LabelColor); // Storage
+      AddHtmlLocalized(350, 40, 75, 20, 1060237, LabelColor); // Lockdowns
+      AddHtmlLocalized(425, 40, 75, 20, 1060034, LabelColor); // Cost
 
       AddImageTiled(10, 70, 500, 280, 2624);
       AddAlphaRegion(10, 70, 500, 280);
@@ -151,14 +150,14 @@ namespace Server.Items
       AddImageTiled(10, 360, 500, 20, 2624);
       AddAlphaRegion(10, 360, 500, 20);
 
-      AddHtmlLocalized(10, 360, 250, 20, 1060645, LabelColor, false, false); // Bank Balance:
+      AddHtmlLocalized(10, 360, 250, 20, 1060645, LabelColor); // Bank Balance:
       AddLabel(250, 360, LabelHue, Banker.GetBalance(from).ToString());
 
       AddImageTiled(10, 390, 500, 20, 2624);
       AddAlphaRegion(10, 390, 500, 20);
 
-      AddButton(10, 390, 4017, 4019, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(50, 390, 100, 20, 3000363, LabelColor, false, false); // Close
+      AddButton(10, 390, 4017, 4019, 0);
+      AddHtmlLocalized(50, 390, 100, 20, 3000363, LabelColor); // Close
 
       for (int i = 0; i < entries.Length; ++i)
       {
@@ -170,7 +169,7 @@ namespace Server.Items
           if (page > 1)
           {
             AddButton(450, 390, 4005, 4007, 0, GumpButtonType.Page, page);
-            AddHtmlLocalized(400, 390, 100, 20, 3000406, LabelColor, false, false); // Next
+            AddHtmlLocalized(400, 390, 100, 20, 3000406, LabelColor); // Next
           }
 
           AddPage(page);
@@ -178,7 +177,7 @@ namespace Server.Items
           if (page > 1)
           {
             AddButton(200, 390, 4014, 4016, 0, GumpButtonType.Page, page - 1);
-            AddHtmlLocalized(250, 390, 100, 20, 3000405, LabelColor, false, false); // Previous
+            AddHtmlLocalized(250, 390, 100, 20, 3000405, LabelColor); // Previous
           }
         }
 
@@ -186,8 +185,8 @@ namespace Server.Items
 
         int y = 70 + index * 20;
 
-        AddButton(10, y, 4005, 4007, 1 + i, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(50, y, 225, 20, entry.Description, LabelColor, false, false);
+        AddButton(10, y, 4005, 4007, 1 + i);
+        AddHtmlLocalized(50, y, 225, 20, entry.Description, LabelColor);
         AddLabel(275, y, LabelHue, entry.Storage.ToString());
         AddLabel(350, y, LabelHue, entry.Lockdowns.ToString());
         AddLabel(425, y, LabelHue, entry.Cost.ToString());
@@ -809,9 +808,7 @@ namespace Server.Items
         return entry;
 
       if (obj is List<HousePlacementEntry> list)
-      {
         return list.FirstOrDefault(e => e.MultiID == house.ItemID);
-      }
 
       if (obj is Dictionary<int, HousePlacementEntry> table)
         return table[house.ItemID];

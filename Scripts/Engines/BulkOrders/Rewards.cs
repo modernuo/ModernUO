@@ -29,11 +29,7 @@ namespace Server.Engines.BulkOrders
 
   public sealed class RewardItem
   {
-    public RewardItem(int weight, ConstructCallback constructor) : this(weight, constructor, 0)
-    {
-    }
-
-    public RewardItem(int weight, ConstructCallback constructor, int type)
+    public RewardItem(int weight, ConstructCallback constructor, int type = 0)
     {
       Weight = weight;
       Constructor = constructor;
@@ -111,14 +107,12 @@ namespace Server.Engines.BulkOrders
     public virtual int ComputeFame(SmallBOD bod)
     {
       int points = ComputePoints(bod) / 50;
-
       return points * points;
     }
 
     public virtual int ComputeFame(LargeBOD bod)
     {
       int points = ComputePoints(bod) / 50;
-
       return points * points;
     }
 
@@ -354,10 +348,10 @@ namespace Server.Engines.BulkOrders
       if (itemCount == 1)
         return 0;
 
-      int typeIdx;
+      int typeIdx = 0;
 
       // Loop through the RewardTypes defined earlier and find the correct one.
-      for (typeIdx = 0; typeIdx < 7; ++typeIdx)
+      for (; typeIdx < 7; ++typeIdx)
         if (m_Types[typeIdx].Contains(type))
           break;
 
@@ -403,14 +397,17 @@ namespace Server.Engines.BulkOrders
 
     private static Item CreateMiningGloves(int type)
     {
-      if (type == 1)
-        return new LeatherGlovesOfMining(1);
-      if (type == 3)
-        return new StuddedGlovesOfMining(3);
-      if (type == 5)
-        return new RingmailGlovesOfMining(5);
-
-      throw new InvalidOperationException();
+      switch (type)
+      {
+        case 1:
+          return new LeatherGlovesOfMining(1);
+        case 3:
+          return new StuddedGlovesOfMining(3);
+        case 5:
+          return new RingmailGlovesOfMining(5);
+        default:
+          throw new InvalidOperationException();
+      }
     }
 
     private static Item CreateGargoylesPickaxe(int type)
@@ -583,7 +580,7 @@ namespace Server.Engines.BulkOrders
     {
       Groups = new[]
       {
-        new RewardGroup(0, new RewardItem(1, Cloth, 0)),
+        new RewardGroup(0, new RewardItem(1, Cloth)),
         new RewardGroup(50, new RewardItem(1, Cloth, 1)),
         new RewardGroup(100, new RewardItem(1, Cloth, 2)),
         new RewardGroup(150, new RewardItem(9, Cloth, 3), new RewardItem(1, Sandals)),

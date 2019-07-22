@@ -3,12 +3,7 @@ namespace Server.Items
   public class PainSpikeScroll : SpellScroll
   {
     [Constructible]
-    public PainSpikeScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public PainSpikeScroll(int amount) : base(108, 0x2268, amount)
+    public PainSpikeScroll(int amount = 1) : base(108, 0x2268, amount)
     {
     }
 

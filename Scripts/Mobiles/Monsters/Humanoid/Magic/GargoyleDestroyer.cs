@@ -65,14 +65,15 @@ namespace Server.Mobiles
 
     public override void OnDamagedBySpell(Mobile from)
     {
-      if (from != null && from.Alive && 0.4 > Utility.RandomDouble()) ThrowHatchet(from);
+      if (from?.Alive == true && 0.4 > Utility.RandomDouble())
+        ThrowHatchet(from);
     }
 
     public override void OnGotMeleeAttack(Mobile attacker)
     {
       base.OnGotMeleeAttack(attacker);
 
-      if (attacker != null && attacker.Alive && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble())
+      if (attacker?.Alive == true && attacker.Weapon is BaseRanged && 0.4 > Utility.RandomDouble())
         ThrowHatchet(attacker);
     }
 

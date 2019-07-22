@@ -15,12 +15,7 @@ namespace Server.Items
   public class SpikeTrap : BaseTrap
   {
     [Constructible]
-    public SpikeTrap() : this(SpikeTrapType.WestFloor)
-    {
-    }
-
-    [Constructible]
-    public SpikeTrap(SpikeTrapType type) : base(GetBaseID(type))
+    public SpikeTrap(SpikeTrapType type = SpikeTrapType.WestFloor) : base(GetBaseID(type))
     {
     }
 

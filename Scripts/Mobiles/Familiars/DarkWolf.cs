@@ -52,10 +52,7 @@ namespace Server.Mobiles
 
       m_NextRestore = DateTime.UtcNow + TimeSpan.FromSeconds(2.0);
 
-      Mobile caster = ControlMaster;
-
-      if (caster == null)
-        caster = SummonMaster;
+      Mobile caster = ControlMaster ?? SummonMaster;
 
       if (caster != null)
         ++caster.Stam;

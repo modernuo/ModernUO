@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -7,12 +8,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class CollectObjective : BaseObjective
   {
-    public CollectObjective()
-      : this(0, null, null)
-    {
-    }
-
-    public CollectObjective(int amount, Type type, TextDefinition name)
+    public CollectObjective(int amount = 0, Type type = null, TextDefinition name = null)
     {
       DesiredAmount = amount;
       AcceptedType = type;
@@ -37,7 +33,7 @@ namespace Server.Engines.MLQuests.Objectives
 
     public bool CheckType(Type type)
     {
-      return AcceptedType != null && AcceptedType.IsAssignableFrom(type);
+      return AcceptedType?.IsAssignableFrom(type) == true;
     }
 
     public virtual bool CheckItem(Item item)
@@ -58,12 +54,12 @@ namespace Server.Engines.MLQuests.Objectives
       {
         string amount = DesiredAmount.ToString();
 
-        g.AddHtmlLocalized(98, y, 350, 16, 1072205, 0x15F90, false, false); // Obtain
+        g.AddHtmlLocalized(98, y, 350, 16, 1072205, 0x15F90); // Obtain
         g.AddLabel(143, y, 0x481, amount);
 
         if (Name.Number > 0)
         {
-          g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF, false, false);
+          g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
           g.AddItem(350, y, LabelToItemID(Name.Number));
         }
         else if (Name.String != null)
@@ -74,7 +70,7 @@ namespace Server.Engines.MLQuests.Objectives
       else
       {
         if (Name.Number > 0)
-          g.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x15F90, false, false);
+          g.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x15F90);
         else if (Name.String != null)
           g.AddLabel(98, y, 0x481, Name.String);
       }
@@ -122,13 +118,7 @@ namespace Server.Engines.MLQuests.Objectives
         return 0;
 
       Item[] items = pack.FindItemsByType(Objective.AcceptedType, false); // Note: subclasses are included
-      int total = 0;
-
-      foreach (Item item in items)
-        if (item.QuestItem && Objective.CheckItem(item))
-          total += item.Amount;
-
-      return total;
+      return items.Where(item => item.QuestItem && Objective.CheckItem(item)).Sum(item => item.Amount);
     }
 
     public override bool AllowsQuestItem(Item item, Type type)
@@ -211,11 +201,11 @@ namespace Server.Engines.MLQuests.Objectives
       {
         base.WriteToGump(g, ref y);
 
-        g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x15F90, false, false); // Total
+        g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x15F90); // Total
         g.AddLabel(223, y, 0x481, GetCurrentTotal().ToString());
         y += 16;
 
-        g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x15F90, false, false); // Return to
+        g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x15F90); // Return to
         g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Instance.QuesterType));
         y += 16;
       }

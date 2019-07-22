@@ -48,23 +48,18 @@ namespace Server.Items
     private string m_Title;
 
     [Constructible]
-    public BaseBook(int itemID) : this(itemID, 20, true)
-    {
-    }
-
-    [Constructible]
-    public BaseBook(int itemID, int pageCount, bool writable) : this(itemID, null, null, pageCount, writable)
+    public BaseBook(int itemID, int pageCount = 20, bool writable = true) : this(itemID, null, null, pageCount, writable)
     {
     }
 
     [Constructible]
     public BaseBook(int itemID, string title, string author, int pageCount, bool writable) : base(itemID)
     {
-      m_Title = title;
-      m_Author = author;
-      Writable = writable;
-
       BookContent content = DefaultContent;
+
+      m_Title = title ?? content?.Title;
+      m_Author = author ?? content?.Author;
+      Writable = writable;
 
       if (content == null)
       {
@@ -80,22 +75,8 @@ namespace Server.Items
     }
 
     // Intended for defined books only
-    public BaseBook(int itemID, bool writable) : base(itemID)
+    public BaseBook(int itemID, bool writable) : this(itemID, 0)
     {
-      Writable = writable;
-
-      BookContent content = DefaultContent;
-
-      if (content == null)
-      {
-        Pages = new BookPageInfo[0];
-      }
-      else
-      {
-        m_Title = content.Title;
-        m_Author = content.Author;
-        Pages = content.Copy();
-      }
     }
 
     public BaseBook(Serial serial) : base(serial)
@@ -298,7 +279,7 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      if (m_Title != null && m_Title.Length > 0)
+      if (!string.IsNullOrEmpty(m_Title))
         list.Add(m_Title);
       else
         base.AddNameProperty(list);
@@ -308,13 +289,13 @@ namespace Server.Items
     {
       base.GetProperties( list );
 
-      if ( m_Title != null && m_Title.Length > 0 )
+      if ( m_Title?.Length > 0 )
         list.Add( 1060658, "Title\t{0}", m_Title ); // ~1_val~: ~2_val~
 
-      if ( m_Author != null && m_Author.Length > 0 )
+      if ( m_Author?.Length > 0 )
         list.Add( 1060659, "Author\t{0}", m_Author ); // ~1_val~: ~2_val~
 
-      if ( m_Pages != null && m_Pages.Length > 0 )
+      if ( m_Pages?.Length > 0 )
         list.Add( 1060660, "Pages\t{0}", m_Pages.Length ); // ~1_val~: ~2_val~
     }*/
 

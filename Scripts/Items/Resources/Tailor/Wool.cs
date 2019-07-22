@@ -5,12 +5,7 @@ namespace Server.Items
   public class Wool : Item, IDyable
   {
     [Constructible]
-    public Wool() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Wool(int amount) : base(0xDF8)
+    public Wool(int amount = 1) : base(0xDF8)
     {
       Stackable = true;
       Weight = 4.0;
@@ -113,12 +108,7 @@ namespace Server.Items
   public class TaintedWool : Wool
   {
     [Constructible]
-    public TaintedWool() : this(1)
-    {
-    }
-
-    [Constructible]
-    public TaintedWool(int amount) : base(0x101F)
+    public TaintedWool(int amount = 1) : base(0x101F)
     {
       Stackable = true;
       Weight = 4.0;
@@ -145,7 +135,7 @@ namespace Server.Items
 
     public override void OnSpun(ISpinningWheel wheel, Mobile from, int hue)
     {
-      Item item = new DarkYarn(1);
+      Item item = new DarkYarn();
       item.Hue = hue;
 
       from.AddToBackpack(item);

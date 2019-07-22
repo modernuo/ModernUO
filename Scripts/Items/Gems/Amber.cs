@@ -3,12 +3,7 @@ namespace Server.Items
   public class Amber : Item
   {
     [Constructible]
-    public Amber() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Amber(int amount) : base(0xF25)
+    public Amber(int amount = 1) : base(0xF25)
     {
       Stackable = true;
       Amount = amount;

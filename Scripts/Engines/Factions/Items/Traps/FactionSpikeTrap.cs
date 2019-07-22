@@ -4,16 +4,7 @@ namespace Server.Factions
 {
   public class FactionSpikeTrap : BaseFactionTrap
   {
-    [Constructible]
-    public FactionSpikeTrap() : this(null)
-    {
-    }
-
-    public FactionSpikeTrap(Faction f) : this(f, null)
-    {
-    }
-
-    public FactionSpikeTrap(Faction f, Mobile m) : base(f, m, 0x11A0)
+    public FactionSpikeTrap(Faction f = null, Mobile m = null) : base(f, m, 0x11A0)
     {
     }
 

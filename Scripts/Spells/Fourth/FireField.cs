@@ -7,7 +7,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-  public class FireFieldSpell : MagerySpell
+  public class FireFieldSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Fire Field", "In Flam Grav",
@@ -19,7 +19,7 @@ namespace Server.Spells.Fourth
       Reagent.SulfurousAsh
     );
 
-    public FireFieldSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public FireFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -27,7 +27,7 @@ namespace Server.Spells.Fourth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -88,13 +88,8 @@ namespace Server.Spells.Fourth
       private DateTime m_End;
       private Timer m_Timer;
 
-      public FireFieldItem(int itemID, Point3D loc, Mobile caster, Map map, TimeSpan duration, int val)
-        : this(itemID, loc, caster, map, duration, val, 2)
-      {
-      }
-
       public FireFieldItem(int itemID, Point3D loc, Mobile caster, Map map, TimeSpan duration, int val,
-        int damage) : base(itemID)
+        int damage = 2) : base(itemID)
       {
         bool canFit = SpellHelper.AdjustField(ref loc, map, 12, false);
 
@@ -248,7 +243,7 @@ namespace Server.Spells.Fourth
 
             if (map == null || caster == null)
               return;
-            
+
             foreach (Mobile m in m_Item.GetMobilesInRange(0))
               if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != caster) &&
                   SpellHelper.ValidIndirectTarget(caster, m) && caster.CanBeHarmful(m, false))
@@ -279,27 +274,6 @@ namespace Server.Spells.Fourth
             }
           }
         }
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private FireFieldSpell m_Owner;
-
-      public InternalTarget(FireFieldSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D d)
-          m_Owner.Target(d);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

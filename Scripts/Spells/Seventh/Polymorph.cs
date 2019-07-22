@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Factions;
 using Server.Gumps;
@@ -167,7 +166,7 @@ namespace Server.Spells.Seventh
       if (!m_Timers.TryGetValue(m, out InternalTimer timer))
         return;
 
-      timer.Stop();
+      timer?.Stop();
       m_Timers.Remove(m);
     }
 

@@ -19,12 +19,7 @@ namespace Server.Items
   public class Lockpick : Item
   {
     [Constructible]
-    public Lockpick() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Lockpick(int amount) : base(0x14FC)
+    public Lockpick(int amount = 1) : base(0x14FC)
     {
       Stackable = true;
       Amount = amount;

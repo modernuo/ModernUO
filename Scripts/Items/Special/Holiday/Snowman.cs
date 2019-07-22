@@ -6,7 +6,7 @@ namespace Server.Items
     private string m_Title;
 
     [Constructible]
-    public Snowman() : this(Utility.RandomDyedHue(), GetRandomTitle())
+    public Snowman() : this(Utility.RandomDyedHue())
     {
     }
 

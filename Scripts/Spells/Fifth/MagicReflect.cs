@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Spells.Fifth
@@ -16,7 +15,7 @@ namespace Server.Spells.Fifth
 
     private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
-    public MagicReflectSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MagicReflectSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -79,7 +78,7 @@ namespace Server.Spells.Fifth
             for (int i = 0; i < mods.Length; ++i)
               targ.AddResistanceMod(mods[i]);
 
-            string buffFormat = string.Format("{0}\t+{1}\t+{1}\t+{1}\t+{1}", physiMod, otherMod);
+            string buffFormat = $"{physiMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}\t+{otherMod}";
 
             BuffInfo.AddBuff(targ, new BuffInfo(BuffIcon.MagicReflection, 1075817, buffFormat, true));
           }
@@ -133,16 +132,14 @@ namespace Server.Spells.Fifth
 
     public static void EndReflect(Mobile m)
     {
-      ResistanceMod[] mods = m_Table[m];
+      if (!m_Table.TryGetValue(m, out ResistanceMod[] mods))
+        return;
 
-      if (mods != null)
-      {
-        for (int i = 0; i < mods.Length; ++i)
-          m.RemoveResistanceMod(mods[i]);
+      for (int i = 0; i < mods?.Length; ++i)
+        m.RemoveResistanceMod(mods[i]);
 
-        m_Table.Remove(m);
-        BuffInfo.RemoveBuff(m, BuffIcon.MagicReflection);
-      }
+      m_Table.Remove(m);
+      BuffInfo.RemoveBuff(m, BuffIcon.MagicReflection);
     }
   }
 }

@@ -13,12 +13,7 @@ namespace Server.Items
     public static int Range = Core.AOS ? 2 : 1;
 
     [Constructible]
-    public Bandage() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Bandage(int amount) : base(0xE21)
+    public Bandage(int amount = 1) : base(0xE21)
     {
       Stackable = true;
       Amount = amount;
@@ -84,16 +79,13 @@ namespace Server.Items
 
       if (from.InRange(b.GetWorldLocation(), Range))
       {
-        Target t = from.Target;
-
-        if (t != null)
+        if (from.Target != null)
         {
           Target.Cancel(from);
           from.Target = null;
         }
 
         from.RevealingAction();
-
         from.SendLocalizedMessage(500948); // Who will you use the bandages on?
 
         new InternalTarget(b).Invoke(from, e.Target);
@@ -122,9 +114,8 @@ namespace Server.Items
         {
           if (from.InRange(m_Bandage.GetWorldLocation(), Bandage.Range))
           {
-            if (BandageContext.BeginHeal(from, mobile) != null)
-              if (!DuelContext.IsFreeConsume(from))
-                m_Bandage.Consume();
+            if (!(BandageContext.BeginHeal(from, mobile) == null || DuelContext.IsFreeConsume(from)))
+              m_Bandage.Consume();
           }
           else
           {
@@ -187,9 +178,7 @@ namespace Server.Items
     public void StopHeal()
     {
       m_Table.Remove(Healer);
-
       Timer?.Stop();
-
       Timer = null;
     }
 
@@ -238,7 +227,7 @@ namespace Server.Items
         patientNumber = -1;
         playSound = false;
       }
-      else if (!Patient.Alive || petPatient != null && petPatient.IsDeadPet)
+      else if (!Patient.Alive || petPatient?.IsDeadPet == true)
       {
         double healing = Healer.Skills[primarySkill].Value;
         double anatomy = Healer.Skills[secondarySkill].Value;
@@ -267,7 +256,7 @@ namespace Server.Items
             Patient.PlaySound(0x214);
             Patient.FixedEffect(0x376A, 10, 16);
 
-            if (petPatient != null && petPatient.IsDeadPet)
+            if (petPatient?.IsDeadPet == true)
             {
               Mobile master = petPatient.ControlMaster;
 
@@ -277,7 +266,7 @@ namespace Server.Items
 
                 for (int i = 0; i < petPatient.Skills.Length; ++i) petPatient.Skills[i].Base -= 0.1;
               }
-              else if (master != null && master.InRange(petPatient, 3))
+              else if (master?.InRange(petPatient, 3) == true)
               {
                 healerNumber = 503255; // You are able to resurrect the creature.
 
@@ -319,7 +308,7 @@ namespace Server.Items
         }
         else
         {
-          if (petPatient != null && petPatient.IsDeadPet)
+          if (petPatient?.IsDeadPet == true)
             healerNumber = 503256; // You fail to resurrect the creature.
           else
             healerNumber = 500966; // You are unable to resurrect your patient.

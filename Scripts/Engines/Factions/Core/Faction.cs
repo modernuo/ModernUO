@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Accounting;
 using Server.Commands;
 using Server.Commands.Generic;
@@ -14,10 +15,10 @@ using Server.Targeting;
 namespace Server.Factions
 {
   [CustomEnum(new[] { "Minax", "Council of Mages", "True Britannians", "Shadowlords" })]
-  public abstract class Faction : IComparable
+  public abstract class Faction : IComparable<Faction>
   {
     public const int StabilityFactor = 300; // 300% greater (3 times) than smallest faction
-    public const int StabilityActivation = 200; // Stablity code goes into effect when largest faction has > 200 people
+    public const int StabilityActivation = 200; // Stability code goes into effect when largest faction has > 200 people
 
     public static readonly TimeSpan LeavePeriod = TimeSpan.FromDays(3.0);
 
@@ -87,9 +88,9 @@ namespace Server.Factions
 
     public static List<Faction> Factions => Reflector.Factions;
 
-    public int CompareTo(object obj)
+    public int CompareTo(Faction f)
     {
-      return m_Definition.Sort - ((Faction)obj).m_Definition.Sort;
+      return m_Definition.Sort - (f?.m_Definition.Sort ?? 0);
     }
 
     public void Broadcast(string text)
@@ -239,36 +240,18 @@ namespace Server.Factions
         return false;
 
       IPooledEnumerable<IEntity> eable = mob.Map.GetObjectsInRange(mob.Location, range, items, mobs);
-
-      foreach (IEntity obj in eable)
-        if (type.IsInstanceOfType(obj))
-        {
-          eable.Free();
-          return true;
-        }
-
+      bool isInstance = eable.Any(type.IsInstanceOfType);
       eable.Free();
-      return false;
+
+      return isInstance;
     }
 
     public static bool IsNearType(Mobile mob, Type[] types, int range)
     {
       IPooledEnumerable<IEntity> eable = mob.GetObjectsInRange(range);
-
-      foreach (IEntity obj in eable)
-      {
-        Type objType = obj.GetType();
-
-        for (int i = 0; i < types.Length; i++)
-          if (types[i].IsAssignableFrom(objType))
-          {
-            eable.Free();
-            return true;
-          }
-      }
-
+      bool found = eable.Any(obj => types.Any(t => t.IsInstanceOfType(obj)));
       eable.Free();
-      return false;
+      return found;
     }
 
     public void RemovePlayerState(PlayerState pl)
@@ -475,7 +458,7 @@ namespace Server.Factions
           pm.SendLocalizedMessage(
             1042161); // You cannot join a faction because your guild is an Order or Chaos type.
         }
-        else if (!Guild.NewGuildSystem && guild.Enemies != null && guild.Enemies.Count > 0
+        else if (!Guild.NewGuildSystem && guild.Enemies?.Count > 0
         ) //CAN join w/wars in new system
         {
           pm.SendLocalizedMessage(1005056); // You cannot join a faction with active Wars
@@ -1016,7 +999,7 @@ namespace Server.Factions
           Player killerEPL = Player.Find(killer);
           Player victimEPL = Player.Find(victim);
 
-          if (killerEPL != null && victimEPL != null && victimEPL.Power > 0 && victimState.CanGiveSilverTo(killer))
+          if (killerEPL != null && victimEPL?.Power > 0 && victimState.CanGiveSilverTo(killer))
           {
             int powerTransfer = Math.Max(1, victimEPL.Power / 5);
 
@@ -1078,7 +1061,7 @@ namespace Server.Factions
             Player killerEPL = Player.Find(killer);
             Player victimEPL = Player.Find(victim);
 
-            if (killerEPL != null && victimEPL != null && victimEPL.Power > 0)
+            if (killerEPL != null && victimEPL?.Power > 0)
             {
               int powerTransfer = Math.Max(1, victimEPL.Power / 5);
 

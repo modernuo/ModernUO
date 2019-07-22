@@ -16,6 +16,7 @@ namespace Server.Misc
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -27,6 +28,7 @@ namespace Server.Misc
       }
       catch
       {
+        // ignored
       }
     }
   }

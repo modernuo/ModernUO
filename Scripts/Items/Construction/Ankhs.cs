@@ -106,12 +106,7 @@ namespace Server.Items
     private InternalItem m_Item;
 
     [Constructible]
-    public AnkhWest() : this(false)
-    {
-    }
-
-    [Constructible]
-    public AnkhWest(bool bloodied) : base(bloodied ? 0x1D98 : 0x3)
+    public AnkhWest(bool bloodied = false) : base(bloodied ? 0x1D98 : 0x3)
     {
       Movable = false;
 
@@ -281,12 +276,7 @@ namespace Server.Items
     private InternalItem m_Item;
 
     [Constructible]
-    public AnkhNorth() : this(false)
-    {
-    }
-
-    [Constructible]
-    public AnkhNorth(bool bloodied) : base(bloodied ? 0x1E5D : 0x4)
+    public AnkhNorth(bool bloodied = false) : base(bloodied ? 0x1E5D : 0x4)
     {
       Movable = false;
 

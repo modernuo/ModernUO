@@ -3,12 +3,7 @@ namespace Server.Items
   public class BladeSpiritsScroll : SpellScroll
   {
     [Constructible]
-    public BladeSpiritsScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BladeSpiritsScroll(int amount) : base(32, 0x1F4D, amount)
+    public BladeSpiritsScroll(int amount = 1) : base(32, 0x1F4D, amount)
     {
     }
 

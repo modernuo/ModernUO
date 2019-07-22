@@ -10,13 +10,7 @@ namespace Server.Items
     private Point3D m_PlotLocation;
     private HouseRaffleStone m_Stone;
 
-    [Constructible]
-    public HouseRaffleDeed()
-      : this(null, null)
-    {
-    }
-
-    public HouseRaffleDeed(HouseRaffleStone stone, Mobile m) : base(0x2830)
+    public HouseRaffleDeed(HouseRaffleStone stone = null, Mobile m = null) : base(0x2830)
     {
       m_Stone = stone;
 
@@ -82,7 +76,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
-    public bool IsExpired => m_Stone == null || m_Stone.Deleted || m_Stone.IsExpired;
+    public bool IsExpired => m_Stone?.Deleted != false || m_Stone.IsExpired;
 
     public override string DefaultName => "a writ of lease";
 
@@ -186,7 +180,7 @@ namespace Server.Items
         AddImage(114, 266, 9387);
         AddImage(171, 266, 9388);
 
-        AddHtmlLocalized(30, 48, 229, 20, 1150484, 200, false, false); // WRIT OF LEASE
+        AddHtmlLocalized(30, 48, 229, 20, 1150484, 200); // WRIT OF LEASE
         AddHtml(28, 75, 231, 280, FormatDescription(deed), false, true);
       }
 

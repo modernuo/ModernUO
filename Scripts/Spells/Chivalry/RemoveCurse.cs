@@ -7,7 +7,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Chivalry
 {
-  public class RemoveCurseSpell : PaladinSpell
+  public class RemoveCurseSpell : PaladinSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Remove Curse", "Extermo Vomica",
@@ -15,7 +15,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public RemoveCurseSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public RemoveCurseSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -39,11 +39,14 @@ namespace Server.Spells.Chivalry
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (CheckBSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -54,7 +57,7 @@ namespace Server.Spells.Chivalry
          * Chance of removing curse is affected by Caster's Karma.
          */
 
-        int chance = 0;
+        int chance;
 
         if (Caster.Karma < -5000)
           chance = 0;
@@ -77,15 +80,15 @@ namespace Server.Spells.Chivalry
             0x100);
 
           StatMod mod = m.GetStatMod("[Magic] Str Offset");
-          if (mod != null && mod.Offset < 0)
+          if (mod?.Offset < 0)
             m.RemoveStatMod("[Magic] Str Offset");
 
           mod = m.GetStatMod("[Magic] Dex Offset");
-          if (mod != null && mod.Offset < 0)
+          if (mod?.Offset < 0)
             m.RemoveStatMod("[Magic] Dex Offset");
 
           mod = m.GetStatMod("[Magic] Int Offset");
-          if (mod != null && mod.Offset < 0)
+          if (mod?.Offset < 0)
             m.RemoveStatMod("[Magic] Int Offset");
 
           m.Paralyzed = false;
@@ -115,27 +118,6 @@ namespace Server.Spells.Chivalry
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private RemoveCurseSpell m_Owner;
-
-      public InternalTarget(RemoveCurseSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Beneficial)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

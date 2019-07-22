@@ -4,12 +4,7 @@ namespace Server.Items
   public class SextantParts : Item
   {
     [Constructible]
-    public SextantParts() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SextantParts(int amount) : base(0x1059)
+    public SextantParts(int amount = 1) : base(0x1059)
     {
       Stackable = true;
       Amount = amount;

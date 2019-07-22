@@ -3,12 +3,7 @@ namespace Server.Items
   public class RecallScroll : SpellScroll
   {
     [Constructible]
-    public RecallScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public RecallScroll(int amount) : base(31, 0x1F4C, amount)
+    public RecallScroll(int amount = 1) : base(31, 0x1F4C, amount)
     {
     }
 

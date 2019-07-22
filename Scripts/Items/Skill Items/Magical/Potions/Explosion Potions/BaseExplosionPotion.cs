@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Network;
 using Server.Spells;
 using Server.Targeting;
@@ -45,17 +46,13 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public virtual object FindParent(Mobile from)
+    public virtual IEntity FindParent(Mobile from)
     {
-      Mobile m = HeldBy;
+      if (HeldBy?.Holding == this)
+        return HeldBy;
 
-      if (m != null && m.Holding == this)
-        return m;
-
-      object obj = RootParent;
-
-      if (obj != null)
-        return obj;
+      if (RootParent != null)
+        return RootParent;
 
       if (Map == Map.Internal)
         return from;
@@ -74,7 +71,7 @@ namespace Server.Items
       ThrowTarget targ = from.Target as ThrowTarget;
       Stackable = false; // Scavenged explosion potions won't stack with those ones in backpack, and still will explode.
 
-      if (targ != null && targ.Potion == this)
+      if (targ?.Potion == this)
         return;
 
       from.RevealingAction();
@@ -107,7 +104,7 @@ namespace Server.Items
       if (Deleted)
         return;
 
-      object parent = FindParent(from);
+      IEntity parent = FindParent(from);
 
       if (timer == 0)
       {
@@ -179,22 +176,17 @@ namespace Server.Items
         alchemyBonus = (int)(from.Skills.Alchemy.Value / (Core.AOS ? 5 : 10));
 
       IPooledEnumerable<IEntity> eable = map.GetObjectsInRange(loc, ExplosionRange, LeveledExplosion);
-      List<IEntity> toExplode = new List<IEntity>();
-
       int toDamage = 0;
 
-      foreach (IEntity o in eable)
-        if (o is Mobile mobile && (from == null ||
-                                   SpellHelper.ValidIndirectTarget(from, mobile) &&
-                                   from.CanBeHarmful(mobile, false)))
-        {
-          toExplode.Add(mobile);
-          ++toDamage;
-        }
-        else if (o is BaseExplosionPotion && o != this)
-        {
-          toExplode.Add(o);
-        }
+      List<IEntity> toExplode = eable.Where(o =>
+      {
+        if (!(o is Mobile mobile) || from != null &&
+            (!SpellHelper.ValidIndirectTarget(from, mobile) || !from.CanBeHarmful(mobile, false)))
+          return o is BaseExplosionPotion && o != this;
+
+        ++toDamage;
+        return true;
+      }).ToList();
 
       eable.Free();
 
@@ -203,7 +195,7 @@ namespace Server.Items
 
       for (int i = 0; i < toExplode.Count; ++i)
       {
-        object o = toExplode[i];
+        IEntity o = toExplode[i];
 
         if (o is Mobile m)
         {

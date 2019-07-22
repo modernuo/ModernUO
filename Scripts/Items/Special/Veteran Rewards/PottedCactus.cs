@@ -90,7 +90,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         return;
 
       if (IsChildOf(from.Backpack))
@@ -151,45 +151,42 @@ namespace Server.Items
         AddLabel(45, 15, 0, "Choose a Potted Cactus:");
 
         AddItem(45, 75, 0x1E0F);
-        AddButton(55, 50, 0x845, 0x846, 0x1E0F, GumpButtonType.Reply, 0);
+        AddButton(55, 50, 0x845, 0x846, 0x1E0F);
 
         AddItem(105, 75, 0x1E10);
-        AddButton(115, 50, 0x845, 0x846, 0x1E10, GumpButtonType.Reply, 0);
+        AddButton(115, 50, 0x845, 0x846, 0x1E10);
 
         AddItem(160, 75, 0x1E14);
-        AddButton(175, 50, 0x845, 0x846, 0x1E14, GumpButtonType.Reply, 0);
+        AddButton(175, 50, 0x845, 0x846, 0x1E14);
 
         AddItem(220, 75, 0x1E11);
-        AddButton(235, 50, 0x845, 0x846, 0x1E11, GumpButtonType.Reply, 0);
+        AddButton(235, 50, 0x845, 0x846, 0x1E11);
 
         AddItem(280, 75, 0x1E12);
-        AddButton(295, 50, 0x845, 0x846, 0x1E12, GumpButtonType.Reply, 0);
+        AddButton(295, 50, 0x845, 0x846, 0x1E12);
 
         AddItem(340, 75, 0x1E13);
-        AddButton(355, 50, 0x845, 0x846, 0x1E13, GumpButtonType.Reply, 0);
+        AddButton(355, 50, 0x845, 0x846, 0x1E13);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if ((m_Cactus == null) | m_Cactus.Deleted)
+        if (m_Cactus?.Deleted != false || info.ButtonID < 0x1E0F || info.ButtonID > 0x1E14)
           return;
 
-        Mobile m = sender.Mobile;
-
-        if (info.ButtonID >= 0x1E0F && info.ButtonID <= 0x1E14)
+        RewardPottedCactus cactus = new RewardPottedCactus(info.ButtonID)
         {
-          RewardPottedCactus cactus = new RewardPottedCactus(info.ButtonID);
-          cactus.IsRewardItem = m_Cactus.IsRewardItem;
+          IsRewardItem = m_Cactus.IsRewardItem
+        };
 
-          if (!m.PlaceInBackpack(cactus))
-          {
-            cactus.Delete();
-            m.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
-          }
-          else
-          {
-            m_Cactus.Delete();
-          }
+        if (!sender.Mobile.PlaceInBackpack(cactus))
+        {
+          cactus.Delete();
+          sender.Mobile.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
+        }
+        else
+        {
+          m_Cactus.Delete();
         }
       }
     }

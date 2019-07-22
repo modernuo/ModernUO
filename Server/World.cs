@@ -46,7 +46,7 @@ namespace Server
     public static readonly string GuildIndexPath = Path.Combine("Saves/Guilds/", "Guilds.idx");
     public static readonly string GuildDataPath = Path.Combine("Saves/Guilds/", "Guilds.bin");
 
-    private static readonly Type[] m_SerialTypeArray = new Type[] { typeof(Serial) };
+    private static readonly Type[] m_SerialTypeArray = { typeof(Serial) };
 
     internal static int m_Saves;
 
@@ -558,12 +558,9 @@ namespace Server
 
     private static void AppendSafetyLog(string action, IEntity entity)
     {
-      string message = string.Format("Warning: Attempted to {1} {2} during world save." +
-                                     "{0}This action could cause inconsistent state." +
-                                     "{0}It is strongly advised that the offending scripts be corrected.",
-        Environment.NewLine,
-        action, entity
-      );
+      string message = $"Warning: Attempted to {action} {entity} during world save." +
+                       $"{Environment.NewLine}This action could cause inconsistent state." +
+                       $"{Environment.NewLine}It is strongly advised that the offending scripts be corrected.";
 
       Console.WriteLine(message);
 

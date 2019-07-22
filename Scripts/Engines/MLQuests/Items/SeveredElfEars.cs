@@ -4,12 +4,7 @@ namespace Server.Items
   public class SeveredElfEars : Item
   {
     [Constructible]
-    public SeveredElfEars() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SeveredElfEars(int amount) : base(Utility.RandomList(0x312D, 0x312E))
+    public SeveredElfEars(int amount = 1) : base(Utility.RandomList(0x312D, 0x312E))
     {
       Stackable = true;
       Amount = amount;

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Commands;
@@ -261,22 +260,8 @@ namespace Server
 
     private static bool IsClothes(int itemID)
     {
-      if (itemID >= 0x1515 && itemID <= 0x1518)
-        return true;
-
-      if (itemID >= 0x152E && itemID <= 0x1531)
-        return true;
-
-      if (itemID >= 0x1537 && itemID <= 0x154C)
-        return true;
-
-      if (itemID >= 0x1EFD && itemID <= 0x1F04)
-        return true;
-
-      if (itemID >= 0x170B && itemID <= 0x171C)
-        return true;
-
-      return false;
+      return itemID >= 0x1515 && itemID <= 0x1518 || itemID >= 0x152E && itemID <= 0x1531 || itemID >= 0x1537
+             && itemID <= 0x154C || itemID >= 0x1EFD && itemID <= 0x1F04 || itemID >= 0x170B && itemID <= 0x171C;
     }
 
     private static bool IsArmor(int itemID)

@@ -35,13 +35,7 @@ namespace Server.Items
   public class SackOfSugar : Item
   {
     [Constructible]
-    public SackOfSugar()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public SackOfSugar(int amount)
+    public SackOfSugar(int amount = 1)
       : base(0x1039)
     {
       Hue = 0x461;
@@ -107,13 +101,7 @@ namespace Server.Items
   public class Vanilla : Item
   {
     [Constructible]
-    public Vanilla()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public Vanilla(int amount)
+    public Vanilla(int amount = 1)
       : base(0xE2A)
     {
       Hue = 0x462;
@@ -147,13 +135,7 @@ namespace Server.Items
   public class CocoaPulp : Item
   {
     [Constructible]
-    public CocoaPulp()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public CocoaPulp(int amount)
+    public CocoaPulp(int amount = 1)
       : base(0xF7C)
     {
       Hue = 0x219;

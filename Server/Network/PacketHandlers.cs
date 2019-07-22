@@ -801,6 +801,7 @@ namespace Server.Network
             }
             catch
             {
+              // ignored
             }
 
           break;
@@ -1025,10 +1026,7 @@ namespace Server.Network
       if (!valid) return;
 
       pvSrc.Seek(5, SeekOrigin.Current);
-      Mobile to = World.FindMobile(pvSrc.ReadUInt32());
-
-      if (to == null)
-        to = from;
+      Mobile to = World.FindMobile(pvSrc.ReadUInt32()) ?? from;
 
       if (!to.AllowEquipFrom(from) || !to.EquipItem(item))
         item.Bounce(from);
@@ -1478,14 +1476,14 @@ namespace Server.Network
           {
             Mobile m = World.FindMobile(s);
 
-            if (m != null && !m.Deleted)
+            if (m?.Deleted == false)
               from.Use(m);
           }
           else if (s.IsItem)
           {
             Item item = World.FindItem(s);
 
-            if (item != null && !item.Deleted)
+            if (item?.Deleted == false)
               from.Use(item);
           }
         }
@@ -1525,7 +1523,7 @@ namespace Server.Network
       {
         Item item = World.FindItem(s);
 
-        if (item != null && !item.Deleted && from.CanSee(item) &&
+        if (item?.Deleted == false && from.CanSee(item) &&
             Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
         {
           if (SingleClickProps)
@@ -1705,7 +1703,7 @@ namespace Server.Network
         {
           Item item = World.FindItem(s);
 
-          if (item != null && !item.Deleted && from.CanSee(item) &&
+          if (item?.Deleted == false && from.CanSee(item) &&
               Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
             item.SendPropertiesTo(from);
         }
@@ -1732,7 +1730,7 @@ namespace Server.Network
       {
         Item item = World.FindItem(s);
 
-        if (item != null && !item.Deleted && from.CanSee(item) &&
+        if (item?.Deleted == false && from.CanSee(item) &&
             Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
           item.SendPropertiesTo(from);
       }
@@ -2374,13 +2372,10 @@ namespace Server.Network
 
       bool female = genderRace % 2 != 0;
 
-      Race race = null;
+      Race race;
 
       byte raceID = (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1);
-      race = Race.Races[raceID];
-
-      if (race == null)
-        race = Race.DefaultRace;
+      race = Race.Races[raceID] ?? Race.DefaultRace;
 
       CityInfo[] info = state.CityInfo;
       IAccount a = state.Account;

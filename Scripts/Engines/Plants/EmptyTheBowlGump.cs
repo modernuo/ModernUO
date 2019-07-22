@@ -17,12 +17,12 @@ namespace Server.Engines.Plants
 
       DrawPicture();
 
-      AddButton(98, 150, 0x47E, 0x480, 1, GumpButtonType.Reply, 0); // Cancel
+      AddButton(98, 150, 0x47E, 0x480, 1); // Cancel
 
-      AddButton(138, 151, 0xD2, 0xD2, 2, GumpButtonType.Reply, 0); // Help
+      AddButton(138, 151, 0xD2, 0xD2, 2); // Help
       AddLabel(143, 151, 0x835, "?");
 
-      AddButton(168, 150, 0x481, 0x483, 3, GumpButtonType.Reply, 0); // Ok
+      AddButton(168, 150, 0x481, 0x483, 3); // Ok
     }
 
     private void DrawBackground()

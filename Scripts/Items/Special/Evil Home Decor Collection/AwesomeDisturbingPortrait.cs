@@ -42,7 +42,7 @@ namespace Server.Items
     {
       base.OnAfterDelete();
 
-      if (m_Timer != null && m_Timer.Running)
+      if (m_Timer?.Running == true)
         m_Timer.Stop();
     }
 
@@ -117,7 +117,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        if (m_Component != null && !m_Component.Deleted)
+        if (m_Component?.Deleted == false)
           m_Component.UpdateImage();
       }
     }

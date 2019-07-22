@@ -2,11 +2,7 @@ namespace Server.Items
 {
   public abstract class BaseShoes : BaseClothing
   {
-    public BaseShoes(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BaseShoes(int itemID, int hue) : base(itemID, Layer.Shoes, hue)
+    public BaseShoes(int itemID, int hue = 0) : base(itemID, Layer.Shoes, hue)
     {
     }
 
@@ -57,12 +53,7 @@ namespace Server.Items
   public class FurBoots : BaseShoes
   {
     [Constructible]
-    public FurBoots() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FurBoots(int hue) : base(0x2307, hue)
+    public FurBoots(int hue = 0) : base(0x2307, hue)
     {
       Weight = 3.0;
     }
@@ -90,12 +81,7 @@ namespace Server.Items
   public class Boots : BaseShoes
   {
     [Constructible]
-    public Boots() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Boots(int hue) : base(0x170B, hue)
+    public Boots(int hue = 0) : base(0x170B, hue)
     {
       Weight = 3.0;
     }
@@ -125,12 +111,7 @@ namespace Server.Items
   public class ThighBoots : BaseShoes, IArcaneEquip
   {
     [Constructible]
-    public ThighBoots() : this(0)
-    {
-    }
-
-    [Constructible]
-    public ThighBoots(int hue) : base(0x1711, hue)
+    public ThighBoots(int hue = 0) : base(0x1711, hue)
     {
       Weight = 4.0;
     }
@@ -256,12 +237,7 @@ namespace Server.Items
   public class Shoes : BaseShoes
   {
     [Constructible]
-    public Shoes() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Shoes(int hue) : base(0x170F, hue)
+    public Shoes(int hue = 0) : base(0x170F, hue)
     {
       Weight = 2.0;
     }
@@ -291,12 +267,7 @@ namespace Server.Items
   public class Sandals : BaseShoes
   {
     [Constructible]
-    public Sandals() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Sandals(int hue) : base(0x170D, hue)
+    public Sandals(int hue = 0) : base(0x170D, hue)
     {
       Weight = 1.0;
     }
@@ -331,12 +302,7 @@ namespace Server.Items
   public class NinjaTabi : BaseShoes
   {
     [Constructible]
-    public NinjaTabi() : this(0)
-    {
-    }
-
-    [Constructible]
-    public NinjaTabi(int hue) : base(0x2797, hue)
+    public NinjaTabi(int hue = 0) : base(0x2797, hue)
     {
       Weight = 2.0;
     }
@@ -364,12 +330,7 @@ namespace Server.Items
   public class SamuraiTabi : BaseShoes
   {
     [Constructible]
-    public SamuraiTabi() : this(0)
-    {
-    }
-
-    [Constructible]
-    public SamuraiTabi(int hue) : base(0x2796, hue)
+    public SamuraiTabi(int hue = 0) : base(0x2796, hue)
     {
       Weight = 2.0;
     }
@@ -397,12 +358,7 @@ namespace Server.Items
   public class Waraji : BaseShoes
   {
     [Constructible]
-    public Waraji() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Waraji(int hue) : base(0x2796, hue)
+    public Waraji(int hue = 0) : base(0x2796, hue)
     {
       Weight = 2.0;
     }
@@ -430,12 +386,7 @@ namespace Server.Items
   public class ElvenBoots : BaseShoes
   {
     [Constructible]
-    public ElvenBoots() : this(0)
-    {
-    }
-
-    [Constructible]
-    public ElvenBoots(int hue) : base(0x2FC4, hue)
+    public ElvenBoots(int hue = 0) : base(0x2FC4, hue)
     {
       Weight = 2.0;
     }

@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Server.Mobiles
 {
   public class InterredGrizzle : BaseCreature
@@ -134,16 +136,8 @@ namespace Server.Mobiles
         for (int j = 0; j < 5; j++)
         {
           p = GetSpawnPosition(2);
-          bool found = false;
 
-          foreach (Item item in Map.GetItemsInRange(p, 0))
-            if (item is StainedOoze)
-            {
-              found = true;
-              break;
-            }
-
-          if (!found)
+          if (!Map.GetItemsInRange(p, 0).OfType<StainedOoze>().Any())
             break;
         }
 

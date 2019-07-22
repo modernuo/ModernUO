@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-  public class ArchCureSpell : MagerySpell
+  public class ArchCureSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Arch Cure", "Vas An Nox",
@@ -16,7 +17,7 @@ namespace Server.Spells.Fourth
       Reagent.MandrakeRoot
     );
 
-    public ArchCureSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ArchCureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -27,7 +28,7 @@ namespace Server.Spells.Fourth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -56,15 +57,7 @@ namespace Server.Spells.Fourth
             targets.Add(directTarget);
 
           IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), 2);
-
-          foreach (Mobile m in eable)
-          {
-            if (m == directTarget)
-              continue;
-
-            if (AreaCanTarget(m, feluccaRules))
-              targets.Add(m);
-          }
+          targets.AddRange(eable.Where(m => m != directTarget).Where(m => AreaCanTarget(m, feluccaRules)));
 
           eable.Free();
         }
@@ -157,27 +150,6 @@ namespace Server.Spells.Fourth
     private static bool IsAllyTo(Mobile from, Mobile to)
     {
       return Notoriety.Compute(from, to) == Notoriety.Ally;
-    }
-
-    private class InternalTarget : Target
-    {
-      private ArchCureSpell m_Owner;
-
-      public InternalTarget(ArchCureSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Second
 {
-  public class RemoveTrapSpell : MagerySpell
+  public class RemoveTrapSpell : MagerySpell, ISpellTargetingItem
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Remove Trap", "An Jux",
@@ -13,7 +13,7 @@ namespace Server.Spells.Second
       Reagent.SulfurousAsh
     );
 
-    public RemoveTrapSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public RemoveTrapSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -21,17 +21,19 @@ namespace Server.Spells.Second
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
-      Caster.SendMessage("What do you wish to untrap?");
+      Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
+      Caster.SendMessage("What do you wish to untrap?"); // TODO: Localization?
     }
 
-    public void Target(TrappableContainer item)
+    public void Target(Item item)
     {
-      if (!Caster.CanSee(item))
+      if (!(item is TrappableContainer cont))
+        Caster.SendMessage("You can't disarm that"); // TODO: Localization?
+      else if (!Caster.CanSee(item))
       {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
       }
-      else if (item.TrapType != TrapType.None && item.TrapType != TrapType.MagicTrap)
+      else if (cont.TrapType != TrapType.None && cont.TrapType != TrapType.MagicTrap)
       {
         base.DoFizzle();
       }
@@ -45,35 +47,12 @@ namespace Server.Spells.Second
           5015);
         Effects.PlaySound(loc, item.Map, 0x1F0);
 
-        item.TrapType = TrapType.None;
-        item.TrapPower = 0;
-        item.TrapLevel = 0;
+        cont.TrapType = TrapType.None;
+        cont.TrapPower = 0;
+        cont.TrapLevel = 0;
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private RemoveTrapSpell m_Owner;
-
-      public InternalTarget(RemoveTrapSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is TrappableContainer container)
-          m_Owner.Target(container);
-        else
-          from.SendMessage("You can't disarm that");
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

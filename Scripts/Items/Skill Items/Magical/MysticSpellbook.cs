@@ -3,13 +3,7 @@
   public class MysticSpellbook : Spellbook
   {
     [Constructible]
-    public MysticSpellbook()
-      : this((ulong)0)
-    {
-    }
-
-    [Constructible]
-    public MysticSpellbook(ulong content)
+    public MysticSpellbook(ulong content = 0)
       : base(content, 0x2D9D)
     {
       Layer = Layer.OneHanded;

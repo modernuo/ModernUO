@@ -512,34 +512,31 @@ namespace Server.Engines.Quests
       AddImage(2, 248, 10006);
       AddImage(2, 2, 10006);
 
-      AddHtmlLocalized(25, 22, 200, 20, 1049000, 32000, false, false); // Confirm Quest Cancellation
+      AddHtmlLocalized(25, 22, 200, 20, 1049000, 32000); // Confirm Quest Cancellation
       AddImage(25, 40, 3007);
 
       if (system.IsTutorial)
       {
-        AddHtmlLocalized(25, 55, 300, 120, 1060836, White, false,
-          false); // This quest will give you valuable information, skills and equipment that will help you advance in the game at a quicker pace.<BR><BR>Are you certain you wish to cancel at this time?
+        AddHtmlLocalized(25, 55, 300, 120, 1060836, White); // This quest will give you valuable information, skills and equipment that will help you advance in the game at a quicker pace.<BR><BR>Are you certain you wish to cancel at this time?
       }
       else
       {
-        AddHtmlLocalized(25, 60, 300, 20, 1049001, White, false, false); // You have chosen to abort your quest:
+        AddHtmlLocalized(25, 60, 300, 20, 1049001, White); // You have chosen to abort your quest:
         AddImage(25, 81, 0x25E7);
         AddHtmlObject(48, 80, 280, 20, system.Name, DarkGreen, false, false);
 
-        AddHtmlLocalized(25, 120, 280, 20, 1049002, White, false,
-          false); // Can this quest be restarted after quitting?
+        AddHtmlLocalized(25, 120, 280, 20, 1049002, White); // Can this quest be restarted after quitting?
         AddImage(25, 141, 0x25E7);
-        AddHtmlLocalized(48, 140, 280, 20, system.RestartDelay < TimeSpan.MaxValue ? 1049016 : 1049017, DarkGreen,
-          false, false); // Yes/No
+        AddHtmlLocalized(48, 140, 280, 20, system.RestartDelay < TimeSpan.MaxValue ? 1049016 : 1049017, DarkGreen); // Yes/No
       }
 
       AddRadio(25, 175, 9720, 9723, true, 1);
-      AddHtmlLocalized(60, 180, 280, 20, 1049005, White, false, false); // Yes, I really want to quit!
+      AddHtmlLocalized(60, 180, 280, 20, 1049005, White); // Yes, I really want to quit!
 
       AddRadio(25, 210, 9720, 9723, false, 0);
-      AddHtmlLocalized(60, 215, 280, 20, 1049006, White, false, false); // No, I don't want to quit.
+      AddHtmlLocalized(60, 215, 280, 20, 1049006, White); // No, I don't want to quit.
 
-      AddButton(265, 220, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(265, 220, 247, 248, 1);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -565,7 +562,7 @@ namespace Server.Engines.Quests
       AddAlphaRegion(50, 20, 400, 400);
 
       AddImage(90, 33, 9005);
-      AddHtmlLocalized(130, 45, 270, 20, 1049010, White, false, false); // Quest Offer
+      AddHtmlLocalized(130, 45, 270, 20, 1049010, White); // Quest Offer
       AddImageTiled(130, 65, 175, 1, 9101);
 
       AddImage(140, 110, 1209);
@@ -574,12 +571,12 @@ namespace Server.Engines.Quests
       AddHtmlObject(98, 140, 312, 200, system.OfferMessage, LightGreen, false, true);
 
       AddRadio(85, 350, 9720, 9723, true, 1);
-      AddHtmlLocalized(120, 356, 280, 20, 1049011, White, false, false); // I accept!
+      AddHtmlLocalized(120, 356, 280, 20, 1049011, White); // I accept!
 
       AddRadio(85, 385, 9720, 9723, false, 0);
-      AddHtmlLocalized(120, 391, 280, 20, 1049012, White, false, false); // No thanks, I decline.
+      AddHtmlLocalized(120, 391, 280, 20, 1049012, White); // No thanks, I decline.
 
-      AddButton(340, 390, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(340, 390, 247, 248, 1);
 
       AddImageTiled(50, 29, 30, 390, 10460);
       AddImageTiled(34, 140, 17, 279, 9263);

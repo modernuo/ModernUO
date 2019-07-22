@@ -20,6 +20,11 @@ namespace Server.Items
     private BookQuality m_Quality;
 
     [Constructible]
+    public Runebook() : this(Core.SE ? 12 : 6)
+    {
+    }
+
+    [Constructible]
     public Runebook(int maxCharges) : base(Core.AOS ? 0x22C5 : 0xEFA)
     {
       Weight = Core.SE ? 1.0 : 3.0;
@@ -35,11 +40,6 @@ namespace Server.Items
       m_DefaultIndex = -1;
 
       Level = SecureLevel.CoOwners;
-    }
-
-    [Constructible]
-    public Runebook() : this(Core.SE ? 12 : 6)
-    {
     }
 
     public Runebook(Serial serial) : base(serial)
@@ -289,7 +289,7 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      if (m_Description != null && m_Description.Length > 0)
+      if (m_Description?.Length > 0)
         LabelTo(from, m_Description);
 
       base.OnSingleClick(from);
@@ -349,10 +349,8 @@ namespace Server.Items
 
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (house != null && house.IsAosRules && (house.Public ? house.IsBanned(m) : !house.HasAccess(m)))
-        return false;
-
-      return house != null && house.HasSecureAccess(m, Level);
+      return (house?.IsAosRules != true || house.Public && !house.IsBanned(m) || house.HasAccess(m)) &&
+             house?.HasSecureAccess(m, Level) == true;
     }
 
     public override bool OnDragDrop(Mobile from, Item dropped)
@@ -427,7 +425,7 @@ namespace Server.Items
 
   public class RunebookEntry
   {
-    public RunebookEntry(Point3D loc, Map map, string desc, BaseHouse house)
+    public RunebookEntry(Point3D loc, Map map, string desc, BaseHouse house = null)
     {
       Location = loc;
       Map = map;
@@ -467,7 +465,7 @@ namespace Server.Items
 
     public void Serialize(GenericWriter writer)
     {
-      if (House != null && !House.Deleted)
+      if (House?.Deleted == false)
       {
         writer.Write((byte)1); // version
 

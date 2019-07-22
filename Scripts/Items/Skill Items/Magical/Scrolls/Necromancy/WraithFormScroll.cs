@@ -3,12 +3,7 @@ namespace Server.Items
   public class WraithFormScroll : SpellScroll
   {
     [Constructible]
-    public WraithFormScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public WraithFormScroll(int amount) : base(115, 0x226F, amount)
+    public WraithFormScroll(int amount = 1) : base(115, 0x226F, amount)
     {
     }
 

@@ -51,12 +51,11 @@ namespace Server
   {
     public unsafe void Read(IntPtr ptr, void* buffer, int length)
     {
-      //UnsafeNativeMethods._lread( ptr, buffer, length );
       uint lpNumberOfBytesRead = 0;
       UnsafeNativeMethods.ReadFile(ptr, buffer, (uint)length, ref lpNumberOfBytesRead, null);
     }
 
-    internal class UnsafeNativeMethods
+    internal static class UnsafeNativeMethods
     {
       /*[DllImport("kernel32")]
       internal unsafe static extern int _lread(IntPtr hFile, void* lpBuffer, int wBytes);*/
@@ -74,7 +73,7 @@ namespace Server
       UnsafeNativeMethods.read(ptr, buffer, length);
     }
 
-    internal class UnsafeNativeMethods
+    internal static class UnsafeNativeMethods
     {
       [DllImport("libc")]
       internal static extern unsafe int read(IntPtr ptr, void* buffer, int length);

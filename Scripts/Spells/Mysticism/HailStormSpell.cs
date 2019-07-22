@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Server.Network;
-using Server.Targeting;
 
 namespace Server.Spells.Mysticism
 {
-  public class HailStormSpell : MysticSpell
+  public class HailStormSpell : MysticSpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Hail Storm", "Kal Des Ylem",
@@ -17,7 +16,7 @@ namespace Server.Spells.Mysticism
       Reagent.MandrakeRoot
     );
 
-    public HailStormSpell(Mobile caster, Item scroll)
+    public HailStormSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }
@@ -29,7 +28,7 @@ namespace Server.Spells.Mysticism
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this);
     }
 
     public void Target(IPoint3D p)
@@ -117,28 +116,6 @@ namespace Server.Spells.Mysticism
       Effects.SendPacket(p, map,
         new HuedEffect(EffectType.Moving, Serial.Zero, Serial.Zero, 0x36D4, orig, dest, 0, 0, false, false, 0x63,
           0x4));
-    }
-
-    private class InternalTarget : Target
-    {
-      private HailStormSpell m_Owner;
-
-      public InternalTarget(HailStormSpell owner)
-        : base(12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

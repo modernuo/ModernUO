@@ -2,11 +2,7 @@ namespace Server.Factions
 {
   public class TownMonolith : BaseMonolith
   {
-    public TownMonolith() : this(null)
-    {
-    }
-
-    public TownMonolith(Town town) : base(town, null)
+    public TownMonolith(Town town = null) : base(town)
     {
     }
 

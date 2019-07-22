@@ -21,10 +21,7 @@ namespace Server.Engines.ConPVP
 
     public override bool AllowHousing(Mobile from, Point3D p)
     {
-      if (from.AccessLevel < AccessLevel.GameMaster)
-        return false;
-
-      return base.AllowHousing(from, p);
+      return from.AccessLevel >= AccessLevel.GameMaster && base.AllowHousing(from, p);
     }
 
     public override bool OnMoveInto(Mobile m, Direction d, Point3D newLocation, Point3D oldLocation)
@@ -35,12 +32,11 @@ namespace Server.Engines.ConPVP
         return false;
       }
 
-      PlayerMobile pm = m as PlayerMobile;
+      PlayerMobile pm = m as PlayerMobile ??
+                        (m is BaseCreature bc && bc.Summoned ?
+        bc.SummonMaster as PlayerMobile : null);
 
-      if (pm == null && m is BaseCreature bc && bc.Summoned)
-        pm = bc.SummonMaster as PlayerMobile;
-
-      if (pm?.DuelContext != null && pm.DuelContext.StartedBeginCountdown)
+      if (pm?.DuelContext?.StartedBeginCountdown == true)
         return true;
 
       if (DuelContext.CheckCombat(m))

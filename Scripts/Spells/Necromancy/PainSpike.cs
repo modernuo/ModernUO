@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Misc;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-  public class PainSpikeSpell : NecromancerSpell
+  public class PainSpikeSpell : NecromancerSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Pain Spike", "In Sar",
@@ -18,7 +17,7 @@ namespace Server.Spells.Necromancy
 
     private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
-    public PainSpikeSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public PainSpikeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -31,11 +30,14 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (CheckHSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -107,27 +109,6 @@ namespace Server.Spells.Necromancy
           m_Mobile.Hits += m_ToRestore;
 
         BuffInfo.RemoveBuff(m_Mobile, BuffIcon.PainSpike);
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private PainSpikeSpell m_Owner;
-
-      public InternalTarget(PainSpikeSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

@@ -9,12 +9,7 @@ namespace Server.Engines.MLQuests.Gumps
     private bool m_CloseGumps;
     private MLQuestInstance m_Instance;
 
-    public QuestLogDetailedGump(MLQuestInstance instance)
-      : this(instance, true)
-    {
-    }
-
-    public QuestLogDetailedGump(MLQuestInstance instance, bool closeGumps)
+    public QuestLogDetailedGump(MLQuestInstance instance, bool closeGumps = true)
       : base(1046026) // Quest Log
     {
       m_Instance = instance;
@@ -39,7 +34,7 @@ namespace Server.Engines.MLQuests.Gumps
       AddDescription(quest);
 
       if (instance.Failed) // only displayed on the first page
-        AddHtmlLocalized(160, 80, 250, 16, 500039, 0x3C00, false, false); // Failed!
+        AddHtmlLocalized(160, 80, 250, 16, 500039, 0x3C00); // Failed!
 
       BuildPage();
       AddObjectivesProgress(instance);

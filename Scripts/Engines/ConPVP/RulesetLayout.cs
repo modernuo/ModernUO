@@ -47,7 +47,7 @@ namespace Server.Engines.ConPVP
       {
         if (m_Root != null)
           return m_Root;
-        
+
         List<RulesetLayout> entries = new List<RulesetLayout>
         {
           new RulesetLayout("Spells",

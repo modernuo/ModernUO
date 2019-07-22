@@ -3,12 +3,7 @@ namespace Server.Items
   public class Tourmaline : Item
   {
     [Constructible]
-    public Tourmaline() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Tourmaline(int amount) : base(0xF2D)
+    public Tourmaline(int amount = 1) : base(0xF2D)
     {
       Stackable = true;
       Amount = amount;

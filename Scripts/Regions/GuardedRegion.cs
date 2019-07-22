@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using Server.Commands;
 using Server.Mobiles;
@@ -171,15 +172,8 @@ namespace Server.Regions
 
     public override void MakeGuard(Mobile focus)
     {
-      BaseGuard useGuard = null;
-
       IPooledEnumerable<BaseGuard> eable = focus.GetMobilesInRange<BaseGuard>(8);
-      foreach (BaseGuard m in eable)
-        if (m.Focus == null) // idling
-        {
-          useGuard = m;
-          break;
-        }
+      BaseGuard useGuard = eable.FirstOrDefault(m => m.Focus == null);
 
       eable.Free();
 
@@ -193,6 +187,7 @@ namespace Server.Regions
         }
         catch
         {
+          // ignored
         }
       }
       else
@@ -212,7 +207,7 @@ namespace Server.Regions
 
     public override void OnExit(Mobile m)
     {
-      if (IsDisabled())
+//      if (IsDisabled())
         return;
     }
 

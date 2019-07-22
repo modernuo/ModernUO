@@ -6,13 +6,7 @@
     private static int fItemID = 0x154d;
 
     [Constructible]
-    public WaterBarrel()
-      : this(false)
-    {
-    }
-
-    [Constructible]
-    public WaterBarrel(bool filled)
+    public WaterBarrel(bool filled = false)
       : base(filled ? fItemID : vItemID, filled)
     {
     }

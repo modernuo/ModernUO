@@ -37,7 +37,7 @@ namespace Server.Engines.Events
 			new Rectangle2D(4528,1314,28,20), // Moonglow
 			new Rectangle2D(712,1104,22,30), // Yew
 			new Rectangle2D(5824,1464,6,22), // Fire Dungeon
-			new Rectangle2D(5224,3655,5,14), // T2A
+			new Rectangle2D(5224,3655,5,14) // T2A
 		};
 
 		public static void Initialize()
@@ -98,7 +98,7 @@ namespace Server.Engines.Events
 					}
 				}
 
-				if ( player != null && !player.Deleted && ReAnimated.Count < m_TotalZombieLimit )
+				if (player?.Deleted == false && ReAnimated.Count < m_TotalZombieLimit )
 				{
 					Map map = Utility.RandomBool() ? Map.Trammel : Map.Felucca;
 
@@ -158,7 +158,7 @@ namespace Server.Engines.Events
 		public override void Serialize( GenericWriter writer )
 		{
 			base.Serialize( writer );
-			writer.Write( ( int )0 );
+			writer.Write( 0 );
 		}
 
 		public override void Deserialize( GenericReader reader )
@@ -175,17 +175,12 @@ namespace Server.Engines.Events
 
 		private PlayerMobile m_DeadPlayer;
 
-		public ZombieSkeleton()
-			: this( null )
-		{
-		}
-
-		public ZombieSkeleton( PlayerMobile player )
+		public ZombieSkeleton(PlayerMobile player = null)
 			: base( AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4 )
 		{
 			m_DeadPlayer = player;
 
-			Name = ( player != null ) ? $"{player.Name}'s {m_Name}" : m_Name;
+			Name = player != null ? $"{player.Name}'s {m_Name}" : m_Name;
 
 			Body = 0x93;
 			BaseSoundID = 0x1c3;
@@ -228,7 +223,7 @@ namespace Server.Engines.Events
 				case 2: PackItem( new Torso() ); break;
 				case 3: PackItem( new Bone() ); break;
 				case 4: PackItem( new RibCage() ); break;
-				case 5: if ( m_DeadPlayer != null && !m_DeadPlayer.Deleted ) { PackItem( new PlayerBones( m_DeadPlayer.Name ) ); } break;
+				case 5: if (m_DeadPlayer?.Deleted == false) { PackItem( new PlayerBones( m_DeadPlayer.Name ) ); } break;
 				default: break;
 			}
 
@@ -248,7 +243,7 @@ namespace Server.Engines.Events
 		{
 			if ( HalloweenHauntings.ReAnimated != null )
 			{
-				if ( m_DeadPlayer != null && !m_DeadPlayer.Deleted )
+				if (m_DeadPlayer?.Deleted == false)
 				{
 					if ( HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
 						HalloweenHauntings.ReAnimated.Remove( m_DeadPlayer );

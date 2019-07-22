@@ -1,38 +1,25 @@
 using System;
-using System.Collections.Generic;
 using Server.Items;
 using Server.Mobiles;
 
 namespace Server.Engines.BulkOrders
 {
-  [TypeAlias("Scripts.Engines.BulkOrders.SmallBOD")]
-  public abstract class SmallBOD : Item
+  public abstract class SmallBOD : BaseBOD
   {
-    private int m_AmountCur, m_AmountMax;
-    private BulkMaterialType m_Material;
+    private int m_AmountCur;
     private int m_Number;
-    private bool m_RequireExceptional;
 
-    [Constructible]
-    public SmallBOD(int hue, int amountMax, Type type, int number, int graphic, bool requireExeptional,
-      BulkMaterialType material) : base(Core.AOS ? 0x2258 : 0x14EF)
+    public SmallBOD(int hue, int amountCur, int amountMax, Type type, int number, int graphic, bool requireExeptional,
+      BulkMaterialType material) : base(hue, amountMax, requireExeptional, material)
     {
-      Weight = 1.0;
-      Hue = hue; // Blacksmith: 0x44E; Tailoring: 0x483
-      LootType = LootType.Blessed;
-
-      m_AmountMax = amountMax;
       Type = type;
-      m_Number = number;
       Graphic = graphic;
-      m_RequireExceptional = requireExeptional;
-      m_Material = material;
+      m_AmountCur = amountCur;
+      m_Number = number;
     }
 
-    public SmallBOD() : base(Core.AOS ? 0x2258 : 0x14EF)
+    public SmallBOD()
     {
-      Weight = 1.0;
-      LootType = LootType.Blessed;
     }
 
     public SmallBOD(Serial serial) : base(serial)
@@ -46,17 +33,6 @@ namespace Server.Engines.BulkOrders
       set
       {
         m_AmountCur = value;
-        InvalidateProperties();
-      }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int AmountMax
-    {
-      get => m_AmountMax;
-      set
-      {
-        m_AmountMax = value;
         InvalidateProperties();
       }
     }
@@ -79,46 +55,9 @@ namespace Server.Engines.BulkOrders
     public int Graphic{ get; set; }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public bool RequireExceptional
-    {
-      get => m_RequireExceptional;
-      set
-      {
-        m_RequireExceptional = value;
-        InvalidateProperties();
-      }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public BulkMaterialType Material
-    {
-      get => m_Material;
-      set
-      {
-        m_Material = value;
-        InvalidateProperties();
-      }
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool Complete => m_AmountCur == m_AmountMax;
+    public override bool Complete => m_AmountCur == AmountMax;
 
     public override int LabelNumber => 1045151; // a bulk order deed
-
-    public static BulkMaterialType GetRandomMaterial(BulkMaterialType start, double[] chances)
-    {
-      double random = Utility.RandomDouble();
-
-      for (int i = 0; i < chances.Length; ++i)
-      {
-        if (random < chances[i])
-          return i == 0 ? BulkMaterialType.None : start + (i - 1);
-
-        random -= chances[i];
-      }
-
-      return BulkMaterialType.None;
-    }
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -126,13 +65,13 @@ namespace Server.Engines.BulkOrders
 
       list.Add(1060654); // small bulk order
 
-      if (m_RequireExceptional)
+      if (RequireExceptional)
         list.Add(1045141); // All items must be exceptional.
 
-      if (m_Material != BulkMaterialType.None)
-        list.Add(SmallBODGump.GetMaterialNumberFor(m_Material)); // All items must be made with x material.
+      if (Material != BulkMaterialType.None)
+        list.Add(SmallBODGump.GetMaterialNumberFor(Material)); // All items must be made with x material.
 
-      list.Add(1060656, m_AmountMax.ToString()); // amount to make: ~1_val~
+      list.Add(1060656, AmountMax.ToString()); // amount to make: ~1_val~
       list.Add(1060658, "#{0}\t{1}", m_Number, m_AmountCur); // ~1_val~: ~2_val~
     }
 
@@ -152,37 +91,6 @@ namespace Server.Engines.BulkOrders
     public override void OnDoubleClickSecureTrade(Mobile from)
     {
       OnDoubleClick(from);
-    }
-
-    public void BeginCombine(Mobile from)
-    {
-      if (m_AmountCur < m_AmountMax)
-        from.Target = new SmallBODTarget(this);
-      else
-        from.SendLocalizedMessage(
-          1045166); // The maximum amount of requested items have already been combined to this deed.
-    }
-
-    public abstract List<Item> ComputeRewards(bool full);
-    public abstract int ComputeGold();
-    public abstract int ComputeFame();
-
-    public virtual void GetRewards(out Item reward, out int gold, out int fame)
-    {
-      reward = null;
-      gold = ComputeGold();
-      fame = ComputeFame();
-
-      List<Item> rewards = ComputeRewards(false);
-
-      if (rewards.Count > 0)
-      {
-        reward = rewards[Utility.Random(rewards.Count)];
-
-        for (int i = 0; i < rewards.Count; ++i)
-          if (rewards[i] != reward)
-            rewards[i].Delete();
-      }
     }
 
     public static BulkMaterialType GetMaterial(CraftResource resource)
@@ -205,13 +113,11 @@ namespace Server.Engines.BulkOrders
       return BulkMaterialType.None;
     }
 
-    public void EndCombine(Mobile from, object o)
+    public override void EndCombine(Mobile from, Item item)
     {
-      if (o is Item item && item.IsChildOf(from.Backpack))
-      {
-        Type objectType = item.GetType();
+      Type objectType = item.GetType();
 
-        if (m_AmountCur >= m_AmountMax)
+        if (m_AmountCur >= AmountMax)
         {
           from.SendLocalizedMessage(
             1045166); // The maximum amount of requested items have already been combined to this deed.
@@ -228,13 +134,13 @@ namespace Server.Engines.BulkOrders
 
           BulkMaterialType material = GetMaterial(armor?.Resource ?? clothing?.Resource ?? CraftResource.None);
 
-          if (m_Material >= BulkMaterialType.DullCopper && m_Material <= BulkMaterialType.Valorite &&
-              material != m_Material)
+          if (Material >= BulkMaterialType.DullCopper && Material <= BulkMaterialType.Valorite &&
+              material != Material)
           {
             from.SendLocalizedMessage(1045168); // The item is not made from the requested ore.
           }
-          else if (m_Material >= BulkMaterialType.Spined && m_Material <= BulkMaterialType.Barbed &&
-                   material != m_Material)
+          else if (Material >= BulkMaterialType.Spined && Material <= BulkMaterialType.Barbed &&
+                   material != Material)
           {
             from.SendLocalizedMessage(1049352); // The item is not made from the requested leather type.
           }
@@ -249,7 +155,7 @@ namespace Server.Engines.BulkOrders
             else
               isExceptional = clothing.Quality == ClothingQuality.Exceptional;
 
-            if (m_RequireExceptional && !isExceptional)
+            if (RequireExceptional && !isExceptional)
             {
               from.SendLocalizedMessage(1045167); // The item must be exceptional.
             }
@@ -259,19 +165,13 @@ namespace Server.Engines.BulkOrders
               ++AmountCur;
 
               from.SendLocalizedMessage(1045170); // The item has been combined with the deed.
-
               from.SendGump(new SmallBODGump(from, this));
 
-              if (m_AmountCur < m_AmountMax)
+              if (m_AmountCur < AmountMax)
                 BeginCombine(from);
             }
           }
         }
-      }
-      else
-      {
-        from.SendLocalizedMessage(1045158); // You must have the item in your backpack to target it.
-      }
     }
 
     public override void Serialize(GenericWriter writer)
@@ -281,12 +181,9 @@ namespace Server.Engines.BulkOrders
       writer.Write(0); // version
 
       writer.Write(m_AmountCur);
-      writer.Write(m_AmountMax);
       writer.Write(Type == null ? null : Type.FullName);
       writer.Write(m_Number);
       writer.Write(Graphic);
-      writer.Write(m_RequireExceptional);
-      writer.Write((int)m_Material);
     }
 
     public override void Deserialize(GenericReader reader)
@@ -300,7 +197,6 @@ namespace Server.Engines.BulkOrders
         case 0:
         {
           m_AmountCur = reader.ReadInt();
-          m_AmountMax = reader.ReadInt();
 
           string type = reader.ReadString();
 
@@ -309,21 +205,9 @@ namespace Server.Engines.BulkOrders
 
           m_Number = reader.ReadInt();
           Graphic = reader.ReadInt();
-          m_RequireExceptional = reader.ReadBool();
-          m_Material = (BulkMaterialType)reader.ReadInt();
-
           break;
         }
       }
-
-      if (Weight == 0.0)
-        Weight = 1.0;
-
-      if (Core.AOS && ItemID == 0x14EF)
-        ItemID = 0x2258;
-
-      if (Parent == null && Map == Map.Internal && Location == Point3D.Zero)
-        Delete();
     }
   }
 }

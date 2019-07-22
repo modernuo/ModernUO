@@ -3,12 +3,7 @@ namespace Server.Items
   public class EnergyBoltScroll : SpellScroll
   {
     [Constructible]
-    public EnergyBoltScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public EnergyBoltScroll(int amount) : base(41, 0x1F56, amount)
+    public EnergyBoltScroll(int amount = 1) : base(41, 0x1F56, amount)
     {
     }
 

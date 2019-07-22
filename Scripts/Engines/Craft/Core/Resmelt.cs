@@ -117,6 +117,7 @@ namespace Server.Engines.Craft
         }
         catch
         {
+          // ignored
         }
 
         return SmeltResult.Invalid;

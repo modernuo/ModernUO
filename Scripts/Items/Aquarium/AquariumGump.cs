@@ -35,46 +35,46 @@ namespace Server.Items
 
       // item name
       if (item.LabelNumber != 0)
-        AddHtmlLocalized(20, 217, 250, 20, item.LabelNumber, 0xFFFFFF, false, false); // Name
+        AddHtmlLocalized(20, 217, 250, 20, item.LabelNumber, 0xFFFFFF); // Name
 
       // item details
       if (item is BaseFish fish)
-        AddHtmlLocalized(20, 239, 315, 20, fish.GetDescription(), 0xFFFFFF, false, false);
+        AddHtmlLocalized(20, 239, 315, 20, fish.GetDescription(), 0xFFFFFF);
       else
-        AddHtmlLocalized(20, 239, 315, 20, 1073634, 0xFFFFFF, false, false); // An aquarium decoration
+        AddHtmlLocalized(20, 239, 315, 20, 1073634, 0xFFFFFF); // An aquarium decoration
 
       // item image
       AddItem(150, 80, item.ItemID, item.Hue);
 
       // item number / all items
-      AddHtml(20, 195, 250, 20, $"<BASEFONT COLOR=#FFFFFF>{page}/{m_Aquarium.Items.Count}</BASEFONT>", false, false);
+      AddHtml(20, 195, 250, 20, $"<BASEFONT COLOR=#FFFFFF>{page}/{m_Aquarium.Items.Count}</BASEFONT>");
 
       // remove item
       if (edit)
       {
         AddBackground(230, 195, 100, 26, 0x13BE);
-        AddButton(235, 200, 0x845, 0x846, page, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(260, 198, 60, 26, 1073838, 0x0, false, false); // Remove
+        AddButton(235, 200, 0x845, 0x846, page);
+        AddHtmlLocalized(260, 198, 60, 26, 1073838, 0x0); // Remove
       }
 
       // next page
       if (page < m_Aquarium.Items.Count)
       {
         AddButton(195, 280, 0xFA5, 0xFA7, 0, GumpButtonType.Page, page + 1);
-        AddHtmlLocalized(230, 283, 100, 18, 1044045, 0xFFFFFF, false, false); // NEXT PAGE
+        AddHtmlLocalized(230, 283, 100, 18, 1044045, 0xFFFFFF); // NEXT PAGE
       }
 
       // previous page
       if (page > 1)
       {
         AddButton(45, 280, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page - 1);
-        AddHtmlLocalized(80, 283, 100, 18, 1044044, 0xFFFFFF, false, false); // PREV PAGE
+        AddHtmlLocalized(80, 283, 100, 18, 1044044, 0xFFFFFF); // PREV PAGE
       }
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (m_Aquarium == null || m_Aquarium.Deleted)
+      if (m_Aquarium?.Deleted != false)
         return;
 
       bool edit = m_Aquarium.HasAccess(sender.Mobile);

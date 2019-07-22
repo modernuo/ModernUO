@@ -3,13 +3,7 @@ namespace Server.Items
   public class RisingColossusScroll : SpellScroll
   {
     [Constructible]
-    public RisingColossusScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public RisingColossusScroll(int amount)
+    public RisingColossusScroll(int amount = 1)
       : base(692, 0x2DAD, amount)
     {
     }

@@ -263,6 +263,7 @@ namespace Server
         }
         catch
         {
+          // ignored
         }
 
         if (!close && !Service)
@@ -273,6 +274,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
 
           Console.WriteLine("This exception is fatal, press return to exit");
@@ -374,6 +376,7 @@ namespace Server
       }
       catch
       {
+        // ignored
       }
 
       Thread = Thread.CurrentThread;
@@ -563,7 +566,7 @@ namespace Server
           warningSb.AppendLine("       - No Deserialize() method");
         }
 
-        if (warningSb != null && warningSb.Length > 0) Console.WriteLine("Warning: {0}\n{1}", t, warningSb);
+        if (warningSb?.Length > 0) Console.WriteLine("Warning: {0}\n{1}", t, warningSb);
       }
       catch
       {
@@ -626,12 +629,7 @@ namespace Server
 
     private bool _NewLine;
 
-    public FileLogger(string file)
-      : this(file, false)
-    {
-    }
-
-    public FileLogger(string file, bool append)
+    public FileLogger(string file, bool append = false)
     {
       FileName = file;
 

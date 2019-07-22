@@ -24,11 +24,7 @@ namespace Server.Menus.ItemLists
 {
   public class ItemListEntry
   {
-    public ItemListEntry(string name, int itemID) : this(name, itemID, 0)
-    {
-    }
-
-    public ItemListEntry(string name, int itemID, int hue)
+    public ItemListEntry(string name, int itemID, int hue = 0)
     {
       Name = name;
       ItemID = itemID;

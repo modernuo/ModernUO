@@ -142,23 +142,23 @@ namespace Server.Items
 
         AddHtmlLocalized(40, 48, 387, 100, m_Scroll.Message, true, true);
 
-        AddHtmlLocalized(125, 148, 200, 20, 1049478, 0xFFFFFF, false, false); // Do you wish to use this scroll?
+        AddHtmlLocalized(125, 148, 200, 20, 1049478, 0xFFFFFF); // Do you wish to use this scroll?
 
-        AddButton(100, 172, 4005, 4007, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(135, 172, 120, 20, 1046362, 0xFFFFFF, false, false); // Yes
+        AddButton(100, 172, 4005, 4007, 1);
+        AddHtmlLocalized(135, 172, 120, 20, 1046362, 0xFFFFFF); // Yes
 
-        AddButton(275, 172, 4005, 4007, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(310, 172, 120, 20, 1046363, 0xFFFFFF, false, false); // No
+        AddButton(275, 172, 4005, 4007, 0);
+        AddHtmlLocalized(310, 172, 120, 20, 1046363, 0xFFFFFF); // No
 
         if (m_Scroll.Title != 0)
-          AddHtmlLocalized(40, 20, 260, 20, m_Scroll.Title, 0xFFFFFF, false, false);
+          AddHtmlLocalized(40, 20, 260, 20, m_Scroll.Title, 0xFFFFFF);
         else
-          AddHtml(40, 20, 260, 20, m_Scroll.DefaultTitle, false, false);
+          AddHtml(40, 20, 260, 20, m_Scroll.DefaultTitle);
 
         if (m_Scroll is StatCapScroll)
-          AddHtmlLocalized(310, 20, 120, 20, 1038019, 0xFFFFFF, false, false); // Power
+          AddHtmlLocalized(310, 20, 120, 20, 1038019, 0xFFFFFF); // Power
         else
-          AddHtmlLocalized(310, 20, 120, 20, AosSkillBonuses.GetLabel(m_Scroll.Skill), 0xFFFFFF, false, false);
+          AddHtmlLocalized(310, 20, 120, 20, AosSkillBonuses.GetLabel(m_Scroll.Skill), 0xFFFFFF);
       }
 
       public override void OnResponse(NetState state, RelayInfo info)

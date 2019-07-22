@@ -55,8 +55,8 @@ namespace Server.Mobiles
     }
 
     public override string DefaultName => "Spawner";
-    public bool IsFull => Spawned != null && Spawned.Count >= m_Count;
-    public bool IsEmpty => Spawned != null && Spawned.Count == 0;
+    public bool IsFull => Spawned?.Count >= m_Count;
+    public bool IsEmpty => Spawned?.Count == 0;
     public DateTime End{ get; set; }
 
     public List<SpawnerEntry> Entries{ get; private set; }
@@ -144,12 +144,7 @@ namespace Server.Mobiles
     [CommandProperty(AccessLevel.Developer)]
     public TimeSpan NextSpawn
     {
-      get
-      {
-        if (m_Running && m_Timer != null && m_Timer.Running)
-          return End - DateTime.UtcNow;
-        return TimeSpan.FromSeconds(0);
-      }
+      get => m_Running && m_Timer?.Running == true ? End - DateTime.UtcNow : TimeSpan.FromSeconds(0);
       set
       {
         Start();
@@ -197,7 +192,7 @@ namespace Server.Mobiles
         Spawned.Remove(spawn);
       }
 
-      if (m_Running && !IsFull && m_Timer != null && !m_Timer.Running)
+      if (m_Running && !IsFull && m_Timer?.Running == false)
         DoTimer();
     }
 
@@ -209,7 +204,7 @@ namespace Server.Mobiles
             false);
     }
 
-    public SpawnerEntry AddEntry(string creaturename, int probability, int amount, bool dotimer = true)
+    public SpawnerEntry AddEntry(string creaturename, int probability = 100, int amount = 1, bool dotimer = true)
     {
       SpawnerEntry entry = new SpawnerEntry(creaturename, probability, amount);
       Entries.Add(entry);
@@ -520,8 +515,7 @@ namespace Server.Mobiles
                       {
                         flags = EntryFlags.InvalidProps;
 
-                        if (o is ISpawnable spawnable)
-                          spawnable.Delete();
+                        (o as ISpawnable)?.Delete();
 
                         return false;
                       }
@@ -549,11 +543,7 @@ namespace Server.Mobiles
             {
               int walkrange = GetWalkingRange();
 
-              if (walkrange >= 0)
-                c.RangeHome = walkrange;
-              else
-                c.RangeHome = m_HomeRange;
-
+              c.RangeHome = walkrange >= 0 ? walkrange : m_HomeRange;
               c.CurrentWayPoint = GetWayPoint();
 
               if (m_Team > 0)
@@ -732,7 +722,7 @@ namespace Server.Mobiles
 
       Entries.Remove(entry);
 
-      if (m_Running && !IsFull && m_Timer != null && !m_Timer.Running)
+      if (m_Running && !IsFull && m_Timer?.Running == false)
         DoTimer();
 
       InvalidateProperties();
@@ -781,7 +771,7 @@ namespace Server.Mobiles
         }
       }
 
-      if (m_Running && !IsFull && m_Timer != null && !m_Timer.Running)
+      if (m_Running && !IsFull && m_Timer?.Running == false)
         DoTimer();
 
       InvalidateProperties();
@@ -1050,6 +1040,7 @@ namespace Server.Mobiles
         }
         catch
         {
+          // ignored
         }
       }
 

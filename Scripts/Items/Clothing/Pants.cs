@@ -2,11 +2,7 @@ namespace Server.Items
 {
   public abstract class BasePants : BaseClothing
   {
-    public BasePants(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BasePants(int itemID, int hue) : base(itemID, Layer.Pants, hue)
+    public BasePants(int itemID, int hue = 0) : base(itemID, Layer.Pants, hue)
     {
     }
 
@@ -33,12 +29,7 @@ namespace Server.Items
   public class ShortPants : BasePants
   {
     [Constructible]
-    public ShortPants() : this(0)
-    {
-    }
-
-    [Constructible]
-    public ShortPants(int hue) : base(0x152E, hue)
+    public ShortPants(int hue = 0) : base(0x152E, hue)
     {
       Weight = 2.0;
     }
@@ -66,12 +57,7 @@ namespace Server.Items
   public class LongPants : BasePants
   {
     [Constructible]
-    public LongPants() : this(0)
-    {
-    }
-
-    [Constructible]
-    public LongPants(int hue) : base(0x1539, hue)
+    public LongPants(int hue = 0) : base(0x1539, hue)
     {
       Weight = 2.0;
     }
@@ -99,12 +85,7 @@ namespace Server.Items
   public class TattsukeHakama : BasePants
   {
     [Constructible]
-    public TattsukeHakama() : this(0)
-    {
-    }
-
-    [Constructible]
-    public TattsukeHakama(int hue) : base(0x279B, hue)
+    public TattsukeHakama(int hue = 0) : base(0x279B, hue)
     {
       Weight = 2.0;
     }
@@ -132,12 +113,7 @@ namespace Server.Items
   public class ElvenPants : BasePants
   {
     [Constructible]
-    public ElvenPants() : this(0)
-    {
-    }
-
-    [Constructible]
-    public ElvenPants(int hue) : base(0x2FC3, hue)
+    public ElvenPants(int hue = 0) : base(0x2FC3, hue)
     {
       Weight = 2.0;
     }

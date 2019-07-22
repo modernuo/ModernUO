@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 
 namespace Server.Spells.Chivalry
@@ -12,7 +13,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public HolyLightSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public HolyLightSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -30,13 +31,6 @@ namespace Server.Spells.Chivalry
     {
       if (CheckSequence())
       {
-        List<Mobile> targets = new List<Mobile>();
-
-        foreach (Mobile m in Caster.GetMobilesInRange(3))
-          if (Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
-              (!Core.AOS || Caster.InLOS(m)))
-            targets.Add(m);
-
         Caster.PlaySound(0x212);
         Caster.PlaySound(0x206);
 
@@ -46,10 +40,12 @@ namespace Server.Spells.Chivalry
           EffectItem.Create(new Point3D(Caster.X, Caster.Y, Caster.Z - 7), Caster.Map, EffectItem.DefaultDuration),
           0x37C4, 1, 29, 0x47D, 2, 9502, 0);
 
-        for (int i = 0; i < targets.Count; ++i)
-        {
-          Mobile m = targets[i];
+        IEnumerable<Mobile> targets = Caster.GetMobilesInRange(3)
+          .Where(m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
+                      (!Core.AOS || Caster.InLOS(m)));
 
+        foreach (Mobile m in targets)
+        {
           int damage = ComputePowerValue(10) + Utility.RandomMinMax(0, 2);
 
           // TODO: Should caps be applied?

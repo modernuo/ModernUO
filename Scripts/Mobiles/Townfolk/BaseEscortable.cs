@@ -302,15 +302,13 @@ namespace Server.Mobiles
     {
       base.OnSpeech(e);
 
-      EDI dest = GetDestination();
+      if (GetDestination() == null || e.Handled || !e.Mobile.InRange(Location, 3))
+        return;
 
-      if (dest != null && !e.Handled && e.Mobile.InRange(Location, 3))
-      {
-        if (e.HasKeyword(0x1D)) // *destination*
-          e.Handled = SayDestinationTo(e.Mobile);
-        else if (e.HasKeyword(0x1E)) // *i will take thee*
-          e.Handled = AcceptEscorter(e.Mobile);
-      }
+      if (e.HasKeyword(0x1D)) // *destination*
+        e.Handled = SayDestinationTo(e.Mobile);
+      else if (e.HasKeyword(0x1E)) // *i will take thee*
+        e.Handled = AcceptEscorter(e.Mobile);
     }
 
     public override void OnAfterDelete()
@@ -600,7 +598,7 @@ namespace Server.Mobiles
         picked = possible[Utility.Random(possible.Length)];
         EDI test = EDI.Find(picked);
 
-        if (test != null && test.Contains(Location))
+        if (test.Contains(Location))
           picked = null;
       }
 
@@ -673,10 +671,7 @@ namespace Server.Mobiles
 
       foreach (Region r in list)
       {
-        if (r.Name == null)
-          continue;
-
-        if (r is DungeonRegion || r is TownRegion)
+        if (r.Name != null && (r is DungeonRegion || r is TownRegion))
           m_Table[r.Name] = new EscortDestinationInfo(r.Name, r);
       }
     }

@@ -3,12 +3,7 @@ namespace Server.Items
   public class ExplosionScroll : SpellScroll
   {
     [Constructible]
-    public ExplosionScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ExplosionScroll(int amount) : base(42, 0x1F57, amount)
+    public ExplosionScroll(int amount = 1) : base(42, 0x1F57, amount)
     {
     }
 

@@ -87,10 +87,9 @@ namespace Server.Mobiles
 
     public virtual void Lifted_Callback(Mobile from)
     {
-      if (from != null && !from.Deleted && from is PlayerMobile)
+      if (from?.Deleted == false && from is PlayerMobile)
       {
         Combatant = from;
-
         Warmode = true;
       }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.MLQuests.Gumps;
 using Server.Engines.MLQuests.Objectives;
 using Server.Engines.MLQuests.Rewards;
@@ -247,12 +248,7 @@ namespace Server.Engines.MLQuests
     {
       string name = $"MLQS-{GetType().Name}";
 
-      // Auto cleanup on regeneration
-      List<Item> toDelete = new List<Item>();
-
-      foreach (Item item in map.GetItemsInRange(loc, 0))
-        if (item is Spawner && item.Name == name)
-          toDelete.Add(item);
+      IEnumerable<Item> toDelete = map.GetItemsInRange(loc, 0).Where(item => item is Spawner && item.Name == name);
 
       foreach (Item item in toDelete)
         item.Delete();
@@ -264,11 +260,7 @@ namespace Server.Engines.MLQuests
     public void PutDeco(Item deco, Point3D loc, Map map)
     {
       // Auto cleanup on regeneration
-      List<Item> toDelete = new List<Item>();
-
-      foreach (Item item in map.GetItemsInRange(loc, 0))
-        if (item.ItemID == deco.ItemID && item.Z == loc.Z)
-          toDelete.Add(item);
+      IEnumerable<Item> toDelete = map.GetItemsInRange(loc, 0).Where(item => item.ItemID == deco.ItemID && item.Z == loc.Z);
 
       foreach (Item item in toDelete)
         item.Delete();

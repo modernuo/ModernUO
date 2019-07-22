@@ -8,13 +8,7 @@ namespace Server.Items
   public class RedVelvetGiftBox : BaseContainer
   {
     [Constructible]
-    public RedVelvetGiftBox()
-      : this(false)
-    {
-    }
-
-    [Constructible]
-    public RedVelvetGiftBox(bool fill)
+    public RedVelvetGiftBox(bool fill = false)
       : base(0xE7A)
     {
       Hue = 0x20;

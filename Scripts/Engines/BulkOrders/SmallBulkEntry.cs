@@ -78,10 +78,11 @@ namespace Server.Engines.BulkOrders
 									list.Add( new SmallBulkEntry( type, graphic < 0x4000 ? 1020000 + graphic : 1078872 + graphic, graphic ) );
 							}
 						}
-						catch
-						{
-						}
-					}
+            catch
+            {
+              // ignored
+            }
+          }
 				}
 			}
 

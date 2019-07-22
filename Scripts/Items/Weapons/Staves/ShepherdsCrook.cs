@@ -116,7 +116,7 @@ namespace Server.Items
         {
           ChampionSpawn spawn = region.ChampionSpawn;
 
-          if (spawn != null && spawn.IsChampionSpawn(bc))
+          if (spawn?.IsChampionSpawn(bc) == true)
           {
             Type t = bc.GetType();
 

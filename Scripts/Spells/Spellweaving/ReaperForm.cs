@@ -7,7 +7,7 @@ namespace Server.Spells.Spellweaving
   {
     private static SpellInfo m_Info = new SpellInfo("Reaper Form", "Tarisstree", -1);
 
-    public ReaperFormSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ReaperFormSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -36,7 +36,7 @@ namespace Server.Spells.Spellweaving
     {
       TransformContext context = TransformationSpellHelper.GetContext(e.Mobile);
 
-      if (context != null && context.Type == typeof(ReaperFormSpell))
+      if (context?.Type == typeof(ReaperFormSpell))
         e.Mobile.Send(SpeedControl.WalkSpeed);
     }
 

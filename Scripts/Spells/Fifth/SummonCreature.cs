@@ -38,7 +38,7 @@ namespace Server.Spells.Fifth
       typeof(Rabbit)
     };
 
-    public SummonCreatureSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public SummonCreatureSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -78,6 +78,7 @@ namespace Server.Spells.Fifth
         }
         catch
         {
+          // ignored
         }
 
       FinishSequence();

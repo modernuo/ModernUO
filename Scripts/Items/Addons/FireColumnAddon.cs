@@ -3,13 +3,7 @@ namespace Server.Items
   public class FireColumnAddon : BaseAddon
   {
     [Constructible]
-    public FireColumnAddon()
-      : this(false)
-    {
-    }
-
-    [Constructible]
-    public FireColumnAddon(bool bloody)
+    public FireColumnAddon(bool bloody = false)
     {
       AddComponent(new AddonComponent(0x3A5), 0, 0, 0);
       AddComponent(new AddonComponent(0x3A5), 0, 0, 5);

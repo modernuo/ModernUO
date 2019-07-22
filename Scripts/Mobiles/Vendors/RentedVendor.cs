@@ -97,7 +97,7 @@ namespace Server.Mobiles
 
     public bool IsLandlord(Mobile m)
     {
-      return House != null && House.IsOwner(m);
+      return House?.IsOwner(m) == true;
     }
 
     public void ComputeRentalExpireDelay(out int days, out int hours)
@@ -134,7 +134,7 @@ namespace Server.Mobiles
 
     public override void Destroy(bool toBackpack)
     {
-      if (RentalGold > 0 && House != null && House.IsAosRules)
+      if (RentalGold > 0 && House?.IsAosRules == true)
       {
         if (House.MovingCrate == null)
           House.MovingCrate = new MovingCrate(House);

@@ -37,7 +37,8 @@ namespace Server.Gumps
     private GumpButtonType m_Type;
     private int m_X, m_Y;
 
-    public GumpButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param)
+    public GumpButton(int x, int y, int normalID, int pressedID, int buttonID,
+      GumpButtonType type = GumpButtonType.Reply, int param = 0)
     {
       m_X = x;
       m_Y = y;

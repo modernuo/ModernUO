@@ -30,7 +30,7 @@ namespace Server.Items
     {
       BaseHouse house = BaseHouse.FindHouseAt(from);
 
-      if (house != null && house.IsCoOwner(from))
+      if (house?.IsCoOwner(from) == true)
       {
         Effects.PlaySound(Location, Map, 0x3B3);
         from.SendLocalizedMessage(500461); // You destroy the item.

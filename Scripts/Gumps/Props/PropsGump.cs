@@ -213,7 +213,7 @@ namespace Server.Gumps
 
       if (page > 0)
       {
-        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1, GumpButtonType.Reply, 0);
+        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
 
         if (PrevLabel)
           AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
@@ -226,7 +226,7 @@ namespace Server.Gumps
 
       if (TypeLabel && m_Type != null)
         AddHtml(x, y, emptyWidth, EntryHeight,
-          $"<BASEFONT COLOR=#FAFAFA><CENTER>{m_Type.Name}</CENTER></BASEFONT>", false, false);
+          $"<BASEFONT COLOR=#FAFAFA><CENTER>{m_Type.Name}</CENTER></BASEFONT>");
 
       x += emptyWidth + OffsetSize;
 
@@ -276,8 +276,7 @@ namespace Server.Gumps
           CPA cpa = GetCPA(prop);
 
           if (prop.CanWrite && cpa != null && m_Mobile.AccessLevel >= cpa.WriteLevel && !cpa.ReadOnly)
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3, GumpButtonType.Reply,
-              0);
+            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3);
         }
       }
     }
@@ -296,10 +295,9 @@ namespace Server.Gumps
       {
         case 0: // Closed
         {
-          if (m_Stack != null && m_Stack.Count > 0)
+          if (m_Stack?.Count > 0)
           {
             StackEntry entry = m_Stack.Pop();
-
             from.SendGump(new PropertiesGump(from, entry.m_Object, m_Stack, null));
           }
 
@@ -504,7 +502,7 @@ namespace Server.Gumps
       }
 
       if (o is byte || o is sbyte || o is short || o is ushort || o is int || o is uint || o is long || o is ulong)
-        return string.Format("{0} (0x{0:X})", o);
+        return $"{o} (0x{o:X})";
       if (o is Mobile mobile) return $"(M) 0x{mobile.Serial.Value:X} \"{mobile.Name}\"";
       if (o is Item item) return $"(I) 0x{item.Serial.Value:X}";
       if (o is Type type) return type.Name;
@@ -637,7 +635,7 @@ namespace Server.Gumps
       }
 
       if (o is byte || o is sbyte || o is short || o is ushort || o is int || o is uint || o is long || o is ulong)
-        return string.Format("{0} (0x{0:X})", o);
+        return $"{o} (0x{o:X})";
       if (o is Mobile mobile) return $"(M) 0x{mobile.Serial.Value:X} \"{mobile.Name}\"";
       if (o is Item item) return $"(I) 0x{item.Serial.Value:X}";
       if (o is Type type) return type.Name;

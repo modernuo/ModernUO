@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Third
 {
-  public class MagicLockSpell : MagerySpell
+  public class MagicLockSpell : MagerySpell, ISpellTargetingItem
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Magic Lock", "An Por",
@@ -16,7 +16,7 @@ namespace Server.Spells.Third
       Reagent.SulfurousAsh
     );
 
-    public MagicLockSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MagicLockSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -24,64 +24,37 @@ namespace Server.Spells.Third
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
-    public void Target(LockableContainer targ)
+    public void Target(Item item)
     {
-      if (BaseHouse.CheckLockedDownOrSecured(targ))
-      {
-        // You cannot cast this on a locked down item.
-        Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 501761);
-      }
-      else if (targ.Locked || targ.LockLevel == 0 || targ is ParagonChest)
-      {
-        // Target must be an unlocked chest.
-        Caster.SendLocalizedMessage(501762);
-      }
+      if (!(item is LockableContainer cont))
+        Caster.SendLocalizedMessage(501762); // Target must be an unlocked chest.
+      else if (BaseHouse.CheckLockedDownOrSecured(cont))
+        Caster.LocalOverheadMessage(MessageType.Regular, 0x22, 501761); // You cannot cast this on a locked down item.
+      else if (cont.Locked || cont.LockLevel == 0 || cont is ParagonChest)
+        Caster.SendLocalizedMessage(501762); // Target must be an unlocked chest.
       else if (CheckSequence())
       {
-        SpellHelper.Turn(Caster, targ);
+        SpellHelper.Turn(Caster, cont);
 
-        Point3D loc = targ.GetWorldLocation();
+        Point3D loc = cont.GetWorldLocation();
 
         Effects.SendLocationParticles(
-          EffectItem.Create(loc, targ.Map, EffectItem.DefaultDuration),
+          EffectItem.Create(loc, cont.Map, EffectItem.DefaultDuration),
           0x376A, 9, 32, 5020);
 
-        Effects.PlaySound(loc, targ.Map, 0x1FA);
+        Effects.PlaySound(loc, cont.Map, 0x1FA);
 
         // The chest is now locked!
         Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501763);
 
-        targ.LockLevel = -255; // signal magic lock
-        targ.Locked = true;
+        cont.LockLevel = -255; // signal magic lock
+        cont.Locked = true;
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private MagicLockSpell m_Owner;
-
-      public InternalTarget(MagicLockSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is LockableContainer container)
-          m_Owner.Target(container);
-        else
-          from.SendLocalizedMessage(501762); // Target must be an unlocked chest.
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

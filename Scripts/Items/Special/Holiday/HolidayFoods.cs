@@ -11,8 +11,7 @@ namespace Server.Items
     {
     }
 
-    public CandyCane(int itemID)
-      : base(itemID)
+    public CandyCane(int itemID) : base(itemID, 1)
     {
       Stackable = false;
       LootType = LootType.Blessed;
@@ -81,7 +80,7 @@ namespace Server.Items
       {
         --Eaten;
 
-        if (Eater == null || Eater.Deleted || Eaten <= 0)
+        if (Eater?.Deleted != false || Eaten <= 0)
         {
           Stop();
           m_ToothAches.Remove(Eater);
@@ -127,7 +126,7 @@ namespace Server.Items
 
     [Constructible]
     public GingerBreadCookie()
-      : base(Utility.RandomBool() ? 0x2be1 : 0x2be2)
+      : base(Utility.RandomBool() ? 0x2be1 : 0x2be2, 1)
     {
       Stackable = false;
       LootType = LootType.Blessed;

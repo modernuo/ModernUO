@@ -1,3 +1,4 @@
+using System.Linq;
 using Server.Gumps;
 using Server.Multis;
 using Server.Network;
@@ -8,13 +9,7 @@ namespace Server.Items
   public class Fireflies : Item, IAddon
   {
     [Constructible]
-    public Fireflies()
-      : this(0x1596)
-    {
-    }
-
-    [Constructible]
-    public Fireflies(int itemID)
+    public Fireflies(int itemID = 0x1596)
       : base(itemID)
     {
       LootType = LootType.Blessed;
@@ -65,7 +60,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(this);
 
-        if (house != null && house.IsOwner(from))
+        if (house?.IsOwner(from) == true)
         {
           from.CloseGump<RewardDemolitionGump>();
           from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
@@ -120,7 +115,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house != null && house.IsOwner(from))
+        if (house?.IsOwner(from) == true)
         {
           from.CloseGump<FacingGump>();
 
@@ -175,8 +170,8 @@ namespace Server.Items
         AddItem(90, 30, 0x2332);
         AddItem(180, 30, 0x2336);
 
-        AddButton(50, 35, 0x868, 0x869, (int)Buttons.East, GumpButtonType.Reply, 0);
-        AddButton(145, 35, 0x868, 0x869, (int)Buttons.South, GumpButtonType.Reply, 0);
+        AddButton(50, 35, 0x868, 0x869, (int)Buttons.East);
+        AddButton(145, 35, 0x868, 0x869, (int)Buttons.South);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -219,14 +214,14 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_FirefliesDeed == null || m_FirefliesDeed.Deleted)
+        if (m_FirefliesDeed?.Deleted != false)
           return;
 
         if (m_FirefliesDeed.IsChildOf(from.Backpack))
         {
           BaseHouse house = BaseHouse.FindHouseAt(from);
 
-          if (house != null && house.IsOwner(from))
+          if (house?.IsOwner(from) == true)
           {
             IPoint3D p = targeted as IPoint3D;
             Map map = from.Map;
@@ -241,16 +236,12 @@ namespace Server.Items
             {
               house = BaseHouse.FindHouseAt(p3d, map, id.Height);
 
-              if (house != null && house.IsOwner(from))
+              if (house?.IsOwner(from) == true)
               {
                 bool north = BaseAddon.IsWall(p3d.X, p3d.Y - 1, p3d.Z, map);
                 bool west = BaseAddon.IsWall(p3d.X - 1, p3d.Y, p3d.Z, map);
 
-                bool isclear = true;
-
-                foreach (Item item in Map.Malas.GetItemsInRange(p3d, 0))
-                  if (item is Fireflies)
-                    isclear = false;
+                bool isclear = !Map.Malas.GetItemsInRange(p3d, 0).OfType<Fireflies>().Any();
 
                 if ((m_ItemID == 0x2336 && north || m_ItemID == 0x2332 && west) && isclear)
                 {

@@ -6,12 +6,7 @@ namespace Server.Items
   public class BoltOfCloth : Item, IScissorable, IDyable, ICommodity
   {
     [Constructible]
-    public BoltOfCloth() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BoltOfCloth(int amount) : base(0xF95)
+    public BoltOfCloth(int amount = 1) : base(0xF95)
     {
       Stackable = true;
       Weight = 5.0;

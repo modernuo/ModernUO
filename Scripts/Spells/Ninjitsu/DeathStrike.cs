@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Items;
 using Server.SkillHandlers;
@@ -31,11 +30,9 @@ namespace Server.Spells.Ninjitsu
       double ninjitsu = attacker.Skills.Ninjitsu.Value;
 
       double chance;
-      bool
-        isRanged = false; // should be defined onHit method, what if the player hit and remove the weapon before process? ;)
 
-      if (attacker.Weapon is BaseRanged)
-        isRanged = true;
+      // TODO: should be defined onHit method, what if the player hit and remove the weapon before process? ;)
+      bool isRanged = attacker.Weapon is BaseRanged;
 
       if (ninjitsu < 100) //This formula is an approximation from OSI data.  TODO: find correct formula
         chance = 30 + (ninjitsu - 85) * 2.2;

@@ -80,15 +80,7 @@ namespace Server
       BodyID = bodyID;
     }
 
-    public BodyType Type
-    {
-      get
-      {
-        if (BodyID >= 0 && BodyID < m_Types.Length)
-          return m_Types[BodyID];
-        return BodyType.Empty;
-      }
-    }
+    public BodyType Type => BodyID >= 0 && BodyID < m_Types.Length ? m_Types[BodyID] : BodyType.Empty;
 
     public bool IsHuman => BodyID >= 0
                            && BodyID < m_Types.Length
@@ -173,14 +165,12 @@ namespace Server
 
     public override int GetHashCode()
     {
-      return BodyID;
+      return BodyID.GetHashCode();
     }
 
     public override bool Equals(object o)
     {
-      if (!(o is Body)) return false;
-
-      return ((Body)o).BodyID == BodyID;
+      return o is Body b && b.BodyID == BodyID;
     }
 
     public static bool operator ==(Body l, Body r)

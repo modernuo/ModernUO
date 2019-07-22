@@ -90,92 +90,92 @@ namespace Server.Commands.Generic
 
     public void Acquire(TypeBuilder typeBuilder, ILGenerator il, string fieldName)
     {
-      if (Value is string toParse)
-      {
-        if (!Type.IsValueType && toParse == "null")
-        {
-          Value = null;
-        }
-        else if (Type == typeof(string))
-        {
-          if (toParse == @"@""null""")
-            toParse = "null";
+      if (!(Value is string toParse))
+        return;
 
-          Value = toParse;
-        }
-        else if (Type.IsEnum)
+      if (!Type.IsValueType && toParse == "null")
+      {
+        Value = null;
+      }
+      else if (Type == typeof(string))
+      {
+        if (toParse == @"@""null""")
+          toParse = "null";
+
+        Value = toParse;
+      }
+      else if (Type.IsEnum)
+      {
+        Value = Enum.Parse(Type, toParse, true);
+      }
+      else
+      {
+        MethodInfo parseMethod;
+        object[] parseArgs;
+
+        MethodInfo parseNumber = Type.GetMethod(
+          "Parse",
+          BindingFlags.Public | BindingFlags.Static,
+          null,
+          new[] { typeof(string), typeof(NumberStyles) },
+          null
+        );
+
+        if (parseNumber != null)
         {
-          Value = Enum.Parse(Type, toParse, true);
+          NumberStyles style = NumberStyles.Integer;
+
+          if (Insensitive.StartsWith(toParse, "0x"))
+          {
+            style = NumberStyles.HexNumber;
+            toParse = toParse.Substring(2);
+          }
+
+          parseMethod = parseNumber;
+          parseArgs = new object[] { toParse, style };
         }
         else
         {
-          MethodInfo parseMethod;
-          object[] parseArgs;
-
-          MethodInfo parseNumber = Type.GetMethod(
+          MethodInfo parseGeneral = Type.GetMethod(
             "Parse",
             BindingFlags.Public | BindingFlags.Static,
             null,
-            new[] { typeof(string), typeof(NumberStyles) },
+            new[] { typeof(string) },
             null
           );
 
-          if (parseNumber != null)
-          {
-            NumberStyles style = NumberStyles.Integer;
+          parseMethod = parseGeneral;
+          parseArgs = new object[] { toParse };
+        }
 
-            if (Insensitive.StartsWith(toParse, "0x"))
-            {
-              style = NumberStyles.HexNumber;
-              toParse = toParse.Substring(2);
-            }
+        if (parseMethod != null)
+        {
+          Value = parseMethod.Invoke(null, parseArgs);
 
-            parseMethod = parseNumber;
-            parseArgs = new object[] { toParse, style };
-          }
-          else
+          if (!Type.IsPrimitive)
           {
-            MethodInfo parseGeneral = Type.GetMethod(
-              "Parse",
-              BindingFlags.Public | BindingFlags.Static,
-              null,
-              new[] { typeof(string) },
-              null
+            Field = typeBuilder.DefineField(
+              fieldName,
+              Type,
+              FieldAttributes.Private | FieldAttributes.InitOnly
             );
 
-            parseMethod = parseGeneral;
-            parseArgs = new object[] { toParse };
+            il.Emit(OpCodes.Ldarg_0);
+
+            il.Emit(OpCodes.Ldstr, toParse);
+
+            if (parseArgs.Length == 2) // dirty evil hack :-(
+              il.Emit(OpCodes.Ldc_I4, (int)parseArgs[1]);
+
+            il.Emit(OpCodes.Call, parseMethod);
+            il.Emit(OpCodes.Stfld, Field);
           }
-
-          if (parseMethod != null)
-          {
-            Value = parseMethod.Invoke(null, parseArgs);
-
-            if (!Type.IsPrimitive)
-            {
-              Field = typeBuilder.DefineField(
-                fieldName,
-                Type,
-                FieldAttributes.Private | FieldAttributes.InitOnly
-              );
-
-              il.Emit(OpCodes.Ldarg_0);
-
-              il.Emit(OpCodes.Ldstr, toParse);
-
-              if (parseArgs.Length == 2) // dirty evil hack :-(
-                il.Emit(OpCodes.Ldc_I4, (int)parseArgs[1]);
-
-              il.Emit(OpCodes.Call, parseMethod);
-              il.Emit(OpCodes.Stfld, Field);
-            }
-          }
-          else
-          {
-            throw new InvalidOperationException(
-              $"Unable to convert string \"{Value}\" into type '{Type}'."
-            );
-          }
+        }
+        else
+        {
+          throw new InvalidOperationException(
+            $"Unable to convert string \"{Value}\" into type '{Type}'."
+          );
         }
       }
     }

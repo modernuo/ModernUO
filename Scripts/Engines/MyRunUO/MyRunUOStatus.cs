@@ -36,7 +36,7 @@ namespace Server.Engines.MyRunUO
 
     public static void Begin()
     {
-      if (m_Command != null && !m_Command.HasCompleted)
+      if (m_Command?.HasCompleted == false)
         return;
 
       Console.WriteLine("MyRunUO: Updating status database");

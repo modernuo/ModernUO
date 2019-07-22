@@ -7,7 +7,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-  public class InvisibilitySpell : MagerySpell
+  public class InvisibilitySpell : MagerySpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Invisibility", "An Lor Xen",
@@ -19,7 +19,7 @@ namespace Server.Spells.Sixth
 
     private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
-    public InvisibilitySpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public InvisibilitySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -38,11 +38,14 @@ namespace Server.Spells.Sixth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (!Caster.CanSee(m))
       {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
@@ -109,27 +112,6 @@ namespace Server.Spells.Sixth
       {
         m_Mobile.RevealingAction();
         RemoveTimer(m_Mobile);
-      }
-    }
-
-    public class InternalTarget : Target
-    {
-      private InvisibilitySpell m_Owner;
-
-      public InternalTarget(InvisibilitySpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Beneficial)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

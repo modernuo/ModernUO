@@ -3,12 +3,7 @@ namespace Server.Items
   public class Rope : Item
   {
     [Constructible]
-    public Rope() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Rope(int amount) : base(0x14F8)
+    public Rope(int amount = 1) : base(0x14F8)
     {
       Stackable = true;
       Weight = 1.0;
@@ -38,12 +33,7 @@ namespace Server.Items
   public class IronWire : Item
   {
     [Constructible]
-    public IronWire() : this(1)
-    {
-    }
-
-    [Constructible]
-    public IronWire(int amount) : base(0x1876)
+    public IronWire(int amount = 1) : base(0x1876)
     {
       Stackable = true;
       Weight = 5.0;
@@ -76,12 +66,7 @@ namespace Server.Items
   public class SilverWire : Item
   {
     [Constructible]
-    public SilverWire() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SilverWire(int amount) : base(0x1877)
+    public SilverWire(int amount = 1) : base(0x1877)
     {
       Stackable = true;
       Weight = 5.0;
@@ -114,12 +99,7 @@ namespace Server.Items
   public class GoldWire : Item
   {
     [Constructible]
-    public GoldWire() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GoldWire(int amount) : base(0x1878)
+    public GoldWire(int amount = 1) : base(0x1878)
     {
       Stackable = true;
       Weight = 5.0;
@@ -152,12 +132,7 @@ namespace Server.Items
   public class CopperWire : Item
   {
     [Constructible]
-    public CopperWire() : this(1)
-    {
-    }
-
-    [Constructible]
-    public CopperWire(int amount) : base(0x1879)
+    public CopperWire(int amount = 1) : base(0x1879)
     {
       Stackable = true;
       Weight = 5.0;
@@ -190,12 +165,7 @@ namespace Server.Items
   public class WhiteDriedFlowers : Item
   {
     [Constructible]
-    public WhiteDriedFlowers() : this(1)
-    {
-    }
-
-    [Constructible]
-    public WhiteDriedFlowers(int amount) : base(0xC3C)
+    public WhiteDriedFlowers(int amount = 1) : base(0xC3C)
     {
       Stackable = true;
       Weight = 1.0;
@@ -225,12 +195,7 @@ namespace Server.Items
   public class GreenDriedFlowers : Item
   {
     [Constructible]
-    public GreenDriedFlowers() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GreenDriedFlowers(int amount) : base(0xC3E)
+    public GreenDriedFlowers(int amount = 1) : base(0xC3E)
     {
       Stackable = true;
       Weight = 1.0;
@@ -260,12 +225,7 @@ namespace Server.Items
   public class DriedOnions : Item
   {
     [Constructible]
-    public DriedOnions() : this(1)
-    {
-    }
-
-    [Constructible]
-    public DriedOnions(int amount) : base(0xC40)
+    public DriedOnions(int amount = 1) : base(0xC40)
     {
       Stackable = true;
       Weight = 1.0;
@@ -295,12 +255,7 @@ namespace Server.Items
   public class DriedHerbs : Item
   {
     [Constructible]
-    public DriedHerbs() : this(1)
-    {
-    }
-
-    [Constructible]
-    public DriedHerbs(int amount) : base(0xC42)
+    public DriedHerbs(int amount = 1) : base(0xC42)
     {
       Stackable = true;
       Weight = 1.0;

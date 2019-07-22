@@ -3,12 +3,8 @@ namespace Server.Mobiles
   public class DesertOstard : BaseMount
   {
     [Constructible]
-    public DesertOstard() : this("a desert ostard")
-    {
-    }
-
-    [Constructible]
-    public DesertOstard(string name) : base(name, 0xD2, 0x3EA3, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+    public DesertOstard(string name = "a desert ostard") :
+      base(name, 0xD2, 0x3EA3, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = 0x270;
 

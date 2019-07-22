@@ -52,7 +52,7 @@ namespace Server.Engines.ConPVP
       get
       {
         for (int i = 0; i < Players.Length; ++i)
-          if (Players[i] != null && !Players[i].Eliminated)
+          if (Players[i]?.Eliminated == false)
             return false;
 
         return true;
@@ -96,7 +96,7 @@ namespace Server.Engines.ConPVP
       }
 
       for (int i = 0; i < Players.Length; ++i)
-        if (Players[i] != null && Players[i].Mobile == mob)
+        if (Players[i]?.Mobile == mob)
           return Players[i];
 
       return null;

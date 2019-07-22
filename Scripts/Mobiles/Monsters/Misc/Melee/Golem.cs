@@ -9,12 +9,8 @@ namespace Server.Mobiles
     private bool m_Stunning;
 
     [Constructible]
-    public Golem() : this(false, 1.0)
-    {
-    }
-
-    [Constructible]
-    public Golem(bool summoned, double scalar) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
+    public Golem(bool summoned = false, double scalar = 1.0) :
+      base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.4, 0.8)
     {
       Body = 752;
 
@@ -192,12 +188,9 @@ namespace Server.Mobiles
     {
       if (Controlled || Summoned)
       {
-        Mobile master = ControlMaster;
+        Mobile master = ControlMaster ?? SummonMaster;
 
-        if (master == null)
-          master = SummonMaster;
-
-        if (master != null && master.Player && master.Map == Map && master.InRange(Location, 20))
+        if (master?.Player == true && master.Map == Map && master.InRange(Location, 20))
         {
           if (master.Mana >= amount)
           {

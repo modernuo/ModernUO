@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-  public class VengefulSpiritSpell : NecromancerSpell
+  public class VengefulSpiritSpell : NecromancerSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Vengeful Spirit", "Kal Xen Bal Beh",
@@ -15,7 +15,7 @@ namespace Server.Spells.Necromancy
       Reagent.PigIron
     );
 
-    public VengefulSpiritSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public VengefulSpiritSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -26,7 +26,7 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public override bool CheckCast()
@@ -45,10 +45,11 @@ namespace Server.Spells.Necromancy
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (Caster == m)
-      {
         Caster.SendLocalizedMessage(1061832); // You cannot exact vengeance on yourself.
-      }
       else if (CheckHSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -69,27 +70,6 @@ namespace Server.Spells.Necromancy
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private VengefulSpiritSpell m_Owner;
-
-      public InternalTarget(VengefulSpiritSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

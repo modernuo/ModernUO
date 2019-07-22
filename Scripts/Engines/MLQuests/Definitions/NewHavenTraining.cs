@@ -365,7 +365,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Archery, 60.0, 80.0);
 
@@ -439,7 +439,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
 
@@ -501,7 +501,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new Boots(0x901));
@@ -557,7 +557,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new Shoes(Utility.RandomNeutralHue()));
@@ -609,7 +609,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Blacksmith, 60.0, 80.0);
 
@@ -673,7 +673,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new Boots(0x901));
@@ -726,7 +726,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new Boots(0x543));
@@ -780,7 +780,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new Robe(0x2FD));
@@ -832,7 +832,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new Boots(0x591));
@@ -877,7 +877,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new ThighBoots());
@@ -931,7 +931,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new Boots(0x901));
@@ -987,7 +987,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new Boots(0x901));

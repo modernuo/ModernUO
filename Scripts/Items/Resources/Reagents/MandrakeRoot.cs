@@ -3,12 +3,7 @@ namespace Server.Items
   public class MandrakeRoot : BaseReagent, ICommodity
   {
     [Constructible]
-    public MandrakeRoot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public MandrakeRoot(int amount) : base(0xF86, amount)
+    public MandrakeRoot(int amount = 1) : base(0xF86, amount)
     {
     }
 

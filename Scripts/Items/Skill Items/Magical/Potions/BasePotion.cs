@@ -145,7 +145,7 @@ namespace Server.Items
 
             Amount--;
 
-            if (from.Backpack != null && !from.Backpack.Deleted)
+            if (from.Backpack?.Deleted != false)
               from.Backpack.DropItem(pot);
             else
               pot.MoveToWorld(from.Location, from.Map);

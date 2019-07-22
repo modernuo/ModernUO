@@ -63,13 +63,7 @@ namespace Server.Items
   public class GenericHouseDoor : BaseHouseDoor
   {
     [Constructible]
-    public GenericHouseDoor(DoorFacing facing, int baseItemID, int openedSound, int closedSound) : this(facing,
-      baseItemID, openedSound, closedSound, true)
-    {
-    }
-
-    [Constructible]
-    public GenericHouseDoor(DoorFacing facing, int baseItemID, int openedSound, int closedSound, bool autoAdjust)
+    public GenericHouseDoor(DoorFacing facing, int baseItemID, int openedSound, int closedSound, bool autoAdjust = true)
       : base(facing, baseItemID + (autoAdjust ? 2 * (int)facing : 0),
         baseItemID + 1 + (autoAdjust ? 2 * (int)facing : 0), openedSound, closedSound, GetOffset(facing))
     {
@@ -151,18 +145,16 @@ namespace Server.Items
     {
       BaseHouse house = FindHouse();
 
-      if (house != null && house.IsFriend(from) && from.AccessLevel == AccessLevel.Player && house.RefreshDecay())
+      if (house?.IsFriend(from) == true && from.AccessLevel == AccessLevel.Player && house.RefreshDecay())
         from.SendLocalizedMessage(1043293); // Your house's age and contents have been refreshed.
 
-      if (house != null && house.Public && !house.IsFriend(from))
+      if (house?.Public == true && !house.IsFriend(from))
         house.Visits++;
     }
 
     public override bool UseLocks()
     {
-      BaseHouse house = FindHouse();
-
-      return house == null || !house.IsAosRules;
+      return FindHouse()?.IsAosRules != true;
     }
 
     public override void Use(Mobile from)
@@ -250,7 +242,7 @@ namespace Server.Items
           h = bs;
           break;
 
-        //No way to test the 'insideness' of SE Sliding doors on OSI, so leaving them default to false until furthur information gained
+        //No way to test the 'insideness' of SE Sliding doors on OSI, so leaving them default to false until further information gained
 
         default: return false;
       }

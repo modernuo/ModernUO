@@ -76,23 +76,23 @@ namespace Server.Gumps
           int y = 40 + i / 4 * 93;
 
           AddItem(x + (120 - bounds.Width) / 2 - bounds.X, y + (69 - bounds.Height) / 2 - bounds.Y, itemID);
-          AddButton(x + 6, y + 66, 0x98D, 0x98D, 7 + index, GumpButtonType.Reply, 0);
+          AddButton(x + 6, y + 66, 0x98D, 0x98D, 7 + index);
 
           x += 6;
           y += 67;
 
-          AddHtml(x + 0, y - 1, 108, 21, Center(entry.DisplayName), false, false);
-          AddHtml(x + 0, y + 1, 108, 21, Center(entry.DisplayName), false, false);
-          AddHtml(x - 1, y + 0, 108, 21, Center(entry.DisplayName), false, false);
-          AddHtml(x + 1, y + 0, 108, 21, Center(entry.DisplayName), false, false);
-          AddHtml(x + 0, y + 0, 108, 21, Color(Center(entry.DisplayName), TextColor32), false, false);
+          AddHtml(x + 0, y - 1, 108, 21, Center(entry.DisplayName));
+          AddHtml(x + 0, y + 1, 108, 21, Center(entry.DisplayName));
+          AddHtml(x - 1, y + 0, 108, 21, Center(entry.DisplayName));
+          AddHtml(x + 1, y + 0, 108, 21, Center(entry.DisplayName));
+          AddHtml(x + 0, y + 0, 108, 21, Color(Center(entry.DisplayName), TextColor32));
         }
 
         if (ourPage > 0)
-          AddButton(480, 12, 0x15E3, 0x15E7, 5, GumpButtonType.Reply, 0);
+          AddButton(480, 12, 0x15E3, 0x15E7, 5);
 
         if ((ourPage + 1) * 12 < ourList.Count)
-          AddButton(497, 12, 0x15E1, 0x15E5, 6, GumpButtonType.Reply, 0);
+          AddButton(497, 12, 0x15E1, 0x15E5, 6);
       }
     }
 
@@ -110,8 +110,8 @@ namespace Server.Gumps
     {
       bool isSelection = m_OurType == type;
 
-      AddButton(x, y - 1, isSelection ? 4006 : 4005, 4007, buttonID, GumpButtonType.Reply, 0);
-      AddHtml(x + 35, y, 200, 20, Color(text, isSelection ? SelectedColor32 : LabelColor32), false, false);
+      AddButton(x, y - 1, isSelection ? 4006 : 4005, 4007, buttonID);
+      AddHtml(x + 35, y, 200, 20, Color(text, isSelection ? SelectedColor32 : LabelColor32));
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

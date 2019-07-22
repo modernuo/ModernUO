@@ -109,7 +109,7 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Gear == null || m_Gear.Deleted)
+        if (m_Gear?.Deleted != false)
           return;
 
         if (targeted is DawnsMusicBox box)

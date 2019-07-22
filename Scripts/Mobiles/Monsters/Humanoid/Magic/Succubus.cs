@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace Server.Mobiles
 {
   public class Succubus : BaseCreature

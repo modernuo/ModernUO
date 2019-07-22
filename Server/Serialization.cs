@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -561,7 +560,7 @@ namespace Server
 
     public override void WriteEntity(IEntity value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -569,7 +568,7 @@ namespace Server
 
     public override void Write(Item value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -577,7 +576,7 @@ namespace Server
 
     public override void Write(Mobile value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -1461,7 +1460,7 @@ namespace Server
 
     public override void WriteEntity(IEntity value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -1469,7 +1468,7 @@ namespace Server
 
     public override void Write(Item value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -1477,7 +1476,7 @@ namespace Server
 
     public override void Write(Mobile value)
     {
-      if (value == null || value.Deleted)
+      if (value?.Deleted != false)
         Write(Serial.MinusOne);
       else
         Write(value.Serial);
@@ -1735,7 +1734,7 @@ namespace Server
               mem = m_Owner.m_WriteQueue.Dequeue();
           }
 
-          if (mem != null && mem.Length > 0)
+          if (mem?.Length > 0)
             mem.WriteTo(m_Owner.m_File);
         } while (lastCount > 1);
 

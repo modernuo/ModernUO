@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Server.Items
 {
@@ -80,21 +81,8 @@ namespace Server.Items
 
     public void Refresh()
     {
-      bool found = false;
-
-      foreach (Mobile mob in GetMobilesInRange(CurrentRange))
-      {
-        if (mob.Hidden && mob.AccessLevel > AccessLevel.Player)
-          continue;
-
-        found = true;
-        break;
-      }
-
-      if (found)
-        ItemID = ActiveItemID;
-      else
-        ItemID = InactiveItemID;
+      bool found = GetMobilesInRange(CurrentRange).Any(mob => !mob.Hidden || mob.AccessLevel <= AccessLevel.Player);
+      ItemID = found ? ActiveItemID : InactiveItemID;
 
       Visible = ItemID != 0x1;
     }

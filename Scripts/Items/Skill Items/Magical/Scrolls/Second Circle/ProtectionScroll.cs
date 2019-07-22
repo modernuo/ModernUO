@@ -3,12 +3,7 @@ namespace Server.Items
   public class ProtectionScroll : SpellScroll
   {
     [Constructible]
-    public ProtectionScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ProtectionScroll(int amount) : base(14, 0x1F3B, amount)
+    public ProtectionScroll(int amount = 1) : base(14, 0x1F3B, amount)
     {
     }
 

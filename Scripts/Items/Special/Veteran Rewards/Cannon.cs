@@ -175,9 +175,9 @@ namespace Server.Items
 
     public int Validate(PotionKeg keg)
     {
-      if (keg == null || keg.Deleted || keg.Held != 100)
+      if (keg?.Deleted != false || keg.Held != 100)
         return 0;
-      
+
       switch (keg.Type)
       {
         case PotionEffect.ExplosionLesser:
@@ -261,7 +261,7 @@ namespace Server.Items
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (m_Cannon == null || m_Cannon.Deleted)
+        if (m_Cannon?.Deleted != false)
           return;
 
         if (!(targeted is IPoint3D p))
@@ -342,22 +342,18 @@ namespace Server.Items
         AddBackground(0, 0, 291, 133, 0x13BE);
         AddImageTiled(5, 5, 280, 100, 0xA40);
 
-        AddHtmlLocalized(9, 9, 272, 100, 1076196, cannon.Validate(keg).ToString(), 0x7FFF, false,
-          false); // You will need a full keg of explosion potions to recharge the cannon.  Your keg will provide ~1_CHARGES~ charges.
+        AddHtmlLocalized(9, 9, 272, 100, 1076196, cannon.Validate(keg).ToString(), 0x7FFF); // You will need a full keg of explosion potions to recharge the cannon.  Your keg will provide ~1_CHARGES~ charges.
 
-        AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
+        AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
 
-        AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Recharge, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(195, 109, 120, 20, 1076197, 0x7FFF, false, false); // Recharge
+        AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Recharge);
+        AddHtmlLocalized(195, 109, 120, 20, 1076197, 0x7FFF); // Recharge
       }
 
       public override void OnResponse(NetState state, RelayInfo info)
       {
-        if (m_Cannon == null || m_Cannon.Deleted)
-          return;
-
-        if (info.ButtonID == (int)Buttons.Recharge)
+        if (m_Cannon?.Deleted == false && info.ButtonID == (int)Buttons.Recharge)
           m_Cannon.Fill(state.Mobile, m_Keg);
       }
 
@@ -388,17 +384,10 @@ namespace Server.Items
 
     public override int LabelNumber => 1076195; // A deed for a cannon
 
-    public override BaseAddon Addon
+    public override BaseAddon Addon => new CannonAddon(m_Direction)
     {
-      get
-      {
-        CannonAddon addon = new CannonAddon(m_Direction);
-        addon.Charges = m_Charges;
-        addon.IsRewardItem = m_IsRewardItem;
-
-        return addon;
-      }
-    }
+      Charges = m_Charges, IsRewardItem = m_IsRewardItem
+    };
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int Charges
@@ -450,7 +439,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         return;
 
       if (IsChildOf(from.Backpack))

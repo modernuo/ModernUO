@@ -12,7 +12,7 @@ namespace Server.Spells.Spellweaving
 
     private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
-    public ThunderstormSpell(Mobile caster, Item scroll)
+    public ThunderstormSpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }
@@ -46,16 +46,13 @@ namespace Server.Spells.Spellweaving
         int range = 2 + FocusLevel;
         TimeSpan duration = TimeSpan.FromSeconds(5 + FocusLevel);
 
-        List<Mobile> targets = new List<Mobile>();
+        IPooledEnumerable<Mobile> eable = Caster.GetMobilesInRange(range);
 
-        foreach (Mobile m in Caster.GetMobilesInRange(range))
-          if (Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false) &&
-              Caster.InLOS(m))
-            targets.Add(m);
-
-        for (int i = 0; i < targets.Count; i++)
+        foreach (Mobile m in eable)
         {
-          Mobile m = targets[i];
+          if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
+              !Caster.InLOS(m))
+            continue;
 
           Caster.DoHarmful(m);
 
@@ -63,14 +60,16 @@ namespace Server.Spells.Spellweaving
 
           SpellHelper.Damage(this, m, m.Player && Caster.Player ? pvpDamage : pvmDamage, 0, 0, 0, 0, 100);
 
-          if (oldSpell != null && oldSpell != m.Spell && !CheckResisted(m))
-          {
-            m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
+          if (oldSpell == null || oldSpell == m.Spell || CheckResisted(m))
+            continue;
 
-            BuffInfo.AddBuff(m,
-              new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m)));
-          }
+          m_Table[m] = Timer.DelayCall(duration, DoExpire, m);
+
+          BuffInfo.AddBuff(m,
+            new BuffInfo(BuffIcon.Thunderstorm, 1075800, duration, m, GetCastRecoveryMalus(m)));
         }
+
+        eable.Free();
       }
 
       FinishSequence();

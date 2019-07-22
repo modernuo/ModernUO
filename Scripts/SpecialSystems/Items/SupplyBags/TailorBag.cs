@@ -1,21 +1,17 @@
+using System;
+
 namespace Server.Items
 {
   public class TailorBag : Bag
   {
     [Constructible]
-    public TailorBag() : this(1)
+    public TailorBag(int amount = 500)
     {
-      Movable = true;
       Hue = 0x315;
-    }
-
-    [Constructible]
-    public TailorBag(int amount)
-    {
-      DropItem(new SewingKit(5));
+      DropItem(new SewingKit(Math.Max(amount / 100, 1)));
       DropItem(new Scissors());
-      DropItem(new Hides(500));
-      DropItem(new BoltOfCloth(20));
+      DropItem(new Hides(amount));
+      DropItem(new BoltOfCloth(Math.Max(amount / 25, 1)));
       DropItem(new DyeTub());
       DropItem(new DyeTub());
       DropItem(new BlackDyeTub());

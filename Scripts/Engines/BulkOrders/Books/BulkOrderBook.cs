@@ -64,23 +64,18 @@ namespace Server.Engines.BulkOrders
 			{
 				from.SendGump( new BOBGump( (PlayerMobile)from, this ) );
 
-				SecureTradeContainer cont = GetSecureTradeCont();
+        SecureTrade trade = GetSecureTradeCont()?.Trade;
 
-				if ( cont != null )
-				{
-					SecureTrade trade = cont.Trade;
-
-					if ( trade != null && trade.From.Mobile == from )
-						trade.To.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.To.Mobile, this ) );
-					else if ( trade != null && trade.To.Mobile == from )
-						trade.From.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.From.Mobile, this ) );
-				}
+        if (trade?.From.Mobile == from )
+          trade.To.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.To.Mobile, this ) );
+        else if (trade?.To.Mobile == from )
+          trade.From.Mobile.SendGump( new BOBGump( (PlayerMobile)trade.From.Mobile, this ) );
 			}
 		}
 
 		public override bool OnDragDrop( Mobile from, Item dropped )
 		{
-			if ( dropped is LargeBOD || dropped is SmallBOD )
+			if ( dropped is BaseBOD )
 			{
 				if ( !IsChildOf( from.Backpack ) )
 				{
@@ -142,7 +137,7 @@ namespace Server.Engines.BulkOrders
 			}
 		}
 
-		public void InvalidateContainers( object parent )
+		public void InvalidateContainers(IEntity parent)
 		{
 			if ( parent is Container c )
 			{
@@ -159,9 +154,9 @@ namespace Server.Engines.BulkOrders
 		{
 			base.Serialize( writer );
 
-			writer.Write( (int) 2 ); // version
+			writer.Write( 2 ); // version
 
-			writer.Write( (int) ItemCount );
+			writer.Write( ItemCount );
 
 			writer.Write( (int) Level );
 
@@ -169,7 +164,7 @@ namespace Server.Engines.BulkOrders
 
 			Filter.Serialize( writer );
 
-			writer.WriteEncodedInt( (int) Entries.Count );
+			writer.WriteEncodedInt( Entries.Count );
 
 			for ( int i = 0; i < Entries.Count; ++i )
 			{

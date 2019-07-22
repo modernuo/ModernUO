@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Server.Mobiles
 {
@@ -8,12 +6,8 @@ namespace Server.Mobiles
   {
     private DrainTimer m_Timer;
 
-    [Constructible]
-    public HarrowerTentacles() : this(null)
-    {
-    }
-
-    public HarrowerTentacles(Mobile harrower) : base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
+    public HarrowerTentacles(Mobile harrower = null) :
+      base(AIType.AI_Melee, FightMode.Closest, 10, 1, 0.2, 0.4)
     {
       Harrower = harrower;
       Body = 129;

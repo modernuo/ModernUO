@@ -23,7 +23,7 @@ namespace Server.Items
 
       Skill skill = from.Skills.ArmsLore;
 
-      if ( skill != null && skill.Base >= 80.0 )
+      if ( skill?.Base >= 80.0 )
         return true;
 
       from.SendLocalizedMessage( 1061812 ); // You lack the required skill in armslore to perform that attack!
@@ -48,16 +48,16 @@ namespace Server.Items
 
       Item toDisarm = defender.FindItemOnLayer(Layer.OneHanded);
 
-      if (toDisarm == null || !toDisarm.Movable)
+      if (toDisarm?.Movable == false)
         toDisarm = defender.FindItemOnLayer(Layer.TwoHanded);
 
       Container pack = defender.Backpack;
 
-      if (pack == null || toDisarm != null && !toDisarm.Movable)
+      if (pack == null || toDisarm?.Movable == false)
       {
         attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
       }
-      else if (toDisarm == null || toDisarm is BaseShield || toDisarm is Spellbook && !Core.ML)
+      else if (!Core.ML && toDisarm == null || toDisarm is BaseShield || toDisarm is Spellbook)
       {
         attacker.SendLocalizedMessage(1060849); // Your target is already unarmed!
       }

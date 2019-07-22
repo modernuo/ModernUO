@@ -18,7 +18,7 @@ namespace Server.Ethics.Hero
 
     public override void BeginInvoke(Player from)
     {
-      if (from.Familiar != null && from.Familiar.Deleted)
+      if (from.Familiar?.Deleted == true)
         from.Familiar = null;
 
       if (from.Familiar != null)

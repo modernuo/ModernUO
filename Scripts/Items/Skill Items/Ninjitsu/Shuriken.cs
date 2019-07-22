@@ -11,12 +11,7 @@ namespace Server.Items
     private int m_UsesRemaining;
 
     [Constructible]
-    public Shuriken() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Shuriken(int amount) : base(0x27AC)
+    public Shuriken(int amount = 1) : base(0x27AC)
     {
       Weight = 1.0;
 

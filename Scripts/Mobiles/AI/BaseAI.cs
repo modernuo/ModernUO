@@ -340,7 +340,7 @@ namespace Server.Mobiles
               Skill skill = ourSkills[i];
               Skill theirSkill = theirSkills[i];
 
-              if (skill != null && theirSkill != null && skill.Base >= 60.0 &&
+              if (skill != null && skill?.Base >= 60.0 &&
                   m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
               {
                 double toTeach = skill.Base / 3.0;
@@ -813,7 +813,7 @@ namespace Server.Mobiles
         {
           m_Mobile.DebugSay("I will go to the next waypoint");
           m_Mobile.CurrentWayPoint = point.NextPoint;
-          if (point.NextPoint != null && point.NextPoint.Deleted)
+          if (point.NextPoint?.Deleted == true)
             m_Mobile.CurrentWayPoint = point.NextPoint = point.NextPoint.NextPoint;
         }
       }
@@ -833,7 +833,7 @@ namespace Server.Mobiles
           WalkRandomInHome(2, 2, 1);
       }
 
-      if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive &&
+      if (m_Mobile.Combatant?.Deleted == false && m_Mobile.Combatant.Alive &&
           !m_Mobile.Combatant.IsDeadBondedPet) m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
 
       return true;
@@ -849,7 +849,7 @@ namespace Server.Mobiles
       {
         Mobile c = m_Mobile.Combatant;
 
-        if (c == null || c.Deleted || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet)
+        if (c?.Deleted != false || c.Map != m_Mobile.Map || !c.Alive || c.IsDeadBondedPet)
           Action = ActionType.Wander;
         else
           m_Mobile.Direction = m_Mobile.GetDirectionTo(c);
@@ -882,7 +882,7 @@ namespace Server.Mobiles
     {
       Mobile from = m_Mobile.FocusMob;
 
-      if (from == null || from.Deleted || from.Map != m_Mobile.Map)
+      if (from?.Deleted != false || from.Map != m_Mobile.Map)
       {
         m_Mobile.DebugSay("I have lost him");
         Action = ActionType.Guard;
@@ -964,7 +964,7 @@ namespace Server.Mobiles
 
     public virtual void OnCurrentOrderChanged()
     {
-      if (m_Mobile.Deleted || m_Mobile.ControlMaster == null || m_Mobile.ControlMaster.Deleted)
+      if (m_Mobile.Deleted || m_Mobile.ControlMaster?.Deleted != false)
         return;
 
       switch (m_Mobile.ControlOrder)
@@ -1077,7 +1077,7 @@ namespace Server.Mobiles
 
       WalkRandomInHome(3, 2, 1);
 
-      if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive &&
+      if (m_Mobile.Combatant?.Deleted == false && m_Mobile.Combatant.Alive &&
           !m_Mobile.Combatant.IsDeadBondedPet)
       {
         m_Mobile.Warmode = true;
@@ -1093,35 +1093,35 @@ namespace Server.Mobiles
 
     public virtual bool DoOrderCome()
     {
-      if (m_Mobile.ControlMaster != null && !m_Mobile.ControlMaster.Deleted)
+      if (m_Mobile.ControlMaster?.Deleted != false)
+        return true;
+
+      int iCurrDist = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.ControlMaster);
+
+      if (iCurrDist > m_Mobile.RangePerception)
       {
-        int iCurrDist = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.ControlMaster);
+        m_Mobile.DebugSay("I have lost my master. I stay here");
+        m_Mobile.ControlTarget = null;
+        m_Mobile.ControlOrder = OrderType.None;
+      }
+      else
+      {
+        m_Mobile.DebugSay("My master told me come");
 
-        if (iCurrDist > m_Mobile.RangePerception)
+        // Not exactly OSI style, but better than nothing.
+        bool bRun = iCurrDist > 5;
+
+        if (WalkMobileRange(m_Mobile.ControlMaster, 1, bRun, 0, 1))
         {
-          m_Mobile.DebugSay("I have lost my master. I stay here");
-          m_Mobile.ControlTarget = null;
-          m_Mobile.ControlOrder = OrderType.None;
-        }
-        else
-        {
-          m_Mobile.DebugSay("My master told me come");
-
-          // Not exactly OSI style, but better than nothing.
-          bool bRun = iCurrDist > 5;
-
-          if (WalkMobileRange(m_Mobile.ControlMaster, 1, bRun, 0, 1))
+          if (m_Mobile.Combatant?.Deleted == false && m_Mobile.Combatant.Alive &&
+              !m_Mobile.Combatant.IsDeadBondedPet)
           {
-            if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive &&
-                !m_Mobile.Combatant.IsDeadBondedPet)
-            {
-              m_Mobile.Warmode = true;
-              m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
-            }
-            else
-            {
-              m_Mobile.Warmode = false;
-            }
+            m_Mobile.Warmode = true;
+            m_Mobile.Direction = m_Mobile.GetDirectionTo(m_Mobile.Combatant);
+          }
+          else
+          {
+            m_Mobile.Warmode = false;
           }
         }
       }
@@ -1140,7 +1140,7 @@ namespace Server.Mobiles
 
       if (pack != null)
       {
-        List<Item> list = pack.Items;
+        List<Item> list = pack?.Items;
 
         for (int i = list.Count - 1; i >= 0; --i)
           if (i < list.Count)
@@ -1196,7 +1196,7 @@ namespace Server.Mobiles
       {
         m_Mobile.DebugSay("Praise the shepherd!");
       }
-      else if (m_Mobile.ControlTarget != null && !m_Mobile.ControlTarget.Deleted && m_Mobile.ControlTarget != m_Mobile)
+      else if (m_Mobile.ControlTarget?.Deleted == false && m_Mobile.ControlTarget != m_Mobile)
       {
         int iCurrDist = (int)m_Mobile.GetDistanceToSqrt(m_Mobile.ControlTarget);
 
@@ -1204,7 +1204,7 @@ namespace Server.Mobiles
         {
           m_Mobile.DebugSay("I have lost the one to follow. I stay here");
 
-          if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive &&
+          if (m_Mobile.Combatant?.Deleted == false && m_Mobile.Combatant.Alive &&
               !m_Mobile.Combatant.IsDeadBondedPet)
           {
             m_Mobile.Warmode = true;
@@ -1224,7 +1224,7 @@ namespace Server.Mobiles
 
           if (WalkMobileRange(m_Mobile.ControlTarget, 1, bRun, 0, 1))
           {
-            if (m_Mobile.Combatant != null && !m_Mobile.Combatant.Deleted && m_Mobile.Combatant.Alive &&
+            if (m_Mobile.Combatant?.Deleted == false && m_Mobile.Combatant.Alive &&
                 !m_Mobile.Combatant.IsDeadBondedPet)
             {
               m_Mobile.Warmode = true;
@@ -1254,7 +1254,7 @@ namespace Server.Mobiles
       Mobile from = m_Mobile.ControlMaster;
       Mobile to = m_Mobile.ControlTarget;
 
-      if (from == null || to == null || from == to || from.Deleted || to.Deleted || !to.Player)
+      if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
       {
         m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039); // *looks confused*
       }
@@ -1326,7 +1326,7 @@ namespace Server.Mobiles
       Mobile from = m_Mobile.ControlMaster;
       Mobile to = m_Mobile.ControlTarget;
 
-      if (from == null || to == null || from == to || from.Deleted || to.Deleted || !to.Player)
+      if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
       {
         m_Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039); // *looks confused*
       }
@@ -1360,7 +1360,7 @@ namespace Server.Mobiles
 
       Mobile controlMaster = m_Mobile.ControlMaster;
 
-      if (controlMaster == null || controlMaster.Deleted)
+      if (controlMaster?.Deleted != false)
         return true;
 
       Mobile combatant = m_Mobile.Combatant;
@@ -1374,7 +1374,7 @@ namespace Server.Mobiles
           AggressorInfo info = aggressors[i];
           Mobile attacker = info.Attacker;
 
-          if (attacker != null && !attacker.Deleted &&
+          if (attacker?.Deleted == false &&
               attacker.GetDistanceToSqrt(m_Mobile) <= m_Mobile.RangePerception)
             if (combatant == null || attacker.GetDistanceToSqrt(controlMaster) <
                 combatant.GetDistanceToSqrt(controlMaster))
@@ -1385,7 +1385,7 @@ namespace Server.Mobiles
           m_Mobile.DebugSay("Crap, my master has been attacked! I will attack one of those bastards!");
       }
 
-      if (combatant != null && combatant != m_Mobile && combatant != m_Mobile.ControlMaster && !combatant.Deleted &&
+      if (combatant?.Deleted == false && combatant != m_Mobile && combatant != m_Mobile.ControlMaster &&
           combatant.Alive && !combatant.IsDeadBondedPet && m_Mobile.CanSee(combatant) &&
           m_Mobile.CanBeHarmful(combatant, false) && combatant.Map == m_Mobile.Map)
       {
@@ -1420,9 +1420,8 @@ namespace Server.Mobiles
       if (m_Mobile.IsDeadPet)
         return true;
 
-      if (m_Mobile.ControlTarget == null || m_Mobile.ControlTarget.Deleted ||
-          m_Mobile.ControlTarget.Map != m_Mobile.Map || !m_Mobile.ControlTarget.Alive ||
-          m_Mobile.ControlTarget.IsDeadBondedPet)
+      if (m_Mobile.ControlTarget?.Deleted != false || m_Mobile.ControlTarget.Map != m_Mobile.Map ||
+          !m_Mobile.ControlTarget.Alive || m_Mobile.ControlTarget.IsDeadBondedPet)
       {
         m_Mobile.DebugSay(
           "I think he might be dead. He's not anywhere around here at least. That's cool. I'm glad he's dead.");
@@ -1527,7 +1526,7 @@ namespace Server.Mobiles
 
     public virtual bool DoOrderStop()
     {
-      if (m_Mobile.ControlMaster == null || m_Mobile.ControlMaster.Deleted)
+      if (m_Mobile.ControlMaster?.Deleted != false)
         return true;
 
       m_Mobile.DebugSay("My master told me to stop.");
@@ -1553,7 +1552,7 @@ namespace Server.Mobiles
       Mobile from = m_Mobile.ControlMaster;
       Mobile to = m_Mobile.ControlTarget;
 
-      if (from != to && from != null && !from.Deleted && to != null && !to.Deleted && to.Player)
+      if (from?.Deleted == false && to?.Deleted == false && from != to && to.Player)
       {
         m_Mobile.DebugSay("Begin transfer with {0}", to.Name);
 
@@ -1639,10 +1638,9 @@ namespace Server.Mobiles
 
     public virtual bool DoBardProvoked()
     {
-      if (DateTime.UtcNow >= m_Mobile.BardEndTime && (m_Mobile.BardMaster == null || m_Mobile.BardMaster.Deleted ||
-                                                      m_Mobile.BardMaster.Map != m_Mobile.Map ||
-                                                      m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) >
-                                                      m_Mobile.RangePerception))
+      if (DateTime.UtcNow >= m_Mobile.BardEndTime && (m_Mobile.BardMaster?.Deleted != false ||
+        m_Mobile.BardMaster.Map != m_Mobile.Map || m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) >
+        m_Mobile.RangePerception))
       {
         m_Mobile.DebugSay("I have lost my provoker");
         m_Mobile.BardProvoked = false;
@@ -1654,7 +1652,7 @@ namespace Server.Mobiles
       }
       else
       {
-        if (m_Mobile.BardTarget == null || m_Mobile.BardTarget.Deleted || m_Mobile.BardTarget.Map != m_Mobile.Map ||
+        if (m_Mobile.BardTarget?.Deleted != false || m_Mobile.BardTarget.Map != m_Mobile.Map ||
             m_Mobile.GetDistanceToSqrt(m_Mobile.BardTarget) > m_Mobile.RangePerception)
         {
           m_Mobile.DebugSay("I have lost my provoke target");
@@ -2056,7 +2054,7 @@ namespace Server.Mobiles
 
     public virtual bool MoveTo(Mobile m, bool run, int range)
     {
-      if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || m == null || m.Deleted)
+      if (m_Mobile.Deleted || m_Mobile.DisallowAllMoves || m?.Deleted != false)
         return false;
 
       if (m_Mobile.InRange(m, range))
@@ -2065,7 +2063,7 @@ namespace Server.Mobiles
         return true;
       }
 
-      if (m_Path != null && m_Path.Goal == m)
+      if (m_Path?.Goal == m)
       {
         if (m_Path.Follow(run, 1))
         {
@@ -2184,7 +2182,7 @@ namespace Server.Mobiles
 
       if (m_Mobile.BardProvoked)
       {
-        if (m_Mobile.BardTarget == null || m_Mobile.BardTarget.Deleted)
+        if (m_Mobile.BardTarget?.Deleted != false)
         {
           m_Mobile.FocusMob = null;
           return false;
@@ -2196,7 +2194,7 @@ namespace Server.Mobiles
 
       if (m_Mobile.Controlled)
       {
-        if (m_Mobile.ControlTarget == null || m_Mobile.ControlTarget.Deleted || m_Mobile.ControlTarget.Hidden ||
+        if (m_Mobile.ControlTarget?.Deleted != false || m_Mobile.ControlTarget.Hidden ||
             !m_Mobile.ControlTarget.Alive || m_Mobile.ControlTarget.IsDeadBondedPet ||
             !m_Mobile.InRange(m_Mobile.ControlTarget, m_Mobile.RangePerception * 2))
         {
@@ -2386,6 +2384,7 @@ namespace Server.Mobiles
         return;
 
       IPooledEnumerable<Mobile> eable = m_Mobile.GetMobilesInRange(m_Mobile.RangePerception);
+
       foreach (Mobile trg in eable)
         if (trg != m_Mobile && trg.Player && trg.Alive && trg.Hidden && trg.AccessLevel == AccessLevel.Player &&
             m_Mobile.InLOS(trg))
@@ -2599,7 +2598,7 @@ namespace Server.Mobiles
         if (!base.AllowSecureTrade(from, to, newOwner, accepted))
           return false;
 
-        if (Deleted || m_Creature == null || m_Creature.Deleted || m_Creature.ControlMaster != from ||
+        if (Deleted || m_Creature?.Deleted != false || m_Creature.ControlMaster != from ||
             !from.CheckAlive() || !to.CheckAlive())
           return false;
 
@@ -2661,7 +2660,7 @@ namespace Server.Mobiles
 
         Delete();
 
-        if (m_Creature == null || m_Creature.Deleted || m_Creature.ControlMaster != from || !from.CheckAlive() ||
+        if (m_Creature?.Deleted != false || m_Creature.ControlMaster != from || !from.CheckAlive() ||
             !to.CheckAlive())
           return;
 

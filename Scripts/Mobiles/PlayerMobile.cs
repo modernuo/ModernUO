@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Accounting;
@@ -259,6 +258,7 @@ namespace Server.Mobiles
         }
         catch
         {
+          // ignored
         }
       }
     }
@@ -283,6 +283,7 @@ namespace Server.Mobiles
         }
         catch
         {
+          // ignored
         }
       }
     }
@@ -445,12 +446,13 @@ namespace Server.Mobiles
       {
         IPooledEnumerable<Mobile> mobiles = Map.GetMobilesInRange(location, 0);
 
-        foreach (Mobile m in mobiles)
-          if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
-          {
-            mobiles.Free();
-            return false;
-          }
+        bool found = mobiles.Any(m =>
+          m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player));
+
+        mobiles.Free();
+
+        if (found)
+          return false;
 
         mobiles.Free();
       }
@@ -819,12 +821,7 @@ namespace Server.Mobiles
 
             if (drop)
             {
-              string name = weapon.Name;
-
-              if (name == null)
-                name = $"#{weapon.LabelNumber}";
-
-              from.SendLocalizedMessage(1062001, name); // You can no longer wield your ~1_WEAPON~
+              from.SendLocalizedMessage(1062001, weapon.Name ?? $"#{weapon.LabelNumber}"); // You can no longer wield your ~1_WEAPON~
               from.AddToBackpack(weapon);
               moved = true;
             }
@@ -861,10 +858,7 @@ namespace Server.Mobiles
 
             if (drop)
             {
-              string name = armor.Name;
-
-              if (name == null)
-                name = $"#{armor.LabelNumber}";
+              string name = armor.Name ?? $"#{armor.LabelNumber}";
 
               if (armor is BaseShield)
                 from.SendLocalizedMessage(1062003, name); // You can no longer equip your ~1_SHIELD~
@@ -902,12 +896,7 @@ namespace Server.Mobiles
 
             if (drop)
             {
-              string name = clothing.Name;
-
-              if (name == null)
-                name = $"#{clothing.LabelNumber}";
-
-              from.SendLocalizedMessage(1062002, name); // You can no longer wear your ~1_ARMOR~
+              from.SendLocalizedMessage(1062002, clothing.Name ?? $"#{clothing.LabelNumber}"); // You can no longer wear your ~1_ARMOR~
 
               from.AddToBackpack(clothing);
               moved = true;
@@ -1200,10 +1189,8 @@ namespace Server.Mobiles
     public override bool AllowItemUse(Item item)
     {
       #region Dueling
-
-      if (DuelContext != null && !DuelContext.AllowItemUse(this, item))
+      if (DuelContext?.AllowItemUse(this, item) == false)
         return false;
-
       #endregion
 
       return DesignContext.Check(this);
@@ -1220,10 +1207,8 @@ namespace Server.Mobiles
           }
 
       #region Dueling
-
-      if (DuelContext != null && !DuelContext.AllowSkillUse(this, skill))
+      if (DuelContext?.AllowSkillUse(this, skill) == false)
         return false;
-
       #endregion
 
       return DesignContext.Check(this);
@@ -1324,7 +1309,7 @@ namespace Server.Mobiles
         {
           NetState ns = from.NetState;
 
-          if (ns != null && ns.ExtendedStatus)
+          if (ns?.ExtendedStatus == true)
             list.Add(new CallbackEntry(RefuseTrades ? 1154112 : 1154113,
               ToggleTrades)); // Allow Trades / Refuse Trades
         }
@@ -1383,7 +1368,7 @@ namespace Server.Mobiles
     {
       BaseHouse house = BaseHouse.FindHouseAt(this);
 
-      if (CheckAlive() && house != null && house.IsOwner(this) && house.InternalizedVendors.Count > 0)
+      if (CheckAlive() && house?.IsOwner(this) == true && house.InternalizedVendors.Count > 0)
       {
         CloseGump<ReclaimVendorGump>();
         SendGump(new ReclaimVendorGump(house));
@@ -1432,7 +1417,7 @@ namespace Server.Mobiles
 
       #region Dueling
 
-      if (DuelContext != null && !DuelContext.AllowItemEquip(this, item))
+      if (DuelContext?.AllowItemEquip(this, item) == false)
         return false;
 
       #endregion
@@ -1524,9 +1509,9 @@ namespace Server.Mobiles
           plusWeight += cont.TotalWeight;
         }
 
-        if (Backpack == null || !Backpack.CheckHold(this, item, false, checkItems, plusItems, plusWeight))
+        if (Backpack?.CheckHold(this, item, false, checkItems, plusItems, plusWeight) != true)
           msgNum = 1004040; // You would not be able to hold this if the trade failed.
-        else if (to.Backpack == null || !to.Backpack.CheckHold(to, item, false, checkItems, plusItems, plusWeight))
+        else if (to.Backpack?.CheckHold(to, item, false, checkItems, plusItems, plusWeight) != true)
           msgNum = 1004039; // The recipient of this trade would not be able to carry this.
         else
           msgNum = CheckContentForTrade(item);
@@ -1698,7 +1683,7 @@ namespace Server.Mobiles
 
       if (!Core.AOS)
         disruptThreshold = 0;
-      else if (from != null && from.Player)
+      else if (from?.Player == true)
         disruptThreshold = 18;
       else
         disruptThreshold = 25;
@@ -1759,7 +1744,7 @@ namespace Server.Mobiles
 
       DropHolding();
 
-      if (Core.AOS && Backpack != null && !Backpack.Deleted)
+      if (Core.AOS && Backpack?.Deleted == false)
       {
         Backpack.FindItemsByType<Item>(FindItems_Callback).ForEach(item => Backpack.AddItem(item));
       }
@@ -1798,8 +1783,8 @@ namespace Server.Mobiles
 
       #region Dueling
 
-      if (m_DuelPlayer != null && DuelContext != null && DuelContext.Registered && DuelContext.Started &&
-          !m_DuelPlayer.Eliminated)
+      if (DuelContext?.Registered == true && DuelContext.Started &&
+          m_DuelPlayer?.Eliminated != true)
         return true;
 
       #endregion
@@ -2060,7 +2045,7 @@ namespace Server.Mobiles
       {
         Mobile mob = ns.Mobile;
 
-        if (mob != null && mob.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel)
+        if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel)
         {
           if (p == null)
             p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3,
@@ -2634,8 +2619,7 @@ namespace Server.Mobiles
       if (m is PlayerMobile mobile && mobile.VisibilityList.Contains(this))
         return true;
 
-      if (DuelContext != null && m_DuelPlayer != null && !DuelContext.Finished && DuelContext.m_Tournament != null &&
-          !m_DuelPlayer.Eliminated)
+      if (DuelContext?.Finished == false && DuelContext.m_Tournament != null && m_DuelPlayer?.Eliminated == false)
       {
         Mobile owner = m;
 
@@ -2662,10 +2646,7 @@ namespace Server.Mobiles
 
     public override bool CanSee(Item item)
     {
-      if (DesignContext != null && DesignContext.Foundation.IsHiddenToCustomizer(item))
-        return false;
-
-      return base.CanSee(item);
+      return DesignContext?.Foundation.IsHiddenToCustomizer(item) != true && base.CanSee(item);
     }
 
     public override void OnAfterDelete()
@@ -2820,11 +2801,10 @@ namespace Server.Mobiles
             continue;
           }
 
-          if (pet is IMount mount && mount.Rider != null)
+          if ((pet as IMount)?.Rider != null)
             continue;
 
-          if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack != null &&
-              pet.Backpack.Items.Count > 0)
+          if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
             continue;
 
           if (pet is BaseEscortable)
@@ -2969,24 +2949,11 @@ namespace Server.Mobiles
 
     public bool NinjaWepCooldown{ get; set; }
 
-    public List<Mobile> AllFollowers
-    {
-      get
-      {
-        if (m_AllFollowers == null)
-          m_AllFollowers = new List<Mobile>();
-        return m_AllFollowers;
-      }
-    }
+    public List<Mobile> AllFollowers => m_AllFollowers ?? (m_AllFollowers = new List<Mobile>());
 
     public RankDefinition GuildRank
     {
-      get
-      {
-        if (AccessLevel >= AccessLevel.GameMaster)
-          return RankDefinition.Leader;
-        return m_GuildRank;
-      }
+      get => AccessLevel >= AccessLevel.GameMaster ? RankDefinition.Leader : m_GuildRank;
       set => m_GuildRank = value;
     }
 
@@ -3456,14 +3423,13 @@ namespace Server.Mobiles
         AddImageTiled(6, 116, 228, 20, 0xA40);
         AddAlphaRegion(6, 6, 228, 142);
 
-        AddHtmlLocalized(8, 8, 228, 100, 1071021, 0x7FFF, false,
-          false); // You are about to disable inventory insurance auto-renewal.
+        AddHtmlLocalized(8, 8, 228, 100, 1071021, 0x7FFF); // You are about to disable inventory insurance auto-renewal.
 
-        AddButton(6, 116, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddButton(6, 116, 0xFB1, 0xFB2, 0);
+        AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
 
-        AddButton(114, 116, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(148, 118, 450, 20, 1071022, 0x7FFF, false, false); // DISABLE IT!
+        AddButton(114, 116, 0xFA5, 0xFA7, 1);
+        AddHtmlLocalized(148, 118, 450, 20, 1071022, 0x7FFF); // DISABLE IT!
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -3550,24 +3516,24 @@ namespace Server.Mobiles
         AddImageTiled(10, 415, 500, 80, 0xA40);
         AddAlphaRegion(10, 10, 500, 485);
 
-        AddButton(15, 470, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(50, 472, 80, 20, 1011012, 0x7FFF, false, false); // CANCEL
+        AddButton(15, 470, 0xFB1, 0xFB2, 0);
+        AddHtmlLocalized(50, 472, 80, 20, 1011012, 0x7FFF); // CANCEL
 
         if (from.AutoRenewInsurance)
-          AddButton(360, 10, 9723, 9724, 1, GumpButtonType.Reply, 0);
+          AddButton(360, 10, 9723, 9724, 1);
         else
-          AddButton(360, 10, 9720, 9722, 1, GumpButtonType.Reply, 0);
+          AddButton(360, 10, 9720, 9722, 1);
 
-        AddHtmlLocalized(395, 14, 105, 20, 1114122, 0x7FFF, false, false); // AUTO REINSURE
+        AddHtmlLocalized(395, 14, 105, 20, 1114122, 0x7FFF); // AUTO REINSURE
 
-        AddButton(395, 470, 0xFA5, 0xFA6, 2, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(430, 472, 50, 20, 1006044, 0x7FFF, false, false); // OK
+        AddButton(395, 470, 0xFA5, 0xFA6, 2);
+        AddHtmlLocalized(430, 472, 50, 20, 1006044, 0x7FFF); // OK
 
-        AddHtmlLocalized(10, 14, 150, 20, 1114121, 0x7FFF, false, false); // <CENTER>ITEM INSURANCE MENU</CENTER>
+        AddHtmlLocalized(10, 14, 150, 20, 1114121, 0x7FFF); // <CENTER>ITEM INSURANCE MENU</CENTER>
 
-        AddHtmlLocalized(45, 54, 70, 20, 1062214, 0x7FFF, false, false); // Item
-        AddHtmlLocalized(250, 54, 70, 20, 1061038, 0x7FFF, false, false); // Cost
-        AddHtmlLocalized(400, 54, 70, 20, 1114311, 0x7FFF, false, false); // Insured
+        AddHtmlLocalized(45, 54, 70, 20, 1062214, 0x7FFF); // Item
+        AddHtmlLocalized(250, 54, 70, 20, 1061038, 0x7FFF); // Cost
+        AddHtmlLocalized(400, 54, 70, 20, 1114311, 0x7FFF); // Insured
 
         int balance = Banker.GetBalance(from);
         int cost = 0;
@@ -3576,14 +3542,14 @@ namespace Server.Mobiles
           if (insure[i])
             cost += GetInsuranceCost(items[i]);
 
-        AddHtmlLocalized(15, 420, 300, 20, 1114310, 0x7FFF, false, false); // GOLD AVAILABLE:
+        AddHtmlLocalized(15, 420, 300, 20, 1114310, 0x7FFF); // GOLD AVAILABLE:
         AddLabel(215, 420, 0x481, balance.ToString());
-        AddHtmlLocalized(15, 435, 300, 20, 1114123, 0x7FFF, false, false); // TOTAL COST OF INSURANCE:
+        AddHtmlLocalized(15, 435, 300, 20, 1114123, 0x7FFF); // TOTAL COST OF INSURANCE:
         AddLabel(215, 435, 0x481, cost.ToString());
 
         if (cost != 0)
         {
-          AddHtmlLocalized(15, 450, 300, 20, 1114125, 0x7FFF, false, false); // NUMBER OF DEATHS PAYABLE:
+          AddHtmlLocalized(15, 450, 300, 20, 1114125, 0x7FFF); // NUMBER OF DEATHS PAYABLE:
           AddLabel(215, 450, 0x481, (balance / cost).ToString());
         }
 
@@ -3598,26 +3564,26 @@ namespace Server.Mobiles
 
           if (insure[i])
           {
-            AddButton(400, y, 9723, 9724, 100 + i, GumpButtonType.Reply, 0);
+            AddButton(400, y, 9723, 9724, 100 + i);
             AddLabel(250, y, 0x481, GetInsuranceCost(item).ToString());
           }
           else
           {
-            AddButton(400, y, 9720, 9722, 100 + i, GumpButtonType.Reply, 0);
+            AddButton(400, y, 9720, 9722, 100 + i);
             AddLabel(250, y, 0x66C, GetInsuranceCost(item).ToString());
           }
         }
 
         if (page >= 1)
         {
-          AddButton(15, 380, 0xFAE, 0xFAF, 3, GumpButtonType.Reply, 0);
-          AddHtmlLocalized(50, 380, 450, 20, 1044044, 0x7FFF, false, false); // PREV PAGE
+          AddButton(15, 380, 0xFAE, 0xFAF, 3);
+          AddHtmlLocalized(50, 380, 450, 20, 1044044, 0x7FFF); // PREV PAGE
         }
 
         if ((page + 1) * 4 < items.Length)
         {
-          AddButton(400, 380, 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0);
-          AddHtmlLocalized(435, 380, 70, 20, 1044045, 0x7FFF, false, false); // NEXT PAGE
+          AddButton(400, 380, 0xFA5, 0xFA7, 4);
+          AddHtmlLocalized(435, 380, 70, 20, 1044045, 0x7FFF); // NEXT PAGE
         }
       }
 
@@ -3703,14 +3669,13 @@ namespace Server.Mobiles
         AddImageTiled(6, 116, 228, 20, 0xA40);
         AddAlphaRegion(6, 6, 228, 142);
 
-        AddHtmlLocalized(8, 8, 228, 100, 1114300, 0x7FFF, false,
-          false); // Do you wish to insure all newly selected items?
+        AddHtmlLocalized(8, 8, 228, 100, 1114300, 0x7FFF); // Do you wish to insure all newly selected items?
 
-        AddButton(6, 116, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddButton(6, 116, 0xFB1, 0xFB2, 0);
+        AddHtmlLocalized(40, 118, 450, 20, 1060051, 0x7FFF); // CANCEL
 
-        AddButton(114, 116, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF, false, false); // ACCEPT
+        AddButton(114, 116, 0xFA5, 0xFA7, 1);
+        AddHtmlLocalized(148, 118, 450, 20, 1073996, 0x7FFF); // ACCEPT
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -3870,7 +3835,7 @@ namespace Server.Mobiles
       get => m_DuelPlayer;
       set
       {
-        bool wasInTourney = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
+        bool wasInTourney = DuelContext?.Finished == false && DuelContext.m_Tournament != null;
 
         m_DuelPlayer = value;
 
@@ -3879,7 +3844,7 @@ namespace Server.Mobiles
         else
           DuelContext = m_DuelPlayer.Participant.Context;
 
-        bool isInTourney = DuelContext != null && !DuelContext.Finished && DuelContext.m_Tournament != null;
+        bool isInTourney = DuelContext?.Finished == false && DuelContext.m_Tournament != null;
 
         if (wasInTourney != isInTourney)
           SendEverything();
@@ -3999,7 +3964,7 @@ namespace Server.Mobiles
 
       TransformContext context = TransformationSpellHelper.GetContext(this);
 
-      if (context != null && context.Type == typeof(ReaperFormSpell))
+      if (context?.Type == typeof(ReaperFormSpell))
         return WalkFoot;
 
       bool running = (dir & Direction.Running) != 0;
@@ -4008,7 +3973,7 @@ namespace Server.Mobiles
 
       AnimalFormContext animalContext = AnimalForm.GetContext(this);
 
-      if (onHorse || animalContext != null && animalContext.SpeedBoost)
+      if (onHorse || animalContext?.SpeedBoost == true)
         return running ? RunMount : WalkMount;
 
       return running ? RunFoot : WalkFoot;
@@ -4262,7 +4227,7 @@ namespace Server.Mobiles
       if (from is BaseCreature creature && creature.IgnoreYoungProtection)
         return false;
 
-      if (Quest != null && Quest.IgnoreYoungProtection(from))
+      if (Quest?.IgnoreYoungProtection(from) == true)
         return false;
 
       if (DateTime.UtcNow - m_LastYoungMessage > TimeSpan.FromMinutes(1.0))

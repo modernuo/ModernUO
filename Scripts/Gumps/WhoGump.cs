@@ -98,11 +98,11 @@ namespace Server.Gumps
 			}
 		}
 
-		public WhoGump( Mobile owner, string filter ) : this( owner, BuildList( owner, filter ), 0 )
+		public WhoGump(Mobile owner, string filter) : this(owner, BuildList( owner, filter ))
 		{
 		}
 
-		public WhoGump( Mobile owner, List<Mobile> list, int page ) : base( GumpOffsetX, GumpOffsetY )
+		public WhoGump(Mobile owner, List<Mobile> list, int page = 0) : base(GumpOffsetX, GumpOffsetY)
 		{
 			owner.CloseGump<WhoGump>();
 
@@ -112,12 +112,9 @@ namespace Server.Gumps
 			Initialize( page );
 		}
 
-		public static List<Mobile> BuildList( Mobile owner, string filter )
+		public static List<Mobile> BuildList(Mobile owner, string rawFilter)
 		{
-			if ( filter != null && (filter = filter.Trim()).Length == 0 )
-				filter = null;
-			else
-				filter = filter.ToLower();
+			string filter = String.IsNullOrWhiteSpace(rawFilter) ? null : rawFilter.Trim().ToLower();
 
 			List<Mobile> list = new List<Mobile>();
 			List<NetState> states = NetState.Instances;
@@ -126,9 +123,9 @@ namespace Server.Gumps
 			{
 				Mobile m = states[i].Mobile;
 
-				if ( m != null && (m == owner || !m.Hidden || owner.AccessLevel >= m.AccessLevel || (m is PlayerMobile mobile && mobile.VisibilityList.Contains( owner ) ) ) )
+				if ( m != null && (m == owner || !m.Hidden || owner.AccessLevel >= m.AccessLevel || m is PlayerMobile mobile && mobile.VisibilityList.Contains( owner ) ) )
 				{
-					if ( filter != null && ( m.Name == null || m.Name.ToLower().IndexOf( filter ) < 0 ) )
+					if ( filter != null && !(m.Name?.ToLower().IndexOf(filter) >= 0) )
 						continue;
 
 					list.Add( m );
@@ -144,14 +141,14 @@ namespace Server.Gumps
 		{
 			m_Page = page;
 
-			int count = m_Mobiles.Count - (page * EntryCount);
+			int count = m_Mobiles.Count - page * EntryCount;
 
 			if ( count < 0 )
 				count = 0;
 			else if ( count > EntryCount )
 				count = EntryCount;
 
-			int totalHeight = OffsetSize + ((EntryHeight + OffsetSize) * (count + 1));
+			int totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
 
 			AddPage( 0 );
 
@@ -178,7 +175,7 @@ namespace Server.Gumps
 
 			if ( page > 0 )
 			{
-				AddButton( x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1, GumpButtonType.Reply, 0 );
+				AddButton( x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1 );
 
 				if ( PrevLabel )
 					AddLabel( x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous" );
@@ -213,7 +210,7 @@ namespace Server.Gumps
 					AddImageTiled( x, y, SetWidth, EntryHeight, SetGumpID );
 
 				if ( m.NetState != null && !m.Deleted )
-					AddButton( x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3, GumpButtonType.Reply, 0 );
+					AddButton( x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3 );
 			}
 		}
 
@@ -227,14 +224,9 @@ namespace Server.Gumps
 				case AccessLevel.Seer: return 0x144;
 				case AccessLevel.GameMaster: return 0x21;
 				case AccessLevel.Counselor: return 0x2;
-				case AccessLevel.Player: default:
+				default:
 				{
-					if ( m.Kills >= 5 )
-						return 0x21;
-					if ( m.Criminal )
-						return 0x3B1;
-
-					return 0x58;
+					return m.Kills >= 5 ? 0x21 : m.Criminal ? 0x3B1 : 0x58;
 				}
 			}
 		}
@@ -265,7 +257,7 @@ namespace Server.Gumps
 				}
 				default:
 				{
-					int index = (m_Page * EntryCount) + (info.ButtonID - 3);
+					int index = m_Page * EntryCount + (info.ButtonID - 3);
 
 					if ( index >= 0 && index < m_Mobiles.Count )
 					{
@@ -281,7 +273,7 @@ namespace Server.Gumps
 							from.SendMessage( "That player is no longer online." );
 							from.SendGump( new WhoGump( from, m_Mobiles, m_Page ) );
 						}
-						else if ( m == from || !m.Hidden || from.AccessLevel >= m.AccessLevel || (m is PlayerMobile mobile && mobile.VisibilityList.Contains( from )))
+						else if ( m == from || !m.Hidden || from.AccessLevel >= m.AccessLevel || m is PlayerMobile mobile && mobile.VisibilityList.Contains( from ))
 						{
 							from.SendGump( new ClientGump( from, m.NetState ) );
 						}

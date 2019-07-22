@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Factions;
 using Server.Spells;
 using Server.Targeting;
@@ -34,64 +35,61 @@ namespace Server
               Point3D origin = new Point3D(pt);
               Map facet = from.Map;
 
-              if (facet != null && facet.CanFit(pt.X, pt.Y, pt.Z, 16, false, false))
-              {
-                Movable = false;
+              if (facet?.CanFit(pt.X, pt.Y, pt.Z, 16, false, false) != true)
+                return;
 
-                Effects.SendMovingEffect(
-                  from, new Entity(Serial.Zero, origin, facet),
-                  ItemID & 0x3FFF, 7, 0, false, false, Hue - 1
+              Movable = false;
+
+              Effects.SendMovingEffect(
+                from, new Entity(Serial.Zero, origin, facet),
+                ItemID & 0x3FFF, 7, 0, false, false, Hue - 1
+              );
+
+              Timer.DelayCall(TimeSpan.FromSeconds(0.5), delegate
+              {
+                Delete();
+
+                Effects.PlaySound(origin, facet, 530);
+                Effects.PlaySound(origin, facet, 263);
+
+                Effects.SendLocationEffect(
+                  origin, facet,
+                  14284, 96, 1, 0, 2
                 );
 
-                Timer.DelayCall(TimeSpan.FromSeconds(0.5), delegate
+                Timer.DelayCall(TimeSpan.FromSeconds(1.0), delegate
                 {
-                  Delete();
+                  List<Mobile> targets = facet.GetMobilesInRange(origin, 12).Where(mob =>
+                    from.CanBeHarmful(mob, false) && mob.InLOS(new Point3D(origin, origin.Z + 1)) &&
+                    Faction.Find(mob) != null).ToList();
 
-                  Effects.PlaySound(origin, facet, 530);
-                  Effects.PlaySound(origin, facet, 263);
-
-                  Effects.SendLocationEffect(
-                    origin, facet,
-                    14284, 96, 1, 0, 2
-                  );
-
-                  Timer.DelayCall(TimeSpan.FromSeconds(1.0), delegate
+                  foreach (Mobile mob in targets)
                   {
-                    List<Mobile> targets = new List<Mobile>();
+                    int damage = mob.Hits * 6 / 10;
 
-                    foreach (Mobile mob in facet.GetMobilesInRange(origin, 12))
-                      if (from.CanBeHarmful(mob, false) &&
-                          mob.InLOS(new Point3D(origin, origin.Z + 1)))
-                        if (Faction.Find(mob) != null)
-                          targets.Add(mob);
+                    if (!mob.Player && damage < 10)
+                      damage = 10;
+                    else if (damage > 75)
+                      damage = 75;
 
-                    foreach (Mobile mob in targets)
-                    {
-                      int damage = mob.Hits * 6 / 10;
+                    Effects.SendMovingEffect(
+                      new Entity(Serial.Zero, new Point3D(origin, origin.Z + 4), facet), mob,
+                      14068, 1, 32, false, false, 1111, 2
+                    );
 
-                      if (!mob.Player && damage < 10)
-                        damage = 10;
-                      else if (damage > 75) damage = 75;
+                    from.DoHarmful(mob);
 
-                      Effects.SendMovingEffect(
-                        new Entity(Serial.Zero, new Point3D(origin, origin.Z + 4), facet), mob,
-                        14068, 1, 32, false, false, 1111, 2
-                      );
+                    SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, from, damage / 3.0, 0, 0, 0, 0,
+                      100);
+                    SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, from, damage / 3.0, 0, 0, 0, 0,
+                      100);
+                    SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, from, damage / 3.0, 0, 0, 0, 0,
+                      100);
 
-                      from.DoHarmful(mob);
-
-                      SpellHelper.Damage(TimeSpan.FromSeconds(0.50), mob, from, damage / 3.0, 0, 0, 0, 0,
-                        100);
-                      SpellHelper.Damage(TimeSpan.FromSeconds(0.70), mob, from, damage / 3.0, 0, 0, 0, 0,
-                        100);
-                      SpellHelper.Damage(TimeSpan.FromSeconds(1.00), mob, from, damage / 3.0, 0, 0, 0, 0,
-                        100);
-
-                      Timer.DelayCall(TimeSpan.FromSeconds(0.50), delegate { mob.PlaySound(0x1FB); });
-                    }
-                  });
+                    Timer.DelayCall(TimeSpan.FromSeconds(0.50), delegate { mob.PlaySound(0x1FB); });
+                  }
                 });
-              }
+              });
             }
         });
 

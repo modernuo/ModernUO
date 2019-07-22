@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
-  public class MindBlastSpell : MagerySpell
+  public class MindBlastSpell : MagerySpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Mind Blast", "Por Corp Wis",
@@ -15,7 +15,7 @@ namespace Server.Spells.Fifth
       Reagent.SulfurousAsh
     );
 
-    public MindBlastSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MindBlastSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
       if (Core.AOS)
         m_Info.LeftHandEffect = m_Info.RightHandEffect = 9002;
@@ -27,7 +27,7 @@ namespace Server.Spells.Fifth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     private void AosDelay_Callback(Mobile caster, Mobile target, Mobile defender, int damage)
@@ -43,10 +43,11 @@ namespace Server.Spells.Fifth
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (!Caster.CanSee(m))
-      {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
-      }
       else if (Core.AOS)
       {
         if (Caster.CanBeHarmful(m) && CheckSequence())
@@ -121,27 +122,6 @@ namespace Server.Spells.Fifth
     public override double GetSlayerDamageScalar(Mobile target)
     {
       return 1.0; //This spell isn't affected by slayer spellbooks
-    }
-
-    private class InternalTarget : Target
-    {
-      private MindBlastSpell m_Owner;
-
-      public InternalTarget(MindBlastSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

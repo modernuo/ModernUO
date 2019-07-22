@@ -19,33 +19,31 @@ namespace Server.Engines.Quests.Necro
       if (m.AccessLevel > AccessLevel.Player)
         return true;
 
-      bool sendMessage = m.Player;
+      Mobile mob = m;
 
-      if (m is BaseCreature)
-        m = ((BaseCreature)m).ControlMaster;
+      if (m is BaseCreature creature)
+        mob = creature.ControlMaster;
 
-      if (m is PlayerMobile pm)
+      if (!(mob is PlayerMobile pm))
+        return false;
+
+      QuestSystem qs = pm.Quest;
+
+      if (qs is DarkTidesQuest)
       {
-        QuestSystem qs = pm.Quest;
+        QuestObjective obj = qs.FindObjective<SpeakCavePasswordObjective>();
 
-        if (qs is DarkTidesQuest)
+        if (obj?.Completed == true)
         {
-          QuestObjective obj = qs.FindObjective<SpeakCavePasswordObjective>();
+          m.SendLocalizedMessage(
+            1060648); // With Horus' permission, you are able to pass through the barrier.
 
-          if (obj != null && obj.Completed)
-          {
-            if (sendMessage)
-              m.SendLocalizedMessage(
-                1060648); // With Horus' permission, you are able to pass through the barrier.
-
-            return true;
-          }
+          return true;
         }
       }
 
-      if (sendMessage)
-        m.SendLocalizedMessage(1060649, "",
-          0x66D); // Without the permission of the guardian Horus, the magic of the barrier prevents your passage.
+      m.SendLocalizedMessage(1060649, "",
+        0x66D); // Without the permission of the guardian Horus, the magic of the barrier prevents your passage.
 
       return false;
     }

@@ -24,32 +24,16 @@ namespace Server.Items
     private uint m_KeyVal;
 
     [Constructible]
-    public Key() : this(KeyType.Iron, 0)
+    public Key(uint val = 0) : this(KeyType.Iron, val)
     {
     }
 
-    [Constructible]
-    public Key(KeyType type) : this(type, 0)
-    {
-    }
-
-    [Constructible]
-    public Key(uint val) : this(KeyType.Iron, val)
-    {
-    }
-
-    [Constructible]
-    public Key(KeyType type, uint LockVal) : this(type, LockVal, null)
-    {
-      m_KeyVal = LockVal;
-    }
-
-    public Key(KeyType type, uint LockVal, Item link) : base((int)type)
+    public Key(KeyType type, uint val = 0, Item link = null) : base((int)type)
     {
       Weight = 1.0;
 
       MaxRange = 3;
-      m_KeyVal = LockVal;
+      m_KeyVal = val;
       Link = link;
     }
 

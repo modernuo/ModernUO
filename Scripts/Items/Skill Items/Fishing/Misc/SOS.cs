@@ -52,12 +52,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public SOS() : this(Map.Trammel)
-    {
-    }
-
-    [Constructible]
-    public SOS(Map map) : this(map, MessageInABottle.GetRandomLevel())
+    public SOS(Map map = null) : this(map, MessageInABottle.GetRandomLevel())
     {
     }
 
@@ -68,7 +63,7 @@ namespace Server.Items
 
       m_Level = level;
       MessageIndex = Utility.Random(MessageEntry.Entries.Length);
-      TargetMap = map;
+      TargetMap = map ?? Map.Trammel;
       TargetLocation = FindLocation(TargetMap);
 
       UpdateHue();
@@ -276,10 +271,10 @@ namespace Server.Items
 																			* The message gives the ship's last known sextant co-ordinates.
 																			*/
 
-        AddHtml(35, 240, 230, 20, fmt, false, false);
+        AddHtml(35, 240, 230, 20, fmt);
 
-        AddButton(35, 265, 4005, 4007, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(70, 265, 100, 20, 1011036, false, false); // OKAY
+        AddButton(35, 265, 4005, 4007, 0);
+        AddHtmlLocalized(70, 265, 100, 20, 1011036); // OKAY
       }
     }
 #endif

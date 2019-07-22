@@ -4,12 +4,7 @@ namespace Server.Items
   public class DaemonBone : BaseReagent
   {
     [Constructible]
-    public DaemonBone() : this(1)
-    {
-    }
-
-    [Constructible]
-    public DaemonBone(int amount) : base(0xF80, amount)
+    public DaemonBone(int amount = 1) : base(0xF80, amount)
     {
     }
 

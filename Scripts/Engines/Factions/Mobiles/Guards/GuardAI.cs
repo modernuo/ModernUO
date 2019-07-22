@@ -27,11 +27,7 @@ namespace Server.Factions
 
   public class ComboEntry
   {
-    public ComboEntry(Type spell) : this(spell, 100, TimeSpan.Zero)
-    {
-    }
-
-    public ComboEntry(Type spell, int chance) : this(spell, chance, TimeSpan.Zero)
+    public ComboEntry(Type spell, int chance = 100) : this(spell, chance, TimeSpan.Zero)
     {
     }
 
@@ -170,7 +166,7 @@ namespace Server.Factions
     public bool EquipWeapon()
     {
       Item weapon = m_Guard.Backpack?.FindItemByType<BaseWeapon>();
-      
+
       return weapon != null && m_Guard.EquipItem(weapon);
     }
 
@@ -225,18 +221,18 @@ namespace Server.Factions
       switch (Utility.Random(maxCircle * 2))
       {
         case 0:
-        case 1: return new MagicArrowSpell(m_Guard, null);
+        case 1: return new MagicArrowSpell(m_Guard);
         case 2:
-        case 3: return new HarmSpell(m_Guard, null);
+        case 3: return new HarmSpell(m_Guard);
         case 4:
-        case 5: return new FireballSpell(m_Guard, null);
+        case 5: return new FireballSpell(m_Guard);
         case 6:
-        case 7: return new LightningSpell(m_Guard, null);
-        case 8: return new MindBlastSpell(m_Guard, null);
-        case 9: return new ParalyzeSpell(m_Guard, null);
-        case 10: return new EnergyBoltSpell(m_Guard, null);
-        case 11: return new ExplosionSpell(m_Guard, null);
-        default: return new FlameStrikeSpell(m_Guard, null);
+        case 7: return new LightningSpell(m_Guard);
+        case 8: return new MindBlastSpell(m_Guard);
+        case 9: return new ParalyzeSpell(m_Guard);
+        case 10: return new EnergyBoltSpell(m_Guard);
+        case 11: return new ExplosionSpell(m_Guard);
+        default: return new FlameStrikeSpell(m_Guard);
       }
     }
 
@@ -255,7 +251,7 @@ namespace Server.Factions
 
         Mobile comb = m_Mobile.Combatant;
 
-        if (comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && m_Mobile.InRange(comb, 12) &&
+        if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet && m_Mobile.InRange(comb, 12) &&
             CanDispel(comb))
         {
           active = comb;
@@ -317,7 +313,7 @@ namespace Server.Factions
 
         Mobile comb = m_Mobile.Combatant;
 
-        if (comb != null && !comb.Deleted && comb.Alive && !comb.IsDeadBondedPet && CanDispel(comb))
+        if (comb?.Deleted == false && comb.Alive && !comb.IsDeadBondedPet && CanDispel(comb))
         {
           active = inactive = comb;
           actPrio = inactPrio = m_Mobile.GetDistanceToSqrt(comb);
@@ -427,7 +423,7 @@ namespace Server.Factions
 
       Mobile combatant = m_Guard.Combatant;
 
-      if (combatant == null || combatant.Deleted || !combatant.Alive || combatant.IsDeadBondedPet ||
+      if (combatant?.Deleted != false || !combatant.Alive || combatant.IsDeadBondedPet ||
           !m_Mobile.CanSee(combatant) || !m_Mobile.CanBeHarmful(combatant, false) || combatant.Map != m_Mobile.Map)
       {
         // Our combatant is deleted, dead, hidden, or we cannot hurt them
@@ -473,7 +469,7 @@ namespace Server.Factions
           if (m_Guard.Map == toHarm.Map && (targ.Range < 0 || m_Guard.InRange(toHarm, targ.Range)) &&
               m_Guard.CanSee(toHarm) && m_Guard.InLOS(toHarm))
             targ.Invoke(m_Guard, toHarm);
-          else if (targ is DispelSpell.InternalTarget)
+          else if ((targ as ISpellTarget)?.Spell is DispelSpell)
             targ.Cancel(m_Guard, TargetCancelType.Canceled);
         }
         else if ((targ.Flags & TargetFlags.Beneficial) != 0)
@@ -512,10 +508,7 @@ namespace Server.Factions
 
         if (m_Guard.Town != null && m_Guard.Orders.Movement == MovementType.Follow)
         {
-          toFollow = m_Guard.Orders.Follow;
-
-          if (toFollow == null)
-            toFollow = m_Guard.Town.Sheriff;
+          toFollow = m_Guard.Orders.Follow ?? m_Guard.Town.Sheriff;
         }
 
         if (toFollow != null && toFollow.Map == m_Guard.Map &&
@@ -577,7 +570,7 @@ namespace Server.Factions
               m_Guard.HitsMax - m_Guard.Hits > Utility.Random(250))
           {
             if (IsAllowed(GuardAI.Bless))
-              spell = new CureSpell(m_Guard, null);
+              spell = new CureSpell(m_Guard);
             else
               UseItemByType(typeof(BaseCurePotion));
           }
@@ -588,16 +581,16 @@ namespace Server.Factions
               m_Guard.Home != Point3D.Zero && !Utility.InRange(m_Guard.Location, m_Guard.Home, 15) &&
               m_Guard.Mana >= 11)
           {
-            spell = new RecallSpell(m_Guard, null,
-              new RunebookEntry(m_Guard.Home, m_Guard.Map, "Guard's Home", null));
+            spell = new RecallSpell(m_Guard,
+              new RunebookEntry(m_Guard.Home, m_Guard.Map, "Guard's Home"));
           }
           else if (IsAllowed(GuardAI.Bless))
           {
             if (m_Guard.Mana >= 11 && m_Guard.Hits + 30 < m_Guard.HitsMax)
-              spell = new GreaterHealSpell(m_Guard, null);
+              spell = new GreaterHealSpell(m_Guard);
             else if (m_Guard.Hits + 10 < m_Guard.HitsMax &&
                      (m_Guard.Mana < 11 || m_Guard.NextCombatTime - Core.TickCount > 2000))
-              spell = new HealSpell(m_Guard, null);
+              spell = new HealSpell(m_Guard);
           }
           else if (m_Guard.CanBeginAction<BaseHealPotion>())
           {
@@ -608,9 +601,9 @@ namespace Server.Factions
                  (IsAllowed(GuardAI.Magic) || IsAllowed(GuardAI.Bless) || IsAllowed(GuardAI.Curse)))
         {
           if (!dispelTarget.Paralyzed && m_Guard.Mana > ManaReserve + 20 && 40 > Utility.Random(100))
-            spell = new ParalyzeSpell(m_Guard, null);
+            spell = new ParalyzeSpell(m_Guard);
           else
-            spell = new DispelSpell(m_Guard, null);
+            spell = new DispelSpell(m_Guard);
         }
 
         if (combatant != null)
@@ -672,7 +665,7 @@ namespace Server.Factions
             if (IsAllowed(GuardAI.Bless))
             {
               if (types.Count > 1)
-                spell = new BlessSpell(m_Guard, null);
+                spell = new BlessSpell(m_Guard);
               else if (types.Count == 1)
                 spell = Activator.CreateInstance(types[0], m_Guard, null) as Spell;
             }
@@ -690,7 +683,7 @@ namespace Server.Factions
           {
             if (!combatant.Poisoned && 40 > Utility.Random(100))
             {
-              spell = new PoisonSpell(m_Guard, null);
+              spell = new PoisonSpell(m_Guard);
             }
             else
             {
@@ -710,7 +703,7 @@ namespace Server.Factions
                 types.Add(typeof(FeeblemindSpell));
 
               if (types.Count > 1)
-                spell = new CurseSpell(m_Guard, null);
+                spell = new CurseSpell(m_Guard);
               else if (types.Count == 1)
                 spell = (Spell)Activator.CreateInstance(types[0], m_Guard, null);
             }
@@ -738,7 +731,7 @@ namespace Server.Factions
             if (spell is GreaterHealSpell)
             {
               if (m_Guard.Hits + 30 > m_Guard.HitsMax && m_Guard.Hits + 10 < m_Guard.HitsMax)
-                spell = new HealSpell(m_Guard, null);
+                spell = new HealSpell(m_Guard);
             }
             else
             {
@@ -751,7 +744,7 @@ namespace Server.Factions
           UseItemByType(typeof(BaseRefreshPotion));
         }
 
-        if (spell == null || !spell.Cast())
+        if (spell?.Cast() != true)
           EquipWeapon();
       }
       else if (spell?.State == SpellState.Sequencing)

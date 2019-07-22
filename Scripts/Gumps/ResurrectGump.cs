@@ -10,7 +10,7 @@ namespace Server.Gumps
 		ChaosShrine = 0,
 		VirtueShrine = 1,
 		Healer = 2,
-		Generic = 3,
+		Generic = 3
 	}
 
 	public class ResurrectGump : Gump
@@ -20,42 +20,22 @@ namespace Server.Gumps
 		private bool m_FromSacrifice;
 		private double m_HitsScalar;
 
-		public ResurrectGump( Mobile owner )
-			: this( owner, owner, ResurrectMessage.Generic, false )
+		public ResurrectGump(Mobile owner, double hitsScalar)
+			: this(owner, owner, ResurrectMessage.Generic, false, hitsScalar)
 		{
 		}
 
-		public ResurrectGump( Mobile owner, double hitsScalar )
-			: this( owner, owner, ResurrectMessage.Generic, false, hitsScalar )
+		public ResurrectGump(Mobile owner, ResurrectMessage msg) : this(owner, owner, msg)
 		{
 		}
 
-		public ResurrectGump( Mobile owner, bool fromSacrifice )
-			: this( owner, owner, ResurrectMessage.Generic, fromSacrifice )
+		public ResurrectGump(Mobile owner, bool fromSacrifice = false)
+			: this(owner, owner, ResurrectMessage.Generic, fromSacrifice)
 		{
 		}
 
-		public ResurrectGump( Mobile owner, Mobile healer )
-			: this( owner, healer, ResurrectMessage.Generic, false )
-		{
-		}
-
-		public ResurrectGump( Mobile owner, ResurrectMessage msg )
-			: this( owner, owner, msg, false )
-		{
-		}
-
-		public ResurrectGump( Mobile owner, Mobile healer, ResurrectMessage msg )
-			: this( owner, healer, msg, false )
-		{
-		}
-
-		public ResurrectGump( Mobile owner, Mobile healer, ResurrectMessage msg, bool fromSacrifice )
-			: this( owner, healer, msg, fromSacrifice, 0.0 )
-		{
-		}
-
-		public ResurrectGump( Mobile owner, Mobile healer, ResurrectMessage msg, bool fromSacrifice, double hitsScalar )
+		public ResurrectGump(Mobile owner, Mobile healer, ResurrectMessage msg = ResurrectMessage.Generic,
+			bool fromSacrifice = false, double hitsScalar = 0.0)
 			: base( 100, 0 )
 		{
 			m_Healer = healer;
@@ -66,18 +46,18 @@ namespace Server.Gumps
 
 			AddBackground( 0, 0, 400, 350, 2600 );
 
-			AddHtmlLocalized( 0, 20, 400, 35, 1011022, false, false ); // <center>Resurrection</center>
+			AddHtmlLocalized( 0, 20, 400, 35, 1011022 ); // <center>Resurrection</center>
 
 			AddHtmlLocalized( 50, 55, 300, 140, 1011023 + (int)msg, true, true ); /* It is possible for you to be resurrected here by this healer. Do you wish to try?<br>
 																				   * CONTINUE - You chose to try to come back to life now.<br>
 																				   * CANCEL - You prefer to remain a ghost for now.
 																				   */
 
-			AddButton( 200, 227, 4005, 4007, 0, GumpButtonType.Reply, 0 );
-			AddHtmlLocalized( 235, 230, 110, 35, 1011012, false, false ); // CANCEL
+			AddButton( 200, 227, 4005, 4007, 0);
+			AddHtmlLocalized( 235, 230, 110, 35, 1011012 ); // CANCEL
 
-			AddButton( 65, 227, 4005, 4007, 1, GumpButtonType.Reply, 0 );
-			AddHtmlLocalized( 100, 230, 110, 35, 1011011, false, false ); // CONTINUE
+			AddButton( 65, 227, 4005, 4007, 1);
+			AddHtmlLocalized( 100, 230, 110, 35, 1011011 ); // CONTINUE
 		}
 
 		public ResurrectGump( Mobile owner, Mobile healer, int price )
@@ -107,14 +87,14 @@ namespace Server.Gumps
 			AddImageTiled( 15, 15, 365, 190, 2624 );
 
 			AddRadio( 30, 140, 9727, 9730, true, 1 );
-			AddHtmlLocalized( 65, 145, 300, 25, 1060015, 0x7FFF, false, false ); // Grudgingly pay the money
+			AddHtmlLocalized( 65, 145, 300, 25, 1060015, 0x7FFF ); // Grudgingly pay the money
 
 			AddRadio( 30, 175, 9727, 9730, false, 0 );
-			AddHtmlLocalized( 65, 178, 300, 25, 1060016, 0x7FFF, false, false ); // I'd rather stay dead, you scoundrel!!!
+			AddHtmlLocalized( 65, 178, 300, 25, 1060016, 0x7FFF ); // I'd rather stay dead, you scoundrel!!!
 
-			AddHtmlLocalized( 30, 20, 360, 35, 1060017, 0x7FFF, false, false ); // Wishing to rejoin the living, are you?  I can restore your body... for a price of course...
+			AddHtmlLocalized( 30, 20, 360, 35, 1060017, 0x7FFF ); // Wishing to rejoin the living, are you?  I can restore your body... for a price of course...
 
-			AddHtmlLocalized( 30, 105, 345, 40, 1060018, 0x5B2D, false, false ); // Do you accept the fee, which will be withdrawn from your bank?
+			AddHtmlLocalized( 30, 105, 345, 40, 1060018, 0x5B2D ); // Do you accept the fee, which will be withdrawn from your bank?
 
 			AddImage( 65, 72, 5605 );
 
@@ -122,9 +102,9 @@ namespace Server.Gumps
 			AddImageTiled( 95, 92, 200, 1, 9157 );
 
 			AddLabel( 90, 70, 1645, price.ToString() );
-			AddHtmlLocalized( 140, 70, 100, 25, 1023823, 0x7FFF, false, false ); // gold coins
+			AddHtmlLocalized( 140, 70, 100, 25, 1023823, 0x7FFF ); // gold coins
 
-			AddButton( 290, 175, 247, 248, 2, GumpButtonType.Reply, 0 );
+			AddButton( 290, 175, 247, 248, 2 );
 
 			AddImageTiled( 15, 14, 365, 1, 9107 );
 			AddImageTiled( 380, 14, 1, 190, 9105 );
@@ -142,107 +122,107 @@ namespace Server.Gumps
 
 			from.CloseGump<ResurrectGump>();
 
-			if ( info.ButtonID == 1 || info.ButtonID == 2 )
-			{
-				if ( from.Map == null || !from.Map.CanFit( from.Location, 16, false, false ) )
-				{
-					from.SendLocalizedMessage( 502391 ); // Thou can not be resurrected there!
-					return;
-				}
+      if (info.ButtonID != 1 && info.ButtonID != 2)
+        return;
 
-				if ( m_Price > 0 )
-				{
-					if ( info.IsSwitched( 1 ) )
-					{
-						if ( Banker.Withdraw( from, m_Price ) )
-						{
-							from.SendLocalizedMessage( 1060398, m_Price.ToString() ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-							from.SendLocalizedMessage( 1060022, Banker.GetBalance( from ).ToString() ); // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
-						}
-						else
-						{
-							from.SendLocalizedMessage( 1060020 ); // Unfortunately, you do not have enough cash in your bank to cover the cost of the healing.
-							return;
-						}
-					}
-					else
-					{
-						from.SendLocalizedMessage( 1060019 ); // You decide against paying the healer, and thus remain dead.
-						return;
-					}
-				}
+      if (from.Map?.CanFit( from.Location, 16, false, false ) != true)
+      {
+        from.SendLocalizedMessage( 502391 ); // Thou can not be resurrected there!
+        return;
+      }
 
-				from.PlaySound( 0x214 );
-				from.FixedEffect( 0x376A, 10, 16 );
+      if ( m_Price > 0 )
+      {
+        if ( info.IsSwitched( 1 ) )
+        {
+          if ( Banker.Withdraw( from, m_Price ) )
+          {
+            from.SendLocalizedMessage( 1060398, m_Price.ToString() ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+            from.SendLocalizedMessage( 1060022, Banker.GetBalance( from ).ToString() ); // You have ~1_AMOUNT~ gold in cash remaining in your bank box.
+          }
+          else
+          {
+            from.SendLocalizedMessage( 1060020 ); // Unfortunately, you do not have enough cash in your bank to cover the cost of the healing.
+            return;
+          }
+        }
+        else
+        {
+          from.SendLocalizedMessage( 1060019 ); // You decide against paying the healer, and thus remain dead.
+          return;
+        }
+      }
 
-				from.Resurrect();
+      from.PlaySound( 0x214 );
+      from.FixedEffect( 0x376A, 10, 16 );
 
-				if ( m_Healer != null && from != m_Healer )
-				{
-					VirtueLevel level = VirtueHelper.GetLevel( m_Healer, VirtueName.Compassion );
+      from.Resurrect();
 
-					switch( level )
-					{
-						case VirtueLevel.Seeker: from.Hits = AOS.Scale( from.HitsMax, 20 ); break;
-						case VirtueLevel.Follower: from.Hits = AOS.Scale( from.HitsMax, 40 ); break;
-						case VirtueLevel.Knight: from.Hits = AOS.Scale( from.HitsMax, 80 ); break;
-					}
-				}
+      if ( m_Healer != null && from != m_Healer )
+      {
+        VirtueLevel level = VirtueHelper.GetLevel( m_Healer, VirtueName.Compassion );
 
-				if ( m_FromSacrifice && from is PlayerMobile mobile )
-				{
-					mobile.AvailableResurrects -= 1;
+        switch( level )
+        {
+          case VirtueLevel.Seeker: from.Hits = AOS.Scale( from.HitsMax, 20 ); break;
+          case VirtueLevel.Follower: from.Hits = AOS.Scale( from.HitsMax, 40 ); break;
+          case VirtueLevel.Knight: from.Hits = AOS.Scale( from.HitsMax, 80 ); break;
+        }
+      }
 
-					Container pack = mobile.Backpack;
-					Container corpse = mobile.Corpse;
+      if ( m_FromSacrifice && from is PlayerMobile mobile )
+      {
+        mobile.AvailableResurrects -= 1;
 
-					if ( pack != null && corpse != null )
-					{
-						List<Item> items = new List<Item>( corpse.Items );
+        Container pack = mobile.Backpack;
+        Container corpse = mobile.Corpse;
 
-						for( int i = 0; i < items.Count; ++i )
-						{
-							Item item = items[i];
+        if ( pack != null && corpse != null )
+        {
+          List<Item> items = new List<Item>( corpse.Items );
 
-							if ( item.Layer != Layer.Hair && item.Layer != Layer.FacialHair && item.Movable )
-								pack.DropItem( item );
-						}
-					}
-				}
+          for( int i = 0; i < items.Count; ++i )
+          {
+            Item item = items[i];
 
-				if ( from.Fame > 0 )
-				{
-					int amount = from.Fame / 10;
+            if ( item.Layer != Layer.Hair && item.Layer != Layer.FacialHair && item.Movable )
+              pack.DropItem( item );
+          }
+        }
+      }
 
-					Misc.Titles.AwardFame( from, -amount, true );
-				}
+      if ( from.Fame > 0 )
+      {
+        int amount = from.Fame / 10;
 
-				if ( !Core.AOS && from.ShortTermMurders >= 5 )
-				{
-					double loss = (100.0 - (4.0 + (from.ShortTermMurders / 5.0))) / 100.0; // 5 to 15% loss
+        Misc.Titles.AwardFame( from, -amount, true );
+      }
 
-					if ( loss < 0.85 )
-						loss = 0.85;
-					else if ( loss > 0.95 )
-						loss = 0.95;
+      if ( !Core.AOS && from.ShortTermMurders >= 5 )
+      {
+        double loss = (100.0 - (4.0 + (from.ShortTermMurders / 5.0))) / 100.0; // 5 to 15% loss
 
-					if ( from.RawStr * loss > 10 )
-						from.RawStr = (int)(from.RawStr * loss);
-					if ( from.RawInt * loss > 10 )
-						from.RawInt = (int)(from.RawInt * loss);
-					if ( from.RawDex * loss > 10 )
-						from.RawDex = (int)(from.RawDex * loss);
+        if ( loss < 0.85 )
+          loss = 0.85;
+        else if ( loss > 0.95 )
+          loss = 0.95;
 
-					for( int s = 0; s < from.Skills.Length; s++ )
-					{
-						if ( from.Skills[s].Base * loss > 35 )
-							from.Skills[s].Base *= loss;
-					}
-				}
+        if ( from.RawStr * loss > 10 )
+          from.RawStr = (int)(from.RawStr * loss);
+        if ( from.RawInt * loss > 10 )
+          from.RawInt = (int)(from.RawInt * loss);
+        if ( from.RawDex * loss > 10 )
+          from.RawDex = (int)(from.RawDex * loss);
 
-				if ( from.Alive && m_HitsScalar > 0 )
-					from.Hits = (int)(from.HitsMax * m_HitsScalar);
-			}
-		}
+        for( int s = 0; s < from.Skills.Length; s++ )
+        {
+          if ( from.Skills[s].Base * loss > 35 )
+            from.Skills[s].Base *= loss;
+        }
+      }
+
+      if ( from.Alive && m_HitsScalar > 0 )
+        from.Hits = (int)(from.HitsMax * m_HitsScalar);
+    }
 	}
 }

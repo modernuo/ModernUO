@@ -40,17 +40,7 @@ namespace Server.Engines.MLQuests.Rewards
 
     private Type m_Type;
 
-    public ItemReward()
-      : this(null, null)
-    {
-    }
-
-    public ItemReward(TextDefinition name, Type type)
-      : this(name, type, 1)
-    {
-    }
-
-    public ItemReward(TextDefinition name, Type type, int amount)
+    public ItemReward(TextDefinition name = null, Type type = null, int amount = 1)
       : base(name)
     {
       m_Type = type;

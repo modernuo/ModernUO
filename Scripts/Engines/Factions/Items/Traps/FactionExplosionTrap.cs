@@ -4,16 +4,7 @@ namespace Server.Factions
 {
   public class FactionExplosionTrap : BaseFactionTrap
   {
-    [Constructible]
-    public FactionExplosionTrap() : this(null)
-    {
-    }
-
-    public FactionExplosionTrap(Faction f) : this(f, null)
-    {
-    }
-
-    public FactionExplosionTrap(Faction f, Mobile m) : base(f, m, 0x11C1)
+    public FactionExplosionTrap(Faction f = null, Mobile m = null) : base(f, m, 0x11C1)
     {
     }
 

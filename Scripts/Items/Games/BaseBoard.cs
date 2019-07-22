@@ -105,26 +105,12 @@ namespace Server.Items
 
     public static bool ValidateDefault(Mobile from, BaseBoard board)
     {
-      if (from.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      if (!from.Alive)
-        return false;
-
-      if (board.IsChildOf(from.Backpack))
-        return true;
-
-      object root = board.RootParent;
-
-      if (root is Mobile && root != from)
-        return false;
-
-      if (board.Deleted || board.Map != from.Map || !from.InRange(board.GetWorldLocation(), 1))
-        return false;
-
-      BaseHouse house = BaseHouse.FindHouseAt(board);
-
-      return house != null && house.IsOwner(from);
+      // Fixed this because it implies you can use it from your bank, if you can access your bank
+      // while in your house. (!(board.RootParent is Mobile) || board.RootParent == from)
+      return !board.Deleted && (from.AccessLevel >= AccessLevel.GameMaster || from.Alive &&
+             (board.IsChildOf(from.Backpack) || !(board.RootParent is Mobile) &&
+              board.Map == from.Map && from.InRange(board.GetWorldLocation(), 1) &&
+              BaseHouse.FindHouseAt(board)?.IsOwner(from) == true));
     }
 
     public class DefaultEntry : ContextMenuEntry

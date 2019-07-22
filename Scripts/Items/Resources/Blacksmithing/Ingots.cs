@@ -4,11 +4,7 @@ namespace Server.Items
   {
     private CraftResource m_Resource;
 
-    public BaseIngot(CraftResource resource) : this(resource, 1)
-    {
-    }
-
-    public BaseIngot(CraftResource resource, int amount) : base(0x1BF2)
+    public BaseIngot(CraftResource resource, int amount = 1) : base(0x1BF2)
     {
       Stackable = true;
       Amount = amount;
@@ -142,12 +138,7 @@ namespace Server.Items
   public class IronIngot : BaseIngot
   {
     [Constructible]
-    public IronIngot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public IronIngot(int amount) : base(CraftResource.Iron, amount)
+    public IronIngot(int amount = 1) : base(CraftResource.Iron, amount)
     {
     }
 
@@ -174,12 +165,7 @@ namespace Server.Items
   public class DullCopperIngot : BaseIngot
   {
     [Constructible]
-    public DullCopperIngot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public DullCopperIngot(int amount) : base(CraftResource.DullCopper, amount)
+    public DullCopperIngot(int amount = 1) : base(CraftResource.DullCopper, amount)
     {
     }
 
@@ -206,12 +192,7 @@ namespace Server.Items
   public class ShadowIronIngot : BaseIngot
   {
     [Constructible]
-    public ShadowIronIngot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ShadowIronIngot(int amount) : base(CraftResource.ShadowIron, amount)
+    public ShadowIronIngot(int amount = 1) : base(CraftResource.ShadowIron, amount)
     {
     }
 
@@ -238,12 +219,7 @@ namespace Server.Items
   public class CopperIngot : BaseIngot
   {
     [Constructible]
-    public CopperIngot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public CopperIngot(int amount) : base(CraftResource.Copper, amount)
+    public CopperIngot(int amount = 1) : base(CraftResource.Copper, amount)
     {
     }
 
@@ -270,12 +246,7 @@ namespace Server.Items
   public class BronzeIngot : BaseIngot
   {
     [Constructible]
-    public BronzeIngot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BronzeIngot(int amount) : base(CraftResource.Bronze, amount)
+    public BronzeIngot(int amount = 1) : base(CraftResource.Bronze, amount)
     {
     }
 
@@ -302,12 +273,7 @@ namespace Server.Items
   public class GoldIngot : BaseIngot
   {
     [Constructible]
-    public GoldIngot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GoldIngot(int amount) : base(CraftResource.Gold, amount)
+    public GoldIngot(int amount = 1) : base(CraftResource.Gold, amount)
     {
     }
 
@@ -334,12 +300,7 @@ namespace Server.Items
   public class AgapiteIngot : BaseIngot
   {
     [Constructible]
-    public AgapiteIngot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public AgapiteIngot(int amount) : base(CraftResource.Agapite, amount)
+    public AgapiteIngot(int amount = 1) : base(CraftResource.Agapite, amount)
     {
     }
 
@@ -366,12 +327,7 @@ namespace Server.Items
   public class VeriteIngot : BaseIngot
   {
     [Constructible]
-    public VeriteIngot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public VeriteIngot(int amount) : base(CraftResource.Verite, amount)
+    public VeriteIngot(int amount = 1) : base(CraftResource.Verite, amount)
     {
     }
 
@@ -398,12 +354,7 @@ namespace Server.Items
   public class ValoriteIngot : BaseIngot
   {
     [Constructible]
-    public ValoriteIngot() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ValoriteIngot(int amount) : base(CraftResource.Valorite, amount)
+    public ValoriteIngot(int amount = 1) : base(CraftResource.Valorite, amount)
     {
     }
 

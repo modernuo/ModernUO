@@ -43,7 +43,8 @@ namespace Server.Gumps
     private int m_Width, m_Height;
     private int m_X, m_Y;
 
-    public GumpHtmlLocalized(int x, int y, int width, int height, int number, bool background, bool scrollbar)
+    public GumpHtmlLocalized(int x, int y, int width, int height, int number,
+      bool background = false, bool scrollbar = false)
     {
       m_X = x;
       m_Y = y;
@@ -56,7 +57,8 @@ namespace Server.Gumps
       m_Type = GumpHtmlLocalizedType.Plain;
     }
 
-    public GumpHtmlLocalized(int x, int y, int width, int height, int number, int color, bool background, bool scrollbar)
+    public GumpHtmlLocalized(int x, int y, int width, int height, int number, int color,
+      bool background = false, bool scrollbar = false)
     {
       m_X = x;
       m_Y = y;
@@ -70,8 +72,8 @@ namespace Server.Gumps
       m_Type = GumpHtmlLocalizedType.Color;
     }
 
-    public GumpHtmlLocalized(int x, int y, int width, int height, int number, string args, int color, bool background,
-      bool scrollbar)
+    public GumpHtmlLocalized(int x, int y, int width, int height, int number, string args, int color,
+      bool background = false, bool scrollbar = false)
     {
       // Are multiple arguments unsupported? And what about non ASCII arguments?
 

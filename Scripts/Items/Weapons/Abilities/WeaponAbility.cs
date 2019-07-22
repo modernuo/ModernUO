@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Engines.ConPVP;
 using Server.Mobiles;
@@ -184,7 +183,7 @@ namespace Server.Items
         return false;
       }
 
-      if (skill != null && skill.Base >= reqSkill)
+      if (skill?.Base >= reqSkill)
         return true;
 
       /* <UBWS> */
@@ -209,15 +208,7 @@ namespace Server.Items
       return CheckWeaponSkill(from);
     }
 
-    public virtual double GetSkill(Mobile from, SkillName skillName)
-    {
-      Skill skill = from.Skills[skillName];
-
-      if (skill == null)
-        return 0.0;
-
-      return skill.Value;
-    }
+    public virtual double GetSkill(Mobile from, SkillName skillName) => from.Skills[skillName]?.Value ?? 0.0;
 
     public virtual bool CheckMana(Mobile from, bool consume)
     {
@@ -381,7 +372,7 @@ namespace Server.Items
         return false;
       }
 
-      if (a != null && !a.Validate(m))
+      if (a?.Validate(m) == false)
       {
         ClearCurrentAbility(m);
         return false;
@@ -394,7 +385,6 @@ namespace Server.Items
       else
       {
         SpecialMove.ClearCurrentMove(m);
-
         Table[m] = a;
       }
 

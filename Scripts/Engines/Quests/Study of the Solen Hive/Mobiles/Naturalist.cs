@@ -116,7 +116,7 @@ namespace Server.Engines.Quests.Naturalist
 
           if (study.StudiedSpecialNest)
           {
-            reward = new Seed(type, PlantHue.FireRed, false);
+            reward = new Seed(type, PlantHue.FireRed);
           }
           else
           {
@@ -134,7 +134,7 @@ namespace Server.Engines.Quests.Naturalist
                 break;
             }
 
-            reward = new Seed(type, hue, false);
+            reward = new Seed(type, hue);
           }
 
           if (player.PlaceInBackpack(reward))

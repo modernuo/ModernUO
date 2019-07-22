@@ -15,16 +15,7 @@ namespace Server.Engines.Craft
 
     public override int GumpTitleNumber => 1044003;
 
-    public static CraftSystem CraftSystem
-    {
-      get
-      {
-        if (m_CraftSystem == null)
-          m_CraftSystem = new DefCooking();
-
-        return m_CraftSystem;
-      }
-    }
+    public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefCooking());
 
     public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFourtyFive;
 
@@ -35,7 +26,7 @@ namespace Server.Engines.Craft
 
     public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
     {
-      if (tool == null || tool.Deleted || tool.UsesRemaining < 0)
+      if (tool?.Deleted != false || tool.UsesRemaining < 0)
         return 1044038; // You have worn out your tool!
       if (!BaseTool.CheckAccessible(tool, from))
         return 1044263; // The tool must be on your person to use.

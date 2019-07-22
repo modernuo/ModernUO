@@ -4,12 +4,7 @@ namespace Server.Items
   public class AxleGears : Item
   {
     [Constructible]
-    public AxleGears() : this(1)
-    {
-    }
-
-    [Constructible]
-    public AxleGears(int amount) : base(0x1051)
+    public AxleGears(int amount = 1) : base(0x1051)
     {
       Stackable = true;
       Amount = amount;

@@ -95,7 +95,7 @@ namespace Server.Items
         {
           Mobile them = theirTicket.Owner;
 
-          if (them == null || them.Deleted)
+          if (them?.Deleted != false)
           {
             from.SendLocalizedMessage(501930); // That is not a valid ticket.
           }
@@ -131,26 +131,26 @@ namespace Server.Items
         AddHtmlLocalized(30, 45, 340, 70, 1013011, true,
           true); // Choose the gift you prefer. WARNING: if you cancel, and your partner does not, you will need to find another matching ticket!
 
-        AddButton(46, 128, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(80, 130, 320, 35, 1013012, false, false); // A sextant
+        AddButton(46, 128, 0xFA5, 0xFA7, 1);
+        AddHtmlLocalized(80, 130, 320, 35, 1013012); // A sextant
 
-        AddButton(46, 163, 0xFA5, 0xFA7, 2, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(80, 165, 320, 35, 1013013, false, false); // A coupon for a single hair restyling
+        AddButton(46, 163, 0xFA5, 0xFA7, 2);
+        AddHtmlLocalized(80, 165, 320, 35, 1013013); // A coupon for a single hair restyling
 
-        AddButton(46, 198, 0xFA5, 0xFA7, 3, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(80, 200, 320, 35, 1013014, false, false); // A spellbook with all 1st - 4th spells.
+        AddButton(46, 198, 0xFA5, 0xFA7, 3);
+        AddHtmlLocalized(80, 200, 320, 35, 1013014); // A spellbook with all 1st - 4th spells.
 
-        AddButton(46, 233, 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(80, 235, 320, 35, 1013015, false, false); // A wand of fireworks
+        AddButton(46, 233, 0xFA5, 0xFA7, 4);
+        AddHtmlLocalized(80, 235, 320, 35, 1013015); // A wand of fireworks
 
-        AddButton(46, 268, 0xFA5, 0xFA7, 5, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(80, 270, 320, 35, 1013016, false, false); // A spyglass
+        AddButton(46, 268, 0xFA5, 0xFA7, 5);
+        AddHtmlLocalized(80, 270, 320, 35, 1013016); // A spyglass
 
-        AddButton(46, 303, 0xFA5, 0xFA7, 6, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(80, 305, 320, 35, 1013017, false, false); // Dyes and a dye tub
+        AddButton(46, 303, 0xFA5, 0xFA7, 6);
+        AddHtmlLocalized(80, 305, 320, 35, 1013017); // Dyes and a dye tub
 
-        AddButton(120, 340, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(154, 342, 100, 35, 1011012, false, false); // CANCEL
+        AddButton(120, 340, 0xFA5, 0xFA7, 0);
+        AddHtmlLocalized(154, 342, 100, 35, 1011012); // CANCEL
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

@@ -9,12 +9,7 @@ namespace Server.Items
     private SkillMod m_SkillMod;
 
     [Constructible]
-    public AncientSmithyHammer(int bonus) : this(bonus, 600)
-    {
-    }
-
-    [Constructible]
-    public AncientSmithyHammer(int bonus, int uses) : base(uses, 0x13E4)
+    public AncientSmithyHammer(int bonus, int uses = 600) : base(uses, 0x13E4)
     {
       m_Bonus = bonus;
       Weight = 8.0;

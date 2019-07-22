@@ -4,12 +4,8 @@ namespace Server.Engines.MLQuests
 {
   public class QuestArea
   {
-    public QuestArea(TextDefinition name, string region)
-      : this(name, region, null)
-    {
-    }
 
-    public QuestArea(TextDefinition name, string region, Map forceMap)
+    public QuestArea(TextDefinition name, string region, Map forceMap = null)
     {
       Name = name;
       RegionName = region;

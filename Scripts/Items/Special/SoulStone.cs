@@ -21,22 +21,8 @@ namespace Server.Items
     private double m_SkillValue;
 
     [Constructible]
-    public SoulStone() : this(null)
-    {
-    }
-
-    [Constructible]
-    public SoulStone(string account)
-      : this(account, 0x2A93, 0x2A94)
-    {
-    }
-
-    public SoulStone(string account, int itemID)
-      : this(account, itemID, itemID)
-    {
-    }
-
-    public SoulStone(string account, int inactiveItemID, int activeItemID) : base(inactiveItemID)
+    public SoulStone(string account = null, int inactiveItemID = 0x2A93, int activeItemID = 0x2A94) :
+      base(inactiveItemID)
     {
       Light = LightType.Circle300;
       LootType = LootType.Blessed;
@@ -135,12 +121,7 @@ namespace Server.Items
         list.Add(1070721, "#{0}\t{1:0.0}", AosSkillBonuses.GetLabel(Skill),
           SkillValue); // Skill stored: ~1_skillname~ ~2_skillamount~
 
-      string name = LastUserName;
-
-      if (name == null)
-        name = $"#{1074235}"; // Unknown
-
-      list.Add(1041602, "{0}", name); // Owner: ~1_val~
+      list.Add(1041602, "{0}", LastUserName ?? $"#{1074235}"); // Owner: ~1_val~
     }
 
     private static bool CheckCombat(Mobile m, TimeSpan time)
@@ -343,11 +324,10 @@ namespace Server.Items
 
         AddAlphaRegion(10, 10, 500, 420);
 
-        AddHtmlLocalized(10, 12, 500, 20, 1061087, 0x7FFF, false,
-          false); // Which skill do you wish to transfer to the Soulstone?
+        AddHtmlLocalized(10, 12, 500, 20, 1061087, 0x7FFF); // Which skill do you wish to transfer to the Soulstone?
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
+        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
 
         for (int i = 0, n = 0; i < from.Skills.Length; i++)
         {
@@ -364,7 +344,7 @@ namespace Server.Items
               if (page > 0)
               {
                 AddButton(260, 380, 0xFA5, 0xFA6, 0, GumpButtonType.Page, page + 1);
-                AddHtmlLocalized(305, 382, 200, 20, 1011066, 0x7FFF, false, false); // Next page
+                AddHtmlLocalized(305, 382, 200, 20, 1011066, 0x7FFF); // Next page
               }
 
               AddPage(page + 1);
@@ -372,16 +352,15 @@ namespace Server.Items
               if (page > 0)
               {
                 AddButton(10, 380, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page);
-                AddHtmlLocalized(55, 382, 200, 20, 1011067, 0x7FFF, false, false); // Previous page
+                AddHtmlLocalized(55, 382, 200, 20, 1011067, 0x7FFF); // Previous page
               }
             }
 
             int x = p % 2 == 0 ? 10 : 260;
             int y = p / 2 * 20 + 40;
 
-            AddButton(x, y, 0xFA5, 0xFA6, i + 1, GumpButtonType.Reply, 0);
-            AddHtmlLocalized(x + 45, y + 2, 200, 20, AosSkillBonuses.GetLabel(skill.SkillName), 0x7FFF, false,
-              false);
+            AddButton(x, y, 0xFA5, 0xFA6, i + 1);
+            AddHtmlLocalized(x + 45, y + 2, 200, 20, AosSkillBonuses.GetLabel(skill.SkillName), 0x7FFF);
 
             n++;
           }
@@ -428,8 +407,7 @@ namespace Server.Items
 
         AddAlphaRegion(10, 10, 500, 420);
 
-        AddHtmlLocalized(10, 12, 500, 20, 1070709, 0x7FFF, false,
-          false); // <CENTER>Confirm Soulstone Transfer</CENTER>
+        AddHtmlLocalized(10, 12, 500, 20, 1070709, 0x7FFF); // <CENTER>Confirm Soulstone Transfer</CENTER>
 
         /* <CENTER>Soulstone</CENTER><BR>
          * You are using a Soulstone.  This powerful artifact allows you to remove skill points
@@ -448,27 +426,26 @@ namespace Server.Items
          */
         AddHtmlLocalized(10, 42, 500, 110, 1061067, 0x7FFF, false, true);
 
-        AddHtmlLocalized(10, 200, 390, 20, 1062297, 0x7FFF, false, false); // Skill Chosen:
-        AddHtmlLocalized(210, 200, 390, 20, AosSkillBonuses.GetLabel(skill.SkillName), 0x7FFF, false, false);
+        AddHtmlLocalized(10, 200, 390, 20, 1062297, 0x7FFF); // Skill Chosen:
+        AddHtmlLocalized(210, 200, 390, 20, AosSkillBonuses.GetLabel(skill.SkillName), 0x7FFF);
 
-        AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF, false, false); // Current Value:
+        AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF); // Current Value:
         AddLabel(210, 220, 0x481, skill.Base.ToString("0.0"));
 
-        AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF, false, false); // Current Cap:
+        AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF); // Current Cap:
         AddLabel(210, 240, 0x481, skill.Cap.ToString("0.0"));
 
-        AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF, false, false); // New Value:
+        AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF); // New Value:
         AddLabel(210, 260, 0x481, "0.0");
 
-        AddButton(10, 360, 0xFA5, 0xFA6, 2, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 362, 450, 20, 1070720, 0x7FFF, false,
-          false); // Activate the stone.  I am ready to transfer the skill points to it.
+        AddButton(10, 360, 0xFA5, 0xFA6, 2);
+        AddHtmlLocalized(45, 362, 450, 20, 1070720, 0x7FFF); // Activate the stone.  I am ready to transfer the skill points to it.
 
-        AddButton(10, 380, 0xFA5, 0xFA6, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 382, 450, 20, 1062279, 0x7FFF, false, false); // No, let me make another selection.
+        AddButton(10, 380, 0xFA5, 0xFA6, 1);
+        AddHtmlLocalized(45, 382, 450, 20, 1062279, 0x7FFF); // No, let me make another selection.
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
+        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -543,8 +520,7 @@ namespace Server.Items
 
         AddAlphaRegion(10, 10, 500, 420);
 
-        AddHtmlLocalized(10, 12, 500, 20, 1070709, 0x7FFF, false,
-          false); // <CENTER>Confirm Soulstone Transfer</CENTER>
+        AddHtmlLocalized(10, 12, 500, 20, 1070709, 0x7FFF); // <CENTER>Confirm Soulstone Transfer</CENTER>
 
         /* <CENTER>Soulstone</CENTER><BR>
          * You are using a Soulstone.  This powerful artifact allows you to remove skill points
@@ -563,30 +539,28 @@ namespace Server.Items
          */
         AddHtmlLocalized(10, 42, 500, 110, 1061067, 0x7FFF, false, true);
 
-        AddHtmlLocalized(10, 200, 390, 20, 1070718, 0x7FFF, false, false); // Skill Stored:
-        AddHtmlLocalized(210, 200, 390, 20, AosSkillBonuses.GetLabel(stone.Skill), 0x7FFF, false, false);
+        AddHtmlLocalized(10, 200, 390, 20, 1070718, 0x7FFF); // Skill Stored:
+        AddHtmlLocalized(210, 200, 390, 20, AosSkillBonuses.GetLabel(stone.Skill), 0x7FFF);
 
         Skill fromSkill = from.Skills[stone.Skill];
 
-        AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF, false, false); // Current Value:
+        AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF); // Current Value:
         AddLabel(210, 220, 0x481, fromSkill.Base.ToString("0.0"));
 
-        AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF, false, false); // Current Cap:
+        AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF); // Current Cap:
         AddLabel(210, 240, 0x481, fromSkill.Cap.ToString("0.0"));
 
-        AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF, false, false); // New Value:
+        AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF); // New Value:
         AddLabel(210, 260, 0x481, stone.SkillValue.ToString("0.0"));
 
-        AddButton(10, 360, 0xFA5, 0xFA6, 2, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 362, 450, 20, 1070719, 0x7FFF, false,
-          false); // Activate the stone.  I am ready to retrieve the skill points from it.
+        AddButton(10, 360, 0xFA5, 0xFA6, 2);
+        AddHtmlLocalized(45, 362, 450, 20, 1070719, 0x7FFF); // Activate the stone.  I am ready to retrieve the skill points from it.
 
-        AddButton(10, 380, 0xFA5, 0xFA6, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 382, 450, 20, 1070723, 0x7FFF, false,
-          false); // Remove all skill points from this stone and DO NOT absorb them.
+        AddButton(10, 380, 0xFA5, 0xFA6, 1);
+        AddHtmlLocalized(45, 382, 450, 20, 1070723, 0x7FFF); // Remove all skill points from this stone and DO NOT absorb them.
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
+        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -755,8 +729,7 @@ namespace Server.Items
 
         AddAlphaRegion(10, 10, 500, 420);
 
-        AddHtmlLocalized(10, 12, 500, 20, 1070725, 0x7FFF, false,
-          false); // <CENTER>Confirm Soulstone Skill Removal</CENTER>
+        AddHtmlLocalized(10, 12, 500, 20, 1070725, 0x7FFF); // <CENTER>Confirm Soulstone Skill Removal</CENTER>
 
         /* WARNING!<BR><BR>
          *
@@ -767,11 +740,11 @@ namespace Server.Items
          */
         AddHtmlLocalized(10, 42, 500, 110, 1070724, 0x7FFF, false, true);
 
-        AddButton(10, 380, 0xFA5, 0xFA6, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF, false, false); // Continue
+        AddButton(10, 380, 0xFA5, 0xFA6, 1);
+        AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF); // Continue
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
+        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -805,15 +778,15 @@ namespace Server.Items
 
         AddAlphaRegion(10, 10, 500, 420);
 
-        AddHtmlLocalized(10, 12, 500, 20, title, 0x7FFF, false, false);
+        AddHtmlLocalized(10, 12, 500, 20, title, 0x7FFF);
 
         AddHtmlLocalized(10, 42, 500, 110, message, 0x7FFF, false, true);
 
-        AddButton(10, 380, 0xFA5, 0xFA6, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF, false, false); // Continue
+        AddButton(10, 380, 0xFA5, 0xFA6, 1);
+        AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF); // Continue
 
-        AddButton(10, 410, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+        AddButton(10, 410, 0xFB1, 0xFB2, 0);
+        AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -839,22 +812,13 @@ namespace Server.Items
     private int m_UsesRemaining;
 
     [Constructible]
-    public SoulstoneFragment() : this(5, null)
-    {
-    }
-
-    [Constructible]
-    public SoulstoneFragment(int usesRemaining) : this(usesRemaining, null)
-    {
-    }
-
-    [Constructible]
     public SoulstoneFragment(string account) : this(5, account)
     {
     }
 
     [Constructible]
-    public SoulstoneFragment(int usesRemaining, string account) : base(account, Utility.Random(0x2AA1, 9))
+    public SoulstoneFragment(int usesRemaining = 5, string account = null) :
+      base(account, Utility.Random(0x2AA1, 9))
     {
       m_UsesRemaining = usesRemaining;
     }
@@ -940,13 +904,7 @@ namespace Server.Items
   public class BlueSoulstone : SoulStone
   {
     [Constructible]
-    public BlueSoulstone()
-      : this(null)
-    {
-    }
-
-    [Constructible]
-    public BlueSoulstone(string account)
+    public BlueSoulstone(string account = null)
       : base(account, 0x2ADC, 0x2ADD)
     {
     }
@@ -995,13 +953,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public RedSoulstone()
-      : this(null)
-    {
-    }
-
-    [Constructible]
-    public RedSoulstone(string account)
+    public RedSoulstone(string account = null)
       : base(account, 0x32F3, 0x32F4)
     {
     }

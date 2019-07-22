@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Server
@@ -32,13 +32,9 @@ namespace Server
     SA
   }
 
-  public class ClientVersion : IComparable, IComparer
+  public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion>
   {
-    public ClientVersion(int maj, int min, int rev, int pat) : this(maj, min, rev, pat, ClientType.Regular)
-    {
-    }
-
-    public ClientVersion(int maj, int min, int rev, int pat, ClientType type)
+    public ClientVersion(int maj, int min, int rev, int pat, ClientType type = ClientType.Regular)
     {
       Major = maj;
       Minor = min;
@@ -111,15 +107,10 @@ namespace Server
 
     public string SourceString{ get; }
 
-    public int CompareTo(object obj)
+    public int CompareTo(ClientVersion o)
     {
-      if (obj == null)
-        return 1;
-
-      ClientVersion o = obj as ClientVersion;
-
       if (o == null)
-        throw new ArgumentException();
+        return 1;
 
       if (Major > o.Major)
         return 1;
@@ -138,24 +129,6 @@ namespace Server
       if (Patch < o.Patch)
         return -1;
       return 0;
-    }
-
-    public int Compare(object x, object y)
-    {
-      if (IsNull(x) && IsNull(y))
-        return 0;
-      if (IsNull(x))
-        return -1;
-      if (IsNull(y))
-        return 1;
-
-      ClientVersion a = x as ClientVersion;
-      ClientVersion b = y as ClientVersion;
-
-      if (IsNull(a) || IsNull(b))
-        throw new ArgumentException();
-
-      return a.CompareTo(b);
     }
 
     public static bool operator ==(ClientVersion l, ClientVersion r)
@@ -193,17 +166,16 @@ namespace Server
       return Major ^ Minor ^ Revision ^ Patch ^ (int)Type;
     }
 
+    int IComparer<ClientVersion>.Compare(ClientVersion x, ClientVersion y)
+    {
+      return Compare(x, y);
+    }
+
     public override bool Equals(object obj)
     {
-      if (obj == null)
-        return false;
-
       ClientVersion v = obj as ClientVersion;
 
-      if (v == null)
-        return false;
-
-      return Major == v.Major
+      return Major == v?.Major
              && Minor == v.Minor
              && Revision == v.Revision
              && Patch == v.Patch

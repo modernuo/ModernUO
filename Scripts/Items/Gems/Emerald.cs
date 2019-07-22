@@ -3,12 +3,7 @@ namespace Server.Items
   public class Emerald : Item
   {
     [Constructible]
-    public Emerald() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Emerald(int amount) : base(0xF10)
+    public Emerald(int amount = 1) : base(0xF10)
     {
       Stackable = true;
       Amount = amount;

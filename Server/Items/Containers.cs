@@ -97,8 +97,8 @@ namespace Server.Items
     {
       Opened = false;
 
-      if (Owner != null && SendDeleteOnClose)
-        Owner.Send(RemovePacket);
+      if (SendDeleteOnClose)
+        Owner?.Send(RemovePacket);
     }
 
     public override void OnSingleClick(Mobile from)
@@ -116,28 +116,24 @@ namespace Server.Items
 
     public override bool IsAccessibleTo(Mobile check)
     {
-      if (check == Owner && Opened || check.AccessLevel >= AccessLevel.GameMaster)
-        return base.IsAccessibleTo(check);
-      return false;
+      return (check == Owner && Opened || check.AccessLevel >= AccessLevel.GameMaster) && base.IsAccessibleTo(check);
     }
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
-      if (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster)
-        return base.OnDragDrop(from, dropped);
-      return false;
+      return (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster) && base.OnDragDrop(from, dropped);
     }
 
     public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
     {
-      if (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster)
-        return base.OnDragDropInto(from, item, p);
-      return false;
+      return (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster) &&
+             base.OnDragDropInto(from, item, p);
     }
 
     public override int GetTotal(TotalType type)
     {
-      if (AccountGold.Enabled && Owner?.Account != null && type == TotalType.Gold) return Owner.Account.TotalGold;
+      if (AccountGold.Enabled && Owner?.Account != null && type == TotalType.Gold)
+        return Owner.Account.TotalGold;
 
       return base.GetTotal(type);
     }

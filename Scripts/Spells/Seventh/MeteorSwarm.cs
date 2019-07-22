@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
-  public class MeteorSwarmSpell : MagerySpell
+  public class MeteorSwarmSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Meteor Swarm", "Flam Kal Des Ylem",
@@ -16,7 +17,7 @@ namespace Server.Spells.Seventh
       Reagent.SpidersSilk
     );
 
-    public MeteorSwarmSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public MeteorSwarmSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -26,7 +27,7 @@ namespace Server.Spells.Seventh
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -42,7 +43,7 @@ namespace Server.Spells.Seventh
         if (p is Item item)
           p = item.GetWorldLocation();
 
-        List<Mobile> targets = new List<Mobile>();
+        List<Mobile> targets;
 
         Map map = Caster.Map;
 
@@ -52,27 +53,29 @@ namespace Server.Spells.Seventh
         {
           IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), 2);
 
-          foreach (Mobile m in eable)
-            if (Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false))
-            {
-              if (Core.AOS && !Caster.InLOS(m))
-                continue;
+          targets = eable.Where(m =>
+          {
+            if (Caster == m || !SpellHelper.ValidIndirectTarget(Caster, m) || !Caster.CanBeHarmful(m, false) ||
+                Core.AOS && !Caster.InLOS(m))
+              return false;
 
-              targets.Add(m);
+            if (m.Player)
+              playerVsPlayer = true;
 
-              if (m.Player)
-                playerVsPlayer = true;
-            }
+            return true;
+          }).ToList();
 
           eable.Free();
+        }
+        else
+        {
+          targets = new List<Mobile>();
         }
 
         double damage;
 
-        if (Core.AOS)
-          damage = GetNewAosDamage(51, 1, 5, playerVsPlayer);
-        else
-          damage = Utility.Random(27, 22);
+        damage = Core.AOS ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
+          : Utility.Random(27, 22);
 
         if (targets.Count > 0)
         {
@@ -83,12 +86,11 @@ namespace Server.Spells.Seventh
           else if (!Core.AOS)
             damage /= targets.Count;
 
-          double toDeal;
           for (int i = 0; i < targets.Count; ++i)
           {
             Mobile m = targets[i];
 
-            toDeal = damage;
+            double toDeal = damage;
 
             if (!Core.AOS && CheckResisted(m))
             {
@@ -107,27 +109,6 @@ namespace Server.Spells.Seventh
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private MeteorSwarmSpell m_Owner;
-
-      public InternalTarget(MeteorSwarmSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

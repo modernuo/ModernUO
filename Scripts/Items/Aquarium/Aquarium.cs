@@ -176,14 +176,10 @@ namespace Server.Items
 
     public virtual bool HasAccess(Mobile from)
     {
-      if (from == null || from.Deleted)
-        return false;
-      if (from.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      BaseHouse house = BaseHouse.FindHouseAt(this);
-
-      return house != null && house.IsCoOwner(from);
+      return from?.Deleted == false && (
+               from.AccessLevel >= AccessLevel.GameMaster ||
+               BaseHouse.FindHouseAt(this)?.IsCoOwner(from) == true
+      );
     }
 
     public override bool OnDragDrop(Mobile from, Item dropped)
@@ -1020,7 +1016,7 @@ namespace Server.Items
     {
       private Aquarium m_Aquarium;
 
-      public GMAddFood(Aquarium aquarium) : base(6231, -1) // GM Add Food
+      public GMAddFood(Aquarium aquarium) : base(6231) // GM Add Food
       {
         m_Aquarium = aquarium;
       }
@@ -1039,7 +1035,7 @@ namespace Server.Items
     {
       private Aquarium m_Aquarium;
 
-      public GMAddWater(Aquarium aquarium) : base(6232, -1) // GM Add Water
+      public GMAddWater(Aquarium aquarium) : base(6232) // GM Add Water
       {
         m_Aquarium = aquarium;
       }
@@ -1058,7 +1054,7 @@ namespace Server.Items
     {
       private Aquarium m_Aquarium;
 
-      public GMForceEvaluate(Aquarium aquarium) : base(6233, -1) // GM Force Evaluate
+      public GMForceEvaluate(Aquarium aquarium) : base(6233) // GM Force Evaluate
       {
         m_Aquarium = aquarium;
       }
@@ -1076,7 +1072,7 @@ namespace Server.Items
     {
       private Aquarium m_Aquarium;
 
-      public GMOpen(Aquarium aquarium) : base(6234, -1) // GM Open Container
+      public GMOpen(Aquarium aquarium) : base(6234) // GM Open Container
       {
         m_Aquarium = aquarium;
       }
@@ -1094,7 +1090,7 @@ namespace Server.Items
     {
       private Aquarium m_Aquarium;
 
-      public GMFill(Aquarium aquarium) : base(6236, -1) // GM Fill Food and Water
+      public GMFill(Aquarium aquarium) : base(6236) // GM Fill Food and Water
       {
         m_Aquarium = aquarium;
       }

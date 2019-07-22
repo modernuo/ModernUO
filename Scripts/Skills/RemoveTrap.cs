@@ -81,7 +81,7 @@ namespace Server.SkillHandlers
             from.SendLocalizedMessage(
               1010538); // You may not disarm faction traps unless you are in an opposing faction
           }
-          else if (faction == trap.Faction && trap.Faction != null && !isOwner)
+          else if (trap.Faction != null && faction == trap.Faction && !isOwner)
           {
             from.SendLocalizedMessage(1010537); // You may not disarm traps set by your own faction!
           }

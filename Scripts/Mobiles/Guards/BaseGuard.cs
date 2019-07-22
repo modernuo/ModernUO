@@ -22,14 +22,9 @@ namespace Server.Mobiles
 
     public abstract Mobile Focus{ get; set; }
 
-    public static void Spawn(Mobile caller, Mobile target)
+    public static void Spawn(Mobile caller, Mobile target, int amount = 1, bool onlyAdditional = false)
     {
-      Spawn(caller, target, 1, false);
-    }
-
-    public static void Spawn(Mobile caller, Mobile target, int amount, bool onlyAdditional)
-    {
-      if (target == null || target.Deleted)
+      if (target?.Deleted != false)
         return;
 
       foreach (Mobile m in target.GetMobilesInRange(15))

@@ -24,8 +24,7 @@ namespace Server.Gumps
 
       AddImage(30, 30, 102);
 
-      AddHtmlLocalized(95, 100, 120, 100, 1060198, 0, false,
-        false); // May your wealth bring blessings to those in need, if tithed upon this most sacred site.
+      AddHtmlLocalized(95, 100, 120, 100, 1060198, 0); // May your wealth bring blessings to those in need, if tithed upon this most sacred site.
 
       AddLabel(57, 274, 0, "Gold:");
       AddLabel(87, 274, 53, (totalGold - offer).ToString());
@@ -33,23 +32,23 @@ namespace Server.Gumps
       AddLabel(137, 274, 0, "Tithe:");
       AddLabel(172, 274, 53, offer.ToString());
 
-      AddButton(105, 230, 5220, 5220, 2, GumpButtonType.Reply, 0);
-      AddButton(113, 230, 5222, 5222, 2, GumpButtonType.Reply, 0);
+      AddButton(105, 230, 5220, 5220, 2);
+      AddButton(113, 230, 5222, 5222, 2);
       AddLabel(108, 228, 0, "<");
       AddLabel(112, 228, 0, "<");
 
-      AddButton(127, 230, 5223, 5223, 1, GumpButtonType.Reply, 0);
+      AddButton(127, 230, 5223, 5223, 1);
       AddLabel(131, 228, 0, "<");
 
-      AddButton(147, 230, 5224, 5224, 3, GumpButtonType.Reply, 0);
+      AddButton(147, 230, 5224, 5224, 3);
       AddLabel(153, 228, 0, ">");
 
-      AddButton(168, 230, 5220, 5220, 4, GumpButtonType.Reply, 0);
-      AddButton(176, 230, 5222, 5222, 4, GumpButtonType.Reply, 0);
+      AddButton(168, 230, 5220, 5220, 4);
+      AddButton(176, 230, 5222, 5222, 4);
       AddLabel(172, 228, 0, ">");
       AddLabel(176, 228, 0, ">");
 
-      AddButton(217, 272, 4023, 4024, 5, GumpButtonType.Reply, 0);
+      AddButton(217, 272, 4023, 4024, 5);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -109,7 +108,7 @@ namespace Server.Gumps
 
           Container pack = m_From.Backpack;
 
-          if (pack != null && pack.ConsumeTotal(typeof(Gold), m_Offer))
+          if (pack?.ConsumeTotal(typeof(Gold), m_Offer) == true)
           {
             // You tithe gold to the shrine as a sign of devotion.
             m_From.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1060195);

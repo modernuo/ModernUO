@@ -1,11 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-  public class StrangleSpell : NecromancerSpell
+  public class StrangleSpell : NecromancerSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Strangle", "In Bal Nox",
@@ -17,7 +16,7 @@ namespace Server.Spells.Necromancy
 
     private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
-    public StrangleSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public StrangleSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -28,11 +27,14 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (CheckHSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -207,27 +209,6 @@ namespace Server.Spells.Necromancy
           ) // OSI: randomly revealed between first and third damage tick, guessing 60% chance
             m_Target.RevealingAction();
         }
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private StrangleSpell m_Owner;
-
-      public InternalTarget(StrangleSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

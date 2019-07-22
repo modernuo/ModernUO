@@ -119,6 +119,7 @@ namespace Server.Misc
       }
       catch
       {
+        // ignored
       }
     }
 
@@ -197,6 +198,7 @@ namespace Server.Misc
           }
           catch
           {
+            // ignored
           }
 
           try
@@ -205,6 +207,7 @@ namespace Server.Misc
           }
           catch
           {
+            // ignored
           }
 
           op.WriteLine("Exception:");

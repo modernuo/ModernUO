@@ -3,12 +3,7 @@ namespace Server.Items
   public class TribalBerry : Item
   {
     [Constructible]
-    public TribalBerry() : this(1)
-    {
-    }
-
-    [Constructible]
-    public TribalBerry(int amount) : base(0x9D0)
+    public TribalBerry(int amount = 1) : base(0x9D0)
     {
       Weight = 1.0;
       Stackable = true;

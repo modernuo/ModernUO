@@ -3,12 +3,7 @@ namespace Server.Items
   public class SummonEarthElementalScroll : SpellScroll
   {
     [Constructible]
-    public SummonEarthElementalScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SummonEarthElementalScroll(int amount) : base(61, 0x1F6A, amount)
+    public SummonEarthElementalScroll(int amount = 1) : base(61, 0x1F6A, amount)
     {
     }
 

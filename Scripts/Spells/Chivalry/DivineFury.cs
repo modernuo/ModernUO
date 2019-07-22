@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Spells.Chivalry
@@ -14,7 +13,7 @@ namespace Server.Spells.Chivalry
 
     private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
-    public DivineFurySpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public DivineFurySpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

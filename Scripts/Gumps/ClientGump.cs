@@ -12,11 +12,7 @@ namespace Server.Gumps
     private const int LabelColor32 = 0xFFFFFF;
     private NetState m_State;
 
-    public ClientGump(Mobile from, NetState state) : this(from, state, "")
-    {
-    }
-
-    public ClientGump(Mobile from, NetState state, string initialText) : base(30, 20)
+    public ClientGump(Mobile from, NetState state, string initialText = "") : base(30, 20)
     {
       if (state == null)
         return;
@@ -33,44 +29,43 @@ namespace Server.Gumps
       AddImageTiled(10, 32, 380, 232, 0xA40);
       AddAlphaRegion(10, 32, 380, 232);
 
-      AddHtml(10, 10, 380, 20, Color(Center("User Information"), LabelColor32), false, false);
+      AddHtml(10, 10, 380, 20, Color(Center("User Information"), LabelColor32));
 
       int line = 0;
 
-      AddHtml(14, 36 + line * 20, 200, 20, Color("Address:", LabelColor32), false, false);
-      AddHtml(70, 36 + line++ * 20, 200, 20, Color(state.ToString(), LabelColor32), false, false);
+      AddHtml(14, 36 + line * 20, 200, 20, Color("Address:", LabelColor32));
+      AddHtml(70, 36 + line++ * 20, 200, 20, Color(state.ToString(), LabelColor32));
 
-      AddHtml(14, 36 + line * 20, 200, 20, Color("Client:", LabelColor32), false, false);
+      AddHtml(14, 36 + line * 20, 200, 20, Color("Client:", LabelColor32));
       AddHtml(70, 36 + line++ * 20, 200, 20,
-        Color(state.Version == null ? "(null)" : state.Version.ToString(), LabelColor32), false, false);
+        Color(state.Version == null ? "(null)" : state.Version.ToString(), LabelColor32));
 
-      AddHtml(14, 36 + line * 20, 200, 20, Color("Version:", LabelColor32), false, false);
+      AddHtml(14, 36 + line * 20, 200, 20, Color("Version:", LabelColor32));
 
       ExpansionInfo info = state.ExpansionInfo;
       string expansionName = info.Name;
 
-      AddHtml(70, 36 + line++ * 20, 200, 20, Color(expansionName, LabelColor32), false, false);
+      AddHtml(70, 36 + line++ * 20, 200, 20, Color(expansionName, LabelColor32));
 
       Account a = state.Account as Account;
       Mobile m = state.Mobile;
 
       if (from.AccessLevel >= AccessLevel.GameMaster && a != null)
       {
-        AddHtml(14, 36 + line * 20, 200, 20, Color("Account:", LabelColor32), false, false);
-        AddHtml(70, 36 + line++ * 20, 200, 20, Color(a.Username, LabelColor32), false, false);
+        AddHtml(14, 36 + line * 20, 200, 20, Color("Account:", LabelColor32));
+        AddHtml(70, 36 + line++ * 20, 200, 20, Color(a.Username, LabelColor32));
       }
 
       if (m != null)
       {
-        AddHtml(14, 36 + line * 20, 200, 20, Color("Mobile:", LabelColor32), false, false);
-        AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Name} (0x{m.Serial.Value:X})", LabelColor32), false,
-          false);
+        AddHtml(14, 36 + line * 20, 200, 20, Color("Mobile:", LabelColor32));
+        AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Name} (0x{m.Serial.Value:X})", LabelColor32));
 
-        AddHtml(14, 36 + line * 20, 200, 20, Color("Location:", LabelColor32), false, false);
-        AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Location} [{m.Map}]", LabelColor32), false, false);
+        AddHtml(14, 36 + line * 20, 200, 20, Color("Location:", LabelColor32));
+        AddHtml(70, 36 + line++ * 20, 200, 20, Color($"{m.Location} [{m.Map}]", LabelColor32));
 
-        AddButton(13, 157, 0xFAB, 0xFAD, 1, GumpButtonType.Reply, 0);
-        AddHtml(48, 158, 200, 20, Color("Send Message", LabelColor32), false, false);
+        AddButton(13, 157, 0xFAB, 0xFAD, 1);
+        AddHtml(48, 158, 200, 20, Color("Send Message", LabelColor32));
 
         AddImageTiled(12, 182, 376, 80, 0xA40);
         AddImageTiled(13, 183, 374, 78, 0xBBC);
@@ -85,43 +80,43 @@ namespace Server.Gumps
 
         if (BaseCommand.IsAccessible(from, m))
         {
-          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 4, GumpButtonType.Reply, 0);
-          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Properties", LabelColor32), false, false);
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 4);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Properties", LabelColor32));
         }
 
         if (from != m)
         {
-          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 5, GumpButtonType.Reply, 0);
-          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Go to them", LabelColor32), false, false);
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 5);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Go to them", LabelColor32));
 
-          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 6, GumpButtonType.Reply, 0);
-          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Bring them here", LabelColor32), false, false);
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 6);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Bring them here", LabelColor32));
         }
 
-        AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 7, GumpButtonType.Reply, 0);
-        AddHtml(280, 38 + line++ * 20, 100, 20, Color("Move to target", LabelColor32), false, false);
+        AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 7);
+        AddHtml(280, 38 + line++ * 20, 100, 20, Color("Move to target", LabelColor32));
 
         if (from.AccessLevel >= AccessLevel.GameMaster && from.AccessLevel > m.AccessLevel)
         {
-          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 8, GumpButtonType.Reply, 0);
-          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Disconnect", LabelColor32), false, false);
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 8);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Disconnect", LabelColor32));
 
           if (m.Alive)
           {
-            AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 9, GumpButtonType.Reply, 0);
-            AddHtml(280, 38 + line++ * 20, 100, 20, Color("Kill", LabelColor32), false, false);
+            AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 9);
+            AddHtml(280, 38 + line++ * 20, 100, 20, Color("Kill", LabelColor32));
           }
           else
           {
-            AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 10, GumpButtonType.Reply, 0);
-            AddHtml(280, 38 + line++ * 20, 100, 20, Color("Resurrect", LabelColor32), false, false);
+            AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 10);
+            AddHtml(280, 38 + line++ * 20, 100, 20, Color("Resurrect", LabelColor32));
           }
         }
 
         if (from.AccessLevel >= AccessLevel.Counselor && from.AccessLevel > m.AccessLevel)
         {
-          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 11, GumpButtonType.Reply, 0);
-          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Skills browser", LabelColor32), false, false);
+          AddButton(246, 36 + line * 20, 0xFA5, 0xFA7, 11);
+          AddHtml(280, 38 + line++ * 20, 100, 20, Color("Skills browser", LabelColor32));
         }
       }
     }

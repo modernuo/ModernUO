@@ -16,16 +16,7 @@ namespace Server.Engines.Craft
 
     public override int GumpTitleNumber => 1044500;
 
-    public static CraftSystem CraftSystem
-    {
-      get
-      {
-        if (m_CraftSystem == null)
-          m_CraftSystem = new DefMasonry();
-
-        return m_CraftSystem;
-      }
-    }
+    public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefMasonry());
 
     public override double GetChanceAtMin(CraftItem item)
     {
@@ -39,7 +30,7 @@ namespace Server.Engines.Craft
 
     public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
     {
-      if (tool == null || tool.Deleted || tool.UsesRemaining < 0)
+      if (tool?.Deleted != false || tool.UsesRemaining < 0)
         return 1044038; // You have worn out your tool!
       if (!BaseTool.CheckTool(tool, from))
         return 1048146; // If you have a tool equipped, you must use that tool.

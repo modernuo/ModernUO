@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy
 {
-  public class BloodOathSpell : NecromancerSpell
+  public class BloodOathSpell : NecromancerSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Blood Oath", "In Jux Mani Xen",
@@ -18,7 +17,7 @@ namespace Server.Spells.Necromancy
     private static Dictionary<Mobile, Mobile> m_OathTable = new Dictionary<Mobile, Mobile>();
     private static Dictionary<Mobile, ExpireTimer> m_Table = new Dictionary<Mobile, ExpireTimer>();
 
-    public BloodOathSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -29,20 +28,18 @@ namespace Server.Spells.Necromancy
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
-      if (Caster == m || !(m is PlayerMobile || m is BaseCreature)
-      ) // only PlayerMobile and BaseCreature implement blood oath checking
-      {
+      if (m == null)
         Caster.SendLocalizedMessage(1060508); // You can't curse that.
-      }
+      // only PlayerMobile and BaseCreature implement blood oath checking
+      else if (Caster == m || !(m is PlayerMobile || m is BaseCreature))
+        Caster.SendLocalizedMessage(1060508); // You can't curse that.
       else if (m_OathTable.ContainsKey(Caster))
-      {
         Caster.SendLocalizedMessage(1061607); // You are already bonded in a Blood Oath.
-      }
       else if (m_OathTable.ContainsKey(m))
       {
         if (m.Player)
@@ -147,29 +144,6 @@ namespace Server.Spells.Necromancy
         BuffInfo.RemoveBuff(m_Target, BuffIcon.BloodOathCurse);
 
         m_Table.Remove(m_Caster);
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private BloodOathSpell m_Owner;
-
-      public InternalTarget(BloodOathSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-        else
-          from.SendLocalizedMessage(1060508); // You can't curse that.
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

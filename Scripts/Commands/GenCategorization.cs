@@ -175,7 +175,7 @@ namespace Server.Commands
 
       ConstructorInfo ctor = type.GetConstructor(Type.EmptyTypes);
 
-      return ctor != null && ctor.IsDefined(typeofConstructible, false);
+      return ctor?.IsDefined(typeofConstructible, false) == true;
     }
 
     private static void AddTypes(Assembly asm, List<Type> types)

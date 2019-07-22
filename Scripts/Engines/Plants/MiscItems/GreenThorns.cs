@@ -8,12 +8,7 @@ namespace Server.Items
   public class GreenThorns : Item
   {
     [Constructible]
-    public GreenThorns() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GreenThorns(int amount) : base(0xF42)
+    public GreenThorns(int amount = 1) : base(0xF42)
     {
       Stackable = true;
       Weight = 1.0;

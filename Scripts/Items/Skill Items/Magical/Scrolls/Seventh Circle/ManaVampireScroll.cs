@@ -3,12 +3,7 @@ namespace Server.Items
   public class ManaVampireScroll : SpellScroll
   {
     [Constructible]
-    public ManaVampireScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ManaVampireScroll(int amount) : base(52, 0x1F61, amount)
+    public ManaVampireScroll(int amount = 1) : base(52, 0x1F61, amount)
     {
     }
 

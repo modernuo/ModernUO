@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.Craft;
 using Server.Ethics;
 using Server.Factions;
@@ -117,7 +118,7 @@ namespace Server.Items
 
         CraftContext context = craftSystem.GetContext(from);
 
-        if (context != null && context.DoNotColor)
+        if (context?.DoNotColor == true)
           Hue = 0;
 
         if (tool is BaseRunicTool runicTool)
@@ -151,7 +152,7 @@ namespace Server.Items
 
           CraftContext context = craftSystem.GetContext(from);
 
-          if (context != null && context.DoNotColor)
+          if (context?.DoNotColor == true)
             Hue = 0;
 
           switch (thisResource)
@@ -247,14 +248,10 @@ namespace Server.Items
 
     public virtual void OnBeforeSwing(Mobile attacker, Mobile defender)
     {
-      WeaponAbility a = WeaponAbility.GetCurrentAbility(attacker);
-
-      if (a != null && !a.OnBeforeSwing(attacker, defender))
+      if (WeaponAbility.GetCurrentAbility(attacker)?.OnBeforeSwing(attacker, defender) == false)
         WeaponAbility.ClearCurrentAbility(attacker);
 
-      SpecialMove move = SpecialMove.GetCurrentMove(attacker);
-
-      if (move != null && !move.OnBeforeSwing(attacker, defender))
+      if (SpecialMove.GetCurrentMove(attacker)?.OnBeforeSwing(attacker, defender) == false)
         SpecialMove.ClearCurrentMove(attacker);
     }
 
@@ -380,10 +377,8 @@ namespace Server.Items
 
     public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
     {
-      if (!Ethic.CheckTrade(from, to, newOwner, this))
-        return false;
-
-      return base.AllowSecureTrade(from, to, newOwner, accepted);
+      return Ethic.CheckTrade(from, to, newOwner, this) &&
+             base.AllowSecureTrade(from, to, newOwner, accepted);
     }
 
     public override bool CanEquip(Mobile from)
@@ -419,9 +414,7 @@ namespace Server.Items
         return false;
       }
 
-      if (!from.CanBeginAction<BaseWeapon>()) return false;
-
-      return base.CanEquip(from);
+      return from.CanBeginAction<BaseWeapon>() && base.CanEquip(from);
     }
 
     public override bool OnEquip(Mobile from)
@@ -806,11 +799,8 @@ namespace Server.Items
       }
 
       #region Dueling
-
-      if (attacker is PlayerMobile pm)
-        if (pm.DuelContext != null && !pm.DuelContext.CheckItemEquip(attacker, this))
-          canSwing = false;
-
+      if ((attacker as PlayerMobile)?.DuelContext?.CheckItemEquip(attacker, this) == false)
+        canSwing = false;
       #endregion
 
       if (canSwing && attacker.HarmfulCheck(defender))
@@ -852,11 +842,11 @@ namespace Server.Items
       double parry = defender.Skills.Parry.Value;
       double bushidoNonRacial = defender.Skills.Bushido.NonRacialValue;
       double bushido = defender.Skills.Bushido.Value;
+      double chance;
 
       if (shield != null)
       {
-        double
-          chance = (parry - bushidoNonRacial) /
+        chance = (parry - bushidoNonRacial) /
                    400.0; // As per OSI, no genitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
 
         if (chance < 0) // chance shouldn't go below 0
@@ -877,44 +867,42 @@ namespace Server.Items
         return defender.CheckSkill(SkillName.Parry, chance);
       }
 
-      if (!(defender.Weapon is Fists) && !(defender.Weapon is BaseRanged))
+      if (defender.Weapon is Fists || defender.Weapon is BaseRanged)
+        return false;
+
+      BaseWeapon weapon = defender.Weapon as BaseWeapon;
+
+      double divisor = weapon.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
+
+      chance = parry * bushido / divisor;
+
+      double aosChance = parry / 800.0;
+
+      // Parry or Bushido over 100 grant a 5% bonus.
+      if (parry >= 100.0)
       {
-        BaseWeapon weapon = defender.Weapon as BaseWeapon;
-
-        double divisor = weapon.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
-
-        double chance = parry * bushido / divisor;
-
-        double aosChance = parry / 800.0;
-
-        // Parry or Bushido over 100 grant a 5% bonus.
-        if (parry >= 100.0)
-        {
-          chance += 0.05;
-          aosChance += 0.05;
-        }
-        else if (bushido >= 100.0)
-        {
-          chance += 0.05;
-        }
-
-        // Evasion grants a variable bonus post ML. 50% prior.
-        if (Evasion.IsEvading(defender))
-          chance *= Evasion.GetParryScalar(defender);
-
-        // Low dexterity lowers the chance.
-        if (defender.Dex < 80)
-          chance = chance * (20 + defender.Dex) / 100;
-
-        if (chance > aosChance)
-          return defender.CheckSkill(SkillName.Parry, chance);
-
-        return
-          aosChance > Utility
-            .RandomDouble(); // Only skillcheck if wielding a shield & there's no effect from Bushido
+        chance += 0.05;
+        aosChance += 0.05;
+      }
+      else if (bushido >= 100.0)
+      {
+        chance += 0.05;
       }
 
-      return false;
+      // Evasion grants a variable bonus post ML. 50% prior.
+      if (Evasion.IsEvading(defender))
+        chance *= Evasion.GetParryScalar(defender);
+
+      // Low dexterity lowers the chance.
+      if (defender.Dex < 80)
+        chance = chance * (20 + defender.Dex) / 100;
+
+      if (chance > aosChance)
+        return defender.CheckSkill(SkillName.Parry, chance);
+
+      return
+        aosChance > Utility
+          .RandomDouble(); // Only skillcheck if wielding a shield & there's no effect from Bushido
     }
 
     public virtual int AbsorbDamageAOS(Mobile attacker, Mobile defender, int damage)
@@ -1049,44 +1037,18 @@ namespace Server.Items
       if (!(attacker is BaseCreature bc) || bc.PackInstinct == PackInstinct.None || !bc.Controlled && !bc.Summoned)
         return 0;
 
-      Mobile master = bc.ControlMaster;
-
-      if (master == null)
-        master = bc.SummonMaster;
+      Mobile master = bc.ControlMaster ?? bc.SummonMaster;
 
       if (master == null)
         return 0;
 
-      int inPack = 1;
-
       IPooledEnumerable<BaseCreature> eable = defender.GetMobilesInRange<BaseCreature>(1);
-      foreach (BaseCreature m in eable)
-        if (m != attacker)
-        {
-          if ((m.PackInstinct & bc.PackInstinct) == 0 || !m.Controlled && !m.Summoned)
-            continue;
-
-          Mobile theirMaster = m.ControlMaster;
-
-          if (theirMaster == null)
-            theirMaster = m.SummonMaster;
-
-          if (master == theirMaster && m.Combatant == defender)
-            ++inPack;
-        }
+      int inPack = 1 + eable.Where(m => m != attacker && (m.PackInstinct & bc.PackInstinct) != 0 && (m.Controlled || m.Summoned))
+                     .Count(m => master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender);
 
       eable.Free();
 
-      if (inPack >= 5)
-        return 100;
-      if (inPack >= 4)
-        return 75;
-      if (inPack >= 3)
-        return 50;
-      if (inPack >= 2)
-        return 25;
-
-      return 0;
+      return inPack >= 5 ? 100 : inPack >= 4 ? 75 : inPack >= 3 ? 50 : inPack >= 2 ? 25 : 0;
     }
 
     public virtual void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1.0)
@@ -1095,7 +1057,7 @@ namespace Server.Items
       {
         IPooledEnumerable<Clone> eable = defender.GetMobilesInRange<Clone>(4);
         foreach (Clone m in eable)
-          if (m != null && m.Summoned && m.SummonMaster == defender)
+          if (m?.Summoned == true && m.SummonMaster == defender)
           {
             attacker.SendLocalizedMessage(
               1063141); // Your attack has been diverted to a nearby mirror image of your target!
@@ -1214,7 +1176,7 @@ namespace Server.Items
       if (!Core.AOS && damage < 1)
         damage = 1;
       else if (Core.AOS && damage == 0) // parried
-        if (a != null && a.Validate(attacker) /*&& a.CheckMana( attacker, true )*/
+        if (a?.Validate(attacker) == true /*&& a.CheckMana( attacker, true )*/
         ) // Parried special moves have no mana cost
         {
           a = null;
@@ -1279,19 +1241,19 @@ namespace Server.Items
 
       int damageGiven = damage;
 
-      if (a != null && !a.OnBeforeDamage(attacker, defender))
+      if (a?.OnBeforeDamage(attacker, defender) == false)
       {
         WeaponAbility.ClearCurrentAbility(attacker);
         a = null;
       }
 
-      if (move != null && !move.OnBeforeDamage(attacker, defender))
+      if (move?.OnBeforeDamage(attacker, defender) == false)
       {
         SpecialMove.ClearCurrentMove(attacker);
         move = null;
       }
 
-      bool ignoreArmor = a is ArmorIgnore || move != null && move.IgnoreArmor(attacker);
+      bool ignoreArmor = a is ArmorIgnore || move?.IgnoreArmor(attacker) == true;
 
       damageGiven = AOS.Damage(defender, attacker, damage, ignoreArmor, phys, fire, cold, pois, nrgy, chaos, direct,
         false, this is BaseRanged);
@@ -1322,10 +1284,10 @@ namespace Server.Items
 
         context = TransformationSpellHelper.GetContext(attacker);
 
-        if (context != null && context.Type == typeof(VampiricEmbraceSpell))
+        if (context?.Type == typeof(VampiricEmbraceSpell))
           lifeLeech += 20; // Vampiric embrace gives an additional 20% life leech
 
-        if (context != null && context.Type == typeof(WraithFormSpell))
+        if (context?.Type == typeof(WraithFormSpell))
         {
           wraithLeech =
             5 + (int)(15 * attacker.Skills.SpiritSpeak.Value /
@@ -1516,7 +1478,7 @@ namespace Server.Items
       if (atkWeapon is ButchersWarCleaver && TalismanSlayer.Slays(TalismanSlayerName.Bovine, defender))
         return CheckSlayerResult.Slayer;
 
-      if (atkSlayer != null && atkSlayer.Slays(defender) || atkSlayer2 != null && atkSlayer2.Slays(defender))
+      if (atkSlayer?.Slays(defender) == true || atkSlayer2?.Slays(defender) == true)
         return CheckSlayerResult.Slayer;
 
       if (attacker.Talisman is BaseTalisman talisman && TalismanSlayer.Slays(talisman.Slayer, defender))
@@ -1524,18 +1486,15 @@ namespace Server.Items
 
       if (!Core.SE)
       {
-        ISlayer defISlayer = Spellbook.FindEquippedSpellbook(defender);
-
-        if (defISlayer == null)
-          defISlayer = defender.Weapon as ISlayer;
+        ISlayer defISlayer = Spellbook.FindEquippedSpellbook(defender) ?? defender.Weapon as ISlayer;
 
         if (defISlayer != null)
         {
           SlayerEntry defSlayer = SlayerGroup.GetEntryByName(defISlayer.Slayer);
           SlayerEntry defSlayer2 = SlayerGroup.GetEntryByName(defISlayer.Slayer2);
 
-          if (defSlayer != null && defSlayer.Group.OppositionSuperSlays(attacker) ||
-              defSlayer2 != null && defSlayer2.Group.OppositionSuperSlays(attacker))
+          if (defSlayer?.Group.OppositionSuperSlays(attacker) == true ||
+              defSlayer2?.Group.OppositionSuperSlays(attacker) == true)
             return CheckSlayerResult.Opposition;
         }
       }
@@ -1545,18 +1504,18 @@ namespace Server.Items
 
     public virtual void AddBlood(Mobile attacker, Mobile defender, int damage)
     {
-      if (damage > 0)
-      {
-        new Blood().MoveToWorld(defender.Location, defender.Map);
+      if (damage <= 0)
+        return;
 
-        int extraBlood = Core.SE ? Utility.RandomMinMax(3, 4) : Utility.RandomMinMax(0, 1);
+      new Blood().MoveToWorld(defender.Location, defender.Map);
 
-        for (int i = 0; i < extraBlood; i++)
-          new Blood().MoveToWorld(new Point3D(
-            defender.X + Utility.RandomMinMax(-1, 1),
-            defender.Y + Utility.RandomMinMax(-1, 1),
-            defender.Z), defender.Map);
-      }
+      int extraBlood = Core.SE ? Utility.RandomMinMax(3, 4) : Utility.RandomMinMax(0, 1);
+
+      for (int i = 0; i < extraBlood; i++)
+        new Blood().MoveToWorld(new Point3D(
+          defender.X + Utility.RandomMinMax(-1, 1),
+          defender.Y + Utility.RandomMinMax(-1, 1),
+          defender.Z), defender.Map);
     }
 
     public virtual void GetDamageTypes(Mobile wielder, out int phys, out int fire, out int cold, out int pois,
@@ -2024,12 +1983,7 @@ namespace Server.Items
 
     private string GetNameString()
     {
-      string name = Name;
-
-      if (name == null)
-        name = $"#{LabelNumber}";
-
-      return name;
+      return Name ?? $"#{LabelNumber}";
     }
 
     public int GetElementalDamageHue()
@@ -3072,7 +3026,7 @@ namespace Server.Items
 
       attacker.DoHarmful(defender);
 
-      MagerySpell sp = new DispelSpell(attacker, null);
+      MagerySpell sp = new DispelSpell(attacker);
 
       if (sp.CheckResisted(defender))
       {
@@ -3114,15 +3068,12 @@ namespace Server.Items
       if (map == null)
         return;
 
-      List<Mobile> list = new List<Mobile>();
-
       int range = Core.ML ? 5 : 10;
 
       IPooledEnumerable<Mobile> eable = from.GetMobilesInRange(range);
-      foreach (Mobile m in eable)
-        if (from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false) &&
-            (!Core.ML || from.InLOS(m)))
-          list.Add(m);
+      List<Mobile> list = eable.Where(m =>
+        from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m)
+        && from.CanBeHarmful(m, false) && (!Core.ML || from.InLOS(m))).ToList();
       eable.Free();
 
       if (list.Count == 0)

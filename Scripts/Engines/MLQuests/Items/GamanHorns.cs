@@ -3,12 +3,7 @@ namespace Server.Items
   public class GamanHorns : Item
   {
     [Constructible]
-    public GamanHorns() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GamanHorns(int amount) : base(0x1084)
+    public GamanHorns(int amount = 1) : base(0x1084)
     {
       LootType = LootType.Blessed;
       Stackable = true;

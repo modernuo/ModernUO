@@ -20,32 +20,32 @@ namespace Server.Engines.ConPVP
 
       AddImage(215, -43, 0xEE40);
 
-      AddHtml(22 - 1, 22, 294, 20, Color(Center("Duel Countdown"), BlackColor32), false, false);
-      AddHtml(22 + 1, 22, 294, 20, Color(Center("Duel Countdown"), BlackColor32), false, false);
-      AddHtml(22, 22 - 1, 294, 20, Color(Center("Duel Countdown"), BlackColor32), false, false);
-      AddHtml(22, 22 + 1, 294, 20, Color(Center("Duel Countdown"), BlackColor32), false, false);
-      AddHtml(22, 22, 294, 20, Color(Center("Duel Countdown"), LabelColor32), false, false);
+      AddHtml(22 - 1, 22, 294, 20, Color(Center("Duel Countdown"), BlackColor32));
+      AddHtml(22 + 1, 22, 294, 20, Color(Center("Duel Countdown"), BlackColor32));
+      AddHtml(22, 22 - 1, 294, 20, Color(Center("Duel Countdown"), BlackColor32));
+      AddHtml(22, 22 + 1, 294, 20, Color(Center("Duel Countdown"), BlackColor32));
+      AddHtml(22, 22, 294, 20, Color(Center("Duel Countdown"), LabelColor32));
 
       AddHtml(22 - 1, 50, 294, 80,
         Color(
           "The arranged duel is about to begin. During this countdown period you may not cast spells and you may not move. This message will close automatically when the period ends.",
-          BlackColor32), false, false);
+          BlackColor32));
       AddHtml(22 + 1, 50, 294, 80,
         Color(
           "The arranged duel is about to begin. During this countdown period you may not cast spells and you may not move. This message will close automatically when the period ends.",
-          BlackColor32), false, false);
+          BlackColor32));
       AddHtml(22, 50 - 1, 294, 80,
         Color(
           "The arranged duel is about to begin. During this countdown period you may not cast spells and you may not move. This message will close automatically when the period ends.",
-          BlackColor32), false, false);
+          BlackColor32));
       AddHtml(22, 50 + 1, 294, 80,
         Color(
           "The arranged duel is about to begin. During this countdown period you may not cast spells and you may not move. This message will close automatically when the period ends.",
-          BlackColor32), false, false);
+          BlackColor32));
       AddHtml(22, 50, 294, 80,
         Color(
           "The arranged duel is about to begin. During this countdown period you may not cast spells and you may not move. This message will close automatically when the period ends.",
-          0xFFCC66), false, false);
+          0xFFCC66));
 
       /*AddImageTiled( 32, 128, 264, 1, 9107 );
       AddImageTiled( 42, 130, 264, 1, 9157 );
@@ -56,7 +56,7 @@ namespace Server.Engines.ConPVP
       AddHtml( 60, 140+1, 250, 20, Color( String.Format( "Duel will begin in <BASEFONT COLOR=#{2:X6}>{0} <BASEFONT COLOR=#{2:X6}>second{1}.", count, count==1?"":"s", BlackColor32 ), BlackColor32 ), false, false );
       AddHtml( 60, 140, 250, 20, Color( String.Format( "Duel will begin in <BASEFONT COLOR=#FF6666>{0} <BASEFONT COLOR=#{2:X6}>second{1}.", count, count==1?"":"s", 0x66AACC ), 0x66AACC ), false, false );*/
 
-      AddButton(314 - 50, 157 - offset, 247, 248, 1, GumpButtonType.Reply, 0);
+      AddButton(314 - 50, 157 - offset, 247, 248, 1);
     }
 
     public string Center(string text)

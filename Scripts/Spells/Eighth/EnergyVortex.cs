@@ -1,10 +1,9 @@
 using System;
 using Server.Mobiles;
-using Server.Targeting;
 
 namespace Server.Spells.Eighth
 {
-  public class EnergyVortexSpell : MagerySpell
+  public class EnergyVortexSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Energy Vortex", "Vas Corp Por",
@@ -17,7 +16,7 @@ namespace Server.Spells.Eighth
       Reagent.Nightshade
     );
 
-    public EnergyVortexSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public EnergyVortexSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -39,7 +38,7 @@ namespace Server.Spells.Eighth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this);
     }
 
     public void Target(IPoint3D p)
@@ -65,35 +64,6 @@ namespace Server.Spells.Eighth
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private EnergyVortexSpell m_Owner;
-
-      public InternalTarget(EnergyVortexSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D d)
-          m_Owner.Target(d);
-      }
-
-      protected override void OnTargetOutOfLOS(Mobile from, object o)
-      {
-        from.SendLocalizedMessage(501943); // Target cannot be seen. Try again.
-        from.Target = new InternalTarget(m_Owner);
-        from.Target.BeginTimeout(from, TimeoutTime - DateTime.UtcNow);
-        m_Owner = null;
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner?.FinishSequence();
-      }
     }
   }
 }
