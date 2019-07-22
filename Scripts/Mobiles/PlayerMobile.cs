@@ -155,15 +155,12 @@ namespace Server.Mobiles
       m_GuildRank = RankDefinition.Lowest;
 
       ChampionTitles = new ChampionTitleInfo();
-
-      InvalidateMyRunUO();
     }
 
     public PlayerMobile(Serial s) : base(s)
     {
       VisibilityList = new List<Mobile>();
       m_AntiMacroTable = new Dictionary<Skill, Dictionary<object, CountAndTimeStamp>>();
-      InvalidateMyRunUO();
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -943,9 +940,6 @@ namespace Server.Mobiles
 
       if ((flag & MobileDelta.Stat) != 0)
         ValidateEquipment();
-
-      if ((flag & (MobileDelta.Name | MobileDelta.Hue)) != 0)
-        InvalidateMyRunUO();
     }
 
     private static void OnLogout(LogoutEventArgs e)
@@ -1100,8 +1094,6 @@ namespace Server.Mobiles
 
       if (NetState != null)
         CheckLightLevels(false);
-
-      InvalidateMyRunUO();
     }
 
     public override void OnItemRemoved(Item item)
@@ -1117,8 +1109,6 @@ namespace Server.Mobiles
 
       if (NetState != null)
         CheckLightLevels(false);
-
-      InvalidateMyRunUO();
     }
 
     private void AddArmorRating(ref double rating, Item armor)
@@ -3095,11 +3085,7 @@ namespace Server.Mobiles
     public bool PublicMyRunUO
     {
       get => GetFlag(PlayerFlag.PublicMyRunUO);
-      set
-      {
-        SetFlag(PlayerFlag.PublicMyRunUO, value);
-        InvalidateMyRunUO();
-      }
+      set => SetFlag(PlayerFlag.PublicMyRunUO, value);
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -3868,45 +3854,29 @@ namespace Server.Mobiles
 
     public bool ChangedMyRunUO{ get; set; }
 
-    public void InvalidateMyRunUO()
-    {
-      if (!Deleted && !ChangedMyRunUO)
-      {
-        ChangedMyRunUO = true;
-        MyRunUO.QueueMobileUpdate(this);
-      }
-    }
-
     public override void OnKillsChange(int oldValue)
     {
       if (Young && Kills > oldValue) ((Account)Account)?.RemoveYoungStatus(0);
-
-      InvalidateMyRunUO();
     }
 
     public override void OnGenderChanged(bool oldFemale)
     {
-      InvalidateMyRunUO();
     }
 
     public override void OnGuildChange(BaseGuild oldGuild)
     {
-      InvalidateMyRunUO();
     }
 
     public override void OnGuildTitleChange(string oldTitle)
     {
-      InvalidateMyRunUO();
     }
 
     public override void OnKarmaChange(int oldValue)
     {
-      InvalidateMyRunUO();
     }
 
     public override void OnFameChange(int oldValue)
     {
-      InvalidateMyRunUO();
     }
 
     public override void OnSkillChange(SkillName skill, double oldBase)
@@ -3918,31 +3888,21 @@ namespace Server.Mobiles
 
       if (MLQuestSystem.Enabled)
         MLQuestSystem.HandleSkillGain(this, skill);
-
-      InvalidateMyRunUO();
     }
 
     public override void OnAccessLevelChanged(AccessLevel oldLevel)
     {
-      if (AccessLevel == AccessLevel.Player)
-        IgnoreMobiles = false;
-      else
-        IgnoreMobiles = true;
-
-      InvalidateMyRunUO();
+      IgnoreMobiles = AccessLevel != AccessLevel.Player;
     }
 
     public override void OnRawStatChange(StatType stat, int oldValue)
     {
-      InvalidateMyRunUO();
     }
 
     public override void OnDelete()
     {
       ReceivedHonorContext?.Cancel();
       SentHonorContext?.Cancel();
-
-      InvalidateMyRunUO();
     }
 
     #endregion

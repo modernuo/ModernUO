@@ -1,266 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{0B33CEEB-88E1-49A6-8D7D-AF6A5A357087}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <NoStandardLibraries>false</NoStandardLibraries>
-    <AssemblyName>RunUO</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RootNamespace>Server</RootNamespace>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <ApplicationIcon>runuo.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
     <StartupObject>Server.Core</StartupObject>
+    <AssemblyName>ModernUO</AssemblyName>
+    <Win32Resource />
+    <Version>3.0.0</Version>
+    <Authors>Kamron Batman</Authors>
+    <Company>ModernUO</Company>
+    <Product>ModernUO</Product>
+    <Copyright>2019</Copyright>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NEWTIMERS</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\</OutputPath>
-    <DefineConstants>TRACE;NEWTIMERS</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NEWTIMERS</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutDir>..\</OutDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputPath>..\</OutputPath>
-    <DefineConstants>TRACE;NEWTIMERS</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <Prefer32Bit>false</Prefer32Bit>
+    <OutDir>..\</OutDir>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AggressorInfo.cs" />
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Attributes.cs" />
-    <Compile Include="BaseVendor.cs" />
-    <Compile Include="Body.cs" />
-    <Compile Include="ClientVersion.cs" />
-    <Compile Include="Commands.cs" />
-    <Compile Include="ContextMenus\ContextMenu.cs" />
-    <Compile Include="ContextMenus\ContextMenuEntry.cs" />
-    <Compile Include="ContextMenus\OpenBackpackEntry.cs" />
-    <Compile Include="ContextMenus\PaperdollEntry.cs" />
-    <Compile Include="Diagnostics\BaseProfile.cs" />
-    <Compile Include="Diagnostics\GumpProfile.cs" />
-    <Compile Include="Diagnostics\PacketProfile.cs" />
-    <Compile Include="Diagnostics\TargetProfile.cs" />
-    <Compile Include="Diagnostics\TimerProfile.cs" />
-    <Compile Include="Effects.cs" />
-    <Compile Include="EventLog.cs" />
-    <Compile Include="EventSink.cs" />
-    <Compile Include="ExpansionInfo.cs" />
-    <Compile Include="Geometry.cs" />
-    <Compile Include="Guild.cs" />
-    <Compile Include="Gumps\Gump.cs" />
-    <Compile Include="Gumps\GumpAlphaRegion.cs" />
-    <Compile Include="Gumps\GumpBackground.cs" />
-    <Compile Include="Gumps\GumpButton.cs" />
-    <Compile Include="Gumps\GumpCheck.cs" />
-    <Compile Include="Gumps\GumpEntry.cs" />
-    <Compile Include="Gumps\GumpGroup.cs" />
-    <Compile Include="Gumps\GumpHtml.cs" />
-    <Compile Include="Gumps\GumpHtmlLocalized.cs" />
-    <Compile Include="Gumps\GumpImage.cs" />
-    <Compile Include="Gumps\GumpImageTileButton.cs" />
-    <Compile Include="Gumps\GumpImageTiled.cs" />
-    <Compile Include="Gumps\GumpItem.cs" />
-    <Compile Include="Gumps\GumpItemProperty.cs" />
-    <Compile Include="Gumps\GumpLabel.cs" />
-    <Compile Include="Gumps\GumpLabelCropped.cs" />
-    <Compile Include="Gumps\GumpPage.cs" />
-    <Compile Include="Gumps\GumpRadio.cs" />
-    <Compile Include="Gumps\GumpTextEntry.cs" />
-    <Compile Include="Gumps\GumpTextEntryLimited.cs" />
-    <Compile Include="Gumps\GumpTooltip.cs" />
-    <Compile Include="Gumps\RelayInfo.cs" />
-    <Compile Include="HuePicker.cs" />
-    <Compile Include="IAccount.cs" />
-    <Compile Include="IEntity.cs" />
-    <Compile Include="Insensitive.cs" />
-    <Compile Include="Interfaces.cs" />
-    <Compile Include="Item.cs" />
-    <Compile Include="ItemBounds.cs" />
-    <Compile Include="Items\BaseMulti.cs" />
-    <Compile Include="Items\Container.cs" />
-    <Compile Include="Items\Containers.cs" />
-    <Compile Include="Items\SecureTradeContainer.cs" />
-    <Compile Include="Items\VirtualCheck.cs" />
-    <Compile Include="Items\VirtualHair.cs" />
-    <Compile Include="KeywordList.cs" />
-    <Compile Include="Layer.cs" />
-    <Compile Include="LightType.cs" />
-    <Compile Include="Main.cs" />
-    <Compile Include="Map.cs" />
-    <Compile Include="Menus\IMenu.cs" />
-    <Compile Include="Menus\ItemListMenu.cs" />
-    <Compile Include="Menus\QuestionMenu.cs" />
-    <Compile Include="Mobile.cs" />
-    <Compile Include="Movement.cs" />
-    <Compile Include="MultiData.cs" />
-    <Compile Include="NativeReader.cs" />
-    <Compile Include="Network\BufferPool.cs" />
-    <Compile Include="Network\ByteQueue.cs" />
-    <Compile Include="Network\Compression.cs" />
-    <Compile Include="Network\EncodedPacketHandler.cs" />
-    <Compile Include="Network\EncodedReader.cs" />
-    <Compile Include="Network\StaticPacketHandlers.cs" />
-    <Compile Include="Network\Listener.cs" />
-    <Compile Include="Network\MessagePump.cs" />
-    <Compile Include="Network\NetState.cs" />
-    <Compile Include="Network\PacketHandler.cs" />
-    <Compile Include="Network\PacketHandlers.cs" />
-    <Compile Include="Network\PacketReader.cs" />
-    <Compile Include="Network\Packets.cs" />
-    <Compile Include="Network\PacketWriter.cs" />
-    <Compile Include="Network\SendQueue.cs" />
-    <Compile Include="Notoriety.cs" />
-    <Compile Include="ObjectPropertyList.cs" />
-    <Compile Include="Party.cs" />
-    <Compile Include="Persistence\BinaryMemoryWriter.cs" />
-    <Compile Include="Persistence\DualSaveStrategy.cs" />
-    <Compile Include="Persistence\DynamicSaveStrategy.cs" />
-    <Compile Include="Persistence\FileOperations.cs" />
-    <Compile Include="Persistence\FileQueue.cs" />
-    <Compile Include="Persistence\ParallelSaveStrategy.cs" />
-    <Compile Include="Persistence\Persistence.cs" />
-    <Compile Include="Persistence\QueuedMemoryWriter.cs" />
-    <Compile Include="Persistence\SaveMetrics.cs" />
-    <Compile Include="Persistence\SaveStrategy.cs" />
-    <Compile Include="Persistence\SequentialFileWriter.cs" />
-    <Compile Include="Persistence\StandardSaveStrategy.cs" />
-    <Compile Include="Point3DList.cs" />
-    <Compile Include="Poison.cs" />
-    <Compile Include="Prompt.cs" />
-    <Compile Include="QuestArrow.cs" />
-    <Compile Include="Race.cs" />
-    <Compile Include="Random.cs" />
-    <Compile Include="Region.cs" />
-    <Compile Include="ScriptCompiler.cs" />
-    <Compile Include="Sector.cs" />
-    <Compile Include="SecureTrade.cs" />
-    <Compile Include="Serial.cs" />
-    <Compile Include="Serialization.cs" />
-    <Compile Include="Skills.cs" />
-    <Compile Include="Targeting\LandTarget.cs" />
-    <Compile Include="Targeting\MultiTarget.cs" />
-    <Compile Include="Targeting\StaticTarget.cs" />
-    <Compile Include="Targeting\Target.cs" />
-    <Compile Include="Targeting\TargetCancelType.cs" />
-    <Compile Include="Targeting\TargetFlags.cs" />
-    <Compile Include="TileData.cs" />
-    <Compile Include="TileList.cs" />
-    <Compile Include="TileMatrix.cs" />
-    <Compile Include="TileMatrixPatch.cs" />
-    <Compile Include="Timer.cs" />
-    <Compile Include="Utility.cs" />
-    <Compile Include="VirtueInfo.cs" />
-    <Compile Include="World.cs" />
-  </ItemGroup>
   <ItemGroup>
     <Content Include="runuo.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 4.5</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
-  <ProjectExtensions>
-    <VisualStudio AllowExistingFolder="true" />
-  </ProjectExtensions>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-  </Target>
 </Project>

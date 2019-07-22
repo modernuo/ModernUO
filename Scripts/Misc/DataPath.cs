@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Microsoft.Win32;
 
 namespace Server.Misc
 {
@@ -12,7 +11,7 @@ namespace Server.Misc
      * Example:
      *  private static string CustomPath = @"C:\Program Files\Ultima Online";
      */
-    private static string CustomPath = null;
+    private static string CustomPath = @"/Users/kamronbatman/UOC";
 
     /* The following is a list of files which a required for proper execution:
      *
@@ -69,7 +68,8 @@ namespace Server.Misc
 
     private static string GetPath(string subName, string keyName)
     {
-      try
+      return null;
+      /*try
       {
         string keyString;
 
@@ -102,7 +102,7 @@ namespace Server.Misc
       catch
       {
         return null;
-      }
+      }*/
     }
   }
 }

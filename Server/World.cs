@@ -649,9 +649,7 @@ namespace Server
         Directory.CreateDirectory("Saves/Guilds/");
 
 
-      /*using ( SaveMetrics metrics = new SaveMetrics() ) {*/
-      strategy.Save(null, permitBackgroundWrite);
-      /*}*/
+      strategy.Save(permitBackgroundWrite);
 
       try
       {

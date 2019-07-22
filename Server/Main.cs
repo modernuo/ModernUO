@@ -26,6 +26,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -116,8 +117,6 @@ namespace Server
 
     internal static bool HaltOnWarning{ get; private set; }
 
-    internal static bool VBdotNet{ get; private set; }
-
     public static List<string> DataDirectories{ get; } = new List<string>();
 
     public static Assembly Assembly{ get; set; }
@@ -198,9 +197,6 @@ namespace Server
 
         if (HaltOnWarning)
           Utility.Separate(sb, "-haltonwarning", " ");
-
-        if (VBdotNet)
-          Utility.Separate(sb, "-vb", " ");
 
         if (_UseHRT)
           Utility.Separate(sb, "-usehrt", " ");
@@ -355,8 +351,6 @@ namespace Server
           m_Cache = false;
         else if (Insensitive.Equals(a, "-haltonwarning"))
           HaltOnWarning = true;
-        else if (Insensitive.Equals(a, "-vb"))
-          VBdotNet = true;
         else if (Insensitive.Equals(a, "-usehrt"))
           _UseHRT = true;
 
@@ -398,10 +392,10 @@ namespace Server
       Version ver = Assembly.GetName().Version;
 
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
-      Console.WriteLine("RunUO - [https://github.com/runuo/] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
+      Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
         ver.Revision);
-      Console.WriteLine("Core: Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major,
-        Environment.Version.Minor, Environment.Version.Build);
+      // Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName
+      Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
 
       string s = Arguments;
 
@@ -440,18 +434,8 @@ namespace Server
       Console.WriteLine("RandomImpl: {0} ({1})", RandomImpl.Type.Name,
         RandomImpl.IsHardwareRNG ? "Hardware" : "Software");
 
-      while (!ScriptCompiler.Compile(Debug, m_Cache))
-      {
-        Console.WriteLine("Scripts: One or more scripts failed to compile or no script files were found.");
-
-        if (Service)
-          return;
-
-        Console.WriteLine(" - Press return to exit, or R to try again.");
-
-        if (Console.ReadKey(true).Key != ConsoleKey.R)
-          return;
-      }
+      // Load Assembly Scripts.CS.dll
+      ScriptCompiler.LoadScripts();
 
       ScriptCompiler.Invoke("Configure");
 
