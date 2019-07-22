@@ -116,8 +116,6 @@ namespace Server
 
     internal static bool HaltOnWarning{ get; private set; }
 
-    internal static bool VBdotNet{ get; private set; }
-
     public static List<string> DataDirectories{ get; } = new List<string>();
 
     public static Assembly Assembly{ get; set; }
@@ -198,9 +196,6 @@ namespace Server
 
         if (HaltOnWarning)
           Utility.Separate(sb, "-haltonwarning", " ");
-
-        if (VBdotNet)
-          Utility.Separate(sb, "-vb", " ");
 
         if (_UseHRT)
           Utility.Separate(sb, "-usehrt", " ");
@@ -355,8 +350,6 @@ namespace Server
           m_Cache = false;
         else if (Insensitive.Equals(a, "-haltonwarning"))
           HaltOnWarning = true;
-        else if (Insensitive.Equals(a, "-vb"))
-          VBdotNet = true;
         else if (Insensitive.Equals(a, "-usehrt"))
           _UseHRT = true;
 

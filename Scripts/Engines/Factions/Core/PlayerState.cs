@@ -271,11 +271,7 @@ namespace Server.Factions
 
     public void Invalidate()
     {
-      if (Mobile is PlayerMobile pm)
-      {
-        pm.InvalidateProperties();
-        pm.InvalidateMyRunUO();
-      }
+      (Mobile as PlayerMobile)?.InvalidateProperties();
     }
 
     public void Attach()

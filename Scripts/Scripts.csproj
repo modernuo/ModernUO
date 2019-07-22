@@ -11,22 +11,26 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>Output\</OutputPath>
+    <Optimize>true</Optimize>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>TRACE;DEBUG;NEWTIMERS;NEWPARENT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <Prefer32Bit>false</Prefer32Bit>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>Output\</OutputPath>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>TRACE;NEWTIMERS;NEWPARENT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,7 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>Output\</OutputPath>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>TRACE;DEBUG;NEWTIMERS;NEWPARENT</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -48,7 +52,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>Output\</OutputPath>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>TRACE;NEWTIMERS;NEWPARENT</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -61,9 +65,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -511,10 +512,7 @@
     <Compile Include="Engines\MLQuests\Rewards\DummyReward.cs" />
     <Compile Include="Engines\MLQuests\Rewards\ItemReward.cs" />
     <Compile Include="Engines\MyRunUO\Config.cs" />
-    <Compile Include="Engines\MyRunUO\DatabaseCommandQueue.cs" />
     <Compile Include="Engines\MyRunUO\LayerComparer.cs" />
-    <Compile Include="Engines\MyRunUO\MyRunUO.cs" />
-    <Compile Include="Engines\MyRunUO\MyRunUOStatus.cs" />
     <Compile Include="Engines\Party\AddPartyTarget.cs" />
     <Compile Include="Engines\Party\DeclineTimer.cs" />
     <Compile Include="Engines\Party\Packets.cs" />

@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Microsoft.Win32;
 
 namespace Server.Misc
 {
@@ -69,7 +68,8 @@ namespace Server.Misc
 
     private static string GetPath(string subName, string keyName)
     {
-      try
+      return null;
+      /*try
       {
         string keyString;
 
@@ -102,7 +102,7 @@ namespace Server.Misc
       catch
       {
         return null;
-      }
+      }*/
     }
   }
 }

@@ -6,7 +6,7 @@ namespace Server.Commands.Generic
   public sealed class DistinctExtension : BaseExtension
   {
     public static ExtensionInfo ExtInfo =
-      new ExtensionInfo(30, "Distinct", -1, delegate { return new DistinctExtension(); });
+      new ExtensionInfo(30, "Distinct", -1, () => new DistinctExtension());
 
     private IComparer<object> m_Comparer;
 
@@ -36,7 +36,7 @@ namespace Server.Commands.Generic
       }
 
       if (assembly == null)
-        assembly = new AssemblyEmitter("__dynamic", false);
+        assembly = new AssemblyEmitter("__dynamic");
 
       m_Comparer = DistinctCompiler.Compile<object>(assembly, baseType, m_Properties.ToArray());
     }
