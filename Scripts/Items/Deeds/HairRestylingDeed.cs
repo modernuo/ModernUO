@@ -104,30 +104,30 @@ namespace Server.Items
 
         AddBackground(100, 10, 400, 385, 0xA28);
 
-        AddHtmlLocalized(100, 25, 400, 35, 1013008, false, false);
-        AddButton(175, 340, 0xFA5, 0xFA7, 0x0, GumpButtonType.Reply, 0); // CANCEL
+        AddHtmlLocalized(100, 25, 400, 35, 1013008);
+        AddButton(175, 340, 0xFA5, 0xFA7, 0x0); // CANCEL
 
-        AddHtmlLocalized(210, 342, 90, 35, 1011012, false, false); // <CENTER>HAIRSTYLE SELECTION MENU</center>
+        AddHtmlLocalized(210, 342, 90, 35, 1011012); // <CENTER>HAIRSTYLE SELECTION MENU</center>
 
         int[][] RacialData = from.Race == Race.Human ? HumanArray : ElvenArray;
 
         for (int i = 1; i < RacialData.Length; i++)
         {
           AddHtmlLocalized(LayoutArray[i][2], LayoutArray[i][3], i == 1 ? 125 : 80, i == 1 ? 70 : 35,
-            m_From.Female ? RacialData[i][0] : RacialData[i][1], false, false);
+            m_From.Female ? RacialData[i][0] : RacialData[i][1]);
           if (LayoutArray[i][4] != 0)
           {
             AddBackground(LayoutArray[i][0], LayoutArray[i][1], 50, 50, 0xA3C);
             AddImage(LayoutArray[i][4], LayoutArray[i][5], m_From.Female ? RacialData[i][4] : RacialData[i][5]);
           }
 
-          AddButton(LayoutArray[i][6], LayoutArray[i][7], 0xFA5, 0xFA7, i, GumpButtonType.Reply, 0);
+          AddButton(LayoutArray[i][6], LayoutArray[i][7], 0xFA5, 0xFA7, i);
         }
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_From == null || !m_From.Alive)
+        if (m_From?.Alive != true)
           return;
 
         if (m_Deed.Deleted)

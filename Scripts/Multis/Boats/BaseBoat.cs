@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Server.Items;
 using Server.Network;
 
@@ -466,13 +467,7 @@ namespace Server.Multis
 
     public bool CheckKey(uint keyValue)
     {
-      if (SPlank != null && SPlank.KeyValue == keyValue)
-        return true;
-
-      if (PPlank != null && PPlank.KeyValue == keyValue)
-        return true;
-
-      return false;
+      return SPlank?.KeyValue == keyValue || PPlank?.KeyValue == keyValue;
     }
 
     public void Refresh()
@@ -751,7 +746,7 @@ namespace Server.Multis
       if (CheckDecay())
         return;
 
-      if (newName != null && newName.Length > 40)
+      if (newName?.Length > 40)
         newName = newName.Substring(0, 40);
 
       if (m_ShipName == newName)
@@ -899,7 +894,7 @@ namespace Server.Multis
         return false;
       }
 
-      if (MapItem == null || MapItem.Deleted)
+      if (MapItem?.Deleted != false)
       {
         if (message)
           TillerMan?.Say(502513); // I have seen no map, sir.
@@ -1198,71 +1193,61 @@ namespace Server.Multis
       MultiComponentList newComponents = MultiData.GetComponents(itemID);
 
       for (int x = 0; x < newComponents.Width; ++x)
-      for (int y = 0; y < newComponents.Height; ++y)
-      {
-        int tx = p.X + newComponents.Min.X + x;
-        int ty = p.Y + newComponents.Min.Y + y;
-
-        if (newComponents.Tiles[x][y].Length == 0 || Contains(tx, ty))
-          continue;
-
-        LandTile landTile = map.Tiles.GetLandTile(tx, ty);
-        StaticTile[] tiles = map.Tiles.GetStaticTiles(tx, ty, true);
-
-        bool hasWater = false;
-
-        if (landTile.Z == p.Z &&
-            (landTile.ID >= 168 && landTile.ID <= 171 || landTile.ID >= 310 && landTile.ID <= 311))
-          hasWater = true;
-
-        int z = p.Z;
-
-        //int landZ = 0, landAvg = 0, landTop = 0;
-
-        //map.GetAverageZ( tx, ty, ref landZ, ref landAvg, ref landTop );
-
-        //if ( !landTile.Ignored && top > landZ && landTop > z )
-        //	return false;
-
-        for (int i = 0; i < tiles.Length; ++i)
+        for (int y = 0; y < newComponents.Height; ++y)
         {
-          StaticTile tile = tiles[i];
-          bool isWater = tile.ID >= 0x1796 && tile.ID <= 0x17B2;
+          int tx = p.X + newComponents.Min.X + x;
+          int ty = p.Y + newComponents.Min.Y + y;
 
-          if (tile.Z == p.Z && isWater)
-            hasWater = true;
-          else if (tile.Z >= p.Z && !isWater)
+          if (newComponents.Tiles[x][y].Length == 0 || Contains(tx, ty))
+            continue;
+
+          LandTile landTile = map.Tiles.GetLandTile(tx, ty);
+          StaticTile[] tiles = map.Tiles.GetStaticTiles(tx, ty, true);
+
+          bool hasWater = landTile.Z == p.Z &&
+                          (landTile.ID >= 168 && landTile.ID <= 171 || landTile.ID >= 310 && landTile.ID <= 311);
+
+          // int z = p.Z;
+
+          //int landZ = 0, landAvg = 0, landTop = 0;
+
+          //map.GetAverageZ( tx, ty, ref landZ, ref landAvg, ref landTop );
+
+          //if ( !landTile.Ignored && top > landZ && landTop > z )
+          //	return false;
+
+          for (int i = 0; i < tiles.Length; ++i)
+          {
+            StaticTile tile = tiles[i];
+            bool isWater = tile.ID >= 0x1796 && tile.ID <= 0x17B2;
+
+            if (tile.Z == p.Z && isWater)
+              hasWater = true;
+            else if (tile.Z >= p.Z && !isWater)
+              return false;
+          }
+
+          if (!hasWater)
             return false;
         }
-
-        if (!hasWater)
-          return false;
-      }
 
       IPooledEnumerable<Item> eable = map.GetItemsInBounds(new Rectangle2D(p.X + newComponents.Min.X,
         p.Y + newComponents.Min.Y, newComponents.Width, newComponents.Height));
 
-      foreach (Item item in eable)
+      bool canFit = eable.All(item =>
       {
         if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || item.Z < p.Z || !item.Visible)
-          continue;
+          return true;
 
         int x = item.X - p.X + newComponents.Min.X;
         int y = item.Y - p.Y + newComponents.Min.Y;
 
-        if (x >= 0 && x < newComponents.Width && y >= 0 && y < newComponents.Height &&
-            newComponents.Tiles[x][y].Length == 0)
-          continue;
-        if (Contains(item))
-          continue;
-
-        eable.Free();
-        return false;
-      }
+        return x >= 0 && x < newComponents.Width && y >= 0 && y < newComponents.Height &&
+               newComponents.Tiles[x][y].Length == 0 || Contains(item);
+      });
 
       eable.Free();
-
-      return true;
+      return canFit;
     }
 
     public Point3D Rotate(Point3D p, int count)
@@ -1282,22 +1267,11 @@ namespace Server.Multis
 
     public override bool Contains(int x, int y)
     {
-      if (base.Contains(x, y))
-        return true;
-
-      if (TillerMan != null && x == TillerMan.X && y == TillerMan.Y)
-        return true;
-
-      if (Hold != null && x == Hold.X && y == Hold.Y)
-        return true;
-
-      if (PPlank != null && x == PPlank.X && y == PPlank.Y)
-        return true;
-
-      if (SPlank != null && x == SPlank.X && y == SPlank.Y)
-        return true;
-
-      return false;
+      return base.Contains(x, y) ||
+             TillerMan?.X == x && y == TillerMan.Y ||
+             Hold?.X == x && Hold.Y == y ||
+             PPlank?.X == x && PPlank.Y == y ||
+             SPlank?.X == x && SPlank.Y == y;
     }
 
     public static bool IsValidLocation(Point3D p, Map map)
@@ -1313,11 +1287,7 @@ namespace Server.Multis
 
     public static Rectangle2D[] GetWrapFor(Map m)
     {
-      if (m == Map.Ilshenar)
-        return m_IlshWrap;
-      if (m == Map.Tokuno)
-        return m_TokunoWrap;
-      return m_BritWrap;
+      return m == Map.Ilshenar ? m_IlshWrap : m == Map.Tokuno ? m_TokunoWrap : m_BritWrap;
     }
 
     public Direction GetMovementFor(int x, int y, out int maxSpeed)
@@ -1351,7 +1321,7 @@ namespace Server.Multis
         speed = Speed;
         clientSpeed = m_ClientSpeed;
       }
-      else if (MapItem == null || MapItem.Deleted)
+      else if (MapItem?.Deleted != false)
       {
         if (message)
           TillerMan?.Say(502513); // I have seen no map, sir.

@@ -20,13 +20,7 @@ namespace Server.Spells
 
     public override bool ConsumeReagents()
     {
-      if (base.ConsumeReagents())
-        return true;
-
-      if (ArcaneGem.ConsumeCharges(Caster, Core.SE ? 1 : 1 + (int)Circle))
-        return true;
-
-      return false;
+      return base.ConsumeReagents() || ArcaneGem.ConsumeCharges(Caster, Core.SE ? 1 : 1 + (int)Circle);
     }
 
     public override void GetCastSkills(out double min, out double max)
@@ -44,10 +38,7 @@ namespace Server.Spells
 
     public override int GetMana()
     {
-      if (Scroll is BaseWand)
-        return 0;
-
-      return m_ManaTable[(int)Circle];
+      return Scroll is BaseWand ? 0 : m_ManaTable[(int)Circle];
     }
 
     public override double GetResistSkill(Mobile m)

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
@@ -30,7 +29,7 @@ namespace Server.Mobiles
     private List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
     private List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
 
-    public BaseVendor(string title)
+    public BaseVendor(string title = null)
       : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
     {
       LoadSBInfo();
@@ -219,9 +218,7 @@ namespace Server.Mobiles
 
       buyer.PlaySound(0x32);
 
-      cont = buyer.Backpack;
-      if (cont == null)
-        cont = buyer.BankBox;
+      cont = buyer.Backpack ?? buyer.BankBox;
 
       foreach (BuyItemResponse buy in validBuy)
       {

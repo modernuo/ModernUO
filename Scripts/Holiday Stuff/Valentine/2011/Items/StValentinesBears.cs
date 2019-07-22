@@ -167,24 +167,23 @@ namespace Server.Items
 
         AddPage(0);
         AddBackground(0, 0, 420, 320, 9300);
-        AddHtml(10, 10, 400, 21, "<CENTER>St. Valentine Bear</CENTER>", false, false);
-        AddHtmlLocalized(10, 40, 400, 75, 1150293, 0, false,
-          false); // Enter up to three lines of personalized greeting for your St. Valentine Bear. You many enter up to 25 characters per line. Once you enter text, you will only be able to correct mistakes for 10 minutes.
+        AddHtml(10, 10, 400, 21, "<CENTER>St. Valentine Bear</CENTER>");
+        AddHtmlLocalized(10, 40, 400, 75, 1150293, 0); // Enter up to three lines of personalized greeting for your St. Valentine Bear. You many enter up to 25 characters per line. Once you enter text, you will only be able to correct mistakes for 10 minutes.
 
-        AddHtmlLocalized(10, 129, 400, 21, 1150296, 0, false, false); // Line 1:
+        AddHtmlLocalized(10, 129, 400, 21, 1150296, 0); // Line 1:
         AddBackground(10, 150, 400, 24, 9350);
         AddTextEntry(15, 152, 390, 20, 0, 0, "", 25);
 
-        AddHtmlLocalized(10, 179, 400, 21, 1150297, 0, false, false); // Line 2:
+        AddHtmlLocalized(10, 179, 400, 21, 1150297, 0); // Line 2:
         AddBackground(10, 200, 400, 24, 9350);
         AddTextEntry(15, 202, 390, 20, 0, 1, "", 25);
 
-        AddHtmlLocalized(10, 229, 400, 21, 1150298, 0, false, false); // Line 3:
+        AddHtmlLocalized(10, 229, 400, 21, 1150298, 0); // Line 3:
         AddBackground(10, 250, 400, 24, 9350);
         AddTextEntry(15, 252, 390, 20, 0, 2, "", 25);
 
-        AddButton(15, 285, 242, 241, 0, GumpButtonType.Reply, 0);
-        AddButton(335, 285, 247, 248, 1, GumpButtonType.Reply, 0);
+        AddButton(15, 285, 242, 241, 0);
+        AddButton(335, 285, 247, 248, 1);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
@@ -237,13 +236,7 @@ namespace Server.Items
   public class StValentinesPanda : StValentinesBear
   {
     [Constructible]
-    public StValentinesPanda()
-      : this(null)
-    {
-    }
-
-    [Constructible]
-    public StValentinesPanda(string name)
+    public StValentinesPanda(string name = null)
       : base(0x48E0, name)
     {
     }
@@ -272,13 +265,7 @@ namespace Server.Items
   public class StValentinesPolarBear : StValentinesBear
   {
     [Constructible]
-    public StValentinesPolarBear()
-      : this(null)
-    {
-    }
-
-    [Constructible]
-    public StValentinesPolarBear(string name)
+    public StValentinesPolarBear(string name = null)
       : base(0x48E2, name)
     {
     }

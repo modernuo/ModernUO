@@ -53,41 +53,40 @@ namespace Server.Engines.Craft
       AddImageTiled(10, 387, 510, 22, 2624);
       AddAlphaRegion(10, 10, 510, 399);
 
-      AddHtmlLocalized(170, 40, 150, 20, 1044053, LabelColor, false, false); // ITEM
-      AddHtmlLocalized(10, 192, 150, 22, 1044054, LabelColor, false, false); // <CENTER>SKILLS</CENTER>
-      AddHtmlLocalized(10, 277, 150, 22, 1044055, LabelColor, false, false); // <CENTER>MATERIALS</CENTER>
-      AddHtmlLocalized(10, 362, 150, 22, 1044056, LabelColor, false, false); // <CENTER>OTHER</CENTER>
+      AddHtmlLocalized(170, 40, 150, 20, 1044053, LabelColor); // ITEM
+      AddHtmlLocalized(10, 192, 150, 22, 1044054, LabelColor); // <CENTER>SKILLS</CENTER>
+      AddHtmlLocalized(10, 277, 150, 22, 1044055, LabelColor); // <CENTER>MATERIALS</CENTER>
+      AddHtmlLocalized(10, 362, 150, 22, 1044056, LabelColor); // <CENTER>OTHER</CENTER>
 
       if (craftSystem.GumpTitleNumber > 0)
-        AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor, false, false);
+        AddHtmlLocalized(10, 12, 510, 20, craftSystem.GumpTitleNumber, LabelColor);
       else
-        AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString, false, false);
+        AddHtml(10, 12, 510, 20, craftSystem.GumpTitleString);
 
-      AddButton(15, 387, 4014, 4016, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(50, 390, 150, 18, 1044150, LabelColor, false, false); // BACK
+      AddButton(15, 387, 4014, 4016, 0);
+      AddHtmlLocalized(50, 390, 150, 18, 1044150, LabelColor); // BACK
 
       bool needsRecipe = craftItem.Recipe != null && from is PlayerMobile mobile &&
                          !mobile.HasRecipe(craftItem.Recipe);
 
       if (needsRecipe)
       {
-        AddButton(270, 387, 4005, 4007, 0, GumpButtonType.Page, 0);
-        AddHtmlLocalized(305, 390, 150, 18, 1044151, GreyLabelColor, false, false); // MAKE NOW
+        AddButton(270, 387, 4005, 4007, 0, GumpButtonType.Page);
+        AddHtmlLocalized(305, 390, 150, 18, 1044151, GreyLabelColor); // MAKE NOW
       }
       else
       {
-        AddButton(270, 387, 4005, 4007, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(305, 390, 150, 18, 1044151, LabelColor, false, false); // MAKE NOW
+        AddButton(270, 387, 4005, 4007, 1);
+        AddHtmlLocalized(305, 390, 150, 18, 1044151, LabelColor); // MAKE NOW
       }
 
       if (craftItem.NameNumber > 0)
-        AddHtmlLocalized(330, 40, 180, 18, craftItem.NameNumber, LabelColor, false, false);
+        AddHtmlLocalized(330, 40, 180, 18, craftItem.NameNumber, LabelColor);
       else
         AddLabel(330, 40, LabelHue, craftItem.NameString);
 
       if (craftItem.UseAllRes)
-        AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 310, 18, 1048176, LabelColor, false,
-          false); // Makes as many as possible at once
+        AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 310, 18, 1048176, LabelColor); // Makes as many as possible at once
 
       DrawItem();
       DrawSkill();
@@ -100,15 +99,14 @@ namespace Server.Engines.Craft
 
       if (craftItem.RequiredExpansion != Expansion.None)
       {
-        bool supportsEx = from.NetState != null && from.NetState.SupportsExpansion(craftItem.RequiredExpansion);
+        bool supportsEx = from.NetState?.SupportsExpansion(craftItem.RequiredExpansion) == true;
         TextDefinition.AddHtmlText(this, 170, 302 + m_OtherCount++ * 20, 310, 18,
           RequiredExpansionMessage(craftItem.RequiredExpansion), false, false,
           supportsEx ? LabelColor : RedLabelColor, supportsEx ? LabelHue : RedLabelHue);
       }
 
       if (needsRecipe)
-        AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 310, 18, 1073620, RedLabelColor, false,
-          false); // You have not learned this recipe.
+        AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 310, 18, 1073620, RedLabelColor); // You have not learned this recipe.
     }
 
     private TextDefinition RequiredExpansionMessage(Expansion expansion)
@@ -132,8 +130,7 @@ namespace Server.Engines.Craft
 
       if (m_CraftItem.IsMarkable(type))
       {
-        AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 310, 18, 1044059, LabelColor, false,
-          false); // This item may hold its maker's mark
+        AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 310, 18, 1044059, LabelColor); // This item may hold its maker's mark
         m_ShowExceptionalChance = true;
       }
     }
@@ -148,8 +145,7 @@ namespace Server.Engines.Craft
         if (minSkill < 0)
           minSkill = 0;
 
-        AddHtmlLocalized(170, 132 + i * 20, 200, 18, AosSkillBonuses.GetLabel(skill.SkillToMake), LabelColor, false,
-          false);
+        AddHtmlLocalized(170, 132 + i * 20, 200, 18, AosSkillBonuses.GetLabel(skill.SkillToMake), LabelColor);
         AddLabel(430, 132 + i * 20, LabelHue, $"{minSkill:F1}");
       }
 
@@ -171,7 +167,7 @@ namespace Server.Engines.Craft
       else if (chance > 1.0)
         chance = 1.0;
 
-      AddHtmlLocalized(170, 80, 250, 18, 1044057, LabelColor, false, false); // Success Chance:
+      AddHtmlLocalized(170, 80, 250, 18, 1044057, LabelColor); // Success Chance:
       AddLabel(430, 80, LabelHue, $"{chance * 100:F1}%");
 
       if (m_ShowExceptionalChance)
@@ -181,7 +177,7 @@ namespace Server.Engines.Craft
         else if (excepChance > 1.0)
           excepChance = 1.0;
 
-        AddHtmlLocalized(170, 100, 250, 18, 1044058, 32767, false, false); // Exceptional Chance:
+        AddHtmlLocalized(170, 100, 250, 18, 1044058, 32767); // Exceptional Chance:
         AddLabel(430, 100, LabelHue, $"{excepChance * 100:F1}%");
       }
     }
@@ -232,13 +228,12 @@ namespace Server.Engines.Craft
         if (!retainedColor && m_CraftItem.RetainsColorFrom(m_CraftSystem, type))
         {
           retainedColor = true;
-          AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 310, 18, 1044152, LabelColor, false,
-            false); // * The item retains the color of this material
+          AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 310, 18, 1044152, LabelColor); // * The item retains the color of this material
           AddLabel(500, 219 + i * 20, LabelHue, "*");
         }
 
         if (nameNumber > 0)
-          AddHtmlLocalized(170, 219 + i * 20, 310, 18, nameNumber, LabelColor, false, false);
+          AddHtmlLocalized(170, 219 + i * 20, 310, 18, nameNumber, LabelColor);
         else
           AddLabel(170, 219 + i * 20, LabelHue, nameString);
 
@@ -247,13 +242,12 @@ namespace Server.Engines.Craft
 
       if (m_CraftItem.NameNumber == 1041267) // runebook
       {
-        AddHtmlLocalized(170, 219 + m_CraftItem.Resources.Count * 20, 310, 18, 1044447, LabelColor, false, false);
+        AddHtmlLocalized(170, 219 + m_CraftItem.Resources.Count * 20, 310, 18, 1044447, LabelColor);
         AddLabel(430, 219 + m_CraftItem.Resources.Count * 20, LabelHue, "1");
       }
 
       if (cropScroll)
-        AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 360, 18, 1044379, LabelColor, false,
-          false); // Inscribing scrolls also requires a blank scroll and mana.
+        AddHtmlLocalized(170, 302 + m_OtherCount++ * 20, 360, 18, 1044379, LabelColor); // Inscribing scrolls also requires a blank scroll and mana.
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

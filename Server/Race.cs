@@ -94,16 +94,16 @@ namespace Server
         if (Insensitive.Equals(m_RaceNames[i], value))
           return m_RaceValues[i];
 
-      if (int.TryParse(value, out int index))
-        if (index >= 0 && index < Races.Length && Races[index] != null)
-          return Races[index];
+      if (int.TryParse(value, out int index) && index >= 0 && index < Races.Length &&
+          Races[index] != null)
+        return Races[index];
 
       throw new ArgumentException("Invalid race name");
     }
 
     private static void CheckNamesAndValues()
     {
-      if (m_RaceNames != null && m_RaceNames.Length == AllRaces.Count)
+      if (m_RaceNames?.Length == AllRaces.Count)
         return;
 
       m_RaceNames = new string[AllRaces.Count];

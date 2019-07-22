@@ -47,7 +47,7 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      if (Board == null || Board.Deleted)
+      if (Board?.Deleted != false)
         Delete();
       else if (!IsChildOf(Board))
         Board.DropItem(this);
@@ -57,7 +57,7 @@ namespace Server.Items
 
     public override bool OnDragLift(Mobile from)
     {
-      if (Board == null || Board.Deleted)
+      if (Board?.Deleted != false)
       {
         Delete();
         return false;

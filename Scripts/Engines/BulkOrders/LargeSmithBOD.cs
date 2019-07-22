@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using Mat = Server.Engines.BulkOrders.BulkMaterialType;
 
 namespace Server.Engines.BulkOrders
 {
-  [TypeAlias("Scripts.Engines.BulkOrders.LargeSmithBOD")]
   public class LargeSmithBOD : LargeBOD
   {
     public static double[] m_BlacksmithMaterialChances =
@@ -63,12 +61,8 @@ namespace Server.Engines.BulkOrders
       int amountMax = Utility.RandomList(10, 15, 20, 20);
       bool reqExceptional = 0.825 > Utility.RandomDouble();
 
-      BulkMaterialType material;
-
-      if (useMaterials)
-        material = GetRandomMaterial(BulkMaterialType.DullCopper, m_BlacksmithMaterialChances);
-      else
-        material = BulkMaterialType.None;
+      BulkMaterialType material = useMaterials ? GetRandomMaterial(BulkMaterialType.DullCopper, m_BlacksmithMaterialChances)
+        : BulkMaterialType.None;
 
       Hue = hue;
       AmountMax = amountMax;
@@ -78,60 +72,20 @@ namespace Server.Engines.BulkOrders
     }
 
     public LargeSmithBOD(int amountMax, bool reqExceptional, BulkMaterialType mat, LargeBulkEntry[] entries)
+      : base(0x44E, amountMax, reqExceptional, mat, entries)
     {
-      Hue = 0x44E;
-      AmountMax = amountMax;
-      Entries = entries;
-      RequireExceptional = reqExceptional;
-      Material = mat;
     }
 
     public LargeSmithBOD(Serial serial) : base(serial)
     {
     }
 
-    public override int ComputeFame()
-    {
-      return SmithRewardCalculator.Instance.ComputeFame(this);
-    }
+    public override int ComputeFame() => SmithRewardCalculator.Instance.ComputeFame(this);
 
-    public override int ComputeGold()
-    {
-      return SmithRewardCalculator.Instance.ComputeGold(this);
-    }
+    public override int ComputeGold() => SmithRewardCalculator.Instance.ComputeGold(this);
 
-    public override List<Item> ComputeRewards(bool full)
-    {
-      List<Item> list = new List<Item>();
-
-      RewardGroup rewardGroup =
-        SmithRewardCalculator.Instance.LookupRewards(SmithRewardCalculator.Instance.ComputePoints(this));
-
-      if (rewardGroup != null)
-      {
-        if (full)
-        {
-          for (int i = 0; i < rewardGroup.Items.Length; ++i)
-          {
-            Item item = rewardGroup.Items[i].Construct();
-
-            if (item != null)
-              list.Add(item);
-          }
-        }
-        else
-        {
-          RewardItem rewardItem = rewardGroup.AcquireItem();
-
-          Item item = rewardItem?.Construct();
-
-          if (item != null)
-            list.Add(item);
-        }
-      }
-
-      return list;
-    }
+    public override RewardGroup GetRewardGroup() =>
+      SmithRewardCalculator.Instance.LookupRewards(SmithRewardCalculator.Instance.ComputePoints(this));
 
     public override void Serialize(GenericWriter writer)
     {

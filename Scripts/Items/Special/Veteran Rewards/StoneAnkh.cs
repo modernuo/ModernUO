@@ -46,12 +46,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public StoneAnkh() : this(true)
-    {
-    }
-
-    [Constructible]
-    public StoneAnkh(bool east)
+    public StoneAnkh(bool east = true)
     {
       if (east)
       {
@@ -110,7 +105,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(this);
 
-        if (house != null && house.IsOwner(from))
+        if (house?.IsOwner(from) == true)
         {
           from.CloseGump<RewardDemolitionGump>();
           from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
@@ -187,7 +182,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         return;
 
       if (IsChildOf(from.Backpack))
@@ -251,23 +246,20 @@ namespace Server.Items
 
         AddItem(90, 30, 0x4);
         AddItem(112, 30, 0x5);
-        AddButton(50, 35, 0x867, 0x869, (int)Buttons.South, GumpButtonType.Reply, 0); // South
+        AddButton(50, 35, 0x867, 0x869, (int)Buttons.South); // South
 
         AddItem(170, 30, 0x2);
         AddItem(192, 30, 0x3);
-        AddButton(145, 35, 0x867, 0x869, (int)Buttons.East, GumpButtonType.Reply, 0); // East
+        AddButton(145, 35, 0x867, 0x869, (int)Buttons.East); // East
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_Deed == null || m_Deed.Deleted)
+        if (m_Deed?.Deleted != false || info.ButtonID == (int)Buttons.Cancel)
           return;
 
-        if (info.ButtonID != (int)Buttons.Cancel)
-        {
-          m_Deed.m_East = info.ButtonID == (int)Buttons.East;
-          m_Deed.SendTarget(sender.Mobile);
-        }
+        m_Deed.m_East = info.ButtonID == (int)Buttons.East;
+        m_Deed.SendTarget(sender.Mobile);
       }
 
       private enum Buttons

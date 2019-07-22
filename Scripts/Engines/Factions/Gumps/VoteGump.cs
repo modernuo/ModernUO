@@ -24,23 +24,23 @@ namespace Server.Factions
       AddHtmlText(20, 20, 380, 20, election.Faction.Definition.Header, false, false);
 
       if (canVote)
-        AddHtmlLocalized(20, 60, 380, 20, 1011428, false, false); // VOTE FOR LEADERSHIP
+        AddHtmlLocalized(20, 60, 380, 20, 1011428); // VOTE FOR LEADERSHIP
       else
-        AddHtmlLocalized(20, 60, 380, 20, 1038032, false, false); // You have already voted in this election.
+        AddHtmlLocalized(20, 60, 380, 20, 1038032); // You have already voted in this election.
 
       for (int i = 0; i < election.Candidates.Count; ++i)
       {
         Candidate cd = election.Candidates[i];
 
         if (canVote)
-          AddButton(20, 100 + i * 20, 4005, 4007, i + 1, GumpButtonType.Reply, 0);
+          AddButton(20, 100 + i * 20, 4005, 4007, i + 1);
 
         AddLabel(55, 100 + i * 20, 0, cd.Mobile.Name);
         AddLabel(300, 100 + i * 20, 0, cd.Votes.ToString());
       }
 
-      AddButton(20, 310, 4005, 4007, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(55, 310, 100, 20, 1011012, false, false); // CANCEL
+      AddButton(20, 310, 4005, 4007, 0);
+      AddHtmlLocalized(55, 310, 100, 20, 1011012); // CANCEL
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

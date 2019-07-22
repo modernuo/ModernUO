@@ -20,39 +20,39 @@ namespace Server.Misc
 
     private static void EventSink_Speech(SpeechEventArgs args)
     {
-      if (!args.Handled)
+      if (args.Handled)
+        return;
+
+      if (Insensitive.StartsWith(args.Speech, "set"))
       {
-        if (Insensitive.StartsWith(args.Speech, "set"))
-        {
-          Mobile from = args.Mobile;
+        Mobile from = args.Mobile;
 
-          string[] split = args.Speech.Split(' ');
+        string[] split = args.Speech.Split(' ');
 
-          if (split.Length == 3)
-            try
-            {
-              string name = split[1];
-              double value = Convert.ToDouble(split[2]);
+        if (split.Length == 3)
+          try
+          {
+            string name = split[1];
+            double value = Convert.ToDouble(split[2]);
 
-              if (Insensitive.Equals(name, "str"))
-                ChangeStrength(from, (int)value);
-              else if (Insensitive.Equals(name, "dex"))
-                ChangeDexterity(from, (int)value);
-              else if (Insensitive.Equals(name, "int"))
-                ChangeIntelligence(from, (int)value);
-              else
-                ChangeSkill(from, name, value);
-            }
-            catch
-            {
-            }
-        }
-        else if (Insensitive.Equals(args.Speech, "help"))
-        {
-          args.Mobile.SendGump(new TCHelpGump());
-
-          args.Handled = true;
-        }
+            if (Insensitive.Equals(name, "str"))
+              ChangeStrength(from, (int)value);
+            else if (Insensitive.Equals(name, "dex"))
+              ChangeDexterity(from, (int)value);
+            else if (Insensitive.Equals(name, "int"))
+              ChangeIntelligence(from, (int)value);
+            else
+              ChangeSkill(from, name, value);
+          }
+          catch
+          {
+            // ignored
+          }
+      }
+      else if (Insensitive.Equals(args.Speech, "help"))
+      {
+        args.Mobile.SendGump(new TCHelpGump());
+        args.Handled = true;
       }
     }
 
@@ -160,16 +160,16 @@ namespace Server.Misc
         AddPage(0);
         AddBackground(0, 0, 160, 120, 5054);
 
-        AddButton(10, 10, 0xFB7, 0xFB9, 1, GumpButtonType.Reply, 0);
+        AddButton(10, 10, 0xFB7, 0xFB9, 1);
         AddLabel(45, 10, 0x34, "RunUO");
 
-        AddButton(10, 35, 0xFB7, 0xFB9, 2, GumpButtonType.Reply, 0);
+        AddButton(10, 35, 0xFB7, 0xFB9, 2);
         AddLabel(45, 35, 0x34, "List of skills");
 
-        AddButton(10, 60, 0xFB7, 0xFB9, 3, GumpButtonType.Reply, 0);
+        AddButton(10, 60, 0xFB7, 0xFB9, 3);
         AddLabel(45, 60, 0x34, "Command list");
 
-        AddButton(10, 85, 0xFB1, 0xFB3, 0, GumpButtonType.Reply, 0);
+        AddButton(10, 85, 0xFB1, 0xFB3, 0);
         AddLabel(45, 85, 0x34, "Close");
       }
 

@@ -23,12 +23,7 @@ namespace Server.Items
     private static DateTime WorldStart = new DateTime(1997, 9, 1);
 
     [Constructible]
-    public Clock() : this(0x104B)
-    {
-    }
-
-    [Constructible]
-    public Clock(int itemID) : base(itemID)
+    public Clock(int itemID = 0x104B) : base(itemID)
     {
       Weight = 3.0;
     }
@@ -149,11 +144,6 @@ namespace Server.Items
   [Flippable(0x104B, 0x104C)]
   public class ClockRight : Clock
   {
-    [Constructible]
-    public ClockRight() : base(0x104B)
-    {
-    }
-
     public ClockRight(Serial serial) : base(serial)
     {
     }

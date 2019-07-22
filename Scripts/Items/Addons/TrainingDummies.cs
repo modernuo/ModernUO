@@ -8,12 +8,7 @@ namespace Server.Items
     private Timer m_Timer;
 
     [Constructible]
-    public TrainingDummy() : this(0x1074)
-    {
-    }
-
-    [Constructible]
-    public TrainingDummy(int itemID) : base(itemID)
+    public TrainingDummy(int itemID = 0x1074) : base(itemID)
     {
       MinSkill = -25.0;
       MaxSkill = +25.0;
@@ -155,7 +150,7 @@ namespace Server.Items
     [Constructible]
     public TrainingDummyEastAddon()
     {
-      AddComponent(new TrainingDummy(0x1074), 0, 0, 0);
+      AddComponent(new TrainingDummy(), 0, 0, 0);
     }
 
     public TrainingDummyEastAddon(Serial serial) : base(serial)

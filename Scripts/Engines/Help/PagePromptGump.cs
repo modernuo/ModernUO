@@ -19,15 +19,14 @@ namespace Server.Engines.Help
 
       AddPage(0);
 
-      AddHtmlLocalized(264, 80, 200, 24, 1062524, false, false); // Enter Description
-      AddHtmlLocalized(120, 108, 420, 48, 1062638, false,
-        false); // Please enter a brief description (up to 200 characters) of your problem:
+      AddHtmlLocalized(264, 80, 200, 24, 1062524); // Enter Description
+      AddHtmlLocalized(120, 108, 420, 48, 1062638); // Please enter a brief description (up to 200 characters) of your problem:
 
       AddBackground(100, 148, 440, 200, 3500);
       AddTextEntry(120, 168, 400, 200, 1153, 0, "");
 
-      AddButton(175, 355, 2074, 2075, 1, GumpButtonType.Reply, 0); // Okay
-      AddButton(405, 355, 2073, 2072, 0, GumpButtonType.Reply, 0); // Cancel
+      AddButton(175, 355, 2074, 2075, 1); // Okay
+      AddButton(405, 355, 2073, 2072, 0); // Cancel
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

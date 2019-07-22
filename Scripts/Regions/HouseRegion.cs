@@ -34,7 +34,7 @@ namespace Server.Regions
     {
       BaseHouse house = BaseHouse.FindHouseAt(e.Mobile);
 
-      if (house != null && !house.Public && !house.IsFriend(e.Mobile))
+      if (house?.Public == false && !house.IsFriend(e.Mobile))
         e.Mobile.Location = house.BanLocation;
     }
 
@@ -47,7 +47,7 @@ namespace Server.Regions
     {
       int x = house.X;
       int y = house.Y;
-      int z = house.Z;
+      // int z = house.Z;
 
       Rectangle2D[] houseArea = house.Area;
       Rectangle3D[] area = new Rectangle3D[houseArea.Length];

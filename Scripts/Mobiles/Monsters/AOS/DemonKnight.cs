@@ -171,7 +171,7 @@ namespace Server.Mobiles
 
       Container pack = to.Backpack;
 
-      if (pack == null || !pack.TryDropItem(to, artifact, false))
+      if (pack?.TryDropItem(to, artifact, false) != true)
         to.BankBox.DropItem(artifact);
 
       to.SendLocalizedMessage(

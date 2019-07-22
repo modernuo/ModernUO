@@ -3,12 +3,7 @@ namespace Server.Items
   public class BolaBall : Item
   {
     [Constructible]
-    public BolaBall() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BolaBall(int amount) : base(0xE73)
+    public BolaBall(int amount = 1) : base(0xE73)
     {
       Weight = 4.0;
       Stackable = true;

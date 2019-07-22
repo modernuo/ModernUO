@@ -6,17 +6,12 @@ namespace Server.Items
   public class Gold : Item
   {
     [Constructible]
-    public Gold() : this(1)
-    {
-    }
-
-    [Constructible]
     public Gold(int amountFrom, int amountTo) : this(Utility.RandomMinMax(amountFrom, amountTo))
     {
     }
 
     [Constructible]
-    public Gold(int amount) : base(0xEED)
+    public Gold(int amount = 1) : base(0xEED)
     {
       Stackable = true;
       Amount = amount;
@@ -44,11 +39,7 @@ namespace Server.Items
       UpdateTotal(this, TotalType.Gold, newValue - oldValue);
     }
 
-#if NEWPARENT
     public override void OnAdded(IEntity parent)
-#else
-		public override void OnAdded(object parent)
-#endif
     {
       base.OnAdded(parent);
 
@@ -59,7 +50,8 @@ namespace Server.Items
 
       Container root = parent as Container;
 
-      while (root?.Parent is Container) root = (Container)root.Parent;
+      while (root?.Parent is Container container)
+        root = container;
 
       parent = root ?? parent;
 
@@ -85,7 +77,7 @@ namespace Server.Items
 
       if (tradeInfo != null)
       {
-        if (owner.NetState != null && !owner.NetState.NewSecureTrading)
+        if (owner.NetState?.NewSecureTrading == false)
         {
           int plat = Math.DivRem(Amount, AccountGold.CurrencyThreshold, out int gold);
 

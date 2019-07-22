@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Items;
 
 namespace Server.Commands
@@ -16,46 +17,33 @@ namespace Server.Commands
     {
       IPooledEnumerable<Item> eable = Map.Felucca.GetItemsInRange(new Point3D(x, y, z), 0);
 
-      foreach (Item item in eable)
-        if (item is MorphItem morphItem && morphItem.Z == z && morphItem.InactiveItemID == inactiveItemID &&
-            morphItem.ActiveItemID == activeItemID)
-        {
-          eable.Free();
-          return true;
-        }
-
+      bool found = eable.Any(item => item is MorphItem morphItem && morphItem.Z == z &&
+                                     morphItem.InactiveItemID == inactiveItemID &&
+                                     morphItem.ActiveItemID == activeItemID);
       eable.Free();
-      return false;
+      return found;
     }
 
     public static bool FindEffectController(int x, int y, int z)
     {
-      IPooledEnumerable eable = Map.Felucca.GetItemsInRange(new Point3D(x, y, z), 0);
+      IPooledEnumerable<Item> eable = Map.Felucca.GetItemsInRange(new Point3D(x, y, z), 0);
 
-      foreach (Item item in eable)
-        if (item is EffectController && item.Z == z)
-        {
-          eable.Free();
-          return true;
-        }
-
+      bool found = eable.Any(item => item is EffectController && item.Z == z);
       eable.Free();
-      return false;
+      return found;
     }
 
     public static T TryCreateItem<T>(int x, int y, int z, T srcItem) where T : Item
     {
       IPooledEnumerable<T> eable = Map.Felucca.GetItemsInBounds<T>(new Rectangle2D(x, y, 1, 1));
-
-      foreach (T item in eable)
-        if (item.GetType() == srcItem.GetType())
-        {
-          eable.Free();
-          srcItem.Delete();
-          return item;
-        }
-
+      T t = eable.FirstOrDefault(item => item.GetType() == srcItem.GetType());
       eable.Free();
+      if (t != null)
+      {
+        srcItem.Delete();
+        return t;
+      }
+
       srcItem.MoveToWorld(new Point3D(x, y, z), Map.Felucca);
       m_Count++;
 

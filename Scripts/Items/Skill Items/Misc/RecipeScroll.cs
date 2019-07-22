@@ -8,14 +8,12 @@ namespace Server.Items
   {
     private int m_RecipeID;
 
-    public RecipeScroll(Recipe r)
-      : this(r.ID)
+    public RecipeScroll(Recipe r) : this(r.ID)
     {
     }
 
     [Constructible]
-    public RecipeScroll(int recipeID)
-      : base(0x2831)
+    public RecipeScroll(int recipeID) : base(0x2831)
     {
       m_RecipeID = recipeID;
     }

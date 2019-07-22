@@ -77,7 +77,7 @@ namespace Server.Engines.Quests.Doom
 
       QuestObjective obj = FindObjective<CollectBonesObjective>();
 
-      if (obj != null && obj.CurProgress > 0)
+      if (obj?.CurProgress > 0)
       {
         From.BankBox.DropItem(new DaemonBone(obj.CurProgress));
 

@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Mobiles
 {
@@ -62,19 +62,13 @@ namespace Server.Mobiles
 
     private void Flare()
     {
-      Mobile caster = ControlMaster;
-
-      if (caster == null)
-        caster = SummonMaster;
+      Mobile caster = ControlMaster ?? SummonMaster;
 
       if (caster == null)
         return;
 
-      List<Mobile> list = new List<Mobile>();
-
-      foreach (Mobile m in GetMobilesInRange(5))
-        if (m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor)
-          list.Add(m);
+      List<Mobile> list = GetMobilesInRange(5).Where(m =>
+        m.Player && m.Alive && !m.IsDeadBondedPet && m.Karma <= 0 && m.AccessLevel < AccessLevel.Counselor).ToList();
 
       for (int i = 0; i < list.Count; ++i)
       {

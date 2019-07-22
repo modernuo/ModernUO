@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Mat = Server.Engines.BulkOrders.BulkMaterialType;
 
 namespace Server.Engines.BulkOrders
@@ -75,12 +74,8 @@ namespace Server.Engines.BulkOrders
       int amountMax = Utility.RandomList(10, 15, 20, 20);
       bool reqExceptional = 0.825 > Utility.RandomDouble();
 
-      BulkMaterialType material;
-
-      if (useMaterials)
-        material = GetRandomMaterial(BulkMaterialType.Spined, m_TailoringMaterialChances);
-      else
-        material = BulkMaterialType.None;
+      BulkMaterialType material = useMaterials ? GetRandomMaterial(BulkMaterialType.Spined, m_TailoringMaterialChances)
+        : BulkMaterialType.None;
 
       Hue = hue;
       AmountMax = amountMax;
@@ -90,12 +85,8 @@ namespace Server.Engines.BulkOrders
     }
 
     public LargeTailorBOD(int amountMax, bool reqExceptional, BulkMaterialType mat, LargeBulkEntry[] entries)
+      : base(0x483, amountMax, reqExceptional, mat, entries)
     {
-      Hue = 0x483;
-      AmountMax = amountMax;
-      Entries = entries;
-      RequireExceptional = reqExceptional;
-      Material = mat;
     }
 
     public LargeTailorBOD(Serial serial) : base(serial)
@@ -112,38 +103,8 @@ namespace Server.Engines.BulkOrders
       return TailorRewardCalculator.Instance.ComputeGold(this);
     }
 
-    public override List<Item> ComputeRewards(bool full)
-    {
-      List<Item> list = new List<Item>();
-
-      RewardGroup rewardGroup =
-        TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
-
-      if (rewardGroup != null)
-      {
-        if (full)
-        {
-          for (int i = 0; i < rewardGroup.Items.Length; ++i)
-          {
-            Item item = rewardGroup.Items[i].Construct();
-
-            if (item != null)
-              list.Add(item);
-          }
-        }
-        else
-        {
-          RewardItem rewardItem = rewardGroup.AcquireItem();
-
-          Item item = rewardItem?.Construct();
-
-          if (item != null)
-            list.Add(item);
-        }
-      }
-
-      return list;
-    }
+    public override RewardGroup GetRewardGroup() =>
+      TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
 
     public override void Serialize(GenericWriter writer)
     {

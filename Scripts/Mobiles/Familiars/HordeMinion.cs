@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Items;
@@ -73,18 +73,12 @@ namespace Server.Mobiles
       if (pack == null)
         return;
 
-      List<Item> list = new List<Item>();
-
-      foreach (Item item in GetItemsInRange(2))
-        if (item.Movable && item.Stackable)
-          list.Add(item);
+      IEnumerable<Item> eable = GetItemsInRange(2).Where(item => item.Movable && item.Stackable);
 
       int pickedUp = 0;
 
-      for (int i = 0; i < list.Count; ++i)
+      foreach (Item item in eable)
       {
-        Item item = list[i];
-
         if (!pack.CheckHold(this, item, false, true))
           return;
 

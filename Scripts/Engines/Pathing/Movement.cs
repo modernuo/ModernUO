@@ -77,7 +77,9 @@ namespace Server.Movement
       List<Mobile> mobsLeft = m_MobPools[1];
       List<Mobile> mobsRight = m_MobPools[2];
 
-      bool checkMobs = m is BaseCreature creature && !creature.Controlled &&
+      BaseCreature bc = m as BaseCreature;
+
+      bool checkMobs = bc?.Controlled == false &&
                        (xForward != Goal.X || yForward != Goal.Y);
 
       if (checkDiagonals)
@@ -114,18 +116,21 @@ namespace Server.Movement
             if ((item.ItemData.Flags & reqFlags) == 0)
               continue;
 
-            if (sector == sectorStart && item.AtWorldPoint(xStart, yStart) && !(item is BaseMulti) &&
-                item.ItemID <= TileData.MaxItemValue)
-              itemsStart.Add(item);
-            else if (sector == sectorForward && item.AtWorldPoint(xForward, yForward) && !(item is BaseMulti) &&
-                     item.ItemID <= TileData.MaxItemValue)
-              itemsForward.Add(item);
-            else if (sector == sectorLeft && item.AtWorldPoint(xLeft, yLeft) && !(item is BaseMulti) &&
-                     item.ItemID <= TileData.MaxItemValue)
-              itemsLeft.Add(item);
-            else if (sector == sectorRight && item.AtWorldPoint(xRight, yRight) && !(item is BaseMulti) &&
-                     item.ItemID <= TileData.MaxItemValue)
-              itemsRight.Add(item);
+            if (!(item is BaseMulti))
+            {
+              if (sector == sectorStart && item.AtWorldPoint(xStart, yStart) &&
+                  item.ItemID <= TileData.MaxItemValue)
+                itemsStart.Add(item);
+              else if (sector == sectorForward && item.AtWorldPoint(xForward, yForward) &&
+                       item.ItemID <= TileData.MaxItemValue)
+                itemsForward.Add(item);
+              else if (sector == sectorLeft && item.AtWorldPoint(xLeft, yLeft) &&
+                       item.ItemID <= TileData.MaxItemValue)
+                itemsLeft.Add(item);
+              else if (sector == sectorRight && item.AtWorldPoint(xRight, yRight) &&
+                       item.ItemID <= TileData.MaxItemValue)
+                itemsRight.Add(item);
+            }
           }
 
           if (checkMobs)
@@ -162,12 +167,15 @@ namespace Server.Movement
             if ((item.ItemData.Flags & reqFlags) == 0)
               continue;
 
-            if (item.AtWorldPoint(xStart, yStart) && !(item is BaseMulti) &&
-                item.ItemID <= TileData.MaxItemValue)
-              itemsStart.Add(item);
-            else if (item.AtWorldPoint(xForward, yForward) && !(item is BaseMulti) &&
-                     item.ItemID <= TileData.MaxItemValue)
-              itemsForward.Add(item);
+            if (!(item is BaseMulti))
+            {
+              if (item.AtWorldPoint(xStart, yStart) &&
+                  item.ItemID <= TileData.MaxItemValue)
+                itemsStart.Add(item);
+              else if (item.AtWorldPoint(xForward, yForward) &&
+                       item.ItemID <= TileData.MaxItemValue)
+                itemsForward.Add(item);
+            }
           }
         }
         else
@@ -215,25 +223,31 @@ namespace Server.Movement
 
       GetStartZ(m, map, loc, itemsStart, out int startZ, out int startTop);
 
+      bc?.DebugSay("My Z/Top is {0} {1}", startZ, startTop);
+
       bool moveIsOk = Check(map, m, itemsForward, mobsForward, xForward, yForward, startTop, startZ, m.CanSwim,
         m.CantWalk, out newZ);
+
+      bc?.DebugSay("Can I move? {0} {1}", moveIsOk, newZ);
 
       if (moveIsOk && checkDiagonals)
       {
         if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
         {
-          if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                out _) || !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                m.CantWalk, out _))
+          if (!(Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
+                out _) && Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+                m.CantWalk, out _)))
             moveIsOk = false;
         }
         else
         {
-          if (!Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
-                out _) && !Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
-                m.CantWalk, out _))
+          if (!(Check(map, m, itemsLeft, mobsLeft, xLeft, yLeft, startTop, startZ, m.CanSwim, m.CantWalk,
+                out _) || Check(map, m, itemsRight, mobsRight, xRight, yRight, startTop, startZ, m.CanSwim,
+                m.CantWalk, out _)))
             moveIsOk = false;
         }
+
+        bc?.DebugSay("Can I still move? {0} {1}", moveIsOk, newZ);
       }
 
       for (int i = 0; i < (checkDiagonals ? 4 : 2); ++i)
@@ -336,56 +350,55 @@ namespace Server.Movement
       bool ignoreSpellFields = m is PlayerMobile && map != Map.Felucca;
 
       #region Tiles
-
       for (int i = 0; i < tiles.Length; ++i)
       {
         StaticTile tile = tiles[i];
         ItemData itemData = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
         TileFlag flags = itemData.Flags;
 
-        if ((flags & ImpassableSurface) == TileFlag.Surface || canSwim && (flags & TileFlag.Wet) != 0
-        ) // Surface && !Impassable
+        // Surface && !Impassable
+        if ((flags & ImpassableSurface) != TileFlag.Surface && (!canSwim || (flags & TileFlag.Wet) == 0))
+          continue;
+
+        if (cantWalk && (flags & TileFlag.Wet) == 0)
+          continue;
+
+        int itemZ = tile.Z;
+        int itemTop = itemZ;
+        int ourZ = itemZ + itemData.CalcHeight;
+        int testTop = checkTop;
+
+        if (moveIsOk)
         {
-          if (cantWalk && (flags & TileFlag.Wet) == 0)
+          int cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
+
+          if (cmp > 0 || cmp == 0 && ourZ > newZ)
             continue;
+        }
 
-          int itemZ = tile.Z;
-          int itemTop = itemZ;
-          int ourZ = itemZ + itemData.CalcHeight;
-          int testTop = checkTop;
+        if (ourZ + PersonHeight > testTop)
+          testTop = ourZ + PersonHeight;
 
-          if (moveIsOk)
-          {
-            int cmp = Math.Abs(ourZ - m.Z) - Math.Abs(newZ - m.Z);
+        if (!itemData.Bridge)
+          itemTop += itemData.Height;
 
-            if (cmp > 0 || cmp == 0 && ourZ > newZ)
-              continue;
-          }
+        if (stepTop < itemTop)
+          continue;
 
-          if (ourZ + PersonHeight > testTop)
-            testTop = ourZ + PersonHeight;
+        int landCheck = itemZ;
 
-          if (!itemData.Bridge)
-            itemTop += itemData.Height;
+        if (itemData.Height >= StepHeight)
+          landCheck += StepHeight;
+        else
+          landCheck += itemData.Height;
 
-          if (stepTop >= itemTop)
-          {
-            int landCheck = itemZ;
+        if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ)
+          continue;
 
-            if (itemData.Height >= StepHeight)
-              landCheck += StepHeight;
-            else
-              landCheck += itemData.Height;
-
-            if (considerLand && landCheck < landCenter && landCenter > ourZ && testTop > landZ)
-              continue;
-
-            if (IsOk(ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items))
-            {
-              newZ = ourZ;
-              moveIsOk = true;
-            }
-          }
+        if (IsOk(ignoreDoors, ignoreSpellFields, ourZ, testTop, tiles, items))
+        {
+          newZ = ourZ;
+          moveIsOk = true;
         }
       }
 
@@ -474,15 +487,13 @@ namespace Server.Movement
 
       #region Mobiles
 
-      if (moveIsOk)
-        for (int i = 0; moveIsOk && i < mobiles.Count; ++i)
-        {
-          Mobile mob = mobiles[i];
+      for (int i = 0; moveIsOk && i < mobiles.Count; ++i)
+      {
+        Mobile mob = mobiles[i];
 
-          if (mob != m && mob.Z + 15 > newZ && newZ + 15 > mob.Z && !CanMoveOver(m, mob))
-            moveIsOk = false;
-        }
-
+        if (mob != m && mob.Z + 15 > newZ && newZ + 15 > mob.Z && !CanMoveOver(m, mob))
+          moveIsOk = false;
+      }
       #endregion
 
       return moveIsOk;
@@ -543,11 +554,7 @@ namespace Server.Movement
 
           zLow = tile.Z;
           zCenter = calcTop;
-
-          int top = tile.Z + id.Height;
-
-          if (!isSet || top > zTop)
-            zTop = top;
+          zTop = tile.Z + id.Height;
 
           isSet = true;
         }

@@ -2,13 +2,7 @@
 {
   public class JellyBeans : CandyCane
   {
-    [Constructible]
-    public JellyBeans()
-      : this(1)
-    {
-    }
-
-    public JellyBeans(int amount)
+    public JellyBeans(int amount = 1)
       : base(0x468C)
     {
       Stackable = true;

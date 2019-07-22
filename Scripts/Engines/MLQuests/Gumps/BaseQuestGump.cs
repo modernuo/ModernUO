@@ -93,7 +93,7 @@ namespace Server.Engines.MLQuests.Gumps
 				AddButton( 275, 430, (int)ButtonGraphic.Continue, (int)ButtonGraphic.Continue + 2, 0, GumpButtonType.Page, m_Page + 1 );
 
 			foreach ( ButtonInfo button in m_Buttons )
-				AddButton( button.Position == ButtonPosition.Left ? 95 : 313, 455, (int)button.Graphic, (int)button.Graphic + 2, button.ButtonID, GumpButtonType.Reply, 0 );
+				AddButton( button.Position == ButtonPosition.Left ? 95 : 313, 455, (int)button.Graphic, (int)button.Graphic + 2, button.ButtonID, );
 
 			if ( m_Title != null )
 				AddHtmlLocalized( 130, 68, 220, 48, 1114513, m_Title, 0x2710, false, false ); // <DIV ALIGN=CENTER>~1_TOKEN~</DIV>
@@ -131,7 +131,7 @@ namespace Server.Engines.MLQuests.Gumps
       AddImage(379, 60, 0x15A9);
       AddImage(425, 0, 0x28C9);
       AddImage(90, 33, 0x232D);
-      AddHtmlLocalized(130, 45, 270, 16, label, 0xFFFFFF, false, false);
+      AddHtmlLocalized(130, 45, 270, 16, label, 0xFFFFFF);
       AddImageTiled(130, 65, 175, 1, 0x238D);
     }
 
@@ -149,11 +149,10 @@ namespace Server.Engines.MLQuests.Gumps
 
       foreach (ButtonInfo button in m_Buttons)
         AddButton(button.Position == ButtonPosition.Left ? 95 : 313, 455, (int)button.Graphic,
-          (int)button.Graphic + 2, button.ButtonID, GumpButtonType.Reply, 0);
+          (int)button.Graphic + 2, button.ButtonID);
 
       if (m_Title != null)
-        AddHtmlLocalized(130, 68, 220, 48, 1114513, m_Title, 0x2710, false,
-          false); // <DIV ALIGN=CENTER>~1_TOKEN~</DIV>
+        AddHtmlLocalized(130, 68, 220, 48, 1114513, m_Title, 0x2710); // <DIV ALIGN=CENTER>~1_TOKEN~</DIV>
     }
 #endif
 
@@ -179,16 +178,14 @@ namespace Server.Engines.MLQuests.Gumps
 
     public void AddDescription(MLQuest quest)
     {
-      AddHtmlLocalized(98, 140, 312, 16, quest.IsChainTriggered || quest.NextQuest != null ? 1075024 : 1072202, 0x2710,
-        false, false); // Description [(quest chain)]
+      AddHtmlLocalized(98, 140, 312, 16, quest.IsChainTriggered || quest.NextQuest != null ? 1075024 : 1072202, 0x2710); // Description [(quest chain)]
       TextDefinition.AddHtmlText(this, 98, 156, 312, 240, quest.Description, false, true, 0x15F90, 0xBDE784);
     }
 
     public void AddObjectives(MLQuest quest)
     {
-      AddHtmlLocalized(98, 140, 312, 16, 1049073, 0x2710, false, false); // Objective:
-      AddHtmlLocalized(98, 156, 312, 16, quest.ObjectiveType == ObjectiveType.All ? 1072208 : 1072209, 0x2710, false,
-        false); // All of the following / Only one of the following
+      AddHtmlLocalized(98, 140, 312, 16, 1049073, 0x2710); // Objective:
+      AddHtmlLocalized(98, 156, 312, 16, quest.ObjectiveType == ObjectiveType.All ? 1072208 : 1072209, 0x2710); // All of the following / Only one of the following
 
       int y = 172;
 
@@ -210,9 +207,8 @@ namespace Server.Engines.MLQuests.Gumps
     {
       MLQuest quest = instance.Quest;
 
-      AddHtmlLocalized(98, 140, 312, 16, 1049073, 0x2710, false, false); // Objective:
-      AddHtmlLocalized(98, 156, 312, 16, quest.ObjectiveType == ObjectiveType.All ? 1072208 : 1072209, 0x2710, false,
-        false); // All of the following / Only one of the following
+      AddHtmlLocalized(98, 140, 312, 16, 1049073, 0x2710); // Objective:
+      AddHtmlLocalized(98, 156, 312, 16, quest.ObjectiveType == ObjectiveType.All ? 1072208 : 1072209, 0x2710); // All of the following / Only one of the following
 
       int y = 172;
 
@@ -222,14 +218,14 @@ namespace Server.Engines.MLQuests.Gumps
 
     public void AddRewardsPage(MLQuest quest) // For the quest log/offer gumps
     {
-      AddHtmlLocalized(98, 140, 312, 16, 1072201, 0x2710, false, false); // Reward
+      AddHtmlLocalized(98, 140, 312, 16, 1072201, 0x2710); // Reward
 
       int y = 162;
 
       if (quest.Rewards.Count > 1)
       {
         // TODO: Is this what this is for? Does "Only one of the following" occur?
-        AddHtmlLocalized(98, 156, 312, 16, 1072208, 0x2710, false, false); // All of the following
+        AddHtmlLocalized(98, 156, 312, 16, 1072208, 0x2710); // All of the following
         y += 16;
       }
 
@@ -243,7 +239,7 @@ namespace Server.Engines.MLQuests.Gumps
       if (quest.Rewards.Count > 1)
       {
         // TODO: Is this what this is for? Does "Only one of the following" occur?
-        AddHtmlLocalized(100, 140, 312, 16, 1072208, 0x2710, false, false); // All of the following
+        AddHtmlLocalized(100, 140, 312, 16, 1072208, 0x2710); // All of the following
         y += 16;
       }
 

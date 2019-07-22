@@ -83,11 +83,7 @@ namespace Server.Items
       list.Add(1060738, worth); // value: ~1_val~
     }
 
-#if NEWPARENT
     public override void OnAdded(IEntity parent)
-#else
-		public override void OnAdded(object parent)
-#endif
     {
       base.OnAdded(parent);
 
@@ -98,7 +94,8 @@ namespace Server.Items
 
       Container root = parent as Container;
 
-      while (root?.Parent is Container) root = (Container)root.Parent;
+      while (root?.Parent is Container container)
+        root = container;
 
       parent = root ?? parent;
 
@@ -124,7 +121,7 @@ namespace Server.Items
 
       if (tradeInfo != null)
       {
-        if (owner.NetState != null && !owner.NetState.NewSecureTrading)
+        if (owner.NetState?.NewSecureTrading == false)
         {
           int plat = Math.DivRem(Worth, AccountGold.CurrencyThreshold, out int gold);
 

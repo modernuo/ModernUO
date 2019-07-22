@@ -205,10 +205,10 @@ namespace Server.Mobiles
 
       foreach (Corpse item in eable)
         // Ensure that the corpse was killed by us
-        if (item.Killer == this && item.Owner != null)
-          if (!item.DevourCorpse() && !item.Devoured)
-            PublicOverheadMessage(MessageType.Emote, 0x3B2,
-              1053032); // * The plague beast attempts to absorb the remains, but cannot! *
+        if (item.Killer == this && item.Owner != null && !item.DevourCorpse() && !item.Devoured)
+          PublicOverheadMessage(MessageType.Emote, 0x3B2,
+            1053032); // * The plague beast attempts to absorb the remains, but cannot! *
+
       eable.Free();
     }
 

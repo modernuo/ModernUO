@@ -5,7 +5,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Spellweaving
 {
-  public class NatureFurySpell : ArcanistSpell
+  public class NatureFurySpell : ArcanistSpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Nature's Fury", "Rauvvrae",
@@ -13,7 +13,7 @@ namespace Server.Spells.Spellweaving
       false
     );
 
-    public NatureFurySpell(Mobile caster, Item scroll)
+    public NatureFurySpell(Mobile caster, Item scroll = null)
       : base(caster, scroll, m_Info)
     {
     }
@@ -39,7 +39,7 @@ namespace Server.Spells.Spellweaving
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, 10);
     }
 
     public void Target(IPoint3D point)
@@ -50,9 +50,7 @@ namespace Server.Spells.Spellweaving
       if (map == null)
         return;
 
-      HouseRegion r = Region.Find(p, map).GetRegion<HouseRegion>();
-
-      if (r?.House != null && !r.House.IsFriend(Caster))
+      if (Region.Find(p, map).GetRegion<HouseRegion>()?.House?.IsFriend(Caster) == false)
         return;
 
       if (!map.CanSpawnMobile(p.X, p.Y, p.Z))
@@ -70,28 +68,6 @@ namespace Server.Spells.Spellweaving
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private NatureFurySpell m_Owner;
-
-      public InternalTarget(NatureFurySpell owner)
-        : base(10, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D d)
-          m_Owner.Target(d);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner?.FinishSequence();
-      }
     }
 
     private class InternalTimer : Timer

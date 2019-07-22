@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Server.ContextMenus;
 using Server.Items;
@@ -30,177 +31,6 @@ using Server.Targeting;
 
 namespace Server
 {
-  /// <summary>
-  ///   Enumeration of item layer values.
-  /// </summary>
-  public enum Layer : byte
-  {
-    /// <summary>
-    ///   Invalid layer.
-    /// </summary>
-    Invalid = 0x00,
-
-    /// <summary>
-    ///   First valid layer. Equivalent to <c>Layer.OneHanded</c>.
-    /// </summary>
-    FirstValid = 0x01,
-
-    /// <summary>
-    ///   One handed weapon.
-    /// </summary>
-    OneHanded = 0x01,
-
-    /// <summary>
-    ///   Two handed weapon or shield.
-    /// </summary>
-    TwoHanded = 0x02,
-
-    /// <summary>
-    ///   Shoes.
-    /// </summary>
-    Shoes = 0x03,
-
-    /// <summary>
-    ///   Pants.
-    /// </summary>
-    Pants = 0x04,
-
-    /// <summary>
-    ///   Shirts.
-    /// </summary>
-    Shirt = 0x05,
-
-    /// <summary>
-    ///   Helmets, hats, and masks.
-    /// </summary>
-    Helm = 0x06,
-
-    /// <summary>
-    ///   Gloves.
-    /// </summary>
-    Gloves = 0x07,
-
-    /// <summary>
-    ///   Rings.
-    /// </summary>
-    Ring = 0x08,
-
-    /// <summary>
-    ///   Talismans.
-    /// </summary>
-    Talisman = 0x09,
-
-    /// <summary>
-    ///   Gorgets and necklaces.
-    /// </summary>
-    Neck = 0x0A,
-
-    /// <summary>
-    ///   Hair.
-    /// </summary>
-    Hair = 0x0B,
-
-    /// <summary>
-    ///   Half aprons.
-    /// </summary>
-    Waist = 0x0C,
-
-    /// <summary>
-    ///   Torso, inner layer.
-    /// </summary>
-    InnerTorso = 0x0D,
-
-    /// <summary>
-    ///   Bracelets.
-    /// </summary>
-    Bracelet = 0x0E,
-
-    /// <summary>
-    ///   Unused.
-    /// </summary>
-    Unused_xF = 0x0F,
-
-    /// <summary>
-    ///   Beards and mustaches.
-    /// </summary>
-    FacialHair = 0x10,
-
-    /// <summary>
-    ///   Torso, outer layer.
-    /// </summary>
-    MiddleTorso = 0x11,
-
-    /// <summary>
-    ///   Earings.
-    /// </summary>
-    Earrings = 0x12,
-
-    /// <summary>
-    ///   Arms and sleeves.
-    /// </summary>
-    Arms = 0x13,
-
-    /// <summary>
-    ///   Cloaks.
-    /// </summary>
-    Cloak = 0x14,
-
-    /// <summary>
-    ///   Backpacks.
-    /// </summary>
-    Backpack = 0x15,
-
-    /// <summary>
-    ///   Torso, outer layer.
-    /// </summary>
-    OuterTorso = 0x16,
-
-    /// <summary>
-    ///   Leggings, outer layer.
-    /// </summary>
-    OuterLegs = 0x17,
-
-    /// <summary>
-    ///   Leggings, inner layer.
-    /// </summary>
-    InnerLegs = 0x18,
-
-    /// <summary>
-    ///   Last valid non-internal layer. Equivalent to <c>Layer.InnerLegs</c>.
-    /// </summary>
-    LastUserValid = 0x18,
-
-    /// <summary>
-    ///   Mount item layer.
-    /// </summary>
-    Mount = 0x19,
-
-    /// <summary>
-    ///   Vendor 'buy pack' layer.
-    /// </summary>
-    ShopBuy = 0x1A,
-
-    /// <summary>
-    ///   Vendor 'resale pack' layer.
-    /// </summary>
-    ShopResale = 0x1B,
-
-    /// <summary>
-    ///   Vendor 'sell pack' layer.
-    /// </summary>
-    ShopSell = 0x1C,
-
-    /// <summary>
-    ///   Bank box layer.
-    /// </summary>
-    Bank = 0x1D,
-
-    /// <summary>
-    ///   Last valid layer. Equivalent to <c>Layer.Bank</c>.
-    /// </summary>
-    LastValid = 0x1D
-  }
-
   /// <summary>
   ///   Internal flags used to signal how the item should be updated and resent to nearby clients.
   /// </summary>
@@ -247,295 +77,6 @@ namespace Server
     ///   The item should be placed into the owners backpack.
     /// </summary>
     MoveToBackpack
-  }
-
-  /// <summary>
-  ///   Enumeration containing all possible light types. These are only applicable to light source items, like lanterns, candles,
-  ///   braziers, etc.
-  /// </summary>
-  public enum LightType
-  {
-    /// <summary>
-    ///   Window shape, arched, ray shining east.
-    /// </summary>
-    ArchedWindowEast,
-
-    /// <summary>
-    ///   Medium circular shape.
-    /// </summary>
-    Circle225,
-
-    /// <summary>
-    ///   Small circular shape.
-    /// </summary>
-    Circle150,
-
-    /// <summary>
-    ///   Door shape, shining south.
-    /// </summary>
-    DoorSouth,
-
-    /// <summary>
-    ///   Door shape, shining east.
-    /// </summary>
-    DoorEast,
-
-    /// <summary>
-    ///   Large semicircular shape (180 degrees), north wall.
-    /// </summary>
-    NorthBig,
-
-    /// <summary>
-    ///   Large pie shape (90 degrees), north-east corner.
-    /// </summary>
-    NorthEastBig,
-
-    /// <summary>
-    ///   Large semicircular shape (180 degrees), east wall.
-    /// </summary>
-    EastBig,
-
-    /// <summary>
-    ///   Large semicircular shape (180 degrees), west wall.
-    /// </summary>
-    WestBig,
-
-    /// <summary>
-    ///   Large pie shape (90 degrees), south-west corner.
-    /// </summary>
-    SouthWestBig,
-
-    /// <summary>
-    ///   Large semicircular shape (180 degrees), south wall.
-    /// </summary>
-    SouthBig,
-
-    /// <summary>
-    ///   Medium semicircular shape (180 degrees), north wall.
-    /// </summary>
-    NorthSmall,
-
-    /// <summary>
-    ///   Medium pie shape (90 degrees), north-east corner.
-    /// </summary>
-    NorthEastSmall,
-
-    /// <summary>
-    ///   Medium semicircular shape (180 degrees), east wall.
-    /// </summary>
-    EastSmall,
-
-    /// <summary>
-    ///   Medium semicircular shape (180 degrees), west wall.
-    /// </summary>
-    WestSmall,
-
-    /// <summary>
-    ///   Medium semicircular shape (180 degrees), south wall.
-    /// </summary>
-    SouthSmall,
-
-    /// <summary>
-    ///   Shaped like a wall decoration, north wall.
-    /// </summary>
-    DecorationNorth,
-
-    /// <summary>
-    ///   Shaped like a wall decoration, north-east corner.
-    /// </summary>
-    DecorationNorthEast,
-
-    /// <summary>
-    ///   Small semicircular shape (180 degrees), east wall.
-    /// </summary>
-    EastTiny,
-
-    /// <summary>
-    ///   Shaped like a wall decoration, west wall.
-    /// </summary>
-    DecorationWest,
-
-    /// <summary>
-    ///   Shaped like a wall decoration, south-west corner.
-    /// </summary>
-    DecorationSouthWest,
-
-    /// <summary>
-    ///   Small semicircular shape (180 degrees), south wall.
-    /// </summary>
-    SouthTiny,
-
-    /// <summary>
-    ///   Window shape, rectangular, no ray, shining south.
-    /// </summary>
-    RectWindowSouthNoRay,
-
-    /// <summary>
-    ///   Window shape, rectangular, no ray, shining east.
-    /// </summary>
-    RectWindowEastNoRay,
-
-    /// <summary>
-    ///   Window shape, rectangular, ray shining south.
-    /// </summary>
-    RectWindowSouth,
-
-    /// <summary>
-    ///   Window shape, rectangular, ray shining east.
-    /// </summary>
-    RectWindowEast,
-
-    /// <summary>
-    ///   Window shape, arched, no ray, shining south.
-    /// </summary>
-    ArchedWindowSouthNoRay,
-
-    /// <summary>
-    ///   Window shape, arched, no ray, shining east.
-    /// </summary>
-    ArchedWindowEastNoRay,
-
-    /// <summary>
-    ///   Window shape, arched, ray shining south.
-    /// </summary>
-    ArchedWindowSouth,
-
-    /// <summary>
-    ///   Large circular shape.
-    /// </summary>
-    Circle300,
-
-    /// <summary>
-    ///   Large pie shape (90 degrees), north-west corner.
-    /// </summary>
-    NorthWestBig,
-
-    /// <summary>
-    ///   Negative light. Medium pie shape (90 degrees), south-east corner.
-    /// </summary>
-    DarkSouthEast,
-
-    /// <summary>
-    ///   Negative light. Medium semicircular shape (180 degrees), south wall.
-    /// </summary>
-    DarkSouth,
-
-    /// <summary>
-    ///   Negative light. Medium pie shape (90 degrees), north-west corner.
-    /// </summary>
-    DarkNorthWest,
-
-    /// <summary>
-    ///   Negative light. Medium pie shape (90 degrees), south-east corner. Equivalent to <c>LightType.SouthEast</c>.
-    /// </summary>
-    DarkSouthEast2,
-
-    /// <summary>
-    ///   Negative light. Medium circular shape (180 degrees), east wall.
-    /// </summary>
-    DarkEast,
-
-    /// <summary>
-    ///   Negative light. Large circular shape.
-    /// </summary>
-    DarkCircle300,
-
-    /// <summary>
-    ///   Opened door shape, shining south.
-    /// </summary>
-    DoorOpenSouth,
-
-    /// <summary>
-    ///   Opened door shape, shining east.
-    /// </summary>
-    DoorOpenEast,
-
-    /// <summary>
-    ///   Window shape, square, ray shining east.
-    /// </summary>
-    SquareWindowEast,
-
-    /// <summary>
-    ///   Window shape, square, no ray, shining east.
-    /// </summary>
-    SquareWindowEastNoRay,
-
-    /// <summary>
-    ///   Window shape, square, ray shining south.
-    /// </summary>
-    SquareWindowSouth,
-
-    /// <summary>
-    ///   Window shape, square, no ray, shining south.
-    /// </summary>
-    SquareWindowSouthNoRay,
-
-    /// <summary>
-    ///   Empty.
-    /// </summary>
-    Empty,
-
-    /// <summary>
-    ///   Window shape, skinny, no ray, shining south.
-    /// </summary>
-    SkinnyWindowSouthNoRay,
-
-    /// <summary>
-    ///   Window shape, skinny, ray shining east.
-    /// </summary>
-    SkinnyWindowEast,
-
-    /// <summary>
-    ///   Window shape, skinny, no ray, shining east.
-    /// </summary>
-    SkinnyWindowEastNoRay,
-
-    /// <summary>
-    ///   Shaped like a hole, shining south.
-    /// </summary>
-    HoleSouth,
-
-    /// <summary>
-    ///   Shaped like a hole, shining south.
-    /// </summary>
-    HoleEast,
-
-    /// <summary>
-    ///   Large circular shape with a moongate graphic embeded.
-    /// </summary>
-    Moongate,
-
-    /// <summary>
-    ///   Unknown usage. Many rows of slightly angled lines.
-    /// </summary>
-    Strips,
-
-    /// <summary>
-    ///   Shaped like a small hole, shining south.
-    /// </summary>
-    SmallHoleSouth,
-
-    /// <summary>
-    ///   Shaped like a small hole, shining east.
-    /// </summary>
-    SmallHoleEast,
-
-    /// <summary>
-    ///   Large semicircular shape (180 degrees), north wall. Identical graphic as <c>LightType.NorthBig</c>, but slightly different
-    ///   positioning.
-    /// </summary>
-    NorthBig2,
-
-    /// <summary>
-    ///   Large semicircular shape (180 degrees), west wall. Identical graphic as <c>LightType.WestBig</c>, but slightly different
-    ///   positioning.
-    /// </summary>
-    WestBig2,
-
-    /// <summary>
-    ///   Large pie shape (90 degrees), north-west corner. Equivalent to <c>LightType.NorthWestBig</c>.
-    /// </summary>
-    NorthWestBig2
   }
 
   /// <summary>
@@ -658,7 +199,7 @@ namespace Server
     Spawner = 0x100
   }
 
-  public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable
+  public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, IPropertyListObject
   {
     public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
     public static readonly List<Item> EmptyItems = new List<Item>();
@@ -669,14 +210,6 @@ namespace Server
 
     private static int m_OpenSlots;
 
-    private object _opll = new object();
-
-    private object _rpl = new object();
-
-    private object _wpl = new object();
-    private object _wplhs = new object();
-    private object _wplsa = new object();
-
     private CompactInfo m_CompactInfo;
 
     private ItemDelta m_DeltaFlags;
@@ -684,8 +217,10 @@ namespace Server
 
     internal int m_TypeRef;
 
-    public Item()
+    [Constructible]
+    public Item(int itemID = 0)
     {
+      m_ItemID = itemID;
       Serial = Serial.NewItem;
 
       //m_Items = new ArrayList( 1 );
@@ -706,12 +241,6 @@ namespace Server
         World.m_ItemTypes.Add(ourType);
         m_TypeRef = World.m_ItemTypes.Count - 1;
       }
-    }
-
-    [Constructible]
-    public Item(int itemID) : this()
-    {
-      m_ItemID = itemID;
     }
 
     public Item(Serial serial)
@@ -811,138 +340,20 @@ namespace Server
       set => SetFlag(ImplFlag.Stackable, value);
     }
 
-    public Packet RemovePacket
-    {
-      get
-      {
-        if (m_RemovePacket == null)
-          lock (_rpl)
-          {
-            if (m_RemovePacket == null)
-            {
-              m_RemovePacket = new RemoveItem(this);
-              m_RemovePacket.SetStatic();
-            }
-          }
+    public Packet RemovePacket => StaticPacketHandlers.GetRemoveEntityPacket(this);
+    public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
+    public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
 
-        return m_RemovePacket;
-      }
-    }
-
-    public Packet OPLPacket
-    {
-      get
-      {
-        if (m_OPLPacket == null)
-          lock (_opll)
-          {
-            if (m_OPLPacket == null)
-            {
-              m_OPLPacket = new OPLInfo(PropertyList);
-              m_OPLPacket.SetStatic();
-            }
-          }
-
-        return m_OPLPacket;
-      }
-    }
-
-    public ObjectPropertyList PropertyList
-    {
-      get
-      {
-        if (m_PropertyList == null)
-        {
-          m_PropertyList = new ObjectPropertyList(this);
-
-          GetProperties(m_PropertyList);
-          AppendChildProperties(m_PropertyList);
-
-          m_PropertyList.Terminate();
-          m_PropertyList.SetStatic();
-        }
-
-        return m_PropertyList;
-      }
-    }
-
-    public Packet WorldPacket
-    {
-      get
-      {
-        // This needs to be invalidated when any of the following changes:
-        //  - ItemID
-        //  - Amount
-        //  - Location
-        //  - Hue
-        //  - Packet Flags
-        //  - Direction
-
-        if (m_WorldPacket == null)
-          lock (_wpl)
-          {
-            if (m_WorldPacket == null)
-            {
-              m_WorldPacket = new WorldItem(this);
-              m_WorldPacket.SetStatic();
-            }
-          }
-
-        return m_WorldPacket;
-      }
-    }
-
-    public Packet WorldPacketSA
-    {
-      get
-      {
-        // This needs to be invalidated when any of the following changes:
-        //  - ItemID
-        //  - Amount
-        //  - Location
-        //  - Hue
-        //  - Packet Flags
-        //  - Direction
-
-        if (m_WorldPacketSA == null)
-          lock (_wplsa)
-          {
-            if (m_WorldPacketSA == null)
-            {
-              m_WorldPacketSA = new WorldItemSA(this);
-              m_WorldPacketSA.SetStatic();
-            }
-          }
-
-        return m_WorldPacketSA;
-      }
-    }
-
-    public Packet WorldPacketHS
-    {
-      get
-      {
-        // This needs to be invalidated when any of the following changes:
-        //  - ItemID
-        //  - Amount
-        //  - Location
-        //  - Hue
-        //  - Packet Flags
-        //  - Direction
-
-        if (m_WorldPacketHS == null)
-          lock (_wplhs)
-          {
-            if (m_WorldPacketHS == null)
-            {
-              m_WorldPacketHS = new WorldItemHS(this);
-              m_WorldPacketHS.SetStatic();
-            }
-          }
-
-        return m_WorldPacketHS;
-      }
-    }
+    // World packets need to be invalidated when any of the following changes:
+    //  - ItemID
+    //  - Amount
+    //  - Location
+    //  - Hue
+    //  - Packet Flags
+    //  - Direction
+    public Packet WorldPacket => StaticPacketHandlers.GetWorldItemPacket(this);
+    public Packet WorldPacketSA => StaticPacketHandlers.GetWorldItemSAPacket(this);
+    public Packet WorldPacketHS => StaticPacketHandlers.GetWorldItemHSPacket(this);
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Visible
@@ -965,7 +376,8 @@ namespace Server
             {
               Mobile m = state.Mobile;
 
-              if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m))) state.Send(RemovePacket);
+              if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
+                state.Send(RemovePacket);
             }
 
             eable.Free();
@@ -1134,10 +546,8 @@ namespace Server
       {
         IEntity p = m_Parent;
 
-        while (p is Item)
+        while (p is Item item)
         {
-          Item item = (Item)p;
-
           if (item.m_Parent == null) break;
 
           p = item.m_Parent;
@@ -1349,25 +759,14 @@ namespace Server
       }
     }
 
+    int IComparable<IEntity>.CompareTo(IEntity other)
+    {
+      return other == null ? -1 : Serial.CompareTo(other.Serial);
+    }
+
     public int CompareTo(Item other)
     {
-      return CompareTo((IEntity)other);
-    }
-
-    public int CompareTo(IEntity other)
-    {
-      if (other == null)
-        return -1;
-
-      return Serial.CompareTo(other.Serial);
-    }
-
-    public int CompareTo(object other)
-    {
-      if (other == null || other is IEntity)
-        return CompareTo((IEntity)other);
-
-      throw new ArgumentException();
+      return other == null ? -1 : Serial.CompareTo(other.Serial);
     }
 
     /// <summary>
@@ -1538,7 +937,7 @@ namespace Server
       }
     }
 
-    public void ProcessDelta()
+    public virtual void ProcessDelta()
     {
       ItemDelta flags = m_DeltaFlags;
 
@@ -1547,220 +946,159 @@ namespace Server
 
       Map map = m_Map;
 
-      if (map != null && !Deleted)
+      if (map == null || Deleted)
+        return;
+
+      Point3D worldLoc = GetWorldLocation();
+      bool update = (flags & ItemDelta.Update) != 0;
+
+      if (update && m_Parent is Container contParent && !contParent.IsPublicContainer)
       {
-        bool sendOPLUpdate = ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0;
+        Mobile rootParent = contParent.RootParent as Mobile;
+        Mobile tradeRecip = null;
 
-        if (m_Parent is Container contParent && !contParent.IsPublicContainer)
-          if ((flags & ItemDelta.Update) != 0)
-          {
-            Point3D worldLoc = GetWorldLocation();
-
-            Mobile rootParent = contParent.RootParent as Mobile;
-            Mobile tradeRecip = null;
-
-            if (rootParent != null)
-            {
-              NetState ns = rootParent.NetState;
-
-              if (ns != null)
-                if (rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
-                {
-                  if (ns.ContainerGridLines)
-                    ns.Send(new ContainerContentUpdate6017(this));
-                  else
-                    ns.Send(new ContainerContentUpdate(this));
-
-                  if (ObjectPropertyList.Enabled)
-                    ns.Send(OPLPacket);
-                }
-            }
-
-            SecureTradeContainer stc = GetSecureTradeCont();
-
-            SecureTrade st = stc?.Trade;
-
-            if (st != null)
-            {
-              Mobile test = st.From.Mobile;
-
-              if (test != null && test != rootParent)
-                tradeRecip = test;
-
-              test = st.To.Mobile;
-
-              if (test != null && test != rootParent)
-                tradeRecip = test;
-
-              NetState ns = tradeRecip?.NetState;
-
-              if (ns != null)
-                if (tradeRecip.CanSee(this) && tradeRecip.InRange(worldLoc, GetUpdateRange(tradeRecip)))
-                {
-                  if (ns.ContainerGridLines)
-                    ns.Send(new ContainerContentUpdate6017(this));
-                  else
-                    ns.Send(new ContainerContentUpdate(this));
-
-                  if (ObjectPropertyList.Enabled)
-                    ns.Send(OPLPacket);
-                }
-            }
-
-            List<Mobile> openers = contParent.Openers;
-
-            if (openers != null)
-              lock (openers)
-              {
-                for (int i = 0; i < openers.Count; ++i)
-                {
-                  Mobile mob = openers[i];
-
-                  int range = GetUpdateRange(mob);
-
-                  if (mob.Map != map || !mob.InRange(worldLoc, range))
-                  {
-                    openers.RemoveAt(i--);
-                  }
-                  else
-                  {
-                    if (mob == rootParent || mob == tradeRecip)
-                      continue;
-
-                    NetState ns = mob.NetState;
-
-                    if (ns != null)
-                      if (mob.CanSee(this))
-                      {
-                        if (ns.ContainerGridLines)
-                          ns.Send(new ContainerContentUpdate6017(this));
-                        else
-                          ns.Send(new ContainerContentUpdate(this));
-
-                        if (ObjectPropertyList.Enabled)
-                          ns.Send(OPLPacket);
-                      }
-                  }
-                }
-
-                if (openers.Count == 0)
-                  contParent.Openers = null;
-              }
-
-            return;
-          }
-
-        if ((flags & ItemDelta.Update) != 0)
+        if (rootParent != null)
         {
-          Packet p = null;
-          Point3D worldLoc = GetWorldLocation();
+          NetState ns = rootParent.NetState;
 
-          IPooledEnumerable<NetState> eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
-
-          foreach (NetState state in eable)
-          {
-            Mobile m = state.Mobile;
-
-            if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
+          if (ns != null)
+            if (rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
             {
-              if (m_Parent == null)
+              if (ns.ContainerGridLines)
+                ns.Send(new ContainerContentUpdate6017(this));
+              else
+                ns.Send(new ContainerContentUpdate(this));
+
+              if (ObjectPropertyList.Enabled)
+                ns.Send(OPLPacket);
+            }
+        }
+
+        SecureTrade st = GetSecureTradeCont()?.Trade;
+
+        if (st != null)
+        {
+          Mobile test = st.From.Mobile;
+
+          if (test != null && test != rootParent)
+            tradeRecip = test;
+
+          test = st.To.Mobile;
+
+          if (test != null && test != rootParent)
+            tradeRecip = test;
+
+          NetState ns = tradeRecip?.NetState;
+
+          if (ns != null && tradeRecip.CanSee(this) && tradeRecip.InRange(worldLoc, GetUpdateRange(tradeRecip)))
+          {
+            if (ns.ContainerGridLines)
+              ns.Send(new ContainerContentUpdate6017(this));
+            else
+              ns.Send(new ContainerContentUpdate(this));
+
+            if (ObjectPropertyList.Enabled)
+              ns.Send(OPLPacket);
+          }
+        }
+
+        List<Mobile> openers = contParent.Openers;
+
+        if (openers != null)
+          lock (openers)
+          {
+            for (int i = 0; i < openers.Count; ++i)
+            {
+              Mobile mob = openers[i];
+
+              int range = GetUpdateRange(mob);
+
+              if (mob.Map != map || !mob.InRange(worldLoc, range))
               {
-                SendInfoTo(state, ObjectPropertyList.Enabled);
+                openers.RemoveAt(i--);
               }
               else
               {
-                if (p == null)
-                {
-                  if (m_Parent is Item)
-                  {
-                    if (state.ContainerGridLines)
-                      state.Send(new ContainerContentUpdate6017(this));
-                    else
-                      state.Send(new ContainerContentUpdate(this));
-                  }
-                  else if (m_Parent is Mobile)
-                  {
-                    p = new EquipUpdate(this);
-                    p.Acquire();
+                if (mob == rootParent || mob == tradeRecip)
+                  continue;
 
-                    state.Send(p);
-                  }
-                }
-                else
-                {
-                  state.Send(p);
-                }
+                NetState ns = mob.NetState;
 
-                if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
+                if (ns != null && mob.CanSee(this))
+                {
+                  if (ns.ContainerGridLines)
+                    ns.Send(new ContainerContentUpdate6017(this));
+                  else
+                    ns.Send(new ContainerContentUpdate(this));
+
+                  if (ObjectPropertyList.Enabled)
+                    ns.Send(OPLPacket);
+                }
               }
             }
+
+            if (openers.Count == 0)
+              contParent.Openers = null;
           }
 
-          if (p != null)
-            Packet.Release(p);
+        return;
+      }
 
-          eable.Free();
-          sendOPLUpdate = false;
-        }
-        else if ((flags & ItemDelta.EquipOnly) != 0)
+      Packet p = null;
+
+      IPooledEnumerable<NetState> eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
+
+      foreach (NetState state in eable)
+      {
+        Mobile m = state.Mobile;
+
+        if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
         {
-          if (m_Parent is Mobile)
+          if (update)
           {
-            Packet p = null;
-            Point3D worldLoc = GetWorldLocation();
-
-            IPooledEnumerable<NetState> eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
-
-            foreach (NetState state in eable)
+            if (m_Parent == null)
+              SendInfoTo(state, ObjectPropertyList.Enabled);
+            else
             {
-              Mobile m = state.Mobile;
-
-              if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
+              if (p != null)
+                state.Send(p);
+              else if (m_Parent is Item)
               {
-                //if ( sendOPLUpdate )
-                //	state.Send( RemovePacket );
-
-                if (p == null)
-                  p = Packet.Acquire(new EquipUpdate(this));
+                if (state.ContainerGridLines)
+                  state.Send(new ContainerContentUpdate6017(this));
+                else
+                  state.Send(new ContainerContentUpdate(this));
+              }
+              else if (m_Parent is Mobile)
+              {
+                p = new EquipUpdate(this);
+                p.Acquire();
 
                 state.Send(p);
-
-                if (ObjectPropertyList.Enabled)
-                  state.Send(OPLPacket);
               }
+
+              if (ObjectPropertyList.Enabled)
+                state.Send(OPLPacket);
             }
-
-            Packet.Release(p);
-
-            eable.Free();
-            sendOPLUpdate = false;
           }
-        }
-
-        if (sendOPLUpdate)
-        {
-          Point3D worldLoc = GetWorldLocation();
-          IPooledEnumerable<NetState> eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
-
-          foreach (NetState state in eable)
+          else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
           {
-            Mobile m = state.Mobile;
+            state.Send(p ?? (p = Packet.Acquire(new EquipUpdate(this))));
 
-            if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
+            if (ObjectPropertyList.Enabled)
               state.Send(OPLPacket);
-          }
-
-          eable.Free();
+          } else if (ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0)
+            state.Send(OPLPacket);
         }
       }
+
+      Packet.Release(p);
+      eable.Free();
     }
 
     public virtual void Delete()
     {
-      if (Deleted)
-        return;
-
-      if (!World.OnDelete(this))
+      if (Deleted || !World.OnDelete(this))
         return;
 
       OnDelete();
@@ -1866,15 +1204,15 @@ namespace Server
 
       if (info != null)
       {
-        if (info.m_BlessedFor != null && !info.m_BlessedFor.Deleted)
+        if (info.m_BlessedFor?.Deleted == false)
           flags |= SaveFlag.BlessedFor;
-        if (info.m_HeldBy != null && !info.m_HeldBy.Deleted)
+        if (info.m_HeldBy?.Deleted == false)
           flags |= SaveFlag.HeldBy;
         if (info.m_SavedFlags != 0)
           flags |= SaveFlag.SavedFlags;
       }
 
-      if (info == null || info.m_Weight == -1)
+      if (info == null || info.m_Weight == -1.0)
       {
         flags |= SaveFlag.NullWeight;
       }
@@ -1976,7 +1314,7 @@ namespace Server
 
       if (GetSaveFlag(flags, SaveFlag.Parent))
       {
-        if (m_Parent != null && !m_Parent.Deleted)
+        if (m_Parent?.Deleted == false)
           writer.Write(m_Parent.Serial);
         else
           writer.Write(Serial.MinusOne);
@@ -2325,7 +1663,7 @@ namespace Server
 
       Mobile blessedFor = BlessedFor;
 
-      if (blessedFor != null && !blessedFor.Deleted)
+      if (blessedFor?.Deleted == false)
         AddBlessedForProperty(list, blessedFor);
 
       if (DisplayLootType)
@@ -2430,7 +1768,7 @@ namespace Server
       {
         IEntity parent = bounce.m_Parent;
 
-        if (parent == null || parent.Deleted)
+        if (parent?.Deleted != false)
         {
           MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
         }
@@ -2715,8 +2053,8 @@ namespace Server
 
     public void ClearProperties()
     {
-      Packet.Release(ref m_PropertyList);
-      Packet.Release(ref m_OPLPacket);
+      StaticPacketHandlers.FreeOPLPacket(this);
+      StaticPacketHandlers.FreeOPLInfoPacket(this);
     }
 
     public void InvalidateProperties()
@@ -2726,13 +2064,11 @@ namespace Server
 
       if (m_Map != null && m_Map != Map.Internal && !World.Loading)
       {
-        ObjectPropertyList oldList = m_PropertyList;
-        m_PropertyList = null;
-        ObjectPropertyList newList = PropertyList;
+        ObjectPropertyList oldList = StaticPacketHandlers.FreeOPLPacket(this);
 
-        if (oldList == null || oldList.Hash != newList.Hash)
+        if (oldList?.Hash != PropertyList.Hash)
         {
-          Packet.Release(ref m_OPLPacket);
+          StaticPacketHandlers.FreeOPLInfoPacket(this);
           Delta(ItemDelta.Properties);
         }
       }
@@ -2744,9 +2080,7 @@ namespace Server
 
     public void ReleaseWorldPackets()
     {
-      Packet.Release(ref m_WorldPacket);
-      Packet.Release(ref m_WorldPacketSA);
-      Packet.Release(ref m_WorldPacketHS);
+      StaticPacketHandlers.FreeWorldItemPackets(this);
     }
 
     public virtual int GetPacketFlags()
@@ -3349,12 +2683,10 @@ namespace Server
     {
       IEntity p = m_Parent;
 
-      while (p is Item)
+      while (p is Item item)
       {
-        if (p is T)
+        if (item is T)
           return true;
-
-        Item item = (Item)p;
 
         if (item.m_Parent == null) break;
 
@@ -3366,7 +2698,7 @@ namespace Server
 
     public virtual void AddItem(Item item)
     {
-      if (item == null || item.Deleted || item.m_Parent == this) return;
+      if (item?.Deleted != false || item.m_Parent == this) return;
 
       if (item == this)
       {
@@ -3434,6 +2766,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
         else
           m_DeltaQueue.Add(this);
@@ -3501,9 +2834,9 @@ namespace Server
     public virtual void FreeCache()
     {
       ReleaseWorldPackets();
-      Packet.Release(ref m_RemovePacket);
-      Packet.Release(ref m_OPLPacket);
-      Packet.Release(ref m_PropertyList);
+      StaticPacketHandlers.FreeRemoveItemPacket(this);
+      StaticPacketHandlers.FreeOPLInfoPacket(this);
+      StaticPacketHandlers.FreeOPLPacket(this);
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)
@@ -3685,15 +3018,13 @@ namespace Server
           target.Map == null)
         return false;
 
-      object root = target.RootParent;
-
       if (from.AccessLevel < AccessLevel.GameMaster && !from.InRange(target.GetWorldLocation(), 2))
         return false;
       if (!from.CanSee(target) || !from.InLOS(target))
         return false;
       if (!target.IsAccessibleTo(from))
         return false;
-      if (root is Mobile mobile && !mobile.CheckNonlocalDrop(from, this, target))
+      if (target.RootParent is Mobile mobile && !mobile.CheckNonlocalDrop(from, this, target))
         return false;
       if (!from.OnDroppedItemToItem(this, target, p))
         return false;
@@ -3765,29 +3096,24 @@ namespace Server
         z = top;
       }
 
-      List<Item> items = new List<Item>();
-
       IPooledEnumerable<Item> eable = map.GetItemsInRange(p, 0);
 
-      foreach (Item item in eable)
+      List<Item> items = eable.Where(item =>
       {
         if (item is BaseMulti || item.ItemID > TileData.MaxItemValue)
-          continue;
-
-        items.Add(item);
+          return false;
 
         ItemData id = item.ItemData;
 
-        if (!id.Surface)
-          continue;
+        if (id.Surface)
+        {
+          int top = item.Z + id.CalcHeight;
+          if (top <= maxZ && top >= z)
+            z = top;
+        }
 
-        int top = item.Z + id.CalcHeight;
-
-        if (top > maxZ || top < z)
-          continue;
-
-        z = top;
-      }
+        return true;
+      }).ToList();
 
       eable.Free();
 
@@ -4024,12 +3350,12 @@ namespace Server
     {
       object p = this;
 
-      while (p is Item)
+      while (p is Item item)
       {
-        if (p is SecureTradeContainer container)
+        if (item is SecureTradeContainer container)
           return container;
 
-        p = ((Item)p).m_Parent;
+        p = item.m_Parent;
       }
 
       return null;
@@ -4125,10 +3451,8 @@ namespace Server
       if (p == o)
         return true;
 
-      while (p is Item)
+      while (p is Item item)
       {
-        Item item = (Item)p;
-
         if (item.m_Parent == null)
           break;
 
@@ -4214,22 +3538,22 @@ namespace Server
 
       NetState ns = from.NetState;
 
-      if (ns != null)
+      if (ns == null)
+        return;
+
+      if (Name == null)
       {
-        if (Name == null)
-        {
-          if (m_Amount <= 1)
-            ns.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", ""));
-          else
-            ns.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "",
-              AffixType.Append,
-              $" : {m_Amount}", ""));
-        }
+        if (m_Amount <= 1)
+          ns.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", ""));
         else
-        {
-          ns.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
-            Name + (m_Amount > 1 ? " : " + m_Amount : "")));
-        }
+          ns.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "",
+            AffixType.Append,
+            $" : {m_Amount}", ""));
+      }
+      else
+      {
+        ns.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
+          Name + (m_Amount > 1 ? " : " + m_Amount : "")));
       }
     }
 
@@ -4294,11 +3618,6 @@ namespace Server
       }
 
       Delete();
-    }
-
-    public virtual bool CheckBlessed(object obj)
-    {
-      return CheckBlessed(obj as Mobile);
     }
 
     public virtual bool CheckBlessed(Mobile m)
@@ -4414,18 +3733,6 @@ namespace Server
     private Map m_Map;
     private LootType m_LootType;
     private Direction m_Direction;
-
-    #endregion
-
-    #region Packet caches
-
-    private Packet m_WorldPacket;
-    private Packet m_WorldPacketSA;
-    private Packet m_WorldPacketHS;
-    private Packet m_RemovePacket;
-
-    private Packet m_OPLPacket;
-    private ObjectPropertyList m_PropertyList;
 
     #endregion
 

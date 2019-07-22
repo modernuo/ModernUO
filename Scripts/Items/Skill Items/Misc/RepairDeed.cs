@@ -23,26 +23,13 @@ namespace Server.Items
     private double m_SkillLevel;
 
     [Constructible]
-    public RepairDeed() : this(RepairSkillType.Smithing, 100.0, null, true)
+    public RepairDeed(RepairSkillType skill, double level, bool normalizeLevel) :
+      this(skill, level, null, normalizeLevel)
     {
     }
 
-    [Constructible]
-    public RepairDeed(RepairSkillType skill, double level) : this(skill, level, null, true)
-    {
-    }
-
-    [Constructible]
-    public RepairDeed(RepairSkillType skill, double level, bool normalizeLevel) : this(skill, level, null,
-      normalizeLevel)
-    {
-    }
-
-    public RepairDeed(RepairSkillType skill, double level, Mobile crafter) : this(skill, level, crafter, true)
-    {
-    }
-
-    public RepairDeed(RepairSkillType skill, double level, Mobile crafter, bool normalizeLevel) : base(0x14F0)
+    public RepairDeed(RepairSkillType skill = RepairSkillType.Smithing, double level = 100.0,
+      Mobile crafter = null, bool normalizeLevel = true) : base(0x14F0)
     {
       if (normalizeLevel)
         SkillLevel = (int)(level / 10) * 10;

@@ -38,60 +38,38 @@ namespace Server.Engines.Harvest
 
     private Fishing()
     {
-      HarvestResource[] res;
-      HarvestVein[] veins;
-
-      #region Fishing
-
-      HarvestDefinition fish = new HarvestDefinition();
-
-      // Resource banks are every 8x8 tiles
-      fish.BankWidth = 8;
-      fish.BankHeight = 8;
-
-      // Every bank holds from 5 to 15 fish
-      fish.MinTotal = 5;
-      fish.MaxTotal = 15;
-
-      // A resource bank will respawn its content every 10 to 20 minutes
-      fish.MinRespawn = TimeSpan.FromMinutes(10.0);
-      fish.MaxRespawn = TimeSpan.FromMinutes(20.0);
-
-      // Skill checking is done on the Fishing skill
-      fish.Skill = SkillName.Fishing;
-
-      // Set the list of harvestable tiles
-      fish.Tiles = m_WaterTiles;
-      fish.RangedTiles = true;
-
-      // Players must be within 4 tiles to harvest
-      fish.MaxRange = 4;
-
-      // One fish per harvest action
-      fish.ConsumedPerHarvest = 1;
-      fish.ConsumedPerFeluccaHarvest = 1;
-
-      // The fishing
-      fish.EffectActions = new[] { 12 };
-      fish.EffectSounds = new int[0];
-      fish.EffectCounts = new[] { 1 };
-      fish.EffectDelay = TimeSpan.Zero;
-      fish.EffectSoundDelay = TimeSpan.FromSeconds(8.0);
-
-      fish.NoResourcesMessage = 503172; // The fish don't seem to be biting here.
-      fish.FailMessage = 503171; // You fish a while, but fail to catch anything.
-      fish.TimedOutOfRangeMessage = 500976; // You need to be closer to the water to fish!
-      fish.OutOfRangeMessage = 500976; // You need to be closer to the water to fish!
-      fish.PackFullMessage = 503176; // You do not have room in your backpack for a fish.
-      fish.ToolBrokeMessage = 503174; // You broke your fishing pole.
-
-      res = new[]
+      HarvestDefinition fish = new HarvestDefinition
       {
+        BankWidth = 8,
+        BankHeight = 8,
+        MinTotal = 5,
+        MaxTotal = 15,
+        MinRespawn = TimeSpan.FromMinutes(10.0),
+        MaxRespawn = TimeSpan.FromMinutes(20.0),
+        Skill = SkillName.Fishing,
+        Tiles = m_WaterTiles,
+        RangedTiles = true,
+        MaxRange = 4,
+        ConsumedPerHarvest = 1,
+        ConsumedPerFeluccaHarvest = 1,
+        EffectActions = new[] { 12 },
+        EffectSounds = new int[0],
+        EffectCounts = new[] { 1 },
+        EffectDelay = TimeSpan.Zero,
+        EffectSoundDelay = TimeSpan.FromSeconds(8.0),
+        NoResourcesMessage = 503172, // The fish don't seem to be biting here.
+        FailMessage = 503171, // You fish a while, but fail to catch anything.
+        TimedOutOfRangeMessage = 500976, // You need to be closer to the water to fish!
+        OutOfRangeMessage = 500976, // You need to be closer to the water to fish!
+        PackFullMessage = 503176, // You do not have room in your backpack for a fish.
+        ToolBrokeMessage = 503174 // You broke your fishing pole.
+      };
+
+      HarvestResource[] res = {
         new HarvestResource(00.0, 00.0, 100.0, 1043297, typeof(Fish))
       };
 
-      veins = new[]
-      {
+      HarvestVein[] veins = {
         new HarvestVein(100.0, 0.0, res[0], null)
       };
 
@@ -107,20 +85,9 @@ namespace Server.Engines.Harvest
 
       Definition = fish;
       Definitions.Add(fish);
-
-      #endregion
     }
 
-    public static Fishing System
-    {
-      get
-      {
-        if (m_System == null)
-          m_System = new Fishing();
-
-        return m_System;
-      }
-    }
+    public static Fishing System => m_System ?? (m_System = new Fishing());
 
     public HarvestDefinition Definition{ get; }
 
@@ -191,10 +158,7 @@ namespace Server.Engines.Harvest
 
     private static Map SafeMap(Map map)
     {
-      if (map == null || map == Map.Internal)
-        return Map.Trammel;
-
-      return map;
+      return map == null || map == Map.Internal ? Map.Trammel : map;
     }
 
     public override bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
@@ -324,10 +288,7 @@ namespace Server.Engines.Harvest
 
             TreasureMapChest.Fill(chest, Math.Max(1, Math.Min(4, sos.Level)));
 
-            if (sos.IsAncient)
-              chest.DropItem(new FabledFishingNet());
-            else
-              chest.DropItem(new SpecialFishingNet());
+            chest.DropItem(sos.IsAncient ? new FabledFishingNet() : new SpecialFishingNet());
 
             chest.Movable = true;
             chest.Locked = false;
@@ -388,10 +349,7 @@ namespace Server.Engines.Harvest
         return true; // we don't want to give the item to the player, it's on the serpent
       }
 
-      if (item is BigFish || item is WoodenChest || item is MetalGoldenChest)
-        placeAtFeet = true;
-
-      return base.Give(m, item, placeAtFeet);
+      return base.Give(m, item, placeAtFeet || item is BigFish || item is WoodenChest || item is MetalGoldenChest);
     }
 
     public override void SendSuccessTo(Mobile from, Item item, HarvestResource resource)

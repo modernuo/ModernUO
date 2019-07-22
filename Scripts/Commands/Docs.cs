@@ -229,11 +229,9 @@ namespace Server.Commands
           StringBuilder nameBuilder = new StringBuilder(rootType);
           StringBuilder fnamBuilder = new StringBuilder("docs/types/" + SanitizeType(rootType));
           StringBuilder linkBuilder;
-          if (DontLink(type)) //if ( DontLink( rootType ) )
-            linkBuilder = new StringBuilder("<font color=\"blue\">" + rootType + "</font>");
-          else
-            linkBuilder =
-              new StringBuilder("<a href=\"" + "@directory@" + rootType + "-T-.html\">" + rootType + "</a>");
+          linkBuilder = DontLink(type) ?
+            new StringBuilder("<font color=\"blue\">" + rootType + "</font>") :
+            new StringBuilder("<a href=\"" + "@directory@" + rootType + "-T-.html\">" + rootType + "</a>");
 
           nameBuilder.Append("&lt;");
           fnamBuilder.Append("-");
@@ -272,10 +270,7 @@ namespace Server.Commands
         }
       }
 
-      if (name == null)
-        typeName = type.Name;
-      else
-        typeName = name;
+      typeName = name ?? type.Name;
 
       if (fnam == null) fileName = "docs/types/" + SanitizeType(type.Name) + ".html";
       else fileName = fnam + ".html";
@@ -300,7 +295,8 @@ namespace Server.Commands
     {
       bool anonymousType = name.Contains("<");
       StringBuilder sb = new StringBuilder(name);
-      for (int i = 0; i < ReplaceChars.Length; ++i) sb.Replace(ReplaceChars[i], '-');
+      for (int i = 0; i < ReplaceChars.Length; ++i)
+        sb.Replace(ReplaceChars[i], '-');
 
       if (anonymousType) return "(Anonymous-Type)" + sb;
       return sb.ToString();
@@ -396,7 +392,8 @@ namespace Server.Commands
           v = 1;
         }
 
-        if (v == 0) v = GetNameFrom(aCtor, aProp, aMethod).CompareTo(GetNameFrom(bCtor, bProp, bMethod));
+        if (v == 0)
+          v = GetNameFrom(aCtor, aProp, aMethod).CompareTo(GetNameFrom(bCtor, bProp, bMethod));
 
         if (v == 0 && aCtor != null && bCtor != null)
           v = aCtor.GetParameters().Length.CompareTo(bCtor.GetParameters().Length);
@@ -418,7 +415,7 @@ namespace Server.Commands
           MethodInfo getMethod = prop.GetGetMethod();
           MethodInfo setMethod = prop.GetGetMethod();
 
-          return getMethod != null && getMethod.IsStatic || setMethod != null && setMethod.IsStatic;
+          return getMethod?.IsStatic == true || setMethod?.IsStatic == true;
         }
 
         return false;
@@ -426,13 +423,7 @@ namespace Server.Commands
 
       private string GetNameFrom(ConstructorInfo ctor, PropertyInfo prop, MethodInfo method)
       {
-        if (ctor != null)
-          return ctor.DeclaringType?.Name ?? "";
-        if (prop != null)
-          return prop.Name;
-        if (method != null)
-          return method.Name;
-        return "";
+        return ctor?.DeclaringType?.Name ?? prop?.Name ?? method?.Name ?? "";
       }
     }
 
@@ -440,14 +431,8 @@ namespace Server.Commands
     {
       public int Compare(TypeInfo x, TypeInfo y)
       {
-        if (x == null && y == null)
-          return 0;
-        if (x == null)
-          return -1;
-        if (y == null)
-          return 1;
-
-        return x.TypeName.CompareTo(y.TypeName);
+        return x == null && y == null ? 0 : x == null ? -1 : y == null ? 1 :
+          x.TypeName.CompareTo(y.TypeName);
       }
     }
 
@@ -1194,14 +1179,14 @@ namespace Server.Commands
       html.WriteLine("      </table></td></tr></table>");
     }
 
-    private static void DocumentTailorBOD(StreamWriter html, List<Item> items, string amt, BulkMaterialType material,
+    private static void DocumentTailorBOD(StreamWriter html, List<RewardItem> items, string amt, BulkMaterialType material,
       Type type)
     {
       bool[] rewards = new bool[20];
 
       for (int i = 0; i < items.Count; ++i)
       {
-        Item item = items[i];
+        Item item = items[i].Construct();
 
         if (item is Sandals)
         {
@@ -1471,13 +1456,13 @@ namespace Server.Commands
       html.WriteLine("      </table></td></tr></table>");
     }
 
-    private static void DocumentSmithBOD(StreamWriter html, List<Item> items, string amt, BulkMaterialType material)
+    private static void DocumentSmithBOD(StreamWriter html, List<RewardItem> items, string amt, BulkMaterialType material)
     {
       bool[] rewards = new bool[24];
 
       for (int i = 0; i < items.Count; ++i)
       {
-        Item item = items[i];
+        Item item = items[i].Construct();
 
         if (item is SturdyPickaxe || item is SturdyShovel)
         {
@@ -2463,7 +2448,7 @@ namespace Server.Commands
 
       int extendCount = 0;
 
-      if (baseType != null && baseType != typeof(object) && baseType != typeof(ValueType) && !baseType.IsPrimitive)
+      if (baseType != typeof(object) && baseType != typeof(ValueType) && baseType?.IsPrimitive == false)
       {
         typeHtml.Write(" : ");
 
@@ -2575,7 +2560,7 @@ namespace Server.Commands
       MethodInfo getMethod = pi.GetGetMethod();
       MethodInfo setMethod = pi.GetSetMethod();
 
-      if (getMethod != null && getMethod.IsStatic || setMethod != null && setMethod.IsStatic)
+      if (getMethod?.IsStatic == true || setMethod?.IsStatic == true)
         html.Write(StaticString);
 
       html.Write(GetPair(pi.PropertyType, pi.Name, false));

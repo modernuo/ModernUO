@@ -81,7 +81,7 @@ namespace Server.Engines.Quests
       AddImageTiled(35, 150, 120, 100, 9393);
       AddImage(35, 250, 9396);
 
-      AddHtmlLocalized(110, 60, 200, 20, 1049069, White, false, false); // <STRONG>Conversation Event</STRONG>
+      AddHtmlLocalized(110, 60, 200, 20, 1049069, White); // <STRONG>Conversation Event</STRONG>
 
       AddImage(65, 14, 10102);
       AddImageTiled(81, 14, 349, 17, 10101);
@@ -94,7 +94,7 @@ namespace Server.Engines.Quests
       AddImage(75, 58, 9781);
       AddImage(380, 45, 223);
 
-      AddButton(220, 335, 2313, 2312, 1, GumpButtonType.Reply, 0);
+      AddButton(220, 335, 2313, 2312, 1);
       AddImage(0, 0, 10440);
 
       AddPage(1);
@@ -106,7 +106,7 @@ namespace Server.Engines.Quests
         if (i > 0)
         {
           AddButton(65, 366, 9909, 9911, 0, GumpButtonType.Page, 1 + i);
-          AddHtmlLocalized(90, 367, 50, 20, 1043354, Black, false, false); // Previous
+          AddHtmlLocalized(90, 367, 50, 20, 1043354, Black); // Previous
 
           AddPage(1 + i);
         }
@@ -116,7 +116,7 @@ namespace Server.Engines.Quests
         if (i > 0)
         {
           AddButton(420, 366, 9903, 9905, 0, GumpButtonType.Page, i);
-          AddHtmlLocalized(370, 367, 50, 20, 1043353, Black, false, false); // Next
+          AddHtmlLocalized(370, 367, 50, 20, 1043353, Black); // Next
         }
       }
     }

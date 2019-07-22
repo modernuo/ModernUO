@@ -5,12 +5,7 @@ namespace Server.Items
   public class DartBoard : AddonComponent
   {
     [Constructible]
-    public DartBoard() : this(true)
-    {
-    }
-
-    [Constructible]
-    public DartBoard(bool east) : base(east ? 0x1E2F : 0x1E2E)
+    public DartBoard(bool east = true) : base(east ? 0x1E2F : 0x1E2E)
     {
     }
 
@@ -100,7 +95,7 @@ namespace Server.Items
   {
     public DartBoardEastAddon()
     {
-      AddComponent(new DartBoard(true), 0, 0, 0);
+      AddComponent(new DartBoard(), 0, 0, 0);
     }
 
     public DartBoardEastAddon(Serial serial) : base(serial)

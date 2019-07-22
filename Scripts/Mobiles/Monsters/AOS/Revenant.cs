@@ -51,20 +51,8 @@ namespace Server.Mobiles
 
       VirtualArmor = 32;
 
-      Item shroud = new DeathShroud();
-
-      shroud.Hue = 0x455;
-
-      shroud.Movable = false;
-
-      AddItem(shroud);
-
-      Halberd weapon = new Halberd();
-
-      weapon.Hue = 1;
-      weapon.Movable = false;
-
-      AddItem(weapon);
+      AddItem(new DeathShroud { Hue = 0x455, Movable = false });
+      AddItem(new Halberd { Hue = 1, Movable = false });
     }
 
     public Revenant(Serial serial) : base(serial)

@@ -38,7 +38,7 @@ namespace Server.Mobiles
     {
       Mobile combatant = m_Mobile.Combatant;
 
-      if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map)
+      if (combatant?.Deleted != false || combatant.Map != m_Mobile.Map)
       {
         m_Mobile.DebugSay("My combatant is gone, so my guard is up");
 
@@ -50,24 +50,15 @@ namespace Server.Mobiles
       if (WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
       {
         m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
-        if (m_toDisarm == null)
-          m_toDisarm = combatant.FindItemOnLayer(Layer.OneHanded);
 
-        if (m_toDisarm == null)
-          m_toDisarm = combatant.FindItemOnLayer(Layer.TwoHanded);
-
-        if (m_toDisarm != null && m_toDisarm.IsChildOf(m_Mobile.Backpack))
-        {
-          m_toDisarm = combatant.FindItemOnLayer(Layer.OneHanded);
-          if (m_toDisarm == null)
-            m_toDisarm = combatant.FindItemOnLayer(Layer.TwoHanded);
-        }
+        if (m_toDisarm?.IsChildOf(m_Mobile.Backpack) != false)
+          m_toDisarm = combatant.FindItemOnLayer(Layer.OneHanded) ?? combatant.FindItemOnLayer(Layer.TwoHanded);
 
         if (!Core.AOS && !m_Mobile.DisarmReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
             m_Mobile.Skills.ArmsLore.Value >= 80.0 && m_toDisarm != null)
           EventSink.InvokeDisarmRequest(new DisarmRequestEventArgs(m_Mobile));
 
-        if (m_toDisarm != null && m_toDisarm.IsChildOf(combatant.Backpack) &&
+        if (m_toDisarm?.IsChildOf(combatant.Backpack) == true &&
             Core.TickCount - m_Mobile.NextSkillTime >= 0 && m_toDisarm.LootType != LootType.Blessed &&
             m_toDisarm.LootType != LootType.Newbied)
         {
@@ -126,31 +117,28 @@ namespace Server.Mobiles
         m_Mobile.DebugSay("I should be closer to {0}", combatant.Name);
       }
 
-      if (m_Mobile.Hits < m_Mobile.HitsMax * 20 / 100 && m_Mobile.CanFlee)
+      if (m_Mobile.Hits >= m_Mobile.HitsMax * 20 / 100 || !m_Mobile.CanFlee)
+        return true;
+      // We are low on health, should we flee?
+
+      bool flee;
+
+      if (m_Mobile.Hits < combatant.Hits)
       {
-        // We are low on health, should we flee?
+        // We are more hurt than them
+        int diff = combatant.Hits - m_Mobile.Hits;
 
-        bool flee = false;
+        flee = Utility.Random(0, 100) > 10 + diff; // (10 + diff)% chance to flee
+      }
+      else
+      {
+        flee = Utility.Random(0, 100) > 10; // 10% chance to flee
+      }
 
-        if (m_Mobile.Hits < combatant.Hits)
-        {
-          // We are more hurt than them
-
-          int diff = combatant.Hits - m_Mobile.Hits;
-
-          flee = Utility.Random(0, 100) > 10 + diff; // (10 + diff)% chance to flee
-        }
-        else
-        {
-          flee = Utility.Random(0, 100) > 10; // 10% chance to flee
-        }
-
-        if (flee)
-        {
-          m_Mobile.DebugSay("I am going to flee from {0}", combatant.Name);
-
-          Action = ActionType.Flee;
-        }
+      if (flee)
+      {
+        m_Mobile.DebugSay("I am going to flee from {0}", combatant.Name);
+        Action = ActionType.Flee;
       }
 
       return true;

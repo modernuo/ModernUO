@@ -19,12 +19,12 @@ namespace Server.Items
       ClearCurrentAbility(attacker);
       Item toDisrobe = defender.FindItemOnLayer(Layer.InnerTorso);
 
-      if (toDisrobe == null || !toDisrobe.Movable)
+      if (toDisrobe?.Movable == false)
         toDisrobe = defender.FindItemOnLayer(Layer.OuterTorso);
 
       Container pack = defender.Backpack;
 
-      if (pack == null || toDisrobe == null || !toDisrobe.Movable)
+      if (pack == null || toDisrobe?.Movable == false)
       {
         attacker.SendLocalizedMessage(1004001); // You cannot disarm your opponent.
       }

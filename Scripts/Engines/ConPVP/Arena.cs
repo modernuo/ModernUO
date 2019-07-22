@@ -86,13 +86,9 @@ namespace Server.Engines.ConPVP
   [PropertyObject]
   public class ArenaStartPoints
   {
-    public ArenaStartPoints() : this(new Point3D[8])
+    public ArenaStartPoints(Point3D[] points = null)
     {
-    }
-
-    public ArenaStartPoints(Point3D[] points)
-    {
-      Points = points;
+      Points = points ?? new Point3D[8];
     }
 
     public ArenaStartPoints(GenericReader reader)
@@ -176,7 +172,7 @@ namespace Server.Engines.ConPVP
   }
 
   [PropertyObject]
-  public class Arena : IComparable
+  public class Arena : IComparable<Arena>
   {
     private bool m_Active;
     private Rectangle2D m_Bounds;
@@ -407,7 +403,8 @@ namespace Server.Engines.ConPVP
       set
       {
         m_GateOut = value;
-        if (Teleporter != null) Teleporter.Location = m_GateOut;
+        if (Teleporter != null)
+          Teleporter.Location = m_GateOut;
       }
     }
 
@@ -459,10 +456,8 @@ namespace Server.Engines.ConPVP
 
     public static List<Arena> Arenas{ get; } = new List<Arena>();
 
-    public int CompareTo(object obj)
+    public int CompareTo(Arena c)
     {
-      Arena c = (Arena)obj;
-
       string a = m_Name;
       string b = c.m_Name;
 
@@ -478,18 +473,13 @@ namespace Server.Engines.ConPVP
 
     public Ladder AcquireLadder()
     {
-      if (Ladder != null)
-        return Ladder.Ladder;
-
-      return ConPVP.Ladder.Instance;
+      return Ladder?.Ladder ?? ConPVP.Ladder.Instance;
     }
 
     public void Delete()
     {
       Active = false;
-
       m_Region?.Unregister();
-
       m_Region = null;
     }
 
@@ -664,7 +654,7 @@ namespace Server.Engines.ConPVP
         {
           ArenaController controller = allControllers[i];
 
-          if (controller != null && !controller.Deleted && controller.Arena != null && controller.IsPrivate &&
+          if (controller?.Deleted == false && controller.Arena != null && controller.IsPrivate &&
               controller.Map == first.Map && first.InRange(controller, 24))
           {
             BaseHouse house = BaseHouse.FindHouseAt(controller);

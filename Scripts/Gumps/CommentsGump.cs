@@ -26,7 +26,7 @@ namespace Server.Gumps
       AddLabel(x, 12, 2100, title);
 
       AddPage(1);
-      AddButton(12, 12, 0xFA8, 0xFAA, 0x7F, GumpButtonType.Reply, 0);
+      AddButton(12, 12, 0xFA8, 0xFAA, 0x7F);
       AddLabel(48, 12, 2100, "Add Comment");
 
       List<AccountComment> list = acct.Comments;

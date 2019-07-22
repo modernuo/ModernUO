@@ -3,12 +3,7 @@ namespace Server.Items
   public class BookOfChivalry : Spellbook
   {
     [Constructible]
-    public BookOfChivalry() : this((ulong)0x3FF)
-    {
-    }
-
-    [Constructible]
-    public BookOfChivalry(ulong content) : base(content, 0x2252)
+    public BookOfChivalry(ulong content = 0x3FF) : base(content, 0x2252)
     {
       Layer = Core.ML ? Layer.OneHanded : Layer.Invalid;
     }

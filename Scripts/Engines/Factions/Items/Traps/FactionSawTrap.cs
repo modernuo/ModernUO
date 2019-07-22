@@ -4,20 +4,7 @@ namespace Server.Factions
 {
   public class FactionSawTrap : BaseFactionTrap
   {
-    [Constructible]
-    public FactionSawTrap() : this(null)
-    {
-    }
-
-    public FactionSawTrap(Serial serial) : base(serial)
-    {
-    }
-
-    public FactionSawTrap(Faction f) : this(f, null)
-    {
-    }
-
-    public FactionSawTrap(Faction f, Mobile m) : base(f, m, 0x11AC)
+    public FactionSawTrap(Faction f = null, Mobile m = null) : base(f, m, 0x11AC)
     {
     }
 

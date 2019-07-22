@@ -14,11 +14,11 @@ namespace Server.Items
     private Timer m_Timer;
 
     [Constructible]
-    public TreasureMapChest(int level) : this(null, level, false)
+    public TreasureMapChest(int level) : this(null, level)
     {
     }
 
-    public TreasureMapChest(Mobile owner, int level, bool temporary) : base(0xE40)
+    public TreasureMapChest(Mobile owner, int level, bool temporary = false) : base(0xE40)
     {
       Owner = owner;
       Level = level;
@@ -346,14 +346,12 @@ namespace Server.Items
       if (m.AccessLevel >= AccessLevel.GameMaster || Owner == null || m == Owner)
         return true;
 
-      Party p = Party.Get(Owner);
-
-      if (p != null && p.Contains(m))
+      if (Party.Get(Owner)?.Contains(m) == true)
         return true;
 
       Map map = Map;
 
-      if (map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0)
+      if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
       {
         if (criminalAction)
           m.CriminalAction(true);
@@ -518,16 +516,14 @@ namespace Server.Items
 
         AddBackground(30, 0, 240, 240, 2620);
 
-        AddHtmlLocalized(45, 15, 200, 80, 1048125, 0xFFFFFF, false,
-          false); // When this treasure chest is removed, any items still inside of it will be lost.
-        AddHtmlLocalized(45, 95, 200, 60, 1048126, 0xFFFFFF, false,
-          false); // Are you certain you're ready to remove this chest?
+        AddHtmlLocalized(45, 15, 200, 80, 1048125, 0xFFFFFF); // When this treasure chest is removed, any items still inside of it will be lost.
+        AddHtmlLocalized(45, 95, 200, 60, 1048126, 0xFFFFFF); // Are you certain you're ready to remove this chest?
 
-        AddButton(40, 153, 4005, 4007, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(75, 155, 180, 40, 1048127, 0xFFFFFF, false, false); // Remove the Treasure Chest
+        AddButton(40, 153, 4005, 4007, 1);
+        AddHtmlLocalized(75, 155, 180, 40, 1048127, 0xFFFFFF); // Remove the Treasure Chest
 
-        AddButton(40, 195, 4005, 4007, 2, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(75, 197, 180, 35, 1006045, 0xFFFFFF, false, false); // Cancel
+        AddButton(40, 195, 4005, 4007, 2);
+        AddHtmlLocalized(75, 197, 180, 35, 1006045, 0xFFFFFF); // Cancel
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

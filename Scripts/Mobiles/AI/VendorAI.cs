@@ -60,7 +60,7 @@ namespace Server.Mobiles
         return true;
       }
 
-      if (customer == null || customer.Deleted || customer.Map != m_Mobile.Map)
+      if (customer?.Deleted != false || customer.Map != m_Mobile.Map)
       {
         m_Mobile.DebugSay("My customer have disapeared");
         m_Mobile.FocusMob = null;

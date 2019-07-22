@@ -314,18 +314,18 @@ namespace Server.Items
 
       AddBackground(0, 0, 380, 280, 5054);
 
-      AddButton(10, 210, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 210, 140, 25, 1011036, false, false); // OKAY
+      AddButton(10, 210, 4005, 4007, 1);
+      AddHtmlLocalized(45, 210, 140, 25, 1011036); // OKAY
 
-      AddButton(10, 235, 4005, 4007, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 235, 140, 25, 1011012, false, false); // CANCEL
+      AddButton(10, 235, 4005, 4007, 0);
+      AddHtmlLocalized(45, 235, 140, 25, 1011012); // CANCEL
 
-      AddHtmlLocalized(5, 5, 200, 20, 1012011, false, false); // Pick your destination:
+      AddHtmlLocalized(5, 5, 200, 20, 1012011); // Pick your destination:
 
       for (int i = 0; i < checkLists.Length; ++i)
       {
         AddButton(10, 35 + i * 25, 2117, 2118, 0, GumpButtonType.Page, Array.IndexOf(m_Lists, checkLists[i]) + 1);
-        AddHtmlLocalized(30, 35 + i * 25, 150, 20, checkLists[i].Number, false, false);
+        AddHtmlLocalized(30, 35 + i * 25, 150, 20, checkLists[i].Number);
       }
 
       for (int i = 0; i < m_Lists.Length; ++i)
@@ -339,14 +339,14 @@ namespace Server.Items
       AddPage(index + 1);
 
       AddButton(10, 35 + offset * 25, 2117, 2118, 0, GumpButtonType.Page, index + 1);
-      AddHtmlLocalized(30, 35 + offset * 25, 150, 20, list.SelNumber, false, false);
+      AddHtmlLocalized(30, 35 + offset * 25, 150, 20, list.SelNumber);
 
       PMEntry[] entries = list.Entries;
 
       for (int i = 0; i < entries.Length; ++i)
       {
         AddRadio(200, 35 + i * 25, 210, 211, false, index * 100 + i);
-        AddHtmlLocalized(225, 35 + i * 25, 150, 20, entries[i].Number, false, false);
+        AddHtmlLocalized(225, 35 + i * 25, 150, 20, entries[i].Number);
       }
     }
 

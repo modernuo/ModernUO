@@ -4,12 +4,10 @@ using Server.Factions;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
-using Server.Network;
-using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
-  public class GateTravelSpell : MagerySpell
+  public class GateTravelSpell : MagerySpell, IRecallSpell
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Gate Travel", "Vas Rel Por",
@@ -22,11 +20,7 @@ namespace Server.Spells.Seventh
 
     private RunebookEntry m_Entry;
 
-    public GateTravelSpell(Mobile caster, Item scroll) : this(caster, scroll, null)
-    {
-    }
-
-    public GateTravelSpell(Mobile caster, Item scroll, RunebookEntry entry) : base(caster, scroll, m_Info)
+    public GateTravelSpell(Mobile caster, RunebookEntry entry = null, Item scroll = null) : base(caster, scroll, m_Info)
     {
       m_Entry = entry;
     }
@@ -36,7 +30,7 @@ namespace Server.Spells.Seventh
     public override void OnCast()
     {
       if (m_Entry == null)
-        Caster.Target = new InternalTarget(this);
+        Caster.Target = new RecallSpellTarget(this, false);
       else
         Effect(m_Entry.Location, m_Entry.Map, true);
     }
@@ -184,65 +178,6 @@ namespace Server.Spells.Seventh
         {
           m_Item.Delete();
         }
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private GateTravelSpell m_Owner;
-
-      public InternalTarget(GateTravelSpell owner) : base(12, false, TargetFlags.None)
-      {
-        m_Owner = owner;
-
-        owner.Caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 501029); // Select Marked item.
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is RecallRune rune)
-        {
-          if (rune.Marked)
-            m_Owner.Effect(rune.Target, rune.TargetMap, true);
-          else
-            from.SendLocalizedMessage(501803); // That rune is not yet marked.
-        }
-        else if (o is Runebook runebook)
-        {
-          RunebookEntry e = runebook.Default;
-
-          if (e != null)
-            m_Owner.Effect(e.Location, e.Map, true);
-          else
-            from.SendLocalizedMessage(502354); // Target is not marked.
-        }
-        /*else if ( o is Key && ((Key)o).KeyValue != 0 && ((Key)o).Link is BaseBoat )
-        {
-          BaseBoat boat = ((Key)o).Link as BaseBoat;
-
-          if ( !boat.Deleted && boat.CheckKey( ((Key)o).KeyValue ) )
-            m_Owner.Effect( boat.GetMarkedLocation(), boat.Map, false );
-          else
-            from.Send( new MessageLocalized( from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 501030, from.Name, "" ) ); // I can not gate travel from that object.
-        }*/
-        else if (o is HouseRaffleDeed deed && deed.ValidLocation())
-        {
-          m_Owner.Effect(deed.PlotLocation, deed.PlotFacet, true);
-        }
-        else
-        {
-          from.Send(new MessageLocalized(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 501030, from.Name,
-            "")); // I can not gate travel from that object.
-        }
-      }
-
-      protected override void OnNonlocalTarget(Mobile from, object o)
-      {
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

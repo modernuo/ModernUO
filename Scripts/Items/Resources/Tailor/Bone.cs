@@ -3,12 +3,7 @@ namespace Server.Items
   public class Bone : Item, ICommodity
   {
     [Constructible]
-    public Bone() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Bone(int amount) : base(0xf7e)
+    public Bone(int amount = 1) : base(0xf7e)
     {
       Stackable = true;
       Amount = amount;

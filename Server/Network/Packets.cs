@@ -382,10 +382,7 @@ namespace Server.Network
 
         m_Stream.Write(bis.Price);
 
-        string desc = bis.Description;
-
-        if (desc == null)
-          desc = "";
+        string desc = bis.Description ?? "";
 
         m_Stream.Write((byte)(desc.Length + 1));
         m_Stream.WriteAsciiNull(desc);
@@ -466,11 +463,7 @@ namespace Server.Network
       m_Stream.Write(m.Serial);
       m_Stream.Write((byte)0);
 
-      int lockBits = 0;
-
-      lockBits |= (int)m.StrLock << 4;
-      lockBits |= (int)m.DexLock << 2;
-      lockBits |= (int)m.IntLock;
+      int lockBits = (int)m.StrLock << 4 | (int)m.DexLock << 2 | (int)m.IntLock;
 
       m_Stream.Write((byte)lockBits);
     }
@@ -478,11 +471,7 @@ namespace Server.Network
 
   public class EquipInfoAttribute
   {
-    public EquipInfoAttribute(int number) : this(number, -1)
-    {
-    }
-
-    public EquipInfoAttribute(int number, int charges)
+    public EquipInfoAttribute(int number, int charges = -1)
     {
       Number = number;
       Charges = charges;
@@ -1046,9 +1035,8 @@ namespace Server.Network
 
       int hue = item.Hue;
 
-      if (parent != null)
-        if (parent.SolidHueOverride >= 0)
-          hue = parent.SolidHueOverride;
+      if (parent?.SolidHueOverride >= 0)
+        hue = parent.SolidHueOverride;
 
       m_Stream.Write(item.Serial);
       m_Stream.Write((short)item.ItemID);
@@ -1070,7 +1058,7 @@ namespace Server.Network
       // +2 - Hue
       // +1 - Flags
 
-      uint serial = (uint)item.Serial.Value;
+      uint serial = item.Serial.Value;
       int itemID = item.ItemID & 0x3FFF;
       int amount = item.Amount;
       Point3D loc = item.Location;
@@ -2030,19 +2018,11 @@ namespace Server.Network
     }
   }
 
-  public sealed class RemoveItem : Packet
+  public sealed class RemoveEntity : Packet
   {
-    public RemoveItem(Item item) : base(0x1D, 5)
+    public RemoveEntity(IEntity entity) : base(0x1D, 5)
     {
-      m_Stream.Write(item.Serial);
-    }
-  }
-
-  public sealed class RemoveMobile : Packet
-  {
-    public RemoveMobile(Mobile m) : base(0x1D, 5)
-    {
-      m_Stream.Write(m.Serial);
+      m_Stream.Write(entity.Serial);
     }
   }
 
@@ -2441,10 +2421,7 @@ namespace Server.Network
 
       for (int i = 0; i < strings.Count; ++i)
       {
-        string v = strings[i];
-
-        if (v == null)
-          v = string.Empty;
+        string v = strings[i] ?? "";
 
         m_Strings.Write((ushort)v.Length);
         m_Strings.WriteBigUniFixed(v, v.Length);
@@ -2603,10 +2580,7 @@ namespace Server.Network
 
       for (int i = 0; i < text.Count; ++i)
       {
-        string v = text[i];
-
-        if (v == null)
-          v = string.Empty;
+        string v = text[i] ?? "";
 
         int length = (ushort)v.Length;
 
@@ -2639,13 +2613,11 @@ namespace Server.Network
 
       for (int i = 0; i < text.Length; ++i)
       {
-        string v = text[i];
+        string v = text[i] ?? "";
 
-        if (v == null) v = "";
+        ushort length = (ushort)v.Length;
 
-        int length = (ushort)v.Length;
-
-        m_Stream.Write((ushort)length);
+        m_Stream.Write(length);
         m_Stream.WriteBigUniFixed(v, length);
       }
     }
@@ -2774,11 +2746,7 @@ namespace Server.Network
       new SeasonChange[2]
     };
 
-    public SeasonChange(int season) : this(season, true)
-    {
-    }
-
-    public SeasonChange(int season, bool playSound) : base(0xBC, 3)
+    public SeasonChange(int season, bool playSound = true) : base(0xBC, 3)
     {
       m_Stream.Write((byte)season);
       m_Stream.Write(playSound);
@@ -2979,14 +2947,10 @@ namespace Server.Network
   {
     public MobileName(Mobile m) : base(0x98)
     {
-      string name = m.Name;
-
-      if (name == null) name = "";
-
       EnsureCapacity(37);
 
       m_Stream.Write(m.Serial);
-      m_Stream.WriteAsciiFixed(name, 30);
+      m_Stream.WriteAsciiFixed(m.Name ?? "", 30);
     }
   }
 
@@ -3020,13 +2984,10 @@ namespace Server.Network
   {
     public MobileStatusCompact(bool canBeRenamed, Mobile m) : base(0x11)
     {
-      string name = m.Name;
-      if (name == null) name = "";
-
       EnsureCapacity(43);
 
       m_Stream.Write(m.Serial);
-      m_Stream.WriteAsciiFixed(name, 30);
+      m_Stream.WriteAsciiFixed(m.Name ?? "", 30);
 
       AttributeNormalizer.WriteReverse(m_Stream, m.Hits, m.HitsMax);
 
@@ -3044,17 +3005,16 @@ namespace Server.Network
 
     public MobileStatusExtended(Mobile m, NetState ns) : base(0x11)
     {
-      string name = m.Name;
-      if (name == null) name = "";
+      string name = m.Name ?? "";
 
       int type;
 
-      if (Core.HS && ns != null && ns.ExtendedStatus)
+      if (Core.HS && ns?.ExtendedStatus == true)
       {
         type = 6;
         EnsureCapacity(121);
       }
-      else if (Core.ML && ns != null && ns.SupportsExpansion(Expansion.ML))
+      else if (Core.ML && ns?.SupportsExpansion(Expansion.ML) == true)
       {
         type = 5;
         EnsureCapacity(91);
@@ -3141,8 +3101,7 @@ namespace Server.Network
 
     public MobileStatus(Mobile beholder, Mobile beheld, NetState ns) : base(0x11)
     {
-      string name = beheld.Name;
-      if (name == null) name = "";
+      string name = beheld.Name ?? "";
 
       int type;
 
@@ -3151,12 +3110,12 @@ namespace Server.Network
         type = 0;
         EnsureCapacity(43);
       }
-      else if (Core.HS && ns != null && ns.ExtendedStatus)
+      else if (Core.HS && ns?.ExtendedStatus == true)
       {
         type = 6;
         EnsureCapacity(121);
       }
-      else if (Core.ML && ns != null && ns.SupportsExpansion(Expansion.ML))
+      else if (Core.ML && ns?.SupportsExpansion(Expansion.ML) == true)
       {
         type = 5;
         EnsureCapacity(91);
@@ -3180,61 +3139,61 @@ namespace Server.Network
 
       m_Stream.Write((byte)type);
 
-      if (type > 0)
+      if (type <= 0)
+        return;
+
+      m_Stream.Write(beheld.Female);
+
+      m_Stream.Write((short)beheld.Str);
+      m_Stream.Write((short)beheld.Dex);
+      m_Stream.Write((short)beheld.Int);
+
+      WriteAttr(beheld.Stam, beheld.StamMax);
+      WriteAttr(beheld.Mana, beheld.ManaMax);
+
+      m_Stream.Write(beheld.TotalGold);
+      m_Stream.Write((short)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)));
+      m_Stream.Write((short)(Mobile.BodyWeight + beheld.TotalWeight));
+
+      if (type >= 5)
       {
-        m_Stream.Write(beheld.Female);
-
-        m_Stream.Write((short)beheld.Str);
-        m_Stream.Write((short)beheld.Dex);
-        m_Stream.Write((short)beheld.Int);
-
-        WriteAttr(beheld.Stam, beheld.StamMax);
-        WriteAttr(beheld.Mana, beheld.ManaMax);
-
-        m_Stream.Write(beheld.TotalGold);
-        m_Stream.Write((short)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)));
-        m_Stream.Write((short)(Mobile.BodyWeight + beheld.TotalWeight));
-
-        if (type >= 5)
-        {
-          m_Stream.Write((short)beheld.MaxWeight);
-          m_Stream.Write((byte)(beheld.Race.RaceID + 1)); // Would be 0x00 if it's a non-ML enabled account but...
-        }
-
-        m_Stream.Write((short)beheld.StatCap);
-
-        m_Stream.Write((byte)beheld.Followers);
-        m_Stream.Write((byte)beheld.FollowersMax);
-
-        if (type >= 4)
-        {
-          m_Stream.Write((short)beheld.FireResistance); // Fire
-          m_Stream.Write((short)beheld.ColdResistance); // Cold
-          m_Stream.Write((short)beheld.PoisonResistance); // Poison
-          m_Stream.Write((short)beheld.EnergyResistance); // Energy
-          m_Stream.Write((short)beheld.Luck); // Luck
-
-          IWeapon weapon = beheld.Weapon;
-
-          if (weapon != null)
-          {
-            weapon.GetStatusDamage(beheld, out int min, out int max);
-            m_Stream.Write((short)min); // Damage min
-            m_Stream.Write((short)max); // Damage max
-          }
-          else
-          {
-            m_Stream.Write((short)0); // Damage min
-            m_Stream.Write((short)0); // Damage max
-          }
-
-          m_Stream.Write(beheld.TithingPoints);
-        }
-
-        if (type >= 6)
-          for (int i = 0; i < 15; ++i)
-            m_Stream.Write((short)beheld.GetAOSStatus(i));
+        m_Stream.Write((short)beheld.MaxWeight);
+        m_Stream.Write((byte)(beheld.Race.RaceID + 1)); // Would be 0x00 if it's a non-ML enabled account but...
       }
+
+      m_Stream.Write((short)beheld.StatCap);
+
+      m_Stream.Write((byte)beheld.Followers);
+      m_Stream.Write((byte)beheld.FollowersMax);
+
+      if (type >= 4)
+      {
+        m_Stream.Write((short)beheld.FireResistance); // Fire
+        m_Stream.Write((short)beheld.ColdResistance); // Cold
+        m_Stream.Write((short)beheld.PoisonResistance); // Poison
+        m_Stream.Write((short)beheld.EnergyResistance); // Energy
+        m_Stream.Write((short)beheld.Luck); // Luck
+
+        IWeapon weapon = beheld.Weapon;
+
+        if (weapon != null)
+        {
+          weapon.GetStatusDamage(beheld, out int min, out int max);
+          m_Stream.Write((short)min); // Damage min
+          m_Stream.Write((short)max); // Damage max
+        }
+        else
+        {
+          m_Stream.Write((short)0); // Damage min
+          m_Stream.Write((short)0); // Damage max
+        }
+
+        m_Stream.Write(beheld.TithingPoints);
+      }
+
+      if (type >= 6)
+        for (int i = 0; i < 15; ++i)
+          m_Stream.Write((short)beheld.GetAOSStatus(i));
     }
 
     private void WriteAttr(int current, int maximum)
@@ -4395,38 +4354,9 @@ namespace Server.Network
       return p;
     }
 
-    public static void Release(ref ObjectPropertyList p)
-    {
-      p?.Release();
-
-      p = null;
-    }
-
-    public static void Release(ref RemoveItem p)
-    {
-      p?.Release();
-
-      p = null;
-    }
-
-    public static void Release(ref RemoveMobile p)
-    {
-      p?.Release();
-
-      p = null;
-    }
-
-    public static void Release(ref OPLInfo p)
-    {
-      p?.Release();
-
-      p = null;
-    }
-
     public static void Release(ref Packet p)
     {
       p?.Release();
-
       p = null;
     }
 
@@ -4501,6 +4431,7 @@ namespace Server.Network
               }
               catch
               {
+                // ignored
               }
             }
 

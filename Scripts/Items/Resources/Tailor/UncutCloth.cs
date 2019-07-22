@@ -6,12 +6,7 @@ namespace Server.Items
   public class UncutCloth : Item, IScissorable, IDyable, ICommodity
   {
     [Constructible]
-    public UncutCloth() : this(1)
-    {
-    }
-
-    [Constructible]
-    public UncutCloth(int amount) : base(0x1767)
+    public UncutCloth(int amount = 1) : base(0x1767)
     {
       Stackable = true;
       Amount = amount;

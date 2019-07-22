@@ -1952,7 +1952,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2014,7 +2014,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2077,7 +2077,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2138,7 +2138,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2200,7 +2200,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2261,7 +2261,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2320,7 +2320,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2383,7 +2383,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2442,7 +2442,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2515,7 +2515,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots());
       AddItem(new FemaleLeafChest());
@@ -2570,7 +2570,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2629,7 +2629,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2686,7 +2686,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2758,7 +2758,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2837,7 +2837,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2900,7 +2900,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -2965,7 +2965,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3023,7 +3023,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3088,7 +3088,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3147,7 +3147,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3205,7 +3205,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3254,7 +3254,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3322,7 +3322,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3380,7 +3380,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3445,7 +3445,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3505,7 +3505,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3564,7 +3564,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -3622,7 +3622,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots(0x1BB));
 
@@ -3685,7 +3685,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots(0x901));
       AddItem(new WoodlandBelt());
@@ -3746,7 +3746,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ThighBoots(0x127));
       AddItem(new FemaleElvenRobe(Utility.RandomBrightHue()));
@@ -3790,7 +3790,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots(0x1BB));
       AddItem(new Cloak(0x3B2));
@@ -3847,7 +3847,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots(0x72C));
       AddItem(new FemaleElvenRobe(0x8B0));
@@ -3890,7 +3890,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots());
       AddItem(new Tunic(0x732));
@@ -3938,7 +3938,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ThighBoots());
       AddItem(new ElvenPants(0x58D));
@@ -3983,7 +3983,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots());
       AddItem(new HidePants());
@@ -4028,7 +4028,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Sandals(0x715));
       AddItem(new FemaleElvenRobe(0x742));
@@ -4071,7 +4071,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots(0x1BB));
       AddItem(new MaleElvenRobe(0x47E));
@@ -4114,7 +4114,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Shoes(0x75A));
       AddItem(new FemaleElvenRobe(0x13));
@@ -4158,7 +4158,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots(0x3B2));
       AddItem(new RoyalCirclet());
@@ -4208,7 +4208,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Sandals(0x1BB));
       AddItem(new MaleElvenRobe(0x48F));
@@ -4251,7 +4251,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots(0x901));
       AddItem(new ElvenPants(0x8AB));
@@ -4303,7 +4303,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new ElvenBoots(0x1BB));
 
@@ -4359,7 +4359,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -4410,7 +4410,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -4470,7 +4470,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -4525,7 +4525,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -4579,7 +4579,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);
@@ -4634,7 +4634,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       SetSkill(SkillName.Meditation, 60.0, 80.0);
       SetSkill(SkillName.Focus, 60.0, 80.0);

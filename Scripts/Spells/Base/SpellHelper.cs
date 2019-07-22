@@ -286,7 +286,7 @@ namespace Server.Spells
 
       StatMod mod = target.GetStatMod(name);
 
-      if (mod != null && mod.Offset < 0)
+      if (mod?.Offset < 0)
       {
         target.AddStatMod(new StatMod(type, name, mod.Offset + offset, duration));
         return true;
@@ -313,7 +313,7 @@ namespace Server.Spells
 
       StatMod mod = target.GetStatMod(name);
 
-      if (mod != null && mod.Offset > 0)
+      if (mod?.Offset > 0)
       {
         target.AddStatMod(new StatMod(type, name, mod.Offset + offset, duration));
         return true;
@@ -420,20 +420,19 @@ namespace Server.Spells
       PlayerMobile pmFrom;
       PlayerMobile pmTarg;
 
-      if (bcFrom != null && bcFrom.Summoned)
+      if (bcFrom?.Summoned == true)
         pmFrom = bcFrom.SummonMaster as PlayerMobile;
       else
         pmFrom = from as PlayerMobile;
 
-      if (bcTarg != null && bcTarg.Summoned)
+      if (bcTarg?.Summoned == true)
         pmTarg = bcTarg.SummonMaster as PlayerMobile;
       else
         pmTarg = to as PlayerMobile;
 
-      if (pmFrom != null && pmTarg != null)
-        if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext && pmFrom.DuelContext.Started &&
-            pmFrom.DuelPlayer != null && pmTarg.DuelPlayer != null)
-          return pmFrom.DuelPlayer.Participant != pmTarg.DuelPlayer.Participant;
+      if (pmFrom?.DuelContext != null && pmFrom.DuelContext == pmTarg?.DuelContext && pmFrom.DuelContext.Started &&
+          pmFrom.DuelPlayer != null && pmTarg?.DuelPlayer != null)
+        return pmFrom.DuelPlayer.Participant != pmTarg.DuelPlayer.Participant;
 
       #endregion
 
@@ -445,7 +444,7 @@ namespace Server.Spells
 
       Party p = Party.Get(from);
 
-      if (p != null && p.Contains(to))
+      if (p?.Contains(to) == true)
         return false;
 
       if (bcTarg != null && (bcTarg.Controlled || bcTarg.Summoned))
@@ -468,12 +467,8 @@ namespace Server.Spells
           return false;
       }
 
-      if (bcTarg != null && !bcTarg.Controlled && bcTarg.InitialInnocent)
-        return true;
-
-      int noto = Notoriety.Compute(from, to);
-
-      return noto != Notoriety.Innocent || from.Kills >= 5;
+      return bcTarg?.Controlled == false && bcTarg.InitialInnocent ||
+             Notoriety.Compute(from, to) != Notoriety.Innocent || from.Kills >= 5;
     }
 
     public static void Summon(BaseCreature creature, Mobile caster, int sound, TimeSpan duration, bool scaleDuration,
@@ -617,7 +612,7 @@ namespace Server.Spells
         return false;
       }
 
-      if (caster != null && caster.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf<Jail>())
+      if (caster?.AccessLevel == AccessLevel.Player && caster.Region.IsPartOf<Jail>())
       {
         caster.SendLocalizedMessage(1114345); // You'll need a better jailbreak plan than that!
         return false;
@@ -722,18 +717,12 @@ namespace Server.Spells
     public static bool IsSafeZone(Map map, Point3D loc)
     {
       #region Duels
-
-      if (Region.Find(loc, map).IsPartOf<SafeZone>())
+      if (Region.Find(loc, map).IsPartOf<SafeZone>() &&
+          (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
+          && (m_TravelCaster as PlayerMobile)?.DuelPlayer?.Eliminated == false)
       {
-        if (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
-        {
-          if (m_TravelCaster is PlayerMobile pm && pm.DuelPlayer != null && !pm.DuelPlayer.Eliminated)
-            return true;
-        }
-
         return true;
       }
-
       #endregion
 
       return false;
@@ -855,22 +844,18 @@ namespace Server.Spells
         return false;
 
       #region Dueling
-
-      SafeZone sz = Region.Find(loc, map).GetRegion<SafeZone>();
-
-      if (sz != null)
+      if (Region.Find(loc, map).GetRegion<SafeZone>() != null)
       {
         PlayerMobile pm = caster as PlayerMobile;
 
-        if (pm?.DuelContext == null || !pm.DuelContext.Started || pm.DuelPlayer == null || pm.DuelPlayer.Eliminated)
+        if (pm.DuelContext?.Started != true || pm.DuelPlayer?.Eliminated != false)
           return true;
       }
-
       #endregion
 
       GuardedRegion reg = Region.Find(loc, map).GetRegion<GuardedRegion>();
 
-      return reg != null && !reg.IsDisabled();
+      return reg?.IsDisabled() == false;
     }
 
     public static bool CheckTown(IPoint3D ip, Mobile caster)
@@ -1047,6 +1032,7 @@ namespace Server.Spells
         int wraithLeech =
           5 + (int)(15 * from.Skills.SpiritSpeak.Value / 100); // Wraith form gives 5-20% mana leech
         int manaLeech = AOS.Scale(damageGiven, wraithLeech);
+
         if (manaLeech != 0)
         {
           from.Mana += manaLeech;
@@ -1060,12 +1046,7 @@ namespace Server.Spells
       }
     }
 
-    public static void Heal(int amount, Mobile target, Mobile from)
-    {
-      Heal(amount, target, from, true);
-    }
-
-    public static void Heal(int amount, Mobile target, Mobile from, bool message)
+    public static void Heal(int amount, Mobile target, Mobile from, bool message = true)
     {
       //TODO: All Healing *spells* go through ArcaneEmpowerment
       target.Heal(amount, from, message);
@@ -1087,7 +1068,7 @@ namespace Server.Spells
         m_Damage = damage;
         m_Spell = s;
 
-        if (m_Spell != null && m_Spell.DelayedDamage && !m_Spell.DelayedDamageStacking)
+        if (m_Spell?.DelayedDamage == true && !m_Spell.DelayedDamageStacking)
           m_Spell.StartDelayedDamageContext(target, this);
 
         Priority = TimerPriority.TwentyFiveMS;
@@ -1127,7 +1108,7 @@ namespace Server.Spells
         m_Chaos = chaos;
         m_DFA = dfa;
         m_Spell = s;
-        if (m_Spell != null && m_Spell.DelayedDamage && !m_Spell.DelayedDamageStacking)
+        if (m_Spell?.DelayedDamage == true && !m_Spell.DelayedDamageStacking)
           m_Spell.StartDelayedDamageContext(target, this);
 
         Priority = TimerPriority.TwentyFiveMS;
@@ -1333,9 +1314,7 @@ namespace Server.Spells
 
     public static bool UnderTransformation(Mobile m, Type type)
     {
-      TransformContext context = GetContext(m);
-
-      return context != null && context.Type == type;
+      return GetContext(m)?.Type == type;
     }
 
     #endregion

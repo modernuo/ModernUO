@@ -14,9 +14,30 @@ namespace Server.Engines.BulkOrders
       0.001953125 // Barbed
     };
 
-    private SmallTailorBOD(SmallBulkEntry entry, BulkMaterialType material, int amountMax, bool reqExceptional)
+    private SmallTailorBOD(SmallBulkEntry entry, BulkMaterialType mat, int amountMax, bool reqExceptional)
+      : base(0x483, 0, amountMax, entry.Type, entry.Number, entry.Graphic, reqExceptional, mat)
     {
-      Hue = 0x483;
+    }
+
+    [Constructible]
+    public SmallTailorBOD()
+    {
+      bool useMaterials = Utility.RandomBool();
+      SmallBulkEntry[] entries = useMaterials ? SmallBulkEntry.TailorLeather : SmallBulkEntry.TailorCloth;
+
+      if (entries.Length <= 0)
+        return;
+
+      int hue = 0x483;
+      int amountMax = Utility.RandomList(10, 15, 20);
+
+      BulkMaterialType material = useMaterials ? GetRandomMaterial(BulkMaterialType.Spined, m_TailoringMaterialChances)
+        : BulkMaterialType.None;
+
+      bool reqExceptional = Utility.RandomBool() || material == BulkMaterialType.None;
+      SmallBulkEntry entry = entries[Utility.Random(entries.Length)];
+
+      Hue = hue;
       AmountMax = amountMax;
       Type = entry.Type;
       Number = entry.Number;
@@ -25,102 +46,21 @@ namespace Server.Engines.BulkOrders
       Material = material;
     }
 
-    [Constructible]
-    public SmallTailorBOD()
-    {
-      SmallBulkEntry[] entries;
-      bool useMaterials;
-
-      if (useMaterials = Utility.RandomBool())
-        entries = SmallBulkEntry.TailorLeather;
-      else
-        entries = SmallBulkEntry.TailorCloth;
-
-      if (entries.Length > 0)
-      {
-        int hue = 0x483;
-        int amountMax = Utility.RandomList(10, 15, 20);
-
-        BulkMaterialType material;
-
-        if (useMaterials)
-          material = GetRandomMaterial(BulkMaterialType.Spined, m_TailoringMaterialChances);
-        else
-          material = BulkMaterialType.None;
-
-        bool reqExceptional = Utility.RandomBool() || material == BulkMaterialType.None;
-
-        SmallBulkEntry entry = entries[Utility.Random(entries.Length)];
-
-        Hue = hue;
-        AmountMax = amountMax;
-        Type = entry.Type;
-        Number = entry.Number;
-        Graphic = entry.Graphic;
-        RequireExceptional = reqExceptional;
-        Material = material;
-      }
-    }
-
     public SmallTailorBOD(int amountCur, int amountMax, Type type, int number, int graphic, bool reqExceptional,
-      BulkMaterialType mat)
+      BulkMaterialType mat) : base(0x483, amountCur, amountMax, type, number, graphic, reqExceptional, mat)
     {
-      Hue = 0x483;
-      AmountMax = amountMax;
-      AmountCur = amountCur;
-      Type = type;
-      Number = number;
-      Graphic = graphic;
-      RequireExceptional = reqExceptional;
-      Material = mat;
     }
 
     public SmallTailorBOD(Serial serial) : base(serial)
     {
     }
 
-    public override int ComputeFame()
-    {
-      return TailorRewardCalculator.Instance.ComputeFame(this);
-    }
+    public override int ComputeFame() => TailorRewardCalculator.Instance.ComputeFame(this);
 
-    public override int ComputeGold()
-    {
-      return TailorRewardCalculator.Instance.ComputeGold(this);
-    }
+    public override int ComputeGold() => TailorRewardCalculator.Instance.ComputeGold(this);
 
-    public override List<Item> ComputeRewards(bool full)
-    {
-      List<Item> list = new List<Item>();
-
-      RewardGroup rewardGroup =
-        TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
-
-      if (rewardGroup != null)
-      {
-        if (full)
-        {
-          for (int i = 0; i < rewardGroup.Items.Length; ++i)
-          {
-            Item item = rewardGroup.Items[i].Construct();
-
-            if (item != null)
-              list.Add(item);
-          }
-        }
-        else
-        {
-          RewardItem rewardItem = rewardGroup.AcquireItem();
-
-          Item item = rewardItem?.Construct();
-
-          if (item != null)
-            list.Add(item);
-        }
-      }
-
-      return list;
-    }
+    public override RewardGroup GetRewardGroup() =>
+      TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));
 
     public static SmallTailorBOD CreateRandomFor(Mobile m)
     {
@@ -128,8 +68,9 @@ namespace Server.Engines.BulkOrders
       bool useMaterials = Utility.RandomBool();
 
       double theirSkill = m.Skills.Tailoring.Base;
-      if (useMaterials && theirSkill >= 6.2
-      ) // Ugly, but the easiest leather BOD is Leather Cap which requires at least 6.2 skill.
+
+      // Ugly, but the easiest leather BOD is Leather Cap which requires at least 6.2 skill.
+      if (useMaterials && theirSkill >= 6.2)
         entries = SmallBulkEntry.TailorLeather;
       else
         entries = SmallBulkEntry.TailorCloth;

@@ -3,12 +3,7 @@ namespace Server.Items
   public class ClumsyScroll : SpellScroll
   {
     [Constructible]
-    public ClumsyScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ClumsyScroll(int amount) : base(0, 0x1F2E, amount)
+    public ClumsyScroll(int amount = 1) : base(0, 0x1F2E, amount)
     {
     }
 

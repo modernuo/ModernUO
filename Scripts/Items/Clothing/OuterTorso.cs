@@ -5,11 +5,7 @@ namespace Server.Items
 {
   public abstract class BaseOuterTorso : BaseClothing
   {
-    public BaseOuterTorso(int itemID) : this(itemID, 0)
-    {
-    }
-
-    public BaseOuterTorso(int itemID, int hue) : base(itemID, Layer.OuterTorso, hue)
+    public BaseOuterTorso(int itemID, int hue = 0) : base(itemID, Layer.OuterTorso, hue)
     {
     }
 
@@ -36,12 +32,7 @@ namespace Server.Items
   public class GildedDress : BaseOuterTorso
   {
     [Constructible]
-    public GildedDress() : this(0)
-    {
-    }
-
-    [Constructible]
-    public GildedDress(int hue) : base(0x230E, hue)
+    public GildedDress(int hue = 0) : base(0x230E, hue)
     {
       Weight = 3.0;
     }
@@ -69,12 +60,7 @@ namespace Server.Items
   public class FancyDress : BaseOuterTorso
   {
     [Constructible]
-    public FancyDress() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FancyDress(int hue) : base(0x1F00, hue)
+    public FancyDress(int hue = 0) : base(0x1F00, hue)
     {
       Weight = 3.0;
     }
@@ -233,17 +219,7 @@ namespace Server.Items
     private int m_LabelNumber;
 
     [Constructible]
-    public RewardRobe() : this(0)
-    {
-    }
-
-    [Constructible]
-    public RewardRobe(int hue) : this(hue, 0)
-    {
-    }
-
-    [Constructible]
-    public RewardRobe(int hue, int labelNumber) : base(0x1F03, hue)
+    public RewardRobe(int hue = 0, int labelNumber = 0) : base(0x1F03, hue)
     {
       Weight = 3.0;
       LootType = LootType.Blessed;
@@ -358,17 +334,7 @@ namespace Server.Items
     private int m_LabelNumber;
 
     [Constructible]
-    public RewardDress() : this(0)
-    {
-    }
-
-    [Constructible]
-    public RewardDress(int hue) : this(hue, 0)
-    {
-    }
-
-    [Constructible]
-    public RewardDress(int hue, int labelNumber) : base(0x1F01, hue)
+    public RewardDress(int hue = 0, int labelNumber = 0) : base(0x1F01, hue)
     {
       Weight = 2.0;
       LootType = LootType.Blessed;
@@ -481,12 +447,7 @@ namespace Server.Items
   public class Robe : BaseOuterTorso, IArcaneEquip
   {
     [Constructible]
-    public Robe() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Robe(int hue) : base(0x1F03, hue)
+    public Robe(int hue = 0) : base(0x1F03, hue)
     {
       Weight = 3.0;
     }
@@ -609,12 +570,7 @@ namespace Server.Items
   public class MonkRobe : BaseOuterTorso
   {
     [Constructible]
-    public MonkRobe() : this(0x21E)
-    {
-    }
-
-    [Constructible]
-    public MonkRobe(int hue) : base(0x2687, hue)
+    public MonkRobe(int hue = 0x21E) : base(0x2687, hue)
     {
       Weight = 1.0;
       StrRequirement = 0;
@@ -652,12 +608,7 @@ namespace Server.Items
   public class PlainDress : BaseOuterTorso
   {
     [Constructible]
-    public PlainDress() : this(0)
-    {
-    }
-
-    [Constructible]
-    public PlainDress(int hue) : base(0x1F01, hue)
+    public PlainDress(int hue = 0) : base(0x1F01, hue)
     {
       Weight = 2.0;
     }
@@ -688,12 +639,7 @@ namespace Server.Items
   public class Kamishimo : BaseOuterTorso
   {
     [Constructible]
-    public Kamishimo() : this(0)
-    {
-    }
-
-    [Constructible]
-    public Kamishimo(int hue) : base(0x2799, hue)
+    public Kamishimo(int hue = 0) : base(0x2799, hue)
     {
       Weight = 3.0;
     }
@@ -721,12 +667,7 @@ namespace Server.Items
   public class HakamaShita : BaseOuterTorso
   {
     [Constructible]
-    public HakamaShita() : this(0)
-    {
-    }
-
-    [Constructible]
-    public HakamaShita(int hue) : base(0x279C, hue)
+    public HakamaShita(int hue = 0) : base(0x279C, hue)
     {
       Weight = 3.0;
     }
@@ -754,12 +695,7 @@ namespace Server.Items
   public class MaleKimono : BaseOuterTorso
   {
     [Constructible]
-    public MaleKimono() : this(0)
-    {
-    }
-
-    [Constructible]
-    public MaleKimono(int hue) : base(0x2782, hue)
+    public MaleKimono(int hue = 0) : base(0x2782, hue)
     {
       Weight = 3.0;
     }
@@ -789,12 +725,7 @@ namespace Server.Items
   public class FemaleKimono : BaseOuterTorso
   {
     [Constructible]
-    public FemaleKimono() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FemaleKimono(int hue) : base(0x2783, hue)
+    public FemaleKimono(int hue = 0) : base(0x2783, hue)
     {
       Weight = 3.0;
     }
@@ -824,12 +755,7 @@ namespace Server.Items
   public class MaleElvenRobe : BaseOuterTorso
   {
     [Constructible]
-    public MaleElvenRobe() : this(0)
-    {
-    }
-
-    [Constructible]
-    public MaleElvenRobe(int hue) : base(0x2FB9, hue)
+    public MaleElvenRobe(int hue = 0) : base(0x2FB9, hue)
     {
       Weight = 2.0;
     }
@@ -859,12 +785,7 @@ namespace Server.Items
   public class FemaleElvenRobe : BaseOuterTorso
   {
     [Constructible]
-    public FemaleElvenRobe() : this(0)
-    {
-    }
-
-    [Constructible]
-    public FemaleElvenRobe(int hue) : base(0x2FBA, hue)
+    public FemaleElvenRobe(int hue = 0) : base(0x2FBA, hue)
     {
       Weight = 2.0;
     }

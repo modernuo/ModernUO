@@ -140,7 +140,7 @@ namespace Server.Items
 
       CraftContext context = craftSystem.GetContext(from);
 
-      if (context != null && context.DoNotColor)
+      if (context?.DoNotColor == true)
         Hue = 0;
 
       if (1 < craftItem.Resources.Count)

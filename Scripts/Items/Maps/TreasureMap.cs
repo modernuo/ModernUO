@@ -206,6 +206,7 @@ namespace Server.Items
             }
             catch
             {
+              // ignored
             }
         }
 
@@ -299,10 +300,7 @@ namespace Server.Items
 
     public static bool HasDiggingTool(Mobile m)
     {
-      if (m.Backpack == null)
-        return false;
-
-      return m.Backpack.FindItemsByType<BaseHarvestTool>().Any(tool => tool.HarvestSystem == Mining.System);
+      return m.Backpack?.FindItemsByType<BaseHarvestTool>().Any(tool => tool.HarvestSystem == Mining.System) == true;
     }
 
     public void OnBeginDig(Mobile from)
@@ -820,7 +818,7 @@ namespace Server.Items
           Effects.PlaySound(m_Chest, m_Map, 0x33B);
         }
 
-        if (m_Chest != null && m_Chest.Location.Z >= m_Location.Z)
+        if (m_Chest?.Location.Z >= m_Location.Z)
         {
           Stop();
           m_From.EndAction<TreasureMap>();

@@ -90,10 +90,11 @@ namespace Server
 
 					m_Table[type] = list;
 				}
-				catch
-				{
-				}
-			}
+        catch
+        {
+          // ignored
+        }
+      }
 		}
 	}
 }

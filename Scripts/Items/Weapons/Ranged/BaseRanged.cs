@@ -69,15 +69,13 @@ namespace Server.Items
         {
           canSwing = !attacker.Paralyzed && !attacker.Frozen;
 
-          if (canSwing) canSwing = !(attacker.Spell is Spell sp) || !sp.IsCasting || !sp.BlocksMovement;
+          if (canSwing)
+            canSwing = !(attacker.Spell is Spell sp) || !sp.IsCasting || !sp.BlocksMovement;
         }
 
         #region Dueling
-
-        if (attacker is PlayerMobile pm)
-          if (pm.DuelContext != null && !pm.DuelContext.CheckItemEquip(attacker, this))
-            canSwing = false;
-
+        if ((attacker as PlayerMobile)?.DuelContext?.CheckItemEquip(attacker, this) == false)
+          canSwing = false;
         #endregion
 
         if (canSwing && attacker.HarmfulCheck(defender))
@@ -175,9 +173,9 @@ namespace Server.Items
         if (quiver == null || Utility.Random(100) >= quiver.LowerAmmoCost)
         {
           // consume ammo
-          if (quiver != null && quiver.ConsumeTotal(AmmoType, 1))
+          if (quiver?.ConsumeTotal(AmmoType) == true)
             quiver.InvalidateWeight();
-          else if (pack == null || !pack.ConsumeTotal(AmmoType, 1))
+          else if (pack?.ConsumeTotal(AmmoType) != true)
             return false;
         }
         else if (quiver.FindItemByType(AmmoType) == null && pack?.FindItemByType(AmmoType) == null)

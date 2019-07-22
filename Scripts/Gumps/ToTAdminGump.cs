@@ -60,7 +60,7 @@ namespace Server.Gumps
     public void SetupToTEras()
     {
       bool isActivated = TreasuresOfTokuno.DropEra != TreasuresOfTokunoEra.None;
-      AddButton(75, 50, isActivated ? 2361 : 2360, isActivated ? 2361 : 2360, 1, GumpButtonType.Reply, 0);
+      AddButton(75, 50, isActivated ? 2361 : 2360, isActivated ? 2361 : 2360, 1);
       AddLabel(90, 45, isActivated ? 167 : 137, isActivated ? "Activated" : "Deactivated");
 
       for (int i = 0; i < m_ToTEras; i++)
@@ -73,9 +73,9 @@ namespace Server.Gumps
         int rewardButtonID = isThisRewardEra ? 2361 : 2360;
 
         AddLabel(10, 70 + yoffset, 2100, "ToT " + (i + 1));
-        AddButton(75, 75 + yoffset, dropButtonID, dropButtonID, 2 + i * 2, GumpButtonType.Reply, 0);
+        AddButton(75, 75 + yoffset, dropButtonID, dropButtonID, 2 + i * 2);
         AddLabel(90, 70 + yoffset, isThisDropEra ? 167 : 137, isThisDropEra ? "Active" : "Inactive");
-        AddButton(180, 75 + yoffset, rewardButtonID, rewardButtonID, 2 + i * 2 + 1, GumpButtonType.Reply, 0);
+        AddButton(180, 75 + yoffset, rewardButtonID, rewardButtonID, 2 + i * 2 + 1);
         AddLabel(195, 70 + yoffset, isThisRewardEra ? 167 : 137, isThisRewardEra ? "Active" : "Inactive");
 
         AddButton(285, 70 + yoffset, 4005, 4006, i, GumpButtonType.Page, 2 + i);

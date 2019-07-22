@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Commands;
@@ -261,82 +260,28 @@ namespace Server
 
     private static bool IsClothes(int itemID)
     {
-      if (itemID >= 0x1515 && itemID <= 0x1518)
-        return true;
-
-      if (itemID >= 0x152E && itemID <= 0x1531)
-        return true;
-
-      if (itemID >= 0x1537 && itemID <= 0x154C)
-        return true;
-
-      if (itemID >= 0x1EFD && itemID <= 0x1F04)
-        return true;
-
-      if (itemID >= 0x170B && itemID <= 0x171C)
-        return true;
-
-      return false;
+      return itemID >= 0x1515 && itemID <= 0x1518 || itemID >= 0x152E && itemID <= 0x1531 || itemID >= 0x1537
+             && itemID <= 0x154C || itemID >= 0x1EFD && itemID <= 0x1F04 || itemID >= 0x170B && itemID <= 0x171C;
     }
 
     private static bool IsArmor(int itemID)
     {
-      if (itemID >= 0x13BB && itemID <= 0x13E2)
-        return true;
-
-      if (itemID >= 0x13E5 && itemID <= 0x13F2)
-        return true;
-
-      if (itemID >= 0x1408 && itemID <= 0x141A)
-        return true;
-
-      if (itemID >= 0x144E && itemID <= 0x1457)
-        return true;
-
-      return false;
+      return itemID >= 0x13BB && itemID <= 0x13E2 || itemID >= 0x13E5 && itemID <= 0x13F2 ||
+             itemID >= 0x1408 && itemID <= 0x141A || itemID >= 0x144E && itemID <= 0x1457;
     }
 
     private static bool IsMetalWeapon(int itemID)
     {
-      if (itemID >= 0xF43 && itemID <= 0xF4E)
-        return true;
-
-      if (itemID >= 0xF51 && itemID <= 0xF52)
-        return true;
-
-      if (itemID >= 0xF5C && itemID <= 0xF63)
-        return true;
-
-      if (itemID >= 0x13AF && itemID <= 0x13B0)
-        return true;
-
-      if (itemID >= 0x13B5 && itemID <= 0x13BA)
-        return true;
-
-      if (itemID >= 0x13FA && itemID <= 0x13FB)
-        return true;
-
-      if (itemID >= 0x13FE && itemID <= 0x1407)
-        return true;
-
-      if (itemID >= 0x1438 && itemID <= 0x1443)
-        return true;
-
-      return false;
+      return itemID >= 0xF43 && itemID <= 0xF4E || itemID >= 0xF51 && itemID <= 0xF52 ||
+             itemID >= 0xF5C && itemID <= 0xF63 || itemID >= 0x13AF && itemID <= 0x13B0 ||
+             itemID >= 0x13B5 && itemID <= 0x13BA || itemID >= 0x13FA && itemID <= 0x13FB ||
+             itemID >= 0x13FE && itemID <= 0x1407 || itemID >= 0x1438 && itemID <= 0x1443;
     }
 
     private static bool IsArcheryWeapon(int itemID)
     {
-      if (itemID >= 0xF4F && itemID <= 0xF50)
-        return true;
-
-      if (itemID >= 0x13B1 && itemID <= 0x13B2)
-        return true;
-
-      if (itemID >= 0x13FC && itemID <= 0x13FD)
-        return true;
-
-      return false;
+      return itemID >= 0xF4F && itemID <= 0xF50 || itemID >= 0x13B1 && itemID <= 0x13B2 ||
+             itemID >= 0x13FC && itemID <= 0x13FD;
     }
 
     private static ShopFlags ProcessDisplayedItem(int itemID)
@@ -481,9 +426,9 @@ namespace Server
       floor.Add(p);
 
       for (int xo = -1; xo <= 1; ++xo)
-      for (int yo = -1; yo <= 1; ++yo)
-        if ((xo != 0 || yo != 0) && IsFloor(map, x + xo, y + yo, false))
-          RecurseFindFloor(map, x + xo, y + yo, floor);
+        for (int yo = -1; yo <= 1; ++yo)
+          if ((xo != 0 || yo != 0) && IsFloor(map, x + xo, y + yo, false))
+            RecurseFindFloor(map, x + xo, y + yo, floor);
     }
 
     [Flags]

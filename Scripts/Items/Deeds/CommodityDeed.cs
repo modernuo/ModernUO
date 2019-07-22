@@ -10,7 +10,7 @@ namespace Server.Items
 
   public class CommodityDeed : Item
   {
-    public CommodityDeed(Item commodity) : base(0x14F0)
+    public CommodityDeed(Item commodity = null) : base(0x14F0)
     {
       Weight = 1.0;
       Hue = 0x47;
@@ -18,11 +18,6 @@ namespace Server.Items
       Commodity = commodity;
 
       LootType = LootType.Blessed;
-    }
-
-    [Constructible]
-    public CommodityDeed() : this(null)
-    {
     }
 
     public CommodityDeed(Serial serial) : base(serial)
@@ -167,7 +162,7 @@ namespace Server.Items
             number = 1047024; // To claim the resources ....
         }
       }
-      else if (cox != null && !cox.IsSecure)
+      else if (cox?.IsSecure == false)
       {
         number = 1080525; // The commodity deed box must be secured before you can use it.
       }
@@ -215,7 +210,7 @@ namespace Server.Items
 
           // Veteran Rewards mods
           if (box != null && m_Deed.IsChildOf(box) && item.IsChildOf(box) ||
-              cox != null && cox.IsSecure && item.IsChildOf(cox))
+              cox?.IsSecure != true && item.IsChildOf(cox))
           {
             if (m_Deed.SetCommodity(item))
             {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Network;
 
@@ -10,12 +9,7 @@ namespace Server.Items
     private static Dictionary<Mobile, OrangePetalsContext> m_Table = new Dictionary<Mobile, OrangePetalsContext>();
 
     [Constructible]
-    public OrangePetals() : this(1)
-    {
-    }
-
-    [Constructible]
-    public OrangePetals(int amount) : base(0x1021)
+    public OrangePetals(int amount = 1) : base(0x1021)
     {
       Stackable = true;
       Hue = 0x2B;

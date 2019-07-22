@@ -94,7 +94,7 @@ namespace Server.Items
     {
       get
       {
-        if (m_Link != null && m_Link.Deleted)
+        if (m_Link?.Deleted == true)
           m_Link = null;
 
         return m_Link;
@@ -435,7 +435,7 @@ namespace Server.Items
 
         BaseDoor link = Link;
 
-        if (m_Open && link != null && !link.Open)
+        if (m_Open && link?.Open == false)
           link.Open = true;
       }
     }

@@ -17,12 +17,12 @@ namespace Server.Guilds
       new InfoField<PlayerMobile>(1062953, 150, TitleComparer.Instance) //Guild Title
     };
 
-    public GuildRosterGump(PlayerMobile pm, Guild g) : this(pm, g, LastOnComparer.Instance, false, "", 0)
+    public GuildRosterGump(PlayerMobile pm, Guild g) : this(pm, g, LastOnComparer.Instance)
     {
     }
 
-    public GuildRosterGump(PlayerMobile pm, Guild g, IComparer<PlayerMobile> currentComparer, bool ascending,
-      string filter, int startNumber)
+    public GuildRosterGump(PlayerMobile pm, Guild g, IComparer<PlayerMobile> currentComparer, bool ascending = false,
+      string filter = "", int startNumber = 0)
       : base(pm, g, Utility.SafeConvertList<Mobile, PlayerMobile>(g.Members), currentComparer, ascending, filter,
         startNumber, m_Fields)
     {
@@ -33,14 +33,14 @@ namespace Server.Guilds
     {
       base.PopulateGump();
 
-      AddHtmlLocalized(266, 43, 110, 26, 1062974, 0xF, false, false); // Guild Roster
+      AddHtmlLocalized(266, 43, 110, 26, 1062974, 0xF); // Guild Roster
     }
 
     public override void DrawEndingEntry(int itemNumber)
     {
       AddBackground(225, 148 + itemNumber * 28, 150, 26, 0x2486);
-      AddButton(230, 153 + itemNumber * 28, 0x845, 0x846, 8, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(255, 151 + itemNumber * 28, 110, 26, 1062992, 0x0, false, false); // Invite Player
+      AddButton(230, 153 + itemNumber * 28, 0x845, 0x846, 8);
+      AddHtmlLocalized(255, 151 + itemNumber * 28, 110, 26, 1062992, 0x0); // Invite Player
     }
 
     protected override TextDefinition[] GetValuesFor(PlayerMobile pm, int aryLength)
@@ -156,7 +156,7 @@ namespace Server.Guilds
         else
           pm.SendLocalizedMessage(1013028); // That person has a different faction affiliation.
       }
-      else if (targetState != null && targetState.IsLeaving)
+      else if (targetState?.IsLeaving == true)
       {
         // OSI does this quite strangely, so we'll just do it this way
         pm.SendMessage("That person is quitting their faction and so you may not recruit them.");

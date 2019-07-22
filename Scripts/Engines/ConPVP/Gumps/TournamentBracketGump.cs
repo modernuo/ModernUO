@@ -19,7 +19,7 @@ namespace Server.Engines.ConPVP
     Match_Info,
     Player_Info
   }
-  
+
   public class TournamentBracketGump : Gump
   {
     private const int BlackColor32 = 0x000008;
@@ -86,7 +86,7 @@ namespace Server.Engines.ConPVP
 
           sb.Append(" Tournament Bracket");
 
-          AddHtml(25, 35, 250, 20, Center(sb.ToString()), false, false);
+          AddHtml(25, 35, 250, 20, Center(sb.ToString()));
 
           AddRightArrow(25, 53, ToButtonID(0, 4), "Rules");
           AddRightArrow(25, 71, ToButtonID(0, 1), "Participants");
@@ -117,7 +117,7 @@ namespace Server.Engines.ConPVP
               text = "The tournament will begin shortly.";
             }
 
-            AddHtml(25, 92, 250, 40, text, false, false);
+            AddHtml(25, 92, 250, 40, text);
           }
           else
           {
@@ -138,7 +138,7 @@ namespace Server.Engines.ConPVP
             defs = new BitArray(basedef.Options);
 
             for (int i = 0; i < ruleset.Flavors.Count; ++i)
-              defs.Or(((Ruleset)ruleset.Flavors[i]).Options);
+              defs.Or(ruleset.Flavors[i].Options);
           }
           else
           {
@@ -158,7 +158,7 @@ namespace Server.Engines.ConPVP
             60 + 18 + 20 + 20 + 20 + 8 + 20 + ruleset.Flavors.Count * 18 + 4 + 20 + changes * 22 + 6, 9380);
 
           AddLeftArrow(25, 11, ToButtonID(0, 0));
-          AddHtml(25, 35, 250, 20, Center("Rules"), false, false);
+          AddHtml(25, 35, 250, 20, Center("Rules"));
 
           int y = 53;
 
@@ -177,7 +177,7 @@ namespace Server.Engines.ConPVP
               break;
           }
 
-          AddHtml(35, y, 190, 20, $"Grouping: {groupText}", false, false);
+          AddHtml(35, y, 190, 20, $"Grouping: {groupText}");
           y += 20;
 
           string tieText = null;
@@ -201,7 +201,7 @@ namespace Server.Engines.ConPVP
               break;
           }
 
-          AddHtml(35, y, 190, 20, $"Tiebreaker: {tieText}", false, false);
+          AddHtml(35, y, 190, 20, $"Tiebreaker: {tieText}");
           y += 20;
 
           string sdText = "Off";
@@ -216,22 +216,22 @@ namespace Server.Engines.ConPVP
               sdText = $"{sdText} (all rounds)";
           }
 
-          AddHtml(35, y, 240, 20, $"Sudden Death: {sdText}", false, false);
+          AddHtml(35, y, 240, 20, $"Sudden Death: {sdText}");
           y += 20;
 
           y += 8;
 
-          AddHtml(35, y, 190, 20, $"Ruleset: {basedef.Title}", false, false);
+          AddHtml(35, y, 190, 20, $"Ruleset: {basedef.Title}");
           y += 20;
 
           for (int i = 0; i < ruleset.Flavors.Count; ++i, y += 18)
-            AddHtml(35, y, 190, 20, $" + {((Ruleset)ruleset.Flavors[i]).Title}", false, false);
+            AddHtml(35, y, 190, 20, $" + {ruleset.Flavors[i].Title}");
 
           y += 4;
 
           if (changes > 0)
           {
-            AddHtml(35, y, 190, 20, "Modifications:", false, false);
+            AddHtml(35, y, 190, 20, "Modifications:");
             y += 20;
 
             for (int i = 0; i < opts.Length; ++i)
@@ -242,7 +242,7 @@ namespace Server.Engines.ConPVP
                 if (name != null) // sanity
                 {
                   AddImage(35, y, opts[i] ? 0xD3 : 0xD2);
-                  AddHtml(60, y, 165, 22, name, false, false);
+                  AddHtml(60, y, 165, 22, name);
                 }
 
                 y += 22;
@@ -250,7 +250,7 @@ namespace Server.Engines.ConPVP
           }
           else
           {
-            AddHtml(35, y, 190, 20, "Modifications: None", false, false);
+            AddHtml(35, y, 190, 20, "Modifications: None");
           }
 
           break;
@@ -265,8 +265,7 @@ namespace Server.Engines.ConPVP
             : new List<TourneyParticipant>(tourney.Participants);
 
           AddLeftArrow(25, 11, ToButtonID(0, 0));
-          AddHtml(25, 35, 250, 20, Center($"{pList.Count} Participant{(pList.Count == 1 ? "" : "s")}"), false,
-            false);
+          AddHtml(25, 35, 250, 20, Center($"{pList.Count} Participant{(pList.Count == 1 ? "" : "s")}"));
 
           StartPage(out int index, out int count, out int y, 12);
 
@@ -293,11 +292,11 @@ namespace Server.Engines.ConPVP
           AddBackground(0, 0, 300, 60 + 18 + 20 + part.Players.Count * 18 + 20 + 20 + 160, 9380);
 
           AddLeftArrow(25, 11, ToButtonID(0, 1));
-          AddHtml(25, 35, 250, 20, Center("Participants"), false, false);
+          AddHtml(25, 35, 250, 20, Center("Participants"));
 
           int y = 53;
 
-          AddHtml(25, y, 200, 20, part.Players.Count == 1 ? "Players" : "Team", false, false);
+          AddHtml(25, y, 200, 20, part.Players.Count == 1 ? "Players" : "Team");
           y += 20;
 
           for (int i = 0; i < part.Players.Count; ++i)
@@ -314,10 +313,10 @@ namespace Server.Engines.ConPVP
           }
 
           AddHtml(25, y, 200, 20,
-            $"Free Advances: {(part.FreeAdvances == 0 ? "None" : part.FreeAdvances.ToString())}", false, false);
+            $"Free Advances: {(part.FreeAdvances == 0 ? "None" : part.FreeAdvances.ToString())}");
           y += 20;
 
-          AddHtml(25, y, 200, 20, "Log:", false, false);
+          AddHtml(25, y, 200, 20, "Log:");
           y += 20;
 
           StringBuilder sb = new StringBuilder();
@@ -343,7 +342,7 @@ namespace Server.Engines.ConPVP
           AddBackground(0, 0, 300, 300, 9380);
 
           AddLeftArrow(25, 11, ToButtonID(0, 3));
-          AddHtml(25, 35, 250, 20, Center("Participants"), false, false);
+          AddHtml(25, 35, 250, 20, Center("Participants"));
 
           if (!(obj is Mobile mob))
             break;
@@ -351,16 +350,13 @@ namespace Server.Engines.ConPVP
           Ladder ladder = Ladder.Instance;
           LadderEntry entry = ladder?.Find(mob);
 
-          AddHtml(25, 53, 250, 20, $"Name: {mob.Name}", false, false);
+          AddHtml(25, 53, 250, 20, $"Name: {mob.Name}");
           AddHtml(25, 73, 250, 20,
-            $"Guild: {(mob.Guild == null ? "None" : mob.Guild.Name + " [" + mob.Guild.Abbreviation + "]")}",
-            false, false);
-          AddHtml(25, 93, 250, 20, $"Rank: {(entry == null ? "N/A" : LadderGump.Rank(entry.Index + 1))}", false,
-            false);
-          AddHtml(25, 113, 250, 20, $"Level: {(entry == null ? 0 : Ladder.GetLevel(entry.Experience))}", false,
-            false);
-          AddHtml(25, 133, 250, 20, $"Wins: {entry?.Wins ?? 0:N0}", false, false);
-          AddHtml(25, 153, 250, 20, $"Losses: {entry?.Losses ?? 0:N0}", false, false);
+            $"Guild: {(mob.Guild == null ? "None" : mob.Guild.Name + " [" + mob.Guild.Abbreviation + "]")}");
+          AddHtml(25, 93, 250, 20, $"Rank: {(entry == null ? "N/A" : LadderGump.Rank(entry.Index + 1))}");
+          AddHtml(25, 113, 250, 20, $"Level: {(entry == null ? 0 : Ladder.GetLevel(entry.Experience))}");
+          AddHtml(25, 133, 250, 20, $"Wins: {entry?.Wins ?? 0:N0}");
+          AddHtml(25, 153, 250, 20, $"Losses: {entry?.Losses ?? 0:N0}");
 
           break;
         }
@@ -370,7 +366,7 @@ namespace Server.Engines.ConPVP
           AddBackground(0, 0, 300, 300, 9380);
 
           AddLeftArrow(25, 11, ToButtonID(0, 0));
-          AddHtml(25, 35, 250, 20, Center("Rounds"), false, false);
+          AddHtml(25, 35, 250, 20, Center("Rounds"));
 
 //          List<PyramidLevel> levelsList = m_List != null
 //            ? Utility.CastListCovariant<object, PyramidLevel>(m_List)
@@ -389,11 +385,11 @@ namespace Server.Engines.ConPVP
           AddBackground(0, 0, 300, 300, 9380);
 
           AddLeftArrow(25, 11, ToButtonID(0, 2));
-          AddHtml(25, 35, 250, 20, Center("Rounds"), false, false);
+          AddHtml(25, 35, 250, 20, Center("Rounds"));
 
           if (!(m_Object is PyramidLevel level))
             break;
-          
+
           List<TourneyMatch> matchesList = m_List != null
             ? Utility.CastListCovariant<object, TourneyMatch>(m_List)
             : new List<TourneyMatch>(level.Matches);
@@ -401,7 +397,7 @@ namespace Server.Engines.ConPVP
           AddRightArrow(25, 53, ToButtonID(5, 0),
             $"Free Advance: {(level.FreeAdvance == null ? "None" : level.FreeAdvance.NameList)}");
 
-          AddHtml(25, 73, 200, 20, $"{matchesList.Count} Match{(matchesList.Count == 1 ? "" : "es")}", false, false);
+          AddHtml(25, 73, 200, 20, $"{matchesList.Count} Match{(matchesList.Count == 1 ? "" : "es")}");
 
           StartPage(out int index, out int count, out int y, 10);
 
@@ -529,14 +525,12 @@ namespace Server.Engines.ConPVP
           AddBackground(0, 0, 300, 60 + 18 + 20 + 20 + 20 + ct * 18 + 6, 9380);
 
           AddLeftArrow(25, 11, ToButtonID(0, 5));
-          AddHtml(25, 35, 250, 20, Center("Rounds"), false, false);
+          AddHtml(25, 35, 250, 20, Center("Rounds"));
 
-          AddHtml(25, 53, 250, 20, $"Winner: {(match.Winner == null ? "N/A" : match.Winner.NameList)}", false,
-            false);
+          AddHtml(25, 53, 250, 20, $"Winner: {(match.Winner == null ? "N/A" : match.Winner.NameList)}");
           AddHtml(25, 73, 250, 20,
-            $"State: {(match.InProgress ? "In progress" : match.Context != null ? "Complete" : "Waiting")}",
-            false, false);
-          AddHtml(25, 93, 250, 20, "Participants:", false, false);
+            $"State: {(match.InProgress ? "In progress" : match.Context != null ? "Complete" : "Waiting")}");
+          AddHtml(25, 93, 250, 20, "Participants:");
 
           if (m_Tournament.TourneyType == TourneyType.Standard)
             for (int i = 0; i < match.Participants.Count; ++i)
@@ -613,7 +607,7 @@ namespace Server.Engines.ConPVP
               }
             }
           else if (m_Tournament.TourneyType == TourneyType.FreeForAll)
-            AddHtml(25, 113, 250, 20, "Free For All", false, false);
+            AddHtml(25, 113, 250, 20, "Free For All");
 
           break;
         }
@@ -642,17 +636,17 @@ namespace Server.Engines.ConPVP
     private void AddColoredText(int x, int y, int width, int height, string text, int color)
     {
       if (color == 0)
-        AddHtml(x, y, width, height, text, false, false);
+        AddHtml(x, y, width, height, text);
       else
-        AddHtml(x, y, width, height, Color(text, color), false, false);
+        AddHtml(x, y, width, height, Color(text, color));
     }
 
     public void AddRightArrow(int x, int y, int bid, string text)
     {
-      AddButton(x, y, 0x15E1, 0x15E5, bid, GumpButtonType.Reply, 0);
+      AddButton(x, y, 0x15E1, 0x15E5, bid);
 
       if (text != null)
-        AddHtml(x + 20, y - 1, 230, 20, text, false, false);
+        AddHtml(x + 20, y - 1, 230, 20, text);
     }
 
     public void AddRightArrow(int x, int y, int bid)
@@ -662,10 +656,10 @@ namespace Server.Engines.ConPVP
 
     public void AddLeftArrow(int x, int y, int bid, string text)
     {
-      AddButton(x, y, 0x15E3, 0x15E7, bid, GumpButtonType.Reply, 0);
+      AddButton(x, y, 0x15E3, 0x15E7, bid);
 
       if (text != null)
-        AddHtml(x + 20, y - 1, 230, 20, text, false, false);
+        AddHtml(x + 20, y - 1, 230, 20, text);
     }
 
     public void AddLeftArrow(int x, int y, int bid)

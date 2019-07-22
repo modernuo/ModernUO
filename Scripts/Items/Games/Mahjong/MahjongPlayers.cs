@@ -144,47 +144,47 @@ namespace Server.Engines.Mahjong
       {
         Mobile player = m_Players[i];
 
-        if (player != null)
+        if (player == null)
+          continue;
+
+        if (player.Deleted)
         {
-          if (player.Deleted)
+          m_Players[i] = null;
+
+          SendPlayerExitMessage(player);
+          UpdateDealer(true);
+
+          removed = true;
+        }
+        else if (m_InGame[i])
+        {
+          if (player.NetState == null)
           {
-            m_Players[i] = null;
+            m_InGame[i] = false;
 
             SendPlayerExitMessage(player);
             UpdateDealer(true);
 
             removed = true;
           }
-          else if (m_InGame[i])
+          else if (!Game.IsAccessibleTo(player) || player.Map != Game.Map ||
+                   !player.InRange(Game.GetWorldLocation(), 5))
           {
-            if (player.NetState == null)
-            {
-              m_InGame[i] = false;
+            m_InGame[i] = false;
 
-              SendPlayerExitMessage(player);
-              UpdateDealer(true);
+            player.Send(new MahjongRelieve(Game));
 
-              removed = true;
-            }
-            else if (!Game.IsAccessibleTo(player) || player.Map != Game.Map ||
-                     !player.InRange(Game.GetWorldLocation(), 5))
-            {
-              m_InGame[i] = false;
+            SendPlayerExitMessage(player);
+            UpdateDealer(true);
 
-              player.Send(new MahjongRelieve(Game));
-
-              SendPlayerExitMessage(player);
-              UpdateDealer(true);
-
-              removed = true;
-            }
+            removed = true;
           }
         }
       }
 
       for (int i = 0; i < m_Spectators.Count;)
       {
-        Mobile mobile = (Mobile)m_Spectators[i];
+        Mobile mobile = m_Spectators[i];
 
         if (mobile.NetState == null || mobile.Deleted)
         {
@@ -257,7 +257,7 @@ namespace Server.Engines.Mahjong
 
       if (nextSeat >= 0)
       {
-        Mobile newPlayer = (Mobile)m_Spectators[0];
+        Mobile newPlayer = m_Spectators[0];
 
         m_Spectators.RemoveAt(0);
 

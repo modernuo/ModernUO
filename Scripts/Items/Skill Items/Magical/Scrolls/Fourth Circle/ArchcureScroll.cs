@@ -3,12 +3,7 @@ namespace Server.Items
   public class ArchCureScroll : SpellScroll
   {
     [Constructible]
-    public ArchCureScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ArchCureScroll(int amount) : base(24, 0x1F45, amount)
+    public ArchCureScroll(int amount = 1) : base(24, 0x1F45, amount)
     {
     }
 

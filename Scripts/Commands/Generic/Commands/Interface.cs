@@ -105,7 +105,7 @@ namespace Server.Commands.Generic
               PropertyInfo[] chain = Properties.GetPropertyInfoChain(m_From, obj.GetType(), m_Columns[i],
                 PropertyAccess.Read, ref failReason);
 
-              if (chain != null && chain.Length > 0)
+              if (chain?.Length > 0)
               {
                 m_Columns[i] = "";
 

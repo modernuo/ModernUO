@@ -5,12 +5,7 @@ namespace Server.Items
   public class SturdyPickaxe : BaseAxe, IUsesRemaining
   {
     [Constructible]
-    public SturdyPickaxe() : this(180)
-    {
-    }
-
-    [Constructible]
-    public SturdyPickaxe(int uses) : base(0xE86)
+    public SturdyPickaxe(int uses = 180) : base(0xE86)
     {
       Weight = 11.0;
       Hue = 0x973;

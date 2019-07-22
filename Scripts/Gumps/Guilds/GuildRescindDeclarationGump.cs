@@ -11,13 +11,13 @@ namespace Server.Gumps
 
     protected override void Design()
     {
-      AddHtmlLocalized(20, 10, 400, 35, 1011150, false, false); // Select the guild to rescind our invitations: 
+      AddHtmlLocalized(20, 10, 400, 35, 1011150); // Select the guild to rescind our invitations:
 
-      AddButton(20, 400, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(55, 400, 245, 30, 1011102, false, false); // Rescind your war declarations.
+      AddButton(20, 400, 4005, 4007, 1);
+      AddHtmlLocalized(55, 400, 245, 30, 1011102); // Rescind your war declarations.
 
-      AddButton(300, 400, 4005, 4007, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(335, 400, 100, 35, 1011012, false, false); // CANCEL
+      AddButton(300, 400, 4005, 4007, 2);
+      AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Spells.Second
@@ -17,7 +16,7 @@ namespace Server.Spells.Second
 
     private static Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> m_Table = new Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>>();
 
-    public ProtectionSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

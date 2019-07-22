@@ -3,7 +3,7 @@ using Server.Accounting;
 
 namespace Server.Engines.Reports
 {
-  public abstract class BaseInfo : IComparable
+  public abstract class BaseInfo : IComparable<BaseInfo>
   {
     private string m_Display;
 
@@ -51,19 +51,14 @@ namespace Server.Engines.Reports
       }
     }
 
-    public int CompareTo(object obj)
+    public int CompareTo(BaseInfo cmp)
     {
-      BaseInfo cmp = obj as BaseInfo;
-
-      int v = cmp.GetPageCount(cmp is StaffInfo ? PageResolution.Handled : PageResolution.None,
-                DateTime.UtcNow - SortRange, DateTime.UtcNow)
+      int v = cmp?.GetPageCount(cmp is StaffInfo ? PageResolution.Handled : PageResolution.None,
+                DateTime.UtcNow - SortRange, DateTime.UtcNow) ?? 0
               - GetPageCount(this is StaffInfo ? PageResolution.Handled : PageResolution.None,
                 DateTime.UtcNow - SortRange, DateTime.UtcNow);
 
-      if (v == 0)
-        v = string.Compare(Display, cmp.Display);
-
-      return v;
+      return v == 0 ? string.Compare(Display, cmp.Display) : v;
     }
 
     public int GetPageCount(PageResolution res, DateTime min, DateTime max)

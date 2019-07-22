@@ -14,7 +14,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public NobleSacrificeSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public NobleSacrificeSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -109,21 +109,21 @@ namespace Server.Spells.Chivalry
             StatMod mod;
 
             mod = m.GetStatMod("[Magic] Str Offset");
-            if (mod != null && mod.Offset < 0)
+            if (mod?.Offset < 0)
             {
               m.RemoveStatMod("[Magic] Str Offset");
               sendEffect = true;
             }
 
             mod = m.GetStatMod("[Magic] Dex Offset");
-            if (mod != null && mod.Offset < 0)
+            if (mod?.Offset < 0)
             {
               m.RemoveStatMod("[Magic] Dex Offset");
               sendEffect = true;
             }
 
             mod = m.GetStatMod("[Magic] Int Offset");
-            if (mod != null && mod.Offset < 0)
+            if (mod?.Offset < 0)
             {
               m.RemoveStatMod("[Magic] Int Offset");
               sendEffect = true;

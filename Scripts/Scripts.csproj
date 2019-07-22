@@ -134,6 +134,7 @@
     <Compile Include="Context Menus\EjectPlayer.cs" />
     <Compile Include="Context Menus\OpenBankEntry.cs" />
     <Compile Include="Context Menus\TeachEntry.cs" />
+    <Compile Include="Engines\BulkOrders\BaseBOD.cs" />
     <Compile Include="Engines\BulkOrders\Books\BOBFilter.cs" />
     <Compile Include="Engines\BulkOrders\Books\BOBFilterGump.cs" />
     <Compile Include="Engines\BulkOrders\Books\BOBGump.cs" />
@@ -148,7 +149,6 @@
     <Compile Include="Engines\BulkOrders\LargeBOD.cs" />
     <Compile Include="Engines\BulkOrders\LargeBODAcceptGump.cs" />
     <Compile Include="Engines\BulkOrders\LargeBODGump.cs" />
-    <Compile Include="Engines\BulkOrders\LargeBODTarget.cs" />
     <Compile Include="Engines\BulkOrders\LargeBulkEntry.cs" />
     <Compile Include="Engines\BulkOrders\LargeSmithBOD.cs" />
     <Compile Include="Engines\BulkOrders\LargeTailorBOD.cs" />
@@ -156,7 +156,7 @@
     <Compile Include="Engines\BulkOrders\SmallBOD.cs" />
     <Compile Include="Engines\BulkOrders\SmallBODAcceptGump.cs" />
     <Compile Include="Engines\BulkOrders\SmallBODGump.cs" />
-    <Compile Include="Engines\BulkOrders\SmallBODTarget.cs" />
+    <Compile Include="Engines\BulkOrders\BODTarget.cs" />
     <Compile Include="Engines\BulkOrders\SmallBulkEntry.cs" />
     <Compile Include="Engines\BulkOrders\SmallSmithBOD.cs" />
     <Compile Include="Engines\BulkOrders\SmallTailorBOD.cs" />
@@ -3269,6 +3269,12 @@
     <Compile Include="Spells\Sixth\MassCurse.cs" />
     <Compile Include="Spells\Sixth\ParalyzeField.cs" />
     <Compile Include="Spells\Sixth\Reveal.cs" />
+    <Compile Include="Spells\Targeting\IRecallSpell.cs" />
+    <Compile Include="Spells\Targeting\ISpellTarget.cs" />
+    <Compile Include="Spells\Targeting\SpellTargetPoint3D.cs" />
+    <Compile Include="Spells\Targeting\SpellTargetItem.cs" />
+    <Compile Include="Spells\Targeting\SpellTargetMobile.cs" />
+    <Compile Include="Spells\Targeting\RecallSpellTarget.cs" />
     <Compile Include="Spells\Spellweaving\ArcaneCircle.cs" />
     <Compile Include="Spells\Spellweaving\ArcaneForm.cs" />
     <Compile Include="Spells\Spellweaving\ArcaneSummon.cs" />

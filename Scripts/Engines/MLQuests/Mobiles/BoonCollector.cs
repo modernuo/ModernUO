@@ -97,7 +97,7 @@ namespace Server.Engines.MLQuests.Mobiles
 
     public void TalkTo(PlayerMobile pm)
     {
-      if (pm == null || m_Timer != null && m_Timer.Running)
+      if (pm == null || m_Timer?.Running == true)
         return;
 
       int completed = CompletedCount(pm);

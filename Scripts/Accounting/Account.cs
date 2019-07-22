@@ -11,7 +11,7 @@ using Server.Network;
 
 namespace Server.Accounting
 {
-	public class Account : IAccount, IComparable, IComparable<Account>
+	public class Account : IAccount, IComparable<Account>
 	{
 		public static readonly TimeSpan YoungDuration = TimeSpan.FromHours( 40.0 );
 
@@ -72,20 +72,14 @@ namespace Server.Accounting
 		/// <summary>
 		/// List of account comments. Type of contained objects is AccountComment.
 		/// </summary>
-		public List<AccountComment> Comments
-		{
-			get { if ( m_Comments == null ) m_Comments = new List<AccountComment>(); return m_Comments; }
-		}
+		public List<AccountComment> Comments => m_Comments ?? (m_Comments = new List<AccountComment>());
 
-		/// <summary>
+    /// <summary>
 		/// List of account tags. Type of contained objects is AccountTag.
 		/// </summary>
-		public List<AccountTag> Tags
-		{
-			get { if ( m_Tags == null ) m_Tags = new List<AccountTag>(); return m_Tags; }
-		}
+		public List<AccountTag> Tags => m_Tags ?? (m_Tags = new List<AccountTag>());
 
-		/// <summary>
+    /// <summary>
 		/// Account username. Case insensitive validation.
 		/// </summary>
 		public string Username { get; set; }
@@ -136,10 +130,7 @@ namespace Server.Accounting
 				if ( !isBanned )
 					return false;
 
-				DateTime banTime;
-				TimeSpan banDuration;
-
-				if ( GetBanTags( out banTime, out banDuration ) )
+        if ( GetBanTags( out DateTime banTime, out TimeSpan banDuration ) )
 				{
 					if ( banDuration != TimeSpan.MaxValue && DateTime.UtcNow >= ( banTime + banDuration ) )
 					{
@@ -164,11 +155,8 @@ namespace Server.Accounting
 			{
 				SetFlag( 1, !value );
 
-				if ( m_YoungTimer != null )
-				{
-					m_YoungTimer.Stop();
-					m_YoungTimer = null;
-				}
+        m_YoungTimer?.Stop();
+        m_YoungTimer = null;
 			}
 		}
 
@@ -704,9 +692,7 @@ namespace Server.Accounting
 				{
 					if ( count < list.Length )
 					{
-						IPAddress address;
-
-						if ( IPAddress.TryParse( Utility.GetText( ip, null ), out address ) )
+            if ( IPAddress.TryParse( Utility.GetText( ip, null ), out IPAddress address ) )
 						{
 							list[count] = Utility.Intern( address );
 							count++;
@@ -848,7 +834,7 @@ namespace Server.Accounting
 					{
 						Mobile m = this[i];
 
-						if ( m != null && m.AccessLevel >= level )
+						if ( m?.AccessLevel >= level )
 							hasAccess = true;
 					}
 				}
@@ -991,7 +977,7 @@ namespace Server.Accounting
 			{
 				Mobile m = m_Mobiles[i];
 
-				if ( m != null && !m.Deleted )
+				if (m?.Deleted == false)
 				{
 					xml.WriteStartElement( "char" );
 					xml.WriteAttributeString( "index", i.ToString() );
@@ -1002,7 +988,7 @@ namespace Server.Accounting
 
 			xml.WriteEndElement();
 
-			if ( m_Comments != null && m_Comments.Count > 0 )
+			if (m_Comments?.Count > 0)
 			{
 				xml.WriteStartElement( "comments" );
 
@@ -1012,7 +998,7 @@ namespace Server.Accounting
 				xml.WriteEndElement();
 			}
 
-			if ( m_Tags != null && m_Tags.Count > 0 )
+			if (m_Tags?.Count > 0)
 			{
 				xml.WriteStartElement( "tags" );
 
@@ -1103,7 +1089,7 @@ namespace Server.Accounting
 				{
 					Mobile m = m_Mobiles[index];
 
-					if ( m != null && m.Deleted )
+					if (m?.Deleted == true)
 					{
 						m.Account = null;
 						m_Mobiles[index] = m = null;
@@ -1135,28 +1121,14 @@ namespace Server.Accounting
 		}
 
 		public int CompareTo( Account other )
-		{
-			if ( other == null )
-				return 1;
-
-			return Username.CompareTo( other.Username );
-		}
+    {
+      return other == null ? 1 : Username.CompareTo( other.Username );
+    }
 
 		public int CompareTo( IAccount other )
-		{
-			if ( other == null )
-				return 1;
-
-			return Username.CompareTo( other.Username );
-		}
-
-		public int CompareTo( object obj )
-		{
-			if ( obj is Account account )
-				return CompareTo( account );
-
-			throw new ArgumentException();
-		}
+    {
+      return other == null ? 1 : Username.CompareTo( other.Username );
+    }
 
 		#region Gold Account
 		/// <summary>

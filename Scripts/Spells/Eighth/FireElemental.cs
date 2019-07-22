@@ -16,7 +16,7 @@ namespace Server.Spells.Eighth
       Reagent.SulfurousAsh
     );
 
-    public FireElementalSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public FireElementalSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 

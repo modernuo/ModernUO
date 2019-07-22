@@ -111,20 +111,11 @@ namespace Server.Gumps
 
     public override string Caption => Title;
 
-    public static CAGCategory Root
-    {
-      get
-      {
-        if (m_Root == null)
-          m_Root = Load("Data/objects.xml");
-
-        return m_Root;
-      }
-    }
+    public static CAGCategory Root => m_Root ?? (m_Root = Load("Data/objects.xml"));
 
     public override void OnClick(Mobile from, int page)
     {
-      from.SendGump(new CategorizedAddGump(from, this, 0));
+      from.SendGump(new CategorizedAddGump(from, this));
     }
 
     public static CAGCategory Load(string path)
@@ -215,11 +206,11 @@ namespace Server.Gumps
     private Mobile m_Owner;
     private int m_Page;
 
-    public CategorizedAddGump(Mobile owner) : this(owner, CAGCategory.Root, 0)
+    public CategorizedAddGump(Mobile owner) : this(owner, CAGCategory.Root)
     {
     }
 
-    public CategorizedAddGump(Mobile owner, CAGCategory category, int page) : base(GumpOffsetX, GumpOffsetY)
+    public CategorizedAddGump(Mobile owner, CAGCategory category, int page = 0) : base(GumpOffsetX, GumpOffsetY)
     {
       owner.CloseGump<WhoGump>();
 
@@ -260,7 +251,7 @@ namespace Server.Gumps
 
       if (m_Category.Parent != null)
       {
-        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1, GumpButtonType.Reply, 0);
+        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
 
         if (PrevLabel)
           AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
@@ -276,7 +267,7 @@ namespace Server.Gumps
           EntryGumpID);
 
       AddHtml(x + TextOffsetX, y + (EntryHeight - 20) / 2, emptyWidth - TextOffsetX, EntryHeight,
-        $"<center>{m_Category.Caption}</center>", false, false);
+        $"<center>{m_Category.Caption}</center>");
 
       x += emptyWidth + OffsetSize;
 
@@ -287,7 +278,7 @@ namespace Server.Gumps
 
       if (page > 0)
       {
-        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 2, GumpButtonType.Reply, 0);
+        AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 2);
 
         if (PrevLabel)
           AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
@@ -322,7 +313,7 @@ namespace Server.Gumps
         if (SetGumpID != 0)
           AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
-        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 4, GumpButtonType.Reply, 0);
+        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 4);
 
         if (node is CAGObject obj)
         {

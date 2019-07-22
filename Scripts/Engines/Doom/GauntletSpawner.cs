@@ -27,12 +27,7 @@ namespace Server.Engines.Doom
     private Timer m_Timer;
 
     [Constructible]
-    public GauntletSpawner() : this(null)
-    {
-    }
-
-    [Constructible]
-    public GauntletSpawner(string typeName) : base(0x36FE)
+    public GauntletSpawner(string typeName = null) : base(0x36FE)
     {
       Visible = false;
       Movable = false;
@@ -334,7 +329,7 @@ namespace Server.Engines.Doom
       {
         State = GauntletSpawnerState.InSequence;
 
-        if (Sequence != null && !Sequence.Deleted)
+        if (Sequence?.Deleted == false)
           Sequence.RecurseReset();
       }
     }
@@ -353,7 +348,7 @@ namespace Server.Engines.Doom
       {
         State = GauntletSpawnerState.Completed;
 
-        if (Sequence != null && !Sequence.Deleted)
+        if (Sequence?.Deleted == false)
         {
           if (Sequence.State == GauntletSpawnerState.Completed)
             RecurseReset();
@@ -428,7 +423,7 @@ namespace Server.Engines.Doom
     public static void CreateTeleporter(int xFrom, int yFrom, int xTo, int yTo)
     {
       Static telePad = new Static(0x1822);
-      Teleporter teleItem = new Teleporter(new Point3D(xTo, yTo, -1), Map.Malas, false);
+      Teleporter teleItem = new Teleporter(new Point3D(xTo, yTo, -1), Map.Malas);
 
       telePad.Hue = 0x482;
       telePad.MoveToWorld(new Point3D(xFrom, yFrom, -1), Map.Malas);

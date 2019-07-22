@@ -2,12 +2,9 @@ namespace Server.Factions
 {
   public class StrongholdMonolith : BaseMonolith
   {
-    public StrongholdMonolith() : this(null, null)
+    public StrongholdMonolith(Town town = null, Faction faction = null) : base(town, faction)
     {
-    }
 
-    public StrongholdMonolith(Town town, Faction faction) : base(town, faction)
-    {
     }
 
     public StrongholdMonolith(Serial serial) : base(serial)

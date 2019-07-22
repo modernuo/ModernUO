@@ -404,7 +404,7 @@ namespace Server.Engines.Quests.Haven
 
     public override void ChildSerialize(GenericWriter writer)
     {
-      if (CorpseWithBone != null && CorpseWithBone.Deleted)
+      if (CorpseWithBone?.Deleted == true)
         CorpseWithBone = null;
 
       writer.WriteEncodedInt(0); // version

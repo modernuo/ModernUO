@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Server.Accounting;
@@ -119,7 +118,7 @@ namespace Server.Multis
         {
           Mobile mob = acct[i];
 
-          if (mob != null && mob.AccessLevel >= AccessLevel.GameMaster)
+          if (mob?.AccessLevel >= AccessLevel.GameMaster)
             return DecayType.Ageless;
         }
 
@@ -202,7 +201,7 @@ namespace Server.Multis
         {
           m_LastDecayLevel = result;
 
-          if (Sign != null && !Sign.GettingProperties)
+          if (Sign?.GettingProperties == false)
             Sign.InvalidateProperties();
         }
 
@@ -722,8 +721,8 @@ namespace Server.Multis
 
         if (!item.Deleted)
         {
-          if (item is StrongBox)
-            item = ((StrongBox)item).ConvertToStandardContainer();
+          if (item is StrongBox box)
+            item = box.ConvertToStandardContainer();
 
           item.IsLockedDown = false;
           item.IsSecure = false;
@@ -1017,13 +1016,8 @@ namespace Server.Multis
       Point2D end = new Point2D(X + Components.Max.X + 1, Y + Components.Max.Y + 1);
       Rectangle2D rect = new Rectangle2D(start, end);
 
-      List<Item> list = new List<Item>();
-
       IPooledEnumerable<Item> eable = Map.GetItemsInBounds(rect);
-
-      foreach (Item item in eable)
-        if (item.Movable && IsInside(item))
-          list.Add(item);
+      List<Item> list = eable.Where(item => item.Movable && IsInside(item)).ToList();
 
       eable.Free();
 
@@ -1080,22 +1074,17 @@ namespace Server.Multis
 
     public static bool CheckLockedDown(Item item)
     {
-      BaseHouse house = FindHouseAt(item);
-
-      return house != null && house.HasLockedDownItem(item);
+      return FindHouseAt(item)?.HasLockedDownItem(item) == true;
     }
 
     public static bool CheckSecured(Item item)
     {
-      BaseHouse house = FindHouseAt(item);
-
-      return house != null && house.HasSecureItem(item);
+      return FindHouseAt(item)?.HasSecureItem(item) == true;
     }
 
     public static bool CheckLockedDownOrSecured(Item item)
     {
       BaseHouse house = FindHouseAt(item);
-
       return house != null && (house.HasSecureItem(item) || house.HasLockedDownItem(item));
     }
 
@@ -1110,7 +1099,7 @@ namespace Server.Multis
           {
             BaseHouse house = exists[i];
 
-            if (house != null && !house.Deleted && house.Owner == m)
+            if (house?.Deleted == false && house.Owner == m)
               list.Add(house);
           }
       }
@@ -1164,7 +1153,7 @@ namespace Server.Multis
 
     public static BaseHouse FindHouseAt(Mobile m)
     {
-      if (m == null || m.Deleted)
+      if (m?.Deleted != false)
         return null;
 
       return FindHouseAt(m.Location, m.Map, 16);
@@ -1172,10 +1161,8 @@ namespace Server.Multis
 
     public static BaseHouse FindHouseAt(Item item)
     {
-      if (item == null || item.Deleted)
-        return null;
-
-      return FindHouseAt(item.GetWorldLocation(), item.Map, item.ItemData.Height);
+      return item?.Deleted != false ? null :
+        FindHouseAt(item.GetWorldLocation(), item.Map, item.ItemData.Height);
     }
 
     public static BaseHouse FindHouseAt(Point3D loc, Map map, int height)
@@ -1196,18 +1183,12 @@ namespace Server.Multis
 
     public bool IsInside(Mobile m)
     {
-      if (m == null || m.Deleted || m.Map != Map)
-        return false;
-
-      return IsInside(m.Location, 16);
+      return m?.Deleted == false && m.Map == Map && IsInside(m.Location, 16);
     }
 
     public bool IsInside(Item item)
     {
-      if (item == null || item.Deleted || item.Map != Map)
-        return false;
-
-      return IsInside(item.Location, item.ItemData.Height);
+      return item?.Deleted == false && item.Map == Map && IsInside(item.Location, item.ItemData.Height);
     }
 
     public bool CheckAccessibility(Item item, Mobile from)
@@ -1321,11 +1302,11 @@ namespace Server.Multis
 
       UpdateRegion();
 
-      if (Sign != null && !Sign.Deleted)
+      if (Sign?.Deleted == false)
         Sign.Map = Map;
 
       if (Doors != null)
-        foreach (Item item in Doors)
+        foreach (BaseDoor item in Doors)
           item.Map = Map;
 
       foreach (IEntity entity in GetHouseEntities())
@@ -1365,13 +1346,13 @@ namespace Server.Multis
       int y = base.Location.Y - oldLocation.Y;
       int z = base.Location.Z - oldLocation.Z;
 
-      if (Sign != null && !Sign.Deleted)
+      if (Sign?.Deleted == false)
         Sign.Location = new Point3D(Sign.X + x, Sign.Y + y, Sign.Z + z);
 
       UpdateRegion();
 
       if (Doors != null)
-        foreach (Item item in Doors)
+        foreach (BaseDoor item in Doors)
           if (!item.Deleted)
             item.Location = new Point3D(item.X + x, item.Y + y, item.Z + z);
 
@@ -1538,7 +1519,7 @@ namespace Server.Multis
 
       for (int i = 0; Doors != null && i < Doors.Count; ++i)
       {
-        BaseDoor door = Doors[i] as BaseDoor;
+        BaseDoor door = Doors[i];
         Point3D p = door.Location;
 
         if (door.Open)
@@ -1552,7 +1533,7 @@ namespace Server.Multis
           }
       }
 
-      if (m_Trash == null || m_Trash.Deleted)
+      if (m_Trash?.Deleted != false)
       {
         m_Trash = new TrashBarrel { Movable = false };
         m_Trash.MoveToWorld(from.Location, from.Map);
@@ -2028,7 +2009,7 @@ namespace Server.Multis
 
       for (int i = 0; Doors != null && i < Doors.Count; ++i)
       {
-        BaseDoor door = Doors[i] as BaseDoor;
+        BaseDoor door = Doors[i];
         Point3D p = door.Location;
 
         if (door.Open)
@@ -3012,36 +2993,27 @@ namespace Server.Multis
       if (m == null)
         return false;
 
-      if (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access != null && Access.Contains(m))
+      if (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access?.Contains(m) == true)
         return true;
 
-      if (m is BaseCreature bc)
-      {
-        if (bc.NoHouseRestrictions)
-          return true;
+      if (!(m is BaseCreature bc))
+        return false;
 
-        if (bc.Controlled || bc.Summoned)
-        {
-          m = bc.ControlMaster;
+      if (bc.NoHouseRestrictions)
+        return true;
 
-          if (m == null)
-            m = bc.SummonMaster;
+      if (!(bc.Controlled || bc.Summoned))
+        return false;
 
-          if (m == null)
-            return false;
+      m = bc.ControlMaster ?? bc.SummonMaster;
 
-          if (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access != null && Access.Contains(m))
-            return true;
-        }
-      }
-
-      return false;
+      return m != null && (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access?.Contains(m) == true);
     }
 
     public bool HasLockedDownItem(Item check)
     {
-      return check != null && LockDowns != null &&
-             (LockDowns.Contains(check) || check is VendorRentalContract contract && VendorRentalContracts.Contains(contract));
+      return LockDowns?.Contains(check) == true ||
+             check is VendorRentalContract contract && VendorRentalContracts.Contains(contract);
     }
 
     public bool HasSecureItem(Item item)
@@ -3049,15 +3021,11 @@ namespace Server.Multis
       if (item == null)
         return false;
 
-      if (Secures == null)
-        return false;
+      for (int i = 0; i < Secures?.Count; ++i)
+        if (Secures[i].Item == item)
+          return true;
 
-      bool contains = false;
-
-      for (int i = 0; !contains && i < Secures.Count; ++i)
-        contains = Secures[i].Item == item;
-
-      return contains;
+      return false;
     }
 
     public virtual Guildstone FindGuildstone()
@@ -3071,15 +3039,9 @@ namespace Server.Multis
       IPooledEnumerable<Guildstone> eable =
         map.GetItemsInBounds<Guildstone>(new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
 
-      foreach (Guildstone item in eable)
-        if (Contains(item))
-        {
-          eable.Free();
-          return item;
-        }
-
+      Guildstone item = eable.FirstOrDefault(Contains);
       eable.Free();
-      return null;
+      return item;
     }
 
     private class TransferItem : Item
@@ -3144,7 +3106,7 @@ namespace Server.Multis
         if (!accepted)
           return true;
 
-        if (Deleted || m_House == null || m_House.Deleted || !m_House.IsOwner(from) || !from.CheckAlive() ||
+        if (Deleted || m_House?.Deleted != false || !m_House.IsOwner(from) || !from.CheckAlive() ||
             !to.CheckAlive())
           return false;
 
@@ -3164,7 +3126,7 @@ namespace Server.Multis
 
         Delete();
 
-        if (m_House == null || m_House.Deleted || !m_House.IsOwner(from) || !from.CheckAlive() || !to.CheckAlive())
+        if (m_House?.Deleted != false || !m_House.IsOwner(from) || !from.CheckAlive() || !to.CheckAlive())
           return;
 
 

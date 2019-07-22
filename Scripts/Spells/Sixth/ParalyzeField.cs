@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-  public class ParalyzeFieldSpell : MagerySpell
+  public class ParalyzeFieldSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Paralyze Field", "In Ex Grav",
@@ -18,7 +18,7 @@ namespace Server.Spells.Sixth
       Reagent.SpidersSilk
     );
 
-    public ParalyzeFieldSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ParalyzeFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -26,7 +26,7 @@ namespace Server.Spells.Sixth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -66,9 +66,8 @@ namespace Server.Spells.Sixth
         for (int i = -2; i <= 2; ++i)
         {
           Point3D loc = new Point3D(eastToWest ? p.X + i : p.X, eastToWest ? p.Y : p.Y + i, p.Z);
-          bool canFit = SpellHelper.AdjustField(ref loc, Caster.Map, 12, false);
 
-          if (!canFit)
+          if (!SpellHelper.AdjustField(ref loc, Caster.Map, 12, false))
             continue;
 
           Item item = new InternalItem(Caster, itemID, loc, Caster.Map, duration);
@@ -210,27 +209,6 @@ namespace Server.Spells.Sixth
         {
           m_Item.Delete();
         }
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private ParalyzeFieldSpell m_Owner;
-
-      public InternalTarget(ParalyzeFieldSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D d)
-          m_Owner.Target(d);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

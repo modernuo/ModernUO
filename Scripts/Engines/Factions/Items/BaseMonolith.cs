@@ -8,7 +8,7 @@ namespace Server.Factions
     private Sigil m_Sigil;
     private Town m_Town;
 
-    public BaseMonolith(Town town, Faction faction) : base(0x1183)
+    public BaseMonolith(Town town = null, Faction faction = null) : base(0x1183)
     {
       Movable = false;
       Town = town;
@@ -80,7 +80,7 @@ namespace Server.Factions
 
     public virtual void UpdateSigil()
     {
-      if (m_Sigil == null || m_Sigil.Deleted)
+      if (m_Sigil?.Deleted != false)
         return;
 
       m_Sigil.MoveToWorld(new Point3D(X, Y, Z + 18), Map);

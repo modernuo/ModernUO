@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Ethics.Evil;
 using Server.Ethics.Hero;
 using Server.Items;
@@ -126,16 +127,7 @@ namespace Server.Ethics
           if (!Insensitive.Equals(ethic.Definition.JoinPhrase.String, e.Speech))
             continue;
 
-          bool isNearAnkh = false;
-
-          foreach (Item item in e.Mobile.GetItemsInRange(2))
-            if (item is AnkhNorth || item is AnkhWest)
-            {
-              isNearAnkh = true;
-              break;
-            }
-
-          if (!isNearAnkh)
+          if (!e.Mobile.GetItemsInRange(2).Any(item => item is AnkhNorth || item is AnkhWest))
             continue;
 
           pl = new Player(ethic, e.Mobile);

@@ -16,28 +16,16 @@ namespace Server.Engines.Craft
 
     public override int GumpTitleNumber => 1044622;
 
-    public static CraftSystem CraftSystem
-    {
-      get
-      {
-        if (m_CraftSystem == null)
-          m_CraftSystem = new DefGlassblowing();
-
-        return m_CraftSystem;
-      }
-    }
+    public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefGlassblowing());
 
     public override double GetChanceAtMin(CraftItem item)
     {
-      if (item.ItemType == typeof(HollowPrism))
-        return 0.5; // 50%
-
-      return 0.0; // 0%
+      return item.ItemType == typeof(HollowPrism) ? 0.5 : 0.0;
     }
 
     public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
     {
-      if (tool == null || tool.Deleted || tool.UsesRemaining < 0)
+      if (tool?.Deleted != false || tool.UsesRemaining < 0)
         return 1044038; // You have worn out your tool!
       if (!BaseTool.CheckTool(tool, from))
         return 1048146; // If you have a tool equipped, you must use that tool.
@@ -48,10 +36,7 @@ namespace Server.Engines.Craft
 
       DefBlacksmithy.CheckAnvilAndForge(from, 2, out _, out bool forge);
 
-      if (forge)
-        return 0;
-
-      return 1044628; // You must be near a forge to blow glass.
+      return forge ? 0 : 1044628; // You must be near a forge to blow glass.
     }
 
     public override void PlayCraftEffect(Mobile from)

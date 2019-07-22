@@ -3,12 +3,7 @@ namespace Server.Items
   public class CreateFoodScroll : SpellScroll
   {
     [Constructible]
-    public CreateFoodScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public CreateFoodScroll(int amount) : base(1, 0x1F2F, amount)
+    public CreateFoodScroll(int amount = 1) : base(1, 0x1F2F, amount)
     {
     }
 

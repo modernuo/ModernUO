@@ -170,7 +170,7 @@ namespace Server.Items
         {
           Container pack = from.Backpack;
 
-          if (pack != null && pack.ConsumeTotal(typeof(Bottle), 1))
+          if (pack?.ConsumeTotal(typeof(Bottle)) == true)
           {
             from.SendLocalizedMessage(502242); // You pour some of the keg's contents into an empty bottle...
 
@@ -284,7 +284,7 @@ namespace Server.Items
 
       Bottle bottle = new Bottle(amount);
 
-      if (pack == null || !pack.TryDropItem(m, bottle, false))
+      if (pack?.TryDropItem(m, bottle, false) != true)
       {
         bottle.Delete();
         return false;

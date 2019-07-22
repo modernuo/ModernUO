@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
@@ -7,7 +7,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fifth
 {
-  public class PoisonFieldSpell : MagerySpell
+  public class PoisonFieldSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Poison Field", "In Nox Grav",
@@ -19,7 +19,7 @@ namespace Server.Spells.Fifth
       Reagent.SpidersSilk
     );
 
-    public PoisonFieldSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public PoisonFieldSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -27,7 +27,7 @@ namespace Server.Spells.Fifth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12, false);
     }
 
     public void Target(IPoint3D p)
@@ -197,7 +197,7 @@ namespace Server.Spells.Fifth
 
       private class InternalTimer : Timer
       {
-        private static Queue m_Queue = new Queue();
+        private static Queue<Mobile> m_Queue = new Queue<Mobile>();
         private bool m_InLOS, m_CanFit;
         private InternalItem m_Item;
 
@@ -257,7 +257,7 @@ namespace Server.Spells.Fifth
 
               while (m_Queue.Count > 0)
               {
-                Mobile m = (Mobile)m_Queue.Dequeue();
+                Mobile m = m_Queue.Dequeue();
 
                 caster.DoHarmful(m);
 
@@ -267,27 +267,6 @@ namespace Server.Spells.Fifth
             }
           }
         }
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private PoisonFieldSpell m_Owner;
-
-      public InternalTarget(PoisonFieldSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D d)
-          m_Owner.Target(d);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

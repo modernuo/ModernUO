@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Spells.First
@@ -16,7 +15,7 @@ namespace Server.Spells.First
 
     private static Dictionary<Mobile, ResistanceMod[]> m_Table = new Dictionary<Mobile, ResistanceMod[]>();
 
-    public ReactiveArmorSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -139,16 +138,14 @@ namespace Server.Spells.First
 
     public static void EndArmor(Mobile m)
     {
-      ResistanceMod[] mods = m_Table[m];
+      if (!m_Table.TryGetValue(m, out ResistanceMod[] mods))
+        return;
 
-      if (mods != null)
-      {
-        for (int i = 0; i < mods.Length; ++i)
-          m.RemoveResistanceMod(mods[i]);
+      for (int i = 0; i < mods?.Length; ++i)
+        m.RemoveResistanceMod(mods[i]);
 
-        m_Table.Remove(m);
-        BuffInfo.RemoveBuff(m, BuffIcon.ReactiveArmor);
-      }
+      m_Table.Remove(m);
+      BuffInfo.RemoveBuff(m, BuffIcon.ReactiveArmor);
     }
   }
 }

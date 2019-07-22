@@ -191,21 +191,21 @@ namespace Server.Items
         AddLabel(45, 15, 0, "Select One:");
 
         AddItem(35, 75, 0x456E);
-        AddButton(65, 50, 0x845, 0x846, 1, GumpButtonType.Reply, 0);
+        AddButton(65, 50, 0x845, 0x846, 1);
 
         AddItem(120, 75, 0x4578);
-        AddButton(135, 50, 0x845, 0x846, 2, GumpButtonType.Reply, 0);
+        AddButton(135, 50, 0x845, 0x846, 2);
 
         AddItem(190, 75, 0x457A);
-        AddButton(205, 50, 0x845, 0x846, 3, GumpButtonType.Reply, 0);
+        AddButton(205, 50, 0x845, 0x846, 3);
 
         AddItem(250, 75, 0x457C);
-        AddButton(275, 50, 0x845, 0x846, 4, GumpButtonType.Reply, 0);
+        AddButton(275, 50, 0x845, 0x846, 4);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if (m_Deed == null || m_Deed.Deleted)
+        if (m_Deed?.Deleted != false)
           return;
 
         Mobile from = sender.Mobile;
@@ -216,10 +216,12 @@ namespace Server.Items
           return;
         }
 
-        Item statue = null;
+        Item statue;
 
         switch (info.ButtonID)
         {
+          default:
+            return;
           case 1:
             statue = new SnowStatuePegasus();
             break;
@@ -233,9 +235,6 @@ namespace Server.Items
             statue = new SnowStatueGriffon();
             break;
         }
-
-        if (statue == null)
-          return;
 
         if (!from.PlaceInBackpack(statue))
         {

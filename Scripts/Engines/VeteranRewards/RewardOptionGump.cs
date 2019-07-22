@@ -14,11 +14,7 @@ namespace Server.Gumps
     private IRewardOption m_Option;
     private RewardOptionList m_Options = new RewardOptionList();
 
-    public RewardOptionGump(IRewardOption option) : this(option, 0)
-    {
-    }
-
-    public RewardOptionGump(IRewardOption option, int title) : base(60, 36)
+    public RewardOptionGump(IRewardOption option, int title = 0) : base(60, 36)
     {
       m_Option = option;
 
@@ -32,20 +28,20 @@ namespace Server.Gumps
       AddImageTiled(10, 294, 253, 20, 0xA40);
       AddAlphaRegion(10, 10, 253, 304);
 
-      AddButton(10, 294, 0xFB1, 0xFB2, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF, false, false); // CANCEL
+      AddButton(10, 294, 0xFB1, 0xFB2, 0);
+      AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF); // CANCEL
 
       if (title > 0)
-        AddHtmlLocalized(14, 12, 273, 20, title, 0x7FFF, false, false);
+        AddHtmlLocalized(14, 12, 273, 20, title, 0x7FFF);
       else
-        AddHtmlLocalized(14, 12, 273, 20, 1080392, 0x7FFF, false, false); // Select your choice from the menu below.
+        AddHtmlLocalized(14, 12, 273, 20, 1080392, 0x7FFF); // Select your choice from the menu below.
 
       AddPage(1);
 
       for (int i = 0; i < m_Options.Count; i++)
       {
-        AddButton(19, 49 + i * 24, 0x845, 0x846, m_Options[i].ID, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(44, 47 + i * 24, 213, 20, m_Options[i].Cliloc, 0x7FFF, false, false);
+        AddButton(19, 49 + i * 24, 0x845, 0x846, m_Options[i].ID);
+        AddHtmlLocalized(44, 47 + i * 24, 213, 20, m_Options[i].Cliloc, 0x7FFF);
       }
     }
 

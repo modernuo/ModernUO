@@ -3,12 +3,7 @@ namespace Server.Items
   public class IncognitoScroll : SpellScroll
   {
     [Constructible]
-    public IncognitoScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public IncognitoScroll(int amount) : base(34, 0x1F4F, amount)
+    public IncognitoScroll(int amount = 1) : base(34, 0x1F4F, amount)
     {
     }
 

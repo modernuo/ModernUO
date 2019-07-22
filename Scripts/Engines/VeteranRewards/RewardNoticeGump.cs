@@ -22,11 +22,11 @@ namespace Server.Engines.VeteranRewards
        */
       AddHtmlLocalized(52, 35, 420, 55, 1006046, true, true);
 
-      AddButton(60, 95, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(95, 96, 150, 35, 1006044, false, false); // Ok
+      AddButton(60, 95, 4005, 4007, 1);
+      AddHtmlLocalized(95, 96, 150, 35, 1006044); // Ok
 
-      AddButton(285, 95, 4017, 4019, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(320, 96, 150, 35, 1006045, false, false); // Cancel
+      AddButton(285, 95, 4017, 4019, 0);
+      AddHtmlLocalized(320, 96, 150, 35, 1006045); // Cancel
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

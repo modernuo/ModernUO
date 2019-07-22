@@ -3,12 +3,7 @@ namespace Server.Items
   public class BatWing : BaseReagent, ICommodity
   {
     [Constructible]
-    public BatWing() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BatWing(int amount) : base(0xF78, amount)
+    public BatWing(int amount = 1) : base(0xF78, amount)
     {
     }
 

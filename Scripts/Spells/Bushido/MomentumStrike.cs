@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 
 namespace Server.Spells.Bushido
@@ -20,46 +21,35 @@ namespace Server.Spells.Bushido
 
       BaseWeapon weapon = attacker.Weapon as BaseWeapon;
 
-      List<Mobile> targets = new List<Mobile>();
+      List<Mobile> targets = attacker.GetMobilesInRange(weapon.MaxRange)
+        .Where(m => m != defender).Where(m => m.Combatant == attacker).ToList();
 
-      foreach (Mobile m in attacker.GetMobilesInRange(weapon.MaxRange))
-      {
-        if (m == defender)
-          continue;
-
-        if (m.Combatant != attacker)
-          continue;
-
-        targets.Add(m);
-      }
-
-      if (targets.Count > 0)
-      {
-        if (!CheckMana(attacker, true))
-          return;
-
-        Mobile target = targets[Utility.Random(targets.Count)];
-
-        double damageBonus = attacker.Skills.Bushido.Value / 100.0;
-
-        if (!defender.Alive)
-          damageBonus *= 1.5;
-
-        attacker.SendLocalizedMessage(1063171); // You transfer the momentum of your weapon into another enemy!
-        target.SendLocalizedMessage(1063172); // You were hit by the momentum of a Samurai's weapon!
-
-        target.FixedParticles(0x37B9, 1, 4, 0x251D, 0, 0, EffectLayer.Waist);
-
-        attacker.PlaySound(0x510);
-
-        weapon.OnSwing(attacker, target, damageBonus);
-
-        CheckGain(attacker);
-      }
-      else
+      if (targets.Count <= 0)
       {
         attacker.SendLocalizedMessage(1063123); // There are no valid targets to attack!
+        return;
       }
+
+      if (!CheckMana(attacker, true))
+        return;
+
+      Mobile target = targets[Utility.Random(targets.Count)];
+
+      double damageBonus = attacker.Skills.Bushido.Value / 100.0;
+
+      if (!defender.Alive)
+        damageBonus *= 1.5;
+
+      attacker.SendLocalizedMessage(1063171); // You transfer the momentum of your weapon into another enemy!
+      target.SendLocalizedMessage(1063172); // You were hit by the momentum of a Samurai's weapon!
+
+      target.FixedParticles(0x37B9, 1, 4, 0x251D, 0, 0, EffectLayer.Waist);
+
+      attacker.PlaySound(0x510);
+
+      weapon.OnSwing(attacker, target, damageBonus);
+
+      CheckGain(attacker);
     }
 
     public override void CheckGain(Mobile m)

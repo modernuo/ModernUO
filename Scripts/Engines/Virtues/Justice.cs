@@ -194,8 +194,7 @@ namespace Server
       AddImageTiled(15, 15, 365, 190, 2624);
       AddAlphaRegion(15, 15, 365, 190);
 
-      AddHtmlLocalized(30, 20, 360, 25, 1049365, 0x7FFF, false,
-        false); // Another player is offering you their <a href="?ForceTopic88">protection</a>:
+      AddHtmlLocalized(30, 20, 360, 25, 1049365, 0x7FFF); // Another player is offering you their <a href="?ForceTopic88">protection</a>:
       AddLabel(90, 55, 1153, protector.Name);
 
       AddImage(50, 45, 9005);
@@ -203,12 +202,12 @@ namespace Server
       AddImageTiled(95, 82, 200, 1, 9157);
 
       AddRadio(30, 110, 9727, 9730, true, 1);
-      AddHtmlLocalized(65, 115, 300, 25, 1049444, 0x7FFF, false, false); // Yes, I would like their protection.
+      AddHtmlLocalized(65, 115, 300, 25, 1049444, 0x7FFF); // Yes, I would like their protection.
 
       AddRadio(30, 145, 9727, 9730, false, 0);
-      AddHtmlLocalized(65, 148, 300, 25, 1049445, 0x7FFF, false, false); // No thanks, I can take care of myself.
+      AddHtmlLocalized(65, 148, 300, 25, 1049445, 0x7FFF); // No thanks, I can take care of myself.
 
-      AddButton(160, 175, 247, 248, 2, GumpButtonType.Reply, 0);
+      AddButton(160, 175, 247, 248, 2);
 
       AddImage(215, 0, 50581);
 

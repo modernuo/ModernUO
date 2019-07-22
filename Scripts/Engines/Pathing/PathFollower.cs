@@ -44,7 +44,7 @@ namespace Server
 
     public void Advance(ref Point3D p, int index)
     {
-      if (m_Path != null && m_Path.Success)
+      if (m_Path?.Success == true)
       {
         Direction[] dirs = m_Path.Directions;
 
@@ -70,18 +70,10 @@ namespace Server
       if (!Enabled)
         return false;
 
-      bool repath = false;
-
       Point3D goal = GetGoalLocation();
 
-      if (m_Path == null)
-        repath = true;
-      else if ((!m_Path.Success || goal != m_LastGoalLoc) && m_LastPathTime + RepathDelay <= DateTime.UtcNow)
-        repath = true;
-      else if (m_Path.Success && Check(m_From.Location, m_LastGoalLoc, 0))
-        repath = true;
-
-      if (!repath)
+      if (m_Path != null && (m_Path.Success && goal == m_LastGoalLoc || m_LastPathTime + RepathDelay > DateTime.Now) &&
+          !(m_Path.Success && Check(m_From.Location, m_LastGoalLoc, 0)))
         return false;
 
       m_LastPathTime = DateTime.UtcNow;
@@ -95,17 +87,12 @@ namespace Server
       Advance(ref m_Next, m_Index);
 
       return true;
+
     }
 
     public bool Check(Point3D loc, Point3D goal, int range)
     {
-      if (!Utility.InRange(loc, goal, range))
-        return false;
-
-      if (range <= 1 && Math.Abs(loc.Z - goal.Z) >= 16)
-        return false;
-
-      return true;
+      return Utility.InRange(loc, goal, range) && (range > 1 || Math.Abs(loc.Z - goal.Z) < 16);
     }
 
     public bool Follow(bool run, int range)
@@ -118,7 +105,7 @@ namespace Server
 
       bool repathed = CheckPath();
 
-      if (!Enabled || !m_Path.Success)
+      if (!(Enabled && m_Path.Success))
       {
         d = m_From.GetDirectionTo(goal);
 

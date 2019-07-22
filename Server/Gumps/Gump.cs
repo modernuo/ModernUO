@@ -185,7 +185,8 @@ namespace Server.Gumps
       Add(new GumpBackground(x, y, width, height, gumpID));
     }
 
-    public void AddButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param)
+    public void AddButton(int x, int y, int normalID, int pressedID, int buttonID,
+      GumpButtonType type = GumpButtonType.Reply, int param = 0)
     {
       Add(new GumpButton(x, y, normalID, pressedID, buttonID, type, param));
     }
@@ -205,34 +206,29 @@ namespace Server.Gumps
       Add(new GumpTooltip(number));
     }
 
-    public void AddHtml(int x, int y, int width, int height, string text, bool background, bool scrollbar)
+    public void AddHtml(int x, int y, int width, int height, string text, bool background = false, bool scrollbar = false)
     {
       Add(new GumpHtml(x, y, width, height, text, background, scrollbar));
     }
 
-    public void AddHtmlLocalized(int x, int y, int width, int height, int number, bool background, bool scrollbar)
+    public void AddHtmlLocalized(int x, int y, int width, int height, int number, bool background = false, bool scrollbar = false)
     {
       Add(new GumpHtmlLocalized(x, y, width, height, number, background, scrollbar));
     }
 
-    public void AddHtmlLocalized(int x, int y, int width, int height, int number, int color, bool background,
-      bool scrollbar)
+    public void AddHtmlLocalized(int x, int y, int width, int height, int number, int color, bool background = false,
+      bool scrollbar = false)
     {
       Add(new GumpHtmlLocalized(x, y, width, height, number, color, background, scrollbar));
     }
 
     public void AddHtmlLocalized(int x, int y, int width, int height, int number, string args, int color,
-      bool background, bool scrollbar)
+      bool background = false, bool scrollbar = false)
     {
       Add(new GumpHtmlLocalized(x, y, width, height, number, args, color, background, scrollbar));
     }
 
-    public void AddImage(int x, int y, int gumpID)
-    {
-      Add(new GumpImage(x, y, gumpID));
-    }
-
-    public void AddImage(int x, int y, int gumpID, int hue)
+    public void AddImage(int x, int y, int gumpID, int hue = 0)
     {
       Add(new GumpImage(x, y, gumpID, hue));
     }
@@ -243,24 +239,13 @@ namespace Server.Gumps
     }
 
     public void AddImageTiledButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type,
-      int param, int itemID, int hue, int width, int height)
-    {
-      Add(new GumpImageTileButton(x, y, normalID, pressedID, buttonID, type, param, itemID, hue, width, height));
-    }
-
-    public void AddImageTiledButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type,
-      int param, int itemID, int hue, int width, int height, int localizedTooltip)
+      int param, int itemID, int hue, int width, int height, int localizedTooltip = -1)
     {
       Add(new GumpImageTileButton(x, y, normalID, pressedID, buttonID, type, param, itemID, hue, width, height,
         localizedTooltip));
     }
 
-    public void AddItem(int x, int y, int itemID)
-    {
-      Add(new GumpItem(x, y, itemID));
-    }
-
-    public void AddItem(int x, int y, int itemID, int hue)
+    public void AddItem(int x, int y, int itemID, int hue = 0)
     {
       Add(new GumpItem(x, y, itemID, hue));
     }
@@ -280,12 +265,7 @@ namespace Server.Gumps
       Add(new GumpRadio(x, y, inactiveID, activeID, initialState, switchID));
     }
 
-    public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText)
-    {
-      Add(new GumpTextEntry(x, y, width, height, hue, entryID, initialText));
-    }
-
-    public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, int size)
+    public void AddTextEntry(int x, int y, int width, int height, int hue, int entryID, string initialText, int size = 0)
     {
       Add(new GumpTextEntryLimited(x, y, width, height, hue, entryID, initialText, size));
     }

@@ -13,37 +13,37 @@ namespace Server.Engines.Plants
 
       DrawBackground();
 
-      AddButton(70, 67, 0xD4, 0xD4, 1, GumpButtonType.Reply, 0); // Main menu
+      AddButton(70, 67, 0xD4, 0xD4, 1); // Main menu
       AddItem(57, 65, 0x1600);
 
       AddLabel(108, 67, 0x835, "Reproduction");
 
       if (m_Plant.PlantStatus == PlantStatus.Stage9)
       {
-        AddButton(212, 67, 0xD4, 0xD4, 2, GumpButtonType.Reply, 0); // Set to decorative
+        AddButton(212, 67, 0xD4, 0xD4, 2); // Set to decorative
         AddItem(202, 68, 0xC61);
         AddLabel(216, 66, 0x21, "/");
       }
 
-      AddButton(80, 116, 0xD4, 0xD4, 3, GumpButtonType.Reply, 0); // Pollination
+      AddButton(80, 116, 0xD4, 0xD4, 3); // Pollination
       AddItem(66, 117, 0x1AA2);
       AddPollinationState(106, 116);
 
-      AddButton(128, 116, 0xD4, 0xD4, 4, GumpButtonType.Reply, 0); // Resources
+      AddButton(128, 116, 0xD4, 0xD4, 4); // Resources
       AddItem(113, 120, 0x1021);
       AddResourcesState(149, 116);
 
-      AddButton(177, 116, 0xD4, 0xD4, 5, GumpButtonType.Reply, 0); // Seeds
+      AddButton(177, 116, 0xD4, 0xD4, 5); // Seeds
       AddItem(160, 121, 0xDCF);
       AddSeedsState(199, 116);
 
-      AddButton(70, 163, 0xD2, 0xD2, 6, GumpButtonType.Reply, 0); // Gather pollen
+      AddButton(70, 163, 0xD2, 0xD2, 6); // Gather pollen
       AddItem(56, 164, 0x1AA2);
 
-      AddButton(138, 163, 0xD2, 0xD2, 7, GumpButtonType.Reply, 0); // Gather resources
+      AddButton(138, 163, 0xD2, 0xD2, 7); // Gather resources
       AddItem(123, 167, 0x1021);
 
-      AddButton(212, 163, 0xD2, 0xD2, 8, GumpButtonType.Reply, 0); // Gather seeds
+      AddButton(212, 163, 0xD2, 0xD2, 8); // Gather seeds
       AddItem(195, 168, 0xDCF);
     }
 

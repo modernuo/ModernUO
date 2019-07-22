@@ -5,12 +5,7 @@ namespace Server.Items
   public class Cotton : Item, IDyable
   {
     [Constructible]
-    public Cotton() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Cotton(int amount) : base(0xDF9)
+    public Cotton(int amount = 1) : base(0xDF9)
     {
       Stackable = true;
       Weight = 4.0;

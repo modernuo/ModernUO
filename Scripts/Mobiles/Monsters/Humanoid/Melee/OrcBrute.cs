@@ -110,16 +110,16 @@ namespace Server.Mobiles
         return;
 
       IPooledEnumerable<OrcishLord> eable = GetMobilesInRange<OrcishLord>(10);
-      int orcs = eable.Count();
-      eable.Free();
 
-      if (orcs < 10)
+      if (eable.Count() < 10)
       {
         BaseCreature orc = new SpawnedOrcishLord{ Team = Team };
 
         orc.MoveToWorld(map.GetRandomNearbyLocation(target.Location), map);
         orc.Combatant = target;
       }
+
+      eable.Free();
     }
 
     public override void Serialize(GenericWriter writer)

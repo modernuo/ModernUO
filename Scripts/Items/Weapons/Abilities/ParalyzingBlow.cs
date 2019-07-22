@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Server.Items
@@ -29,7 +28,7 @@ namespace Server.Items
 
       Skill skill = from.Skills.Anatomy;
 
-      if ( skill != null && skill.Base >= 80.0 )
+      if ( skill?.Base >= 80.0 )
         return true;
 
       from.SendLocalizedMessage( 1061811 ); // You lack the required anatomy skill to perform that attack!

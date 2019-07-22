@@ -3,12 +3,7 @@ namespace Server.Items
   public class GraveDust : BaseReagent, ICommodity
   {
     [Constructible]
-    public GraveDust() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GraveDust(int amount) : base(0xF8F, amount)
+    public GraveDust(int amount = 1) : base(0xF8F, amount)
     {
     }
 

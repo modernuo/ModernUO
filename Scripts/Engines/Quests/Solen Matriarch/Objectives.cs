@@ -15,7 +15,7 @@ namespace Server.Engines.Quests.Matriarch
       {
         // Black/Red Solen Infiltrators killed:
         gump.AddHtmlLocalized(70, 260, 270, 100, ((SolenMatriarchQuest)System).RedSolen ? 1054088 : 1054087,
-          BaseQuestGump.Blue, false, false);
+          BaseQuestGump.Blue);
         gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
         gump.AddLabel(100, 280, 0x64, "/");
         gump.AddLabel(130, 280, 0x64, MaxProgress.ToString());
@@ -80,8 +80,7 @@ namespace Server.Engines.Quests.Matriarch
     {
       if (!Completed)
       {
-        gump.AddHtmlLocalized(70, 260, 270, 100, 1054093, BaseQuestGump.Blue, false,
-          false); // Gallons of Water gathered:
+        gump.AddHtmlLocalized(70, 260, 270, 100, 1054093, BaseQuestGump.Blue); // Gallons of Water gathered:
         gump.AddLabel(70, 280, 0x64, (CurProgress / 5).ToString());
         gump.AddLabel(100, 280, 0x64, "/");
         gump.AddLabel(130, 280, 0x64, (MaxProgress / 5).ToString());

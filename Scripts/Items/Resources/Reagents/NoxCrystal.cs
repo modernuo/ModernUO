@@ -3,12 +3,7 @@ namespace Server.Items
   public class NoxCrystal : BaseReagent, ICommodity
   {
     [Constructible]
-    public NoxCrystal() : this(1)
-    {
-    }
-
-    [Constructible]
-    public NoxCrystal(int amount) : base(0xF8E, amount)
+    public NoxCrystal(int amount = 1) : base(0xF8E, amount)
     {
     }
 

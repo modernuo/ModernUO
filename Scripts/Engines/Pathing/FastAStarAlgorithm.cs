@@ -124,7 +124,6 @@ namespace Server.PathAlgorithms.FastAStar
 
       BaseCreature bc = m as BaseCreature;
 
-      int pathCount, parent;
       int backtrack = 0, depth = 0;
 
       Direction[] path = m_Path;
@@ -182,8 +181,8 @@ namespace Server.PathAlgorithms.FastAStar
           if (newNode != destNode)
             continue;
           
-          pathCount = 0;
-          parent = m_Nodes[newNode].parent;
+          int pathCount = 0;
+          int parent = m_Nodes[newNode].parent;
 
           while (parent != -1)
           {

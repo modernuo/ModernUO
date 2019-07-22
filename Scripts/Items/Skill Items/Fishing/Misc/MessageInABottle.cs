@@ -7,12 +7,7 @@ namespace Server.Items
   {
     private int m_Level;
 
-    [Constructible]
-    public MessageInABottle() : this(Map.Trammel)
-    {
-    }
-
-    public MessageInABottle(Map map) : this(map, GetRandomLevel())
+    public MessageInABottle(Map map = null) : this(map, GetRandomLevel())
     {
     }
 
@@ -20,7 +15,7 @@ namespace Server.Items
     public MessageInABottle(Map map, int level) : base(0x099F)
     {
       Weight = 1.0;
-      TargetMap = map;
+      TargetMap = map ?? Map.Trammel;
       m_Level = level;
     }
 

@@ -3,12 +3,7 @@ namespace Server.Items
   public class MarkScroll : SpellScroll
   {
     [Constructible]
-    public MarkScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public MarkScroll(int amount) : base(44, 0x1F59, amount)
+    public MarkScroll(int amount = 1) : base(44, 0x1F59, amount)
     {
     }
 

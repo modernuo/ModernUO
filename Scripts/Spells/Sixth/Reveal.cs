@@ -1,10 +1,9 @@
-using System.Collections.Generic;
 using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Sixth
 {
-  public class RevealSpell : MagerySpell
+  public class RevealSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Reveal", "Wis Quas",
@@ -14,7 +13,7 @@ namespace Server.Spells.Sixth
       Reagent.SulfurousAsh
     );
 
-    public RevealSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public RevealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -22,7 +21,7 @@ namespace Server.Spells.Sixth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -34,11 +33,7 @@ namespace Server.Spells.Sixth
       else if (CheckSequence())
       {
         SpellHelper.Turn(Caster, p);
-
         SpellHelper.GetSurfaceTop(ref p);
-
-        List<Mobile> targets = new List<Mobile>();
-
         Map map = Caster.Map;
 
         if (map != null)
@@ -48,25 +43,19 @@ namespace Server.Spells.Sixth
 
           foreach (Mobile m in eable)
           {
-            if (m is ShadowKnight && (m.X != p.X || m.Y != p.Y))
+            if (m is ShadowKnight &&
+                (m.X != p.X || m.Y != p.Y || !m.Hidden || m.AccessLevel != AccessLevel.Player &&
+                 Caster.AccessLevel <= m.AccessLevel ||
+                 !CheckDifficulty(Caster, m)))
               continue;
 
-            if (m.Hidden && (m.AccessLevel == AccessLevel.Player || Caster.AccessLevel > m.AccessLevel) &&
-                CheckDifficulty(Caster, m))
-              targets.Add(m);
+            m.RevealingAction();
+
+            m.FixedParticles(0x375A, 9, 20, 5049, EffectLayer.Head);
+            m.PlaySound(0x1FD);
           }
 
           eable.Free();
-        }
-
-        for (int i = 0; i < targets.Count; ++i)
-        {
-          Mobile m = targets[i];
-
-          m.RevealingAction();
-
-          m.FixedParticles(0x375A, 9, 20, 5049, EffectLayer.Head);
-          m.PlaySound(0x1FD);
         }
       }
 
@@ -94,27 +83,6 @@ namespace Server.Spells.Sixth
         chance = 100;
 
       return chance > Utility.Random(100);
-    }
-
-    public class InternalTarget : Target
-    {
-      private RevealSpell m_Owner;
-
-      public InternalTarget(RevealSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

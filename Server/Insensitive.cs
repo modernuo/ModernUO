@@ -18,13 +18,14 @@
  *
  ***************************************************************************/
 
-using System.Collections;
+using System;
+using System.Collections.Generic;
 
 namespace Server
 {
   public static class Insensitive
   {
-    public static IComparer Comparer{ get; } = CaseInsensitiveComparer.Default;
+    public static IComparer<string> Comparer{ get; } = StringComparer.OrdinalIgnoreCase;
 
     public static int Compare(string a, string b)
     {

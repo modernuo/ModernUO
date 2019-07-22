@@ -81,7 +81,7 @@ namespace Server.Items
       {
         BaseHouse house = BaseHouse.FindHouseAt(from);
 
-        if (house != null && house.IsCoOwner(from))
+        if (house?.IsCoOwner(from) == true)
         {
           if (m_Fire != null)
             TurnOff();
@@ -163,7 +163,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         return;
 
       if (IsChildOf(from.Backpack))
@@ -223,33 +223,32 @@ namespace Server.Items
         AddLabel(45, 15, 0, "Choose a Brazier:");
 
         AddItem(40, 75, 0x19AA);
-        AddButton(55, 50, 0x845, 0x846, 0x19AA, GumpButtonType.Reply, 0);
+        AddButton(55, 50, 0x845, 0x846, 0x19AA);
 
         AddItem(100, 75, 0x19BB);
-        AddButton(115, 50, 0x845, 0x846, 0x19BB, GumpButtonType.Reply, 0);
+        AddButton(115, 50, 0x845, 0x846, 0x19BB);
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        if ((m_Brazier == null) | m_Brazier.Deleted)
+        if (m_Brazier?.Deleted != false)
           return;
 
         Mobile m = sender.Mobile;
 
-        if (info.ButtonID == 0x19AA || info.ButtonID == 0x19BB)
-        {
-          RewardBrazier brazier = new RewardBrazier(info.ButtonID);
-          brazier.IsRewardItem = m_Brazier.IsRewardItem;
+        if (info.ButtonID != 0x19AA && info.ButtonID != 0x19BB)
+          return;
 
-          if (!m.PlaceInBackpack(brazier))
-          {
-            brazier.Delete();
-            m.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
-          }
-          else
-          {
-            m_Brazier.Delete();
-          }
+        RewardBrazier brazier = new RewardBrazier(info.ButtonID) { IsRewardItem = m_Brazier.IsRewardItem };
+
+        if (!m.PlaceInBackpack(brazier))
+        {
+          brazier.Delete();
+          m.SendLocalizedMessage(1078837); // Your backpack is full! Please make room and try again.
+        }
+        else
+        {
+          m_Brazier.Delete();
         }
       }
     }

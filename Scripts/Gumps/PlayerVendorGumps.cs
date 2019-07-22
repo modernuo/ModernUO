@@ -20,21 +20,21 @@ namespace Server.Gumps
 
       AddBackground(100, 10, 300, 150, 5054);
 
-      AddHtmlLocalized(125, 20, 250, 24, 1019070, false, false); // You have agreed to purchase:
+      AddHtmlLocalized(125, 20, 250, 24, 1019070); // You have agreed to purchase:
 
       if (!string.IsNullOrEmpty(vi.Description))
         AddLabel(125, 45, 0, vi.Description);
       else
-        AddHtmlLocalized(125, 45, 250, 24, 1019072, false, false); // an item without a description
+        AddHtmlLocalized(125, 45, 250, 24, 1019072); // an item without a description
 
-      AddHtmlLocalized(125, 70, 250, 24, 1019071, false, false); // for the amount of:
+      AddHtmlLocalized(125, 70, 250, 24, 1019071); // for the amount of:
       AddLabel(125, 95, 0, vi.Price.ToString());
 
-      AddButton(250, 130, 4005, 4007, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(282, 130, 100, 24, 1011012, false, false); // CANCEL
+      AddButton(250, 130, 4005, 4007, 0);
+      AddHtmlLocalized(282, 130, 100, 24, 1011012); // CANCEL
 
-      AddButton(120, 130, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(152, 130, 100, 24, 1011036, false, false); // OKAY
+      AddButton(120, 130, 4005, 4007, 1);
+      AddHtmlLocalized(152, 130, 100, 24, 1011036); // OKAY
     }
 
     public override void OnResponse(NetState state, RelayInfo info)
@@ -110,28 +110,28 @@ namespace Server.Gumps
       AddPage(0);
       AddBackground(25, 10, 530, 140, 5054);
 
-      AddHtmlLocalized(425, 25, 120, 20, 1019068, false, false); // See goods
-      AddButton(390, 25, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(425, 48, 120, 20, 1019069, false, false); // Customize
-      AddButton(390, 48, 4005, 4007, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(425, 72, 120, 20, 1011012, false, false); // CANCEL
-      AddButton(390, 71, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddHtmlLocalized(425, 25, 120, 20, 1019068); // See goods
+      AddButton(390, 25, 4005, 4007, 1);
+      AddHtmlLocalized(425, 48, 120, 20, 1019069); // Customize
+      AddButton(390, 48, 4005, 4007, 2);
+      AddHtmlLocalized(425, 72, 120, 20, 1011012); // CANCEL
+      AddButton(390, 71, 4005, 4007, 0);
 
-      AddHtmlLocalized(40, 72, 260, 20, 1038321, false, false); // Gold held for you:
+      AddHtmlLocalized(40, 72, 260, 20, 1038321); // Gold held for you:
       AddLabel(300, 72, 0, m_Vendor.HoldGold.ToString());
-      AddHtmlLocalized(40, 96, 260, 20, 1038322, false, false); // Gold held in my account:
+      AddHtmlLocalized(40, 96, 260, 20, 1038322); // Gold held in my account:
       AddLabel(300, 96, 0, m_Vendor.BankAccount.ToString());
 
       //AddHtmlLocalized( 40, 120, 260, 20, 1038324, false, false ); // My charge per day is:
       // Localization has changed, we must use a string here
-      AddHtml(40, 120, 260, 20, "My charge per day is:", false, false);
+      AddHtml(40, 120, 260, 20, "My charge per day is:");
       AddLabel(300, 120, 0, perDay.ToString());
 
       double days = (m_Vendor.HoldGold + m_Vendor.BankAccount) / (double)perDay;
 
-      AddHtmlLocalized(40, 25, 260, 20, 1038318, false, false); // Amount of days I can work:
+      AddHtmlLocalized(40, 25, 260, 20, 1038318); // Amount of days I can work:
       AddLabel(300, 25, 0, ((int)days).ToString());
-      AddHtmlLocalized(40, 48, 260, 20, 1038319, false, false); // Earth days:
+      AddHtmlLocalized(40, 48, 260, 20, 1038319); // Earth days:
       AddLabel(300, 48, 0, ((int)(days / 12.0)).ToString());
     }
 
@@ -185,24 +185,24 @@ namespace Server.Gumps
       {
         int goldNeeded = perRealWorldDay - goldHeld;
 
-        AddHtmlLocalized(40, 35, 260, 20, 1038320, 0x7FFF, false, false); // Gold needed for 1 day of vendor salary:
+        AddHtmlLocalized(40, 35, 260, 20, 1038320, 0x7FFF); // Gold needed for 1 day of vendor salary:
         AddLabel(300, 35, 0x1F, goldNeeded.ToString());
       }
       else
       {
         int days = goldHeld / perRealWorldDay;
 
-        AddHtmlLocalized(40, 35, 260, 20, 1038318, 0x7FFF, false, false); // # of days Vendor salary is paid for:
+        AddHtmlLocalized(40, 35, 260, 20, 1038318, 0x7FFF); // # of days Vendor salary is paid for:
         AddLabel(300, 35, 0x480, days.ToString());
       }
 
-      AddHtmlLocalized(40, 58, 260, 20, 1038324, 0x7FFF, false, false); // My charge per real world day is:
+      AddHtmlLocalized(40, 58, 260, 20, 1038324, 0x7FFF); // My charge per real world day is:
       AddLabel(300, 58, 0x480, perRealWorldDay.ToString());
 
-      AddHtmlLocalized(40, 82, 260, 20, 1038322, 0x7FFF, false, false); // Gold held in my account:
+      AddHtmlLocalized(40, 82, 260, 20, 1038322, 0x7FFF); // Gold held in my account:
       AddLabel(300, 82, 0x480, goldHeld.ToString());
 
-      AddHtmlLocalized(40, 108, 260, 20, 1062509, 0x7FFF, false, false); // Shop Name:
+      AddHtmlLocalized(40, 108, 260, 20, 1062509, 0x7FFF); // Shop Name:
       AddLabel(140, 106, 0x66D, vendor.ShopName);
 
       if (vendor is RentedVendor rentedVendor)
@@ -213,29 +213,29 @@ namespace Server.Gumps
           $"Location rental will expire in {days} day{(days != 1 ? "s" : "")} and {hours} hour{(hours != 1 ? "s" : "")}.");
       }
 
-      AddButton(390, 24, 0x15E1, 0x15E5, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(408, 21, 120, 20, 1019068, 0x7FFF, false, false); // See goods
+      AddButton(390, 24, 0x15E1, 0x15E5, 1);
+      AddHtmlLocalized(408, 21, 120, 20, 1019068, 0x7FFF); // See goods
 
-      AddButton(390, 44, 0x15E1, 0x15E5, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(408, 41, 120, 20, 1019069, 0x7FFF, false, false); // Customize
+      AddButton(390, 44, 0x15E1, 0x15E5, 2);
+      AddHtmlLocalized(408, 41, 120, 20, 1019069, 0x7FFF); // Customize
 
-      AddButton(390, 64, 0x15E1, 0x15E5, 3, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(408, 61, 120, 20, 1062434, 0x7FFF, false, false); // Rename Shop
+      AddButton(390, 64, 0x15E1, 0x15E5, 3);
+      AddHtmlLocalized(408, 61, 120, 20, 1062434, 0x7FFF); // Rename Shop
 
-      AddButton(390, 84, 0x15E1, 0x15E5, 4, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(408, 81, 120, 20, 3006217, 0x7FFF, false, false); // Rename Vendor
+      AddButton(390, 84, 0x15E1, 0x15E5, 4);
+      AddHtmlLocalized(408, 81, 120, 20, 3006217, 0x7FFF); // Rename Vendor
 
-      AddButton(390, 104, 0x15E1, 0x15E5, 5, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(408, 101, 120, 20, 3006123, 0x7FFF, false, false); // Open Paperdoll
+      AddButton(390, 104, 0x15E1, 0x15E5, 5);
+      AddHtmlLocalized(408, 101, 120, 20, 3006123, 0x7FFF); // Open Paperdoll
 
-      AddButton(390, 124, 0x15E1, 0x15E5, 6, GumpButtonType.Reply, 0);
+      AddButton(390, 124, 0x15E1, 0x15E5, 6);
       AddLabel(408, 121, 0x480, "Collect Gold");
 
-      AddButton(390, 144, 0x15E1, 0x15E5, 7, GumpButtonType.Reply, 0);
+      AddButton(390, 144, 0x15E1, 0x15E5, 7);
       AddLabel(408, 141, 0x480, "Dismiss Vendor");
 
-      AddButton(390, 162, 0x15E1, 0x15E5, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(408, 161, 120, 20, 1011012, 0x7FFF, false, false); // CANCEL
+      AddButton(390, 162, 0x15E1, 0x15E5, 0);
+      AddHtmlLocalized(408, 161, 120, 20, 1011012, 0x7FFF); // CANCEL
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)
@@ -431,17 +431,17 @@ namespace Server.Gumps
       AddPage(0);
       AddBackground(0, 0, 585, 393, 5054);
       AddBackground(195, 36, 387, 275, 3000);
-      AddHtmlLocalized(10, 10, 565, 18, 1011356, false, false); // <center>VENDOR CUSTOMIZATION MENU</center>
-      AddHtmlLocalized(60, 355, 150, 18, 1011036, false, false); // OKAY
-      AddButton(25, 355, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(320, 355, 150, 18, 1011012, false, false); // CANCEL
-      AddButton(285, 355, 4005, 4007, 0, GumpButtonType.Reply, 0);
+      AddHtmlLocalized(10, 10, 565, 18, 1011356); // <center>VENDOR CUSTOMIZATION MENU</center>
+      AddHtmlLocalized(60, 355, 150, 18, 1011036); // OKAY
+      AddButton(25, 355, 4005, 4007, 1);
+      AddHtmlLocalized(320, 355, 150, 18, 1011012); // CANCEL
+      AddButton(285, 355, 4005, 4007, 0);
 
       y = 35;
       for (int i = 0; i < Categories.Length; i++)
       {
         CustomCategory cat = Categories[i];
-        AddHtmlLocalized(5, y, 150, 25, cat.LocNumber, true, false);
+        AddHtmlLocalized(5, y, 150, 25, cat.LocNumber, true);
         AddButton(155, y, 4005, 4007, 0, GumpButtonType.Page, i + 1);
         y += 25;
       }
@@ -457,7 +457,7 @@ namespace Server.Gumps
           x = 198 + c % 3 * 129;
           y = 38 + c / 3 * 67;
 
-          AddHtmlLocalized(x, y, 100, entry.LongText ? 36 : 18, entry.LocNumber, false, false);
+          AddHtmlLocalized(x, y, 100, entry.LongText ? 36 : 18, entry.LocNumber);
 
           if (entry.ArtNumber != 0)
             AddItem(x + 20, y + 25, entry.ArtNumber);
@@ -467,11 +467,11 @@ namespace Server.Gumps
 
         if (cat.CanDye)
         {
-          AddHtmlLocalized(327, 239, 100, 18, 1011402, false, false); // Color
+          AddHtmlLocalized(327, 239, 100, 18, 1011402); // Color
           AddRadio(327, 259, 210, 211, false, 100 + i);
         }
 
-        AddHtmlLocalized(456, 239, 100, 18, 1011403, false, false); // Remove
+        AddHtmlLocalized(456, 239, 100, 18, 1011403); // Remove
         AddRadio(456, 259, 210, 211, false, 200 + i);
       }
     }
@@ -824,57 +824,57 @@ namespace Server.Gumps
 
       AddAlphaRegion(10, 10, 350, 350);
 
-      AddHtmlLocalized(10, 12, 350, 18, 1011356, 0x7FFF, false, false); // <center>VENDOR CUSTOMIZATION MENU</center>
+      AddHtmlLocalized(10, 12, 350, 18, 1011356, 0x7FFF); // <center>VENDOR CUSTOMIZATION MENU</center>
 
-      AddHtmlLocalized(10, 42, 150, 18, 1062459, 0x421F, false, false); // <CENTER>HAIR</CENTER>
+      AddHtmlLocalized(10, 42, 150, 18, 1062459, 0x421F); // <CENTER>HAIR</CENTER>
 
       for (int i = 0; i < m_HairStyles.Length; i++)
       {
         HairOrBeard hair = m_HairStyles[i];
 
-        AddButton(10, 70 + i * 20, 0xFA5, 0xFA7, 0x100 | i, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 72 + i * 20, 110, 18, hair.Name, 0x7FFF, false, false);
+        AddButton(10, 70 + i * 20, 0xFA5, 0xFA7, 0x100 | i);
+        AddHtmlLocalized(45, 72 + i * 20, 110, 18, hair.Name, 0x7FFF);
       }
 
-      AddButton(10, 70 + m_HairStyles.Length * 20, 0xFB1, 0xFB3, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 72 + m_HairStyles.Length * 20, 110, 18, 1011403, 0x7FFF, false, false); // Remove
+      AddButton(10, 70 + m_HairStyles.Length * 20, 0xFB1, 0xFB3, 2);
+      AddHtmlLocalized(45, 72 + m_HairStyles.Length * 20, 110, 18, 1011403, 0x7FFF); // Remove
 
-      AddButton(10, 70 + (m_HairStyles.Length + 1) * 20, 0xFA5, 0xFA7, 3, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 72 + (m_HairStyles.Length + 1) * 20, 110, 18, 1011402, 0x7FFF, false, false); // Color
+      AddButton(10, 70 + (m_HairStyles.Length + 1) * 20, 0xFA5, 0xFA7, 3);
+      AddHtmlLocalized(45, 72 + (m_HairStyles.Length + 1) * 20, 110, 18, 1011402, 0x7FFF); // Color
 
       if (vendor.Female)
       {
-        AddButton(160, 290, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x7FFF, false, false); // Male
+        AddButton(160, 290, 0xFA5, 0xFA7, 1);
+        AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x7FFF); // Male
 
-        AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x421F, false, false); // Female
+        AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x421F); // Female
       }
       else
       {
-        AddHtmlLocalized(160, 42, 210, 18, 1062460, 0x421F, false, false); // <CENTER>BEARD</CENTER>
+        AddHtmlLocalized(160, 42, 210, 18, 1062460, 0x421F); // <CENTER>BEARD</CENTER>
 
         for (int i = 0; i < m_BeardStyles.Length; i++)
         {
           HairOrBeard beard = m_BeardStyles[i];
 
-          AddButton(160, 70 + i * 20, 0xFA5, 0xFA7, 0x200 | i, GumpButtonType.Reply, 0);
-          AddHtmlLocalized(195, 72 + i * 20, 160, 18, beard.Name, 0x7FFF, false, false);
+          AddButton(160, 70 + i * 20, 0xFA5, 0xFA7, 0x200 | i);
+          AddHtmlLocalized(195, 72 + i * 20, 160, 18, beard.Name, 0x7FFF);
         }
 
-        AddButton(160, 70 + m_BeardStyles.Length * 20, 0xFB1, 0xFB3, 4, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(195, 72 + m_BeardStyles.Length * 20, 160, 18, 1011403, 0x7FFF, false, false); // Remove
+        AddButton(160, 70 + m_BeardStyles.Length * 20, 0xFB1, 0xFB3, 4);
+        AddHtmlLocalized(195, 72 + m_BeardStyles.Length * 20, 160, 18, 1011403, 0x7FFF); // Remove
 
-        AddButton(160, 70 + (m_BeardStyles.Length + 1) * 20, 0xFA5, 0xFA7, 5, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(195, 72 + (m_BeardStyles.Length + 1) * 20, 160, 18, 1011402, 0x7FFF, false, false); // Color
+        AddButton(160, 70 + (m_BeardStyles.Length + 1) * 20, 0xFA5, 0xFA7, 5);
+        AddHtmlLocalized(195, 72 + (m_BeardStyles.Length + 1) * 20, 160, 18, 1011402, 0x7FFF); // Color
 
-        AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x421F, false, false); // Male
+        AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x421F); // Male
 
-        AddButton(160, 310, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x7FFF, false, false); // Female
+        AddButton(160, 310, 0xFA5, 0xFA7, 1);
+        AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x7FFF); // Female
       }
 
-      AddButton(10, 340, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 342, 305, 18, 1060675, 0x7FFF, false, false); // CLOSE
+      AddButton(10, 340, 0xFA5, 0xFA7, 0);
+      AddHtmlLocalized(45, 342, 305, 18, 1060675, 0x7FFF); // CLOSE
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

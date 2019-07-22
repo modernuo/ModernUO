@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NEWTIMERS;NEWPARENT;NewAsyncSockets</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NEWTIMERS</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -53,7 +53,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>..\</OutputPath>
-    <DefineConstants>TRACE;NEWTIMERS;NEWPARENT;NewAsyncSockets</DefineConstants>
+    <DefineConstants>TRACE;NEWTIMERS</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -66,7 +66,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NEWTIMERS,NEWPARENT;NewAsyncSockets</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NEWTIMERS</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -77,7 +77,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\</OutputPath>
-    <DefineConstants>TRACE;NEWTIMERS,NEWPARENT;NewAsyncSockets</DefineConstants>
+    <DefineConstants>TRACE;NEWTIMERS</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -155,6 +155,8 @@
     <Compile Include="Items\VirtualCheck.cs" />
     <Compile Include="Items\VirtualHair.cs" />
     <Compile Include="KeywordList.cs" />
+    <Compile Include="Layer.cs" />
+    <Compile Include="LightType.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Menus\IMenu.cs" />
@@ -169,6 +171,7 @@
     <Compile Include="Network\Compression.cs" />
     <Compile Include="Network\EncodedPacketHandler.cs" />
     <Compile Include="Network\EncodedReader.cs" />
+    <Compile Include="Network\StaticPacketHandlers.cs" />
     <Compile Include="Network\Listener.cs" />
     <Compile Include="Network\MessagePump.cs" />
     <Compile Include="Network\NetState.cs" />

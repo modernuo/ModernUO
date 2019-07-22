@@ -72,7 +72,7 @@ namespace Server
 
     public static IEnumerable<NetState> SelectClients(Sector s, Rectangle2D bounds)
     {
-      return s.Clients.Where(o => o?.Mobile != null && !o.Mobile.Deleted && bounds.Contains(o.Mobile));
+      return s.Clients.Where(o => o?.Mobile?.Deleted == false && bounds.Contains(o.Mobile));
     }
 
     public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds)
@@ -84,9 +84,9 @@ namespace Server
     {
       IEnumerable<IEntity> eable = Enumerable.Empty<IEntity>();
       if (mobiles)
-        eable = eable.Union(s.Mobiles.Where(o => o != null && !o.Deleted));
+        eable = eable.Union(s.Mobiles.Where(o => o?.Deleted == false));
       if (items)
-        eable = eable.Union(s.Items.Where(o => o != null && !o.Deleted && o.Parent == null));
+        eable = eable.Union(s.Items.Where(o => o?.Deleted == false && o.Parent == null));
 
       return eable.Where(bounds.Contains);
     }
@@ -99,17 +99,17 @@ namespace Server
     public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
     {
       return s.Items.OfType<T>()
-        .Where(o => !o.Deleted && o.Parent == null && bounds.Contains(o));
+        .Where(o => o.Deleted == false && o.Parent == null && bounds.Contains(o));
     }
 
     public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds)
     {
-      return s.Multis.Where(o => o != null && !o.Deleted && bounds.Contains(o.Location));
+      return s.Multis.Where(o => o?.Deleted == false && bounds.Contains(o.Location));
     }
 
     public static IEnumerable<StaticTile[]> SelectMultiTiles(Sector s, Rectangle2D bounds)
     {
-      foreach (BaseMulti o in s.Multis.Where(o => o != null && !o.Deleted))
+      foreach (BaseMulti o in s.Multis.Where(o => o?.Deleted == false))
       {
         MultiComponentList c = o.Components;
 
@@ -275,7 +275,7 @@ namespace Server
 
   [Parsable]
   //[CustomEnum( new string[]{ "Felucca", "Trammel", "Ilshenar", "Malas", "Internal" } )]
-  public sealed class Map : IComparable, IComparable<Map>
+  public sealed class Map : IComparable<Map>
   {
     public const int SectorSize = 16;
     public const int SectorShift = 4;
@@ -354,13 +354,8 @@ namespace Server
 
     public Region DefaultRegion
     {
-      get
-      {
-        if (m_DefaultRegion == null)
-          m_DefaultRegion = new Region(null, this, 0, new Rectangle3D[0]);
-
-        return m_DefaultRegion;
-      }
+      get => m_DefaultRegion ??
+             (m_DefaultRegion = new Region(null, this, 0, new Rectangle3D[0]));
       set => m_DefaultRegion = value;
     }
 
@@ -396,20 +391,9 @@ namespace Server
 
     public static int[] InvalidLandTiles{ get; set; } = { 0x244 };
 
-    public int CompareTo(object other)
-    {
-      if (other == null || other is Map)
-        return CompareTo(other);
-
-      throw new ArgumentException();
-    }
-
     public int CompareTo(Map other)
     {
-      if (other == null)
-        return -1;
-
-      return MapID.CompareTo(other.MapID);
+      return other == null ? -1 : MapID.CompareTo(other.MapID);
     }
 
     public static string[] GetMapNames()
@@ -424,16 +408,16 @@ namespace Server
 
     public static Map Parse(string value)
     {
-      if (string.IsNullOrWhiteSpace(value)) return null;
+      if (string.IsNullOrWhiteSpace(value))
+        return null;
 
-      if (Insensitive.Equals(value, "Internal")) return Internal;
+      if (Insensitive.Equals(value, "Internal"))
+        return Internal;
 
       if (!int.TryParse(value, out int index))
         return Maps.FirstOrDefault(m => m != null && Insensitive.Equals(m.Name, value));
 
-      if (index == 127) return Internal;
-
-      return Maps.FirstOrDefault(m => m != null && m.MapIndex == index);
+      return index == 127 ? Internal : Maps.FirstOrDefault(m => m?.MapIndex == index);
     }
 
     public override string ToString()
@@ -473,10 +457,8 @@ namespace Server
       if (zBottom > top)
         top = zBottom;
 
-      if (Math.Abs(zTop - zBottom) > Math.Abs(zLeft - zRight))
-        avg = FloorAverage(zLeft, zRight);
-      else
-        avg = FloorAverage(zTop, zBottom);
+      avg = Math.Abs(zTop - zBottom) > Math.Abs(zLeft - zRight) ?
+        FloorAverage(zLeft, zRight) : FloorAverage(zTop, zBottom);
     }
 
     private static int FloorAverage(int a, int b)
@@ -496,16 +478,19 @@ namespace Server
 
     private static List<Item> AcquireFixItems(Map map, int x, int y)
     {
-      if (map == null || map == Internal || x < 0 || x > map.Width || y < 0 || y > map.Height) return _EmptyFixItems;
+      if (map == null || map == Internal || x < 0 || x > map.Width || y < 0 || y > map.Height)
+        return _EmptyFixItems;
 
       List<Item> pool = null;
 
       lock (_FixPool)
       {
-        if (_FixPool.Count > 0) pool = _FixPool.Dequeue();
+        if (_FixPool.Count > 0)
+          pool = _FixPool.Dequeue();
       }
 
-      if (pool == null) pool = new List<Item>(128); // Arbitrary limit
+      if (pool == null)
+        pool = new List<Item>(128); // Arbitrary limit
 
       IPooledEnumerable<Item> eable = map.GetItemsInRange(new Point3D(x, y, 0), 0);
 
@@ -528,7 +513,8 @@ namespace Server
 
       lock (_FixPool)
       {
-        if (_FixPool.Count < 128) _FixPool.Enqueue(pool);
+        if (_FixPool.Count < 128)
+          _FixPool.Enqueue(pool);
       }
     }
 
@@ -970,16 +956,6 @@ namespace Server
       return p;
     }
 
-    private class ZComparer : IComparer<Item>
-    {
-      public static readonly ZComparer Default = new ZComparer();
-
-      public int Compare(Item x, Item y)
-      {
-        return x.Z.CompareTo(y.Z);
-      }
-    }
-
     public class NullEnumerable<T> : IPooledEnumerable<T>
     {
       public static readonly NullEnumerable<T> Instance = new NullEnumerable<T>();
@@ -1064,13 +1040,12 @@ namespace Server
 
         IEnumerable<T> pool = PooledEnumeration.EnumerateSectors(map, bounds).SelectMany(s => selector(s, bounds));
 
-        if (e != null)
-        {
-          e._Pool.AddRange(pool);
-          return e;
-        }
+        if (e == null)
+          return new PooledEnumerable<T>(pool);
 
-        return new PooledEnumerable<T>(pool);
+        e._Pool.AddRange(pool);
+        return e;
+
       }
     }
 
@@ -1436,14 +1411,7 @@ namespace Server
         {
           IPooledEnumerable<Item> eable = GetItemsInRange(point, 0);
 
-          foreach (Item item in eable)
-          {
-            if (item.Visible)
-              contains = false;
-
-            if (!contains)
-              break;
-          }
+          contains = !eable.Any(item => item.Visible);
 
           eable.Free();
 

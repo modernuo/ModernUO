@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Server.Multis;
 
@@ -264,7 +263,7 @@ namespace Server.Items
 
       public override void OnDoubleClick(Mobile from)
       {
-        if (m_Tree != null && !m_Tree.Deleted)
+        if (m_Tree?.Deleted == false)
           m_Tree.OnDoubleClick(from);
       }
 

@@ -67,19 +67,16 @@ namespace Server.Misc
       PlayerMobile pmFrom = from as PlayerMobile;
       PlayerMobile pmTarg = target as PlayerMobile;
 
-      if (pmFrom == null && from is BaseCreature bcFrom)
-        if (bcFrom.Summoned)
-          pmFrom = bcFrom.SummonMaster as PlayerMobile;
+      if (pmFrom == null && from is BaseCreature bcFrom && bcFrom.Summoned)
+        pmFrom = bcFrom.SummonMaster as PlayerMobile;
 
-      if (pmTarg == null && target is BaseCreature bcTarg)
-        if (bcTarg.Summoned)
-          pmTarg = bcTarg.SummonMaster as PlayerMobile;
+      if (pmTarg == null && target is BaseCreature bcTarg && bcTarg.Summoned)
+        pmTarg = bcTarg.SummonMaster as PlayerMobile;
 
       if (pmFrom != null && pmTarg != null)
       {
         if (pmFrom.DuelContext != pmTarg.DuelContext &&
-            (pmFrom.DuelContext != null && pmFrom.DuelContext.Started ||
-             pmTarg.DuelContext != null && pmTarg.DuelContext.Started))
+            (pmFrom.DuelContext?.Started == true || pmTarg.DuelContext?.Started == true))
           return false;
 
         if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext &&
@@ -87,27 +84,25 @@ namespace Server.Misc
              pmFrom.DuelPlayer.Eliminated || pmTarg.DuelPlayer.Eliminated))
           return false;
 
-        if (pmFrom.DuelPlayer != null && !pmFrom.DuelPlayer.Eliminated && pmFrom.DuelContext != null &&
-            pmFrom.DuelContext.IsSuddenDeath)
+        if (pmFrom.DuelPlayer?.Eliminated == false && pmFrom.DuelContext?.IsSuddenDeath == true)
           return false;
 
         if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext &&
-            pmFrom.DuelContext.m_Tournament != null && pmFrom.DuelContext.m_Tournament.IsNotoRestricted &&
+            pmFrom.DuelContext.m_Tournament?.IsNotoRestricted == true &&
             pmFrom.DuelPlayer != null && pmTarg.DuelPlayer != null &&
             pmFrom.DuelPlayer.Participant != pmTarg.DuelPlayer.Participant)
           return false;
 
-        if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext && pmFrom.DuelContext.Started)
+        if (pmFrom.DuelContext?.Started == true && pmFrom.DuelContext == pmTarg.DuelContext)
           return true;
       }
 
-      if (pmFrom?.DuelContext != null && pmFrom.DuelContext.Started ||
-          pmTarg?.DuelContext != null && pmTarg.DuelContext.Started)
+      if (pmFrom?.DuelContext?.Started == true || pmTarg?.DuelContext?.Started == true)
         return false;
 
       if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
         return false;
-      
+
       #endregion
 
       Map map = from.Map;
@@ -123,7 +118,7 @@ namespace Server.Misc
       #endregion
 
 
-      if (map != null && (map.Rules & MapRules.BeneficialRestrictions) == 0)
+      if ((map?.Rules & MapRules.BeneficialRestrictions) == 0)
         return true; // In felucca, anything goes
 
       if (!from.Player)
@@ -163,8 +158,7 @@ namespace Server.Misc
       if (pmFrom != null && pmTarg != null)
       {
         if (pmFrom.DuelContext != pmTarg.DuelContext &&
-            (pmFrom.DuelContext != null && pmFrom.DuelContext.Started ||
-             pmTarg.DuelContext != null && pmTarg.DuelContext.Started))
+            (pmFrom.DuelContext?.Started == true || pmTarg.DuelContext?.Started == true))
           return false;
 
         if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext &&
@@ -173,17 +167,16 @@ namespace Server.Misc
           return false;
 
         if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext &&
-            pmFrom.DuelContext.m_Tournament != null && pmFrom.DuelContext.m_Tournament.IsNotoRestricted &&
+            pmFrom.DuelContext.m_Tournament?.IsNotoRestricted == true &&
             pmFrom.DuelPlayer != null && pmTarg.DuelPlayer != null &&
             pmFrom.DuelPlayer.Participant == pmTarg.DuelPlayer.Participant)
           return false;
 
-        if (pmFrom.DuelContext != null && pmFrom.DuelContext == pmTarg.DuelContext && pmFrom.DuelContext.Started)
+        if ( pmFrom.DuelContext?.Started == true && pmFrom.DuelContext == pmTarg.DuelContext)
           return true;
       }
 
-      if (pmFrom?.DuelContext != null && pmFrom.DuelContext.Started ||
-          pmTarg?.DuelContext != null && pmTarg.DuelContext.Started)
+      if (pmFrom?.DuelContext?.Started == true || pmTarg?.DuelContext?.Started == true)
         return false;
 
       if (from.Region.IsPartOf<SafeZone>() || target.Region.IsPartOf<SafeZone>())
@@ -193,7 +186,7 @@ namespace Server.Misc
 
       Map map = from.Map;
 
-      if (map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0)
+      if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
         return true; // In felucca, anything goes
 
       if (!from.Player && !(from is BaseCreature bc && bc.GetMaster() != null &&
@@ -219,11 +212,7 @@ namespace Server.Misc
       if (target.Player)
         return false; // Cannot harm other players
 
-      if (bcTarg?.InitialInnocent != true)
-        if (Notoriety.Compute(from, target) == Notoriety.Innocent)
-          return false; // Cannot harm innocent mobiles
-
-      return true;
+      return bcTarg?.InitialInnocent == true || Notoriety.Compute(from, target) != Notoriety.Innocent;
     }
 
     public static Guild GetGuildFor(Guild def, Mobile m)
@@ -344,7 +333,7 @@ namespace Server.Misc
       {
         Mobile master = bcTarg.GetMaster();
 
-        if (master != null && master.AccessLevel > AccessLevel.Player)
+        if (master?.AccessLevel > AccessLevel.Player)
           return Notoriety.CanBeAttacked;
 
         master = bcTarg.ControlMaster;
@@ -407,7 +396,7 @@ namespace Server.Misc
       if (CheckAggressed(source.Aggressed, target))
         return Notoriety.CanBeAttacked;
 
-      if (bcTarg != null && bcTarg.Controlled && bcTarg.ControlOrder == OrderType.Guard &&
+      if (bcTarg?.Controlled == true && bcTarg.ControlOrder == OrderType.Guard &&
           bcTarg.ControlTarget == source)
         return Notoriety.CanBeAttacked;
 
@@ -427,26 +416,24 @@ namespace Server.Misc
     {
       BaseHouse house = BaseHouse.FindHouseAt(p, map, 16);
 
-      if (house == null || house.Public || !house.IsFriend(from))
+      if (house?.Public != false || !house.IsFriend(from))
         return false;
 
       if (m != null && house.IsFriend(m))
         return false;
 
-      if (m is BaseCreature c && !c.Deleted && c.Controlled && c.ControlMaster != null)
-        return !house.IsFriend(c.ControlMaster);
-
-      return true;
+      return !(m is BaseCreature c) || c.Deleted || !c.Controlled || c.ControlMaster == null ||
+             !house.IsFriend(c.ControlMaster);
     }
 
     public static bool IsPet(BaseCreature c)
     {
-      return c != null && c.Controlled;
+      return c?.Controlled == true;
     }
 
     public static bool IsSummoned(BaseCreature c)
     {
-      return c != null && /*c.Controlled &&*/ c.Summoned;
+      return c?.Summoned == true;
     }
 
     public static bool CheckAggressor(List<AggressorInfo> list, Mobile target)

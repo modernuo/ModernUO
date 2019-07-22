@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells.Necromancy;
@@ -14,7 +15,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public DispelEvilSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public DispelEvilSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -37,12 +38,6 @@ namespace Server.Spells.Chivalry
     {
       if (CheckSequence())
       {
-        List<Mobile> targets = new List<Mobile>();
-
-        foreach (Mobile m in Caster.GetMobilesInRange(8))
-          if (Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false))
-            targets.Add(m);
-
         Caster.PlaySound(0xF5);
         Caster.PlaySound(0x299);
         Caster.FixedParticles(0x37C4, 1, 25, 9922, 14, 3, EffectLayer.Head);
@@ -51,10 +46,11 @@ namespace Server.Spells.Chivalry
 
         double chiv = Caster.Skills.Chivalry.Value;
 
-        for (int i = 0; i < targets.Count; ++i)
-        {
-          Mobile m = targets[i];
+        IEnumerable<Mobile> targets = Caster.GetMobilesInRange(8)
+          .Where(m => Caster != m && SpellHelper.ValidIndirectTarget(Caster, m) && Caster.CanBeHarmful(m, false));
 
+        foreach (Mobile m in targets)
+        {
           if (m is BaseCreature bc)
           {
             if (bc.Summoned && !bc.IsAnimatedDead)

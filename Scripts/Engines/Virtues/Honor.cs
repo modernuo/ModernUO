@@ -119,11 +119,11 @@ namespace Server
 
       if (target.Body.IsHuman && (!(target is BaseCreature cret) || !cret.AlwaysAttackable && !cret.AlwaysMurderer))
       {
-        if (reg == null || reg.IsDisabled())
+        if (reg?.IsDisabled() != true)
         {
           //Allow honor on blue if Out of guardzone
         }
-        else if (map != null && (map.Rules & MapRules.HarmfulRestrictions) == 0)
+        else if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
         {
           //Allow honor on blue if in Fel
         }

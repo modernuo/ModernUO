@@ -24,7 +24,7 @@ namespace Server.Gumps
       AddBackground(0, 0, 420, 280, 0x13BE);
       AddImageTiled(10, 10, 400, 20, 0xA40);
       AddAlphaRegion(10, 10, 400, 20);
-      AddHtmlLocalized(10, 10, 400, 20, 1060635, 0x7800, false, false); // <CENTER>WARNING</CENTER>
+      AddHtmlLocalized(10, 10, 400, 20, 1060635, 0x7800); // <CENTER>WARNING</CENTER>
       AddImageTiled(10, 40, 400, 200, 0xA40);
       AddAlphaRegion(10, 40, 400, 200);
 
@@ -40,10 +40,10 @@ namespace Server.Gumps
 
       AddImageTiled(10, 250, 400, 20, 0xA40);
       AddAlphaRegion(10, 250, 400, 20);
-      AddButton(10, 250, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-      AddButton(210, 250, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(40, 250, 170, 20, 1011036, 0x7FFF, false, false); // OKAY
-      AddHtmlLocalized(240, 250, 170, 20, 1011012, 0x7FFF, false, false); // CANCEL
+      AddButton(10, 250, 0xFA5, 0xFA7, 1);
+      AddButton(210, 250, 0xFA5, 0xFA7, 0);
+      AddHtmlLocalized(40, 250, 170, 20, 1011036, 0x7FFF); // OKAY
+      AddHtmlLocalized(240, 250, 170, 20, 1011012, 0x7FFF); // CANCEL
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

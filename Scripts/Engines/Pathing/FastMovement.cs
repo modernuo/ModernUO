@@ -132,10 +132,9 @@ namespace Server.Movement
 
     public bool CheckMovement(Mobile m, Direction d, out int newZ)
     {
-      if (!Enabled && _Successor != null)
-        return _Successor.CheckMovement(m, d, out newZ);
-
-      return CheckMovement(m, m.Map, m.Location, d, out newZ);
+      return !Enabled && _Successor != null
+        ? _Successor.CheckMovement(m, d, out newZ)
+        : CheckMovement(m, m.Map, m.Location, d, out newZ);
     }
 
     public static void Initialize()
@@ -235,7 +234,7 @@ namespace Server.Movement
         }
 
         // Stygian Dragon
-        if (m.Body == 826 && map != null && map.MapID == 5)
+        if (m.Body == 826 && map?.MapID == 5)
         {
           if (x >= 307 && x <= 354 && y >= 126 && y <= 192)
           {
@@ -384,20 +383,13 @@ namespace Server.Movement
 
     private static bool Verify(Item item, int x, int y)
     {
-      return item != null && item.AtWorldPoint(x, y);
+      return item.AtWorldPoint(x, y);
     }
 
     private static bool Verify(Item item, TileFlag reqFlags, bool ignoreMovableImpassables)
     {
-      if (item == null) return false;
-
-      if (ignoreMovableImpassables && item.Movable && item.ItemData.Impassable) return false;
-
-      if ((item.ItemData.Flags & reqFlags) == 0) return false;
-
-      if (item is BaseMulti || item.ItemID > TileData.MaxItemValue) return false;
-
-      return true;
+      return item != null && (!ignoreMovableImpassables || !item.Movable || !item.ItemData.Impassable) &&
+             (item.ItemData.Flags & reqFlags) != 0 && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue;
     }
 
     private static bool Verify(Item item, TileFlag reqFlags, bool ignoreMovableImpassables, int x, int y)
@@ -460,11 +452,9 @@ namespace Server.Movement
         isSet = true;
       }
 
-      ItemData itemData;
-
       foreach (Item item in itemList)
       {
-        itemData = item.ItemData;
+        ItemData itemData = item.ItemData;
 
         int calcTop = item.Z + itemData.CalcHeight;
 
@@ -489,7 +479,8 @@ namespace Server.Movement
 
       if (!isSet)
         zLow = zTop = loc.Z;
-      else if (loc.Z > zTop) zTop = loc.Z;
+      else if (loc.Z > zTop)
+        zTop = loc.Z;
     }
 
     public void Offset(Direction d, ref int x, ref int y)

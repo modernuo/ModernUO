@@ -9,10 +9,11 @@ namespace Server.Engines.BulkOrders
 
 		public LargeBOD Owner { get; set; }
 
-		public int Amount{ get => m_Amount;
-			set{ m_Amount = value;
-				Owner?.InvalidateProperties();
-			} }
+		public int Amount
+    {
+      get => m_Amount;
+			set{ m_Amount = value; Owner?.InvalidateProperties(); }
+    }
 		public SmallBulkEntry Details { get; }
 
 		public static SmallBulkEntry[] LargeRing => GetEntries( "Blacksmith", "largering" );

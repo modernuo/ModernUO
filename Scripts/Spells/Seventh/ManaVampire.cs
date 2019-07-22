@@ -2,7 +2,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Seventh
 {
-  public class ManaVampireSpell : MagerySpell
+  public class ManaVampireSpell : MagerySpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Mana Vampire", "Ort Sanct",
@@ -14,7 +14,7 @@ namespace Server.Spells.Seventh
       Reagent.SpidersSilk
     );
 
-    public ManaVampireSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ManaVampireSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -22,15 +22,16 @@ namespace Server.Spells.Seventh
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (!Caster.CanSee(m))
-      {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
-      }
       else if (CheckHSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -91,26 +92,6 @@ namespace Server.Spells.Seventh
     public override double GetResistPercent(Mobile target)
     {
       return 98.0;
-    }
-
-    private class InternalTarget : Target
-    {
-      private ManaVampireSpell m_Owner;
-
-      public InternalTarget(ManaVampireSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

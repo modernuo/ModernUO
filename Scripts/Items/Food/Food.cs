@@ -5,11 +5,7 @@ namespace Server.Items
 {
   public abstract class Food : Item
   {
-    public Food(int itemID) : this(1, itemID)
-    {
-    }
-
-    public Food(int amount, int itemID) : base(itemID)
+    public Food(int itemID, int amount) : base(itemID)
     {
       Stackable = true;
       Amount = amount;
@@ -173,12 +169,7 @@ namespace Server.Items
   public class BreadLoaf : Food
   {
     [Constructible]
-    public BreadLoaf() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BreadLoaf(int amount) : base(amount, 0x103B)
+    public BreadLoaf(int amount = 1) : base(0x103B, amount)
     {
       Weight = 1.0;
       FillFactor = 3;
@@ -206,12 +197,7 @@ namespace Server.Items
   public class Bacon : Food
   {
     [Constructible]
-    public Bacon() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Bacon(int amount) : base(amount, 0x979)
+    public Bacon(int amount = 1) : base(0x979, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -239,12 +225,7 @@ namespace Server.Items
   public class SlabOfBacon : Food
   {
     [Constructible]
-    public SlabOfBacon() : this(1)
-    {
-    }
-
-    [Constructible]
-    public SlabOfBacon(int amount) : base(amount, 0x976)
+    public SlabOfBacon(int amount = 1) : base(0x976, amount)
     {
       Weight = 1.0;
       FillFactor = 3;
@@ -272,12 +253,7 @@ namespace Server.Items
   public class FishSteak : Food
   {
     [Constructible]
-    public FishSteak() : this(1)
-    {
-    }
-
-    [Constructible]
-    public FishSteak(int amount) : base(amount, 0x97B)
+    public FishSteak(int amount = 1) : base(0x97B, amount)
     {
       FillFactor = 3;
     }
@@ -306,12 +282,7 @@ namespace Server.Items
   public class CheeseWheel : Food
   {
     [Constructible]
-    public CheeseWheel() : this(1)
-    {
-    }
-
-    [Constructible]
-    public CheeseWheel(int amount) : base(amount, 0x97E)
+    public CheeseWheel(int amount = 1) : base(0x97E, amount)
     {
       FillFactor = 3;
     }
@@ -340,12 +311,7 @@ namespace Server.Items
   public class CheeseWedge : Food
   {
     [Constructible]
-    public CheeseWedge() : this(1)
-    {
-    }
-
-    [Constructible]
-    public CheeseWedge(int amount) : base(amount, 0x97D)
+    public CheeseWedge(int amount = 1) : base(0x97D, amount)
     {
       FillFactor = 3;
     }
@@ -374,12 +340,7 @@ namespace Server.Items
   public class CheeseSlice : Food
   {
     [Constructible]
-    public CheeseSlice() : this(1)
-    {
-    }
-
-    [Constructible]
-    public CheeseSlice(int amount) : base(amount, 0x97C)
+    public CheeseSlice(int amount = 1) : base(0x97C, amount)
     {
       FillFactor = 1;
     }
@@ -408,12 +369,7 @@ namespace Server.Items
   public class FrenchBread : Food
   {
     [Constructible]
-    public FrenchBread() : this(1)
-    {
-    }
-
-    [Constructible]
-    public FrenchBread(int amount) : base(amount, 0x98C)
+    public FrenchBread(int amount = 1) : base(0x98C, amount)
     {
       Weight = 2.0;
       FillFactor = 3;
@@ -442,12 +398,7 @@ namespace Server.Items
   public class FriedEggs : Food
   {
     [Constructible]
-    public FriedEggs() : this(1)
-    {
-    }
-
-    [Constructible]
-    public FriedEggs(int amount) : base(amount, 0x9B6)
+    public FriedEggs(int amount = 1) : base(0x9B6, amount)
     {
       Weight = 1.0;
       FillFactor = 4;
@@ -475,12 +426,7 @@ namespace Server.Items
   public class CookedBird : Food
   {
     [Constructible]
-    public CookedBird() : this(1)
-    {
-    }
-
-    [Constructible]
-    public CookedBird(int amount) : base(amount, 0x9B7)
+    public CookedBird(int amount = 1) : base(0x9B7, amount)
     {
       Weight = 1.0;
       FillFactor = 5;
@@ -508,12 +454,7 @@ namespace Server.Items
   public class RoastPig : Food
   {
     [Constructible]
-    public RoastPig() : this(1)
-    {
-    }
-
-    [Constructible]
-    public RoastPig(int amount) : base(amount, 0x9BB)
+    public RoastPig(int amount = 1) : base(0x9BB, amount)
     {
       Weight = 45.0;
       FillFactor = 20;
@@ -541,12 +482,7 @@ namespace Server.Items
   public class Sausage : Food
   {
     [Constructible]
-    public Sausage() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Sausage(int amount) : base(amount, 0x9C0)
+    public Sausage(int amount = 1) : base(0x9C0, amount)
     {
       Weight = 1.0;
       FillFactor = 4;
@@ -574,12 +510,7 @@ namespace Server.Items
   public class Ham : Food
   {
     [Constructible]
-    public Ham() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Ham(int amount) : base(amount, 0x9C9)
+    public Ham(int amount = 1) : base(0x9C9, amount)
     {
       Weight = 1.0;
       FillFactor = 5;
@@ -607,7 +538,7 @@ namespace Server.Items
   public class Cake : Food
   {
     [Constructible]
-    public Cake() : base(0x9E9)
+    public Cake() : base(0x9E9, 1)
     {
       Stackable = false;
       Weight = 1.0;
@@ -636,12 +567,7 @@ namespace Server.Items
   public class Ribs : Food
   {
     [Constructible]
-    public Ribs() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Ribs(int amount) : base(amount, 0x9F2)
+    public Ribs(int amount = 1) : base(0x9F2, amount)
     {
       Weight = 1.0;
       FillFactor = 5;
@@ -669,7 +595,7 @@ namespace Server.Items
   public class Cookies : Food
   {
     [Constructible]
-    public Cookies() : base(0x160b)
+    public Cookies() : base(0x160b, 1)
     {
       Stackable = Core.ML;
       Weight = 1.0;
@@ -698,7 +624,7 @@ namespace Server.Items
   public class Muffins : Food
   {
     [Constructible]
-    public Muffins() : base(0x9eb)
+    public Muffins() : base(0x9eb, 1)
     {
       Stackable = false;
       Weight = 1.0;
@@ -728,7 +654,7 @@ namespace Server.Items
   public class CheesePizza : Food
   {
     [Constructible]
-    public CheesePizza() : base(0x1040)
+    public CheesePizza() : base(0x1040, 1)
     {
       Stackable = false;
       Weight = 1.0;
@@ -759,7 +685,7 @@ namespace Server.Items
   public class SausagePizza : Food
   {
     [Constructible]
-    public SausagePizza() : base(0x1040)
+    public SausagePizza() : base(0x1040, 1)
     {
       Stackable = false;
       Weight = 1.0;
@@ -821,7 +747,7 @@ namespace Server.Items
   public class FruitPie : Food
   {
     [Constructible]
-    public FruitPie() : base(0x1041)
+    public FruitPie() : base(0x1041, 1)
     {
       Stackable = false;
       Weight = 1.0;
@@ -852,7 +778,7 @@ namespace Server.Items
   public class MeatPie : Food
   {
     [Constructible]
-    public MeatPie() : base(0x1041)
+    public MeatPie() : base(0x1041, 1)
     {
       Stackable = false;
       Weight = 1.0;
@@ -883,7 +809,7 @@ namespace Server.Items
   public class PumpkinPie : Food
   {
     [Constructible]
-    public PumpkinPie() : base(0x1041)
+    public PumpkinPie() : base(0x1041, 1)
     {
       Stackable = false;
       Weight = 1.0;
@@ -914,7 +840,7 @@ namespace Server.Items
   public class ApplePie : Food
   {
     [Constructible]
-    public ApplePie() : base(0x1041)
+    public ApplePie() : base(0x1041, 1)
     {
       Stackable = false;
       Weight = 1.0;
@@ -945,7 +871,7 @@ namespace Server.Items
   public class PeachCobbler : Food
   {
     [Constructible]
-    public PeachCobbler() : base(0x1041)
+    public PeachCobbler() : base(0x1041, 1)
     {
       Stackable = false;
       Weight = 1.0;
@@ -976,7 +902,7 @@ namespace Server.Items
   public class Quiche : Food
   {
     [Constructible]
-    public Quiche() : base(0x1041)
+    public Quiche() : base(0x1041, 1)
     {
       Stackable = Core.ML;
       Weight = 1.0;
@@ -1007,12 +933,7 @@ namespace Server.Items
   public class LambLeg : Food
   {
     [Constructible]
-    public LambLeg() : this(1)
-    {
-    }
-
-    [Constructible]
-    public LambLeg(int amount) : base(amount, 0x160a)
+    public LambLeg(int amount = 1) : base(0x160a, amount)
     {
       Weight = 2.0;
       FillFactor = 5;
@@ -1040,12 +961,7 @@ namespace Server.Items
   public class ChickenLeg : Food
   {
     [Constructible]
-    public ChickenLeg() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ChickenLeg(int amount) : base(amount, 0x1608)
+    public ChickenLeg(int amount = 1) : base(0x1608, amount)
     {
       Weight = 1.0;
       FillFactor = 4;
@@ -1074,12 +990,7 @@ namespace Server.Items
   public class HoneydewMelon : Food
   {
     [Constructible]
-    public HoneydewMelon() : this(1)
-    {
-    }
-
-    [Constructible]
-    public HoneydewMelon(int amount) : base(amount, 0xC74)
+    public HoneydewMelon(int amount = 1) : base(0xC74, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -1108,12 +1019,7 @@ namespace Server.Items
   public class YellowGourd : Food
   {
     [Constructible]
-    public YellowGourd() : this(1)
-    {
-    }
-
-    [Constructible]
-    public YellowGourd(int amount) : base(amount, 0xC64)
+    public YellowGourd(int amount = 1) : base(0xC64, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -1142,12 +1048,7 @@ namespace Server.Items
   public class GreenGourd : Food
   {
     [Constructible]
-    public GreenGourd() : this(1)
-    {
-    }
-
-    [Constructible]
-    public GreenGourd(int amount) : base(amount, 0xC66)
+    public GreenGourd(int amount = 1) : base(0xC66, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -1176,12 +1077,7 @@ namespace Server.Items
   public class EarOfCorn : Food
   {
     [Constructible]
-    public EarOfCorn() : this(1)
-    {
-    }
-
-    [Constructible]
-    public EarOfCorn(int amount) : base(amount, 0xC81)
+    public EarOfCorn(int amount = 1) : base(0xC81, amount)
     {
       Weight = 1.0;
       FillFactor = 1;
@@ -1209,12 +1105,7 @@ namespace Server.Items
   public class Turnip : Food
   {
     [Constructible]
-    public Turnip() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Turnip(int amount) : base(amount, 0xD3A)
+    public Turnip(int amount = 1) : base(0xD3A, amount)
     {
       Weight = 1.0;
       FillFactor = 1;

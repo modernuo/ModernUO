@@ -3,12 +3,7 @@ namespace Server.Items
   public class MagicTrapScroll : SpellScroll
   {
     [Constructible]
-    public MagicTrapScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public MagicTrapScroll(int amount) : base(12, 0x1F39, amount)
+    public MagicTrapScroll(int amount = 1) : base(12, 0x1F39, amount)
     {
     }
 

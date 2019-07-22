@@ -27,11 +27,7 @@ namespace Server.Engines.Quests
   {
     protected List<SBInfo> m_SBInfos = new List<SBInfo>();
 
-    public BaseQuester() : this(null)
-    {
-    }
-
-    public BaseQuester(string title) : base(title)
+    public BaseQuester(string title = null) : base(title)
     {
     }
 

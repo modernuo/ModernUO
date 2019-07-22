@@ -4,12 +4,7 @@ namespace Server.Items
   public class Springs : Item
   {
     [Constructible]
-    public Springs() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Springs(int amount) : base(0x105D)
+    public Springs(int amount = 1) : base(0x105D)
     {
       Stackable = true;
       Amount = amount;

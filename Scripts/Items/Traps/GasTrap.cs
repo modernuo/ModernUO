@@ -13,22 +13,17 @@ namespace Server.Items
   public class GasTrap : BaseTrap
   {
     [Constructible]
-    public GasTrap() : this(GasTrapType.Floor)
+    public GasTrap() : this(Poison.Lesser)
     {
     }
 
     [Constructible]
-    public GasTrap(GasTrapType type) : this(type, Poison.Lesser)
+    public GasTrap(Poison poison) : this(GasTrapType.Floor, poison)
     {
     }
 
     [Constructible]
-    public GasTrap(Poison poison) : this(GasTrapType.Floor, Poison.Lesser)
-    {
-    }
-
-    [Constructible]
-    public GasTrap(GasTrapType type, Poison poison) : base(GetBaseID(type))
+    public GasTrap(GasTrapType type, Poison poison = null) : base(GetBaseID(type))
     {
       Poison = poison;
     }

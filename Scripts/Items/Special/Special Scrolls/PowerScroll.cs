@@ -67,12 +67,8 @@ namespace Server.Items
 
     private static List<SkillName> _Skills = new List<SkillName>();
 
-    public PowerScroll() : this(SkillName.Alchemy, 0.0)
-    {
-    }
-
     [Constructible]
-    public PowerScroll(SkillName skill, double value) : base(skill, value)
+    public PowerScroll(SkillName skill = SkillName.Alchemy, double value = 0.0) : base(skill, value)
     {
       Hue = 0x481;
 

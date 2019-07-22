@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Commands;
 using Server.Mobiles;
 
@@ -10,12 +11,7 @@ namespace Server.Items
     private SHTeleComponent m_TeleDest;
 
     [Constructible]
-    public SHTeleComponent() : this(0x1775)
-    {
-    }
-
-    [Constructible]
-    public SHTeleComponent(int itemID) : this(itemID, new Point3D(0, 0, 0))
+    public SHTeleComponent(int itemID = 0x1775) : this(itemID, new Point3D(0, 0, 0))
     {
     }
 
@@ -73,7 +69,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile m)
     {
-      if (!m_Active || m_TeleDest == null || m_TeleDest.Deleted || m_TeleDest.Map == Map.Internal)
+      if (!m_Active || m_TeleDest?.Deleted != false || m_TeleDest.Map == Map.Internal)
         return;
 
       if (m.InRange(this, 3))
@@ -124,12 +120,7 @@ namespace Server.Items
     private bool m_Changing;
 
     [Constructible]
-    public SHTeleporter() : this(true)
-    {
-    }
-
-    [Constructible]
-    public SHTeleporter(bool external)
+    public SHTeleporter(bool external = true)
     {
       m_Changing = false;
       External = external;
@@ -318,16 +309,9 @@ namespace Server.Items
       public static SHTeleporter FindSHTeleporter(Map map, Point3D p)
       {
         IPooledEnumerable<SHTeleporter> eable = map.GetItemsInRange<SHTeleporter>(p, 0);
-
-        foreach (SHTeleporter item in eable)
-          if (item.Z == p.Z)
-          {
-            eable.Free();
-            return item;
-          }
-
+        SHTeleporter teleporter = eable.FirstOrDefault(item => item.Z == p.Z);
         eable.Free();
-        return null;
+        return teleporter;
       }
 
       public SHTeleporter AddSHT(Map map, bool ext, int x, int y, int z)

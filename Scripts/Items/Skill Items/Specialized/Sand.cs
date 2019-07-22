@@ -4,12 +4,7 @@ namespace Server.Items
   public class Sand : Item, ICommodity
   {
     [Constructible]
-    public Sand() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Sand(int amount) : base(0x11EA)
+    public Sand(int amount = 1) : base(0x11EA)
     {
       Stackable = Core.ML;
       Weight = 1.0;

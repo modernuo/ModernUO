@@ -80,10 +80,6 @@ namespace Server
       AppendCompilerOption(ref sb, "/d:NEWTIMERS");
 #endif
 
-#if NEWPARENT
-      AppendCompilerOption(ref sb, "/d:NEWPARENT");
-#endif
-
       return sb?.ToString();
     }
 
@@ -368,6 +364,7 @@ namespace Server
           }
           catch
           {
+            // ignored
           }
 
         assembly = results.CompiledAssembly;

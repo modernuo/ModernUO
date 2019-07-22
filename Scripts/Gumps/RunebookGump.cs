@@ -88,12 +88,12 @@ namespace Server.Gumps
         AddButton(xOffset, 187, gumpID, gumpID, 0, GumpButtonType.Page, 6 + i);
 
       // Charges
-      AddHtmlLocalized(140, 40, 80, 18, 1011296, false, false); // Charges:
-      AddHtml(220, 40, 30, 18, Book.CurCharges.ToString(), false, false);
+      AddHtmlLocalized(140, 40, 80, 18, 1011296); // Charges:
+      AddHtml(220, 40, 30, 18, Book.CurCharges.ToString());
 
       // Max charges
-      AddHtmlLocalized(300, 40, 100, 18, 1011297, false, false); // Max Charges:
-      AddHtml(400, 40, 30, 18, Book.MaxCharges.ToString(), false, false);
+      AddHtmlLocalized(300, 40, 100, 18, 1011297); // Max Charges:
+      AddHtml(400, 40, 30, 18, Book.MaxCharges.ToString());
     }
 
     private void AddIndex()
@@ -102,8 +102,8 @@ namespace Server.Gumps
       AddPage(1);
 
       // Rename button
-      AddButton(125, 15, 2472, 2473, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(158, 22, 100, 18, 1011299, false, false); // Rename book
+      AddButton(125, 15, 2472, 2473, 1);
+      AddHtmlLocalized(158, 22, 100, 18, 1011299); // Rename book
 
       // List of entries
       List<RunebookEntry> entries = Book.Entries;
@@ -125,7 +125,7 @@ namespace Server.Gumps
         }
 
         // Use charge button
-        AddButton(130 + i / 8 * 160, 65 + i % 8 * 15, 2103, 2104, 2 + i * 6 + 0, GumpButtonType.Reply, 0);
+        AddButton(130 + i / 8 * 160, 65 + i % 8 * 15, 2103, 2104, 2 + i * 6 + 0);
 
         // Description label
         AddLabelCropped(145 + i / 8 * 160, 60 + i % 8 * 15, 115, 17, hue, desc);
@@ -138,7 +138,7 @@ namespace Server.Gumps
     private void AddDetails(int index, int half)
     {
       // Use charge button
-      AddButton(130 + half * 160, 65, 2103, 2104, 2 + index * 6 + 0, GumpButtonType.Reply, 0);
+      AddButton(130 + half * 160, 65, 2103, 2104, 2 + index * 6 + 0);
 
       string desc;
       int hue;
@@ -162,33 +162,33 @@ namespace Server.Gumps
         }
 
         // Drop rune button
-        AddButton(135 + half * 160, 115, 2437, 2438, 2 + index * 6 + 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(150 + half * 160, 115, 100, 18, 1011298, false, false); // Drop rune
+        AddButton(135 + half * 160, 115, 2437, 2438, 2 + index * 6 + 1);
+        AddHtmlLocalized(150 + half * 160, 115, 100, 18, 1011298); // Drop rune
 
         // Set as default button
         int defButtonID = e != Book.Default ? 2361 : 2360;
 
-        AddButton(160 + half * 140, 20, defButtonID, defButtonID, 2 + index * 6 + 2, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(175 + half * 140, 15, 100, 18, 1011300, false, false); // Set default
+        AddButton(160 + half * 140, 20, defButtonID, defButtonID, 2 + index * 6 + 2);
+        AddHtmlLocalized(175 + half * 140, 15, 100, 18, 1011300); // Set default
 
         if (Core.AOS)
         {
-          AddButton(135 + half * 160, 140, 2103, 2104, 2 + index * 6 + 3, GumpButtonType.Reply, 0);
-          AddHtmlLocalized(150 + half * 160, 136, 110, 20, 1062722, false, false); // Recall
+          AddButton(135 + half * 160, 140, 2103, 2104, 2 + index * 6 + 3);
+          AddHtmlLocalized(150 + half * 160, 136, 110, 20, 1062722); // Recall
 
-          AddButton(135 + half * 160, 158, 2103, 2104, 2 + index * 6 + 4, GumpButtonType.Reply, 0);
-          AddHtmlLocalized(150 + half * 160, 154, 110, 20, 1062723, false, false); // Gate Travel
+          AddButton(135 + half * 160, 158, 2103, 2104, 2 + index * 6 + 4);
+          AddHtmlLocalized(150 + half * 160, 154, 110, 20, 1062723); // Gate Travel
 
-          AddButton(135 + half * 160, 176, 2103, 2104, 2 + index * 6 + 5, GumpButtonType.Reply, 0);
-          AddHtmlLocalized(150 + half * 160, 172, 110, 20, 1062724, false, false); // Sacred Journey
+          AddButton(135 + half * 160, 176, 2103, 2104, 2 + index * 6 + 5);
+          AddHtmlLocalized(150 + half * 160, 172, 110, 20, 1062724); // Sacred Journey
         }
         else
         {
           // Recall button
-          AddButton(135 + half * 160, 140, 2271, 2271, 2 + index * 6 + 3, GumpButtonType.Reply, 0);
+          AddButton(135 + half * 160, 140, 2271, 2271, 2 + index * 6 + 3);
 
           // Gate button
-          AddButton(205 + half * 160, 140, 2291, 2291, 2 + index * 6 + 4, GumpButtonType.Reply, 0);
+          AddButton(205 + half * 160, 140, 2291, 2291, 2 + index * 6 + 4);
         }
       }
       else
@@ -203,9 +203,7 @@ namespace Server.Gumps
 
     public static bool HasSpell(Mobile from, int spellID)
     {
-      Spellbook book = Spellbook.Find(from, spellID);
-
-      return book != null && book.HasSpell(spellID);
+      return Spellbook.Find(from, spellID)?.HasSpell(spellID) == true;
     }
 
     public override void OnResponse(NetState state, RelayInfo info)
@@ -271,7 +269,7 @@ namespace Server.Gumps
                 }
 
                 Book.OnTravel();
-                new RecallSpell(from, Book, e, Book).Cast();
+                new RecallSpell(from, e, Book, Book).Cast();
 
                 Book.Openers.Remove(from);
               }
@@ -329,7 +327,7 @@ namespace Server.Gumps
                 }
 
                 Book.OnTravel();
-                new RecallSpell(from, null, e).Cast();
+                new RecallSpell(from, e).Cast();
               }
               else
               {
@@ -357,7 +355,7 @@ namespace Server.Gumps
                 }
 
                 Book.OnTravel();
-                new GateTravelSpell(from, null, e).Cast();
+                new GateTravelSpell(from, e).Cast();
               }
               else
               {
@@ -387,7 +385,7 @@ namespace Server.Gumps
                   }
 
                   Book.OnTravel();
-                  new SacredJourneySpell(from, null, e).Cast();
+                  new SacredJourneySpell(from, e).Cast();
                 }
                 else
                 {

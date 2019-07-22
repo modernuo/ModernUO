@@ -348,7 +348,7 @@ namespace Server.Engines.CannedEvil
       }
       else
       {
-        if (killer.Corpse != null && !killer.Corpse.Deleted)
+        if (killer?.Corpse.Deleted == false)
           killer.Corpse.DropItem(scroll);
         else
           killer.AddToBackpack(scroll);
@@ -421,7 +421,8 @@ namespace Server.Engines.CannedEvil
           {
             m_Altar.Hue = 0;
 
-            if (!Core.ML || Map == Map.Felucca) new StarRoomGate(true, m_Altar.Location, m_Altar.Map);
+            if (!Core.ML || Map == Map.Felucca)
+              new StarRoomGate(m_Altar.Location, m_Altar.Map, true);
           }
 
           Champion = null;
@@ -440,7 +441,9 @@ namespace Server.Engines.CannedEvil
 
           if (m.Deleted)
           {
-            if (m.Corpse != null && !m.Corpse.Deleted) ((Corpse)m.Corpse).BeginDecay(TimeSpan.FromMinutes(1));
+            if (m.Corpse?.Deleted == false)
+              ((Corpse)m.Corpse).BeginDecay(TimeSpan.FromMinutes(1));
+
             m_Creatures.RemoveAt(i);
             --i;
             ++m_Kills;
@@ -574,6 +577,7 @@ namespace Server.Engines.CannedEvil
       }
       catch
       {
+        // ignored
       }
 
       Champion?.MoveToWorld(new Point3D(X, Y, Z - 15), Map);
@@ -919,7 +923,7 @@ namespace Server.Engines.CannedEvil
         m_Creatures.Clear();
       }
 
-      if (Champion != null && !Champion.Player)
+      if (Champion?.Player == false)
         Champion.Delete();
 
       Stop();
@@ -950,7 +954,7 @@ namespace Server.Engines.CannedEvil
 
     public void RegisterDamage(Mobile from, int amount)
     {
-      if (from == null || !from.Player)
+      if (from?.Player != true)
         return;
 
       m_DamageEntries[from] = amount + (m_DamageEntries.TryGetValue(from, out int value) ? value : 0);
@@ -997,7 +1001,7 @@ namespace Server.Engines.CannedEvil
 
       Container pack = to.Backpack;
 
-      if (pack == null || !pack.TryDropItem(to, artifact, false))
+      if (pack?.TryDropItem(to, artifact, false) != true)
         artifact.Delete();
       else
         to.SendLocalizedMessage(
@@ -1006,8 +1010,8 @@ namespace Server.Engines.CannedEvil
 
     public bool IsEligible(Mobile m, Item Artifact)
     {
-      return m.Player && m.Alive && m.Region != null && m.Region == m_Region && m.Backpack != null &&
-             m.Backpack.CheckHold(m, Artifact, false);
+      return m.Player && m.Alive && m.Region != null && m.Region == m_Region &&
+             m.Backpack?.CheckHold(m, Artifact, false) == true;
     }
 
     public override void Serialize(GenericWriter writer)

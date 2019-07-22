@@ -95,7 +95,7 @@ namespace Server.Commands
     }
   }
 
-  public class CommandEntry : IComparable
+  public class CommandEntry : IComparable<CommandEntry>
   {
     public CommandEntry(string command, CommandEventHandler handler, AccessLevel accessLevel)
     {
@@ -110,17 +110,9 @@ namespace Server.Commands
 
     public AccessLevel AccessLevel{ get; }
 
-    public int CompareTo(object obj)
+    public int CompareTo(CommandEntry e)
     {
-      if (obj == this)
-        return 0;
-      if (obj == null)
-        return 1;
-
-      if (!(obj is CommandEntry e))
-        throw new ArgumentException();
-
-      return Command.CompareTo(e.Command);
+      return e == null ? 1 : Command.CompareTo(e.Command);
     }
   }
 
@@ -219,29 +211,29 @@ namespace Server.Commands
 
       if (entry != null)
       {
-        if (@from.AccessLevel >= entry.AccessLevel)
+        if (from.AccessLevel >= entry.AccessLevel)
         {
           if (entry.Handler != null)
           {
-            CommandEventArgs e = new CommandEventArgs(@from, command, argString, args);
+            CommandEventArgs e = new CommandEventArgs(from, command, argString, args);
             entry.Handler(e);
             EventSink.InvokeCommand(e);
           }
         }
         else
         {
-          if (@from.AccessLevel <= BadCommandIgnoreLevel)
+          if (from.AccessLevel <= BadCommandIgnoreLevel)
             return false;
 
-          @from.SendMessage("You do not have access to that command.");
+          from.SendMessage("You do not have access to that command.");
         }
       }
       else
       {
-        if (@from.AccessLevel <= BadCommandIgnoreLevel)
+        if (from.AccessLevel <= BadCommandIgnoreLevel)
           return false;
 
-        @from.SendMessage("That is not a valid command.");
+        from.SendMessage("That is not a valid command.");
       }
 
       return true;

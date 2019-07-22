@@ -468,14 +468,9 @@ namespace Server.Items
   {
     public BBDisplayBoard(BaseBulletinBoard board) : base(0x71)
     {
-      string name = board.BoardName;
-
-      if (name == null)
-        name = "";
-
       EnsureCapacity(38);
 
-      byte[] buffer = Utility.UTF8.GetBytes(name);
+      byte[] buffer = Utility.UTF8.GetBytes(board.BoardName ?? "");
 
       m_Stream.Write((byte)0x00); // PacketID
       m_Stream.Write(board.Serial); // Bulletin board serial
@@ -535,10 +530,7 @@ namespace Server.Items
 
     public string SafeString(string v)
     {
-      if (v == null)
-        return string.Empty;
-
-      return v;
+      return v ?? string.Empty;
     }
   }
 

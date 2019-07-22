@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Server.Engines.Quests.Naturalist
 {
   public class NestArea
@@ -27,17 +29,7 @@ namespace Server.Engines.Quests.Naturalist
       m_Rects = rects;
     }
 
-    public static int NonSpecialCount
-    {
-      get
-      {
-        int n = 0;
-        foreach (NestArea area in m_Areas)
-          if (!area.Special)
-            n++;
-        return n;
-      }
-    }
+    public static int NonSpecialCount => m_Areas.Count(area => !area.Special);
 
     public bool Special{ get; }
 
@@ -54,10 +46,7 @@ namespace Server.Engines.Quests.Naturalist
 
     public static NestArea Find(IPoint2D p)
     {
-      foreach (NestArea area in m_Areas)
-        if (area.Contains(p))
-          return area;
-      return null;
+      return m_Areas.FirstOrDefault(area => area.Contains(p));
     }
 
     public static NestArea GetByID(int id)
@@ -69,10 +58,7 @@ namespace Server.Engines.Quests.Naturalist
 
     public bool Contains(IPoint2D p)
     {
-      foreach (Rectangle2D rect in m_Rects)
-        if (rect.Contains(p))
-          return true;
-      return false;
+      return m_Rects.Any(rect => rect.Contains(p));
     }
   }
 }

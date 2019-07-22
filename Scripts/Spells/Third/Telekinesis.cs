@@ -3,7 +3,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Third
 {
-  public class TelekinesisSpell : MagerySpell
+  public class TelekinesisSpell : MagerySpell, ISpellTargetingItem
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Telekinesis", "Ort Por Ylem",
@@ -13,7 +13,7 @@ namespace Server.Spells.Third
       Reagent.MandrakeRoot
     );
 
-    public TelekinesisSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public TelekinesisSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -21,79 +21,55 @@ namespace Server.Spells.Third
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetItem(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
-    public void Target(ITelekinesisable obj)
+    public void Target(Item item)
     {
+      ITelekinesisable t = item as ITelekinesisable;
+      if (!(t != null || item is Container))
+      {
+        Caster.SendLocalizedMessage(501857); // This spell won't work on that!
+        return;
+      }
+
       if (CheckSequence())
       {
-        SpellHelper.Turn(Caster, obj);
-
-        obj.OnTelekinesis(Caster);
-      }
-
-      FinishSequence();
-    }
-
-    public void Target(Container item)
-    {
-      if (CheckSequence())
-      {
-        SpellHelper.Turn(Caster, item);
-
-        object root = item.RootParent;
-
-        if (!item.IsAccessibleTo(Caster))
+        if (t != null)
         {
-          item.OnDoubleClickNotAccessible(Caster);
+          SpellHelper.Turn(Caster, t);
+          t.OnTelekinesis(Caster);
         }
-        else if (!item.CheckItemUse(Caster, item))
-        {
-        }
-        else if (root is Mobile && root != Caster)
-        {
-          item.OnSnoop(Caster);
-        }
-        else if (item is Corpse corpse && !corpse.CheckLoot(Caster, null))
-        {
-        }
-        else if (Caster.Region.OnDoubleClick(Caster, item))
-        {
-          Effects.SendLocationParticles(EffectItem.Create(item.Location, item.Map, EffectItem.DefaultDuration),
-            0x376A, 9, 32, 5022);
-          Effects.PlaySound(item.Location, item.Map, 0x1F5);
-
-          item.OnItemUsed(Caster, item);
-        }
-      }
-
-      FinishSequence();
-    }
-
-    public class InternalTarget : Target
-    {
-      private TelekinesisSpell m_Owner;
-
-      public InternalTarget(TelekinesisSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is ITelekinesisable telekinesisable)
-          m_Owner.Target(telekinesisable);
-        else if (o is Container container)
-          m_Owner.Target(container);
         else
-          from.SendLocalizedMessage(501857); // This spell won't work on that!
+        {
+          SpellHelper.Turn(Caster, item);
+
+          if (!item.IsAccessibleTo(Caster))
+          {
+            item.OnDoubleClickNotAccessible(Caster);
+          }
+          else if (!item.CheckItemUse(Caster, item))
+          {
+          }
+          else if (item.RootParent is Mobile && item.RootParent != Caster)
+          {
+            item.OnSnoop(Caster);
+          }
+          else if (item is Corpse corpse && !corpse.CheckLoot(Caster, null))
+          {
+          }
+          else if (Caster.Region.OnDoubleClick(Caster, item))
+          {
+            Effects.SendLocationParticles(EffectItem.Create(item.Location, item.Map, EffectItem.DefaultDuration),
+              0x376A, 9, 32, 5022);
+            Effects.PlaySound(item.Location, item.Map, 0x1F5);
+
+            item.OnItemUsed(Caster, item);
+          }
+        }
       }
 
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
+      FinishSequence();
     }
   }
 }

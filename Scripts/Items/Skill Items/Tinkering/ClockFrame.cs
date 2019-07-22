@@ -4,12 +4,7 @@ namespace Server.Items
   public class ClockFrame : Item
   {
     [Constructible]
-    public ClockFrame() : this(1)
-    {
-    }
-
-    [Constructible]
-    public ClockFrame(int amount) : base(0x104D)
+    public ClockFrame(int amount = 1) : base(0x104D)
     {
       Stackable = true;
       Amount = amount;

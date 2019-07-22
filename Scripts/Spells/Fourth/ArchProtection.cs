@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.PartySystem;
 using Server.Spells.Second;
 using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-  public class ArchProtectionSpell : MagerySpell
+  public class ArchProtectionSpell : MagerySpell, ISpellTargetingPoint3D
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Arch Protection", "Vas Uus Sanct",
@@ -20,7 +21,7 @@ namespace Server.Spells.Fourth
 
     private static Dictionary<Mobile, int> _Table = new Dictionary<Mobile, int>();
 
-    public ArchProtectionSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public ArchProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -28,7 +29,7 @@ namespace Server.Spells.Fourth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetPoint3D(this, TargetFlags.None, Core.ML ? 10 : 12);
     }
 
     public void Target(IPoint3D p)
@@ -43,30 +44,25 @@ namespace Server.Spells.Fourth
 
         SpellHelper.GetSurfaceTop(ref p);
 
-        List<Mobile> targets = new List<Mobile>();
+        if (!Core.AOS)
+          Effects.PlaySound(p, Caster.Map, 0x299);
 
-        Map map = Caster.Map;
-
-        if (map != null)
+        if (Caster.Map == null)
         {
-          IPooledEnumerable<Mobile> eable = map.GetMobilesInRange(new Point3D(p), Core.AOS ? 2 : 3);
-
-          foreach (Mobile m in eable)
-            if (Caster.CanBeBeneficial(m, false))
-              targets.Add(m);
-
-          eable.Free();
+          FinishSequence();
+          return;
         }
+
+        IEnumerable<Mobile> targets = Caster.Map.GetMobilesInRange(new Point3D(p), Core.AOS ? 2 : 3)
+          .Where(m => Caster.CanBeBeneficial(m, false));
 
         if (Core.AOS)
         {
           Party party = Party.Get(Caster);
 
-          for (int i = 0; i < targets.Count; ++i)
+          foreach (Mobile m in targets)
           {
-            Mobile m = targets[i];
-
-            if (m == Caster || party != null && party.Contains(m))
+            if (m == Caster || party?.Contains(m) == true)
             {
               Caster.DoBeneficial(m);
               ProtectionSpell.Toggle(Caster, m);
@@ -75,27 +71,22 @@ namespace Server.Spells.Fourth
         }
         else
         {
-          Effects.PlaySound(p, Caster.Map, 0x299);
-
           int val = (int)(Caster.Skills.Magery.Value / 10.0 + 1);
 
-          if (targets.Count > 0)
-            for (int i = 0; i < targets.Count; ++i)
+          foreach (Mobile m in targets)
+          {
+            if (m.BeginAction<ArchProtectionSpell>())
             {
-              Mobile m = targets[i];
+              Caster.DoBeneficial(m);
+              m.VirtualArmorMod += val;
 
-              if (m.BeginAction<ArchProtectionSpell>())
-              {
-                Caster.DoBeneficial(m);
-                m.VirtualArmorMod += val;
+              AddEntry(m, val);
+              new InternalTimer(m, Caster).Start();
 
-                AddEntry(m, val);
-                new InternalTimer(m, Caster).Start();
-
-                m.FixedParticles(0x375A, 9, 20, 5027, EffectLayer.Waist);
-                m.PlaySound(0x1F7);
-              }
+              m.FixedParticles(0x375A, 9, 20, 5027, EffectLayer.Waist);
+              m.PlaySound(0x1F7);
             }
+          }
         }
       }
 
@@ -137,27 +128,6 @@ namespace Server.Spells.Fourth
       protected override void OnTick()
       {
         RemoveEntry(m_Owner);
-      }
-    }
-
-    private class InternalTarget : Target
-    {
-      private ArchProtectionSpell m_Owner;
-
-      public InternalTarget(ArchProtectionSpell owner) : base(Core.ML ? 10 : 12, true, TargetFlags.None)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is IPoint3D p)
-          m_Owner.Target(p);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
       }
     }
   }

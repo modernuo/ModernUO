@@ -11,7 +11,7 @@ namespace Server.Mobiles
 
     private DateTime m_NextResurrect;
 
-    public BaseHealer() : base(null)
+    public BaseHealer()
     {
       if (!IsInvulnerable)
       {

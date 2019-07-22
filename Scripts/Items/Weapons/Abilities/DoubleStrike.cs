@@ -34,19 +34,13 @@ namespace Server.Items
 
       IWeapon weapon = attacker.Weapon;
 
-      if (weapon == null)
+      if (!(weapon != null && attacker.InRange(defender, weapon.MaxRange) &&attacker.InLOS(defender)))
         return;
 
-      if (!attacker.InRange(defender, weapon.MaxRange))
-        return;
-
-      if (attacker.InLOS(defender))
-      {
-        BaseWeapon.InDoubleStrike = true;
-        attacker.RevealingAction();
-        attacker.NextCombatTime = Core.TickCount + (int)weapon.OnSwing(attacker, defender).TotalMilliseconds;
-        BaseWeapon.InDoubleStrike = false;
-      }
+      BaseWeapon.InDoubleStrike = true;
+      attacker.RevealingAction();
+      attacker.NextCombatTime = Core.TickCount + (int)weapon.OnSwing(attacker, defender).TotalMilliseconds;
+      BaseWeapon.InDoubleStrike = false;
     }
   }
 }

@@ -3,13 +3,7 @@ namespace Server.Items
   public class CleansingWindsScroll : SpellScroll
   {
     [Constructible]
-    public CleansingWindsScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public CleansingWindsScroll(int amount)
+    public CleansingWindsScroll(int amount = 1)
       : base(687, 0x2DA8, amount)
     {
     }

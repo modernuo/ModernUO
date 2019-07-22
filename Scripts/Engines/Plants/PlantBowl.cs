@@ -162,7 +162,7 @@ namespace Server.Engines.Plants
         }
         else if (IsDirtPatch(targeted))
         {
-          PlantItem fullBowl = new PlantItem(false);
+          PlantItem fullBowl = new PlantItem();
 
           if (from.PlaceInBackpack(fullBowl))
           {

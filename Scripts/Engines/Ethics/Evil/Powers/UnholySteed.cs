@@ -18,7 +18,7 @@ namespace Server.Ethics.Evil
 
     public override void BeginInvoke(Player from)
     {
-      if (from.Steed != null && from.Steed.Deleted)
+      if (from.Steed?.Deleted == true)
         from.Steed = null;
 
       if (from.Steed != null)

@@ -8,12 +8,7 @@ namespace Server.Gumps
     private double m_HitsScalar;
     private BaseCreature m_Pet;
 
-    public PetResurrectGump(Mobile from, BaseCreature pet)
-      : this(from, pet, 0.0)
-    {
-    }
-
-    public PetResurrectGump(Mobile from, BaseCreature pet, double hitsScalar) : base(50, 50)
+    public PetResurrectGump(Mobile from, BaseCreature pet, double hitsScalar = 0.0) : base(50, 50)
     {
       from.CloseGump<PetResurrectGump>();
 
@@ -31,12 +26,11 @@ namespace Server.Gumps
       AddItem(195, 90, 0xCAD);
       AddItem(218, 95, 0xCB0);
 
-      AddHtmlLocalized(30, 30, 150, 75, 1049665, false,
-        false); // <div align=center>Wilt thou sanctify the resurrection of:</div>
-      AddHtml(30, 70, 150, 25, $"<div align=CENTER>{pet.Name}</div>", true, false);
+      AddHtmlLocalized(30, 30, 150, 75, 1049665); // <div align=center>Wilt thou sanctify the resurrection of:</div>
+      AddHtml(30, 70, 150, 25, $"<div align=CENTER>{pet.Name}</div>", true);
 
-      AddButton(40, 105, 0x81A, 0x81B, 0x1, GumpButtonType.Reply, 0); // Okay
-      AddButton(110, 105, 0x819, 0x818, 0x2, GumpButtonType.Reply, 0); // Cancel
+      AddButton(40, 105, 0x81A, 0x81B, 0x1); // Okay
+      AddButton(110, 105, 0x819, 0x818, 0x2); // Cancel
     }
 
     public override void OnResponse(NetState state, RelayInfo info)

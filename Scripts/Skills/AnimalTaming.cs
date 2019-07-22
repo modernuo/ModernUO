@@ -44,8 +44,7 @@ namespace Server.SkillHandlers
 
     public static bool MustBeSubdued(BaseCreature bc)
     {
-      if (bc.Owners.Count > 0) return false;
-      return bc.SubdueBeforeTame && bc.Hits > bc.HitsMax / 10;
+      return bc.Owners.Count <= 0 && bc.SubdueBeforeTame && bc.Hits > bc.HitsMax / 10;
     }
 
     public static void ScaleStats(BaseCreature bc, double scalar)
@@ -316,7 +315,7 @@ namespace Server.SkillHandlers
               m_Tamer.NetState); // You must subdue this creature before you can tame it!
             Stop();
           }
-          else if (de != null && de.LastDamage > m_StartTime)
+          else if (de?.LastDamage > m_StartTime)
           {
             m_BeingTamed.Remove(m_Creature);
             m_Tamer.NextSkillTime = Core.TickCount;
@@ -418,14 +417,8 @@ namespace Server.SkillHandlers
         {
           IPoint3D p = m_Tamer;
 
-          if (p == null)
-            return false;
-
-          if (m_Creature.InRange(new Point3D(p), 1))
-            return true;
-
-          MovementPath path = new MovementPath(m_Creature, new Point3D(p));
-          return path.Success;
+          return p != null && (m_Creature.InRange(new Point3D(p), 1) ||
+                               new MovementPath(m_Creature, new Point3D(p)).Success);
         }
       }
     }

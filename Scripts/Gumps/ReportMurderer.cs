@@ -90,11 +90,7 @@ namespace Server.Gumps
 			}
 		}
 
-		public ReportMurdererGump( Mobile victum, List<Mobile> killers ) : this( victum, killers, 0 )
-		{
-		}
-
-		private ReportMurdererGump( Mobile victum, List<Mobile> killers, int idx ) : base( 0, 0 )
+		private ReportMurdererGump(Mobile victum, List<Mobile> killers, int idx = 0) : base( 0, 0 )
 		{
 			m_Killers = killers;
 			m_Victum = victum;
@@ -121,14 +117,14 @@ namespace Server.Gumps
 
 			AddPage( 1 );
 
-			AddHtml( 260, 234, 300, 140, ((Mobile)m_Killers[m_Idx]).Name, false, false ); // Player's Name
-			AddHtmlLocalized( 260, 254, 300, 140, 1049066, false, false ); // Would you like to report...
+			AddHtml( 260, 234, 300, 140, m_Killers[m_Idx].Name ); // Player's Name
+			AddHtmlLocalized( 260, 254, 300, 140, 1049066 ); // Would you like to report...
 
-			AddButton( 260, 300, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0 );
-			AddHtmlLocalized( 300, 300, 300, 50, 1046362, false, false ); // Yes
+			AddButton( 260, 300, 0xFA5, 0xFA7, 1 );
+			AddHtmlLocalized( 300, 300, 300, 50, 1046362 ); // Yes
 
-			AddButton( 360, 300, 0xFA5, 0xFA7, 2, GumpButtonType.Reply, 0 );
-			AddHtmlLocalized( 400, 300, 300, 50, 1046363, false, false ); // No
+			AddButton( 360, 300, 0xFA5, 0xFA7, 2 );
+			AddHtmlLocalized( 400, 300, 300, 50, 1046363 ); // No
 		}
 
 		public static void ReportedListExpiry_Callback( PlayerMobile from, Mobile killer )
@@ -146,7 +142,7 @@ namespace Server.Gumps
 				case 1:
 				{
 					Mobile killer = m_Killers[m_Idx];
-					if ( killer != null && !killer.Deleted )
+					if (killer?.Deleted == false)
 					{
 						killer.Kills++;
 						killer.ShortTermMurders++;

@@ -20,24 +20,24 @@ namespace Server.Engines.VeteranRewards
 
       AddBackground(10, 10, 500, 300, 2600);
 
-      AddHtmlLocalized(30, 55, 300, 35, 1006000, false, false); // You have selected:
+      AddHtmlLocalized(30, 55, 300, 35, 1006000); // You have selected:
 
       if (entry.NameString != null)
-        AddHtml(335, 55, 150, 35, entry.NameString, false, false);
+        AddHtml(335, 55, 150, 35, entry.NameString);
       else
-        AddHtmlLocalized(335, 55, 150, 35, entry.Name, false, false);
+        AddHtmlLocalized(335, 55, 150, 35, entry.Name);
 
-      AddHtmlLocalized(30, 95, 300, 35, 1006001, false, false); // This will be assigned to this character:
+      AddHtmlLocalized(30, 95, 300, 35, 1006001); // This will be assigned to this character:
       AddLabel(335, 95, 0, from.Name);
 
       AddHtmlLocalized(35, 160, 450, 90, 1006002, true,
         true); // Are you sure you wish to select this reward for this character?  You will not be able to transfer this reward to another character on another shard.  Click 'ok' below to confirm your selection or 'cancel' to go back to the selection screen.
 
-      AddButton(60, 265, 4005, 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(95, 266, 150, 35, 1006044, false, false); // Ok
+      AddButton(60, 265, 4005, 4007, 1);
+      AddHtmlLocalized(95, 266, 150, 35, 1006044); // Ok
 
-      AddButton(295, 265, 4017, 4019, 0, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(330, 266, 150, 35, 1006045, false, false); // Cancel
+      AddButton(295, 265, 4017, 4019, 0);
+      AddHtmlLocalized(330, 266, 150, 35, 1006045); // Cancel
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

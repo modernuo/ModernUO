@@ -92,7 +92,7 @@ namespace Server.Items
       {
         from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
       }
-      else if (house != null && house.HasSecureAccess(from, SecureLevel.Friends))
+      else if (house?.HasSecureAccess(from, SecureLevel.Friends) == true)
       {
         if (m_Logs > 0)
         {
@@ -275,7 +275,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+      if (m_IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         return;
 
       if (IsChildOf(from.Backpack))

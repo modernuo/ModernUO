@@ -3,12 +3,7 @@ namespace Server.Items
   public class BlankScroll : Item, ICommodity
   {
     [Constructible]
-    public BlankScroll() : this(1)
-    {
-    }
-
-    [Constructible]
-    public BlankScroll(int amount) : base(0xEF3)
+    public BlankScroll(int amount = 1) : base(0xEF3)
     {
       Stackable = true;
       Weight = 1.0;

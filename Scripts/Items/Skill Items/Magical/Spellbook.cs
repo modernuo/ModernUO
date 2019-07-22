@@ -79,17 +79,7 @@ namespace Server.Items
     private SlayerName m_Slayer;
     private SlayerName m_Slayer2;
 
-    [Constructible]
-    public Spellbook() : this((ulong)0)
-    {
-    }
-
-    [Constructible]
-    public Spellbook(ulong content) : this(content, 0xEFA)
-    {
-    }
-
-    public Spellbook(ulong content, int itemID) : base(itemID)
+    public Spellbook(ulong content = 0, int itemID = 0xEFA) : base(itemID)
     {
       Attributes = new AosAttributes(this);
       SkillBonuses = new AosSkillBonuses(this);
@@ -337,10 +327,10 @@ namespace Server.Items
       Spellbook book = e.Spellbook as Spellbook;
       int spellID = e.SpellID;
 
-      if (book == null || !book.HasSpell(spellID))
+      if (book?.HasSpell(spellID) != true)
         book = Find(from, spellID);
 
-      if (book != null && book.HasSpell(spellID))
+      if (book?.HasSpell(spellID) == true)
       {
         SpecialMove move = SpellRegistry.GetSpecialMove(spellID);
 
@@ -479,22 +469,17 @@ namespace Server.Items
     {
       List<Spellbook> list = new List<Spellbook>();
 
-      Item item = from.FindItemOnLayer(Layer.OneHanded);
+      Spellbook spellbook = FindEquippedSpellbook(from);
 
-      if (item is Spellbook spellbook)
+      if (spellbook != null)
         list.Add(spellbook);
 
       Container pack = from.Backpack;
 
-      if (pack == null)
-        return list;
-
-      for (int i = 0; i < pack.Items.Count; ++i)
+      for (int i = 0; i < pack?.Items.Count; ++i)
       {
-        item = pack.Items[i];
-
-        if (item is Spellbook spellbook1)
-          list.Add(spellbook1);
+        if (pack.Items[i] is Spellbook sp)
+          list.Add(sp);
       }
 
       return list;

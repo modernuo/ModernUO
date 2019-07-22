@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Commands.Generic
 {
@@ -36,28 +37,15 @@ namespace Server.Commands.Generic
         if (!CheckObjectTypes(from, command, ext, out bool items, out bool mobiles))
           return;
 
-        IPooledEnumerable<IEntity> eable;
-
-        if (items || mobiles)
-          eable = map.GetObjectsInBounds(rect, items, mobiles);
-        else
+        if (!(items || mobiles))
           return;
 
-        eable.Free();
+        IPooledEnumerable<IEntity> eable = map.GetObjectsInBounds(rect, items, mobiles);
 
-        List<object> objs = new List<object>();
-
-        foreach (IEntity obj in eable)
-        {
-          if (mobiles && obj is Mobile && !BaseCommand.IsAccessible(from, obj))
-            continue;
-
-          if (ext.IsValid(obj))
-            objs.Add(obj);
-        }
+        List<object> objs = eable.Where(obj => !mobiles || !(obj is Mobile) || BaseCommand.IsAccessible(from, obj))
+          .Where(obj => ext.IsValid(obj)).Cast<object>().ToList();
 
         eable.Free();
-
         ext.Filter(objs);
 
         RunCommand(from, objs, command, args);

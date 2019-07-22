@@ -3,13 +3,7 @@ namespace Server.Items
   public class AnimatedWeaponScroll : SpellScroll
   {
     [Constructible]
-    public AnimatedWeaponScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public AnimatedWeaponScroll(int amount)
+    public AnimatedWeaponScroll(int amount = 1)
       : base(683, 0x2DA4, amount)
     {
     }

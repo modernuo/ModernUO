@@ -29,31 +29,31 @@ namespace Server.Gumps
 
       AddAlphaRegion(10, 10, 200, 140);
 
-      AddHtmlLocalized(10, 10, 200, 20, 1061276, 32767, false, false); // <CENTER>SET ACCESS</CENTER>
-      AddHtmlLocalized(10, 40, 100, 20, 1041474, 32767, false, false); // Owner:
+      AddHtmlLocalized(10, 10, 200, 20, 1061276, 32767); // <CENTER>SET ACCESS</CENTER>
+      AddHtmlLocalized(10, 40, 100, 20, 1041474, 32767); // Owner:
 
       AddLabel(110, 40, 1152, owner == null ? "" : owner.Name);
 
-      AddButton(10, 70, GetFirstID(SecureLevel.Owner), 4007, 1, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 70, 150, 20, 1061277, GetColor(SecureLevel.Owner), false, false); // Owner Only
+      AddButton(10, 70, GetFirstID(SecureLevel.Owner), 4007, 1);
+      AddHtmlLocalized(45, 70, 150, 20, 1061277, GetColor(SecureLevel.Owner)); // Owner Only
 
-      AddButton(10, 90, GetFirstID(SecureLevel.CoOwners), 4007, 2, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 90, 150, 20, 1061278, GetColor(SecureLevel.CoOwners), false, false); // Co-Owners
+      AddButton(10, 90, GetFirstID(SecureLevel.CoOwners), 4007, 2);
+      AddHtmlLocalized(45, 90, 150, 20, 1061278, GetColor(SecureLevel.CoOwners)); // Co-Owners
 
-      AddButton(10, 110, GetFirstID(SecureLevel.Friends), 4007, 3, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 110, 150, 20, 1061279, GetColor(SecureLevel.Friends), false, false); // Friends
+      AddButton(10, 110, GetFirstID(SecureLevel.Friends), 4007, 3);
+      AddHtmlLocalized(45, 110, 150, 20, 1061279, GetColor(SecureLevel.Friends)); // Friends
 
       Mobile houseOwner = house.Owner;
       if (Guild.NewGuildSystem && houseOwner?.Guild != null &&
           ((Guild)houseOwner.Guild).Leader == houseOwner
       ) //Only the actual House owner AND guild master can set guild secures
       {
-        AddButton(10, 130, GetFirstID(SecureLevel.Guild), 4007, 5, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(45, 130, 150, 20, 1063455, GetColor(SecureLevel.Guild), false, false); // Guild Members
+        AddButton(10, 130, GetFirstID(SecureLevel.Guild), 4007, 5);
+        AddHtmlLocalized(45, 130, 150, 20, 1063455, GetColor(SecureLevel.Guild)); // Guild Members
       }
 
-      AddButton(10, 130 + offset, GetFirstID(SecureLevel.Anyone), 4007, 4, GumpButtonType.Reply, 0);
-      AddHtmlLocalized(45, 130 + offset, 150, 20, 1061626, GetColor(SecureLevel.Anyone), false, false); // Anyone
+      AddButton(10, 130 + offset, GetFirstID(SecureLevel.Anyone), 4007, 4);
+      AddHtmlLocalized(45, 130 + offset, 150, 20, 1061626, GetColor(SecureLevel.Anyone)); // Anyone
     }
 
     public int GetColor(SecureLevel level)

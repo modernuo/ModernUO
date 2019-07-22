@@ -3,13 +3,7 @@ namespace Server.Items
   public class NetherBoltScroll : SpellScroll
   {
     [Constructible]
-    public NetherBoltScroll()
-      : this(1)
-    {
-    }
-
-    [Constructible]
-    public NetherBoltScroll(int amount)
+    public NetherBoltScroll(int amount = 1)
       : base(677, 0x2D9E, amount)
     {
     }

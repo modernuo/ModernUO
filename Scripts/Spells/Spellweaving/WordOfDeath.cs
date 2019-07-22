@@ -3,11 +3,11 @@ using Server.Targeting;
 
 namespace Server.Spells.Spellweaving
 {
-  public class WordOfDeathSpell : ArcanistSpell
+  public class WordOfDeathSpell : ArcanistSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo("Word of Death", "Nyraxle", -1);
 
-    public WordOfDeathSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public WordOfDeathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -18,15 +18,16 @@ namespace Server.Spells.Spellweaving
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Harmful, 10);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (!Caster.CanSee(m))
-      {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
-      }
       else if (CheckHSequence(m))
       {
         Point3D loc = m.Location;
@@ -62,27 +63,6 @@ namespace Server.Spells.Spellweaving
       }
 
       FinishSequence();
-    }
-
-    public class InternalTarget : Target
-    {
-      private WordOfDeathSpell m_Owner;
-
-      public InternalTarget(WordOfDeathSpell owner) : base(10, false, TargetFlags.Harmful)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile m, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile m)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

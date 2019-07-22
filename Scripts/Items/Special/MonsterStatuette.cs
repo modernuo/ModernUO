@@ -132,12 +132,8 @@ namespace Server.Items
     private MonsterStatuetteType m_Type;
 
     [Constructible]
-    public MonsterStatuette() : this(MonsterStatuetteType.Crocodile)
-    {
-    }
-
-    [Constructible]
-    public MonsterStatuette(MonsterStatuetteType type) : base(MonsterStatuetteInfo.GetInfo(type).ItemID)
+    public MonsterStatuette(MonsterStatuetteType type = MonsterStatuetteType.Crocodile) :
+      base(MonsterStatuetteInfo.GetInfo(type).ItemID)
     {
       LootType = LootType.Blessed;
 
@@ -226,9 +222,7 @@ namespace Server.Items
 
     public bool IsOwner(Mobile mob)
     {
-      BaseHouse house = BaseHouse.FindHouseAt(this);
-
-      return house != null && house.IsOwner(mob);
+      return BaseHouse.FindHouseAt(this)?.IsOwner(mob) == true;
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -283,14 +277,13 @@ namespace Server.Items
 
         AddBackground(0, 0, 300, 150, 0xA28);
 
-        AddHtmlLocalized(45, 20, 300, 35, statuette.TurnedOn ? 1011035 : 1011034, false,
-          false); // [De]Activate this item
+        AddHtmlLocalized(45, 20, 300, 35, statuette.TurnedOn ? 1011035 : 1011034); // [De]Activate this item
 
-        AddButton(40, 53, 0xFA5, 0xFA7, 1, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(80, 55, 65, 35, 1011036, false, false); // OKAY
+        AddButton(40, 53, 0xFA5, 0xFA7, 1);
+        AddHtmlLocalized(80, 55, 65, 35, 1011036); // OKAY
 
-        AddButton(150, 53, 0xFA5, 0xFA7, 0, GumpButtonType.Reply, 0);
-        AddHtmlLocalized(190, 55, 100, 35, 1011012, false, false); // CANCEL
+        AddButton(150, 53, 0xFA5, 0xFA7, 0);
+        AddHtmlLocalized(190, 55, 100, 35, 1011012); // CANCEL
       }
 
       public override void OnResponse(NetState sender, RelayInfo info)

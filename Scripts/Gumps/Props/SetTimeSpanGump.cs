@@ -100,7 +100,7 @@ namespace Server.Gumps
         AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
 
       if (button != 0)
-        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, button, GumpButtonType.Reply, 0);
+        AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, button);
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

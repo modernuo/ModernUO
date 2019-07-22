@@ -18,7 +18,7 @@ namespace Server.Items
 
     public override void OnAfterDelete()
     {
-      if (m_Timer != null && m_Timer.Running)
+      if (m_Timer?.Running == true)
         m_Timer.Stop();
     }
 
@@ -51,7 +51,7 @@ namespace Server.Items
 
       protected override void OnTick()
       {
-        if (m_Heart == null || m_Heart.Deleted || m_Heart.Owner == null || !m_Heart.Owner.Alive)
+        if (m_Heart?.Deleted != false || m_Heart.Owner?.Alive != true)
         {
           Stop();
           return;

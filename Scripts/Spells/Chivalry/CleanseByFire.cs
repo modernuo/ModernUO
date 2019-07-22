@@ -4,7 +4,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Chivalry
 {
-  public class CleanseByFireSpell : PaladinSpell
+  public class CleanseByFireSpell : PaladinSpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Cleanse By Fire", "Expor Flamus",
@@ -12,7 +12,7 @@ namespace Server.Spells.Chivalry
       9002
     );
 
-    public CleanseByFireSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public CleanseByFireSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -36,15 +36,16 @@ namespace Server.Spells.Chivalry
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (!m.Poisoned)
-      {
         Caster.SendLocalizedMessage(1060176); // That creature is not poisoned!
-      }
       else if (CheckBSequence(m))
       {
         SpellHelper.Turn(Caster, m);
@@ -100,27 +101,6 @@ namespace Server.Spells.Chivalry
       }
 
       FinishSequence();
-    }
-
-    private class InternalTarget : Target
-    {
-      private CleanseByFireSpell m_Owner;
-
-      public InternalTarget(CleanseByFireSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Beneficial)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

@@ -219,9 +219,7 @@ namespace Server
 
     public override void ProcessDecay()
     {
-      Item item;
-
-      while (_decayBag.TryTake(out item))
+      while (_decayBag.TryTake(out Item item))
         if (item.OnDecay())
           item.Delete();
     }

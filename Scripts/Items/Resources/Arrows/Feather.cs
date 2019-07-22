@@ -3,12 +3,7 @@ namespace Server.Items
   public class Feather : Item, ICommodity
   {
     [Constructible]
-    public Feather() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Feather(int amount) : base(0x1BD1)
+    public Feather(int amount = 1) : base(0x1BD1)
     {
       Stackable = true;
       Amount = amount;

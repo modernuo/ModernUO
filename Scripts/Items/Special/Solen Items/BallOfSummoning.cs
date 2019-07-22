@@ -37,7 +37,7 @@ namespace Server.Items
     {
       get
       {
-        if (m_Pet != null && m_Pet.Deleted)
+        if (m_Pet?.Deleted == true)
         {
           m_Pet = null;
           InternalUpdatePetName();

@@ -24,21 +24,8 @@ namespace Server.Engines.MLQuests.Items
 
     public override bool Nontransferable => true;
 
-    public List<MLQuest> MLQuests
-    {
-      get
-      {
-        if (m_MLQuests == null)
-        {
-          m_MLQuests = MLQuestSystem.FindQuestList(GetType());
-
-          if (m_MLQuests == null)
-            m_MLQuests = MLQuestSystem.EmptyList;
-        }
-
-        return m_MLQuests;
-      }
-    }
+    public List<MLQuest> MLQuests => m_MLQuests ??
+                                     (m_MLQuests = MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList);
 
     public override void AddNameProperties(ObjectPropertyList list)
     {
@@ -101,21 +88,8 @@ namespace Server.Engines.MLQuests.Items
 
     public override bool Nontransferable => true;
 
-    public List<MLQuest> MLQuests
-    {
-      get
-      {
-        if (m_MLQuests == null)
-        {
-          m_MLQuests = MLQuestSystem.FindQuestList(GetType());
-
-          if (m_MLQuests == null)
-            m_MLQuests = MLQuestSystem.EmptyList;
-        }
-
-        return m_MLQuests;
-      }
-    }
+    public List<MLQuest> MLQuests => m_MLQuests ??
+                                     (m_MLQuests = MLQuestSystem.FindQuestList(GetType()) ?? MLQuestSystem.EmptyList);
 
     public override void HandleInvalidTransfer(Mobile from)
     {

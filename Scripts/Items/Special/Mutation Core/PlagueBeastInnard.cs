@@ -76,11 +76,7 @@ namespace Server.Items
 
   public class PlagueBeastComponent : PlagueBeastInnard
   {
-    public PlagueBeastComponent(int itemID, int hue) : this(itemID, hue, false)
-    {
-    }
-
-    public PlagueBeastComponent(int itemID, int hue, bool movable) : base(itemID, hue)
+    public PlagueBeastComponent(int itemID, int hue, bool movable = false) : base(itemID, hue)
     {
       Movable = movable;
     }
@@ -99,10 +95,7 @@ namespace Server.Items
 
     public override bool DropToItem(Mobile from, Item target, Point3D p)
     {
-      if (target is PlagueBeastBackpack)
-        return base.DropToItem(from, target, p);
-
-      return false;
+      return target is PlagueBeastBackpack && base.DropToItem(from, target, p);
     }
 
     public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
@@ -122,8 +115,7 @@ namespace Server.Items
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
-      if (Organ != null && Organ.OnDropped(from, dropped, this))
-        if (dropped is PlagueBeastComponent component)
+      if (Organ?.OnDropped(from, dropped, this) == true && dropped is PlagueBeastComponent component)
           Organ.Components.Add(component);
 
       return true;
@@ -133,10 +125,9 @@ namespace Server.Items
     {
       if (IsAccessibleTo(from))
       {
-        if (Organ != null && Organ.OnLifted(from, this))
+        if (Organ?.OnLifted(from, this) == true)
         {
-          from.SendLocalizedMessage(IsGland ? 1071895 : 1071914, null,
-            0x3B2); // * You rip the organ out of the plague beast's flesh *
+          from.SendLocalizedMessage(IsGland ? 1071895 : 1071914, null); // * You rip the organ out of the plague beast's flesh *
 
           if (Organ.Components.Contains(this))
             Organ.Components.Remove(this);

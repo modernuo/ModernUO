@@ -87,7 +87,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new Doublet());
@@ -130,7 +130,7 @@ namespace Server.Engines.MLQuests.Definitions
       Hue = Race.RandomSkinHue();
       InitStats(100, 100, 25);
 
-      Utility.AssignRandomHair(this, true);
+      Utility.AssignRandomHair(this);
 
       AddItem(new Backpack());
       AddItem(new GildedDress());

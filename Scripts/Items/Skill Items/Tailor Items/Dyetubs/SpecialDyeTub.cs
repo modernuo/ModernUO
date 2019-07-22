@@ -22,7 +22,7 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this, null))
+      if (IsRewardItem && !RewardSystem.CheckIsUsableBy(from, this))
         return;
 
       base.OnDoubleClick(from);

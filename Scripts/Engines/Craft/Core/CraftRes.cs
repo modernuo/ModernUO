@@ -4,14 +4,11 @@ namespace Server.Engines.Craft
 {
   public class CraftRes
   {
-    public CraftRes(Type type, int amount)
+    public CraftRes(Type type, TextDefinition name, int amount, TextDefinition message = null)
     {
       ItemType = type;
       Amount = amount;
-    }
 
-    public CraftRes(Type type, TextDefinition name, int amount, TextDefinition message) : this(type, amount)
-    {
       NameNumber = name;
       MessageNumber = message;
 

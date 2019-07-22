@@ -457,7 +457,7 @@ namespace Server
   /// <summary>
   ///   Base class representing players, npcs, and creatures.
   /// </summary>
-  public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable
+  public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
   {
     private const int
       WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
@@ -551,13 +551,7 @@ namespace Server
 
     private string m_NameMod;
 
-    private Packet m_OPLPacket;
-
-    private ObjectPropertyList m_PropertyList;
-
     private QuestArrow m_QuestArrow;
-
-    private Packet m_RemovePacket;
 
     private int m_SolidHueOverride = -1;
 
@@ -614,21 +608,12 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public Race Race
     {
-      get
-      {
-        if (m_Race == null)
-          m_Race = Race.DefaultRace;
-
-        return m_Race;
-      }
+      get => m_Race ?? (m_Race = Race.DefaultRace);
       set
       {
         Race oldRace = Race;
 
-        m_Race = value;
-
-        if (m_Race == null)
-          m_Race = Race.DefaultRace;
+        m_Race = value ?? Race.DefaultRace;
 
         Body = m_Race.Body(this);
         UpdateResistances();
@@ -1465,7 +1450,8 @@ namespace Server
     {
       get
       {
-        if (m_NetState != null && m_NetState.Socket == null && !m_NetState.IsDisposing) NetState = null;
+        if (m_NetState != null && m_NetState.Socket == null && !m_NetState.IsDisposing)
+          NetState = null;
 
         return m_NetState;
       }
@@ -1489,7 +1475,7 @@ namespace Server
 
           BankBox box = FindBankNoCreate();
 
-          if (box != null && box.Opened)
+          if (box?.Opened == true)
             box.Close();
 
           // REMOVED:
@@ -1591,7 +1577,7 @@ namespace Server
         {
           m_GuildTitle = value;
 
-          if (m_Guild != null && !m_Guild.Disbanded && m_GuildTitle != null)
+          if (m_Guild?.Disbanded == false && m_GuildTitle != null)
             SendLocalizedMessage(1018026, true, m_GuildTitle); // Your guild title has changed :
 
           InvalidateProperties();
@@ -1789,72 +1775,11 @@ namespace Server
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public Map LogoutMap{ get; set; }
 
-    public Region Region
-    {
-      get
-      {
-        if (m_Region == null)
-          if (Map == null)
-            return Map.Internal.DefaultRegion;
-          else
-            return Map.DefaultRegion;
-        return m_Region;
-      }
-    }
+    public Region Region => m_Region ?? (Map == null ? Map.Internal.DefaultRegion : Map.DefaultRegion);
 
-    public Packet RemovePacket
-    {
-      get
-      {
-        if (m_RemovePacket == null)
-          lock (rpLock)
-          {
-            if (m_RemovePacket == null)
-            {
-              m_RemovePacket = new RemoveMobile(this);
-              m_RemovePacket.SetStatic();
-            }
-          }
-
-        return m_RemovePacket;
-      }
-    }
-
-    public Packet OPLPacket
-    {
-      get
-      {
-        if (m_OPLPacket == null)
-          lock (oplLock)
-          {
-            if (m_OPLPacket == null)
-            {
-              m_OPLPacket = new OPLInfo(PropertyList);
-              m_OPLPacket.SetStatic();
-            }
-          }
-
-        return m_OPLPacket;
-      }
-    }
-
-    public ObjectPropertyList PropertyList
-    {
-      get
-      {
-        if (m_PropertyList == null)
-        {
-          m_PropertyList = new ObjectPropertyList(this);
-
-          GetProperties(m_PropertyList);
-
-          m_PropertyList.Terminate();
-          m_PropertyList.SetStatic();
-        }
-
-        return m_PropertyList;
-      }
-    }
+    public Packet RemovePacket => StaticPacketHandlers.GetRemoveEntityPacket(this);
+    public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
+    public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int SolidHueOverride
@@ -1892,7 +1817,7 @@ namespace Server
     {
       get
       {
-        if (m_BankBox != null && !m_BankBox.Deleted && m_BankBox.Parent == this)
+        if (m_BankBox?.Deleted == false && m_BankBox.Parent == this)
           return m_BankBox;
 
         m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
@@ -1909,10 +1834,10 @@ namespace Server
     {
       get
       {
-        if (m_Backpack != null && !m_Backpack.Deleted && m_Backpack.Parent == this)
-          return m_Backpack;
+        if (m_Backpack?.Deleted != false || m_Backpack.Parent != this)
+          m_Backpack = FindItemOnLayer(Layer.Backpack) as Container;
 
-        return m_Backpack = FindItemOnLayer(Layer.Backpack) as Container;
+        return m_Backpack;
       }
     }
 
@@ -2408,9 +2333,7 @@ namespace Server
     public virtual void ProcessDelta()
     {
       Mobile m = this;
-      MobileDelta delta;
-
-      delta = m.m_DeltaFlags;
+      MobileDelta delta = m.m_DeltaFlags;
 
       if (delta == MobileDelta.None)
         return;
@@ -3087,10 +3010,7 @@ namespace Server
 
     public virtual void AddNameProperties(ObjectPropertyList list)
     {
-      string name = Name;
-
-      if (name == null)
-        name = string.Empty;
+      string name = Name ?? string.Empty;
 
       string prefix = "";
 
@@ -3106,10 +3026,8 @@ namespace Server
 
       if (guild != null && (m_Player || m_DisplayGuildTitle))
       {
-        if (suffix.Length > 0)
-          suffix = string.Format("{0} [{1}]", suffix, Utility.FixHtml(guild.Abbreviation));
-        else
-          suffix = string.Format("[{0}]", Utility.FixHtml(guild.Abbreviation));
+        suffix = suffix.Length > 0 ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
+          : $"[{Utility.FixHtml(guild.Abbreviation)}]";
       }
 
       suffix = ApplyNameSuffix(suffix);
@@ -3125,12 +3043,7 @@ namespace Server
         else
           type = "";
 
-        string title = GuildTitle;
-
-        if (title == null)
-          title = "";
-        else
-          title = title.Trim();
+        string title = GuildTitle?.Trim() ?? "";
 
         if (NewGuildDisplay && title.Length > 0)
         {
@@ -3360,12 +3273,7 @@ namespace Server
 
     public bool InLOS(Point3D target)
     {
-      if (Deleted || m_Map == null)
-        return false;
-      if (m_AccessLevel > AccessLevel.Player)
-        return true;
-
-      return m_Map.LineOfSight(this, target);
+      return !Deleted && m_Map != null && (m_AccessLevel > AccessLevel.Player || m_Map.LineOfSight(this, target));
     }
 
     public bool BeginAction<T>()
@@ -3444,7 +3352,7 @@ namespace Server
 
     public override string ToString()
     {
-      return string.Format("0x{0:X} \"{1}\"", Serial.Value, Name);
+      return $"0x{Serial.Value:X} \"{Name}\"";
     }
 
     public virtual void SendSkillMessage()
@@ -3860,7 +3768,7 @@ namespace Server
 
       BankBox box = FindBankNoCreate();
 
-      if (box != null && box.Opened)
+      if (box?.Opened == true)
         box.Close();
 
       Point3D newLocation = m_Location;
@@ -3870,7 +3778,7 @@ namespace Server
       {
         // We are actually moving (not just a direction change)
 
-        if (m_Spell != null && !m_Spell.OnCasterMoving(d))
+        if (m_Spell?.OnCasterMoving(d) == false)
           return false;
 
         if (m_Paralyzed || m_Frozen)
@@ -4101,9 +4009,8 @@ namespace Server
           {
             if (ns.StygianAbyss)
             {
-              Packet p;
               int noto = Notoriety.Compute(m, this);
-              p = cache[0][noto];
+              Packet p = cache[0][noto];
 
               if (p == null)
                 cache[0][noto] = p = Packet.Acquire(new MobileMoving(this, noto));
@@ -4112,9 +4019,8 @@ namespace Server
             }
             else
             {
-              Packet p;
               int noto = Notoriety.Compute(m, this);
-              p = cache[1][noto];
+              Packet p = cache[1][noto];
 
               if (p == null)
                 cache[1][noto] = p = Packet.Acquire(new MobileMovingOld(this, noto));
@@ -4125,8 +4031,8 @@ namespace Server
         }
 
         for (int i = 0; i < cache.Length; ++i)
-        for (int j = 0; j < cache[i].Length; ++j)
-          Packet.Release(ref cache[i][j]);
+          for (int j = 0; j < cache[i].Length; ++j)
+            Packet.Release(ref cache[i][j]);
 
         for (int i = 0; i < m_MoveList.Count; ++i)
         {
@@ -4297,7 +4203,7 @@ namespace Server
 
         BankBox box = FindBankNoCreate();
 
-        if (box != null && box.Opened)
+        if (box?.Opened == true)
           box.Close();
 
         Poison = null;
@@ -4458,7 +4364,7 @@ namespace Server
 
       BankBox box = FindBankNoCreate();
 
-      if (box != null && box.Opened)
+      if (box?.Opened == true)
         box.Close();
 
       m_NetState?.CancelAllTrades();
@@ -4670,15 +4576,15 @@ namespace Server
 
     public virtual void Use(Item item)
     {
-      if (item == null || item.Deleted || item.QuestItem || Deleted)
+      if (item?.Deleted != false || item.QuestItem || Deleted)
         return;
 
       DisruptiveAction();
 
-      if (m_Spell != null && !m_Spell.OnCasterUsingObject(item))
+      if (m_Spell?.OnCasterUsingObject(item) == false)
         return;
 
-      object root = item.RootParent;
+      IEntity root = item.RootParent;
       bool okay = false;
 
       if (!Utility.InUpdateRange(this, item.GetWorldLocation()))
@@ -4733,12 +4639,12 @@ namespace Server
 
     public virtual void Use(Mobile m)
     {
-      if (m == null || m.Deleted || Deleted)
+      if (m?.Deleted != false || Deleted)
         return;
 
       DisruptiveAction();
 
-      if (m_Spell != null && !m_Spell.OnCasterUsingObject(m))
+      if (m_Spell?.OnCasterUsingObject(m) == false)
         return;
 
       if (!Utility.InUpdateRange(this, m))
@@ -4800,7 +4706,7 @@ namespace Server
           }
           else
           {
-            object root = item.RootParent;
+            IEntity root = item.RootParent;
 
             if (root is Mobile mobile && !mobile.CheckNonlocalLift(from, item))
             {
@@ -4939,7 +4845,7 @@ namespace Server
       catch
       {
         Console.WriteLine(
-          "Warning: 0x{0:X}: Item must have a zero paramater constructor to be separated from a stack. '{1}'.",
+          "Warning: 0x{0:X}: Item must have a zero parameter constructor to be separated from a stack. '{1}'.",
           oldItem.Serial.Value, oldItem.GetType().Name);
         return null;
       }
@@ -4975,7 +4881,7 @@ namespace Server
       if (DragEffects && !item.Deleted)
       {
         Map map = m_Map;
-        object root = item.RootParent;
+        IEntity root = item.RootParent;
 
         if (map != null && (root == null || root is Item))
         {
@@ -5213,24 +5119,24 @@ namespace Server
         foreach (IEntity o in eable)
           if (o is Mobile heard)
           {
-            if (heard.CanSee(this) && (NoSpeechLOS || !heard.Player || heard.InLOS(this)))
+            if (!heard.CanSee(this) || !NoSpeechLOS && heard.Player && !heard.InLOS(this))
+              continue;
+
+            if (heard.m_NetState != null)
+              hears.Add(heard);
+
+            if (heard.HandlesOnSpeech(this))
+              onSpeech.Add(heard);
+
+            for (int i = 0; i < heard.Items.Count; ++i)
             {
-              if (heard.m_NetState != null)
-                hears.Add(heard);
+              Item item = heard.Items[i];
 
-              if (heard.HandlesOnSpeech(this))
-                onSpeech.Add(heard);
+              if (item.HandlesOnSpeech)
+                onSpeech.Add(item);
 
-              for (int i = 0; i < heard.Items.Count; ++i)
-              {
-                Item item = heard.Items[i];
-
-                if (item.HandlesOnSpeech)
-                  onSpeech.Add(item);
-
-                if (item is Container container)
-                  AddSpeechItemsFrom(onSpeech, container);
-              }
+              if (item is Container container)
+                AddSpeechItemsFrom(onSpeech, container);
             }
           }
           else if (o is Item item)
@@ -6255,7 +6161,7 @@ namespace Server
 
     public void AddItem(Item item)
     {
-      if (item == null || item.Deleted)
+      if (item?.Deleted != false)
         return;
 
       if (item.Parent == this)
@@ -6801,17 +6707,17 @@ namespace Server
       return delta != 0 ? body : 0;
     }
 
-    public void FreeCache()
+    public virtual void FreeCache()
     {
-      Packet.Release(ref m_RemovePacket);
-      Packet.Release(ref m_PropertyList);
-      Packet.Release(ref m_OPLPacket);
+      StaticPacketHandlers.FreeRemoveItemPacket(this);
+      StaticPacketHandlers.FreeOPLInfoPacket(this);
+      StaticPacketHandlers.FreeOPLPacket(this);
     }
 
     public void ClearProperties()
     {
-      Packet.Release(ref m_PropertyList);
-      Packet.Release(ref m_OPLPacket);
+      StaticPacketHandlers.FreeOPLPacket(this);
+      StaticPacketHandlers.FreeOPLInfoPacket(this);
     }
 
     public void InvalidateProperties()
@@ -6821,13 +6727,11 @@ namespace Server
 
       if (m_Map != null && m_Map != Map.Internal && !World.Loading)
       {
-        ObjectPropertyList oldList = m_PropertyList;
-        Packet.Release(ref m_PropertyList);
-        ObjectPropertyList newList = PropertyList;
+        ObjectPropertyList oldList = StaticPacketHandlers.FreeOPLPacket(this);
 
-        if (oldList == null || oldList.Hash != newList.Hash)
+        if (oldList?.Hash != PropertyList.Hash)
         {
-          Packet.Release(ref m_OPLPacket);
+          StaticPacketHandlers.FreeOPLInfoPacket(this);
           Delta(MobileDelta.Properties);
         }
       }
@@ -6844,148 +6748,148 @@ namespace Server
 
       Point3D oldLocation = m_Location;
 
-      if (oldLocation != newLocation)
+      if (oldLocation == newLocation)
+        return;
+
+      m_Location = newLocation;
+      UpdateRegion();
+
+      BankBox box = FindBankNoCreate();
+
+      if (box?.Opened == true)
+        box.Close();
+
+      m_NetState?.ValidateAllTrades();
+
+      m_Map?.OnMove(oldLocation, this);
+
+      if (isTeleport && m_NetState != null && (!m_NetState.HighSeas || !NoMoveHS))
       {
-        m_Location = newLocation;
-        UpdateRegion();
+        m_NetState.Sequence = 0;
 
-        BankBox box = FindBankNoCreate();
+        if (m_NetState.StygianAbyss)
+          m_NetState.Send(new MobileUpdate(this));
+        else
+          m_NetState.Send(new MobileUpdateOld(this));
 
-        if (box != null && box.Opened)
-          box.Close();
+        ClearFastwalkStack();
+      }
 
-        m_NetState?.ValidateAllTrades();
+      Map map = m_Map;
 
-        m_Map?.OnMove(oldLocation, this);
+      if (map != null)
+      {
+        // First, send a remove message to everyone who can no longer see us. (inOldRange && !inNewRange)
 
-        if (isTeleport && m_NetState != null && (!m_NetState.HighSeas || !NoMoveHS))
+        IPooledEnumerable<NetState> eable = map.GetClientsInRange(oldLocation);
+
+        foreach (NetState ns in eable)
+          if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
+            ns.Send(RemovePacket);
+
+        eable.Free();
+
+        NetState ourState = m_NetState;
+
+        // Check to see if we are attached to a client
+        if (ourState != null)
         {
-          m_NetState.Sequence = 0;
+          IPooledEnumerable<IEntity> eeable = map.GetObjectsInRange(newLocation, Core.GlobalMaxUpdateRange);
 
-          if (m_NetState.StygianAbyss)
-            m_NetState.Send(new MobileUpdate(this));
-          else
-            m_NetState.Send(new MobileUpdateOld(this));
+          // We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
 
-          ClearFastwalkStack();
-        }
+          foreach (IEntity o in eeable)
+            if (o is Item item)
+            {
+              int range = item.GetUpdateRange(this);
+              Point3D loc = item.Location;
 
-        Map map = m_Map;
+              if (!Utility.InRange(oldLocation, loc, range) && Utility.InRange(newLocation, loc, range) &&
+                  CanSee(item))
+                item.SendInfoTo(ourState);
+            }
+            else if (o != this && o is Mobile m)
+            {
+              if (!Utility.InUpdateRange(newLocation, m.m_Location))
+                continue;
 
-        if (map != null)
-        {
-          // First, send a remove message to everyone who can no longer see us. (inOldRange && !inNewRange)
+              bool inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
 
-          IPooledEnumerable<NetState> eable = map.GetClientsInRange(oldLocation);
-
-          foreach (NetState ns in eable)
-            if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
-              ns.Send(RemovePacket);
-
-          eable.Free();
-
-          NetState ourState = m_NetState;
-
-          // Check to see if we are attached to a client
-          if (ourState != null)
-          {
-            IPooledEnumerable<IEntity> eeable = map.GetObjectsInRange(newLocation, Core.GlobalMaxUpdateRange);
-
-            // We are attached to a client, so it's a bit more complex. We need to send new items and people to ourself, and ourself to other clients
-
-            foreach (IEntity o in eeable)
-              if (o is Item item)
+              if (m.m_NetState != null &&
+                  (isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
               {
-                int range = item.GetUpdateRange(this);
-                Point3D loc = item.Location;
+                m.m_NetState.Send(MobileIncoming.Create(m.m_NetState, m, this));
 
-                if (!Utility.InRange(oldLocation, loc, range) && Utility.InRange(newLocation, loc, range) &&
-                    CanSee(item))
-                  item.SendInfoTo(ourState);
-              }
-              else if (o != this && o is Mobile m)
-              {
-                if (!Utility.InUpdateRange(newLocation, m.m_Location))
-                  continue;
-
-                bool inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
-
-                if (m.m_NetState != null &&
-                    (isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
-                {
-                  m.m_NetState.Send(MobileIncoming.Create(m.m_NetState, m, this));
-
-                  if (m.m_NetState.StygianAbyss)
-                  {
-                    //if ( m_Poison != null )
-                    m.m_NetState.Send(new HealthbarPoison(this));
-
-                    //if ( m_Blessed || m_YellowHealthbar )
-                    m.m_NetState.Send(new HealthbarYellow(this));
-                  }
-
-                  if (IsDeadBondedPet)
-                    m.m_NetState.Send(new BondedStatus(0, Serial, 1));
-
-                  if (ObjectPropertyList.Enabled) m.m_NetState.Send(OPLPacket);
-                }
-
-                if (!inOldRange && CanSee(m))
-                {
-                  ourState.Send(MobileIncoming.Create(ourState, this, m));
-
-                  if (ourState.StygianAbyss)
-                  {
-                    //if ( m.Poisoned )
-                    ourState.Send(new HealthbarPoison(m));
-
-                    //if ( m.Blessed || m.YellowHealthbar )
-                    ourState.Send(new HealthbarYellow(m));
-                  }
-
-                  if (m.IsDeadBondedPet)
-                    ourState.Send(new BondedStatus(0, m.Serial, 1));
-
-                  if (ObjectPropertyList.Enabled) ourState.Send(m.OPLPacket);
-                }
-              }
-
-            eeable.Free();
-          }
-          else
-          {
-            eable = map.GetClientsInRange(newLocation);
-
-            // We're not attached to a client, so simply send an Incoming
-            foreach (NetState ns in eable)
-              if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
-                   !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
-              {
-                ns.Send(MobileIncoming.Create(ns, ns.Mobile, this));
-
-                if (ns.StygianAbyss)
+                if (m.m_NetState.StygianAbyss)
                 {
                   //if ( m_Poison != null )
-                  ns.Send(new HealthbarPoison(this));
+                  m.m_NetState.Send(new HealthbarPoison(this));
 
                   //if ( m_Blessed || m_YellowHealthbar )
-                  ns.Send(new HealthbarYellow(this));
+                  m.m_NetState.Send(new HealthbarYellow(this));
                 }
 
                 if (IsDeadBondedPet)
-                  ns.Send(new BondedStatus(0, Serial, 1));
+                  m.m_NetState.Send(new BondedStatus(0, Serial, 1));
 
-                if (ObjectPropertyList.Enabled) ns.Send(OPLPacket);
+                if (ObjectPropertyList.Enabled) m.m_NetState.Send(OPLPacket);
               }
 
-            eable.Free();
-          }
+              if (inOldRange || !CanSee(m))
+                continue;
+
+              ourState.Send(MobileIncoming.Create(ourState, this, m));
+
+              if (ourState.StygianAbyss)
+              {
+                //if ( m.Poisoned )
+                ourState.Send(new HealthbarPoison(m));
+
+                //if ( m.Blessed || m.YellowHealthbar )
+                ourState.Send(new HealthbarYellow(m));
+              }
+
+              if (m.IsDeadBondedPet)
+                ourState.Send(new BondedStatus(0, m.Serial, 1));
+
+              if (ObjectPropertyList.Enabled) ourState.Send(m.OPLPacket);
+            }
+
+          eeable.Free();
         }
+        else
+        {
+          eable = map.GetClientsInRange(newLocation);
 
-        OnLocationChange(oldLocation);
+          // We're not attached to a client, so simply send an Incoming
+          foreach (NetState ns in eable)
+            if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
+                 !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
+            {
+              ns.Send(MobileIncoming.Create(ns, ns.Mobile, this));
 
-        Region.OnLocationChanged(this, oldLocation);
+              if (ns.StygianAbyss)
+              {
+                //if ( m_Poison != null )
+                ns.Send(new HealthbarPoison(this));
+
+                //if ( m_Blessed || m_YellowHealthbar )
+                ns.Send(new HealthbarYellow(this));
+              }
+
+              if (IsDeadBondedPet)
+                ns.Send(new BondedStatus(0, Serial, 1));
+
+              if (ObjectPropertyList.Enabled) ns.Send(OPLPacket);
+            }
+
+          eable.Free();
+        }
       }
+
+      OnLocationChange(oldLocation);
+
+      Region.OnLocationChanged(this, oldLocation);
     }
 
     /// <summary>
@@ -7007,10 +6911,8 @@ namespace Server
 
     public BankBox FindBankNoCreate()
     {
-      if (m_BankBox != null && !m_BankBox.Deleted && m_BankBox.Parent == this)
-        return m_BankBox;
-
-      m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
+      if (m_BankBox?.Deleted != false || m_BankBox.Parent != this)
+         m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
 
       return m_BankBox;
     }
@@ -7032,32 +6934,32 @@ namespace Server
 
     public void SendIncomingPacket()
     {
-      if (m_Map != null)
-      {
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      if (m_Map == null)
+        return;
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this))
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this))
+        {
+          state.Send(MobileIncoming.Create(state, state.Mobile, this));
+
+          if (state.StygianAbyss)
           {
-            state.Send(MobileIncoming.Create(state, state.Mobile, this));
+            if (m_Poison != null)
+              state.Send(new HealthbarPoison(this));
 
-            if (state.StygianAbyss)
-            {
-              if (m_Poison != null)
-                state.Send(new HealthbarPoison(this));
-
-              if (m_Blessed || m_YellowHealthbar)
-                state.Send(new HealthbarYellow(this));
-            }
-
-            if (IsDeadBondedPet)
-              state.Send(new BondedStatus(0, Serial, 1));
-
-            if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
+            if (m_Blessed || m_YellowHealthbar)
+              state.Send(new HealthbarYellow(this));
           }
 
-        eable.Free();
-      }
+          if (IsDeadBondedPet)
+            state.Send(new BondedStatus(0, Serial, 1));
+
+          if (ObjectPropertyList.Enabled) state.Send(OPLPacket);
+        }
+
+      eable.Free();
     }
 
     public bool PlaceInBackpack(Item item)
@@ -7065,9 +6967,7 @@ namespace Server
       if (item.Deleted)
         return false;
 
-      Container pack = Backpack;
-
-      return pack != null && pack.TryDropItem(this, item, false);
+      return Backpack?.TryDropItem(this, item, false) == true;
     }
 
     public bool AddToBackpack(Item item)
@@ -7100,10 +7000,7 @@ namespace Server
 
     public virtual bool CheckNonlocalLift(Mobile from, Item item)
     {
-      if (from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      return false;
+      return from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
     }
 
     public virtual bool CheckTrade(Mobile to, Item item, SecureTradeContainer cont, bool message, bool checkItems,
@@ -7112,12 +7009,7 @@ namespace Server
       return true;
     }
 
-    public bool OpenTrade(Mobile from)
-    {
-      return OpenTrade(from, null);
-    }
-
-    public virtual bool OpenTrade(Mobile from, Item offer)
+    public virtual bool OpenTrade(Mobile from, Item offer = null)
     {
       if (!from.Player || !Player || !from.Alive || !Alive) return false;
 
@@ -7149,15 +7041,10 @@ namespace Server
       if (from == this)
       {
         Container pack = Backpack;
-
-        if (pack != null)
-          return dropped.DropToItem(from, pack, new Point3D(-1, -1, 0));
-
-        return false;
+        return pack != null && dropped.DropToItem(from, pack, new Point3D(-1, -1, 0));
       }
 
-      if (from.InRange(Location, 2)) return OpenTrade(from, dropped);
-      return false;
+      return from.InRange(Location, 2) && OpenTrade(from, dropped);
     }
 
     public virtual bool CheckEquip(Item item)
@@ -7278,10 +7165,7 @@ namespace Server
 
     public virtual bool CheckNonlocalDrop(Mobile from, Item item, Item target)
     {
-      if (from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      return false;
+      return from == this || from.AccessLevel > AccessLevel && from.AccessLevel >= AccessLevel.GameMaster;
     }
 
     public virtual bool CheckItemUse(Mobile from, Item item)
@@ -7310,12 +7194,12 @@ namespace Server
 
     public virtual bool EquipItem(Item item)
     {
-      if (item == null || item.Deleted || !item.CanEquip(this))
+      if (item?.Deleted != false || !item.CanEquip(this))
         return false;
 
       if (CheckEquip(item) && OnEquip(item) && item.OnEquip(this))
       {
-        if (m_Spell != null && !m_Spell.OnCasterEquipping(item))
+        if (m_Spell?.OnCasterEquipping(item) == false)
           return false;
 
         //if ( m_Spell != null && m_Spell.State == SpellState.Casting )
@@ -7375,6 +7259,7 @@ namespace Server
             }
             catch
             {
+              // ignored
             }
           }
         else
@@ -7395,34 +7280,29 @@ namespace Server
       }
       else
       {
-        while (m_DeltaQueue.Count > 0) m_DeltaQueue.Dequeue().ProcessDelta();
+        while (m_DeltaQueue.Count > 0)
+          m_DeltaQueue.Dequeue().ProcessDelta();
       }
 
       _processing = false;
 
-      while (m_DeltaQueueR.Count > 0) m_DeltaQueueR.Dequeue().ProcessDelta();
+      while (m_DeltaQueueR.Count > 0)
+        m_DeltaQueueR.Dequeue().ProcessDelta();
     }
 
     public virtual void OnKillsChange(int oldValue)
     {
     }
 
-    public bool CheckAlive()
+    public bool CheckAlive(bool message = true)
     {
-      return CheckAlive(true);
-    }
+      if (Alive)
+        return true;
 
-    public bool CheckAlive(bool message)
-    {
-      if (!Alive)
-      {
-        if (message)
-          LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019048); // I am dead and cannot do that.
+      if (message)
+        LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019048); // I am dead and cannot do that.
 
-        return false;
-      }
-
-      return true;
+      return false;
     }
 
     public void LaunchBrowser(string url)
@@ -7494,9 +7374,8 @@ namespace Server
     /// </summary>
     public virtual void OnSingleClick(Mobile from)
     {
-      if (Deleted)
-        return;
-      if (AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
+      if (Deleted ||
+          AccessLevel == AccessLevel.Player && DisableHiddenSelfClick && Hidden && from == this)
         return;
 
       if (GuildClickMessage)
@@ -7534,10 +7413,7 @@ namespace Server
       else
         hue = Notoriety.GetHue(Notoriety.Compute(from, this));
 
-      string name = Name;
-
-      if (name == null)
-        name = string.Empty;
+      string name = Name ?? string.Empty;
 
       string prefix = "";
 
@@ -7546,7 +7422,7 @@ namespace Server
 
       string suffix = "";
 
-      if (ClickTitle && Title != null && Title.Length > 0)
+      if (ClickTitle && !string.IsNullOrEmpty(Title))
         suffix = Title;
 
       suffix = ApplyNameSuffix(suffix);
@@ -7567,32 +7443,22 @@ namespace Server
 
     public bool CheckSkill(SkillName skill, double minSkill, double maxSkill)
     {
-      if (SkillCheckLocationHandler == null)
-        return false;
-      return SkillCheckLocationHandler(this, skill, minSkill, maxSkill);
+      return SkillCheckLocationHandler?.Invoke(this, skill, minSkill, maxSkill) == true;
     }
 
     public bool CheckSkill(SkillName skill, double chance)
     {
-      if (SkillCheckDirectLocationHandler == null)
-        return false;
-      return SkillCheckDirectLocationHandler(this, skill, chance);
+      return SkillCheckDirectLocationHandler?.Invoke(this, skill, chance) == true;
     }
 
     public bool CheckTargetSkill(SkillName skill, object target, double minSkill, double maxSkill)
     {
-      if (SkillCheckTargetHandler == null)
-        return false;
-
-      return SkillCheckTargetHandler(this, skill, target, minSkill, maxSkill);
+      return SkillCheckTargetHandler?.Invoke(this, skill, target, minSkill, maxSkill) == true;
     }
 
     public bool CheckTargetSkill(SkillName skill, object target, double chance)
     {
-      if (SkillCheckDirectTargetHandler == null)
-        return false;
-
-      return SkillCheckDirectTargetHandler(this, skill, target, chance);
+      return SkillCheckDirectTargetHandler?.Invoke(this, skill, target, chance) == true;
     }
 
     public virtual void DisruptiveAction()
@@ -7770,30 +7636,15 @@ namespace Server
       }
     }
 
-    #region CompareTo(...)
-
-    public int CompareTo(IEntity other)
+    int IComparable<IEntity>.CompareTo(IEntity other)
     {
-      if (other == null)
-        return -1;
-
-      return Serial.CompareTo(other.Serial);
+      return other == null ? -1 : Serial.CompareTo(other.Serial);
     }
 
     public int CompareTo(Mobile other)
     {
-      return CompareTo((IEntity)other);
+      return other == null ? -1 : Serial.CompareTo(other.Serial);
     }
-
-    public int CompareTo(object other)
-    {
-      if (other == null || other is IEntity)
-        return CompareTo((IEntity)other);
-
-      throw new ArgumentException();
-    }
-
-    #endregion
 
     #region Handlers
 
@@ -8033,8 +7884,7 @@ namespace Server
     {
       private Mobile m_Mobile;
 
-      public CombatTimer(Mobile m)
-        : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01), 0)
+      public CombatTimer(Mobile m) : base(TimeSpan.FromSeconds(0.0), TimeSpan.FromSeconds(0.01))
       {
         m_Mobile = m;
 
@@ -8044,32 +7894,32 @@ namespace Server
 
       protected override void OnTick()
       {
-        if (Core.TickCount - m_Mobile.NextCombatTime >= 0)
+        if (Core.TickCount - m_Mobile.NextCombatTime < 0)
+          return;
+
+        Mobile combatant = m_Mobile.Combatant;
+
+        // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
+        if (combatant?.Deleted != false || m_Mobile.Deleted || combatant.m_Map != m_Mobile.m_Map ||
+            !combatant.Alive || !m_Mobile.Alive || !m_Mobile.CanSee(combatant) || combatant.IsDeadBondedPet ||
+            m_Mobile.IsDeadBondedPet)
         {
-          Mobile combatant = m_Mobile.Combatant;
+          m_Mobile.Combatant = null;
+          return;
+        }
 
-          // If no combatant, wrong map, one of us is a ghost, or cannot see, or deleted, then stop combat
-          if (combatant == null || combatant.Deleted || m_Mobile.Deleted || combatant.m_Map != m_Mobile.m_Map ||
-              !combatant.Alive || !m_Mobile.Alive || !m_Mobile.CanSee(combatant) || combatant.IsDeadBondedPet ||
-              m_Mobile.IsDeadBondedPet)
-          {
-            m_Mobile.Combatant = null;
-            return;
-          }
+        IWeapon weapon = m_Mobile.Weapon;
 
-          IWeapon weapon = m_Mobile.Weapon;
+        if (!m_Mobile.InRange(combatant, weapon.MaxRange))
+          return;
 
-          if (!m_Mobile.InRange(combatant, weapon.MaxRange))
-            return;
-
-          if (m_Mobile.InLOS(combatant))
-          {
-            weapon.OnBeforeSwing(m_Mobile,
-              combatant); //OnBeforeSwing for checking in regards to being hidden and whatnot
-            m_Mobile.RevealingAction();
-            m_Mobile.NextCombatTime =
-              Core.TickCount + (int)weapon.OnSwing(m_Mobile, combatant).TotalMilliseconds;
-          }
+        if (m_Mobile.InLOS(combatant))
+        {
+          weapon.OnBeforeSwing(m_Mobile,
+            combatant); //OnBeforeSwing for checking in regards to being hidden and whatnot
+          m_Mobile.RevealingAction();
+          m_Mobile.NextCombatTime =
+            Core.TickCount + (int)weapon.OnSwing(m_Mobile, combatant).TotalMilliseconds;
         }
       }
     }
@@ -8404,12 +8254,7 @@ namespace Server
       PublicOverheadMessage(MessageType.Regular, SpeechHue, number, type, affix, args);
     }
 
-    public void Say(int number)
-    {
-      Say(number, "");
-    }
-
-    public void Say(int number, string args)
+    public void Say(int number, string args = "")
     {
       PublicOverheadMessage(MessageType.Regular, SpeechHue, number, args);
     }
@@ -8424,12 +8269,7 @@ namespace Server
       Emote(string.Format(format, args));
     }
 
-    public void Emote(int number)
-    {
-      Emote(number, "");
-    }
-
-    public void Emote(int number, string args)
+    public void Emote(int number, string args = "")
     {
       PublicOverheadMessage(MessageType.Emote, EmoteHue, number, args);
     }
@@ -8444,12 +8284,7 @@ namespace Server
       Whisper(string.Format(format, args));
     }
 
-    public void Whisper(int number)
-    {
-      Whisper(number, "");
-    }
-
-    public void Whisper(int number, string args)
+    public void Whisper(int number, string args = "")
     {
       PublicOverheadMessage(MessageType.Whisper, WhisperHue, number, args);
     }
@@ -8464,12 +8299,7 @@ namespace Server
       Yell(string.Format(format, args));
     }
 
-    public void Yell(int number)
-    {
-      Yell(number, "");
-    }
-
-    public void Yell(int number, string args)
+    public void Yell(int number, string args = "")
     {
       PublicOverheadMessage(MessageType.Yell, YellHue, number, args);
     }
@@ -8478,12 +8308,7 @@ namespace Server
 
     #region Gumps/Menus
 
-    public bool SendHuePicker(HuePicker p)
-    {
-      return SendHuePicker(p, false);
-    }
-
-    public bool SendHuePicker(HuePicker p, bool throwOnOffline)
+    public bool SendHuePicker(HuePicker p, bool throwOnOffline = false)
     {
       if (m_NetState != null)
       {
@@ -9750,88 +9575,64 @@ namespace Server
 
     #region Overhead messages
 
-    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)
+    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight = true)
     {
-      PublicOverheadMessage(type, hue, ascii, text, true);
+      if (m_Map == null)
+        return;
+
+      Packet p = ascii
+        ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
+        : new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text);
+
+      p.Acquire();
+
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+          state.Send(p);
+
+      Packet.Release(p);
+
+      eable.Free();
     }
 
-    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text, bool noLineOfSight)
+    public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "", bool noLineOfSight = true)
     {
-      if (m_Map != null)
-      {
-        Packet p = null;
+      if (m_Map == null)
+        return;
 
-        if (ascii)
-          p = new AsciiMessage(Serial, Body, type, hue, 3, Name, text);
-        else
-          p = new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text);
+      Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
 
-        p.Acquire();
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+          state.Send(p);
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-            state.Send(p);
+      Packet.Release(p);
 
-        Packet.Release(p);
-
-        eable.Free();
-      }
-    }
-
-    public void PublicOverheadMessage(MessageType type, int hue, int number)
-    {
-      PublicOverheadMessage(type, hue, number, "", true);
-    }
-
-    public void PublicOverheadMessage(MessageType type, int hue, int number, string args)
-    {
-      PublicOverheadMessage(type, hue, number, args, true);
-    }
-
-    public void PublicOverheadMessage(MessageType type, int hue, int number, string args, bool noLineOfSight)
-    {
-      if (m_Map != null)
-      {
-        Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
-
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
-
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-            state.Send(p);
-
-        Packet.Release(p);
-
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, int number, AffixType affixType, string affix,
-      string args)
+      string args = "", bool noLineOfSight = false)
     {
-      PublicOverheadMessage(type, hue, number, affixType, affix, args, true);
-    }
+      if (m_Map == null)
+        return;
 
-    public void PublicOverheadMessage(MessageType type, int hue, int number, AffixType affixType, string affix,
-      string args, bool noLineOfSight)
-    {
-      if (m_Map != null)
-      {
-        Packet p = Packet.Acquire(new MessageLocalizedAffix(Serial, Body, type, hue, 3, number, Name, affixType,
-          affix, args));
+      Packet p = Packet.Acquire(new MessageLocalizedAffix(Serial, Body, type, hue, 3, number, Name, affixType,
+        affix, args));
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        foreach (NetState state in eable)
-          if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-            state.Send(p);
+      foreach (NetState state in eable)
+        if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
+          state.Send(p);
 
-        Packet.Release(p);
+      Packet.Release(p);
 
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public void PrivateOverheadMessage(MessageType type, int hue, bool ascii, string text, NetState state)
@@ -9859,73 +9660,58 @@ namespace Server
     {
       NetState ns = m_NetState;
 
-      if (ns != null)
-      {
-        if (ascii)
-          ns.Send(new AsciiMessage(Serial, Body, type, hue, 3, Name, text));
-        else
-          ns.Send(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text));
-      }
+      if (ns == null)
+        return;
+
+      if (ascii)
+        ns.Send(new AsciiMessage(Serial, Body, type, hue, 3, Name, text));
+      else
+        ns.Send(new UnicodeMessage(Serial, Body, type, hue, 3, m_Language, Name, text));
     }
 
-    public void LocalOverheadMessage(MessageType type, int hue, int number)
+    public void LocalOverheadMessage(MessageType type, int hue, int number, string args = "")
     {
-      LocalOverheadMessage(type, hue, number, "");
+      m_NetState?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
     }
 
-    public void LocalOverheadMessage(MessageType type, int hue, int number, string args)
+    public void NonlocalOverheadMessage(MessageType type, int hue, int number, string args = "")
     {
-      NetState ns = m_NetState;
+      if (m_Map == null)
+        return;
 
-      ns?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
-    }
+      Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
 
-    public void NonlocalOverheadMessage(MessageType type, int hue, int number)
-    {
-      NonlocalOverheadMessage(type, hue, number, "");
-    }
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-    public void NonlocalOverheadMessage(MessageType type, int hue, int number, string args)
-    {
-      if (m_Map != null)
-      {
-        Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
+      foreach (NetState state in eable)
+        if (state != m_NetState && state.Mobile.CanSee(this))
+          state.Send(p);
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      Packet.Release(p);
 
-        foreach (NetState state in eable)
-          if (state != m_NetState && state.Mobile.CanSee(this))
-            state.Send(p);
-
-        Packet.Release(p);
-
-        eable.Free();
-      }
+      eable.Free();
     }
 
     public void NonlocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
     {
-      if (m_Map != null)
-      {
-        Packet p = null;
+      if (m_Map == null)
+        return;
 
-        if (ascii)
-          p = new AsciiMessage(Serial, Body, type, hue, 3, Name, text);
-        else
-          p = new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text);
+      Packet p = ascii
+        ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
+        : new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text);
 
-        p.Acquire();
+      p.Acquire();
 
-        IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+      IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
-        foreach (NetState state in eable)
-          if (state != m_NetState && state.Mobile.CanSee(this))
-            state.Send(p);
+      foreach (NetState state in eable)
+        if (state != m_NetState && state.Mobile.CanSee(this))
+          state.Send(p);
 
-        Packet.Release(p);
+      Packet.Release(p);
 
-        eable.Free();
-      }
+      eable.Free();
     }
 
     #endregion
@@ -9934,47 +9720,20 @@ namespace Server
 
     public void SendLocalizedMessage(int number)
     {
-      NetState ns = m_NetState;
-
-      ns?.Send(MessageLocalized.InstantiateGeneric(number));
+      m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
     }
 
-    public void SendLocalizedMessage(int number, string args)
+    public void SendLocalizedMessage(int number, string args, int hue = 0x3B2)
     {
-      SendLocalizedMessage(number, args, 0x3B2);
-    }
-
-    public void SendLocalizedMessage(int number, string args, int hue)
-    {
-      if (hue == 0x3B2 && (args == null || args.Length == 0))
-      {
-        NetState ns = m_NetState;
-
-        ns?.Send(MessageLocalized.InstantiateGeneric(number));
-      }
+      if (hue == 0x3B2 && string.IsNullOrEmpty(args))
+        m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
       else
-      {
-        NetState ns = m_NetState;
-
-        ns?.Send(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
-      }
+        m_NetState?.Send(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
     }
 
-    public void SendLocalizedMessage(int number, bool append, string affix)
+    public void SendLocalizedMessage(int number, bool append, string affix, string args = "", int hue = 0x3B2)
     {
-      SendLocalizedMessage(number, append, affix, "", 0x3B2);
-    }
-
-    public void SendLocalizedMessage(int number, bool append, string affix, string args)
-    {
-      SendLocalizedMessage(number, append, affix, args, 0x3B2);
-    }
-
-    public void SendLocalizedMessage(int number, bool append, string affix, string args, int hue)
-    {
-      NetState ns = m_NetState;
-
-      ns?.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System",
+      m_NetState?.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System",
         (append ? AffixType.Append : AffixType.Prepend) | AffixType.System, affix, args));
     }
 
@@ -9994,9 +9753,7 @@ namespace Server
 
     public void SendMessage(int hue, string text)
     {
-      NetState ns = m_NetState;
-
-      ns?.Send(new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text));
+      m_NetState?.Send(new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text));
     }
 
     public void SendMessage(int hue, string format, params object[] args)
@@ -10016,9 +9773,7 @@ namespace Server
 
     public void SendAsciiMessage(int hue, string text)
     {
-      NetState ns = m_NetState;
-
-      ns?.Send(new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text));
+      m_NetState?.Send(new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text));
     }
 
     public void SendAsciiMessage(int hue, string format, params object[] args)

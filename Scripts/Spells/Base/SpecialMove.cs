@@ -236,7 +236,7 @@ namespace Server.Spells
         return false;
       }
 
-      if (move != null && !move.Validate(m))
+      if (move?.Validate(m) == false)
       {
         ClearCurrentMove(m);
         return false;

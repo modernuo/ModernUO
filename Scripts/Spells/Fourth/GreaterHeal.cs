@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Spells.Fourth
 {
-  public class GreaterHealSpell : MagerySpell
+  public class GreaterHealSpell : MagerySpell, ISpellTargetingMobile
   {
     private static SpellInfo m_Info = new SpellInfo(
       "Greater Heal", "In Vas Mani",
@@ -18,7 +18,7 @@ namespace Server.Spells.Fourth
       Reagent.SpidersSilk
     );
 
-    public GreaterHealSpell(Mobile caster, Item scroll) : base(caster, scroll, m_Info)
+    public GreaterHealSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
     }
 
@@ -37,15 +37,16 @@ namespace Server.Spells.Fourth
 
     public override void OnCast()
     {
-      Caster.Target = new InternalTarget(this);
+      Caster.Target = new SpellTargetMobile(this, TargetFlags.Beneficial, Core.ML ? 10 : 12);
     }
 
     public void Target(Mobile m)
     {
+      if (m == null)
+        return;
+
       if (!Caster.CanSee(m))
-      {
         Caster.SendLocalizedMessage(500237); // Target can not be seen.
-      }
       else if (m is BaseCreature creature && creature.IsAnimatedDead)
       {
         Caster.SendLocalizedMessage(1061654); // You cannot heal that which is not alive.
@@ -79,27 +80,6 @@ namespace Server.Spells.Fourth
       }
 
       FinishSequence();
-    }
-
-    public class InternalTarget : Target
-    {
-      private GreaterHealSpell m_Owner;
-
-      public InternalTarget(GreaterHealSpell owner) : base(Core.ML ? 10 : 12, false, TargetFlags.Beneficial)
-      {
-        m_Owner = owner;
-      }
-
-      protected override void OnTarget(Mobile from, object o)
-      {
-        if (o is Mobile mobile)
-          m_Owner.Target(mobile);
-      }
-
-      protected override void OnTargetFinish(Mobile from)
-      {
-        m_Owner.FinishSequence();
-      }
     }
   }
 }

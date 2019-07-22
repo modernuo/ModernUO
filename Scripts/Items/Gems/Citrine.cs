@@ -3,12 +3,7 @@ namespace Server.Items
   public class Citrine : Item
   {
     [Constructible]
-    public Citrine() : this(1)
-    {
-    }
-
-    [Constructible]
-    public Citrine(int amount) : base(0xF15)
+    public Citrine(int amount = 1) : base(0xF15)
     {
       Stackable = true;
       Amount = amount;
