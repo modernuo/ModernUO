@@ -968,16 +968,12 @@ namespace Server
 
     public static int GetAddressValue(IPAddress address)
     {
-#pragma warning disable 618
-      return (int)address.Address;
-#pragma warning restore 618
+      return BitConverter.ToInt32(address.GetAddressBytes(), 0);
     }
 
     public static long GetLongAddressValue(IPAddress address)
     {
-#pragma warning disable 618
-      return address.Address;
-#pragma warning restore 618
+      return BitConverter.ToInt64(address.GetAddressBytes(), 0);
     }
 
     #endregion

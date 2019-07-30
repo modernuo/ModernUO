@@ -1,42 +1,22 @@
-/***************************************************************************
- *                              PacketReader.cs
- *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
- *
- *   $Id$
- *
- ***************************************************************************/
-
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
-
+using System;
+using System.Buffers;
 using System.IO;
+using System.IO.Pipelines;
 using System.Text;
 
 namespace Server.Network
 {
-  public class PacketReader
+  public ref struct PacketReader
   {
-    private int m_Index;
+    private SequenceReader<byte> m_Reader;
 
-    public PacketReader(byte[] data, int size, bool fixedSize)
+    public SequencePosition Position => m_Reader.Position;
+    public long Length => m_Reader.Length;
+
+    public PacketReader(ReadOnlySequence<byte> seq)
     {
-      Buffer = data;
-      Size = size;
-      m_Index = fixedSize ? 1 : 3;
+      m_Reader = new SequenceReader<byte>(seq);
     }
-
-    public byte[] Buffer{ get; }
-
-    public int Size{ get; }
 
     public void Trace(NetState state)
     {
@@ -44,7 +24,7 @@ namespace Server.Network
       {
         using (StreamWriter sw = new StreamWriter("Packets.log", true))
         {
-          byte[] buffer = Buffer;
+          byte[] buffer = m_Reader.Sequence.ToArray();
 
           if (buffer.Length > 0)
             sw.WriteLine("Client: {0}: Unhandled packet 0x{1:X2}", state, buffer[0]);
@@ -64,113 +44,82 @@ namespace Server.Network
       }
     }
 
-    public int Seek(int offset, SeekOrigin origin)
+    public SequencePosition Seek(long offset, SeekOrigin origin)
     {
       switch (origin)
       {
         case SeekOrigin.Begin:
-          m_Index = offset;
+          m_Reader.Rewind(m_Reader.Consumed - Math.Max(offset, 0));
           break;
         case SeekOrigin.Current:
-          m_Index += offset;
+          if (offset < 0)
+            m_Reader.Rewind(Math.Min(m_Reader.Consumed, offset * -1));
+          else
+            m_Reader.Advance(Math.Min(m_Reader.Remaining, offset));
           break;
         case SeekOrigin.End:
-          m_Index = Size - offset;
+          long count = m_Reader.Remaining - offset;
+          if (count < 0)
+            m_Reader.Rewind(count * -1);
+          else if (count > 0)
+            m_Reader.Advance(count);
           break;
       }
 
-      return m_Index;
+      return m_Reader.Position;
     }
 
-    public int ReadInt32()
-    {
-      if (m_Index + 4 > Size)
-        return 0;
+    public int ReadInt32() => m_Reader.TryReadBigEndian(out int value) ? value : 0;
 
-      return (Buffer[m_Index++] << 24)
-             | (Buffer[m_Index++] << 16)
-             | (Buffer[m_Index++] << 8)
-             | Buffer[m_Index++];
-    }
+    public short ReadInt16() => m_Reader.TryReadBigEndian(out short value) ? value : (short)0;
 
-    public short ReadInt16()
-    {
-      if (m_Index + 2 > Size)
-        return 0;
+    public byte ReadByte() => m_Reader.TryRead(out byte value) ? value : (byte)0;
 
-      return (short)((Buffer[m_Index++] << 8) | Buffer[m_Index++]);
-    }
+    public uint ReadUInt32() => (uint)ReadInt32();
 
-    public byte ReadByte()
-    {
-      if (m_Index + 1 > Size)
-        return 0;
+    public ushort ReadUInt16() => (ushort)ReadInt16();
 
-      return Buffer[m_Index++];
-    }
+    public sbyte ReadSByte() => (sbyte)ReadByte();
 
-    public uint ReadUInt32()
-    {
-      if (m_Index + 4 > Size)
-        return 0;
-
-      return (uint)((Buffer[m_Index++] << 24) | (Buffer[m_Index++] << 16) | (Buffer[m_Index++] << 8) |
-                    Buffer[m_Index++]);
-    }
-
-    public ushort ReadUInt16()
-    {
-      if (m_Index + 2 > Size)
-        return 0;
-
-      return (ushort)((Buffer[m_Index++] << 8) | Buffer[m_Index++]);
-    }
-
-    public sbyte ReadSByte()
-    {
-      if (m_Index + 1 > Size)
-        return 0;
-
-      return (sbyte)Buffer[m_Index++];
-    }
-
-    public bool ReadBoolean()
-    {
-      if (m_Index + 1 > Size)
-        return false;
-
-      return Buffer[m_Index++] != 0;
-    }
+    public bool ReadBoolean() => ReadByte() > 0;
 
     public string ReadUnicodeStringLE()
     {
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index + 1 < Size && (c = Buffer[m_Index++] | (Buffer[m_Index++] << 8)) != 0)
+      while (m_Reader.TryReadLittleEndian(out short c) && c != 0)
         sb.Append((char)c);
+
+      return sb.ToString();
+    }
+
+    public string ReadUnicodeStringLE(int fixedLength)
+    {
+      long bound = Math.Min(m_Reader.Consumed + (fixedLength << 1), m_Reader.Length);
+
+      StringBuilder sb = new StringBuilder();
+
+      while (m_Reader.Consumed + 1 < bound && m_Reader.TryReadLittleEndian(out short c) && c != 0)
+        sb.Append((char)c);
+
+      if (m_Reader.Consumed < bound)
+        m_Reader.Advance(bound - m_Reader.Consumed);
 
       return sb.ToString();
     }
 
     public string ReadUnicodeStringLESafe(int fixedLength)
     {
-      int bound = m_Index + (fixedLength << 1);
-      int end = bound;
-
-      if (bound > Size)
-        bound = Size;
+      long bound = Math.Min(m_Reader.Consumed + (fixedLength << 1), m_Reader.Length);
 
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index + 1 < bound && (c = Buffer[m_Index++] | (Buffer[m_Index++] << 8)) != 0)
+      while (m_Reader.Consumed + 1 < bound && m_Reader.TryReadLittleEndian(out short c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
-      m_Index = end;
+      if (m_Reader.Consumed < bound)
+        m_Reader.Advance(bound - m_Reader.Consumed);
 
       return sb.ToString();
     }
@@ -179,9 +128,7 @@ namespace Server.Network
     {
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index + 1 < Size && (c = Buffer[m_Index++] | (Buffer[m_Index++] << 8)) != 0)
+      while (m_Reader.TryReadLittleEndian(out short c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
@@ -192,9 +139,7 @@ namespace Server.Network
     {
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index + 1 < Size && (c = (Buffer[m_Index++] << 8) | Buffer[m_Index++]) != 0)
+      while (m_Reader.TryReadBigEndian(out short c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
@@ -205,9 +150,7 @@ namespace Server.Network
     {
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index + 1 < Size && (c = (Buffer[m_Index++] << 8) | Buffer[m_Index++]) != 0)
+      while (m_Reader.TryReadBigEndian(out short c) && c != 0)
         sb.Append((char)c);
 
       return sb.ToString();
@@ -220,44 +163,16 @@ namespace Server.Network
 
     public string ReadUTF8StringSafe(int fixedLength)
     {
-      if (m_Index >= Size)
+      string s;
+
+      if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true))
+        s = Utility.UTF8.GetString(span.Length > fixedLength ? span.Slice(0, fixedLength) : span);
+      else
       {
-        m_Index += fixedLength;
-        return string.Empty;
+        long size = Math.Min(m_Reader.Remaining, fixedLength);
+        s = Utility.UTF8.GetString(m_Reader.Sequence.Slice(m_Reader.Position, size).ToArray());
+        m_Reader.Advance(size);
       }
-
-      int bound = m_Index + fixedLength;
-      //int end   = bound;
-
-      if (bound > Size)
-        bound = Size;
-
-      int count = 0;
-      int index = m_Index;
-      int start = m_Index;
-
-      while (index < bound && Buffer[index++] != 0)
-        ++count;
-
-      index = 0;
-
-      byte[] buffer = new byte[count];
-      int value = 0;
-
-      while (m_Index < bound && (value = Buffer[m_Index++]) != 0)
-        buffer[index++] = (byte)value;
-
-      string s = Utility.UTF8.GetString(buffer);
-
-      bool isSafe = true;
-
-      for (int i = 0; isSafe && i < s.Length; ++i)
-        isSafe = IsSafeChar(s[i]);
-
-      m_Index = start + fixedLength;
-
-      if (isSafe)
-        return s;
 
       StringBuilder sb = new StringBuilder(s.Length);
 
@@ -270,32 +185,15 @@ namespace Server.Network
 
     public string ReadUTF8StringSafe()
     {
-      if (m_Index >= Size)
-        return string.Empty;
+      string s;
 
-      int count = 0;
-      int index = m_Index;
-
-      while (index < Size && Buffer[index++] != 0)
-        ++count;
-
-      index = 0;
-
-      byte[] buffer = new byte[count];
-      int value = 0;
-
-      while (m_Index < Size && (value = Buffer[m_Index++]) != 0)
-        buffer[index++] = (byte)value;
-
-      string s = Utility.UTF8.GetString(buffer);
-
-      bool isSafe = true;
-
-      for (int i = 0; isSafe && i < s.Length; ++i)
-        isSafe = IsSafeChar(s[i]);
-
-      if (isSafe)
-        return s;
+      if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true))
+        s = Utility.UTF8.GetString(span);
+      else
+      {
+        s = Utility.UTF8.GetString(m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray());
+        m_Reader.Advance(m_Reader.Remaining);
+      }
 
       StringBuilder sb = new StringBuilder(s.Length);
 
@@ -308,33 +206,17 @@ namespace Server.Network
 
     public string ReadUTF8String()
     {
-      if (m_Index >= Size)
-        return string.Empty;
-
-      int count = 0;
-      int index = m_Index;
-
-      while (index < Size && Buffer[index++] != 0)
-        ++count;
-
-      index = 0;
-
-      byte[] buffer = new byte[count];
-      int value = 0;
-
-      while (m_Index < Size && (value = Buffer[m_Index++]) != 0)
-        buffer[index++] = (byte)value;
-
-      return Utility.UTF8.GetString(buffer);
+      return Utility.UTF8.GetString(
+        m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true) ? span :
+        m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray()
+      );
     }
 
     public string ReadString()
     {
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index < Size && (c = Buffer[m_Index++]) != 0)
+      while (m_Reader.TryRead(out byte c))
         sb.Append((char)c);
 
       return sb.ToString();
@@ -344,9 +226,7 @@ namespace Server.Network
     {
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index < Size && (c = Buffer[m_Index++]) != 0)
+      while (m_Reader.TryRead(out byte c))
         if (IsSafeChar(c))
           sb.Append((char)c);
 
@@ -355,82 +235,62 @@ namespace Server.Network
 
     public string ReadUnicodeStringSafe(int fixedLength)
     {
-      int bound = m_Index + (fixedLength << 1);
-      int end = bound;
-
-      if (bound > Size)
-        bound = Size;
+      long bound = Math.Min(m_Reader.Consumed + (fixedLength << 1), m_Reader.Length);
 
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index + 1 < bound && (c = (Buffer[m_Index++] << 8) | Buffer[m_Index++]) != 0)
+      while (m_Reader.Consumed + 1 < bound && m_Reader.TryReadBigEndian(out short c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
-      m_Index = end;
+      if (m_Reader.Consumed < bound)
+        m_Reader.Advance(bound - m_Reader.Consumed);
 
       return sb.ToString();
     }
 
     public string ReadUnicodeString(int fixedLength)
     {
-      int bound = m_Index + (fixedLength << 1);
-      int end = bound;
-
-      if (bound > Size)
-        bound = Size;
+      long bound = Math.Min(m_Reader.Consumed + (fixedLength << 1), m_Reader.Length);
 
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index + 1 < bound && (c = (Buffer[m_Index++] << 8) | Buffer[m_Index++]) != 0)
+      while (m_Reader.Consumed + 1 < bound && m_Reader.TryReadBigEndian(out short c) && c != 0)
         sb.Append((char)c);
 
-      m_Index = end;
+      if (m_Reader.Consumed < bound)
+        m_Reader.Advance(bound - m_Reader.Consumed);
 
       return sb.ToString();
     }
 
     public string ReadStringSafe(int fixedLength)
     {
-      int bound = m_Index + fixedLength;
-      int end = bound;
-
-      if (bound > Size)
-        bound = Size;
+      long bound = Math.Min(m_Reader.Consumed + fixedLength, m_Reader.Length);
 
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index < bound && (c = Buffer[m_Index++]) != 0)
+      while (m_Reader.Consumed + 1 < bound && m_Reader.TryRead(out byte c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
-      m_Index = end;
+      if (m_Reader.Consumed < bound)
+        m_Reader.Advance(bound - m_Reader.Consumed);
 
       return sb.ToString();
     }
 
     public string ReadString(int fixedLength)
     {
-      int bound = m_Index + fixedLength;
-      int end = bound;
-
-      if (bound > Size)
-        bound = Size;
+      long bound = Math.Min(m_Reader.Consumed + fixedLength, m_Reader.Length);
 
       StringBuilder sb = new StringBuilder();
 
-      int c;
-
-      while (m_Index < bound && (c = Buffer[m_Index++]) != 0)
+      while (m_Reader.Consumed + 1 < bound && m_Reader.TryRead(out byte c) && c != 0)
         sb.Append((char)c);
 
-      m_Index = end;
+      if (m_Reader.Consumed < bound)
+        m_Reader.Advance(bound - m_Reader.Consumed);
 
       return sb.ToString();
     }

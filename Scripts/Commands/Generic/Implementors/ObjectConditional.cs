@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Commands.Generic
 {

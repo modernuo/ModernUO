@@ -1,5 +1,3 @@
-using Mat = Server.Engines.BulkOrders.BulkMaterialType;
-
 namespace Server.Engines.BulkOrders
 {
   public class LargeTailorBOD : LargeBOD

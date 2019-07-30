@@ -28,8 +28,7 @@ namespace Server.Diagnostics
 {
   public abstract class BasePacketProfile : BaseProfile
   {
-    protected BasePacketProfile(string name)
-      : base(name)
+    protected BasePacketProfile(string name) : base(name)
     {
     }
 
@@ -37,7 +36,7 @@ namespace Server.Diagnostics
 
     public double AverageLength => (double)TotalLength / Math.Max(1, Count);
 
-    public void Finish(int length)
+    public void Finish(long length)
     {
       Finish();
 

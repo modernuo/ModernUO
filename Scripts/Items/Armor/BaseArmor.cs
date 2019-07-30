@@ -6,7 +6,6 @@ using Server.Factions;
 using Server.Network;
 using AMA = Server.Items.ArmorMeditationAllowance;
 using AMT = Server.Items.ArmorMaterialType;
-using ABT = Server.Items.ArmorBodyType;
 
 namespace Server.Items
 {

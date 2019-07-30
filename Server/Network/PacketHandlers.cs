@@ -19,8 +19,10 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipelines;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Diagnostics;
@@ -304,6 +306,89 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
+    public static bool ProcessPacket(MessagePump pump, NetState ns, PipeReader pr, in ReadOnlySequence<byte> seq)
+    {
+      PacketReader r = new PacketReader(seq);
+      byte packetId = r.ReadByte();
+      if (packetId == 0)
+        packetId = 0xFF;
+
+      Console.WriteLine("Packet {0:X}", packetId);
+
+      if (ns.CheckEncrypted(packetId))
+      {
+        pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
+        ns.Dispose();
+        return false;
+      }
+
+      // Get Handlers
+      PacketHandler handler = ns.GetHandler(packetId);
+      Console.WriteLine("Got Handler? {0}", handler == null ? "no" : "yes");
+
+      if (handler == null)
+      {
+        r.Trace(ns);
+        pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
+        return false;
+      }
+
+      long packetLength = handler.Length;
+      Console.WriteLine("Handler Length: {0}", packetLength);
+      if (packetLength <= 0)
+      {
+        if (r.Length >= 3)
+        {
+          packetLength = r.ReadInt16();
+          Console.WriteLine("Packet Length: {0}", packetLength);
+          if (packetLength < 3)
+          {
+            pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
+            ns.Dispose();
+            return false;
+          }
+        }
+      }
+
+      if (r.Length >= packetLength)
+      {
+        if (handler.Ingame && ns.Mobile?.Deleted != false)
+        {
+          Console.WriteLine(
+            "Client: {0}: Sent ingame packet (0x{1:X2}) without being attached to a valid mobile.",
+            ns,
+            packetId
+          );
+          pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
+          ns.Dispose();
+          return false;
+        }
+
+        Console.WriteLine("Processing...");
+
+        ThrottlePacketCallback throttler = handler.ThrottleCallback;
+        TimeSpan throttled = handler.ThrottleCallback?.Invoke(ns) ?? TimeSpan.Zero;
+
+        if (throttled > TimeSpan.Zero)
+          ns.ThrottledUntil = DateTime.UtcNow + throttled;
+
+        PacketReceiveProfile prof = null;
+
+        if (Core.Profiling)
+          prof = PacketReceiveProfile.Acquire(packetId);
+
+        prof?.Start();
+
+        Console.WriteLine("Queueing...");
+        pump.QueueWork(ns, seq, handler.OnReceive);
+
+        prof?.Finish(packetLength);
+      }
+
+      pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
+      return true;
+    }
+
     private static void UnhandledBF(NetState state, PacketReader pvSrc)
     {
     }
@@ -450,7 +535,8 @@ namespace Server.Network
       Mobile vendor = World.FindMobile(pvSrc.ReadUInt32());
       byte flag = pvSrc.ReadByte();
 
-      if (vendor == null) return;
+      if (vendor == null)
+        return;
 
       if (vendor.Deleted || !Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10))
       {
@@ -499,7 +585,7 @@ namespace Server.Network
       }
 
       int count = pvSrc.ReadUInt16();
-      if (count < 100 && pvSrc.Size == 1 + 2 + 4 + 2 + count * 6)
+      if (count < 100 && pvSrc.Length == 1 + 2 + 4 + 2 + count * 6)
       {
         List<SellItemResponse> sellList = new List<SellItemResponse>(count);
 
@@ -888,7 +974,8 @@ namespace Server.Network
 
     public static void GodModeRequest(NetState state, PacketReader pvSrc)
     {
-      if (VerifyGC(state)) state.Send(new GodModeReply(pvSrc.ReadBoolean()));
+      if (VerifyGC(state))
+        state.Send(new GodModeReply(pvSrc.ReadBoolean()));
     }
 
     public static void AsciiPromptResponse(NetState state, PacketReader pvSrc)
@@ -1681,12 +1768,12 @@ namespace Server.Network
 
       Mobile from = state.Mobile;
 
-      int length = pvSrc.Size - 3;
+      long length = pvSrc.Length - 3;
 
       if (length < 0 || length % 4 != 0)
         return;
 
-      int count = length / 4;
+      long count = length / 4;
 
       for (int i = 0; i < count; ++i)
       {
@@ -2645,8 +2732,7 @@ namespace Server.Network
       if (e.Rejected)
       {
         state.Account = null;
-        state.Send(new AccountLoginRej(ALRReason.BadComm));
-        state.Dispose();
+        AccountLogin_ReplyRej(state, ALRReason.BadComm);
       }
       else
       {

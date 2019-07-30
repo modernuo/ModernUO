@@ -177,7 +177,7 @@ namespace Server.Engines.MLQuests.Gumps
       IRaceChanger owner = raceChangeState.m_Owner;
       Race targetRace = raceChangeState.m_TargetRace;
 
-      if (pvSrc.Size == 5)
+      if (pvSrc.Length == 5)
       {
         owner?.OnCancel(pm);
 

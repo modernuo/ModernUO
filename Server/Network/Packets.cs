@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -2336,8 +2337,6 @@ namespace Server.Network
 
   public sealed class DisplayGumpPacked : Packet, IGumpWriter
   {
-    private const int GumpBufferSize = 0x5000;
-
     private static byte[] m_True = Gump.StringToBuffer(" 1");
     private static byte[] m_False = Gump.StringToBuffer(" 0");
 
@@ -2345,7 +2344,6 @@ namespace Server.Network
     private static byte[] m_EndTextSeparator = Gump.StringToBuffer("@");
 
     private static byte[] m_Buffer = new byte[48];
-    private static BufferPool m_PackBuffers = new BufferPool("Gump", 4, GumpBufferSize);
 
     private Gump m_Gump;
 
@@ -2465,30 +2463,17 @@ namespace Server.Network
       wantLength += 4095;
       wantLength &= ~4095;
 
-      byte[] m_PackBuffer;
-      lock (m_PackBuffers)
-      {
-        m_PackBuffer = m_PackBuffers.AcquireBuffer();
-      }
+      byte[] packBuffer = ArrayPool<byte>.Shared.Rent(wantLength);
 
-      if (m_PackBuffer.Length < wantLength)
-      {
-        Console.WriteLine("Notice: DisplayGumpPacked creating new {0} byte buffer", wantLength);
-        m_PackBuffer = new byte[wantLength];
-      }
+      int packLength = wantLength;
 
-      int packLength = m_PackBuffer.Length;
-
-      Compression.Pack(m_PackBuffer, ref packLength, buffer, length, ZLibQuality.Default);
+      Compression.Pack(packBuffer, ref packLength, buffer, length, ZLibQuality.Default);
 
       m_Stream.Write(4 + packLength);
       m_Stream.Write(length);
-      m_Stream.Write(m_PackBuffer, 0, packLength);
+      m_Stream.Write(packBuffer, 0, packLength);
 
-      lock (m_PackBuffers)
-      {
-        m_PackBuffers.ReleaseBuffer(m_PackBuffer);
-      }
+      ArrayPool<byte>.Shared.Return(packBuffer);
     }
   }
 
@@ -4278,6 +4263,7 @@ namespace Server.Network
 
     public PlayServerAck(ServerInfo si) : base(0x8C, 11)
     {
+      Console.WriteLine("Auth ID: {0:X}", m_AuthID);
       int addr = Utility.GetAddressValue(si.Address.Address);
 
       m_Stream.Write((byte)addr);
@@ -4295,8 +4281,6 @@ namespace Server.Network
     private const int CompressorBufferSize = 0x10000;
 
     private const int BufferSize = 4096;
-    private static BufferPool m_CompressorBuffers = new BufferPool("Compressor", 4, CompressorBufferSize);
-    private static BufferPool m_Buffers = new BufferPool("Compressed", 16, BufferSize);
 
     private byte[] m_CompiledBuffer;
     private int m_CompiledLength;
@@ -4377,13 +4361,10 @@ namespace Server.Network
 
     public void OnSend()
     {
-      Core.Set();
+      Core.Set(); // Is this still needed if this is done async?
 
-      lock (this)
-      {
-        if ((m_State & (State.Acquired | State.Static)) == 0)
-          Free();
-      }
+      if ((m_State & (State.Acquired | State.Static)) == 0)
+        Free();
     }
 
     private void Free()
@@ -4392,7 +4373,7 @@ namespace Server.Network
         return;
 
       if ((m_State & State.Buffered) != 0)
-        m_Buffers.ReleaseBuffer(m_CompiledBuffer);
+        ArrayPool<byte>.Shared.Return(m_CompiledBuffer);
 
       m_State &= ~(State.Static | State.Acquired | State.Buffered);
 
@@ -4474,11 +4455,7 @@ namespace Server.Network
 
       if (compress)
       {
-        byte[] buffer;
-        lock (m_CompressorBuffers)
-        {
-          buffer = m_CompressorBuffers.AcquireBuffer();
-        }
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(CompressorBufferSize);
 
         Compression.Compress(m_CompiledBuffer, 0, length, buffer, ref length);
 
@@ -4497,25 +4474,16 @@ namespace Server.Network
         {
           m_CompiledLength = length;
 
-          if (length > BufferSize || (m_State & State.Static) != 0)
+          if ((m_State & State.Static) != 0)
           {
             m_CompiledBuffer = new byte[length];
+            Buffer.BlockCopy(buffer, 0, m_CompiledBuffer, 0, length);
+            ArrayPool<byte>.Shared.Return(buffer);
           }
           else
           {
-            lock (m_Buffers)
-            {
-              m_CompiledBuffer = m_Buffers.AcquireBuffer();
-            }
-
+            m_CompiledBuffer = buffer;
             m_State |= State.Buffered;
-          }
-
-          Buffer.BlockCopy(buffer, 0, m_CompiledBuffer, 0, length);
-
-          lock (m_CompressorBuffers)
-          {
-            m_CompressorBuffers.ReleaseBuffer(buffer);
           }
         }
       }
@@ -4524,17 +4492,11 @@ namespace Server.Network
         byte[] old = m_CompiledBuffer;
         m_CompiledLength = length;
 
-        if (length > BufferSize || (m_State & State.Static) != 0)
-        {
+        if ((m_State & State.Static) != 0)
           m_CompiledBuffer = new byte[length];
-        }
         else
         {
-          lock (m_Buffers)
-          {
-            m_CompiledBuffer = m_Buffers.AcquireBuffer();
-          }
-
+          m_CompiledBuffer = ArrayPool<byte>.Shared.Rent(length);
           m_State |= State.Buffered;
         }
 

@@ -22,7 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+#if NETCORE
 using System.Runtime.Loader;
+#endif
 
 namespace Server
 {
@@ -33,14 +35,22 @@ namespace Server
     public static Assembly[] Assemblies { get; set; }
 
     // TODO: Make this more robust
-    public static string ScriptsPath = "Scripts.CS.dll";
+#if NETCORE
+    public static string ScriptsPath = "Scripts.CS.NETCORE.dll";
+#else
+    public static string ScriptsPath = "Scripts.CS.NETFULL.dll";
+#endif
 
     public static bool LoadScripts()
     {
       string scriptsPath = Path.Combine(Core.BaseDirectory, ScriptsPath);
       if (File.Exists(ScriptsPath))
       {
+#if NETCORE
         Assembly scripts = AssemblyLoadContext.Default.LoadFromAssemblyPath(scriptsPath);
+#else
+        Assembly scripts = Assembly.LoadFrom(scriptsPath);
+#endif
         Assemblies = new Assembly[] { scripts };
         return true;
       }

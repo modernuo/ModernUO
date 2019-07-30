@@ -209,38 +209,6 @@ namespace Server.Gumps
           sb.Append((maxIOCP - curIOCP) * 100 / maxIOCP);
           sb.Append("%");
 
-          List<BufferPool> pools = BufferPool.Pools;
-
-          lock (pools)
-          {
-            for (int i = 0; i < pools.Count; ++i)
-            {
-              BufferPool pool = pools[i];
-              pool.GetInfo(out string name, out int freeCount, out _,
-                out int currentCapacity, out int bufferSize, out int misses);
-
-              if (sb.Length > 0)
-                sb.Append("<br><br>");
-
-              sb.Append(name);
-              sb.Append("<br>Size: ");
-              sb.Append(FormatByteAmount(bufferSize));
-              sb.Append("<br>Capacity: ");
-              sb.Append(currentCapacity);
-              sb.Append(" (");
-              sb.Append(misses);
-              sb.Append(" misses)<br>Available: ");
-              sb.Append(freeCount);
-              sb.Append("<br>Usage: ");
-              sb.Append((currentCapacity - freeCount) * 100 / currentCapacity);
-              sb.Append("% : ");
-              sb.Append(FormatByteAmount((currentCapacity - freeCount) * bufferSize));
-              sb.Append(" of ");
-              sb.Append(FormatByteAmount(currentCapacity * bufferSize));
-            }
-          }
-
-
           AddLabel(20, 200, LabelHue, "Pooling:");
           AddHtml(20, 220, 380, 150, sb.ToString(), true, true);
 

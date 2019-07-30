@@ -10,7 +10,6 @@ using Server.Engines.Craft;
 using Server.Engines.Help;
 using Server.Engines.MLQuests;
 using Server.Engines.MLQuests.Gumps;
-using Server.Engines.MyRunUO;
 using Server.Engines.PartySystem;
 using Server.Engines.Quests;
 using Server.Ethics;
@@ -3939,17 +3938,17 @@ namespace Server.Mobiles
       return running ? RunFoot : WalkFoot;
     }
 
-    public static bool MovementThrottle_Callback(NetState ns)
+    public static TimeSpan MovementThrottle_Callback(NetState ns)
     {
       if (!(ns.Mobile is PlayerMobile pm) || !pm.UsesFastwalkPrevention)
-        return true;
+        return TimeSpan.Zero;
 
       if (!pm.m_HasMoved)
       {
         // has not yet moved
         pm.m_NextMovementTime = Core.TickCount;
         pm.m_HasMoved = true;
-        return true;
+        return TimeSpan.Zero;
       }
 
       long ts = pm.m_NextMovementTime - Core.TickCount;
@@ -3958,10 +3957,10 @@ namespace Server.Mobiles
       {
         // been a while since we've last moved
         pm.m_NextMovementTime = Core.TickCount;
-        return true;
+        return TimeSpan.Zero;
       }
 
-      return ts < FastwalkThreshold;
+      return ts < FastwalkThreshold ? TimeSpan.Zero : TimeSpan.FromTicks(ts);
     }
 
     #endregion

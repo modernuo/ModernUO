@@ -26,7 +26,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,7 +44,7 @@ namespace Server
 
     private static bool m_Cache = true;
 
-    private static bool m_Profiling;
+    private static bool m_Profiling = true;
     private static DateTime m_ProfileStart;
     private static TimeSpan m_ProfileTime;
 
@@ -67,7 +66,7 @@ namespace Server
     private static readonly double _HighFrequency = 1000.0 / Stopwatch.Frequency;
     private static readonly double _LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
 
-    private static bool _UseHRT;
+    private static bool _UseHRT = true;
 
     public static readonly bool Is64Bit = Environment.Is64BitProcess;
     internal static ConsoleEventHandler m_ConsoleEventHandler;
@@ -113,7 +112,7 @@ namespace Server
 
     public static bool Service{ get; private set; }
 
-    public static bool Debug{ get; private set; }
+    public static bool Debug { get; private set; } = true;
 
     internal static bool HaltOnWarning{ get; private set; }
 
@@ -266,7 +265,8 @@ namespace Server
         {
           try
           {
-            foreach (Listener l in MessagePump.Listeners) l.Dispose();
+            foreach (Listener l in MessagePump.Listeners)
+              l.Dispose();
           }
           catch
           {
@@ -318,14 +318,20 @@ namespace Server
 
       Closing = true;
 
-      Console.Write("Exiting...");
+      Console.WriteLine("Exiting...");
 
       World.WaitForWriteCompletion();
+
+      Console.WriteLine("Writes completed");
 
       if (!m_Crashed)
         EventSink.InvokeShutdown(new ShutdownEventArgs());
 
+      Console.WriteLine("Finished shutdown events");
+
       Timer.TimerThread.Set();
+
+      Console.WriteLine("Timer Set");
 
       Console.WriteLine("done");
     }
@@ -394,8 +400,12 @@ namespace Server
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
       Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
         ver.Revision);
-      // Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName
+#if NETCORE
       Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
+#else
+      Console.WriteLine("Core: Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major,
+        Environment.Version.Minor, Environment.Version.Build);
+#endif
 
       string s = Arguments;
 
@@ -444,7 +454,10 @@ namespace Server
 
       ScriptCompiler.Invoke("Initialize");
 
-      MessagePump messagePump = MessagePump = new MessagePump();
+      // Start accepting new connections
+      MessagePump = new MessagePump();
+
+      ScriptCompiler.Invoke("RegisterListeners");
 
       timerThread.Start();
 
@@ -472,16 +485,15 @@ namespace Server
             Task.Run(() => Mobile.ProcessDeltaQueue()),
             Task.Run(() => Item.ProcessDeltaQueue()),
             Task.Run(() => Timer.Slice()),
-            Task.Run(() => messagePump.Slice())
+            Task.Run(() => MessagePump.DoWork())
           );
 
-
-          NetState.FlushAll();
           NetState.ProcessDisposedQueue();
 
           Slice?.Invoke();
 
-          if (sample++ % sampleInterval != 0) continue;
+          if (sample++ % sampleInterval != 0)
+            continue;
 
           long now = TickCount;
           m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
@@ -580,7 +592,7 @@ namespace Server
       internal static extern bool SetConsoleCtrlHandler(ConsoleEventHandler callback, bool add);
     }
 
-    #region Expansions
+#region Expansions
 
     public static Expansion Expansion{ get; set; }
 
@@ -604,7 +616,7 @@ namespace Server
 
     public static bool TOL => Expansion >= Expansion.TOL;
 
-    #endregion
+#endregion
   }
 
   public class FileLogger : TextWriter

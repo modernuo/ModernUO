@@ -18,15 +18,17 @@
  *
  ***************************************************************************/
 
+using System;
+
 namespace Server.Network
 {
   public delegate void OnPacketReceive(NetState state, PacketReader pvSrc);
 
-  public delegate bool ThrottlePacketCallback(NetState state);
+  public delegate TimeSpan ThrottlePacketCallback(NetState state);
 
   public class PacketHandler
   {
-    public PacketHandler(int packetID, int length, bool ingame, OnPacketReceive onReceive)
+    public PacketHandler(int packetID, long length, bool ingame, OnPacketReceive onReceive)
     {
       PacketID = packetID;
       Length = length;
@@ -36,7 +38,7 @@ namespace Server.Network
 
     public int PacketID{ get; }
 
-    public int Length{ get; }
+    public long Length{ get; }
 
     public OnPacketReceive OnReceive{ get; }
 
