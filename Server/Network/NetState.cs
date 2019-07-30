@@ -576,25 +576,18 @@ namespace Server.Network
         ReadOnlySequence<byte> seq = result.Buffer;
         Console.WriteLine("Read from Writer {0}", seq.Length);
 
-        while (true)
+        long pos = PacketHandlers.ProcessPacket(pump, this, seq);
+        Console.WriteLine("Packet Processed {0}", pos);
+
+        if (pos < 0)
         {
-          SequencePosition? pos = PacketHandlers.ProcessPacket(pump, this, seq);
-          Console.WriteLine("Packet Processed");
-
-          if (pos == null)
-          {
-            Console.WriteLine("Disposed!");
-            pr.Complete();
-            break;
-          }
-
-          pr.AdvanceTo(pos.Value);
-          seq = seq.Slice(pos.Value);
-
-          Console.WriteLine("Processed Packet, Remaining Length: {0}", seq.Length);
+          Console.WriteLine("Disposed!");
+          pr.Complete();
+          break;
         }
 
-        Console.WriteLine("Finished reading from writer!");
+        pr.AdvanceTo(seq.GetPosition(pos, seq.Start));
+        Console.WriteLine("Advanced Handler: {0} {1}", pos, seq.Length);
 
         if (result.IsCompleted || result.IsCanceled)
         {
@@ -650,6 +643,7 @@ namespace Server.Network
 
     public void Dispose()
     {
+      Console.WriteLine("Netstate disposing!");
       try { Socket.Shutdown(SocketShutdown.Both); } catch { /* ignored */ }
       try { Socket.Close(); } catch { /* ignored */ }
       try { Socket.Dispose(); } catch { /* ignored */ }

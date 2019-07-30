@@ -306,7 +306,7 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
-    public static SequencePosition? ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
+    public static long ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
     {
       PacketReader r = new PacketReader(seq);
       byte packetId = r.ReadByte();
@@ -318,7 +318,7 @@ namespace Server.Network
       if (ns.CheckEncrypted(packetId))
       {
         ns.Dispose();
-        return null;
+        return -1;
       }
 
       // Get Handlers
@@ -327,7 +327,7 @@ namespace Server.Network
       if (handler == null)
       {
         r.Trace(ns);
-        return null;
+        return -1;
       }
 
       long packetLength = handler.Length;
@@ -338,14 +338,14 @@ namespace Server.Network
         if (packetLength < 3)
         {
           ns.Dispose();
-          return null;
+          return -1;
         }
       }
 
       if (r.Length < packetLength)
       {
         Console.WriteLine("Packet is to small!");
-        return r.Position;
+        return 0;
       }
 
       if (handler.Ingame && ns.Mobile?.Deleted != false)
@@ -356,7 +356,7 @@ namespace Server.Network
           packetId
         );
         ns.Dispose();
-        return null;
+        return -1;
       }
 
       Console.WriteLine("Processing...");
@@ -378,7 +378,7 @@ namespace Server.Network
 
       prof?.Finish(packetLength);
 
-      return handler.Length == 0 ? r.Position : r.Seek(handler.Length, SeekOrigin.Begin);
+      return handler.Length == 0 ? handler.Length : packetLength;
     }
 
     private static void UnhandledBF(NetState state, PacketReader pvSrc)
