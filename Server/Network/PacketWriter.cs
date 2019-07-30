@@ -82,7 +82,6 @@ namespace Server.Network
 
     public static void ReleaseInstance(PacketWriter pw)
     {
-      pw.UnderlyingStream = null;
       m_Pool.Enqueue(pw);
     }
 

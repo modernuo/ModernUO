@@ -306,87 +306,79 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
-    public static bool ProcessPacket(MessagePump pump, NetState ns, PipeReader pr, in ReadOnlySequence<byte> seq)
+    public static SequencePosition? ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
     {
       PacketReader r = new PacketReader(seq);
       byte packetId = r.ReadByte();
       if (packetId == 0)
         packetId = 0xFF;
 
-      Console.WriteLine("Packet {0:X}", packetId);
+      Console.WriteLine("Packet {0:X} ({1})", packetId, seq.Length);
 
       if (ns.CheckEncrypted(packetId))
       {
-        pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
         ns.Dispose();
-        return false;
+        return null;
       }
 
       // Get Handlers
       PacketHandler handler = ns.GetHandler(packetId);
-      Console.WriteLine("Got Handler? {0}", handler == null ? "no" : "yes");
 
       if (handler == null)
       {
         r.Trace(ns);
-        pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
-        return false;
+        return null;
       }
 
       long packetLength = handler.Length;
-      Console.WriteLine("Handler Length: {0}", packetLength);
-      if (packetLength <= 0)
+      Console.WriteLine("Handler Length: {0} ({1})", handler.Length, packetLength);
+      if (handler.Length <= 0 && r.Length >= 3)
       {
-        if (r.Length >= 3)
+        packetLength = r.ReadInt16();
+        if (packetLength < 3)
         {
-          packetLength = r.ReadInt16();
-          Console.WriteLine("Packet Length: {0}", packetLength);
-          if (packetLength < 3)
-          {
-            pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
-            ns.Dispose();
-            return false;
-          }
-        }
-      }
-
-      if (r.Length >= packetLength)
-      {
-        if (handler.Ingame && ns.Mobile?.Deleted != false)
-        {
-          Console.WriteLine(
-            "Client: {0}: Sent ingame packet (0x{1:X2}) without being attached to a valid mobile.",
-            ns,
-            packetId
-          );
-          pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
           ns.Dispose();
-          return false;
+          return null;
         }
-
-        Console.WriteLine("Processing...");
-
-        ThrottlePacketCallback throttler = handler.ThrottleCallback;
-        TimeSpan throttled = handler.ThrottleCallback?.Invoke(ns) ?? TimeSpan.Zero;
-
-        if (throttled > TimeSpan.Zero)
-          ns.ThrottledUntil = DateTime.UtcNow + throttled;
-
-        PacketReceiveProfile prof = null;
-
-        if (Core.Profiling)
-          prof = PacketReceiveProfile.Acquire(packetId);
-
-        prof?.Start();
-
-        Console.WriteLine("Queueing...");
-        pump.QueueWork(ns, seq, handler.OnReceive);
-
-        prof?.Finish(packetLength);
       }
 
-      pr.AdvanceTo(r.Seek(0L, SeekOrigin.End));
-      return true;
+      if (r.Length < packetLength)
+      {
+        Console.WriteLine("Packet is to small!");
+        return r.Position;
+      }
+
+      if (handler.Ingame && ns.Mobile?.Deleted != false)
+      {
+        Console.WriteLine(
+          "Client: {0}: Sent ingame packet (0x{1:X2}) without being attached to a valid mobile.",
+          ns,
+          packetId
+        );
+        ns.Dispose();
+        return null;
+      }
+
+      Console.WriteLine("Processing...");
+
+      ThrottlePacketCallback throttler = handler.ThrottleCallback;
+      TimeSpan throttled = handler.ThrottleCallback?.Invoke(ns) ?? TimeSpan.Zero;
+
+      if (throttled > TimeSpan.Zero)
+        ns.ThrottledUntil = DateTime.UtcNow + throttled;
+
+      PacketReceiveProfile prof = null;
+
+      if (Core.Profiling)
+        prof = PacketReceiveProfile.Acquire(packetId);
+
+      prof?.Start();
+
+      pump.QueueWork(ns, seq.Slice(r.Position), handler.OnReceive);
+
+      prof?.Finish(packetLength);
+
+      return handler.Length == 0 ? r.Position : r.Seek(handler.Length, SeekOrigin.Begin);
     }
 
     private static void UnhandledBF(NetState state, PacketReader pvSrc)
@@ -2648,6 +2640,7 @@ namespace Server.Network
 
     public static void LoginServerSeed(NetState state, PacketReader pvSrc)
     {
+      Console.WriteLine("Reading LoginServerSeed");
       state.m_Seed = pvSrc.ReadInt32();
       state.Seeded = true;
 
@@ -2731,6 +2724,7 @@ namespace Server.Network
 
       if (e.Rejected)
       {
+        Console.WriteLine("Rejected!");
         state.Account = null;
         AccountLogin_ReplyRej(state, ALRReason.BadComm);
       }

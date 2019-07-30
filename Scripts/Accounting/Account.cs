@@ -807,17 +807,15 @@ namespace Server.Accounting
 			return list;
 		}
 
-		/// <summary>
-		/// Checks if a specific NetState is allowed access to this account.
-		/// </summary>
-		/// <param name="ns">NetState instance to check.</param>
-		/// <returns>True if allowed, false if not.</returns>
-		public bool HasAccess( NetState ns )
-		{
-			return ( ns != null && HasAccess( ns.Address ) );
-		}
+    /// <summary>
+    /// Checks if a specific NetState is allowed access to this account.
+    /// </summary>
+    /// <param name="ns">NetState instance to check.</param>
+    /// <returns>True if allowed, false if not.</returns>
+    public bool HasAccess(NetState ns) => ns != null && HasAccess(ns.Address);
 
-		public bool HasAccess( IPAddress ipAddress ) {
+    public bool HasAccess( IPAddress ipAddress )
+    {
 			AccessLevel level = AccountHandler.LockdownLevel;
 
 			if ( level > AccessLevel.Player )
@@ -825,9 +823,7 @@ namespace Server.Accounting
 				bool hasAccess = false;
 
 				if ( m_AccessLevel >= level )
-				{
 					hasAccess = true;
-				}
 				else
 				{
 					for ( int i = 0; !hasAccess && i < Length; ++i )
@@ -839,11 +835,13 @@ namespace Server.Accounting
 					}
 				}
 
-				if ( !hasAccess )
+        Console.WriteLine("{0} {1}", hasAccess ? "yes" : "no", m_AccessLevel);
+
+        if ( !hasAccess )
 					return false;
 			}
 
-			bool accessAllowed = ( IPRestrictions.Length == 0 || IPLimiter.IsExempt( ipAddress ) );
+			bool accessAllowed = IPRestrictions.Length == 0 || IPLimiter.IsExempt( ipAddress );
 
 			for ( int i = 0; !accessAllowed && i < IPRestrictions.Length; ++i )
 				accessAllowed = Utility.IPMatch( IPRestrictions[i], ipAddress );
@@ -903,9 +901,8 @@ namespace Server.Accounting
 		public bool CheckAccess( IPAddress ipAddress ) {
 			bool hasAccess = HasAccess( ipAddress );
 
-			if ( hasAccess ) {
+			if ( hasAccess )
 				LogAccess( ipAddress );
-			}
 
 			return hasAccess;
 		}

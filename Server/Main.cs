@@ -44,7 +44,7 @@ namespace Server
 
     private static bool m_Cache = true;
 
-    private static bool m_Profiling = true;
+    private static bool m_Profiling = false;
     private static DateTime m_ProfileStart;
     private static TimeSpan m_ProfileTime;
 

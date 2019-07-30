@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
@@ -447,6 +448,8 @@ namespace Server.Network
         return;
       }
 
+      Console.WriteLine("Send(p) {0:X}", p.PacketID);
+
       m_SendQueue.Enqueue(p);
     }
 
@@ -521,11 +524,14 @@ namespace Server.Network
         try
         {
           Packet p = await m_SendQueue.DequeueAsync();
+          Console.WriteLine("Dequeue Packet to Send {0:X}", p.PacketID);
 
           ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
+          Console.WriteLine("Compiled Packet for Sending... {0} {1}", buffer.Length, length);
 
           if (buffer.Length <= 0 || length <= 0)
           {
+            Console.WriteLine("Buffer is empty...");
             p.OnSend();
             return;
           }
@@ -537,8 +543,9 @@ namespace Server.Network
 
           prof?.Start();
 
-          Console.WriteLine("Sending Packet: {0:X}", p.PacketID);
+          Console.Write("Sending Packet: {0:X}...", p.PacketID);
           await Socket.SendAsync(buffer, SocketFlags.None);
+          Console.WriteLine("done");
 
           p.OnSend();
 
@@ -546,9 +553,14 @@ namespace Server.Network
         }
         catch (SocketException ex)
         {
+          Console.WriteLine(ex);
           TraceException(ex);
           Dispose();
           break;
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine(ex);
         }
       }
     }
@@ -559,16 +571,36 @@ namespace Server.Network
 
       while (true)
       {
+        Console.WriteLine("Looping Packet Handler!");
         ReadResult result = await pr.ReadAsync();
-        Console.WriteLine("Read from Writer");
-        if (!PacketHandlers.ProcessPacket(pump, this, pr, result.Buffer))
+        ReadOnlySequence<byte> seq = result.Buffer;
+        Console.WriteLine("Read from Writer {0}", seq.Length);
+
+        while (true)
         {
-          pr.Complete();
-          break;
+          SequencePosition? pos = PacketHandlers.ProcessPacket(pump, this, seq);
+          Console.WriteLine("Packet Processed");
+
+          if (pos == null)
+          {
+            Console.WriteLine("Disposed!");
+            pr.Complete();
+            break;
+          }
+
+          pr.AdvanceTo(pos.Value);
+          seq = seq.Slice(pos.Value);
+
+          Console.WriteLine("Processed Packet, Remaining Length: {0}", seq.Length);
         }
 
+        Console.WriteLine("Finished reading from writer!");
+
         if (result.IsCompleted || result.IsCanceled)
+        {
+          Console.WriteLine("Result is complete!");
           break;
+        }
       }
     }
 

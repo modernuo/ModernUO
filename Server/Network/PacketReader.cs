@@ -12,6 +12,8 @@ namespace Server.Network
 
     public SequencePosition Position => m_Reader.Position;
     public long Length => m_Reader.Length;
+    public long Consumed => m_Reader.Consumed;
+    public long Remaining => m_Reader.Remaining;
 
     public PacketReader(ReadOnlySequence<byte> seq)
     {
@@ -49,7 +51,10 @@ namespace Server.Network
       switch (origin)
       {
         case SeekOrigin.Begin:
-          m_Reader.Rewind(m_Reader.Consumed - Math.Max(offset, 0));
+          if (offset < m_Reader.Consumed)
+            m_Reader.Rewind(m_Reader.Consumed - Math.Max(offset, 0L));
+          else
+            m_Reader.Advance(offset - m_Reader.Consumed);
           break;
         case SeekOrigin.Current:
           if (offset < 0)
@@ -95,31 +100,27 @@ namespace Server.Network
 
     public string ReadUnicodeStringLE(int fixedLength)
     {
-      long bound = Math.Min(m_Reader.Consumed + (fixedLength << 1), m_Reader.Length);
-
       StringBuilder sb = new StringBuilder();
 
-      while (m_Reader.Consumed + 1 < bound && m_Reader.TryReadLittleEndian(out short c) && c != 0)
+      while (fixedLength-- > 0 && m_Reader.TryReadLittleEndian(out short c) && c != 0)
         sb.Append((char)c);
 
-      if (m_Reader.Consumed < bound)
-        m_Reader.Advance(bound - m_Reader.Consumed);
+      if (fixedLength > 0)
+        m_Reader.Advance(fixedLength);
 
       return sb.ToString();
     }
 
     public string ReadUnicodeStringLESafe(int fixedLength)
     {
-      long bound = Math.Min(m_Reader.Consumed + (fixedLength << 1), m_Reader.Length);
-
       StringBuilder sb = new StringBuilder();
 
-      while (m_Reader.Consumed + 1 < bound && m_Reader.TryReadLittleEndian(out short c) && c != 0)
+      while (fixedLength-- > 0 && m_Reader.TryReadLittleEndian(out short c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
-      if (m_Reader.Consumed < bound)
-        m_Reader.Advance(bound - m_Reader.Consumed);
+      if (fixedLength > 0)
+        m_Reader.Advance(fixedLength * 2);
 
       return sb.ToString();
     }
@@ -235,62 +236,54 @@ namespace Server.Network
 
     public string ReadUnicodeStringSafe(int fixedLength)
     {
-      long bound = Math.Min(m_Reader.Consumed + (fixedLength << 1), m_Reader.Length);
-
       StringBuilder sb = new StringBuilder();
 
-      while (m_Reader.Consumed + 1 < bound && m_Reader.TryReadBigEndian(out short c) && c != 0)
+      while (fixedLength-- > 0 && m_Reader.TryReadBigEndian(out short c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
-      if (m_Reader.Consumed < bound)
-        m_Reader.Advance(bound - m_Reader.Consumed);
+      if (fixedLength > 0)
+        m_Reader.Advance(fixedLength * 2);
 
       return sb.ToString();
     }
 
     public string ReadUnicodeString(int fixedLength)
     {
-      long bound = Math.Min(m_Reader.Consumed + (fixedLength << 1), m_Reader.Length);
-
       StringBuilder sb = new StringBuilder();
 
-      while (m_Reader.Consumed + 1 < bound && m_Reader.TryReadBigEndian(out short c) && c != 0)
+      while (fixedLength-- > 0 && m_Reader.TryReadBigEndian(out short c) && c != 0)
         sb.Append((char)c);
 
-      if (m_Reader.Consumed < bound)
-        m_Reader.Advance(bound - m_Reader.Consumed);
+      if (fixedLength > 0)
+        m_Reader.Advance(fixedLength * 2);
 
       return sb.ToString();
     }
 
     public string ReadStringSafe(int fixedLength)
     {
-      long bound = Math.Min(m_Reader.Consumed + fixedLength, m_Reader.Length);
-
       StringBuilder sb = new StringBuilder();
 
-      while (m_Reader.Consumed + 1 < bound && m_Reader.TryRead(out byte c) && c != 0)
+      while (fixedLength-- > 0 && m_Reader.TryRead(out byte c) && c != 0)
         if (IsSafeChar(c))
           sb.Append((char)c);
 
-      if (m_Reader.Consumed < bound)
-        m_Reader.Advance(bound - m_Reader.Consumed);
+      if (fixedLength > 0)
+        m_Reader.Advance(fixedLength);
 
       return sb.ToString();
     }
 
     public string ReadString(int fixedLength)
     {
-      long bound = Math.Min(m_Reader.Consumed + fixedLength, m_Reader.Length);
-
       StringBuilder sb = new StringBuilder();
 
-      while (m_Reader.Consumed + 1 < bound && m_Reader.TryRead(out byte c) && c != 0)
+      while (fixedLength-- > 0 && m_Reader.TryRead(out byte c) && c != 0)
         sb.Append((char)c);
 
-      if (m_Reader.Consumed < bound)
-        m_Reader.Advance(bound - m_Reader.Consumed);
+      if (fixedLength > 0)
+        m_Reader.Advance(fixedLength);
 
       return sb.ToString();
     }

@@ -315,11 +315,13 @@ namespace Server.Misc
 
       if (!(Accounts.GetAccount(un) is Account acct))
       {
-        if (AutoAccountCreation && un.Trim().Length > 0
-        ) // To prevent someone from making an account of just '' or a bunch of meaningless spaces
+        // To prevent someone from making an account of just '' or a bunch of meaningless spaces
+        if (AutoAccountCreation && un.Trim().Length > 0)
         {
           e.State.Account = acct = CreateAccount(e.State, un, pw);
           e.Accepted = acct?.CheckAccess(e.State) ?? false;
+
+          Console.WriteLine("Access Granted? {0} ({1})", e.Accepted ? "yes" : "no", un);
 
           if (!e.Accepted)
             e.RejectReason = ALRReason.BadComm;
