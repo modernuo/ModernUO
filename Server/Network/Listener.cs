@@ -61,7 +61,9 @@ namespace Server.Network
         Socket s;
         try
         {
+          Console.WriteLine("Listener: Waiting for Socket...");
           s = await m_Socket.AcceptAsync();
+          Console.WriteLine("Listener: Socket Connection Detected!");
         }
         catch (SocketException ex)
         {
@@ -70,7 +72,7 @@ namespace Server.Network
         }
 
         if (VerifySocket(s))
-          new NetState(s, pump);
+          _ = new NetState(s, pump);
         else
           Release(s);
       }

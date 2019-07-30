@@ -326,6 +326,7 @@ namespace Server.Network
 
       if (handler == null)
       {
+        Console.WriteLine("Invalid Packet ID {0:X}", packetId);
         r.Trace(ns);
         return -1;
       }

@@ -448,8 +448,6 @@ namespace Server.Network
         return;
       }
 
-      Console.WriteLine("Send(p) {0:X}", p.PacketID);
-
       m_SendQueue.Enqueue(p);
     }
 
@@ -478,33 +476,33 @@ namespace Server.Network
     private async Task ProcessRecvs()
     {
       PipeWriter w = m_RecvdPipe.Writer;
-      const int minBuffSize = 512;
+      //const int minBuffSize = 512;
 
       while (true)
       {
-        Console.WriteLine("Looping!");
         if (m_AsyncState.Paused)
         {
           await Timer.Pause(50);
           continue;
         }
 
+        Console.WriteLine("ProcessRecvs: Looping!");
+
         try
         {
-          Console.WriteLine("Waiting to Read!");
-          Memory<byte> memory = w.GetMemory(minBuffSize);
+          Console.WriteLine("ProcessRecvs: Waiting to Read!");
+          Memory<byte> memory = w.GetMemory();
           int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None);
-          Console.WriteLine("Read {0} bytes!", bytesRead);
+          Console.WriteLine("ProcessRecvs: Read {0} bytes!", bytesRead);
           if (bytesRead == 0)
             break;
 
           Interlocked.Exchange(ref m_NextCheckActivity, Core.TickCount + 90000);
 
           w.Advance(bytesRead);
-          Console.WriteLine("Advanced Writer {0} bytes!", bytesRead);
+          Console.WriteLine("ProcessRecvs: Advanced Writer {0} bytes!", bytesRead);
 
           FlushResult result = await w.FlushAsync();
-          Console.WriteLine("Flushed Writer {0} bytes!", bytesRead);
           if (result.IsCompleted || result.IsCanceled)
             break;
         }
@@ -513,6 +511,8 @@ namespace Server.Network
           break;
         }
       }
+
+      Console.WriteLine("ProcessRecvs: Writer Completed!");
 
       w.Complete();
     }
@@ -523,15 +523,16 @@ namespace Server.Network
       {
         try
         {
+          Console.WriteLine("ProcessSends: Looping!");
           Packet p = await m_SendQueue.DequeueAsync();
-          Console.WriteLine("Dequeue Packet to Send {0:X}", p.PacketID);
+          Console.WriteLine("ProcessSends: Dequeue Packet to Send {0:X}", p.PacketID);
 
           ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
-          Console.WriteLine("Compiled Packet for Sending... {0} {1}", buffer.Length, length);
+          Console.WriteLine("ProcessSends: Compiled Packet for Sending... {0} ({1})", buffer.Length, length);
 
           if (buffer.Length <= 0 || length <= 0)
           {
-            Console.WriteLine("Buffer is empty...");
+            Console.WriteLine("ProcessSends: Buffer is empty...");
             p.OnSend();
             return;
           }
@@ -543,11 +544,13 @@ namespace Server.Network
 
           prof?.Start();
 
-          Console.Write("Sending Packet: {0:X}...", p.PacketID);
+          Console.Write("ProcessSends: Sending Packet: {0:X}...", p.PacketID);
           await Socket.SendAsync(buffer, SocketFlags.None);
           Console.WriteLine("done");
 
           p.OnSend();
+
+          Console.WriteLine("ProcessSends: Finished onSend");
 
           prof?.Finish(length);
         }
@@ -571,27 +574,27 @@ namespace Server.Network
 
       while (true)
       {
-        Console.WriteLine("Looping Packet Handler!");
+        Console.WriteLine("HandlePackets: Looping!");
         ReadResult result = await pr.ReadAsync();
         ReadOnlySequence<byte> seq = result.Buffer;
-        Console.WriteLine("Read from Writer {0}", seq.Length);
+        Console.WriteLine("HandlePackets: Read from Writer {0}", seq.Length);
 
         long pos = PacketHandlers.ProcessPacket(pump, this, seq);
-        Console.WriteLine("Packet Processed {0}", pos);
+        Console.WriteLine("HandlePackets: Packet Processed {0}", pos);
 
         if (pos < 0)
         {
-          Console.WriteLine("Disposed!");
+          Console.WriteLine("HandlePackets: Disposed!");
           pr.Complete();
           break;
         }
 
         pr.AdvanceTo(seq.GetPosition(pos, seq.Start));
-        Console.WriteLine("Advanced Handler: {0} {1}", pos, seq.Length);
+        Console.WriteLine("HandlePackets: Advanced {0} ({1})", pos, seq.Length);
 
         if (result.IsCompleted || result.IsCanceled)
         {
-          Console.WriteLine("Result is complete!");
+          Console.WriteLine("HandlePackets: Result is complete!");
           break;
         }
       }
