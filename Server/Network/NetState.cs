@@ -585,31 +585,22 @@ namespace Server.Network
         ReadOnlySequence<byte> seq = result.Buffer;
         Console.WriteLine("HandlePackets: Read from Writer {0}", seq.Length);
         if (seq.Length == 0)
-        {
-          Console.WriteLine("HandlePackets: Disposed!");
-          pr.Complete();
           break;
-        }
 
         long pos = PacketHandlers.ProcessPacket(pump, this, seq);
         Console.WriteLine("HandlePackets: Packet Processed {0}", pos);
 
         if (pos < 0)
-        {
-          Console.WriteLine("HandlePackets: Disposed!");
-          pr.Complete();
           break;
-        }
 
         pr.AdvanceTo(seq.GetPosition(pos, seq.Start));
         Console.WriteLine("HandlePackets: Advanced {0} ({1})", pos, seq.Length);
 
         if (result.IsCompleted || result.IsCanceled)
-        {
-          Console.WriteLine("HandlePackets: Result is complete!");
           break;
-        }
       }
+
+      pr.Complete();
     }
 
     public PacketHandler GetHandler(int packetID)
