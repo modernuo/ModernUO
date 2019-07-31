@@ -20,6 +20,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
@@ -44,6 +45,7 @@ namespace Server.Network
 
   public delegate void NetStateCreatedCallback(NetState ns);
 
+  [Flags]
   public enum ProtocolChanges
   {
     NewSpellbook = 0x00000001,
@@ -186,9 +188,9 @@ namespace Server.Network
     public bool NewSecureTrading => (ProtocolChanges & ProtocolChanges.NewSecureTrading) != 0;
 
     public bool IsUOTDClient =>
-      (Flags & ClientFlags.UOTD) != 0 || m_Version != null && m_Version.Type == ClientType.UOTD;
+      (Flags & ClientFlags.UOTD) != 0 || m_Version?.Type == ClientType.UOTD;
 
-    public bool IsSAClient => m_Version != null && m_Version.Type == ClientType.SA;
+    public bool IsSAClient => m_Version?.Type == ClientType.SA;
 
     public List<SecureTrade> Trades { get; }
 
@@ -470,7 +472,7 @@ namespace Server.Network
     {
       m_RecvdPipe = new Pipe();
 
-      await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump));
+      await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump)).ConfigureAwait(false);
     }
 
     private async Task ProcessRecvs()
@@ -481,7 +483,7 @@ namespace Server.Network
       {
         if (m_AsyncState.Paused)
         {
-          await Timer.Pause(50);
+          await Timer.Pause(50).ConfigureAwait(false);
           continue;
         }
 
@@ -489,9 +491,9 @@ namespace Server.Network
 
         try
         {
-          Console.WriteLine("ProcessRecvs: Waiting to Read!");
           Memory<byte> memory = w.GetMemory();
-          int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None);
+          Console.WriteLine("ProcessRecvs: Waiting to Read!");
+          int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None).ConfigureAwait(false);
           Console.WriteLine("ProcessRecvs: Read {0} bytes!", bytesRead);
           if (bytesRead == 0)
             break;
@@ -501,7 +503,7 @@ namespace Server.Network
           w.Advance(bytesRead);
           Console.WriteLine("ProcessRecvs: Advanced Writer {0} bytes!", bytesRead);
 
-          FlushResult result = await w.FlushAsync();
+          FlushResult result = await w.FlushAsync().ConfigureAwait(false);
           if (result.IsCompleted || result.IsCanceled)
             break;
         }
@@ -514,6 +516,7 @@ namespace Server.Network
       Console.WriteLine("ProcessRecvs: Writer Completed!");
 
       w.Complete();
+      Dispose();
     }
 
     private async Task ProcessSends()
@@ -523,7 +526,9 @@ namespace Server.Network
         try
         {
           Console.WriteLine("ProcessSends: Looping!");
-          Packet p = await m_SendQueue.DequeueAsync();
+          Packet p = await (m_SendQueue?.DequeueAsync() ?? null).ConfigureAwait(false);
+          if (p == null)
+            break;
           Console.WriteLine("ProcessSends: Dequeue Packet to Send {0:X}", p.PacketID);
 
           ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
@@ -536,6 +541,8 @@ namespace Server.Network
             return;
           }
 
+          buffer = buffer.Slice(0, length);
+
           PacketSendProfile prof = null;
 
           if (Core.Profiling)
@@ -544,7 +551,7 @@ namespace Server.Network
           prof?.Start();
 
           Console.Write("ProcessSends: Sending Packet: {0:X}...", p.PacketID);
-          await Socket.SendAsync(buffer, SocketFlags.None);
+          await Socket.SendAsync(buffer, SocketFlags.None).ConfigureAwait(false);
           Console.WriteLine("done");
 
           p.OnSend();
@@ -577,6 +584,12 @@ namespace Server.Network
         ReadResult result = await pr.ReadAsync();
         ReadOnlySequence<byte> seq = result.Buffer;
         Console.WriteLine("HandlePackets: Read from Writer {0}", seq.Length);
+        if (seq.Length == 0)
+        {
+          Console.WriteLine("HandlePackets: Disposed!");
+          pr.Complete();
+          break;
+        }
 
         long pos = PacketHandlers.ProcessPacket(pump, this, seq);
         Console.WriteLine("HandlePackets: Packet Processed {0}", pos);
@@ -641,14 +654,33 @@ namespace Server.Network
       Console.WriteLine(ex);
     }
 
-    public bool IsDisposing { get; private set; }
+    private int m_Disposing;
 
-    public void Dispose()
+    public bool IsDisposing { get { return m_Disposing != 0; } private set { m_Disposing = value ? 1 : 0; } }
+
+    public virtual void Dispose()
     {
       Console.WriteLine("Netstate disposing!");
-      try { Socket.Shutdown(SocketShutdown.Both); } catch { /* ignored */ }
-      try { Socket.Close(); } catch { /* ignored */ }
-      try { Socket.Dispose(); } catch { /* ignored */ }
+
+      int disposing = Interlocked.Exchange(ref m_Disposing, 1);
+      if (disposing == 1)
+        return;
+
+      Task.Run(async () =>
+      {
+        m_RecvdPipe.Reader.CancelPendingRead();
+        m_RecvdPipe.Reader.Complete();
+        await m_RecvdPipe.Writer.FlushAsync().ConfigureAwait(false);
+        m_RecvdPipe.Writer.Complete();
+
+        try { Socket.Shutdown(SocketShutdown.Both); } catch (Exception ex) { TraceException(ex); }
+        try { Socket.Close(); } catch (Exception ex) { TraceException(ex); }
+
+        Socket = null;
+        m_RecvdPipe = null;
+        m_SendQueue = null;
+        m_Disposed.Enqueue(this);
+      });
     }
 
     public static void Initialize()
@@ -674,42 +706,39 @@ namespace Server.Network
       }
     }
 
-    private static Queue<NetState> m_Disposed = new Queue<NetState>();
+    private static ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
 
     public static void ProcessDisposedQueue()
     {
-      lock (m_Disposed)
+      int breakout = 0;
+
+      while (breakout++ < 200)
       {
-        int breakout = 0;
+        if (!m_Disposed.TryDequeue(out NetState ns))
+          break;
 
-        while (breakout < 200 && m_Disposed.Count > 0)
+        Mobile m = ns.Mobile;
+        IAccount a = ns.Account;
+
+        if (m != null)
         {
-          ++breakout;
-          NetState ns = m_Disposed.Dequeue();
-
-          Mobile m = ns.Mobile;
-          IAccount a = ns.Account;
-
-          if (m != null)
-          {
-            m.NetState = null;
-            ns.Mobile = null;
-          }
-
-          ns.Gumps.Clear();
-          ns.Menus.Clear();
-          ns.HuePickers.Clear();
-          ns.Account = null;
-          ns.ServerInfo = null;
-          ns.CityInfo = null;
-
-          Instances.Remove(ns);
-
-          if (a != null)
-            ns.WriteConsole("Disconnected. [{0} Online] [{1}]", Instances.Count, a);
-          else
-            ns.WriteConsole("Disconnected. [{0} Online]", Instances.Count);
+          m.NetState = null;
+          ns.Mobile = null;
         }
+
+        ns.Gumps.Clear();
+        ns.Menus.Clear();
+        ns.HuePickers.Clear();
+        ns.Account = null;
+        ns.ServerInfo = null;
+        ns.CityInfo = null;
+
+        Instances.Remove(ns);
+
+        if (a != null)
+          ns.WriteConsole("Disconnected. [{0} Online] [{1}]", Instances.Count, a);
+        else
+          ns.WriteConsole("Disconnected. [{0} Online]", Instances.Count);
       }
     }
 

@@ -62,7 +62,7 @@ namespace Server.Network
         try
         {
           Console.WriteLine("Listener: Waiting for Socket...");
-          s = await m_Socket.AcceptAsync();
+          s = await m_Socket.AcceptAsync().ConfigureAwait(false);
           Console.WriteLine("Listener: Socket Connection Detected!");
         }
         catch (SocketException ex)

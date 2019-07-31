@@ -306,12 +306,47 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
+    private static bool HandleSeed(NetState ns, byte packetId, ref PacketReader r)
+    {
+
+      if (packetId == 0xEF)
+      {
+        // new packet in client	6.0.5.0	replaces the traditional seed method with a	seed packet
+        // 0xEF	= 239 =	multicast IP, so this should never appear in a normal seed.	 So	this is	backwards compatible with older	clients.
+        ns.Seeded = true;
+        return true;
+      }
+
+      int seed = (packetId << 24) | (r.ReadByte() << 16) | r.ReadUInt16();
+
+      if (seed == 0)
+      {
+        Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", ns);
+        return false;
+      }
+
+      ns.m_Seed = seed;
+      ns.Seeded = true;
+      return true;
+    }
+
     public static long ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
     {
       PacketReader r = new PacketReader(seq);
+
       byte packetId = r.ReadByte();
       if (packetId == 0)
         packetId = 0xFF;
+
+      if (!ns.Seeded && !HandleSeed(ns, packetId, ref r))
+      {
+        ns.Dispose();
+        return -1;
+      }
+
+      // Seed only
+      if (r.Remaining == 0)
+        return r.Consumed;
 
       Console.WriteLine("Packet {0:X} ({1})", packetId, seq.Length);
 
@@ -2133,9 +2168,7 @@ namespace Server.Network
       IAccount a = state.Account;
 
       if (a == null || charSlot < 0 || charSlot >= a.Length)
-      {
         state.Dispose();
-      }
       else
       {
         Mobile m = a[charSlot];

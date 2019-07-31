@@ -11,10 +11,6 @@ namespace Server.Network
     private ConcurrentQueue<Work> m_WorkQueue = new ConcurrentQueue<Work>();
     public Listener[] Listeners => new Listener[0];
 
-    public MessagePump()
-    {
-    }
-
     public void AddListener(IPEndPoint ipep)
     {
       Listener[] listeners = new Listener[Listeners.Length + 1];
