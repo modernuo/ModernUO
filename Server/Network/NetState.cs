@@ -476,7 +476,6 @@ namespace Server.Network
     private async Task ProcessRecvs()
     {
       PipeWriter w = m_RecvdPipe.Writer;
-      //const int minBuffSize = 512;
 
       while (true)
       {

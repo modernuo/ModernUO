@@ -27,14 +27,19 @@ namespace Server.Network
     public void QueueWork(NetState ns, in ReadOnlySequence<byte> seq, OnPacketReceive onReceive)
     {
       m_WorkQueue.Enqueue(new Work(ns, seq, onReceive));
+      Core.Set();
     }
 
     public void DoWork()
     {
       int count = m_WorkQueue.Count;
-      while (count > 0)
-        if (m_WorkQueue.TryDequeue(out Work work))
-          work.OnReceive(work.State, new PacketReader(work.Sequence));
+      while (count-- > 0)
+      {
+        if (!m_WorkQueue.TryDequeue(out Work work))
+          break;
+
+        work.OnReceive(work.State, new PacketReader(work.Sequence));
+      }
     }
 
     // TODO: Optimize this with a pool
