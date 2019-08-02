@@ -4263,7 +4263,6 @@ namespace Server.Network
 
     public PlayServerAck(ServerInfo si) : base(0x8C, 11)
     {
-      Console.WriteLine("Auth ID: {0:X}", m_AuthID);
       int addr = Utility.GetAddressValue(si.Address.Address);
 
       m_Stream.Write((byte)addr);

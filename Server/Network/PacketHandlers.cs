@@ -316,8 +316,6 @@ namespace Server.Network
         return -1;
       }
 
-      Console.WriteLine("Packet {0:X} ({1})", packetId, seq.Length);
-
       if (!ns.Seeded)
       {
         if (packetId == 0xEF)
@@ -355,17 +353,14 @@ namespace Server.Network
 
       if (handler == null)
       {
-        Console.WriteLine("Invalid Packet ID {0:X}", packetId);
         r.Trace(ns);
         return -1;
       }
 
       long packetLength = handler.Length;
-      Console.WriteLine("Handler Length: {0}", handler.Length);
       if (handler.Length <= 0 && r.Length >= 3)
       {
         packetLength = r.ReadUInt16();
-        Console.WriteLine("Packet Length Set {0}", packetLength);
         if (packetLength < 3)
         {
           ns.Dispose();
@@ -374,10 +369,7 @@ namespace Server.Network
       }
 
       if (r.Length < packetLength)
-      {
-        Console.WriteLine("Packet is too small!");
         return 0;
-      }
 
       if (handler.Ingame && ns.Mobile?.Deleted != false)
       {
@@ -2665,7 +2657,6 @@ namespace Server.Network
 
     public static void LoginServerSeed(NetState state, PacketReader pvSrc)
     {
-      Console.WriteLine("Reading LoginServerSeed");
       state.m_Seed = pvSrc.ReadInt32();
       state.Seeded = true;
 
@@ -2749,7 +2740,6 @@ namespace Server.Network
 
       if (e.Rejected)
       {
-        Console.WriteLine("Rejected!");
         state.Account = null;
         AccountLogin_ReplyRej(state, ALRReason.BadComm);
       }
@@ -2782,13 +2772,11 @@ namespace Server.Network
 
       protected override void OnTick()
       {
-        Console.WriteLine("Tick!");
         if (m_State == null)
           Stop();
 
         if (m_State.Version != null)
         {
-          Console.WriteLine("FInishing Login!");
           m_State.BlockAllPackets = false;
           DoLogin(m_State, m_Mobile);
           Stop();
