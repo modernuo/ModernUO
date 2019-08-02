@@ -44,7 +44,7 @@ namespace Server
 
     private static bool m_Cache = true;
 
-    private static bool m_Profiling = false;
+    private static bool m_Profiling;
     private static DateTime m_ProfileStart;
     private static TimeSpan m_ProfileTime;
 
@@ -66,7 +66,7 @@ namespace Server
     private static readonly double _HighFrequency = 1000.0 / Stopwatch.Frequency;
     private static readonly double _LowFrequency = 1000.0 / TimeSpan.TicksPerSecond;
 
-    private static bool _UseHRT = true;
+    private static bool _UseHRT;
 
     public static readonly bool Is64Bit = Environment.Is64BitProcess;
     internal static ConsoleEventHandler m_ConsoleEventHandler;
@@ -112,7 +112,7 @@ namespace Server
 
     public static bool Service{ get; private set; }
 
-    public static bool Debug { get; private set; } = true;
+    public static bool Debug { get; private set; };
 
     internal static bool HaltOnWarning{ get; private set; }
 
