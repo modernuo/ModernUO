@@ -22,26 +22,47 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
-    <OutputPath>..\</OutputPath>
-    <OutDir>..\</OutDir>
+    <OutputPath>..\..\Distribution\</OutputPath>
+    <OutDir>..\..\Distribution</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>..\</OutputPath>
-    <OutDir>..\</OutDir>
+    <OutputPath>..\..\Distribution\</OutputPath>
+    <OutDir>..\..\Distribution</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
+    <PublishDir>..\..\Distribution</PublishDir>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="runuo.ico" />
+    <Content Include="Assemblies\rdrand.so">
+      <Link>%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\rdrand32.dll">
+      <Link>%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\rdrand64.dll">
+      <Link>%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\zlib32.dll">
+      <Link>%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\zlib64.dll">
+      <Link>%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.IO.Pipelines">
-      <HintPath>..\System.IO.Pipelines.dll</HintPath>
+      <HintPath>Assemblies\System.IO.Pipelines.dll</HintPath>
       <IncludeInPackage>false</IncludeInPackage>
     </Reference>
   </ItemGroup>
