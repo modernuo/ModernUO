@@ -321,8 +321,6 @@ namespace Server.Misc
           e.State.Account = acct = CreateAccount(e.State, un, pw);
           e.Accepted = acct?.CheckAccess(e.State) ?? false;
 
-          Console.WriteLine("Access Granted? {0} ({1})", e.Accepted ? "yes" : "no", un);
-
           if (!e.Accepted)
             e.RejectReason = ALRReason.BadComm;
         }
