@@ -16,7 +16,7 @@ ModernUO
 - Build `Scripts` project
 
 ### Building with .NET Core 3.0 SDK
-`dotnet publish /p:PublishProfile=<OS>`
+`dotnet publish /p:PublishProfiles=<OS>`
 - OS must be `Windows`, `Linux`, or `OSX`
 
 ### Troubleshooting / FAQ
