@@ -112,7 +112,7 @@ namespace Server
 
     public static bool Service{ get; private set; }
 
-    public static bool Debug { get; private set; };
+    public static bool Debug { get; private set; }
 
     internal static bool HaltOnWarning{ get; private set; }
 
@@ -322,16 +322,10 @@ namespace Server
 
       World.WaitForWriteCompletion();
 
-      Console.WriteLine("Writes completed");
-
       if (!m_Crashed)
         EventSink.InvokeShutdown(new ShutdownEventArgs());
 
-      Console.WriteLine("Finished shutdown events");
-
       Timer.TimerThread.Set();
-
-      Console.WriteLine("Timer Set");
 
       Console.WriteLine("done");
     }
