@@ -33,6 +33,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Server\Server.csproj">
       <Private>false</Private>
+      <IncludeInPackage>false</IncludeInPackage>
     </ProjectReference>
   </ItemGroup>
 </Project>

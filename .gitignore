@@ -5,10 +5,7 @@ ModernUO.dll
 ModernUO.dll.config
 ModernUO.*.json
 ModernUO.pdb
-/Assemblies/Scripts.CS.*.json
-/Assemblies/Scripts.CS.dll
-/Assemblies/Scripts.CS.dll.config
-/Assemblies/Scripts.CS.pdb
+/Assemblies
 /Logs/
 /Scripts/bin/
 /Scripts/obj/

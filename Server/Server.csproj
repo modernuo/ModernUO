@@ -40,6 +40,9 @@
     <Content Include="runuo.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.IO.Pipelines" Version="4.5.3" />
+    <Reference Include="System.IO.Pipelines">
+      <HintPath>..\System.IO.Pipelines.dll</HintPath>
+      <IncludeInPackage>false</IncludeInPackage>
+    </Reference>
   </ItemGroup>
 </Project>
