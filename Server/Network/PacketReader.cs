@@ -20,6 +20,8 @@ namespace Server.Network
       m_Reader = new SequenceReader<byte>(seq);
     }
 
+    public byte Peek() => m_Reader.TryPeek(out byte value) ? value : (byte)0;
+
     public void Trace(NetState state)
     {
       try
@@ -73,6 +75,8 @@ namespace Server.Network
 
       return m_Reader.Position;
     }
+
+    public bool TryReadByte(out byte value) => m_Reader.TryRead(out value);
 
     public int ReadInt32() => m_Reader.TryReadBigEndian(out int value) ? value : 0;
 

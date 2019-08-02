@@ -1,30 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <RootNamespace>Server</RootNamespace>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0'">
-	  <DefineConstants>NETCORE;NETSTANDARD</DefineConstants>
-    <AssemblyName>Scripts.CS.NETCORE</AssemblyName>
+    <DefineConstants>NETCORE;NETSTANDARD</DefineConstants>
+    <AssemblyName>Scripts.CS</AssemblyName>
   </PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <OutputPath>..\</OutputPath>
-    <OutDir>..\</OutDir>
+    <OutputPath>..\Assemblies\</OutputPath>
+    <OutDir>..\Assemblies\</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <OutputPath>..\</OutputPath>
-    <OutDir>..\</OutDir>
+    <OutputPath>..\Assemblies\</OutputPath>
+    <OutDir>..\Assemblies\</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
@@ -33,6 +30,8 @@
     <Content Include="SpecialSystems\README.TXT" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Server\Server.csproj" />
+    <ProjectReference Include="..\Server\Server.csproj">
+      <Private>false</Private>
+    </ProjectReference>
   </ItemGroup>
 </Project>

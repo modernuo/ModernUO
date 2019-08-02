@@ -62,6 +62,8 @@ namespace Server.Network
     ExtendedStatus = 0x00000800,
     NewMobileIncoming = 0x00001000,
     NewSecureTrading = 0x00002000,
+    UltimaStore = 0x00004000,
+    EndlessJourney = 0x00008000,
 
     Version400a = NewSpellbook,
     Version407a = Version400a | DamagePacket,
@@ -76,7 +78,9 @@ namespace Server.Network
     Version70160 = Version70130 | NewCharacterCreation,
     Version70300 = Version70160 | ExtendedStatus,
     Version70331 = Version70300 | NewMobileIncoming,
-    Version704565 = Version70331 | NewSecureTrading
+    Version704565 = Version70331 | NewSecureTrading,
+    Version70500 = Version704565 | UltimaStore,
+    Version70610 = Version70500 | EndlessJourney
   }
 
   public class AsyncState
@@ -127,6 +131,10 @@ namespace Server.Network
       {
         m_Version = value;
 
+        if (value >= m_Version70610)
+          ProtocolChanges = ProtocolChanges.Version70610;
+        if (value >= m_Version70500)
+          ProtocolChanges = ProtocolChanges.Version70500;
         if (value >= m_Version704565)
           ProtocolChanges = ProtocolChanges.Version704565;
         else if (value >= m_Version70331)
@@ -171,6 +179,8 @@ namespace Server.Network
     private static readonly ClientVersion m_Version70300 = new ClientVersion("7.0.30.0");
     private static readonly ClientVersion m_Version70331 = new ClientVersion("7.0.33.1");
     private static readonly ClientVersion m_Version704565 = new ClientVersion("7.0.45.65");
+    private static readonly ClientVersion m_Version70500 = new ClientVersion("7.0.50.0");
+    private static readonly ClientVersion m_Version70610 = new ClientVersion("7.0.61.0");
 
     public bool NewSpellbook => (ProtocolChanges & ProtocolChanges.NewSpellbook) != 0;
     public bool DamagePacket => (ProtocolChanges & ProtocolChanges.DamagePacket) != 0;
@@ -471,6 +481,7 @@ namespace Server.Network
     private async Task Start(MessagePump pump)
     {
       m_RecvdPipe = new Pipe();
+      Running = true;
 
       await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump)).ConfigureAwait(false);
     }
@@ -487,21 +498,16 @@ namespace Server.Network
           continue;
         }
 
-        Console.WriteLine("ProcessRecvs: Looping!");
-
         try
         {
           Memory<byte> memory = w.GetMemory();
-          Console.WriteLine("ProcessRecvs: Waiting to Read!");
           int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None).ConfigureAwait(false);
-          Console.WriteLine("ProcessRecvs: Read {0} bytes!", bytesRead);
           if (bytesRead == 0)
             break;
 
           Interlocked.Exchange(ref m_NextCheckActivity, Core.TickCount + 90000);
 
           w.Advance(bytesRead);
-          Console.WriteLine("ProcessRecvs: Advanced Writer {0} bytes!", bytesRead);
 
           FlushResult result = await w.FlushAsync().ConfigureAwait(false);
           if (result.IsCompleted || result.IsCanceled)
@@ -513,8 +519,6 @@ namespace Server.Network
         }
       }
 
-      Console.WriteLine("ProcessRecvs: Writer Completed!");
-
       w.Complete();
       Dispose();
     }
@@ -525,18 +529,14 @@ namespace Server.Network
       {
         try
         {
-          Console.WriteLine("ProcessSends: Looping!");
-          Packet p = await (m_SendQueue?.DequeueAsync() ?? null).ConfigureAwait(false);
+          Packet p = await m_SendQueue?.DequeueAsync() ?? null;
           if (p == null)
             break;
-          Console.WriteLine("ProcessSends: Dequeue Packet to Send {0:X}", p.PacketID);
 
           ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
-          Console.WriteLine("ProcessSends: Compiled Packet for Sending... {0} ({1})", buffer.Length, length);
 
           if (buffer.Length <= 0 || length <= 0)
           {
-            Console.WriteLine("ProcessSends: Buffer is empty...");
             p.OnSend();
             return;
           }
@@ -550,13 +550,9 @@ namespace Server.Network
 
           prof?.Start();
 
-          Console.Write("ProcessSends: Sending Packet: {0:X}...", p.PacketID);
           await Socket.SendAsync(buffer, SocketFlags.None).ConfigureAwait(false);
-          Console.WriteLine("done");
 
           p.OnSend();
-
-          Console.WriteLine("ProcessSends: Finished onSend");
 
           prof?.Finish(length);
         }
@@ -580,21 +576,17 @@ namespace Server.Network
 
       while (true)
       {
-        Console.WriteLine("HandlePackets: Looping!");
         ReadResult result = await pr.ReadAsync();
         ReadOnlySequence<byte> seq = result.Buffer;
-        Console.WriteLine("HandlePackets: Read from Writer {0}", seq.Length);
         if (seq.Length == 0)
           break;
 
         long pos = PacketHandlers.ProcessPacket(pump, this, seq);
-        Console.WriteLine("HandlePackets: Packet Processed {0}", pos);
 
-        if (pos < 0)
+        if (pos <= 0)
           break;
 
         pr.AdvanceTo(seq.GetPosition(pos, seq.Start));
-        Console.WriteLine("HandlePackets: Advanced {0} ({1})", pos, seq.Length);
 
         if (result.IsCompleted || result.IsCanceled)
           break;
@@ -651,8 +643,6 @@ namespace Server.Network
 
     public virtual void Dispose()
     {
-      Console.WriteLine("Netstate disposing!");
-
       int disposing = Interlocked.Exchange(ref m_Disposing, 1);
       if (disposing == 1)
         return;

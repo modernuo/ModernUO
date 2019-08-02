@@ -189,7 +189,7 @@ namespace Server.Network
       else
       {
         Encoding.ASCII.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-        UnderlyingStream.Position += size - length;
+        UnderlyingStream.Position += size;
       }
     }
 
@@ -235,7 +235,7 @@ namespace Server.Network
     ///   Writes a fixed-length little-endian unicode string value to the underlying stream. To fit (size), the string content is
     ///   either truncated or padded with null characters.
     /// </summary>
-    public void WriteLittleUniFixed(string value, int count)
+    public void WriteLittleUniFixed(string value, int size)
     {
       if (value == null)
       {
@@ -244,19 +244,19 @@ namespace Server.Network
       }
 
       int length = value.Length;
-      int size = count * 2;
+      size *= 2;
 
       UnderlyingStream.SetLength(UnderlyingStream.Length + size);
 
-      if (length >= count)
+      if (length * 2 >= size)
       {
         UnderlyingStream.Position +=
-          Encoding.Unicode.GetBytes(value, 0, count, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
+          Encoding.Unicode.GetBytes(value, 0, size, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
       }
       else
       {
         Encoding.Unicode.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-        UnderlyingStream.Position += size - (length * 2);
+        UnderlyingStream.Position += size;
       }
     }
 
@@ -284,7 +284,7 @@ namespace Server.Network
     ///   Writes a fixed-length big-endian unicode string value to the underlying stream. To fit (size), the string content is
     ///   either truncated or padded with null characters.
     /// </summary>
-    public void WriteBigUniFixed(string value, int count)
+    public void WriteBigUniFixed(string value, int size)
     {
       if (value == null)
       {
@@ -293,19 +293,19 @@ namespace Server.Network
       }
 
       int length = value.Length;
-      int size = count * 2;
+      size *= 2;
 
       UnderlyingStream.SetLength(UnderlyingStream.Length + size);
 
-      if (length >= count)
+      if (length * 2 >= size )
       {
         UnderlyingStream.Position +=
-          Encoding.BigEndianUnicode.GetBytes(value, 0, count, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
+          Encoding.BigEndianUnicode.GetBytes(value, 0, size, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
       }
       else
       {
         Encoding.BigEndianUnicode.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-        UnderlyingStream.Position += size - (length * 2);
+        UnderlyingStream.Position += size;
       }
     }
 

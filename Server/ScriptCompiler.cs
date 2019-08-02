@@ -34,28 +34,22 @@ namespace Server
     private static TypeCache m_NullCache;
     public static Assembly[] Assemblies { get; set; }
 
-    // TODO: Make this more robust
-#if NETCORE
-    public static string ScriptsPath = "Scripts.CS.NETCORE.dll";
-#else
-    public static string ScriptsPath = "Scripts.CS.NETFULL.dll";
-#endif
+    public static string ScriptsPath = EnsureDirectory("Assemblies");
 
-    public static bool LoadScripts()
+    public static bool LoadScripts(string path = null)
     {
-      string scriptsPath = Path.Combine(Core.BaseDirectory, ScriptsPath);
-      if (File.Exists(ScriptsPath))
-      {
-#if NETCORE
-        Assembly scripts = AssemblyLoadContext.Default.LoadFromAssemblyPath(scriptsPath);
-#else
-        Assembly scripts = Assembly.LoadFrom(scriptsPath);
-#endif
-        Assemblies = new Assembly[] { scripts };
-        return true;
-      }
+      string[] files = Directory.GetFiles(path ?? ScriptsPath, "*.dll");
 
-      return false;
+      Assemblies = new Assembly[files.Length];
+
+      for (int i = 0; i < files.Length; i++)
+#if NETCORE
+        Assemblies[i] = AssemblyLoadContext.Default.LoadFromAssemblyPath(files[i]);
+#else
+        Assemblies[i] = Assembly.LoadFrom(files[i]);
+#endif
+
+      return files.Length > 0;
     }
 
     public static void Invoke(string method)
@@ -123,12 +117,14 @@ namespace Server
       return type ?? GetTypeCache(Core.Assembly).GetTypeByName(name, ignoreCase);
     }
 
-    public static void EnsureDirectory(string dir)
+    public static string EnsureDirectory(string dir)
     {
       string path = Path.Combine(Core.BaseDirectory, dir);
 
       if (!Directory.Exists(path))
         Directory.CreateDirectory(path);
+
+      return path;
     }
   }
 

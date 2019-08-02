@@ -306,49 +306,43 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
-    private static bool HandleSeed(NetState ns, byte packetId, ref PacketReader r)
-    {
-
-      if (packetId == 0xEF)
-      {
-        // new packet in client	6.0.5.0	replaces the traditional seed method with a	seed packet
-        // 0xEF	= 239 =	multicast IP, so this should never appear in a normal seed.	 So	this is	backwards compatible with older	clients.
-        ns.Seeded = true;
-        return true;
-      }
-
-      int seed = (packetId << 24) | (r.ReadByte() << 16) | r.ReadUInt16();
-
-      if (seed == 0)
-      {
-        Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", ns);
-        return false;
-      }
-
-      ns.m_Seed = seed;
-      ns.Seeded = true;
-      return true;
-    }
-
     public static long ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
     {
       PacketReader r = new PacketReader(seq);
 
-      byte packetId = r.ReadByte();
-      if (packetId == 0)
-        packetId = 0xFF;
-
-      if (!ns.Seeded && !HandleSeed(ns, packetId, ref r))
+      if (!r.TryReadByte(out byte packetId))
       {
         ns.Dispose();
         return -1;
       }
 
-      // Seed only
-      if (r.Remaining == 0)
-        return r.Consumed;
-
       Console.WriteLine("Packet {0:X} ({1})", packetId, seq.Length);
+
+      if (!ns.Seeded)
+      {
+        if (packetId == 0xEF)
+        {
+          // new packet in client	6.0.5.0	replaces the traditional seed method with a	seed packet
+          // 0xEF	= 239 =	multicast IP, so this should never appear in a normal seed.	 So	this is	backwards compatible with older	clients.
+          ns.Seeded = true;
+        }
+        else
+        {
+          int seed = (packetId << 24) | (r.ReadByte() << 16) | (r.ReadByte() << 8) | r.ReadByte();
+
+          if (seed == 0)
+          {
+            Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", ns);
+            ns.Dispose();
+            return -1;
+          }
+
+          ns.m_Seed = seed;
+          ns.Seeded = true;
+
+          return 4;
+        }
+      }
 
       if (ns.CheckEncrypted(packetId))
       {
@@ -367,10 +361,11 @@ namespace Server.Network
       }
 
       long packetLength = handler.Length;
-      Console.WriteLine("Handler Length: {0} ({1})", handler.Length, packetLength);
+      Console.WriteLine("Handler Length: {0}", handler.Length);
       if (handler.Length <= 0 && r.Length >= 3)
       {
-        packetLength = r.ReadInt16();
+        packetLength = r.ReadUInt16();
+        Console.WriteLine("Packet Length Set {0}", packetLength);
         if (packetLength < 3)
         {
           ns.Dispose();
@@ -380,7 +375,7 @@ namespace Server.Network
 
       if (r.Length < packetLength)
       {
-        Console.WriteLine("Packet is to small!");
+        Console.WriteLine("Packet is too small!");
         return 0;
       }
 
@@ -394,8 +389,6 @@ namespace Server.Network
         ns.Dispose();
         return -1;
       }
-
-      Console.WriteLine("Processing...");
 
       ThrottlePacketCallback throttler = handler.ThrottleCallback;
       TimeSpan throttled = handler.ThrottleCallback?.Invoke(ns) ?? TimeSpan.Zero;
@@ -414,7 +407,7 @@ namespace Server.Network
 
       prof?.Finish(packetLength);
 
-      return handler.Length == 0 ? handler.Length : packetLength;
+      return packetLength;
     }
 
     private static void UnhandledBF(NetState state, PacketReader pvSrc)
@@ -1718,6 +1711,7 @@ namespace Server.Network
     {
       int packetID = pvSrc.ReadUInt16();
 
+      Console.WriteLine("Extended Packet: {0:X}", packetID);
       PacketHandler ph = GetExtendedHandler(packetID);
 
       if (ph == null)
@@ -2125,7 +2119,7 @@ namespace Server.Network
       pvSrc.Seek(2, SeekOrigin.Current);
       int flags = pvSrc.ReadInt32();
 
-      if (FeatureProtection.DisabledFeatures != 0 && ThirdPartyAuthCallback != null)
+/*      if (FeatureProtection.DisabledFeatures != 0 && ThirdPartyAuthCallback != null)
       {
         bool authOK = false;
 
@@ -2146,18 +2140,18 @@ namespace Server.Network
         }
 
         ThirdPartyAuthCallback(state, authOK);
-      }
-      else
-      {
+      }*/
+/*      else
+      {*/
         pvSrc.Seek(24, SeekOrigin.Current);
-      }
+/*      }*/
 
-      if (ThirdPartyHackedCallback != null)
+/*      if (ThirdPartyHackedCallback != null)
       {
         pvSrc.Seek(-2, SeekOrigin.Current);
         if (pvSrc.ReadUInt16() == 0xDEAD)
           ThirdPartyHackedCallback(state, true);
-      }
+      }*/
 
       if (!state.Running)
         return;
@@ -2191,7 +2185,6 @@ namespace Server.Network
           state.Dispose();
           return;
         }
-
 
         m.NetState?.Dispose();
 
@@ -2318,8 +2311,6 @@ namespace Server.Network
       pvSrc.Seek(8, SeekOrigin.Current);
       int prof = pvSrc.ReadByte();
       pvSrc.Seek(15, SeekOrigin.Current);
-
-      //bool female = pvSrc.ReadBoolean();
 
       int genderRace = pvSrc.ReadByte();
 
@@ -2791,11 +2782,13 @@ namespace Server.Network
 
       protected override void OnTick()
       {
+        Console.WriteLine("Tick!");
         if (m_State == null)
           Stop();
 
         if (m_State.Version != null)
         {
+          Console.WriteLine("FInishing Login!");
           m_State.BlockAllPackets = false;
           DoLogin(m_State, m_Mobile);
           Stop();
