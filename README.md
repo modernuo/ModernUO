@@ -8,26 +8,30 @@ ModernUO
 - See [Goals](./GOALS.md)
 
 ### Requirements
-- .NET Framework 4.7 or Mono 5.10+
+- .NET Core 3.0 (Preview 7) or newer
 - zlib (Linux only)
-- [DotNetCompilerPlatform](https://www.nuget.org/packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform) v2.0+ (Windows Only)
 
-### Building using Visual Studio (Recommended)
-- Build `Server` project
-  - Building with Visual Studio for Windows will install `DotNetCompilerPlatform` automatically.
+### Building with Visual Studio 2019
+- Publish `Server` project
+- Build `Scripts` project
 
-### Building for Windows (Without Visual Studio)
-`C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc /optimize /unsafe /t:exe /out:RunUO.exe /win32icon:Server\runuo.ico /d:NEWTIMERS /recurse:Server\\*.cs`
-- DotNetCompilerPlatform must be installed with the `csc.exe` file in the `roslyn` folder at the root of the repository.
+### Building with .NET Core 3.0 SDK
+`dotnet publish /p:PublishProfiles=<profile>`
+- Windows x64: `Windows`
+- Linux/MacOSX x64 w/ .NET Core 3 installed: `Unix-Portable`
+- Linux x64 w/ .NET Core 3: `Linux-SelfContained`
+- MacOSX x64 /wo .NET Core 3: `MacOSX-SelfContained`
 
-### Building for Mac/Linux (Without Visual Studio)
-`mcs -optimize+ -unsafe -t:exe -out:RunUO.exe -win32icon:Server/runuo.ico -nowarn:219,414 -d:NEWTIMERS -d:MONO -recurse:"Server/*".cs`
+#### Running on Windows
+- Follow the build instructions
+- Run `Distribution\ModernUO.exe` or `dotnet ModernUO.dll`
 
-### Running on Mac/Linux (MONO)
-`mono RunUO.exe`
+#### Running on MacOSX or Linux
+- Follow the build instructions
+- Run `Distribution\ModernUO` or `dotnet ModernUO.dll`
+
+#### Running on Linux
+- Follow the build instructions
+- Run `Distribution\ModernUO` or `dotnet ModernUO.dll`
 
 ### Troubleshooting / FAQ
-
-#### Scripts fail to compile on Windows
-This is usually caused nuget packages not being installed. Install the required packages and rebuild the Server project.
-Note: The required nuget packages can be set to automatically restore on build with this [setting](https://docs.microsoft.com/en-us/nuget/consume-packages/media/restore-01-autorestoreoptions.png)

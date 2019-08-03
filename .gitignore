@@ -1,25 +1,14 @@
-RunUO.exe
-RunUO.exe.config
-RunUO.pdb
-RunUO.vshost.exe
-RunUO.vshost.exe.config
-/Logs/
-/Scripts/bin/
-/Scripts/obj/
-/Scripts/Output
-/Server/bin/
-/Server/obj/
+/Distribution/ModernUO
+/Distribution/ModernUO.*
+/Distribution/Assemblies
+/Distribution/Logs
+/Distribution/Backups
+/Distribution/Saves
+/Projects/Scripts/obj
+/Projects/Server/obj
 
 *.user
-*.suo
 /.idea
-/Backups
-/Saves
-
-/packages
 /.vs
-/roslyn
-Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 
 .DS_Store
