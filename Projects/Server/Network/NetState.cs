@@ -26,6 +26,7 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Server.Accounting;
@@ -477,10 +478,14 @@ namespace Server.Network
     }
 
     private Pipe m_RecvdPipe;
+    private Pipe m_SendPipe;
+
+    public PipeWriter SendPipeWriter => m_SendPipe.Writer;
 
     private async Task Start(MessagePump pump)
     {
       m_RecvdPipe = new Pipe();
+      m_SendPipe = new Pipe();
       Running = true;
 
       await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump)).ConfigureAwait(false);
@@ -494,6 +499,7 @@ namespace Server.Network
       {
         if (m_AsyncState.Paused)
         {
+          Interlocked.Exchange(ref m_NextCheckActivity, Core.TickCount + 90000);
           await Timer.Pause(50).ConfigureAwait(false);
           continue;
         }
@@ -523,53 +529,6 @@ namespace Server.Network
       Dispose();
     }
 
-    private async Task ProcessSends()
-    {
-      while (true)
-      {
-        try
-        {
-          Packet p = await m_SendQueue?.DequeueAsync() ?? null;
-          if (p == null)
-            break;
-
-          ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
-
-          if (buffer.Length <= 0 || length <= 0)
-          {
-            p.OnSend();
-            return;
-          }
-
-          buffer = buffer.Slice(0, length);
-
-          PacketSendProfile prof = null;
-
-          if (Core.Profiling)
-            prof = PacketSendProfile.Acquire(p.GetType());
-
-          prof?.Start();
-
-          await Socket.SendAsync(buffer, SocketFlags.None).ConfigureAwait(false);
-
-          p.OnSend();
-
-          prof?.Finish(length);
-        }
-        catch (SocketException ex)
-        {
-          Console.WriteLine(ex);
-          TraceException(ex);
-          Dispose();
-          break;
-        }
-        catch (Exception ex)
-        {
-          Console.WriteLine(ex);
-        }
-      }
-    }
-
     private async Task HandlePackets(MessagePump pump)
     {
       PipeReader pr = m_RecvdPipe.Reader;
@@ -587,6 +546,50 @@ namespace Server.Network
           break;
 
         pr.AdvanceTo(seq.GetPosition(pos, seq.Start));
+
+        if (result.IsCompleted || result.IsCanceled)
+          break;
+      }
+
+      pr.Complete();
+    }
+
+    private async Task ProcessSends()
+    {
+      PipeReader pr = m_SendPipe.Reader;
+
+      while (true)
+      {
+        ReadResult result = await pr.ReadAsync();
+        ReadOnlySequence<byte> seq = result.Buffer;
+        if (seq.Length == 0)
+          break;
+
+        if (!SequenceMarshal.TryGetReadOnlyMemory(seq, out ReadOnlyMemory<byte> memory))
+          break;
+
+        //PacketSendProfile prof = null;
+
+        //if (Core.Profiling)
+        //  prof = PacketSendProfile.Acquire(p.GetType());
+
+        //prof?.Start();
+
+        try
+        {
+          int bytesWritten = await Socket.SendAsync(memory, SocketFlags.None);
+
+          pr.AdvanceTo(seq.GetPosition(bytesWritten));
+        }
+        catch (SocketException ex)
+        {
+          Console.WriteLine(ex);
+          TraceException(ex);
+          Dispose();
+          break;
+        }
+
+        //prof?.Finish(seq.Length);
 
         if (result.IsCompleted || result.IsCanceled)
           break;

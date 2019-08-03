@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7238,7 +7239,8 @@ namespace Server
         m_InDeltaQueue = true;
 
         if (_processing)
-          lock (m_DeltaQueueR)
+        {
+          lock(m_DeltaQueueR)
           {
             m_DeltaQueueR.Enqueue(this);
 
@@ -7256,6 +7258,7 @@ namespace Server
               // ignored
             }
           }
+        }
         else
           m_DeltaQueue.Enqueue(this);
       }

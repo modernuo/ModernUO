@@ -475,12 +475,13 @@ namespace Server
         {
           m_Signal.WaitOne();
 
-          Task.WaitAll(
-            Task.Run(() => Mobile.ProcessDeltaQueue()),
-            Task.Run(() => Item.ProcessDeltaQueue()),
-            Task.Run(() => Timer.Slice()),
-            Task.Run(() => MessagePump.DoWork())
+          Task.WhenAll(
+            Task.Run(Mobile.ProcessDeltaQueue),
+            Task.Run(Item.ProcessDeltaQueue)
           );
+
+          Timer.Slice();
+          MessagePump.DoWork();
 
           NetState.ProcessDisposedQueue();
 

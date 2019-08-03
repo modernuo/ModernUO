@@ -1080,6 +1080,11 @@ namespace Server
       RandomImpl.NextBytes(buffer);
     }
 
+    public static void RandomBytes(Span<byte> buffer)
+    {
+      RandomImpl.NextBytes(buffer);
+    }
+
     public static double RandomDouble()
     {
       return RandomImpl.NextDouble();
