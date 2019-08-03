@@ -349,7 +349,6 @@ namespace Server
     {
       World.Broadcast(0x35, true, "Generating doors, please wait.");
 
-      NetState.FlushAll();
       NetState.Pause();
 
       m_Map = Map.Trammel;

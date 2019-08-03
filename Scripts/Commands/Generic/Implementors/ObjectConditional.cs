@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using CPA = Server.CommandPropertyAttribute;
 
 namespace Server.Commands.Generic
 {
@@ -32,7 +31,7 @@ namespace Server.Commands.Generic
     public void Compile(ref AssemblyEmitter emitter)
     {
       if (emitter == null)
-        emitter = new AssemblyEmitter("__dynamic", false);
+        emitter = new AssemblyEmitter("__dynamic");
 
       m_Conditionals = new IConditional[m_Conditions.Length];
 

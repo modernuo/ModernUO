@@ -8,26 +8,15 @@ ModernUO
 - See [Goals](./GOALS.md)
 
 ### Requirements
-- .NET Framework 4.7 or Mono 5.10+
+- .NET Core 3.0 (Preview 7) or newer
 - zlib (Linux only)
-- [DotNetCompilerPlatform](https://www.nuget.org/packages/Microsoft.CodeDom.Providers.DotNetCompilerPlatform) v2.0+ (Windows Only)
 
-### Building using Visual Studio (Recommended)
-- Build `Server` project
-  - Building with Visual Studio for Windows will install `DotNetCompilerPlatform` automatically.
+### Building with Visual Studio 2019
+- Publish `Server` project
+- Build `Scripts` project
 
-### Building for Windows (Without Visual Studio)
-`C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc /optimize /unsafe /t:exe /out:RunUO.exe /win32icon:Server\runuo.ico /d:NEWTIMERS /recurse:Server\\*.cs`
-- DotNetCompilerPlatform must be installed with the `csc.exe` file in the `roslyn` folder at the root of the repository.
-
-### Building for Mac/Linux (Without Visual Studio)
-`mcs -optimize+ -unsafe -t:exe -out:RunUO.exe -win32icon:Server/runuo.ico -nowarn:219,414 -d:NEWTIMERS -d:MONO -recurse:"Server/*".cs`
-
-### Running on Mac/Linux (MONO)
-`mono RunUO.exe`
+### Building with .NET Core 3.0 SDK
+`dotnet publish /p:PublishProfile=<OS>`
+- OS must be `Windows`, `Linux`, or `OSX`
 
 ### Troubleshooting / FAQ
-
-#### Scripts fail to compile on Windows
-This is usually caused nuget packages not being installed. Install the required packages and rebuild the Server project.
-Note: The required nuget packages can be set to automatically restore on build with this [setting](https://docs.microsoft.com/en-us/nuget/consume-packages/media/restore-01-autorestoreoptions.png)

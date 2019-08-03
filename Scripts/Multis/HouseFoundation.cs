@@ -1,8 +1,11 @@
 using System;
+using System.Buffers;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -2197,14 +2200,8 @@ namespace Server.Multis
   {
     public const int MaxItemsPerStairBuffer = 750;
 
-    private static BufferPool m_PlaneBufferPool = new BufferPool("Housing Plane Buffers", 9, 0x400);
-    private static BufferPool m_StairBufferPool = new BufferPool("Housing Stair Buffers", 6, MaxItemsPerStairBuffer * 5);
-    private static BufferPool m_DeflatedBufferPool = new BufferPool("Housing Deflated Buffers", 1, 0x2000);
-
-    private static Queue<SendQueueEntry> m_SendQueue;
-    private static object m_SendQueueSyncRoot;
+    private static ConcurrentQueue<SendQueueEntry> m_SendQueue;
     private static AutoResetEvent m_Sync;
-    private static Thread m_Thread;
 
     private byte[][] m_PlaneBuffers;
 
@@ -2214,13 +2211,10 @@ namespace Server.Multis
 
     static DesignStateDetailed()
     {
-      m_SendQueue = new Queue<SendQueueEntry>();
-      m_SendQueueSyncRoot = ((ICollection)m_SendQueue).SyncRoot;
+      m_SendQueue = new ConcurrentQueue<SendQueueEntry>();
       m_Sync = new AutoResetEvent(false);
 
-      m_Thread = new Thread(CompressionThread);
-      m_Thread.Name = "Housing Compression Thread";
-      m_Thread.Start();
+      Task.Run(ProcessCompression);
     }
 
     public DesignStateDetailed(uint serial, int revision, int xMin, int yMin, int xMax, int yMax, MultiTileEntry[] tiles)
@@ -2243,19 +2237,13 @@ namespace Server.Multis
 
       m_PlaneBuffers = new byte[9][];
 
-      lock (m_PlaneBufferPool)
-      {
-        for (int i = 0; i < m_PlaneBuffers.Length; ++i)
-          m_PlaneBuffers[i] = m_PlaneBufferPool.AcquireBuffer();
-      }
+      for (int i = 0; i < m_PlaneBuffers.Length; ++i)
+        m_PlaneBuffers[i] = ArrayPool<byte>.Shared.Rent(0x400);
 
       m_StairBuffers = new byte[6][];
 
-      lock (m_StairBufferPool)
-      {
-        for (int i = 0; i < m_StairBuffers.Length; ++i)
-          m_StairBuffers[i] = m_StairBufferPool.AcquireBuffer();
-      }
+      for (int i = 0; i < m_StairBuffers.Length; ++i)
+        m_StairBuffers[i] = ArrayPool<byte>.Shared.Rent(MaxItemsPerStairBuffer * 5);
 
       Clear(m_PlaneBuffers[0], width * height * 2);
 
@@ -2357,17 +2345,13 @@ namespace Server.Multis
 
       int planeCount = 0;
 
-      byte[] m_DeflatedBuffer;
-      lock (m_DeflatedBufferPool)
-      {
-        m_DeflatedBuffer = m_DeflatedBufferPool.AcquireBuffer();
-      }
+      byte[] m_DeflatedBuffer = ArrayPool<byte>.Shared.Rent(0x2000);
 
       for (int i = 0; i < m_PlaneBuffers.Length; ++i)
       {
         if (!m_PlaneUsed[i])
         {
-          m_PlaneBufferPool.ReleaseBuffer(m_PlaneBuffers[i]);
+          ArrayPool<byte>.Shared.Return(m_PlaneBuffers[i]);
           continue;
         }
 
@@ -2402,10 +2386,7 @@ namespace Server.Multis
         Write(m_DeflatedBuffer, 0, deflatedLength);
 
         totalLength += 4 + deflatedLength;
-        lock (m_PlaneBufferPool)
-        {
-          m_PlaneBufferPool.ReleaseBuffer(inflatedBuffer);
-        }
+        ArrayPool<byte>.Shared.Return(inflatedBuffer);
       }
 
       int totalStairBuffersUsed = (totalStairsUsed + (MaxItemsPerStairBuffer - 1)) / MaxItemsPerStairBuffer;
@@ -2443,16 +2424,10 @@ namespace Server.Multis
         totalLength += 4 + deflatedLength;
       }
 
-      lock (m_StairBufferPool)
-      {
-        for (int i = 0; i < m_StairBuffers.Length; ++i)
-          m_StairBufferPool.ReleaseBuffer(m_StairBuffers[i]);
-      }
+      for (int i = 0; i < m_StairBuffers.Length; ++i)
+        ArrayPool<byte>.Shared.Return(m_StairBuffers[i]);
 
-      lock (m_DeflatedBufferPool)
-      {
-        m_DeflatedBufferPool.ReleaseBuffer(m_DeflatedBuffer);
-      }
+      ArrayPool<byte>.Shared.Return(m_DeflatedBuffer);
 
       m_Stream.Seek(15, SeekOrigin.Begin);
 
@@ -2504,28 +2479,16 @@ namespace Server.Multis
         buffer[i] = 0;
     }
 
-    public static void CompressionThread()
+    public static void ProcessCompression()
     {
       while (!Core.Closing)
       {
         m_Sync.WaitOne();
 
-        int count;
+        int count = m_SendQueue.Count;
 
-        lock (m_SendQueueSyncRoot)
+        while (count > 0 && m_SendQueue.TryDequeue(out SendQueueEntry sqe))
         {
-          count = m_SendQueue.Count;
-        }
-
-        while (count > 0)
-        {
-          SendQueueEntry sqe;
-
-          lock (m_SendQueueSyncRoot)
-          {
-            sqe = m_SendQueue.Dequeue();
-          }
-
           try
           {
             Packet p;
@@ -2568,23 +2531,15 @@ namespace Server.Multis
           }
           finally
           {
-            lock (m_SendQueueSyncRoot)
-            {
-              count = m_SendQueue.Count;
-            }
+            count = m_SendQueue.Count;
           }
-
-          //sqe.m_NetState.Send( new DesignStateDetailed( sqe.m_Serial, sqe.m_Revision, sqe.m_xMin, sqe.m_yMin, sqe.m_xMax, sqe.m_yMax, sqe.m_Tiles ) );
         }
       }
     }
 
     public static void SendDetails(NetState ns, HouseFoundation house, DesignState state)
     {
-      lock (m_SendQueueSyncRoot)
-      {
-        m_SendQueue.Enqueue(new SendQueueEntry(ns, house, state));
-      }
+      m_SendQueue.Enqueue(new SendQueueEntry(ns, house, state));
 
       m_Sync.Set();
     }

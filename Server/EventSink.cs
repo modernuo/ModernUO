@@ -608,10 +608,10 @@ namespace Server
 
     public void AddServer(string name, IPEndPoint address)
     {
-      AddServer(name, 0, TimeZone.CurrentTimeZone, address);
+      AddServer(name, 0, TimeZoneInfo.Local, address);
     }
 
-    public void AddServer(string name, int fullPercent, TimeZone tz, IPEndPoint address)
+    public void AddServer(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
     {
       Servers.Add(new ServerInfo(name, fullPercent, tz, address));
     }

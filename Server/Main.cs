@@ -112,11 +112,9 @@ namespace Server
 
     public static bool Service{ get; private set; }
 
-    public static bool Debug{ get; private set; }
+    public static bool Debug { get; private set; }
 
     internal static bool HaltOnWarning{ get; private set; }
-
-    internal static bool VBdotNet{ get; private set; }
 
     public static List<string> DataDirectories{ get; } = new List<string>();
 
@@ -199,9 +197,6 @@ namespace Server
         if (HaltOnWarning)
           Utility.Separate(sb, "-haltonwarning", " ");
 
-        if (VBdotNet)
-          Utility.Separate(sb, "-vb", " ");
-
         if (_UseHRT)
           Utility.Separate(sb, "-usehrt", " ");
 
@@ -270,7 +265,8 @@ namespace Server
         {
           try
           {
-            foreach (Listener l in MessagePump.Listeners) l.Dispose();
+            foreach (Listener l in MessagePump.Listeners)
+              l.Dispose();
           }
           catch
           {
@@ -322,7 +318,7 @@ namespace Server
 
       Closing = true;
 
-      Console.Write("Exiting...");
+      Console.WriteLine("Exiting...");
 
       World.WaitForWriteCompletion();
 
@@ -355,8 +351,6 @@ namespace Server
           m_Cache = false;
         else if (Insensitive.Equals(a, "-haltonwarning"))
           HaltOnWarning = true;
-        else if (Insensitive.Equals(a, "-vb"))
-          VBdotNet = true;
         else if (Insensitive.Equals(a, "-usehrt"))
           _UseHRT = true;
 
@@ -398,10 +392,14 @@ namespace Server
       Version ver = Assembly.GetName().Version;
 
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
-      Console.WriteLine("RunUO - [https://github.com/runuo/] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
+      Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
         ver.Revision);
+#if NETCORE
+      Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
+#else
       Console.WriteLine("Core: Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major,
         Environment.Version.Minor, Environment.Version.Build);
+#endif
 
       string s = Arguments;
 
@@ -440,18 +438,8 @@ namespace Server
       Console.WriteLine("RandomImpl: {0} ({1})", RandomImpl.Type.Name,
         RandomImpl.IsHardwareRNG ? "Hardware" : "Software");
 
-      while (!ScriptCompiler.Compile(Debug, m_Cache))
-      {
-        Console.WriteLine("Scripts: One or more scripts failed to compile or no script files were found.");
-
-        if (Service)
-          return;
-
-        Console.WriteLine(" - Press return to exit, or R to try again.");
-
-        if (Console.ReadKey(true).Key != ConsoleKey.R)
-          return;
-      }
+      // Load Assembly Scripts.CS.dll
+      ScriptCompiler.LoadScripts();
 
       ScriptCompiler.Invoke("Configure");
 
@@ -460,7 +448,10 @@ namespace Server
 
       ScriptCompiler.Invoke("Initialize");
 
-      MessagePump messagePump = MessagePump = new MessagePump();
+      // Start accepting new connections
+      MessagePump = new MessagePump();
+
+      ScriptCompiler.Invoke("RegisterListeners");
 
       timerThread.Start();
 
@@ -488,16 +479,15 @@ namespace Server
             Task.Run(() => Mobile.ProcessDeltaQueue()),
             Task.Run(() => Item.ProcessDeltaQueue()),
             Task.Run(() => Timer.Slice()),
-            Task.Run(() => messagePump.Slice())
+            Task.Run(() => MessagePump.DoWork())
           );
 
-
-          NetState.FlushAll();
           NetState.ProcessDisposedQueue();
 
           Slice?.Invoke();
 
-          if (sample++ % sampleInterval != 0) continue;
+          if (sample++ % sampleInterval != 0)
+            continue;
 
           long now = TickCount;
           m_CyclesPerSecond[m_CycleIndex++ % m_CyclesPerSecond.Length] = ticksPerSecond / (now - last);
@@ -596,7 +586,7 @@ namespace Server
       internal static extern bool SetConsoleCtrlHandler(ConsoleEventHandler callback, bool add);
     }
 
-    #region Expansions
+#region Expansions
 
     public static Expansion Expansion{ get; set; }
 
@@ -620,7 +610,7 @@ namespace Server
 
     public static bool TOL => Expansion >= Expansion.TOL;
 
-    #endregion
+#endregion
   }
 
   public class FileLogger : TextWriter

@@ -80,8 +80,9 @@ namespace Server.Misc
 
         e.AddServer(ServerName, new IPEndPoint(localAddress, localPort));
       }
-      catch
+      catch (Exception er)
       {
+        Console.WriteLine(er);
         e.Rejected = true;
       }
     }

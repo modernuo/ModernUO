@@ -38,7 +38,6 @@ namespace Server
 
     private SequentialFileWriter itemData, itemIndex;
 
-    private SaveMetrics metrics;
     private SequentialFileWriter mobileData, mobileIndex;
 
     private int processorCount;
@@ -57,10 +56,8 @@ namespace Server
       return processorCount - 1;
     }
 
-    public override void Save(SaveMetrics metrics, bool permitBackgroundWrite)
+    public override void Save(bool permitBackgroundWrite)
     {
-      this.metrics = metrics;
-
       OpenFiles();
 
       consumers = new Consumer[GetThreadCount()];
@@ -121,14 +118,14 @@ namespace Server
 
     private void OpenFiles()
     {
-      itemData = new SequentialFileWriter(World.ItemDataPath, metrics);
-      itemIndex = new SequentialFileWriter(World.ItemIndexPath, metrics);
+      itemData = new SequentialFileWriter(World.ItemDataPath);
+      itemIndex = new SequentialFileWriter(World.ItemIndexPath);
 
-      mobileData = new SequentialFileWriter(World.MobileDataPath, metrics);
-      mobileIndex = new SequentialFileWriter(World.MobileIndexPath, metrics);
+      mobileData = new SequentialFileWriter(World.MobileDataPath);
+      mobileIndex = new SequentialFileWriter(World.MobileIndexPath);
 
-      guildData = new SequentialFileWriter(World.GuildDataPath, metrics);
-      guildIndex = new SequentialFileWriter(World.GuildIndexPath, metrics);
+      guildData = new SequentialFileWriter(World.GuildDataPath);
+      guildIndex = new SequentialFileWriter(World.GuildIndexPath);
 
       WriteCount(itemIndex, World.Items.Count);
       WriteCount(mobileIndex, World.Mobiles.Count);
@@ -176,9 +173,7 @@ namespace Server
 
     private void Save(Item item, BinaryMemoryWriter writer)
     {
-      int length = writer.CommitTo(itemData, itemIndex, item.m_TypeRef, item.Serial);
-
-      metrics?.OnItemSaved(length);
+      writer.CommitTo(itemData, itemIndex, item.m_TypeRef, item.Serial);
 
       if (item.Decays && item.Parent == null && item.Map != Map.Internal &&
           DateTime.UtcNow > item.LastMoved + item.DecayTime) _decayQueue.Enqueue(item);
@@ -186,16 +181,12 @@ namespace Server
 
     private void Save(Mobile mob, BinaryMemoryWriter writer)
     {
-      int length = writer.CommitTo(mobileData, mobileIndex, mob.m_TypeRef, mob.Serial);
-
-      metrics?.OnMobileSaved(length);
+      writer.CommitTo(mobileData, mobileIndex, mob.m_TypeRef, mob.Serial);
     }
 
     private void Save(BaseGuild guild, BinaryMemoryWriter writer)
     {
-      int length = writer.CommitTo(guildData, guildIndex, 0, guild.Id);
-
-      metrics?.OnGuildSaved(length);
+      writer.CommitTo(guildData, guildIndex, 0, guild.Id);
     }
 
     private bool Enqueue(ISerializable value)

@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Server.Diagnostics;
 
 namespace Server
@@ -587,5 +588,31 @@ namespace Server
     }
 
     #endregion
+
+    private class DelayTaskTimer : Timer
+    {
+      private TaskCompletionSource<DelayTaskTimer> m_TaskCompleter;
+
+      public Task Task { get { return m_TaskCompleter.Task; } }
+
+      public DelayTaskTimer(TimeSpan delay) : base(delay)
+      {
+        m_TaskCompleter = new TaskCompletionSource<DelayTaskTimer>();
+      }
+
+      protected override void OnTick()
+      {
+        m_TaskCompleter.SetResult(this);
+      }
+    }
+
+    public static Task Pause(int ms) => Pause(TimeSpan.FromMilliseconds(ms));
+
+    public static Task Pause(TimeSpan ms)
+    {
+      DelayTaskTimer t = new DelayTaskTimer(ms);
+      t.Start();
+      return t.Task;
+    }
   }
 }

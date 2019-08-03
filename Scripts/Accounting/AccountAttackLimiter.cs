@@ -22,14 +22,16 @@ namespace Server.Accounting
       PacketHandlers.RegisterThrottler(0xCF, Throttle_Callback);
     }
 
-    public static bool Throttle_Callback(NetState ns)
+    public static TimeSpan Throttle_Callback(NetState ns)
     {
       InvalidAccountAccessLog accessLog = FindAccessLog(ns);
 
       if (accessLog == null)
-        return true;
+        return TimeSpan.Zero;
 
-      return DateTime.UtcNow >= accessLog.LastAccessTime + ComputeThrottle(accessLog.Counts);
+      DateTime date = DateTime.UtcNow;
+      DateTime access = accessLog.LastAccessTime + ComputeThrottle(accessLog.Counts);
+      return date >= access ? TimeSpan.Zero : date - access;
     }
 
     public static InvalidAccountAccessLog FindAccessLog(NetState ns)

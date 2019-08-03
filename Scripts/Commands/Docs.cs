@@ -28,7 +28,6 @@ namespace Server.Commands
       World.Broadcast(0x35, true, "Documentation is being generated, please wait.");
       Console.WriteLine("Documentation is being generated, please wait.");
 
-      NetState.FlushAll();
       NetState.Pause();
 
       DateTime startTime = DateTime.UtcNow;

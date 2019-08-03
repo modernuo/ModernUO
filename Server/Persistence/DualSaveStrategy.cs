@@ -26,17 +26,17 @@ namespace Server
   {
     public override string Name => "Dual";
 
-    public override void Save(SaveMetrics metrics, bool permitBackgroundWrite)
+    public override void Save(bool permitBackgroundWrite)
     {
       PermitBackgroundWrite = permitBackgroundWrite;
 
-      Thread saveThread = new Thread(delegate() { SaveItems(metrics); });
+      Thread saveThread = new Thread(delegate() { SaveItems(); });
 
       saveThread.Name = "Item Save Subset";
       saveThread.Start();
 
-      SaveMobiles(metrics);
-      SaveGuilds(metrics);
+      SaveMobiles();
+      SaveGuilds();
 
       saveThread.Join();
 

@@ -88,11 +88,11 @@ namespace Server.Misc
 
       public static void Initialize()
       {
-        if (Settings.Enabled)
+/*        if (Settings.Enabled)
         {
           EventSink.Login += EventSink_Login;
           ProtocolExtensions.Register(0xFF, true, OnHandshakeResponse);
-        }
+        }*/
       }
 
       private static void EventSink_Login(LoginEventArgs e)

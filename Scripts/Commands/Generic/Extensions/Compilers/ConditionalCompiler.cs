@@ -160,6 +160,10 @@ namespace Server.Commands.Generic
               FieldAttributes.Private | FieldAttributes.InitOnly
             );
 
+//            parseMethod.Invoke(null,
+//              parseArgs.Length == 2 ? new object[] {toParse, (int) parseArgs[1]} : new object[] {toParse});
+
+
             il.Emit(OpCodes.Ldarg_0);
 
             il.Emit(OpCodes.Ldstr, toParse);

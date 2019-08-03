@@ -4,7 +4,6 @@ using System.IO;
 using System.Net.Mail;
 using Server.Accounting;
 using Server.Commands;
-using Server.Engines.Reports;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
@@ -49,18 +48,7 @@ namespace Server.Engines.Help
 
       m_Timer = new InternalTimer(this);
       m_Timer.Start();
-
-      StaffHistory history = Reports.Reports.StaffHistory;
-
-      if (history != null)
-      {
-        PageInfo = new PageInfo(this);
-
-        history.AddPage(PageInfo);
-      }
     }
-
-    public PageInfo PageInfo{ get; }
 
     public Mobile Sender{ get; }
 
@@ -93,20 +81,6 @@ namespace Server.Engines.Help
       m_Timer = null;
     }
 
-    public void AddResponse(Mobile mob, string text)
-    {
-      if (PageInfo != null)
-      {
-        lock (PageInfo)
-        {
-          PageInfo.Responses.Add(PageInfo.GetAccount(mob), text);
-        }
-
-        if (PageInfo.ResFromResp(text) != PageResolution.None)
-          PageInfo.UpdateResolver();
-      }
-    }
-
     private class InternalTimer : Timer
     {
       private static TimeSpan StatusDelay = TimeSpan.FromMinutes(2.0);
@@ -135,7 +109,7 @@ namespace Server.Engines.Help
         else
         {
           if (index != -1)
-            m_Entry.AddResponse(m_Entry.Sender, "[Logout]");
+            // m_Entry.AddResponse(m_Entry.Sender, "[Logout]");
 
           PageQueue.Remove(m_Entry);
         }

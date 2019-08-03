@@ -19,9 +19,9 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Threading;
-using Server.Network;
 
 namespace Server
 {
@@ -30,7 +30,6 @@ namespace Server
   public sealed class FileQueue : IDisposable
   {
     private static int bufferSize;
-    private static BufferPool bufferPool;
 
     private Chunk[] active;
     private int activeCount;
@@ -47,15 +46,14 @@ namespace Server
     static FileQueue()
     {
       bufferSize = FileOperations.BufferSize;
-      bufferPool = new BufferPool("File Buffers", 64, bufferSize);
     }
 
     public FileQueue(int concurrentWrites, FileCommitCallback callback)
     {
       if (concurrentWrites < 1) throw new ArgumentOutOfRangeException("concurrentWrites");
 
-      if (bufferSize < 1) throw new ArgumentOutOfRangeException("bufferSize");
-      if (callback == null) throw new ArgumentNullException("callback");
+      if (bufferSize < 1)
+        throw new ArgumentOutOfRangeException("bufferSize");
 
       syncRoot = new object();
 
@@ -139,7 +137,7 @@ namespace Server
       {
         if (active[slot] != chunk) throw new ArgumentException();
 
-        bufferPool.ReleaseBuffer(chunk.Buffer);
+        ArrayPool<byte>.Shared.Return(chunk.Buffer);
 
         if (pending.Count > 0)
         {
@@ -172,7 +170,8 @@ namespace Server
 
       while (size > 0)
       {
-        if (buffered.buffer == null) buffered.buffer = bufferPool.AcquireBuffer();
+        if (buffered.buffer == null)
+          buffered.buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
 
         byte[] page = buffered.buffer; // buffer page
         int pageSpace = page.Length - buffered.length; // available bytes in page

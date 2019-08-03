@@ -19,9 +19,11 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.IO.Pipelines;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -37,54 +39,90 @@ namespace Server.Network
 {
   public interface IPacketEncoder
   {
-    void EncodeOutgoingPacket(NetState to, ref byte[] buffer, ref int length);
-    void DecodeIncomingPacket(NetState from, ref byte[] buffer, ref int length);
+    void EncodeOutgoingPacket(NetState to, ref Memory<byte> seq);
+    void DecodeIncomingPacket(NetState from, ref Memory<byte> seq);
   }
 
   public delegate void NetStateCreatedCallback(NetState ns);
 
+  [Flags]
+  public enum ProtocolChanges
+  {
+    NewSpellbook = 0x00000001,
+    DamagePacket = 0x00000002,
+    Unpack = 0x00000004,
+    BuffIcon = 0x00000008,
+    NewHaven = 0x00000010,
+    ContainerGridLines = 0x00000020,
+    ExtendedSupportedFeatures = 0x00000040,
+    StygianAbyss = 0x00000080,
+    HighSeas = 0x00000100,
+    NewCharacterList = 0x00000200,
+    NewCharacterCreation = 0x00000400,
+    ExtendedStatus = 0x00000800,
+    NewMobileIncoming = 0x00001000,
+    NewSecureTrading = 0x00002000,
+    UltimaStore = 0x00004000,
+    EndlessJourney = 0x00008000,
+
+    Version400a = NewSpellbook,
+    Version407a = Version400a | DamagePacket,
+    Version500a = Version407a | Unpack,
+    Version502b = Version500a | BuffIcon,
+    Version6000 = Version502b | NewHaven,
+    Version6017 = Version6000 | ContainerGridLines,
+    Version60142 = Version6017 | ExtendedSupportedFeatures,
+    Version7000 = Version60142 | StygianAbyss,
+    Version7090 = Version7000 | HighSeas,
+    Version70130 = Version7090 | NewCharacterList,
+    Version70160 = Version70130 | NewCharacterCreation,
+    Version70300 = Version70160 | ExtendedStatus,
+    Version70331 = Version70300 | NewMobileIncoming,
+    Version704565 = Version70331 | NewSecureTrading,
+    Version70500 = Version704565 | UltimaStore,
+    Version70610 = Version70500 | EndlessJourney
+  }
+
+  public class AsyncState
+  {
+    public bool Paused { get; set; }
+    public AsyncState(bool paused)
+    {
+      Paused = paused;
+    }
+  }
+
   public class NetState : IComparable<NetState>
   {
-    private byte[] m_RecvBuffer;
-    private SendQueue m_SendQueue;
-
-    private SocketAsyncEventArgs m_ReceiveEventArgs;
-    private SocketAsyncEventArgs m_SendEventArgs;
-
-    private MessagePump m_MessagePump;
     private string m_ToString;
     private ClientVersion m_Version;
+    private SendQueue<Packet> m_SendQueue = new SendQueue<Packet>();
 
-    public DateTime ConnectedOn{ get; }
+    public DateTime ConnectedOn { get; }
 
     public TimeSpan ConnectedFor => DateTime.UtcNow - ConnectedOn;
+
+    public DateTime ThrottledUntil { get; set; }
 
     internal int m_Seed;
     internal int m_AuthID;
 
-    public IPAddress Address{ get; }
+    public IPAddress Address { get; }
 
-    private static bool m_Paused;
+    private static AsyncState m_PauseState = new AsyncState(true);
+    private static AsyncState m_ResumeState = new AsyncState(false);
 
-    [Flags]
-    private enum AsyncState
-    {
-      Pending = 0x01,
-      Paused = 0x02
-    }
+    private static AsyncState m_AsyncState = m_ResumeState;
 
-    private AsyncState m_AsyncState;
-    private object m_AsyncLock = new object();
+    public IPacketEncoder PacketEncoder { get; set; }
 
-    public IPacketEncoder PacketEncoder{ get; set; }
+    public static NetStateCreatedCallback CreatedCallback { get; set; }
 
-    public static NetStateCreatedCallback CreatedCallback{ get; set; }
+    public bool SentFirstPacket { get; set; }
 
-    public bool SentFirstPacket{ get; set; }
+    public bool BlockAllPackets { get; set; }
 
-    public bool BlockAllPackets{ get; set; }
-
-    public ClientFlags Flags{ get; set; }
+    public ClientFlags Flags { get; set; }
 
     public ClientVersion Version
     {
@@ -93,107 +131,78 @@ namespace Server.Network
       {
         m_Version = value;
 
+        if (value >= m_Version70610)
+          ProtocolChanges = ProtocolChanges.Version70610;
+        if (value >= m_Version70500)
+          ProtocolChanges = ProtocolChanges.Version70500;
         if (value >= m_Version704565)
-          _ProtocolChanges = ProtocolChanges.Version704565;
+          ProtocolChanges = ProtocolChanges.Version704565;
         else if (value >= m_Version70331)
-          _ProtocolChanges = ProtocolChanges.Version70331;
+          ProtocolChanges = ProtocolChanges.Version70331;
         else if (value >= m_Version70300)
-          _ProtocolChanges = ProtocolChanges.Version70300;
+          ProtocolChanges = ProtocolChanges.Version70300;
         else if (value >= m_Version70160)
-          _ProtocolChanges = ProtocolChanges.Version70160;
+          ProtocolChanges = ProtocolChanges.Version70160;
         else if (value >= m_Version70130)
-          _ProtocolChanges = ProtocolChanges.Version70130;
+          ProtocolChanges = ProtocolChanges.Version70130;
         else if (value >= m_Version7090)
-          _ProtocolChanges = ProtocolChanges.Version7090;
+          ProtocolChanges = ProtocolChanges.Version7090;
         else if (value >= m_Version7000)
-          _ProtocolChanges = ProtocolChanges.Version7000;
+          ProtocolChanges = ProtocolChanges.Version7000;
         else if (value >= m_Version60142)
-          _ProtocolChanges = ProtocolChanges.Version60142;
+          ProtocolChanges = ProtocolChanges.Version60142;
         else if (value >= m_Version6017)
-          _ProtocolChanges = ProtocolChanges.Version6017;
+          ProtocolChanges = ProtocolChanges.Version6017;
         else if (value >= m_Version6000)
-          _ProtocolChanges = ProtocolChanges.Version6000;
+          ProtocolChanges = ProtocolChanges.Version6000;
         else if (value >= m_Version502b)
-          _ProtocolChanges = ProtocolChanges.Version502b;
+          ProtocolChanges = ProtocolChanges.Version502b;
         else if (value >= m_Version500a)
-          _ProtocolChanges = ProtocolChanges.Version500a;
+          ProtocolChanges = ProtocolChanges.Version500a;
         else if (value >= m_Version407a)
-          _ProtocolChanges = ProtocolChanges.Version407a;
-        else if (value >= m_Version400a) _ProtocolChanges = ProtocolChanges.Version400a;
+          ProtocolChanges = ProtocolChanges.Version407a;
+        else if (value >= m_Version400a) ProtocolChanges = ProtocolChanges.Version400a;
       }
     }
 
-    private static ClientVersion m_Version400a = new ClientVersion("4.0.0a");
-    private static ClientVersion m_Version407a = new ClientVersion("4.0.7a");
-    private static ClientVersion m_Version500a = new ClientVersion("5.0.0a");
-    private static ClientVersion m_Version502b = new ClientVersion("5.0.2b");
-    private static ClientVersion m_Version6000 = new ClientVersion("6.0.0.0");
-    private static ClientVersion m_Version6017 = new ClientVersion("6.0.1.7");
-    private static ClientVersion m_Version60142 = new ClientVersion("6.0.14.2");
-    private static ClientVersion m_Version7000 = new ClientVersion("7.0.0.0");
-    private static ClientVersion m_Version7090 = new ClientVersion("7.0.9.0");
-    private static ClientVersion m_Version70130 = new ClientVersion("7.0.13.0");
-    private static ClientVersion m_Version70160 = new ClientVersion("7.0.16.0");
-    private static ClientVersion m_Version70300 = new ClientVersion("7.0.30.0");
-    private static ClientVersion m_Version70331 = new ClientVersion("7.0.33.1");
-    private static ClientVersion m_Version704565 = new ClientVersion("7.0.45.65");
+    private static readonly ClientVersion m_Version400a = new ClientVersion("4.0.0a");
+    private static readonly ClientVersion m_Version407a = new ClientVersion("4.0.7a");
+    private static readonly ClientVersion m_Version500a = new ClientVersion("5.0.0a");
+    private static readonly ClientVersion m_Version502b = new ClientVersion("5.0.2b");
+    private static readonly ClientVersion m_Version6000 = new ClientVersion("6.0.0.0");
+    private static readonly ClientVersion m_Version6017 = new ClientVersion("6.0.1.7");
+    private static readonly ClientVersion m_Version60142 = new ClientVersion("6.0.14.2");
+    private static readonly ClientVersion m_Version7000 = new ClientVersion("7.0.0.0");
+    private static readonly ClientVersion m_Version7090 = new ClientVersion("7.0.9.0");
+    private static readonly ClientVersion m_Version70130 = new ClientVersion("7.0.13.0");
+    private static readonly ClientVersion m_Version70160 = new ClientVersion("7.0.16.0");
+    private static readonly ClientVersion m_Version70300 = new ClientVersion("7.0.30.0");
+    private static readonly ClientVersion m_Version70331 = new ClientVersion("7.0.33.1");
+    private static readonly ClientVersion m_Version704565 = new ClientVersion("7.0.45.65");
+    private static readonly ClientVersion m_Version70500 = new ClientVersion("7.0.50.0");
+    private static readonly ClientVersion m_Version70610 = new ClientVersion("7.0.61.0");
 
-    private ProtocolChanges _ProtocolChanges;
-
-    private enum ProtocolChanges
-    {
-      NewSpellbook = 0x00000001,
-      DamagePacket = 0x00000002,
-      Unpack = 0x00000004,
-      BuffIcon = 0x00000008,
-      NewHaven = 0x00000010,
-      ContainerGridLines = 0x00000020,
-      ExtendedSupportedFeatures = 0x00000040,
-      StygianAbyss = 0x00000080,
-      HighSeas = 0x00000100,
-      NewCharacterList = 0x00000200,
-      NewCharacterCreation = 0x00000400,
-      ExtendedStatus = 0x00000800,
-      NewMobileIncoming = 0x00001000,
-      NewSecureTrading = 0x00002000,
-
-      Version400a = NewSpellbook,
-      Version407a = Version400a | DamagePacket,
-      Version500a = Version407a | Unpack,
-      Version502b = Version500a | BuffIcon,
-      Version6000 = Version502b | NewHaven,
-      Version6017 = Version6000 | ContainerGridLines,
-      Version60142 = Version6017 | ExtendedSupportedFeatures,
-      Version7000 = Version60142 | StygianAbyss,
-      Version7090 = Version7000 | HighSeas,
-      Version70130 = Version7090 | NewCharacterList,
-      Version70160 = Version70130 | NewCharacterCreation,
-      Version70300 = Version70160 | ExtendedStatus,
-      Version70331 = Version70300 | NewMobileIncoming,
-      Version704565 = Version70331 | NewSecureTrading
-    }
-
-    public bool NewSpellbook => (_ProtocolChanges & ProtocolChanges.NewSpellbook) != 0;
-    public bool DamagePacket => (_ProtocolChanges & ProtocolChanges.DamagePacket) != 0;
-    public bool Unpack => (_ProtocolChanges & ProtocolChanges.Unpack) != 0;
-    public bool BuffIcon => (_ProtocolChanges & ProtocolChanges.BuffIcon) != 0;
-    public bool NewHaven => (_ProtocolChanges & ProtocolChanges.NewHaven) != 0;
-    public bool ContainerGridLines => (_ProtocolChanges & ProtocolChanges.ContainerGridLines) != 0;
-    public bool ExtendedSupportedFeatures => (_ProtocolChanges & ProtocolChanges.ExtendedSupportedFeatures) != 0;
-    public bool StygianAbyss => (_ProtocolChanges & ProtocolChanges.StygianAbyss) != 0;
-    public bool HighSeas => (_ProtocolChanges & ProtocolChanges.HighSeas) != 0;
-    public bool NewCharacterList => (_ProtocolChanges & ProtocolChanges.NewCharacterList) != 0;
-    public bool NewCharacterCreation => (_ProtocolChanges & ProtocolChanges.NewCharacterCreation) != 0;
-    public bool ExtendedStatus => (_ProtocolChanges & ProtocolChanges.ExtendedStatus) != 0;
-    public bool NewMobileIncoming => (_ProtocolChanges & ProtocolChanges.NewMobileIncoming) != 0;
-    public bool NewSecureTrading => (_ProtocolChanges & ProtocolChanges.NewSecureTrading) != 0;
+    public bool NewSpellbook => (ProtocolChanges & ProtocolChanges.NewSpellbook) != 0;
+    public bool DamagePacket => (ProtocolChanges & ProtocolChanges.DamagePacket) != 0;
+    public bool Unpack => (ProtocolChanges & ProtocolChanges.Unpack) != 0;
+    public bool BuffIcon => (ProtocolChanges & ProtocolChanges.BuffIcon) != 0;
+    public bool NewHaven => (ProtocolChanges & ProtocolChanges.NewHaven) != 0;
+    public bool ContainerGridLines => (ProtocolChanges & ProtocolChanges.ContainerGridLines) != 0;
+    public bool ExtendedSupportedFeatures => (ProtocolChanges & ProtocolChanges.ExtendedSupportedFeatures) != 0;
+    public bool StygianAbyss => (ProtocolChanges & ProtocolChanges.StygianAbyss) != 0;
+    public bool HighSeas => (ProtocolChanges & ProtocolChanges.HighSeas) != 0;
+    public bool NewCharacterList => (ProtocolChanges & ProtocolChanges.NewCharacterList) != 0;
+    public bool NewCharacterCreation => (ProtocolChanges & ProtocolChanges.NewCharacterCreation) != 0;
+    public bool ExtendedStatus => (ProtocolChanges & ProtocolChanges.ExtendedStatus) != 0;
+    public bool NewMobileIncoming => (ProtocolChanges & ProtocolChanges.NewMobileIncoming) != 0;
+    public bool NewSecureTrading => (ProtocolChanges & ProtocolChanges.NewSecureTrading) != 0;
 
     public bool IsUOTDClient =>
-      (Flags & ClientFlags.UOTD) != 0 || m_Version != null && m_Version.Type == ClientType.UOTD;
+      (Flags & ClientFlags.UOTD) != 0 || m_Version?.Type == ClientType.UOTD;
 
-    public bool IsSAClient => m_Version != null && m_Version.Type == ClientType.SA;
+    public bool IsSAClient => m_Version?.Type == ClientType.SA;
 
-    public List<SecureTrade> Trades{ get; }
+    public List<SecureTrade> Trades { get; }
 
     public void ValidateAllTrades()
     {
@@ -260,21 +269,27 @@ namespace Server.Network
       return newTrade.From.Container;
     }
 
-    public bool CompressionEnabled{ get; set; }
+    public bool Running { get; private set; }
 
-    public int Sequence{ get; set; }
+    public bool Seeded { get; set; }
 
-    public List<Gump> Gumps{ get; private set; }
+    public Socket Socket { get; private set; }
 
-    public List<HuePicker> HuePickers{ get; private set; }
+    public bool CompressionEnabled { get; set; }
 
-    public List<IMenu> Menus{ get; private set; }
+    public int Sequence { get; set; }
 
-    public static int GumpCap{ get; set; } = 512;
+    public List<Gump> Gumps { get; private set; }
 
-    public static int HuePickerCap{ get; set; } = 512;
+    public List<HuePicker> HuePickers { get; private set; }
 
-    public static int MenuCap{ get; set; } = 512;
+    public List<IMenu> Menus { get; private set; }
+
+    public static int GumpCap { get; set; } = 512;
+
+    public static int HuePickerCap { get; set; } = 512;
+
+    public static int MenuCap { get; set; } = 512;
 
     public void WriteConsole(string text)
     {
@@ -288,12 +303,11 @@ namespace Server.Network
 
     public void AddMenu(IMenu menu)
     {
-      if (Menus == null) Menus = new List<IMenu>();
+      if (Menus == null)
+        Menus = new List<IMenu>();
 
       if (Menus.Count < MenuCap)
-      {
         Menus.Add(menu);
-      }
       else
       {
         WriteConsole("Exceeded menu cap, disconnecting...");
@@ -318,12 +332,11 @@ namespace Server.Network
 
     public void AddHuePicker(HuePicker huePicker)
     {
-      if (HuePickers == null) HuePickers = new List<HuePicker>();
+      if (HuePickers == null)
+        HuePickers = new List<HuePicker>();
 
       if (HuePickers.Count < HuePickerCap)
-      {
         HuePickers.Add(huePicker);
-      }
       else
       {
         WriteConsole("Exceeded hue picker cap, disconnecting...");
@@ -348,12 +361,11 @@ namespace Server.Network
 
     public void AddGump(Gump gump)
     {
-      if (Gumps == null) Gumps = new List<Gump>();
+      if (Gumps == null)
+        Gumps = new List<Gump>();
 
       if (Gumps.Count < GumpCap)
-      {
         Gumps.Add(gump);
-      }
       else
       {
         WriteConsole("Exceeded gump cap, disconnecting...");
@@ -382,37 +394,30 @@ namespace Server.Network
       Send(new LaunchBrowser(url));
     }
 
-    public CityInfo[] CityInfo{ get; set; }
+    public CityInfo[] CityInfo { get; set; }
 
-    public Mobile Mobile{ get; set; }
+    public Mobile Mobile { get; set; }
 
-    public ServerInfo[] ServerInfo{ get; set; }
+    public ServerInfo[] ServerInfo { get; set; }
 
-    public IAccount Account{ get; set; }
+    public IAccount Account { get; set; }
 
     public override string ToString()
     {
       return m_ToString;
     }
 
-    public static List<NetState> Instances{ get; } = new List<NetState>();
+    public static List<NetState> Instances { get; } = new List<NetState>();
 
-    private static BufferPool m_ReceiveBufferPool = new BufferPool("Receive", 2048, 2048);
-
-    public NetState(Socket socket, MessagePump messagePump)
+    public NetState(Socket socket, MessagePump pump)
     {
       Socket = socket;
-      Buffer = new ByteQueue();
       Seeded = false;
       Running = false;
-      m_RecvBuffer = m_ReceiveBufferPool.AcquireBuffer();
-      m_MessagePump = messagePump;
       Gumps = new List<Gump>();
       HuePickers = new List<HuePicker>();
       Menus = new List<IMenu>();
       Trades = new List<SecureTrade>();
-
-      m_SendQueue = new SendQueue();
 
       m_NextCheckActivity = Core.TickCount + 30000;
 
@@ -431,12 +436,21 @@ namespace Server.Network
       }
 
       ConnectedOn = DateTime.UtcNow;
+      _ = Start(pump);
 
       CreatedCallback?.Invoke(this);
+      Console.WriteLine("Client: {0}: Connected. [{1} Online]", this, NetState.Instances.Count);
     }
 
-    private bool _sending;
-    private object _sendL = new object();
+    public static void Pause()
+    {
+      m_AsyncState = Interlocked.Exchange(ref m_AsyncState, m_PauseState);
+    }
+
+    public static void Resume()
+    {
+      m_AsyncState = Interlocked.Exchange(ref m_AsyncState, m_ResumeState);
+    }
 
     public virtual void Send(Packet p)
     {
@@ -446,280 +460,139 @@ namespace Server.Network
         return;
       }
 
-      byte[] buffer = p.Compile(CompressionEnabled, out int length);
+      m_SendQueue.Enqueue(p);
+    }
 
-      if (buffer == null)
+    public bool CheckEncrypted(int packetID)
+    {
+      if (!SentFirstPacket && packetID != 0xF0 && packetID != 0xF1 && packetID != 0xCF && packetID != 0x80 &&
+          packetID != 0x91 && packetID != 0xA4 && packetID != 0xEF)
       {
-        Console.WriteLine("Client: {0}: null buffer send, disconnecting...", this);
-        using (StreamWriter op = new StreamWriter("null_send.log", true))
-        {
-          op.WriteLine("{0} Client: {1}: null buffer send, disconnecting...", DateTime.UtcNow, this);
-          op.WriteLine(new StackTrace());
-        }
-
+        Console.WriteLine("Client: {0}: Encrypted client detected, disconnecting", this);
         Dispose();
-        return;
-      }
-
-      if (buffer.Length <= 0 || length <= 0)
-      {
-        p.OnSend();
-        return;
-      }
-
-      PacketSendProfile prof = null;
-
-      if (Core.Profiling)
-        prof = PacketSendProfile.Acquire(p.GetType());
-
-      prof?.Start();
-
-      PacketEncoder?.EncodeOutgoingPacket(this, ref buffer, ref length);
-
-      try
-      {
-        lock (_sendL)
-        {
-          SendQueue.Gram gram;
-          lock (m_SendQueue)
-          {
-            gram = m_SendQueue.Enqueue(buffer, length);
-          }
-
-          if (gram != null && !_sending)
-          {
-            _sending = true;
-            m_SendEventArgs.SetBuffer(gram.Buffer, 0, gram.Length);
-            Send_Start();
-          }
-        }
-      }
-      catch (CapacityExceededException)
-      {
-        Console.WriteLine("Client: {0}: Too much data pending, disconnecting...", this);
-        Dispose(false);
-      }
-
-      p.OnSend();
-
-      prof?.Finish(length);
-    }
-
-    public void Start()
-    {
-      m_ReceiveEventArgs = new SocketAsyncEventArgs();
-      m_ReceiveEventArgs.Completed += Receive_Completion;
-      m_ReceiveEventArgs.SetBuffer(m_RecvBuffer, 0, m_RecvBuffer.Length);
-
-      m_SendEventArgs = new SocketAsyncEventArgs();
-      m_SendEventArgs.Completed += Send_Completion;
-
-      Running = true;
-
-      if (Socket == null || m_Paused) return;
-
-      Receive_Start();
-    }
-
-    private void Receive_Start()
-    {
-      try
-      {
-        bool result = false;
-
-        do
-        {
-          lock (m_AsyncLock)
-          {
-            if ((m_AsyncState & (AsyncState.Pending | AsyncState.Paused)) == 0)
-            {
-              m_AsyncState |= AsyncState.Pending;
-              result = !Socket.ReceiveAsync(m_ReceiveEventArgs);
-
-              if (result)
-                Receive_Process(m_ReceiveEventArgs);
-            }
-          }
-        } while (result);
-      }
-      catch (Exception ex)
-      {
-        TraceException(ex);
-        Dispose(false);
-      }
-    }
-
-    private void Receive_Completion(object sender, SocketAsyncEventArgs e)
-    {
-      Receive_Process(e);
-
-      if (!IsDisposing)
-        Receive_Start();
-    }
-
-    private void Receive_Process(SocketAsyncEventArgs e)
-    {
-      int byteCount = e.BytesTransferred;
-
-      if (e.SocketError != SocketError.Success || byteCount <= 0)
-      {
-        Dispose(false);
-        return;
-      }
-
-      if (IsDisposing)
-        return;
-
-      m_NextCheckActivity = Core.TickCount + 90000;
-
-      byte[] buffer = m_RecvBuffer;
-
-      PacketEncoder?.DecodeIncomingPacket(this, ref buffer, ref byteCount);
-
-      lock (Buffer)
-      {
-        Buffer.Enqueue(buffer, 0, byteCount);
-      }
-
-      m_MessagePump.OnReceive(this);
-
-      lock (m_AsyncLock)
-      {
-        m_AsyncState &= ~AsyncState.Pending;
-      }
-    }
-
-    private void Send_Start()
-    {
-      try
-      {
-        bool result;
-
-        do
-        {
-          result = !Socket.SendAsync(m_SendEventArgs);
-
-          if (result)
-            Send_Process(m_SendEventArgs);
-        } while (result);
-      }
-      catch (Exception ex)
-      {
-        TraceException(ex);
-        Dispose(false);
-      }
-    }
-
-    private void Send_Completion(object sender, SocketAsyncEventArgs e)
-    {
-      Send_Process(e);
-
-      if (IsDisposing)
-        return;
-
-      if (CoalesceSleep >= 0) Thread.Sleep(CoalesceSleep);
-
-      SendQueue.Gram gram;
-
-      lock (m_SendQueue)
-      {
-        gram = m_SendQueue.Dequeue();
-
-        if (gram == null && m_SendQueue.IsFlushReady)
-          gram = m_SendQueue.CheckFlushReady();
-      }
-
-      if (gram != null)
-      {
-        m_SendEventArgs.SetBuffer(gram.Buffer, 0, gram.Length);
-        Send_Start();
-      }
-      else
-      {
-        lock (_sendL)
-        {
-          _sending = false;
-        }
-      }
-    }
-
-    private void Send_Process(SocketAsyncEventArgs e)
-    {
-      int bytes = e.BytesTransferred;
-
-      if (e.SocketError != SocketError.Success || bytes <= 0)
-      {
-        Dispose(false);
-        return;
-      }
-
-      m_NextCheckActivity = Core.TickCount + 90000;
-    }
-
-    public static void Pause()
-    {
-      m_Paused = true;
-
-      for (int i = 0; i < Instances.Count; ++i)
-      {
-        NetState ns = Instances[i];
-
-        lock (ns.m_AsyncLock)
-        {
-          ns.m_AsyncState |= AsyncState.Paused;
-        }
-      }
-    }
-
-    public static void Resume()
-    {
-      m_Paused = false;
-
-      for (int i = 0; i < Instances.Count; ++i)
-      {
-        NetState ns = Instances[i];
-
-        if (ns.Socket == null) continue;
-
-        lock (ns.m_AsyncLock)
-        {
-          ns.m_AsyncState &= ~AsyncState.Paused;
-
-          if ((ns.m_AsyncState & AsyncState.Pending) == 0)
-            ns.Receive_Start();
-        }
-      }
-    }
-
-    public bool Flush()
-    {
-      if (Socket == null)
-        return false;
-
-      lock (_sendL)
-      {
-        if (_sending)
-          return false;
-
-        SendQueue.Gram gram;
-
-        lock (m_SendQueue)
-        {
-          if (!m_SendQueue.IsFlushReady)
-            return false;
-
-          gram = m_SendQueue.CheckFlushReady();
-        }
-
-        if (gram != null)
-        {
-          _sending = true;
-          m_SendEventArgs.SetBuffer(gram.Buffer, 0, gram.Length);
-          Send_Start();
-        }
+        return true;
       }
 
       return false;
+    }
+
+    private Pipe m_RecvdPipe;
+
+    private async Task Start(MessagePump pump)
+    {
+      m_RecvdPipe = new Pipe();
+      Running = true;
+
+      await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump)).ConfigureAwait(false);
+    }
+
+    private async Task ProcessRecvs()
+    {
+      PipeWriter w = m_RecvdPipe.Writer;
+
+      while (true)
+      {
+        if (m_AsyncState.Paused)
+        {
+          await Timer.Pause(50).ConfigureAwait(false);
+          continue;
+        }
+
+        try
+        {
+          Memory<byte> memory = w.GetMemory();
+          int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None).ConfigureAwait(false);
+          if (bytesRead == 0)
+            break;
+
+          Interlocked.Exchange(ref m_NextCheckActivity, Core.TickCount + 90000);
+
+          w.Advance(bytesRead);
+
+          FlushResult result = await w.FlushAsync().ConfigureAwait(false);
+          if (result.IsCompleted || result.IsCanceled)
+            break;
+        }
+        catch
+        {
+          break;
+        }
+      }
+
+      w.Complete();
+      Dispose();
+    }
+
+    private async Task ProcessSends()
+    {
+      while (true)
+      {
+        try
+        {
+          Packet p = await m_SendQueue?.DequeueAsync() ?? null;
+          if (p == null)
+            break;
+
+          ReadOnlyMemory<byte> buffer = p.Compile(CompressionEnabled, out int length);
+
+          if (buffer.Length <= 0 || length <= 0)
+          {
+            p.OnSend();
+            return;
+          }
+
+          buffer = buffer.Slice(0, length);
+
+          PacketSendProfile prof = null;
+
+          if (Core.Profiling)
+            prof = PacketSendProfile.Acquire(p.GetType());
+
+          prof?.Start();
+
+          await Socket.SendAsync(buffer, SocketFlags.None).ConfigureAwait(false);
+
+          p.OnSend();
+
+          prof?.Finish(length);
+        }
+        catch (SocketException ex)
+        {
+          Console.WriteLine(ex);
+          TraceException(ex);
+          Dispose();
+          break;
+        }
+        catch (Exception ex)
+        {
+          Console.WriteLine(ex);
+        }
+      }
+    }
+
+    private async Task HandlePackets(MessagePump pump)
+    {
+      PipeReader pr = m_RecvdPipe.Reader;
+
+      while (true)
+      {
+        ReadResult result = await pr.ReadAsync();
+        ReadOnlySequence<byte> seq = result.Buffer;
+        if (seq.Length == 0)
+          break;
+
+        long pos = PacketHandlers.ProcessPacket(pump, this, seq);
+
+        if (pos <= 0)
+          break;
+
+        pr.AdvanceTo(seq.GetPosition(pos, seq.Start));
+
+        if (result.IsCompleted || result.IsCanceled)
+          break;
+      }
+
+      pr.Complete();
     }
 
     public PacketHandler GetHandler(int packetID)
@@ -727,17 +600,6 @@ namespace Server.Network
       return ContainerGridLines ? PacketHandlers.Get6017Handler(packetID) :
         PacketHandlers.GetHandler(packetID);
     }
-
-    public static void FlushAll()
-    {
-      if (Instances.Count >= 1024)
-        Parallel.ForEach(Instances, ns => ns.Flush());
-      else
-        for (int i = 0; i < Instances.Count; ++i)
-          Instances[i].Flush();
-    }
-
-    public static int CoalesceSleep{ get; set; } = -1;
 
     private long m_NextCheckActivity;
 
@@ -772,72 +634,34 @@ namespace Server.Network
         // ignored
       }
 
-      try
-      {
-        Console.WriteLine(ex);
-      }
-      catch
-      {
-        // ignored
-      }
+      Console.WriteLine(ex);
     }
 
-    public bool IsDisposing{ get; private set; }
+    private int m_Disposing;
 
-    public virtual void Dispose(bool flush = true)
+    public bool IsDisposing { get { return m_Disposing != 0; } private set { m_Disposing = value ? 1 : 0; } }
+
+    public virtual void Dispose()
     {
-      if (Socket == null || IsDisposing)
+      int disposing = Interlocked.Exchange(ref m_Disposing, 1);
+      if (disposing == 1)
         return;
 
-      IsDisposing = true;
-
-      if (flush)
-        flush = Flush();
-
-      try
+      Task.Run(async () =>
       {
-        Socket.Shutdown(SocketShutdown.Both);
-      }
-      catch (SocketException ex)
-      {
-        TraceException(ex);
-      }
+        m_RecvdPipe.Reader.CancelPendingRead();
+        m_RecvdPipe.Reader.Complete();
+        await m_RecvdPipe.Writer.FlushAsync().ConfigureAwait(false);
+        m_RecvdPipe.Writer.Complete();
 
-      try
-      {
-        Socket.Close();
-      }
-      catch (SocketException ex)
-      {
-        TraceException(ex);
-      }
+        try { Socket.Shutdown(SocketShutdown.Both); } catch (Exception ex) { TraceException(ex); }
+        try { Socket.Close(); } catch (Exception ex) { TraceException(ex); }
 
-      if (m_RecvBuffer != null)
-        lock (m_ReceiveBufferPool)
-        {
-          m_ReceiveBufferPool.ReleaseBuffer(m_RecvBuffer);
-        }
-
-      Socket = null;
-
-      Buffer = null;
-      m_RecvBuffer = null;
-
-      m_ReceiveEventArgs = null;
-      m_SendEventArgs = null;
-
-      Running = false;
-
-      lock (m_Disposed)
-      {
+        Socket = null;
+        m_RecvdPipe = null;
+        m_SendQueue = null;
         m_Disposed.Enqueue(this);
-      }
-
-      lock (m_SendQueue)
-      {
-        if ( /*!flush &&*/ !m_SendQueue.IsEmpty)
-          m_SendQueue.Clear();
-      }
+      });
     }
 
     public static void Initialize()
@@ -863,52 +687,41 @@ namespace Server.Network
       }
     }
 
-    private static Queue<NetState> m_Disposed = new Queue<NetState>();
+    private static ConcurrentQueue<NetState> m_Disposed = new ConcurrentQueue<NetState>();
 
     public static void ProcessDisposedQueue()
     {
-      lock (m_Disposed)
+      int breakout = 0;
+
+      while (breakout++ < 200)
       {
-        int breakout = 0;
+        if (!m_Disposed.TryDequeue(out NetState ns))
+          break;
 
-        while (breakout < 200 && m_Disposed.Count > 0)
+        Mobile m = ns.Mobile;
+        IAccount a = ns.Account;
+
+        if (m != null)
         {
-          ++breakout;
-          NetState ns = m_Disposed.Dequeue();
-
-          Mobile m = ns.Mobile;
-          IAccount a = ns.Account;
-
-          if (m != null)
-          {
-            m.NetState = null;
-            ns.Mobile = null;
-          }
-
-          ns.Gumps.Clear();
-          ns.Menus.Clear();
-          ns.HuePickers.Clear();
-          ns.Account = null;
-          ns.ServerInfo = null;
-          ns.CityInfo = null;
-
-          Instances.Remove(ns);
-
-          if (a != null)
-            ns.WriteConsole("Disconnected. [{0} Online] [{1}]", Instances.Count, a);
-          else
-            ns.WriteConsole("Disconnected. [{0} Online]", Instances.Count);
+          m.NetState = null;
+          ns.Mobile = null;
         }
+
+        ns.Gumps.Clear();
+        ns.Menus.Clear();
+        ns.HuePickers.Clear();
+        ns.Account = null;
+        ns.ServerInfo = null;
+        ns.CityInfo = null;
+
+        Instances.Remove(ns);
+
+        if (a != null)
+          ns.WriteConsole("Disconnected. [{0} Online] [{1}]", Instances.Count, a);
+        else
+          ns.WriteConsole("Disconnected. [{0} Online]", Instances.Count);
       }
     }
-
-    public bool Running{ get; private set; }
-
-    public bool Seeded{ get; set; }
-
-    public Socket Socket{ get; private set; }
-
-    public ByteQueue Buffer{ get; private set; }
 
     public ExpansionInfo ExpansionInfo
     {
@@ -927,6 +740,8 @@ namespace Server.Network
     }
 
     public Expansion Expansion => (Expansion)ExpansionInfo.ID;
+
+    public ProtocolChanges ProtocolChanges { get; set; }
 
     public bool SupportsExpansion(ExpansionInfo info, bool checkCoreExpansion = true)
     {

@@ -107,8 +107,6 @@ namespace Server
           list[i].Send(p);
 
       p.Release();
-
-      NetState.FlushAll();
     }
 
     public static void Broadcast(int hue, bool ascii, string format, params object[] args)
@@ -622,7 +620,6 @@ namespace Server
 
       ++m_Saves;
 
-      NetState.FlushAll();
       NetState.Pause();
 
       WaitForWriteCompletion(); //Blocks Save until current disk flush is done.
@@ -649,9 +646,7 @@ namespace Server
         Directory.CreateDirectory("Saves/Guilds/");
 
 
-      /*using ( SaveMetrics metrics = new SaveMetrics() ) {*/
-      strategy.Save(null, permitBackgroundWrite);
-      /*}*/
+      strategy.Save(permitBackgroundWrite);
 
       try
       {

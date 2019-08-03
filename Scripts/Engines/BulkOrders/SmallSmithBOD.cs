@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Server.Engines.Craft;
-using Mat = Server.Engines.BulkOrders.BulkMaterialType;
 
 namespace Server.Engines.BulkOrders
 {

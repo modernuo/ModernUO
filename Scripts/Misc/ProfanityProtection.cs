@@ -96,9 +96,7 @@ namespace Server.Misc
           return true;
         case ProfanityAction.Disconnect:
         {
-          NetState ns = from.NetState;
-
-          ns?.Dispose();
+          from.NetState?.Dispose();
 
           return false;
         }

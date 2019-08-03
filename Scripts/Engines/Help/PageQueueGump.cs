@@ -62,7 +62,7 @@ namespace Server.Engines.Help
 
         if (e.Sender.Deleted || e.Sender.NetState == null)
         {
-          e.AddResponse(e.Sender, "[Logout]");
+          // e.AddResponse(e.Sender, "[Logout]");
           PageQueue.Remove(e);
         }
         else
@@ -601,7 +601,7 @@ namespace Server.Engines.Help
           }
           else
           {
-            m_Entry.AddResponse(state.Mobile, "[Go Sender]");
+            // m_Entry.AddResponse(state.Mobile, "[Go Sender]");
             m.MoveToWorld(m_Entry.Sender.Location, m_Entry.Sender.Map);
 
             m.SendMessage("You have been teleported to that page's sender.");
@@ -628,7 +628,7 @@ namespace Server.Engines.Help
             }
             else
             {
-              m_Entry.AddResponse(state.Mobile, "[Go Handler]");
+              // m_Entry.AddResponse(state.Mobile, "[Go Handler]");
               m.MoveToWorld(h.Location, h.Map);
 
               m.SendMessage("You have been teleported to that page's handler.");
@@ -653,7 +653,7 @@ namespace Server.Engines.Help
           }
           else
           {
-            m_Entry.AddResponse(state.Mobile, "[Go PageLoc]");
+            // m_Entry.AddResponse(state.Mobile, "[Go PageLoc]");
             m.MoveToWorld(m_Entry.PageLocation, m_Entry.PageMap);
 
             state.Mobile.SendMessage("You have been teleported to the original page location.");
@@ -667,7 +667,7 @@ namespace Server.Engines.Help
         {
           if (m_Entry.Handler == null)
           {
-            m_Entry.AddResponse(state.Mobile, "[Handling]");
+            // m_Entry.AddResponse(state.Mobile, "[Handling]");
             m_Entry.Handler = state.Mobile;
 
             state.Mobile.SendMessage("You are now handling the page.");
@@ -685,7 +685,7 @@ namespace Server.Engines.Help
         {
           if (m_Entry.Handler == null)
           {
-            m_Entry.AddResponse(state.Mobile, "[Deleting]");
+            // m_Entry.AddResponse(state.Mobile, "[Deleting]");
             PageQueue.Remove(m_Entry);
 
             state.Mobile.SendMessage("You delete the page.");
@@ -707,7 +707,7 @@ namespace Server.Engines.Help
         {
           if (m_Entry.Handler == state.Mobile)
           {
-            m_Entry.AddResponse(state.Mobile, "[Abandoning]");
+            // m_Entry.AddResponse(state.Mobile, "[Abandoning]");
             state.Mobile.SendMessage("You abandon the page.");
 
             m_Entry.Handler = null;
@@ -725,7 +725,7 @@ namespace Server.Engines.Help
         {
           if (m_Entry.Handler == state.Mobile)
           {
-            m_Entry.AddResponse(state.Mobile, "[Handled]");
+            // m_Entry.AddResponse(state.Mobile, "[Handled]");
             PageQueue.Remove(m_Entry);
 
             m_Entry.Handler = null;
@@ -751,7 +751,7 @@ namespace Server.Engines.Help
 
           if (text != null)
           {
-            m_Entry.AddResponse(state.Mobile, "[Response] " + text.Text);
+            // m_Entry.AddResponse(state.Mobile, "[Response] " + text.Text);
             m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name, text.Text));
             //m_Entry.Sender.SendMessage( 0x482, "{0} tells you:", state.Mobile.Name );
             //m_Entry.Sender.SendMessage( 0x482, text.Text );
@@ -786,7 +786,7 @@ namespace Server.Engines.Help
 
           if (index >= 0 && index < preresp.Count)
           {
-            m_Entry.AddResponse(state.Mobile, "[PreDef] " + preresp[index].Title);
+            // m_Entry.AddResponse(state.Mobile, "[PreDef] " + preresp[index].Title);
             m_Entry.Sender.SendGump(new MessageSentGump(m_Entry.Sender, state.Mobile.Name,
               preresp[index].Message));
           }

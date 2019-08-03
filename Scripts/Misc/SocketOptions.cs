@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Sockets;
 using Server.Network;
@@ -7,7 +8,6 @@ namespace Server
   public class SocketOptions
   {
     private const bool NagleEnabled = false; // Should the Nagle algorithm be enabled? This may reduce performance
-    private const int CoalesceBufferSize = 512; // MSS that the core will use when buffering packets
 
     private static IPEndPoint[] m_ListenerEndPoints =
     {
@@ -20,11 +20,13 @@ namespace Server
 
     public static void Initialize()
     {
-      SendQueue.CoalesceBufferSize = CoalesceBufferSize;
-
       EventSink.SocketConnect += EventSink_SocketConnect;
+    }
 
-      Listener.EndPoints = m_ListenerEndPoints;
+    public static void RegisterListeners()
+    {
+      for (int i = 0; i < m_ListenerEndPoints.Length; i++)
+        Core.MessagePump.AddListener(m_ListenerEndPoints[i]);
     }
 
     private static void EventSink_SocketConnect(SocketConnectEventArgs e)

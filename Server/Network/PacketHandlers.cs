@@ -19,8 +19,10 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipelines;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Diagnostics;
@@ -304,6 +306,102 @@ namespace Server.Network
         ph.ThrottleCallback = t;
     }
 
+    public static long ProcessPacket(MessagePump pump, NetState ns, in ReadOnlySequence<byte> seq)
+    {
+      PacketReader r = new PacketReader(seq);
+
+      if (!r.TryReadByte(out byte packetId))
+      {
+        ns.Dispose();
+        return -1;
+      }
+
+      if (!ns.Seeded)
+      {
+        if (packetId == 0xEF)
+        {
+          // new packet in client	6.0.5.0	replaces the traditional seed method with a	seed packet
+          // 0xEF	= 239 =	multicast IP, so this should never appear in a normal seed.	 So	this is	backwards compatible with older	clients.
+          ns.Seeded = true;
+        }
+        else
+        {
+          int seed = (packetId << 24) | (r.ReadByte() << 16) | (r.ReadByte() << 8) | r.ReadByte();
+
+          if (seed == 0)
+          {
+            Console.WriteLine("Login: {0}: Invalid client detected, disconnecting", ns);
+            ns.Dispose();
+            return -1;
+          }
+
+          ns.m_Seed = seed;
+          ns.Seeded = true;
+
+          return 4;
+        }
+      }
+
+      if (ns.CheckEncrypted(packetId))
+      {
+        ns.Dispose();
+        return -1;
+      }
+
+      // Get Handlers
+      PacketHandler handler = ns.GetHandler(packetId);
+
+      if (handler == null)
+      {
+        r.Trace(ns);
+        return -1;
+      }
+
+      long packetLength = handler.Length;
+      if (handler.Length <= 0 && r.Length >= 3)
+      {
+        packetLength = r.ReadUInt16();
+        if (packetLength < 3)
+        {
+          ns.Dispose();
+          return -1;
+        }
+      }
+
+      if (r.Length < packetLength)
+        return 0;
+
+      if (handler.Ingame && ns.Mobile?.Deleted != false)
+      {
+        Console.WriteLine(
+          "Client: {0}: Sent ingame packet (0x{1:X2}) without being attached to a valid mobile.",
+          ns,
+          packetId
+        );
+        ns.Dispose();
+        return -1;
+      }
+
+      ThrottlePacketCallback throttler = handler.ThrottleCallback;
+      TimeSpan throttled = handler.ThrottleCallback?.Invoke(ns) ?? TimeSpan.Zero;
+
+      if (throttled > TimeSpan.Zero)
+        ns.ThrottledUntil = DateTime.UtcNow + throttled;
+
+      PacketReceiveProfile prof = null;
+
+      if (Core.Profiling)
+        prof = PacketReceiveProfile.Acquire(packetId);
+
+      prof?.Start();
+
+      pump.QueueWork(ns, seq.Slice(r.Position), handler.OnReceive);
+
+      prof?.Finish(packetLength);
+
+      return packetLength;
+    }
+
     private static void UnhandledBF(NetState state, PacketReader pvSrc)
     {
     }
@@ -450,7 +548,8 @@ namespace Server.Network
       Mobile vendor = World.FindMobile(pvSrc.ReadUInt32());
       byte flag = pvSrc.ReadByte();
 
-      if (vendor == null) return;
+      if (vendor == null)
+        return;
 
       if (vendor.Deleted || !Utility.RangeCheck(vendor.Location, state.Mobile.Location, 10))
       {
@@ -499,7 +598,7 @@ namespace Server.Network
       }
 
       int count = pvSrc.ReadUInt16();
-      if (count < 100 && pvSrc.Size == 1 + 2 + 4 + 2 + count * 6)
+      if (count < 100 && pvSrc.Length == 1 + 2 + 4 + 2 + count * 6)
       {
         List<SellItemResponse> sellList = new List<SellItemResponse>(count);
 
@@ -888,7 +987,8 @@ namespace Server.Network
 
     public static void GodModeRequest(NetState state, PacketReader pvSrc)
     {
-      if (VerifyGC(state)) state.Send(new GodModeReply(pvSrc.ReadBoolean()));
+      if (VerifyGC(state))
+        state.Send(new GodModeReply(pvSrc.ReadBoolean()));
     }
 
     public static void AsciiPromptResponse(NetState state, PacketReader pvSrc)
@@ -1603,6 +1703,7 @@ namespace Server.Network
     {
       int packetID = pvSrc.ReadUInt16();
 
+      Console.WriteLine("Extended Packet: {0:X}", packetID);
       PacketHandler ph = GetExtendedHandler(packetID);
 
       if (ph == null)
@@ -1681,12 +1782,12 @@ namespace Server.Network
 
       Mobile from = state.Mobile;
 
-      int length = pvSrc.Size - 3;
+      long length = pvSrc.Length - 3;
 
       if (length < 0 || length % 4 != 0)
         return;
 
-      int count = length / 4;
+      long count = length / 4;
 
       for (int i = 0; i < count; ++i)
       {
@@ -2010,7 +2111,7 @@ namespace Server.Network
       pvSrc.Seek(2, SeekOrigin.Current);
       int flags = pvSrc.ReadInt32();
 
-      if (FeatureProtection.DisabledFeatures != 0 && ThirdPartyAuthCallback != null)
+/*      if (FeatureProtection.DisabledFeatures != 0 && ThirdPartyAuthCallback != null)
       {
         bool authOK = false;
 
@@ -2031,18 +2132,18 @@ namespace Server.Network
         }
 
         ThirdPartyAuthCallback(state, authOK);
-      }
-      else
-      {
+      }*/
+/*      else
+      {*/
         pvSrc.Seek(24, SeekOrigin.Current);
-      }
+/*      }*/
 
-      if (ThirdPartyHackedCallback != null)
+/*      if (ThirdPartyHackedCallback != null)
       {
         pvSrc.Seek(-2, SeekOrigin.Current);
         if (pvSrc.ReadUInt16() == 0xDEAD)
           ThirdPartyHackedCallback(state, true);
-      }
+      }*/
 
       if (!state.Running)
         return;
@@ -2053,9 +2154,7 @@ namespace Server.Network
       IAccount a = state.Account;
 
       if (a == null || charSlot < 0 || charSlot >= a.Length)
-      {
         state.Dispose();
-      }
       else
       {
         Mobile m = a[charSlot];
@@ -2078,7 +2177,6 @@ namespace Server.Network
           state.Dispose();
           return;
         }
-
 
         m.NetState?.Dispose();
 
@@ -2205,8 +2303,6 @@ namespace Server.Network
       pvSrc.Seek(8, SeekOrigin.Current);
       int prof = pvSrc.ReadByte();
       pvSrc.Seek(15, SeekOrigin.Current);
-
-      //bool female = pvSrc.ReadBoolean();
 
       int genderRace = pvSrc.ReadByte();
 
@@ -2645,8 +2741,7 @@ namespace Server.Network
       if (e.Rejected)
       {
         state.Account = null;
-        state.Send(new AccountLoginRej(ALRReason.BadComm));
-        state.Dispose();
+        AccountLogin_ReplyRej(state, ALRReason.BadComm);
       }
       else
       {

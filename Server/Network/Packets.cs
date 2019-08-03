@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -2336,8 +2337,6 @@ namespace Server.Network
 
   public sealed class DisplayGumpPacked : Packet, IGumpWriter
   {
-    private const int GumpBufferSize = 0x5000;
-
     private static byte[] m_True = Gump.StringToBuffer(" 1");
     private static byte[] m_False = Gump.StringToBuffer(" 0");
 
@@ -2345,7 +2344,6 @@ namespace Server.Network
     private static byte[] m_EndTextSeparator = Gump.StringToBuffer("@");
 
     private static byte[] m_Buffer = new byte[48];
-    private static BufferPool m_PackBuffers = new BufferPool("Gump", 4, GumpBufferSize);
 
     private Gump m_Gump;
 
@@ -2465,30 +2463,17 @@ namespace Server.Network
       wantLength += 4095;
       wantLength &= ~4095;
 
-      byte[] m_PackBuffer;
-      lock (m_PackBuffers)
-      {
-        m_PackBuffer = m_PackBuffers.AcquireBuffer();
-      }
+      byte[] packBuffer = ArrayPool<byte>.Shared.Rent(wantLength);
 
-      if (m_PackBuffer.Length < wantLength)
-      {
-        Console.WriteLine("Notice: DisplayGumpPacked creating new {0} byte buffer", wantLength);
-        m_PackBuffer = new byte[wantLength];
-      }
+      int packLength = wantLength;
 
-      int packLength = m_PackBuffer.Length;
-
-      Compression.Pack(m_PackBuffer, ref packLength, buffer, length, ZLibQuality.Default);
+      Compression.Pack(packBuffer, ref packLength, buffer, length, ZLibQuality.Default);
 
       m_Stream.Write(4 + packLength);
       m_Stream.Write(length);
-      m_Stream.Write(m_PackBuffer, 0, packLength);
+      m_Stream.Write(packBuffer, 0, packLength);
 
-      lock (m_PackBuffers)
-      {
-        m_PackBuffers.ReleaseBuffer(m_PackBuffer);
-      }
+      ArrayPool<byte>.Shared.Return(packBuffer);
     }
   }
 
@@ -3954,7 +3939,7 @@ namespace Server.Network
 
   public sealed class CharacterList : Packet
   {
-    private static MD5CryptoServiceProvider m_MD5Provider;
+    //private static MD5CryptoServiceProvider m_MD5Provider;
 
     public CharacterList(IAccount a, CityInfo[] info) : base(0xA9)
     {
@@ -4013,7 +3998,7 @@ namespace Server.Network
 
       m_Stream.Write((short)-1);
 
-      ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
+      /*ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
 
       if (disabled != 0)
       {
@@ -4040,7 +4025,7 @@ namespace Server.Network
 
         m_Stream.Seek(95, SeekOrigin.Begin);
         m_Stream.Write(hashCode, 0, hashCode.Length);
-      }
+      }*/
     }
 
     public static CharacterListFlags AdditionalFlags{ get; set; }
@@ -4048,7 +4033,7 @@ namespace Server.Network
 
   public sealed class CharacterListOld : Packet
   {
-    private static MD5CryptoServiceProvider m_MD5Provider;
+    // private static MD5CryptoServiceProvider m_MD5Provider;
 
     public CharacterListOld(IAccount a, CityInfo[] info) : base(0xA9)
     {
@@ -4099,7 +4084,7 @@ namespace Server.Network
 
       m_Stream.Write((int)(flags | CharacterList.AdditionalFlags)); // Additional Flags
 
-      ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
+/*      ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
 
       if (disabled != 0)
       {
@@ -4126,7 +4111,7 @@ namespace Server.Network
 
         m_Stream.Seek(95, SeekOrigin.Begin);
         m_Stream.Write(hashCode, 0, hashCode.Length);
-      }
+      }*/
     }
   }
 
@@ -4197,7 +4182,7 @@ namespace Server.Network
 
   public sealed class ServerInfo
   {
-    public ServerInfo(string name, int fullPercent, TimeZone tz, IPEndPoint address)
+    public ServerInfo(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
     {
       Name = name;
       FullPercent = fullPercent;
@@ -4287,273 +4272,6 @@ namespace Server.Network
 
       m_Stream.Write((short)si.Address.Port);
       m_Stream.Write(m_AuthID);
-    }
-  }
-
-  public abstract class Packet
-  {
-    private const int CompressorBufferSize = 0x10000;
-
-    private const int BufferSize = 4096;
-    private static BufferPool m_CompressorBuffers = new BufferPool("Compressor", 4, CompressorBufferSize);
-    private static BufferPool m_Buffers = new BufferPool("Compressed", 16, BufferSize);
-
-    private byte[] m_CompiledBuffer;
-    private int m_CompiledLength;
-    private int m_Length;
-    private State m_State;
-
-    protected PacketWriter m_Stream;
-
-    protected Packet(int packetID)
-    {
-      PacketID = packetID;
-
-      if (Core.Profiling)
-      {
-        PacketSendProfile prof = PacketSendProfile.Acquire(GetType());
-        prof.Increment();
-      }
-    }
-
-    protected Packet(int packetID, int length)
-    {
-      PacketID = packetID;
-      m_Length = length;
-
-      m_Stream = PacketWriter.CreateInstance(length); // new PacketWriter( length );
-      m_Stream.Write((byte)packetID);
-
-      if (Core.Profiling)
-      {
-        PacketSendProfile prof = PacketSendProfile.Acquire(GetType());
-        prof.Increment();
-      }
-    }
-
-    public int PacketID{ get; }
-
-    public PacketWriter UnderlyingStream => m_Stream;
-
-    public void EnsureCapacity(int length)
-    {
-      m_Stream = PacketWriter.CreateInstance(length); // new PacketWriter( length );
-      m_Stream.Write((byte)PacketID);
-      m_Stream.Write((short)0);
-    }
-
-    public static Packet SetStatic(Packet p)
-    {
-      p.SetStatic();
-      return p;
-    }
-
-    public static Packet Acquire(Packet p)
-    {
-      p.Acquire();
-      return p;
-    }
-
-    public static void Release(ref Packet p)
-    {
-      p?.Release();
-      p = null;
-    }
-
-    public static void Release(Packet p)
-    {
-      p?.Release();
-    }
-
-    public void SetStatic()
-    {
-      m_State |= State.Static | State.Acquired;
-    }
-
-    public void Acquire()
-    {
-      m_State |= State.Acquired;
-    }
-
-    public void OnSend()
-    {
-      Core.Set();
-
-      lock (this)
-      {
-        if ((m_State & (State.Acquired | State.Static)) == 0)
-          Free();
-      }
-    }
-
-    private void Free()
-    {
-      if (m_CompiledBuffer == null)
-        return;
-
-      if ((m_State & State.Buffered) != 0)
-        m_Buffers.ReleaseBuffer(m_CompiledBuffer);
-
-      m_State &= ~(State.Static | State.Acquired | State.Buffered);
-
-      m_CompiledBuffer = null;
-    }
-
-    public void Release()
-    {
-      if ((m_State & State.Acquired) != 0)
-        Free();
-    }
-
-    public byte[] Compile(bool compress, out int length)
-    {
-      lock (this)
-      {
-        if (m_CompiledBuffer == null)
-        {
-          if ((m_State & State.Accessed) == 0)
-          {
-            m_State |= State.Accessed;
-          }
-          else
-          {
-            if ((m_State & State.Warned) == 0)
-            {
-              m_State |= State.Warned;
-
-              try
-              {
-                using (StreamWriter op = new StreamWriter("net_opt.log", true))
-                {
-                  op.WriteLine("Redundant compile for packet {0}, use Acquire() and Release()", GetType());
-                  op.WriteLine(new StackTrace());
-                }
-              }
-              catch
-              {
-                // ignored
-              }
-            }
-
-            m_CompiledBuffer = new byte[0];
-            m_CompiledLength = 0;
-
-            length = m_CompiledLength;
-            return m_CompiledBuffer;
-          }
-
-          InternalCompile(compress);
-        }
-
-        length = m_CompiledLength;
-        return m_CompiledBuffer;
-      }
-    }
-
-    private void InternalCompile(bool compress)
-    {
-      if (m_Length == 0)
-      {
-        long streamLen = m_Stream.Length;
-
-        m_Stream.Seek(1, SeekOrigin.Begin);
-        m_Stream.Write((ushort)streamLen);
-      }
-      else if (m_Stream.Length != m_Length)
-      {
-        int diff = (int)m_Stream.Length - m_Length;
-
-        Console.WriteLine("Packet: 0x{0:X2}: Bad packet length! ({1}{2} bytes)", PacketID, diff >= 0 ? "+" : "",
-          diff);
-      }
-
-      MemoryStream ms = m_Stream.UnderlyingStream;
-
-      m_CompiledBuffer = ms.GetBuffer();
-      int length = (int)ms.Length;
-
-      if (compress)
-      {
-        byte[] buffer;
-        lock (m_CompressorBuffers)
-        {
-          buffer = m_CompressorBuffers.AcquireBuffer();
-        }
-
-        Compression.Compress(m_CompiledBuffer, 0, length, buffer, ref length);
-
-        if (length <= 0)
-        {
-          Console.WriteLine("Warning: Compression buffer overflowed on packet 0x{0:X2} ('{1}') (length={2})",
-            PacketID, GetType().Name, length);
-          using (StreamWriter op = new StreamWriter("compression_overflow.log", true))
-          {
-            op.WriteLine("{0} Warning: Compression buffer overflowed on packet 0x{1:X2} ('{2}') (length={3})",
-              DateTime.UtcNow, PacketID, GetType().Name, length);
-            op.WriteLine(new StackTrace());
-          }
-        }
-        else
-        {
-          m_CompiledLength = length;
-
-          if (length > BufferSize || (m_State & State.Static) != 0)
-          {
-            m_CompiledBuffer = new byte[length];
-          }
-          else
-          {
-            lock (m_Buffers)
-            {
-              m_CompiledBuffer = m_Buffers.AcquireBuffer();
-            }
-
-            m_State |= State.Buffered;
-          }
-
-          Buffer.BlockCopy(buffer, 0, m_CompiledBuffer, 0, length);
-
-          lock (m_CompressorBuffers)
-          {
-            m_CompressorBuffers.ReleaseBuffer(buffer);
-          }
-        }
-      }
-      else if (length > 0)
-      {
-        byte[] old = m_CompiledBuffer;
-        m_CompiledLength = length;
-
-        if (length > BufferSize || (m_State & State.Static) != 0)
-        {
-          m_CompiledBuffer = new byte[length];
-        }
-        else
-        {
-          lock (m_Buffers)
-          {
-            m_CompiledBuffer = m_Buffers.AcquireBuffer();
-          }
-
-          m_State |= State.Buffered;
-        }
-
-        Buffer.BlockCopy(old, 0, m_CompiledBuffer, 0, length);
-      }
-
-      PacketWriter.ReleaseInstance(m_Stream);
-      m_Stream = null;
-    }
-
-    [Flags]
-    private enum State
-    {
-      Inactive = 0x00,
-      Static = 0x01,
-      Acquired = 0x02,
-      Accessed = 0x04,
-      Buffered = 0x08,
-      Warned = 0x10
     }
   }
 }
