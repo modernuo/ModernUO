@@ -11,18 +11,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <OutputPath>..\Assemblies\</OutputPath>
-    <OutDir>..\Assemblies\</OutDir>
+    <OutputPath>..\..\Distribution\Assemblies\</OutputPath>
+    <OutDir>..\..\Distribution\Assemblies</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
+    <PublishDir>..\..\Distribution\Assemblies</PublishDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
-    <OutputPath>..\Assemblies\</OutputPath>
-    <OutDir>..\Assemblies\</OutDir>
+    <OutputPath>..\..\Distribution\Assemblies\</OutputPath>
+    <OutDir>..\..\Distribution\Assemblies</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>

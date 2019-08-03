@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 #if NETCORE
 using System.Runtime.Loader;
 #endif
@@ -40,16 +41,25 @@ namespace Server
     {
       string[] files = Directory.GetFiles(path ?? ScriptsPath, "*.dll");
 
-      Assemblies = new Assembly[files.Length];
+      List<Assembly> assemblies = new List<Assembly>();
+
+      AssemblyName[] names = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+
+      int loaded = 0;
 
       for (int i = 0; i < files.Length; i++)
+      {
 #if NETCORE
-        Assemblies[i] = AssemblyLoadContext.Default.LoadFromAssemblyPath(files[i]);
+        assemblies.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(files[i]));
+        loaded++;
 #else
         Assemblies[i] = Assembly.LoadFrom(files[i]);
 #endif
+      }
 
-      return files.Length > 0;
+      Assemblies = assemblies.ToArray();
+
+      return loaded > 0;
     }
 
     public static void Invoke(string method)

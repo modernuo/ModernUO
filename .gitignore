@@ -1,23 +1,14 @@
-ModernUO
-ModernUO.exe
-ModernUO.exe.config
-ModernUO.dll
-ModernUO.dll.config
-ModernUO.*.json
-ModernUO.pdb
-/Assemblies
-/Logs/
-/Scripts/bin/
-/Scripts/obj/
-/Scripts/Output
-/Server/bin/
-/Server/obj/
+/Distribution/ModernUO
+/Distribution/ModernUO.*
+/Distribution/Assemblies
+/Distribution/Logs
+/Distribution/Backups
+/Distribution/Saves
+/Projects/Scripts/obj
+/Projects/Server/obj
 
 *.user
-*.suo
 /.idea
 /.vs
-/Backups
-/Saves
 
 .DS_Store
