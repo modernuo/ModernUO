@@ -477,37 +477,36 @@ namespace Server.Network
       return false;
     }
 
-    private Pipe m_RecvdPipe;
-    private Pipe m_SendPipe;
+    public Pipe RecvdPipe { get; private set; }
 
-    public PipeWriter SendPipeWriter => m_SendPipe.Writer;
+    public Pipe SendPipe { get; private set; }
 
     private async Task Start(MessagePump pump)
     {
-      m_RecvdPipe = new Pipe();
-      m_SendPipe = new Pipe();
+      RecvdPipe = new Pipe();
+      SendPipe = new Pipe();
       Running = true;
 
-      await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump)).ConfigureAwait(false);
+      await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump));
     }
 
     private async Task ProcessRecvs()
     {
-      PipeWriter w = m_RecvdPipe.Writer;
+      PipeWriter w = RecvdPipe.Writer;
 
       while (true)
       {
         if (m_AsyncState.Paused)
         {
           Interlocked.Exchange(ref m_NextCheckActivity, Core.TickCount + 90000);
-          await Timer.Pause(50).ConfigureAwait(false);
+          await Timer.Pause(50);
           continue;
         }
 
         try
         {
           Memory<byte> memory = w.GetMemory();
-          int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None).ConfigureAwait(false);
+          int bytesRead = await Socket.ReceiveAsync(memory, SocketFlags.None);
           if (bytesRead == 0)
             break;
 
@@ -515,7 +514,7 @@ namespace Server.Network
 
           w.Advance(bytesRead);
 
-          FlushResult result = await w.FlushAsync().ConfigureAwait(false);
+          FlushResult result = await w.FlushAsync();
           if (result.IsCompleted || result.IsCanceled)
             break;
         }
@@ -531,7 +530,7 @@ namespace Server.Network
 
     private async Task HandlePackets(MessagePump pump)
     {
-      PipeReader pr = m_RecvdPipe.Reader;
+      PipeReader pr = RecvdPipe.Reader;
 
       while (true)
       {
@@ -554,9 +553,32 @@ namespace Server.Network
       pr.Complete();
     }
 
+    public async Task Write(Memory<byte> mem)
+    {
+      FlushResult result = await SendPipe.Writer.WriteAsync(mem.GetArray());
+
+      if (result.IsCompleted || result.IsCanceled)
+        SendPipe.Writer.Complete();
+    }
+
+    public async Task Flush(int bytesWritten)
+    {
+      SendPipe.Writer.Advance(bytesWritten);
+      FlushResult result = await SendPipe.Writer.FlushAsync();
+
+      if (result.IsCompleted || result.IsCanceled)
+        SendPipe.Writer.Complete();
+    }
+
+    private void _PostFlush(FlushResult result)
+    {
+      if (result.IsCanceled || result.IsCompleted)
+        SendPipe.Writer.Complete();
+    }
+
     private async Task ProcessSends()
     {
-      PipeReader pr = m_SendPipe.Reader;
+      PipeReader pr = SendPipe.Reader;
 
       while (true)
       {
@@ -652,16 +674,16 @@ namespace Server.Network
 
       Task.Run(async () =>
       {
-        m_RecvdPipe.Reader.CancelPendingRead();
-        m_RecvdPipe.Reader.Complete();
-        await m_RecvdPipe.Writer.FlushAsync().ConfigureAwait(false);
-        m_RecvdPipe.Writer.Complete();
+        RecvdPipe.Reader.CancelPendingRead();
+        RecvdPipe.Reader.Complete();
+        await RecvdPipe.Writer.FlushAsync().ConfigureAwait(false);
+        RecvdPipe.Writer.Complete();
 
         try { Socket.Shutdown(SocketShutdown.Both); } catch (Exception ex) { TraceException(ex); }
         try { Socket.Close(); } catch (Exception ex) { TraceException(ex); }
 
         Socket = null;
-        m_RecvdPipe = null;
+        RecvdPipe = null;
         m_SendQueue = null;
         m_Disposed.Enqueue(this);
       });

@@ -27,6 +27,7 @@
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -36,6 +37,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
     <PublishDir>..\..\Distribution</PublishDir>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="runuo.ico" />
@@ -65,5 +67,8 @@
       <HintPath>Assemblies\System.IO.Pipelines.dll</HintPath>
       <IncludeInPackage>false</IncludeInPackage>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Network\Packets\" />
   </ItemGroup>
 </Project>

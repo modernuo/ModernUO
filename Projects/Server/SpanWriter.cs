@@ -1,9 +1,9 @@
 /***************************************************************************
- *                              PacketWriter.cs
+ *                            SocketExtensions.cs
  *                            -------------------
- *   begin                : May 1, 2002
- *   copyright            : (C) The RunUO Software Team
- *   email                : info@runuo.com
+ *   begin                : August 5, 2019
+ *   copyright            : (C) The ModernUO Team
+ *   email                : hi@modernuo.com
  *
  *   $Id$
  *
@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 
@@ -28,69 +27,58 @@ namespace Server.Network
   /// <summary>
   ///   Provides functionality for writing primitive binary data.
   /// </summary>
-  public class PacketWriter
+  public ref struct SpanWriter
   {
-    private static ConcurrentQueue<PacketWriter> m_Pool = new ConcurrentQueue<PacketWriter>();
-
     /// <summary>
     ///   Internal format buffer.
     /// </summary>
-    private byte[] m_Buffer = new byte[4];
-
-    private int m_Capacity;
+    private Span<byte> m_Buffer;
 
     /// <summary>
-    ///   Instantiates a new PacketWriter instance with a given capacity.
+    ///   Gets or sets the current stream capacity.
     /// </summary>
-    /// <param name="capacity">Initial capacity for the internal stream.</param>
-    public PacketWriter(int capacity = 32)
+    public int Capacity { get; set; }
+
+    /// <summary>
+    ///   Instantiates a new PacketWriter instance.
+    /// </summary>
+    /// <param name="buffer">Internal buffer used for writing</param>
+    public SpanWriter(Span<byte> buffer, int cap)
     {
-      UnderlyingStream = new MemoryStream(capacity);
-      m_Capacity = capacity;
+      m_Buffer = buffer;
+      Capacity = cap;
+      Position = 0;
     }
 
     /// <summary>
     ///   Gets the total stream length.
     /// </summary>
-    public long Length => UnderlyingStream.Length;
+    public long Length => m_Buffer.Length;
 
     /// <summary>
     ///   Gets or sets the current stream position.
     /// </summary>
-    public long Position
-    {
-      get => UnderlyingStream.Position;
-      set => UnderlyingStream.Position = value;
-    }
-
-    /// <summary>
-    ///   The internal stream used by this PacketWriter instance.
-    /// </summary>
-    public MemoryStream UnderlyingStream { get; private set; }
-
-    public static PacketWriter CreateInstance(int capacity = 32)
-    {
-      if (m_Pool.TryDequeue(out PacketWriter pw))
-      {
-        pw.m_Capacity = capacity;
-        pw.UnderlyingStream.SetLength(0);
-        return pw;
-      }
-
-      return new PacketWriter(capacity);
-    }
-
-    public static void ReleaseInstance(PacketWriter pw)
-    {
-      m_Pool.Enqueue(pw);
-    }
+    public int Position { get; set; }
 
     /// <summary>
     ///   Writes a 1-byte boolean value to the underlying stream. False is represented by 0, true by 1.
     /// </summary>
     public void Write(bool value)
     {
-      UnderlyingStream.WriteByte((byte)(value ? 1 : 0));
+      Write((byte)(value ? 0 : 1));
+    }
+
+    /// <summary>
+    ///   Writes a 1-byte boolean value to the underlying stream. False is represented by 0, true by 1.
+    ///   Optimizes by skipping the write entirely if the value is false.
+    ///   Do not use this if the data is not initialized to 0.
+    /// </summary>
+    public void WriteIfTrue(bool value)
+    {
+      if (value)
+        m_Buffer[Position] = 1;
+
+      Position++;
     }
 
     /// <summary>
@@ -98,7 +86,7 @@ namespace Server.Network
     /// </summary>
     public void Write(byte value)
     {
-      UnderlyingStream.WriteByte(value);
+      m_Buffer[Position++] = value;
     }
 
     /// <summary>
@@ -106,7 +94,7 @@ namespace Server.Network
     /// </summary>
     public void Write(sbyte value)
     {
-      UnderlyingStream.WriteByte((byte)value);
+      Write((byte)value);
     }
 
     /// <summary>
@@ -114,10 +102,8 @@ namespace Server.Network
     /// </summary>
     public void Write(short value)
     {
-      m_Buffer[0] = (byte)(value >> 8);
-      m_Buffer[1] = (byte)value;
-
-      UnderlyingStream.Write(m_Buffer, 0, 2);
+      Write((byte)(value >> 8));
+      Write((byte)value);
     }
 
     /// <summary>
@@ -125,10 +111,8 @@ namespace Server.Network
     /// </summary>
     public void Write(ushort value)
     {
-      m_Buffer[0] = (byte)(value >> 8);
-      m_Buffer[1] = (byte)value;
-
-      UnderlyingStream.Write(m_Buffer, 0, 2);
+      Write((byte)(value >> 8));
+      Write((byte)value);
     }
 
     /// <summary>
@@ -136,12 +120,10 @@ namespace Server.Network
     /// </summary>
     public void Write(int value)
     {
-      m_Buffer[0] = (byte)(value >> 24);
-      m_Buffer[1] = (byte)(value >> 16);
-      m_Buffer[2] = (byte)(value >> 8);
-      m_Buffer[3] = (byte)value;
-
-      UnderlyingStream.Write(m_Buffer, 0, 4);
+      Write((byte)(value >> 24));
+      Write((byte)(value >> 16));
+      Write((byte)(value >> 8));
+      Write((byte)value);
     }
 
     /// <summary>
@@ -149,12 +131,10 @@ namespace Server.Network
     /// </summary>
     public void Write(uint value)
     {
-      m_Buffer[0] = (byte)(value >> 24);
-      m_Buffer[1] = (byte)(value >> 16);
-      m_Buffer[2] = (byte)(value >> 8);
-      m_Buffer[3] = (byte)value;
-
-      UnderlyingStream.Write(m_Buffer, 0, 4);
+      Write((byte)(value >> 24));
+      Write((byte)(value >> 16));
+      Write((byte)(value >> 8));
+      Write((byte)value);
     }
 
     /// <summary>
@@ -162,7 +142,15 @@ namespace Server.Network
     /// </summary>
     public void Write(byte[] buffer, int offset, int size)
     {
-      UnderlyingStream.Write(buffer, offset, size);
+      if (size < Length - Position)
+      {
+        // Todo: Get more memory?
+        Console.WriteLine("Network: Attempted to Write buffer with not enough room");
+        return;
+      }
+
+      buffer.AsSpan().Slice(0, offset).CopyTo(m_Buffer.Slice(Position, size));
+      Position += size;
     }
 
     /// <summary>
@@ -177,20 +165,10 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
-
-      UnderlyingStream.SetLength(UnderlyingStream.Length + size);
-
-      if (length >= size)
-      {
-        UnderlyingStream.Position +=
-          Encoding.ASCII.GetBytes(value, 0, size, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-      }
-      else
-      {
-        Encoding.ASCII.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-        UnderlyingStream.Position += size;
-      }
+      // TODO: Performance sucks
+      // https://github.com/dotnet/corefx/issues/30382
+      Encoding.ASCII.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, value.Length)));
+      Position += size;
     }
 
     /// <summary>
@@ -204,12 +182,10 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
-
-      UnderlyingStream.SetLength(UnderlyingStream.Length + length + 1);
-
-      Encoding.ASCII.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-      UnderlyingStream.Position += length + 1;
+      // TODO: Performance sucks
+      // https://github.com/dotnet/corefx/issues/30382
+      Encoding.ASCII.GetBytes(value, m_Buffer.Slice(Position, value.Length));
+      Position += value.Length + 1;
     }
 
     /// <summary>
@@ -223,12 +199,12 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      int length = value.Length * 2;
 
-      UnderlyingStream.SetLength(UnderlyingStream.Length + (length + 1) * 2);
-
-      UnderlyingStream.Position += Encoding.Unicode.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-      UnderlyingStream.Position += 2;
+      // TODO: Performance sucks
+      // https://github.com/dotnet/corefx/issues/30382
+      Encoding.Unicode.GetBytes(value, m_Buffer.Slice(Position, length));
+      Position += length + 2;
     }
 
     /// <summary>
@@ -243,21 +219,13 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      int length = value.Length * 2;
       size *= 2;
 
-      UnderlyingStream.SetLength(UnderlyingStream.Length + size);
-
-      if (length * 2 >= size)
-      {
-        UnderlyingStream.Position +=
-          Encoding.Unicode.GetBytes(value, 0, size, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-      }
-      else
-      {
-        Encoding.Unicode.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-        UnderlyingStream.Position += size;
-      }
+      // TODO: Performance sucks
+      // https://github.com/dotnet/corefx/issues/30382
+      Encoding.Unicode.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, length)));
+      Position += size;
     }
 
     /// <summary>
@@ -271,13 +239,12 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      int length = value.Length * 2;
 
-      UnderlyingStream.SetLength(UnderlyingStream.Length + (length + 1) * 2);
-
-      UnderlyingStream.Position +=
-        Encoding.BigEndianUnicode.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-      UnderlyingStream.Position += 2;
+      // TODO: Performance sucks
+      // https://github.com/dotnet/corefx/issues/30382
+      Encoding.BigEndianUnicode.GetBytes(value, m_Buffer.Slice(Position, length));
+      Position += length + 2;
     }
 
     /// <summary>
@@ -292,55 +259,53 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length;
+      int length = value.Length * 2;
       size *= 2;
 
-      UnderlyingStream.SetLength(UnderlyingStream.Length + size);
-
-      if (length * 2 >= size )
-      {
-        UnderlyingStream.Position +=
-          Encoding.BigEndianUnicode.GetBytes(value, 0, size, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-      }
-      else
-      {
-        Encoding.BigEndianUnicode.GetBytes(value, 0, length, UnderlyingStream.GetBuffer(), (int)UnderlyingStream.Position);
-        UnderlyingStream.Position += size;
-      }
+      // TODO: Performance sucks
+      // https://github.com/dotnet/corefx/issues/30382
+      Encoding.BigEndianUnicode.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, length)));
+      Position += size;
     }
 
     /// <summary>
     ///   Fills the stream from the current position up to (capacity) with 0x00's
     /// </summary>
-    public void Fill()
-    {
-      Fill(m_Capacity - UnderlyingStream.Length);
-    }
+    public void Fill() => m_Buffer.Slice(Position, Capacity - Position).Fill(0);
 
     /// <summary>
     ///   Writes a number of 0x00 byte values to the underlying stream.
     /// </summary>
-    public void Fill(long length)
-    {
-      if (UnderlyingStream.Position == UnderlyingStream.Length)
-      {
-        UnderlyingStream.SetLength(UnderlyingStream.Length + length);
-        UnderlyingStream.Seek(0, SeekOrigin.End);
-      }
-      else
-      {
-        UnderlyingStream.Write(new byte[length], 0, (int)length);
-      }
-    }
+    public void Fill(int length) => m_Buffer.Slice(Position, Math.Min(length, Capacity - Position)).Fill(0);
 
     /// <summary>
     ///   Offsets the current position from an origin.
     /// </summary>
-    public long Seek(long offset, SeekOrigin origin) => UnderlyingStream.Seek(offset, origin);
+    public int Seek(int offset, SeekOrigin origin = SeekOrigin.Begin)
+    {
+      switch (origin)
+      {
+        default: Position = Math.Max(offset, 0); break;
+        case SeekOrigin.Current:
+          {
+            Position += offset;
+            if (Position < 0)
+              Position = 0;
+            else if (Position >= Capacity)
+              Position = Capacity - 1;
 
-    /// <summary>
-    ///   Gets the entire stream content as a byte array.
-    /// </summary>
-    public byte[] ToArray() => UnderlyingStream.ToArray();
+              break;
+          }
+        case SeekOrigin.End:
+          {
+            Position -= Math.Max(0, offset);
+            if (Position < 0)
+              Position = 0;
+            break;
+          }
+      }
+
+      return Position;
+    }
   }
 }
