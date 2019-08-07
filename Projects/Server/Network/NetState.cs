@@ -570,12 +570,6 @@ namespace Server.Network
         SendPipe.Writer.Complete();
     }
 
-    private void _PostFlush(FlushResult result)
-    {
-      if (result.IsCanceled || result.IsCompleted)
-        SendPipe.Writer.Complete();
-    }
-
     private async Task ProcessSends()
     {
       PipeReader pr = SendPipe.Reader;

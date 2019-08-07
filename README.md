@@ -1,14 +1,19 @@
 ModernUO
 =====
 
-### Contacts
+The next generation Ultima Online Server Emulator.
+
+### Join!
 [Join Discord Channel](https://discord.gg/VdyCpjQ)
 
 ### Goals
 - See [Goals](./GOALS.md)
 
-### Requirements
-- .NET Core 3.0 (Preview 7) or newer
+# Requirements to Compile
+- .NET Core 3.0 SDK
+
+### Requirements to Run
+- .NET Core 3.0 Runtime or SDK
 - zlib (Linux only)
 
 ### Building with Visual Studio 2019
@@ -33,5 +38,9 @@ ModernUO
 #### Running on Linux
 - Follow the build instructions
 - Run `Distribution\ModernUO` or `dotnet ModernUO.dll`
+
+### Thanks
+- RunUO Team & Community
+- [Jaedan](https://github.com/jaedan) and the ClassicUO Community
 
 ### Troubleshooting / FAQ
