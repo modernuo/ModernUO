@@ -1,5 +1,5 @@
 /***************************************************************************
- *                            SocketExtensions.cs
+ *                               SpanWriter.cs
  *                            -------------------
  *   begin                : August 5, 2019
  *   copyright            : (C) The ModernUO Team
