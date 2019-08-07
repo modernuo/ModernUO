@@ -158,5 +158,55 @@ namespace Server.Network
 
       return write;
     }
+
+    public static WriteFixedPacketMethod LogoutAck(out int length)
+    {
+      length = 2;
+      static void write(Memory<byte> mem)
+      {
+        mem.Span[0] = 0xD1; // Packet ID
+        mem.Span[1] = 0x01;
+      }
+
+      return write;
+    }
+
+    public static WriteFixedPacketMethod<int, int, int> Weather(out int length)
+    {
+      length = 4;
+      static void write(Memory<byte> mem, int type, int density, int temperature)
+      {
+        mem.Span[0] = 0x65; // Packet ID
+        mem.Span[1] = (byte)type;
+        mem.Span[2] = (byte)density;
+        mem.Span[3] = (byte)temperature;
+      }
+
+      return write;
+    }
+
+    public static WriteFixedPacketMethod<Direction> PlayerMove(out int length)
+    {
+      length = 2;
+      static void write(Memory<byte> mem, Direction d)
+      {
+        mem.Span[0] = 0x97; // Packet ID
+        mem.Span[1] = (byte)d;
+      }
+
+      return write;
+    }
+
+    public static WriteFixedPacketMethod ClientVersionReq(out int length)
+    {
+      length = 3;
+      static void write(Memory<byte> mem)
+      {
+        mem.Span[0] = 0xBD; // Packet ID
+        mem.Span[1] = 0x03; // Length
+      }
+
+      return write;
+    }
   }
 }

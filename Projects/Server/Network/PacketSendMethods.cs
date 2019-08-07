@@ -23,6 +23,15 @@ namespace Server.Network
 
   public delegate WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6> FixedPacketMethod<T1, T2, T3, T4, T5, T6>(out int length);
   public delegate void WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6>(Memory<byte> mem, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
+
+  public delegate WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7> FixedPacketMethod<T1, T2, T3, T4, T5, T6, T7>(out int length);
+  public delegate void WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7>(Memory<byte> mem, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7);
+
+  public delegate WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8> FixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8>(out int length);
+  public delegate void WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8>(Memory<byte> mem, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8);
+
+  public delegate WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> FixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9>(out int length);
+  public delegate void WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9>(Memory<byte> mem, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9);
   #endregion
 
   #region Dynamic Length Packet Delegates
@@ -46,6 +55,15 @@ namespace Server.Network
 
   public delegate WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6> DynamicPacketMethod<T1, T2, T3, T4, T5, T6>(out int length, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
   public delegate int WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6>(Memory<byte> mem, int length, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
+
+  public delegate WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7> DynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7>(out int length, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7);
+  public delegate int WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7>(Memory<byte> mem, int length, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7);
+
+  public delegate WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8> DynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8>(out int length, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8);
+  public delegate int WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8>(Memory<byte> mem, int length, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8);
+
+  public delegate WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> DynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9>(out int length, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9);
+  public delegate int WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9>(Memory<byte> mem, int length, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9);
   #endregion
 
   public static partial class Packets
@@ -110,6 +128,30 @@ namespace Server.Network
       WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6> func = f(out int length);
       Memory<byte> mem = ns.SendPipe.Writer.GetMemory(length);
       func(mem, t1, t2, t3, t4, t5, t6);
+      _ = ns.Flush(length);
+    }
+
+    public static void Send<T1, T2, T3, T4, T5, T6, T7>(NetState ns, FixedPacketMethod<T1, T2, T3, T4, T5, T6, T7> f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
+    {
+      WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7> func = f(out int length);
+      Memory<byte> mem = ns.SendPipe.Writer.GetMemory(length);
+      func(mem, t1, t2, t3, t4, t5, t6, t7);
+      _ = ns.Flush(length);
+    }
+
+    public static void Send<T1, T2, T3, T4, T5, T6, T7, T8>(NetState ns, FixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8> f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
+    {
+      WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8> func = f(out int length);
+      Memory<byte> mem = ns.SendPipe.Writer.GetMemory(length);
+      func(mem, t1, t2, t3, t4, t5, t6, t7, t8);
+      _ = ns.Flush(length);
+    }
+
+    public static void Send<T1, T2, T3, T4, T5, T6, T7, T8, T9>(NetState ns, FixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
+    {
+      WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> func = f(out int length);
+      Memory<byte> mem = ns.SendPipe.Writer.GetMemory(length);
+      func(mem, t1, t2, t3, t4, t5, t6, t7, t8, t9);
       _ = ns.Flush(length);
     }
     #endregion
