@@ -2,11 +2,22 @@ using System;
 
 namespace Server.Network
 {
+  public enum DeleteResultType : byte
+  {
+    PasswordInvalid,
+    CharNotExist,
+    CharBeingPlayed,
+    CharTooYoung,
+    CharQueued,
+    BadRequest
+  }
+
   public static partial class Packets
   {
     public static WriteFixedPacketMethod<byte> ChangeUpdateRange(out int length)
     {
       length = 2;
+
       static void write(Memory<byte> mem, byte range)
       {
         mem.Span[0] = 0xC8; // Packet ID
@@ -19,6 +30,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Serial> ChangeCombatant(out int length)
     {
       length = 5;
+
       static void write(Memory<byte> mem, Serial combatant)
       {
         SpanWriter w = new SpanWriter(mem.Span, 5);
@@ -33,6 +45,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Serial, int> DisplayHuePicker(out int length)
     {
       length = 9;
+
       static void write(Memory<byte> mem, Serial s, int itemId)
       {
         SpanWriter w = new SpanWriter(mem.Span, 9);
@@ -49,6 +62,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Serial, Serial> UnicodePrompt(out int length)
     {
       length = 21;
+
       static void write(Memory<byte> mem, Serial player, Serial message)
       {
         SpanWriter w = new SpanWriter(mem.Span, 21);
@@ -68,6 +82,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod DeathStatus_Dead(out int length)
     {
       length = 2;
+
       static void write(Memory<byte> mem)
       {
         mem.Span[0] = 0x2C; // Packet ID
@@ -79,6 +94,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod DeathStatus_Alive(out int length)
     {
       length = 2;
+
       static void write(Memory<byte> mem)
       {
         mem.Span[0] = 0x2C; // Packet ID
@@ -91,6 +107,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod SpeedControl_Disabled(out int length)
     {
       length = 6;
+
       static void write(Memory<byte> mem)
       {
         mem.Span[0] = 0xBF; // Packet ID
@@ -105,6 +122,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod SpeedControl_Walk(out int length)
     {
       length = 6;
+
       static void write(Memory<byte> mem)
       {
         mem.Span[0] = 0xBF; // Packet ID
@@ -119,6 +137,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod SpeedControl_Mount(out int length)
     {
       length = 6;
+
       static void write(Memory<byte> mem)
       {
         mem.Span[0] = 0xBF; // Packet ID
@@ -133,6 +152,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<short, bool> ToggleSpecialAbility(out int length)
     {
       length = 8;
+
       static void write(Memory<byte> mem, short ability, bool active)
       {
         SpanWriter w = new SpanWriter(mem.Span, 8);
@@ -150,6 +170,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<sbyte> GlobalLightLevel(out int length)
     {
       length = 2;
+
       static void write(Memory<byte> mem, sbyte level)
       {
         mem.Span[0] = 0x4F; // Packet ID
@@ -162,6 +183,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod LogoutAck(out int length)
     {
       length = 2;
+
       static void write(Memory<byte> mem)
       {
         mem.Span[0] = 0xD1; // Packet ID
@@ -174,6 +196,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<int, int, int> Weather(out int length)
     {
       length = 4;
+
       static void write(Memory<byte> mem, int type, int density, int temperature)
       {
         mem.Span[0] = 0x65; // Packet ID
@@ -188,6 +211,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Direction> PlayerMove(out int length)
     {
       length = 2;
+
       static void write(Memory<byte> mem, Direction d)
       {
         mem.Span[0] = 0x97; // Packet ID
@@ -200,10 +224,24 @@ namespace Server.Network
     public static WriteFixedPacketMethod ClientVersionReq(out int length)
     {
       length = 3;
+
       static void write(Memory<byte> mem)
       {
         mem.Span[0] = 0xBD; // Packet ID
         mem.Span[1] = 0x03; // Length
+      }
+
+      return write;
+    }
+
+    public static WriteFixedPacketMethod<DeleteResultType> DeleteResult(out int length)
+    {
+      length = 2;
+
+      static void write(Memory<byte> mem, DeleteResultType res)
+      {
+        mem.Span[0] = 0x85; // Packet ID
+        mem.Span[1] = (byte)res;
       }
 
       return write;
