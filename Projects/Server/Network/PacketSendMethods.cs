@@ -1,4 +1,6 @@
 using System;
+using System.Buffers;
+using System.Collections.Generic;
 
 namespace Server.Network
 {
@@ -73,6 +75,19 @@ namespace Server.Network
 
   public static partial class Packets
   {
+    public static void Send(NetState ns, in IMemoryOwner<byte> imo)
+    {
+      Send(ns, imo.Memory);
+    }
+
+    public static void Send(NetState ns, in ReadOnlyMemory<byte> buffer)
+    {
+      int length = buffer.Length;
+      Memory<byte> mem = ns.SendPipe.Writer.GetMemory(length);
+      buffer.CopyTo(mem);
+      _ = ns.Flush(length);
+    }
+
     #region Send Fixed Packet Methods
     public static void Send(NetState ns, FixedPacketMethod f)
     {
@@ -163,6 +178,44 @@ namespace Server.Network
       Memory<byte> mem = ns.SendPipe.Writer.GetMemory(length);
       func(mem, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14);
       _ = ns.Flush(length);
+    }
+    #endregion
+
+    #region Acquire Fixed Packets
+    public static IMemoryOwner<byte> Acquire(FixedPacketMethod f)
+    {
+      WriteFixedPacketMethod func = f(out int length);
+      IMemoryOwner<byte> imo = MemoryPool<byte>.Shared.Rent(length);
+      func(imo.Memory);
+
+      return imo;
+    }
+
+    public static IMemoryOwner<byte> Acquire<T1, T2, T3, T4, T5, T6, T7, T8, T9>(FixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
+    {
+      WriteFixedPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> func = f(out int length);
+      IMemoryOwner<byte> imo = MemoryPool<byte>.Shared.Rent(length);
+      func(imo.Memory, t1, t2, t3, t4, t5, t6, t7, t8, t9);
+
+      return imo;
+    }
+
+    public static IMemoryOwner<byte> Acquire<T1, T2, T3, T4, T5, T6, T7, T8>(DynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8> f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
+    {
+      WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8> func = f(out int length, t1, t2, t3, t4, t5, t6, t7, t8);
+      IMemoryOwner<byte> imo = MemoryPool<byte>.Shared.Rent(length);
+      func(imo.Memory, length, t1, t2, t3, t4, t5, t6, t7, t8);
+
+      return imo;
+    }
+
+    public static IMemoryOwner<byte> Acquire<T1, T2, T3, T4, T5, T6, T7, T8, T9>(DynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
+    {
+      WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> func = f(out int length, t1, t2, t3, t4, t5, t6, t7, t8, t9);
+      IMemoryOwner<byte> imo = MemoryPool<byte>.Shared.Rent(length);
+      func(imo.Memory, length, t1, t2, t3, t4, t5, t6, t7, t8, t9);
+
+      return imo;
     }
     #endregion
 
