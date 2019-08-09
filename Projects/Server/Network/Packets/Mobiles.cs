@@ -7,6 +7,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Serial, Serial> DeathAnimation(out int length)
     {
       length = 13;
+
       static void write(Memory<byte> mem, Serial killed, Serial corpse)
       {
         SpanWriter w = new SpanWriter(mem.Span, 13);
@@ -23,6 +24,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Mobile> StatLockInfo(out int length)
     {
       length = 12;
+
       static void write(Memory<byte> mem, Mobile m)
       {
         SpanWriter w = new SpanWriter(mem.Span, 13);
@@ -41,6 +43,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Serial, bool> BondStatus(out int length)
     {
       length = 11;
+
       static void write(Memory<byte> mem, Serial m, bool bonded)
       {
         SpanWriter w = new SpanWriter(mem.Span, 11);
@@ -59,6 +62,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Serial, sbyte> PersonalLightLevel(out int length)
     {
       length = 6;
+
       static void write(Memory<byte> mem, Serial m, sbyte level)
       {
         SpanWriter w = new SpanWriter(mem.Span, 6);
@@ -74,6 +78,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Serial> PersonalLightLevelZero(out int length)
     {
       length = 6;
+
       static void write(Memory<byte> mem, Serial m)
       {
         SpanWriter w = new SpanWriter(mem.Span, 6);
@@ -89,6 +94,7 @@ namespace Server.Network
     public static WriteFixedPacketMethod<Item> EquipUpdate(out int length)
     {
       length = 15;
+
       static void write(Memory<byte> mem, Item item)
       {
         SpanWriter w = new SpanWriter(mem.Span, 15);
@@ -110,6 +116,23 @@ namespace Server.Network
         w.Write((short)item.Layer);
         w.Write(parentSerial);
         w.Write((short)hue);
+      }
+
+      return write;
+    }
+
+    public static WriteFixedPacketMethod<Serial, Serial> Swing(out int length)
+    {
+      length = 10;
+
+      static void write(Memory<byte> mem, Serial attacker, Serial defender)
+      {
+        SpanWriter w = new SpanWriter(mem.Span, 10);
+        w.Write((byte)0x2F); // Packet ID
+
+        w.Position++; // ?
+        w.Write(attacker);
+        w.Write(defender);
       }
 
       return write;

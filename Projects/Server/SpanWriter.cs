@@ -144,12 +144,28 @@ namespace Server.Network
     {
       if (size < Length - Position)
       {
-        // Todo: Get more memory?
         Console.WriteLine("Network: Attempted to Write buffer with not enough room");
         return;
       }
 
       buffer.AsSpan().Slice(0, offset).CopyTo(m_Buffer.Slice(Position, size));
+      Position += size;
+    }
+
+    /// <summary>
+    ///   Writes a sequence of bytes to the underlying stream
+    /// </summary>
+    public void Write(Span<byte> buffer)
+    {
+      int size = buffer.Length;
+
+      if (size < Length - Position)
+      {
+        Console.WriteLine("Network: Attempted to Write buffer with not enough room");
+        return;
+      }
+
+      buffer.CopyTo(m_Buffer.Slice(Position, size));
       Position += size;
     }
 

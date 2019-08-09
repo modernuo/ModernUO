@@ -16,7 +16,7 @@ namespace Server.Network
 
   public static partial class Packets
   {
-    public static WriteDynamicPacketMethod<Item> WorldItem(out int length, Item item)
+    public static WriteDynamicPacketMethod<Item> WorldItem(out int length, Item _)
     {
       length = 20;
 
@@ -240,6 +240,101 @@ namespace Server.Network
         w.Write(s);
         w.Write((short)-1);
         w.Write((short)0x7D);
+      }
+
+      return write;
+    }
+
+    public static WriteDynamicPacketMethod<Serial, int, int, ulong> SpellbookContent(out int length, Serial s, int count, int offset, ulong content)
+    {
+      length = 5 + count * 19;
+
+      static int write(Memory<byte> mem, int length, Serial s, int count, int offset, ulong content)
+      {
+        SpanWriter w = new SpanWriter(mem.Span, length);
+        w.Write((byte)0x3C); // Packet ID
+        w.Write((short)length); // Length
+
+        // This should always be the same as written
+        w.Write((ushort)count);
+
+        // ushort written = 0;
+        ulong mask = 1;
+
+        for (int i = 0; i < 64; ++i, mask <<= 1)
+          if ((content & mask) != 0)
+          {
+            w.Write(0x7FFFFFFF - i);
+            w.Position += 3;
+            w.Write((ushort)(i + offset));
+            w.Position += 4;
+            w.Write(s);
+            w.Position += 2;
+
+            // ++written;
+          }
+
+        return length;
+      }
+
+      return write;
+    }
+
+    public static WriteDynamicPacketMethod<Serial, int, int, ulong> SpellbookContent6017(out int length, Serial s, int count, int offset, ulong content)
+    {
+      length = 5 + count * 20;
+
+      static int write(Memory<byte> mem, int length, Serial s, int count, int offset, ulong content)
+      {
+        SpanWriter w = new SpanWriter(mem.Span, length);
+        w.Write((byte)0x3C); // Packet ID
+        w.Write((short)length); // Length
+
+        // This should always be the same as written
+        w.Write((ushort)count);
+
+        // ushort written = 0;
+        ulong mask = 1;
+
+        for (int i = 0; i < 64; ++i, mask <<= 1)
+          if ((content & mask) != 0)
+          {
+            w.Write(0x7FFFFFFF - i);
+            w.Position += 3;
+            w.Write((ushort)(i + offset));
+            w.Position += 5; // Grid Location?
+            w.Write(s);
+            w.Position += 2;
+
+            // ++written;
+          }
+
+        return length;
+      }
+
+      return write;
+    }
+
+    public static WriteFixedPacketMethod<Serial, int, int, ulong> NewSpellbookContent(out int length)
+    {
+      length = 23;
+
+      static void write(Memory<byte> mem, Serial s, int graphic, int offset, ulong content)
+      {
+        SpanWriter w = new SpanWriter(mem.Span, 23);
+        w.Write((byte)0x3C); // Packet ID
+        w.Write((short)23); // Length
+
+
+        w.Write((short)0x1B);
+        w.Write((short)0x01);
+
+        w.Write(s);
+        w.Write((short)graphic);
+        w.Write((short)offset);
+
+        for (int i = 0; i < 8; ++i)
+          w.Write((byte)(content >> (i * 8)));
       }
 
       return write;
