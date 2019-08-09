@@ -209,5 +209,40 @@ namespace Server.Network
 
       return write;
     }
+
+    public static WriteFixedPacketMethod<Serial> DisplaySpellbook(out int length)
+    {
+      length = 7;
+
+      static void write(Memory<byte> mem, Serial s)
+      {
+        SpanWriter w = new SpanWriter(mem.Span, 7);
+        w.Write((byte)0x24); // Packet ID
+
+
+        w.Write(s);
+        w.Write((short)-1);
+      }
+
+      return write;
+    }
+
+    public static WriteFixedPacketMethod<Serial> DisplaySpellbookHS(out int length)
+    {
+      length = 9;
+
+      static void write(Memory<byte> mem, Serial s)
+      {
+        SpanWriter w = new SpanWriter(mem.Span, 9);
+        w.Write((byte)0x24); // Packet ID
+
+
+        w.Write(s);
+        w.Write((short)-1);
+        w.Write((short)0x7D);
+      }
+
+      return write;
+    }
   }
 }

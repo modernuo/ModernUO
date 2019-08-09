@@ -52,25 +52,6 @@ namespace Server.Network
     IdleWarning = 7
   }
 
-  public sealed class DisplaySpellbook : Packet
-  {
-    public DisplaySpellbook(Item book) : base(0x24, 7)
-    {
-      m_Stream.Write(book.Serial);
-      m_Stream.Write((short)-1);
-    }
-  }
-
-  public sealed class DisplaySpellbookHS : Packet
-  {
-    public DisplaySpellbookHS(Item book) : base(0x24, 9)
-    {
-      m_Stream.Write(book.Serial);
-      m_Stream.Write((short)-1);
-      m_Stream.Write((short)0x7D);
-    }
-  }
-
   public sealed class NewSpellbookContent : Packet
   {
     public NewSpellbookContent(Item item, int graphic, int offset, ulong content) : base(0xBF)
@@ -151,25 +132,6 @@ namespace Server.Network
 
       m_Stream.Seek(3, SeekOrigin.Begin);
       m_Stream.Write((ushort)written);
-    }
-  }
-
-  public sealed class ContainerDisplay : Packet
-  {
-    public ContainerDisplay(Container c) : base(0x24, 7)
-    {
-      m_Stream.Write(c.Serial);
-      m_Stream.Write((short)c.GumpID);
-    }
-  }
-
-  public sealed class ContainerDisplayHS : Packet
-  {
-    public ContainerDisplayHS(Container c) : base(0x24, 9)
-    {
-      m_Stream.Write(c.Serial);
-      m_Stream.Write((short)c.GumpID);
-      m_Stream.Write((short)0x7D);
     }
   }
 
