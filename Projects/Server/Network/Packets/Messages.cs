@@ -22,7 +22,7 @@ namespace Server.Network
       return buffer;
     }
 
-    public static WriteFixedPacketMethod<int> GenericMessageLocalized(out int length)
+    public static WriteFixedPacketMethod<int> MessageLocalized(out int length)
     {
       length = 50;
 

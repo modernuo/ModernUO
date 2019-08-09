@@ -46,10 +46,7 @@ namespace Server.Network
     {
       Point3D loc = m.Location;
 
-      int hue = m.Hue;
-
-      if (m.SolidHueOverride >= 0)
-        hue = m.SolidHueOverride;
+      int hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
 
       m_Stream.Write(m.Serial);
       m_Stream.Write((short)m.Body);
@@ -70,10 +67,7 @@ namespace Server.Network
     {
       Point3D loc = m.Location;
 
-      int hue = m.Hue;
-
-      if (m.SolidHueOverride >= 0)
-        hue = m.SolidHueOverride;
+      int hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
 
       m_Stream.Write(m.Serial);
       m_Stream.Write((short)m.Body);

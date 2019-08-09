@@ -222,6 +222,30 @@ namespace Server.Network
       int bytesWritten = func(mem, length, t1, t2, t3, t4, t5, t6);
       _ = ns.Flush(bytesWritten);
     }
+
+    public static void Send<T1, T2, T3, T4, T5, T6, T7>(NetState ns, DynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7> f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
+    {
+      WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7> func = f(out int length, t1, t2, t3, t4, t5, t6, t7);
+      Memory<byte> mem = ns.SendPipe.Writer.GetMemory(length);
+      int bytesWritten = func(mem, length, t1, t2, t3, t4, t5, t6, t7);
+      _ = ns.Flush(bytesWritten);
+    }
+
+    public static void Send<T1, T2, T3, T4, T5, T6, T7, T8>(NetState ns, DynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8> f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
+    {
+      WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8> func = f(out int length, t1, t2, t3, t4, t5, t6, t7, t8);
+      Memory<byte> mem = ns.SendPipe.Writer.GetMemory(length);
+      int bytesWritten = func(mem, length, t1, t2, t3, t4, t5, t6, t7, t8);
+      _ = ns.Flush(bytesWritten);
+    }
+
+    public static void Send<T1, T2, T3, T4, T5, T6, T7, T8, T9>(NetState ns, DynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> f, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
+    {
+      WriteDynamicPacketMethod<T1, T2, T3, T4, T5, T6, T7, T8, T9> func = f(out int length, t1, t2, t3, t4, t5, t6, t7, t8, t9);
+      Memory<byte> mem = ns.SendPipe.Writer.GetMemory(length);
+      int bytesWritten = func(mem, length, t1, t2, t3, t4, t5, t6, t7, t8, t9);
+      _ = ns.Flush(bytesWritten);
+    }
     #endregion
   }
 }
