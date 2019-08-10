@@ -40,6 +40,11 @@ namespace Server.Network
     IdleWarning = 7
   }
 
+  public static partial class Packets
+  {
+    public static readonly int MaxPacketSize = 0x10000;
+  }
+
   public sealed class MobileMoving : Packet
   {
     public MobileMoving(Mobile m, int noto) : base(0x77, 17)
