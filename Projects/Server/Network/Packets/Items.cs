@@ -284,5 +284,26 @@ namespace Server.Network
 
       _ = ns.Flush(23);
     }
+
+    public static void SendDragEffect(NetState ns, IEntity src, IEntity trg, int itemID, int hue, int amount)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(26));
+      w.Write((byte)0x23); // Packet ID
+
+      w.Write((short)itemID);
+      w.Position++; // w.Write((byte)0);
+      w.Write((short)hue);
+      w.Write((short)amount);
+      w.Write(src.Serial);
+      w.Write((short)src.X);
+      w.Write((short)src.Y);
+      w.Write((sbyte)src.Z);
+      w.Write(trg.Serial);
+      w.Write((short)trg.X);
+      w.Write((short)trg.Y);
+      w.Write((sbyte)trg.Z);
+
+      _ = ns.Flush(26);
+    }
   }
 }

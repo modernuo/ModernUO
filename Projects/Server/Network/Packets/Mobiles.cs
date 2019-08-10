@@ -102,5 +102,65 @@ namespace Server.Network
 
       _ = ns.Flush(10);
     }
+
+    public static void SendMobileMoving(NetState ns, Mobile m, int noto)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(17));
+      w.Write((byte)0x77); // Packet ID
+
+      Point3D loc = m.Location;
+
+      w.Write(m.Serial);
+      w.Write((short)m.Body);
+      w.Write((short)loc.m_X);
+      w.Write((short)loc.m_Y);
+      w.Write((sbyte)loc.m_Z);
+      w.Write((byte)m.Direction);
+      w.Write((short)(m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue));
+      w.Write((byte)m.GetPacketFlags());
+      w.Write((byte)noto);
+
+      _ = ns.Flush(17);
+    }
+
+    public static void SendMobileMovingOld(NetState ns, Mobile m, int noto)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(17));
+      w.Write((byte)0x77); // Packet ID
+
+      Point3D loc = m.Location;
+
+      w.Write(m.Serial);
+      w.Write((short)m.Body);
+      w.Write((short)loc.m_X);
+      w.Write((short)loc.m_Y);
+      w.Write((sbyte)loc.m_Z);
+      w.Write((byte)m.Direction);
+      w.Write((short)(m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue));
+      w.Write((byte)m.GetOldPacketFlags());
+      w.Write((byte)noto);
+
+      _ = ns.Flush(17);
+    }
+
+    public static void SendDisplayPaperdoll(NetState ns, Mobile m, string text, bool canLift)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(66));
+      w.Write((byte)0x88); // Packet ID
+
+      byte flags = 0x00;
+
+      if (m.Warmode)
+        flags |= 0x01;
+
+      if (canLift)
+        flags |= 0x02;
+
+      w.Write(m.Serial);
+      w.WriteAsciiFixed(text, 60);
+      w.Write(flags);
+
+      _ = ns.Flush(66);
+    }
   }
 }

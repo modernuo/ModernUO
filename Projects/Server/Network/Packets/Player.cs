@@ -12,25 +12,28 @@ namespace Server.Network
     BadRequest
   }
 
+  public enum PMMessage : byte
+  {
+    CharNoExist = 1,
+    CharExists = 2,
+    CharInWorld = 5,
+    LoginSyncError = 6,
+    IdleWarning = 7
+  }
+
   public static partial class Packets
   {
-    public static WriteDynamicPacketMethod<Serial, string> ObjectHelpResponse(out int length, Serial e, string text)
+    public static void SendObjectHelpResponse(NetState ns, Serial e, string text)
     {
-      length = 9 + text.Length * 2;
+      int length = 9 + text.Length * 2;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan());
+      w.Write((byte)0xB7); // Extended Packet ID
+      w.Write((ushort)length); // Length
 
-      static int write(Memory<byte> mem, int length, Serial e, string text)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, length);
-        w.Write((byte)0xB7); // Extended Packet ID
-        w.Write((ushort)length); // Length
+      w.Write(e);
+      w.WriteBigUniNull(text);
 
-        w.Write(e);
-        w.WriteBigUniNull(text);
-
-        return length;
-      }
-
-      return write;
+      _ = ns.Flush(length);
     }
 
     public static void SendChangeUpdateRange(NetState ns, byte range)
@@ -314,6 +317,87 @@ namespace Server.Network
       w.WriteAsciiNull(url ?? "");
 
       _ = ns.Flush(length);
+    }
+
+    public static void SendPopupMessage(NetState ns, PMMessage msg)
+    {
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0x53; // Packet ID
+      span[1] = (byte)msg;
+
+      _ = ns.Flush(2);
+    }
+
+    public static void SendPlaySound(NetState ns, int soundID, IPoint3D target)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
+      w.Write((byte)0x54); // Packet ID
+
+      w.Write((byte)1); // flags
+      w.Write((short)soundID);
+      w.Position++; // volume?
+      w.Write((short)target.X);
+      w.Write((short)target.Y);
+      w.Write((short)target.Z);
+
+      _ = ns.Flush(12);
+    }
+
+    public static void SendPlayRepeatingSound(NetState ns, int soundID, IPoint3D target)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
+      w.Write((byte)0x54); // Packet ID
+
+      w.Position++; // flags
+      w.Write((short)soundID);
+      w.Position++; // volume?
+      w.Write((short)target.X);
+      w.Write((short)target.Y);
+      w.Write((short)target.Z);
+
+      _ = ns.Flush(12);
+    }
+
+    public static void SendPlayMusic(NetState ns, MusicName music)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(3));
+      w.Write((byte)0x6D); // Packet ID
+
+      w.Write((short)music);
+
+      _ = ns.Flush(3);
+    }
+
+    public static void SendScrollMessage(NetState ns, int type, int tip, string text)
+    {
+      int length = 10 + text.Length;
+
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0xA6); // Packet ID
+      w.Write((short)length); // Length
+
+      if (text == null)
+        text = "";
+
+      w.Write((byte)type);
+      w.Write(tip);
+      w.Write((ushort)text.Length);
+      w.WriteAsciiFixed(text, text.Length);
+
+      _ = ns.Flush(length);
+    }
+
+    public static void SendCurrentTime(NetState ns)
+    {
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(4);
+      span[0] = 0x5B; // Packet ID
+
+      // TODO: Don't call UtcNow so readily.
+      DateTime now = DateTime.UtcNow;
+
+      span[1] = (byte)now.Hour;
+      span[2] = (byte)now.Minute;
+      span[3] = (byte)now.Second;
     }
   }
 }

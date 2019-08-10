@@ -27,7 +27,7 @@ using Server.Targeting;
 
 namespace Server
 {
-  public enum MusicName
+  public enum MusicName : short
   {
     Invalid = -1,
     OldUlt01 = 0,
