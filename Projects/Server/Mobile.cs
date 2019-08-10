@@ -6470,7 +6470,8 @@ namespace Server
               if (m.IsDeadBondedPet)
                 ns.Send(new BondedStatus(0, m.Serial, 1));
 
-              if (ObjectPropertyList.Enabled) ns.Send(m.OPLPacket);
+              if (ObjectPropertyList.Enabled)
+                ns.Send(m.OPLPacket);
             }
           }
 

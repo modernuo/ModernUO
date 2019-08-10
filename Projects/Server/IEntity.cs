@@ -44,15 +44,9 @@ namespace Server
       Deleted = false;
     }
 
-    public int CompareTo(Entity other)
-    {
-      return CompareTo((IEntity)other);
-    }
+    public int CompareTo(Entity other) => CompareTo((IEntity)other);
 
-    public int CompareTo(IEntity other)
-    {
-      return other == null ? -1 : Serial.CompareTo(other.Serial);
-    }
+    public int CompareTo(IEntity other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
     public Serial Serial{ get; }
 
