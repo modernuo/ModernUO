@@ -4,54 +4,42 @@ namespace Server.Network
 {
   public static partial class Packets
   {
-    public static WriteFixedPacketMethod<Serial, int> DamageOld(out int length)
+    public static void DamageOld(NetState ns, Serial m, int amount)
     {
-      length = 11;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(11));
+      w.Write((byte)0xBF); // Packet ID
+      w.Write((ushort)11); // Length
 
-      static void write(Memory<byte> mem, Serial m, int amount)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 11);
+      w.Write((short)0x22);
+      w.Write((byte)1);
+      w.Write(m);
 
-        w.Write((byte)0xBF); // Packet ID
-        w.Write((ushort)11); // Length
+      if (amount > 255)
+        amount = 255;
+      else if (amount < 0)
+        amount = 0;
 
-        w.Write((short)0x22);
-        w.Write((byte)1);
-        w.Write(m);
+      w.Write((byte)amount);
 
-        if (amount > 255)
-          amount = 255;
-        else if (amount < 0)
-          amount = 0;
-
-        w.Write((byte)amount);
-      }
-
-      return write;
+      _ = ns.Flush(11);
     }
 
-    public static WriteFixedPacketMethod<Serial, int> Damage(out int length)
+    public static void Damage(NetState ns, Serial m, int amount)
     {
-      length = 7;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
+      w.Write((byte)0xBF); // Packet ID
+      w.Write((ushort)7); // Length
 
-      static void write(Memory<byte> mem, Serial m, int amount)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 7);
+      w.Write(m);
 
-        w.Write((byte)0xBF); // Packet ID
-        w.Write((ushort)7); // Length
+      if (amount > 0xFFFF)
+        amount = 0xFFFF;
+      else if (amount < 0)
+        amount = 0;
 
-        w.Write(m);
+      w.Write((ushort)amount);
 
-        if (amount > 0xFFFF)
-          amount = 0xFFFF;
-        else if (amount < 0)
-          amount = 0;
-
-        w.Write((ushort)amount);
-      }
-
-      return write;
+      _ = ns.Flush(7);
     }
   }
 }

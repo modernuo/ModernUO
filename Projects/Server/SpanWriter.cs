@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 using System;
-using System.IO;
 using System.Text;
 
 namespace Server.Network
@@ -35,25 +34,18 @@ namespace Server.Network
     private Span<byte> m_Buffer;
 
     /// <summary>
-    ///   Gets or sets the current stream capacity.
+    ///   Instantiates a new SpanWriter instance.
     /// </summary>
-    public int Capacity { get; set; }
-
-    /// <summary>
-    ///   Instantiates a new PacketWriter instance.
-    /// </summary>
-    /// <param name="buffer">Internal buffer used for writing</param>
-    public SpanWriter(Span<byte> buffer, int cap)
+    public SpanWriter(Span<byte> buffer)
     {
       m_Buffer = buffer;
-      Capacity = cap;
       Position = 0;
     }
 
     /// <summary>
     ///   Gets the total stream length.
     /// </summary>
-    public long Length => m_Buffer.Length;
+    public int Length => m_Buffer.Length;
 
     /// <summary>
     ///   Gets or sets the current stream position.
@@ -63,22 +55,9 @@ namespace Server.Network
     /// <summary>
     ///   Writes a 1-byte boolean value to the underlying stream. False is represented by 0, true by 1.
     /// </summary>
-    public void Write(bool value)
+    public unsafe void Write(bool value)
     {
-      Write((byte)(value ? 0 : 1));
-    }
-
-    /// <summary>
-    ///   Writes a 1-byte boolean value to the underlying stream. False is represented by 0, true by 1.
-    ///   Optimizes by skipping the write entirely if the value is false.
-    ///   Do not use this if the data is not initialized to 0.
-    /// </summary>
-    public void WriteIfTrue(bool value)
-    {
-      if (value)
-        m_Buffer[Position] = 1;
-
-      Position++;
+      Write(*(byte*)&value);
     }
 
     /// <summary>
@@ -181,8 +160,6 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      // TODO: Performance sucks
-      // https://github.com/dotnet/corefx/issues/30382
       Encoding.ASCII.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, value.Length)));
       Position += size;
     }
@@ -198,8 +175,6 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      // TODO: Performance sucks
-      // https://github.com/dotnet/corefx/issues/30382
       Encoding.ASCII.GetBytes(value, m_Buffer.Slice(Position, value.Length));
       Position += value.Length + 1;
     }
@@ -217,8 +192,6 @@ namespace Server.Network
 
       int length = value.Length * 2;
 
-      // TODO: Performance sucks
-      // https://github.com/dotnet/corefx/issues/30382
       Encoding.Unicode.GetBytes(value, m_Buffer.Slice(Position, length));
       Position += length + 2;
     }
@@ -238,8 +211,6 @@ namespace Server.Network
       int length = value.Length * 2;
       size *= 2;
 
-      // TODO: Performance sucks
-      // https://github.com/dotnet/corefx/issues/30382
       Encoding.Unicode.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, length)));
       Position += size;
     }
@@ -257,8 +228,6 @@ namespace Server.Network
 
       int length = value.Length * 2;
 
-      // TODO: Performance sucks
-      // https://github.com/dotnet/corefx/issues/30382
       Encoding.BigEndianUnicode.GetBytes(value, m_Buffer.Slice(Position, length));
       Position += length + 2;
     }
@@ -278,50 +247,8 @@ namespace Server.Network
       int length = value.Length * 2;
       size *= 2;
 
-      // TODO: Performance sucks
-      // https://github.com/dotnet/corefx/issues/30382
       Encoding.BigEndianUnicode.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, length)));
       Position += size;
-    }
-
-    /// <summary>
-    ///   Fills the stream from the current position up to (capacity) with 0x00's
-    /// </summary>
-    public void Fill() => m_Buffer.Slice(Position, Capacity - Position).Fill(0);
-
-    /// <summary>
-    ///   Writes a number of 0x00 byte values to the underlying stream.
-    /// </summary>
-    public void Fill(int length) => m_Buffer.Slice(Position, Math.Min(length, Capacity - Position)).Fill(0);
-
-    /// <summary>
-    ///   Offsets the current position from an origin.
-    /// </summary>
-    public int Seek(int offset, SeekOrigin origin = SeekOrigin.Begin)
-    {
-      switch (origin)
-      {
-        default: Position = Math.Max(offset, 0); break;
-        case SeekOrigin.Current:
-          {
-            Position += offset;
-            if (Position < 0)
-              Position = 0;
-            else if (Position >= Capacity)
-              Position = Capacity - 1;
-
-              break;
-          }
-        case SeekOrigin.End:
-          {
-            Position -= Math.Max(0, offset);
-            if (Position < 0)
-              Position = 0;
-            break;
-          }
-      }
-
-      return Position;
     }
   }
 }

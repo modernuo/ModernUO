@@ -16,328 +16,273 @@ namespace Server.Network
 
   public static partial class Packets
   {
-    public static WriteDynamicPacketMethod<Item> WorldItem(out int length, Item _)
+    public static void WorldItem(NetState ns, Item item)
     {
-      length = 20;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(20));
+      w.Write((byte)0x1A); // Packet ID
+      w.Position += 2; // Dynamic Length
 
-      static int write(Memory<byte> mem, int length, Item item)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 20);
-        w.Write((byte)0x1A); // Packet ID
-        w.Position += 2; // Dynamic Length
+      uint serial = item.Serial.Value;
+      int itemID = item.ItemID & 0x3FFF;
+      int amount = item.Amount;
+      Point3D loc = item.Location;
+      int x = loc.m_X;
+      int y = loc.m_Y;
+      int hue = item.Hue;
+      int flags = item.GetPacketFlags();
+      int direction = (int)item.Direction;
 
-        uint serial = item.Serial.Value;
-        int itemID = item.ItemID & 0x3FFF;
-        int amount = item.Amount;
-        Point3D loc = item.Location;
-        int x = loc.m_X;
-        int y = loc.m_Y;
-        int hue = item.Hue;
-        int flags = item.GetPacketFlags();
-        int direction = (int)item.Direction;
+      if (amount != 0)
+        serial |= 0x80000000;
+      else
+        serial &= 0x7FFFFFFF;
 
-        if (amount != 0)
-          serial |= 0x80000000;
-        else
-          serial &= 0x7FFFFFFF;
+      w.Write(serial);
 
-        w.Write(serial);
+      if (item is BaseMulti)
+        w.Write((short)(itemID | 0x4000));
+      else
+        w.Write((short)itemID);
 
-        if (item is BaseMulti)
-          w.Write((short)(itemID | 0x4000));
-        else
-          w.Write((short)itemID);
+      if (amount != 0)
+        w.Write((short)amount);
 
-        if (amount != 0)
-          w.Write((short)amount);
+      x &= 0x7FFF;
 
-        x &= 0x7FFF;
+      if (direction != 0) x |= 0x8000;
 
-        if (direction != 0) x |= 0x8000;
+      w.Write((short)x);
 
-        w.Write((short)x);
+      y &= 0x3FFF;
 
-        y &= 0x3FFF;
+      if (hue != 0) y |= 0x8000;
 
-        if (hue != 0) y |= 0x8000;
+      if (flags != 0) y |= 0x4000;
 
-        if (flags != 0) y |= 0x4000;
+      w.Write((short)y);
 
-        w.Write((short)y);
+      if (direction != 0)
+        w.Write((byte)direction);
 
-        if (direction != 0)
-          w.Write((byte)direction);
+      w.Write((sbyte)loc.m_Z);
 
-        w.Write((sbyte)loc.m_Z);
+      if (hue != 0)
+        w.Write((ushort)hue);
 
-        if (hue != 0)
-          w.Write((ushort)hue);
+      if (flags != 0)
+        w.Write((byte)flags);
 
-        if (flags != 0)
-          w.Write((byte)flags);
+      int bytesWritten = w.Position;
+      w.Position = 1;
+      w.Write((ushort)bytesWritten);
 
-        int bytesWritten = w.Position;
-        w.Seek(1, SeekOrigin.Begin);
-        w.Write((ushort)bytesWritten);
-
-        return bytesWritten;
-      }
-
-      return write;
+      _ = ns.Flush(bytesWritten);
     }
 
-    public static WriteFixedPacketMethod<Item> WorldItemSA(out int length)
+    public static void WorldItemSA(NetState ns, Item item)
     {
-      length = 24;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(24));
+      w.Write((byte)0xF3); // Packet ID
 
-      static void write(Memory<byte> mem, Item item)
+      w.Write((short)0x01);
+
+      int itemID = item.ItemID;
+
+      if (item is BaseMulti)
       {
-        SpanWriter w = new SpanWriter(mem.Span, 24);
-        w.Write((byte)0xF3); // Packet ID
+        w.Write((byte)0x02);
 
-        w.Write((short)0x01);
+        w.Write(item.Serial);
 
-        int itemID = item.ItemID;
+        itemID &= 0x3FFF;
 
-        if (item is BaseMulti)
+        w.Write((short)itemID);
+
+        w.Position++; // w.Write((byte)0);
+      }
+      else
+      {
+        w.Position++; // w.Write((byte)0);
+
+        w.Write(item.Serial);
+
+        itemID &= 0x7FFF;
+
+        w.Write((short)itemID);
+
+        w.Write((byte)item.Direction);
+      }
+
+      short amount = (short)item.Amount;
+      w.Write(amount);
+      w.Write(amount);
+
+      Point3D loc = item.Location;
+      w.Write((short)(loc.m_X & 0x7FFF));
+      w.Write((short)(loc.m_Y & 0x3FFF));
+      w.Write((sbyte)loc.m_Z);
+
+      w.Write((byte)item.Light);
+      w.Write((short)item.Hue);
+      w.Write((byte)item.GetPacketFlags());
+
+      _ = ns.Flush(24);
+    }
+
+    public static void WorldItemHS(NetState ns, Item item)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(26));
+      w.Write((byte)0xF3); // Packet ID
+
+      w.Write((short)0x01);
+
+      int itemID = item.ItemID;
+
+      if (item is BaseMulti)
+      {
+        w.Write((byte)0x02);
+
+        w.Write(item.Serial);
+
+        itemID &= 0x3FFF;
+
+        w.Write((short)itemID);
+
+        w.Position++; // w.Write((byte)0);
+      }
+      else
+      {
+        w.Position++; // w.Write((byte)0);
+
+        w.Write(item.Serial);
+
+        itemID &= 0x7FFF;
+
+        w.Write((short)itemID);
+
+        w.Write((byte)item.Direction);
+      }
+
+      short amount = (short)item.Amount;
+      w.Write(amount);
+      w.Write(amount);
+
+      Point3D loc = item.Location;
+      w.Write((short)(loc.m_X & 0x7FFF));
+      w.Write((short)(loc.m_Y & 0x3FFF));
+      w.Write((sbyte)loc.m_Z);
+
+      w.Write((byte)item.Light);
+      w.Write((short)item.Hue);
+      w.Write((byte)item.GetPacketFlags());
+
+      _ = ns.Flush(26);
+    }
+
+    public static void LiftRej(NetState ns, LRReason reason)
+    {
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0x27; // Packet ID
+      span[1] = (byte)reason;
+
+      _ = ns.Flush(2);
+    }
+
+    public static void DisplaySpellbook(NetState ns, Serial s)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
+      w.Write((byte)0x24); // Packet ID
+
+
+      w.Write(s);
+      w.Write((short)-1);
+
+      _ = ns.Flush(7);
+    }
+
+    public static void DisplaySpellbookHS(NetState ns, Serial s)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      w.Write((byte)0x24); // Packet ID
+
+
+      w.Write(s);
+      w.Write((short)-1);
+      w.Write((short)0x7D);
+
+      _ = ns.Flush(9);
+    }
+
+    public static void SpellbookContent(NetState ns, Serial s, int count, int offset, ulong content)
+    {
+      int length = 5 + count * 19;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0x3C); // Packet ID
+      w.Write((short)length); // Length
+
+      // This should always be the same as written
+      w.Write((ushort)count);
+
+      ulong mask = 1;
+
+      for (int i = 0; i < 64; ++i, mask <<= 1)
+        if ((content & mask) != 0)
         {
-          w.Write((byte)0x02);
-
-          w.Write(item.Serial);
-
-          itemID &= 0x3FFF;
-
-          w.Write((short)itemID);
-
-          w.Position++; // w.Write((byte)0);
+          w.Write(0x7FFFFFFF - i);
+          w.Position += 3;
+          w.Write((ushort)(i + offset));
+          w.Position += 4;
+          w.Write(s);
+          w.Position += 2;
         }
-        else
+
+      _ = ns.Flush(length);
+    }
+
+    public static void SpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
+    {
+      int length = 5 + count * 20;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0x3C); // Packet ID
+      w.Write((short)length); // Length
+
+      // This should always be the same as written
+      w.Write((ushort)count);
+
+      ulong mask = 1;
+
+      for (int i = 0; i < 64; ++i, mask <<= 1)
+        if ((content & mask) != 0)
         {
-          w.Position++; // w.Write((byte)0);
-
-          w.Write(item.Serial);
-
-          itemID &= 0x7FFF;
-
-          w.Write((short)itemID);
-
-          w.Write((byte)item.Direction);
+          w.Write(0x7FFFFFFF - i);
+          w.Position += 3;
+          w.Write((ushort)(i + offset));
+          w.Position += 5; // Grid Location?
+          w.Write(s);
+          w.Position += 2;
         }
 
-        short amount = (short)item.Amount;
-        w.Write(amount);
-        w.Write(amount);
-
-        Point3D loc = item.Location;
-        w.Write((short)(loc.m_X & 0x7FFF));
-        w.Write((short)(loc.m_Y & 0x3FFF));
-        w.Write((sbyte)loc.m_Z);
-
-        w.Write((byte)item.Light);
-        w.Write((short)item.Hue);
-        w.Write((byte)item.GetPacketFlags());
-      }
-
-      return write;
+      _ = ns.Flush(length);
     }
 
-    public static WriteFixedPacketMethod<Item> WorldItemHS(out int length)
+    public static void NewSpellbookContent(NetState ns, Serial s, int graphic, int offset, ulong content)
     {
-      length = 26;
-
-      static void write(Memory<byte> mem, Item item)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 26);
-        w.Write((byte)0xF3); // Packet ID
-
-        w.Write((short)0x01);
-
-        int itemID = item.ItemID;
-
-        if (item is BaseMulti)
-        {
-          w.Write((byte)0x02);
-
-          w.Write(item.Serial);
-
-          itemID &= 0x3FFF;
-
-          w.Write((short)itemID);
-
-          w.Position++; // w.Write((byte)0);
-        }
-        else
-        {
-          w.Position++; // w.Write((byte)0);
-
-          w.Write(item.Serial);
-
-          itemID &= 0x7FFF;
-
-          w.Write((short)itemID);
-
-          w.Write((byte)item.Direction);
-        }
-
-        short amount = (short)item.Amount;
-        w.Write(amount);
-        w.Write(amount);
-
-        Point3D loc = item.Location;
-        w.Write((short)(loc.m_X & 0x7FFF));
-        w.Write((short)(loc.m_Y & 0x3FFF));
-        w.Write((sbyte)loc.m_Z);
-
-        w.Write((byte)item.Light);
-        w.Write((short)item.Hue);
-        w.Write((byte)item.GetPacketFlags());
-
-        // w.Position += 2; // w.Write((short)0); // ??
-      }
-
-      return write;
-    }
-
-    public static WriteFixedPacketMethod<LRReason> LiftRej(out int length)
-    {
-      length = 2;
-      static void write(Memory<byte> mem, LRReason reason)
-      {
-        mem.Span[0] = 0x27; // Packet ID
-        mem.Span[1] = (byte)reason;
-      }
-
-      return write;
-    }
-
-    public static WriteFixedPacketMethod<Serial> DisplaySpellbook(out int length)
-    {
-      length = 7;
-
-      static void write(Memory<byte> mem, Serial s)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 7);
-        w.Write((byte)0x24); // Packet ID
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(23));
+      w.Write((byte)0x3C); // Packet ID
+      w.Write((short)23); // Length
 
 
-        w.Write(s);
-        w.Write((short)-1);
-      }
+      w.Write((short)0x1B);
+      w.Write((short)0x01);
 
-      return write;
-    }
+      w.Write(s);
+      w.Write((short)graphic);
+      w.Write((short)offset);
 
-    public static WriteFixedPacketMethod<Serial> DisplaySpellbookHS(out int length)
-    {
-      length = 9;
+      for (int i = 0; i < 8; ++i)
+        w.Write((byte)(content >> (i * 8)));
 
-      static void write(Memory<byte> mem, Serial s)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 9);
-        w.Write((byte)0x24); // Packet ID
-
-
-        w.Write(s);
-        w.Write((short)-1);
-        w.Write((short)0x7D);
-      }
-
-      return write;
-    }
-
-    public static WriteDynamicPacketMethod<Serial, int, int, ulong> SpellbookContent(out int length, Serial s, int count, int offset, ulong content)
-    {
-      length = 5 + count * 19;
-
-      static int write(Memory<byte> mem, int length, Serial s, int count, int offset, ulong content)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, length);
-        w.Write((byte)0x3C); // Packet ID
-        w.Write((short)length); // Length
-
-        // This should always be the same as written
-        w.Write((ushort)count);
-
-        // ushort written = 0;
-        ulong mask = 1;
-
-        for (int i = 0; i < 64; ++i, mask <<= 1)
-          if ((content & mask) != 0)
-          {
-            w.Write(0x7FFFFFFF - i);
-            w.Position += 3;
-            w.Write((ushort)(i + offset));
-            w.Position += 4;
-            w.Write(s);
-            w.Position += 2;
-
-            // ++written;
-          }
-
-        return length;
-      }
-
-      return write;
-    }
-
-    public static WriteDynamicPacketMethod<Serial, int, int, ulong> SpellbookContent6017(out int length, Serial s, int count, int offset, ulong content)
-    {
-      length = 5 + count * 20;
-
-      static int write(Memory<byte> mem, int length, Serial s, int count, int offset, ulong content)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, length);
-        w.Write((byte)0x3C); // Packet ID
-        w.Write((short)length); // Length
-
-        // This should always be the same as written
-        w.Write((ushort)count);
-
-        // ushort written = 0;
-        ulong mask = 1;
-
-        for (int i = 0; i < 64; ++i, mask <<= 1)
-          if ((content & mask) != 0)
-          {
-            w.Write(0x7FFFFFFF - i);
-            w.Position += 3;
-            w.Write((ushort)(i + offset));
-            w.Position += 5; // Grid Location?
-            w.Write(s);
-            w.Position += 2;
-
-            // ++written;
-          }
-
-        return length;
-      }
-
-      return write;
-    }
-
-    public static WriteFixedPacketMethod<Serial, int, int, ulong> NewSpellbookContent(out int length)
-    {
-      length = 23;
-
-      static void write(Memory<byte> mem, Serial s, int graphic, int offset, ulong content)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 23);
-        w.Write((byte)0x3C); // Packet ID
-        w.Write((short)23); // Length
-
-
-        w.Write((short)0x1B);
-        w.Write((short)0x01);
-
-        w.Write(s);
-        w.Write((short)graphic);
-        w.Write((short)offset);
-
-        for (int i = 0; i < 8; ++i)
-          w.Write((byte)(content >> (i * 8)));
-      }
-
-      return write;
+      _ = ns.Flush(23);
     }
   }
 }

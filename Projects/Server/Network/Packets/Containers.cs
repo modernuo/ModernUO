@@ -1,204 +1,169 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Server.Network
 {
   public static partial class Packets
   {
-    public static WriteFixedPacketMethod<Serial, int> DisplayContainer(out int length)
+    public static void SendDisplayContainer(NetState ns, Serial s, int gumpid)
     {
-      length = 7;
-
-      static void write(Memory<byte> mem, Serial s, int gumpid)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 7);
-        w.Write((byte)0x24); // Packet ID
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
+      w.Write((byte)0x24); // Packet ID
 
 
-        w.Write(s);
-        w.Write((short)gumpid);
-      }
+      w.Write(s);
+      w.Write((short)gumpid);
 
-      return write;
+      _ = ns.Flush(7);
     }
 
-    public static WriteFixedPacketMethod<Serial, int> DisplayContainerHS(out int length)
+    public static void SendDisplayContainerHS(NetState ns, Serial s, int gumpid)
     {
-      length = 9;
-
-      static void write(Memory<byte> mem, Serial s, int gumpid)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 9);
-        w.Write((byte)0x24); // Packet ID
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      w.Write((byte)0x24); // Packet ID
 
 
-        w.Write(s);
-        w.Write((short)gumpid);
-        w.Write((short)0x7D);
-      }
+      w.Write(s);
+      w.Write((short)gumpid);
+      w.Write((short)0x7D);
 
-      return write;
+      _ = ns.Flush(9);
     }
 
-    public static WriteFixedPacketMethod<Item> ContainerContentUpdate(out int length)
+    public static void SendContainerContentUpdate(NetState ns, Item item)
     {
-      length = 20;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(20));
+      w.Write((byte)0x25); // Packet ID
 
-      static void write(Memory<byte> mem, Item item)
+      Serial parentSerial;
+
+      if (item.Parent is Item parentItem)
+        parentSerial = parentItem.Serial;
+      else
       {
-        SpanWriter w = new SpanWriter(mem.Span, 20);
-        w.Write((byte)0x25); // Packet ID
+        Console.WriteLine("Warning: ContainerContentUpdate on item with !(parent is Item)");
+        parentSerial = Serial.Zero;
+      }
 
-        Serial parentSerial;
+      w.Write(item.Serial);
+      w.Write((ushort)item.ItemID);
+      w.Position++; // w.Write((byte)0); // signed, itemID offset
+      w.Write((ushort)item.Amount);
+      w.Write((short)item.X);
+      w.Write((short)item.Y);
+      w.Write(parentSerial);
+      w.Write((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
 
-        if (item.Parent is Item parentItem)
-          parentSerial = parentItem.Serial;
-        else
+      _ = ns.Flush(20);
+    }
+
+    public static void SendContainerContentUpdate6017(NetState ns, Item item)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(21));
+      w.Write((byte)0x25); // Packet ID
+
+      Serial parentSerial;
+
+      if (item.Parent is Item parentItem)
+        parentSerial = parentItem.Serial;
+      else
+      {
+        Console.WriteLine("Warning: ContainerContentUpdate on item with !(parent is Item)");
+        parentSerial = Serial.Zero;
+      }
+
+      w.Write(item.Serial);
+      w.Write((ushort)item.ItemID);
+      w.Position++; // signed, itemID offset
+      w.Write((ushort)item.Amount);
+      w.Write((short)item.X);
+      w.Write((short)item.Y);
+      w.Position++; // Grid Location?
+      w.Write(parentSerial);
+      w.Write((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
+
+      _ = ns.Flush(21);
+    }
+
+    public static void ContainerContent(NetState ns, Mobile beholder, Item beheld)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(5 + beheld.Items.Count * 19));
+      w.Write((byte)0x3C); // Packet ID
+      w.Position += 4; // Dynamic Length, Item Count
+
+      List<Item> items = beheld.Items;
+      int count = items.Count;
+
+      ushort written = 0;
+
+      for (int i = 0; i < count; ++i)
+      {
+        Item child = items[i];
+
+        if (!child.Deleted && beholder.CanSee(child))
         {
-          Console.WriteLine("Warning: ContainerContentUpdate on item with !(parent is Item)");
-          parentSerial = Serial.Zero;
-        }
+          Point3D loc = child.Location;
 
-        w.Write(item.Serial);
-        w.Write((ushort)item.ItemID);
-        w.Position++; // w.Write((byte)0); // signed, itemID offset
-        w.Write((ushort)item.Amount);
-        w.Write((short)item.X);
-        w.Write((short)item.Y);
-        w.Write(parentSerial);
-        w.Write((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
+          w.Write(child.Serial);
+          w.Write((ushort)child.ItemID);
+          w.Position++; // signed, itemID offset
+          w.Write((ushort)child.Amount);
+          w.Write((short)loc.m_X);
+          w.Write((short)loc.m_Y);
+          w.Write(beheld.Serial);
+          w.Write((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue));
+
+          ++written;
+        }
       }
 
-      return write;
+      int bytesWritten = w.Position;
+      w.Position = 1;
+      w.Write((ushort)bytesWritten);
+      w.Write(written);
+
+      _ = ns.Flush(6);
     }
 
-    public static WriteFixedPacketMethod<Item> ContainerContentUpdate6017(out int length)
+    public static void ContainerContent6017(NetState ns, Mobile beholder, Item beheld)
     {
-      length = 21;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(5 + beheld.Items.Count * 20));
+      w.Write((byte)0x3C); // Packet ID
+      w.Position += 4; // Dynamic Length, Item Count
 
-      static void write(Memory<byte> mem, Item item)
+      List<Item> items = beheld.Items;
+      int count = items.Count;
+
+      ushort written = 0;
+
+      for (int i = 0; i < count; ++i)
       {
-        SpanWriter w = new SpanWriter(mem.Span, 21);
-        w.Write((byte)0x25); // Packet ID
+        Item child = items[i];
 
-        Serial parentSerial;
-
-        if (item.Parent is Item parentItem)
-          parentSerial = parentItem.Serial;
-        else
+        if (!child.Deleted && beholder.CanSee(child))
         {
-          Console.WriteLine("Warning: ContainerContentUpdate on item with !(parent is Item)");
-          parentSerial = Serial.Zero;
-        }
+          Point3D loc = child.Location;
 
-        w.Write(item.Serial);
-        w.Write((ushort)item.ItemID);
-        w.Position++; // signed, itemID offset
-        w.Write((ushort)item.Amount);
-        w.Write((short)item.X);
-        w.Write((short)item.Y);
-        w.Position++; // Grid Location?
-        w.Write(parentSerial);
-        w.Write((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
+          w.Write(child.Serial);
+          w.Write((ushort)child.ItemID);
+          w.Position++; // signed, itemID offset
+          w.Write((ushort)child.Amount);
+          w.Write((short)loc.m_X);
+          w.Write((short)loc.m_Y);
+          w.Position++; // Grid Location?
+          w.Write(beheld.Serial);
+          w.Write((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue));
+
+          ++written;
+        }
       }
 
-      return write;
-    }
+      int bytesWritten = w.Position;
+      w.Position = 1;
+      w.Write((ushort)bytesWritten);
+      w.Write(written);
 
-    public static WriteDynamicPacketMethod<Mobile, Item> ContainerContent(out int length, Mobile beholder, Item beheld)
-    {
-      length = 5 + beheld.Items.Count * 19;
-
-      static int write(Memory<byte> mem, int length, Mobile beholder, Item beheld)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, length);
-        w.Write((byte)0x3C); // Packet ID
-        w.Position += 4; // Dynamic Length, Item Count
-
-        List<Item> items = beheld.Items;
-        int count = items.Count;
-
-        ushort written = 0;
-
-        for (int i = 0; i < count; ++i)
-        {
-          Item child = items[i];
-
-          if (!child.Deleted && beholder.CanSee(child))
-          {
-            Point3D loc = child.Location;
-
-            w.Write(child.Serial);
-            w.Write((ushort)child.ItemID);
-            w.Position++; // signed, itemID offset
-            w.Write((ushort)child.Amount);
-            w.Write((short)loc.m_X);
-            w.Write((short)loc.m_Y);
-            w.Write(beheld.Serial);
-            w.Write((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue));
-
-            ++written;
-          }
-        }
-
-        int bytesWritten = w.Position;
-        w.Seek(1, SeekOrigin.Begin);
-        w.Write((ushort)bytesWritten);
-        w.Write(written);
-
-        return bytesWritten;
-      }
-
-      return write;
-    }
-
-    public static WriteDynamicPacketMethod<Mobile, Item> ContainerContent6017(out int length, Mobile beholder, Item beheld)
-    {
-      length = 5 + beheld.Items.Count * 20;
-
-      static int write(Memory<byte> mem, int length, Mobile beholder, Item beheld)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, length);
-        w.Write((byte)0x3C); // Packet ID
-        w.Position += 4; // Dynamic Length, Item Count
-
-        List<Item> items = beheld.Items;
-        int count = items.Count;
-
-        ushort written = 0;
-
-        for (int i = 0; i < count; ++i)
-        {
-          Item child = items[i];
-
-          if (!child.Deleted && beholder.CanSee(child))
-          {
-            Point3D loc = child.Location;
-
-            w.Write(child.Serial);
-            w.Write((ushort)child.ItemID);
-            w.Position++; // signed, itemID offset
-            w.Write((ushort)child.Amount);
-            w.Write((short)loc.m_X);
-            w.Write((short)loc.m_Y);
-            w.Position++; // Grid Location?
-            w.Write(beheld.Serial);
-            w.Write((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue));
-
-            ++written;
-          }
-        }
-
-        int bytesWritten = w.Position;
-        w.Seek(1, SeekOrigin.Begin);
-        w.Write((ushort)bytesWritten);
-        w.Write(written);
-
-        return bytesWritten;
-      }
-
-      return write;
+      _ = ns.Flush(6);
     }
   }
 }

@@ -14,352 +14,235 @@ namespace Server.Network
 
   public static partial class Packets
   {
-    public static WriteFixedPacketMethod<byte> ChangeUpdateRange(out int length)
+    public static void SendChangeUpdateRange(NetState ns, byte range)
     {
-      length = 2;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0xC8; // Packet ID
+      span[1] = range;
 
-      static void write(Memory<byte> mem, byte range)
-      {
-        mem.Span[0] = 0xC8; // Packet ID
-        mem.Span[1] = range;
-      }
-
-      return write;
+      _ = ns.Flush(2);
     }
 
-    public static WriteFixedPacketMethod<Serial> ChangeCombatant(out int length)
+    public static void SendChangeCombatant(NetState ns, Serial combatant)
     {
-      length = 5;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(5));
+      w.Write((byte)0xAA); // Packet ID
 
-      static void write(Memory<byte> mem, Serial combatant)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 5);
-        w.Write((byte)0xAA); // Packet ID
+      w.Write(combatant);
 
-        w.Write(combatant);
-      }
-
-      return write;
+      _ = ns.Flush(5);
     }
 
-    public static WriteFixedPacketMethod<Serial, int> DisplayHuePicker(out int length)
+    public static void SendDisplayHuePicker(NetState ns, Serial s, int itemId)
     {
-      length = 9;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      w.Write((byte)0x95); // Packet ID
 
-      static void write(Memory<byte> mem, Serial s, int itemId)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 9);
-        w.Write((byte)0x95); // Packet ID
+      w.Write(s);
+      w.Position += 2; // w.Write((short)0);
+      w.Write((short)itemId);
 
-        w.Write(s);
-        w.Position += 2; // w.Write((short)0);
-        w.Write((short)itemId);
-      }
-
-      return write;
+      _ = ns.Flush(9);
     }
 
-    public static WriteFixedPacketMethod<Serial, Serial> UnicodePrompt(out int length)
+    public static void SendUnicodePrompt(NetState ns, Serial player, Serial message)
     {
-      length = 21;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(21));
+      w.Write((byte)0xC2); // Packet ID
+      w.Write((short)21); // Length
 
-      static void write(Memory<byte> mem, Serial player, Serial message)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 21);
-        w.Write((byte)0xC2); // Packet ID
-        w.Write((short)21); // Length
+      w.Write(player);
+      w.Write(message);
+      // w.Position += 4; w.Write(0);
+      // w.Position += 4; w.Write(0);
+      // w.Position += 2; w.Write((short)0);
 
-        w.Write(player);
-        w.Write(message);
-        // w.Position += 4; w.Write(0);
-        // w.Position += 4; w.Write(0);
-        // w.Position += 2; w.Write((short)0);
-      }
-
-      return write;
+      _ = ns.Flush(21);
     }
 
-    public static WriteFixedPacketMethod DeathStatus_Dead(out int length)
+    public static void SendDeathStatus_Dead(NetState ns)
     {
-      length = 2;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0x2C; // Packet ID
 
-      static void write(Memory<byte> mem)
-      {
-        mem.Span[0] = 0x2C; // Packet ID
-      }
-
-      return write;
+      _ = ns.Flush(2);
     }
 
-    public static WriteFixedPacketMethod DeathStatus_Alive(out int length)
+    public static void SendDeathStatus_Alive(NetState ns)
     {
-      length = 2;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0x2C; // Packet ID
+      span[1] = 2; // Why not 1?
 
-      static void write(Memory<byte> mem)
-      {
-        mem.Span[0] = 0x2C; // Packet ID
-        mem.Span[1] = 2;
-      }
-
-      return write;
+      _ = ns.Flush(2);
     }
 
-    public static WriteFixedPacketMethod SpeedControl_Disabled(out int length)
+    public static void SendSpeedControlDisabled(NetState ns)
     {
-      length = 6;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(6);
 
-      static void write(Memory<byte> mem)
-      {
-        mem.Span[0] = 0xBF; // Packet ID
-        mem.Span[2] = 0x06; // Length
-        mem.Span[4] = 0x26;
-        mem.Span[5] = 0; // Disabled
-      }
+      span[0] = 0xBF; // Packet ID
+      span[2] = 0x06; // Length
+      span[4] = 0x26;
 
-      return write;
+      _ = ns.Flush(6);
     }
 
-    public static WriteFixedPacketMethod SpeedControl_Walk(out int length)
+    public static void SendSpeedControlMount(NetState ns)
     {
-      length = 6;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(6);
 
-      static void write(Memory<byte> mem)
-      {
-        mem.Span[0] = 0xBF; // Packet ID
-        mem.Span[2] = 0x06; // Length
-        mem.Span[4] = 0x26;
-        mem.Span[5] = 1; // Mount
-      }
+      span[0] = 0xBF; // Packet ID
+      span[2] = 0x06; // Length
+      span[4] = 0x26;
+      span[5] = 1; // Mount
 
-      return write;
+      _ = ns.Flush(6);
     }
 
-    public static WriteFixedPacketMethod SpeedControl_Mount(out int length)
+    public static void SendSpeedControlWalk(NetState ns)
     {
-      length = 6;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(6);
 
-      static void write(Memory<byte> mem)
-      {
-        mem.Span[0] = 0xBF; // Packet ID
-        mem.Span[2] = 0x06; // Length
-        mem.Span[4] = 0x26;
-        mem.Span[5] = 2; // Walk
-      }
+      span[0] = 0xBF; // Packet ID
+      span[2] = 0x06; // Length
+      span[4] = 0x26;
+      span[5] = 2; // Walk
 
-      return write;
+      _ = ns.Flush(6);
     }
 
-    public static WriteFixedPacketMethod<short, bool> ToggleSpecialAbility(out int length)
+    public static void SendToggleSpecialAbility(NetState ns, short ability, bool active)
     {
-      length = 8;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8));
+      w.Write((byte)0xBF); // Packet ID
+      w.Write((short)8); // Length
 
-      static void write(Memory<byte> mem, short ability, bool active)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 8);
-        w.Write((byte)0xBF); // Packet ID
-        w.Write((short)8); // Length
+      w.Write((short)0x25); // Command
+      w.Write(ability);
+      w.Write(active);
 
-        w.Write((short)0x25); // Command
-        w.Write(ability);
-        w.WriteIfTrue(active);
-      }
-
-      return write;
+      _ = ns.Flush(8);
     }
 
-    public static WriteFixedPacketMethod<sbyte> GlobalLightLevel(out int length)
+    public static void SendGlobalLightLevel(NetState ns, sbyte level)
     {
-      length = 2;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0x4F; // Packet ID
+      span[1] = (byte)level;
 
-      static void write(Memory<byte> mem, sbyte level)
-      {
-        mem.Span[0] = 0x4F; // Packet ID
-        mem.Span[1] = (byte)level;
-      }
-
-      return write;
+      _ = ns.Flush(2);
     }
 
-    public static WriteFixedPacketMethod LogoutAck(out int length)
+    public static void SendLogoutAck(NetState ns)
     {
-      length = 2;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0xD1; // Packet ID
+      span[1] = 0x01;
 
-      static void write(Memory<byte> mem)
-      {
-        mem.Span[0] = 0xD1; // Packet ID
-        mem.Span[1] = 0x01;
-      }
-
-      return write;
+      _ = ns.Flush(2);
     }
 
-    public static WriteFixedPacketMethod<int, int, int> Weather(out int length)
+    public static void SendWeather(NetState ns, int type, int density, int temperature)
     {
-      length = 4;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(4);
+      span[0] = 0x65; // Packet ID
+      span[1] = (byte)type;
+      span[2] = (byte)density;
+      span[3] = (byte)temperature;
 
-      static void write(Memory<byte> mem, int type, int density, int temperature)
-      {
-        mem.Span[0] = 0x65; // Packet ID
-        mem.Span[1] = (byte)type;
-        mem.Span[2] = (byte)density;
-        mem.Span[3] = (byte)temperature;
-      }
-
-      return write;
+      _ = ns.Flush(4);
     }
 
-    public static WriteFixedPacketMethod<Direction> PlayerMove(out int length)
+    public static void SendPlayerMove(NetState ns, Direction d)
     {
-      length = 2;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0x97; // Packet ID
+      span[1] = (byte)d;
 
-      static void write(Memory<byte> mem, Direction d)
-      {
-        mem.Span[0] = 0x97; // Packet ID
-        mem.Span[1] = (byte)d;
-      }
-
-      return write;
+      _ = ns.Flush(2);
     }
 
-    public static WriteFixedPacketMethod ClientVersionReq(out int length)
+    public static void SendClientVersionReq(NetState ns)
     {
-      length = 3;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(3);
+      span[0] = 0xBD; // Packet ID
+      span[2] = 0x03;
 
-      static void write(Memory<byte> mem)
-      {
-        mem.Span[0] = 0xBD; // Packet ID
-        mem.Span[1] = 0x03; // Length
-      }
-
-      return write;
+      _ = ns.Flush(3);
     }
 
-    public static WriteFixedPacketMethod<DeleteResultType> DeleteResult(out int length)
+    public static void SendDeleteResult(NetState ns, DeleteResultType res)
     {
-      length = 2;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0x85; // Packet ID
+      span[1] = (byte)res;
 
-      static void write(Memory<byte> mem, DeleteResultType res)
-      {
-        mem.Span[0] = 0x85; // Packet ID
-        mem.Span[1] = (byte)res;
-      }
-
-      return write;
+      _ = ns.Flush(2);
     }
 
-    public static WriteFixedPacketMethod InWarMode(out int length)
+    public static void SendInWarMode(NetState ns)
     {
-      length = 5;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(5);
+      span[0] = 0x72; // Packet ID
+      span[1] = 0x01; // War mode
+      span[3] = 0x32; // ?
 
-      static void write(Memory<byte> mem)
-      {
-        mem.Span[0] = 0x72; // Packet ID
-        mem.Span[1] = 0x01; // War mode
-        mem.Span[3] = 0x32; // ?
-      }
-
-      return write;
+      _ = ns.Flush(5);
     }
 
-    public static WriteFixedPacketMethod InPeaceMode(out int length)
+    public static void SendInPeaceMode(NetState ns)
     {
-      length = 5;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(5);
+      span[0] = 0x72; // Packet ID
+      span[3] = 0x32; // ?
 
-      static void write(Memory<byte> mem)
-      {
-        mem.Span[0] = 0x72; // Packet ID
-        mem.Span[3] = 0x32; // ?
-      }
-
-      return write;
+      _ = ns.Flush(5);
     }
 
-    public static WriteFixedPacketMethod<Serial> RemoveEntity(out int length)
+    public static void SendRemoveEntity(NetState ns, Serial entity)
     {
-      length = 5;
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(5);
+      span[0] = 0x1D; // Packet ID
 
-      static void write(Memory<byte> mem, Serial entity)
-      {
-        mem.Span[0] = 0x1D; // Packet ID
+      span[1] = (byte)(entity >> 24);
+      span[2] = (byte)(entity >> 16);
+      span[3] = (byte)(entity >> 8);
+      span[4] = (byte)entity;
 
-        mem.Span[1] = (byte)(entity >> 24);
-        mem.Span[2] = (byte)(entity >> 16);
-        mem.Span[3] = (byte)(entity >> 8);
-        mem.Span[4] = (byte)entity;
-      }
-
-      return write;
+      _ = ns.Flush(5);
     }
 
-    public static WriteFixedPacketMethod<Mobile, Map> ServerChange(out int length)
+    public static void SendServerChange(NetState ns, Mobile m, Map map)
     {
-      length = 16;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(16));
+      w.Write((byte)0x76); // Packet ID
 
-      static void write(Memory<byte> mem, Mobile m, Map map)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 16);
-        w.Write((byte)0x76); // Packet ID
+      w.Write((short)m.X);
+      w.Write((short)m.Y);
+      w.Write((short)m.Z);
+      w.Position += 5;
+      w.Write((short)map.Width);
+      w.Write((short)map.Height);
 
-        w.Write((short)m.X);
-        w.Write((short)m.Y);
-        w.Write((short)m.Z);
-        w.Position += 5;
-        w.Write((short)map.Width);
-        w.Write((short)map.Height);
-      }
-
-      return write;
+      _ = ns.Flush(16);
     }
 
-    public static WriteDynamicPacketMethod<Skills> SkillsUpdate(out int length, Skills skills)
+    public static void SendSkillsUpdate(NetState ns, Skills skills)
     {
-      length = 6 + skills.Length * 9;
+      int length = 6 + skills.Length * 9;
 
-      static int write(Memory<byte> mem, int length, Skills skills)
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0x3A); // Packet ID
+      w.Write((short)length); // Length
+
+      w.Write((byte)0x02); // type: absolute, capped
+
+      for (int i = 0; i < skills.Length; ++i)
       {
-        SpanWriter w = new SpanWriter(mem.Span, length);
-        w.Write((byte)0x3A); // Packet ID
-        w.Write((short)length); // Length
+        Skill s = skills[i];
 
-        w.Write((byte)0x02); // type: absolute, capped
-
-        for (int i = 0; i < skills.Length; ++i)
-        {
-          Skill s = skills[i];
-
-          double v = s.NonRacialValue;
-          int uv = (int)(v * 10);
-
-          if (uv < 0)
-            uv = 0;
-          else if (uv >= 0x10000)
-            uv = 0xFFFF;
-
-          w.Write((ushort)(s.Info.SkillID + 1));
-          w.Write((ushort)uv);
-          w.Write((ushort)s.BaseFixedPoint);
-          w.Write((byte)s.Lock);
-          w.Write((ushort)s.CapFixedPoint);
-        }
-
-        return length;
-      }
-
-      return write;
-    }
-
-    public static WriteFixedPacketMethod<Skill> SkillChange(out int length)
-    {
-      length = 13;
-
-      static void write(Memory<byte> mem, Skill skill)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 13);
-        w.Write((byte)0x3A); // Packet ID
-        w.Write((short)13); // Length
-
-
-        double v = skill.NonRacialValue;
+        double v = s.NonRacialValue;
         int uv = (int)(v * 10);
 
         if (uv < 0)
@@ -367,33 +250,51 @@ namespace Server.Network
         else if (uv >= 0x10000)
           uv = 0xFFFF;
 
-        w.Write((byte)0xDF); // type: delta, capped
-        w.Write((ushort)skill.Info.SkillID);
+        w.Write((ushort)(s.Info.SkillID + 1));
         w.Write((ushort)uv);
-        w.Write((ushort)skill.BaseFixedPoint);
-        w.Write((byte)skill.Lock);
-        w.Write((ushort)skill.CapFixedPoint);
+        w.Write((ushort)s.BaseFixedPoint);
+        w.Write((byte)s.Lock);
+        w.Write((ushort)s.CapFixedPoint);
       }
 
-      return write;
+        _ = ns.Flush(length);
     }
 
-    public static WriteDynamicPacketMethod<string> LaunchBrowser(out int length, string url)
+    public static void SendSkillChange(NetState ns, Skill skill)
     {
-      length = 4 + url?.Length ?? 0;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(13));
+      w.Write((byte)0x3A); // Packet ID
+      w.Write((short)13); // Length
 
-      static int write(Memory<byte> mem, int length, string url)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, length);
-        w.Write((byte)0xA5); // Packet ID
-        w.Write((short)length); // Length
 
-        w.WriteAsciiNull(url ?? "");
+      double v = skill.NonRacialValue;
+      int uv = (int)(v * 10);
 
-        return length;
-      }
+      if (uv < 0)
+        uv = 0;
+      else if (uv >= 0x10000)
+        uv = 0xFFFF;
 
-      return write;
+      w.Write((byte)0xDF); // type: delta, capped
+      w.Write((ushort)skill.Info.SkillID);
+      w.Write((ushort)uv);
+      w.Write((ushort)skill.BaseFixedPoint);
+      w.Write((byte)skill.Lock);
+      w.Write((ushort)skill.CapFixedPoint);
+
+      _ = ns.Flush(13);
+    }
+
+    public static void SendLaunchBrowser(NetState ns, string url)
+    {
+      int length = 4 + url?.Length ?? 0;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0xA5); // Packet ID
+      w.Write((short)length); // Length
+
+      w.WriteAsciiNull(url ?? "");
+
+      _ = ns.Flush(length);
     }
   }
 }

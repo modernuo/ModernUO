@@ -13,108 +13,82 @@ namespace Server.Network
 
   public static partial class Packets
   {
-    public static WriteDynamicPacketMethod<Serial, Serial, Serial, string> DisplaySecureTrade(out int length, Serial them, Serial firstCont, Serial secondCont, string name)
+    public static void SendDisplaySecureTrade(NetState ns, Serial them, Serial firstCont, Serial secondCont, string name)
     {
-      length = 18 + name?.Length ?? 0;
+      int length = 18 + name?.Length ?? 0;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0x6F); // Packet ID
+      w.Write((short)length); // Length
 
-      static int write(Memory<byte> mem, int length, Serial them, Serial firstCont, Serial secondCont, string name)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, length);
-        w.Write((byte)0x6F); // Packet ID
-        w.Write((ushort)length); // Length
+      w.Position++; // Display
+      w.Write(them);
+      w.Write(firstCont);
+      w.Write(secondCont);
+      w.Write((byte)1);
+      w.WriteAsciiFixed(name ?? "", 30);
 
-        w.Position++; // Display
-        w.Write(them);
-        w.Write(firstCont);
-        w.Write(secondCont);
-        w.Write((byte)1);
-        w.WriteAsciiFixed(name ?? "", 30);
-
-        return length;
-      }
-
-      return write;
+      _ = ns.Flush(length);
     }
 
-    public static WriteFixedPacketMethod<Serial> CloseSecureTrade(out int length)
+    public static void SendCloseSecureTrade(NetState ns, Serial cont)
     {
-      length = 8;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8));
+      w.Write((byte)0x6F); // Packet ID
+      w.Write((ushort)8); // Length
 
-      static void write(Memory<byte> mem, Serial cont)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 8);
-        w.Write((byte)0x6F); // Packet ID
-        w.Write((ushort)8); // Length
+      w.Write((byte)1); // Close
+      w.Write(cont);
 
-        w.Write((byte)1); // Close
-        w.Write(cont);
-      }
-
-      return write;
+      _ = ns.Flush(8);
     }
 
-    public static WriteFixedPacketMethod<Serial, TradeFlag, int, int> UpdateSecureTrade(out int length)
+    public static void SendUpdateSecureTrade(NetState ns, Serial cont, TradeFlag flag, int first, int second)
     {
-      length = 17;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(17));
+      w.Write((byte)0x6F); // Packet ID
+      w.Write((ushort)17); // Length
 
-      static void write(Memory<byte> mem, Serial cont, TradeFlag flag, int first, int second)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 17);
-        w.Write((byte)0x6F); // Packet ID
-        w.Write((ushort)17); // Length
+      w.Write((byte)flag);
+      w.Write(cont);
+      w.Write(first);
+      w.Write(second);
 
-        w.Write((byte)flag);
-        w.Write(cont);
-        w.Write(first);
-        w.Write(second);
-      }
-
-      return write;
+      _ = ns.Flush(17);
     }
 
-    public static WriteFixedPacketMethod<Item, Serial> SecureTradeEquip(out int length)
+    public static void SendSecureTradeEquip(NetState ns, Item item, Serial m)
     {
-      length = 20;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(20));
+      w.Write((byte)0x25); // Packet ID
 
-      static void write(Memory<byte> mem, Item item, Serial m)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 20);
-        w.Write((byte)0x25); // Packet ID
+      w.Write(item.Serial);
+      w.Write((short)item.ItemID);
+      w.Position++; // Write((byte)0)
+      w.Write((short)item.Amount);
+      w.Write((short)item.X);
+      w.Write((short)item.Y);
+      w.Write(m);
+      w.Write((short)item.Hue);
 
-        w.Write(item.Serial);
-        w.Write((short)item.ItemID);
-        w.Position++; // Write((byte)0)
-        w.Write((short)item.Amount);
-        w.Write((short)item.X);
-        w.Write((short)item.Y);
-        w.Write(m);
-        w.Write((short)item.Hue);
-      }
-
-      return write;
+      _ = ns.Flush(20);
     }
 
-    public static WriteFixedPacketMethod<Item, Serial> SecureTradeEquip6017(out int length)
+    public static void SendSecureTradeEquip6017(NetState ns, Item item, Serial m)
     {
-      length = 21;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(21));
+      w.Write((byte)0x25); // Packet ID
 
-      static void write(Memory<byte> mem, Item item, Serial m)
-      {
-        SpanWriter w = new SpanWriter(mem.Span, 21);
-        w.Write((byte)0x25); // Packet ID
+      w.Write(item.Serial);
+      w.Write((short)item.ItemID);
+      w.Position++; // Write((byte)0)
+      w.Write((short)item.Amount);
+      w.Write((short)item.X);
+      w.Write((short)item.Y);
+      w.Write(m);
+      w.Position++; // Write((byte)0) Grid Location?
+      w.Write((short)item.Hue);
 
-        w.Write(item.Serial);
-        w.Write((short)item.ItemID);
-        w.Position++; // Write((byte)0)
-        w.Write((short)item.Amount);
-        w.Write((short)item.X);
-        w.Write((short)item.Y);
-        w.Write(m);
-        w.Position++; // Write((byte)0) Grid Location?
-        w.Write((short)item.Hue);
-      }
-
-      return write;
+      _ = ns.Flush(21);
     }
   }
 }

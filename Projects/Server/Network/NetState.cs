@@ -97,7 +97,6 @@ namespace Server.Network
   {
     private string m_ToString;
     private ClientVersion m_Version;
-    private SendQueue<Packet> m_SendQueue = new SendQueue<Packet>();
 
     public DateTime ConnectedOn { get; }
 
