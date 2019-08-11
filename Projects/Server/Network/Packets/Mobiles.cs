@@ -519,6 +519,23 @@ namespace Server.Network
 
     public static void SendMobileIncoming(NetState ns, Mobile beholder, Mobile beheld)
     {
+      if (ns.NewMobileIncoming)
+      {
+        SendMobileIncomingNew(ns, beholder, beheld);
+        return;
+      }
+
+      if (ns.StygianAbyss)
+      {
+        SendMobileIncomingSA(ns, beholder, beheld);
+        return;
+      }
+
+      SendMobileIncomingOld(ns, beholder, beheld);
+    }
+
+    public static void SendMobileIncomingNew(NetState ns, Mobile beholder, Mobile beheld)
+    {
       bool[] dupedLayers = ArrayPool<bool>.Shared.Rent(256);
 
       List<Item> eq = beheld.Items;
@@ -600,7 +617,233 @@ namespace Server.Network
 
       ArrayPool<bool>.Shared.Return(dupedLayers, true);
 
-      // w.Write(0); // terminate
+      int bytesWritten = w.Position + 4;
+      w.Position = 1;
+      w.Write((ushort)bytesWritten);
+
+      _ = ns.Flush(bytesWritten);
+    }
+
+    public static void SendMobileIncomingSA(NetState ns, Mobile beholder, Mobile beheld)
+    {
+      bool[] dupedLayers = ArrayPool<bool>.Shared.Rent(256);
+
+      List<Item> eq = beheld.Items;
+      int count = eq.Count;
+
+      if (beheld.HairItemID > 0)
+        count++;
+      if (beheld.FacialHairItemID > 0)
+        count++;
+
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(23 + count * 9));
+      w.Write((byte)0x78); // Packet ID
+      w.Position += 2; // Dynamic Length
+
+      int hue = beheld.Hue;
+
+      if (beheld.SolidHueOverride >= 0)
+        hue = beheld.SolidHueOverride;
+
+      w.Write(beheld.Serial);
+      w.Write((short)beheld.Body);
+      w.Write((short)beheld.X);
+      w.Write((short)beheld.Y);
+      w.Write((sbyte)beheld.Z);
+      w.Write((byte)beheld.Direction);
+      w.Write((short)hue);
+      w.Write((byte)beheld.GetPacketFlags());
+      w.Write((byte)Notoriety.Compute(beholder, beheld));
+
+      for (int i = 0; i < eq.Count; ++i)
+      {
+        Item item = eq[i];
+
+        byte layer = (byte)item.Layer;
+
+        if (!item.Deleted && beholder.CanSee(item) && !dupedLayers[layer])
+        {
+          dupedLayers[layer] = true;
+
+          hue = item.Hue;
+
+          if (beheld.SolidHueOverride >= 0)
+            hue = beheld.SolidHueOverride;
+
+          int itemID = item.ItemID & 0x7FFF;
+          bool writeHue = hue != 0;
+
+          if (writeHue)
+            itemID |= 0x8000;
+
+          w.Write(item.Serial);
+          w.Write((ushort)itemID);
+          w.Write(layer);
+
+          if (writeHue)
+            w.Write((short)hue);
+        }
+      }
+
+      if (beheld.HairItemID > 0 && !dupedLayers[(int)Layer.Hair])
+      {
+        hue = beheld.HairHue;
+
+        if (beheld.SolidHueOverride >= 0)
+          hue = beheld.SolidHueOverride;
+
+        int itemID = beheld.HairItemID & 0x7FFF;
+
+        bool writeHue = hue != 0;
+
+        if (writeHue)
+          itemID |= 0x8000;
+
+        w.Write(HairInfo.FakeSerial(beheld));
+        w.Write((ushort)itemID);
+        w.Write((byte)Layer.Hair);
+
+        if (writeHue)
+          w.Write((short)hue);
+      }
+
+      if (beheld.FacialHairItemID > 0 && !dupedLayers[(int)Layer.FacialHair])
+      {
+        hue = beheld.FacialHairHue;
+
+        if (beheld.SolidHueOverride >= 0)
+          hue = beheld.SolidHueOverride;
+
+        int itemID = beheld.FacialHairItemID & 0x7FFF;
+
+        bool writeHue = hue != 0;
+
+        if (writeHue)
+          itemID |= 0x8000;
+
+        w.Write(FacialHairInfo.FakeSerial(beheld));
+        w.Write((ushort)itemID);
+        w.Write((byte)Layer.FacialHair);
+
+        if (writeHue)
+          w.Write((short)hue);
+      }
+
+      ArrayPool<bool>.Shared.Return(dupedLayers, true);
+
+      int bytesWritten = w.Position + 4;
+      w.Position = 1;
+      w.Write((ushort)bytesWritten);
+
+      _ = ns.Flush(bytesWritten);
+    }
+
+    public static void SendMobileIncomingOld(NetState ns, Mobile beholder, Mobile beheld)
+    {
+      bool[] dupedLayers = ArrayPool<bool>.Shared.Rent(256);
+
+      List<Item> eq = beheld.Items;
+      int count = eq.Count;
+
+      if (beheld.HairItemID > 0)
+        count++;
+      if (beheld.FacialHairItemID > 0)
+        count++;
+
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(23 + count * 9));
+      w.Write((byte)0x78); // Packet ID
+      w.Position += 2; // Dynamic Length
+
+      int hue = beheld.Hue;
+
+      if (beheld.SolidHueOverride >= 0)
+        hue = beheld.SolidHueOverride;
+
+      w.Write(beheld.Serial);
+      w.Write((short)beheld.Body);
+      w.Write((short)beheld.X);
+      w.Write((short)beheld.Y);
+      w.Write((sbyte)beheld.Z);
+      w.Write((byte)beheld.Direction);
+      w.Write((short)hue);
+      w.Write((byte)beheld.GetOldPacketFlags());
+      w.Write((byte)Notoriety.Compute(beholder, beheld));
+
+      for (int i = 0; i < eq.Count; ++i)
+      {
+        Item item = eq[i];
+
+        byte layer = (byte)item.Layer;
+
+        if (!item.Deleted && beholder.CanSee(item) && !dupedLayers[layer])
+        {
+          dupedLayers[layer] = true;
+
+          hue = item.Hue;
+
+          if (beheld.SolidHueOverride >= 0)
+            hue = beheld.SolidHueOverride;
+
+          int itemID = item.ItemID & 0x7FFF;
+          bool writeHue = hue != 0;
+
+          if (writeHue)
+            itemID |= 0x8000;
+
+          w.Write(item.Serial);
+          w.Write((ushort)itemID);
+          w.Write(layer);
+
+          if (writeHue)
+            w.Write((short)hue);
+        }
+      }
+
+      if (beheld.HairItemID > 0 && !dupedLayers[(int)Layer.Hair])
+      {
+        hue = beheld.HairHue;
+
+        if (beheld.SolidHueOverride >= 0)
+          hue = beheld.SolidHueOverride;
+
+        int itemID = beheld.HairItemID & 0x7FFF;
+
+        bool writeHue = hue != 0;
+
+        if (writeHue)
+          itemID |= 0x8000;
+
+        w.Write(HairInfo.FakeSerial(beheld));
+        w.Write((ushort)itemID);
+        w.Write((byte)Layer.Hair);
+
+        if (writeHue)
+          w.Write((short)hue);
+      }
+
+      if (beheld.FacialHairItemID > 0 && !dupedLayers[(int)Layer.FacialHair])
+      {
+        hue = beheld.FacialHairHue;
+
+        if (beheld.SolidHueOverride >= 0)
+          hue = beheld.SolidHueOverride;
+
+        int itemID = beheld.FacialHairItemID & 0x7FFF;
+
+        bool writeHue = hue != 0;
+
+        if (writeHue)
+          itemID |= 0x8000;
+
+        w.Write(FacialHairInfo.FakeSerial(beheld));
+        w.Write((ushort)itemID);
+        w.Write((byte)Layer.FacialHair);
+
+        if (writeHue)
+          w.Write((short)hue);
+      }
+
+      ArrayPool<bool>.Shared.Return(dupedLayers, true);
 
       int bytesWritten = w.Position + 4;
       w.Position = 1;

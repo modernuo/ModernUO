@@ -399,6 +399,8 @@ namespace Server.Network
       span[1] = (byte)now.Hour;
       span[2] = (byte)now.Minute;
       span[3] = (byte)now.Second;
+
+      _ = ns.Flush(4);
     }
 
     public static void SendSupportedFeatures(NetState ns)
@@ -436,6 +438,74 @@ namespace Server.Network
       w.Write((short)p.Z);
 
       _ = ns.Flush(7);
+    }
+
+    public static void SendPingAck(NetState ns, byte ping)
+    {
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
+      span[0] = 0x73; // Packet ID
+      span[1] = ping;
+
+      _ = ns.Flush(2);
+    }
+
+    public static void SendMovementRej(NetState ns, int seq, Mobile m)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8));
+      w.Write((byte)0x21); // Packet ID
+
+      w.Write((byte)seq);
+      w.Write((short)m.X);
+      w.Write((short)m.Y);
+      w.Write((byte)m.Direction);
+      w.Write((sbyte)m.Z);
+
+      _ = ns.Flush(8);
+    }
+
+    public static void SendMovementAck(NetState ns, int seq, byte noto)
+    {
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(3);
+      span[0] = 0x22;
+      span[1] = (byte)seq;
+      span[2] = noto;
+
+      _ = ns.Flush(3);
+    }
+
+    public static void SendLoginConfirm(NetState ns, Mobile m)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8));
+      w.Write((byte)0x1B); // Packet ID
+
+      w.Write(m.Serial);
+      w.Position++;
+      w.Write((short)m.Body);
+      w.Write((short)m.X);
+      w.Write((short)m.Y);
+      w.Write((short)m.Z);
+      w.Write((byte)m.Direction);
+      w.Position++;
+      w.Write(-1);
+
+      Map map = m.Map;
+
+      if (map == null || map == Map.Internal)
+        map = m.LogoutMap;
+
+      w.Position += 4;
+      w.Write((short)(map?.Width ?? 6144));
+      w.Write((short)(map?.Height ?? 4096));
+
+      _ = ns.Flush(37);
+    }
+
+    public static void SendLoginComplete(NetState ns)
+    {
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(1);
+      span[0] = 0x55;
+
+      _ = ns.Flush(1);
     }
   }
 }

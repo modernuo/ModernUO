@@ -2432,7 +2432,7 @@ namespace Server
         sendFacialHair = true;
       }
 
-      Packet[][] cache = new Packet[2][] { new Packet[8], new Packet[8] };
+      Packet[][] cache = { new Packet[8], new Packet[8] };
 
       NetState ourState = m.m_NetState;
 
