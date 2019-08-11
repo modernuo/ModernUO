@@ -173,7 +173,7 @@ namespace Server.Network
       m_Stream.Write(length);
       m_Stream.Write(packBuffer, 0, packLength);
 
-      ArrayPool<byte>.Shared.Return(packBuffer);
+      ArrayPool<byte>.Shared.Return(packBuffer, true);
     }
   }
 

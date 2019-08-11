@@ -122,7 +122,7 @@ namespace Server.Network
       w.Write((ushort)bytesWritten);
       w.Write(written);
 
-      _ = ns.Flush(6);
+      _ = ns.Flush(bytesWritten);
     }
 
     public static void ContainerContent6017(NetState ns, Mobile beholder, Item beheld)
@@ -163,7 +163,7 @@ namespace Server.Network
       w.Write((ushort)bytesWritten);
       w.Write(written);
 
-      _ = ns.Flush(6);
+      _ = ns.Flush(bytesWritten);
     }
   }
 }

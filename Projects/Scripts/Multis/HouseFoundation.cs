@@ -2351,7 +2351,7 @@ namespace Server.Multis
       {
         if (!m_PlaneUsed[i])
         {
-          ArrayPool<byte>.Shared.Return(m_PlaneBuffers[i]);
+          ArrayPool<byte>.Shared.Return(m_PlaneBuffers[i], true);
           continue;
         }
 
@@ -2386,7 +2386,7 @@ namespace Server.Multis
         Write(m_DeflatedBuffer, 0, deflatedLength);
 
         totalLength += 4 + deflatedLength;
-        ArrayPool<byte>.Shared.Return(inflatedBuffer);
+        ArrayPool<byte>.Shared.Return(inflatedBuffer, true);
       }
 
       int totalStairBuffersUsed = (totalStairsUsed + (MaxItemsPerStairBuffer - 1)) / MaxItemsPerStairBuffer;
@@ -2425,9 +2425,9 @@ namespace Server.Multis
       }
 
       for (int i = 0; i < m_StairBuffers.Length; ++i)
-        ArrayPool<byte>.Shared.Return(m_StairBuffers[i]);
+        ArrayPool<byte>.Shared.Return(m_StairBuffers[i], true);
 
-      ArrayPool<byte>.Shared.Return(m_DeflatedBuffer);
+      ArrayPool<byte>.Shared.Return(m_DeflatedBuffer, true);
 
       m_Stream.Seek(15, SeekOrigin.Begin);
 

@@ -137,7 +137,7 @@ namespace Server
       {
         if (active[slot] != chunk) throw new ArgumentException();
 
-        ArrayPool<byte>.Shared.Return(chunk.Buffer);
+        ArrayPool<byte>.Shared.Return(chunk.Buffer, true);
 
         if (pending.Count > 0)
         {
@@ -160,10 +160,10 @@ namespace Server
 
     public void Enqueue(byte[] buffer, int offset, int size)
     {
-      if (buffer == null) throw new ArgumentNullException("buffer");
+      if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
-      if (offset < 0) throw new ArgumentOutOfRangeException("offset");
-      if (size < 0) throw new ArgumentOutOfRangeException("size");
+      if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+      if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
       if (buffer.Length - offset < size) throw new ArgumentException();
 
       Position += size;
