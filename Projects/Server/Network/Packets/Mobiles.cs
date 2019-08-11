@@ -162,5 +162,357 @@ namespace Server.Network
 
       _ = ns.Flush(66);
     }
+
+    public static void SendMobileName(NetState ns, Mobile m)
+    {
+      int length = 7 + Math.Min(m.Name?.Length ?? 0, 30);
+
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0x98); // Packet ID
+      w.Write((short)length); // Length
+
+      w.Write(m.Serial);
+      w.WriteAsciiFixed(m.Name ?? "", 30);
+
+      _ = ns.Flush(length);
+    }
+
+    public static void SendMobileAnimation(NetState ns, Mobile m, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(14));
+      w.Write((byte)0x6E); // Packet ID
+
+      w.Write(m.Serial);
+      w.Write((short)action);
+      w.Write((short)frameCount);
+      w.Write((short)repeatCount);
+      w.Write(!forward); // protocol has really "reverse" but I find this more intuitive
+      w.Write(repeat);
+      w.Write((byte)delay);
+
+      _ = ns.Flush(14);
+    }
+
+    public static void SendNewMobileAnimation(NetState ns, Mobile m, int action, int frameCount, int delay)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(10));
+      w.Write((byte)0xE2); // Packet ID
+
+      w.Write(m.Serial);
+      w.Write((short)action);
+      w.Write((short)frameCount);
+      w.Write((byte)delay);
+
+      _ = ns.Flush(10);
+    }
+
+    public static void SendMobileStatusCompact(NetState ns, Mobile m, bool canBeRenamed = false)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(43));
+      w.Write((byte)0x11); // Packet ID
+      w.Write((ushort)43); // Length
+
+      w.Write(m.Serial);
+      w.WriteAsciiFixed(m.Name ?? "", 30);
+
+      AttributeNormalizer.WriteReverse(w, m.Hits, m.HitsMax);
+
+      w.Write(canBeRenamed);
+
+      // w.Write((byte)0); // type
+
+      _ = ns.Flush(43);
+    }
+
+    public static void SendMobileExtended(NetState ns, Mobile m)
+    {
+      string name = m.Name ?? "";
+
+      byte type;
+      short length;
+
+      if (Core.HS && ns?.ExtendedStatus == true)
+      {
+        type = 6;
+        length = 121;
+      }
+      else if (Core.ML && ns?.SupportsExpansion(Expansion.ML) == true)
+      {
+        type = 5;
+        length = 91;
+      }
+      else if (Core.AOS)
+      {
+        type = 4;
+        length = 88;
+      }
+      else
+      {
+        type = 3;
+        length = 70;
+      }
+
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0x11); // Packet ID
+      w.Write(length); // Length
+
+      w.Write(m.Serial);
+      w.WriteAsciiFixed(name, 30);
+
+      w.Write((short)m.Hits);
+      w.Write((short)m.HitsMax);
+
+      w.Write(m.CanBeRenamedBy(m));
+
+      w.Write(type);
+
+      w.Write(m.Female);
+
+      w.Write((short)m.Str);
+      w.Write((short)m.Dex);
+      w.Write((short)m.Int);
+
+      w.Write((short)m.Stam);
+      w.Write((short)m.StamMax);
+
+      w.Write((short)m.Mana);
+      w.Write((short)m.ManaMax);
+
+      w.Write(m.TotalGold);
+      w.Write((short)(Core.AOS ? m.PhysicalResistance : (int)(m.ArmorRating + 0.5)));
+      w.Write((short)(Mobile.BodyWeight + m.TotalWeight));
+
+      if (type >= 5)
+      {
+        w.Write((short)m.MaxWeight);
+        w.Write((byte)(m.Race.RaceID + 1)); // Would be 0x00 if it's a non-ML enabled account but...
+      }
+
+      w.Write((short)m.StatCap);
+
+      w.Write((byte)m.Followers);
+      w.Write((byte)m.FollowersMax);
+
+      if (type >= 4)
+      {
+        w.Write((short)m.FireResistance); // Fire
+        w.Write((short)m.ColdResistance); // Cold
+        w.Write((short)m.PoisonResistance); // Poison
+        w.Write((short)m.EnergyResistance); // Energy
+        w.Write((short)m.Luck); // Luck
+
+        IWeapon weapon = m.Weapon;
+
+        if (weapon != null)
+        {
+          weapon.GetStatusDamage(m, out int min, out int max);
+          w.Write((short)min); // Damage min
+          w.Write((short)max); // Damage max
+        }
+        else
+          w.Position += 4; // Damage min, Damage max
+
+        w.Write(m.TithingPoints);
+      }
+
+      if (type >= 6)
+        for (int i = 0; i < 15; ++i)
+          w.Write((short)m.GetAOSStatus(i));
+
+      _ = ns.Flush(length);
+    }
+
+    public static void SendMobileStatus(NetState ns, Mobile beholder, Mobile beheld)
+    {
+      string name = beheld.Name ?? "";
+
+      int type;
+      short length;
+
+      if (beholder != beheld)
+      {
+        type = 0;
+        length = 43;
+      }
+      else if (Core.HS && ns?.ExtendedStatus == true)
+      {
+        type = 6;
+        length = 121;
+      }
+      else if (Core.ML && ns?.SupportsExpansion(Expansion.ML) == true)
+      {
+        type = 5;
+        length = 91;
+      }
+      else if (Core.AOS)
+      {
+        type = 4;
+        length = 88;
+      }
+      else
+      {
+        type = 3;
+        length = 70;
+      }
+
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0x11); // Packet ID
+      w.Write((ushort)length); // Length
+
+      w.Write(beheld.Serial);
+
+      w.WriteAsciiFixed(name, 30);
+
+      if (beholder == beheld)
+      {
+        w.Write((short)beheld.Hits);
+        w.Write((short)beheld.HitsMax);
+      }
+      else
+        AttributeNormalizer.WriteReverse(w, beheld.Hits, beheld.HitsMax);
+
+      w.Write(beheld.CanBeRenamedBy(beholder));
+
+      w.Write((byte)type);
+
+      if (type <= 0)
+        return;
+
+      w.Write(beheld.Female);
+
+      w.Write((short)beheld.Str);
+      w.Write((short)beheld.Dex);
+      w.Write((short)beheld.Int);
+
+      w.Write((short)beheld.Stam);
+      w.Write((short)beheld.StamMax);
+
+      w.Write((short)beheld.Mana);
+      w.Write((short)beheld.ManaMax);
+
+      w.Write(beheld.TotalGold);
+      w.Write((short)(Core.AOS ? beheld.PhysicalResistance : (int)(beheld.ArmorRating + 0.5)));
+      w.Write((short)(Mobile.BodyWeight + beheld.TotalWeight));
+
+      if (type >= 5)
+      {
+        w.Write((short)beheld.MaxWeight);
+        w.Write((byte)(beheld.Race.RaceID + 1)); // Would be 0x00 if it's a non-ML enabled account but...
+      }
+
+      w.Write((short)beheld.StatCap);
+
+      w.Write((byte)beheld.Followers);
+      w.Write((byte)beheld.FollowersMax);
+
+      if (type >= 4)
+      {
+        w.Write((short)beheld.FireResistance); // Fire
+        w.Write((short)beheld.ColdResistance); // Cold
+        w.Write((short)beheld.PoisonResistance); // Poison
+        w.Write((short)beheld.EnergyResistance); // Energy
+        w.Write((short)beheld.Luck); // Luck
+
+        IWeapon weapon = beheld.Weapon;
+
+        if (weapon != null)
+        {
+          weapon.GetStatusDamage(beheld, out int min, out int max);
+          w.Write((short)min); // Damage min
+          w.Write((short)max); // Damage max
+        }
+        else
+          w.Position += 2; // Damage min, Damage max
+
+        w.Write(beheld.TithingPoints);
+      }
+
+      if (type >= 6)
+        for (int i = 0; i < 15; ++i)
+          w.Write((short)beheld.GetAOSStatus(i));
+
+      _ = ns.Flush(length);
+    }
+
+    public static void SendHealthbarPoison(NetState ns, Mobile m)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
+      w.Write((byte)0x17); // Packet ID
+      w.Write((ushort)12); // Length
+
+      w.Write(m.Serial);
+      w.Write((short)1);
+      w.Write((short)1);
+
+      Poison p = m.Poison;
+
+      if (p != null)
+        w.Write((byte)(p.Level + 1));
+
+      _ = ns.Flush(12);
+    }
+
+    public static void SendHealthbarYellow(NetState ns, Mobile m)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
+      w.Write((byte)0x17); // Packet ID
+      w.Write((ushort)12); // Length
+
+      w.Write(m.Serial);
+      w.Write((short)1);
+      w.Write((short)2);
+
+      w.Write(m.Blessed || m.YellowHealthbar);
+
+      _ = ns.Flush(12);
+    }
+
+    public static void SendMobileUpdate(NetState ns, Mobile m)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(19));
+      w.Write((byte)0x20); // Packet ID
+
+      int hue = m.Hue;
+
+      if (m.SolidHueOverride >= 0)
+        hue = m.SolidHueOverride;
+
+      w.Write(m.Serial);
+      w.Write((short)m.Body);
+      w.Position++;  // w.Write((byte)0);
+      w.Write((short)hue);
+      w.Write((byte)m.GetPacketFlags());
+      w.Write((short)m.X);
+      w.Write((short)m.Y);
+      w.Position += 2; // w.Write((short)0);
+      w.Write((byte)m.Direction);
+      w.Write((sbyte)m.Z);
+
+      _ = ns.Flush(19);
+    }
+
+    public static void SendMobileUpdateOld(NetState ns, Mobile m)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(19));
+      w.Write((byte)0x20); // Packet ID
+
+      int hue = m.Hue;
+
+      if (m.SolidHueOverride >= 0)
+        hue = m.SolidHueOverride;
+
+      w.Write(m.Serial);
+      w.Write((short)m.Body);
+      w.Position++;  // w.Write((byte)0);
+      w.Write((short)hue);
+      w.Write((byte)m.GetOldPacketFlags());
+      w.Write((short)m.X);
+      w.Write((short)m.Y);
+      w.Position += 2; // w.Write((short)0);
+      w.Write((byte)m.Direction);
+      w.Write((sbyte)m.Z);
+
+      _ = ns.Flush(19);
+    }
   }
 }

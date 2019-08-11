@@ -1,4 +1,5 @@
 using System;
+using Server.Accounting;
 
 namespace Server.Network
 {
@@ -398,6 +399,43 @@ namespace Server.Network
       span[1] = (byte)now.Hour;
       span[2] = (byte)now.Minute;
       span[3] = (byte)now.Second;
+    }
+
+    public static void SendSupportedFeatures(NetState ns)
+    {
+      int length = ns.ExtendedSupportedFeatures ? 5 : 3;
+
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0xB9); // Packet ID
+      w.Write((short)length); // Length
+
+      FeatureFlags flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
+
+      if (ns.Account is IAccount acct && acct.Limit >= 6)
+      {
+        flags &= ~FeatureFlags.UOTD;
+        flags |= FeatureFlags.LiveAccount |
+          (acct.Limit > 6 ? FeatureFlags.SeventhCharacterSlot : FeatureFlags.SixthCharacterSlot);
+      }
+
+      if (ns.ExtendedSupportedFeatures)
+        w.Write((uint)flags);
+      else
+        w.Write((ushort)flags);
+
+      _ = ns.Flush(length);
+    }
+
+    public static void SendPathfindMessage(NetState ns, IPoint3D p)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
+      w.Write((byte)0x38); // Packet ID
+
+      w.Write((short)p.X);
+      w.Write((short)p.Y);
+      w.Write((short)p.Z);
+
+      _ = ns.Flush(7);
     }
   }
 }
