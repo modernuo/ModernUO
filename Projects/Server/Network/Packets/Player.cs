@@ -1,27 +1,7 @@
 using System;
-using Server.Accounting;
 
 namespace Server.Network
 {
-  public enum DeleteResultType : byte
-  {
-    PasswordInvalid,
-    CharNotExist,
-    CharBeingPlayed,
-    CharTooYoung,
-    CharQueued,
-    BadRequest
-  }
-
-  public enum PMMessage : byte
-  {
-    CharNoExist = 1,
-    CharExists = 2,
-    CharInWorld = 5,
-    LoginSyncError = 6,
-    IdleWarning = 7
-  }
-
   public static partial class Packets
   {
     public static void SendObjectHelpResponse(NetState ns, Serial e, string text)
@@ -195,15 +175,6 @@ namespace Server.Network
       _ = ns.Flush(3);
     }
 
-    public static void SendDeleteResult(NetState ns, DeleteResultType res)
-    {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0x85; // Packet ID
-      span[1] = (byte)res;
-
-      _ = ns.Flush(2);
-    }
-
     public static void SendInWarMode(NetState ns)
     {
       Span<byte> span = ns.SendPipe.Writer.GetSpan(5);
@@ -320,15 +291,6 @@ namespace Server.Network
       _ = ns.Flush(length);
     }
 
-    public static void SendPopupMessage(NetState ns, PMMessage msg)
-    {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0x53; // Packet ID
-      span[1] = (byte)msg;
-
-      _ = ns.Flush(2);
-    }
-
     public static void SendPlaySound(NetState ns, int soundID, IPoint3D target)
     {
       SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
@@ -401,31 +363,6 @@ namespace Server.Network
       span[3] = (byte)now.Second;
 
       _ = ns.Flush(4);
-    }
-
-    public static void SendSupportedFeatures(NetState ns)
-    {
-      int length = ns.ExtendedSupportedFeatures ? 5 : 3;
-
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
-      w.Write((byte)0xB9); // Packet ID
-      w.Write((short)length); // Length
-
-      FeatureFlags flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
-
-      if (ns.Account is IAccount acct && acct.Limit >= 6)
-      {
-        flags &= ~FeatureFlags.UOTD;
-        flags |= FeatureFlags.LiveAccount |
-          (acct.Limit > 6 ? FeatureFlags.SeventhCharacterSlot : FeatureFlags.SixthCharacterSlot);
-      }
-
-      if (ns.ExtendedSupportedFeatures)
-        w.Write((uint)flags);
-      else
-        w.Write((ushort)flags);
-
-      _ = ns.Flush(length);
     }
 
     public static void SendPathfindMessage(NetState ns, IPoint3D p)
@@ -506,6 +443,16 @@ namespace Server.Network
       span[0] = 0x55;
 
       _ = ns.Flush(1);
+    }
+
+    public static void SendClearWeaponAbility(NetState ns)
+    {
+      Span<byte> span = ns.SendPipe.Writer.GetSpan(5);
+      span[0] = 0xBF;
+      span[2] = 0x05; // Length
+      span[4] = 0x21;
+
+      _ = ns.Flush(5);
     }
   }
 }

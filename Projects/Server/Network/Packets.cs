@@ -310,14 +310,12 @@ namespace Server.Network
 
   public sealed class CityInfo
   {
-    private Point3D m_Location;
-
     public CityInfo(string city, string building, int description, int x, int y, int z, Map m)
     {
       City = city;
       Building = building;
       Description = description;
-      m_Location = new Point3D(x, y, z);
+      Location = new Point3D(x, y, z);
       Map = m;
     }
 
@@ -342,27 +340,23 @@ namespace Server.Network
 
     public int X
     {
-      get => m_Location.X;
-      set => m_Location.X = value;
+      get => Location.X;
+      set => Location.X = value;
     }
 
     public int Y
     {
-      get => m_Location.Y;
-      set => m_Location.Y = value;
+      get => Location.Y;
+      set => Location.Y = value;
     }
 
     public int Z
     {
-      get => m_Location.Z;
-      set => m_Location.Z = value;
+      get => Location.Z;
+      set => Location.Z = value;
     }
 
-    public Point3D Location
-    {
-      get => m_Location;
-      set => m_Location = value;
-    }
+    public Point3D Location { get; set; }
 
     public Map Map{ get; set; }
   }
@@ -397,278 +391,6 @@ namespace Server.Network
           m_Stream.Fill(60);
         }
       }
-    }
-  }
-
-  [Flags]
-  public enum ThirdPartyFeature : ulong
-  {
-    FilterWeather = 1 << 0,
-    FilterLight = 1 << 1,
-
-    SmartTarget = 1 << 2,
-    RangedTarget = 1 << 3,
-
-    AutoOpenDoors = 1 << 4,
-
-    DequipOnCast = 1 << 5,
-    AutoPotionEquip = 1 << 6,
-
-    ProtectHeals = 1 << 7,
-
-    LoopedMacros = 1 << 8,
-
-    UseOnceAgent = 1 << 9,
-    RestockAgent = 1 << 10,
-    SellAgent = 1 << 11,
-    BuyAgent = 1 << 12,
-
-    PotionHotkeys = 1 << 13,
-
-    RandomTargets = 1 << 14,
-    ClosestTargets = 1 << 15, // All closest target hotkeys
-    OverheadHealth = 1 << 16, // Health and Mana/Stam messages shown over player's heads
-
-    AutolootAgent = 1 << 17,
-    BoneCutterAgent = 1 << 18,
-    AdvancedMacros = 1 << 19,
-    AutoRemount = 1 << 20,
-    AutoBandage = 1 << 21,
-    EnemyTargetShare = 1 << 22,
-    FilterSeason = 1 << 23,
-    SpellTargetShare = 1 << 24,
-
-    All = ulong.MaxValue
-  }
-
-  public static class FeatureProtection
-  {
-    public static ThirdPartyFeature DisabledFeatures{ get; private set; } = 0;
-
-    public static void Disable(ThirdPartyFeature feature)
-    {
-      SetDisabled(feature, true);
-    }
-
-    public static void Enable(ThirdPartyFeature feature)
-    {
-      SetDisabled(feature, false);
-    }
-
-    public static void SetDisabled(ThirdPartyFeature feature, bool value)
-    {
-      if (value)
-        DisabledFeatures |= feature;
-      else
-        DisabledFeatures &= ~feature;
-    }
-  }
-
-  public sealed class CharacterList : Packet
-  {
-    //private static MD5CryptoServiceProvider m_MD5Provider;
-
-    public CharacterList(IAccount a, CityInfo[] info) : base(0xA9)
-    {
-      EnsureCapacity(11 + a.Length * 60 + info.Length * 89);
-
-      int highSlot = -1;
-
-      for (int i = 0; i < a.Length; ++i)
-        if (a[i] != null)
-          highSlot = i;
-
-      int count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
-
-      m_Stream.Write((byte)count);
-
-      for (int i = 0; i < count; ++i)
-        if (a[i] != null)
-        {
-          m_Stream.WriteAsciiFixed(a[i].Name, 30);
-          m_Stream.Fill(30); // password
-        }
-        else
-        {
-          m_Stream.Fill(60);
-        }
-
-      m_Stream.Write((byte)info.Length);
-
-      for (int i = 0; i < info.Length; ++i)
-      {
-        CityInfo ci = info[i];
-
-        m_Stream.Write((byte)i);
-        m_Stream.WriteAsciiFixed(ci.City, 32);
-        m_Stream.WriteAsciiFixed(ci.Building, 32);
-        m_Stream.Write(ci.X);
-        m_Stream.Write(ci.Y);
-        m_Stream.Write(ci.Z);
-        m_Stream.Write(ci.Map.MapID);
-        m_Stream.Write(ci.Description);
-        m_Stream.Write(0);
-      }
-
-      CharacterListFlags flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
-
-      if (count > 6)
-        flags |= CharacterListFlags.SeventhCharacterSlot |
-                 CharacterListFlags.SixthCharacterSlot; // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
-      else if (count == 6)
-        flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
-      else if (a.Limit == 1)
-        flags |= CharacterListFlags.SlotLimit &
-                 CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
-
-      m_Stream.Write((int)(flags | AdditionalFlags)); // Additional Flags
-
-      m_Stream.Write((short)-1);
-
-      /*ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
-
-      if (disabled != 0)
-      {
-        if (m_MD5Provider == null)
-          m_MD5Provider = new MD5CryptoServiceProvider();
-
-        m_Stream.UnderlyingStream.Flush();
-
-        byte[] hashCode = m_MD5Provider.ComputeHash(m_Stream.UnderlyingStream.GetBuffer(), 0,
-          (int)m_Stream.UnderlyingStream.Length);
-        byte[] buffer = new byte[28];
-
-        for (int i = 0; i < count; ++i)
-        {
-          Utility.RandomBytes(buffer);
-
-          m_Stream.Seek(35 + i * 60, SeekOrigin.Begin);
-          m_Stream.Write(buffer, 0, buffer.Length);
-        }
-
-        m_Stream.Seek(35, SeekOrigin.Begin);
-        m_Stream.Write((int)((long)disabled >> 32));
-        m_Stream.Write((int)disabled);
-
-        m_Stream.Seek(95, SeekOrigin.Begin);
-        m_Stream.Write(hashCode, 0, hashCode.Length);
-      }*/
-    }
-
-    public static CharacterListFlags AdditionalFlags{ get; set; }
-  }
-
-  public sealed class CharacterListOld : Packet
-  {
-    // private static MD5CryptoServiceProvider m_MD5Provider;
-
-    public CharacterListOld(IAccount a, CityInfo[] info) : base(0xA9)
-    {
-      EnsureCapacity(9 + a.Length * 60 + info.Length * 63);
-
-      int highSlot = -1;
-
-      for (int i = 0; i < a.Length; ++i)
-        if (a[i] != null)
-          highSlot = i;
-
-      int count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
-
-      m_Stream.Write((byte)count);
-
-      for (int i = 0; i < count; ++i)
-        if (a[i] != null)
-        {
-          m_Stream.WriteAsciiFixed(a[i].Name, 30);
-          m_Stream.Fill(30); // password
-        }
-        else
-        {
-          m_Stream.Fill(60);
-        }
-
-      m_Stream.Write((byte)info.Length);
-
-      for (int i = 0; i < info.Length; ++i)
-      {
-        CityInfo ci = info[i];
-
-        m_Stream.Write((byte)i);
-        m_Stream.WriteAsciiFixed(ci.City, 31);
-        m_Stream.WriteAsciiFixed(ci.Building, 31);
-      }
-
-      CharacterListFlags flags = ExpansionInfo.CoreExpansion.CharacterListFlags;
-
-      if (count > 6)
-        flags |= CharacterListFlags.SeventhCharacterSlot |
-                 CharacterListFlags.SixthCharacterSlot; // 7th Character Slot - TODO: Is SixthCharacterSlot Required?
-      else if (count == 6)
-        flags |= CharacterListFlags.SixthCharacterSlot; // 6th Character Slot
-      else if (a.Limit == 1)
-        flags |= CharacterListFlags.SlotLimit &
-                 CharacterListFlags.OneCharacterSlot; // Limit Characters & One Character
-
-      m_Stream.Write((int)(flags | CharacterList.AdditionalFlags)); // Additional Flags
-
-/*      ThirdPartyFeature disabled = FeatureProtection.DisabledFeatures;
-
-      if (disabled != 0)
-      {
-        if (m_MD5Provider == null)
-          m_MD5Provider = new MD5CryptoServiceProvider();
-
-        m_Stream.UnderlyingStream.Flush();
-
-        byte[] hashCode = m_MD5Provider.ComputeHash(m_Stream.UnderlyingStream.GetBuffer(), 0,
-          (int)m_Stream.UnderlyingStream.Length);
-        byte[] buffer = new byte[28];
-
-        for (int i = 0; i < count; ++i)
-        {
-          Utility.RandomBytes(buffer);
-
-          m_Stream.Seek(35 + i * 60, SeekOrigin.Begin);
-          m_Stream.Write(buffer, 0, buffer.Length);
-        }
-
-        m_Stream.Seek(35, SeekOrigin.Begin);
-        m_Stream.Write((int)((long)disabled >> 32));
-        m_Stream.Write((int)disabled);
-
-        m_Stream.Seek(95, SeekOrigin.Begin);
-        m_Stream.Write(hashCode, 0, hashCode.Length);
-      }*/
-    }
-  }
-
-  public sealed class ClearWeaponAbility : Packet
-  {
-    public static readonly Packet Instance = SetStatic(new ClearWeaponAbility());
-
-    public ClearWeaponAbility() : base(0xBF)
-    {
-      EnsureCapacity(5);
-
-      m_Stream.Write((short)0x21);
-    }
-  }
-
-  public enum ALRReason : byte
-  {
-    Invalid = 0x00,
-    InUse = 0x01,
-    Blocked = 0x02,
-    BadPass = 0x03,
-    Idle = 0xFE,
-    BadComm = 0xFF
-  }
-
-  public sealed class AccountLoginRej : Packet
-  {
-    public AccountLoginRej(ALRReason reason) : base(0x82, 2)
-    {
-      m_Stream.Write((byte)reason);
     }
   }
 
@@ -772,14 +494,6 @@ namespace Server.Network
       m_Stream.WriteAsciiFixed(unknown, unknown.Length);
       m_Stream.Write((short)(caption.Length + 1));
       m_Stream.WriteAsciiFixed(caption, caption.Length + 1);
-    }
-  }
-
-  public sealed class GodModeReply : Packet
-  {
-    public GodModeReply(bool reply) : base(0x2B, 2)
-    {
-      m_Stream.Write(reply);
     }
   }
 

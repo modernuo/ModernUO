@@ -57,7 +57,7 @@ namespace Server.Network
     /// </summary>
     public unsafe void Write(bool value)
     {
-      Write(*(byte*)&value);
+      m_Buffer[Position++] = *(byte*)&value;
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ namespace Server.Network
     /// </summary>
     public void Write(sbyte value)
     {
-      Write((byte)value);
+      m_Buffer[Position++] = (byte)value;
     }
 
     /// <summary>
@@ -110,6 +110,38 @@ namespace Server.Network
     /// </summary>
     public void Write(uint value)
     {
+      Write((byte)(value >> 24));
+      Write((byte)(value >> 16));
+      Write((byte)(value >> 8));
+      Write((byte)value);
+    }
+
+    /// <summary>
+    ///   Writes an 8-byte signed integer value to the underlying stream.
+    /// </summary>
+    public void Write(long value)
+    {
+      Write((byte)(value >> 56));
+      Write((byte)(value >> 48));
+      Write((byte)(value >> 40));
+      Write((byte)(value >> 32));
+
+      Write((byte)(value >> 24));
+      Write((byte)(value >> 16));
+      Write((byte)(value >> 8));
+      Write((byte)value);
+    }
+
+    /// <summary>
+    ///   Writes an 8-byte unsigned integer value to the underlying stream.
+    /// </summary>
+    public void Write(ulong value)
+    {
+      Write((byte)(value >> 56));
+      Write((byte)(value >> 48));
+      Write((byte)(value >> 40));
+      Write((byte)(value >> 32));
+
       Write((byte)(value >> 24));
       Write((byte)(value >> 16));
       Write((byte)(value >> 8));

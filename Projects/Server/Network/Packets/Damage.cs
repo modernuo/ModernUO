@@ -7,7 +7,7 @@ namespace Server.Network
     public static void DamageOld(NetState ns, Serial m, int amount)
     {
       SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(11));
-      w.Write((byte)0xBF); // Packet ID
+      w.Write((byte)0xBF); // Extended Packet ID
       w.Write((ushort)11); // Length
 
       w.Write((short)0x22);
@@ -27,7 +27,7 @@ namespace Server.Network
     public static void Damage(NetState ns, Serial m, int amount)
     {
       SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
-      w.Write((byte)0xBF); // Packet ID
+      w.Write((byte)0xBF); // Extended Packet ID
       w.Write((ushort)7); // Length
 
       w.Write(m);
