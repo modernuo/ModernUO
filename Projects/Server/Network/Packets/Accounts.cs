@@ -203,5 +203,56 @@ namespace Server.Network
 
       // TODO: Razor support?
     }
+
+    public static void SendCharacterListUpdate(NetState ns, IAccount a)
+    {
+      int highSlot = -1;
+
+      for (int i = 0; i < a.Length; ++i)
+        if (a[i] != null)
+          highSlot = i;
+
+      int count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
+
+      int length = 4 + count * 60;
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0x86); // Packet ID
+      w.Write((short)length); // Length
+
+      w.Write((byte)count);
+
+      for (int i = 0; i < count; ++i)
+      {
+        Mobile m = a[i];
+
+        if (m != null)
+        {
+          w.WriteAsciiFixed(m.Name, 30);
+          w.Position += 30;
+        }
+        else
+          w.Position += 60;
+      }
+
+      _ = ns.Flush(length);
+    }
+
+    public static void SendPlayServerAck(NetState ns, ServerInfo si)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(11));
+      w.Write((byte)0x8C); // Packet ID
+
+      int addr = Utility.GetAddressValue(si.Address.Address);
+
+      w.Write((byte)addr);
+      w.Write((byte)(addr >> 8));
+      w.Write((byte)(addr >> 16));
+      w.Write((byte)(addr >> 24));
+
+      w.Write((short)si.Address.Port);
+      w.Write(ns.m_AuthID);
+
+      _ = ns.Flush(11);
+    }
   }
 }

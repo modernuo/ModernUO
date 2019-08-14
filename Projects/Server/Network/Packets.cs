@@ -22,10 +22,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
-using System.Threading;
-using Server.Accounting;
 using Server.Gumps;
 
 namespace Server.Network
@@ -308,92 +305,6 @@ namespace Server.Network
     }
   }
 
-  public sealed class CityInfo
-  {
-    public CityInfo(string city, string building, int description, int x, int y, int z, Map m)
-    {
-      City = city;
-      Building = building;
-      Description = description;
-      Location = new Point3D(x, y, z);
-      Map = m;
-    }
-
-    public CityInfo(string city, string building, int x, int y, int z, Map m) : this(city, building, 0, x, y, z, m)
-    {
-    }
-
-    public CityInfo(string city, string building, int description, int x, int y, int z) : this(city, building,
-      description, x, y, z, Map.Trammel)
-    {
-    }
-
-    public CityInfo(string city, string building, int x, int y, int z) : this(city, building, 0, x, y, z, Map.Trammel)
-    {
-    }
-
-    public string City{ get; set; }
-
-    public string Building{ get; set; }
-
-    public int Description{ get; set; }
-
-    public int X
-    {
-      get => Location.X;
-      set => Location.X = value;
-    }
-
-    public int Y
-    {
-      get => Location.Y;
-      set => Location.Y = value;
-    }
-
-    public int Z
-    {
-      get => Location.Z;
-      set => Location.Z = value;
-    }
-
-    public Point3D Location { get; set; }
-
-    public Map Map{ get; set; }
-  }
-
-  public sealed class CharacterListUpdate : Packet
-  {
-    public CharacterListUpdate(IAccount a) : base(0x86)
-    {
-      EnsureCapacity(4 + a.Length * 60);
-
-      int highSlot = -1;
-
-      for (int i = 0; i < a.Length; ++i)
-        if (a[i] != null)
-          highSlot = i;
-
-      int count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
-
-      m_Stream.Write((byte)count);
-
-      for (int i = 0; i < count; ++i)
-      {
-        Mobile m = a[i];
-
-        if (m != null)
-        {
-          m_Stream.WriteAsciiFixed(m.Name, 30);
-          m_Stream.Fill(30); // password
-        }
-        else
-        {
-          m_Stream.Fill(60);
-        }
-      }
-    }
-  }
-
   [Flags]
   public enum AffixType : byte
   {
@@ -426,25 +337,6 @@ namespace Server.Network
       m_Stream.WriteAsciiNull(affix);
       m_Stream.WriteBigUniNull(args);
     }
-  }
-
-  public sealed class ServerInfo
-  {
-    public ServerInfo(string name, int fullPercent, TimeZoneInfo tz, IPEndPoint address)
-    {
-      Name = name;
-      FullPercent = fullPercent;
-      TimeZone = tz.GetUtcOffset(DateTime.Now).Hours;
-      Address = address;
-    }
-
-    public string Name{ get; set; }
-
-    public int FullPercent{ get; set; }
-
-    public int TimeZone{ get; set; }
-
-    public IPEndPoint Address{ get; set; }
   }
 
   public sealed class FollowMessage : Packet
@@ -494,24 +386,6 @@ namespace Server.Network
       m_Stream.WriteAsciiFixed(unknown, unknown.Length);
       m_Stream.Write((short)(caption.Length + 1));
       m_Stream.WriteAsciiFixed(caption, caption.Length + 1);
-    }
-  }
-
-  public sealed class PlayServerAck : Packet
-  {
-    internal static int m_AuthID = -1;
-
-    public PlayServerAck(ServerInfo si) : base(0x8C, 11)
-    {
-      int addr = Utility.GetAddressValue(si.Address.Address);
-
-      m_Stream.Write((byte)addr);
-      m_Stream.Write((byte)(addr >> 8));
-      m_Stream.Write((byte)(addr >> 16));
-      m_Stream.Write((byte)(addr >> 24));
-
-      m_Stream.Write((short)si.Address.Port);
-      m_Stream.Write(m_AuthID);
     }
   }
 }

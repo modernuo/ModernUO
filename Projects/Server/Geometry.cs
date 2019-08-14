@@ -170,10 +170,7 @@ namespace Server
 
     public override bool Equals(object obj) => obj is IPoint3D p && m_X == p.X && m_Y == p.Y && m_Z == p.Z;
 
-    public override int GetHashCode()
-    {
-      return m_X ^ m_Y ^ m_Z;
-    }
+    public override int GetHashCode() => m_X ^ m_Y ^ m_Z;
 
     public static Point3D Parse(string value)
     {

@@ -536,7 +536,7 @@ namespace Server.Network
 
     public static void SendMobileIncomingNew(NetState ns, Mobile beholder, Mobile beheld)
     {
-      bool[] dupedLayers = ArrayPool<bool>.Shared.Rent(256);
+      Span<bool> dupedLayers = stackalloc bool[256];
 
       List<Item> eq = beheld.Items;
       int count = eq.Count;
@@ -563,7 +563,7 @@ namespace Server.Network
       w.Write((byte)beheld.Direction);
       w.Write((short)hue);
       w.Write((byte)beheld.GetPacketFlags());
-      w.Write((byte)Notoriety.Compute(beholder, beheld));
+      w.Write(Notoriety.Compute(beholder, beheld));
 
       for (int i = 0; i < eq.Count; ++i)
       {
@@ -615,8 +615,6 @@ namespace Server.Network
         w.Write((short)hue);
       }
 
-      ArrayPool<bool>.Shared.Return(dupedLayers, true);
-
       int bytesWritten = w.Position + 4;
       w.Position = 1;
       w.Write((ushort)bytesWritten);
@@ -626,7 +624,7 @@ namespace Server.Network
 
     public static void SendMobileIncomingSA(NetState ns, Mobile beholder, Mobile beheld)
     {
-      bool[] dupedLayers = ArrayPool<bool>.Shared.Rent(256);
+      Span<bool> dupedLayers = stackalloc bool[256];
 
       List<Item> eq = beheld.Items;
       int count = eq.Count;
@@ -653,7 +651,7 @@ namespace Server.Network
       w.Write((byte)beheld.Direction);
       w.Write((short)hue);
       w.Write((byte)beheld.GetPacketFlags());
-      w.Write((byte)Notoriety.Compute(beholder, beheld));
+      w.Write(Notoriety.Compute(beholder, beheld));
 
       for (int i = 0; i < eq.Count; ++i)
       {
@@ -729,8 +727,6 @@ namespace Server.Network
           w.Write((short)hue);
       }
 
-      ArrayPool<bool>.Shared.Return(dupedLayers, true);
-
       int bytesWritten = w.Position + 4;
       w.Position = 1;
       w.Write((ushort)bytesWritten);
@@ -740,7 +736,7 @@ namespace Server.Network
 
     public static void SendMobileIncomingOld(NetState ns, Mobile beholder, Mobile beheld)
     {
-      bool[] dupedLayers = ArrayPool<bool>.Shared.Rent(256);
+      Span<bool> dupedLayers = stackalloc bool[256];
 
       List<Item> eq = beheld.Items;
       int count = eq.Count;
@@ -767,7 +763,7 @@ namespace Server.Network
       w.Write((byte)beheld.Direction);
       w.Write((short)hue);
       w.Write((byte)beheld.GetOldPacketFlags());
-      w.Write((byte)Notoriety.Compute(beholder, beheld));
+      w.Write(Notoriety.Compute(beholder, beheld));
 
       for (int i = 0; i < eq.Count; ++i)
       {
@@ -842,8 +838,6 @@ namespace Server.Network
         if (writeHue)
           w.Write((short)hue);
       }
-
-      ArrayPool<bool>.Shared.Return(dupedLayers, true);
 
       int bytesWritten = w.Position + 4;
       w.Position = 1;

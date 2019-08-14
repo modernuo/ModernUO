@@ -2648,7 +2648,7 @@ namespace Server.Network
       {
         ServerInfo si = info[index];
 
-        state.m_AuthID = PlayServerAck.m_AuthID = GenerateAuthID(state);
+        state.m_AuthID = GenerateAuthID(state);
 
         state.SentFirstPacket = false;
         state.Send(new PlayServerAck(si));
