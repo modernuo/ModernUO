@@ -477,9 +477,11 @@ namespace Server
 
           Task.WaitAll(
             Task.Run(() => Mobile.ProcessDeltaQueue()),
-            Task.Run(() => Item.ProcessDeltaQueue()),
-            Task.Run(() => { Timer.Slice(); MessagePump.DoWork(); })
+            Task.Run(() => Item.ProcessDeltaQueue())
           );
+
+          Timer.Slice();
+          MessagePump.DoWork();
 
           NetState.ProcessDisposedQueue();
 
