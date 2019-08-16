@@ -308,7 +308,7 @@ namespace Server.Network
       ns.SendCompressed(span, 12);
     }
 
-    public static void SendPlaySounds(ICollection<NetState> coll, int soundID, IPoint3D target)
+    public static void SendPlaySounds(IEnumerable<NetState> coll, int soundID, IPoint3D target, Action<NetState> action = null)
     {
       Span<byte> span = stackalloc byte[12];
       SpanWriter w = new SpanWriter(span);
@@ -322,13 +322,7 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((short)target.Z);
 
-      Span<byte> compressedSpan = stackalloc byte[12];
-
-      Compression.Compress(span, 0, 12, compressedSpan, out int bytesWritten);
-      compressedSpan = compressedSpan.Slice(0, bytesWritten);
-
-      foreach (NetState ns in coll)
-        ns.Send(compressedSpan);
+      NetState.SendCompressed(coll, span, action);
     }
 
     public static void SendPlayRepeatingSound(NetState ns, int soundID, IPoint3D target)

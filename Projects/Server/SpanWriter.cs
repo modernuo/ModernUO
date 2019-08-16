@@ -29,23 +29,23 @@ namespace Server.Network
   public ref struct SpanWriter
   {
     /// <summary>
-    ///   Internal format buffer.
+    ///   Internal format Span.
     /// </summary>
-    private Span<byte> m_Buffer;
+    public Span<byte> Span { get; private set; }
 
     /// <summary>
     ///   Instantiates a new SpanWriter instance.
     /// </summary>
-    public SpanWriter(Span<byte> buffer)
+    public SpanWriter(Span<byte> span)
     {
-      m_Buffer = buffer;
+      Span = span;
       Position = 0;
     }
 
     /// <summary>
     ///   Gets the total stream length.
     /// </summary>
-    public int Length => m_Buffer.Length;
+    public int Length => Span.Length;
 
     /// <summary>
     ///   Gets or sets the current stream position.
@@ -57,7 +57,7 @@ namespace Server.Network
     /// </summary>
     public unsafe void Write(bool value)
     {
-      m_Buffer[Position++] = *(byte*)&value;
+      Span[Position++] = *(byte*)&value;
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace Server.Network
     /// </summary>
     public void Write(byte value)
     {
-      m_Buffer[Position++] = value;
+      Span[Position++] = value;
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ namespace Server.Network
     /// </summary>
     public void Write(sbyte value)
     {
-      m_Buffer[Position++] = (byte)value;
+      Span[Position++] = (byte)value;
     }
 
     /// <summary>
@@ -151,32 +151,17 @@ namespace Server.Network
     /// <summary>
     ///   Writes a sequence of bytes to the underlying stream
     /// </summary>
-    public void Write(byte[] buffer, int offset, int size)
+    public void Write(ReadOnlySpan<byte> input)
     {
-      if (size < Length - Position)
-      {
-        Console.WriteLine("Network: Attempted to Write buffer with not enough room");
-        return;
-      }
-
-      buffer.AsSpan().Slice(0, offset).CopyTo(m_Buffer.Slice(Position, size));
-      Position += size;
-    }
-
-    /// <summary>
-    ///   Writes a sequence of bytes to the underlying stream
-    /// </summary>
-    public void Write(Span<byte> buffer)
-    {
-      int size = buffer.Length;
+      int size = Span.Length;
 
       if (size < Length - Position)
       {
-        Console.WriteLine("Network: Attempted to Write buffer with not enough room");
+        Console.WriteLine("Network: Attempted to Write Span with not enough room");
         return;
       }
 
-      buffer.CopyTo(m_Buffer.Slice(Position, size));
+      input.CopyTo(Span.Slice(Position, size));
       Position += size;
     }
 
@@ -192,7 +177,7 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      Encoding.ASCII.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, value.Length)));
+      Encoding.ASCII.GetBytes(value, Span.Slice(Position, Math.Min(size, value.Length)));
       Position += size;
     }
 
@@ -207,7 +192,7 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      Encoding.ASCII.GetBytes(value, m_Buffer.Slice(Position, value.Length));
+      Encoding.ASCII.GetBytes(value, Span.Slice(Position, value.Length));
       Position += value.Length + 1;
     }
 
@@ -224,7 +209,7 @@ namespace Server.Network
 
       int length = value.Length * 2;
 
-      Encoding.Unicode.GetBytes(value, m_Buffer.Slice(Position, length));
+      Encoding.Unicode.GetBytes(value, Span.Slice(Position, length));
       Position += length + 2;
     }
 
@@ -243,7 +228,7 @@ namespace Server.Network
       int length = value.Length * 2;
       size *= 2;
 
-      Encoding.Unicode.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, length)));
+      Encoding.Unicode.GetBytes(value, Span.Slice(Position, Math.Min(size, length)));
       Position += size;
     }
 
@@ -260,7 +245,7 @@ namespace Server.Network
 
       int length = value.Length * 2;
 
-      Encoding.BigEndianUnicode.GetBytes(value, m_Buffer.Slice(Position, length));
+      Encoding.BigEndianUnicode.GetBytes(value, Span.Slice(Position, length));
       Position += length + 2;
     }
 
@@ -279,7 +264,7 @@ namespace Server.Network
       int length = value.Length * 2;
       size *= 2;
 
-      Encoding.BigEndianUnicode.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, length)));
+      Encoding.BigEndianUnicode.GetBytes(value, Span.Slice(Position, Math.Min(size, length)));
       Position += size;
     }
 
@@ -288,7 +273,7 @@ namespace Server.Network
     /// </summary>
     public void CopyTo(Span<byte> destination)
     {
-      m_Buffer.CopyTo(destination);
+      Span.CopyTo(destination);
     }
 
     /// <summary>
@@ -296,7 +281,7 @@ namespace Server.Network
     /// </summary>
     public void CopyTo(Span<byte> destination, int count)
     {
-      m_Buffer.Slice(0, count).CopyTo(destination);
+      Span.Slice(0, count).CopyTo(destination);
     }
   }
 }

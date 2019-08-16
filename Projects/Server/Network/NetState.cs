@@ -557,14 +557,6 @@ namespace Server.Network
         SendPipe.Writer.Complete();
     }
 
-    public void SendCompressed(ReadOnlySpan<byte> input, int count)
-    {
-      Span<byte> span = SendPipe.Writer.GetSpan(count);
-
-      Compression.Compress(input, count, span, out int bytesWritten);
-      _ = Flush(bytesWritten);
-    }
-
     public async Task Flush(int bytesWritten)
     {
       SendPipe.Writer.Advance(bytesWritten);
@@ -580,10 +572,34 @@ namespace Server.Network
       _ = Flush(input.Length);
     }
 
-    public void SendCompressed(ReadOnlySpan<byte> input, int count)
+    public void SendCompressed(ReadOnlySpan<byte> input)
     {
-      Compression.Compress(input, 0, count, SendPipe.Writer.GetSpan(count), out int bytesWritten);
+#if NOCOMPRESSION
+      Send(input.Slice(0, count));
+#else
+      Compression.Compress(input, 0, input.Length, SendPipe.Writer.GetSpan(input.Length), out int bytesWritten);
       _ = Flush(bytesWritten);
+#endif
+    }
+
+    public static void SendCompressed(IEnumerable<NetState> ie, ReadOnlySpan<byte> input, Action<NetState> action = null)
+    {
+#if !NOCOMPRESSION
+      Span<byte> span = stackalloc byte[input.Length];
+
+      Compression.Compress(input, 0, input.Length, span, out int bytesWritten);
+      span = span.Slice(0, bytesWritten);
+#endif
+
+      foreach (NetState ns in ie)
+      {
+        action?.Invoke(ns);
+#if NOCOMPRESSION
+        ns.Send(input);
+#else
+        ns.Send(span);
+#endif
+      }
     }
 
     private async Task ProcessSends()

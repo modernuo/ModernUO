@@ -65,7 +65,7 @@ namespace Server.Network
     {
       int length = ns.ExtendedSupportedFeatures ? 5 : 3;
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xB9); // Packet ID
       w.Write((short)length); // Length
 
@@ -83,7 +83,7 @@ namespace Server.Network
       else
         w.Write((ushort)flags);
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendCharacterList(NetState ns, IAccount a, CityInfo[] info)
@@ -97,7 +97,7 @@ namespace Server.Network
       int count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
       int length = 11 + count * 60 + info.Length * 89;
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xA9); // Packet ID
       w.Write((short)length); // Length
 
@@ -144,7 +144,7 @@ namespace Server.Network
 
       w.Write((short)-1);
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
 
       // TODO: Razor support?
     }
@@ -160,7 +160,7 @@ namespace Server.Network
       int count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
       int length = 9 + count * 60 + info.Length * 63;
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xA9); // Packet ID
       w.Write((short)length); // Length
 
@@ -199,7 +199,7 @@ namespace Server.Network
 
       w.Write((int)flags);
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
 
       // TODO: Razor support?
     }
@@ -215,7 +215,8 @@ namespace Server.Network
       int count = Math.Max(Math.Max(highSlot + 1, a.Limit), 5);
 
       int length = 4 + count * 60;
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x86); // Packet ID
       w.Write((short)length); // Length
 
@@ -234,7 +235,7 @@ namespace Server.Network
           w.Position += 60;
       }
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendPlayServerAck(NetState ns, ServerInfo si)
