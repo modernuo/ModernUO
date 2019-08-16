@@ -7,19 +7,19 @@ namespace Server.Network
   {
     public static void SendDisplayContainer(NetState ns, Serial s, int gumpid)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
+      SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0x24); // Packet ID
 
 
       w.Write(s);
       w.Write((short)gumpid);
 
-      _ = ns.Flush(7);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendDisplayContainerHS(NetState ns, Serial s, int gumpid)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x24); // Packet ID
 
 
@@ -27,12 +27,12 @@ namespace Server.Network
       w.Write((short)gumpid);
       w.Write((short)0x7D);
 
-      _ = ns.Flush(9);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendContainerContentUpdate(NetState ns, Item item)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(20));
+      SpanWriter w = new SpanWriter(stackalloc byte[20]);
       w.Write((byte)0x25); // Packet ID
 
       Serial parentSerial;
@@ -54,12 +54,12 @@ namespace Server.Network
       w.Write(parentSerial);
       w.Write((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
 
-      _ = ns.Flush(20);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendContainerContentUpdate6017(NetState ns, Item item)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(21));
+      SpanWriter w = new SpanWriter(stackalloc byte[21]);
       w.Write((byte)0x25); // Packet ID
 
       Serial parentSerial;
@@ -82,12 +82,12 @@ namespace Server.Network
       w.Write(parentSerial);
       w.Write((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
 
-      _ = ns.Flush(21);
+      ns.SendCompressed(w.Span);
     }
 
     public static void ContainerContent(NetState ns, Mobile beholder, Item beheld)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(5 + beheld.Items.Count * 19));
+      SpanWriter w = new SpanWriter(stackalloc byte[5 + beheld.Items.Count * 19]);
       w.Write((byte)0x3C); // Packet ID
       w.Position += 4; // Dynamic Length, Item Count
 
@@ -122,12 +122,12 @@ namespace Server.Network
       w.Write((ushort)bytesWritten);
       w.Write(written);
 
-      _ = ns.Flush(bytesWritten);
+      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
     }
 
     public static void ContainerContent6017(NetState ns, Mobile beholder, Item beheld)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(5 + beheld.Items.Count * 20));
+      SpanWriter w = new SpanWriter(stackalloc byte[5 + beheld.Items.Count * 20]);
       w.Write((byte)0x3C); // Packet ID
       w.Position += 4; // Dynamic Length, Item Count
 
@@ -163,7 +163,7 @@ namespace Server.Network
       w.Write((ushort)bytesWritten);
       w.Write(written);
 
-      _ = ns.Flush(bytesWritten);
+      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
     }
   }
 }
