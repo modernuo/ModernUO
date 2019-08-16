@@ -33,8 +33,7 @@ namespace Server.Network
         };
 
 #if NOCOMPRESSION
-        m_CancelArrowPacket = new byte[6];
-        input.CopyTo(CancelArrowPacket);
+        m_CancelArrowPacket = input.ToArray();
 #else
         Span<byte> compressedSpan = stackalloc byte[6];
         Compression.Compress(input, 0, 6, compressedSpan, out int bytesWritten);
