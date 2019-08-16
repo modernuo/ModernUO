@@ -22,13 +22,15 @@ namespace Server.Network
     {
       if (m_CancelArrowPacket == null)
       {
-        Span<byte> input = stackalloc byte[6];
-
-        input[0] = 0xBA; // Packet ID
-        input[2] = 0xFF;
-        input[3] = 0xFF;
-        input[4] = 0xFF;
-        input[5] = 0xFF;
+        Span<byte> input = stackalloc byte[]
+        {
+          0xBA, // Packet ID
+          0x00,
+          0xFF,
+          0xFF,
+          0xFF,
+          0xFF
+        };
 
 #if NOCOMPRESSION
         m_CancelArrowPacket = new byte[6];

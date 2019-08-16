@@ -41,76 +41,76 @@ namespace Server.Network
 
     public static void SendMobileHits(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA1); // Packet ID
 
       w.Write(m.Serial);
       w.Write((short)m.HitsMax);
       w.Write((short)m.Hits);
 
-      _ = ns.Flush(9);
+      ns.Send(w.Span);
     }
 
     public static void SendNormalizedMobileHits(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA1); // Packet ID
 
       w.Write(m.Serial);
       AttributeNormalizer.Write(w, m.Hits, m.HitsMax);
 
-      _ = ns.Flush(9);
+      ns.Send(w.Span);
     }
 
     public static void SendMobileMana(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA2); // Packet ID
 
       w.Write(m.Serial);
       w.Write((short)m.ManaMax);
       w.Write((short)m.Mana);
 
-      _ = ns.Flush(9);
+      ns.Send(w.Span);
     }
 
     public static void SendNormalizedMobileMana(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA2); // Packet ID
 
       w.Write(m.Serial);
       AttributeNormalizer.Write(w, m.Mana, m.ManaMax);
 
-      _ = ns.Flush(9);
+      ns.Send(w.Span);
     }
 
     public static void SendMobileStam(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA3); // Packet ID
 
       w.Write(m.Serial);
       w.Write((short)m.StamMax);
       w.Write((short)m.Stam);
 
-      _ = ns.Flush(9);
+      ns.Send(w.Span);
     }
 
     public static void SendNormalizedMobileStam(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA3); // Packet ID
 
       w.Write(m.Serial);
       AttributeNormalizer.Write(w, m.Stam, m.StamMax);
 
-      _ = ns.Flush(9);
+      ns.Send(w.Span);
     }
 
     public static void SendMobileAttributes(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(17));
+      SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x2D); // Packet ID
 
       w.Write(m.Serial);
@@ -124,12 +124,12 @@ namespace Server.Network
       w.Write((short)m.StamMax);
       w.Write((short)m.Stam);
 
-      _ = ns.Flush(17);
+      ns.Send(w.Span);
     }
 
     public static void SendNormalizedMobileAttributes(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(17));
+      SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x2D); // Packet ID
 
       w.Write(m.Serial);
@@ -138,7 +138,7 @@ namespace Server.Network
       AttributeNormalizer.Write(w, m.Mana, m.ManaMax);
       AttributeNormalizer.Write(w, m.Stam, m.StamMax);
 
-      _ = ns.Flush(17);
+      ns.Send(w.Span);
     }
   }
 }
