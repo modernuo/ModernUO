@@ -254,5 +254,31 @@ namespace Server.Network
 
       _ = ns.Flush(11);
     }
+
+    public static void AccountLoginAck(NetState ns, ServerInfo[] info)
+    {
+      int length = 6 + info.Length * 40;
+
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      w.Write((byte)0xA8); // Packet ID
+      w.Write((short)length);
+
+      w.Write((byte)0x5D); // Unknown
+
+      w.Write((ushort)info.Length);
+
+      for (int i = 0; i < info.Length; ++i)
+      {
+        ServerInfo si = info[i];
+
+        w.Write((ushort)i);
+        w.WriteAsciiFixed(si.Name, 32);
+        w.Write((byte)si.FullPercent);
+        w.Write((sbyte)si.TimeZone);
+        w.Write(Utility.GetAddressValue(si.Address.Address));
+      }
+
+      _ = ns.Flush(length);
+    }
   }
 }

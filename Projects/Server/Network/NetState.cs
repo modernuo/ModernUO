@@ -23,6 +23,7 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.IO.Pipelines;
 using System.Net;
 using System.Net.Sockets;
@@ -274,8 +275,6 @@ namespace Server.Network
 
     public Socket Socket { get; private set; }
 
-    public bool CompressionEnabled { get; set; }
-
     public int Sequence { get; set; }
 
     public List<Gump> Gumps { get; private set; }
@@ -476,7 +475,6 @@ namespace Server.Network
     }
 
     public Pipe RecvdPipe { get; private set; }
-
     public Pipe SendPipe { get; private set; }
 
     private async Task Start(MessagePump pump)
@@ -485,7 +483,7 @@ namespace Server.Network
       SendPipe = new Pipe();
       Running = true;
 
-      await Task.WhenAll(ProcessSends(), ProcessRecvs(), HandlePackets(pump));
+      await Task.WhenAll(HandlePackets(pump), ProcessSends(), ProcessRecvs());
     }
 
     private async Task ProcessRecvs()
@@ -559,6 +557,14 @@ namespace Server.Network
         SendPipe.Writer.Complete();
     }
 
+    public void SendCompressed(ReadOnlySpan<byte> input, int count)
+    {
+      Span<byte> span = SendPipe.Writer.GetSpan(count);
+
+      Compression.Compress(input, count, span, out int bytesWritten);
+      _ = Flush(bytesWritten);
+    }
+
     public async Task Flush(int bytesWritten)
     {
       SendPipe.Writer.Advance(bytesWritten);
@@ -582,13 +588,6 @@ namespace Server.Network
         if (!SequenceMarshal.TryGetReadOnlyMemory(seq, out ReadOnlyMemory<byte> memory))
           break;
 
-        //PacketSendProfile prof = null;
-
-        //if (Core.Profiling)
-        //  prof = PacketSendProfile.Acquire(p.GetType());
-
-        //prof?.Start();
-
         try
         {
           int bytesWritten = await Socket.SendAsync(memory, SocketFlags.None);
@@ -602,8 +601,6 @@ namespace Server.Network
           Dispose();
           break;
         }
-
-        //prof?.Finish(seq.Length);
 
         if (result.IsCompleted || result.IsCanceled)
           break;

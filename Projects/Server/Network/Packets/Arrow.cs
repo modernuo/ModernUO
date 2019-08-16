@@ -6,14 +6,15 @@ namespace Server.Network
   {
     public static void SendSetArrow(NetState ns, short x, short y)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(6));
+      Span<byte> span = stackalloc byte[6];
+      SpanWriter w = new SpanWriter(span);
       w.Write((byte)0xBA); // Packet ID
 
       w.Write((byte)1);
       w.Write(x);
       w.Write(y);
 
-      _ = ns.Flush(6);
+      ns.SendCompressed(span, 6);
     }
 
     public static void SendCancelArrow(NetState ns)

@@ -339,38 +339,6 @@ namespace Server.Network
     }
   }
 
-  public sealed class FollowMessage : Packet
-  {
-    public FollowMessage(Serial serial1, Serial serial2) : base(0x15, 9)
-    {
-      m_Stream.Write(serial1);
-      m_Stream.Write(serial2);
-    }
-  }
-
-  public sealed class AccountLoginAck : Packet
-  {
-    public AccountLoginAck(ServerInfo[] info) : base(0xA8)
-    {
-      EnsureCapacity(6 + info.Length * 40);
-
-      m_Stream.Write((byte)0x5D); // Unknown
-
-      m_Stream.Write((ushort)info.Length);
-
-      for (int i = 0; i < info.Length; ++i)
-      {
-        ServerInfo si = info[i];
-
-        m_Stream.Write((ushort)i);
-        m_Stream.WriteAsciiFixed(si.Name, 32);
-        m_Stream.Write((byte)si.FullPercent);
-        m_Stream.Write((sbyte)si.TimeZone);
-        m_Stream.Write(Utility.GetAddressValue(si.Address.Address));
-      }
-    }
-  }
-
   public sealed class DisplaySignGump : Packet
   {
     public DisplaySignGump(Serial serial, int gumpID, string unknown, string caption) : base(0x8B)

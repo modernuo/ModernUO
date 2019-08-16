@@ -104,6 +104,95 @@ namespace Server.Network
       }
     }
 
+    public static unsafe void Compress(ReadOnlySpan<byte> input, int count, Span<byte> output, out int length)
+    {
+      if (input == null) throw new ArgumentNullException(nameof(input));
+
+      int offset = 0;
+
+      if (count < 0 || count > input.Length) throw new ArgumentOutOfRangeException(nameof(count));
+      if (input.Length - offset < count) throw new ArgumentException();
+
+      length = 0;
+
+      if (count > DefiniteOverflow) return;
+
+      int bitCount = 0;
+      int bitValue = 0;
+
+      fixed (int* pTable = _huffmanTable)
+      {
+        int* pEntry;
+
+        fixed (byte* pInputBuffer = input)
+        {
+          byte* pInput = pInputBuffer + offset, pInputEnd = pInput + count;
+
+          fixed (byte* pOutputBuffer = output)
+          {
+            byte* pOutput = pOutputBuffer, pOutputEnd = pOutput + BufferSize;
+
+            while (pInput < pInputEnd)
+            {
+              pEntry = &pTable[*pInput++ << 1];
+
+              bitCount += pEntry[CountIndex];
+
+              bitValue <<= pEntry[CountIndex];
+              bitValue |= pEntry[ValueIndex];
+
+              while (bitCount >= 8)
+              {
+                bitCount -= 8;
+
+                if (pOutput < pOutputEnd)
+                {
+                  *pOutput++ = (byte)(bitValue >> bitCount);
+                }
+                else
+                {
+                  length = 0;
+                  return;
+                }
+              }
+            }
+
+            // terminal code
+            pEntry = &pTable[0x200];
+
+            bitCount += pEntry[CountIndex];
+
+            bitValue <<= pEntry[CountIndex];
+            bitValue |= pEntry[ValueIndex];
+
+            // align on byte boundary
+            if ((bitCount & 7) != 0)
+            {
+              bitValue <<= 8 - (bitCount & 7);
+              bitCount += 8 - (bitCount & 7);
+            }
+
+            while (bitCount >= 8)
+            {
+              bitCount -= 8;
+
+              if (pOutput < pOutputEnd)
+              {
+                *pOutput++ = (byte)(bitValue >> bitCount);
+              }
+              else
+              {
+                length = 0;
+                return;
+              }
+            }
+
+            length = (int)(pOutput - pOutputBuffer);
+          }
+        }
+      }
+    }
+
     public static unsafe void Compress(byte[] input, int offset, int count, byte[] output, ref int length)
     {
       if (input == null) throw new ArgumentNullException(nameof(input));

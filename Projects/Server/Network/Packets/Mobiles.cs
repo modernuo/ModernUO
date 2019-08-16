@@ -845,5 +845,16 @@ namespace Server.Network
 
       _ = ns.Flush(bytesWritten);
     }
+
+    public static void SendFollowMessage(NetState ns, Serial s1, Serial s2) : base(0x15, 9)
+    {
+      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      w.Write((byte)0x15); // Packet ID
+
+      w.Write(s1);
+      w.Write(s2);
+
+      _ = ns.Flush(9);
+    }
   }
 }
