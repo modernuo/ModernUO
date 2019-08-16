@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Server.Network
 {
@@ -293,7 +294,8 @@ namespace Server.Network
 
     public static void SendPlaySound(NetState ns, int soundID, IPoint3D target)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
+      Span<byte> span = stackalloc byte[12];
+      SpanWriter w = new SpanWriter(span);
       w.Write((byte)0x54); // Packet ID
 
       w.Write((byte)1); // flags
@@ -303,7 +305,30 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((short)target.Z);
 
-      _ = ns.Flush(12);
+      ns.SendCompressed(span, 12);
+    }
+
+    public static void SendPlaySounds(ICollection<NetState> coll, int soundID, IPoint3D target)
+    {
+      Span<byte> span = stackalloc byte[12];
+      SpanWriter w = new SpanWriter(span);
+
+      w.Write((byte)0x54); // Packet ID
+
+      w.Write((byte)1); // flags
+      w.Write((short)soundID);
+      w.Position++; // volume?
+      w.Write((short)target.X);
+      w.Write((short)target.Y);
+      w.Write((short)target.Z);
+
+      Span<byte> compressedSpan = stackalloc byte[12];
+
+      Compression.Compress(span, 0, 12, compressedSpan, out int bytesWritten);
+      compressedSpan = compressedSpan.Slice(0, bytesWritten);
+
+      foreach (NetState ns in coll)
+        ns.Send(compressedSpan);
     }
 
     public static void SendPlayRepeatingSound(NetState ns, int soundID, IPoint3D target)

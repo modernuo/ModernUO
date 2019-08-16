@@ -104,12 +104,11 @@ namespace Server.Network
       }
     }
 
-    public static unsafe void Compress(ReadOnlySpan<byte> input, int count, Span<byte> output, out int length)
+    public static unsafe void Compress(ReadOnlySpan<byte> input, int offset, int count, Span<byte> output, out int length)
     {
       if (input == null) throw new ArgumentNullException(nameof(input));
 
-      int offset = 0;
-
+      if (offset < 0 || offset >= input.Length) throw new ArgumentOutOfRangeException(nameof(offset));
       if (count < 0 || count > input.Length) throw new ArgumentOutOfRangeException(nameof(count));
       if (input.Length - offset < count) throw new ArgumentException();
 

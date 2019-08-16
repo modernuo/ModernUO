@@ -282,5 +282,21 @@ namespace Server.Network
       Encoding.BigEndianUnicode.GetBytes(value, m_Buffer.Slice(Position, Math.Min(size, length)));
       Position += size;
     }
+
+    /// <summary>
+    ///   Copies the span to the destination.
+    /// </summary>
+    public void CopyTo(Span<byte> destination)
+    {
+      m_Buffer.CopyTo(destination);
+    }
+
+    /// <summary>
+    ///   Copies the span to the destination.
+    /// </summary>
+    public void CopyTo(Span<byte> destination, int count)
+    {
+      m_Buffer.Slice(0, count).CopyTo(destination);
+    }
   }
 }

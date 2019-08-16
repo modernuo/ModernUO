@@ -574,6 +574,18 @@ namespace Server.Network
         SendPipe.Writer.Complete();
     }
 
+    public void Send(ReadOnlySpan<byte> input)
+    {
+      input.CopyTo(SendPipe.Writer.GetSpan(input.Length));
+      _ = Flush(input.Length);
+    }
+
+    public void SendCompressed(ReadOnlySpan<byte> input, int count)
+    {
+      Compression.Compress(input, 0, count, SendPipe.Writer.GetSpan(count), out int bytesWritten);
+      _ = Flush(bytesWritten);
+    }
+
     private async Task ProcessSends()
     {
       PipeReader pr = SendPipe.Reader;
