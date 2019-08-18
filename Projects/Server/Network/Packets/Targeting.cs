@@ -7,7 +7,7 @@ namespace Server.Network
   {
     public static void SendMultiTargetReqHS(NetState ns, MultiTarget t)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(30));
+      SpanWriter w = new SpanWriter(stackalloc byte[30]);
       w.Write((byte)0x99); // Packet ID
 
       w.Write(t.AllowGround);
@@ -20,12 +20,12 @@ namespace Server.Network
       w.Write((short)t.Offset.Z);
       // 4 bytes unknown?
 
-      _ = ns.Flush(30);
+      ns.Send(w.Span);
     }
 
     public static void SendMultiTargetReq(NetState ns, MultiTarget t)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(26));
+      SpanWriter w = new SpanWriter(stackalloc byte[26]);
       w.Write((byte)0x99); // Packet ID
 
       w.Write(t.AllowGround);
@@ -37,28 +37,33 @@ namespace Server.Network
       w.Write((short)t.Offset.Y);
       w.Write((short)t.Offset.Z);
 
-      _ = ns.Flush(26);
+      ns.Send(w.Span);
     }
+
+    private static byte[] m_TargetReqPacket;
 
     public static void SendTargetReq(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(19);
-      span[0] = 0x6C; // Packet ID
-      span[6] = 0x03;
+      if (m_TargetReqPacket == null)
+      {
+        m_TargetReqPacket = new byte[19];
+        m_TargetReqPacket[0] = 0x6C; // Packet ID
+        m_TargetReqPacket[6] = 0x03; // ?
+      }
 
-      _ = ns.Flush(19);
+      ns.Send(m_TargetReqPacket);
     }
 
     public static void SendCancelTarget(NetState ns, Target t)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(19));
+      SpanWriter w = new SpanWriter(stackalloc byte[19]);
       w.Write((byte)0x6C); // Packet ID
 
       w.Write(t.AllowGround);
       w.Write(t.TargetID);
       w.Write((byte)t.Flags);
 
-      _ = ns.Flush(19);
+      ns.Send(w.Span);
     }
   }
 }

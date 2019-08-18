@@ -13,7 +13,7 @@ namespace Server.Network
       w.Write(x);
       w.Write(y);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     private static byte[] m_CancelArrowPacket;
@@ -22,17 +22,15 @@ namespace Server.Network
     {
       if (m_CancelArrowPacket == null)
       {
-        ReadOnlySpan<byte> input = stackalloc byte[]
-        {
-          0xBA, // Packet ID
-          0x00,
-          0xFF,
-          0xFF,
-          0xFF,
-          0xFF
-        };
-
-        m_CancelArrowPacket = CreateStaticPacket(input, true);
+        m_CancelArrowPacket = new byte[]
+          {
+            0xBA, // Packet ID
+            0x00,
+            0xFF,
+            0xFF,
+            0xFF,
+            0xFF
+          };
       }
 
       ns.Send(m_CancelArrowPacket);
@@ -48,7 +46,7 @@ namespace Server.Network
       w.Write(y);
       w.Write(s);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendCancelArrowHS(NetState ns, Serial s, short x, short y)
@@ -61,7 +59,7 @@ namespace Server.Network
       w.Write(y);
       w.Write(s);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
   }
 }

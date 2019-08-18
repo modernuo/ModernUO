@@ -44,14 +44,14 @@ namespace Server.Network
       byte[] packet = m_SeasonChangePackets[season][playSound];
       if (packet == null)
       {
-        ReadOnlySpan<byte> input = stackalloc byte[]
+        packet = new byte[]
         {
           0xBC, // Packet ID
           season,
           playSound
         };
 
-        m_SeasonChangePackets[season][playSound] = packet = CreateStaticPacket(input, true);
+        m_SeasonChangePackets[season][playSound] = packet;
       }
 
       ns.Send(packet);
@@ -69,7 +69,7 @@ namespace Server.Network
         (byte)(map?.MapID ?? 0)
       };
 
-      ns.SendCompressed(span);
+      ns.Send(span);
     }
   }
 }

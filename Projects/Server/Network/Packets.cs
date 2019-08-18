@@ -30,22 +30,7 @@ namespace Server.Network
   public static partial class Packets
   {
     public static readonly int MaxPacketSize = 0x10000;
-
-    public static byte[] CreateStaticPacket(ReadOnlySpan<byte> input, bool compress)
-    {
-#if NOCOMPRESSION
-      return input.ToArray();
-#else
-      if (compress)
-      {
-        Span<byte> compressedSpan = stackalloc byte[input.Length];
-        Compression.HuffmanCompression(input, 0, input.Length, compressedSpan, out int bytesWritten);
-        return compressedSpan.Slice(0, bytesWritten).ToArray();
-      }
-
-      return input.ToArray();
-#endif
-    }
+    public static bool UseCompression { get; set; } = true;
   }
 
   public sealed class DisplayGumpPacked : Packet, IGumpWriter

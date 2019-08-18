@@ -60,7 +60,7 @@ namespace Server.Network
       w.Write((byte)layer);
       w.Write((short)unknown);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendHuedEffect(NetState ns, EffectType type, Serial from, Serial to, int itemID,
@@ -90,7 +90,7 @@ namespace Server.Network
       w.Write(hue);
       w.Write(renderMode);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendScreenEffect(NetState ns, ScreenEffectType screen)
@@ -102,7 +102,7 @@ namespace Server.Network
       w.Position += 8;
       w.Write((short)screen);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendScreenOldEffect(NetState ns, ScreenEffectType screen)
@@ -114,7 +114,7 @@ namespace Server.Network
       w.Position += 8;
       w.Write((short)screen);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendBoltEffect(NetState ns, IEntity target)
@@ -132,7 +132,7 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((sbyte)target.Z);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendOldBoltEffect(NetState ns, IEntity target)
@@ -150,7 +150,7 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((sbyte)target.Z);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendEffect(NetState ns, EffectType type, Serial from, Serial to, int itemID,
@@ -177,7 +177,7 @@ namespace Server.Network
       w.Write(fixedDirection);
       w.Write(explode);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendOldEffect(NetState ns, EffectType type, Serial from, Serial to, int itemID,
@@ -204,7 +204,7 @@ namespace Server.Network
       w.Write(fixedDirection);
       w.Write(explode);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendLocationParticleEffect(NetState ns, IEntity e, int itemID, int speed, int duration, int hue, int renderMode,

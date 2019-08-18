@@ -30,7 +30,7 @@ namespace Server.Network
       w.Write(typeId);
       w.Write(buttonId);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
   }
 }

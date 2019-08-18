@@ -8,50 +8,69 @@ namespace Server.Network
     public static void SendObjectHelpResponse(NetState ns, Serial e, string text)
     {
       int length = 9 + text.Length * 2;
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan());
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xB7); // Extended Packet ID
       w.Write((ushort)length); // Length
 
       w.Write(e);
       w.WriteBigUniNull(text);
 
-      _ = ns.Flush(length);
+      ns.Send(w.Span);
+    }
+
+    private static byte[] m_DefaultChangeUpdateRangePacket;
+
+    public static void SendChangeUpdateRange(NetState ns)
+    {
+      if (m_DefaultChangeUpdateRangePacket == null)
+      {
+        m_DefaultChangeUpdateRangePacket = new byte[]
+        {
+          0xC8, // Packet ID
+          // TODO: Change to a configuration
+          18, // default range
+        };
+      }
+
+      ns.Send(m_DefaultChangeUpdateRangePacket);
     }
 
     public static void SendChangeUpdateRange(NetState ns, byte range)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0xC8; // Packet ID
-      span[1] = range;
+      ReadOnlySpan<byte> span = stackalloc byte[]
+      {
+        0xC8, // Packet ID
+        range,
+      };
 
-      _ = ns.Flush(2);
+      ns.Send(span);
     }
 
     public static void SendChangeCombatant(NetState ns, Serial combatant)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(5));
+      SpanWriter w = new SpanWriter(stackalloc byte[5]);
       w.Write((byte)0xAA); // Packet ID
 
       w.Write(combatant);
 
-      _ = ns.Flush(5);
+      ns.Send(w.Span);
     }
 
     public static void SendDisplayHuePicker(NetState ns, Serial s, int itemId)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x95); // Packet ID
 
       w.Write(s);
       w.Position += 2; // w.Write((short)0);
       w.Write((short)itemId);
 
-      _ = ns.Flush(9);
+      ns.Send(w.Span);
     }
 
     public static void SendUnicodePrompt(NetState ns, Serial player, Serial message)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(21));
+      SpanWriter w = new SpanWriter(stackalloc byte[21]);
       w.Write((byte)0xC2); // Packet ID
       w.Write((short)21); // Length
 
@@ -61,64 +80,97 @@ namespace Server.Network
       // w.Position += 4; w.Write(0);
       // w.Position += 2; w.Write((short)0);
 
-      _ = ns.Flush(21);
+      ns.Send(w.Span);
     }
 
     public static void SendDeathStatus_Dead(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0x2C; // Packet ID
+      ReadOnlySpan<byte> input = stackalloc byte[]
+      {
+        0x2C, // Packet ID
+        0x00
+      };
 
-      _ = ns.Flush(2);
+      ns.Send(input);
     }
 
     public static void SendDeathStatus_Alive(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0x2C; // Packet ID
-      span[1] = 2; // Why not 1?
+      ReadOnlySpan<byte> input = stackalloc byte[]
+      {
+        0x2C, // Packet ID
+        0x02, // Why not 1?
+      };
 
-      _ = ns.Flush(2);
+      ns.Send(input);
     }
+
+    private static byte[][] m_SpeedControlPackets = new byte[3][];
 
     public static void SendSpeedControlDisabled(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(6);
+      byte[] packet = m_SpeedControlPackets[0];
 
-      span[0] = 0xBF; // Packet ID
-      span[2] = 0x06; // Length
-      span[4] = 0x26;
+      if (packet == null)
+      {
+        packet = new byte[]
+        {
+          0xBF, // Extended Packet ID
+          0x00,
+          0x06, // Length
+          0x26,
+          0x00, // Disabled
+        };
 
-      _ = ns.Flush(6);
+        m_SpeedControlPackets[0] = packet;
+      }
+
+      ns.Send(packet);
     }
 
     public static void SendSpeedControlMount(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(6);
+      byte[] packet = m_SpeedControlPackets[1];
+      if (packet == null)
+      {
+        packet = new byte[]
+        {
+          0xBF, // Extended Packet ID
+          0x00,
+          0x06, // Length
+          0x26,
+          0x01, // Mount
+        };
 
-      span[0] = 0xBF; // Packet ID
-      span[2] = 0x06; // Length
-      span[4] = 0x26;
-      span[5] = 1; // Mount
+        m_SpeedControlPackets[1] = packet;
+      }
 
-      _ = ns.Flush(6);
+      ns.Send(packet);
     }
 
     public static void SendSpeedControlWalk(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(6);
+      byte[] packet = m_SpeedControlPackets[2];
+      if (packet == null)
+      {
+        packet = new byte[]
+        {
+          0xBF, // Extended Packet ID
+          0x00,
+          0x06, // Length
+          0x26,
+          0x02, // Walk
+        };
 
-      span[0] = 0xBF; // Packet ID
-      span[2] = 0x06; // Length
-      span[4] = 0x26;
-      span[5] = 2; // Walk
+        m_SpeedControlPackets[2] = packet;
+      }
 
-      _ = ns.Flush(6);
+      ns.Send(packet);
     }
 
     public static void SendToggleSpecialAbility(NetState ns, short ability, bool active)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8));
+      SpanWriter w = new SpanWriter(stackalloc byte[8]);
       w.Write((byte)0xBF); // Packet ID
       w.Write((short)8); // Length
 
@@ -126,91 +178,105 @@ namespace Server.Network
       w.Write(ability);
       w.Write(active);
 
-      _ = ns.Flush(8);
+      ns.Send(w.Span);
     }
 
     public static void SendGlobalLightLevel(NetState ns, sbyte level)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0x4F; // Packet ID
-      span[1] = (byte)level;
+      ReadOnlySpan<byte> span = stackalloc byte[]
+      {
+        0x4F, // Packet ID
+        (byte)level
+      };
 
-      _ = ns.Flush(2);
+      ns.Send(span);
     }
 
     public static void SendLogoutAck(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0xD1; // Packet ID
-      span[1] = 0x01;
+      ReadOnlySpan<byte> span = stackalloc byte[]
+      {
+        0xD1, // Packet ID
+        0x01
+      };
 
-      _ = ns.Flush(2);
+      ns.Send(span);
     }
 
-    public static void SendWeather(NetState ns, int type, int density, int temperature)
+    public static void SendWeather(NetState ns, byte type, byte density, byte temperature)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(4);
-      span[0] = 0x65; // Packet ID
-      span[1] = (byte)type;
-      span[2] = (byte)density;
-      span[3] = (byte)temperature;
+      ReadOnlySpan<byte> span = stackalloc byte[]
+      {
+        0x65, // Packet ID
+        type,
+        density,
+        temperature,
+      };
 
-      _ = ns.Flush(4);
+      ns.Send(span);
     }
 
     public static void SendPlayerMove(NetState ns, Direction d)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0x97; // Packet ID
-      span[1] = (byte)d;
+      ReadOnlySpan<byte> span = stackalloc byte[]
+      {
+        0x97, // Packet ID
+        (byte)d
+      };
 
-      _ = ns.Flush(2);
+      ns.Send(span);
     }
 
     public static void SendClientVersionReq(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(3);
-      span[0] = 0xBD; // Packet ID
-      span[2] = 0x03;
+      ReadOnlySpan<byte> span = stackalloc byte[]
+      {
+        0xBD, // Packet ID
+        0x03
+      };
 
-      _ = ns.Flush(3);
+      ns.Send(span);
     }
 
     public static void SendInWarMode(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(5);
-      span[0] = 0x72; // Packet ID
-      span[1] = 0x01; // War mode
-      span[3] = 0x32; // ?
+      ReadOnlySpan<byte> span = stackalloc byte[]
+      {
+        0x72, // Packet ID
+        0x01, // War mode
+        0x00,
+        0x32 // ?
+      };
 
-      _ = ns.Flush(5);
+      ns.Send(span);
     }
 
     public static void SendInPeaceMode(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(5);
-      span[0] = 0x72; // Packet ID
-      span[3] = 0x32; // ?
+      ReadOnlySpan<byte> span = stackalloc byte[]
+      {
+        0x72, // Packet ID
+        0x00, // Peace mode
+        0x00,
+        0x32 // ?
+      };
 
-      _ = ns.Flush(5);
+      ns.Send(span);
     }
 
     public static void SendRemoveEntity(NetState ns, Serial entity)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(5);
-      span[0] = 0x1D; // Packet ID
+      SpanWriter w = new SpanWriter(stackalloc byte[5]);
+      w.Write((byte)0x1D); // Packet ID
 
-      span[1] = (byte)(entity >> 24);
-      span[2] = (byte)(entity >> 16);
-      span[3] = (byte)(entity >> 8);
-      span[4] = (byte)entity;
+      w.Write(entity);
 
-      _ = ns.Flush(5);
+      ns.Send(w.Span);
     }
 
     public static void SendServerChange(NetState ns, Mobile m, Map map)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(16));
+      SpanWriter w = new SpanWriter(stackalloc byte[16]);
       w.Write((byte)0x76); // Packet ID
 
       w.Write((short)m.X);
@@ -220,14 +286,14 @@ namespace Server.Network
       w.Write((short)map.Width);
       w.Write((short)map.Height);
 
-      _ = ns.Flush(16);
+      ns.Send(w.Span);
     }
 
     public static void SendSkillsUpdate(NetState ns, Skills skills)
     {
       int length = 6 + skills.Length * 9;
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3A); // Packet ID
       w.Write((short)length); // Length
 
@@ -252,12 +318,12 @@ namespace Server.Network
         w.Write((ushort)s.CapFixedPoint);
       }
 
-        _ = ns.Flush(length);
+      ns.Send(w.Span);
     }
 
     public static void SendSkillChange(NetState ns, Skill skill)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(13));
+      SpanWriter w = new SpanWriter(stackalloc byte[13]);
       w.Write((byte)0x3A); // Packet ID
       w.Write((short)13); // Length
 
@@ -277,25 +343,24 @@ namespace Server.Network
       w.Write((byte)skill.Lock);
       w.Write((ushort)skill.CapFixedPoint);
 
-      _ = ns.Flush(13);
+      ns.Send(w.Span);
     }
 
     public static void SendLaunchBrowser(NetState ns, string url)
     {
       int length = 4 + url?.Length ?? 0;
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xA5); // Packet ID
       w.Write((short)length); // Length
 
       w.WriteAsciiNull(url ?? "");
 
-      _ = ns.Flush(length);
+      ns.Send(w.Span);
     }
 
     public static void SendPlaySound(NetState ns, int soundID, IPoint3D target)
     {
-      Span<byte> span = stackalloc byte[12];
-      SpanWriter w = new SpanWriter(span);
+      SpanWriter w = new SpanWriter(stackalloc byte[12]);
       w.Write((byte)0x54); // Packet ID
 
       w.Write((byte)1); // flags
@@ -305,29 +370,12 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((short)target.Z);
 
-      ns.SendCompressed(span, 12);
-    }
-
-    public static void SendPlaySounds(IEnumerable<NetState> coll, int soundID, IPoint3D target, Action<NetState> action = null)
-    {
-      Span<byte> span = stackalloc byte[12];
-      SpanWriter w = new SpanWriter(span);
-
-      w.Write((byte)0x54); // Packet ID
-
-      w.Write((byte)1); // flags
-      w.Write((short)soundID);
-      w.Position++; // volume?
-      w.Write((short)target.X);
-      w.Write((short)target.Y);
-      w.Write((short)target.Z);
-
-      NetState.SendCompressed(coll, span, action);
+      ns.Send(w.Span);
     }
 
     public static void SendPlayRepeatingSound(NetState ns, int soundID, IPoint3D target)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
+      SpanWriter w = new SpanWriter(stackalloc byte[12]);
       w.Write((byte)0x54); // Packet ID
 
       w.Position++; // flags
@@ -337,77 +385,81 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((short)target.Z);
 
-      _ = ns.Flush(12);
+      ns.Send(w.Span);
     }
 
     public static void SendPlayMusic(NetState ns, MusicName music)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(3));
-      w.Write((byte)0x6D); // Packet ID
+      ReadOnlySpan<byte> input = stackalloc byte[]
+      {
+        0x6D, // Packet ID
+        0x00,
+        (byte)music
+      };
 
-      w.Write((short)music);
-
-      _ = ns.Flush(3);
+      ns.Send(input);
     }
 
     public static void SendScrollMessage(NetState ns, int type, int tip, string text)
     {
       int length = 10 + text.Length;
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xA6); // Packet ID
       w.Write((short)length); // Length
 
-      if (text == null)
-        text = "";
+      if (text == null) text = "";
 
       w.Write((byte)type);
       w.Write(tip);
       w.Write((ushort)text.Length);
       w.WriteAsciiFixed(text, text.Length);
 
-      _ = ns.Flush(length);
+      ns.Send(w.Span);
     }
 
     public static void SendCurrentTime(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(4);
-      span[0] = 0x5B; // Packet ID
-
       // TODO: Don't call UtcNow so readily.
       DateTime now = DateTime.UtcNow;
 
-      span[1] = (byte)now.Hour;
-      span[2] = (byte)now.Minute;
-      span[3] = (byte)now.Second;
+      Span<byte> input = stackalloc byte[]
+      {
+        0x5B, // Packet ID
+        (byte)now.Hour,
+        (byte)now.Minute,
+        (byte)now.Second
+      };
 
-      _ = ns.Flush(4);
+      ns.Send(input);
     }
 
     public static void SendPathfindMessage(NetState ns, IPoint3D p)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
+      SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0x38); // Packet ID
 
       w.Write((short)p.X);
       w.Write((short)p.Y);
       w.Write((short)p.Z);
 
-      _ = ns.Flush(7);
+      ns.Send(w.Span);
     }
 
     public static void SendPingAck(NetState ns, byte ping)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0x73; // Packet ID
-      span[1] = ping;
+      ReadOnlySpan<byte> input = stackalloc byte[2]
+      {
+        0x73, // Packet ID
+        ping,
+      };
 
-      _ = ns.Flush(2);
+      ns.Send(input);
     }
 
     public static void SendMovementRej(NetState ns, int seq, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8));
+      SpanWriter w = new SpanWriter(stackalloc byte[8]);
       w.Write((byte)0x21); // Packet ID
 
       w.Write((byte)seq);
@@ -416,22 +468,24 @@ namespace Server.Network
       w.Write((byte)m.Direction);
       w.Write((sbyte)m.Z);
 
-      _ = ns.Flush(8);
+      ns.Send(w.Span);
     }
 
-    public static void SendMovementAck(NetState ns, int seq, byte noto)
+    public static void SendMovementAck(NetState ns, byte seq, byte noto)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(3);
-      span[0] = 0x22;
-      span[1] = (byte)seq;
-      span[2] = noto;
+      ReadOnlySpan<byte> input = stackalloc byte[3]
+      {
+        0x22,
+        seq,
+        noto,
+      };
 
-      _ = ns.Flush(3);
+      ns.Send(input);
     }
 
     public static void SendLoginConfirm(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8));
+      SpanWriter w = new SpanWriter(stackalloc byte[8]);
       w.Write((byte)0x1B); // Packet ID
 
       w.Write(m.Serial);
@@ -453,25 +507,26 @@ namespace Server.Network
       w.Write((short)(map?.Width ?? 6144));
       w.Write((short)(map?.Height ?? 4096));
 
-      _ = ns.Flush(37);
+      ns.Send(w.Span);
     }
 
     public static void SendLoginComplete(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(1);
-      span[0] = 0x55;
-
-      _ = ns.Flush(1);
+      ns.Send(stackalloc byte[] { 0x55 });
     }
 
     public static void SendClearWeaponAbility(NetState ns)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(5);
-      span[0] = 0xBF;
-      span[2] = 0x05; // Length
-      span[4] = 0x21;
+      ReadOnlySpan<byte> input = stackalloc byte[]
+      {
+        0xBF, // Extended Packet ID
+        0x00,
+        0x05, // Length
+        0x21, // Command
+        0x00
+      };
 
-      _ = ns.Flush(5);
+      ns.Send(input);
     }
   }
 }

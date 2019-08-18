@@ -68,7 +68,7 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span.Slice(0, bytesWritten));
     }
 
     public static void SendDisplayQuestionMenu(NetState ns, QuestionMenu menu)
@@ -118,7 +118,7 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span.Slice(0, bytesWritten));
     }
 
     public static void DisplayContextMenu(NetState ns, ContextMenu menu)
@@ -163,7 +163,7 @@ namespace Server.Network
         w.Write((short)(e.Flags | (e.Enabled && menu.From.InRange(p, range) ? CMEFlags.None : CMEFlags.Disabled)));
       }
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendDisplayContextMenuOld(NetState ns, ContextMenu menu)
@@ -221,7 +221,7 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span.Slice(0, bytesWritten));
     }
   }
 }

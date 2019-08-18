@@ -19,7 +19,7 @@ namespace Server.Network
 
       w.Write((byte)amount);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void Damage(NetState ns, Serial m, int amount)
@@ -37,7 +37,7 @@ namespace Server.Network
 
       w.Write((ushort)amount);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
   }
 }

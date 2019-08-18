@@ -2579,6 +2579,7 @@ namespace Server.Network
       }
 
       state.SentFirstPacket = true;
+      state.UseCompression = true;
 
       int authID = pvSrc.ReadInt32();
 

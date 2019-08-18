@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using Server.Items;
 using Server.Mobiles;
 
@@ -11,7 +9,7 @@ namespace Server.Network
     public static void SendVendorBuyContent(NetState ns, IList<BuyItemState> list)
     {
       int length = 5 + list.Count * 19;
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
       w.Write((ushort)length); // Length
 
@@ -35,13 +33,13 @@ namespace Server.Network
         w.Write((ushort)bis.Hue);
       }
 
-        _ = ns.Flush(length);
+      ns.Send(w.Span);
     }
 
     public static void SendVendorBuyContent6017(NetState ns, IList<BuyItemState> list)
     {
       int length = 5 + list.Count * 20;
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
       w.Write((ushort)length); // Length
 
@@ -66,35 +64,35 @@ namespace Server.Network
         w.Write((ushort)bis.Hue);
       }
 
-        _ = ns.Flush(length);
+      ns.Send(w.Span);
     }
 
     public static void SendDisplayBuyList(NetState ns, Serial vendor)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
+      SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0x24); // Packet ID
 
       w.Write(vendor);
       w.Write((short)0x30); // buy window id?
 
-      _ = ns.Flush(7);
+      ns.Send(w.Span);
     }
 
     public static void SendDisplayBuyListHS(NetState ns, Serial vendor)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x24); // Packet ID
 
       w.Write(vendor);
       w.Write((short)0x30); // buy window id?
       //w.Write((short)0x00); // Unknown
 
-      _ = ns.Flush(9);
+      ns.Send(w.Span);
     }
 
     public static void SendVendorBuyList(NetState ns, Mobile vendor, IList<BuyItemState> list)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8 + 135 * list.Count));
+      SpanWriter w = new SpanWriter(stackalloc byte[8 + 135 * list.Count]);
       w.Write((byte)0x74); // Packet ID
       w.Position += 2; // Dynamic Length
 
@@ -117,12 +115,12 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      _ = ns.Flush(bytesWritten);
+      ns.Send(w.Span.Slice(0, bytesWritten));
     }
 
     public static void SendVendorSellList(NetState ns, Serial shopkeeper, IList<SellItemState> list)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(MaxPacketSize));
+      SpanWriter w = new SpanWriter(stackalloc byte[MaxPacketSize]);
       w.Write((byte)0x9E); // Packet ID
       w.Position += 2; //( Dynamic Length
 
@@ -153,17 +151,17 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      _ = ns.Flush(bytesWritten);
+      ns.Send(w.Span.Slice(0, bytesWritten));
     }
 
     public static void SendEndVendorBuyOrSell(NetState ns, Serial vendor)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8));
+      SpanWriter w = new SpanWriter(stackalloc byte[8]);
       w.Write((byte)0x3B); // Packet ID
 
       w.Write(vendor);
 
-      _ = ns.Flush(8);
+      ns.Send(w.Span)
     }
   }
 }

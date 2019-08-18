@@ -76,7 +76,7 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span.Slice(0, bytesWritten));
     }
 
     public static void WorldItemSA(NetState ns, Item item)
@@ -126,7 +126,7 @@ namespace Server.Network
       w.Write((short)item.Hue);
       w.Write((byte)item.GetPacketFlags());
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void WorldItemHS(NetState ns, Item item)
@@ -176,7 +176,7 @@ namespace Server.Network
       w.Write((short)item.Hue);
       w.Write((byte)item.GetPacketFlags());
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     private static byte[][] m_LiftRejPackets = new byte[(int)Enum.GetValues(typeof(LRReason)).Cast<LRReason>().Max()][];
@@ -188,13 +188,13 @@ namespace Server.Network
 
       if (packet == null)
       {
-        Span<byte> span = stackalloc byte[]
+        packet = new byte[]
         {
           0x27, // Packet ID
           r
         };
 
-        m_LiftRejPackets[r] = packet = CreateStaticPacket(span, true);
+        m_LiftRejPackets[r] = packet;
       }
 
       ns.Send(packet);
@@ -209,7 +209,7 @@ namespace Server.Network
       w.Write(s);
       w.Write((short)-1);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void DisplaySpellbookHS(NetState ns, Serial s)
@@ -222,7 +222,7 @@ namespace Server.Network
       w.Write((short)-1);
       w.Write((short)0x7D);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SpellbookContent(NetState ns, Serial s, int count, int offset, ulong content)
@@ -248,7 +248,7 @@ namespace Server.Network
           w.Position += 2;
         }
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
@@ -274,7 +274,7 @@ namespace Server.Network
           w.Position += 2;
         }
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void NewSpellbookContent(NetState ns, Serial s, int graphic, int offset, ulong content)
@@ -294,7 +294,7 @@ namespace Server.Network
       for (int i = 0; i < 8; ++i)
         w.Write((byte)(content >> (i * 8)));
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendDragEffect(NetState ns, IEntity src, IEntity trg, int itemID, int hue, int amount)
@@ -315,7 +315,7 @@ namespace Server.Network
       w.Write((short)trg.Y);
       w.Write((sbyte)trg.Z);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
   }
 }

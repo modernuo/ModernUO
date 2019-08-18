@@ -16,7 +16,7 @@ namespace Server.Network
     public static void SendDisplaySecureTrade(NetState ns, Serial them, Serial firstCont, Serial secondCont, string name)
     {
       int length = 18 + name?.Length ?? 0;
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x6F); // Packet ID
       w.Write((short)length); // Length
 
@@ -27,24 +27,24 @@ namespace Server.Network
       w.Write((byte)1);
       w.WriteAsciiFixed(name ?? "", 30);
 
-      _ = ns.Flush(length);
+      ns.Send(w.Span);
     }
 
     public static void SendCloseSecureTrade(NetState ns, Serial cont)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(8));
+      SpanWriter w = new SpanWriter(stackalloc byte[8]);
       w.Write((byte)0x6F); // Packet ID
       w.Write((ushort)8); // Length
 
       w.Write((byte)1); // Close
       w.Write(cont);
 
-      _ = ns.Flush(8);
+      ns.Send(w.Span);
     }
 
     public static void SendUpdateSecureTrade(NetState ns, Serial cont, TradeFlag flag, int first, int second)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(17));
+      SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x6F); // Packet ID
       w.Write((ushort)17); // Length
 
@@ -53,12 +53,12 @@ namespace Server.Network
       w.Write(first);
       w.Write(second);
 
-      _ = ns.Flush(17);
+      ns.Send(w.Span);
     }
 
     public static void SendSecureTradeEquip(NetState ns, Item item, Serial m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(20));
+      SpanWriter w = new SpanWriter(stackalloc byte[20]);
       w.Write((byte)0x25); // Packet ID
 
       w.Write(item.Serial);
@@ -70,12 +70,12 @@ namespace Server.Network
       w.Write(m);
       w.Write((short)item.Hue);
 
-      _ = ns.Flush(20);
+      ns.Send(w.Span);
     }
 
     public static void SendSecureTradeEquip6017(NetState ns, Item item, Serial m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(21));
+      SpanWriter w = new SpanWriter(stackalloc byte[21]);
       w.Write((byte)0x25); // Packet ID
 
       w.Write(item.Serial);
@@ -88,7 +88,7 @@ namespace Server.Network
       w.Position++; // Write((byte)0) Grid Location?
       w.Write((short)item.Hue);
 
-      _ = ns.Flush(21);
+      ns.Send(w.Span);
     }
   }
 }

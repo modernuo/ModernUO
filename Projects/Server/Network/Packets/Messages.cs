@@ -9,22 +9,26 @@ namespace Server.Network
     public static void SendMessageLocalized(NetState ns, int number)
     {
       byte[] packet;
-      if (!m_MessageLocalizedPackets.TryGetValue(number, out packet))
+
+      if (m_MessageLocalizedPackets.TryGetValue(number, out packet))
       {
-        SpanWriter w = new SpanWriter(stackalloc byte[50]);
-        w.Write((byte)0xC1); // Packet ID
-        w.Write((short)50); // Length
-
-        w.Write(Serial.MinusOne);
-        w.Write((short)-1);
-        w.Position++; // w.Write((byte)MessageType.Regular);
-        w.Write((short)0x3B2);
-        w.Write((short)3);
-        w.Write(number);
-        w.WriteAsciiFixed("System", 30);
-
-        m_MessageLocalizedPackets[number] = packet = CreateStaticPacket(w.Span, true);
+        ns.Send(packet);
+        return;
       }
+
+      SpanWriter w = new SpanWriter(packet = new byte[50]);
+      w.Write((byte)0xC1); // Packet ID
+      w.Write((short)50); // Length
+
+      w.Write(Serial.MinusOne);
+      w.Write((short)-1);
+      w.Position++; // w.Write((byte)MessageType.Regular);
+      w.Write((short)0x3B2);
+      w.Write((short)3);
+      w.Write(number);
+      w.WriteAsciiFixed("System", 30);
+
+      m_MessageLocalizedPackets[number] = packet;
 
       ns.Send(packet);
     }
@@ -49,7 +53,7 @@ namespace Server.Network
       w.WriteAsciiFixed(name ?? "", 30);
       w.WriteLittleUniNull(args ?? "");
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendAsciiMessage(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, string name, string text)
@@ -71,7 +75,7 @@ namespace Server.Network
       w.WriteAsciiFixed(name ?? "", 30);
       w.WriteAsciiNull(text);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendUnicodeMessage(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, string lang, string name,
@@ -97,7 +101,7 @@ namespace Server.Network
       w.WriteAsciiFixed(name, 30);
       w.WriteBigUniNull(text);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
   }
 }

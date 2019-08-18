@@ -48,7 +48,7 @@ namespace Server.Network
       w.Write((short)m.HitsMax);
       w.Write((short)m.Hits);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendNormalizedMobileHits(NetState ns, Mobile m)
@@ -59,7 +59,7 @@ namespace Server.Network
       w.Write(m.Serial);
       AttributeNormalizer.Write(w, m.Hits, m.HitsMax);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendMobileMana(NetState ns, Mobile m)
@@ -71,7 +71,7 @@ namespace Server.Network
       w.Write((short)m.ManaMax);
       w.Write((short)m.Mana);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendNormalizedMobileMana(NetState ns, Mobile m)
@@ -82,7 +82,7 @@ namespace Server.Network
       w.Write(m.Serial);
       AttributeNormalizer.Write(w, m.Mana, m.ManaMax);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendMobileStam(NetState ns, Mobile m)
@@ -94,7 +94,7 @@ namespace Server.Network
       w.Write((short)m.StamMax);
       w.Write((short)m.Stam);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendNormalizedMobileStam(NetState ns, Mobile m)
@@ -105,7 +105,7 @@ namespace Server.Network
       w.Write(m.Serial);
       AttributeNormalizer.Write(w, m.Stam, m.StamMax);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendMobileAttributes(NetState ns, Mobile m)
@@ -124,7 +124,7 @@ namespace Server.Network
       w.Write((short)m.StamMax);
       w.Write((short)m.Stam);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendNormalizedMobileAttributes(NetState ns, Mobile m)
@@ -138,7 +138,7 @@ namespace Server.Network
       AttributeNormalizer.Write(w, m.Mana, m.ManaMax);
       AttributeNormalizer.Write(w, m.Stam, m.StamMax);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
   }
 }

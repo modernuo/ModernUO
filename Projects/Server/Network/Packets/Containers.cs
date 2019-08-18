@@ -13,7 +13,7 @@ namespace Server.Network
       w.Write(s);
       w.Write((short)gumpid);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendDisplayContainerHS(NetState ns, Serial s, int gumpid)
@@ -26,7 +26,7 @@ namespace Server.Network
       w.Write((short)gumpid);
       w.Write((short)0x7D);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendContainerContentUpdate(NetState ns, Item item)
@@ -53,7 +53,7 @@ namespace Server.Network
       w.Write(parentSerial);
       w.Write((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendContainerContentUpdate6017(NetState ns, Item item)
@@ -81,7 +81,7 @@ namespace Server.Network
       w.Write(parentSerial);
       w.Write((ushort)(item.QuestItem ? Item.QuestItemHue : item.Hue));
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void ContainerContent(NetState ns, Mobile beholder, Item beheld)
@@ -121,7 +121,7 @@ namespace Server.Network
       w.Write((ushort)bytesWritten);
       w.Write(written);
 
-      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span.Slice(0, bytesWritten));
     }
 
     public static void ContainerContent6017(NetState ns, Mobile beholder, Item beheld)
@@ -162,7 +162,7 @@ namespace Server.Network
       w.Write((ushort)bytesWritten);
       w.Write(written);
 
-      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span.Slice(0, bytesWritten));
     }
   }
 }

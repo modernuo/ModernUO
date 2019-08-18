@@ -45,11 +45,13 @@ namespace Server.Network
 
     public static void SendPopupMessage(NetState ns, PMMessage msg)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0x53; // Packet ID
-      span[1] = (byte)msg;
+      ReadOnlySpan<byte> input = stackalloc byte[]
+      {
+        0x53, // Packet ID
+        (byte)msg,
+      };
 
-      _ = ns.Flush(2);
+      ns.Send(input);
     }
 
     public static void SendAccountLoginRej(NetState ns, ALRReason reason)
@@ -83,7 +85,7 @@ namespace Server.Network
       else
         w.Write((ushort)flags);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendCharacterList(NetState ns, IAccount a, CityInfo[] info)
@@ -144,7 +146,7 @@ namespace Server.Network
 
       w.Write((short)-1);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
 
       // TODO: Razor support?
     }
@@ -199,7 +201,7 @@ namespace Server.Network
 
       w.Write((int)flags);
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
 
       // TODO: Razor support?
     }
@@ -235,7 +237,7 @@ namespace Server.Network
           w.Position += 60;
       }
 
-      ns.SendCompressed(w.Span);
+      ns.Send(w.Span);
     }
 
     public static void SendPlayServerAck(NetState ns, ServerInfo si)

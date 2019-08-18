@@ -22,12 +22,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using Server.Network;
 using Server.Targeting;
 
 namespace Server
 {
-  public enum MusicName : short
+  public enum MusicName : byte
   {
     Invalid = -1,
     OldUlt01 = 0,
