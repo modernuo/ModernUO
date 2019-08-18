@@ -1,12 +1,10 @@
-using System;
-
 namespace Server.Network
 {
   public static partial class Packets
   {
     public static void DamageOld(NetState ns, Serial m, int amount)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(11));
+      SpanWriter w = new SpanWriter(stackalloc byte[11]);
       w.Write((byte)0xBF); // Extended Packet ID
       w.Write((ushort)11); // Length
 
@@ -21,12 +19,12 @@ namespace Server.Network
 
       w.Write((byte)amount);
 
-      _ = ns.Flush(11);
+      ns.SendCompressed(w.Span);
     }
 
     public static void Damage(NetState ns, Serial m, int amount)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
+      SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0xBF); // Extended Packet ID
       w.Write((ushort)7); // Length
 
@@ -39,7 +37,7 @@ namespace Server.Network
 
       w.Write((ushort)amount);
 
-      _ = ns.Flush(7);
+      ns.SendCompressed(w.Span);
     }
   }
 }

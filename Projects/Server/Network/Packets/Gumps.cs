@@ -22,7 +22,7 @@ namespace Server.Network
   {
     public static void SendCloseGump(NetState ns, int typeId, int buttonId)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(13));
+      SpanWriter w = new SpanWriter(stackalloc byte[13]);
       w.Write((byte)0xBF); // Packet ID
       w.Write((short)13); // Length
 
@@ -30,7 +30,7 @@ namespace Server.Network
       w.Write(typeId);
       w.Write(buttonId);
 
-      _ = ns.Flush(13);
+      ns.SendCompressed(w.Span);
     }
   }
 }

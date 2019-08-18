@@ -30,6 +30,22 @@ namespace Server.Network
   public static partial class Packets
   {
     public static readonly int MaxPacketSize = 0x10000;
+
+    public static byte[] CreateStaticPacket(ReadOnlySpan<byte> input, bool compress)
+    {
+#if NOCOMPRESSION
+      return input.ToArray();
+#else
+      if (compress)
+      {
+        Span<byte> compressedSpan = stackalloc byte[input.Length];
+        Compression.HuffmanCompression(input, 0, input.Length, compressedSpan, out int bytesWritten);
+        return compressedSpan.Slice(0, bytesWritten).ToArray();
+      }
+
+      return input.ToArray();
+#endif
+    }
   }
 
   public sealed class DisplayGumpPacked : Packet, IGumpWriter
@@ -63,9 +79,9 @@ namespace Server.Network
       m_Strings = PacketWriter.CreateInstance(8192);
     }
 
-    public int TextEntries{ get; set; }
+    public int TextEntries { get; set; }
 
-    public int Switches{ get; set; }
+    public int Switches { get; set; }
 
     public void AppendLayout(bool val)
     {
@@ -198,9 +214,9 @@ namespace Server.Network
       m_Stream.Write((ushort)0xFFFF);
     }
 
-    public int TextEntries{ get; set; }
+    public int TextEntries { get; set; }
 
-    public int Switches{ get; set; }
+    public int Switches { get; set; }
 
     public void AppendLayout(bool val)
     {

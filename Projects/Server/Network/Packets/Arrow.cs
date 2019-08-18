@@ -22,7 +22,7 @@ namespace Server.Network
     {
       if (m_CancelArrowPacket == null)
       {
-        Span<byte> input = stackalloc byte[]
+        ReadOnlySpan<byte> input = stackalloc byte[]
         {
           0xBA, // Packet ID
           0x00,
@@ -32,13 +32,7 @@ namespace Server.Network
           0xFF
         };
 
-#if NOCOMPRESSION
-        m_CancelArrowPacket = input.ToArray();
-#else
-        Span<byte> compressedSpan = stackalloc byte[6];
-        Compression.Compress(input, 0, 6, compressedSpan, out int bytesWritten);
-        m_CancelArrowPacket = compressedSpan.Slice(0, bytesWritten).ToArray();
-#endif
+        m_CancelArrowPacket = CreateStaticPacket(input, true);
       }
 
       ns.Send(m_CancelArrowPacket);

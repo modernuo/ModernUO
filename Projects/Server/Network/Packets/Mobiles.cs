@@ -1,5 +1,4 @@
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 
 namespace Server.Network
@@ -8,19 +7,19 @@ namespace Server.Network
   {
     public static void SendDeathAnimation(NetState ns, Serial killed, Serial corpse)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(13));
+      SpanWriter w = new SpanWriter(stackalloc byte[13]);
       w.Write((byte)0xAF); // Packet ID
 
       w.Write(killed);
       w.Write(corpse);
       // w.Position++; w.Write(0);
 
-      _ = ns.Flush(13);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendDeathAnimation(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
+      SpanWriter w = new SpanWriter(stackalloc byte[12]);
       w.Write((byte)0xBF); // Extended Packet ID
       w.Write((short)12); // Length
 
@@ -29,12 +28,12 @@ namespace Server.Network
       w.Write(m.Serial);
       w.Write((short)((int)m.StrLock << 4 | (int)m.DexLock << 2 | (int)m.IntLock));
 
-      _ = ns.Flush(12);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendBondStatus(NetState ns, Serial m, bool bonded)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(11));
+      SpanWriter w = new SpanWriter(stackalloc byte[11]);
       w.Write((byte)0xBF); // Extended Packet ID
       w.Write((short)11); // Length
 
@@ -43,33 +42,33 @@ namespace Server.Network
       w.Write(m);
       w.Write(bonded);
 
-      _ = ns.Flush(11);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendPersonalLightLevel(NetState ns, Serial m, sbyte level)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(6));
+      SpanWriter w = new SpanWriter(stackalloc byte[6]);
       w.Write((byte)0x4E); // Packet ID
 
       w.Write(m);
       w.Write(level);
 
-      _ = ns.Flush(6);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendPersonalLightLevelZero(NetState ns, Serial m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(6));
+      SpanWriter w = new SpanWriter(stackalloc byte[6]);
       w.Write((byte)0x4E); // Packet ID
 
       w.Write(m);
 
-      _ = ns.Flush(6);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendEquipUpdate(NetState ns, Item item)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(15));
+      SpanWriter w = new SpanWriter(stackalloc byte[15]);
       w.Write((byte)0x2E); // Packet ID
 
       Serial parentSerial = Serial.Zero;
@@ -90,12 +89,12 @@ namespace Server.Network
       w.Write(parentSerial);
       w.Write((short)hue);
 
-      _ = ns.Flush(15);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendSwing(NetState ns, Serial attacker, Serial defender)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(10));
+      SpanWriter w = new SpanWriter(stackalloc byte[10]);
       w.Write((byte)0x2F); // Packet ID
 
       w.Position++; // ?
@@ -107,7 +106,7 @@ namespace Server.Network
 
     public static void SendMobileMoving(NetState ns, Mobile m, int noto)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(17));
+      SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x77); // Packet ID
 
       Point3D loc = m.Location;
@@ -122,12 +121,12 @@ namespace Server.Network
       w.Write((byte)m.GetPacketFlags());
       w.Write((byte)noto);
 
-      _ = ns.Flush(17);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendMobileMovingOld(NetState ns, Mobile m, int noto)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(17));
+      SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x77); // Packet ID
 
       Point3D loc = m.Location;
@@ -142,12 +141,12 @@ namespace Server.Network
       w.Write((byte)m.GetOldPacketFlags());
       w.Write((byte)noto);
 
-      _ = ns.Flush(17);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendDisplayPaperdoll(NetState ns, Mobile m, string text, bool canLift)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(66));
+      SpanWriter w = new SpanWriter(stackalloc byte[66]);
       w.Write((byte)0x88); // Packet ID
 
       byte flags = 0x00;
@@ -162,26 +161,26 @@ namespace Server.Network
       w.WriteAsciiFixed(text, 60);
       w.Write(flags);
 
-      _ = ns.Flush(66);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendMobileName(NetState ns, Mobile m)
     {
       int length = 7 + Math.Min(m.Name?.Length ?? 0, 30);
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x98); // Packet ID
       w.Write((short)length); // Length
 
       w.Write(m.Serial);
       w.WriteAsciiFixed(m.Name ?? "", 30);
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendMobileAnimation(NetState ns, Mobile m, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(14));
+      SpanWriter w = new SpanWriter(stackalloc byte[14]);
       w.Write((byte)0x6E); // Packet ID
 
       w.Write(m.Serial);
@@ -192,12 +191,12 @@ namespace Server.Network
       w.Write(repeat);
       w.Write((byte)delay);
 
-      _ = ns.Flush(14);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendNewMobileAnimation(NetState ns, Mobile m, int action, int frameCount, int delay)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(10));
+      SpanWriter w = new SpanWriter(stackalloc byte[10]);
       w.Write((byte)0xE2); // Packet ID
 
       w.Write(m.Serial);
@@ -205,12 +204,12 @@ namespace Server.Network
       w.Write((short)frameCount);
       w.Write((byte)delay);
 
-      _ = ns.Flush(10);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendMobileStatusCompact(NetState ns, Mobile m, bool canBeRenamed = false)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(43));
+      SpanWriter w = new SpanWriter(stackalloc byte[43]);
       w.Write((byte)0x11); // Packet ID
       w.Write((ushort)43); // Length
 
@@ -223,7 +222,7 @@ namespace Server.Network
 
       // w.Write((byte)0); // type
 
-      _ = ns.Flush(43);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendMobileExtended(NetState ns, Mobile m)
@@ -254,7 +253,7 @@ namespace Server.Network
         length = 70;
       }
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x11); // Packet ID
       w.Write(length); // Length
 
@@ -321,7 +320,7 @@ namespace Server.Network
         for (int i = 0; i < 15; ++i)
           w.Write((short)m.GetAOSStatus(i));
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendMobileStatus(NetState ns, Mobile beholder, Mobile beheld)
@@ -357,7 +356,7 @@ namespace Server.Network
         length = 70;
       }
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x11); // Packet ID
       w.Write((ushort)length); // Length
 
@@ -433,12 +432,12 @@ namespace Server.Network
         for (int i = 0; i < 15; ++i)
           w.Write((short)beheld.GetAOSStatus(i));
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendHealthbarPoison(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
+      SpanWriter w = new SpanWriter(stackalloc byte[12]);
       w.Write((byte)0x17); // Packet ID
       w.Write((ushort)12); // Length
 
@@ -451,12 +450,12 @@ namespace Server.Network
       if (p != null)
         w.Write((byte)(p.Level + 1));
 
-      _ = ns.Flush(12);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendHealthbarYellow(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12));
+      SpanWriter w = new SpanWriter(stackalloc byte[12]);
       w.Write((byte)0x17); // Packet ID
       w.Write((ushort)12); // Length
 
@@ -466,12 +465,12 @@ namespace Server.Network
 
       w.Write(m.Blessed || m.YellowHealthbar);
 
-      _ = ns.Flush(12);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendMobileUpdate(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(19));
+      SpanWriter w = new SpanWriter(stackalloc byte[19]);
       w.Write((byte)0x20); // Packet ID
 
       int hue = m.Hue;
@@ -490,12 +489,12 @@ namespace Server.Network
       w.Write((byte)m.Direction);
       w.Write((sbyte)m.Z);
 
-      _ = ns.Flush(19);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendMobileUpdateOld(NetState ns, Mobile m)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(19));
+      SpanWriter w = new SpanWriter(stackalloc byte[19]);
       w.Write((byte)0x20); // Packet ID
 
       int hue = m.Hue;
@@ -514,7 +513,7 @@ namespace Server.Network
       w.Write((byte)m.Direction);
       w.Write((sbyte)m.Z);
 
-      _ = ns.Flush(19);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendMobileIncoming(NetState ns, Mobile beholder, Mobile beheld)
@@ -546,7 +545,7 @@ namespace Server.Network
       if (beheld.FacialHairItemID > 0)
         count++;
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(23 + count * 9));
+      SpanWriter w = new SpanWriter(stackalloc byte[23 + count * 9]);
       w.Write((byte)0x78); // Packet ID
       w.Position += 2; // Dynamic Length
 
@@ -619,7 +618,7 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      _ = ns.Flush(bytesWritten);
+      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
     }
 
     public static void SendMobileIncomingSA(NetState ns, Mobile beholder, Mobile beheld)
@@ -634,7 +633,7 @@ namespace Server.Network
       if (beheld.FacialHairItemID > 0)
         count++;
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(23 + count * 9));
+      SpanWriter w = new SpanWriter(stackalloc byte[23 + count * 9]);
       w.Write((byte)0x78); // Packet ID
       w.Position += 2; // Dynamic Length
 
@@ -731,7 +730,7 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      _ = ns.Flush(bytesWritten);
+      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
     }
 
     public static void SendMobileIncomingOld(NetState ns, Mobile beholder, Mobile beheld)
@@ -746,7 +745,7 @@ namespace Server.Network
       if (beheld.FacialHairItemID > 0)
         count++;
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(23 + count * 9));
+      SpanWriter w = new SpanWriter(stackalloc byte[23 + count * 9]);
       w.Write((byte)0x78); // Packet ID
       w.Position += 2; // Dynamic Length
 
@@ -843,18 +842,18 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      _ = ns.Flush(bytesWritten);
+      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
     }
 
-    public static void SendFollowMessage(NetState ns, Serial s1, Serial s2) : base(0x15, 9)
+    public static void SendFollowMessage(NetState ns, Serial s1, Serial s2)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x15); // Packet ID
 
       w.Write(s1);
       w.Write(s2);
 
-      _ = ns.Flush(9);
+      ns.SendCompressed(w.Span);
     }
   }
 }

@@ -21,7 +21,7 @@ namespace Server.Network
     public static void SendDisplayItemListMenu(NetState ns, ItemListMenu menu)
     {
       // 10 + 128 + (255 * (128 + 5))
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(138 + menu.Entries.Length * 133));
+      SpanWriter w = new SpanWriter(stackalloc byte[138 + menu.Entries.Length * 133]);
       w.Write((byte)0x7C); // Packet ID
       w.Position += 2; // Dynamic Length
 
@@ -68,13 +68,13 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      _ = ns.Flush(bytesWritten);
+      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
     }
 
     public static void SendDisplayQuestionMenu(NetState ns, QuestionMenu menu)
     {
       // 10 + 128 + (255 * (128 + 5))
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(138 + menu.Answers.Length * 133));
+      SpanWriter w = new SpanWriter(stackalloc byte[138 + menu.Entries.Length * 133]);
       w.Write((byte)0x7C); // Packet ID
       w.Position += 2; // Dynamic Length
 
@@ -118,7 +118,7 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      _ = ns.Flush(bytesWritten);
+      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
     }
 
     public static void DisplayContextMenu(NetState ns, ContextMenu menu)
@@ -126,7 +126,7 @@ namespace Server.Network
       ContextMenuEntry[] entries = menu.Entries;
 
       int length = 12 + entries.Length * 8;
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xBF); // Packet ID
       w.Write((short)length); // Length
 
@@ -163,14 +163,14 @@ namespace Server.Network
         w.Write((short)(e.Flags | (e.Enabled && menu.From.InRange(p, range) ? CMEFlags.None : CMEFlags.Disabled)));
       }
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendDisplayContextMenuOld(NetState ns, ContextMenu menu)
     {
       ContextMenuEntry[] entries = menu.Entries;
 
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(12 + entries.Length * 8));
+      SpanWriter w = new SpanWriter(stackalloc byte[12 + entries.Length * 8]);
       w.Write((byte)0xBF); // Packet ID
       w.Position += 2; // Dynamic Length
 
@@ -221,7 +221,7 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      _ = ns.Flush(bytesWritten);
+      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
     }
   }
 }

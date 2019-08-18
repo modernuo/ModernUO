@@ -31,7 +31,7 @@ namespace Server.Network
       bool explode, int hue, int renderMode, int effect, int explodeEffect, int explodeSound, Serial serial,
       int layer, int unknown)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(ParticleEffectPacketLength));
+      SpanWriter w = new SpanWriter(stackalloc byte[ParticleEffectPacketLength]);
       w.Write((byte)0xC7); // Packet ID
 
       w.Write((byte)type);
@@ -60,14 +60,14 @@ namespace Server.Network
       w.Write((byte)layer);
       w.Write((short)unknown);
 
-      _ = ns.Flush(ParticleEffectPacketLength);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendHuedEffect(NetState ns, EffectType type, Serial from, Serial to, int itemID,
       IPoint3D fromPoint, IPoint3D toPoint, int speed, int duration, bool fixedDirection, bool explode, int hue,
       int renderMode)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(HuedEffectPacketLength));
+      SpanWriter w = new SpanWriter(stackalloc byte[HuedEffectPacketLength]);
       w.Write((byte)0xC0); // Packet ID
 
       w.Write((byte)type);
@@ -90,36 +90,36 @@ namespace Server.Network
       w.Write(hue);
       w.Write(renderMode);
 
-      _ = ns.Flush(HuedEffectPacketLength);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendScreenEffect(NetState ns, ScreenEffectType screen)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(HuedEffectPacketLength));
+      SpanWriter w = new SpanWriter(stackalloc byte[HuedEffectPacketLength]);
       w.Write((byte)0xC0); // Packet ID
 
       w.Write((byte)0x04);
       w.Position += 8;
       w.Write((short)screen);
 
-      _ = ns.Flush(HuedEffectPacketLength);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendScreenOldEffect(NetState ns, ScreenEffectType screen)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(OldEffectPacketLength));
+      SpanWriter w = new SpanWriter(stackalloc byte[OldEffectPacketLength]);
       w.Write((byte)0x70); // Packet ID
 
       w.Write((byte)0x04);
       w.Position += 8;
       w.Write((short)screen);
 
-      _ = ns.Flush(OldEffectPacketLength);
+      ns.SendCompressed(w.Span);
     }
 
-    public static void SendBoldEffect(NetState ns, IEntity target)
+    public static void SendBoltEffect(NetState ns, IEntity target)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(HuedEffectPacketLength));
+      SpanWriter w = new SpanWriter(stackalloc byte[HuedEffectPacketLength]);
       w.Write((byte)0xC0); // Packet ID
 
       w.Write((byte)0x01);
@@ -132,12 +132,12 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((sbyte)target.Z);
 
-      _ = ns.Flush(HuedEffectPacketLength);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendOldBoltEffect(NetState ns, IEntity target)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(OldEffectPacketLength));
+      SpanWriter w = new SpanWriter(stackalloc byte[OldEffectPacketLength]);
       w.Write((byte)0x70); // Packet ID
 
       w.Write((byte)0x01);
@@ -150,13 +150,13 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((sbyte)target.Z);
 
-      _ = ns.Flush(OldEffectPacketLength);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendEffect(NetState ns, EffectType type, Serial from, Serial to, int itemID,
       IPoint3D fromPoint, IPoint3D toPoint, int speed, int duration, bool fixedDirection, bool explode)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(HuedEffectPacketLength));
+      SpanWriter w = new SpanWriter(stackalloc byte[HuedEffectPacketLength]);
       w.Write((byte)0xC0); // Packet ID
 
       w.Write((byte)type);
@@ -177,13 +177,13 @@ namespace Server.Network
       w.Write(fixedDirection);
       w.Write(explode);
 
-      _ = ns.Flush(HuedEffectPacketLength);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendOldEffect(NetState ns, EffectType type, Serial from, Serial to, int itemID,
       IPoint3D fromPoint, IPoint3D toPoint, int speed, int duration, bool fixedDirection, bool explode)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(OldEffectPacketLength));
+      SpanWriter w = new SpanWriter(stackalloc byte[OldEffectPacketLength]);
       w.Write((byte)0x70); // Packet ID
 
       w.Write((byte)type);
@@ -204,7 +204,7 @@ namespace Server.Network
       w.Write(fixedDirection);
       w.Write(explode);
 
-      _ = ns.Flush(OldEffectPacketLength);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendLocationParticleEffect(NetState ns, IEntity e, int itemID, int speed, int duration, int hue, int renderMode,

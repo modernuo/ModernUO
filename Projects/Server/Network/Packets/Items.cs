@@ -1,5 +1,5 @@
 using System;
-using System.IO;
+using System.Linq;
 using Server.Items;
 
 namespace Server.Network
@@ -18,7 +18,7 @@ namespace Server.Network
   {
     public static void WorldItem(NetState ns, Item item)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(20));
+      SpanWriter w = new SpanWriter(stackalloc byte[20]);
       w.Write((byte)0x1A); // Packet ID
       w.Position += 2; // Dynamic Length
 
@@ -76,12 +76,12 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)bytesWritten);
 
-      _ = ns.Flush(bytesWritten);
+      ns.SendCompressed(w.Span.Slice(0, bytesWritten));
     }
 
     public static void WorldItemSA(NetState ns, Item item)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(24));
+      SpanWriter w = new SpanWriter(stackalloc byte[24]);
       w.Write((byte)0xF3); // Packet ID
 
       w.Write((short)0x01);
@@ -126,12 +126,12 @@ namespace Server.Network
       w.Write((short)item.Hue);
       w.Write((byte)item.GetPacketFlags());
 
-      _ = ns.Flush(24);
+      ns.SendCompressed(w.Span);
     }
 
     public static void WorldItemHS(NetState ns, Item item)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(26));
+      SpanWriter w = new SpanWriter(stackalloc byte[26]);
       w.Write((byte)0xF3); // Packet ID
 
       w.Write((short)0x01);
@@ -176,16 +176,28 @@ namespace Server.Network
       w.Write((short)item.Hue);
       w.Write((byte)item.GetPacketFlags());
 
-      _ = ns.Flush(26);
+      ns.SendCompressed(w.Span);
     }
+
+    private static byte[][] m_LiftRejPackets = new byte[(int)Enum.GetValues(typeof(LRReason)).Cast<LRReason>().Max()][];
 
     public static void LiftRej(NetState ns, LRReason reason)
     {
-      Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
-      span[0] = 0x27; // Packet ID
-      span[1] = (byte)reason;
+      byte r = (byte)reason;
+      byte[] packet = m_LiftRejPackets[r];
 
-      _ = ns.Flush(2);
+      if (packet == null)
+      {
+        Span<byte> span = stackalloc byte[]
+        {
+          0x27, // Packet ID
+          r
+        };
+
+        m_LiftRejPackets[r] = packet = CreateStaticPacket(span, true);
+      }
+
+      ns.Send(packet);
     }
 
     public static void DisplaySpellbook(NetState ns, Serial s)
@@ -197,7 +209,7 @@ namespace Server.Network
       w.Write(s);
       w.Write((short)-1);
 
-      _ = ns.Flush(7);
+      ns.SendCompressed(w.Span);
     }
 
     public static void DisplaySpellbookHS(NetState ns, Serial s)
@@ -210,7 +222,7 @@ namespace Server.Network
       w.Write((short)-1);
       w.Write((short)0x7D);
 
-      _ = ns.Flush(9);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SpellbookContent(NetState ns, Serial s, int count, int offset, ulong content)
@@ -236,7 +248,7 @@ namespace Server.Network
           w.Position += 2;
         }
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
@@ -262,7 +274,7 @@ namespace Server.Network
           w.Position += 2;
         }
 
-      _ = ns.Flush(length);
+      ns.SendCompressed(w.Span);
     }
 
     public static void NewSpellbookContent(NetState ns, Serial s, int graphic, int offset, ulong content)
@@ -282,7 +294,7 @@ namespace Server.Network
       for (int i = 0; i < 8; ++i)
         w.Write((byte)(content >> (i * 8)));
 
-      _ = ns.Flush(23);
+      ns.SendCompressed(w.Span);
     }
 
     public static void SendDragEffect(NetState ns, IEntity src, IEntity trg, int itemID, int hue, int amount)
@@ -303,7 +315,7 @@ namespace Server.Network
       w.Write((short)trg.Y);
       w.Write((sbyte)trg.Z);
 
-      _ = ns.Flush(26);
+      ns.SendCompressed(w.Span);
     }
   }
 }

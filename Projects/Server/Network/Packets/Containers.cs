@@ -10,7 +10,6 @@ namespace Server.Network
       SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0x24); // Packet ID
 
-
       w.Write(s);
       w.Write((short)gumpid);
 

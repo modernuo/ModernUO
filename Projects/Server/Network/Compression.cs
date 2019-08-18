@@ -104,7 +104,7 @@ namespace Server.Network
       }
     }
 
-    public static unsafe void Compress(ReadOnlySpan<byte> input, int offset, int count, Span<byte> output, out int length)
+    public static unsafe void HuffmanCompression(ReadOnlySpan<byte> input, int offset, int count, Span<byte> output, out int length)
     {
       if (input == null) throw new ArgumentNullException(nameof(input));
 
