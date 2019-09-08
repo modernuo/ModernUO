@@ -18,14 +18,13 @@
  *
  ***************************************************************************/
 
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpImage : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("gumppic");
-    private static byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
     private int m_GumpID;
     private int m_Hue;
     private int m_X, m_Y;
@@ -66,18 +65,27 @@ namespace Server.Gumps
       $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}" :
       $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
+    private static byte[] m_LayoutName = Gump.StringToBuffer(" { gumppic ");
+    private static byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
+
+    public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_GumpID);
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_GumpID.ToString());
+      writer.Write((byte)0x20); // ' '
 
       if (m_Hue != 0)
       {
-        disp.AppendLayout(m_HueEquals);
-        disp.AppendLayoutNS(m_Hue);
+        writer.Write(m_HueEquals);
+        writer.WriteAscii(m_Hue.ToString());
+        writer.Write((byte)0x20); // ' '
       }
+      
+      writer.Write((byte)0x7D); // '}'
     }
   }
 }

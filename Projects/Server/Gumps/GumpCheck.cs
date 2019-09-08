@@ -18,13 +18,13 @@
  *
  ***************************************************************************/
 
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpCheck : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("checkbox");
     private int m_ID1, m_ID2;
     private bool m_InitialState;
     private int m_SwitchID;
@@ -78,17 +78,24 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ checkbox {m_X} {m_Y} {m_ID1} {m_ID2} {(m_InitialState ? 1 : 0)} {m_SwitchID} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
-    {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_ID1);
-      disp.AppendLayout(m_ID2);
-      disp.AppendLayout(m_InitialState);
-      disp.AppendLayout(m_SwitchID);
+    private static byte[] m_LayoutName = Gump.StringToBuffer(" { checkbox ");
 
-      disp.Switches++;
+    public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
+    {
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_ID1.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_ID2.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_InitialState ? "1" : "0");
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_SwitchID.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
     }
   }
 }

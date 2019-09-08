@@ -18,13 +18,13 @@
  *
  ***************************************************************************/
 
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpAlphaRegion : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("checkertrans");
     private int m_Width, m_Height;
     private int m_X, m_Y;
 
@@ -62,13 +62,20 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ checkertrans {m_X} {m_Y} {m_Width} {m_Height} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
+    private static byte[] m_LayoutName = Gump.StringToBuffer(" { checkertrans ");
+
+    public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_Width);
-      disp.AppendLayout(m_Height);
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Width.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Height.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
     }
   }
 }

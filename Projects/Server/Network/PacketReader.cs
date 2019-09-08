@@ -180,10 +180,7 @@ namespace Server.Network
       return sb.ToString();
     }
 
-    public bool IsSafeChar(int c)
-    {
-      return c >= 0x20 && c < 0xFFFE;
-    }
+    public bool IsSafeChar(int c) => c >= 0x20 && c < 0xFFFE;
 
     public string ReadUTF8StringSafe(int fixedLength)
     {

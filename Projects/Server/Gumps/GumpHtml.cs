@@ -18,13 +18,13 @@
  *
  ***************************************************************************/
 
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpHtml : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("htmlgump");
     private bool m_Background, m_Scrollbar;
     private string m_Text;
     private int m_Width, m_Height;
@@ -86,16 +86,26 @@ namespace Server.Gumps
     public override string Compile() =>
       $"{{ htmlgump {m_X} {m_Y} {m_Width} {m_Height} {Parent.Intern(m_Text)} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
+    private static byte[] m_LayoutName = Gump.StringToBuffer(" { htmlgump ");
+
+    public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_Width);
-      disp.AppendLayout(m_Height);
-      disp.AppendLayout(Parent.Intern(m_Text));
-      disp.AppendLayout(m_Background);
-      disp.AppendLayout(m_Scrollbar);
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Width.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Height.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(Parent.Intern(m_Text).ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Background ? "1" : "0");
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Scrollbar ? "1" : "0");
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
     }
   }
 }
