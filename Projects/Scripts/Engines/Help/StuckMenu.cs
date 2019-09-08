@@ -6,23 +6,23 @@ using Server.Network;
 
 namespace Server.Menus.Questions
 {
-    public class StuckMenuEntry
+  public class StuckMenuEntry
+  {
+    public StuckMenuEntry(int name, Point3D[] locations)
     {
-        public StuckMenuEntry(int name, Point3D[] locations)
-        {
-            Name = name;
-            Locations = locations;
-        }
-
-        public int Name { get; }
-
-        public Point3D[] Locations { get; }
+      Name = name;
+      Locations = locations;
     }
 
-    public class StuckMenu : Gump
+    public int Name { get; }
+
+    public Point3D[] Locations { get; }
+  }
+
+  public class StuckMenu : Gump
+  {
+    private static StuckMenuEntry[] m_Entries =
     {
-        private static StuckMenuEntry[] m_Entries =
-        {
       // Britain
       new StuckMenuEntry(1011028, new[]
       {
@@ -84,8 +84,8 @@ namespace Server.Menus.Questions
       })
     };
 
-        private static StuckMenuEntry[] m_T2AEntries =
-        {
+    private static StuckMenuEntry[] m_T2AEntries =
+    {
       // Papua
       new StuckMenuEntry(1011057, new[]
       {
@@ -107,178 +107,178 @@ namespace Server.Menus.Questions
       })
     };
 
-        private bool m_MarkUse;
+    private bool m_MarkUse;
 
-        private Mobile m_Mobile, m_Sender;
+    private Mobile m_Mobile, m_Sender;
 
-        private Timer m_Timer;
+    private Timer m_Timer;
 
-        public StuckMenu(Mobile beholder, Mobile beheld, bool markUse) : base(150, 50)
-        {
-            m_Sender = beholder;
-            m_Mobile = beheld;
-            m_MarkUse = markUse;
+    public StuckMenu(Mobile beholder, Mobile beheld, bool markUse) : base(150, 50)
+    {
+      m_Sender = beholder;
+      m_Mobile = beheld;
+      m_MarkUse = markUse;
 
-            Closable = false;
-            Draggable = false;
-            SetDisposable(false);
+      Closable = false;
+      Draggable = false;
+      Disposable = false;
 
-            AddBackground(0, 0, 270, 320, 2600);
+      AddBackground(0, 0, 270, 320, 2600);
 
-            AddHtmlLocalized(50, 20, 250, 35, 1011027); // Chose a town:
+      AddHtmlLocalized(50, 20, 250, 35, 1011027); // Chose a town:
 
-            StuckMenuEntry[] entries = IsInSecondAgeArea(beheld) ? m_T2AEntries : m_Entries;
+      StuckMenuEntry[] entries = IsInSecondAgeArea(beheld) ? m_T2AEntries : m_Entries;
 
-            for (int i = 0; i < entries.Length; i++)
-            {
-                StuckMenuEntry entry = entries[i];
+      for (int i = 0; i < entries.Length; i++)
+      {
+        StuckMenuEntry entry = entries[i];
 
-                AddButton(50, 55 + 35 * i, 208, 209, i + 1);
-                AddHtmlLocalized(75, 55 + 35 * i, 335, 40, entry.Name);
-            }
+        AddButton(50, 55 + 35 * i, 208, 209, i + 1);
+        AddHtmlLocalized(75, 55 + 35 * i, 335, 40, entry.Name);
+      }
 
-            AddButton(55, 263, 4005, 4007, 0);
-            AddHtmlLocalized(90, 265, 200, 35, 1011012); // CANCEL
-        }
-
-        private static bool IsInSecondAgeArea(Mobile m)
-        {
-            return (m.Map == Map.Trammel || m.Map == Map.Felucca) &&
-                   (m.X >= 5120 && m.Y >= 2304 || m.Region.IsPartOf("Terathan Keep"));
-        }
-
-        public void BeginClose()
-        {
-            StopClose();
-
-            m_Timer = new CloseTimer(m_Mobile);
-            m_Timer.Start();
-
-            m_Mobile.Frozen = true;
-        }
-
-        public void StopClose()
-        {
-            m_Timer?.Stop();
-
-            m_Mobile.Frozen = false;
-        }
-
-        public override void OnResponse(NetState sender, RelayInfo info)
-        {
-            StopClose();
-
-            if (Sigil.ExistsOn(m_Mobile))
-            {
-                m_Mobile.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
-            }
-            else if (info.ButtonID == 0)
-            {
-                if (m_Mobile == m_Sender)
-                    m_Mobile.SendLocalizedMessage(1010588); // You choose not to go to any city.
-            }
-            else
-            {
-                int index = info.ButtonID - 1;
-                StuckMenuEntry[] entries = IsInSecondAgeArea(m_Mobile) ? m_T2AEntries : m_Entries;
-
-                if (index >= 0 && index < entries.Length)
-                    Teleport(entries[index]);
-            }
-        }
-
-        private void Teleport(StuckMenuEntry entry)
-        {
-            if (m_MarkUse)
-            {
-                m_Mobile.SendLocalizedMessage(1010589); // You will be teleported within the next two minutes.
-
-                new TeleportTimer(m_Mobile, entry, TimeSpan.FromSeconds(10.0 + Utility.RandomDouble() * 110.0)).Start();
-
-                if (m_Mobile is PlayerMobile mobile)
-                    mobile.UsedStuckMenu();
-            }
-            else
-            {
-                new TeleportTimer(m_Mobile, entry, TimeSpan.Zero).Start();
-            }
-        }
-
-        private class CloseTimer : Timer
-        {
-            private DateTime m_End;
-            private Mobile m_Mobile;
-
-            public CloseTimer(Mobile m) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
-            {
-                m_Mobile = m;
-                m_End = DateTime.UtcNow + TimeSpan.FromMinutes(3.0);
-            }
-
-            protected override void OnTick()
-            {
-                if (m_Mobile.NetState == null || DateTime.UtcNow > m_End)
-                {
-                    m_Mobile.Frozen = false;
-                    m_Mobile.CloseGump<StuckMenu>();
-
-                    Stop();
-                }
-                else
-                {
-                    m_Mobile.Frozen = true;
-                }
-            }
-        }
-
-        private class TeleportTimer : Timer
-        {
-            private StuckMenuEntry m_Destination;
-            private DateTime m_End;
-            private Mobile m_Mobile;
-
-            public TeleportTimer(Mobile mobile, StuckMenuEntry destination, TimeSpan delay) : base(TimeSpan.Zero,
-              TimeSpan.FromSeconds(1.0))
-            {
-                Priority = TimerPriority.TwoFiftyMS;
-
-                m_Mobile = mobile;
-                m_Destination = destination;
-                m_End = DateTime.UtcNow + delay;
-            }
-
-            protected override void OnTick()
-            {
-                if (DateTime.UtcNow < m_End)
-                {
-                    m_Mobile.Frozen = true;
-                }
-                else
-                {
-                    m_Mobile.Frozen = false;
-                    Stop();
-
-                    if (Sigil.ExistsOn(m_Mobile))
-                    {
-                        m_Mobile.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
-                        return;
-                    }
-
-                    int idx = Utility.Random(m_Destination.Locations.Length);
-                    Point3D dest = m_Destination.Locations[idx];
-
-                    Map destMap;
-                    if (m_Mobile.Map == Map.Trammel)
-                        destMap = Map.Trammel;
-                    else if (m_Mobile.Map == Map.Felucca)
-                        destMap = Map.Felucca;
-                    else
-                        destMap = m_Mobile.Kills >= 5 ? Map.Felucca : Map.Trammel;
-
-                    BaseCreature.TeleportPets(m_Mobile, dest, destMap);
-                    m_Mobile.MoveToWorld(dest, destMap);
-                }
-            }
-        }
+      AddButton(55, 263, 4005, 4007, 0);
+      AddHtmlLocalized(90, 265, 200, 35, 1011012); // CANCEL
     }
+
+    private static bool IsInSecondAgeArea(Mobile m)
+    {
+      return (m.Map == Map.Trammel || m.Map == Map.Felucca) &&
+             (m.X >= 5120 && m.Y >= 2304 || m.Region.IsPartOf("Terathan Keep"));
+    }
+
+    public void BeginClose()
+    {
+      StopClose();
+
+      m_Timer = new CloseTimer(m_Mobile);
+      m_Timer.Start();
+
+      m_Mobile.Frozen = true;
+    }
+
+    public void StopClose()
+    {
+      m_Timer?.Stop();
+
+      m_Mobile.Frozen = false;
+    }
+
+    public override void OnResponse(NetState sender, RelayInfo info)
+    {
+      StopClose();
+
+      if (Sigil.ExistsOn(m_Mobile))
+      {
+        m_Mobile.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
+      }
+      else if (info.ButtonID == 0)
+      {
+        if (m_Mobile == m_Sender)
+          m_Mobile.SendLocalizedMessage(1010588); // You choose not to go to any city.
+      }
+      else
+      {
+        int index = info.ButtonID - 1;
+        StuckMenuEntry[] entries = IsInSecondAgeArea(m_Mobile) ? m_T2AEntries : m_Entries;
+
+        if (index >= 0 && index < entries.Length)
+          Teleport(entries[index]);
+      }
+    }
+
+    private void Teleport(StuckMenuEntry entry)
+    {
+      if (m_MarkUse)
+      {
+        m_Mobile.SendLocalizedMessage(1010589); // You will be teleported within the next two minutes.
+
+        new TeleportTimer(m_Mobile, entry, TimeSpan.FromSeconds(10.0 + Utility.RandomDouble() * 110.0)).Start();
+
+        if (m_Mobile is PlayerMobile mobile)
+          mobile.UsedStuckMenu();
+      }
+      else
+      {
+        new TeleportTimer(m_Mobile, entry, TimeSpan.Zero).Start();
+      }
+    }
+
+    private class CloseTimer : Timer
+    {
+      private DateTime m_End;
+      private Mobile m_Mobile;
+
+      public CloseTimer(Mobile m) : base(TimeSpan.Zero, TimeSpan.FromSeconds(1.0))
+      {
+        m_Mobile = m;
+        m_End = DateTime.UtcNow + TimeSpan.FromMinutes(3.0);
+      }
+
+      protected override void OnTick()
+      {
+        if (m_Mobile.NetState == null || DateTime.UtcNow > m_End)
+        {
+          m_Mobile.Frozen = false;
+          m_Mobile.CloseGump<StuckMenu>();
+
+          Stop();
+        }
+        else
+        {
+          m_Mobile.Frozen = true;
+        }
+      }
+    }
+
+    private class TeleportTimer : Timer
+    {
+      private StuckMenuEntry m_Destination;
+      private DateTime m_End;
+      private Mobile m_Mobile;
+
+      public TeleportTimer(Mobile mobile, StuckMenuEntry destination, TimeSpan delay) : base(TimeSpan.Zero,
+        TimeSpan.FromSeconds(1.0))
+      {
+        Priority = TimerPriority.TwoFiftyMS;
+
+        m_Mobile = mobile;
+        m_Destination = destination;
+        m_End = DateTime.UtcNow + delay;
+      }
+
+      protected override void OnTick()
+      {
+        if (DateTime.UtcNow < m_End)
+        {
+          m_Mobile.Frozen = true;
+        }
+        else
+        {
+          m_Mobile.Frozen = false;
+          Stop();
+
+          if (Sigil.ExistsOn(m_Mobile))
+          {
+            m_Mobile.SendLocalizedMessage(1061632); // You can't do that while carrying the sigil.
+            return;
+          }
+
+          int idx = Utility.Random(m_Destination.Locations.Length);
+          Point3D dest = m_Destination.Locations[idx];
+
+          Map destMap;
+          if (m_Mobile.Map == Map.Trammel)
+            destMap = Map.Trammel;
+          else if (m_Mobile.Map == Map.Felucca)
+            destMap = Map.Felucca;
+          else
+            destMap = m_Mobile.Kills >= 5 ? Map.Felucca : Map.Trammel;
+
+          BaseCreature.TeleportPets(m_Mobile, dest, destMap);
+          m_Mobile.MoveToWorld(dest, destMap);
+        }
+      }
+    }
+  }
 }
