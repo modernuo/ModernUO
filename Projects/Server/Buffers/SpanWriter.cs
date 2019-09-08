@@ -28,13 +28,17 @@ namespace Server.Buffers
   /// </summary>
   public ref struct SpanWriter
   {
-    private Span<byte> m_Span;
     private int m_Position;
+
+    /// <summary>
+    ///   Underlying Span.
+    /// </summary>
+    public Span<byte> RawSpan { get; }
 
     /// <summary>
     ///   Underlying Span up to the bytes written.
     /// </summary>
-    public Span<byte> Span => m_Span.Slice(0, WrittenCount);
+    public Span<byte> Span => RawSpan.Slice(0, WrittenCount);
 
     /// <summary>
     ///   Gets the total length of the span.
@@ -67,7 +71,7 @@ namespace Server.Buffers
     /// </summary>
     public SpanWriter(Span<byte> span)
     {
-      m_Span = span;
+      RawSpan = span;
       m_Position = 0;
       WrittenCount = 0;
     }
@@ -175,7 +179,7 @@ namespace Server.Buffers
     {
       int size = Math.Min(input.Length, Length - Position);
 
-      input.CopyTo(m_Span.Slice(Position, size));
+      input.CopyTo(RawSpan.Slice(Position, size));
       Position += size;
     }
 
@@ -190,7 +194,7 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      Encoding.ASCII.GetBytes(value, m_Span.Slice(Position, value.Length));
+      Encoding.ASCII.GetBytes(value, RawSpan.Slice(Position, value.Length));
       Position += value.Length;
     }
 
@@ -207,7 +211,7 @@ namespace Server.Buffers
 
       size = Math.Min(size, value.Length);
 
-      Encoding.ASCII.GetBytes(value, m_Span.Slice(Position, size));
+      Encoding.ASCII.GetBytes(value, RawSpan.Slice(Position, size));
       Position += size;
     }
 
@@ -239,7 +243,7 @@ namespace Server.Buffers
 
       int length = value.Length * 2;
 
-      Encoding.Unicode.GetBytes(value, m_Span.Slice(Position, length));
+      Encoding.Unicode.GetBytes(value, RawSpan.Slice(Position, length));
       Position += length + 2;
     }
 
@@ -257,7 +261,7 @@ namespace Server.Buffers
 
       size = Math.Min(size * 2, value.Length * 2);
 
-      Encoding.Unicode.GetBytes(value, m_Span.Slice(Position, size));
+      Encoding.Unicode.GetBytes(value, RawSpan.Slice(Position, size));
       Position += size;
     }
 
@@ -274,7 +278,7 @@ namespace Server.Buffers
 
       int length = value.Length * 2;
 
-      Encoding.BigEndianUnicode.GetBytes(value, m_Span.Slice(Position, length));
+      Encoding.BigEndianUnicode.GetBytes(value, RawSpan.Slice(Position, length));
       Position += length + 2;
     }
 
@@ -291,7 +295,7 @@ namespace Server.Buffers
 
       size = Math.Min(size * 2, value.Length * 2);
 
-      Encoding.BigEndianUnicode.GetBytes(value, m_Span.Slice(Position, size));
+      Encoding.BigEndianUnicode.GetBytes(value, RawSpan.Slice(Position, size));
       Position += size;
     }
 
@@ -300,7 +304,7 @@ namespace Server.Buffers
     /// </summary>
     public void CopyTo(Span<byte> destination)
     {
-      m_Span.CopyTo(destination);
+      RawSpan.CopyTo(destination);
     }
 
     /// <summary>
@@ -308,7 +312,7 @@ namespace Server.Buffers
     /// </summary>
     public void CopyTo(Span<byte> destination, int count)
     {
-      m_Span.Slice(0, Math.Min(count, WrittenCount)).CopyTo(destination);
+      RawSpan.Slice(0, Math.Min(count, WrittenCount)).CopyTo(destination);
     }
   }
 }

@@ -20,7 +20,7 @@ namespace Server.Network
       w.Write((short)t.Offset.Z);
       // 4 bytes unknown?
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMultiTargetReq(NetState ns, MultiTarget t)
@@ -37,7 +37,7 @@ namespace Server.Network
       w.Write((short)t.Offset.Y);
       w.Write((short)t.Offset.Z);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     private static byte[] m_TargetReqPacket;
@@ -63,7 +63,7 @@ namespace Server.Network
       w.Write(t.TargetID);
       w.Write((byte)t.Flags);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
   }
 }

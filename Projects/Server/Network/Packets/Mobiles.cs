@@ -15,7 +15,7 @@ namespace Server.Network
       w.Write(corpse);
       // w.Position++; w.Write(0);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendDeathAnimation(NetState ns, Mobile m)
@@ -29,7 +29,7 @@ namespace Server.Network
       w.Write(m.Serial);
       w.Write((short)((int)m.StrLock << 4 | (int)m.DexLock << 2 | (int)m.IntLock));
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendBondStatus(NetState ns, Serial m, bool bonded)
@@ -43,7 +43,7 @@ namespace Server.Network
       w.Write(m);
       w.Write(bonded);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendPersonalLightLevel(NetState ns, Serial m, sbyte level)
@@ -54,7 +54,7 @@ namespace Server.Network
       w.Write(m);
       w.Write(level);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendPersonalLightLevelZero(NetState ns, Serial m)
@@ -64,7 +64,7 @@ namespace Server.Network
 
       w.Write(m);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendEquipUpdate(NetState ns, Item item)
@@ -90,7 +90,7 @@ namespace Server.Network
       w.Write(parentSerial);
       w.Write((short)hue);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendSwing(NetState ns, Serial attacker, Serial defender)
@@ -102,7 +102,7 @@ namespace Server.Network
       w.Write(attacker);
       w.Write(defender);
 
-      _ = ns.Flush(10);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileMoving(NetState ns, Mobile m, int noto)
@@ -122,7 +122,7 @@ namespace Server.Network
       w.Write((byte)m.GetPacketFlags());
       w.Write((byte)noto);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileMovingOld(NetState ns, Mobile m, int noto)
@@ -142,7 +142,7 @@ namespace Server.Network
       w.Write((byte)m.GetOldPacketFlags());
       w.Write((byte)noto);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendDisplayPaperdoll(NetState ns, Mobile m, string text, bool canLift)
@@ -162,7 +162,7 @@ namespace Server.Network
       w.WriteAsciiFixed(text, 60);
       w.Write(flags);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileName(NetState ns, Mobile m)
@@ -176,7 +176,7 @@ namespace Server.Network
       w.Write(m.Serial);
       w.WriteAsciiFixed(m.Name ?? "", 30);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileAnimation(NetState ns, Mobile m, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
@@ -192,7 +192,7 @@ namespace Server.Network
       w.Write(repeat);
       w.Write((byte)delay);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendNewMobileAnimation(NetState ns, Mobile m, int action, int frameCount, int delay)
@@ -205,7 +205,7 @@ namespace Server.Network
       w.Write((short)frameCount);
       w.Write((byte)delay);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileStatusCompact(NetState ns, Mobile m, bool canBeRenamed = false)
@@ -223,7 +223,7 @@ namespace Server.Network
 
       // w.Write((byte)0); // type
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileExtended(NetState ns, Mobile m)
@@ -321,7 +321,7 @@ namespace Server.Network
         for (int i = 0; i < 15; ++i)
           w.Write((short)m.GetAOSStatus(i));
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileStatus(NetState ns, Mobile beholder, Mobile beheld)
@@ -433,7 +433,7 @@ namespace Server.Network
         for (int i = 0; i < 15; ++i)
           w.Write((short)beheld.GetAOSStatus(i));
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendHealthbarPoison(NetState ns, Mobile m)
@@ -451,7 +451,7 @@ namespace Server.Network
       if (p != null)
         w.Write((byte)(p.Level + 1));
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendHealthbarYellow(NetState ns, Mobile m)
@@ -466,7 +466,7 @@ namespace Server.Network
 
       w.Write(m.Blessed || m.YellowHealthbar);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileUpdate(NetState ns, Mobile m)
@@ -490,7 +490,7 @@ namespace Server.Network
       w.Write((byte)m.Direction);
       w.Write((sbyte)m.Z);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileUpdateOld(NetState ns, Mobile m)
@@ -514,7 +514,7 @@ namespace Server.Network
       w.Write((byte)m.Direction);
       w.Write((sbyte)m.Z);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMobileIncoming(NetState ns, Mobile beholder, Mobile beheld)
@@ -857,7 +857,7 @@ namespace Server.Network
       w.Write(s1);
       w.Write(s2);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
   }
 }

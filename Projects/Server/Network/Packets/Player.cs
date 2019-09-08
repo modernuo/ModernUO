@@ -16,7 +16,7 @@ namespace Server.Network
       w.Write(e);
       w.WriteBigUniNull(text);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     private static byte[] m_DefaultChangeUpdateRangePacket;
@@ -38,13 +38,11 @@ namespace Server.Network
 
     public static void SendChangeUpdateRange(NetState ns, byte range)
     {
-      ReadOnlySpan<byte> span = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0xC8, // Packet ID
         range,
-      };
-
-      ns.Send(span);
+      });
     }
 
     public static void SendChangeCombatant(NetState ns, Serial combatant)
@@ -54,7 +52,7 @@ namespace Server.Network
 
       w.Write(combatant);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendDisplayHuePicker(NetState ns, Serial s, int itemId)
@@ -66,7 +64,7 @@ namespace Server.Network
       w.Position += 2; // w.Write((short)0);
       w.Write((short)itemId);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendUnicodePrompt(NetState ns, Serial player, Serial message)
@@ -81,29 +79,25 @@ namespace Server.Network
       // w.Position += 4; w.Write(0);
       // w.Position += 2; w.Write((short)0);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendDeathStatus_Dead(NetState ns)
     {
-      ReadOnlySpan<byte> input = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0x2C, // Packet ID
         0x00
-      };
-
-      ns.Send(input);
+      });
     }
 
     public static void SendDeathStatus_Alive(NetState ns)
     {
-      ReadOnlySpan<byte> input = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0x2C, // Packet ID
         0x02, // Why not 1?
-      };
-
-      ns.Send(input);
+      });
     }
 
     private static byte[][] m_SpeedControlPackets = new byte[3][];
@@ -114,7 +108,7 @@ namespace Server.Network
 
       if (packet == null)
       {
-        packet = new byte[]
+        m_SpeedControlPackets[0] = packet = new byte[]
         {
           0xBF, // Extended Packet ID
           0x00,
@@ -122,8 +116,6 @@ namespace Server.Network
           0x26,
           0x00, // Disabled
         };
-
-        m_SpeedControlPackets[0] = packet;
       }
 
       ns.Send(packet);
@@ -132,9 +124,10 @@ namespace Server.Network
     public static void SendSpeedControlMount(NetState ns)
     {
       byte[] packet = m_SpeedControlPackets[1];
+
       if (packet == null)
       {
-        packet = new byte[]
+        m_SpeedControlPackets[1] = packet = new byte[]
         {
           0xBF, // Extended Packet ID
           0x00,
@@ -142,8 +135,6 @@ namespace Server.Network
           0x26,
           0x01, // Mount
         };
-
-        m_SpeedControlPackets[1] = packet;
       }
 
       ns.Send(packet);
@@ -152,9 +143,10 @@ namespace Server.Network
     public static void SendSpeedControlWalk(NetState ns)
     {
       byte[] packet = m_SpeedControlPackets[2];
+
       if (packet == null)
       {
-        packet = new byte[]
+        m_SpeedControlPackets[2] = packet = new byte[]
         {
           0xBF, // Extended Packet ID
           0x00,
@@ -162,8 +154,6 @@ namespace Server.Network
           0x26,
           0x02, // Walk
         };
-
-        m_SpeedControlPackets[2] = packet;
       }
 
       ns.Send(packet);
@@ -179,90 +169,76 @@ namespace Server.Network
       w.Write(ability);
       w.Write(active);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendGlobalLightLevel(NetState ns, sbyte level)
     {
-      ReadOnlySpan<byte> span = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0x4F, // Packet ID
         (byte)level
-      };
-
-      ns.Send(span);
+      });
     }
 
     public static void SendLogoutAck(NetState ns)
     {
-      ReadOnlySpan<byte> span = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0xD1, // Packet ID
         0x01
-      };
-
-      ns.Send(span);
+      });
     }
 
     public static void SendWeather(NetState ns, byte type, byte density, byte temperature)
     {
-      ReadOnlySpan<byte> span = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0x65, // Packet ID
         type,
         density,
         temperature,
-      };
-
-      ns.Send(span);
+      });
     }
 
     public static void SendPlayerMove(NetState ns, Direction d)
     {
-      ReadOnlySpan<byte> span = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0x97, // Packet ID
         (byte)d
-      };
-
-      ns.Send(span);
+      });
     }
 
     public static void SendClientVersionReq(NetState ns)
     {
-      ReadOnlySpan<byte> span = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0xBD, // Packet ID
         0x03
-      };
-
-      ns.Send(span);
+      });
     }
 
     public static void SendInWarMode(NetState ns)
     {
-      ReadOnlySpan<byte> span = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0x72, // Packet ID
         0x01, // War mode
         0x00,
         0x32 // ?
-      };
-
-      ns.Send(span);
+      });
     }
 
     public static void SendInPeaceMode(NetState ns)
     {
-      ReadOnlySpan<byte> span = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0x72, // Packet ID
         0x00, // Peace mode
         0x00,
         0x32 // ?
-      };
-
-      ns.Send(span);
+      });
     }
 
     public static void SendRemoveEntity(NetState ns, Serial entity)
@@ -287,7 +263,7 @@ namespace Server.Network
       w.Write((short)map.Width);
       w.Write((short)map.Height);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendSkillsUpdate(NetState ns, Skills skills)
@@ -319,7 +295,7 @@ namespace Server.Network
         w.Write((ushort)s.CapFixedPoint);
       }
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendSkillChange(NetState ns, Skill skill)
@@ -344,7 +320,7 @@ namespace Server.Network
       w.Write((byte)skill.Lock);
       w.Write((ushort)skill.CapFixedPoint);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendLaunchBrowser(NetState ns, string url)
@@ -356,7 +332,7 @@ namespace Server.Network
 
       w.WriteAsciiNull(url ?? "");
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendPlaySound(NetState ns, int soundID, IPoint3D target)
@@ -371,7 +347,7 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((short)target.Z);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendPlayRepeatingSound(NetState ns, int soundID, IPoint3D target)
@@ -386,19 +362,17 @@ namespace Server.Network
       w.Write((short)target.Y);
       w.Write((short)target.Z);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendPlayMusic(NetState ns, MusicName music)
     {
-      ReadOnlySpan<byte> input = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0x6D, // Packet ID
         0x00,
         (byte)music
-      };
-
-      ns.Send(input);
+      });
     }
 
     public static void SendScrollMessage(NetState ns, int type, int tip, string text)
@@ -416,7 +390,7 @@ namespace Server.Network
       w.Write((ushort)text.Length);
       w.WriteAsciiFixed(text, text.Length);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendCurrentTime(NetState ns)
@@ -424,15 +398,13 @@ namespace Server.Network
       // TODO: Don't call UtcNow so readily.
       DateTime now = DateTime.UtcNow;
 
-      Span<byte> input = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0x5B, // Packet ID
         (byte)now.Hour,
         (byte)now.Minute,
         (byte)now.Second
-      };
-
-      ns.Send(input);
+      });
     }
 
     public static void SendPathfindMessage(NetState ns, IPoint3D p)
@@ -444,18 +416,16 @@ namespace Server.Network
       w.Write((short)p.Y);
       w.Write((short)p.Z);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendPingAck(NetState ns, byte ping)
     {
-      ReadOnlySpan<byte> input = stackalloc byte[2]
+      ns.Send(stackalloc byte[2]
       {
         0x73, // Packet ID
         ping,
-      };
-
-      ns.Send(input);
+      });
     }
 
     public static void SendMovementRej(NetState ns, int seq, Mobile m)
@@ -469,19 +439,17 @@ namespace Server.Network
       w.Write((byte)m.Direction);
       w.Write((sbyte)m.Z);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendMovementAck(NetState ns, byte seq, byte noto)
     {
-      ReadOnlySpan<byte> input = stackalloc byte[3]
+      ns.Send(stackalloc byte[3]
       {
         0x22,
         seq,
         noto,
-      };
-
-      ns.Send(input);
+      });
     }
 
     public static void SendLoginConfirm(NetState ns, Mobile m)
@@ -508,7 +476,7 @@ namespace Server.Network
       w.Write((short)(map?.Width ?? 6144));
       w.Write((short)(map?.Height ?? 4096));
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendLoginComplete(NetState ns)
@@ -518,16 +486,14 @@ namespace Server.Network
 
     public static void SendClearWeaponAbility(NetState ns)
     {
-      ReadOnlySpan<byte> input = stackalloc byte[]
+      ns.Send(stackalloc byte[]
       {
         0xBF, // Extended Packet ID
         0x00,
         0x05, // Length
         0x21, // Command
         0x00
-      };
-
-      ns.Send(input);
+      });
     }
   }
 }

@@ -27,7 +27,7 @@ namespace Server.Network
       w.Write((byte)1);
       w.WriteAsciiFixed(name ?? "", 30);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendCloseSecureTrade(NetState ns, Serial cont)
@@ -39,7 +39,7 @@ namespace Server.Network
       w.Write((byte)1); // Close
       w.Write(cont);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendUpdateSecureTrade(NetState ns, Serial cont, TradeFlag flag, int first, int second)
@@ -53,7 +53,7 @@ namespace Server.Network
       w.Write(first);
       w.Write(second);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendSecureTradeEquip(NetState ns, Item item, Serial m)
@@ -70,7 +70,7 @@ namespace Server.Network
       w.Write(m);
       w.Write((short)item.Hue);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendSecureTradeEquip6017(NetState ns, Item item, Serial m)
@@ -88,7 +88,7 @@ namespace Server.Network
       w.Position++; // Write((byte)0) Grid Location?
       w.Write((short)item.Hue);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
   }
 }

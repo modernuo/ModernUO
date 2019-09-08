@@ -34,7 +34,7 @@ namespace Server.Network
         w.Write((ushort)bis.Hue);
       }
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendVendorBuyContent6017(NetState ns, IList<BuyItemState> list)
@@ -65,7 +65,7 @@ namespace Server.Network
         w.Write((ushort)bis.Hue);
       }
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendDisplayBuyList(NetState ns, Serial vendor)
@@ -76,7 +76,7 @@ namespace Server.Network
       w.Write(vendor);
       w.Write((short)0x30); // buy window id?
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendDisplayBuyListHS(NetState ns, Serial vendor)
@@ -88,7 +88,7 @@ namespace Server.Network
       w.Write((short)0x30); // buy window id?
       //w.Write((short)0x00); // Unknown
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendVendorBuyList(NetState ns, Mobile vendor, IList<BuyItemState> list)
@@ -150,7 +150,7 @@ namespace Server.Network
       w.Position = 1;
       w.Write((ushort)w.WrittenCount);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendEndVendorBuyOrSell(NetState ns, Serial vendor)
@@ -160,7 +160,7 @@ namespace Server.Network
 
       w.Write(vendor);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
   }
 }

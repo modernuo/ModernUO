@@ -126,7 +126,7 @@ namespace Server.Network
       w.Write((short)item.Hue);
       w.Write((byte)item.GetPacketFlags());
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void WorldItemHS(NetState ns, Item item)
@@ -176,7 +176,7 @@ namespace Server.Network
       w.Write((short)item.Hue);
       w.Write((byte)item.GetPacketFlags());
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     private static byte[][] m_LiftRejPackets = new byte[(int)Enum.GetValues(typeof(LRReason)).Cast<LRReason>().Max()][];
@@ -202,33 +202,31 @@ namespace Server.Network
 
     public static void DisplaySpellbook(NetState ns, Serial s)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(7));
+      SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0x24); // Packet ID
-
 
       w.Write(s);
       w.Write((short)-1);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void DisplaySpellbookHS(NetState ns, Serial s)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(9));
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x24); // Packet ID
-
 
       w.Write(s);
       w.Write((short)-1);
       w.Write((short)0x7D);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SpellbookContent(NetState ns, Serial s, int count, int offset, ulong content)
     {
       int length = 5 + count * 19;
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
       w.Write((short)length); // Length
 
@@ -248,13 +246,13 @@ namespace Server.Network
           w.Position += 2;
         }
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
     {
       int length = 5 + count * 20;
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
       w.Write((short)length); // Length
 
@@ -274,12 +272,12 @@ namespace Server.Network
           w.Position += 2;
         }
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void NewSpellbookContent(NetState ns, Serial s, int graphic, int offset, ulong content)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(23));
+      SpanWriter w = new SpanWriter(stackalloc byte[23]);
       w.Write((byte)0x3C); // Packet ID
       w.Write((short)23); // Length
 
@@ -294,12 +292,12 @@ namespace Server.Network
       for (int i = 0; i < 8; ++i)
         w.Write((byte)(content >> (i * 8)));
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
 
     public static void SendDragEffect(NetState ns, IEntity src, IEntity trg, int itemID, int hue, int amount)
     {
-      SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(26));
+      SpanWriter w = new SpanWriter(stackalloc byte[26]);
       w.Write((byte)0x23); // Packet ID
 
       w.Write((short)itemID);
@@ -315,7 +313,7 @@ namespace Server.Network
       w.Write((short)trg.Y);
       w.Write((sbyte)trg.Z);
 
-      ns.Send(w.Span);
+      ns.Send(w.RawSpan);
     }
   }
 }
