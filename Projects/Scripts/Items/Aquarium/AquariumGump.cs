@@ -12,7 +12,7 @@ namespace Server.Items
       m_Aquarium = aquarium;
 
       Closable = true;
-      SetDisposable(true);
+      Disposable = true;
       Draggable = true;
       Resizable = false;
 

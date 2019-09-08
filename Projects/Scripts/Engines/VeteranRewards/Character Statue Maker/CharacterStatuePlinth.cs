@@ -100,7 +100,7 @@ namespace Server.Items
       public CharacterPlinthGump(CharacterStatue statue) : base(60, 30)
       {
         Closable = true;
-        SetDisposable(true);
+        Disposable = true;
         Draggable = true;
         Resizable = false;
 

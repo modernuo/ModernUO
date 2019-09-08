@@ -92,7 +92,7 @@ namespace Server.Items
         m_Deed = deed;
 
         Closable = true;
-        SetDisposable(true);
+        Disposable = true;
         Draggable = true;
         Resizable = false;
 

@@ -7,7 +7,7 @@ namespace Server.Gumps
     public BaseConfirmGump() : base(120, 50)
     {
       Closable = false;
-      SetDisposable(true);
+      Disposable = true;
       Draggable = true;
       Resizable = false;
 

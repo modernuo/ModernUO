@@ -13,7 +13,7 @@ namespace Server.Gumps
       m_Addon = addon;
 
       Closable = true;
-      SetDisposable(true);
+      Disposable = true;
       Draggable = true;
       Resizable = false;
 
