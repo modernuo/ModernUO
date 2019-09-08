@@ -66,7 +66,7 @@ namespace Server.Gumps
       return m_Info.Level == level ? 4006 : 4005;
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       SecureLevel level = m_Info.Level;
 

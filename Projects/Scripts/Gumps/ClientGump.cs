@@ -128,7 +128,7 @@ namespace Server.Gumps
       to.SendGump(new ClientGump(to, m_State, te == null ? "" : te.Text));
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (m_State == null)
         return;

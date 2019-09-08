@@ -38,10 +38,7 @@ namespace Server.Gumps
       set => Delta(ref m_Serial, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ itemproperty {m_Serial} }}";
-    }
+    public override string Compile() => $"{{ itemproperty {m_Serial} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

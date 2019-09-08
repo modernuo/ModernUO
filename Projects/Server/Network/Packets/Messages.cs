@@ -1,7 +1,17 @@
+using System;
+using Server.Buffers;
 using System.Collections.Generic;
 
 namespace Server.Network
 {
+  [Flags]
+  public enum AffixType : byte
+  {
+    Append = 0x00,
+    Prepend = 0x01,
+    System = 0x02
+  }
+
   public static partial class Packets
   {
     private static Dictionary<int, byte[]> m_MessageLocalizedPackets = new Dictionary<int, byte[]>();
@@ -52,6 +62,33 @@ namespace Server.Network
       w.Write(number);
       w.WriteAsciiFixed(name ?? "", 30);
       w.WriteLittleUniNull(args ?? "");
+
+      ns.Send(w.Span);
+    }
+
+    public static void SendMessageLocalizedAffix(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, int number,
+      string name, AffixType affixType, string affix, string args)
+    {
+      int length = 52 + affix.Length + args.Length * 2;
+
+      SpanWriter w = new SpanWriter(stackalloc byte[length]);
+      w.Write((byte)0xCC); // Packet ID
+      w.Write((short)length); // Length
+
+      if (affix == null) affix = "";
+      if (args == null) args = "";
+      if (hue == 0) hue = 0x3B2;
+
+      w.Write(serial);
+      w.Write((short)graphic);
+      w.Write((byte)type);
+      w.Write((short)hue);
+      w.Write((short)font);
+      w.Write(number);
+      w.Write((byte)affixType);
+      w.WriteAsciiFixed(name ?? "", 30);
+      w.WriteAsciiNull(affix);
+      w.WriteBigUniNull(args); // Not little endian? Ugh
 
       ns.Send(w.Span);
     }

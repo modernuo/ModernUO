@@ -29,7 +29,7 @@ namespace Server.Multis
       AddButton(20, 125, 4005, 4007, 1);
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (info.ButtonID == 2)
         m_Boat.EndDryDock(m_From);

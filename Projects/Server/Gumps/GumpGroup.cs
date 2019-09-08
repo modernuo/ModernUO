@@ -38,10 +38,7 @@ namespace Server.Gumps
       set => Delta(ref m_Group, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ group {m_Group} }}";
-    }
+    public override string Compile() => $"{{ group {m_Group} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

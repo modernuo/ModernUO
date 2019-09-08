@@ -1,4 +1,5 @@
 using System;
+using Server.Buffers;
 
 namespace Server.Network
 {
@@ -10,7 +11,7 @@ namespace Server.Network
     {
       if (m_MapPatchesPacket == null)
       {
-        SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(33));
+        SpanWriter w = new SpanWriter(m_MapPatchesPacket = new byte[33]);
         w.Write((byte)0xBF); // Extended Packet ID
         w.Write((ushort)33); // Length
 
@@ -28,8 +29,6 @@ namespace Server.Network
 
         w.Write(Map.Malas.Tiles.Patch.StaticBlocks);
         w.Write(Map.Malas.Tiles.Patch.LandBlocks);
-
-        m_MapPatchesPacket = CreateStaticPacket(w.Span, true);
       }
 
       ns.Send(m_MapPatchesPacket);

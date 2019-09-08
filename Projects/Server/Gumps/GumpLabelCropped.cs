@@ -76,10 +76,7 @@ namespace Server.Gumps
       set => Delta(ref m_Text, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ croppedtext {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {Parent.Intern(m_Text)} }}";
-    }
+    public override string Compile() => $"{{ croppedtext {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {Parent.Intern(m_Text)} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

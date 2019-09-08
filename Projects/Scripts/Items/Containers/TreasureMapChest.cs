@@ -7,40 +7,40 @@ using Server.Network;
 
 namespace Server.Items
 {
-  public class TreasureMapChest : LockableContainer
-  {
-    private List<Item> m_Lifted = new List<Item>();
-
-    private Timer m_Timer;
-
-    [Constructible]
-    public TreasureMapChest(int level) : this(null, level)
+    public class TreasureMapChest : LockableContainer
     {
-    }
+        private List<Item> m_Lifted = new List<Item>();
 
-    public TreasureMapChest(Mobile owner, int level, bool temporary = false) : base(0xE40)
-    {
-      Owner = owner;
-      Level = level;
-      DeleteTime = DateTime.UtcNow + TimeSpan.FromHours(3.0);
+        private Timer m_Timer;
 
-      Temporary = temporary;
-      Guardians = new List<Mobile>();
+        [Constructible]
+        public TreasureMapChest(int level) : this(null, level)
+        {
+        }
 
-      m_Timer = new DeleteTimer(this, DeleteTime);
-      m_Timer.Start();
+        public TreasureMapChest(Mobile owner, int level, bool temporary = false) : base(0xE40)
+        {
+            Owner = owner;
+            Level = level;
+            DeleteTime = DateTime.UtcNow + TimeSpan.FromHours(3.0);
 
-      Fill(this, level);
-    }
+            Temporary = temporary;
+            Guardians = new List<Mobile>();
 
-    public TreasureMapChest(Serial serial) : base(serial)
-    {
-    }
+            m_Timer = new DeleteTimer(this, DeleteTime);
+            m_Timer.Start();
 
-    public override int LabelNumber => 3000541;
+            Fill(this, level);
+        }
 
-    public static Type[] Artifacts{ get; } =
-    {
+        public TreasureMapChest(Serial serial) : base(serial)
+        {
+        }
+
+        public override int LabelNumber => 3000541;
+
+        public static Type[] Artifacts { get; } =
+        {
       typeof(CandelabraOfSouls), typeof(GoldBricks), typeof(PhillipsWoodenSteed),
       typeof(ArcticDeathDealer), typeof(BlazeOfDeath), typeof(BurglarsBandana),
       typeof(CavortingClub), typeof(DreadPirateHat),
@@ -50,525 +50,525 @@ namespace Server.Items
       typeof(ColdBlood), typeof(AlchemistsBauble)
     };
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Level{ get; set; }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Level { get; set; }
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public Mobile Owner{ get; set; }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public Mobile Owner { get; set; }
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public DateTime DeleteTime{ get; private set; }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public DateTime DeleteTime { get; private set; }
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool Temporary{ get; set; }
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool Temporary { get; set; }
 
-    public List<Mobile> Guardians{ get; private set; }
+        public List<Mobile> Guardians { get; private set; }
 
-    public override bool IsDecoContainer => false;
+        public override bool IsDecoContainer => false;
 
-    private static void GetRandomAOSStats(out int attributeCount, out int min, out int max)
-    {
-      int rnd = Utility.Random(15);
-
-      if (Core.SE)
-      {
-        if (rnd < 1)
+        private static void GetRandomAOSStats(out int attributeCount, out int min, out int max)
         {
-          attributeCount = Utility.RandomMinMax(3, 5);
-          min = 50;
-          max = 100;
-        }
-        else if (rnd < 3)
-        {
-          attributeCount = Utility.RandomMinMax(2, 5);
-          min = 40;
-          max = 80;
-        }
-        else if (rnd < 6)
-        {
-          attributeCount = Utility.RandomMinMax(2, 4);
-          min = 30;
-          max = 60;
-        }
-        else if (rnd < 10)
-        {
-          attributeCount = Utility.RandomMinMax(1, 3);
-          min = 20;
-          max = 40;
-        }
-        else
-        {
-          attributeCount = 1;
-          min = 10;
-          max = 20;
-        }
-      }
-      else
-      {
-        if (rnd < 1)
-        {
-          attributeCount = Utility.RandomMinMax(2, 5);
-          min = 20;
-          max = 70;
-        }
-        else if (rnd < 3)
-        {
-          attributeCount = Utility.RandomMinMax(2, 4);
-          min = 20;
-          max = 50;
-        }
-        else if (rnd < 6)
-        {
-          attributeCount = Utility.RandomMinMax(2, 3);
-          min = 20;
-          max = 40;
-        }
-        else if (rnd < 10)
-        {
-          attributeCount = Utility.RandomMinMax(1, 2);
-          min = 10;
-          max = 30;
-        }
-        else
-        {
-          attributeCount = 1;
-          min = 10;
-          max = 20;
-        }
-      }
-    }
+            int rnd = Utility.Random(15);
 
-    public static void Fill(LockableContainer cont, int level)
-    {
-      cont.Movable = false;
-      cont.Locked = true;
-      int numberItems;
-
-      if (level == 0)
-      {
-        cont.LockLevel = 0; // Can't be unlocked
-
-        cont.DropItem(new Gold(Utility.RandomMinMax(50, 100)));
-
-        if (Utility.RandomDouble() < 0.75)
-          cont.DropItem(new TreasureMap(0, Map.Trammel));
-      }
-      else
-      {
-        cont.TrapType = TrapType.ExplosionTrap;
-        cont.TrapPower = level * 25;
-        cont.TrapLevel = level;
-
-        switch (level)
-        {
-          case 1:
-            cont.RequiredSkill = 36;
-            break;
-          case 2:
-            cont.RequiredSkill = 76;
-            break;
-          case 3:
-            cont.RequiredSkill = 84;
-            break;
-          case 4:
-            cont.RequiredSkill = 92;
-            break;
-          case 5:
-            cont.RequiredSkill = 100;
-            break;
-          case 6:
-            cont.RequiredSkill = 100;
-            break;
-        }
-
-        cont.LockLevel = cont.RequiredSkill - 10;
-        cont.MaxLockLevel = cont.RequiredSkill + 40;
-
-        //Publish 67 gold change
-        //if ( Core.SA )
-        //	cont.DropItem( new Gold( level * 5000 ) );
-        //else
-        cont.DropItem(new Gold(level * 1000));
-
-        for (int i = 0; i < level * 5; ++i)
-          cont.DropItem(Loot.RandomScroll(0, 63, SpellbookType.Regular));
-
-        if (Core.SE)
-        {
-          switch (level)
-          {
-            case 1:
-              numberItems = 5;
-              break;
-            case 2:
-              numberItems = 10;
-              break;
-            case 3:
-              numberItems = 15;
-              break;
-            case 4:
-              numberItems = 38;
-              break;
-            case 5:
-              numberItems = 50;
-              break;
-            case 6:
-              numberItems = 60;
-              break;
-            default:
-              numberItems = 0;
-              break;
-          }
-
-          ;
-        }
-        else
-        {
-          numberItems = level * 6;
-        }
-
-        for (int i = 0; i < numberItems; ++i)
-        {
-          Item item;
-
-          if (Core.AOS)
-            item = Loot.RandomArmorOrShieldOrWeaponOrJewelry();
-          else
-            item = Loot.RandomArmorOrShieldOrWeapon();
-
-          if (item is BaseWeapon weapon)
-          {
-            if (Core.AOS)
+            if (Core.SE)
             {
-              GetRandomAOSStats(out int attributeCount, out int min, out int max);
-              BaseRunicTool.ApplyAttributesTo(weapon, attributeCount, min, max);
+                if (rnd < 1)
+                {
+                    attributeCount = Utility.RandomMinMax(3, 5);
+                    min = 50;
+                    max = 100;
+                }
+                else if (rnd < 3)
+                {
+                    attributeCount = Utility.RandomMinMax(2, 5);
+                    min = 40;
+                    max = 80;
+                }
+                else if (rnd < 6)
+                {
+                    attributeCount = Utility.RandomMinMax(2, 4);
+                    min = 30;
+                    max = 60;
+                }
+                else if (rnd < 10)
+                {
+                    attributeCount = Utility.RandomMinMax(1, 3);
+                    min = 20;
+                    max = 40;
+                }
+                else
+                {
+                    attributeCount = 1;
+                    min = 10;
+                    max = 20;
+                }
             }
             else
             {
-              weapon.DamageLevel = (WeaponDamageLevel)Utility.Random(6);
-              weapon.AccuracyLevel = (WeaponAccuracyLevel)Utility.Random(6);
-              weapon.DurabilityLevel = (WeaponDurabilityLevel)Utility.Random(6);
+                if (rnd < 1)
+                {
+                    attributeCount = Utility.RandomMinMax(2, 5);
+                    min = 20;
+                    max = 70;
+                }
+                else if (rnd < 3)
+                {
+                    attributeCount = Utility.RandomMinMax(2, 4);
+                    min = 20;
+                    max = 50;
+                }
+                else if (rnd < 6)
+                {
+                    attributeCount = Utility.RandomMinMax(2, 3);
+                    min = 20;
+                    max = 40;
+                }
+                else if (rnd < 10)
+                {
+                    attributeCount = Utility.RandomMinMax(1, 2);
+                    min = 10;
+                    max = 30;
+                }
+                else
+                {
+                    attributeCount = 1;
+                    min = 10;
+                    max = 20;
+                }
             }
+        }
 
-            cont.DropItem(weapon);
-          }
-          else if (item is BaseArmor armor)
-          {
-            if (Core.AOS)
+        public static void Fill(LockableContainer cont, int level)
+        {
+            cont.Movable = false;
+            cont.Locked = true;
+            int numberItems;
+
+            if (level == 0)
             {
-              GetRandomAOSStats(out int attributeCount, out int min, out int max);
-              BaseRunicTool.ApplyAttributesTo(armor, attributeCount, min, max);
+                cont.LockLevel = 0; // Can't be unlocked
+
+                cont.DropItem(new Gold(Utility.RandomMinMax(50, 100)));
+
+                if (Utility.RandomDouble() < 0.75)
+                    cont.DropItem(new TreasureMap(0, Map.Trammel));
             }
             else
             {
-              armor.ProtectionLevel = (ArmorProtectionLevel)Utility.Random(6);
-              armor.Durability = (ArmorDurabilityLevel)Utility.Random(6);
+                cont.TrapType = TrapType.ExplosionTrap;
+                cont.TrapPower = level * 25;
+                cont.TrapLevel = level;
+
+                switch (level)
+                {
+                    case 1:
+                        cont.RequiredSkill = 36;
+                        break;
+                    case 2:
+                        cont.RequiredSkill = 76;
+                        break;
+                    case 3:
+                        cont.RequiredSkill = 84;
+                        break;
+                    case 4:
+                        cont.RequiredSkill = 92;
+                        break;
+                    case 5:
+                        cont.RequiredSkill = 100;
+                        break;
+                    case 6:
+                        cont.RequiredSkill = 100;
+                        break;
+                }
+
+                cont.LockLevel = cont.RequiredSkill - 10;
+                cont.MaxLockLevel = cont.RequiredSkill + 40;
+
+                //Publish 67 gold change
+                //if ( Core.SA )
+                //	cont.DropItem( new Gold( level * 5000 ) );
+                //else
+                cont.DropItem(new Gold(level * 1000));
+
+                for (int i = 0; i < level * 5; ++i)
+                    cont.DropItem(Loot.RandomScroll(0, 63, SpellbookType.Regular));
+
+                if (Core.SE)
+                {
+                    switch (level)
+                    {
+                        case 1:
+                            numberItems = 5;
+                            break;
+                        case 2:
+                            numberItems = 10;
+                            break;
+                        case 3:
+                            numberItems = 15;
+                            break;
+                        case 4:
+                            numberItems = 38;
+                            break;
+                        case 5:
+                            numberItems = 50;
+                            break;
+                        case 6:
+                            numberItems = 60;
+                            break;
+                        default:
+                            numberItems = 0;
+                            break;
+                    }
+
+                  ;
+                }
+                else
+                {
+                    numberItems = level * 6;
+                }
+
+                for (int i = 0; i < numberItems; ++i)
+                {
+                    Item item;
+
+                    if (Core.AOS)
+                        item = Loot.RandomArmorOrShieldOrWeaponOrJewelry();
+                    else
+                        item = Loot.RandomArmorOrShieldOrWeapon();
+
+                    if (item is BaseWeapon weapon)
+                    {
+                        if (Core.AOS)
+                        {
+                            GetRandomAOSStats(out int attributeCount, out int min, out int max);
+                            BaseRunicTool.ApplyAttributesTo(weapon, attributeCount, min, max);
+                        }
+                        else
+                        {
+                            weapon.DamageLevel = (WeaponDamageLevel)Utility.Random(6);
+                            weapon.AccuracyLevel = (WeaponAccuracyLevel)Utility.Random(6);
+                            weapon.DurabilityLevel = (WeaponDurabilityLevel)Utility.Random(6);
+                        }
+
+                        cont.DropItem(weapon);
+                    }
+                    else if (item is BaseArmor armor)
+                    {
+                        if (Core.AOS)
+                        {
+                            GetRandomAOSStats(out int attributeCount, out int min, out int max);
+                            BaseRunicTool.ApplyAttributesTo(armor, attributeCount, min, max);
+                        }
+                        else
+                        {
+                            armor.ProtectionLevel = (ArmorProtectionLevel)Utility.Random(6);
+                            armor.Durability = (ArmorDurabilityLevel)Utility.Random(6);
+                        }
+
+                        cont.DropItem(armor);
+                    }
+                    else if (item is BaseHat hat)
+                    {
+                        if (Core.AOS)
+                        {
+                            GetRandomAOSStats(out int attributeCount, out int min, out int max);
+                            BaseRunicTool.ApplyAttributesTo(hat, attributeCount, min, max);
+                        }
+
+                        cont.DropItem(hat);
+                    }
+                    else if (item is BaseJewel jewel)
+                    {
+                        GetRandomAOSStats(out int attributeCount, out int min, out int max);
+                        BaseRunicTool.ApplyAttributesTo(jewel, attributeCount, min, max);
+
+                        cont.DropItem(jewel);
+                    }
+                }
             }
 
-            cont.DropItem(armor);
-          }
-          else if (item is BaseHat hat)
-          {
-            if (Core.AOS)
+            int reagents;
+            if (level == 0)
+                reagents = 12;
+            else
+                reagents = level * 3;
+
+            for (int i = 0; i < reagents; i++)
             {
-              GetRandomAOSStats(out int attributeCount, out int min, out int max);
-              BaseRunicTool.ApplyAttributesTo(hat, attributeCount, min, max);
+                Item item = Loot.RandomPossibleReagent();
+                item.Amount = Utility.RandomMinMax(40, 60);
+                cont.DropItem(item);
             }
 
-            cont.DropItem(hat);
-          }
-          else if (item is BaseJewel jewel)
-          {
-            GetRandomAOSStats(out int attributeCount, out int min, out int max);
-            BaseRunicTool.ApplyAttributesTo(jewel, attributeCount, min, max);
+            int gems;
+            if (level == 0)
+                gems = 2;
+            else
+                gems = level * 3;
 
-            cont.DropItem(jewel);
-          }
+            for (int i = 0; i < gems; i++)
+            {
+                Item item = Loot.RandomGem();
+                cont.DropItem(item);
+            }
+
+            if (level == 6 && Core.AOS)
+                cont.DropItem((Item)Activator.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]));
         }
-      }
 
-      int reagents;
-      if (level == 0)
-        reagents = 12;
-      else
-        reagents = level * 3;
-
-      for (int i = 0; i < reagents; i++)
-      {
-        Item item = Loot.RandomPossibleReagent();
-        item.Amount = Utility.RandomMinMax(40, 60);
-        cont.DropItem(item);
-      }
-
-      int gems;
-      if (level == 0)
-        gems = 2;
-      else
-        gems = level * 3;
-
-      for (int i = 0; i < gems; i++)
-      {
-        Item item = Loot.RandomGem();
-        cont.DropItem(item);
-      }
-
-      if (level == 6 && Core.AOS)
-        cont.DropItem((Item)Activator.CreateInstance(Artifacts[Utility.Random(Artifacts.Length)]));
-    }
-
-    public override bool CheckLocked(Mobile from)
-    {
-      if (!Locked)
-        return false;
-
-      if (Level == 0 && from.AccessLevel < AccessLevel.GameMaster)
-      {
-        foreach (Mobile m in Guardians)
-          if (m.Alive)
-          {
-            from.SendLocalizedMessage(
-              1046448); // You must first kill the guardians before you may open this chest.
-            return true;
-          }
-
-        LockPick(from);
-        return false;
-      }
-
-      return base.CheckLocked(from);
-    }
-
-    private bool CheckLoot(Mobile m, bool criminalAction)
-    {
-      if (Temporary)
-        return false;
-
-      if (m.AccessLevel >= AccessLevel.GameMaster || Owner == null || m == Owner)
-        return true;
-
-      if (Party.Get(Owner)?.Contains(m) == true)
-        return true;
-
-      Map map = Map;
-
-      if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
-      {
-        if (criminalAction)
-          m.CriminalAction(true);
-        else
-          m.SendLocalizedMessage(1010630); // Taking someone else's treasure is a criminal offense!
-
-        return true;
-      }
-
-      m.SendLocalizedMessage(1010631); // You did not discover this chest!
-      return false;
-    }
-
-    public override bool CheckItemUse(Mobile from, Item item)
-    {
-      return CheckLoot(from, item != this) && base.CheckItemUse(from, item);
-    }
-
-    public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
-    {
-      return CheckLoot(from, true) && base.CheckLift(from, item, ref reject);
-    }
-
-    public override void OnItemLifted(Mobile from, Item item)
-    {
-      bool notYetLifted = !m_Lifted.Contains(item);
-
-      from.RevealingAction();
-
-      if (notYetLifted)
-      {
-        m_Lifted.Add(item);
-
-        if (0.1 >= Utility.RandomDouble()) // 10% chance to spawn a new monster
-          TreasureMap.Spawn(Level, GetWorldLocation(), Map, from, false);
-      }
-
-      base.OnItemLifted(from, item);
-    }
-
-    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
-    {
-      if (m.AccessLevel < AccessLevel.GameMaster)
-      {
-        m.SendLocalizedMessage(1048122, "", 0x8A5); // The chest refuses to be filled with treasure again.
-        return false;
-      }
-
-      return base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
-    }
-
-    public override void Serialize(GenericWriter writer)
-    {
-      base.Serialize(writer);
-
-      writer.Write(2); // version
-
-      writer.Write(Guardians, true);
-      writer.Write(Temporary);
-
-      writer.Write(Owner);
-
-      writer.Write(Level);
-      writer.WriteDeltaTime(DeleteTime);
-      writer.Write(m_Lifted, true);
-    }
-
-    public override void Deserialize(GenericReader reader)
-    {
-      base.Deserialize(reader);
-
-      int version = reader.ReadInt();
-
-      switch (version)
-      {
-        case 2:
+        public override bool CheckLocked(Mobile from)
         {
-          Guardians = reader.ReadStrongMobileList();
-          Temporary = reader.ReadBool();
+            if (!Locked)
+                return false;
 
-          goto case 1;
+            if (Level == 0 && from.AccessLevel < AccessLevel.GameMaster)
+            {
+                foreach (Mobile m in Guardians)
+                    if (m.Alive)
+                    {
+                        from.SendLocalizedMessage(
+                          1046448); // You must first kill the guardians before you may open this chest.
+                        return true;
+                    }
+
+                LockPick(from);
+                return false;
+            }
+
+            return base.CheckLocked(from);
         }
-        case 1:
+
+        private bool CheckLoot(Mobile m, bool criminalAction)
         {
-          Owner = reader.ReadMobile();
+            if (Temporary)
+                return false;
 
-          goto case 0;
+            if (m.AccessLevel >= AccessLevel.GameMaster || Owner == null || m == Owner)
+                return true;
+
+            if (Party.Get(Owner)?.Contains(m) == true)
+                return true;
+
+            Map map = Map;
+
+            if ((map?.Rules & MapRules.HarmfulRestrictions) == 0)
+            {
+                if (criminalAction)
+                    m.CriminalAction(true);
+                else
+                    m.SendLocalizedMessage(1010630); // Taking someone else's treasure is a criminal offense!
+
+                return true;
+            }
+
+            m.SendLocalizedMessage(1010631); // You did not discover this chest!
+            return false;
         }
-        case 0:
+
+        public override bool CheckItemUse(Mobile from, Item item)
         {
-          Level = reader.ReadInt();
-          DeleteTime = reader.ReadDeltaTime();
-          m_Lifted = reader.ReadStrongItemList();
-
-          if (version < 2)
-            Guardians = new List<Mobile>();
-
-          break;
+            return CheckLoot(from, item != this) && base.CheckItemUse(from, item);
         }
-      }
 
-      if (!Temporary)
-      {
-        m_Timer = new DeleteTimer(this, DeleteTime);
-        m_Timer.Start();
-      }
-      else
-      {
-        Delete();
-      }
+        public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
+        {
+            return CheckLoot(from, true) && base.CheckLift(from, item, ref reject);
+        }
+
+        public override void OnItemLifted(Mobile from, Item item)
+        {
+            bool notYetLifted = !m_Lifted.Contains(item);
+
+            from.RevealingAction();
+
+            if (notYetLifted)
+            {
+                m_Lifted.Add(item);
+
+                if (0.1 >= Utility.RandomDouble()) // 10% chance to spawn a new monster
+                    TreasureMap.Spawn(Level, GetWorldLocation(), Map, from, false);
+            }
+
+            base.OnItemLifted(from, item);
+        }
+
+        public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
+        {
+            if (m.AccessLevel < AccessLevel.GameMaster)
+            {
+                m.SendLocalizedMessage(1048122, "", 0x8A5); // The chest refuses to be filled with treasure again.
+                return false;
+            }
+
+            return base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
+        }
+
+        public override void Serialize(GenericWriter writer)
+        {
+            base.Serialize(writer);
+
+            writer.Write(2); // version
+
+            writer.Write(Guardians, true);
+            writer.Write(Temporary);
+
+            writer.Write(Owner);
+
+            writer.Write(Level);
+            writer.WriteDeltaTime(DeleteTime);
+            writer.Write(m_Lifted, true);
+        }
+
+        public override void Deserialize(GenericReader reader)
+        {
+            base.Deserialize(reader);
+
+            int version = reader.ReadInt();
+
+            switch (version)
+            {
+                case 2:
+                    {
+                        Guardians = reader.ReadStrongMobileList();
+                        Temporary = reader.ReadBool();
+
+                        goto case 1;
+                    }
+                case 1:
+                    {
+                        Owner = reader.ReadMobile();
+
+                        goto case 0;
+                    }
+                case 0:
+                    {
+                        Level = reader.ReadInt();
+                        DeleteTime = reader.ReadDeltaTime();
+                        m_Lifted = reader.ReadStrongItemList();
+
+                        if (version < 2)
+                            Guardians = new List<Mobile>();
+
+                        break;
+                    }
+            }
+
+            if (!Temporary)
+            {
+                m_Timer = new DeleteTimer(this, DeleteTime);
+                m_Timer.Start();
+            }
+            else
+            {
+                Delete();
+            }
+        }
+
+        public override void OnAfterDelete()
+        {
+            m_Timer?.Stop();
+
+            m_Timer = null;
+
+            base.OnAfterDelete();
+        }
+
+        public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
+        {
+            base.GetContextMenuEntries(from, list);
+
+            if (from.Alive)
+                list.Add(new RemoveEntry(from, this));
+        }
+
+        public void BeginRemove(Mobile from)
+        {
+            if (!from.Alive)
+                return;
+
+            from.CloseGump<RemoveGump>();
+            from.SendGump(new RemoveGump(from, this));
+        }
+
+        public void EndRemove(Mobile from)
+        {
+            if (Deleted || from != Owner || !from.InRange(GetWorldLocation(), 3))
+                return;
+
+            from.SendLocalizedMessage(1048124, "", 0x8A5); // The old, rusted chest crumbles when you hit it.
+            Delete();
+        }
+
+        private class RemoveGump : Gump
+        {
+            private TreasureMapChest m_Chest;
+            private Mobile m_From;
+
+            public RemoveGump(Mobile from, TreasureMapChest chest) : base(15, 15)
+            {
+                m_From = from;
+                m_Chest = chest;
+
+                Closable = false;
+                SetDisposable(false);
+
+                AddPage(0);
+
+                AddBackground(30, 0, 240, 240, 2620);
+
+                AddHtmlLocalized(45, 15, 200, 80, 1048125, 0xFFFFFF); // When this treasure chest is removed, any items still inside of it will be lost.
+                AddHtmlLocalized(45, 95, 200, 60, 1048126, 0xFFFFFF); // Are you certain you're ready to remove this chest?
+
+                AddButton(40, 153, 4005, 4007, 1);
+                AddHtmlLocalized(75, 155, 180, 40, 1048127, 0xFFFFFF); // Remove the Treasure Chest
+
+                AddButton(40, 195, 4005, 4007, 2);
+                AddHtmlLocalized(75, 197, 180, 35, 1006045, 0xFFFFFF); // Cancel
+            }
+
+            public override void OnResponse(NetState sender, RelayInfo info)
+            {
+                if (info.ButtonID == 1)
+                    m_Chest.EndRemove(m_From);
+            }
+        }
+
+        private class RemoveEntry : ContextMenuEntry
+        {
+            private TreasureMapChest m_Chest;
+            private Mobile m_From;
+
+            public RemoveEntry(Mobile from, TreasureMapChest chest) : base(6149, 3)
+            {
+                m_From = from;
+                m_Chest = chest;
+
+                Enabled = from == chest.Owner;
+            }
+
+            public override void OnClick()
+            {
+                if (m_Chest.Deleted || m_From != m_Chest.Owner || !m_From.CheckAlive())
+                    return;
+
+                m_Chest.BeginRemove(m_From);
+            }
+        }
+
+        private class DeleteTimer : Timer
+        {
+            private Item m_Item;
+
+            public DeleteTimer(Item item, DateTime time) : base(time - DateTime.UtcNow)
+            {
+                m_Item = item;
+                Priority = TimerPriority.OneMinute;
+            }
+
+            protected override void OnTick()
+            {
+                m_Item.Delete();
+            }
+        }
     }
-
-    public override void OnAfterDelete()
-    {
-      m_Timer?.Stop();
-
-      m_Timer = null;
-
-      base.OnAfterDelete();
-    }
-
-    public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
-    {
-      base.GetContextMenuEntries(from, list);
-
-      if (from.Alive)
-        list.Add(new RemoveEntry(from, this));
-    }
-
-    public void BeginRemove(Mobile from)
-    {
-      if (!from.Alive)
-        return;
-
-      from.CloseGump<RemoveGump>();
-      from.SendGump(new RemoveGump(from, this));
-    }
-
-    public void EndRemove(Mobile from)
-    {
-      if (Deleted || from != Owner || !from.InRange(GetWorldLocation(), 3))
-        return;
-
-      from.SendLocalizedMessage(1048124, "", 0x8A5); // The old, rusted chest crumbles when you hit it.
-      Delete();
-    }
-
-    private class RemoveGump : Gump
-    {
-      private TreasureMapChest m_Chest;
-      private Mobile m_From;
-
-      public RemoveGump(Mobile from, TreasureMapChest chest) : base(15, 15)
-      {
-        m_From = from;
-        m_Chest = chest;
-
-        Closable = false;
-        Disposable = false;
-
-        AddPage(0);
-
-        AddBackground(30, 0, 240, 240, 2620);
-
-        AddHtmlLocalized(45, 15, 200, 80, 1048125, 0xFFFFFF); // When this treasure chest is removed, any items still inside of it will be lost.
-        AddHtmlLocalized(45, 95, 200, 60, 1048126, 0xFFFFFF); // Are you certain you're ready to remove this chest?
-
-        AddButton(40, 153, 4005, 4007, 1);
-        AddHtmlLocalized(75, 155, 180, 40, 1048127, 0xFFFFFF); // Remove the Treasure Chest
-
-        AddButton(40, 195, 4005, 4007, 2);
-        AddHtmlLocalized(75, 197, 180, 35, 1006045, 0xFFFFFF); // Cancel
-      }
-
-      public override void OnResponse(NetState sender, RelayInfo info)
-      {
-        if (info.ButtonID == 1)
-          m_Chest.EndRemove(m_From);
-      }
-    }
-
-    private class RemoveEntry : ContextMenuEntry
-    {
-      private TreasureMapChest m_Chest;
-      private Mobile m_From;
-
-      public RemoveEntry(Mobile from, TreasureMapChest chest) : base(6149, 3)
-      {
-        m_From = from;
-        m_Chest = chest;
-
-        Enabled = from == chest.Owner;
-      }
-
-      public override void OnClick()
-      {
-        if (m_Chest.Deleted || m_From != m_Chest.Owner || !m_From.CheckAlive())
-          return;
-
-        m_Chest.BeginRemove(m_From);
-      }
-    }
-
-    private class DeleteTimer : Timer
-    {
-      private Item m_Item;
-
-      public DeleteTimer(Item item, DateTime time) : base(time - DateTime.UtcNow)
-      {
-        m_Item = item;
-        Priority = TimerPriority.OneMinute;
-      }
-
-      protected override void OnTick()
-      {
-        m_Item.Delete();
-      }
-    }
-  }
 }

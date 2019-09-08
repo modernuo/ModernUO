@@ -18,13 +18,15 @@
  *
  ***************************************************************************/
 
+using System;
+using System.Buffers;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpTextEntry : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("textentry");
     private int m_EntryID;
     private int m_Hue;
     private string m_InitialText;
@@ -84,24 +86,30 @@ namespace Server.Gumps
       set => Delta(ref m_InitialText, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return
-        $"{{ textentry {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {Parent.Intern(m_InitialText)} }}";
-    }
+    public override string Compile() => $"{{ textentry {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {Parent.Intern(m_InitialText)} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
-    {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_Width);
-      disp.AppendLayout(m_Height);
-      disp.AppendLayout(m_Hue);
-      disp.AppendLayout(m_EntryID);
-      disp.AppendLayout(Parent.Intern(m_InitialText));
+    private static byte[] m_LayoutName = Gump.StringToBuffer(" { textentry ");
 
-      disp.TextEntries++;
+    public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
+    {
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Width.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Height.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Hue.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_EntryID.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(Parent.Intern(m_InitialText).ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
+
+      entries++;
     }
   }
 }

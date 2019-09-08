@@ -1,3 +1,5 @@
+using Server.Buffers;
+
 namespace Server.Network
 {
   public static partial class Packets

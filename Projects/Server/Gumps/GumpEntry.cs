@@ -18,7 +18,7 @@
  *
  ***************************************************************************/
 
-using Server.Network;
+using Server.Buffers;
 
 namespace Server.Gumps
 {
@@ -72,7 +72,7 @@ namespace Server.Gumps
         var = val;
     }
 
-    public abstract string Compile(NetState ns);
-    public abstract void AppendTo(NetState ns, IGumpWriter disp);
+    public abstract string Compile();
+    public abstract void AppendTo(SpanWriter writer, ref int entries, ref int switches);
   }
 }

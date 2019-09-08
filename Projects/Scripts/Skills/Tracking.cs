@@ -108,7 +108,7 @@ namespace Server.SkillHandlers
       AddHtmlLocalized(320, 90, 100, 20, 1018090); // Players
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (info.ButtonID >= 1 && info.ButtonID <= 4)
         TrackWhoGump.DisplayTo(m_Success, m_From, info.ButtonID - 1);
@@ -275,7 +275,7 @@ namespace Server.SkillHandlers
       return m.Player;
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       int index = info.ButtonID - 1;
 

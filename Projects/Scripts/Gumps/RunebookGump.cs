@@ -206,9 +206,9 @@ namespace Server.Gumps
       return Spellbook.Find(from, spellID)?.HasSpell(spellID) == true;
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (Book.Deleted || !from.InRange(Book.GetWorldLocation(), Core.ML ? 3 : 1) || !DesignContext.Check(from))
       {

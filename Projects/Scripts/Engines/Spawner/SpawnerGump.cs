@@ -206,7 +206,7 @@ namespace Server.Mobiles
         spawner.Start();
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (m_Spawner.Deleted)
         return;

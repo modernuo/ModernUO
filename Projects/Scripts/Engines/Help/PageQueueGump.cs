@@ -32,7 +32,7 @@ namespace Server.Engines.Help
       AddHtmlLocalized(34, 28, 65, 24, 3001002, 0xFFFFFF); // Message
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       m_Mobile.SendGump(new PageResponseGump(m_Mobile, m_Name, m_Text));
 
@@ -102,7 +102,7 @@ namespace Server.Engines.Help
       }
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (info.ButtonID >= 1 && info.ButtonID <= m_List.Length)
       {
@@ -565,7 +565,7 @@ namespace Server.Engines.Help
       g.SendTo(state);
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (info.ButtonID != 0 && PageQueue.List.IndexOf(m_Entry) < 0)
       {

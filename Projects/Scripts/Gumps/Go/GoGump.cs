@@ -187,7 +187,7 @@ namespace Server.Gumps
         from.SendGump(new GoGump(0, from, tree, branch));
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       Mobile from = state.Mobile;
 

@@ -208,7 +208,7 @@ namespace Server.Items
         m_Page = page;
 
         Closable = true;
-        Disposable = true;
+        SetDisposable(true);
         Draggable = true;
         Resizable = false;
 
@@ -350,7 +350,7 @@ namespace Server.Items
           m_House = house;
 
           Closable = true;
-          Disposable = true;
+          SetDisposable(true);
           Draggable = true;
           Resizable = false;
 

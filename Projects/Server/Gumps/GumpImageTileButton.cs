@@ -137,14 +137,8 @@ namespace Server.Gumps
 
     public int LocalizedTooltip{ get; set; }
 
-    public override string Compile(NetState ns)
-    {
-      if (LocalizedTooltip > 0)
-        return
-          $"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int)m_Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}{{ tooltip {LocalizedTooltip} }}";
-      return
-        $"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int)m_Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}";
-    }
+    public override string Compile() =>
+      $"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int)m_Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}{(LocalizedTooltip > 0 ? $"{{ tooltip {LocalizedTooltip} }}" : "")}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

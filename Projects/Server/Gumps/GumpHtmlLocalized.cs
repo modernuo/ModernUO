@@ -158,7 +158,7 @@ namespace Server.Gumps
       }
     }
 
-    public override string Compile(NetState ns)
+    public override string Compile()
     {
       switch (m_Type)
       {

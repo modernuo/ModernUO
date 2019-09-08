@@ -69,9 +69,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Network\Packets\" />
+    <PackageReference Include="System.IO.Pipelines" Version="4.5.3" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.IO.Pipelines" Version="4.5.3" />
+    <Compile Remove="SequenceWriter.cs" />
+    <Compile Remove="Buffers\SpanWriter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buffers\SpanWriter.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
   </ItemGroup>
 </Project>

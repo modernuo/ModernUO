@@ -38,10 +38,7 @@ namespace Server.Gumps
       set => Delta(ref m_Number, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ tooltip {m_Number} }}";
-    }
+    public override string Compile() => $"{{ tooltip {m_Number} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

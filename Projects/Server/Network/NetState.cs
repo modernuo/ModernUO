@@ -162,7 +162,8 @@ namespace Server.Network
           ProtocolChanges = ProtocolChanges.Version500a;
         else if (value >= m_Version407a)
           ProtocolChanges = ProtocolChanges.Version407a;
-        else if (value >= m_Version400a) ProtocolChanges = ProtocolChanges.Version400a;
+        else if (value >= m_Version400a)
+          ProtocolChanges = ProtocolChanges.Version400a;
       }
     }
 

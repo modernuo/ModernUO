@@ -38,10 +38,7 @@ namespace Server.Gumps
       set => Delta(ref m_Page, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ page {m_Page} }}";
-    }
+    public override string Compile() => $"{{ page {m_Page} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

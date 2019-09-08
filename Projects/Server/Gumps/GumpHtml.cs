@@ -83,11 +83,8 @@ namespace Server.Gumps
       set => Delta(ref m_Scrollbar, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return
-        $"{{ htmlgump {m_X} {m_Y} {m_Width} {m_Height} {Parent.Intern(m_Text)} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}";
-    }
+    public override string Compile() =>
+      $"{{ htmlgump {m_X} {m_Y} {m_Width} {m_Height} {Parent.Intern(m_Text)} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

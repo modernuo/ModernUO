@@ -1,6 +1,7 @@
-using System.Collections.Generic;
+using Server.Buffers;
 using Server.Items;
 using Server.Mobiles;
+using System.Collections.Generic;
 
 namespace Server.Network
 {
@@ -161,7 +162,7 @@ namespace Server.Network
 
       w.Write(vendor);
 
-      ns.Send(w.Span)
+      ns.Send(w.Span);
     }
   }
 }

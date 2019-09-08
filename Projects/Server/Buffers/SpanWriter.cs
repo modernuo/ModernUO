@@ -21,7 +21,7 @@
 using System;
 using System.Text;
 
-namespace Server.Network
+namespace Server.Buffers
 {
   /// <summary>
   ///   Provides functionality for writing primitive binary data.
@@ -47,9 +47,6 @@ namespace Server.Network
     /// </summary>
     public int Length => Span.Length;
 
-    /// <summary>
-    ///   Gets or sets the current stream position.
-    /// </summary>
     public int Position { get; set; }
 
     /// <summary>
@@ -153,21 +150,29 @@ namespace Server.Network
     /// </summary>
     public void Write(ReadOnlySpan<byte> input)
     {
-      int size = Span.Length;
-
-      if (size < Length - Position)
-      {
-        Console.WriteLine("Network: Attempted to Write Span with not enough room");
-        return;
-      }
+      int size = Math.Min(input.Length, Length - Position);
 
       input.CopyTo(Span.Slice(Position, size));
       Position += size;
     }
 
     /// <summary>
-    ///   Writes a fixed-length ASCII-encoded string value to the underlying stream. To fit (size), the string content is either
-    ///   truncated or padded with null characters.
+    ///   Writes an ASCII-encoded string value to the underlying stream.
+    /// </summary>
+    public void WriteAscii(string value)
+    {
+      if (value == null)
+      {
+        Console.WriteLine("Network: Attempted to WriteAsciiFixed() with null value");
+        value = string.Empty;
+      }
+
+      Encoding.ASCII.GetBytes(value, Span.Slice(Position, value.Length));
+      Position += value.Length;
+    }
+
+    /// <summary>
+    ///   Writes a fixed-length ASCII-encoded string value to the underlying stream.
     /// </summary>
     public void WriteAsciiFixed(string value, int size)
     {
@@ -177,7 +182,9 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      Encoding.ASCII.GetBytes(value, Span.Slice(Position, Math.Min(size, value.Length)));
+      size = Math.Min(size, value.Length);
+
+      Encoding.ASCII.GetBytes(value, Span.Slice(Position, size));
       Position += size;
     }
 
@@ -225,10 +232,9 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length * 2;
-      size *= 2;
+      size = Math.Min(size * 2, value.Length * 2);
 
-      Encoding.Unicode.GetBytes(value, Span.Slice(Position, Math.Min(size, length)));
+      Encoding.Unicode.GetBytes(value, Span.Slice(Position, size));
       Position += size;
     }
 
@@ -250,8 +256,7 @@ namespace Server.Network
     }
 
     /// <summary>
-    ///   Writes a fixed-length big-endian unicode string value to the underlying stream. To fit (size), the string content is
-    ///   either truncated or padded with null characters.
+    ///   Writes a fixed-length big-endian unicode string value to the underlying stream.
     /// </summary>
     public void WriteBigUniFixed(string value, int size)
     {
@@ -261,10 +266,9 @@ namespace Server.Network
         value = string.Empty;
       }
 
-      int length = value.Length * 2;
-      size *= 2;
+      size = Math.Min(size * 2, value.Length * 2);
 
-      Encoding.BigEndianUnicode.GetBytes(value, Span.Slice(Position, Math.Min(size, length)));
+      Encoding.BigEndianUnicode.GetBytes(value, Span.Slice(Position, size));
       Position += size;
     }
 

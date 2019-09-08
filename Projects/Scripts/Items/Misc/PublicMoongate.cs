@@ -350,7 +350,7 @@ namespace Server.Items
       }
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (info.ButtonID == 0) // Cancel
         return;

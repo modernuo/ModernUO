@@ -37,7 +37,7 @@ namespace Server.Gumps
       AddHtmlLocalized(152, 130, 100, 24, 1011036); // OKAY
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       Mobile from = state.Mobile;
 
@@ -135,7 +135,7 @@ namespace Server.Gumps
       AddLabel(300, 48, 0, ((int)(days / 12.0)).ToString());
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       Mobile from = state.Mobile;
 
@@ -476,7 +476,7 @@ namespace Server.Gumps
       }
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (m_Vendor.Deleted)
         return;

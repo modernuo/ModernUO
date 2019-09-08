@@ -151,7 +151,7 @@ namespace Server
       return m_Table[index * 3 + vl];
     }
 
-    public override void OnResponse(NetState state, RelayInfo info)
+    public override void OnResponse(NetState sender, RelayInfo info)
     {
       if (info.ButtonID == 1 && m_Beholder == m_Beheld)
         m_Beholder.SendGump(new VirtueStatusGump(m_Beholder));
@@ -165,10 +165,7 @@ namespace Server
       {
       }
 
-      public override string Compile(NetState ns)
-      {
-        return $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class=VirtueGumpItem }}";
-      }
+      public override string Compile() => $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class=VirtueGumpItem }}";
 
       public override void AppendTo(NetState ns, IGumpWriter disp)
       {

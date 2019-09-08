@@ -135,9 +135,9 @@ namespace Server.Items
       {
       }
 
-      public override void OnResponse(NetState state, RelayInfo info)
+      public override void OnResponse(NetState sender, RelayInfo info)
       {
-        Mobile from = state.Mobile;
+        Mobile from = sender.Mobile;
 
         if (info.ButtonID == 1 || info.ButtonID == 2)
         {
@@ -147,9 +147,10 @@ namespace Server.Items
             return;
           }
 
-          if (from is PlayerMobile mobile) mobile.AnkhNextUse = DateTime.UtcNow + TimeSpan.FromHours(1);
+          if (from is PlayerMobile mobile)
+            mobile.AnkhNextUse = DateTime.UtcNow + TimeSpan.FromHours(1);
 
-          base.OnResponse(state, info);
+          base.OnResponse(sender, info);
         }
       }
     }
