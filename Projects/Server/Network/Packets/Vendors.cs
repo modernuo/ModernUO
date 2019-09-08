@@ -112,11 +112,10 @@ namespace Server.Network
         w.WriteAsciiNull(desc);
       }
 
-      int bytesWritten = w.Position;
       w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Write((ushort)w.WrittenCount);
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span);
     }
 
     public static void SendVendorSellList(NetState ns, Serial shopkeeper, IList<SellItemState> list)
@@ -148,11 +147,10 @@ namespace Server.Network
         w.WriteAsciiFixed(name, (ushort)name.Length);
       }
 
-      int bytesWritten = w.Position;
       w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Write((ushort)w.WrittenCount);
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span);
     }
 
     public static void SendEndVendorBuyOrSell(NetState ns, Serial vendor)

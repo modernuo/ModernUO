@@ -117,12 +117,11 @@ namespace Server.Network
         }
       }
 
-      int bytesWritten = w.Position;
       w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Write((ushort)w.WrittenCount);
       w.Write(written);
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span);
     }
 
     public static void ContainerContent6017(NetState ns, Mobile beholder, Item beheld)
@@ -158,12 +157,11 @@ namespace Server.Network
         }
       }
 
-      int bytesWritten = w.Position;
       w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Write((ushort)w.WrittenCount);
       w.Write(written);
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span);
     }
   }
 }

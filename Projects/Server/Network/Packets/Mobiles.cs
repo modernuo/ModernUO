@@ -615,11 +615,12 @@ namespace Server.Network
         w.Write((short)hue);
       }
 
-      int bytesWritten = w.Position + 4;
-      w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Position += 4; // w.Write(0)
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      w.Position = 1;
+      w.Write((ushort)w.WrittenCount);
+
+      ns.Send(w.Span);
     }
 
     public static void SendMobileIncomingSA(NetState ns, Mobile beholder, Mobile beheld)
@@ -727,11 +728,12 @@ namespace Server.Network
           w.Write((short)hue);
       }
 
-      int bytesWritten = w.Position + 4;
-      w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Position += 4; // w.Write(0)
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      w.Position = 1;
+      w.Write((ushort)w.WrittenCount);
+
+      ns.Send(w.Span);
     }
 
     public static void SendMobileIncomingOld(NetState ns, Mobile beholder, Mobile beheld)
@@ -839,11 +841,12 @@ namespace Server.Network
           w.Write((short)hue);
       }
 
-      int bytesWritten = w.Position + 4;
-      w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Position += 4; // w.Write(0)
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      w.Position = 1;
+      w.Write((ushort)w.WrittenCount);
+
+      ns.Send(w.Span);
     }
 
     public static void SendFollowMessage(NetState ns, Serial s1, Serial s2)

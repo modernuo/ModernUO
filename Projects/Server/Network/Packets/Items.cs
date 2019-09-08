@@ -73,11 +73,10 @@ namespace Server.Network
       if (flags != 0)
         w.Write((byte)flags);
 
-      int bytesWritten = w.Position;
       w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Write((ushort)w.WrittenCount);
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span);
     }
 
     public static void WorldItemSA(NetState ns, Item item)

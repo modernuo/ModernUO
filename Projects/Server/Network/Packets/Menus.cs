@@ -65,11 +65,10 @@ namespace Server.Network
         }
       }
 
-      int bytesWritten = w.Position;
       w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Write((ushort)w.WrittenCount);
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span);
     }
 
     public static void SendDisplayQuestionMenu(NetState ns, QuestionMenu menu)
@@ -115,11 +114,10 @@ namespace Server.Network
         }
       }
 
-      int bytesWritten = w.Position;
       w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Write((ushort)w.WrittenCount);
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span);
     }
 
     public static void DisplayContextMenu(NetState ns, ContextMenu menu)
@@ -218,11 +216,10 @@ namespace Server.Network
           w.Write((short)color);
       }
 
-      int bytesWritten = w.Position;
       w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Write((ushort)w.WrittenCount);
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span);
     }
   }
 }

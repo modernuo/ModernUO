@@ -28,29 +28,52 @@ namespace Server.Buffers
   /// </summary>
   public ref struct SpanWriter
   {
+    private Span<byte> m_Span;
+    private int m_Position;
+
     /// <summary>
-    ///   Internal format Span.
+    ///   Underlying Span up to the bytes written.
     /// </summary>
-    public Span<byte> Span { get; private set; }
+    public Span<byte> Span => m_Span.Slice(0, WrittenCount);
+
+    /// <summary>
+    ///   Gets the total length of the span.
+    /// </summary>
+    public int Length => Span.Length;
+
+    /// <summary>
+    ///   Total bytes written to the span.
+    /// </summary>
+    public int WrittenCount { get; private set; }
+
+    /// <summary>
+    ///   Current position in the the span.
+    /// </summary>
+    public int Position
+    {
+      get => m_Position;
+
+      set
+      {
+        m_Position = value;
+
+        if (value > WrittenCount)
+          WrittenCount = value;
+      }
+    }
 
     /// <summary>
     ///   Instantiates a new SpanWriter instance.
     /// </summary>
     public SpanWriter(Span<byte> span)
     {
-      Span = span;
-      Position = 0;
+      m_Span = span;
+      m_Position = 0;
+      WrittenCount = 0;
     }
 
     /// <summary>
-    ///   Gets the total stream length.
-    /// </summary>
-    public int Length => Span.Length;
-
-    public int Position { get; set; }
-
-    /// <summary>
-    ///   Writes a 1-byte boolean value to the underlying stream. False is represented by 0, true by 1.
+    ///   Writes a 1-byte boolean value to the span.
     /// </summary>
     public unsafe void Write(bool value)
     {
@@ -58,7 +81,7 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a 1-byte unsigned integer value to the underlying stream.
+    ///   Writes a 1-byte unsigned integer value to the span.
     /// </summary>
     public void Write(byte value)
     {
@@ -66,7 +89,7 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a 1-byte signed integer value to the underlying stream.
+    ///   Writes a 1-byte signed integer value to the span.
     /// </summary>
     public void Write(sbyte value)
     {
@@ -74,7 +97,7 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a 2-byte signed integer value to the underlying stream.
+    ///   Writes a 2-byte signed integer value to the span.
     /// </summary>
     public void Write(short value)
     {
@@ -83,7 +106,7 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a 2-byte unsigned integer value to the underlying stream.
+    ///   Writes a 2-byte unsigned integer value to the span.
     /// </summary>
     public void Write(ushort value)
     {
@@ -92,7 +115,7 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a 4-byte signed integer value to the underlying stream.
+    ///   Writes a 4-byte signed integer value to the span.
     /// </summary>
     public void Write(int value)
     {
@@ -103,7 +126,7 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a 4-byte unsigned integer value to the underlying stream.
+    ///   Writes a 4-byte unsigned integer value to the span.
     /// </summary>
     public void Write(uint value)
     {
@@ -114,7 +137,7 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes an 8-byte signed integer value to the underlying stream.
+    ///   Writes an 8-byte signed integer value to the span.
     /// </summary>
     public void Write(long value)
     {
@@ -130,7 +153,7 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes an 8-byte unsigned integer value to the underlying stream.
+    ///   Writes an 8-byte unsigned integer value to the span.
     /// </summary>
     public void Write(ulong value)
     {
@@ -146,18 +169,18 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a sequence of bytes to the underlying stream
+    ///   Writes a sequence of bytes to the span.
     /// </summary>
     public void Write(ReadOnlySpan<byte> input)
     {
       int size = Math.Min(input.Length, Length - Position);
 
-      input.CopyTo(Span.Slice(Position, size));
+      input.CopyTo(m_Span.Slice(Position, size));
       Position += size;
     }
 
     /// <summary>
-    ///   Writes an ASCII-encoded string value to the underlying stream.
+    ///   Writes an ASCII-encoded string value to the span.
     /// </summary>
     public void WriteAscii(string value)
     {
@@ -167,12 +190,12 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      Encoding.ASCII.GetBytes(value, Span.Slice(Position, value.Length));
+      Encoding.ASCII.GetBytes(value, m_Span.Slice(Position, value.Length));
       Position += value.Length;
     }
 
     /// <summary>
-    ///   Writes a fixed-length ASCII-encoded string value to the underlying stream.
+    ///   Writes a fixed-length ASCII-encoded string value to the span.
     /// </summary>
     public void WriteAsciiFixed(string value, int size)
     {
@@ -184,12 +207,12 @@ namespace Server.Buffers
 
       size = Math.Min(size, value.Length);
 
-      Encoding.ASCII.GetBytes(value, Span.Slice(Position, size));
+      Encoding.ASCII.GetBytes(value, m_Span.Slice(Position, size));
       Position += size;
     }
 
     /// <summary>
-    ///   Writes a dynamic-length ASCII-encoded string value to the underlying stream, followed by a 1-byte null character.
+    ///   Writes a dynamic-length ASCII-encoded string value to the span, followed by a 1-byte null character.
     /// </summary>
     public void WriteAsciiNull(string value)
     {
@@ -204,7 +227,7 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a dynamic-length little-endian unicode string value to the underlying stream, followed by a 2-byte null character.
+    ///   Writes a dynamic-length little-endian unicode string value to the span, followed by a 2-byte null character.
     /// </summary>
     public void WriteLittleUniNull(string value)
     {
@@ -216,12 +239,12 @@ namespace Server.Buffers
 
       int length = value.Length * 2;
 
-      Encoding.Unicode.GetBytes(value, Span.Slice(Position, length));
+      Encoding.Unicode.GetBytes(value, m_Span.Slice(Position, length));
       Position += length + 2;
     }
 
     /// <summary>
-    ///   Writes a fixed-length little-endian unicode string value to the underlying stream. To fit (size), the string content is
+    ///   Writes a fixed-length little-endian unicode string value to the span. To fit (size), the string content is
     ///   either truncated or padded with null characters.
     /// </summary>
     public void WriteLittleUniFixed(string value, int size)
@@ -234,12 +257,12 @@ namespace Server.Buffers
 
       size = Math.Min(size * 2, value.Length * 2);
 
-      Encoding.Unicode.GetBytes(value, Span.Slice(Position, size));
+      Encoding.Unicode.GetBytes(value, m_Span.Slice(Position, size));
       Position += size;
     }
 
     /// <summary>
-    ///   Writes a dynamic-length big-endian unicode string value to the underlying stream, followed by a 2-byte null character.
+    ///   Writes a dynamic-length big-endian unicode string value to the span, followed by a 2-byte null character.
     /// </summary>
     public void WriteBigUniNull(string value)
     {
@@ -251,12 +274,12 @@ namespace Server.Buffers
 
       int length = value.Length * 2;
 
-      Encoding.BigEndianUnicode.GetBytes(value, Span.Slice(Position, length));
+      Encoding.BigEndianUnicode.GetBytes(value, m_Span.Slice(Position, length));
       Position += length + 2;
     }
 
     /// <summary>
-    ///   Writes a fixed-length big-endian unicode string value to the underlying stream.
+    ///   Writes a fixed-length big-endian unicode string value to the span.
     /// </summary>
     public void WriteBigUniFixed(string value, int size)
     {
@@ -268,7 +291,7 @@ namespace Server.Buffers
 
       size = Math.Min(size * 2, value.Length * 2);
 
-      Encoding.BigEndianUnicode.GetBytes(value, Span.Slice(Position, size));
+      Encoding.BigEndianUnicode.GetBytes(value, m_Span.Slice(Position, size));
       Position += size;
     }
 
@@ -277,15 +300,15 @@ namespace Server.Buffers
     /// </summary>
     public void CopyTo(Span<byte> destination)
     {
-      Span.CopyTo(destination);
+      m_Span.CopyTo(destination);
     }
 
     /// <summary>
-    ///   Copies the span to the destination.
+    ///   Copies the span to the destination up to count or bytes written.
     /// </summary>
     public void CopyTo(Span<byte> destination, int count)
     {
-      Span.Slice(0, count).CopyTo(destination);
+      m_Span.Slice(0, Math.Min(count, WrittenCount)).CopyTo(destination);
     }
   }
 }

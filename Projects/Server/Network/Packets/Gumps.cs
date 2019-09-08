@@ -59,11 +59,10 @@ namespace Server.Network
         w.WriteBigUniFixed(v, length);
       }
 
-      int bytesWritten = w.Position;
       w.Position = 1;
-      w.Write((ushort)bytesWritten);
+      w.Write((ushort)w.WrittenCount);
 
-      ns.Send(w.Span.Slice(0, bytesWritten));
+      ns.Send(w.Span);
     }
 
     public static void SendDisplaySignGump(NetState ns, Serial serial, int gumpID, string unknown, string caption)

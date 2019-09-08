@@ -19,9 +19,7 @@
  ***************************************************************************/
 
 using System;
-using System.Buffers;
 using System.Collections.Generic;
-using System.IO.Compression;
 using System.Text;
 using Server.Buffers;
 using Server.Network;
@@ -31,9 +29,6 @@ namespace Server.Gumps
   public class Gump
   {
     private static uint m_NextSerial = 1;
-
-    private static byte[] m_BeginLayout = StringToBuffer("{ ");
-    private static byte[] m_EndLayout = StringToBuffer(" }");
 
     private static byte[] m_NoMove = StringToBuffer("{ nomove }");
     private static byte[] m_NoClose = StringToBuffer("{ noclose }");
@@ -259,7 +254,7 @@ namespace Server.Gumps
       if (packed)
       {
         writer.Position++; // Null terminated
-        WritePacked(writer.Span.Slice(0, writer.Position), compiledWriter);
+        WritePacked(writer.Span, compiledWriter);
       }
       else
       {
@@ -283,7 +278,7 @@ namespace Server.Gumps
       }
 
       if (packed)
-        WritePacked(writer.Span.Slice(0, writer.Position), compiledWriter);
+        WritePacked(writer.Span, compiledWriter);
 
       int bytesWritten = compiledWriter.Position;
       compiledWriter.Position = 1;
@@ -292,7 +287,7 @@ namespace Server.Gumps
       return bytesWritten;
     }
 
-    private void WritePacked(Span<byte> source, SpanWriter dest)
+    private void WritePacked(ReadOnlySpan<byte> source, SpanWriter dest)
     {
       int length = source.Length;
       dest.Position += 4;
