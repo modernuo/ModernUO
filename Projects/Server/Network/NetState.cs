@@ -567,7 +567,7 @@ namespace Server.Network
     {
       if (UseCompression)
       {
-        Compression.HuffmanCompression(input, 0, input.Length, SendPipe.Writer.GetSpan(input.Length), out int bytesWritten);
+        Compression.Compress(input, 0, input.Length, SendPipe.Writer.GetSpan(input.Length), out int bytesWritten);
         _ = Flush(bytesWritten);
         return;
       }
