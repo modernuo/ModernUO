@@ -18,8 +18,6 @@
  *
  ***************************************************************************/
 
-using Server.Network;
-
 namespace Server
 {
   public abstract class BaseHairInfo

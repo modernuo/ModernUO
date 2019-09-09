@@ -1,5 +1,3 @@
-using System;
-
 namespace Server
 {
   public sealed class CityInfo

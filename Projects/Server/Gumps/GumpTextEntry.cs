@@ -18,10 +18,8 @@
  *
  ***************************************************************************/
 
-using System;
 using System.Buffers;
 using Server.Buffers;
-using Server.Network;
 
 namespace Server.Gumps
 {

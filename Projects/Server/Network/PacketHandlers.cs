@@ -22,7 +22,6 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipelines;
 using Server.Accounting;
 using Server.ContextMenus;
 using Server.Diagnostics;
