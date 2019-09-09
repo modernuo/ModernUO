@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Server
+namespace Server.Collections
 {
-  public class ArraySet<T> : IList<T>, ICollection<T>, IEnumerable<T>
+  public class ArraySet<T> : IList<T>
   {
-    private List<T> m_List = new List<T>();
+    private readonly List<T> m_List = new List<T>();
 
     public T this[int index] { get => m_List[index]; set => m_List[index] = value; }
 

@@ -34,7 +34,7 @@ namespace Server.Engines.Craft
 
     public int ID{ get; }
 
-    public TextDefinition TextDefinition => m_TD ?? (m_TD = new TextDefinition(CraftItem.NameNumber, CraftItem.NameString));
+    public TextDefinition TextDefinition => m_TD ??= new TextDefinition(CraftItem.NameNumber, CraftItem.NameString);
 
     public static void Initialize()
     {

@@ -72,12 +72,12 @@ namespace Server.Accounting
 		/// <summary>
 		/// List of account comments. Type of contained objects is AccountComment.
 		/// </summary>
-		public List<AccountComment> Comments => m_Comments ?? (m_Comments = new List<AccountComment>());
+		public List<AccountComment> Comments => m_Comments ??= new List<AccountComment>();
 
     /// <summary>
 		/// List of account tags. Type of contained objects is AccountTag.
 		/// </summary>
-		public List<AccountTag> Tags => m_Tags ?? (m_Tags = new List<AccountTag>());
+		public List<AccountTag> Tags => m_Tags ??= new List<AccountTag>();
 
     /// <summary>
 		/// Account username. Case insensitive validation.

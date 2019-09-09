@@ -126,7 +126,7 @@ namespace Server.Engines.Harvest
       Definitions.Add(lumber);
     }
 
-    public static Lumberjacking System => m_System ?? (m_System = new Lumberjacking());
+    public static Lumberjacking System => m_System ??= new Lumberjacking();
 
     public HarvestDefinition Definition{ get; }
 

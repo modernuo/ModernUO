@@ -153,7 +153,7 @@ namespace Server.Engines.Harvest
       #endregion
     }
 
-    public static Mining System => m_System ?? (m_System = new Mining());
+    public static Mining System => m_System ??= new Mining();
 
     public HarvestDefinition OreAndStone{ get; }
 

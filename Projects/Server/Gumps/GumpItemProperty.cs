@@ -20,6 +20,7 @@
 
 using System.Buffers;
 using Server.Buffers;
+using Server.Collections;
 
 namespace Server.Gumps
 {

@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System.Buffers;
+using Server.Collections;
 
 namespace Server.Gumps
 {

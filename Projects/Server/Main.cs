@@ -147,7 +147,7 @@ namespace Server
 
     public static bool Unix{ get; private set; }
 
-    public static string ExePath => m_ExePath ?? (m_ExePath = Assembly.Location);
+    public static string ExePath => m_ExePath ??= Assembly.Location;
 
     public static string BaseDirectory
     {

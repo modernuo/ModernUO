@@ -2938,7 +2938,7 @@ namespace Server.Mobiles
 
     public bool NinjaWepCooldown{ get; set; }
 
-    public List<Mobile> AllFollowers => m_AllFollowers ?? (m_AllFollowers = new List<Mobile>());
+    public List<Mobile> AllFollowers => m_AllFollowers ??= new List<Mobile>();
 
     public RankDefinition GuildRank
     {

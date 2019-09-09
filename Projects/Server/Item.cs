@@ -1083,7 +1083,7 @@ namespace Server
           }
           else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
           {
-            state.Send(p ?? (p = Packet.Acquire(new EquipUpdate(this))));
+            state.Send(p ??= Packet.Acquire(new EquipUpdate(this)));
 
             if (ObjectPropertyList.Enabled)
               state.Send(OPLPacket);
@@ -1408,15 +1408,9 @@ namespace Server
       return flags;
     }
 
-    private CompactInfo LookupCompactInfo()
-    {
-      return m_CompactInfo;
-    }
+    private CompactInfo LookupCompactInfo() => m_CompactInfo;
 
-    private CompactInfo AcquireCompactInfo()
-    {
-      return m_CompactInfo ?? (m_CompactInfo = new CompactInfo());
-    }
+    private CompactInfo AcquireCompactInfo() => m_CompactInfo ??= new CompactInfo();
 
     private void ReleaseCompactInfo()
     {
@@ -1455,10 +1449,10 @@ namespace Server
     public List<Item> AcquireItems()
     {
       if (this is Container cont)
-        return cont.m_Items ?? (cont.m_Items = new List<Item>());
+        return cont.m_Items ??= new List<Item>();
 
       CompactInfo info = AcquireCompactInfo();
-      return info.m_Items ?? (info.m_Items = new List<Item>());
+      return info.m_Items ??= new List<Item>();
     }
 
     private void SetFlag(ImplFlag flag, bool value)

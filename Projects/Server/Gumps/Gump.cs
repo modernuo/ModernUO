@@ -23,6 +23,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using Server.Buffers;
+using Server.Collections;
 using Server.Network;
 
 namespace Server.Gumps
@@ -213,7 +214,8 @@ namespace Server.Gumps
     private int Compile(bool packed, ArrayBufferWriter<byte> bufferWriter)
     {
       // m_Strings.Clear(); // Do we care?
-
+      m_TextEntries = 0;
+      m_Switches = 0;
 
       int writeLength = packed ? 19 : 21;
 
@@ -273,7 +275,7 @@ namespace Server.Gumps
 
         writeLength += layoutSize + 2;
       }
-      
+
       for (int i = 0; i < strings.Count; ++i)
       {
         string v = strings[i] ?? "";

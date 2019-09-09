@@ -608,7 +608,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public Race Race
     {
-      get => m_Race ?? (m_Race = Race.DefaultRace);
+      get => m_Race ??= Race.DefaultRace;
       set
       {
         Race oldRace = Race;

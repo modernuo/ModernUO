@@ -88,7 +88,7 @@ namespace Server
     {
       if (asm == null)
       {
-        return m_NullCache ?? (m_NullCache = new TypeCache(null));
+        return m_NullCache ??= new TypeCache(null);
       }
       if (!m_TypeCaches.TryGetValue(asm, out TypeCache c))
         m_TypeCaches[asm] = c = new TypeCache(asm);

@@ -87,7 +87,7 @@ namespace Server.Engines.Harvest
       Definitions.Add(fish);
     }
 
-    public static Fishing System => m_System ?? (m_System = new Fishing());
+    public static Fishing System => m_System ??= new Fishing();
 
     public HarvestDefinition Definition{ get; }
 

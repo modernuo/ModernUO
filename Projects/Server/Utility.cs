@@ -118,8 +118,8 @@ namespace Server
 
     private static Stack<ConsoleColor> m_ConsoleColors = new Stack<ConsoleColor>();
 
-    public static Encoding UTF8 => m_UTF8 ?? (m_UTF8 = new UTF8Encoding(false, false));
-    public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ?? (m_UTF8WithEncoding = new UTF8Encoding(true, false));
+    public static Encoding UTF8 => m_UTF8 ??= new UTF8Encoding(false, false);
+    public static Encoding UTF8WithEncoding => m_UTF8WithEncoding ??= new UTF8Encoding(true, false);
 
     public static void Separate(StringBuilder sb, string value, string separator)
     {
@@ -1233,6 +1233,6 @@ namespace Server
         RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
     }
 
-    #endregions
+    #endregion
   }
 }

@@ -111,7 +111,7 @@ namespace Server.Gumps
 
     public override string Caption => Title;
 
-    public static CAGCategory Root => m_Root ?? (m_Root = Load("Data/objects.xml"));
+    public static CAGCategory Root => m_Root ??= Load("Data/objects.xml");
 
     public override void OnClick(Mobile from, int page)
     {
@@ -185,7 +185,8 @@ namespace Server.Gumps
     public static readonly int NextButtonID1 = PropsConfig.NextButtonID1;
     public static readonly int NextButtonID2 = PropsConfig.NextButtonID2;
 
-    private static bool PrevLabel = false, NextLabel = false;
+    private static bool PrevLabel = false;
+    private static bool NextLabel = false;
 
     private static readonly int PrevLabelOffsetX = PrevWidth + 1;
     private static readonly int PrevLabelOffsetY = 0;

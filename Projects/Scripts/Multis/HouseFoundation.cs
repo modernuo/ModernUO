@@ -188,7 +188,7 @@ namespace Server.Multis
       }
     }
 
-    public static ComponentVerification Verification => m_Verification ?? (m_Verification = new ComponentVerification());
+    public static ComponentVerification Verification => m_Verification ??= new ComponentVerification();
 
     public bool IsFixture(Item item)
     {
