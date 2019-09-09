@@ -66,7 +66,7 @@ namespace Server.Gumps
       $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}" :
       $"{{ tilepichue {m_X} {m_Y} {m_ItemID} {m_Hue} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, IGumpWriter disp)
     {
       disp.AppendLayout(m_Hue == 0 ? m_LayoutName : m_LayoutNameHue);
       disp.AppendLayout(m_X);

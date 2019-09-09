@@ -36,14 +36,14 @@ namespace Server
 
       AddPage(1);
 
-      Add(new InternalEntry(61, 71, 108, GetHueFor(0))); // Humility
-      Add(new InternalEntry(123, 46, 112, GetHueFor(4))); // Valor
-      Add(new InternalEntry(187, 70, 107, GetHueFor(5))); // Honor
-      Add(new InternalEntry(35, 135, 110, GetHueFor(1))); // Sacrifice
-      Add(new InternalEntry(211, 133, 105, GetHueFor(2))); // Compassion
-      Add(new InternalEntry(61, 195, 111, GetHueFor(3))); // Spiritulaity
-      Add(new InternalEntry(186, 195, 109, GetHueFor(6))); // Justice
-      Add(new InternalEntry(121, 221, 106, GetHueFor(7))); // Honesty
+      Add(new GumpImage(61, 71, 108, GetHueFor(0), "VirtueGumpItem")); // Humility
+      Add(new GumpImage(123, 46, 112, GetHueFor(4), "VirtueGumpItem")); // Valor
+      Add(new GumpImage(187, 70, 107, GetHueFor(5), "VirtueGumpItem")); // Honor
+      Add(new GumpImage(35, 135, 110, GetHueFor(1), "VirtueGumpItem")); // Sacrifice
+      Add(new GumpImage(211, 133, 105, GetHueFor(2), "VirtueGumpItem")); // Compassion
+      Add(new GumpImage(61, 195, 111, GetHueFor(3), "VirtueGumpItem")); // Spiritulaity
+      Add(new GumpImage(186, 195, 109, GetHueFor(6), "VirtueGumpItem")); // Justice
+      Add(new GumpImage(121, 221, 106, GetHueFor(7), "VirtueGumpItem")); // Honesty
 
       if (m_Beholder == m_Beheld)
       {
@@ -155,24 +155,6 @@ namespace Server
     {
       if (info.ButtonID == 1 && m_Beholder == m_Beheld)
         m_Beholder.SendGump(new VirtueStatusGump(m_Beholder));
-    }
-
-    private class InternalEntry : GumpImage
-    {
-      private static byte[] m_Class = StringToBuffer(" class=VirtueGumpItem");
-
-      public InternalEntry(int x, int y, int gumpID, int hue) : base(x, y, gumpID, hue)
-      {
-      }
-
-      public override string Compile() => $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class=VirtueGumpItem }}";
-
-      public override void AppendTo(NetState ns, IGumpWriter disp)
-      {
-        base.AppendTo(ns, disp);
-
-        disp.AppendLayout(m_Class);
-      }
     }
   }
 }

@@ -78,7 +78,7 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ radio {m_X} {m_Y} {m_ID1} {m_ID2} {(m_InitialState ? 1 : 0)} {m_SwitchID} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
       disp.AppendLayout(m_X);

@@ -94,7 +94,7 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ textentrylimited {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {Parent.Intern(m_InitialText)} {m_Size} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
       disp.AppendLayout(m_X);

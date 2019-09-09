@@ -40,7 +40,7 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ page {m_Page} }}";
 
-    public override void AppendTo(NetState ns, IGumpWriter disp)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, IGumpWriter disp)
     {
       disp.AppendLayout(m_LayoutName);
       disp.AppendLayout(m_Page);

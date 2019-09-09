@@ -29,6 +29,7 @@ namespace Server.Gumps
     private int m_GumpID;
     private int m_Hue;
     private int m_X, m_Y;
+    private string m_Class;
 
     public GumpImage(int x, int y, int gumpID, int hue = 0)
     {
@@ -36,6 +37,15 @@ namespace Server.Gumps
       m_Y = y;
       m_GumpID = gumpID;
       m_Hue = hue;
+    }
+
+    public GumpImage(int x, int y, int gumpID, int hue = 0, string cls = null)
+    {
+      m_X = x;
+      m_Y = y;
+      m_GumpID = gumpID;
+      m_Hue = hue;
+      m_Class = cls;
     }
 
     public int X
@@ -62,16 +72,23 @@ namespace Server.Gumps
       set => Delta(ref m_Hue, value);
     }
 
+    public string Class
+    {
+      get => m_Class;
+      set => Delta(ref m_Class, value);
+    }
+
     public override string Compile() => m_Hue == 0 ?
       $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}" :
       $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
 
     private static byte[] m_LayoutName = Gump.StringToBuffer("{ gumppic ");
     private static byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
+    private static byte[] m_ClassEquals = Gump.StringToBuffer(" class=");
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches)
     {
-      SpanWriter writer = new SpanWriter(buffer.GetSpan(59));
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(66 + m_Class?.Length ?? 0));
       writer.Write(m_LayoutName);
       writer.WriteAscii(m_X.ToString());
       writer.Write((byte)0x20); // ' '
@@ -86,7 +103,14 @@ namespace Server.Gumps
         writer.WriteAscii(m_Hue.ToString());
         writer.Write((byte)0x20); // ' '
       }
-      
+
+      if (!string.IsNullOrWhiteSpace(m_Class))
+      {
+        writer.Write(m_ClassEquals);
+        writer.Write(m_Class);
+        writer.Write((byte)0x20); // ' '
+      }
+
       writer.Write((byte)0x7D); // '}'
       buffer.Advance(writer.WrittenCount);
     }
