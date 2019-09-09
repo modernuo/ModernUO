@@ -18,14 +18,14 @@
  *
  ***************************************************************************/
 
+using System.Buffers;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpItem : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("tilepic");
-    private static byte[] m_LayoutNameHue = Gump.StringToBuffer("tilepichue");
     private int m_Hue;
     private int m_ItemID;
     private int m_X, m_Y;
@@ -66,15 +66,30 @@ namespace Server.Gumps
       $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}" :
       $"{{ tilepichue {m_X} {m_Y} {m_ItemID} {m_Hue} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, IGumpWriter disp)
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ tilepic ");
+    private static byte[] m_LayoutNameHue = Gump.StringToBuffer("{ tilepichue ");
+
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_Hue == 0 ? m_LayoutName : m_LayoutNameHue);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_ItemID);
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(57));
+      writer.Write(m_Hue == 0 ? m_LayoutName : m_LayoutNameHue);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_ItemID.ToString());
+      writer.Write((byte)0x20); // ' '
 
       if (m_Hue != 0)
-        disp.AppendLayout(m_Hue);
+      {
+        writer.WriteAscii(m_Hue.ToString());
+        writer.Write((byte)0x20); // ' '
+      }
+
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
+
+      buffer.Advance(writer.WrittenCount);
     }
   }
 }

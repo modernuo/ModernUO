@@ -68,11 +68,11 @@ namespace Server.Gumps
       set => Delta(ref m_GumpID, value);
     }
 
-    public override string Compile() => $"{{ gumppictiled {m_X} {m_Y} {m_Width} {m_Height} {m_GumpID} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ gumppictiled {m_X} {m_Y} {m_Width} {m_Height} {m_GumpID} }}";
 
     private static byte[] m_LayoutName = Gump.StringToBuffer("{ gumppictiled ");
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(71));
       writer.Write(m_LayoutName);

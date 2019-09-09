@@ -86,7 +86,7 @@ namespace Server.Gumps
     private static byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
     private static byte[] m_ClassEquals = Gump.StringToBuffer(" class=");
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(66 + m_Class?.Length ?? 0));
       writer.Write(m_LayoutName);
@@ -107,7 +107,7 @@ namespace Server.Gumps
       if (!string.IsNullOrWhiteSpace(m_Class))
       {
         writer.Write(m_ClassEquals);
-        writer.Write(m_Class);
+        writer.WriteAscii(m_Class);
         writer.Write((byte)0x20); // ' '
       }
 

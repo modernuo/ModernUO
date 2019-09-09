@@ -18,13 +18,14 @@
  *
  ***************************************************************************/
 
+using System.Buffers;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpTextEntryLimited : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("textentrylimited");
     private int m_EntryID;
     private int m_Hue;
     private string m_InitialText;
@@ -92,21 +93,35 @@ namespace Server.Gumps
       set => Delta(ref m_Size, value);
     }
 
-    public override string Compile() => $"{{ textentrylimited {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {Parent.Intern(m_InitialText)} {m_Size} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ textentrylimited {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {strings.Add(m_InitialText)} {m_Size} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, IGumpWriter disp)
+    private static byte[] m_LayoutName = Gump.StringToBuffer(" { textentrylimited ");
+
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_Width);
-      disp.AppendLayout(m_Height);
-      disp.AppendLayout(m_Hue);
-      disp.AppendLayout(m_EntryID);
-      disp.AppendLayout(Parent.Intern(m_InitialText));
-      disp.AppendLayout(m_Size);
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(107));
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Width.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Height.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Hue.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_EntryID.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(strings.Add(m_InitialText).ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Size.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
 
-      disp.TextEntries++;
+      buffer.Advance(writer.WrittenCount);
+
+      entries++;
     }
   }
 }

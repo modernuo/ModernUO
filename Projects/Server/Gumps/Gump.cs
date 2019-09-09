@@ -35,7 +35,6 @@ namespace Server.Gumps
     private static byte[] m_NoClose = StringToBuffer("{ noclose }");
     private static byte[] m_NoDispose = StringToBuffer("{ nodispose }");
     private static byte[] m_NoResize = StringToBuffer("{ noresize }");
-    private List<string> m_Strings;
 
     internal int m_TextEntries, m_Switches;
     private int m_X, m_Y;
@@ -53,7 +52,6 @@ namespace Server.Gumps
       TypeID = GetTypeID(GetType());
 
       Entries = new List<GumpEntry>();
-      m_Strings = new List<string>();
     }
 
     public int TypeID{ get; }
@@ -202,16 +200,6 @@ namespace Server.Gumps
       g.Parent = null;
     }
 
-    public int Intern(string value)
-    {
-      int indexOf = m_Strings.IndexOf(value);
-
-      if (indexOf >= 0) return indexOf;
-
-      m_Strings.Add(value);
-      return m_Strings.Count - 1;
-    }
-
     public static byte[] StringToBuffer(string str) => Encoding.ASCII.GetBytes(str);
 
     public void SendTo(NetState state)
@@ -224,6 +212,9 @@ namespace Server.Gumps
 
     private int Compile(bool packed, ArrayBufferWriter<byte> bufferWriter)
     {
+      // m_Strings.Clear(); // Do we care?
+
+
       int writeLength = packed ? 19 : 21;
 
       SpanWriter headWriter = new SpanWriter(stackalloc byte[writeLength]);
@@ -235,6 +226,7 @@ namespace Server.Gumps
       headWriter.Write(X);
       headWriter.Write(Y);
 
+      ArraySet<string> strings = new ArraySet<string>();
       ArrayBufferWriter<byte> layoutBuffer = new ArrayBufferWriter<byte>();
       ArrayBufferWriter<byte> stringsBuffer = new ArrayBufferWriter<byte>();
       SpanWriter sw;
@@ -252,7 +244,7 @@ namespace Server.Gumps
         layoutBuffer.Write(m_NoResize);
 
       for (int i = 0; i < Entries.Count; ++i)
-        Entries[i].AppendTo(layoutBuffer, ref m_TextEntries, ref m_Switches);
+        Entries[i].AppendTo(layoutBuffer, strings, ref m_TextEntries, ref m_Switches);
 
       if (packed)
       {
@@ -263,7 +255,7 @@ namespace Server.Gumps
 
         // Write the length of the strings
         sw = new SpanWriter(stringsBuffer.GetSpan(4));
-        sw.Write(m_Strings.Count);
+        sw.Write(strings.Count);
         stringsBuffer.Advance(4);
 
         writeLength += layoutBuffer.WrittenCount + 4;
@@ -276,15 +268,15 @@ namespace Server.Gumps
 
         // Write the length of the strings
         sw = new SpanWriter(stringsBuffer.GetSpan(2));
-        sw.Write((ushort)m_Strings.Count);
+        sw.Write((ushort)strings.Count);
         stringsBuffer.Advance(2);
 
         writeLength += layoutSize + 2;
       }
       
-      for (int i = 0; i < m_Strings.Count; ++i)
+      for (int i = 0; i < strings.Count; ++i)
       {
-        string v = m_Strings[i] ?? "";
+        string v = strings[i] ?? "";
 
         int length = (ushort)v.Length;
 

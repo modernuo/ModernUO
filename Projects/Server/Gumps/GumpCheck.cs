@@ -77,11 +77,11 @@ namespace Server.Gumps
       set => Delta(ref m_SwitchID, value);
     }
 
-    public override string Compile() => $"{{ checkbox {m_X} {m_Y} {m_ID1} {m_ID2} {(m_InitialState ? 1 : 0)} {m_SwitchID} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ checkbox {m_X} {m_Y} {m_ID1} {m_ID2} {(m_InitialState ? 1 : 0)} {m_SwitchID} }}";
 
     private static byte[] m_LayoutName = Gump.StringToBuffer("{ checkbox ");
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(69));
       writer.Write(m_LayoutName);

@@ -18,13 +18,14 @@
  *
  ***************************************************************************/
 
+using System.Buffers;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpLabelCropped : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("croppedtext");
     private int m_Hue;
     private string m_Text;
     private int m_Width, m_Height;
@@ -76,17 +77,29 @@ namespace Server.Gumps
       set => Delta(ref m_Text, value);
     }
 
-    public override string Compile() => $"{{ croppedtext {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {Parent.Intern(m_Text)} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ croppedtext {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {strings.Add(m_Text)} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, IGumpWriter disp)
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ croppedtext ");
+
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_Width);
-      disp.AppendLayout(m_Height);
-      disp.AppendLayout(m_Hue);
-      disp.AppendLayout(Parent.Intern(m_Text));
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(81));
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Width.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Height.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Hue.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(strings.Add(m_Text).ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
+
+      buffer.Advance(writer.WrittenCount);
     }
   }
 }

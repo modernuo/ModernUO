@@ -18,6 +18,7 @@
  *
  ***************************************************************************/
 
+using System.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
@@ -38,9 +39,9 @@ namespace Server.Gumps
       set => Delta(ref m_Page, value);
     }
 
-    public override string Compile() => $"{{ page {m_Page} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ page {m_Page} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, IGumpWriter disp)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       disp.AppendLayout(m_LayoutName);
       disp.AppendLayout(m_Page);

@@ -18,13 +18,14 @@
  *
  ***************************************************************************/
 
+using System.Buffers;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpLabel : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("text");
     private int m_Hue;
     private string m_Text;
     private int m_X, m_Y;
@@ -61,15 +62,25 @@ namespace Server.Gumps
       set => Delta(ref m_Text, value);
     }
 
-    public override string Compile() => $"{{ text {m_X} {m_Y} {m_Hue} {Parent.Intern(m_Text)} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ text {m_X} {m_Y} {m_Hue} {strings.Add(m_Text)} }}";
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, IGumpWriter disp)
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ text ");
+
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_Hue);
-      disp.AppendLayout(Parent.Intern(m_Text));
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(52));
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Hue.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(strings.Add(m_Text).ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
+
+      buffer.Advance(writer.WrittenCount);
     }
   }
 }

@@ -84,12 +84,12 @@ namespace Server.Gumps
       set => Delta(ref m_Scrollbar, value);
     }
 
-    public override string Compile() =>
-      $"{{ htmlgump {m_X} {m_Y} {m_Width} {m_Height} {Parent.Intern(m_Text)} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}";
+    public override string Compile(ArraySet<string> strings) =>
+      $"{{ htmlgump {m_X} {m_Y} {m_Width} {m_Height} {strings.Add(m_Text)} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}";
 
     private static byte[] m_LayoutName = Gump.StringToBuffer("{ htmlgump ");
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(71));
       writer.Write(m_LayoutName);
@@ -101,7 +101,7 @@ namespace Server.Gumps
       writer.Write((byte)0x20); // ' '
       writer.WriteAscii(m_Height.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(Parent.Intern(m_Text).ToString());
+      writer.WriteAscii(strings.Add(m_Text).ToString());
       writer.Write((byte)0x20); // ' '
       writer.WriteAscii(m_Background ? "1" : "0");
       writer.Write((byte)0x20); // ' '

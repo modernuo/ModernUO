@@ -86,12 +86,13 @@ namespace Server.Gumps
       set => Delta(ref m_InitialText, value);
     }
 
-    public override string Compile() => $"{{ textentry {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {Parent.Intern(m_InitialText)} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ textentry {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {strings.Add(m_InitialText)} }}";
 
     private static byte[] m_LayoutName = Gump.StringToBuffer(" { textentry ");
 
-    public override void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(90));
       writer.Write(m_LayoutName);
       writer.WriteAscii(m_X.ToString());
       writer.Write((byte)0x20); // ' '
@@ -105,9 +106,11 @@ namespace Server.Gumps
       writer.Write((byte)0x20); // ' '
       writer.WriteAscii(m_EntryID.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(Parent.Intern(m_InitialText).ToString());
+      writer.WriteAscii(strings.Add(m_InitialText).ToString());
       writer.Write((byte)0x20); // ' '
       writer.Write((byte)0x7D); // '}'
+
+      buffer.Advance(writer.WrittenCount);
 
       entries++;
     }
