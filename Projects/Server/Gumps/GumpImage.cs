@@ -65,7 +65,7 @@ namespace Server.Gumps
       $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}" :
       $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer(" { gumppic ");
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ gumppic ");
     private static byte[] m_HueEquals = Gump.StringToBuffer(" hue=");
 
     public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)

@@ -159,9 +159,9 @@ namespace Server.Gumps
       }
     }
 
-    private static byte[] m_LayoutNamePlain = Gump.StringToBuffer(" { xmfhtmlgump ");
-    private static byte[] m_LayoutNameColor = Gump.StringToBuffer(" { xmfhtmlgumpcolor ");
-    private static byte[] m_LayoutNameArgs = Gump.StringToBuffer(" { xmfhtmltok ");
+    private static byte[] m_LayoutNamePlain = Gump.StringToBuffer("{ xmfhtmlgump ");
+    private static byte[] m_LayoutNameColor = Gump.StringToBuffer("{ xmfhtmlgumpcolor ");
+    private static byte[] m_LayoutNameArgs = Gump.StringToBuffer("{ xmfhtmltok ");
 
     public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {

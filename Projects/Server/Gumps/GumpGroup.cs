@@ -39,7 +39,7 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ group {m_Group} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer(" { group ");
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ group ");
 
     public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {

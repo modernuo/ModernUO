@@ -45,20 +45,12 @@
       <Link>rdrand.so</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assemblies\rdrand32.dll">
-      <Link>rdrand32.dll</Link>
+    <Content Include="Assemblies\rdrand.dll">
+      <Link>rdrand.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assemblies\rdrand64.dll">
-      <Link>rdrand64.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\zlib32.dll">
-      <Link>zlib32.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assemblies\zlib64.dll">
-      <Link>zlib64.dll</Link>
+    <Content Include="Assemblies\zlib.dll">
+      <Link>zlib.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -72,10 +64,9 @@
     <PackageReference Include="System.IO.Pipelines" Version="4.5.3" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="SequenceWriter.cs" />
-    <Compile Remove="Buffers\SpanWriter.cs" />
+    <Compile Include="Buffers\SpanWriter.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Buffers\SpanWriter.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <None Remove="Assemblies\zlib32.dll" />
   </ItemGroup>
 </Project>

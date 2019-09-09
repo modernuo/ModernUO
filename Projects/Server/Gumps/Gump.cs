@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Text;
 using Server.Buffers;
@@ -216,94 +217,105 @@ namespace Server.Gumps
     public void SendTo(NetState state)
     {
       state.AddGump(this);
-      Span<byte> buffer = stackalloc byte[Packets.MaxPacketSize];
-      state.Send(buffer.Slice(0, Compile(state?.Unpack == true, buffer)));
+      ArrayBufferWriter<byte> bufferWriter = new ArrayBufferWriter<byte>();
+      Compile(state?.Unpack == true, bufferWriter);
+      state.Send(bufferWriter.WrittenSpan);
     }
 
-    private int Compile(bool packed, Span<byte> buffer)
+    private int Compile(bool packed, ArrayBufferWriter<byte> bufferWriter)
     {
-      SpanWriter compiledWriter = new SpanWriter(buffer);
-      compiledWriter.Write((byte)(packed ? 0xDD : 0xB0));
-      compiledWriter.Position += 2; // Dynamic Length
+      int writeLength = packed ? 19 : 21;
 
-      compiledWriter.Write(Serial);
-      compiledWriter.Write(TypeID);
-      compiledWriter.Write(X);
-      compiledWriter.Write(Y);
+      SpanWriter headWriter = new SpanWriter(stackalloc byte[writeLength]);
+      headWriter.Write((byte)(packed ? 0xDD : 0xB0));
+      headWriter.Position += 2; // Dynamic Length
 
-      if (!packed)
-        compiledWriter.Position += 2; // Old has Layout Length
+      headWriter.Write(Serial);
+      headWriter.Write(TypeID);
+      headWriter.Write(X);
+      headWriter.Write(Y);
 
-      SpanWriter writer = packed ? new SpanWriter(stackalloc byte[0x8000]) : compiledWriter;
+      ArrayBufferWriter<byte> layoutBuffer = new ArrayBufferWriter<byte>();
+      ArrayBufferWriter<byte> stringsBuffer = new ArrayBufferWriter<byte>();
 
       if (!Draggable)
-        writer.Write(m_NoMove);
+        layoutBuffer.Write(m_NoMove);
 
       if (!Closable)
-        writer.Write(m_NoClose);
+        layoutBuffer.Write(m_NoClose);
 
       if (!Disposable)
-        writer.Write(m_NoDispose);
+        layoutBuffer.Write(m_NoDispose);
 
       if (!Resizable)
-        writer.Write(m_NoResize);
+        layoutBuffer.Write(m_NoResize);
 
       for (int i = 0; i < Entries.Count; ++i)
-        Entries[i].AppendTo(writer, ref m_TextEntries, ref m_Switches);
+        Entries[i].AppendTo(layoutBuffer, ref m_TextEntries, ref m_Switches);
 
       if (packed)
       {
-        writer.Position++; // Null terminated
-        WritePacked(writer.Span, compiledWriter);
+        layoutBuffer.Write(stackalloc byte[1]); // Null Terminated
+        int bytesWritten = WritePacked(layoutBuffer.WrittenSpan, bufferWriter);
+
+        SpanWriter sw = new SpanWriter(stringsBuffer.GetSpan(4));
+        sw.Write(m_Strings.Count);
+        stringsBuffer.Advance(4);
+
+        writeLength += layoutWriter.WrittenCount + 12;
       }
       else
       {
-        int pos = writer.Position;
-        writer.Position = 19;
-        writer.Write((ushort)(pos - 21)); // Length of the layout
+        ushort layoutSize = (ushort)layoutWriter.WrittenCount;
+        headWriter.Position = 19;
+        headWriter.Write(layoutSize);
+
+        spanWriter = new SpanWriter(bufferWriter.GetSpan(2));
+        spanWriter.Write((ushort)m_Strings.Count);
+
+        writeLength += layoutSize + 2;
       }
 
-      compiledWriter.Write((ushort)m_Strings.Count);
-
-      writer = packed ? new SpanWriter(stackalloc byte[0x8000]) : compiledWriter;
-
+      ArrayBufferWriter<byte> stringsWriter = new ArrayBufferWriter<byte>();
+      
       for (int i = 0; i < m_Strings.Count; ++i)
       {
         string v = m_Strings[i] ?? "";
 
         int length = (ushort)v.Length;
 
-        writer.Write((ushort)length);
-        writer.WriteBigUniFixed(v, length);
+        spanWriter = new SpanWriter(stringsWriter.GetSpan(2 + length));
+        spanWriter.Write((ushort)length);
+        spanWriter.WriteBigUniFixed(v, length);
       }
 
       if (packed)
-        WritePacked(writer.Span, compiledWriter);
+      {
+        WritePacked(stringsWriter.WrittenSpan, bufferWriter);
+        writeLength += stringsWriter;
+      }
 
-      int bytesWritten = compiledWriter.Position;
-      compiledWriter.Position = 1;
-      compiledWriter.Write((ushort)bytesWritten);
+      headWriter.Position = 1;
+      headWriter.Write((ushort)(25 + layoutWriter.WrittenCount + stringsWriter.WrittenCount));
+
 
       return bytesWritten;
     }
 
-    private void WritePacked(ReadOnlySpan<byte> source, SpanWriter dest)
+    private int WritePacked(ReadOnlySpan<byte> source, ArrayBufferWriter<byte> dest)
     {
       int length = source.Length;
-      dest.Position += 4;
+      uint wantLength = Compression.MaxPackSize(length);
+      Span<byte> span = dest.GetSpan(4 + ((4096 + length * 1024 / 1000) & ~4095));
 
-      if (length == 0)
-        return;
+      int packLength = wantLength;
 
-      dest.Write(length);
+      Compression.Pack(span.Slice(8), ref packLength, source, length, ZLibQuality.Default);
+      SpanWriter writer = new SpanWriter(span);
+      writer.Write(4 + packLength);
+      writer.Write(length);
 
-      int packLength = 0;
-
-      Compression.Pack(dest.Span.Slice(dest.Position), ref packLength, source, length, ZLibQuality.Default);
-
-      dest.Position -= 8;
-      dest.Write(packLength);
-      dest.Position += 4 + packLength;
+      return packLength + 8;
     }
 
     public virtual void OnResponse(NetState sender, RelayInfo info)

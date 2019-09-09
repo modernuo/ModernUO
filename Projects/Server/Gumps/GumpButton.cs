@@ -88,7 +88,7 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ button {m_X} {m_Y} {m_ID1} {m_ID2} {(int)Type} {m_Param} {m_ButtonID} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer(" { button ");
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ button ");
 
     public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {

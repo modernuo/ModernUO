@@ -78,7 +78,7 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ checkbox {m_X} {m_Y} {m_ID1} {m_ID2} {(m_InitialState ? 1 : 0)} {m_SwitchID} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer(" { checkbox ");
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ checkbox ");
 
     public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {

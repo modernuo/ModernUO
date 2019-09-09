@@ -62,7 +62,7 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ checkertrans {m_X} {m_Y} {m_Width} {m_Height} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer(" { checkertrans ");
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ checkertrans ");
 
     public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {

@@ -18,6 +18,7 @@
  *
  ***************************************************************************/
 
+using System.Buffers;
 using Server.Buffers;
 
 namespace Server.Gumps
@@ -73,6 +74,6 @@ namespace Server.Gumps
     }
 
     public abstract string Compile();
-    public abstract void AppendTo(SpanWriter writer, ref int entries, ref int switches);
+    public abstract void AppendTo(ArrayBufferWriter<byte> writer, ref int entries, ref int switches);
   }
 }

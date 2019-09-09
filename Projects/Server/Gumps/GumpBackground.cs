@@ -70,7 +70,7 @@ namespace Server.Gumps
 
     public override string Compile() => $"{{ resizepic {m_X} {m_Y} {m_GumpID} {m_Width} {m_Height} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer(" { resizepic ");
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ resizepic ");
 
     public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {

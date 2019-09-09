@@ -86,7 +86,7 @@ namespace Server.Gumps
     public override string Compile() =>
       $"{{ htmlgump {m_X} {m_Y} {m_Width} {m_Height} {Parent.Intern(m_Text)} {(m_Background ? 1 : 0)} {(m_Scrollbar ? 1 : 0)} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer(" { htmlgump ");
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ htmlgump ");
 
     public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
     {
