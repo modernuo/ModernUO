@@ -120,15 +120,16 @@ namespace Server.Network
 
     public static void SendVendorSellList(NetState ns, Serial shopkeeper, IList<SellItemState> list)
     {
-      SpanWriter w = new SpanWriter(stackalloc byte[MaxPacketSize]);
+      ushort count = (ushort)list.Count;
+      SpanWriter w = new SpanWriter(stackalloc byte[9 + 140 * count]);
       w.Write((byte)0x9E); // Packet ID
       w.Position += 2; //( Dynamic Length
 
       w.Write(shopkeeper);
 
-      w.Write((ushort)list.Count);
+      w.Write(count);
 
-      for (int i = 0; i < list.Count; ++i)
+      for (int i = 0; i < count; ++i)
       {
         SellItemState state = list[i];
 

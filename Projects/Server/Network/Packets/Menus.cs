@@ -74,7 +74,7 @@ namespace Server.Network
     public static void SendDisplayQuestionMenu(NetState ns, QuestionMenu menu)
     {
       // 10 + 128 + (255 * (128 + 5))
-      SpanWriter w = new SpanWriter(stackalloc byte[138 + menu.Entries.Length * 133]);
+      SpanWriter w = new SpanWriter(stackalloc byte[138 + menu.Answers.Length * 133]);
       w.Write((byte)0x7C); // Packet ID
       w.Position += 2; // Dynamic Length
 

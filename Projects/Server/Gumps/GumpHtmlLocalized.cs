@@ -142,7 +142,7 @@ namespace Server.Gumps
 
     public GumpHtmlLocalizedType Type { get; set; }
 
-    public override string Compile()
+    public override string Compile(ArraySet<string> strings)
     {
       switch (Type)
       {

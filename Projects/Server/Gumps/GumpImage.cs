@@ -78,7 +78,7 @@ namespace Server.Gumps
       set => Delta(ref m_Class, value);
     }
 
-    public override string Compile() => m_Hue == 0 ?
+    public override string Compile(ArraySet<string> strings) => m_Hue == 0 ?
       $"{{ gumppic {m_X} {m_Y} {m_GumpID} }}" :
       $"{{ gumppic {m_X} {m_Y} {m_GumpID} hue={m_Hue} }}";
 

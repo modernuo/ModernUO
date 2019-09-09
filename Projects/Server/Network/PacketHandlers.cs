@@ -567,7 +567,7 @@ namespace Server.Network
         List<BuyItemResponse> buyList = new List<BuyItemResponse>(msgSize / 7);
         while (msgSize > 0)
         {
-          byte layer = pvSrc.ReadByte();
+          pvSrc.ReadByte(); // layer
           Serial serial = pvSrc.ReadUInt32();
           int amount = pvSrc.ReadInt16();
 
@@ -605,10 +605,10 @@ namespace Server.Network
         for (int i = 0; i < count; i++)
         {
           Item item = World.FindItem(pvSrc.ReadUInt32());
-          int Amount = pvSrc.ReadInt16();
+          int amount = pvSrc.ReadInt16();
 
-          if (item != null && Amount > 0)
-            sellList.Add(new SellItemResponse(item, Amount));
+          if (item != null && amount > 0)
+            sellList.Add(new SellItemResponse(item, amount));
         }
 
         if (sellList.Count > 0 && vendor is IVendor v && v.OnSellItems(state.Mobile, sellList))

@@ -62,7 +62,7 @@ namespace Server.Gumps
       set => Delta(ref m_Hue, value);
     }
 
-    public override string Compile() => m_Hue == 0 ?
+    public override string Compile(ArraySet<string> strings) => m_Hue == 0 ?
       $"{{ tilepic {m_X} {m_Y} {m_ItemID} }}" :
       $"{{ tilepichue {m_X} {m_Y} {m_ItemID} {m_Hue} }}";
 

@@ -63,14 +63,4 @@
   <ItemGroup>
     <PackageReference Include="System.IO.Pipelines" Version="4.5.3" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Buffers\SpanWriter.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Collections\ArraySet.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Assemblies\zlib32.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Collections\" />
-  </ItemGroup>
 </Project>

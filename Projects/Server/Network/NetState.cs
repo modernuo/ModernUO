@@ -674,7 +674,6 @@ namespace Server.Network
 
         Socket = null;
         RecvdPipe = null;
-        m_SendQueue = null;
         m_Disposed.Enqueue(this);
       });
     }

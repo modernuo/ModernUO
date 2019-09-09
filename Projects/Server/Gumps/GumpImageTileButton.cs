@@ -121,7 +121,7 @@ namespace Server.Gumps
 
     public int LocalizedTooltip{ get; set; }
 
-    public override string Compile() =>
+    public override string Compile(ArraySet<string> strings) =>
       $"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int)Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}{(LocalizedTooltip > 0 ? $"{{ tooltip {LocalizedTooltip} }}" : "")}";
 
     private static byte[] m_LayoutName = Gump.StringToBuffer("{ buttontileart ");
