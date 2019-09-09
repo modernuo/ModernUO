@@ -237,6 +237,7 @@ namespace Server.Gumps
 
       ArrayBufferWriter<byte> layoutBuffer = new ArrayBufferWriter<byte>();
       ArrayBufferWriter<byte> stringsBuffer = new ArrayBufferWriter<byte>();
+      SpanWriter sw;
 
       if (!Draggable)
         layoutBuffer.Write(m_NoMove);
@@ -255,28 +256,31 @@ namespace Server.Gumps
 
       if (packed)
       {
+        // TODO: Do you need to advance after doing a direct write?
         layoutBuffer.Write(stackalloc byte[1]); // Null Terminated
-        int bytesWritten = WritePacked(layoutBuffer.WrittenSpan, bufferWriter);
 
-        SpanWriter sw = new SpanWriter(stringsBuffer.GetSpan(4));
+        layoutBuffer = WritePacked(layoutBuffer.WrittenSpan);
+
+        // Write the length of the strings
+        sw = new SpanWriter(stringsBuffer.GetSpan(4));
         sw.Write(m_Strings.Count);
         stringsBuffer.Advance(4);
 
-        writeLength += layoutWriter.WrittenCount + 12;
+        writeLength += layoutBuffer.WrittenCount + 4;
       }
       else
       {
-        ushort layoutSize = (ushort)layoutWriter.WrittenCount;
+        ushort layoutSize = (ushort)layoutBuffer.WrittenCount;
         headWriter.Position = 19;
         headWriter.Write(layoutSize);
 
-        spanWriter = new SpanWriter(bufferWriter.GetSpan(2));
-        spanWriter.Write((ushort)m_Strings.Count);
+        // Write the length of the strings
+        sw = new SpanWriter(stringsBuffer.GetSpan(2));
+        sw.Write((ushort)m_Strings.Count);
+        stringsBuffer.Advance(2);
 
         writeLength += layoutSize + 2;
       }
-
-      ArrayBufferWriter<byte> stringsWriter = new ArrayBufferWriter<byte>();
       
       for (int i = 0; i < m_Strings.Count; ++i)
       {
@@ -284,38 +288,47 @@ namespace Server.Gumps
 
         int length = (ushort)v.Length;
 
-        spanWriter = new SpanWriter(stringsWriter.GetSpan(2 + length));
-        spanWriter.Write((ushort)length);
-        spanWriter.WriteBigUniFixed(v, length);
+        sw = new SpanWriter(stringsBuffer.GetSpan(2 + length));
+        sw.Write((ushort)length);
+        sw.WriteBigUniFixed(v, length);
       }
 
       if (packed)
-      {
-        WritePacked(stringsWriter.WrittenSpan, bufferWriter);
-        writeLength += stringsWriter;
-      }
+        stringsBuffer = WritePacked(stringsBuffer.WrittenSpan);
 
+      writeLength += stringsBuffer.WrittenCount;
+
+      // Write the packet length
       headWriter.Position = 1;
-      headWriter.Write((ushort)(25 + layoutWriter.WrittenCount + stringsWriter.WrittenCount));
+      headWriter.Write((ushort)writeLength);
 
+      bufferWriter.Write(headWriter.Span);
+      bufferWriter.Write(layoutBuffer.WrittenSpan);
+      bufferWriter.Write(stringsBuffer.WrittenSpan);
+      bufferWriter.Advance(writeLength);
 
-      return bytesWritten;
+      return writeLength;
     }
 
-    private int WritePacked(ReadOnlySpan<byte> source, ArrayBufferWriter<byte> dest)
+    private ArrayBufferWriter<byte> WritePacked(ReadOnlySpan<byte> source)
     {
-      int length = source.Length;
-      uint wantLength = Compression.MaxPackSize(length);
-      Span<byte> span = dest.GetSpan(4 + ((4096 + length * 1024 / 1000) & ~4095));
+      ArrayBufferWriter<byte> dest = new ArrayBufferWriter<byte>();
 
-      int packLength = wantLength;
+      ulong length = (ulong)source.Length;
+      ulong wantLength = Compression.MaxPackSize(length);
+      Span<byte> span = dest.GetSpan((int)wantLength);
+
+      ulong packLength = wantLength;
 
       Compression.Pack(span.Slice(8), ref packLength, source, length, ZLibQuality.Default);
       SpanWriter writer = new SpanWriter(span);
-      writer.Write(4 + packLength);
-      writer.Write(length);
+      int packLengthInt = (int)packLength;
 
-      return packLength + 8;
+      writer.Write(4 + packLengthInt);
+      writer.Write(length);
+      dest.Advance(8 + packLengthInt);
+
+      return dest;
     }
 
     public virtual void OnResponse(NetState sender, RelayInfo info)
