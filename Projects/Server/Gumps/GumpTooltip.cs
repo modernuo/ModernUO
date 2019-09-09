@@ -19,13 +19,13 @@
  ***************************************************************************/
 
 using System.Buffers;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpTooltip : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
     private int m_Number;
 
     public GumpTooltip(int number)
@@ -41,10 +41,17 @@ namespace Server.Gumps
 
     public override string Compile(ArraySet<string> strings) => $"{{ tooltip {m_Number} }}";
 
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ tooltip ");
+
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_Number);
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(22));
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_Number.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
+
+      buffer.Advance(writer.WrittenCount);
     }
   }
 }

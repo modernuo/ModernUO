@@ -19,13 +19,13 @@
  ***************************************************************************/
 
 using System.Buffers;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpRadio : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("radio");
     private int m_ID1, m_ID2;
     private bool m_InitialState;
     private int m_SwitchID;
@@ -79,17 +79,29 @@ namespace Server.Gumps
 
     public override string Compile(ArraySet<string> strings) => $"{{ radio {m_X} {m_Y} {m_ID1} {m_ID2} {(m_InitialState ? 1 : 0)} {m_SwitchID} }}";
 
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ radio ");
+
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_X);
-      disp.AppendLayout(m_Y);
-      disp.AppendLayout(m_ID1);
-      disp.AppendLayout(m_ID2);
-      disp.AppendLayout(m_InitialState);
-      disp.AppendLayout(m_SwitchID);
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(66));
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_X.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_Y.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_ID1.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_ID2.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_InitialState ? "1" : "0");
+      writer.Write((byte)0x20); // ' '
+      writer.WriteAscii(m_SwitchID.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
 
-      disp.Switches++;
+      buffer.Advance(writer.WrittenCount);
+
+      switches++;
     }
   }
 }

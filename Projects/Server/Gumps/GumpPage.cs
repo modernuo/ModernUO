@@ -19,13 +19,13 @@
  ***************************************************************************/
 
 using System.Buffers;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server.Gumps
 {
   public class GumpPage : GumpEntry
   {
-    private static byte[] m_LayoutName = Gump.StringToBuffer("page");
     private int m_Page;
 
     public GumpPage(int page)
@@ -41,10 +41,17 @@ namespace Server.Gumps
 
     public override string Compile(ArraySet<string> strings) => $"{{ page {m_Page} }}";
 
+    private static byte[] m_LayoutName = Gump.StringToBuffer("{ page ");
+
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
-      disp.AppendLayout(m_LayoutName);
-      disp.AppendLayout(m_Page);
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(19));
+      writer.Write(m_LayoutName);
+      writer.WriteAscii(m_Page.ToString());
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
+
+      buffer.Advance(writer.WrittenCount);
     }
   }
 }
