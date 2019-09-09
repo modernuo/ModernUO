@@ -18,6 +18,7 @@
  *
  ***************************************************************************/
 
+using System.Buffers;
 using Server.Buffers;
 
 namespace Server.Gumps
@@ -163,8 +164,9 @@ namespace Server.Gumps
     private static byte[] m_LayoutNameColor = Gump.StringToBuffer("{ xmfhtmlgumpcolor ");
     private static byte[] m_LayoutNameArgs = Gump.StringToBuffer("{ xmfhtmltok ");
 
-    public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches)
     {
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(90 + m_Args?.Length ?? 0));
       switch (Type)
       {
         case GumpHtmlLocalizedType.Plain:
@@ -183,8 +185,6 @@ namespace Server.Gumps
             writer.WriteAscii(m_Background ? "1" : "0");
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(m_Scrollbar ? "1" : "0");
-            writer.Write((byte)0x20); // ' '
-            writer.Write((byte)0x7D); // '}'
 
             break;
           }
@@ -207,8 +207,6 @@ namespace Server.Gumps
             writer.WriteAscii(m_Scrollbar ? "1" : "0");
             writer.Write((byte)0x20); // ' '
             writer.WriteAscii(m_Color.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.Write((byte)0x7D); // '}'
 
             break;
           }
@@ -233,14 +231,16 @@ namespace Server.Gumps
             writer.WriteAscii(m_Number.ToString());
             writer.Write((byte)0x20); // ' '
             writer.Write((byte)0x40); // '@'
-            writer.WriteAscii(m_Args);
+            writer.WriteAscii(m_Args ?? "");
             writer.Write((byte)0x40); // '@'
-            writer.Write((byte)0x20); // ' '
-            writer.Write((byte)0x7D); // '}'
 
             break;
           }
       }
+
+      writer.Write((byte)0x20); // ' '
+      writer.Write((byte)0x7D); // '}'
+      buffer.Advance(writer.WrittenCount);
     }
   }
 }

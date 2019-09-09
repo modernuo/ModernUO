@@ -74,6 +74,6 @@ namespace Server.Gumps
     }
 
     public abstract string Compile();
-    public abstract void AppendTo(ArrayBufferWriter<byte> writer, ref int entries, ref int switches);
+    public abstract void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches);
   }
 }

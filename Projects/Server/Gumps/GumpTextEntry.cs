@@ -90,7 +90,7 @@ namespace Server.Gumps
 
     private static byte[] m_LayoutName = Gump.StringToBuffer(" { textentry ");
 
-    public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches)
     {
       writer.Write(m_LayoutName);
       writer.WriteAscii(m_X.ToString());

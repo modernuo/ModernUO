@@ -18,6 +18,7 @@
  *
  ***************************************************************************/
 
+using System.Buffers;
 using Server.Buffers;
 
 namespace Server.Gumps
@@ -41,12 +42,14 @@ namespace Server.Gumps
 
     private static byte[] m_LayoutName = Gump.StringToBuffer("{ group ");
 
-    public override void AppendTo(SpanWriter writer, ref int entries, ref int switches)
+    public override void AppendTo(ArrayBufferWriter<byte> buffer, ref int entries, ref int switches)
     {
+      SpanWriter writer = new SpanWriter(buffer.GetSpan(20));
       writer.Write(m_LayoutName);
       writer.WriteAscii(m_Group.ToString());
       writer.Write((byte)0x20); // ' '
       writer.Write((byte)0x7D); // '}'
+      buffer.Advance(writer.WrittenCount);
     }
   }
 }
