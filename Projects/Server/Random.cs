@@ -25,16 +25,15 @@ namespace Server
 
     static RandomImpl()
     {
-      if (Core.Unix && File.Exists("rdrand.so"))
-        _Random = new RDRandUnix();
-      else if (Core.Is64Bit && File.Exists("rdrand64.dll"))
-        _Random = new RDRand64();
-      else if (File.Exists("rdrand.dll"))
-        _Random = new RDRand32();
-      else
-        _Random = new CSPRandom();
+      if (Core.Is64Bit)
+      {
+        if (Core.Unix && File.Exists("rdrand.so"))
+          _Random = new RDRandUnix();
+        else if (File.Exists("rdrand.dll"))
+          _Random = new RDRand64();
+      }
 
-      if (_Random is IHardwareRNG rng && !rng.IsSupported())
+      if (_Random == null || (_Random is IHardwareRNG rng && !rng.IsSupported()))
         _Random = new CSPRandom();
     }
 
@@ -46,8 +45,6 @@ namespace Server
 
     public static bool NextBool() => _Random.NextBool();
 
-    public static void NextBytes(byte[] b) => _Random.NextBytes(b);
-
     public static void NextBytes(Span<byte> b) => _Random.NextBytes(b);
 
     public static double NextDouble() => _Random.NextDouble();
@@ -57,7 +54,6 @@ namespace Server
   {
     int Next(int c);
     bool NextBool();
-    void NextBytes(byte[] b);
     void NextBytes(Span<byte> b);
     double NextDouble();
   }
@@ -70,11 +66,9 @@ namespace Server
   public abstract class BaseRandom : IRandomImpl
   {
     internal abstract void GetBytes(Span<byte> b);
-    internal abstract void GetBytes(byte[] b);
     internal abstract void GetBytes(byte[] b, int offset, int count);
 
     public virtual void NextBytes(Span<byte> b) => GetBytes(b);
-    public virtual void NextBytes(byte[] b) => GetBytes(b);
     public virtual int Next(int c) => (int)(c * NextDouble());
     public virtual bool NextBool() => (NextByte() & 1) == 1;
 
@@ -136,7 +130,7 @@ namespace Server
       Task.Run(Fill);
     }
 
-    public override void NextBytes(byte[] b)
+    public override void NextBytes(Span<byte> b)
     {
       int c = b.Length;
 
@@ -184,26 +178,9 @@ namespace Server
       }
     }
 
-    internal override void GetBytes(byte[] b)
-    {
-      int c = b.Length;
-
-      lock (_sync)
-      {
-        CheckSwap(c);
-        Buffer.BlockCopy(_Working, _Index, b, 0, c);
-        _Index += c;
-      }
-    }
-
     internal override void GetBytes(byte[] b, int offset, int count)
     {
-      lock (_sync)
-      {
-        CheckSwap(count);
-        Buffer.BlockCopy(_Working, _Index, b, offset, count);
-        _Index += count;
-      }
+      GetBytes(b.AsSpan(offset, count));
     }
 
     public override byte NextByte()
@@ -218,109 +195,53 @@ namespace Server
 
   public sealed class RDRandUnix : BaseRandom, IHardwareRNG
   {
+    [DllImport("rdrand.so")]
+    internal static extern RDRandError rdrand_32(ref uint rand, bool retry);
+
+    [DllImport("rdrand.so")]
+    internal unsafe static extern RDRandError rdrand_get_bytes(int n, byte* buffer);
+
     public bool IsSupported()
     {
       uint r = 0;
-      return SafeNativeMethods.rdrand_32(ref r, true) == RDRandError.Success;
+      return rdrand_32(ref r, true) == RDRandError.Success;
     }
 
     internal unsafe override void GetBytes(Span<byte> b)
     {
       fixed(byte* ptr = b)
-      {
-        SafeNativeMethods.rdrand_get_bytes(b.Length, ptr);
-      }
-    }
-
-    internal unsafe override void GetBytes(byte[] b)
-    {
-      GetBytes(new Span<byte>(b));
+        rdrand_get_bytes(b.Length, ptr);
     }
 
     internal override void GetBytes(byte[] b, int offset, int count)
     {
-      throw new NotImplementedException();
-    }
-
-    internal class SafeNativeMethods
-    {
-      [DllImport("rdrand.so")]
-      internal static extern RDRandError rdrand_32(ref uint rand, bool retry);
-
-      [DllImport("rdrand.so")]
-      internal unsafe static extern RDRandError rdrand_get_bytes(int n, byte* buffer);
-    }
-  }
-
-  public sealed class RDRand32 : BaseRandom, IHardwareRNG
-  {
-    public bool IsSupported()
-    {
-      uint r = 0;
-      return SafeNativeMethods.rdrand_32(ref r, true) == RDRandError.Success;
-    }
-
-    internal unsafe override void GetBytes(Span<byte> b)
-    {
-      fixed (byte* ptr = b)
-      {
-        SafeNativeMethods.rdrand_get_bytes(b.Length, ptr);
-      }
-    }
-
-    internal unsafe override void GetBytes(byte[] b)
-    {
-      GetBytes(new Span<byte>(b));
-    }
-
-    internal override void GetBytes(byte[] b, int offset, int count)
-    {
-      throw new NotImplementedException();
-    }
-
-    internal class SafeNativeMethods
-    {
-      [DllImport("rdrand32")]
-      internal static extern RDRandError rdrand_32(ref uint rand, bool retry);
-
-      [DllImport("rdrand32")]
-      internal unsafe static extern RDRandError rdrand_get_bytes(int n, byte* buffer);
+      GetBytes(b.AsSpan().Slice(offset, count));
     }
   }
 
   public sealed class RDRand64 : BaseRandom, IHardwareRNG
   {
+    [DllImport("rdrand64")]
+    internal static extern RDRandError rdrand_64(ref ulong rand, bool retry);
+
+    [DllImport("rdrand64")]
+    internal unsafe static extern RDRandError rdrand_get_bytes(int n, byte* buffer);
+
     public bool IsSupported()
     {
-      uint r = 0;
-      return SafeNativeMethods.rdrand_64(ref r, true) == RDRandError.Success;
+      ulong r = 0;
+      return rdrand_64(ref r, true) == RDRandError.Success;
     }
 
     internal unsafe override void GetBytes(Span<byte> b)
     {
       fixed (byte* ptr = b)
-      {
-        SafeNativeMethods.rdrand_get_bytes(b.Length, ptr);
-      }
-    }
-
-    internal unsafe override void GetBytes(byte[] b)
-    {
-      GetBytes(new Span<byte>(b));
+        rdrand_get_bytes(b.Length, ptr);
     }
 
     internal override void GetBytes(byte[] b, int offset, int count)
     {
-      throw new NotImplementedException();
-    }
-
-    internal class SafeNativeMethods
-    {
-      [DllImport("rdrand64")]
-      internal static extern RDRandError rdrand_64(ref ulong rand, bool retry);
-
-      [DllImport("rdrand64")]
-      internal unsafe static extern RDRandError rdrand_get_bytes(int n, byte* buffer);
+      GetBytes(b.AsSpan(offset, count));
     }
   }
 
