@@ -1,6 +1,6 @@
 using Server.Buffers;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public enum TradeFlag : byte
   {
@@ -15,6 +15,9 @@ namespace Server.Network
   {
     public static void SendDisplaySecureTrade(NetState ns, Serial them, Serial firstCont, Serial secondCont, string name)
     {
+      if (ns == null)
+        return;
+
       int length = 18 + name?.Length ?? 0;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x6F); // Packet ID
@@ -32,6 +35,9 @@ namespace Server.Network
 
     public static void SendCloseSecureTrade(NetState ns, Serial cont)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[8]);
       w.Write((byte)0x6F); // Packet ID
       w.Write((ushort)8); // Length
@@ -44,6 +50,9 @@ namespace Server.Network
 
     public static void SendUpdateSecureTrade(NetState ns, Serial cont, TradeFlag flag, int first, int second)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x6F); // Packet ID
       w.Write((ushort)17); // Length
@@ -58,6 +67,9 @@ namespace Server.Network
 
     public static void SendSecureTradeEquip(NetState ns, Item item, Serial m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[20]);
       w.Write((byte)0x25); // Packet ID
 
@@ -75,6 +87,9 @@ namespace Server.Network
 
     public static void SendSecureTradeEquip6017(NetState ns, Item item, Serial m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[21]);
       w.Write((byte)0x25); // Packet ID
 

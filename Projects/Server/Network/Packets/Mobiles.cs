@@ -1,13 +1,17 @@
 using System;
-using Server.Buffers;
 using System.Collections.Generic;
+using Server.Buffers;
+using Server.Items;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public static partial class Packets
   {
     public static void SendDeathAnimation(NetState ns, Serial killed, Serial corpse)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[13]);
       w.Write((byte)0xAF); // Packet ID
 
@@ -20,6 +24,9 @@ namespace Server.Network
 
     public static void SendDeathAnimation(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[12]);
       w.Write((byte)0xBF); // Extended Packet ID
       w.Write((short)12); // Length
@@ -34,6 +41,9 @@ namespace Server.Network
 
     public static void SendBondStatus(NetState ns, Serial m, bool bonded)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[11]);
       w.Write((byte)0xBF); // Extended Packet ID
       w.Write((short)11); // Length
@@ -48,6 +58,9 @@ namespace Server.Network
 
     public static void SendPersonalLightLevel(NetState ns, Serial m, sbyte level)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[6]);
       w.Write((byte)0x4E); // Packet ID
 
@@ -59,6 +72,9 @@ namespace Server.Network
 
     public static void SendPersonalLightLevelZero(NetState ns, Serial m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[6]);
       w.Write((byte)0x4E); // Packet ID
 
@@ -69,6 +85,9 @@ namespace Server.Network
 
     public static void SendEquipUpdate(NetState ns, Item item)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[15]);
       w.Write((byte)0x2E); // Packet ID
 
@@ -95,6 +114,9 @@ namespace Server.Network
 
     public static void SendSwing(NetState ns, Serial attacker, Serial defender)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[10]);
       w.Write((byte)0x2F); // Packet ID
 
@@ -107,6 +129,9 @@ namespace Server.Network
 
     public static void SendMobileMoving(NetState ns, Mobile m, int noto)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x77); // Packet ID
 
@@ -127,6 +152,9 @@ namespace Server.Network
 
     public static void SendMobileMovingOld(NetState ns, Mobile m, int noto)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x77); // Packet ID
 
@@ -147,6 +175,9 @@ namespace Server.Network
 
     public static void SendDisplayPaperdoll(NetState ns, Mobile m, string text, bool canLift)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[66]);
       w.Write((byte)0x88); // Packet ID
 
@@ -167,11 +198,12 @@ namespace Server.Network
 
     public static void SendMobileName(NetState ns, Mobile m)
     {
-      int length = 7 + Math.Min(m.Name?.Length ?? 0, 30);
+      if (ns == null)
+        return;
 
-      SpanWriter w = new SpanWriter(stackalloc byte[length]);
+      SpanWriter w = new SpanWriter(stackalloc byte[37]);
       w.Write((byte)0x98); // Packet ID
-      w.Write((short)length); // Length
+      w.Write((ushort)37); // Dynamic Length
 
       w.Write(m.Serial);
       w.WriteAsciiFixed(m.Name ?? "", 30);
@@ -181,6 +213,9 @@ namespace Server.Network
 
     public static void SendMobileAnimation(NetState ns, Mobile m, int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[14]);
       w.Write((byte)0x6E); // Packet ID
 
@@ -197,6 +232,9 @@ namespace Server.Network
 
     public static void SendNewMobileAnimation(NetState ns, Mobile m, int action, int frameCount, int delay)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[10]);
       w.Write((byte)0xE2); // Packet ID
 
@@ -210,6 +248,9 @@ namespace Server.Network
 
     public static void SendMobileStatusCompact(NetState ns, Mobile m, bool canBeRenamed = false)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[43]);
       w.Write((byte)0x11); // Packet ID
       w.Write((ushort)43); // Length
@@ -228,6 +269,9 @@ namespace Server.Network
 
     public static void SendMobileExtended(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       string name = m.Name ?? "";
 
       byte type;
@@ -326,6 +370,9 @@ namespace Server.Network
 
     public static void SendMobileStatus(NetState ns, Mobile beholder, Mobile beheld)
     {
+      if (ns == null)
+        return;
+
       string name = beheld.Name ?? "";
 
       int type;
@@ -438,6 +485,9 @@ namespace Server.Network
 
     public static void SendHealthbarPoison(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[12]);
       w.Write((byte)0x17); // Packet ID
       w.Write((ushort)12); // Length
@@ -456,6 +506,9 @@ namespace Server.Network
 
     public static void SendHealthbarYellow(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[12]);
       w.Write((byte)0x17); // Packet ID
       w.Write((ushort)12); // Length
@@ -471,6 +524,9 @@ namespace Server.Network
 
     public static void SendMobileUpdate(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[19]);
       w.Write((byte)0x20); // Packet ID
 
@@ -495,6 +551,9 @@ namespace Server.Network
 
     public static void SendMobileUpdateOld(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[19]);
       w.Write((byte)0x20); // Packet ID
 
@@ -519,6 +578,9 @@ namespace Server.Network
 
     public static void SendMobileIncoming(NetState ns, Mobile beholder, Mobile beheld)
     {
+      if (ns == null)
+        return;
+
       if (ns.NewMobileIncoming)
       {
         SendMobileIncomingNew(ns, beholder, beheld);
@@ -536,6 +598,9 @@ namespace Server.Network
 
     public static void SendMobileIncomingNew(NetState ns, Mobile beholder, Mobile beheld)
     {
+      if (ns == null)
+        return;
+
       Span<bool> dupedLayers = stackalloc bool[256];
 
       List<Item> eq = beheld.Items;
@@ -594,7 +659,7 @@ namespace Server.Network
         if (beheld.SolidHueOverride >= 0)
           hue = beheld.SolidHueOverride;
 
-        w.Write(HairInfo.FakeSerial(beheld));
+        w.Write(HairInfo.FakeSerial(beheld.Serial));
         w.Write((ushort)(beheld.HairItemID & 0xFFFF));
         w.Write((byte)Layer.Hair);
 
@@ -608,7 +673,7 @@ namespace Server.Network
         if (beheld.SolidHueOverride >= 0)
           hue = beheld.SolidHueOverride;
 
-        w.Write(FacialHairInfo.FakeSerial(beheld));
+        w.Write(FacialHairInfo.FakeSerial(beheld.Serial));
         w.Write((ushort)(beheld.FacialHairItemID & 0xFFFF));
         w.Write((byte)Layer.FacialHair);
 
@@ -625,6 +690,9 @@ namespace Server.Network
 
     public static void SendMobileIncomingSA(NetState ns, Mobile beholder, Mobile beheld)
     {
+      if (ns == null)
+        return;
+
       Span<bool> dupedLayers = stackalloc bool[256];
 
       List<Item> eq = beheld.Items;
@@ -669,14 +737,14 @@ namespace Server.Network
           if (beheld.SolidHueOverride >= 0)
             hue = beheld.SolidHueOverride;
 
-          int itemID = item.ItemID & 0x7FFF;
+          int itemId = item.ItemID & 0x7FFF;
           bool writeHue = hue != 0;
 
           if (writeHue)
-            itemID |= 0x8000;
+            itemId |= 0x8000;
 
           w.Write(item.Serial);
-          w.Write((ushort)itemID);
+          w.Write((ushort)itemId);
           w.Write(layer);
 
           if (writeHue)
@@ -691,15 +759,15 @@ namespace Server.Network
         if (beheld.SolidHueOverride >= 0)
           hue = beheld.SolidHueOverride;
 
-        int itemID = beheld.HairItemID & 0x7FFF;
+        int itemId = beheld.HairItemID & 0x7FFF;
 
         bool writeHue = hue != 0;
 
         if (writeHue)
-          itemID |= 0x8000;
+          itemId |= 0x8000;
 
-        w.Write(HairInfo.FakeSerial(beheld));
-        w.Write((ushort)itemID);
+        w.Write(HairInfo.FakeSerial(beheld.Serial));
+        w.Write((ushort)itemId);
         w.Write((byte)Layer.Hair);
 
         if (writeHue)
@@ -713,15 +781,15 @@ namespace Server.Network
         if (beheld.SolidHueOverride >= 0)
           hue = beheld.SolidHueOverride;
 
-        int itemID = beheld.FacialHairItemID & 0x7FFF;
+        int itemId = beheld.FacialHairItemID & 0x7FFF;
 
         bool writeHue = hue != 0;
 
         if (writeHue)
-          itemID |= 0x8000;
+          itemId |= 0x8000;
 
-        w.Write(FacialHairInfo.FakeSerial(beheld));
-        w.Write((ushort)itemID);
+        w.Write(FacialHairInfo.FakeSerial(beheld.Serial));
+        w.Write((ushort)itemId);
         w.Write((byte)Layer.FacialHair);
 
         if (writeHue)
@@ -738,6 +806,9 @@ namespace Server.Network
 
     public static void SendMobileIncomingOld(NetState ns, Mobile beholder, Mobile beheld)
     {
+      if (ns == null)
+        return;
+
       Span<bool> dupedLayers = stackalloc bool[256];
 
       List<Item> eq = beheld.Items;
@@ -782,14 +853,14 @@ namespace Server.Network
           if (beheld.SolidHueOverride >= 0)
             hue = beheld.SolidHueOverride;
 
-          int itemID = item.ItemID & 0x7FFF;
+          int itemId = item.ItemID & 0x7FFF;
           bool writeHue = hue != 0;
 
           if (writeHue)
-            itemID |= 0x8000;
+            itemId |= 0x8000;
 
           w.Write(item.Serial);
-          w.Write((ushort)itemID);
+          w.Write((ushort)itemId);
           w.Write(layer);
 
           if (writeHue)
@@ -804,15 +875,15 @@ namespace Server.Network
         if (beheld.SolidHueOverride >= 0)
           hue = beheld.SolidHueOverride;
 
-        int itemID = beheld.HairItemID & 0x7FFF;
+        int itemId = beheld.HairItemID & 0x7FFF;
 
         bool writeHue = hue != 0;
 
         if (writeHue)
-          itemID |= 0x8000;
+          itemId |= 0x8000;
 
-        w.Write(HairInfo.FakeSerial(beheld));
-        w.Write((ushort)itemID);
+        w.Write(HairInfo.FakeSerial(beheld.Serial));
+        w.Write((ushort)itemId);
         w.Write((byte)Layer.Hair);
 
         if (writeHue)
@@ -826,15 +897,15 @@ namespace Server.Network
         if (beheld.SolidHueOverride >= 0)
           hue = beheld.SolidHueOverride;
 
-        int itemID = beheld.FacialHairItemID & 0x7FFF;
+        int itemId = beheld.FacialHairItemID & 0x7FFF;
 
         bool writeHue = hue != 0;
 
         if (writeHue)
-          itemID |= 0x8000;
+          itemId |= 0x8000;
 
-        w.Write(FacialHairInfo.FakeSerial(beheld));
-        w.Write((ushort)itemID);
+        w.Write(FacialHairInfo.FakeSerial(beheld.Serial));
+        w.Write((ushort)itemId);
         w.Write((byte)Layer.FacialHair);
 
         if (writeHue)
@@ -851,6 +922,9 @@ namespace Server.Network
 
     public static void SendFollowMessage(NetState ns, Serial s1, Serial s2)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x15); // Packet ID
 

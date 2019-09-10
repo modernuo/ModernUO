@@ -48,10 +48,7 @@ namespace Server.Misc
       if (footer.Length == 0 && beholder == beheld)
         footer = GetAccountDuration(beheld);
 
-      string body = beheld.Profile;
-
-      if (body == null || body.Length <= 0)
-        body = "";
+      string body = beheld.Profile ?? "";
 
       beholder.Send(new DisplayProfile(beholder != beheld || !beheld.ProfileLocked, beheld, header, body, footer));
     }

@@ -23,7 +23,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Server
+namespace Server.Persistence
 {
   public delegate void FileCommitCallback(FileQueue.Chunk chunk);
 

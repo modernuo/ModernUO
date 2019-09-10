@@ -31,11 +31,7 @@ namespace Server.Items
 
     private void AddGeneratorComponent(int itemID, int x, int y, int z)
     {
-      AddonComponent component = new AddonComponent(itemID);
-      component.Name = "a power generator";
-      component.Hue = 0x451;
-
-      AddComponent(component, x, y, z);
+      AddComponent(new AddonComponent(itemID){ Name = "a power generator", Hue = 0x451 }, x, y, z);
     }
 
     public override void Serialize(GenericWriter writer)
@@ -207,7 +203,7 @@ namespace Server.Items
     {
       to.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "", "",
         "The generator shoots an arc of electricity at you!"));
-      to.BoltEffect(0);
+      to.BoltEffect();
       to.LocalOverheadMessage(MessageType.Regular, 0xC9, true, "* Your body convulses from electric shock *");
       to.NonlocalOverheadMessage(MessageType.Regular, 0xC9, true, $"* {to.Name} spasms from electric shock *");
 

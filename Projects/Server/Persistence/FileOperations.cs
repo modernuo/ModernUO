@@ -21,13 +21,13 @@
 
 using System;
 using System.IO;
-#if !MONO
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
+#if !MONO
 
 #endif
 
-namespace Server
+namespace Server.Persistence
 {
   public static class FileOperations
   {

@@ -18,7 +18,7 @@
  *
  ***************************************************************************/
 
-namespace Server.Prompts
+namespace Server
 {
   public abstract class Prompt
   {

@@ -1,8 +1,8 @@
 using System;
-using Server.Buffers;
 using System.Collections.Generic;
+using Server.Buffers;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   [Flags]
   public enum AffixType : byte
@@ -14,13 +14,14 @@ namespace Server.Network
 
   public static partial class Packets
   {
-    private static Dictionary<int, byte[]> m_MessageLocalizedPackets = new Dictionary<int, byte[]>();
+    private static readonly Dictionary<int, byte[]> _messageLocalizedPackets = new Dictionary<int, byte[]>();
 
     public static void SendMessageLocalized(NetState ns, int number)
     {
-      byte[] packet;
+      if (ns == null)
+        return;
 
-      if (m_MessageLocalizedPackets.TryGetValue(number, out packet))
+      if (_messageLocalizedPackets.TryGetValue(number, out var packet))
       {
         ns.Send(packet);
         return;
@@ -38,7 +39,7 @@ namespace Server.Network
       w.Write(number);
       w.WriteAsciiFixed("System", 30);
 
-      m_MessageLocalizedPackets[number] = packet;
+      _messageLocalizedPackets[number] = packet;
 
       ns.Send(packet);
     }
@@ -46,6 +47,9 @@ namespace Server.Network
     public static void SendMessageLocalized(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
       string args)
     {
+      if (ns == null)
+        return;
+
       int length = 50 + args.Length * 2;
 
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
@@ -69,15 +73,19 @@ namespace Server.Network
     public static void SendMessageLocalizedAffix(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, int number,
       string name, AffixType affixType, string affix, string args)
     {
+      if (ns == null)
+        return;
+
+      affix ??= "";
+      args ??= "";
+
+      if (hue == 0) hue = 0x3B2;
+
       int length = 52 + affix.Length + args.Length * 2;
 
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xCC); // Packet ID
       w.Write((short)length); // Length
-
-      if (affix == null) affix = "";
-      if (args == null) args = "";
-      if (hue == 0) hue = 0x3B2;
 
       w.Write(serial);
       w.Write((short)graphic);
@@ -93,9 +101,14 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
+    // TODO: Handle IEnumerable<NetState>
     public static void SendAsciiMessage(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, string name, string text)
     {
-      if (text == null) text = "";
+      if (ns == null)
+        return;
+
+      text ??= "";
+
       if (hue == 0) hue = 0x3B2;
 
       int length = 45 + text.Length;
@@ -115,12 +128,16 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
+    // TODO: Handle IEnumerable<NetState>
     public static void SendUnicodeMessage(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, string lang, string name,
       string text)
     {
+      if (ns == null)
+        return;
+
       if (string.IsNullOrEmpty(lang)) lang = "ENU";
-      if (name == null) name = "";
-      if (text == null) text = "";
+      name ??= "";
+      text ??= "";
       if (hue == 0) hue = 0x3B2;
 
       int length = 50 + text.Length * 2;

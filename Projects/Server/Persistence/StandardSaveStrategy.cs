@@ -20,9 +20,8 @@
 
 using System;
 using System.Collections.Generic;
-using Server.Guilds;
 
-namespace Server
+namespace Server.Persistence
 {
   public class StandardSaveStrategy : SaveStrategy
   {

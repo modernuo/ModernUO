@@ -1,13 +1,16 @@
 using System;
-using Server.Buffers;
 using System.Collections.Generic;
+using Server.Buffers;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public static partial class Packets
   {
     public static void SendDisplayContainer(NetState ns, Serial s, int gumpid)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0x24); // Packet ID
 
@@ -19,6 +22,9 @@ namespace Server.Network
 
     public static void SendDisplayContainerHS(NetState ns, Serial s, int gumpid)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x24); // Packet ID
 
@@ -32,6 +38,9 @@ namespace Server.Network
 
     public static void SendContainerContentUpdate(NetState ns, Item item)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[20]);
       w.Write((byte)0x25); // Packet ID
 
@@ -59,6 +68,9 @@ namespace Server.Network
 
     public static void SendContainerContentUpdate6017(NetState ns, Item item)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[21]);
       w.Write((byte)0x25); // Packet ID
 
@@ -87,6 +99,9 @@ namespace Server.Network
 
     public static void ContainerContent(NetState ns, Mobile beholder, Item beheld)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[5 + beheld.Items.Count * 19]);
       w.Write((byte)0x3C); // Packet ID
       w.Position += 4; // Dynamic Length, Item Count
@@ -126,6 +141,9 @@ namespace Server.Network
 
     public static void ContainerContent6017(NetState ns, Mobile beholder, Item beheld)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[5 + beheld.Items.Count * 20]);
       w.Write((byte)0x3C); // Packet ID
       w.Position += 4; // Dynamic Length, Item Count

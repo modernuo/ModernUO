@@ -1,14 +1,16 @@
+using System.Collections.Generic;
 using Server.Buffers;
 using Server.Items;
-using Server.Mobiles;
-using System.Collections.Generic;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public static partial class Packets
   {
     public static void SendVendorBuyContent(NetState ns, IList<BuyItemState> list)
     {
+      if (ns == null)
+        return;
+
       int length = 5 + list.Count * 19;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
@@ -39,6 +41,9 @@ namespace Server.Network
 
     public static void SendVendorBuyContent6017(NetState ns, IList<BuyItemState> list)
     {
+      if (ns == null)
+        return;
+
       int length = 5 + list.Count * 20;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
@@ -70,6 +75,9 @@ namespace Server.Network
 
     public static void SendDisplayBuyList(NetState ns, Serial vendor)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0x24); // Packet ID
 
@@ -81,6 +89,9 @@ namespace Server.Network
 
     public static void SendDisplayBuyListHS(NetState ns, Serial vendor)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x24); // Packet ID
 
@@ -93,6 +104,9 @@ namespace Server.Network
 
     public static void SendVendorBuyList(NetState ns, Mobile vendor, IList<BuyItemState> list)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[8 + 135 * list.Count]);
       w.Write((byte)0x74); // Packet ID
       w.Position += 2; // Dynamic Length
@@ -120,6 +134,9 @@ namespace Server.Network
 
     public static void SendVendorSellList(NetState ns, Serial shopkeeper, IList<SellItemState> list)
     {
+      if (ns == null)
+        return;
+
       ushort count = (ushort)list.Count;
       SpanWriter w = new SpanWriter(stackalloc byte[9 + 140 * count]);
       w.Write((byte)0x9E); // Packet ID
@@ -156,6 +173,9 @@ namespace Server.Network
 
     public static void SendEndVendorBuyOrSell(NetState ns, Serial vendor)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[8]);
       w.Write((byte)0x3B); // Packet ID
 

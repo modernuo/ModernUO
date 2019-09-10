@@ -307,7 +307,7 @@ namespace Server.Items
       {
         case ECEffectType.Lightning:
         {
-          Effects.SendBoltEffect(from, false, EffectHue);
+          Effects.SendBoltEffect(from, false);
           break;
         }
         case ECEffectType.Location:

@@ -1,9 +1,9 @@
-using Server.Gumps;
-using Server.Buffers;
-using System.Collections.Generic;
 using System.Buffers;
+using System.Collections.Generic;
+using Server.Buffers;
+using Server.Gumps;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public interface IGumpWriter
   {
@@ -20,6 +20,9 @@ namespace Server.Network
   {
     public static void SendCloseGump(NetState ns, int typeId, int buttonId)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[13]);
       w.Write((byte)0xBF); // Packet ID
       w.Write((short)13); // Length
@@ -33,12 +36,15 @@ namespace Server.Network
 
     public static void SendDisplayGump(NetState ns, Gump g, string layout, string[] text)
     {
+      if (ns == null)
+        return;
+
+      layout ??= "";
+
       // Assume no longer than 128 characters per text element
-      SpanWriter w = new SpanWriter(stackalloc byte[20 + layout.Length + 1 + (258 * text.Length)]);
+      SpanWriter w = new SpanWriter(stackalloc byte[20 + layout.Length + 1 + (258 * text?.Length ?? 0)]);
       w.Write((byte)0xB0); // Packet ID
       w.Position += 2; // Dynamic Length
-
-      if (layout == null) layout = "";
 
       w.Write(g.Serial);
       w.Write(g.TypeID);
@@ -47,9 +53,9 @@ namespace Server.Network
       w.Write((ushort)(layout.Length + 1));
       w.WriteAsciiNull(layout);
 
-      w.Write((ushort)text.Length);
+      w.Write((ushort)(text?.Length ?? 0));
 
-      for (int i = 0; i < text.Length; ++i)
+      for (int i = 0; i < text?.Length; ++i)
       {
         string v = text[i] ?? "";
 
@@ -65,15 +71,18 @@ namespace Server.Network
       ns.Send(w.Span);
     }
 
-    public static void SendDisplaySignGump(NetState ns, Serial serial, int gumpID, string unknown, string caption)
+    public static void SendDisplaySignGump(NetState ns, Serial serial, int gumpId, string unknown, string caption)
     {
+      if (ns == null)
+        return;
+
       int length = 14 + caption.Length + unknown.Length;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x8B); // Packet ID
       w.Write((short)length);
 
       w.Write(serial);
-      w.Write((short)gumpID);
+      w.Write((short)gumpId);
       w.Write((short)unknown.Length);
       w.WriteAsciiFixed(unknown, unknown.Length);
       w.Write((short)(caption.Length + 1));

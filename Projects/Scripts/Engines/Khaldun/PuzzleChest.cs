@@ -329,7 +329,7 @@ namespace Server.Items
         }
         default:
         {
-          to.BoltEffect(0);
+          to.BoltEffect();
           to.LocalOverheadMessage(MessageType.Regular, 0xDA, 1010526); // Lightning arcs through thy body.
 
           AOS.Damage(to, to, Utility.RandomMinMax(10, 40), 0, 0, 0, 0, 100);

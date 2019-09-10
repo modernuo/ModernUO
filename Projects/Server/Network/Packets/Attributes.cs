@@ -1,6 +1,6 @@
 using Server.Buffers;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public static partial class Packets
   {
@@ -41,6 +41,9 @@ namespace Server.Network
 
     public static void SendMobileHits(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA1); // Packet ID
 
@@ -53,6 +56,9 @@ namespace Server.Network
 
     public static void SendNormalizedMobileHits(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA1); // Packet ID
 
@@ -64,6 +70,9 @@ namespace Server.Network
 
     public static void SendMobileMana(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA2); // Packet ID
 
@@ -76,6 +85,9 @@ namespace Server.Network
 
     public static void SendNormalizedMobileMana(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA2); // Packet ID
 
@@ -87,6 +99,9 @@ namespace Server.Network
 
     public static void SendMobileStam(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA3); // Packet ID
 
@@ -99,6 +114,9 @@ namespace Server.Network
 
     public static void SendNormalizedMobileStam(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xA3); // Packet ID
 
@@ -110,6 +128,9 @@ namespace Server.Network
 
     public static void SendMobileAttributes(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x2D); // Packet ID
 
@@ -129,6 +150,9 @@ namespace Server.Network
 
     public static void SendNormalizedMobileAttributes(NetState ns, Mobile m)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x2D); // Packet ID
 

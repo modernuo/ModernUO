@@ -19,13 +19,13 @@
  ***************************************************************************/
 
 using Server.Network;
+using Server.Network.Packets;
 
-namespace Server.Menus.Questions
+namespace Server.Menus
 {
   public class QuestionMenu : IMenu
   {
-    private static int m_NextSerial;
-    private int m_Serial;
+    private static Serial m_NextSerial;
 
     public QuestionMenu(string question, string[] answers)
     {
@@ -34,16 +34,16 @@ namespace Server.Menus.Questions
 
       do
       {
-        m_Serial = ++m_NextSerial;
-        m_Serial &= 0x7FFFFFFF;
-      } while (m_Serial == 0);
+        Serial = ++m_NextSerial;
+        Serial &= 0x7FFFFFFF;
+      } while (Serial == 0);
     }
 
     public string Question{ get; set; }
 
     public string[] Answers{ get; }
 
-    int IMenu.Serial => m_Serial;
+    public Serial Serial { get; private set; }
 
     int IMenu.EntryLength => Answers.Length;
 
@@ -58,7 +58,7 @@ namespace Server.Menus.Questions
     public void SendTo(NetState state)
     {
       state.AddMenu(this);
-      state.Send(new DisplayQuestionMenu(this));
+      Packets.SendDisplayQuestionMenu(state, this);
     }
   }
 }

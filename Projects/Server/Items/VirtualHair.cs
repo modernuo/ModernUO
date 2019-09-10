@@ -18,7 +18,7 @@
  *
  ***************************************************************************/
 
-namespace Server
+namespace Server.Items
 {
   public abstract class BaseHairInfo
   {
@@ -59,12 +59,7 @@ namespace Server
 
   public class HairInfo : BaseHairInfo
   {
-    public HairInfo(int itemid)
-      : base(itemid)
-    {
-    }
-
-    public HairInfo(int itemid, int hue)
+    public HairInfo(int itemid, int hue = 0)
       : base(itemid, hue)
     {
     }
@@ -74,21 +69,13 @@ namespace Server
     {
     }
 
-    // TOOD: Can we make this higher for newer clients?
-    public static uint FakeSerial(Mobile parent)
-    {
-      return 0x7FFFFFFF - 0x400 - parent.Serial * 4;
-    }
+    // TODO: Can we make this higher for newer clients?
+    public static uint FakeSerial(Serial parent) => 0x7FFFFFFF - 0x400 - parent * 4;
   }
 
   public class FacialHairInfo : BaseHairInfo
   {
-    public FacialHairInfo(int itemid)
-      : base(itemid)
-    {
-    }
-
-    public FacialHairInfo(int itemid, int hue)
+    public FacialHairInfo(int itemid, int hue = 0)
       : base(itemid, hue)
     {
     }
@@ -99,65 +86,6 @@ namespace Server
     }
 
     // TOOD: Can we make this higher for newer clients?
-    public static uint FakeSerial(Mobile parent)
-    {
-      return 0x7FFFFFFF - 0x400 - 1 - parent.Serial * 4;
-    }
-  }
-
-  public sealed class HairEquipUpdate : Packet
-  {
-    public HairEquipUpdate(Mobile parent)
-      : base(0x2E, 15)
-    {
-      int hue = parent.HairHue;
-
-      if (parent.SolidHueOverride >= 0)
-        hue = parent.SolidHueOverride;
-
-      m_Stream.Write(HairInfo.FakeSerial(parent));
-      m_Stream.Write((short)parent.HairItemID);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)Layer.Hair);
-      m_Stream.Write(parent.Serial);
-      m_Stream.Write((short)hue);
-    }
-  }
-
-  public sealed class FacialHairEquipUpdate : Packet
-  {
-    public FacialHairEquipUpdate(Mobile parent)
-      : base(0x2E, 15)
-    {
-      int hue = parent.FacialHairHue;
-
-      if (parent.SolidHueOverride >= 0)
-        hue = parent.SolidHueOverride;
-
-      m_Stream.Write(FacialHairInfo.FakeSerial(parent));
-      m_Stream.Write((short)parent.FacialHairItemID);
-      m_Stream.Write((byte)0);
-      m_Stream.Write((byte)Layer.FacialHair);
-      m_Stream.Write(parent.Serial);
-      m_Stream.Write((short)hue);
-    }
-  }
-
-  public sealed class RemoveHair : Packet
-  {
-    public RemoveHair(Mobile parent)
-      : base(0x1D, 5)
-    {
-      m_Stream.Write(HairInfo.FakeSerial(parent));
-    }
-  }
-
-  public sealed class RemoveFacialHair : Packet
-  {
-    public RemoveFacialHair(Mobile parent)
-      : base(0x1D, 5)
-    {
-      m_Stream.Write(FacialHairInfo.FakeSerial(parent));
-    }
+    public static uint FakeSerial(Serial parent) => 0x7FFFFFFF - 0x400 - 1 - parent * 4;
   }
 }

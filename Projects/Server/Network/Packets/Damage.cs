@@ -1,11 +1,14 @@
 using Server.Buffers;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public static partial class Packets
   {
     public static void DamageOld(NetState ns, Serial m, int amount)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[11]);
       w.Write((byte)0xBF); // Extended Packet ID
       w.Write((ushort)11); // Length
@@ -26,6 +29,9 @@ namespace Server.Network
 
     public static void Damage(NetState ns, Serial m, int amount)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0xBF); // Extended Packet ID
       w.Write((ushort)7); // Length

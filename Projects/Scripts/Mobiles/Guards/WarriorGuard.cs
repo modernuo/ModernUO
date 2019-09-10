@@ -298,7 +298,7 @@ namespace Server.Mobiles
         {
           // <instakill>
           TeleportTo(target);
-          target.BoltEffect(0);
+          target.BoltEffect();
 
           if (target is BaseCreature creature)
             creature.NoKillAwards = true;

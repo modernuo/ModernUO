@@ -1,12 +1,15 @@
 using Server.Buffers;
 using Server.Targeting;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public static partial class Packets
   {
     public static void SendMultiTargetReqHS(NetState ns, MultiTarget t)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[30]);
       w.Write((byte)0x99); // Packet ID
 
@@ -25,6 +28,9 @@ namespace Server.Network
 
     public static void SendMultiTargetReq(NetState ns, MultiTarget t)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[26]);
       w.Write((byte)0x99); // Packet ID
 
@@ -40,22 +46,28 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    private static byte[] m_TargetReqPacket;
+    private static byte[] _targetReqPacket;
 
-    public static void SendTargetReq(NetState ns)
+    public static void SendCancelTarget(NetState ns)
     {
-      if (m_TargetReqPacket == null)
+      if (ns == null)
+        return;
+
+      if (_targetReqPacket == null)
       {
-        m_TargetReqPacket = new byte[19];
-        m_TargetReqPacket[0] = 0x6C; // Packet ID
-        m_TargetReqPacket[6] = 0x03; // ?
+        _targetReqPacket = new byte[19];
+        _targetReqPacket[0] = 0x6C; // Packet ID
+        _targetReqPacket[6] = 0x03; // ?
       }
 
-      ns.Send(m_TargetReqPacket);
+      ns.Send(_targetReqPacket);
     }
 
-    public static void SendCancelTarget(NetState ns, Target t)
+    public static void SendTargetReq(NetState ns, Target t)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[19]);
       w.Write((byte)0x6C); // Packet ID
 

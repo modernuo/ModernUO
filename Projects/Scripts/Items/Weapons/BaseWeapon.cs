@@ -3006,7 +3006,7 @@ namespace Server.Items
 
       double damage = GetAosDamage(attacker, 23, 1, 4);
 
-      defender.BoltEffect(0);
+      defender.BoltEffect();
 
       SpellHelper.Damage(TimeSpan.Zero, defender, attacker, damage, 0, 0, 0, 0, 100);
     }

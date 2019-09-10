@@ -26,7 +26,6 @@ namespace Server.Network
   {
     private static ConcurrentDictionary<IPropertyListObject,OPLInfo> OPLInfoPackets = new ConcurrentDictionary<IPropertyListObject,OPLInfo>();
     private static ConcurrentDictionary<IPropertyListObject,ObjectPropertyList> ObjectPropertyListPackets = new ConcurrentDictionary<IPropertyListObject,ObjectPropertyList>();
-    private static ConcurrentDictionary<IEntity,RemoveEntity> RemoveEntityPackets = new ConcurrentDictionary<IEntity,RemoveEntity>();
 
     private static ConcurrentDictionary<Item,WorldItem> WorldItemPackets = new ConcurrentDictionary<Item,WorldItem>();
     private static ConcurrentDictionary<Item,WorldItemSA> WorldItemSAPackets = new ConcurrentDictionary<Item,WorldItemSA>();
@@ -72,22 +71,6 @@ namespace Server.Network
         Packet.Release(list);
 
       return list;
-    }
-
-    public static RemoveEntity GetRemoveEntityPacket(IEntity entity)
-    {
-      return RemoveEntityPackets.GetOrAdd(entity, value =>
-      {
-        RemoveEntity packet = new RemoveEntity(value);
-        packet.SetStatic();
-        return packet;
-      });
-    }
-
-    public static void FreeRemoveItemPacket(IEntity entity)
-    {
-      if (RemoveEntityPackets.TryRemove(entity, out RemoveEntity p))
-        Packet.Release(p);
     }
 
     public static WorldItem GetWorldItemPacket(Item item)

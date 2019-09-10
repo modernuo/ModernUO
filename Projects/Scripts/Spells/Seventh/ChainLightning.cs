@@ -96,7 +96,7 @@ namespace Server.Spells.Seventh
             Caster.DoHarmful(m);
             SpellHelper.Damage(this, m, toDeal, 0, 0, 0, 0, 100);
 
-            m.BoltEffect(0);
+            m.BoltEffect();
           }
         }
         else

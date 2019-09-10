@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using Server.Network;
+using Server.Network.Packets;
 
 namespace Server.ContextMenus
 {

@@ -1,8 +1,7 @@
 using System;
-using Server.Accounting;
 using Server.Buffers;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public enum DeleteResultType : byte
   {
@@ -37,16 +36,20 @@ namespace Server.Network
   {
     public static void SendDeleteResult(NetState ns, DeleteResultType res)
     {
+      if (ns == null)
+        return;
+
       Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
       span[0] = 0x85; // Packet ID
       span[1] = (byte)res;
 
+      // Not compressed with Huffman
       _ = ns.Flush(2);
     }
 
     public static void SendPopupMessage(NetState ns, PMMessage msg)
     {
-      ns.Send(stackalloc byte[]
+      ns?.Send(stackalloc byte[]
       {
         0x53, // Packet ID
         (byte)msg,
@@ -55,15 +58,22 @@ namespace Server.Network
 
     public static void SendAccountLoginRej(NetState ns, ALRReason reason)
     {
+      if (ns == null)
+        return;
+
       Span<byte> span = ns.SendPipe.Writer.GetSpan(2);
       span[0] = 0x82; // Packet ID
       span[1] = (byte)reason;
 
+      // Not compressed with Huffman
       _ = ns.Flush(2);
     }
 
     public static void SendSupportedFeatures(NetState ns)
     {
+      if (ns == null)
+        return;
+
       int length = ns.ExtendedSupportedFeatures ? 5 : 3;
 
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
@@ -72,11 +82,11 @@ namespace Server.Network
 
       FeatureFlags flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
 
-      if (ns.Account is IAccount acct && acct.Limit >= 6)
+      if (ns.Account?.Limit >= 6)
       {
         flags &= ~FeatureFlags.UOTD;
         flags |= FeatureFlags.LiveAccount |
-          (acct.Limit > 6 ? FeatureFlags.SeventhCharacterSlot : FeatureFlags.SixthCharacterSlot);
+          (ns.Account.Limit > 6 ? FeatureFlags.SeventhCharacterSlot : FeatureFlags.SixthCharacterSlot);
       }
 
       if (ns.ExtendedSupportedFeatures)
@@ -89,6 +99,9 @@ namespace Server.Network
 
     public static void SendCharacterList(NetState ns, IAccount a, CityInfo[] info)
     {
+      if (ns == null)
+        return;
+
       int highSlot = -1;
 
       for (int i = 0; i < a.Length; ++i)
@@ -152,6 +165,9 @@ namespace Server.Network
 
     public static void SendCharacterListOld(NetState ns, IAccount a, CityInfo[] info)
     {
+      if (ns == null)
+        return;
+
       int highSlot = -1;
 
       for (int i = 0; i < a.Length; ++i)
@@ -207,6 +223,9 @@ namespace Server.Network
 
     public static void SendCharacterListUpdate(NetState ns, IAccount a)
     {
+      if (ns == null)
+        return;
+
       int highSlot = -1;
 
       for (int i = 0; i < a.Length; ++i)
@@ -241,6 +260,9 @@ namespace Server.Network
 
     public static void SendPlayServerAck(NetState ns, ServerInfo si)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(11));
       w.Write((byte)0x8C); // Packet ID
 
@@ -254,11 +276,15 @@ namespace Server.Network
       w.Write((short)si.Address.Port);
       w.Write(ns.m_AuthID);
 
+      // Not compressed with Huffman
       _ = ns.Flush(11);
     }
 
     public static void AccountLoginAck(NetState ns, ServerInfo[] info)
     {
+      if (ns == null)
+        return;
+
       int length = 6 + info.Length * 40;
 
       SpanWriter w = new SpanWriter(ns.SendPipe.Writer.GetSpan(length));
@@ -280,6 +306,7 @@ namespace Server.Network
         w.Write(Utility.GetAddressValue(si.Address.Address));
       }
 
+      // Not compressed with Huffman
       _ = ns.Flush(length);
     }
   }

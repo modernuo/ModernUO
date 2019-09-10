@@ -22,6 +22,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Server.Network.Packets;
 
 namespace Server
 {
@@ -709,7 +710,7 @@ namespace Server
         m_Highest = skill;
 
       Owner.OnSkillInvalidated(skill);
-      Owner.NetState?.Send(new SkillChange(skill));
+      Packets.SendSkillChange(Owner.NetState, skill);
     }
 
     #region Skill Getters & Setters

@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Network;
+using Server.Network.Packets;
 
 namespace Server.Items
 {

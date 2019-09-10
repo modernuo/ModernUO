@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using Server.Items;
 using Server.Buffers;
+using Server.Items;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public enum LRReason : byte
   {
@@ -12,19 +12,22 @@ namespace Server.Network
     OutOfSight,
     TryToSteal,
     AreHolding,
-    Inspecific
+    Unspecific
   }
 
   public static partial class Packets
   {
     public static void WorldItem(NetState ns, Item item)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[20]);
       w.Write((byte)0x1A); // Packet ID
       w.Position += 2; // Dynamic Length
 
       uint serial = item.Serial.Value;
-      int itemID = item.ItemID & 0x3FFF;
+      int itemId = item.ItemID & 0x3FFF;
       int amount = item.Amount;
       Point3D loc = item.Location;
       int x = loc.m_X;
@@ -41,9 +44,9 @@ namespace Server.Network
       w.Write(serial);
 
       if (item is BaseMulti)
-        w.Write((short)(itemID | 0x4000));
+        w.Write((short)(itemId | 0x4000));
       else
-        w.Write((short)itemID);
+        w.Write((short)itemId);
 
       if (amount != 0)
         w.Write((short)amount);
@@ -81,12 +84,15 @@ namespace Server.Network
 
     public static void WorldItemSA(NetState ns, Item item)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[24]);
       w.Write((byte)0xF3); // Packet ID
 
       w.Write((short)0x01);
 
-      int itemID = item.ItemID;
+      int itemId = item.ItemID;
 
       if (item is BaseMulti)
       {
@@ -94,9 +100,9 @@ namespace Server.Network
 
         w.Write(item.Serial);
 
-        itemID &= 0x3FFF;
+        itemId &= 0x3FFF;
 
-        w.Write((short)itemID);
+        w.Write((short)itemId);
 
         w.Position++; // w.Write((byte)0);
       }
@@ -106,9 +112,9 @@ namespace Server.Network
 
         w.Write(item.Serial);
 
-        itemID &= 0x7FFF;
+        itemId &= 0x7FFF;
 
-        w.Write((short)itemID);
+        w.Write((short)itemId);
 
         w.Write((byte)item.Direction);
       }
@@ -131,12 +137,15 @@ namespace Server.Network
 
     public static void WorldItemHS(NetState ns, Item item)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[26]);
       w.Write((byte)0xF3); // Packet ID
 
       w.Write((short)0x01);
 
-      int itemID = item.ItemID;
+      int itemId = item.ItemID;
 
       if (item is BaseMulti)
       {
@@ -144,9 +153,9 @@ namespace Server.Network
 
         w.Write(item.Serial);
 
-        itemID &= 0x3FFF;
+        itemId &= 0x3FFF;
 
-        w.Write((short)itemID);
+        w.Write((short)itemId);
 
         w.Position++; // w.Write((byte)0);
       }
@@ -156,9 +165,9 @@ namespace Server.Network
 
         w.Write(item.Serial);
 
-        itemID &= 0x7FFF;
+        itemId &= 0x7FFF;
 
-        w.Write((short)itemID);
+        w.Write((short)itemId);
 
         w.Write((byte)item.Direction);
       }
@@ -179,12 +188,15 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    private static byte[][] m_LiftRejPackets = new byte[(int)Enum.GetValues(typeof(LRReason)).Cast<LRReason>().Max()][];
+    private static byte[][] _liftRejPackets = new byte[(int)Enum.GetValues(typeof(LRReason)).Cast<LRReason>().Max()][];
 
     public static void LiftRej(NetState ns, LRReason reason)
     {
+      if (ns == null)
+        return;
+
       byte r = (byte)reason;
-      byte[] packet = m_LiftRejPackets[r];
+      byte[] packet = _liftRejPackets[r];
 
       if (packet == null)
       {
@@ -194,7 +206,7 @@ namespace Server.Network
           r
         };
 
-        m_LiftRejPackets[r] = packet;
+        _liftRejPackets[r] = packet;
       }
 
       ns.Send(packet);
@@ -202,6 +214,9 @@ namespace Server.Network
 
     public static void DisplaySpellbook(NetState ns, Serial s)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[7]);
       w.Write((byte)0x24); // Packet ID
 
@@ -213,6 +228,9 @@ namespace Server.Network
 
     public static void DisplaySpellbookHS(NetState ns, Serial s)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x24); // Packet ID
 
@@ -225,6 +243,9 @@ namespace Server.Network
 
     public static void SpellbookContent(NetState ns, Serial s, int count, int offset, ulong content)
     {
+      if (ns == null)
+        return;
+
       int length = 5 + count * 19;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
@@ -251,6 +272,9 @@ namespace Server.Network
 
     public static void SpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
     {
+      if (ns == null)
+        return;
+
       int length = 5 + count * 20;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
@@ -277,6 +301,9 @@ namespace Server.Network
 
     public static void NewSpellbookContent(NetState ns, Serial s, int graphic, int offset, ulong content)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[23]);
       w.Write((byte)0x3C); // Packet ID
       w.Write((short)23); // Length
@@ -297,6 +324,9 @@ namespace Server.Network
 
     public static void SendDragEffect(NetState ns, IEntity src, IEntity trg, int itemID, int hue, int amount)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[26]);
       w.Write((byte)0x23); // Packet ID
 

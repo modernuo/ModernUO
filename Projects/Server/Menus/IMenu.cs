@@ -24,7 +24,7 @@ namespace Server.Menus
 {
   public interface IMenu
   {
-    int Serial{ get; }
+    Serial Serial{ get; }
     int EntryLength{ get; }
     void SendTo(NetState state);
     void OnCancel(NetState state);

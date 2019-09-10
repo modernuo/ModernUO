@@ -2,10 +2,8 @@ using System;
 using Server.Buffers;
 using Server.ContextMenus;
 using Server.Menus;
-using Server.Menus.ItemLists;
-using Server.Menus.Questions;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   [Flags]
   public enum CMEFlags
@@ -21,12 +19,15 @@ namespace Server.Network
   {
     public static void SendDisplayItemListMenu(NetState ns, ItemListMenu menu)
     {
+      if (ns == null)
+        return;
+
       // 10 + 128 + (255 * (128 + 5))
       SpanWriter w = new SpanWriter(stackalloc byte[138 + menu.Entries.Length * 133]);
       w.Write((byte)0x7C); // Packet ID
       w.Position += 2; // Dynamic Length
 
-      w.Write(((IMenu)menu).Serial);
+      w.Write(menu.Serial);
       w.Position += 2; // w.Write((short)0);
 
       string question = menu.Question;
@@ -73,12 +74,15 @@ namespace Server.Network
 
     public static void SendDisplayQuestionMenu(NetState ns, QuestionMenu menu)
     {
+      if (ns == null)
+        return;
+
       // 10 + 128 + (255 * (128 + 5))
       SpanWriter w = new SpanWriter(stackalloc byte[138 + menu.Answers.Length * 133]);
       w.Write((byte)0x7C); // Packet ID
       w.Position += 2; // Dynamic Length
 
-      w.Write(((IMenu)menu).Serial);
+      w.Write(menu.Serial);
       w.Position += 2; // w.Write((short)0);
 
       string question = menu.Question;
@@ -122,6 +126,9 @@ namespace Server.Network
 
     public static void DisplayContextMenu(NetState ns, ContextMenu menu)
     {
+      if (ns == null)
+        return;
+
       ContextMenuEntry[] entries = menu.Entries;
 
       int length = 12 + entries.Length * 8;
@@ -167,6 +174,9 @@ namespace Server.Network
 
     public static void SendDisplayContextMenuOld(NetState ns, ContextMenu menu)
     {
+      if (ns == null)
+        return;
+
       ContextMenuEntry[] entries = menu.Entries;
 
       SpanWriter w = new SpanWriter(stackalloc byte[12 + entries.Length * 8]);

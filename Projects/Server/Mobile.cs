@@ -24,17 +24,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Server.Accounting;
-using Server.Commands;
 using Server.ContextMenus;
-using Server.Guilds;
 using Server.Gumps;
-using Server.HuePickers;
 using Server.Items;
 using Server.Menus;
-using Server.Mobiles;
 using Server.Network;
-using Server.Prompts;
+using Server.Network.Packets;
 using Server.Targeting;
 
 namespace Server
@@ -1771,7 +1766,6 @@ namespace Server
 
     public Region Region => m_Region ?? (Map == null ? Map.Internal.DefaultRegion : Map.DefaultRegion);
 
-    public Packet RemovePacket => StaticPacketHandlers.GetRemoveEntityPacket(this);
     public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
     public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
 
@@ -2553,7 +2547,7 @@ namespace Server
           if (beholder != m && beholder.CanSee(m))
           {
             if (sendRemove)
-              state.Send(RemovePacket);
+              Packets.SendRemoveEntity(state, Serial);
 
             if (sendIncoming)
             {
@@ -3752,7 +3746,7 @@ namespace Server
 
     public virtual bool CheckMovement(Direction d, out int newZ)
     {
-      return Movement.Movement.CheckMovement(this, d, out newZ);
+      return Movement.CheckMovement(this, d, out newZ);
     }
 
     public virtual bool Move(Direction d)
@@ -4489,7 +4483,8 @@ namespace Server
 
             state.Send(animPacket);
 
-            if (!state.Mobile.CanSee(this)) state.Send(RemovePacket);
+            if (!state.Mobile.CanSee(this))
+              Packets.SendRemoveEntity((state, Serial));
           }
 
         Packet.Release(animPacket);
@@ -4654,7 +4649,7 @@ namespace Server
     public virtual void Lift(Item item, int amount, out bool rejected, out LRReason reject)
     {
       rejected = true;
-      reject = LRReason.Inspecific;
+      reject = LRReason.Unspecific;
 
       if (item == null)
         return;
@@ -4708,11 +4703,11 @@ namespace Server
             }
             else if (!from.OnDragLift(item) || !item.OnDragLift(from))
             {
-              reject = LRReason.Inspecific;
+              reject = LRReason.Unspecific;
             }
             else if (!from.CheckAlive())
             {
-              reject = LRReason.Inspecific;
+              reject = LRReason.Unspecific;
             }
             else
             {
@@ -4785,20 +4780,20 @@ namespace Server
               if (fixMap != null && shouldFix)
                 fixMap.FixColumn(fixLoc.m_X, fixLoc.m_Y);
 
-              reject = LRReason.Inspecific;
+              reject = LRReason.Unspecific;
               rejected = false;
             }
           }
         }
         else
         {
-          reject = LRReason.Inspecific;
+          reject = LRReason.Unspecific;
         }
       }
       else
       {
         SendActionMessage();
-        reject = LRReason.Inspecific;
+        reject = LRReason.Unspecific;
       }
 
       if (rejected && state != null)
@@ -6357,7 +6352,7 @@ namespace Server
 
       foreach (NetState state in eable)
         if (state != m_NetState && (everyone || !state.Mobile.CanSee(this)))
-          state.Send(RemovePacket);
+          Packets.SendRemoveEntity(state, Serial);
 
       eable.Free();
     }
@@ -6373,37 +6368,18 @@ namespace Server
         if (o is Mobile m)
         {
           if (m != this && Utility.InUpdateRange(m_Location, m.m_Location))
-            m_NetState.Send(m.RemovePacket);
+            Packets.SendRemoveEntity(m_NetState, m.Serial);
         }
         else if (o is Item item)
         {
           if (InRange(item.Location, item.GetUpdateRange(this)))
-            m_NetState.Send(item.RemovePacket);
+            Packets.SendRemoveEntity(m_NetState, item.Serial);
         }
 
       eable.Free();
     }
 
-    public bool Send(Packet p)
-    {
-      return Send(p, false);
-    }
-
-    public bool Send(Packet p, bool throwOnOffline)
-    {
-      if (m_NetState != null)
-      {
-        m_NetState.Send(p);
-        return true;
-      }
-
-      if (throwOnOffline)
-        throw new MobileNotConnectedException(this, "Packet could not be sent.");
-
-      return false;
-    }
-
-	  /// <summary>
+    /// <summary>
 	  ///   Overridable. Event invoked before the Mobile says something.
 	  ///   <seealso cref="DoSpeech" />
 	  /// </summary>
@@ -6589,9 +6565,7 @@ namespace Server
 
       foreach (NetState state in eable)
         if (!state.Mobile.CanSee(this))
-        {
-          state.Send(RemovePacket);
-        }
+          Packets.SendRemoveEntity(state, Serial);
         else
         {
           state.Send(MobileIncoming.Create(state, state.Mobile, this));
@@ -6780,7 +6754,7 @@ namespace Server
 
         foreach (NetState ns in eable)
           if (ns != m_NetState && !Utility.InUpdateRange(newLocation, ns.Mobile.Location))
-            ns.Send(RemovePacket);
+            Packets.SendRemoveEntity(ns, Serial);
 
         eable.Free();
 
@@ -8305,17 +8279,10 @@ namespace Server
 
     #region Gumps/Menus
 
-    public bool SendHuePicker(HuePicker p, bool throwOnOffline = false)
+    public void SendHuePicker(HuePicker p)
     {
       if (m_NetState != null)
-      {
         p.SendTo(m_NetState);
-        return true;
-      }
-
-      if (throwOnOffline) throw new MobileNotConnectedException(this, "Hue picker could not be sent.");
-
-      return false;
     }
 
     public Gump FindGump<T>() where T : Gump
@@ -9512,9 +9479,9 @@ namespace Server
       Effects.SendTargetParticles(this, itemID, speed, duration, 0, 0, effect, layer, 0);
     }
 
-    public void BoltEffect(int hue)
+    public void BoltEffect()
     {
-      Effects.SendBoltEffect(this, true, hue);
+      Effects.SendBoltEffect(this, true);
     }
 
     #endregion
@@ -9876,27 +9843,9 @@ namespace Server
 
     public Item ArmsArmor => FindItemOnLayer(Layer.Arms);
 
-    public Item LegsArmor
-    {
-      get
-      {
-        if (!(FindItemOnLayer(Layer.InnerLegs) is Item ar))
-          ar = FindItemOnLayer(Layer.Pants);
+    public Item LegsArmor => FindItemOnLayer(Layer.InnerLegs) ?? FindItemOnLayer(Layer.Pants);
 
-        return ar;
-      }
-    }
-
-    public Item ChestArmor
-    {
-      get
-      {
-        if (!(FindItemOnLayer(Layer.InnerTorso) is Item ar))
-          ar = FindItemOnLayer(Layer.Shirt);
-
-        return ar;
-      }
-    }
+    public Item ChestArmor => FindItemOnLayer(Layer.InnerTorso) ?? FindItemOnLayer(Layer.Shirt);
 
     public Item Talisman => FindItemOnLayer(Layer.Talisman);
 

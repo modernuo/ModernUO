@@ -20,7 +20,7 @@
 
 using System.Collections.Generic;
 
-namespace Server.Guilds
+namespace Server
 {
   public enum GuildType
   {

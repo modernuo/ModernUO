@@ -29,11 +29,10 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Server.Accounting;
 using Server.Gumps;
-using Server.HuePickers;
 using Server.Items;
 using Server.Menus;
+using NetworkPackets = Server.Network.Packets.Packets;
 
 namespace Server.Network
 {
@@ -390,8 +389,8 @@ namespace Server.Network
 
     public void LaunchBrowser(string url)
     {
-      Send(new MessageLocalized(Serial.MinusOne, -1, MessageType.Label, 0x35, 3, 501231, "", ""));
-      Send(new LaunchBrowser(url));
+      NetworkPackets.SendMessageLocalized(this, Serial.MinusOne, -1, MessageType.Label, 0x35, 3, 501231, "", "");
+      NetworkPackets.SendLaunchBrowser(this, url);
     }
 
     public CityInfo[] CityInfo { get; set; }

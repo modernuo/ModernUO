@@ -1,11 +1,14 @@
 using Server.Buffers;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public static partial class Packets
   {
     public static void SendSetArrow(NetState ns, short x, short y)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[6]);
       w.Write((byte)0xBA); // Packet ID
 
@@ -16,28 +19,26 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    private static byte[] m_CancelArrowPacket;
+    private static byte[] _cancelArrowPacket;
 
     public static void SendCancelArrow(NetState ns)
     {
-      if (m_CancelArrowPacket == null)
+      ns?.Send(_cancelArrowPacket ??= new byte[]
       {
-        m_CancelArrowPacket = new byte[]
-          {
-            0xBA, // Packet ID
-            0x00,
-            0xFF,
-            0xFF,
-            0xFF,
-            0xFF
-          };
-      }
-
-      ns.Send(m_CancelArrowPacket);
+        0xBA, // Packet ID
+        0x00,
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF
+      });
     }
 
     public static void SendSetArrowHS(NetState ns, Serial s, short x, short y)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[10]);
       w.Write((byte)0xBA); // Packet ID
 
@@ -51,6 +52,9 @@ namespace Server.Network
 
     public static void SendCancelArrowHS(NetState ns, Serial s, short x, short y)
     {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[10]);
       w.Write((byte)0xBA); // Packet ID
 

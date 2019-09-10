@@ -20,7 +20,7 @@
 
 using System.Collections.Generic;
 
-namespace Server.Mobiles
+namespace Server
 {
   public class BuyItemStateComparer : IComparer<BuyItemState>
   {

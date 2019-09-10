@@ -78,7 +78,7 @@ namespace Server.Mobiles
       if (Rider.Hits - damage < 30 && Rider.Map == attacker.Map && Rider.InRange(attacker, 18)
       ) //Range and map checked here instead of other base fuction because of abiliites that don't need to check this
       {
-        attacker.BoltEffect(0);
+        attacker.BoltEffect();
         // 35~100 damage, unresistable, by the Ki-rin.
         attacker.Damage(Utility.RandomMinMax(35, 100), this,
           false); //Don't inform mount about this damage, Still unsure wether or not it's flagged as the mount doing damage or the player.  If changed to player, without the extra bool it'd be an infinite loop

@@ -18,8 +18,8 @@
  *
  ***************************************************************************/
 
-using Server.Accounting;
 using Server.Network;
+using Server.Network.Packets;
 
 namespace Server.Items
 {
@@ -54,7 +54,9 @@ namespace Server.Items
       {
         Owner.PrivateOverheadMessage(MessageType.Regular, 0x3B2, true,
           $"Bank container has {TotalItems} items, {TotalWeight} stones", Owner.NetState);
-        Owner.Send(new EquipUpdate(this));
+
+        if (Owner.NetState != null)
+          Packets.SendEquipUpdate(Owner.NetState, this);
         DisplayTo(Owner);
       }
     }
@@ -97,8 +99,8 @@ namespace Server.Items
     {
       Opened = false;
 
-      if (SendDeleteOnClose)
-        Owner?.Send(RemovePacket);
+      if (SendDeleteOnClose && Owner != null)
+        Packets.SendRemoveEntity(Owner.NetState, Serial);
     }
 
     public override void OnSingleClick(Mobile from)

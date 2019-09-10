@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Network;
+using Server.Network.Packets;
 using Server.Targeting;
 
 namespace Server
@@ -340,7 +341,6 @@ namespace Server
       set => SetFlag(ImplFlag.Stackable, value);
     }
 
-    public Packet RemovePacket => StaticPacketHandlers.GetRemoveEntityPacket(this);
     public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
     public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
 
@@ -377,7 +377,7 @@ namespace Server
               Mobile m = state.Mobile;
 
               if (!m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
-                state.Send(RemovePacket);
+                Packets.SendRemoveEntity(state, Serial);
             }
 
             eable.Free();
@@ -804,7 +804,7 @@ namespace Server
               Mobile m = state.Mobile;
 
               if (m.InRange(oldLocation, GetUpdateRange(m)))
-                state.Send(RemovePacket);
+                Packets.SendRemoveEntity(state, Serial);
             }
 
             eable.Free();
@@ -859,7 +859,8 @@ namespace Server
           {
             Mobile m = state.Mobile;
 
-            if (!m.InRange(location, GetUpdateRange(m))) state.Send(RemovePacket);
+            if (!m.InRange(location, GetUpdateRange(m)))
+              Packets.SendRemoveEntity(state, Serial);
           }
 
           eable.Free();
@@ -3273,7 +3274,8 @@ namespace Server
       {
         Mobile m = state.Mobile;
 
-        if (m.InRange(worldLoc, GetUpdateRange(m))) state.Send(RemovePacket);
+        if (m.InRange(worldLoc, GetUpdateRange(m)))
+          Packets.SendRemoveEntity(state, Serial);
       }
 
       eable.Free();
@@ -3491,7 +3493,7 @@ namespace Server
 
     public bool CheckLift(Mobile from)
     {
-      LRReason reject = LRReason.Inspecific;
+      LRReason reject = LRReason.Unspecific;
 
       return CheckLift(from, this, ref reject);
     }
@@ -3760,7 +3762,8 @@ namespace Server
               {
                 Mobile m = state.Mobile;
 
-                if (!m.InRange(value, GetUpdateRange(m))) state.Send(RemovePacket);
+                if (!m.InRange(value, GetUpdateRange(m)))
+                  Packets.SendRemoveEntity(state, Serial);
               }
 
               eable.Free();

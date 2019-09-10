@@ -1,7 +1,7 @@
 using System;
 using Server.Buffers;
 
-namespace Server.Network
+namespace Server.Network.Packets
 {
   public static partial class Packets
   {
@@ -9,6 +9,9 @@ namespace Server.Network
 
     public static void SendMapPatches(NetState ns)
     {
+      if (ns == null)
+        return;
+
       if (m_MapPatchesPacket == null)
       {
         SpanWriter w = new SpanWriter(m_MapPatchesPacket = new byte[33]);
@@ -34,31 +37,23 @@ namespace Server.Network
       ns.Send(m_MapPatchesPacket);
     }
 
-    public static byte[][][] m_SeasonChangePackets = {
+    private static readonly byte[][][] _seasonChangePackets = {
       new byte[2][], new byte[2][], new byte[2][], new byte[2][], new byte[2][],
     };
 
     public static void SendSeasonChange(NetState ns, byte season, byte playSound)
     {
-      byte[] packet = m_SeasonChangePackets[season][playSound];
-      if (packet == null)
+      ns?.Send(_seasonChangePackets[season][playSound] ??= new byte[]
       {
-        packet = new byte[]
-        {
-          0xBC, // Packet ID
-          season,
-          playSound
-        };
-
-        m_SeasonChangePackets[season][playSound] = packet;
-      }
-
-      ns.Send(packet);
+        0xBC, // Packet ID
+        season,
+        playSound
+      });
     }
 
     public static void SendMapChange(NetState ns, Map map)
     {
-      ReadOnlySpan<byte> span = stackalloc byte[6]
+      ns?.Send(stackalloc byte[6]
       {
         0xBF, // Extended Packet ID
         0x00,
@@ -66,9 +61,7 @@ namespace Server.Network
         0x00,
         0x08, // Command
         (byte)(map?.MapID ?? 0)
-      };
-
-      ns.Send(span);
+      });
     }
   }
 }

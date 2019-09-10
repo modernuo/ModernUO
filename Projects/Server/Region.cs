@@ -22,13 +22,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using Server.Network.Packets;
 using Server.Targeting;
 
 namespace Server
 {
   public enum MusicName : byte
   {
-    Invalid = -1,
+    Invalid = 255,
     OldUlt01 = 0,
     Create1,
     DragFlit,
@@ -95,7 +96,7 @@ namespace Server
     Paws,
     SelimsBar,
     SerpentIsleCombat_U7,
-    ValoriaShips
+    ValoriaShips,
   }
 
   public class Region : IComparable<Region>
@@ -780,7 +781,8 @@ namespace Server
       {
         m.CheckLightLevels(false);
 
-        if (oldRegion == null || oldRegion.Music != newRegion.Music) m.Send(PlayMusic.GetInstance(newRegion.Music));
+        if (oldRegion == null || oldRegion.Music != newRegion.Music)
+          Packets.SendPlayMusic(m.NetState, newRegion.Music);
       }
 
       Region oldR = oldRegion;
