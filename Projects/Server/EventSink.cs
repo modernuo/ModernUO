@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Server.Network;
-using Server.Network.Packets;
 
 namespace Server
 {

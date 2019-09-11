@@ -3,7 +3,7 @@ using System.Linq;
 using Server.Buffers;
 using Server.Items;
 
-namespace Server.Network.Packets
+namespace Server.Network
 {
   public enum LRReason : byte
   {
@@ -273,7 +273,7 @@ namespace Server.Network.Packets
     public static void SpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
     {
       if (ns == null)
-        return;0
+        return;
 
       int length = 5 + count * 20;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);

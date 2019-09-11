@@ -29,7 +29,6 @@ using Server.Gumps;
 using Server.Items;
 using Server.Menus;
 using Server.Network;
-using Server.Network.Packets;
 using Server.Targeting;
 
 namespace Server
@@ -1372,7 +1371,7 @@ namespace Server
           m_Warmode = value;
           Delta(MobileDelta.Flags);
 
-          Packets.SendInWarMode(m_NetState);
+          Packets.SendSetWarMode(m_NetState, m_Warmode);
 
           if (!m_Warmode)
             Combatant = null;

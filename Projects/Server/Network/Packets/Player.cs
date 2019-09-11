@@ -1,7 +1,7 @@
 using System;
 using Server.Buffers;
 
-namespace Server.Network.Packets
+namespace Server.Network
 {
   public static partial class Packets
   {
@@ -193,6 +193,14 @@ namespace Server.Network.Packets
         0xBD, // Packet ID
         0x03
       });
+    }
+
+    public static void SendSetWarMode(NetState ns, bool warmode)
+    {
+      if (warmode)
+        SendInWarMode(ns);
+      else
+        SendInPeaceMode(ns);
     }
 
     public static void SendInWarMode(NetState ns)

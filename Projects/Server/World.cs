@@ -25,7 +25,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using Server.Network;
-using Server.Network.Packets;
 using Server.Persistence;
 
 namespace Server

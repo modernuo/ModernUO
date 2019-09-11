@@ -1,6 +1,6 @@
 using Server.Buffers;
 
-namespace Server.Network.Packets
+namespace Server.Network
 {
   public enum TradeFlag : byte
   {

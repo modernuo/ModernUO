@@ -1,7 +1,7 @@
 using Server.Buffers;
 using Server.Targeting;
 
-namespace Server.Network.Packets
+namespace Server.Network
 {
   public static partial class Packets
   {

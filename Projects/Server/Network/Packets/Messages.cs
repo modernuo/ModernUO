@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.Buffers;
 
-namespace Server.Network.Packets
+namespace Server.Network
 {
   [Flags]
   public enum AffixType : byte

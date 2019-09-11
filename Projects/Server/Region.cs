@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using Server.Network.Packets;
+using Server.Network;
 using Server.Targeting;
 
 namespace Server

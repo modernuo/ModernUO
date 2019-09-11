@@ -27,7 +27,6 @@ using System.Threading.Tasks;
 using Server.ContextMenus;
 using Server.Items;
 using Server.Network;
-using Server.Network.Packets;
 using Server.Targeting;
 
 namespace Server

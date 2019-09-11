@@ -3,7 +3,7 @@ using Server.Buffers;
 using Server.ContextMenus;
 using Server.Menus;
 
-namespace Server.Network.Packets
+namespace Server.Network
 {
   [Flags]
   public enum CMEFlags

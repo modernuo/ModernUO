@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Server.Buffers;
 using Server.Gumps;
 
-namespace Server.Network.Packets
+namespace Server.Network
 {
   public interface IGumpWriter
   {

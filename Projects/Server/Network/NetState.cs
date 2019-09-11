@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 using Server.Gumps;
 using Server.Items;
 using Server.Menus;
-using NetworkPackets = Server.Network.Packets.Packets;
+using NetworkPackets = Server.Network.Packets;
 
 namespace Server.Network
 {

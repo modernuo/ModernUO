@@ -20,7 +20,6 @@
 
 using System;
 using Server.Network;
-using Server.Network.Packets;
 
 namespace Server.Targeting
 {
