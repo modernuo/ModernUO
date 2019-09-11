@@ -75,10 +75,7 @@ namespace Server
       }
     }
 
-    public Body(int bodyID)
-    {
-      BodyID = bodyID;
-    }
+    public Body(int bodyID) => BodyID = bodyID;
 
     public BodyType Type => BodyID >= 0 && BodyID < m_Types.Length ? m_Types[BodyID] : BodyType.Empty;
 
@@ -148,59 +145,26 @@ namespace Server
 
     public int BodyID{ get; }
 
-    public static implicit operator int(Body a)
-    {
-      return a.BodyID;
-    }
+    public static implicit operator int(Body a) => a.BodyID;
 
-    public static implicit operator Body(int a)
-    {
-      return new Body(a);
-    }
+    public static implicit operator Body(int a) => new Body(a);
 
-    public override string ToString()
-    {
-      return $"0x{BodyID:X}";
-    }
+    public override string ToString() => $"0x{BodyID:X}";
 
-    public override int GetHashCode()
-    {
-      return BodyID.GetHashCode();
-    }
+    public override int GetHashCode() => BodyID.GetHashCode();
 
-    public override bool Equals(object o)
-    {
-      return o is Body b && b.BodyID == BodyID;
-    }
+    public override bool Equals(object o) => o is Body b && b.BodyID == BodyID;
 
-    public static bool operator ==(Body l, Body r)
-    {
-      return l.BodyID == r.BodyID;
-    }
+    public static bool operator ==(Body l, Body r) => l.BodyID == r.BodyID;
 
-    public static bool operator !=(Body l, Body r)
-    {
-      return l.BodyID != r.BodyID;
-    }
+    public static bool operator !=(Body l, Body r) => l.BodyID != r.BodyID;
 
-    public static bool operator >(Body l, Body r)
-    {
-      return l.BodyID > r.BodyID;
-    }
+    public static bool operator >(Body l, Body r) => l.BodyID > r.BodyID;
 
-    public static bool operator >=(Body l, Body r)
-    {
-      return l.BodyID >= r.BodyID;
-    }
+    public static bool operator >=(Body l, Body r) => l.BodyID >= r.BodyID;
 
-    public static bool operator <(Body l, Body r)
-    {
-      return l.BodyID < r.BodyID;
-    }
+    public static bool operator <(Body l, Body r) => l.BodyID < r.BodyID;
 
-    public static bool operator <=(Body l, Body r)
-    {
-      return l.BodyID <= r.BodyID;
-    }
+    public static bool operator <=(Body l, Body r) => l.BodyID <= r.BodyID;
   }
 }

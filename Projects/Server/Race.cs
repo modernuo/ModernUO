@@ -118,10 +118,7 @@ namespace Server
       }
     }
 
-    public override string ToString()
-    {
-      return Name;
-    }
+    public override string ToString() => Name;
 
     public virtual bool ValidateHair(Mobile m, int itemID) => ValidateHair(m.Female, itemID);
 

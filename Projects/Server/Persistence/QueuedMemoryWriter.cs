@@ -29,10 +29,8 @@ namespace Server.Persistence
     private List<IndexInfo> _orderedIndexInfo = new List<IndexInfo>();
 
     public QueuedMemoryWriter()
-      : base(new MemoryStream(1024 * 1024), true)
-    {
+      : base(new MemoryStream(1024 * 1024), true) =>
       _memStream = UnderlyingStream as MemoryStream;
-    }
 
     protected override int BufferSize => 512;
 

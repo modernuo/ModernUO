@@ -34,10 +34,7 @@ namespace Server.Network
     public long Consumed => m_Reader.Consumed;
     public long Remaining => m_Reader.Remaining;
 
-    public PacketReader(ReadOnlySequence<byte> seq)
-    {
-      m_Reader = new SequenceReader<byte>(seq);
-    }
+    public PacketReader(ReadOnlySequence<byte> seq) => m_Reader = new SequenceReader<byte>(seq);
 
     public byte Peek() => m_Reader.TryPeek(out byte value) ? value : (byte)0;
 
@@ -225,13 +222,11 @@ namespace Server.Network
       return sb.ToString();
     }
 
-    public string ReadUTF8String()
-    {
-      return Utility.UTF8.GetString(
+    public string ReadUTF8String() =>
+      Utility.UTF8.GetString(
         m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true) ? span :
-        m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray()
+          m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray()
       );
-    }
 
     public string ReadString()
     {

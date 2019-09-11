@@ -191,9 +191,7 @@ namespace Server.Network
     public static void Register(int packetID, int length, bool ingame, OnPacketReceive onReceive)
     {
       Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
-
-      if (m_6017Handlers[packetID] == null)
-        m_6017Handlers[packetID] = new PacketHandler(packetID, length, ingame, onReceive);
+      m_6017Handlers[packetID] ??= new PacketHandler(packetID, length, ingame, onReceive);
     }
 
     public static PacketHandler GetHandler(int packetID) => Handlers[packetID];
@@ -2068,13 +2066,9 @@ namespace Server.Network
         race = Race.Races[raceID];
       }
       else
-      {
         race = Race.Races[(byte)(genderRace / 2)];
-      }
 
-      if (race == null)
-        race = Race.DefaultRace;
-
+      race ??= Race.DefaultRace;
       CityInfo[] info = state.CityInfo;
       IAccount a = state.Account;
 

@@ -245,10 +245,8 @@ namespace Server
       FeatureFlags supportedFeatures,
       CharacterListFlags charListFlags,
       HousingFlags customHousingFlag)
-      : this(id, name, supportedFeatures, charListFlags, customHousingFlag)
-    {
+      : this(id, name, supportedFeatures, charListFlags, customHousingFlag) =>
       ClientFlags = clientFlags;
-    }
 
     public ExpansionInfo(
       int id,
@@ -257,10 +255,8 @@ namespace Server
       FeatureFlags supportedFeatures,
       CharacterListFlags charListFlags,
       HousingFlags customHousingFlag)
-      : this(id, name, supportedFeatures, charListFlags, customHousingFlag)
-    {
+      : this(id, name, supportedFeatures, charListFlags, customHousingFlag) =>
       RequiredClient = requiredClient;
-    }
 
     private ExpansionInfo(
       int id,
@@ -326,10 +322,7 @@ namespace Server
       return FeatureFlags.ExpansionNone;
     }
 
-    public static ExpansionInfo GetInfo(Expansion ex)
-    {
-      return GetInfo((int)ex);
-    }
+    public static ExpansionInfo GetInfo(Expansion ex) => GetInfo((int)ex);
 
     public static ExpansionInfo GetInfo(int ex)
     {
@@ -340,9 +333,6 @@ namespace Server
       return Table[v];
     }
 
-    public override string ToString()
-    {
-      return Name;
-    }
+    public override string ToString() => Name;
   }
 }

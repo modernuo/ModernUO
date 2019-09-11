@@ -28,10 +28,7 @@ namespace Server.Gumps
   {
     private int m_Group;
 
-    public GumpGroup(int group)
-    {
-      m_Group = group;
-    }
+    public GumpGroup(int group) => m_Group = group;
 
     public int Group
     {

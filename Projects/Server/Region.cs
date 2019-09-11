@@ -117,10 +117,7 @@ namespace Server
     {
     }
 
-    public Region(string name, Map map, int priority, params Rectangle3D[] area) : this(name, map, null, area)
-    {
-      m_Priority = priority;
-    }
+    public Region(string name, Map map, int priority, params Rectangle3D[] area) : this(name, map, null, area) => m_Priority = priority;
 
     public Region(string name, Map map, Region parent, params Rectangle2D[] area) : this(name, map, parent,
       ConvertTo3D(area))
@@ -569,10 +566,7 @@ namespace Server
 
     public virtual Type GetResource(Type type) => Parent?.GetResource(type) ?? type;
 
-    public virtual bool CanUseStuckMenu(Mobile m)
-    {
-      return Parent?.CanUseStuckMenu(m) != false;
-    }
+    public virtual bool CanUseStuckMenu(Mobile m) => Parent?.CanUseStuckMenu(m) != false;
 
     public virtual void OnAggressed(Mobile aggressor, Mobile aggressed, bool criminal)
     {
@@ -853,10 +847,7 @@ namespace Server
       return true;
     }
 
-    public static bool ReadBoolean(XmlElement xml, string attribute, ref bool value)
-    {
-      return ReadBoolean(xml, attribute, ref value, true);
-    }
+    public static bool ReadBoolean(XmlElement xml, string attribute, ref bool value) => ReadBoolean(xml, attribute, ref value, true);
 
     public static bool ReadBoolean(XmlElement xml, string attribute, ref bool value, bool mandatory)
     {

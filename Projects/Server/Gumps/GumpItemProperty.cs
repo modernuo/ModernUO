@@ -28,10 +28,7 @@ namespace Server.Gumps
   {
     private uint m_Serial;
 
-    public GumpItemProperty(uint serial)
-    {
-      m_Serial = serial;
-    }
+    public GumpItemProperty(uint serial) => m_Serial = serial;
 
     public uint Serial
     {

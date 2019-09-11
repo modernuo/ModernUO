@@ -28,10 +28,7 @@ namespace Server.Gumps
   {
     private int m_Page;
 
-    public GumpPage(int page)
-    {
-      m_Page = page;
-    }
+    public GumpPage(int page) => m_Page = page;
 
     public int Page
     {

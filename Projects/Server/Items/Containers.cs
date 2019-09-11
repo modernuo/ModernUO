@@ -110,26 +110,15 @@ namespace Server.Items
     {
     }
 
-    public override DeathMoveResult OnParentDeath(Mobile parent)
-    {
-      return DeathMoveResult.RemainEquipped;
-    }
+    public override DeathMoveResult OnParentDeath(Mobile parent) => DeathMoveResult.RemainEquipped;
 
-    public override bool IsAccessibleTo(Mobile check)
-    {
-      return (check == Owner && Opened || check.AccessLevel >= AccessLevel.GameMaster) && base.IsAccessibleTo(check);
-    }
+    public override bool IsAccessibleTo(Mobile check) => (check == Owner && Opened || check.AccessLevel >= AccessLevel.GameMaster) && base.IsAccessibleTo(check);
 
-    public override bool OnDragDrop(Mobile from, Item dropped)
-    {
-      return (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster) && base.OnDragDrop(from, dropped);
-    }
+    public override bool OnDragDrop(Mobile from, Item dropped) => (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster) && base.OnDragDrop(from, dropped);
 
-    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
-    {
-      return (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster) &&
-             base.OnDragDropInto(from, item, p);
-    }
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p) =>
+      (from == Owner && Opened || from.AccessLevel >= AccessLevel.GameMaster) &&
+      base.OnDragDropInto(from, item, p);
 
     public override int GetTotal(TotalType type)
     {

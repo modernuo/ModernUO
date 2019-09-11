@@ -83,10 +83,7 @@ namespace Server
 
     public override bool Equals(object obj) => obj is IPoint2D p && m_X == p.X && m_Y == p.Y;
 
-    public override int GetHashCode()
-    {
-      return m_X ^ m_Y;
-    }
+    public override int GetHashCode() => m_X ^ m_Y;
 
     public static bool operator ==(Point2D l, Point2D r) => l.m_X == r.m_X && l.m_Y == r.m_Y;
 
@@ -365,24 +362,20 @@ namespace Server
     [CommandProperty(AccessLevel.Counselor)]
     public int Depth => End.Z - Start.Z;
 
-    public bool Contains(Point3D p)
-    {
-      return p.m_X >= Start.m_X
-             && p.m_X < End.m_X
-             && p.m_Y >= Start.m_Y
-             && p.m_Y < End.m_Y
-             && p.m_Z >= Start.m_Z
-             && p.m_Z < End.m_Z;
-    }
+    public bool Contains(Point3D p) =>
+      p.m_X >= Start.m_X
+      && p.m_X < End.m_X
+      && p.m_Y >= Start.m_Y
+      && p.m_Y < End.m_Y
+      && p.m_Z >= Start.m_Z
+      && p.m_Z < End.m_Z;
 
-    public bool Contains(IPoint3D p)
-    {
-      return p.X >= Start.m_X
-             && p.X < End.m_X
-             && p.Y >= Start.m_Y
-             && p.Y < End.m_Y
-             && p.Z >= Start.m_Z
-             && p.Z < End.m_Z;
-    }
+    public bool Contains(IPoint3D p) =>
+      p.X >= Start.m_X
+      && p.X < End.m_X
+      && p.Y >= Start.m_Y
+      && p.Y < End.m_Y
+      && p.Z >= Start.m_Z
+      && p.Z < End.m_Z;
   }
 }

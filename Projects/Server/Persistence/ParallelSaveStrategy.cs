@@ -50,10 +50,7 @@ namespace Server.Persistence
 
     public override string Name => "Parallel";
 
-    private int GetThreadCount()
-    {
-      return processorCount - 1;
-    }
+    private int GetThreadCount() => processorCount - 1;
 
     public override void Save(bool permitBackgroundWrite)
     {
@@ -248,10 +245,7 @@ namespace Server.Persistence
         foreach (BaseGuild guild in guilds) yield return guild;
       }
 
-      IEnumerator IEnumerable.GetEnumerator()
-      {
-        throw new NotImplementedException();
-      }
+      IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
     }
 
     private struct ConsumableEntry

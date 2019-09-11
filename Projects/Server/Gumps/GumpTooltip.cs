@@ -28,10 +28,7 @@ namespace Server.Gumps
   {
     private int m_Number;
 
-    public GumpTooltip(int number)
-    {
-      m_Number = number;
-    }
+    public GumpTooltip(int number) => m_Number = number;
 
     public int Number
     {

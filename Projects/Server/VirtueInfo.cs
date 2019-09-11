@@ -130,16 +130,12 @@ namespace Server
 
     public void SetValue(int index, int value)
     {
-      if (Values == null)
-        Values = new int[8];
+      Values ??= new int[8];
 
       Values[index] = value;
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
 
     public static void Serialize(GenericWriter writer, VirtueInfo info)
     {

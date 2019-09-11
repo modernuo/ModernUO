@@ -35,10 +35,7 @@ namespace Server.Persistence
 
     private Queue<Item> _decayQueue;
 
-    public StandardSaveStrategy()
-    {
-      _decayQueue = new Queue<Item>();
-    }
+    public StandardSaveStrategy() => _decayQueue = new Queue<Item>();
 
     public override string Name => "Standard";
 

@@ -43,10 +43,7 @@ namespace Server.Persistence
 
     private object syncRoot;
 
-    static FileQueue()
-    {
-      bufferSize = FileOperations.BufferSize;
-    }
+    static FileQueue() => bufferSize = FileOperations.BufferSize;
 
     public FileQueue(int concurrentWrites, FileCommitCallback callback)
     {
@@ -170,8 +167,7 @@ namespace Server.Persistence
 
       while (size > 0)
       {
-        if (buffered.buffer == null)
-          buffered.buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        buffered.buffer ??= ArrayPool<byte>.Shared.Rent(bufferSize);
 
         byte[] page = buffered.buffer; // buffer page
         int pageSpace = page.Length - buffered.length; // available bytes in page

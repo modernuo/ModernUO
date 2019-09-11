@@ -46,10 +46,7 @@ namespace Server
 
     private ArrayBufferWriter<byte> m_Buffer = new ArrayBufferWriter<byte>();
 
-    public ObjectPropertyList(IEntity e)
-    {
-      Entity = e;
-    }
+    public ObjectPropertyList(IEntity e) => Entity = e;
 
     public IEntity Entity{ get; }
 

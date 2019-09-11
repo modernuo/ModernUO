@@ -663,10 +663,7 @@ namespace Server
       NetState.Resume();
     }
 
-    public static IEntity FindEntity(Serial serial)
-    {
-      return serial.IsItem ? (IEntity)FindItem(serial) : serial.IsMobile ? FindMobile(serial) : null;
-    }
+    public static IEntity FindEntity(Serial serial) => serial.IsItem ? (IEntity)FindItem(serial) : serial.IsMobile ? FindMobile(serial) : null;
 
     public static Mobile FindMobile(Serial serial)
     {

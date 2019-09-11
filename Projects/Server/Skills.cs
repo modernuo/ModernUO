@@ -329,10 +329,7 @@ namespace Server
       }
     }
 
-    public override string ToString()
-    {
-      return $"[{Name}: {Base}]";
-    }
+    public override string ToString() => $"[{Name}: {Base}]";
 
     public void SetLockNoRelay(SkillLock skillLock)
     {
@@ -632,15 +629,9 @@ namespace Server
       return m_Skills.Where(s => s != null).GetEnumerator();
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
 
-    public static bool UseSkill(Mobile from, SkillName name)
-    {
-      return UseSkill(from, (int)name);
-    }
+    public static bool UseSkill(Mobile from, SkillName name) => UseSkill(from, (int)name);
 
     public static bool UseSkill(Mobile from, int skillID)
     {

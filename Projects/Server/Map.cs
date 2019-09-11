@@ -77,10 +77,7 @@ namespace Server
       return s.Clients.Where(o => o?.Mobile?.Deleted == false && bounds.Contains(o.Mobile));
     }
 
-    public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds)
-    {
-      return SelectEntities(s, true, true, bounds);
-    }
+    public static IEnumerable<IEntity> SelectEntities(Sector s, Rectangle2D bounds) => SelectEntities(s, true, true, bounds);
 
     public static IEnumerable<IEntity> SelectEntities(Sector s, bool items, bool mobiles, Rectangle2D bounds)
     {
@@ -148,40 +145,19 @@ namespace Server
       }
     }
 
-    public static Map.PooledEnumerable<NetState> GetClients(Map map, Rectangle2D bounds)
-    {
-      return Map.PooledEnumerable<NetState>.Instantiate(map, bounds, ClientSelector ?? SelectClients);
-    }
+    public static Map.PooledEnumerable<NetState> GetClients(Map map, Rectangle2D bounds) => Map.PooledEnumerable<NetState>.Instantiate(map, bounds, ClientSelector ?? SelectClients);
 
-    public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds, bool items = true, bool mobiles = true)
-    {
-      return Map.PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
-    }
+    public static Map.PooledEnumerable<IEntity> GetEntities(Map map, Rectangle2D bounds, bool items = true, bool mobiles = true) => Map.PooledEnumerable<IEntity>.Instantiate(map, bounds, EntitySelector ?? SelectEntities);
 
-    public static Map.PooledEnumerable<Mobile> GetMobiles(Map map, Rectangle2D bounds)
-    {
-      return GetMobiles<Mobile>(map, bounds);
-    }
+    public static Map.PooledEnumerable<Mobile> GetMobiles(Map map, Rectangle2D bounds) => GetMobiles<Mobile>(map, bounds);
 
-    public static Map.PooledEnumerable<T> GetMobiles<T>(Map map, Rectangle2D bounds) where T : Mobile
-    {
-      return Map.PooledEnumerable<T>.Instantiate(map, bounds, SelectMobiles<T>);
-    }
+    public static Map.PooledEnumerable<T> GetMobiles<T>(Map map, Rectangle2D bounds) where T : Mobile => Map.PooledEnumerable<T>.Instantiate(map, bounds, SelectMobiles<T>);
 
-    public static Map.PooledEnumerable<T> GetItems<T>(Map map, Rectangle2D bounds) where T : Item
-    {
-      return Map.PooledEnumerable<T>.Instantiate(map, bounds, SelectItems<T>);
-    }
+    public static Map.PooledEnumerable<T> GetItems<T>(Map map, Rectangle2D bounds) where T : Item => Map.PooledEnumerable<T>.Instantiate(map, bounds, SelectItems<T>);
 
-    public static Map.PooledEnumerable<BaseMulti> GetMultis(Map map, Rectangle2D bounds)
-    {
-      return Map.PooledEnumerable<BaseMulti>.Instantiate(map, bounds, MultiSelector ?? SelectMultis);
-    }
+    public static Map.PooledEnumerable<BaseMulti> GetMultis(Map map, Rectangle2D bounds) => Map.PooledEnumerable<BaseMulti>.Instantiate(map, bounds, MultiSelector ?? SelectMultis);
 
-    public static Map.PooledEnumerable<StaticTile[]> GetMultiTiles(Map map, Rectangle2D bounds)
-    {
-      return Map.PooledEnumerable<StaticTile[]>.Instantiate(map, bounds, MultiTileSelector ?? SelectMultiTiles);
-    }
+    public static Map.PooledEnumerable<StaticTile[]> GetMultiTiles(Map map, Rectangle2D bounds) => Map.PooledEnumerable<StaticTile[]>.Instantiate(map, bounds, MultiTileSelector ?? SelectMultiTiles);
 
     public static IEnumerable<Sector> EnumerateSectors(Map map, Rectangle2D bounds)
     {
@@ -807,15 +783,9 @@ namespace Server
         InternalGetSector(x, y).OnMultiEnter(m);
     }
 
-    public Sector GetMultiMinSector(Point3D loc, MultiComponentList mcl)
-    {
-      return GetSector(Bound(new Point2D(loc.m_X + mcl.Min.m_X, loc.m_Y + mcl.Min.m_Y)));
-    }
+    public Sector GetMultiMinSector(Point3D loc, MultiComponentList mcl) => GetSector(Bound(new Point2D(loc.m_X + mcl.Min.m_X, loc.m_Y + mcl.Min.m_Y)));
 
-    public Sector GetMultiMaxSector(Point3D loc, MultiComponentList mcl)
-    {
-      return GetSector(Bound(new Point2D(loc.m_X + mcl.Max.m_X, loc.m_Y + mcl.Max.m_Y)));
-    }
+    public Sector GetMultiMaxSector(Point3D loc, MultiComponentList mcl) => GetSector(Bound(new Point2D(loc.m_X + mcl.Max.m_X, loc.m_Y + mcl.Max.m_Y)));
 
     public void OnMove(Point3D oldLocation, Mobile m)
     {
@@ -937,20 +907,11 @@ namespace Server
 
       private readonly IEnumerable<T> _Empty;
 
-      private NullEnumerable()
-      {
-        _Empty = Enumerable.Empty<T>();
-      }
+      private NullEnumerable() => _Empty = Enumerable.Empty<T>();
 
-      IEnumerator IEnumerable.GetEnumerator()
-      {
-        return _Empty.GetEnumerator();
-      }
+      IEnumerator IEnumerable.GetEnumerator() => _Empty.GetEnumerator();
 
-      public IEnumerator<T> GetEnumerator()
-      {
-        return _Empty.GetEnumerator();
-      }
+      public IEnumerator<T> GetEnumerator() => _Empty.GetEnumerator();
 
       public void Free()
       {
@@ -979,15 +940,9 @@ namespace Server
         _Pool = null;
       }
 
-      IEnumerator IEnumerable.GetEnumerator()
-      {
-        return _Pool.GetEnumerator();
-      }
+      IEnumerator IEnumerable.GetEnumerator() => _Pool.GetEnumerator();
 
-      public IEnumerator<T> GetEnumerator()
-      {
-        return _Pool.GetEnumerator();
-      }
+      public IEnumerator<T> GetEnumerator() => _Pool.GetEnumerator();
 
       public void Free()
       {
@@ -1147,10 +1102,7 @@ namespace Server
 
     public bool CanSpawnMobile(Point3D p) => CanSpawnMobile(p.m_X, p.m_Y, p.m_Z);
 
-    public bool CanSpawnMobile(Point2D p, int z)
-    {
-      return CanSpawnMobile(p.m_X, p.m_Y, z);
-    }
+    public bool CanSpawnMobile(Point2D p, int z) => CanSpawnMobile(p.m_X, p.m_Y, z);
 
     public bool CanSpawnMobile(int x, int y, int z)
     {
@@ -1406,11 +1358,9 @@ namespace Server
       return true;
     }
 
-    public bool LineOfSight(object from, object dest)
-    {
-      return from == dest || (from as Mobile)?.AccessLevel > AccessLevel.Player ||
-             (dest as Item)?.RootParent == from || LineOfSight(GetPoint(from, true), GetPoint(dest, false));
-    }
+    public bool LineOfSight(object from, object dest) =>
+      from == dest || (from as Mobile)?.AccessLevel > AccessLevel.Player ||
+      (dest as Item)?.RootParent == from || LineOfSight(GetPoint(from, true), GetPoint(dest, false));
 
     public bool LineOfSight(Mobile from, Point3D target)
     {

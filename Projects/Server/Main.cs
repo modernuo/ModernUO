@@ -232,10 +232,7 @@ namespace Server
       return fullPath;
     }
 
-    public static string FindDataFile(string format, params object[] args)
-    {
-      return FindDataFile(string.Format(format, args));
-    }
+    public static string FindDataFile(string format, params object[] args) => FindDataFile(string.Format(format, args));
 
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {

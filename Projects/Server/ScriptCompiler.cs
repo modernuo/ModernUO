@@ -96,10 +96,7 @@ namespace Server
       return c;
     }
 
-    public static Type FindTypeByFullName(string fullName)
-    {
-      return FindTypeByFullName(fullName, true);
-    }
+    public static Type FindTypeByFullName(string fullName) => FindTypeByFullName(fullName, true);
 
     public static Type FindTypeByFullName(string fullName, bool ignoreCase)
     {
@@ -111,10 +108,7 @@ namespace Server
       return type ?? GetTypeCache(Core.Assembly).GetTypeByFullName(fullName, ignoreCase);
     }
 
-    public static Type FindTypeByName(string name)
-    {
-      return FindTypeByName(name, true);
-    }
+    public static Type FindTypeByName(string name) => FindTypeByName(name, true);
 
     public static Type FindTypeByName(string name, bool ignoreCase)
     {
@@ -172,15 +166,9 @@ namespace Server
 
     public TypeTable FullNames{ get; }
 
-    public Type GetTypeByName(string name, bool ignoreCase)
-    {
-      return Names.Get(name, ignoreCase);
-    }
+    public Type GetTypeByName(string name, bool ignoreCase) => Names.Get(name, ignoreCase);
 
-    public Type GetTypeByFullName(string fullName, bool ignoreCase)
-    {
-      return FullNames.Get(fullName, ignoreCase);
-    }
+    public Type GetTypeByFullName(string fullName, bool ignoreCase) => FullNames.Get(fullName, ignoreCase);
   }
 
   public class TypeTable

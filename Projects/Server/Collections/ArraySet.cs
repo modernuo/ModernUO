@@ -55,10 +55,7 @@ namespace Server.Collections
       throw new NotImplementedException();
     }
 
-    public bool Remove(T item)
-    {
-      throw new NotImplementedException();
-    }
+    public bool Remove(T item) => throw new NotImplementedException();
 
     public void RemoveAt(int index)
     {

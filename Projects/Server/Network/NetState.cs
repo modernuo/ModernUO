@@ -85,10 +85,7 @@ namespace Server.Network
   public class AsyncState
   {
     public bool Paused { get; set; }
-    public AsyncState(bool paused)
-    {
-      Paused = paused;
-    }
+    public AsyncState(bool paused) => Paused = paused;
   }
 
   public class NetState : IComparable<NetState>
@@ -401,10 +398,7 @@ namespace Server.Network
 
     public IAccount Account { get; set; }
 
-    public override string ToString()
-    {
-      return m_ToString;
-    }
+    public override string ToString() => m_ToString;
 
     public static List<NetState> Instances { get; } = new List<NetState>();
 
@@ -609,11 +603,9 @@ namespace Server.Network
       pr.Complete();
     }
 
-    public PacketHandler GetHandler(int packetID)
-    {
-      return ContainerGridLines ? PacketHandlers.Get6017Handler(packetID) :
+    public PacketHandler GetHandler(int packetID) =>
+      ContainerGridLines ? PacketHandlers.Get6017Handler(packetID) :
         PacketHandlers.GetHandler(packetID);
-    }
 
     private long m_NextCheckActivity;
 
@@ -653,7 +645,9 @@ namespace Server.Network
 
     private int m_Disposing;
 
-    public bool IsDisposing { get { return m_Disposing != 0; } private set { m_Disposing = value ? 1 : 0; } }
+    public bool IsDisposing { get => m_Disposing != 0;
+      private set => m_Disposing = value ? 1 : 0;
+    }
 
     public virtual void Dispose()
     {
@@ -764,14 +758,8 @@ namespace Server.Network
       return info.RequiredClient != null ? Version >= info.RequiredClient : (Flags & info.ClientFlags) != 0;
     }
 
-    public bool SupportsExpansion(Expansion ex, bool checkCoreExpansion = true)
-    {
-      return SupportsExpansion(ExpansionInfo.GetInfo(ex), checkCoreExpansion);
-    }
+    public bool SupportsExpansion(Expansion ex, bool checkCoreExpansion = true) => SupportsExpansion(ExpansionInfo.GetInfo(ex), checkCoreExpansion);
 
-    public int CompareTo(NetState other)
-    {
-      return other == null ? 1 : m_ToString.CompareTo(other.m_ToString);
-    }
+    public int CompareTo(NetState other) => other == null ? 1 : m_ToString.CompareTo(other.m_ToString);
   }
 }

@@ -190,15 +190,9 @@ namespace Server.Items
       return base.CheckItemUse(from, item);
     }
 
-    public bool CheckHold(Mobile m, Item item, bool message)
-    {
-      return CheckHold(m, item, message, true, 0, 0);
-    }
+    public bool CheckHold(Mobile m, Item item, bool message) => CheckHold(m, item, message, true, 0, 0);
 
-    public bool CheckHold(Mobile m, Item item, bool message, bool checkItems)
-    {
-      return CheckHold(m, item, message, checkItems, 0, 0);
-    }
+    public bool CheckHold(Mobile m, Item item, bool message, bool checkItems) => CheckHold(m, item, message, checkItems, 0, 0);
 
     public virtual bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
     {
@@ -294,10 +288,7 @@ namespace Server.Items
         flags |= toSet;
     }
 
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet)
-    {
-      return (flags & toGet) != 0;
-    }
+    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -454,10 +445,7 @@ namespace Server.Items
       }
     }
 
-    public virtual bool OnStackAttempt(Mobile from, Item stack, Item dropped)
-    {
-      return CheckHold(from, dropped, true, false) && stack.StackWith(from, dropped);
-    }
+    public virtual bool OnStackAttempt(Mobile from, Item stack, Item dropped) => CheckHold(from, dropped, true, false) && stack.StackWith(from, dropped);
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
@@ -471,10 +459,7 @@ namespace Server.Items
       return false;
     }
 
-    public virtual bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
-    {
-      return TryDropItem(from, dropped, sendFullMessage, false);
-    }
+    public virtual bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage) => TryDropItem(from, dropped, sendFullMessage, false);
 
     public virtual bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage, bool playSound)
     {
@@ -741,15 +726,9 @@ namespace Server.Items
     {
       private CheckItemGroup m_Grouper;
 
-      public GroupComparer(CheckItemGroup grouper)
-      {
-        m_Grouper = grouper;
-      }
+      public GroupComparer(CheckItemGroup grouper) => m_Grouper = grouper;
 
-      public int Compare(Item a, Item b)
-      {
-        return m_Grouper(a, b);
-      }
+      public int Compare(Item a, Item b) => m_Grouper(a, b);
     }
 
     [Flags]

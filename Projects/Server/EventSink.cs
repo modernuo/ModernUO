@@ -125,10 +125,7 @@ namespace Server
 
   public class CreateGuildEventArgs : EventArgs
   {
-    public CreateGuildEventArgs(uint id)
-    {
-      Id = id;
-    }
+    public CreateGuildEventArgs(uint id) => Id = id;
 
     public uint Id{ get; set; }
 
@@ -137,20 +134,14 @@ namespace Server
 
   public class GuildGumpRequestArgs : EventArgs
   {
-    public GuildGumpRequestArgs(Mobile mobile)
-    {
-      Mobile = mobile;
-    }
+    public GuildGumpRequestArgs(Mobile mobile) => Mobile = mobile;
 
     public Mobile Mobile{ get; }
   }
 
   public class QuestGumpRequestArgs : EventArgs
   {
-    public QuestGumpRequestArgs(Mobile mobile)
-    {
-      Mobile = mobile;
-    }
+    public QuestGumpRequestArgs(Mobile mobile) => Mobile = mobile;
 
     public Mobile Mobile{ get; }
   }
@@ -350,20 +341,14 @@ namespace Server
 
   public class ChatRequestEventArgs : EventArgs
   {
-    public ChatRequestEventArgs(Mobile mobile)
-    {
-      Mobile = mobile;
-    }
+    public ChatRequestEventArgs(Mobile mobile) => Mobile = mobile;
 
     public Mobile Mobile{ get; }
   }
 
   public class PlayerDeathEventArgs : EventArgs
   {
-    public PlayerDeathEventArgs(Mobile mobile)
-    {
-      Mobile = mobile;
-    }
+    public PlayerDeathEventArgs(Mobile mobile) => Mobile = mobile;
 
     public Mobile Mobile{ get; }
   }
@@ -386,10 +371,7 @@ namespace Server
 
   public class LogoutEventArgs : EventArgs
   {
-    public LogoutEventArgs(Mobile m)
-    {
-      Mobile = m;
-    }
+    public LogoutEventArgs(Mobile m) => Mobile = m;
 
     public Mobile Mobile{ get; }
   }
@@ -409,20 +391,14 @@ namespace Server
 
   public class ConnectedEventArgs : EventArgs
   {
-    public ConnectedEventArgs(Mobile m)
-    {
-      Mobile = m;
-    }
+    public ConnectedEventArgs(Mobile m) => Mobile = m;
 
     public Mobile Mobile{ get; }
   }
 
   public class DisconnectedEventArgs : EventArgs
   {
-    public DisconnectedEventArgs(Mobile m)
-    {
-      Mobile = m;
-    }
+    public DisconnectedEventArgs(Mobile m) => Mobile = m;
 
     public Mobile Mobile{ get; }
   }
@@ -487,30 +463,21 @@ namespace Server
 
   public class StunRequestEventArgs : EventArgs
   {
-    public StunRequestEventArgs(Mobile m)
-    {
-      Mobile = m;
-    }
+    public StunRequestEventArgs(Mobile m) => Mobile = m;
 
     public Mobile Mobile{ get; }
   }
 
   public class DisarmRequestEventArgs : EventArgs
   {
-    public DisarmRequestEventArgs(Mobile m)
-    {
-      Mobile = m;
-    }
+    public DisarmRequestEventArgs(Mobile m) => Mobile = m;
 
     public Mobile Mobile{ get; }
   }
 
   public class HelpRequestEventArgs : EventArgs
   {
-    public HelpRequestEventArgs(Mobile m)
-    {
-      Mobile = m;
-    }
+    public HelpRequestEventArgs(Mobile m) => Mobile = m;
 
     public Mobile Mobile{ get; }
   }
@@ -521,10 +488,7 @@ namespace Server
 
   public class CrashedEventArgs : EventArgs
   {
-    public CrashedEventArgs(Exception e)
-    {
-      Exception = e;
-    }
+    public CrashedEventArgs(Exception e) => Exception = e;
 
     public Exception Exception{ get; }
 
@@ -694,10 +658,7 @@ namespace Server
 
   public class OpenDoorMacroEventArgs : EventArgs
   {
-    public OpenDoorMacroEventArgs(Mobile mobile)
-    {
-      Mobile = mobile;
-    }
+    public OpenDoorMacroEventArgs(Mobile mobile) => Mobile = mobile;
 
     public Mobile Mobile{ get; }
   }
@@ -739,20 +700,14 @@ namespace Server
 
   public class LoginEventArgs : EventArgs
   {
-    public LoginEventArgs(Mobile mobile)
-    {
-      Mobile = mobile;
-    }
+    public LoginEventArgs(Mobile mobile) => Mobile = mobile;
 
     public Mobile Mobile{ get; }
   }
 
   public class WorldSaveEventArgs : EventArgs
   {
-    public WorldSaveEventArgs(bool msg)
-    {
-      Message = msg;
-    }
+    public WorldSaveEventArgs(bool msg) => Message = msg;
 
     public bool Message{ get; }
   }

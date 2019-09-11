@@ -191,8 +191,7 @@ namespace Server
       if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
         return;
 
-      if (m_StaticTiles[x] == null)
-        m_StaticTiles[x] = new StaticTile[BlockHeight][][][];
+      m_StaticTiles[x] ??= new StaticTile[BlockHeight][][][];
 
       m_StaticTiles[x][y] = value;
 
@@ -342,10 +341,7 @@ namespace Server
       return m_LandTiles[x][y] = tiles ?? ReadLandBlock(x, y);
     }
 
-    public LandTile GetLandTile(int x, int y)
-    {
-      return GetLandBlock(x >> 3, y >> 3)[((y & 0x7) << 3) + (x & 0x7)];
-    }
+    public LandTile GetLandTile(int x, int y) => GetLandBlock(x >> 3, y >> 3)[((y & 0x7) << 3) + (x & 0x7)];
 
     [MethodImpl(MethodImplOptions.Synchronized)]
     private unsafe StaticTile[][][] ReadStaticBlock(int x, int y)
@@ -676,10 +672,7 @@ namespace Server
         m_Order = 0;
       }
 
-      public int CompareTo(UOPEntry other)
-      {
-        return m_Order.CompareTo(other.m_Order);
-      }
+      public int CompareTo(UOPEntry other) => m_Order.CompareTo(other.m_Order);
     }
 
     private class OffsetComparer : IComparer<UOPEntry>

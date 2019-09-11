@@ -810,10 +810,7 @@ namespace Server
   {
     private BinaryReader m_File;
 
-    public BinaryFileReader(BinaryReader br)
-    {
-      m_File = br;
-    }
+    public BinaryFileReader(BinaryReader br) => m_File = br;
 
     public long Position => m_File.BaseStream.Position;
 
@@ -822,15 +819,9 @@ namespace Server
       m_File.Close();
     }
 
-    public long Seek(long offset, SeekOrigin origin)
-    {
-      return m_File.BaseStream.Seek(offset, origin);
-    }
+    public long Seek(long offset, SeekOrigin origin) => m_File.BaseStream.Seek(offset, origin);
 
-    public override string ReadString()
-    {
-      return ReadByte() != 0 ? m_File.ReadString() : null;
-    }
+    public override string ReadString() => ReadByte() != 0 ? m_File.ReadString() : null;
 
     public override DateTime ReadDeltaTime()
     {
@@ -853,10 +844,7 @@ namespace Server
       }
     }
 
-    public override IPAddress ReadIPAddress()
-    {
-      return new IPAddress(m_File.ReadInt64());
-    }
+    public override IPAddress ReadIPAddress() => new IPAddress(m_File.ReadInt64());
 
     public override int ReadEncodedInt()
     {
@@ -873,10 +861,7 @@ namespace Server
       return v;
     }
 
-    public override DateTime ReadDateTime()
-    {
-      return new DateTime(m_File.ReadInt64());
-    }
+    public override DateTime ReadDateTime() => new DateTime(m_File.ReadInt64());
 
     public override DateTimeOffset ReadDateTimeOffset()
     {
@@ -886,100 +871,43 @@ namespace Server
       return new DateTimeOffset(ticks, offset);
     }
 
-    public override TimeSpan ReadTimeSpan()
-    {
-      return new TimeSpan(m_File.ReadInt64());
-    }
+    public override TimeSpan ReadTimeSpan() => new TimeSpan(m_File.ReadInt64());
 
-    public override decimal ReadDecimal()
-    {
-      return m_File.ReadDecimal();
-    }
+    public override decimal ReadDecimal() => m_File.ReadDecimal();
 
-    public override long ReadLong()
-    {
-      return m_File.ReadInt64();
-    }
+    public override long ReadLong() => m_File.ReadInt64();
 
-    public override ulong ReadULong()
-    {
-      return m_File.ReadUInt64();
-    }
+    public override ulong ReadULong() => m_File.ReadUInt64();
 
-    public override int ReadInt()
-    {
-      return m_File.ReadInt32();
-    }
+    public override int ReadInt() => m_File.ReadInt32();
 
-    public override uint ReadUInt()
-    {
-      return m_File.ReadUInt32();
-    }
+    public override uint ReadUInt() => m_File.ReadUInt32();
 
-    public override short ReadShort()
-    {
-      return m_File.ReadInt16();
-    }
+    public override short ReadShort() => m_File.ReadInt16();
 
-    public override ushort ReadUShort()
-    {
-      return m_File.ReadUInt16();
-    }
+    public override ushort ReadUShort() => m_File.ReadUInt16();
 
-    public override double ReadDouble()
-    {
-      return m_File.ReadDouble();
-    }
+    public override double ReadDouble() => m_File.ReadDouble();
 
-    public override float ReadFloat()
-    {
-      return m_File.ReadSingle();
-    }
+    public override float ReadFloat() => m_File.ReadSingle();
 
-    public override char ReadChar()
-    {
-      return m_File.ReadChar();
-    }
+    public override char ReadChar() => m_File.ReadChar();
 
-    public override byte ReadByte()
-    {
-      return m_File.ReadByte();
-    }
+    public override byte ReadByte() => m_File.ReadByte();
 
-    public override sbyte ReadSByte()
-    {
-      return m_File.ReadSByte();
-    }
+    public override sbyte ReadSByte() => m_File.ReadSByte();
 
-    public override bool ReadBool()
-    {
-      return m_File.ReadBoolean();
-    }
+    public override bool ReadBool() => m_File.ReadBoolean();
 
-    public override Point3D ReadPoint3D()
-    {
-      return new Point3D(ReadInt(), ReadInt(), ReadInt());
-    }
+    public override Point3D ReadPoint3D() => new Point3D(ReadInt(), ReadInt(), ReadInt());
 
-    public override Point2D ReadPoint2D()
-    {
-      return new Point2D(ReadInt(), ReadInt());
-    }
+    public override Point2D ReadPoint2D() => new Point2D(ReadInt(), ReadInt());
 
-    public override Rectangle2D ReadRect2D()
-    {
-      return new Rectangle2D(ReadPoint2D(), ReadPoint2D());
-    }
+    public override Rectangle2D ReadRect2D() => new Rectangle2D(ReadPoint2D(), ReadPoint2D());
 
-    public override Rectangle3D ReadRect3D()
-    {
-      return new Rectangle3D(ReadPoint3D(), ReadPoint3D());
-    }
+    public override Rectangle3D ReadRect3D() => new Rectangle3D(ReadPoint3D(), ReadPoint3D());
 
-    public override Map ReadMap()
-    {
-      return Map.Maps[ReadByte()];
-    }
+    public override Map ReadMap() => Map.Maps[ReadByte()];
 
     public override IEntity ReadEntity()
     {
@@ -987,40 +915,19 @@ namespace Server
       return World.FindEntity(serial) ?? new Entity(serial, new Point3D(0, 0, 0), Map.Internal);
     }
 
-    public override Item ReadItem()
-    {
-      return World.FindItem(ReadUInt());
-    }
+    public override Item ReadItem() => World.FindItem(ReadUInt());
 
-    public override Mobile ReadMobile()
-    {
-      return World.FindMobile(ReadUInt());
-    }
+    public override Mobile ReadMobile() => World.FindMobile(ReadUInt());
 
-    public override BaseGuild ReadGuild()
-    {
-      return BaseGuild.Find(ReadUInt());
-    }
+    public override BaseGuild ReadGuild() => BaseGuild.Find(ReadUInt());
 
-    public override T ReadItem<T>()
-    {
-      return ReadItem() as T;
-    }
+    public override T ReadItem<T>() => ReadItem() as T;
 
-    public override T ReadMobile<T>()
-    {
-      return ReadMobile() as T;
-    }
+    public override T ReadMobile<T>() => ReadMobile() as T;
 
-    public override T ReadGuild<T>()
-    {
-      return ReadGuild() as T;
-    }
+    public override T ReadGuild<T>() => ReadGuild() as T;
 
-    public override List<Item> ReadStrongItemList()
-    {
-      return ReadStrongItemList<Item>();
-    }
+    public override List<Item> ReadStrongItemList() => ReadStrongItemList<Item>();
 
     public override List<T> ReadStrongItemList<T>()
     {
@@ -1040,10 +947,7 @@ namespace Server
       return new List<T>();
     }
 
-    public override HashSet<Item> ReadItemSet()
-    {
-      return ReadItemSet<Item>();
-    }
+    public override HashSet<Item> ReadItemSet() => ReadItemSet<Item>();
 
     public override HashSet<T> ReadItemSet<T>()
     {
@@ -1063,10 +967,7 @@ namespace Server
       return new HashSet<T>();
     }
 
-    public override List<Mobile> ReadStrongMobileList()
-    {
-      return ReadStrongMobileList<Mobile>();
-    }
+    public override List<Mobile> ReadStrongMobileList() => ReadStrongMobileList<Mobile>();
 
     public override List<T> ReadStrongMobileList<T>()
     {
@@ -1086,10 +987,7 @@ namespace Server
       return new List<T>();
     }
 
-    public override HashSet<Mobile> ReadMobileSet()
-    {
-      return ReadMobileSet<Mobile>();
-    }
+    public override HashSet<Mobile> ReadMobileSet() => ReadMobileSet<Mobile>();
 
     public override HashSet<T> ReadMobileSet<T>()
     {
@@ -1109,10 +1007,7 @@ namespace Server
       return new HashSet<T>();
     }
 
-    public override List<BaseGuild> ReadStrongGuildList()
-    {
-      return ReadStrongGuildList<BaseGuild>();
-    }
+    public override List<BaseGuild> ReadStrongGuildList() => ReadStrongGuildList<BaseGuild>();
 
     public override List<T> ReadStrongGuildList<T>()
     {
@@ -1132,10 +1027,7 @@ namespace Server
       return new List<T>();
     }
 
-    public override HashSet<BaseGuild> ReadGuildSet()
-    {
-      return ReadGuildSet<BaseGuild>();
-    }
+    public override HashSet<BaseGuild> ReadGuildSet() => ReadGuildSet<BaseGuild>();
 
     public override HashSet<T> ReadGuildSet<T>()
     {
@@ -1155,15 +1047,9 @@ namespace Server
       return new HashSet<T>();
     }
 
-    public override Race ReadRace()
-    {
-      return Race.Races[ReadByte()];
-    }
+    public override Race ReadRace() => Race.Races[ReadByte()];
 
-    public override bool End()
-    {
-      return m_File.PeekChar() == -1;
-    }
+    public override bool End() => m_File.PeekChar() == -1;
   }
 
   public sealed class AsyncWriter : GenericWriter
@@ -1703,10 +1589,7 @@ namespace Server
     {
       private AsyncWriter m_Owner;
 
-      public WorkerThread(AsyncWriter owner)
-      {
-        m_Owner = owner;
-      }
+      public WorkerThread(AsyncWriter owner) => m_Owner = owner;
 
       public void Worker()
       {

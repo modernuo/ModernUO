@@ -4,7 +4,17 @@ namespace Server.Network
 {
   public static partial class Packets
   {
-    public static void DamageOld(NetState ns, Serial m, int amount)
+    public static void SendDamage(NetState ns, Serial m, int amount)
+    {
+      if (ns == null)
+        return;
+
+      if (ns.DamagePacket)
+        SendDamageNew(ns, m, amount);
+      else
+        SendDamageOld(ns, m, amount);
+    }
+    public static void SendDamageOld(NetState ns, Serial m, int amount)
     {
       if (ns == null)
         return;
@@ -27,7 +37,7 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    public static void Damage(NetState ns, Serial m, int amount)
+    public static void SendDamageNew(NetState ns, Serial m, int amount)
     {
       if (ns == null)
         return;

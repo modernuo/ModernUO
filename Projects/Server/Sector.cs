@@ -39,15 +39,9 @@ namespace Server
 
     public Rectangle3D Rect => m_Rect;
 
-    public int CompareTo(RegionRect regRect)
-    {
-      return regRect == null ? 1 : Region.CompareTo(regRect.Region);
-    }
+    public int CompareTo(RegionRect regRect) => regRect == null ? 1 : Region.CompareTo(regRect.Region);
 
-    public bool Contains(Point3D loc)
-    {
-      return m_Rect.Contains(loc);
-    }
+    public bool Contains(Point3D loc) => m_Rect.Contains(loc);
   }
 
 
