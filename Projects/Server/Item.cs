@@ -343,17 +343,6 @@ namespace Server
 
     public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
 
-    // World packets need to be invalidated when any of the following changes:
-    //  - ItemID
-    //  - Amount
-    //  - Location
-    //  - Hue
-    //  - Packet Flags
-    //  - Direction
-    public Packet WorldPacket => StaticPacketHandlers.GetWorldItemPacket(this);
-    public Packet WorldPacketSA => StaticPacketHandlers.GetWorldItemSAPacket(this);
-    public Packet WorldPacketHS => StaticPacketHandlers.GetWorldItemHSPacket(this);
-
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Visible
     {
@@ -363,7 +352,6 @@ namespace Server
         if (GetFlag(ImplFlag.Visible) != value)
         {
           SetFlag(ImplFlag.Visible, value);
-          ReleaseWorldPackets();
 
           if (m_Map != null)
           {
@@ -396,7 +384,6 @@ namespace Server
         if (GetFlag(ImplFlag.Movable) != value)
         {
           SetFlag(ImplFlag.Movable, value);
-          ReleaseWorldPackets();
           Delta(ItemDelta.Update);
         }
       }
@@ -512,8 +499,6 @@ namespace Server
         if (m_Hue != value)
         {
           m_Hue = value;
-          ReleaseWorldPackets();
-
           Delta(ItemDelta.Update);
         }
       }
@@ -575,7 +560,6 @@ namespace Server
           int oldPileWeight = PileWeight;
 
           m_ItemID = value;
-          ReleaseWorldPackets();
 
           int newPileWeight = PileWeight;
 
@@ -641,8 +625,6 @@ namespace Server
         if ((LightType)m_Direction != value)
         {
           m_Direction = (Direction)value;
-          ReleaseWorldPackets();
-
           Delta(ItemDelta.Update);
         }
       }
@@ -657,8 +639,6 @@ namespace Server
         if (m_Direction != value)
         {
           m_Direction = value;
-          ReleaseWorldPackets();
-
           Delta(ItemDelta.Update);
         }
       }
@@ -677,7 +657,6 @@ namespace Server
           int oldPileWeight = PileWeight;
 
           m_Amount = value;
-          ReleaseWorldPackets();
 
           int newPileWeight = PileWeight;
 
@@ -719,8 +698,6 @@ namespace Server
         SetFlag(ImplFlag.QuestItem, value);
 
         InvalidateProperties();
-
-        ReleaseWorldPackets();
 
         Delta(ItemDelta.Update);
       }
@@ -813,8 +790,6 @@ namespace Server
         m_Location = location;
         OnLocationChange(oldRealLocation);
 
-        ReleaseWorldPackets();
-
         List<Item> items = LookupItems();
 
         if (items != null)
@@ -869,8 +844,6 @@ namespace Server
 
         m_Location = location;
         OnLocationChange(oldRealLocation);
-
-        ReleaseWorldPackets();
 
         eable = m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange());
 
@@ -2066,11 +2039,6 @@ namespace Server
         ClearProperties();
     }
 
-    public void ReleaseWorldPackets()
-    {
-      StaticPacketHandlers.FreeWorldItemPackets(this);
-    }
-
     public virtual int GetPacketFlags()
     {
       int flags = 0;
@@ -2606,15 +2574,9 @@ namespace Server
       }
     }
 
-    public virtual int GetMaxUpdateRange()
-    {
-      return 18;
-    }
+    public virtual int GetMaxUpdateRange() => 18;
 
-    public virtual int GetUpdateRange(Mobile m)
-    {
-      return 18;
-    }
+    public virtual int GetUpdateRange(Mobile m) => 18;
 
     public void SendInfoTo(NetState state)
     {
@@ -2623,24 +2585,30 @@ namespace Server
 
     public virtual void SendInfoTo(NetState state, bool sendOplPacket)
     {
-      state.Send(GetWorldPacketFor(state));
+      SendWorldPacketFor(state);
 
-      if (sendOplPacket) state.Send(OPLPacket);
+      if (sendOplPacket)
+        state.Send(OPLPacket);
     }
 
-    protected virtual Packet GetWorldPacketFor(NetState state)
+    // World packets need to be invalidated when any of the following changes:
+    //  - ItemID
+    //  - Amount
+    //  - Location
+    //  - Hue
+    //  - Packet Flags
+    //  - Direction
+    protected virtual void SendWorldPacketFor(NetState state)
     {
       if (state.HighSeas)
-        return WorldPacketHS;
-      if (state.StygianAbyss)
-        return WorldPacketSA;
-      return WorldPacket;
+        Packets.SendWorldItemHS(state, this);
+      else if (state.StygianAbyss)
+        Packets.SendWorldItemSA(state, this);
+      else
+        Packets.SendWorldItem(state, this);
     }
 
-    public virtual int GetTotal(TotalType type)
-    {
-      return 0;
-    }
+    public virtual int GetTotal(TotalType type) => 0;
 
     public virtual void UpdateTotal(Item sender, TotalType type, int delta)
     {
@@ -2821,7 +2789,6 @@ namespace Server
 
     public virtual void FreeCache()
     {
-      ReleaseWorldPackets();
       StaticPacketHandlers.FreeOPLPacket(this);
     }
 
@@ -3762,7 +3729,6 @@ namespace Server
 
             Point3D oldLoc = m_Location;
             m_Location = value;
-            ReleaseWorldPackets();
 
             SetLastMoved();
 
@@ -3785,24 +3751,17 @@ namespace Server
           else if (m_Parent is Item)
           {
             m_Location = value;
-            ReleaseWorldPackets();
 
             Delta(ItemDelta.Update);
           }
           else
-          {
             m_Location = value;
-            ReleaseWorldPackets();
-          }
 
           if (m_Parent == null)
             m_Map.OnMove(oldLocation, this);
         }
         else
-        {
           m_Location = value;
-          ReleaseWorldPackets();
-        }
 
         OnLocationChange(oldLocation);
       }

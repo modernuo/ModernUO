@@ -17,7 +17,7 @@ namespace Server.Network.Packets
 
   public static partial class Packets
   {
-    public static void WorldItem(NetState ns, Item item)
+    public static void SendWorldItem(NetState ns, Item item)
     {
       if (ns == null)
         return;
@@ -82,7 +82,7 @@ namespace Server.Network.Packets
       ns.Send(w.Span);
     }
 
-    public static void WorldItemSA(NetState ns, Item item)
+    public static void SendWorldItemSA(NetState ns, Item item)
     {
       if (ns == null)
         return;
@@ -135,7 +135,7 @@ namespace Server.Network.Packets
       ns.Send(w.RawSpan);
     }
 
-    public static void WorldItemHS(NetState ns, Item item)
+    public static void SendWorldItemHS(NetState ns, Item item)
     {
       if (ns == null)
         return;
@@ -273,7 +273,7 @@ namespace Server.Network.Packets
     public static void SpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
     {
       if (ns == null)
-        return;
+        return;0
 
       int length = 5 + count * 20;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
