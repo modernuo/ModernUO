@@ -1766,7 +1766,6 @@ namespace Server
 
     public Region Region => m_Region ?? (Map == null ? Map.Internal.DefaultRegion : Map.DefaultRegion);
 
-    public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
     public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -6678,15 +6677,12 @@ namespace Server
 
     public virtual void FreeCache()
     {
-      StaticPacketHandlers.FreeRemoveItemPacket(this);
-      StaticPacketHandlers.FreeOPLInfoPacket(this);
       StaticPacketHandlers.FreeOPLPacket(this);
     }
 
     public void ClearProperties()
     {
       StaticPacketHandlers.FreeOPLPacket(this);
-      StaticPacketHandlers.FreeOPLInfoPacket(this);
     }
 
     public void InvalidateProperties()
@@ -6699,15 +6695,10 @@ namespace Server
         ObjectPropertyList oldList = StaticPacketHandlers.FreeOPLPacket(this);
 
         if (oldList?.Hash != PropertyList.Hash)
-        {
-          StaticPacketHandlers.FreeOPLInfoPacket(this);
           Delta(MobileDelta.Properties);
-        }
       }
       else
-      {
         ClearProperties();
-      }
     }
 
     public virtual void SetLocation(Point3D newLocation, bool isTeleport)

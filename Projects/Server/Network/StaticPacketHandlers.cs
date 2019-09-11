@@ -24,30 +24,11 @@ namespace Server.Network
 {
   public static class StaticPacketHandlers
   {
-    private static ConcurrentDictionary<IPropertyListObject,OPLInfo> OPLInfoPackets = new ConcurrentDictionary<IPropertyListObject,OPLInfo>();
     private static ConcurrentDictionary<IPropertyListObject,ObjectPropertyList> ObjectPropertyListPackets = new ConcurrentDictionary<IPropertyListObject,ObjectPropertyList>();
 
     private static ConcurrentDictionary<Item,WorldItem> WorldItemPackets = new ConcurrentDictionary<Item,WorldItem>();
     private static ConcurrentDictionary<Item,WorldItemSA> WorldItemSAPackets = new ConcurrentDictionary<Item,WorldItemSA>();
     private static ConcurrentDictionary<Item,WorldItemHS> WorldItemHSPackets = new ConcurrentDictionary<Item,WorldItemHS>();
-
-    public static OPLInfo GetOPLInfoPacket(IPropertyListObject obj)
-    {
-      return OPLInfoPackets.GetOrAdd(obj, value =>
-      {
-        OPLInfo packet = new OPLInfo(value.PropertyList);
-        packet.SetStatic();
-        return packet;
-      });
-    }
-
-    public static OPLInfo FreeOPLInfoPacket(IPropertyListObject obj)
-    {
-      if (OPLInfoPackets.TryRemove(obj, out OPLInfo p))
-        Packet.Release(p);
-
-      return p;
-    }
 
     public static ObjectPropertyList GetOPLPacket(IPropertyListObject obj)
     {

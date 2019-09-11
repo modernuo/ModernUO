@@ -341,7 +341,6 @@ namespace Server
       set => SetFlag(ImplFlag.Stackable, value);
     }
 
-    public OPLInfo OPLPacket => StaticPacketHandlers.GetOPLInfoPacket(this);
     public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
 
     // World packets need to be invalidated when any of the following changes:
@@ -2049,7 +2048,6 @@ namespace Server
     public void ClearProperties()
     {
       StaticPacketHandlers.FreeOPLPacket(this);
-      StaticPacketHandlers.FreeOPLInfoPacket(this);
     }
 
     public void InvalidateProperties()
@@ -2062,15 +2060,10 @@ namespace Server
         ObjectPropertyList oldList = StaticPacketHandlers.FreeOPLPacket(this);
 
         if (oldList?.Hash != PropertyList.Hash)
-        {
-          StaticPacketHandlers.FreeOPLInfoPacket(this);
           Delta(ItemDelta.Properties);
-        }
       }
       else
-      {
         ClearProperties();
-      }
     }
 
     public void ReleaseWorldPackets()
@@ -2829,8 +2822,6 @@ namespace Server
     public virtual void FreeCache()
     {
       ReleaseWorldPackets();
-      StaticPacketHandlers.FreeRemoveItemPacket(this);
-      StaticPacketHandlers.FreeOPLInfoPacket(this);
       StaticPacketHandlers.FreeOPLPacket(this);
     }
 
