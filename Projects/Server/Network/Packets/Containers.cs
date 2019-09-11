@@ -6,7 +6,18 @@ namespace Server.Network
 {
   public static partial class Packets
   {
-    public static void SendDisplayContainer(NetState ns, Serial s, int gumpid)
+    public static void SendDisplayContainer(NetState ns, Serial s, short gumpId = -1)
+    {
+      if (ns == null)
+        return;
+
+      if (ns.HighSeas)
+        SendDisplayContainerHS(ns, s, gumpId);
+      else
+        SendDisplayContainerOld(ns, s, gumpId);
+    }
+
+    public static void SendDisplayContainerOld(NetState ns, Serial s, short gumpId = -1)
     {
       if (ns == null)
         return;
@@ -15,12 +26,12 @@ namespace Server.Network
       w.Write((byte)0x24); // Packet ID
 
       w.Write(s);
-      w.Write((short)gumpid);
+      w.Write(gumpId);
 
       ns.Send(w.RawSpan);
     }
 
-    public static void SendDisplayContainerHS(NetState ns, Serial s, int gumpid)
+    public static void SendDisplayContainerHS(NetState ns, Serial s, short gumpId = -1)
     {
       if (ns == null)
         return;
@@ -28,15 +39,25 @@ namespace Server.Network
       SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0x24); // Packet ID
 
-
       w.Write(s);
-      w.Write((short)gumpid);
+      w.Write(gumpId);
       w.Write((short)0x7D);
 
       ns.Send(w.RawSpan);
     }
 
     public static void SendContainerContentUpdate(NetState ns, Item item)
+    {
+      if (ns == null)
+        return;
+
+      if (ns.ContainerGridLines)
+        SendContainerContentUpdateNew(ns, item);
+      else
+        SendContainerContentUpdateOld(ns, item);
+    }
+
+    public static void SendContainerContentUpdateOld(NetState ns, Item item)
     {
       if (ns == null)
         return;
@@ -66,7 +87,7 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    public static void SendContainerContentUpdate6017(NetState ns, Item item)
+    public static void SendContainerContentUpdateNew(NetState ns, Item item)
     {
       if (ns == null)
         return;
@@ -97,7 +118,18 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    public static void ContainerContent(NetState ns, Mobile beholder, Item beheld)
+    public static void SendContainerContent(NetState ns, Mobile beholder, Item beheld)
+    {
+      if (ns == null)
+        return;
+
+      if (ns.ContainerGridLines)
+        SendContainerContentNew(ns, beholder, beheld);
+      else
+        SendContainerContentOld(ns, beholder, beheld);
+    }
+
+    public static void SendContainerContentOld(NetState ns, Mobile beholder, Item beheld)
     {
       if (ns == null)
         return;
@@ -139,7 +171,7 @@ namespace Server.Network
       ns.Send(w.Span);
     }
 
-    public static void ContainerContent6017(NetState ns, Mobile beholder, Item beheld)
+    public static void SendContainerContentNew(NetState ns, Mobile beholder, Item beheld)
     {
       if (ns == null)
         return;

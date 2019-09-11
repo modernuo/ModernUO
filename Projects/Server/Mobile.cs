@@ -731,9 +731,7 @@ namespace Server
           if (m_Holding != null)
           {
             UpdateTotal(m_Holding, TotalType.Weight, m_Holding.TotalWeight + m_Holding.PileWeight);
-
-            if (m_Holding.HeldBy == null)
-              m_Holding.HeldBy = this;
+            m_Holding.HeldBy ??= this;
           }
         }
       }
@@ -903,14 +901,10 @@ namespace Server
           }
           else
           {
-            if (m_ExpireCombatant == null)
-              m_ExpireCombatant = new ExpireCombatantTimer(this);
-
+            m_ExpireCombatant ??= new ExpireCombatantTimer(this);
             m_ExpireCombatant.Start();
 
-            if (m_CombatTimer == null)
-              m_CombatTimer = new CombatTimer(this);
-
+            m_CombatTimer ??= new CombatTimer(this);
             m_CombatTimer.Start();
           }
 
@@ -1783,10 +1777,8 @@ namespace Server
         if (m_BankBox?.Deleted == false && m_BankBox.Parent == this)
           return m_BankBox;
 
-        m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
-
-        if (m_BankBox == null)
-          AddItem(m_BankBox = new BankBox(this));
+        m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox ?? new BankBox(this);
+        AddItem(m_BankBox);
 
         return m_BankBox;
       }
@@ -1905,8 +1897,7 @@ namespace Server
         if (m_MountItem?.Deleted == false && m_MountItem.Parent == this)
           item = m_MountItem;
 
-        if (item == null)
-          item = FindItemOnLayer(Layer.Mount);
+        item ??= FindItemOnLayer(Layer.Mount);
 
         if (!(item is IMountItem mountItem))
           return null;
@@ -2657,8 +2648,7 @@ namespace Server
 
     public virtual void UpdateResistances()
     {
-      if (Resistances == null)
-        Resistances = new int[5] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+      Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
 
       bool delta = false;
 
@@ -2675,8 +2665,7 @@ namespace Server
 
     public virtual int GetResistance(ResistanceType type)
     {
-      if (Resistances == null)
-        Resistances = new int[5] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+      Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
 
       int v = (int)type;
 
@@ -2696,8 +2685,7 @@ namespace Server
 
     public virtual void AddResistanceMod(ResistanceMod toAdd)
     {
-      if (ResistanceMods == null) ResistanceMods = new List<ResistanceMod>();
-
+      ResistanceMods ??= new List<ResistanceMod>();
       ResistanceMods.Add(toAdd);
       UpdateResistances();
     }
@@ -2717,8 +2705,7 @@ namespace Server
 
     public virtual void ComputeResistances()
     {
-      if (Resistances == null)
-        Resistances = new int[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+      Resistances ??= new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
 
       for (int i = 0; i < Resistances.Length; ++i)
         Resistances[i] = 0;

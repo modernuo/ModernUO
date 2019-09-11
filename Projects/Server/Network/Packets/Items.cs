@@ -188,60 +188,16 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    private static byte[][] _liftRejPackets = new byte[(int)Enum.GetValues(typeof(LRReason)).Cast<LRReason>().Max()][];
-
-    public static void LiftRej(NetState ns, LRReason reason)
+    public static void SendLiftRej(NetState ns, LRReason reason)
     {
-      if (ns == null)
-        return;
-
-      byte r = (byte)reason;
-      byte[] packet = _liftRejPackets[r];
-
-      if (packet == null)
+      ns?.Send(stackalloc byte[]
       {
-        packet = new byte[]
-        {
-          0x27, // Packet ID
-          r
-        };
-
-        _liftRejPackets[r] = packet;
-      }
-
-      ns.Send(packet);
+        0x27, // Packet ID
+        (byte)reason
+      });
     }
 
-    public static void DisplaySpellbook(NetState ns, Serial s)
-    {
-      if (ns == null)
-        return;
-
-      SpanWriter w = new SpanWriter(stackalloc byte[7]);
-      w.Write((byte)0x24); // Packet ID
-
-      w.Write(s);
-      w.Write((short)-1);
-
-      ns.Send(w.RawSpan);
-    }
-
-    public static void DisplaySpellbookHS(NetState ns, Serial s)
-    {
-      if (ns == null)
-        return;
-
-      SpanWriter w = new SpanWriter(stackalloc byte[9]);
-      w.Write((byte)0x24); // Packet ID
-
-      w.Write(s);
-      w.Write((short)-1);
-      w.Write((short)0x7D);
-
-      ns.Send(w.RawSpan);
-    }
-
-    public static void SpellbookContent(NetState ns, Serial s, int count, int offset, ulong content)
+    public static void SendSpellbookContent(NetState ns, Serial s, int count, int offset, ulong content)
     {
       if (ns == null)
         return;
@@ -270,7 +226,7 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    public static void SpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
+    public static void SendSpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
     {
       if (ns == null)
         return;
@@ -299,7 +255,7 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    public static void NewSpellbookContent(NetState ns, Serial s, int graphic, int offset, ulong content)
+    public static void SendNewSpellbookContent(NetState ns, Serial s, int graphic, int offset, ulong content)
     {
       if (ns == null)
         return;

@@ -541,8 +541,7 @@ namespace Server
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) ==
           null)
         {
-          if (warningSb == null) warningSb = new StringBuilder();
-
+          warningSb ??= new StringBuilder();
           warningSb.AppendLine("       - No Serialize() method");
         }
 
@@ -552,8 +551,7 @@ namespace Server
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly) ==
           null)
         {
-          if (warningSb == null) warningSb = new StringBuilder();
-
+          warningSb ??= new StringBuilder();
           warningSb.AppendLine("       - No Deserialize() method");
         }
 

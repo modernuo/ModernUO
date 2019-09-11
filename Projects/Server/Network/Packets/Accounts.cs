@@ -97,7 +97,18 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    public static void SendCharacterList(NetState ns, IAccount a, CityInfo[] info)
+    public static void SendCharacterList(NetState ns, CityInfo[] info)
+    {
+      if (ns == null)
+        return;
+
+      if (ns.NewCharacterList)
+        SendCharacterListNew(ns, ns.Account, info);
+      else
+        SendCharacterListOld(ns, ns.Account, info);
+    }
+
+    public static void SendCharacterListNew(NetState ns, IAccount a, CityInfo[] info)
     {
       if (ns == null)
         return;
@@ -280,7 +291,7 @@ namespace Server.Network
       _ = ns.Flush(11);
     }
 
-    public static void AccountLoginAck(NetState ns, ServerInfo[] info)
+    public static void SendAccountLoginAck(NetState ns, ServerInfo[] info)
     {
       if (ns == null)
         return;

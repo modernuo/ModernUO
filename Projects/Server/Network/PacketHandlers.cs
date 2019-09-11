@@ -2092,7 +2092,7 @@ namespace Server.Network
           if (check != null && check.Map != Map.Internal)
           {
             Console.WriteLine("Login: {0}: Account in use", state);
-            state.Send(new PopupMessage(PMMessage.CharInWorld));
+            Packets.SendPopupMessage(state, PMMessage.CharInWorld);
             return;
           }
         }
@@ -2117,7 +2117,7 @@ namespace Server.Network
           race
         );
 
-        state.Send(new ClientVersionReq());
+        Packets.SendClientVersionReq(state);
 
         state.BlockAllPackets = true;
 
@@ -2187,10 +2187,8 @@ namespace Server.Network
 
       bool female = genderRace % 2 != 0;
 
-      Race race;
-
-      byte raceID = (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1);
-      race = Race.Races[raceID] ?? Race.DefaultRace;
+      byte raceId = (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1);
+      Race race = Race.Races[raceId] ?? Race.DefaultRace;
 
       CityInfo[] info = state.CityInfo;
       IAccount a = state.Account;
@@ -2209,7 +2207,7 @@ namespace Server.Network
           if (check != null && check.Map != Map.Internal)
           {
             Console.WriteLine("Login: {0}: Account in use", state);
-            state.Send(new PopupMessage(PMMessage.CharInWorld));
+            Packets.SendPopupMessage(state, PMMessage.CharInWorld);
             return;
           }
         }
@@ -2235,7 +2233,7 @@ namespace Server.Network
           race
         );
 
-        state.Send(new ClientVersionReq());
+        Packets.SendClientVersionReq(state);
 
         state.BlockAllPackets = true;
 
@@ -2340,12 +2338,8 @@ namespace Server.Network
       {
         state.CityInfo = e.CityInfo;
 
-        state.Send(SupportedFeatures.Instantiate(state));
-
-        if (state.NewCharacterList)
-          state.Send(new CharacterList(state.Account, state.CityInfo));
-        else
-          state.Send(new CharacterListOld(state.Account, state.CityInfo));
+        Packets.SendSupportedFeatures(state);
+        Packets.SendCharacterList(state, state.CityInfo);
       }
       else
       {
@@ -2370,7 +2364,7 @@ namespace Server.Network
         state.m_AuthID = GenerateAuthID(state);
 
         state.SentFirstPacket = false;
-        state.Send(new PlayServerAck(si));
+        Packets.SendPlayServerAck(state, si);
       }
     }
 
@@ -2468,13 +2462,13 @@ namespace Server.Network
 
         state.ServerInfo = info;
 
-        state.Send(new AccountLoginAck(info));
+        Packets.SendAccountLoginAck(state, info);
       }
     }
 
     public static void AccountLogin_ReplyRej(NetState state, ALRReason reason)
     {
-      state.Send(new AccountLoginRej(reason));
+      Packets.SendAccountLoginRej(state, reason);
       state.Dispose();
     }
 
