@@ -22,7 +22,7 @@ namespace Server.Network.Packets
       ns.Send(w.RawSpan);
     }
 
-    public static void SendDeathAnimation(NetState ns, Mobile m)
+    public static void SendStatLockInfo(NetState ns, Mobile m)
     {
       if (ns == null)
         return;
@@ -267,12 +267,15 @@ namespace Server.Network.Packets
       ns.Send(w.RawSpan);
     }
 
-    public static void SendMobileExtended(NetState ns, Mobile m)
+    public static void SendMobileExtended(NetState to, Mobile m)
     {
-      if (ns == null)
-        return;
+      SendMobileExtended(to, m, m.NetState);
+    }
 
-      string name = m.Name ?? "";
+    public static void SendMobileExtended(NetState to, Mobile m, NetState ns)
+    {
+      if (to == null)
+        return;
 
       byte type;
       short length;
@@ -303,7 +306,7 @@ namespace Server.Network.Packets
       w.Write(length); // Length
 
       w.Write(m.Serial);
-      w.WriteAsciiFixed(name, 30);
+      w.WriteAsciiFixed(m.Name ?? "", 30);
 
       w.Write((short)m.Hits);
       w.Write((short)m.HitsMax);
@@ -365,15 +368,18 @@ namespace Server.Network.Packets
         for (int i = 0; i < 15; ++i)
           w.Write((short)m.GetAOSStatus(i));
 
-      ns.Send(w.RawSpan);
+      to.Send(w.RawSpan);
     }
 
-    public static void SendMobileStatus(NetState ns, Mobile beholder, Mobile beheld)
+    public static void SendMobileStatus(NetState to, Mobile beholder, Mobile beheld)
     {
-      if (ns == null)
-        return;
+      SendMobileStatus(to, beholder, beheld, beheld.NetState);
+    }
 
-      string name = beheld.Name ?? "";
+    public static void SendMobileStatus(NetState to, Mobile beholder, Mobile beheld, NetState ns)
+    {
+      if (to == null)
+        return;
 
       int type;
       short length;
@@ -410,7 +416,7 @@ namespace Server.Network.Packets
 
       w.Write(beheld.Serial);
 
-      w.WriteAsciiFixed(name, 30);
+      w.WriteAsciiFixed(beheld.Name ?? "", 30);
 
       if (beholder == beheld)
       {
@@ -480,7 +486,7 @@ namespace Server.Network.Packets
         for (int i = 0; i < 15; ++i)
           w.Write((short)beheld.GetAOSStatus(i));
 
-      ns.Send(w.RawSpan);
+      to.Send(w.RawSpan);
     }
 
     public static void SendHealthbarPoison(NetState ns, Mobile m)
@@ -523,6 +529,17 @@ namespace Server.Network.Packets
     }
 
     public static void SendMobileUpdate(NetState ns, Mobile m)
+    {
+      if (ns == null)
+        return;
+
+      if (ns.StygianAbyss)
+        SendMobileUpdateSA(ns, m);
+      else
+        SendMobileUpdateOld(ns, m);
+    }
+
+    public static void SendMobileUpdateSA(NetState ns, Mobile m)
     {
       if (ns == null)
         return;
@@ -582,18 +599,11 @@ namespace Server.Network.Packets
         return;
 
       if (ns.NewMobileIncoming)
-      {
         SendMobileIncomingNew(ns, beholder, beheld);
-        return;
-      }
-
-      if (ns.StygianAbyss)
-      {
+      else if (ns.StygianAbyss)
         SendMobileIncomingSA(ns, beholder, beheld);
-        return;
-      }
-
-      SendMobileIncomingOld(ns, beholder, beheld);
+      else
+        SendMobileIncomingOld(ns, beholder, beheld);
     }
 
     public static void SendMobileIncomingNew(NetState ns, Mobile beholder, Mobile beheld)

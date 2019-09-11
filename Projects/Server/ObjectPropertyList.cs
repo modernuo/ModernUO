@@ -61,11 +61,15 @@ namespace Server
 
     public static bool Enabled{ get; set; }
 
-    public byte[] GetPacket()
+    public int PacketLength => 19 + m_Buffer.WrittenCount;
+
+    public void Send(NetState ns)
     {
-      short length = (short)(19 + m_Buffer.WrittenCount);
-      byte[] bytes = new byte[length];
-      SpanWriter writer = new SpanWriter(bytes);
+      if (ns == null)
+        return;
+
+      short length = (short)PacketLength;
+      SpanWriter writer = new SpanWriter(stackalloc byte[PacketLength]);
       writer.Write((byte)0xD6); // Packet ID
       writer.Write(length); // Dynamic Length
 
@@ -73,9 +77,10 @@ namespace Server
       writer.Write(Entity.Serial);
       writer.Position += 2;
       writer.Write(m_Hash);
+      writer.Write(m_Buffer.WrittenSpan);
       // writer.Write(0);
 
-      return bytes;
+      ns.Send(writer.RawSpan);
     }
 
     public void Add(int number)

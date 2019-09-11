@@ -1105,7 +1105,7 @@ namespace Server
 
       OnAfterDelete();
 
-      FreeCache();
+      ClearProperties();
     }
 
     [CommandProperty(AccessLevel.Counselor)]
@@ -2789,7 +2789,7 @@ namespace Server
 
     public virtual void FreeCache()
     {
-      StaticPacketHandlers.FreeOPLPacket(this);
+      m_PropertyList = null;
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)

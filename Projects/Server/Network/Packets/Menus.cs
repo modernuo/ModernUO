@@ -124,7 +124,7 @@ namespace Server.Network.Packets
       ns.Send(w.Span);
     }
 
-    public static void DisplayContextMenu(NetState ns, ContextMenu menu)
+    public static void SendDisplayContextMenu(NetState ns, ContextMenu menu)
     {
       if (ns == null)
         return;

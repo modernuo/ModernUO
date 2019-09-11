@@ -453,6 +453,14 @@ namespace Server.Network.Packets
       ns.Send(w.RawSpan);
     }
 
+    public static void SendMovementAck(NetState ns, Mobile m)
+    {
+      if (ns == null)
+        return;
+
+      SendMovementAck(ns, ns.Sequence, Notoriety.Compute(m, m));
+    }
+
     public static void SendMovementAck(NetState ns, byte seq, byte noto)
     {
       ns?.Send(stackalloc byte[3]

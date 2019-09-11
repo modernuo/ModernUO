@@ -276,7 +276,7 @@ namespace Server.Network
 
     public Socket Socket { get; private set; }
 
-    public int Sequence { get; set; }
+    public byte Sequence { get; set; }
 
     public List<Gump> Gumps { get; private set; }
 

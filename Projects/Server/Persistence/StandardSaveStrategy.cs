@@ -93,7 +93,7 @@ namespace Server.Persistence
 
         idx.Write((int)(bin.Position - start));
 
-        m.FreeCache();
+        m.ClearProperties();
       }
 
       tdb.Write(World.m_MobileTypes.Count);
@@ -146,7 +146,7 @@ namespace Server.Persistence
 
         idx.Write((int)(bin.Position - start));
 
-        item.FreeCache();
+        item.ClearProperties();
       }
 
       tdb.Write(World.m_ItemTypes.Count);

@@ -20,8 +20,10 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Server.Items;
 using Server.Network;
 using Server.Targeting;
@@ -281,7 +283,7 @@ namespace Server
     public const int SectorShift = 4;
     public static int SectorActiveRange = 2;
 
-    private static readonly Queue<List<Item>> _FixPool = new Queue<List<Item>>(128);
+    private static readonly ConcurrentQueue<List<Item>> _FixPool = new ConcurrentQueue<List<Item>>();
 
     private static readonly List<Item> _EmptyFixItems = new List<Item>();
     private Region m_DefaultRegion;
@@ -297,7 +299,7 @@ namespace Server
 
     private object tileLock = new object();
 
-    public Map(int mapID, int mapIndex, int fileIndex, int width, int height, int season, string name, MapRules rules)
+    public Map(int mapID, int mapIndex, int fileIndex, int width, int height, byte season, string name, MapRules rules)
     {
       MapID = mapID;
       MapIndex = mapIndex;
@@ -326,17 +328,14 @@ namespace Server
 
     public static List<Map> AllMaps{ get; } = new List<Map>();
 
-    public int Season{ get; set; }
+    public byte Season{ get; set; }
 
     public TileMatrix Tiles
     {
       get
       {
         if (m_Tiles == null)
-          lock (tileLock)
-          {
-            m_Tiles = new TileMatrix(this, m_FileIndex, MapID, Width, Height);
-          }
+          Interlocked.Exchange(ref m_Tiles, new TileMatrix(this, m_FileIndex, MapID, Width, Height));
 
         return m_Tiles;
       }
@@ -354,8 +353,7 @@ namespace Server
 
     public Region DefaultRegion
     {
-      get => m_DefaultRegion ??
-             (m_DefaultRegion = new Region(null, this, 0, new Rectangle3D[0]));
+      get => m_DefaultRegion ??= new Region(null, this, 0, new Rectangle3D[0]);
       set => m_DefaultRegion = value;
     }
 
@@ -391,20 +389,11 @@ namespace Server
 
     public static int[] InvalidLandTiles{ get; set; } = { 0x244 };
 
-    public int CompareTo(Map other)
-    {
-      return other == null ? -1 : MapID.CompareTo(other.MapID);
-    }
+    public int CompareTo(Map other) => other == null ? -1 : MapID.CompareTo(other.MapID);
 
-    public static string[] GetMapNames()
-    {
-      return Maps.Where(m => m != null).Select(m => m.Name).ToArray();
-    }
+    public static string[] GetMapNames() => Maps.Where(m => m != null).Select(m => m.Name).ToArray();
 
-    public static Map[] GetMapValues()
-    {
-      return Maps.Where(m => m != null).ToArray();
-    }
+    public static Map[] GetMapValues() => Maps.Where(m => m != null).ToArray();
 
     public static Map Parse(string value)
     {
@@ -420,10 +409,7 @@ namespace Server
       return index == 127 ? Internal : Maps.FirstOrDefault(m => m?.MapIndex == index);
     }
 
-    public override string ToString()
-    {
-      return Name;
-    }
+    public override string ToString() => Name;
 
     public int GetAverageZ(int x, int y)
     {
@@ -471,10 +457,8 @@ namespace Server
       return v / 2;
     }
 
-    public IPooledEnumerable<StaticTile[]> GetMultiTilesAt(int x, int y)
-    {
-      return PooledEnumeration.GetMultiTiles(this, new Rectangle2D(x, y, 1, 1));
-    }
+    public IPooledEnumerable<StaticTile[]> GetMultiTilesAt(int x, int y) =>
+      PooledEnumeration.GetMultiTiles(this, new Rectangle2D(x, y, 1, 1));
 
     private static List<Item> AcquireFixItems(Map map, int x, int y)
     {
@@ -483,13 +467,7 @@ namespace Server
 
       List<Item> pool = null;
 
-      lock (_FixPool)
-      {
-        if (_FixPool.Count > 0)
-          pool = _FixPool.Dequeue();
-      }
-
-      if (pool == null)
+      if (!_FixPool.TryDequeue(out pool) || pool == null)
         pool = new List<Item>(128); // Arbitrary limit
 
       IPooledEnumerable<Item> eable = map.GetItemsInRange(new Point3D(x, y, 0), 0);
@@ -511,11 +489,8 @@ namespace Server
 
       pool.Clear();
 
-      lock (_FixPool)
-      {
-        if (_FixPool.Count < 128)
-          _FixPool.Enqueue(pool);
-      }
+      if (_FixPool.Count < 128)
+        _FixPool.Enqueue(pool);
     }
 
     public void FixColumn(int x, int y)
@@ -984,7 +959,7 @@ namespace Server
 
     public sealed class PooledEnumerable<T> : IPooledEnumerable<T>, IDisposable
     {
-      private static readonly Queue<PooledEnumerable<T>> _Buffer = new Queue<PooledEnumerable<T>>(0x400);
+      private static readonly ConcurrentQueue<PooledEnumerable<T>> _Buffer = new ConcurrentQueue<PooledEnumerable<T>>();
 
       private bool _IsDisposed;
 
@@ -1022,131 +997,73 @@ namespace Server
         _Pool.Clear();
         _Pool.Capacity = Math.Max(_Pool.Capacity, 0x100);
 
-        lock (((ICollection)_Buffer).SyncRoot)
-        {
-          _Buffer.Enqueue(this);
-        }
+        _Buffer.Enqueue(this);
       }
 
       public static PooledEnumerable<T> Instantiate(Map map, Rectangle2D bounds, PooledEnumeration.Selector<T> selector)
       {
-        PooledEnumerable<T> e = null;
-
-        lock (((ICollection)_Buffer).SyncRoot)
-        {
-          if (_Buffer.Count > 0)
-            e = _Buffer.Dequeue();
-        }
-
         IEnumerable<T> pool = PooledEnumeration.EnumerateSectors(map, bounds).SelectMany(s => selector(s, bounds));
 
-        if (e == null)
-          return new PooledEnumerable<T>(pool);
+        if (_Buffer.TryDequeue(out PooledEnumerable<T> e) && e != null)
+        {
+          e._Pool.AddRange(pool);
+          return e;
+        }
 
-        e._Pool.AddRange(pool);
-        return e;
+        return new PooledEnumerable<T>(pool);
 
       }
     }
 
     #region Get*InRange/Bounds
 
-    public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p)
-    {
-      return GetObjectsInRange(p, Core.GlobalMaxUpdateRange);
-    }
+    public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p) => GetObjectsInRange(p, Core.GlobalMaxUpdateRange);
 
-    public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range, bool items = true, bool mobiles = true)
-    {
-      return GetObjectsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1), items,
+    public IPooledEnumerable<IEntity> GetObjectsInRange(Point3D p, int range, bool items = true, bool mobiles = true) =>
+      GetObjectsInBounds(new Rectangle2D(p.m_X - range, p.m_Y - range, range * 2 + 1, range * 2 + 1), items,
         mobiles);
-    }
 
-    public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds, bool items = true, bool mobiles = true)
-    {
-      return PooledEnumeration.GetEntities(this, bounds, items, mobiles);
-    }
+    public IPooledEnumerable<IEntity> GetObjectsInBounds(Rectangle2D bounds, bool items = true, bool mobiles = true) =>
+      PooledEnumeration.GetEntities(this, bounds, items, mobiles);
 
-    public IPooledEnumerable<NetState> GetClientsInRange(IPoint3D p)
-    {
-      return GetClientsInRange(p, Core.GlobalMaxUpdateRange);
-    }
+    public IPooledEnumerable<NetState> GetClientsInRange(IPoint3D p) => GetClientsInRange(p, Core.GlobalMaxUpdateRange);
 
-    public IPooledEnumerable<NetState> GetClientsInRange(IPoint3D p, int range)
-    {
-      return GetClientsInBounds(new Rectangle2D(p.X - range, p.Y - range, range * 2 + 1, range * 2 + 1));
-    }
+    public IPooledEnumerable<NetState> GetClientsInRange(IPoint3D p, int range) =>
+      GetClientsInBounds(new Rectangle2D(p.X - range, p.Y - range, range * 2 + 1, range * 2 + 1));
 
-    public IPooledEnumerable<NetState> GetClientsInBounds(Rectangle2D bounds)
-    {
-      return PooledEnumeration.GetClients(this, bounds);
-    }
+    public IPooledEnumerable<NetState> GetClientsInBounds(Rectangle2D bounds) => PooledEnumeration.GetClients(this, bounds);
 
-    public IPooledEnumerable<Item> GetItemsInRange(IPoint3D p)
-    {
-      return GetItemsInRange(p, Core.GlobalMaxUpdateRange);
-    }
+    public IPooledEnumerable<Item> GetItemsInRange(IPoint3D p) => GetItemsInRange(p, Core.GlobalMaxUpdateRange);
 
-    public IPooledEnumerable<Item> GetItemsInRange(IPoint3D p, int range)
-    {
-      return GetItemsInRange<Item>(p, range);
-    }
+    public IPooledEnumerable<Item> GetItemsInRange(IPoint3D p, int range) => GetItemsInRange<Item>(p, range);
 
-    public IPooledEnumerable<T> GetItemsInRange<T>(IPoint3D p, int range) where T : Item
-    {
-      return GetItemsInBounds<T>(new Rectangle2D(p.X - range, p.Y - range, range * 2 + 1, range * 2 + 1));
-    }
+    public IPooledEnumerable<T> GetItemsInRange<T>(IPoint3D p, int range) where T : Item =>
+      GetItemsInBounds<T>(new Rectangle2D(p.X - range, p.Y - range, range * 2 + 1, range * 2 + 1));
 
-    public IPooledEnumerable<Item> GetItemsInBounds(Rectangle2D bounds)
-    {
-      return GetItemsInBounds<Item>(bounds);
-    }
+    public IPooledEnumerable<Item> GetItemsInBounds(Rectangle2D bounds) => GetItemsInBounds<Item>(bounds);
 
-    public IPooledEnumerable<T> GetItemsInBounds<T>(Rectangle2D bounds) where T : Item
-    {
-      return PooledEnumeration.GetItems<T>(this, bounds);
-    }
+    public IPooledEnumerable<T> GetItemsInBounds<T>(Rectangle2D bounds) where T : Item => PooledEnumeration.GetItems<T>(this, bounds);
 
-    public IPooledEnumerable<Mobile> GetMobilesInRange(Point3D p)
-    {
-      return GetMobilesInRange(p, Core.GlobalMaxUpdateRange);
-    }
+    public IPooledEnumerable<Mobile> GetMobilesInRange(Point3D p) => GetMobilesInRange(p, Core.GlobalMaxUpdateRange);
 
-    public IPooledEnumerable<Mobile> GetMobilesInRange(IPoint3D p, int range)
-    {
-      return GetMobilesInRange<Mobile>(p, range);
-    }
+    public IPooledEnumerable<Mobile> GetMobilesInRange(IPoint3D p, int range) => GetMobilesInRange<Mobile>(p, range);
 
-    public IPooledEnumerable<T> GetMobilesInRange<T>(IPoint3D p, int range) where T : Mobile
-    {
-      return GetMobilesInBounds<T>(new Rectangle2D(p.X - range, p.Y - range, range * 2 + 1, range * 2 + 1));
-    }
+    public IPooledEnumerable<T> GetMobilesInRange<T>(IPoint3D p, int range) where T : Mobile =>
+      GetMobilesInBounds<T>(new Rectangle2D(p.X - range, p.Y - range, range * 2 + 1, range * 2 + 1));
 
-    public IPooledEnumerable<Mobile> GetMobilesInBounds(Rectangle2D bounds)
-    {
-      return GetMobilesInBounds<Mobile>(bounds);
-    }
+    public IPooledEnumerable<Mobile> GetMobilesInBounds(Rectangle2D bounds) => GetMobilesInBounds<Mobile>(bounds);
 
-    public IPooledEnumerable<T> GetMobilesInBounds<T>(Rectangle2D bounds) where T : Mobile
-    {
-      return PooledEnumeration.GetMobiles<T>(this, bounds);
-    }
+    public IPooledEnumerable<T> GetMobilesInBounds<T>(Rectangle2D bounds) where T : Mobile => PooledEnumeration.GetMobiles<T>(this, bounds);
 
     #endregion
 
     #region CanFit
 
     public bool CanFit(Point3D p, int height, bool checkBlocksFit = false, bool checkMobiles = true,
-      bool requireSurface = true)
-    {
-      return CanFit(p.m_X, p.m_Y, p.m_Z, height, checkBlocksFit, checkMobiles, requireSurface);
-    }
+      bool requireSurface = true) => CanFit(p.m_X, p.m_Y, p.m_Z, height, checkBlocksFit, checkMobiles, requireSurface);
 
     public bool CanFit(Point2D p, int z, int height, bool checkBlocksFit = false, bool checkMobiles = true,
-      bool requireSurface = true)
-    {
-      return CanFit(p.m_X, p.m_Y, z, height, checkBlocksFit, checkMobiles, requireSurface);
-    }
+      bool requireSurface = true) => CanFit(p.m_X, p.m_Y, z, height, checkBlocksFit, checkMobiles, requireSurface);
 
     public bool CanFit(int x, int y, int z, int height, bool checkBlocksFit = false, bool checkMobiles = true,
       bool requireSurface = true)
@@ -1228,10 +1145,7 @@ namespace Server
 
     #region CanSpawnMobile
 
-    public bool CanSpawnMobile(Point3D p)
-    {
-      return CanSpawnMobile(p.m_X, p.m_Y, p.m_Z);
-    }
+    public bool CanSpawnMobile(Point3D p) => CanSpawnMobile(p.m_X, p.m_Y, p.m_Z);
 
     public bool CanSpawnMobile(Point2D p, int z)
     {
@@ -1250,30 +1164,15 @@ namespace Server
 
     #region GetSector
 
-    public Sector GetSector(Point3D p)
-    {
-      return InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
-    }
+    public Sector GetSector(Point3D p) => InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
 
-    public Sector GetSector(Point2D p)
-    {
-      return InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
-    }
+    public Sector GetSector(Point2D p) => InternalGetSector(p.m_X >> SectorShift, p.m_Y >> SectorShift);
 
-    public Sector GetSector(IPoint2D p)
-    {
-      return InternalGetSector(p.X >> SectorShift, p.Y >> SectorShift);
-    }
+    public Sector GetSector(IPoint2D p) => InternalGetSector(p.X >> SectorShift, p.Y >> SectorShift);
 
-    public Sector GetSector(int x, int y)
-    {
-      return InternalGetSector(x >> SectorShift, y >> SectorShift);
-    }
+    public Sector GetSector(int x, int y) => InternalGetSector(x >> SectorShift, y >> SectorShift);
 
-    public Sector GetRealSector(int x, int y)
-    {
-      return InternalGetSector(x, y);
-    }
+    public Sector GetRealSector(int x, int y) => InternalGetSector(x, y);
 
     private Sector InternalGetSector(int x, int y)
     {

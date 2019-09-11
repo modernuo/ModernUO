@@ -65,7 +65,7 @@ namespace Server.Network.Packets
 
     public static void SendTargetReq(NetState ns, Target t)
     {
-      if (ns == null)
+      if (ns == null || t == null)
         return;
 
       SpanWriter w = new SpanWriter(stackalloc byte[19]);
