@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <ApplicationIcon>runuo.ico</ApplicationIcon>
+    <ApplicationIcon>MUO.ico</ApplicationIcon>
     <StartupObject>
     </StartupObject>
     <AssemblyName>ModernUO</AssemblyName>
@@ -38,25 +38,24 @@
     <PublishDir>..\..\Distribution</PublishDir>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="runuo.ico" />
     <Content Include="Assemblies\rdrand.so">
-      <Link>%(Filename)%(Extension)</Link>
+      <Link>rdrand.so</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assemblies\rdrand32.dll">
-      <Link>%(Filename)%(Extension)</Link>
+      <Link>rdrand32.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assemblies\rdrand64.dll">
-      <Link>%(Filename)%(Extension)</Link>
+      <Link>rdrand64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assemblies\zlib32.dll">
-      <Link>%(Filename)%(Extension)</Link>
+      <Link>zlib32.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assemblies\zlib64.dll">
-      <Link>%(Filename)%(Extension)</Link>
+      <Link>zlib64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
