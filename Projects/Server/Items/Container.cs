@@ -665,9 +665,7 @@ namespace Server.Items
           Mobile mob = Openers[i];
 
           if (mob == opener)
-          {
             contains = true;
-          }
           else
           {
             int range = GetUpdateRange(mob);
@@ -681,7 +679,6 @@ namespace Server.Items
       if (!contains)
       {
         Openers ??= new List<Mobile>();
-
         Openers.Add(opener);
       }
       else if (Openers?.Count == 0)

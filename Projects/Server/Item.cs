@@ -340,7 +340,22 @@ namespace Server
       set => SetFlag(ImplFlag.Stackable, value);
     }
 
-    public ObjectPropertyList PropertyList => StaticPacketHandlers.GetOPLPacket(this);
+    private ObjectPropertyList m_PropertyList;
+
+    public ObjectPropertyList PropertyList
+    {
+      get
+      {
+        if (m_PropertyList != null)
+          return m_PropertyList;
+
+        // TODO: Object Pool OPL
+        ObjectPropertyList opl = new ObjectPropertyList(this);
+        GetProperties(opl);
+
+        return m_PropertyList;
+      }
+    }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Visible
@@ -927,17 +942,13 @@ namespace Server
         {
           NetState ns = rootParent.NetState;
 
-          if (ns != null)
-            if (rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
-            {
-              if (ns.ContainerGridLines)
-                ns.Send(new ContainerContentUpdate6017(this));
-              else
-                ns.Send(new ContainerContentUpdate(this));
+          if (ns != null && rootParent.CanSee(this) && rootParent.InRange(worldLoc, GetUpdateRange(rootParent)))
+          {
+            Packets.SendContainerContentUpdate(ns, this);
 
-              if (ObjectPropertyList.Enabled)
-                ns.Send(OPLPacket);
-            }
+            if (ObjectPropertyList.Enabled)
+              PropertyList.Send(ns);
+          }
         }
 
         SecureTrade st = GetSecureTradeCont()?.Trade;
@@ -958,19 +969,16 @@ namespace Server
 
           if (ns != null && tradeRecip.CanSee(this) && tradeRecip.InRange(worldLoc, GetUpdateRange(tradeRecip)))
           {
-            if (ns.ContainerGridLines)
-              ns.Send(new ContainerContentUpdate6017(this));
-            else
-              ns.Send(new ContainerContentUpdate(this));
+            Packets.SendContainerContentUpdate(ns, this);
 
             if (ObjectPropertyList.Enabled)
-              ns.Send(OPLPacket);
+              PropertyList.Send(ns);
           }
         }
 
         List<Mobile> openers = contParent.Openers;
 
-        if (openers != null)
+        if (openers?.Count > 0)
           lock (openers)
           {
             for (int i = 0; i < openers.Count; ++i)
@@ -980,9 +988,7 @@ namespace Server
               int range = GetUpdateRange(mob);
 
               if (mob.Map != map || !mob.InRange(worldLoc, range))
-              {
                 openers.RemoveAt(i--);
-              }
               else
               {
                 if (mob == rootParent || mob == tradeRecip)
@@ -992,13 +998,10 @@ namespace Server
 
                 if (ns != null && mob.CanSee(this))
                 {
-                  if (ns.ContainerGridLines)
-                    ns.Send(new ContainerContentUpdate6017(this));
-                  else
-                    ns.Send(new ContainerContentUpdate(this));
+                  Packets.SendContainerContentUpdate(ns, this);
 
                   if (ObjectPropertyList.Enabled)
-                    ns.Send(OPLPacket);
+                    PropertyList.Send(ns);
                 }
               }
             }
@@ -1009,8 +1012,6 @@ namespace Server
 
         return;
       }
-
-      Packet p = null;
 
       IPooledEnumerable<NetState> eable = map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
 
@@ -1026,39 +1027,26 @@ namespace Server
               SendInfoTo(state, ObjectPropertyList.Enabled);
             else
             {
-              if (p != null)
-                state.Send(p);
-              else if (m_Parent is Item)
-              {
-                if (state.ContainerGridLines)
-                  state.Send(new ContainerContentUpdate6017(this));
-                else
-                  state.Send(new ContainerContentUpdate(this));
-              }
+              if (m_Parent is Item)
+                Packets.SendContainerContentUpdate(state, this);
               else if (m_Parent is Mobile)
-              {
-                p = new EquipUpdate(this);
-                p.Acquire();
-
-                state.Send(p);
-              }
+                Packets.SendEquipUpdate(state, this);
 
               if (ObjectPropertyList.Enabled)
-                state.Send(OPLPacket);
+                PropertyList.Send(state);
             }
           }
           else if ((flags & ItemDelta.EquipOnly) != 0 && m_Parent is Mobile)
           {
-            state.Send(p ??= Packet.Acquire(new EquipUpdate(this)));
+            Packets.SendEquipUpdate(state, this);
 
             if (ObjectPropertyList.Enabled)
-              state.Send(OPLPacket);
+              PropertyList.Send(state);
           } else if (ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0)
-            state.Send(OPLPacket);
+            PropertyList.Send(state);
         }
       }
 
-      Packet.Release(p);
       eable.Free();
     }
 
@@ -1209,17 +1197,7 @@ namespace Server
       long ticks = LastMoved.Ticks;
       long now = DateTime.UtcNow.Ticks;
 
-      TimeSpan d;
-
-      try
-      {
-        d = new TimeSpan(ticks - now);
-      }
-      catch
-      {
-        if (ticks < now) d = TimeSpan.MaxValue;
-        else d = TimeSpan.MaxValue;
-      }
+      TimeSpan d = new TimeSpan(ticks - now);
 
       double minutes = -d.TotalMinutes;
 
@@ -1280,10 +1258,7 @@ namespace Server
 
       if (GetSaveFlag(flags, SaveFlag.Parent))
       {
-        if (m_Parent?.Deleted == false)
-          writer.Write(m_Parent.Serial);
-        else
-          writer.Write(Serial.MinusOne);
+        writer.Write(m_Parent?.Deleted == false ? m_Parent.Serial : Serial.MinusOne);
       }
 
       if (GetSaveFlag(flags, SaveFlag.Items))
@@ -1510,7 +1485,7 @@ namespace Server
     /// </summary>
     public virtual void SendPropertiesTo(Mobile from)
     {
-      from.Send(PropertyList);
+      PropertyList.Send(from?.NetState);
     }
 
     /// <summary>

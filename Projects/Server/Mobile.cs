@@ -19,10 +19,13 @@
  ***************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Server.ContextMenus;
 using Server.Gumps;
@@ -467,8 +470,8 @@ namespace Server
       198
     };
 
-    private static Queue<Mobile> m_DeltaQueue = new Queue<Mobile>();
-    private static Queue<Mobile> m_DeltaQueueR = new Queue<Mobile>();
+    private static ConcurrentQueue<Mobile> m_DeltaQueue = new ConcurrentQueue<Mobile>();
+    private static ConcurrentQueue<Mobile> m_DeltaQueueR = new ConcurrentQueue<Mobile>();
 
     private static bool _processing;
 
@@ -5668,10 +5671,8 @@ namespace Server
 
       if (map == null)
         return;
-      ProcessDelta();
 
-      Packet p = null;
-      //Packet pNew = null;
+      ProcessDelta();
 
       IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
 
@@ -5680,70 +5681,52 @@ namespace Server
         {
           state.Mobile.ProcessDelta();
 
-          //if ( state.StygianAbyss ) {
-          //if ( pNew == null )
-          //pNew = Packet.Acquire( new NewMobileAnimation( this, action, frameCount, delay ) );
-
-          //state.Send( pNew );
-          //} else {
-          if (p == null)
+          if (Body.IsGargoyle)
           {
-            #region SA
+            frameCount = 10;
 
-            if (Body.IsGargoyle)
+            if (Flying)
             {
-              frameCount = 10;
-
-              if (Flying)
-              {
-                if (action >= 9 && action <= 11)
-                  action = 71;
-                else if (action >= 12 && action <= 14)
-                  action = 72;
-                else if (action == 20)
-                  action = 77;
-                else if (action == 31)
-                  action = 71;
-                else if (action == 34)
-                  action = 78;
-                else if (action >= 200 && action <= 259)
-                  action = 75;
-                else if (action >= 260 && action <= 270) action = 75;
-              }
-              else
-              {
-                if (action >= 200 && action <= 259)
-                  action = 17;
-                else if (action >= 260 && action <= 270) action = 16;
-              }
+              if (action >= 9 && action <= 11)
+                action = 71;
+              else if (action >= 12 && action <= 14)
+                action = 72;
+              else if (action == 20)
+                action = 77;
+              else if (action == 31)
+                action = 71;
+              else if (action == 34)
+                action = 78;
+              else if (action >= 200 && action <= 259)
+                action = 75;
+              else if (action >= 260 && action <= 270) action = 75;
             }
-
-            #endregion
-
-            p = Packet.Acquire(new MobileAnimation(this, action, frameCount, repeatCount, forward, repeat,
-              delay));
+            else
+            {
+              if (action >= 200 && action <= 259)
+                action = 17;
+              else if (action >= 260 && action <= 270)
+                action = 16;
+            }
           }
 
-          state.Send(p);
-          //}
+          Packets.SendMobileAnimation(state, this, action, frameCount, repeatCount, forward, repeat, delay);
         }
-
-      Packet.Release(p);
-      //Packet.Release( pNew );
 
       eable.Free();
     }
 
     public void SendSound(int soundID)
     {
-      if (soundID != -1 && m_NetState != null)
-        Send(new PlaySound(soundID, this));
+      SendSound(soundID, this);
     }
 
     public void SendSound(int soundID, IPoint3D p)
     {
-      if (soundID != -1 && m_NetState != null)
-        Send(new PlaySound(soundID, p));
+      if (soundID == -1)
+        return;
+
+      Packets.SendPlaySound(m_NetState, soundID, p);
     }
 
     public void PlaySound(int soundID)
@@ -5751,15 +5734,11 @@ namespace Server
       if (soundID == -1 || m_Map == null)
         return;
 
-      Packet p = Packet.Acquire(new PlaySound(soundID, this));
-
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
       foreach (NetState state in eable)
         if (state.Mobile.CanSee(this))
-          state.Send(p);
-
-      Packet.Release(p);
+          Packets.SendPlaySound(m_NetState, soundID, this);
 
       eable.Free();
     }
@@ -5869,22 +5848,22 @@ namespace Server
           {
             if (CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location))
             {
-              ns.Send(MobileIncoming.Create(ns, this, m));
+              Packets.SendMobileIncoming(ns, this, m);
 
               if (ns.StygianAbyss)
               {
                 if (m.Poisoned)
-                  ns.Send(new HealthbarPoison(m));
+                  Packets.SendHealthbarPoison(ns, m);
 
                 if (m.Blessed || m.YellowHealthbar)
-                  ns.Send(new HealthbarYellow(m));
+                  Packets.SendHealthbarYellow(ns, m);
               }
 
               if (m.IsDeadBondedPet)
-                ns.Send(new BondedStatus(0, m.Serial, 1));
+                Packets.SendBondStatus(ns, m.Serial, true);
 
               if (ObjectPropertyList.Enabled)
-                ns.Send(m.OPLPacket);
+                m.PropertyList.Send(ns);
             }
           }
 
@@ -6003,7 +5982,7 @@ namespace Server
           Packets.SendRemoveEntity(state, Serial);
         else
         {
-          state.Send(MobileIncoming.Create(state, state.Mobile, this));
+          Packets.SendMobileIncoming(state, state.Mobile, this);
 
           if (IsDeadBondedPet)
             Packets.SendBondStatus(state, Serial, true);
@@ -6156,10 +6135,7 @@ namespace Server
       {
         m_NetState.Sequence = 0;
 
-        if (m_NetState.StygianAbyss)
-          m_NetState.Send(new MobileUpdate(this));
-        else
-          m_NetState.Send(new MobileUpdateOld(this));
+        Packets.SendMobileUpdate(m_NetState, this);
 
         ClearFastwalkStack();
       }
@@ -6204,44 +6180,40 @@ namespace Server
 
               bool inOldRange = Utility.InUpdateRange(oldLocation, m.m_Location);
 
-              if (m.m_NetState != null &&
+              if (m.NetState != null &&
                   (isTeleport && (!m.m_NetState.HighSeas || !NoMoveHS) || !inOldRange) && m.CanSee(this))
               {
-                m.m_NetState.Send(MobileIncoming.Create(m.m_NetState, m, this));
+                Packets.SendMobileIncoming(m.m_NetState, m, this);
 
                 if (m.m_NetState.StygianAbyss)
                 {
-                  //if ( m_Poison != null )
-                  m.m_NetPackets.SendHealthbarPoison(state, this);
-
-                  //if ( m_Blessed || m_YellowHealthbar )
-                  m.m_NetPackets.SendHealthbarYellow(state, this);
+                  Packets.SendHealthbarPoison(m.m_NetState, this);
+                  Packets.SendHealthbarYellow(m.m_NetState, this);
                 }
 
                 if (IsDeadBondedPet)
                   Packets.SendBondStatus(NetState, Serial, true);
 
-                if (ObjectPropertyList.Enabled) m.m_NetPropertyList.Send(state);
+                if (ObjectPropertyList.Enabled)
+                  PropertyList.Send(m.NetState);
               }
 
               if (inOldRange || !CanSee(m))
                 continue;
 
-              ourState.Send(MobileIncoming.Create(ourState, this, m));
+              Packets.SendMobileIncoming(ourState, this, m);
 
               if (ourState.StygianAbyss)
               {
-                //if ( m.Poisoned )
-                ourState.Send(new HealthbarPoison(m));
-
-                //if ( m.Blessed || m.YellowHealthbar )
-                ourState.Send(new HealthbarYellow(m));
+                Packets.SendHealthbarPoison(ourState, m);
+                Packets.SendHealthbarYellow(ourState, m);
               }
 
               if (m.IsDeadBondedPet)
-                ourState.Send(new BondedStatus(0, m.Serial, 1));
+                Packets.SendBondStatus(ourState, Serial, true);
 
-              if (ObjectPropertyList.Enabled) ourState.Send(m.OPLPacket);
+              if (ObjectPropertyList.Enabled)
+                m.PropertyList.Send(ourState);
             }
 
           eeable.Free();
@@ -6255,21 +6227,19 @@ namespace Server
             if ((isTeleport && (!ns.HighSeas || !NoMoveHS) ||
                  !Utility.InUpdateRange(oldLocation, ns.Mobile.Location)) && ns.Mobile.CanSee(this))
             {
-              ns.Send(MobileIncoming.Create(ns, ns.Mobile, this));
+              Packets.SendMobileIncoming(ns, ns.Mobile, this);
 
               if (ns.StygianAbyss)
               {
-                //if ( m_Poison != null )
-                ns.Send(new HealthbarPoison(this));
-
-                //if ( m_Blessed || m_YellowHealthbar )
-                ns.Send(new HealthbarYellow(this));
+                Packets.SendHealthbarPoison(ns, this);
+                Packets.SendHealthbarYellow(ns, this);
               }
 
               if (IsDeadBondedPet)
-                ns.Send(new BondedStatus(0, Serial, 1));
+                Packets.SendBondStatus(ns, Serial, true);
 
-              if (ObjectPropertyList.Enabled) ns.Send(OPLPacket);
+              if (ObjectPropertyList.Enabled)
+                PropertyList.Send(ns);
             }
 
           eable.Free();
@@ -6325,7 +6295,7 @@ namespace Server
       foreach (NetState state in eable)
         if (state.Mobile.CanSee(this))
         {
-          state.Send(MobileIncoming.Create(state, state.Mobile, this));
+          Packets.SendMobileIncoming(state, state.Mobile, this);
 
           if (state.StygianAbyss)
           {
@@ -6346,13 +6316,8 @@ namespace Server
       eable.Free();
     }
 
-    public bool PlaceInBackpack(Item item)
-    {
-      if (item.Deleted)
-        return false;
-
-      return Backpack?.TryDropItem(this, item, false) == true;
-    }
+    public bool PlaceInBackpack(Item item) =>
+      !item.Deleted && Backpack?.TryDropItem(this, item, false) == true;
 
     public bool AddToBackpack(Item item)
     {
@@ -6590,23 +6555,18 @@ namespace Server
 
         if (_processing)
         {
-          lock(m_DeltaQueueR)
-          {
-            m_DeltaQueueR.Enqueue(this);
+          m_DeltaQueueR.Enqueue(this);
 
-            try
-            {
-              using (StreamWriter op = new StreamWriter("delta-recursion.log", true))
-              {
-                op.WriteLine("# {0}", DateTime.UtcNow);
-                op.WriteLine(new StackTrace());
-                op.WriteLine();
-              }
-            }
-            catch
-            {
-              // ignored
-            }
+          try
+          {
+            using StreamWriter op = new StreamWriter("delta-recursion.log", true);
+            op.WriteLine("# {0}", DateTime.UtcNow);
+            op.WriteLine(new StackTrace());
+            op.WriteLine();
+          }
+          catch
+          {
+            // ignored
           }
         }
         else
@@ -6622,19 +6582,26 @@ namespace Server
 
       if (m_DeltaQueue.Count >= 512)
       {
-        Parallel.ForEach(m_DeltaQueue, m => m.ProcessDelta());
-        m_DeltaQueue.Clear();
+        ConcurrentQueue<Mobile> queue = new ConcurrentQueue<Mobile>();
+        queue = Interlocked.Exchange(ref m_DeltaQueue, queue);
+        do
+        {
+          Parallel.For(0, queue.Count,
+            _ =>
+            {
+              if (queue.TryDequeue(out Mobile m))
+                m.ProcessDelta();
+            });
+        } while (queue.Count > 0);
       }
       else
-      {
-        while (m_DeltaQueue.Count > 0)
-          m_DeltaQueue.Dequeue().ProcessDelta();
-      }
+        while (m_DeltaQueue.TryDequeue(out Mobile m))
+          m.ProcessDelta();
 
       _processing = false;
 
-      while (m_DeltaQueueR.Count > 0)
-        m_DeltaQueueR.Dequeue().ProcessDelta();
+      while (m_DeltaQueueR.TryDequeue(out Mobile m))
+        m.ProcessDelta();
     }
 
     public virtual void OnKillsChange(int oldValue)
@@ -6691,10 +6658,10 @@ namespace Server
     public virtual void OnStatsQuery(Mobile from)
     {
       if (from.Map == Map && Utility.InUpdateRange(this, from) && from.CanSee(this))
-        from.Send(new MobileStatus(from, this, m_NetState));
+        Packets.SendMobileStatus(from.NetState, from, this, m_NetState);
 
       if (from == this)
-        Send(new StatLockInfo(this));
+        Packets.SendStatLockInfo(m_NetState, this);
 
       if (Party is IParty ip)
         ip.OnStatsQuery(from, this);
@@ -6706,7 +6673,7 @@ namespace Server
     public virtual void OnSkillsQuery(Mobile from)
     {
       if (from == this)
-        Send(new SkillUpdate(Skills));
+        Packets.SendSkillsUpdate(m_NetState, Skills);
     }
 
     /// <summary>
@@ -6731,13 +6698,8 @@ namespace Server
 
         if (guild != null && (m_DisplayGuildTitle || m_Player && guild.Type != GuildType.Regular))
         {
-          string title = GuildTitle;
+          string title = GuildTitle?.Trim() ?? "";
           string type;
-
-          if (title == null)
-            title = "";
-          else
-            title = title.Trim();
 
           if (guild.Type >= 0 && (int)guild.Type < m_GuildTypes.Length)
             type = m_GuildTypes[(int)guild.Type];
@@ -7415,14 +7377,12 @@ namespace Server
         m_Prompt = newPrompt;
 
         if (newPrompt != null)
-          Send(new UnicodePrompt(newPrompt));
+          Packets.SendUnicodePrompt(m_NetState, newPrompt.Serial);
       }
     }
-
     #endregion
 
     #region Get*Sound
-
     public virtual int GetAngerSound()
     {
       if (BaseSoundID != 0)
@@ -7462,59 +7422,27 @@ namespace Server
       if (m_Body.IsHuman) return Utility.Random(m_Female ? 0x314 : 0x423, m_Female ? 4 : 5);
       return -1;
     }
-
     #endregion
 
     #region Get*InRange
-
     public IPooledEnumerable<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
 
-    public IPooledEnumerable<T> GetItemsInRange<T>(int range) where T : Item
-    {
-      Map map = m_Map;
+    public IPooledEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
+      m_Map?.GetItemsInRange<T>(m_Location, range) ?? Map.NullEnumerable<T>.Instance;
 
-      if (map == null)
-        return Map.NullEnumerable<T>.Instance;
-
-      return map.GetItemsInRange<T>(m_Location, range);
-    }
-
-    public IPooledEnumerable<IEntity> GetObjectsInRange(int range)
-    {
-      Map map = m_Map;
-
-      if (map == null)
-        return Map.NullEnumerable<IEntity>.Instance;
-
-      return map.GetObjectsInRange(m_Location, range);
-    }
+    public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
+      m_Map?.GetObjectsInRange(m_Location, range) ?? Map.NullEnumerable<IEntity>.Instance;
 
     public IPooledEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
 
-    public IPooledEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile
-    {
-      Map map = m_Map;
+    public IPooledEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
+      m_Map?.GetMobilesInRange<T>(m_Location, range) ?? Map.NullEnumerable<T>.Instance;
 
-      if (map == null)
-        return Map.NullEnumerable<T>.Instance;
-
-      return map.GetMobilesInRange<T>(m_Location, range);
-    }
-
-    public IPooledEnumerable<NetState> GetClientsInRange(int range)
-    {
-      Map map = m_Map;
-
-      if (map == null)
-        return Map.NullEnumerable<NetState>.Instance;
-
-      return map.GetClientsInRange(m_Location, range);
-    }
-
+    public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
+      m_Map.GetClientsInRange(m_Location, range) ?? Map.NullEnumerable<NetState>.Instance;
     #endregion
 
     #region Say/SayTo/Emote/Whisper/Yell
-
     public void SayTo(Mobile to, bool ascii, string text)
     {
       PrivateOverheadMessage(MessageType.Regular, SpeechHue, ascii, text, to.NetState);
@@ -7537,12 +7465,12 @@ namespace Server
 
     public void SayTo(Mobile to, int number)
     {
-      to.Send(new MessageLocalized(Serial, Body, MessageType.Regular, SpeechHue, 3, number, Name, ""));
+      Packets.SendMessageLocalized(to?.NetState, Serial, Body, MessageType.Regular, SpeechHue, 3, number, Name, "");
     }
 
     public void SayTo(Mobile to, int number, string args)
     {
-      to.Send(new MessageLocalized(Serial, Body, MessageType.Regular, SpeechHue, 3, number, Name, args));
+      Packets.SendMessageLocalized(to?.NetState, Serial, Body, MessageType.Regular, SpeechHue, 3, number, Name, args);
     }
 
     public void Say(bool ascii, string text)
@@ -7614,21 +7542,16 @@ namespace Server
     {
       PublicOverheadMessage(MessageType.Yell, YellHue, number, args);
     }
-
     #endregion
 
     #region Gumps/Menus
-
     public void SendHuePicker(HuePicker p)
     {
       if (m_NetState != null)
         p.SendTo(m_NetState);
     }
 
-    public Gump FindGump<T>() where T : Gump
-    {
-      return m_NetState?.Gumps.Find(g => g is T);
-    }
+    public Gump FindGump<T>() where T : Gump => m_NetState?.Gumps.Find(g => g is T);
 
     public bool CloseGump<T>() where T : Gump
     {
@@ -7639,8 +7562,7 @@ namespace Server
 
       if (gump != null)
       {
-        // TODO: Recycle CloseGump
-        m_NetState.Send(new CloseGump(gump.TypeID, 0));
+        Packets.SendCloseGump(m_NetState, gump.TypeID, 0);
         m_NetState.RemoveGump(gump);
         gump.OnServerClose(m_NetState);
       }
@@ -7661,8 +7583,7 @@ namespace Server
 
       foreach (Gump gump in gumps)
       {
-        ns.Send(new CloseGump(gump.TypeID, 0));
-
+        Packets.SendCloseGump(ns, gump.TypeID, 0);
         gump.OnServerClose(ns);
       }
 
@@ -8609,7 +8530,7 @@ namespace Server
           m_Hair = new HairInfo(value);
         else if (value <= 0)
           m_Hair = null;
-        else
+        else if (m_Hair != null)
           m_Hair.ItemID = value;
 
         Delta(MobileDelta.Hair);
@@ -8629,7 +8550,7 @@ namespace Server
           m_FacialHair = new FacialHairInfo(value);
         else if (value <= 0)
           m_FacialHair = null;
-        else
+        else if (m_FacialHair != null)
           m_FacialHair.ItemID = value;
 
         Delta(MobileDelta.FacialHair);
@@ -8801,19 +8722,16 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = ascii
-        ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
-        : new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text);
-
-      p.Acquire();
-
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
       foreach (NetState state in eable)
         if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-          state.Send(p);
-
-      Packet.Release(p);
+        {
+          if (ascii)
+            Packets.SendAsciiMessage(state, Serial, Body, type, hue, 3, Name, text);
+          else
+            Packets.SendUnicodeMessage(state, Serial, Body, type, hue, 3, Language, Name, text);
+        }
 
       eable.Free();
     }
@@ -8823,15 +8741,11 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
-
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
       foreach (NetState state in eable)
         if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-          state.Send(p);
-
-      Packet.Release(p);
+          Packets.SendMessageLocalized(state, Serial, Body, type, hue, 3, number, Name, args);
 
       eable.Free();
     }
@@ -8842,16 +8756,12 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = Packet.Acquire(new MessageLocalizedAffix(Serial, Body, type, hue, 3, number, Name, affixType,
-        affix, args));
-
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
       foreach (NetState state in eable)
         if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-          state.Send(p);
-
-      Packet.Release(p);
+          Packets.SendMessageLocalizedAffix(state, Serial, Body, type, hue, 3, number, Name, affixType,
+            affix, args);
 
       eable.Free();
     }
@@ -8862,9 +8772,9 @@ namespace Server
         return;
 
       if (ascii)
-        state.Send(new AsciiMessage(Serial, Body, type, hue, 3, Name, text));
+        Packets.SendAsciiMessage(state, Serial, Body, type, hue, 3, Name, text);
       else
-        state.Send(new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text));
+        Packets.SendUnicodeMessage(state, Serial, Body, type, hue, 3, Language, Name, text);
     }
 
     public void PrivateOverheadMessage(MessageType type, int hue, int number, NetState state)
@@ -8874,7 +8784,7 @@ namespace Server
 
     public void PrivateOverheadMessage(MessageType type, int hue, int number, string args, NetState state)
     {
-      state?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
+      Packets.SendMessageLocalized(state, Serial, Body, type, hue, 3, number, Name, args);
     }
 
     public void LocalOverheadMessage(MessageType type, int hue, bool ascii, string text)
@@ -8885,14 +8795,14 @@ namespace Server
         return;
 
       if (ascii)
-        ns.Send(new AsciiMessage(Serial, Body, type, hue, 3, Name, text));
+        Packets.SendAsciiMessage(ns, Serial, Body, type, hue, 3, Name, text);
       else
-        ns.Send(new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text));
+        Packets.SendUnicodeMessage(ns, Serial, Body, type, hue, 3, Language, Name, text);
     }
 
     public void LocalOverheadMessage(MessageType type, int hue, int number, string args = "")
     {
-      m_NetState?.Send(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
+      Packets.SendMessageLocalized(m_NetState, Serial, Body, type, hue, 3, number, Name, args);
     }
 
     public void NonlocalOverheadMessage(MessageType type, int hue, int number, string args = "")
@@ -8900,15 +8810,11 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = Packet.Acquire(new MessageLocalized(Serial, Body, type, hue, 3, number, Name, args));
-
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
       foreach (NetState state in eable)
         if (state != m_NetState && state.Mobile.CanSee(this))
-          state.Send(p);
-
-      Packet.Release(p);
+          Packets.SendMessageLocalized(state, Serial, Body, type, hue, 3, number, Name, args);
 
       eable.Free();
     }
@@ -8918,19 +8824,16 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = ascii
-        ? (Packet)new AsciiMessage(Serial, Body, type, hue, 3, Name, text)
-        : new UnicodeMessage(Serial, Body, type, hue, 3, Language, Name, text);
-
-      p.Acquire();
-
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
 
       foreach (NetState state in eable)
         if (state != m_NetState && state.Mobile.CanSee(this))
-          state.Send(p);
-
-      Packet.Release(p);
+        {
+          if (ascii)
+            Packets.SendAsciiMessage(state, Serial, Body, type, hue, 3, Name, text);
+          else
+            Packets.SendUnicodeMessage(state, Serial, Body, type, hue, 3, Language, Name, text);
+        }
 
       eable.Free();
     }
@@ -8941,27 +8844,25 @@ namespace Server
 
     public void SendLocalizedMessage(int number)
     {
-      m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
+      Packets.SendMessageLocalized(m_NetState, number);
     }
 
     public void SendLocalizedMessage(int number, string args, int hue = 0x3B2)
     {
       if (hue == 0x3B2 && string.IsNullOrEmpty(args))
-        m_NetState?.Send(MessageLocalized.InstantiateGeneric(number));
+        Packets.SendMessageLocalized(m_NetState, number);
       else
-        m_NetState?.Send(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
+        Packets.SendMessageLocalized(m_NetState, Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args);
     }
 
     public void SendLocalizedMessage(int number, bool append, string affix, string args = "", int hue = 0x3B2)
     {
-      m_NetState?.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System",
-        (append ? AffixType.Append : AffixType.Prepend) | AffixType.System, affix, args));
+      Packets.SendMessageLocalizedAffix(m_NetState, Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System",
+        (append ? AffixType.Append : AffixType.Prepend) | AffixType.System, affix, args);
     }
-
     #endregion
 
     #region Send[ASCII]Message
-
     public void SendMessage(string text)
     {
       SendMessage(0x3B2, text);
@@ -8974,7 +8875,7 @@ namespace Server
 
     public void SendMessage(int hue, string text)
     {
-      m_NetState?.Send(new UnicodeMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text));
+      Packets.SendUnicodeMessage(m_NetState, Serial.MinusOne, -1, MessageType.Regular, hue, 3, "ENU", "System", text);
     }
 
     public void SendMessage(int hue, string format, params object[] args)
@@ -8994,18 +8895,16 @@ namespace Server
 
     public void SendAsciiMessage(int hue, string text)
     {
-      m_NetState?.Send(new AsciiMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text));
+      Packets.SendAsciiMessage(m_NetState, Serial.MinusOne, -1, MessageType.Regular, hue, 3, "System", text);
     }
 
     public void SendAsciiMessage(int hue, string format, params object[] args)
     {
       SendAsciiMessage(hue, string.Format(format, args));
     }
-
     #endregion
 
     #region InRange
-
     public bool InRange(Point2D p, int range) =>
       p.m_X >= m_Location.m_X - range
       && p.m_X <= m_Location.m_X + range
@@ -9023,12 +8922,10 @@ namespace Server
       && p.X <= m_Location.m_X + range
       && p.Y >= m_Location.m_Y - range
       && p.Y <= m_Location.m_Y + range;
-
     #endregion
 
     #region OnDoubleClick[..]
-
-	  /// <summary>
+    /// <summary>
 	  ///   Overridable. Event invoked when the Mobile is double clicked. By default, this method can either dismount or open the
 	  ///   paperdoll.
 	  ///   <seealso cref="CanPaperdollBeOpenedBy" />
@@ -9079,27 +8976,17 @@ namespace Server
       if (CanPaperdollBeOpenedBy(from))
         DisplayPaperdollTo(from);
     }
-
     #endregion
 
     #region Armor
-
     public Item ShieldArmor => FindItemOnLayer(Layer.TwoHanded);
-
     public Item NeckArmor => FindItemOnLayer(Layer.Neck);
-
     public Item HandArmor => FindItemOnLayer(Layer.Gloves);
-
     public Item HeadArmor => FindItemOnLayer(Layer.Helm);
-
     public Item ArmsArmor => FindItemOnLayer(Layer.Arms);
-
     public Item LegsArmor => FindItemOnLayer(Layer.InnerLegs) ?? FindItemOnLayer(Layer.Pants);
-
     public Item ChestArmor => FindItemOnLayer(Layer.InnerTorso) ?? FindItemOnLayer(Layer.Shirt);
-
     public Item Talisman => FindItemOnLayer(Layer.Talisman);
-
     #endregion
   }
 }

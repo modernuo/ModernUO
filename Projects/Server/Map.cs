@@ -47,7 +47,7 @@ namespace Server
     void Free();
   }
 
-  public interface IPooledEnumerable<T> : IPooledEnumerable, IEnumerable<T>
+  public interface IPooledEnumerable<out T> : IPooledEnumerable, IEnumerable<T>
   {
   }
 
@@ -90,21 +90,15 @@ namespace Server
       return eable.Where(bounds.Contains);
     }
 
-    public static IEnumerable<T> SelectMobiles<T>(Sector s, Rectangle2D bounds) where T : Mobile
-    {
-      return s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o));
-    }
+    public static IEnumerable<T> SelectMobiles<T>(Sector s, Rectangle2D bounds) where T : Mobile =>
+      s.Mobiles.OfType<T>().Where(o => !o.Deleted && bounds.Contains(o));
 
-    public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item
-    {
-      return s.Items.OfType<T>()
+    public static IEnumerable<T> SelectItems<T>(Sector s, Rectangle2D bounds) where T : Item =>
+      s.Items.OfType<T>()
         .Where(o => o.Deleted == false && o.Parent == null && bounds.Contains(o));
-    }
 
-    public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds)
-    {
-      return s.Multis.Where(o => o?.Deleted == false && bounds.Contains(o.Location));
-    }
+    public static IEnumerable<BaseMulti> SelectMultis(Sector s, Rectangle2D bounds) =>
+      s.Multis.Where(o => o?.Deleted == false && bounds.Contains(o.Location));
 
     public static IEnumerable<StaticTile[]> SelectMultiTiles(Sector s, Rectangle2D bounds)
     {
@@ -112,26 +106,23 @@ namespace Server
       {
         MultiComponentList c = o.Components;
 
-        int x, y, xo, yo;
-        StaticTile[] t, r;
-
-        for (x = bounds.Start.X; x < bounds.End.X; x++)
+        for (int x = bounds.Start.X; x < bounds.End.X; x++)
         {
-          xo = x - (o.X + c.Min.X);
+          var xo = x - (o.X + c.Min.X);
 
           if (xo < 0 || xo >= c.Width) continue;
 
-          for (y = bounds.Start.Y; y < bounds.End.Y; y++)
+          for (int y = bounds.Start.Y; y < bounds.End.Y; y++)
           {
-            yo = y - (o.Y + c.Min.Y);
+            var yo = y - (o.Y + c.Min.Y);
 
             if (yo < 0 || yo >= c.Height) continue;
 
-            t = c.Tiles[xo][yo];
+            var t = c.Tiles[xo][yo];
 
             if (t.Length <= 0) continue;
 
-            r = new StaticTile[t.Length];
+            var r = new StaticTile[t.Length];
 
             for (int i = 0; i < t.Length; i++)
             {
@@ -441,9 +432,7 @@ namespace Server
       if (map == null || map == Internal || x < 0 || x > map.Width || y < 0 || y > map.Height)
         return _EmptyFixItems;
 
-      List<Item> pool = null;
-
-      if (!_FixPool.TryDequeue(out pool) || pool == null)
+      if (!_FixPool.TryDequeue(out List<Item> pool) || pool == null)
         pool = new List<Item>(128); // Arbitrary limit
 
       IPooledEnumerable<Item> eable = map.GetItemsInRange(new Point3D(x, y, 0), 0);
@@ -1009,7 +998,6 @@ namespace Server
     public IPooledEnumerable<Mobile> GetMobilesInBounds(Rectangle2D bounds) => GetMobilesInBounds<Mobile>(bounds);
 
     public IPooledEnumerable<T> GetMobilesInBounds<T>(Rectangle2D bounds) where T : Mobile => PooledEnumeration.GetMobiles<T>(this, bounds);
-
     #endregion
 
     #region CanFit

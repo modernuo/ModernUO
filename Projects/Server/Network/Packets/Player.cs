@@ -58,7 +58,7 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    public static void SendUnicodePrompt(NetState ns, Serial player, Serial message)
+    public static void SendUnicodePrompt(NetState ns, Serial message)
     {
       if (ns == null)
         return;
@@ -67,7 +67,7 @@ namespace Server.Network
       w.Write((byte)0xC2); // Packet ID
       w.Write((short)21); // Length
 
-      w.Write(player);
+      w.Write(message); // Should be Player serial?
       w.Write(message);
       // w.Position += 4; w.Write(0);
       // w.Position += 4; w.Write(0);

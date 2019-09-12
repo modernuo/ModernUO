@@ -22,7 +22,7 @@ namespace Server
 {
   public abstract class Prompt
   {
-    private static int m_Serials;
+    private static Serial m_Serials;
 
     protected Prompt()
     {
@@ -32,7 +32,7 @@ namespace Server
       } while (Serial == 0);
     }
 
-    public int Serial{ get; }
+    public Serial Serial{ get; }
 
     public virtual void OnCancel(Mobile from)
     {
