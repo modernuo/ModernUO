@@ -386,7 +386,7 @@ namespace Server.Network
 
     public void LaunchBrowser(string url)
     {
-      NetworkPackets.SendMessageLocalized(this, Serial.MinusOne, -1, MessageType.Label, 0x35, 3, 501231, "", "");
+      NetworkPackets.SendMessageLocalized(this, Serial.MinusOne, -1, MessageType.Label, 0x35, 3, 501231);
       NetworkPackets.SendLaunchBrowser(this, url);
     }
 

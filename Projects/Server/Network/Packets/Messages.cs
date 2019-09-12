@@ -44,8 +44,8 @@ namespace Server.Network
       ns.Send(packet);
     }
 
-    public static void SendMessageLocalized(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
-      string args)
+    public static void SendMessageLocalized(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, int number, string name = "",
+      string args = "")
     {
       if (ns == null)
         return;
@@ -71,7 +71,7 @@ namespace Server.Network
     }
 
     public static void SendMessageLocalizedAffix(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, int number,
-      string name, AffixType affixType, string affix, string args)
+      string name = "", AffixType affixType = AffixType.System, string affix = "", string args = "")
     {
       if (ns == null)
         return;

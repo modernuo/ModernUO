@@ -183,7 +183,7 @@ namespace Server.Network
     {
       string s;
 
-      if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true))
+      if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0'))
         s = Utility.UTF8.GetString(span.Length > fixedLength ? span.Slice(0, fixedLength) : span);
       else
       {
@@ -205,7 +205,7 @@ namespace Server.Network
     {
       string s;
 
-      if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true))
+      if (m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0'))
         s = Utility.UTF8.GetString(span);
       else
       {
@@ -224,7 +224,7 @@ namespace Server.Network
 
     public string ReadUTF8String() =>
       Utility.UTF8.GetString(
-        m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0', true) ? span :
+        m_Reader.TryReadTo(out ReadOnlySpan<byte> span, (byte)'\0') ? span :
           m_Reader.Sequence.Slice(m_Reader.Position, m_Reader.Remaining).ToArray()
       );
 

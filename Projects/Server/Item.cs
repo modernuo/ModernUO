@@ -1808,17 +1808,17 @@ namespace Server
 
     public void LabelTo(Mobile to, int number)
     {
-      to.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", ""));
+      Packets.SendMessageLocalized(to?.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number);
     }
 
     public void LabelTo(Mobile to, int number, string args)
     {
-      to.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", args));
+      Packets.SendMessageLocalized(to?.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", args);
     }
 
     public void LabelTo(Mobile to, string text)
     {
-      to.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", text));
+      Packets.SendUnicodeMessage(to?.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "", text);
     }
 
     public void LabelTo(Mobile to, string format, params object[] args)
