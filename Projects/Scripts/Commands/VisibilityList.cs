@@ -107,7 +107,7 @@ namespace Server.Commands
           pm.SendMessage("{0} has been added to your visibility list.", targ.Name);
         }
 
-        if (Utility.InUpdateRange(targ, @from))
+        if (Utility.InUpdateRange(targ, from))
         {
           NetState ns = targ.NetState;
 

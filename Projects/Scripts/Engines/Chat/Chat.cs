@@ -6,7 +6,7 @@ using Server.Network;
 
 namespace Server.Engines.Chat
 {
-  public class ChatSystem
+  public static class ChatSystem
   {
     public static bool Enabled{ get; set; } = true;
 
@@ -18,7 +18,7 @@ namespace Server.Engines.Chat
 
     public static void SendCommandTo(Mobile to, ChatCommand type, string param1 = null, string param2 = null)
     {
-      to?.Send(new ChatMessagePacket(null, (int)type + 20, param1, param2));
+      ChatPackets.SendChatMessage(to?.NetState, null, (int)type + 20, param1, param2);
     }
 
     public static void OpenChatWindowRequest(NetState state, PacketReader pvSrc)
@@ -137,9 +137,7 @@ namespace Server.Engines.Chat
             handler.Callback(user, channel, param);
         }
         else
-        {
           Console.WriteLine("Client: {0}: Unknown chat action 0x{1:X}: {2}", state, actionID, param);
-        }
       }
       catch (Exception e)
       {

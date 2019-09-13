@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Accounting;
 using Server.Engines.Help;
 using Server.Factions;
@@ -185,10 +186,7 @@ namespace Server.Commands.Generic
 
     public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
-      if (list.Count == 1)
-        AddResponse("There is one matching object.");
-      else
-        AddResponse($"There are {list.Count} matching objects.");
+      AddResponse(list.Count == 1 ? "There is one matching object." : $"There are {list.Count} matching objects.");
     }
   }
 
@@ -234,9 +232,7 @@ namespace Server.Commands.Generic
           NetState ns = mob.NetState;
 
           if (ns == null)
-          {
             LogFailure("That player is not online.");
-          }
           else
           {
             string url = e.GetString(0);
@@ -244,10 +240,7 @@ namespace Server.Commands.Generic
             CommandLogging.WriteLine(from, "{0} {1} requesting to open web browser of {2} to {3}",
               from.AccessLevel, CommandLogging.Format(from), CommandLogging.Format(mob), url);
 
-            if (echo)
-              AddResponse("Awaiting user confirmation...");
-            else
-              AddResponse("Open web browser request sent.");
+            AddResponse(echo ? "Awaiting user confirmation..." : "Open web browser request sent.");
 
             mob.SendGump(new WarningGump(1060637, 30720,
               $"A game master is requesting to open your web browser to the following URL:<br>{url}", 0xFFC000,
@@ -255,14 +248,10 @@ namespace Server.Commands.Generic
           }
         }
         else
-        {
           LogFailure("That is not a player.");
-        }
       }
       else
-      {
         LogFailure("Format: OpenBrowser <url>");
-      }
     }
 
     public override void Execute(CommandEventArgs e, object obj)
@@ -336,7 +325,7 @@ namespace Server.Commands.Generic
 
         CommandLogging.WriteLine(from, "{0} {1} playing sound {2} for {3}", from.AccessLevel,
           CommandLogging.Format(from), index, CommandLogging.Format(mob));
-        mob.Send(new PlaySound(index, mob.Location));
+        Packets.SendPlaySound(mob.NetState, index, mob.Location);
       }
       else
       {
@@ -458,14 +447,10 @@ namespace Server.Commands.Generic
             e.Mobile.SendGump(new AddGump(e.Mobile, match, 0, Type.EmptyTypes, false));
           }
           else
-          {
             e.Mobile.SendGump(new AddGump(e.Mobile, match, 0, AddGump.Match(match).ToArray(), true));
-          }
         }
         else
-        {
           return true;
-        }
       }
       else
       {
@@ -860,13 +845,9 @@ namespace Server.Commands.Generic
       if (m_Value)
       {
         if (!mob.Alive)
-        {
           LogFailure("They are already dead.");
-        }
         else if (!mob.CanBeDamaged())
-        {
           LogFailure("They cannot be harmed.");
-        }
         else
         {
           CommandLogging.WriteLine(from, "{0} {1} killing {2}", from.AccessLevel, CommandLogging.Format(from),
@@ -960,10 +941,7 @@ namespace Server.Commands.Generic
       m.PlaySound(0x228);
       m.Hidden = m_Value;
 
-      if (m_Value)
-        AddResponse("They have been hidden.");
-      else
-        AddResponse("They have been revealed.");
+      AddResponse(m_Value ? "They have been hidden." : "They have been revealed.");
     }
   }
 
@@ -1002,9 +980,7 @@ namespace Server.Commands.Generic
         }
       }
       else
-      {
         LogFailure("They are not online.");
-      }
     }
   }
 
@@ -1098,12 +1074,11 @@ namespace Server.Commands.Generic
         return;
       }
 
-      foreach (BaseHouse house in BaseHouse.AllHouses)
-        if (house.HasSecureItem(item) || house.HasLockedDownItem(item))
-        {
-          e.Mobile.SendGump(new PropertiesGump(e.Mobile, house));
-          return;
-        }
+      foreach (BaseHouse house in BaseHouse.AllHouses.Where(house => house.HasSecureItem(item) || house.HasLockedDownItem(item)))
+      {
+        e.Mobile.SendGump(new PropertiesGump(e.Mobile, house));
+        return;
+      }
 
       LogFailure("No house was found.");
     }
