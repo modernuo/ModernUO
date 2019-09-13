@@ -1472,7 +1472,7 @@ namespace Server.Network
       {
         ++seq;
 
-        if (seq == 256)
+        if (seq == 0)
           seq = 1;
 
         state.Sequence = seq;
