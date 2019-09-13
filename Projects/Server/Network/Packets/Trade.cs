@@ -48,6 +48,23 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
+    public static void SendUpdateSecureTrade(NetState ns, Serial cont, bool fromAccepted, bool toAccepted)
+    {
+      if (ns == null)
+        return;
+
+      SpanWriter w = new SpanWriter(stackalloc byte[17]);
+      w.Write((byte)0x6F); // Packet ID
+      w.Write((ushort)17); // Length
+
+      w.Write((byte)TradeFlag.Update);
+      w.Write(cont);
+      w.Write(fromAccepted);
+      w.Write(toAccepted);
+
+      ns.Send(w.RawSpan);
+    }
+
     public static void SendUpdateSecureTrade(NetState ns, Serial cont, TradeFlag flag, int first, int second)
     {
       if (ns == null)
@@ -70,6 +87,17 @@ namespace Server.Network
       if (ns == null)
         return;
 
+      if (ns.ContainerGridLines)
+        SendSecureTradeEquipNew(ns, item, m);
+      else
+        SendSecureTradeEquipOld(ns, item, m);
+    }
+
+    public static void SendSecureTradeEquipOld(NetState ns, Item item, Serial m)
+    {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[20]);
       w.Write((byte)0x25); // Packet ID
 
@@ -85,7 +113,7 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    public static void SendSecureTradeEquip6017(NetState ns, Item item, Serial m)
+    public static void SendSecureTradeEquipNew(NetState ns, Item item, Serial m)
     {
       if (ns == null)
         return;
