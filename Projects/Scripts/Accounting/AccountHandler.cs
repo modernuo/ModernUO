@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using Server.Accounting;
-using Server.Commands;
 using Server.Engines.Help;
 using Server.Network;
 using Server.Regions;
@@ -200,38 +199,27 @@ namespace Server.Misc
       if (!(state.Account is Account acct))
       {
         state.Dispose();
+        return;
       }
-      else if (index < 0 || index >= acct.Length)
-      {
-        state.Send(new DeleteResult(DeleteResultType.BadRequest));
-        state.Send(new CharacterListUpdate(acct));
-      }
+
+      DeleteResultType deleteType;
+
+      if (index < 0 || index >= acct.Length)
+        deleteType = DeleteResultType.BadRequest;
       else
       {
         Mobile m = acct[index];
 
         if (m == null)
-        {
-          state.Send(new DeleteResult(DeleteResultType.CharNotExist));
-          state.Send(new CharacterListUpdate(acct));
-        }
+          deleteType = DeleteResultType.CharNotExist;
         else if (m.NetState != null)
-        {
-          state.Send(new DeleteResult(DeleteResultType.CharBeingPlayed));
-          state.Send(new CharacterListUpdate(acct));
-        }
+          deleteType = DeleteResultType.CharBeingPlayed;
         else if (RestrictDeletion && DateTime.UtcNow < m.CreationTime + DeleteDelay)
-        {
-          state.Send(new DeleteResult(DeleteResultType.CharTooYoung));
-          state.Send(new CharacterListUpdate(acct));
-        }
+          deleteType = DeleteResultType.CharTooYoung;
         else if (m.AccessLevel == AccessLevel.Player &&
                  Region.Find(m.LogoutLocation, m.LogoutMap).IsPartOf<Jail>()
         ) //Don't need to check current location, if netstate is null, they're logged out
-        {
-          state.Send(new DeleteResult(DeleteResultType.BadRequest));
-          state.Send(new CharacterListUpdate(acct));
-        }
+          deleteType = DeleteResultType.BadRequest;
         else
         {
           Console.WriteLine("Client: {0}: Deleting character {1} (0x{2:X})", state, index, m.Serial.Value);
@@ -239,9 +227,13 @@ namespace Server.Misc
           acct.Comments.Add(new AccountComment("System", $"Character #{index + 1} {m} deleted by {state}"));
 
           m.Delete();
-          state.Send(new CharacterListUpdate(acct));
+          Packets.SendCharacterListUpdate(state, acct);
+          return;
         }
       }
+
+      Packets.SendDeleteResult(state, deleteType);
+      Packets.SendCharacterListUpdate(state, acct);
     }
 
     public static bool CanCreate(IPAddress ip)
