@@ -1,5 +1,3 @@
-using Server.Network;
-
 namespace Server.Engines.PartySystem
 {
   public sealed class PartyEmptyList : Packet

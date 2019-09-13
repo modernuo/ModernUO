@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Server.Items;
 using Server.Multis;
 using Server.Network;
-using Server.Prompts;
 using Server.Spells.Chivalry;
 using Server.Spells.Fourth;
 using Server.Spells.Seventh;

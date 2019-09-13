@@ -5,7 +5,6 @@ using Server.Factions;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Network;
-using Server.Prompts;
 using Server.Regions;
 using Server.Spells;
 using Server.Targeting;

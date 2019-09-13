@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server.Network;
 using Server.Spells;
 using Server.Targeting;
 

@@ -10,8 +10,6 @@ using Server.Items;
 using Server.Misc;
 using Server.Multis;
 using Server.Network;
-using Server.Prompts;
-using Server.RemoteAdmin;
 
 namespace Server.Gumps
 {

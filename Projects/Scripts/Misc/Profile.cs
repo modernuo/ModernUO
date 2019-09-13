@@ -1,6 +1,5 @@
 using System;
 using Server.Accounting;
-using Server.Network;
 
 namespace Server.Misc
 {

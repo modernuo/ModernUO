@@ -4,7 +4,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Server.Gumps;
 using Server.Network;
-using Server.Prompts;
 
 namespace Server.Misc
 {

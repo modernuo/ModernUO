@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Server.Engines.ConPVP;
 using Server.Items;
-using Server.Network;
 using Server.Spells.Bushido;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;

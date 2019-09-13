@@ -1,5 +1,3 @@
-using Server.Prompts;
-
 namespace Server.Engines.Help
 {
   public class PagePrompt : Prompt

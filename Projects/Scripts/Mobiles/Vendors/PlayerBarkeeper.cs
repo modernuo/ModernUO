@@ -5,7 +5,6 @@ using Server.Gumps;
 using Server.Items;
 using Server.Multis;
 using Server.Network;
-using Server.Prompts;
 
 namespace Server.Mobiles
 {

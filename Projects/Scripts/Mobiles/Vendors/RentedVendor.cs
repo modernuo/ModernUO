@@ -4,7 +4,6 @@ using Server.ContextMenus;
 using Server.Gumps;
 using Server.Misc;
 using Server.Multis;
-using Server.Prompts;
 
 namespace Server.Mobiles
 {

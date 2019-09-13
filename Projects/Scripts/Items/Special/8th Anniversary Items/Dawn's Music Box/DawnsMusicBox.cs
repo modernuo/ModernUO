@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Server.ContextMenus;
 using Server.Gumps;
 using Server.Multis;
-using Server.Network;
 
 namespace Server.Items
 {

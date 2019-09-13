@@ -1,6 +1,5 @@
 using Server.Guilds;
 using Server.Multis;
-using Server.Prompts;
 
 namespace Server.Items
 {

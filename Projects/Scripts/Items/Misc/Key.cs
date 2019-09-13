@@ -1,5 +1,4 @@
 using Server.Network;
-using Server.Prompts;
 using Server.Targeting;
 
 namespace Server.Items

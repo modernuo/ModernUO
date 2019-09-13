@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Server.Engines.Craft;
 using Server.Misc;
-using Server.Network;
 
 namespace Server.Items
 {

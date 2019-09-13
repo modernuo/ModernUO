@@ -8,7 +8,6 @@ using Server.Gumps;
 using Server.Items;
 using Server.Misc;
 using Server.Multis;
-using Server.Prompts;
 using Server.Targeting;
 
 namespace Server.Mobiles
