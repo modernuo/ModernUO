@@ -5,10 +5,7 @@ namespace Server.Items
   public class BambooScreen : Item
   {
     [Constructible]
-    public BambooScreen() : base(0x24D0)
-    {
-      Weight = 20.0;
-    }
+    public BambooScreen() : base(0x24D0) => Weight = 20.0;
 
     public BambooScreen(Serial serial) : base(serial)
     {
@@ -34,10 +31,7 @@ namespace Server.Items
   public class ShojiScreen : Item
   {
     [Constructible]
-    public ShojiScreen() : base(0x24CB)
-    {
-      Weight = 20.0;
-    }
+    public ShojiScreen() : base(0x24CB) => Weight = 20.0;
 
     public ShojiScreen(Serial serial) : base(serial)
     {

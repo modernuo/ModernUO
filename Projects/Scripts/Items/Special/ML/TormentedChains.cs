@@ -3,10 +3,7 @@ namespace Server.Items
   public class TormentedChains : Item
   {
     [Constructible]
-    public TormentedChains() : base(Utility.Random(6663, 2))
-    {
-      Weight = 1.0;
-    }
+    public TormentedChains() : base(Utility.Random(6663, 2)) => Weight = 1.0;
 
     public TormentedChains(Serial serial) : base(serial)
     {

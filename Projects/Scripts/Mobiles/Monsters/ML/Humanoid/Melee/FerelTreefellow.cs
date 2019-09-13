@@ -48,25 +48,13 @@ namespace Server.Mobiles
 
     public override bool BleedImmune => true;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.Dismount;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
-    public override int GetIdleSound()
-    {
-      return 443;
-    }
+    public override int GetIdleSound() => 443;
 
-    public override int GetDeathSound()
-    {
-      return 31;
-    }
+    public override int GetDeathSound() => 31;
 
-    public override int GetAttackSound()
-    {
-      return 672;
-    }
+    public override int GetAttackSound() => 672;
 
     public override void GenerateLoot()
     {

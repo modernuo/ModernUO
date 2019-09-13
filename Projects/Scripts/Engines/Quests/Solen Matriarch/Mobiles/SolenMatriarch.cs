@@ -27,10 +27,7 @@ namespace Server.Engines.Quests.Matriarch
     public override string DefaultName => "the solen matriarch";
     public override bool DisallowAllMoves => false;
 
-    public override int GetIdleSound()
-    {
-      return 0x10D;
-    }
+    public override int GetIdleSound() => 0x10D;
 
     public override bool CanTalkTo(PlayerMobile to)
     {

@@ -29,26 +29,17 @@ namespace Server
 				List[i] = Utility.Intern( List[i].Trim() );
 		}
 
-		public string GetRandomName()
-		{
-			if ( List.Length > 0 )
-				return List[Utility.Random( List.Length )];
+		public string GetRandomName() => List.Length > 0 ? List[Utility.Random( List.Length )] : "";
 
-			return "";
-		}
-
-		public static NameList GetNameList( string type )
+    public static NameList GetNameList( string type )
 		{
 			m_Table.TryGetValue( type, out NameList n );
 			return n;
 		}
 
-		public static string RandomName( string type )
-		{
-			return GetNameList( type )?.GetRandomName() ?? "";
-		}
+		public static string RandomName( string type ) => GetNameList( type )?.GetRandomName() ?? "";
 
-		private static Dictionary<string, NameList> m_Table;
+    private static Dictionary<string, NameList> m_Table;
 
 		static NameList()
 		{

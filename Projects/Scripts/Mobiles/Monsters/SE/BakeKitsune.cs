@@ -114,30 +114,15 @@ namespace Server.Mobiles
       m_Table[defender] = timer;
     }
 
-    public override int GetAngerSound()
-    {
-      return 0x4DE;
-    }
+    public override int GetAngerSound() => 0x4DE;
 
-    public override int GetIdleSound()
-    {
-      return 0x4DD;
-    }
+    public override int GetIdleSound() => 0x4DD;
 
-    public override int GetAttackSound()
-    {
-      return 0x4DC;
-    }
+    public override int GetAttackSound() => 0x4DC;
 
-    public override int GetHurtSound()
-    {
-      return 0x4DF;
-    }
+    public override int GetHurtSound() => 0x4DF;
 
-    public override int GetDeathSound()
-    {
-      return 0x4DB;
-    }
+    public override int GetDeathSound() => 0x4DB;
 
     public override void Serialize(GenericWriter writer)
     {

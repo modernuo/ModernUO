@@ -2,16 +2,10 @@ namespace Server.Items
 {
   public class Static : Item
   {
-    public Static() : base(0x80)
-    {
-      Movable = false;
-    }
+    public Static() : base(0x80) => Movable = false;
 
     [Constructible]
-    public Static(int itemID) : base(itemID)
-    {
-      Movable = false;
-    }
+    public Static(int itemID) : base(itemID) => Movable = false;
 
     [Constructible]
     public Static(int itemID, int count) : this(Utility.Random(itemID, count))
@@ -50,10 +44,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public LocalizedStatic(int itemID, int labelNumber) : base(itemID)
-    {
-      m_LabelNumber = labelNumber;
-    }
+    public LocalizedStatic(int itemID, int labelNumber) : base(itemID) => m_LabelNumber = labelNumber;
 
     public LocalizedStatic(Serial serial) : base(serial)
     {

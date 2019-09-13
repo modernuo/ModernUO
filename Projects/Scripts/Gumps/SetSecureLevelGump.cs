@@ -56,15 +56,9 @@ namespace Server.Gumps
       AddHtmlLocalized(45, 130 + offset, 150, 20, 1061626, GetColor(SecureLevel.Anyone)); // Anyone
     }
 
-    public int GetColor(SecureLevel level)
-    {
-      return m_Info.Level == level ? 0x7F18 : 0x7FFF;
-    }
+    public int GetColor(SecureLevel level) => m_Info.Level == level ? 0x7F18 : 0x7FFF;
 
-    public int GetFirstID(SecureLevel level)
-    {
-      return m_Info.Level == level ? 4006 : 4005;
-    }
+    public int GetFirstID(SecureLevel level) => m_Info.Level == level ? 4006 : 4005;
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {

@@ -5,21 +5,13 @@ namespace Server.Engines.Quests.Haven
   public class QuestDaemonBlood : QuestItem
   {
     [Constructible]
-    public QuestDaemonBlood() : base(0xF7D)
-    {
-      Weight = 1.0;
-    }
+    public QuestDaemonBlood() : base(0xF7D) => Weight = 1.0;
 
     public QuestDaemonBlood(Serial serial) : base(serial)
     {
     }
 
-    public override bool CanDrop(PlayerMobile player)
-    {
-      return !(player.Quest is UzeraanTurmoilQuest);
-
-      /*return !qs.IsObjectiveInProgress( typeof( ReturnDaemonBloodObjective ) );*/
-    }
+    public override bool CanDrop(PlayerMobile player) => !(player.Quest is UzeraanTurmoilQuest);
 
     public override void Serialize(GenericWriter writer)
     {

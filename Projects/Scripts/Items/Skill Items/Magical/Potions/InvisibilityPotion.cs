@@ -8,10 +8,7 @@ namespace Server.Items
     private static Dictionary<Mobile, Timer> m_Table = new Dictionary<Mobile, Timer>();
 
     [Constructible]
-    public InvisibilityPotion() : base(0xF0A, PotionEffect.Invisibility)
-    {
-      Hue = 0x48D;
-    }
+    public InvisibilityPotion() : base(0xF0A, PotionEffect.Invisibility) => Hue = 0x48D;
 
     public InvisibilityPotion(Serial serial) : base(serial)
     {
@@ -60,10 +57,7 @@ namespace Server.Items
       RemoveTimer(m);
     }
 
-    public static bool HasTimer(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool HasTimer(Mobile m) => m_Table.ContainsKey(m);
 
     public static void RemoveTimer(Mobile m, bool interrupted = false)
     {

@@ -6,15 +6,13 @@ namespace Server.Ethics.Hero
 {
   public sealed class HolyItem : Power
   {
-    public HolyItem()
-    {
+    public HolyItem() =>
       m_Definition = new PowerDefinition(
         5,
         "Holy Item",
         "Vidda K'balc",
         ""
       );
-    }
 
     public override void BeginInvoke(Player from)
     {

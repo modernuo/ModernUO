@@ -155,10 +155,7 @@ namespace Server.Items
   public class AwesomeDisturbingPortraitDeed : BaseAddonDeed
   {
     [Constructible]
-    public AwesomeDisturbingPortraitDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public AwesomeDisturbingPortraitDeed() => LootType = LootType.Blessed;
 
     public AwesomeDisturbingPortraitDeed(Serial serial) : base(serial)
     {

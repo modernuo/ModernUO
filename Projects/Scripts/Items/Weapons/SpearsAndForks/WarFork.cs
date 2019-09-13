@@ -4,10 +4,7 @@ namespace Server.Items
   public class WarFork : BaseSpear
   {
     [Constructible]
-    public WarFork() : base(0x1405)
-    {
-      Weight = 9.0;
-    }
+    public WarFork() : base(0x1405) => Weight = 9.0;
 
     public WarFork(Serial serial) : base(serial)
     {

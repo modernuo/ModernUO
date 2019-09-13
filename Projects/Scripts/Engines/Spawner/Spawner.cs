@@ -591,15 +591,9 @@ namespace Server.Mobiles
       return false;
     }
 
-    public virtual int GetWalkingRange()
-    {
-      return m_WalkingRange;
-    }
+    public virtual int GetWalkingRange() => m_WalkingRange;
 
-    public virtual WayPoint GetWayPoint()
-    {
-      return WayPoint;
-    }
+    public virtual WayPoint GetWayPoint() => WayPoint;
 
     public virtual Point3D GetSpawnPosition(ISpawnable spawned, Map map)
     {
@@ -671,10 +665,7 @@ namespace Server.Mobiles
       return false;
     }
 
-    public virtual Map GetSpawnMap()
-    {
-      return Map;
-    }
+    public virtual Map GetSpawnMap() => Map;
 
     public void DoTimer()
     {

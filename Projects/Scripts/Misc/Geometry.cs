@@ -13,38 +13,25 @@ namespace Server.Misc
       b = temp;
     }
 
-    public static double RadiansToDegrees(double angle)
-    {
-      return angle * (180.0 / Math.PI);
-    }
+    public static double RadiansToDegrees(double angle) => angle * (180.0 / Math.PI);
 
-    public static double DegreesToRadians(double angle)
-    {
-      return angle * (Math.PI / 180.0);
-    }
+    public static double DegreesToRadians(double angle) => angle * (Math.PI / 180.0);
 
     public static Point2D ArcPoint(Point3D loc, int radius, int angle)
     {
-      int sideA, sideB;
-
       if (angle < 0)
         angle = 0;
 
       if (angle > 90)
         angle = 90;
 
-      sideA = (int)Math.Round(radius * Math.Sin(DegreesToRadians(angle)));
-      sideB = (int)Math.Round(radius * Math.Cos(DegreesToRadians(angle)));
+      int sideA = (int)Math.Round(radius * Math.Sin(DegreesToRadians(angle)));
+      int sideB = (int)Math.Round(radius * Math.Cos(DegreesToRadians(angle)));
 
       return new Point2D(loc.X - sideB, loc.Y - sideA);
     }
 
-    public static void Circle2D(Point3D loc, Map map, int radius, DoEffect_Callback effect)
-    {
-      Circle2D(loc, map, radius, effect, 0, 360);
-    }
-
-    public static void Circle2D(Point3D loc, Map map, int radius, DoEffect_Callback effect, int angleStart, int angleEnd)
+    public static void Circle2D(Point3D loc, Map map, int radius, DoEffect_Callback effect, int angleStart = 0, int angleEnd = 360)
     {
       if (angleStart < 0 || angleStart > 360)
         angleStart = 0;

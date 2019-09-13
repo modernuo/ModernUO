@@ -27,10 +27,7 @@ namespace Server.Engines.Quests.Ambitious
       SpeechHue = 0;
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x10D;
-    }
+    public override int GetIdleSound() => 0x10D;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

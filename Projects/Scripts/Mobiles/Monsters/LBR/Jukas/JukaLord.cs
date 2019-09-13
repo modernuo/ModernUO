@@ -90,25 +90,13 @@ namespace Server.Mobiles
       base.OnDamage(amount, from, willKill);
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x262;
-    }
+    public override int GetIdleSound() => 0x262;
 
-    public override int GetAngerSound()
-    {
-      return 0x263;
-    }
+    public override int GetAngerSound() => 0x263;
 
-    public override int GetHurtSound()
-    {
-      return 0x1D0;
-    }
+    public override int GetHurtSound() => 0x1D0;
 
-    public override int GetDeathSound()
-    {
-      return 0x28D;
-    }
+    public override int GetDeathSound() => 0x28D;
 
     public override void Serialize(GenericWriter writer)
     {

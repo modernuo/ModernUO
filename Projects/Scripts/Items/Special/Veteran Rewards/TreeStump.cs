@@ -190,10 +190,7 @@ namespace Server.Items
     private int m_Logs;
 
     [Constructible]
-    public TreeStumpDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public TreeStumpDeed() => LootType = LootType.Blessed;
 
     public TreeStumpDeed(Serial serial) : base(serial)
     {

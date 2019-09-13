@@ -4,10 +4,7 @@ namespace Server.Items
   public class HidePants : BaseArmor
   {
     [Constructible]
-    public HidePants() : base(0x2B78)
-    {
-      Weight = 5.0;
-    }
+    public HidePants() : base(0x2B78) => Weight = 5.0;
 
     public HidePants(Serial serial) : base(serial)
     {

@@ -141,11 +141,9 @@ namespace Server.Menus.Questions
       AddHtmlLocalized(90, 265, 200, 35, 1011012); // CANCEL
     }
 
-    private static bool IsInSecondAgeArea(Mobile m)
-    {
-      return (m.Map == Map.Trammel || m.Map == Map.Felucca) &&
-             (m.X >= 5120 && m.Y >= 2304 || m.Region.IsPartOf("Terathan Keep"));
-    }
+    private static bool IsInSecondAgeArea(Mobile m) =>
+      (m.Map == Map.Trammel || m.Map == Map.Felucca) &&
+      (m.X >= 5120 && m.Y >= 2304 || m.Region.IsPartOf("Terathan Keep"));
 
     public void BeginClose()
     {

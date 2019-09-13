@@ -29,10 +29,7 @@ namespace Server.Items
   public class FancyShirt : BaseShirt
   {
     [Constructible]
-    public FancyShirt(int hue = 0) : base(0x1EFD, hue)
-    {
-      Weight = 2.0;
-    }
+    public FancyShirt(int hue = 0) : base(0x1EFD, hue) => Weight = 2.0;
 
     public FancyShirt(Serial serial) : base(serial)
     {
@@ -57,10 +54,7 @@ namespace Server.Items
   public class Shirt : BaseShirt
   {
     [Constructible]
-    public Shirt(int hue = 0) : base(0x1517, hue)
-    {
-      Weight = 1.0;
-    }
+    public Shirt(int hue = 0) : base(0x1517, hue) => Weight = 1.0;
 
     public Shirt(Serial serial) : base(serial)
     {
@@ -116,10 +110,7 @@ namespace Server.Items
   public class ElvenShirt : BaseShirt
   {
     [Constructible]
-    public ElvenShirt(int hue = 0) : base(0x3175, hue)
-    {
-      Weight = 2.0;
-    }
+    public ElvenShirt(int hue = 0) : base(0x3175, hue) => Weight = 2.0;
 
     public ElvenShirt(Serial serial)
       : base(serial)
@@ -146,10 +137,7 @@ namespace Server.Items
   public class ElvenDarkShirt : BaseShirt
   {
     [Constructible]
-    public ElvenDarkShirt(int hue = 0) : base(0x3176, hue)
-    {
-      Weight = 2.0;
-    }
+    public ElvenDarkShirt(int hue = 0) : base(0x3176, hue) => Weight = 2.0;
 
     public ElvenDarkShirt(Serial serial) : base(serial)
     {

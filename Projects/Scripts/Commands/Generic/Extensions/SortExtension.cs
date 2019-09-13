@@ -11,10 +11,7 @@ namespace Server.Commands.Generic
 
     private List<OrderInfo> m_Orders;
 
-    public SortExtension()
-    {
-      m_Orders = new List<OrderInfo>();
-    }
+    public SortExtension() => m_Orders = new List<OrderInfo>();
 
     public override ExtensionInfo Info => ExtInfo;
 

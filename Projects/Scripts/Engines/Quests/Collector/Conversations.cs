@@ -243,15 +243,9 @@ namespace Server.Engines.Quests.Collector
   {
     private bool m_Logged;
 
-    public FullEndConversation(bool logged)
-    {
-      m_Logged = logged;
-    }
+    public FullEndConversation(bool logged) => m_Logged = logged;
 
-    public FullEndConversation()
-    {
-      m_Logged = true;
-    }
+    public FullEndConversation() => m_Logged = true;
 
     public override object Message => 1055135;
 

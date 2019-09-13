@@ -101,10 +101,7 @@ namespace Server.Items
     );
 
     [Constructible]
-    public NewAquariumBook() : base(false)
-    {
-      Hue = 0;
-    }
+    public NewAquariumBook() : base(false) => Hue = 0;
 
     public NewAquariumBook(Serial serial) : base(serial)
     {

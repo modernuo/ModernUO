@@ -129,10 +129,7 @@ namespace Server.Items
     {
       private DyeTub m_Tub;
 
-      public InternalTarget(DyeTub tub) : base(1, false, TargetFlags.None)
-      {
-        m_Tub = tub;
-      }
+      public InternalTarget(DyeTub tub) : base(1, false, TargetFlags.None) => m_Tub = tub;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

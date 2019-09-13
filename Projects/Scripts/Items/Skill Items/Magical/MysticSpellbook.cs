@@ -4,10 +4,8 @@
   {
     [Constructible]
     public MysticSpellbook(ulong content = 0)
-      : base(content, 0x2D9D)
-    {
+      : base(content, 0x2D9D) =>
       Layer = Layer.OneHanded;
-    }
 
     public MysticSpellbook(Serial serial)
       : base(serial)

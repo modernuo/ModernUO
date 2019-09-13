@@ -6,10 +6,7 @@ namespace Server.Items
   public class LOSBlocker : Item
   {
     [Constructible]
-    public LOSBlocker() : base(0x21A2)
-    {
-      Movable = false;
-    }
+    public LOSBlocker() : base(0x21A2) => Movable = false;
 
     public LOSBlocker(Serial serial) : base(serial)
     {

@@ -43,10 +43,7 @@ namespace Server.Engines.Quests.Samurai
       AddItem(new PlateHiroSode());
     }
 
-    public override int GetAutoTalkRange(PlayerMobile pm)
-    {
-      return 2;
-    }
+    public override int GetAutoTalkRange(PlayerMobile pm) => 2;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

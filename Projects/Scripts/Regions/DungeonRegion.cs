@@ -27,10 +27,7 @@ namespace Server.Regions
 
     public Map EntranceMap{ get; set; }
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      return false;
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => false;
 
     public override void AlterLightLevel(Mobile m, ref int global, ref int personal)
     {

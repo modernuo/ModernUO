@@ -6,10 +6,7 @@ namespace Server.Engines.Plants
   {
     private PlantItem m_Plant;
 
-    public PlantPourTarget(PlantItem plant) : base(3, true, TargetFlags.None)
-    {
-      m_Plant = plant;
-    }
+    public PlantPourTarget(PlantItem plant) : base(3, true, TargetFlags.None) => m_Plant = plant;
 
     protected override void OnTarget(Mobile from, object targeted)
     {

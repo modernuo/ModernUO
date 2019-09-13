@@ -3,10 +3,7 @@ namespace Server.Items
   public class Cauldron : Item
   {
     [Constructible]
-    public Cauldron() : base(0x9ED)
-    {
-      Weight = 1.0;
-    }
+    public Cauldron() : base(0x9ED) => Weight = 1.0;
 
     public Cauldron(Serial serial) : base(serial)
     {

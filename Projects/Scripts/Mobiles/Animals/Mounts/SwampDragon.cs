@@ -139,35 +139,17 @@ namespace Server.Mobiles
     public override ScaleType ScaleType => ScaleType.Green;
     public override bool CanAngerOnTame => true;
 
-    public override bool OverrideBondingReqs()
-    {
-      return true;
-    }
+    public override bool OverrideBondingReqs() => true;
 
-    public override int GetIdleSound()
-    {
-      return 0x2CE;
-    }
+    public override int GetIdleSound() => 0x2CE;
 
-    public override int GetDeathSound()
-    {
-      return 0x2CC;
-    }
+    public override int GetDeathSound() => 0x2CC;
 
-    public override int GetHurtSound()
-    {
-      return 0x2D1;
-    }
+    public override int GetHurtSound() => 0x2D1;
 
-    public override int GetAttackSound()
-    {
-      return 0x2C8;
-    }
+    public override int GetAttackSound() => 0x2C8;
 
-    public override double GetControlChance(Mobile m, bool useBaseSkill = false)
-    {
-      return 1.0;
-    }
+    public override double GetControlChance(Mobile m, bool useBaseSkill = false) => 1.0;
 
     public override void GetProperties(ObjectPropertyList list)
     {

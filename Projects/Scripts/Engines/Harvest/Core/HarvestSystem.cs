@@ -8,10 +8,7 @@ namespace Server.Engines.Harvest
 {
   public abstract class HarvestSystem
   {
-    public HarvestSystem()
-    {
-      Definitions = new List<HarvestDefinition>();
-    }
+    public HarvestSystem() => Definitions = new List<HarvestDefinition>();
 
     public List<HarvestDefinition> Definitions{ get; }
 
@@ -25,15 +22,9 @@ namespace Server.Engines.Harvest
       return !wornOut;
     }
 
-    public virtual bool CheckHarvest(Mobile from, Item tool)
-    {
-      return CheckTool(from, tool);
-    }
+    public virtual bool CheckHarvest(Mobile from, Item tool) => CheckTool(from, tool);
 
-    public virtual bool CheckHarvest(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
-    {
-      return CheckTool(from, tool);
-    }
+    public virtual bool CheckHarvest(Mobile from, Item tool, HarvestDefinition def, object toHarvest) => CheckTool(from, tool);
 
     public virtual bool CheckRange(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
     {
@@ -60,18 +51,7 @@ namespace Server.Engines.Harvest
     {
     }
 
-    public virtual object GetLock(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
-    {
-      /* Here we prevent multiple harvesting.
-       *
-       * Some options:
-       *  - 'return tool;' : This will allow the player to harvest more than once concurrently, but only if they use multiple tools. This seems to be as OSI.
-       *  - 'return GetType();' : This will disallow multiple harvesting of the same type. That is, we couldn't mine more than once concurrently, but we could be both mining and lumberjacking.
-       *  - 'return typeof( HarvestSystem );' : This will completely restrict concurrent harvesting.
-       */
-
-      return tool;
-    }
+    public virtual object GetLock(Mobile from, Item tool, HarvestDefinition def, object toHarvest) => tool;
 
     public virtual void OnConcurrentHarvest(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
     {
@@ -234,10 +214,7 @@ namespace Server.Engines.Harvest
     {
     }
 
-    public virtual bool SpecialHarvest(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc)
-    {
-      return false;
-    }
+    public virtual bool SpecialHarvest(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc) => false;
 
     public virtual Item Construct(Type type, Mobile from)
     {
@@ -252,10 +229,8 @@ namespace Server.Engines.Harvest
     }
 
     public virtual HarvestVein MutateVein(Mobile from, Item tool, HarvestDefinition def, HarvestBank bank,
-      object toHarvest, HarvestVein vein)
-    {
-      return vein;
-    }
+      object toHarvest, HarvestVein vein) =>
+      vein;
 
     public virtual void SendSuccessTo(Mobile from, Item item, HarvestResource resource)
     {
@@ -288,16 +263,12 @@ namespace Server.Engines.Harvest
     }
 
     public virtual Type MutateType(Type type, Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
-      HarvestResource resource)
-    {
-      return from.Region.GetResource(type);
-    }
+      HarvestResource resource) =>
+      from.Region.GetResource(type);
 
     public virtual Type GetResourceType(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
-      HarvestResource resource)
-    {
-      return resource.Types.Length > 0 ? resource.Types[Utility.Random(resource.Types.Length)] : null;
-    }
+      HarvestResource resource) =>
+      resource.Types.Length > 0 ? resource.Types[Utility.Random(resource.Types.Length)] : null;
 
     public virtual HarvestResource MutateResource(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
       HarvestVein vein, HarvestResource primary, HarvestResource fallback)
@@ -464,9 +435,6 @@ namespace Server
   [AttributeUsage(AttributeTargets.Class)]
   public class FurnitureAttribute : Attribute
   {
-    public static bool Check(Item item)
-    {
-      return item?.GetType().IsDefined(typeof(FurnitureAttribute), false) == true;
-    }
+    public static bool Check(Item item) => item?.GetType().IsDefined(typeof(FurnitureAttribute), false) == true;
   }
 }

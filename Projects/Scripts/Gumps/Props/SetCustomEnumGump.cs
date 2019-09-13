@@ -11,10 +11,8 @@ namespace Server.Gumps
     private string[] m_Names;
 
     public SetCustomEnumGump(PropertyInfo prop, Mobile mobile, object o, Stack<StackEntry> stack, int propspage,
-      List<object> list, string[] names) : base(prop, mobile, o, stack, propspage, list, names, null)
-    {
+      List<object> list, string[] names) : base(prop, mobile, o, stack, propspage, list, names, null) =>
       m_Names = names;
-    }
 
     public override void OnResponse(NetState sender, RelayInfo relayInfo)
     {

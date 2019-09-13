@@ -25,10 +25,7 @@ namespace Server.Items
     public override int LabelNumber => 1075035; // Totem of the Void
     public override bool ForceShowName => true;
 
-    public override Type GetSummoner()
-    {
-      return Utility.RandomBool() ? typeof(SummonedSkeletalKnight) : typeof(SummonedSheep);
-    }
+    public override Type GetSummoner() => Utility.RandomBool() ? typeof(SummonedSkeletalKnight) : typeof(SummonedSheep);
 
     public override void Serialize(GenericWriter writer)
     {

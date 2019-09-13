@@ -107,10 +107,7 @@ namespace Server.Engines.Quests
     {
     }
 
-    public virtual bool GetTimerEvent()
-    {
-      return !Completed;
-    }
+    public virtual bool GetTimerEvent() => !Completed;
 
     public virtual void CheckProgress()
     {
@@ -120,19 +117,13 @@ namespace Server.Engines.Quests
     {
     }
 
-    public virtual bool GetKillEvent(BaseCreature creature, Container corpse)
-    {
-      return !Completed;
-    }
+    public virtual bool GetKillEvent(BaseCreature creature, Container corpse) => !Completed;
 
     public virtual void OnKill(BaseCreature creature, Container corpse)
     {
     }
 
-    public virtual bool IgnoreYoungProtection(Mobile from)
-    {
-      return false;
-    }
+    public virtual bool IgnoreYoungProtection(Mobile from) => false;
   }
 
   public class QuestLogUpdatedGump : BaseQuestGump

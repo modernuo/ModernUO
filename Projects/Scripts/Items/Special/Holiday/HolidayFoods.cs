@@ -32,10 +32,7 @@ namespace Server.Items
       return timer;
     }
 
-    public static int GetToothAche(Mobile from)
-    {
-      return m_ToothAches.TryGetValue(from, out CandyCaneTimer timer) ? timer.Eaten : 0;
-    }
+    public static int GetToothAche(Mobile from) => m_ToothAches.TryGetValue(from, out CandyCaneTimer timer) ? timer.Eaten : 0;
 
     public static void SetToothAche(Mobile from, int value)
     {

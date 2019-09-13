@@ -3,10 +3,7 @@ namespace Server.Items
   public class HollowPrism : Item
   {
     [Constructible]
-    public HollowPrism() : base(0x2F5D)
-    {
-      Weight = 1.0;
-    }
+    public HollowPrism() : base(0x2F5D) => Weight = 1.0;
 
     public HollowPrism(Serial serial) : base(serial)
     {

@@ -2,8 +2,7 @@ namespace Server.Factions
 {
   public class Yew : Town
   {
-    public Yew()
-    {
+    public Yew() =>
       Definition =
         new TownDefinition(
           4,
@@ -19,6 +18,5 @@ namespace Server.Factions
           new TextDefinition(1041390, "Corrupted Faction Town Sigil of Yew"),
           new Point3D(548, 979, 0),
           new Point3D(542, 980, 0));
-    }
   }
 }

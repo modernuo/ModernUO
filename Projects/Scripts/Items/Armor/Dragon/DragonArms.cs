@@ -4,10 +4,7 @@ namespace Server.Items
   public class DragonArms : BaseArmor
   {
     [Constructible]
-    public DragonArms() : base(0x2657)
-    {
-      Weight = 5.0;
-    }
+    public DragonArms() : base(0x2657) => Weight = 5.0;
 
     public DragonArms(Serial serial) : base(serial)
     {

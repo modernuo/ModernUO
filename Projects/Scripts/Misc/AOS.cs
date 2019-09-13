@@ -9,7 +9,7 @@ using Server.Spells.Seventh;
 
 namespace Server
 {
-  public class AOS
+  public static class AOS
   {
     public static void DisableStatInfluences()
     {
@@ -24,32 +24,22 @@ namespace Server
       }
     }
 
-    public static int Damage(Mobile m, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy)
-    {
-      return Damage(m, null, damage, ignoreArmor, phys, fire, cold, pois, nrgy);
-    }
+    public static int Damage(Mobile m, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois, int nrgy) =>
+      Damage(m, null, damage, ignoreArmor, phys, fire, cold, pois, nrgy);
 
-    public static int Damage(Mobile m, int damage, int phys, int fire, int cold, int pois, int nrgy)
-    {
-      return Damage(m, null, damage, phys, fire, cold, pois, nrgy);
-    }
+    public static int Damage(Mobile m, int damage, int phys, int fire, int cold, int pois, int nrgy) =>
+      Damage(m, null, damage, phys, fire, cold, pois, nrgy);
 
-    public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy)
-    {
-      return Damage(m, from, damage, false, phys, fire, cold, pois, nrgy);
-    }
+    public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy) =>
+      Damage(m, from, damage, false, phys, fire, cold, pois, nrgy);
 
     public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy,
-      int chaos)
-    {
-      return Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, chaos);
-    }
+      int chaos) =>
+      Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, chaos);
 
     public static int Damage(Mobile m, Mobile from, int damage, int phys, int fire, int cold, int pois, int nrgy,
-      bool keepAlive)
-    {
-      return Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive);
-    }
+      bool keepAlive) =>
+      Damage(m, from, damage, false, phys, fire, cold, pois, nrgy, 0, 0, keepAlive);
 
     public static int Damage(Mobile m, Mobile from, int damage, bool ignoreArmor, int phys, int fire, int cold, int pois,
       int nrgy, int chaos = 0, int direct = 0, bool keepAlive = false, bool archer = false, bool deathStrike = false)
@@ -203,10 +193,7 @@ namespace Server
         val = 0;
     }
 
-    public static int Scale(int input, int percent)
-    {
-      return input * percent / 100;
-    }
+    public static int Scale(int input, int percent) => input * percent / 100;
 
     public static int GetStatus(Mobile from, int index)
     {
@@ -525,10 +512,7 @@ namespace Server
       return value;
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
 
     public void AddStatBonuses(Mobile to)
     {
@@ -824,10 +808,7 @@ namespace Server
       return value;
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
   }
 
   [Flags]
@@ -921,10 +902,7 @@ namespace Server
       return value;
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
   }
 
   public sealed class AosSkillBonuses : BaseAttributes
@@ -1140,10 +1118,7 @@ namespace Server
       SetValues(index, GetSkill(index), bonus);
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
 
     public void CheckCancelMorph(Mobile m)
     {
@@ -1279,10 +1254,7 @@ namespace Server
       set => this[AosElementAttribute.Direct] = value;
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
   }
 
   [PropertyObject]

@@ -51,11 +51,9 @@ namespace Server.Engines.Chat
 
     public bool IsModerator => CurrentChannel?.IsModerator(this) == true;
 
-    public char GetColorCharacter()
-    {
-      return IsModerator ? ModeratorColorCharacter :
-        CurrentChannel?.IsVoiced(this) == true ? VoicedColorCharacter : NormalColorCharacter;
-    }
+    public char GetColorCharacter() =>
+      IsModerator ? ModeratorColorCharacter :
+      CurrentChannel?.IsVoiced(this) == true ? VoicedColorCharacter : NormalColorCharacter;
 
     public bool CheckOnline()
     {
@@ -78,10 +76,7 @@ namespace Server.Engines.Chat
         Mobile.Send(new ChatMessagePacket(from, number, param1, param2));
     }
 
-    public bool IsIgnored(ChatUser check)
-    {
-      return Ignored.Contains(check);
-    }
+    public bool IsIgnored(ChatUser check) => Ignored.Contains(check);
 
     public void AddIgnored(ChatUser user)
     {

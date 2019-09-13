@@ -3,10 +3,7 @@ namespace Server.Items
   public class AcidProofRope : Item
   {
     [Constructible]
-    public AcidProofRope() : base(0x20D)
-    {
-      Hue = 0x3D1; // TODO check
-    }
+    public AcidProofRope() : base(0x20D) => Hue = 0x3D1;
 
     public AcidProofRope(Serial serial) : base(serial)
     {

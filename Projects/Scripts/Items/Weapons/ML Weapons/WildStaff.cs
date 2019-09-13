@@ -4,10 +4,7 @@ namespace Server.Items
   public class WildStaff : BaseStaff
   {
     [Constructible]
-    public WildStaff() : base(0x2D25)
-    {
-      Weight = 8.0;
-    }
+    public WildStaff() : base(0x2D25) => Weight = 8.0;
 
     public WildStaff(Serial serial) : base(serial)
     {

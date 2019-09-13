@@ -84,10 +84,7 @@ namespace Server.Spells.Spellweaving
         StopAbsorbing(defender, true);
     }
 
-    public static bool IsAbsorbing(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool IsAbsorbing(Mobile m) => m_Table.ContainsKey(m);
 
     public static void StopAbsorbing(Mobile m, bool message)
     {
@@ -100,10 +97,8 @@ namespace Server.Spells.Spellweaving
       private Mobile m_Mobile;
 
       public ExpireTimer(Mobile m, TimeSpan delay)
-        : base(delay)
-      {
+        : base(delay) =>
         m_Mobile = m;
-      }
 
       protected override void OnTick()
       {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class HardenedWildStaff : WildStaff
   {
     [Constructible]
-    public HardenedWildStaff()
-    {
-      Attributes.WeaponDamage = 5;
-    }
+    public HardenedWildStaff() => Attributes.WeaponDamage = 5;
 
     public HardenedWildStaff(Serial serial) : base(serial)
     {

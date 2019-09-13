@@ -3,10 +3,7 @@ namespace Server.Items
   public class SealedNotesForJamal : Item
   {
     [Constructible]
-    public SealedNotesForJamal() : base(0xEF9)
-    {
-      LootType = LootType.Blessed;
-    }
+    public SealedNotesForJamal() : base(0xEF9) => LootType = LootType.Blessed;
 
     public SealedNotesForJamal(Serial serial) : base(serial)
     {

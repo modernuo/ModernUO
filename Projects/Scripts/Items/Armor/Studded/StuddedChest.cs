@@ -4,10 +4,7 @@ namespace Server.Items
   public class StuddedChest : BaseArmor
   {
     [Constructible]
-    public StuddedChest() : base(0x13DB)
-    {
-      Weight = 8.0;
-    }
+    public StuddedChest() : base(0x13DB) => Weight = 8.0;
 
     public StuddedChest(Serial serial) : base(serial)
     {

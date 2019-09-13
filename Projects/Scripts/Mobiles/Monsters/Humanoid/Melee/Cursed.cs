@@ -56,10 +56,7 @@ namespace Server.Mobiles
 
     public override bool AlwaysMurderer => true;
 
-    public override int GetAttackSound()
-    {
-      return -1;
-    }
+    public override int GetAttackSound() => -1;
 
     public override void GenerateLoot()
     {

@@ -142,14 +142,8 @@ namespace Server.Spells.Fourth
       return false;
     }
 
-    private static bool IsInnocentTo(Mobile from, Mobile to)
-    {
-      return Notoriety.Compute(from, to) == Notoriety.Innocent;
-    }
+    private static bool IsInnocentTo(Mobile from, Mobile to) => Notoriety.Compute(from, to) == Notoriety.Innocent;
 
-    private static bool IsAllyTo(Mobile from, Mobile to)
-    {
-      return Notoriety.Compute(from, to) == Notoriety.Ally;
-    }
+    private static bool IsAllyTo(Mobile from, Mobile to) => Notoriety.Compute(from, to) == Notoriety.Ally;
   }
 }

@@ -114,11 +114,9 @@ namespace Server.Mobiles
       PlaySound(0x1D3);
     }
 
-    public bool IsValidTarget(PlayerMobile m)
-    {
-      return m?.PeacedUntil < DateTime.UtcNow && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
-             CanBeHarmful(m);
-    }
+    public bool IsValidTarget(PlayerMobile m) =>
+      m?.PeacedUntil < DateTime.UtcNow && !m.Hidden && m.AccessLevel == AccessLevel.Player &&
+      CanBeHarmful(m);
 
     #endregion
 

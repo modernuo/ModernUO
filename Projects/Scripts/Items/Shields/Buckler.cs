@@ -3,10 +3,7 @@ namespace Server.Items
   public class Buckler : BaseShield
   {
     [Constructible]
-    public Buckler() : base(0x1B73)
-    {
-      Weight = 5.0;
-    }
+    public Buckler() : base(0x1B73) => Weight = 5.0;
 
     public Buckler(Serial serial) : base(serial)
     {

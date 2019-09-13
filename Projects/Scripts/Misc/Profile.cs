@@ -4,7 +4,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class Profile
+  public static class Profile
   {
     public static void Initialize()
     {
@@ -69,10 +69,7 @@ namespace Server.Misc
       if (Format(ts.TotalMinutes, "This account is {0} minute{1} old.", out v))
         return v;
 
-      if (Format(ts.TotalSeconds, "This account is {0} second{1} old.", out v))
-        return v;
-
-      return "";
+      return Format(ts.TotalSeconds, "This account is {0} second{1} old.", out v) ? v : "";
     }
 
     public static bool Format(double value, string format, out string op)

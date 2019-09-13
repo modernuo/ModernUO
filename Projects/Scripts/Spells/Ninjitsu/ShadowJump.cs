@@ -40,10 +40,7 @@ namespace Server.Spells.Ninjitsu
       return base.CheckCast();
     }
 
-    public override bool CheckDisturb(DisturbType type, bool firstCircle, bool resistable)
-    {
-      return false;
-    }
+    public override bool CheckDisturb(DisturbType type, bool firstCircle, bool resistable) => false;
 
     public override void OnCast()
     {

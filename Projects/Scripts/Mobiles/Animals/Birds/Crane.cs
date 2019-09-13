@@ -42,30 +42,15 @@ namespace Server.Mobiles
     public override int Feathers => 25;
 
 
-    public override int GetAngerSound()
-    {
-      return 0x4D9;
-    }
+    public override int GetAngerSound() => 0x4D9;
 
-    public override int GetIdleSound()
-    {
-      return 0x4D8;
-    }
+    public override int GetIdleSound() => 0x4D8;
 
-    public override int GetAttackSound()
-    {
-      return 0x4D7;
-    }
+    public override int GetAttackSound() => 0x4D7;
 
-    public override int GetHurtSound()
-    {
-      return 0x4DA;
-    }
+    public override int GetHurtSound() => 0x4DA;
 
-    public override int GetDeathSound()
-    {
-      return 0x4D6;
-    }
+    public override int GetDeathSound() => 0x4D6;
 
     public override void Serialize(GenericWriter writer)
     {

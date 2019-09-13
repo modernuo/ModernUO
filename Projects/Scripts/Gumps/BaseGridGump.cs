@@ -37,20 +37,11 @@ namespace Server.Gumps
     public virtual int TextHue => 0;
     public virtual int TextOffsetX => 2;
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
-    public int GetButtonID(int typeCount, int type, int index)
-    {
-      return 1 + index * typeCount + type;
-    }
+    public int GetButtonID(int typeCount, int type, int index) => 1 + index * typeCount + type;
 
     public bool SplitButtonID(int buttonID, int typeCount, out int type, out int index)
     {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class RunedPrism : Item
   {
     [Constructible]
-    public RunedPrism() : base(0x2F57)
-    {
-      Weight = 1.0;
-    }
+    public RunedPrism() : base(0x2F57) => Weight = 1.0;
 
     public RunedPrism(Serial serial) : base(serial)
     {

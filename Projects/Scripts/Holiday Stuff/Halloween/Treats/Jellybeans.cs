@@ -3,10 +3,8 @@
   public class JellyBeans : CandyCane
   {
     public JellyBeans(int amount = 1)
-      : base(0x468C)
-    {
+      : base(0x468C) =>
       Stackable = true;
-    }
 
     public JellyBeans(Serial serial)
       : base(serial)

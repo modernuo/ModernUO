@@ -4,10 +4,7 @@ namespace Server.Items
   public class ThinLongsword : BaseSword
   {
     [Constructible]
-    public ThinLongsword() : base(0x13B8)
-    {
-      Weight = 1.0;
-    }
+    public ThinLongsword() : base(0x13B8) => Weight = 1.0;
 
     public ThinLongsword(Serial serial) : base(serial)
     {

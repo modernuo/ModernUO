@@ -225,17 +225,12 @@ namespace Server.Gumps
 
 		public VendorRentalContractGump( VendorRentalContract contract, Mobile from ) : base(
 			contract.IsLockedDown ? GumpType.LockedContract : GumpType.UnlockedContract, contract.Duration,
-			contract.Price, contract.Price, from, null, contract.LandlordRenew, false, false )
-		{
-			m_Contract = contract;
-		}
+			contract.Price, contract.Price, from, null, contract.LandlordRenew, false, false ) =>
+      m_Contract = contract;
 
-		protected override bool IsValidResponse( Mobile from )
-		{
-			return m_Contract.IsUsableBy( from, true, true, true, true );
-		}
+    protected override bool IsValidResponse( Mobile from ) => m_Contract.IsUsableBy( from, true, true, true, true );
 
-		protected override void SetContractDuration( Mobile from, VendorRentalDuration duration )
+    protected override void SetContractDuration( Mobile from, VendorRentalDuration duration )
 		{
 			m_Contract.Duration = duration;
 
@@ -268,12 +263,9 @@ namespace Server.Gumps
 		{
 			private VendorRentalContract m_Contract;
 
-			public PricePerRentalPrompt( VendorRentalContract contract )
-			{
-				m_Contract = contract;
-			}
+			public PricePerRentalPrompt( VendorRentalContract contract ) => m_Contract = contract;
 
-			public override void OnResponse( Mobile from, string text )
+      public override void OnResponse( Mobile from, string text )
 			{
 				if ( !m_Contract.IsUsableBy( from, true, true, true, true ) )
 					return;
@@ -311,12 +303,9 @@ namespace Server.Gumps
 		{
 			private VendorRentalContract m_Contract;
 
-			public OfferContractTarget( VendorRentalContract contract ) : base( -1, false, TargetFlags.None )
-			{
-				m_Contract = contract;
-			}
+			public OfferContractTarget( VendorRentalContract contract ) : base( -1, false, TargetFlags.None ) => m_Contract = contract;
 
-			protected override void OnTarget( Mobile from, object targeted )
+      protected override void OnTarget( Mobile from, object targeted )
 			{
 				if ( !m_Contract.IsUsableBy( from, true, false, true, true ) )
 					return;
@@ -360,12 +349,9 @@ namespace Server.Gumps
 			m_Landlord = landlord;
 		}
 
-		protected override bool IsValidResponse( Mobile from )
-		{
-			return m_Contract.IsUsableBy( m_Landlord, true, false, false, false ) && from.CheckAlive() && m_Contract.Offeree == from;
-		}
+		protected override bool IsValidResponse( Mobile from ) => m_Contract.IsUsableBy( m_Landlord, true, false, false, false ) && from.CheckAlive() && m_Contract.Offeree == from;
 
-		protected override void AcceptOffer( Mobile from )
+    protected override void AcceptOffer( Mobile from )
 		{
 			m_Contract.Offeree = null;
 
@@ -434,17 +420,12 @@ namespace Server.Gumps
 
 		public RenterVendorRentalGump( RentedVendor vendor ) : base(
 			GumpType.VendorRenter, vendor.RentalDuration, vendor.RentalPrice, vendor.RenewalPrice,
-			vendor.Landlord, vendor.Owner, vendor.LandlordRenew, vendor.RenterRenew, vendor.Renew )
-		{
-			m_Vendor = vendor;
-		}
+			vendor.Landlord, vendor.Owner, vendor.LandlordRenew, vendor.RenterRenew, vendor.Renew ) =>
+      m_Vendor = vendor;
 
-		protected override bool IsValidResponse( Mobile from )
-		{
-			return m_Vendor.CanInteractWith( from, true );
-		}
+    protected override bool IsValidResponse( Mobile from ) => m_Vendor.CanInteractWith( from, true );
 
-		protected override void RenterRenewOnExpiration( Mobile from )
+    protected override void RenterRenewOnExpiration( Mobile from )
 		{
 			m_Vendor.RenterRenew = !m_Vendor.RenterRenew;
 
@@ -458,17 +439,12 @@ namespace Server.Gumps
 
 		public LandlordVendorRentalGump( RentedVendor vendor ) : base(
 			GumpType.VendorLandlord, vendor.RentalDuration, vendor.RentalPrice, vendor.RenewalPrice,
-			vendor.Landlord, vendor.Owner, vendor.LandlordRenew, vendor.RenterRenew, vendor.Renew )
-		{
-			m_Vendor = vendor;
-		}
+			vendor.Landlord, vendor.Owner, vendor.LandlordRenew, vendor.RenterRenew, vendor.Renew ) =>
+      m_Vendor = vendor;
 
-		protected override bool IsValidResponse( Mobile from )
-		{
-			return m_Vendor.CanInteractWith( from, false ) && m_Vendor.IsLandlord( from );
-		}
+    protected override bool IsValidResponse( Mobile from ) => m_Vendor.CanInteractWith( from, false ) && m_Vendor.IsLandlord( from );
 
-		protected override void LandlordRenewOnExpiration( Mobile from )
+    protected override void LandlordRenewOnExpiration( Mobile from )
 		{
 			m_Vendor.LandlordRenew = !m_Vendor.LandlordRenew;
 
@@ -486,12 +462,9 @@ namespace Server.Gumps
 		{
 			private RentedVendor m_Vendor;
 
-			public ContractRenewalPricePrompt( RentedVendor vendor )
-			{
-				m_Vendor = vendor;
-			}
+			public ContractRenewalPricePrompt( RentedVendor vendor ) => m_Vendor = vendor;
 
-			public override void OnResponse( Mobile from, string text )
+      public override void OnResponse( Mobile from, string text )
 			{
 				if ( !m_Vendor.CanInteractWith( from, false ) || !m_Vendor.IsLandlord( from ) )
 					return;

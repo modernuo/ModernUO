@@ -3,10 +3,7 @@ namespace Server.Items
   public abstract class BaseEquipableLight : BaseLight
   {
     [Constructible]
-    public BaseEquipableLight(int itemID) : base(itemID)
-    {
-      Layer = Layer.TwoHanded;
-    }
+    public BaseEquipableLight(int itemID) : base(itemID) => Layer = Layer.TwoHanded;
 
     public BaseEquipableLight(Serial serial) : base(serial)
     {

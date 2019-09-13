@@ -337,12 +337,10 @@ namespace Server.Items
       }
     }
 
-    public override bool IsChildVisibleTo(Mobile m, Item child)
-    {
-      return !m.Player || m.AccessLevel > AccessLevel.Player || m_InstancedItems == null ||
-             !m_InstancedItems.TryGetValue(child, out InstancedItemInfo info) || !InstancedCorpse && !info.Perpetual
-             || info.IsOwner(m);
-    }
+    public override bool IsChildVisibleTo(Mobile m, Item child) =>
+      !m.Player || m.AccessLevel > AccessLevel.Player || m_InstancedItems == null ||
+      !m_InstancedItems.TryGetValue(child, out InstancedItemInfo info) || !InstancedCorpse && !info.Perpetual
+      || info.IsOwner(m);
 
     private void AssignInstancedLoot()
     {
@@ -403,7 +401,7 @@ namespace Server.Items
           }
 
           if (remainder == 0)
-            m_InstancedItems.Add(item, new InstancedItemInfo(item, attackers[attackers.Count - 1]));
+            m_InstancedItems.Add(item, new InstancedItemInfo(item, attackers[^1]));
           else
             m_Unstackables.Add(item);
         }
@@ -470,10 +468,7 @@ namespace Server.Items
       m_DecayTimer = null;
     }
 
-    public static string GetCorpseName(Mobile m)
-    {
-      return m is BaseCreature bc ? bc.CorpseNameOverride ?? bc.CorpseName : null;
-    }
+    public static string GetCorpseName(Mobile m) => m is BaseCreature bc ? bc.CorpseNameOverride ?? bc.CorpseName : null;
 
     public static void Initialize()
     {
@@ -521,10 +516,7 @@ namespace Server.Items
       return c;
     }
 
-    protected bool GetFlag(CorpseFlag flag)
-    {
-      return (m_Flags & flag) != 0;
-    }
+    protected bool GetFlag(CorpseFlag flag) => (m_Flags & flag) != 0;
 
     protected void SetFlag(CorpseFlag flag, bool on)
     {
@@ -791,15 +783,9 @@ namespace Server.Items
       return NotorietyHandlers.CorpseNotoriety(from, this) == Notoriety.Innocent;
     }
 
-    public override bool CheckItemUse(Mobile from, Item item)
-    {
-      return base.CheckItemUse(from, item) && (item == this || CanLoot(from, item));
-    }
+    public override bool CheckItemUse(Mobile from, Item item) => base.CheckItemUse(from, item) && (item == this || CanLoot(from, item));
 
-    public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
-    {
-      return base.CheckLift(from, item, ref reject) && CanLoot(from, item);
-    }
+    public override bool CheckLift(Mobile from, Item item, ref LRReason reject) => base.CheckLift(from, item, ref reject) && CanLoot(from, item);
 
     public override void OnItemUsed(Mobile from, Item item)
     {
@@ -843,10 +829,7 @@ namespace Server.Items
         list.Add(new OpenCorpseEntry());
     }
 
-    public bool GetRestoreInfo(Item item, ref Point3D loc)
-    {
-      return item != null && m_RestoreTable?.TryGetValue(item, out loc) == true;
-    }
+    public bool GetRestoreInfo(Item item, ref Point3D loc) => item != null && m_RestoreTable?.TryGetValue(item, out loc) == true;
 
     public void SetRestoreInfo(Item item, Point3D loc)
     {
@@ -870,10 +853,7 @@ namespace Server.Items
         m_RestoreTable = null;
     }
 
-    public bool CanLoot(Mobile from, Item item)
-    {
-      return !IsCriminalAction(from) || (Map.Rules & MapRules.HarmfulRestrictions) == 0;
-    }
+    public bool CanLoot(Mobile from, Item item) => !IsCriminalAction(from) || (Map.Rules & MapRules.HarmfulRestrictions) == 0;
 
     public bool CheckLoot(Mobile from, Item item)
     {
@@ -1062,10 +1042,7 @@ namespace Server.Items
       Open(from, Core.AOS);
     }
 
-    public override bool CheckContentDisplay(Mobile from)
-    {
-      return false;
-    }
+    public override bool CheckContentDisplay(Mobile from) => false;
 
     public override void AddNameProperty(ObjectPropertyList list)
     {

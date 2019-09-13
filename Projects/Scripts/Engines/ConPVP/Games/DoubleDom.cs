@@ -13,10 +13,8 @@ namespace Server.Engines.ConPVP
 
     [Constructible]
     public DDBoard()
-      : base(7774)
-    {
+      : base(7774) =>
       Movable = false;
-    }
 
     public DDBoard(Serial serial)
       : base(serial)
@@ -177,15 +175,9 @@ namespace Server.Engines.ConPVP
       AddButton(314, height - 42, 247, 248, 1);
     }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
     {
@@ -354,10 +346,7 @@ namespace Server.Engines.ConPVP
       op.Write(Origin);
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
   }
 
   public sealed class DDController : EventController
@@ -402,15 +391,9 @@ namespace Server.Engines.ConPVP
 
     public override string DefaultName => "DD Controller";
 
-    public override string GetTeamName(int teamID)
-    {
-      return TeamInfo[teamID % TeamInfo.Length].Name;
-    }
+    public override string GetTeamName(int teamID) => TeamInfo[teamID % TeamInfo.Length].Name;
 
-    public override EventGame Construct(DuelContext context)
-    {
-      return new DDGame(this, context);
-    }
+    public override EventGame Construct(DuelContext context) => new DDGame(this, context);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -464,10 +447,7 @@ namespace Server.Engines.ConPVP
     private Timer m_FinishTimer;
     private Timer m_UncaptureTimer;
 
-    public DDGame(DDController controller, DuelContext context) : base(context)
-    {
-      Controller = controller;
-    }
+    public DDGame(DDController controller, DuelContext context) : base(context) => Controller = controller;
 
     public DDController Controller{ get; }
 
@@ -525,10 +505,7 @@ namespace Server.Engines.ConPVP
       return pm.DuelContext.Participants.IndexOf(pm.DuelPlayer.Participant);
     }
 
-    public int GetColor(Mobile mob)
-    {
-      return GetTeamInfo(mob)?.Color ?? -1;
-    }
+    public int GetColor(Mobile mob) => GetTeamInfo(mob)?.Color ?? -1;
 
     private void ApplyHues(Participant p, int hueOverride)
     {
@@ -1077,10 +1054,7 @@ namespace Server.Engines.ConPVP
 
     public class DDStep : AddonComponent
     {
-      public DDStep(int itemID) : base(itemID)
-      {
-        Visible = true;
-      }
+      public DDStep(int itemID) : base(itemID) => Visible = true;
 
       public DDStep(Serial serial) : base(serial)
       {
@@ -1100,10 +1074,7 @@ namespace Server.Engines.ConPVP
         writer.Write(0); //version
       }
 
-      public override bool OnMoveOver(Mobile m)
-      {
-        return Addon.OnMoveOver(m);
-      }
+      public override bool OnMoveOver(Mobile m) => Addon.OnMoveOver(m);
     }
   }
 }

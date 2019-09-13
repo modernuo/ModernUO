@@ -196,10 +196,7 @@ namespace Server.Items
         from.SendMessage("This moongate does not seem to go anywhere.");
     }
 
-    public static bool IsInTown(Point3D p, Map map)
-    {
-      return map != null && Region.Find(p, map).GetRegion<GuardedRegion>()?.IsDisabled() == false;
-    }
+    public static bool IsInTown(Point3D p, Map map) => map != null && Region.Find(p, map).GetRegion<GuardedRegion>()?.IsDisabled() == false;
 
     private class DelayTimer : Timer
     {

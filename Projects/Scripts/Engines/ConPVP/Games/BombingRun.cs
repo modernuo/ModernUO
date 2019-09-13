@@ -293,7 +293,7 @@ namespace Server.Engines.ConPVP
 
         if (list.Count > 0)
         {
-          Point3D p = list[list.Count - 1];
+          Point3D p = list[^1];
 
           if (p.X != ix || p.Y != iy || p.Z != iz)
             list.Add(new Point3D(ix, iy, iz));
@@ -308,7 +308,7 @@ namespace Server.Engines.ConPVP
         z += zslp;
       }
 
-      if (list.Count > 0 && list[list.Count - 1] != dest)
+      if (list.Count > 0 && list[^1] != dest)
         list.Add(dest);
 
       /*if ( dist3d > 4 && ( dest.X != org.X || dest.Y != org.Y ) )
@@ -918,10 +918,8 @@ namespace Server.Engines.ConPVP
 
     [Constructible]
     public BRBoard()
-      : base(7774)
-    {
+      : base(7774) =>
       Movable = false;
-    }
 
     public BRBoard(Serial serial)
       : base(serial)
@@ -1088,15 +1086,9 @@ namespace Server.Engines.ConPVP
       AddButton(314, height - 42, 247, 248, 1);
     }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
     {
@@ -1362,15 +1354,9 @@ namespace Server.Engines.ConPVP
     public override string Title => "Bombing Run";
     public override string DefaultName => "Bombing Run Controller";
 
-    public override string GetTeamName(int teamID)
-    {
-      return TeamInfo[teamID % TeamInfo.Length].Name;
-    }
+    public override string GetTeamName(int teamID) => TeamInfo[teamID % TeamInfo.Length].Name;
 
-    public override EventGame Construct(DuelContext context)
-    {
-      return new BRGame(this, context);
-    }
+    public override EventGame Construct(DuelContext context) => new BRGame(this, context);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -1421,10 +1407,7 @@ namespace Server.Engines.ConPVP
 
     private TimerCallback m_UnhideCallback;
 
-    public BRGame(BRController controller, DuelContext context) : base(context)
-    {
-      Controller = controller;
-    }
+    public BRGame(BRController controller, DuelContext context) : base(context) => Controller = controller;
 
     public BRController Controller{ get; }
 
@@ -1439,10 +1422,7 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public override bool CantDoAnything(Mobile mob)
-    {
-      return mob.Backpack?.FindItemByType<BRBomb>() != null && GetTeamInfo(mob) != null;
-    }
+    public override bool CantDoAnything(Mobile mob) => mob.Backpack?.FindItemByType<BRBomb>() != null && GetTeamInfo(mob) != null;
 
     public void ReturnBomb()
     {
@@ -1508,10 +1488,7 @@ namespace Server.Engines.ConPVP
       return pm.DuelContext.Participants.IndexOf(pm.DuelPlayer.Participant);
     }
 
-    public int GetColor(Mobile mob)
-    {
-      return GetTeamInfo(mob)?.Color ?? -1;
-    }
+    public int GetColor(Mobile mob) => GetTeamInfo(mob)?.Color ?? -1;
 
     private void ApplyHues(Participant p, int hueOverride)
     {

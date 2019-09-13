@@ -66,10 +66,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.UltraRich, 3);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.WhirlwindAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.WhirlwindAttack;
 
     public override void OnDeath(Container c)
     {

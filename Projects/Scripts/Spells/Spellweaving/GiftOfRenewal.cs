@@ -120,10 +120,8 @@ namespace Server.Spells.Spellweaving
       private GiftOfRenewalInfo m_GiftInfo;
 
       public InternalTimer(GiftOfRenewalInfo info)
-        : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0))
-      {
+        : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0)) =>
         m_GiftInfo = info;
-      }
 
       protected override void OnTick()
       {

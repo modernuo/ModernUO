@@ -3,10 +3,7 @@ namespace Server.Items
   public class MacheteOfDefense : ElvenMachete
   {
     [Constructible]
-    public MacheteOfDefense()
-    {
-      Attributes.DefendChance = 5;
-    }
+    public MacheteOfDefense() => Attributes.DefendChance = 5;
 
     public MacheteOfDefense(Serial serial) : base(serial)
     {

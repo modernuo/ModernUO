@@ -4,10 +4,7 @@ namespace Server.Items
   public class BlackStaff : BaseStaff
   {
     [Constructible]
-    public BlackStaff() : base(0xDF0)
-    {
-      Weight = 6.0;
-    }
+    public BlackStaff() : base(0xDF0) => Weight = 6.0;
 
     public BlackStaff(Serial serial) : base(serial)
     {

@@ -32,20 +32,11 @@ namespace Server.Multis
       LoadMultis("Data/Components/stairs.txt", "MultiNorth", "MultiEast", "MultiSouth", "MultiWest");
     }
 
-    public bool IsItemValid(int itemID)
-    {
-      return itemID > 0 && itemID < m_ItemTable.Length && CheckValidity(m_ItemTable[itemID]);
-    }
+    public bool IsItemValid(int itemID) => itemID > 0 && itemID < m_ItemTable.Length && CheckValidity(m_ItemTable[itemID]);
 
-    public bool IsMultiValid(int multiID)
-    {
-      return multiID > 0 && multiID < m_MultiTable.Length && CheckValidity(m_MultiTable[multiID]);
-    }
+    public bool IsMultiValid(int multiID) => multiID > 0 && multiID < m_MultiTable.Length && CheckValidity(m_MultiTable[multiID]);
 
-    public bool CheckValidity(int val)
-    {
-      return val != -1 && (val == 0 || ((int)ExpansionInfo.CoreExpansion.CustomHousingFlag & val) != 0);
-    }
+    public bool CheckValidity(int val) => val != -1 && (val == 0 || ((int)ExpansionInfo.CoreExpansion.CustomHousingFlag & val) != 0);
 
     private int[] CreateTable(int length)
     {
@@ -204,24 +195,12 @@ namespace Server.Multis
 
     public object this[int id] => id < 0 ? null : Data[id];
 
-    public int GetInt32(string name)
-    {
-      return GetInt32(this[name]);
-    }
+    public int GetInt32(string name) => GetInt32(this[name]);
 
-    public int GetInt32(int id)
-    {
-      return GetInt32(this[id]);
-    }
+    public int GetInt32(int id) => GetInt32(this[id]);
 
-    public int GetInt32(object obj)
-    {
-      return Convert.ToInt32(obj);
-    }
+    public int GetInt32(object obj) => Convert.ToInt32(obj);
 
-    public string GetString(string name)
-    {
-      return this[name] as string;
-    }
+    public string GetString(string name) => this[name] as string;
   }
 }

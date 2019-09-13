@@ -4,10 +4,7 @@ namespace Server.Items
   public class Nunchaku : BaseBashing
   {
     [Constructible]
-    public Nunchaku() : base(0x27AE)
-    {
-      Weight = 5.0;
-    }
+    public Nunchaku() : base(0x27AE) => Weight = 5.0;
 
     public Nunchaku(Serial serial) : base(serial)
     {

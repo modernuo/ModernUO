@@ -53,10 +53,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.UltraRich, 2);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.ParalyzingBlow;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
 
     public override void Serialize(GenericWriter writer)
     {

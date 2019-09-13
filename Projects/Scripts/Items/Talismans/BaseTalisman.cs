@@ -440,10 +440,7 @@ namespace Server.Items
         flags |= toSet;
     }
 
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet)
-    {
-      return (flags & toGet) != 0;
-    }
+    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -598,10 +595,7 @@ namespace Server.Items
       InvalidateProperties();
     }
 
-    public virtual Type GetSummoner()
-    {
-      return null;
-    }
+    public virtual Type GetSummoner() => null;
 
     public virtual void SetSummoner(Type type, TextDefinition name)
     {
@@ -646,10 +640,8 @@ namespace Server.Items
       private BaseTalisman m_Talisman;
 
       public TalismanTarget(BaseTalisman talisman)
-        : base(12, false, TargetFlags.Beneficial)
-      {
+        : base(12, false, TargetFlags.Beneficial) =>
         m_Talisman = talisman;
-      }
 
       protected override void OnTarget(Mobile from, object o)
       {
@@ -937,10 +929,7 @@ namespace Server.Items
       0x2F58, 0x2F59, 0x2F5A, 0x2F5B
     };
 
-    public static int GetRandomItemID()
-    {
-      return Utility.RandomList(m_ItemIDs);
-    }
+    public static int GetRandomItemID() => Utility.RandomList(m_ItemIDs);
 
     private static Type[] m_Summons =
     {
@@ -992,10 +981,7 @@ namespace Server.Items
       1023817 // clean bandage
     };
 
-    public static Type GetRandomSummonType()
-    {
-      return m_Summons[Utility.Random(m_Summons.Length)];
-    }
+    public static Type GetRandomSummonType() => m_Summons[Utility.Random(m_Summons.Length)];
 
     public static TalismanAttribute GetRandomSummoner()
     {
@@ -1052,10 +1038,7 @@ namespace Server.Items
       1072493, 1072494, 1072495, 1072498
     };
 
-    public static TalismanAttribute GetRandomKiller()
-    {
-      return GetRandomKiller(true);
-    }
+    public static TalismanAttribute GetRandomKiller() => GetRandomKiller(true);
 
     public static TalismanAttribute GetRandomKiller(bool includingNone)
     {
@@ -1067,10 +1050,7 @@ namespace Server.Items
       return new TalismanAttribute(m_Killers[num], m_KillerLabels[num], Utility.RandomMinMax(10, 100));
     }
 
-    public static TalismanAttribute GetRandomProtection()
-    {
-      return GetRandomProtection(true);
-    }
+    public static TalismanAttribute GetRandomProtection() => GetRandomProtection(true);
 
     public static TalismanAttribute GetRandomProtection(bool includingNone)
     {
@@ -1095,10 +1075,7 @@ namespace Server.Items
       SkillName.Tinkering
     };
 
-    public static SkillName GetRandomSkill()
-    {
-      return m_Skills[Utility.Random(m_Skills.Length)];
-    }
+    public static SkillName GetRandomSkill() => m_Skills[Utility.Random(m_Skills.Length)];
 
     public static int GetRandomExceptional()
     {
@@ -1124,20 +1101,11 @@ namespace Server.Items
       return 0;
     }
 
-    public static bool GetRandomBlessed()
-    {
-      return 0.02 > Utility.RandomDouble();
-    }
+    public static bool GetRandomBlessed() => 0.02 > Utility.RandomDouble();
 
-    public static TalismanSlayerName GetRandomSlayer()
-    {
-      return 0.01 > Utility.RandomDouble() ? (TalismanSlayerName)Utility.RandomMinMax(1, 9) : TalismanSlayerName.None;
-    }
+    public static TalismanSlayerName GetRandomSlayer() => 0.01 > Utility.RandomDouble() ? (TalismanSlayerName)Utility.RandomMinMax(1, 9) : TalismanSlayerName.None;
 
-    public static int GetRandomCharges()
-    {
-      return 0.5 > Utility.RandomDouble() ? Utility.RandomMinMax(10, 50) : 0;
-    }
+    public static int GetRandomCharges() => 0.5 > Utility.RandomDouble() ? Utility.RandomMinMax(10, 50) : 0;
 
     #endregion
   }

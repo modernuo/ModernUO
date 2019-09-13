@@ -75,10 +75,8 @@ namespace Server.Spells.Spellweaving
       private NatureFury m_NatureFury;
 
       public InternalTimer(NatureFury nf)
-        : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0))
-      {
+        : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(5.0)) =>
         m_NatureFury = nf;
-      }
 
       protected override void OnTick()
       {

@@ -5,16 +5,10 @@ namespace Server.Items
   public class Inshave : BaseTool
   {
     [Constructible]
-    public Inshave() : base(0x10E6)
-    {
-      Weight = 1.0;
-    }
+    public Inshave() : base(0x10E6) => Weight = 1.0;
 
     [Constructible]
-    public Inshave(int uses) : base(uses, 0x10E6)
-    {
-      Weight = 1.0;
-    }
+    public Inshave(int uses) : base(uses, 0x10E6) => Weight = 1.0;
 
     public Inshave(Serial serial) : base(serial)
     {

@@ -130,12 +130,10 @@ namespace Server.Movement
       return moveIsOk;
     }
 
-    public bool CheckMovement(Mobile m, Direction d, out int newZ)
-    {
-      return !Enabled && _Successor != null
+    public bool CheckMovement(Mobile m, Direction d, out int newZ) =>
+      !Enabled && _Successor != null
         ? _Successor.CheckMovement(m, d, out newZ)
         : CheckMovement(m, m.Map, m.Location, d, out newZ);
-    }
 
     public static void Initialize()
     {
@@ -381,21 +379,13 @@ namespace Server.Movement
       return moveIsOk;
     }
 
-    private static bool Verify(Item item, int x, int y)
-    {
-      return item.AtWorldPoint(x, y);
-    }
+    private static bool Verify(Item item, int x, int y) => item.AtWorldPoint(x, y);
 
-    private static bool Verify(Item item, TileFlag reqFlags, bool ignoreMovableImpassables)
-    {
-      return item != null && (!ignoreMovableImpassables || !item.Movable || !item.ItemData.Impassable) &&
-             (item.ItemData.Flags & reqFlags) != 0 && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue;
-    }
+    private static bool Verify(Item item, TileFlag reqFlags, bool ignoreMovableImpassables) =>
+      item != null && (!ignoreMovableImpassables || !item.Movable || !item.ItemData.Impassable) &&
+      (item.ItemData.Flags & reqFlags) != 0 && !(item is BaseMulti) && item.ItemID <= TileData.MaxItemValue;
 
-    private static bool Verify(Item item, TileFlag reqFlags, bool ignoreMovableImpassables, int x, int y)
-    {
-      return Verify(item, reqFlags, ignoreMovableImpassables) && Verify(item, x, y);
-    }
+    private static bool Verify(Item item, TileFlag reqFlags, bool ignoreMovableImpassables, int x, int y) => Verify(item, reqFlags, ignoreMovableImpassables) && Verify(item, x, y);
 
     private static void GetStartZ(Mobile m, Map map, Point3D loc, IEnumerable<Item> itemList, out int zLow, out int zTop)
     {

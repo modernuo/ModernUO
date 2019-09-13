@@ -3,10 +3,7 @@ namespace Server.Mobiles
   public class Minter : Banker
   {
     [Constructible]
-    public Minter()
-    {
-      Title = "the minter";
-    }
+    public Minter() => Title = "the minter";
 
     public Minter(Serial serial) : base(serial)
     {

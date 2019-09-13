@@ -4,10 +4,7 @@ namespace Server.Items
   public class QuarterStaff : BaseStaff
   {
     [Constructible]
-    public QuarterStaff() : base(0xE89)
-    {
-      Weight = 4.0;
-    }
+    public QuarterStaff() : base(0xE89) => Weight = 4.0;
 
     public QuarterStaff(Serial serial) : base(serial)
     {

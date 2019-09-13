@@ -3,10 +3,7 @@ namespace Server.Items
   public class IcyScimitar : RadiantScimitar
   {
     [Constructible]
-    public IcyScimitar()
-    {
-      WeaponAttributes.HitHarm = 15;
-    }
+    public IcyScimitar() => WeaponAttributes.HitHarm = 15;
 
     public IcyScimitar(Serial serial) : base(serial)
     {

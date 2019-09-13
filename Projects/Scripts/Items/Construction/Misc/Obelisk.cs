@@ -3,10 +3,7 @@ namespace Server.Items
   public class Obelisk : Item
   {
     [Constructible]
-    public Obelisk() : base(0x1184)
-    {
-      Movable = false;
-    }
+    public Obelisk() : base(0x1184) => Movable = false;
 
     public Obelisk(Serial serial) : base(serial)
     {

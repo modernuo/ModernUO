@@ -269,10 +269,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public WallBannerDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public WallBannerDeed() => LootType = LootType.Blessed;
 
     public WallBannerDeed(Serial serial) : base(serial)
     {

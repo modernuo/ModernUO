@@ -5,16 +5,10 @@ namespace Server.Items
   public class Scorp : BaseTool
   {
     [Constructible]
-    public Scorp() : base(0x10E7)
-    {
-      Weight = 1.0;
-    }
+    public Scorp() : base(0x10E7) => Weight = 1.0;
 
     [Constructible]
-    public Scorp(int uses) : base(uses, 0x10E7)
-    {
-      Weight = 1.0;
-    }
+    public Scorp(int uses) : base(uses, 0x10E7) => Weight = 1.0;
 
     public Scorp(Serial serial) : base(serial)
     {

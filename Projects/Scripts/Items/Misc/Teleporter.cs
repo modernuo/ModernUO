@@ -548,10 +548,7 @@ namespace Server.Items
       base.DoTeleport(m);
     }
 
-    public override bool OnMoveOver(Mobile m)
-    {
-      return true;
-    }
+    public override bool OnMoveOver(Mobile m) => true;
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -761,10 +758,8 @@ namespace Server.Items
 
     [Constructible]
     public TimeoutTeleporter(Point3D pointDest, Map mapDest = null, bool creatures = false)
-      : base(pointDest, mapDest, creatures)
-    {
+      : base(pointDest, mapDest, creatures) =>
       m_Teleporting = new Dictionary<Mobile, Timer>();
-    }
 
     public TimeoutTeleporter(Serial serial)
       : base(serial)
@@ -1151,10 +1146,7 @@ namespace Server.Items
       m_Flags = (ConditionFlag)reader.ReadInt();
     }
 
-    protected bool GetFlag(ConditionFlag flag)
-    {
-      return (m_Flags & flag) != 0;
-    }
+    protected bool GetFlag(ConditionFlag flag) => (m_Flags & flag) != 0;
 
     protected void SetFlag(ConditionFlag flag, bool value)
     {

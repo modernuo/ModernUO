@@ -4,10 +4,7 @@ namespace Server.Items
   public class ExecutionersAxe : BaseAxe
   {
     [Constructible]
-    public ExecutionersAxe() : base(0xF45)
-    {
-      Weight = 8.0;
-    }
+    public ExecutionersAxe() : base(0xF45) => Weight = 8.0;
 
     public ExecutionersAxe(Serial serial) : base(serial)
     {

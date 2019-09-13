@@ -5,10 +5,7 @@ namespace Server.Items
   public class Sextant : Item
   {
     [Constructible]
-    public Sextant() : base(0x1058)
-    {
-      Weight = 2.0;
-    }
+    public Sextant() : base(0x1058) => Weight = 2.0;
 
     public Sextant(Serial serial) : base(serial)
     {

@@ -152,10 +152,7 @@ namespace Server.Items
     {
       private KeyRing m_KeyRing;
 
-      public InternalTarget(KeyRing keyRing) : base(-1, false, TargetFlags.None)
-      {
-        m_KeyRing = keyRing;
-      }
+      public InternalTarget(KeyRing keyRing) : base(-1, false, TargetFlags.None) => m_KeyRing = keyRing;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

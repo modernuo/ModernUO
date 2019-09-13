@@ -139,10 +139,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public SecureLevel Level{ get; set; }
 
-    public override bool AllowEquippedCast(Mobile from)
-    {
-      return true;
-    }
+    public override bool AllowEquippedCast(Mobile from) => true;
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
     {

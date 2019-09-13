@@ -3,10 +3,7 @@ namespace Server.Items
   public class PhillipsWoodenSteed : MonsterStatuette
   {
     [Constructible]
-    public PhillipsWoodenSteed() : base(MonsterStatuetteType.PhillipsWoodenSteed)
-    {
-      LootType = LootType.Regular;
-    }
+    public PhillipsWoodenSteed() : base(MonsterStatuetteType.PhillipsWoodenSteed) => LootType = LootType.Regular;
 
     public PhillipsWoodenSteed(Serial serial) : base(serial)
     {

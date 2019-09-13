@@ -203,10 +203,7 @@ namespace Server.Gumps
 
     private class TypeNameComparer : IComparer<Type>
     {
-      public int Compare(Type x, Type y)
-      {
-        return x.Name.CompareTo(y.Name);
-      }
+      public int Compare(Type x, Type y) => x.Name.CompareTo(y.Name);
     }
 
     public class InternalTarget : Target

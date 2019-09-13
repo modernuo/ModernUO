@@ -45,30 +45,15 @@ namespace Server.Mobiles
     public override string CorpseName => "a horde minion corpse";
     public override string DefaultName => "a horde minion";
 
-    public override int GetIdleSound()
-    {
-      return 338;
-    }
+    public override int GetIdleSound() => 338;
 
-    public override int GetAngerSound()
-    {
-      return 338;
-    }
+    public override int GetAngerSound() => 338;
 
-    public override int GetDeathSound()
-    {
-      return 338;
-    }
+    public override int GetDeathSound() => 338;
 
-    public override int GetAttackSound()
-    {
-      return 406;
-    }
+    public override int GetAttackSound() => 406;
 
-    public override int GetHurtSound()
-    {
-      return 194;
-    }
+    public override int GetHurtSound() => 194;
 
     public override void Serialize(GenericWriter writer)
     {

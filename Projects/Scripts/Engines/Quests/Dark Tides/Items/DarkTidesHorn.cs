@@ -15,10 +15,7 @@ namespace Server.Engines.Quests.Necro
     {
     }
 
-    public override bool ValidateUse(Mobile from)
-    {
-      return from is PlayerMobile pm && pm.Quest is DarkTidesQuest;
-    }
+    public override bool ValidateUse(Mobile from) => from is PlayerMobile pm && pm.Quest is DarkTidesQuest;
 
     public override void Serialize(GenericWriter writer)
     {

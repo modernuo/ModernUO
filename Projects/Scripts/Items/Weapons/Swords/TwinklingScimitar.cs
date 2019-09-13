@@ -3,10 +3,7 @@ namespace Server.Items
   public class TwinklingScimitar : RadiantScimitar
   {
     [Constructible]
-    public TwinklingScimitar()
-    {
-      Attributes.DefendChance = 6;
-    }
+    public TwinklingScimitar() => Attributes.DefendChance = 6;
 
     public TwinklingScimitar(Serial serial) : base(serial)
     {

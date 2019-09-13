@@ -68,10 +68,7 @@ namespace Server
       return newPoison ?? oldPoison;
     }
 
-    public override Timer ConstructTimer(Mobile m)
-    {
-      return new PoisonTimer(m, this);
-    }
+    public override Timer ConstructTimer(Mobile m) => new PoisonTimer(m, this);
 
     public class PoisonTimer : Timer
     {

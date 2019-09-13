@@ -3,10 +3,7 @@ namespace Server.Items
   public class NotarizedApplication : Item
   {
     [Constructible]
-    public NotarizedApplication() : base(0x14EF)
-    {
-      LootType = LootType.Blessed;
-    }
+    public NotarizedApplication() : base(0x14EF) => LootType = LootType.Blessed;
 
     public NotarizedApplication(Serial serial) : base(serial)
     {

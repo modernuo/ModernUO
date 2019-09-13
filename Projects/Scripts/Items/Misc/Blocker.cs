@@ -6,10 +6,7 @@ namespace Server.Items
   public class Blocker : Item
   {
     [Constructible]
-    public Blocker() : base(0x21A4)
-    {
-      Movable = false;
-    }
+    public Blocker() : base(0x21A4) => Movable = false;
 
     public Blocker(Serial serial) : base(serial)
     {

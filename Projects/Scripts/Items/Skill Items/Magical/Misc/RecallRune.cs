@@ -290,10 +290,7 @@ namespace Server.Items
     {
       private RecallRune m_Rune;
 
-      public RenamePrompt(RecallRune rune)
-      {
-        m_Rune = rune;
-      }
+      public RenamePrompt(RecallRune rune) => m_Rune = rune;
 
       public override void OnResponse(Mobile from, string text)
       {

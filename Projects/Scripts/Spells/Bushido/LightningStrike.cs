@@ -13,10 +13,7 @@ namespace Server.Spells.Bushido
 
     public override bool ValidatesDuringHit => false;
 
-    public override int GetAccuracyBonus(Mobile attacker)
-    {
-      return 50;
-    }
+    public override int GetAccuracyBonus(Mobile attacker) => 50;
 
     public override bool Validate(Mobile from)
     {

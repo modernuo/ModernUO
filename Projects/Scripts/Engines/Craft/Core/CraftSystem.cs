@@ -65,10 +65,7 @@ namespace Server.Engines.Craft
 
     public abstract double GetChanceAtMin(CraftItem item);
 
-    public virtual bool RetainsColorFrom(CraftItem item, Type type)
-    {
-      return false;
-    }
+    public virtual bool RetainsColorFrom(CraftItem item, Type type) => false;
 
     public CraftContext GetContext(Mobile m)
     {
@@ -92,10 +89,7 @@ namespace Server.Engines.Craft
       GetContext(m)?.OnMade(item);
     }
 
-    public virtual bool ConsumeOnFailure(Mobile from, Type resourceType, CraftItem craftItem)
-    {
-      return true;
-    }
+    public virtual bool ConsumeOnFailure(Mobile from, Type resourceType, CraftItem craftItem) => true;
 
     public void CreateItem(Mobile from, Type type, Type typeRes, BaseTool tool, CraftItem realCraftItem)
     {
@@ -122,22 +116,16 @@ namespace Server.Engines.Craft
 
 
     public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, double minSkill, double maxSkill,
-      Type typeRes, TextDefinition nameRes, int amount)
-    {
-      return AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, "");
-    }
+      Type typeRes, TextDefinition nameRes, int amount) =>
+      AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, "");
 
     public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, double minSkill, double maxSkill,
-      Type typeRes, TextDefinition nameRes, int amount, TextDefinition message)
-    {
-      return AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, message);
-    }
+      Type typeRes, TextDefinition nameRes, int amount, TextDefinition message) =>
+      AddCraft(typeItem, group, name, MainSkill, minSkill, maxSkill, typeRes, nameRes, amount, message);
 
     public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, double minSkill,
-      double maxSkill, Type typeRes, TextDefinition nameRes, int amount)
-    {
-      return AddCraft(typeItem, group, name, skillToMake, minSkill, maxSkill, typeRes, nameRes, amount, "");
-    }
+      double maxSkill, Type typeRes, TextDefinition nameRes, int amount) =>
+      AddCraft(typeItem, group, name, skillToMake, minSkill, maxSkill, typeRes, nameRes, amount, "");
 
     public int AddCraft(Type typeItem, TextDefinition group, TextDefinition name, SkillName skillToMake, double minSkill,
       double maxSkill, Type typeRes, TextDefinition nameRes, int amount, TextDefinition message)

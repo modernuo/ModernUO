@@ -69,40 +69,19 @@ namespace Server.Mobiles
         CurrentSpeed = PassiveSpeed;
     }
 
-    public override bool OverrideBondingReqs()
-    {
-      return true;
-    }
+    public override bool OverrideBondingReqs() => true;
 
-    public override int GetAngerSound()
-    {
-      return 0x21D;
-    }
+    public override int GetAngerSound() => 0x21D;
 
-    public override int GetIdleSound()
-    {
-      return 0x21D;
-    }
+    public override int GetIdleSound() => 0x21D;
 
-    public override int GetAttackSound()
-    {
-      return 0x162;
-    }
+    public override int GetAttackSound() => 0x162;
 
-    public override int GetHurtSound()
-    {
-      return 0x163;
-    }
+    public override int GetHurtSound() => 0x163;
 
-    public override int GetDeathSound()
-    {
-      return 0x21D;
-    }
+    public override int GetDeathSound() => 0x21D;
 
-    public override double GetControlChance(Mobile m, bool useBaseSkill = false)
-    {
-      return 1.0;
-    }
+    public override double GetControlChance(Mobile m, bool useBaseSkill = false) => 1.0;
 
     public override void Serialize(GenericWriter writer)
     {

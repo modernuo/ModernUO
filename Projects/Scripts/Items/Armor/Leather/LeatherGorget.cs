@@ -3,10 +3,7 @@ namespace Server.Items
   public class LeatherGorget : BaseArmor
   {
     [Constructible]
-    public LeatherGorget() : base(0x13C7)
-    {
-      Weight = 1.0;
-    }
+    public LeatherGorget() : base(0x13C7) => Weight = 1.0;
 
     public LeatherGorget(Serial serial) : base(serial)
     {

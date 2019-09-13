@@ -20,10 +20,7 @@ namespace Server.ContextMenus
     {
       private SpellScroll m_Scroll;
 
-      public InternalTarget(SpellScroll scroll) : base(3, false, TargetFlags.None)
-      {
-        m_Scroll = scroll;
-      }
+      public InternalTarget(SpellScroll scroll) : base(3, false, TargetFlags.None) => m_Scroll = scroll;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -37,9 +34,7 @@ namespace Server.ContextMenus
             {
             }
             else if (book.HasSpell(m_Scroll.SpellID))
-            {
               from.SendLocalizedMessage(500179); // That spell is already present in that spellbook.
-            }
             else
             {
               int val = m_Scroll.SpellID - book.BookOffset;
@@ -50,7 +45,7 @@ namespace Server.ContextMenus
 
                 m_Scroll.Consume();
 
-                from.Send(new PlaySound(0x249, book.GetWorldLocation()));
+                Packets.SendPlaySound(from.NetState, 0x249, book.GetWorldLocation());
               }
             }
           }

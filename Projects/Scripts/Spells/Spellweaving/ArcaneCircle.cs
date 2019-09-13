@@ -65,10 +65,7 @@ namespace Server.Spells.Spellweaving
       FinishSequence();
     }
 
-    private static bool IsSanctuary(Point3D p, Map m)
-    {
-      return (m == Map.Trammel || m == Map.Felucca) && p.X == 6267 && p.Y == 131;
-    }
+    private static bool IsSanctuary(Point3D p, Map m) => (m == Map.Trammel || m == Map.Felucca) && p.X == 6267 && p.Y == 131;
 
     private static bool IsValidLocation(Point3D location, Map map)
     {
@@ -102,13 +99,10 @@ namespace Server.Spells.Spellweaving
       return found;
     }
 
-    public static bool IsValidTile(int itemID)
-    {
-      //Per OSI, Center tile only
-      return itemID == 0xFEA || itemID == 0x1216 || itemID == 0x307F || itemID == 0x1D10 || itemID == 0x1D0F ||
-             itemID == 0x1D1F ||
-             itemID == 0x1D12; // Pentagram center, Abbatoir center, Arcane Circle Center, Bloody Pentagram has 4 tiles at center
-    }
+    public static bool IsValidTile(int itemID) =>
+      itemID == 0xFEA || itemID == 0x1216 || itemID == 0x307F || itemID == 0x1D10 || itemID == 0x1D0F ||
+      itemID == 0x1D1F ||
+      itemID == 0x1D12;
 
     private List<Mobile> GetArcanists()
     {

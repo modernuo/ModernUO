@@ -30,10 +30,7 @@ namespace Server.Items
   public class GoldRing : BaseRing
   {
     [Constructible]
-    public GoldRing() : base(0x108a)
-    {
-      Weight = 0.1;
-    }
+    public GoldRing() : base(0x108a) => Weight = 0.1;
 
     public GoldRing(Serial serial) : base(serial)
     {
@@ -57,10 +54,7 @@ namespace Server.Items
   public class SilverRing : BaseRing
   {
     [Constructible]
-    public SilverRing() : base(0x1F09)
-    {
-      Weight = 0.1;
-    }
+    public SilverRing() : base(0x1F09) => Weight = 0.1;
 
     public SilverRing(Serial serial) : base(serial)
     {

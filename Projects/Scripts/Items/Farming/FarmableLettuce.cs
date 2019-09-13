@@ -11,10 +11,7 @@ namespace Server.Items
     {
     }
 
-    public static int GetCropID()
-    {
-      return 3254;
-    }
+    public static int GetCropID() => 3254;
 
     public override Item GetCropObject()
     {
@@ -25,10 +22,7 @@ namespace Server.Items
       return lettuce;
     }
 
-    public override int GetPickedID()
-    {
-      return 3254;
-    }
+    public override int GetPickedID() => 3254;
 
     public override void Serialize(GenericWriter writer)
     {

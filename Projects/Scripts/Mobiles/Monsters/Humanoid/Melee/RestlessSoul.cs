@@ -68,20 +68,11 @@ namespace Server.Mobiles
           list.RemoveAt(i--);
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x107;
-    }
+    public override int GetIdleSound() => 0x107;
 
-    public override int GetAngerSound()
-    {
-      return 0x1BF;
-    }
+    public override int GetAngerSound() => 0x1BF;
 
-    public override int GetDeathSound()
-    {
-      return 0xFD;
-    }
+    public override int GetDeathSound() => 0xFD;
 
     public override bool IsEnemy(Mobile m)
     {

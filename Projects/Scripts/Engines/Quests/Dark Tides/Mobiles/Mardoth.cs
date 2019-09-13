@@ -80,10 +80,7 @@ namespace Server.Engines.Quests.Necro
       AddItem(gorget);
     }
 
-    public override int GetAutoTalkRange(PlayerMobile m)
-    {
-      return 3;
-    }
+    public override int GetAutoTalkRange(PlayerMobile m) => 3;
 
     public override bool CanTalkTo(PlayerMobile to)
     {

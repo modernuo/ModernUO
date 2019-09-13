@@ -4,10 +4,7 @@ namespace Server.Items
   public class ShortSpear : BaseSpear
   {
     [Constructible]
-    public ShortSpear() : base(0x1403)
-    {
-      Weight = 4.0;
-    }
+    public ShortSpear() : base(0x1403) => Weight = 4.0;
 
     public ShortSpear(Serial serial) : base(serial)
     {

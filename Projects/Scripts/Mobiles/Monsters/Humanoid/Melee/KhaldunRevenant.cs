@@ -100,29 +100,17 @@ namespace Server.Mobiles
       m_Set.Add(killer);
     }
 
-    public static bool IsInsideKhaldun(Mobile from)
-    {
-      return from?.Region?.IsPartOf("Khaldun") == true;
-    }
+    public static bool IsInsideKhaldun(Mobile from) => from?.Region?.IsPartOf("Khaldun") == true;
 
     public override void DisplayPaperdollTo(Mobile to)
     {
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x1BF;
-    }
+    public override int GetIdleSound() => 0x1BF;
 
-    public override int GetAngerSound()
-    {
-      return 0x107;
-    }
+    public override int GetAngerSound() => 0x107;
 
-    public override int GetDeathSound()
-    {
-      return 0xFD;
-    }
+    public override int GetDeathSound() => 0xFD;
 
     public override void OnThink()
     {

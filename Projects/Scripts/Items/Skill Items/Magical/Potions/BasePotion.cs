@@ -254,10 +254,8 @@ namespace Server.Items
       return AOS.Scale(v, 100 + EnhancePotions(m));
     }
 
-    public override bool StackWith(Mobile from, Item dropped, bool playSound)
-    {
-      return dropped is BasePotion potion && potion.m_PotionEffect == m_PotionEffect &&
-             base.StackWith(from, potion, playSound);
-    }
+    public override bool StackWith(Mobile from, Item dropped, bool playSound) =>
+      dropped is BasePotion potion && potion.m_PotionEffect == m_PotionEffect &&
+      base.StackWith(from, potion, playSound);
   }
 }

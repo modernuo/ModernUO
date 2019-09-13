@@ -9,10 +9,8 @@ namespace Server.Engines.MLQuests.Items
     private static readonly Map MapDest = Map.Malas;
 
     public BedlamTeleporter()
-      : base(0x124D)
-    {
+      : base(0x124D) =>
       Movable = false;
-    }
 
     public BedlamTeleporter(Serial serial)
       : base(serial)

@@ -113,10 +113,7 @@ namespace Server.Engines.Quests.Doom
       return base.OnDragDrop(from, dropped);
     }
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-      return to.Quest == null && QuestSystem.CanOfferQuest(to, typeof(TheSummoningQuest));
-    }
+    public override bool CanTalkTo(PlayerMobile to) => to.Quest == null && QuestSystem.CanOfferQuest(to, typeof(TheSummoningQuest));
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

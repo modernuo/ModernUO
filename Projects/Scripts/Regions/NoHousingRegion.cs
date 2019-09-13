@@ -16,9 +16,6 @@ namespace Server.Regions
 
     public bool SmartChecking => m_SmartChecking;
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      return m_SmartChecking;
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => m_SmartChecking;
   }
 }

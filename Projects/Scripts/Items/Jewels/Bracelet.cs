@@ -30,10 +30,7 @@ namespace Server.Items
   public class GoldBracelet : BaseBracelet
   {
     [Constructible]
-    public GoldBracelet() : base(0x1086)
-    {
-      Weight = 0.1;
-    }
+    public GoldBracelet() : base(0x1086) => Weight = 0.1;
 
     public GoldBracelet(Serial serial) : base(serial)
     {
@@ -57,10 +54,7 @@ namespace Server.Items
   public class SilverBracelet : BaseBracelet
   {
     [Constructible]
-    public SilverBracelet() : base(0x1F06)
-    {
-      Weight = 0.1;
-    }
+    public SilverBracelet() : base(0x1F06) => Weight = 0.1;
 
     public SilverBracelet(Serial serial) : base(serial)
     {

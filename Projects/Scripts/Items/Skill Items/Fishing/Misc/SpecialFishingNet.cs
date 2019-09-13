@@ -380,10 +380,7 @@ namespace Server.Items
   public class FabledFishingNet : SpecialFishingNet
   {
     [Constructible]
-    public FabledFishingNet()
-    {
-      Hue = 0x481;
-    }
+    public FabledFishingNet() => Hue = 0x481;
 
     public FabledFishingNet(Serial serial) : base(serial)
     {
@@ -395,10 +392,7 @@ namespace Server.Items
     {
     }
 
-    protected override int GetSpawnCount()
-    {
-      return base.GetSpawnCount() + 4;
-    }
+    protected override int GetSpawnCount() => base.GetSpawnCount() + 4;
 
     protected override void FinishEffect(Point3D p, Map map, Mobile from)
     {

@@ -57,10 +57,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsItem => Type?.Namespace.Equals("Server.Items") == true;
 
-    public override string ToString()
-    {
-      return Type?.Name ?? "None";
-    }
+    public override string ToString() => Type?.Name ?? "None";
 
     private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
     {
@@ -68,10 +65,7 @@ namespace Server.Items
         flags |= toSet;
     }
 
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet)
-    {
-      return (flags & toGet) != 0;
-    }
+    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     public virtual void Serialize(GenericWriter writer)
     {
@@ -95,10 +89,7 @@ namespace Server.Items
         writer.WriteEncodedInt(Amount);
     }
 
-    public int DamageBonus(Mobile to)
-    {
-      return to?.GetType() == Type ? Amount : 0;
-    }
+    public int DamageBonus(Mobile to) => to?.GetType() == Type ? Amount : 0;
 
     [Flags]
     private enum SaveFlag

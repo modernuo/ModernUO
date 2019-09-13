@@ -61,10 +61,7 @@ namespace Server.Guilds
 
     public RankFlags Flags{ get; private set; }
 
-    public bool GetFlag(RankFlags flag)
-    {
-      return (Flags & flag) != 0;
-    }
+    public bool GetFlag(RankFlags flag) => (Flags & flag) != 0;
 
     public void SetFlag(RankFlags flag, bool value)
     {
@@ -267,25 +264,19 @@ namespace Server.Guilds
       private AllianceInfo m_Alliance;
 
       public AllianceRosterGump(PlayerMobile pm, Guild g, AllianceInfo alliance) : base(pm, g, true, "", 0,
-        alliance.m_Members, alliance.Name)
-      {
+        alliance.m_Members, alliance.Name) =>
         m_Alliance = alliance;
-      }
 
       public AllianceRosterGump(PlayerMobile pm, Guild g, AllianceInfo alliance, IComparer<Guild> currentComparer,
         bool ascending, string filter, int startNumber) : base(pm, g, currentComparer, ascending, filter,
-        startNumber, alliance.m_Members, alliance.Name)
-      {
+        startNumber, alliance.m_Members, alliance.Name) =>
         m_Alliance = alliance;
-      }
 
       protected override bool AllowAdvancedSearch => false;
 
       public override Gump GetResentGump(PlayerMobile pm, Guild g, IComparer<Guild> comparer, bool ascending,
-        string filter, int startNumber)
-      {
-        return new AllianceRosterGump(pm, g, m_Alliance, comparer, ascending, filter, startNumber);
-      }
+        string filter, int startNumber) =>
+        new AllianceRosterGump(pm, g, m_Alliance, comparer, ascending, filter, startNumber);
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
@@ -498,10 +489,7 @@ namespace Server.Guilds
   {
     private static TimeSpan InternalDelay = TimeSpan.FromMinutes(1.0);
 
-    public WarTimer() : base(InternalDelay, InternalDelay)
-    {
-      Priority = TimerPriority.FiveSeconds;
-    }
+    public WarTimer() : base(InternalDelay, InternalDelay) => Priority = TimerPriority.FiveSeconds;
 
     public static void Initialize()
     {
@@ -989,20 +977,11 @@ namespace Server.Guilds
 
     #region Is<something>(...)
 
-    public bool IsMember(Mobile m)
-    {
-      return Members.Contains(m);
-    }
+    public bool IsMember(Mobile m) => Members.Contains(m);
 
-    public bool IsAlly(Guild g)
-    {
-      return NewGuildSystem ? Alliance?.IsMember(this) == true && Alliance.IsMember(g) : Allies.Contains(g);
-    }
+    public bool IsAlly(Guild g) => NewGuildSystem ? Alliance?.IsMember(this) == true && Alliance.IsMember(g) : Allies.Contains(g);
 
-    public bool IsEnemy(Guild g)
-    {
-      return Type != GuildType.Regular && g.Type != GuildType.Regular && Type != g.Type || IsWar(g);
-    }
+    public bool IsEnemy(Guild g) => Type != GuildType.Regular && g.Type != GuildType.Regular && Type != g.Type || IsWar(g);
 
     public bool IsWar(Guild g)
     {
@@ -1385,16 +1364,11 @@ namespace Server.Guilds
 
     #region Voting
 
-    public bool CanVote(Mobile m)
-    {
-      return (!NewGuildSystem || m is PlayerMobile pm && pm.GuildRank.GetFlag(RankFlags.CanVote)) &&
-             m?.Deleted == false && m.Guild == this;
-    }
+    public bool CanVote(Mobile m) =>
+      (!NewGuildSystem || m is PlayerMobile pm && pm.GuildRank.GetFlag(RankFlags.CanVote)) &&
+      m?.Deleted == false && m.Guild == this;
 
-    public bool CanBeVotedFor(Mobile m)
-    {
-      return (!NewGuildSystem || m is PlayerMobile pm && pm.LastOnline + InactiveTime >= DateTime.UtcNow) && m?.Deleted == false && m.Guild == this;
-    }
+    public bool CanBeVotedFor(Mobile m) => (!NewGuildSystem || m is PlayerMobile pm && pm.LastOnline + InactiveTime >= DateTime.UtcNow) && m?.Deleted == false && m.Guild == this;
 
     public void CalculateGuildmaster()
     {

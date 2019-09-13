@@ -365,15 +365,9 @@ namespace Server.Items
       return false;
     }
 
-    public override bool CheckItemUse(Mobile from, Item item)
-    {
-      return CheckLoot(from, item != this) && base.CheckItemUse(from, item);
-    }
+    public override bool CheckItemUse(Mobile from, Item item) => CheckLoot(from, item != this) && base.CheckItemUse(from, item);
 
-    public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
-    {
-      return CheckLoot(from, true) && base.CheckLift(from, item, ref reject);
-    }
+    public override bool CheckLift(Mobile from, Item item, ref LRReason reject) => CheckLoot(from, true) && base.CheckLift(from, item, ref reject);
 
     public override void OnItemLifted(Mobile from, Item item)
     {

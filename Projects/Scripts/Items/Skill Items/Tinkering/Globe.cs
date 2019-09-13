@@ -4,9 +4,8 @@ namespace Server.Items
   {
     [Constructible]
     public Globe() : base(0x1047) // It isn't flippable
-    {
-      Weight = 3.0;
-    }
+      =>
+        Weight = 3.0;
 
     public Globe(Serial serial) : base(serial)
     {

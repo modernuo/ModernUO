@@ -89,9 +89,6 @@ namespace Server.Spells.Seventh
       FinishSequence();
     }
 
-    public override double GetResistPercent(Mobile target)
-    {
-      return 98.0;
-    }
+    public override double GetResistPercent(Mobile target) => 98.0;
   }
 }

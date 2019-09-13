@@ -10,10 +10,8 @@ namespace Server.Items
 
     [Constructible]
     public Guillotine()
-      : base(4656)
-    {
+      : base(4656) =>
       Movable = false;
-    }
 
     public Guillotine(Serial serial)
       : base(serial)

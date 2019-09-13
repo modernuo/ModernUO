@@ -3,10 +3,7 @@ namespace Server.Items
   public class DiseasedMachete : ElvenMachete
   {
     [Constructible]
-    public DiseasedMachete()
-    {
-      WeaponAttributes.HitPoisonArea = 25;
-    }
+    public DiseasedMachete() => WeaponAttributes.HitPoisonArea = 25;
 
     public DiseasedMachete(Serial serial) : base(serial)
     {

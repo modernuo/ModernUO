@@ -653,10 +653,7 @@ namespace Server.Engines.MLQuests
       return result;
     }
 
-    public static List<MLQuest> FindQuestList(Type questerType)
-    {
-      return QuestGivers.TryGetValue(questerType, out List<MLQuest> result) ? result : EmptyList;
-    }
+    public static List<MLQuest> FindQuestList(Type questerType) => QuestGivers.TryGetValue(questerType, out List<MLQuest> result) ? result : EmptyList;
 
     public class ViewQuestsCommand : BaseCommand
     {

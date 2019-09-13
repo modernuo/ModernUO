@@ -789,10 +789,7 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual bool OnAtWayPoint()
-    {
-      return true;
-    }
+    public virtual bool OnAtWayPoint() => true;
 
     public virtual bool DoActionWander()
     {
@@ -901,15 +898,9 @@ namespace Server.Mobiles
       return true;
     }
 
-    public virtual bool DoActionInteract()
-    {
-      return true;
-    }
+    public virtual bool DoActionInteract() => true;
 
-    public virtual bool DoActionBackoff()
-    {
-      return true;
-    }
+    public virtual bool DoActionBackoff() => true;
 
     public virtual bool Obey()
     {
@@ -1785,15 +1776,9 @@ namespace Server.Mobiles
       return delay;
     }
 
-    public virtual bool CheckMove()
-    {
-      return Core.TickCount - NextMove >= 0;
-    }
+    public virtual bool CheckMove() => Core.TickCount - NextMove >= 0;
 
-    public virtual bool DoMove(Direction d)
-    {
-      return DoMove(d, false);
-    }
+    public virtual bool DoMove(Direction d) => DoMove(d, false);
 
     public virtual bool DoMove(Direction d, bool badStateOk)
     {
@@ -2561,10 +2546,7 @@ namespace Server.Mobiles
       {
       }
 
-      public static bool IsInCombat(BaseCreature creature)
-      {
-        return creature != null && (creature.Aggressors.Count > 0 || creature.Aggressed.Count > 0);
-      }
+      public static bool IsInCombat(BaseCreature creature) => creature != null && (creature.Aggressors.Count > 0 || creature.Aggressed.Count > 0);
 
       public override void Serialize(GenericWriter writer)
       {

@@ -52,10 +52,7 @@ namespace Server.Mobiles
     public override Poison PoisonImmune => Poison.Lethal;
     public override int TreasureMapLevel => 1;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.BleedAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
     public override void GenerateLoot()
     {

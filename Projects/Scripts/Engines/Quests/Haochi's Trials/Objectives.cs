@@ -85,10 +85,7 @@ namespace Server.Engines.Quests.Samurai
   {
     private bool m_CursedSoul;
 
-    public FirstTrialReturnObjective(bool cursedSoul)
-    {
-      m_CursedSoul = cursedSoul;
-    }
+    public FirstTrialReturnObjective(bool cursedSoul) => m_CursedSoul = cursedSoul;
 
     public FirstTrialReturnObjective()
     {
@@ -133,10 +130,7 @@ namespace Server.Engines.Quests.Samurai
 
   public class SecondTrialReturnObjective : QuestObjective
   {
-    public SecondTrialReturnObjective(bool dragon)
-    {
-      Dragon = dragon;
-    }
+    public SecondTrialReturnObjective(bool dragon) => Dragon = dragon;
 
     public SecondTrialReturnObjective()
     {
@@ -228,10 +222,7 @@ namespace Server.Engines.Quests.Samurai
 
   public class FourthTrialReturnObjective : QuestObjective
   {
-    public FourthTrialReturnObjective(bool killedCat)
-    {
-      KilledCat = killedCat;
-    }
+    public FourthTrialReturnObjective(bool killedCat) => KilledCat = killedCat;
 
     public FourthTrialReturnObjective()
     {

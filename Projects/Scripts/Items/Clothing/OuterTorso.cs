@@ -32,10 +32,7 @@ namespace Server.Items
   public class GildedDress : BaseOuterTorso
   {
     [Constructible]
-    public GildedDress(int hue = 0) : base(0x230E, hue)
-    {
-      Weight = 3.0;
-    }
+    public GildedDress(int hue = 0) : base(0x230E, hue) => Weight = 3.0;
 
     public GildedDress(Serial serial) : base(serial)
     {
@@ -60,10 +57,7 @@ namespace Server.Items
   public class FancyDress : BaseOuterTorso
   {
     [Constructible]
-    public FancyDress(int hue = 0) : base(0x1F00, hue)
-    {
-      Weight = 3.0;
-    }
+    public FancyDress(int hue = 0) : base(0x1F00, hue) => Weight = 3.0;
 
     public FancyDress(Serial serial) : base(serial)
     {
@@ -447,10 +441,7 @@ namespace Server.Items
   public class Robe : BaseOuterTorso, IArcaneEquip
   {
     [Constructible]
-    public Robe(int hue = 0) : base(0x1F03, hue)
-    {
-      Weight = 3.0;
-    }
+    public Robe(int hue = 0) : base(0x1F03, hue) => Weight = 3.0;
 
     public Robe(Serial serial) : base(serial)
     {
@@ -608,10 +599,7 @@ namespace Server.Items
   public class PlainDress : BaseOuterTorso
   {
     [Constructible]
-    public PlainDress(int hue = 0) : base(0x1F01, hue)
-    {
-      Weight = 2.0;
-    }
+    public PlainDress(int hue = 0) : base(0x1F01, hue) => Weight = 2.0;
 
     public PlainDress(Serial serial) : base(serial)
     {
@@ -639,10 +627,7 @@ namespace Server.Items
   public class Kamishimo : BaseOuterTorso
   {
     [Constructible]
-    public Kamishimo(int hue = 0) : base(0x2799, hue)
-    {
-      Weight = 3.0;
-    }
+    public Kamishimo(int hue = 0) : base(0x2799, hue) => Weight = 3.0;
 
     public Kamishimo(Serial serial) : base(serial)
     {
@@ -667,10 +652,7 @@ namespace Server.Items
   public class HakamaShita : BaseOuterTorso
   {
     [Constructible]
-    public HakamaShita(int hue = 0) : base(0x279C, hue)
-    {
-      Weight = 3.0;
-    }
+    public HakamaShita(int hue = 0) : base(0x279C, hue) => Weight = 3.0;
 
     public HakamaShita(Serial serial) : base(serial)
     {
@@ -695,10 +677,7 @@ namespace Server.Items
   public class MaleKimono : BaseOuterTorso
   {
     [Constructible]
-    public MaleKimono(int hue = 0) : base(0x2782, hue)
-    {
-      Weight = 3.0;
-    }
+    public MaleKimono(int hue = 0) : base(0x2782, hue) => Weight = 3.0;
 
     public MaleKimono(Serial serial) : base(serial)
     {
@@ -725,10 +704,7 @@ namespace Server.Items
   public class FemaleKimono : BaseOuterTorso
   {
     [Constructible]
-    public FemaleKimono(int hue = 0) : base(0x2783, hue)
-    {
-      Weight = 3.0;
-    }
+    public FemaleKimono(int hue = 0) : base(0x2783, hue) => Weight = 3.0;
 
     public FemaleKimono(Serial serial) : base(serial)
     {
@@ -755,10 +731,7 @@ namespace Server.Items
   public class MaleElvenRobe : BaseOuterTorso
   {
     [Constructible]
-    public MaleElvenRobe(int hue = 0) : base(0x2FB9, hue)
-    {
-      Weight = 2.0;
-    }
+    public MaleElvenRobe(int hue = 0) : base(0x2FB9, hue) => Weight = 2.0;
 
     public MaleElvenRobe(Serial serial) : base(serial)
     {
@@ -785,10 +758,7 @@ namespace Server.Items
   public class FemaleElvenRobe : BaseOuterTorso
   {
     [Constructible]
-    public FemaleElvenRobe(int hue = 0) : base(0x2FBA, hue)
-    {
-      Weight = 2.0;
-    }
+    public FemaleElvenRobe(int hue = 0) : base(0x2FBA, hue) => Weight = 2.0;
 
     public FemaleElvenRobe(Serial serial) : base(serial)
     {

@@ -5,16 +5,10 @@ namespace Server.Items
   public class Skillet : BaseTool
   {
     [Constructible]
-    public Skillet() : base(0x97F)
-    {
-      Weight = 1.0;
-    }
+    public Skillet() : base(0x97F) => Weight = 1.0;
 
     [Constructible]
-    public Skillet(int uses) : base(uses, 0x97F)
-    {
-      Weight = 1.0;
-    }
+    public Skillet(int uses) : base(uses, 0x97F) => Weight = 1.0;
 
     public Skillet(Serial serial) : base(serial)
     {

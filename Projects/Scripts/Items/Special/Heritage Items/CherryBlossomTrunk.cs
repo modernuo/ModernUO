@@ -32,10 +32,7 @@ namespace Server.Items
   public class CherryBlossomTrunkDeed : BaseAddonDeed
   {
     [Constructible]
-    public CherryBlossomTrunkDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public CherryBlossomTrunkDeed() => LootType = LootType.Blessed;
 
     public CherryBlossomTrunkDeed(Serial serial) : base(serial)
     {

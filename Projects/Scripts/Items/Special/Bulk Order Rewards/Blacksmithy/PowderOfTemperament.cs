@@ -93,10 +93,7 @@ namespace Server.Items
     {
       private PowderOfTemperament m_Powder;
 
-      public InternalTarget(PowderOfTemperament powder) : base(2, false, TargetFlags.None)
-      {
-        m_Powder = powder;
-      }
+      public InternalTarget(PowderOfTemperament powder) : base(2, false, TargetFlags.None) => m_Powder = powder;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

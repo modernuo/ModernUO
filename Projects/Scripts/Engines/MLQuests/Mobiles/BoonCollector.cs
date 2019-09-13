@@ -86,10 +86,7 @@ namespace Server.Engines.MLQuests.Mobiles
         DenyTalk(from);
     }
 
-    public virtual bool CanTalkTo(Mobile from)
-    {
-      return true;
-    }
+    public virtual bool CanTalkTo(Mobile from) => true;
 
     public virtual void DenyTalk(Mobile from)
     {
@@ -191,10 +188,7 @@ namespace Server.Engines.MLQuests.Mobiles
         m_Index = 0;
       }
 
-      private static TimeSpan GetDelay()
-      {
-        return TimeSpan.FromSeconds(Utility.RandomBool() ? 3 : 4);
-      }
+      private static TimeSpan GetDelay() => TimeSpan.FromSeconds(Utility.RandomBool() ? 3 : 4);
 
       protected override void OnTick()
       {
@@ -297,10 +291,7 @@ namespace Server.Engines.MLQuests.Mobiles
 
     public override string DefaultName => "Darius";
 
-    public override bool CanTalkTo(Mobile from)
-    {
-      return from.Race == Race.Human;
-    }
+    public override bool CanTalkTo(Mobile from) => from.Race == Race.Human;
 
     public override void DenyTalk(Mobile from)
     {
@@ -394,10 +385,7 @@ namespace Server.Engines.MLQuests.Mobiles
 
     public override string DefaultName => "Nedrick";
 
-    public override bool CanTalkTo(Mobile from)
-    {
-      return from.Race == Race.Elf;
-    }
+    public override bool CanTalkTo(Mobile from) => from.Race == Race.Elf;
 
     public override void DenyTalk(Mobile from)
     {

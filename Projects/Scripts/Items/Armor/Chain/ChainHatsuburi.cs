@@ -3,10 +3,7 @@ namespace Server.Items
   public class ChainHatsuburi : BaseArmor
   {
     [Constructible]
-    public ChainHatsuburi() : base(0x2774)
-    {
-      Weight = 7.0;
-    }
+    public ChainHatsuburi() : base(0x2774) => Weight = 7.0;
 
     public ChainHatsuburi(Serial serial) : base(serial)
     {

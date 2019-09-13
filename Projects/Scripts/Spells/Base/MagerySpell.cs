@@ -18,10 +18,7 @@ namespace Server.Spells
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds((3 + (int)Circle) * CastDelaySecondsPerTick);
 
-    public override bool ConsumeReagents()
-    {
-      return base.ConsumeReagents() || ArcaneGem.ConsumeCharges(Caster, Core.SE ? 1 : 1 + (int)Circle);
-    }
+    public override bool ConsumeReagents() => base.ConsumeReagents() || ArcaneGem.ConsumeCharges(Caster, Core.SE ? 1 : 1 + (int)Circle);
 
     public override void GetCastSkills(out double min, out double max)
     {
@@ -36,10 +33,7 @@ namespace Server.Spells
       max = avg + ChanceOffset;
     }
 
-    public override int GetMana()
-    {
-      return Scroll is BaseWand ? 0 : m_ManaTable[(int)Circle];
-    }
+    public override int GetMana() => Scroll is BaseWand ? 0 : m_ManaTable[(int)Circle];
 
     public override double GetResistSkill(Mobile m)
     {
@@ -83,10 +77,7 @@ namespace Server.Spells
              2.0; // Seems should be about half of what stratics says.
     }
 
-    public virtual double GetResistPercent(Mobile target)
-    {
-      return GetResistPercentForCircle(target, Circle);
-    }
+    public virtual double GetResistPercent(Mobile target) => GetResistPercentForCircle(target, Circle);
 
     public override TimeSpan GetCastDelay()
     {

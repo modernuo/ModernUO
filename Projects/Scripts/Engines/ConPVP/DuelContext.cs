@@ -117,11 +117,7 @@ namespace Server.Engines.ConPVP
       Timer.DelayCall(ts, () => DelayBounce_Callback(mob, corpse));
     }
 
-    public static bool AllowSpecialMove(Mobile from, string name, SpecialMove move)
-    {
-      // No DuelContext, or InstaAllowSpecialMove
-      return (from as PlayerMobile)?.DuelContext?.InstAllowSpecialMove(from, name, move) != false;
-    }
+    public static bool AllowSpecialMove(Mobile from, string name, SpecialMove move) => (from as PlayerMobile)?.DuelContext?.InstAllowSpecialMove(from, name, move) != false;
 
     public bool InstAllowSpecialMove(Mobile from, string name, SpecialMove move)
     {
@@ -958,10 +954,7 @@ namespace Server.Engines.ConPVP
       m_SDWarnTimer = null;
     }
 
-    public static bool CheckSuddenDeath(Mobile mob)
-    {
-      return mob is PlayerMobile pm && pm.DuelPlayer?.Eliminated == false && pm.DuelContext?.IsSuddenDeath == true;
-    }
+    public static bool CheckSuddenDeath(Mobile mob) => mob is PlayerMobile pm && pm.DuelPlayer?.Eliminated == false && pm.DuelContext?.IsSuddenDeath == true;
 
     public void ActivateSuddenDeath()
     {
@@ -2204,10 +2197,7 @@ namespace Server.Engines.ConPVP
 
     private class InternalWall : Item
     {
-      public InternalWall() : base(0x80)
-      {
-        Movable = false;
-      }
+      public InternalWall() : base(0x80) => Movable = false;
 
       public InternalWall(Serial serial) : base(serial)
       {

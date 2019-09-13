@@ -3,10 +3,7 @@ namespace Server.Items
   public class LightweightShortbow : MagicalShortbow
   {
     [Constructible]
-    public LightweightShortbow()
-    {
-      Balanced = true;
-    }
+    public LightweightShortbow() => Balanced = true;
 
     public LightweightShortbow(Serial serial) : base(serial)
     {

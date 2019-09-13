@@ -2,8 +2,7 @@ namespace Server.Factions
 {
   public class Minoc : Town
   {
-    public Minoc()
-    {
+    public Minoc() =>
       Definition =
         new TownDefinition(
           2,
@@ -19,6 +18,5 @@ namespace Server.Factions
           new TextDefinition(1041388, "Corrupted Faction Town Sigil of Minoc"),
           new Point3D(2471, 439, 15),
           new Point3D(2469, 445, 15));
-    }
   }
 }

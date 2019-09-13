@@ -8,10 +8,7 @@ namespace Server.Engines.MLQuests.Items
   {
     protected static readonly Type[] m_TalismanType = { typeof(RandomTalisman) };
 
-    public BaseCraftmansSatchel()
-    {
-      Hue = Utility.RandomBrightHue();
-    }
+    public BaseCraftmansSatchel() => Hue = Utility.RandomBrightHue();
 
     public BaseCraftmansSatchel(Serial serial)
       : base(serial)

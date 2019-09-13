@@ -4,10 +4,7 @@ namespace Server.Items
   public class Glass : Item
   {
     [Constructible]
-    public Glass() : base(0x1f81)
-    {
-      Weight = 0.1;
-    }
+    public Glass() : base(0x1f81) => Weight = 0.1;
 
     public Glass(Serial serial) : base(serial)
     {
@@ -31,10 +28,7 @@ namespace Server.Items
   public class GlassBottle : Item
   {
     [Constructible]
-    public GlassBottle() : base(0xe2b)
-    {
-      Weight = 0.3;
-    }
+    public GlassBottle() : base(0xe2b) => Weight = 0.3;
 
     public GlassBottle(Serial serial) : base(serial)
     {

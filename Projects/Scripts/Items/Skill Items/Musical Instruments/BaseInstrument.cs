@@ -179,10 +179,7 @@ namespace Server.Items
       UsesRemaining = UsesRemaining * 100 / GetUsesScalar();
     }
 
-    public int GetUsesScalar()
-    {
-      return m_Quality == InstrumentQuality.Exceptional ? 200 : 100;
-    }
+    public int GetUsesScalar() => m_Quality == InstrumentQuality.Exceptional ? 200 : 100;
 
     public void ConsumeUse(Mobile from)
     {
@@ -209,10 +206,7 @@ namespace Server.Items
       return null;
     }
 
-    public static int GetBardRange(Mobile bard, SkillName skill)
-    {
-      return 8 + (int)(bard.Skills[skill].Value / 15);
-    }
+    public static int GetBardRange(Mobile bard, SkillName skill) => 8 + (int)(bard.Skills[skill].Value / 15);
 
     public static void PickInstrument(Mobile from, InstrumentPickedCallback callback)
     {
@@ -241,25 +235,13 @@ namespace Server.Items
       }
     }
 
-    public static bool IsMageryCreature(BaseCreature bc)
-    {
-      return bc?.AI == AIType.AI_Mage && bc.Skills.Magery.Base > 5.0;
-    }
+    public static bool IsMageryCreature(BaseCreature bc) => bc?.AI == AIType.AI_Mage && bc.Skills.Magery.Base > 5.0;
 
-    public static bool IsFireBreathingCreature(BaseCreature bc)
-    {
-      return bc?.HasBreath == true;
-    }
+    public static bool IsFireBreathingCreature(BaseCreature bc) => bc?.HasBreath == true;
 
-    public static bool IsPoisonImmune(BaseCreature bc)
-    {
-      return bc?.PoisonImmune != null;
-    }
+    public static bool IsPoisonImmune(BaseCreature bc) => bc?.PoisonImmune != null;
 
-    public static int GetPoisonLevel(BaseCreature bc)
-    {
-      return (bc?.HitPoison.Level ?? -1) + 1;
-    }
+    public static int GetPoisonLevel(BaseCreature bc) => (bc?.HitPoison.Level ?? -1) + 1;
 
     public static double GetBaseDifficulty(Mobile targ)
     {

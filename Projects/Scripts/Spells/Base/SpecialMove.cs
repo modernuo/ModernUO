@@ -27,27 +27,15 @@ namespace Server.Spells
 
     public virtual bool ValidatesDuringHit => true;
 
-    public virtual int GetAccuracyBonus(Mobile attacker)
-    {
-      return 0;
-    }
+    public virtual int GetAccuracyBonus(Mobile attacker) => 0;
 
-    public virtual double GetDamageScalar(Mobile attacker, Mobile defender)
-    {
-      return 1.0;
-    }
+    public virtual double GetDamageScalar(Mobile attacker, Mobile defender) => 1.0;
 
     // Called before swinging, to make sure the accuracy scalar is to be computed.
-    public virtual bool OnBeforeSwing(Mobile attacker, Mobile defender)
-    {
-      return true;
-    }
+    public virtual bool OnBeforeSwing(Mobile attacker, Mobile defender) => true;
 
     // Called when a hit connects, but before damage is calculated.
-    public virtual bool OnBeforeDamage(Mobile attacker, Mobile defender)
-    {
-      return true;
-    }
+    public virtual bool OnBeforeDamage(Mobile attacker, Mobile defender) => true;
 
     // Called as soon as the ability is used.
     public virtual void OnUse(Mobile from)
@@ -69,15 +57,9 @@ namespace Server.Spells
     {
     }
 
-    public virtual bool IgnoreArmor(Mobile attacker)
-    {
-      return false;
-    }
+    public virtual bool IgnoreArmor(Mobile attacker) => false;
 
-    public virtual double GetPropertyBonus(Mobile attacker)
-    {
-      return 1.0;
-    }
+    public virtual double GetPropertyBonus(Mobile attacker) => 1.0;
 
     public virtual bool CheckSkills(Mobile m)
     {
@@ -302,10 +284,7 @@ namespace Server.Spells
       }
     }
 
-    private static SpecialMoveContext GetContext(Mobile m)
-    {
-      return m_PlayersTable.TryGetValue(m, out SpecialMoveContext context) ? context : null;
-    }
+    private static SpecialMoveContext GetContext(Mobile m) => m_PlayersTable.TryGetValue(m, out SpecialMoveContext context) ? context : null;
 
     private class SpecialMoveTimer : Timer
     {

@@ -49,30 +49,15 @@ namespace Server.Mobiles
     public override int Hides => 15;
     public override FoodType FavoriteFood => FoodType.GrainsAndHay;
 
-    public override int GetAngerSound()
-    {
-      return 0x4F8;
-    }
+    public override int GetAngerSound() => 0x4F8;
 
-    public override int GetIdleSound()
-    {
-      return 0x4F7;
-    }
+    public override int GetIdleSound() => 0x4F7;
 
-    public override int GetAttackSound()
-    {
-      return 0x4F6;
-    }
+    public override int GetAttackSound() => 0x4F6;
 
-    public override int GetHurtSound()
-    {
-      return 0x4F9;
-    }
+    public override int GetHurtSound() => 0x4F9;
 
-    public override int GetDeathSound()
-    {
-      return 0x4F5;
-    }
+    public override int GetDeathSound() => 0x4F5;
 
     public override void OnDeath(Container c)
     {

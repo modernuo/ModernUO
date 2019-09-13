@@ -8,10 +8,7 @@ namespace Server.Items
   {
     private ResetTimer m_ResetTimer;
 
-    public RaiseSwitch(int itemID = 0x1093) : base(itemID)
-    {
-      Movable = false;
-    }
+    public RaiseSwitch(int itemID = 0x1093) : base(itemID) => Movable = false;
 
     public RaiseSwitch(Serial serial) : base(serial)
     {

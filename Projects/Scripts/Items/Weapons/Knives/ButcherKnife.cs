@@ -4,10 +4,7 @@ namespace Server.Items
   public class ButcherKnife : BaseKnife
   {
     [Constructible]
-    public ButcherKnife() : base(0x13F6)
-    {
-      Weight = 1.0;
-    }
+    public ButcherKnife() : base(0x13F6) => Weight = 1.0;
 
     public ButcherKnife(Serial serial) : base(serial)
     {

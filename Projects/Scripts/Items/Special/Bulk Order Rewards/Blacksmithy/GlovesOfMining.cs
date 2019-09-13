@@ -4,10 +4,7 @@ namespace Server.Items
   public class LeatherGlovesOfMining : BaseGlovesOfMining
   {
     [Constructible]
-    public LeatherGlovesOfMining(int bonus) : base(bonus, 0x13C6)
-    {
-      Weight = 1;
-    }
+    public LeatherGlovesOfMining(int bonus) : base(bonus, 0x13C6) => Weight = 1;
 
     public LeatherGlovesOfMining(Serial serial) : base(serial)
     {
@@ -51,10 +48,7 @@ namespace Server.Items
   public class StuddedGlovesOfMining : BaseGlovesOfMining
   {
     [Constructible]
-    public StuddedGlovesOfMining(int bonus) : base(bonus, 0x13D5)
-    {
-      Weight = 2;
-    }
+    public StuddedGlovesOfMining(int bonus) : base(bonus, 0x13D5) => Weight = 2;
 
     public StuddedGlovesOfMining(Serial serial) : base(serial)
     {
@@ -96,10 +90,7 @@ namespace Server.Items
   public class RingmailGlovesOfMining : BaseGlovesOfMining
   {
     [Constructible]
-    public RingmailGlovesOfMining(int bonus) : base(bonus, 0x13EB)
-    {
-      Weight = 1;
-    }
+    public RingmailGlovesOfMining(int bonus) : base(bonus, 0x13EB) => Weight = 1;
 
     public RingmailGlovesOfMining(Serial serial) : base(serial)
     {

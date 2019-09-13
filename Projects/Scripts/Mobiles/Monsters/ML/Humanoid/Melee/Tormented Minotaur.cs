@@ -45,40 +45,22 @@ namespace Server.Mobiles
     public override Poison PoisonImmune => Poison.Deadly;
     public override int TreasureMapLevel => 3;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.Dismount;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
     public override void GenerateLoot()
     {
       AddLoot(LootPack.FilthyRich, 10);
     }
 
-    public override int GetDeathSound()
-    {
-      return 0x596;
-    }
+    public override int GetDeathSound() => 0x596;
 
-    public override int GetAttackSound()
-    {
-      return 0x597;
-    }
+    public override int GetAttackSound() => 0x597;
 
-    public override int GetIdleSound()
-    {
-      return 0x598;
-    }
+    public override int GetIdleSound() => 0x598;
 
-    public override int GetAngerSound()
-    {
-      return 0x599;
-    }
+    public override int GetAngerSound() => 0x599;
 
-    public override int GetHurtSound()
-    {
-      return 0x59A;
-    }
+    public override int GetHurtSound() => 0x59A;
 
     public override void Serialize(GenericWriter writer)
     {

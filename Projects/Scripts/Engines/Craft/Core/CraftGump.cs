@@ -339,10 +339,7 @@ namespace Server.Engines.Craft
       return craftGroupCol.Count;
     }
 
-    public static int GetButtonID(int type, int index)
-    {
-      return 1 + type + index * 7;
-    }
+    public static int GetButtonID(int type, int index) => 1 + type + index * 7;
 
     public void CraftItem(CraftItem item)
     {

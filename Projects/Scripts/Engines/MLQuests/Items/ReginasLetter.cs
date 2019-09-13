@@ -3,10 +3,7 @@ namespace Server.Items
   public class ReginasLetter : Item
   {
     [Constructible]
-    public ReginasLetter() : base(0x14ED)
-    {
-      LootType = LootType.Blessed;
-    }
+    public ReginasLetter() : base(0x14ED) => LootType = LootType.Blessed;
 
     public ReginasLetter(Serial serial) : base(serial)
     {

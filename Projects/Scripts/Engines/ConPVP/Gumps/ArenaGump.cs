@@ -67,10 +67,7 @@ namespace Server.Engines.ConPVP
         from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
     }
 
-    public override bool OnMoveOver(Mobile m)
-    {
-      return !m.Player || UseGate(m);
-    }
+    public override bool OnMoveOver(Mobile m) => !m.Player || UseGate(m);
   }
 
   public class ArenaGump : Gump
@@ -242,15 +239,9 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     private void AddBorderedText(int x, int y, int width, string text, int color, int borderColor)
     {

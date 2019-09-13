@@ -49,10 +49,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.Average);
     }
 
-    public override int GetDeathSound()
-    {
-      return 1218;
-    }
+    public override int GetDeathSound() => 1218;
 
     public override void Serialize(GenericWriter writer)
     {

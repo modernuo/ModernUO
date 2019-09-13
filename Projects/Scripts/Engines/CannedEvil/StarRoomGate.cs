@@ -85,10 +85,7 @@ namespace Server.Items
     {
       private Item m_Item;
 
-      public InternalTimer(Item item, DateTime end) : base(end - DateTime.UtcNow)
-      {
-        m_Item = item;
-      }
+      public InternalTimer(Item item, DateTime end) : base(end - DateTime.UtcNow) => m_Item = item;
 
       protected override void OnTick()
       {

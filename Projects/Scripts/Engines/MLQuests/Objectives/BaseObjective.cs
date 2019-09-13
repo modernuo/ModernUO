@@ -9,17 +9,11 @@ namespace Server.Engines.MLQuests.Objectives
     public virtual bool IsTimed => false;
     public virtual TimeSpan Duration => TimeSpan.Zero;
 
-    public virtual bool CanOffer(IQuestGiver quester, PlayerMobile pm, bool message)
-    {
-      return true;
-    }
+    public virtual bool CanOffer(IQuestGiver quester, PlayerMobile pm, bool message) => true;
 
     public abstract void WriteToGump(Gump g, ref int y);
 
-    public virtual BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
-    {
-      return null;
-    }
+    public virtual BaseObjectiveInstance CreateInstance(MLQuestInstance instance) => null;
   }
 
   public abstract class BaseObjectiveInstance
@@ -63,15 +57,9 @@ namespace Server.Engines.MLQuests.Objectives
       y += 16;
     }
 
-    public virtual bool AllowsQuestItem(Item item, Type type)
-    {
-      return false;
-    }
+    public virtual bool AllowsQuestItem(Item item, Type type) => false;
 
-    public virtual bool IsCompleted()
-    {
-      return false;
-    }
+    public virtual bool IsCompleted() => false;
 
     public virtual void CheckComplete()
     {
@@ -94,10 +82,7 @@ namespace Server.Engines.MLQuests.Objectives
     {
     }
 
-    public virtual bool OnBeforeClaimReward()
-    {
-      return true;
-    }
+    public virtual bool OnBeforeClaimReward() => true;
 
     public virtual void OnClaimReward()
     {

@@ -174,10 +174,7 @@ namespace Server.Engines.PartySystem
       from.Party = null;
     }
 
-    public static Party Get(Mobile m)
-    {
-      return m?.Party as Party;
-    }
+    public static Party Get(Mobile m) => m?.Party as Party;
 
     public void Add(Mobile m)
     {
@@ -288,10 +285,7 @@ namespace Server.Engines.PartySystem
       }
     }
 
-    public bool Contains(Mobile m)
-    {
-      return this[m] != null;
-    }
+    public bool Contains(Mobile m) => this[m] != null;
 
     public void Disband()
     {
@@ -433,10 +427,7 @@ namespace Server.Engines.PartySystem
     {
       private Mobile m_Mobile;
 
-      public RejoinTimer(Mobile m) : base(TimeSpan.FromSeconds(1.0))
-      {
-        m_Mobile = m;
-      }
+      public RejoinTimer(Mobile m) : base(TimeSpan.FromSeconds(1.0)) => m_Mobile = m;
 
       protected override void OnTick()
       {

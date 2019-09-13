@@ -4,10 +4,7 @@ namespace Server.Items
   public class Bokuto : BaseSword
   {
     [Constructible]
-    public Bokuto() : base(0x27A8)
-    {
-      Weight = 7.0;
-    }
+    public Bokuto() : base(0x27A8) => Weight = 7.0;
 
     public Bokuto(Serial serial) : base(serial)
     {

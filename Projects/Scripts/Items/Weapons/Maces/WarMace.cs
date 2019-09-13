@@ -4,10 +4,7 @@ namespace Server.Items
   public class WarMace : BaseBashing
   {
     [Constructible]
-    public WarMace() : base(0x1407)
-    {
-      Weight = 17.0;
-    }
+    public WarMace() : base(0x1407) => Weight = 17.0;
 
     public WarMace(Serial serial) : base(serial)
     {

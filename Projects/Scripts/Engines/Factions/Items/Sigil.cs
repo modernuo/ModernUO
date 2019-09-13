@@ -221,10 +221,7 @@ namespace Server.Factions
       }
     }
 
-    public static bool ExistsOn(Mobile mob)
-    {
-      return mob.Backpack?.FindItemByType<Sigil>() != null;
-    }
+    public static bool ExistsOn(Mobile mob) => mob.Backpack?.FindItemByType<Sigil>() != null;
 
     private void BeginCorrupting(Faction faction)
     {

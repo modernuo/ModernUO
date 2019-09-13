@@ -208,12 +208,9 @@ namespace Server.Accounting
 		/// Gets the value of a specific flag in the Flags bitfield.
 		/// </summary>
 		/// <param name="index">The zero-based flag index.</param>
-		public bool GetFlag( int index )
-		{
-			return ( Flags & ( 1 << index ) ) != 0;
-		}
+		public bool GetFlag( int index ) => ( Flags & ( 1 << index ) ) != 0;
 
-		/// <summary>
+    /// <summary>
 		/// Sets the value of a specific flag in the Flags bitfield.
 		/// </summary>
 		/// <param name="index">The zero-based flag index.</param>
@@ -893,12 +890,9 @@ namespace Server.Accounting
 		/// </summary>
 		/// <param name="ns">NetState instance to check.</param>
 		/// <returns>True if allowed, false if not.</returns>
-		public bool CheckAccess( NetState ns )
-		{
-			return ( ns != null && CheckAccess( ns.Address ) );
-		}
+		public bool CheckAccess( NetState ns ) => ( ns != null && CheckAccess( ns.Address ) );
 
-		public bool CheckAccess( IPAddress ipAddress ) {
+    public bool CheckAccess( IPAddress ipAddress ) {
 			bool hasAccess = HasAccess( ipAddress );
 
 			if ( hasAccess )
@@ -1112,22 +1106,13 @@ namespace Server.Accounting
 			}
 		}
 
-		public override string ToString()
-		{
-			return Username;
-		}
+		public override string ToString() => Username;
 
-		public int CompareTo( Account other )
-    {
-      return other == null ? 1 : Username.CompareTo( other.Username );
-    }
+    public int CompareTo( Account other ) => other == null ? 1 : Username.CompareTo( other.Username );
 
-		public int CompareTo( IAccount other )
-    {
-      return other == null ? 1 : Username.CompareTo( other.Username );
-    }
+    public int CompareTo( IAccount other ) => other == null ? 1 : Username.CompareTo( other.Username );
 
-		#region Gold Account
+    #region Gold Account
 		/// <summary>
 		///     This amount represents the current amount of Gold owned by the player.
 		///     The value does not include the value of Platinum and ranges from
@@ -1213,10 +1198,8 @@ namespace Server.Accounting
 		/// This is strictly for backwards compatibility
 		/// </summary>
 		/// <returns>Total gold, capped at Int32.MaxValue</returns>
-		public long GetTotalGold()
-		{
-			return TotalGold + TotalPlat * AccountGold.CurrencyThreshold;
-		}
-		#endregion
+		public long GetTotalGold() => TotalGold + TotalPlat * AccountGold.CurrencyThreshold;
+
+    #endregion
 	}
 }

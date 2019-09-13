@@ -156,10 +156,7 @@ namespace Server.Engines.Harvest
       return type;
     }
 
-    private static Map SafeMap(Map map)
-    {
-      return map == null || map == Map.Internal ? Map.Trammel : map;
-    }
+    private static Map SafeMap(Map map) => map == null || map == Map.Internal ? Map.Trammel : map;
 
     public override bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
     {
@@ -447,10 +444,7 @@ namespace Server.Engines.Harvest
         from.RevealingAction();
     }
 
-    public override object GetLock(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
-    {
-      return this;
-    }
+    public override object GetLock(Mobile from, Item tool, HarvestDefinition def, object toHarvest) => this;
 
     public override bool BeginHarvesting(Mobile from, Item tool)
     {

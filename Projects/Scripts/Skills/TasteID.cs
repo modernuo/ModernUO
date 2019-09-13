@@ -24,10 +24,7 @@ namespace Server.SkillHandlers
     [PlayerVendorTarget]
     private class InternalTarget : Target
     {
-      public InternalTarget() : base(2, false, TargetFlags.None)
-      {
-        AllowNonlocal = true;
-      }
+      public InternalTarget() : base(2, false, TargetFlags.None) => AllowNonlocal = true;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

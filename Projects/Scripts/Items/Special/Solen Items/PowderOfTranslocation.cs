@@ -52,10 +52,7 @@ namespace Server.Items
     {
       private PowderOfTranslocation m_Powder;
 
-      public InternalTarget(PowderOfTranslocation powder) : base(-1, false, TargetFlags.None)
-      {
-        m_Powder = powder;
-      }
+      public InternalTarget(PowderOfTranslocation powder) : base(-1, false, TargetFlags.None) => m_Powder = powder;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

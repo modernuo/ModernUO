@@ -3,10 +3,7 @@
   public class TwilightLantern : Lantern
   {
     [Constructible]
-    public TwilightLantern()
-    {
-      Hue = Utility.RandomBool() ? 244 : 997;
-    }
+    public TwilightLantern() => Hue = Utility.RandomBool() ? 244 : 997;
 
     public TwilightLantern(Serial serial)
       : base(serial)
@@ -15,10 +12,7 @@
 
     public override string DefaultName => "Twilight Lantern";
 
-    public override bool AllowEquippedCast(Mobile from)
-    {
-      return true;
-    }
+    public override bool AllowEquippedCast(Mobile from) => true;
 
     public override void GetProperties(ObjectPropertyList list)
     {

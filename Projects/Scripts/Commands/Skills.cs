@@ -60,10 +60,7 @@ namespace Server.Commands
     {
       private double m_Value;
 
-      public AllSkillsTarget(double value) : base(-1, false, TargetFlags.None)
-      {
-        m_Value = value;
-      }
+      public AllSkillsTarget(double value) : base(-1, false, TargetFlags.None) => m_Value = value;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

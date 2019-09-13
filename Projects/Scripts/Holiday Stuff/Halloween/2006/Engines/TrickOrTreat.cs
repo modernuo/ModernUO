@@ -109,10 +109,7 @@ namespace Server.Engines.Events
       return loc;
     }
 
-    public static bool CheckMobile(Mobile mobile)
-    {
-      return mobile?.Map != null && !mobile.Deleted && mobile.Alive && mobile.Map != Map.Internal;
-    }
+    public static bool CheckMobile(Mobile mobile) => mobile?.Map != null && !mobile.Deleted && mobile.Alive && mobile.Map != Map.Internal;
 
     private class TrickOrTreatTarget : Target
     {

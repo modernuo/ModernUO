@@ -17,13 +17,7 @@ namespace Server.Engines.Quests.Collector
     {
     }
 
-    public override bool CanDrop(PlayerMobile player)
-    {
-      return !(player.Quest is CollectorQuest);
-
-      /*return !( qs.IsObjectiveInProgress( typeof( CaptureImagesObjective ) )
-        || qs.IsObjectiveInProgress( typeof( ReturnImagesObjective ) ) );*/
-    }
+    public override bool CanDrop(PlayerMobile player) => !(player.Quest is CollectorQuest);
 
     public override void OnDoubleClick(Mobile from)
     {

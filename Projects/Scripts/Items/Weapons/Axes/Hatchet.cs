@@ -4,10 +4,7 @@ namespace Server.Items
   public class Hatchet : BaseAxe
   {
     [Constructible]
-    public Hatchet() : base(0xF43)
-    {
-      Weight = 4.0;
-    }
+    public Hatchet() : base(0xF43) => Weight = 4.0;
 
     public Hatchet(Serial serial) : base(serial)
     {

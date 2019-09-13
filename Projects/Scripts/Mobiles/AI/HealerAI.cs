@@ -137,20 +137,11 @@ namespace Server.Mobiles
       return null;
     }
 
-    private static bool NeedCure(Mobile m)
-    {
-      return m.Poisoned;
-    }
+    private static bool NeedCure(Mobile m) => m.Poisoned;
 
-    private static bool NeedGHeal(Mobile m)
-    {
-      return m.Hits < m.HitsMax - 40;
-    }
+    private static bool NeedGHeal(Mobile m) => m.Hits < m.HitsMax - 40;
 
-    private static bool NeedLHeal(Mobile m)
-    {
-      return m.Hits < m.HitsMax - 10;
-    }
+    private static bool NeedLHeal(Mobile m) => m.Hits < m.HitsMax - 10;
 
     private delegate bool NeedDelegate(Mobile m);
   }

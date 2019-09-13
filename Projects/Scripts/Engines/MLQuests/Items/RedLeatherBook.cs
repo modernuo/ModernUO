@@ -3,10 +3,7 @@
   public class RedLeatherBook : BlueBook
   {
     [Constructible]
-    public RedLeatherBook()
-    {
-      Hue = 0x485;
-    }
+    public RedLeatherBook() => Hue = 0x485;
 
     public RedLeatherBook(Serial serial)
       : base(serial)

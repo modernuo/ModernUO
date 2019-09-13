@@ -6,16 +6,10 @@ namespace Server.Items
   public class SmoothingPlane : BaseTool
   {
     [Constructible]
-    public SmoothingPlane() : base(0x1032)
-    {
-      Weight = 1.0;
-    }
+    public SmoothingPlane() : base(0x1032) => Weight = 1.0;
 
     [Constructible]
-    public SmoothingPlane(int uses) : base(uses, 0x1032)
-    {
-      Weight = 1.0;
-    }
+    public SmoothingPlane(int uses) : base(uses, 0x1032) => Weight = 1.0;
 
     public SmoothingPlane(Serial serial) : base(serial)
     {

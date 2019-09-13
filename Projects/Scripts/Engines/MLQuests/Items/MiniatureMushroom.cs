@@ -3,10 +3,7 @@ namespace Server.Items
   public class MiniatureMushroom : Food
   {
     [Constructible]
-    public MiniatureMushroom() : base(0xD16)
-    {
-      LootType = LootType.Blessed;
-    }
+    public MiniatureMushroom() : base(0xD16) => LootType = LootType.Blessed;
 
     public MiniatureMushroom(Serial serial) : base(serial)
     {

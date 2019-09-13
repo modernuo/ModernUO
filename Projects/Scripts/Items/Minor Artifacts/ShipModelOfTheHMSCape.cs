@@ -3,10 +3,7 @@ namespace Server.Items
   public class ShipModelOfTheHMSCape : Item
   {
     [Constructible]
-    public ShipModelOfTheHMSCape() : base(0x14F3)
-    {
-      Hue = 0x37B;
-    }
+    public ShipModelOfTheHMSCape() : base(0x14F3) => Hue = 0x37B;
 
     public ShipModelOfTheHMSCape(Serial serial) : base(serial)
     {

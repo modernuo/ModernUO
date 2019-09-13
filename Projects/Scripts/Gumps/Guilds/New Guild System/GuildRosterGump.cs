@@ -73,15 +73,10 @@ namespace Server.Guilds
     }
 
     public override Gump GetResentGump(PlayerMobile pm, Guild g, IComparer<PlayerMobile> comparer, bool ascending,
-      string filter, int startNumber)
-    {
-      return new GuildRosterGump(pm, g, comparer, ascending, filter, startNumber);
-    }
+      string filter, int startNumber) =>
+      new GuildRosterGump(pm, g, comparer, ascending, filter, startNumber);
 
-    public override Gump GetObjectInfoGump(PlayerMobile pm, Guild g, PlayerMobile o)
-    {
-      return new GuildMemberInfoGump(pm, g, o, false, false);
-    }
+    public override Gump GetObjectInfoGump(PlayerMobile pm, Guild g, PlayerMobile o) => new GuildMemberInfoGump(pm, g, o, false, false);
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {

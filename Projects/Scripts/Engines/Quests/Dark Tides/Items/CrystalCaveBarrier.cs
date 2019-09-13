@@ -5,10 +5,7 @@ namespace Server.Engines.Quests.Necro
   public class CrystalCaveBarrier : Item
   {
     [Constructible]
-    public CrystalCaveBarrier() : base(0x3967)
-    {
-      Movable = false;
-    }
+    public CrystalCaveBarrier() : base(0x3967) => Movable = false;
 
     public CrystalCaveBarrier(Serial serial) : base(serial)
     {

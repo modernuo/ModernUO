@@ -3,10 +3,7 @@ namespace Server.Items
   public class AndrosGratitude : SmithHammer
   {
     [Constructible]
-    public AndrosGratitude() : base(10)
-    {
-      LootType = LootType.Blessed;
-    }
+    public AndrosGratitude() : base(10) => LootType = LootType.Blessed;
 
     public AndrosGratitude(Serial serial) : base(serial)
     {

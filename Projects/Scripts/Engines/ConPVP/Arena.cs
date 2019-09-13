@@ -86,10 +86,7 @@ namespace Server.Engines.ConPVP
   [PropertyObject]
   public class ArenaStartPoints
   {
-    public ArenaStartPoints(Point3D[] points = null)
-    {
-      Points = points ?? new Point3D[8];
-    }
+    public ArenaStartPoints(Point3D[] points = null) => Points = points ?? new Point3D[8];
 
     public ArenaStartPoints(GenericReader reader)
     {
@@ -157,10 +154,7 @@ namespace Server.Engines.ConPVP
       set => Points[7] = value;
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
 
     public void Serialize(GenericWriter writer)
     {
@@ -471,10 +465,7 @@ namespace Server.Engines.ConPVP
       return a.CompareTo(b);
     }
 
-    public Ladder AcquireLadder()
-    {
-      return Ladder?.Ladder ?? ConPVP.Ladder.Instance;
-    }
+    public Ladder AcquireLadder() => Ladder?.Ladder ?? ConPVP.Ladder.Instance;
 
     public void Delete()
     {
@@ -483,10 +474,7 @@ namespace Server.Engines.ConPVP
       m_Region = null;
     }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
 
     public Point3D GetBaseStartPoint(int index)
     {
@@ -524,7 +512,7 @@ namespace Server.Engines.ConPVP
         if (offset < offsets.Length)
           p = offsets[offset++];
         else
-          p = offsets[offsets.Length - 1];
+          p = offsets[^1];
 
         p.X = p.X * matrix[0, 0] + p.Y * matrix[0, 1];
         p.Y = p.X * matrix[1, 0] + p.Y * matrix[1, 1];
@@ -754,10 +742,7 @@ namespace Server.Engines.ConPVP
       public int m_VotesAgainst;
       public int m_VotesFor;
 
-      public ArenaEntry(Arena arena)
-      {
-        m_Arena = arena;
-      }
+      public ArenaEntry(Arena arena) => m_Arena = arena;
 
       public int Value => m_VotesFor;
     }

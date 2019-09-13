@@ -34,10 +34,7 @@ namespace Server.Items
         BeginWound(defender, defender.Player ? PlayerDuration : NPCDuration);
     }
 
-    public static bool IsWounded(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool IsWounded(Mobile m) => m_Table.ContainsKey(m);
 
     public static void BeginWound(Mobile m, TimeSpan duration)
     {

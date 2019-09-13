@@ -420,19 +420,14 @@ namespace Server.Commands
         return false;
       }
 
-      private string GetNameFrom(ConstructorInfo ctor, PropertyInfo prop, MethodInfo method)
-      {
-        return ctor?.DeclaringType?.Name ?? prop?.Name ?? method?.Name ?? "";
-      }
+      private string GetNameFrom(ConstructorInfo ctor, PropertyInfo prop, MethodInfo method) => ctor?.DeclaringType?.Name ?? prop?.Name ?? method?.Name ?? "";
     }
 
     private class TypeComparer : IComparer<TypeInfo>
     {
-      public int Compare(TypeInfo x, TypeInfo y)
-      {
-        return x == null && y == null ? 0 : x == null ? -1 : y == null ? 1 :
-          x.TypeName.CompareTo(y.TypeName);
-      }
+      public int Compare(TypeInfo x, TypeInfo y) =>
+        x == null && y == null ? 0 : x == null ? -1 : y == null ? 1 :
+        x.TypeName.CompareTo(y.TypeName);
     }
 
     private class TypeInfo
@@ -456,10 +451,7 @@ namespace Server.Commands
       public string FileName => m_FileName;
       public string TypeName => m_TypeName;
 
-      public string LinkName(string dirRoot)
-      {
-        return m_LinkName.Replace("@directory@", dirRoot);
-      }
+      public string LinkName(string dirRoot) => m_LinkName.Replace("@directory@", dirRoot);
     }
 
     #region FileSystem
@@ -503,15 +495,9 @@ namespace Server.Commands
         Directory.Delete(path, true);
     }
 
-    private static StreamWriter GetWriter(string root, string name)
-    {
-      return new StreamWriter(Path.Combine(Path.Combine(m_RootDirectory, root), name));
-    }
+    private static StreamWriter GetWriter(string root, string name) => new StreamWriter(Path.Combine(Path.Combine(m_RootDirectory, root), name));
 
-    private static StreamWriter GetWriter(string path)
-    {
-      return new StreamWriter(Path.Combine(m_RootDirectory, path));
-    }
+    private static StreamWriter GetWriter(string path) => new StreamWriter(Path.Combine(m_RootDirectory, path));
 
     #endregion
 
@@ -2161,15 +2147,9 @@ namespace Server.Commands
     private static Type typeofItem = typeof(Item), typeofMobile = typeof(Mobile), typeofMap = typeof(Map);
     private static Type typeofCustomEnum = typeof(CustomEnumAttribute);
 
-    private static bool IsConstructible(Type t, out bool isItem)
-    {
-      return (isItem = typeofItem.IsAssignableFrom(t)) || typeofMobile.IsAssignableFrom(t);
-    }
+    private static bool IsConstructible(Type t, out bool isItem) => (isItem = typeofItem.IsAssignableFrom(t)) || typeofMobile.IsAssignableFrom(t);
 
-    private static bool IsConstructible(ConstructorInfo ctor)
-    {
-      return ctor.IsDefined(typeof(ConstructibleAttribute), false);
-    }
+    private static bool IsConstructible(ConstructorInfo ctor) => ctor.IsDefined(typeof(ConstructibleAttribute), false);
 
     private static void DocumentConstructibleObjects()
     {
@@ -2691,10 +2671,7 @@ namespace Server.Commands
       return Body == e?.Body && BodyType == e.BodyType && Name == e.Name;
     }
 
-    public override int GetHashCode()
-    {
-      return Body.BodyID ^ (int)BodyType ^ Name.GetHashCode();
-    }
+    public override int GetHashCode() => Body.BodyID ^ (int)BodyType ^ Name.GetHashCode();
   }
 
   public class BodyEntrySorter : IComparer<BodyEntry>

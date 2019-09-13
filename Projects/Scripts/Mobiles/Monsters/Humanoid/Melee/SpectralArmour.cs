@@ -60,15 +60,9 @@ namespace Server.Mobiles
 
     public override Poison PoisonImmune => Poison.Regular;
 
-    public override int GetIdleSound()
-    {
-      return 0x200;
-    }
+    public override int GetIdleSound() => 0x200;
 
-    public override int GetAngerSound()
-    {
-      return 0x56;
-    }
+    public override int GetAngerSound() => 0x56;
 
     public override bool OnBeforeDeath()
     {

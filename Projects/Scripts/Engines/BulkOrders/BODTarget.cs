@@ -6,10 +6,7 @@ namespace Server.Engines.BulkOrders
   {
     private BaseBOD m_Deed;
 
-    public BODTarget(BaseBOD deed) : base(18, false, TargetFlags.None)
-    {
-      m_Deed = deed;
-    }
+    public BODTarget(BaseBOD deed) : base(18, false, TargetFlags.None) => m_Deed = deed;
 
     protected override void OnTarget(Mobile from, object targeted)
     {

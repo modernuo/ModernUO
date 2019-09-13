@@ -89,10 +89,7 @@ namespace Server.Mobiles
       return true;
     }
 
-    public override DeathMoveResult GetInventoryMoveResultFor(Item item)
-    {
-      return DeathMoveResult.MoveToCorpse;
-    }
+    public override DeathMoveResult GetInventoryMoveResultFor(Item item) => DeathMoveResult.MoveToCorpse;
 
     public override bool IsSnoop(Mobile from)
     {
@@ -116,15 +113,9 @@ namespace Server.Mobiles
       return base.OnDragDrop(from, item);
     }
 
-    public override bool CheckNonlocalDrop(Mobile from, Item item, Item target)
-    {
-      return PackAnimal.CheckAccess(this, from);
-    }
+    public override bool CheckNonlocalDrop(Mobile from, Item item, Item target) => PackAnimal.CheckAccess(this, from);
 
-    public override bool CheckNonlocalLift(Mobile from, Item item)
-    {
-      return PackAnimal.CheckAccess(this, from);
-    }
+    public override bool CheckNonlocalLift(Mobile from, Item item) => PackAnimal.CheckAccess(this, from);
 
     public override void OnDoubleClick(Mobile from)
     {

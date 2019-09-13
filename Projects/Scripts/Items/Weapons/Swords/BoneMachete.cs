@@ -5,10 +5,7 @@ namespace Server.Items
   public class BoneMachete : ElvenMachete, ITicket
   {
     [Constructible]
-    public BoneMachete()
-    {
-      ItemID = 0x20E;
-    }
+    public BoneMachete() => ItemID = 0x20E;
 
     public BoneMachete(Serial serial)
       : base(serial)

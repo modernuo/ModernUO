@@ -19,10 +19,7 @@ namespace Server.Engines.Quests.Hag
       Body = 0x4A;
     }
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-      return false;
-    }
+    public override bool CanTalkTo(PlayerMobile to) => false;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

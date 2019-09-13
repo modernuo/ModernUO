@@ -255,10 +255,7 @@ namespace Server.Items
         SpecialMove.ClearCurrentMove(attacker);
     }
 
-    public virtual TimeSpan OnSwing(Mobile attacker, Mobile defender)
-    {
-      return OnSwing(attacker, defender, 1.0);
-    }
+    public virtual TimeSpan OnSwing(Mobile attacker, Mobile defender) => OnSwing(attacker, defender, 1.0);
 
     public virtual void GetStatusDamage(Mobile from, out int min, out int max)
     {
@@ -375,11 +372,9 @@ namespace Server.Items
       return false;
     }
 
-    public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
-    {
-      return Ethic.CheckTrade(from, to, newOwner, this) &&
-             base.AllowSecureTrade(from, to, newOwner, accepted);
-    }
+    public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) =>
+      Ethic.CheckTrade(from, to, newOwner, this) &&
+      base.AllowSecureTrade(from, to, newOwner, accepted);
 
     public override bool CanEquip(Mobile from)
     {
@@ -553,20 +548,11 @@ namespace Server.Items
       return sk;
     }
 
-    public virtual double GetAttackSkillValue(Mobile attacker, Mobile defender)
-    {
-      return attacker.Skills[GetUsedSkill(attacker, true)].Value;
-    }
+    public virtual double GetAttackSkillValue(Mobile attacker, Mobile defender) => attacker.Skills[GetUsedSkill(attacker, true)].Value;
 
-    public virtual double GetDefendSkillValue(Mobile attacker, Mobile defender)
-    {
-      return defender.Skills[GetUsedSkill(defender, true)].Value;
-    }
+    public virtual double GetDefendSkillValue(Mobile attacker, Mobile defender) => defender.Skills[GetUsedSkill(defender, true)].Value;
 
-    private static bool CheckAnimal(Mobile m, Type type)
-    {
-      return AnimalForm.UnderTransformation(m, type);
-    }
+    private static bool CheckAnimal(Mobile m, Type type) => AnimalForm.UnderTransformation(m, type);
 
     public virtual bool CheckHit(Mobile attacker, Mobile defender)
     {
@@ -1786,10 +1772,7 @@ namespace Server.Items
       return damage + (int)(damage * totalBonus);
     }
 
-    public virtual int ComputeDamageAOS(Mobile attacker, Mobile defender)
-    {
-      return (int)ScaleDamageAOS(attacker, GetBaseDamage(attacker), true);
-    }
+    public virtual int ComputeDamageAOS(Mobile attacker, Mobile defender) => (int)ScaleDamageAOS(attacker, GetBaseDamage(attacker), true);
 
     public virtual double ScaleDamageOld(Mobile attacker, double damage, bool checkSkills)
     {
@@ -1981,10 +1964,7 @@ namespace Server.Items
       from.Animate(action, 7, 1, true, false, 0);
     }
 
-    private string GetNameString()
-    {
-      return Name ?? $"#{LabelNumber}";
-    }
+    private string GetNameString() => Name ?? $"#{LabelNumber}";
 
     public int GetElementalDamageHue()
     {
@@ -2461,10 +2441,7 @@ namespace Server.Items
     {
       private Mobile m_Mobile;
 
-      public ResetEquipTimer(Mobile m, TimeSpan duration) : base(duration)
-      {
-        m_Mobile = m;
-      }
+      public ResetEquipTimer(Mobile m, TimeSpan duration) : base(duration) => m_Mobile = m;
 
       protected override void OnTick()
       {
@@ -2928,20 +2905,11 @@ namespace Server.Items
       return sound;
     }
 
-    public virtual int GetHitDefendSound(Mobile attacker, Mobile defender)
-    {
-      return defender.GetHurtSound();
-    }
+    public virtual int GetHitDefendSound(Mobile attacker, Mobile defender) => defender.GetHurtSound();
 
-    public virtual int GetMissAttackSound(Mobile attacker, Mobile defender)
-    {
-      return attacker.GetAttackSound() == -1 ? MissSound : -1;
-    }
+    public virtual int GetMissAttackSound(Mobile attacker, Mobile defender) => attacker.GetAttackSound() == -1 ? MissSound : -1;
 
-    public virtual int GetMissDefendSound(Mobile attacker, Mobile defender)
-    {
-      return -1;
-    }
+    public virtual int GetMissDefendSound(Mobile attacker, Mobile defender) => -1;
 
     #endregion
 
@@ -3108,10 +3076,7 @@ namespace Server.Items
         flags |= toSet;
     }
 
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet)
-    {
-      return (flags & toGet) != 0;
-    }
+    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     public override void Serialize(GenericWriter writer)
     {

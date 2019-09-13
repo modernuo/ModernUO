@@ -142,30 +142,15 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    public override int GetAngerSound()
-    {
-      return 0x52D;
-    }
+    public override int GetAngerSound() => 0x52D;
 
-    public override int GetIdleSound()
-    {
-      return 0x52C;
-    }
+    public override int GetIdleSound() => 0x52C;
 
-    public override int GetAttackSound()
-    {
-      return 0x52B;
-    }
+    public override int GetAttackSound() => 0x52B;
 
-    public override int GetHurtSound()
-    {
-      return 0x52E;
-    }
+    public override int GetHurtSound() => 0x52E;
 
-    public override int GetDeathSound()
-    {
-      return 0x52A;
-    }
+    public override int GetDeathSound() => 0x52A;
 
     private class ExpireTimer : Timer
     {

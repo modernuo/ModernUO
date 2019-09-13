@@ -27,10 +27,7 @@ namespace Server.Spells.First
     {
       private Spell m_Spell;
 
-      public NightSightTarget(Spell spell) : base(12, false, TargetFlags.Beneficial)
-      {
-        m_Spell = spell;
-      }
+      public NightSightTarget(Spell spell) : base(12, false, TargetFlags.Beneficial) => m_Spell = spell;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

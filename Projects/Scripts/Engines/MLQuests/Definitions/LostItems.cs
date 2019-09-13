@@ -38,10 +38,8 @@ namespace Server.Engines.MLQuests.Definitions
   {
     [Constructible]
     public BatteredBucket()
-      : base(0x2004, TimeSpan.FromMinutes(10))
-    {
+      : base(0x2004, TimeSpan.FromMinutes(10)) =>
       LootType = LootType.Blessed;
-    }
 
     public BatteredBucket(Serial serial)
       : base(serial)

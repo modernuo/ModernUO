@@ -71,25 +71,13 @@ namespace Server.Mobiles
 
     public override bool AlwaysMurderer => true;
 
-    public override int GetIdleSound()
-    {
-      return 0x1CE;
-    }
+    public override int GetIdleSound() => 0x1CE;
 
-    public override int GetAngerSound()
-    {
-      return 0x1AC;
-    }
+    public override int GetAngerSound() => 0x1AC;
 
-    public override int GetDeathSound()
-    {
-      return 0x182;
-    }
+    public override int GetDeathSound() => 0x182;
 
-    public override int GetHurtSound()
-    {
-      return 0x28D;
-    }
+    public override int GetHurtSound() => 0x28D;
 
     public override void GenerateLoot()
     {

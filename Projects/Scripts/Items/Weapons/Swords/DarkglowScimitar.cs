@@ -3,10 +3,7 @@ namespace Server.Items
   public class DarkglowScimitar : RadiantScimitar
   {
     [Constructible]
-    public DarkglowScimitar()
-    {
-      WeaponAttributes.HitDispel = 10;
-    }
+    public DarkglowScimitar() => WeaponAttributes.HitDispel = 10;
 
     public DarkglowScimitar(Serial serial) : base(serial)
     {

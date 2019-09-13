@@ -4,9 +4,9 @@ using Server.Commands;
 using Server.Gumps;
 using Server.Items;
 
-namespace Server
+namespace Server.Commands
 {
-  public class Statics
+  public static class Statics
   {
     private const string BaseFreezeWarning = "{0}  " +
                                              "Those items <u>will be removed from the world</u> and placed into the server data files.  " +

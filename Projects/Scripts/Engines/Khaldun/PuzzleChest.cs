@@ -153,10 +153,7 @@ namespace Server.Items
 
   public class PuzzleChestSolutionAndTime : PuzzleChestSolution
   {
-    public PuzzleChestSolutionAndTime(DateTime when, PuzzleChestSolution solution) : base(solution)
-    {
-      When = when;
-    }
+    public PuzzleChestSolutionAndTime(DateTime when, PuzzleChestSolution solution) : base(solution) => When = when;
 
     public PuzzleChestSolutionAndTime(GenericReader reader) : base(reader)
     {

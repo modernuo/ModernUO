@@ -10,10 +10,7 @@ namespace Server.Factions
 
     public virtual int ButtonTypes => 10;
 
-    public int ToButtonID(int type, int index)
-    {
-      return 1 + index * ButtonTypes + type;
-    }
+    public int ToButtonID(int type, int index) => 1 + index * ButtonTypes + type;
 
     public bool FromButtonID(int buttonID, out int type, out int index)
     {
@@ -30,10 +27,7 @@ namespace Server.Factions
       return false;
     }
 
-    public static bool Exists(Mobile mob)
-    {
-      return mob.HasGump<FactionGump>();
-    }
+    public static bool Exists(Mobile mob) => mob.HasGump<FactionGump>();
 
     public void AddHtmlText(int x, int y, int width, int height, TextDefinition text, bool back, bool scroll)
     {

@@ -3,7 +3,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class Paperdoll
+  public static class Paperdoll
   {
     public static void Initialize()
     {

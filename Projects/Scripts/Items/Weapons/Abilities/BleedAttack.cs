@@ -51,10 +51,7 @@ namespace Server.Items
       BeginBleed(defender, attacker);
     }
 
-    public static bool IsBleeding(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool IsBleeding(Mobile m) => m_Table.ContainsKey(m);
 
     public static void BeginBleed(Mobile m, Mobile from)
     {

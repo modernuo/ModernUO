@@ -68,10 +68,7 @@ namespace Server.Items
     };
 
     [Constructible]
-    public EnchantedSextant() : base(0x1058)
-    {
-      Weight = 2.0;
-    }
+    public EnchantedSextant() : base(0x1058) => Weight = 2.0;
 
     public EnchantedSextant(Serial serial) : base(serial)
     {

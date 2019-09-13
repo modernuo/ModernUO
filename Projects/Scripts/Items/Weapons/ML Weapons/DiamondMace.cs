@@ -4,10 +4,7 @@ namespace Server.Items
   public class DiamondMace : BaseBashing
   {
     [Constructible]
-    public DiamondMace() : base(0x2D24)
-    {
-      Weight = 10.0;
-    }
+    public DiamondMace() : base(0x2D24) => Weight = 10.0;
 
     public DiamondMace(Serial serial) : base(serial)
     {

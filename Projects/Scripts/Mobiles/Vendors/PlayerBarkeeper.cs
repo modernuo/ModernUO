@@ -63,10 +63,7 @@ namespace Server.Mobiles
   {
     private PlayerBarkeeper m_Barkeeper;
 
-    public ChangeTipMessagePrompt(PlayerBarkeeper barkeeper)
-    {
-      m_Barkeeper = barkeeper;
-    }
+    public ChangeTipMessagePrompt(PlayerBarkeeper barkeeper) => m_Barkeeper = barkeeper;
 
     public override void OnCancel(Mobile from)
     {
@@ -185,10 +182,7 @@ namespace Server.Mobiles
     public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.ThighBoots : VendorShoeType.Boots;
     protected override List<SBInfo> SBInfos => m_SBInfos;
 
-    public override bool GetGender()
-    {
-      return false; // always starts as male
-    }
+    public override bool GetGender() => false;
 
     public override void InitOutfit()
     {
@@ -215,10 +209,7 @@ namespace Server.Mobiles
       pack?.Delete();
     }
 
-    public override bool HandlesOnSpeech(Mobile from)
-    {
-      return InRange(from, 3) || base.HandlesOnSpeech(from);
-    }
+    public override bool HandlesOnSpeech(Mobile from) => InRange(from, 3) || base.HandlesOnSpeech(from);
 
     private void ShoutNews_Callback(TownCrierEntry tce, int index)
     {
@@ -922,10 +913,7 @@ namespace Server.Mobiles
       AddItem(580, 46, 4030);
     }
 
-    private int GetButtonID(int type, int index)
-    {
-      return 1 + index * 6 + type;
-    }
+    private int GetButtonID(int type, int index) => 1 + index * 6 + type;
 
     private void RenderMessageManagement_Tip_AddOrChange()
     {

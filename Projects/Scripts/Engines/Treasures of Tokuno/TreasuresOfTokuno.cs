@@ -244,10 +244,7 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    public override bool CanBeDamaged()
-    {
-      return false;
-    }
+    public override bool CanBeDamaged() => false;
 
     public override void OnMovement(Mobile m, Point3D oldLocation)
     {
@@ -304,10 +301,8 @@ namespace Server.Gumps
   public class ItemTileButtonInfo : ImageTileButtonInfo
   {
     public ItemTileButtonInfo(Item i) : base(i.ItemID, i.Hue,
-      i.Name == null || i.Name.Length <= 0 ? (TextDefinition)i.LabelNumber : (TextDefinition)i.Name)
-    {
+      i.Name == null || i.Name.Length <= 0 ? (TextDefinition)i.LabelNumber : (TextDefinition)i.Name) =>
       Item = i;
-    }
 
     public Item Item{ get; set; }
   }
@@ -318,9 +313,8 @@ namespace Server.Gumps
 
     public ToTTurnInGump(Mobile collector, List<ItemTileButtonInfo> buttons) :
       base(1071012, Utility.CastListContravariant<ItemTileButtonInfo, ImageTileButtonInfo>(buttons)) // Click a minor artifact to give it to Ihara Soko.
-    {
-      m_Collector = collector;
-    }
+      =>
+        m_Collector = collector;
 
     public static List<ItemTileButtonInfo> FindRedeemableItems(Mobile m)
     {
@@ -413,10 +407,8 @@ namespace Server.Gumps
       pigments
         ? PigmentRewards[(int)TreasuresOfTokuno.RewardEra - 1].ToArray<ImageTileButtonInfo>()
         : NormalRewards[(int)TreasuresOfTokuno.RewardEra - 1].ToArray<ImageTileButtonInfo>()
-    )
-    {
+    ) =>
       m_Collector = collector;
-    }
 
     public static TypeTileButtonInfo[][] NormalRewards{ get; } =
     {
@@ -588,10 +580,8 @@ namespace Server.Gumps
       }
 
       public TypeTileButtonInfo(Type type, int itemID, int hue, TextDefinition label, int localizedToolTip = -1) : base(
-        itemID, hue, label, localizedToolTip)
-      {
+        itemID, hue, label, localizedToolTip) =>
         Type = type;
-      }
 
       public Type Type{ get; }
     }
@@ -599,10 +589,8 @@ namespace Server.Gumps
     public class PigmentsTileButtonInfo : ImageTileButtonInfo
     {
       public PigmentsTileButtonInfo(PigmentType p) : base(0xEFF, PigmentsOfTokuno.GetInfo(p)[0],
-        PigmentsOfTokuno.GetInfo(p)[1])
-      {
+        PigmentsOfTokuno.GetInfo(p)[1]) =>
         Pigment = p;
-      }
 
       public PigmentType Pigment{ get; set; }
     }

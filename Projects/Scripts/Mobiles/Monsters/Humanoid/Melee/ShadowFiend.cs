@@ -56,30 +56,15 @@ namespace Server.Mobiles
 
     public override bool CanRummageCorpses => true;
 
-    public override int GetIdleSound()
-    {
-      return 0x37A;
-    }
+    public override int GetIdleSound() => 0x37A;
 
-    public override int GetAngerSound()
-    {
-      return 0x379;
-    }
+    public override int GetAngerSound() => 0x379;
 
-    public override int GetDeathSound()
-    {
-      return 0x381;
-    }
+    public override int GetDeathSound() => 0x381;
 
-    public override int GetAttackSound()
-    {
-      return 0x37F;
-    }
+    public override int GetAttackSound() => 0x37F;
 
-    public override int GetHurtSound()
-    {
-      return 0x380;
-    }
+    public override int GetHurtSound() => 0x380;
 
     public override bool OnBeforeDeath()
     {

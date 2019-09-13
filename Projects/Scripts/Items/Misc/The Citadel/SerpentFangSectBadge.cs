@@ -3,10 +3,7 @@ namespace Server.Items
   public class SerpentFangSectBadge : Item
   {
     [Constructible]
-    public SerpentFangSectBadge() : base(0x23C)
-    {
-      LootType = LootType.Blessed;
-    }
+    public SerpentFangSectBadge() : base(0x23C) => LootType = LootType.Blessed;
 
     public SerpentFangSectBadge(Serial serial) : base(serial)
     {

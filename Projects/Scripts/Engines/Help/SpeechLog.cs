@@ -21,28 +21,19 @@ namespace Server.Engines.Help
 
     private Queue<SpeechLogEntry> m_Queue;
 
-    public SpeechLog()
-    {
-      m_Queue = new Queue<SpeechLogEntry>();
-    }
+    public SpeechLog() => m_Queue = new Queue<SpeechLogEntry>();
 
     public int Count => m_Queue.Count;
 
     #region IEnumerable<SpeechLogEntry> Members
 
-    IEnumerator<SpeechLogEntry> IEnumerable<SpeechLogEntry>.GetEnumerator()
-    {
-      return m_Queue.GetEnumerator();
-    }
+    IEnumerator<SpeechLogEntry> IEnumerable<SpeechLogEntry>.GetEnumerator() => m_Queue.GetEnumerator();
 
     #endregion
 
     #region IEnumerable Members
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return m_Queue.GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => m_Queue.GetEnumerator();
 
     #endregion
 

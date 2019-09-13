@@ -75,30 +75,15 @@ namespace Server.Mobiles
     public override string DefaultName => "a deathwatch beetle hatchling";
     public override int Hides => 8;
 
-    public override int GetAngerSound()
-    {
-      return 0x4F3;
-    }
+    public override int GetAngerSound() => 0x4F3;
 
-    public override int GetIdleSound()
-    {
-      return 0x4F2;
-    }
+    public override int GetIdleSound() => 0x4F2;
 
-    public override int GetAttackSound()
-    {
-      return 0x4F1;
-    }
+    public override int GetAttackSound() => 0x4F1;
 
-    public override int GetHurtSound()
-    {
-      return 0x4F4;
-    }
+    public override int GetHurtSound() => 0x4F4;
 
-    public override int GetDeathSound()
-    {
-      return 0x4F0;
-    }
+    public override int GetDeathSound() => 0x4F0;
 
     public override void GenerateLoot()
     {

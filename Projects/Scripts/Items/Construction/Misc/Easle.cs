@@ -5,10 +5,7 @@ namespace Server.Items
   public class Easle : Item
   {
     [Constructible]
-    public Easle() : base(0xF65)
-    {
-      Weight = 25.0;
-    }
+    public Easle() : base(0xF65) => Weight = 25.0;
 
     public Easle(Serial serial) : base(serial)
     {

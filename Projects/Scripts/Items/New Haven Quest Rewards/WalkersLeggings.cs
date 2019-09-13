@@ -3,10 +3,7 @@ namespace Server.Items
   public class WalkersLeggings : LeatherNinjaPants
   {
     [Constructible]
-    public WalkersLeggings()
-    {
-      LootType = LootType.Blessed;
-    }
+    public WalkersLeggings() => LootType = LootType.Blessed;
 
     public WalkersLeggings(Serial serial) : base(serial)
     {

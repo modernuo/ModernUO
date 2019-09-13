@@ -4,10 +4,7 @@ namespace Server.Items
   public class HidePauldrons : BaseArmor
   {
     [Constructible]
-    public HidePauldrons() : base(0x2B77)
-    {
-      Weight = 4.0;
-    }
+    public HidePauldrons() : base(0x2B77) => Weight = 4.0;
 
     public HidePauldrons(Serial serial) : base(serial)
     {

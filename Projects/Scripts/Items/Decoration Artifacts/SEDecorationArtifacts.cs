@@ -1511,10 +1511,7 @@ namespace Server.Items
   public class TowerLanternArtifact : BaseDecorationArtifact
   {
     [Constructible]
-    public TowerLanternArtifact() : base(0x24C0)
-    {
-      Light = LightType.Circle225;
-    }
+    public TowerLanternArtifact() : base(0x24C0) => Light = LightType.Circle225;
 
     public TowerLanternArtifact(Serial serial) : base(serial)
     {

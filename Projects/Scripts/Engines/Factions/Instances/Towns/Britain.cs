@@ -2,8 +2,7 @@ namespace Server.Factions
 {
   public class Britain : Town
   {
-    public Britain()
-    {
+    public Britain() =>
       Definition =
         new TownDefinition(
           0,
@@ -19,6 +18,5 @@ namespace Server.Factions
           new TextDefinition(1041386, "Corrupted Faction Town Sigil of Britain"),
           new Point3D(1592, 1680, 10),
           new Point3D(1588, 1676, 10));
-    }
   }
 }

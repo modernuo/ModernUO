@@ -91,15 +91,9 @@ namespace Server.Engines.BulkOrders
     {
     }
 
-    public override int ComputeFame()
-    {
-      return TailorRewardCalculator.Instance.ComputeFame(this);
-    }
+    public override int ComputeFame() => TailorRewardCalculator.Instance.ComputeFame(this);
 
-    public override int ComputeGold()
-    {
-      return TailorRewardCalculator.Instance.ComputeGold(this);
-    }
+    public override int ComputeGold() => TailorRewardCalculator.Instance.ComputeGold(this);
 
     public override RewardGroup GetRewardGroup() =>
       TailorRewardCalculator.Instance.LookupRewards(TailorRewardCalculator.Instance.ComputePoints(this));

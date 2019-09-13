@@ -278,10 +278,7 @@ namespace Server.Engines.Plants
       return PlantType.ExoticBonsai;
     }
 
-    public static bool IsCrossable(PlantType plantType)
-    {
-      return GetInfo(plantType).Crossable;
-    }
+    public static bool IsCrossable(PlantType plantType) => GetInfo(plantType).Crossable;
 
     public static PlantType Cross(PlantType first, PlantType second)
     {
@@ -296,10 +293,7 @@ namespace Server.Engines.Plants
       return (PlantType)((firstIndex + secondIndex) / 2);
     }
 
-    public static bool CanReproduce(PlantType plantType)
-    {
-      return GetInfo(plantType).Reproduces;
-    }
+    public static bool CanReproduce(PlantType plantType) => GetInfo(plantType).Reproduces;
 
     public int GetPlantLabelSeed(PlantHueInfo hueInfo)
     {

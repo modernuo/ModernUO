@@ -25,10 +25,7 @@ namespace Server.Items
       m_RespawnTimer = Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMinutes(15.0), CheckRespawn);
     }
 
-    public StealableArtifactsSpawner(Serial serial) : base(serial)
-    {
-      Instance = this;
-    }
+    public StealableArtifactsSpawner(Serial serial) : base(serial) => Instance = this;
 
     public static StealableEntry[] Entries{ get; } =
     {

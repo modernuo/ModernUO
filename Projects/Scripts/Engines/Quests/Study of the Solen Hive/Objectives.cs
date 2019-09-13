@@ -18,10 +18,7 @@ namespace Server.Engines.Quests.Naturalist
 
     public bool StudiedSpecialNest{ get; private set; }
 
-    public override bool GetTimerEvent()
-    {
-      return true;
-    }
+    public override bool GetTimerEvent() => true;
 
     public override void CheckProgress()
     {

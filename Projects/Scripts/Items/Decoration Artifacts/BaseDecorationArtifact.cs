@@ -2,10 +2,7 @@ namespace Server.Items
 {
   public abstract class BaseDecorationArtifact : Item
   {
-    public BaseDecorationArtifact(int itemID) : base(itemID)
-    {
-      Weight = 10.0;
-    }
+    public BaseDecorationArtifact(int itemID) : base(itemID) => Weight = 10.0;
 
     public BaseDecorationArtifact(Serial serial) : base(serial)
     {
@@ -39,10 +36,7 @@ namespace Server.Items
 
   public abstract class BaseDecorationContainerArtifact : BaseContainer
   {
-    public BaseDecorationContainerArtifact(int itemID) : base(itemID)
-    {
-      Weight = 10.0;
-    }
+    public BaseDecorationContainerArtifact(int itemID) : base(itemID) => Weight = 10.0;
 
     public BaseDecorationContainerArtifact(Serial serial) : base(serial)
     {

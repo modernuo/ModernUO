@@ -266,10 +266,7 @@ namespace Server.Items
     );
 
     [Constructible]
-    public BlackthornWelcomeBook() : base(false)
-    {
-      Hue = 0x89B;
-    }
+    public BlackthornWelcomeBook() : base(false) => Hue = 0x89B;
 
     public BlackthornWelcomeBook(Serial serial) : base(serial)
     {

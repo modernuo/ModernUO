@@ -3,10 +3,7 @@ namespace Server.Items
   public class IcySpellblade : ElvenSpellblade
   {
     [Constructible]
-    public IcySpellblade()
-    {
-      WeaponAttributes.ResistColdBonus = 5;
-    }
+    public IcySpellblade() => WeaponAttributes.ResistColdBonus = 5;
 
     public IcySpellblade(Serial serial) : base(serial)
     {

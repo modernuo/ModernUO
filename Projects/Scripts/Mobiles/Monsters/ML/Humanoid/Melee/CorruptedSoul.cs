@@ -59,10 +59,7 @@ namespace Server.Mobiles
       return 0x0;
     }*/
 
-    public override int GetAttackSound()
-    {
-      return 0x233;
-    }
+    public override int GetAttackSound() => 0x233;
 
     // TODO: Proper OnDeath Effect
 

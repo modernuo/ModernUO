@@ -4,10 +4,7 @@ namespace Server.Items
   public class RuinedFallenChairA : Item
   {
     [Constructible]
-    public RuinedFallenChairA() : base(0xC10)
-    {
-      Movable = false;
-    }
+    public RuinedFallenChairA() : base(0xC10) => Movable = false;
 
     public RuinedFallenChairA(Serial serial) : base(serial)
     {
@@ -32,10 +29,7 @@ namespace Server.Items
   public class RuinedArmoire : Item
   {
     [Constructible]
-    public RuinedArmoire() : base(0xC13)
-    {
-      Movable = false;
-    }
+    public RuinedArmoire() : base(0xC13) => Movable = false;
 
     public RuinedArmoire(Serial serial) : base(serial)
     {
@@ -60,10 +54,7 @@ namespace Server.Items
   public class RuinedBookcase : Item
   {
     [Constructible]
-    public RuinedBookcase() : base(0xC14)
-    {
-      Movable = false;
-    }
+    public RuinedBookcase() : base(0xC14) => Movable = false;
 
     public RuinedBookcase(Serial serial) : base(serial)
     {
@@ -87,10 +78,7 @@ namespace Server.Items
   public class RuinedBooks : Item
   {
     [Constructible]
-    public RuinedBooks() : base(0xC16)
-    {
-      Movable = false;
-    }
+    public RuinedBooks() : base(0xC16) => Movable = false;
 
     public RuinedBooks(Serial serial) : base(serial)
     {
@@ -115,10 +103,7 @@ namespace Server.Items
   public class CoveredChair : Item
   {
     [Constructible]
-    public CoveredChair() : base(0xC17)
-    {
-      Movable = false;
-    }
+    public CoveredChair() : base(0xC17) => Movable = false;
 
     public CoveredChair(Serial serial) : base(serial)
     {
@@ -143,10 +128,7 @@ namespace Server.Items
   public class RuinedFallenChairB : Item
   {
     [Constructible]
-    public RuinedFallenChairB() : base(0xC19)
-    {
-      Movable = false;
-    }
+    public RuinedFallenChairB() : base(0xC19) => Movable = false;
 
     public RuinedFallenChairB(Serial serial) : base(serial)
     {
@@ -171,10 +153,7 @@ namespace Server.Items
   public class RuinedChair : Item
   {
     [Constructible]
-    public RuinedChair() : base(0xC1B)
-    {
-      Movable = false;
-    }
+    public RuinedChair() : base(0xC1B) => Movable = false;
 
     public RuinedChair(Serial serial) : base(serial)
     {
@@ -198,10 +177,7 @@ namespace Server.Items
   public class RuinedClock : Item
   {
     [Constructible]
-    public RuinedClock() : base(0xC1F)
-    {
-      Movable = false;
-    }
+    public RuinedClock() : base(0xC1F) => Movable = false;
 
     public RuinedClock(Serial serial) : base(serial)
     {
@@ -226,10 +202,7 @@ namespace Server.Items
   public class RuinedDrawers : Item
   {
     [Constructible]
-    public RuinedDrawers() : base(0xC24)
-    {
-      Movable = false;
-    }
+    public RuinedDrawers() : base(0xC24) => Movable = false;
 
     public RuinedDrawers(Serial serial) : base(serial)
     {
@@ -253,10 +226,7 @@ namespace Server.Items
   public class RuinedPainting : Item
   {
     [Constructible]
-    public RuinedPainting() : base(0xC2C)
-    {
-      Movable = false;
-    }
+    public RuinedPainting() : base(0xC2C) => Movable = false;
 
     public RuinedPainting(Serial serial) : base(serial)
     {
@@ -281,10 +251,7 @@ namespace Server.Items
   public class WoodDebris : Item
   {
     [Constructible]
-    public WoodDebris() : base(0xC2D)
-    {
-      Movable = false;
-    }
+    public WoodDebris() : base(0xC2D) => Movable = false;
 
     public WoodDebris(Serial serial) : base(serial)
     {

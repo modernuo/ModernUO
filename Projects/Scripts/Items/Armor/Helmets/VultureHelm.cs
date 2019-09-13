@@ -4,10 +4,7 @@ namespace Server.Items
   public class VultureHelm : BaseArmor
   {
     [Constructible]
-    public VultureHelm() : base(0x2B72)
-    {
-      Weight = 5.0;
-    }
+    public VultureHelm() : base(0x2B72) => Weight = 5.0;
 
     public VultureHelm(Serial serial) : base(serial)
     {

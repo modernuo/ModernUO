@@ -75,10 +75,7 @@ namespace Server.Spells.Spellweaving
       FinishSequence();
     }
 
-    public static int GetCastRecoveryMalus(Mobile m)
-    {
-      return m_Table.ContainsKey(m) ? 6 : 0;
-    }
+    public static int GetCastRecoveryMalus(Mobile m) => m_Table.ContainsKey(m) ? 6 : 0;
 
     public static void DoExpire(Mobile m)
     {

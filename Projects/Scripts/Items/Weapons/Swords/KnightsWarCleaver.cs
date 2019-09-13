@@ -3,10 +3,7 @@ namespace Server.Items
   public class KnightsWarCleaver : WarCleaver
   {
     [Constructible]
-    public KnightsWarCleaver()
-    {
-      Attributes.RegenHits = 3;
-    }
+    public KnightsWarCleaver() => Attributes.RegenHits = 3;
 
     public KnightsWarCleaver(Serial serial) : base(serial)
     {

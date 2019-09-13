@@ -23,10 +23,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public GasTrap(GasTrapType type, Poison poison = null) : base(GetBaseID(type))
-    {
-      Poison = poison;
-    }
+    public GasTrap(GasTrapType type, Poison poison = null) : base(GetBaseID(type)) => Poison = poison;
 
     public GasTrap(Serial serial) : base(serial)
     {

@@ -41,15 +41,9 @@ namespace Server.Engines.Quests.Samurai
         }
     }
 
-    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
-    {
-      return false;
-    }
+    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight) => false;
 
-    public override bool CheckItemUse(Mobile from, Item item)
-    {
-      return item == this;
-    }
+    public override bool CheckItemUse(Mobile from, Item item) => item == this;
 
     public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
     {

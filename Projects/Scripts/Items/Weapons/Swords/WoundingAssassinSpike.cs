@@ -3,10 +3,7 @@ namespace Server.Items
   public class WoundingAssassinSpike : AssassinSpike
   {
     [Constructible]
-    public WoundingAssassinSpike()
-    {
-      WeaponAttributes.HitHarm = 15;
-    }
+    public WoundingAssassinSpike() => WeaponAttributes.HitHarm = 15;
 
     public WoundingAssassinSpike(Serial serial) : base(serial)
     {

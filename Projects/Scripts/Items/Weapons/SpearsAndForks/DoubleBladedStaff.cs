@@ -4,10 +4,7 @@ namespace Server.Items
   public class DoubleBladedStaff : BaseSpear
   {
     [Constructible]
-    public DoubleBladedStaff() : base(0x26BF)
-    {
-      Weight = 2.0;
-    }
+    public DoubleBladedStaff() : base(0x26BF) => Weight = 2.0;
 
     public DoubleBladedStaff(Serial serial) : base(serial)
     {

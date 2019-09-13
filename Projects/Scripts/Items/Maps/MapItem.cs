@@ -160,10 +160,7 @@ namespace Server.Items
         y = Height - 1;
     }
 
-    public virtual bool ValidateEdit(Mobile from)
-    {
-      return m_Editable && Validate(from);
-    }
+    public virtual bool ValidateEdit(Mobile from) => m_Editable && Validate(from);
 
     public virtual bool Validate(Mobile from)
     {

@@ -97,10 +97,7 @@ namespace Server.Spells.Necromancy
       t?.DoExpire();
     }
 
-    public static Mobile GetBloodOath(Mobile m)
-    {
-      return m == null || m_OathTable.TryGetValue(m, out Mobile oath) && oath == m ? null : oath;
-    }
+    public static Mobile GetBloodOath(Mobile m) => m == null || m_OathTable.TryGetValue(m, out Mobile oath) && oath == m ? null : oath;
 
     private class ExpireTimer : Timer
     {

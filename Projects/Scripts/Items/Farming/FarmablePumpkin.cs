@@ -13,10 +13,7 @@ namespace Server.Items
     {
     }
 
-    public static int GetCropID()
-    {
-      return Utility.Random(3166, 3);
-    }
+    public static int GetCropID() => Utility.Random(3166, 3);
 
     public override Item GetCropObject()
     {
@@ -27,10 +24,7 @@ namespace Server.Items
       return pumpkin;
     }
 
-    public override int GetPickedID()
-    {
-      return Utility.Random(3166, 3);
-    }
+    public override int GetPickedID() => Utility.Random(3166, 3);
 
     public override void Serialize(GenericWriter writer)
     {

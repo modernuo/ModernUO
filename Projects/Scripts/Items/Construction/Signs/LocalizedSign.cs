@@ -5,16 +5,10 @@ namespace Server.Items
     private int m_LabelNumber;
 
     [Constructible]
-    public LocalizedSign(SignType type, SignFacing facing, int labelNumber) : base(0xB95 + 2 * (int)type + (int)facing)
-    {
-      m_LabelNumber = labelNumber;
-    }
+    public LocalizedSign(SignType type, SignFacing facing, int labelNumber) : base(0xB95 + 2 * (int)type + (int)facing) => m_LabelNumber = labelNumber;
 
     [Constructible]
-    public LocalizedSign(int itemID, int labelNumber) : base(itemID)
-    {
-      m_LabelNumber = labelNumber;
-    }
+    public LocalizedSign(int itemID, int labelNumber) : base(itemID) => m_LabelNumber = labelNumber;
 
     public LocalizedSign(Serial serial) : base(serial)
     {

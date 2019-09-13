@@ -4,10 +4,7 @@ namespace Server.Items
   public class Scimitar : BaseSword
   {
     [Constructible]
-    public Scimitar() : base(0x13B6)
-    {
-      Weight = 5.0;
-    }
+    public Scimitar() : base(0x13B6) => Weight = 5.0;
 
     public Scimitar(Serial serial) : base(serial)
     {

@@ -84,10 +84,7 @@ namespace Server.Mobiles
 
     public override bool CanRummageCorpses => true;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.DoubleStrike;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.DoubleStrike;
 
 
     public override void GenerateLoot()
@@ -130,24 +127,12 @@ namespace Server.Mobiles
       int version = reader.ReadInt();
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x42A;
-    }
+    public override int GetIdleSound() => 0x42A;
 
-    public override int GetAttackSound()
-    {
-      return 0x435;
-    }
+    public override int GetAttackSound() => 0x435;
 
-    public override int GetHurtSound()
-    {
-      return 0x436;
-    }
+    public override int GetHurtSound() => 0x436;
 
-    public override int GetDeathSound()
-    {
-      return 0x43A;
-    }
+    public override int GetDeathSound() => 0x43A;
   }
 }

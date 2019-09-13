@@ -4,10 +4,8 @@
   {
     [Constructible]
     public NougatSwirl(int amount = 1)
-      : base(0x4690)
-    {
+      : base(0x4690) =>
       Stackable = true;
-    }
 
     public NougatSwirl(Serial serial)
       : base(serial)

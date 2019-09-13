@@ -86,10 +86,7 @@ namespace Server.Engines.MLQuests.Objectives
       y += 16;
     }
 
-    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
-    {
-      return new DeliverObjectiveInstance(this, instance);
-    }
+    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance) => new DeliverObjectiveInstance(this, instance);
   }
 
   #region Timed
@@ -98,10 +95,8 @@ namespace Server.Engines.MLQuests.Objectives
   {
     public TimedDeliverObjective(TimeSpan duration, Type delivery, int amount, TextDefinition name, Type destination,
       bool spawnsDelivery = true)
-      : base(delivery, amount, name, destination, spawnsDelivery)
-    {
+      : base(delivery, amount, name, destination, spawnsDelivery) =>
       Duration = duration;
-    }
 
     public override bool IsTimed => true;
     public override TimeSpan Duration{ get; }
@@ -112,10 +107,8 @@ namespace Server.Engines.MLQuests.Objectives
   public class DeliverObjectiveInstance : BaseObjectiveInstance
   {
     public DeliverObjectiveInstance(DeliverObjective objective, MLQuestInstance instance)
-      : base(instance, objective)
-    {
+      : base(instance, objective) =>
       Objective = objective;
-    }
 
     public DeliverObjective Objective{ get; set; }
 
@@ -130,10 +123,7 @@ namespace Server.Engines.MLQuests.Objectives
       return destType?.IsAssignableFrom(type) == true;
     }
 
-    public override bool IsCompleted()
-    {
-      return HasCompleted;
-    }
+    public override bool IsCompleted() => HasCompleted;
 
     public override void OnQuestAccepted()
     {

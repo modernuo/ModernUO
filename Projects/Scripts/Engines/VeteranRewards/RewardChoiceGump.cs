@@ -107,10 +107,7 @@ namespace Server.Engines.VeteranRewards
       return (int)Math.Ceiling(i / 24.0);
     }
 
-    private int GetButtonID(int type, int index)
-    {
-      return 2 + index * 20 + type;
-    }
+    private int GetButtonID(int type, int index) => 2 + index * 20 + type;
 
     private void RenderCategory(RewardCategory category, int index, ref int page)
     {

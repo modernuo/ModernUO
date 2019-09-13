@@ -4,10 +4,7 @@ namespace Server.Items
   public class Club : BaseBashing
   {
     [Constructible]
-    public Club() : base(0x13B4)
-    {
-      Weight = 9.0;
-    }
+    public Club() : base(0x13B4) => Weight = 9.0;
 
     public Club(Serial serial) : base(serial)
     {

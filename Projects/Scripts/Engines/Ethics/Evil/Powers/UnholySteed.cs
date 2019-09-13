@@ -6,15 +6,13 @@ namespace Server.Ethics.Evil
 {
   public sealed class UnholySteed : Power
   {
-    public UnholySteed()
-    {
+    public UnholySteed() =>
       m_Definition = new PowerDefinition(
         30,
         "Unholy Steed",
         "Trubechs Yeliab",
         ""
       );
-    }
 
     public override void BeginInvoke(Player from)
     {

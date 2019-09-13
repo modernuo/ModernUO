@@ -5,10 +5,7 @@ namespace Server.Mobiles
   public class GypsyBanker : Banker
   {
     [Constructible]
-    public GypsyBanker()
-    {
-      Title = "the gypsy banker";
-    }
+    public GypsyBanker() => Title = "the gypsy banker";
 
     public GypsyBanker(Serial serial) : base(serial)
     {

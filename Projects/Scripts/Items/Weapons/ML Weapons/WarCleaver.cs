@@ -4,10 +4,7 @@ namespace Server.Items
   public class WarCleaver : BaseKnife
   {
     [Constructible]
-    public WarCleaver() : base(0x2D2F)
-    {
-      Weight = 10.0;
-    }
+    public WarCleaver() : base(0x2D2F) => Weight = 10.0;
 
     public WarCleaver(Serial serial) : base(serial)
     {

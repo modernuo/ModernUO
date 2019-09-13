@@ -21,10 +21,7 @@ namespace Server.Engines.Quests.Haven
   {
     private int m_OldTithingPoints;
 
-    public TitheGoldObjective()
-    {
-      m_OldTithingPoints = -1;
-    }
+    public TitheGoldObjective() => m_OldTithingPoints = -1;
 
     public override object Message => 1060386;
 
@@ -71,10 +68,7 @@ namespace Server.Engines.Quests.Haven
     {
     }
 
-    public KillHordeMinionsObjective(KillHordeMinionsStep step)
-    {
-      Step = step;
-    }
+    public KillHordeMinionsObjective(KillHordeMinionsStep step) => Step = step;
 
     public KillHordeMinionsStep Step{ get; private set; }
 

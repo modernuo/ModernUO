@@ -4,10 +4,7 @@ namespace Server.Items
   public class HideGorget : BaseArmor
   {
     [Constructible]
-    public HideGorget() : base(0x2B76)
-    {
-      Weight = 3.0;
-    }
+    public HideGorget() : base(0x2B76) => Weight = 3.0;
 
     public HideGorget(Serial serial) : base(serial)
     {

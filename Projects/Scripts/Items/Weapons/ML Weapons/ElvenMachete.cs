@@ -4,10 +4,7 @@ namespace Server.Items
   public class ElvenMachete : BaseSword
   {
     [Constructible]
-    public ElvenMachete() : base(0x2D35)
-    {
-      Weight = 6.0;
-    }
+    public ElvenMachete() : base(0x2D35) => Weight = 6.0;
 
     public ElvenMachete(Serial serial) : base(serial)
     {

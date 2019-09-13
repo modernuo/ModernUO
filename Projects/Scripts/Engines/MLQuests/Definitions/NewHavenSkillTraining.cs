@@ -1510,10 +1510,7 @@ namespace Server.Engines.MLQuests.Definitions
   public class GustarShroud : BaseOuterTorso
   {
     [Constructible]
-    public GustarShroud() : base(0x2684)
-    {
-      Hue = 0x479;
-    }
+    public GustarShroud() : base(0x2684) => Hue = 0x479;
 
     public GustarShroud(Serial serial) : base(serial)
     {
@@ -1988,10 +1985,7 @@ namespace Server.Engines.MLQuests.Definitions
       m_SBInfos.Add(new SBNinja());
     }
 
-    public override bool GetGender()
-    {
-      return false;
-    }
+    public override bool GetGender() => false;
 
     public override void InitOutfit()
     {
@@ -2235,10 +2229,7 @@ namespace Server.Engines.MLQuests.Definitions
       m_SBInfos.Add(new SBSamurai());
     }
 
-    public override bool GetGender()
-    {
-      return false;
-    }
+    public override bool GetGender() => false;
 
     public override void InitOutfit()
     {

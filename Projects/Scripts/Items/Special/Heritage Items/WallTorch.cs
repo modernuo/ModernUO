@@ -90,10 +90,7 @@ namespace Server.Items
   public class WallTorchDeed : BaseAddonDeed
   {
     [Constructible]
-    public WallTorchDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public WallTorchDeed() => LootType = LootType.Blessed;
 
     public WallTorchDeed(Serial serial) : base(serial)
     {

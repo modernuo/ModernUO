@@ -6,17 +6,17 @@ using System.Threading;
 
 namespace Server.Misc
 {
-  public class Email
+  public static class Email
   {
     /* In order to support emailing, fill in EmailServer and FromAddress:
      * Example:
      *  public static readonly string EmailServer = "mail.domain.com";
      *  public static readonly string FromAddress = "runuo@domain.com";
-     * 
+     *
      * If you want to add crash reporting emailing, fill in CrashAddresses:
      * Example:
      *  public static readonly string CrashAddresses = "first@email.here,second@email.here,third@email.here";
-     * 
+     *
      * If you want to add speech log page emailing, fill in SpeechLogPageAddresses:
      * Example:
      *  public static readonly string SpeechLogPageAddresses = "first@email.here,second@email.here,third@email.here";

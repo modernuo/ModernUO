@@ -20,25 +20,13 @@ namespace Server.Spells
 
     public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(.25);
 
-    public override TimeSpan GetCastRecovery()
-    {
-      return TimeSpan.Zero;
-    }
+    public override TimeSpan GetCastRecovery() => TimeSpan.Zero;
 
-    public override int GetMana()
-    {
-      return 0;
-    }
+    public override int GetMana() => 0;
 
-    public override bool ConsumeReagents()
-    {
-      return true;
-    }
+    public override bool ConsumeReagents() => true;
 
-    public override bool CheckFizzle()
-    {
-      return true;
-    }
+    public override bool CheckFizzle() => true;
 
     public void Stop()
     {

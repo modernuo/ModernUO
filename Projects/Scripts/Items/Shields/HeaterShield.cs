@@ -3,10 +3,7 @@ namespace Server.Items
   public class HeaterShield : BaseShield
   {
     [Constructible]
-    public HeaterShield() : base(0x1B76)
-    {
-      Weight = 8.0;
-    }
+    public HeaterShield() : base(0x1B76) => Weight = 8.0;
 
     public HeaterShield(Serial serial) : base(serial)
     {

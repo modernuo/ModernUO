@@ -391,7 +391,7 @@ namespace Server
 
     public static bool IsFrame(int id, int[] list)
     {
-      if (id > list[list.Length - 1])
+      if (id > list[^1])
         return false;
 
       for (int i = 0; i < list.Length; ++i)
@@ -407,25 +407,13 @@ namespace Server
       return false;
     }
 
-    public static bool IsNorthFrame(int id)
-    {
-      return IsFrame(id, m_NorthFrames);
-    }
+    public static bool IsNorthFrame(int id) => IsFrame(id, m_NorthFrames);
 
-    public static bool IsSouthFrame(int id)
-    {
-      return IsFrame(id, m_SouthFrames);
-    }
+    public static bool IsSouthFrame(int id) => IsFrame(id, m_SouthFrames);
 
-    public static bool IsWestFrame(int id)
-    {
-      return IsFrame(id, m_WestFrames);
-    }
+    public static bool IsWestFrame(int id) => IsFrame(id, m_WestFrames);
 
-    public static bool IsEastFrame(int id)
-    {
-      return IsFrame(id, m_EastFrames);
-    }
+    public static bool IsEastFrame(int id) => IsFrame(id, m_EastFrames);
 
     public static bool IsEastFrame(int x, int y, int z)
     {

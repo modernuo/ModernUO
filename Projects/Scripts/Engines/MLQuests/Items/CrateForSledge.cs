@@ -5,10 +5,7 @@ namespace Server.Items
   public class CrateForSledge : TransientItem
   {
     [Constructible]
-    public CrateForSledge() : base(0x1FFF, TimeSpan.FromHours(1))
-    {
-      LootType = LootType.Blessed;
-    }
+    public CrateForSledge() : base(0x1FFF, TimeSpan.FromHours(1)) => LootType = LootType.Blessed;
 
     public CrateForSledge(Serial serial) : base(serial)
     {

@@ -14,16 +14,11 @@ namespace Server.Regions
     private Dictionary<Mobile, GuardTimer> m_GuardCandidates = new Dictionary<Mobile, GuardTimer>();
     private Type m_GuardType;
 
-    public GuardedRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area)
-    {
-      m_GuardType = DefaultGuardType;
-    }
+    public GuardedRegion(string name, Map map, int priority, params Rectangle3D[] area) : base(name, map, priority, area) => m_GuardType = DefaultGuardType;
 
     public GuardedRegion(string name, Map map, int priority, params Rectangle2D[] area)
-      : base(name, map, priority, area)
-    {
+      : base(name, map, priority, area) =>
       m_GuardType = DefaultGuardType;
-    }
 
     public GuardedRegion(XmlElement xml, Map map, Region parent) : base(xml, map, parent)
     {
@@ -61,10 +56,7 @@ namespace Server.Regions
       }
     }
 
-    public virtual bool IsDisabled()
-    {
-      return Disabled;
-    }
+    public virtual bool IsDisabled() => Disabled;
 
     public static void Initialize()
     {
@@ -165,10 +157,7 @@ namespace Server.Regions
       return base.OnBeginSpellCast(m, s);
     }
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      return false;
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => false;
 
     public override void MakeGuard(Mobile focus)
     {

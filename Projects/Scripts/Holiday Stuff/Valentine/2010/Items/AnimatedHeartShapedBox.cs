@@ -4,10 +4,7 @@ namespace Server.Items
   public class AnimatedHeartShapedBox : HeartShapedBox
   {
     [Constructible]
-    public AnimatedHeartShapedBox()
-    {
-      ItemID = 0x49CC;
-    }
+    public AnimatedHeartShapedBox() => ItemID = 0x49CC;
 
     public AnimatedHeartShapedBox(Serial serial)
       : base(serial)

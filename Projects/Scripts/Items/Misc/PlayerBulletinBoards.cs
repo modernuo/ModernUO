@@ -14,12 +14,9 @@ namespace Server.Items
 		public override int LabelNumber => 1062421; // bulletin board (south)
 
 		[Constructible]
-		public PlayerBBSouth() : base( 0x2311 )
-		{
-			Weight = 15.0;
-		}
+		public PlayerBBSouth() : base( 0x2311 ) => Weight = 15.0;
 
-		public PlayerBBSouth( Serial serial ) : base( serial )
+    public PlayerBBSouth( Serial serial ) : base( serial )
 		{
 		}
 
@@ -43,12 +40,9 @@ namespace Server.Items
 		public override int LabelNumber => 1062420; // bulletin board (east)
 
 		[Constructible]
-		public PlayerBBEast() : base( 0x2312 )
-		{
-			Weight = 15.0;
-		}
+		public PlayerBBEast() : base( 0x2312 ) => Weight = 15.0;
 
-		public PlayerBBEast( Serial serial ) : base( serial )
+    public PlayerBBEast( Serial serial ) : base( serial )
 		{
 		}
 

@@ -43,12 +43,9 @@ namespace Server.Engines.BulkOrders
 			return entries;
 		}
 
-		public static SmallBulkEntry[] LoadEntries( string type, string name )
-		{
-			return LoadEntries($"Data/Bulk Orders/{type}/{name}.cfg");
-		}
+		public static SmallBulkEntry[] LoadEntries( string type, string name ) => LoadEntries($"Data/Bulk Orders/{type}/{name}.cfg");
 
-		public static SmallBulkEntry[] LoadEntries( string path )
+    public static SmallBulkEntry[] LoadEntries( string path )
 		{
 			path = Path.Combine( Core.BaseDirectory, path );
 
@@ -72,7 +69,7 @@ namespace Server.Engines.BulkOrders
 							if ( split.Length >= 2 )
 							{
 								Type type = ScriptCompiler.FindTypeByName( split[0] );
-								int graphic = Utility.ToInt32( split[split.Length - 1] );
+								int graphic = Utility.ToInt32( split[^1] );
 
 								if ( type != null && graphic > 0 )
 									list.Add( new SmallBulkEntry( type, graphic < 0x4000 ? 1020000 + graphic : 1078872 + graphic, graphic ) );

@@ -139,15 +139,9 @@ namespace Server.Multis
       return base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
     }
 
-    public override bool CheckLift(Mobile from, Item item, ref LRReason reject)
-    {
-      return House?.Deleted == false && base.CheckLift(from, item, ref reject) && House.IsOwner(from);
-    }
+    public override bool CheckLift(Mobile from, Item item, ref LRReason reject) => House?.Deleted == false && base.CheckLift(from, item, ref reject) && House.IsOwner(from);
 
-    public override bool CheckItemUse(Mobile from, Item item)
-    {
-      return House?.Deleted == false && base.CheckItemUse(from, item) && House.IsOwner(from);
-    }
+    public override bool CheckItemUse(Mobile from, Item item) => House?.Deleted == false && base.CheckItemUse(from, item) && House.IsOwner(from);
 
     public override void OnItemRemoved(Item item)
     {
@@ -254,10 +248,7 @@ namespace Server.Multis
 
   public class PackingBox : BaseContainer
   {
-    public PackingBox() : base(0x9A8)
-    {
-      Movable = false;
-    }
+    public PackingBox() : base(0x9A8) => Movable = false;
 
     public PackingBox(Serial serial) : base(serial)
     {

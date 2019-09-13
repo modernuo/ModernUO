@@ -5,7 +5,7 @@ using Server.Network;
 
 namespace Server
 {
-  public class LightCycle
+  public static class LightCycle
   {
     public const int DayLevel = 0;
     public const int NightLevel = 12;
@@ -70,12 +70,12 @@ namespace Server
       Clock.GetTime(from.Map, from.X, from.Y, out int hours, out int minutes);
 
       /* OSI times:
-       * 
+       *
        * Midnight ->  3:59 AM : Night
        *  4:00 AM -> 11:59 PM : Day
-       * 
+       *
        * RunUO times:
-       * 
+       *
        * 10:00 PM -> 11:59 PM : Scale to night
        * Midnight ->  3:59 AM : Night
        *  4:00 AM ->  5:59 AM : Scale to day
@@ -99,10 +99,8 @@ namespace Server
 
     private class LightCycleTimer : Timer
     {
-      public LightCycleTimer() : base(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(5.0))
-      {
+      public LightCycleTimer() : base(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(5.0)) =>
         Priority = TimerPriority.FiveSeconds;
-      }
 
       protected override void OnTick()
       {

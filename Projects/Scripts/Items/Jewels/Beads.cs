@@ -3,10 +3,7 @@ namespace Server.Items
   public class Beads : Item
   {
     [Constructible]
-    public Beads() : base(0x108B)
-    {
-      Weight = 1.0;
-    }
+    public Beads() : base(0x108B) => Weight = 1.0;
 
     public Beads(Serial serial) : base(serial)
     {

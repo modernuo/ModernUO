@@ -47,20 +47,11 @@ namespace Server.Mobiles
     public override int Hides => 15;
     public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
 
-    public override int GetAttackSound()
-    {
-      return 0x82;
-    }
+    public override int GetAttackSound() => 0x82;
 
-    public override int GetHurtSound()
-    {
-      return 0x83;
-    }
+    public override int GetHurtSound() => 0x83;
 
-    public override int GetDeathSound()
-    {
-      return 0x84;
-    }
+    public override int GetDeathSound() => 0x84;
 
     public override void Serialize(GenericWriter writer)
     {

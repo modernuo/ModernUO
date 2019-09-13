@@ -241,10 +241,7 @@ namespace Server.Factions
 
     public bool IsActive{ get; set; }
 
-    public int CompareTo(PlayerState ps)
-    {
-      return (ps?.m_KillPoints ?? 0) - m_KillPoints;
-    }
+    public int CompareTo(PlayerState ps) => (ps?.m_KillPoints ?? 0) - m_KillPoints;
 
     public bool CanGiveSilverTo(Mobile mob)
     {
@@ -295,9 +292,6 @@ namespace Server.Factions
       writer.Write(Leaving);
     }
 
-    public static PlayerState Find(Mobile mob)
-    {
-      return mob is PlayerMobile mobile ? mobile.FactionPlayerState : null;
-    }
+    public static PlayerState Find(Mobile mob) => mob is PlayerMobile mobile ? mobile.FactionPlayerState : null;
   }
 }

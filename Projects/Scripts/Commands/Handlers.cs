@@ -408,10 +408,7 @@ namespace Server.Commands
       AutoSave.Save(true);
     }
 
-    private static bool FixMap(ref Map map, ref Point3D loc, Item item)
-    {
-      return map != null && map != Map.Internal || item.RootParent is Mobile m && FixMap(ref map, ref loc, m);
-    }
+    private static bool FixMap(ref Map map, ref Point3D loc, Item item) => map != null && map != Map.Internal || item.RootParent is Mobile m && FixMap(ref map, ref loc, m);
 
     private static bool FixMap(ref Map map, ref Point3D loc, Mobile m)
     {

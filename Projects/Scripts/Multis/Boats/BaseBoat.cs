@@ -453,10 +453,7 @@ namespace Server.Multis
         SPlank.Map = Map;
     }
 
-    public bool CanCommand(Mobile m)
-    {
-      return true;
-    }
+    public bool CanCommand(Mobile m) => true;
 
     public Point3D GetMarkedLocation()
     {
@@ -465,10 +462,7 @@ namespace Server.Multis
       return Rotate(p, (int)m_Facing / 2);
     }
 
-    public bool CheckKey(uint keyValue)
-    {
-      return SPlank?.KeyValue == keyValue || PPlank?.KeyValue == keyValue;
-    }
+    public bool CheckKey(uint keyValue) => SPlank?.KeyValue == keyValue || PPlank?.KeyValue == keyValue;
 
     public void Refresh()
     {
@@ -1265,14 +1259,12 @@ namespace Server.Multis
       return new Point3D(Location.X + rx, Location.Y + ry, p.Z);
     }
 
-    public override bool Contains(int x, int y)
-    {
-      return base.Contains(x, y) ||
-             TillerMan?.X == x && y == TillerMan.Y ||
-             Hold?.X == x && Hold.Y == y ||
-             PPlank?.X == x && PPlank.Y == y ||
-             SPlank?.X == x && SPlank.Y == y;
-    }
+    public override bool Contains(int x, int y) =>
+      base.Contains(x, y) ||
+      TillerMan?.X == x && y == TillerMan.Y ||
+      Hold?.X == x && Hold.Y == y ||
+      PPlank?.X == x && PPlank.Y == y ||
+      SPlank?.X == x && SPlank.Y == y;
 
     public static bool IsValidLocation(Point3D p, Map map)
     {
@@ -1285,10 +1277,7 @@ namespace Server.Multis
       return false;
     }
 
-    public static Rectangle2D[] GetWrapFor(Map m)
-    {
-      return m == Map.Ilshenar ? m_IlshWrap : m == Map.Tokuno ? m_TokunoWrap : m_BritWrap;
-    }
+    public static Rectangle2D[] GetWrapFor(Map m) => m == Map.Ilshenar ? m_IlshWrap : m == Map.Tokuno ? m_TokunoWrap : m_BritWrap;
 
     public Direction GetMovementFor(int x, int y, out int maxSpeed)
     {

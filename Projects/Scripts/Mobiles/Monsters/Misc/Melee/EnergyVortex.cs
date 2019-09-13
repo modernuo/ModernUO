@@ -69,20 +69,11 @@ namespace Server.Mobiles
     public override bool BleedImmune => true;
     public override Poison PoisonImmune => Poison.Lethal;
 
-    public override double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly)
-    {
-      return (m.Int + m.Skills.Magery.Value) / Math.Max(GetDistanceToSqrt(m), 1.0);
-    }
+    public override double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly) => (m.Int + m.Skills.Magery.Value) / Math.Max(GetDistanceToSqrt(m), 1.0);
 
-    public override int GetAngerSound()
-    {
-      return 0x15;
-    }
+    public override int GetAngerSound() => 0x15;
 
-    public override int GetAttackSound()
-    {
-      return 0x28;
-    }
+    public override int GetAttackSound() => 0x28;
 
     public override void OnThink()
     {

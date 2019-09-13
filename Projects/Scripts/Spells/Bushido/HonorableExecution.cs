@@ -74,15 +74,9 @@ namespace Server.Spells.Bushido
       CheckGain(attacker);
     }
 
-    public static int GetSwingBonus(Mobile target)
-    {
-      return m_Table.TryGetValue(target, out HonorableExecutionInfo info) ? info.m_SwingBonus : 0;
-    }
+    public static int GetSwingBonus(Mobile target) => m_Table.TryGetValue(target, out HonorableExecutionInfo info) ? info.m_SwingBonus : 0;
 
-    public static bool IsUnderPenalty(Mobile target)
-    {
-      return m_Table.TryGetValue(target, out HonorableExecutionInfo info) && info.m_Penalty;
-    }
+    public static bool IsUnderPenalty(Mobile target) => m_Table.TryGetValue(target, out HonorableExecutionInfo info) && info.m_Penalty;
 
     public static void RemovePenalty(Mobile target)
     {

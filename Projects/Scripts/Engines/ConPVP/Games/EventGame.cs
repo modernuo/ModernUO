@@ -47,24 +47,15 @@ namespace Server.Engines.ConPVP
   {
     protected DuelContext m_Context;
 
-    public EventGame(DuelContext context)
-    {
-      m_Context = context;
-    }
+    public EventGame(DuelContext context) => m_Context = context;
 
     public DuelContext Context => m_Context;
 
     public virtual bool FreeConsume => true;
 
-    public virtual bool OnDeath(Mobile mob, Container corpse)
-    {
-      return true;
-    }
+    public virtual bool OnDeath(Mobile mob, Container corpse) => true;
 
-    public virtual bool CantDoAnything(Mobile mob)
-    {
-      return false;
-    }
+    public virtual bool CantDoAnything(Mobile mob) => false;
 
     public virtual void OnStart()
     {

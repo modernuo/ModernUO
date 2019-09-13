@@ -4,10 +4,8 @@ namespace Server.Items
   {
     [Constructible]
     public ArcaneCircleScroll(int amount = 1)
-      : base(600, 0x2D51, amount)
-    {
+      : base(600, 0x2D51, amount) =>
       Hue = 0x8FD;
-    }
 
     public ArcaneCircleScroll(Serial serial)
       : base(serial)
@@ -33,10 +31,8 @@ namespace Server.Items
   {
     [Constructible]
     public GiftOfRenewalScroll(int amount = 1)
-      : base(601, 0x2D52, amount)
-    {
+      : base(601, 0x2D52, amount) =>
       Hue = 0x8FD;
-    }
 
     public GiftOfRenewalScroll(Serial serial)
       : base(serial)
@@ -62,10 +58,8 @@ namespace Server.Items
   {
     [Constructible]
     public ImmolatingWeaponScroll(int amount = 1)
-      : base(602, 0x2D53, amount)
-    {
+      : base(602, 0x2D53, amount) =>
       Hue = 0x8FD;
-    }
 
     public ImmolatingWeaponScroll(Serial serial)
       : base(serial)
@@ -91,10 +85,8 @@ namespace Server.Items
   {
     [Constructible]
     public AttuneWeaponScroll(int amount = 1)
-      : base(603, 0x2D54, amount)
-    {
+      : base(603, 0x2D54, amount) =>
       Hue = 0x8FD;
-    }
 
     public AttuneWeaponScroll(Serial serial)
       : base(serial)
@@ -120,10 +112,8 @@ namespace Server.Items
   {
     [Constructible]
     public ThunderstormScroll(int amount = 1)
-      : base(604, 0x2D55, amount)
-    {
+      : base(604, 0x2D55, amount) =>
       Hue = 0x8FD;
-    }
 
     public ThunderstormScroll(Serial serial)
       : base(serial)
@@ -149,10 +139,8 @@ namespace Server.Items
   {
     [Constructible]
     public NatureFuryScroll(int amount = 1)
-      : base(605, 0x2D56, amount)
-    {
+      : base(605, 0x2D56, amount) =>
       Hue = 0x8FD;
-    }
 
     public NatureFuryScroll(Serial serial)
       : base(serial)
@@ -178,10 +166,8 @@ namespace Server.Items
   {
     [Constructible]
     public SummonFeyScroll(int amount = 1)
-      : base(606, 0x2D57, amount)
-    {
+      : base(606, 0x2D57, amount) =>
       Hue = 0x8FD;
-    }
 
     public SummonFeyScroll(Serial serial)
       : base(serial)
@@ -207,10 +193,8 @@ namespace Server.Items
   {
     [Constructible]
     public SummonFiendScroll(int amount = 1)
-      : base(607, 0x2D58, amount)
-    {
+      : base(607, 0x2D58, amount) =>
       Hue = 0x8FD;
-    }
 
     public SummonFiendScroll(Serial serial)
       : base(serial)
@@ -236,10 +220,8 @@ namespace Server.Items
   {
     [Constructible]
     public ReaperFormScroll(int amount = 1)
-      : base(608, 0x2D59, amount)
-    {
+      : base(608, 0x2D59, amount) =>
       Hue = 0x8FD;
-    }
 
     public ReaperFormScroll(Serial serial)
       : base(serial)
@@ -265,10 +247,8 @@ namespace Server.Items
   {
     [Constructible]
     public WildfireScroll(int amount = 1)
-      : base(609, 0x2D5A, amount)
-    {
+      : base(609, 0x2D5A, amount) =>
       Hue = 0x8FD;
-    }
 
     public WildfireScroll(Serial serial)
       : base(serial)
@@ -294,10 +274,8 @@ namespace Server.Items
   {
     [Constructible]
     public EssenceOfWindScroll(int amount = 1)
-      : base(610, 0x2D5B, amount)
-    {
+      : base(610, 0x2D5B, amount) =>
       Hue = 0x8FD;
-    }
 
     public EssenceOfWindScroll(Serial serial)
       : base(serial)
@@ -323,10 +301,8 @@ namespace Server.Items
   {
     [Constructible]
     public DryadAllureScroll(int amount = 1)
-      : base(611, 0x2D5C, amount)
-    {
+      : base(611, 0x2D5C, amount) =>
       Hue = 0x8FD;
-    }
 
     public DryadAllureScroll(Serial serial)
       : base(serial)
@@ -352,10 +328,8 @@ namespace Server.Items
   {
     [Constructible]
     public EtherealVoyageScroll(int amount = 1)
-      : base(612, 0x2D5D, amount)
-    {
+      : base(612, 0x2D5D, amount) =>
       Hue = 0x8FD;
-    }
 
     public EtherealVoyageScroll(Serial serial)
       : base(serial)
@@ -381,10 +355,8 @@ namespace Server.Items
   {
     [Constructible]
     public WordOfDeathScroll(int amount = 1)
-      : base(613, 0x2D5E, amount)
-    {
+      : base(613, 0x2D5E, amount) =>
       Hue = 0x8FD;
-    }
 
     public WordOfDeathScroll(Serial serial)
       : base(serial)
@@ -410,10 +382,8 @@ namespace Server.Items
   {
     [Constructible]
     public GiftOfLifeScroll(int amount = 1)
-      : base(614, 0x2D5F, amount)
-    {
+      : base(614, 0x2D5F, amount) =>
       Hue = 0x8FD;
-    }
 
     public GiftOfLifeScroll(Serial serial)
       : base(serial)
@@ -439,10 +409,8 @@ namespace Server.Items
   {
     [Constructible]
     public ArcaneEmpowermentScroll(int amount = 1)
-      : base(615, 0x2D60, amount)
-    {
+      : base(615, 0x2D60, amount) =>
       Hue = 0x8FD;
-    }
 
     public ArcaneEmpowermentScroll(Serial serial)
       : base(serial)

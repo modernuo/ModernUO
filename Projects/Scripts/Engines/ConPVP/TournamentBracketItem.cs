@@ -5,10 +5,7 @@ namespace Server.Engines.ConPVP
   public class TournamentBracketItem : Item
   {
     [Constructible]
-    public TournamentBracketItem() : base(3774)
-    {
-      Movable = false;
-    }
+    public TournamentBracketItem() : base(3774) => Movable = false;
 
     public TournamentBracketItem(Serial serial) : base(serial)
     {

@@ -20,9 +20,6 @@ namespace Server.Engines.Craft
       }
     }
 
-    public CraftRes GetAt(int index)
-    {
-      return (CraftRes)List[index];
-    }
+    public CraftRes GetAt(int index) => (CraftRes)List[index];
   }
 }

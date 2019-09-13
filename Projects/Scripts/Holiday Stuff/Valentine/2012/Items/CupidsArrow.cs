@@ -30,12 +30,10 @@ namespace Server.Items
 
 		[Constructible]
 		public CupidsArrow()
-			: base( 0x4F7F )
-		{
-			LootType = LootType.Blessed;
-		}
+			: base( 0x4F7F ) =>
+      LootType = LootType.Blessed;
 
-		public override void AddNameProperty( ObjectPropertyList list )
+    public override void AddNameProperty( ObjectPropertyList list )
 		{
 			base.AddNameProperty( list );
 

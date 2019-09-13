@@ -12,7 +12,7 @@ using Server.Spells.Seventh;
 
 namespace Server.Misc
 {
-  public class NotorietyHandlers
+  public static class NotorietyHandlers
   {
     public static void Initialize()
     {
@@ -306,7 +306,7 @@ namespace Server.Misc
     }
 
     /* Must be thread-safe */
-    public static int MobileNotoriety(Mobile source, Mobile target)
+    public static byte MobileNotoriety(Mobile source, Mobile target)
     {
       BaseCreature bcTarg = target as BaseCreature;
 
@@ -426,15 +426,9 @@ namespace Server.Misc
              !house.IsFriend(c.ControlMaster);
     }
 
-    public static bool IsPet(BaseCreature c)
-    {
-      return c?.Controlled == true;
-    }
+    public static bool IsPet(BaseCreature c) => c?.Controlled == true;
 
-    public static bool IsSummoned(BaseCreature c)
-    {
-      return c?.Summoned == true;
-    }
+    public static bool IsSummoned(BaseCreature c) => c?.Summoned == true;
 
     public static bool CheckAggressor(List<AggressorInfo> list, Mobile target)
     {

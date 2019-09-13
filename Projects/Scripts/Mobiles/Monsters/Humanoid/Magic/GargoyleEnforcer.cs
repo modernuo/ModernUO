@@ -54,10 +54,7 @@ namespace Server.Mobiles
 
     public override int Meat => 1;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.WhirlwindAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.WhirlwindAttack;
 
     public override void GenerateLoot()
     {

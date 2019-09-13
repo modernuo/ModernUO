@@ -23,15 +23,7 @@ namespace Server.Engines.Quests.Necro
 
     public override int LabelNumber => 1060149; // Calling of Kronus
 
-    public override bool CanDrop(PlayerMobile player)
-    {
-      return !(player.Quest is DarkTidesQuest);
-
-      /*return !( qs.IsObjectiveInProgress( typeof( FindCallingScrollObjective ) )
-        || qs.IsObjectiveInProgress( typeof( FindMardothAboutKronusObjective ) )
-        || qs.IsObjectiveInProgress( typeof( FindWellOfTearsObjective ) )
-        || qs.IsObjectiveInProgress( typeof( UseCallingScrollObjective ) ) );*/
-    }
+    public override bool CanDrop(PlayerMobile player) => !(player.Quest is DarkTidesQuest);
 
     public override void OnDoubleClick(Mobile from)
     {

@@ -10,9 +10,8 @@ namespace Server.Items
     public static readonly TimeSpan DefaultDuration = TimeSpan.FromSeconds(5.0);
 
     private EffectItem() : base(1) // nodraw
-    {
-      Movable = false;
-    }
+      =>
+        Movable = false;
 
     public EffectItem(Serial serial) : base(serial)
     {

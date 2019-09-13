@@ -4,10 +4,7 @@ namespace Server.Items
   public class ChainLegs : BaseArmor
   {
     [Constructible]
-    public ChainLegs() : base(0x13BE)
-    {
-      Weight = 7.0;
-    }
+    public ChainLegs() : base(0x13BE) => Weight = 7.0;
 
     public ChainLegs(Serial serial) : base(serial)
     {

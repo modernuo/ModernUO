@@ -3,10 +3,7 @@ namespace Server.Items
   public class SlayerLongbow : ElvenCompositeLongbow
   {
     [Constructible]
-    public SlayerLongbow()
-    {
-      Slayer2 = (SlayerName)Utility.RandomMinMax(1, 27);
-    }
+    public SlayerLongbow() => Slayer2 = (SlayerName)Utility.RandomMinMax(1, 27);
 
     public SlayerLongbow(Serial serial) : base(serial)
     {

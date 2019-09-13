@@ -111,7 +111,7 @@ namespace Server.Misc
         IPHostEntry iphe = Dns.GetHostEntry(addr);
 
         if (iphe.AddressList.Length > 0)
-          outValue = iphe.AddressList[iphe.AddressList.Length - 1];
+          outValue = iphe.AddressList[^1];
       }
       catch
       {

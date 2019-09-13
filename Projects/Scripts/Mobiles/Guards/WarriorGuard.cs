@@ -234,10 +234,7 @@ namespace Server.Mobiles
     {
       private Mobile m_Focus;
 
-      public AvengeTimer(Mobile focus) : base(TimeSpan.FromSeconds(2.5), TimeSpan.FromSeconds(1.0), 3)
-      {
-        m_Focus = focus;
-      }
+      public AvengeTimer(Mobile focus) : base(TimeSpan.FromSeconds(2.5), TimeSpan.FromSeconds(1.0), 3) => m_Focus = focus;
 
       protected override void OnTick()
       {
@@ -249,10 +246,7 @@ namespace Server.Mobiles
     {
       private WarriorGuard m_Owner;
 
-      public AttackTimer(WarriorGuard owner) : base(TimeSpan.FromSeconds(0.25), TimeSpan.FromSeconds(0.1))
-      {
-        m_Owner = owner;
-      }
+      public AttackTimer(WarriorGuard owner) : base(TimeSpan.FromSeconds(0.25), TimeSpan.FromSeconds(0.1)) => m_Owner = owner;
 
       public void DoOnTick()
       {
@@ -354,10 +348,7 @@ namespace Server.Mobiles
       private WarriorGuard m_Owner;
       private int m_Stage;
 
-      public IdleTimer(WarriorGuard owner) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.5))
-      {
-        m_Owner = owner;
-      }
+      public IdleTimer(WarriorGuard owner) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.5)) => m_Owner = owner;
 
       protected override void OnTick()
       {

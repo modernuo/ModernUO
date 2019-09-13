@@ -48,15 +48,9 @@ namespace Server.Engines.Quests.Haven
       AddItem(pack);
     }
 
-    public override int GetAutoTalkRange(PlayerMobile pm)
-    {
-      return 7;
-    }
+    public override int GetAutoTalkRange(PlayerMobile pm) => 7;
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-      return to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective<FindSchmendrickObjective>() != null;
-    }
+    public override bool CanTalkTo(PlayerMobile to) => to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective<FindSchmendrickObjective>() != null;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

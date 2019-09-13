@@ -473,10 +473,7 @@ namespace Server.Engines.Craft
     {
       private TrapCraft m_TrapCraft;
 
-      public ContainerTarget(TrapCraft trapCraft) : base(-1, false, TargetFlags.None)
-      {
-        m_TrapCraft = trapCraft;
-      }
+      public ContainerTarget(TrapCraft trapCraft) : base(-1, false, TargetFlags.None) => m_TrapCraft = trapCraft;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

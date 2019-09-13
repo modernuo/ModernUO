@@ -53,9 +53,6 @@ namespace Server.Spells.Necromancy
       return false;
     }
 
-    public override int GetMana()
-    {
-      return RequiredMana;
-    }
+    public override int GetMana() => RequiredMana;
   }
 }

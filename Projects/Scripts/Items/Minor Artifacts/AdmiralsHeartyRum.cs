@@ -3,10 +3,7 @@ namespace Server.Items
   public class AdmiralsHeartyRum : BeverageBottle
   {
     [Constructible]
-    public AdmiralsHeartyRum() : base(BeverageType.Ale)
-    {
-      Hue = 0x66C;
-    }
+    public AdmiralsHeartyRum() : base(BeverageType.Ale) => Hue = 0x66C;
 
     public AdmiralsHeartyRum(Serial serial) : base(serial)
     {

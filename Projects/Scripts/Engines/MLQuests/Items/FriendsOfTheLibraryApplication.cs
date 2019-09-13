@@ -3,10 +3,7 @@ namespace Server.Items
   public class FriendsOfTheLibraryApplication : Item
   {
     [Constructible]
-    public FriendsOfTheLibraryApplication() : base(0xEC0)
-    {
-      LootType = LootType.Blessed;
-    }
+    public FriendsOfTheLibraryApplication() : base(0xEC0) => LootType = LootType.Blessed;
 
     public FriendsOfTheLibraryApplication(Serial serial) : base(serial)
     {

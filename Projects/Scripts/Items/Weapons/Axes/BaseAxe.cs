@@ -18,10 +18,7 @@ namespace Server.Items
 
     private int m_UsesRemaining;
 
-    public BaseAxe(int itemID) : base(itemID)
-    {
-      m_UsesRemaining = 150;
-    }
+    public BaseAxe(int itemID) : base(itemID) => m_UsesRemaining = 150;
 
     public BaseAxe(Serial serial) : base(serial)
     {

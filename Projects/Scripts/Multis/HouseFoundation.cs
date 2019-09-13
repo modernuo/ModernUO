@@ -190,15 +190,9 @@ namespace Server.Multis
 
     public static ComponentVerification Verification => m_Verification ??= new ComponentVerification();
 
-    public bool IsFixture(Item item)
-    {
-      return Fixtures.Contains(item);
-    }
+    public bool IsFixture(Item item) => Fixtures.Contains(item);
 
-    public override int GetMaxUpdateRange()
-    {
-      return 24;
-    }
+    public override int GetMaxUpdateRange() => 24;
 
     public override int GetUpdateRange(Mobile m)
     {
@@ -633,13 +627,7 @@ namespace Server.Multis
       }
     }
 
-    private static DoorFacing GetSADoorFacing(int offset)
-    {
-      /* Offset		0	2	4	6
-       * DoorFacing	2	3	6	7
-       */
-      return (DoorFacing)((offset / 2 + 2 * (1 + offset / 4)) % 8);
-    }
+    private static DoorFacing GetSADoorFacing(int offset) => (DoorFacing)((offset / 2 + 2 * (1 + offset / 4)) % 8);
 
     public void AddFixture(Item item, MultiTileEntry mte)
     {
@@ -932,10 +920,7 @@ namespace Server.Multis
       base.Deserialize(reader);
     }
 
-    public bool IsHiddenToCustomizer(Item item)
-    {
-      return item == Signpost || item == SignHanger || item == Sign || IsFixture(item);
-    }
+    public bool IsHiddenToCustomizer(Item item) => item == Signpost || item == SignHanger || item == Sign || IsFixture(item);
 
     public static void Initialize()
     {

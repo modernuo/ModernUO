@@ -4,10 +4,7 @@ namespace Server.Items
   public class SkinningKnife : BaseKnife
   {
     [Constructible]
-    public SkinningKnife() : base(0xEC4)
-    {
-      Weight = 1.0;
-    }
+    public SkinningKnife() : base(0xEC4) => Weight = 1.0;
 
     public SkinningKnife(Serial serial) : base(serial)
     {

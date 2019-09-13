@@ -3,10 +3,7 @@ namespace Server.Items
   public class StuddedHaidate : BaseArmor
   {
     [Constructible]
-    public StuddedHaidate() : base(0x278B)
-    {
-      Weight = 5.0;
-    }
+    public StuddedHaidate() : base(0x278B) => Weight = 5.0;
 
     public StuddedHaidate(Serial serial) : base(serial)
     {

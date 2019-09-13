@@ -4,10 +4,7 @@ namespace Server.Items
   public class GemmedCirclet : BaseArmor
   {
     [Constructible]
-    public GemmedCirclet() : base(0x2B70)
-    {
-      Weight = 2.0;
-    }
+    public GemmedCirclet() : base(0x2B70) => Weight = 2.0;
 
     public GemmedCirclet(Serial serial) : base(serial)
     {

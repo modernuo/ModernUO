@@ -58,20 +58,11 @@ namespace Server.Spells
 
     public static Dictionary<int, SpecialMove> SpecialMoves{ get; } = new Dictionary<int, SpecialMove>();
 
-    public static int GetRegistryNumber(ISpell s)
-    {
-      return GetRegistryNumber(s.GetType());
-    }
+    public static int GetRegistryNumber(ISpell s) => GetRegistryNumber(s.GetType());
 
-    public static int GetRegistryNumber(SpecialMove s)
-    {
-      return GetRegistryNumber(s.GetType());
-    }
+    public static int GetRegistryNumber(SpecialMove s) => GetRegistryNumber(s.GetType());
 
-    public static int GetRegistryNumber(Type type)
-    {
-      return m_IDsFromTypes.TryGetValue(type, out int value) ? value : -1;
-    }
+    public static int GetRegistryNumber(Type type) => m_IDsFromTypes.TryGetValue(type, out int value) ? value : -1;
 
     public static void Register(int spellID, Type type)
     {

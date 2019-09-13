@@ -96,15 +96,9 @@ namespace Server.Spells.Ninjitsu
       return base.CheckCast();
     }
 
-    public override bool CheckDisturb(DisturbType type, bool firstCircle, bool resistable)
-    {
-      return false;
-    }
+    public override bool CheckDisturb(DisturbType type, bool firstCircle, bool resistable) => false;
 
-    private bool CasterIsMoving()
-    {
-      return Core.TickCount - Caster.LastMoveTime <= Caster.ComputeMovementSpeed(Caster.Direction);
-    }
+    private bool CasterIsMoving() => Core.TickCount - Caster.LastMoveTime <= Caster.ComputeMovementSpeed(Caster.Direction);
 
     public override void OnBeginCast()
     {
@@ -114,11 +108,7 @@ namespace Server.Spells.Ninjitsu
       m_WasMoving = CasterIsMoving();
     }
 
-    public override bool CheckFizzle()
-    {
-      // Spell is initially always successful, and with no skill gain.
-      return true;
-    }
+    public override bool CheckFizzle() => true;
 
     public override void OnCast()
     {
@@ -188,10 +178,7 @@ namespace Server.Spells.Ninjitsu
       FinishSequence();
     }
 
-    public int GetLastAnimalForm(Mobile m)
-    {
-      return m_LastAnimalForms.TryGetValue(m, out int value) ? value : -1;
-    }
+    public int GetLastAnimalForm(Mobile m) => m_LastAnimalForms.TryGetValue(m, out int value) ? value : -1;
 
     public static MorphResult Morph(Mobile m, int entryID)
     {
@@ -311,20 +298,11 @@ namespace Server.Spells.Ninjitsu
       context.Timer.Stop();
     }
 
-    public static AnimalFormContext GetContext(Mobile m)
-    {
-      return m_Table.TryGetValue(m, out AnimalFormContext context) ? context : null;
-    }
+    public static AnimalFormContext GetContext(Mobile m) => m_Table.TryGetValue(m, out AnimalFormContext context) ? context : null;
 
-    public static bool UnderTransformation(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool UnderTransformation(Mobile m) => m_Table.ContainsKey(m);
 
-    public static bool UnderTransformation(Mobile m, Type type)
-    {
-      return GetContext(m)?.Type == type;
-    }
+    public static bool UnderTransformation(Mobile m, Type type) => GetContext(m)?.Type == type;
 
     /*
         private delegate void AnimalFormCallback( Mobile from );

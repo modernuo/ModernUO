@@ -6,15 +6,13 @@ namespace Server.Ethics.Hero
 {
   public sealed class HolySense : Power
   {
-    public HolySense()
-    {
+    public HolySense() =>
       m_Definition = new PowerDefinition(
         0,
         "Holy Sense",
         "Drewrok Erstok",
         ""
       );
-    }
 
     public override void BeginInvoke(Player from)
     {

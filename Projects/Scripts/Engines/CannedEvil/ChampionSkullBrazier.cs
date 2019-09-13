@@ -170,10 +170,7 @@ namespace Server.Engines.CannedEvil
     {
       private ChampionSkullBrazier m_Brazier;
 
-      public SacrificeTarget(ChampionSkullBrazier brazier) : base(12, false, TargetFlags.None)
-      {
-        m_Brazier = brazier;
-      }
+      public SacrificeTarget(ChampionSkullBrazier brazier) : base(12, false, TargetFlags.None) => m_Brazier = brazier;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

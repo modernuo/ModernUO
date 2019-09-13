@@ -8,20 +8,11 @@ namespace Server
 
     private static int[] m_Table;
 
-    public static int Lookup(Mobile m)
-    {
-      return Lookup(m.Body.BodyID, DefaultItemID);
-    }
+    public static int Lookup(Mobile m) => Lookup(m.Body.BodyID, DefaultItemID);
 
-    public static int Lookup(int body)
-    {
-      return Lookup(body, DefaultItemID);
-    }
+    public static int Lookup(int body) => Lookup(body, DefaultItemID);
 
-    public static int Lookup(Mobile m, int defaultValue)
-    {
-      return Lookup(m.Body.BodyID, defaultValue);
-    }
+    public static int Lookup(Mobile m, int defaultValue) => Lookup(m.Body.BodyID, defaultValue);
 
     public static int Lookup(int body, int defaultValue)
     {

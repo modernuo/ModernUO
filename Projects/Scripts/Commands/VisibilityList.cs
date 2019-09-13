@@ -49,9 +49,7 @@ namespace Server.Commands
             pm.SendMessage("#{0}: {1}", i + 1, list[i].Name);
         }
         else
-        {
           pm.SendMessage("Your visibility list is empty.");
-        }
       }
     }
 
@@ -71,7 +69,7 @@ namespace Server.Commands
           Mobile m = list[i];
 
           if (!m.CanSee(pm) && Utility.InUpdateRange(m, pm))
-            m.Send(pm.RemovePacket);
+            Packets.SendRemoveEntity(m.NetState, pm.Serial);
         }
       }
     }
@@ -84,56 +82,52 @@ namespace Server.Commands
 
       protected override void OnTarget(Mobile from, object targeted)
       {
-        if (from is PlayerMobile pm && targeted is Mobile targ)
+        if (!(from is PlayerMobile pm) || !(targeted is Mobile targ))
         {
-          if (targ.AccessLevel <= pm.AccessLevel)
-          {
-            List<Mobile> list = pm.VisibilityList;
+          from.SendMessage("Add only mobiles to your visibility list.");
+          return;
+        }
 
-            if (list.Contains(targ))
-            {
-              list.Remove(targ);
-              pm.SendMessage("{0} has been removed from your visibility list.", targ.Name);
-            }
-            else
-            {
-              list.Add(targ);
-              pm.SendMessage("{0} has been added to your visibility list.", targ.Name);
-            }
+        if (targ.AccessLevel > pm.AccessLevel)
+        {
+          pm.SendMessage("They can already see you!");
+          return;
+        }
 
-            if (Utility.InUpdateRange(targ, from))
-            {
-              NetState ns = targ.NetState;
+        List<Mobile> list = pm.VisibilityList;
 
-              if (ns != null)
-              {
-                if (targ.CanSee(pm))
-                {
-                  ns.Send(MobileIncoming.Create(ns, targ, pm));
-
-                  if (ObjectPropertyList.Enabled)
-                  {
-                    ns.Send(pm.OPLPacket);
-
-                    foreach (Item item in pm.Items)
-                      ns.Send(item.OPLPacket);
-                  }
-                }
-                else
-                {
-                  ns.Send(pm.RemovePacket);
-                }
-              }
-            }
-          }
-          else
-          {
-            pm.SendMessage("They can already see you!");
-          }
+        if (list.Contains(targ))
+        {
+          list.Remove(targ);
+          pm.SendMessage("{0} has been removed from your visibility list.", targ.Name);
         }
         else
         {
-          from.SendMessage("Add only mobiles to your visibility list.");
+          list.Add(targ);
+          pm.SendMessage("{0} has been added to your visibility list.", targ.Name);
+        }
+
+        if (Utility.InUpdateRange(targ, @from))
+        {
+          NetState ns = targ.NetState;
+
+          if (ns != null)
+          {
+            if (targ.CanSee(pm))
+            {
+              Packets.SendMobileIncoming(ns, targ, pm);
+
+              if (ObjectPropertyList.Enabled)
+              {
+                pm.PropertyList.Send(ns);
+
+                foreach (Item item in pm.Items)
+                  item.PropertyList.Send(ns);
+              }
+            }
+            else
+              Packets.SendRemoveEntity(ns, pm.Serial);
+          }
         }
       }
     }

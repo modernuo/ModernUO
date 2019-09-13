@@ -76,10 +76,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.UltraRich, 2);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.ArmorIgnore;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.ArmorIgnore;
 
     public override void Serialize(GenericWriter writer)
     {

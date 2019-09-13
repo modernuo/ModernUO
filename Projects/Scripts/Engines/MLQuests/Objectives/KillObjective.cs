@@ -55,10 +55,7 @@ namespace Server.Engines.MLQuests.Objectives
       #endregion
     }
 
-    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
-    {
-      return new KillObjectiveInstance(this, instance);
-    }
+    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance) => new KillObjectiveInstance(this, instance);
   }
 
   #region Timed
@@ -66,10 +63,8 @@ namespace Server.Engines.MLQuests.Objectives
   public class TimedKillObjective : KillObjective
   {
     public TimedKillObjective(TimeSpan duration, int amount, Type[] types, TextDefinition name, QuestArea area = null)
-      : base(amount, types, name, area)
-    {
+      : base(amount, types, name, area) =>
       Duration = duration;
-    }
 
     public override bool IsTimed => true;
     public override TimeSpan Duration{ get; }
@@ -116,10 +111,7 @@ namespace Server.Engines.MLQuests.Objectives
       return false;
     }
 
-    public override bool IsCompleted()
-    {
-      return Slain >= Objective.DesiredAmount;
-    }
+    public override bool IsCompleted() => Slain >= Objective.DesiredAmount;
 
     public override void WriteToGump(Gump g, ref int y)
     {

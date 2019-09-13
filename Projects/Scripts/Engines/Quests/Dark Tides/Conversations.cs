@@ -127,10 +127,7 @@ namespace Server.Engines.Quests.Necro
   {
     private bool m_FromMardoth;
 
-    public LostCallingScrollConversation(bool fromMardoth)
-    {
-      m_FromMardoth = fromMardoth;
-    }
+    public LostCallingScrollConversation(bool fromMardoth) => m_FromMardoth = fromMardoth;
 
     // Serialization
     public LostCallingScrollConversation()

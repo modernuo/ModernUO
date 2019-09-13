@@ -487,10 +487,7 @@ namespace Server.Gumps
       return String.IsNullOrWhiteSpace(m.Name) ? "(no name)" : m.Name.Trim();
     }
 
-    private string GetDateTime(DateTime val)
-    {
-      return val == DateTime.MinValue ? "" : val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");
-    }
+    private string GetDateTime(DateTime val) => val == DateTime.MinValue ? "" : val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");
 
     public void AddPageButton(int x, int y, int buttonID, int number, HouseGumpPageAOS page)
     {
@@ -576,10 +573,7 @@ namespace Server.Gumps
       }
     }
 
-    public int GetButtonID(int type, int index)
-    {
-      return 1 + index * 15 + type;
-    }
+    public int GetButtonID(int type, int index) => 1 + index * 15 + type;
 
     public static void PublicPrivateNotice_Callback(Mobile from, BaseHouse house)
     {

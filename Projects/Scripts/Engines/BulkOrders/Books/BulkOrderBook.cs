@@ -282,12 +282,9 @@ namespace Server.Engines.BulkOrders
 		{
 			private BulkOrderBook m_Book;
 
-			public NameBookPrompt( BulkOrderBook book )
-			{
-				m_Book = book;
-			}
+			public NameBookPrompt( BulkOrderBook book ) => m_Book = book;
 
-			public override void OnResponse( Mobile from, string text )
+      public override void OnResponse( Mobile from, string text )
 			{
 				if ( text.Length > 40 )
 					text = text.Substring( 0, 40 );

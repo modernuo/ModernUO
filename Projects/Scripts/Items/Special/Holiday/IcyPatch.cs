@@ -15,10 +15,8 @@ namespace Server.Items
     }
 
     public IcyPatch(int itemid)
-      : base(itemid)
-    {
+      : base(itemid) =>
       Hue = 0x481;
-    }
 
     public IcyPatch(Serial serial)
       : base(serial)

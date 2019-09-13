@@ -84,25 +84,13 @@ namespace Server.Mobiles
     public override bool Unprovokable => true;
     public override Poison PoisonImmune => Poison.Deadly;
 
-    public override int GetIdleSound()
-    {
-      return 0x184;
-    }
+    public override int GetIdleSound() => 0x184;
 
-    public override int GetAngerSound()
-    {
-      return 0x286;
-    }
+    public override int GetAngerSound() => 0x286;
 
-    public override int GetDeathSound()
-    {
-      return 0x288;
-    }
+    public override int GetDeathSound() => 0x288;
 
-    public override int GetHurtSound()
-    {
-      return 0x19F;
-    }
+    public override int GetHurtSound() => 0x19F;
 
     public override bool OnBeforeDeath()
     {

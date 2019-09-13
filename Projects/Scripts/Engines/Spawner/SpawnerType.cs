@@ -4,9 +4,6 @@ namespace Server.Mobiles
 {
   public class SpawnerType
   {
-    public static Type GetType(string name)
-    {
-      return ScriptCompiler.FindTypeByName(name);
-    }
+    public static Type GetType(string name) => ScriptCompiler.FindTypeByName(name);
   }
 }

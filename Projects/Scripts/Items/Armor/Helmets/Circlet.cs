@@ -4,10 +4,7 @@ namespace Server.Items
   public class Circlet : BaseArmor
   {
     [Constructible]
-    public Circlet() : base(0x2B6E)
-    {
-      Weight = 2.0;
-    }
+    public Circlet() : base(0x2B6E) => Weight = 2.0;
 
     public Circlet(Serial serial) : base(serial)
     {

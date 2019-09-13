@@ -66,10 +66,7 @@ namespace Server.Items
     {
       private Wool m_Wool;
 
-      public PickWheelTarget(Wool wool) : base(3, false, TargetFlags.None)
-      {
-        m_Wool = wool;
-      }
+      public PickWheelTarget(Wool wool) : base(3, false, TargetFlags.None) => m_Wool = wool;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

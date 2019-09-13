@@ -65,10 +65,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public SnowGlobeOne(SnowGlobeTypeOne type)
-    {
-      m_Type = type;
-    }
+    public SnowGlobeOne(SnowGlobeTypeOne type) => m_Type = type;
 
     public SnowGlobeOne(Serial serial)
       : base(serial)
@@ -171,10 +168,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public SnowGlobeTwo(SnowGlobeTypeTwo type)
-    {
-      m_Type = type;
-    }
+    public SnowGlobeTwo(SnowGlobeTypeTwo type) => m_Type = type;
 
     public SnowGlobeTwo(Serial serial)
       : base(serial)
@@ -261,10 +255,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public SnowGlobeThree(SnowGlobeTypeThree type)
-    {
-      m_Type = type;
-    }
+    public SnowGlobeThree(SnowGlobeTypeThree type) => m_Type = type;
 
     public SnowGlobeThree(Serial serial)
       : base(serial)

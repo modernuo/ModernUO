@@ -156,11 +156,7 @@ namespace Server.Items
       return false;
     }
 
-    public bool VerifyRegion(Mobile m)
-    {
-      //TODO: When the entire region system data is in, convert to that instead of a proximity thing.
-      return m.Region.IsPartOf<TownRegion>() && Faction.IsNearType(m, RepairSkillInfo.GetInfo(m_Skill).NearbyTypes, 6);
-    }
+    public bool VerifyRegion(Mobile m) => m.Region.IsPartOf<TownRegion>() && Faction.IsNearType(m, RepairSkillInfo.GetInfo(m_Skill).NearbyTypes, 6);
 
     public override void Serialize(GenericWriter writer)
     {

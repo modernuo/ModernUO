@@ -15,10 +15,7 @@ namespace Server.Items
         base.Delete();
     }
 
-    public DisguisePersistance(Serial serial) : base(serial)
-    {
-      Instance = this;
-    }
+    public DisguisePersistance(Serial serial) : base(serial) => Instance = this;
 
     public static DisguisePersistance Instance{ get; private set; }
 

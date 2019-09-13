@@ -4,10 +4,7 @@ namespace Server.Items
   public class RadiantScimitar : BaseSword
   {
     [Constructible]
-    public RadiantScimitar() : base(0x2D33)
-    {
-      Weight = 9.0;
-    }
+    public RadiantScimitar() : base(0x2D33) => Weight = 9.0;
 
     public RadiantScimitar(Serial serial) : base(serial)
     {

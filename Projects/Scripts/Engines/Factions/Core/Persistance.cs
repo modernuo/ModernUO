@@ -14,10 +14,7 @@ namespace Server.Factions
         base.Delete();
     }
 
-    public FactionPersistance(Serial serial) : base(serial)
-    {
-      Instance = this;
-    }
+    public FactionPersistance(Serial serial) : base(serial) => Instance = this;
 
     public static FactionPersistance Instance{ get; private set; }
 

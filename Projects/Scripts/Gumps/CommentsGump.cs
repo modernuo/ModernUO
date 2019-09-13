@@ -92,10 +92,7 @@ namespace Server.Gumps
     {
       private Account m_Acct;
 
-      public CommentPrompt(Account acct)
-      {
-        m_Acct = acct;
-      }
+      public CommentPrompt(Account acct) => m_Acct = acct;
 
       public override void OnCancel(Mobile from)
       {

@@ -122,10 +122,7 @@ namespace Server.Mobiles
         AddImage(293, 308 + offset, 0x25E6);
     }
 
-    public int GetButtonID(int type, int index)
-    {
-      return 1 + index * 10 + type;
-    }
+    public int GetButtonID(int type, int index) => 1 + index * 10 + type;
 
     public void CreateArray(RelayInfo info, Mobile from, Spawner spawner)
     {

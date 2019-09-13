@@ -5,10 +5,7 @@ namespace Server.Items
   public class RunedSwitch : Item
   {
     [Constructible]
-    public RunedSwitch() : base(0x2F61)
-    {
-      Weight = 1.0;
-    }
+    public RunedSwitch() : base(0x2F61) => Weight = 1.0;
 
     public RunedSwitch(Serial serial) : base(serial)
     {
@@ -47,10 +44,7 @@ namespace Server.Items
     {
       private RunedSwitch m_Item;
 
-      public InternalTarget(RunedSwitch item) : base(0, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(RunedSwitch item) : base(0, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object o)
       {

@@ -9,10 +9,7 @@ namespace Server.Items
 {
   public class CannonAddonComponent : AddonComponent
   {
-    public CannonAddonComponent(int itemID) : base(itemID)
-    {
-      LootType = LootType.Blessed;
-    }
+    public CannonAddonComponent(int itemID) : base(itemID) => LootType = LootType.Blessed;
 
     public CannonAddonComponent(Serial serial) : base(serial)
     {
@@ -254,10 +251,7 @@ namespace Server.Items
     {
       private CannonAddon m_Cannon;
 
-      public InternalTarget(CannonAddon cannon) : base(12, true, TargetFlags.None)
-      {
-        m_Cannon = cannon;
-      }
+      public InternalTarget(CannonAddon cannon) : base(12, true, TargetFlags.None) => m_Cannon = cannon;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -373,10 +367,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public CannonDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public CannonDeed() => LootType = LootType.Blessed;
 
     public CannonDeed(Serial serial) : base(serial)
     {

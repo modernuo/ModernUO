@@ -79,20 +79,11 @@ namespace Server.Mobiles
       Timer.DelayCall(TimeSpan.FromSeconds(5.0), Delete);
     }
 
-    public override int GetAttackSound()
-    {
-      return 0xC9;
-    }
+    public override int GetAttackSound() => 0xC9;
 
-    public override int GetHurtSound()
-    {
-      return 0xCA;
-    }
+    public override int GetHurtSound() => 0xCA;
 
-    public override int GetDeathSound()
-    {
-      return 0xCB;
-    }
+    public override int GetDeathSound() => 0xCB;
 
     public override void Serialize(GenericWriter writer)
     {

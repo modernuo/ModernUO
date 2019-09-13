@@ -62,17 +62,15 @@ namespace Server
       return false;
     }
 
-    public static bool IsMLRegion(Region region)
-    {
-      return region.IsPartOf("Twisted Weald")
-             || region.IsPartOf("Sanctuary")
-             || region.IsPartOf("The Prism of Light")
-             || region.IsPartOf("The Citadel")
-             || region.IsPartOf("Bedlam")
-             || region.IsPartOf("Blighted Grove")
-             || region.IsPartOf("The Painted Caves")
-             || region.IsPartOf("The Palace of Paroxysmus")
-             || region.IsPartOf("Labyrinth");
-    }
+    public static bool IsMLRegion(Region region) =>
+      region.IsPartOf("Twisted Weald")
+      || region.IsPartOf("Sanctuary")
+      || region.IsPartOf("The Prism of Light")
+      || region.IsPartOf("The Citadel")
+      || region.IsPartOf("Bedlam")
+      || region.IsPartOf("Blighted Grove")
+      || region.IsPartOf("The Painted Caves")
+      || region.IsPartOf("The Palace of Paroxysmus")
+      || region.IsPartOf("Labyrinth");
   }
 }

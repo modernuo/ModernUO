@@ -439,10 +439,7 @@ namespace Server.Gumps
       }
     }
 
-    public int GetButtonID(int type, int index)
-    {
-      return 1 + index * 3 + type;
-    }
+    public int GetButtonID(int type, int index) => 1 + index * 3 + type;
   }
 
   public class SkillsGumpGroup

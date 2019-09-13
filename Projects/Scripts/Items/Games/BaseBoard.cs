@@ -66,10 +66,7 @@ namespace Server.Items
         Weight = 5.0;
     }
 
-    public override bool OnDragDrop(Mobile from, Item dropped)
-    {
-      return dropped is BasePiece piece && piece.Board == this && base.OnDragDrop(from, dropped);
-    }
+    public override bool OnDragDrop(Mobile from, Item dropped) => dropped is BasePiece piece && piece.Board == this && base.OnDragDrop(from, dropped);
 
     public override bool OnDragDropInto(Mobile from, Item dropped, Point3D point)
     {
@@ -103,15 +100,11 @@ namespace Server.Items
       SetSecureLevelEntry.AddTo(from, this, list);
     }
 
-    public static bool ValidateDefault(Mobile from, BaseBoard board)
-    {
-      // Fixed this because it implies you can use it from your bank, if you can access your bank
-      // while in your house. (!(board.RootParent is Mobile) || board.RootParent == from)
-      return !board.Deleted && (from.AccessLevel >= AccessLevel.GameMaster || from.Alive &&
-             (board.IsChildOf(from.Backpack) || !(board.RootParent is Mobile) &&
-              board.Map == from.Map && from.InRange(board.GetWorldLocation(), 1) &&
-              BaseHouse.FindHouseAt(board)?.IsOwner(from) == true));
-    }
+    public static bool ValidateDefault(Mobile from, BaseBoard board) =>
+      !board.Deleted && (from.AccessLevel >= AccessLevel.GameMaster || from.Alive &&
+                         (board.IsChildOf(from.Backpack) || !(board.RootParent is Mobile) &&
+                          board.Map == from.Map && from.InRange(board.GetWorldLocation(), 1) &&
+                          BaseHouse.FindHouseAt(board)?.IsOwner(from) == true));
 
     public class DefaultEntry : ContextMenuEntry
     {

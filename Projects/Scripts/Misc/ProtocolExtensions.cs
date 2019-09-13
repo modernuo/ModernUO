@@ -3,7 +3,7 @@ using Server.Network;
 
 namespace Server.Misc
 {
-  public class ProtocolExtensions
+  public static class ProtocolExtensions
   {
     private static PacketHandler[] m_Handlers = new PacketHandler[0x100];
 

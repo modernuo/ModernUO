@@ -55,10 +55,7 @@ namespace Server.Engines.Quests.Hag
   {
     private Point3D m_ImpLocation;
 
-    public ImpDeathConversation(Point3D impLocation)
-    {
-      m_ImpLocation = impLocation;
-    }
+    public ImpDeathConversation(Point3D impLocation) => m_ImpLocation = impLocation;
 
     public ImpDeathConversation()
     {
@@ -213,10 +210,7 @@ namespace Server.Engines.Quests.Hag
   {
     private bool m_FirstMet;
 
-    public BlackheartPirateConversation(bool firstMet)
-    {
-      m_FirstMet = firstMet;
-    }
+    public BlackheartPirateConversation(bool firstMet) => m_FirstMet = firstMet;
 
     public BlackheartPirateConversation()
     {

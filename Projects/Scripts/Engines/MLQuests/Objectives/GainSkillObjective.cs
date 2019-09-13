@@ -71,15 +71,9 @@ namespace Server.Engines.MLQuests.Objectives
       y += 16;
     }
 
-    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
-    {
-      return new GainSkillObjectiveInstance(this, instance);
-    }
+    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance) => new GainSkillObjectiveInstance(this, instance);
 
-    private bool GetFlag(GainSkillObjectiveFlags flag)
-    {
-      return (m_Flags & flag) != 0;
-    }
+    private bool GetFlag(GainSkillObjectiveFlags flag) => (m_Flags & flag) != 0;
 
     private void SetFlag(GainSkillObjectiveFlags flag, bool value)
     {
@@ -94,17 +88,12 @@ namespace Server.Engines.MLQuests.Objectives
   public class GainSkillObjectiveInstance : BaseObjectiveInstance
   {
     public GainSkillObjectiveInstance(GainSkillObjective objective, MLQuestInstance instance)
-      : base(instance, objective)
-    {
+      : base(instance, objective) =>
       Objective = objective;
-    }
 
     public GainSkillObjective Objective{ get; set; }
 
-    public bool Handles(SkillName skill)
-    {
-      return Objective.Skill == skill;
-    }
+    public bool Handles(SkillName skill) => Objective.Skill == skill;
 
     public override bool IsCompleted()
     {

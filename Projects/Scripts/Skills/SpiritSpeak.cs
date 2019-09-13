@@ -90,10 +90,7 @@ namespace Server.SkillHandlers
 
       public override bool CheckNextSpellTime => false;
 
-      public override int GetMana()
-      {
-        return 0;
-      }
+      public override int GetMana() => 0;
 
       public override void OnCasterHurt()
       {
@@ -101,15 +98,9 @@ namespace Server.SkillHandlers
           Disturb(DisturbType.Hurt, false, true);
       }
 
-      public override bool ConsumeReagents()
-      {
-        return true;
-      }
+      public override bool ConsumeReagents() => true;
 
-      public override bool CheckFizzle()
-      {
-        return true;
-      }
+      public override bool CheckFizzle() => true;
 
       public override void OnDisturb(DisturbType type, bool message)
       {

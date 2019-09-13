@@ -4,10 +4,7 @@ namespace Server.Items
   public class BoneHelm : BaseArmor
   {
     [Constructible]
-    public BoneHelm() : base(0x1451)
-    {
-      Weight = 3.0;
-    }
+    public BoneHelm() : base(0x1451) => Weight = 3.0;
 
     public BoneHelm(Serial serial) : base(serial)
     {

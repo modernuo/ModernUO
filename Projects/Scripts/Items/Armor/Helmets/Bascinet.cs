@@ -3,10 +3,7 @@ namespace Server.Items
   public class Bascinet : BaseArmor
   {
     [Constructible]
-    public Bascinet() : base(0x140C)
-    {
-      Weight = 5.0;
-    }
+    public Bascinet() : base(0x140C) => Weight = 5.0;
 
     public Bascinet(Serial serial) : base(serial)
     {

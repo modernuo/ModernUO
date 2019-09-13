@@ -4,10 +4,7 @@ namespace Server.Items
   public class RingmailArms : BaseArmor
   {
     [Constructible]
-    public RingmailArms() : base(0x13EE)
-    {
-      Weight = 15.0;
-    }
+    public RingmailArms() : base(0x13EE) => Weight = 15.0;
 
     public RingmailArms(Serial serial) : base(serial)
     {

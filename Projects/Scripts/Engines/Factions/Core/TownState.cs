@@ -7,10 +7,7 @@ namespace Server.Factions
     private Mobile m_Finance;
     private Mobile m_Sheriff;
 
-    public TownState(Town town)
-    {
-      Town = town;
-    }
+    public TownState(Town town) => Town = town;
 
     public TownState(GenericReader reader)
     {

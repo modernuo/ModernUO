@@ -8,10 +8,7 @@ namespace Server.Items
   public class TallCabinet : BaseContainer
   {
     [Constructible]
-    public TallCabinet() : base(0x2815)
-    {
-      Weight = 1.0;
-    }
+    public TallCabinet() : base(0x2815) => Weight = 1.0;
 
     public TallCabinet(Serial serial) : base(serial)
     {
@@ -35,10 +32,7 @@ namespace Server.Items
   public class ShortCabinet : BaseContainer
   {
     [Constructible]
-    public ShortCabinet() : base(0x2817)
-    {
-      Weight = 1.0;
-    }
+    public ShortCabinet() : base(0x2817) => Weight = 1.0;
 
     public ShortCabinet(Serial serial) : base(serial)
     {
@@ -63,10 +57,7 @@ namespace Server.Items
   public class RedArmoire : BaseContainer
   {
     [Constructible]
-    public RedArmoire() : base(0x2857)
-    {
-      Weight = 1.0;
-    }
+    public RedArmoire() : base(0x2857) => Weight = 1.0;
 
     public RedArmoire(Serial serial) : base(serial)
     {
@@ -90,10 +81,7 @@ namespace Server.Items
   public class CherryArmoire : BaseContainer
   {
     [Constructible]
-    public CherryArmoire() : base(0x285D)
-    {
-      Weight = 1.0;
-    }
+    public CherryArmoire() : base(0x285D) => Weight = 1.0;
 
     public CherryArmoire(Serial serial) : base(serial)
     {
@@ -117,10 +105,7 @@ namespace Server.Items
   public class MapleArmoire : BaseContainer
   {
     [Constructible]
-    public MapleArmoire() : base(0x285B)
-    {
-      Weight = 1.0;
-    }
+    public MapleArmoire() : base(0x285B) => Weight = 1.0;
 
     public MapleArmoire(Serial serial) : base(serial)
     {
@@ -144,10 +129,7 @@ namespace Server.Items
   public class ElegantArmoire : BaseContainer
   {
     [Constructible]
-    public ElegantArmoire() : base(0x2859)
-    {
-      Weight = 1.0;
-    }
+    public ElegantArmoire() : base(0x2859) => Weight = 1.0;
 
     public ElegantArmoire(Serial serial) : base(serial)
     {
@@ -171,10 +153,7 @@ namespace Server.Items
   public class FullBookcase : BaseContainer
   {
     [Constructible]
-    public FullBookcase() : base(0xA97)
-    {
-      Weight = 1.0;
-    }
+    public FullBookcase() : base(0xA97) => Weight = 1.0;
 
     public FullBookcase(Serial serial) : base(serial)
     {
@@ -228,10 +207,7 @@ namespace Server.Items
   public class Drawer : BaseContainer
   {
     [Constructible]
-    public Drawer() : base(0xA2C)
-    {
-      Weight = 1.0;
-    }
+    public Drawer() : base(0xA2C) => Weight = 1.0;
 
     public Drawer(Serial serial) : base(serial)
     {
@@ -255,10 +231,7 @@ namespace Server.Items
   public class FancyDrawer : BaseContainer
   {
     [Constructible]
-    public FancyDrawer() : base(0xA30)
-    {
-      Weight = 1.0;
-    }
+    public FancyDrawer() : base(0xA30) => Weight = 1.0;
 
     public FancyDrawer(Serial serial) : base(serial)
     {
@@ -282,10 +255,7 @@ namespace Server.Items
   public class Armoire : BaseContainer
   {
     [Constructible]
-    public Armoire() : base(0xA4F)
-    {
-      Weight = 1.0;
-    }
+    public Armoire() : base(0xA4F) => Weight = 1.0;
 
     public Armoire(Serial serial) : base(serial)
     {
@@ -317,10 +287,7 @@ namespace Server.Items
   public class FancyArmoire : BaseContainer
   {
     [Constructible]
-    public FancyArmoire() : base(0xA4D)
-    {
-      Weight = 1.0;
-    }
+    public FancyArmoire() : base(0xA4D) => Weight = 1.0;
 
     public FancyArmoire(Serial serial) : base(serial)
     {

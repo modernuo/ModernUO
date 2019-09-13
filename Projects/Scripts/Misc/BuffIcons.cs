@@ -80,10 +80,8 @@ namespace Server
     }
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args)
-      : this(iconID, titleCliloc, secondaryCliloc)
-    {
+      : this(iconID, titleCliloc, secondaryCliloc) =>
       Args = args;
-    }
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, bool retainThroughDeath)
       : this(iconID, titleCliloc, titleCliloc + 1, retainThroughDeath)
@@ -91,10 +89,8 @@ namespace Server
     }
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, bool retainThroughDeath)
-      : this(iconID, titleCliloc, secondaryCliloc)
-    {
+      : this(iconID, titleCliloc, secondaryCliloc) =>
       RetainThroughDeath = retainThroughDeath;
-    }
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, TextDefinition args, bool retainThroughDeath)
       : this(iconID, titleCliloc, titleCliloc + 1, args, retainThroughDeath)
@@ -102,10 +98,8 @@ namespace Server
     }
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TextDefinition args, bool retainThroughDeath)
-      : this(iconID, titleCliloc, secondaryCliloc, args)
-    {
+      : this(iconID, titleCliloc, secondaryCliloc, args) =>
       RetainThroughDeath = retainThroughDeath;
-    }
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m, TextDefinition args)
       : this(iconID, titleCliloc, titleCliloc + 1, length, m, args)
@@ -114,10 +108,8 @@ namespace Server
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, int secondaryCliloc, TimeSpan length, Mobile m,
       TextDefinition args)
-      : this(iconID, titleCliloc, secondaryCliloc, length, m)
-    {
+      : this(iconID, titleCliloc, secondaryCliloc, length, m) =>
       Args = args;
-    }
 
     public BuffInfo(BuffIcon iconID, int titleCliloc, TimeSpan length, Mobile m, TextDefinition args,
       bool retainThroughDeath)

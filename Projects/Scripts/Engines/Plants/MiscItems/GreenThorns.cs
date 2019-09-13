@@ -59,10 +59,7 @@ namespace Server.Items
     {
       private GreenThorns m_Thorn;
 
-      public InternalTarget(GreenThorns thorn) : base(3, true, TargetFlags.None)
-      {
-        m_Thorn = thorn;
-      }
+      public InternalTarget(GreenThorns thorn) : base(3, true, TargetFlags.None) => m_Thorn = thorn;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

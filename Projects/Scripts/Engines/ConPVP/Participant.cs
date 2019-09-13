@@ -102,10 +102,7 @@ namespace Server.Engines.ConPVP
       return null;
     }
 
-    public bool Contains(Mobile mob)
-    {
-      return Find(mob) != null;
-    }
+    public bool Contains(Mobile mob) => Find(mob) != null;
 
     public void Broadcast(int hue, string message, string nonLocalOverhead, string localOverhead)
     {
@@ -176,7 +173,7 @@ namespace Server.Engines.ConPVP
         }
 
       Resize(Players.Length + 1);
-      Players[Players.Length - 1] = new DuelPlayer(player, this);
+      Players[^1] = new DuelPlayer(player, this);
     }
 
     public void Resize(int count)

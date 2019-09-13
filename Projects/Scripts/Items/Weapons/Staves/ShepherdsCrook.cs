@@ -10,10 +10,7 @@ namespace Server.Items
   public class ShepherdsCrook : BaseStaff
   {
     [Constructible]
-    public ShepherdsCrook() : base(0xE81)
-    {
-      Weight = 4.0;
-    }
+    public ShepherdsCrook() : base(0xE81) => Weight = 4.0;
 
     public ShepherdsCrook(Serial serial) : base(serial)
     {
@@ -133,10 +130,7 @@ namespace Server.Items
       {
         private BaseCreature m_Creature;
 
-        public InternalTarget(BaseCreature c) : base(10, true, TargetFlags.None)
-        {
-          m_Creature = c;
-        }
+        public InternalTarget(BaseCreature c) : base(10, true, TargetFlags.None) => m_Creature = c;
 
         protected override void OnTarget(Mobile from, object targ)
         {

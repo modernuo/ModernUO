@@ -3,10 +3,7 @@ namespace Server.Mobiles
   public class CapturedHordeMinion : HordeMinion
   {
     [Constructible]
-    public CapturedHordeMinion()
-    {
-      FightMode = FightMode.None;
-    }
+    public CapturedHordeMinion() => FightMode = FightMode.None;
 
     public CapturedHordeMinion(Serial serial) : base(serial)
     {
@@ -14,10 +11,7 @@ namespace Server.Mobiles
 
     public override bool InitialInnocent => true;
 
-    public override bool CanBeDamaged()
-    {
-      return false;
-    }
+    public override bool CanBeDamaged() => false;
 
     public override void Serialize(GenericWriter writer)
     {

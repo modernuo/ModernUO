@@ -146,10 +146,7 @@ namespace Server.Mobiles
       }
     }
 
-    public bool IsFanned(Mobile m)
-    {
-      return m_Table.Contains(m);
-    }
+    public bool IsFanned(Mobile m) => m_Table.Contains(m);
 
     public override void Serialize(GenericWriter writer)
     {

@@ -31,10 +31,7 @@ namespace Server.Items
   public class FountainDeed : BaseAddonDeed
   {
     [Constructible]
-    public FountainDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public FountainDeed() => LootType = LootType.Blessed;
 
     public FountainDeed(Serial serial) : base(serial)
     {

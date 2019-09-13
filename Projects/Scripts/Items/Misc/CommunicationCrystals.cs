@@ -174,10 +174,7 @@ namespace Server.Items
     {
       private BroadcastCrystal m_Crystal;
 
-      public InternalTarget(BroadcastCrystal crystal) : base(2, false, TargetFlags.None)
-      {
-        m_Crystal = crystal;
-      }
+      public InternalTarget(BroadcastCrystal crystal) : base(2, false, TargetFlags.None) => m_Crystal = crystal;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -280,10 +277,7 @@ namespace Server.Items
     private BroadcastCrystal m_Sender;
 
     [Constructible]
-    public ReceiverCrystal() : base(0x1ED0)
-    {
-      Light = LightType.Circle150;
-    }
+    public ReceiverCrystal() : base(0x1ED0) => Light = LightType.Circle150;
 
     public ReceiverCrystal(Serial serial) : base(serial)
     {
@@ -388,10 +382,7 @@ namespace Server.Items
     {
       private ReceiverCrystal m_Crystal;
 
-      public InternalTarget(ReceiverCrystal crystal) : base(-1, false, TargetFlags.None)
-      {
-        m_Crystal = crystal;
-      }
+      public InternalTarget(ReceiverCrystal crystal) : base(-1, false, TargetFlags.None) => m_Crystal = crystal;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

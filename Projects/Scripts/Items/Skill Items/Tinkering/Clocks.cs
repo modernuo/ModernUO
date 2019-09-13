@@ -23,10 +23,7 @@ namespace Server.Items
     private static DateTime WorldStart = new DateTime(1997, 9, 1);
 
     [Constructible]
-    public Clock(int itemID = 0x104B) : base(itemID)
-    {
-      Weight = 3.0;
-    }
+    public Clock(int itemID = 0x104B) : base(itemID) => Weight = 3.0;
 
     public Clock(Serial serial) : base(serial)
     {

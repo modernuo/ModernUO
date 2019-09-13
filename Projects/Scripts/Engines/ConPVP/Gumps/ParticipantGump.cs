@@ -64,10 +64,7 @@ namespace Server.Engines.ConPVP
 
     public Participant Participant{ get; }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
     public void AddGoldenButton(int x, int y, int bid)
     {

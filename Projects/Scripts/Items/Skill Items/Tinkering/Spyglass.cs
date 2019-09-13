@@ -9,10 +9,7 @@ namespace Server.Items
   public class Spyglass : Item
   {
     [Constructible]
-    public Spyglass() : base(0x14F5)
-    {
-      Weight = 3.0;
-    }
+    public Spyglass() : base(0x14F5) => Weight = 3.0;
 
     public Spyglass(Serial serial) : base(serial)
     {

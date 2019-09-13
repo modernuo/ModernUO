@@ -6,16 +6,10 @@ namespace Server.Items
   public class MouldingPlane : BaseTool
   {
     [Constructible]
-    public MouldingPlane() : base(0x102C)
-    {
-      Weight = 2.0;
-    }
+    public MouldingPlane() : base(0x102C) => Weight = 2.0;
 
     [Constructible]
-    public MouldingPlane(int uses) : base(uses, 0x102C)
-    {
-      Weight = 2.0;
-    }
+    public MouldingPlane(int uses) : base(uses, 0x102C) => Weight = 2.0;
 
     public MouldingPlane(Serial serial) : base(serial)
     {

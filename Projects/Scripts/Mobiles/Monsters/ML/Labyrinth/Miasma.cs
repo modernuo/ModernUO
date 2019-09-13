@@ -91,10 +91,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.UltraRich, 4);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.MortalStrike;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.MortalStrike;
 
     public override void Serialize(GenericWriter writer)
     {

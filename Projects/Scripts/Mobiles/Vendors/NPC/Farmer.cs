@@ -28,10 +28,7 @@ namespace Server.Mobiles
       m_SBInfos.Add(new SBFarmer());
     }
 
-    public override int GetShoeHue()
-    {
-      return 0;
-    }
+    public override int GetShoeHue() => 0;
 
     public override void InitOutfit()
     {
