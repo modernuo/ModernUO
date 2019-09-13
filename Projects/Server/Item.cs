@@ -1689,9 +1689,7 @@ namespace Server
         IEntity parent = bounce.m_Parent;
 
         if (parent?.Deleted != false)
-        {
           MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
-        }
         else if (parent is Item p)
         {
           IEntity root = p.RootParent;
@@ -1703,9 +1701,7 @@ namespace Server
             p.AddItem(this);
           }
           else
-          {
             MoveToWorld(from.Location, from.Map);
-          }
         }
         else if (parent is Mobile parentMobile)
         {
@@ -1713,9 +1709,7 @@ namespace Server
             MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
         }
         else
-        {
           MoveToWorld(bounce.m_WorldLoc, bounce.m_Map);
-        }
 
         ClearBounce();
       }
@@ -1806,12 +1800,7 @@ namespace Server
       MoveToWorld(location, m_Map);
     }
 
-    public void LabelTo(Mobile to, int number)
-    {
-      Packets.SendMessageLocalized(to?.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number);
-    }
-
-    public void LabelTo(Mobile to, int number, string args)
+    public void LabelTo(Mobile to, int number, string args = "")
     {
       Packets.SendMessageLocalized(to?.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", args);
     }
@@ -1826,14 +1815,9 @@ namespace Server
       LabelTo(to, string.Format(format, args));
     }
 
-    public void LabelToAffix(Mobile to, int number, AffixType type, string affix)
+    public void LabelToAffix(Mobile to, int number, AffixType type, string affix, string args = "")
     {
-      to.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, ""));
-    }
-
-    public void LabelToAffix(Mobile to, int number, AffixType type, string affix, string args)
-    {
-      to.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, args));
+      Packets.SendMessageLocalizedAffix(to?.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, number, "", type, affix, args);
     }
 
     public virtual void LabelLootTypeTo(Mobile to)
@@ -1947,7 +1931,7 @@ namespace Server
 
     public void ClearProperties()
     {
-      StaticPacketHandlers.FreeOPLPacket(this);
+      m_PropertyList = null;
     }
 
     public void InvalidateProperties()
@@ -1957,7 +1941,8 @@ namespace Server
 
       if (m_Map != null && m_Map != Map.Internal && !World.Loading)
       {
-        ObjectPropertyList oldList = StaticPacketHandlers.FreeOPLPacket(this);
+        ObjectPropertyList oldList = m_PropertyList;
+        m_PropertyList = null;
 
         if (oldList?.Hash != PropertyList.Hash)
           Delta(ItemDelta.Properties);
@@ -2012,57 +1997,17 @@ namespace Server
 
     private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
-    public IPooledEnumerable<IEntity> GetObjectsInRange(int range)
-    {
-      Map map = m_Map;
+    public IPooledEnumerable<IEntity> GetObjectsInRange(int range) =>
+      m_Map?.GetObjectsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range) ?? Map.NullEnumerable<IEntity>.Instance;
 
-      if (map == null)
-        return Map.NullEnumerable<IEntity>.Instance;
+    public IPooledEnumerable<Item> GetItemsInRange(int range) =>
+      m_Map?.GetItemsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range) ?? Map.NullEnumerable<Item>.Instance;
 
-      if (m_Parent == null)
-        return map.GetObjectsInRange(m_Location, range);
+    public IPooledEnumerable<Mobile> GetMobilesInRange(int range) =>
+      m_Map?.GetMobilesInRange(m_Parent == null ? m_Location : GetWorldLocation(), range) ?? Map.NullEnumerable<Mobile>.Instance;
 
-      return map.GetObjectsInRange(GetWorldLocation(), range);
-    }
-
-    public IPooledEnumerable<Item> GetItemsInRange(int range)
-    {
-      Map map = m_Map;
-
-      if (map == null)
-        return Map.NullEnumerable<Item>.Instance;
-
-      if (m_Parent == null)
-        return map.GetItemsInRange(m_Location, range);
-
-      return map.GetItemsInRange(GetWorldLocation(), range);
-    }
-
-    public IPooledEnumerable<Mobile> GetMobilesInRange(int range)
-    {
-      Map map = m_Map;
-
-      if (map == null)
-        return Map.NullEnumerable<Mobile>.Instance;
-
-      if (m_Parent == null)
-        return map.GetMobilesInRange(m_Location, range);
-
-      return map.GetMobilesInRange(GetWorldLocation(), range);
-    }
-
-    public IPooledEnumerable<NetState> GetClientsInRange(int range)
-    {
-      Map map = m_Map;
-
-      if (map == null)
-        return Map.NullEnumerable<NetState>.Instance;
-
-      if (m_Parent == null)
-        return map.GetClientsInRange(m_Location, range);
-
-      return map.GetClientsInRange(GetWorldLocation(), range);
-    }
+    public IPooledEnumerable<NetState> GetClientsInRange(int range) =>
+      m_Map?.GetClientsInRange(m_Parent == null ? m_Location : GetWorldLocation(), range) ?? Map.NullEnumerable<NetState>.Instance;
 
     public bool GetTempFlag(int flag) => ((LookupCompactInfo()?.m_TempFlags ?? 0) & flag) != 0;
 
@@ -2474,9 +2419,7 @@ namespace Server
       if (heldBy != null)
       {
         if (GetBounce() != null)
-        {
           Bounce(heldBy);
-        }
         else
         {
           heldBy.Holding = null;
@@ -2500,7 +2443,7 @@ namespace Server
       SendWorldPacketFor(state);
 
       if (sendOplPacket)
-        state.Send(OPLPacket);
+        PropertyList.Send(state);
     }
 
     // World packets need to be invalidated when any of the following changes:
@@ -2654,12 +2597,10 @@ namespace Server
         if (_processing)
           try
           {
-            using (StreamWriter op = new StreamWriter("delta-recursion.log", true))
-            {
-              op.WriteLine("# {0}", DateTime.UtcNow);
-              op.WriteLine(new StackTrace());
-              op.WriteLine();
-            }
+            using StreamWriter op = new StreamWriter("delta-recursion.log", true);
+            op.WriteLine("# {0}", DateTime.UtcNow);
+            op.WriteLine(new StackTrace());
+            op.WriteLine();
           }
           catch
           {
@@ -2709,7 +2650,6 @@ namespace Server
       if (m_Map == null)
         return;
 
-      Packet p = null;
       Point3D worldLoc = GetWorldLocation();
 
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
@@ -2720,36 +2660,21 @@ namespace Server
 
         if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
         {
-          if (p == null)
-          {
-            if (ascii)
-              p = new AsciiMessage(Serial, m_ItemID, type, hue, 3, Name, text);
-            else
-              p = new UnicodeMessage(Serial, m_ItemID, type, hue, 3, "ENU", Name, text);
-
-            p.Acquire();
-          }
-
-          state.Send(p);
+          if (ascii)
+            Packets.SendAsciiMessage(state, Serial, m_ItemID, type, hue, 3, Name, text);
+          else
+            Packets.SendUnicodeMessage(state, Serial, m_ItemID, type, hue, 3, "ENU", Name, text);
         }
       }
-
-      Packet.Release(p);
 
       eable.Free();
     }
 
-    public void PublicOverheadMessage(MessageType type, int hue, int number)
-    {
-      PublicOverheadMessage(type, hue, number, "");
-    }
-
-    public void PublicOverheadMessage(MessageType type, int hue, int number, string args)
+    public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "")
     {
       if (m_Map == null)
         return;
 
-      Packet p = null;
       Point3D worldLoc = GetWorldLocation();
 
       IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange());
@@ -2759,15 +2684,8 @@ namespace Server
         Mobile m = state.Mobile;
 
         if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
-        {
-          if (p == null)
-            p = Packet.Acquire(new MessageLocalized(Serial, m_ItemID, type, hue, 3, number, Name, args));
-
-          state.Send(p);
-        }
+          Packets.SendMessageLocalized(state, Serial, m_ItemID, type, hue, 3, number, Name, args);
       }
-
-      Packet.Release(p);
 
       eable.Free();
     }
@@ -3166,29 +3084,21 @@ namespace Server
 
     public Point3D GetWorldTop() => RootParent?.Location ?? new Point3D(m_Location.m_X, m_Location.m_Y, m_Location.m_Z + ItemData.CalcHeight);
 
-    public void SendLocalizedMessageTo(Mobile to, int number)
+    public void SendLocalizedMessageTo(Mobile to, int number, string args = "")
     {
       if (Deleted || !to.CanSee(this))
         return;
 
-      to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", ""));
+      Packets.SendMessageLocalized(to.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args);
     }
 
-    public void SendLocalizedMessageTo(Mobile to, int number, string args)
+    public void SendLocalizedMessageTo(Mobile to, int number, AffixType affixType, string affix = "", string args = "")
     {
       if (Deleted || !to.CanSee(this))
         return;
 
-      to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args));
-    }
-
-    public void SendLocalizedMessageTo(Mobile to, int number, AffixType affixType, string affix, string args)
-    {
-      if (Deleted || !to.CanSee(this))
-        return;
-
-      to.Send(new MessageLocalizedAffix(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", affixType, affix,
-        args));
+      Packets.SendMessageLocalizedAffix(to.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", affixType, affix,
+        args);
     }
 
     public virtual void OnSnoop(Mobile from)
@@ -3367,8 +3277,8 @@ namespace Server
       ObjectPropertyList opl = PropertyList;
 
       if (opl.Header > 0)
-        from.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, opl.Header, Name,
-          opl.HeaderArgs));
+        Packets.SendMessageLocalized(from.NetState, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, opl.Header, Name,
+          opl.HeaderArgs);
     }
 
     public virtual void OnSingleClick(Mobile from)
@@ -3387,17 +3297,14 @@ namespace Server
       if (Name == null)
       {
         if (m_Amount <= 1)
-          ns.Send(new MessageLocalized(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "", ""));
+          Packets.SendMessageLocalized(ns, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber);
         else
-          ns.Send(new MessageLocalizedAffix(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "",
-            AffixType.Append,
-            $" : {m_Amount}", ""));
+          Packets.SendMessageLocalizedAffix(ns, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, LabelNumber, "",
+            AffixType.Append, $" : {m_Amount}");
       }
       else
-      {
-        ns.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
-          Name + (m_Amount > 1 ? " : " + m_Amount : "")));
-      }
+        Packets.SendUnicodeMessage(ns, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
+          Name + (m_Amount > 1 ? " : " + m_Amount : ""));
     }
 
     public virtual void ScissorHelper(Mobile from, Item newItem, int amountPerOldItem)
@@ -3473,16 +3380,8 @@ namespace Server
 
     public virtual bool CheckNewbied() => m_LootType == LootType.Newbied;
 
-    public virtual bool IsStandardLoot()
-    {
-      if (Mobile.InsuranceEnabled && Insured)
-        return false;
-
-      if (BlessedFor != null)
-        return false;
-
-      return m_LootType == LootType.Regular;
-    }
+    public virtual bool IsStandardLoot() =>
+      !(Mobile.InsuranceEnabled && Insured) && BlessedFor == null && m_LootType == LootType.Regular;
 
     public override string ToString() => $"0x{Serial.Value:X} \"{GetType().Name}\"";
 
@@ -3570,11 +3469,9 @@ namespace Server
     private Map m_Map;
     private LootType m_LootType;
     private Direction m_Direction;
-
     #endregion
 
     #region Location Location Location!
-
     public virtual void OnLocationChange(Point3D oldLocation)
     {
     }
@@ -3670,11 +3567,9 @@ namespace Server
       get => m_Location.m_Z;
       set => Location = new Point3D(m_Location.m_X, m_Location.m_Y, value);
     }
-
     #endregion
 
     #region OnDoubleClick[...]
-
     public virtual void OnDoubleClick(Mobile from)
     {
     }
@@ -3701,7 +3596,6 @@ namespace Server
     {
       from.SendLocalizedMessage(500447); // That is not accessible.
     }
-
     #endregion
   }
 }
