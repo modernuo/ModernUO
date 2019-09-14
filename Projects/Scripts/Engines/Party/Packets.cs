@@ -71,7 +71,7 @@ namespace Server.Engines.PartySystem
         SendPartyRemoveMember(p[i].Mobile.NetState, removed, p);
     }
 
-    public static void SendPartyMessage(NetState ns, bool toAll, Mobile from, string text)
+    public static void SendPartyTextMessage(NetState ns, bool toAll, Mobile from, string text)
     {
       if (ns == null)
         return;
@@ -89,6 +89,12 @@ namespace Server.Engines.PartySystem
       writer.WriteBigUniNull(text);
 
       ns.Send(writer.Span);
+    }
+
+    public static void SendPartyTextMessageToAll(Party p, bool toAll, Mobile from, string text)
+    {
+      for (int i = 0; i < p.Members.Count; ++i)
+        SendPartyTextMessage(p.Members[i].Mobile.NetState, toAll, from, text);
     }
 
     public static void SendPartyInvitation(NetState ns, Mobile leader)

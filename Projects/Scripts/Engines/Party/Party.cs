@@ -300,7 +300,7 @@ namespace Server.Engines.PartySystem
 
     public void SendPublicMessage(Mobile from, string text)
     {
-      SendToAll(new PartyTextMessage(true, from, text));
+      PartyPackets.SendPartyTextMessageToAll(this, true, from, text);
 
       for (int i = 0; i < Listeners.Count; ++i)
       {
@@ -315,7 +315,7 @@ namespace Server.Engines.PartySystem
 
     public void SendPrivateMessage(Mobile from, Mobile to, string text)
     {
-      to.Send(new PartyTextMessage(false, from, text));
+      PartyPackets.SendPartyTextMessage(to.NetState, false, from, text);
 
       for (int i = 0; i < Listeners.Count; ++i)
       {
@@ -330,24 +330,14 @@ namespace Server.Engines.PartySystem
 
     private void SendToStaffMessage(Mobile from, string text)
     {
-      Packet p = null;
-
       foreach (NetState ns in from.GetClientsInRange(8))
       {
         Mobile mob = ns.Mobile;
 
         if (mob?.AccessLevel >= AccessLevel.GameMaster && mob.AccessLevel > from.AccessLevel &&
             mob.Party != this && !Listeners.Contains(mob))
-        {
-          if (p == null)
-            p = Packet.Acquire(new UnicodeMessage(from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3,
-              from.Language, from.Name, text));
-
-          ns.Send(p);
-        }
+          Packets.SendUnicodeMessage(ns, from.Serial, from.Body, MessageType.Regular, from.SpeechHue, 3, from.Language, from.Name, text);
       }
-
-      Packet.Release(p);
     }
 
     private void SendToStaffMessage(Mobile from, string format, params object[] args)
@@ -369,11 +359,7 @@ namespace Server.Engines.PartySystem
           return;
 
         m_Mobile.SendLocalizedMessage(1005437); // You have rejoined the party.
-        m_Mobile.Send(new PartyMemberList(p));
-
-        Packet message = Packet.Acquire(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Label, 0x3B2, 3,
-          1008087, "", AffixType.Prepend | AffixType.System, m_Mobile.Name, ""));
-        Packet attrs = Packet.Acquire(new MobileAttributesN(m_Mobile));
+        PartyPackets.SendPartyMemberList(m_Mobile.NetState, p);
 
         foreach (PartyMemberInfo mi in p.Members)
         {
@@ -381,16 +367,15 @@ namespace Server.Engines.PartySystem
 
           if (m != m_Mobile)
           {
-            m.Send(message);
-            m.Send(new MobileStatusCompact(m_Mobile.CanBeRenamedBy(m), m_Mobile));
-            m.Send(attrs);
-            m_Mobile.Send(new MobileStatusCompact(m.CanBeRenamedBy(m_Mobile), m));
-            m_Mobile.Send(new MobileAttributesN(m));
+            NetState ns = m.NetState;
+            Packets.SendMessageLocalizedAffix(ns, Serial.MinusOne, -1, MessageType.Label, 0x3B2, 3,
+              1008087, "", AffixType.Prepend | AffixType.System, m_Mobile.Name);
+            Packets.SendMobileStatusCompact(ns, m_Mobile, m_Mobile.CanBeRenamedBy(m));
+            Packets.SendNormalizedMobileAttributes(ns, m_Mobile);
+            Packets.SendMobileStatusCompact(ns, m, m.CanBeRenamedBy(m_Mobile));
+            Packets.SendNormalizedMobileAttributes(ns, m);
           }
         }
-
-        Packet.Release(message);
-        Packet.Release(attrs);
       }
     }
   }

@@ -47,7 +47,7 @@ namespace Server.Network
     // If our input exceeds this length, we may potentially overflow the buffer
     private const int PossibleOverflow = (BufferSize * 8 - TerminalCodeLength) / MaximalCodeLength;
 
-    private static int[] _huffmanTable = {
+    private static readonly int[] _huffmanTable = {
       0x2, 0x000, 0x5, 0x01F, 0x6, 0x022, 0x7, 0x034, 0x7, 0x075, 0x6, 0x028, 0x6, 0x03B, 0x7, 0x032,
       0x8, 0x0E0, 0x8, 0x062, 0x7, 0x056, 0x8, 0x079, 0x9, 0x19D, 0x8, 0x097, 0x6, 0x02A, 0x7, 0x057,
       0x8, 0x071, 0x8, 0x05B, 0x9, 0x1CC, 0x8, 0x0A7, 0x7, 0x025, 0x7, 0x04F, 0x8, 0x066, 0x8, 0x07D,
@@ -113,8 +113,6 @@ namespace Server.Network
 
       fixed (int* pTable = _huffmanTable)
       {
-        int* pEntry;
-
         fixed (byte* pInputBuffer = input)
         {
           byte* pInput = pInputBuffer + offset, pInputEnd = pInput + count;
@@ -123,6 +121,7 @@ namespace Server.Network
           {
             byte* pOutput = pOutputBuffer, pOutputEnd = pOutput + BufferSize;
 
+            int* pEntry;
             while (pInput < pInputEnd)
             {
               pEntry = &pTable[*pInput++ << 1];
