@@ -278,32 +278,28 @@ namespace Server.Engines.Plants
         }
         case 2: // Infestation
         {
-          from.Send(new DisplayHelpTopic(54, true)); // INFESTATION LEVEL
-
+          PlantsPackets.SendDisplayHelpTopic(from.NetState, 54, true); // INFESTATION LEVEL
           from.SendGump(new MainPlantGump(m_Plant));
 
           break;
         }
         case 3: // Fungus
         {
-          from.Send(new DisplayHelpTopic(56, true)); // FUNGUS LEVEL
-
+          PlantsPackets.SendDisplayHelpTopic(from.NetState, 56, true); // FUNGUS LEVEL
           from.SendGump(new MainPlantGump(m_Plant));
 
           break;
         }
         case 4: // Poison
         {
-          from.Send(new DisplayHelpTopic(58, true)); // POISON LEVEL
-
+          PlantsPackets.SendDisplayHelpTopic(from.NetState, 58, true); // POISON LEVEL
           from.SendGump(new MainPlantGump(m_Plant));
 
           break;
         }
         case 5: // Disease
         {
-          from.Send(new DisplayHelpTopic(60, true)); // DISEASE LEVEL
-
+          PlantsPackets.SendDisplayHelpTopic(from.NetState, 60, true); // DISEASE LEVEL
           from.SendGump(new MainPlantGump(m_Plant));
 
           break;
@@ -355,7 +351,7 @@ namespace Server.Engines.Plants
         }
         case 11: // Help
         {
-          from.Send(new DisplayHelpTopic(48, true)); // PLANT GROWING
+          PlantsPackets.SendDisplayHelpTopic(from.NetState, 48, true); // PLANT GROWING
 
           from.SendGump(new MainPlantGump(m_Plant));
 

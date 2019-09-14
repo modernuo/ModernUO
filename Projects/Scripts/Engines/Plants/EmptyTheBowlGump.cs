@@ -75,7 +75,7 @@ namespace Server.Engines.Plants
         }
         case 2: // Help
         {
-          from.Send(new DisplayHelpTopic(71, true)); // EMPTYING THE BOWL
+          PlantsPackets.SendDisplayHelpTopic(from.NetState, 17, true); // EMPTYING THE BOWL
 
           from.SendGump(new EmptyTheBowlGump(m_Plant));
 

@@ -64,7 +64,7 @@ namespace Server.Engines.Plants
         }
         case 2: // Help
         {
-          from.Send(new DisplayHelpTopic(70, true)); // DECORATIVE MODE
+          PlantsPackets.SendDisplayHelpTopic(from.NetState, 70, true); // DECORATIVE MODE
 
           from.SendGump(new SetToDecorativeGump(m_Plant));
 
