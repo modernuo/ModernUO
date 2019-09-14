@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Server.Items;
 using Server.Mobiles;
 
-namespace Server.Movement
+namespace Server
 {
   public class MovementImpl : IMovementImpl
   {

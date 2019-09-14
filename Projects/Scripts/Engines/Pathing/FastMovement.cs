@@ -8,7 +8,7 @@ using Server.Mobiles;
 
 #endregion
 
-namespace Server.Movement
+namespace Server
 {
   public class FastMovementImpl : IMovementImpl
   {

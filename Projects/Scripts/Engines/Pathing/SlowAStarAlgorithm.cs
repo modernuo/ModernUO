@@ -1,20 +1,18 @@
 using System;
 using Server.Mobiles;
-using CalcMoves = Server.Movement.Movement;
-using MoveImpl = Server.Movement.MovementImpl;
 
-namespace Server.PathAlgorithms.SlowAStar
+namespace Server.PathAlgorithms
 {
-  public struct PathNode
-  {
-    public int x, y, z;
-    public int g, h;
-    public int px, py, pz;
-    public int dir;
-  }
-
   public class SlowAStarAlgorithm : PathAlgorithm
   {
+    public struct PathNode
+    {
+      public int x, y, z;
+      public int g, h;
+      public int px, py, pz;
+      public int dir;
+    }
+
     private const int MaxDepth = 300;
     private const int MaxNodes = MaxDepth * 16;
     public static PathAlgorithm Instance = new SlowAStarAlgorithm();
@@ -148,11 +146,11 @@ namespace Server.PathAlgorithms.SlowAStar
 
         if (bc != null)
         {
-          MoveImpl.AlwaysIgnoreDoors = bc.CanOpenDoors;
-          MoveImpl.IgnoreMovableImpassables = bc.CanMoveOverObstacles;
+          MovementImpl.AlwaysIgnoreDoors = bc.CanOpenDoors;
+          MovementImpl.IgnoreMovableImpassables = bc.CanMoveOverObstacles;
         }
 
-        MoveImpl.Goal = goal;
+        MovementImpl.Goal = goal;
 
         int x;
         int y;
@@ -196,7 +194,7 @@ namespace Server.PathAlgorithms.SlowAStar
               break;
           }
 
-          if (CalcMoves.CheckMovement(m, map, new Point3D(curNode.x, curNode.y, curNode.z), (Direction)i, out z))
+          if (Movement.CheckMovement(m, map, new Point3D(curNode.x, curNode.y, curNode.z), (Direction)i, out z))
           {
             successors[sucCount].x = x + curNode.x;
             successors[sucCount].y = y + curNode.y;
@@ -204,9 +202,9 @@ namespace Server.PathAlgorithms.SlowAStar
           }
         }
 
-        MoveImpl.AlwaysIgnoreDoors = false;
-        MoveImpl.IgnoreMovableImpassables = false;
-        MoveImpl.Goal = Point3D.Zero;
+        MovementImpl.AlwaysIgnoreDoors = false;
+        MovementImpl.IgnoreMovableImpassables = false;
+        MovementImpl.Goal = Point3D.Zero;
 
         if (sucCount == 0 || ++depth > MaxDepth)
           break;
