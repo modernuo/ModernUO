@@ -165,7 +165,7 @@ namespace Server.Factions
     {
       NetState ns = to?.NetState;
 
-      ns?.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number, name, args));
+      Packets.SendMessageLocalized(ns, Serial, ItemID, MessageType.Regular, hue, 3, number, name, args);
     }
 
     public virtual bool CheckDecay()
@@ -252,10 +252,7 @@ namespace Server.Factions
       if (faction == null && mob is BaseFactionGuard guard)
         faction = guard.Faction;
 
-      if (faction == null)
-        return false;
-
-      return faction != Faction;
+      return faction != null && faction != Faction;
     }
   }
 }

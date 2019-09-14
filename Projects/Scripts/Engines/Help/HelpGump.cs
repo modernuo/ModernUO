@@ -2,6 +2,7 @@ using System;
 using Server.Engines.ConPVP;
 using Server.Factions;
 using Server.Gumps;
+using Server.Menus;
 using Server.Menus.Questions;
 using Server.Mobiles;
 using Server.Multis;
@@ -27,9 +28,7 @@ namespace Server.Engines.Help
     public override void OnResponse(NetState state, int index)
     {
       if (index == 0)
-      {
         m_From.SendLocalizedMessage(1005306, "", 0x35); // Help request unchanged.
-      }
       else if (index == 1)
       {
         PageEntry entry = PageQueue.GetEntry(m_From);
@@ -226,7 +225,7 @@ namespace Server.Engines.Help
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       PageType type = (PageType)(-1);
 

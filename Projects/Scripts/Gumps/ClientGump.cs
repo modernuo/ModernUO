@@ -134,7 +134,7 @@ namespace Server.Gumps
         return;
 
       Mobile focus = m_State.Mobile;
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (focus == null)
       {

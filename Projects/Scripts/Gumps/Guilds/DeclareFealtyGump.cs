@@ -38,7 +38,7 @@ namespace Server.Gumps
             Mobile m = m_List[index];
 
             if (m?.Deleted == false)
-              state.Mobile.GuildFealty = m;
+              sender.Mobile.GuildFealty = m;
           }
         }
       }

@@ -206,7 +206,7 @@ namespace Server.Items
 
     public static void BBClientRequest(NetState state, PacketReader pvSrc)
     {
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       int packetID = pvSrc.ReadByte();
 

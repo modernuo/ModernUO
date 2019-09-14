@@ -83,7 +83,7 @@ namespace Server.Engines.Mahjong
       if (game == null)
         return;
 
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       game.Players.LeaveGame(from);
     }

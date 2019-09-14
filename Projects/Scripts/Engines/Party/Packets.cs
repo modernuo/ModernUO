@@ -1,74 +1,163 @@
+using Server.Buffers;
+using Server.Network;
+
 namespace Server.Engines.PartySystem
 {
-  public sealed class PartyEmptyList : Packet
+  public static class PartyPackets
   {
-    public PartyEmptyList(Mobile m) : base(0xBF)
+    public static void SendPartyEmptyList(NetState ns, Mobile m)
     {
-      EnsureCapacity(7);
+      if (ns == null)
+        return;
 
-      m_Stream.Write((short)0x0006);
-      m_Stream.Write((byte)0x02);
-      m_Stream.Write((byte)0);
-      m_Stream.Write(m.Serial);
+      SpanWriter writer = new SpanWriter(stackalloc byte[11]);
+      writer.Write((byte)0xBF); // Packet ID
+      writer.Write((short)0x7); // Dynamic Length
+
+      writer.Write((short)0x06);
+      writer.Write((byte)0x02);
+      writer.Position++; // Writer(0); // Number of members
+      writer.Write(m.Serial);
+
+      ns.Send(writer.Span);
     }
-  }
 
-  public sealed class PartyMemberList : Packet
-  {
-    public PartyMemberList(Party p) : base(0xBF)
+    public static void SendPartyMemberList(NetState ns, Party p)
     {
-      EnsureCapacity(7 + p.Count * 4);
+      if (ns == null)
+        return;
 
-      m_Stream.Write((short)0x0006);
-      m_Stream.Write((byte)0x01);
-      m_Stream.Write((byte)p.Count);
+      ushort length = (ushort)(7 + p.Count * 4);
+
+      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
+      writer.Write((byte)0xBF); // Packet ID
+      writer.Write((ushort)length); // Dynamic Length
+
+      writer.Write((short)0x06);
+      writer.Write((byte)0x01);
+      writer.Write((byte)p.Count);
 
       for (int i = 0; i < p.Count; ++i)
-        m_Stream.Write(p[i].Mobile.Serial);
+        writer.Write(p[i].Mobile.Serial);
+
+      ns.Send(writer.Span);
     }
-  }
 
-  public sealed class PartyRemoveMember : Packet
-  {
-    public PartyRemoveMember(Mobile removed, Party p) : base(0xBF)
+    public static void SendPartyRemoveMember(NetState ns, Mobile removed, Party p)
     {
-      EnsureCapacity(11 + p.Count * 4);
+      if (ns == null)
+        return;
 
-      m_Stream.Write((short)0x0006);
-      m_Stream.Write((byte)0x02);
-      m_Stream.Write((byte)p.Count);
+      ushort length = (ushort)(11 + p.Count * 4);
 
-      m_Stream.Write(removed.Serial);
+      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
+      writer.Write((byte)0xBF); // Packet ID
+      writer.Write((short)length); // Dynamic Length
+
+      writer.Write((short)0x06);
+      writer.Write((byte)0x02);
+      writer.Write((byte)p.Count);
+      writer.Write(removed.Serial);
 
       for (int i = 0; i < p.Count; ++i)
-        m_Stream.Write(p[i].Mobile.Serial);
+        writer.Write(p[i].Mobile.Serial);
+
+      ns.Send(writer.Span);
     }
-  }
 
-  public sealed class PartyTextMessage : Packet
-  {
-    public PartyTextMessage(bool toAll, Mobile from, string text) : base(0xBF)
+    public static void SendPartyMessage(NetState ns, bool toAll, Mobile from, string text)
     {
-      text ??= "";
+      if (ns == null)
+        return;
 
-      EnsureCapacity(12 + text.Length * 2);
+      ushort length = (ushort)(12 + text.Length * 2);
 
-      m_Stream.Write((short)0x0006);
-      m_Stream.Write((byte)(toAll ? 0x04 : 0x03));
-      m_Stream.Write(from.Serial);
-      m_Stream.WriteBigUniNull(text);
+      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
+      writer.Write((byte)0xBF); // Packet ID
+      writer.Write((short)length); // Dynamic Length
+
+      writer.Write((short)0x06);
+      writer.Write((byte)(toAll ? 0x04 : 0x03));
+      writer.Write(from.Serial);
+
+      writer.WriteBigUniNull(text);
+
+      ns.Send(writer.Span);
     }
-  }
 
-  public sealed class PartyInvitation : Packet
-  {
-    public PartyInvitation(Mobile leader) : base(0xBF)
+    public static void SendPartyInvitation(NetState ns, Mobile leader)
     {
-      EnsureCapacity(10);
+      if (ns == null)
+        return;
 
-      m_Stream.Write((short)0x0006);
-      m_Stream.Write((byte)0x07);
-      m_Stream.Write(leader.Serial);
+      SpanWriter writer = new SpanWriter(stackalloc byte[10]);
+      writer.Write((byte)0xBF); // Packet ID
+      writer.Write((short)0x0A); // Dynamic Length
+
+      writer.Write((short)0x06);
+      writer.Write((byte)0x07);
+      writer.Write(leader.Serial);
+
+      ns.Send(writer.Span);
+    }
+
+    public static void SendPartyMessageLocalizedToAll(Party p, Serial serial, int graphic, MessageType type, int hue, int font, int number, string name = "",
+      string args = "")
+    {
+      for (int i = 0; i < p.Members.Count; ++i)
+        Packets.SendMessageLocalized(p.Members[i].Mobile.NetState, serial, graphic, type, hue, font, number, name, args);
+
+      for (int i = 0; i < p.Listeners.Count; ++i)
+      {
+        Mobile mob = p.Listeners[i];
+
+        if (mob.Party != p)
+          Packets.SendMessageLocalized(mob.NetState, serial, graphic, type, hue, font, number, name, args);
+      }
+    }
+
+    public static void SendPartyMessageLocalizedAffixToAll(Party p, Serial serial, int graphic, MessageType type, int hue, int font, int number,
+      string name = "", AffixType affixType = AffixType.System, string affix = "", string args = "")
+    {
+      for (int i = 0; i < p.Members.Count; ++i)
+        Packets.SendMessageLocalizedAffix(p.Members[i].Mobile.NetState, serial, graphic, type, hue, font, number, name, affixType, affix, args);
+
+      for (int i = 0; i < p.Listeners.Count; ++i)
+      {
+        Mobile mob = p.Listeners[i];
+
+        if (mob.Party != p)
+          Packets.SendMessageLocalizedAffix(mob.NetState, serial, graphic, type, hue, font, number, name, affixType, affix, args);
+      }
+    }
+
+    public static void SendPartyUnicodeMessageToAll(Party p, Serial serial, int graphic, MessageType type, int hue, int font, string lang, string name,
+      string text)
+    {
+      for (int i = 0; i < p.Members.Count; ++i)
+        Packets.SendUnicodeMessage(p.Members[i].Mobile.NetState, serial, graphic, type, hue, font, lang, name, text);
+
+      for (int i = 0; i < p.Listeners.Count; ++i)
+      {
+        Mobile mob = p.Listeners[i];
+
+        if (mob.Party != p)
+          Packets.SendUnicodeMessage(p.Members[i].Mobile.NetState, serial, graphic, type, hue, font, lang, name, text);
+      }
+    }
+
+    public static void SendPartyAsciiMessageToAll(Party p, Serial serial, int graphic, MessageType type, int hue, int font, string name, string text)
+    {
+      for (int i = 0; i < p.Members.Count; ++i)
+        Packets.SendAsciiMessage(p.Members[i].Mobile.NetState, serial, graphic, type, hue, font, name, text);
+
+      for (int i = 0; i < p.Listeners.Count; ++i)
+      {
+        Mobile mob = p.Listeners[i];
+
+        if (mob.Party != p)
+          Packets.SendAsciiMessage(p.Members[i].Mobile.NetState, serial, graphic, type, hue, font, name, text);
+      }
     }
   }
 }

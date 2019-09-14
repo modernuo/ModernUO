@@ -38,7 +38,7 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (!m_Vendor.CanInteractWith(from, false))
         return;
@@ -136,7 +136,7 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (!m_Vendor.CanInteractWith(from, true))
         return;
@@ -480,7 +480,7 @@ namespace Server.Gumps
       if (m_Vendor.Deleted)
         return;
 
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (m_Vendor is PlayerVendor vendor && !vendor.CanInteractWith(from, true))
         return;

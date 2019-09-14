@@ -283,7 +283,7 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (!BaseCommand.IsAccessible(from, m_Object))
       {

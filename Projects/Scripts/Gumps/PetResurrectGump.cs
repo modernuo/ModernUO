@@ -38,7 +38,7 @@ namespace Server.Gumps
       if (m_Pet.Deleted || !m_Pet.IsBonded || !m_Pet.IsDeadPet)
         return;
 
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (info.ButtonID == 1)
       {

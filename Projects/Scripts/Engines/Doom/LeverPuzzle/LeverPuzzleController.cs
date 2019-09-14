@@ -417,25 +417,21 @@ namespace Server.Engines.Doom
 
     public static void SendLocationEffect(IPoint3D p, int itemID, int speed, int duration, int hue)
     {
-      Effects.SendPacket(p, Map.Malas, new LocationEffect(p, itemID, speed, duration, hue, 0));
+      Effects.SendLocationEffect(p, Map.Malas, itemID, speed, duration, hue);
     }
 
     public static void PlayerSendASCII(Mobile player, int index)
     {
-      player.Send(new AsciiMessage(Serial.MinusOne, 0xFFFF, MessageType.Label, MsgParams[index][0],
-        MsgParams[index][1], null, Msgs[index]));
+      Packets.SendAsciiMessage(player.NetState, Serial.MinusOne, 0xFFFF, MessageType.Label, MsgParams[index][0],
+        MsgParams[index][1], null, Msgs[index]);
     }
 
     /* I cant find any better way to send "speech" using fonts other than default */
     public static void POHMessage(Mobile from, int index)
     {
-      Packet p = new AsciiMessage(from.Serial, from.Body, MessageType.Regular, MsgParams[index][0],
-        MsgParams[index][1], from.Name, Msgs[index]);
-      p.Acquire();
       foreach (NetState state in from.Map.GetClientsInRange(from.Location))
-        state.Send(p);
-
-      Packet.Release(p);
+        Packets.SendAsciiMessage(state, from.Serial, from.Body, MessageType.Regular, MsgParams[index][0],
+        MsgParams[index][1], from.Name, Msgs[index]);
     }
 
     public override void Serialize(GenericWriter writer)

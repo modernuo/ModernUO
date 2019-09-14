@@ -59,7 +59,7 @@ namespace Server.Gumps
       if (m_House.Deleted)
         return;
 
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       from.SendGump(new HouseGump(from, m_House));
     }
@@ -130,7 +130,7 @@ namespace Server.Gumps
       if (m_House.Deleted)
         return;
 
-      Mobile from = state.Mobile;
+      Mobile from = sender.Mobile;
 
       if (m_List != null && info.ButtonID == 1) // Remove now
       {

@@ -415,8 +415,7 @@ namespace Server.Gumps
             int offset = 140 + i * 20;
 
             if (m == null)
-              AddLabelCropped(12, offset, 81, 20, LabelHue,
-                AdminNetwork.IsAuth(ns) ? "(remote admin)" : "(logging in)");
+              AddLabelCropped(12, offset, 81, 20, LabelHue, "(logging in)");
             else
               AddLabelCropped(12, offset, 81, 20, GetHueFor(m), m.Name);
             AddLabelCropped(95, offset, 81, 20, LabelHue, a == null ? "(no account)" : a.Username);
@@ -1174,19 +1173,10 @@ namespace Server.Gumps
 
     public static string FormatTimeSpan(TimeSpan ts) => $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
 
-    public static string FormatByteAmount(long totalBytes)
-    {
-      if (totalBytes > 1000000000)
-        return $"{(double)totalBytes / 1073741824:F1} GB";
-
-      if (totalBytes > 1000000)
-        return $"{(double)totalBytes / 1048576:F1} MB";
-
-      if (totalBytes > 1000)
-        return $"{(double)totalBytes / 1024:F1} KB";
-
-      return $"{totalBytes} Bytes";
-    }
+    public static string FormatByteAmount(long totalBytes) =>
+      totalBytes > 1000000000 ? $"{(double)totalBytes / 1073741824:F1} GB" :
+      totalBytes > 1000000 ? $"{(double)totalBytes / 1048576:F1} MB" :
+      totalBytes > 1000 ? $"{(double)totalBytes / 1024:F1} KB" : $"{totalBytes} Bytes";
 
     public static void Initialize()
     {

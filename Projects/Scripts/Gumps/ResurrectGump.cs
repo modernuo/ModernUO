@@ -118,7 +118,7 @@ namespace Server.Gumps
 
 		public override void OnResponse( NetState state, RelayInfo info )
 		{
-			Mobile from = state.Mobile;
+			Mobile from = sender.Mobile;
 
 			from.CloseGump<ResurrectGump>();
 
