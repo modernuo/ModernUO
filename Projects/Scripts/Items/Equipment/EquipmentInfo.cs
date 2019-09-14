@@ -12,23 +12,4 @@ namespace Server.Items
 
     public int Charges { get; }
   }
-
-  public class EquipmentInfo
-  {
-    public EquipmentInfo(int number, Mobile crafter, bool unidentified, EquipInfoAttribute[] attributes)
-    {
-      Number = number;
-      Crafter = crafter;
-      Unidentified = unidentified;
-      Attributes = attributes;
-    }
-
-    public int Number { get; }
-
-    public Mobile Crafter { get; }
-
-    public bool Unidentified { get; }
-
-    public EquipInfoAttribute[] Attributes { get; }
-  }
 }

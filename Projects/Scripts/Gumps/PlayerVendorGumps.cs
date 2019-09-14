@@ -580,11 +580,11 @@ namespace Server.Gumps
 
               if (category.Layer == Layer.Hair)
               {
-                new PVHairHuePicker(false, m_Vendor, from).SendTo(state);
+                new PVHairHuePicker(false, m_Vendor, from).SendTo(sender);
               }
               else if (category.Layer == Layer.FacialHair)
               {
-                new PVHairHuePicker(true, m_Vendor, from).SendTo(state);
+                new PVHairHuePicker(true, m_Vendor, from).SendTo(sender);
               }
               else
               {
@@ -603,7 +603,7 @@ namespace Server.Gumps
                 }
 
                 if (item != null)
-                  new PVHuePicker(item, m_Vendor, from).SendTo(state);
+                  new PVHuePicker(item, m_Vendor, from).SendTo(sender);
               }
             }
           }

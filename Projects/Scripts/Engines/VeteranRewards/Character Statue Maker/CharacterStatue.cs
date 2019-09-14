@@ -630,15 +630,9 @@ namespace Server.Mobiles
       }
     }
 
-    public static AddonFitResult CouldFit(Point3D p, Map map, Mobile from, ref BaseHouse house)
-    {
-      if (!map.CanFit(p.X, p.Y, p.Z, 20, true))
-        return AddonFitResult.Blocked;
-      if (!BaseAddon.CheckHouse(from, p, map, 20, ref house))
-        return AddonFitResult.NotInHouse;
-
-      return CheckDoors(p, 20, house);
-    }
+    public static AddonFitResult CouldFit(Point3D p, Map map, Mobile from, ref BaseHouse house) =>
+      !map.CanFit(p.X, p.Y, p.Z, 20, true) ? AddonFitResult.Blocked :
+      !BaseAddon.CheckHouse(@from, p, map, 20, ref house) ? AddonFitResult.NotInHouse : CheckDoors(p, 20, house);
 
     public static AddonFitResult CheckDoors(Point3D p, int height, BaseHouse house)
     {

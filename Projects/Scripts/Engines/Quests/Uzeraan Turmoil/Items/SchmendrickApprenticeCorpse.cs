@@ -28,6 +28,7 @@ namespace Server.Engines.Quests.Haven
     {
     }
 
+    // TODO: Should be a better way than making/deleting a mob.
     private static Mobile GetOwner()
     {
       Mobile apprentice = new Mobile
@@ -43,12 +44,14 @@ namespace Server.Engines.Quests.Haven
 
     private static List<Item> GetEquipment()
     {
-      List<Item> list = new List<Item>();
+      List<Item> list = new List<Item>
+      {
+        new Robe(QuestSystem.RandomBrightHue()),
+        new WizardsHat(Utility.RandomNeutralHue()),
+        new Shoes(Utility.RandomNeutralHue()),
+        new Spellbook()
+      };
 
-      list.Add(new Robe(QuestSystem.RandomBrightHue()));
-      list.Add(new WizardsHat(Utility.RandomNeutralHue()));
-      list.Add(new Shoes(Utility.RandomNeutralHue()));
-      list.Add(new Spellbook());
 
       return list;
     }
@@ -84,11 +87,10 @@ namespace Server.Engines.Quests.Haven
       int hue = Notoriety.GetHue(NotorietyHandlers.CorpseNotoriety(from, this));
 
       if (ItemID == 0x2006) // Corpse form
-        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1049144, "",
-          Name)); // the remains of ~1_NAME~ the apprentice
+        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049144, "",
+        Name); // the remains of ~1_NAME~ the apprentice
       else
-        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1049145, "",
-          "")); // the remains of a wizard's apprentice
+        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049145); // the remains of a wizard's apprentice
     }
 
     public override void Open(Mobile from, bool checkSelfLoot)

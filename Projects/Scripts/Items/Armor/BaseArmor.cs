@@ -1665,9 +1665,7 @@ namespace Server.Items
       if (attrs.Count == 0 && Crafter == null && Name != null)
         return;
 
-      EquipmentInfo eqInfo = new EquipmentInfo(number, m_Crafter, false, attrs.ToArray());
-
-      from.Send(new DisplayEquipmentInfo(this, eqInfo));
+      EquipmentPackets.SendDisplayEquipmentInfo(from.NetState, this, number, m_Crafter, false, attrs);
     }
 
     [Flags]

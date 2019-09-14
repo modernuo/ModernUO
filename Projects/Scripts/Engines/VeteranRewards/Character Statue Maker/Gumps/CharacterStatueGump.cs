@@ -126,7 +126,7 @@ namespace Server.Gumps
 
         m_Maker?.Delete();
 
-        m_Statue.Sculpt(state.Mobile);
+        m_Statue.Sculpt(sender.Mobile);
       }
       else if (info.ButtonID == (int)Buttons.PosePrev)
       {
@@ -174,11 +174,11 @@ namespace Server.Gumps
       }
       else // Close
       {
-        sendGump = !m_Statue.Demolish(state.Mobile);
+        sendGump = !m_Statue.Demolish(sender.Mobile);
       }
 
       if (sendGump)
-        state.Mobile.SendGump(new CharacterStatueGump(m_Maker, m_Statue, m_Owner));
+        sender.Mobile.SendGump(new CharacterStatueGump(m_Maker, m_Statue, m_Owner));
     }
 
     private enum Buttons

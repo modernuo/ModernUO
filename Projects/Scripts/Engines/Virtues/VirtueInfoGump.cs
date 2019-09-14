@@ -88,7 +88,7 @@ namespace Server
           m_Beholder.SendGump(new VirtueInfoGump(m_Beholder, m_Virtue, m_Desc, m_Page));
 
           if (m_Page != null)
-            state.Send(new LaunchBrowser(m_Page)); //No message about web browser starting on OSI
+            Packets.SendLaunchBrowser(sender, m_Page);
           break;
         }
         case 2:
