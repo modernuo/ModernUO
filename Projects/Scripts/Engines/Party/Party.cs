@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Factions;
 using Server.Network;
 using Server.Targeting;
@@ -33,17 +34,7 @@ namespace Server.Engines.PartySystem
 
     public PartyMemberInfo this[int index] => Members[index];
 
-    public PartyMemberInfo this[Mobile m]
-    {
-      get
-      {
-        for (int i = 0; i < Members.Count; ++i)
-          if (Members[i].Mobile == m)
-            return Members[i];
-
-        return null;
-      }
-    }
+    public PartyMemberInfo this[Mobile m] => Members.FirstOrDefault(t => t.Mobile == m);
 
     public void OnStamChanged(Mobile m)
     {
@@ -194,8 +185,8 @@ namespace Server.Engines.PartySystem
         return;
 
       //  : joined the party.
-      SendToAll(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Label, 0x3B2, 3, 1008094, "",
-        AffixType.Prepend | AffixType.System, from.Name, ""));
+      PartyPackets.SendPartyMessageLocalizedAffixToAll(this, Serial.MinusOne, -1, MessageType.Label,
+        0x3B2, 3, 1008094, "",AffixType.Prepend | AffixType.System, from.Name);
 
       from.SendLocalizedMessage(1005445); // You have been added to the party.
 
@@ -218,7 +209,7 @@ namespace Server.Engines.PartySystem
         for (int i = 0; i < Members.Count; ++i)
         {
           Mobile m = this[i].Mobile;
-          PartyPackets.SendPartyEmptyList(m, m);
+          PartyPackets.SendPartyEmptyList(m.NetState, m);
           m.Party = null;
         }
 
@@ -229,9 +220,7 @@ namespace Server.Engines.PartySystem
     public void Remove(Mobile m)
     {
       if (m == Leader)
-      {
         Disband();
-      }
       else
       {
         for (int i = 0; i < Members.Count; ++i)
@@ -244,15 +233,17 @@ namespace Server.Engines.PartySystem
 
             m.SendLocalizedMessage(1005451); // You have been removed from the party.
 
-            SendToAll(new PartyRemoveMember(m, this));
-            SendToAll(1005452); // A player has been removed from your party.
+            PartyPackets.SendPartyRemoveMemberToAll(m, this);
+            // A player has been removed from your party.
+            PartyPackets.SendPartyMessageLocalizedToAll(this, Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, 1005452, "System");
 
             break;
           }
 
         if (Members.Count == 1)
         {
-          SendToAll(1005450); // The last person has left the party...
+          // The last person has left the party...
+          PartyPackets.SendPartyMessageLocalizedToAll(this, Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, 1005450, "System");
           Disband();
         }
       }
@@ -262,7 +253,8 @@ namespace Server.Engines.PartySystem
 
     public void Disband()
     {
-      SendToAll(1005449); // Your party has disbanded.
+      // Your party has disbanded.
+      PartyPackets.SendPartyMessageLocalizedToAll(this, Serial.MinusOne, -1, MessageType.Regular, 0x3B2, 3, 1005449, "System");
 
       for (int i = 0; i < Members.Count; ++i)
       {
@@ -295,20 +287,15 @@ namespace Server.Engines.PartySystem
         p.Candidates.Add(target);
 
       //  : You are invited to join the party. Type /accept to join or /decline to decline the offer.
-      target.Send(new MessageLocalizedAffix(Serial.MinusOne, -1, MessageType.Label, 0x3B2, 3, 1008089, "",
-        AffixType.Prepend | AffixType.System, from.Name, ""));
+      Packets.SendMessageLocalizedAffix(target.NetState, Serial.MinusOne, -1, MessageType.Label, 0x3B2, 3, 1008089, "",
+        AffixType.Prepend | AffixType.System, from.Name);
 
       from.SendLocalizedMessage(1008090); // You have invited them to join the party.
 
-      target.Send(new PartyInvitation(from));
+      PartyPackets.SendPartyInvitation(target.NetState, from);
       target.Party = from;
 
       DeclineTimer.Start(target, from);
-    }
-
-    public void SendToAll(int number, string args = "", int hue = 0x3B2)
-    {
-      SendToAll(new MessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args));
     }
 
     public void SendPublicMessage(Mobile from, string text)
@@ -366,25 +353,6 @@ namespace Server.Engines.PartySystem
     private void SendToStaffMessage(Mobile from, string format, params object[] args)
     {
       SendToStaffMessage(from, string.Format(format, args));
-    }
-
-    public void SendToAll(Packet p)
-    {
-      p.Acquire();
-
-      for (int i = 0; i < Members.Count; ++i)
-        Members[i].Mobile.Send(p);
-
-      if (p is MessageLocalized || p is MessageLocalizedAffix || p is UnicodeMessage || p is AsciiMessage)
-        for (int i = 0; i < Listeners.Count; ++i)
-        {
-          Mobile mob = Listeners[i];
-
-          if (mob.Party != this)
-            mob.Send(p);
-        }
-
-      p.Release();
     }
 
     private class RejoinTimer : Timer

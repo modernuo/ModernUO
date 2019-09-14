@@ -65,6 +65,12 @@ namespace Server.Engines.PartySystem
       ns.Send(writer.Span);
     }
 
+    public static void SendPartyRemoveMemberToAll(Mobile removed, Party p)
+    {
+      for (int i = 0; i < p.Members.Count; i++)
+        SendPartyRemoveMember(p[i].Mobile.NetState, removed, p);
+    }
+
     public static void SendPartyMessage(NetState ns, bool toAll, Mobile from, string text)
     {
       if (ns == null)
