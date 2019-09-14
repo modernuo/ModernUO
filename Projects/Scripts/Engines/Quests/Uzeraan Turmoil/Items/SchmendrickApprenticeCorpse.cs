@@ -28,15 +28,13 @@ namespace Server.Engines.Quests.Haven
     {
     }
 
-    // TODO: What is this? Why are we creating and deleting a mobile?
     private static Mobile GetOwner()
     {
-      Mobile apprentice = new Mobile();
+      Mobile apprentice = new Mobile
+      {
+        Hue = Race.Human.RandomSkinHue(), Female = false, Body = 0x190, Name = NameList.RandomName("male")
+      };
 
-      apprentice.Hue = Race.Human.RandomSkinHue();
-      apprentice.Female = false;
-      apprentice.Body = 0x190;
-      apprentice.Name = NameList.RandomName("male");
 
       apprentice.Delete();
 

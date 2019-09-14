@@ -244,14 +244,14 @@ namespace Server.Engines.Quests.Collector
             if (targObsidian.Quantity >= m_Completed)
               targObsidian.StatueName = RandomName(from);
 
-            from.Send(new AsciiMessage(targObsidian.Serial, targObsidian.ItemID, MessageType.Regular, 0x59, 3,
-              m_Obsidian.Name, "Something Happened."));
+            Packets.SendAsciiMessage(from.NetState, targObsidian.Serial, targObsidian.ItemID, MessageType.Regular, 0x59, 3,
+              m_Obsidian.Name, "Something Happened.");
 
             return;
           }
 
-        from.Send(new MessageLocalized(m_Obsidian.Serial, m_Obsidian.ItemID, MessageType.Regular, 0x2C, 3, 500309,
-          m_Obsidian.Name, "")); // Nothing Happens.
+        Packets.SendMessageLocalized(from.NetState, m_Obsidian.Serial, m_Obsidian.ItemID, MessageType.Regular, 0x2C, 3, 500309,
+          m_Obsidian.Name); // Nothing Happens.
       }
     }
   }

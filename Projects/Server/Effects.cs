@@ -196,6 +196,20 @@ namespace Server
       eable.Free();
     }
 
+    public static void SendMovingEffect(Point3D from, Point3D to, Map map, int itemID, int speed, int duration,
+      bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0)
+    {
+      IPooledEnumerable<NetState> eable = map.GetClientsInRange(from);
+
+      foreach (NetState state in eable)
+      {
+        state.Mobile.ProcessDelta();
+        Packets.SendMovingHuedEffect(state, from, to, itemID, speed, duration, fixedDirection, explodes, hue, renderMode);
+      }
+
+      eable.Free();
+    }
+
     public static void SendMovingEffect(IEntity from, IEntity to, int itemID, int speed, int duration,
       bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0)
     {

@@ -260,6 +260,13 @@ namespace Server.Network
         to.Location, speed, duration, fixedDirection, explodes, hue, renderMode);
     }
 
+    public static void SendMovingHuedEffect(NetState ns, Point3D from, Point3D to, int itemId, int speed, int duration, bool fixedDirection,
+      bool explodes, int hue, int renderMode)
+    {
+      SendHuedEffect(ns, EffectType.Moving, Serial.Zero, Serial.Zero, itemId, from,
+        to, speed, duration, fixedDirection, explodes, hue, renderMode);
+    }
+
     public static void SendTargetParticleEffect(NetState ns, IEntity e, int itemId, int speed, int duration, int hue, int renderMode,
         int effect, int layer, int unknown)
     {
