@@ -63,35 +63,18 @@ namespace Server.Items
         if (craftResource.Amount < 2)
           return false; // Not enough metal to resmelt
 
-        double difficulty = 0.0;
-
-        switch (resource)
+        var difficulty = resource switch
         {
-          case CraftResource.DullCopper:
-            difficulty = 65.0;
-            break;
-          case CraftResource.ShadowIron:
-            difficulty = 70.0;
-            break;
-          case CraftResource.Copper:
-            difficulty = 75.0;
-            break;
-          case CraftResource.Bronze:
-            difficulty = 80.0;
-            break;
-          case CraftResource.Gold:
-            difficulty = 85.0;
-            break;
-          case CraftResource.Agapite:
-            difficulty = 90.0;
-            break;
-          case CraftResource.Verite:
-            difficulty = 95.0;
-            break;
-          case CraftResource.Valorite:
-            difficulty = 99.0;
-            break;
-        }
+          CraftResource.DullCopper => 65.0,
+          CraftResource.ShadowIron => 70.0,
+          CraftResource.Copper => 75.0,
+          CraftResource.Bronze => 80.0,
+          CraftResource.Gold => 85.0,
+          CraftResource.Agapite => 90.0,
+          CraftResource.Verite => 95.0,
+          CraftResource.Valorite => 99.0,
+          _ => 0.0
+        };
 
         Type resourceType = info.ResourceTypes[0];
         Item ingot = (Item)Activator.CreateInstance(resourceType);

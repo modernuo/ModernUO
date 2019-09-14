@@ -370,17 +370,16 @@ namespace Server.Items
 
     private double GetMinSkillLevel()
     {
-      switch (m_Level)
+      return m_Level switch
       {
-        case 1: return -3.0;
-        case 2: return 41.0;
-        case 3: return 51.0;
-        case 4: return 61.0;
-        case 5: return 70.0;
-        case 6: return 70.0;
-
-        default: return 0.0;
-      }
+        1 => -3.0,
+        2 => 41.0,
+        3 => 51.0,
+        4 => 61.0,
+        5 => 70.0,
+        6 => 70.0,
+        _ => 0.0
+      };
     }
 
     private bool HasRequiredSkill(Mobile from) => from.Skills.Cartography.Value >= GetMinSkillLevel();
@@ -652,34 +651,17 @@ namespace Server.Items
             {
               Direction dir = Utility.GetDirection(targ3D, chest3D0);
 
-              string sDir;
-              switch (dir)
+              var sDir = dir switch
               {
-                case Direction.North:
-                  sDir = "north";
-                  break;
-                case Direction.Right:
-                  sDir = "northeast";
-                  break;
-                case Direction.East:
-                  sDir = "east";
-                  break;
-                case Direction.Down:
-                  sDir = "southeast";
-                  break;
-                case Direction.South:
-                  sDir = "south";
-                  break;
-                case Direction.Left:
-                  sDir = "southwest";
-                  break;
-                case Direction.West:
-                  sDir = "west";
-                  break;
-                default:
-                  sDir = "northwest";
-                  break;
-              }
+                Direction.North => "north",
+                Direction.Right => "northeast",
+                Direction.East => "east",
+                Direction.Down => "southeast",
+                Direction.South => "south",
+                Direction.Left => "southwest",
+                Direction.West => "west",
+                _ => "northwest"
+              };
 
               from.SendAsciiMessage(0x44, "Try looking for the treasure chest more to the {0}.", sDir);
             }
@@ -818,19 +800,12 @@ namespace Server.Items
           m_TreasureMap.Completed = true;
           m_TreasureMap.CompletedBy = m_From;
 
-          int spawns;
-          switch (m_TreasureMap.Level)
+          var spawns = m_TreasureMap.Level switch
           {
-            case 0:
-              spawns = 3;
-              break;
-            case 1:
-              spawns = 0;
-              break;
-            default:
-              spawns = 4;
-              break;
-          }
+            0 => 3,
+            1 => 0,
+            _ => 4
+          };
 
           for (int i = 0; i < spawns; ++i)
           {

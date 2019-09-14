@@ -477,33 +477,23 @@ namespace Server.Mobiles
                 Direction dir = GetDirection4(oldWorldLoc, newWorldLoc);
 
                 if (itemIDs.Length == 2)
-                  switch (dir)
+                  item.ItemID = dir switch
                   {
-                    case Direction.North:
-                    case Direction.South:
-                      item.ItemID = itemIDs[0];
-                      break;
-                    case Direction.East:
-                    case Direction.West:
-                      item.ItemID = itemIDs[1];
-                      break;
-                  }
+                    Direction.North => itemIDs[0],
+                    Direction.South => itemIDs[0],
+                    Direction.East => itemIDs[1],
+                    Direction.West => itemIDs[1],
+                    _ => item.ItemID
+                  };
                 else if (itemIDs.Length == 4)
-                  switch (dir)
+                  item.ItemID = dir switch
                   {
-                    case Direction.South:
-                      item.ItemID = itemIDs[0];
-                      break;
-                    case Direction.East:
-                      item.ItemID = itemIDs[1];
-                      break;
-                    case Direction.North:
-                      item.ItemID = itemIDs[2];
-                      break;
-                    case Direction.West:
-                      item.ItemID = itemIDs[3];
-                      break;
-                  }
+                    Direction.South => itemIDs[0],
+                    Direction.East => itemIDs[1],
+                    Direction.North => itemIDs[2],
+                    Direction.West => itemIDs[3],
+                    _ => item.ItemID
+                  };
               }
             }
         }

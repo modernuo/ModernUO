@@ -21,21 +21,14 @@ namespace Server.Items
 
     public void SetFacing(Direction dir)
     {
-      switch (dir)
+      ItemID = dir switch
       {
-        case Direction.East:
-          ItemID = 0x3E65;
-          break;
-        case Direction.West:
-          ItemID = 0x3E93;
-          break;
-        case Direction.North:
-          ItemID = 0x3EAE;
-          break;
-        case Direction.South:
-          ItemID = 0x3EB9;
-          break;
-      }
+        Direction.East => 0x3E65,
+        Direction.West => 0x3E93,
+        Direction.North => 0x3EAE,
+        Direction.South => 0x3EB9,
+        _ => ItemID
+      };
     }
 
     public override bool OnDragDrop(Mobile from, Item item)

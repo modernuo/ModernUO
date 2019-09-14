@@ -72,14 +72,14 @@ namespace Server.Gumps
       {
         case StatueMaterial.Antique:
 
-          switch (type)
+          return type switch
           {
-            case StatueType.Bronze: return 1076187;
-            case StatueType.Jade: return 1076186;
-            case StatueType.Marble: return 1076182;
-          }
+            StatueType.Bronze => 1076187,
+            StatueType.Jade => 1076186,
+            StatueType.Marble => 1076182,
+            _ => 1076187
+          };
 
-          return 1076187;
         case StatueMaterial.Dark:
 
           if (type == StatueType.Marble)
@@ -94,18 +94,18 @@ namespace Server.Gumps
 
     private int GetDirectionNumber(Direction direction)
     {
-      switch (direction)
+      return direction switch
       {
-        case Direction.North: return 1075389;
-        case Direction.Right: return 1075388;
-        case Direction.East: return 1075387;
-        case Direction.Down: return 1076204;
-        case Direction.South: return 1075386;
-        case Direction.Left: return 1075391;
-        case Direction.West: return 1075390;
-        case Direction.Up: return 1076205;
-        default: return 1075386;
-      }
+        Direction.North => 1075389,
+        Direction.Right => 1075388,
+        Direction.East => 1075387,
+        Direction.Down => 1076204,
+        Direction.South => 1075386,
+        Direction.Left => 1075391,
+        Direction.West => 1075390,
+        Direction.Up => 1076205,
+        _ => 1075386
+      };
     }
 
     public override void OnResponse(NetState sender, RelayInfo info)

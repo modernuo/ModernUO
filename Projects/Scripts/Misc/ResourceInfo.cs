@@ -493,17 +493,16 @@ namespace Server.Items
 		/// </summary>
 		public static CraftResourceInfo GetInfo( CraftResource resource )
 		{
-			CraftResourceInfo[] list = null;
+      var list = GetType(resource) switch
+      {
+        CraftResourceType.Metal => m_MetalInfo,
+        CraftResourceType.Leather => (Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo),
+        CraftResourceType.Scales => m_ScaleInfo,
+        CraftResourceType.Wood => m_WoodInfo,
+        _ => null
+      };
 
-			switch ( GetType( resource ) )
-			{
-				case CraftResourceType.Metal: list = m_MetalInfo; break;
-				case CraftResourceType.Leather: list = Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo; break;
-				case CraftResourceType.Scales: list = m_ScaleInfo; break;
-				case CraftResourceType.Wood: list = m_WoodInfo; break;
-			}
-
-			if ( list != null )
+      if ( list != null )
 			{
 				int index = GetIndex( resource );
 
@@ -538,17 +537,16 @@ namespace Server.Items
 		/// Returns the first <see cref="CraftResource"/> in the series of resources for which '<paramref name="resource"/>' belongs.
 		/// </summary>
 		public static CraftResource GetStart( CraftResource resource )
-		{
-			switch ( GetType( resource ) )
-			{
-				case CraftResourceType.Metal: return CraftResource.Iron;
-				case CraftResourceType.Leather: return CraftResource.RegularLeather;
-				case CraftResourceType.Scales: return CraftResource.RedScales;
-				case CraftResourceType.Wood: return CraftResource.RegularWood;
-			}
-
-			return CraftResource.None;
-		}
+    {
+      return GetType(resource) switch
+      {
+        CraftResourceType.Metal => CraftResource.Iron,
+        CraftResourceType.Leather => CraftResource.RegularLeather,
+        CraftResourceType.Scales => CraftResource.RedScales,
+        CraftResourceType.Wood => CraftResource.RegularWood,
+        _ => CraftResource.None
+      };
+    }
 
 		/// <summary>
 		/// Returns the index of '<paramref name="resource"/>' in the seriest of resources for which it belongs.

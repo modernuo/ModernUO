@@ -113,13 +113,13 @@ namespace Server.Items
 
       public int GetTypeNumber(StatueType type)
       {
-        switch (type)
+        return type switch
         {
-          case StatueType.Marble: return 1076181;
-          case StatueType.Jade: return 1076180;
-          case StatueType.Bronze: return 1076230;
-          default: return 1076181;
-        }
+          StatueType.Marble => 1076181,
+          StatueType.Jade => 1076180,
+          StatueType.Bronze => 1076230,
+          _ => 1076181
+        };
       }
     }
   }

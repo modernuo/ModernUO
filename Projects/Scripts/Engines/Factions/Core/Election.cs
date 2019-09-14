@@ -79,21 +79,13 @@ namespace Server.Factions
     {
       get
       {
-        TimeSpan period;
-
-        switch (CurrentState)
+        var period = CurrentState switch
         {
-          default:
-          case ElectionState.Pending:
-            period = PendingPeriod;
-            break;
-          case ElectionState.Election:
-            period = VotingPeriod;
-            break;
-          case ElectionState.Campaign:
-            period = CampaignPeriod;
-            break;
-        }
+          ElectionState.Pending => PendingPeriod,
+          ElectionState.Election => VotingPeriod,
+          ElectionState.Campaign => CampaignPeriod,
+          _ => PendingPeriod
+        };
 
         TimeSpan until = LastStateTime + period - DateTime.UtcNow;
 
@@ -104,21 +96,13 @@ namespace Server.Factions
       }
       set
       {
-        TimeSpan period;
-
-        switch (CurrentState)
+        var period = CurrentState switch
         {
-          default:
-          case ElectionState.Pending:
-            period = PendingPeriod;
-            break;
-          case ElectionState.Election:
-            period = VotingPeriod;
-            break;
-          case ElectionState.Campaign:
-            period = CampaignPeriod;
-            break;
-        }
+          ElectionState.Pending => PendingPeriod,
+          ElectionState.Election => VotingPeriod,
+          ElectionState.Campaign => CampaignPeriod,
+          _ => PendingPeriod
+        };
 
         LastStateTime = DateTime.UtcNow - period + value;
       }

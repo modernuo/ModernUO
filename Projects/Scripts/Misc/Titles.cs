@@ -361,12 +361,12 @@ namespace Server.Misc
 
     private static int GetTableType(Skill skill)
     {
-      switch (skill.SkillName)
+      return skill.SkillName switch
       {
-        default: return 0;
-        case SkillName.Bushido: return 1;
-        case SkillName.Ninjitsu: return 2;
-      }
+        SkillName.Bushido => 1,
+        SkillName.Ninjitsu => 2,
+        _ => 0
+      };
     }
 
     private static int GetTableIndex(Skill skill)

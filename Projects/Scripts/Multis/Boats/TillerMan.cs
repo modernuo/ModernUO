@@ -19,21 +19,14 @@ namespace Server.Items
 
     public void SetFacing(Direction dir)
     {
-      switch (dir)
+      ItemID = dir switch
       {
-        case Direction.South:
-          ItemID = 0x3E4B;
-          break;
-        case Direction.North:
-          ItemID = 0x3E4E;
-          break;
-        case Direction.West:
-          ItemID = 0x3E50;
-          break;
-        case Direction.East:
-          ItemID = 0x3E55;
-          break;
-      }
+        Direction.South => 0x3E4B,
+        Direction.North => 0x3E4E,
+        Direction.West => 0x3E50,
+        Direction.East => 0x3E55,
+        _ => ItemID
+      };
     }
 
     public override void GetProperties(ObjectPropertyList list)

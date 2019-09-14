@@ -1934,27 +1934,19 @@ namespace Server.Items
           if (!from.Mounted)
             action = (int)Animation;
           else
-            switch (Animation)
+            action = Animation switch
             {
-              default:
-              case WeaponAnimation.Wrestle:
-              case WeaponAnimation.Bash1H:
-              case WeaponAnimation.Pierce1H:
-              case WeaponAnimation.Slash1H:
-                action = 26;
-                break;
-              case WeaponAnimation.Bash2H:
-              case WeaponAnimation.Pierce2H:
-              case WeaponAnimation.Slash2H:
-                action = 29;
-                break;
-              case WeaponAnimation.ShootBow:
-                action = 27;
-                break;
-              case WeaponAnimation.ShootXBow:
-                action = 28;
-                break;
-            }
+              WeaponAnimation.Wrestle => 26,
+              WeaponAnimation.Bash1H => 26,
+              WeaponAnimation.Pierce1H => 26,
+              WeaponAnimation.Slash1H => 26,
+              WeaponAnimation.Bash2H => 29,
+              WeaponAnimation.Pierce2H => 29,
+              WeaponAnimation.Slash2H => 29,
+              WeaponAnimation.ShootBow => 27,
+              WeaponAnimation.ShootXBow => 28,
+              _ => 26
+            };
 
           break;
         }
@@ -1999,65 +1991,27 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      int oreType;
-
-      switch (m_Resource)
+      var oreType = m_Resource switch
       {
-        case CraftResource.DullCopper:
-          oreType = 1053108;
-          break; // dull copper
-        case CraftResource.ShadowIron:
-          oreType = 1053107;
-          break; // shadow iron
-        case CraftResource.Copper:
-          oreType = 1053106;
-          break; // copper
-        case CraftResource.Bronze:
-          oreType = 1053105;
-          break; // bronze
-        case CraftResource.Gold:
-          oreType = 1053104;
-          break; // golden
-        case CraftResource.Agapite:
-          oreType = 1053103;
-          break; // agapite
-        case CraftResource.Verite:
-          oreType = 1053102;
-          break; // verite
-        case CraftResource.Valorite:
-          oreType = 1053101;
-          break; // valorite
-        case CraftResource.SpinedLeather:
-          oreType = 1061118;
-          break; // spined
-        case CraftResource.HornedLeather:
-          oreType = 1061117;
-          break; // horned
-        case CraftResource.BarbedLeather:
-          oreType = 1061116;
-          break; // barbed
-        case CraftResource.RedScales:
-          oreType = 1060814;
-          break; // red
-        case CraftResource.YellowScales:
-          oreType = 1060818;
-          break; // yellow
-        case CraftResource.BlackScales:
-          oreType = 1060820;
-          break; // black
-        case CraftResource.GreenScales:
-          oreType = 1060819;
-          break; // green
-        case CraftResource.WhiteScales:
-          oreType = 1060821;
-          break; // white
-        case CraftResource.BlueScales:
-          oreType = 1060815;
-          break; // blue
-        default:
-          oreType = 0;
-          break;
-      }
+        CraftResource.DullCopper => 1053108,
+        CraftResource.ShadowIron => 1053107,
+        CraftResource.Copper => 1053106,
+        CraftResource.Bronze => 1053105,
+        CraftResource.Gold => 1053104,
+        CraftResource.Agapite => 1053103,
+        CraftResource.Verite => 1053102,
+        CraftResource.Valorite => 1053101,
+        CraftResource.SpinedLeather => 1061118,
+        CraftResource.HornedLeather => 1061117,
+        CraftResource.BarbedLeather => 1061116,
+        CraftResource.RedScales => 1060814,
+        CraftResource.YellowScales => 1060818,
+        CraftResource.BlackScales => 1060820,
+        CraftResource.GreenScales => 1060819,
+        CraftResource.WhiteScales => 1060821,
+        CraftResource.BlueScales => 1060815,
+        _ => 0
+      };
 
       if (oreType != 0)
         list.Add(1053099, "#{0}\t{1}", oreType, GetNameString()); // ~1_oretype~ ~2_armortype~

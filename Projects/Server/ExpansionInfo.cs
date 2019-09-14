@@ -293,33 +293,21 @@ namespace Server
       if (info != null)
         return info.SupportedFeatures;
 
-      switch (ex)
+      return ex switch
       {
-        case Expansion.None:
-          return FeatureFlags.ExpansionNone;
-        case Expansion.T2A:
-          return FeatureFlags.ExpansionT2A;
-        case Expansion.UOR:
-          return FeatureFlags.ExpansionUOR;
-        case Expansion.UOTD:
-          return FeatureFlags.ExpansionUOTD;
-        case Expansion.LBR:
-          return FeatureFlags.ExpansionLBR;
-        case Expansion.AOS:
-          return FeatureFlags.ExpansionAOS;
-        case Expansion.SE:
-          return FeatureFlags.ExpansionSE;
-        case Expansion.ML:
-          return FeatureFlags.ExpansionML;
-        case Expansion.SA:
-          return FeatureFlags.ExpansionSA;
-        case Expansion.HS:
-          return FeatureFlags.ExpansionHS;
-        case Expansion.TOL:
-          return FeatureFlags.ExpansionTOL;
-      }
-
-      return FeatureFlags.ExpansionNone;
+        Expansion.None => FeatureFlags.ExpansionNone,
+        Expansion.T2A => FeatureFlags.ExpansionT2A,
+        Expansion.UOR => FeatureFlags.ExpansionUOR,
+        Expansion.UOTD => FeatureFlags.ExpansionUOTD,
+        Expansion.LBR => FeatureFlags.ExpansionLBR,
+        Expansion.AOS => FeatureFlags.ExpansionAOS,
+        Expansion.SE => FeatureFlags.ExpansionSE,
+        Expansion.ML => FeatureFlags.ExpansionML,
+        Expansion.SA => FeatureFlags.ExpansionSA,
+        Expansion.HS => FeatureFlags.ExpansionHS,
+        Expansion.TOL => FeatureFlags.ExpansionTOL,
+        _ => FeatureFlags.ExpansionNone
+      };
     }
 
     public static ExpansionInfo GetInfo(Expansion ex) => GetInfo((int)ex);

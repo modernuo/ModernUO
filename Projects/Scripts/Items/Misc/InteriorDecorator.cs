@@ -117,20 +117,13 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        DecorateCommand command = DecorateCommand.None;
-
-        switch (info.ButtonID)
+        var command = info.ButtonID switch
         {
-          case 1:
-            command = DecorateCommand.Turn;
-            break;
-          case 2:
-            command = DecorateCommand.Up;
-            break;
-          case 3:
-            command = DecorateCommand.Down;
-            break;
-        }
+          1 => DecorateCommand.Turn,
+          2 => DecorateCommand.Up,
+          3 => DecorateCommand.Down,
+          _ => DecorateCommand.None
+        };
 
         if (command != DecorateCommand.None)
         {

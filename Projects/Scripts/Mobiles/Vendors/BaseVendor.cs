@@ -508,15 +508,15 @@ namespace Server.Mobiles
 
     public virtual int GetRandomHue()
     {
-      switch (Utility.Random(5))
+      return Utility.Random(5) switch
       {
-        default:
-        case 0: return Utility.RandomBlueHue();
-        case 1: return Utility.RandomGreenHue();
-        case 2: return Utility.RandomRedHue();
-        case 3: return Utility.RandomYellowHue();
-        case 4: return Utility.RandomNeutralHue();
-      }
+        0 => Utility.RandomBlueHue(),
+        1 => Utility.RandomGreenHue(),
+        2 => Utility.RandomRedHue(),
+        3 => Utility.RandomYellowHue(),
+        4 => Utility.RandomNeutralHue(),
+        _ => Utility.RandomBlueHue()
+      };
     }
 
     public virtual int GetShoeHue() => 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
@@ -598,12 +598,12 @@ namespace Server.Mobiles
 
     public virtual int GetRandomNecromancerHue()
     {
-      switch (Utility.Random(20))
+      return Utility.Random(20) switch
       {
-        case 0: return 0;
-        case 1: return 0x4E9;
-        default: return Utility.RandomList(0x485, 0x497);
-      }
+        0 => 0,
+        1 => 0x4E9,
+        _ => Utility.RandomList(0x485, 0x497)
+      };
     }
 
     public virtual void TurnToNecromancer()
@@ -1118,29 +1118,17 @@ namespace Server.Mobiles
           GenericBuyInfo gbi = buyInfo[j];
 
           int maxAmount = gbi.MaxAmount;
-          int doubled = 0;
 
-          switch (maxAmount)
+          var doubled = maxAmount switch
           {
-            case 40:
-              doubled = 1;
-              break;
-            case 80:
-              doubled = 2;
-              break;
-            case 160:
-              doubled = 3;
-              break;
-            case 320:
-              doubled = 4;
-              break;
-            case 640:
-              doubled = 5;
-              break;
-            case 999:
-              doubled = 6;
-              break;
-          }
+            40 => 1,
+            80 => 2,
+            160 => 3,
+            320 => 4,
+            640 => 5,
+            999 => 6,
+            _ => 0
+          };
 
           if (doubled > 0)
           {
@@ -1188,29 +1176,16 @@ namespace Server.Mobiles
                 {
                   GenericBuyInfo gbi = buyInfo[buyInfoIndex];
 
-                  int amount = 20;
-
-                  switch (doubled)
+                  var amount = doubled switch
                   {
-                    case 1:
-                      amount = 40;
-                      break;
-                    case 2:
-                      amount = 80;
-                      break;
-                    case 3:
-                      amount = 160;
-                      break;
-                    case 4:
-                      amount = 320;
-                      break;
-                    case 5:
-                      amount = 640;
-                      break;
-                    case 6:
-                      amount = 999;
-                      break;
-                  }
+                    1 => 40,
+                    2 => 80,
+                    3 => 160,
+                    4 => 320,
+                    5 => 640,
+                    6 => 999,
+                    _ => 20
+                  };
 
                   gbi.Amount = gbi.MaxAmount = amount;
                 }

@@ -2380,33 +2380,17 @@ namespace Server.Gumps
               if (!(m_State is Account a))
                 break;
 
-              AccessLevel newLevel;
-
-              switch (index)
+              var newLevel = index switch
               {
-                default:
-                case 20:
-                  newLevel = AccessLevel.Player;
-                  break;
-                case 21:
-                  newLevel = AccessLevel.Counselor;
-                  break;
-                case 22:
-                  newLevel = AccessLevel.GameMaster;
-                  break;
-                case 23:
-                  newLevel = AccessLevel.Seer;
-                  break;
-                case 24:
-                  newLevel = AccessLevel.Administrator;
-                  break;
-                case 33:
-                  newLevel = AccessLevel.Developer;
-                  break;
-                case 34:
-                  newLevel = AccessLevel.Owner;
-                  break;
-              }
+                20 => AccessLevel.Player,
+                21 => AccessLevel.Counselor,
+                22 => AccessLevel.GameMaster,
+                23 => AccessLevel.Seer,
+                24 => AccessLevel.Administrator,
+                33 => AccessLevel.Developer,
+                34 => AccessLevel.Owner,
+                _ => AccessLevel.Player
+              };
 
               if (newLevel < from.AccessLevel || from.AccessLevel == AccessLevel.Owner)
               {

@@ -198,13 +198,13 @@ namespace Server.Mobiles
 
     public override WeaponAbility GetWeaponAbility()
     {
-      switch (Utility.Random(3))
+      return Utility.Random(3) switch
       {
-        default:
-        case 0: return WeaponAbility.DoubleStrike;
-        case 1: return WeaponAbility.WhirlwindAttack;
-        case 2: return WeaponAbility.CrushingBlow;
-      }
+        0 => WeaponAbility.DoubleStrike,
+        1 => WeaponAbility.WhirlwindAttack,
+        2 => WeaponAbility.CrushingBlow,
+        _ => WeaponAbility.DoubleStrike
+      };
     }
 
     public override void OnDeath(Container c)

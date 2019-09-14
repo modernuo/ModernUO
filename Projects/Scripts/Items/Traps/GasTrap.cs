@@ -37,14 +37,13 @@ namespace Server.Items
     {
       get
       {
-        switch (ItemID)
+        return ItemID switch
         {
-          case 0x113C: return GasTrapType.NorthWall;
-          case 0x1147: return GasTrapType.WestWall;
-          case 0x11A8: return GasTrapType.Floor;
-        }
-
-        return GasTrapType.WestWall;
+          0x113C => GasTrapType.NorthWall,
+          0x1147 => GasTrapType.WestWall,
+          0x11A8 => GasTrapType.Floor,
+          _ => GasTrapType.WestWall
+        };
       }
       set => ItemID = GetBaseID(value);
     }
@@ -56,14 +55,13 @@ namespace Server.Items
 
     public static int GetBaseID(GasTrapType type)
     {
-      switch (type)
+      return type switch
       {
-        case GasTrapType.NorthWall: return 0x113C;
-        case GasTrapType.WestWall: return 0x1147;
-        case GasTrapType.Floor: return 0x11A8;
-      }
-
-      return 0;
+        GasTrapType.NorthWall => 0x113C,
+        GasTrapType.WestWall => 0x1147,
+        GasTrapType.Floor => 0x11A8,
+        _ => 0
+      };
     }
 
     public override void OnTrigger(Mobile from)

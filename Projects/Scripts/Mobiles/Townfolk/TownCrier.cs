@@ -320,18 +320,12 @@ namespace Server.Mobiles
 
       AddItem(new FancyShirt(Utility.RandomBlueHue()));
 
-      Item skirt;
-
-      switch (Utility.Random(2))
+      var skirt = Utility.Random(2) switch
       {
-        case 0:
-          skirt = new Skirt();
-          break;
-        default:
-        case 1:
-          skirt = new Kilt();
-          break;
-      }
+        0 => (Item)new Skirt(),
+        1 => new Kilt(),
+        _ => new Kilt()
+      };
 
       skirt.Hue = Utility.RandomGreenHue();
 
@@ -339,18 +333,12 @@ namespace Server.Mobiles
 
       AddItem(new FeatheredHat(Utility.RandomGreenHue()));
 
-      Item boots;
-
-      switch (Utility.Random(2))
+      var boots = Utility.Random(2) switch
       {
-        case 0:
-          boots = new Boots();
-          break;
-        default:
-        case 1:
-          boots = new ThighBoots();
-          break;
-      }
+        0 => (Item)new Boots(),
+        1 => new ThighBoots(),
+        _ => new ThighBoots()
+      };
 
       AddItem(boots);
 

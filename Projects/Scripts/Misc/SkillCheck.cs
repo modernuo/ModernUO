@@ -262,14 +262,13 @@ namespace Server.Misc
 
     public static bool CanLower(Mobile from, Stat stat)
     {
-      switch (stat)
+      return stat switch
       {
-        case Stat.Str: return from.StrLock == StatLockType.Down && from.RawStr > 10;
-        case Stat.Dex: return from.DexLock == StatLockType.Down && from.RawDex > 10;
-        case Stat.Int: return from.IntLock == StatLockType.Down && from.RawInt > 10;
-      }
-
-      return false;
+        Stat.Str => (from.StrLock == StatLockType.Down && from.RawStr > 10),
+        Stat.Dex => (from.DexLock == StatLockType.Down && from.RawDex > 10),
+        Stat.Int => (from.IntLock == StatLockType.Down && from.RawInt > 10),
+        _ => false
+      };
     }
 
     public static bool CanRaise(Mobile from, Stat stat)
@@ -278,14 +277,13 @@ namespace Server.Misc
         if (from.RawStatTotal >= from.StatCap)
           return false;
 
-      switch (stat)
+      return stat switch
       {
-        case Stat.Str: return from.StrLock == StatLockType.Up && from.RawStr < 125;
-        case Stat.Dex: return from.DexLock == StatLockType.Up && from.RawDex < 125;
-        case Stat.Int: return from.IntLock == StatLockType.Up && from.RawInt < 125;
-      }
-
-      return false;
+        Stat.Str => (from.StrLock == StatLockType.Up && from.RawStr < 125),
+        Stat.Dex => (from.DexLock == StatLockType.Up && from.RawDex < 125),
+        Stat.Int => (from.IntLock == StatLockType.Up && from.RawInt < 125),
+        _ => false
+      };
     }
 
     public static void IncreaseStat(Mobile from, Stat stat, bool atrophy)

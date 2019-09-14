@@ -95,22 +95,21 @@ namespace Server.Engines.BulkOrders
 
     public static BulkMaterialType GetMaterial(CraftResource resource)
     {
-      switch (resource)
+      return resource switch
       {
-        case CraftResource.DullCopper: return BulkMaterialType.DullCopper;
-        case CraftResource.ShadowIron: return BulkMaterialType.ShadowIron;
-        case CraftResource.Copper: return BulkMaterialType.Copper;
-        case CraftResource.Bronze: return BulkMaterialType.Bronze;
-        case CraftResource.Gold: return BulkMaterialType.Gold;
-        case CraftResource.Agapite: return BulkMaterialType.Agapite;
-        case CraftResource.Verite: return BulkMaterialType.Verite;
-        case CraftResource.Valorite: return BulkMaterialType.Valorite;
-        case CraftResource.SpinedLeather: return BulkMaterialType.Spined;
-        case CraftResource.HornedLeather: return BulkMaterialType.Horned;
-        case CraftResource.BarbedLeather: return BulkMaterialType.Barbed;
-      }
-
-      return BulkMaterialType.None;
+        CraftResource.DullCopper => BulkMaterialType.DullCopper,
+        CraftResource.ShadowIron => BulkMaterialType.ShadowIron,
+        CraftResource.Copper => BulkMaterialType.Copper,
+        CraftResource.Bronze => BulkMaterialType.Bronze,
+        CraftResource.Gold => BulkMaterialType.Gold,
+        CraftResource.Agapite => BulkMaterialType.Agapite,
+        CraftResource.Verite => BulkMaterialType.Verite,
+        CraftResource.Valorite => BulkMaterialType.Valorite,
+        CraftResource.SpinedLeather => BulkMaterialType.Spined,
+        CraftResource.HornedLeather => BulkMaterialType.Horned,
+        CraftResource.BarbedLeather => BulkMaterialType.Barbed,
+        _ => BulkMaterialType.None
+      };
     }
 
     public override void EndCombine(Mobile from, Item item)

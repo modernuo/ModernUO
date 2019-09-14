@@ -301,13 +301,13 @@ namespace Server.Engines.Events
 
     public static Point3D RandomMoongate(Mobile target)
     {
-      switch (target.Map.MapID)
+      return target.Map.MapID switch
       {
-        case 2: return Ilshenar_Locations[Utility.Random(Ilshenar_Locations.Length)];
-        case 3: return Malas_Locations[Utility.Random(Malas_Locations.Length)];
-        case 4: return Tokuno_Locations[Utility.Random(Tokuno_Locations.Length)];
-        default: return Felucca_Locations[Utility.Random(Felucca_Locations.Length)];
-      }
+        2 => Ilshenar_Locations[Utility.Random(Ilshenar_Locations.Length)],
+        3 => Malas_Locations[Utility.Random(Malas_Locations.Length)],
+        4 => Tokuno_Locations[Utility.Random(Tokuno_Locations.Length)],
+        _ => Felucca_Locations[Utility.Random(Felucca_Locations.Length)]
+      };
     }
 
     public override void Serialize(GenericWriter writer)

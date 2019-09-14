@@ -167,11 +167,10 @@ namespace Server.Engines.Quests.Collector
     {
       if (m_Quantity < m_Completed)
       {
-        if (!IsChildOf(from.Backpack))
-          from.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x2C, 3, 500309, "",
-            "")); // Nothing Happens.
-        else
+        if (IsChildOf(from.Backpack))
           from.Target = new InternalTarget(this);
+        else
+          Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Regular, 0x2C, 3, 500309, ""); // Nothing Happens.
       }
     }
 

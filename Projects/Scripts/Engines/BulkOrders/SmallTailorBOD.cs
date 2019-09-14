@@ -92,38 +92,20 @@ namespace Server.Engines.BulkOrders
           for (int i = 0; i < 20; ++i)
           {
             BulkMaterialType check = GetRandomMaterial(BulkMaterialType.Spined, m_TailoringMaterialChances);
-            double skillReq = 0.0;
 
-            switch (check)
+            var skillReq = check switch
             {
-              case BulkMaterialType.DullCopper:
-                skillReq = 65.0;
-                break;
-              case BulkMaterialType.Bronze:
-                skillReq = 80.0;
-                break;
-              case BulkMaterialType.Gold:
-                skillReq = 85.0;
-                break;
-              case BulkMaterialType.Agapite:
-                skillReq = 90.0;
-                break;
-              case BulkMaterialType.Verite:
-                skillReq = 95.0;
-                break;
-              case BulkMaterialType.Valorite:
-                skillReq = 100.0;
-                break;
-              case BulkMaterialType.Spined:
-                skillReq = 65.0;
-                break;
-              case BulkMaterialType.Horned:
-                skillReq = 80.0;
-                break;
-              case BulkMaterialType.Barbed:
-                skillReq = 99.0;
-                break;
-            }
+              BulkMaterialType.DullCopper => 65.0,
+              BulkMaterialType.Bronze => 80.0,
+              BulkMaterialType.Gold => 85.0,
+              BulkMaterialType.Agapite => 90.0,
+              BulkMaterialType.Verite => 95.0,
+              BulkMaterialType.Valorite => 100.0,
+              BulkMaterialType.Spined => 65.0,
+              BulkMaterialType.Horned => 80.0,
+              BulkMaterialType.Barbed => 99.0,
+              _ => 0.0
+            };
 
             if (theirSkill >= skillReq)
             {

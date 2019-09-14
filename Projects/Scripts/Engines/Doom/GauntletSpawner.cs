@@ -89,18 +89,13 @@ namespace Server.Engines.Doom
         int hue = 0;
         bool lockDoors = m_State == GauntletSpawnerState.InProgress;
 
-        switch (m_State)
+        hue = m_State switch
         {
-          case GauntletSpawnerState.InSequence:
-            hue = InSequenceItemHue;
-            break;
-          case GauntletSpawnerState.InProgress:
-            hue = InProgressItemHue;
-            break;
-          case GauntletSpawnerState.Completed:
-            hue = CompletedItemHue;
-            break;
-        }
+          GauntletSpawnerState.InSequence => InSequenceItemHue,
+          GauntletSpawnerState.InProgress => InProgressItemHue,
+          GauntletSpawnerState.Completed => CompletedItemHue,
+          _ => hue
+        };
 
         if (Door != null)
         {

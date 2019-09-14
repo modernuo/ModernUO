@@ -325,33 +325,18 @@ namespace Server.Multis
             int type = (itemID - 0x675) / 16;
             DoorFacing facing = (DoorFacing)((itemID - 0x675) / 2 % 8);
 
-            switch (type)
+            door = type switch
             {
-              case 0:
-                door = new GenericHouseDoor(facing, 0x675, 0xEC, 0xF3);
-                break;
-              case 1:
-                door = new GenericHouseDoor(facing, 0x685, 0xEC, 0xF3);
-                break;
-              case 2:
-                door = new GenericHouseDoor(facing, 0x695, 0xEB, 0xF2);
-                break;
-              case 3:
-                door = new GenericHouseDoor(facing, 0x6A5, 0xEA, 0xF1);
-                break;
-              case 4:
-                door = new GenericHouseDoor(facing, 0x6B5, 0xEA, 0xF1);
-                break;
-              case 5:
-                door = new GenericHouseDoor(facing, 0x6C5, 0xEC, 0xF3);
-                break;
-              case 6:
-                door = new GenericHouseDoor(facing, 0x6D5, 0xEA, 0xF1);
-                break;
-              case 7:
-                door = new GenericHouseDoor(facing, 0x6E5, 0xEA, 0xF1);
-                break;
-            }
+              0 => new GenericHouseDoor(facing, 0x675, 0xEC, 0xF3),
+              1 => new GenericHouseDoor(facing, 0x685, 0xEC, 0xF3),
+              2 => new GenericHouseDoor(facing, 0x695, 0xEB, 0xF2),
+              3 => new GenericHouseDoor(facing, 0x6A5, 0xEA, 0xF1),
+              4 => new GenericHouseDoor(facing, 0x6B5, 0xEA, 0xF1),
+              5 => new GenericHouseDoor(facing, 0x6C5, 0xEC, 0xF3),
+              6 => new GenericHouseDoor(facing, 0x6D5, 0xEA, 0xF1),
+              7 => new GenericHouseDoor(facing, 0x6E5, 0xEA, 0xF1),
+              _ => door
+            };
           }
           else if (itemID >= 0x314 && itemID < 0x364)
           {
@@ -453,15 +438,12 @@ namespace Server.Multis
             int type = (itemID - 0x367B) / 16;
             DoorFacing facing = (DoorFacing)((itemID - 0x367B) / 2 % 8);
 
-            switch (type)
+            door = type switch
             {
-              case 0:
-                door = new GenericHouseDoor(facing, 0x367B, 0xED, 0xF4);
-                break; //crystal
-              case 1:
-                door = new GenericHouseDoor(facing, 0x368B, 0xEC, 0x3E7);
-                break; //shadow
-            }
+              0 => new GenericHouseDoor(facing, 0x367B, 0xED, 0xF4),
+              1 => new GenericHouseDoor(facing, 0x368B, 0xEC, 0x3E7),
+              _ => door
+            };
           }
           else if (itemID >= 0x409B && itemID < 0x40A3)
           {

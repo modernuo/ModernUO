@@ -432,13 +432,13 @@ namespace Server.Mobiles
 
         if (Statue != null) t = Statue.StatueType;
 
-        switch (t)
+        return t switch
         {
-          case StatueType.Marble: return 1076189;
-          case StatueType.Jade: return 1076188;
-          case StatueType.Bronze: return 1076190;
-          default: return 1076173;
-        }
+          StatueType.Marble => 1076189,
+          StatueType.Jade => 1076188,
+          StatueType.Bronze => 1076190,
+          _ => 1076173
+        };
       }
     }
 

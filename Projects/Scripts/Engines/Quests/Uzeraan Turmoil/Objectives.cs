@@ -76,27 +76,23 @@ namespace Server.Engines.Quests.Haven
     {
       get
       {
-        switch (Step)
+        return Step switch
         {
-          case KillHordeMinionsStep.First:
-            /* Find the mountain pass beyond the house which lies at the
+          KillHordeMinionsStep.First =>
+          /* Find the mountain pass beyond the house which lies at the
              * end of the runic road.<BR><BR>
              *
              * Assist the city Militia by slaying <I>Horde Minions</I>
              */
-            return 1049089;
-
-          case KillHordeMinionsStep.LearnKarma:
-            /* You have just gained some <a href="?ForceTopic45">Karma</a>
+          1049089,
+          KillHordeMinionsStep.LearnKarma =>
+          /* You have just gained some <a href="?ForceTopic45">Karma</a>
              * for killing the horde minion. <a href="?ForceTopic134">Learn</a>
              * how this affects your Paladin abilities.
              */
-            return 1060389;
-
-          default:
-            // Continue driving back the Horde Minions, as Uzeraan instructed you to do.
-            return 1060507;
-        }
+          1060389,
+          _ => 1060507
+        };
       }
     }
 
@@ -105,12 +101,12 @@ namespace Server.Engines.Quests.Haven
       get
       {
         if (System.From.Profession == 5) // paladin
-          switch (Step)
+          return Step switch
           {
-            case KillHordeMinionsStep.First: return 1;
-            case KillHordeMinionsStep.LearnKarma: return 2;
-            default: return 5;
-          }
+            KillHordeMinionsStep.First => 1,
+            KillHordeMinionsStep.LearnKarma => 2,
+            _ => 5
+          };
 
         return 5;
       }

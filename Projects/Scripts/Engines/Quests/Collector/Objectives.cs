@@ -132,18 +132,12 @@ namespace Server.Engines.Quests.Collector
 
     public void InitTheater()
     {
-      switch (Utility.Random(3))
+      m_Theater = Utility.Random(3) switch
       {
-        case 1:
-          m_Theater = Theater.Britain;
-          break;
-        case 2:
-          m_Theater = Theater.Nujelm;
-          break;
-        default:
-          m_Theater = Theater.Jhelom;
-          break;
-      }
+        1 => Theater.Britain,
+        2 => Theater.Nujelm,
+        _ => Theater.Jhelom
+      };
     }
 
     public bool IsInRightTheater()
@@ -155,14 +149,13 @@ namespace Server.Engines.Quests.Collector
       if (region == null)
         return false;
 
-      switch (m_Theater)
+      return m_Theater switch
       {
-        case Theater.Britain: return region.IsPartOf("Britain");
-        case Theater.Nujelm: return region.IsPartOf("Nujel'm");
-        case Theater.Jhelom: return region.IsPartOf("Jhelom");
-
-        default: return false;
-      }
+        Theater.Britain => region.IsPartOf("Britain"),
+        Theater.Nujelm => region.IsPartOf("Nujel'm"),
+        Theater.Jhelom => region.IsPartOf("Jhelom"),
+        _ => false
+      };
     }
 
     public override void OnComplete()

@@ -295,43 +295,34 @@ namespace Server.Items
 
     public BasePotion FillBottle()
     {
-      switch (m_Type)
+      return m_Type switch
       {
-        default:
-        case PotionEffect.Nightsight: return new NightSightPotion();
-
-        case PotionEffect.CureLesser: return new LesserCurePotion();
-        case PotionEffect.Cure: return new CurePotion();
-        case PotionEffect.CureGreater: return new GreaterCurePotion();
-
-        case PotionEffect.Agility: return new AgilityPotion();
-        case PotionEffect.AgilityGreater: return new GreaterAgilityPotion();
-
-        case PotionEffect.Strength: return new StrengthPotion();
-        case PotionEffect.StrengthGreater: return new GreaterStrengthPotion();
-
-        case PotionEffect.PoisonLesser: return new LesserPoisonPotion();
-        case PotionEffect.Poison: return new PoisonPotion();
-        case PotionEffect.PoisonGreater: return new GreaterPoisonPotion();
-        case PotionEffect.PoisonDeadly: return new DeadlyPoisonPotion();
-
-        case PotionEffect.Refresh: return new RefreshPotion();
-        case PotionEffect.RefreshTotal: return new TotalRefreshPotion();
-
-        case PotionEffect.HealLesser: return new LesserHealPotion();
-        case PotionEffect.Heal: return new HealPotion();
-        case PotionEffect.HealGreater: return new GreaterHealPotion();
-
-        case PotionEffect.ExplosionLesser: return new LesserExplosionPotion();
-        case PotionEffect.Explosion: return new ExplosionPotion();
-        case PotionEffect.ExplosionGreater: return new GreaterExplosionPotion();
-
-        case PotionEffect.Conflagration: return new ConflagrationPotion();
-        case PotionEffect.ConflagrationGreater: return new GreaterConflagrationPotion();
-
-        case PotionEffect.ConfusionBlast: return new ConfusionBlastPotion();
-        case PotionEffect.ConfusionBlastGreater: return new GreaterConfusionBlastPotion();
-      }
+        PotionEffect.Nightsight => (BasePotion)new NightSightPotion(),
+        PotionEffect.CureLesser => new LesserCurePotion(),
+        PotionEffect.Cure => new CurePotion(),
+        PotionEffect.CureGreater => new GreaterCurePotion(),
+        PotionEffect.Agility => new AgilityPotion(),
+        PotionEffect.AgilityGreater => new GreaterAgilityPotion(),
+        PotionEffect.Strength => new StrengthPotion(),
+        PotionEffect.StrengthGreater => new GreaterStrengthPotion(),
+        PotionEffect.PoisonLesser => new LesserPoisonPotion(),
+        PotionEffect.Poison => new PoisonPotion(),
+        PotionEffect.PoisonGreater => new GreaterPoisonPotion(),
+        PotionEffect.PoisonDeadly => new DeadlyPoisonPotion(),
+        PotionEffect.Refresh => new RefreshPotion(),
+        PotionEffect.RefreshTotal => new TotalRefreshPotion(),
+        PotionEffect.HealLesser => new LesserHealPotion(),
+        PotionEffect.Heal => new HealPotion(),
+        PotionEffect.HealGreater => new GreaterHealPotion(),
+        PotionEffect.ExplosionLesser => new LesserExplosionPotion(),
+        PotionEffect.Explosion => new ExplosionPotion(),
+        PotionEffect.ExplosionGreater => new GreaterExplosionPotion(),
+        PotionEffect.Conflagration => new ConflagrationPotion(),
+        PotionEffect.ConflagrationGreater => new GreaterConflagrationPotion(),
+        PotionEffect.ConfusionBlast => new ConfusionBlastPotion(),
+        PotionEffect.ConfusionBlastGreater => new GreaterConfusionBlastPotion(),
+        _ => new NightSightPotion()
+      };
     }
 
     public static void Initialize()

@@ -57,29 +57,17 @@ namespace Server.Commands
         for (int i = 0; i < list.Count; ++i)
         {
           SignEntry e = list[i];
-          Map[] maps = null;
 
-          switch (e.m_Map)
+          var maps = e.m_Map switch
           {
-            case 0:
-              maps = brit;
-              break; // Trammel and Felucca
-            case 1:
-              maps = fel;
-              break; // Felucca
-            case 2:
-              maps = tram;
-              break; // Trammel
-            case 3:
-              maps = ilsh;
-              break; // Ilshenar
-            case 4:
-              maps = malas;
-              break; // Malas
-            case 5:
-              maps = tokuno;
-              break; // Tokuno Islands
-          }
+            0 => brit,
+            1 => fel,
+            2 => tram,
+            3 => ilsh,
+            4 => malas,
+            5 => tokuno,
+            _ => null
+          };
 
           for (int j = 0; maps?.Length >= j; ++j)
             Add_Static(e.m_ItemID, e.m_Location, maps[j], e.m_Text);

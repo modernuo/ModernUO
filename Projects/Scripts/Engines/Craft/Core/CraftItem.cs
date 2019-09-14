@@ -831,16 +831,14 @@ namespace Server.Engines.Craft
       RequiredExpansionMessage(
         Expansion expansion) //Eventually convert to TextDefinition, but that requires that we convert all the gumps to ues it too.  Not that it wouldn't be a bad idea.
     {
-      switch (expansion)
+      return expansion switch
       {
-        case Expansion.SE:
-          return 1063307; // The "Samurai Empire" expansion is required to attempt this item.
-        case Expansion.ML:
-          return 1072650; // The "Mondain's Legacy" expansion is required to attempt this item.
-        default:
-          return
-            $"The \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion is required to attempt this item.";
-      }
+        Expansion.SE => (object)1063307 // The "Samurai Empire" expansion is required to attempt this item.
+        ,
+        Expansion.ML => 1072650 // The "Mondain's Legacy" expansion is required to attempt this item.
+        ,
+        _ => $"The \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion is required to attempt this item."
+      };
     }
 
     public void CompleteCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes,

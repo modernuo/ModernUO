@@ -93,37 +93,23 @@ namespace Server.Items
     public void SetFacing(Direction dir)
     {
       if (IsOpen)
-        switch (dir)
+        ItemID = dir switch
         {
-          case Direction.North:
-            ItemID = Starboard ? 0x3ED4 : 0x3ED5;
-            break;
-          case Direction.East:
-            ItemID = Starboard ? 0x3E84 : 0x3E89;
-            break;
-          case Direction.South:
-            ItemID = Starboard ? 0x3ED5 : 0x3ED4;
-            break;
-          case Direction.West:
-            ItemID = Starboard ? 0x3E89 : 0x3E84;
-            break;
-        }
+          Direction.North => (Starboard ? 0x3ED4 : 0x3ED5),
+          Direction.East => (Starboard ? 0x3E84 : 0x3E89),
+          Direction.South => (Starboard ? 0x3ED5 : 0x3ED4),
+          Direction.West => (Starboard ? 0x3E89 : 0x3E84),
+          _ => ItemID
+        };
       else
-        switch (dir)
+        ItemID = dir switch
         {
-          case Direction.North:
-            ItemID = Starboard ? 0x3EB2 : 0x3EB1;
-            break;
-          case Direction.East:
-            ItemID = Starboard ? 0x3E85 : 0x3E8A;
-            break;
-          case Direction.South:
-            ItemID = Starboard ? 0x3EB1 : 0x3EB2;
-            break;
-          case Direction.West:
-            ItemID = Starboard ? 0x3E8A : 0x3E85;
-            break;
-        }
+          Direction.North => (Starboard ? 0x3EB2 : 0x3EB1),
+          Direction.East => (Starboard ? 0x3E85 : 0x3E8A),
+          Direction.South => (Starboard ? 0x3EB1 : 0x3EB2),
+          Direction.West => (Starboard ? 0x3E8A : 0x3E85),
+          _ => ItemID
+        };
     }
 
     public void Open()
@@ -136,21 +122,14 @@ namespace Server.Items
       m_CloseTimer = new CloseTimer(this);
       m_CloseTimer.Start();
 
-      switch (ItemID)
+      ItemID = ItemID switch
       {
-        case 0x3EB1:
-          ItemID = 0x3ED5;
-          break;
-        case 0x3E8A:
-          ItemID = 0x3E89;
-          break;
-        case 0x3EB2:
-          ItemID = 0x3ED4;
-          break;
-        case 0x3E85:
-          ItemID = 0x3E84;
-          break;
-      }
+        0x3EB1 => 0x3ED5,
+        0x3E8A => 0x3E89,
+        0x3EB2 => 0x3ED4,
+        0x3E85 => 0x3E84,
+        _ => ItemID
+      };
 
       Boat?.Refresh();
     }
@@ -235,21 +214,14 @@ namespace Server.Items
 
       m_CloseTimer = null;
 
-      switch (ItemID)
+      ItemID = ItemID switch
       {
-        case 0x3ED5:
-          ItemID = 0x3EB1;
-          break;
-        case 0x3E89:
-          ItemID = 0x3E8A;
-          break;
-        case 0x3ED4:
-          ItemID = 0x3EB2;
-          break;
-        case 0x3E84:
-          ItemID = 0x3E85;
-          break;
-      }
+        0x3ED5 => 0x3EB1,
+        0x3E89 => 0x3E8A,
+        0x3ED4 => 0x3EB2,
+        0x3E84 => 0x3E85,
+        _ => ItemID
+      };
 
       Boat?.Refresh();
     }

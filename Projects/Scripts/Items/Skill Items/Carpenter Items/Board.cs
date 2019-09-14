@@ -45,14 +45,14 @@ namespace Server.Items
         if (m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.YewWood)
           return 1075052 + ((int)m_Resource - (int)CraftResource.OakWood);
 
-        switch (m_Resource)
+        return m_Resource switch
         {
-          case CraftResource.Bloodwood: return 1075055;
-          case CraftResource.Frostwood: return 1075056;
-          case CraftResource.Heartwood: return 1075062; //WHY Osi.  Why?
-        }
-
-        return LabelNumber;
+          CraftResource.Bloodwood => 1075055,
+          CraftResource.Frostwood => 1075056,
+          CraftResource.Heartwood => 1075062 //WHY Osi.  Why?
+          ,
+          _ => LabelNumber
+        };
       }
     }
 

@@ -165,7 +165,7 @@ namespace Server.Commands
             return;
           }
 
-          @from.SendMessage(targ.AddToBackpack(held)
+          from.SendMessage(targ.AddToBackpack(held)
             ? "The item they were holding has been placed into their backpack."
             : "The item they were holding has been placed at their feet.");
 

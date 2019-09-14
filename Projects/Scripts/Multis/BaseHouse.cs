@@ -1888,16 +1888,15 @@ namespace Server.Multis
       if (IsCombatRestricted(m))
         return false;
 
-      switch (level)
+      return level switch
       {
-        case SecureLevel.Owner: return IsOwner(m);
-        case SecureLevel.CoOwners: return IsCoOwner(m);
-        case SecureLevel.Friends: return IsFriend(m);
-        case SecureLevel.Anyone: return true;
-        case SecureLevel.Guild: return IsGuildMember(m);
-      }
-
-      return false;
+        SecureLevel.Owner => IsOwner(m),
+        SecureLevel.CoOwners => IsCoOwner(m),
+        SecureLevel.Friends => IsFriend(m),
+        SecureLevel.Anyone => true,
+        SecureLevel.Guild => IsGuildMember(m),
+        _ => false
+      };
     }
 
     public void ReleaseSecure(Mobile m, Item item)

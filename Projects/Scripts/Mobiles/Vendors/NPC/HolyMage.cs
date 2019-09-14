@@ -53,15 +53,12 @@ namespace Server.Mobiles
         AddItem(ApplyHue(new PlateGorget(), 0x47E));
       }
 
-      switch (Utility.Random(Female ? 2 : 1))
+      HairItemID = Utility.Random(Female ? 2 : 1) switch
       {
-        case 0:
-          HairItemID = 0x203C;
-          break;
-        case 1:
-          HairItemID = 0x203D;
-          break;
-      }
+        0 => 0x203C,
+        1 => 0x203D,
+        _ => HairItemID
+      };
 
       HairHue = 0x47E;
 

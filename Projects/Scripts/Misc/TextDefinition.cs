@@ -57,14 +57,13 @@ namespace Server
     {
       int type = reader.ReadEncodedInt();
 
-      switch (type)
+      return type switch
       {
-        case 0: return new TextDefinition();
-        case 1: return new TextDefinition(reader.ReadEncodedInt());
-        case 2: return new TextDefinition(reader.ReadString());
-      }
-
-      return null;
+        0 => new TextDefinition(),
+        1 => new TextDefinition(reader.ReadEncodedInt()),
+        2 => new TextDefinition(reader.ReadString()),
+        _ => null
+      };
     }
 
     public static void AddTo(ObjectPropertyList list, TextDefinition def)

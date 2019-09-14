@@ -118,15 +118,12 @@ namespace Server.Items
       if (skill >= 5)
         return 1061123 + skill - 5;
 
-      switch (skill)
+      return skill switch
       {
-        case 4:
-          return "a Novice";
-        case 3:
-          return "a Neophyte";
-        default:
-          return "a Newbie"; //On OSI, it shouldn't go below 50, but, this is for 'custom' support.
-      }
+        4 => "a Novice",
+        3 => "a Neophyte",
+        _ => "a Newbie"
+      };
     }
 
     public static RepairSkillType GetTypeFor(CraftSystem s)

@@ -198,12 +198,12 @@ namespace Server.Items
 
     public static int GetWestItemID(int south)
     {
-      switch (south)
+      return south switch
       {
-        case 0x1B1E: return 0x1B1D;
-        case 0x1B7F: return 0x1B7C;
-        default: return south + 1;
-      }
+        0x1B1E => 0x1B1D,
+        0x1B7F => 0x1B7C,
+        _ => (south + 1)
+      };
     }
 
     private class InternalGump : Gump

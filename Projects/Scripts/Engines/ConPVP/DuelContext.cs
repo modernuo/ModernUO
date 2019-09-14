@@ -190,33 +190,18 @@ namespace Server.Engines.ConPVP
       }
       else if (spell is MagerySpell magerySpell)
       {
-        switch (magerySpell.Circle)
+        title = magerySpell.Circle switch
         {
-          case SpellCircle.First:
-            title = "1st Circle";
-            break;
-          case SpellCircle.Second:
-            title = "2nd Circle";
-            break;
-          case SpellCircle.Third:
-            title = "3rd Circle";
-            break;
-          case SpellCircle.Fourth:
-            title = "4th Circle";
-            break;
-          case SpellCircle.Fifth:
-            title = "5th Circle";
-            break;
-          case SpellCircle.Sixth:
-            title = "6th Circle";
-            break;
-          case SpellCircle.Seventh:
-            title = "7th Circle";
-            break;
-          case SpellCircle.Eighth:
-            title = "8th Circle";
-            break;
-        }
+          SpellCircle.First => "1st Circle",
+          SpellCircle.Second => "2nd Circle",
+          SpellCircle.Third => "3rd Circle",
+          SpellCircle.Fourth => "4th Circle",
+          SpellCircle.Fifth => "5th Circle",
+          SpellCircle.Sixth => "6th Circle",
+          SpellCircle.Seventh => "7th Circle",
+          SpellCircle.Eighth => "8th Circle",
+          _ => title
+        };
 
         option = magerySpell.Name;
       }

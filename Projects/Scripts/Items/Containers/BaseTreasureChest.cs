@@ -95,32 +95,16 @@ namespace Server.Items
 
     protected virtual void SetLockLevel()
     {
-      switch (Level)
+      RequiredSkill = Level switch
       {
-        case TreasureLevel.Level1:
-          RequiredSkill = LockLevel = 5;
-          break;
-
-        case TreasureLevel.Level2:
-          RequiredSkill = LockLevel = 20;
-          break;
-
-        case TreasureLevel.Level3:
-          RequiredSkill = LockLevel = 50;
-          break;
-
-        case TreasureLevel.Level4:
-          RequiredSkill = LockLevel = 70;
-          break;
-
-        case TreasureLevel.Level5:
-          RequiredSkill = LockLevel = 90;
-          break;
-
-        case TreasureLevel.Level6:
-          RequiredSkill = LockLevel = 100;
-          break;
-      }
+        TreasureLevel.Level1 => (LockLevel = 5),
+        TreasureLevel.Level2 => (LockLevel = 20),
+        TreasureLevel.Level3 => (LockLevel = 50),
+        TreasureLevel.Level4 => (LockLevel = 70),
+        TreasureLevel.Level5 => (LockLevel = 90),
+        TreasureLevel.Level6 => (LockLevel = 100),
+        _ => RequiredSkill
+      };
     }
 
     private void StartResetTimer()

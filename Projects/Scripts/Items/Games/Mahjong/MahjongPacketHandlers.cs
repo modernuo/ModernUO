@@ -58,24 +58,24 @@ namespace Server.Engines.Mahjong
 
     private static MahjongPieceDirection GetDirection(int value)
     {
-      switch (value)
+      return value switch
       {
-        case 0: return MahjongPieceDirection.Up;
-        case 1: return MahjongPieceDirection.Left;
-        case 2: return MahjongPieceDirection.Down;
-        default: return MahjongPieceDirection.Right;
-      }
+        0 => MahjongPieceDirection.Up,
+        1 => MahjongPieceDirection.Left,
+        2 => MahjongPieceDirection.Down,
+        _ => MahjongPieceDirection.Right
+      };
     }
 
     private static MahjongWind GetWind(int value)
     {
-      switch (value)
+      return value switch
       {
-        case 0: return MahjongWind.North;
-        case 1: return MahjongWind.East;
-        case 2: return MahjongWind.South;
-        default: return MahjongWind.West;
-      }
+        0 => MahjongWind.North,
+        1 => MahjongWind.East,
+        2 => MahjongWind.South,
+        _ => MahjongWind.West
+      };
     }
 
     public static void ExitGame(MahjongGame game, NetState state, PacketReader pvSrc)

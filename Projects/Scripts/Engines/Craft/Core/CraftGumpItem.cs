@@ -111,15 +111,14 @@ namespace Server.Engines.Craft
 
     private TextDefinition RequiredExpansionMessage(Expansion expansion)
     {
-      switch (expansion)
+      return expansion switch
       {
-        case Expansion.SE:
-          return 1063363; // * Requires the "Samurai Empire" expansion
-        case Expansion.ML:
-          return 1072651; // * Requires the "Mondain's Legacy" expansion
-        default:
-          return $"* Requires the \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion";
-      }
+        Expansion.SE => (TextDefinition)1063363 // * Requires the "Samurai Empire" expansion
+        ,
+        Expansion.ML => 1072651 // * Requires the "Mondain's Legacy" expansion
+        ,
+        _ => $"* Requires the \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion"
+      };
     }
 
     public void DrawItem()

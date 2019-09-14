@@ -175,17 +175,13 @@ namespace Server.Items
       if (keg?.Deleted != false || keg.Held != 100)
         return 0;
 
-      switch (keg.Type)
+      return keg.Type switch
       {
-        case PotionEffect.ExplosionLesser:
-          return 5;
-        case PotionEffect.Explosion:
-          return 10;
-        case PotionEffect.ExplosionGreater:
-          return 15;
-        default:
-          return 0;
-      }
+        PotionEffect.ExplosionLesser => 5,
+        PotionEffect.Explosion => 10,
+        PotionEffect.ExplosionGreater => 15,
+        _ => 0
+      };
     }
 
     public void Fill(Mobile from, PotionKeg keg)

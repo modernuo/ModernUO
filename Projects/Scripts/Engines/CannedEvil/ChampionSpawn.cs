@@ -291,24 +291,15 @@ namespace Server.Engines.CannedEvil
     public void EndRestart()
     {
       if (RandomizeType)
-        switch (Utility.Random(5))
+        Type = Utility.Random(5) switch
         {
-          case 0:
-            Type = ChampionSpawnType.VerminHorde;
-            break;
-          case 1:
-            Type = ChampionSpawnType.UnholyTerror;
-            break;
-          case 2:
-            Type = ChampionSpawnType.ColdBlood;
-            break;
-          case 3:
-            Type = ChampionSpawnType.Abyss;
-            break;
-          case 4:
-            Type = ChampionSpawnType.Arachnid;
-            break;
-        }
+          0 => ChampionSpawnType.VerminHorde,
+          1 => ChampionSpawnType.UnholyTerror,
+          2 => ChampionSpawnType.ColdBlood,
+          3 => ChampionSpawnType.Abyss,
+          4 => ChampionSpawnType.Arachnid,
+          _ => Type
+        };
 
       HasBeenAdvanced = false;
 
@@ -361,20 +352,13 @@ namespace Server.Engines.CannedEvil
             !JusticeVirtue.CheckMapRegion(killer, prot))
           continue;
 
-        int chance = 0;
-
-        switch (VirtueHelper.GetLevel(prot, VirtueName.Justice))
+        var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
         {
-          case VirtueLevel.Seeker:
-            chance = 60;
-            break;
-          case VirtueLevel.Follower:
-            chance = 80;
-            break;
-          case VirtueLevel.Knight:
-            chance = 100;
-            break;
-        }
+          VirtueLevel.Seeker => 60,
+          VirtueLevel.Follower => 80,
+          VirtueLevel.Knight => 100,
+          _ => 0
+        };
 
         if (chance > Utility.Random(100))
           try
