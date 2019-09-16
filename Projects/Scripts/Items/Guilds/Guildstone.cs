@@ -251,10 +251,8 @@ namespace Server.Items
         from.SendGump(new GuildGump(from, Guild));
       }
       else if (from.AccessLevel < AccessLevel.GameMaster && !Guild.IsMember(from))
-      {
-        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, 501158, "",
-          "")); // You are not a member ...
-      }
+        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3,
+          501158); // You are not a member ...
       else
       {
         GuildGump.EnsureClosed(from);
@@ -262,13 +260,9 @@ namespace Server.Items
       }
     }
 
-    #region IAddon Members
-
     public Item Deed => new GuildstoneDeed(Guild, m_GuildName, m_GuildAbbrev);
 
     public bool CouldFit(IPoint3D p, Map map) => map.CanFit(p.X, p.Y, p.Z, ItemData.Height);
-
-    #endregion
   }
 
   [Flippable(0x14F0, 0x14EF)]
@@ -376,9 +370,7 @@ namespace Server.Items
         list.Add(1060802, $"{Utility.FixHtml(name)} [{Utility.FixHtml(abbr)}]");
       }
       else if (m_GuildName != null && m_GuildAbbrev != null)
-      {
         list.Add(1060802, $"{Utility.FixHtml(m_GuildName)} [{Utility.FixHtml(m_GuildAbbrev)}]");
-      }
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -393,14 +385,10 @@ namespace Server.Items
           from.BeginTarget(-1, true, TargetFlags.None, Placement_OnTarget);
         }
         else
-        {
           from.SendLocalizedMessage(502092); // You must be in your house to do this.
-        }
       }
       else
-      {
         from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-      }
     }
 
     public void Placement_OnTarget(Mobile from, object targeted)
@@ -424,14 +412,10 @@ namespace Server.Items
           Delete();
         }
         else
-        {
           from.SendLocalizedMessage(1042036); // That location is not in your house.
-        }
       }
       else
-      {
         from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-      }
     }
   }
 }

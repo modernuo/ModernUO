@@ -21,10 +21,8 @@ namespace Server.Items
 
     public override void OnDoubleClick(Mobile from)
     {
-      if (!from.InRange(GetWorldLocation(), 2))
-        return;
-
-      Roll(from);
+      if (from.InRange(GetWorldLocation(), 2))
+        Roll(from);
     }
 
     public void Roll(Mobile from)
