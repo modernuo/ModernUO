@@ -6,7 +6,7 @@ namespace Server.Engines.Mahjong
 
   public sealed class MahjongPacketHandlers
   {
-    private static OnMahjongPacketReceive[] m_SubCommandDelegates = new OnMahjongPacketReceive[0x100];
+    private static readonly OnMahjongPacketReceive[] m_SubCommandDelegates = new OnMahjongPacketReceive[0x100];
 
     public static void RegisterSubCommand(int subCmd, OnMahjongPacketReceive onReceive)
     {
@@ -80,12 +80,7 @@ namespace Server.Engines.Mahjong
 
     public static void ExitGame(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null)
-        return;
-
-      Mobile from = sender.Mobile;
-
-      game.Players.LeaveGame(from);
+      game?.Players.LeaveGame(state.Mobile);
     }
 
     public static void GivePoints(MahjongGame game, NetState state, PacketReader pvSrc)
@@ -101,41 +96,31 @@ namespace Server.Engines.Mahjong
 
     public static void RollDice(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGamePlayer(state.Mobile))
-        return;
-
-      game.Dices.RollDices(state.Mobile);
+      if (game?.Players.IsInGamePlayer(state.Mobile) == true)
+        game.Dices.RollDices(state.Mobile);
     }
 
     public static void BuildWalls(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGameDealer(state.Mobile))
-        return;
-
-      game.ResetWalls(state.Mobile);
+      if (game?.Players.IsInGamePlayer(state.Mobile) == true)
+        game.ResetWalls(state.Mobile);
     }
 
     public static void ResetScores(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGameDealer(state.Mobile))
-        return;
-
-      game.Players.ResetScores(MahjongGame.BaseScore);
+      if (game?.Players.IsInGamePlayer(state.Mobile) == true)
+        game.Players.ResetScores(MahjongGame.BaseScore);
     }
 
     public static void AssignDealer(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGameDealer(state.Mobile))
-        return;
-
-      int position = pvSrc.ReadByte();
-
-      game.Players.AssignDealer(position);
+      if (game?.Players.IsInGameDealer(state.Mobile) == true)
+        game.Players.AssignDealer(pvSrc.ReadByte());
     }
 
     public static void OpenSeat(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGameDealer(state.Mobile))
+      if (game?.Players.IsInGameDealer(state.Mobile) != true)
         return;
 
       int position = pvSrc.ReadByte();
@@ -148,7 +133,7 @@ namespace Server.Engines.Mahjong
 
     public static void ChangeOption(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGameDealer(state.Mobile))
+      if (game?.Players.IsInGameDealer(state.Mobile) != true)
         return;
 
       pvSrc.ReadInt16();
@@ -162,7 +147,7 @@ namespace Server.Engines.Mahjong
 
     public static void MoveWallBreakIndicator(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGameDealer(state.Mobile))
+      if (game?.Players.IsInGameDealer(state.Mobile) != true)
         return;
 
       int y = pvSrc.ReadInt16();
@@ -173,7 +158,7 @@ namespace Server.Engines.Mahjong
 
     public static void TogglePublicHand(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGamePlayer(state.Mobile))
+      if (game?.Players.IsInGameDealer(state.Mobile) != true)
         return;
 
       pvSrc.ReadInt16();
@@ -186,7 +171,7 @@ namespace Server.Engines.Mahjong
 
     public static void MoveTile(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGamePlayer(state.Mobile))
+      if (game?.Players.IsInGameDealer(state.Mobile) != true)
         return;
 
       int number = pvSrc.ReadByte();
@@ -217,7 +202,7 @@ namespace Server.Engines.Mahjong
 
     public static void MoveDealerIndicator(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGameDealer(state.Mobile))
+      if (game?.Players.IsInGameDealer(state.Mobile) != true)
         return;
 
       MahjongPieceDirection direction = GetDirection(pvSrc.ReadByte());

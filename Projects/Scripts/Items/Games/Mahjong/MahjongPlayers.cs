@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Engines.Mahjong
 {
@@ -82,28 +83,13 @@ namespace Server.Engines.Mahjong
       return m_InGame[index];
     }
 
-    public bool IsInGamePlayer(Mobile mobile)
-    {
-      int index = GetPlayerIndex(mobile);
-
-      return IsInGamePlayer(index);
-    }
+    public bool IsInGamePlayer(Mobile mobile) => IsInGamePlayer(GetPlayerIndex(mobile));
 
     public bool IsSpectator(Mobile mobile) => m_Spectators.Contains(mobile);
 
-    public int GetScore(int index)
-    {
-      if (index < 0 || index >= m_Scores.Length)
-        return 0;
-      return m_Scores[index];
-    }
+    public int GetScore(int index) => index < 0 || index >= m_Scores.Length ? 0 : m_Scores[index];
 
-    public bool IsPublic(int index)
-    {
-      if (index < 0 || index >= m_PublicHand.Length)
-        return false;
-      return m_PublicHand[index];
-    }
+    public bool IsPublic(int index) => index >= 0 && index < m_PublicHand.Length && m_PublicHand[index];
 
     public void SetPublic(int index, bool value)
     {
@@ -122,10 +108,7 @@ namespace Server.Engines.Mahjong
     {
       List<Mobile> list = new List<Mobile>();
 
-      if (players)
-        for (int i = 0; i < m_Players.Length; i++)
-          if (IsInGamePlayer(i))
-            list.Add(m_Players[i]);
+      if (players) list.AddRange(m_Players.Where((t, i) => IsInGamePlayer(i)));
 
       if (spectators)
         list.AddRange(m_Spectators);
@@ -184,9 +167,7 @@ namespace Server.Engines.Mahjong
         Mobile mobile = m_Spectators[i];
 
         if (mobile.NetState == null || mobile.Deleted)
-        {
           m_Spectators.RemoveAt(i);
-        }
         else if (!Game.IsAccessibleTo(mobile) || mobile.Map != Game.Map ||
                  !mobile.InRange(Game.GetWorldLocation(), 5))
         {
@@ -195,9 +176,7 @@ namespace Server.Engines.Mahjong
           mobile.Send(new MahjongRelieve(Game));
         }
         else
-        {
           i++;
-        }
       }
 
       if (removed && !UpdateSpectators())
@@ -304,9 +283,7 @@ namespace Server.Engines.Mahjong
       int index = GetPlayerIndex(mobile);
 
       if (index >= 0)
-      {
         AddPlayer(mobile, index, true);
-      }
       else
       {
         int nextSeat = GetNextSeat();
@@ -331,9 +308,7 @@ namespace Server.Engines.Mahjong
         SendPlayersPacket(true, true);
       }
       else
-      {
         m_Spectators.Remove(player);
-      }
     }
 
     public void ResetScores(int value)
@@ -357,9 +332,7 @@ namespace Server.Engines.Mahjong
       m_Scores[toPosition] += amount;
 
       if (Game.ShowScores)
-      {
         SendPlayersPacket(true, true);
-      }
       else
       {
         from.Send(new MahjongPlayersInfo(Game, from));
