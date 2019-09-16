@@ -1606,7 +1606,7 @@ namespace Server.Multis
       toMove.Add(SPlank);
 
       int xOffset = 0, yOffset = 0;
-      Movement.Movement.Offset(facing, ref xOffset, ref yOffset);
+      Movement.Offset(facing, ref xOffset, ref yOffset);
 
       if (TillerMan != null)
         TillerMan.Location = new Point3D(X + xOffset * TillerManDistance + (facing == Direction.North ? 1 : 0),

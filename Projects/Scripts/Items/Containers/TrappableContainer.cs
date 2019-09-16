@@ -46,7 +46,7 @@ namespace Server.Items
       if (Deleted || !to.CanSee(this))
         return;
 
-      to.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number, "", ""));
+      Packets.SendMessageLocalized(to.NetState, Serial, ItemID, MessageType.Regular, hue, 3, number);
     }
 
     private void SendMessageTo(Mobile to, string text, int hue)
@@ -54,7 +54,7 @@ namespace Server.Items
       if (Deleted || !to.CanSee(this))
         return;
 
-      to.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, hue, 3, "ENU", "", text));
+      Packets.SendUnicodeMessage(to.NetState,Serial, ItemID, MessageType.Regular, hue, 3, "ENU", "", text);
     }
 
     public virtual bool ExecuteTrap(Mobile from)
@@ -129,7 +129,7 @@ namespace Server.Items
 
               AOS.Damage(from, damage, 100, 0, 0, 0, 0);
 
-              // A dart imbeds itself in your flesh!
+              // A dart embeds itself in your flesh!
               from.LocalOverheadMessage(MessageType.Regular, 0x62, 502998);
             }
 

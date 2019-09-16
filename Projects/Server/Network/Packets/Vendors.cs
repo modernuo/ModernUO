@@ -128,7 +128,6 @@ namespace Server.Network
 
       w.Position = 1;
       w.Write((ushort)w.WrittenCount);
-
       ns.Send(w.Span);
     }
 
@@ -167,8 +166,7 @@ namespace Server.Network
 
       w.Position = 1;
       w.Write((ushort)w.WrittenCount);
-
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendEndVendorBuyOrSell(NetState ns, Serial vendor)

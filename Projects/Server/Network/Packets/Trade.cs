@@ -13,12 +13,14 @@ namespace Server.Network
 
   public static partial class Packets
   {
-    public static void SendDisplaySecureTrade(NetState ns, Serial them, Serial firstCont, Serial secondCont, string name)
+    public static void SendDisplaySecureTrade(NetState ns, Serial them, Serial firstCont, Serial secondCont, string name = "")
     {
       if (ns == null)
         return;
 
-      int length = 18 + name?.Length ?? 0;
+      name ??= "";
+
+      int length = 17 + name.Length;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x6F); // Packet ID
       w.Write((short)length); // Length
@@ -27,10 +29,10 @@ namespace Server.Network
       w.Write(them);
       w.Write(firstCont);
       w.Write(secondCont);
-      w.Write((byte)1);
-      w.WriteAsciiFixed(name ?? "", 30);
+      w.Write(name.Length > 0);
+      w.WriteAscii(name);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendCloseSecureTrade(NetState ns, Serial cont)
@@ -45,7 +47,7 @@ namespace Server.Network
       w.Write((byte)1); // Close
       w.Write(cont);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendUpdateSecureTrade(NetState ns, Serial cont, bool fromAccepted, bool toAccepted)
@@ -53,16 +55,16 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      SpanWriter w = new SpanWriter(stackalloc byte[17]);
+      SpanWriter w = new SpanWriter(stackalloc byte[10]);
       w.Write((byte)0x6F); // Packet ID
-      w.Write((ushort)17); // Length
+      w.Write((ushort)10); // Length
 
       w.Write((byte)TradeFlag.Update);
       w.Write(cont);
       w.Write(fromAccepted);
       w.Write(toAccepted);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendUpdateSecureTrade(NetState ns, Serial cont, TradeFlag flag, int first, int second)
@@ -70,16 +72,16 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      SpanWriter w = new SpanWriter(stackalloc byte[17]);
+      SpanWriter w = new SpanWriter(stackalloc byte[16]);
       w.Write((byte)0x6F); // Packet ID
-      w.Write((ushort)17); // Length
+      w.Write((ushort)16); // Length
 
       w.Write((byte)flag);
       w.Write(cont);
       w.Write(first);
       w.Write(second);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendSecureTradeEquip(NetState ns, Item item, Serial m)
@@ -110,7 +112,7 @@ namespace Server.Network
       w.Write(m);
       w.Write((short)item.Hue);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendSecureTradeEquipNew(NetState ns, Item item, Serial m)
@@ -131,7 +133,7 @@ namespace Server.Network
       w.Position++; // Write((byte)0) Grid Location?
       w.Write((short)item.Hue);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
   }
 }

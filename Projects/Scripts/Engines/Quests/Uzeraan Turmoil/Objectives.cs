@@ -140,23 +140,15 @@ namespace Server.Engines.Quests.Haven
       CheckCompletionStatus();
     }
 
-    public override bool IgnoreYoungProtection(Mobile from)
-    {
-      // This restriction continues until the quest is ended
-      if (from is HordeMinion && from.Map == Map.Trammel && from.X >= 3314 && from.X <= 3814 && from.Y >= 2345 &&
-          from.Y <= 3095) // Haven island
-        return true;
-
-      return false;
-    }
+    public override bool IgnoreYoungProtection(Mobile from) =>
+      from is HordeMinion && from.Map == Map.Trammel && TreasureMap.IsInHavenIsland(from);
 
     public override void OnKill(BaseCreature creature, Container corpse)
     {
-      if (creature is HordeMinion && corpse.Map == Map.Trammel && corpse.X >= 3314 && corpse.X <= 3814 &&
-          corpse.Y >= 2345 && corpse.Y <= 3095) // Haven island
+      if (creature is HordeMinion && corpse.Map == Map.Trammel && TreasureMap.IsInHavenIsland(corpse))
       {
         if (CurProgress == 0)
-          System.From.Send(new DisplayHelpTopic(29, false)); // HEALING
+          ContentPackets.SendDisplayHelpTopic(System.From.NetState, 29, false); // HEALING
 
         CurProgress++;
       }
@@ -340,49 +332,26 @@ namespace Server.Engines.Quests.Haven
   {
     public Container CorpseWithBone{ get; set; }
 
-    public override object Message
-    {
-      get
-      {
-        if (System.From.Profession == 5) return 1060755;
-
-        /* Use Uzeraan's teleporter to get to the Haunted graveyard.<BR><BR>
-           *
-           * Slay the undead until you find a <I>Daemon Bone</I>.
-           */
-        return 1049362;
-      }
-    }
+    public override object Message => System.From.Profession == 5 ? 1060755 : 1049362;
 
     public override void OnComplete()
     {
       System.AddObjective(new ReturnDaemonBoneObjective());
     }
 
-    public override bool IgnoreYoungProtection(Mobile from)
-    {
-      // This restriction continues until the end of the quest
-      if ((from is Zombie || from is Skeleton) && from.Map == Map.Trammel && from.X >= 3391 && from.X <= 3424 &&
-          from.Y >= 2639 && from.Y <= 2664) // Haven graveyard
-        return true;
+    private static bool IsInHavenGraveyard(IPoint2D p) => p.X >= 3391 && p.X <= 3424 &&
+                                                          p.Y >= 2639 && p.Y <= 2664;
 
-      return false;
-    }
+    public override bool IgnoreYoungProtection(Mobile from) =>
+      (from is Zombie || from is Skeleton) && from.Map == Map.Trammel && IsInHavenGraveyard(from);
 
-    public override bool GetKillEvent(BaseCreature creature, Container corpse)
-    {
-      if (base.GetKillEvent(creature, corpse))
-        return true;
-
-      return UzeraanTurmoilQuest.HasLostDaemonBone(System.From);
-    }
+    public override bool GetKillEvent(BaseCreature creature, Container corpse) =>
+      base.GetKillEvent(creature, corpse) || UzeraanTurmoilQuest.HasLostDaemonBone(System.From);
 
     public override void OnKill(BaseCreature creature, Container corpse)
     {
-      if ((creature is Zombie || creature is Skeleton) && corpse.Map == Map.Trammel && corpse.X >= 3391 &&
-          corpse.X <= 3424 && corpse.Y >= 2639 && corpse.Y <= 2664) // Haven graveyard
-        if (Utility.RandomDouble() < 0.25)
-          CorpseWithBone = corpse;
+      if ((creature is Zombie || creature is Skeleton) && corpse.Map == Map.Trammel && IsInHavenGraveyard(corpse) && Utility.RandomDouble() < 0.25)
+        CorpseWithBone = corpse;
     }
 
     public override void ChildDeserialize(GenericReader reader)

@@ -130,7 +130,7 @@ namespace Server.Network
       w.Write((short)item.Hue);
       w.Write((byte)item.GetPacketFlags());
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendWorldItemHS(NetState ns, Item item)
@@ -183,7 +183,7 @@ namespace Server.Network
       w.Write((short)item.Hue);
       w.Write((byte)item.GetPacketFlags());
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendLiftRej(NetState ns, LRReason reason)
@@ -221,7 +221,7 @@ namespace Server.Network
           w.Position += 2;
         }
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendSpellbookContent6017(NetState ns, Serial s, int count, int offset, ulong content)
@@ -250,7 +250,7 @@ namespace Server.Network
           w.Position += 2;
         }
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendNewSpellbookContent(NetState ns, Serial s, int graphic, int offset, ulong content)
@@ -273,7 +273,7 @@ namespace Server.Network
       for (int i = 0; i < 8; ++i)
         w.Write((byte)(content >> (i * 8)));
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendDragEffect(NetState ns, IEntity src, IEntity trg, int itemID, int hue, int amount)
@@ -297,7 +297,7 @@ namespace Server.Network
       w.Write((short)trg.Y);
       w.Write((sbyte)trg.Z);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
   }
 }

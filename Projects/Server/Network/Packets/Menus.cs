@@ -169,7 +169,7 @@ namespace Server.Network
         w.Write((short)(e.Flags | (e.Enabled && menu.From.InRange(p, range) ? CMEFlags.None : CMEFlags.Disabled)));
       }
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendDisplayContextMenuOld(NetState ns, ContextMenu menu)

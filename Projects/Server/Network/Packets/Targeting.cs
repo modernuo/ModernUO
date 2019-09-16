@@ -16,14 +16,14 @@ namespace Server.Network
       w.Write(t.AllowGround);
       w.Write(t.TargetID);
       w.Write((byte)t.Flags);
-      w.Position += 14;
+      w.Position += 11;
       w.Write((short)t.MultiID);
       w.Write((short)t.Offset.X);
       w.Write((short)t.Offset.Y);
       w.Write((short)t.Offset.Z);
       // 4 bytes unknown?
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendMultiTargetReq(NetState ns, MultiTarget t)
@@ -43,7 +43,7 @@ namespace Server.Network
       w.Write((short)t.Offset.Y);
       w.Write((short)t.Offset.Z);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     private static byte[] _targetReqPacket;
@@ -75,7 +75,7 @@ namespace Server.Network
       w.Write(t.TargetID);
       w.Write((byte)t.Flags);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
   }
 }

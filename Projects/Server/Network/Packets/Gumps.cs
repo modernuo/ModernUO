@@ -31,7 +31,7 @@ namespace Server.Network
       w.Write(typeId);
       w.Write(buttonId);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendDisplayGump(NetState ns, Gump g, string layout, string[] text)
@@ -88,7 +88,7 @@ namespace Server.Network
       w.Write((short)(caption.Length + 1));
       w.WriteAsciiFixed(caption, caption.Length);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
   }
 }

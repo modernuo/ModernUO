@@ -918,7 +918,7 @@ namespace Server.Mobiles
       return (double)chance / 1000;
     }
 
-    public override void Damage(int amount, Mobile from)
+    public override void Damage(int amount, Mobile from = null, bool informMount = true)
     {
       int oldHits = Hits;
 
@@ -933,7 +933,7 @@ namespace Server.Mobiles
       if (oath == this)
       {
         amount = (int)(amount * 1.1);
-        from.Damage(amount, from);
+        from?.Damage(amount, from);
       }
 
       base.Damage(amount, from);

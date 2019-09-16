@@ -10,6 +10,8 @@ namespace Server.Network
       if (ns == null)
         return;
 
+      text ??= "";
+
       int length = 9 + text.Length * 2;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte) 0xB7); // Extended Packet ID
@@ -18,7 +20,7 @@ namespace Server.Network
       w.Write(e);
       w.WriteBigUniNull(text);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendChangeUpdateRange(NetState ns, byte range = 18)
@@ -40,7 +42,7 @@ namespace Server.Network
 
       w.Write(combatant);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendDisplayHuePicker(NetState ns, Serial s, int itemId)
@@ -55,7 +57,7 @@ namespace Server.Network
       w.Position += 2; // w.Write((short)0);
       w.Write((short)itemId);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendUnicodePrompt(NetState ns, Serial message)
@@ -69,11 +71,9 @@ namespace Server.Network
 
       w.Write(message); // Should be Player serial?
       w.Write(message);
-      // w.Position += 4; w.Write(0);
-      // w.Position += 4; w.Write(0);
-      // w.Position += 2; w.Write((short)0);
+      w.Position += 10;
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendDeathStatus_Dead(NetState ns)
@@ -145,7 +145,7 @@ namespace Server.Network
       w.Write(ability);
       w.Write(active);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendGlobalLightLevel(NetState ns, sbyte level)
@@ -253,7 +253,7 @@ namespace Server.Network
       w.Write((short)map.Width);
       w.Write((short)map.Height);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendSkillsUpdate(NetState ns, Skills skills)
@@ -288,7 +288,7 @@ namespace Server.Network
         w.Write((ushort)s.CapFixedPoint);
       }
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendSkillChange(NetState ns, Skill skill)
@@ -316,7 +316,7 @@ namespace Server.Network
       w.Write((byte)skill.Lock);
       w.Write((ushort)skill.CapFixedPoint);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendLaunchBrowser(NetState ns, string url)
@@ -324,14 +324,16 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      int length = 4 + url?.Length ?? 0;
+      url ??= "";
+
+      int length = 4 + url.Length;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xA5); // Packet ID
       w.Write((short)length); // Length
 
-      w.WriteAsciiNull(url ?? "");
+      w.WriteAsciiNull(url);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     // TODO: Optimize for IEnumerable<NetState>
@@ -345,12 +347,12 @@ namespace Server.Network
 
       w.Write((byte)1); // flags
       w.Write((short)soundId);
-      w.Position++; // volume?
+      w.Position += 2; // volume?
       w.Write((short)target.X);
       w.Write((short)target.Y);
       w.Write((short)target.Z);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendPlayRepeatingSound(NetState ns, int soundId, IPoint3D target)
@@ -363,12 +365,12 @@ namespace Server.Network
 
       w.Position++; // flags
       w.Write((short)soundId);
-      w.Position++; // volume?
+      w.Position += 2; // volume?
       w.Write((short)target.X);
       w.Write((short)target.Y);
       w.Write((short)target.Z);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendPlayMusic(NetState ns, MusicName music)
@@ -386,21 +388,20 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      int length = 10 + text?.Length ?? 0;
+      text ??= "";
+
+      int length = 10 + text.Length;
 
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xA6); // Packet ID
       w.Write((short)length); // Length
-
-      if (text == null)
-        text = "";
 
       w.Write((byte)type);
       w.Write(tip);
       w.Write((ushort)text.Length);
       w.WriteAsciiFixed(text, text.Length);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendCurrentTime(NetState ns)
@@ -432,7 +433,7 @@ namespace Server.Network
       w.Write((short)p.Y);
       w.Write((short)p.Z);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendPingAck(NetState ns, byte ping)
@@ -458,7 +459,7 @@ namespace Server.Network
       w.Write((byte)m.Direction);
       w.Write((sbyte)m.Z);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendMovementAck(NetState ns, Mobile m)
@@ -484,7 +485,7 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      SpanWriter w = new SpanWriter(stackalloc byte[8]);
+      SpanWriter w = new SpanWriter(stackalloc byte[28]);
       w.Write((byte)0x1B); // Packet ID
 
       w.Write(m.Serial);
@@ -506,7 +507,7 @@ namespace Server.Network
       w.Write((short)(map?.Width ?? 6144));
       w.Write((short)(map?.Height ?? 4096));
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendLoginComplete(NetState ns)

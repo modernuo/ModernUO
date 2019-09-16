@@ -217,7 +217,7 @@ namespace Server.Mobiles
     {
       if (to.Alive && to.Player && !UnderCacophonicAttack(to))
       {
-        to.Send(SpeedControl.WalkSpeed);
+        Packets.SendSpeedControlWalk(to.NetState);
         to.SendLocalizedMessage(1072069); // A cacophonic sound lambastes you, suppressing your ability to move.
         to.PlaySound(0x584);
 
@@ -229,7 +229,7 @@ namespace Server.Mobiles
     public virtual void CacophonicEnd(Mobile from)
     {
       m_Table.Remove(from);
-      from.Send(SpeedControl.Disable);
+      Packets.SendSpeedControlDisabled(from.NetState);
     }
 
     public static bool UnderCacophonicAttack(Mobile from) => m_Table.Contains(from);

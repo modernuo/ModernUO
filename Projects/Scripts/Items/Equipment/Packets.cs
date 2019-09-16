@@ -9,7 +9,7 @@ namespace Server.Items
     public static void SendDisplayEquipmentInfo(NetState ns, Item item, int number, Mobile crafter, bool unidentified, ICollection<EquipInfoAttribute> attrs)
     {
       int packetLength = 17 +
-                   (crafter != null ? 6 + crafter.Name?.Length ?? 0 : 0) +
+                   (crafter != null ? 6 + crafter.RawName?.Length ?? 0 : 0) +
                    (unidentified ? 4 : 0) + attrs.Count * 6;
 
       SpanWriter writer = new SpanWriter(stackalloc byte[packetLength]);
@@ -23,7 +23,9 @@ namespace Server.Items
 
       if (crafter != null)
       {
-        string name = crafter.Name;
+        // TODO: We should not be referencing the crafter.
+        // They could have been deleted and the crafted by should still show up.
+        string name = crafter.RawName;
 
         writer.Write(-3);
 

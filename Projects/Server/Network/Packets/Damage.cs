@@ -34,7 +34,7 @@ namespace Server.Network
 
       w.Write((byte)amount);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendDamageNew(NetState ns, Serial m, int amount)
@@ -42,9 +42,9 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      SpanWriter w = new SpanWriter(stackalloc byte[7]);
+      SpanWriter w = new SpanWriter(stackalloc byte[9]);
       w.Write((byte)0xBF); // Extended Packet ID
-      w.Write((ushort)7); // Length
+      w.Write((ushort)9); // Length
 
       w.Write(m);
 
@@ -55,7 +55,7 @@ namespace Server.Network
 
       w.Write((ushort)amount);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
   }
 }

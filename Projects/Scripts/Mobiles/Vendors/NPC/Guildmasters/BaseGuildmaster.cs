@@ -85,14 +85,10 @@ namespace Server.Mobiles
         else if (e.HasKeyword(0x0005)) // *resign* | *quit*
         {
           if (pm.NpcGuild != NpcGuild)
-          {
             SayTo(pm, 501052); // Thou dost not belong to my guild!
-          }
           else if (pm.NpcGuildJoinTime + QuitAge > DateTime.UtcNow ||
                    pm.NpcGuildGameTime + QuitGameAge > pm.GameTime)
-          {
             SayTo(pm, 501053); // You just joined my guild! You must wait a week to resign.
-          }
           else
           {
             SayTo(pm, 501054); // I accept thy resignation.
@@ -111,17 +107,11 @@ namespace Server.Mobiles
       if (from is PlayerMobile pm && dropped.Amount == JoinCost)
       {
         if (pm.NpcGuild == NpcGuild)
-        {
           SayTo(pm, 501047); // Thou art already a member of our guild.
-        }
         else if (pm.NpcGuild != NpcGuild.None)
-        {
           SayTo(pm, 501046); // Thou must resign from thy other guild first.
-        }
         else if (pm.GameTime < JoinGameAge || pm.CreationTime + JoinAge > DateTime.UtcNow)
-        {
           SayTo(pm, 501048); // You are too young to join my guild...
-        }
         else if (CheckCustomReqs(pm))
         {
           SayWelcomeTo(pm);

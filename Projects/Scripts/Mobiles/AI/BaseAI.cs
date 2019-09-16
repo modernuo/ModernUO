@@ -12,7 +12,6 @@ using Server.Regions;
 using Server.Spells;
 using Server.Spells.Spellweaving;
 using Server.Targets;
-using MoveImpl = Server.Movement.MovementImpl;
 
 namespace Server.Mobiles
 {
@@ -1781,13 +1780,13 @@ namespace Server.Mobiles
 
       m_Mobile.Pushing = false;
 
-      MoveImpl.IgnoreMovableImpassables = m_Mobile.CanMoveOverObstacles && !m_Mobile.CanDestroyObstacles;
+      MovementImpl.IgnoreMovableImpassables = m_Mobile.CanMoveOverObstacles && !m_Mobile.CanDestroyObstacles;
 
       if ((m_Mobile.Direction & Direction.Mask) != (d & Direction.Mask))
       {
         bool v = m_Mobile.Move(d);
 
-        MoveImpl.IgnoreMovableImpassables = false;
+        MovementImpl.IgnoreMovableImpassables = false;
         return v ? MoveResult.Success : MoveResult.Blocked;
       }
 
@@ -1809,7 +1808,7 @@ namespace Server.Mobiles
           if (map != null)
           {
             int x = m_Mobile.X, y = m_Mobile.Y;
-            Movement.Movement.Offset(d, ref x, ref y);
+            Movement.Offset(d, ref x, ref y);
 
             int destroyables = 0;
 
@@ -1898,20 +1897,20 @@ namespace Server.Mobiles
 
             if (m_Mobile.Move(m_Mobile.Direction))
             {
-              MoveImpl.IgnoreMovableImpassables = false;
+              MovementImpl.IgnoreMovableImpassables = false;
               return MoveResult.SuccessAutoTurn;
             }
           }
 
-          MoveImpl.IgnoreMovableImpassables = false;
+          MovementImpl.IgnoreMovableImpassables = false;
           return wasPushing ? MoveResult.BadState : MoveResult.Blocked;
         }
 
-        MoveImpl.IgnoreMovableImpassables = false;
+        MovementImpl.IgnoreMovableImpassables = false;
         return MoveResult.Success;
       }
 
-      MoveImpl.IgnoreMovableImpassables = false;
+      MovementImpl.IgnoreMovableImpassables = false;
       return MoveResult.Success;
     }
 
@@ -2031,8 +2030,7 @@ namespace Server.Mobiles
       }
       else if (!DoMove(m_Mobile.GetDirectionTo(m), true))
       {
-        m_Path = new PathFollower(m_Mobile, m);
-        m_Path.Mover = DoMoveImpl;
+        m_Path = new PathFollower(m_Mobile, m) {Mover = DoMoveImpl};
 
         if (m_Path.Follow(run, 1))
         {
@@ -2096,8 +2094,7 @@ namespace Server.Mobiles
 
             if (!DoMove(dirTo, true) && needCloser)
             {
-              m_Path = new PathFollower(m_Mobile, m);
-              m_Path.Mover = DoMoveImpl;
+              m_Path = new PathFollower(m_Mobile, m) {Mover = DoMoveImpl};
 
               if (m_Path.Follow(bRun, 1))
                 m_Path = null;
@@ -2703,13 +2700,9 @@ namespace Server.Mobiles
         }
 
         if (m_Owner.m_Mobile.BardPacified)
-        {
           m_Owner.DoBardPacified();
-        }
         else if (m_Owner.m_Mobile.BardProvoked)
-        {
           m_Owner.DoBardProvoked();
-        }
         else
         {
           if (!m_Owner.m_Mobile.Controlled)

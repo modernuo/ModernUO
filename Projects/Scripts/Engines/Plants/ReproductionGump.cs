@@ -138,21 +138,21 @@ namespace Server.Engines.Plants
         }
         case 3: // Pollination
         {
-          PlantsPackets.SendDisplayHelpTopic(from.NetState, 67, true); // POLLINATION STATE
+          ContentPackets.SendDisplayHelpTopic(from.NetState, 67, true); // POLLINATION STATE
           from.SendGump(new ReproductionGump(m_Plant));
 
           break;
         }
         case 4: // Resources
         {
-          PlantsPackets.SendDisplayHelpTopic(from.NetState, 69, true); // RESOURCE PRODUCTION
+          ContentPackets.SendDisplayHelpTopic(from.NetState, 69, true); // RESOURCE PRODUCTION
           from.SendGump(new ReproductionGump(m_Plant));
 
           break;
         }
         case 5: // Seeds
         {
-          PlantsPackets.SendDisplayHelpTopic(from.NetState, 68, true); // SEED PRODUCTION
+          ContentPackets.SendDisplayHelpTopic(from.NetState, 68, true); // SEED PRODUCTION
           from.SendGump(new ReproductionGump(m_Plant));
 
           break;

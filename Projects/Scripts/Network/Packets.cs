@@ -1,9 +1,8 @@
 using Server.Buffers;
-using Server.Network;
 
-namespace Server.Engines.Plants
+namespace Server.Network
 {
-  public static class PlantsPackets
+  public static class ContentPackets
   {
     public static void SendDisplayHelpTopic(NetState ns, int topicID, bool display)
     {

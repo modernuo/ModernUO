@@ -65,9 +65,9 @@ namespace Server.Network
       w.Write((short)font);
       w.Write(number);
       w.WriteAsciiFixed(name ?? "", 30);
-      w.WriteLittleUniNull(args ?? "");
+      w.WriteLittleUniNull(args);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendMessageLocalizedAffix(NetState ns, Serial serial, int graphic, MessageType type, int hue, int font, int number,
@@ -98,7 +98,7 @@ namespace Server.Network
       w.WriteAsciiNull(affix);
       w.WriteBigUniNull(args); // Not little endian? Ugh
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     // TODO: Handle IEnumerable<NetState>
@@ -125,7 +125,7 @@ namespace Server.Network
       w.WriteAsciiFixed(name ?? "", 30);
       w.WriteAsciiNull(text);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     // TODO: Handle IEnumerable<NetState>
@@ -155,7 +155,7 @@ namespace Server.Network
       w.WriteAsciiFixed(name, 30);
       w.WriteBigUniNull(text);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
   }
 }

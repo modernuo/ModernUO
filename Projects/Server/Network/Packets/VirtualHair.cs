@@ -20,12 +20,11 @@ namespace Server.Network
 
       w.Write(HairInfo.FakeSerial(parent.Serial));
       w.Write((short)parent.HairItemID);
-      w.Write((byte)0);
-      w.Write((byte)Layer.Hair);
+      w.Write((short)Layer.Hair);
       w.Write(parent.Serial);
       w.Write((short)hue);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendFacialHairEquipUpdate(NetState ns, Mobile parent)
@@ -43,12 +42,11 @@ namespace Server.Network
 
       w.Write(FacialHairInfo.FakeSerial(parent.Serial));
       w.Write((short)parent.FacialHairItemID);
-      w.Write((byte)0);
-      w.Write((byte)Layer.Hair);
+      w.Write((short)Layer.Hair);
       w.Write(parent.Serial);
       w.Write((short)hue);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendRemoveHair(NetState ns, Mobile parent)
@@ -61,7 +59,7 @@ namespace Server.Network
 
       w.Write(HairInfo.FakeSerial(parent.Serial));
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
 
     public static void SendRemoveFacialHair(NetState ns, Mobile parent)
@@ -74,7 +72,7 @@ namespace Server.Network
 
       w.Write(FacialHairInfo.FakeSerial(parent.Serial));
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
     }
   }
 }
