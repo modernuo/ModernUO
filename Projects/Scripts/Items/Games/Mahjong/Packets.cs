@@ -79,17 +79,12 @@ namespace Server.Engines.Mahjong
         }
       }
 
-      int position;
-
       if (n != players.Seats)
       {
-        position = writer.Position;
         writer.Position = 9;
         writer.Write(n);
-        writer.Position = position;
       }
 
-      position = writer.Position;
       writer.Position = 1;
       writer.Write((short)writer.WrittenCount);
       ns.Send(writer.Span);
