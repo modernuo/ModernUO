@@ -179,7 +179,7 @@ namespace Server.Buffers
     {
       int size = Math.Min(input.Length, Length - Position);
 
-      input.CopyTo(RawSpan.Slice(Position, size));
+      input.CopyTo(RawSpan.Slice(Position));
       Position += size;
     }
 
@@ -194,8 +194,7 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      Encoding.ASCII.GetBytes(value, RawSpan.Slice(Position, value.Length));
-      Position += value.Length;
+      Position += Encoding.ASCII.GetBytes(value, RawSpan.Slice(Position));
     }
 
     /// <summary>
@@ -211,8 +210,7 @@ namespace Server.Buffers
 
       size = Math.Min(size, value.Length);
 
-      Encoding.ASCII.GetBytes(value, RawSpan.Slice(Position, size));
-      Position += size;
+      Position += Encoding.ASCII.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position));
     }
 
     /// <summary>
@@ -226,8 +224,7 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      Encoding.ASCII.GetBytes(value, Span.Slice(Position, value.Length));
-      Position += value.Length + 1;
+      Position += Encoding.ASCII.GetBytes(value, Span.Slice(Position)) + 1;
     }
 
     /// <summary>
@@ -241,10 +238,7 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      int length = value.Length * 2;
-
-      Encoding.Unicode.GetBytes(value, RawSpan.Slice(Position, length));
-      Position += length + 2;
+      Position += Encoding.Unicode.GetBytes(value, RawSpan.Slice(Position)) + 2;
     }
 
     /// <summary>
@@ -259,10 +253,9 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      size = Math.Min(size * 2, value.Length * 2);
+      size = Math.Min(size, value.Length);
 
-      Encoding.Unicode.GetBytes(value, RawSpan.Slice(Position, size));
-      Position += size;
+      Position += Encoding.Unicode.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position));
     }
 
     /// <summary>
@@ -276,10 +269,7 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      int length = value.Length * 2;
-
-      Encoding.BigEndianUnicode.GetBytes(value, RawSpan.Slice(Position, length));
-      Position += length + 2;
+      Position += Encoding.BigEndianUnicode.GetBytes(value, RawSpan.Slice(Position)) + 2;
     }
 
     /// <summary>
@@ -293,10 +283,39 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      size = Math.Min(size * 2, value.Length * 2);
+      size = Math.Min(size, value.Length);
 
-      Encoding.BigEndianUnicode.GetBytes(value, RawSpan.Slice(Position, size));
-      Position += size;
+      Position += Encoding.BigEndianUnicode.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position));
+    }
+
+    /// <summary>
+    ///   Writes a dynamic-length utf-8 string value to the span, followed by a 1-byte null character.
+    /// </summary>
+    public void WriteUTF8Null(string value)
+    {
+      if (value == null)
+      {
+        Console.WriteLine("Network: Attempted to WriteUTF8Null() with null value");
+        value = string.Empty;
+      }
+
+      Position += Utility.UTF8.GetBytes(value, RawSpan.Slice(Position)) + 1;
+    }
+
+    /// <summary>
+    ///   Writes a dynamic-length utf-8 string value up to max characters to the span, followed by a 1-byte null character.
+    /// </summary>
+    public void WriteUTF8Null(string value, int size)
+    {
+      if (value == null)
+      {
+        Console.WriteLine("Network: Attempted to WriteUTF8Null() with null value");
+        value = string.Empty;
+      }
+
+      size = Math.Min(size, value.Length);
+
+      Position += Utility.UTF8.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position)) + 1;
     }
 
     /// <summary>
@@ -312,7 +331,10 @@ namespace Server.Buffers
     /// </summary>
     public void CopyTo(Span<byte> destination, int count)
     {
-      RawSpan.Slice(0, Math.Min(count, WrittenCount)).CopyTo(destination);
+      if (count > WrittenCount)
+        CopyTo(destination);
+      else
+        RawSpan.Slice(0, count).CopyTo(destination);
     }
   }
 }
