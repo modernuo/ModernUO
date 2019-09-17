@@ -38,6 +38,9 @@ namespace Server.Items
 
     public List<Point2D> Pins{ get; } = new List<Point2D>();
 
+    [CommandProperty(AccessLevel.GameMaster)]
+    public virtual Map Facet{ get; set; }
+
     #region ICraftable Members
 
     public int OnCraft(int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
@@ -83,13 +86,13 @@ namespace Server.Items
 
     public virtual void DisplayTo(Mobile from)
     {
-      from.Send(new MapDetails(this));
-      from.Send(new MapDisplay(this));
+      MapItemPackets.SendMapDetails(from.NetState, this);
+      MapItemPackets.SendMapDisplay(from.NetState, this);
 
       for (int i = 0; i < Pins.Count; ++i)
-        from.Send(new MapAddPin(this, Pins[i]));
+        MapItemPackets.SendMapAddPin(from.NetState, this, Pins[i]);
 
-      from.Send(new MapSetEditable(this, ValidateEdit(from)));
+      MapItemPackets.SendMapSetEditable(from.NetState, this, ValidateEdit(from));
     }
 
     public virtual void OnAddPin(Mobile from, int x, int y)
@@ -144,7 +147,7 @@ namespace Server.Items
       if (Validate(from))
         m_Editable = !m_Editable;
 
-      from.Send(new MapSetEditable(this, Validate(from) && m_Editable));
+      MapItemPackets.SendMapSetEditable(from.NetState, this, m_Editable && ValidateEdit(from));
     }
 
     public virtual void Validate(ref int x, ref int y)
@@ -226,7 +229,9 @@ namespace Server.Items
     {
       base.Serialize(writer);
 
-      writer.Write(0);
+      writer.Write(1);
+
+      writer.Write(Facet);
 
       writer.Write(Bounds);
 
@@ -248,6 +253,9 @@ namespace Server.Items
 
       switch (version)
       {
+        case 1:
+          Facet = reader.ReadMap();
+          goto case 0;
         case 0:
         {
           Bounds = reader.ReadRect2D();
@@ -304,72 +312,6 @@ namespace Server.Items
         case 6:
           map.OnToggleEditable(from);
           break;
-      }
-    }
-
-    private sealed class MapDetails : Packet
-    {
-      public MapDetails(MapItem map) : base(0x90, 19)
-      {
-        m_Stream.Write(map.Serial);
-        m_Stream.Write((short)0x139D);
-        m_Stream.Write((short)map.Bounds.Start.X);
-        m_Stream.Write((short)map.Bounds.Start.Y);
-        m_Stream.Write((short)map.Bounds.End.X);
-        m_Stream.Write((short)map.Bounds.End.Y);
-        m_Stream.Write((short)map.Width);
-        m_Stream.Write((short)map.Height);
-      }
-    }
-
-    /*
-    private sealed class MapDetailsNew : Packet
-    {
-      public MapDetailsNew( MapItem map ) : base ( 0xF5, 21 )
-      {
-        m_Stream.Write( (int) map.Serial );
-        m_Stream.Write( (short) 0x139D );
-        m_Stream.Write( (short) map.Bounds.Start.X );
-        m_Stream.Write( (short) map.Bounds.Start.Y );
-        m_Stream.Write( (short) map.Bounds.End.X );
-        m_Stream.Write( (short) map.Bounds.End.Y );
-        m_Stream.Write( (short) map.Width );
-        m_Stream.Write( (short) map.Height );
-        m_Stream.Write( (short) ( map.Facet == null ? 0 : map.Facet.MapID ) );
-      }
-    }
-    */
-
-    private abstract class MapCommand : Packet
-    {
-      public MapCommand(MapItem map, int command, int number, int x, int y) : base(0x56, 11)
-      {
-        m_Stream.Write(map.Serial);
-        m_Stream.Write((byte)command);
-        m_Stream.Write((byte)number);
-        m_Stream.Write((short)x);
-        m_Stream.Write((short)y);
-      }
-    }
-
-    private sealed class MapDisplay : MapCommand
-    {
-      public MapDisplay(MapItem map) : base(map, 5, 0, 0, 0)
-      {
-      }
-    }
-
-    private sealed class MapAddPin : MapCommand
-    {
-      public MapAddPin(MapItem map, Point2D point) : base(map, 1, 0, point.X, point.Y)
-      {
-      }
-    }
-
-    private sealed class MapSetEditable : MapCommand
-    {
-      public MapSetEditable(MapItem map, bool editable) : base(map, 7, editable ? 1 : 0, 0, 0)
-      {
       }
     }
   }
