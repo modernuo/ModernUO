@@ -33,13 +33,11 @@ namespace Server.Items
     private Mobile m_CompletedBy;
     private Mobile m_Decoder;
     private int m_Level;
-    private Map m_Map;
 
     [Constructible]
-    public TreasureMap(int level, Map map)
+    public TreasureMap(int level, Map facet = null) : base(facet)
     {
       m_Level = level;
-      m_Map = map;
 
       ChestLocation = level == 0 ? GetRandomHavenLocation() : GetRandomLocation();
 
@@ -313,7 +311,7 @@ namespace Server.Items
       {
         from.SendLocalizedMessage(503020); // You are already digging treasure.
       }
-      else if (from.Map != m_Map)
+      else if (from.Map != Facet)
       {
         from.SendLocalizedMessage(1010479); // You seem to be in the right place, but may be on the wrong facet!
       }
@@ -461,7 +459,7 @@ namespace Server.Items
     {
       base.GetProperties(list);
 
-      list.Add(m_Map == Map.Felucca ? 1041502 : 1041503); // for somewhere in Felucca : for somewhere in Trammel
+      list.Add(Facet == Map.Felucca ? 1041502 : 1041503); // for somewhere in Felucca : for somewhere in Trammel
 
       if (m_Completed)
         list.Add(1041507, m_CompletedBy == null ? "someone" : m_CompletedBy.Name); // completed by ~1_val~
@@ -483,10 +481,10 @@ namespace Server.Items
       }
       else
       {
-        LabelTo(@from, 1041522,
+        LabelTo(from, 1041522,
           m_Level == 6
-            ? $"#{1063452}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}"
-            : $"#{1041510 + m_Level}\t \t#{(m_Map == Map.Felucca ? 1041502 : 1041503)}");
+            ? $"#{1063452}\t \t#{(Facet == Map.Felucca ? 1041502 : 1041503)}"
+            : $"#{1041510 + m_Level}\t \t#{(Facet == Map.Felucca ? 1041502 : 1041503)}");
       }
     }
 
@@ -494,14 +492,13 @@ namespace Server.Items
     {
       base.Serialize(writer);
 
-      writer.Write(1);
+      writer.Write(2);
 
       writer.Write(m_CompletedBy);
 
       writer.Write(m_Level);
       writer.Write(m_Completed);
       writer.Write(m_Decoder);
-      writer.Write(m_Map);
       writer.Write(ChestLocation);
     }
 
@@ -524,7 +521,8 @@ namespace Server.Items
           m_Level = reader.ReadInt();
           m_Completed = reader.ReadBool();
           m_Decoder = reader.ReadMobile();
-          m_Map = reader.ReadMap();
+          if (version < 2)
+            Facet = reader.ReadMap();
           ChestLocation = reader.ReadPoint2D();
 
           if (version == 0 && m_Completed)
@@ -549,7 +547,7 @@ namespace Server.Items
         if (m_Map.Deleted)
           return;
 
-        Map map = m_Map.m_Map;
+        Map facet = m_Map.Facet;
 
         if (m_Map.m_Completed)
           from.SendLocalizedMessage(503028); // The treasure for this map has already been found.
@@ -565,8 +563,8 @@ namespace Server.Items
         else if (!from.CanBeginAction<TreasureMap>())
           from.SendLocalizedMessage(503020); // You are already digging treasure.
         else if (!HasDiggingTool(from))
-          from.SendMessage("You must have a digging tool to dig for treasure.");
-        else if (from.Map != map)
+          from.SendLocalizedMessage(1114416); // You must have a digging tool to dig for treasure.
+        else if (from.Map != facet)
           from.SendLocalizedMessage(1010479); // You seem to be in the right place, but may be on the wrong facet!
         else
         {
@@ -596,15 +594,15 @@ namespace Server.Items
             if (from.Location.X == x && from.Location.Y == y)
               from.SendLocalizedMessage(
                 503030); // The chest can't be dug up because you are standing on top of it.
-            else if (map != null)
+            else if (facet != null)
             {
-              int z = map.GetAverageZ(x, y);
+              int z = facet.GetAverageZ(x, y);
 
-              if (!map.CanFit(x, y, z, 16, true))
+              if (!facet.CanFit(x, y, z, 16, true))
                 from.SendLocalizedMessage(
                   503021); // You have found the treasure chest but something is keeping it from being dug up.
               else if (from.BeginAction<TreasureMap>())
-                new DigTimer(from, m_Map, new Point3D(x, y, z), map).Start();
+                new DigTimer(from, m_Map, new Point3D(x, y, z), facet).Start();
               else
                 from.SendLocalizedMessage(503020); // You are already digging treasure.
             }
@@ -619,7 +617,7 @@ namespace Server.Items
           else
           {
             if (Utility.InRange(targ3D, chest3D0, 8)) // We're close, but not quite
-              from.SendAsciiMessage(0x44, "The treasure chest is very close!");
+              from.SendLocalizedMessage(1080030, "", 0x44); // The treasure chest is very close!
             else
             {
               Direction dir = Utility.GetDirection(targ3D, chest3D0);
@@ -636,7 +634,7 @@ namespace Server.Items
                 _ => "northwest"
               };
 
-              from.SendAsciiMessage(0x44, "Try looking for the treasure chest more to the {0}.", sDir);
+              from.SendLocalizedMessage(1080040, sDir, 0x44); // Try looking for the treasure chest more ~1_NAME~.
             }
           }
         }

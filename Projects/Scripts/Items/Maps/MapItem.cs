@@ -10,14 +10,16 @@ namespace Server.Items
   {
     private const int MaxUserPins = 50;
     private bool m_Editable;
+    private Map m_Facet;
 
     [Constructible]
-    public MapItem() : base(0x14EC)
+    public MapItem(Map facet = null) : base(0x14EC)
     {
       Weight = 1.0;
 
       Width = 200;
       Height = 200;
+      m_Facet = facet;
     }
 
     public MapItem(Serial serial) : base(serial)
@@ -39,7 +41,11 @@ namespace Server.Items
     public List<Point2D> Pins{ get; } = new List<Point2D>();
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public virtual Map Facet{ get; set; }
+    public virtual Map Facet
+    {
+      get => m_Facet;
+      set => m_Facet = value;
+    }
 
     #region ICraftable Members
 
@@ -86,7 +92,18 @@ namespace Server.Items
 
     public virtual void DisplayTo(Mobile from)
     {
-      MapItemPackets.SendMapDetails(from.NetState, this);
+      NetState ns = from.NetState;
+
+      if (ns.NewCharacterList) // 7.0.13.0+ supports maps on all facets
+        MapItemPackets.SendMapDetailsNew(ns, this);
+      else if (Facet != null && Facet != Map.Felucca && Facet != Map.Trammel) // Is it Felucca and Trammel, or just Felucca?
+      {
+        from.SendMessage("You must have client 7.0.13.0 or higher to display this map.");
+        return;
+      }
+      else
+        MapItemPackets.SendMapDetailsOld(ns, this);
+
       MapItemPackets.SendMapDisplay(from.NetState, this);
 
       for (int i = 0; i < Pins.Count; ++i)
@@ -231,7 +248,7 @@ namespace Server.Items
 
       writer.Write(1);
 
-      writer.Write(Facet);
+      writer.Write(m_Facet);
 
       writer.Write(Bounds);
 
@@ -254,7 +271,7 @@ namespace Server.Items
       switch (version)
       {
         case 1:
-          Facet = reader.ReadMap();
+          m_Facet = reader.ReadMap();
           goto case 0;
         case 0:
         {

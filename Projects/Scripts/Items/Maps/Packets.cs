@@ -3,17 +3,8 @@ using Server.Network;
 
 namespace Server.Items
 {
-  public class MapItemPackets
+  public static class MapItemPackets
   {
-    public static void SendMapDetails(NetState ns, MapItem map)
-    {
-      // TODO: When was this actually? Guessing >5.0.0
-      if (ns.BuffIcon)
-        SendMapDetailsNew(ns, map);
-      else
-        SendMapDetailsOld(ns, map);
-    }
-
     public static void SendMapDetailsOld(NetState ns, MapItem map)
     {
       if (ns == null)

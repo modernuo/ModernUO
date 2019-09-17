@@ -100,7 +100,7 @@ namespace Server.Items
     public Corpse(Mobile owner, HairInfo hair, FacialHairInfo facialhair, List<Item> equipItems)
       : base(0x2006)
     {
-      // To supress console warnings, stackable must be true
+      // To suppress console warnings, stackable must be true
       Stackable = true;
       Amount = owner.Body; // protocol defines that for itemid 0x2006, amount=body
       Stackable = false;
@@ -193,16 +193,7 @@ namespace Server.Items
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public virtual bool InstancedCorpse
-    {
-      get
-      {
-        if (!Core.SE)
-          return false;
-
-        return DateTime.UtcNow < TimeOfDeath + InstancedCorpseTime;
-      }
-    }
+    public virtual bool InstancedCorpse => Core.SE && DateTime.UtcNow < TimeOfDeath + InstancedCorpseTime;
 
     public override bool IsDecoContainer => false;
 
@@ -302,9 +293,7 @@ namespace Server.Items
       Mobile dead = Owner;
 
       if (GetFlag(CorpseFlag.Carved) || dead == null)
-      {
         from.SendLocalizedMessage(500485); // You see nothing useful to carve from the corpse.
-      }
       else if (((Body)Amount).IsHuman && ItemID == 0x2006)
       {
         new Blood(0x122D).MoveToWorld(Location, Map);
@@ -328,13 +317,9 @@ namespace Server.Items
           from.CriminalAction(true);
       }
       else if (dead is BaseCreature creature)
-      {
         creature.OnCarve(from, this, item);
-      }
       else
-      {
         from.SendLocalizedMessage(500485); // You see nothing useful to carve from the corpse.
-      }
     }
 
     public override bool IsChildVisibleTo(Mobile m, Item child) =>
@@ -427,9 +412,7 @@ namespace Server.Items
 
       if (InstancedCorpse)
       {
-        if (m_InstancedItems == null)
-          m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
-
+        m_InstancedItems ??= new Dictionary<Item, InstancedItemInfo>();
         m_InstancedItems.Add(carved, new InstancedItemInfo(carved, carver));
       }
     }
@@ -464,7 +447,6 @@ namespace Server.Items
     public override void OnAfterDelete()
     {
       m_DecayTimer?.Stop();
-
       m_DecayTimer = null;
     }
 
@@ -543,29 +525,26 @@ namespace Server.Items
 
       writer.WriteDeltaTime(TimeOfDeath);
 
-      List<KeyValuePair<Item, Point3D>> list = m_RestoreTable == null
-        ? null
-        : new List<KeyValuePair<Item, Point3D>>(m_RestoreTable);
-      int count = list?.Count ?? 0;
-
-      writer.Write(count);
-
-      for (int i = 0; i < count; ++i)
+      if (m_RestoreTable == null)
+        writer.Write(0);
+      else
       {
-        KeyValuePair<Item, Point3D> kvp = list[i];
-        Item item = kvp.Key;
-        Point3D loc = kvp.Value;
+        writer.Write(m_RestoreTable.Count);
 
-        writer.Write(item);
+        foreach (KeyValuePair<Item, Point3D> kvp in m_RestoreTable)
+        {
+          Item item = kvp.Key;
+          Point3D loc = kvp.Value;
 
-        if (item.Location == loc)
-        {
-          writer.Write(false);
-        }
-        else
-        {
-          writer.Write(true);
-          writer.Write(loc);
+          writer.Write(item);
+
+          if (item.Location == loc)
+            writer.Write(false);
+          else
+          {
+            writer.Write(true);
+            writer.Write(loc);
+          }
         }
       }
 
