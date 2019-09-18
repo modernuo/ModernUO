@@ -2455,12 +2455,7 @@ namespace Server
     //  - Direction
     protected virtual void SendWorldPacketFor(NetState state)
     {
-      if (state.HighSeas)
-        Packets.SendWorldItemHS(state, this);
-      else if (state.StygianAbyss)
-        Packets.SendWorldItemSA(state, this);
-      else
-        Packets.SendWorldItem(state, this);
+      Packets.SendWorldItem(state);
     }
 
     public virtual int GetTotal(TotalType type) => 0;

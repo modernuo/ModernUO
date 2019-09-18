@@ -20,6 +20,19 @@ namespace Server.Network
       if (ns == null)
         return;
 
+      if (ns.HighSeas)
+        SendWorldItemHS(ns, item);
+      else if (ns.StygianAbyss)
+        SendWorldItemSA(ns, item);
+      else
+        SendWorldItemOld(ns, item);
+    }
+
+    public static void SendWorldItemOld(NetState ns, Item item)
+    {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[20]);
       w.Write((byte)0x1A); // Packet ID
       w.Position += 2; // Dynamic Length
@@ -200,6 +213,19 @@ namespace Server.Network
       if (ns == null)
         return;
 
+      if (ObjectPropertyList.Enabled && ns.NewSpellbook)
+        SendSpellbookContentNew(ns, s, count, offset, content);
+      else if (ns.ContainerGridLines)
+        SendSpellbookContent6017(ns, s, count, offset, content);
+      else
+        SendSpellbookContentOld(ns, s, count, offset, content);
+    }
+
+    public static void SendSpellbookContentOld(NetState ns, Serial s, int count, int offset, ulong content)
+    {
+      if (ns == null)
+        return;
+
       int length = 5 + count * 19;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
@@ -253,7 +279,7 @@ namespace Server.Network
       ns.Send(w.Span);
     }
 
-    public static void SendNewSpellbookContent(NetState ns, Serial s, int graphic, int offset, ulong content)
+    public static void SendSpellbookContentNew(NetState ns, Serial s, int graphic, int offset, ulong content)
     {
       if (ns == null)
         return;

@@ -736,12 +736,8 @@ namespace Server.Items
       if (!(((Body)Amount).IsHuman && ItemID == 0x2006))
         return;
 
-      if (state.ContainerGridLines)
-        state.Send(new CorpseContent6017(state.Mobile, this));
-      else
-        state.Send(new CorpseContent(state.Mobile, this));
-
-      state.Send(new CorpseEquip(state.Mobile, this));
+      CorpsePackets.SendCorpseContent(state, state.Mobile, this);
+      CorpsePackets.SendCorpseEquip(state, state.Mobile, this);
     }
 
     public bool IsCriminalAction(Mobile from)
@@ -815,8 +811,7 @@ namespace Server.Items
       if (item == null)
         return;
 
-      if (m_RestoreTable == null)
-        m_RestoreTable = new Dictionary<Item, Point3D>();
+      m_RestoreTable ??= new Dictionary<Item, Point3D>();
 
       m_RestoreTable[item] = loc;
     }
