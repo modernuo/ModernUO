@@ -29,16 +29,10 @@ namespace Server.Items
       }
     }
 
-    public override int LabelNumber
-    {
-      get
-      {
-        if (m_Resource >= CraftResource.SpinedLeather && m_Resource <= CraftResource.BarbedLeather)
-          return 1049684 + (m_Resource - CraftResource.SpinedLeather);
-
-        return 1047022;
-      }
-    }
+    public override int LabelNumber =>
+      m_Resource >= CraftResource.SpinedLeather && m_Resource <= CraftResource.BarbedLeather
+        ? 1049684 + (m_Resource - CraftResource.SpinedLeather)
+        : 1047022;
 
     int ICommodity.DescriptionNumber => LabelNumber;
     bool ICommodity.IsDeedable => true;

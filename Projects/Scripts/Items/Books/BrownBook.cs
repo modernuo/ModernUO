@@ -13,8 +13,8 @@ namespace Server.Items
     }
 
     [Constructible]
-    public BrownBook(string title, string author, int pageCount, bool writable) : base(0xFEF, title, author, pageCount,
-      writable)
+    public BrownBook(string title, string author, int pageCount, bool writable) :
+      base(0xFEF, title, author, pageCount,  writable)
     {
     }
 

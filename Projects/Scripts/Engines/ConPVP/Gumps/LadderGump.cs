@@ -183,7 +183,7 @@ namespace Server.Engines.ConPVP
       string numStr = num.ToString("N0");
 
       if (num % 100 > 10 && num % 100 < 20)
-        return numStr + "th";
+        return $"{numStr}th";
 
       return (num % 10) switch
       {

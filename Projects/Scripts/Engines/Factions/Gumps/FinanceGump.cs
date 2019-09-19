@@ -68,9 +68,9 @@ namespace Server.Factions
         AddRadio(x, y, 208, 209, town.Tax == ofs, i + 1);
 
         if (ofs < 0)
-          AddLabel(x + 35, y, 0x26, string.Concat("- ", -ofs, "%"));
+          AddLabel(x + 35, y, 0x26, $"- {-ofs}%");
         else
-          AddLabel(x + 35, y, 0x12A, string.Concat("+ ", ofs, "%"));
+          AddLabel(x + 35, y, 0x12A, $"+ {ofs}%");
       }
 
       AddRadio(20, 270, 208, 209, town.Tax == 0, 0);

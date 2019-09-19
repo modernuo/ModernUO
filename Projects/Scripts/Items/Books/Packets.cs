@@ -1,3 +1,4 @@
+using System;
 using Server.Buffers;
 using Server.Network;
 
@@ -10,14 +11,13 @@ namespace Server.Items
       if (ns == null)
         return;
 
+      // 80 chars per line (240 bytes)
+      // 8 lines per page
+      // Max: 77049 bytes
       int length = 9;
 
       for (int i = 0; i < book.PagesCount; i++)
-      {
-        BookPageInfo page = book.Pages[i];
-        // max 80 characters per line, 2 bytes per character, null terminated
-        length += 5 + page.Lines.Length * 160;
-      }
+        length += 1926 * book.Pages[i].Lines.Length;
 
       SpanWriter writer = new SpanWriter(stackalloc byte[length]);
       writer.Write((byte)0x66); // Packet ID
@@ -29,12 +29,16 @@ namespace Server.Items
       for (int i = 0; i < book.PagesCount; i++)
       {
         BookPageInfo page = book.Pages[i];
+        length = Math.Min(page.Lines.Length, 8);
 
         writer.Write((ushort)(i + 1));
-        writer.Write((ushort)page.Lines.Length);
+        writer.Write((ushort)length);
 
-        foreach (string line in page.Lines)
-          writer.WriteUTF8Null(line, 80);
+        for (int j = 0; j < length; j++)
+        {
+          string line = page.Lines[j];
+          writer.WriteUTF8Null(line);
+        }
       }
 
       writer.Position = 1;
@@ -51,10 +55,7 @@ namespace Server.Items
       string title = book.Title ?? "";
       string author = book.Author ?? "";
 
-      byte[] titleBuffer = Utility.UTF8.GetBytes(title);
-      byte[] authorBuffer = Utility.UTF8.GetBytes(author);
-
-      int length = 17 + titleBuffer.Length * 2 + authorBuffer.Length * 2;
+      int length = 17 + title.Length + author.Length;
       SpanWriter writer = new SpanWriter(stackalloc byte[length]);
       writer.Write((byte)0xD4); // Packet ID
       writer.Position += 2; // Dynamic Length
@@ -64,17 +65,11 @@ namespace Server.Items
       writer.Write(book.Writable && from.InRange(book.GetWorldLocation(), 1));
       writer.Write((ushort)book.PagesCount);
 
-      int pos = writer.Position;
-      writer.WriteUTF8Null(title);
-      length = writer.Position - pos;
-      writer.Position = pos;
-      writer.Write((ushort)length);
+      writer.Write((ushort)title.Length + 1);
+      writer.WriteAsciiNull(title);
 
-      pos = writer.Position;
-      writer.WriteUTF8Null(author);
-      length = writer.Position - pos;
-      writer.Position = pos;
-      writer.Write((ushort)length);
+      writer.Write((ushort)author.Length + 1);
+      writer.WriteAsciiNull(author);
 
       writer.Position = 1;
       writer.Write((ushort)writer.WrittenCount);

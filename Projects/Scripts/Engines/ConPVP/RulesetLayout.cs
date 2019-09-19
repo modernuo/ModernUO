@@ -700,7 +700,7 @@ namespace Server.Engines.ConPVP
     public string FindByIndex(int index)
     {
       if (index >= Offset && index < Offset + Options.Length)
-        return Description + ": " + Options[index - Offset];
+        return $"{Description}: {Options[index - Offset]}";
 
       for (int i = 0; i < Children.Length; ++i)
       {

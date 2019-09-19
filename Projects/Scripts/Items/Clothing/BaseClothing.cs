@@ -436,13 +436,13 @@ namespace Server.Items
       string modName = Serial.ToString();
 
       if (strBonus != 0)
-        parent.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+        parent.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
       if (dexBonus != 0)
-        parent.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+        parent.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
       if (intBonus != 0)
-        parent.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+        parent.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
     }
 
     public static void ValidateMobile(Mobile m)
@@ -518,9 +518,9 @@ namespace Server.Items
 
         string modName = Serial.ToString();
 
-        mob.RemoveStatMod(modName + "Str");
-        mob.RemoveStatMod(modName + "Dex");
-        mob.RemoveStatMod(modName + "Int");
+        mob.RemoveStatMod($"{modName}Str");
+        mob.RemoveStatMod($"{modName}Dex");
+        mob.RemoveStatMod($"{modName}Int");
 
         mob.CheckStatTimers();
       }

@@ -375,11 +375,22 @@ namespace Server.Network
 
     public static void SendPlayMusic(NetState ns, MusicName music)
     {
+      ushort value = (ushort)music;
       ns?.Send(stackalloc byte[]
       {
         0x6D, // Packet ID
-        0x00,
-        (byte)music
+        value >> 8,
+        value & 0xFF,
+      });
+    }
+
+    public static void SendStopMusic(NetState ns)
+    {
+      ns?.Send(stackalloc byte[]
+      {
+        0x6D, // Packet ID
+        0x1F,
+        0xFF
       });
     }
 

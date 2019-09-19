@@ -6738,11 +6738,11 @@ namespace Server
       string val;
 
       if (prefix.Length > 0 && suffix.Length > 0)
-        val = string.Concat(prefix, " ", name, " ", suffix);
+        val = $"{prefix} {name} {suffix}";
       else if (prefix.Length > 0)
-        val = string.Concat(prefix, " ", name);
+        val = $"{prefix} {name}";
       else if (suffix.Length > 0)
-        val = string.Concat(name, " ", suffix);
+        val = $"{name} {suffix}";
       else
         val = name;
 
@@ -8704,13 +8704,7 @@ namespace Server
 
     public Direction GetDirectionTo(Point3D p) => GetDirectionTo(p.m_X, p.m_Y);
 
-    public Direction GetDirectionTo(IPoint2D p)
-    {
-      if (p == null)
-        return Direction.North;
-
-      return GetDirectionTo(p.X, p.Y);
-    }
+    public Direction GetDirectionTo(IPoint2D p) => p == null ? Direction.North : GetDirectionTo(p.X, p.Y);
 
     #endregion
 

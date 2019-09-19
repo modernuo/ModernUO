@@ -57,15 +57,13 @@ namespace Server.Items
 
       if (content == null)
       {
-        Pages = new BookPageInfo[pageCount];
+        Pages = new BookPageInfo[Math.Min(pageCount, 255)];
 
         for (int i = 0; i < Pages.Length; ++i)
           Pages[i] = new BookPageInfo();
       }
       else
-      {
         Pages = content.Copy();
-      }
     }
 
     // Intended for defined books only
@@ -338,14 +336,14 @@ namespace Server.Items
       if (titleLength > 60)
         return;
 
-      string title = pvSrc.ReadUTF8StringSafe(titleLength);
+      string title = pvSrc.ReadStringSafe(titleLength);
 
       int authorLength = pvSrc.ReadUInt16();
 
       if (authorLength > 30)
         return;
 
-      string author = pvSrc.ReadUTF8StringSafe(authorLength);
+      string author = pvSrc.ReadStringSafe(authorLength);
 
       book.Title = Utility.FixHtml(title);
       book.Author = Utility.FixHtml(author);
@@ -368,27 +366,23 @@ namespace Server.Items
       {
         int index = pvSrc.ReadUInt16();
 
-        if (index >= 1 && index <= book.PagesCount)
-        {
-          --index;
-
-          int lineCount = pvSrc.ReadUInt16();
-
-          if (lineCount <= 8)
-          {
-            string[] lines = new string[lineCount];
-
-            for (int j = 0; j < lineCount; ++j)
-              if ((lines[j] = pvSrc.ReadUTF8StringSafe()).Length >= 80)
-                return;
-
-            book.Pages[index].Lines = lines;
-          }
-          else
-            return;
-        }
-        else
+        if (index < 1 || index > book.PagesCount)
           return;
+
+        --index;
+
+        int lineCount = pvSrc.ReadUInt16();
+
+        if (lineCount > 8)
+          return;
+
+        string[] lines = new string[lineCount];
+
+        for (int j = 0; j < lineCount; ++j)
+          if ((lines[j] = pvSrc.ReadUTF8StringSafe()).Length >= 80)
+            return;
+
+        book.Pages[index].Lines = lines;
       }
     }
 

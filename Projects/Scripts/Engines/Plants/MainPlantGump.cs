@@ -313,8 +313,7 @@ namespace Server.Engines.Plants
           {
             from.Target = new PlantPourTarget(m_Plant);
             from.SendLocalizedMessage(1060808,
-              "#" + m_Plant
-                .GetLocalizedPlantStatus()); // Target the container you wish to use to water the ~1_val~.
+              $"#{m_Plant.GetLocalizedPlantStatus()}"); // Target the container you wish to use to water the ~1_val~.
           }
           else
           {
@@ -382,8 +381,7 @@ namespace Server.Engines.Plants
 
           from.Target = new PlantPourTarget(m_Plant);
           from.SendLocalizedMessage(1060808,
-            "#" + m_Plant
-              .GetLocalizedPlantStatus()); // Target the container you wish to use to water the ~1_val~.
+            $"#{m_Plant.GetLocalizedPlantStatus()}"); // Target the container you wish to use to water the ~1_val~.
 
           return;
         }

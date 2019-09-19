@@ -400,9 +400,9 @@ namespace Server.Engines.Harvest
           number = 1043297;
 
           if ((item.ItemData.Flags & TileFlag.ArticleA) != 0)
-            name = "a " + item.ItemData.Name;
+            name = $"a {item.ItemData.Name}";
           else if ((item.ItemData.Flags & TileFlag.ArticleAn) != 0)
-            name = "an " + item.ItemData.Name;
+            name = $"an {item.ItemData.Name}";
           else
             name = item.ItemData.Name;
         }

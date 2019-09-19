@@ -157,10 +157,7 @@ namespace Server.Items
     {
       base.GetProperties(list);
 
-      if (m_Active)
-        list.Add(1060742); // active
-      else
-        list.Add(1060743); // inactive
+      list.Add(m_Active ? 1060742 : 1060743);
 
       if (m_MapDest != null)
         list.Add(1060658, "Map\t{0}", m_MapDest);
@@ -395,11 +392,10 @@ namespace Server.Items
         if (m.BeginAction(this))
         {
           if (m_MessageString != null)
-            m.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", null,
-              m_MessageString));
+            Packets.SendUnicodeMessage(m.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", "",
+              m_MessageString);
           else if (m_MessageNumber != 0)
-            m.Send(new MessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber, null,
-              ""));
+            Packets.SendMessageLocalized(m.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, m_MessageNumber);
 
           Timer.DelayCall(TimeSpan.FromSeconds(5.0), () => m.EndAction(this));
         }

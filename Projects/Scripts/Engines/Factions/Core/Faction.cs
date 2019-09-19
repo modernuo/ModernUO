@@ -379,7 +379,7 @@ namespace Server.Factions
       else
       {
         AddMember(mob);
-        mob.SendLocalizedMessage(1042756, true, " " + m_Definition.FriendlyName); // You are now joining a faction:
+        mob.SendLocalizedMessage(1042756, true, $" {m_Definition.FriendlyName}"); // You are now joining a faction:
       }
     }
 

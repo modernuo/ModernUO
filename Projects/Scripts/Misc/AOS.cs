@@ -525,13 +525,13 @@ namespace Server
         string modName = Owner.Serial.ToString();
 
         if (strBonus != 0)
-          to.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+          to.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
         if (dexBonus != 0)
-          to.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+          to.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
         if (intBonus != 0)
-          to.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+          to.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
       }
 
       to.CheckStatTimers();
@@ -541,9 +541,9 @@ namespace Server
     {
       string modName = Owner.Serial.ToString();
 
-      from.RemoveStatMod(modName + "Str");
-      from.RemoveStatMod(modName + "Dex");
-      from.RemoveStatMod(modName + "Int");
+      from.RemoveStatMod($"{modName}Str");
+      from.RemoveStatMod($"{modName}Dex");
+      from.RemoveStatMod($"{modName}Int");
 
       from.CheckStatTimers();
     }

@@ -2455,7 +2455,7 @@ namespace Server
     //  - Direction
     protected virtual void SendWorldPacketFor(NetState state)
     {
-      Packets.SendWorldItem(state);
+      Packets.SendWorldItem(state, this);
     }
 
     public virtual int GetTotal(TotalType type) => 0;
@@ -3299,7 +3299,7 @@ namespace Server
       }
       else
         Packets.SendUnicodeMessage(ns, Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
-          Name + (m_Amount > 1 ? " : " + m_Amount : ""));
+          Name + (m_Amount > 1 ? $" : {m_Amount}" : ""));
     }
 
     public virtual void ScissorHelper(Mobile from, Item newItem, int amountPerOldItem)

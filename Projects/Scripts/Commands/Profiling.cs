@@ -28,7 +28,7 @@ namespace Server.Commands
         using (StreamWriter sw = new StreamWriter("profiles.log", true))
         {
           sw.WriteLine("# Dump on {0:f}", DateTime.UtcNow);
-          sw.WriteLine("# Core profiling for " + Core.ProfileTime);
+          sw.WriteLine($"# Core profiling for {Core.ProfileTime}");
 
           sw.WriteLine("# Packet send");
           BaseProfile.WriteAll(sw, PacketSendProfile.Profiles);

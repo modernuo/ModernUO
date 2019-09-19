@@ -1039,7 +1039,7 @@ namespace Server.Items
       ObjectPropertyList opl = PropertyList;
 
       if (opl.Header > 0)
-        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs));
+        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, opl.Header, Name, opl.HeaderArgs);
     }
 
     public override void OnSingleClick(Mobile from)
@@ -1049,14 +1049,12 @@ namespace Server.Items
       if (ItemID == 0x2006) // Corpse form
       {
         if (m_CorpseName != null)
-          from.Send(new AsciiMessage(Serial, ItemID, MessageType.Label, hue, 3, "", m_CorpseName));
+          Packets.SendAsciiMessage(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, "", m_CorpseName);
         else
-          from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name));
+          Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name);
       }
       else // Bone form
-      {
-        from.Send(new MessageLocalized(Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name));
-      }
+        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1046414, "", Name);
     }
 
     private class InstancedItemInfo

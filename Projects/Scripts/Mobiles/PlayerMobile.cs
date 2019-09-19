@@ -2681,28 +2681,24 @@ namespace Server.Mobiles
 
           if (faction.Commander == this)
           {
-            text = string.Concat(Female ? "(Commanding Lady of the " : "(Commanding Lord of the ",
-              faction.Definition.FriendlyName, ")");
+            text = $"{(Female ? "(Commanding Lady of the " : "(Commanding Lord of the ")}{faction.Definition.FriendlyName})";
           }
           else if (pl.Sheriff != null)
           {
-            text = string.Concat("(The Sheriff of ", pl.Sheriff.Definition.FriendlyName, ", ",
-              faction.Definition.FriendlyName, ")");
+            text = $"(The Sheriff of {pl.Sheriff.Definition.FriendlyName}, {faction.Definition.FriendlyName})";
           }
           else if (pl.Finance != null)
           {
-            text = string.Concat("(The Finance Minister of ", pl.Finance.Definition.FriendlyName, ", ",
-              faction.Definition.FriendlyName, ")");
+            text = $"(The Finance Minister of {pl.Finance.Definition.FriendlyName}, {faction.Definition.FriendlyName})";
           }
           else
           {
             ascii = true;
 
             if (pl.MerchantTitle != MerchantTitle.None)
-              text = string.Concat("(", MerchantTitles.GetInfo(pl.MerchantTitle).Title.String, ", ",
-                faction.Definition.FriendlyName, ")");
+              text = $"({MerchantTitles.GetInfo(pl.MerchantTitle).Title.String}, {faction.Definition.FriendlyName})";
             else
-              text = string.Concat("(", pl.Rank.Title.String, ", ", faction.Definition.FriendlyName, ")");
+              text = $"({pl.Rank.Title.String}, {faction.Definition.FriendlyName})";
           }
 
           int hue = Faction.Find(from) == faction ? 98 : 38;
@@ -4097,7 +4093,7 @@ namespace Server.Mobiles
         if (suffix.Length == 0)
           suffix = "(Young)";
         else
-          suffix = string.Concat(suffix, " (Young)");
+          suffix = $"{suffix} (Young)";
       }
 
       #region Ethics
@@ -4107,7 +4103,7 @@ namespace Server.Mobiles
         if (suffix.Length == 0)
           suffix = EthicPlayer.Ethic.Definition.Adjunct.String;
         else
-          suffix = string.Concat(suffix, " ", EthicPlayer.Ethic.Definition.Adjunct.String);
+          suffix = $"{suffix} {EthicPlayer.Ethic.Definition.Adjunct.String}";
       }
 
       #endregion
@@ -4122,7 +4118,7 @@ namespace Server.Mobiles
           if (suffix.Length == 0)
             suffix = adjunct;
           else
-            suffix = string.Concat(suffix, " ", adjunct);
+            suffix = $"{suffix} {adjunct}";
         }
       }
 

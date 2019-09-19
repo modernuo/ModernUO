@@ -326,9 +326,9 @@ namespace Server.Misc
         string skillTitle = highest.Info.Title;
 
         if (mob.Female && skillTitle.EndsWith("man"))
-          skillTitle = skillTitle.Substring(0, skillTitle.Length - 3) + "woman";
+          skillTitle = $"{skillTitle.Substring(0, skillTitle.Length - 3)}woman";
 
-        return string.Concat(skillLevel, " ", skillTitle);
+        return $"{skillLevel} {skillTitle}";
       }
 
       return null;

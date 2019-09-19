@@ -128,7 +128,7 @@ namespace Server.Items
 
     public virtual void DisplayDurabilityTo(Mobile m)
     {
-      LabelToAffix(m, 1017323, AffixType.Append, ": " + m_UsesRemaining); // Durability
+      LabelToAffix(m, 1017323, AffixType.Append, $": {m_UsesRemaining}"); // Durability
     }
 
     public static bool CheckAccessible(Item tool, Mobile m) => tool.IsChildOf(m) || tool.Parent == m;

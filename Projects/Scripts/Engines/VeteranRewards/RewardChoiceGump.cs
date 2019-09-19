@@ -50,14 +50,8 @@ namespace Server.Engines.VeteranRewards
 
       AddPage(1);
 
-      AddHtml(60, 35, 500, 70, "<B>Ultima Online Rewards Program</B><BR>" +
-                               "Thank you for being a part of the Ultima Online community for a full " +
-                               intervalAsString + ".  " +
-                               "As a token of our appreciation,  you may select from the following in-game reward items listed below.  " +
-                               "The gift items will be attributed to the character you have logged-in with on the shard you are on when you chose the item(s).  " +
-                               "The number of rewards you are entitled to are listed below and are for your entire account.  " +
-                               "To read more about these rewards before making a selection, feel free to visit the uo.com site at " +
-                               "<A HREF=\"http://www.uo.com/rewards\">http://www.uo.com/rewards</A>.", true, true);
+      AddHtml(60, 35, 500, 70,
+        $"<B>Ultima Online Rewards Program</B><BR>Thank you for being a part of the Ultima Online community for a full {intervalAsString}.  As a token of our appreciation,  you may select from the following in-game reward items listed below.  The gift items will be attributed to the character you have logged-in with on the shard you are on when you chose the item(s).  The number of rewards you are entitled to are listed below and are for your entire account.  To read more about these rewards before making a selection, feel free to visit the uo.com site at <A HREF=\"http://www.uo.com/rewards\">http://www.uo.com/rewards</A>.", true, true);
 
       RewardSystem.ComputeRewardInfo(m_From, out int cur, out int max);
 

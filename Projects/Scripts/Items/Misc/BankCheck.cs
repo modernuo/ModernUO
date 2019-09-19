@@ -140,18 +140,15 @@ namespace Server.Items
 
     public override void OnSingleClick(Mobile from)
     {
-      from.Send(
-        new MessageLocalizedAffix(
-          Serial,
-          ItemID,
-          MessageType.Label,
-          0x3B2,
-          3,
-          1041361,
-          "",
-          AffixType.Append,
-          string.Concat(" ", m_Worth.ToString()),
-          "")); // A bank check:
+      Packets.SendMessageLocalizedAffix(from.NetState, Serial,
+        ItemID,
+        MessageType.Label,
+        0x3B2,
+        3,
+        1041361,
+        "",
+        AffixType.Append,
+        $" {m_Worth}"); // A bank check:
     }
 
     public override void OnDoubleClick(Mobile from)

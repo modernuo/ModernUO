@@ -102,7 +102,7 @@ namespace Server.Items
       list.Add(1054131,
         m_Charges + (PetName.Length == 0
           ? "\t "
-          : "\t" + PetName)); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
+          : $"\t{PetName}")); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
     }
 
     public override void OnSingleClick(Mobile from)
@@ -110,7 +110,7 @@ namespace Server.Items
       LabelTo(from, 1054131,
         m_Charges + (PetName.Length == 0
           ? "\t "
-          : "\t" + PetName)); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
+          : $"\t{PetName}")); // a crystal ball of pet summoning: [charges: ~1_charges~] : [linked pet: ~2_petName~]
     }
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
@@ -177,41 +177,27 @@ namespace Server.Items
         return;
 
       if (Charges == 0)
-      {
         SendLocalizedMessageTo(from,
           1054122); // The Crystal Ball darkens. It must be charged before it can be used again.
-      }
       else if (pet is BaseMount mount && mount.Rider == from)
-      {
         MessageHelper.SendLocalizedMessageTo(this, from, 1054124,
           0x36); // The Crystal Ball fills with a yellow mist. Why would you summon your pet while riding it?
-      }
       else if (pet.Map == Map.Internal && (!pet.IsStabled || from.Followers + pet.ControlSlots > from.FollowersMax))
-      {
         MessageHelper.SendLocalizedMessageTo(this, from, 1054125,
           0x5); // The Crystal Ball fills with a blue mist. Your pet is not responding to the summons.
-      }
       else if ((!pet.Controlled || pet.ControlMaster != from) && !from.Stabled.Contains(pet))
-      {
         MessageHelper.SendLocalizedMessageTo(this, from, 1054126,
           0x8FD); // The Crystal Ball fills with a grey mist. You are not the owner of the pet you are attempting to summon.
-      }
       else if (!pet.IsBonded)
-      {
         MessageHelper.SendLocalizedMessageTo(this, from, 1054127,
           0x22); // The Crystal Ball fills with a red mist. You appear to have let your bond to your pet deteriorate.
-      }
       else if (from.Map == Map.Ilshenar || from.Region.IsPartOf<DungeonRegion>() ||
                from.Region.IsPartOf<Jail>() || from.Region.IsPartOf<SafeZone>())
-      {
-        from.Send(new AsciiMessage(Serial, ItemID, MessageType.Regular, 0x22, 3, "",
-          "You cannot summon your pet to this location."));
-      }
+        Packets.SendAsciiMessage(from.NetState, Serial, ItemID, MessageType.Regular, 0x22, 3, "",
+          "You cannot summon your pet to this location.");
       else if (Core.ML && from is PlayerMobile mobile && DateTime.UtcNow < mobile.LastPetBallTime.AddSeconds(15.0))
-      {
         MessageHelper.SendLocalizedMessageTo(this, mobile, 1080072,
           0x22); // You must wait a few seconds before you can summon your pet.
-      }
       else
       {
         if (Core.ML)

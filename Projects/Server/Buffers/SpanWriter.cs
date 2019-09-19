@@ -228,6 +228,21 @@ namespace Server.Buffers
     }
 
     /// <summary>
+    ///   Writes a dynamic-length ASCII-encoded string value to the span, followed by a 1-byte null character.
+    /// </summary>
+    public void WriteAsciiNull(string value, int size)
+    {
+      if (value == null)
+      {
+        Console.WriteLine("Network: Attempted to WriteAsciiNull() with null value");
+        value = string.Empty;
+      }
+
+      size = Math.Min(size, value.Length);
+      Position += Encoding.ASCII.GetBytes(value.AsSpan(0, size), Span.Slice(Position)) + 1;
+    }
+
+    /// <summary>
     ///   Writes a dynamic-length little-endian unicode string value to the span, followed by a 2-byte null character.
     /// </summary>
     public void WriteLittleUniNull(string value)
@@ -289,7 +304,21 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a dynamic-length utf-8 string value to the span, followed by a 1-byte null character.
+    ///   Writes a dynamic-length utf-8 string values.
+    /// </summary>
+    public void WriteUTF8(string value)
+    {
+      if (value == null)
+      {
+        Console.WriteLine("Network: Attempted to WriteUTF8Null() with null value");
+        value = string.Empty;
+      }
+
+      Position += Utility.UTF8.GetBytes(value, RawSpan.Slice(Position));
+    }
+
+    /// <summary>
+    ///   Writes a dynamic-length utf-8 string value, followed by a 1-byte null character.
     /// </summary>
     public void WriteUTF8Null(string value)
     {

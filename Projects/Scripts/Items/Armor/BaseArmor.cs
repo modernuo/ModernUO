@@ -1288,13 +1288,13 @@ namespace Server.Items
         string modName = Serial.ToString();
 
         if (strBonus != 0)
-          m.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+          m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
         if (dexBonus != 0)
-          m.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+          m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
         if (intBonus != 0)
-          m.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+          m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
       }
 
       m?.CheckStatTimers();
@@ -1401,13 +1401,13 @@ namespace Server.Items
         string modName = Serial.ToString();
 
         if (strBonus != 0)
-          from.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+          from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
         if (dexBonus != 0)
-          from.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+          from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
         if (intBonus != 0)
-          from.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+          from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
       }
 
       return base.OnEquip(from);
@@ -1419,9 +1419,9 @@ namespace Server.Items
       {
         string modName = Serial.ToString();
 
-        m.RemoveStatMod(modName + "Str");
-        m.RemoveStatMod(modName + "Dex");
-        m.RemoveStatMod(modName + "Int");
+        m.RemoveStatMod($"{modName}Str");
+        m.RemoveStatMod($"{modName}Dex");
+        m.RemoveStatMod($"{modName}Int");
 
         if (Core.AOS)
           SkillBonuses.Remove();

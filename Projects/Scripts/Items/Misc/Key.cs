@@ -203,14 +203,9 @@ namespace Server.Items
     {
       base.GetProperties(list);
 
-      string desc;
+      string desc = m_KeyVal == 0 ? "(blank)" : m_Description?.Trim() ?? "";
 
-      if (m_KeyVal == 0)
-        desc = "(blank)";
-      else if ((desc = m_Description) == null || (desc = desc.Trim()).Length <= 0)
-        desc = null;
-
-      if (desc != null)
+      if (desc != "")
         list.Add(desc);
     }
 
@@ -218,15 +213,10 @@ namespace Server.Items
     {
       base.OnSingleClick(from);
 
-      string desc;
-
-      if (m_KeyVal == 0)
-        desc = "(blank)";
-      else if ((desc = m_Description) == null || (desc = desc.Trim()).Length <= 0)
-        desc = "";
+      string desc = m_KeyVal == 0 ? "(blank)" : m_Description?.Trim() ?? "";
 
       if (desc.Length > 0)
-        from.Send(new UnicodeMessage(Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", "", desc));
+        Packets.SendUnicodeMessage(from.NetState, Serial, ItemID, MessageType.Regular, 0x3B2, 3, "ENU", "", desc);
     }
 
     public bool UseOn(Mobile from, ILockable o)

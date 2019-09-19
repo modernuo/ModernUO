@@ -27,9 +27,10 @@ using Server.Targeting;
 
 namespace Server
 {
-  public enum MusicName : byte
+  public enum MusicName : ushort
   {
-    Invalid = 255,
+    Invalid = 0xFFFF,
+    None = 0x1FFF,
     OldUlt01 = 0,
     Create1,
     DragFlit,
