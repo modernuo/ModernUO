@@ -3364,22 +3364,14 @@ namespace Server
       UpdateAggrExpire();
     }
 
-    public virtual int GetTotal(TotalType type)
-    {
-      switch (type)
+    public virtual int GetTotal(TotalType type) =>
+      type switch
       {
-        case TotalType.Gold:
-          return m_TotalGold;
-
-        case TotalType.Items:
-          return m_TotalItems;
-
-        case TotalType.Weight:
-          return m_TotalWeight;
-      }
-
-      return 0;
-    }
+        TotalType.Gold => m_TotalGold,
+        TotalType.Items => m_TotalItems,
+        TotalType.Weight => m_TotalWeight,
+        _ => 0
+      };
 
     public virtual void UpdateTotal(Item sender, TotalType type, int delta)
     {

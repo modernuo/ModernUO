@@ -1,11 +1,11 @@
 namespace Server.Misc
 {
-  public class MapDefinitions
+  public static class MapDefinitions
   {
     public static void Configure()
     {
       /* Here we configure all maps. Some notes:
-       * 
+       *
        * 1) The first 32 maps are reserved for core use.
        * 2) Map 0x7F is reserved for core use.
        * 3) Map 0xFF is reserved for core use.
@@ -23,7 +23,7 @@ namespace Server.Misc
 
       /* Example of registering a custom map:
        * RegisterMap( 32, 0, 0, 6144, 4096, 3, "Iceland", MapRules.FeluccaRules );
-       * 
+       *
        * Defined:
        * RegisterMap( <index>, <mapID>, <fileIndex>, <width>, <height>, <season>, <name>, <rules> );
        *  - <index> : An unreserved unique index for this map
@@ -40,7 +40,7 @@ namespace Server.Misc
       MultiComponentList.PostHSFormat = true; // OSI Client Patch 7.0.9.0
     }
 
-    public static void RegisterMap(int mapIndex, int mapID, int fileIndex, int width, int height, int season,
+    public static void RegisterMap(int mapIndex, int mapID, int fileIndex, int width, int height, byte season,
       string name, MapRules rules)
     {
       Map newMap = new Map(mapID, mapIndex, fileIndex, width, height, season, name, rules);

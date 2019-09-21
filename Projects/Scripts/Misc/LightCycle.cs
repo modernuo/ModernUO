@@ -125,7 +125,7 @@ namespace Server
 
       protected override void OnTick()
       {
-        m_Owner.EndAction<LightCycle>();
+        m_Owner.EndAction<NightSightTimer>();
         m_Owner.LightLevel = 0;
         BuffInfo.RemoveBuff(m_Owner, BuffIcon.NightSight);
       }

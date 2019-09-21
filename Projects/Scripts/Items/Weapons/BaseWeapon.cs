@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Server.Engines.Craft;
 using Server.Ethics;
@@ -516,10 +517,9 @@ namespace Server.Items
         double swrd = m.Skills.Swords.Value;
         double fenc = m.Skills.Fencing.Value;
         double mcng = m.Skills.Macing.Value;
-        double val;
 
         sk = SkillName.Swords;
-        val = swrd;
+        var val = swrd;
 
         if (fenc > val)
         {
@@ -530,12 +530,7 @@ namespace Server.Items
         if (mcng > val) sk = SkillName.Macing;
       }
       else if (WeaponAttributes.MageWeapon != 0)
-      {
-        if (m.Skills.Magery.Value > m.Skills[Skill].Value)
-          sk = SkillName.Magery;
-        else
-          sk = Skill;
-      }
+        sk = m.Skills.Magery.Value > m.Skills[Skill].Value ? SkillName.Magery : Skill;
       else
       {
         sk = Skill;
@@ -559,11 +554,11 @@ namespace Server.Items
       BaseWeapon atkWeapon = attacker.Weapon as BaseWeapon;
       BaseWeapon defWeapon = defender.Weapon as BaseWeapon;
 
-      Skill atkSkill = attacker.Skills[atkWeapon.Skill];
+      Skill atkSkill = attacker.Skills[atkWeapon?.Skill ?? SkillName.Wrestling];
       // Skill defSkill = defender.Skills[defWeapon.Skill];
 
-      double atkValue = atkWeapon.GetAttackSkillValue(attacker, defender);
-      double defValue = defWeapon.GetDefendSkillValue(attacker, defender);
+      double atkValue = atkWeapon?.GetAttackSkillValue(attacker, defender) ?? 0;
+      double defValue = defWeapon?.GetDefendSkillValue(attacker, defender) ?? 0;
 
       double ourValue, theirValue;
 
@@ -792,9 +787,7 @@ namespace Server.Items
       if (canSwing && attacker.HarmfulCheck(defender))
       {
         attacker.DisruptiveAction();
-
-        if (attacker.NetState != null)
-          attacker.Send(new Swing(0, attacker, defender));
+        Packets.SendSwing(attacker.NetState, attacker.Serial, defender.Serial);
 
         if (attacker is BaseCreature bc)
         {
@@ -2383,12 +2376,8 @@ namespace Server.Items
         number = 1041000;
       }
 
-      if (attrs.Count == 0 && Crafter == null && Name != null)
-        return;
-
-      EquipmentInfo eqInfo = new EquipmentInfo(number, m_Crafter, false, attrs.ToArray());
-
-      from.Send(new DisplayEquipmentInfo(this, eqInfo));
+      if (attrs.Count > 0 || Crafter != null || Name == null)
+        EquipmentPackets.SendDisplayEquipmentInfo(from.NetState, this, number, m_Crafter, false, attrs);
     }
 
     private class ResetEquipTimer : Timer

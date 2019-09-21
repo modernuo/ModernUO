@@ -15,7 +15,7 @@ namespace Server.Gumps
 {
   public enum AdminGumpPage
   {
-    Information_General,
+    Information_General = 0,
     Information_Perf,
     Administer,
     Clients,
@@ -38,7 +38,8 @@ namespace Server.Gumps
     AccountDetails_Tags,
     AccountDetails_ChangePassword,
     AccountDetails_ChangeAccess,
-    FirewallInfo
+    FirewallInfo,
+    Invalid = 1
   }
 
   public class AdminGump : Gump
@@ -1600,30 +1601,19 @@ namespace Server.Gumps
       {
         case 0:
         {
-          AdminGumpPage page;
-
-          switch (index)
+          AdminGumpPage page = index switch
           {
-            case 0:
-              page = AdminGumpPage.Information_General;
-              break;
-            case 1:
-              page = AdminGumpPage.Administer;
-              break;
-            case 2:
-              page = AdminGumpPage.Clients;
-              break;
-            case 3:
-              page = AdminGumpPage.Accounts;
-              break;
-            case 4:
-              page = AdminGumpPage.Firewall;
-              break;
-            case 5:
-              page = AdminGumpPage.Information_Perf;
-              break;
-            default: return;
-          }
+            0 => AdminGumpPage.Information_General,
+            1 => AdminGumpPage.Administer,
+            2 => AdminGumpPage.Clients,
+            3 => AdminGumpPage.Accounts,
+            4 => AdminGumpPage.Firewall,
+            5 => AdminGumpPage.Information_Perf,
+            _ => AdminGumpPage.Invalid,
+          };
+
+          if (page == AdminGumpPage.Invalid)
+            return;
 
           from.SendGump(new AdminGump(from, page));
           break;

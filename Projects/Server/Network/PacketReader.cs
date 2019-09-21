@@ -104,7 +104,7 @@ namespace Server.Network
 
     public sbyte ReadSByte() => (sbyte)ReadByte();
 
-    public bool ReadBoolean() => ReadByte() > 0;
+    public bool ReadBoolean() => ReadByte() != 0;
 
     public bool IsSafeChar(int c) => c >= 0x20 && c < 0xFFFE;
 

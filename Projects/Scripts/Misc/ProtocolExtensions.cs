@@ -51,14 +51,4 @@ namespace Server.Misc
       }
     }
   }
-
-  public abstract class ProtocolExtension : Packet
-  {
-    public ProtocolExtension(int packetID, int capacity) : base(0xF0)
-    {
-      EnsureCapacity(4 + capacity);
-
-      m_Stream.Write((byte)packetID);
-    }
-  }
 }

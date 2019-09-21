@@ -1,4 +1,5 @@
 using System;
+using Server.Buffers;
 using Server.Engines.PartySystem;
 using Server.Guilds;
 using Server.Network;
@@ -18,35 +19,12 @@ namespace Server.Misc
 
     private static void OnPartyTrack(NetState state, PacketReader pvSrc)
     {
-      Mobile from = state.Mobile;
-      Party party = Party.Get(from);
-
-      if (party != null)
-      {
-        Packets.PartyTrack packet = new Packets.PartyTrack(from, party);
-
-        if (packet.UnderlyingStream.Length > 8)
-          state.Send(packet);
-      }
+      MapUOPackets.SendPartyTrack(state, Party.Get(state.Mobile));
     }
 
     private static void OnGuildTrack(NetState state, PacketReader pvSrc)
     {
-      Mobile from = state.Mobile;
-
-      if (from.Guild is Guild guild)
-      {
-        bool locations = pvSrc.ReadByte() != 0;
-
-        Packets.GuildTrack packet = new Packets.GuildTrack(from, guild, locations);
-
-        if (packet.UnderlyingStream.Length > (locations ? 9 : 5))
-          state.Send(packet);
-      }
-      else
-      {
-        state.Send(new Packets.GuildTrack());
-      }
+      MapUOPackets.SendGuildTrack(state, state.Mobile.Guild as Guild, pvSrc.ReadBoolean());
     }
 
     private static class Settings
@@ -56,74 +34,96 @@ namespace Server.Misc
       public const bool GuildHitsPercent = true;
     }
 
-    private static class Packets
+    private static class MapUOPackets
     {
-      public sealed class PartyTrack : ProtocolExtension
+      public static void SendPartyTrack(NetState ns, Party party)
       {
-        public PartyTrack(Mobile from, Party party) : base(0x01, (party.Members.Count - 1) * 9 + 4)
+        Mobile from = ns.Mobile;
+        int count = party?.Members.Count ?? 0;
+        if (count < 2)
+          return;
+
+        SpanWriter writer = new SpanWriter(stackalloc byte[Math.Max(count - 1, 0) * 9 + 8]);
+        writer.Write((byte)0xF0); // Packet ID
+        writer.Position += 2; // Dynamic Length
+
+        writer.Write((byte)0x01); // Command
+
+        count = 0;
+        for (int i = 0; i < count; ++i)
         {
-          for (int i = 0; i < party.Members.Count; ++i)
-          {
-            PartyMemberInfo pmi = party.Members[i];
+          Mobile mob = party.Members[i]?.Mobile; // if count is greater than 0, then party is not null
 
-            if (pmi == null || pmi.Mobile == from)
-              continue;
+          if (mob == from || mob?.NetState == null || Utility.InUpdateRange(from, mob) && from.CanSee(mob))
+            continue;
 
-            Mobile mob = pmi.Mobile;
-
-            if (Utility.InUpdateRange(from, mob) && from.CanSee(mob))
-              continue;
-
-            m_Stream.Write(mob.Serial);
-            m_Stream.Write((short)mob.X);
-            m_Stream.Write((short)mob.Y);
-            m_Stream.Write((byte)(mob.Map?.MapID ?? 0));
-          }
-
-          m_Stream.Write(0);
+          count++;
+          writer.Write(mob.Serial);
+          writer.Write((short)mob.X);
+          writer.Write((short)mob.Y);
+          writer.Write((byte)(mob.Map?.MapID ?? 0));
         }
+
+        if (count == 0)
+          return;
+
+        writer.Position += 4; // Empty Serial
+        writer.Position = 1;
+        writer.Write((ushort)writer.WrittenCount);
+
+        ns.Send(writer.Span);
       }
 
-      public sealed class GuildTrack : ProtocolExtension
+      public static void SendGuildTrack(NetState ns, Guild guild = null, bool locations = false)
       {
-        public GuildTrack() : base(0x02, 5)
-        {
-          m_Stream.Write((byte)0);
-          m_Stream.Write(0);
-        }
+        Mobile from = ns.Mobile;
 
-        public GuildTrack(Mobile from, Guild guild, bool locations) : base(0x02,
-          (guild.Members.Count - 1) * (locations ? 10 : 4) + 5)
-        {
-          m_Stream.Write((byte)(locations ? 1 : 0));
+        int count = guild?.Members.Count ?? 0;
 
-          for (int i = 0; i < guild.Members.Count; ++i)
+        if (count < 2)
+          return;
+
+        SpanWriter writer = new SpanWriter(stackalloc byte[Math.Max(count - 1, 0) * (locations ? 10 : 4) + 9]);
+        writer.Write((byte)0xF0); // Packet ID
+        writer.Position += 2; // Dynamic Length
+
+        writer.Write((byte)0x02); // Command
+
+        writer.Write(locations);
+
+        count = 0;
+        for (int i = 0; i < count; ++i)
+        {
+          Mobile mob = guild.Members[i]; // If guild count is above 0, then guild is not null.
+
+          if (mob == from || mob?.NetState == null || locations && Utility.InUpdateRange(from, mob) && from.CanSee(mob))
+            continue;
+
+          count++;
+          writer.Write(mob.Serial);
+
+          if (locations)
           {
-            Mobile mob = guild.Members[i];
+            writer.Write((short)mob.X);
+            writer.Write((short)mob.Y);
+            writer.Write((byte)(mob.Map?.MapID ?? 0));
 
-            if (mob == null || mob == from || mob.NetState == null)
-              continue;
-
-            if (locations && Utility.InUpdateRange(from, mob) && from.CanSee(mob))
-              continue;
-
-            m_Stream.Write(mob.Serial);
-
-            if (locations)
-            {
-              m_Stream.Write((short)mob.X);
-              m_Stream.Write((short)mob.Y);
-              m_Stream.Write((byte)(mob.Map?.MapID ?? 0));
-
-              if (Settings.GuildHitsPercent && mob.Alive)
-                m_Stream.Write((byte)(mob.Hits / Math.Max(mob.HitsMax, 1.0) * 100));
-              else
-                m_Stream.Write((byte)0);
-            }
+            if (Settings.GuildHitsPercent && mob.Alive)
+              writer.Write((byte)(mob.Hits / Math.Max(mob.HitsMax, 1.0) * 100));
+            else
+              writer.Position++; // writer.Write((byte)0);
           }
-
-          m_Stream.Write(0);
         }
+
+        if (count == 0)
+          return;
+
+        writer.Position += 4; // Empty Serial
+
+        writer.Position = 1;
+        writer.Write((ushort)writer.WrittenCount);
+
+        ns.Send(writer.Span);
       }
     }
   }
