@@ -37,7 +37,7 @@ namespace Server.Network
     }
 
     private static readonly byte[][][] _seasonChangePackets = {
-      new byte[2][], new byte[2][], new byte[2][], new byte[2][], new byte[2][],
+      new byte[2][], new byte[2][], new byte[2][], new byte[2][], new byte[2][]
     };
 
     public static void SendSeasonChange(NetState ns, byte season, byte playSound)

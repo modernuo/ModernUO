@@ -1,5 +1,6 @@
 using System;
 using Server.Accounting;
+using Server.Network;
 
 namespace Server.Misc
 {
@@ -49,7 +50,7 @@ namespace Server.Misc
 
       string body = beheld.Profile ?? "";
 
-      beholder.Send(new DisplayProfile(beholder != beheld || !beheld.ProfileLocked, beheld, header, body, footer));
+      Packets.SendDisplayProfile(beholder.NetState, beholder != beheld || !beheld.ProfileLocked ? beheld.Serial : Serial.Zero, header, body, footer);
     }
 
     private static string GetAccountDuration(Mobile m)

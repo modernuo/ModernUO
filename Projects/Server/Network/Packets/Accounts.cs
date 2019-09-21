@@ -52,7 +52,7 @@ namespace Server.Network
       ns?.Send(stackalloc byte[]
       {
         0x53, // Packet ID
-        (byte)msg,
+        (byte)msg
       });
     }
 

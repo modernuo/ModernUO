@@ -28,7 +28,7 @@ namespace Server.Network
       ns?.Send(stackalloc byte[]
       {
         0xC8, // Packet ID
-        range,
+        range
       });
     }
 
@@ -90,7 +90,7 @@ namespace Server.Network
       ns?.Send(stackalloc byte[]
       {
         0x2C, // Packet ID
-        0x02, // Why not 1?
+        0x02 // Why not 1?
       });
     }
 
@@ -104,7 +104,7 @@ namespace Server.Network
         0x00,
         0x06, // Length
         0x26,
-        0x00, // Disabled
+        0x00 // Disabled
       });
     }
 
@@ -116,7 +116,7 @@ namespace Server.Network
         0x00,
         0x06, // Length
         0x26,
-        0x01, // Mount
+        0x01 // Mount
       });
     }
 
@@ -128,7 +128,7 @@ namespace Server.Network
         0x00,
         0x06, // Length
         0x26,
-        0x02, // Walk
+        0x02 // Walk
       });
     }
 
@@ -173,7 +173,7 @@ namespace Server.Network
         0x65, // Packet ID
         type,
         density,
-        temperature,
+        temperature
       });
     }
 
@@ -380,7 +380,7 @@ namespace Server.Network
       {
         0x6D, // Packet ID
         value >> 8,
-        value & 0xFF,
+        value & 0xFF
       });
     }
 
@@ -452,7 +452,7 @@ namespace Server.Network
       ns?.Send(stackalloc byte[2]
       {
         0x73, // Packet ID
-        ping,
+        ping
       });
     }
 
@@ -487,7 +487,7 @@ namespace Server.Network
       {
         0x22,
         seq,
-        noto,
+        noto
       });
     }
 

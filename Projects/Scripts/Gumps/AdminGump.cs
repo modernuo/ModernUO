@@ -39,7 +39,7 @@ namespace Server.Gumps
     AccountDetails_ChangePassword,
     AccountDetails_ChangeAccess,
     FirewallInfo,
-    Invalid = 1
+    Invalid = -1
   }
 
   public class AdminGump : Gump

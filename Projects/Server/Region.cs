@@ -97,7 +97,7 @@ namespace Server
     Paws,
     SelimsBar,
     SerpentIsleCombat_U7,
-    ValoriaShips,
+    ValoriaShips
   }
 
   public class Region : IComparable<Region>

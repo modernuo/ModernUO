@@ -8,7 +8,7 @@ namespace Server.Misc
 	public class Weather
 	{
 		private static Map[] m_Facets;
-		private static Dictionary<Map, List<Weather>> m_WeatherByFacet = new Dictionary<Map, List<Weather>>();
+		private static readonly Dictionary<Map, List<Weather>> m_WeatherByFacet = new Dictionary<Map, List<Weather>>();
 
 		public static void Initialize()
 		{
