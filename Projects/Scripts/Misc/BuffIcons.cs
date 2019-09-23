@@ -58,21 +58,6 @@ namespace Server
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, string args, TimeSpan time, bool retain = false, Mobile m = null) :
-      this(iconId, title, title + 1, args, DateTime.UtcNow, time, retain, m)
-    {
-    }
-
-    public BuffInfo(BuffIcon iconId, int title, DateTime start, TimeSpan time = default, bool retain = false,
-      Mobile m = null) : this(iconId, title, title + 1, start, time, retain, m)
-    {
-    }
-
-    public BuffInfo(BuffIcon iconId, int title, string args, DateTime start, TimeSpan time = default,  bool retain = false, Mobile m = null) :
-      this(iconId, title, title + 1, args, start, time, retain, m)
-    {
-    }
-
     public BuffInfo(BuffIcon iconId, int title, int desc, TimeSpan time = default, bool retain = false,
       Mobile m = null) : this(iconId, title, desc, null, time, retain, m)
     {
