@@ -31,34 +31,59 @@ namespace Server
 
     public Timer Timer{ get; }
 
-    public bool RetainThroughDeath{ get; }
+    public bool RetainThroughDeath { get; }
 
     public BuffInfo(BuffIcon iconId, int title, TimeSpan time = default, Mobile m = null) :
       this(iconId, title, title + 1, time, m)
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, TimeSpan time, Mobile m) :
+    public BuffInfo(BuffIcon iconId, int title, string args, TimeSpan time = default, Mobile m = null) :
+      this(iconId, title, title + 1, args, time, m)
+    {
+    }
+
+    public BuffInfo(BuffIcon iconId, int title, int desc, TimeSpan time = default, Mobile m = null) :
       this(iconId, title, desc, null, time, m)
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, string args, TimeSpan time, Mobile m) :
-      this(iconId, title, desc, args, DateTime.UtcNow, time, false, m)
+    public BuffInfo(BuffIcon iconId, int title, string args, bool retain, Mobile m = null) :
+      this(iconId, title, title + 1, args, DateTime.UtcNow, default, retain, m)
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, bool retain) :
-      this(iconId, title, desc, null, retain)
+    public BuffInfo(BuffIcon iconId, int title, int desc, string args, TimeSpan time, Mobile m = null) :
+      this(iconId, title, new TextDefinition(desc, args), DateTime.UtcNow, time, false, m)
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, string args, bool retain) :
-      this(iconId, title, new TextDefinition(desc, args), DateTime.UtcNow, default, retain)
+    public BuffInfo(BuffIcon iconId, int title, string args, TimeSpan time, bool retain = false, Mobile m = null) :
+      this(iconId, title, title + 1, args, DateTime.UtcNow, time, retain, m)
     {
     }
 
-    public BuffInfo(BuffIcon iconId, int title, int desc, string args = null, DateTime start = default, TimeSpan time = default, bool retain = false,
+    public BuffInfo(BuffIcon iconId, int title, DateTime start, TimeSpan time = default, bool retain = false,
+      Mobile m = null) : this(iconId, title, title + 1, start, time, retain, m)
+    {
+    }
+
+    public BuffInfo(BuffIcon iconId, int title, string args, DateTime start, TimeSpan time = default,  bool retain = false, Mobile m = null) :
+      this(iconId, title, title + 1, args, start, time, retain, m)
+    {
+    }
+
+    public BuffInfo(BuffIcon iconId, int title, int desc, TimeSpan time = default, bool retain = false,
+      Mobile m = null) : this(iconId, title, desc, null, time, retain, m)
+    {
+    }
+
+    public BuffInfo(BuffIcon iconId, int title, int desc, string args, TimeSpan time = default, bool retain = false,
+      Mobile m = null) : this(iconId, title, new TextDefinition(desc, args), DateTime.UtcNow, time, retain, m)
+    {
+    }
+
+    public BuffInfo(BuffIcon iconId, int title, int desc, string args, DateTime start, TimeSpan time = default, bool retain = false,
       Mobile m = null) : this(iconId, title, new TextDefinition(desc, args), start, time, retain, m)
     {
     }

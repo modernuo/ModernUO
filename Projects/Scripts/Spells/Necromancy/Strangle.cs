@@ -14,7 +14,7 @@ namespace Server.Spells.Necromancy
       Reagent.NoxCrystal
     );
 
-    private static Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
+    private static readonly Dictionary<Mobile, InternalTimer> m_Table = new Dictionary<Mobile, InternalTimer>();
 
     public StrangleSpell(Mobile caster, Item scroll = null) : base(caster, scroll, m_Info)
     {
@@ -104,7 +104,7 @@ namespace Server.Spells.Necromancy
       }
 
       TimeSpan t_Duration = TimeSpan.FromSeconds(i_Length);
-      BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, 1075795, t_Duration, m, args));
+      BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Strangle, 1075794, args, t_Duration, m));
 
       FinishSequence();
     }

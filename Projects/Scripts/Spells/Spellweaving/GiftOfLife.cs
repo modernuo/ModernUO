@@ -77,7 +77,7 @@ namespace Server.Spells.Spellweaving
 
         m_Table[m] = t;
 
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.GiftOfLife, 1031615, 1075807, duration, m, null, true));
+        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.GiftOfLife, 1031615, 1075807, duration, true, m));
       }
 
       FinishSequence();
