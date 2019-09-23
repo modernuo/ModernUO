@@ -68,7 +68,7 @@ namespace Server.Items
         }
         case 0:
         {
-          var info = reader.ReadInt() switch
+          OreInfo info = reader.ReadInt() switch
           {
             0 => OreInfo.Iron,
             1 => OreInfo.DullCopper,

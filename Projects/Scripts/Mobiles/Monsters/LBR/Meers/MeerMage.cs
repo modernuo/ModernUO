@@ -108,7 +108,7 @@ namespace Server.Mobiles
               if (!combatant.Map.CanSpawnMobile(loc))
                 continue;
 
-              var rabid = i switch
+              BaseCreature rabid = i switch
               {
                 0 => (BaseCreature)new EnragedRabbit(this),
                 1 => new EnragedHind(this),

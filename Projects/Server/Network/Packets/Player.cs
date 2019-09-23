@@ -166,7 +166,7 @@ namespace Server.Network
       });
     }
 
-    public static void SendWeather(NetState ns, byte type, byte density, byte temperature)
+    public static void SendWeather(NetState ns, byte type, byte density, sbyte temperature)
     {
       ns?.Send(stackalloc byte[]
       {

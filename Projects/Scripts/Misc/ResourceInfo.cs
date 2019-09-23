@@ -493,7 +493,7 @@ namespace Server.Items
 		/// </summary>
 		public static CraftResourceInfo GetInfo( CraftResource resource )
 		{
-      var list = GetType(resource) switch
+      CraftResourceInfo[] list = GetType(resource) switch
       {
         CraftResourceType.Metal => m_MetalInfo,
         CraftResourceType.Leather => (Core.AOS ? m_AOSLeatherInfo : m_LeatherInfo),

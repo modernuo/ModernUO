@@ -33,7 +33,7 @@ namespace Server
 
     public bool RetainThroughDeath{ get; }
 
-    public BuffInfo(BuffIcon iconId, int title, TimeSpan time, Mobile m) :
+    public BuffInfo(BuffIcon iconId, int title, TimeSpan time = default, Mobile m = null) :
       this(iconId, title, title + 1, time, m)
     {
     }

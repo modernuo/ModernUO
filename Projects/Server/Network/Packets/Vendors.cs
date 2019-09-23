@@ -11,6 +11,17 @@ namespace Server.Network
       if (ns == null)
         return;
 
+      if (ns.ContainerGridLines)
+        SendVendorBuyContentNew(ns, list);
+      else
+        SendVendorBuyContentOld(ns, list);
+    }
+
+    public static void SendVendorBuyContentOld(NetState ns, IList<BuyItemState> list)
+    {
+      if (ns == null)
+        return;
+
       int length = 5 + list.Count * 19;
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0x3C); // Packet ID
@@ -39,7 +50,7 @@ namespace Server.Network
       ns.Send(w.RawSpan);
     }
 
-    public static void SendVendorBuyContent6017(NetState ns, IList<BuyItemState> list)
+    public static void SendVendorBuyContentNew(NetState ns, IList<BuyItemState> list)
     {
       if (ns == null)
         return;
@@ -74,6 +85,17 @@ namespace Server.Network
     }
 
     public static void SendDisplayBuyList(NetState ns, Serial vendor)
+    {
+      if (ns == null)
+        return;
+
+      if (ns.HighSeas)
+        SendDisplayBuyListHS(ns, vendor);
+      else
+        SendDisplayBuyList(ns, vendor);
+    }
+
+    public static void SendDisplayBuyListOld(NetState ns, Serial vendor)
     {
       if (ns == null)
         return;

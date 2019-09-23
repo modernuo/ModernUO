@@ -58,7 +58,7 @@ namespace Server.Commands
         {
           SignEntry e = list[i];
 
-          var maps = e.m_Map switch
+          Map[] maps = e.m_Map switch
           {
             0 => brit,
             1 => fel,

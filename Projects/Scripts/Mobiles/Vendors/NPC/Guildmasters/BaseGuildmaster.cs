@@ -44,24 +44,13 @@ namespace Server.Mobiles
 
     public virtual void SayPriceTo(Mobile m)
     {
-      m.Send(new MessageLocalizedAffix(Serial, Body, MessageType.Regular, SpeechHue, 3, 1008052, Name,
-        AffixType.Append, JoinCost.ToString(), ""));
+      Packets.SendMessageLocalizedAffix(m.NetState, Serial, Body, MessageType.Regular, SpeechHue, 3, 1008052, Name,
+        AffixType.Append, JoinCost.ToString());
     }
 
-    public virtual bool WasNamed(string speech)
-    {
-      string name = Name;
+    public virtual bool WasNamed(string speech) => Name != null && Insensitive.StartsWith(speech, Name);
 
-      return name != null && Insensitive.StartsWith(speech, name);
-    }
-
-    public override bool HandlesOnSpeech(Mobile from)
-    {
-      if (from.InRange(Location, 2))
-        return true;
-
-      return base.HandlesOnSpeech(from);
-    }
+    public override bool HandlesOnSpeech(Mobile from) => from.InRange(Location, 2) || base.HandlesOnSpeech(from);
 
     public override void OnSpeech(SpeechEventArgs e)
     {

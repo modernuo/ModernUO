@@ -146,7 +146,7 @@ namespace Server.Items
           case MiningCartType.OreEast:
             if (Ore > 0)
             {
-              var ingots = Utility.Random(9) switch
+              Item ingots = Utility.Random(9) switch
               {
                 0 => (Item)new IronIngot(),
                 1 => new DullCopperIngot(),
@@ -184,7 +184,7 @@ namespace Server.Items
           case MiningCartType.GemEast:
             if (Gems > 0)
             {
-              var gems = Utility.Random(15) switch
+              Item gems = Utility.Random(15) switch
               {
                 0 => (Item)new Amber(),
                 1 => new Amethyst(),

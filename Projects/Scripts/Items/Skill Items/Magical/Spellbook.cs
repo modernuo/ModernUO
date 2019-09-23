@@ -284,7 +284,7 @@ namespace Server.Items
       if (!DesignContext.Check(from))
         return; // They are customizing
 
-      var type = e.Type switch
+      SpellbookType type = e.Type switch
       {
         1 => SpellbookType.Regular,
         2 => SpellbookType.Necromancer,

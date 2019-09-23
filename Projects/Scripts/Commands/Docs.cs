@@ -2197,7 +2197,7 @@ namespace Server.Commands
 
         items.ForEach(tuple =>
         {
-          var (type, constructors) = tuple;
+          (Type type, ConstructorInfo[] constructors) = tuple;
           DocumentConstructibleObject(html, type, constructors);
         });
 
@@ -2211,7 +2211,7 @@ namespace Server.Commands
 
         mobiles.ForEach(tuple =>
         {
-          var (type, constructors) = tuple;
+          (Type type, ConstructorInfo[] constructors) = tuple;
           DocumentConstructibleObject(html, type, constructors);
         });
 

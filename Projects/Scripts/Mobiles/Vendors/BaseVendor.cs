@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
 using Server.Factions;
@@ -24,10 +25,10 @@ namespace Server.Mobiles
   {
     private const int MaxSell = 500;
 
-    private static TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
+    private static readonly TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
 
-    private List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
-    private List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
+    private readonly List<IBuyItemInfo> m_ArmorBuyInfo = new List<IBuyItemInfo>();
+    private readonly List<IShopSellInfo> m_ArmorSellInfo = new List<IShopSellInfo>();
 
     public BaseVendor(string title = null)
       : base(AIType.AI_Vendor, FightMode.None, 2, 1, 0.5, 2)
@@ -125,7 +126,6 @@ namespace Server.Mobiles
       IShopSellInfo[] info = GetSellInfo();
       int totalCost = 0;
       List<BuyItemResponse> validBuy = new List<BuyItemResponse>(list.Count);
-      bool bought;
       bool fromBank = false;
       bool fullPurchase = true;
       int controlSlots = buyer.FollowersMax - buyer.Followers;
@@ -188,7 +188,7 @@ namespace Server.Mobiles
       if (validBuy.Count == 0)
         return false;
 
-      bought = buyer.AccessLevel >= AccessLevel.GameMaster;
+      bool bought = buyer.AccessLevel >= AccessLevel.GameMaster;
 
       Container cont = buyer.Backpack;
       if (!bought && cont != null)
@@ -246,25 +246,13 @@ namespace Server.Mobiles
             if (amount > item.Amount)
               amount = item.Amount;
 
-            foreach (IShopSellInfo ssi in info)
-              if (ssi.IsSellable(item))
-                if (ssi.IsResellable(item))
-                {
-                  Item buyItem;
-                  if (amount >= item.Amount)
-                  {
-                    buyItem = item;
-                  }
-                  else
-                  {
-                    buyItem = LiftItemDupe(item, item.Amount - amount) ?? item;
-                  }
+            if (info.Where(ssi => ssi.IsSellable(item)).Any(ssi => ssi.IsResellable(item)))
+            {
+              Item buyItem = amount >= item.Amount ? item : LiftItemDupe(item, item.Amount - amount) ?? item;
 
-                  if (cont == null || !cont.TryDropItem(buyer, buyItem, false))
-                    buyItem.MoveToWorld(buyer.Location, buyer.Map);
-
-                  break;
-                }
+              if (cont?.TryDropItem(buyer, buyItem, false) != true)
+                buyItem.MoveToWorld(buyer.Location, buyer.Map);
+            }
           }
         }
         else if (ser.IsMobile)
@@ -313,10 +301,7 @@ namespace Server.Mobiles
 
     public virtual bool OnSellItems(Mobile seller, List<SellItemResponse> list)
     {
-      if (!IsActiveBuyer)
-        return false;
-
-      if (!seller.CheckAlive())
+      if (!(IsActiveBuyer && seller.CheckAlive()))
         return false;
 
       if (!CheckVendorAccess(seller))
@@ -338,12 +323,7 @@ namespace Server.Mobiles
             !resp.Item.Movable || resp.Item is Container container && container.Items.Count != 0)
           continue;
 
-        foreach (IShopSellInfo ssi in info)
-          if (ssi.IsSellable(resp.Item))
-          {
-            Sold++;
-            break;
-          }
+        if (info.Any(ssi => ssi.IsSellable(resp.Item))) Sold++;
       }
 
       if (Sold > MaxSell)
@@ -372,14 +352,11 @@ namespace Server.Mobiles
             {
               bool found = false;
 
-              foreach (IBuyItemInfo bii in buyInfo)
-                if (bii.Restock(resp.Item, amount))
-                {
-                  resp.Item.Consume(amount);
-                  found = true;
-
-                  break;
-                }
+              if (buyInfo.Any(bii => bii.Restock(resp.Item, amount)))
+              {
+                resp.Item.Consume(amount);
+                found = true;
+              }
 
               if (!found)
               {
@@ -521,16 +498,7 @@ namespace Server.Mobiles
 
     public virtual int GetShoeHue() => 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
 
-    public virtual void CheckMorph()
-    {
-      if (CheckGargoyle())
-        return;
-
-      if (CheckNecromancer())
-        return;
-
-      CheckTokuno();
-    }
+    public virtual bool CheckMorph() => CheckGargoyle() || CheckNecromancer() || CheckTokuno();
 
     public virtual bool CheckTokuno()
     {
@@ -552,12 +520,7 @@ namespace Server.Mobiles
 
     public virtual bool CheckGargoyle()
     {
-      Map map = Map;
-
-      if (map != Map.Ilshenar)
-        return false;
-
-      if (!Region.IsPartOf("Gargoyle City"))
+      if (!(Map == Map.Ilshenar && Region.IsPartOf("Gargoyle City")))
         return false;
 
       if (Body != 0x2F6 || (Hue & 0x8000) == 0)
@@ -568,12 +531,7 @@ namespace Server.Mobiles
 
     public virtual bool CheckNecromancer()
     {
-      Map map = Map;
-
-      if (map != Map.Malas)
-        return false;
-
-      if (!Region.IsPartOf("Umbra"))
+      if (!(Map == Map.Malas && Region.IsPartOf("Umbra")))
         return false;
 
       if (Hue != 0x83E8)
@@ -596,15 +554,13 @@ namespace Server.Mobiles
       LoadSBInfo();
     }
 
-    public virtual int GetRandomNecromancerHue()
-    {
-      return Utility.Random(20) switch
+    public virtual int GetRandomNecromancerHue() =>
+      Utility.Random(20) switch
       {
         0 => 0,
         1 => 0x4E9,
         _ => Utility.RandomList(0x485, 0x497)
       };
-    }
 
     public virtual void TurnToNecromancer()
     {
@@ -643,12 +599,10 @@ namespace Server.Mobiles
 
     public virtual void CapitalizeTitle()
     {
-      string title = Title;
-
-      if (title == null)
+      if (Title == null)
         return;
 
-      string[] split = title.Split(' ');
+      string[] split = Title.Split(' ');
 
       for (int i = 0; i < split.Length; ++i)
       {
@@ -734,10 +688,7 @@ namespace Server.Mobiles
 
     public virtual void VendorBuy(Mobile from)
     {
-      if (!IsActiveSeller)
-        return;
-
-      if (!from.CheckAlive())
+      if (!(IsActiveSeller && from.CheckAlive()))
         return;
 
       if (!CheckVendorAccess(from))
@@ -828,25 +779,13 @@ namespace Server.Mobiles
 
       NetState ns = from.NetState;
 
-      if (ns == null)
-        return;
-
-      if (ns.ContainerGridLines)
-        from.Send(new VendorBuyContent6017(list));
-      else
-        from.Send(new VendorBuyContent(list));
-
-      from.Send(new VendorBuyList(this, list));
-
-      if (ns.HighSeas)
-        from.Send(new DisplayBuyListHS(this));
-      else
-        from.Send(new DisplayBuyList(this));
-
-      from.Send(new MobileStatusExtended(from)); //make sure their gold amount is sent
+      Packets.SendVendorBuyContent(ns, list);
+      Packets.SendVendorBuyList(ns, this, list);
+      Packets.SendDisplayBuyList(ns, this.Serial);
+      Packets.SendMobileStatusExtended(ns, from); //make sure their gold amount is sent
 
       for (int i = 0; i < opls.Count; ++i)
-        from.Send(opls[i]);
+        opls[i].Send(ns);
 
       SayTo(from, 500186); // Greetings.  Have a look around.
     }
@@ -861,12 +800,14 @@ namespace Server.Mobiles
         AddItem(pack);
       }
 
-      from.Send(new EquipUpdate(pack));
+      NetState ns = from.NetState;
+
+      Packets.SendEquipUpdate(ns, pack);
 
       pack = FindItemOnLayer(Layer.ShopSell);
 
       if (pack != null)
-        from.Send(new EquipUpdate(pack));
+        Packets.SendEquipUpdate(ns, pack);
 
       pack = FindItemOnLayer(Layer.ShopResale);
 
@@ -876,15 +817,12 @@ namespace Server.Mobiles
         AddItem(pack);
       }
 
-      from.Send(new EquipUpdate(pack));
+      Packets.SendEquipUpdate(ns, pack);
     }
 
     public virtual void VendorSell(Mobile from)
     {
-      if (!IsActiveBuyer)
-        return;
-
-      if (!from.CheckAlive())
+      if (!(IsActiveBuyer && from.CheckAlive()))
         return;
 
       if (!CheckVendorAccess(from))
@@ -917,13 +855,10 @@ namespace Server.Mobiles
       if (list.Count > 0)
       {
         SendPacksTo(from);
-
-        from.Send(new VendorSellList(this, list));
+        Packets.SendVendorSellList(from.NetState, Serial, list);
       }
       else
-      {
         Say(true, "You have nothing I would be interested in.");
-      }
     }
 
     public override bool OnDragDrop(Mobile from, Item dropped)
@@ -1014,9 +949,7 @@ namespace Server.Mobiles
       int slots = bii.ControlSlots * amount;
 
       if (controlSlots >= slots)
-      {
         controlSlots -= slots;
-      }
       else
       {
         fullPurchase = false;
@@ -1119,7 +1052,7 @@ namespace Server.Mobiles
 
           int maxAmount = gbi.MaxAmount;
 
-          var doubled = maxAmount switch
+          int doubled = maxAmount switch
           {
             40 => 1,
             80 => 2,
@@ -1176,7 +1109,7 @@ namespace Server.Mobiles
                 {
                   GenericBuyInfo gbi = buyInfo[buyInfoIndex];
 
-                  var amount = doubled switch
+                  int amount = doubled switch
                   {
                     1 => 40,
                     2 => 80,
@@ -1197,10 +1130,9 @@ namespace Server.Mobiles
         }
       }
 
-      if (IsParagon)
-        IsParagon = false;
+      IsParagon = false;
 
-      Timer.DelayCall(TimeSpan.Zero, CheckMorph);
+      Timer.DelayCall(TimeSpan.Zero, () => CheckMorph());
     }
 
     public override void AddCustomContextEntries(Mobile from, List<ContextMenuEntry> list)
@@ -1300,8 +1232,7 @@ namespace Server.ContextMenus
   {
     private BaseVendor m_Vendor;
 
-    public VendorBuyEntry(Mobile from, BaseVendor vendor)
-      : base(6103, 8)
+    public VendorBuyEntry(Mobile from, BaseVendor vendor) : base(6103, 8)
     {
       m_Vendor = vendor;
       Enabled = vendor.CheckVendorAccess(from);
@@ -1317,8 +1248,7 @@ namespace Server.ContextMenus
   {
     private BaseVendor m_Vendor;
 
-    public VendorSellEntry(Mobile from, BaseVendor vendor)
-      : base(6104, 8)
+    public VendorSellEntry(Mobile from, BaseVendor vendor) : base(6104, 8)
     {
       m_Vendor = vendor;
       Enabled = vendor.CheckVendorAccess(from);

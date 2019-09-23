@@ -2364,7 +2364,7 @@ namespace Server
           Packets.SendMobileMovingOld(ourState, m, Notoriety.Compute(m, m));
 
         if (sendPublicStats || sendPrivateStats)
-          Packets.SendMobileExtended(ourState, m);
+          Packets.SendMobileStatusExtended(ourState, m);
         else if (sendAll)
           Packets.SendMobileAttributes(ourState, m);
         else if (sendAny)

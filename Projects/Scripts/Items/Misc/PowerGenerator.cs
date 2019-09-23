@@ -378,7 +378,7 @@ namespace Server.Items
 
       private void AddNode(int x, int y, NodeHue hue)
       {
-        var id = hue switch
+        int id = hue switch
         {
           NodeHue.Gray => 0x25F8,
           NodeHue.Blue => 0x868,

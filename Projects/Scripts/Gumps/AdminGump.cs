@@ -2370,7 +2370,7 @@ namespace Server.Gumps
               if (!(m_State is Account a))
                 break;
 
-              var newLevel = index switch
+              AccessLevel newLevel = index switch
               {
                 20 => AccessLevel.Player,
                 21 => AccessLevel.Counselor,

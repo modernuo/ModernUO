@@ -845,7 +845,7 @@ namespace Server.Items
 
         if (ContainsAlchohol)
         {
-          var bac = Content switch
+          int bac = Content switch
           {
             BeverageType.Ale => 1,
             BeverageType.Wine => 2,

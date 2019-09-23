@@ -86,7 +86,7 @@ namespace Server
 
     private static void EventSink_VirtueMacroRequest(VirtueMacroRequestEventArgs e)
     {
-      var virtueID = e.VirtueID switch
+      int virtueID = e.VirtueID switch
       {
         0 => // Honor
         107,

@@ -108,21 +108,21 @@ namespace Server
 
         for (int x = bounds.Start.X; x < bounds.End.X; x++)
         {
-          var xo = x - (o.X + c.Min.X);
+          int xo = x - (o.X + c.Min.X);
 
           if (xo < 0 || xo >= c.Width) continue;
 
           for (int y = bounds.Start.Y; y < bounds.End.Y; y++)
           {
-            var yo = y - (o.Y + c.Min.Y);
+            int yo = y - (o.Y + c.Min.Y);
 
             if (yo < 0 || yo >= c.Height) continue;
 
-            var t = c.Tiles[xo][yo];
+            StaticTile[] t = c.Tiles[xo][yo];
 
             if (t.Length <= 0) continue;
 
-            var r = new StaticTile[t.Length];
+            StaticTile[] r = new StaticTile[t.Length];
 
             for (int i = 0; i < t.Length; i++)
             {

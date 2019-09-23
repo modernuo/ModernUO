@@ -21,7 +21,7 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      if (_messageLocalizedPackets.TryGetValue(number, out var packet))
+      if (_messageLocalizedPackets.TryGetValue(number, out byte[] packet))
       {
         ns.Send(packet);
         return;

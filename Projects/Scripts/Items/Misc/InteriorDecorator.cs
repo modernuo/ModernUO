@@ -117,7 +117,7 @@ namespace Server.Items
 
       public override void OnResponse(NetState sender, RelayInfo info)
       {
-        var command = info.ButtonID switch
+        DecorateCommand command = info.ButtonID switch
         {
           1 => DecorateCommand.Turn,
           2 => DecorateCommand.Up,

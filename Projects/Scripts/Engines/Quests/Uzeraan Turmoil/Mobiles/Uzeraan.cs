@@ -305,7 +305,7 @@ namespace Server.Engines.Quests.Haven
               }
               else
               {
-                var weapon = Utility.Random(6) switch
+                BaseWeapon weapon = Utility.Random(6) switch
                 {
                   0 => (BaseWeapon)new Broadsword(),
                   1 => new Cutlass(),

@@ -69,7 +69,7 @@ namespace Server.Items
         }
         case 0:
         {
-          var info = reader.ReadInt() switch
+          OreInfo info = reader.ReadInt() switch
           {
             0 => OreInfo.Iron,
             1 => OreInfo.DullCopper,
@@ -275,7 +275,7 @@ namespace Server.Items
 
         if (IsForge(targeted))
         {
-          var difficulty = m_Ore.Resource switch
+          double difficulty = m_Ore.Resource switch
           {
             CraftResource.DullCopper => 65.0,
             CraftResource.ShadowIron => 70.0,

@@ -33,7 +33,7 @@ namespace Server.Engines.Quests.Haven
       AddItem(new LeatherGloves());
       AddItem(new LeatherGorget());
 
-      var weapon = Utility.Random(6) switch
+      Item weapon = Utility.Random(6) switch
       {
         0 => (Item)new Broadsword(),
         1 => new Cutlass(),

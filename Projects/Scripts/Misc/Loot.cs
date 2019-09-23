@@ -623,7 +623,7 @@ namespace Server
 
     public static SpellScroll RandomScroll(int minIndex, int maxIndex, SpellbookType type)
     {
-      var types = type switch
+      Type[] types = type switch
       {
         SpellbookType.Regular => RegularScrollTypes,
         SpellbookType.Necromancer => (Core.SE ? SENecromancyScrollTypes : NecromancyScrollTypes),

@@ -162,7 +162,7 @@ namespace Server.Engines.ConPVP
 
           int y = 53;
 
-          var groupText = tourney.GroupType switch
+          string groupText = tourney.GroupType switch
           {
             GroupingType.HighVsLow => "High vs Low",
             GroupingType.Nearest => "Closest opponent",
@@ -173,7 +173,7 @@ namespace Server.Engines.ConPVP
           AddHtml(35, y, 190, 20, $"Grouping: {groupText}");
           y += 20;
 
-          var tieText = tourney.TieType switch
+          string tieText = tourney.TieType switch
           {
             TieType.Random => "Random",
             TieType.Highest => "Highest advances",

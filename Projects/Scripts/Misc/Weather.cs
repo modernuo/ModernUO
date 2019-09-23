@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Network;
 
@@ -51,7 +52,7 @@ namespace Server.Misc
 			return list;
 		}
 
-		public static void AddDynamicWeather( int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, int moveSpeed, int width, int height, Rectangle2D bounds )
+		public static void AddDynamicWeather( sbyte temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, int moveSpeed, int width, int height, Rectangle2D bounds )
 		{
 			for ( int i = 0; i < m_Facets.Length; ++i )
 			{
@@ -77,35 +78,20 @@ namespace Server.Misc
 			}
 		}
 
-		public static void AddWeather( int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, params Rectangle2D[] area )
+		public static void AddWeather( sbyte temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, params Rectangle2D[] area )
 		{
 			for ( int i = 0; i < m_Facets.Length; ++i )
 				new Weather( m_Facets[i], area, temperature, chanceOfPercipitation, chanceOfExtremeTemperature, TimeSpan.FromSeconds( 30.0 ) );
 		}
 
-		public static bool CheckWeatherConflict( Map facet, Weather exclude, Rectangle2D area )
-		{
-			List<Weather> list = GetWeatherList( facet );
+		public static bool CheckWeatherConflict( Map facet, Weather exclude, Rectangle2D area ) =>
+      GetWeatherList(facet)?.Any(w => w != exclude && w.IntersectsWith(area)) ?? false;
 
-			if ( list == null )
-				return false;
-
-			for ( int i = 0; i < list.Count; ++i )
-			{
-				Weather w = list[i];
-
-				if ( w != exclude && w.IntersectsWith( area ) )
-					return true;
-			}
-
-			return false;
-		}
-
-		public Map Facet { get; }
+    public Map Facet { get; }
 
 		public Rectangle2D[] Area { get; set; }
 
-		public int Temperature { get; set; }
+		public sbyte Temperature { get; set; }
 
 		public int ChanceOfPercipitation { get; set; }
 
@@ -127,18 +113,9 @@ namespace Server.Misc
       small.X >= big.X && small.Y >= big.Y && small.X + small.Width <= big.X + big.Width
       && small.Y + small.Height <= big.Y + big.Height;
 
-    public virtual bool IntersectsWith( Rectangle2D area )
-		{
-			for ( int i = 0; i < Area.Length; ++i )
-			{
-				if ( CheckIntersection( area, Area[i] ) )
-					return true;
-			}
+    public virtual bool IntersectsWith( Rectangle2D area ) => Area.Any(t => CheckIntersection(area, t));
 
-			return false;
-		}
-
-		public Weather( Map facet, Rectangle2D[] area, int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, TimeSpan interval )
+    public Weather( Map facet, Rectangle2D[] area, sbyte temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, TimeSpan interval )
 		{
 			Facet = facet;
 			Area = area;
@@ -238,18 +215,17 @@ namespace Server.Misc
 				if ( m_Stage > 0 && MoveSpeed > 0 )
 					MoveForward();
 
-				int type, density;
-				int temperature = Temperature;
+        byte type;
+        int density;
+				sbyte temperature = Temperature;
 
 				if ( m_ExtremeTemperature )
 					temperature *= -1;
 
-				if ( m_Stage < 15 )
-				{
-					density = m_Stage * 5;
-				}
-				else
-				{
+        if (m_Stage < 15)
+          density = m_Stage * 5;
+        else
+        {
 					density = 150 - m_Stage * 5;
 
 					if ( density < 10 )
@@ -267,8 +243,6 @@ namespace Server.Misc
 
 				List<NetState> states = NetState.Instances;
 
-				Packet weatherPacket = null;
-
 				for ( int i = 0; i < states.Count; ++i )
 				{
 					NetState ns = states[i];
@@ -285,13 +259,8 @@ namespace Server.Misc
 					if ( !contains )
 						continue;
 
-					if ( weatherPacket == null )
-						weatherPacket = Packet.Acquire( new Server.Network.Weather( type, density, temperature ) );
-
-					ns.Send( weatherPacket );
-				}
-
-				Packet.Release( weatherPacket );
+          Packets.SendWeather(ns, type, (byte)density, temperature);
+        }
 			}
 
 			m_Stage++;

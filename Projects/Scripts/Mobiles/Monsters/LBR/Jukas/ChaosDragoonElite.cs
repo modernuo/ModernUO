@@ -54,7 +54,7 @@ namespace Server.Mobiles
         _ => res
       };
 
-      var melee = Utility.Random(3) switch
+      BaseWeapon melee = Utility.Random(3) switch
       {
         0 => (BaseWeapon)new Kryss(),
         1 => new Broadsword(),

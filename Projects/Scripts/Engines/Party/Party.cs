@@ -310,7 +310,7 @@ namespace Server.Engines.PartySystem
           Listeners[i].SendMessage("[{0}]: {1}", from.Name, text);
       }
 
-      SendToStaffMessage(from, "[Party]: {0}", text);
+      SendToStaffMessage(from, $"[Party]: {text}");
     }
 
     public void SendPrivateMessage(Mobile from, Mobile to, string text)
@@ -325,7 +325,7 @@ namespace Server.Engines.PartySystem
           Listeners[i].SendMessage("[{0}]->[{1}]: {2}", from.Name, to.Name, text);
       }
 
-      SendToStaffMessage(from, "[Party]->[{0}]: {1}", to.Name, text);
+      SendToStaffMessage(from, $"[Party]->[{to.Name}]: {text}");
     }
 
     private void SendToStaffMessage(Mobile from, string text)

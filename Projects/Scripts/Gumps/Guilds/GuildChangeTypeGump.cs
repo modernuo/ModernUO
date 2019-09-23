@@ -47,7 +47,7 @@ namespace Server.Gumps
           !Guild.NewGuildSystem && GuildGump.BadLeader(m_Mobile, m_Guild))
         return;
 
-      var newType = info.ButtonID switch
+      GuildType newType = info.ButtonID switch
       {
         1 => GuildType.Regular,
         2 => GuildType.Order,

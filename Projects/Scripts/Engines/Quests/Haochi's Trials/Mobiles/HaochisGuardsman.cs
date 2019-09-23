@@ -64,7 +64,7 @@ namespace Server.Engines.Quests.Samurai
           break;
       }
 
-      var weapon = Utility.Random(3) switch
+      Item weapon = Utility.Random(3) switch
       {
         0 => (Item)new NoDachi(),
         1 => new Lajatang(),

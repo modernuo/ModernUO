@@ -167,7 +167,7 @@ namespace Server.Items
           from.Map != Map.Felucca && TargetMap == Map.Felucca && ShowFeluccaWarning)
       {
         if (from.AccessLevel == AccessLevel.Player || !from.Hidden)
-          from.Send(new PlaySound(0x20E, from.Location));
+          Packets.SendPlaySound(from.NetState, 0x20E, from.Location);
         from.CloseGump<MoongateConfirmGump>();
         from.SendGump(new MoongateConfirmGump(from, this));
       }

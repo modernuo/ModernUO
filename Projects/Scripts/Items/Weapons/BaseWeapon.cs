@@ -519,7 +519,7 @@ namespace Server.Items
         double mcng = m.Skills.Macing.Value;
 
         sk = SkillName.Swords;
-        var val = swrd;
+        double val = swrd;
 
         if (fenc > val)
         {
@@ -1984,7 +1984,7 @@ namespace Server.Items
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
-      var oreType = m_Resource switch
+      int oreType = m_Resource switch
       {
         CraftResource.DullCopper => 1053108,
         CraftResource.ShadowIron => 1053107,

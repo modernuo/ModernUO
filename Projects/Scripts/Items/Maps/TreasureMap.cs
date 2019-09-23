@@ -622,7 +622,7 @@ namespace Server.Items
             {
               Direction dir = Utility.GetDirection(targ3D, chest3D0);
 
-              var sDir = dir switch
+              string sDir = dir switch
               {
                 Direction.North => "north",
                 Direction.Right => "northeast",
@@ -771,7 +771,7 @@ namespace Server.Items
           m_TreasureMap.Completed = true;
           m_TreasureMap.CompletedBy = m_From;
 
-          var spawns = m_TreasureMap.Level switch
+          int spawns = m_TreasureMap.Level switch
           {
             0 => 3,
             1 => 0,

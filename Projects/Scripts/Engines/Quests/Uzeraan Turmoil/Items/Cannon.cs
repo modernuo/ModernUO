@@ -68,7 +68,7 @@ namespace Server.Engines.Quests.Haven
 
     public void DoFireEffect(IPoint3D target)
     {
-      var from = CannonDirection switch
+      Point3D from = CannonDirection switch
       {
         CannonDirection.North => new Point3D(X, Y - 1, Z),
         CannonDirection.East => new Point3D(X + 1, Y, Z),
@@ -95,7 +95,7 @@ namespace Server.Engines.Quests.Haven
       if (!(Canoneer?.Deleted == false && Canoneer.Active))
         return;
 
-      var canFire = CannonDirection switch
+      bool canFire = CannonDirection switch
       {
         CannonDirection.North => (m.X >= X - 7 && m.X <= X + 7 && m.Y == Y - 7 && oldLocation.Y < Y - 7),
         CannonDirection.East => (m.Y >= Y - 7 && m.Y <= Y + 7 && m.X == X + 7 && oldLocation.X > X + 7),

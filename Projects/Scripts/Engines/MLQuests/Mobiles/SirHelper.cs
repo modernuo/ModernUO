@@ -42,9 +42,7 @@ namespace Server.Engines.MLQuests.Mobiles
 
     public override bool GetGender() => false;
 
-    public override void CheckMorph()
-    {
-    }
+    public override bool CheckMorph() => true;
 
     public override void InitOutfit()
     {

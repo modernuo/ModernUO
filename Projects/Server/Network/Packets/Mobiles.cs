@@ -133,6 +133,17 @@ namespace Server.Network
       if (ns == null)
         return;
 
+      if (ns.StygianAbyss)
+        SendMobileMovingNew(ns, m, noto);
+      else
+        SendMobileMovingOld(ns, m, noto);
+    }
+
+    public static void SendMobileMovingNew(NetState ns, Mobile m, int noto)
+    {
+      if (ns == null)
+        return;
+
       SpanWriter w = new SpanWriter(stackalloc byte[17]);
       w.Write((byte)0x77); // Packet ID
 
@@ -268,12 +279,12 @@ namespace Server.Network
       ns.Send(w.Span);
     }
 
-    public static void SendMobileExtended(NetState to, Mobile m)
+    public static void SendMobileStatusExtended(NetState to, Mobile m)
     {
-      SendMobileExtended(to, m, m.NetState);
+      SendMobileStatusExtended(to, m, m.NetState);
     }
 
-    public static void SendMobileExtended(NetState to, Mobile m, NetState ns)
+    public static void SendMobileStatusExtended(NetState to, Mobile m, NetState ns)
     {
       if (to == null)
         return;

@@ -75,7 +75,7 @@ namespace Server.Multis
 
     private void AddCampChests()
     {
-      var chest = Utility.Random(3) switch
+      LockableContainer chest = Utility.Random(3) switch
       {
         0 => (LockableContainer)new MetalChest(),
         1 => new MetalGoldenChest(),
@@ -88,7 +88,7 @@ namespace Server.Multis
 
       AddItem(chest, -2, 2, 0);
 
-      var crates = Utility.Random(4) switch
+      LockableContainer crates = Utility.Random(4) switch
       {
         0 => (LockableContainer)new SmallCrate(),
         1 => new MediumCrate(),
@@ -136,7 +136,7 @@ namespace Server.Multis
     {
       if (m.Player && m_Prisoner != null && m_Prisoner.CantWalk)
       {
-        var number = Utility.Random(8) switch
+        int number = Utility.Random(8) switch
         {
           0 => 502261,
           1 => 502262,

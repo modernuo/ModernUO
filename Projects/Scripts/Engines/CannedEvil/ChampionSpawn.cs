@@ -352,7 +352,7 @@ namespace Server.Engines.CannedEvil
             !JusticeVirtue.CheckMapRegion(killer, prot))
           continue;
 
-        var chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
+        int chance = VirtueHelper.GetLevel(prot, VirtueName.Justice) switch
         {
           VirtueLevel.Seeker => 60,
           VirtueLevel.Follower => 80,

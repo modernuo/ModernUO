@@ -131,7 +131,7 @@ namespace Server.Factions
       {
         Direction = GetDirectionTo(m);
 
-        var warning = Utility.Random(6) switch
+        string warning = Utility.Random(6) switch
         {
           0 => "I warn you, {0}, you would do well to leave this area before someone shows you the world of gray.",
           1 => "It would be wise to leave this area, {0}, lest your head become my commanders' trophy.",
@@ -173,7 +173,7 @@ namespace Server.Factions
       }
       else
       {
-        var def = type switch
+        TextDefinition def = type switch
         {
           ReactionType.Ignore => faction.Definition.GuardIgnore,
           ReactionType.Warn => faction.Definition.GuardWarn,

@@ -62,7 +62,7 @@ namespace Server.Gumps
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      var level = info.ButtonID switch
+      SecureLevel level = info.ButtonID switch
       {
         1 => SecureLevel.Owner,
         2 => SecureLevel.CoOwners,

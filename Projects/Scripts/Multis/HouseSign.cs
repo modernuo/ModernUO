@@ -86,7 +86,7 @@ namespace Server.Multis
     {
       if (Owner != null && BaseHouse.DecayEnabled && Owner.DecayPeriod != TimeSpan.Zero)
       {
-        var message = Owner.DecayLevel switch
+        string message = Owner.DecayLevel switch
         {
           DecayLevel.Ageless => "ageless",
           DecayLevel.Fairly => "fairly worn",

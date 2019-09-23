@@ -212,7 +212,7 @@ namespace Server.Items
       }
       else
       {
-        var num = m_WandEffect switch
+        int num = m_WandEffect switch
         {
           WandEffect.Clumsiness => 3002011,
           WandEffect.Identification => 1044063,
