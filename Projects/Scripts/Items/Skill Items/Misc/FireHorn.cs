@@ -80,8 +80,7 @@ namespace Server.Items
 
       from.PlaySound(0x15F);
 
-      // TODO: Better way without creating entity? Overload?
-      Effects.SendMovingEffect(from, new Entity(Serial.Zero, new Point3D(loc), from.Map), 0x36D4, 5, 0, false, true);
+      Effects.SendMovingEffect(from, loc, from.Map, 0x36D4, 5, 0, false, true);
 
       IPooledEnumerable<Mobile> eable = from.Map.GetMobilesInRange(new Point3D(loc), 2);
 

@@ -196,10 +196,16 @@ namespace Server
       eable.Free();
     }
 
-    public static void SendMovingEffect(Point3D from, Point3D to, Map map, int itemID, int speed, int duration,
-      bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0)
+    public static void SendMovingEffect(IPoint3D from, IPoint3D to, Map map, int itemID, int speed = 0, int duration = 0,
+      bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0)
     {
-      IPooledEnumerable<NetState> eable = map.GetClientsInRange(from);
+      SendMovingEffect(from, from, to, map, itemID, speed, duration, fixedDirection, explodes, hue, renderMode);
+    }
+
+    public static void SendMovingEffect(IPoint3D range, IPoint3D from, IPoint3D to, Map map, int itemID, int speed = 0, int duration = 0,
+      bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0)
+    {
+      IPooledEnumerable<NetState> eable = map.GetClientsInRange(range);
 
       foreach (NetState state in eable)
       {
@@ -211,7 +217,7 @@ namespace Server
     }
 
     public static void SendMovingEffect(IEntity from, IEntity to, int itemID, int speed, int duration,
-      bool fixedDirection, bool explodes, int hue = 0, int renderMode = 0)
+      bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0)
     {
       if (from is Mobile mobile)
         mobile.ProcessDelta();

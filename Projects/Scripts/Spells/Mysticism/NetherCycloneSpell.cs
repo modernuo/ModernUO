@@ -122,9 +122,7 @@ namespace Server.Spells.Mysticism
 
     private static void SendEffectPacket(IPoint3D p, Map map, Point3D orig, Point3D dest)
     {
-      Effects.SendPacket(p, map,
-        new HuedEffect(EffectType.Moving, Serial.Zero, Serial.Zero, 0x375A, orig, dest, 0, 0, false, false, 0x49A,
-          0x4));
+      Effects.SendMovingEffect(p, orig, dest, map, 0x375A, 0, 0, false, false, 0x49A, 4);
     }
   }
 }

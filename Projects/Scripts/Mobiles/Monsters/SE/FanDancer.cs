@@ -85,9 +85,7 @@ namespace Server.Mobiles
          * Effect: - To: "0x57D4F5B" - ItemId: "0x27A3" - ItemIdName: "Tessen" - FromLocation: "(992 299, 24)" - ToLocation: "(992 308, 22)" - Speed: "10" - Duration: "0" - FixedDirection: "False" - Explode: "False" - Hue: "0x0" - Render: "0x0"
          * Damage: 50-65
          */
-        Entity from = new Entity(Serial.Zero, Location, attacker.Map);
-        Entity to = new Entity(Serial.Zero, attacker.Location, attacker.Map);
-        Packets.SendMovingHuedEffect(attacker.NetState, from, to, 0x27A3, 10, 0, false, false, 0, 0);
+        Effects.SendMovingEffect(Location, attacker.Location, attacker.Map, 0x27A3, 10, 0, false, false);
         AOS.Damage(attacker, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);
       }
     }
@@ -102,9 +100,7 @@ namespace Server.Mobiles
          * Effect: - To: "0x57D4F5B" - ItemId: "0x27A3" - ItemIdName: "Tessen" - FromLocation: "(992 299, 24)" - ToLocation: "(992 308, 22)" - Speed: "10" - Duration: "0" - FixedDirection: "False" - Explode: "False" - Hue: "0x0" - Render: "0x0"
          * Damage: 50-65
          */
-        Entity from = new Entity(Serial.Zero, Location, attacker.Map);
-        Entity to = new Entity(Serial.Zero, attacker.Location, attacker.Map);
-        Packets.SendMovingHuedEffect(attacker.NetState, from, to, 0x27A3, 10, 0, false, false, 0, 0);
+        Effects.SendMovingEffect(Location, attacker.Location, attacker.Map, 0x27A3, 10, 0, false, false);
         AOS.Damage(attacker, this, Utility.RandomMinMax(50, 65), 100, 0, 0, 0, 0);
       }
     }

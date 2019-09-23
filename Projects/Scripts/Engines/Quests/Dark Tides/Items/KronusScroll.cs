@@ -134,8 +134,7 @@ namespace Server.Engines.Quests.Necro
 
             int hue = Utility.RandomList(0x481, 0x482, 0x489, 0x497, 0x66D);
 
-            Effects.SendMovingEffect(from, to, map, 0x36D4, 0, 0, false, true,
-              hue);
+            Effects.SendMovingEffect(from, to, map, 0x36D4, 0, 0, false, true,  hue);
           }
         }
 

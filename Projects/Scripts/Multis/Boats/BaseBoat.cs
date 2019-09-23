@@ -261,7 +261,7 @@ namespace Server.Multis
       }
 
       int xOffset = 0, yOffset = 0;
-      Movement.Movement.Offset(m_Facing, ref xOffset, ref yOffset);
+      Movement.Offset(m_Facing, ref xOffset, ref yOffset);
 
       if (TillerMan != null)
       {
@@ -1398,7 +1398,7 @@ namespace Server.Multis
 
       int rx = 0, ry = 0;
       Direction d = (Direction)(((int)m_Facing + (int)dir) & 0x7);
-      Movement.Movement.Offset(d, ref rx, ref ry);
+      Movement.Offset(d, ref rx, ref ry);
 
       for (int i = 1; i <= speed; ++i)
         if (!CanFit(new Point3D(X + i * rx, Y + i * ry, Z), Map, ItemID))
