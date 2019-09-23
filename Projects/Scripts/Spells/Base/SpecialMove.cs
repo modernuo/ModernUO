@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Engines.ConPVP;
 using Server.Items;
+using Server.Network;
 using Server.Spells.Bushido;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
@@ -10,7 +12,7 @@ namespace Server.Spells
 {
   public abstract class SpecialMove
   {
-    private static Dictionary<Mobile, SpecialMoveContext> m_PlayersTable = new Dictionary<Mobile, SpecialMoveContext>();
+    private static readonly Dictionary<Mobile, SpecialMoveContext> m_PlayersTable = new Dictionary<Mobile, SpecialMoveContext>();
 
     public virtual int BaseMana => 0;
 
@@ -180,13 +182,8 @@ namespace Server.Spells
 
     public static void ClearAllMoves(Mobile m)
     {
-      foreach (KeyValuePair<int, SpecialMove> kvp in SpellRegistry.SpecialMoves)
-      {
-        int moveID = kvp.Key;
-
-        if (moveID != -1)
-          m.Send(new ToggleSpecialAbility(moveID + 1, false));
-      }
+      foreach (var (moveID, _) in SpellRegistry.SpecialMoves.Where(kvp => kvp.Key != -1))
+        Packets.SendToggleSpecialAbility(m.NetState, (short)(moveID + 1), false);
     }
 
     public static SpecialMove GetCurrentMove(Mobile m)
@@ -241,7 +238,7 @@ namespace Server.Spells
         int moveID = SpellRegistry.GetRegistryNumber(move);
 
         if (moveID > 0)
-          m.Send(new ToggleSpecialAbility(moveID + 1, true));
+          Packets.SendToggleSpecialAbility(m.NetState, (short)(moveID + 1), true);
 
         TextDefinition.SendMessageTo(m, move.AbilityMessage);
       }
@@ -260,7 +257,7 @@ namespace Server.Spells
         int moveID = SpellRegistry.GetRegistryNumber(move);
 
         if (moveID > 0)
-          m.Send(new ToggleSpecialAbility(moveID + 1, false));
+          Packets.SendToggleSpecialAbility(m.NetState, (short)(moveID + 1), false);
       }
 
       Table.Remove(m);

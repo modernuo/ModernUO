@@ -40,18 +40,13 @@ namespace Server.Spells
         if (!boat.Deleted && boat.CheckKey(key.KeyValue))
           m_Spell.Effect(boat.GetMarkedLocation(), boat.Map, false);
         else
-          from.Send(new MessageLocalized(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 502357,
-            from.Name, "")); // I can not recall from that object.
+          Packets.SendMessageLocalized(from.NetState, from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 502357,
+            from.Name); // I can not recall from that object.
       }
       else if (o is HouseRaffleDeed deed && deed.ValidLocation())
-      {
         m_Spell.Effect(deed.PlotLocation, deed.PlotFacet, true);
-      }
       else
-      {
-        from.Send(new MessageLocalized(from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 502357, from.Name,
-          "")); // I can not recall from that object.
-      }
+        Packets.SendMessageLocalized(from.NetState, from.Serial, from.Body, MessageType.Regular, 0x3B2, 3, 502357, from.Name); // I can not recall from that object.
     }
 
     protected override void OnNonlocalTarget(Mobile from, object o)

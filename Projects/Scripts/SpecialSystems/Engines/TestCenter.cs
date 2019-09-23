@@ -59,9 +59,7 @@ namespace Server.Misc
     private static void ChangeStrength(Mobile from, int value)
     {
       if (value < 10 || value > 125)
-      {
         from.SendLocalizedMessage(1005628); // Stats range between 10 and 125.
-      }
       else
       {
         if (value + from.RawDex + from.RawInt > from.StatCap)
@@ -80,9 +78,7 @@ namespace Server.Misc
     private static void ChangeDexterity(Mobile from, int value)
     {
       if (value < 10 || value > 125)
-      {
         from.SendLocalizedMessage(1005628); // Stats range between 10 and 125.
-      }
       else
       {
         if (from.RawStr + value + from.RawInt > from.StatCap)
@@ -101,9 +97,7 @@ namespace Server.Misc
     private static void ChangeIntelligence(Mobile from, int value)
     {
       if (value < 10 || value > 125)
-      {
         from.SendLocalizedMessage(1005628); // Stats range between 10 and 125.
-      }
       else
       {
         if (from.RawStr + from.RawDex + value > from.StatCap)
@@ -132,9 +126,7 @@ namespace Server.Misc
       if (skill != null)
       {
         if (value < 0 || value > skill.Cap)
-        {
           from.SendMessage($"Your skill in {skill.Info.Name} is capped at {skill.Cap:F1}.");
-        }
         else
         {
           int newFixedPoint = (int)(value * 10.0);
@@ -147,9 +139,7 @@ namespace Server.Misc
         }
       }
       else
-      {
         from.SendLocalizedMessage(1005631); // You have specified an invalid skill to set.
-      }
     }
 
 
@@ -199,8 +189,8 @@ namespace Server.Misc
 
               if (sb.Length + 1 + v.Length >= 256)
               {
-                sender.Send(new AsciiMessage(Server.Serial.MinusOne, -1, MessageType.Label, 0x35, 3,
-                  "System", sb.ToString()));
+                Packets.SendAsciiMessage(sender, Server.Serial.MinusOne, -1, MessageType.Label, 0x35, 3,
+                  "System", sb.ToString());
                 sb = new StringBuilder();
                 sb.Append(v);
               }
@@ -212,8 +202,8 @@ namespace Server.Misc
             }
 
             if (sb.Length > 0)
-              sender.Send(new AsciiMessage(Server.Serial.MinusOne, -1, MessageType.Label, 0x35, 3, "System",
-                sb.ToString()));
+              Packets.SendAsciiMessage(sender, Server.Serial.MinusOne, -1, MessageType.Label, 0x35, 3, "System",
+                sb.ToString());
 
             break;
           }
