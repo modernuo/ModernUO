@@ -569,7 +569,7 @@ namespace Server
       }
     }
 
-    private static void SaveIndex<T>(List<T> list, string path) where T : IEntityEntry
+    private static void SaveIndex<T>(IReadOnlyList<T> list, string path) where T : IEntityEntry
     {
       if (!Directory.Exists("Saves/Mobiles/"))
         Directory.CreateDirectory("Saves/Mobiles/");

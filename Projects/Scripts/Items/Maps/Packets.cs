@@ -1,7 +1,7 @@
 using Server.Buffers;
-using Server.Network;
+using Server.Items;
 
-namespace Server.Items
+namespace Server.Network
 {
   public static class MapItemPackets
   {

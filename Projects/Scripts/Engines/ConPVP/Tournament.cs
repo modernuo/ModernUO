@@ -499,7 +499,7 @@ namespace Server.Engines.ConPVP
       }
     }
 
-    private void GiveAwards(List<Mobile> players, TrophyRank rank, int cash)
+    private void GiveAwards(IReadOnlyList<Mobile> players, TrophyRank rank, int cash)
     {
       if (players.Count == 0)
         return;

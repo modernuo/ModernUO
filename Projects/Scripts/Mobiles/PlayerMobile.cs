@@ -1921,14 +1921,8 @@ namespace Server.Mobiles
       if (Core.ML && Skills.SpiritSpeak.Value >= 100.0)
         return false;
 
-      if (Core.AOS)
-        for (int i = 0; i < hears.Count; ++i)
-        {
-          Mobile m = hears[i];
-
-          if (m != this && m.Skills.SpiritSpeak.Value >= 100.0)
-            return false;
-        }
+      if (Core.AOS && hears.Any(m => m != this && m.Skills.SpiritSpeak.Value >= 100.0))
+        return false;
 
       return base.MutateSpeech(hears, ref text, ref context);
     }
@@ -1938,9 +1932,7 @@ namespace Server.Mobiles
       if (Guilds.Guild.NewGuildSystem && (type == MessageType.Guild || type == MessageType.Alliance))
       {
         if (!(Guild is Guild g))
-        {
           SendLocalizedMessage(1063142); // You are not in a guild!
-        }
         else if (type == MessageType.Alliance)
         {
           if (g.Alliance != null && g.Alliance.IsMember(g))
@@ -1963,9 +1955,7 @@ namespace Server.Mobiles
         }
       }
       else
-      {
         base.DoSpeech(text, keywords, type, hue);
-      }
     }
 
     private static void SendToStaffMessage(Mobile from, string text)

@@ -935,7 +935,7 @@ namespace Server.Mobiles
       return null;
     }
 
-    private void ProcessSinglePurchase(BuyItemResponse buy, IBuyItemInfo bii, List<BuyItemResponse> validBuy,
+    private void ProcessSinglePurchase(BuyItemResponse buy, IBuyItemInfo bii, ICollection<BuyItemResponse> validBuy,
       ref int controlSlots, ref bool fullPurchase, ref int totalCost)
     {
       int amount = buy.Amount;

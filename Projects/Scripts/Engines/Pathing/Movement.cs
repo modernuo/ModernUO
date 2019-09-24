@@ -316,7 +316,7 @@ namespace Server
       return true;
     }
 
-    private bool Check(Map map, Mobile m, List<Item> items, List<Mobile> mobiles, int x, int y, int startTop, int startZ,
+    private bool Check(Map map, Mobile m, List<Item> items, IReadOnlyList<Mobile> mobiles, int x, int y, int startTop, int startZ,
       bool canSwim, bool cantWalk, out int newZ)
     {
       newZ = 0;
@@ -500,7 +500,7 @@ namespace Server
       !t.Alive || !m.Alive || t.IsDeadBondedPet || m.IsDeadBondedPet ||
       t.Hidden && t.AccessLevel > AccessLevel.Player;
 
-    private void GetStartZ(Mobile m, Map map, Point3D loc, List<Item> itemList, out int zLow, out int zTop)
+    private void GetStartZ(Mobile m, Map map, Point3D loc, IReadOnlyList<Item> itemList, out int zLow, out int zTop)
     {
       int xCheck = loc.X, yCheck = loc.Y;
 

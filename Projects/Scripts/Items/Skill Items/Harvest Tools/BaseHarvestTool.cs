@@ -159,9 +159,7 @@ namespace Server.Items
       if (!(from is PlayerMobile pm))
         return;
 
-      ContextMenuEntry miningEntry = new ContextMenuEntry(pm.ToggleMiningStone ? 6179 : 6178);
-      miningEntry.Color = 0x421F;
-      list.Add(miningEntry);
+      list.Add(new ContextMenuEntry(pm.ToggleMiningStone ? 6179 : 6178) {Color = 0x421F});
 
       list.Add(new ToggleMiningStoneEntry(pm, false, 6176));
       list.Add(new ToggleMiningStoneEntry(pm, true, 6177));

@@ -24,8 +24,8 @@ The next generation Ultima Online Server Emulator.
 `dotnet publish /p:PublishProfiles=<profile>`
 - Windows x64: `Windows`
 - Linux/MacOSX x64 w/ .NET Core 3 installed: `Unix-Portable`
-- Linux x64 w/ .NET Core 3: `Linux-SelfContained`
-- MacOSX x64 /wo .NET Core 3: `MacOSX-SelfContained`
+- Linux x64 w/o .NET Core 3: `Linux-SelfContained`
+- MacOSX x64 w/o .NET Core 3: `MacOSX-SelfContained`
 
 #### Running on Windows
 - Follow the build instructions
@@ -41,6 +41,7 @@ The next generation Ultima Online Server Emulator.
 
 ### Thanks
 - RunUO Team & Community
+- ServUO Team & Community
 - [Jaedan](https://github.com/jaedan) and the ClassicUO Community
 
 ### Troubleshooting / FAQ

@@ -207,7 +207,7 @@ namespace Server.Gumps
     {
       state.AddGump(this);
       ArrayBufferWriter<byte> bufferWriter = new ArrayBufferWriter<byte>();
-      Compile(state?.Unpack == true, bufferWriter);
+      Compile(state.Unpack, bufferWriter);
       state.Send(bufferWriter.WrittenSpan);
     }
 
@@ -250,7 +250,6 @@ namespace Server.Gumps
 
       if (packed)
       {
-        // TODO: Do you need to advance after doing a direct write?
         layoutBuffer.Write(stackalloc byte[1]); // Null Terminated
 
         layoutBuffer = WritePacked(layoutBuffer.WrittenSpan);

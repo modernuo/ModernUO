@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Server.Buffers;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -771,7 +772,7 @@ namespace Server.Multis
         mobile.Location = BanLocation;
 
       DesignContext.Add(m, this);
-      m.Send(new BeginHouseCustomization(this));
+      HouseFoundationPackets.SendBeginHouseCustomization(m.NetState, Serial);
 
       NetState ns = m.NetState;
       if (ns != null)
@@ -1105,7 +1106,7 @@ namespace Server.Multis
       DesignContext.Remove(from);
 
       // Notify the client that customization has ended
-      from.Send(new EndHouseCustomization(this));
+      HouseFoundationPackets.SendEndHouseCustomization(from.NetState, Serial);
 
       // Notify the core that the foundation has changed and should be resent to all clients
       Delta(ItemDelta.Update);
@@ -1522,7 +1523,8 @@ namespace Server.Multis
       DesignContext.Remove(from);
 
       // Notify the client that customization has ended
-      from.Send(new EndHouseCustomization(context.Foundation));
+
+      HouseFoundationPackets.SendEndHouseCustomization(from.NetState, context.Foundation.Serial);
 
       // Refresh client with current visible design state
       context.Foundation.SendInfoTo(state);
@@ -1670,7 +1672,7 @@ namespace Server.Multis
 
   public class DesignState
   {
-    private Packet m_PacketCache;
+    private int m_Revision;
 
     public DesignState(HouseFoundation foundation, MultiComponentList components)
     {
@@ -1722,27 +1724,17 @@ namespace Server.Multis
       }
     }
 
-    public Packet PacketCache
-    {
-      get => m_PacketCache;
-      set
-      {
-        if (m_PacketCache == value)
-          return;
-
-        m_PacketCache?.Release();
-
-        m_PacketCache = value;
-      }
-    }
-
     public HouseFoundation Foundation{ get; }
 
     public MultiComponentList Components{ get; }
 
     public MultiTileEntry[] Fixtures{ get; private set; }
 
-    public int Revision{ get; set; }
+    public int Revision
+    {
+      get => m_Revision;
+      set => m_Revision = value;
+    }
 
     public void Serialize(GenericWriter writer)
     {
@@ -1768,19 +1760,12 @@ namespace Server.Multis
 
     public void OnRevised()
     {
-      lock (this)
-      {
-        Revision = ++Foundation.LastRevision;
-
-        m_PacketCache?.Release();
-
-        m_PacketCache = null;
-      }
+      Interlocked.Exchange(ref m_Revision, ++Foundation.LastRevision);
     }
 
     public void SendGeneralInfoTo(NetState state)
     {
-      state?.Send(new DesignStateGeneral(Foundation, this));
+      HouseFoundationPackets.SendDesignStateGeneral(state, Foundation.Serial, Revision);
     }
 
     public void SendDetailedInfoTo(NetState state)
@@ -1788,10 +1773,7 @@ namespace Server.Multis
       if (state != null)
         lock (this)
         {
-          if (m_PacketCache == null)
-            DesignStateDetailed.SendDetails(state, Foundation, this);
-          else
-            state.Send(m_PacketCache);
+          DesignStateDetailed.SendDetails(state, Foundation, this);
         }
     }
 
@@ -2038,50 +2020,70 @@ namespace Server.Multis
     }
   }
 
-  public class BeginHouseCustomization : Packet
+  public static class HouseFoundationPackets
   {
-    public BeginHouseCustomization(HouseFoundation house)
-      : base(0xBF)
+    public static void SendBeginHouseCustomization(NetState ns, Serial house)
     {
-      EnsureCapacity(17);
+      if (ns == null)
+        return;
 
-      m_Stream.Write((short)0x20);
-      m_Stream.Write(house.Serial);
-      m_Stream.Write((byte)0x04);
-      m_Stream.Write((ushort)0x0000);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((byte)0xFF);
+      SpanWriter writer = new SpanWriter(stackalloc byte[17]);
+      writer.Write((byte)0xBF); // Packet ID
+      writer.Write((ushort)17); // Dynamic Length
+
+      writer.Write((short)0x20); // House Customization
+      writer.Write(house);
+      writer.Write((byte)0x04); // Start customization
+      writer.Position += 2;
+      writer.Write(0xFFFFFFFF);
+      writer.Write((byte)0xFF);
+
+      ns.Send(writer.Span);
     }
-  }
 
-  public class EndHouseCustomization : Packet
-  {
-    public EndHouseCustomization(HouseFoundation house)
-      : base(0xBF)
+    public static void SendEndHouseCustomization(NetState ns, Serial house)
     {
-      EnsureCapacity(17);
+      if (ns == null)
+        return;
 
-      m_Stream.Write((short)0x20);
-      m_Stream.Write(house.Serial);
-      m_Stream.Write((byte)0x05);
-      m_Stream.Write((ushort)0x0000);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((ushort)0xFFFF);
-      m_Stream.Write((byte)0xFF);
+      SpanWriter writer = new SpanWriter(stackalloc byte[17]);
+      writer.Write((byte)0xBF); // Packet ID
+      writer.Write((ushort)17); // Dynamic Length
+
+      writer.Write((short)0x20); // House Customization
+      writer.Write(house);
+      writer.Write((byte)0x05); // End customization
+      writer.Position += 2;
+      writer.Write(0xFFFFFFFF);
+      writer.Write((byte)0xFF);
+
+      ns.Send(writer.Span);
     }
-  }
 
-  public sealed class DesignStateGeneral : Packet
-  {
-    public DesignStateGeneral(HouseFoundation house, DesignState state)
-      : base(0xBF)
+    public static void SendDesignStateGeneral(NetState ns, Serial house, int revision)
     {
-      EnsureCapacity(13);
+      if (ns == null)
+        return;
 
-      m_Stream.Write((short)0x1D);
-      m_Stream.Write(house.Serial);
-      m_Stream.Write(state.Revision);
+      SpanWriter writer = new SpanWriter(stackalloc byte[13]);
+      writer.Write((byte)0xBF); // Packet ID
+      writer.Write((ushort)13); // Dynamic Length
+
+      writer.Write((short)0x1D); // Design
+      writer.Write(house);
+      writer.Write(revision);
+
+      ns.Send(writer.Span);
+    }
+
+    static HouseFoundationPackets()
+    {
+      Task.Run(ProcessDesignStates);
+    }
+
+    public static void ProcessDesignStates()
+    {
+
     }
   }
 
@@ -2220,7 +2222,7 @@ namespace Server.Multis
 
           stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
           stairBuffer[byteIndex++] = (byte)mte.m_OffsetY;
-          stairBuffer[byteIndex++] = (byte)mte.m_OffsetZ;
+          stairBuffer[byteIndex] = (byte)mte.m_OffsetZ;
 
           ++totalStairsUsed;
         }
@@ -2408,10 +2410,8 @@ namespace Server.Multis
 
             try
             {
-              using (StreamWriter op = new StreamWriter("dsd_exceptions.txt", true))
-              {
-                op.WriteLine(e);
-              }
+              using StreamWriter op = new StreamWriter("dsd_exceptions.txt", true);
+              op.WriteLine(e);
             }
             catch
             {

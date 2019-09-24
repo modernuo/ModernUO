@@ -86,18 +86,6 @@ namespace Server
         Timer = Timer.DelayCall(time, playermobile => playermobile.RemoveBuff(this), pm);
     }
 
-    public BuffInfo(BuffIcon iconId, int title, TextDefinition desc, TimeSpan time, DateTime start, bool retain,
-      Timer timer)
-    {
-      ID = iconId;
-      Title = title;
-      Description = desc;
-      TimeLength = time;
-      TimeStart = start;
-      RetainThroughDeath = retain;
-      Timer = timer;
-    }
-
     #region Convenience Methods
 
     public static void AddBuff(Mobile m, BuffInfo b)
