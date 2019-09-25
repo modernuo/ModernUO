@@ -76,7 +76,7 @@ namespace Server.Network
 
       DisplayListener();
 
-      while (true)
+      while (!Core.Closing)
       {
         Socket s;
         try

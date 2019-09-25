@@ -206,7 +206,7 @@ namespace Server.Gumps
     public void SendTo(NetState state)
     {
       state.AddGump(this);
-      ArrayBufferWriter<byte> bufferWriter = new ArrayBufferWriter<byte>();
+      ArrayBufferWriter<byte> bufferWriter = new ArrayBufferWriter<byte>(0x10000);
       Compile(state.Unpack, bufferWriter);
       state.Send(bufferWriter.WrittenSpan);
     }
@@ -298,7 +298,8 @@ namespace Server.Gumps
       bufferWriter.Write(headWriter.Span);
       bufferWriter.Write(layoutBuffer.WrittenSpan);
       bufferWriter.Write(stringsBuffer.WrittenSpan);
-      bufferWriter.Advance(writeLength);
+
+      //bufferWriter.Advance(writeLength); // Do you need to advance?
 
       return writeLength;
     }

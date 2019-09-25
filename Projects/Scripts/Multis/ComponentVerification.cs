@@ -94,48 +94,46 @@ namespace Server.Multis
 
     public Spreadsheet(string path)
     {
-      using (StreamReader ip = new StreamReader(path))
-      {
-        string[] types = ReadLine(ip);
-        string[] names = ReadLine(ip);
+      using StreamReader ip = new StreamReader(path);
+      string[] types = ReadLine(ip);
+      string[] names = ReadLine(ip);
 
-        m_Columns = new ColumnInfo[types.Length];
+      m_Columns = new ColumnInfo[types.Length];
+
+      for (int i = 0; i < m_Columns.Length; ++i)
+        m_Columns[i] = new ColumnInfo(i, types[i], names[i]);
+
+      List<DataRecord> records = new List<DataRecord>();
+
+      string[] values;
+
+      while ((values = ReadLine(ip)) != null)
+      {
+        object[] data = new object[m_Columns.Length];
 
         for (int i = 0; i < m_Columns.Length; ++i)
-          m_Columns[i] = new ColumnInfo(i, types[i], names[i]);
-
-        List<DataRecord> records = new List<DataRecord>();
-
-        string[] values;
-
-        while ((values = ReadLine(ip)) != null)
         {
-          object[] data = new object[m_Columns.Length];
+          ColumnInfo ci = m_Columns[i];
 
-          for (int i = 0; i < m_Columns.Length; ++i)
+          switch (ci.m_Type)
           {
-            ColumnInfo ci = m_Columns[i];
-
-            switch (ci.m_Type)
+            case "int":
             {
-              case "int":
-              {
-                data[i] = Utility.ToInt32(values[ci.m_DataIndex]);
-                break;
-              }
-              case "string":
-              {
-                data[i] = values[ci.m_DataIndex];
-                break;
-              }
+              data[i] = Utility.ToInt32(values[ci.m_DataIndex]);
+              break;
+            }
+            case "string":
+            {
+              data[i] = values[ci.m_DataIndex];
+              break;
             }
           }
-
-          records.Add(new DataRecord(this, data));
         }
 
-        Records = records.ToArray();
+        records.Add(new DataRecord(this, data));
       }
+
+      Records = records.ToArray();
     }
 
     public DataRecord[] Records{ get; }
@@ -154,10 +152,8 @@ namespace Server.Multis
       string line;
 
       while ((line = ip.ReadLine()) != null)
-      {
         if (line.Length > 0)
           return line.Split('\t');
-      }
 
       return null;
     }

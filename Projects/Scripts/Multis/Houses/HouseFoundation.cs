@@ -1,12 +1,9 @@
 using System;
 using System.Buffers;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using Server.Buffers;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -125,9 +122,7 @@ namespace Server.Multis
     {
       get
       {
-        if (m_Current == null)
-          SetInitialState();
-
+        if (m_Current == null) SetInitialState();
         return m_Current.Components;
       }
     }
@@ -1673,6 +1668,7 @@ namespace Server.Multis
   public class DesignState
   {
     private int m_Revision;
+    private byte[] m_Packet;
 
     public DesignState(HouseFoundation foundation, MultiComponentList components)
     {
@@ -1736,6 +1732,12 @@ namespace Server.Multis
       set => m_Revision = value;
     }
 
+    public byte[] Packet
+    {
+      get => m_Packet;
+      set => Interlocked.Exchange(ref m_Packet, value);
+    }
+
     public void Serialize(GenericWriter writer)
     {
       writer.Write(0); // version
@@ -1771,10 +1773,7 @@ namespace Server.Multis
     public void SendDetailedInfoTo(NetState state)
     {
       if (state != null)
-        lock (this)
-        {
-          DesignStateDetailed.SendDetails(state, Foundation, this);
-        }
+        HouseFoundationPackets.SendDesignDetails(state, Foundation, this);
     }
 
     public void FreezeFixtures()
@@ -2017,447 +2016,6 @@ namespace Server.Multis
       context.Foundation.Signpost?.SendInfoTo(state);
       context.Foundation.SignHanger?.SendInfoTo(state);
       context.Foundation.Sign?.SendInfoTo(state);
-    }
-  }
-
-  public static class HouseFoundationPackets
-  {
-    public static void SendBeginHouseCustomization(NetState ns, Serial house)
-    {
-      if (ns == null)
-        return;
-
-      SpanWriter writer = new SpanWriter(stackalloc byte[17]);
-      writer.Write((byte)0xBF); // Packet ID
-      writer.Write((ushort)17); // Dynamic Length
-
-      writer.Write((short)0x20); // House Customization
-      writer.Write(house);
-      writer.Write((byte)0x04); // Start customization
-      writer.Position += 2;
-      writer.Write(0xFFFFFFFF);
-      writer.Write((byte)0xFF);
-
-      ns.Send(writer.Span);
-    }
-
-    public static void SendEndHouseCustomization(NetState ns, Serial house)
-    {
-      if (ns == null)
-        return;
-
-      SpanWriter writer = new SpanWriter(stackalloc byte[17]);
-      writer.Write((byte)0xBF); // Packet ID
-      writer.Write((ushort)17); // Dynamic Length
-
-      writer.Write((short)0x20); // House Customization
-      writer.Write(house);
-      writer.Write((byte)0x05); // End customization
-      writer.Position += 2;
-      writer.Write(0xFFFFFFFF);
-      writer.Write((byte)0xFF);
-
-      ns.Send(writer.Span);
-    }
-
-    public static void SendDesignStateGeneral(NetState ns, Serial house, int revision)
-    {
-      if (ns == null)
-        return;
-
-      SpanWriter writer = new SpanWriter(stackalloc byte[13]);
-      writer.Write((byte)0xBF); // Packet ID
-      writer.Write((ushort)13); // Dynamic Length
-
-      writer.Write((short)0x1D); // Design
-      writer.Write(house);
-      writer.Write(revision);
-
-      ns.Send(writer.Span);
-    }
-
-    static HouseFoundationPackets()
-    {
-      Task.Run(ProcessDesignStates);
-    }
-
-    public static void ProcessDesignStates()
-    {
-
-    }
-  }
-
-  public sealed class DesignStateDetailed : Packet
-  {
-    public const int MaxItemsPerStairBuffer = 750;
-
-    private static ConcurrentQueue<SendQueueEntry> m_SendQueue;
-    private static AutoResetEvent m_Sync;
-
-    private byte[][] m_PlaneBuffers;
-
-    private bool[] m_PlaneUsed = new bool[9];
-    private byte[] m_PrimBuffer = new byte[4];
-    private byte[][] m_StairBuffers;
-
-    static DesignStateDetailed()
-    {
-      m_SendQueue = new ConcurrentQueue<SendQueueEntry>();
-      m_Sync = new AutoResetEvent(false);
-
-      Task.Run(ProcessCompression);
-    }
-
-    public DesignStateDetailed(uint serial, int revision, int xMin, int yMin, int xMax, int yMax, MultiTileEntry[] tiles)
-      : base(0xD8)
-    {
-      EnsureCapacity(17 + tiles.Length * 5);
-
-      Write((byte)0x03); // Compression Type
-      Write((byte)0x00); // Unknown
-      Write(serial);
-      Write(revision);
-      Write((short)tiles.Length);
-      Write((short)0); // Buffer length : reserved
-      Write((byte)0); // Plane count : reserved
-
-      int totalLength = 1; // includes plane count
-
-      int width = xMax - xMin + 1;
-      int height = yMax - yMin + 1;
-
-      m_PlaneBuffers = new byte[9][];
-
-      for (int i = 0; i < m_PlaneBuffers.Length; ++i)
-        m_PlaneBuffers[i] = ArrayPool<byte>.Shared.Rent(0x400);
-
-      m_StairBuffers = new byte[6][];
-
-      for (int i = 0; i < m_StairBuffers.Length; ++i)
-        m_StairBuffers[i] = ArrayPool<byte>.Shared.Rent(MaxItemsPerStairBuffer * 5);
-
-      Clear(m_PlaneBuffers[0], width * height * 2);
-
-      for (int i = 0; i < 4; ++i)
-      {
-        Clear(m_PlaneBuffers[1 + i], (width - 1) * (height - 2) * 2);
-        Clear(m_PlaneBuffers[5 + i], width * (height - 1) * 2);
-      }
-
-      int totalStairsUsed = 0;
-
-      for (int i = 0; i < tiles.Length; ++i)
-      {
-        MultiTileEntry mte = tiles[i];
-        int x = mte.m_OffsetX - xMin;
-        int y = mte.m_OffsetY - yMin;
-        int z = mte.m_OffsetZ;
-        bool floor = TileData.ItemTable[mte.m_ItemID & TileData.MaxItemValue].Height <= 0;
-        int plane, size;
-
-        switch (z)
-        {
-          case 0:
-            plane = 0;
-            break;
-          case 7:
-            plane = 1;
-            break;
-          case 27:
-            plane = 2;
-            break;
-          case 47:
-            plane = 3;
-            break;
-          case 67:
-            plane = 4;
-            break;
-          default:
-          {
-            int stairBufferIndex = totalStairsUsed / MaxItemsPerStairBuffer;
-            byte[] stairBuffer = m_StairBuffers[stairBufferIndex];
-
-            int byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
-
-            stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
-            stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
-
-            stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
-            stairBuffer[byteIndex++] = (byte)mte.m_OffsetY;
-            stairBuffer[byteIndex++] = (byte)mte.m_OffsetZ;
-
-            ++totalStairsUsed;
-
-            continue;
-          }
-        }
-
-        if (plane == 0)
-        {
-          size = height;
-        }
-        else if (floor)
-        {
-          size = height - 2;
-          x -= 1;
-          y -= 1;
-        }
-        else
-        {
-          size = height - 1;
-          plane += 4;
-        }
-
-        int index = (x * size + y) * 2;
-
-        if (x < 0 || y < 0 || y >= size || index + 1 >= 0x400)
-        {
-          int stairBufferIndex = totalStairsUsed / MaxItemsPerStairBuffer;
-          byte[] stairBuffer = m_StairBuffers[stairBufferIndex];
-
-          int byteIndex = totalStairsUsed % MaxItemsPerStairBuffer * 5;
-
-          stairBuffer[byteIndex++] = (byte)(mte.m_ItemID >> 8);
-          stairBuffer[byteIndex++] = (byte)mte.m_ItemID;
-
-          stairBuffer[byteIndex++] = (byte)mte.m_OffsetX;
-          stairBuffer[byteIndex++] = (byte)mte.m_OffsetY;
-          stairBuffer[byteIndex] = (byte)mte.m_OffsetZ;
-
-          ++totalStairsUsed;
-        }
-        else
-        {
-          m_PlaneUsed[plane] = true;
-          m_PlaneBuffers[plane][index] = (byte)(mte.m_ItemID >> 8);
-          m_PlaneBuffers[plane][index + 1] = (byte)mte.m_ItemID;
-        }
-      }
-
-      int planeCount = 0;
-
-      byte[] m_DeflatedBuffer = ArrayPool<byte>.Shared.Rent(0x2000);
-
-      for (int i = 0; i < m_PlaneBuffers.Length; ++i)
-      {
-        if (!m_PlaneUsed[i])
-        {
-          ArrayPool<byte>.Shared.Return(m_PlaneBuffers[i], true);
-          continue;
-        }
-
-        ++planeCount;
-
-        int size;
-
-        if (i == 0)
-          size = width * height * 2;
-        else if (i < 5)
-          size = (width - 1) * (height - 2) * 2;
-        else
-          size = width * (height - 1) * 2;
-
-        byte[] inflatedBuffer = m_PlaneBuffers[i];
-
-        int deflatedLength = m_DeflatedBuffer.Length;
-        ZLibError ce = Compression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
-          ZLibQuality.Default);
-
-        if (ce != ZLibError.Okay)
-        {
-          Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
-          deflatedLength = 0;
-          size = 0;
-        }
-
-        Write((byte)(0x20 | i));
-        Write((byte)size);
-        Write((byte)deflatedLength);
-        Write((byte)(((size >> 4) & 0xF0) | ((deflatedLength >> 8) & 0xF)));
-        Write(m_DeflatedBuffer, 0, deflatedLength);
-
-        totalLength += 4 + deflatedLength;
-        ArrayPool<byte>.Shared.Return(inflatedBuffer, true);
-      }
-
-      int totalStairBuffersUsed = (totalStairsUsed + (MaxItemsPerStairBuffer - 1)) / MaxItemsPerStairBuffer;
-
-      for (int i = 0; i < totalStairBuffersUsed; ++i)
-      {
-        ++planeCount;
-
-        int count = totalStairsUsed - i * MaxItemsPerStairBuffer;
-
-        if (count > MaxItemsPerStairBuffer)
-          count = MaxItemsPerStairBuffer;
-
-        int size = count * 5;
-
-        byte[] inflatedBuffer = m_StairBuffers[i];
-
-        int deflatedLength = m_DeflatedBuffer.Length;
-        ZLibError ce = Compression.Pack(m_DeflatedBuffer, ref deflatedLength, inflatedBuffer, size,
-          ZLibQuality.Default);
-
-        if (ce != ZLibError.Okay)
-        {
-          Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
-          deflatedLength = 0;
-          size = 0;
-        }
-
-        Write((byte)(9 + i));
-        Write((byte)size);
-        Write((byte)deflatedLength);
-        Write((byte)(((size >> 4) & 0xF0) | ((deflatedLength >> 8) & 0xF)));
-        Write(m_DeflatedBuffer, 0, deflatedLength);
-
-        totalLength += 4 + deflatedLength;
-      }
-
-      for (int i = 0; i < m_StairBuffers.Length; ++i)
-        ArrayPool<byte>.Shared.Return(m_StairBuffers[i], true);
-
-      ArrayPool<byte>.Shared.Return(m_DeflatedBuffer, true);
-
-      m_Stream.Seek(15, SeekOrigin.Begin);
-
-      Write((short)totalLength); // Buffer length
-      Write((byte)planeCount); // Plane count
-    }
-
-    public void Write(int value)
-    {
-      m_PrimBuffer[0] = (byte)(value >> 24);
-      m_PrimBuffer[1] = (byte)(value >> 16);
-      m_PrimBuffer[2] = (byte)(value >> 8);
-      m_PrimBuffer[3] = (byte)value;
-
-      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
-    }
-
-    public void Write(uint value)
-    {
-      m_PrimBuffer[0] = (byte)(value >> 24);
-      m_PrimBuffer[1] = (byte)(value >> 16);
-      m_PrimBuffer[2] = (byte)(value >> 8);
-      m_PrimBuffer[3] = (byte)value;
-
-      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 4);
-    }
-
-    public void Write(short value)
-    {
-      m_PrimBuffer[0] = (byte)(value >> 8);
-      m_PrimBuffer[1] = (byte)value;
-
-      m_Stream.UnderlyingStream.Write(m_PrimBuffer, 0, 2);
-    }
-
-    public void Write(byte value)
-    {
-      m_Stream.UnderlyingStream.WriteByte(value);
-    }
-
-    public void Write(byte[] buffer, int offset, int size)
-    {
-      m_Stream.UnderlyingStream.Write(buffer, offset, size);
-    }
-
-    public static void Clear(byte[] buffer, int size)
-    {
-      for (int i = 0; i < size; ++i)
-        buffer[i] = 0;
-    }
-
-    public static void ProcessCompression()
-    {
-      while (!Core.Closing)
-      {
-        m_Sync.WaitOne();
-
-        int count = m_SendQueue.Count;
-
-        while (count > 0 && m_SendQueue.TryDequeue(out SendQueueEntry sqe))
-        {
-          try
-          {
-            Packet p;
-
-            lock (sqe.m_Root)
-            {
-              p = sqe.m_Root.PacketCache;
-            }
-
-            if (p == null)
-            {
-              p = new DesignStateDetailed(sqe.m_Serial, sqe.m_Revision, sqe.m_xMin, sqe.m_yMin, sqe.m_xMax,
-                sqe.m_yMax, sqe.m_Tiles);
-              p.SetStatic();
-
-              lock (sqe.m_Root)
-              {
-                if (sqe.m_Revision == sqe.m_Root.Revision)
-                  sqe.m_Root.PacketCache = p;
-              }
-            }
-
-            sqe.m_NetState.Send(p);
-          }
-          catch (Exception e)
-          {
-            Console.WriteLine(e);
-
-            try
-            {
-              using StreamWriter op = new StreamWriter("dsd_exceptions.txt", true);
-              op.WriteLine(e);
-            }
-            catch
-            {
-              // ignored
-            }
-          }
-          finally
-          {
-            count = m_SendQueue.Count;
-          }
-        }
-      }
-    }
-
-    public static void SendDetails(NetState ns, HouseFoundation house, DesignState state)
-    {
-      m_SendQueue.Enqueue(new SendQueueEntry(ns, house, state));
-
-      m_Sync.Set();
-    }
-
-    private class SendQueueEntry
-    {
-      public NetState m_NetState;
-      public DesignState m_Root;
-      public int m_Revision;
-      public uint m_Serial;
-      public MultiTileEntry[] m_Tiles;
-      public int m_xMin, m_yMin, m_xMax, m_yMax;
-
-      public SendQueueEntry(NetState ns, HouseFoundation foundation, DesignState state)
-      {
-        m_NetState = ns;
-        m_Serial = foundation.Serial;
-        m_Revision = state.Revision;
-        m_Root = state;
-
-        MultiComponentList mcl = state.Components;
-
-        m_xMin = mcl.Min.X;
-        m_yMin = mcl.Min.Y;
-        m_xMax = mcl.Max.X;
-        m_yMax = mcl.Max.Y;
-
-        m_Tiles = mcl.List;
-      }
     }
   }
 }

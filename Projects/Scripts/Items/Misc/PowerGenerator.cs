@@ -144,9 +144,7 @@ namespace Server.Items
           visited[current.X, current.Y] = true;
         }
         else
-        {
           current = stack[--stackSize - 1];
-        }
       }
 
       Path = new Node[stackSize];

@@ -474,7 +474,7 @@ namespace Server.Network
     {
       PipeWriter w = RecvdPipe.Writer;
 
-      while (true)
+      while (!Core.Closing)
       {
         if (m_AsyncState.Paused)
         {
@@ -512,7 +512,7 @@ namespace Server.Network
     {
       PipeReader pr = RecvdPipe.Reader;
 
-      while (true)
+      while (!Core.Closing)
       {
         ReadResult result = await pr.ReadAsync();
         ReadOnlySequence<byte> seq = result.Buffer;
@@ -572,7 +572,7 @@ namespace Server.Network
     {
       PipeReader pr = SendPipe.Reader;
 
-      while (true)
+      while (!Core.Closing)
       {
         ReadResult result = await pr.ReadAsync();
         ReadOnlySequence<byte> seq = result.Buffer;

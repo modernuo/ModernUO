@@ -179,7 +179,7 @@ namespace Server.Buffers
     {
       int size = Math.Min(input.Length, Length - Position);
 
-      input.CopyTo(RawSpan.Slice(Position));
+      input.Slice(0, size).CopyTo(RawSpan.Slice(Position));
       Position += size;
     }
 
