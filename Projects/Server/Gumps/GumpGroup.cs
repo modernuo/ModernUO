@@ -26,25 +26,19 @@ namespace Server.Gumps
 {
   public class GumpGroup : GumpEntry
   {
-    private int m_Group;
+    public GumpGroup(int group) => Group = group;
 
-    public GumpGroup(int group) => m_Group = group;
+    public int Group { get; set; }
 
-    public int Group
-    {
-      get => m_Group;
-      set => Delta(ref m_Group, value);
-    }
+    public override string Compile(ArraySet<string> strings) => $"{{ group {Group} }}";
 
-    public override string Compile(ArraySet<string> strings) => $"{{ group {m_Group} }}";
-
-    private static byte[] m_LayoutName = Gump.StringToBuffer("{ group ");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ group ");
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(20));
       writer.Write(m_LayoutName);
-      writer.WriteAscii(m_Group.ToString());
+      writer.WriteAscii(Group.ToString());
       writer.Write((byte)0x20); // ' '
       writer.Write((byte)0x7D); // '}'
       buffer.Advance(writer.WrittenCount);

@@ -26,25 +26,19 @@ namespace Server.Gumps
 {
   public class GumpPage : GumpEntry
   {
-    private int m_Page;
+    public GumpPage(int page) => Page = page;
 
-    public GumpPage(int page) => m_Page = page;
+    public int Page { get; set; }
 
-    public int Page
-    {
-      get => m_Page;
-      set => Delta(ref m_Page, value);
-    }
+    public override string Compile(ArraySet<string> strings) => $"{{ page {Page} }}";
 
-    public override string Compile(ArraySet<string> strings) => $"{{ page {m_Page} }}";
-
-    private static byte[] m_LayoutName = Gump.StringToBuffer("{ page ");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ page ");
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(19));
       writer.Write(m_LayoutName);
-      writer.WriteAscii(m_Page.ToString());
+      writer.WriteAscii(Page.ToString());
       writer.Write((byte)0x20); // ' '
       writer.Write((byte)0x7D); // '}'
 

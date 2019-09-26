@@ -937,7 +937,7 @@ namespace Server.Mobiles
         from?.Damage(amount, from);
       }
 
-      base.Damage(amount, from);
+      base.Damage(amount, from, informMount);
 
       if (SubdueBeforeTame && !Controlled && oldHits > HitsMax / 10 && Hits <= HitsMax / 10)
         PublicOverheadMessage(MessageType.Regular, 0x3B2, false,

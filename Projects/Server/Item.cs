@@ -199,7 +199,7 @@ namespace Server
     Spawner = 0x100
   }
 
-  public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, IPropertyListObject
+  public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, IPropertyListObject, ITile
   {
     public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
     public static readonly List<Item> EmptyItems = new List<Item>();
@@ -688,6 +688,8 @@ namespace Server
     public bool InSecureTrade => GetSecureTradeCont() != null;
 
     public ItemData ItemData => TileData.ItemTable[m_ItemID & TileData.MaxItemValue];
+
+    int ITile.ID => ItemData.Value;
 
     public virtual bool CanTarget => true;
     public virtual bool DisplayLootType => true;

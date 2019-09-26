@@ -2004,7 +2004,7 @@ namespace Server.Mobiles
           amount = (int)(amount * (1 - (double)talisman.Protection.Amount / 100));
       }
 
-      base.Damage(amount, from);
+      base.Damage(amount, from, informMount);
     }
 
     public override bool IsHarmfulCriminal(Mobile target)

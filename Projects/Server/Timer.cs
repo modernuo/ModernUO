@@ -130,13 +130,7 @@ namespace Server
 
     public virtual bool DefRegCreation => true;
 
-    private static string FormatDelegate(Delegate callback)
-    {
-      if (callback == null)
-        return "null";
-
-      return $"{callback.Method.DeclaringType.FullName}.{callback.Method.Name}";
-    }
+    private static string FormatDelegate(Delegate callback) => callback == null ? "null" : $"{callback.Method.DeclaringType?.FullName}.{callback.Method.Name}";
 
     public static void DumpInfo(TextWriter tw)
     {
@@ -183,30 +177,15 @@ namespace Server
       if (prof != null) prof.Created++;
     }
 
-    public override string ToString() => GetType().FullName;
+    public override string ToString() => GetType().FullName ?? "";
 
-    public static TimerPriority ComputePriority(TimeSpan ts)
-    {
-      if (ts >= TimeSpan.FromMinutes(1.0))
-        return TimerPriority.FiveSeconds;
-
-      if (ts >= TimeSpan.FromSeconds(10.0))
-        return TimerPriority.OneSecond;
-
-      if (ts >= TimeSpan.FromSeconds(5.0))
-        return TimerPriority.TwoFiftyMS;
-
-      if (ts >= TimeSpan.FromSeconds(2.5))
-        return TimerPriority.FiftyMS;
-
-      if (ts >= TimeSpan.FromSeconds(1.0))
-        return TimerPriority.TwentyFiveMS;
-
-      if (ts >= TimeSpan.FromSeconds(0.5))
-        return TimerPriority.TenMS;
-
-      return TimerPriority.EveryTick;
-    }
+    public static TimerPriority ComputePriority(TimeSpan ts) =>
+      ts >= TimeSpan.FromMinutes(1.0) ? TimerPriority.FiveSeconds :
+      ts >= TimeSpan.FromSeconds(10.0) ? TimerPriority.OneSecond :
+      ts >= TimeSpan.FromSeconds(5.0) ? TimerPriority.TwoFiftyMS :
+      ts >= TimeSpan.FromSeconds(2.5) ? TimerPriority.FiftyMS :
+      ts >= TimeSpan.FromSeconds(1.0) ? TimerPriority.TwentyFiveMS :
+      ts >= TimeSpan.FromSeconds(0.5) ? TimerPriority.TenMS : TimerPriority.EveryTick;
 
     public void Start()
     {

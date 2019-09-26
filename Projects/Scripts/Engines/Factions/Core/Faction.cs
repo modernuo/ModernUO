@@ -840,7 +840,7 @@ namespace Server.Factions
 
       Silver += tithed;
 
-      silver = silver - tithed;
+      silver -= tithed;
 
       if (silver > 0)
         mob.AddToBackpack(new Silver(silver));

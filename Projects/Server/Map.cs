@@ -264,8 +264,6 @@ namespace Server
 
     private TileMatrix m_Tiles;
 
-    private object tileLock = new object();
-
     public Map(int mapID, int mapIndex, int fileIndex, int width, int height, byte season, string name, MapRules rules)
     {
       MapID = mapID;
@@ -551,13 +549,13 @@ namespace Server
     ///   Gets the highest surface that is lower than <paramref name="p" />.
     /// </summary>
     /// <param name="p">The reference point.</param>
-    /// <returns>A surface <typeparamref name="Tile" /> or <typeparamref name="Item" />.</returns>
-    public object GetTopSurface(Point3D p)
+    /// <returns>A surface <typeparamref><name>ITile</name></typeparamref></returns>
+    public ITile GetTopSurface(Point3D p)
     {
       if (this == Internal)
         return null;
 
-      object surface = null;
+      ITile surface = null;
       int surfaceZ = int.MinValue;
 
 

@@ -388,7 +388,7 @@ namespace Server
           while (pCur < pEnd)
           {
             lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add(pCur->m_ID, pCur->m_Z);
-            pCur = pCur + 1;
+            pCur += 1;
           }
 
           StaticTile[][][] tiles = new StaticTile[8][][];
@@ -468,8 +468,13 @@ namespace Server
     }
   }
 
+  public interface ITile
+  {
+    int ID { get; }
+  }
+
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
-  public struct LandTile
+  public struct LandTile : ITile
   {
     internal short m_ID;
     internal sbyte m_Z;
@@ -500,7 +505,7 @@ namespace Server
   }
 
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
-  public struct StaticTile
+  public struct StaticTile : ITile
   {
     internal ushort m_ID;
     internal byte m_X;

@@ -211,7 +211,7 @@ namespace Server.Gumps
       state.Send(bufferWriter.WrittenSpan);
     }
 
-    private int Compile(bool packed, ArrayBufferWriter<byte> bufferWriter)
+    private void Compile(bool packed, IBufferWriter<byte> bufferWriter)
     {
       // m_Strings.Clear(); // Do we care?
       m_TextEntries = 0;
@@ -298,10 +298,6 @@ namespace Server.Gumps
       bufferWriter.Write(headWriter.Span);
       bufferWriter.Write(layoutBuffer.WrittenSpan);
       bufferWriter.Write(stringsBuffer.WrittenSpan);
-
-      //bufferWriter.Advance(writeLength); // Do you need to advance?
-
-      return writeLength;
     }
 
     private ArrayBufferWriter<byte> WritePacked(ReadOnlySpan<byte> source)

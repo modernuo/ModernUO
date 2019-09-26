@@ -32,82 +32,53 @@ namespace Server.Gumps
 
   public class GumpButton : GumpEntry
   {
-    private int m_ButtonID;
-    private int m_ID1, m_ID2;
-    private int m_Param;
-    private int m_X, m_Y;
-
     public GumpButton(int x, int y, int normalID, int pressedID, int buttonID,
       GumpButtonType type = GumpButtonType.Reply, int param = 0)
     {
-      m_X = x;
-      m_Y = y;
-      m_ID1 = normalID;
-      m_ID2 = pressedID;
-      m_ButtonID = buttonID;
+      X = x;
+      Y = y;
+      NormalID = normalID;
+      PressedID = pressedID;
+      ButtonID = buttonID;
       Type = type;
-      m_Param = param;
+      Param = param;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int NormalID
-    {
-      get => m_ID1;
-      set => Delta(ref m_ID1, value);
-    }
+    public int NormalID { get; set; }
 
-    public int PressedID
-    {
-      get => m_ID2;
-      set => Delta(ref m_ID2, value);
-    }
+    public int PressedID { get; set; }
 
-    public int ButtonID
-    {
-      get => m_ButtonID;
-      set => Delta(ref m_ButtonID, value);
-    }
+    public int ButtonID { get; set; }
 
     public GumpButtonType Type { get; set; }
 
-    public int Param
-    {
-      get => m_Param;
-      set => Delta(ref m_Param, value);
-    }
+    public int Param { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => $"{{ button {m_X} {m_Y} {m_ID1} {m_ID2} {(int)Type} {m_Param} {m_ButtonID} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ button {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer("{ button ");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ button ");
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(68));
       writer.Write(m_LayoutName);
-      writer.WriteAscii(m_X.ToString());
+      writer.WriteAscii(X.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Y.ToString());
+      writer.WriteAscii(Y.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_ID1.ToString());
+      writer.WriteAscii(NormalID.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_ID2.ToString());
+      writer.WriteAscii(PressedID.ToString());
       writer.Write((byte)0x20); // ' '
       writer.WriteAscii(((int)Type).ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Param.ToString());
+      writer.WriteAscii(Param.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_ButtonID.ToString());
+      writer.WriteAscii(ButtonID.ToString());
       writer.Write((byte)0x20); // ' '
       writer.Write((byte)0x7D); // '}'
       buffer.Advance(writer.WrittenCount);

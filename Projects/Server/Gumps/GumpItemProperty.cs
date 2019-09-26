@@ -26,25 +26,19 @@ namespace Server.Gumps
 {
   public class GumpItemProperty : GumpEntry
   {
-    private uint m_Serial;
+    public GumpItemProperty(uint serial) => Serial = serial;
 
-    public GumpItemProperty(uint serial) => m_Serial = serial;
+    public uint Serial { get; set; }
 
-    public uint Serial
-    {
-      get => m_Serial;
-      set => Delta(ref m_Serial, value);
-    }
+    public override string Compile(ArraySet<string> strings) => $"{{ itemproperty {Serial} }}";
 
-    public override string Compile(ArraySet<string> strings) => $"{{ itemproperty {m_Serial} }}";
-
-    private static byte[] m_LayoutName = Gump.StringToBuffer("{ itemproperty ");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ itemproperty ");
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(27));
       writer.Write(m_LayoutName);
-      writer.WriteAscii(m_Serial.ToString());
+      writer.WriteAscii(Serial.ToString());
       writer.Write((byte)0x20); // ' '
       writer.Write((byte)0x7D); // '}'
 

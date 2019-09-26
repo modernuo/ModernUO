@@ -7,19 +7,12 @@ namespace Server
 {
 	public class AssemblyEmitter
 	{
-		private string m_AssemblyName;
-
-		private AppDomain m_AppDomain;
 		private AssemblyBuilder m_AssemblyBuilder;
 		private ModuleBuilder m_ModuleBuilder;
 
 		public AssemblyEmitter( string assemblyName )
 		{
-			m_AssemblyName = assemblyName;
-
-			m_AppDomain = AppDomain.CurrentDomain;
-
-			m_AssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
+      m_AssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
 				new AssemblyName( assemblyName ),
 				AssemblyBuilderAccess.Run
 			);

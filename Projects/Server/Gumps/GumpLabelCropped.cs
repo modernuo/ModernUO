@@ -26,76 +26,47 @@ namespace Server.Gumps
 {
   public class GumpLabelCropped : GumpEntry
   {
-    private int m_Hue;
-    private string m_Text;
-    private int m_Width, m_Height;
-    private int m_X, m_Y;
-
     public GumpLabelCropped(int x, int y, int width, int height, int hue, string text)
     {
-      m_X = x;
-      m_Y = y;
-      m_Width = width;
-      m_Height = height;
-      m_Hue = hue;
-      m_Text = text;
+      X = x;
+      Y = y;
+      Width = width;
+      Height = height;
+      Hue = hue;
+      Text = text;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int Width
-    {
-      get => m_Width;
-      set => Delta(ref m_Width, value);
-    }
+    public int Width { get; set; }
 
-    public int Height
-    {
-      get => m_Height;
-      set => Delta(ref m_Height, value);
-    }
+    public int Height { get; set; }
 
-    public int Hue
-    {
-      get => m_Hue;
-      set => Delta(ref m_Hue, value);
-    }
+    public int Hue { get; set; }
 
-    public string Text
-    {
-      get => m_Text;
-      set => Delta(ref m_Text, value);
-    }
+    public string Text { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => $"{{ croppedtext {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {strings.Add(m_Text)} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ croppedtext {X} {Y} {Width} {Height} {Hue} {strings.Add(Text)} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer("{ croppedtext ");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ croppedtext ");
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(81));
       writer.Write(m_LayoutName);
-      writer.WriteAscii(m_X.ToString());
+      writer.WriteAscii(X.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Y.ToString());
+      writer.WriteAscii(Y.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Width.ToString());
+      writer.WriteAscii(Width.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Height.ToString());
+      writer.WriteAscii(Height.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Hue.ToString());
+      writer.WriteAscii(Hue.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(strings.Add(m_Text).ToString());
+      writer.WriteAscii(strings.Add(Text).ToString());
       writer.Write((byte)0x20); // ' '
       writer.Write((byte)0x7D); // '}'
 

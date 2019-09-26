@@ -62,7 +62,7 @@ namespace Server.Misc
         // .NET relies on the MTA to generate Message-ID header. Not all MTAs will add this header.
 
         DateTime now = DateTime.UtcNow;
-        string messageID = $"<{now.ToString("yyyyMMdd")}.{now.ToString("HHmmssff")}@{EmailServer}>";
+        string messageID = $"<{now:yyyyMMdd}.{now:HHmmssff}@{EmailServer}>";
         message.Headers.Add("Message-ID", messageID);
 
         message.Headers.Add("X-Mailer", "RunUO");
@@ -89,10 +89,8 @@ namespace Server.Misc
     {
       MailMessage message = (MailMessage)state;
 
-      if (Send(message))
-        Console.WriteLine("Sent e-mail '{0}' to '{1}'.", message.Subject, message.To);
-      else
-        Console.WriteLine("Failure sending e-mail '{0}' to '{1}'.", message.Subject, message.To);
+      Console.WriteLine(Send(message) ? "Sent e-mail '{0}' to '{1}'." : "Failure sending e-mail '{0}' to '{1}'.",
+        message.Subject, message.To);
     }
   }
 }

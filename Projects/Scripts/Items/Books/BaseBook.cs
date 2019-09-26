@@ -67,7 +67,7 @@ namespace Server.Items
     }
 
     // Intended for defined books only
-    public BaseBook(int itemID, bool writable) : this(itemID, 0)
+    public BaseBook(int itemID, bool writable) : this(itemID, 0, writable)
     {
     }
 

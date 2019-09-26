@@ -598,10 +598,7 @@ namespace Server.Misc
       newChar.Female = args.Female;
       //newChar.Body = newChar.Female ? 0x191 : 0x190;
 
-      if (Core.Expansion >= args.Race.RequiredExpansion)
-        newChar.Race = args.Race; //Sets body
-      else
-        newChar.Race = Race.DefaultRace;
+      newChar.Race = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
 
       //newChar.Hue = Utility.ClipSkinHue( args.Hue & 0x3FFF ) | 0x8000;
       newChar.Hue = newChar.Race.ClipSkinHue(args.Hue & 0x3FFF) | 0x8000;
@@ -1100,7 +1097,7 @@ namespace Server.Misc
       if (m_Mobile?.EquipItem(item) == true)
         return;
 
-      Container pack = m_Mobile.Backpack;
+      Container pack = m_Mobile?.Backpack;
 
       if (!mustEquip && pack != null)
         pack.DropItem(item);
@@ -1113,7 +1110,7 @@ namespace Server.Misc
       if (!Core.AOS)
         item.LootType = LootType.Newbied;
 
-      Container pack = m_Mobile.Backpack;
+      Container pack = m_Mobile?.Backpack;
 
       if (pack != null)
         pack.DropItem(item);
@@ -1669,18 +1666,18 @@ namespace Server.Misc
     private class BadStartMessage : Timer
     {
       private int m_Message;
-      private Mobile m_Mobile;
+      private Mobile m_From;
 
       public BadStartMessage(Mobile m, int message) : base(TimeSpan.FromSeconds(3.5))
       {
-        m_Mobile = m;
+        m_From = m;
         m_Message = message;
         Start();
       }
 
       protected override void OnTick()
       {
-        m_Mobile.SendLocalizedMessage(m_Message);
+        m_From.SendLocalizedMessage(m_Message);
       }
     }
   }

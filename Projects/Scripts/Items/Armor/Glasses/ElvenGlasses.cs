@@ -1,3 +1,5 @@
+using System;
+
 namespace Server.Items
 {
   public class ElvenGlasses : BaseArmor
@@ -120,12 +122,10 @@ namespace Server.Items
 
       SaveFlag flags = (SaveFlag)reader.ReadInt();
 
-      if (GetSaveFlag(flags, SaveFlag.WeaponAttributes))
-        WeaponAttributes = new AosWeaponAttributes(this, reader);
-      else
-        WeaponAttributes = new AosWeaponAttributes(this);
+      WeaponAttributes = GetSaveFlag(flags, SaveFlag.WeaponAttributes) ? new AosWeaponAttributes(this, reader) : new AosWeaponAttributes(this);
     }
 
+    [Flags]
     private enum SaveFlag
     {
       None = 0x00000000,

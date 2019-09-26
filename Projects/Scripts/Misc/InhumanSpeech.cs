@@ -298,8 +298,7 @@ namespace Server.Misc
 				switch ( Utility.Random( 6 ) )
 				{
 					default:
-					case 0:
-					{
+          {
 						response.Append( "Me " ).Append( responseWord ).Append( '?' );
 						break;
 					}

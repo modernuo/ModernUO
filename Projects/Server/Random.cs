@@ -79,7 +79,7 @@ namespace Server
       return b[0];
     }
 
-    public unsafe virtual double NextDouble()
+    public virtual unsafe double NextDouble()
     {
       byte[] b = new byte[8];
 
@@ -94,7 +94,7 @@ namespace Server
         GetBytes(b, 1, 7);
       }
 
-      ulong r = 0;
+      ulong r;
       fixed (byte* buf = b)
       {
         r = *(ulong*)&buf[0] >> 3;
@@ -136,7 +136,11 @@ namespace Server
 
       if (c >= LARGE_REQUEST)
       {
-        _CSP.GetBytes(b);
+        lock (_sync)
+        {
+          _CSP.GetBytes(b);
+        }
+
         return;
       }
 
@@ -199,7 +203,7 @@ namespace Server
     internal static extern RDRandError rdrand_32(ref uint rand, bool retry);
 
     [DllImport("rdrand.so")]
-    internal unsafe static extern RDRandError rdrand_get_bytes(int n, byte* buffer);
+    internal static extern unsafe RDRandError rdrand_get_bytes(int n, byte* buffer);
 
     public bool IsSupported()
     {
@@ -207,7 +211,7 @@ namespace Server
       return rdrand_32(ref r, true) == RDRandError.Success;
     }
 
-    internal unsafe override void GetBytes(Span<byte> b)
+    internal override unsafe void GetBytes(Span<byte> b)
     {
       fixed(byte* ptr = b)
         rdrand_get_bytes(b.Length, ptr);
@@ -225,7 +229,7 @@ namespace Server
     internal static extern RDRandError rdrand_64(ref ulong rand, bool retry);
 
     [DllImport("rdrand64")]
-    internal unsafe static extern RDRandError rdrand_get_bytes(int n, byte* buffer);
+    internal static extern unsafe RDRandError rdrand_get_bytes(int n, byte* buffer);
 
     public bool IsSupported()
     {
@@ -233,7 +237,7 @@ namespace Server
       return rdrand_64(ref r, true) == RDRandError.Success;
     }
 
-    internal unsafe override void GetBytes(Span<byte> b)
+    internal override unsafe void GetBytes(Span<byte> b)
     {
       fixed (byte* ptr = b)
         rdrand_get_bytes(b.Length, ptr);

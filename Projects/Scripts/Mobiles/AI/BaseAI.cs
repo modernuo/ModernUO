@@ -1687,20 +1687,30 @@ namespace Server.Mobiles
       bool isPassive = delay == m_Mobile.PassiveSpeed;
       bool isControlled = m_Mobile.Controlled || m_Mobile.Summoned;
 
-      if (delay == 0.2)
-        delay = 0.3;
-      else if (delay == 0.25)
-        delay = 0.45;
-      else if (delay == 0.3)
-        delay = 0.6;
-      else if (delay == 0.4)
-        delay = 0.9;
-      else if (delay == 0.5)
-        delay = 1.05;
-      else if (delay == 0.6)
-        delay = 1.2;
-      else if (delay == 0.8)
-        delay = 1.5;
+      switch (delay)
+      {
+        case 0.2:
+          delay = 0.3;
+          break;
+        case 0.25:
+          delay = 0.45;
+          break;
+        case 0.3:
+          delay = 0.6;
+          break;
+        case 0.4:
+          delay = 0.9;
+          break;
+        case 0.5:
+          delay = 1.05;
+          break;
+        case 0.6:
+          delay = 1.2;
+          break;
+        case 0.8:
+          delay = 1.5;
+          break;
+      }
 
       if (isPassive)
         delay += 0.2;
@@ -2020,9 +2030,9 @@ namespace Server.Mobiles
         return true;
       }
 
-      if (m_Path?.Goal == m)
+      if (ReferenceEquals(m_Path?.Goal, m))
       {
-        if (m_Path.Follow(run, 1))
+        if (m_Path?.Follow(run, 1) == true)
         {
           m_Path = null;
           return true;
@@ -2072,25 +2082,19 @@ namespace Server.Mobiles
         if (iCurrDist < iWantDistMin || iCurrDist > iWantDistMax)
         {
           bool needCloser = iCurrDist > iWantDistMax;
-          bool needFurther = !needCloser;
 
-          if (needCloser && m_Path != null && m_Path.Goal == m)
+          if (needCloser && m_Path != null && ReferenceEquals(m_Path.Goal, m))
           {
             if (m_Path.Follow(bRun, 1))
               m_Path = null;
           }
           else
           {
-            Direction dirTo;
-
-            if (iCurrDist > iWantDistMax)
-              dirTo = m_Mobile.GetDirectionTo(m);
-            else
-              dirTo = m.GetDirectionTo(m_Mobile);
+            Direction dirTo = iCurrDist > iWantDistMax ? m_Mobile.GetDirectionTo(m) : m.GetDirectionTo(m_Mobile);
 
             // Add the run flag
             if (bRun)
-              dirTo = dirTo | Direction.Running;
+              dirTo |= Direction.Running;
 
             if (!DoMove(dirTo, true) && needCloser)
             {

@@ -90,7 +90,7 @@ namespace Server.Network
         }
 
         if (VerifySocket(s))
-          _ = new NetState(s, pump);
+          new NetState(s, pump);
         else
           Release(s);
       }
@@ -168,7 +168,7 @@ namespace Server.Network
 
     public void Dispose()
     {
-      Interlocked.Exchange<Socket>(ref m_Socket, null)?.Close();
+      Interlocked.Exchange(ref m_Socket, null)?.Close();
       GC.SuppressFinalize(this);
     }
   }

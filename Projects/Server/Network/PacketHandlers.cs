@@ -2098,7 +2098,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new SkillNameValue[3]
+          new[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),
@@ -2213,7 +2213,7 @@ namespace Server.Network
           name, female, hue,
           str, dex, intl,
           info[cityIndex],
-          new SkillNameValue[4]
+          new[]
           {
             new SkillNameValue((SkillName)is1, vs1),
             new SkillNameValue((SkillName)is2, vs2),

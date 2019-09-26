@@ -26,96 +26,57 @@ namespace Server.Gumps
 {
   public class GumpTextEntryLimited : GumpEntry
   {
-    private int m_EntryID;
-    private int m_Hue;
-    private string m_InitialText;
-    private int m_Size;
-    private int m_Width, m_Height;
-    private int m_X, m_Y;
-
     public GumpTextEntryLimited(int x, int y, int width, int height, int hue, int entryID, string initialText, int size = 0)
     {
-      m_X = x;
-      m_Y = y;
-      m_Width = width;
-      m_Height = height;
-      m_Hue = hue;
-      m_EntryID = entryID;
-      m_InitialText = initialText;
-      m_Size = size;
+      X = x;
+      Y = y;
+      Width = width;
+      Height = height;
+      Hue = hue;
+      EntryID = entryID;
+      InitialText = initialText;
+      Size = size;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int Width
-    {
-      get => m_Width;
-      set => Delta(ref m_Width, value);
-    }
+    public int Width { get; set; }
 
-    public int Height
-    {
-      get => m_Height;
-      set => Delta(ref m_Height, value);
-    }
+    public int Height { get; set; }
 
-    public int Hue
-    {
-      get => m_Hue;
-      set => Delta(ref m_Hue, value);
-    }
+    public int Hue { get; set; }
 
-    public int EntryID
-    {
-      get => m_EntryID;
-      set => Delta(ref m_EntryID, value);
-    }
+    public int EntryID { get; set; }
 
-    public string InitialText
-    {
-      get => m_InitialText;
-      set => Delta(ref m_InitialText, value);
-    }
+    public string InitialText { get; set; }
 
-    public int Size
-    {
-      get => m_Size;
-      set => Delta(ref m_Size, value);
-    }
+    public int Size { get; set; }
 
-    public override string Compile(ArraySet<string> strings) => $"{{ textentrylimited {m_X} {m_Y} {m_Width} {m_Height} {m_Hue} {m_EntryID} {strings.Add(m_InitialText)} {m_Size} }}";
+    public override string Compile(ArraySet<string> strings) => $"{{ textentrylimited {X} {Y} {Width} {Height} {Hue} {EntryID} {strings.Add(InitialText)} {Size} }}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer(" { textentrylimited ");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer(" { textentrylimited ");
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(107));
       writer.Write(m_LayoutName);
-      writer.WriteAscii(m_X.ToString());
+      writer.WriteAscii(X.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Y.ToString());
+      writer.WriteAscii(Y.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Width.ToString());
+      writer.WriteAscii(Width.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Height.ToString());
+      writer.WriteAscii(Height.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Hue.ToString());
+      writer.WriteAscii(Hue.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_EntryID.ToString());
+      writer.WriteAscii(EntryID.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(strings.Add(m_InitialText).ToString());
+      writer.WriteAscii(strings.Add(InitialText).ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Size.ToString());
+      writer.WriteAscii(Size.ToString());
       writer.Write((byte)0x20); // ' '
       writer.Write((byte)0x7D); // '}'
 

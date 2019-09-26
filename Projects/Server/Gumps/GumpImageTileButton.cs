@@ -26,132 +26,82 @@ namespace Server.Gumps
 {
   public class GumpImageTileButton : GumpEntry
   {
-    private int m_ButtonID;
-    private int m_Height;
-    private int m_Hue;
-    private int m_ID1, m_ID2;
-
-    private int m_ItemID;
-    private int m_Param;
-    private int m_Width;
-
     //Note, on OSI, The tooltip supports ONLY clilocs as far as I can figure out, and the tooltip ONLY works after the buttonTileArt (as far as I can tell from testing)
-    private int m_X, m_Y;
 
     public GumpImageTileButton(int x, int y, int normalID, int pressedID, int buttonID, GumpButtonType type, int param,
       int itemID, int hue, int width, int height, int localizedTooltip = -1)
     {
-      m_X = x;
-      m_Y = y;
-      m_ID1 = normalID;
-      m_ID2 = pressedID;
-      m_ButtonID = buttonID;
+      X = x;
+      Y = y;
+      NormalID = normalID;
+      PressedID = pressedID;
+      ButtonID = buttonID;
       Type = type;
-      m_Param = param;
+      Param = param;
 
-      m_ItemID = itemID;
-      m_Hue = hue;
-      m_Width = width;
-      m_Height = height;
+      ItemID = itemID;
+      Hue = hue;
+      Width = width;
+      Height = height;
 
       LocalizedTooltip = localizedTooltip;
     }
 
-    public int X
-    {
-      get => m_X;
-      set => Delta(ref m_X, value);
-    }
+    public int X { get; set; }
 
-    public int Y
-    {
-      get => m_Y;
-      set => Delta(ref m_Y, value);
-    }
+    public int Y { get; set; }
 
-    public int NormalID
-    {
-      get => m_ID1;
-      set => Delta(ref m_ID1, value);
-    }
+    public int NormalID { get; set; }
 
-    public int PressedID
-    {
-      get => m_ID2;
-      set => Delta(ref m_ID2, value);
-    }
+    public int PressedID { get; set; }
 
-    public int ButtonID
-    {
-      get => m_ButtonID;
-      set => Delta(ref m_ButtonID, value);
-    }
+    public int ButtonID { get; set; }
 
     public GumpButtonType Type { get; set; }
 
-    public int Param
-    {
-      get => m_Param;
-      set => Delta(ref m_Param, value);
-    }
+    public int Param { get; set; }
 
-    public int ItemID
-    {
-      get => m_ItemID;
-      set => Delta(ref m_ItemID, value);
-    }
+    public int ItemID { get; set; }
 
-    public int Hue
-    {
-      get => m_Hue;
-      set => Delta(ref m_Hue, value);
-    }
+    public int Hue { get; set; }
 
-    public int Width
-    {
-      get => m_Width;
-      set => Delta(ref m_Width, value);
-    }
+    public int Width { get; set; }
 
-    public int Height
-    {
-      get => m_Height;
-      set => Delta(ref m_Height, value);
-    }
+    public int Height { get; set; }
 
     public int LocalizedTooltip{ get; set; }
 
     public override string Compile(ArraySet<string> strings) =>
-      $"{{ buttontileart {m_X} {m_Y} {m_ID1} {m_ID2} {(int)Type} {m_Param} {m_ButtonID} {m_ItemID} {m_Hue} {m_Width} {m_Height} }}{(LocalizedTooltip > 0 ? $"{{ tooltip {LocalizedTooltip} }}" : "")}";
+      $"{{ buttontileart {X} {Y} {NormalID} {PressedID} {(int)Type} {Param} {ButtonID} {ItemID} {Hue} {Width} {Height} }}{(LocalizedTooltip > 0 ? $"{{ tooltip {LocalizedTooltip} }}" : "")}";
 
-    private static byte[] m_LayoutName = Gump.StringToBuffer("{ buttontileart ");
-    private static byte[] m_LayoutTooltip = Gump.StringToBuffer(" }{ tooltip ");
+    private static readonly byte[] m_LayoutName = Gump.StringToBuffer("{ buttontileart ");
+    private static readonly byte[] m_LayoutTooltip = Gump.StringToBuffer(" }{ tooltip ");
 
     public override void AppendTo(ArrayBufferWriter<byte> buffer, ArraySet<string> strings, ref int entries, ref int switches)
     {
       SpanWriter writer = new SpanWriter(buffer.GetSpan(160));
       writer.Write(m_LayoutName);
-      writer.WriteAscii(m_X.ToString());
+      writer.WriteAscii(X.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Y.ToString());
+      writer.WriteAscii(Y.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_ID1.ToString());
+      writer.WriteAscii(NormalID.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_ID2.ToString());
+      writer.WriteAscii(PressedID.ToString());
       writer.Write((byte)0x20); // ' '
       writer.WriteAscii(((int)Type).ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Param.ToString());
+      writer.WriteAscii(Param.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_ButtonID.ToString());
+      writer.WriteAscii(ButtonID.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_ItemID.ToString());
+      writer.WriteAscii(ItemID.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Hue.ToString());
+      writer.WriteAscii(Hue.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Width.ToString());
+      writer.WriteAscii(Width.ToString());
       writer.Write((byte)0x20); // ' '
-      writer.WriteAscii(m_Height.ToString());
+      writer.WriteAscii(Height.ToString());
       writer.Write((byte)0x20); // ' '
 
       if (LocalizedTooltip > 0)

@@ -72,7 +72,6 @@ namespace Server.Gumps
 		private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
 		private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
 
-		private Mobile m_Owner;
 		private List<Mobile> m_Mobiles;
 		private int m_Page;
 
@@ -97,7 +96,6 @@ namespace Server.Gumps
 		{
 			owner.CloseGump<WhoGump>();
 
-			m_Owner = owner;
 			m_Mobiles = list;
 
 			Initialize( page );
@@ -206,21 +204,18 @@ namespace Server.Gumps
 		}
 
 		private static int GetHueFor( Mobile m )
-		{
-			switch ( m.AccessLevel )
-			{
-				case AccessLevel.Owner:
-				case AccessLevel.Developer:
-				case AccessLevel.Administrator: return 0x516;
-				case AccessLevel.Seer: return 0x144;
-				case AccessLevel.GameMaster: return 0x21;
-				case AccessLevel.Counselor: return 0x2;
-				default:
-				{
-					return m.Kills >= 5 ? 0x21 : m.Criminal ? 0x3B1 : 0x58;
-				}
-			}
-		}
+    {
+      return m.AccessLevel switch
+      {
+        AccessLevel.Owner => 0x516,
+        AccessLevel.Developer => 0x516,
+        AccessLevel.Administrator => 0x516,
+        AccessLevel.Seer => 0x144,
+        AccessLevel.GameMaster => 0x21,
+        AccessLevel.Counselor => 0x2,
+        _ => (m.Kills >= 5 ? 0x21 : m.Criminal ? 0x3B1 : 0x58)
+      };
+    }
 
 		public override void OnResponse( NetState sender, RelayInfo info )
 		{
@@ -229,10 +224,8 @@ namespace Server.Gumps
 			switch ( info.ButtonID )
 			{
 				case 0: // Closed
-				{
-					return;
-				}
-				case 1: // Previous
+          return;
+        case 1: // Previous
 				{
 					if ( m_Page > 0 )
 						from.SendGump( new WhoGump( from, m_Mobiles, m_Page - 1 ) );
@@ -264,12 +257,11 @@ namespace Server.Gumps
 							from.SendMessage( "That player is no longer online." );
 							from.SendGump( new WhoGump( from, m_Mobiles, m_Page ) );
 						}
-						else if ( m == from || !m.Hidden || from.AccessLevel >= m.AccessLevel || m is PlayerMobile mobile && mobile.VisibilityList.Contains( from ))
-						{
-							from.SendGump( new ClientGump( from, m.NetState ) );
-						}
-						else
-						{
+						else if (m == from || !m.Hidden || from.AccessLevel >= m.AccessLevel ||
+                     m is PlayerMobile mobile && mobile.VisibilityList.Contains(from))
+              from.SendGump(new ClientGump(from, m.NetState));
+            else
+            {
 							from.SendMessage( "You cannot see them." );
 							from.SendGump( new WhoGump( from, m_Mobiles, m_Page ) );
 						}

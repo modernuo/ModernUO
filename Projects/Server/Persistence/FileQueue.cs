@@ -47,7 +47,7 @@ namespace Server.Persistence
 
     public FileQueue(int concurrentWrites, FileCommitCallback callback)
     {
-      if (concurrentWrites < 1) throw new ArgumentOutOfRangeException("concurrentWrites");
+      if (concurrentWrites < 1) throw new ArgumentOutOfRangeException(nameof(concurrentWrites));
 
       if (bufferSize < 1)
         throw new ArgumentOutOfRangeException("bufferSize");
