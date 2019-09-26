@@ -105,12 +105,9 @@ namespace Server.Network
       {
         NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
         foreach (NetworkInterface adapter in adapters)
-        {
-          IPInterfaceProperties properties = adapter.GetIPProperties();
-          foreach (UnicastIPAddressInformation unicast in properties.UnicastAddresses)
-            if (ipep.AddressFamily == unicast.Address.AddressFamily)
-              Console.WriteLine("Listening: {0}:{1}", unicast.Address, ipep.Port);
-        }
+        foreach (UnicastIPAddressInformation unicast in adapter.GetIPProperties().UnicastAddresses)
+          if (ipep.AddressFamily == unicast.Address.AddressFamily)
+            Console.WriteLine("Listening: {0}:{1}", unicast.Address, ipep.Port);
       }
       else
       {

@@ -132,21 +132,12 @@ namespace Server.Factions
 
     public static void HandleAtrophy()
     {
-      foreach (Faction f in Factions)
-        if (!f.State.IsAtrophyReady)
-          return;
+      if (Factions.Any(f => !f.State.IsAtrophyReady))
+        return;
 
-      List<PlayerState> activePlayers = new List<PlayerState>();
+      List<PlayerState> activePlayers = (from f in Factions from ps in f.Members where ps.KillPoints > 0 && ps.IsActive select ps).ToList();
 
-      foreach (Faction f in Factions)
-      foreach (PlayerState ps in f.Members)
-        if (ps.KillPoints > 0 && ps.IsActive)
-          activePlayers.Add(ps);
-
-      int distrib = 0;
-
-      foreach (Faction f in Factions)
-        distrib += f.State.CheckAtrophy();
+      int distrib = Factions.Sum(f => f.State.CheckAtrophy());
 
       if (activePlayers.Count == 0)
         return;
@@ -157,12 +148,7 @@ namespace Server.Factions
 
     public static void DistributePoints(int distrib)
     {
-      List<PlayerState> activePlayers = new List<PlayerState>();
-
-      foreach (Faction f in Factions)
-      foreach (PlayerState ps in f.Members)
-        if (ps.KillPoints > 0 && ps.IsActive)
-          activePlayers.Add(ps);
+      List<PlayerState> activePlayers = (from f in Factions from ps in f.Members where ps.KillPoints > 0 && ps.IsActive select ps).ToList();
 
       if (activePlayers.Count > 0)
         for (int i = 0; i < distrib; ++i)
@@ -186,13 +172,9 @@ namespace Server.Factions
           return;
 
         if (recvState == null || recvState.Faction != giveState.Faction)
-        {
           from.SendLocalizedMessage(1042497); // Only faction mates can be honored this way.
-        }
         else if (giveState.KillPoints < 5)
-        {
           from.SendLocalizedMessage(1042499); // You must have at least five kill points to honor them.
-        }
         else
         {
           recvState.LastHonorTime = DateTime.UtcNow;
@@ -204,9 +186,7 @@ namespace Server.Factions
         }
       }
       else
-      {
         from.SendLocalizedMessage(1042496); // You may only honor another player.
-      }
     }
 
     public virtual void AddMember(Mobile mob)
@@ -648,11 +628,7 @@ namespace Server.Factions
 
     public static void FactionItemReset_OnCommand(CommandEventArgs e)
     {
-      List<Item> items = new List<Item>();
-
-      foreach (Item item in World.Items.Values)
-        if (item is IFactionItem && !(item is HoodedShroudOfShadows))
-          items.Add(item);
+      List<Item> items = World.Items.Values.Where(item => item is IFactionItem && !(item is HoodedShroudOfShadows)).ToList();
 
       int[] hues = new int[Factions.Count * 2];
 
@@ -672,16 +648,7 @@ namespace Server.Factions
         if (fci.FactionItemState != null || item.LootType != LootType.Blessed)
           continue;
 
-        bool isHued = false;
-
-        for (int j = 0; j < hues.Length; ++j)
-          if (item.Hue == hues[j])
-          {
-            isHued = true;
-            break;
-          }
-
-        if (isHued)
+        if (hues.Any(t => item.Hue == t))
         {
           fci.FactionItemState = null;
           ++count;

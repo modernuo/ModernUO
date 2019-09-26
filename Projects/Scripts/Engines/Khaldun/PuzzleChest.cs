@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Gumps;
 using Server.Network;
 
@@ -473,13 +474,7 @@ namespace Server.Items
 
     public void CleanupGuesses()
     {
-      List<Mobile> toDelete = new List<Mobile>();
-
-      foreach (KeyValuePair<Mobile, PuzzleChestSolutionAndTime> kvp in m_Guesses)
-        if (DateTime.UtcNow - kvp.Value.When > CleanupTime)
-          toDelete.Add(kvp.Key);
-
-      foreach (Mobile m in toDelete)
+      foreach (Mobile m in from kvp in m_Guesses where DateTime.UtcNow - kvp.Value.When > CleanupTime select kvp.Key)
         m_Guesses.Remove(m);
     }
 
@@ -497,10 +492,10 @@ namespace Server.Items
       for (int i = 0; i < Hints.Length; i++) writer.Write((int)Hints[i]);
 
       writer.WriteEncodedInt(m_Guesses.Count);
-      foreach (KeyValuePair<Mobile, PuzzleChestSolutionAndTime> kvp in m_Guesses)
+      foreach (var (key, value) in m_Guesses)
       {
-        writer.Write(kvp.Key);
-        kvp.Value.Serialize(writer);
+        writer.Write(key);
+        value.Serialize(writer);
       }
     }
 

@@ -506,10 +506,8 @@ namespace Server.Commands
 
             Dictionary<string, Region> list = from.Map.Regions;
 
-            foreach (KeyValuePair<string, Region> kvp in list)
+            foreach (var (_, r) in list)
             {
-              Region r = kvp.Value;
-
               if (Insensitive.Equals(r.Name, name))
               {
                 from.Location = new Point3D(r.GoLocation);

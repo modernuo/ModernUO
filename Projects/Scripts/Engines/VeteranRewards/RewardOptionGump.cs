@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Network;
 
 namespace Server.Gumps
@@ -51,17 +52,7 @@ namespace Server.Gumps
         m_Option.OnOptionSelected(sender.Mobile, info.ButtonID);
     }
 
-    private bool Contains(int chosen)
-    {
-      if (m_Options == null)
-        return false;
-
-      foreach (RewardOption option in m_Options)
-        if (option.ID == chosen)
-          return true;
-
-      return false;
-    }
+    private bool Contains(int chosen) => m_Options?.Any(option => option.ID == chosen) == true;
   }
 
   public class RewardOption

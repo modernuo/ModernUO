@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Engines.ConPVP;
 using Server.Factions;
 using Server.Gumps;
@@ -195,9 +196,8 @@ namespace Server.Engines.Help
 
     private static void EventSink_HelpRequest(HelpRequestEventArgs e)
     {
-      foreach (Gump g in e.Mobile.NetState.Gumps)
-        if (g is HelpGump)
-          return;
+      if (e.Mobile.NetState.Gumps.OfType<HelpGump>().Any())
+        return;
 
       if (!PageQueue.CheckAllowedToPage(e.Mobile))
         return;

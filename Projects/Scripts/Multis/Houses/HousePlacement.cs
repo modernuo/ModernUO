@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Regions;
 using Server.Spells;
 
@@ -333,29 +334,7 @@ namespace Server.Multis
         }
       }
 
-      for (int i = 0; i < yard.Count; ++i)
-        foreach (BaseHouse b in _houses)
-          if (b.Contains(yard[i]))
-            return HousePlacementResult.BadStatic; // Broke rule #3
-      /*Point2D yardPoint = yard[i];
-
-        IPooledEnumerable eable = map.GetMultiTilesAt( yardPoint.X, yardPoint.Y );
-
-        foreach ( StaticTile[] tile in eable )
-        {
-          for ( int j = 0; j < tile.Length; ++j )
-          {
-            if ( (TileData.ItemTable[tile[j].ID & TileData.MaxItemValue].Flags & (TileFlag.Impassable | TileFlag.Surface)) != 0 )
-            {
-              eable.Free();
-              return HousePlacementResult.BadStatic; // Broke rule #3
-            }
-          }
-        }
-
-        eable.Free();*/
-
-      return HousePlacementResult.Valid;
+      return yard.Any(t => _houses.Any(b => b.Contains(t))) ? HousePlacementResult.BadStatic : HousePlacementResult.Valid;
     }
   }
 }

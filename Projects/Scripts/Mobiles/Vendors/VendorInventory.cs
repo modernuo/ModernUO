@@ -116,8 +116,7 @@ namespace Server.Mobiles
         {
           if (m_Inventory.Gold > 0)
           {
-            if (house.MovingCrate == null)
-              house.MovingCrate = new MovingCrate(house);
+            house.MovingCrate ??= new MovingCrate(house);
 
             Banker.Deposit(house.MovingCrate, m_Inventory.Gold);
           }

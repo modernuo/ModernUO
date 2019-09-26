@@ -26,14 +26,8 @@ namespace Server.Items
       m_Timer.Start();
 
       foreach (AddonComponent c in Components)
-        switch (c.ItemID)
-        {
-          case 0x2DD9:
-          case 0x101C:
-          case 0x10A4:
-            ++c.ItemID;
-            break;
-        }
+        if (c.ItemID == 0x2DD9 || c.ItemID == 0x101C || c.ItemID == 0x10A4)
+          ++c.ItemID;
     }
 
     public override void Serialize(GenericWriter writer)
@@ -69,15 +63,8 @@ namespace Server.Items
       m_Timer = null;
 
       foreach (AddonComponent c in Components)
-        switch (c.ItemID)
-        {
-          case 0x1016:
-          case 0x101A:
-          case 0x101D:
-          case 0x10A5:
-            --c.ItemID;
-            break;
-        }
+        if (c.ItemID == 0x1016 || c.ItemID == 0x101A || c.ItemID == 0x101D || c.ItemID == 0x10A5)
+          --c.ItemID;
 
       callback?.Invoke(this, from, hue);
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Buffers;
 using Server.Gumps;
 using Server.Items;
@@ -113,24 +114,15 @@ namespace Server.Engines.MLQuests.Gumps
 
     public static bool IsWearingEquipment(Mobile from)
     {
-      foreach (Item item in from.Items)
-        switch (item.Layer)
+      return from.Items.Select(item => item.Layer switch
         {
-          case Layer.Hair:
-          case Layer.FacialHair:
-          case Layer.Backpack:
-          case Layer.Mount:
-          case Layer.Bank:
-          {
-            continue; // ignore
-          }
-          default:
-          {
-            return true;
-          }
-        }
-
-      return false;
+          Layer.Hair => false,
+          Layer.FacialHair => false,
+          Layer.Backpack => false,
+          Layer.Mount => false,
+          Layer.Bank => false,
+          _ => true
+        }).FirstOrDefault();
     }
 
     private static bool CanChange(PlayerMobile from, Race targetRace)

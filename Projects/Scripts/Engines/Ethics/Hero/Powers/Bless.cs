@@ -33,7 +33,9 @@ namespace Server.Ethics.Hero
 
       SpellHelper.GetSurfaceTop(ref p);
 
-      foreach (Mobile mob in from.Mobile.GetMobilesInRange(6))
+      IPooledEnumerable eable = from.Mobile.GetMobilesInRange(6);
+
+      foreach (Mobile mob in eable)
       {
         if (mob != from.Mobile && SpellHelper.ValidIndirectTarget(from.Mobile, mob))
           continue;
@@ -53,6 +55,8 @@ namespace Server.Ethics.Hero
 
         powerFunctioned = true;
       }
+
+      eable.Free();
 
       if (powerFunctioned)
       {

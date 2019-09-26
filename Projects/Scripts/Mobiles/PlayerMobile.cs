@@ -1899,14 +1899,8 @@ namespace Server.Mobiles
 
       if (m_BuffTable != null)
       {
-        List<BuffInfo> list = new List<BuffInfo>();
-
-        foreach (BuffInfo buff in m_BuffTable.Values)
-          if (!buff.RetainThroughDeath)
-            list.Add(buff);
-
-        for (int i = 0; i < list.Count; i++)
-          RemoveBuff(list[i]);
+        foreach(var buff in m_BuffTable.Values.Where(buff => !buff.RetainThroughDeath))
+          RemoveBuff(buff);
       }
     }
 
@@ -3026,14 +3020,14 @@ namespace Server.Mobiles
       if (!Core.SE || !Alive)
         return;
 
-      foreach (KeyValuePair<Type, int> kvp in RecoverableAmmo)
-        if (kvp.Value > 0)
+      foreach (var (key, value) in RecoverableAmmo)
+        if (value > 0)
         {
           Item ammo = null;
 
           try
           {
-            ammo = Activator.CreateInstance(kvp.Key) as Item;
+            ammo = Activator.CreateInstance(key) as Item;
           }
           catch
           {
@@ -3043,7 +3037,7 @@ namespace Server.Mobiles
           if (ammo == null)
             continue;
           string name = ammo.Name;
-          ammo.Amount = kvp.Value;
+          ammo.Amount = value;
 
           if (name == null)
           {
@@ -3347,11 +3341,7 @@ namespace Server.Mobiles
       if (!CheckAlive())
         return;
 
-      List<Item> items = new List<Item>();
-
-      foreach (Item item in Items)
-        if (DisplayInItemInsuranceGump(item))
-          items.Add(item);
+      List<Item> items = Items.Where(DisplayInItemInsuranceGump).ToList();
 
       Container pack = Backpack;
 

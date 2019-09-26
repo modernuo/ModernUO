@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Targeting;
 
@@ -40,7 +41,7 @@ namespace Server.Commands.Generic
         from.SendMessage("That is not a container.");
         return;
       }
-      
+
       try
       {
         Extensions ext = Extensions.Parse(from, ref args);
@@ -54,11 +55,7 @@ namespace Server.Commands.Generic
           return;
         }
 
-        List<object> list = new List<object>();
-
-        foreach (Item item in cont.FindItemsByType<Item>())
-          if (ext.IsValid(item))
-            list.Add(item);
+        List<object> list = cont.FindItemsByType<Item>().Where(item => ext.IsValid(item)).Cast<object>().ToList();
 
         ext.Filter(list);
 

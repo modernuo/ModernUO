@@ -531,11 +531,8 @@ namespace Server.Items
       {
         writer.Write(m_RestoreTable.Count);
 
-        foreach (KeyValuePair<Item, Point3D> kvp in m_RestoreTable)
+        foreach (var (item, loc) in m_RestoreTable)
         {
-          Item item = kvp.Key;
-          Point3D loc = kvp.Value;
-
           writer.Write(item);
 
           if (item.Location == loc)

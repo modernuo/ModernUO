@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Commands.Generic
 {
@@ -30,16 +31,7 @@ namespace Server.Commands.Generic
         List<object> list = new List<object>();
 
         if (mobiles)
-        {
-          foreach (Mobile mob in reg.GetMobiles())
-          {
-            if (!BaseCommand.IsAccessible(from, mob))
-              continue;
-
-            if (ext.IsValid(mob))
-              list.Add(mob);
-          }
-        }
+          list.AddRange(reg.GetMobiles().Where(mob => BaseCommand.IsAccessible(from, mob)).Where(mob => ext.IsValid(mob)));
         else
         {
           command.LogFailure("This command does not support items.");

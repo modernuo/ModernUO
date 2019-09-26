@@ -816,10 +816,10 @@ namespace Server.Items
       writer.Write(TimeoutDelay);
       writer.Write(m_Teleporting.Count);
 
-      foreach (KeyValuePair<Mobile, Timer> kvp in m_Teleporting)
+      foreach (var (key, value) in m_Teleporting)
       {
-        writer.Write(kvp.Key);
-        writer.Write(kvp.Value.Next);
+        writer.Write(key);
+        writer.Write(value.Next);
       }
     }
 
@@ -1059,9 +1059,7 @@ namespace Server.Items
             case Layer.Backpack:
             case Layer.Mount:
             case Layer.Bank:
-            {
               continue; // ignore
-            }
             default:
             {
               m.SendMessage("You must remove all of your equipment before proceeding.");

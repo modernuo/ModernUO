@@ -574,11 +574,14 @@ namespace Server.Engines.ConPVP
       if (hasBounds)
       {
         List<Mobile> pets = new List<Mobile>();
+        IPooledEnumerable eable = facet.GetMobilesInBounds(m_Bounds);
 
-        foreach (Mobile mob in facet.GetMobilesInBounds(m_Bounds))
+        foreach (Mobile mob in eable)
           if (mob is BaseCreature pet && pet.Controlled && pet.ControlMaster != null &&
               Players.Contains(pet.ControlMaster))
             pets.Add(pet);
+
+        eable.Free();
 
         foreach (Mobile pet in pets)
         {

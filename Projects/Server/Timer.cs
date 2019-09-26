@@ -269,11 +269,8 @@ namespace Server
             list.Add(t);
           }
 
-          foreach (KeyValuePair<string, List<Timer>> kv in hash)
+          foreach (var (key, list) in hash)
           {
-            string key = kv.Key;
-            List<Timer> list = kv.Value;
-
             tw.WriteLine("Type: {0}; Count: {1}; Percent: {2}%", key, list.Count,
               (int)(100 * (list.Count / (double)m_Timers[i].Count)));
           }

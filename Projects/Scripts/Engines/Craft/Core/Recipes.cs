@@ -52,15 +52,13 @@ namespace Server.Engines.Craft
       {
         if (targeted is PlayerMobile mobile)
         {
-          foreach (KeyValuePair<int, Recipe> kvp in Recipes)
-            mobile.AcquireRecipe(kvp.Key);
+          foreach (var (key, _) in Recipes)
+            mobile.AcquireRecipe(key);
 
           m.SendMessage("You teach them all of the recipes.");
         }
         else
-        {
           m.SendMessage("That is not a player!");
-        }
       });
     }
 

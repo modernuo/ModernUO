@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Server.Factions;
 using Server.Mobiles;
 using Server.Network;
@@ -41,9 +42,7 @@ namespace Server
 
           if (chance > Utility.Random(100))
           {
-            int weight = 0;
-
-            foreach (WeightedItem item in _items) weight += item.Weight;
+            int weight = _items.Sum(item => item.Weight);
 
             weight = Utility.Random(weight);
 

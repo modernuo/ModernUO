@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Server.Network;
 using Server.Targeting;
@@ -474,13 +475,7 @@ namespace Server
       List<Mobile> list = new List<Mobile>();
 
       for (int i = 0; i < Sectors?.Length; i++)
-      {
-        Sector sector = Sectors[i];
-
-        foreach (Mobile player in sector.Players)
-          if (player.Region.IsPartOf(this))
-            list.Add(player);
-      }
+        list.AddRange(Sectors[i].Players.Where(player => player.Region.IsPartOf(this)));
 
       return list;
     }
@@ -490,13 +485,7 @@ namespace Server
       int count = 0;
 
       for (int i = 0; i < Sectors?.Length; i++)
-      {
-        Sector sector = Sectors[i];
-
-        foreach (Mobile player in sector.Players)
-          if (player.Region.IsPartOf(this))
-            count++;
-      }
+        count += Sectors[i].Players.Count(player => player.Region.IsPartOf(this));
       return count;
     }
 
@@ -505,13 +494,7 @@ namespace Server
       List<Mobile> list = new List<Mobile>();
 
       for (int i = 0; i < Sectors?.Length; i++)
-      {
-        Sector sector = Sectors[i];
-
-        foreach (Mobile mobile in sector.Mobiles)
-          if (mobile.Region.IsPartOf(this))
-            list.Add(mobile);
-      }
+        list.AddRange(Sectors[i].Mobiles.Where(mobile => mobile.Region.IsPartOf(this)));
       return list;
     }
 
@@ -520,13 +503,7 @@ namespace Server
       int count = 0;
 
       for (int i = 0; i < Sectors?.Length; i++)
-      {
-        Sector sector = Sectors[i];
-
-        foreach (Mobile mobile in sector.Mobiles)
-          if (mobile.Region.IsPartOf(this))
-            count++;
-      }
+        count += Sectors[i].Mobiles.Count(mobile => mobile.Region.IsPartOf(this));
 
       return count;
     }

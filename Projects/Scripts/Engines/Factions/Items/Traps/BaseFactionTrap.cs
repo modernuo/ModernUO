@@ -113,9 +113,14 @@ namespace Server.Factions
         return 502956; // You cannot place a trap on that.
 
       if (Core.ML)
-        foreach (Item item in m.GetItemsInRange(p, 0))
+      {
+        IPooledEnumerable eable = m.GetItemsInRange(p, 0);
+        foreach (Item item in eable)
           if (item is BaseFactionTrap trap && trap.Faction == Faction)
             return 1075263; // There is already a trap belonging to your faction at this location.;
+
+        eable.Free();
+      }
 
       switch (AllowedPlacing)
       {

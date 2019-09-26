@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Engines.CannedEvil;
 using Server.Mobiles;
 using Server.Network;
@@ -117,9 +118,7 @@ namespace Server.Items
           {
             Type t = bc.GetType();
 
-            foreach (Type type in m_ChampTamables)
-              if (type == t)
-                return true;
+            return m_ChampTamables.Any(type => type == t);
           }
         }
 

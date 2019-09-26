@@ -73,11 +73,11 @@ namespace Server.Mobiles
       if (pack == null)
         return;
 
-      IEnumerable<Item> eable = GetItemsInRange(2).Where(item => item.Movable && item.Stackable);
+      IPooledEnumerable<Item> eable = GetItemsInRange(2);
 
       int pickedUp = 0;
 
-      foreach (Item item in eable)
+      foreach (Item item in eable.Where(item => item.Movable && item.Stackable))
       {
         if (!pack.CheckHold(this, item, false, true))
           return;
@@ -94,6 +94,8 @@ namespace Server.Mobiles
         if (++pickedUp == 3)
           break;
       }
+
+      eable.Free();
     }
 
     private void ConfirmRelease_Callback(Mobile from, bool okay)

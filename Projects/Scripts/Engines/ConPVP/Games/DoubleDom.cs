@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -72,11 +73,9 @@ namespace Server.Engines.ConPVP
             entries.Add(teamInfo);
         }
       else
-        foreach (DDPlayerInfo player in section.Players.Values)
-          if (player.Score > 0)
-            entries.Add(player);
+        entries.AddRange(section.Players.Values.Where(player => player.Score > 0));
 
-      entries.Sort(delegate(IRankedCTF a, IRankedCTF b) { return b.Score - a.Score; });
+      entries.Sort((a, b) => b.Score - a.Score);
 
       int height = 0;
 

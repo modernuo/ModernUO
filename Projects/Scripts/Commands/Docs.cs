@@ -148,11 +148,11 @@ namespace Server.Commands
 
       SortedList<string, List<TypeInfo>> nspaces = new SortedList<string, List<TypeInfo>>(m_Namespaces);
 
-      foreach (KeyValuePair<string, List<TypeInfo>> kvp in nspaces)
+      foreach (var (key, value) in nspaces)
       {
-        kvp.Value.Sort(new TypeComparer());
+        value.Sort(new TypeComparer());
 
-        SaveNamespace(kvp.Key, kvp.Value, indexHtml);
+        SaveNamespace(key, value, indexHtml);
       }
 
       indexHtml.WriteLine("   </body>");
@@ -644,10 +644,8 @@ namespace Server.Commands
       m_Namespaces = new Dictionary<string, List<TypeInfo>>();
 
       List<Assembly> assemblies = new List<Assembly> { Core.Assembly };
+      assemblies.AddRange(ScriptCompiler.Assemblies);
 
-
-      foreach (Assembly asm in ScriptCompiler.Assemblies)
-        assemblies.Add(asm);
 
       Assembly[] asms = assemblies.ToArray();
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Gumps;
@@ -298,13 +299,12 @@ namespace Server.Items
 
       if (Level == 0 && from.AccessLevel < AccessLevel.GameMaster)
       {
-        foreach (Mobile m in Guardians)
-          if (m.Alive)
-          {
-            from.SendLocalizedMessage(
-              1046448); // You must first kill the guardians before you may open this chest.
-            return true;
-          }
+        if (Guardians.Any(m => m.Alive))
+        {
+          from.SendLocalizedMessage(
+            1046448); // You must first kill the guardians before you may open this chest.
+          return true;
+        }
 
         LockPick(from);
         return false;

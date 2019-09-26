@@ -24,7 +24,7 @@ namespace Server.Multis
 
     public const int MaximumBarkeepCount = 2;
 
-    private static Dictionary<Mobile, List<BaseHouse>> m_Table = new Dictionary<Mobile, List<BaseHouse>>();
+    private static readonly Dictionary<Mobile, List<BaseHouse>> m_Table = new Dictionary<Mobile, List<BaseHouse>>();
 
     private DecayLevel m_LastDecayLevel;
 
@@ -331,9 +331,7 @@ namespace Server.Multis
     {
       get
       {
-        int count = 0;
-
-        count += GetLockdowns();
+        int count = GetLockdowns();
 
         if (Secures != null)
           for (int i = 0; i < Secures.Count; ++i)
@@ -476,25 +474,9 @@ namespace Server.Multis
 
     public virtual HousePlacementEntry GetAosEntry() => HousePlacementEntry.Find(this);
 
-    public virtual int GetAosMaxSecures()
-    {
-      HousePlacementEntry hpe = GetAosEntry();
+    public virtual int GetAosMaxSecures() => (int)(GetAosEntry()?.Storage ?? 0 * BonusStorageScalar);
 
-      if (hpe == null)
-        return 0;
-
-      return (int)(hpe.Storage * BonusStorageScalar);
-    }
-
-    public virtual int GetAosMaxLockdowns()
-    {
-      HousePlacementEntry hpe = GetAosEntry();
-
-      if (hpe == null)
-        return 0;
-
-      return (int)(hpe.Lockdowns * BonusStorageScalar);
-    }
+    public virtual int GetAosMaxLockdowns() => (int)(GetAosEntry()?.Lockdowns ?? 0 * BonusStorageScalar);
 
     public virtual int GetAosCurSecures(out int fromSecures, out int fromVendors, out int fromLockdowns,
       out int fromMovingCrate)
@@ -515,9 +497,7 @@ namespace Server.Multis
       fromLockdowns += GetLockdowns();
 
       if (!NewVendorSystem)
-        foreach (PlayerVendor vendor in PlayerVendors)
-          if (vendor.Backpack != null)
-            fromVendors += vendor.Backpack.TotalItems;
+        fromVendors += PlayerVendors.Where(vendor => vendor.Backpack != null).Sum(vendor => vendor.Backpack.TotalItems);
 
       if (MovingCrate != null)
       {
@@ -602,7 +582,7 @@ namespace Server.Multis
 
       LockDowns.Clear();
 
-      foreach (Item item in VendorRentalContracts)
+      foreach (VendorRentalContract item in VendorRentalContracts)
         if (!item.Deleted)
         {
           item.IsLockedDown = false;
@@ -882,9 +862,7 @@ namespace Server.Multis
 
     public void DropToMovingCrate(Item item)
     {
-      if (MovingCrate == null)
-        MovingCrate = new MovingCrate(this);
-
+      MovingCrate ??= new MovingCrate(this);
       MovingCrate.DropItem(item);
     }
 
@@ -923,20 +901,7 @@ namespace Server.Multis
       Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), Decay_OnTick);
     }
 
-    public virtual int GetAosCurLockdowns()
-    {
-      int v = 0;
-
-      v += GetLockdowns();
-
-      if (Secures != null)
-        v += Secures.Count;
-
-      if (!NewVendorSystem)
-        v += PlayerVendors.Count * 10;
-
-      return v;
-    }
+    public virtual int GetAosCurLockdowns() => GetLockdowns() + Secures?.Count ?? 0 + (NewVendorSystem ? 0 : PlayerVendors.Count * 10);
 
     public static bool CheckLockedDown(Item item) => FindHouseAt(item)?.HasLockedDownItem(item) == true;
 

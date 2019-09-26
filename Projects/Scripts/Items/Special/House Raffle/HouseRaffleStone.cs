@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using Server.Accounting;
@@ -290,22 +291,9 @@ namespace Server.Items
       }
     }
 
-    private bool HasEntered(Mobile from)
-    {
-      if (!(from.Account is Account acc))
-        return false;
-
-      foreach (RaffleEntry entry in Entries)
-        if (entry.From != null)
-        {
-          Account entryAcc = entry.From.Account as Account;
-
-          if (entryAcc == acc)
-            return true;
-        }
-
-      return false;
-    }
+    private bool HasEntered(Mobile from) =>
+      from.Account is Account acc &&
+      (from entry in Entries select entry.From?.Account as Account).Any(entryAcc => entryAcc == acc);
 
     private bool IsAtIPLimit(Mobile from)
     {
@@ -315,12 +303,7 @@ namespace Server.Items
       IPAddress address = from.NetState.Address;
       int tickets = 0;
 
-      foreach (RaffleEntry entry in Entries)
-        if (Utility.IPMatchClassC(entry.Address, address))
-          if (++tickets >= EntryLimitPerIP)
-            return true;
-
-      return false;
+      return Entries.Where(entry => Utility.IPMatchClassC(entry.Address, address)).Any(entry => ++tickets >= EntryLimitPerIP);
     }
 
     public static string FormatLocation(Point3D loc, Map map, bool displayMap)

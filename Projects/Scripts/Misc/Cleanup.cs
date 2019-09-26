@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 using Server.Multis;
@@ -43,9 +44,7 @@ namespace Server.Misc
             if (relEntity.Entity is Item item1)
               validItems.Add(item1);
 
-          foreach (VendorInventory inventory in house.VendorInventories)
-          foreach (Item subItem in inventory.Items)
-            validItems.Add(subItem);
+          validItems.AddRange(house.VendorInventories.SelectMany(inventory => inventory.Items));
         }
         else if (item is BankBox box)
         {

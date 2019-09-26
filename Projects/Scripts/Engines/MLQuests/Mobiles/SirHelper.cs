@@ -77,7 +77,8 @@ namespace Server.Engines.MLQuests.Mobiles
 
       if (m_NextShout <= DateTime.UtcNow)
       {
-        foreach (NetState state in GetClientsInRange(12))
+        IPooledEnumerable eable = GetClientsInRange(12);
+        foreach (NetState state in eable)
         {
           Mobile m = state.Mobile;
 
@@ -85,6 +86,8 @@ namespace Server.Engines.MLQuests.Mobiles
             Packets.SendMessageLocalized(state, Serial, Body, MessageType.Regular, 946, 3,
               1078099, Name); // Double Click On Me For Help!
         }
+
+        eable.Free();
 
         m_NextShout = DateTime.UtcNow + m_ShoutDelay;
       }

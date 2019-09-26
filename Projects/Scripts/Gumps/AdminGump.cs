@@ -2480,11 +2480,7 @@ namespace Server.Gumps
             }
             case 31: // View all inactive accounts
             {
-              List<object> results = new List<object>();
-
-              foreach (Account acct in Accounts.GetAccounts())
-                if (acct.Inactive)
-                  results.Add(acct);
+              List<object> results = Accounts.GetAccounts().Cast<Account>().Where(acct => acct.Inactive).Cast<object>().ToList();
 
               if (results.Count == 1)
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Information, 0, null,
@@ -2497,11 +2493,7 @@ namespace Server.Gumps
             }
             case 32: // View all banned accounts
             {
-              List<object> results = new List<object>();
-
-              foreach (Account acct in Accounts.GetAccounts())
-                if (acct.Banned)
-                  results.Add(acct);
+              List<object> results = Accounts.GetAccounts().Cast<Account>().Where(acct => acct.Banned).Cast<object>().ToList();
 
               if (results.Count == 1)
                 from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Information, 0, null,

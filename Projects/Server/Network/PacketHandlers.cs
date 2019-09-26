@@ -2256,11 +2256,11 @@ namespace Server.Network
         int oldestID = 0;
         DateTime oldest = DateTime.MaxValue;
 
-        foreach (KeyValuePair<int, AuthIDPersistence> kvp in m_AuthIDWindow)
-          if (kvp.Value.Age < oldest)
+        foreach (var (key, value) in m_AuthIDWindow)
+          if (value.Age < oldest)
           {
-            oldestID = kvp.Key;
-            oldest = kvp.Value.Age;
+            oldestID = key;
+            oldest = value.Age;
           }
 
         m_AuthIDWindow.Remove(oldestID);

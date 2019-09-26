@@ -429,9 +429,12 @@ namespace Server.Engines.Doom
     /* I cant find any better way to send "speech" using fonts other than default */
     public static void POHMessage(Mobile from, int index)
     {
-      foreach (NetState state in from.Map.GetClientsInRange(from.Location))
+      IPooledEnumerable eable = from.Map.GetClientsInRange(from.Location);
+      foreach (NetState state in eable)
         Packets.SendAsciiMessage(state, from.Serial, from.Body, MessageType.Regular, MsgParams[index][0],
         MsgParams[index][1], from.Name, Msgs[index]);
+
+      eable.Free();
     }
 
     public override void Serialize(GenericWriter writer)

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Engines.MLQuests;
 using Server.Engines.MLQuests.Objectives;
 using Server.Mobiles;
@@ -43,12 +44,11 @@ namespace Server.Items
       MLQuestContext context = MLQuestSystem.GetContext(pm);
 
       if (context != null)
-        foreach (MLQuestInstance instance in context.QuestInstances)
-        foreach (BaseObjectiveInstance objective in instance.Objectives)
+        foreach (var objective in context.QuestInstances.SelectMany(instance => instance.Objectives))
           if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
               objectiveInstance.Handles(Skill))
           {
-            @from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
+            from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
             return false;
           }
 

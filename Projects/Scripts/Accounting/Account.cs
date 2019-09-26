@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -625,27 +626,9 @@ namespace Server.Accounting
 		/// <returns>String list. Value will never be null.</returns>
 		public static string[] LoadAccessCheck( XmlElement node )
 		{
-			string[] stringList;
-			XmlElement accessCheck = node["accessCheck"];
+      XmlElement accessCheck = node["accessCheck"];
 
-			if ( accessCheck != null )
-			{
-				List<string> list = new List<string>();
-
-				foreach ( XmlElement ip in accessCheck.GetElementsByTagName( "ip" ) )
-				{
-					string text = Utility.GetText( ip, null );
-
-					if ( text != null )
-						list.Add( text );
-				}
-
-				stringList = list.ToArray();
-			}
-			else
-			{
-				stringList = new string[0];
-			}
+			var stringList = accessCheck?.GetElementsByTagName("ip").Cast<XmlElement>().Select(ip => Utility.GetText(ip, null)).Where(text => text != null).ToArray() ?? new string[0];
 
 			return stringList;
 		}

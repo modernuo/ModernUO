@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Server.Targeting;
 
 namespace Server.Items
@@ -109,14 +110,7 @@ namespace Server.Items
       UpdateItemID();
     }
 
-    public bool ContainsKey(uint keyValue)
-    {
-      foreach (Key key in Keys)
-        if (key.KeyValue == keyValue)
-          return true;
-
-      return false;
-    }
+    public bool ContainsKey(uint keyValue) => Keys.Any(key => key.KeyValue == keyValue);
 
     private void UpdateItemID()
     {
@@ -169,9 +163,7 @@ namespace Server.Items
         }
         else if (targeted is ILockable o)
         {
-          foreach (Key key in m_KeyRing.Keys)
-            if (key.UseOn(from, o))
-              return;
+          if (m_KeyRing.Keys.Any(key => key.UseOn(from, o))) return;
 
           from.SendLocalizedMessage(1008140); // You do not have a key for that.
         }

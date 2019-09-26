@@ -56,7 +56,7 @@ namespace Server.Items
 
 				List<Mobile> toDamage = new List<Mobile>();
 
-				foreach( Mobile m in GetMobilesInRange( 0 ) )
+				foreach( Mobile m in GetMobilesInRange(0) )
           if ( m.Alive && !m.IsDeadBondedPet && (!(m is BaseCreature bc) || bc.Controlled || bc.Summoned) )
             toDamage.Add( m );
 

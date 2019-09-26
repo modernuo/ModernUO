@@ -83,18 +83,8 @@ namespace Server.Ethics
 
     public static bool IsImbued(Item item) => IsImbued(item, false);
 
-    public static bool IsImbued(Item item, bool recurse)
-    {
-      if (Find(item) != null)
-        return true;
-
-      if (recurse)
-        foreach (Item child in item.Items)
-          if (IsImbued(child, true))
-            return true;
-
-      return false;
-    }
+    public static bool IsImbued(Item item, bool recurse) =>
+      Find(item) != null || recurse && item.Items.Any(child => IsImbued(child, true));
 
     public static void Initialize()
     {

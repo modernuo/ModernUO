@@ -73,7 +73,7 @@ namespace Server.Commands
       foreach (PropertyInfo prop in _mobProps)
         try
         {
-          prop.SetValue(to, prop.GetValue(@from, null), null);
+          prop.SetValue(to, prop.GetValue(from, null), null);
         }
         catch
         {

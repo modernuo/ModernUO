@@ -448,13 +448,9 @@ namespace Server.Engines.ConPVP
             continue;
 
           if (i is BRGoal)
-          {
             height = 17;
-          }
           else if (i is Blocker)
-          {
             height = 20;
-          }
           else
           {
             ItemData id = i.ItemData;
@@ -983,9 +979,7 @@ namespace Server.Engines.ConPVP
         total = entries.Count;
       }
       else
-        foreach (BRPlayerInfo player in section.Players.Values)
-          if (player.Score > 0)
-            total++;
+        total += section.Players.Values.Count(player => player.Score > 0);
 
       entries.Sort();
 

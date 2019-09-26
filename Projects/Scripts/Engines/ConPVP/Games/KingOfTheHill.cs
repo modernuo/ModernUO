@@ -1150,8 +1150,9 @@ namespace Server.Engines.ConPVP
         if (Controller.Hills[i] != null)
           Controller.Hills[i].Game = null;
 
-      foreach (var board in Controller.Boards.Where(board => board != null))
-        board.m_Game = null;
+      foreach (var board in Controller.Boards)
+        if (board != null)
+          board.m_Game = null;
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
         ApplyHues(m_Context.Participants[i], -1);
