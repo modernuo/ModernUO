@@ -10,7 +10,7 @@ The next generation Ultima Online Server Emulator.
 - See [Goals](./GOALS.md)
 
 # Requirements to Compile
-- .NET Core 3.0 SDK
+- [.NET Core 3.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0)
 
 ### Requirements to Run
 - zlib (Linux only)
@@ -28,11 +28,7 @@ The next generation Ultima Online Server Emulator.
 - Follow the build instructions
 - Run `Distribution\ModernUO.exe` or `dotnet ModernUO.dll`
 
-#### Running on MacOSX or Linux
-- Follow the build instructions
-- Run `Distribution\ModernUO` or `dotnet ModernUO.dll`
-
-#### Running on Linux
+#### Running on OSX or Linux
 - Follow the build instructions
 - Run `Distribution\ModernUO` or `dotnet ModernUO.dll`
 
