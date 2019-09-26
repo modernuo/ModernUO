@@ -56,7 +56,6 @@ namespace Server.Buffers
     public int Position
     {
       get => m_Position;
-
       set
       {
         m_Position = value;
@@ -81,7 +80,7 @@ namespace Server.Buffers
     /// </summary>
     public unsafe void Write(bool value)
     {
-      Span[Position++] = *(byte*)&value;
+      RawSpan[Position++] = *(byte*)&value;
     }
 
     /// <summary>
@@ -89,7 +88,7 @@ namespace Server.Buffers
     /// </summary>
     public void Write(byte value)
     {
-      Span[Position++] = value;
+      RawSpan[Position++] = value;
     }
 
     /// <summary>
@@ -97,7 +96,7 @@ namespace Server.Buffers
     /// </summary>
     public void Write(sbyte value)
     {
-      Span[Position++] = (byte)value;
+      RawSpan[Position++] = (byte)value;
     }
 
     /// <summary>

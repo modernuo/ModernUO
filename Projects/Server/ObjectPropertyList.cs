@@ -18,6 +18,7 @@
  *
  ***************************************************************************/
 
+using System;
 using System.Buffers;
 using Server.Buffers;
 using Server.Network;
@@ -124,7 +125,6 @@ namespace Server
 
       int argLength = arguments.Length * 2;
       SpanWriter writer = new SpanWriter(m_Buffer.GetSpan(6 + argLength));
-
       writer.Write(number);
       writer.Write((short)argLength);
       writer.WriteBigUniFixed(arguments, argLength);

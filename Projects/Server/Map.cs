@@ -371,7 +371,7 @@ namespace Server
         return Internal;
 
       if (!int.TryParse(value, out int index))
-        return Maps.FirstOrDefault(m => m != null && Insensitive.Equals(m.Name, value));
+        return Maps.FirstOrDefault(m => Insensitive.Equals(m?.Name ?? "", value));
 
       return index == 127 ? Internal : Maps.FirstOrDefault(m => m?.MapIndex == index);
     }
