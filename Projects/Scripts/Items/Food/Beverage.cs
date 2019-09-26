@@ -293,12 +293,8 @@ namespace Server.Items
     public override int BaseLabelNumber => 1042976; // a mug of Ale
     public override int MaxQuantity => 5;
 
-    public override int ComputeItemID()
-    {
-      if (IsEmpty)
-        return ItemID >= 0x1F81 && ItemID <= 0x1F84 ? ItemID : 0x1F81;
-
-      return Content switch
+    public override int ComputeItemID() =>
+      IsEmpty ? ItemID >= 0x1F81 && ItemID <= 0x1F84 ? ItemID : 0x1F81 : Content switch
       {
         BeverageType.Ale => (ItemID == 0x9EF ? 0x9EF : 0x9EE),
         BeverageType.Cider => (ItemID >= 0x1F7D && ItemID <= 0x1F80 ? ItemID : 0x1F7D),
@@ -308,7 +304,6 @@ namespace Server.Items
         BeverageType.Water => (ItemID >= 0x1F91 && ItemID <= 0x1F94 ? ItemID : 0x1F91),
         _ => 0
       };
-    }
 
     public override void Serialize(GenericWriter writer)
     {

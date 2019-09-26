@@ -260,31 +260,23 @@ namespace Server.Misc
       }
     }
 
-    public static bool CanLower(Mobile from, Stat stat)
-    {
-      return stat switch
+    public static bool CanLower(Mobile from, Stat stat) =>
+      stat switch
       {
         Stat.Str => (from.StrLock == StatLockType.Down && from.RawStr > 10),
         Stat.Dex => (from.DexLock == StatLockType.Down && from.RawDex > 10),
         Stat.Int => (from.IntLock == StatLockType.Down && from.RawInt > 10),
         _ => false
       };
-    }
 
-    public static bool CanRaise(Mobile from, Stat stat)
-    {
-      if (!(from is BaseCreature creature && creature.Controlled))
-        if (from.RawStatTotal >= from.StatCap)
-          return false;
-
-      return stat switch
+    public static bool CanRaise(Mobile from, Stat stat) =>
+      (from is BaseCreature creature && creature.Controlled || from.RawStatTotal < from.StatCap) && stat switch
       {
         Stat.Str => (from.StrLock == StatLockType.Up && from.RawStr < 125),
         Stat.Dex => (from.DexLock == StatLockType.Up && from.RawDex < 125),
         Stat.Int => (from.IntLock == StatLockType.Up && from.RawInt < 125),
         _ => false
       };
-    }
 
     public static void IncreaseStat(Mobile from, Stat stat, bool atrophy)
     {

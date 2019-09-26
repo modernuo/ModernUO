@@ -359,22 +359,15 @@ namespace Server.Misc
 
     private static string GetSkillLevel(Skill skill) => m_Levels[GetTableIndex(skill), GetTableType(skill)];
 
-    private static int GetTableType(Skill skill)
-    {
-      return skill.SkillName switch
+    private static int GetTableType(Skill skill) =>
+      skill.SkillName switch
       {
         SkillName.Bushido => 1,
         SkillName.Ninjitsu => 2,
         _ => 0
       };
-    }
 
-    private static int GetTableIndex(Skill skill)
-    {
-      int fp = Math.Min(skill.BaseFixedPoint, 1200);
-
-      return (fp - 300) / 100;
-    }
+    private static int GetTableIndex(Skill skill) => (Math.Min(skill.BaseFixedPoint, 1200) - 300) / 100;
   }
 
   public class FameEntry

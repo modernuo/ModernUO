@@ -82,7 +82,7 @@ namespace Server.Commands
         path = Path.Combine(path, $"{name}.log");
 
         using StreamWriter sw = new StreamWriter(path, true);
-        sw.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, @from.NetState, text);
+        sw.WriteLine("{0}: {1}: {2}", DateTime.UtcNow, from.NetState, text);
       }
       catch
       {

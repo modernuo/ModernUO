@@ -44,15 +44,12 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public CampfireStatus Status
     {
-      get
+      get => ItemID switch
       {
-        return ItemID switch
-        {
-          0xDE3 => CampfireStatus.Burning,
-          0xDE9 => CampfireStatus.Extinguishing,
-          _ => CampfireStatus.Off
-        };
-      }
+        0xDE3 => CampfireStatus.Burning,
+        0xDE9 => CampfireStatus.Extinguishing,
+        _ => CampfireStatus.Off
+      };
       set
       {
         if (Status == value)

@@ -26,17 +26,14 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public SawTrapType Type
     {
-      get
+      get => ItemID switch
       {
-        return ItemID switch
-        {
-          0x1103 => SawTrapType.NorthWall,
-          0x1116 => SawTrapType.WestWall,
-          0x11AC => SawTrapType.NorthFloor,
-          0x11B1 => SawTrapType.WestFloor,
-          _ => SawTrapType.NorthWall
-        };
-      }
+        0x1103 => SawTrapType.NorthWall,
+        0x1116 => SawTrapType.WestWall,
+        0x11AC => SawTrapType.NorthFloor,
+        0x11B1 => SawTrapType.WestFloor,
+        _ => SawTrapType.NorthWall
+      };
       set => ItemID = GetBaseID(value);
     }
 
@@ -45,9 +42,8 @@ namespace Server.Items
     public override int PassiveTriggerRange => 0;
     public override TimeSpan ResetDelay => TimeSpan.FromSeconds(0.0);
 
-    public static int GetBaseID(SawTrapType type)
-    {
-      return type switch
+    public static int GetBaseID(SawTrapType type) =>
+      type switch
       {
         SawTrapType.NorthWall => 0x1103,
         SawTrapType.WestWall => 0x1116,
@@ -55,7 +51,6 @@ namespace Server.Items
         SawTrapType.WestFloor => 0x11B1,
         _ => 0
       };
-    }
 
     public override void OnTrigger(Mobile from)
     {

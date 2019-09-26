@@ -21,9 +21,8 @@ namespace Server.Mobiles
     public override bool CanTeach => true;
     public override bool ClickTitle => false; // Do not display 'the noble' when single-clicking
 
-    private static int GetRandomHue()
-    {
-      return Utility.Random(6) switch
+    private static int GetRandomHue() =>
+      Utility.Random(6) switch
       {
         0 => 0,
         1 => Utility.RandomBlueHue(),
@@ -33,7 +32,6 @@ namespace Server.Mobiles
         5 => Utility.RandomNeutralHue(),
         _ => 0
       };
-    }
 
     public override void InitOutfit()
     {

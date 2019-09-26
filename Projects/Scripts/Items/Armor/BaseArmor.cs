@@ -436,27 +436,22 @@ namespace Server.Items
       BaseEnergyResistance + GetProtOffset() + GetResourceAttrs().ArmorEnergyResist + m_EnergyBonus;
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public ArmorBodyType BodyPosition
-    {
-      get
+    public ArmorBodyType BodyPosition =>
+      Layer switch
       {
-        return Layer switch
-        {
-          Layer.Neck => ArmorBodyType.Gorget,
-          Layer.TwoHanded => ArmorBodyType.Shield,
-          Layer.Gloves => ArmorBodyType.Gloves,
-          Layer.Helm => ArmorBodyType.Helmet,
-          Layer.Arms => ArmorBodyType.Arms,
-          Layer.InnerLegs => ArmorBodyType.Legs,
-          Layer.OuterLegs => ArmorBodyType.Legs,
-          Layer.Pants => ArmorBodyType.Legs,
-          Layer.InnerTorso => ArmorBodyType.Chest,
-          Layer.OuterTorso => ArmorBodyType.Chest,
-          Layer.Shirt => ArmorBodyType.Chest,
-          _ => ArmorBodyType.Gorget
-        };
-      }
-    }
+        Layer.Neck => ArmorBodyType.Gorget,
+        Layer.TwoHanded => ArmorBodyType.Shield,
+        Layer.Gloves => ArmorBodyType.Gloves,
+        Layer.Helm => ArmorBodyType.Helmet,
+        Layer.Arms => ArmorBodyType.Arms,
+        Layer.InnerLegs => ArmorBodyType.Legs,
+        Layer.OuterLegs => ArmorBodyType.Legs,
+        Layer.Pants => ArmorBodyType.Legs,
+        Layer.InnerTorso => ArmorBodyType.Chest,
+        Layer.OuterTorso => ArmorBodyType.Chest,
+        Layer.Shirt => ArmorBodyType.Chest,
+        _ => ArmorBodyType.Gorget
+      };
 
     public static double[] ArmorScalars{ get; set; } = { 0.07, 0.07, 0.14, 0.15, 0.22, 0.35 };
 
@@ -761,9 +756,8 @@ namespace Server.Items
       return info.AttributeInfo;
     }
 
-    public int GetProtOffset()
-    {
-      return m_Protection switch
+    public int GetProtOffset() =>
+      m_Protection switch
       {
         ArmorProtectionLevel.Guarding => 1,
         ArmorProtectionLevel.Hardening => 2,
@@ -771,7 +765,6 @@ namespace Server.Items
         ArmorProtectionLevel.Invulnerability => 4,
         _ => 0
       };
-    }
 
     public int GetDurabilityBonus()
     {

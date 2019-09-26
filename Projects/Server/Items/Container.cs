@@ -379,16 +379,14 @@ namespace Server.Items
       UpdateContainerData();
     }
 
-    public override int GetTotal(TotalType type)
-    {
-      return type switch
+    public override int GetTotal(TotalType type) =>
+      type switch
       {
         TotalType.Gold => m_TotalGold,
         TotalType.Items => m_TotalItems,
         TotalType.Weight => m_TotalWeight,
         _ => base.GetTotal(type)
       };
-    }
 
     public override void UpdateTotal(Item sender, TotalType type, int delta)
     {

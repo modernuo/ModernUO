@@ -95,7 +95,7 @@ namespace Server.Regions
         {
           reg.Disabled = !e.GetBoolean(0);
 
-          @from.SendMessage(reg.Disabled
+          from.SendMessage(reg.Disabled
             ? "The guards in this region have been disabled."
             : "The guards in this region have been enabled.");
         }

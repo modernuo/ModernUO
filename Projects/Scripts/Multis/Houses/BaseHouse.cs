@@ -1880,15 +1880,8 @@ namespace Server.Multis
       return false;
     }
 
-    public bool HasSecureAccess(Mobile m, SecureLevel level)
-    {
-      if (m.AccessLevel >= AccessLevel.GameMaster)
-        return true;
-
-      if (IsCombatRestricted(m))
-        return false;
-
-      return level switch
+    public bool HasSecureAccess(Mobile m, SecureLevel level) =>
+      m.AccessLevel >= AccessLevel.GameMaster || !IsCombatRestricted(m) && level switch
       {
         SecureLevel.Owner => IsOwner(m),
         SecureLevel.CoOwners => IsCoOwner(m),
@@ -1897,7 +1890,6 @@ namespace Server.Multis
         SecureLevel.Guild => IsGuildMember(m),
         _ => false
       };
-    }
 
     public void ReleaseSecure(Mobile m, Item item)
     {
@@ -1913,15 +1905,7 @@ namespace Server.Multis
           item.IsLockedDown = false;
           item.IsSecure = false;
 
-          #region Mondain's Legacy
-
-          if (item is BaseAddonContainer)
-            item.Movable = false;
-          else
-
-            #endregion
-
-            item.Movable = true;
+          item.Movable = !(item is BaseAddonContainer);
           item.SetLastMoved();
           item.PublicOverheadMessage(MessageType.Label, 0x3B2, 501656); //[no longer secure]
           Secures.RemoveAt(i);

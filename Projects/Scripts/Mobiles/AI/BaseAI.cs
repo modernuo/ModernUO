@@ -901,12 +901,8 @@ namespace Server.Mobiles
 
     public virtual bool DoActionBackoff() => true;
 
-    public virtual bool Obey()
-    {
-      if (m_Mobile.Deleted)
-        return false;
-
-      return m_Mobile.ControlOrder switch
+    public virtual bool Obey() =>
+      !m_Mobile.Deleted && m_Mobile.ControlOrder switch
       {
         OrderType.None => DoOrderNone(),
         OrderType.Come => DoOrderCome(),
@@ -923,7 +919,6 @@ namespace Server.Mobiles
         OrderType.Transfer => DoOrderTransfer(),
         _ => false
       };
-    }
 
     public virtual void OnCurrentOrderChanged()
     {

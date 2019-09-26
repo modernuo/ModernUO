@@ -174,19 +174,16 @@ namespace Server.Engines.Plants
       return m_Table[0];
     }
 
-    public static PlantType RandomFirstGeneration()
-    {
-      return Utility.Random(3) switch
+    public static PlantType RandomFirstGeneration() =>
+      Utility.Random(3) switch
       {
         0 => PlantType.CampionFlowers,
         1 => PlantType.Fern,
         _ => PlantType.TribarrelCactus
       };
-    }
 
-    public static PlantType RandomPeculiarGroupOne()
-    {
-      return Utility.Random(6) switch
+    public static PlantType RandomPeculiarGroupOne() =>
+      Utility.Random(6) switch
       {
         0 => PlantType.Cactus,
         1 => PlantType.FlaxFlowers,
@@ -195,11 +192,9 @@ namespace Server.Engines.Plants
         4 => PlantType.CocoaTree,
         _ => PlantType.OrfluerFlowers
       };
-    }
 
-    public static PlantType RandomPeculiarGroupTwo()
-    {
-      return Utility.Random(5) switch
+    public static PlantType RandomPeculiarGroupTwo() =>
+      Utility.Random(5) switch
       {
         0 => PlantType.CypressTwisted,
         1 => PlantType.HedgeShort,
@@ -207,11 +202,9 @@ namespace Server.Engines.Plants
         3 => PlantType.CocoaTree,
         _ => PlantType.SnowdropPatch
       };
-    }
 
-    public static PlantType RandomPeculiarGroupThree()
-    {
-      return Utility.Random(5) switch
+    public static PlantType RandomPeculiarGroupThree() =>
+      Utility.Random(5) switch
       {
         0 => PlantType.Cattails,
         1 => PlantType.PoppyPatch,
@@ -219,11 +212,9 @@ namespace Server.Engines.Plants
         3 => PlantType.CocoaTree,
         _ => PlantType.WaterLily
       };
-    }
 
-    public static PlantType RandomPeculiarGroupFour()
-    {
-      return Utility.Random(5) switch
+    public static PlantType RandomPeculiarGroupFour() =>
+      Utility.Random(5) switch
       {
         0 => PlantType.CypressStraight,
         1 => PlantType.HedgeTall,
@@ -231,7 +222,6 @@ namespace Server.Engines.Plants
         3 => PlantType.CocoaTree,
         _ => PlantType.SugarCanes
       };
-    }
 
     public static PlantType RandomBonsai(double increaseRatio)
     {
@@ -261,21 +251,13 @@ namespace Server.Engines.Plants
 
       double rand = Utility.RandomDouble();
 
-      if (rand < 0.5 / exp4)
-        return PlantType.CommonGreenBonsai;
-      if (rand < 1.0 / exp4)
-        return PlantType.CommonPinkBonsai;
-      if (rand < (k1 * 0.5 + 1.0) / exp4)
-        return PlantType.UncommonGreenBonsai;
-      if (rand < exp1 / exp4)
-        return PlantType.UncommonPinkBonsai;
-      if (rand < (k2 * 0.5 + exp1) / exp4)
-        return PlantType.RareGreenBonsai;
-      if (rand < exp2 / exp4)
-        return PlantType.RarePinkBonsai;
-      if (rand < exp3 / exp4)
-        return PlantType.ExceptionalBonsai;
-      return PlantType.ExoticBonsai;
+      return rand < 0.5 / exp4 ? PlantType.CommonGreenBonsai :
+        rand < 1.0 / exp4 ? PlantType.CommonPinkBonsai :
+        rand < (k1 * 0.5 + 1.0) / exp4 ? PlantType.UncommonGreenBonsai :
+        rand < exp1 / exp4 ? PlantType.UncommonPinkBonsai :
+        rand < (k2 * 0.5 + exp1) / exp4 ? PlantType.RareGreenBonsai :
+        rand < exp2 / exp4 ? PlantType.RarePinkBonsai :
+        rand < exp3 / exp4 ? PlantType.ExceptionalBonsai : PlantType.ExoticBonsai;
     }
 
     public static bool IsCrossable(PlantType plantType) => GetInfo(plantType).Crossable;

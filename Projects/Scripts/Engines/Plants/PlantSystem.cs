@@ -383,22 +383,18 @@ namespace Server.Engines.Plants
         return 1060827; // soft
       if (Water <= 3)
         return 1060828; // squishy
+
       return 1060829; // sopping wet
     }
 
-    public int GetLocalizedHealth()
-    {
-      return Health switch
+    public int GetLocalizedHealth() =>
+      Health switch
       {
-        PlantHealth.Dying => 1060825 // dying
-        ,
-        PlantHealth.Wilted => 1060824 // wilted
-        ,
-        PlantHealth.Healthy => 1060823 // healthy
-        ,
+        PlantHealth.Dying => 1060825, // dying
+        PlantHealth.Wilted => 1060824, // wilted
+        PlantHealth.Healthy => 1060823, // healthy
         _ => 1060822
       };
-    }
 
     public static void Configure()
     {

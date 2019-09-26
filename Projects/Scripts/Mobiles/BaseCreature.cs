@@ -1763,20 +1763,13 @@ namespace Server.Mobiles
      *
      */
 
-    public virtual double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly)
-    {
-      if (bPlayerOnly && !m.Player)
-        return double.MinValue;
-
-      return acqType switch
+    public virtual double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly) =>
+      bPlayerOnly && !m.Player ? double.MinValue : acqType switch
       {
-        FightMode.Strongest => (m.Skills.Tactics.Value + m.Str) //returns strongest mobile
-        ,
-        FightMode.Weakest => -m.Hits // returns weakest mobile
-        ,
+        FightMode.Strongest => (m.Skills.Tactics.Value + m.Str), //returns strongest mobile
+        FightMode.Weakest => -m.Hits, // returns weakest mobile
         _ => -GetDistanceToSqrt(m)
       };
-    }
 
     // Turn, - for left, + for right
     // Basic for now, needs work

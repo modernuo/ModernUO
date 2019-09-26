@@ -286,14 +286,8 @@ namespace Server
     public ClientVersion RequiredClient{ get; set; }
     public HousingFlags CustomHousingFlag{ get; set; }
 
-    public static FeatureFlags GetFeatures(Expansion ex)
-    {
-      ExpansionInfo info = GetInfo(ex);
-
-      if (info != null)
-        return info.SupportedFeatures;
-
-      return ex switch
+    public static FeatureFlags GetFeatures(Expansion ex) =>
+      GetInfo(ex)?.SupportedFeatures ?? ex switch
       {
         Expansion.None => FeatureFlags.ExpansionNone,
         Expansion.T2A => FeatureFlags.ExpansionT2A,
@@ -308,7 +302,6 @@ namespace Server
         Expansion.TOL => FeatureFlags.ExpansionTOL,
         _ => FeatureFlags.ExpansionNone
       };
-    }
 
     public static ExpansionInfo GetInfo(Expansion ex) => GetInfo((int)ex);
 

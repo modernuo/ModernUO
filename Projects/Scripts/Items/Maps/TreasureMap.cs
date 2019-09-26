@@ -353,9 +353,8 @@ namespace Server.Items
       return false;
     }
 
-    private double GetMinSkillLevel()
-    {
-      return m_Level switch
+    private double GetMinSkillLevel() =>
+      m_Level switch
       {
         1 => -3.0,
         2 => 41.0,
@@ -365,7 +364,6 @@ namespace Server.Items
         6 => 70.0,
         _ => 0.0
       };
-    }
 
     private bool HasRequiredSkill(Mobile from) => from.Skills.Cartography.Value >= GetMinSkillLevel();
 

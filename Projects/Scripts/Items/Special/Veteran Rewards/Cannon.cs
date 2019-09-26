@@ -170,19 +170,14 @@ namespace Server.Items
       }
     }
 
-    public int Validate(PotionKeg keg)
-    {
-      if (keg?.Deleted != false || keg.Held != 100)
-        return 0;
-
-      return keg.Type switch
+    public int Validate(PotionKeg keg) =>
+      keg?.Deleted != false || keg.Held != 100 ? 0 : keg.Type switch
       {
         PotionEffect.ExplosionLesser => 5,
         PotionEffect.Explosion => 10,
         PotionEffect.ExplosionGreater => 15,
         _ => 0
       };
-    }
 
     public void Fill(Mobile from, PotionKeg keg)
     {

@@ -53,18 +53,14 @@ namespace Server
       }
     }
 
-    public static TextDefinition Deserialize(GenericReader reader)
-    {
-      int type = reader.ReadEncodedInt();
-
-      return type switch
+    public static TextDefinition Deserialize(GenericReader reader) =>
+      reader.ReadEncodedInt() switch
       {
         0 => new TextDefinition(),
         1 => new TextDefinition(reader.ReadEncodedInt()),
         2 => new TextDefinition(reader.ReadString()),
         _ => null
       };
-    }
 
     public static void AddTo(ObjectPropertyList list, TextDefinition def)
     {

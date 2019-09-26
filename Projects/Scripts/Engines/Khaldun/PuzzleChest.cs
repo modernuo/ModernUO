@@ -97,9 +97,8 @@ namespace Server.Items
       set => Cylinders[4] = value;
     }
 
-    public static PuzzleChestCylinder RandomCylinder()
-    {
-      return Utility.Random(8) switch
+    public static PuzzleChestCylinder RandomCylinder() =>
+      Utility.Random(8) switch
       {
         0 => PuzzleChestCylinder.LightBlue,
         1 => PuzzleChestCylinder.Blue,
@@ -110,7 +109,6 @@ namespace Server.Items
         6 => PuzzleChestCylinder.DarkBlue,
         _ => PuzzleChestCylinder.Yellow
       };
-    }
 
     public bool Matches(PuzzleChestSolution solution, out int cylinders, out int colors)
     {

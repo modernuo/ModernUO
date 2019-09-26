@@ -26,16 +26,10 @@ namespace Server.Mobiles
 
     public override bool ClickTitle => false; // Do not display 'the seeker of adventure' when single-clicking
 
-    public override string[] GetPossibleDestinations()
-    {
-      if (Core.ML)
-        return m_MLDestinations;
-      return m_Dungeons;
-    }
+    public override string[] GetPossibleDestinations() => Core.ML ? m_MLDestinations : m_Dungeons;
 
-    private static int GetRandomHue()
-    {
-      return Utility.Random(6) switch
+    private static int GetRandomHue() =>
+      Utility.Random(6) switch
       {
         0 => 0,
         1 => Utility.RandomBlueHue(),
@@ -45,7 +39,6 @@ namespace Server.Mobiles
         5 => Utility.RandomNeutralHue(),
         _ => 0
       };
-    }
 
     public override void InitOutfit()
     {

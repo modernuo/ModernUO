@@ -20,9 +20,8 @@ namespace Server.Mobiles
     public override bool CanTeach => true;
     public override bool ClickTitle => false; // Do not display 'the groom' when single-clicking
 
-    private static int GetRandomHue()
-    {
-      return Utility.Random(6) switch
+    private static int GetRandomHue() =>
+      Utility.Random(6) switch
       {
         0 => 0,
         1 => Utility.RandomBlueHue(),
@@ -32,7 +31,6 @@ namespace Server.Mobiles
         5 => Utility.RandomNeutralHue(),
         _ => 0
       };
-    }
 
     public override void InitOutfit()
     {
@@ -50,10 +48,7 @@ namespace Server.Mobiles
       else
         AddItem(new Boots(lowHue));
 
-      if (Utility.RandomBool())
-        HairItemID = 0x203B;
-      else
-        HairItemID = 0x203C;
+      HairItemID = Utility.RandomBool() ? 0x203B : 0x203C;
 
       HairHue = Race.RandomHairHue();
 

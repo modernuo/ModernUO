@@ -72,55 +72,34 @@ namespace Server.Engines.Quests.Haven
 
     public KillHordeMinionsStep Step{ get; private set; }
 
-    public override object Message
-    {
-      get
+    public override object Message =>
+      Step switch
       {
-        return Step switch
-        {
-          KillHordeMinionsStep.First =>
-          /* Find the mountain pass beyond the house which lies at the
+        KillHordeMinionsStep.First =>
+        /* Find the mountain pass beyond the house which lies at the
              * end of the runic road.<BR><BR>
              *
              * Assist the city Militia by slaying <I>Horde Minions</I>
              */
-          1049089,
-          KillHordeMinionsStep.LearnKarma =>
-          /* You have just gained some <a href="?ForceTopic45">Karma</a>
+        1049089,
+        KillHordeMinionsStep.LearnKarma =>
+        /* You have just gained some <a href="?ForceTopic45">Karma</a>
              * for killing the horde minion. <a href="?ForceTopic134">Learn</a>
              * how this affects your Paladin abilities.
              */
-          1060389,
-          _ => 1060507
-        };
-      }
-    }
+        1060389,
+        _ => 1060507
+      };
 
-    public override int MaxProgress
-    {
-      get
+    public override int MaxProgress =>
+      System.From.Profession == 5 ? Step switch
       {
-        if (System.From.Profession == 5) // paladin
-          return Step switch
-          {
-            KillHordeMinionsStep.First => 1,
-            KillHordeMinionsStep.LearnKarma => 2,
-            _ => 5
-          };
+        KillHordeMinionsStep.First => 1,
+        KillHordeMinionsStep.LearnKarma => 2,
+        _ => 5
+      } : 5;
 
-        return 5;
-      }
-    }
-
-    public override bool Completed
-    {
-      get
-      {
-        if (Step == KillHordeMinionsStep.LearnKarma && HasBeenRead)
-          return true;
-        return base.Completed;
-      }
-    }
+    public override bool Completed => Step == KillHordeMinionsStep.LearnKarma && HasBeenRead || base.Completed;
 
     public override void RenderProgress(BaseQuestGump gump)
     {

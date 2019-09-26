@@ -1042,9 +1042,8 @@ namespace Server
     /// <summary>
     ///   Random pink, blue, green, orange, red or yellow hue
     /// </summary>
-    public static int RandomNondyedHue()
-    {
-      return Random(6) switch
+    public static int RandomNondyedHue() =>
+      Random(6) switch
       {
         0 => RandomPinkHue(),
         1 => RandomBlueHue(),
@@ -1054,7 +1053,6 @@ namespace Server
         5 => RandomYellowHue(),
         _ => 0
       };
-    }
 
     /// <summary>
     ///   Random hue in the range 1201-1254

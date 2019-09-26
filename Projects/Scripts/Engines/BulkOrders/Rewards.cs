@@ -379,16 +379,14 @@ namespace Server.Engines.BulkOrders
 
     private static Item CreateSturdyPickaxe(int type) => new SturdyPickaxe();
 
-    private static Item CreateMiningGloves(int type)
-    {
-      return type switch
+    private static Item CreateMiningGloves(int type) =>
+      type switch
       {
         1 => (Item)new LeatherGlovesOfMining(1),
         3 => new StuddedGlovesOfMining(3),
         5 => new RingmailGlovesOfMining(5),
         _ => throw new InvalidOperationException()
       };
-    }
 
     private static Item CreateGargoylesPickaxe(int type) => new GargoylesPickaxe();
 
@@ -645,54 +643,42 @@ namespace Server.Engines.BulkOrders
 
     private static Item CreateSandals(int type) => new Sandals(m_SandalHues[Utility.Random(m_SandalHues.Length)]);
 
-    private static Item CreateStretchedHide(int type)
-    {
-      return Utility.Random(4) switch
+    private static Item CreateStretchedHide(int type) =>
+      Utility.Random(4) switch
       {
         1 => (Item)new SmallStretchedHideSouthDeed(),
         2 => new MediumStretchedHideEastDeed(),
         3 => new MediumStretchedHideSouthDeed(),
         _ => new SmallStretchedHideEastDeed()
       };
-    }
 
-    private static Item CreateTapestry(int type)
-    {
-      return Utility.Random(4) switch
+    private static Item CreateTapestry(int type) =>
+      Utility.Random(4) switch
       {
         1 => (Item)new LightFlowerTapestrySouthDeed(),
         2 => new DarkFlowerTapestryEastDeed(),
         3 => new DarkFlowerTapestrySouthDeed(),
         _ => new LightFlowerTapestryEastDeed()
       };
-    }
 
-    private static Item CreateBearRug(int type)
-    {
-      return Utility.Random(4) switch
+    private static Item CreateBearRug(int type) =>
+      Utility.Random(4) switch
       {
         1 => (Item)new BrownBearRugSouthDeed(),
         2 => new PolarBearRugEastDeed(),
         3 => new PolarBearRugSouthDeed(),
         _ => new BrownBearRugEastDeed()
       };
-    }
 
-    private static Item CreateRunicKit(int type)
-    {
-      if (type >= 1 && type <= 3)
-        return new RunicSewingKit(CraftResource.RegularLeather + type, 60 - type * 15);
+    private static Item CreateRunicKit(int type) =>
+      type >= 1 && type <= 3
+        ? new RunicSewingKit(CraftResource.RegularLeather + type, 60 - type * 15)
+        : throw new InvalidOperationException();
 
-      throw new InvalidOperationException();
-    }
-
-    private static Item CreatePowerScroll(int type)
-    {
-      if (type == 5 || type == 10 || type == 15 || type == 20)
-        return new PowerScroll(SkillName.Tailoring, 100 + type);
-
-      throw new InvalidOperationException();
-    }
+    private static Item CreatePowerScroll(int type) =>
+      type == 5 || type == 10 || type == 15 || type == 20
+        ? new PowerScroll(SkillName.Tailoring, 100 + type)
+        : throw new InvalidOperationException();
 
     private static Item CreateCBD(int type) => new ClothingBlessDeed();
 

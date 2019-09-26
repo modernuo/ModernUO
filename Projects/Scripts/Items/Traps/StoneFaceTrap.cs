@@ -22,40 +22,26 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public StoneFaceTrapType Type
     {
-      get
+      get => ItemID switch
       {
-        return ItemID switch
-        {
-          0x10F5 => StoneFaceTrapType.NorthWestWall,
-          0x10F6 => StoneFaceTrapType.NorthWestWall,
-          0x10F7 => StoneFaceTrapType.NorthWestWall,
-          0x10FC => StoneFaceTrapType.NorthWall,
-          0x10FD => StoneFaceTrapType.NorthWall,
-          0x10FE => StoneFaceTrapType.NorthWall,
-          0x110F => StoneFaceTrapType.WestWall,
-          0x1110 => StoneFaceTrapType.WestWall,
-          0x1111 => StoneFaceTrapType.WestWall,
-          _ => StoneFaceTrapType.NorthWestWall
-        };
-      }
-      set
-      {
-        bool breathing = Breathing;
-
-        ItemID = breathing ? GetFireID(value) : GetBaseID(value);
-      }
+        0x10F5 => StoneFaceTrapType.NorthWestWall,
+        0x10F6 => StoneFaceTrapType.NorthWestWall,
+        0x10F7 => StoneFaceTrapType.NorthWestWall,
+        0x10FC => StoneFaceTrapType.NorthWall,
+        0x10FD => StoneFaceTrapType.NorthWall,
+        0x10FE => StoneFaceTrapType.NorthWall,
+        0x110F => StoneFaceTrapType.WestWall,
+        0x1110 => StoneFaceTrapType.WestWall,
+        0x1111 => StoneFaceTrapType.WestWall,
+        _ => StoneFaceTrapType.NorthWestWall
+      };
+      set => ItemID = Breathing ? GetFireID(value) : GetBaseID(value);
     }
 
     public bool Breathing
     {
       get => ItemID == GetFireID(Type);
-      set
-      {
-        if (value)
-          ItemID = GetFireID(Type);
-        else
-          ItemID = GetBaseID(Type);
-      }
+      set => ItemID = value ? GetFireID(Type) : GetBaseID(Type);
     }
 
     public override bool PassivelyTriggered => true;
@@ -63,27 +49,23 @@ namespace Server.Items
     public override int PassiveTriggerRange => 2;
     public override TimeSpan ResetDelay => TimeSpan.Zero;
 
-    public static int GetBaseID(StoneFaceTrapType type)
-    {
-      return type switch
+    public static int GetBaseID(StoneFaceTrapType type) =>
+      type switch
       {
         StoneFaceTrapType.NorthWestWall => 0x10F5,
         StoneFaceTrapType.NorthWall => 0x10FC,
         StoneFaceTrapType.WestWall => 0x110F,
         _ => 0
       };
-    }
 
-    public static int GetFireID(StoneFaceTrapType type)
-    {
-      return type switch
+    public static int GetFireID(StoneFaceTrapType type) =>
+      type switch
       {
         StoneFaceTrapType.NorthWestWall => 0x10F7,
         StoneFaceTrapType.NorthWall => 0x10FE,
         StoneFaceTrapType.WestWall => 0x1111,
         _ => 0
       };
-    }
 
     public override void OnTrigger(Mobile from)
     {

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Server.Items;
 using Server.Mobiles;
 
@@ -279,48 +280,24 @@ namespace Server.Engines.Quests.Hag
       BlackheartMet = blackheartMet;
     }
 
-    public FindIngredientObjective()
-    {
-    }
-
-    public override object Message
-    {
-      get
+    public override object Message =>
+      !BlackheartMet ? Step switch
       {
-        if (!BlackheartMet)
-          return Step switch
-          {
-            1 =>
-            /* You must gather each ingredient on the Hag's list so that she can cook
+        1 =>
+        /* You must gather each ingredient on the Hag's list so that she can cook
                * up her vile Magic Brew.  The first ingredient is :
                */
-            1055019,
-            2 =>
-            /* You must gather each ingredient on the Hag's list so that she can cook
+        1055019,
+        2 =>
+        /* You must gather each ingredient on the Hag's list so that she can cook
                * up her vile Magic Brew.  The second ingredient is :
                */
-            1055044,
-            _ => 1055045
-          };
-
-        /* You are still attempting to obtain a jug of Captain Blackheart's
-           * Whiskey, but the drunkard Captain refuses to share his unique brew.
-           * You must prove your worthiness as a pirate to Blackheart before he'll
-           * offer you a jug.
-           */
-        return 1055055;
+        1055044,
+        _ => 1055045
       }
-    }
+      : 1055055;
 
-    public override int MaxProgress
-    {
-      get
-      {
-        IngredientInfo info = IngredientInfo.Get(Ingredient);
-
-        return info.Quantity;
-      }
-    }
+    public override int MaxProgress => IngredientInfo.Get(Ingredient).Quantity;
 
     public Ingredient[] Ingredients{ get; private set; }
 
@@ -345,38 +322,19 @@ namespace Server.Engines.Quests.Hag
       }
     }
 
-    public override bool IgnoreYoungProtection(Mobile from)
-    {
-      if (Completed)
-        return false;
-
-      IngredientInfo info = IngredientInfo.Get(Ingredient);
-      Type fromType = from.GetType();
-
-      for (int i = 0; i < info.Creatures.Length; i++)
-        if (fromType == info.Creatures[i])
-          return true;
-
-      return false;
-    }
+    public override bool IgnoreYoungProtection(Mobile from) =>
+      !Completed && IngredientInfo.Get(Ingredient).Creatures.Any(t => from.GetType() == t);
 
     public override void OnKill(BaseCreature creature, Container corpse)
     {
       IngredientInfo info = IngredientInfo.Get(Ingredient);
 
-      for (int i = 0; i < info.Creatures.Length; i++)
+      if (info.Creatures.Any(type => creature.GetType() == type))
       {
-        Type type = info.Creatures[i];
+        System.From.SendLocalizedMessage(1055043,
+          $"#{info.Name}"); // You gather a ~1_INGREDIENT_NAME~ from the corpse.
 
-        if (creature.GetType() == type)
-        {
-          System.From.SendLocalizedMessage(1055043,
-            $"#{info.Name}"); // You gather a ~1_INGREDIENT_NAME~ from the corpse.
-
-          CurProgress++;
-
-          break;
-        }
+        CurProgress++;
       }
     }
 

@@ -195,9 +195,8 @@ namespace Server
 
     public static int Scale(int input, int percent) => input * percent / 100;
 
-    public static int GetStatus(Mobile from, int index)
-    {
-      return index switch
+    public static int GetStatus(Mobile from, int index) =>
+      index switch
       {
         // TODO: Account for buffs/debuffs
         0 => from.GetMaxResistance(ResistanceType.Physical),
@@ -217,7 +216,6 @@ namespace Server
         14 => AosAttributes.GetValue(from, AosAttribute.LowerManaCost),
         _ => 0
       };
-    }
   }
 
   [Flags]

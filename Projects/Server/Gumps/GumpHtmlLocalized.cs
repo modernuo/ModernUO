@@ -100,9 +100,8 @@ namespace Server.Gumps
 
     public GumpHtmlLocalizedType Type { get; set; }
 
-    public override string Compile(ArraySet<string> strings)
-    {
-      return Type switch
+    public override string Compile(ArraySet<string> strings) =>
+      Type switch
       {
         GumpHtmlLocalizedType.Plain =>
         $"{{ xmfhtmlgump {X} {Y} {Width} {Height} {Number} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} }}",
@@ -111,7 +110,6 @@ namespace Server.Gumps
         _ =>
         $"{{ xmfhtmltok {X} {Y} {Width} {Height} {(Background ? 1 : 0)} {(Scrollbar ? 1 : 0)} {Color} {Number} @{Args}@ }}"
       };
-    }
 
     private static readonly byte[] m_LayoutNamePlain = Gump.StringToBuffer("{ xmfhtmlgump ");
     private static readonly byte[] m_LayoutNameColor = Gump.StringToBuffer("{ xmfhtmlgumpcolor ");

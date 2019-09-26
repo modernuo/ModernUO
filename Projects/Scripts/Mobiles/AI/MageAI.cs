@@ -323,36 +323,26 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual Spell GetRandomCurseSpellMage()
-    {
-      if (m_Mobile.Skills.Magery.Value >= 40.0 && Utility.Random(4) == 0)
-        return new CurseSpell(m_Mobile);
+    public virtual Spell GetRandomCurseSpellMage() =>
+      m_Mobile.Skills.Magery.Value >= 40.0 && Utility.Random(4) == 0 ? new CurseSpell(m_Mobile)
+        : Utility.Random(3) switch
+        {
+          0 => (Spell)new WeakenSpell(m_Mobile),
+          1 => new ClumsySpell(m_Mobile),
+          _ => new FeeblemindSpell(m_Mobile)
+        };
 
-      return Utility.Random(3) switch
-      {
-        0 => (Spell)new WeakenSpell(m_Mobile),
-        1 => new ClumsySpell(m_Mobile),
-        _ => new FeeblemindSpell(m_Mobile)
-      };
-    }
-
-    public virtual Spell GetRandomManaDrainSpell()
-    {
-      if (m_Mobile.Skills.Magery.Value >= 80.0 && Utility.RandomBool())
-        return new ManaVampireSpell(m_Mobile);
-
-      return new ManaDrainSpell(m_Mobile);
-    }
+    public virtual Spell GetRandomManaDrainSpell() =>
+      m_Mobile.Skills.Magery.Value >= 80.0 && Utility.RandomBool()
+        ? (Spell)new ManaVampireSpell(m_Mobile)
+        : new ManaDrainSpell(m_Mobile);
 
     public virtual Spell DoDispel(Mobile toDispel)
     {
       if (!SmartAI)
-      {
-        if (ScaleBySkill(DispelChance, SkillName.Magery) > Utility.RandomDouble())
-          return new DispelSpell(m_Mobile);
-
-        return ChooseSpell(toDispel);
-      }
+        return ScaleBySkill(DispelChance, SkillName.Magery) > Utility.RandomDouble()
+          ? new DispelSpell(m_Mobile)
+          : ChooseSpell(toDispel);
 
       Spell spell = CheckCastHealingSpell();
 

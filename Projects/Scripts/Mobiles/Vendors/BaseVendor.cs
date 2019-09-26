@@ -483,9 +483,8 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual int GetRandomHue()
-    {
-      return Utility.Random(5) switch
+    public virtual int GetRandomHue() =>
+      Utility.Random(5) switch
       {
         0 => Utility.RandomBlueHue(),
         1 => Utility.RandomGreenHue(),
@@ -494,7 +493,6 @@ namespace Server.Mobiles
         4 => Utility.RandomNeutralHue(),
         _ => Utility.RandomBlueHue()
       };
-    }
 
     public virtual int GetShoeHue() => 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
 

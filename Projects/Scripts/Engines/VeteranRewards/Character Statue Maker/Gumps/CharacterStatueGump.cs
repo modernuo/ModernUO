@@ -81,20 +81,16 @@ namespace Server.Gumps
           };
 
         case StatueMaterial.Dark:
+          return type == StatueType.Marble ? 1076183 : 1076182;
 
-          if (type == StatueType.Marble)
-            return 1076183;
-
-          return 1076182;
         case StatueMaterial.Medium: return 1076184;
         case StatueMaterial.Light: return 1076185;
         default: return 1076187;
       }
     }
 
-    private int GetDirectionNumber(Direction direction)
-    {
-      return direction switch
+    private int GetDirectionNumber(Direction direction) =>
+      direction switch
       {
         Direction.North => 1075389,
         Direction.Right => 1075388,
@@ -106,7 +102,6 @@ namespace Server.Gumps
         Direction.Up => 1076205,
         _ => 1075386
       };
-    }
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {

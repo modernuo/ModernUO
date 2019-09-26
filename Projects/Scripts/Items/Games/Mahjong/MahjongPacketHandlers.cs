@@ -56,27 +56,23 @@ namespace Server.Engines.Mahjong
         pvSrc.Trace(state);
     }
 
-    private static MahjongPieceDirection GetDirection(int value)
-    {
-      return value switch
+    private static MahjongPieceDirection GetDirection(int value) =>
+      value switch
       {
         0 => MahjongPieceDirection.Up,
         1 => MahjongPieceDirection.Left,
         2 => MahjongPieceDirection.Down,
         _ => MahjongPieceDirection.Right
       };
-    }
 
-    private static MahjongWind GetWind(int value)
-    {
-      return value switch
+    private static MahjongWind GetWind(int value) =>
+      value switch
       {
         0 => MahjongWind.North,
         1 => MahjongWind.East,
         2 => MahjongWind.South,
         _ => MahjongWind.West
       };
-    }
 
     public static void ExitGame(MahjongGame game, NetState state, PacketReader pvSrc)
     {
@@ -85,7 +81,7 @@ namespace Server.Engines.Mahjong
 
     public static void GivePoints(MahjongGame game, NetState state, PacketReader pvSrc)
     {
-      if (game == null || !game.Players.IsInGamePlayer(state.Mobile))
+      if (game?.Players.IsInGamePlayer(state.Mobile) != true)
         return;
 
       int to = pvSrc.ReadByte();

@@ -93,9 +93,8 @@ namespace Server.Engines.BulkOrders
       OnDoubleClick(from);
     }
 
-    public static BulkMaterialType GetMaterial(CraftResource resource)
-    {
-      return resource switch
+    public static BulkMaterialType GetMaterial(CraftResource resource) =>
+      resource switch
       {
         CraftResource.DullCopper => BulkMaterialType.DullCopper,
         CraftResource.ShadowIron => BulkMaterialType.ShadowIron,
@@ -110,7 +109,6 @@ namespace Server.Engines.BulkOrders
         CraftResource.BarbedLeather => BulkMaterialType.Barbed,
         _ => BulkMaterialType.None
       };
-    }
 
     public override void EndCombine(Mobile from, Item item)
     {

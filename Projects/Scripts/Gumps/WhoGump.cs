@@ -203,9 +203,8 @@ namespace Server.Gumps
 			}
 		}
 
-		private static int GetHueFor( Mobile m )
-    {
-      return m.AccessLevel switch
+		private static int GetHueFor( Mobile m ) =>
+      m.AccessLevel switch
       {
         AccessLevel.Owner => 0x516,
         AccessLevel.Developer => 0x516,
@@ -215,9 +214,8 @@ namespace Server.Gumps
         AccessLevel.Counselor => 0x2,
         _ => (m.Kills >= 5 ? 0x21 : m.Criminal ? 0x3B1 : 0x58)
       };
-    }
 
-		public override void OnResponse( NetState sender, RelayInfo info )
+    public override void OnResponse( NetState sender, RelayInfo info )
 		{
 			Mobile from = sender.Mobile;
 

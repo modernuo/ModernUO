@@ -23,9 +23,8 @@ namespace Server.Mobiles
     public override bool CanTeach => true;
     public override bool ClickTitle => false; // Do not display 'the mage' when single-clicking
 
-    private static int GetRandomHue()
-    {
-      return Utility.Random(5) switch
+    private static int GetRandomHue() =>
+      Utility.Random(5) switch
       {
         0 => Utility.RandomBlueHue(),
         1 => Utility.RandomGreenHue(),
@@ -34,7 +33,6 @@ namespace Server.Mobiles
         4 => Utility.RandomNeutralHue(),
         _ => Utility.RandomBlueHue()
       };
-    }
 
     public override void InitOutfit()
     {

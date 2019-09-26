@@ -104,15 +104,13 @@ namespace Server.Items
 
     public string TranslocationItemName => "bag of sending";
 
-    public static BagOfSendingHue RandomHue()
-    {
-      return Utility.Random(3) switch
+    public static BagOfSendingHue RandomHue() =>
+      Utility.Random(3) switch
       {
         0 => BagOfSendingHue.Yellow,
         1 => BagOfSendingHue.Blue,
         _ => BagOfSendingHue.Red
       };
-    }
 
     public override void GetProperties(ObjectPropertyList list)
     {

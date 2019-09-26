@@ -299,16 +299,14 @@ namespace Server.Engines.Events
       }
     }
 
-    public static Point3D RandomMoongate(Mobile target)
-    {
-      return target.Map.MapID switch
+    public static Point3D RandomMoongate(Mobile target) =>
+      target.Map.MapID switch
       {
         2 => Ilshenar_Locations[Utility.Random(Ilshenar_Locations.Length)],
         3 => Malas_Locations[Utility.Random(Malas_Locations.Length)],
         4 => Tokuno_Locations[Utility.Random(Tokuno_Locations.Length)],
         _ => Felucca_Locations[Utility.Random(Felucca_Locations.Length)]
       };
-    }
 
     public override void Serialize(GenericWriter writer)
     {

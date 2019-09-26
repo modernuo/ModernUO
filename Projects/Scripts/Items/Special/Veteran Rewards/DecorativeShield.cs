@@ -177,9 +177,8 @@ namespace Server.Items
       m_IsRewardItem = reader.ReadBool();
     }
 
-    public static int GetWestItemID(int east)
-    {
-      return east switch
+    public static int GetWestItemID(int east) =>
+      east switch
       {
         0x1582 => 0x1635,
         0x1583 => 0x1634,
@@ -187,7 +186,6 @@ namespace Server.Items
         0x1585 => 0x1636,
         _ => (east + 1)
       };
-    }
 
     private class InternalGump : Gump
     {

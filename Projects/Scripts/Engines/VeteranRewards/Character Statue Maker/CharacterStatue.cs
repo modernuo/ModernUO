@@ -416,23 +416,14 @@ namespace Server.Mobiles
     {
     }
 
-    public override int LabelNumber
-    {
-      get
+    public override int LabelNumber =>
+      (Statue?.StatueType ?? m_Type) switch
       {
-        StatueType t = m_Type;
-
-        if (Statue != null) t = Statue.StatueType;
-
-        return t switch
-        {
-          StatueType.Marble => 1076189,
-          StatueType.Jade => 1076188,
-          StatueType.Bronze => 1076190,
-          _ => 1076173
-        };
-      }
-    }
+        StatueType.Marble => 1076189,
+        StatueType.Jade => 1076188,
+        StatueType.Bronze => 1076190,
+        _ => 1076173
+      };
 
     [CommandProperty(AccessLevel.GameMaster)]
     public CharacterStatue Statue{ get; set; }
@@ -440,13 +431,7 @@ namespace Server.Mobiles
     [CommandProperty(AccessLevel.GameMaster)]
     public StatueType StatueType
     {
-      get
-      {
-        if (Statue != null)
-          return Statue.StatueType;
-
-        return m_Type;
-      }
+      get => Statue?.StatueType ?? m_Type;
       set => m_Type = value;
     }
 

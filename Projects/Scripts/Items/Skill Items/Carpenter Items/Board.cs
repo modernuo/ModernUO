@@ -38,14 +38,10 @@ namespace Server.Items
       }
     }
 
-    int ICommodity.DescriptionNumber
-    {
-      get
-      {
-        if (m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.YewWood)
-          return 1075052 + ((int)m_Resource - (int)CraftResource.OakWood);
-
-        return m_Resource switch
+    int ICommodity.DescriptionNumber =>
+      m_Resource >= CraftResource.OakWood && m_Resource <= CraftResource.YewWood
+        ? 1075052 + ((int)m_Resource - (int)CraftResource.OakWood)
+        : m_Resource switch
         {
           CraftResource.Bloodwood => 1075055,
           CraftResource.Frostwood => 1075056,
@@ -53,8 +49,6 @@ namespace Server.Items
           ,
           _ => LabelNumber
         };
-      }
-    }
 
     bool ICommodity.IsDeedable => true;
 

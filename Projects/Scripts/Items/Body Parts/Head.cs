@@ -33,21 +33,13 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public HeadType HeadType{ get; set; }
 
-    public override string DefaultName
-    {
-      get
+    public override string DefaultName =>
+      PlayerName == null ? base.DefaultName : HeadType switch
       {
-        if (PlayerName == null)
-          return base.DefaultName;
-
-        return HeadType switch
-        {
-          HeadType.Duel => $"the head of {PlayerName}, taken in a duel",
-          HeadType.Tournament => $"the head of {PlayerName}, taken in a tournament",
-          _ => $"the head of {PlayerName}"
-        };
-      }
-    }
+        HeadType.Duel => $"the head of {PlayerName}, taken in a duel",
+        HeadType.Tournament => $"the head of {PlayerName}, taken in a tournament",
+        _ => $"the head of {PlayerName}"
+      };
 
     public override void Serialize(GenericWriter writer)
     {

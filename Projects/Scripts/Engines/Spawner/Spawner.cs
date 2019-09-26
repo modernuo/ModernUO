@@ -952,36 +952,13 @@ namespace Server.Mobiles
         m_WalkingRange = m_HomeRange;
     }
 
-    public static string ConvertTypes(string type)
-    {
-      type = type.ToLower();
-      return type switch
-      {
-        "wheat" => "WheatSheaf",
-        "noxxiousmage" => "NoxiousMage",
-        "noxxiousarcher" => "NoxiousArcher",
-        "noxxiouswarrior" => "NoxiousWarrior",
-        "noxxiouswarlord" => "NoxiousWarlord",
-        "obsidian" => "obsidianstatue",
-        "adeepwaterelemental" => "deepwaterelemental",
-        "noxskeleton" => "poisonskeleton",
-        "earthcaller" => "earthsummoner",
-        "bonedemon" => "bonedaemon",
-        _ => type
-      };
-    }
-
     private class InternalTimer : Timer
     {
       private Spawner m_Spawner;
 
       public InternalTimer(Spawner spawner, TimeSpan delay) : base(delay)
       {
-        if (spawner.IsFull)
-          Priority = TimerPriority.FiveSeconds;
-        else
-          Priority = TimerPriority.OneSecond;
-
+        Priority = spawner.IsFull ? TimerPriority.FiveSeconds : TimerPriority.OneSecond;
         m_Spawner = spawner;
       }
 

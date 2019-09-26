@@ -532,9 +532,8 @@ namespace Server.Items
 		/// <summary>
 		/// Returns the first <see cref="CraftResource"/> in the series of resources for which '<paramref name="resource"/>' belongs.
 		/// </summary>
-		public static CraftResource GetStart( CraftResource resource )
-    {
-      return GetType(resource) switch
+		public static CraftResource GetStart( CraftResource resource ) =>
+      GetType(resource) switch
       {
         CraftResourceType.Metal => CraftResource.Iron,
         CraftResourceType.Leather => CraftResource.RegularLeather,
@@ -542,9 +541,8 @@ namespace Server.Items
         CraftResourceType.Wood => CraftResource.RegularWood,
         _ => CraftResource.None
       };
-    }
 
-		/// <summary>
+    /// <summary>
 		/// Returns the index of '<paramref name="resource"/>' in the seriest of resources for which it belongs.
 		/// </summary>
 		public static int GetIndex( CraftResource resource )
@@ -560,34 +558,19 @@ namespace Server.Items
 		/// <summary>
 		/// Returns the <see cref="CraftResourceInfo.Number"/> property of '<paramref name="resource"/>' -or- 0 if an invalid resource was specified.
 		/// </summary>
-		public static int GetLocalizationNumber( CraftResource resource )
-		{
-			CraftResourceInfo info = GetInfo( resource );
+		public static int GetLocalizationNumber( CraftResource resource ) => GetInfo(resource)?.Number ?? 0;
 
-			return info?.Number ?? 0;
-		}
-
-		/// <summary>
+    /// <summary>
 		/// Returns the <see cref="CraftResourceInfo.Hue"/> property of '<paramref name="resource"/>' -or- 0 if an invalid resource was specified.
 		/// </summary>
-		public static int GetHue( CraftResource resource )
-		{
-			CraftResourceInfo info = GetInfo( resource );
+		public static int GetHue( CraftResource resource ) => GetInfo(resource)?.Hue ?? 0;
 
-			return info?.Hue ?? 0;
-		}
-
-		/// <summary>
+    /// <summary>
 		/// Returns the <see cref="CraftResourceInfo.Name"/> property of '<paramref name="resource"/>' -or- an empty string if the resource specified was invalid.
 		/// </summary>
-		public static string GetName( CraftResource resource )
-		{
-			CraftResourceInfo info = GetInfo( resource );
+		public static string GetName( CraftResource resource ) => GetInfo(resource)?.Name ?? "";
 
-			return ( info == null ? string.Empty : info.Name );
-		}
-
-		/// <summary>
+    /// <summary>
 		/// Returns the <see cref="CraftResource"/> value which represents '<paramref name="info"/>' -or- CraftResource.None if unable to convert.
 		/// </summary>
 		public static CraftResource GetFromOreInfo( OreInfo info )
@@ -601,51 +584,36 @@ namespace Server.Items
 			if ( info.Name.IndexOf( "Leather" ) >= 0 )
 				return CraftResource.RegularLeather;
 
-			if ( info.Level == 0 )
-				return CraftResource.Iron;
-			if ( info.Level == 1 )
-				return CraftResource.DullCopper;
-			if ( info.Level == 2 )
-				return CraftResource.ShadowIron;
-			if ( info.Level == 3 )
-				return CraftResource.Copper;
-			if ( info.Level == 4 )
-				return CraftResource.Bronze;
-			if ( info.Level == 5 )
-				return CraftResource.Gold;
-			if ( info.Level == 6 )
-				return CraftResource.Agapite;
-			if ( info.Level == 7 )
-				return CraftResource.Verite;
-			if ( info.Level == 8 )
-				return CraftResource.Valorite;
-
-			return CraftResource.None;
-		}
+      return info.Level switch
+      {
+        0 => CraftResource.Iron,
+        1 => CraftResource.DullCopper,
+        2 => CraftResource.ShadowIron,
+        3 => CraftResource.Copper,
+        4 => CraftResource.Bronze,
+        5 => CraftResource.Gold,
+        6 => CraftResource.Agapite,
+        7 => CraftResource.Verite,
+        8 => CraftResource.Valorite,
+        _ => CraftResource.None
+      };
+    }
 
 		/// <summary>
 		/// Returns the <see cref="CraftResource"/> value which represents '<paramref name="info"/>', using '<paramref name="material"/>' to help resolve leather OreInfo instances.
 		/// </summary>
-		public static CraftResource GetFromOreInfo( OreInfo info, ArmorMaterialType material )
-		{
-			if ( material == ArmorMaterialType.Studded || material == ArmorMaterialType.Leather || material == ArmorMaterialType.Spined ||
-				material == ArmorMaterialType.Horned || material == ArmorMaterialType.Barbed )
-			{
-				if ( info.Level == 0 )
-					return CraftResource.RegularLeather;
-				if ( info.Level == 1 )
-					return CraftResource.SpinedLeather;
-				if ( info.Level == 2 )
-					return CraftResource.HornedLeather;
-				if ( info.Level == 3 )
-					return CraftResource.BarbedLeather;
-
-				return CraftResource.None;
-			}
-
-			return GetFromOreInfo( info );
-		}
-	}
+		public static CraftResource GetFromOreInfo( OreInfo info, ArmorMaterialType material ) =>
+      material == ArmorMaterialType.Studded || material == ArmorMaterialType.Leather ||
+      material == ArmorMaterialType.Spined || material == ArmorMaterialType.Horned || material == ArmorMaterialType.Barbed
+        ? info.Level switch
+        {
+          0 => CraftResource.RegularLeather,
+          1 => CraftResource.SpinedLeather,
+          2 => CraftResource.HornedLeather,
+          3 => CraftResource.BarbedLeather,
+          _ => CraftResource.None
+        } : GetFromOreInfo(info);
+  }
 
 	// NOTE: This class is only for compatability with very old RunUO versions.
 	// No changes to it should be required for custom resources.

@@ -111,16 +111,14 @@ namespace Server.Items
         AddHtmlLocalized(55, 100, 150, 20, GetTypeNumber(statue.StatueType), 0);
       }
 
-      public int GetTypeNumber(StatueType type)
-      {
-        return type switch
+      public int GetTypeNumber(StatueType type) =>
+        type switch
         {
           StatueType.Marble => 1076181,
           StatueType.Jade => 1076180,
           StatueType.Bronze => 1076230,
           _ => 1076181
         };
-      }
     }
   }
 }
