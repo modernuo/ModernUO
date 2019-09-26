@@ -983,16 +983,14 @@ namespace Server.Commands
 
     public static List<DecorationListMag> ReadAll(string path)
     {
-      using (StreamReader ip = new StreamReader(path))
-      {
-        List<DecorationListMag> list = new List<DecorationListMag>();
+      using StreamReader ip = new StreamReader(path);
+      List<DecorationListMag> list = new List<DecorationListMag>();
 
-        DecorationListMag v;
-        while ((v = Read(ip)) != null)
-          list.Add(v);
+      DecorationListMag v;
+      while ((v = Read(ip)) != null)
+        list.Add(v);
 
-        return list;
-      }
+      return list;
     }
 
     public static DecorationListMag Read(StreamReader ip)

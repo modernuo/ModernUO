@@ -346,14 +346,14 @@ namespace Server
     {
       get
       {
-        if (m_PropertyList != null)
-          return m_PropertyList;
+        if (m_PropertyList == null)
+        {
+          m_PropertyList = new ObjectPropertyList(this);
+          GetProperties(m_PropertyList);
+          AppendChildProperties(m_PropertyList);
+        }
 
-        // TODO: Object Pool OPL
-        ObjectPropertyList opl = new ObjectPropertyList(this);
-        GetProperties(opl);
-
-        return m_PropertyList = opl;
+        return m_PropertyList;
       }
     }
 
@@ -433,16 +433,7 @@ namespace Server
 
     public virtual bool IsVirtualItem => false;
 
-    public virtual int LabelNumber
-    {
-      get
-      {
-        if (m_ItemID < 0x4000)
-          return 1020000 + m_ItemID;
-
-        return 1078872 + m_ItemID;
-      }
-    }
+    public virtual int LabelNumber => m_ItemID < 0x4000 ? 1020000 + m_ItemID : 1078872 + m_ItemID;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int TotalGold => GetTotal(TotalType.Gold);
@@ -2563,12 +2554,10 @@ namespace Server
         if (_processing)
           try
           {
-            using (StreamWriter op = new StreamWriter("delta-recursion.log", true))
-            {
-              op.WriteLine("# {0}", DateTime.UtcNow);
-              op.WriteLine(new StackTrace());
-              op.WriteLine();
-            }
+            using StreamWriter op = new StreamWriter("delta-recursion.log", true);
+            op.WriteLine("# {0}", DateTime.UtcNow);
+            op.WriteLine(new StackTrace());
+            op.WriteLine();
           }
           catch
           {

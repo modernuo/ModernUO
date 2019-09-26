@@ -326,7 +326,7 @@ namespace Server.Engines.Doom
             SendLocationEffect(lp_Center, 0x1153, 0, 60, 1);
             PlaySounds(lp_Center, cs1);
 
-            Effects.SendBoltEffect(player, true);
+            Effects.SendBoltEffect(player);
             player.MoveToWorld(lr_Enter, Map.Malas);
 
             m_Timer = new LampRoomTimer(this);

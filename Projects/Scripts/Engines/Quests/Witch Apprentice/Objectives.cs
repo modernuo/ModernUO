@@ -50,7 +50,7 @@ namespace Server.Engines.Quests.Hag
       Corpse = new HagApprenticeCorpse();
       Corpse.MoveToWorld(m_CorpseLocation, map);
 
-      Effects.SendLocationEffect(m_CorpseLocation, map, 0x3728, 10, 10);
+      Effects.SendLocationEffect(m_CorpseLocation, map, 0x3728, 10);
       Effects.PlaySound(m_CorpseLocation, map, 0x1FE);
 
       Mobile imp = new Zeefzorpul();
@@ -66,7 +66,7 @@ namespace Server.Engines.Quests.Hag
     {
       if (m?.Deleted == false)
       {
-        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
+        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
         Effects.PlaySound(m.Location, m.Map, 0x1FE);
 
         m.Delete();
@@ -204,7 +204,7 @@ namespace Server.Engines.Quests.Hag
       Mobile from = System.From;
       Map map = from.Map;
 
-      Effects.SendLocationEffect(ImpLocation, map, 0x3728, 10, 10);
+      Effects.SendLocationEffect(ImpLocation, map, 0x3728, 10);
       Effects.PlaySound(ImpLocation, map, 0x1FE);
 
       Mobile imp = new Zeefzorpul();
@@ -219,7 +219,7 @@ namespace Server.Engines.Quests.Hag
     {
       if (imp is Mobile m && !m.Deleted)
       {
-        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
+        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
         Effects.PlaySound(m.Location, m.Map, 0x1FE);
 
         m.Delete();

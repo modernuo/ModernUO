@@ -102,7 +102,7 @@ namespace Server.Items
 				banks = m_IlshenarBanks;
 				moongates = PMList.Ilshenar;
 #else
-        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, 0x482, 3, 1061684, ""); // The magic of the sextant fails...
+        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, 0x482, 3, 1061684); // The magic of the sextant fails...
         return;
 #endif
       }

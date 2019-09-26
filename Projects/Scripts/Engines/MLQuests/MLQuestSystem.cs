@@ -36,61 +36,61 @@ namespace Server.Engines.MLQuests
       Type baseQuesterType = typeof(IQuestGiver);
 
       if (File.Exists(cfgPath))
-        using (StreamReader sr = new StreamReader(cfgPath))
+      {
+        using StreamReader sr = new StreamReader(cfgPath);
+        string line;
+
+        while ((line = sr.ReadLine()) != null)
         {
-          string line;
+          if (line.Length == 0 || line.StartsWith("#"))
+            continue;
 
-          while ((line = sr.ReadLine()) != null)
+          string[] split = line.Split('\t');
+
+          Type type = ScriptCompiler.FindTypeByName(split[0]);
+
+          if (type == null || !baseQuestType.IsAssignableFrom(type))
           {
-            if (line.Length == 0 || line.StartsWith("#"))
-              continue;
+            if (Debug)
+              Console.WriteLine("Warning: {1} quest type '{0}'", split[0],
+                type == null ? "Unknown" : "Invalid");
 
-            string[] split = line.Split('\t');
+            continue;
+          }
 
-            Type type = ScriptCompiler.FindTypeByName(split[0]);
+          MLQuest quest = null;
 
-            if (type == null || !baseQuestType.IsAssignableFrom(type))
+          try
+          {
+            quest = Activator.CreateInstance(type) as MLQuest;
+          }
+          catch
+          {
+            // ignored
+          }
+
+          if (quest == null)
+            continue;
+
+          Register(type, quest);
+
+          for (int i = 1; i < split.Length; ++i)
+          {
+            Type questerType = ScriptCompiler.FindTypeByName(split[i]);
+
+            if (questerType == null || !baseQuesterType.IsAssignableFrom(questerType))
             {
               if (Debug)
-                Console.WriteLine("Warning: {1} quest type '{0}'", split[0],
-                  type == null ? "Unknown" : "Invalid");
+                Console.WriteLine("Warning: {1} quester type '{0}'", split[i],
+                  questerType == null ? "Unknown" : "Invalid");
 
               continue;
             }
 
-            MLQuest quest = null;
-
-            try
-            {
-              quest = Activator.CreateInstance(type) as MLQuest;
-            }
-            catch
-            {
-              // ignored
-            }
-
-            if (quest == null)
-              continue;
-
-            Register(type, quest);
-
-            for (int i = 1; i < split.Length; ++i)
-            {
-              Type questerType = ScriptCompiler.FindTypeByName(split[i]);
-
-              if (questerType == null || !baseQuesterType.IsAssignableFrom(questerType))
-              {
-                if (Debug)
-                  Console.WriteLine("Warning: {1} quester type '{0}'", split[i],
-                    questerType == null ? "Unknown" : "Invalid");
-
-                continue;
-              }
-
-              RegisterQuestGiver(quest, questerType);
-            }
+            RegisterQuestGiver(quest, questerType);
           }
         }
+      }
     }
 
     public static bool Enabled => Core.ML;

@@ -136,29 +136,27 @@ namespace Server.Commands
 
     private static void DocumentLoadedTypes()
     {
-      using (StreamWriter indexHtml = GetWriter("docs/", "overview.html"))
+      using StreamWriter indexHtml = GetWriter("docs/", "overview.html");
+      indexHtml.WriteLine("<html>");
+      indexHtml.WriteLine("   <head>");
+      indexHtml.WriteLine("      <title>RunUO Documentation - Class Overview</title>");
+      indexHtml.WriteLine("   </head>");
+      indexHtml.WriteLine(
+        "   <body bgcolor=\"white\" style=\"font-family: Courier New\" text=\"#000000\" link=\"#000000\" vlink=\"#000000\" alink=\"#808080\">");
+      indexHtml.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
+      indexHtml.WriteLine("      <h2>Namespaces</h2>");
+
+      SortedList<string, List<TypeInfo>> nspaces = new SortedList<string, List<TypeInfo>>(m_Namespaces);
+
+      foreach (KeyValuePair<string, List<TypeInfo>> kvp in nspaces)
       {
-        indexHtml.WriteLine("<html>");
-        indexHtml.WriteLine("   <head>");
-        indexHtml.WriteLine("      <title>RunUO Documentation - Class Overview</title>");
-        indexHtml.WriteLine("   </head>");
-        indexHtml.WriteLine(
-          "   <body bgcolor=\"white\" style=\"font-family: Courier New\" text=\"#000000\" link=\"#000000\" vlink=\"#000000\" alink=\"#808080\">");
-        indexHtml.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
-        indexHtml.WriteLine("      <h2>Namespaces</h2>");
+        kvp.Value.Sort(new TypeComparer());
 
-        SortedList<string, List<TypeInfo>> nspaces = new SortedList<string, List<TypeInfo>>(m_Namespaces);
-
-        foreach (KeyValuePair<string, List<TypeInfo>> kvp in nspaces)
-        {
-          kvp.Value.Sort(new TypeComparer());
-
-          SaveNamespace(kvp.Key, kvp.Value, indexHtml);
-        }
-
-        indexHtml.WriteLine("   </body>");
-        indexHtml.WriteLine("</html>");
+        SaveNamespace(kvp.Key, kvp.Value, indexHtml);
       }
+
+      indexHtml.WriteLine("   </body>");
+      indexHtml.WriteLine("</html>");
     }
 
     private static void SaveNamespace(string name, List<TypeInfo> types, StreamWriter indexHtml)
@@ -167,23 +165,21 @@ namespace Server.Commands
 
       indexHtml.WriteLine("      <a href=\"namespaces/{0}\">{1}</a><br>", fileName, name);
 
-      using (StreamWriter nsHtml = GetWriter("docs/namespaces/", fileName))
-      {
-        nsHtml.WriteLine("<html>");
-        nsHtml.WriteLine("   <head>");
-        nsHtml.WriteLine("      <title>RunUO Documentation - Class Overview - {0}</title>", name);
-        nsHtml.WriteLine("   </head>");
-        nsHtml.WriteLine(
-          "   <body bgcolor=\"white\" style=\"font-family: Courier New\" text=\"#000000\" link=\"#000000\" vlink=\"#000000\" alink=\"#808080\">");
-        nsHtml.WriteLine("      <h4><a href=\"../overview.html\">Back to the namespace index</a></h4>");
-        nsHtml.WriteLine("      <h2>{0}</h2>", name);
+      using StreamWriter nsHtml = GetWriter("docs/namespaces/", fileName);
+      nsHtml.WriteLine("<html>");
+      nsHtml.WriteLine("   <head>");
+      nsHtml.WriteLine("      <title>RunUO Documentation - Class Overview - {0}</title>", name);
+      nsHtml.WriteLine("   </head>");
+      nsHtml.WriteLine(
+        "   <body bgcolor=\"white\" style=\"font-family: Courier New\" text=\"#000000\" link=\"#000000\" vlink=\"#000000\" alink=\"#808080\">");
+      nsHtml.WriteLine("      <h4><a href=\"../overview.html\">Back to the namespace index</a></h4>");
+      nsHtml.WriteLine("      <h2>{0}</h2>", name);
 
-        for (int i = 0; i < types.Count; ++i)
-          SaveType(types[i], nsHtml, fileName, name);
+      for (int i = 0; i < types.Count; ++i)
+        SaveType(types[i], nsHtml, fileName, name);
 
-        nsHtml.WriteLine("   </body>");
-        nsHtml.WriteLine("</html>");
-      }
+      nsHtml.WriteLine("   </body>");
+      nsHtml.WriteLine("</html>");
     }
 
     private static void SaveType(TypeInfo info, StreamWriter nsHtml, string nsFileName, string nsName)
@@ -191,24 +187,22 @@ namespace Server.Commands
       if (info.m_Declaring == null)
         nsHtml.WriteLine($"      <!-- DBG-ST -->{info.LinkName("../types/")}<br>");
 
-      using (StreamWriter typeHtml = GetWriter(info.FileName))
-      {
-        typeHtml.WriteLine("<html>");
-        typeHtml.WriteLine("   <head>");
-        typeHtml.WriteLine("      <title>RunUO Documentation - Class Overview - {0}</title>", info.TypeName);
-        typeHtml.WriteLine("   </head>");
-        typeHtml.WriteLine(
-          "   <body bgcolor=\"white\" style=\"font-family: Courier New\" text=\"#000000\" link=\"#000000\" vlink=\"#000000\" alink=\"#808080\">");
-        typeHtml.WriteLine("      <h4><a href=\"../namespaces/{0}\">Back to {1}</a></h4>", nsFileName, nsName);
+      using StreamWriter typeHtml = GetWriter(info.FileName);
+      typeHtml.WriteLine("<html>");
+      typeHtml.WriteLine("   <head>");
+      typeHtml.WriteLine("      <title>RunUO Documentation - Class Overview - {0}</title>", info.TypeName);
+      typeHtml.WriteLine("   </head>");
+      typeHtml.WriteLine(
+        "   <body bgcolor=\"white\" style=\"font-family: Courier New\" text=\"#000000\" link=\"#000000\" vlink=\"#000000\" alink=\"#808080\">");
+      typeHtml.WriteLine("      <h4><a href=\"../namespaces/{0}\">Back to {1}</a></h4>", nsFileName, nsName);
 
-        if (info.m_Type.IsEnum)
-          WriteEnum(info, typeHtml);
-        else
-          WriteType(info, typeHtml);
+      if (info.m_Type.IsEnum)
+        WriteEnum(info, typeHtml);
+      else
+        WriteType(info, typeHtml);
 
-        typeHtml.WriteLine("   </body>");
-        typeHtml.WriteLine("</html>");
-      }
+      typeHtml.WriteLine("   </body>");
+      typeHtml.WriteLine("</html>");
     }
 
     public static void FormatGeneric(Type type, out string typeName, out string fileName, out string linkName)
@@ -673,65 +667,61 @@ namespace Server.Commands
 
     private static void GenerateStyles()
     {
-      using (StreamWriter css = GetWriter("docs/", "styles.css"))
-      {
-        css.WriteLine("body { background-color: #FFFFFF; font-family: verdana, arial; font-size: 11px; }");
-        css.WriteLine("a { color: #28435E; }");
-        css.WriteLine("a:hover { color: #4878A9; }");
-        css.WriteLine("td.header { background-color: #9696AA; font-weight: bold; font-size: 12px; }");
-        css.WriteLine("td.lentry { background-color: #D7D7EB; width: 10%; }");
-        css.WriteLine("td.rentry { background-color: #FFFFFF; width: 90%; }");
-        css.WriteLine("td.entry { background-color: #FFFFFF; }");
-        css.WriteLine("td { font-size: 11px; }");
-        css.WriteLine(".tbl-border { background-color: #46465A; }");
+      using StreamWriter css = GetWriter("docs/", "styles.css");
+      css.WriteLine("body { background-color: #FFFFFF; font-family: verdana, arial; font-size: 11px; }");
+      css.WriteLine("a { color: #28435E; }");
+      css.WriteLine("a:hover { color: #4878A9; }");
+      css.WriteLine("td.header { background-color: #9696AA; font-weight: bold; font-size: 12px; }");
+      css.WriteLine("td.lentry { background-color: #D7D7EB; width: 10%; }");
+      css.WriteLine("td.rentry { background-color: #FFFFFF; width: 90%; }");
+      css.WriteLine("td.entry { background-color: #FFFFFF; }");
+      css.WriteLine("td { font-size: 11px; }");
+      css.WriteLine(".tbl-border { background-color: #46465A; }");
 
-        css.WriteLine("td.ir {{ background-color: #{0:X6}; }}", Iron);
-        css.WriteLine("td.du {{ background-color: #{0:X6}; }}", DullCopper);
-        css.WriteLine("td.sh {{ background-color: #{0:X6}; }}", ShadowIron);
-        css.WriteLine("td.co {{ background-color: #{0:X6}; }}", Copper);
-        css.WriteLine("td.br {{ background-color: #{0:X6}; }}", Bronze);
-        css.WriteLine("td.go {{ background-color: #{0:X6}; }}", Gold);
-        css.WriteLine("td.ag {{ background-color: #{0:X6}; }}", Agapite);
-        css.WriteLine("td.ve {{ background-color: #{0:X6}; }}", Verite);
-        css.WriteLine("td.va {{ background-color: #{0:X6}; }}", Valorite);
+      css.WriteLine("td.ir {{ background-color: #{0:X6}; }}", Iron);
+      css.WriteLine("td.du {{ background-color: #{0:X6}; }}", DullCopper);
+      css.WriteLine("td.sh {{ background-color: #{0:X6}; }}", ShadowIron);
+      css.WriteLine("td.co {{ background-color: #{0:X6}; }}", Copper);
+      css.WriteLine("td.br {{ background-color: #{0:X6}; }}", Bronze);
+      css.WriteLine("td.go {{ background-color: #{0:X6}; }}", Gold);
+      css.WriteLine("td.ag {{ background-color: #{0:X6}; }}", Agapite);
+      css.WriteLine("td.ve {{ background-color: #{0:X6}; }}", Verite);
+      css.WriteLine("td.va {{ background-color: #{0:X6}; }}", Valorite);
 
-        css.WriteLine("td.cl {{ background-color: #{0:X6}; }}", Cloth);
-        css.WriteLine("td.pl {{ background-color: #{0:X6};  }}", Plain);
-        css.WriteLine("td.sp {{ background-color: #{0:X6}; }}", Core.AOS ? SpinedAOS : SpinedLBR);
-        css.WriteLine("td.ho {{ background-color: #{0:X6}; }}", Core.AOS ? HornedAOS : HornedLBR);
-        css.WriteLine("td.ba {{ background-color: #{0:X6}; }}", Core.AOS ? BarbedAOS : BarbedLBR);
-      }
+      css.WriteLine("td.cl {{ background-color: #{0:X6}; }}", Cloth);
+      css.WriteLine("td.pl {{ background-color: #{0:X6};  }}", Plain);
+      css.WriteLine("td.sp {{ background-color: #{0:X6}; }}", Core.AOS ? SpinedAOS : SpinedLBR);
+      css.WriteLine("td.ho {{ background-color: #{0:X6}; }}", Core.AOS ? HornedAOS : HornedLBR);
+      css.WriteLine("td.ba {{ background-color: #{0:X6}; }}", Core.AOS ? BarbedAOS : BarbedLBR);
     }
 
     private static void GenerateIndex()
     {
-      using (StreamWriter html = GetWriter("docs/", "index.html"))
-      {
-        html.WriteLine("<html>");
-        html.WriteLine("   <head>");
-        html.WriteLine("      <title>RunUO Documentation - Index</title>");
-        html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
-        html.WriteLine("   </head>");
-        html.WriteLine("   <body>");
+      using StreamWriter html = GetWriter("docs/", "index.html");
+      html.WriteLine("<html>");
+      html.WriteLine("   <head>");
+      html.WriteLine("      <title>RunUO Documentation - Index</title>");
+      html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
+      html.WriteLine("   </head>");
+      html.WriteLine("   <body>");
 
-        AddIndexLink(html, "commands.html", "Commands",
-          "Every available command. This contains command name, usage, aliases, and description.");
-        AddIndexLink(html, "objects.html", "Constructible Objects",
-          "Every constructible item or npc. This contains object name and usage. Hover mouse over parameters to see type description.");
-        AddIndexLink(html, "keywords.html", "Speech Keywords",
-          "Lists speech keyword numbers and associated match patterns. These are used in some scripts for multi-language matching of client speech.");
-        AddIndexLink(html, "bodies.html", "Body List",
-          "Every usable body number and name. Table is generated from a UO:3D client datafile. If you do not have UO:3D installed, this may be blank.");
-        AddIndexLink(html, "overview.html", "Class Overview",
-          "Scripting reference. Contains every class type and contained methods in the core and scripts.");
-        AddIndexLink(html, "bods/bod_smith_rewards.html", "Bulk Order Rewards: Smithing",
-          "Reference table for large and small smithing bulk order deed rewards.");
-        AddIndexLink(html, "bods/bod_tailor_rewards.html", "Bulk Order Rewards: Tailoring",
-          "Reference table for large and small tailoring bulk order deed rewards.");
+      AddIndexLink(html, "commands.html", "Commands",
+        "Every available command. This contains command name, usage, aliases, and description.");
+      AddIndexLink(html, "objects.html", "Constructible Objects",
+        "Every constructible item or npc. This contains object name and usage. Hover mouse over parameters to see type description.");
+      AddIndexLink(html, "keywords.html", "Speech Keywords",
+        "Lists speech keyword numbers and associated match patterns. These are used in some scripts for multi-language matching of client speech.");
+      AddIndexLink(html, "bodies.html", "Body List",
+        "Every usable body number and name. Table is generated from a UO:3D client datafile. If you do not have UO:3D installed, this may be blank.");
+      AddIndexLink(html, "overview.html", "Class Overview",
+        "Scripting reference. Contains every class type and contained methods in the core and scripts.");
+      AddIndexLink(html, "bods/bod_smith_rewards.html", "Bulk Order Rewards: Smithing",
+        "Reference table for large and small smithing bulk order deed rewards.");
+      AddIndexLink(html, "bods/bod_tailor_rewards.html", "Bulk Order Rewards: Tailoring",
+        "Reference table for large and small tailoring bulk order deed rewards.");
 
-        html.WriteLine("   </body>");
-        html.WriteLine("</html>");
-      }
+      html.WriteLine("   </body>");
+      html.WriteLine("</html>");
     }
 
     #endregion
@@ -1598,32 +1588,32 @@ namespace Server.Commands
       string path = Core.FindDataFile("models/models.txt");
 
       if (File.Exists(path))
-        using (StreamReader ip = new StreamReader(path))
+      {
+        using StreamReader ip = new StreamReader(path);
+        string line;
+
+        while ((line = ip.ReadLine()) != null)
         {
-          string line;
+          line = line.Trim();
 
-          while ((line = ip.ReadLine()) != null)
+          if (line.Length == 0 || line.StartsWith("#"))
+            continue;
+
+          string[] split = line.Split('\t');
+
+          if (split.Length >= 9)
           {
-            line = line.Trim();
+            Body body = Utility.ToInt32(split[0]);
+            ModelBodyType type = (ModelBodyType)Utility.ToInt32(split[1]);
+            string name = split[8];
 
-            if (line.Length == 0 || line.StartsWith("#"))
-              continue;
+            BodyEntry entry = new BodyEntry(body, type, name);
 
-            string[] split = line.Split('\t');
-
-            if (split.Length >= 9)
-            {
-              Body body = Utility.ToInt32(split[0]);
-              ModelBodyType type = (ModelBodyType)Utility.ToInt32(split[1]);
-              string name = split[8];
-
-              BodyEntry entry = new BodyEntry(body, type, name);
-
-              if (!list.Contains(entry))
-                list.Add(entry);
-            }
+            if (!list.Contains(entry))
+              list.Add(entry);
           }
         }
+      }
 
       return list;
     }
@@ -1632,84 +1622,82 @@ namespace Server.Commands
     {
       List<BodyEntry> list = LoadBodies();
 
-      using (StreamWriter html = GetWriter("docs/", "bodies.html"))
+      using StreamWriter html = GetWriter("docs/", "bodies.html");
+      html.WriteLine("<html>");
+      html.WriteLine("   <head>");
+      html.WriteLine("      <title>RunUO Documentation - Body List</title>");
+      html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
+      html.WriteLine("   </head>");
+      html.WriteLine("   <body>");
+      html.WriteLine("      <a name=\"Top\" />");
+      html.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
+
+      if (list.Count > 0)
       {
-        html.WriteLine("<html>");
-        html.WriteLine("   <head>");
-        html.WriteLine("      <title>RunUO Documentation - Body List</title>");
-        html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
-        html.WriteLine("   </head>");
-        html.WriteLine("   <body>");
-        html.WriteLine("      <a name=\"Top\" />");
-        html.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
+        html.WriteLine("      <h2>Body List</h2>");
 
-        if (list.Count > 0)
+        list.Sort(new BodyEntrySorter());
+
+        ModelBodyType lastType = ModelBodyType.Invalid;
+
+        for (int i = 0; i < list.Count; ++i)
         {
-          html.WriteLine("      <h2>Body List</h2>");
+          BodyEntry entry = list[i];
+          ModelBodyType type = entry.BodyType;
 
-          list.Sort(new BodyEntrySorter());
-
-          ModelBodyType lastType = ModelBodyType.Invalid;
-
-          for (int i = 0; i < list.Count; ++i)
+          if (type != lastType)
           {
-            BodyEntry entry = list[i];
-            ModelBodyType type = entry.BodyType;
+            if (lastType != ModelBodyType.Invalid)
+              html.WriteLine("      </table></td></tr></table><br>");
 
-            if (type != lastType)
+            lastType = type;
+
+            html.WriteLine("      <a name=\"{0}\" />", type);
+
+            switch (type)
             {
-              if (lastType != ModelBodyType.Invalid)
-                html.WriteLine("      </table></td></tr></table><br>");
-
-              lastType = type;
-
-              html.WriteLine("      <a name=\"{0}\" />", type);
-
-              switch (type)
-              {
-                case ModelBodyType.Monsters:
-                  html.WriteLine(
-                    "      <b>Monsters</b> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>");
-                  break;
-                case ModelBodyType.Sea:
-                  html.WriteLine(
-                    "      <a href=\"#Top\">Monsters</a> | <b>Sea</b> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>");
-                  break;
-                case ModelBodyType.Animals:
-                  html.WriteLine(
-                    "      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <b>Animals</b> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>");
-                  break;
-                case ModelBodyType.Human:
-                  html.WriteLine(
-                    "      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <b>Human</b> | <a href=\"#Equipment\">Equipment</a><br><br>");
-                  break;
-                case ModelBodyType.Equipment:
-                  html.WriteLine(
-                    "      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <b>Equipment</b><br><br>");
-                  break;
-              }
-
-              html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
-              html.WriteLine("      <tr><td class=\"tbl-border\">");
-              html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
-              html.WriteLine("         <tr><td width=\"100%\" colspan=\"2\" class=\"header\">{0}</td></tr>",
-                type);
+              case ModelBodyType.Monsters:
+                html.WriteLine(
+                  "      <b>Monsters</b> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>");
+                break;
+              case ModelBodyType.Sea:
+                html.WriteLine(
+                  "      <a href=\"#Top\">Monsters</a> | <b>Sea</b> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>");
+                break;
+              case ModelBodyType.Animals:
+                html.WriteLine(
+                  "      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <b>Animals</b> | <a href=\"#Human\">Human</a> | <a href=\"#Equipment\">Equipment</a><br><br>");
+                break;
+              case ModelBodyType.Human:
+                html.WriteLine(
+                  "      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <b>Human</b> | <a href=\"#Equipment\">Equipment</a><br><br>");
+                break;
+              case ModelBodyType.Equipment:
+                html.WriteLine(
+                  "      <a href=\"#Top\">Monsters</a> | <a href=\"#Sea\">Sea</a> | <a href=\"#Animals\">Animals</a> | <a href=\"#Human\">Human</a> | <b>Equipment</b><br><br>");
+                break;
             }
 
-            html.WriteLine("         <tr><td class=\"lentry\">{0}</td><td class=\"rentry\">{1}</td></tr>",
-              entry.Body.BodyID, entry.Name);
+            html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
+            html.WriteLine("      <tr><td class=\"tbl-border\">");
+            html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
+            html.WriteLine("         <tr><td width=\"100%\" colspan=\"2\" class=\"header\">{0}</td></tr>",
+              type);
           }
 
-          html.WriteLine("      </table>");
-        }
-        else
-        {
-          html.WriteLine("      This feature requires a UO:3D installation.");
+          html.WriteLine("         <tr><td class=\"lentry\">{0}</td><td class=\"rentry\">{1}</td></tr>",
+            entry.Body.BodyID, entry.Name);
         }
 
-        html.WriteLine("   </body>");
-        html.WriteLine("</html>");
+        html.WriteLine("      </table>");
       }
+      else
+      {
+        html.WriteLine("      This feature requires a UO:3D installation.");
+      }
+
+      html.WriteLine("   </body>");
+      html.WriteLine("</html>");
     }
 
     #endregion
@@ -1720,77 +1708,75 @@ namespace Server.Commands
     {
       List<Dictionary<int, SpeechEntry>> tables = LoadSpeechFile();
 
-      using (StreamWriter html = GetWriter("docs/", "keywords.html"))
+      using StreamWriter html = GetWriter("docs/", "keywords.html");
+      html.WriteLine("<html>");
+      html.WriteLine("   <head>");
+      html.WriteLine("      <title>RunUO Documentation - Speech Keywords</title>");
+      html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
+      html.WriteLine("   </head>");
+      html.WriteLine("   <body>");
+      html.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
+      html.WriteLine("      <h2>Speech Keywords</h2>");
+
+      for (int p = 0; p < 1 && p < tables.Count; ++p)
       {
-        html.WriteLine("<html>");
-        html.WriteLine("   <head>");
-        html.WriteLine("      <title>RunUO Documentation - Speech Keywords</title>");
-        html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
-        html.WriteLine("   </head>");
-        html.WriteLine("   <body>");
-        html.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
-        html.WriteLine("      <h2>Speech Keywords</h2>");
+        Dictionary<int, SpeechEntry> table = tables[p];
 
-        for (int p = 0; p < 1 && p < tables.Count; ++p)
+        if (p > 0)
+          html.WriteLine("      <br>");
+
+        html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
+        html.WriteLine("      <tr><td class=\"tbl-border\">");
+        html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
+        html.WriteLine("         <tr><td class=\"header\">Number</td><td class=\"header\">Text</td></tr>");
+
+        List<SpeechEntry> list = new List<SpeechEntry>(table.Values);
+        list.Sort(new SpeechEntrySorter());
+
+        for (int i = 0; i < list.Count; ++i)
         {
-          Dictionary<int, SpeechEntry> table = tables[p];
+          SpeechEntry entry = list[i];
 
-          if (p > 0)
-            html.WriteLine("      <br>");
+          html.Write("         <tr><td class=\"lentry\">0x{0:X4}</td><td class=\"rentry\">", entry.Index);
 
-          html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
-          html.WriteLine("      <tr><td class=\"tbl-border\">");
-          html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
-          html.WriteLine("         <tr><td class=\"header\">Number</td><td class=\"header\">Text</td></tr>");
+          entry.Strings.Sort(); //( new EnglishPrioStringSorter() );
 
-          List<SpeechEntry> list = new List<SpeechEntry>(table.Values);
-          list.Sort(new SpeechEntrySorter());
-
-          for (int i = 0; i < list.Count; ++i)
+          for (int j = 0; j < entry.Strings.Count; ++j)
           {
-            SpeechEntry entry = list[i];
+            if (j > 0)
+              html.Write("<br>");
 
-            html.Write("         <tr><td class=\"lentry\">0x{0:X4}</td><td class=\"rentry\">", entry.Index);
+            string v = entry.Strings[j];
 
-            entry.Strings.Sort(); //( new EnglishPrioStringSorter() );
-
-            for (int j = 0; j < entry.Strings.Count; ++j)
+            for (int k = 0; k < v.Length; ++k)
             {
-              if (j > 0)
-                html.Write("<br>");
+              char c = v[k];
 
-              string v = entry.Strings[j];
-
-              for (int k = 0; k < v.Length; ++k)
-              {
-                char c = v[k];
-
-                if (c == '<')
-                  html.Write("&lt;");
-                else if (c == '>')
-                  html.Write("&gt;");
-                else if (c == '&')
-                  html.Write("&amp;");
-                else if (c == '"')
-                  html.Write("&quot;");
-                else if (c == '\'')
-                  html.Write("&apos;");
-                else if (c >= 0x20 && c < 0x7F)
-                  html.Write(c);
-                else
-                  html.Write("&#{0};", (int)c);
-              }
+              if (c == '<')
+                html.Write("&lt;");
+              else if (c == '>')
+                html.Write("&gt;");
+              else if (c == '&')
+                html.Write("&amp;");
+              else if (c == '"')
+                html.Write("&quot;");
+              else if (c == '\'')
+                html.Write("&apos;");
+              else if (c >= 0x20 && c < 0x7F)
+                html.Write(c);
+              else
+                html.Write("&#{0};", (int)c);
             }
-
-            html.WriteLine("</td></tr>");
           }
 
-          html.WriteLine("      </table></td></tr></table>");
+          html.WriteLine("</td></tr>");
         }
 
-        html.WriteLine("   </body>");
-        html.WriteLine("</html>");
+        html.WriteLine("      </table></td></tr></table>");
       }
+
+      html.WriteLine("   </body>");
+      html.WriteLine("</html>");
     }
 
     private class SpeechEntry
@@ -1825,35 +1811,35 @@ namespace Server.Commands
       string path = Core.FindDataFile("speech.mul");
 
       if (File.Exists(path))
-        using (FileStream ip = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+      {
+        using FileStream ip = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        BinaryReader bin = new BinaryReader(ip);
+
+        while (bin.PeekChar() >= 0)
         {
-          BinaryReader bin = new BinaryReader(ip);
+          int index = (bin.ReadByte() << 8) | bin.ReadByte();
+          int length = (bin.ReadByte() << 8) | bin.ReadByte();
+          string text = Encoding.UTF8.GetString(bin.ReadBytes(length)).Trim();
 
-          while (bin.PeekChar() >= 0)
+          if (text.Length == 0)
+            continue;
+
+          if (table == null || lastIndex > index)
           {
-            int index = (bin.ReadByte() << 8) | bin.ReadByte();
-            int length = (bin.ReadByte() << 8) | bin.ReadByte();
-            string text = Encoding.UTF8.GetString(bin.ReadBytes(length)).Trim();
-
-            if (text.Length == 0)
-              continue;
-
-            if (table == null || lastIndex > index)
-            {
-              if (index == 0 && text == "*withdraw*")
-                tables.Insert(0, table = new Dictionary<int, SpeechEntry>());
-              else
-                tables.Add(table = new Dictionary<int, SpeechEntry>());
-            }
-
-            lastIndex = index;
-
-            if (!table.TryGetValue(index, out SpeechEntry entry))
-              table[index] = entry = new SpeechEntry(index);
-
-            entry.Strings.Add(text);
+            if (index == 0 && text == "*withdraw*")
+              tables.Insert(0, table = new Dictionary<int, SpeechEntry>());
+            else
+              tables.Add(table = new Dictionary<int, SpeechEntry>());
           }
+
+          lastIndex = index;
+
+          if (!table.TryGetValue(index, out SpeechEntry entry))
+            table[index] = entry = new SpeechEntry(index);
+
+          entry.Strings.Add(text);
         }
+      }
 
       return tables;
     }
@@ -1901,191 +1887,189 @@ namespace Server.Commands
 
     private static void DocumentCommands()
     {
-      using (StreamWriter html = GetWriter("docs/", "commands.html"))
+      using StreamWriter html = GetWriter("docs/", "commands.html");
+      html.WriteLine("<html>");
+      html.WriteLine("   <head>");
+      html.WriteLine("      <title>RunUO Documentation - Commands</title>");
+      html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
+      html.WriteLine("   </head>");
+      html.WriteLine("   <body>");
+      html.WriteLine("      <a name=\"Top\" />");
+      html.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
+      html.WriteLine("      <h2>Commands</h2>");
+
+      List<CommandEntry> commands = new List<CommandEntry>(CommandSystem.Entries.Values);
+      List<DocCommandEntry> list = new List<DocCommandEntry>();
+
+      commands.Sort();
+      commands.Reverse();
+      Clean(commands);
+
+      for (int i = 0; i < commands.Count; ++i)
       {
-        html.WriteLine("<html>");
-        html.WriteLine("   <head>");
-        html.WriteLine("      <title>RunUO Documentation - Commands</title>");
-        html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
-        html.WriteLine("   </head>");
-        html.WriteLine("   <body>");
-        html.WriteLine("      <a name=\"Top\" />");
-        html.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
-        html.WriteLine("      <h2>Commands</h2>");
+        CommandEntry e = commands[i];
 
-        List<CommandEntry> commands = new List<CommandEntry>(CommandSystem.Entries.Values);
-        List<DocCommandEntry> list = new List<DocCommandEntry>();
+        MethodInfo mi = e.Handler.Method;
 
-        commands.Sort();
-        commands.Reverse();
-        Clean(commands);
+        object[] attrs = mi.GetCustomAttributes(typeof(UsageAttribute), false);
 
-        for (int i = 0; i < commands.Count; ++i)
-        {
-          CommandEntry e = commands[i];
+        if (attrs.Length == 0)
+          continue;
 
-          MethodInfo mi = e.Handler.Method;
+        UsageAttribute usage = attrs[0] as UsageAttribute;
 
-          object[] attrs = mi.GetCustomAttributes(typeof(UsageAttribute), false);
+        attrs = mi.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
-          if (attrs.Length == 0)
-            continue;
+        if (attrs.Length == 0)
+          continue;
 
-          UsageAttribute usage = attrs[0] as UsageAttribute;
+        if (usage == null || !(attrs[0] is DescriptionAttribute desc))
+          continue;
 
-          attrs = mi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        attrs = mi.GetCustomAttributes(typeof(AliasesAttribute), false);
 
-          if (attrs.Length == 0)
-            continue;
+        AliasesAttribute aliases = attrs.Length == 0 ? null : attrs[0] as AliasesAttribute;
 
-          if (usage == null || !(attrs[0] is DescriptionAttribute desc))
-            continue;
+        string descString = desc.Description.Replace("<", "&lt;").Replace(">", "&gt;");
 
-          attrs = mi.GetCustomAttributes(typeof(AliasesAttribute), false);
-
-          AliasesAttribute aliases = attrs.Length == 0 ? null : attrs[0] as AliasesAttribute;
-
-          string descString = desc.Description.Replace("<", "&lt;").Replace(">", "&gt;");
-
-          if (aliases == null)
-            list.Add(new DocCommandEntry(e.AccessLevel, e.Command, null, usage.Usage, descString));
-          else
-            list.Add(new DocCommandEntry(e.AccessLevel, e.Command, aliases.Aliases, usage.Usage, descString));
-        }
-
-        for (int i = 0; i < TargetCommands.AllCommands.Count; ++i)
-        {
-          BaseCommand command = TargetCommands.AllCommands[i];
-
-          string usage = command.Usage;
-          string desc = command.Description;
-
-          if (usage == null || desc == null)
-            continue;
-
-          string[] cmds = command.Commands;
-          string cmd = cmds[0];
-          string[] aliases = new string[cmds.Length - 1];
-
-          for (int j = 0; j < aliases.Length; ++j)
-            aliases[j] = cmds[j + 1];
-
-          desc = desc.Replace("<", "&lt;").Replace(">", "&gt;");
-
-          if (command.Supports != CommandSupport.Single)
-          {
-            StringBuilder sb = new StringBuilder(50 + desc.Length);
-
-            sb.Append("Modifiers: ");
-
-            if ((command.Supports & CommandSupport.Global) != 0)
-              sb.Append("<i><a href=\"#Global\">Global</a></i>, ");
-
-            if ((command.Supports & CommandSupport.Online) != 0)
-              sb.Append("<i><a href=\"#Online\">Online</a></i>, ");
-
-            if ((command.Supports & CommandSupport.Region) != 0)
-              sb.Append("<i><a href=\"#Region\">Region</a></i>, ");
-
-            if ((command.Supports & CommandSupport.Contained) != 0)
-              sb.Append("<i><a href=\"#Contained\">Contained</a></i>, ");
-
-            if ((command.Supports & CommandSupport.Multi) != 0)
-              sb.Append("<i><a href=\"#Multi\">Multi</a></i>, ");
-
-            if ((command.Supports & CommandSupport.Area) != 0)
-              sb.Append("<i><a href=\"#Area\">Area</a></i>, ");
-
-            if ((command.Supports & CommandSupport.Self) != 0)
-              sb.Append("<i><a href=\"#Self\">Self</a></i>, ");
-
-            sb.Remove(sb.Length - 2, 2);
-            sb.Append("<br>");
-            sb.Append(desc);
-
-            desc = sb.ToString();
-          }
-
-          list.Add(new DocCommandEntry(command.AccessLevel, cmd, aliases, usage, desc));
-        }
-
-        List<BaseCommandImplementor> commandImpls = BaseCommandImplementor.Implementors;
-
-        for (int i = 0; i < commandImpls.Count; ++i)
-        {
-          BaseCommandImplementor command = commandImpls[i];
-
-          string usage = command.Usage;
-          string desc = command.Description;
-
-          if (usage == null || desc == null)
-            continue;
-
-          string[] cmds = command.Accessors;
-          string cmd = cmds[0];
-          string[] aliases = new string[cmds.Length - 1];
-
-          for (int j = 0; j < aliases.Length; ++j)
-            aliases[j] = cmds[j + 1];
-
-          desc = desc.Replace("<", "&lt;").Replace(">", "&gt;");
-
-          list.Add(new DocCommandEntry(command.AccessLevel, cmd, aliases, usage, desc));
-        }
-
-        list.Sort(new CommandEntrySorter());
-
-        AccessLevel last = AccessLevel.Player;
-
-        foreach (DocCommandEntry e in list)
-        {
-          if (e.AccessLevel != last)
-          {
-            if (last != AccessLevel.Player)
-              html.WriteLine("      </table></td></tr></table><br>");
-
-            last = e.AccessLevel;
-
-            html.WriteLine("      <a name=\"{0}\" />", last);
-
-            switch (last)
-            {
-              case AccessLevel.Administrator:
-                html.WriteLine(
-                  "      <b>Administrator</b> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>");
-                break;
-              case AccessLevel.GameMaster:
-                html.WriteLine(
-                  "      <a href=\"#Top\">Administrator</a> | <b>Game Master</b> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>");
-                break;
-              case AccessLevel.Seer:
-                html.WriteLine(
-                  "      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>");
-                break;
-              case AccessLevel.Counselor:
-                html.WriteLine(
-                  "      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <b>Counselor</b> | <a href=\"#Player\">Player</a><br><br>");
-                break;
-              case AccessLevel.Player:
-                html.WriteLine(
-                  "      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <b>Player</b><br><br>");
-                break;
-            }
-
-            html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
-            html.WriteLine("      <tr><td class=\"tbl-border\">");
-            html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
-            html.WriteLine("         <tr><td colspan=\"2\" width=\"100%\" class=\"header\">{0}</td></tr>",
-              last == AccessLevel.GameMaster ? "Game Master" : last.ToString());
-          }
-
-          DocumentCommand(html, e);
-        }
-
-        html.WriteLine("      </table></td></tr></table>");
-        html.WriteLine("   </body>");
-        html.WriteLine("</html>");
+        if (aliases == null)
+          list.Add(new DocCommandEntry(e.AccessLevel, e.Command, null, usage.Usage, descString));
+        else
+          list.Add(new DocCommandEntry(e.AccessLevel, e.Command, aliases.Aliases, usage.Usage, descString));
       }
+
+      for (int i = 0; i < TargetCommands.AllCommands.Count; ++i)
+      {
+        BaseCommand command = TargetCommands.AllCommands[i];
+
+        string usage = command.Usage;
+        string desc = command.Description;
+
+        if (usage == null || desc == null)
+          continue;
+
+        string[] cmds = command.Commands;
+        string cmd = cmds[0];
+        string[] aliases = new string[cmds.Length - 1];
+
+        for (int j = 0; j < aliases.Length; ++j)
+          aliases[j] = cmds[j + 1];
+
+        desc = desc.Replace("<", "&lt;").Replace(">", "&gt;");
+
+        if (command.Supports != CommandSupport.Single)
+        {
+          StringBuilder sb = new StringBuilder(50 + desc.Length);
+
+          sb.Append("Modifiers: ");
+
+          if ((command.Supports & CommandSupport.Global) != 0)
+            sb.Append("<i><a href=\"#Global\">Global</a></i>, ");
+
+          if ((command.Supports & CommandSupport.Online) != 0)
+            sb.Append("<i><a href=\"#Online\">Online</a></i>, ");
+
+          if ((command.Supports & CommandSupport.Region) != 0)
+            sb.Append("<i><a href=\"#Region\">Region</a></i>, ");
+
+          if ((command.Supports & CommandSupport.Contained) != 0)
+            sb.Append("<i><a href=\"#Contained\">Contained</a></i>, ");
+
+          if ((command.Supports & CommandSupport.Multi) != 0)
+            sb.Append("<i><a href=\"#Multi\">Multi</a></i>, ");
+
+          if ((command.Supports & CommandSupport.Area) != 0)
+            sb.Append("<i><a href=\"#Area\">Area</a></i>, ");
+
+          if ((command.Supports & CommandSupport.Self) != 0)
+            sb.Append("<i><a href=\"#Self\">Self</a></i>, ");
+
+          sb.Remove(sb.Length - 2, 2);
+          sb.Append("<br>");
+          sb.Append(desc);
+
+          desc = sb.ToString();
+        }
+
+        list.Add(new DocCommandEntry(command.AccessLevel, cmd, aliases, usage, desc));
+      }
+
+      List<BaseCommandImplementor> commandImpls = BaseCommandImplementor.Implementors;
+
+      for (int i = 0; i < commandImpls.Count; ++i)
+      {
+        BaseCommandImplementor command = commandImpls[i];
+
+        string usage = command.Usage;
+        string desc = command.Description;
+
+        if (usage == null || desc == null)
+          continue;
+
+        string[] cmds = command.Accessors;
+        string cmd = cmds[0];
+        string[] aliases = new string[cmds.Length - 1];
+
+        for (int j = 0; j < aliases.Length; ++j)
+          aliases[j] = cmds[j + 1];
+
+        desc = desc.Replace("<", "&lt;").Replace(">", "&gt;");
+
+        list.Add(new DocCommandEntry(command.AccessLevel, cmd, aliases, usage, desc));
+      }
+
+      list.Sort(new CommandEntrySorter());
+
+      AccessLevel last = AccessLevel.Player;
+
+      foreach (DocCommandEntry e in list)
+      {
+        if (e.AccessLevel != last)
+        {
+          if (last != AccessLevel.Player)
+            html.WriteLine("      </table></td></tr></table><br>");
+
+          last = e.AccessLevel;
+
+          html.WriteLine("      <a name=\"{0}\" />", last);
+
+          switch (last)
+          {
+            case AccessLevel.Administrator:
+              html.WriteLine(
+                "      <b>Administrator</b> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>");
+              break;
+            case AccessLevel.GameMaster:
+              html.WriteLine(
+                "      <a href=\"#Top\">Administrator</a> | <b>Game Master</b> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>");
+              break;
+            case AccessLevel.Seer:
+              html.WriteLine(
+                "      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <a href=\"#Player\">Player</a><br><br>");
+              break;
+            case AccessLevel.Counselor:
+              html.WriteLine(
+                "      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <b>Counselor</b> | <a href=\"#Player\">Player</a><br><br>");
+              break;
+            case AccessLevel.Player:
+              html.WriteLine(
+                "      <a href=\"#Top\">Administrator</a> | <a href=\"#GameMaster\">Game Master</a> | <a href=\"#Counselor\">Counselor</a> | <b>Player</b><br><br>");
+              break;
+          }
+
+          html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
+          html.WriteLine("      <tr><td class=\"tbl-border\">");
+          html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
+          html.WriteLine("         <tr><td colspan=\"2\" width=\"100%\" class=\"header\">{0}</td></tr>",
+            last == AccessLevel.GameMaster ? "Game Master" : last.ToString());
+        }
+
+        DocumentCommand(html, e);
+      }
+
+      html.WriteLine("      </table></td></tr></table>");
+      html.WriteLine("   </body>");
+      html.WriteLine("</html>");
     }
 
     public static void Clean(List<CommandEntry> list)
@@ -2177,49 +2161,47 @@ namespace Server.Commands
         }
       }
 
-      using (StreamWriter html = GetWriter("docs/", "objects.html"))
+      using StreamWriter html = GetWriter("docs/", "objects.html");
+      html.WriteLine("<html>");
+      html.WriteLine("   <head>");
+      html.WriteLine("      <title>RunUO Documentation - Constructible Objects</title>");
+      html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
+      html.WriteLine("   </head>");
+      html.WriteLine("   <body>");
+      html.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
+      html.WriteLine(
+        "      <h2>Constructible <a href=\"#items\">Items</a> and <a href=\"#mobiles\">Mobiles</a></h2>");
+
+      html.WriteLine("      <a name=\"items\" />");
+      html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
+      html.WriteLine("      <tr><td class=\"tbl-border\">");
+      html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
+      html.WriteLine("         <tr><td class=\"header\">Item Name</td><td class=\"header\">Usage</td></tr>");
+
+      items.ForEach(tuple =>
       {
-        html.WriteLine("<html>");
-        html.WriteLine("   <head>");
-        html.WriteLine("      <title>RunUO Documentation - Constructible Objects</title>");
-        html.WriteLine("      <link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" />");
-        html.WriteLine("   </head>");
-        html.WriteLine("   <body>");
-        html.WriteLine("      <h4><a href=\"index.html\">Back to the index</a></h4>");
-        html.WriteLine(
-          "      <h2>Constructible <a href=\"#items\">Items</a> and <a href=\"#mobiles\">Mobiles</a></h2>");
+        (Type type, ConstructorInfo[] constructors) = tuple;
+        DocumentConstructibleObject(html, type, constructors);
+      });
 
-        html.WriteLine("      <a name=\"items\" />");
-        html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
-        html.WriteLine("      <tr><td class=\"tbl-border\">");
-        html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
-        html.WriteLine("         <tr><td class=\"header\">Item Name</td><td class=\"header\">Usage</td></tr>");
+      html.WriteLine("      </table></td></tr></table><br><br>");
 
-        items.ForEach(tuple =>
-        {
-          (Type type, ConstructorInfo[] constructors) = tuple;
-          DocumentConstructibleObject(html, type, constructors);
-        });
+      html.WriteLine("      <a name=\"mobiles\" />");
+      html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
+      html.WriteLine("      <tr><td class=\"tbl-border\">");
+      html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
+      html.WriteLine("         <tr><td class=\"header\">Mobile Name</td><td class=\"header\">Usage</td></tr>");
 
-        html.WriteLine("      </table></td></tr></table><br><br>");
+      mobiles.ForEach(tuple =>
+      {
+        (Type type, ConstructorInfo[] constructors) = tuple;
+        DocumentConstructibleObject(html, type, constructors);
+      });
 
-        html.WriteLine("      <a name=\"mobiles\" />");
-        html.WriteLine("      <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
-        html.WriteLine("      <tr><td class=\"tbl-border\">");
-        html.WriteLine("      <table width=\"100%\" cellpadding=\"4\" cellspacing=\"1\">");
-        html.WriteLine("         <tr><td class=\"header\">Mobile Name</td><td class=\"header\">Usage</td></tr>");
+      html.WriteLine("      </table></td></tr></table>");
 
-        mobiles.ForEach(tuple =>
-        {
-          (Type type, ConstructorInfo[] constructors) = tuple;
-          DocumentConstructibleObject(html, type, constructors);
-        });
-
-        html.WriteLine("      </table></td></tr></table>");
-
-        html.WriteLine("   </body>");
-        html.WriteLine("</html>");
-      }
+      html.WriteLine("   </body>");
+      html.WriteLine("</html>");
     }
 
     private static void DocumentConstructibleObject(StreamWriter html, Type t, ConstructorInfo[] ctors)

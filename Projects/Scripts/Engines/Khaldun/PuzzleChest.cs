@@ -296,7 +296,7 @@ namespace Server.Items
       {
         case 0:
         {
-          Effects.SendLocationEffect(to, to.Map, 0x113A, 20, 10);
+          Effects.SendLocationEffect(to, to.Map, 0x113A, 20);
           to.PlaySound(0x231);
           to.LocalOverheadMessage(MessageType.Regular, 0x44, 1010523); // A toxic vapor envelops thee.
 

@@ -69,7 +69,7 @@ namespace Server.Items
       if (Poison == null || !from.Player || !from.Alive || from.AccessLevel > AccessLevel.Player)
         return;
 
-      Effects.SendLocationEffect(Location, Map, GetBaseID(Type) - 2, 16, 3, GetEffectHue(), 0);
+      Effects.SendLocationEffect(Location, Map, GetBaseID(Type) - 2, 16, 3, GetEffectHue());
       Effects.PlaySound(Location, Map, 0x231);
 
       from.ApplyPoison(from, Poison);

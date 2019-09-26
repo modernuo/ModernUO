@@ -26,7 +26,7 @@ namespace Server.Items
     public void Carve(Mobile from, Item item)
     {
       Effects.PlaySound(GetWorldLocation(), Map, 0x48F);
-      Effects.SendLocationEffect(GetWorldLocation(), Map, 0x3728, 10, 10, 0, 0);
+      Effects.SendLocationEffect(GetWorldLocation(), Map, 0x3728, 10);
 
       if (0.3 > Utility.RandomDouble())
       {

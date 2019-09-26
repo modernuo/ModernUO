@@ -985,16 +985,14 @@ namespace Server.Commands
 
     public static List<DecorationList> ReadAll(string path)
     {
-      using (StreamReader ip = new StreamReader(path))
-      {
-        List<DecorationList> list = new List<DecorationList>();
-        DecorationList v;
+      using StreamReader ip = new StreamReader(path);
+      List<DecorationList> list = new List<DecorationList>();
+      DecorationList v;
 
-        while ((v = Read(ip)) != null)
-          list.Add(v);
+      while ((v = Read(ip)) != null)
+        list.Add(v);
 
-        return list;
-      }
+      return list;
     }
 
     public static DecorationList Read(StreamReader ip)

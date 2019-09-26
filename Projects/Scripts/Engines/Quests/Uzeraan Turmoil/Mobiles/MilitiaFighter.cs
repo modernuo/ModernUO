@@ -121,7 +121,7 @@ namespace Server.Engines.Quests.Haven
         Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049318, "",
           Name); // the remains of ~1_NAME~ the militia fighter
       else
-        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049318, ""); // the remains of a militia fighters
+        Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049318); // the remains of a militia fighters
     }
 
     public override void Open(Mobile from, bool checkSelfLoot)

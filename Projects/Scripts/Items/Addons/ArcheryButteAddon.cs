@@ -76,11 +76,7 @@ namespace Server.Items
 				Total += score;
 				Count += 1;
 			}
-
-			public ScoreEntry()
-			{
-			}
-		}
+    }
 
 		private Dictionary<Mobile, ScoreEntry> m_Entries;
 

@@ -169,7 +169,7 @@ namespace Server.Items
 
       Effects.PlaySound(loc, map, 0x307);
 
-      Effects.SendLocationEffect(loc, map, 0x36B0, 9, 10, 0, 0);
+      Effects.SendLocationEffect(loc, map, 0x36B0, 9);
       int alchemyBonus = 0;
 
       if (direct)

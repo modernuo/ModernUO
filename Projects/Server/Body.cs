@@ -41,29 +41,27 @@ namespace Server
     {
       if (File.Exists("Data/bodyTable.cfg"))
       {
-        using (StreamReader ip = new StreamReader("Data/bodyTable.cfg"))
+        using StreamReader ip = new StreamReader("Data/bodyTable.cfg");
+        m_Types = new BodyType[0x1000];
+
+        string line;
+
+        while ((line = ip.ReadLine()) != null)
         {
-          m_Types = new BodyType[0x1000];
+          if (line.Length == 0 || line.StartsWith("#"))
+            continue;
 
-          string line;
+          string[] split = line.Split('\t');
 
-          while ((line = ip.ReadLine()) != null)
+          if (int.TryParse(split[0], out int bodyID) && Enum.TryParse(split[1], true, out BodyType type) && bodyID >= 0 &&
+              bodyID < m_Types.Length)
           {
-            if (line.Length == 0 || line.StartsWith("#"))
-              continue;
-
-            string[] split = line.Split('\t');
-
-            if (int.TryParse(split[0], out int bodyID) && Enum.TryParse(split[1], true, out BodyType type) && bodyID >= 0 &&
-                bodyID < m_Types.Length)
-            {
-              m_Types[bodyID] = type;
-            }
-            else
-            {
-              Console.WriteLine("Warning: Invalid bodyTable entry:");
-              Console.WriteLine(line);
-            }
+            m_Types[bodyID] = type;
+          }
+          else
+          {
+            Console.WriteLine("Warning: Invalid bodyTable entry:");
+            Console.WriteLine(line);
           }
         }
       }

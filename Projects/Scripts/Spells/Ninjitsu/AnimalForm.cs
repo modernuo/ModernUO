@@ -575,7 +575,7 @@ namespace Server.Spells.Ninjitsu
       {
         m_Mobile.RevealingAction();
         m_Mobile.PlaySound(0x227);
-        Effects.SendMovingEffect(m_Mobile, target, 0x36D4, 5, 0, false, false);
+        Effects.SendMovingEffect(m_Mobile, target, 0x36D4, 5, 0);
 
         DelayCall(TimeSpan.FromSeconds(1), BreathDamage_Callback, target);
       }

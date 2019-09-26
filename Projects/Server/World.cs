@@ -183,114 +183,114 @@ namespace Server
       List<GuildEntry> guilds = new List<GuildEntry>();
 
       if (File.Exists(MobileIndexPath) && File.Exists(MobileTypesPath))
-        using (FileStream idx = new FileStream(MobileIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+      {
+        using FileStream idx = new FileStream(MobileIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        BinaryReader idxReader = new BinaryReader(idx);
+
+        using (FileStream tdb = new FileStream(MobileTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
-          BinaryReader idxReader = new BinaryReader(idx);
+          BinaryReader tdbReader = new BinaryReader(tdb);
 
-          using (FileStream tdb = new FileStream(MobileTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+          List<Tuple<ConstructorInfo, string>> types = ReadTypes(tdbReader);
+
+          int mobileCount = idxReader.ReadInt32();
+
+          Mobiles = new Dictionary<Serial, Mobile>(mobileCount);
+
+          for (int i = 0; i < mobileCount; ++i)
           {
-            BinaryReader tdbReader = new BinaryReader(tdb);
+            int typeID = idxReader.ReadInt32();
+            uint serial = idxReader.ReadUInt32();
+            long pos = idxReader.ReadInt64();
+            int length = idxReader.ReadInt32();
 
-            List<Tuple<ConstructorInfo, string>> types = ReadTypes(tdbReader);
+            Tuple<ConstructorInfo, string> objs = types[typeID];
 
-            int mobileCount = idxReader.ReadInt32();
+            if (objs == null)
+              continue;
 
-            Mobiles = new Dictionary<Serial, Mobile>(mobileCount);
+            Mobile m = null;
+            ConstructorInfo ctor = objs.Item1;
+            string typeName = objs.Item2;
 
-            for (int i = 0; i < mobileCount; ++i)
+            try
             {
-              int typeID = idxReader.ReadInt32();
-              uint serial = idxReader.ReadUInt32();
-              long pos = idxReader.ReadInt64();
-              int length = idxReader.ReadInt32();
-
-              Tuple<ConstructorInfo, string> objs = types[typeID];
-
-              if (objs == null)
-                continue;
-
-              Mobile m = null;
-              ConstructorInfo ctor = objs.Item1;
-              string typeName = objs.Item2;
-
-              try
-              {
-                ctorArgs[0] = (Serial)serial;
-                m = (Mobile)ctor.Invoke(ctorArgs);
-              }
-              catch
-              {
-                // ignored
-              }
-
-              if (m != null)
-              {
-                mobiles.Add(new MobileEntry(m, typeID, typeName, pos, length));
-                AddMobile(m);
-              }
+              ctorArgs[0] = (Serial)serial;
+              m = (Mobile)ctor.Invoke(ctorArgs);
+            }
+            catch
+            {
+              // ignored
             }
 
-            tdbReader.Close();
+            if (m != null)
+            {
+              mobiles.Add(new MobileEntry(m, typeID, typeName, pos, length));
+              AddMobile(m);
+            }
           }
 
-          idxReader.Close();
+          tdbReader.Close();
         }
+
+        idxReader.Close();
+      }
       else
         Mobiles = new Dictionary<Serial, Mobile>();
 
       if (File.Exists(ItemIndexPath) && File.Exists(ItemTypesPath))
-        using (FileStream idx = new FileStream(ItemIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+      {
+        using FileStream idx = new FileStream(ItemIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        BinaryReader idxReader = new BinaryReader(idx);
+
+        using (FileStream tdb = new FileStream(ItemTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
-          BinaryReader idxReader = new BinaryReader(idx);
+          BinaryReader tdbReader = new BinaryReader(tdb);
 
-          using (FileStream tdb = new FileStream(ItemTypesPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+          List<Tuple<ConstructorInfo, string>> types = ReadTypes(tdbReader);
+
+          int itemCount = idxReader.ReadInt32();
+
+          Items = new Dictionary<Serial, Item>(itemCount);
+
+          for (int i = 0; i < itemCount; ++i)
           {
-            BinaryReader tdbReader = new BinaryReader(tdb);
+            int typeID = idxReader.ReadInt32();
+            uint serial = idxReader.ReadUInt32();
+            long pos = idxReader.ReadInt64();
+            int length = idxReader.ReadInt32();
 
-            List<Tuple<ConstructorInfo, string>> types = ReadTypes(tdbReader);
+            Tuple<ConstructorInfo, string> objs = types[typeID];
 
-            int itemCount = idxReader.ReadInt32();
+            if (objs == null)
+              continue;
 
-            Items = new Dictionary<Serial, Item>(itemCount);
+            Item item = null;
+            ConstructorInfo ctor = objs.Item1;
+            string typeName = objs.Item2;
 
-            for (int i = 0; i < itemCount; ++i)
+            try
             {
-              int typeID = idxReader.ReadInt32();
-              uint serial = idxReader.ReadUInt32();
-              long pos = idxReader.ReadInt64();
-              int length = idxReader.ReadInt32();
-
-              Tuple<ConstructorInfo, string> objs = types[typeID];
-
-              if (objs == null)
-                continue;
-
-              Item item = null;
-              ConstructorInfo ctor = objs.Item1;
-              string typeName = objs.Item2;
-
-              try
-              {
-                ctorArgs[0] = (Serial)serial;
-                item = (Item)ctor.Invoke(ctorArgs);
-              }
-              catch
-              {
-                // ignored
-              }
-
-              if (item != null)
-              {
-                items.Add(new ItemEntry(item, typeID, typeName, pos, length));
-                AddItem(item);
-              }
+              ctorArgs[0] = (Serial)serial;
+              item = (Item)ctor.Invoke(ctorArgs);
+            }
+            catch
+            {
+              // ignored
             }
 
-            tdbReader.Close();
+            if (item != null)
+            {
+              items.Add(new ItemEntry(item, typeID, typeName, pos, length));
+              AddItem(item);
+            }
           }
 
-          idxReader.Close();
+          tdbReader.Close();
         }
+
+        idxReader.Close();
+      }
       else
         Items = new Dictionary<Serial, Item>();
 

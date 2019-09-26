@@ -306,7 +306,6 @@ namespace Server.Gumps
               switch (sk.Lock)
               {
                 default:
-                case SkillLock.Up:
                   buttonID1 = 0x983;
                   buttonID2 = 0x983;
                   xOffset = 6;

@@ -94,11 +94,7 @@ namespace Server.Items
 
 		public int RunicMaxIntensity { get; set; }
 
-		public CraftAttributeInfo()
-		{
-		}
-
-		public static readonly CraftAttributeInfo Blank;
+    public static readonly CraftAttributeInfo Blank;
 		public static readonly CraftAttributeInfo DullCopper, ShadowIron, Copper, Bronze, Golden, Agapite, Verite, Valorite;
 		public static readonly CraftAttributeInfo Spined, Horned, Barbed;
 		public static readonly CraftAttributeInfo RedScales, YellowScales, BlackScales, GreenScales, WhiteScales, BlueScales;

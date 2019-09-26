@@ -793,90 +793,78 @@ namespace Server.Engines.ConPVP
               for (int j = 0; j < part.Players.Count; ++j)
                   part.Players[j].SendMessage("You have been disqualified from the tournament.");
 
-                Undefeated.RemoveAt(i);
+              Undefeated.RemoveAt(i);
 
-                if (Undefeated.Count == 1)
+              if (Undefeated.Count == 1)
+              {
+                TourneyParticipant winner = Undefeated[0];
+
+                try
                 {
-                  TourneyParticipant winner = Undefeated[0];
-
-                  try
+                  if (EventController != null)
+                    Alert("The tournament has completed!",
+                      $"Team {EventController.GetTeamName(Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner))} has won");
+                  else if (TourneyType == TourneyType.RandomTeam)
+                    Alert("The tournament has completed!",
+                      $"Team {Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner) + 1} has won!");
+                  else if (TourneyType == TourneyType.Faction)
                   {
-                    if (EventController != null)
+                    if (m_ParticipantsPerMatch == 4)
                     {
-                      Alert("The tournament has completed!",
-                        $"Team {EventController.GetTeamName(Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner))} has won");
+                      string name = "(null)";
+
+                      switch (Pyramid.Levels[0].Matches[0]
+                        .Participants.IndexOf(winner))
+                      {
+                        case 0:
+                        {
+                          name = "Minax";
+                          break;
+                        }
+                        case 1:
+                        {
+                          name = "Council of Mages";
+                          break;
+                        }
+                        case 2:
+                        {
+                          name = "True Britannians";
+                          break;
+                        }
+                        case 3:
+                        {
+                          name = "Shadowlords";
+                          break;
+                        }
+                      }
+
+                      Alert("The tournament has completed!", $"The {name} team has won!");
                     }
-                    else if (TourneyType == TourneyType.RandomTeam)
-                    {
+                    else if (m_ParticipantsPerMatch == 2)
+                      Alert("The tournament has completed!",
+                        $"The {(Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner) == 0 ? "Evil" : "Hero")} team has won!");
+                    else
                       Alert("The tournament has completed!",
                         $"Team {Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner) + 1} has won!");
-                    }
-                    else if (TourneyType == TourneyType.Faction)
-                    {
-                      if (m_ParticipantsPerMatch == 4)
-                      {
-                        string name = "(null)";
-
-                        switch (Pyramid.Levels[0].Matches[0]
-                          .Participants.IndexOf(winner))
-                        {
-                          case 0:
-                          {
-                            name = "Minax";
-                            break;
-                          }
-                          case 1:
-                          {
-                            name = "Council of Mages";
-                            break;
-                          }
-                          case 2:
-                          {
-                            name = "True Britannians";
-                            break;
-                          }
-                          case 3:
-                          {
-                            name = "Shadowlords";
-                            break;
-                          }
-                        }
-
-                        Alert("The tournament has completed!", $"The {name} team has won!");
-                      }
-                      else if (m_ParticipantsPerMatch == 2)
-                      {
-                        Alert("The tournament has completed!",
-                          $"The {(Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner) == 0 ? "Evil" : "Hero")} team has won!");
-                      }
-                      else
-                      {
-                        Alert("The tournament has completed!",
-                          $"Team {Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner) + 1} has won!");
-                      }
-                    }
-                    else if (TourneyType == TourneyType.RedVsBlue)
-                    {
-                      Alert("The tournament has completed!",
-                        $"Team {(Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner) == 0 ? "Red" : "Blue")} has won!");
-                    }
-                    else
-                    {
-                      Alert("The tournament has completed!",
-                        $"{winner.NameList} {(winner.Players.Count > 1 ? "are" : "is")} the champion{(winner.Players.Count == 1 ? "" : "s")}.");
-                    }
                   }
-                  catch
-                  {
-                    // ignored
-                  }
-
-                  GiveAwards();
-
-                  CurrentStage = TournamentStage.Inactive;
-                  Undefeated.Clear();
-                  break;
+                  else if (TourneyType == TourneyType.RedVsBlue)
+                    Alert("The tournament has completed!",
+                      $"Team {(Pyramid.Levels[0].Matches[0].Participants.IndexOf(winner) == 0 ? "Red" : "Blue")} has won!");
+                  else
+                    Alert("The tournament has completed!",
+                      $"{winner.NameList} {(winner.Players.Count > 1 ? "are" : "is")} the champion{(winner.Players.Count == 1 ? "" : "s")}.");
                 }
+                catch
+                {
+                  // ignored
+                }
+
+                GiveAwards();
+
+                CurrentStage = TournamentStage.Inactive;
+                Undefeated.Clear();
+                break;
+              }
 
             }
 

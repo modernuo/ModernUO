@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Server.Accounting;
 using Server.Misc;
 using Server.Network;
@@ -61,21 +62,11 @@ namespace Server.Engines.Chat
         {
           // TODO: Optimize this search
 
-          foreach (Account checkAccount in Accounts.GetAccounts())
+          if (Accounts.GetAccounts().Cast<Account>().Any(checkAccount => Insensitive.Equals(checkAccount.GetTag("ChatName")?.Trim(), chatName)))
           {
-            string existingName = checkAccount.GetTag("ChatName");
-
-            if (existingName != null)
-            {
-              existingName = existingName.Trim();
-
-              if (Insensitive.Equals(existingName, chatName))
-              {
-                from.SendMessage("Nickname already in use.");
-                SendCommandTo(from, ChatCommand.AskNewNickname);
-                return;
-              }
-            }
+            from.SendMessage("Nickname already in use.");
+            SendCommandTo(from, ChatCommand.AskNewNickname);
+            return;
           }
 
           accountChatName = chatName;

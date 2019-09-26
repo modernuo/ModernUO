@@ -2,7 +2,7 @@ namespace Server.Engines.BulkOrders
 {
   public class LargeTailorBOD : LargeBOD
   {
-    public static double[] m_TailoringMaterialChances =
+    public static readonly double[] m_TailoringMaterialChances =
     {
       0.857421875, // None
       0.125000000, // Spined
@@ -19,7 +19,6 @@ namespace Server.Engines.BulkOrders
       switch (Utility.Random(14))
       {
         default:
-        case 0:
           entries = LargeBulkEntry.ConvertEntries(this, LargeBulkEntry.Farmer);
           break;
         case 1:

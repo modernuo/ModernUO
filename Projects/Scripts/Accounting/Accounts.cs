@@ -72,24 +72,22 @@ namespace Server.Accounting
 
       string filePath = Path.Combine("Saves/Accounts", "accounts.xml");
 
-      using (StreamWriter op = new StreamWriter(filePath))
-      {
-        XmlTextWriter xml = new XmlTextWriter(op) { Formatting = Formatting.Indented, IndentChar = '\t', Indentation = 1 };
+      using StreamWriter op = new StreamWriter(filePath);
+      XmlTextWriter xml = new XmlTextWriter(op) { Formatting = Formatting.Indented, IndentChar = '\t', Indentation = 1 };
 
 
-        xml.WriteStartDocument(true);
+      xml.WriteStartDocument(true);
 
-        xml.WriteStartElement("accounts");
+      xml.WriteStartElement("accounts");
 
-        xml.WriteAttributeString("count", m_Accounts.Count.ToString());
+      xml.WriteAttributeString("count", m_Accounts.Count.ToString());
 
-        foreach (Account a in GetAccounts())
-          a.Save(xml);
+      foreach (Account a in GetAccounts())
+        a.Save(xml);
 
-        xml.WriteEndElement();
+      xml.WriteEndElement();
 
-        xml.Close();
-      }
+      xml.Close();
     }
   }
 }

@@ -80,21 +80,13 @@ namespace Server.Gumps
 		{
 			public static readonly IComparer<Mobile> Instance = new InternalComparer();
 
-			public InternalComparer()
-			{
-			}
-
-			public int Compare( Mobile x, Mobile y )
-			{
-				if ( x == null || y == null )
+      public int Compare( Mobile x, Mobile y )
+      {
+        if ( x == null || y == null )
 					throw new ArgumentException();
 
-				if ( x.AccessLevel > y.AccessLevel )
-					return -1;
-				if ( x.AccessLevel < y.AccessLevel )
-					return 1;
-				return Insensitive.Compare( x.Name, y.Name );
-			}
+        return x.AccessLevel > y.AccessLevel ? -1 : x.AccessLevel < y.AccessLevel ? 1 : Insensitive.Compare(x.Name, y.Name);
+      }
 		}
 
 		public WhoGump(Mobile owner, string filter) : this(owner, BuildList( owner, filter ))

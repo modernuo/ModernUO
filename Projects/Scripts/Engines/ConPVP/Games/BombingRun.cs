@@ -550,7 +550,7 @@ namespace Server.Engines.ConPVP
         else if (m_Path.Count > 0)
           MoveToWorld(m_Path.Last);
 
-        int myZ = Map.GetAverageZ(X, Y);
+        int myZ = Map?.GetAverageZ(X, Y) ?? 0;
 
         StaticTile[] statics = Map.Tiles.GetStaticTiles(X, Y, true);
         for (int j = 0; j < statics.Length; j++)
@@ -676,7 +676,7 @@ namespace Server.Engines.ConPVP
         if (m_Bomb.Parent == null && m_Bomb.m_Game?.Controller != null)
         {
           if (!m_Bomb.m_Flying && m_Bomb.Map != Map.Internal)
-            Effects.SendLocationEffect(m_Bomb.GetWorldLocation(), m_Bomb.Map, 0x377A, 16, 10, m_Bomb.Hue, 0);
+            Effects.SendLocationEffect(m_Bomb.GetWorldLocation(), m_Bomb.Map, 0x377A, 16, 10, m_Bomb.Hue);
 
           if (m_Bomb.Location != m_Bomb.m_Game.Controller.BombHome)
           {
@@ -1722,12 +1722,13 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        if (!(m_Context.Participants[i] is Participant p) || p.Players == null)
+        DuelPlayer[] players = m_Context.Participants[i]?.Players;
+        if (players == null)
           continue;
 
-        for (int j = 0; j < p.Players.Length; ++j)
+        for (int j = 0; j < players.Length; ++j)
         {
-          DuelPlayer dp = p.Players[j];
+          DuelPlayer dp = players[j];
 
           if (dp?.Mobile != null)
           {
@@ -1736,16 +1737,16 @@ namespace Server.Engines.ConPVP
           }
         }
 
-        if (i == winner.TeamID)
+        if (i == winner?.TeamID)
           continue;
 
-        if (p.Players != null)
-          for (int j = 0; j < p.Players.Length; ++j)
-            if (p.Players[j] != null)
-              p.Players[j].Eliminated = true;
+        for (int j = 0; j < players.Length; ++j)
+          if (players[j] != null)
+            players[j].Eliminated = true;
       }
 
-      m_Context.Finish(m_Context.Participants[winner.TeamID]);
+      if (winner != null)
+        m_Context.Finish(m_Context.Participants[winner.TeamID]);
     }
 
     public override void OnStop()

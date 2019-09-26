@@ -84,8 +84,7 @@ namespace Server.SkillHandlers
         }
         else
         {
-          (targeted as Item)?.SendLocalizedMessageTo(from, 500908,
-            ""); // It looks smarter than a rock, but dumber than a piece of wood.
+          (targeted as Item)?.SendLocalizedMessageTo(from, 500908); // It looks smarter than a rock, but dumber than a piece of wood.
         }
       }
     }

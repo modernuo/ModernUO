@@ -101,7 +101,7 @@ namespace Server.Items
       if (!from.Alive || from.AccessLevel > AccessLevel.Player)
         return;
 
-      Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 18, 3, GetEffectHue(), 0);
+      Effects.SendLocationEffect(Location, Map, GetBaseID(Type) + 1, 18, 3, GetEffectHue());
       Effects.PlaySound(Location, Map, 0x22C);
 
       foreach (Mobile mob in GetMobilesInRange(0))
@@ -122,7 +122,7 @@ namespace Server.Items
     public virtual void OnSpikeRetracted()
     {
       Extended = false;
-      Effects.SendLocationEffect(Location, Map, GetExtendedID(Type) - 1, 6, 3, GetEffectHue(), 0);
+      Effects.SendLocationEffect(Location, Map, GetExtendedID(Type) - 1, 6, 3, GetEffectHue());
     }
 
     public override void Serialize(GenericWriter writer)

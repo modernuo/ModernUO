@@ -70,15 +70,13 @@ namespace Server.Accounting
       if (accessLog.Counts >= 3)
         try
         {
-          using (StreamWriter op = new StreamWriter("throttle.log", true))
-          {
-            op.WriteLine(
-              "{0}\t{1}\t{2}",
-              DateTime.UtcNow,
-              ns,
-              accessLog.Counts
-            );
-          }
+          using StreamWriter op = new StreamWriter("throttle.log", true);
+          op.WriteLine(
+            "{0}\t{1}\t{2}",
+            DateTime.UtcNow,
+            ns,
+            accessLog.Counts
+          );
         }
         catch
         {

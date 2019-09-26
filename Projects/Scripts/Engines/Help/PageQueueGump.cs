@@ -154,14 +154,12 @@ namespace Server.Engines.Help
       {
         string path = Path.Combine(Core.BaseDirectory, "Data/pageresponse.cfg");
 
-        using (StreamWriter op = new StreamWriter(path))
+        using StreamWriter op = new StreamWriter(path);
+        for (int i = 0; i < List.Count; ++i)
         {
-          for (int i = 0; i < List.Count; ++i)
-          {
-            PredefinedResponse resp = List[i];
+          PredefinedResponse resp = List[i];
 
-            op.WriteLine("{0}\t{1}", resp.Title, resp.Message);
-          }
+          op.WriteLine("{0}\t{1}", resp.Title, resp.Message);
         }
       }
       catch (Exception e)
@@ -181,20 +179,18 @@ namespace Server.Engines.Help
 
       try
       {
-        using (StreamReader ip = new StreamReader(path))
+        using StreamReader ip = new StreamReader(path);
+        string line;
+
+        while ((line = ip.ReadLine()?.Trim()) != null)
         {
-          string line;
+          if (line.Length == 0 || line.StartsWith("#"))
+            continue;
 
-          while ((line = ip.ReadLine()?.Trim()) != null)
-          {
-            if (line.Length == 0 || line.StartsWith("#"))
-              continue;
+          string[] split = line.Split('\t');
 
-            string[] split = line.Split('\t');
-
-            if (split.Length == 2)
-              list.Add(new PredefinedResponse(split[0], split[1]));
-          }
+          if (split.Length == 2)
+            list.Add(new PredefinedResponse(split[0], split[1]));
         }
       }
       catch (Exception e)

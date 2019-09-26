@@ -13,20 +13,20 @@ namespace Server
       string path = "firewall.cfg";
 
       if (File.Exists(path))
-        using (StreamReader ip = new StreamReader(path))
+      {
+        using StreamReader ip = new StreamReader(path);
+        string line;
+
+        while ((line = ip.ReadLine()) != null)
         {
-          string line;
+          line = line.Trim();
 
-          while ((line = ip.ReadLine()) != null)
-          {
-            line = line.Trim();
+          if (line.Length == 0)
+            continue;
 
-            if (line.Length == 0)
-              continue;
+          List.Add(ToFirewallEntry(line));
 
-            List.Add(ToFirewallEntry(line));
-
-            /*
+          /*
             object toAdd;
 
             IPAddress addr;
@@ -37,8 +37,8 @@ namespace Server
 
             m_Blocked.Add( toAdd.ToString() );
              * */
-          }
         }
+      }
     }
 
     public static List<IFirewallEntry> List{ get; }
@@ -130,11 +130,9 @@ namespace Server
     {
       string path = "firewall.cfg";
 
-      using (StreamWriter op = new StreamWriter(path))
-      {
-        for (int i = 0; i < List.Count; ++i)
-          op.WriteLine(List[i]);
-      }
+      using StreamWriter op = new StreamWriter(path);
+      for (int i = 0; i < List.Count; ++i)
+        op.WriteLine(List[i]);
     }
 
     public static bool IsBlocked(IPAddress ip)
@@ -179,7 +177,7 @@ namespace Server
 
       public IPFirewallEntry(IPAddress address) => m_Address = address;
 
-      public bool IsBlocked(IPAddress address) => m_Address.Equals(address);
+      bool IFirewallEntry.IsBlocked(IPAddress address) => m_Address.Equals(address);
 
       public override string ToString() => m_Address.ToString();
 
@@ -214,7 +212,7 @@ namespace Server
         m_CIDRLength = cidrLength;
       }
 
-      public bool IsBlocked(IPAddress address) => Utility.IPMatchCIDR(m_CIDRPrefix, address, m_CIDRLength);
+      bool IFirewallEntry.IsBlocked(IPAddress address) => Utility.IPMatchCIDR(m_CIDRPrefix, address, m_CIDRLength);
 
       public override string ToString() => $"{m_CIDRPrefix}/{m_CIDRLength}";
 
@@ -248,7 +246,7 @@ namespace Server
 
       public WildcardIPFirewallEntry(string entry) => m_Entry = entry;
 
-      public bool IsBlocked(IPAddress address)
+      bool IFirewallEntry.IsBlocked(IPAddress address)
       {
         if (!m_Valid)
           return false; //Why process if it's invalid?  it'll return false anyway after processing it.

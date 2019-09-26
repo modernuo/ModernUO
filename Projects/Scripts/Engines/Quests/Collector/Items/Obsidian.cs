@@ -170,7 +170,7 @@ namespace Server.Engines.Quests.Collector
         if (IsChildOf(from.Backpack))
           from.Target = new InternalTarget(this);
         else
-          Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Regular, 0x2C, 3, 500309, ""); // Nothing Happens.
+          Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Regular, 0x2C, 3, 500309); // Nothing Happens.
       }
     }
 

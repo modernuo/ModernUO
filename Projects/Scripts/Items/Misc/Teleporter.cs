@@ -231,12 +231,12 @@ namespace Server.Items
       bool sendEffect = !m.Hidden || m.AccessLevel == AccessLevel.Player;
 
       if (m_SourceEffect && sendEffect)
-        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
+        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
 
       m.MoveToWorld(p, map);
 
       if (m_DestEffect && sendEffect)
-        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10, 10);
+        Effects.SendLocationEffect(m.Location, m.Map, 0x3728, 10);
 
       if (m_SoundID > 0 && sendEffect)
         Effects.PlaySound(m.Location, m.Map, m_SoundID);

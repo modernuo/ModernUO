@@ -1518,7 +1518,7 @@ namespace Server.Gumps
       {
         IPAddress[] ips = a.LoginIPs;
 
-        if (ips.Length != 0 && ip == ips[0] && AccountHandler.IPTable.ContainsKey(ips[0]))
+        if (ips.Length != 0 && ip.Equals(ips[0]) && AccountHandler.IPTable.ContainsKey(ips[0]))
           --AccountHandler.IPTable[ip];
 
         List<IPAddress> newList = new List<IPAddress>(ips);

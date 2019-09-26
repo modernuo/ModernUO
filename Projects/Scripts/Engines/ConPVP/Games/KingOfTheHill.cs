@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Server.Gumps;
 using Server.Items;
@@ -1113,12 +1114,13 @@ namespace Server.Engines.ConPVP
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
       {
-        if (!(m_Context.Participants[i] is Participant p) || p.Players == null)
+        DuelPlayer[] players = m_Context.Participants[i]?.Players;
+        if (players == null)
           continue;
 
-        for (int j = 0; j < p.Players.Length; ++j)
+        for (int j = 0; j < players.Length; ++j)
         {
-          DuelPlayer dp = p.Players[j];
+          DuelPlayer dp = players[j];
 
           if (dp?.Mobile != null)
           {
@@ -1130,10 +1132,9 @@ namespace Server.Engines.ConPVP
         if (i == winner?.TeamID)
           continue;
 
-        if (p.Players != null)
-          for (int j = 0; j < p.Players.Length; ++j)
-            if (p.Players[j] != null)
-              p.Players[j].Eliminated = true;
+        for (int j = 0; j < players.Length; ++j)
+          if (players[j] != null)
+            players[j].Eliminated = true;
       }
 
       if (winner != null)
@@ -1149,9 +1150,8 @@ namespace Server.Engines.ConPVP
         if (Controller.Hills[i] != null)
           Controller.Hills[i].Game = null;
 
-      foreach (KHBoard board in Controller.Boards)
-        if (board != null)
-          board.m_Game = null;
+      foreach (var board in Controller.Boards.Where(board => board != null))
+        board.m_Game = null;
 
       for (int i = 0; i < m_Context.Participants.Count; ++i)
         ApplyHues(m_Context.Participants[i], -1);

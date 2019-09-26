@@ -382,7 +382,7 @@ namespace Server.Commands
       if (IsEnum(type))
         try
         {
-          toSet = Enum.Parse(type, value, true);
+          toSet = Enum.Parse(type, value ?? "", true);
         }
         catch
         {

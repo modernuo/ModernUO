@@ -1,3 +1,4 @@
+using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Engines.BulkOrders
@@ -13,19 +14,9 @@ namespace Server.Engines.BulkOrders
     }
 
 		[CommandProperty( AccessLevel.GameMaster )]
-		public override bool Complete
-		{
-			get
-			{
-				for ( int i = 0; i < m_Entries.Length; ++i )
-				if ( m_Entries[i].Amount < AmountMax )
-						return false;
+		public override bool Complete => m_Entries.All(t => t.Amount >= AmountMax);
 
-				return true;
-			}
-		}
-
-		public override int LabelNumber => 1045151; // a bulk order deed
+    public override int LabelNumber => 1045151; // a bulk order deed
 
 		public LargeBOD(int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries) :
       base(hue, amountMax, requireExeptional, material) =>

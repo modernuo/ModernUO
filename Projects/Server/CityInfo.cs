@@ -52,8 +52,8 @@ namespace Server
 
     public Point3D Location
     {
-      get => Location;
-      set => Location = value;
+      get => m_Location;
+      set => m_Location = value;
     }
 
     public Map Map { get; set; }

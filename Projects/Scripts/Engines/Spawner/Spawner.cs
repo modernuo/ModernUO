@@ -1014,19 +1014,17 @@ namespace Server.Mobiles
         {
           Console.WriteLine("Warning: {0} bad spawns detected, logged: 'badspawn.log'", m_List.Count);
 
-          using (StreamWriter op = new StreamWriter("badspawn.log", true))
-          {
-            op.WriteLine("# Bad spawns : {0}", DateTime.Now);
-            op.WriteLine("# Format: X Y Z F Name");
-            op.WriteLine();
+          using StreamWriter op = new StreamWriter("badspawn.log", true);
+          op.WriteLine("# Bad spawns : {0}", DateTime.Now);
+          op.WriteLine("# Format: X Y Z F Name");
+          op.WriteLine();
 
-            foreach (WarnEntry e in m_List)
-              op.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", e.m_Point.X, e.m_Point.Y, e.m_Point.Z, e.m_Map,
-                e.m_Name);
+          foreach (WarnEntry e in m_List)
+            op.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", e.m_Point.X, e.m_Point.Y, e.m_Point.Z, e.m_Map,
+              e.m_Name);
 
-            op.WriteLine();
-            op.WriteLine();
-          }
+          op.WriteLine();
+          op.WriteLine();
         }
         catch
         {
