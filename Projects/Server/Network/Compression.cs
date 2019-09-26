@@ -87,9 +87,6 @@ namespace Server.Network
 
     static Compression()
     {
-      if (!Core.Is64Bit)
-        throw new Exception("Core: 32-bit operating systems are not supported");
-
       if (Core.Unix)
         Compressor = new UnixCompressor();
       else
