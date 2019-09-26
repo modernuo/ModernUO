@@ -1199,10 +1199,7 @@ namespace Server.Items
           type = 3;
         }
 
-        if (nrgy < low)
-        {
-          type = 4;
-        }
+        if (nrgy < low) type = 4;
 
         phys = fire = cold = pois = nrgy = chaos = direct = 0;
 

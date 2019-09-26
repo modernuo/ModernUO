@@ -952,11 +952,8 @@ namespace Server.Multis
     {
       List<BaseHouse> list = new List<BaseHouse>();
 
-      if (m != null)
-      {
-        if (m_Table.TryGetValue(m, out List<BaseHouse> exists))
-          list.AddRange(exists.Where(house => house?.Deleted == false && house.Owner == m));
-      }
+      if (m != null && m_Table.TryGetValue(m, out List<BaseHouse> exists))
+        list.AddRange(exists.Where(house => house?.Deleted == false && house.Owner == m));
 
       return list;
     }
@@ -1009,10 +1006,8 @@ namespace Server.Multis
       Sector sector = map.GetSector(loc);
 
       for (int i = 0; i < sector.Multis.Count; ++i)
-      {
         if (sector.Multis[i] is BaseHouse house && house.IsInside(loc, height))
           return house;
-      }
 
       return null;
     }
@@ -2239,13 +2234,11 @@ namespace Server.Multis
             Secures = new List<SecureInfo>(items.Count);
 
             for (int i = 0; i < items.Count; ++i)
-            {
               if (items[i] is Container c)
               {
                 c.IsSecure = true;
                 Secures.Add(new SecureInfo(c, SecureLevel.CoOwners));
               }
-            }
           }
 
           MaxLockDowns = reader.ReadInt();

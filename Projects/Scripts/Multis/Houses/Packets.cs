@@ -86,7 +86,6 @@ namespace Server.Network
         int count = m_SendQueue.Count;
 
         while (count > 0 && m_SendQueue.TryDequeue(out SendQueueEntry sqe))
-        {
           try
           {
             byte[] packet = sqe.m_DesignState.Packet;
@@ -119,7 +118,6 @@ namespace Server.Network
           {
             count = m_SendQueue.Count;
           }
-        }
       }
     }
 

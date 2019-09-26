@@ -61,20 +61,17 @@ namespace Server.Spells.Fourth
           Party party = Party.Get(Caster);
 
           foreach (Mobile m in targets)
-          {
             if (m == Caster || party?.Contains(m) == true)
             {
               Caster.DoBeneficial(m);
               ProtectionSpell.Toggle(Caster, m);
             }
-          }
         }
         else
         {
           int val = (int)(Caster.Skills.Magery.Value / 10.0 + 1);
 
           foreach (Mobile m in targets)
-          {
             if (m.BeginAction<ArchProtectionSpell>())
             {
               Caster.DoBeneficial(m);
@@ -86,7 +83,6 @@ namespace Server.Spells.Fourth
               m.FixedParticles(0x375A, 9, 20, 5027, EffectLayer.Waist);
               m.PlaySound(0x1F7);
             }
-          }
         }
       }
 

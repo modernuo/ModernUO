@@ -1249,10 +1249,7 @@ namespace Server
       if (GetSaveFlag(flags, SaveFlag.Name))
         writer.Write(info.m_Name);
 
-      if (GetSaveFlag(flags, SaveFlag.Parent))
-      {
-        writer.Write(m_Parent?.Deleted == false ? m_Parent.Serial : Serial.MinusOne);
-      }
+      if (GetSaveFlag(flags, SaveFlag.Parent)) writer.Write(m_Parent?.Deleted == false ? m_Parent.Serial : Serial.MinusOne);
 
       if (GetSaveFlag(flags, SaveFlag.Items))
         writer.Write(items, false);

@@ -216,10 +216,8 @@ namespace Server.Gumps
           from.RawDex = (int)(from.RawDex * loss);
 
         for( int s = 0; s < from.Skills.Length; s++ )
-        {
-          if ( from.Skills[s].Base * loss > 35 )
-            from.Skills[s].Base *= loss;
-        }
+          if ( @from.Skills[s].Base * loss > 35 )
+            @from.Skills[s].Base *= loss;
       }
 
       if ( from.Alive && m_HitsScalar > 0 )

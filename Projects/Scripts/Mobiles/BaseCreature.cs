@@ -833,10 +833,7 @@ namespace Server.Mobiles
 
     public override string ApplyNameSuffix(string suffix)
     {
-      if (IsParagon && !GivesMLMinorArtifact)
-      {
-        suffix = suffix.Length == 0 ? "(Paragon)" : $"{suffix} (Paragon)";
-      }
+      if (IsParagon && !GivesMLMinorArtifact) suffix = suffix.Length == 0 ? "(Paragon)" : $"{suffix} (Paragon)";
 
       return base.ApplyNameSuffix(suffix);
     }

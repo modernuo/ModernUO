@@ -93,7 +93,6 @@ namespace Server.Mobiles
     public override bool OnGoldGiven(Mobile from, Gold dropped)
     {
       if (from is PlayerMobile pm && dropped.Amount == 700)
-      {
         if (pm.NpcGuild == NpcGuild.ThievesGuild)
         {
           pm.AddToBackpack(new DisguiseKit());
@@ -101,7 +100,6 @@ namespace Server.Mobiles
           dropped.Delete();
           return true;
         }
-      }
 
       return base.OnGoldGiven(from, dropped);
     }

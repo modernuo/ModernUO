@@ -172,11 +172,9 @@ namespace Server.Items
     public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
     {
       if (CheckType(item))
-      {
         return Items.Count >= DefaultMaxItems && !checkItems && Ammo?.Deleted == false &&
                Ammo.Amount + item.Amount <= m_Capacity || item.Amount <= m_Capacity &&
                base.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
-      }
 
       if (message)
         m.SendLocalizedMessage(1074836); // The container can not hold that type of object.

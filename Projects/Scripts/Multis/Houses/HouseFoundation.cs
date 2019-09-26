@@ -483,13 +483,11 @@ namespace Server.Multis
         if (fixture is HouseTeleporter tp)
         {
           for (int j = 1; j <= Fixtures.Count; ++j)
-          {
             if (Fixtures[(i + j) % Fixtures.Count] is HouseTeleporter check && check.ItemID == tp.ItemID)
             {
               tp.Target = check;
               break;
             }
-          }
         }
         else if (fixture is BaseHouseDoor door)
         {
@@ -564,7 +562,6 @@ namespace Server.Multis
           }
 
           for (int j = i + 1; j < Fixtures.Count; ++j)
-          {
             if (Fixtures[j] is BaseHouseDoor check && check.Link == null && check.Facing == linkFacing &&
                 check.X - door.X == xOffset && check.Y - door.Y == yOffset && check.Z == door.Z)
             {
@@ -572,7 +569,6 @@ namespace Server.Multis
               door.Link = check;
               break;
             }
-          }
         }
       }
     }

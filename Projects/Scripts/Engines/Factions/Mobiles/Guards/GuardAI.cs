@@ -498,10 +498,7 @@ namespace Server.Factions
       {
         Mobile toFollow = null;
 
-        if (m_Guard.Town != null && m_Guard.Orders.Movement == MovementType.Follow)
-        {
-          toFollow = m_Guard.Orders.Follow ?? m_Guard.Town.Sheriff;
-        }
+        if (m_Guard.Town != null && m_Guard.Orders.Movement == MovementType.Follow) toFollow = m_Guard.Orders.Follow ?? m_Guard.Town.Sheriff;
 
         if (toFollow != null && toFollow.Map == m_Guard.Map &&
             toFollow.InRange(m_Guard, m_Guard.RangePerception * 3) &&

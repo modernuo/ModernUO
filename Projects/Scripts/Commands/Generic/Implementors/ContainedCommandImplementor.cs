@@ -57,10 +57,8 @@ namespace Server.Commands.Generic
         List<object> list = new List<object>();
 
         foreach (Item item in cont.FindItemsByType<Item>())
-        {
           if (ext.IsValid(item))
             list.Add(item);
-        }
 
         ext.Filter(list);
 

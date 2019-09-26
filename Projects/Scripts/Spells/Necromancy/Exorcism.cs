@@ -99,11 +99,9 @@ namespace Server.Spells.Necromancy
           IEnumerable<Mobile> targets = r.ChampionSpawn.GetMobilesInRange(Range).Where(IsValidTarget);
 
           foreach (Mobile m in targets)
-          {
-            //Surprisingly, no sparkle type effects
+          //Surprisingly, no sparkle type effects
 
             m.Location = GetNearestShrine(m);
-          }
         }
       }
 

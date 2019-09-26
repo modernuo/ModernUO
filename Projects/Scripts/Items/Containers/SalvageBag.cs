@@ -242,10 +242,7 @@ namespace Server.Items
         typeof(Bandage), typeof(Bone)
       });
 
-      for (int i = 0; i < items.Length; i++)
-      {
-        from.AddToBackpack(items[i]);
-      }     
+      for (int i = 0; i < items.Length; i++) @from.AddToBackpack(items[i]);
     }
 
     private void SalvageAll(Mobile from)

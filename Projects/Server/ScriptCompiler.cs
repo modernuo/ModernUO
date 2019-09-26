@@ -86,10 +86,7 @@ namespace Server
 
     public static TypeCache GetTypeCache(Assembly asm)
     {
-      if (asm == null)
-      {
-        return m_NullCache ??= new TypeCache(null);
-      }
+      if (asm == null) return m_NullCache ??= new TypeCache(null);
       if (!m_TypeCaches.TryGetValue(asm, out TypeCache c))
         m_TypeCaches[asm] = c = new TypeCache(asm);
 

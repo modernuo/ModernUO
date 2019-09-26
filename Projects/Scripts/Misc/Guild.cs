@@ -1335,13 +1335,11 @@ namespace Server.Guilds
       int highVotes = 0;
 
       foreach ((Mobile m, int val) in votes)
-      {
         if (winner == null || val > highVotes)
         {
           winner = m;
           highVotes = val;
         }
-      }
 
       if (NewGuildSystem && highVotes * 100 / Math.Max(votingMembers, 1) < MajorityPercentage && !Disbanded &&
           winner != m_Leader && m_Leader.Guild == this)

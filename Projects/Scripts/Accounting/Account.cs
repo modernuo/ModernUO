@@ -131,16 +131,14 @@ namespace Server.Accounting
 					return false;
 
         if ( GetBanTags( out DateTime banTime, out TimeSpan banDuration ) )
-				{
-					if ( banDuration != TimeSpan.MaxValue && DateTime.UtcNow >= ( banTime + banDuration ) )
-					{
-						SetUnspecifiedBan( null ); // clear
-						Banned = false;
-						return false;
-					}
-				}
+          if ( banDuration != TimeSpan.MaxValue && DateTime.UtcNow >= ( banTime + banDuration ) )
+          {
+            SetUnspecifiedBan( null ); // clear
+            Banned = false;
+            return false;
+          }
 
-				return true;
+        return true;
 			}
 			set => SetFlag( 0, value );
 		}
@@ -195,12 +193,10 @@ namespace Server.Accounting
 			get
 			{
 				for ( int i = 0; i < m_Mobiles.Length; i++ )
-				{
-					if ( m_Mobiles[i] is PlayerMobile m && m.NetState != null )
-						return m_TotalGameTime + ( DateTime.UtcNow - m.SessionStart );
-				}
+          if ( m_Mobiles[i] is PlayerMobile m && m.NetState != null )
+            return m_TotalGameTime + ( DateTime.UtcNow - m.SessionStart );
 
-				return m_TotalGameTime;
+        return m_TotalGameTime;
 			}
 		}
 
@@ -323,19 +319,13 @@ namespace Server.Accounting
 				banTime = DateTime.MinValue;
 
 			if ( tagDuration == "Infinite" )
-			{
-				banDuration = TimeSpan.MaxValue;
-			}
-			else if ( tagDuration != null )
-			{
-				banDuration = Utility.ToTimeSpan( tagDuration );
-			}
-			else
-			{
-				banDuration = TimeSpan.Zero;
-			}
+        banDuration = TimeSpan.MaxValue;
+      else if ( tagDuration != null )
+        banDuration = Utility.ToTimeSpan( tagDuration );
+      else
+        banDuration = TimeSpan.Zero;
 
-			return ( banTime != DateTime.MinValue && banDuration != TimeSpan.Zero );
+      return ( banTime != DateTime.MinValue && banDuration != TimeSpan.Zero );
 		}
 
 		private static MD5CryptoServiceProvider m_MD5HashProvider;
@@ -488,21 +478,19 @@ namespace Server.Accounting
 			Young = false;
 
 			for ( int i = 0; i < m_Mobiles.Length; i++ )
-			{
-				if ( m_Mobiles[i] is PlayerMobile m && m.Young )
-				{
-					m.Young = false;
+        if ( m_Mobiles[i] is PlayerMobile m && m.Young )
+        {
+          m.Young = false;
 
-					if ( m.NetState != null )
-					{
-						if ( message > 0 )
-							m.SendLocalizedMessage( message );
+          if ( m.NetState != null )
+          {
+            if ( message > 0 )
+              m.SendLocalizedMessage( message );
 
-						m.SendLocalizedMessage( 1019039 ); // You are no longer considered a young player of Ultima Online, and are no longer subject to the limitations and benefits of being in that caste.
-					}
-				}
-			}
-		}
+            m.SendLocalizedMessage( 1019039 ); // You are no longer considered a young player of Ultima Online, and are no longer subject to the limitations and benefits of being in that caste.
+          }
+        }
+    }
 
 		public void CheckYoung()
 		{
@@ -613,21 +601,16 @@ namespace Server.Accounting
 			IPRestrictions = LoadAccessCheck( node );
 
 			for ( int i = 0; i < m_Mobiles.Length; ++i )
-			{
-				if ( m_Mobiles[i] != null )
-					m_Mobiles[i].Account = this;
-			}
+        if ( m_Mobiles[i] != null )
+          m_Mobiles[i].Account = this;
 
-			TimeSpan totalGameTime = Utility.GetXMLTimeSpan( Utility.GetText( node["totalGameTime"], null ), TimeSpan.Zero );
+      TimeSpan totalGameTime = Utility.GetXMLTimeSpan( Utility.GetText( node["totalGameTime"], null ), TimeSpan.Zero );
 			if ( totalGameTime == TimeSpan.Zero )
-			{
-				for ( int i = 0; i < m_Mobiles.Length; i++ )
-				{
-					if ( m_Mobiles[i] is PlayerMobile m )
-						totalGameTime += m.GameTime;
-				}
-			}
-			m_TotalGameTime = totalGameTime;
+        for ( int i = 0; i < m_Mobiles.Length; i++ )
+          if ( m_Mobiles[i] is PlayerMobile m )
+            totalGameTime += m.GameTime;
+
+      m_TotalGameTime = totalGameTime;
 
 			if ( Young )
 				CheckYoung();
@@ -686,18 +669,14 @@ namespace Server.Accounting
 				count = 0;
 
 				foreach ( XmlElement ip in addressList.GetElementsByTagName( "ip" ) )
-				{
-					if ( count < list.Length )
-					{
+          if ( count < list.Length )
             if ( IPAddress.TryParse( Utility.GetText( ip, null ), out IPAddress address ) )
-						{
-							list[count] = Utility.Intern( address );
-							count++;
-						}
-					}
-				}
+            {
+              list[count] = Utility.Intern( address );
+              count++;
+            }
 
-				if ( count != list.Length )
+        if ( count != list.Length )
 				{
 					IPAddress[] old = list;
 					list = new IPAddress[count];
@@ -729,25 +708,21 @@ namespace Server.Accounting
 			//Above is legacy, no longer used
 
 			if ( chars != null )
-			{
-				foreach ( XmlElement ele in chars.GetElementsByTagName( "char" ) )
-				{
-					try
-					{
-						int index = Utility.GetXMLInt32( Utility.GetAttribute( ele, "index", "0" ), 0 );
-						uint serial = Utility.GetXMLUInt32( Utility.GetText( ele, "0" ), 0 );
+        foreach ( XmlElement ele in chars.GetElementsByTagName( "char" ) )
+          try
+          {
+            int index = Utility.GetXMLInt32( Utility.GetAttribute( ele, "index", "0" ), 0 );
+            uint serial = Utility.GetXMLUInt32( Utility.GetText( ele, "0" ), 0 );
 
-						if ( index >= 0 && index < list.Length )
-							list[index] = World.FindMobile( serial );
-					}
-					catch
-					{
-						// ignored
-					}
-				}
-			}
+            if ( index >= 0 && index < list.Length )
+              list[index] = World.FindMobile( serial );
+          }
+          catch
+          {
+            // ignored
+          }
 
-			return list;
+      return list;
 		}
 
 		/// <summary>
@@ -765,14 +740,12 @@ namespace Server.Accounting
 				list = new List<AccountComment>();
 
 				foreach ( XmlElement comment in comments.GetElementsByTagName( "comment" ) )
-				{
-					try { list.Add( new AccountComment( comment ) ); }
-					catch
-					{
-						// ignored
-					}
-				}
-			}
+          try { list.Add( new AccountComment( comment ) ); }
+          catch
+          {
+            // ignored
+          }
+      }
 
 			return list;
 		}
@@ -792,14 +765,12 @@ namespace Server.Accounting
 				list = new List<AccountTag>();
 
 				foreach ( XmlElement tag in tags.GetElementsByTagName( "tag" ) )
-				{
-					try { list.Add( new AccountTag( tag ) ); }
-					catch
-					{
-						// ignored
-					}
-				}
-			}
+          try { list.Add( new AccountTag( tag ) ); }
+          catch
+          {
+            // ignored
+          }
+      }
 
 			return list;
 		}
@@ -822,15 +793,13 @@ namespace Server.Accounting
 				if ( m_AccessLevel >= level )
 					hasAccess = true;
 				else
-				{
-					for ( int i = 0; !hasAccess && i < Length; ++i )
-					{
-						Mobile m = this[i];
+          for ( int i = 0; !hasAccess && i < Length; ++i )
+          {
+            Mobile m = this[i];
 
-						if ( m?.AccessLevel >= level )
-							hasAccess = true;
-					}
-				}
+            if ( m?.AccessLevel >= level )
+              hasAccess = true;
+          }
 
         Console.WriteLine("{0} {1}", hasAccess ? "yes" : "no", m_AccessLevel);
 
@@ -852,10 +821,8 @@ namespace Server.Accounting
 		/// <param name="ns">NetState instance to record.</param>
 		public void LogAccess( NetState ns )
 		{
-			if ( ns != null ) {
-				LogAccess( ns.Address );
-			}
-		}
+			if ( ns != null ) LogAccess( ns.Address );
+    }
 
 		public void LogAccess( IPAddress ipAddress ) {
 			if ( IPLimiter.IsExempt( ipAddress ) )
@@ -1050,12 +1017,10 @@ namespace Server.Accounting
 				int count = 0;
 
 				for ( int i = 0; i < Length; ++i )
-				{
-					if ( this[i] != null )
-						++count;
-				}
+          if ( this[i] != null )
+            ++count;
 
-				return count;
+        return count;
 			}
 		}
 
@@ -1139,9 +1104,9 @@ namespace Server.Accounting
 		/// <returns>True if successful, false if amount given is less than or equal to zero.</returns>
 		public bool DepositGold(int amount)
 		{
-			if (amount <= 0) { return false; }
+			if (amount <= 0) return false;
 
-			int plat = Math.DivRem(amount, AccountGold.CurrencyThreshold, out int gold);
+      int plat = Math.DivRem(amount, AccountGold.CurrencyThreshold, out int gold);
 			TotalPlat += plat;
 			TotalGold += gold;
 
@@ -1155,9 +1120,9 @@ namespace Server.Accounting
 		/// <returns>True if successful, false if amount given is less than or equal to zero.</returns>
 		public bool DepositPlat(int amount)
 		{
-			if (amount <= 0) { return false; }
+			if (amount <= 0) return false;
 
-			TotalPlat += amount;
+      TotalPlat += amount;
 			return true;
 		}
 
@@ -1170,10 +1135,10 @@ namespace Server.Accounting
 		/// <returns>True if successful, false if balance was too low.</returns>
 		public bool WithdrawGold(int amount)
 		{
-			if (amount <= 0) { return true; }
-			if (amount > TotalGold) { return false; }
+			if (amount <= 0) return true;
+      if (amount > TotalGold) return false;
 
-			TotalGold -= amount;
+      TotalGold -= amount;
 
 			return true;
 		}
@@ -1185,10 +1150,10 @@ namespace Server.Accounting
 		/// <returns>True if successful, false if balance was too low.</returns>
 		public bool WithdrawPlat(int amount)
 		{
-			if (amount <= 0) { return true; }
-			if (amount > TotalPlat) { return false; }
+			if (amount <= 0) return true;
+      if (amount > TotalPlat) return false;
 
-			TotalPlat -= amount;
+      TotalPlat -= amount;
 
 			return true;
 		}

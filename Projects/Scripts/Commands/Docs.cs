@@ -2155,10 +2155,7 @@ namespace Server.Commands
         for (int j = 0; !anyConstructible && j < ctors.Length; ++j)
           anyConstructible = IsConstructible(ctors[j]);
 
-        if (anyConstructible)
-        {
-          (isItem ? items : mobiles).Add((t, ctors));
-        }
+        if (anyConstructible) (isItem ? items : mobiles).Add((t, ctors));
       }
 
       using StreamWriter html = GetWriter("docs/", "objects.html");

@@ -251,16 +251,14 @@ namespace Server.Items
             return;
 
           foreach (Mobile m in m_Item.GetMobilesInRange(0))
-          {
-            if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != from) &&
-                SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false))
+            if (m.Z + 16 > m_Item.Z && m_Item.Z + 12 > m.Z && (!Core.AOS || m != @from) &&
+                SpellHelper.ValidIndirectTarget(@from, m) && @from.CanBeHarmful(m, false))
             {
-              from.DoHarmful(m);
+              @from.DoHarmful(m);
 
-              AOS.Damage(m, from, m_Item.GetDamage(), 0, 100, 0, 0, 0);
+              AOS.Damage(m, @from, m_Item.GetDamage(), 0, 100, 0, 0, 0);
               m.PlaySound(0x208);
             }
-          }
         }
       }
     }

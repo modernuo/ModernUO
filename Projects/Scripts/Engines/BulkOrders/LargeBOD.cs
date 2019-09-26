@@ -73,13 +73,11 @@ namespace Server.Engines.BulkOrders
       LargeBulkEntry entry = null;
 
       for (int i = 0; i < m_Entries.Length; ++i)
-      {
         if (m_Entries[i].Details.Type == small.Type)
         {
           entry = m_Entries[i];
           break;
         }
-      }
 
       if (entry == null)
       {

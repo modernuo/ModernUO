@@ -230,10 +230,8 @@ namespace Server.Multis
       Sector sector = map.GetSector(loc);
 
       for (int i = 0; i < sector.Multis.Count; i++)
-      {
         if (sector.Multis[i] is BaseBoat boat && boat.Contains(loc.X, loc.Y))
           return boat;
-      }
 
       return null;
     }

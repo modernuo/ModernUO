@@ -233,10 +233,8 @@ namespace Server.Regions
       int count = reader.ReadInt();
 
       for (int i = 0; i < count; i++)
-      {
         if (World.FindEntity(reader.ReadUInt()) is ISpawnable spawnableEntity)
           Add(spawnableEntity);
-      }
 
       Running = reader.ReadBool();
 

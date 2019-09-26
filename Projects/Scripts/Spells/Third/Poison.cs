@@ -80,9 +80,7 @@ namespace Server.Spells.Third
             {
               if (pm.DuelContext == null || !pm.DuelContext.Started || pm.DuelContext.Finished ||
                   pm.DuelContext.Ruleset.GetOption("Skills", "Poisoning"))
-              {
                 total += pm.Skills.Poisoning.Value;
-              }
             }
             else
             {

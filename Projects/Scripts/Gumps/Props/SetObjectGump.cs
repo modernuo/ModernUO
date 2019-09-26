@@ -236,16 +236,11 @@ namespace Server.Gumps
           IEntity toSet = World.FindEntity(serial);
 
           if (toSet == null)
-          {
             m_Mobile.SendMessage("No object with that serial was found.");
-          }
           else if (!m_Type.IsInstanceOfType(toSet))
-          {
             m_Mobile.SendMessage("The object with that serial could not be assigned to a property of type : {0}",
               m_Type.Name);
-          }
           else
-          {
             try
             {
               CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name,
@@ -257,7 +252,6 @@ namespace Server.Gumps
             {
               m_Mobile.SendMessage("An exception was caught. The property may not have changed.");
             }
-          }
         }
         catch
         {

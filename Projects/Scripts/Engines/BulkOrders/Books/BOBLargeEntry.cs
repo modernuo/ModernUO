@@ -78,10 +78,8 @@ namespace Server.Engines.BulkOrders
       LargeBulkEntry[] entries = new LargeBulkEntry[Entries.Length];
 
       for (int i = 0; i < Entries.Length; ++i)
-      {
         entries[i] = new LargeBulkEntry(null,
           new SmallBulkEntry(Entries[i].ItemType, Entries[i].Number, Entries[i].Graphic)) { Amount = Entries[i].AmountCur };
-      }
 
       return entries;
     }

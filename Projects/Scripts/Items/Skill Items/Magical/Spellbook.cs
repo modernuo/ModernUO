@@ -437,10 +437,8 @@ namespace Server.Items
       Container pack = from.Backpack;
 
       for (int i = 0; i < pack?.Items.Count; ++i)
-      {
         if (pack.Items[i] is Spellbook sp)
           list.Add(sp);
-      }
 
       return list;
     }
@@ -573,15 +571,11 @@ namespace Server.Items
       if (Parent == null)
         SendWorldPacketFor(ns);
       else if (Parent is Item)
-      {
-        // What will happen if the client doesn't know about our parent?
+      // What will happen if the client doesn't know about our parent?
         Packets.SendContainerContentUpdate(ns, this);
-      }
       else if (Parent is Mobile)
-      {
-        // What will happen if the client doesn't know about our parent?
+      // What will happen if the client doesn't know about our parent?
         Packets.SendEquipUpdate(ns, this);
-      }
 
       Packets.SendDisplayContainer(ns, Serial);
       Packets.SendSpellbookContent(ns, Serial, ItemID, BookOffset + 1, m_Content);

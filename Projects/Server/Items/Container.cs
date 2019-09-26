@@ -1537,10 +1537,8 @@ namespace Server.Items
         Item item = items[i];
 
         if (item is T typedItem)
-        {
           if (predicate?.Invoke(typedItem) == true)
             list.Add(typedItem);
-        }
 
         if (recurse && item is Container)
           RecurseFindItemsByType(item, true, list, predicate);

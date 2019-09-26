@@ -183,13 +183,8 @@ namespace Server.Gumps
     public void Add(GumpEntry g)
     {
       if (g.Parent != this)
-      {
         g.Parent = this;
-      }
-      else if (!Entries.Contains(g))
-      {
-        Entries.Add(g);
-      }
+      else if (!Entries.Contains(g)) Entries.Add(g);
     }
 
     public void Remove(GumpEntry g)
