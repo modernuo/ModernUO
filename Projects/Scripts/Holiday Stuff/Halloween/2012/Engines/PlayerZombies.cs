@@ -138,17 +138,17 @@ namespace Server.Engines.Events
 		[Constructible]
 		public PlayerBones( string name )
 			: base( Utility.RandomMinMax( 0x0ECA, 0x0ED2 ) )
-		{
-			Name = $"{name}'s bones";
+    {
+      Name = $"{name}'s bones";
 
-			switch( Utility.Random( 10 ) )
-			{
-				case 0: Hue = 0xa09; break;
-				case 1: Hue = 0xa93; break;
-				case 2: Hue = 0xa47; break;
-				default: break;
-			}
-		}
+      Hue = Utility.Random(10) switch
+      {
+        0 => 0xa09,
+        1 => 0xa93,
+        2 => 0xa47,
+        _ => Hue
+      };
+    }
 
 		public PlayerBones( Serial serial )
 			: base( serial )

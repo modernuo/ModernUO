@@ -22,21 +22,22 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Distribution\</OutputPath>
-    <OutDir>..\..\Distribution</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <PublishDir>..\..\Distribution</PublishDir>
+    <OutDir>..\..\Distribution</OutDir>
+    <OutputPath>..\..\Distribution</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>..\..\Distribution\</OutputPath>
-    <OutDir>..\..\Distribution</OutDir>
     <WarningsAsErrors />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PlatformTarget>x64</PlatformTarget>
     <PublishDir>..\..\Distribution</PublishDir>
+    <OutDir>..\..\Distribution</OutDir>
+    <OutputPath>..\..\Distribution</OutputPath>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>

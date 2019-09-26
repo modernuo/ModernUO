@@ -13,7 +13,6 @@ The next generation Ultima Online Server Emulator.
 - .NET Core 3.0 SDK
 
 ### Requirements to Run
-- .NET Core 3.0 Runtime or SDK
 - zlib (Linux only)
 
 ### Building with Visual Studio 2019
@@ -21,11 +20,9 @@ The next generation Ultima Online Server Emulator.
 - Build `Scripts` project
 
 ### Building with .NET Core 3.0 SDK
-`dotnet publish /p:PublishProfiles=<profile>`
-- Windows x64: `Windows`
-- Linux/MacOSX x64 w/ .NET Core 3 installed: `Unix-Portable`
-- Linux x64 w/o .NET Core 3: `Linux-SelfContained`
-- MacOSX x64 w/o .NET Core 3: `MacOSX-SelfContained`
+`dotnet publish /p:PublishProfile=[platform]<-SelfContained>`
+- `platform` can be `Windows`, `Linux`, or `OSX` (capitalization matters)
+- Appending `-SelfContained` will export all .NET Core files required to run portably.
 
 #### Running on Windows
 - Follow the build instructions

@@ -337,6 +337,8 @@ namespace Server
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
       AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
+      Console.WriteLine("Current Directory {0}", Directory.GetCurrentDirectory());
+
       foreach (string a in args)
         if (Insensitive.Equals(a, "-debug"))
           Debug = true;

@@ -173,7 +173,7 @@ namespace Server.Network
         0x65, // Packet ID
         type,
         density,
-        temperature
+        (byte)temperature
       });
     }
 
@@ -379,8 +379,8 @@ namespace Server.Network
       ns?.Send(stackalloc byte[]
       {
         0x6D, // Packet ID
-        value >> 8,
-        value & 0xFF
+        (byte)(value >> 8),
+        (byte)(value & 0xFF)
       });
     }
 

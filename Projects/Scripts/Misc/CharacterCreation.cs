@@ -695,9 +695,7 @@ namespace Server.Misc
           break;
         }
         case 5: //Paladin
-        {
           return m_NewHavenInfo;
-        }
         case 6: //Samurai
         {
           if ((flags & ClientFlags.Tokuno) != 0)

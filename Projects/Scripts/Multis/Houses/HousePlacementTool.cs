@@ -707,9 +707,7 @@ namespace Server.Items
         case HousePlacementResult.Valid:
         {
           if (from.AccessLevel < AccessLevel.GameMaster && BaseHouse.HasAccountHouse(from))
-          {
             from.SendLocalizedMessage(501271); // You already own a house, you may not place another!
-          }
           else
           {
             from.SendLocalizedMessage(1011576); // This is a valid location.
