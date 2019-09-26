@@ -357,7 +357,7 @@ namespace Server.Engines.ConPVP
           StartPage(out int index, out int count, out int y, 12);
 
           for (int i = 0; i < count; ++i, y += 18)
-            AddRightArrow(25, y, ToButtonID(3, index + i), $"Round #{(index + i + 1)}");
+            AddRightArrow(25, y, ToButtonID(3, index + i), $"Round #{index + i + 1}");
 
           break;
         }

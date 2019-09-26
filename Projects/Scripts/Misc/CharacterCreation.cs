@@ -660,7 +660,7 @@ namespace Server.Misc
     }
 
     public static bool VerifyProfession(int profession) =>
-      profession >= 0 && (profession < 4 || (Core.AOS && profession < 6 || Core.SE && profession < 8));
+      profession >= 0 && (profession < 4 || Core.AOS && profession < 6 || Core.SE && profession < 8);
 
     private static CityInfo GetStartLocation(CharacterCreatedEventArgs args, bool isYoung)
     {

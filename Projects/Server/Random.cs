@@ -30,7 +30,7 @@ namespace Server
       else if (File.Exists("rdrand.dll"))
         _Random = new RDRand64();
 
-      if (_Random == null || (_Random is IHardwareRNG rng && !rng.IsSupported()))
+      if (_Random == null || _Random is IHardwareRNG rng && !rng.IsSupported())
         _Random = new CSPRandom();
     }
 

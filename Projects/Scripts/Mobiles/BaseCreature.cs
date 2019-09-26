@@ -3865,7 +3865,7 @@ namespace Server.Mobiles
 
     public virtual bool CheckFeed(Mobile from, Item dropped)
     {
-      if (IsDeadPet || !Controlled || (ControlMaster != from && !IsPetFriend(from)))
+      if (IsDeadPet || !Controlled || ControlMaster != @from && !IsPetFriend(@from))
         return false;
 
       Item f = dropped;

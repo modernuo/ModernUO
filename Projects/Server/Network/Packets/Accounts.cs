@@ -74,7 +74,7 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      int length = ns.ExtendedSupportedFeatures ? 5 : 3;
+      int length = ns.ExtendedSupportedFeatures ? 7 : 5;
 
       SpanWriter w = new SpanWriter(stackalloc byte[length]);
       w.Write((byte)0xB9); // Packet ID

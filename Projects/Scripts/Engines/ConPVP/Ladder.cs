@@ -256,10 +256,10 @@ namespace Server.Engines.ConPVP
 
       if (index >= 0 && index < Entries.Count)
       {
-        while (index - 1 >= 0 && (entry.CompareTo(Entries[index - 1])) < 0)
+        while (index - 1 >= 0 && entry.CompareTo(Entries[index - 1]) < 0)
           index = Swap(index, index - 1);
 
-        while (index + 1 < Entries.Count && (entry.CompareTo(Entries[index + 1])) > 0)
+        while (index + 1 < Entries.Count && entry.CompareTo(Entries[index + 1]) > 0)
           index = Swap(index, index + 1);
       }
     }

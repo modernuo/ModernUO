@@ -303,6 +303,8 @@ namespace Server.Misc
       string un = e.Username;
       string pw = e.Password;
 
+      Console.WriteLine("Attempting to log in with {0} {1}", un, pw);
+
       e.Accepted = false;
 
       if (!(Accounts.GetAccount(un) is Account acct))

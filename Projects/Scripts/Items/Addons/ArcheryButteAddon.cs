@@ -99,7 +99,7 @@ namespace Server.Items
 				return;
 			}
 
-			if ( DateTime.UtcNow < (LastUse + UseDelay) )
+			if ( DateTime.UtcNow < LastUse + UseDelay )
 				return;
 
 			Point3D worldLoc = GetWorldLocation();
@@ -202,7 +202,7 @@ namespace Server.Items
 				splitScore = 5;
 			}
 
-			bool split = ( isKnown && ((Arrows + Bolts) * 0.02) > Utility.RandomDouble() );
+			bool split = isKnown && (Arrows + Bolts) * 0.02 > Utility.RandomDouble();
 
 			if ( split )
 			{

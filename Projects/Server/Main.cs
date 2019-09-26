@@ -95,16 +95,8 @@ namespace Server
       }
     }
 
-    public static TimeSpan ProfileTime
-    {
-      get
-      {
-        if (m_ProfileStart > DateTime.MinValue)
-          return m_ProfileTime + (DateTime.UtcNow - m_ProfileStart);
-
-        return m_ProfileTime;
-      }
-    }
+    public static TimeSpan ProfileTime =>
+      m_ProfileStart > DateTime.MinValue ? m_ProfileTime + (DateTime.UtcNow - m_ProfileStart) : m_ProfileTime;
 
     public static bool Service{ get; private set; }
 
@@ -388,6 +380,9 @@ namespace Server
       // Load Assembly Scripts.CS.dll
       ScriptCompiler.LoadScripts();
 
+      // Verify the loaded assemblies
+      VerifySerialization();
+
       ScriptCompiler.Invoke("Configure");
 
       Region.Load();
@@ -457,7 +452,8 @@ namespace Server
 
       VerifySerialization(ca);
 
-      foreach (Assembly a in ScriptCompiler.Assemblies.Where(a => a != ca)) VerifySerialization(a);
+      foreach (Assembly a in ScriptCompiler.Assemblies.Where(a => a != ca))
+        VerifySerialization(a);
     }
 
     private static void VerifyType(Type t)
@@ -512,7 +508,8 @@ namespace Server
 
     private static void VerifySerialization(Assembly a)
     {
-      if (a != null) Parallel.ForEach(a.GetTypes(), VerifyType);
+      if (a != null)
+        Parallel.ForEach(a.GetTypes(), VerifyType);
     }
 
     internal enum ConsoleEventType

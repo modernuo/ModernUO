@@ -222,6 +222,9 @@ namespace Server.Network
         m_Reader.Advance(count);
       }
 
+      if (size > 0)
+        m_Reader.Advance(size);
+
       return sb.ToString();
     }
 
@@ -290,8 +293,11 @@ namespace Server.Network
         }
 
         sb.Append(Encoding.ASCII.GetString(span.Slice(0, count)));
-        m_Reader.Advance(count + (safe ? 1 : 0));
+        m_Reader.Advance(size + (safe ? 1 : 0));
       }
+
+      if (size > 0)
+        m_Reader.Advance(size);
 
       return sb.ToString();
     }

@@ -11,6 +11,7 @@
 /Projects/Scripts/obj
 /Projects/Server/obj
 
+*.log
 *.user
 /.idea
 /.vs

@@ -132,7 +132,7 @@ namespace Server.Accounting
 					return false;
 
         if ( GetBanTags( out DateTime banTime, out TimeSpan banDuration ) )
-          if ( banDuration != TimeSpan.MaxValue && DateTime.UtcNow >= ( banTime + banDuration ) )
+          if ( banDuration != TimeSpan.MaxValue && DateTime.UtcNow >= banTime + banDuration )
           {
             SetUnspecifiedBan( null ); // clear
             Banned = false;
@@ -181,7 +181,7 @@ namespace Server.Accounting
 
 				TimeSpan inactiveLength = DateTime.UtcNow - LastLogin;
 
-				return (inactiveLength > ((Count == 0) ? EmptyInactiveDuration : InactiveDuration));
+				return inactiveLength > (Count == 0 ? EmptyInactiveDuration : InactiveDuration);
 			}
 		}
 
@@ -215,7 +215,7 @@ namespace Server.Accounting
 		public void SetFlag( int index, bool value )
 		{
 			if ( value )
-				Flags |= ( 1 << index );
+				Flags |= 1 << index;
 			else
 				Flags &= ~( 1 << index );
 		}
@@ -326,7 +326,7 @@ namespace Server.Accounting
       else
         banDuration = TimeSpan.Zero;
 
-      return ( banTime != DateTime.MinValue && banDuration != TimeSpan.Zero );
+      return banTime != DateTime.MinValue && banDuration != TimeSpan.Zero;
 		}
 
 		private static MD5CryptoServiceProvider m_MD5HashProvider;
@@ -399,17 +399,17 @@ namespace Server.Accounting
 
 			if ( PlainPassword != null )
 			{
-				ok = ( PlainPassword == plainPassword );
+				ok = PlainPassword == plainPassword;
 				curProt = PasswordProtection.None;
 			}
 			else if ( CryptPassword != null )
 			{
-				ok = ( CryptPassword == HashMD5( plainPassword ) );
+				ok = CryptPassword == HashMD5( plainPassword );
 				curProt = PasswordProtection.Crypt;
 			}
 			else
 			{
-				ok = ( NewCryptPassword == HashSHA1( Username + plainPassword ) );
+				ok = NewCryptPassword == HashSHA1( Username + plainPassword );
 				curProt = PasswordProtection.NewCrypt;
 			}
 
@@ -840,7 +840,7 @@ namespace Server.Accounting
 		/// </summary>
 		/// <param name="ns">NetState instance to check.</param>
 		/// <returns>True if allowed, false if not.</returns>
-		public bool CheckAccess( NetState ns ) => ( ns != null && CheckAccess( ns.Address ) );
+		public bool CheckAccess( NetState ns ) => ns != null && CheckAccess( ns.Address );
 
     public bool CheckAccess( IPAddress ipAddress ) {
 			bool hasAccess = HasAccess( ipAddress );
@@ -1010,7 +1010,7 @@ namespace Server.Accounting
 		/// <summary>
 		/// Gets the maximum amount of characters allowed to be created on this account. Values other than 1, 5, 6, or 7 are not supported by the client.
 		/// </summary>
-		public int Limit => ( Core.SA ? 7 : Core.AOS ? 6 : 5 );
+		public int Limit => Core.SA ? 7 : Core.AOS ? 6 : 5;
 
 		/// <summary>
 		/// Gets the maximum amount of characters that this account can hold.

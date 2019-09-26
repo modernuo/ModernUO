@@ -34,12 +34,12 @@ namespace Server.Gumps
             ai.CanReportMurder = false;
           }
 
-        if ( ai.Attacker.Player && (DateTime.UtcNow - ai.LastCombatTime) < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Attacker ) )
+        if ( ai.Attacker.Player && DateTime.UtcNow - ai.LastCombatTime < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Attacker ) )
 					toGive.Add( ai.Attacker );
 			}
 
 			foreach ( AggressorInfo ai in m.Aggressed )
-        if ( ai.Defender.Player && (DateTime.UtcNow - ai.LastCombatTime) < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Defender ) )
+        if ( ai.Defender.Player && DateTime.UtcNow - ai.LastCombatTime < TimeSpan.FromSeconds( 30.0 ) && !toGive.Contains( ai.Defender ) )
           toGive.Add( ai.Defender );
 
       foreach ( Mobile g in toGive )
@@ -47,14 +47,14 @@ namespace Server.Gumps
 				int n = Notoriety.Compute( g, m );
 
 				int theirKarma = m.Karma, ourKarma = g.Karma;
-				bool innocent = ( n == Notoriety.Innocent );
-				bool criminal = ( n == Notoriety.Criminal || n == Notoriety.Murderer );
+				bool innocent = n == Notoriety.Innocent;
+				bool criminal = n == Notoriety.Criminal || n == Notoriety.Murderer;
 
 				int fameAward = m.Fame / 200;
 				int karmaAward = 0;
 
 				if ( innocent )
-					karmaAward = ( ourKarma > -2500 ? -850 : -110 - (m.Karma / 100) );
+					karmaAward = ourKarma > -2500 ? -850 : -110 - m.Karma / 100;
 				else if ( criminal )
 					karmaAward = 50;
 

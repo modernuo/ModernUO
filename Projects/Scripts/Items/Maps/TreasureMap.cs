@@ -467,7 +467,7 @@ namespace Server.Items
       if (m_Completed)
       {
         Packets.SendMessageLocalizedAffix(from.NetState, Serial, ItemID, MessageType.Label, 0x3B2, 3, 1048030, "",
-          AffixType.Append, $" completed by {(m_CompletedBy?.Name ?? "someone")}");
+          AffixType.Append, $" completed by {m_CompletedBy?.Name ?? "someone"}");
       }
       else if (m_Decoder != null)
       {

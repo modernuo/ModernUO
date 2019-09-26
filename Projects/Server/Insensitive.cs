@@ -29,8 +29,8 @@ namespace Server
 
     public static int Compare(string a, string b) => Comparer.Compare(a, b);
 
-    public static bool Equals(string a, string b) => (a == null && b == null)
-        || (a != null && b != null && a.Length == b.Length && Comparer.Compare(a, b) == 0);
+    public static bool Equals(string a, string b) => a == null && b == null
+        || a != null && b != null && a.Length == b.Length && Comparer.Compare(a, b) == 0;
 
     public static bool StartsWith(string a, string b) => a != null && b != null && a.Length >= b.Length && Comparer.Compare(a.Substring(0, b.Length), b) == 0;
 

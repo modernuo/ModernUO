@@ -306,7 +306,7 @@ namespace Server.Items
         list.Add(1072400,
           m_Summoner?.Name ?? "Unknown"); // Talisman of ~1_name~ Summoning
       else if (m_Removal != TalismanRemoval.None)
-        list.Add(1072389, $"#{(1072000 + (int)m_Removal)}"); // Talisman of ~1_name~
+        list.Add(1072389, $"#{1072000 + (int)m_Removal}"); // Talisman of ~1_name~
       else
         base.AddNameProperty(list);
     }
