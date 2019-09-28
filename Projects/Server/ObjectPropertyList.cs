@@ -126,7 +126,7 @@ namespace Server
       SpanWriter writer = new SpanWriter(m_Buffer.GetSpan(6 + argLength));
       writer.Write(number);
       writer.Write((short)argLength);
-      writer.WriteBigUniFixed(arguments, argLength);
+      writer.WriteLittleUni(arguments);
 
       m_Buffer.Advance(writer.Position);
     }

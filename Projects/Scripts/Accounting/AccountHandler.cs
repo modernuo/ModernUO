@@ -303,8 +303,6 @@ namespace Server.Misc
       string un = e.Username;
       string pw = e.Password;
 
-      Console.WriteLine("Attempting to log in with {0} {1}", un, pw);
-
       e.Accepted = false;
 
       if (!(Accounts.GetAccount(un) is Account acct))
@@ -372,9 +370,7 @@ namespace Server.Misc
       string pw = e.Password;
 
       if (!(Accounts.GetAccount(un) is Account acct))
-      {
         e.Accepted = false;
-      }
       else if (!acct.HasAccess(e.State))
       {
         Console.WriteLine("Login: {0}: Access denied for '{1}'", e.State, un);

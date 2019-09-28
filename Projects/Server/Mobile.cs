@@ -1029,7 +1029,7 @@ namespace Server
 
     public static bool FwdEnabled{ get; set; } = true;
 
-    public static bool FwdUOTDOverride{ get; set; } = false;
+    public static bool FwdUOTDOverride{ get; set; }
 
     public static int FwdMaxSteps{ get; set; } = 4;
 
@@ -1722,12 +1722,12 @@ namespace Server
     {
       get
       {
-        if (m_PropertyList != null)
-          return m_PropertyList;
-
-        // TODO: Object Pool OPL
-        ObjectPropertyList opl = new ObjectPropertyList(this);
-        GetProperties(opl);
+        if (m_PropertyList == null)
+        {
+          // TODO: Object Pool OPL
+          m_PropertyList = new ObjectPropertyList(this);
+          GetProperties(m_PropertyList);
+        }
 
         return m_PropertyList;
       }

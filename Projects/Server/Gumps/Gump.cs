@@ -278,7 +278,7 @@ namespace Server.Gumps
 
         sw = new SpanWriter(stringsBuffer.GetSpan(2 + length));
         sw.Write((ushort)length);
-        sw.WriteBigUniFixed(v, length);
+        sw.WriteBigUniFixed(v, length, true);
       }
 
       if (packed)
@@ -295,7 +295,7 @@ namespace Server.Gumps
       bufferWriter.Write(stringsBuffer.WrittenSpan);
     }
 
-    private ArrayBufferWriter<byte> WritePacked(ReadOnlySpan<byte> source)
+    private static ArrayBufferWriter<byte> WritePacked(ReadOnlySpan<byte> source)
     {
       ArrayBufferWriter<byte> dest = new ArrayBufferWriter<byte>();
 

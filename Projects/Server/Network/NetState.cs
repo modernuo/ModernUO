@@ -560,7 +560,8 @@ namespace Server.Network
     {
       if (UseCompression)
       {
-        Compression.Compress(input, 0, input.Length, SendPipe.Writer.GetSpan(input.Length), out int bytesWritten);
+        int destSize = (int)Compression.Compressor.CompressBound((ulong)input.Length);
+        Compression.Compress(input, 0, input.Length, SendPipe.Writer.GetSpan(destSize), out int bytesWritten);
         _ = Flush(bytesWritten);
         return;
       }

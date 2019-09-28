@@ -2297,7 +2297,6 @@ namespace Server.Network
       if (m_AuthIDWindow.TryGetValue(authID, out AuthIDPersistence ap))
       {
         m_AuthIDWindow.Remove(authID);
-
         state.Version = ap.Version;
       }
       else if (ClientVerification)
@@ -2336,9 +2335,7 @@ namespace Server.Network
         Packets.SendCharacterList(state, state.CityInfo);
       }
       else
-      {
         state.Dispose();
-      }
     }
 
     public static void PlayServer(NetState state, PacketReader pvSrc)
@@ -2348,9 +2345,7 @@ namespace Server.Network
       IAccount a = state.Account;
 
       if (info == null || a == null || index < 0 || index >= info.Length)
-      {
         state.Dispose();
-      }
       else
       {
         ServerInfo si = info[index];

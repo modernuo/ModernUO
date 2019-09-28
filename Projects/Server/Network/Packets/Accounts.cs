@@ -74,11 +74,12 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      int length = ns.ExtendedSupportedFeatures ? 7 : 5;
+      int length = ns.ExtendedSupportedFeatures ? 5 : 3;
 
-      SpanWriter w = new SpanWriter(stackalloc byte[length]);
+      Span<byte> bytes = stackalloc byte[length];
+
+      SpanWriter w = new SpanWriter(bytes);
       w.Write((byte)0xB9); // Packet ID
-      w.Write((short)length); // Length
 
       FeatureFlags flags = ExpansionInfo.CoreExpansion.SupportedFeatures;
 
@@ -169,7 +170,7 @@ namespace Server.Network
 
       w.Write((short)-1);
 
-      ns.Send(w.RawSpan);
+      ns.Send(w.Span);
 
       // TODO: Razor support?
     }
@@ -311,7 +312,7 @@ namespace Server.Network
         ServerInfo si = info[i];
 
         w.Write((ushort)i);
-        w.WriteAsciiFixed(si.Name, 32);
+        w.WriteAsciiFixed(si.Name, 32, true);
         w.Write((byte)si.FullPercent);
         w.Write((sbyte)si.TimeZone);
         w.Write(Utility.GetAddressValue(si.Address.Address));

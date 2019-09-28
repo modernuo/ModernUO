@@ -13,12 +13,12 @@ namespace Server.Network
 
       if (m_MapPatchesPacket == null)
       {
-        SpanWriter w = new SpanWriter(m_MapPatchesPacket = new byte[33]);
+        SpanWriter w = new SpanWriter(m_MapPatchesPacket = new byte[57]);
         w.Write((byte)0xBF); // Extended Packet ID
-        w.Write((ushort)33); // Length
+        w.Write((ushort)57); // Dynamic Length
 
-        w.Write((short)0x18);
-        w.Write(4);
+        w.Write((short)0x18); // Map Patches
+        w.Write(6); // Map count
 
         w.Write(Map.Felucca.Tiles.Patch.StaticBlocks);
         w.Write(Map.Felucca.Tiles.Patch.LandBlocks);
@@ -31,6 +31,12 @@ namespace Server.Network
 
         w.Write(Map.Malas.Tiles.Patch.StaticBlocks);
         w.Write(Map.Malas.Tiles.Patch.LandBlocks);
+
+        w.Write(Map.Tokuno.Tiles.Patch.StaticBlocks);
+        w.Write(Map.Tokuno.Tiles.Patch.LandBlocks);
+
+        w.Write(Map.TerMur.Tiles.Patch.StaticBlocks);
+        w.Write(Map.TerMur.Tiles.Patch.LandBlocks);
       }
 
       ns.Send(m_MapPatchesPacket);

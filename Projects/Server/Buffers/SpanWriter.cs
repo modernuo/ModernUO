@@ -199,7 +199,7 @@ namespace Server.Buffers
     /// <summary>
     ///   Writes a fixed-length ASCII-encoded string value to the span.
     /// </summary>
-    public void WriteAsciiFixed(string value, int size)
+    public void WriteAsciiFixed(string value, int size, bool zero = false)
     {
       if (value == null)
       {
@@ -207,9 +207,17 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      size = Math.Min(size, value.Length);
+      int length = Math.Min(size, value.Length);
 
-      Position += Encoding.ASCII.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position));
+      Encoding.ASCII.GetBytes(value.AsSpan(0, length), RawSpan.Slice(Position));
+
+      if (zero)
+      {
+        Position += length;
+        Fill(size - length);
+      }
+      else
+        Position += size;
     }
 
     /// <summary>
@@ -223,7 +231,8 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      Position += Encoding.ASCII.GetBytes(value, Span.Slice(Position)) + 1;
+      Position += Encoding.ASCII.GetBytes(value, Span.Slice(Position));
+      Write((byte)0);
     }
 
     /// <summary>
@@ -238,13 +247,14 @@ namespace Server.Buffers
       }
 
       size = Math.Min(size, value.Length);
-      Position += Encoding.ASCII.GetBytes(value.AsSpan(0, size), Span.Slice(Position)) + 1;
+      Position += Encoding.ASCII.GetBytes(value.AsSpan(0, size), Span.Slice(Position));
+      Write((byte)0);
     }
 
     /// <summary>
-    ///   Writes a dynamic-length little-endian unicode string value to the span, followed by a 2-byte null character.
+    ///   Writes a dynamic-length little-endian unicode string value to the span.
     /// </summary>
-    public void WriteLittleUniNull(string value)
+    public void WriteLittleUni(string value)
     {
       if (value == null)
       {
@@ -252,14 +262,23 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      Position += Encoding.Unicode.GetBytes(value, RawSpan.Slice(Position)) + 2;
+      Position += Encoding.Unicode.GetBytes(value, RawSpan.Slice(Position));
+    }
+
+    /// <summary>
+    ///   Writes a dynamic-length little-endian unicode string value to the span, followed by a 2-byte null character.
+    /// </summary>
+    public void WriteLittleUniNull(string value)
+    {
+      WriteLittleUni(value);
+      Write((ushort)0);
     }
 
     /// <summary>
     ///   Writes a fixed-length little-endian unicode string value to the span. To fit (size), the string content is
     ///   either truncated or padded with null characters.
     /// </summary>
-    public void WriteLittleUniFixed(string value, int size)
+    public void WriteLittleUniFixed(string value, int size, bool zero = false)
     {
       if (value == null)
       {
@@ -267,15 +286,24 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      size = Math.Min(size, value.Length);
+      size *= 2;
 
-      Position += Encoding.Unicode.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position));
+      int length = Math.Min(size, value.Length * 2);
+      Encoding.Unicode.GetBytes(value.AsSpan(0, length), RawSpan.Slice(Position));
+
+      if (zero)
+      {
+        Position += length;
+        Fill(size - length);
+      }
+      else
+        Position += size;
     }
 
     /// <summary>
-    ///   Writes a dynamic-length big-endian unicode string value to the span, followed by a 2-byte null character.
+    ///   Writes a dynamic-length big-endian unicode string value to the span.
     /// </summary>
-    public void WriteBigUniNull(string value)
+    public void WriteBigUni(string value)
     {
       if (value == null)
       {
@@ -283,13 +311,22 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      Position += Encoding.BigEndianUnicode.GetBytes(value, RawSpan.Slice(Position)) + 2;
+      Position += Encoding.BigEndianUnicode.GetBytes(value, RawSpan.Slice(Position));
+    }
+
+    /// <summary>
+    ///   Writes a dynamic-length big-endian unicode string value to the span, followed by a 2-byte null character.
+    /// </summary>
+    public void WriteBigUniNull(string value)
+    {
+      WriteBigUni(value);
+      Position += 2;
     }
 
     /// <summary>
     ///   Writes a fixed-length big-endian unicode string value to the span.
     /// </summary>
-    public void WriteBigUniFixed(string value, int size)
+    public void WriteBigUniFixed(string value, int size, bool zero = false)
     {
       if (value == null)
       {
@@ -297,9 +334,18 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      size = Math.Min(size, value.Length);
+      size *= 2;
 
-      Position += Encoding.BigEndianUnicode.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position));
+      int length = Math.Min(size, value.Length * 2);
+      Encoding.BigEndianUnicode.GetBytes(value.AsSpan(0, length), RawSpan.Slice(Position));
+
+      if (zero)
+      {
+        Position += length;
+        Fill(size - length);
+      }
+      else
+        Position += size;
     }
 
     /// <summary>
@@ -363,6 +409,16 @@ namespace Server.Buffers
         CopyTo(destination);
       else
         RawSpan.Slice(0, count).CopyTo(destination);
+    }
+
+    /// <summary>
+    ///   Fills the buffer with zeroes up to count
+    /// </summary>
+    public void Fill(int count)
+    {
+      count = Math.Min(count, RawSpan.Length - Position);
+      RawSpan.Slice(Position, count).Clear();
+      Position += count;
     }
   }
 }
