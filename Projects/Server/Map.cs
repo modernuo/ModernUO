@@ -1026,8 +1026,7 @@ namespace Server
       if ((landFlags & TileFlag.Impassable) != 0 && avgZ > z && z + height > lowZ)
         return false;
 
-      if ((landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored)
-        hasSurface = true;
+      hasSurface |= (landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored;
 
       StaticTile[] staticTiles = Tiles.GetStaticTiles(x, y, true);
 
@@ -1042,8 +1041,7 @@ namespace Server
         if ((surface || impassable) && staticTiles[i].Z + id.CalcHeight > z && z + height > staticTiles[i].Z)
           return false;
 
-        if (surface && !impassable && z == staticTiles[i].Z + id.CalcHeight)
-          hasSurface = true;
+        hasSurface |= surface && !impassable && z == staticTiles[i].Z + id.CalcHeight;
       }
 
       Sector sector = GetSector(x, y);
@@ -1064,22 +1062,14 @@ namespace Server
               z + height > item.Z)
             return false;
 
-          if (surface && !impassable && !item.Movable && z == item.Z + id.CalcHeight)
-            hasSurface = true;
+          hasSurface |= surface && !impassable && !item.Movable && z == item.Z + id.CalcHeight;
         }
       }
 
-      if (checkMobiles)
-        for (int i = 0; i < mobs.Count; ++i)
-        {
-          Mobile m = mobs[i];
-
-          if (m.Location.m_X == x && m.Location.m_Y == y && (m.AccessLevel == AccessLevel.Player || !m.Hidden) &&
-              m.Z + 16 > z && z + height > m.Z)
-            return false;
-        }
-
-      return !requireSurface || hasSurface;
+      return !(checkMobiles && mobs.Any(m => m.Location.m_X == x && m.Location.m_Y == y &&
+                                             (m.AccessLevel == AccessLevel.Player || !m.Hidden) &&
+                                             m.Z + 16 > z && z + height > m.Z)) &&
+             (!requireSurface || hasSurface);
     }
 
     #endregion
@@ -1090,13 +1080,8 @@ namespace Server
 
     public bool CanSpawnMobile(Point2D p, int z) => CanSpawnMobile(p.m_X, p.m_Y, z);
 
-    public bool CanSpawnMobile(int x, int y, int z)
-    {
-      if (!Region.Find(new Point3D(x, y, z), this).AllowSpawn())
-        return false;
-
-      return CanFit(x, y, z, 16);
-    }
+    public bool CanSpawnMobile(int x, int y, int z) =>
+      Region.Find(new Point3D(x, y, z), this).AllowSpawn() && CanFit(x, y, z, 16);
 
     #endregion
 

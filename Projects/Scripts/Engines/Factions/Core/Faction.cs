@@ -983,13 +983,12 @@ namespace Server.Factions
             {
               victimState.IsActive = true;
 
-              if (1 > Utility.Random(3))
-                killerState.IsActive = true;
+              killerState.IsActive |= 1 > Utility.Random(3);
 
               int silver = killerState.Faction.AwardSilver(killer, award * 40);
 
               if (silver > 0)
-                killer.SendLocalizedMessage(1042736,
+                killer?.SendLocalizedMessage(1042736,
                   $"{silver:N0} silver\t{victim.Name}"); // You have earned ~1_SILVER_AMOUNT~ pieces for vanquishing ~2_PLAYER_NAME~!
             }
 
@@ -998,9 +997,9 @@ namespace Server.Factions
 
             int offset = award != 1 ? 0 : 2; // for pluralization
 
-            string args = $"{award}\t{victim.Name}\t{killer.Name}";
+            string args = $"{award}\t{victim.Name}\t{killer?.Name ?? ""}";
 
-            killer.SendLocalizedMessage(1042737 + offset,
+            killer?.SendLocalizedMessage(1042737 + offset,
               args); // Thou hast been honored with ~1_KILL_POINTS~ kill point(s) for vanquishing ~2_DEAD_PLAYER~!
             victim.SendLocalizedMessage(1042738 + offset,
               args); // Thou has lost ~1_KILL_POINTS~ kill point(s) to ~3_ATTACKER_NAME~ for being vanquished!
@@ -1032,7 +1031,7 @@ namespace Server.Factions
           }
           else
           {
-            killer.SendLocalizedMessage(
+            killer?.SendLocalizedMessage(
               1042231); // You have recently defeated this enemy and thus their death brings you no honor.
           }
         }

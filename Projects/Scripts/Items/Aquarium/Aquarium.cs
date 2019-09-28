@@ -597,8 +597,7 @@ namespace Server.Items
         UpdateWaterState();
 
         // reward
-        if (LiveCreatures > 0)
-          m_RewardAvailable = true;
+        m_RewardAvailable |= LiveCreatures > 0;
       }
       else
       {

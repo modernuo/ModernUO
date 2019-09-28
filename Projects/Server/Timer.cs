@@ -87,8 +87,7 @@ namespace Server
       get => m_Priority;
       set
       {
-        if (!m_PrioritySet)
-          m_PrioritySet = true;
+        m_PrioritySet |= !m_PrioritySet;
 
         if (m_Priority != value)
         {

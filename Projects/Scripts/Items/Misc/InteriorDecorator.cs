@@ -182,8 +182,7 @@ namespace Server.Items
 
           if (addon != null)
           {
-            if (count == 1 && Core.SE)
-              isDecorableComponent = true;
+            isDecorableComponent |= count == 1 && Core.SE;
 
             if (m_Decorator.Command == DecorateCommand.Turn)
             {
@@ -191,8 +190,7 @@ namespace Server.Items
                 (FlippableAddonAttribute[])addon.GetType()
                   .GetCustomAttributes(typeof(FlippableAddonAttribute), false);
 
-              if (attributes.Length > 0)
-                isDecorableComponent = true;
+              isDecorableComponent = attributes.Length > 0;
             }
           }
 

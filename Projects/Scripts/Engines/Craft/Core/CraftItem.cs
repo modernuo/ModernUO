@@ -907,8 +907,7 @@ namespace Server.Engines.Craft
               hammer.Delete();
           }
 
-        if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
-          toolBroken = true;
+        toolBroken |= tool.UsesRemaining < 1 && tool.BreakOnDepletion;
 
         if (toolBroken)
           tool.Delete();
@@ -1030,8 +1029,7 @@ namespace Server.Engines.Craft
 
         tool.UsesRemaining--;
 
-        if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
-          toolBroken = true;
+        toolBroken |= tool.UsesRemaining < 1 && tool.BreakOnDepletion;
 
         if (toolBroken)
           tool.Delete();

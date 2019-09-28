@@ -5248,8 +5248,7 @@ namespace Server
           if (version < 18)
             Virtues = new VirtueInfo();
 
-          if (version < 11)
-            m_DisplayGuildTitle = true;
+          m_DisplayGuildTitle |= version < 11;
 
           if (version < 3)
             m_StatCap = 225;

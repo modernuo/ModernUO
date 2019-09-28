@@ -37,16 +37,7 @@ namespace Server.Engines.MLQuests
 
       Objectives = new BaseObjectiveInstance[quest.Objectives.Count];
 
-      BaseObjectiveInstance obj;
-      bool timed = false;
-
-      for (int i = 0; i < quest.Objectives.Count; ++i)
-      {
-        Objectives[i] = obj = quest.Objectives[i].CreateInstance(this);
-
-        if (obj.IsTimed)
-          timed = true;
-      }
+      bool timed = quest.Objectives.Aggregate(false, (current, t) => current | t.CreateInstance(this).IsTimed);
 
       Register();
 

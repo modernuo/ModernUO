@@ -854,16 +854,9 @@ namespace Server.Engines.ConPVP
         Participant p = Participants[i];
 
         if (p.Eliminated)
-        {
-          ++eliminated;
-
-          if (eliminated == Participants.Count - 1)
-            hasWinner = true;
-        }
+          hasWinner |= ++eliminated == Participants.Count - 1;
         else
-        {
           winner = p;
-        }
       }
 
       return hasWinner ? winner ?? Participants[0] : null;
@@ -1630,16 +1623,7 @@ namespace Server.Engines.ConPVP
       int rx = dx - dy;
       int ry = dx + dy;
 
-      bool eastToWest;
-
-      if (rx >= 0 && ry >= 0)
-        eastToWest = false;
-      else if (rx >= 0)
-        eastToWest = true;
-      else if (ry >= 0)
-        eastToWest = true;
-      else
-        eastToWest = false;
+      bool eastToWest = (rx < 0 || ry < 0) && (rx >= 0 || ry >= 0);
 
       Effects.PlaySound(wall, Arena.Facet, 0x1F6);
 

@@ -3343,8 +3343,7 @@ namespace Server.Items
             parentMobile.AddSkillMod(m_MageMod);
           }
 
-          if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
-            PlayerConstructed = true;
+          PlayerConstructed |= GetSaveFlag(flags, SaveFlag.PlayerConstructed);
 
           if (GetSaveFlag(flags, SaveFlag.SkillBonuses))
             SkillBonuses = new AosSkillBonuses(this, reader);
@@ -3496,8 +3495,7 @@ namespace Server.Items
 
       if (m_Hits <= 0 && m_MaxHits <= 0) m_Hits = m_MaxHits = Utility.RandomMinMax(InitMinHits, InitMaxHits);
 
-      if (version < 6)
-        PlayerConstructed = true; // we don't know, so, assume it's crafted
+      PlayerConstructed |= version < 6; // we don't know, so, assume it's crafted
     }
 
     #endregion

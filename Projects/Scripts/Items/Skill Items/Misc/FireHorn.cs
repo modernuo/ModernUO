@@ -91,11 +91,9 @@ namespace Server.Items
             || Core.AOS && !from.InLOS(m))
           return false;
 
-        if (m.Player)
-          playerVsPlayer = true;
+        playerVsPlayer |= m.Player;
 
         return true;
-
       }).ToList();
 
       eable.Free();

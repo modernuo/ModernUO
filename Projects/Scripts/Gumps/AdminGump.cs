@@ -2943,8 +2943,7 @@ namespace Server.Gumps
         if (check.AccessLevel > accessLevel)
           accessLevel = check.AccessLevel;
 
-        if (check.NetState != null)
-          online = true;
+        online |= check.NetState != null;
       }
     }
 

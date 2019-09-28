@@ -158,8 +158,7 @@ namespace Server.Multis
           bool isFoundation = addTile.Z == 0 && (addTileFlags & TileFlag.Wall) != 0;
           bool hasSurface = false;
 
-          if (isFoundation)
-            hasFoundation = true;
+          hasFoundation |= isFoundation;
 
           int addTileZ = center.Z + addTile.Z;
           int addTileTop = addTileZ + addTile.Height;

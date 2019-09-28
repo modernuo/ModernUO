@@ -111,11 +111,8 @@ namespace Server.Commands.Generic
         case ObjectTypes.All:
         case ObjectTypes.Both:
         {
-          if (condIsItem)
-            items = true;
-
-          if (condIsMobile)
-            mobiles = true;
+          items |= condIsItem;
+          mobiles |= condIsMobile;
 
           break;
         }

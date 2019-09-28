@@ -63,8 +63,7 @@ namespace Server.Misc
         {
           area = new Rectangle2D( bounds.X + Utility.Random( bounds.Width - width ), bounds.Y + Utility.Random( bounds.Height - height ), width, height );
 
-          if ( !CheckWeatherConflict( m_Facets[i], null, area ) )
-            isValid = true;
+          isValid |= !CheckWeatherConflict( m_Facets[i], null, area );
 
           if ( isValid )
             break;
@@ -145,8 +144,7 @@ namespace Server.Misc
       {
         area = new Rectangle2D( Bounds.X + Utility.Random( Bounds.Width - width ), Bounds.Y + Utility.Random( Bounds.Height - height ), width, height );
 
-        if ( !CheckWeatherConflict( Facet, this, area ) )
-          isValid = true;
+        isValid |= !CheckWeatherConflict( Facet, this, area );
 
         if ( isValid )
           break;

@@ -256,34 +256,19 @@ namespace Server.Items
         {
           if (!Utility.InRange(new Point3D(p), m_Cannon.Location, 2))
           {
-            bool allow = false;
 
             int x = p.X - m_Cannon.X;
             int y = p.Y - m_Cannon.Y;
 
-            switch (m_Cannon.CannonDirection)
+            bool allow = m_Cannon.CannonDirection switch
             {
-              case CannonDirection.North:
-                if (y < 0 && Math.Abs(x) <= -y / 3)
-                  allow = true;
 
-                break;
-              case CannonDirection.East:
-                if (x > 0 && Math.Abs(y) <= x / 3)
-                  allow = true;
-
-                break;
-              case CannonDirection.South:
-                if (y > 0 && Math.Abs(x) <= y / 3)
-                  allow = true;
-
-                break;
-              case CannonDirection.West:
-                if (x < 0 && Math.Abs(y) <= -x / 3)
-                  allow = true;
-
-                break;
-            }
+              CannonDirection.North => y < 0 && Math.Abs(x) <= -y / 3,
+              CannonDirection.East => x > 0 && Math.Abs(y) <= x / 3,
+              CannonDirection.South => y > 0 && Math.Abs(x) <= y / 3,
+              CannonDirection.West => x < 0 && Math.Abs(y) <= -x / 3,
+              _ => false,
+            };
 
             if (allow && Utility.InRange(new Point3D(p), m_Cannon.Location, 14))
               m_Cannon.DoFireEffect(p);
@@ -296,9 +281,7 @@ namespace Server.Items
           }
         }
         else
-        {
           from.SendLocalizedMessage(1049630); // You cannot see that target!
-        }
       }
 
       protected override void OnTargetOutOfRange(Mobile from, object targeted)

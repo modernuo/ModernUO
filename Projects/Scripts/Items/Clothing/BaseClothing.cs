@@ -927,8 +927,7 @@ namespace Server.Items
           else
             m_StrReq = -1;
 
-          if (GetSaveFlag(flags, SaveFlag.PlayerConstructed))
-            PlayerConstructed = true;
+          PlayerConstructed |= GetSaveFlag(flags, SaveFlag.PlayerConstructed);
 
           break;
         }
@@ -966,8 +965,7 @@ namespace Server.Items
         }
       }
 
-      if (version < 2)
-        PlayerConstructed = true; // we don't know, so, assume it's crafted
+      PlayerConstructed |= version < 2; // we don't know, so, assume it's crafted
 
       if (version < 3)
       {

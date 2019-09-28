@@ -40,8 +40,6 @@ namespace Server
     private static bool m_Crashed;
     private static Thread timerThread;
 
-    private static bool m_Cache = true;
-
     private static bool m_Profiling;
     private static DateTime m_ProfileStart;
     private static TimeSpan m_ProfileTime;
@@ -151,9 +149,6 @@ namespace Server
 
         if (m_Profiling)
           Utility.Separate(sb, "-profile", " ");
-
-        if (!m_Cache)
-          Utility.Separate(sb, "-nocache", " ");
 
         if (HaltOnWarning)
           Utility.Separate(sb, "-haltonwarning", " ");
@@ -278,10 +273,7 @@ namespace Server
       Console.WriteLine("done");
     }
 
-    public static void Set()
-    {
-      m_Signal.Set();
-    }
+    public static void Set() => m_Signal.Set();
 
     public static void Main(string[] args)
     {
@@ -289,16 +281,12 @@ namespace Server
       AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
       foreach (string a in args)
-        if (Insensitive.Equals(a, "-debug"))
-          Debug = true;
-        else if (Insensitive.Equals(a, "-service"))
-          Service = true;
-        else if (Insensitive.Equals(a, "-profile"))
-          Profiling = true;
-        else if (Insensitive.Equals(a, "-nocache"))
-          m_Cache = false;
-        else if (Insensitive.Equals(a, "-haltonwarning"))
-          HaltOnWarning = true;
+      {
+        Debug |= Insensitive.Equals(a, "-debug");
+        Service |= Insensitive.Equals(a, "-service");
+        Profiling |= Insensitive.Equals(a, "-profiling");
+        HaltOnWarning |= Insensitive.Equals(a, "-haltonwarning");
+      }
 
       try
       {

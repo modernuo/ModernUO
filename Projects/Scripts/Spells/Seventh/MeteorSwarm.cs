@@ -59,8 +59,7 @@ namespace Server.Spells.Seventh
                 Core.AOS && !Caster.InLOS(m))
               return false;
 
-            if (m.Player)
-              playerVsPlayer = true;
+            playerVsPlayer |= m.Player;
 
             return true;
           }).ToList();
@@ -72,9 +71,7 @@ namespace Server.Spells.Seventh
           targets = new List<Mobile>();
         }
 
-        double damage;
-
-        damage = Core.AOS ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
+        double damage = Core.AOS ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
           : Utility.Random(27, 22);
 
         if (targets.Count > 0)

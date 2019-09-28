@@ -59,8 +59,7 @@ namespace Server.Spells.Seventh
                 !Caster.CanBeHarmful(m, false))
               return false;
 
-            if (m.Player)
-              playerVsPlayer = true;
+            playerVsPlayer |= m.Player;
 
             return true;
           }).ToList());
@@ -68,9 +67,7 @@ namespace Server.Spells.Seventh
           eable.Free();
         }
 
-        double damage;
-
-        damage = Core.AOS ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
+        double damage = Core.AOS ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
           : Utility.Random(27, 22);
 
         if (targets.Count > 0)
@@ -100,9 +97,7 @@ namespace Server.Spells.Seventh
           }
         }
         else
-        {
           Caster.PlaySound(0x29);
-        }
       }
 
       FinishSequence();

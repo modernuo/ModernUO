@@ -777,8 +777,7 @@ namespace Server.Items
         for (int j = 0; j < items[i].Length; ++j)
           totals[i] += items[i][j].Amount;
 
-        if (totals[i] >= amount)
-          hasEnough = true;
+        hasEnough |= totals[i] >= amount;
       }
 
       if (!hasEnough)
@@ -870,8 +869,7 @@ namespace Server.Items
           for (int k = 0; k < items[i][j].Length; ++k)
             totals[i][j] += items[i][j][k].Amount;
 
-          if (totals[i][j] >= amounts[i])
-            hasEnough = true;
+          hasEnough |= totals[i][j] >= amounts[i];
         }
 
         if (!hasEnough)
@@ -965,8 +963,7 @@ namespace Server.Items
           for (int k = 0; k < items[i][j].Length; ++k)
             totals[i][j] += items[i][j][k].Amount;
 
-          if (totals[i][j] >= amounts[i])
-            hasEnough = true;
+          hasEnough |= totals[i][j] >= amounts[i];
         }
 
         if (!hasEnough)

@@ -22,6 +22,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Server.ContextMenus;
 using Server.Diagnostics;
 using Server.Gumps;
@@ -1089,42 +1090,28 @@ namespace Server.Network
                 t.Cancel(from, TargetCancelType.Canceled);
                 return;
               }
-              else
+
+              StaticTile[] tiles = map.Tiles.GetStaticTiles(x, y, !t.DisallowMultis);
+
+              if (state.HighSeas)
               {
-                StaticTile[] tiles = map.Tiles.GetStaticTiles(x, y, !t.DisallowMultis);
-
-                bool valid = false;
-
-                if (state.HighSeas)
-                {
-                  ItemData id = TileData.ItemTable[graphic & TileData.MaxItemValue];
-                  if (id.Surface) z -= id.Height;
-                }
-
-                for (int i = 0; !valid && i < tiles.Length; ++i)
-                  if (tiles[i].Z == z && tiles[i].ID == graphic)
-                    valid = true;
-
-                if (!valid)
-                {
-                  t.Cancel(from, TargetCancelType.Canceled);
-                  return;
-                }
-                else
-                {
-                  toTarget = new StaticTarget(new Point3D(x, y, z), graphic);
-                }
+                ItemData id = TileData.ItemTable[graphic & TileData.MaxItemValue];
+                if (id.Surface) z -= id.Height;
               }
+
+              if (tiles.All(tile => tile.Z != z || tile.ID != graphic))
+              {
+                t.Cancel(from, TargetCancelType.Canceled);
+                return;
+              }
+
+              toTarget = new StaticTarget(new Point3D(x, y, z), graphic);
             }
           }
           else if (serial.IsMobile)
-          {
             toTarget = World.FindMobile(serial);
-          }
           else if (serial.IsItem)
-          {
             toTarget = World.FindItem(serial);
-          }
           else
           {
             t.Cancel(from, TargetCancelType.Canceled);

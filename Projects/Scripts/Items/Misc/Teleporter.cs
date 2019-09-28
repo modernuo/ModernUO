@@ -521,12 +521,7 @@ namespace Server.Items
         if (!m.InRange(GetWorldLocation(), m_Range))
           return;
 
-        bool isMatch = false;
-
-        if (m_Keyword >= 0 && e.HasKeyword(m_Keyword))
-          isMatch = true;
-        else if (m_Substring != null && e.Speech.ToLower().IndexOf(m_Substring.ToLower()) >= 0)
-          isMatch = true;
+        bool isMatch = m_Keyword >= 0 && e.HasKeyword(m_Keyword) || m_Substring != null && e.Speech.ToLower().IndexOf(m_Substring.ToLower()) >= 0;
 
         if (!isMatch || !CanTeleport(m))
           return;

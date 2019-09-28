@@ -120,8 +120,7 @@ namespace Server.Commands
 
           command.ExecuteList(eventArgs[i], usedList);
 
-          if (list.Count > 20)
-            CommandLogging.Enabled = true;
+          CommandLogging.Enabled |= list.Count > 20;
 
           command.Flush(e.Mobile, list.Count > 20);
         }

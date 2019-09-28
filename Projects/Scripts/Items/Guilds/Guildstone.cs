@@ -143,8 +143,7 @@ namespace Server.Items
       if (Guild.NewGuildSystem && ItemID == 0xED4)
         ItemID = 0xED6;
 
-      if (version <= 2)
-        m_BeforeChangeover = true;
+      m_BeforeChangeover |= version <= 2;
 
       if (Guild.NewGuildSystem && m_BeforeChangeover)
         Timer.DelayCall(TimeSpan.Zero, AddToHouse);

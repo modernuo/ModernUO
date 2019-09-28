@@ -66,8 +66,7 @@ namespace Server.Spells.Mysticism
 
               targets.Add(m);
 
-              if (m.Player)
-                pvp = true;
+              pvp |= m.Player;
             }
           }
         }

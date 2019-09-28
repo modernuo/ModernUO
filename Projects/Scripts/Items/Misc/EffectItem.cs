@@ -33,7 +33,8 @@ namespace Server.Items
           item = free;
       }
 
-           EffectItem();
+      if (item == null)
+        item = new EffectItem();
       else
         item.ItemID = 1;
 

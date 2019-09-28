@@ -780,8 +780,7 @@ namespace Server.Accounting
           {
             Mobile m = this[i];
 
-            if ( m?.AccessLevel >= level )
-              hasAccess = true;
+            hasAccess |= m?.AccessLevel >= level;
           }
 
         Console.WriteLine("{0} {1}", hasAccess ? "yes" : "no", m_AccessLevel);

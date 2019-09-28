@@ -1343,16 +1343,12 @@ namespace Server.Multis
       // Remove the component
       if (AllowStairSectioning)
       {
-        if (DeleteStairs(mcl, itemID, x, y, z))
-          fixState = true; // The client removes the entire set of stairs locally, resend state
+        fixState |= DeleteStairs(mcl, itemID, x, y, z); // The client removes the entire set of stairs locally, resend state
 
         mcl.Remove(itemID, x, y, z);
       }
-      else
-      {
-        if (!DeleteStairs(mcl, itemID, x, y, z))
-          mcl.Remove(itemID, x, y, z);
-      }
+      else if (!DeleteStairs(mcl, itemID, x, y, z))
+        mcl.Remove(itemID, x, y, z);
 
       // If needed, replace removed component with a dirt tile
       if (ax >= 1 && ax < mcl.Width && ay >= 1 && ay < mcl.Height - 1)
