@@ -571,10 +571,10 @@ namespace Server.Items
       if (Parent == null)
         SendWorldPacketFor(ns);
       else if (Parent is Item)
-      // What will happen if the client doesn't know about our parent?
+        // What will happen if the client doesn't know about our parent?
         Packets.SendContainerContentUpdate(ns, this);
       else if (Parent is Mobile)
-      // What will happen if the client doesn't know about our parent?
+        // What will happen if the client doesn't know about our parent?
         Packets.SendEquipUpdate(ns, this);
 
       Packets.SendDisplayContainer(ns, Serial);

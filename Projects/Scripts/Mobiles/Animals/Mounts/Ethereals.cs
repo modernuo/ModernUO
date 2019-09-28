@@ -365,7 +365,7 @@ namespace Server.Mobiles
       }
 
       public override bool CheckDisturb(DisturbType type, bool checkFirst, bool resistable) =>
-      type != DisturbType.EquipRequest && type != DisturbType.UseRequest;
+        type != DisturbType.EquipRequest && type != DisturbType.UseRequest;
 
       public override void DoHurtFizzle()
       {

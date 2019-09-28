@@ -509,7 +509,7 @@ namespace Server.Commands
             foreach (var (_, r) in list)
               if (Insensitive.Equals(r.Name, name))
               {
-                @from.Location = new Point3D(r.GoLocation);
+                from.Location = new Point3D(r.GoLocation);
                 return;
               }
 

@@ -38,7 +38,6 @@ namespace Server.Gumps
     private static byte[] m_NoResize = StringToBuffer("{ noresize }");
 
     internal int m_TextEntries, m_Switches;
-    private int m_X, m_Y;
 
     public Gump(int x, int y)
     {
@@ -47,8 +46,8 @@ namespace Server.Gumps
         Serial = m_NextSerial++;
       } while (Serial == 0); // standard client apparently doesn't send a gump response packet if serial == 0
 
-      m_X = x;
-      m_Y = y;
+      X = x;
+      Y = y;
 
       TypeID = GetTypeID(GetType());
 

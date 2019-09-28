@@ -40,10 +40,7 @@ namespace Server.Mobiles
       Fame = 8000;
       Karma = -8000;
 
-      CraftResource res = CraftResource.None;
-      ;
-
-      res = Utility.Random(6) switch
+      CraftResource res = Utility.Random(6) switch
       {
         0 => CraftResource.BlackScales,
         1 => CraftResource.RedScales,
@@ -51,7 +48,7 @@ namespace Server.Mobiles
         3 => CraftResource.YellowScales,
         4 => CraftResource.GreenScales,
         5 => CraftResource.WhiteScales,
-        _ => res
+        _ => CraftResource.None
       };
 
       BaseWeapon melee = Utility.Random(3) switch

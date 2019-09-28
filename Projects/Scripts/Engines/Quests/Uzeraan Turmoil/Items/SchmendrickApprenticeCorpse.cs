@@ -88,7 +88,7 @@ namespace Server.Engines.Quests.Haven
 
       if (ItemID == 0x2006) // Corpse form
         Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049144, "",
-        Name); // the remains of ~1_NAME~ the apprentice
+          Name); // the remains of ~1_NAME~ the apprentice
       else
         Packets.SendMessageLocalized(from.NetState, Serial, ItemID, MessageType.Label, hue, 3, 1049145); // the remains of a wizard's apprentice
     }

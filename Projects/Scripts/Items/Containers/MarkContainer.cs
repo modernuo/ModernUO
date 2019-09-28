@@ -114,7 +114,7 @@ namespace Server.Items
     }
 
     private static void CreateMalasPassage(int x, int y, int z, int xTarget, int yTarget, int zTarget, bool bone,
-bool locked)
+      bool locked)
     {
       Point3D location = new Point3D(x, y, z);
 

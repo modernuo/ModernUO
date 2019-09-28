@@ -429,10 +429,7 @@ namespace Server.Engines.ConPVP
             if (t.Z <= point.Z && t.Z + height >= point.Z &&
                 (id.Flags & (TileFlag.Impassable | TileFlag.Wall | TileFlag.NoShoot)) != 0)
             {
-              if (i > m_PathIdx)
-                point = m_Path[i - 1];
-              else
-                point = GetWorldLocation();
+              point = i > m_PathIdx ? m_Path[i - 1] : GetWorldLocation();
               HitObject(point, t.Z, height);
               return;
             }
@@ -469,10 +466,7 @@ namespace Server.Engines.ConPVP
                 (i is Blocker || loc.Z <= point.Z && loc.Z + height >= point.Z))
             {
               found = true;
-              if (j > m_PathIdx)
-                point = m_Path[j - 1];
-              else
-                point = GetWorldLocation();
+              point = j > m_PathIdx ? m_Path[j - 1] : GetWorldLocation();
               break;
             }
           }
@@ -490,9 +484,7 @@ namespace Server.Engines.ConPVP
               HitObject(point, loc.Z, height);
           }
           else
-          {
             HitObject(point, loc.Z, height);
-          }
 
           return;
         }
@@ -507,12 +499,11 @@ namespace Server.Engines.ConPVP
           if (m == null || m == Thrower)
             continue;
 
-          Point3D point;
           Point3D loc = m.Location;
 
           for (int j = m_PathIdx; j < pathCheckEnd && !found; j++)
           {
-            point = m_Path[j];
+            Point3D point = m_Path[j];
 
             if (loc.X == point.X && loc.Y == point.Y &&
                 loc.Z <= point.Z && loc.Z + 16 >= point.Z)
@@ -548,7 +539,8 @@ namespace Server.Engines.ConPVP
 
         int myZ = Map?.GetAverageZ(X, Y) ?? 0;
 
-        StaticTile[] statics = Map.Tiles.GetStaticTiles(X, Y, true);
+        StaticTile[] statics = Map?.Tiles?.GetStaticTiles(X, Y, true) ?? new StaticTile[0];
+
         for (int j = 0; j < statics.Length; j++)
         {
           StaticTile t = statics[j];
@@ -953,12 +945,8 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
-//    private BRGame m_Game;
-
     public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section = null) : base(60, 60)
     {
-//      m_Game = game;
-
       BRTeamInfo ourTeam = game.GetTeamInfo(mob);
 
       List<BRTeamInfo> entries = new List<BRTeamInfo>();

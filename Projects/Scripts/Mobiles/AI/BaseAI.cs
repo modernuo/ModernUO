@@ -339,7 +339,7 @@ namespace Server.Mobiles
               Skill skill = ourSkills[i];
               Skill theirSkill = theirSkills[i];
 
-              if (skill != null && skill?.Base >= 60.0 &&
+              if (skill?.Base >= 60.0 &&
                   m_Mobile.CheckTeach(skill.SkillName, e.Mobile))
               {
                 double toTeach = skill.Base / 3.0;
@@ -1596,9 +1596,10 @@ namespace Server.Mobiles
 
     public virtual bool DoBardProvoked()
     {
-      if (DateTime.UtcNow >= m_Mobile.BardEndTime && (m_Mobile.BardMaster?.Deleted != false ||
-        m_Mobile.BardMaster.Map != m_Mobile.Map || m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) >
-        m_Mobile.RangePerception))
+      if (DateTime.UtcNow >= m_Mobile.BardEndTime &&
+          (m_Mobile.BardMaster?.Deleted != false ||
+           m_Mobile.BardMaster.Map != m_Mobile.Map ||
+           m_Mobile.GetDistanceToSqrt(m_Mobile.BardMaster) > m_Mobile.RangePerception))
       {
         m_Mobile.DebugSay("I have lost my provoker");
         m_Mobile.BardProvoked = false;
@@ -1682,30 +1683,17 @@ namespace Server.Mobiles
       bool isPassive = delay == m_Mobile.PassiveSpeed;
       bool isControlled = m_Mobile.Controlled || m_Mobile.Summoned;
 
-      switch (delay)
+      delay = delay switch
       {
-        case 0.2:
-          delay = 0.3;
-          break;
-        case 0.25:
-          delay = 0.45;
-          break;
-        case 0.3:
-          delay = 0.6;
-          break;
-        case 0.4:
-          delay = 0.9;
-          break;
-        case 0.5:
-          delay = 1.05;
-          break;
-        case 0.6:
-          delay = 1.2;
-          break;
-        case 0.8:
-          delay = 1.5;
-          break;
-      }
+        0.2 => 0.3,
+        0.25 => 0.45,
+        0.3 => 0.6,
+        0.4 => 0.9,
+        0.5 => 1.05,
+        0.6 => 1.2,
+        0.8 => 1.5,
+        _ => delay
+      };
 
       if (isPassive)
         delay += 0.2;

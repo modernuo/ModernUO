@@ -19,7 +19,7 @@ namespace Server
     public static void Initialize()
     {
       string filePath = Path.Combine(Core.BaseDirectory, "Data/treasure.cfg");
-      int i = 0, x = 0, y = 0;
+      int i = 0;
 
       if (File.Exists(filePath))
       {
@@ -34,8 +34,8 @@ namespace Server
           {
             string[] split = line.Split(' ');
 
-            x = Convert.ToInt32(split[0]);
-            y = Convert.ToInt32(split[1]);
+            var x = Convert.ToInt32(split[0]);
+            var y = Convert.ToInt32(split[1]);
 
             try
             {
