@@ -84,10 +84,7 @@ namespace Server.Mobiles
       return max;
     }
 
-    private void CloseClaimList(Mobile from)
-    {
-      from.CloseGump<ClaimListGump>();
-    }
+    private void CloseClaimList(Mobile from) => from.CloseGump<ClaimListGump>();
 
     public void BeginClaimList(Mobile from)
     {
@@ -102,8 +99,11 @@ namespace Server.Mobiles
 
         if (pet?.Deleted != false)
         {
-          pet.IsStabled = false;
-          pet.StabledBy = null;
+          if (pet != null)
+          {
+            pet.IsStabled = false;
+            pet.StabledBy = null;
+          }
           from.Stabled.RemoveAt(i);
           --i;
           continue;
@@ -240,10 +240,13 @@ namespace Server.Mobiles
       {
         BaseCreature pet = from.Stabled[i] as BaseCreature;
 
-        if (pet?.Deleted == false)
+        if (pet?.Deleted != false)
         {
-          pet.IsStabled = false;
-          pet.StabledBy = null;
+          if (pet != null)
+          {
+            pet.IsStabled = false;
+            pet.StabledBy = null;
+          }
           from.Stabled.RemoveAt(i);
           --i;
           continue;
