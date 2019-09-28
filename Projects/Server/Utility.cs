@@ -728,7 +728,7 @@ namespace Server
 
     public static List<TOutput> SafeConvertList<TInput, TOutput>(List<TInput> list) where TOutput : class
     {
-      List<TOutput> output = new List<TOutput>(list.Capacity)
+      List<TOutput> output = new List<TOutput>(list.Capacity);
       output.AddRange(list.OfType<TOutput>());
 
       return output;
