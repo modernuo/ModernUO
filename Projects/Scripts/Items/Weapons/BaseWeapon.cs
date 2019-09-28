@@ -2055,7 +2055,7 @@ namespace Server.Items
       if (Core.ML && ranged?.Balanced == true)
         list.Add(1072792); // Balanced
 
-      if ((prop = WeaponAttributes.UseBestSkill) != 0)
+      if (WeaponAttributes.UseBestSkill != 0)
         list.Add(1060400); // use best weapon skill
 
       if ((prop = GetDamageBonus() + Attributes.WeaponDamage) != 0)
@@ -2157,7 +2157,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = Attributes.NightSight) != 0)
+      if (Attributes.NightSight != 0)
         list.Add(1060441); // night sight
 
       if ((prop = Attributes.ReflectPhysical) != 0)
@@ -2172,7 +2172,7 @@ namespace Server.Items
       if ((prop = WeaponAttributes.SelfRepair) != 0)
         list.Add(1060450, prop.ToString()); // self repair ~1_val~
 
-      if ((prop = Attributes.SpellChanneling) != 0)
+      if (Attributes.SpellChanneling != 0)
         list.Add(1060482); // spell channeling
 
       if ((prop = Attributes.SpellDamage) != 0)
@@ -2304,10 +2304,7 @@ namespace Server.Items
       }
       else if (m_Slayer != SlayerName.None || m_Slayer2 != SlayerName.None ||
                m_DurabilityLevel != WeaponDurabilityLevel.Regular || m_DamageLevel != WeaponDamageLevel.Regular ||
-               m_AccuracyLevel != WeaponAccuracyLevel.Regular)
-      {
-        attrs.Add(new EquipInfoAttribute(1038000)); // Unidentified
-      }
+               m_AccuracyLevel != WeaponAccuracyLevel.Regular) attrs.Add(new EquipInfoAttribute(1038000)); // Unidentified
 
       if (m_Poison != null && m_PoisonCharges > 0)
         attrs.Add(new EquipInfoAttribute(1017383, m_PoisonCharges));
@@ -2315,9 +2312,7 @@ namespace Server.Items
       int number;
 
       if (Name == null)
-      {
         number = LabelNumber;
-      }
       else
       {
         LabelTo(from, Name);

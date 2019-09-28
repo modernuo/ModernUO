@@ -1520,7 +1520,7 @@ namespace Server.Items
       if ((prop = GetLuckBonus() + Attributes.Luck) != 0)
         list.Add(1060436, prop.ToString()); // luck ~1_val~
 
-      if ((prop = ArmorAttributes.MageArmor) != 0)
+      if (ArmorAttributes.MageArmor != 0)
         list.Add(1060437); // mage armor
 
       if ((prop = Attributes.BonusMana) != 0)
@@ -1529,7 +1529,7 @@ namespace Server.Items
       if ((prop = Attributes.RegenMana) != 0)
         list.Add(1060440, prop.ToString()); // mana regeneration ~1_val~
 
-      if ((prop = Attributes.NightSight) != 0)
+      if (Attributes.NightSight != 0)
         list.Add(1060441); // night sight
 
       if ((prop = Attributes.ReflectPhysical) != 0)
@@ -1544,7 +1544,7 @@ namespace Server.Items
       if ((prop = ArmorAttributes.SelfRepair) != 0)
         list.Add(1060450, prop.ToString()); // self repair ~1_val~
 
-      if ((prop = Attributes.SpellChanneling) != 0)
+      if (Attributes.SpellChanneling != 0)
         list.Add(1060482); // spell channeling
 
       if ((prop = Attributes.SpellDamage) != 0)

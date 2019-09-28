@@ -279,7 +279,7 @@ namespace Server.Gumps
         int v = Name.CompareTo(comp.Name);
 
         if (v == 0)
-          Body.CompareTo(comp.Body);
+          v = Body.CompareTo(comp.Body);
 
         return v;
       }

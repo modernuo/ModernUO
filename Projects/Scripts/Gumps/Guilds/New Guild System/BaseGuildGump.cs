@@ -41,7 +41,7 @@ namespace Server.Guilds
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {
-      if (!((sender.Mobile is PlayerMobile pm) &&IsMember(pm, guild)))
+      if (!(sender.Mobile is PlayerMobile pm &&IsMember(pm, guild)))
         return;
 
       switch (info.ButtonID)
