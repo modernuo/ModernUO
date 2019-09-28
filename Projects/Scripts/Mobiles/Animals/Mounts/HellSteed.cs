@@ -4,7 +4,7 @@ namespace Server.Mobiles
   {
     [Constructible]
     public HellSteed(string name = "a hellsteed") :
-		  base(name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+      base(name, 793, 0x3EBB, AIType.AI_Animal, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       SetStats(this);
     }

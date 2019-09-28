@@ -4,7 +4,7 @@ namespace Server.Mobiles
   {
     [Constructible]
     public SavageRidgeback(string name = "a savage ridgeback") :
-		  base(name, 188, 0x3EB8, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
+      base(name, 188, 0x3EB8, AIType.AI_Melee, FightMode.Aggressor, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = 0x3F3;
 

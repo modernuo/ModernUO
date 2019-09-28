@@ -689,37 +689,6 @@ namespace Server.Items
     }
   }
 
-#if false
-	public class Pizza : Food
-	{
-		[Constructible]
-		public Pizza() : base( 0x1040 )
-		{
-			Stackable = false;
-			this.Weight = 1.0;
-			this.FillFactor = 6;
-		}
-
-		public Pizza( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
-#endif
-
   public class FruitPie : Food
   {
     [Constructible]

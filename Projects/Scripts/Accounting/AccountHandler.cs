@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using Server.Accounting;
 using Server.Engines.Help;
@@ -176,8 +177,8 @@ namespace Server.Misc
 
             from.SendLocalizedMessage(501234, "",
               0x35); /* The next available Counselor/Game Master will respond as soon as possible.
-																	    * Please check your Journal for messages every few minutes.
-																	    */
+                           * Please check your Journal for messages every few minutes.
+                           */
 
             PageQueue.Enqueue(new PageEntry(from,
               $"[Automated: Change Password]<br>Desired password: {pass}<br>Current IP address: {ipAddress}<br>Account IP address: {accessList[0]}",
@@ -236,22 +237,9 @@ namespace Server.Misc
       Packets.SendCharacterListUpdate(state, acct);
     }
 
-    public static bool CanCreate(IPAddress ip)
-    {
-      if (!IPTable.ContainsKey(ip))
-        return true;
+    public static bool CanCreate(IPAddress ip) => !IPTable.ContainsKey(ip) || IPTable[ip] < MaxAccountsPerIP;
 
-      return IPTable[ip] < MaxAccountsPerIP;
-    }
-
-    private static bool IsForbiddenChar(char c)
-    {
-      for (int i = 0; i < m_ForbiddenChars.Length; ++i)
-        if (c == m_ForbiddenChars[i])
-          return true;
-
-      return false;
-    }
+    private static bool IsForbiddenChar(char c) => m_ForbiddenChars.Any(t => c == t);
 
     private static Account CreateAccount(NetState state, string un, string pw)
     {

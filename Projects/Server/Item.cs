@@ -1449,26 +1449,26 @@ namespace Server
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Method checked to see if the elemental resistances of this Item conflict with another Item on the
-	  ///   <see cref="Mobile" />.
-	  /// </summary>
-	  /// <returns>
-	  ///   <list type="table">
-	  ///     <item>
-	  ///       <term>True</term>
-	  ///       <description>
-	  ///         There is a confliction. The elemental resistance bonuses of this Item should not be applied to the
-	  ///         <see cref="Mobile" />
-	  ///       </description>
-	  ///     </item>
-	  ///     <item>
-	  ///       <term>False</term>
-	  ///       <description>There is no confliction. The bonuses should be applied.</description>
-	  ///     </item>
-	  ///   </list>
-	  /// </returns>
-	  public virtual bool CheckPropertyConfliction(Mobile m) => false;
+    /// <summary>
+    ///   Overridable. Method checked to see if the elemental resistances of this Item conflict with another Item on the
+    ///   <see cref="Mobile" />.
+    /// </summary>
+    /// <returns>
+    ///   <list type="table">
+    ///     <item>
+    ///       <term>True</term>
+    ///       <description>
+    ///         There is a confliction. The elemental resistance bonuses of this Item should not be applied to the
+    ///         <see cref="Mobile" />
+    ///       </description>
+    ///     </item>
+    ///     <item>
+    ///       <term>False</term>
+    ///       <description>There is no confliction. The bonuses should be applied.</description>
+    ///     </item>
+    ///   </list>
+    /// </returns>
+    public virtual bool CheckPropertyConfliction(Mobile m) => false;
 
     /// <summary>
     ///   Overridable. Sends the <see cref="PropertyList">object property list</see> to <paramref name="from" />.
@@ -1560,12 +1560,12 @@ namespace Server
         list.Add(1072789, weight.ToString()); //Weight: ~1_WEIGHT~ stones
     }
 
-	  /// <summary>
-	  ///   Overridable. Adds header properties. By default, this invokes <see cref="AddNameProperty" />,
-	  ///   <see cref="AddBlessedForProperty" /> (if applicable), and <see cref="AddLootTypeProperty" /> (if
-	  ///   <see cref="DisplayLootType" />).
-	  /// </summary>
-	  public virtual void AddNameProperties(ObjectPropertyList list)
+    /// <summary>
+    ///   Overridable. Adds header properties. By default, this invokes <see cref="AddNameProperty" />,
+    ///   <see cref="AddBlessedForProperty" /> (if applicable), and <see cref="AddLootTypeProperty" /> (if
+    ///   <see cref="DisplayLootType" />).
+    /// </summary>
+    public virtual void AddNameProperties(ObjectPropertyList list)
     {
       AddNameProperty(list);
 
@@ -1624,23 +1624,23 @@ namespace Server
       list.Add(1062203, "{0}", m.Name); // Blessed for ~1_NAME~
     }
 
-	  /// <summary>
-	  ///   Overridable. Fills an <see cref="ObjectPropertyList" /> with everything applicable. By default, this invokes
-	  ///   <see cref="AddNameProperties" />, then <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
-	  ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>. This method should be overridden to add any custom
-	  ///   properties.
-	  /// </summary>
-	  public virtual void GetProperties(ObjectPropertyList list)
+    /// <summary>
+    ///   Overridable. Fills an <see cref="ObjectPropertyList" /> with everything applicable. By default, this invokes
+    ///   <see cref="AddNameProperties" />, then <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
+    ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>. This method should be overridden to add any custom
+    ///   properties.
+    /// </summary>
+    public virtual void GetProperties(ObjectPropertyList list)
     {
       AddNameProperties(list);
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked when a child (<paramref name="item" />) is building it's <see cref="ObjectPropertyList" />.
-	  ///   Recursively calls <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
-	  ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>.
-	  /// </summary>
-	  public virtual void GetChildProperties(ObjectPropertyList list, Item item)
+    /// <summary>
+    ///   Overridable. Event invoked when a child (<paramref name="item" />) is building it's <see cref="ObjectPropertyList" />.
+    ///   Recursively calls <see cref="Item.GetChildProperties">Item.GetChildProperties</see> or
+    ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildProperties</see>.
+    /// </summary>
+    public virtual void GetChildProperties(ObjectPropertyList list, Item item)
     {
       if (m_Parent is Item parentItem)
         parentItem.GetChildProperties(list, item);
@@ -1648,12 +1648,12 @@ namespace Server
         parentMobile.GetChildProperties(list, item);
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked when a child (<paramref name="item" />) is building it's Name <see cref="ObjectPropertyList" />
-	  ///   . Recursively calls <see cref="Item.GetChildProperties">Item.GetChildNameProperties</see> or
-	  ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildNameProperties</see>.
-	  /// </summary>
-	  public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
+    /// <summary>
+    ///   Overridable. Event invoked when a child (<paramref name="item" />) is building it's Name <see cref="ObjectPropertyList" />
+    ///   . Recursively calls <see cref="Item.GetChildProperties">Item.GetChildNameProperties</see> or
+    ///   <see cref="Mobile.GetChildProperties">Mobile.GetChildNameProperties</see>.
+    /// </summary>
+    public virtual void GetChildNameProperties(ObjectPropertyList list, Item item)
     {
       if (m_Parent is Item parentItem)
         parentItem.GetChildNameProperties(list, item);
@@ -1709,24 +1709,24 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Overridable. Method checked to see if this item may be equipped while casting a spell. By default, this returns false. It
-	  ///   is overridden on spellbook and spell channeling weapons or shields.
-	  /// </summary>
-	  /// <returns>True if it may, false if not.</returns>
-	  /// <example>
-	  ///   <code>
-	  /// 	public override bool AllowEquippedCast( Mobile from )
-	  /// 	{
-	  /// 		if ( from.Int &gt;= 100 )
-	  /// 			return true;
-	  ///
-	  /// 		return base.AllowEquippedCast( from );
-	  ///  }</code>
-	  ///   When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more
-	  ///   intelligence. Otherwise, it will drop to their backpack.
-	  /// </example>
-	  public virtual bool AllowEquippedCast(Mobile from) => false;
+    /// <summary>
+    ///   Overridable. Method checked to see if this item may be equipped while casting a spell. By default, this returns false. It
+    ///   is overridden on spellbook and spell channeling weapons or shields.
+    /// </summary>
+    /// <returns>True if it may, false if not.</returns>
+    /// <example>
+    ///   <code>
+    /// 	public override bool AllowEquippedCast( Mobile from )
+    /// 	{
+    /// 		if ( from.Int &gt;= 100 )
+    /// 			return true;
+    ///
+    /// 		return base.AllowEquippedCast( from );
+    ///  }</code>
+    ///   When placed in an Item script, the item may be cast when equipped if the <paramref name="from" /> has 100 or more
+    ///   intelligence. Otherwise, it will drop to their backpack.
+    /// </example>
+    public virtual bool AllowEquippedCast(Mobile from) => false;
 
     public virtual bool CheckConflictingLayer(Mobile m, Item item, Layer layer) => m_Layer == layer;
 

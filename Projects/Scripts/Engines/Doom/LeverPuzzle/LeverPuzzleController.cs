@@ -5,11 +5,6 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
 
-/*
-	this is From me to you, Under no terms, Conditions...   K?  to apply you
-	just simply Unpatch/delete, Stick these in, Same location.. Restart
-	*/
-
 namespace Server.Engines.Doom
 {
   public class LeverPuzzleController : Item

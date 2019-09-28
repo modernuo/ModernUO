@@ -8,7 +8,7 @@ namespace Server.Mobiles
   {
     [Constructible]
     public Kirin(string name = "a ki-rin") :
-		  base(name, 132, 0x3EAD, AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
+      base(name, 132, 0x3EAD, AIType.AI_Mage, FightMode.Evil, 10, 1, 0.2, 0.4)
     {
       BaseSoundID = 0x3C5;
 

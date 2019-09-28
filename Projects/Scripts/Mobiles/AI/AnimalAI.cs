@@ -1,5 +1,5 @@
 // Ideas
-// When you run on animals the panic
+// When you run on animals they panic
 // When if ( distance < 8 && Utility.RandomDouble() * Math.Sqrt( (8 - distance) / 6 ) >= incoming.Skills.AnimalTaming.Value )
 // More your close, the more it can panic
 /*
@@ -17,28 +17,6 @@ namespace Server.Mobiles
 
     public override bool DoActionWander()
     {
-      // Old:
-#if false
-			if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, true, false, true))
-			{
-				m_Mobile.DebugSay( "There is something near, I go away" );
-				Action = ActionType.Backoff;
-			}
-			else if ( m_Mobile.IsHurt() || m_Mobile.Combatant != null )
-			{
-				m_Mobile.DebugSay( "I am hurt or being attacked, I flee" );
-				Action = ActionType.Flee;
-			}
-			else
-			{
-				base.DoActionWander();
-			}
-
-			return true;
-#endif
-
-      // New, only flee @ 10%
-
       double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;
 
       if (!m_Mobile.Summoned && !m_Mobile.Controlled && hitPercent < 0.1 && m_Mobile.CanFlee) // Less than 10% health

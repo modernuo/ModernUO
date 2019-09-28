@@ -48,10 +48,11 @@ namespace Server.Gumps
 
       AddHtmlLocalized( 0, 20, 400, 35, 1011022 ); // <center>Resurrection</center>
 
-      AddHtmlLocalized( 50, 55, 300, 140, 1011023 + (int)msg, true, true ); /* It is possible for you to be resurrected here by this healer. Do you wish to try?<br>
-																				   * CONTINUE - You chose to try to come back to life now.<br>
-																				   * CANCEL - You prefer to remain a ghost for now.
-																				   */
+      AddHtmlLocalized( 50, 55, 300, 140, 1011023 + (int)msg, true, true );
+      /* It is possible for you to be resurrected here by this healer. Do you wish to try?<br>
+       * CONTINUE - You chose to try to come back to life now.<br>
+       * CANCEL - You prefer to remain a ghost for now.
+       */
 
       AddButton( 200, 227, 4005, 4007, 0);
       AddHtmlLocalized( 235, 230, 110, 35, 1011012 ); // CANCEL

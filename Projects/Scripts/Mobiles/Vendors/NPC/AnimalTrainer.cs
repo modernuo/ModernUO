@@ -173,43 +173,27 @@ namespace Server.Mobiles
         return;
 
       if (pet.Body.IsHuman)
-      {
         SayTo(from, 502672); // HA HA HA! Sorry, I am not an inn.
-      }
       else if (!pet.Controlled)
-      {
         SayTo(from, 1048053); // You can't stable that!
-      }
       else if (pet.ControlMaster != from)
-      {
         SayTo(from, 1042562); // You do not own that pet!
-      }
       else if (pet.IsDeadPet)
-      {
         SayTo(from, 1049668); // Living pets only, please.
-      }
       else if (pet.Summoned)
-      {
         SayTo(from, 502673); // I can not stable summoned creatures.
-      }
-/*
-			else if ( pet.Allured )
-			{
-				SayTo( from, 1048053 ); // You can't stable that!
-			}
-*/
+      /*else if ( pet.Allured )
+      {
+        SayTo( from, 1048053 ); // You can't stable that!
+      }*/
       else if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
       {
         SayTo(from, 1042563); // You need to unload your pet.
       }
       else if (pet.Combatant != null && pet.InRange(pet.Combatant, 12) && pet.Map == pet.Combatant.Map)
-      {
         SayTo(from, 1042564); // I'm sorry.  Your pet seems to be busy.
-      }
       else if (from.Stabled.Count >= GetMaxStabled(from))
-      {
         SayTo(from, 1042565); // You have too many pets in the stables!
-      }
       else
       {
         Container bank = from.FindBankNoCreate();
@@ -238,9 +222,7 @@ namespace Server.Mobiles
               : 502679); // [AOS: Your pet has been stabled.] Very well, thy pet is stabled. Thou mayst recover it by saying 'claim' to me. In one real world week, I shall sell it off if it is not claimed!
         }
         else
-        {
           SayTo(from, 502677); // But thou hast not the funds in thy bank account!
-        }
       }
     }
 
@@ -258,7 +240,7 @@ namespace Server.Mobiles
       {
         BaseCreature pet = from.Stabled[i] as BaseCreature;
 
-        if (pet?.Deleted != false)
+        if (pet?.Deleted == false)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
