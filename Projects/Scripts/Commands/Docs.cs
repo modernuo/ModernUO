@@ -82,9 +82,7 @@ namespace Server.Commands
           if (baseInfo == null)
             m_Types[baseType] = baseInfo = new TypeInfo(baseType);
 
-          if (baseInfo.m_Derived == null)
-            baseInfo.m_Derived = new List<TypeInfo>();
-
+          baseInfo.m_Derived ??= new List<TypeInfo>();
           baseInfo.m_Derived.Add(info);
         }
 
@@ -97,9 +95,7 @@ namespace Server.Commands
           if (decInfo == null)
             m_Types[decType] = decInfo = new TypeInfo(decType);
 
-          if (decInfo.m_Nested == null)
-            decInfo.m_Nested = new List<TypeInfo>();
-
+          decInfo.m_Nested ??= new List<TypeInfo>();
           decInfo.m_Nested.Add(info);
         }
 
@@ -115,9 +111,7 @@ namespace Server.Commands
           if (ifaceInfo == null)
             m_Types[iface] = ifaceInfo = new TypeInfo(iface);
 
-          if (ifaceInfo.m_Derived == null)
-            ifaceInfo.m_Derived = new List<TypeInfo>();
-
+          ifaceInfo.m_Derived ??= new List<TypeInfo>();
           ifaceInfo.m_Derived.Add(info);
         }
       }

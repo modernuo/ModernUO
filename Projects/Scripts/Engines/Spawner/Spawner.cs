@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Server.Commands;
 using Server.Items;
@@ -293,8 +294,7 @@ namespace Server.Mobiles
 
     public void Defrag()
     {
-      if (Entries == null)
-        Entries = new List<SpawnerEntry>();
+      Entries ??= new List<SpawnerEntry>();
 
       for (int i = 0; i < Entries.Count; ++i)
         Entries[i].Defrag(this);
@@ -302,8 +302,6 @@ namespace Server.Mobiles
 
     public void OnTick()
     {
-//			DoTimer( m_Spawned.Count >= m_Count );
-
       if (m_Group)
       {
         Defrag();
@@ -314,19 +312,8 @@ namespace Server.Mobiles
         Respawn();
       }
       else
-      {
         Spawn();
-      }
 
-/*
-			if ( m_Running && m_Timer != null )
-			{
-				if ( m_Spawned.Count >= m_Count && m_Timer.Running )
-					DoTimer( true );
-				else if ( m_Spawned.Count < m_Count && !m_Timer.Running )
-					DoTimer( false );
-			}
-*/
       DoTimer();
     }
 
@@ -347,11 +334,7 @@ namespace Server.Mobiles
       if (Entries.Count <= 0 || IsFull)
         return;
 
-      int probsum = 0;
-
-      for (int i = 0; i < Entries.Count; i++)
-        if (!Entries[i].IsFull)
-          probsum += Entries[i].SpawnedProbability;
+      int probsum = Entries.Where(t => !t.IsFull).Sum(t => t.SpawnedProbability);
 
       if (probsum <= 0)
         return;
@@ -1135,9 +1118,7 @@ namespace Server.Mobiles
         else if (e is Mobile m)
         {
           if (m.Deleted)
-          {
             remove = true;
-          }
           else if (m is BaseCreature c)
           {
             if (c.Controlled || c.IsStabled)
@@ -1153,10 +1134,7 @@ namespace Server.Mobiles
 						}
 */
           }
-          else if (m.Spawner == null)
-          {
-            remove = true;
-          }
+          else if (m.Spawner == null) remove = true;
         }
         else
         {

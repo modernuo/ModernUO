@@ -1089,24 +1089,10 @@ namespace Server.Guilds
         }
       }
 
-      if (AllyDeclarations == null)
-        AllyDeclarations = new List<Guild>();
-
-      if (AllyInvitations == null)
-        AllyInvitations = new List<Guild>();
-
-
-      if (AcceptedWars == null)
-        AcceptedWars = new List<WarDeclaration>();
-
-      if (PendingWars == null)
-        PendingWars = new List<WarDeclaration>();
-
-
-      /*
-      if ( ( !NewGuildSystem && m_Guildstone == null )|| m_Members.Count == 0 )
-        Disband();
-      */
+      AllyDeclarations ??= new List<Guild>();
+      AllyInvitations ??= new List<Guild>();
+      AcceptedWars ??= new List<WarDeclaration>();
+      PendingWars ??= new List<WarDeclaration>();
 
       Timer.DelayCall(TimeSpan.Zero, VerifyGuild_Callback);
     }

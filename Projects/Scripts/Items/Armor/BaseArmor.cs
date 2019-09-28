@@ -1264,8 +1264,7 @@ namespace Server.Items
         }
       }
 
-      if (SkillBonuses == null)
-        SkillBonuses = new AosSkillBonuses(this);
+      SkillBonuses ??= new AosSkillBonuses(this);
 
       Mobile m = Parent as Mobile;
 

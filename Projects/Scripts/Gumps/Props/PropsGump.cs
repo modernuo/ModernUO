@@ -153,9 +153,7 @@ namespace Server.Gumps
 
       if (parent != null)
       {
-        if (m_Stack == null)
-          m_Stack = new Stack<StackEntry>();
-
+        m_Stack ??= new Stack<StackEntry>();
         m_Stack.Push(parent);
       }
 

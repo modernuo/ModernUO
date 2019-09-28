@@ -299,8 +299,7 @@ namespace Server.Network
 
     public void AddMenu(IMenu menu)
     {
-      if (Menus == null)
-        Menus = new List<IMenu>();
+      Menus ??= new List<IMenu>();
 
       if (Menus.Count < MenuCap)
         Menus.Add(menu);
@@ -328,8 +327,7 @@ namespace Server.Network
 
     public void AddHuePicker(HuePicker huePicker)
     {
-      if (HuePickers == null)
-        HuePickers = new List<HuePicker>();
+      HuePickers ??= new List<HuePicker>();
 
       if (HuePickers.Count < HuePickerCap)
         HuePickers.Add(huePicker);
@@ -357,8 +355,7 @@ namespace Server.Network
 
     public void AddGump(Gump gump)
     {
-      if (Gumps == null)
-        Gumps = new List<Gump>();
+      Gumps ??= new List<Gump>();
 
       if (Gumps.Count < GumpCap)
         Gumps.Add(gump);

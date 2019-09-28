@@ -464,9 +464,7 @@ namespace Server.Misc
 
     public void QueuePoll(ShardPoller poller)
     {
-      if (m_Polls == null)
-        m_Polls = new Queue<ShardPoller>(4);
-
+      m_Polls ??= new Queue<ShardPoller>(4);
       m_Polls.Enqueue(poller);
     }
 

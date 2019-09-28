@@ -171,8 +171,7 @@ namespace Server.Engines.ConPVP
 
       King = m;
 
-      if (m_KingTimer == null)
-        m_KingTimer = new KingTimer(this);
+      m_KingTimer ??= new KingTimer(this);
       m_KingTimer.Stop();
       m_KingTimer.StartHillTicker();
 

@@ -484,8 +484,7 @@ namespace Server.Engines.Craft
           if (m_TypesTable[j][0] == baseType)
             types[i] = m_TypesTable[j];
 
-        if (types[i] == null)
-          types[i] = new[] { baseType };
+        types[i] ??= new[] { baseType };
 
         amounts[i] = craftRes.Amount;
 

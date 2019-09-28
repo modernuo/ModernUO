@@ -4852,23 +4852,9 @@ namespace Server
 
       if (master != null)
       {
-        List<DamageEntry> list = de.Responsible;
+        List<DamageEntry> list = de.Responsible ?? new List<DamageEntry>();
 
-        if (list == null)
-          de.Responsible = list = new List<DamageEntry>();
-
-        DamageEntry resp = null;
-
-        for (int i = 0; i < list.Count; ++i)
-        {
-          DamageEntry check = list[i];
-
-          if (check.Damager == master)
-          {
-            resp = check;
-            break;
-          }
-        }
+        DamageEntry resp = list.FirstOrDefault(check => check.Damager == master);
 
         if (resp == null)
           list.Add(resp = new DamageEntry(master));

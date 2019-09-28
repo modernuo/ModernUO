@@ -49,8 +49,7 @@ namespace Server.Mobiles
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
     {
-      if (Entries == null)
-        Entries = new List<TownCrierEntry>();
+      Entries ??= new List<TownCrierEntry>();
 
       TownCrierEntry tce = new TownCrierEntry(lines, duration);
 
@@ -383,8 +382,7 @@ namespace Server.Mobiles
 
     public TownCrierEntry AddEntry(string[] lines, TimeSpan duration)
     {
-      if (Entries == null)
-        Entries = new List<TownCrierEntry>();
+      Entries ??= new List<TownCrierEntry>();
 
       TownCrierEntry tce = new TownCrierEntry(lines, duration);
 

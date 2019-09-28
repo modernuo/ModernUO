@@ -332,8 +332,7 @@ namespace Server.Items
       if (Aggressors.Count == 0 || Items.Count == 0)
         return;
 
-      if (m_InstancedItems == null)
-        m_InstancedItems = new Dictionary<Item, InstancedItemInfo>();
+      m_InstancedItems ??= new Dictionary<Item, InstancedItemInfo>();
 
       List<Item> m_Stackables = new List<Item>();
       List<Item> m_Unstackables = new List<Item>();

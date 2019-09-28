@@ -2293,32 +2293,23 @@ namespace Server.Mobiles
         }
       }
 
-      if (RecentlyReported == null)
-        RecentlyReported = new List<Mobile>();
+      RecentlyReported ??= new List<Mobile>();
 
       // Professions weren't verified on 1.0 RC0
       if (!CharacterCreation.VerifyProfession(Profession))
         Profession = 0;
 
-      if (PermaFlags == null)
-        PermaFlags = new List<Mobile>();
+      PermaFlags ??= new List<Mobile>();
+      JusticeProtectors ??= new List<Mobile>();
+      BOBFilter ??= new BOBFilter();
 
-      if (JusticeProtectors == null)
-        JusticeProtectors = new List<Mobile>();
-
-      if (BOBFilter == null)
-        BOBFilter = new BOBFilter();
-
-      if (m_GuildRank == null)
-        m_GuildRank =
-          RankDefinition
-            .Member; //Default to member if going from older version to new version (only time it should be null)
+      //Default to member if going from older version to new version (only time it should be null)
+      m_GuildRank ??= RankDefinition.Member;
 
       if (LastOnline == DateTime.MinValue && Account != null)
         LastOnline = ((Account)Account).LastLogin;
 
-      if (ChampionTitles == null)
-        ChampionTitles = new ChampionTitleInfo();
+      ChampionTitles ??= new ChampionTitleInfo();
 
       if (AccessLevel > AccessLevel.Player)
         m_IgnoreMobiles = true;
@@ -3114,39 +3105,21 @@ namespace Server.Mobiles
     [CommandProperty(AccessLevel.GameMaster)]
     public override int Str
     {
-      get
-      {
-        if (Core.ML && AccessLevel == AccessLevel.Player)
-          return Math.Min(base.Str, 150);
-
-        return base.Str;
-      }
+      get => Core.ML && AccessLevel == AccessLevel.Player ? Math.Min(base.Str, 150) : base.Str;
       set => base.Str = value;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public override int Int
     {
-      get
-      {
-        if (Core.ML && AccessLevel == AccessLevel.Player)
-          return Math.Min(base.Int, 150);
-
-        return base.Int;
-      }
+      get => Core.ML && AccessLevel == AccessLevel.Player ? Math.Min(base.Int, 150) : base.Int;
       set => base.Int = value;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public override int Dex
     {
-      get
-      {
-        if (Core.ML && AccessLevel == AccessLevel.Player)
-          return Math.Min(base.Dex, 150);
-
-        return base.Dex;
-      }
+      get => Core.ML && AccessLevel == AccessLevel.Player ? Math.Min(base.Dex, 150) : base.Dex;
       set => base.Dex = value;
     }
 
@@ -3165,36 +3138,16 @@ namespace Server.Mobiles
       SendLocalizedMessage(1060868); // Target the item you wish to toggle insurance status on <ESC> to cancel
     }
 
-    private bool CanInsure(Item item)
-    {
-      if (item is Container && !(item is BaseQuiver) || item is BagOfSending || item is KeyRing || item is PotionKeg ||
-          item is Sigil)
-        return false;
-
-      if (item.Stackable)
-        return false;
-
-      if (item.LootType == LootType.Cursed)
-        return false;
-
-      if (item.ItemID == 0x204E) // death shroud
-        return false;
-
-      if (item.Layer == Layer.Mount)
-        return false;
-
-      if (item.LootType == LootType.Blessed || item.LootType == LootType.Newbied || item.BlessedFor == this)
-        return false;
-
-      return true;
-    }
+    private bool CanInsure(Item item) =>
+      (!(item is Container) || item is BaseQuiver) && !(item is BagOfSending) && !(item is KeyRing) &&
+      !(item is PotionKeg) && !(item is Sigil) && !item.Stackable && item.LootType != LootType.Cursed &&
+      item.ItemID != 0x204E && item.Layer != Layer.Mount && item.LootType != LootType.Blessed &&
+      item.LootType != LootType.Newbied && item.BlessedFor != this;
 
     private void ToggleItemInsurance_Callback(Mobile from, object obj)
     {
-      if (!CheckAlive())
-        return;
-
-      ToggleItemInsurance_Callback(from, obj as Item, true);
+      if (CheckAlive())
+        ToggleItemInsurance_Callback(from, obj as Item, true);
     }
 
     private void ToggleItemInsurance_Callback(Mobile from, Item item, bool target)
@@ -3324,9 +3277,7 @@ namespace Server.Mobiles
           m_Player.AutoRenewInsurance = false;
         }
         else
-        {
           m_Player.SendLocalizedMessage(1042021); // Cancelled.
-        }
 
         if (m_InsuranceGump != null)
           m_Player.SendGump(m_InsuranceGump.NewInstance());
@@ -3409,11 +3360,7 @@ namespace Server.Mobiles
         AddHtmlLocalized(400, 54, 70, 20, 1114311, 0x7FFF); // Insured
 
         int balance = Banker.GetBalance(from);
-        int cost = 0;
-
-        for (int i = 0; i < items.Length; ++i)
-          if (insure[i])
-            cost += GetInsuranceCost(items[i]);
+        int cost = items.Where((t, i) => insure[i]).Sum(GetInsuranceCost);
 
         AddHtmlLocalized(15, 420, 300, 20, 1114310, 0x7FFF); // GOLD AVAILABLE:
         AddLabel(215, 420, 0x481, balance.ToString());
@@ -3632,20 +3579,12 @@ namespace Server.Mobiles
 
     private DateTime[] m_StuckMenuUses;
 
-    public bool CanUseStuckMenu()
-    {
-      if (m_StuckMenuUses == null) return true;
-
-      for (int i = 0; i < m_StuckMenuUses.Length; ++i)
-        if (DateTime.UtcNow - m_StuckMenuUses[i] > TimeSpan.FromDays(1.0))
-          return true;
-
-      return false;
-    }
+    public bool CanUseStuckMenu() =>
+      m_StuckMenuUses?.Any(t => DateTime.UtcNow - t > TimeSpan.FromDays(1.0)) != false;
 
     public void UsedStuckMenu()
     {
-      if (m_StuckMenuUses == null) m_StuckMenuUses = new DateTime[2];
+      m_StuckMenuUses ??= new DateTime[2];
 
       for (int i = 0; i < m_StuckMenuUses.Length; ++i)
         if (DateTime.UtcNow - m_StuckMenuUses[i] > TimeSpan.FromDays(1.0))
@@ -3675,13 +3614,9 @@ namespace Server.Mobiles
       return result;
     }
 
-    public override bool CheckPoisonImmunity(Mobile from, Poison poison)
-    {
-      if (Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished))
-        return true;
-
-      return base.CheckPoisonImmunity(from, poison);
-    }
+    public override bool CheckPoisonImmunity(Mobile from, Poison poison) =>
+      Young && (DuelContext == null || !DuelContext.Started || DuelContext.Finished) ||
+      base.CheckPoisonImmunity(from, poison);
 
     public override void OnPoisonImmunity(Mobile from, Poison poison)
     {
@@ -3709,10 +3644,7 @@ namespace Server.Mobiles
 
         m_DuelPlayer = value;
 
-        if (m_DuelPlayer == null)
-          DuelContext = null;
-        else
-          DuelContext = m_DuelPlayer.Participant.Context;
+        DuelContext = m_DuelPlayer?.Participant.Context;
 
         bool isInTourney = DuelContext?.Finished == false && DuelContext.m_Tournament != null;
 
@@ -4006,22 +3938,12 @@ namespace Server.Mobiles
     public override string ApplyNameSuffix(string suffix)
     {
       if (Young)
-      {
-        if (suffix.Length == 0)
-          suffix = "(Young)";
-        else
-          suffix = $"{suffix} (Young)";
-      }
+        suffix = suffix.Length == 0 ? "(Young)" : $"{suffix} (Young)";
 
       #region Ethics
 
       if (EthicPlayer != null)
-      {
-        if (suffix.Length == 0)
-          suffix = EthicPlayer.Ethic.Definition.Adjunct.String;
-        else
-          suffix = $"{suffix} {EthicPlayer.Ethic.Definition.Adjunct.String}";
-      }
+        suffix = suffix.Length == 0 ? EthicPlayer.Ethic.Definition.Adjunct.String : $"{suffix} {EthicPlayer.Ethic.Definition.Adjunct.String}";
 
       #endregion
 
@@ -4032,23 +3954,15 @@ namespace Server.Mobiles
         if (faction != null)
         {
           string adjunct = $"[{faction.Definition.Abbreviation}]";
-          if (suffix.Length == 0)
-            suffix = adjunct;
-          else
-            suffix = $"{suffix} {adjunct}";
+          suffix = suffix.Length == 0 ? adjunct : $"{suffix} {adjunct}";
         }
       }
 
       return base.ApplyNameSuffix(suffix);
     }
 
-    public override TimeSpan GetLogoutDelay()
-    {
-      if (Young || BedrollLogout || TestCenter.Enabled)
-        return TimeSpan.Zero;
-
-      return base.GetLogoutDelay();
-    }
+    public override TimeSpan GetLogoutDelay() =>
+      Young || BedrollLogout || TestCenter.Enabled ? TimeSpan.Zero : base.GetLogoutDelay();
 
     private DateTime m_LastYoungMessage = DateTime.MinValue;
 
@@ -4089,7 +4003,7 @@ namespace Server.Mobiles
       return false;
     }
 
-    private static Point3D[] m_TrammelDeathDestinations =
+    private static readonly Point3D[] m_TrammelDeathDestinations =
     {
       new Point3D(1481, 1612, 20),
       new Point3D(2708, 2153, 0),
@@ -4108,7 +4022,7 @@ namespace Server.Mobiles
       new Point3D(3665, 2587, 0)
     };
 
-    private static Point3D[] m_IlshenarDeathDestinations =
+    private static readonly Point3D[] m_IlshenarDeathDestinations =
     {
       new Point3D(1216, 468, -13),
       new Point3D(723, 1367, -60),
@@ -4121,13 +4035,13 @@ namespace Server.Mobiles
       new Point3D(1722, 219, 96)
     };
 
-    private static Point3D[] m_MalasDeathDestinations =
+    private static readonly Point3D[] m_MalasDeathDestinations =
     {
       new Point3D(2079, 1376, -70),
       new Point3D(944, 519, -71)
     };
 
-    private static Point3D[] m_TokunoDeathDestinations =
+    private static readonly Point3D[] m_TokunoDeathDestinations =
     {
       new Point3D(1166, 801, 27),
       new Point3D(782, 1228, 25),
@@ -4207,9 +4121,7 @@ namespace Server.Mobiles
     {
       if (SpeechLog.Enabled && NetState != null)
       {
-        if (SpeechLog == null)
-          SpeechLog = new SpeechLog();
-
+        SpeechLog ??= new SpeechLog();
         SpeechLog.Add(e.Mobile, e.Speech);
       }
     }
@@ -4432,9 +4344,7 @@ namespace Server.Mobiles
 
         for (int i = 0; i < length; i++)
         {
-          if (titles.m_Values[i] == null)
-            titles.m_Values[i] = new TitleInfo();
-
+          titles.m_Values[i] ??= new TitleInfo();
           TitleInfo.Serialize(writer, titles.m_Values[i]);
         }
       }
@@ -4516,9 +4426,7 @@ namespace Server.Mobiles
 
     public virtual void AcquireRecipe(int recipeID)
     {
-      if (m_AcquiredRecipes == null)
-        m_AcquiredRecipes = new Dictionary<int, bool>();
-
+      m_AcquiredRecipes ??= new Dictionary<int, bool>();
       m_AcquiredRecipes[recipeID] = true;
     }
 
