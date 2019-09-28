@@ -878,9 +878,7 @@ namespace Server.Commands
                 res = true;
             }
             else if ((item.ItemData.Flags & TileFlag.LightSource) != 0 && item.ItemData.Name == srcName)
-            {
               m_DeleteQueue.Enqueue(item);
-            }
           }
       }
       else if (srcItem is Teleporter || srcItem is FillableContainer || srcItem is BaseBook)

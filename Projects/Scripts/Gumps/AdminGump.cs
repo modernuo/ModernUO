@@ -1930,12 +1930,7 @@ namespace Server.Gumps
                     hasAccess = true;
                   else
                     for (int j = 0; !hasAccess && j < a.Length; ++j)
-                    {
-                      Mobile m = a[j];
-
-                      if (m?.AccessLevel >= level)
-                        hasAccess = true;
-                    }
+                      hasAccess |= a[j]?.AccessLevel >= level;
 
                   if (!hasAccess)
                   {
@@ -2523,8 +2518,7 @@ namespace Server.Gumps
                 bool hasHouse = false;
 
                 for (int i = 0; i < acct.Length && !hasHouse; ++i)
-                  if (acct[i] != null && BaseHouse.HasHouse(acct[i]))
-                    hasHouse = true;
+                  hasHouse |= acct[i] != null && BaseHouse.HasHouse(acct[i]);
 
                 if (!hasHouse)
                   newRads.Add(acct);

@@ -264,9 +264,7 @@ namespace Server.Engines.Plants
         case 1: // Reproduction menu
         {
           if (m_Plant.PlantStatus > PlantStatus.BowlOfDirt)
-          {
             from.SendGump(new ReproductionGump(m_Plant));
-          }
           else
           {
             from.SendLocalizedMessage(1061885); // You need to plant a seed in the bowl first.
@@ -316,9 +314,7 @@ namespace Server.Engines.Plants
               $"#{m_Plant.GetLocalizedPlantStatus()}"); // Target the container you wish to use to water the ~1_val~.
           }
           else
-          {
             m_Plant.Pour(from, bev);
-          }
 
           from.SendGump(new MainPlantGump(m_Plant));
 
@@ -370,9 +366,7 @@ namespace Server.Engines.Plants
       Item item = GetPotion(from, effects);
 
       if (item != null)
-      {
         m_Plant.Pour(from, item);
-      }
       else
       {
         if (m_Plant.ApplyPotion(effects[0], true, out int message))

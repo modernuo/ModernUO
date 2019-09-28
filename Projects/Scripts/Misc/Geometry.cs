@@ -140,13 +140,9 @@ namespace Server.Misc
           withinBounds = false;
       }
       else if (pointQuadrant == start.Quadrant && (x < startX || y > startY))
-      {
         withinBounds = false;
-      }
       else if (pointQuadrant == end.Quadrant && (x > endX || y < endY))
-      {
         withinBounds = false;
-      }
 
       return opposite ? !withinBounds : withinBounds;
     }

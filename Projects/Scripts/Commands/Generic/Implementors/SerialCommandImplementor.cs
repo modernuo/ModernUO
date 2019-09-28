@@ -17,7 +17,7 @@ namespace Server.Commands.Generic
       {
         Serial serial = e.GetUInt32(0);
 
-        object obj = null;
+        IEntity obj = null;
 
         if (serial.IsItem)
           obj = World.FindItem(serial);
@@ -25,36 +25,20 @@ namespace Server.Commands.Generic
           obj = World.FindMobile(serial);
 
         if (obj == null)
-        {
           e.Mobile.SendMessage("That is not a valid serial.");
-        }
         else
         {
           Commands.TryGetValue(e.GetString(1), out BaseCommand command);
 
           if (command == null)
-          {
             e.Mobile.SendMessage(
               "That is either an invalid command name or one that does not support this modifier.");
-          }
           else if (e.Mobile.AccessLevel < command.AccessLevel)
-          {
             e.Mobile.SendMessage("You do not have access to that command.");
-          }
           else
           {
             switch (command.ObjectTypes)
             {
-//              case ObjectTypes.Both:
-//              {
-//                if (!(obj is Item) && !(obj is Mobile))
-//                {
-//                  e.Mobile.SendMessage("This command does not work on that.");
-//                  return;
-//                }
-//
-//                break;
-//              }
               case ObjectTypes.Items:
               {
                 if (!(obj is Item))

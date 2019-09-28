@@ -134,22 +134,12 @@ namespace Server.Factions
           return 1010355; // This trap can only be placed in your stronghold
         }
         case AllowedPlacing.AnyFactionTown:
-        {
-          Town town = Town.FromRegion(Region.Find(p, m));
-
-          if (town != null)
-            return 0;
-
-          return 1010356; // This trap can only be placed in a faction town
-        }
+          return Town.FromRegion(Region.Find(p, m)) != null ? 0 : 1010356;
         case AllowedPlacing.ControlledFactionTown:
         {
           Town town = Town.FromRegion(Region.Find(p, m));
 
-          if (town != null && town.Owner == Faction)
-            return 0;
-
-          return 1010357; // This trap can only be placed in a town your faction controls
+          return town != null && town.Owner == Faction ? 0 : 1010357;
         }
       }
 
@@ -160,10 +150,9 @@ namespace Server.Factions
     {
       base.OnMovement(m, oldLocation);
 
-      if (!CheckDecay() && CheckRange(m.Location, oldLocation, 6))
-        if (Faction.Find(m) != null &&
-            (m.Skills.DetectHidden.Value - 80.0) / 20.0 > Utility.RandomDouble())
-          PrivateOverheadLocalizedMessage(m, 1010154, MessageHue, "", ""); // [Faction Trap]
+      if (!CheckDecay() && CheckRange(m.Location, oldLocation, 6) &&
+          Faction.Find(m) != null && (m.Skills.DetectHidden.Value - 80.0) / 20.0 > Utility.RandomDouble())
+        PrivateOverheadLocalizedMessage(m, 1010154, MessageHue, "", ""); // [Faction Trap]
     }
 
     public void PrivateOverheadLocalizedMessage(Mobile to, int number, int hue, string name, string args)

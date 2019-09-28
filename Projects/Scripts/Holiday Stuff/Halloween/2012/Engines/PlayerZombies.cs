@@ -211,16 +211,17 @@ namespace Server.Engines.Events
 
     public override void GenerateLoot()
     {
-      switch( Utility.Random( 10 ) )
+      switch ( Utility.Random( 10 ) )
       {
         case 0: PackItem( new LeftArm() ); break;
         case 1: PackItem( new RightArm() ); break;
         case 2: PackItem( new Torso() ); break;
         case 3: PackItem( new Bone() ); break;
         case 4: PackItem( new RibCage() ); break;
-        case 5: if (m_DeadPlayer?.Deleted == false) PackItem( new PlayerBones( m_DeadPlayer.Name ) );
+        case 5:
+          if (m_DeadPlayer?.Deleted == false)
+            PackItem( new PlayerBones( m_DeadPlayer.Name ) );
           break;
-        default: break;
       }
 
       AddLoot( LootPack.Meager );
@@ -237,10 +238,8 @@ namespace Server.Engines.Events
 
     public override void OnDelete()
     {
-      if ( HalloweenHauntings.ReAnimated != null )
-        if (m_DeadPlayer?.Deleted == false)
-          if ( HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
-            HalloweenHauntings.ReAnimated.Remove( m_DeadPlayer );
+      if (m_DeadPlayer?.Deleted == false && HalloweenHauntings.ReAnimated?.ContainsKey(m_DeadPlayer) == true)
+        HalloweenHauntings.ReAnimated.Remove(m_DeadPlayer);
     }
 
     public override void Serialize( GenericWriter writer )

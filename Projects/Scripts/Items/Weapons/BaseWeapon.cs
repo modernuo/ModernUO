@@ -291,24 +291,16 @@ namespace Server.Items
       if (m_Quality == WeaponQuality.Exceptional)
         bonus += 20;
 
-      switch (m_DurabilityLevel)
+
+      bonus += m_DurabilityLevel switch
       {
-        case WeaponDurabilityLevel.Durable:
-          bonus += 20;
-          break;
-        case WeaponDurabilityLevel.Substantial:
-          bonus += 50;
-          break;
-        case WeaponDurabilityLevel.Massive:
-          bonus += 70;
-          break;
-        case WeaponDurabilityLevel.Fortified:
-          bonus += 100;
-          break;
-        case WeaponDurabilityLevel.Indestructible:
-          bonus += 120;
-          break;
-      }
+        WeaponDurabilityLevel.Durable => 20,
+        WeaponDurabilityLevel.Substantial => 50,
+        WeaponDurabilityLevel.Massive => 70,
+        WeaponDurabilityLevel.Fortified => 100,
+        WeaponDurabilityLevel.Indestructible => 120,
+        _ => 0
+      };
 
       if (Core.AOS)
       {
@@ -1633,65 +1625,32 @@ namespace Server.Items
       if (!Core.AOS)
         return 0;
 
-      int bonus = 0;
-
-      switch (m_AccuracyLevel)
+      return m_AccuracyLevel switch
       {
-        case WeaponAccuracyLevel.Accurate:
-          bonus += 02;
-          break;
-        case WeaponAccuracyLevel.Surpassingly:
-          bonus += 04;
-          break;
-        case WeaponAccuracyLevel.Eminently:
-          bonus += 06;
-          break;
-        case WeaponAccuracyLevel.Exceedingly:
-          bonus += 08;
-          break;
-        case WeaponAccuracyLevel.Supremely:
-          bonus += 10;
-          break;
-      }
-
-      return bonus;
+        WeaponAccuracyLevel.Accurate => 2,
+        WeaponAccuracyLevel.Surpassingly => 4,
+        WeaponAccuracyLevel.Eminently => 6,
+        WeaponAccuracyLevel.Exceedingly => 8,
+        WeaponAccuracyLevel.Supremely => 10,
+        _ => 0
+      };
     }
 
-    public virtual int GetDamageBonus()
-    {
-      int bonus = VirtualDamageBonus;
-
-      switch (m_Quality)
+    public virtual int GetDamageBonus() =>
+      VirtualDamageBonus + m_Quality switch
       {
-        case WeaponQuality.Low:
-          bonus -= 20;
-          break;
-        case WeaponQuality.Exceptional:
-          bonus += 20;
-          break;
-      }
-
-      switch (m_DamageLevel)
+        WeaponQuality.Low => -20,
+        WeaponQuality.Exceptional => 20,
+        _ => 0,
+      } + m_DamageLevel switch
       {
-        case WeaponDamageLevel.Ruin:
-          bonus += 15;
-          break;
-        case WeaponDamageLevel.Might:
-          bonus += 20;
-          break;
-        case WeaponDamageLevel.Force:
-          bonus += 25;
-          break;
-        case WeaponDamageLevel.Power:
-          bonus += 30;
-          break;
-        case WeaponDamageLevel.Vanq:
-          bonus += 35;
-          break;
-      }
-
-      return bonus;
-    }
+        WeaponDamageLevel.Ruin => 15,
+        WeaponDamageLevel.Might => 20,
+        WeaponDamageLevel.Force => 25,
+        WeaponDamageLevel.Power => 30,
+        WeaponDamageLevel.Vanq => 35,
+        _ => 0,
+      };
 
     public virtual double ScaleDamageAOS(Mobile attacker, double damage, bool checkSkills)
     {

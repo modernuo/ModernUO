@@ -160,7 +160,6 @@ namespace Server.PathAlgorithms
           switch (i)
           {
             default:
-            case 0:
               x = 0;
               y = -1;
               break;

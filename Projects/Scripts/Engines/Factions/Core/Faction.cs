@@ -941,7 +941,7 @@ namespace Server.Factions
       {
         if (victimState.KillPoints <= -6)
         {
-          killer.SendLocalizedMessage(501693); // This victim is not worth enough to get kill points from.
+          killer?.SendLocalizedMessage(501693); // This victim is not worth enough to get kill points from.
 
           #region Ethics
 
@@ -1242,9 +1242,7 @@ namespace Server.Factions
             AddResponse("They have been kicked from their faction.");
           }
           else
-          {
             LogFailure("They are not in a faction.");
-          }
 
           break;
         }
@@ -1258,9 +1256,7 @@ namespace Server.Factions
               AddResponse("The account has been banned from joining factions.");
             }
             else
-            {
               AddResponse("The account is already banned from joining factions.");
-            }
 
             for (int i = 0; i < acct.Length; ++i)
             {
@@ -1280,9 +1276,7 @@ namespace Server.Factions
             }
           }
           else
-          {
             LogFailure("They have no assigned account.");
-          }
 
           break;
         }
@@ -1291,9 +1285,7 @@ namespace Server.Factions
           if (mob.Account is Account acct)
           {
             if (acct.GetTag("FactionBanned") == null)
-            {
               AddResponse("The account is not already banned from joining factions.");
-            }
             else
             {
               acct.RemoveTag("FactionBanned");
@@ -1301,9 +1293,7 @@ namespace Server.Factions
             }
           }
           else
-          {
             LogFailure("They have no assigned account.");
-          }
 
           break;
         }

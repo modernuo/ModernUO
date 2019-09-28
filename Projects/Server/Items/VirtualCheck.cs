@@ -281,58 +281,58 @@ namespace Server.Items
           case Buttons.Close:
             break;
           case Buttons.Clear:
-            {
-              _Plat = _Gold = 0;
-              refresh = true;
-            }
+          {
+            _Plat = _Gold = 0;
+            refresh = true;
+          }
             break;
           case Buttons.Accept:
-            {
-              string platText = info.GetTextEntry(0).Text;
-              string goldText = info.GetTextEntry(1).Text;
+          {
+            string platText = info.GetTextEntry(0).Text;
+            string goldText = info.GetTextEntry(1).Text;
 
-              if (!int.TryParse(platText, out _Plat))
+            if (!int.TryParse(platText, out _Plat))
+            {
+              User.SendMessage("That is not a valid amount of platinum.");
+              refresh = true;
+            }
+            else if (!int.TryParse(goldText, out _Gold))
+            {
+              User.SendMessage("That is not a valid amount of gold.");
+              refresh = true;
+            }
+            else
+            {
+              int totalPlat = User.Account.TotalPlat;
+              int totalGold = User.Account.TotalGold;
+
+              if (totalPlat < _Plat || totalGold < _Gold)
               {
-                User.SendMessage("That is not a valid amount of platinum.");
-                refresh = true;
-              }
-              else if (!int.TryParse(goldText, out _Gold))
-              {
-                User.SendMessage("That is not a valid amount of gold.");
+                _Plat = User.Account.TotalPlat;
+                _Gold = User.Account.TotalGold;
+                User.SendMessage("You do not have that much currency.");
                 refresh = true;
               }
               else
               {
-                int totalPlat = User.Account.TotalPlat;
-                int totalGold = User.Account.TotalGold;
-
-                if (totalPlat < _Plat || totalGold < _Gold)
-                {
-                  _Plat = User.Account.TotalPlat;
-                  _Gold = User.Account.TotalGold;
-                  User.SendMessage("You do not have that much currency.");
-                  refresh = true;
-                }
-                else
-                {
-                  Check.Plat = _Plat;
-                  Check.Gold = _Gold;
-                  updated = true;
-                }
+                Check.Plat = _Plat;
+                Check.Gold = _Gold;
+                updated = true;
               }
             }
+          }
             break;
           case Buttons.AllPlat:
-            {
-              _Plat = User.Account.TotalPlat;
-              refresh = true;
-            }
+          {
+            _Plat = User.Account.TotalPlat;
+            refresh = true;
+          }
             break;
           case Buttons.AllGold:
-            {
-              _Gold = User.Account.TotalGold;
-              refresh = true;
-            }
+          {
+            _Gold = User.Account.TotalGold;
+            refresh = true;
+          }
             break;
         }
 

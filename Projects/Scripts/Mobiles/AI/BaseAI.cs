@@ -110,18 +110,7 @@ namespace Server.Mobiles
 
       m_Timer = new AITimer(this);
 
-      bool activate;
-
-      if (!m.PlayerRangeSensitive)
-        activate = true;
-      else if (World.Loading)
-        activate = false;
-      else if (m.Map == null || m.Map == Map.Internal || !m.Map.GetSector(m).Active)
-        activate = false;
-      else
-        activate = true;
-
-      if (activate)
+      if (!(m.PlayerRangeSensitive || World.Loading || m.Map == null || m.Map == Map.Internal || !m.Map.GetSector(m).Active))
         m_Timer.Start();
 
       Action = ActionType.Wander;

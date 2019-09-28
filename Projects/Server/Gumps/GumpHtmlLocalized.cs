@@ -121,72 +121,72 @@ namespace Server.Gumps
       switch (Type)
       {
         case GumpHtmlLocalizedType.Plain:
-          {
-            writer.Write(m_LayoutNamePlain);
-            writer.WriteAscii(X.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Y.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Width.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Height.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Number.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Background ? "1" : "0");
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Scrollbar ? "1" : "0");
+        {
+          writer.Write(m_LayoutNamePlain);
+          writer.WriteAscii(X.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Y.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Width.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Height.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Number.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Background ? "1" : "0");
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Scrollbar ? "1" : "0");
 
-            break;
-          }
+          break;
+        }
 
         case GumpHtmlLocalizedType.Color:
-          {
-            writer.Write(m_LayoutNameColor);
-            writer.WriteAscii(X.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Y.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Width.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Height.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Number.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Background ? "1" : "0");
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Scrollbar ? "1" : "0");
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Color.ToString());
+        {
+          writer.Write(m_LayoutNameColor);
+          writer.WriteAscii(X.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Y.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Width.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Height.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Number.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Background ? "1" : "0");
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Scrollbar ? "1" : "0");
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Color.ToString());
 
-            break;
-          }
+          break;
+        }
 
         case GumpHtmlLocalizedType.Args:
-          {
-            writer.Write(m_LayoutNameArgs);
-            writer.WriteAscii(X.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Y.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Width.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Height.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Background ? "1" : "0");
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Scrollbar ? "1" : "0");
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Color.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.WriteAscii(Number.ToString());
-            writer.Write((byte)0x20); // ' '
-            writer.Write((byte)0x40); // '@'
-            writer.WriteAscii(Args ?? "");
-            writer.Write((byte)0x40); // '@'
+        {
+          writer.Write(m_LayoutNameArgs);
+          writer.WriteAscii(X.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Y.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Width.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Height.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Background ? "1" : "0");
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Scrollbar ? "1" : "0");
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Color.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.WriteAscii(Number.ToString());
+          writer.Write((byte)0x20); // ' '
+          writer.Write((byte)0x40); // '@'
+          writer.WriteAscii(Args ?? "");
+          writer.Write((byte)0x40); // '@'
 
-            break;
-          }
+          break;
+        }
       }
 
       writer.Write((byte)0x20); // ' '

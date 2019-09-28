@@ -230,36 +230,17 @@ namespace Server.Commands.Generic
 
     public override void Compile(MethodEmitter emitter)
     {
-      bool inverse = false;
+      bool inverse = m_Operator == StringOperator.NotEqual;
 
-      string methodName;
-
-      switch (m_Operator)
+      string methodName = m_Operator switch
       {
-        case StringOperator.Equal:
-          methodName = "Equals";
-          break;
-
-        case StringOperator.NotEqual:
-          methodName = "Equals";
-          inverse = true;
-          break;
-
-        case StringOperator.Contains:
-          methodName = "Contains";
-          break;
-
-        case StringOperator.StartsWith:
-          methodName = "StartsWith";
-          break;
-
-        case StringOperator.EndsWith:
-          methodName = "EndsWith";
-          break;
-
-        default:
-          throw new InvalidOperationException("Invalid string comparison operator.");
-      }
+        StringOperator.Equal => "Equals",
+        StringOperator.NotEqual => "Equals",
+        StringOperator.Contains => "Contains",
+        StringOperator.StartsWith => "StartsWith",
+        StringOperator.EndsWith => "EndsWith",
+        _ => throw new InvalidOperationException("Invalid string comparison operator.")
+      };
 
       if (m_IgnoreCase || methodName == "Equals")
       {

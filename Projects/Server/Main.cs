@@ -337,8 +337,7 @@ namespace Server
 
       ProcessorCount = Environment.ProcessorCount;
 
-      if (ProcessorCount > 1)
-        MultiProcessor = true;
+      MultiProcessor |= ProcessorCount > 1;
 
       if (!Is64Bit) throw new NotSupportedException("Core: 32-bit operating systems are not supported");
 

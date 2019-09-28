@@ -1981,9 +1981,7 @@ namespace Server.Engines.ConPVP
       if (!Registered)
         return;
 
-      if (count != -1)
-        StartedReadyCountdown = true;
-
+      StartedReadyCountdown |= count != -1;
       ReadyCount = count;
 
       if (count == 0)

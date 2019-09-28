@@ -236,9 +236,7 @@ namespace Server.Items
       int number;
 
       if (Name == null)
-      {
         number = 1017085;
-      }
       else
       {
         LabelTo(from, Name);

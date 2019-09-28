@@ -3,22 +3,22 @@ using Server.Mobiles;
 
 namespace Server.Engines.BulkOrders
 {
-	public abstract class LargeBOD : BaseBOD
-	{
-		private LargeBulkEntry[] m_Entries;
+  public abstract class LargeBOD : BaseBOD
+  {
+    private LargeBulkEntry[] m_Entries;
 
-		public LargeBulkEntry[] Entries
+    public LargeBulkEntry[] Entries
     {
       get => m_Entries;
-			set{ m_Entries = value; InvalidateProperties(); }
+      set{ m_Entries = value; InvalidateProperties(); }
     }
 
-		[CommandProperty( AccessLevel.GameMaster )]
-		public override bool Complete => m_Entries.All(t => t.Amount >= AmountMax);
+    [CommandProperty( AccessLevel.GameMaster )]
+    public override bool Complete => m_Entries.All(t => t.Amount >= AmountMax);
 
     public override int LabelNumber => 1045151; // a bulk order deed
 
-		public LargeBOD(int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries) :
+    public LargeBOD(int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries) :
       base(hue, amountMax, requireExeptional, material) =>
       m_Entries = entries;
 
@@ -26,43 +26,43 @@ namespace Server.Engines.BulkOrders
     {
     }
 
-		public override void GetProperties( ObjectPropertyList list )
-		{
-			base.GetProperties( list );
+    public override void GetProperties( ObjectPropertyList list )
+    {
+      base.GetProperties( list );
 
-			list.Add( 1060655 ); // large bulk order
+      list.Add( 1060655 ); // large bulk order
 
-			if ( RequireExceptional )
-				list.Add( 1045141 ); // All items must be exceptional.
+      if ( RequireExceptional )
+        list.Add( 1045141 ); // All items must be exceptional.
 
-			if ( Material != BulkMaterialType.None )
-				list.Add( LargeBODGump.GetMaterialNumberFor( Material ) ); // All items must be made with x material.
+      if ( Material != BulkMaterialType.None )
+        list.Add( LargeBODGump.GetMaterialNumberFor( Material ) ); // All items must be made with x material.
 
-			list.Add( 1060656, AmountMax.ToString() ); // amount to make: ~1_val~
+      list.Add( 1060656, AmountMax.ToString() ); // amount to make: ~1_val~
 
-			for ( int i = 0; i < m_Entries.Length; ++i )
-				list.Add( 1060658 + i, "#{0}\t{1}", m_Entries[i].Details.Number, m_Entries[i].Amount ); // ~1_val~: ~2_val~
-		}
+      for ( int i = 0; i < m_Entries.Length; ++i )
+        list.Add( 1060658 + i, "#{0}\t{1}", m_Entries[i].Details.Number, m_Entries[i].Amount ); // ~1_val~: ~2_val~
+    }
 
-		public override void OnDoubleClickNotAccessible( Mobile from )
-		{
-			OnDoubleClick( from );
-		}
+    public override void OnDoubleClickNotAccessible( Mobile from )
+    {
+      OnDoubleClick( from );
+    }
 
-		public override void OnDoubleClickSecureTrade( Mobile from )
-		{
-			OnDoubleClick( from );
-		}
+    public override void OnDoubleClickSecureTrade( Mobile from )
+    {
+      OnDoubleClick( from );
+    }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( IsChildOf( from.Backpack ) || InSecureTrade || RootParent is PlayerVendor )
-				from.SendGump( new LargeBODGump( from, this ) );
-			else
-				from.SendLocalizedMessage( 1045156 ); // You must have the deed in your backpack to use it.
-		}
+    public override void OnDoubleClick( Mobile from )
+    {
+      if ( IsChildOf( from.Backpack ) || InSecureTrade || RootParent is PlayerVendor )
+        from.SendGump( new LargeBODGump( from, this ) );
+      else
+        from.SendLocalizedMessage( 1045156 ); // You must have the deed in your backpack to use it.
+    }
 
-		public override void EndCombine(Mobile from, Item item)
+    public override void EndCombine(Mobile from, Item item)
     {
       if (!(item is SmallBOD small))
       {
@@ -123,40 +123,40 @@ namespace Server.Engines.BulkOrders
       }
     }
 
-		public LargeBOD(Serial serial) : base(serial)
-		{
-		}
+    public LargeBOD(Serial serial) : base(serial)
+    {
+    }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+    public override void Serialize( GenericWriter writer )
+    {
+      base.Serialize( writer );
 
-			writer.WriteEncodedInt( 0 ); // version
+      writer.WriteEncodedInt( 0 ); // version
 
-			writer.Write( m_Entries.Length );
+      writer.Write( m_Entries.Length );
 
-			for ( int i = 0; i < m_Entries.Length; ++i )
-				m_Entries[i].Serialize( writer );
-		}
+      for ( int i = 0; i < m_Entries.Length; ++i )
+        m_Entries[i].Serialize( writer );
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Deserialize( GenericReader reader )
+    {
+      base.Deserialize( reader );
 
-			int version = reader.ReadEncodedInt();
+      int version = reader.ReadEncodedInt();
 
-			switch ( version )
-			{
-				case 0:
-				{
-					m_Entries = new LargeBulkEntry[reader.ReadInt()];
+      switch ( version )
+      {
+        case 0:
+        {
+          m_Entries = new LargeBulkEntry[reader.ReadInt()];
 
-					for ( int i = 0; i < m_Entries.Length; ++i )
-						m_Entries[i] = new LargeBulkEntry( this, reader );
+          for ( int i = 0; i < m_Entries.Length; ++i )
+            m_Entries[i] = new LargeBulkEntry( this, reader );
 
-					break;
-				}
-			}
-		}
-	}
+          break;
+        }
+      }
+    }
+  }
 }

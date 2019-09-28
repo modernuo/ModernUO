@@ -4,22 +4,22 @@ using System.Text;
 
 namespace Server.Misc
 {
-	[Flags]
-	public enum IHSFlags
-	{
-		None		= 0x00,
-		OnDamaged	= 0x01,
-		OnDeath		= 0x02,
-		OnMovement	= 0x04,
-		OnSpeech	= 0x08,
-		All			= OnDamaged | OnDeath | OnMovement
-	} // NOTE: To enable monster conversations, add " | OnSpeech" to the "All" line
+  [Flags]
+  public enum IHSFlags
+  {
+    None		= 0x00,
+    OnDamaged	= 0x01,
+    OnDeath		= 0x02,
+    OnMovement	= 0x04,
+    OnSpeech	= 0x08,
+    All			= OnDamaged | OnDeath | OnMovement
+  } // NOTE: To enable monster conversations, add " | OnSpeech" to the "All" line
 
-	public class InhumanSpeech
-	{
-		private static InhumanSpeech m_RatmanSpeech;
+  public class InhumanSpeech
+  {
+    private static InhumanSpeech m_RatmanSpeech;
 
-		public static InhumanSpeech Ratman =>
+    public static InhumanSpeech Ratman =>
       m_RatmanSpeech ??= new InhumanSpeech
       {
         Hue = 149,
@@ -57,7 +57,7 @@ namespace Server.Misc
 
     private static InhumanSpeech m_OrcSpeech;
 
-		public static InhumanSpeech Orc =>
+    public static InhumanSpeech Orc =>
       m_OrcSpeech ??= new InhumanSpeech
       {
         Hue = 34,
@@ -103,7 +103,7 @@ namespace Server.Misc
 
     private static InhumanSpeech m_LizardmanSpeech;
 
-		public static InhumanSpeech Lizardman =>
+    public static InhumanSpeech Lizardman =>
       m_LizardmanSpeech ??= new InhumanSpeech
       {
         Hue = 58,
@@ -140,7 +140,7 @@ namespace Server.Misc
 
     private static InhumanSpeech m_WispSpeech;
 
-		public static InhumanSpeech Wisp =>
+    public static InhumanSpeech Wisp =>
       m_WispSpeech ??= new InhumanSpeech
       {
         Hue = 89,
@@ -155,246 +155,233 @@ namespace Server.Misc
 
     private string[] m_Keywords;
 
-		private Dictionary<string, string> m_KeywordHash;
+    private Dictionary<string, string> m_KeywordHash;
 
-		public string[] Syllables { get; set; }
+    public string[] Syllables { get; set; }
 
-		public string[] Keywords
-		{
-			get => m_Keywords;
-			set
-			{
-				m_Keywords = value;
-				m_KeywordHash = new Dictionary<string, string>( m_Keywords.Length, StringComparer.OrdinalIgnoreCase );
-				for ( int i = 0; i < m_Keywords.Length; ++i )
-					m_KeywordHash[m_Keywords[i]] = m_Keywords[i];
-			}
-		}
-
-		public string[] Responses { get; set; }
-
-		public int Hue { get; set; }
-
-		public int Sound { get; set; }
-
-		public IHSFlags Flags { get; set; }
-
-		public string GetRandomSyllable() => Syllables[Utility.Random( Syllables.Length )];
-
-    public string ConstructWord( int syllableCount )
-		{
-			string[] syllables = new string[syllableCount];
-
-			for ( int i = 0; i < syllableCount; ++i )
-				syllables[i] = GetRandomSyllable();
-
-			return string.Concat( syllables );
-		}
-
-		public string ConstructSentance( int wordCount )
-		{
-			StringBuilder sentence = new StringBuilder();
-
-			bool needUpperCase = true;
-
-			for ( int i = 0; i < wordCount; ++i )
-			{
-				if ( i > 0 ) // not first word )
-				{
-					int random = Utility.RandomMinMax( 1, 15 );
-
-					if ( random < 11 )
-					{
-						sentence.Append( ' ' );
-					}
-					else
-					{
-						needUpperCase = true;
-
-						if ( random > 13 )
-							sentence.Append( "! " );
-						else
-							sentence.Append( ". " );
-					}
-				}
-
-				int syllableCount;
-
-				if ( 30 > Utility.Random( 100 ) )
-					syllableCount = Utility.Random( 1, 5 );
-				else
-					syllableCount = Utility.Random( 1, 3 );
-
-				string word = ConstructWord( syllableCount );
-
-				sentence.Append( word );
-
-				if ( needUpperCase )
-					sentence.Replace( word[0], char.ToUpper( word[0] ), sentence.Length - word.Length, 1 );
-
-				needUpperCase = false;
-			}
-
-			if ( Utility.RandomMinMax( 1, 5 ) == 1 )
-				sentence.Append( '!' );
-			else
-				sentence.Append( '.' );
-
-			return sentence.ToString();
-		}
-
-		public void SayRandomTranslate( Mobile mob, params string[] sentancesInEnglish )
-		{
-			SaySentance( mob, Utility.RandomMinMax( 2, 3 ) );
-			mob.Say( sentancesInEnglish[Utility.Random( sentancesInEnglish.Length )] );
-		}
-
-		private string GetRandomResponseWord( List<string> keywordsFound )
-		{
-			int random = Utility.Random( keywordsFound.Count + Responses.Length );
-
-			return random < keywordsFound.Count ? keywordsFound[random] : Responses[random - keywordsFound.Count];
+    public string[] Keywords
+    {
+      get => m_Keywords;
+      set
+      {
+        m_Keywords = value;
+        m_KeywordHash = new Dictionary<string, string>( m_Keywords.Length, StringComparer.OrdinalIgnoreCase );
+        for ( int i = 0; i < m_Keywords.Length; ++i )
+          m_KeywordHash[m_Keywords[i]] = m_Keywords[i];
+      }
     }
 
-		public bool OnSpeech( Mobile mob, Mobile speaker, string text )
-		{
-			if ( (Flags & IHSFlags.OnSpeech) == 0 || m_Keywords == null || Responses == null || m_KeywordHash == null )
-				return false; // not enabled
+    public string[] Responses { get; set; }
 
-			if ( !speaker.Alive )
-				return false;
+    public int Hue { get; set; }
 
-			if ( !speaker.InRange( mob, 3 ) )
-				return false;
+    public int Sound { get; set; }
 
-			if ( (speaker.Direction & Direction.Mask) != speaker.GetDirectionTo( mob ) )
-				return false;
+    public IHSFlags Flags { get; set; }
 
-			if ( (mob.Direction & Direction.Mask) != mob.GetDirectionTo( speaker ) )
-				return false;
+    public string GetRandomSyllable() => Syllables[Utility.Random( Syllables.Length )];
 
-			string[] split = text.Split( ' ' );
-			List<string> keywordsFound = new List<string>();
+    public string ConstructWord( int syllableCount )
+    {
+      string[] syllables = new string[syllableCount];
 
-			for ( int i = 0; i < split.Length; ++i )
+      for ( int i = 0; i < syllableCount; ++i )
+        syllables[i] = GetRandomSyllable();
+
+      return string.Concat( syllables );
+    }
+
+    public string ConstructSentance( int wordCount )
+    {
+      StringBuilder sentence = new StringBuilder();
+
+      bool needUpperCase = true;
+
+      for ( int i = 0; i < wordCount; ++i )
+      {
+        if ( i > 0 ) // not first word )
+        {
+          int random = Utility.RandomMinMax( 1, 15 );
+
+          if (random < 11)
+            sentence.Append(' ');
+          else
+          {
+            needUpperCase = true;
+
+            sentence.Append(random > 13 ? "! " : ". ");
+          }
+        }
+
+        var syllableCount = Utility.Random(1, 30 > Utility.Random( 100 ) ? 5 : 3);
+
+        string word = ConstructWord( syllableCount );
+
+        sentence.Append( word );
+
+        if ( needUpperCase )
+          sentence.Replace( word[0], char.ToUpper( word[0] ), sentence.Length - word.Length, 1 );
+
+        needUpperCase = false;
+      }
+
+      sentence.Append(Utility.RandomMinMax(1, 5) == 1 ? '!' : '.');
+
+      return sentence.ToString();
+    }
+
+    public void SayRandomTranslate( Mobile mob, params string[] sentancesInEnglish )
+    {
+      SaySentance( mob, Utility.RandomMinMax( 2, 3 ) );
+      mob.Say( sentancesInEnglish[Utility.Random( sentancesInEnglish.Length )] );
+    }
+
+    private string GetRandomResponseWord( List<string> keywordsFound )
+    {
+      int random = Utility.Random( keywordsFound.Count + Responses.Length );
+
+      return random < keywordsFound.Count ? keywordsFound[random] : Responses[random - keywordsFound.Count];
+    }
+
+    public bool OnSpeech( Mobile mob, Mobile speaker, string text )
+    {
+      if ( (Flags & IHSFlags.OnSpeech) == 0 || m_Keywords == null || Responses == null || m_KeywordHash == null )
+        return false; // not enabled
+
+      if ( !speaker.Alive )
+        return false;
+
+      if ( !speaker.InRange( mob, 3 ) )
+        return false;
+
+      if ( (speaker.Direction & Direction.Mask) != speaker.GetDirectionTo( mob ) )
+        return false;
+
+      if ( (mob.Direction & Direction.Mask) != mob.GetDirectionTo( speaker ) )
+        return false;
+
+      string[] split = text.Split( ' ' );
+      List<string> keywordsFound = new List<string>();
+
+      for ( int i = 0; i < split.Length; ++i )
         if (m_KeywordHash.TryGetValue( split[i], out string keyword ))
           keywordsFound.Add( keyword );
 
       if ( keywordsFound.Count > 0 )
-			{
-				string responseWord;
+      {
+        string responseWord;
 
-				if ( Utility.RandomBool() )
-					responseWord = GetRandomResponseWord( keywordsFound );
-				else
-					responseWord = keywordsFound[Utility.Random( keywordsFound.Count )];
+        if ( Utility.RandomBool() )
+          responseWord = GetRandomResponseWord( keywordsFound );
+        else
+          responseWord = keywordsFound[Utility.Random( keywordsFound.Count )];
 
-				string secondResponseWord = GetRandomResponseWord( keywordsFound );
+        string secondResponseWord = GetRandomResponseWord( keywordsFound );
 
-				StringBuilder response = new StringBuilder();
+        StringBuilder response = new StringBuilder();
 
-				switch ( Utility.Random( 6 ) )
-				{
-					default:
+        switch ( Utility.Random( 6 ) )
+        {
+          default:
           {
-						response.Append( "Me " ).Append( responseWord ).Append( '?' );
-						break;
-					}
-					case 1:
-					{
-						response.Append( responseWord ).Append( " thee!" );
-						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
-						break;
-					}
-					case 2:
-					{
-						response.Append( responseWord ).Append( '?' );
-						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
-						break;
-					}
-					case 3:
-					{
-						response.Append( responseWord ).Append( "! " ).Append( secondResponseWord ).Append( '.' );
-						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
-						response.Replace( secondResponseWord[0], char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
-						break;
-					}
-					case 4:
-					{
-						response.Append( responseWord ).Append( '.' );
-						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
-						break;
-					}
-					case 5:
-					{
-						response.Append( responseWord ).Append( "? " ).Append( secondResponseWord ).Append( '.' );
-						response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
-						response.Replace( secondResponseWord[0], char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
-						break;
-					}
-				}
+            response.Append( "Me " ).Append( responseWord ).Append( '?' );
+            break;
+          }
+          case 1:
+          {
+            response.Append( responseWord ).Append( " thee!" );
+            response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
+            break;
+          }
+          case 2:
+          {
+            response.Append( responseWord ).Append( '?' );
+            response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
+            break;
+          }
+          case 3:
+          {
+            response.Append( responseWord ).Append( "! " ).Append( secondResponseWord ).Append( '.' );
+            response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
+            response.Replace( secondResponseWord[0], char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
+            break;
+          }
+          case 4:
+          {
+            response.Append( responseWord ).Append( '.' );
+            response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
+            break;
+          }
+          case 5:
+          {
+            response.Append( responseWord ).Append( "? " ).Append( secondResponseWord ).Append( '.' );
+            response.Replace( responseWord[0], char.ToUpper( responseWord[0] ), 0, 1 );
+            response.Replace( secondResponseWord[0], char.ToUpper( secondResponseWord[0] ), responseWord.Length + 2, 1 );
+            break;
+          }
+        }
 
-				int maxWords = split.Length / 2 + 1;
+        int maxWords = split.Length / 2 + 1;
 
-				if ( maxWords < 2 )
-					maxWords = 2;
-				else if ( maxWords > 6 )
-					maxWords = 6;
+        if ( maxWords < 2 )
+          maxWords = 2;
+        else if ( maxWords > 6 )
+          maxWords = 6;
 
-				SaySentance( mob, Utility.RandomMinMax( 2, maxWords ) );
-				mob.Say( response.ToString() );
+        SaySentance( mob, Utility.RandomMinMax( 2, maxWords ) );
+        mob.Say( response.ToString() );
 
-				return true;
-			}
+        return true;
+      }
 
-			return false;
-		}
+      return false;
+    }
 
-		public void OnDeath( Mobile mob )
-		{
-			if ( (Flags & IHSFlags.OnDeath) == 0 )
-				return; // not enabled
+    public void OnDeath( Mobile mob )
+    {
+      if ( (Flags & IHSFlags.OnDeath) == 0 )
+        return; // not enabled
 
-			if ( 90 > Utility.Random( 100 ) )
-				return; // 90% chance to do nothing; 10% chance to talk
+      if ( 90 > Utility.Random( 100 ) )
+        return; // 90% chance to do nothing; 10% chance to talk
 
-			SayRandomTranslate( mob,
-				"Revenge!",
-				"NOOooo!",
-				"I... I...",
-				"Me no die!",
-				"Me die!",
-				"Must... not die...",
-				"Oooh, me hurt...",
-				"Me dying?" );
-		}
+      SayRandomTranslate( mob,
+        "Revenge!",
+        "NOOooo!",
+        "I... I...",
+        "Me no die!",
+        "Me die!",
+        "Must... not die...",
+        "Oooh, me hurt...",
+        "Me dying?" );
+    }
 
-		public void OnMovement( Mobile mob, Mobile mover, Point3D oldLocation )
-		{
-			if ( (Flags & IHSFlags.OnMovement) == 0 )
-				return; // not enabled
+    public void OnMovement( Mobile mob, Mobile mover, Point3D oldLocation )
+    {
+      if ( (Flags & IHSFlags.OnMovement) == 0 )
+        return; // not enabled
 
-			if ( !mover.Player || mover.Hidden && mover.AccessLevel > AccessLevel.Player )
-				return;
+      if ( !mover.Player || mover.Hidden && mover.AccessLevel > AccessLevel.Player )
+        return;
 
-			if ( !mob.InRange( mover, 5 ) || mob.InRange( oldLocation, 5 ) )
-				return; // only talk when they enter 5 tile range
+      if ( !mob.InRange( mover, 5 ) || mob.InRange( oldLocation, 5 ) )
+        return; // only talk when they enter 5 tile range
 
-			if ( 90 > Utility.Random( 100 ) )
-				return; // 90% chance to do nothing; 10% chance to talk
+      if ( 90 > Utility.Random( 100 ) )
+        return; // 90% chance to do nothing; 10% chance to talk
 
-			SaySentance( mob, 6 );
-		}
+      SaySentance( mob, 6 );
+    }
 
-		public void OnDamage( Mobile mob, int amount )
-		{
-			if ( (Flags & IHSFlags.OnDamaged) == 0 )
-				return; // not enabled
+    public void OnDamage( Mobile mob, int amount )
+    {
+      if ( (Flags & IHSFlags.OnDamaged) == 0 )
+        return; // not enabled
 
-			if ( 90 > Utility.Random( 100 ) )
-				return; // 90% chance to do nothing; 10% chance to talk
+      if ( 90 > Utility.Random( 100 ) )
+        return; // 90% chance to do nothing; 10% chance to talk
 
-			if ( amount < 5 )
+      if ( amount < 5 )
         SayRandomTranslate( mob,
           "Ouch!",
           "Me not hurt bad!",
@@ -412,15 +399,15 @@ namespace Server.Misc
           "Good blow!" );
     }
 
-		public void OnConstruct( Mobile mob )
-		{
-			mob.SpeechHue = Hue;
-		}
+    public void OnConstruct( Mobile mob )
+    {
+      mob.SpeechHue = Hue;
+    }
 
-		public void SaySentance( Mobile mob, int wordCount )
-		{
-			mob.Say( ConstructSentance( wordCount ) );
-			mob.PlaySound( Sound );
-		}
+    public void SaySentance( Mobile mob, int wordCount )
+    {
+      mob.Say( ConstructSentance( wordCount ) );
+      mob.PlaySound( Sound );
+    }
   }
 }
