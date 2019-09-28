@@ -65,7 +65,7 @@ namespace Server.Spells.Fourth
         TimeSpan duration;
 
         if (Core.AOS)
-          duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5) / 4);
+          duration = TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Fixed / 5.0) / 4.0);
         else
           duration = TimeSpan.FromSeconds(4.0 + Caster.Skills.Magery.Value * 0.5);
 

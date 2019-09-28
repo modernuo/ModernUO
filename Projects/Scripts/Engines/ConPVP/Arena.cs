@@ -752,7 +752,7 @@ namespace Server.Engines.ConPVP
 
     #region Offsets & Rotation
 
-    private static Point2D[] m_EdgeOffsets =
+    private static readonly Point2D[] m_EdgeOffsets =
     {
       /*
        *        /\
@@ -775,7 +775,7 @@ namespace Server.Engines.ConPVP
     };
 
     // nw corner
-    private static Point2D[] m_CornerOffsets =
+    private static readonly Point2D[] m_CornerOffsets =
     {
       /*
        *         /\
@@ -796,7 +796,7 @@ namespace Server.Engines.ConPVP
       new Point2D(3, 0)
     };
 
-    private static int[][,] m_Rotate =
+    private static readonly int[][,] m_Rotate =
     {
       new[,] { { +1, 0 }, { 0, +1 } }, // west
       new[,] { { -1, 0 }, { 0, -1 } }, // east

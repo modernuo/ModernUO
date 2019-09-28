@@ -619,19 +619,9 @@ namespace Server.Commands.Generic
 
     public override void Execute(CommandEventArgs e, object obj)
     {
-      if (obj == null)
-      {
-        AddResponse("The object is null.");
-      }
-      else
-      {
-        Type type = obj.GetType();
-
-        if (type.DeclaringType == null)
-          AddResponse($"The type of that object is {type.Name}.");
-        else
-          AddResponse($"The type of that object is {type.FullName}.");
-      }
+      AddResponse(obj == null ?
+        "The object is null." :
+        $"The type of that object is {obj.GetType().FullName}.");
     }
   }
 

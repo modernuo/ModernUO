@@ -644,9 +644,7 @@ namespace Server.Network
 
     private int m_Disposing;
 
-    public bool IsDisposing { get => m_Disposing != 0;
-      private set => m_Disposing = value ? 1 : 0;
-    }
+    public bool IsDisposing => m_Disposing != 0;
 
     public virtual void Dispose()
     {

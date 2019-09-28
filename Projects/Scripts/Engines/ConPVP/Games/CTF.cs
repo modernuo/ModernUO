@@ -71,10 +71,8 @@ namespace Server.Engines.ConPVP
         {
           CTFTeamInfo teamInfo = game.Controller.TeamInfo[i % 8];
 
-          if (teamInfo?.Flag == null)
-            continue;
-
-          entries.Add(teamInfo);
+          if (teamInfo?.Flag != null)
+            entries.Add(teamInfo);
         }
       else
         entries.AddRange(section.Players.Values.Where(player => player.Score > 0));
@@ -110,7 +108,8 @@ namespace Server.Engines.ConPVP
       if (section == null)
         for (int i = 0; i < entries.Count; ++i)
         {
-          CTFTeamInfo teamInfo = entries[i] as CTFTeamInfo;
+          if (!(entries[i] is CTFTeamInfo teamInfo))
+            continue;
 
           AddImage(30, 70 + i * 75, 10152);
           AddImage(30, 85 + i * 75, 10151);

@@ -526,9 +526,9 @@ namespace Server.Mobiles
     private static void CheckPets()
     {
       foreach (Mobile m in World.Mobiles.Values)
-          if (m is PlayerMobile pm && ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers.Count > pm.AutoStabled.Count ||
-              pm.Mounted && pm.AllFollowers.Count > pm.AutoStabled.Count + 1))
-            pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
+        if (m is PlayerMobile pm && ((!pm.Mounted || pm.Mount is EtherealMount) && pm.AllFollowers.Count > pm.AutoStabled.Count ||
+                                     pm.Mounted && pm.AllFollowers.Count > pm.AutoStabled.Count + 1))
+          pm.AutoStablePets(); /* autostable checks summons, et al: no need here */
     }
 
     private static bool CheckBlock(MountBlock block) => block?.m_Timer.Running == true;
@@ -1848,7 +1848,7 @@ namespace Server.Mobiles
 
           pointsToGain += (int)Math.Sqrt(GameTime.TotalSeconds * 4);
           pointsToGain *= 5;
-          pointsToGain += (int)Math.Pow(Skills.Total / 250, 2);
+          pointsToGain += (int)Math.Pow(Skills.Total / 250.0, 2);
 
           if (VirtueHelper.Award(m, VirtueName.Justice, pointsToGain, ref gainedPath))
           {
@@ -1860,7 +1860,7 @@ namespace Server.Mobiles
             m.FixedParticles(0x375A, 9, 20, 5027, EffectLayer.Waist);
             m.PlaySound(0x1F7);
 
-            m_NextJustAward = DateTime.UtcNow + TimeSpan.FromMinutes(pointsToGain / 3);
+            m_NextJustAward = DateTime.UtcNow + TimeSpan.FromMinutes(pointsToGain / 3.0);
           }
         }
       }
@@ -1898,10 +1898,8 @@ namespace Server.Mobiles
       #endregion
 
       if (m_BuffTable != null)
-      {
         foreach(var buff in m_BuffTable.Values.Where(buff => !buff.RetainThroughDeath))
           RemoveBuff(buff);
-      }
     }
 
     public override bool MutateSpeech(List<Mobile> hears, ref string text, ref object context)
@@ -2734,9 +2732,10 @@ namespace Server.Mobiles
 
       for (int i = AutoStabled.Count - 1; i >= 0; --i)
       {
-        BaseCreature pet = AutoStabled[i] as BaseCreature;
+        if (!(AutoStabled[i] is BaseCreature pet))
+          return;
 
-        if (pet?.Deleted == true)
+        if (pet.Deleted)
         {
           pet.IsStabled = false;
           pet.StabledBy = null;
@@ -2768,10 +2767,8 @@ namespace Server.Mobiles
             Stabled.Remove(pet);
         }
         else
-        {
           SendLocalizedMessage(1049612,
             pet.Name); // ~1_NAME~ remained in the stables because you have too many followers.
-        }
       }
 
       AutoStabled.Clear();

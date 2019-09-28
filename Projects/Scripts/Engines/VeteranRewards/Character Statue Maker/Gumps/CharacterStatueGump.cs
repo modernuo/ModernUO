@@ -66,28 +66,21 @@ namespace Server.Gumps
       }
     }
 
-    private int GetMaterialNumber(StatueType type, StatueMaterial material)
-    {
-      switch (material)
+    private int GetMaterialNumber(StatueType type, StatueMaterial material) =>
+      material switch
       {
-        case StatueMaterial.Antique:
-
-          return type switch
-          {
-            StatueType.Bronze => 1076187,
-            StatueType.Jade => 1076186,
-            StatueType.Marble => 1076182,
-            _ => 1076187
-          };
-
-        case StatueMaterial.Dark:
-          return type == StatueType.Marble ? 1076183 : 1076182;
-
-        case StatueMaterial.Medium: return 1076184;
-        case StatueMaterial.Light: return 1076185;
-        default: return 1076187;
-      }
-    }
+        StatueMaterial.Antique => (type switch
+        {
+          StatueType.Bronze => 1076187,
+          StatueType.Jade => 1076186,
+          StatueType.Marble => 1076182,
+          _ => 1076187
+        }),
+        StatueMaterial.Dark => (type == StatueType.Marble ? 1076183 : 1076182),
+        StatueMaterial.Medium => 1076184,
+        StatueMaterial.Light => 1076185,
+        _ => 1076187
+      };
 
     private int GetDirectionNumber(Direction direction) =>
       direction switch

@@ -69,7 +69,6 @@ namespace Server.Commands.Generic
             case "up":
             case "asc":
             case "ascending":
-              isAscending = true;
               ++offset;
               break;
 

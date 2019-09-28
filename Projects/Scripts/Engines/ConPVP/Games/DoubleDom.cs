@@ -53,13 +53,9 @@ namespace Server.Engines.ConPVP
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
-//    private DDGame m_Game;
-
     public DDBoardGump(Mobile mob, DDGame game, DDTeamInfo section = null)
       : base(60, 60)
     {
-//      m_Game = game;
-
       DDTeamInfo ourTeam = game.GetTeamInfo(mob);
 
       List<IRankedCTF> entries = new List<IRankedCTF>();
@@ -106,7 +102,8 @@ namespace Server.Engines.ConPVP
       if (section == null)
         for (int i = 0; i < entries.Count; ++i)
         {
-          DDTeamInfo teamInfo = entries[i] as DDTeamInfo;
+          if (!(entries[i] is DDTeamInfo teamInfo))
+            continue;
 
           AddImage(30, 70 + i * 75, 10152);
           AddImage(30, 85 + i * 75, 10151);

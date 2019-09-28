@@ -853,19 +853,12 @@ namespace Server.Factions
 
       Faction smallest = FindSmallestFaction();
 
-      if (smallest == null)
-        return true; // sanity
-
-      if ((Members.Count + influx) * 100 / StabilityFactor > smallest.Members.Count)
-        return false;
-
-      return true;
+      return smallest == null || (Members.Count + influx) * 100 / StabilityFactor <= smallest.Members.Count;
     }
 
     public static void HandleDeath(Mobile victim, Mobile killer)
     {
-      if (killer == null)
-        killer = victim.FindMostRecentDamager(true);
+      killer ??= victim.FindMostRecentDamager(true);
 
       PlayerState killerState = PlayerState.Find(killer);
       Container killerPack = killer?.Backpack;
@@ -907,7 +900,7 @@ namespace Server.Factions
           int silver = killerState.Faction.AwardSilver(killer, bc.FactionSilverWorth);
 
           if (silver > 0)
-            killer.SendLocalizedMessage(1042748,
+            killer?.SendLocalizedMessage(1042748,
               silver.ToString("N0")); // Thou hast earned ~1_AMOUNT~ silver for vanquishing the vile creature.
         }
 

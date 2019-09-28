@@ -160,7 +160,7 @@ namespace Server.Engines.ConPVP
       if (spell is RecallSpell)
         from.SendMessage("You may not cast this spell.");
 
-      string title = null;
+      string title;
       string option;
 
       if (spell is ArcanistSpell)
@@ -200,7 +200,7 @@ namespace Server.Engines.ConPVP
           SpellCircle.Sixth => "6th Circle",
           SpellCircle.Seventh => "7th Circle",
           SpellCircle.Eighth => "8th Circle",
-          _ => title
+          _ => null
         };
 
         option = magerySpell.Name;
@@ -1817,9 +1817,7 @@ namespace Server.Engines.ConPVP
         }
       }
       else
-      {
         defs = basedef.Options;
-      }
 
       int changes = 0;
 

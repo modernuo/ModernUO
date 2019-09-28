@@ -48,22 +48,9 @@ namespace Server.Items
       int version = reader.ReadEncodedInt();
 
       int length = reader.ReadEncodedInt();
-      for (int i = 0;; i++)
-        if (i < length)
-        {
-          PuzzleChestCylinder cylinder = (PuzzleChestCylinder)reader.ReadInt();
 
-          if (i < Cylinders.Length)
-            Cylinders[i] = cylinder;
-        }
-        else if (i < Cylinders.Length)
-        {
-          Cylinders[i] = RandomCylinder();
-        }
-        else
-        {
-          break;
-        }
+      for (int i = 0; i < Cylinders.Length; i++)
+        Cylinders[i] = i < length ? (PuzzleChestCylinder)reader.ReadInt() : RandomCylinder();
     }
 
     public PuzzleChestCylinder[] Cylinders{ get; } = new PuzzleChestCylinder[Length];
@@ -408,12 +395,8 @@ namespace Server.Items
 
       for (int i = 0; i < 2; i++)
       {
-        Item item;
-
-        if (Core.AOS)
-          item = Loot.RandomArmorOrShieldOrWeaponOrJewelry();
-        else
-          item = Loot.RandomArmorOrShieldOrWeapon();
+        Item item = Core.AOS ?
+          Loot.RandomArmorOrShieldOrWeaponOrJewelry() : Loot.RandomArmorOrShieldOrWeapon();
 
         if (item is BaseWeapon weapon)
         {
@@ -673,9 +656,7 @@ namespace Server.Items
         }
 
         if (info.ButtonID == 1)
-        {
           m_Chest.SubmitSolution(m_From, m_Solution);
-        }
         else
         {
           if (info.Switches.Length == 0)

@@ -543,10 +543,8 @@ namespace Server
               }
             }
             else
-            {
               // Will be discarded
               new Skill(this, null, reader);
-            }
 
           //for ( int i = count; i < info.Length; ++i )
           //	m_Skills[i] = new Skill( this, info[i], 0, 1000, SkillLock.Up );

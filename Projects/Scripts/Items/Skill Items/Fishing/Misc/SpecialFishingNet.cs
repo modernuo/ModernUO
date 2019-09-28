@@ -200,7 +200,6 @@ namespace Server.Items
             switch (Utility.Random(8))
             {
               default:
-              case 0:
                 x = -1;
                 y = -1;
                 break;

@@ -191,14 +191,12 @@ namespace Server
             return otherAddress.Equals(m_Address);
         }
         else if (obj is IPFirewallEntry entry)
-        {
           return m_Address.Equals(entry.m_Address);
-        }
 
         return false;
       }
 
-      public override int GetHashCode() => m_Address.GetHashCode();
+      public override int GetHashCode() => m_Address?.GetHashCode() ?? 0;
     }
 
     public class CIDRFirewallEntry : IFirewallEntry

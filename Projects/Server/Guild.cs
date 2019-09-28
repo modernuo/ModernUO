@@ -83,10 +83,8 @@ namespace Server
       List<BaseGuild> results = new List<BaseGuild>();
 
       foreach (BaseGuild g in List.Values)
-      {
         if (words.All(t => g.Name.ToLower().IndexOf(t) != -1))
           results.Add(g);
-      }
 
       return results;
     }

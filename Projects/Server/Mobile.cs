@@ -23,6 +23,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -506,7 +507,7 @@ namespace Server
      *
      * When a client attached to a mobile disconnects
      *  - LogoutTimer is started
-     *	   - Delay is taken from Region.GetLogoutDelay to allow insta-logout regions.
+     *     - Delay is taken from Region.GetLogoutDelay to allow insta-logout regions.
      *     - OnTick : Location and map are stored, and mobile is internalized
      *
      * Some things to consider:
@@ -529,8 +530,6 @@ namespace Server
     private IWeapon m_Weapon;
 
     private bool m_YellowHealthbar;
-    private object oplLock = new object();
-    private object rpLock = new object();
 
     public Mobile(Serial serial)
     {
@@ -855,11 +854,11 @@ namespace Server
 
     public bool ChangingCombatant => m_ChangingCombatant > 0;
 
-	  /// <summary>
-	  ///   Overridable. Gets or sets which Mobile that this Mobile is currently engaged in combat with.
-	  ///   <seealso cref="OnCombatantChange" />
-	  /// </summary>
-	  [CommandProperty(AccessLevel.GameMaster)]
+    /// <summary>
+    ///   Overridable. Gets or sets which Mobile that this Mobile is currently engaged in combat with.
+    ///   <seealso cref="OnCombatantChange" />
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
     public virtual Mobile Combatant
     {
       get => m_Combatant;
@@ -883,7 +882,7 @@ namespace Server
             return;
           }
 
-          Packets.SendChangeCombatant(m_NetState, m_Combatant.Serial);
+          Packets.SendChangeCombatant(m_NetState, m_Combatant?.Serial ?? Serial.Zero);
 
           if (m_Combatant == null)
           {
@@ -1071,11 +1070,11 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual double ArmorRating => 0.0;
 
-	  /// <summary>
-	  ///   Overridable. Returns true if the player is alive, false if otherwise. By default, this is computed by:
-	  ///   <c>!Deleted &amp;&amp; (!Player || !Body.IsGhost)</c>
-	  /// </summary>
-	  [CommandProperty(AccessLevel.Counselor)]
+    /// <summary>
+    ///   Overridable. Returns true if the player is alive, false if otherwise. By default, this is computed by:
+    ///   <c>!Deleted &amp;&amp; (!Player || !Body.IsGhost)</c>
+    /// </summary>
+    [CommandProperty(AccessLevel.Counselor)]
     public virtual bool Alive => !Deleted && (!m_Player || !m_Body.IsGhost);
 
     public static CreateCorpseHandler CreateCorpseHandler{ get; set; }
@@ -1085,7 +1084,7 @@ namespace Server
     [CommandProperty(AccessLevel.GameMaster)]
     public Container Corpse{ get; set; }
 
-    public static char[] GhostChars{ get; set; } = new char[2] { 'o', 'O' };
+    public static char[] GhostChars{ get; set; } = { 'o', 'O' };
 
     public static bool NoSpeechLOS{ get; set; }
 
@@ -1795,13 +1794,7 @@ namespace Server
 
     public bool HasTrade
     {
-      get
-      {
-        if (m_NetState != null)
-          return m_NetState.Trades.Count > 0;
-
-        return false;
-      }
+      get => m_NetState?.Trades.Count > 0;
     }
 
     public bool NoMoveHS{ get; set; }
@@ -1922,7 +1915,7 @@ namespace Server
     public virtual bool CanTarget => true;
     public virtual bool ClickTitle => true;
 
-    public virtual bool PropertyTitle => OldPropertyTitles ? ClickTitle : true;
+    public virtual bool PropertyTitle => !OldPropertyTitles || ClickTitle;
 
     public static bool DisableHiddenSelfClick{ get; set; } = true;
 
@@ -1978,10 +1971,7 @@ namespace Server
 
     public virtual void Delete()
     {
-      if (Deleted)
-        return;
-
-      if (!World.OnDelete(this))
+      if (Deleted || !World.OnDelete(this))
         return;
 
       if (m_NetState != null)
@@ -2317,9 +2307,7 @@ namespace Server
         sendPublicStats = true;
       }
 
-      sendPrivateStats |= (delta & (MobileDelta.WeaponDamage | MobileDelta.Resistances | MobileDelta.Stat |
-                    MobileDelta.Weight | MobileDelta.Gold | MobileDelta.Armor | MobileDelta.StatCap |
-                    MobileDelta.Followers | MobileDelta.TithingPoints | MobileDelta.Race)) != 0;
+      sendPrivateStats |= (delta & (MobileDelta.WeaponDamage | MobileDelta.Resistances | MobileDelta.Stat | MobileDelta.Weight | MobileDelta.Gold | MobileDelta.Armor | MobileDelta.StatCap | MobileDelta.Followers | MobileDelta.TithingPoints | MobileDelta.Race)) != 0;
 
       if ((delta & MobileDelta.Hair) != 0)
       {
@@ -2417,13 +2405,11 @@ namespace Server
                               sendOPLUpdate || sendHair || sendFacialHair || sendHealthbarPoison ||
                               sendHealthbarYellow))
       {
-        Mobile beholder;
-
         IPooledEnumerable<NetState> eable = m.Map.GetClientsInRange(m.m_Location);
 
         foreach (NetState state in eable)
         {
-          beholder = state.Mobile;
+          var beholder = state.Mobile;
 
           if (beholder != m && beholder.CanSee(m))
           {
@@ -2450,7 +2436,7 @@ namespace Server
                 Packets.SendHealthbarYellow(state, m);
             }
             else if (sendMoving || sendHealthbarPoison || sendHealthbarYellow)
-                Packets.SendMobileMovingOld(state, m, Notoriety.Compute(beholder, m));
+              Packets.SendMobileMovingOld(state, m, Notoriety.Compute(beholder, m));
 
             if (sendPublicStats)
               Packets.SendMobileStatusCompact(state, m, m.CanBeRenamedBy(beholder));
@@ -2790,18 +2776,13 @@ namespace Server
       if (ShowFameTitle && (m_Player || m_Body.IsHuman) && m_Fame >= 10000)
         prefix = m_Female ? "Lady" : "Lord";
 
-      string suffix = "";
-
-      if (PropertyTitle && !string.IsNullOrEmpty(Title))
-        suffix = Title;
+      string suffix = PropertyTitle && !string.IsNullOrEmpty(Title) ? Title : "";
 
       BaseGuild guild = m_Guild;
 
       if (guild != null && (m_Player || m_DisplayGuildTitle))
-      {
         suffix = suffix.Length > 0 ? $"{suffix} [{Utility.FixHtml(guild.Abbreviation)}]"
           : $"[{Utility.FixHtml(guild.Abbreviation)}]";
-      }
 
       suffix = ApplyNameSuffix(suffix);
 
@@ -2819,9 +2800,7 @@ namespace Server
         string title = GuildTitle?.Trim() ?? "";
 
         if (NewGuildDisplay && title.Length > 0)
-        {
           list.Add("{0}, {1}", Utility.FixHtml(title), Utility.FixHtml(guild.Name));
-        }
         else
         {
           if (title.Length > 0)
@@ -2848,9 +2827,7 @@ namespace Server
     private void UpdateAggrExpire()
     {
       if (Deleted || Aggressors.Count == 0 && Aggressed.Count == 0)
-      {
         StopAggrExpire();
-      }
       else if (m_ExpireAggrTimer == null)
       {
         m_ExpireAggrTimer = new ExpireAggressorsTimer(this);
@@ -3020,27 +2997,13 @@ namespace Server
       Warmode = value;
     }
 
-    public bool InLOS(Mobile target)
-    {
-      if (Deleted || m_Map == null)
-        return false;
-      if (target == this || m_AccessLevel > AccessLevel.Player)
-        return true;
+    public bool InLOS(Mobile target) =>
+      !Deleted && m_Map != null &&
+      (target == this || m_AccessLevel > AccessLevel.Player || m_Map.LineOfSight(this, target));
 
-      return m_Map.LineOfSight(this, target);
-    }
-
-    public bool InLOS(object target)
-    {
-      if (Deleted || m_Map == null)
-        return false;
-      if (target == this || m_AccessLevel > AccessLevel.Player)
-        return true;
-      if (target is Item item && item.RootParent == this)
-        return true;
-
-      return m_Map.LineOfSight(this, target);
-    }
+    public bool InLOS(object target) =>
+      !Deleted && m_Map != null &&
+      (target == this || m_AccessLevel > AccessLevel.Player || target is Item item && item.RootParent == this || m_Map.LineOfSight(this, target));
 
     public bool InLOS(Point3D target) =>
       !Deleted && m_Map != null && (m_AccessLevel > AccessLevel.Player || m_Map.LineOfSight(this, target));
@@ -3068,10 +3031,7 @@ namespace Server
 
     public bool CanBeginAction(object toLock) => _actions?.Contains(toLock) != true;
 
-    public void EndAction<T>()
-    {
-      EndAction(typeof(T));
-    }
+    public void EndAction<T>() => EndAction(typeof(T));
 
     public void EndAction(object toLock)
     {
@@ -3157,10 +3117,10 @@ namespace Server
     public virtual bool CheckAttack(Mobile m) => Utility.InUpdateRange(this, m) && CanSee(m) && InLOS(m);
 
     /// <summary>
-	  ///   Overridable. Virtual event invoked after the <see cref="Combatant" /> property has changed.
-	  ///   <seealso cref="Combatant" />
-	  /// </summary>
-	  public virtual void OnCombatantChange()
+    ///   Overridable. Virtual event invoked after the <see cref="Combatant" /> property has changed.
+    ///   <seealso cref="Combatant" />
+    /// </summary>
+    public virtual void OnCombatantChange()
     {
     }
 
@@ -3434,10 +3394,7 @@ namespace Server
       m_QuestArrow = null;
     }
 
-    public void ClearTarget()
-    {
-      m_Target = null;
-    }
+    public void ClearTarget() => m_Target = null;
 
     public Target BeginTarget(int range, bool allowGround, TargetFlags flags, TargetCallback callback) =>
       Target = new SimpleTarget(range, flags, allowGround, callback);
@@ -3573,42 +3530,21 @@ namespace Server
 
             if (oldSector != newSector)
             {
-              for (int i = 0; i < oldSector.Mobiles.Count; ++i)
-              {
-                Mobile m = oldSector.Mobiles[i];
+              if (oldSector.Mobiles.Any(
+                m => m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z && !m.OnMoveOff(this)))
+                return false;
 
-                if (m != this && m.X == oldX && m.Y == oldY && m.Z + 15 > oldZ && oldZ + 15 > m.Z &&
-                    !m.OnMoveOff(this))
-                  return false;
-              }
+              if (oldSector.Items.Any(item => item.AtWorldPoint(oldX, oldY) &&
+                                              (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
+                                              !item.OnMoveOff(this)))
+                return false;
 
-              for (int i = 0; i < oldSector.Items.Count; ++i)
-              {
-                Item item = oldSector.Items[i];
+              if (newSector.Mobiles.Any(m => m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))) return false;
 
-                if (item.AtWorldPoint(oldX, oldY) &&
-                    (item.Z == oldZ || item.Z + item.ItemData.Height > oldZ && oldZ + 15 > item.Z) &&
-                    !item.OnMoveOff(this))
-                  return false;
-              }
-
-              for (int i = 0; i < newSector.Mobiles.Count; ++i)
-              {
-                Mobile m = newSector.Mobiles[i];
-
-                if (m.X == x && m.Y == y && m.Z + 15 > newZ && newZ + 15 > m.Z && !m.OnMoveOver(this))
-                  return false;
-              }
-
-              for (int i = 0; i < newSector.Items.Count; ++i)
-              {
-                Item item = newSector.Items[i];
-
-                if (item.AtWorldPoint(x, y) &&
-                    (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
-                    !item.OnMoveOver(this))
-                  return false;
-              }
+              if (newSector.Items.Any(item => item.AtWorldPoint(x, y) &&
+                                              (item.Z == newZ || item.Z + item.ItemData.Height > newZ && newZ + 15 > item.Z) &&
+                                              !item.OnMoveOver(this)))
+                return false;
             }
             else
             {
@@ -3726,12 +3662,7 @@ namespace Server
           NetState ns = m.NetState;
 
           if (ns != null && Utility.InUpdateRange(m_Location, m.m_Location) && m.CanSee(this))
-          {
-            if (ns.StygianAbyss)
-              Packets.SendMobileMoving(ns, this, Notoriety.Compute(m, this));
-            else
-              Packets.SendMobileMovingOld(ns, this, Notoriety.Compute(m, this));
-          }
+            Packets.SendMobileMoving(ns, this, Notoriety.Compute(m, this));
         }
 
         for (int i = 0; i < m_MoveList.Count; ++i)
@@ -3853,19 +3784,19 @@ namespace Server
     /// </summary>
     public virtual bool CheckResurrect() => true;
 
-	  /// <summary>
-	  ///   Overridable. Event invoked before the Mobile is <see cref="Resurrect">resurrected</see>.
-	  ///   <seealso cref="Resurrect" />
-	  /// </summary>
-	  public virtual void OnBeforeResurrect()
+    /// <summary>
+    ///   Overridable. Event invoked before the Mobile is <see cref="Resurrect">resurrected</see>.
+    ///   <seealso cref="Resurrect" />
+    /// </summary>
+    public virtual void OnBeforeResurrect()
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked after the Mobile is <see cref="Resurrect">resurrected</see>.
-	  ///   <seealso cref="Resurrect" />
-	  /// </summary>
-	  public virtual void OnAfterResurrect()
+    /// <summary>
+    ///   Overridable. Event invoked after the Mobile is <see cref="Resurrect">resurrected</see>.
+    ///   <seealso cref="Resurrect" />
+    /// </summary>
+    public virtual void OnAfterResurrect()
     {
     }
 
@@ -3959,11 +3890,11 @@ namespace Server
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when the <see cref="Skill.Base" /> or <see cref="Skill.BaseFixedPoint" /> property of
-	  ///   <paramref name="skill" /> changes.
-	  /// </summary>
-	  public virtual void OnSkillChange(SkillName skill, double oldBase)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when the <see cref="Skill.Base" /> or <see cref="Skill.BaseFixedPoint" /> property of
+    ///   <paramref name="skill" /> changes.
+    /// </summary>
+    public virtual void OnSkillChange(SkillName skill, double oldBase)
     {
     }
 
@@ -4161,21 +4092,21 @@ namespace Server
       OnDeath(c);
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked before the Mobile is <see cref="Kill">killed</see>.
-	  ///   <seealso cref="Kill" />
-	  ///   <seealso cref="OnDeath" />
-	  /// </summary>
-	  /// <returns>True to continue with death, false to override it.</returns>
-	  public virtual bool OnBeforeDeath() => true;
+    /// <summary>
+    ///   Overridable. Event invoked before the Mobile is <see cref="Kill">killed</see>.
+    ///   <seealso cref="Kill" />
+    ///   <seealso cref="OnDeath" />
+    /// </summary>
+    /// <returns>True to continue with death, false to override it.</returns>
+    public virtual bool OnBeforeDeath() => true;
 
-	  /// <summary>
-	  ///   Overridable. Event invoked after the Mobile is <see cref="Kill">killed</see>. Primarily, this method is responsible for
-	  ///   deleting an NPC or turning a PC into a ghost.
-	  ///   <seealso cref="Kill" />
-	  ///   <seealso cref="OnBeforeDeath" />
-	  /// </summary>
-	  public virtual void OnDeath(Container c)
+    /// <summary>
+    ///   Overridable. Event invoked after the Mobile is <see cref="Kill">killed</see>. Primarily, this method is responsible for
+    ///   deleting an NPC or turning a PC into a ghost.
+    ///   <seealso cref="Kill" />
+    ///   <seealso cref="OnBeforeDeath" />
+    /// </summary>
+    public virtual void OnDeath(Container c)
     {
       int sound = GetDeathSound();
 
@@ -4183,9 +4114,7 @@ namespace Server
         Effects.PlaySound(this, Map, sound);
 
       if (!m_Player)
-      {
         Delete();
-      }
       else
       {
         Packets.SendDeathStatus_Dead(NetState);
@@ -4486,8 +4415,7 @@ namespace Server
         {
           IPooledEnumerable<NetState> eable = map.GetClientsInRange(m_Location);
           Item rootItem = root as Item;
-          IEntity trg = new Entity(rootItem?.Serial ?? Serial.Zero,
-                            rootItem?.Location ?? item.Location, map);
+          IEntity trg = new Entity(rootItem?.Serial ?? Serial.Zero, rootItem?.Location ?? item.Location, map);
 
           foreach (NetState ns in eable)
           {
@@ -4952,14 +4880,14 @@ namespace Server
       return de;
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when the Mobile is <see cref="Damage">damaged</see>. It is called before
-	  ///   <see cref="Hits">hit points</see> are lowered or the Mobile is <see cref="Kill">killed</see>.
-	  ///   <seealso cref="Damage" />
-	  ///   <seealso cref="Hits" />
-	  ///   <seealso cref="Kill" />
-	  /// </summary>
-	  public virtual void OnDamage(int amount, Mobile from, bool willKill)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when the Mobile is <see cref="Damage">damaged</see>. It is called before
+    ///   <see cref="Hits">hit points</see> are lowered or the Mobile is <see cref="Kill">killed</see>.
+    ///   <seealso cref="Damage" />
+    ///   <seealso cref="Hits" />
+    ///   <seealso cref="Kill" />
+    /// </summary>
+    public virtual void OnDamage(int amount, Mobile from, bool willKill)
     {
     }
 
@@ -5124,7 +5052,7 @@ namespace Server
 
       if (message && amount > 0)
         Packets.SendMessageLocalizedAffix(m_NetState, Serial.MinusOne, -1, MessageType.Label, 0x3B2, 3, 1008158, "",
-          AffixType.Append | AffixType.System, amount.ToString(), "");
+          AffixType.Append | AffixType.System, amount.ToString());
     }
 
     public virtual void OnHeal(ref int amount, Mobile from)
@@ -5542,22 +5470,22 @@ namespace Server
       Map = Map.Internal;
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when <paramref name="item" /> is <see cref="AddItem">added</see> from the Mobile, such
-	  ///   as when it is equipped.
-	  ///   <seealso cref="Items" />
-	  ///   <seealso cref="OnItemRemoved" />
-	  /// </summary>
-	  public virtual void OnItemAdded(Item item)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when <paramref name="item" /> is <see cref="AddItem">added</see> from the Mobile, such
+    ///   as when it is equipped.
+    ///   <seealso cref="Items" />
+    ///   <seealso cref="OnItemRemoved" />
+    /// </summary>
+    public virtual void OnItemAdded(Item item)
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when <paramref name="item" /> is <see cref="RemoveItem">removed</see> from the Mobile.
-	  ///   <seealso cref="Items" />
-	  ///   <seealso cref="OnItemAdded" />
-	  /// </summary>
-	  public virtual void OnItemRemoved(Item item)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when <paramref name="item" /> is <see cref="RemoveItem">removed</see> from the Mobile.
+    ///   <seealso cref="Items" />
+    ///   <seealso cref="OnItemAdded" />
+    /// </summary>
+    public virtual void OnItemRemoved(Item item)
     {
     }
 
@@ -5571,13 +5499,13 @@ namespace Server
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when <paramref name="item" /> is removed from the Mobile, its
-	  ///   <see cref="Mobile.Backpack">backpack</see>, or its <see cref="Mobile.BankBox">bank box</see>.
-	  ///   <seealso cref="OnSubItemAdded" />
-	  ///   <seealso cref="OnItemRemoved" />
-	  /// </summary>
-	  public virtual void OnSubItemRemoved(Item item)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when <paramref name="item" /> is removed from the Mobile, its
+    ///   <see cref="Mobile.Backpack">backpack</see>, or its <see cref="Mobile.BankBox">bank box</see>.
+    ///   <seealso cref="OnSubItemAdded" />
+    ///   <seealso cref="OnItemRemoved" />
+    /// </summary>
+    public virtual void OnSubItemRemoved(Item item)
     {
     }
 
@@ -5791,10 +5719,10 @@ namespace Server
     }
 
     /// <summary>
-	  ///   Overridable. Event invoked before the Mobile says something.
-	  ///   <seealso cref="DoSpeech" />
-	  /// </summary>
-	  public virtual void OnSaid(SpeechEventArgs e)
+    ///   Overridable. Event invoked before the Mobile says something.
+    ///   <seealso cref="DoSpeech" />
+    /// </summary>
+    public virtual void OnSaid(SpeechEventArgs e)
     {
       if (Squelched)
       {
@@ -5812,12 +5740,12 @@ namespace Server
 
     public virtual bool HandlesOnSpeech(Mobile from) => false;
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when the Mobile hears speech. This event will only be invoked if
-	  ///   <see cref="HandlesOnSpeech" /> returns true.
-	  ///   <seealso cref="DoSpeech" />
-	  /// </summary>
-	  public virtual void OnSpeech(SpeechEventArgs e)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when the Mobile hears speech. This event will only be invoked if
+    ///   <see cref="HandlesOnSpeech" /> returns true.
+    ///   <seealso cref="DoSpeech" />
+    /// </summary>
+    public virtual void OnSpeech(SpeechEventArgs e)
     {
     }
 
@@ -6256,7 +6184,7 @@ namespace Server
     public BankBox FindBankNoCreate()
     {
       if (m_BankBox?.Deleted != false || m_BankBox.Parent != this)
-         m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
+        m_BankBox = FindItemOnLayer(Layer.Bank) as BankBox;
 
       return m_BankBox;
     }
@@ -6359,14 +6287,14 @@ namespace Server
       return true;
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked when a Mobile (<paramref name="from" />) drops an
-	  ///   <see cref="Item">
-	  ///     <paramref name="dropped" />
-	  ///   </see>
-	  ///   onto the Mobile.
-	  /// </summary>
-	  public virtual bool OnDragDrop(Mobile from, Item dropped)
+    /// <summary>
+    ///   Overridable. Event invoked when a Mobile (<paramref name="from" />) drops an
+    ///   <see cref="Item">
+    ///     <paramref name="dropped" />
+    ///   </see>
+    ///   onto the Mobile.
+    /// </summary>
+    public virtual bool OnDragDrop(Mobile from, Item dropped)
     {
       if (from == this)
       {
@@ -6425,15 +6353,15 @@ namespace Server
     /// </example>
     public virtual bool OnDragLift(Item item) => true;
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> into a
-	  ///   <see cref="Container">
-	  ///     <paramref name="container" />
-	  ///   </see>
-	  ///   .
-	  /// </summary>
-	  /// <returns>True if the drop is allowed, false if otherwise.</returns>
-	  public virtual bool OnDroppedItemInto(Item item, Container container, Point3D loc) => true;
+    /// <summary>
+    ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> into a
+    ///   <see cref="Container">
+    ///     <paramref name="container" />
+    ///   </see>
+    ///   .
+    /// </summary>
+    /// <returns>True if the drop is allowed, false if otherwise.</returns>
+    public virtual bool OnDroppedItemInto(Item item, Container container, Point3D loc) => true;
 
     /// <summary>
     ///   Overridable. Virtual event invoked when the Mobile attempts to drop <paramref name="item" /> directly onto another
@@ -6480,12 +6408,12 @@ namespace Server
 
     public virtual bool CheckItemUse(Mobile from, Item item) => true;
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when <paramref name="from" /> successfully lifts <paramref name="item" /> from this
-	  ///   Mobile.
-	  ///   <seealso cref="Item.OnItemLifted" />
-	  /// </summary>
-	  public virtual void OnItemLifted(Mobile from, Item item)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when <paramref name="from" /> successfully lifts <paramref name="item" /> from this
+    ///   Mobile.
+    ///   <seealso cref="Item.OnItemLifted" />
+    /// </summary>
+    public virtual void OnItemLifted(Mobile from, Item item)
     {
     }
 
@@ -7285,9 +7213,7 @@ namespace Server
         if (m_CallbackHandlesCancel && m_Callback != null)
           m_Callback(from, "");
         else
-        {
-          m_CancelCallback?.Invoke(from, "");
-        }
+          m_CancelCallback?.Invoke(@from, "");
       }
     }
 
@@ -7456,7 +7382,7 @@ namespace Server
 
     public void SayTo(Mobile to, int number)
     {
-      Packets.SendMessageLocalized(to?.NetState, Serial, Body, MessageType.Regular, SpeechHue, 3, number, Name, "");
+      Packets.SendMessageLocalized(to?.NetState, Serial, Body, MessageType.Regular, SpeechHue, 3, number, Name);
     }
 
     public void SayTo(Mobile to, int number, string args)
@@ -7881,52 +7807,52 @@ namespace Server
       return offset;
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when the <see cref="RawStr" /> changes.
-	  ///   <seealso cref="RawStr" />
-	  ///   <seealso cref="OnRawStatChange" />
-	  /// </summary>
-	  public virtual void OnRawStrChange(int oldValue)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when the <see cref="RawStr" /> changes.
+    ///   <seealso cref="RawStr" />
+    ///   <seealso cref="OnRawStatChange" />
+    /// </summary>
+    public virtual void OnRawStrChange(int oldValue)
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when <see cref="RawDex" /> changes.
-	  ///   <seealso cref="RawDex" />
-	  ///   <seealso cref="OnRawStatChange" />
-	  /// </summary>
-	  public virtual void OnRawDexChange(int oldValue)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when <see cref="RawDex" /> changes.
+    ///   <seealso cref="RawDex" />
+    ///   <seealso cref="OnRawStatChange" />
+    /// </summary>
+    public virtual void OnRawDexChange(int oldValue)
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when the <see cref="RawInt" /> changes.
-	  ///   <seealso cref="RawInt" />
-	  ///   <seealso cref="OnRawStatChange" />
-	  /// </summary>
-	  public virtual void OnRawIntChange(int oldValue)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when the <see cref="RawInt" /> changes.
+    ///   <seealso cref="RawInt" />
+    ///   <seealso cref="OnRawStatChange" />
+    /// </summary>
+    public virtual void OnRawIntChange(int oldValue)
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when the <see cref="RawStr" />, <see cref="RawDex" />, or <see cref="RawInt" />
-	  ///   changes.
-	  ///   <seealso cref="OnRawStrChange" />
-	  ///   <seealso cref="OnRawDexChange" />
-	  ///   <seealso cref="OnRawIntChange" />
-	  /// </summary>
-	  public virtual void OnRawStatChange(StatType stat, int oldValue)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when the <see cref="RawStr" />, <see cref="RawDex" />, or <see cref="RawInt" />
+    ///   changes.
+    ///   <seealso cref="OnRawStrChange" />
+    ///   <seealso cref="OnRawDexChange" />
+    ///   <seealso cref="OnRawIntChange" />
+    /// </summary>
+    public virtual void OnRawStatChange(StatType stat, int oldValue)
     {
     }
 
-	  /// <summary>
-	  ///   Gets or sets the base, unmodified, strength of the Mobile. Ranges from 1 to 65000, inclusive.
-	  ///   <seealso cref="Str" />
-	  ///   <seealso cref="StatMod" />
-	  ///   <seealso cref="OnRawStrChange" />
-	  ///   <seealso cref="OnRawStatChange" />
-	  /// </summary>
-	  [CommandProperty(AccessLevel.GameMaster)]
+    /// <summary>
+    ///   Gets or sets the base, unmodified, strength of the Mobile. Ranges from 1 to 65000, inclusive.
+    ///   <seealso cref="Str" />
+    ///   <seealso cref="StatMod" />
+    ///   <seealso cref="OnRawStrChange" />
+    ///   <seealso cref="OnRawStatChange" />
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
     public int RawStr
     {
       get => m_Str;
@@ -7957,14 +7883,14 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Gets or sets the effective strength of the Mobile. This is the sum of the <see cref="RawStr" /> plus any additional
-	  ///   modifiers. Any attempts to set this value when under the influence of a <see cref="StatMod" /> will result in no change.
-	  ///   It ranges from 1 to 65000, inclusive.
-	  ///   <seealso cref="RawStr" />
-	  ///   <seealso cref="StatMod" />
-	  /// </summary>
-	  [CommandProperty(AccessLevel.GameMaster)]
+    /// <summary>
+    ///   Gets or sets the effective strength of the Mobile. This is the sum of the <see cref="RawStr" /> plus any additional
+    ///   modifiers. Any attempts to set this value when under the influence of a <see cref="StatMod" /> will result in no change.
+    ///   It ranges from 1 to 65000, inclusive.
+    ///   <seealso cref="RawStr" />
+    ///   <seealso cref="StatMod" />
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Str
     {
       get
@@ -7985,14 +7911,14 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Gets or sets the base, unmodified, dexterity of the Mobile. Ranges from 1 to 65000, inclusive.
-	  ///   <seealso cref="Dex" />
-	  ///   <seealso cref="StatMod" />
-	  ///   <seealso cref="OnRawDexChange" />
-	  ///   <seealso cref="OnRawStatChange" />
-	  /// </summary>
-	  [CommandProperty(AccessLevel.GameMaster)]
+    /// <summary>
+    ///   Gets or sets the base, unmodified, dexterity of the Mobile. Ranges from 1 to 65000, inclusive.
+    ///   <seealso cref="Dex" />
+    ///   <seealso cref="StatMod" />
+    ///   <seealso cref="OnRawDexChange" />
+    ///   <seealso cref="OnRawStatChange" />
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
     public int RawDex
     {
       get => m_Dex;
@@ -8024,14 +7950,14 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Gets or sets the effective dexterity of the Mobile. This is the sum of the <see cref="RawDex" /> plus any additional
-	  ///   modifiers. Any attempts to set this value when under the influence of a <see cref="StatMod" /> will result in no change.
-	  ///   It ranges from 1 to 65000, inclusive.
-	  ///   <seealso cref="RawDex" />
-	  ///   <seealso cref="StatMod" />
-	  /// </summary>
-	  [CommandProperty(AccessLevel.GameMaster)]
+    /// <summary>
+    ///   Gets or sets the effective dexterity of the Mobile. This is the sum of the <see cref="RawDex" /> plus any additional
+    ///   modifiers. Any attempts to set this value when under the influence of a <see cref="StatMod" /> will result in no change.
+    ///   It ranges from 1 to 65000, inclusive.
+    ///   <seealso cref="RawDex" />
+    ///   <seealso cref="StatMod" />
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Dex
     {
       get
@@ -8052,14 +7978,14 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Gets or sets the base, unmodified, intelligence of the Mobile. Ranges from 1 to 65000, inclusive.
-	  ///   <seealso cref="Int" />
-	  ///   <seealso cref="StatMod" />
-	  ///   <seealso cref="OnRawIntChange" />
-	  ///   <seealso cref="OnRawStatChange" />
-	  /// </summary>
-	  [CommandProperty(AccessLevel.GameMaster)]
+    /// <summary>
+    ///   Gets or sets the base, unmodified, intelligence of the Mobile. Ranges from 1 to 65000, inclusive.
+    ///   <seealso cref="Int" />
+    ///   <seealso cref="StatMod" />
+    ///   <seealso cref="OnRawIntChange" />
+    ///   <seealso cref="OnRawStatChange" />
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
     public int RawInt
     {
       get => m_Int;
@@ -8091,14 +8017,14 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Gets or sets the effective intelligence of the Mobile. This is the sum of the <see cref="RawInt" /> plus any additional
-	  ///   modifiers. Any attempts to set this value when under the influence of a <see cref="StatMod" /> will result in no change.
-	  ///   It ranges from 1 to 65000, inclusive.
-	  ///   <seealso cref="RawInt" />
-	  ///   <seealso cref="StatMod" />
-	  /// </summary>
-	  [CommandProperty(AccessLevel.GameMaster)]
+    /// <summary>
+    ///   Gets or sets the effective intelligence of the Mobile. This is the sum of the <see cref="RawInt" /> plus any additional
+    ///   modifiers. Any attempts to set this value when under the influence of a <see cref="StatMod" /> will result in no change.
+    ///   It ranges from 1 to 65000, inclusive.
+    ///   <seealso cref="RawInt" />
+    ///   <seealso cref="StatMod" />
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
     public virtual int Int
     {
       get
@@ -8231,13 +8157,13 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Overridable. Gets the maximum stamina of the Mobile. By default, this returns:
-	  ///   <c>
-	  ///     <see cref="Dex" />
-	  ///   </c>
-	  /// </summary>
-	  [CommandProperty(AccessLevel.GameMaster)]
+    /// <summary>
+    ///   Overridable. Gets the maximum stamina of the Mobile. By default, this returns:
+    ///   <c>
+    ///     <see cref="Dex" />
+    ///   </c>
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
     public virtual int StamMax => Dex;
 
     /// <summary>
@@ -8290,13 +8216,13 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Overridable. Gets the maximum mana of the Mobile. By default, this returns:
-	  ///   <c>
-	  ///     <see cref="Int" />
-	  ///   </c>
-	  /// </summary>
-	  [CommandProperty(AccessLevel.GameMaster)]
+    /// <summary>
+    ///   Overridable. Gets the maximum mana of the Mobile. By default, this returns:
+    ///   <c>
+    ///     <see cref="Int" />
+    ///   </c>
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
     public virtual int ManaMax => Int;
 
     #endregion
@@ -8331,37 +8257,37 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked when a call to <see cref="ApplyPoison" /> failed because <see cref="CheckPoisonImmunity" />
-	  ///   returned false: the Mobile was resistant to the poison. By default, this broadcasts an overhead message: * The poison
-	  ///   seems to have no effect. *
-	  ///   <seealso cref="CheckPoisonImmunity" />
-	  ///   <seealso cref="ApplyPoison" />
-	  ///   <seealso cref="Poison" />
-	  /// </summary>
-	  public virtual void OnPoisonImmunity(Mobile from, Poison poison)
+    /// <summary>
+    ///   Overridable. Event invoked when a call to <see cref="ApplyPoison" /> failed because <see cref="CheckPoisonImmunity" />
+    ///   returned false: the Mobile was resistant to the poison. By default, this broadcasts an overhead message: * The poison
+    ///   seems to have no effect. *
+    ///   <seealso cref="CheckPoisonImmunity" />
+    ///   <seealso cref="ApplyPoison" />
+    ///   <seealso cref="Poison" />
+    /// </summary>
+    public virtual void OnPoisonImmunity(Mobile from, Poison poison)
     {
       PublicOverheadMessage(MessageType.Emote, 0x3B2, 1005534); // * The poison seems to have no effect. *
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when a call to <see cref="ApplyPoison" /> failed because
-	  ///   <see cref="CheckHigherPoison" /> returned false: the Mobile was already poisoned by an equal or greater strength poison.
-	  ///   <seealso cref="CheckHigherPoison" />
-	  ///   <seealso cref="ApplyPoison" />
-	  ///   <seealso cref="Poison" />
-	  /// </summary>
-	  public virtual void OnHigherPoison(Mobile from, Poison poison)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when a call to <see cref="ApplyPoison" /> failed because
+    ///   <see cref="CheckHigherPoison" /> returned false: the Mobile was already poisoned by an equal or greater strength poison.
+    ///   <seealso cref="CheckHigherPoison" />
+    ///   <seealso cref="ApplyPoison" />
+    ///   <seealso cref="Poison" />
+    /// </summary>
+    public virtual void OnHigherPoison(Mobile from, Poison poison)
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked when a call to <see cref="ApplyPoison" /> succeeded. By default, this broadcasts an overhead
-	  ///   message varying by the level of the poison. Example: * Zippy begins to spasm uncontrollably. *
-	  ///   <seealso cref="ApplyPoison" />
-	  ///   <seealso cref="Poison" />
-	  /// </summary>
-	  public virtual void OnPoisoned(Mobile from, Poison poison, Poison oldPoison)
+    /// <summary>
+    ///   Overridable. Event invoked when a call to <see cref="ApplyPoison" /> succeeded. By default, this broadcasts an overhead
+    ///   message varying by the level of the poison. Example: * Zippy begins to spasm uncontrollably. *
+    ///   <seealso cref="ApplyPoison" />
+    ///   <seealso cref="Poison" />
+    /// </summary>
+    public virtual void OnPoisoned(Mobile from, Poison poison, Poison oldPoison)
     {
       if (poison != null)
       {
@@ -8370,64 +8296,64 @@ namespace Server
       }
     }
 
-	  /// <summary>
-	  ///   Overridable. Called from <see cref="ApplyPoison" />, this method checks if the Mobile is immune to some
-	  ///   <see cref="Poison" />. If true, <see cref="OnPoisonImmunity" /> will be invoked and
-	  ///   <see cref="ApplyPoisonResult.Immune" /> is returned.
-	  ///   <seealso cref="OnPoisonImmunity" />
-	  ///   <seealso cref="ApplyPoison" />
-	  ///   <seealso cref="Poison" />
-	  /// </summary>
-	  public virtual bool CheckPoisonImmunity(Mobile from, Poison poison) => false;
+    /// <summary>
+    ///   Overridable. Called from <see cref="ApplyPoison" />, this method checks if the Mobile is immune to some
+    ///   <see cref="Poison" />. If true, <see cref="OnPoisonImmunity" /> will be invoked and
+    ///   <see cref="ApplyPoisonResult.Immune" /> is returned.
+    ///   <seealso cref="OnPoisonImmunity" />
+    ///   <seealso cref="ApplyPoison" />
+    ///   <seealso cref="Poison" />
+    /// </summary>
+    public virtual bool CheckPoisonImmunity(Mobile from, Poison poison) => false;
 
     /// <summary>
-	  ///   Overridable. Called from <see cref="ApplyPoison" />, this method checks if the Mobile is already poisoned by some
-	  ///   <see cref="Poison" /> of equal or greater strength. If true, <see cref="OnHigherPoison" /> will be invoked and
-	  ///   <see cref="ApplyPoisonResult.HigherPoisonActive" /> is returned.
-	  ///   <seealso cref="OnHigherPoison" />
-	  ///   <seealso cref="ApplyPoison" />
-	  ///   <seealso cref="Poison" />
-	  /// </summary>
-	  public virtual bool CheckHigherPoison(Mobile from, Poison poison) => m_Poison != null && m_Poison.Level >= poison.Level;
+    ///   Overridable. Called from <see cref="ApplyPoison" />, this method checks if the Mobile is already poisoned by some
+    ///   <see cref="Poison" /> of equal or greater strength. If true, <see cref="OnHigherPoison" /> will be invoked and
+    ///   <see cref="ApplyPoisonResult.HigherPoisonActive" /> is returned.
+    ///   <seealso cref="OnHigherPoison" />
+    ///   <seealso cref="ApplyPoison" />
+    ///   <seealso cref="Poison" />
+    /// </summary>
+    public virtual bool CheckHigherPoison(Mobile from, Poison poison) => m_Poison != null && m_Poison.Level >= poison.Level;
 
     /// <summary>
-	  ///   Overridable. Attempts to apply poison to the Mobile. Checks are made such that no
-	  ///   <see cref="CheckHigherPoison">higher poison is active</see> and that the Mobile is not
-	  ///   <see cref="CheckPoisonImmunity">immune to the poison</see>. Provided those assertions are true, the
-	  ///   <paramref name="poison" /> is applied and <see cref="OnPoisoned" /> is invoked.
-	  ///   <seealso cref="Poison" />
-	  ///   <seealso cref="CurePoison" />
-	  /// </summary>
-	  /// <returns>
-	  ///   One of four possible values:
-	  ///   <list type="table">
-	  ///     <item>
-	  ///       <term>
-	  ///         <see cref="ApplyPoisonResult.Cured">Cured</see>
-	  ///       </term>
-	  ///       <description>The <paramref name="poison" /> parameter was null and so <see cref="CurePoison" /> was invoked.</description>
-	  ///     </item>
-	  ///     <item>
-	  ///       <term>
-	  ///         <see cref="ApplyPoisonResult.HigherPoisonActive">HigherPoisonActive</see>
-	  ///       </term>
-	  ///       <description>The call to <see cref="CheckHigherPoison" /> returned false.</description>
-	  ///     </item>
-	  ///     <item>
-	  ///       <term>
-	  ///         <see cref="ApplyPoisonResult.Immune">Immune</see>
-	  ///       </term>
-	  ///       <description>The call to <see cref="CheckPoisonImmunity" /> returned false.</description>
-	  ///     </item>
-	  ///     <item>
-	  ///       <term>
-	  ///         <see cref="ApplyPoisonResult.Poisoned">Poisoned</see>
-	  ///       </term>
-	  ///       <description>The <paramref name="poison" /> was successfully applied.</description>
-	  ///     </item>
-	  ///   </list>
-	  /// </returns>
-	  public virtual ApplyPoisonResult ApplyPoison(Mobile from, Poison poison)
+    ///   Overridable. Attempts to apply poison to the Mobile. Checks are made such that no
+    ///   <see cref="CheckHigherPoison">higher poison is active</see> and that the Mobile is not
+    ///   <see cref="CheckPoisonImmunity">immune to the poison</see>. Provided those assertions are true, the
+    ///   <paramref name="poison" /> is applied and <see cref="OnPoisoned" /> is invoked.
+    ///   <seealso cref="Poison" />
+    ///   <seealso cref="CurePoison" />
+    /// </summary>
+    /// <returns>
+    ///   One of four possible values:
+    ///   <list type="table">
+    ///     <item>
+    ///       <term>
+    ///         <see cref="ApplyPoisonResult.Cured">Cured</see>
+    ///       </term>
+    ///       <description>The <paramref name="poison" /> parameter was null and so <see cref="CurePoison" /> was invoked.</description>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///         <see cref="ApplyPoisonResult.HigherPoisonActive">HigherPoisonActive</see>
+    ///       </term>
+    ///       <description>The call to <see cref="CheckHigherPoison" /> returned false.</description>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///         <see cref="ApplyPoisonResult.Immune">Immune</see>
+    ///       </term>
+    ///       <description>The call to <see cref="CheckPoisonImmunity" /> returned false.</description>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///         <see cref="ApplyPoisonResult.Poisoned">Poisoned</see>
+    ///       </term>
+    ///       <description>The <paramref name="poison" /> was successfully applied.</description>
+    ///     </item>
+    ///   </list>
+    /// </returns>
+    public virtual ApplyPoisonResult ApplyPoison(Mobile from, Poison poison)
     {
       if (poison == null)
       {
@@ -8455,31 +8381,31 @@ namespace Server
       return ApplyPoisonResult.Poisoned;
     }
 
-	  /// <summary>
-	  ///   Overridable. Called from <see cref="CurePoison" />, this method checks to see that the Mobile can be cured of
-	  ///   <see cref="Poison" />
-	  ///   <seealso cref="CurePoison" />
-	  ///   <seealso cref="Poison" />
-	  /// </summary>
-	  public virtual bool CheckCure(Mobile from) => true;
+    /// <summary>
+    ///   Overridable. Called from <see cref="CurePoison" />, this method checks to see that the Mobile can be cured of
+    ///   <see cref="Poison" />
+    ///   <seealso cref="CurePoison" />
+    ///   <seealso cref="Poison" />
+    /// </summary>
+    public virtual bool CheckCure(Mobile from) => true;
 
     /// <summary>
-	  ///   Overridable. Virtual event invoked when a call to <see cref="CurePoison" /> succeeded.
-	  ///   <seealso cref="CurePoison" />
-	  ///   <seealso cref="CheckCure" />
-	  ///   <seealso cref="Poison" />
-	  /// </summary>
-	  public virtual void OnCured(Mobile from, Poison oldPoison)
+    ///   Overridable. Virtual event invoked when a call to <see cref="CurePoison" /> succeeded.
+    ///   <seealso cref="CurePoison" />
+    ///   <seealso cref="CheckCure" />
+    ///   <seealso cref="Poison" />
+    /// </summary>
+    public virtual void OnCured(Mobile from, Poison oldPoison)
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when a call to <see cref="CurePoison" /> failed.
-	  ///   <seealso cref="CurePoison" />
-	  ///   <seealso cref="CheckCure" />
-	  ///   <seealso cref="Poison" />
-	  /// </summary>
-	  public virtual void OnFailedCure(Mobile from)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when a call to <see cref="CurePoison" /> failed.
+    ///   <seealso cref="CurePoison" />
+    ///   <seealso cref="CheckCure" />
+    ///   <seealso cref="Poison" />
+    /// </summary>
+    public virtual void OnFailedCure(Mobile from)
     {
     }
 
@@ -8629,7 +8555,7 @@ namespace Server
 
     public void FixedEffect(int itemID, int speed, int duration)
     {
-      Effects.SendTargetEffect(this, itemID, speed, duration, 0, 0);
+      Effects.SendTargetEffect(this, itemID, speed, duration);
     }
 
     public void FixedParticles(int itemID, int speed, int duration, int effect, int hue, int renderMode,
@@ -8656,7 +8582,7 @@ namespace Server
 
     public void BoltEffect()
     {
-      Effects.SendBoltEffect(this, true);
+      Effects.SendBoltEffect(this);
     }
 
     #endregion
@@ -8911,12 +8837,12 @@ namespace Server
 
     #region OnDoubleClick[..]
     /// <summary>
-	  ///   Overridable. Event invoked when the Mobile is double clicked. By default, this method can either dismount or open the
-	  ///   paperdoll.
-	  ///   <seealso cref="CanPaperdollBeOpenedBy" />
-	  ///   <seealso cref="DisplayPaperdollTo" />
-	  /// </summary>
-	  public virtual void OnDoubleClick(Mobile from)
+    ///   Overridable. Event invoked when the Mobile is double clicked. By default, this method can either dismount or open the
+    ///   paperdoll.
+    ///   <seealso cref="CanPaperdollBeOpenedBy" />
+    ///   <seealso cref="DisplayPaperdollTo" />
+    /// </summary>
+    public virtual void OnDoubleClick(Mobile from)
     {
       if (this == from && (!DisableDismountInWarmode || !m_Warmode))
       {
@@ -8933,30 +8859,30 @@ namespace Server
         DisplayPaperdollTo(from);
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when the Mobile is double clicked by someone who is over 18 tiles away.
-	  ///   <seealso cref="OnDoubleClick" />
-	  /// </summary>
-	  public virtual void OnDoubleClickOutOfRange(Mobile from)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when the Mobile is double clicked by someone who is over 18 tiles away.
+    ///   <seealso cref="OnDoubleClick" />
+    /// </summary>
+    public virtual void OnDoubleClickOutOfRange(Mobile from)
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Virtual event invoked when the Mobile is double clicked by someone who can no longer see the Mobile. This may
-	  ///   happen, for example, using 'Last Object' after the Mobile has hidden.
-	  ///   <seealso cref="OnDoubleClick" />
-	  /// </summary>
-	  public virtual void OnDoubleClickCantSee(Mobile from)
+    /// <summary>
+    ///   Overridable. Virtual event invoked when the Mobile is double clicked by someone who can no longer see the Mobile. This may
+    ///   happen, for example, using 'Last Object' after the Mobile has hidden.
+    ///   <seealso cref="OnDoubleClick" />
+    /// </summary>
+    public virtual void OnDoubleClickCantSee(Mobile from)
     {
     }
 
-	  /// <summary>
-	  ///   Overridable. Event invoked when the Mobile is double clicked by someone who is not alive. Similar to
-	  ///   <see cref="OnDoubleClick" />, this method will show the paperdoll. It does not, however, provide any dismount
-	  ///   functionality.
-	  ///   <seealso cref="OnDoubleClick" />
-	  /// </summary>
-	  public virtual void OnDoubleClickDead(Mobile from)
+    /// <summary>
+    ///   Overridable. Event invoked when the Mobile is double clicked by someone who is not alive. Similar to
+    ///   <see cref="OnDoubleClick" />, this method will show the paperdoll. It does not, however, provide any dismount
+    ///   functionality.
+    ///   <seealso cref="OnDoubleClick" />
+    /// </summary>
+    public virtual void OnDoubleClickDead(Mobile from)
     {
       if (CanPaperdollBeOpenedBy(from))
         DisplayPaperdollTo(from);

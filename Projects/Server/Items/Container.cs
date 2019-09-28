@@ -483,9 +483,6 @@ namespace Server.Items
       int extraItems = 0;
       int extraWeight = 0;
 
-//			from.SendMessage( String.Format( "There are {0} items in this container.", this.Items.Count ) );
-//			from.SendMessage( String.Format( "There are {0} items being dropped into this container.", droppedItems.Length ) );
-
       for (int i = 0; i < droppedItems.Length; i++)
       {
         Item dropped = droppedItems[i];
@@ -709,15 +706,6 @@ namespace Server.Items
         DisplayTo(from);
       else
         from.SendLocalizedMessage(500446); // That is too far away.
-    }
-
-    private class GroupComparer : IComparer<Item>
-    {
-      private CheckItemGroup m_Grouper;
-
-      public GroupComparer(CheckItemGroup grouper) => m_Grouper = grouper;
-
-      public int Compare(Item a, Item b) => m_Grouper(a, b);
     }
 
     [Flags]

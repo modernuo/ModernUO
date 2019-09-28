@@ -144,7 +144,7 @@ namespace Server.Items
 
             if (from.CheckTargetSkill(SkillName.Herding, m_Creature, min, max))
             {
-              if (p != from)
+              if (!ReferenceEquals(p, from))
                 p = new Point2D(p.X, p.Y);
 
               m_Creature.TargetLocation = p;

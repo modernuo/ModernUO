@@ -219,11 +219,11 @@ namespace Server
 
     public class TimerThread
     {
-      private static Dictionary<Timer, TimerChangeEntry> m_Changed = new Dictionary<Timer, TimerChangeEntry>();
+      private static readonly Dictionary<Timer, TimerChangeEntry> m_Changed = new Dictionary<Timer, TimerChangeEntry>();
 
-      private static long[] m_NextPriorities = new long[8];
+      private static readonly long[] m_NextPriorities = new long[8];
 
-      private static long[] m_PriorityDelays = {
+      private static readonly long[] m_PriorityDelays = {
         0,
         10,
         25,
@@ -234,7 +234,7 @@ namespace Server
         60000
       };
 
-      private static List<Timer>[] m_Timers = new List<Timer>[8]
+      private static readonly List<Timer>[] m_Timers =
       {
         new List<Timer>(),
         new List<Timer>(),
@@ -246,7 +246,7 @@ namespace Server
         new List<Timer>()
       };
 
-      private static AutoResetEvent m_Signal = new AutoResetEvent(false);
+      private static readonly AutoResetEvent m_Signal = new AutoResetEvent(false);
 
       public static void DumpInfo(TextWriter tw)
       {
@@ -270,10 +270,8 @@ namespace Server
           }
 
           foreach (var (key, list) in hash)
-          {
             tw.WriteLine("Type: {0}; Count: {1}; Percent: {2}%", key, list.Count,
               (int)(100 * (list.Count / (double)m_Timers[i].Count)));
-          }
 
           tw.WriteLine();
           tw.WriteLine();
@@ -283,9 +281,7 @@ namespace Server
       public static void Change(Timer t, int newIndex, bool isAdd)
       {
         lock (m_Changed)
-        {
           m_Changed[t] = TimerChangeEntry.GetInstance(t, newIndex, isAdd);
-        }
 
         m_Signal.Set();
       }

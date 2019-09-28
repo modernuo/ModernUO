@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Server.Mobiles;
 
 namespace Server.Items
@@ -83,15 +84,11 @@ namespace Server.Items
     public static bool Slays(TalismanSlayerName name, Mobile m)
     {
       if (m == null || !m_Table.TryGetValue(name, out Type[] types) || types == null)
-        return false;;
+        return false;
 
       Type type = m.GetType();
 
-      for (int i = 0; i < types.Length; i++)
-        if (types[i].IsAssignableFrom(type))
-          return true;
-
-      return false;
+      return types.Any(t => t.IsAssignableFrom(type));
     }
   }
 }

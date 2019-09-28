@@ -87,9 +87,7 @@ namespace Server.Spells.Necromancy
     {
       ChampionSpawnRegion r = Caster.Region.GetRegion<ChampionSpawnRegion>();
       if (r == null || !Caster.InRange(r.ChampionSpawn, Range))
-      {
         Caster.SendLocalizedMessage(1072111); // You are not in a valid exorcism region.
-      }
       else if (CheckSequence())
       {
         Map map = Caster.Map;
@@ -98,9 +96,8 @@ namespace Server.Spells.Necromancy
         {
           IEnumerable<Mobile> targets = r.ChampionSpawn.GetMobilesInRange(Range).Where(IsValidTarget);
 
-          foreach (Mobile m in targets)
           //Surprisingly, no sparkle type effects
-
+          foreach (Mobile m in targets)
             m.Location = GetNearestShrine(m);
         }
       }
@@ -135,7 +132,7 @@ namespace Server.Spells.Necromancy
         Guild mGuild = m.Guild as Guild;
         Guild cGuild = Caster.Guild as Guild;
 
-        if (mGuild.IsAlly(cGuild))
+        if (mGuild?.IsAlly(cGuild) == true)
           return false;
 
         if (mGuild == cGuild)

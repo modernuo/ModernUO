@@ -824,8 +824,8 @@ namespace Server.Items
 
       if (shield != null)
       {
-        chance = (parry - bushidoNonRacial) /
-                   400.0; // As per OSI, no genitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
+        // As per OSI, no genitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
+        chance = (parry - bushidoNonRacial) / 400.0;
 
         if (chance < 0) // chance shouldn't go below 0
           chance = 0;
@@ -850,7 +850,7 @@ namespace Server.Items
 
       BaseWeapon weapon = defender.Weapon as BaseWeapon;
 
-      double divisor = weapon.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
+      double divisor = weapon?.Layer == Layer.OneHanded ? 48000.0 : 41140.0;
 
       chance = parry * bushido / divisor;
 
@@ -1441,7 +1441,7 @@ namespace Server.Items
 
       damage = AOS.Scale(damage, 100 + damageBonus);
 
-      return damage / 100;
+      return damage / 100.0;
     }
 
     public virtual CheckSlayerResult CheckSlayers(Mobile attacker, Mobile defender)
@@ -1903,13 +1903,6 @@ namespace Server.Items
           switch (Animation)
           {
             default:
-            case WeaponAnimation.Wrestle:
-            case WeaponAnimation.Bash1H:
-            case WeaponAnimation.Pierce1H:
-            case WeaponAnimation.Slash1H:
-            case WeaponAnimation.Bash2H:
-            case WeaponAnimation.Pierce2H:
-            case WeaponAnimation.Slash2H:
               action = Utility.Random(4, 3);
               break;
             case WeaponAnimation.ShootBow: return; // 7

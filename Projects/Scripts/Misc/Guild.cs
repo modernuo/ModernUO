@@ -464,9 +464,8 @@ namespace Server.Guilds
 
   public class WarTimer : Timer
   {
-    private static TimeSpan InternalDelay = TimeSpan.FromMinutes(1.0);
-
-    public WarTimer() : base(InternalDelay, InternalDelay) => Priority = TimerPriority.FiveSeconds;
+    public WarTimer() : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0)) =>
+      Priority = TimerPriority.FiveSeconds;
 
     public static void Initialize()
     {

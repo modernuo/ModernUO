@@ -507,13 +507,11 @@ namespace Server.Commands
             Dictionary<string, Region> list = from.Map.Regions;
 
             foreach (var (_, r) in list)
-            {
               if (Insensitive.Equals(r.Name, name))
               {
-                from.Location = new Point3D(r.GoLocation);
+                @from.Location = new Point3D(r.GoLocation);
                 return;
               }
-            }
 
             for (int i = 0; i < Map.AllMaps.Count; ++i)
             {
