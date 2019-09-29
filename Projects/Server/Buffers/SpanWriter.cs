@@ -187,13 +187,7 @@ namespace Server.Buffers
     /// </summary>
     public void WriteAscii(string value)
     {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteAsciiFixed() with null value");
-        value = string.Empty;
-      }
-
-      Position += Encoding.ASCII.GetBytes(value, RawSpan.Slice(Position));
+      Position += Encoding.ASCII.GetBytes(value ?? "", RawSpan.Slice(Position));
     }
 
     /// <summary>
@@ -201,11 +195,7 @@ namespace Server.Buffers
     /// </summary>
     public void WriteAsciiFixed(string value, int size, bool zero = false)
     {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteAsciiFixed() with null value");
-        value = string.Empty;
-      }
+      value ??= "";
 
       int length = Math.Min(size, value.Length);
 
@@ -225,13 +215,7 @@ namespace Server.Buffers
     /// </summary>
     public void WriteAsciiNull(string value)
     {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteAsciiNull() with null value");
-        value = string.Empty;
-      }
-
-      Position += Encoding.ASCII.GetBytes(value, RawSpan.Slice(Position));
+      Position += Encoding.ASCII.GetBytes(value ?? "", RawSpan.Slice(Position));
       Write((byte)0);
     }
 
@@ -240,11 +224,7 @@ namespace Server.Buffers
     /// </summary>
     public void WriteAsciiNull(string value, int size)
     {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteAsciiNull() with null value");
-        value = string.Empty;
-      }
+      value ??= "";
 
       size = Math.Min(size, value.Length);
       Position += Encoding.ASCII.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position));
@@ -256,13 +236,7 @@ namespace Server.Buffers
     /// </summary>
     public void WriteLittleUni(string value)
     {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteLittleUniNull() with null value");
-        value = string.Empty;
-      }
-
-      Position += Encoding.Unicode.GetBytes(value, RawSpan.Slice(Position));
+      Position += Encoding.Unicode.GetBytes(value ?? "", RawSpan.Slice(Position));
     }
 
     /// <summary>
@@ -279,13 +253,7 @@ namespace Server.Buffers
     /// </summary>
     public void WriteBigUni(string value)
     {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteBigUniNull() with null value");
-        value = string.Empty;
-      }
-
-      Position += Encoding.BigEndianUnicode.GetBytes(value, RawSpan.Slice(Position));
+      Position += Encoding.BigEndianUnicode.GetBytes(value ?? "", RawSpan.Slice(Position));
     }
 
     /// <summary>
@@ -306,13 +274,7 @@ namespace Server.Buffers
     /// </summary>
     public void WriteUTF8Null(string value)
     {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteUTF8Null() with null value");
-        value = string.Empty;
-      }
-
-      Position += Utility.UTF8.GetBytes(value, RawSpan.Slice(Position)) + 1;
+      Position += Utility.UTF8.GetBytes(value ?? "", RawSpan.Slice(Position)) + 1;
     }
 
     /// <summary>
