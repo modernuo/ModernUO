@@ -686,7 +686,6 @@ namespace Server.Network
         w.Write(HairInfo.FakeSerial(beheld.Serial));
         w.Write((ushort)(beheld.HairItemID & 0xFFFF));
         w.Write((byte)Layer.Hair);
-
         w.Write((short)hue);
       }
 
@@ -700,7 +699,6 @@ namespace Server.Network
         w.Write(FacialHairInfo.FakeSerial(beheld.Serial));
         w.Write((ushort)(beheld.FacialHairItemID & 0xFFFF));
         w.Write((byte)Layer.FacialHair);
-
         w.Write((short)hue);
       }
 

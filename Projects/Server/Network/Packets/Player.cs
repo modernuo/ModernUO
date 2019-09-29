@@ -291,6 +291,8 @@ namespace Server.Network
         w.Write((ushort)s.CapFixedPoint);
       }
 
+      w.Position += 2;
+
       ns.Send(w.Span);
     }
 
@@ -527,7 +529,10 @@ namespace Server.Network
 
     public static void SendLoginComplete(NetState ns)
     {
-      ns?.Send(stackalloc byte[] { 0x55 });
+      ns?.Send(stackalloc byte[]
+      {
+        0x55 // Packet ID
+      });
     }
 
     public static void SendClearWeaponAbility(NetState ns)
