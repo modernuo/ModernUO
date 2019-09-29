@@ -177,7 +177,6 @@ namespace Server.Buffers
     public void Write(ReadOnlySpan<byte> input)
     {
       int size = Math.Min(input.Length, Length - Position);
-      Console.WriteLine("Size {0}", size);
 
       input.Slice(0, size).CopyTo(RawSpan.Slice(Position));
       Position += size;
@@ -276,32 +275,6 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a fixed-length little-endian unicode string value to the span. To fit (size), the string content is
-    ///   either truncated or padded with null characters.
-    /// </summary>
-    public void WriteLittleUniFixed(string value, int size, bool zero = false)
-    {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteLittleUniFixed() with null value");
-        value = string.Empty;
-      }
-
-      size *= 2;
-
-      int length = Math.Min(size, value.Length * 2);
-      Encoding.Unicode.GetBytes(value.AsSpan(0, length), RawSpan.Slice(Position));
-
-      if (zero)
-      {
-        Position += length;
-        Fill(size - length);
-      }
-      else
-        Position += size;
-    }
-
-    /// <summary>
     ///   Writes a dynamic-length big-endian unicode string value to the span.
     /// </summary>
     public void WriteBigUni(string value)
@@ -318,49 +291,14 @@ namespace Server.Buffers
     /// <summary>
     ///   Writes a dynamic-length big-endian unicode string value to the span, followed by a 2-byte null character.
     /// </summary>
-    public void WriteBigUniNull(string value)
+    public void WriteBigUniNull(string value, bool zero = false)
     {
       WriteBigUni(value);
-      Position += 2;
-    }
-
-    /// <summary>
-    ///   Writes a fixed-length big-endian unicode string value to the span.
-    /// </summary>
-    public void WriteBigUniFixed(string value, int size, bool zero = false)
-    {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteBigUniFixed() with null value");
-        value = string.Empty;
-      }
-
-      size *= 2;
-
-      int length = Math.Min(size, value.Length * 2);
-      Encoding.BigEndianUnicode.GetBytes(value.AsSpan(0, length), RawSpan.Slice(Position));
 
       if (zero)
-      {
-        Position += length;
-        Fill(size - length);
-      }
+        Fill(2);
       else
-        Position += size;
-    }
-
-    /// <summary>
-    ///   Writes a dynamic-length utf-8 string values.
-    /// </summary>
-    public void WriteUTF8(string value)
-    {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteUTF8Null() with null value");
-        value = string.Empty;
-      }
-
-      Position += Utility.UTF8.GetBytes(value, RawSpan.Slice(Position));
+        Position += 2;
     }
 
     /// <summary>
@@ -378,38 +316,11 @@ namespace Server.Buffers
     }
 
     /// <summary>
-    ///   Writes a dynamic-length utf-8 string value up to max characters to the span, followed by a 1-byte null character.
-    /// </summary>
-    public void WriteUTF8Null(string value, int size)
-    {
-      if (value == null)
-      {
-        Console.WriteLine("Network: Attempted to WriteUTF8Null() with null value");
-        value = string.Empty;
-      }
-
-      size = Math.Min(size, value.Length);
-
-      Position += Utility.UTF8.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position)) + 1;
-    }
-
-    /// <summary>
     ///   Copies the span to the destination.
     /// </summary>
     public void CopyTo(Span<byte> destination)
     {
       RawSpan.CopyTo(destination);
-    }
-
-    /// <summary>
-    ///   Copies the span to the destination up to count or bytes written.
-    /// </summary>
-    public void CopyTo(Span<byte> destination, int count)
-    {
-      if (count > WrittenCount)
-        CopyTo(destination);
-      else
-        RawSpan.Slice(0, count).CopyTo(destination);
     }
 
     /// <summary>

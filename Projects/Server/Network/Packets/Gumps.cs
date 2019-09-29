@@ -62,7 +62,7 @@ namespace Server.Network
         ushort length = (ushort)v.Length;
 
         w.Write(length);
-        w.WriteBigUniFixed(v, length);
+        w.WriteBigUni(v);
       }
 
       w.Position = 1;

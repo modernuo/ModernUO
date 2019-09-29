@@ -222,10 +222,10 @@ namespace Server
 
   public sealed class RDRand64 : BaseRandom, IHardwareRNG
   {
-    [DllImport("rdrand64")]
+    [DllImport("rdrand")]
     internal static extern RDRandError rdrand_64(ref ulong rand, bool retry);
 
-    [DllImport("rdrand64")]
+    [DllImport("rdrand")]
     internal static extern unsafe RDRandError rdrand_get_bytes(int n, byte* buffer);
 
     public bool IsSupported()
