@@ -293,7 +293,7 @@ namespace Server.Engines.Doom
         if (TypeName == null)
           return;
 
-        Type type = ScriptCompiler.FindTypeByName(TypeName, true);
+        Type type = AssemblyHandler.FindTypeByName(TypeName, true);
 
         if (type == null)
           return;

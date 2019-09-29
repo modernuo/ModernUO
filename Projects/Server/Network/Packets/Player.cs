@@ -191,6 +191,7 @@ namespace Server.Network
       ns?.Send(stackalloc byte[]
       {
         0xBD, // Packet ID
+        0x00,
         0x03
       });
     }
@@ -210,7 +211,8 @@ namespace Server.Network
         0x72, // Packet ID
         0x01, // War mode
         0x00,
-        0x32 // ?
+        0x32, // ?
+        0x00
       });
     }
 
@@ -221,7 +223,8 @@ namespace Server.Network
         0x72, // Packet ID
         0x00, // Peace mode
         0x00,
-        0x32 // ?
+        0x32, // ?
+        0x00
       });
     }
 
@@ -496,7 +499,7 @@ namespace Server.Network
       if (ns == null)
         return;
 
-      SpanWriter w = new SpanWriter(stackalloc byte[28]);
+      SpanWriter w = new SpanWriter(stackalloc byte[37]);
       w.Write((byte)0x1B); // Packet ID
 
       w.Write(m.Serial);
@@ -517,6 +520,7 @@ namespace Server.Network
       w.Position += 4;
       w.Write((short)(map?.Width ?? 6144));
       w.Write((short)(map?.Height ?? 4096));
+      w.Position += 9;
 
       ns.Send(w.Span);
     }

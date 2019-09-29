@@ -87,7 +87,7 @@ namespace Server.Network
       {
         flags &= ~FeatureFlags.UOTD;
         flags |= FeatureFlags.LiveAccount |
-          (ns.Account.Limit > 6 ? FeatureFlags.SeventhCharacterSlot : FeatureFlags.SixthCharacterSlot);
+                 (ns.Account.Limit > 6 ? FeatureFlags.SeventhCharacterSlot : FeatureFlags.SixthCharacterSlot);
       }
 
       if (ns.ExtendedSupportedFeatures)

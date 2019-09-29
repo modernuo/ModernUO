@@ -92,7 +92,7 @@ namespace Server.Network
       if (ns.HighSeas)
         SendDisplayBuyListHS(ns, vendor);
       else
-        SendDisplayBuyList(ns, vendor);
+        SendDisplayBuyListOld(ns, vendor);
     }
 
     public static void SendDisplayBuyListOld(NetState ns, Serial vendor)

@@ -530,31 +530,40 @@ namespace Server.Network
       pr.Complete();
     }
 
-    public async Task Write(Memory<byte> mem)
-    {
-      FlushResult result = await SendPipe.Writer.WriteAsync(mem.GetArray());
-
-      if (result.IsCompleted || result.IsCanceled)
-        SendPipe.Writer.Complete();
-    }
-
     public async Task Flush(int bytesWritten)
     {
+      if (IsDisposing || BlockAllPackets)
+        return;
+
       SendPipe.Writer.Advance(bytesWritten);
       FlushResult result = await SendPipe.Writer.FlushAsync();
 
       if (result.IsCompleted || result.IsCanceled)
-        SendPipe.Writer.Complete();
+        Dispose();
     }
 
     public void SendRaw(ReadOnlySpan<byte> input)
     {
+      if (IsDisposing || BlockAllPackets)
+        return;
+
+      Console.WriteLine("Packet ID {0:X}", input[0]);
+      if (input.Length >= 4 && input[0] == 0xBF)
+        Console.WriteLine("Sub-Packet {0:X}", input[3]);
+
       input.CopyTo(SendPipe.Writer.GetSpan(input.Length));
       _ = Flush(input.Length);
     }
 
     public void Send(ReadOnlySpan<byte> input)
     {
+      if (IsDisposing || BlockAllPackets)
+        return;
+
+      Console.WriteLine("Packet ID {0:X}", input[0]);
+      if (input.Length >= 5 && input[0] == 0xBF)
+        Console.WriteLine("Sub-Packet {0:X}", input[4]);
+
       if (UseCompression)
       {
         int destSize = (int)Compression.Compressor.CompressBound((ulong)input.Length);
@@ -572,6 +581,12 @@ namespace Server.Network
 
       while (!Core.Closing)
       {
+        if (m_AsyncState.Paused)
+        {
+          await Timer.Pause(50);
+          continue;
+        }
+
         ReadResult result = await pr.ReadAsync();
         ReadOnlySequence<byte> seq = result.Buffer;
         if (seq.Length == 0)
@@ -590,7 +605,6 @@ namespace Server.Network
         {
           Console.WriteLine(ex);
           TraceException(ex);
-          Dispose();
           break;
         }
 
@@ -598,7 +612,7 @@ namespace Server.Network
           break;
       }
 
-      pr.Complete();
+      Dispose();
     }
 
     public PacketHandler GetHandler(int packetID) =>
@@ -653,14 +667,15 @@ namespace Server.Network
       {
         RecvdPipe.Reader.CancelPendingRead();
         RecvdPipe.Reader.Complete();
-        await RecvdPipe.Writer.FlushAsync().ConfigureAwait(false);
-        RecvdPipe.Writer.Complete();
+        await SendPipe.Writer.FlushAsync();
+        SendPipe.Writer.Complete();
 
         try { Socket.Shutdown(SocketShutdown.Both); } catch (Exception ex) { TraceException(ex); }
         try { Socket.Close(); } catch (Exception ex) { TraceException(ex); }
 
         Socket = null;
         RecvdPipe = null;
+        SendPipe = null;
         m_Disposed.Enqueue(this);
       });
     }

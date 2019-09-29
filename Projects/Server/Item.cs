@@ -199,7 +199,7 @@ namespace Server
     Spawner = 0x100
   }
 
-  public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, IPropertyListObject, ITile
+  public class Item : IHued, IComparable<Item>, ISerializable, ISpawnable, ITile
   {
     public const int QuestItemHue = 0x4EA; // Hmmmm... "for EA"?
     public static readonly List<Item> EmptyItems = new List<Item>();

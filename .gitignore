@@ -9,7 +9,9 @@
 /Distribution/rdrand.dll
 /Distribution/zlib.dll
 /Projects/Scripts/obj
+/Projects/Scripts/bin
 /Projects/Server/obj
+/Projects/Server/bin
 
 *.log
 *.user

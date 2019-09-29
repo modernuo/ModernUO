@@ -12,7 +12,7 @@ namespace Server.Engines.PartySystem
 
       SpanWriter writer = new SpanWriter(stackalloc byte[11]);
       writer.Write((byte)0xBF); // Packet ID
-      writer.Write((short)0x7); // Dynamic Length
+      writer.Write((short)11); // Dynamic Length
 
       writer.Write((short)0x06);
       writer.Write((byte)0x02);
@@ -31,7 +31,7 @@ namespace Server.Engines.PartySystem
 
       SpanWriter writer = new SpanWriter(stackalloc byte[length]);
       writer.Write((byte)0xBF); // Packet ID
-      writer.Write((ushort)length); // Dynamic Length
+      writer.Write(length); // Dynamic Length
 
       writer.Write((short)0x06);
       writer.Write((byte)0x01);
@@ -52,7 +52,7 @@ namespace Server.Engines.PartySystem
 
       SpanWriter writer = new SpanWriter(stackalloc byte[length]);
       writer.Write((byte)0xBF); // Packet ID
-      writer.Write((short)length); // Dynamic Length
+      writer.Write(length); // Dynamic Length
 
       writer.Write((short)0x06);
       writer.Write((byte)0x02);
@@ -80,7 +80,7 @@ namespace Server.Engines.PartySystem
 
       SpanWriter writer = new SpanWriter(stackalloc byte[length]);
       writer.Write((byte)0xBF); // Packet ID
-      writer.Write((short)length); // Dynamic Length
+      writer.Write(length); // Dynamic Length
 
       writer.Write((short)0x06);
       writer.Write((byte)(toAll ? 0x04 : 0x03));
@@ -104,7 +104,7 @@ namespace Server.Engines.PartySystem
 
       SpanWriter writer = new SpanWriter(stackalloc byte[10]);
       writer.Write((byte)0xBF); // Packet ID
-      writer.Write((short)0x0A); // Dynamic Length
+      writer.Write((short)10); // Dynamic Length
 
       writer.Write((short)0x06);
       writer.Write((byte)0x07);

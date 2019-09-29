@@ -1,6 +1,6 @@
 /***************************************************************************
- *                             ScriptCompiler.cs
- *                            -------------------
+ *                            AssemblyHandler.cs
+ *                           --------------------
  *   begin                : May 1, 2002
  *   copyright            : (C) The RunUO Software Team
  *   email                : info@runuo.com
@@ -21,62 +21,31 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-#if NETCORE
 using System.Runtime.Loader;
-#endif
 
 namespace Server
 {
-  public static class ScriptCompiler
+  public static class AssemblyHandler
   {
     private static Dictionary<Assembly, TypeCache> m_TypeCaches = new Dictionary<Assembly, TypeCache>();
     private static TypeCache m_NullCache;
     public static Assembly[] Assemblies { get; set; }
 
-    public static string ScriptsPath = EnsureDirectory("Assemblies");
+    public static string AssembliesPath = EnsureDirectory("Assemblies");
 
-    public static bool LoadScripts(string path = null)
-    {
-      string[] files = Directory.GetFiles(path ?? ScriptsPath, "*.dll");
-
-      List<Assembly> assemblies = new List<Assembly>();
-
-      AssemblyName[] names = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-
-      int loaded = 0;
-
-      for (int i = 0; i < files.Length; i++)
-      {
-#if NETCORE
-        assemblies.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(files[i]));
-        loaded++;
-#else
-        Assemblies[i] = Assembly.LoadFrom(files[i]);
-#endif
-      }
-
-      Assemblies = assemblies.ToArray();
-
-      return loaded > 0;
-    }
+    public static void LoadScripts(string path = null) =>
+      Assemblies = Directory.GetFiles(path ?? AssembliesPath, "*.dll")
+        .Select(t => AssemblyLoadContext.Default.LoadFromAssemblyPath(t)).ToArray();
 
     public static void Invoke(string method)
     {
       List<MethodInfo> invoke = new List<MethodInfo>();
 
       for (int a = 0; a < Assemblies.Length; ++a)
-      {
-        Type[] types = Assemblies[a].GetTypes();
-
-        for (int i = 0; i < types.Length; ++i)
-        {
-          MethodInfo m = types[i].GetMethod(method, BindingFlags.Static | BindingFlags.Public);
-
-          if (m != null)
-            invoke.Add(m);
-        }
-      }
+        invoke.AddRange(Assemblies[a].GetTypes()
+          .Select(t => t.GetMethod(method, BindingFlags.Static | BindingFlags.Public)).Where(m => m != null));
 
       invoke.Sort(new CallPriorityComparer());
 
@@ -87,10 +56,11 @@ namespace Server
     public static TypeCache GetTypeCache(Assembly asm)
     {
       if (asm == null) return m_NullCache ??= new TypeCache(null);
-      if (!m_TypeCaches.TryGetValue(asm, out TypeCache c))
-        m_TypeCaches[asm] = c = new TypeCache(asm);
 
-      return c;
+      if (m_TypeCaches.TryGetValue(asm, out TypeCache c))
+        return c;
+
+      return m_TypeCaches[asm] = new TypeCache(asm);
     }
 
     public static Type FindTypeByFullName(string fullName) => FindTypeByFullName(fullName, true);
@@ -132,7 +102,7 @@ namespace Server
   {
     public TypeCache(Assembly asm)
     {
-      Types = asm == null ? Type.EmptyTypes : asm.GetTypes();
+      Types = asm?.GetTypes() ?? Type.EmptyTypes;
 
       Names = new TypeTable(Types.Length);
       FullNames = new TypeTable(Types.Length);

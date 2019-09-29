@@ -195,6 +195,7 @@ namespace Server.Network
       w.Write((byte)item.Light);
       w.Write((short)item.Hue);
       w.Write((byte)item.GetPacketFlags());
+      w.Position += 2;
 
       ns.Send(w.Span);
     }

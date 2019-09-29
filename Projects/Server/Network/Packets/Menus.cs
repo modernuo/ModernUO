@@ -136,7 +136,7 @@ namespace Server.Network
       w.Write((byte)0xBF); // Packet ID
       w.Write((short)length); // Length
 
-      w.Write((short)0x14);
+      w.Write((short)0x14); // Command
       w.Write((short)0x02);
 
       IEntity target = menu.Target as IEntity;
@@ -183,7 +183,7 @@ namespace Server.Network
       w.Write((byte)0xBF); // Packet ID
       w.Position += 2; // Dynamic Length
 
-      w.Write((short)0x14);
+      w.Write((short)0x14); // Command
       w.Write((short)0x01); // Old!
 
       IEntity target = menu.Target as IEntity;

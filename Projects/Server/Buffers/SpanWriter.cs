@@ -43,7 +43,7 @@ namespace Server.Buffers
     /// <summary>
     ///   Gets the total length of the span.
     /// </summary>
-    public int Length => Span.Length;
+    public int Length => RawSpan.Length;
 
     /// <summary>
     ///   Total bytes written to the span.
@@ -177,6 +177,7 @@ namespace Server.Buffers
     public void Write(ReadOnlySpan<byte> input)
     {
       int size = Math.Min(input.Length, Length - Position);
+      Console.WriteLine("Size {0}", size);
 
       input.Slice(0, size).CopyTo(RawSpan.Slice(Position));
       Position += size;
@@ -231,7 +232,7 @@ namespace Server.Buffers
         value = string.Empty;
       }
 
-      Position += Encoding.ASCII.GetBytes(value, Span.Slice(Position));
+      Position += Encoding.ASCII.GetBytes(value, RawSpan.Slice(Position));
       Write((byte)0);
     }
 
@@ -247,7 +248,7 @@ namespace Server.Buffers
       }
 
       size = Math.Min(size, value.Length);
-      Position += Encoding.ASCII.GetBytes(value.AsSpan(0, size), Span.Slice(Position));
+      Position += Encoding.ASCII.GetBytes(value.AsSpan(0, size), RawSpan.Slice(Position));
       Write((byte)0);
     }
 

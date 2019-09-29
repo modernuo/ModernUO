@@ -58,7 +58,7 @@ namespace Server.Engines.Quests
         {
           string fullName = reader.ReadString();
 
-          return fullName == null ? null : ScriptCompiler.FindTypeByFullName(fullName, false);
+          return fullName == null ? null : AssemblyHandler.FindTypeByFullName(fullName, false);
         }
       }
     }

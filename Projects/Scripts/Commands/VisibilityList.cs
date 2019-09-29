@@ -122,7 +122,7 @@ namespace Server.Commands
                 pm.PropertyList.Send(ns);
 
                 foreach (Item item in pm.Items)
-                  item.PropertyList.Send(ns);
+                  item.PropertyList.SendOPLInfo(ns);
               }
             }
             else

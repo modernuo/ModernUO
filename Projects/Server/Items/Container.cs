@@ -632,7 +632,7 @@ namespace Server.Items
           List<Item> items = Items;
 
           for (int i = 0; i < items.Count; ++i)
-            items[i].PropertyList.Send(ns);
+            items[i].PropertyList.SendOPLInfo(ns);
         }
       }
     }

@@ -138,9 +138,7 @@ namespace Server.Mobiles
         (from as PlayerMobile)?.AutoStabled.Remove(pet);
       }
       else
-      {
         SayTo(from, 1049612, pet.Name); // ~1_NAME~ remained in the stables because you have too many followers.
-      }
     }
 
     public void BeginStable(Mobile from)
@@ -187,9 +185,7 @@ namespace Server.Mobiles
         SayTo( from, 1048053 ); // You can't stable that!
       }*/
       else if ((pet is PackLlama || pet is PackHorse || pet is Beetle) && pet.Backpack?.Items.Count > 0)
-      {
         SayTo(from, 1042563); // You need to unload your pet.
-      }
       else if (pet.Combatant != null && pet.InRange(pet.Combatant, 12) && pet.Map == pet.Combatant.Map)
         SayTo(from, 1042564); // I'm sorry.  Your pet seems to be busy.
       else if (from.Stabled.Count >= GetMaxStabled(from))
@@ -285,7 +281,7 @@ namespace Server.Mobiles
 
     public bool CanClaim(Mobile from, BaseCreature pet) => from.Followers + pet.ControlSlots <= from.FollowersMax;
 
-    private void DoClaim(Mobile from, BaseCreature pet)
+    private static void DoClaim(Mobile from, BaseCreature pet)
     {
       pet.SetControlMaster(from);
 

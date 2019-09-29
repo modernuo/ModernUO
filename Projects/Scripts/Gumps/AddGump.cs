@@ -132,15 +132,15 @@ namespace Server.Gumps
       List<Type> results = new List<Type>();
       Type[] types;
 
-      Assembly[] asms = ScriptCompiler.Assemblies;
+      Assembly[] asms = AssemblyHandler.Assemblies;
 
       for (int i = 0; i < asms.Length; ++i)
       {
-        types = ScriptCompiler.GetTypeCache(asms[i]).Types;
+        types = AssemblyHandler.GetTypeCache(asms[i]).Types;
         Match(match, types, results);
       }
 
-      types = ScriptCompiler.GetTypeCache(Core.Assembly).Types;
+      types = AssemblyHandler.GetTypeCache(Core.Assembly).Types;
       Match(match, types, results);
 
       results.Sort(new TypeNameComparer());

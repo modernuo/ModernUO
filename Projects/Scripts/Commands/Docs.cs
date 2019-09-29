@@ -638,7 +638,7 @@ namespace Server.Commands
       m_Namespaces = new Dictionary<string, List<TypeInfo>>();
 
       List<Assembly> assemblies = new List<Assembly> { Core.Assembly };
-      assemblies.AddRange(ScriptCompiler.Assemblies);
+      assemblies.AddRange(AssemblyHandler.Assemblies);
 
 
       Assembly[] asms = assemblies.ToArray();

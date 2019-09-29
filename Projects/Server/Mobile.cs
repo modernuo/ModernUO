@@ -432,7 +432,7 @@ namespace Server
   /// <summary>
   ///   Base class representing players, npcs, and creatures.
   /// </summary>
-  public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable, IPropertyListObject
+  public class Mobile : IHued, IComparable<Mobile>, ISerializable, ISpawnable
   {
     private const int
       WarmodeCatchCount = 4; // Allow four warmode changes in 0.5 seconds, any more will be delay for two seconds
@@ -2250,9 +2250,7 @@ namespace Server
         sendAny = true;
 
         if (attrs == MobileDelta.Attributes)
-        {
           sendAll = true;
-        }
         else
         {
           sendHits = (attrs & MobileDelta.Hits) != 0;
@@ -4064,22 +4062,15 @@ namespace Server
 
       Container c = CreateCorpseHandler?.Invoke(this, hair, facialhair, content, equip);
 
-      /*m_Corpse = c;
-
-      for ( int i = 0; c != null && i < content.Count; ++i )
-        c.DropItem( (Item)content[i] );
-
-      if ( c != null )
-        c.MoveToWorld( this.Location, this.Map );*/
-
       if (m_Map != null)
       {
         IPooledEnumerable<NetState> eable = m_Map.GetClientsInRange(m_Location);
+        Serial cSerial = c?.Serial ?? Serial.Zero;
 
         foreach (NetState state in eable)
           if (state != m_NetState)
           {
-            Packets.SendDeathAnimation(state, Serial, c.Serial);
+            Packets.SendDeathAnimation(state, Serial, cSerial);
 
             if (!state.Mobile.CanSee(this))
               Packets.SendRemoveEntity(state, Serial);
@@ -4333,9 +4324,7 @@ namespace Server
           }
         }
         else
-        {
           reject = LRReason.Unspecific;
-        }
       }
       else
       {
@@ -4397,7 +4386,8 @@ namespace Server
 
       if (oldItem.Parent is Mobile parentMobile)
         parentMobile.AddItem(item);
-      else if (oldItem.Parent is Item parentItem) parentItem.AddItem(item);
+      else if (oldItem.Parent is Item parentItem)
+        parentItem.AddItem(item);
 
       item.Delta(ItemDelta.Update);
 
@@ -5767,7 +5757,7 @@ namespace Server
                 Packets.SendBondStatus(ns, m.Serial, true);
 
               if (ObjectPropertyList.Enabled)
-                m.PropertyList.Send(ns);
+                m.PropertyList.SendOPLInfo(ns);
             }
           }
 

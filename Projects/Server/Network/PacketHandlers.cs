@@ -318,6 +318,8 @@ namespace Server.Network
         return -1;
       }
 
+      Console.WriteLine("Packet Handler {0:X}", handler.PacketID);
+
       long packetLength = handler.Length;
       if (handler.Length <= 0 && r.Length >= 3)
       {
@@ -1354,9 +1356,7 @@ namespace Server.Network
         uint value = pvSrc.ReadUInt32();
 
         if ((value & ~0x7FFFFFFF) != 0)
-        {
           from.OnPaperdollRequest();
-        }
         else
         {
           Serial s = value;
@@ -1380,9 +1380,7 @@ namespace Server.Network
         from.NextActionTime = Core.TickCount + Mobile.ActionDelay;
       }
       else
-      {
         from.SendActionMessage();
-      }
     }
 
     public static void LookReq(NetState state, PacketReader pvSrc)
@@ -1398,9 +1396,7 @@ namespace Server.Network
         if (m != null && from.CanSee(m) && Utility.InUpdateRange(from, m))
         {
           if (SingleClickProps)
-          {
             m.OnAosSingleClick(from);
-          }
           else
           {
             if (from.Region.OnSingleClick(from, m))
@@ -1416,9 +1412,7 @@ namespace Server.Network
             Utility.InUpdateRange(from.Location, item.GetWorldLocation()))
         {
           if (SingleClickProps)
-          {
             item.OnAosSingleClick(from);
-          }
           else if (from.Region.OnSingleClick(from, item))
           {
             if (item.Parent is Item item1)
@@ -1866,13 +1860,6 @@ namespace Server.Network
       if (m != null)
         switch (type)
         {
-          case 0x00: // Unknown, sent by godclient
-          {
-            if (VerifyGC(state))
-              Console.WriteLine("God Client: {0}: Query 0x{1:X2} on {2} '{3}'", state, type, m.Serial, m.Name);
-
-            break;
-          }
           case 0x04: // Stats
           {
             m.OnStatsQuery(from);
@@ -1897,10 +1884,9 @@ namespace Server.Network
 
       string name = pvSrc.ReadString(30);
 
-      pvSrc.Seek(2, SeekOrigin.Current);
-      int flags = pvSrc.ReadInt32();
+      pvSrc.ReadInt16(); // Unknown
 
-      // Razor
+      int flags = pvSrc.ReadInt32();
 
       pvSrc.Seek(24, SeekOrigin.Current);
 
@@ -1908,6 +1894,7 @@ namespace Server.Network
         return;
 
       int charSlot = pvSrc.ReadInt32();
+      // TODO: Handle IP address.
       int clientIP = pvSrc.ReadInt32();
 
       IAccount a = state.Account;
@@ -1941,11 +1928,9 @@ namespace Server.Network
 
         // TODO: Make this wait one tick so we don't have to call it unnecessarily
         NetState.ProcessDisposedQueue();
-
         Packets.SendClientVersionReq(state);
 
         state.BlockAllPackets = true;
-
         state.Flags = (ClientFlags)flags;
 
         state.Mobile = m;
@@ -2060,9 +2045,7 @@ namespace Server.Network
       IAccount a = state.Account;
 
       if (info == null || a == null || cityIndex < 0 || cityIndex >= info.Length)
-      {
         state.Dispose();
-      }
       else
       {
         // Check if anyone is using this account
@@ -2215,24 +2198,19 @@ namespace Server.Network
         );
 
         Packets.SendClientVersionReq(state);
-
-        state.BlockAllPackets = true;
-
         EventSink.InvokeCharacterCreated(args);
 
         Mobile m = args.Mobile;
 
         if (m != null)
         {
+          state.BlockAllPackets = true;
           state.Mobile = m;
           m.NetState = state;
           new LoginTimer(state, m).Start();
         }
         else
-        {
-          state.BlockAllPackets = false;
           state.Dispose();
-        }
       }
     }
 
@@ -2462,7 +2440,10 @@ namespace Server.Network
       protected override void OnTick()
       {
         if (m_State == null)
+        {
           Stop();
+          return;
+        }
 
         if (m_State.Version != null)
         {

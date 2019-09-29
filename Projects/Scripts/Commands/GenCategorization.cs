@@ -144,8 +144,8 @@ namespace Server.Commands
 
       AddTypes(Core.Assembly, types);
 
-      for (int i = 0; i < ScriptCompiler.Assemblies.Length; ++i)
-        AddTypes(ScriptCompiler.Assemblies[i], types);
+      for (int i = 0; i < AssemblyHandler.Assemblies.Length; ++i)
+        AddTypes(AssemblyHandler.Assemblies[i], types);
 
       m_RootItems = Load(types, "Data/items.cfg");
       m_RootMobiles = Load(types, "Data/mobiles.cfg");
@@ -315,7 +315,7 @@ namespace Server.Commands
 
       for (int i = 0; i < split.Length; ++i)
       {
-        Type type = ScriptCompiler.FindTypeByName(split[i].Trim());
+        Type type = AssemblyHandler.FindTypeByName(split[i].Trim());
 
         if (type == null)
           Console.WriteLine("Match type not found ('{0}')", split[i].Trim());

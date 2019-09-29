@@ -18,19 +18,14 @@
  *
  ***************************************************************************/
 
+using System;
 using System.Buffers;
+using System.Text;
 using Server.Buffers;
 using Server.Network;
 
 namespace Server
 {
-  public interface IPropertyListObject : IEntity
-  {
-    ObjectPropertyList PropertyList{ get; }
-
-    void GetProperties(ObjectPropertyList list);
-  }
-
   public sealed class ObjectPropertyList
   {
     // Each of these are localized to "~1_NOTHING~" which allows the string argument to be used
@@ -58,26 +53,26 @@ namespace Server
 
     public static bool Enabled{ get; set; }
 
-    public int PacketLength => 19 + m_Buffer.WrittenCount;
-
     public void Send(NetState ns)
     {
       if (ns == null)
         return;
 
-      short length = (short)PacketLength;
-      SpanWriter writer = new SpanWriter(stackalloc byte[PacketLength]);
+      ReadOnlySpan<byte> body = m_Buffer.WrittenSpan;
+
+      short length = (short)(19 + body.Length);
+      SpanWriter writer = new SpanWriter(stackalloc byte[length]);
       writer.Write((byte)0xD6); // Packet ID
       writer.Write(length); // Dynamic Length
 
-      writer.Write((short)1);
+      writer.Write((short)1); // Command
       writer.Write(Entity.Serial);
       writer.Position += 2;
       writer.Write(m_Hash);
-      writer.Write(m_Buffer.WrittenSpan);
-      // writer.Write(0);
+      writer.Write(body);
+      writer.Position += 4;
 
-      ns.Send(writer.RawSpan);
+      ns.Send(writer.Span);
     }
 
     public void Add(int number)
@@ -95,7 +90,7 @@ namespace Server
 
       SpanWriter writer = new SpanWriter(m_Buffer.GetSpan(6));
       writer.Write(number);
-      // writer.Write((short)0);
+      writer.Write((short)0);
 
       m_Buffer.Advance(6);
     }
@@ -122,13 +117,14 @@ namespace Server
       AddHash(number);
       AddHash(arguments.GetHashCode());
 
-      int argLength = arguments.Length * 2;
-      SpanWriter writer = new SpanWriter(m_Buffer.GetSpan(6 + argLength));
+      int argLength = Encoding.Unicode.GetByteCount(arguments);
+      int length = 6 + argLength;
+      SpanWriter writer = new SpanWriter(m_Buffer.GetSpan(length));
       writer.Write(number);
       writer.Write((short)argLength);
       writer.WriteLittleUni(arguments);
 
-      m_Buffer.Advance(writer.Position);
+      m_Buffer.Advance(length);
     }
 
     public void Add(int number, string format, object arg0)
@@ -181,7 +177,8 @@ namespace Server
     public void SendOPLInfo(NetState ns)
     {
       SpanWriter writer = new SpanWriter(stackalloc byte[9]);
-      writer.Write((byte)0xDC);
+      writer.Write((byte)0xDC); // Packet ID
+
       writer.Write(Entity.Serial);
       writer.Write(m_Hash);
 

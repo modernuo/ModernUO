@@ -391,7 +391,7 @@ namespace Server.Commands
       else if (IsType(type))
         try
         {
-          toSet = ScriptCompiler.FindTypeByName(value);
+          toSet = AssemblyHandler.FindTypeByName(value);
 
           if (toSet == null)
             return "No type with that name was found.";

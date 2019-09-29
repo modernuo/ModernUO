@@ -323,12 +323,7 @@ namespace Server
 
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
       Console.WriteLine("ModernUO - [https://github.com/modernuo/modernuo] v{0}.{1}.{2}{3}", ver.Major, ver.Minor, ver.Build, ver.Revision != 0 ? ver.Revision.ToString() : "");
-#if NETCORE
       Console.WriteLine("Core: Running on {0}", RuntimeInformation.FrameworkDescription);
-#else
-      Console.WriteLine("Core: Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major,
-        Environment.Version.Minor, Environment.Version.Build);
-#endif
 
       string s = Arguments;
 
@@ -365,22 +360,22 @@ namespace Server
         RandomImpl.IsHardwareRNG ? "Hardware" : "Software");
 
       // Load Assembly Scripts.CS.dll
-      ScriptCompiler.LoadScripts();
+      AssemblyHandler.LoadScripts();
 
       // Verify the loaded assemblies
       VerifySerialization();
 
-      ScriptCompiler.Invoke("Configure");
+      AssemblyHandler.Invoke("Configure");
 
       Region.Load();
       World.Load();
 
-      ScriptCompiler.Invoke("Initialize");
+      AssemblyHandler.Invoke("Initialize");
 
       // Start accepting new connections
       MessagePump = new MessagePump();
 
-      ScriptCompiler.Invoke("RegisterListeners");
+      AssemblyHandler.Invoke("RegisterListeners");
 
       timerThread.Start();
 
@@ -437,9 +432,7 @@ namespace Server
 
       Assembly ca = Assembly.GetCallingAssembly();
 
-      VerifySerialization(ca);
-
-      foreach (Assembly a in ScriptCompiler.Assemblies.Where(a => a != ca))
+      foreach (Assembly a in AssemblyHandler.Assemblies.Where(a => a != ca))
         VerifySerialization(a);
     }
 

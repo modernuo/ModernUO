@@ -24,7 +24,7 @@ namespace Server.Misc
         List<Item> items = beheld.Items;
 
         for (int i = 0; i < items.Count; ++i)
-          items[i].PropertyList.Send(ns);
+          items[i].PropertyList.SendOPLInfo(ns);
 
         // NOTE: OSI sends MobileUpdate when opening your own paperdoll.
         // It has a very bad rubber-banding affect. What positive affects does it have?

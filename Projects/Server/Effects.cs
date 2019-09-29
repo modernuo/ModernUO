@@ -55,7 +55,7 @@ namespace Server
 
       if (map != null)
       {
-        IPooledEnumerable<NetState> eable = map.GetClientsInRange(new Point3D(p));
+        IPooledEnumerable<NetState> eable = map.GetClientsInRange(p);
 
         foreach (NetState state in eable)
         {

@@ -192,7 +192,7 @@ namespace Server.Engines.BulkOrders
           string type = reader.ReadString();
 
           if (type != null)
-            Type = ScriptCompiler.FindTypeByFullName(type);
+            Type = AssemblyHandler.FindTypeByFullName(type);
 
           m_Number = reader.ReadInt();
           Graphic = reader.ReadInt();

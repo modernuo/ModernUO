@@ -138,7 +138,7 @@ namespace Server.Spells
     {
       for (int i = 0; i < m_CircleNames.Length; ++i)
       {
-        Type t = ScriptCompiler.FindTypeByFullName($"Server.Spells.{m_CircleNames[i]}.{name}");
+        Type t = AssemblyHandler.FindTypeByFullName($"Server.Spells.{m_CircleNames[i]}.{name}");
 
         if (t?.IsSubclassOf(typeof(SpecialMove)) == false)
         {

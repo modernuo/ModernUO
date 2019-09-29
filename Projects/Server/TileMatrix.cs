@@ -410,7 +410,7 @@ namespace Server
 
     public void Force()
     {
-      if (ScriptCompiler.Assemblies == null || ScriptCompiler.Assemblies.Length == 0)
+      if (AssemblyHandler.Assemblies == null || AssemblyHandler.Assemblies.Length == 0)
         throw new Exception();
     }
 
