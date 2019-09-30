@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Server.Network
@@ -180,112 +181,108 @@ namespace Server.Network
       }
     }
 
-    public static int MaxPackSize(int sourceLength) => Compressor.CompressBound(sourceLength);
+    public static ulong MaxPackSize(ulong sourceLength) => Compressor.CompressBound(sourceLength);
 
-    public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength)
+    public static unsafe ZLibError Pack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ulong sourceLength)
     {
-      fixed(byte* dPtr = dest, sPtr = source)
-        return Compressor.Compress(dPtr, ref destLength, sPtr, sourceLength);
+      fixed(byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+        return Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLength, Unsafe.AsRef<int>(sPtr), sourceLength);
     }
 
-    public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, ZLibQuality quality)
+    public static unsafe ZLibError Pack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ZLibQuality quality)
     {
-      fixed (byte* dPtr = dest, sPtr = source)
-        return Compressor.Compress(dPtr, ref destLength, sPtr, source.Length, quality);
+      fixed(byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+        return Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLength, Unsafe.AsRef<int>(sPtr), (ulong)source.Length, quality);
     }
 
-    public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength, ZLibQuality quality)
+    public static unsafe ZLibError Pack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ulong sourceLength, ZLibQuality quality)
     {
-      fixed (byte* dPtr = dest, sPtr = source)
-        return Compressor.Compress(dPtr, ref destLength, sPtr, sourceLength, quality);
+      fixed(byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+        return Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLength, Unsafe.AsRef<int>(sPtr), sourceLength, quality);
     }
 
-    public static unsafe ZLibError Unpack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength)
+    public static unsafe ZLibError Unpack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ulong sourceLength)
     {
-      fixed (byte* dPtr = dest, sPtr = source)
-        return Compressor.Decompress(dPtr, ref destLength, sPtr, sourceLength);
+      fixed(byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+        return Compressor.Decompress(Unsafe.AsRef<int>(dPtr), ref destLength, Unsafe.AsRef<int>(sPtr), sourceLength);
     }
   }
 
   public interface ICompressor
   {
-    unsafe ZLibError Compress(byte* dest, ref int destLength, in byte* source, int sourceLength);
-    unsafe ZLibError Compress(byte* dest, ref int destLength, in byte* source, int sourceLength, ZLibQuality quality);
-    unsafe ZLibError Decompress(byte* dest, ref int destLength, in byte* source, int sourceLength);
-    int CompressBound(int sourceLength);
+    ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
+    ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength, ZLibQuality quality);
+    ZLibError Decompress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
+    ulong CompressBound(ulong sourceLength);
   }
 
   public class Compressor : ICompressor
   {
     public string Version => zlibVersion();
 
-    public unsafe ZLibError Compress(byte* dest, ref int destLength, in byte* source, int sourceLength) =>
+    public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength) =>
       compress(dest, ref destLength, source, sourceLength);
 
-    public unsafe ZLibError Compress(byte* dest, ref int destLength, in byte* source, int sourceLength, ZLibQuality quality) =>
+    public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength,
+      ZLibQuality quality) =>
       compress2(dest, ref destLength, source, sourceLength, quality);
 
-    public unsafe ZLibError Decompress(byte* dest, ref int destLength, in byte* source, int sourceLength) =>
+    public ZLibError Decompress(in int dest, ref ulong destLength, in int source, ulong sourceLength) =>
       uncompress(dest, ref destLength, source, sourceLength);
 
-    public int CompressBound(int sourceLength) => compressBound(sourceLength);
+    public ulong CompressBound(ulong sourceLength) => compressBound(sourceLength);
 
     [DllImport("zlib")]
     private static extern string zlibVersion();
 
     [DllImport("zlib")]
-    private static extern unsafe ZLibError compress(byte* dest, ref int destLength, in byte* source, int sourceLength);
+    private static extern ZLibError compress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
 
     [DllImport("zlib")]
-    private static extern unsafe ZLibError compress2(byte* dest, ref int destLength, in byte* source, int sourceLength,
+    private static extern ZLibError compress2(in int dest, ref ulong destLength, in int source, ulong sourceLength,
       ZLibQuality quality);
 
     [DllImport("zlib")]
-    private static extern unsafe ZLibError uncompress(byte* dest, ref int destLen, in byte* source, int sourceLen);
+    private static extern ZLibError uncompress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
 
     [DllImport("zlib")]
-    private static extern int compressBound(int sourceLen);
+    private static extern ulong compressBound(ulong sourceLen);
   }
 
   public class UnixCompressor : ICompressor
   {
     public string Version => zlibVersion();
 
-    public unsafe ZLibError Compress( byte* dest, ref int destLength, in byte* source, int sourceLength ) {
-      ulong destLengthLong = (ulong)destLength;
-      ZLibError z = compress(dest, ref destLengthLong, source, sourceLength);
-      destLength = (int)destLengthLong;
+    public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength) {
+      ZLibError z = compress(dest, ref destLength, source, sourceLength);
       return z;
     }
 
-    public unsafe ZLibError Compress( byte* dest, ref int destLength, in byte* source, int sourceLength, ZLibQuality quality ) {
-      ulong destLengthLong = (ulong)destLength;
-      ZLibError z = compress2(dest, ref destLengthLong, source, sourceLength, quality);
-      destLength = (int)destLengthLong;
+    public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength,
+      ZLibQuality quality) {
+      ZLibError z = compress2(dest, ref destLength, source, sourceLength, quality);
       return z;
     }
 
-    public unsafe ZLibError Decompress( byte* dest, ref int destLength, in byte* source, int sourceLength ) {
-      ulong destLengthLong = (ulong)destLength;
-      ZLibError z = uncompress(dest, ref destLengthLong, source, sourceLength);
-      destLength = (int)destLengthLong;
+    public ZLibError Decompress(in int dest, ref ulong destLength, in int source, ulong sourceLength) {
+      ZLibError z = uncompress(dest, ref destLength, source, sourceLength);
       return z;
     }
 
-    public int CompressBound(int sourceLength) => (int)compressBound((ulong)sourceLength);
+    public ulong CompressBound(ulong sourceLength) => compressBound(sourceLength);
 
     [DllImport("libz")]
     private static extern string zlibVersion();
 
     [DllImport("libz")]
-    private static extern unsafe ZLibError compress(byte* dest, ref ulong destLength, in byte* source, int sourceLength);
+    private static extern ZLibError compress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
 
     [DllImport("libz")]
-    private static extern unsafe ZLibError compress2(byte* dest, ref ulong destLength, in byte* source, int sourceLength,
+    private static extern ZLibError compress2(in int dest, ref ulong destLength, in int source, ulong sourceLength,
       ZLibQuality quality);
 
     [DllImport("libz")]
-    private static extern unsafe ZLibError uncompress(byte* dest, ref ulong destLen, in byte* source, int sourceLen);
+    private static extern ZLibError uncompress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
 
     [DllImport("libz")]
     private static extern ulong compressBound(ulong sourceLen);

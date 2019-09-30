@@ -235,7 +235,7 @@ namespace Server.Network
       }
 
       int planeCount = 0;
-      int length = (int)Compression.Compressor.CompressBound(0x400);
+      int bound = (int)Compression.Compressor.CompressBound(0x400);
 
       for (int i = 0; i < 9; ++i)
       {
@@ -254,19 +254,18 @@ namespace Server.Network
           size = width * (height - 1) * 2;
 
         Span<byte> inflatedBuffer = planeBuffers.Slice(i * 0x400, 0x400);
-        Span<byte> deflatedBuffer = bufferWriter.GetSpan(length + 4);
+        Span<byte> deflatedBuffer = bufferWriter.GetSpan(bound + 4);
 
-        int deflatedLength = length;
-        ZLibError ce = Compression.Pack(deflatedBuffer.Slice(4), ref deflatedLength, inflatedBuffer, size, ZLibQuality.Default);
+        ulong deflatedLength = (ulong)bound;
+        ZLibError ce = Compression.Pack(deflatedBuffer.Slice(4), ref deflatedLength, inflatedBuffer, (ulong)size, ZLibQuality.Default);
 
         if (ce != ZLibError.Okay)
         {
           Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
-          deflatedLength = 0;
           size = 0;
         }
 
-        length = (int)deflatedLength;
+        int length = (int)deflatedLength;
 
         deflatedBuffer[0] = (byte)(0x20 | i);
         deflatedBuffer[1] = (byte)size;
@@ -278,7 +277,7 @@ namespace Server.Network
       }
 
       int totalStairBuffersUsed = (totalStairsUsed + (MaxItemsPerStairBuffer - 1)) / MaxItemsPerStairBuffer;
-      length = (int)Compression.Compressor.CompressBound(MaxItemsPerStairBuffer);
+      bound = (int)Compression.Compressor.CompressBound(MaxItemsPerStairBuffer);
 
       for (int i = 0; i < totalStairBuffersUsed; ++i)
       {
@@ -292,10 +291,10 @@ namespace Server.Network
         int size = count * 5;
 
         Span<byte> inflatedBuffer = stairBuffers.Slice(i * MaxItemsPerStairBuffer, MaxItemsPerStairBuffer);
-        Span<byte> deflatedBuffer = bufferWriter.GetSpan(length + 4);
+        Span<byte> deflatedBuffer = bufferWriter.GetSpan(bound + 4);
 
-        int deflatedLength = length;
-        ZLibError ce = Compression.Pack(deflatedBuffer.Slice(4), ref deflatedLength, inflatedBuffer, size, ZLibQuality.Default);
+        ulong deflatedLength = (ulong)bound;
+        ZLibError ce = Compression.Pack(deflatedBuffer.Slice(4), ref deflatedLength, inflatedBuffer, (ulong)size, ZLibQuality.Default);
 
         if (ce != ZLibError.Okay)
         {
@@ -304,7 +303,7 @@ namespace Server.Network
           size = 0;
         }
 
-        length = (int)deflatedLength;
+        int length = (int)deflatedLength;
 
         deflatedBuffer[0] = (byte)(9 + i);
         deflatedBuffer[1] = (byte)size;
@@ -321,10 +320,10 @@ namespace Server.Network
       headWriter.Write((byte)planeCount); // Plane count
 
       headWriter.Position = 1;
-      length = headWriter.WrittenCount + bufferWriter.WrittenCount;
-      headWriter.Write((ushort)length);
+      int written = headWriter.WrittenCount + bufferWriter.WrittenCount;
+      headWriter.Write((ushort)written);
 
-      byte[] packet = new byte[length];
+      byte[] packet = new byte[written];
       headWriter.CopyTo(packet);
       bufferWriter.WrittenSpan.CopyTo(packet.AsSpan(headWriter.WrittenCount));
 

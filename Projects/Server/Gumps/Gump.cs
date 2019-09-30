@@ -22,6 +22,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Server.Buffers;
 using Server.Collections;
@@ -252,7 +253,6 @@ namespace Server.Gumps
       if (packed)
       {
         layoutBuffer.Write(stackalloc byte[]{0x00}); // Null Terminated
-        Console.WriteLine(Encoding.ASCII.GetString(layoutBuffer.WrittenSpan));
         layoutReadOnlySpan = WritePacked(layoutBuffer.WrittenSpan, layoutSpan);
       }
       else
@@ -264,33 +264,31 @@ namespace Server.Gumps
 
       writeLength += layoutReadOnlySpan.Length;
 
-      int packedStringCount = packed ? 4 : 2;
+      int stringLength = (packed ? 4 : 2) + 2 * strings.Count + strings.Sum(t => t.Length * 2);
+      SpanWriter rawStringsWriter = new SpanWriter(stackalloc byte[stringLength]);
 
-      int stringsLength = packedStringCount + 2 * strings.Count + strings.Sum(t => t.Length * 2);
-      SpanWriter stringsWriter = new SpanWriter(stackalloc byte[stringsLength]);
       if (packed)
-        stringsWriter.Write(strings.Count);
+        rawStringsWriter.Write(strings.Count);
       else
-        stringsWriter.Write((ushort)strings.Count);
+        rawStringsWriter.Write((ushort)strings.Count);
 
       for (int i = 0; i < strings.Count; ++i)
       {
         string v = strings[i] ?? "";
 
-        stringsWriter.Write((ushort)v.Length);
-        stringsWriter.WriteBigUni(v);
+        rawStringsWriter.Write((ushort)v.Length);
+        rawStringsWriter.WriteBigUni(v);
       }
 
-      Span<byte> stringsSpan = stackalloc byte[GetMaxPackedSize(stringsLength)];
-      ReadOnlySpan<byte> stringsReadOnlySpan = stringsSpan;
+      ReadOnlySpan<byte> stringsReadOnlySpan = rawStringsWriter.Span;
+      Span<byte> stringsSpan = stackalloc byte[4 + GetMaxPackedSize(stringLength)];
 
       if (packed)
       {
-        stringsReadOnlySpan = WritePacked(stringsWriter.Span.Slice(packedStringCount), stringsSpan);
+        stringsReadOnlySpan = WritePacked(stringsReadOnlySpan.Slice(4), stringsSpan);
+        stringsReadOnlySpan.Slice(0, 4).CopyTo(stringsSpan.Slice(0, 4));
         stringsReadOnlySpan = stringsSpan.Slice(0, stringsReadOnlySpan.Length + 4);
       }
-      else
-        stringsReadOnlySpan = stringsWriter.Span;
 
       writeLength += stringsReadOnlySpan.Length;
 
@@ -303,7 +301,7 @@ namespace Server.Gumps
       bufferWriter.Write(stringsReadOnlySpan);
     }
 
-    private static int GetMaxPackedSize(int sourceLength) => 8 + Compression.MaxPackSize(sourceLength);
+    private static int GetMaxPackedSize(int sourceLength) => 8 + (int)Compression.MaxPackSize((ulong)sourceLength);
 
     private static ReadOnlySpan<byte> WritePacked(ReadOnlySpan<byte> source, Span<byte> dest)
     {
@@ -315,16 +313,16 @@ namespace Server.Gumps
         return dest.Slice(0, 4);
       }
 
-      int packLength = dest.Length;
+      ulong packLength = (ulong)dest.Length - 8;
 
       ZLibError ce = Compression.Pack(dest.Slice(8), ref packLength, source, ZLibQuality.Default);
       if (ce != ZLibError.Okay) Console.WriteLine("ZLib error: {0} (#{1})", ce, (int)ce);
       SpanWriter writer = new SpanWriter(dest);
-
-      writer.Write(4 + packLength);
+      int packLengthInt = (int)packLength;
+      writer.Write(4 + packLengthInt);
       writer.Write(length);
 
-      return dest.Slice(0, 8 + packLength);
+      return dest.Slice(0, 8 + packLengthInt);
     }
 
     public virtual void OnResponse(NetState sender, RelayInfo info)
