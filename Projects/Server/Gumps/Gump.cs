@@ -208,29 +208,17 @@ namespace Server.Gumps
     {
       state.AddGump(this);
       ArrayBufferWriter<byte> bufferWriter = new ArrayBufferWriter<byte>(0x10000);
-      Compile(state.Unpack, bufferWriter);
+      m_TextEntries = 0;
+      m_Switches = 0;
+      if (state.Unpack)
+        CompilePacked(bufferWriter);
+      else
+        CompileFast(bufferWriter);
       state.Send(bufferWriter.WrittenSpan);
     }
 
-    private void Compile(bool packed, IBufferWriter<byte> bufferWriter)
+    private void WriteLayout(ArrayBufferWriter<byte> layoutBuffer, ArraySet<string> strings)
     {
-      m_TextEntries = 0;
-      m_Switches = 0;
-
-      int writeLength = packed ? 19 : 21;
-
-      SpanWriter headWriter = new SpanWriter(stackalloc byte[writeLength]);
-      headWriter.Write((byte)(packed ? 0xDD : 0xB0));
-      headWriter.Position += 2; // Dynamic Length
-
-      headWriter.Write(Serial);
-      headWriter.Write(TypeID);
-      headWriter.Write(X);
-      headWriter.Write(Y);
-
-      ArraySet<string> strings = new ArraySet<string>();
-      ArrayBufferWriter<byte> layoutBuffer = new ArrayBufferWriter<byte>();
-
       if (!Draggable)
         layoutBuffer.Write(m_NoMove);
 
@@ -245,32 +233,12 @@ namespace Server.Gumps
 
       for (int i = 0; i < Entries.Count; ++i)
         Entries[i].AppendTo(layoutBuffer, strings, ref m_TextEntries, ref m_Switches);
+    }
 
-      Span<byte> layoutSpan =
-        stackalloc byte[GetMaxPackedSize(layoutBuffer.WrittenCount)];
-      ReadOnlySpan<byte> layoutReadOnlySpan = layoutSpan;
-
-      if (packed)
-      {
-        layoutBuffer.Write(stackalloc byte[]{0x00}); // Null Terminated
-        layoutReadOnlySpan = WritePacked(layoutBuffer.WrittenSpan, layoutSpan);
-      }
-      else
-      {
-        ushort layoutSize = (ushort)layoutBuffer.WrittenCount;
-        headWriter.Write(layoutSize);
-        layoutReadOnlySpan = layoutBuffer.WrittenSpan;
-      }
-
-      writeLength += layoutReadOnlySpan.Length;
-
-      int stringLength = (packed ? 4 : 2) + 2 * strings.Count + strings.Sum(t => t.Length * 2);
-      SpanWriter rawStringsWriter = new SpanWriter(stackalloc byte[stringLength]);
-
-      if (packed)
-        rawStringsWriter.Write(strings.Count);
-      else
-        rawStringsWriter.Write((ushort)strings.Count);
+    private static void WriteStrings(IBufferWriter<byte> stringsBuffer, IList<string> strings)
+    {
+      int stringLength = 2 * strings.Count + strings.Sum(t => t.Length * 2);
+      SpanWriter rawStringsWriter = new SpanWriter(stringsBuffer.GetSpan(stringLength));
 
       for (int i = 0; i < strings.Count; ++i)
       {
@@ -280,37 +248,101 @@ namespace Server.Gumps
         rawStringsWriter.WriteBigUni(v);
       }
 
-      ReadOnlySpan<byte> stringsReadOnlySpan = rawStringsWriter.Span;
-      Span<byte> stringsSpan = stackalloc byte[4 + GetMaxPackedSize(stringLength)];
+      stringsBuffer.Advance(stringLength);
+    }
 
-      if (packed)
-      {
-        stringsReadOnlySpan = WritePacked(stringsReadOnlySpan.Slice(4), stringsSpan);
-        stringsReadOnlySpan.Slice(0, 4).CopyTo(stringsSpan.Slice(0, 4));
-        stringsReadOnlySpan = stringsSpan.Slice(0, stringsReadOnlySpan.Length + 4);
-      }
+    private void CompilePacked(IBufferWriter<byte> bufferWriter)
+    {
+      SpanWriter writer = new SpanWriter(bufferWriter.GetSpan(19));
+      writer.Write((byte)0xDD); // Packed ID
+      writer.Position += 2; // Dynamic Length
 
-      writeLength += stringsReadOnlySpan.Length;
+      writer.Write(Serial);
+      writer.Write(TypeID);
+      writer.Write(X);
+      writer.Write(Y);
 
-      // Write the packet length
-      headWriter.Position = 1;
-      headWriter.Write((ushort)writeLength);
+      ArraySet<string> strings = new ArraySet<string>();
+      ArrayBufferWriter<byte> buffer = new ArrayBufferWriter<byte>();
+      WriteLayout(buffer, strings);
 
-      bufferWriter.Write(headWriter.Span);
-      bufferWriter.Write(layoutReadOnlySpan);
-      bufferWriter.Write(stringsReadOnlySpan);
+      Console.WriteLine("last character {0:X2}", buffer.WrittenSpan[0]);
+      buffer.Write(stackalloc byte[]{0x00}); // Null Terminated
+
+      Span<byte> layoutSpan = stackalloc byte[GetMaxPackedSize(buffer.WrittenCount)];
+      int writtenBytes = WritePacked(buffer.WrittenSpan, layoutSpan);
+      layoutSpan = layoutSpan.Slice(0, writtenBytes);
+
+      buffer = new ArrayBufferWriter<byte>();
+      WriteStrings(buffer, strings);
+
+      Span<byte> stringsSpan = stackalloc byte[GetMaxPackedSize(buffer.WrittenCount)];
+      writtenBytes = WritePacked(buffer.WrittenSpan, stringsSpan);
+      stringsSpan = stringsSpan.Slice(0, writtenBytes);
+
+      writer.Position = 1;
+      writer.Write((ushort)(23 + layoutSpan.Length + stringsSpan.Length));
+
+      // Write the header
+      bufferWriter.Advance(19);
+
+      // Write the layout
+      bufferWriter.Write(layoutSpan);
+
+      // Write strings
+      writer = new SpanWriter(bufferWriter.GetSpan(4));
+      writer.Write(strings.Count);
+      bufferWriter.Advance(4);
+      bufferWriter.Write(stringsSpan);
+    }
+
+    private void CompileFast(IBufferWriter<byte> bufferWriter)
+    {
+      SpanWriter writer = new SpanWriter(bufferWriter.GetSpan(21));
+      writer.Write((byte)0xB0); // Packed ID
+      writer.Position += 2; // Dynamic Length
+
+      writer.Write(Serial);
+      writer.Write(TypeID);
+      writer.Write(X);
+      writer.Write(Y);
+
+      ArraySet<string> strings = new ArraySet<string>();
+      ArrayBufferWriter<byte> layoutBuffer = new ArrayBufferWriter<byte>();
+      WriteLayout(layoutBuffer, strings);
+
+      writer.Write((ushort)layoutBuffer.WrittenCount);
+
+      ArrayBufferWriter<byte> stringsBuffer = new ArrayBufferWriter<byte>();
+      Span<byte> span = stringsBuffer.GetSpan(2);
+      span[0] = (byte)(strings.Count >> 8);
+      span[1] = (byte)strings.Count;
+      bufferWriter.Advance(2);
+      WriteStrings(stringsBuffer, strings);
+
+      writer.Position = 1;
+      writer.Write((ushort)(23 + layoutBuffer.WrittenCount + stringsBuffer.WrittenCount));
+
+      // Write the header
+      bufferWriter.Advance(21);
+
+      // Write the layout
+      bufferWriter.Write(layoutBuffer.WrittenSpan);
+
+      // Write strings
+      bufferWriter.Write(stringsBuffer.WrittenSpan);
     }
 
     private static int GetMaxPackedSize(int sourceLength) => 8 + (int)Compression.MaxPackSize((ulong)sourceLength);
 
-    private static ReadOnlySpan<byte> WritePacked(ReadOnlySpan<byte> source, Span<byte> dest)
+    private static int WritePacked(ReadOnlySpan<byte> source, Span<byte> dest)
     {
       int length = source.Length;
 
       if (length == 0)
       {
         dest.Clear();
-        return dest.Slice(0, 4);
+        return 4;
       }
 
       ulong packLength = (ulong)dest.Length - 8;
@@ -322,7 +354,7 @@ namespace Server.Gumps
       writer.Write(4 + packLengthInt);
       writer.Write(length);
 
-      return dest.Slice(0, 8 + packLengthInt);
+      return 8 + packLengthInt;
     }
 
     public virtual void OnResponse(NetState sender, RelayInfo info)

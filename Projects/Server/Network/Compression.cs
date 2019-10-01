@@ -181,6 +181,52 @@ namespace Server.Network
       }
     }
 
+    public static int MaxPackSize(int sourceLength) => (int)Compressor.CompressBound((ulong)sourceLength);
+
+    public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength)
+    {
+      ulong destLengthLong = (ulong)destLength;
+      fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      {
+        ZLibError e = Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr), (ulong)sourceLength);
+        destLength = (int)destLengthLong;
+        return e;
+      }
+    }
+
+    public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, ZLibQuality quality)
+    {
+      ulong destLengthLong = (ulong)destLength;
+      fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      {
+        ZLibError e = Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr), (ulong)source.Length, quality);
+        destLength = (int)destLengthLong;
+        return e;
+      }
+    }
+
+    public static unsafe ZLibError Pack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength, ZLibQuality quality)
+    {
+      ulong destLengthLong = (ulong)destLength;
+      fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      {
+        ZLibError e = Compressor.Compress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr), (ulong)sourceLength, quality);
+        destLength = (int)destLengthLong;
+        return e;
+      }
+    }
+
+    public static unsafe ZLibError Unpack(Span<byte> dest, ref int destLength, ReadOnlySpan<byte> source, int sourceLength)
+    {
+      ulong destLengthLong = (ulong)destLength;
+      fixed (byte* dPtr = &MemoryMarshal.GetReference(dest), sPtr = &MemoryMarshal.GetReference(source))
+      {
+        ZLibError e = Compressor.Decompress(Unsafe.AsRef<int>(dPtr), ref destLengthLong, Unsafe.AsRef<int>(sPtr), (ulong)sourceLength);
+        destLength = (int)destLengthLong;
+        return e;
+      }
+    }
+
     public static ulong MaxPackSize(ulong sourceLength) => Compressor.CompressBound(sourceLength);
 
     public static unsafe ZLibError Pack(Span<byte> dest, ref ulong destLength, ReadOnlySpan<byte> source, ulong sourceLength)
@@ -210,6 +256,7 @@ namespace Server.Network
 
   public interface ICompressor
   {
+    string Version { get; }
     ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
     ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength, ZLibQuality quality);
     ZLibError Decompress(in int dest, ref ulong destLength, in int source, ulong sourceLength);
@@ -224,8 +271,7 @@ namespace Server.Network
       compress(dest, ref destLength, source, sourceLength);
 
     public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength,
-      ZLibQuality quality) =>
-      compress2(dest, ref destLength, source, sourceLength, quality);
+      ZLibQuality quality) => compress2(dest, ref destLength, source, sourceLength, quality);
 
     public ZLibError Decompress(in int dest, ref ulong destLength, in int source, ulong sourceLength) =>
       uncompress(dest, ref destLength, source, sourceLength);
@@ -253,21 +299,14 @@ namespace Server.Network
   {
     public string Version => zlibVersion();
 
-    public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength) {
-      ZLibError z = compress(dest, ref destLength, source, sourceLength);
-      return z;
-    }
+    public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength) =>
+      compress(dest, ref destLength, source, sourceLength);
 
     public ZLibError Compress(in int dest, ref ulong destLength, in int source, ulong sourceLength,
-      ZLibQuality quality) {
-      ZLibError z = compress2(dest, ref destLength, source, sourceLength, quality);
-      return z;
-    }
+      ZLibQuality quality) => compress2(dest, ref destLength, source, sourceLength, quality);
 
-    public ZLibError Decompress(in int dest, ref ulong destLength, in int source, ulong sourceLength) {
-      ZLibError z = uncompress(dest, ref destLength, source, sourceLength);
-      return z;
-    }
+    public ZLibError Decompress(in int dest, ref ulong destLength, in int source, ulong sourceLength) =>
+      uncompress(dest, ref destLength, source, sourceLength);
 
     public ulong CompressBound(ulong sourceLength) => compressBound(sourceLength);
 
@@ -296,9 +335,7 @@ namespace Server.Network
     DataError = -3,
     StreamError = -2,
     FileError = -1,
-
     Okay = 0,
-
     StreamEnd = 1,
     NeedDictionary = 2
   }
@@ -306,9 +343,7 @@ namespace Server.Network
   public enum ZLibQuality
   {
     Default = -1,
-
     None = 0,
-
     Speed = 1,
     Size = 9
   }
