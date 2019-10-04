@@ -4,6 +4,7 @@
 - [x] Upgrade Server/Scripts to target .NET Core 3
 - [X] Upgrade the code to use C# 8 standards
 - [X] Remove compilation of scripts at startup in favor of loading DLLs.
+- [X] Support configuration via a `modernuo.json` file
 
 ### Networking
 - [ ] Replace Packet classes with functions
