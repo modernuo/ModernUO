@@ -19,7 +19,6 @@ namespace Server
     {
       Configuration config = new Configuration();
 
-      Console.WriteLine();
       Console.ForegroundColor = ConsoleColor.Red;
       Console.WriteLine($"modernuo.json not found at {Configuration.FilePath}");
       Console.ResetColor();
@@ -46,7 +45,6 @@ namespace Server
     {
       if (File.Exists(Configuration.FilePath))
       {
-        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"Reading configuration from {Configuration.FilePath}...");
         Console.ResetColor();
@@ -109,7 +107,6 @@ namespace Server
         string configJson = JsonSerializer.Serialize<Configuration>(config, jsonOptions);
         byte[] data = new UTF8Encoding(true).GetBytes(configJson);
         fs.Write(data, 0, data.Length);
-        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"Configuration saved to {Configuration.FilePath}");
         Console.ResetColor();

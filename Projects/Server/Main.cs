@@ -383,16 +383,10 @@ namespace Server
       if (BaseDirectory.Length > 0)
         Directory.SetCurrentDirectory(BaseDirectory);
 
-      m_Configuration = Configuration.ReadConfiguration();
-
-        Timer.TimerThread ttObj = new Timer.TimerThread();
-      timerThread = new Thread(ttObj.TimerMain)
-      {
-        Name = "Timer Thread"
-      };
 
       Version ver = Assembly.GetName().Version;
 
+      Console.ForegroundColor = ConsoleColor.Green;
       // Added to help future code support on forums, as a 'check' people can ask for to it see if they recompiled core or not
       Console.WriteLine("ModernUO - [https://github.com/kamronbatman/ModernUO] Version {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build,
         ver.Revision);
@@ -402,6 +396,16 @@ namespace Server
       Console.WriteLine("Core: Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major,
         Environment.Version.Minor, Environment.Version.Build);
 #endif
+      Console.ResetColor();
+      Console.WriteLine();
+
+      m_Configuration = Configuration.ReadConfiguration();
+
+      Timer.TimerThread ttObj = new Timer.TimerThread();
+      timerThread = new Thread(ttObj.TimerMain)
+      {
+        Name = "Timer Thread"
+      };
 
       string s = Arguments;
 
