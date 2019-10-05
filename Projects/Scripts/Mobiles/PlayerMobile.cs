@@ -1722,10 +1722,7 @@ namespace Server.Mobiles
 
       DropHolding();
 
-      if (Core.AOS && Backpack?.Deleted == false)
-      {
-        Backpack.FindItemsByType<Item>(FindItems_Callback).ForEach(item => Backpack.AddItem(item));
-      }
+      if (Core.AOS && Backpack?.Deleted == false) Backpack.FindItemsByType<Item>(FindItems_Callback).ForEach(item => Backpack.AddItem(item));
 
       EquipSnapshot = new List<Item>(Items);
 

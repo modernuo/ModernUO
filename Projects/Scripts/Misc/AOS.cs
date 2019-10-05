@@ -995,10 +995,8 @@ namespace Server
     public void GetProperties(ObjectPropertyList list)
     {
       for (int i = 0; i < 5; ++i)
-      {
         if (GetValues(i, out SkillName skill, out double bonus))
           list.Add(1060451 + i, "#{0}\t{1}", GetLabel(skill), bonus);
-      }
     }
 
     public static int GetLabel(SkillName skill)

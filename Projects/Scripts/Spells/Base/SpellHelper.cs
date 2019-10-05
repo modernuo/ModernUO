@@ -686,9 +686,8 @@ namespace Server.Spells
       if (Region.Find(loc, map).IsPartOf<SafeZone>() &&
           (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom)
           && (m_TravelCaster as PlayerMobile)?.DuelPlayer?.Eliminated == false)
-      {
         return true;
-      }
+
       #endregion
 
       return false;

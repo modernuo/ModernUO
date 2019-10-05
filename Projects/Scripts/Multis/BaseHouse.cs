@@ -1076,7 +1076,6 @@ namespace Server.Multis
       List<BaseHouse> list = new List<BaseHouse>();
 
       if (m != null)
-      {
         if (m_Table.TryGetValue(m, out List<BaseHouse> exists))
           for (int i = 0; i < exists.Count; ++i)
           {
@@ -1085,7 +1084,6 @@ namespace Server.Multis
             if (house?.Deleted == false && house.Owner == m)
               list.Add(house);
           }
-      }
 
       return list;
     }
@@ -1154,10 +1152,8 @@ namespace Server.Multis
       Sector sector = map.GetSector(loc);
 
       for (int i = 0; i < sector.Multis.Count; ++i)
-      {
         if (sector.Multis[i] is BaseHouse house && house.IsInside(loc, height))
           return house;
-      }
 
       return null;
     }
@@ -2526,13 +2522,11 @@ namespace Server.Multis
             Secures = new List<SecureInfo>(items.Count);
 
             for (int i = 0; i < items.Count; ++i)
-            {
               if (items[i] is Container c)
               {
                 c.IsSecure = true;
                 Secures.Add(new SecureInfo(c, SecureLevel.CoOwners));
               }
-            }
           }
 
           MaxLockDowns = reader.ReadInt();
@@ -2874,10 +2868,8 @@ namespace Server.Multis
         uint keyValue = 0;
 
         for (int i = 0; keyValue == 0 && i < Doors.Count; ++i)
-        {
           if (Doors[i] is BaseDoor door)
             keyValue = door.KeyValue;
-        }
 
         Key.RemoveKeys(m, keyValue);
       }
@@ -2889,23 +2881,19 @@ namespace Server.Multis
 
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
-        {
           if (Doors[i] is BaseDoor door)
             door.KeyValue = keyValue;
-        }
     }
 
     public void RemoveLocks()
     {
       if (Doors != null)
         for (int i = 0; i < Doors.Count; ++i)
-        {
           if (Doors[i] is BaseDoor door)
           {
             door.KeyValue = 0;
             door.Locked = false;
           }
-        }
     }
 
     public virtual HouseDeed GetDeed() => null;

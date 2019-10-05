@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server.Commands;
 using Server.Mobiles;
 
 namespace Server.Regions
@@ -234,10 +233,8 @@ namespace Server.Regions
       int count = reader.ReadInt();
 
       for (int i = 0; i < count; i++)
-      {
         if (World.FindEntity(reader.ReadUInt()) is ISpawnable spawnableEntity)
           Add(spawnableEntity);
-      }
 
       Running = reader.ReadBool();
 

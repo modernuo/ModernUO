@@ -401,10 +401,8 @@ namespace Server.Misc
       List<string> keywordsFound = new List<string>();
 
       for ( int i = 0; i < split.Length; ++i )
-      {
         if (m_KeywordHash.TryGetValue( split[i], out string keyword ))
           keywordsFound.Add( keyword );
-      }
 
       if ( keywordsFound.Count > 0 )
       {
@@ -522,16 +520,13 @@ namespace Server.Misc
         return; // 90% chance to do nothing; 10% chance to talk
 
       if ( amount < 5 )
-      {
         SayRandomTranslate( mob,
           "Ouch!",
           "Me not hurt bad!",
           "Thou fight bad.",
           "Thy blows soft!",
           "You bad with weapon!" );
-      }
       else
-      {
         SayRandomTranslate( mob,
           "Ouch! Me hurt!",
           "No, kill me not!",
@@ -540,7 +535,6 @@ namespace Server.Misc
           "Oof! That hurt!",
           "Aaah! That hurt...",
           "Good blow!" );
-      }
     }
 
     public void OnConstruct( Mobile mob )

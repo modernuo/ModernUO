@@ -1,5 +1,3 @@
-using Server.Network;
-
 namespace Server.Misc
 {
   public enum ProfanityAction

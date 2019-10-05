@@ -252,13 +252,9 @@ namespace Server.Mobiles
                 {
                   Item buyItem;
                   if (amount >= item.Amount)
-                  {
                     buyItem = item;
-                  }
                   else
-                  {
                     buyItem = LiftItemDupe(item, item.Amount - amount) ?? item;
-                  }
 
                   if (cont == null || !cont.TryDropItem(buyer, buyItem, false))
                     buyItem.MoveToWorld(buyer.Location, buyer.Map);
@@ -903,15 +899,13 @@ namespace Server.Mobiles
       List<SellItemState> list = new List<SellItemState>();
 
       foreach (IShopSellInfo ssi in info)
+      foreach (Item item in pack.FindItemsByType(ssi.Types))
       {
-        foreach (Item item in pack.FindItemsByType(ssi.Types))
-        {
-          if (item is Container container && container.Items.Count != 0)
-            continue;
+        if (item is Container container && container.Items.Count != 0)
+          continue;
 
-          if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
-            list.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
-        }
+        if (item.IsStandardLoot() && item.Movable && ssi.IsSellable(item))
+          list.Add(new SellItemState(item, ssi.GetSellPriceFor(item), ssi.GetNameFor(item)));
       }
 
       if (list.Count > 0)
@@ -992,10 +986,8 @@ namespace Server.Mobiles
       IBuyItemInfo[] buyInfo = GetBuyInfo();
 
       for (int i = 0; i < buyInfo.Length; ++i)
-      {
         if (buyInfo[i] is GenericBuyInfo gbi && gbi.GetDisplayEntity() == obj)
           return gbi;
-      }
 
       return null;
     }
@@ -1056,7 +1048,6 @@ namespace Server.Mobiles
             item.MoveToWorld(buyer.Location, buyer.Map);
 
           for (int i = 1; i < amount; i++)
-          {
             if (bii.GetEntity() is Item newItem)
             {
               newItem.Amount = 1;
@@ -1064,7 +1055,6 @@ namespace Server.Mobiles
               if (cont == null || !cont.TryDropItem(buyer, newItem, false))
                 newItem.MoveToWorld(buyer.Location, buyer.Map);
             }
-          }
         }
       }
       else if (o is Mobile m)
@@ -1080,7 +1070,6 @@ namespace Server.Mobiles
         }
 
         for (int i = 1; i < amount; ++i)
-        {
           if (bii.GetEntity() is Mobile newMobile)
           {
             newMobile.Direction = (Direction)Utility.Random(8);
@@ -1092,7 +1081,6 @@ namespace Server.Mobiles
               newBc.ControlOrder = OrderType.Stop;
             }
           }
-        }
       }
     }
 

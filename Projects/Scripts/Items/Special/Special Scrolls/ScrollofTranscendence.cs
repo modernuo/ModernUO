@@ -54,20 +54,15 @@ namespace Server.Items
       MLQuestContext context = MLQuestSystem.GetContext(pm);
 
       if (context != null)
-      {
         foreach (MLQuestInstance instance in context.QuestInstances)
-        {
-          foreach (BaseObjectiveInstance objective in instance.Objectives)
+        foreach (BaseObjectiveInstance objective in instance.Objectives)
+          if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
+              objectiveInstance.Handles(Skill))
           {
-            if (!objective.Expired && objective is GainSkillObjectiveInstance objectiveInstance &&
-                objectiveInstance.Handles(Skill))
-            {
-              from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
-              return false;
-            }
+            @from.SendMessage("You are already under the effect of an enhanced skillgain quest.");
+            return false;
           }
-        }
-      }
+
       #endregion
 
       if (pm.AcceleratedStart > DateTime.UtcNow)

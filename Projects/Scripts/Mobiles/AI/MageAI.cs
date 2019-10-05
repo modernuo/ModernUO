@@ -143,9 +143,7 @@ namespace Server.Mobiles
       if (m_Mobile.Hits < m_Mobile.HitsMax - 50)
       {
         if (UseNecromancy())
-        {
           m_Mobile.UseSkill(SkillName.SpiritSpeak);
-        }
         else
           spell = new GreaterHealSpell(m_Mobile);
       }

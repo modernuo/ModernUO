@@ -453,10 +453,8 @@ namespace Server.Items
       Container pack = from.Backpack;
 
       for (int i = 0; i < pack?.Items.Count; ++i)
-      {
         if (pack.Items[i] is Spellbook sp)
           list.Add(sp);
-      }
 
       return list;
     }

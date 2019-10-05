@@ -231,10 +231,8 @@ namespace Server.Multis
       Sector sector = map.GetSector(loc);
 
       for (int i = 0; i < sector.Multis.Count; i++)
-      {
         if (sector.Multis[i] is BaseBoat boat && boat.Contains(loc.X, loc.Y))
           return boat;
-      }
 
       return null;
     }
@@ -1519,13 +1517,8 @@ namespace Server.Multis
         IEntity e = toMove[i];
 
         if (e is Item item)
-        {
           item.Location = new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset);
-        }
-        else if (e is Mobile m)
-        {
-          m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z + zOffset);
-        }
+        else if (e is Mobile m) m.Location = new Point3D(m.X + xOffset, m.Y + yOffset, m.Z + zOffset);
       }
 
       Location = new Point3D(X + xOffset, Y + yOffset, Z + zOffset);

@@ -203,10 +203,8 @@ namespace Server.Engines.ConPVP
     public bool HasParticipant(Mobile mob)
     {
       for (int i = 0; i < Participants.Count; ++i)
-      {
         if (Participants[i].Players.Contains(mob))
           return true;
-      }
 
       return false;
     }
@@ -369,10 +367,8 @@ namespace Server.Engines.ConPVP
         int rem = 0;
 
         for (int i = 0; i < part.Context.Participants.Count; ++i)
-        {
           if (part.Context.Participants[i]?.Eliminated == false)
             ++rem;
-        }
 
         TourneyParticipant tp = part.TourneyPart;
 

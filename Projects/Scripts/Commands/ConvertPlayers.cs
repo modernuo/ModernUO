@@ -71,16 +71,14 @@ namespace Server.Commands
     private static void CopyProps(Mobile to, Mobile from)
     {
       foreach (PropertyInfo prop in _mobProps)
-      {
         try
         {
-          prop.SetValue(to, prop.GetValue(from, null), null);
+          prop.SetValue(to, prop.GetValue(@from, null), null);
         }
         catch
         {
           // ignored
         }
-      }
     }
   }
 }

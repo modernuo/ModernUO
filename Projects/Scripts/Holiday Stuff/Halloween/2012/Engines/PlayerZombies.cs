@@ -76,10 +76,7 @@ namespace Server.Engines.Events
 
       m_DeathQueue.Clear();
 
-      if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
-      {
-        m_ClearTimer.Stop();
-      }
+      if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween ) m_ClearTimer.Stop();
     }
 
     private static void Timer_Callback()
@@ -89,14 +86,12 @@ namespace Server.Engines.Events
       if ( DateTime.UtcNow <= HolidaySettings.FinishHalloween )
       {
         for( int index = 0; m_DeathQueue.Count > 0 && index < m_DeathQueue.Count; index++ )
-        {
           if ( !ReAnimated.ContainsKey( m_DeathQueue[ index ] ) )
           {
             player = m_DeathQueue[ index ];
 
             break;
           }
-        }
 
         if (player?.Deleted == false && ReAnimated.Count < m_TotalZombieLimit )
         {
@@ -223,7 +218,8 @@ namespace Server.Engines.Events
         case 2: PackItem( new Torso() ); break;
         case 3: PackItem( new Bone() ); break;
         case 4: PackItem( new RibCage() ); break;
-        case 5: if (m_DeadPlayer?.Deleted == false) { PackItem( new PlayerBones( m_DeadPlayer.Name ) ); } break;
+        case 5: if (m_DeadPlayer?.Deleted == false) PackItem( new PlayerBones( m_DeadPlayer.Name ) );
+          break;
         default: break;
       }
 
@@ -242,13 +238,9 @@ namespace Server.Engines.Events
     public override void OnDelete()
     {
       if ( HalloweenHauntings.ReAnimated != null )
-      {
         if (m_DeadPlayer?.Deleted == false)
-        {
           if ( HalloweenHauntings.ReAnimated.ContainsKey( m_DeadPlayer ) )
             HalloweenHauntings.ReAnimated.Remove( m_DeadPlayer );
-        }
-      }
     }
 
     public override void Serialize( GenericWriter writer )

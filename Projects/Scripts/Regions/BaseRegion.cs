@@ -69,7 +69,6 @@ namespace Server.Regions
         List<SpawnEntry> list = new List<SpawnEntry>();
 
         foreach (XmlNode node in spawning.ChildNodes)
-        {
           if (node is XmlElement el)
           {
             SpawnDefinition def = SpawnDefinition.GetSpawnDefinition(el);
@@ -104,7 +103,6 @@ namespace Server.Regions
               maxSpawnTime);
             list.Add(entry);
           }
-        }
 
         if (list.Count > 0) m_Spawns = list.ToArray();
       }

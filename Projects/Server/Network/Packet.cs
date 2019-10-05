@@ -21,10 +21,8 @@
 using Server.Diagnostics;
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 
 namespace Server.Network
 {

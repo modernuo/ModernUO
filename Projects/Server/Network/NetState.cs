@@ -520,7 +520,6 @@ namespace Server.Network
     private async Task ProcessSends()
     {
       while (true)
-      {
         try
         {
           Packet p = await m_SendQueue?.DequeueAsync() ?? null;
@@ -561,7 +560,6 @@ namespace Server.Network
         {
           Console.WriteLine(ex);
         }
-      }
     }
 
     private async Task HandlePackets(MessagePump pump)

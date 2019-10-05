@@ -282,9 +282,7 @@ namespace Server.SkillHandlers
 
                 if (m_Thief.CheckTargetSkill(SkillName.Stealing, toSteal, pileWeight - 22.5,
                   pileWeight + 27.5))
-                {
                   stolen = Mobile.LiftItemDupe(toSteal, toSteal.Amount - amount) ?? toSteal;
-                }
               }
             }
             else

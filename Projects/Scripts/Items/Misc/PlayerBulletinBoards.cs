@@ -212,10 +212,7 @@ namespace Server.Items
           from.SendLocalizedMessage( 1062398 ); // You are not allowed to post to this bulletin board.
           return;
         }
-        if ( m_Greeting && !house.IsOwner( from ) )
-        {
-          return;
-        }
+        if ( m_Greeting && !house.IsOwner( from ) ) return;
 
         text = text.Trim();
 

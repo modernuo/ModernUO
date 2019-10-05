@@ -130,10 +130,8 @@ namespace Server.Misc
     public virtual bool IntersectsWith( Rectangle2D area )
     {
       for ( int i = 0; i < Area.Length; ++i )
-      {
         if ( CheckIntersection( area, Area[i] ) )
           return true;
-      }
 
       return false;
     }

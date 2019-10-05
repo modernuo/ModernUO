@@ -1292,10 +1292,8 @@ namespace Server.Gumps
         IPAddress[] theirAddresses = acct.LoginIPs;
 
         for (int i = 0; i < theirAddresses.Length; ++i)
-        {
           if (!table.ContainsKey(theirAddresses[i]))
             table[theirAddresses[i]] = new List<Account>{ acct };
-        }
       }
 
       List<KeyValuePair<IPAddress, List<Account>>> tableEntries = table.ToList();
