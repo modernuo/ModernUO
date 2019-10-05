@@ -4,6 +4,7 @@
     <RootNamespace>Server</RootNamespace>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>Scripts.CS</AssemblyName>
+    <UseNETCoreGenerator>true</UseNETCoreGenerator>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
