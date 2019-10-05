@@ -68,10 +68,8 @@ namespace Server.Engines.Quests.Haven
       {
         return From.Profession switch
         {
-          1 => 0x15C9 // warrior
-          ,
-          2 => 0x15C1 // magician
-          ,
+          1 => 0x15C9, // warrior
+          2 => 0x15C1, // magician
           _ => 0x15D3
         };
       }

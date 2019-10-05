@@ -51,22 +51,14 @@ namespace Server.Misc
       {
         return Utility.Random(9) switch
         {
-          0 => 0x203B //Short
-          ,
-          1 => 0x203C //Long
-          ,
-          2 => 0x203D //Pony Tail
-          ,
-          3 => 0x2044 //Mohawk
-          ,
-          4 => 0x2045 //Pageboy
-          ,
-          5 => 0x2047 //Afro
-          ,
-          6 => 0x2049 //Pig tails
-          ,
-          7 => 0x204A //Krisna
-          ,
+          0 => 0x203B, //Short
+          1 => 0x203C, //Long
+          2 => 0x203D, //Pony Tail
+          3 => 0x2044, //Mohawk
+          4 => 0x2045, //Pageboy
+          5 => 0x2047, //Afro
+          6 => 0x2049, //Pig tails
+          7 => 0x204A, //Krisna
           _ => (female ? 0x2046 : 0x2048)
         };
       }
@@ -168,20 +160,13 @@ namespace Server.Misc
       {
         return Utility.Random(8) switch
         {
-          0 => 0x2FC0 //Long Feather
-          ,
-          1 => 0x2FC1 //Short
-          ,
-          2 => 0x2FC2 //Mullet
-          ,
-          3 => 0x2FCE //Knob
-          ,
-          4 => 0x2FCF //Braided
-          ,
-          5 => 0x2FD1 //Spiked
-          ,
-          6 => (female ? 0x2FCC : 0x2FBF) //Flower or Mid-long
-          ,
+          0 => 0x2FC0, //Long Feather
+          1 => 0x2FC1, //Short
+          2 => 0x2FC2, //Mullet
+          3 => 0x2FCE, //Knob
+          4 => 0x2FCF, //Braided
+          5 => 0x2FD1, //Spiked
+          6 => (female ? 0x2FCC : 0x2FBF), //Flower or Mid-long
           _ => (female ? 0x2FD0 : 0x2FCD)
         };
       }

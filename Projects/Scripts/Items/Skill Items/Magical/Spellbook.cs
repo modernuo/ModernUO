@@ -523,13 +523,13 @@ namespace Server.Items
           string modName = Serial.ToString();
 
           if (strBonus != 0)
-            from.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+            from.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
           if (dexBonus != 0)
-            from.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+            from.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
           if (intBonus != 0)
-            from.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+            from.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
         }
 
         from.CheckStatTimers();
@@ -544,9 +544,9 @@ namespace Server.Items
 
         string modName = Serial.ToString();
 
-        from.RemoveStatMod(modName + "Str");
-        from.RemoveStatMod(modName + "Dex");
-        from.RemoveStatMod(modName + "Int");
+        from.RemoveStatMod($"{modName}Str");
+        from.RemoveStatMod($"{modName}Dex");
+        from.RemoveStatMod($"{modName}Int");
 
         from.CheckStatTimers();
       }
@@ -830,13 +830,13 @@ namespace Server.Items
           string modName = Serial.ToString();
 
           if (strBonus != 0)
-            m.AddStatMod(new StatMod(StatType.Str, modName + "Str", strBonus, TimeSpan.Zero));
+            m.AddStatMod(new StatMod(StatType.Str, $"{modName}Str", strBonus, TimeSpan.Zero));
 
           if (dexBonus != 0)
-            m.AddStatMod(new StatMod(StatType.Dex, modName + "Dex", dexBonus, TimeSpan.Zero));
+            m.AddStatMod(new StatMod(StatType.Dex, $"{modName}Dex", dexBonus, TimeSpan.Zero));
 
           if (intBonus != 0)
-            m.AddStatMod(new StatMod(StatType.Int, modName + "Int", intBonus, TimeSpan.Zero));
+            m.AddStatMod(new StatMod(StatType.Int, $"{modName}Int", intBonus, TimeSpan.Zero));
         }
 
         m.CheckStatTimers();

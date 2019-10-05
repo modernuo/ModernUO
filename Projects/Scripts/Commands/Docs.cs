@@ -185,7 +185,7 @@ namespace Server.Commands
     private static void SaveType(TypeInfo info, StreamWriter nsHtml, string nsFileName, string nsName)
     {
       if (info.m_Declaring == null)
-        nsHtml.WriteLine("      <!-- DBG-ST -->" + info.LinkName("../types/") + "<br>");
+        nsHtml.WriteLine($"      <!-- DBG-ST -->{info.LinkName("../types/")}<br>");
 
       using StreamWriter typeHtml = GetWriter(info.FileName);
       typeHtml.WriteLine("<html>");
@@ -220,11 +220,11 @@ namespace Server.Commands
           string rootType = type.Name.Substring(0, index);
 
           StringBuilder nameBuilder = new StringBuilder(rootType);
-          StringBuilder fnamBuilder = new StringBuilder("docs/types/" + SanitizeType(rootType));
+          StringBuilder fnamBuilder = new StringBuilder($"docs/types/{SanitizeType(rootType)}");
           StringBuilder linkBuilder;
           linkBuilder = DontLink(type) ?
-            new StringBuilder("<font color=\"blue\">" + rootType + "</font>") :
-            new StringBuilder("<a href=\"" + "@directory@" + rootType + "-T-.html\">" + rootType + "</a>");
+            new StringBuilder($"<font color=\"blue\">{rootType}</font>") :
+            new StringBuilder($"<a href=\"@directory@{rootType}-T-.html\">{rootType}</a>");
 
           nameBuilder.Append("&lt;");
           fnamBuilder.Append("-");
@@ -247,10 +247,10 @@ namespace Server.Commands
             nameBuilder.Append(sanitizedName);
             fnamBuilder.Append("T");
             if (DontLink(typeArguments[i])) //if ( DontLink( typeArguments[i].Name ) )
-              linkBuilder.Append("<font color=\"blue\">" + aliasedName + "</font>");
+              linkBuilder.Append($"<font color=\"blue\">{aliasedName}</font>");
             else
               linkBuilder.Append(
-                "<a href=\"" + "@directory@" + aliasedName + ".html\">" + aliasedName + "</a>");
+                $"<a href=\"@directory@{aliasedName}.html\">{aliasedName}</a>");
           }
 
           nameBuilder.Append("&gt;");
@@ -265,16 +265,15 @@ namespace Server.Commands
 
       typeName = name ?? type.Name;
 
-      if (fnam == null) fileName = "docs/types/" + SanitizeType(type.Name) + ".html";
-      else fileName = fnam + ".html";
+      if (fnam == null) fileName = $"docs/types/{SanitizeType(type.Name)}.html";
+      else fileName = $"{fnam}.html";
 
       if (link == null)
       {
         if (DontLink(type)) //if ( DontLink( type.Name ) )
-          linkName = "<font color=\"blue\">" + SanitizeType(type.Name) + "</font>";
+          linkName = $"<font color=\"blue\">{SanitizeType(type.Name)}</font>";
         else
-          linkName = "<a href=\"" + "@directory@" + SanitizeType(type.Name) + ".html\">" +
-                     SanitizeType(type.Name) + "</a>";
+          linkName = $"<a href=\"@directory@{SanitizeType(type.Name)}.html\">{SanitizeType(type.Name)}</a>";
       }
       else
       {
@@ -291,7 +290,7 @@ namespace Server.Commands
       for (int i = 0; i < ReplaceChars.Length; ++i)
         sb.Replace(ReplaceChars[i], '-');
 
-      if (anonymousType) return "(Anonymous-Type)" + sb;
+      if (anonymousType) return $"(Anonymous-Type){sb}";
       return sb.ToString();
     }
 
@@ -2415,7 +2414,7 @@ namespace Server.Commands
         if (baseInfo == null)
           typeHtml.Write(baseType.Name);
         else
-          typeHtml.Write("<!-- DBG-1 -->" + baseInfo.LinkName(null));
+          typeHtml.Write($"<!-- DBG-1 -->{baseInfo.LinkName(null)}");
 
         ++extendCount;
       }
@@ -2442,7 +2441,7 @@ namespace Server.Commands
           }
           else
           {
-            typeHtml.Write("<!-- DBG-2.2 -->" + ifaceInfo.LinkName(null));
+            typeHtml.Write($"<!-- DBG-2.2 -->{ifaceInfo.LinkName(null)}");
           }
         }
       }
@@ -2465,7 +2464,7 @@ namespace Server.Commands
             typeHtml.Write(", ");
 
           //typeHtml.Write( "<a href=\"{0}\">{1}</a>", derivedInfo.m_FileName, derivedInfo.m_TypeName );
-          typeHtml.Write("<!-- DBG-3 -->" + derivedInfo.LinkName(null));
+          typeHtml.Write($"<!-- DBG-3 -->{derivedInfo.LinkName(null)}");
         }
 
         typeHtml.WriteLine("</h4>");
@@ -2487,7 +2486,7 @@ namespace Server.Commands
             typeHtml.Write(", ");
 
           //typeHtml.Write( "<a href=\"{0}\">{1}</a>", nestedInfo.m_FileName, nestedInfo.m_TypeName );
-          typeHtml.Write("<!-- DBG-4 -->" + nestedInfo.LinkName(null));
+          typeHtml.Write($"<!-- DBG-4 -->{nestedInfo.LinkName(null)}");
         }
 
         typeHtml.WriteLine("</h4>");

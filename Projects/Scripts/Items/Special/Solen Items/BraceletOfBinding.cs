@@ -104,7 +104,7 @@ namespace Server.Items
       list.Add(1054000,
         m_Charges + (m_Inscription.Length == 0
           ? "\t "
-          : " :\t" + m_Inscription)); // a bracelet of binding : ~1_val~ ~2_val~
+          : $" :\t{m_Inscription}")); // a bracelet of binding : ~1_val~ ~2_val~
     }
 
     public override void OnSingleClick(Mobile from)
@@ -112,7 +112,7 @@ namespace Server.Items
       LabelTo(from, 1054000,
         m_Charges + (m_Inscription.Length == 0
           ? "\t "
-          : " :\t" + m_Inscription)); // a bracelet of binding : ~1_val~ ~2_val~
+          : $" :\t{m_Inscription}")); // a bracelet of binding : ~1_val~ ~2_val~
     }
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)

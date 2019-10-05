@@ -41,7 +41,6 @@ namespace Server.Mobiles
       Karma = -8000;
 
       CraftResource res = CraftResource.None;
-      ;
 
       res = Utility.Random(6) switch
       {

@@ -3449,7 +3449,7 @@ namespace Server
       else
       {
         ns.Send(new UnicodeMessage(Serial, m_ItemID, MessageType.Label, 0x3B2, 3, "ENU", "",
-          Name + (m_Amount > 1 ? " : " + m_Amount : "")));
+          Name + (m_Amount > 1 ? $" : {m_Amount}" : "")));
       }
     }
 

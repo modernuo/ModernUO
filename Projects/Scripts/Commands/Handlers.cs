@@ -125,7 +125,7 @@ namespace Server.Commands
 
           while (reg != null)
           {
-            builder.Append(" <- " + reg);
+            builder.Append($" <- {reg}");
             reg = reg.Parent;
           }
 

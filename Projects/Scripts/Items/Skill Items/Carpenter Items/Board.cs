@@ -49,8 +49,7 @@ namespace Server.Items
         {
           CraftResource.Bloodwood => 1075055,
           CraftResource.Frostwood => 1075056,
-          CraftResource.Heartwood => 1075062 //WHY Osi.  Why?
-          ,
+          CraftResource.Heartwood => 1075062, //WHY Osi.  Why?
           _ => LabelNumber
         };
       }

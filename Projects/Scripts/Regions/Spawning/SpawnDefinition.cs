@@ -322,7 +322,7 @@ namespace Server.Regions
       }
       catch (Exception ex)
       {
-        Console.WriteLine("Could not load SpawnDefinitions.xml: " + ex.Message);
+        Console.WriteLine($"Could not load SpawnDefinitions.xml: {ex.Message}");
       }
     }
 

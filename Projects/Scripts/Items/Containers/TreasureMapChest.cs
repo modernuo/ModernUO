@@ -194,8 +194,6 @@ namespace Server.Items
             6 => 60,
             _ => 0
           };
-
-          ;
         }
         else
         {

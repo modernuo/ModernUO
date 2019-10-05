@@ -49,7 +49,7 @@ namespace Server.Engines.ConPVP
       else
       {
         AddHtml(35, 25, 190, 20, Center("Starting"));
-        AddHtml(35, 25, 190, 20, "<DIV ALIGN=RIGHT>" + count);
+        AddHtml(35, 25, 190, 20, $"<DIV ALIGN=RIGHT>{count}");
       }
 
       int y = 25 + 20;

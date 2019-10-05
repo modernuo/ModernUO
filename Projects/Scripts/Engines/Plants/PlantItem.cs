@@ -320,7 +320,7 @@ namespace Server.Engines.Plants
       else if (m_PlantStatus != PlantStatus.BowlOfDirt)
       {
         from.SendLocalizedMessage(1080389,
-          "#" + GetLocalizedPlantStatus()); // This bowl of dirt already has a ~1_val~ in it!
+          $"#{GetLocalizedPlantStatus()}"); // This bowl of dirt already has a ~1_val~ in it!
       }
       else if (PlantSystem.Water < 2)
       {

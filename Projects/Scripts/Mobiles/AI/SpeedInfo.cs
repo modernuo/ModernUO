@@ -169,8 +169,6 @@ namespace Server
       if (m_Table == null)
         LoadTable();
 
-      ;
-
       return m_Table.ContainsKey(obj.GetType());
     }
 

@@ -1766,10 +1766,8 @@ namespace Server.Mobiles
 
       return acqType switch
       {
-        FightMode.Strongest => (m.Skills.Tactics.Value + m.Str) //returns strongest mobile
-        ,
-        FightMode.Weakest => -m.Hits // returns weakest mobile
-        ,
+        FightMode.Strongest => (m.Skills.Tactics.Value + m.Str), //returns strongest mobile
+        FightMode.Weakest => -m.Hits, // returns weakest mobile
         _ => -GetDistanceToSqrt(m)
       };
     }

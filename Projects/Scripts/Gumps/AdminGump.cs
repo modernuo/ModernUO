@@ -186,8 +186,8 @@ namespace Server.Gumps
         case AdminGumpPage.Information_Perf:
         {
           AddLabel(20, 130, LabelHue, "Cycles Per Second:");
-          AddLabel(40, 150, LabelHue, "Current: " + Core.CyclesPerSecond.ToString("N2"));
-          AddLabel(40, 170, LabelHue, "Average: " + Core.AverageCPS.ToString("N2"));
+          AddLabel(40, 150, LabelHue, $"Current: {Core.CyclesPerSecond:N2}");
+          AddLabel(40, 170, LabelHue, $"Average: {Core.AverageCPS:N2}");
 
           StringBuilder sb = new StringBuilder();
 

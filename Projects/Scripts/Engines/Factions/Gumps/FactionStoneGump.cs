@@ -33,7 +33,7 @@ namespace Server.Factions
       if (faction.Tithe >= 0 && faction.Tithe <= 100 && faction.Tithe % 10 == 0)
         AddHtmlLocalized(125, 80, 350, 20, 1011480 + faction.Tithe / 10);
       else
-        AddHtml(125, 80, 350, 20, faction.Tithe + "%");
+        AddHtml(125, 80, 350, 20, $"{faction.Tithe}%");
 
       AddHtmlLocalized(20, 100, 100, 20, 1011458); // Traps placed :
       AddHtml(125, 100, 50, 20, faction.Traps.Count.ToString());
@@ -185,7 +185,7 @@ namespace Server.Factions
         if (faction.Tithe >= 0 && faction.Tithe <= 100 && faction.Tithe % 10 == 0)
           AddHtmlLocalized(140, 70, 250, 20, 1011480 + faction.Tithe / 10);
         else
-          AddHtml(140, 70, 250, 20, faction.Tithe + "%");
+          AddHtml(140, 70, 250, 20, $"{faction.Tithe}%");
 
         AddHtmlLocalized(20, 100, 120, 20, 1011474); // Silver available :
         AddHtml(140, 100, 50, 20, faction.Silver.ToString("N0")); // NOTE: Added 'N0' formatting
@@ -335,7 +335,7 @@ namespace Server.Factions
                 town.Silver += 10000;
 
                 // 10k in silver has been received by:
-                m_From.SendLocalizedMessage(1042726, true, " " + town.Definition.FriendlyName);
+                m_From.SendLocalizedMessage(1042726, true, $" {town.Definition.FriendlyName}");
               }
           }
 

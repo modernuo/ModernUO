@@ -827,16 +827,13 @@ namespace Server.Engines.Craft
       }
     }
 
-    private object
-      RequiredExpansionMessage(
-        Expansion expansion) //Eventually convert to TextDefinition, but that requires that we convert all the gumps to ues it too.  Not that it wouldn't be a bad idea.
+    //Eventually convert to TextDefinition, but that requires that we convert all the gumps to ues it too.  Not that it wouldn't be a bad idea.
+    private object RequiredExpansionMessage(Expansion expansion)
     {
       return expansion switch
       {
-        Expansion.SE => (object)1063307 // The "Samurai Empire" expansion is required to attempt this item.
-        ,
-        Expansion.ML => 1072650 // The "Mondain's Legacy" expansion is required to attempt this item.
-        ,
+        Expansion.SE => (object)1063307, // The "Samurai Empire" expansion is required to attempt this item.
+        Expansion.ML => 1072650, // The "Mondain's Legacy" expansion is required to attempt this item.
         _ => $"The \"{ExpansionInfo.GetInfo(expansion).Name}\" expansion is required to attempt this item."
       };
     }

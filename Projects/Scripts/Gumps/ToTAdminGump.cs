@@ -71,7 +71,7 @@ namespace Server.Gumps
         int dropButtonID = isThisDropEra ? 2361 : 2360;
         int rewardButtonID = isThisRewardEra ? 2361 : 2360;
 
-        AddLabel(10, 70 + yoffset, 2100, "ToT " + (i + 1));
+        AddLabel(10, 70 + yoffset, 2100, $"ToT {(i + 1)}");
         AddButton(75, 75 + yoffset, dropButtonID, dropButtonID, 2 + i * 2);
         AddLabel(90, 70 + yoffset, isThisDropEra ? 167 : 137, isThisDropEra ? "Active" : "Inactive");
         AddButton(180, 75 + yoffset, rewardButtonID, rewardButtonID, 2 + i * 2 + 1);
@@ -104,13 +104,13 @@ namespace Server.Gumps
         {
           selectedToT = button / 2;
           TreasuresOfTokuno.DropEra = (TreasuresOfTokunoEra)selectedToT;
-          from.SendMessage("Treasures of Tokuno " + selectedToT + " Drops have been enabled");
+          from.SendMessage($"Treasures of Tokuno {selectedToT} Drops have been enabled");
         }
         else
         {
           selectedToT = (button - 1) / 2;
           TreasuresOfTokuno.RewardEra = (TreasuresOfTokunoEra)selectedToT;
-          from.SendMessage("Treasures of Tokuno " + selectedToT + " Rewards have been enabled");
+          from.SendMessage($"Treasures of Tokuno {selectedToT} Rewards have been enabled");
         }
       }
     }

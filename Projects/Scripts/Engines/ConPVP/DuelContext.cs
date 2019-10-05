@@ -1767,13 +1767,13 @@ namespace Server.Engines.ConPVP
 
           if (item is BaseWeapon)
             mob.SendLocalizedMessage(1062001,
-              item.Name ?? "#" + item.LabelNumber); // You can no longer wield your ~1_WEAPON~
+              item.Name ?? $"#{item.LabelNumber}"); // You can no longer wield your ~1_WEAPON~
           else if (item is BaseArmor && !(item is BaseShield))
             mob.SendLocalizedMessage(1062002,
-              item.Name ?? "#" + item.LabelNumber); // You can no longer wear your ~1_ARMOR~
+              item.Name ?? $"#{item.LabelNumber}"); // You can no longer wear your ~1_ARMOR~
           else
             mob.SendLocalizedMessage(1062003,
-              item.Name ?? "#" + item.LabelNumber); // You can no longer equip your ~1_SHIELD~
+              item.Name ?? $"#{item.LabelNumber}"); // You can no longer equip your ~1_SHIELD~
         }
       }
 

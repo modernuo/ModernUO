@@ -20,7 +20,6 @@ namespace Server.Items
       RequiredSkill = 72;
       LockLevel = RequiredSkill - Utility.Random(1, 10);
       MaxLockLevel = RequiredSkill + Utility.Random(1, 10);
-      ;
 
       // According to OSI, loot in level 2 chest is:
       //  Gold 80 - 150

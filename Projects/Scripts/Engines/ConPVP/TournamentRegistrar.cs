@@ -5,7 +5,7 @@ using Server.Network;
 
 namespace Server.Engines.ConPVP
 {
-public class TournamentRegistrar : Banker
+  public class TournamentRegistrar : Banker
   {
     [Constructible]
     public TournamentRegistrar()

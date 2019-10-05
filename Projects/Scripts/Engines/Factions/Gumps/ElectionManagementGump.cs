@@ -94,7 +94,7 @@ namespace Server.Factions
             }
             else if (obj is int i1)
             {
-              AddHtml(x, 140 + idx * 20, 60, 20, Color(Center(i1 + "%"), LabelColor));
+              AddHtml(x, 140 + idx * 20, 60, 20, Color(Center($"{i1}%"), LabelColor));
               x += 60;
             }
           }

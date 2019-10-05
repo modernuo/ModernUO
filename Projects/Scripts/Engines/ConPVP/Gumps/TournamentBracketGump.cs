@@ -334,7 +334,7 @@ namespace Server.Engines.ConPVP
 
           AddHtml(25, 53, 250, 20, $"Name: {mob.Name}");
           AddHtml(25, 73, 250, 20,
-            $"Guild: {(mob.Guild == null ? "None" : mob.Guild.Name + " [" + mob.Guild.Abbreviation + "]")}");
+            $"Guild: {(mob.Guild == null ? "None" : $"{mob.Guild.Name} [{mob.Guild.Abbreviation}]")}");
           AddHtml(25, 93, 250, 20, $"Rank: {(entry == null ? "N/A" : LadderGump.Rank(entry.Index + 1))}");
           AddHtml(25, 113, 250, 20, $"Level: {(entry == null ? 0 : Ladder.GetLevel(entry.Experience))}");
           AddHtml(25, 133, 250, 20, $"Wins: {entry?.Wins ?? 0:N0}");
@@ -357,7 +357,7 @@ namespace Server.Engines.ConPVP
           StartPage(out int index, out int count, out int y, 12);
 
           for (int i = 0; i < count; ++i, y += 18)
-            AddRightArrow(25, y, ToButtonID(3, index + i), "Round #" + (index + i + 1));
+            AddRightArrow(25, y, ToButtonID(3, index + i), $"Round #{(index + i + 1)}");
 
           break;
         }

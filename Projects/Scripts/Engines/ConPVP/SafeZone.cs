@@ -31,7 +31,7 @@ namespace Server.Engines.ConPVP
 
       PlayerMobile pm = m as PlayerMobile ??
                         (m is BaseCreature bc && bc.Summoned ?
-        bc.SummonMaster as PlayerMobile : null);
+                          bc.SummonMaster as PlayerMobile : null);
 
       if (pm?.DuelContext?.StartedBeginCountdown == true)
         return true;
