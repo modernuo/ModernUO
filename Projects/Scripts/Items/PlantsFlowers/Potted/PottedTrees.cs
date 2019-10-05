@@ -3,10 +3,7 @@ namespace Server.Items
   public class PottedTree : Item
   {
     [Constructible]
-    public PottedTree() : base(0x11C8)
-    {
-      Weight = 100;
-    }
+    public PottedTree() : base(0x11C8) => Weight = 100;
 
     public PottedTree(Serial serial) : base(serial)
     {
@@ -30,10 +27,7 @@ namespace Server.Items
   public class PottedTree1 : Item
   {
     [Constructible]
-    public PottedTree1() : base(0x11C9)
-    {
-      Weight = 100;
-    }
+    public PottedTree1() : base(0x11C9) => Weight = 100;
 
     public PottedTree1(Serial serial) : base(serial)
     {

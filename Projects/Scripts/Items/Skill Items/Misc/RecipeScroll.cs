@@ -13,10 +13,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public RecipeScroll(int recipeID) : base(0x2831)
-    {
-      m_RecipeID = recipeID;
-    }
+    public RecipeScroll(int recipeID) : base(0x2831) => m_RecipeID = recipeID;
 
     public RecipeScroll(Serial serial)
       : base(serial)

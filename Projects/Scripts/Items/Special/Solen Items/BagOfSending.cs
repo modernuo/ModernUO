@@ -216,10 +216,7 @@ namespace Server.Items
     {
       private BagOfSending m_Bag;
 
-      public SendTarget(BagOfSending bag) : base(-1, false, TargetFlags.None)
-      {
-        m_Bag = bag;
-      }
+      public SendTarget(BagOfSending bag) : base(-1, false, TargetFlags.None) => m_Bag = bag;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

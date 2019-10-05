@@ -164,40 +164,19 @@ namespace Server.Mobiles
         Backpack.SendRemovePacket();
     }
 
-    public override bool CheckNonlocalLift(Mobile from, Item item)
-    {
-      return true;
-    }
+    public override bool CheckNonlocalLift(Mobile from, Item item) => true;
 
-    public override bool CheckNonlocalDrop(Mobile from, Item item, Item target)
-    {
-      return true;
-    }
+    public override bool CheckNonlocalDrop(Mobile from, Item item, Item target) => true;
 
-    public override bool IsSnoop(Mobile from)
-    {
-      return false;
-    }
+    public override bool IsSnoop(Mobile from) => false;
 
-    public override int GetIdleSound()
-    {
-      return 0x1BF;
-    }
+    public override int GetIdleSound() => 0x1BF;
 
-    public override int GetAttackSound()
-    {
-      return 0x1C0;
-    }
+    public override int GetAttackSound() => 0x1C0;
 
-    public override int GetHurtSound()
-    {
-      return 0x1C1;
-    }
+    public override int GetHurtSound() => 0x1C1;
 
-    public override int GetDeathSound()
-    {
-      return 0x1C2;
-    }
+    public override int GetDeathSound() => 0x1C2;
 
     public virtual void OnParalyzed(Mobile from)
     {

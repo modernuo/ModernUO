@@ -3,10 +3,7 @@ namespace Server.Items
   public class ReginasRing : SilverRing
   {
     [Constructible]
-    public ReginasRing()
-    {
-      LootType = LootType.Blessed;
-    }
+    public ReginasRing() => LootType = LootType.Blessed;
 
     public ReginasRing(Serial serial) : base(serial)
     {

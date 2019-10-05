@@ -8,10 +8,7 @@ namespace Server.Multis.Deeds
   {
     private HouseDeed m_Deed;
 
-    public HousePlacementTarget(HouseDeed deed) : base(deed.MultiID, deed.Offset)
-    {
-      m_Deed = deed;
-    }
+    public HousePlacementTarget(HouseDeed deed) : base(deed.MultiID, deed.Offset) => m_Deed = deed;
 
     protected override void OnTarget(Mobile from, object o)
     {
@@ -211,10 +208,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041211;
     public override Rectangle2D[] Area => SmallOldHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SmallOldHouse(owner, 0x64);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x64);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -245,10 +239,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041212;
     public override Rectangle2D[] Area => SmallOldHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SmallOldHouse(owner, 0x66);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x66);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -279,10 +270,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041213;
     public override Rectangle2D[] Area => SmallOldHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SmallOldHouse(owner, 0x68);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x68);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -313,10 +301,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041214;
     public override Rectangle2D[] Area => SmallOldHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SmallOldHouse(owner, 0x6A);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x6A);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -347,10 +332,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041215;
     public override Rectangle2D[] Area => SmallOldHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SmallOldHouse(owner, 0x6C);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x6C);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -381,10 +363,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041216;
     public override Rectangle2D[] Area => SmallOldHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SmallOldHouse(owner, 0x6E);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SmallOldHouse(owner, 0x6E);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -415,10 +394,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041219;
     public override Rectangle2D[] Area => GuildHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new GuildHouse(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new GuildHouse(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -449,10 +425,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041220;
     public override Rectangle2D[] Area => TwoStoryHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new TwoStoryHouse(owner, 0x76);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new TwoStoryHouse(owner, 0x76);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -483,10 +456,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041221;
     public override Rectangle2D[] Area => TwoStoryHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new TwoStoryHouse(owner, 0x78);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new TwoStoryHouse(owner, 0x78);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -517,10 +487,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041222;
     public override Rectangle2D[] Area => Tower.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new Tower(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new Tower(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -551,10 +518,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041223;
     public override Rectangle2D[] Area => Keep.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new Keep(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new Keep(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -585,10 +549,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041224;
     public override Rectangle2D[] Area => Castle.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new Castle(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new Castle(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -619,10 +580,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041231;
     public override Rectangle2D[] Area => LargePatioHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new LargePatioHouse(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new LargePatioHouse(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -653,10 +611,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041236;
     public override Rectangle2D[] Area => LargeMarbleHouse.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new LargeMarbleHouse(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new LargeMarbleHouse(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -687,10 +642,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041237;
     public override Rectangle2D[] Area => SmallTower.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SmallTower(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SmallTower(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -721,10 +673,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041238;
     public override Rectangle2D[] Area => LogCabin.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new LogCabin(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new LogCabin(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -755,10 +704,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041239;
     public override Rectangle2D[] Area => SandStonePatio.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SandStonePatio(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SandStonePatio(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -789,10 +735,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041240;
     public override Rectangle2D[] Area => TwoStoryVilla.AreaArray;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new TwoStoryVilla(owner);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new TwoStoryVilla(owner);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -823,10 +766,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041241;
     public override Rectangle2D[] Area => SmallShop.AreaArray2;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SmallShop(owner, 0xA0);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SmallShop(owner, 0xA0);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -857,10 +797,7 @@ namespace Server.Multis.Deeds
     public override int LabelNumber => 1041242;
     public override Rectangle2D[] Area => SmallShop.AreaArray1;
 
-    public override BaseHouse GetHouse(Mobile owner)
-    {
-      return new SmallShop(owner, 0xA2);
-    }
+    public override BaseHouse GetHouse(Mobile owner) => new SmallShop(owner, 0xA2);
 
     public override void Serialize(GenericWriter writer)
     {

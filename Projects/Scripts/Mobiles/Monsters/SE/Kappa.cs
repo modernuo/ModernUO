@@ -70,30 +70,15 @@ namespace Server.Mobiles
       AddLoot(LootPack.Average);
     }
 
-    public override int GetAngerSound()
-    {
-      return 0x50B;
-    }
+    public override int GetAngerSound() => 0x50B;
 
-    public override int GetIdleSound()
-    {
-      return 0x50A;
-    }
+    public override int GetIdleSound() => 0x50A;
 
-    public override int GetAttackSound()
-    {
-      return 0x509;
-    }
+    public override int GetAttackSound() => 0x509;
 
-    public override int GetHurtSound()
-    {
-      return 0x50C;
-    }
+    public override int GetHurtSound() => 0x50C;
 
-    public override int GetDeathSound()
-    {
-      return 0x508;
-    }
+    public override int GetDeathSound() => 0x508;
 
     public override void OnGaveMeleeAttack(Mobile defender)
     {
@@ -108,10 +93,7 @@ namespace Server.Mobiles
         }
     }
 
-    public static bool IsBeingDrained(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool IsBeingDrained(Mobile m) => m_Table.ContainsKey(m);
 
     public static void BeginLifeDrain(Mobile m, Mobile from)
     {
@@ -171,10 +153,7 @@ namespace Server.Mobiles
       base.OnDamage(amount, from, willKill);
     }
 
-    public override Item NewHarmfulItem()
-    {
-      return new AcidSlime(TimeSpan.FromSeconds(10), 5, 10);
-    }
+    public override Item NewHarmfulItem() => new AcidSlime(TimeSpan.FromSeconds(10), 5, 10);
 
     public override void Serialize(GenericWriter writer)
     {

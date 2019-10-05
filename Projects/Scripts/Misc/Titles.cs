@@ -357,10 +357,7 @@ namespace Server.Misc
       return highest;
     }
 
-    private static string GetSkillLevel(Skill skill)
-    {
-      return m_Levels[GetTableIndex(skill), GetTableType(skill)];
-    }
+    private static string GetSkillLevel(Skill skill) => m_Levels[GetTableIndex(skill), GetTableType(skill)];
 
     private static int GetTableType(Skill skill)
     {

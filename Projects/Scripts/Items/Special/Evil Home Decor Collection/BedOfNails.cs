@@ -159,10 +159,7 @@ namespace Server.Items
   public class BedOfNailsDeed : BaseAddonDeed
   {
     [Constructible]
-    public BedOfNailsDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public BedOfNailsDeed() => LootType = LootType.Blessed;
 
     public BedOfNailsDeed(Serial serial)
       : base(serial)

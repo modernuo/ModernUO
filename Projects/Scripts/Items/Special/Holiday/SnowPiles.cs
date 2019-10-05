@@ -12,10 +12,8 @@
 
     [Constructible]
     public SnowPileDeco(int itemid)
-      : base(itemid)
-    {
+      : base(itemid) =>
       Hue = 0x481;
-    }
 
     public SnowPileDeco(Serial serial)
       : base(serial)

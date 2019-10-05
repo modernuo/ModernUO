@@ -5,16 +5,10 @@ namespace Server.Items
   public class FlourSifter : BaseTool
   {
     [Constructible]
-    public FlourSifter() : base(0x103E)
-    {
-      Weight = 1.0;
-    }
+    public FlourSifter() : base(0x103E) => Weight = 1.0;
 
     [Constructible]
-    public FlourSifter(int uses) : base(uses, 0x103E)
-    {
-      Weight = 1.0;
-    }
+    public FlourSifter(int uses) : base(uses, 0x103E) => Weight = 1.0;
 
     public FlourSifter(Serial serial) : base(serial)
     {

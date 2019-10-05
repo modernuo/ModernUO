@@ -3,10 +3,7 @@ namespace Server.Items
   public class SamplesOfCorruptedWater : Item
   {
     [Constructible]
-    public SamplesOfCorruptedWater() : base(0xEFE)
-    {
-      LootType = LootType.Blessed;
-    }
+    public SamplesOfCorruptedWater() : base(0xEFE) => LootType = LootType.Blessed;
 
     public SamplesOfCorruptedWater(Serial serial) : base(serial)
     {

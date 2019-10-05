@@ -200,10 +200,7 @@ namespace Server.Engines.CannedEvil
       */
     }
 
-    public bool IsChampionSpawn(Mobile m)
-    {
-      return m_Creatures.Contains(m);
-    }
+    public bool IsChampionSpawn(Mobile m) => m_Creatures.Contains(m);
 
     public void SetWhiteSkullCount(int val)
     {
@@ -1008,11 +1005,9 @@ namespace Server.Engines.CannedEvil
           1062317); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
     }
 
-    public bool IsEligible(Mobile m, Item Artifact)
-    {
-      return m.Player && m.Alive && m.Region != null && m.Region == m_Region &&
-             m.Backpack?.CheckHold(m, Artifact, false) == true;
-    }
+    public bool IsEligible(Mobile m, Item Artifact) =>
+      m.Player && m.Alive && m.Region != null && m.Region == m_Region &&
+      m.Backpack?.CheckHold(m, Artifact, false) == true;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -1167,19 +1162,14 @@ namespace Server.Engines.CannedEvil
   public class ChampionSpawnRegion : BaseRegion
   {
     public ChampionSpawnRegion(ChampionSpawn spawn) : base(null, spawn.Map, Find(spawn.Location, spawn.Map),
-      spawn.SpawnArea)
-    {
+      spawn.SpawnArea) =>
       ChampionSpawn = spawn;
-    }
 
     public override bool YoungProtected => false;
 
     public ChampionSpawn ChampionSpawn{ get; }
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      return false;
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => false;
 
     public override void AlterLightLevel(Mobile m, ref int global, ref int personal)
     {

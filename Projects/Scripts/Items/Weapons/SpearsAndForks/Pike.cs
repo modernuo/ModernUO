@@ -4,10 +4,7 @@ namespace Server.Items
   public class Pike : BaseSpear
   {
     [Constructible]
-    public Pike() : base(0x26BE)
-    {
-      Weight = 8.0;
-    }
+    public Pike() : base(0x26BE) => Weight = 8.0;
 
     public Pike(Serial serial) : base(serial)
     {

@@ -4,10 +4,7 @@ namespace Server.Items
   public class Scepter : BaseBashing
   {
     [Constructible]
-    public Scepter() : base(0x26BC)
-    {
-      Weight = 8.0;
-    }
+    public Scepter() : base(0x26BC) => Weight = 8.0;
 
     public Scepter(Serial serial) : base(serial)
     {

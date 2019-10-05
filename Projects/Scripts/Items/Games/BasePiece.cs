@@ -2,10 +2,7 @@ namespace Server.Items
 {
   public class BasePiece : Item
   {
-    public BasePiece(int itemID, BaseBoard board) : base(itemID)
-    {
-      Board = board;
-    }
+    public BasePiece(int itemID, BaseBoard board) : base(itemID) => Board = board;
 
     public BasePiece(Serial serial) : base(serial)
     {
@@ -72,24 +69,12 @@ namespace Server.Items
       return true;
     }
 
-    public override bool DropToMobile(Mobile from, Mobile target, Point3D p)
-    {
-      return false;
-    }
+    public override bool DropToMobile(Mobile from, Mobile target, Point3D p) => false;
 
-    public override bool DropToItem(Mobile from, Item target, Point3D p)
-    {
-      return target == Board && p.X != -1 && p.Y != -1 && base.DropToItem(from, target, p);
-    }
+    public override bool DropToItem(Mobile from, Item target, Point3D p) => target == Board && p.X != -1 && p.Y != -1 && base.DropToItem(from, target, p);
 
-    public override bool DropToWorld(Mobile from, Point3D p)
-    {
-      return false;
-    }
+    public override bool DropToWorld(Mobile from, Point3D p) => false;
 
-    public override int GetLiftSound(Mobile from)
-    {
-      return -1;
-    }
+    public override int GetLiftSound(Mobile from) => -1;
   }
 }

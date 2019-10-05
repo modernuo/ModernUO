@@ -56,10 +56,7 @@ namespace Server.Items
     {
       private Flax m_Flax;
 
-      public PickWheelTarget(Flax flax) : base(3, false, TargetFlags.None)
-      {
-        m_Flax = flax;
-      }
+      public PickWheelTarget(Flax flax) : base(3, false, TargetFlags.None) => m_Flax = flax;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

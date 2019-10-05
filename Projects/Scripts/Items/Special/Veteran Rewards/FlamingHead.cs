@@ -196,10 +196,7 @@ namespace Server.Items
     {
       private FlamingHeadDeed m_Head;
 
-      public InternalTarget(FlamingHeadDeed head) : base(-1, true, TargetFlags.None)
-      {
-        m_Head = head;
-      }
+      public InternalTarget(FlamingHeadDeed head) : base(-1, true, TargetFlags.None) => m_Head = head;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

@@ -69,10 +69,7 @@ namespace Server.Engines.Doom
       kick.Start();
     }
 
-    public override bool OnSkillUse(Mobile m, int Skill) /* just in case */
-    {
-      return m_Controller.Successful != null && (m.AccessLevel != AccessLevel.Player || m == m_Controller.Successful);
-    }
+    public override bool OnSkillUse(Mobile m, int Skill) /* just in case */ => m_Controller.Successful != null && (m.AccessLevel != AccessLevel.Player || m == m_Controller.Successful);
   }
 
   public class LeverPuzzleRegion : BaseRegion

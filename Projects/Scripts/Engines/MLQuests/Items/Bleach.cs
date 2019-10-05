@@ -3,10 +3,7 @@ namespace Server.Items
   public class Bleach : PigmentsOfTokuno
   {
     [Constructible]
-    public Bleach()
-    {
-      LootType = LootType.Blessed;
-    }
+    public Bleach() => LootType = LootType.Blessed;
 
     public Bleach(Serial serial) : base(serial)
     {

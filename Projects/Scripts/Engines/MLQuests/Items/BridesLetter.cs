@@ -3,10 +3,7 @@ namespace Server.Items
   public class BridesLetter : Item
   {
     [Constructible]
-    public BridesLetter() : base(0x14ED)
-    {
-      LootType = LootType.Blessed;
-    }
+    public BridesLetter() : base(0x14ED) => LootType = LootType.Blessed;
 
     public BridesLetter(Serial serial) : base(serial)
     {

@@ -40,10 +40,7 @@ namespace Server.Items
   public class CinnamonFancyRugDeed : BaseAddonDeed
   {
     [Constructible]
-    public CinnamonFancyRugDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public CinnamonFancyRugDeed() => LootType = LootType.Blessed;
 
     public CinnamonFancyRugDeed(Serial serial) : base(serial)
     {

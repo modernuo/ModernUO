@@ -5,10 +5,7 @@ namespace Server.Engines.Craft
 {
   public class CraftSubResCol : CollectionBase
   {
-    public CraftSubResCol()
-    {
-      Init = false;
-    }
+    public CraftSubResCol() => Init = false;
 
     public bool Init{ get; set; }
 
@@ -34,10 +31,7 @@ namespace Server.Engines.Craft
       }
     }
 
-    public CraftSubRes GetAt(int index)
-    {
-      return (CraftSubRes)List[index];
-    }
+    public CraftSubRes GetAt(int index) => (CraftSubRes)List[index];
 
     public CraftSubRes SearchFor(Type type)
     {

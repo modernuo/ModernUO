@@ -3,10 +3,7 @@ namespace Server.Items
   public class MetallicClothDyetub : DyeTub
   {
     [Constructible]
-    public MetallicClothDyetub()
-    {
-      LootType = LootType.Blessed;
-    }
+    public MetallicClothDyetub() => LootType = LootType.Blessed;
 
     public MetallicClothDyetub(Serial serial)
       : base(serial)

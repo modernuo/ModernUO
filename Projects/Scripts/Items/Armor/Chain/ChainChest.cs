@@ -4,10 +4,7 @@ namespace Server.Items
   public class ChainChest : BaseArmor
   {
     [Constructible]
-    public ChainChest() : base(0x13BF)
-    {
-      Weight = 7.0;
-    }
+    public ChainChest() : base(0x13BF) => Weight = 7.0;
 
     public ChainChest(Serial serial) : base(serial)
     {

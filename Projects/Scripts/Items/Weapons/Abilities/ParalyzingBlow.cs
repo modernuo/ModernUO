@@ -36,10 +36,7 @@ namespace Server.Items
       return false;
     }*/
 
-    public override bool RequiresTactics(Mobile from)
-    {
-      return !(from.Weapon is BaseWeapon weapon && weapon.Skill == SkillName.Wrestling);
-    }
+    public override bool RequiresTactics(Mobile from) => !(from.Weapon is BaseWeapon weapon && weapon.Skill == SkillName.Wrestling);
 
     public override bool OnBeforeSwing(Mobile attacker, Mobile defender)
     {
@@ -80,10 +77,7 @@ namespace Server.Items
       BeginImmunity(defender, duration + FreezeDelayDuration);
     }
 
-    public static bool IsImmune(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool IsImmune(Mobile m) => m_Table.ContainsKey(m);
 
     public static void BeginImmunity(Mobile m, TimeSpan duration)
     {

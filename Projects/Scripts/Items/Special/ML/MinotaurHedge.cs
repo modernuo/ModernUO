@@ -3,10 +3,7 @@ namespace Server.Items
   public class MinotaurHedge : Item
   {
     [Constructible]
-    public MinotaurHedge() : base(Utility.Random(3215, 4))
-    {
-      Weight = 1.0;
-    }
+    public MinotaurHedge() : base(Utility.Random(3215, 4)) => Weight = 1.0;
 
     public MinotaurHedge(Serial serial) : base(serial)
     {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class SealingWaxOrderAddressedToPetrus : Item
   {
     [Constructible]
-    public SealingWaxOrderAddressedToPetrus() : base(0xEBF)
-    {
-      LootType = LootType.Blessed;
-    }
+    public SealingWaxOrderAddressedToPetrus() : base(0xEBF) => LootType = LootType.Blessed;
 
     public SealingWaxOrderAddressedToPetrus(Serial serial) : base(serial)
     {

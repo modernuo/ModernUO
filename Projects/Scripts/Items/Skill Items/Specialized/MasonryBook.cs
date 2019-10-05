@@ -5,10 +5,7 @@ namespace Server.Items
   public class MasonryBook : Item
   {
     [Constructible]
-    public MasonryBook() : base(0xFBE)
-    {
-      Weight = 1.0;
-    }
+    public MasonryBook() : base(0xFBE) => Weight = 1.0;
 
     public MasonryBook(Serial serial) : base(serial)
     {

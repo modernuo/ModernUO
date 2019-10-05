@@ -388,13 +388,13 @@ namespace Server.Commands
       List<CategoryLine> list = new List<CategoryLine>();
 
       if (File.Exists(path))
-        using (StreamReader ip = new StreamReader(path))
-        {
-          string line;
+      {
+        using StreamReader ip = new StreamReader(path);
+        string line;
 
-          while ((line = ip.ReadLine()) != null)
-            list.Add(new CategoryLine(line));
-        }
+        while ((line = ip.ReadLine()) != null)
+          list.Add(new CategoryLine(line));
+      }
 
       return list.ToArray();
     }

@@ -129,10 +129,7 @@ namespace Server
       sb.Append(value);
     }
 
-    public static string Intern(string str)
-    {
-      return str == null ? null : str.Length == 0 ? string.Empty : string.Intern(str);
-    }
+    public static string Intern(string str) => str == null ? null : str.Length == 0 ? string.Empty : string.Intern(str);
 
     public static void Intern(ref string str)
     {
@@ -165,10 +162,7 @@ namespace Server
       return valid;
     }
 
-    public static bool IPMatch(string val, IPAddress ip)
-    {
-      return IPMatch(val, ip, out _);
-    }
+    public static bool IPMatch(string val, IPAddress ip) => IPMatch(val, ip, out _);
 
     public static string FixHtml(string str)
     {
@@ -364,13 +358,11 @@ namespace Server
       return (uint)((bytes[0] << 0x18) | (bytes[1] << 0x10) | (bytes[2] << 8) | bytes[3]) & 0xffffffff;
     }
 
-    private static uint SwapUnsignedInt(uint source)
-    {
-      return ((source & 0x000000FF) << 0x18)
-             | ((source & 0x0000FF00) << 8)
-             | ((source & 0x00FF0000) >> 8)
-             | ((source & 0xFF000000) >> 0x18);
-    }
+    private static uint SwapUnsignedInt(uint source) =>
+      ((source & 0x000000FF) << 0x18)
+      | ((source & 0x0000FF00) << 8)
+      | ((source & 0x00FF0000) >> 8)
+      | ((source & 0xFF000000) >> 0x18);
 
     public static bool TryConvertIPv6toIPv4(ref IPAddress address)
     {
@@ -512,20 +504,11 @@ namespace Server
       return true;
     }
 
-    public static bool IPMatchClassC(IPAddress ip1, IPAddress ip2)
-    {
-      return (GetAddressValue(ip1) & 0xFFFFFF) == (GetAddressValue(ip2) & 0xFFFFFF);
-    }
+    public static bool IPMatchClassC(IPAddress ip1, IPAddress ip2) => (GetAddressValue(ip1) & 0xFFFFFF) == (GetAddressValue(ip2) & 0xFFFFFF);
 
-    public static int InsensitiveCompare(string first, string second)
-    {
-      return Insensitive.Compare(first, second);
-    }
+    public static int InsensitiveCompare(string first, string second) => Insensitive.Compare(first, second);
 
-    public static bool InsensitiveStartsWith(string first, string second)
-    {
-      return Insensitive.StartsWith(first, second);
-    }
+    public static bool InsensitiveStartsWith(string first, string second) => Insensitive.StartsWith(first, second);
 
     public static Direction GetDirection(IPoint2D from, IPoint2D to)
     {
@@ -622,20 +605,11 @@ namespace Server
       return emptyValue;
     }
 
-    public static SkillName RandomSkill()
-    {
-      return m_AllSkills[Random(m_AllSkills.Length - (Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6))];
-    }
+    public static SkillName RandomSkill() => m_AllSkills[Random(m_AllSkills.Length - (Core.ML ? 0 : Core.SE ? 1 : Core.AOS ? 3 : 6))];
 
-    public static SkillName RandomCombatSkill()
-    {
-      return m_CombatSkills[Random(m_CombatSkills.Length)];
-    }
+    public static SkillName RandomCombatSkill() => m_CombatSkills[Random(m_CombatSkills.Length)];
 
-    public static SkillName RandomCraftSkill()
-    {
-      return m_CraftSkills[Random(m_CraftSkills.Length)];
-    }
+    public static SkillName RandomCraftSkill() => m_CraftSkills[Random(m_CraftSkills.Length)];
 
     public static void FixPoints(ref Point3D top, ref Point3D bottom)
     {
@@ -661,13 +635,11 @@ namespace Server
       }
     }
 
-    public static bool RangeCheck(IPoint2D p1, IPoint2D p2, int range)
-    {
-      return p1.X >= p2.X - range
-             && p1.X <= p2.X + range
-             && p1.Y >= p2.Y - range
-             && p2.Y <= p2.Y + range;
-    }
+    public static bool RangeCheck(IPoint2D p1, IPoint2D p2, int range) =>
+      p1.X >= p2.X - range
+      && p1.X <= p2.X + range
+      && p1.Y >= p2.Y - range
+      && p2.Y <= p2.Y + range;
 
     public static void FormatBuffer(TextWriter output, Stream input, int length)
     {
@@ -956,61 +928,41 @@ namespace Server
       }
     }
 
-    public static string GetAttribute(XmlElement node, string attributeName, string defaultValue = null)
-    {
-      return node?.Attributes[attributeName]?.Value ?? defaultValue;
-    }
+    public static string GetAttribute(XmlElement node, string attributeName, string defaultValue = null) => node?.Attributes[attributeName]?.Value ?? defaultValue;
 
-    public static string GetText(XmlElement node, string defaultValue)
-    {
-      return node == null ? defaultValue : node.InnerText;
-    }
+    public static string GetText(XmlElement node, string defaultValue) => node == null ? defaultValue : node.InnerText;
 
-    public static int GetAddressValue(IPAddress address)
-    {
-      return BitConverter.ToInt32(address.GetAddressBytes(), 0);
-    }
+    public static int GetAddressValue(IPAddress address) => BitConverter.ToInt32(address.GetAddressBytes(), 0);
 
-    public static long GetLongAddressValue(IPAddress address)
-    {
-      return BitConverter.ToInt64(address.GetAddressBytes(), 0);
-    }
+    public static long GetLongAddressValue(IPAddress address) => BitConverter.ToInt64(address.GetAddressBytes(), 0);
 
     #endregion
 
     #region In[...]Range
 
-    public static bool InRange(Point3D p1, Point3D p2, int range)
-    {
-      return p1.m_X >= p2.m_X - range
-             && p1.m_X <= p2.m_X + range
-             && p1.m_Y >= p2.m_Y - range
-             && p1.m_Y <= p2.m_Y + range;
-    }
+    public static bool InRange(Point3D p1, Point3D p2, int range) =>
+      p1.m_X >= p2.m_X - range
+      && p1.m_X <= p2.m_X + range
+      && p1.m_Y >= p2.m_Y - range
+      && p1.m_Y <= p2.m_Y + range;
 
-    public static bool InUpdateRange(Point3D p1, Point3D p2)
-    {
-      return p1.m_X >= p2.m_X - 18
-             && p1.m_X <= p2.m_X + 18
-             && p1.m_Y >= p2.m_Y - 18
-             && p1.m_Y <= p2.m_Y + 18;
-    }
+    public static bool InUpdateRange(Point3D p1, Point3D p2) =>
+      p1.m_X >= p2.m_X - 18
+      && p1.m_X <= p2.m_X + 18
+      && p1.m_Y >= p2.m_Y - 18
+      && p1.m_Y <= p2.m_Y + 18;
 
-    public static bool InUpdateRange(Point2D p1, Point2D p2)
-    {
-      return p1.m_X >= p2.m_X - 18
-             && p1.m_X <= p2.m_X + 18
-             && p1.m_Y >= p2.m_Y - 18
-             && p1.m_Y <= p2.m_Y + 18;
-    }
+    public static bool InUpdateRange(Point2D p1, Point2D p2) =>
+      p1.m_X >= p2.m_X - 18
+      && p1.m_X <= p2.m_X + 18
+      && p1.m_Y >= p2.m_Y - 18
+      && p1.m_Y <= p2.m_Y + 18;
 
-    public static bool InUpdateRange(IPoint2D p1, IPoint2D p2)
-    {
-      return p1.X >= p2.X - 18
-             && p1.X <= p2.X + 18
-             && p1.Y >= p2.Y - 18
-             && p1.Y <= p2.Y + 18;
-    }
+    public static bool InUpdateRange(IPoint2D p1, IPoint2D p2) =>
+      p1.X >= p2.X - 18
+      && p1.X <= p2.X + 18
+      && p1.Y >= p2.Y - 18
+      && p1.Y <= p2.Y + 18;
 
     #endregion
 
@@ -1070,20 +1022,14 @@ namespace Server
       return from - RandomImpl.Next(-count);
     }
 
-    public static int Random(int count)
-    {
-      return RandomImpl.Next(count);
-    }
+    public static int Random(int count) => RandomImpl.Next(count);
 
     public static void RandomBytes(byte[] buffer)
     {
       RandomImpl.NextBytes(buffer);
     }
 
-    public static double RandomDouble()
-    {
-      return RandomImpl.NextDouble();
-    }
+    public static double RandomDouble() => RandomImpl.NextDouble();
 
     #endregion
 
@@ -1110,98 +1056,62 @@ namespace Server
     /// <summary>
     ///   Random hue in the range 1201-1254
     /// </summary>
-    public static int RandomPinkHue()
-    {
-      return Random(1201, 54);
-    }
+    public static int RandomPinkHue() => Random(1201, 54);
 
     /// <summary>
     ///   Random hue in the range 1301-1354
     /// </summary>
-    public static int RandomBlueHue()
-    {
-      return Random(1301, 54);
-    }
+    public static int RandomBlueHue() => Random(1301, 54);
 
     /// <summary>
     ///   Random hue in the range 1401-1454
     /// </summary>
-    public static int RandomGreenHue()
-    {
-      return Random(1401, 54);
-    }
+    public static int RandomGreenHue() => Random(1401, 54);
 
     /// <summary>
     ///   Random hue in the range 1501-1554
     /// </summary>
-    public static int RandomOrangeHue()
-    {
-      return Random(1501, 54);
-    }
+    public static int RandomOrangeHue() => Random(1501, 54);
 
     /// <summary>
     ///   Random hue in the range 1601-1654
     /// </summary>
-    public static int RandomRedHue()
-    {
-      return Random(1601, 54);
-    }
+    public static int RandomRedHue() => Random(1601, 54);
 
     /// <summary>
     ///   Random hue in the range 1701-1754
     /// </summary>
-    public static int RandomYellowHue()
-    {
-      return Random(1701, 54);
-    }
+    public static int RandomYellowHue() => Random(1701, 54);
 
     /// <summary>
     ///   Random hue in the range 1801-1908
     /// </summary>
-    public static int RandomNeutralHue()
-    {
-      return Random(1801, 108);
-    }
+    public static int RandomNeutralHue() => Random(1801, 108);
 
     /// <summary>
     ///   Random hue in the range 2001-2018
     /// </summary>
-    public static int RandomSnakeHue()
-    {
-      return Random(2001, 18);
-    }
+    public static int RandomSnakeHue() => Random(2001, 18);
 
     /// <summary>
     ///   Random hue in the range 2101-2130
     /// </summary>
-    public static int RandomBirdHue()
-    {
-      return Random(2101, 30);
-    }
+    public static int RandomBirdHue() => Random(2101, 30);
 
     /// <summary>
     ///   Random hue in the range 2201-2224
     /// </summary>
-    public static int RandomSlimeHue()
-    {
-      return Random(2201, 24);
-    }
+    public static int RandomSlimeHue() => Random(2201, 24);
 
     /// <summary>
     ///   Random hue in the range 2301-2318
     /// </summary>
-    public static int RandomAnimalHue()
-    {
-      return Random(2301, 18);
-    }
+    public static int RandomAnimalHue() => Random(2301, 18);
 
     /// <summary>
     ///   Random hue in the range 2401-2430
     /// </summary>
-    public static int RandomMetalHue()
-    {
-      return Random(2401, 30);
-    }
+    public static int RandomMetalHue() => Random(2401, 30);
 
     public static int ClipDyedHue(int hue)
     {
@@ -1214,19 +1124,14 @@ namespace Server
     /// <summary>
     ///   Random hue in the range 2-1001
     /// </summary>
-    public static int RandomDyedHue()
-    {
-      return Random(2, 1000);
-    }
+    public static int RandomDyedHue() => Random(2, 1000);
 
     /// <summary>
     ///   Random hue from 0x62, 0x71, 0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59
     /// </summary>
-    public static int RandomBrightHue()
-    {
-      return RandomDouble() < 0.1 ? RandomList(0x62, 0x71) :
+    public static int RandomBrightHue() =>
+      RandomDouble() < 0.1 ? RandomList(0x62, 0x71) :
         RandomList(0x03, 0x0D, 0x13, 0x1C, 0x21, 0x30, 0x37, 0x3A, 0x44, 0x59);
-    }
 
     #endregion
   }

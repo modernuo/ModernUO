@@ -7,10 +7,7 @@ namespace Server.Items
 {
   public class StoneAnkhComponent : AddonComponent
   {
-    public StoneAnkhComponent(int itemID) : base(itemID)
-    {
-      Weight = 1.0;
-    }
+    public StoneAnkhComponent(int itemID) : base(itemID) => Weight = 1.0;
 
     public StoneAnkhComponent(Serial serial) : base(serial)
     {
@@ -147,10 +144,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public StoneAnkhDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public StoneAnkhDeed() => LootType = LootType.Blessed;
 
     public StoneAnkhDeed(Serial serial) : base(serial)
     {

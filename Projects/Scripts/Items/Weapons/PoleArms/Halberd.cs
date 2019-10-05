@@ -4,10 +4,7 @@ namespace Server.Items
   public class Halberd : BasePoleArm
   {
     [Constructible]
-    public Halberd() : base(0x143E)
-    {
-      Weight = 16.0;
-    }
+    public Halberd() : base(0x143E) => Weight = 16.0;
 
     public Halberd(Serial serial) : base(serial)
     {

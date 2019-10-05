@@ -85,35 +85,17 @@ namespace Server.Mobiles
     public override Poison PoisonImmune => Poison.Greater;
     public override Poison HitPoison => Poison.Greater;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.BleedAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
-    public override int GetAngerSound()
-    {
-      return 0x518;
-    }
+    public override int GetAngerSound() => 0x518;
 
-    public override int GetIdleSound()
-    {
-      return 0x517;
-    }
+    public override int GetIdleSound() => 0x517;
 
-    public override int GetAttackSound()
-    {
-      return 0x516;
-    }
+    public override int GetAttackSound() => 0x516;
 
-    public override int GetHurtSound()
-    {
-      return 0x519;
-    }
+    public override int GetHurtSound() => 0x519;
 
-    public override int GetDeathSound()
-    {
-      return 0x515;
-    }
+    public override int GetDeathSound() => 0x515;
 
     public override void GenerateLoot()
     {

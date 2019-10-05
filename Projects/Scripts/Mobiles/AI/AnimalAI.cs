@@ -17,26 +17,6 @@ namespace Server.Mobiles
 
     public override bool DoActionWander()
     {
-      // Old:
-#if false
-			if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, true, false, true))
-			{
-				m_Mobile.DebugSay( "There is something near, I go away" );
-				Action = ActionType.Backoff;
-			}
-			else if ( m_Mobile.IsHurt() || m_Mobile.Combatant != null )
-			{
-				m_Mobile.DebugSay( "I am hurt or being attacked, I flee" );
-				Action = ActionType.Flee;
-			}
-			else
-			{
-				base.DoActionWander();
-			}
-
-			return true;
-#endif
-
       // New, only flee @ 10%
 
       double hitPercent = (double)m_Mobile.Hits / m_Mobile.HitsMax;

@@ -214,10 +214,7 @@ namespace Server.Items
       writer.WriteEncodedInt(TriggerRange);
     }
 
-    private IEntity ReadEntity(GenericReader reader)
-    {
-      return World.FindEntity(reader.ReadUInt());
-    }
+    private IEntity ReadEntity(GenericReader reader) => World.FindEntity(reader.ReadUInt());
 
     public override void Deserialize(GenericReader reader)
     {

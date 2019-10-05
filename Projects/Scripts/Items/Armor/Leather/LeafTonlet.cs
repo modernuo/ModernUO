@@ -4,10 +4,7 @@ namespace Server.Items
   public class LeafTonlet : BaseArmor
   {
     [Constructible]
-    public LeafTonlet() : base(0x2FCA)
-    {
-      Weight = 2.0;
-    }
+    public LeafTonlet() : base(0x2FCA) => Weight = 2.0;
 
     public LeafTonlet(Serial serial) : base(serial)
     {

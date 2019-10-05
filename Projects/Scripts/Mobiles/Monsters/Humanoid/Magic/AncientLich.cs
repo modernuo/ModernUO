@@ -57,30 +57,15 @@ namespace Server.Mobiles
     public override Poison PoisonImmune => Poison.Lethal;
     public override int TreasureMapLevel => 5;
 
-    public override int GetIdleSound()
-    {
-      return 0x19D;
-    }
+    public override int GetIdleSound() => 0x19D;
 
-    public override int GetAngerSound()
-    {
-      return 0x175;
-    }
+    public override int GetAngerSound() => 0x175;
 
-    public override int GetDeathSound()
-    {
-      return 0x108;
-    }
+    public override int GetDeathSound() => 0x108;
 
-    public override int GetAttackSound()
-    {
-      return 0xE2;
-    }
+    public override int GetAttackSound() => 0xE2;
 
-    public override int GetHurtSound()
-    {
-      return 0x28B;
-    }
+    public override int GetHurtSound() => 0x28B;
 
     public override void GenerateLoot()
     {

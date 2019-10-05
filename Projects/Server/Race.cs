@@ -118,36 +118,21 @@ namespace Server
       }
     }
 
-    public override string ToString()
-    {
-      return Name;
-    }
+    public override string ToString() => Name;
 
-    public virtual bool ValidateHair(Mobile m, int itemID)
-    {
-      return ValidateHair(m.Female, itemID);
-    }
+    public virtual bool ValidateHair(Mobile m, int itemID) => ValidateHair(m.Female, itemID);
 
     public abstract bool ValidateHair(bool female, int itemID);
 
-    public virtual int RandomHair(Mobile m)
-    {
-      return RandomHair(m.Female);
-    }
+    public virtual int RandomHair(Mobile m) => RandomHair(m.Female);
 
     public abstract int RandomHair(bool female);
 
-    public virtual bool ValidateFacialHair(Mobile m, int itemID)
-    {
-      return ValidateFacialHair(m.Female, itemID);
-    }
+    public virtual bool ValidateFacialHair(Mobile m, int itemID) => ValidateFacialHair(m.Female, itemID);
 
     public abstract bool ValidateFacialHair(bool female, int itemID);
 
-    public virtual int RandomFacialHair(Mobile m)
-    {
-      return RandomFacialHair(m.Female);
-    }
+    public virtual int RandomFacialHair(Mobile m) => RandomFacialHair(m.Female);
 
     public abstract int RandomFacialHair(bool female); //For the *ahem* bearded ladies
 
@@ -157,29 +142,14 @@ namespace Server
     public abstract int ClipHairHue(int hue);
     public abstract int RandomHairHue();
 
-    public virtual int Body(Mobile m)
-    {
-      return m.Alive ? AliveBody(m.Female) : GhostBody(m.Female);
-    }
+    public virtual int Body(Mobile m) => m.Alive ? AliveBody(m.Female) : GhostBody(m.Female);
 
-    public virtual int AliveBody(Mobile m)
-    {
-      return AliveBody(m.Female);
-    }
+    public virtual int AliveBody(Mobile m) => AliveBody(m.Female);
 
-    public virtual int AliveBody(bool female)
-    {
-      return female ? FemaleBody : MaleBody;
-    }
+    public virtual int AliveBody(bool female) => female ? FemaleBody : MaleBody;
 
-    public virtual int GhostBody(Mobile m)
-    {
-      return GhostBody(m.Female);
-    }
+    public virtual int GhostBody(Mobile m) => GhostBody(m.Female);
 
-    public virtual int GhostBody(bool female)
-    {
-      return female ? FemaleGhostBody : MaleGhostBody;
-    }
+    public virtual int GhostBody(bool female) => female ? FemaleGhostBody : MaleGhostBody;
   }
 }

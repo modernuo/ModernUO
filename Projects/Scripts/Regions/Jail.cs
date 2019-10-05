@@ -24,10 +24,7 @@ namespace Server.Regions
       return from.AccessLevel > AccessLevel.Player;
     }
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      return false;
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => false;
 
     public override void AlterLightLevel(Mobile m, ref int global, ref int personal)
     {
@@ -50,9 +47,6 @@ namespace Server.Regions
       return from.AccessLevel > AccessLevel.Player;
     }
 
-    public override bool OnCombatantChange(Mobile from, Mobile Old, Mobile New)
-    {
-      return from.AccessLevel > AccessLevel.Player;
-    }
+    public override bool OnCombatantChange(Mobile from, Mobile Old, Mobile New) => from.AccessLevel > AccessLevel.Player;
   }
 }

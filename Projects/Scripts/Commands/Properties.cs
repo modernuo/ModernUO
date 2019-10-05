@@ -70,10 +70,7 @@ namespace Server.Commands
       }
     }
 
-    private static bool CIEqual(string l, string r)
-    {
-      return Insensitive.Equals(l, r);
-    }
+    private static bool CIEqual(string l, string r) => Insensitive.Equals(l, r);
 
     public static CPA GetCPA(PropertyInfo p)
     {
@@ -346,40 +343,19 @@ namespace Server.Commands
       return p == null ? failReason : InternalSetValue(from, logObject, o, p, name, value, true);
     }
 
-    private static bool IsSerial(Type t)
-    {
-      return t == typeofSerial;
-    }
+    private static bool IsSerial(Type t) => t == typeofSerial;
 
-    private static bool IsType(Type t)
-    {
-      return t == typeofType;
-    }
+    private static bool IsType(Type t) => t == typeofType;
 
-    private static bool IsChar(Type t)
-    {
-      return t == typeofChar;
-    }
+    private static bool IsChar(Type t) => t == typeofChar;
 
-    private static bool IsString(Type t)
-    {
-      return t == typeofString;
-    }
+    private static bool IsString(Type t) => t == typeofString;
 
-    private static bool IsText(Type t)
-    {
-      return t == typeofText;
-    }
+    private static bool IsText(Type t) => t == typeofText;
 
-    private static bool IsEnum(Type t)
-    {
-      return t.IsEnum;
-    }
+    private static bool IsEnum(Type t) => t.IsEnum;
 
-    private static bool IsParsable(Type t)
-    {
-      return t == typeofTimeSpan || t.IsDefined(typeofParsable, false);
-    }
+    private static bool IsParsable(Type t) => t == typeofTimeSpan || t.IsDefined(typeofParsable, false);
 
     private static object Parse(object o, Type t, string value)
     {
@@ -390,10 +366,7 @@ namespace Server.Commands
       return method?.Invoke(o, m_ParseParams);
     }
 
-    private static bool IsNumeric(Type t)
-    {
-      return Array.IndexOf(m_NumericTypes, t) >= 0;
-    }
+    private static bool IsNumeric(Type t) => Array.IndexOf(m_NumericTypes, t) >= 0;
 
     public static string ConstructFromString(Type type, object obj, string value, ref object constructed)
     {
@@ -551,10 +524,8 @@ namespace Server
     protected Property m_Property;
 
     public PropertyException(Property property, string message)
-      : base(message)
-    {
+      : base(message) =>
       m_Property = property;
-    }
 
     public Property Property => m_Property;
   }
@@ -655,15 +626,9 @@ namespace Server
   {
     private PropertyInfo[] m_Chain;
 
-    public Property(string binding)
-    {
-      Binding = binding;
-    }
+    public Property(string binding) => Binding = binding;
 
-    public Property(PropertyInfo[] chain)
-    {
-      m_Chain = chain;
-    }
+    public Property(PropertyInfo[] chain) => m_Chain = chain;
 
     public string Binding{ get; }
 

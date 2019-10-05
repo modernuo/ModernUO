@@ -100,10 +100,7 @@ namespace Server.Items
     {
       private Bandage m_Bandage;
 
-      public InternalTarget(Bandage bandage) : base(Bandage.Range, false, TargetFlags.Beneficial)
-      {
-        m_Bandage = bandage;
-      }
+      public InternalTarget(Bandage bandage) : base(Bandage.Range, false, TargetFlags.Beneficial) => m_Bandage = bandage;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

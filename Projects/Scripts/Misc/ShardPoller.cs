@@ -471,15 +471,9 @@ namespace Server.Misc
       m_Polls.Enqueue(poller);
     }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     public override void OnResponse(NetState sender, RelayInfo info)
     {

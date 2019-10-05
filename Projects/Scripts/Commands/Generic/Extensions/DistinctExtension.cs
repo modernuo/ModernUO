@@ -12,10 +12,7 @@ namespace Server.Commands.Generic
 
     private List<Property> m_Properties;
 
-    public DistinctExtension()
-    {
-      m_Properties = new List<Property>();
-    }
+    public DistinctExtension() => m_Properties = new List<Property>();
 
     public override ExtensionInfo Info => ExtInfo;
 

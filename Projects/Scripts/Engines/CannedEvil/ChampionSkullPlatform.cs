@@ -84,10 +84,7 @@ namespace Server.Engines.CannedEvil
       }
     }
 
-    public bool Validate(ChampionSkullBrazier brazier)
-    {
-      return brazier?.Skull?.Deleted == false;
-    }
+    public bool Validate(ChampionSkullBrazier brazier) => brazier?.Skull?.Deleted == false;
 
     public override void Serialize(GenericWriter writer)
     {

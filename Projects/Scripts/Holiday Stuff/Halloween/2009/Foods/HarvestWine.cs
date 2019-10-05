@@ -9,10 +9,8 @@
   {
     [Constructible]
     public HarvestWine()
-      : base(BeverageType.Wine)
-    {
+      : base(BeverageType.Wine) =>
       Hue = 0xe0;
-    }
 
     public HarvestWine(Serial serial)
       : base(serial)

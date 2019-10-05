@@ -7,10 +7,7 @@ namespace Server.Items
   public class GuildDeed : Item
   {
     [Constructible]
-    public GuildDeed() : base(0x14F0)
-    {
-      Weight = 1.0;
-    }
+    public GuildDeed() : base(0x14F0) => Weight = 1.0;
 
     public GuildDeed(Serial serial) : base(serial)
     {
@@ -76,10 +73,7 @@ namespace Server.Items
     {
       private GuildDeed m_Deed;
 
-      public InternalPrompt(GuildDeed deed)
-      {
-        m_Deed = deed;
-      }
+      public InternalPrompt(GuildDeed deed) => m_Deed = deed;
 
       public override void OnResponse(Mobile from, string text)
       {

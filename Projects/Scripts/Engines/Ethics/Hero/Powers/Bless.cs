@@ -7,15 +7,13 @@ namespace Server.Ethics.Hero
 {
   public sealed class Bless : Power
   {
-    public Bless()
-    {
+    public Bless() =>
       m_Definition = new PowerDefinition(
         15,
         "Bless",
         "Erstok Ontawl",
         ""
       );
-    }
 
     public override void BeginInvoke(Player from)
     {

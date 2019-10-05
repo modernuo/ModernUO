@@ -7,15 +7,13 @@ namespace Server.Ethics.Evil
 {
   public sealed class Blight : Power
   {
-    public Blight()
-    {
+    public Blight() =>
       m_Definition = new PowerDefinition(
         15,
         "Blight",
         "Velgo Ontawl",
         ""
       );
-    }
 
     public override void BeginInvoke(Player from)
     {

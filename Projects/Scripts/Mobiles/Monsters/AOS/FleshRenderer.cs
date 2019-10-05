@@ -56,10 +56,7 @@ namespace Server.Mobiles
 
     public override int TreasureMapLevel => 1;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.ParalyzingBlow;
-    }
+    public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.Dismount : WeaponAbility.ParalyzingBlow;
 
     public override void GenerateLoot()
     {
@@ -74,30 +71,15 @@ namespace Server.Mobiles
         DemonKnight.DistributeArtifact(this);
     }
 
-    public override int GetAttackSound()
-    {
-      return 0x34C;
-    }
+    public override int GetAttackSound() => 0x34C;
 
-    public override int GetHurtSound()
-    {
-      return 0x354;
-    }
+    public override int GetHurtSound() => 0x354;
 
-    public override int GetAngerSound()
-    {
-      return 0x34C;
-    }
+    public override int GetAngerSound() => 0x34C;
 
-    public override int GetIdleSound()
-    {
-      return 0x34C;
-    }
+    public override int GetIdleSound() => 0x34C;
 
-    public override int GetDeathSound()
-    {
-      return 0x354;
-    }
+    public override int GetDeathSound() => 0x354;
 
     public override void Serialize(GenericWriter writer)
     {

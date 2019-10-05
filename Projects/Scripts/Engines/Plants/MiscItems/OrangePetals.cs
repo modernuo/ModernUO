@@ -85,10 +85,7 @@ namespace Server.Items
       return context;
     }
 
-    public static bool UnderEffect(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -108,10 +105,7 @@ namespace Server.Items
     {
       private Mobile m_Mobile;
 
-      public OrangePetalsTimer(Mobile from) : base(TimeSpan.FromMinutes(5.0))
-      {
-        m_Mobile = from;
-      }
+      public OrangePetalsTimer(Mobile from) : base(TimeSpan.FromMinutes(5.0)) => m_Mobile = from;
 
       protected override void OnTick()
       {
@@ -125,10 +119,7 @@ namespace Server.Items
 
     private class OrangePetalsContext
     {
-      public OrangePetalsContext(Timer timer)
-      {
-        Timer = timer;
-      }
+      public OrangePetalsContext(Timer timer) => Timer = timer;
 
       public Timer Timer{ get; }
     }

@@ -66,20 +66,11 @@ namespace Server.Mobiles
       AddLoot(LootPack.HighScrolls, 2);
     }
 
-    public override int GetHurtSound()
-    {
-      return 0x167;
-    }
+    public override int GetHurtSound() => 0x167;
 
-    public override int GetDeathSound()
-    {
-      return 0xBC;
-    }
+    public override int GetDeathSound() => 0xBC;
 
-    public override int GetAttackSound()
-    {
-      return 0x28B;
-    }
+    public override int GetAttackSound() => 0x28B;
 
     private void DoAreaLeech()
     {

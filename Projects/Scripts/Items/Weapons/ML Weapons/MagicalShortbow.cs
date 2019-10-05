@@ -6,10 +6,7 @@ namespace Server.Items
   public class MagicalShortbow : BaseRanged
   {
     [Constructible]
-    public MagicalShortbow() : base(0x2D2B)
-    {
-      Weight = 6.0;
-    }
+    public MagicalShortbow() : base(0x2D2B) => Weight = 6.0;
 
     public MagicalShortbow(Serial serial) : base(serial)
     {

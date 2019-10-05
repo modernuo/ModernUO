@@ -6,10 +6,7 @@ namespace Server.Items
   public class CompositeBow : BaseRanged
   {
     [Constructible]
-    public CompositeBow() : base(0x26C2)
-    {
-      Weight = 5.0;
-    }
+    public CompositeBow() : base(0x26C2) => Weight = 5.0;
 
     public CompositeBow(Serial serial) : base(serial)
     {

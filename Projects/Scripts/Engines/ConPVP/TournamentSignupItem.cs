@@ -8,10 +8,7 @@ namespace Server.Engines.ConPVP
 public class TournamentSignupItem : Item
   {
     [Constructible]
-    public TournamentSignupItem() : base(4029)
-    {
-      Movable = false;
-    }
+    public TournamentSignupItem() : base(4029) => Movable = false;
 
     public TournamentSignupItem(Serial serial) : base(serial)
     {

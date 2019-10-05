@@ -61,10 +61,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.UltraRich, 3);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.Dismount;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.Dismount;
 
     public override void Serialize(GenericWriter writer)
     {

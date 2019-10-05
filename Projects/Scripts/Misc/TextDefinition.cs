@@ -25,16 +25,11 @@ namespace Server
 
     public override string ToString() => Number > 0 ? $"#{Number}" : String ?? "";
 
-    public string Format(bool propsGump)
-    {
-      return Number > 0 ? $"{Number} (0x{Number:X})" :
-        String != null ? $"\"{String}\"" : propsGump ? "-empty-" : "empty";
-    }
+    public string Format(bool propsGump) =>
+      Number > 0 ? $"{Number} (0x{Number:X})" :
+      String != null ? $"\"{String}\"" : propsGump ? "-empty-" : "empty";
 
-    public string GetValue()
-    {
-      return Number > 0 ? Number.ToString() : String ?? "";
-    }
+    public string GetValue() => Number > 0 ? Number.ToString() : String ?? "";
 
     public static void Serialize(GenericWriter writer, TextDefinition def)
     {
@@ -83,25 +78,13 @@ namespace Server
         list.Add(def.String);
     }
 
-    public static implicit operator TextDefinition(int v)
-    {
-      return new TextDefinition(v);
-    }
+    public static implicit operator TextDefinition(int v) => new TextDefinition(v);
 
-    public static implicit operator TextDefinition(string s)
-    {
-      return new TextDefinition(s);
-    }
+    public static implicit operator TextDefinition(string s) => new TextDefinition(s);
 
-    public static implicit operator int(TextDefinition m)
-    {
-      return m?.Number ?? 0;
-    }
+    public static implicit operator int(TextDefinition m) => m?.Number ?? 0;
 
-    public static implicit operator string(TextDefinition m)
-    {
-      return m?.String;
-    }
+    public static implicit operator string(TextDefinition m) => m?.String;
 
     public static void AddHtmlText(Gump g, int x, int y, int width, int height, TextDefinition def, bool back,
       bool scroll, int numberColor, int stringColor)
@@ -180,9 +163,6 @@ namespace Server
       return isInteger ? new TextDefinition(i) : new TextDefinition(value);
     }
 
-    public static bool IsNullOrEmpty(TextDefinition def)
-    {
-      return def == null || def.IsEmpty;
-    }
+    public static bool IsNullOrEmpty(TextDefinition def) => def == null || def.IsEmpty;
   }
 }

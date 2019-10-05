@@ -131,10 +131,8 @@ namespace Server.Items
   {
     [Constructible]
     public SnowStatueDeed()
-      : base(0x14F0)
-    {
+      : base(0x14F0) =>
       LootType = LootType.Blessed;
-    }
 
     public SnowStatueDeed(Serial serial)
       : base(serial)

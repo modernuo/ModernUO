@@ -56,15 +56,9 @@ namespace Server.Engines.Quests.Haven
       m_SBInfos.Add(new SBDryad());
     }
 
-    public override int GetAutoTalkRange(PlayerMobile pm)
-    {
-      return 4;
-    }
+    public override int GetAutoTalkRange(PlayerMobile pm) => 4;
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-      return to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective<FindDryadObjective>() != null;
-    }
+    public override bool CanTalkTo(PlayerMobile to) => to.Quest is UzeraanTurmoilQuest qs && qs.FindObjective<FindDryadObjective>() != null;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

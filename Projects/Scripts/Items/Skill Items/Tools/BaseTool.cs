@@ -131,10 +131,7 @@ namespace Server.Items
       LabelToAffix(m, 1017323, AffixType.Append, ": " + m_UsesRemaining); // Durability
     }
 
-    public static bool CheckAccessible(Item tool, Mobile m)
-    {
-      return tool.IsChildOf(m) || tool.Parent == m;
-    }
+    public static bool CheckAccessible(Item tool, Mobile m) => tool.IsChildOf(m) || tool.Parent == m;
 
     public static bool CheckTool(Item tool, Mobile m)
     {

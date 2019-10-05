@@ -5,10 +5,7 @@ namespace Server.Items
   public class FurnitureDyeTub : DyeTub, IRewardItem
   {
     [Constructible]
-    public FurnitureDyeTub()
-    {
-      LootType = LootType.Blessed;
-    }
+    public FurnitureDyeTub() => LootType = LootType.Blessed;
 
     public FurnitureDyeTub(Serial serial) : base(serial)
     {

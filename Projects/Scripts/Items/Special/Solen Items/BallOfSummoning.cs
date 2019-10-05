@@ -326,10 +326,7 @@ namespace Server.Items
     {
       private BallCallback m_Callback;
 
-      public BallEntry(BallCallback callback, int number) : base(number, 2)
-      {
-        m_Callback = callback;
-      }
+      public BallEntry(BallCallback callback, int number) : base(number, 2) => m_Callback = callback;
 
       public override void OnClick()
       {
@@ -344,10 +341,7 @@ namespace Server.Items
     {
       private BallOfSummoning m_Ball;
 
-      public PetLinkTarget(BallOfSummoning ball) : base(-1, false, TargetFlags.None)
-      {
-        m_Ball = ball;
-      }
+      public PetLinkTarget(BallOfSummoning ball) : base(-1, false, TargetFlags.None) => m_Ball = ball;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -415,25 +409,13 @@ namespace Server.Items
 
       public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(2.0);
 
-      public override TimeSpan GetCastRecovery()
-      {
-        return TimeSpan.Zero;
-      }
+      public override TimeSpan GetCastRecovery() => TimeSpan.Zero;
 
-      public override int GetMana()
-      {
-        return 0;
-      }
+      public override int GetMana() => 0;
 
-      public override bool ConsumeReagents()
-      {
-        return true;
-      }
+      public override bool ConsumeReagents() => true;
 
-      public override bool CheckFizzle()
-      {
-        return true;
-      }
+      public override bool CheckFizzle() => true;
 
       public void Stop()
       {

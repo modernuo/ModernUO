@@ -130,10 +130,7 @@ namespace Server.Items
   public class SacrificialAltarDeed : BaseAddonContainerDeed
   {
     [Constructible]
-    public SacrificialAltarDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public SacrificialAltarDeed() => LootType = LootType.Blessed;
 
     public SacrificialAltarDeed(Serial serial) : base(serial)
     {

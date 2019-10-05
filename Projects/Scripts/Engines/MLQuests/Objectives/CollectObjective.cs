@@ -31,15 +31,9 @@ namespace Server.Engines.MLQuests.Objectives
 
     public virtual bool ShowDetailed => true;
 
-    public bool CheckType(Type type)
-    {
-      return AcceptedType?.IsAssignableFrom(type) == true;
-    }
+    public bool CheckType(Type type) => AcceptedType?.IsAssignableFrom(type) == true;
 
-    public virtual bool CheckItem(Item item)
-    {
-      return true;
-    }
+    public virtual bool CheckItem(Item item) => true;
 
     public static int LabelToItemID(int label)
     {
@@ -78,10 +72,7 @@ namespace Server.Engines.MLQuests.Objectives
       y += 32;
     }
 
-    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance)
-    {
-      return new CollectObjectiveInstance(this, instance);
-    }
+    public override BaseObjectiveInstance CreateInstance(MLQuestInstance instance) => new CollectObjectiveInstance(this, instance);
   }
 
   #region Timed
@@ -89,10 +80,8 @@ namespace Server.Engines.MLQuests.Objectives
   public class TimedCollectObjective : CollectObjective
   {
     public TimedCollectObjective(TimeSpan duration, int amount, Type type, TextDefinition name)
-      : base(amount, type, name)
-    {
+      : base(amount, type, name) =>
       Duration = duration;
-    }
 
     public override bool IsTimed => true;
     public override TimeSpan Duration{ get; }
@@ -103,10 +92,8 @@ namespace Server.Engines.MLQuests.Objectives
   public class CollectObjectiveInstance : BaseObjectiveInstance
   {
     public CollectObjectiveInstance(CollectObjective objective, MLQuestInstance instance)
-      : base(instance, objective)
-    {
+      : base(instance, objective) =>
       Objective = objective;
-    }
 
     public CollectObjective Objective{ get; set; }
 
@@ -121,15 +108,9 @@ namespace Server.Engines.MLQuests.Objectives
       return items.Where(item => item.QuestItem && Objective.CheckItem(item)).Sum(item => item.Amount);
     }
 
-    public override bool AllowsQuestItem(Item item, Type type)
-    {
-      return Objective.CheckType(type) && Objective.CheckItem(item);
-    }
+    public override bool AllowsQuestItem(Item item, Type type) => Objective.CheckType(type) && Objective.CheckItem(item);
 
-    public override bool IsCompleted()
-    {
-      return GetCurrentTotal() >= Objective.DesiredAmount;
-    }
+    public override bool IsCompleted() => GetCurrentTotal() >= Objective.DesiredAmount;
 
     public override void OnQuestCancelled()
     {

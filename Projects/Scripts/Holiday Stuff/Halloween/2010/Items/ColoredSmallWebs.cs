@@ -4,10 +4,8 @@ namespace Server.Items
   {
     [Constructible]
     public ColoredSmallWebs()
-      : base(Utility.RandomBool() ? 0x10d6 : 0x10d7)
-    {
+      : base(Utility.RandomBool() ? 0x10d6 : 0x10d7) =>
       Hue = Utility.RandomBool() ? 0x455 : 0x4E9;
-    }
 
     public ColoredSmallWebs(Serial serial)
       : base(serial)

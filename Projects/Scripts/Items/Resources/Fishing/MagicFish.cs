@@ -6,10 +6,7 @@ namespace Server.Items
 {
   public abstract class BaseMagicFish : Item
   {
-    public BaseMagicFish(int hue) : base(0xDD6)
-    {
-      Hue = hue;
-    }
+    public BaseMagicFish(int hue) : base(0xDD6) => Hue = hue;
 
     public BaseMagicFish(Serial serial) : base(serial)
     {

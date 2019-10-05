@@ -3,10 +3,7 @@ namespace Server.Items
   public class AnOldRing : GoldRing
   {
     [Constructible]
-    public AnOldRing()
-    {
-      Hue = 0x222;
-    }
+    public AnOldRing() => Hue = 0x222;
 
     public AnOldRing(Serial serial) : base(serial)
     {

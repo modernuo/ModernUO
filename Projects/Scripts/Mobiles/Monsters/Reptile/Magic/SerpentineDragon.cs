@@ -68,30 +68,15 @@ namespace Server.Mobiles
       AddLoot(LootPack.Gems, 2);
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x2C4;
-    }
+    public override int GetIdleSound() => 0x2C4;
 
-    public override int GetAttackSound()
-    {
-      return 0x2C0;
-    }
+    public override int GetAttackSound() => 0x2C0;
 
-    public override int GetDeathSound()
-    {
-      return 0x2C1;
-    }
+    public override int GetDeathSound() => 0x2C1;
 
-    public override int GetAngerSound()
-    {
-      return 0x2C4;
-    }
+    public override int GetAngerSound() => 0x2C4;
 
-    public override int GetHurtSound()
-    {
-      return 0x2C3;
-    }
+    public override int GetHurtSound() => 0x2C3;
 
     public override void OnGotMeleeAttack(Mobile attacker)
     {

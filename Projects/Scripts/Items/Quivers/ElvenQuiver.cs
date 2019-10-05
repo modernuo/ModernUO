@@ -4,10 +4,7 @@ namespace Server.Items
   public class ElvenQuiver : BaseQuiver
   {
     [Constructible]
-    public ElvenQuiver()
-    {
-      WeightReduction = 30;
-    }
+    public ElvenQuiver() => WeightReduction = 30;
 
     public ElvenQuiver(Serial serial) : base(serial)
     {

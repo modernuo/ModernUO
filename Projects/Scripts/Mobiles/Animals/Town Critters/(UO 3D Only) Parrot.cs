@@ -29,30 +29,15 @@ namespace Server.Mobiles
     public override string CorpseName => "a parrot corpse";
     public override string DefaultName => "a parrot";
 
-    public override int GetAngerSound()
-    {
-      return 0x1B;
-    }
+    public override int GetAngerSound() => 0x1B;
 
-    public override int GetIdleSound()
-    {
-      return 0x1C;
-    }
+    public override int GetIdleSound() => 0x1C;
 
-    public override int GetAttackSound()
-    {
-      return 0x1D;
-    }
+    public override int GetAttackSound() => 0x1D;
 
-    public override int GetHurtSound()
-    {
-      return 0x1E;
-    }
+    public override int GetHurtSound() => 0x1E;
 
-    public override int GetDeathSound()
-    {
-      return 0x1F;
-    }
+    public override int GetDeathSound() => 0x1F;
 
     public override void Serialize(GenericWriter writer)
     {

@@ -4,10 +4,7 @@ namespace Server.Items
   public class PlateGloves : BaseArmor
   {
     [Constructible]
-    public PlateGloves() : base(0x1414)
-    {
-      Weight = 2.0;
-    }
+    public PlateGloves() : base(0x1414) => Weight = 2.0;
 
     public PlateGloves(Serial serial) : base(serial)
     {

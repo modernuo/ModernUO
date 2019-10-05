@@ -50,10 +50,7 @@ namespace Server.Items
     private bool m_East;
 
     [Constructible]
-    public BrokenBedDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public BrokenBedDeed() => LootType = LootType.Blessed;
 
     public BrokenBedDeed(Serial serial) : base(serial)
     {

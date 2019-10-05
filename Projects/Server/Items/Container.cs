@@ -190,15 +190,9 @@ namespace Server.Items
       return base.CheckItemUse(from, item);
     }
 
-    public bool CheckHold(Mobile m, Item item, bool message)
-    {
-      return CheckHold(m, item, message, true, 0, 0);
-    }
+    public bool CheckHold(Mobile m, Item item, bool message) => CheckHold(m, item, message, true, 0, 0);
 
-    public bool CheckHold(Mobile m, Item item, bool message, bool checkItems)
-    {
-      return CheckHold(m, item, message, checkItems, 0, 0);
-    }
+    public bool CheckHold(Mobile m, Item item, bool message, bool checkItems) => CheckHold(m, item, message, checkItems, 0, 0);
 
     public virtual bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
     {
@@ -294,10 +288,7 @@ namespace Server.Items
         flags |= toSet;
     }
 
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet)
-    {
-      return (flags & toGet) != 0;
-    }
+    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -454,10 +445,7 @@ namespace Server.Items
       }
     }
 
-    public virtual bool OnStackAttempt(Mobile from, Item stack, Item dropped)
-    {
-      return CheckHold(from, dropped, true, false) && stack.StackWith(from, dropped);
-    }
+    public virtual bool OnStackAttempt(Mobile from, Item stack, Item dropped) => CheckHold(from, dropped, true, false) && stack.StackWith(from, dropped);
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
@@ -471,10 +459,7 @@ namespace Server.Items
       return false;
     }
 
-    public virtual bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
-    {
-      return TryDropItem(from, dropped, sendFullMessage, false);
-    }
+    public virtual bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage) => TryDropItem(from, dropped, sendFullMessage, false);
 
     public virtual bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage, bool playSound)
     {
@@ -622,12 +607,10 @@ namespace Server.Items
       }
     }
 
-    public virtual bool CheckContentDisplay(Mobile from)
-    {
-      return DisplaysContent && RootParent == null ||
-             RootParent is Item || RootParent == from ||
-             from.AccessLevel > AccessLevel.Player;
-    }
+    public virtual bool CheckContentDisplay(Mobile from) =>
+      DisplaysContent && RootParent == null ||
+      RootParent is Item || RootParent == from ||
+      from.AccessLevel > AccessLevel.Player;
 
     public override void OnSingleClick(Mobile from)
     {
@@ -757,15 +740,9 @@ namespace Server.Items
     {
       private CheckItemGroup m_Grouper;
 
-      public GroupComparer(CheckItemGroup grouper)
-      {
-        m_Grouper = grouper;
-      }
+      public GroupComparer(CheckItemGroup grouper) => m_Grouper = grouper;
 
-      public int Compare(Item a, Item b)
-      {
-        return m_Grouper(a, b);
-      }
+      public int Compare(Item a, Item b) => m_Grouper(a, b);
     }
 
     [Flags]
@@ -1503,10 +1480,7 @@ namespace Server.Items
       }
     }
 
-    public Item FindItemByType(Type type, bool recurse = true)
-    {
-      return RecurseFindItemByType(this, type, recurse);
-    }
+    public Item FindItemByType(Type type, bool recurse = true) => RecurseFindItemByType(this, type, recurse);
 
     private static Item RecurseFindItemByType(Item current, Type type, bool recurse)
     {
@@ -1534,10 +1508,7 @@ namespace Server.Items
       return null;
     }
 
-    public Item FindItemByType(Type[] types, bool recurse = true)
-    {
-      return RecurseFindItemByType(this, types, recurse);
-    }
+    public Item FindItemByType(Type[] types, bool recurse = true) => RecurseFindItemByType(this, types, recurse);
 
     private static Item RecurseFindItemByType(Item current, Type[] types, bool recurse)
     {
@@ -1568,10 +1539,7 @@ namespace Server.Items
 
     #region Generic FindItem[s] by Type
 
-    public List<T> FindItemsByType<T>(Predicate<T> predicate) where T : Item
-    {
-      return FindItemsByType(true, predicate);
-    }
+    public List<T> FindItemsByType<T>(Predicate<T> predicate) where T : Item => FindItemsByType(true, predicate);
 
     public List<T> FindItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item
     {
@@ -1604,10 +1572,7 @@ namespace Server.Items
       }
     }
 
-    public T FindItemByType<T>(bool recurse = true) where T : Item
-    {
-      return RecurseFindItemByType<T>(this, recurse);
-    }
+    public T FindItemByType<T>(bool recurse = true) where T : Item => RecurseFindItemByType<T>(this, recurse);
 
     private static T RecurseFindItemByType<T>(Item current, bool recurse = true, Predicate<T> predicate = null) where T : Item
     {

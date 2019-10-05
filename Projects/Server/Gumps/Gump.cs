@@ -159,10 +159,7 @@ namespace Server.Gumps
       }
     }
 
-    public static int GetTypeID(Type type)
-    {
-      return type?.FullName?.GetHashCode() ?? -1;
-    }
+    public static int GetTypeID(Type type) => type?.FullName?.GetHashCode() ?? -1;
 
     public void Invalidate()
     {
@@ -315,10 +312,7 @@ namespace Server.Gumps
       state.Send(Compile(state));
     }
 
-    public static byte[] StringToBuffer(string str)
-    {
-      return Encoding.ASCII.GetBytes(str);
-    }
+    public static byte[] StringToBuffer(string str) => Encoding.ASCII.GetBytes(str);
 
     private Packet Compile(NetState ns = null)
     {

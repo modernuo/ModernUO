@@ -17,10 +17,7 @@ namespace Server.Engines.Quests.Naturalist
       typeof(FullBackpackConversation)
     };
 
-    public StudyOfSolenQuest(PlayerMobile from, Naturalist naturalist) : base(from)
-    {
-      Naturalist = naturalist;
-    }
+    public StudyOfSolenQuest(PlayerMobile from, Naturalist naturalist) : base(from) => Naturalist = naturalist;
 
     // Serialization
     public StudyOfSolenQuest()

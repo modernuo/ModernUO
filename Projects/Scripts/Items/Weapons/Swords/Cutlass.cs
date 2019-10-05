@@ -4,10 +4,7 @@ namespace Server.Items
   public class Cutlass : BaseSword
   {
     [Constructible]
-    public Cutlass() : base(0x1441)
-    {
-      Weight = 8.0;
-    }
+    public Cutlass() : base(0x1441) => Weight = 8.0;
 
     public Cutlass(Serial serial) : base(serial)
     {

@@ -5,10 +5,7 @@ namespace Server.Items
   public class MelisandesHairDye : Item
   {
     [Constructible]
-    public MelisandesHairDye() : base(0xEFF)
-    {
-      Hue = Utility.RandomMinMax(0x47E, 0x499);
-    }
+    public MelisandesHairDye() : base(0xEFF) => Hue = Utility.RandomMinMax(0x47E, 0x499);
 
     public MelisandesHairDye(Serial serial) : base(serial)
     {
@@ -54,10 +51,7 @@ namespace Server.Items
     {
       private Item m_Item;
 
-      public ConfirmGump(Item item)
-      {
-        m_Item = item;
-      }
+      public ConfirmGump(Item item) => m_Item = item;
 
       public override int TitleNumber => 1074395; // <div align=right>Use Permanent Hair Dye</div>
 

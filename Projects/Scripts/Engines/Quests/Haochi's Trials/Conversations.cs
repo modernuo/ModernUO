@@ -41,10 +41,7 @@ namespace Server.Engines.Quests.Samurai
   {
     private bool m_CursedSoul;
 
-    public GainKarmaConversation(bool cursedSoul)
-    {
-      m_CursedSoul = cursedSoul;
-    }
+    public GainKarmaConversation(bool cursedSoul) => m_CursedSoul = cursedSoul;
 
     public GainKarmaConversation()
     {
@@ -82,10 +79,7 @@ namespace Server.Engines.Quests.Samurai
   {
     private bool m_CursedSoul;
 
-    public SecondTrialIntroConversation(bool cursedSoul)
-    {
-      m_CursedSoul = cursedSoul;
-    }
+    public SecondTrialIntroConversation(bool cursedSoul) => m_CursedSoul = cursedSoul;
 
     public SecondTrialIntroConversation()
     {
@@ -143,10 +137,7 @@ namespace Server.Engines.Quests.Samurai
   {
     private bool m_Dragon;
 
-    public ThirdTrialIntroConversation(bool dragon)
-    {
-      m_Dragon = dragon;
-    }
+    public ThirdTrialIntroConversation(bool dragon) => m_Dragon = dragon;
 
     public ThirdTrialIntroConversation()
     {
@@ -230,10 +221,7 @@ namespace Server.Engines.Quests.Samurai
   {
     private bool m_KilledCat;
 
-    public FifthTrialIntroConversation(bool killedCat)
-    {
-      m_KilledCat = killedCat;
-    }
+    public FifthTrialIntroConversation(bool killedCat) => m_KilledCat = killedCat;
 
     public FifthTrialIntroConversation()
     {
@@ -305,10 +293,7 @@ namespace Server.Engines.Quests.Samurai
   {
     private bool m_StolenTreasure;
 
-    public SixthTrialIntroConversation(bool stolenTreasure)
-    {
-      m_StolenTreasure = stolenTreasure;
-    }
+    public SixthTrialIntroConversation(bool stolenTreasure) => m_StolenTreasure = stolenTreasure;
 
     public SixthTrialIntroConversation()
     {

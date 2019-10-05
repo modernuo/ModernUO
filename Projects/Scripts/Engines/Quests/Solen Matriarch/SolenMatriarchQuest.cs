@@ -25,10 +25,7 @@ namespace Server.Engines.Quests.Matriarch
       typeof(GetRewardObjective)
     };
 
-    public SolenMatriarchQuest(PlayerMobile from, bool redSolen) : base(from)
-    {
-      RedSolen = redSolen;
-    }
+    public SolenMatriarchQuest(PlayerMobile from, bool redSolen) : base(from) => RedSolen = redSolen;
 
     // Serialization
     public SolenMatriarchQuest()

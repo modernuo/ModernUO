@@ -69,10 +69,7 @@ namespace Server.Items
   public class MountedPixieLimeDeed : BaseAddonDeed
   {
     [Constructible]
-    public MountedPixieLimeDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public MountedPixieLimeDeed() => LootType = LootType.Blessed;
 
     public MountedPixieLimeDeed(Serial serial) : base(serial)
     {

@@ -24,10 +24,7 @@ namespace Server.Spells.Bushido
     public override double RequiredSkill => 60.0;
     public override int RequiredMana => 10;
 
-    public override bool CheckCast()
-    {
-      return VerifyCast(Caster, true) && base.CheckCast();
-    }
+    public override bool CheckCast() => VerifyCast(Caster, true) && base.CheckCast();
 
     public static bool VerifyCast(Mobile Caster, bool messages)
     {
@@ -118,10 +115,7 @@ namespace Server.Spells.Bushido
       FinishSequence();
     }
 
-    public static bool IsEvading(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool IsEvading(Mobile m) => m_Table.ContainsKey(m);
 
     public static TimeSpan GetEvadeDuration(Mobile m)
     {

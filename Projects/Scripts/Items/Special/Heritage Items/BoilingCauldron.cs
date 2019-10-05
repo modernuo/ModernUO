@@ -37,10 +37,7 @@ namespace Server.Items
   public class BoilingCauldronDeed : BaseAddonContainerDeed
   {
     [Constructible]
-    public BoilingCauldronDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public BoilingCauldronDeed() => LootType = LootType.Blessed;
 
     public BoilingCauldronDeed(Serial serial) : base(serial)
     {

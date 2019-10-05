@@ -4,10 +4,7 @@ namespace Server.Items
   public class Katana : BaseSword
   {
     [Constructible]
-    public Katana() : base(0x13FF)
-    {
-      Weight = 6.0;
-    }
+    public Katana() : base(0x13FF) => Weight = 6.0;
 
     public Katana(Serial serial) : base(serial)
     {

@@ -76,10 +76,7 @@ namespace Server.Gumps
       set => Delta(ref m_SwitchID, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ radio {m_X} {m_Y} {m_ID1} {m_ID2} {(m_InitialState ? 1 : 0)} {m_SwitchID} }}";
-    }
+    public override string Compile(NetState ns) => $"{{ radio {m_X} {m_Y} {m_ID1} {m_ID2} {(m_InitialState ? 1 : 0)} {m_SwitchID} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

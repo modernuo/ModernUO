@@ -3,10 +3,7 @@ namespace Server.Items
   public class EnchantedSwitch : Item
   {
     [Constructible]
-    public EnchantedSwitch() : base(0x2F5C)
-    {
-      Weight = 1.0;
-    }
+    public EnchantedSwitch() : base(0x2F5C) => Weight = 1.0;
 
     public EnchantedSwitch(Serial serial) : base(serial)
     {

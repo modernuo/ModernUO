@@ -79,10 +79,7 @@ namespace Server.Spells.Mysticism
       FinishSequence();
     }
 
-    public static bool UnderEffect(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
 
     public static void RemoveEffect(Mobile m)
     {
@@ -197,10 +194,8 @@ namespace Server.Spells.Mysticism
       private SpellPlagueSpell m_Owner;
 
       public InternalTarget(SpellPlagueSpell owner)
-        : base(12, false, TargetFlags.Harmful)
-      {
+        : base(12, false, TargetFlags.Harmful) =>
         m_Owner = owner;
-      }
 
       protected override void OnTarget(Mobile from, object o)
       {

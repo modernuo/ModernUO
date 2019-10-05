@@ -4,10 +4,7 @@ namespace Server.Engines.Craft
 {
   public class CraftGroupCol : CollectionBase
   {
-    public int Add(CraftGroup craftGroup)
-    {
-      return List.Add(craftGroup);
-    }
+    public int Add(CraftGroup craftGroup) => List.Add(craftGroup);
 
     public void Remove(int index)
     {
@@ -20,10 +17,7 @@ namespace Server.Engines.Craft
       }
     }
 
-    public CraftGroup GetAt(int index)
-    {
-      return (CraftGroup)List[index];
-    }
+    public CraftGroup GetAt(int index) => (CraftGroup)List[index];
 
     public int SearchFor(TextDefinition groupName)
     {

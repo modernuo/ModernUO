@@ -53,10 +53,7 @@ namespace Server.Items
   public class FurBoots : BaseShoes
   {
     [Constructible]
-    public FurBoots(int hue = 0) : base(0x2307, hue)
-    {
-      Weight = 3.0;
-    }
+    public FurBoots(int hue = 0) : base(0x2307, hue) => Weight = 3.0;
 
     public FurBoots(Serial serial) : base(serial)
     {
@@ -81,10 +78,7 @@ namespace Server.Items
   public class Boots : BaseShoes
   {
     [Constructible]
-    public Boots(int hue = 0) : base(0x170B, hue)
-    {
-      Weight = 3.0;
-    }
+    public Boots(int hue = 0) : base(0x170B, hue) => Weight = 3.0;
 
     public Boots(Serial serial) : base(serial)
     {
@@ -111,10 +105,7 @@ namespace Server.Items
   public class ThighBoots : BaseShoes, IArcaneEquip
   {
     [Constructible]
-    public ThighBoots(int hue = 0) : base(0x1711, hue)
-    {
-      Weight = 4.0;
-    }
+    public ThighBoots(int hue = 0) : base(0x1711, hue) => Weight = 4.0;
 
     public ThighBoots(Serial serial) : base(serial)
     {
@@ -237,10 +228,7 @@ namespace Server.Items
   public class Shoes : BaseShoes
   {
     [Constructible]
-    public Shoes(int hue = 0) : base(0x170F, hue)
-    {
-      Weight = 2.0;
-    }
+    public Shoes(int hue = 0) : base(0x170F, hue) => Weight = 2.0;
 
     public Shoes(Serial serial) : base(serial)
     {
@@ -267,10 +255,7 @@ namespace Server.Items
   public class Sandals : BaseShoes
   {
     [Constructible]
-    public Sandals(int hue = 0) : base(0x170D, hue)
-    {
-      Weight = 1.0;
-    }
+    public Sandals(int hue = 0) : base(0x170D, hue) => Weight = 1.0;
 
     public Sandals(Serial serial) : base(serial)
     {
@@ -278,10 +263,7 @@ namespace Server.Items
 
     public override CraftResource DefaultResource => CraftResource.RegularLeather;
 
-    public override bool Dye(Mobile from, DyeTub sender)
-    {
-      return false;
-    }
+    public override bool Dye(Mobile from, DyeTub sender) => false;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -302,10 +284,7 @@ namespace Server.Items
   public class NinjaTabi : BaseShoes
   {
     [Constructible]
-    public NinjaTabi(int hue = 0) : base(0x2797, hue)
-    {
-      Weight = 2.0;
-    }
+    public NinjaTabi(int hue = 0) : base(0x2797, hue) => Weight = 2.0;
 
     public NinjaTabi(Serial serial) : base(serial)
     {
@@ -330,10 +309,7 @@ namespace Server.Items
   public class SamuraiTabi : BaseShoes
   {
     [Constructible]
-    public SamuraiTabi(int hue = 0) : base(0x2796, hue)
-    {
-      Weight = 2.0;
-    }
+    public SamuraiTabi(int hue = 0) : base(0x2796, hue) => Weight = 2.0;
 
     public SamuraiTabi(Serial serial) : base(serial)
     {
@@ -358,10 +334,7 @@ namespace Server.Items
   public class Waraji : BaseShoes
   {
     [Constructible]
-    public Waraji(int hue = 0) : base(0x2796, hue)
-    {
-      Weight = 2.0;
-    }
+    public Waraji(int hue = 0) : base(0x2796, hue) => Weight = 2.0;
 
     public Waraji(Serial serial) : base(serial)
     {
@@ -386,10 +359,7 @@ namespace Server.Items
   public class ElvenBoots : BaseShoes
   {
     [Constructible]
-    public ElvenBoots(int hue = 0) : base(0x2FC4, hue)
-    {
-      Weight = 2.0;
-    }
+    public ElvenBoots(int hue = 0) : base(0x2FC4, hue) => Weight = 2.0;
 
     public ElvenBoots(Serial serial) : base(serial)
     {
@@ -399,10 +369,7 @@ namespace Server.Items
 
     public override Race RequiredRace => Race.Elf;
 
-    public override bool Dye(Mobile from, DyeTub sender)
-    {
-      return false;
-    }
+    public override bool Dye(Mobile from, DyeTub sender) => false;
 
     public override void Serialize(GenericWriter writer)
     {

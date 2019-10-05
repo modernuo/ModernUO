@@ -280,10 +280,7 @@ namespace Server.Engines.Mahjong
     {
       private MahjongGame m_Game;
 
-      public ResetGameEntry(MahjongGame game) : base(6162)
-      {
-        m_Game = game;
-      }
+      public ResetGameEntry(MahjongGame game) : base(6162) => m_Game = game;
 
       public override void OnClick()
       {

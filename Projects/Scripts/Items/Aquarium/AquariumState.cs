@@ -48,10 +48,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public int Added{ get; set; }
 
-    public override string ToString()
-    {
-      return "...";
-    }
+    public override string ToString() => "...";
 
     public virtual void Serialize(GenericWriter writer)
     {

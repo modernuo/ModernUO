@@ -20,10 +20,7 @@ namespace Server.ContextMenus
     {
       private SpellScroll m_Scroll;
 
-      public InternalTarget(SpellScroll scroll) : base(3, false, TargetFlags.None)
-      {
-        m_Scroll = scroll;
-      }
+      public InternalTarget(SpellScroll scroll) : base(3, false, TargetFlags.None) => m_Scroll = scroll;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

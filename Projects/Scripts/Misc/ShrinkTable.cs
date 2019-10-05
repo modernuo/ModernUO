@@ -8,20 +8,11 @@ namespace Server
 
     private static int[] m_Table;
 
-    public static int Lookup(Mobile m)
-    {
-      return Lookup(m.Body.BodyID, DefaultItemID);
-    }
+    public static int Lookup(Mobile m) => Lookup(m.Body.BodyID, DefaultItemID);
 
-    public static int Lookup(int body)
-    {
-      return Lookup(body, DefaultItemID);
-    }
+    public static int Lookup(int body) => Lookup(body, DefaultItemID);
 
-    public static int Lookup(Mobile m, int defaultValue)
-    {
-      return Lookup(m.Body.BodyID, defaultValue);
-    }
+    public static int Lookup(Mobile m, int defaultValue) => Lookup(m.Body.BodyID, defaultValue);
 
     public static int Lookup(int body, int defaultValue)
     {
@@ -51,34 +42,32 @@ namespace Server
 
       m_Table = new int[1000];
 
-      using (StreamReader ip = new StreamReader(path))
+      using StreamReader ip = new StreamReader(path);
+      string line;
+
+      while ((line = ip.ReadLine()) != null)
       {
-        string line;
+        line = line.Trim();
 
-        while ((line = ip.ReadLine()) != null)
+        if (line.Length == 0 || line.StartsWith("#"))
+          continue;
+
+        try
         {
-          line = line.Trim();
+          string[] split = line.Split('\t');
 
-          if (line.Length == 0 || line.StartsWith("#"))
-            continue;
-
-          try
+          if (split.Length >= 2)
           {
-            string[] split = line.Split('\t');
+            int body = Utility.ToInt32(split[0]);
+            int item = Utility.ToInt32(split[1]);
 
-            if (split.Length >= 2)
-            {
-              int body = Utility.ToInt32(split[0]);
-              int item = Utility.ToInt32(split[1]);
-
-              if (body >= 0 && body < m_Table.Length)
-                m_Table[body] = item;
-            }
+            if (body >= 0 && body < m_Table.Length)
+              m_Table[body] = item;
           }
-          catch
-          {
-            // ignored
-          }
+        }
+        catch
+        {
+          // ignored
         }
       }
     }

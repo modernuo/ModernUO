@@ -24,10 +24,8 @@ namespace Server.Misc
     private static readonly object _StatusLock = new object();
 
     public StatusPage()
-      : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(60.0))
-    {
+      : base(TimeSpan.FromSeconds(5.0), TimeSpan.FromSeconds(60.0)) =>
       Priority = TimerPriority.FiveSeconds;
-    }
 
     public static void Initialize()
     {

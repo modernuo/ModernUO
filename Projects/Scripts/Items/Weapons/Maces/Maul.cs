@@ -4,10 +4,7 @@ namespace Server.Items
   public class Maul : BaseBashing
   {
     [Constructible]
-    public Maul() : base(0x143B)
-    {
-      Weight = 10.0;
-    }
+    public Maul() : base(0x143B) => Weight = 10.0;
 
     public Maul(Serial serial) : base(serial)
     {

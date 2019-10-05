@@ -56,10 +56,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public string BoardName{ get; set; }
 
-    public static bool CheckTime(DateTime time, TimeSpan range)
-    {
-      return time + range < DateTime.UtcNow;
-    }
+    public static bool CheckTime(DateTime time, TimeSpan range) => time + range < DateTime.UtcNow;
 
     public static string FormatTS(TimeSpan ts)
     {
@@ -367,20 +364,11 @@ namespace Server.Items
 
     public string[] Lines{ get; private set; }
 
-    public string GetTimeAsString()
-    {
-      return Time.ToString("MMM dd, yyyy");
-    }
+    public string GetTimeAsString() => Time.ToString("MMM dd, yyyy");
 
-    public override bool CheckTarget(Mobile from, Target targ, object targeted)
-    {
-      return false;
-    }
+    public override bool CheckTarget(Mobile from, Target targ, object targeted) => false;
 
-    public override bool IsAccessibleTo(Mobile check)
-    {
-      return false;
-    }
+    public override bool IsAccessibleTo(Mobile check) => false;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -528,10 +516,7 @@ namespace Server.Items
       m_Stream.Write((byte)0);
     }
 
-    public string SafeString(string v)
-    {
-      return v ?? string.Empty;
-    }
+    public string SafeString(string v) => v ?? string.Empty;
   }
 
   public class BBMessageContent : Packet

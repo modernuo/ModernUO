@@ -84,10 +84,7 @@ namespace Server.Spells.Sixth
       FinishSequence();
     }
 
-    public static bool HasTimer(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool HasTimer(Mobile m) => m_Table.ContainsKey(m);
 
     public static void RemoveTimer(Mobile m)
     {

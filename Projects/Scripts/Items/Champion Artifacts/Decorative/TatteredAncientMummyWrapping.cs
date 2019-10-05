@@ -3,10 +3,7 @@ namespace Server.Items
   public class TatteredAncientMummyWrapping : Item
   {
     [Constructible]
-    public TatteredAncientMummyWrapping() : base(0xE21)
-    {
-      Hue = 0x909;
-    }
+    public TatteredAncientMummyWrapping() : base(0xE21) => Hue = 0x909;
 
     public TatteredAncientMummyWrapping(Serial serial) : base(serial)
     {

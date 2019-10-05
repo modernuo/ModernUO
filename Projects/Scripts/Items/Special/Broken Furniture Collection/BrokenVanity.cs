@@ -46,10 +46,7 @@ namespace Server.Items
     private bool m_East;
 
     [Constructible]
-    public BrokenVanityDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public BrokenVanityDeed() => LootType = LootType.Blessed;
 
     public BrokenVanityDeed(Serial serial) : base(serial)
     {

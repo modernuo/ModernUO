@@ -4,10 +4,7 @@ namespace Server.Items
   public class LeatherGloves : BaseArmor, IArcaneEquip
   {
     [Constructible]
-    public LeatherGloves() : base(0x13C6)
-    {
-      Weight = 1.0;
-    }
+    public LeatherGloves() : base(0x13C6) => Weight = 1.0;
 
     public LeatherGloves(Serial serial) : base(serial)
     {

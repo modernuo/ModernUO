@@ -4,10 +4,7 @@ namespace Server.Engines.Quests.Matriarch
   {
     private bool m_Friend;
 
-    public DontOfferConversation(bool friend)
-    {
-      m_Friend = friend;
-    }
+    public DontOfferConversation(bool friend) => m_Friend = friend;
 
     public DontOfferConversation()
     {
@@ -86,10 +83,7 @@ namespace Server.Engines.Quests.Matriarch
   {
     private bool m_Friend;
 
-    public ProcessFungiConversation(bool friend)
-    {
-      m_Friend = friend;
-    }
+    public ProcessFungiConversation(bool friend) => m_Friend = friend;
 
     public ProcessFungiConversation()
     {
@@ -150,15 +144,9 @@ namespace Server.Engines.Quests.Matriarch
   {
     private bool m_Logged;
 
-    public FullBackpackConversation(bool logged)
-    {
-      m_Logged = logged;
-    }
+    public FullBackpackConversation(bool logged) => m_Logged = logged;
 
-    public FullBackpackConversation()
-    {
-      m_Logged = true;
-    }
+    public FullBackpackConversation() => m_Logged = true;
 
     public override object Message => 1054102;
 

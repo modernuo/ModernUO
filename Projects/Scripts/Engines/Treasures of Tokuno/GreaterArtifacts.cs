@@ -44,10 +44,7 @@ namespace Server.Items
   public class KasaOfTheRajin : Kasa
   {
     [Constructible]
-    public KasaOfTheRajin()
-    {
-      Attributes.SpellDamage = 12;
-    }
+    public KasaOfTheRajin() => Attributes.SpellDamage = 12;
 
     public KasaOfTheRajin(Serial serial) : base(serial)
     {

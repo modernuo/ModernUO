@@ -23,10 +23,7 @@ namespace Server.Spells.Seventh
 
     private int m_NewBody;
 
-    public PolymorphSpell(Mobile caster, Item scroll, int body = 0) : base(caster, scroll, m_Info)
-    {
-      m_NewBody = body;
-    }
+    public PolymorphSpell(Mobile caster, Item scroll, int body = 0) : base(caster, scroll, m_Info) => m_NewBody = body;
 
     public override SpellCircle Circle => SpellCircle.Seventh;
 

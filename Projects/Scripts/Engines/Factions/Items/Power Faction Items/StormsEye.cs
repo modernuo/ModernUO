@@ -10,10 +10,8 @@ namespace Server
   public sealed class StormsEye : PowerFactionItem
   {
     public StormsEye()
-      : base(3967)
-    {
+      : base(3967) =>
       Hue = 1165;
-    }
 
     public StormsEye(Serial serial)
       : base(serial)

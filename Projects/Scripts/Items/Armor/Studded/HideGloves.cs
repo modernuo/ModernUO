@@ -4,10 +4,7 @@ namespace Server.Items
   public class HideGloves : BaseArmor
   {
     [Constructible]
-    public HideGloves() : base(0x2B75)
-    {
-      Weight = 2.0;
-    }
+    public HideGloves() : base(0x2B75) => Weight = 2.0;
 
     public HideGloves(Serial serial) : base(serial)
     {

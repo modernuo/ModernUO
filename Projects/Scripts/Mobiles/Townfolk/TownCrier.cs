@@ -115,10 +115,7 @@ namespace Server.Mobiles
   {
     private ITownCrierEntryList m_Owner;
 
-    public TownCrierDurationPrompt(ITownCrierEntryList owner)
-    {
-      m_Owner = owner;
-    }
+    public TownCrierDurationPrompt(ITownCrierEntryList owner) => m_Owner = owner;
 
     public override void OnResponse(Mobile from, string text)
     {
@@ -478,10 +475,7 @@ namespace Server.Mobiles
         base.OnDoubleClick(from);
     }
 
-    public override bool HandlesOnSpeech(Mobile from)
-    {
-      return m_NewsTimer == null && from.Alive && InRange(from, 12);
-    }
+    public override bool HandlesOnSpeech(Mobile from) => m_NewsTimer == null && from.Alive && InRange(from, 12);
 
     public override void OnSpeech(SpeechEventArgs e)
     {
@@ -506,10 +500,7 @@ namespace Server.Mobiles
       }
     }
 
-    public override bool CanBeDamaged()
-    {
-      return false;
-    }
+    public override bool CanBeDamaged() => false;
 
     public override void OnDelete()
     {

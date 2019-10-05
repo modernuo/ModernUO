@@ -2,8 +2,7 @@ namespace Server.Factions
 {
   public class Trinsic : Town
   {
-    public Trinsic()
-    {
+    public Trinsic() =>
       Definition =
         new TownDefinition(
           1,
@@ -19,6 +18,5 @@ namespace Server.Factions
           new TextDefinition(1041387, "Corrupted Faction Town Sigil of Trinsic"),
           new Point3D(1914, 2717, 20),
           new Point3D(1909, 2720, 20));
-    }
   }
 }

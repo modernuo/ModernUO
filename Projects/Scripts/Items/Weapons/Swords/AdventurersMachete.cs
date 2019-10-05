@@ -3,10 +3,7 @@ namespace Server.Items
   public class AdventurersMachete : ElvenMachete
   {
     [Constructible]
-    public AdventurersMachete()
-    {
-      Attributes.Luck = 20;
-    }
+    public AdventurersMachete() => Attributes.Luck = 20;
 
     public AdventurersMachete(Serial serial) : base(serial)
     {

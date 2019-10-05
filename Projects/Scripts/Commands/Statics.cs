@@ -187,101 +187,97 @@ namespace Server
 
         TileMatrix matrix = map.Tiles;
 
-        using (FileStream idxStream = OpenWrite(matrix.IndexStream))
+        using FileStream idxStream = OpenWrite(matrix.IndexStream);
+        using FileStream mulStream = OpenWrite(matrix.DataStream);
+        if (idxStream == null || mulStream == null)
         {
-          using (FileStream mulStream = OpenWrite(matrix.DataStream))
+          badDataFile = true;
+          continue;
+        }
+
+        BinaryReader idxReader = new BinaryReader(idxStream);
+
+        BinaryWriter idxWriter = new BinaryWriter(idxStream);
+        BinaryWriter mulWriter = new BinaryWriter(mulStream);
+
+        foreach (DeltaState state in table.Values)
+        {
+          StaticTile[] oldTiles = ReadStaticBlock(idxReader, mulStream, state.m_X, state.m_Y,
+            matrix.BlockWidth, matrix.BlockHeight, out int oldTileCount);
+
+          if (oldTileCount < 0)
+            continue;
+
+          int newTileCount = 0;
+          StaticTile[] newTiles = new StaticTile[state.m_List.Count];
+
+          for (int i = 0; i < state.m_List.Count; ++i)
           {
-            if (idxStream == null || mulStream == null)
-            {
-              badDataFile = true;
+            Item item = state.m_List[i];
+
+            int xOffset = item.X - state.m_X * 8;
+            int yOffset = item.Y - state.m_Y * 8;
+
+            if (xOffset < 0 || xOffset >= 8 || yOffset < 0 || yOffset >= 8)
               continue;
-            }
 
-            BinaryReader idxReader = new BinaryReader(idxStream);
+            StaticTile newTile = new StaticTile((ushort)item.ItemID, (byte)xOffset, (byte)yOffset,
+              (sbyte)item.Z, (short)item.Hue);
 
-            BinaryWriter idxWriter = new BinaryWriter(idxStream);
-            BinaryWriter mulWriter = new BinaryWriter(mulStream);
+            newTiles[newTileCount++] = newTile;
 
-            foreach (DeltaState state in table.Values)
-            {
-              StaticTile[] oldTiles = ReadStaticBlock(idxReader, mulStream, state.m_X, state.m_Y,
-                matrix.BlockWidth, matrix.BlockHeight, out int oldTileCount);
+            item.Delete();
 
-              if (oldTileCount < 0)
-                continue;
-
-              int newTileCount = 0;
-              StaticTile[] newTiles = new StaticTile[state.m_List.Count];
-
-              for (int i = 0; i < state.m_List.Count; ++i)
-              {
-                Item item = state.m_List[i];
-
-                int xOffset = item.X - state.m_X * 8;
-                int yOffset = item.Y - state.m_Y * 8;
-
-                if (xOffset < 0 || xOffset >= 8 || yOffset < 0 || yOffset >= 8)
-                  continue;
-
-                StaticTile newTile = new StaticTile((ushort)item.ItemID, (byte)xOffset, (byte)yOffset,
-                  (sbyte)item.Z, (short)item.Hue);
-
-                newTiles[newTileCount++] = newTile;
-
-                item.Delete();
-
-                ++totalFrozen;
-              }
-
-              int mulPos = -1;
-              int length = -1;
-              int extra = 0;
-
-              if (oldTileCount + newTileCount > 0)
-              {
-                mulWriter.Seek(0, SeekOrigin.End);
-
-                mulPos = (int)mulWriter.BaseStream.Position;
-                length = (oldTileCount + newTileCount) * 7;
-                extra = 1;
-
-                for (int i = 0; i < oldTileCount; ++i)
-                {
-                  StaticTile toWrite = oldTiles[i];
-
-                  mulWriter.Write((ushort)toWrite.ID);
-                  mulWriter.Write((byte)toWrite.X);
-                  mulWriter.Write((byte)toWrite.Y);
-                  mulWriter.Write((sbyte)toWrite.Z);
-                  mulWriter.Write((short)toWrite.Hue);
-                }
-
-                for (int i = 0; i < newTileCount; ++i)
-                {
-                  StaticTile toWrite = newTiles[i];
-
-                  mulWriter.Write((ushort)toWrite.ID);
-                  mulWriter.Write((byte)toWrite.X);
-                  mulWriter.Write((byte)toWrite.Y);
-                  mulWriter.Write((sbyte)toWrite.Z);
-                  mulWriter.Write((short)toWrite.Hue);
-                }
-
-                mulWriter.Flush();
-              }
-
-              int idxPos = (state.m_X * matrix.BlockHeight + state.m_Y) * 12;
-
-              idxWriter.Seek(idxPos, SeekOrigin.Begin);
-              idxWriter.Write(mulPos);
-              idxWriter.Write(length);
-              idxWriter.Write(extra);
-
-              idxWriter.Flush();
-
-              matrix.SetStaticBlock(state.m_X, state.m_Y, null);
-            }
+            ++totalFrozen;
           }
+
+          int mulPos = -1;
+          int length = -1;
+          int extra = 0;
+
+          if (oldTileCount + newTileCount > 0)
+          {
+            mulWriter.Seek(0, SeekOrigin.End);
+
+            mulPos = (int)mulWriter.BaseStream.Position;
+            length = (oldTileCount + newTileCount) * 7;
+            extra = 1;
+
+            for (int i = 0; i < oldTileCount; ++i)
+            {
+              StaticTile toWrite = oldTiles[i];
+
+              mulWriter.Write((ushort)toWrite.ID);
+              mulWriter.Write((byte)toWrite.X);
+              mulWriter.Write((byte)toWrite.Y);
+              mulWriter.Write((sbyte)toWrite.Z);
+              mulWriter.Write((short)toWrite.Hue);
+            }
+
+            for (int i = 0; i < newTileCount; ++i)
+            {
+              StaticTile toWrite = newTiles[i];
+
+              mulWriter.Write((ushort)toWrite.ID);
+              mulWriter.Write((byte)toWrite.X);
+              mulWriter.Write((byte)toWrite.Y);
+              mulWriter.Write((sbyte)toWrite.Z);
+              mulWriter.Write((short)toWrite.Hue);
+            }
+
+            mulWriter.Flush();
+          }
+
+          int idxPos = (state.m_X * matrix.BlockHeight + state.m_Y) * 12;
+
+          idxWriter.Seek(idxPos, SeekOrigin.Begin);
+          idxWriter.Write(mulPos);
+          idxWriter.Write(length);
+          idxWriter.Write(extra);
+
+          idxWriter.Flush();
+
+          matrix.SetStaticBlock(state.m_X, state.m_Y, null);
         }
       }
 
@@ -351,96 +347,92 @@ namespace Server
 
       TileMatrix matrix = map.Tiles;
 
-      using (FileStream idxStream = OpenWrite(matrix.IndexStream))
+      using FileStream idxStream = OpenWrite(matrix.IndexStream);
+      using FileStream mulStream = OpenWrite(matrix.DataStream);
+      if (idxStream == null || mulStream == null)
       {
-        using (FileStream mulStream = OpenWrite(matrix.DataStream))
+        badDataFile = true;
+        return;
+      }
+
+      BinaryReader idxReader = new BinaryReader(idxStream);
+
+      BinaryWriter idxWriter = new BinaryWriter(idxStream);
+      BinaryWriter mulWriter = new BinaryWriter(mulStream);
+
+      for (int x = xStartBlock; x <= xEndBlock; ++x)
+      for (int y = yStartBlock; y <= yEndBlock; ++y)
+      {
+        StaticTile[] oldTiles = ReadStaticBlock(idxReader, mulStream, x, y, matrix.BlockWidth,
+          matrix.BlockHeight, out int oldTileCount);
+
+        if (oldTileCount < 0)
+          continue;
+
+        int newTileCount = 0;
+        StaticTile[] newTiles = new StaticTile[oldTileCount];
+
+        int baseX = (x << 3) - xTileStart, baseY = (y << 3) - yTileStart;
+
+        for (int i = 0; i < oldTileCount; ++i)
         {
-          if (idxStream == null || mulStream == null)
+          StaticTile oldTile = oldTiles[i];
+
+          int px = baseX + oldTile.X;
+          int py = baseY + oldTile.Y;
+
+          if (px < 0 || px >= xTileWidth || py < 0 || py >= yTileHeight)
           {
-            badDataFile = true;
-            return;
+            newTiles[newTileCount++] = oldTile;
           }
-
-          BinaryReader idxReader = new BinaryReader(idxStream);
-
-          BinaryWriter idxWriter = new BinaryWriter(idxStream);
-          BinaryWriter mulWriter = new BinaryWriter(mulStream);
-
-          for (int x = xStartBlock; x <= xEndBlock; ++x)
-          for (int y = yStartBlock; y <= yEndBlock; ++y)
+          else
           {
-            StaticTile[] oldTiles = ReadStaticBlock(idxReader, mulStream, x, y, matrix.BlockWidth,
-              matrix.BlockHeight, out int oldTileCount);
+            ++totalUnfrozen;
 
-            if (oldTileCount < 0)
-              continue;
+            Item item = new Static(oldTile.ID);
 
-            int newTileCount = 0;
-            StaticTile[] newTiles = new StaticTile[oldTileCount];
+            item.Hue = oldTile.Hue;
 
-            int baseX = (x << 3) - xTileStart, baseY = (y << 3) - yTileStart;
-
-            for (int i = 0; i < oldTileCount; ++i)
-            {
-              StaticTile oldTile = oldTiles[i];
-
-              int px = baseX + oldTile.X;
-              int py = baseY + oldTile.Y;
-
-              if (px < 0 || px >= xTileWidth || py < 0 || py >= yTileHeight)
-              {
-                newTiles[newTileCount++] = oldTile;
-              }
-              else
-              {
-                ++totalUnfrozen;
-
-                Item item = new Static(oldTile.ID);
-
-                item.Hue = oldTile.Hue;
-
-                item.MoveToWorld(new Point3D(px + xTileStart, py + yTileStart, oldTile.Z), map);
-              }
-            }
-
-            int mulPos = -1;
-            int length = -1;
-            int extra = 0;
-
-            if (newTileCount > 0)
-            {
-              mulWriter.Seek(0, SeekOrigin.End);
-
-              mulPos = (int)mulWriter.BaseStream.Position;
-              length = newTileCount * 7;
-              extra = 1;
-
-              for (int i = 0; i < newTileCount; ++i)
-              {
-                StaticTile toWrite = newTiles[i];
-
-                mulWriter.Write((ushort)toWrite.ID);
-                mulWriter.Write((byte)toWrite.X);
-                mulWriter.Write((byte)toWrite.Y);
-                mulWriter.Write((sbyte)toWrite.Z);
-                mulWriter.Write((short)toWrite.Hue);
-              }
-
-              mulWriter.Flush();
-            }
-
-            int idxPos = (x * matrix.BlockHeight + y) * 12;
-
-            idxWriter.Seek(idxPos, SeekOrigin.Begin);
-            idxWriter.Write(mulPos);
-            idxWriter.Write(length);
-            idxWriter.Write(extra);
-
-            idxWriter.Flush();
-
-            matrix.SetStaticBlock(x, y, null);
+            item.MoveToWorld(new Point3D(px + xTileStart, py + yTileStart, oldTile.Z), map);
           }
         }
+
+        int mulPos = -1;
+        int length = -1;
+        int extra = 0;
+
+        if (newTileCount > 0)
+        {
+          mulWriter.Seek(0, SeekOrigin.End);
+
+          mulPos = (int)mulWriter.BaseStream.Position;
+          length = newTileCount * 7;
+          extra = 1;
+
+          for (int i = 0; i < newTileCount; ++i)
+          {
+            StaticTile toWrite = newTiles[i];
+
+            mulWriter.Write((ushort)toWrite.ID);
+            mulWriter.Write((byte)toWrite.X);
+            mulWriter.Write((byte)toWrite.Y);
+            mulWriter.Write((sbyte)toWrite.Z);
+            mulWriter.Write((short)toWrite.Hue);
+          }
+
+          mulWriter.Flush();
+        }
+
+        int idxPos = (x * matrix.BlockHeight + y) * 12;
+
+        idxWriter.Seek(idxPos, SeekOrigin.Begin);
+        idxWriter.Write(mulPos);
+        idxWriter.Write(length);
+        idxWriter.Write(extra);
+
+        idxWriter.Flush();
+
+        matrix.SetStaticBlock(x, y, null);
       }
     }
 

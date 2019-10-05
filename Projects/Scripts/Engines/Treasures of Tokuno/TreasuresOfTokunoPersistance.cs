@@ -12,10 +12,7 @@ namespace Server.Misc
         base.Delete();
     }
 
-    public TreasuresOfTokunoPersistance(Serial serial) : base(serial)
-    {
-      Instance = this;
-    }
+    public TreasuresOfTokunoPersistance(Serial serial) : base(serial) => Instance = this;
 
     public static TreasuresOfTokunoPersistance Instance{ get; private set; }
 

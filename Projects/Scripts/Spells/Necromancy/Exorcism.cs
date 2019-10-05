@@ -81,10 +81,7 @@ namespace Server.Spells.Necromancy
       return base.CheckCast();
     }
 
-    public override int ComputeKarmaAward()
-    {
-      return 0; //no karma lost from this spell!
-    }
+    public override int ComputeKarmaAward() => 0;
 
     public override void OnCast()
     {

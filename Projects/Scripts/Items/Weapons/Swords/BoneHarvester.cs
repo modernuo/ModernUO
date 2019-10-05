@@ -4,10 +4,7 @@ namespace Server.Items
   public class BoneHarvester : BaseSword
   {
     [Constructible]
-    public BoneHarvester() : base(0x26BB)
-    {
-      Weight = 3.0;
-    }
+    public BoneHarvester() : base(0x26BB) => Weight = 3.0;
 
     public BoneHarvester(Serial serial) : base(serial)
     {

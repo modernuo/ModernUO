@@ -4,10 +4,7 @@ namespace Server.Items
   public class Leafblade : BaseKnife
   {
     [Constructible]
-    public Leafblade() : base(0x2D22)
-    {
-      Weight = 8.0;
-    }
+    public Leafblade() : base(0x2D22) => Weight = 8.0;
 
     public Leafblade(Serial serial) : base(serial)
     {

@@ -187,37 +187,34 @@ namespace Server.Items
       List<Point2D> havenList = new List<Point2D>();
 
       if (File.Exists(filePath))
-        using (StreamReader ip = new StreamReader(filePath))
-        {
-          string line;
+      {
+        using StreamReader ip = new StreamReader(filePath);
+        string line;
 
-          while ((line = ip.ReadLine()) != null)
-            try
-            {
-              string[] split = line.Split(' ');
+        while ((line = ip.ReadLine()) != null)
+          try
+          {
+            string[] split = line.Split(' ');
 
-              int x = Convert.ToInt32(split[0]), y = Convert.ToInt32(split[1]);
+            int x = Convert.ToInt32(split[0]), y = Convert.ToInt32(split[1]);
 
-              Point2D loc = new Point2D(x, y);
-              list.Add(loc);
+            Point2D loc = new Point2D(x, y);
+            list.Add(loc);
 
-              if (IsInHavenIsland(loc))
-                havenList.Add(loc);
-            }
-            catch
-            {
-              // ignored
-            }
-        }
+            if (IsInHavenIsland(loc))
+              havenList.Add(loc);
+          }
+          catch
+          {
+            // ignored
+          }
+      }
 
       m_Locations = list.ToArray();
       m_HavenLocations = havenList.ToArray();
     }
 
-    public static bool IsInHavenIsland(IPoint2D loc)
-    {
-      return loc.X >= 3314 && loc.X <= 3814 && loc.Y >= 2345 && loc.Y <= 3095;
-    }
+    public static bool IsInHavenIsland(IPoint2D loc) => loc.X >= 3314 && loc.X <= 3814 && loc.Y >= 2345 && loc.Y <= 3095;
 
     public static BaseCreature Spawn(int level, Point3D p, bool guardian)
     {
@@ -386,10 +383,7 @@ namespace Server.Items
       }
     }
 
-    private bool HasRequiredSkill(Mobile from)
-    {
-      return from.Skills.Cartography.Value >= GetMinSkillLevel();
-    }
+    private bool HasRequiredSkill(Mobile from) => from.Skills.Cartography.Value >= GetMinSkillLevel();
 
     public void Decode(Mobile from)
     {
@@ -562,10 +556,7 @@ namespace Server.Items
     {
       private TreasureMap m_Map;
 
-      public DigTarget(TreasureMap map) : base(6, true, TargetFlags.None)
-      {
-        m_Map = map;
-      }
+      public DigTarget(TreasureMap map) : base(6, true, TargetFlags.None) => m_Map = map;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -882,10 +873,7 @@ namespace Server.Items
     {
       private TreasureMap m_Map;
 
-      public DecodeMapEntry(TreasureMap map) : base(6147, 2)
-      {
-        m_Map = map;
-      }
+      public DecodeMapEntry(TreasureMap map) : base(6147, 2) => m_Map = map;
 
       public override void OnClick()
       {
@@ -898,10 +886,7 @@ namespace Server.Items
     {
       private TreasureMap m_Map;
 
-      public OpenMapEntry(TreasureMap map) : base(6150, 2)
-      {
-        m_Map = map;
-      }
+      public OpenMapEntry(TreasureMap map) : base(6150, 2) => m_Map = map;
 
       public override void OnClick()
       {

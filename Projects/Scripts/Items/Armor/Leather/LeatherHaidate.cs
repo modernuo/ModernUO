@@ -3,10 +3,7 @@ namespace Server.Items
   public class LeatherHaidate : BaseArmor
   {
     [Constructible]
-    public LeatherHaidate() : base(0x278A)
-    {
-      Weight = 4.0;
-    }
+    public LeatherHaidate() : base(0x278A) => Weight = 4.0;
 
     public LeatherHaidate(Serial serial) : base(serial)
     {

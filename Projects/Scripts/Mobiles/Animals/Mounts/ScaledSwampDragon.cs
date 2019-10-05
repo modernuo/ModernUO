@@ -45,15 +45,9 @@ namespace Server.Mobiles
     public override bool AutoDispel => !Controlled;
     public override FoodType FavoriteFood => FoodType.Meat;
 
-    public override bool OverrideBondingReqs()
-    {
-      return true;
-    }
+    public override bool OverrideBondingReqs() => true;
 
-    public override double GetControlChance(Mobile m, bool useBaseSkill = false)
-    {
-      return 1.0;
-    }
+    public override double GetControlChance(Mobile m, bool useBaseSkill = false) => 1.0;
 
     public override void Serialize(GenericWriter writer)
     {

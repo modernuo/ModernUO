@@ -79,10 +79,7 @@
       m_Attribute = (AosElementAttribute)reader.ReadInt();
     }
 
-    public static AosElementAttribute RandomType()
-    {
-      return GetTypes(Utility.Random(5));
-    }
+    public static AosElementAttribute RandomType() => GetTypes(Utility.Random(5));
 
     public static AosElementAttribute GetTypes(int value)
     {

@@ -5,10 +5,7 @@ namespace Server.Items
   public class FancyWoodenChairCushion : Item
   {
     [Constructible]
-    public FancyWoodenChairCushion() : base(0xB4F)
-    {
-      Weight = 20.0;
-    }
+    public FancyWoodenChairCushion() : base(0xB4F) => Weight = 20.0;
 
     public FancyWoodenChairCushion(Serial serial) : base(serial)
     {
@@ -37,10 +34,7 @@ namespace Server.Items
   public class WoodenChairCushion : Item
   {
     [Constructible]
-    public WoodenChairCushion() : base(0xB53)
-    {
-      Weight = 20.0;
-    }
+    public WoodenChairCushion() : base(0xB53) => Weight = 20.0;
 
     public WoodenChairCushion(Serial serial) : base(serial)
     {
@@ -69,10 +63,7 @@ namespace Server.Items
   public class WoodenChair : Item
   {
     [Constructible]
-    public WoodenChair() : base(0xB57)
-    {
-      Weight = 20.0;
-    }
+    public WoodenChair() : base(0xB57) => Weight = 20.0;
 
     public WoodenChair(Serial serial) : base(serial)
     {
@@ -101,10 +92,7 @@ namespace Server.Items
   public class BambooChair : Item
   {
     [Constructible]
-    public BambooChair() : base(0xB5B)
-    {
-      Weight = 20.0;
-    }
+    public BambooChair() : base(0xB5B) => Weight = 20.0;
 
     public BambooChair(Serial serial) : base(serial)
     {
@@ -133,10 +121,7 @@ namespace Server.Items
   public class StoneChair : Item
   {
     [Constructible]
-    public StoneChair() : base(0x1218)
-    {
-      Weight = 20;
-    }
+    public StoneChair() : base(0x1218) => Weight = 20;
 
     public StoneChair(Serial serial) : base(serial)
     {
@@ -162,10 +147,7 @@ namespace Server.Items
   public class OrnateElvenChair : Item
   {
     [Constructible]
-    public OrnateElvenChair() : base(0x2DE3)
-    {
-      Weight = 1.0;
-    }
+    public OrnateElvenChair() : base(0x2DE3) => Weight = 1.0;
 
     public OrnateElvenChair(Serial serial) : base(serial)
     {

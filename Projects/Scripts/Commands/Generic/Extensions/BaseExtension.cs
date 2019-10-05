@@ -121,10 +121,7 @@ namespace Server.Commands.Generic
     {
     }
 
-    public virtual bool IsValid(object obj)
-    {
-      return true;
-    }
+    public virtual bool IsValid(object obj) => true;
 
     public virtual void Filter(List<object> list)
     {

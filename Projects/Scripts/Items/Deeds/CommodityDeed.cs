@@ -187,10 +187,7 @@ namespace Server.Items
     {
       private CommodityDeed m_Deed;
 
-      public InternalTarget(CommodityDeed deed) : base(3, false, TargetFlags.None)
-      {
-        m_Deed = deed;
-      }
+      public InternalTarget(CommodityDeed deed) : base(3, false, TargetFlags.None) => m_Deed = deed;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

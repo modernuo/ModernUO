@@ -108,10 +108,7 @@ namespace Server.Items
   public class CreepyPortraitDeed : BaseAddonDeed
   {
     [Constructible]
-    public CreepyPortraitDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public CreepyPortraitDeed() => LootType = LootType.Blessed;
 
     public CreepyPortraitDeed(Serial serial) : base(serial)
     {

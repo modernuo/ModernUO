@@ -193,15 +193,9 @@ namespace Server.Items
       return false;
     }
 
-    public override bool OnDragDropInto(Mobile from, Item item, Point3D p)
-    {
-      return false;
-    }
+    public override bool OnDragDropInto(Mobile from, Item item, Point3D p) => false;
 
-    public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
-    {
-      return false;
-    }
+    public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage) => false;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -236,16 +230,11 @@ namespace Server.Items
 
     public override int DefaultMaxWeight => 1600;
 
-    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight)
-    {
-      return base.CheckHold(m, item, false, checkItems, plusItems, plusWeight);
-    }
+    public override bool CheckHold(Mobile m, Item item, bool message, bool checkItems, int plusItems, int plusWeight) => base.CheckHold(m, item, false, checkItems, plusItems, plusWeight);
 
-    public override bool CheckContentDisplay(Mobile from)
-    {
-      return RootParent is BaseCreature creature && creature.Controlled && creature.ControlMaster == from ||
-             base.CheckContentDisplay(from);
-    }
+    public override bool CheckContentDisplay(Mobile from) =>
+      RootParent is BaseCreature creature && creature.Controlled && creature.ControlMaster == from ||
+      base.CheckContentDisplay(from);
 
     public override void Serialize(GenericWriter writer)
     {
@@ -319,10 +308,7 @@ namespace Server.Items
   public class Pouch : TrappableContainer
   {
     [Constructible]
-    public Pouch() : base(0xE79)
-    {
-      Weight = 1.0;
-    }
+    public Pouch() : base(0xE79) => Weight = 1.0;
 
     public Pouch(Serial serial) : base(serial)
     {
@@ -345,10 +331,7 @@ namespace Server.Items
 
   public abstract class BaseBagBall : BaseContainer, IDyable
   {
-    public BaseBagBall(int itemID) : base(itemID)
-    {
-      Weight = 1.0;
-    }
+    public BaseBagBall(int itemID) : base(itemID) => Weight = 1.0;
 
     public BaseBagBall(Serial serial) : base(serial)
     {
@@ -434,10 +417,7 @@ namespace Server.Items
   public class Bag : BaseContainer, IDyable
   {
     [Constructible]
-    public Bag() : base(0xE76)
-    {
-      Weight = 2.0;
-    }
+    public Bag() : base(0xE76) => Weight = 2.0;
 
     public Bag(Serial serial) : base(serial)
     {
@@ -470,10 +450,7 @@ namespace Server.Items
   public class Barrel : BaseContainer
   {
     [Constructible]
-    public Barrel() : base(0xE77)
-    {
-      Weight = 25.0;
-    }
+    public Barrel() : base(0xE77) => Weight = 25.0;
 
     public Barrel(Serial serial) : base(serial)
     {
@@ -500,10 +477,7 @@ namespace Server.Items
   public class Keg : BaseContainer
   {
     [Constructible]
-    public Keg() : base(0xE7F)
-    {
-      Weight = 15.0;
-    }
+    public Keg() : base(0xE7F) => Weight = 15.0;
 
     public Keg(Serial serial) : base(serial)
     {
@@ -527,10 +501,7 @@ namespace Server.Items
   public class PicnicBasket : BaseContainer
   {
     [Constructible]
-    public PicnicBasket() : base(0xE7A)
-    {
-      Weight = 2.0; // Stratics doesn't know weight
-    }
+    public PicnicBasket() : base(0xE7A) => Weight = 2.0;
 
     public PicnicBasket(Serial serial) : base(serial)
     {
@@ -554,10 +525,7 @@ namespace Server.Items
   public class Basket : BaseContainer
   {
     [Constructible]
-    public Basket() : base(0x990)
-    {
-      Weight = 1.0; // Stratics doesn't know weight
-    }
+    public Basket() : base(0x990) => Weight = 1.0;
 
     public Basket(Serial serial) : base(serial)
     {
@@ -583,10 +551,7 @@ namespace Server.Items
   public class WoodenBox : LockableContainer
   {
     [Constructible]
-    public WoodenBox() : base(0x9AA)
-    {
-      Weight = 4.0;
-    }
+    public WoodenBox() : base(0x9AA) => Weight = 4.0;
 
     public WoodenBox(Serial serial) : base(serial)
     {
@@ -612,10 +577,7 @@ namespace Server.Items
   public class SmallCrate : LockableContainer
   {
     [Constructible]
-    public SmallCrate() : base(0x9A9)
-    {
-      Weight = 2.0;
-    }
+    public SmallCrate() : base(0x9A9) => Weight = 2.0;
 
     public SmallCrate(Serial serial) : base(serial)
     {
@@ -644,10 +606,7 @@ namespace Server.Items
   public class MediumCrate : LockableContainer
   {
     [Constructible]
-    public MediumCrate() : base(0xE3F)
-    {
-      Weight = 2.0;
-    }
+    public MediumCrate() : base(0xE3F) => Weight = 2.0;
 
     public MediumCrate(Serial serial) : base(serial)
     {
@@ -676,10 +635,7 @@ namespace Server.Items
   public class LargeCrate : LockableContainer
   {
     [Constructible]
-    public LargeCrate() : base(0xE3D)
-    {
-      Weight = 1.0;
-    }
+    public LargeCrate() : base(0xE3D) => Weight = 1.0;
 
     public LargeCrate(Serial serial) : base(serial)
     {
@@ -801,10 +757,7 @@ namespace Server.Items
   public class WoodenChest : LockableContainer
   {
     [Constructible]
-    public WoodenChest() : base(0xe43)
-    {
-      Weight = 2.0;
-    }
+    public WoodenChest() : base(0xe43) => Weight = 2.0;
 
     public WoodenChest(Serial serial) : base(serial)
     {
@@ -926,10 +879,7 @@ namespace Server.Items
   public class WoodenFootLocker : LockableContainer
   {
     [Constructible]
-    public WoodenFootLocker() : base(0x2811)
-    {
-      GumpID = 0x10B;
-    }
+    public WoodenFootLocker() : base(0x2811) => GumpID = 0x10B;
 
     public WoodenFootLocker(Serial serial) : base(serial)
     {

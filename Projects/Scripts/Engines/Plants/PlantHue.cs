@@ -41,8 +41,7 @@ namespace Server.Engines.Plants
   {
     private static Dictionary<PlantHue, PlantHueInfo> m_Table;
 
-    static PlantHueInfo()
-    {
+    static PlantHueInfo() =>
       m_Table = new Dictionary<PlantHue, PlantHueInfo>
       {
         [PlantHue.Plain] = new PlantHueInfo(0, 1060813, PlantHue.Plain, 0x835),
@@ -66,8 +65,6 @@ namespace Server.Engines.Plants
         [PlantHue.FireRed] = new PlantHueInfo(0x489, 1061855, PlantHue.FireRed)
       };
 
-    }
-
     private PlantHueInfo(int hue, int name, PlantHue plantHue) : this(hue, name, plantHue, hue)
     {
     }
@@ -88,10 +85,7 @@ namespace Server.Engines.Plants
 
     public int GumpHue{ get; }
 
-    public static PlantHueInfo GetInfo(PlantHue plantHue)
-    {
-      return m_Table.TryGetValue(plantHue, out PlantHueInfo info) ? info : m_Table[PlantHue.Plain];
-    }
+    public static PlantHueInfo GetInfo(PlantHue plantHue) => m_Table.TryGetValue(plantHue, out PlantHueInfo info) ? info : m_Table[PlantHue.Plain];
 
     public static PlantHue RandomFirstGeneration()
     {
@@ -104,30 +98,15 @@ namespace Server.Engines.Plants
       }
     }
 
-    public static bool CanReproduce(PlantHue plantHue)
-    {
-      return (plantHue & PlantHue.Reproduces) != PlantHue.None;
-    }
+    public static bool CanReproduce(PlantHue plantHue) => (plantHue & PlantHue.Reproduces) != PlantHue.None;
 
-    public static bool IsCrossable(PlantHue plantHue)
-    {
-      return (plantHue & PlantHue.Crossable) != PlantHue.None;
-    }
+    public static bool IsCrossable(PlantHue plantHue) => (plantHue & PlantHue.Crossable) != PlantHue.None;
 
-    public static bool IsBright(PlantHue plantHue)
-    {
-      return (plantHue & PlantHue.Bright) != PlantHue.None;
-    }
+    public static bool IsBright(PlantHue plantHue) => (plantHue & PlantHue.Bright) != PlantHue.None;
 
-    public static PlantHue GetNotBright(PlantHue plantHue)
-    {
-      return plantHue & ~PlantHue.Bright;
-    }
+    public static PlantHue GetNotBright(PlantHue plantHue) => plantHue & ~PlantHue.Bright;
 
-    public static bool IsPrimary(PlantHue plantHue)
-    {
-      return plantHue == PlantHue.Red || plantHue == PlantHue.Blue || plantHue == PlantHue.Yellow;
-    }
+    public static bool IsPrimary(PlantHue plantHue) => plantHue == PlantHue.Red || plantHue == PlantHue.Blue || plantHue == PlantHue.Yellow;
 
     public static PlantHue Cross(PlantHue first, PlantHue second)
     {
@@ -161,24 +140,12 @@ namespace Server.Engines.Plants
       return notBrightFirst & notBrightSecond;
     }
 
-    public bool IsCrossable()
-    {
-      return IsCrossable(PlantHue);
-    }
+    public bool IsCrossable() => IsCrossable(PlantHue);
 
-    public bool IsBright()
-    {
-      return IsBright(PlantHue);
-    }
+    public bool IsBright() => IsBright(PlantHue);
 
-    public PlantHue GetNotBright()
-    {
-      return GetNotBright(PlantHue);
-    }
+    public PlantHue GetNotBright() => GetNotBright(PlantHue);
 
-    public bool IsPrimary()
-    {
-      return IsPrimary(PlantHue);
-    }
+    public bool IsPrimary() => IsPrimary(PlantHue);
   }
 }

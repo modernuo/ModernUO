@@ -3,10 +3,7 @@ namespace Server.Items
   public class AnOldNecklace : Necklace
   {
     [Constructible]
-    public AnOldNecklace()
-    {
-      Hue = 0x222;
-    }
+    public AnOldNecklace() => Hue = 0x222;
 
     public AnOldNecklace(Serial serial) : base(serial)
     {

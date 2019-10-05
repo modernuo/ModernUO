@@ -7,10 +7,7 @@ namespace Server.Gumps
   {
     private BaseImprisonedMobile m_Item;
 
-    public ConfirmBreakCrystalGump(BaseImprisonedMobile item)
-    {
-      m_Item = item;
-    }
+    public ConfirmBreakCrystalGump(BaseImprisonedMobile item) => m_Item = item;
 
     public override int LabelNumber =>
       1075084; // This statuette will be destroyed when its trapped creature is summoned. The creature will be bonded to you but will disappear if released. <br><br>Do you wish to proceed?

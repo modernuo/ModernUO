@@ -99,10 +99,7 @@ namespace Server.Misc
         return hue;
       }
 
-      public override int RandomSkinHue()
-      {
-        return Utility.Random(1002, 57) | 0x8000;
-      }
+      public override int RandomSkinHue() => Utility.Random(1002, 57) | 0x8000;
 
       public override int ClipHairHue(int hue)
       {
@@ -113,10 +110,7 @@ namespace Server.Misc
         return hue;
       }
 
-      public override int RandomHairHue()
-      {
-        return Utility.Random(1102, 48);
-      }
+      public override int RandomHairHue() => Utility.Random(1102, 48);
     }
 
     private class Elf : Race
@@ -177,15 +171,9 @@ namespace Server.Misc
         }
       }
 
-      public override bool ValidateFacialHair(bool female, int itemID)
-      {
-        return itemID == 0;
-      }
+      public override bool ValidateFacialHair(bool female, int itemID) => itemID == 0;
 
-      public override int RandomFacialHair(bool female)
-      {
-        return 0;
-      }
+      public override int RandomFacialHair(bool female) => 0;
 
       public override int ClipSkinHue(int hue)
       {
@@ -196,10 +184,7 @@ namespace Server.Misc
         return m_SkinHues[0];
       }
 
-      public override int RandomSkinHue()
-      {
-        return m_SkinHues[Utility.Random(m_SkinHues.Length)] | 0x8000;
-      }
+      public override int RandomSkinHue() => m_SkinHues[Utility.Random(m_SkinHues.Length)] | 0x8000;
 
       public override int ClipHairHue(int hue)
       {
@@ -210,10 +195,7 @@ namespace Server.Misc
         return m_HairHues[0];
       }
 
-      public override int RandomHairHue()
-      {
-        return m_HairHues[Utility.Random(m_HairHues.Length)];
-      }
+      public override int RandomHairHue() => m_HairHues[Utility.Random(m_HairHues.Length)];
     }
 
     #region SA
@@ -282,25 +264,13 @@ namespace Server.Misc
         return 0;
       }
 
-      public override bool ValidateFacialHair(bool female, int itemID)
-      {
-        return !female && itemID >= 0x42AD && itemID <= 0x42B0;
-      }
+      public override bool ValidateFacialHair(bool female, int itemID) => !female && itemID >= 0x42AD && itemID <= 0x42B0;
 
-      public override int RandomFacialHair(bool female)
-      {
-        return female ? 0 : Utility.RandomList(0, 0x42AD, 0x42AE, 0x42AF, 0x42B0);
-      }
+      public override int RandomFacialHair(bool female) => female ? 0 : Utility.RandomList(0, 0x42AD, 0x42AE, 0x42AF, 0x42B0);
 
-      public override int ClipSkinHue(int hue)
-      {
-        return hue; // for hue information gathering
-      }
+      public override int ClipSkinHue(int hue) => hue;
 
-      public override int RandomSkinHue()
-      {
-        return m_BodyHues[Utility.Random(m_BodyHues.Length)] | 0x8000;
-      }
+      public override int RandomSkinHue() => m_BodyHues[Utility.Random(m_BodyHues.Length)] | 0x8000;
 
       public override int ClipHairHue(int hue)
       {
@@ -311,10 +281,7 @@ namespace Server.Misc
         return m_HornHues[0];
       }
 
-      public override int RandomHairHue()
-      {
-        return m_HornHues[Utility.Random(m_HornHues.Length)];
-      }
+      public override int RandomHairHue() => m_HornHues[Utility.Random(m_HornHues.Length)];
     }
 
     #endregion

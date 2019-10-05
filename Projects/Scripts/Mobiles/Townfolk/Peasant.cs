@@ -5,10 +5,7 @@ namespace Server.Mobiles
   public class Peasant : BaseEscortable
   {
     [Constructible]
-    public Peasant()
-    {
-      Title = "the peasant";
-    }
+    public Peasant() => Title = "the peasant";
 
     public Peasant(Serial serial) : base(serial)
     {

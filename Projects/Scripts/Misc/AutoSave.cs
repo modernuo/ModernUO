@@ -16,10 +16,7 @@ namespace Server.Misc
       "Most Recent"
     };
 
-    public AutoSave() : base(m_Delay - m_Warning, m_Delay)
-    {
-      Priority = TimerPriority.OneMinute;
-    }
+    public AutoSave() : base(m_Delay - m_Warning, m_Delay) => Priority = TimerPriority.OneMinute;
 
     public static bool SavesEnabled{ get; set; } = true;
     //private static TimeSpan m_Warning = TimeSpan.FromSeconds( 15.0 );
@@ -161,10 +158,7 @@ namespace Server.Misc
       return null;
     }
 
-    private static string FormatDirectory(string root, string name, string timeStamp)
-    {
-      return Path.Combine(root, $"{name} ({timeStamp})");
-    }
+    private static string FormatDirectory(string root, string name, string timeStamp) => Path.Combine(root, $"{name} ({timeStamp})");
 
     private static string FindTimeStamp(string input)
     {

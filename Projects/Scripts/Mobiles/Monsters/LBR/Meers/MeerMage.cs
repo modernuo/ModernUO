@@ -68,20 +68,11 @@ namespace Server.Mobiles
       // TODO: Daemon bone ...
     }
 
-    public override int GetHurtSound()
-    {
-      return 0x14D;
-    }
+    public override int GetHurtSound() => 0x14D;
 
-    public override int GetDeathSound()
-    {
-      return 0x314;
-    }
+    public override int GetDeathSound() => 0x314;
 
-    public override int GetAttackSound()
-    {
-      return 0x75;
-    }
+    public override int GetAttackSound() => 0x75;
 
     public override void OnThink()
     {
@@ -157,10 +148,7 @@ namespace Server.Mobiles
       base.OnThink();
     }
 
-    public static bool UnderEffect(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
 
     public static void StopEffect(Mobile m, bool message)
     {

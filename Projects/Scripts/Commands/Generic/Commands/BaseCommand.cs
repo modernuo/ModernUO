@@ -54,10 +54,7 @@ namespace Server.Commands.Generic
     {
     }
 
-    public virtual bool ValidateArgs(BaseCommandImplementor impl, CommandEventArgs e)
-    {
-      return true;
-    }
+    public virtual bool ValidateArgs(BaseCommandImplementor impl, CommandEventArgs e) => true;
 
     public void AddResponse(string message)
     {
@@ -128,10 +125,7 @@ namespace Server.Commands.Generic
         m_Count = 1;
       }
 
-      public override string ToString()
-      {
-        return m_Count > 1 ? $"{m_Message} ({m_Count})" : m_Message;
-      }
+      public override string ToString() => m_Count > 1 ? $"{m_Message} ({m_Count})" : m_Message;
     }
   }
 }

@@ -5,353 +5,348 @@ using Server.Network;
 
 namespace Server.Misc
 {
-	public class Weather
-	{
-		private static Map[] m_Facets;
-		private static Dictionary<Map, List<Weather>> m_WeatherByFacet = new Dictionary<Map, List<Weather>>();
+  public class Weather
+  {
+    private static Map[] m_Facets;
+    private static Dictionary<Map, List<Weather>> m_WeatherByFacet = new Dictionary<Map, List<Weather>>();
 
-		public static void Initialize()
-		{
-			m_Facets = new[]{ Map.Felucca, Map.Trammel };
+    public static void Initialize()
+    {
+      m_Facets = new[]{ Map.Felucca, Map.Trammel };
 
-			/* Static weather:
-			 *
-			 * Format:
-			 *   AddWeather( temperature, chanceOfPercipitation, chanceOfExtremeTemperature, <area ...> );
-			 */
+      /* Static weather:
+       *
+       * Format:
+       *   AddWeather( temperature, chanceOfPercipitation, chanceOfExtremeTemperature, <area ...> );
+       */
 
-			// ice island
-			AddWeather( -15, 100, 5, new Rectangle2D( 3850, 160, 390, 320 ), new Rectangle2D( 3900, 480, 380, 180 ), new Rectangle2D( 4160, 660, 150, 110 ) );
+      // ice island
+      AddWeather( -15, 100, 5, new Rectangle2D( 3850, 160, 390, 320 ), new Rectangle2D( 3900, 480, 380, 180 ), new Rectangle2D( 4160, 660, 150, 110 ) );
 
-			// covetous entrance, around vesper and minoc
-			AddWeather( +15,  50, 5, new Rectangle2D( 2425, 725, 250, 250 ) );
+      // covetous entrance, around vesper and minoc
+      AddWeather( +15,  50, 5, new Rectangle2D( 2425, 725, 250, 250 ) );
 
-			// despise entrance, north of britain
-			AddWeather( +15,  50, 5, new Rectangle2D( 1245, 1045, 250, 250 ) );
+      // despise entrance, north of britain
+      AddWeather( +15,  50, 5, new Rectangle2D( 1245, 1045, 250, 250 ) );
 
 
-			/* Dynamic weather:
-			 *
-			 * Format:
-			 *   AddDynamicWeather( temperature, chanceOfPercipitation, chanceOfExtremeTemperature, moveSpeed, width, height, bounds );
-			 */
+      /* Dynamic weather:
+       *
+       * Format:
+       *   AddDynamicWeather( temperature, chanceOfPercipitation, chanceOfExtremeTemperature, moveSpeed, width, height, bounds );
+       */
 
-			for ( int i = 0; i < 15; ++i )
-				AddDynamicWeather( +15, 100, 5, 8, 400, 400, new Rectangle2D( 0, 0, 5120, 4096 ) );
-		}
+      for ( int i = 0; i < 15; ++i )
+        AddDynamicWeather( +15, 100, 5, 8, 400, 400, new Rectangle2D( 0, 0, 5120, 4096 ) );
+    }
 
-		public static List<Weather> GetWeatherList( Map facet )
-		{
-			if ( facet == null )
-				return null;
+    public static List<Weather> GetWeatherList( Map facet )
+    {
+      if ( facet == null )
+        return null;
 
-			if (!m_WeatherByFacet.TryGetValue( facet, out List<Weather> list ))
-				m_WeatherByFacet[facet] = list = new List<Weather>();
+      if (!m_WeatherByFacet.TryGetValue( facet, out List<Weather> list ))
+        m_WeatherByFacet[facet] = list = new List<Weather>();
 
-			return list;
-		}
+      return list;
+    }
 
-		public static void AddDynamicWeather( int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, int moveSpeed, int width, int height, Rectangle2D bounds )
-		{
-			for ( int i = 0; i < m_Facets.Length; ++i )
-			{
-				Rectangle2D area = new Rectangle2D();
-				bool isValid = false;
+    public static void AddDynamicWeather( int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, int moveSpeed, int width, int height, Rectangle2D bounds )
+    {
+      for ( int i = 0; i < m_Facets.Length; ++i )
+      {
+        Rectangle2D area = new Rectangle2D();
+        bool isValid = false;
 
-				for ( int j = 0; j < 10; ++j )
-				{
-					area = new Rectangle2D( bounds.X + Utility.Random( bounds.Width - width ), bounds.Y + Utility.Random( bounds.Height - height ), width, height );
+        for ( int j = 0; j < 10; ++j )
+        {
+          area = new Rectangle2D( bounds.X + Utility.Random( bounds.Width - width ), bounds.Y + Utility.Random( bounds.Height - height ), width, height );
 
-					if ( !CheckWeatherConflict( m_Facets[i], null, area ) )
-						isValid = true;
+          if ( !CheckWeatherConflict( m_Facets[i], null, area ) )
+            isValid = true;
 
-					if ( isValid )
-						break;
-				}
+          if ( isValid )
+            break;
+        }
 
-				if ( !isValid )
-					continue;
+        if ( !isValid )
+          continue;
 
-				new Weather(m_Facets[i], new[] { area }, temperature, chanceOfPercipitation, chanceOfExtremeTemperature,
-					TimeSpan.FromSeconds(30.0)) { Bounds = bounds, MoveSpeed = moveSpeed };
-			}
-		}
+        new Weather(m_Facets[i], new[] { area }, temperature, chanceOfPercipitation, chanceOfExtremeTemperature,
+          TimeSpan.FromSeconds(30.0)) { Bounds = bounds, MoveSpeed = moveSpeed };
+      }
+    }
 
-		public static void AddWeather( int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, params Rectangle2D[] area )
-		{
-			for ( int i = 0; i < m_Facets.Length; ++i )
-				new Weather( m_Facets[i], area, temperature, chanceOfPercipitation, chanceOfExtremeTemperature, TimeSpan.FromSeconds( 30.0 ) );
-		}
+    public static void AddWeather( int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, params Rectangle2D[] area )
+    {
+      for ( int i = 0; i < m_Facets.Length; ++i )
+        new Weather( m_Facets[i], area, temperature, chanceOfPercipitation, chanceOfExtremeTemperature, TimeSpan.FromSeconds( 30.0 ) );
+    }
 
-		public static bool CheckWeatherConflict( Map facet, Weather exclude, Rectangle2D area )
-		{
-			List<Weather> list = GetWeatherList( facet );
+    public static bool CheckWeatherConflict( Map facet, Weather exclude, Rectangle2D area )
+    {
+      List<Weather> list = GetWeatherList( facet );
 
-			if ( list == null )
-				return false;
+      if ( list == null )
+        return false;
 
-			for ( int i = 0; i < list.Count; ++i )
-			{
-				Weather w = list[i];
+      for ( int i = 0; i < list.Count; ++i )
+      {
+        Weather w = list[i];
 
-				if ( w != exclude && w.IntersectsWith( area ) )
-					return true;
-			}
+        if ( w != exclude && w.IntersectsWith( area ) )
+          return true;
+      }
 
-			return false;
-		}
+      return false;
+    }
 
-		public Map Facet { get; }
+    public Map Facet { get; }
 
-		public Rectangle2D[] Area { get; set; }
+    public Rectangle2D[] Area { get; set; }
 
-		public int Temperature { get; set; }
+    public int Temperature { get; set; }
 
-		public int ChanceOfPercipitation { get; set; }
+    public int ChanceOfPercipitation { get; set; }
 
-		public int ChanceOfExtremeTemperature { get; set; }
+    public int ChanceOfExtremeTemperature { get; set; }
 
-		// For dynamic weather:
+    // For dynamic weather:
 
-		public Rectangle2D Bounds { get; set; }
+    public Rectangle2D Bounds { get; set; }
 
-		public int MoveSpeed { get; set; }
+    public int MoveSpeed { get; set; }
 
-		public int MoveAngleX { get; set; }
+    public int MoveAngleX { get; set; }
 
-		public int MoveAngleY { get; set; }
+    public int MoveAngleY { get; set; }
 
-		public static bool CheckIntersection( Rectangle2D r1, Rectangle2D r2 )
-		{
-			return r1.X < r2.X + r2.Width && r2.X < r1.X + r1.Width && r1.Y < r2.Y + r2.Height && r2.Y < r1.Y + r1.Height;
-		}
+    public static bool CheckIntersection( Rectangle2D r1, Rectangle2D r2 ) => r1.X < r2.X + r2.Width && r2.X < r1.X + r1.Width && r1.Y < r2.Y + r2.Height && r2.Y < r1.Y + r1.Height;
 
-		public static bool CheckContains( Rectangle2D big, Rectangle2D small )
-		{
-			return small.X >= big.X && small.Y >= big.Y && small.X + small.Width <= big.X + big.Width
-			       && small.Y + small.Height <= big.Y + big.Height;
-		}
+    public static bool CheckContains( Rectangle2D big, Rectangle2D small ) =>
+      small.X >= big.X && small.Y >= big.Y && small.X + small.Width <= big.X + big.Width
+      && small.Y + small.Height <= big.Y + big.Height;
 
-		public virtual bool IntersectsWith( Rectangle2D area )
-		{
-			for ( int i = 0; i < Area.Length; ++i )
-			{
-				if ( CheckIntersection( area, Area[i] ) )
-					return true;
-			}
+    public virtual bool IntersectsWith( Rectangle2D area )
+    {
+      for ( int i = 0; i < Area.Length; ++i )
+      {
+        if ( CheckIntersection( area, Area[i] ) )
+          return true;
+      }
 
-			return false;
-		}
+      return false;
+    }
 
-		public Weather( Map facet, Rectangle2D[] area, int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, TimeSpan interval )
-		{
-			Facet = facet;
-			Area = area;
-			Temperature = temperature;
-			ChanceOfPercipitation = chanceOfPercipitation;
-			ChanceOfExtremeTemperature = chanceOfExtremeTemperature;
+    public Weather( Map facet, Rectangle2D[] area, int temperature, int chanceOfPercipitation, int chanceOfExtremeTemperature, TimeSpan interval )
+    {
+      Facet = facet;
+      Area = area;
+      Temperature = temperature;
+      ChanceOfPercipitation = chanceOfPercipitation;
+      ChanceOfExtremeTemperature = chanceOfExtremeTemperature;
 
-			List<Weather> list = GetWeatherList( facet );
+      List<Weather> list = GetWeatherList( facet );
 
-			list?.Add( this );
+      list?.Add( this );
 
-			Timer.DelayCall( TimeSpan.FromSeconds( (0.2+Utility.RandomDouble()*0.8) * interval.TotalSeconds ), interval, OnTick );
-		}
+      Timer.DelayCall( TimeSpan.FromSeconds( (0.2+Utility.RandomDouble()*0.8) * interval.TotalSeconds ), interval, OnTick );
+    }
 
-		public virtual void Reposition()
-		{
-			if ( Area.Length == 0 )
-				return;
-
-			int width = Area[0].Width;
-			int height = Area[0].Height;
+    public virtual void Reposition()
+    {
+      if ( Area.Length == 0 )
+        return;
 
-			Rectangle2D area = new Rectangle2D();
-			bool isValid = false;
-
-			for ( int j = 0; j < 10; ++j )
-			{
-				area = new Rectangle2D( Bounds.X + Utility.Random( Bounds.Width - width ), Bounds.Y + Utility.Random( Bounds.Height - height ), width, height );
+      int width = Area[0].Width;
+      int height = Area[0].Height;
 
-				if ( !CheckWeatherConflict( Facet, this, area ) )
-					isValid = true;
+      Rectangle2D area = new Rectangle2D();
+      bool isValid = false;
 
-				if ( isValid )
-					break;
-			}
+      for ( int j = 0; j < 10; ++j )
+      {
+        area = new Rectangle2D( Bounds.X + Utility.Random( Bounds.Width - width ), Bounds.Y + Utility.Random( Bounds.Height - height ), width, height );
 
-			if ( !isValid )
-				return;
+        if ( !CheckWeatherConflict( Facet, this, area ) )
+          isValid = true;
 
-			Area[0] = area;
-		}
+        if ( isValid )
+          break;
+      }
 
-		public virtual void RecalculateMovementAngle()
-		{
-			double angle = Utility.RandomDouble() * Math.PI * 2.0;
+      if ( !isValid )
+        return;
 
-			double cos = Math.Cos( angle );
-			double sin = Math.Sin( angle );
+      Area[0] = area;
+    }
 
-			MoveAngleX = (int)(100 * cos);
-			MoveAngleY = (int)(100 * sin);
-		}
+    public virtual void RecalculateMovementAngle()
+    {
+      double angle = Utility.RandomDouble() * Math.PI * 2.0;
 
-		public virtual void MoveForward()
-		{
-			if ( Area.Length == 0 )
-				return;
+      double cos = Math.Cos( angle );
+      double sin = Math.Sin( angle );
 
-			for ( int i = 0; i < 5; ++i ) // try 5 times to find a valid spot
-			{
-				int xOffset = MoveSpeed * MoveAngleX / 100;
-				int yOffset = MoveSpeed * MoveAngleY / 100;
+      MoveAngleX = (int)(100 * cos);
+      MoveAngleY = (int)(100 * sin);
+    }
 
-				Rectangle2D oldArea = Area[0];
-				Rectangle2D newArea = new Rectangle2D( oldArea.X + xOffset, oldArea.Y + yOffset, oldArea.Width, oldArea.Height );
+    public virtual void MoveForward()
+    {
+      if ( Area.Length == 0 )
+        return;
 
-				if ( !CheckWeatherConflict( Facet, this, newArea ) && CheckContains( Bounds, newArea ) )
-				{
-					Area[0] = newArea;
-					break;
-				}
+      for ( int i = 0; i < 5; ++i ) // try 5 times to find a valid spot
+      {
+        int xOffset = MoveSpeed * MoveAngleX / 100;
+        int yOffset = MoveSpeed * MoveAngleY / 100;
 
-				RecalculateMovementAngle();
-			}
-		}
+        Rectangle2D oldArea = Area[0];
+        Rectangle2D newArea = new Rectangle2D( oldArea.X + xOffset, oldArea.Y + yOffset, oldArea.Width, oldArea.Height );
 
-		private int m_Stage;
-		private bool m_Active;
-		private bool m_ExtremeTemperature;
+        if ( !CheckWeatherConflict( Facet, this, newArea ) && CheckContains( Bounds, newArea ) )
+        {
+          Area[0] = newArea;
+          break;
+        }
 
-		public virtual void OnTick()
-		{
-			if ( m_Stage == 0 )
-			{
-				m_Active = ChanceOfPercipitation > Utility.Random( 100 );
-				m_ExtremeTemperature = ChanceOfExtremeTemperature > Utility.Random( 100 );
+        RecalculateMovementAngle();
+      }
+    }
 
-				if ( MoveSpeed > 0 )
-				{
-					Reposition();
-					RecalculateMovementAngle();
-				}
-			}
+    private int m_Stage;
+    private bool m_Active;
+    private bool m_ExtremeTemperature;
 
-			if ( m_Active )
-			{
-				if ( m_Stage > 0 && MoveSpeed > 0 )
-					MoveForward();
+    public virtual void OnTick()
+    {
+      if ( m_Stage == 0 )
+      {
+        m_Active = ChanceOfPercipitation > Utility.Random( 100 );
+        m_ExtremeTemperature = ChanceOfExtremeTemperature > Utility.Random( 100 );
 
-				int type, density;
-				int temperature = Temperature;
+        if ( MoveSpeed > 0 )
+        {
+          Reposition();
+          RecalculateMovementAngle();
+        }
+      }
 
-				if ( m_ExtremeTemperature )
-					temperature *= -1;
+      if ( m_Active )
+      {
+        if ( m_Stage > 0 && MoveSpeed > 0 )
+          MoveForward();
 
-				if ( m_Stage < 15 )
-				{
-					density = m_Stage * 5;
-				}
-				else
-				{
-					density = 150 - m_Stage * 5;
+        int type, density;
+        int temperature = Temperature;
 
-					if ( density < 10 )
-						density = 10;
-					else if ( density > 70 )
-						density = 70;
-				}
+        if ( m_ExtremeTemperature )
+          temperature *= -1;
 
-				if ( density == 0 )
-					type = 0xFE;
-				else if ( temperature > 0 )
-					type = 0;
-				else
-					type = 2;
+        if ( m_Stage < 15 )
+        {
+          density = m_Stage * 5;
+        }
+        else
+        {
+          density = 150 - m_Stage * 5;
 
-				List<NetState> states = NetState.Instances;
+          if ( density < 10 )
+            density = 10;
+          else if ( density > 70 )
+            density = 70;
+        }
 
-				Packet weatherPacket = null;
+        if ( density == 0 )
+          type = 0xFE;
+        else if ( temperature > 0 )
+          type = 0;
+        else
+          type = 2;
 
-				for ( int i = 0; i < states.Count; ++i )
-				{
-					NetState ns = states[i];
-					Mobile mob = ns.Mobile;
+        List<NetState> states = NetState.Instances;
 
-					if ( mob == null || mob.Map != Facet )
-						continue;
+        Packet weatherPacket = null;
 
-					bool contains = Area.Length == 0;
+        for ( int i = 0; i < states.Count; ++i )
+        {
+          NetState ns = states[i];
+          Mobile mob = ns.Mobile;
 
-					for ( int j = 0; !contains && j < Area.Length; ++j )
-						contains = Area[j].Contains( mob.Location );
+          if ( mob == null || mob.Map != Facet )
+            continue;
 
-					if ( !contains )
-						continue;
+          bool contains = Area.Length == 0;
 
-					if ( weatherPacket == null )
-						weatherPacket = Packet.Acquire( new Server.Network.Weather( type, density, temperature ) );
+          for ( int j = 0; !contains && j < Area.Length; ++j )
+            contains = Area[j].Contains( mob.Location );
 
-					ns.Send( weatherPacket );
-				}
+          if ( !contains )
+            continue;
 
-				Packet.Release( weatherPacket );
-			}
+          if ( weatherPacket == null )
+            weatherPacket = Packet.Acquire( new Server.Network.Weather( type, density, temperature ) );
 
-			m_Stage++;
-			m_Stage %= 30;
-		}
-	}
+          ns.Send( weatherPacket );
+        }
 
-	public class WeatherMap : MapItem
-	{
-		public override string DefaultName => "weather map";
+        Packet.Release( weatherPacket );
+      }
 
-		[Constructible]
-		public WeatherMap()
-		{
-			SetDisplay( 0, 0, 5119, 4095, 400, 400 );
-		}
+      m_Stage++;
+      m_Stage %= 30;
+    }
+  }
 
-		public override void OnDoubleClick( Mobile from )
-		{
-			Map facet = from.Map;
+  public class WeatherMap : MapItem
+  {
+    public override string DefaultName => "weather map";
 
-			if ( facet == null )
-				return;
+    [Constructible]
+    public WeatherMap()
+    {
+      SetDisplay( 0, 0, 5119, 4095, 400, 400 );
+    }
 
-			List<Weather> list = Weather.GetWeatherList( facet );
+    public override void OnDoubleClick( Mobile from )
+    {
+      Map facet = from.Map;
 
-			ClearPins();
+      if ( facet == null )
+        return;
 
-			for ( int i = 0; i < list.Count; ++i )
-			{
-				Weather w = list[i];
+      List<Weather> list = Weather.GetWeatherList( facet );
 
-				for ( int j = 0; j < w.Area.Length; ++j )
-					AddWorldPin( w.Area[j].X + w.Area[j].Width/2, w.Area[j].Y + w.Area[j].Height/2 );
-			}
+      ClearPins();
 
-			base.OnDoubleClick( from );
-		}
+      for ( int i = 0; i < list.Count; ++i )
+      {
+        Weather w = list[i];
 
-		public WeatherMap( Serial serial ) : base( serial )
-		{
-		}
+        for ( int j = 0; j < w.Area.Length; ++j )
+          AddWorldPin( w.Area[j].X + w.Area[j].Width/2, w.Area[j].Y + w.Area[j].Height/2 );
+      }
 
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
+      base.OnDoubleClick( from );
+    }
 
-			writer.Write( 0 );
-		}
+    public WeatherMap( Serial serial ) : base( serial )
+    {
+    }
 
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
+    public override void Serialize( GenericWriter writer )
+    {
+      base.Serialize( writer );
 
-			int version = reader.ReadInt();
-		}
-	}
+      writer.Write( 0 );
+    }
+
+    public override void Deserialize( GenericReader reader )
+    {
+      base.Deserialize( reader );
+
+      int version = reader.ReadInt();
+    }
+  }
 }

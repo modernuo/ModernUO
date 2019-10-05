@@ -54,9 +54,6 @@ namespace Server
       return Hues[noto];
     }
 
-    public static int Compute(Mobile source, Mobile target)
-    {
-      return Handler?.Invoke(source, target) ?? CanBeAttacked;
-    }
+    public static int Compute(Mobile source, Mobile target) => Handler?.Invoke(source, target) ?? CanBeAttacked;
   }
 }

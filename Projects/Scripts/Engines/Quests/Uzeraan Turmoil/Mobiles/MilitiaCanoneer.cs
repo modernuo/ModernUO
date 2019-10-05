@@ -6,10 +6,7 @@ namespace Server.Engines.Quests.Haven
   public class MilitiaCanoneer : BaseQuester
   {
     [Constructible]
-    public MilitiaCanoneer() : base("the Militia Canoneer")
-    {
-      Active = true;
-    }
+    public MilitiaCanoneer() : base("the Militia Canoneer") => Active = true;
 
     public MilitiaCanoneer(Serial serial) : base(serial)
     {
@@ -45,10 +42,7 @@ namespace Server.Engines.Quests.Haven
       torch.Ignite();
     }
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-      return false;
-    }
+    public override bool CanTalkTo(PlayerMobile to) => false;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

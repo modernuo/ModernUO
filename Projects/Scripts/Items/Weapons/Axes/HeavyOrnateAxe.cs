@@ -3,10 +3,7 @@ namespace Server.Items
   public class HeavyOrnateAxe : OrnateAxe
   {
     [Constructible]
-    public HeavyOrnateAxe()
-    {
-      Attributes.WeaponDamage = 8;
-    }
+    public HeavyOrnateAxe() => Attributes.WeaponDamage = 8;
 
     public HeavyOrnateAxe(Serial serial) : base(serial)
     {

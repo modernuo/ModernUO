@@ -50,10 +50,7 @@ namespace Server.Items
         list.Add(502696); // turned off
     }
 
-    public bool IsOwner(Mobile mob)
-    {
-      return BaseHouse.FindHouseAt(this)?.IsOwner(mob) == true;
-    }
+    public bool IsOwner(Mobile mob) => BaseHouse.FindHouseAt(this)?.IsOwner(mob) == true;
 
     public override void OnDoubleClick(Mobile from)
     {

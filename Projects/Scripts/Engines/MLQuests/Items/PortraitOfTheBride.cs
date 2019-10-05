@@ -3,10 +3,7 @@ namespace Server.Items
   public class PortraitOfTheBride : Item
   {
     [Constructible]
-    public PortraitOfTheBride() : base(0xE9F)
-    {
-      LootType = LootType.Blessed;
-    }
+    public PortraitOfTheBride() : base(0xE9F) => LootType = LootType.Blessed;
 
     public PortraitOfTheBride(Serial serial) : base(serial)
     {

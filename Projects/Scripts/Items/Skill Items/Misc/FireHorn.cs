@@ -196,10 +196,7 @@ namespace Server.Items
     {
       private FireHorn m_Horn;
 
-      public InternalTarget(FireHorn horn) : base(Core.AOS ? 3 : 2, true, TargetFlags.Harmful)
-      {
-        m_Horn = horn;
-      }
+      public InternalTarget(FireHorn horn) : base(Core.AOS ? 3 : 2, true, TargetFlags.Harmful) => m_Horn = horn;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

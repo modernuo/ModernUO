@@ -14,10 +14,7 @@ namespace Server.Items
       typeof(Mobile), typeof(Direction)
     };
 
-    public FlippableAddonAttribute(params Direction[] directions)
-    {
-      Directions = directions;
-    }
+    public FlippableAddonAttribute(params Direction[] directions) => Directions = directions;
 
     public Direction[] Directions{ get; }
 

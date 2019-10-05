@@ -300,9 +300,6 @@ namespace Server.Items
         ConsumeCharge(from);
     }
 
-    public virtual bool OnWandTarget(Mobile from, object o)
-    {
-      return true;
-    }
+    public virtual bool OnWandTarget(Mobile from, object o) => true;
   }
 }

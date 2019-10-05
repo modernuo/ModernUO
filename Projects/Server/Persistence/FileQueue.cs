@@ -43,10 +43,7 @@ namespace Server
 
     private object syncRoot;
 
-    static FileQueue()
-    {
-      bufferSize = FileOperations.BufferSize;
-    }
+    static FileQueue() => bufferSize = FileOperations.BufferSize;
 
     public FileQueue(int concurrentWrites, FileCommitCallback callback)
     {

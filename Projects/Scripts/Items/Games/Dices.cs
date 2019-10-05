@@ -5,10 +5,7 @@ namespace Server.Items
   public class Dices : Item, ITelekinesisable
   {
     [Constructible]
-    public Dices() : base(0xFA7)
-    {
-      Weight = 1.0;
-    }
+    public Dices() : base(0xFA7) => Weight = 1.0;
 
     public Dices(Serial serial) : base(serial)
     {

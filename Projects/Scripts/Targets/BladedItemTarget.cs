@@ -11,10 +11,7 @@ namespace Server.Targets
   {
     private Item m_Item;
 
-    public BladedItemTarget(Item item) : base(2, false, TargetFlags.None)
-    {
-      m_Item = item;
-    }
+    public BladedItemTarget(Item item) : base(2, false, TargetFlags.None) => m_Item = item;
 
     protected override void OnTargetOutOfRange(Mobile from, object targeted)
     {

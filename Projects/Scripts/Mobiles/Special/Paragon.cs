@@ -136,10 +136,7 @@ namespace Server.Mobiles
         bc.Karma = (int)(bc.Karma / KarmaBuff);
     }
 
-    public static bool CheckConvert(BaseCreature bc)
-    {
-      return CheckConvert(bc, bc.Location, bc.Map);
-    }
+    public static bool CheckConvert(BaseCreature bc) => CheckConvert(bc, bc.Location, bc.Map);
 
     public static bool CheckConvert(BaseCreature bc, Point3D location, Map m)
     {

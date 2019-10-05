@@ -41,10 +41,7 @@ namespace Server.Mobiles
       SBInfos.Add(new SBFortuneTeller());
     }
 
-    public override int GetRobeColor()
-    {
-      return Utility.RandomBrightHue();
-    }
+    public override int GetRobeColor() => Utility.RandomBrightHue();
 
     public override void InitOutfit()
     {

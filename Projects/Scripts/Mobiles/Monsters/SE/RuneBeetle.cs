@@ -97,35 +97,17 @@ namespace Server.Mobiles
     public override FoodType FavoriteFood => FoodType.FruitsAndVegies | FoodType.GrainsAndHay;
     public override bool CanAngerOnTame => true;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.BleedAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
-    public override int GetAngerSound()
-    {
-      return 0x4E8;
-    }
+    public override int GetAngerSound() => 0x4E8;
 
-    public override int GetIdleSound()
-    {
-      return 0x4E7;
-    }
+    public override int GetIdleSound() => 0x4E7;
 
-    public override int GetAttackSound()
-    {
-      return 0x4E6;
-    }
+    public override int GetAttackSound() => 0x4E6;
 
-    public override int GetHurtSound()
-    {
-      return 0x4E9;
-    }
+    public override int GetHurtSound() => 0x4E9;
 
-    public override int GetDeathSound()
-    {
-      return 0x4E5;
-    }
+    public override int GetDeathSound() => 0x4E5;
 
     public override void GenerateLoot()
     {

@@ -32,10 +32,7 @@ namespace Server.Items
   public class TableWithRedClothDeed : BaseAddonDeed
   {
     [Constructible]
-    public TableWithRedClothDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public TableWithRedClothDeed() => LootType = LootType.Blessed;
 
     public TableWithRedClothDeed(Serial serial) : base(serial)
     {

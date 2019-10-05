@@ -43,13 +43,7 @@ namespace Server.Misc
         m.Stam -= (int)fatigue;
     }
 
-    public static int GetMaxWeight(Mobile m)
-    {
-      //return ((( Core.ML && m.Race == Race.Human) ? 100 : 40 ) + (int)(3.5 * m.Str));
-      //Moved to core virtual method for use there
-
-      return m.MaxWeight;
-    }
+    public static int GetMaxWeight(Mobile m) => m.MaxWeight;
 
     public static void EventSink_Movement(MovementEventArgs e)
     {

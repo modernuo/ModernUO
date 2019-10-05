@@ -5,10 +5,7 @@ namespace Server.Items
   public class RunebookDyeTub : DyeTub, IRewardItem
   {
     [Constructible]
-    public RunebookDyeTub()
-    {
-      LootType = LootType.Blessed;
-    }
+    public RunebookDyeTub() => LootType = LootType.Blessed;
 
     public RunebookDyeTub(Serial serial) : base(serial)
     {

@@ -162,10 +162,7 @@ namespace Server.Items
       AddComponent(LeftTele, 0, 1, 0);
     }
 
-    public SHTeleporter(Serial serial) : base(serial)
-    {
-      m_Changing = false;
-    }
+    public SHTeleporter(Serial serial) : base(serial) => m_Changing = false;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool External{ get; private set; }
@@ -301,10 +298,7 @@ namespace Server.Items
     {
       private int m_Count;
 
-      public SHTeleporterCreator()
-      {
-        m_Count = 0;
-      }
+      public SHTeleporterCreator() => m_Count = 0;
 
       public static SHTeleporter FindSHTeleporter(Map map, Point3D p)
       {

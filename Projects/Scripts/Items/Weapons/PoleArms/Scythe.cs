@@ -6,10 +6,7 @@ namespace Server.Items
   public class Scythe : BasePoleArm
   {
     [Constructible]
-    public Scythe() : base(0x26BA)
-    {
-      Weight = 5.0;
-    }
+    public Scythe() : base(0x26BA) => Weight = 5.0;
 
     public Scythe(Serial serial) : base(serial)
     {

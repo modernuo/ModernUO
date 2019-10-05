@@ -106,10 +106,7 @@ namespace Server.Engines.ConPVP
     {
       private Tournament m_Tournament;
 
-      public EditEntry(Tournament tourney) : base(5101)
-      {
-        m_Tournament = tourney;
-      }
+      public EditEntry(Tournament tourney) : base(5101) => m_Tournament = tourney;
 
       public override void OnClick()
       {
@@ -121,10 +118,7 @@ namespace Server.Engines.ConPVP
     {
       private Tournament m_Tournament;
 
-      public StartEntry(Tournament tourney) : base(5113)
-      {
-        m_Tournament = tourney;
-      }
+      public StartEntry(Tournament tourney) : base(5113) => m_Tournament = tourney;
 
       public override void OnClick()
       {

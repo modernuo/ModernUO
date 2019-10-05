@@ -56,10 +56,7 @@ namespace Server.Mobiles
     public override Poison PoisonImmune => Poison.Lethal;
     public override int TreasureMapLevel => 1;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.WhirlwindAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.WhirlwindAttack;
 
     public override void GenerateLoot()
     {

@@ -616,10 +616,7 @@ namespace Server.Commands
       InternalAvg_OnCommand(e, true);
     }
 
-    public static bool IsEntity(Type t)
-    {
-      return m_EntityType.IsAssignableFrom(t);
-    }
+    public static bool IsEntity(Type t) => m_EntityType.IsAssignableFrom(t);
 
     public static bool IsConstructible(ConstructorInfo ctor, AccessLevel accessLevel)
     {
@@ -628,20 +625,11 @@ namespace Server.Commands
       return attrs.Length != 0 && accessLevel >= ((ConstructibleAttribute)attrs[0]).AccessLevel;
     }
 
-    public static bool IsEnum(Type type)
-    {
-      return type.IsSubclassOf(m_EnumType);
-    }
+    public static bool IsEnum(Type type) => type.IsSubclassOf(m_EnumType);
 
-    public static bool IsType(Type type)
-    {
-      return type == m_TypeType || type.IsSubclassOf(m_TypeType);
-    }
+    public static bool IsType(Type type) => type == m_TypeType || type.IsSubclassOf(m_TypeType);
 
-    public static bool IsParsable(Type type)
-    {
-      return type.IsDefined(m_ParsableType, false);
-    }
+    public static bool IsParsable(Type type) => type.IsDefined(m_ParsableType, false);
 
     public static object ParseParsable(Type type, string value)
     {

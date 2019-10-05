@@ -105,10 +105,7 @@ namespace Server.Factions
     public abstract void DoVisibleEffect();
     public abstract void DoAttackEffect(Mobile m);
 
-    public virtual int IsValidLocation()
-    {
-      return IsValidLocation(GetWorldLocation(), Map);
-    }
+    public virtual int IsValidLocation() => IsValidLocation(GetWorldLocation(), Map);
 
     public virtual int IsValidLocation(Point3D p, Map m)
     {

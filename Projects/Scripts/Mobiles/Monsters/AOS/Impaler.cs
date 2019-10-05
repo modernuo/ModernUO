@@ -57,10 +57,7 @@ namespace Server.Mobiles
 
     public override int TreasureMapLevel => 1;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.BleedAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => Utility.RandomBool() ? WeaponAbility.MortalStrike : WeaponAbility.BleedAttack;
 
     public override void GenerateLoot()
     {

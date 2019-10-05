@@ -70,10 +70,7 @@ namespace Server.Mobiles
     {
     }
 
-    public virtual int GetRobeColor()
-    {
-      return Utility.RandomYellowHue();
-    }
+    public virtual int GetRobeColor() => Utility.RandomYellowHue();
 
     public override void InitOutfit()
     {
@@ -82,10 +79,7 @@ namespace Server.Mobiles
       AddItem(new Robe(GetRobeColor()));
     }
 
-    public virtual bool CheckResurrect(Mobile m)
-    {
-      return true;
-    }
+    public virtual bool CheckResurrect(Mobile m) => true;
 
     public virtual void OfferResurrection(Mobile m)
     {

@@ -70,10 +70,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.UltraRich, 2);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.BleedAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
     public override void Serialize(GenericWriter writer)
     {

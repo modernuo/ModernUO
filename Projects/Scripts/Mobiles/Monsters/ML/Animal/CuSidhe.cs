@@ -99,35 +99,17 @@ namespace Server.Mobiles
       base.OnDoubleClick(from);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.BleedAttack;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
-    public override int GetIdleSound()
-    {
-      return 0x577;
-    }
+    public override int GetIdleSound() => 0x577;
 
-    public override int GetAttackSound()
-    {
-      return 0x576;
-    }
+    public override int GetAttackSound() => 0x576;
 
-    public override int GetAngerSound()
-    {
-      return 0x578;
-    }
+    public override int GetAngerSound() => 0x578;
 
-    public override int GetHurtSound()
-    {
-      return 0x576;
-    }
+    public override int GetHurtSound() => 0x576;
 
-    public override int GetDeathSound()
-    {
-      return 0x579;
-    }
+    public override int GetDeathSound() => 0x579;
 
     public override void Serialize(GenericWriter writer)
     {

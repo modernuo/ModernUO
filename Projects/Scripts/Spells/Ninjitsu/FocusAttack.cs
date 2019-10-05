@@ -48,10 +48,7 @@ namespace Server.Spells.Ninjitsu
       return 1.0 + (bonus * 3 + 0.01);
     }
 
-    public override bool OnBeforeDamage(Mobile attacker, Mobile defender)
-    {
-      return Validate(attacker) && CheckMana(attacker, true);
-    }
+    public override bool OnBeforeDamage(Mobile attacker, Mobile defender) => Validate(attacker) && CheckMana(attacker, true);
 
     public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {

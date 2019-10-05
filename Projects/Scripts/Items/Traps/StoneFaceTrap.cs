@@ -13,10 +13,7 @@ namespace Server.Items
   public class StoneFaceTrap : BaseTrap
   {
     [Constructible]
-    public StoneFaceTrap() : base(0x10FC)
-    {
-      Light = LightType.Circle225;
-    }
+    public StoneFaceTrap() : base(0x10FC) => Light = LightType.Circle225;
 
     public StoneFaceTrap(Serial serial) : base(serial)
     {

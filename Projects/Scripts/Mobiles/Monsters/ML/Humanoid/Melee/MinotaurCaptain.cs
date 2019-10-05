@@ -48,10 +48,7 @@ namespace Server.Mobiles
 
     public override string DefaultName => "a minotaur captain";
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.ParalyzingBlow;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.ParalyzingBlow;
 
     public override void GenerateLoot()
     {
@@ -59,30 +56,15 @@ namespace Server.Mobiles
     }
 
     // Using Tormented Minotaur sounds - Need to veryfy
-    public override int GetAngerSound()
-    {
-      return 0x597;
-    }
+    public override int GetAngerSound() => 0x597;
 
-    public override int GetIdleSound()
-    {
-      return 0x596;
-    }
+    public override int GetIdleSound() => 0x596;
 
-    public override int GetAttackSound()
-    {
-      return 0x599;
-    }
+    public override int GetAttackSound() => 0x599;
 
-    public override int GetHurtSound()
-    {
-      return 0x59a;
-    }
+    public override int GetHurtSound() => 0x59a;
 
-    public override int GetDeathSound()
-    {
-      return 0x59c;
-    }
+    public override int GetDeathSound() => 0x59c;
 
     public override void Serialize(GenericWriter writer)
     {

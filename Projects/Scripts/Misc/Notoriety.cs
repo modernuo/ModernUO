@@ -426,15 +426,9 @@ namespace Server.Misc
              !house.IsFriend(c.ControlMaster);
     }
 
-    public static bool IsPet(BaseCreature c)
-    {
-      return c?.Controlled == true;
-    }
+    public static bool IsPet(BaseCreature c) => c?.Controlled == true;
 
-    public static bool IsSummoned(BaseCreature c)
-    {
-      return c?.Summoned == true;
-    }
+    public static bool IsSummoned(BaseCreature c) => c?.Summoned == true;
 
     public static bool CheckAggressor(List<AggressorInfo> list, Mobile target)
     {

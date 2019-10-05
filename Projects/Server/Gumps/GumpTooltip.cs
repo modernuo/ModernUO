@@ -27,10 +27,7 @@ namespace Server.Gumps
     private static byte[] m_LayoutName = Gump.StringToBuffer("tooltip");
     private int m_Number;
 
-    public GumpTooltip(int number)
-    {
-      m_Number = number;
-    }
+    public GumpTooltip(int number) => m_Number = number;
 
     public int Number
     {
@@ -38,10 +35,7 @@ namespace Server.Gumps
       set => Delta(ref m_Number, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ tooltip {m_Number} }}";
-    }
+    public override string Compile(NetState ns) => $"{{ tooltip {m_Number} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

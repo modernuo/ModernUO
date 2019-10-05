@@ -47,10 +47,7 @@ namespace Server.Engines.Quests.Ninja
       AddItem(nunchaku);
     }
 
-    public override int GetAutoTalkRange(PlayerMobile pm)
-    {
-      return 2;
-    }
+    public override int GetAutoTalkRange(PlayerMobile pm) => 2;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

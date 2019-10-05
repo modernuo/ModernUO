@@ -34,18 +34,13 @@ namespace Server.SkillHandlers
       return TimeSpan.FromHours(6.0);
     }
 
-    public static bool CheckMastery(Mobile tamer, BaseCreature creature)
-    {
-      return SummonFamiliarSpell.Table.TryGetValue(tamer, out BaseCreature bc) && bc is DarkWolfFamiliar familiar &&
-             !familiar.Deleted && (creature is DireWolf || creature is GreyWolf || creature is TimberWolf ||
-                                   creature is WhiteWolf ||
-                                   creature is BakeKitsune);
-    }
+    public static bool CheckMastery(Mobile tamer, BaseCreature creature) =>
+      SummonFamiliarSpell.Table.TryGetValue(tamer, out BaseCreature bc) && bc is DarkWolfFamiliar familiar &&
+      !familiar.Deleted && (creature is DireWolf || creature is GreyWolf || creature is TimberWolf ||
+                            creature is WhiteWolf ||
+                            creature is BakeKitsune);
 
-    public static bool MustBeSubdued(BaseCreature bc)
-    {
-      return bc.Owners.Count <= 0 && bc.SubdueBeforeTame && bc.Hits > bc.HitsMax / 10;
-    }
+    public static bool MustBeSubdued(BaseCreature bc) => bc.Owners.Count <= 0 && bc.SubdueBeforeTame && bc.Hits > bc.HitsMax / 10;
 
     public static void ScaleStats(BaseCreature bc, double scalar)
     {

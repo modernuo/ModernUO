@@ -36,10 +36,8 @@ namespace Server.SkillHandlers
       private bool m_SetSkillTime = true;
 
       public InternalTarget(Mobile from, BaseInstrument instrument) : base(
-        BaseInstrument.GetBardRange(from, SkillName.Peacemaking), false, TargetFlags.None)
-      {
+        BaseInstrument.GetBardRange(from, SkillName.Peacemaking), false, TargetFlags.None) =>
         m_Instrument = instrument;
-      }
 
       protected override void OnTargetFinish(Mobile from)
       {

@@ -20,9 +20,6 @@ namespace Server.Engines.Craft
       }
     }
 
-    public CraftSkill GetAt(int index)
-    {
-      return (CraftSkill)List[index];
-    }
+    public CraftSkill GetAt(int index) => (CraftSkill)List[index];
   }
 }

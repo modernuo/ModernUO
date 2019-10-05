@@ -60,10 +60,7 @@ namespace Server.Items
   public class ScarecrowDeed : BaseAddonDeed
   {
     [Constructible]
-    public ScarecrowDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public ScarecrowDeed() => LootType = LootType.Blessed;
 
     public ScarecrowDeed(Serial serial) : base(serial)
     {

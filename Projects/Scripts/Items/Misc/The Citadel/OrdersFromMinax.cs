@@ -3,10 +3,7 @@ namespace Server.Items
   public class OrdersFromMinax : Item
   {
     [Constructible]
-    public OrdersFromMinax() : base(0x2279)
-    {
-      LootType = LootType.Blessed;
-    }
+    public OrdersFromMinax() : base(0x2279) => LootType = LootType.Blessed;
 
     public OrdersFromMinax(Serial serial) : base(serial)
     {

@@ -7,10 +7,7 @@ namespace Server.Engines.MLQuests.Objectives
 {
   public class EscortObjective : BaseObjective
   {
-    public EscortObjective(QuestArea destination = null)
-    {
-      Destination = destination;
-    }
+    public EscortObjective(QuestArea destination = null) => Destination = destination;
 
     public QuestArea Destination{ get; set; }
 
@@ -99,10 +96,7 @@ namespace Server.Engines.MLQuests.Objectives
 
     public override DataType ExtraDataType => DataType.EscortObjective;
 
-    public override bool IsCompleted()
-    {
-      return HasCompleted;
-    }
+    public override bool IsCompleted() => HasCompleted;
 
     private void CheckDestination()
     {

@@ -68,15 +68,9 @@ namespace Server.Engines.Plants
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 
-    public static Seed RandomBonsaiSeed()
-    {
-      return RandomBonsaiSeed(0.5);
-    }
+    public static Seed RandomBonsaiSeed() => RandomBonsaiSeed(0.5);
 
-    public static Seed RandomBonsaiSeed(double increaseRatio)
-    {
-      return new Seed(PlantTypeInfo.RandomBonsai(increaseRatio), PlantHue.Plain);
-    }
+    public static Seed RandomBonsaiSeed(double increaseRatio) => new Seed(PlantTypeInfo.RandomBonsai(increaseRatio), PlantHue.Plain);
 
     public static Seed RandomPeculiarSeed(int group)
     {
@@ -145,11 +139,9 @@ namespace Server.Engines.Plants
       LabelTo(from, 1061916); // Choose a bowl of dirt to plant this seed in.
     }
 
-    public override bool StackWith(Mobile from, Item dropped, bool playSound)
-    {
-      return dropped is Seed other && other.PlantType == m_PlantType && other.PlantHue == m_PlantHue &&
-             other.ShowType == m_ShowType && base.StackWith(from, other, playSound);
-    }
+    public override bool StackWith(Mobile from, Item dropped, bool playSound) =>
+      dropped is Seed other && other.PlantType == m_PlantType && other.PlantHue == m_PlantHue &&
+      other.ShowType == m_ShowType && base.StackWith(from, other, playSound);
 
     public override void OnAfterDuped(Item newItem)
     {

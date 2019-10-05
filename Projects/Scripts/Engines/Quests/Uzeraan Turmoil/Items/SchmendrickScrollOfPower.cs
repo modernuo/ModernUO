@@ -16,11 +16,9 @@ namespace Server.Engines.Quests.Haven
 
     public override int LabelNumber => 1049118; // a scroll with ancient markings
 
-    public override bool CanDrop(PlayerMobile player)
-    {
-      return !(player.Quest is UzeraanTurmoilQuest qs &&
-               qs.IsObjectiveInProgress(typeof(ReturnScrollOfPowerObjective)));
-    }
+    public override bool CanDrop(PlayerMobile player) =>
+      !(player.Quest is UzeraanTurmoilQuest qs &&
+        qs.IsObjectiveInProgress(typeof(ReturnScrollOfPowerObjective)));
 
     public override void Serialize(GenericWriter writer)
     {

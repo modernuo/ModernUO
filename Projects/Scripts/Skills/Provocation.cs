@@ -33,10 +33,8 @@ namespace Server.SkillHandlers
       private BaseInstrument m_Instrument;
 
       public InternalFirstTarget(Mobile from, BaseInstrument instrument) : base(
-        BaseInstrument.GetBardRange(from, SkillName.Provocation), false, TargetFlags.None)
-      {
+        BaseInstrument.GetBardRange(from, SkillName.Provocation), false, TargetFlags.None) =>
         m_Instrument = instrument;
-      }
 
       protected override void OnTarget(Mobile from, object targeted)
       {

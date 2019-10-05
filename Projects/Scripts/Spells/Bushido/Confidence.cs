@@ -48,10 +48,7 @@ namespace Server.Spells.Bushido
       FinishSequence();
     }
 
-    public static bool IsConfident(Mobile m)
-    {
-      return m_Table.ContainsKey(m);
-    }
+    public static bool IsConfident(Mobile m) => m_Table.ContainsKey(m);
 
     public static void BeginConfidence(Mobile m)
     {
@@ -73,10 +70,7 @@ namespace Server.Spells.Bushido
       OnEffectEnd(m, typeof(Confidence));
     }
 
-    public static bool IsRegenerating(Mobile m)
-    {
-      return m_RegenTable.ContainsKey(m);
-    }
+    public static bool IsRegenerating(Mobile m) => m_RegenTable.ContainsKey(m);
 
     public static void BeginRegenerating(Mobile m)
     {

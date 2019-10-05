@@ -3,10 +3,7 @@ namespace Server.Items
   public class Luckblade : Leafblade
   {
     [Constructible]
-    public Luckblade()
-    {
-      Attributes.Luck = 20;
-    }
+    public Luckblade() => Attributes.Luck = 20;
 
     public Luckblade(Serial serial) : base(serial)
     {

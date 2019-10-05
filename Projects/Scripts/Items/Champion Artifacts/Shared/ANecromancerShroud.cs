@@ -3,10 +3,7 @@ namespace Server.Items
   public class ANecromancerShroud : Robe
   {
     [Constructible]
-    public ANecromancerShroud()
-    {
-      Hue = 0x455;
-    }
+    public ANecromancerShroud() => Hue = 0x455;
 
     public ANecromancerShroud(Serial serial) : base(serial)
     {

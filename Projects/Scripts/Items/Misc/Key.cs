@@ -70,10 +70,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public Item Link{ get; set; }
 
-    public static uint RandomValue()
-    {
-      return (uint)(0xFFFFFFFE * Utility.RandomDouble()) + 1;
-    }
+    public static uint RandomValue() => (uint)(0xFFFFFFFE * Utility.RandomDouble()) + 1;
 
     public static void RemoveKeys(Mobile m, uint keyValue)
     {
@@ -273,10 +270,7 @@ namespace Server.Items
     {
       private Key m_Key;
 
-      public RenamePrompt(Key key)
-      {
-        m_Key = key;
-      }
+      public RenamePrompt(Key key) => m_Key = key;
 
       public override void OnResponse(Mobile from, string text)
       {
@@ -336,10 +330,7 @@ namespace Server.Items
     {
       private Key m_Key;
 
-      public CopyTarget(Key key) : base(3, false, TargetFlags.None)
-      {
-        m_Key = key;
-      }
+      public CopyTarget(Key key) : base(3, false, TargetFlags.None) => m_Key = key;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

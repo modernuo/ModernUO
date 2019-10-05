@@ -45,10 +45,7 @@ namespace Server.Mobiles
     {
       private Mobile m_Mobile;
 
-      public TalismanReleaseEntry(Mobile m) : base(6118, 3)
-      {
-        m_Mobile = m;
-      }
+      public TalismanReleaseEntry(Mobile m) : base(6118, 3) => m_Mobile = m;
 
       public override void OnClick()
       {

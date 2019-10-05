@@ -65,10 +65,8 @@ namespace Server
 
                   try
                   {
-                    using (StreamWriter op = new StreamWriter("faction-power-items.log", true))
-                    {
-                      op.WriteLine("{0}\t{1}\t{2}\t{3}", DateTime.UtcNow, killer, victim, obj);
-                    }
+                    using StreamWriter op = new StreamWriter("faction-power-items.log", true);
+                    op.WriteLine("{0}\t{1}\t{2}\t{3}", DateTime.UtcNow, killer, victim, obj);
                   }
                   catch
                   {
@@ -144,10 +142,8 @@ namespace Server
       private bool _screamed;
 
       public DestructionTimer(Mobile mob)
-        : base(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.1), 10)
-      {
+        : base(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(0.1), 10) =>
         _mobile = mob;
-      }
 
       protected override void OnTick()
       {
@@ -178,10 +174,7 @@ namespace Server
 
       public Type Type{ get; }
 
-      public Item Construct()
-      {
-        return Activator.CreateInstance(Type) as Item;
-      }
+      public Item Construct() => Activator.CreateInstance(Type) as Item;
     }
   }
 }

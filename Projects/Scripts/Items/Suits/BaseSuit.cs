@@ -67,10 +67,7 @@ namespace Server.Items
         base.OnDoubleClick(from);
     }
 
-    public override bool VerifyMove(Mobile from)
-    {
-      return from.AccessLevel >= AccessLevel;
-    }
+    public override bool VerifyMove(Mobile from) => from.AccessLevel >= AccessLevel;
 
     public override bool OnEquip(Mobile from)
     {

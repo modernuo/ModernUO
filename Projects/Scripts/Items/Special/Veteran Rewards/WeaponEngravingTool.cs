@@ -185,19 +185,13 @@ namespace Server.Items
       }
     }
 
-    public static WeaponEngravingTool Find(Mobile from)
-    {
-      return from.Backpack?.FindItemByType<WeaponEngravingTool>();
-    }
+    public static WeaponEngravingTool Find(Mobile from) => from.Backpack?.FindItemByType<WeaponEngravingTool>();
 
     private class TargetWeapon : Target
     {
       private WeaponEngravingTool m_Tool;
 
-      public TargetWeapon(WeaponEngravingTool tool) : base(-1, true, TargetFlags.None)
-      {
-        m_Tool = tool;
-      }
+      public TargetWeapon(WeaponEngravingTool tool) : base(-1, true, TargetFlags.None) => m_Tool = tool;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

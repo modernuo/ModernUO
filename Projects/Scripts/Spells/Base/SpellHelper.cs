@@ -241,11 +241,7 @@ namespace Server.Spells
       return false;
     }
 
-    public static bool CanRevealCaster(Mobile m)
-    {
-
-      return m is BaseCreature c && !c.Controlled;
-    }
+    public static bool CanRevealCaster(Mobile m) => m is BaseCreature c && !c.Controlled;
 
     public static void GetSurfaceTop(ref IPoint3D p)
     {
@@ -274,10 +270,7 @@ namespace Server.Spells
       return true;
     }
 
-    public static bool AddStatBonus(Mobile caster, Mobile target, StatType type)
-    {
-      return AddStatBonus(caster, target, type, GetOffset(caster, target, type, false), GetDuration(caster, target));
-    }
+    public static bool AddStatBonus(Mobile caster, Mobile target, StatType type) => AddStatBonus(caster, target, type, GetOffset(caster, target, type, false), GetDuration(caster, target));
 
     public static bool AddStatBonus(Mobile caster, Mobile target, StatType type, int bonus, TimeSpan duration)
     {
@@ -301,10 +294,7 @@ namespace Server.Spells
       return false;
     }
 
-    public static bool AddStatCurse(Mobile caster, Mobile target, StatType type)
-    {
-      return AddStatCurse(caster, target, type, GetOffset(caster, target, type, true), GetDuration(caster, target));
-    }
+    public static bool AddStatCurse(Mobile caster, Mobile target, StatType type) => AddStatCurse(caster, target, type, GetOffset(caster, target, type, true), GetDuration(caster, target));
 
     public static bool AddStatCurse(Mobile caster, Mobile target, StatType type, int curse, TimeSpan duration)
     {
@@ -592,15 +582,9 @@ namespace Server.Spells
         caster.SendLocalizedMessage(501802); // Thy spell doth not appear to work...
     }
 
-    public static bool CheckTravel(Mobile caster, TravelCheckType type)
-    {
-      return CheckTravel(caster, caster.Map, caster.Location, type);
-    }
+    public static bool CheckTravel(Mobile caster, TravelCheckType type) => CheckTravel(caster, caster.Map, caster.Location, type);
 
-    public static bool CheckTravel(Map map, Point3D loc, TravelCheckType type)
-    {
-      return CheckTravel(null, map, loc, type);
-    }
+    public static bool CheckTravel(Map map, Point3D loc, TravelCheckType type) => CheckTravel(null, map, loc, type);
 
     public static bool CheckTravel(Mobile caster, Map map, Point3D loc, TravelCheckType type)
     {
@@ -644,20 +628,11 @@ namespace Server.Spells
       return x >= 5120 && y >= 0 && x < 5376 && y < 256;
     }
 
-    public static bool IsFeluccaWind(Map map, Point3D loc)
-    {
-      return map == Map.Felucca && IsWindLoc(loc);
-    }
+    public static bool IsFeluccaWind(Map map, Point3D loc) => map == Map.Felucca && IsWindLoc(loc);
 
-    public static bool IsTrammelWind(Map map, Point3D loc)
-    {
-      return map == Map.Trammel && IsWindLoc(loc);
-    }
+    public static bool IsTrammelWind(Map map, Point3D loc) => map == Map.Trammel && IsWindLoc(loc);
 
-    public static bool IsIlshenar(Map map, Point3D loc)
-    {
-      return map == Map.Ilshenar;
-    }
+    public static bool IsIlshenar(Map map, Point3D loc) => map == Map.Ilshenar;
 
     public static bool IsSolenHiveLoc(Point3D loc)
     {
@@ -666,15 +641,9 @@ namespace Server.Spells
       return x >= 5640 && y >= 1776 && x < 5935 && y < 2039;
     }
 
-    public static bool IsTrammelSolenHive(Map map, Point3D loc)
-    {
-      return map == Map.Trammel && IsSolenHiveLoc(loc);
-    }
+    public static bool IsTrammelSolenHive(Map map, Point3D loc) => map == Map.Trammel && IsSolenHiveLoc(loc);
 
-    public static bool IsFeluccaSolenHive(Map map, Point3D loc)
-    {
-      return map == Map.Felucca && IsSolenHiveLoc(loc);
-    }
+    public static bool IsFeluccaSolenHive(Map map, Point3D loc) => map == Map.Felucca && IsSolenHiveLoc(loc);
 
     public static bool IsFeluccaT2A(Map map, Point3D loc)
     {
@@ -696,10 +665,7 @@ namespace Server.Spells
       return region.IsPartOf<DungeonRegion>() && region.Map == Map.Felucca;
     }
 
-    public static bool IsKhaldun(Map map, Point3D loc)
-    {
-      return Region.Find(loc, map).Name == "Khaldun";
-    }
+    public static bool IsKhaldun(Map map, Point3D loc) => Region.Find(loc, map).Name == "Khaldun";
 
     public static bool IsCrystalCave(Map map, Point3D loc)
     {
@@ -728,22 +694,9 @@ namespace Server.Spells
       return false;
     }
 
-    public static bool IsFactionStronghold(Map map, Point3D loc)
-    {
-      /*// Teleporting is allowed, but only for faction members
-      if ( !Core.AOS && m_TravelCaster != null && (m_TravelType == TravelCheckType.TeleportTo || m_TravelType == TravelCheckType.TeleportFrom) )
-      {
-        if ( Factions.Faction.Find( m_TravelCaster, true, true ) != null )
-          return false;
-      }*/
+    public static bool IsFactionStronghold(Map map, Point3D loc) => Region.Find(loc, map).IsPartOf<StrongholdRegion>();
 
-      return Region.Find(loc, map).IsPartOf<StrongholdRegion>();
-    }
-
-    public static bool IsChampionSpawn(Map map, Point3D loc)
-    {
-      return Region.Find(loc, map).IsPartOf<ChampionSpawnRegion>();
-    }
+    public static bool IsChampionSpawn(Map map, Point3D loc) => Region.Find(loc, map).IsPartOf<ChampionSpawnRegion>();
 
     public static bool IsDoomFerry(Map map, Point3D loc)
     {
@@ -812,10 +765,7 @@ namespace Server.Spells
       return (map == Map.Trammel || map == Map.Felucca) && x >= 6911 && y >= 254 && x < 7167 && y < 511;
     }
 
-    public static bool IsMLDungeon(Map map, Point3D loc)
-    {
-      return MondainsLegacy.IsMLRegion(Region.Find(loc, map));
-    }
+    public static bool IsMLDungeon(Map map, Point3D loc) => MondainsLegacy.IsMLRegion(Region.Find(loc, map));
 
     public static bool IsInvalid(Map map, Point3D loc)
     {
@@ -1307,15 +1257,9 @@ namespace Server.Spells
       return context;
     }
 
-    public static bool UnderTransformation(Mobile m)
-    {
-      return GetContext(m) != null;
-    }
+    public static bool UnderTransformation(Mobile m) => GetContext(m) != null;
 
-    public static bool UnderTransformation(Mobile m, Type type)
-    {
-      return GetContext(m)?.Type == type;
-    }
+    public static bool UnderTransformation(Mobile m, Type type) => GetContext(m)?.Type == type;
 
     #endregion
   }

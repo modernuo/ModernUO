@@ -13,10 +13,7 @@ namespace Server.Engines.Quests.Ninja
     };
 
     [Constructible]
-    public HiddenFigure()
-    {
-      Message = Utility.RandomList(Messages);
-    }
+    public HiddenFigure() => Message = Utility.RandomList(Messages);
 
     public HiddenFigure(Serial serial) : base(serial)
     {
@@ -61,10 +58,7 @@ namespace Server.Engines.Quests.Ninja
         AddItem(new Sandals(GetShoeHue()));
     }
 
-    public override int GetAutoTalkRange(PlayerMobile pm)
-    {
-      return 3;
-    }
+    public override int GetAutoTalkRange(PlayerMobile pm) => 3;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

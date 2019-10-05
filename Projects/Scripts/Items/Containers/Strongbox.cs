@@ -110,12 +110,10 @@ namespace Server.Items
       }
     }
 
-    public override bool IsAccessibleTo(Mobile m)
-    {
-      return m_Owner?.Deleted != false || m_House?.Deleted != false ||
-             m.AccessLevel >= AccessLevel.GameMaster ||
-             m == m_Owner && m_House.IsCoOwner(m) && base.IsAccessibleTo(m);
-    }
+    public override bool IsAccessibleTo(Mobile m) =>
+      m_Owner?.Deleted != false || m_House?.Deleted != false ||
+      m.AccessLevel >= AccessLevel.GameMaster ||
+      m == m_Owner && m_House.IsCoOwner(m) && base.IsAccessibleTo(m);
 
     private void Chop(Mobile from)
     {

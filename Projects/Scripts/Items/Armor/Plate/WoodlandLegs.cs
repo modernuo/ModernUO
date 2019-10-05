@@ -4,10 +4,7 @@ namespace Server.Items
   public class WoodlandLegs : BaseArmor
   {
     [Constructible]
-    public WoodlandLegs() : base(0x2B6B)
-    {
-      Weight = 8.0;
-    }
+    public WoodlandLegs() : base(0x2B6B) => Weight = 8.0;
 
     public WoodlandLegs(Serial serial) : base(serial)
     {

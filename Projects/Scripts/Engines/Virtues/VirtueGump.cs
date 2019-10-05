@@ -165,10 +165,7 @@ namespace Server
       {
       }
 
-      public override string Compile(NetState ns)
-      {
-        return $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class=VirtueGumpItem }}";
-      }
+      public override string Compile(NetState ns) => $"{{ gumppic {X} {Y} {GumpID} hue={Hue} class=VirtueGumpItem }}";
 
       public override void AppendTo(NetState ns, IGumpWriter disp)
       {

@@ -22,10 +22,7 @@ namespace Server.Engines.Quests.Ambitious
       typeof(GetRewardObjective)
     };
 
-    public AmbitiousQueenQuest(PlayerMobile from, bool redSolen) : base(from)
-    {
-      RedSolen = redSolen;
-    }
+    public AmbitiousQueenQuest(PlayerMobile from, bool redSolen) : base(from) => RedSolen = redSolen;
 
     // Serialization
     public AmbitiousQueenQuest()

@@ -15,16 +15,11 @@ namespace Server.Engines.Mahjong
       Height = height;
     }
 
-    public bool IsValid()
-    {
-      return Position.X >= 0 && Position.Y >= 0 && Position.X + Width <= 670 && Position.Y + Height <= 670;
-    }
+    public bool IsValid() => Position.X >= 0 && Position.Y >= 0 && Position.X + Width <= 670 && Position.Y + Height <= 670;
 
-    public bool IsOverlapping(MahjongPieceDim dim)
-    {
-      return Position.X < dim.Position.X + dim.Width && Position.Y < dim.Position.Y + dim.Height &&
-             Position.X + Width > dim.Position.X && Position.Y + Height > dim.Position.Y;
-    }
+    public bool IsOverlapping(MahjongPieceDim dim) =>
+      Position.X < dim.Position.X + dim.Width && Position.Y < dim.Position.Y + dim.Height &&
+      Position.X + Width > dim.Position.X && Position.Y + Height > dim.Position.Y;
 
     public int GetHandArea()
     {

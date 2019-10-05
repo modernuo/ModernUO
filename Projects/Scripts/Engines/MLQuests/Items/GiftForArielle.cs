@@ -3,10 +3,7 @@ namespace Server.Items
   public class GiftForArielle : BaseContainer
   {
     [Constructible]
-    public GiftForArielle() : base(0x1882)
-    {
-      Hue = 0x2C4;
-    }
+    public GiftForArielle() : base(0x1882) => Hue = 0x2C4;
 
     public GiftForArielle(Serial serial) : base(serial)
     {

@@ -5,10 +5,7 @@ namespace Server.Items
   public class Throne : Item
   {
     [Constructible]
-    public Throne() : base(0xB33)
-    {
-      Weight = 1.0;
-    }
+    public Throne() : base(0xB33) => Weight = 1.0;
 
     public Throne(Serial serial) : base(serial)
     {
@@ -37,10 +34,7 @@ namespace Server.Items
   public class WoodenThrone : Item
   {
     [Constructible]
-    public WoodenThrone() : base(0xB2E)
-    {
-      Weight = 15.0;
-    }
+    public WoodenThrone() : base(0xB2E) => Weight = 15.0;
 
     public WoodenThrone(Serial serial) : base(serial)
     {

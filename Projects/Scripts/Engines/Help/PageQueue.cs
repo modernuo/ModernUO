@@ -87,10 +87,7 @@ namespace Server.Engines.Help
 
       private PageEntry m_Entry;
 
-      public InternalTimer(PageEntry entry) : base(TimeSpan.FromSeconds(1.0), StatusDelay)
-      {
-        m_Entry = entry;
-      }
+      public InternalTimer(PageEntry entry) : base(TimeSpan.FromSeconds(1.0), StatusDelay) => m_Entry = entry;
 
       protected override void OnTick()
       {
@@ -180,20 +177,11 @@ namespace Server.Engines.Help
         e.Mobile.SendMessage("The page queue is empty.");
     }
 
-    public static bool IsHandling(Mobile check)
-    {
-      return m_KeyedByHandler.ContainsKey(check);
-    }
+    public static bool IsHandling(Mobile check) => m_KeyedByHandler.ContainsKey(check);
 
-    public static bool Contains(Mobile sender)
-    {
-      return m_KeyedBySender.ContainsKey(sender);
-    }
+    public static bool Contains(Mobile sender) => m_KeyedBySender.ContainsKey(sender);
 
-    public static int IndexOf(PageEntry e)
-    {
-      return List.IndexOf(e);
-    }
+    public static int IndexOf(PageEntry e) => List.IndexOf(e);
 
     public static void Remove(PageEntry e)
     {

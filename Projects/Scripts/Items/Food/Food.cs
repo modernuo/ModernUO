@@ -63,10 +63,7 @@ namespace Server.Items
       return false;
     }
 
-    public virtual bool CheckHunger(Mobile from)
-    {
-      return FillHunger(from, FillFactor);
-    }
+    public virtual bool CheckHunger(Mobile from) => FillHunger(from, FillFactor);
 
     public static bool FillHunger(Mobile from, int fillFactor)
     {
@@ -253,10 +250,7 @@ namespace Server.Items
   public class FishSteak : Food
   {
     [Constructible]
-    public FishSteak(int amount = 1) : base(0x97B, amount)
-    {
-      FillFactor = 3;
-    }
+    public FishSteak(int amount = 1) : base(0x97B, amount) => FillFactor = 3;
 
     public FishSteak(Serial serial) : base(serial)
     {
@@ -282,10 +276,7 @@ namespace Server.Items
   public class CheeseWheel : Food
   {
     [Constructible]
-    public CheeseWheel(int amount = 1) : base(0x97E, amount)
-    {
-      FillFactor = 3;
-    }
+    public CheeseWheel(int amount = 1) : base(0x97E, amount) => FillFactor = 3;
 
     public CheeseWheel(Serial serial) : base(serial)
     {
@@ -311,10 +302,7 @@ namespace Server.Items
   public class CheeseWedge : Food
   {
     [Constructible]
-    public CheeseWedge(int amount = 1) : base(0x97D, amount)
-    {
-      FillFactor = 3;
-    }
+    public CheeseWedge(int amount = 1) : base(0x97D, amount) => FillFactor = 3;
 
     public CheeseWedge(Serial serial) : base(serial)
     {
@@ -340,10 +328,7 @@ namespace Server.Items
   public class CheeseSlice : Food
   {
     [Constructible]
-    public CheeseSlice(int amount = 1) : base(0x97C, amount)
-    {
-      FillFactor = 1;
-    }
+    public CheeseSlice(int amount = 1) : base(0x97C, amount) => FillFactor = 1;
 
     public CheeseSlice(Serial serial) : base(serial)
     {
@@ -712,37 +697,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
   }
-
-#if false
-	public class Pizza : Food
-	{
-		[Constructible]
-		public Pizza() : base( 0x1040 )
-		{
-			Stackable = false;
-			this.Weight = 1.0;
-			this.FillFactor = 6;
-		}
-
-		public Pizza( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-	}
-#endif
 
   public class FruitPie : Food
   {
@@ -1133,10 +1087,7 @@ namespace Server.Items
   public class SheafOfHay : Item
   {
     [Constructible]
-    public SheafOfHay() : base(0xF36)
-    {
-      Weight = 10.0;
-    }
+    public SheafOfHay() : base(0xF36) => Weight = 10.0;
 
     public SheafOfHay(Serial serial) : base(serial)
     {

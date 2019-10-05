@@ -51,10 +51,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.FilthyRich, 4);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.ArmorIgnore;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.ArmorIgnore;
 
     public override void OnDeath(Container c)
     {

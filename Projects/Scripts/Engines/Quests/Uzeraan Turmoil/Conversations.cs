@@ -346,10 +346,7 @@ namespace Server.Engines.Quests.Haven
   {
     private bool m_FromUzeraan;
 
-    public LostScrollOfPowerConversation(bool fromUzeraan)
-    {
-      m_FromUzeraan = fromUzeraan;
-    }
+    public LostScrollOfPowerConversation(bool fromUzeraan) => m_FromUzeraan = fromUzeraan;
 
     public LostScrollOfPowerConversation()
     {
@@ -395,10 +392,7 @@ namespace Server.Engines.Quests.Haven
   {
     private bool m_FromUzeraan;
 
-    public LostFertileDirtConversation(bool fromUzeraan)
-    {
-      m_FromUzeraan = fromUzeraan;
-    }
+    public LostFertileDirtConversation(bool fromUzeraan) => m_FromUzeraan = fromUzeraan;
 
     public LostFertileDirtConversation()
     {

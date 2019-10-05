@@ -5,10 +5,7 @@ namespace Server.Engines.Craft
 {
   public class CraftItemCol : CollectionBase
   {
-    public int Add(CraftItem craftItem)
-    {
-      return List.Add(craftItem);
-    }
+    public int Add(CraftItem craftItem) => List.Add(craftItem);
 
     public void Remove(int index)
     {
@@ -21,10 +18,7 @@ namespace Server.Engines.Craft
       }
     }
 
-    public CraftItem GetAt(int index)
-    {
-      return (CraftItem)List[index];
-    }
+    public CraftItem GetAt(int index) => (CraftItem)List[index];
 
     public CraftItem SearchForSubclass(Type type)
     {

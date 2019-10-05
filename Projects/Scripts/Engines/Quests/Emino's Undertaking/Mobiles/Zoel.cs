@@ -46,15 +46,9 @@ namespace Server.Engines.Quests.Ninja
       AddItem(tekagi);
     }
 
-    public override int GetAutoTalkRange(PlayerMobile pm)
-    {
-      return 2;
-    }
+    public override int GetAutoTalkRange(PlayerMobile pm) => 2;
 
-    public override bool CanTalkTo(PlayerMobile to)
-    {
-      return to.Quest is EminosUndertakingQuest;
-    }
+    public override bool CanTalkTo(PlayerMobile to) => to.Quest is EminosUndertakingQuest;
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {

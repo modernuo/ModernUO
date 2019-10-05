@@ -3,10 +3,7 @@ namespace Server.Items
   public class AncientWildStaff : WildStaff
   {
     [Constructible]
-    public AncientWildStaff()
-    {
-      WeaponAttributes.ResistPoisonBonus = 5;
-    }
+    public AncientWildStaff() => WeaponAttributes.ResistPoisonBonus = 5;
 
     public AncientWildStaff(Serial serial) : base(serial)
     {

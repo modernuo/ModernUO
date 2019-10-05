@@ -2,8 +2,7 @@ namespace Server.Factions
 {
   public class Moonglow : Town
   {
-    public Moonglow()
-    {
+    public Moonglow() =>
       Definition =
         new TownDefinition(
           3,
@@ -19,6 +18,5 @@ namespace Server.Factions
           new TextDefinition(1041389, "Corrupted Faction Town Sigil of Moonglow"),
           new Point3D(4436, 1083, 0),
           new Point3D(4432, 1086, 0));
-    }
   }
 }

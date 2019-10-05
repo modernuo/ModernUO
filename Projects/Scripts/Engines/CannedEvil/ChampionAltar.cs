@@ -6,10 +6,7 @@ namespace Server.Engines.CannedEvil
   {
     private ChampionSpawn m_Spawn;
 
-    public ChampionAltar(ChampionSpawn spawn)
-    {
-      m_Spawn = spawn;
-    }
+    public ChampionAltar(ChampionSpawn spawn) => m_Spawn = spawn;
 
     public ChampionAltar(Serial serial) : base(serial)
     {

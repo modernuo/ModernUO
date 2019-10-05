@@ -60,10 +60,7 @@ namespace Server.Items
   public class BrokenChestOfDrawersDeed : BaseAddonDeed
   {
     [Constructible]
-    public BrokenChestOfDrawersDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public BrokenChestOfDrawersDeed() => LootType = LootType.Blessed;
 
     public BrokenChestOfDrawersDeed(Serial serial) : base(serial)
     {

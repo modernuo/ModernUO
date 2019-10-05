@@ -37,10 +37,7 @@ namespace Server.Engines.Quests.Samurai
     public override string CorpseName => "an injured wolf corpse";
     public override string DefaultName => "an injured wolf";
 
-    public override int GetIdleSound()
-    {
-      return 0xE9;
-    }
+    public override int GetIdleSound() => 0xE9;
 
     public override void Serialize(GenericWriter writer)
     {

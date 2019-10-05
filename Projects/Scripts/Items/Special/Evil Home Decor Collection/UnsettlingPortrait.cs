@@ -8,10 +8,7 @@ namespace Server.Items
   {
     private Timer m_Timer;
 
-    public UnsettlingPortraitComponent() : base(0x2A65)
-    {
-      m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), ChangeDirection);
-    }
+    public UnsettlingPortraitComponent() : base(0x2A65) => m_Timer = Timer.DelayCall(TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(3), ChangeDirection);
 
     public UnsettlingPortraitComponent(Serial serial) : base(serial)
     {
@@ -95,10 +92,7 @@ namespace Server.Items
   public class UnsettlingPortraitDeed : BaseAddonDeed
   {
     [Constructible]
-    public UnsettlingPortraitDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public UnsettlingPortraitDeed() => LootType = LootType.Blessed;
 
     public UnsettlingPortraitDeed(Serial serial) : base(serial)
     {

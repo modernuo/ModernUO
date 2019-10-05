@@ -183,10 +183,8 @@ namespace Server.Items
     private class ThrowTarget : Target
     {
       public ThrowTarget(Firebomb bomb)
-        : base(12, true, TargetFlags.None)
-      {
+        : base(12, true, TargetFlags.None) =>
         Bomb = bomb;
-      }
 
       public Firebomb Bomb{ get; }
 

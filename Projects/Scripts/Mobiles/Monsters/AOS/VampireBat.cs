@@ -47,10 +47,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.Poor);
     }
 
-    public override int GetIdleSound()
-    {
-      return 0x29B;
-    }
+    public override int GetIdleSound() => 0x29B;
 
     public override void Serialize(GenericWriter writer)
     {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class MagesRuneBlade : RuneBlade
   {
     [Constructible]
-    public MagesRuneBlade()
-    {
-      Attributes.CastSpeed = 1;
-    }
+    public MagesRuneBlade() => Attributes.CastSpeed = 1;
 
     public MagesRuneBlade(Serial serial) : base(serial)
     {

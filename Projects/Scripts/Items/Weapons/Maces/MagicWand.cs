@@ -3,10 +3,7 @@ namespace Server.Items
   public class MagicWand : BaseBashing
   {
     [Constructible]
-    public MagicWand() : base(0xDF2)
-    {
-      Weight = 1.0;
-    }
+    public MagicWand() : base(0xDF2) => Weight = 1.0;
 
     public MagicWand(Serial serial) : base(serial)
     {

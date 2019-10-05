@@ -359,10 +359,7 @@ namespace Server
       return Construct(OldWandTypes, WandTypes, NewWandTypes) as BaseWand;
     }
 
-    public static BaseClothing RandomClothing()
-    {
-      return RandomClothing(false, false);
-    }
+    public static BaseClothing RandomClothing() => RandomClothing(false, false);
 
     public static BaseClothing RandomClothing(bool inTokuno, bool isMondain)
     {
@@ -382,10 +379,7 @@ namespace Server
       return Construct(ClothingTypes) as BaseClothing;
     }
 
-    public static BaseWeapon RandomRangedWeapon()
-    {
-      return RandomRangedWeapon(false, false);
-    }
+    public static BaseWeapon RandomRangedWeapon() => RandomRangedWeapon(false, false);
 
     public static BaseWeapon RandomRangedWeapon(bool inTokuno, bool isMondain)
     {
@@ -405,10 +399,7 @@ namespace Server
       return Construct(RangedWeaponTypes) as BaseWeapon;
     }
 
-    public static BaseWeapon RandomWeapon()
-    {
-      return RandomWeapon(false, false);
-    }
+    public static BaseWeapon RandomWeapon() => RandomWeapon(false, false);
 
     public static BaseWeapon RandomWeapon(bool inTokuno, bool isMondain)
     {
@@ -428,10 +419,7 @@ namespace Server
       return Construct(WeaponTypes) as BaseWeapon;
     }
 
-    public static Item RandomWeaponOrJewelry()
-    {
-      return RandomWeaponOrJewelry(false, false);
-    }
+    public static Item RandomWeaponOrJewelry() => RandomWeaponOrJewelry(false, false);
 
     public static Item RandomWeaponOrJewelry(bool inTokuno, bool isMondain)
     {
@@ -451,15 +439,9 @@ namespace Server
       return Construct(WeaponTypes, JewelryTypes);
     }
 
-    public static BaseJewel RandomJewelry()
-    {
-      return Construct(JewelryTypes) as BaseJewel;
-    }
+    public static BaseJewel RandomJewelry() => Construct(JewelryTypes) as BaseJewel;
 
-    public static BaseArmor RandomArmor()
-    {
-      return RandomArmor(false, false);
-    }
+    public static BaseArmor RandomArmor() => RandomArmor(false, false);
 
     public static BaseArmor RandomArmor(bool inTokuno, bool isMondain)
     {
@@ -476,10 +458,7 @@ namespace Server
       return Construct(ArmorTypes) as BaseArmor;
     }
 
-    public static BaseHat RandomHat()
-    {
-      return RandomHat(false);
-    }
+    public static BaseHat RandomHat() => RandomHat(false);
 
     public static BaseHat RandomHat(bool inTokuno)
     {
@@ -492,10 +471,7 @@ namespace Server
       return Construct(HatTypes) as BaseHat;
     }
 
-    public static Item RandomArmorOrHat()
-    {
-      return RandomArmorOrHat(false, false);
-    }
+    public static Item RandomArmorOrHat() => RandomArmorOrHat(false, false);
 
     public static Item RandomArmorOrHat(bool inTokuno, bool isMondain)
     {
@@ -523,10 +499,7 @@ namespace Server
       return Construct(ShieldTypes) as BaseShield;
     }
 
-    public static BaseArmor RandomArmorOrShield()
-    {
-      return RandomArmorOrShield(false, false);
-    }
+    public static BaseArmor RandomArmorOrShield() => RandomArmorOrShield(false, false);
 
     public static BaseArmor RandomArmorOrShield(bool inTokuno, bool isMondain)
     {
@@ -546,10 +519,7 @@ namespace Server
       return Construct(ArmorTypes, ShieldTypes) as BaseArmor;
     }
 
-    public static Item RandomArmorOrShieldOrJewelry()
-    {
-      return RandomArmorOrShieldOrJewelry(false, false);
-    }
+    public static Item RandomArmorOrShieldOrJewelry() => RandomArmorOrShieldOrJewelry(false, false);
 
     public static Item RandomArmorOrShieldOrJewelry(bool inTokuno, bool isMondain)
     {
@@ -570,10 +540,7 @@ namespace Server
       return Construct(ArmorTypes, HatTypes, ShieldTypes, JewelryTypes);
     }
 
-    public static Item RandomArmorOrShieldOrWeapon()
-    {
-      return RandomArmorOrShieldOrWeapon(false, false);
-    }
+    public static Item RandomArmorOrShieldOrWeapon() => RandomArmorOrShieldOrWeapon(false, false);
 
     public static Item RandomArmorOrShieldOrWeapon(bool inTokuno, bool isMondain)
     {
@@ -597,10 +564,7 @@ namespace Server
       return Construct(WeaponTypes, RangedWeaponTypes, ArmorTypes, HatTypes, ShieldTypes);
     }
 
-    public static Item RandomArmorOrShieldOrWeaponOrJewelry()
-    {
-      return RandomArmorOrShieldOrWeaponOrJewelry(false, false);
-    }
+    public static Item RandomArmorOrShieldOrWeaponOrJewelry() => RandomArmorOrShieldOrWeaponOrJewelry(false, false);
 
     public static Item RandomArmorOrShieldOrWeaponOrJewelry(bool inTokuno, bool isMondain)
     {
@@ -627,27 +591,15 @@ namespace Server
 
     #region Chest of Heirlooms
 
-    public static Item ChestOfHeirloomsContains()
-    {
-      return Construct(SEArmorTypes, SEHatTypes, SEWeaponTypes, SERangedWeaponTypes, JewelryTypes);
-    }
+    public static Item ChestOfHeirloomsContains() => Construct(SEArmorTypes, SEHatTypes, SEWeaponTypes, SERangedWeaponTypes, JewelryTypes);
 
     #endregion
 
-    public static Item RandomGem()
-    {
-      return Construct(GemTypes);
-    }
+    public static Item RandomGem() => Construct(GemTypes);
 
-    public static Item RandomReagent()
-    {
-      return Construct(RegTypes);
-    }
+    public static Item RandomReagent() => Construct(RegTypes);
 
-    public static Item RandomNecromancyReagent()
-    {
-      return Construct(NecroRegTypes);
-    }
+    public static Item RandomNecromancyReagent() => Construct(NecroRegTypes);
 
     public static Item RandomPossibleReagent()
     {
@@ -657,10 +609,7 @@ namespace Server
       return Construct(RegTypes);
     }
 
-    public static Item RandomPotion()
-    {
-      return Construct(PotionTypes);
-    }
+    public static Item RandomPotion() => Construct(PotionTypes);
 
     public static BaseInstrument RandomInstrument()
     {
@@ -670,10 +619,7 @@ namespace Server
       return Construct(InstrumentTypes) as BaseInstrument;
     }
 
-    public static Item RandomStatue()
-    {
-      return Construct(StatueTypes);
-    }
+    public static Item RandomStatue() => Construct(StatueTypes);
 
     public static SpellScroll RandomScroll(int minIndex, int maxIndex, SpellbookType type)
     {
@@ -699,25 +645,13 @@ namespace Server
       return Construct(types, Utility.RandomMinMax(minIndex, maxIndex)) as SpellScroll;
     }
 
-    public static BaseBook RandomGrimmochJournal()
-    {
-      return Construct(GrimmochJournalTypes) as BaseBook;
-    }
+    public static BaseBook RandomGrimmochJournal() => Construct(GrimmochJournalTypes) as BaseBook;
 
-    public static BaseBook RandomLysanderNotebook()
-    {
-      return Construct(LysanderNotebookTypes) as BaseBook;
-    }
+    public static BaseBook RandomLysanderNotebook() => Construct(LysanderNotebookTypes) as BaseBook;
 
-    public static BaseBook RandomTavarasJournal()
-    {
-      return Construct(TavarasJournalTypes) as BaseBook;
-    }
+    public static BaseBook RandomTavarasJournal() => Construct(TavarasJournalTypes) as BaseBook;
 
-    public static BaseBook RandomLibraryBook()
-    {
-      return Construct(LibraryBookTypes) as BaseBook;
-    }
+    public static BaseBook RandomLibraryBook() => Construct(LibraryBookTypes) as BaseBook;
 
     public static BaseTalisman RandomTalisman()
     {

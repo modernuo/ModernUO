@@ -25,10 +25,7 @@ namespace Server.Spells.Bushido
 
     public override int CastRecoveryBase => 7;
 
-    public static bool CheckExpansion(Mobile from)
-    {
-      return (from as PlayerMobile)?.NetState?.SupportsExpansion(Expansion.SE) == true;
-    }
+    public static bool CheckExpansion(Mobile from) => (from as PlayerMobile)?.NetState?.SupportsExpansion(Expansion.SE) == true;
 
     public override bool CheckCast()
     {
@@ -93,10 +90,7 @@ namespace Server.Spells.Bushido
       max = RequiredSkill + 37.5;
     }
 
-    public override int GetMana()
-    {
-      return 0;
-    }
+    public override int GetMana() => 0;
 
     public virtual void OnCastSuccessful(Mobile caster)
     {

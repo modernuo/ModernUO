@@ -23,15 +23,9 @@ namespace Server.Items
     {
     }
 
-    public virtual bool Scissor(Mobile from, Scissors scissors)
-    {
-      return false;
-    }
+    public virtual bool Scissor(Mobile from, Scissors scissors) => false;
 
-    public virtual bool OnBandage(Mobile from)
-    {
-      return false;
-    }
+    public virtual bool OnBandage(Mobile from) => false;
 
     public override bool IsAccessibleTo(Mobile check)
     {
@@ -76,10 +70,7 @@ namespace Server.Items
 
   public class PlagueBeastComponent : PlagueBeastInnard
   {
-    public PlagueBeastComponent(int itemID, int hue, bool movable = false) : base(itemID, hue)
-    {
-      Movable = movable;
-    }
+    public PlagueBeastComponent(int itemID, int hue, bool movable = false) : base(itemID, hue) => Movable = movable;
 
     public PlagueBeastComponent(Serial serial) : base(serial)
     {
@@ -93,25 +84,13 @@ namespace Server.Items
 
     public bool IsReceptacle => ItemID == 0x9DF;
 
-    public override bool DropToItem(Mobile from, Item target, Point3D p)
-    {
-      return target is PlagueBeastBackpack && base.DropToItem(from, target, p);
-    }
+    public override bool DropToItem(Mobile from, Item target, Point3D p) => target is PlagueBeastBackpack && base.DropToItem(from, target, p);
 
-    public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
-    {
-      return false;
-    }
+    public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted) => false;
 
-    public override bool DropToMobile(Mobile from, Mobile target, Point3D p)
-    {
-      return false;
-    }
+    public override bool DropToMobile(Mobile from, Mobile target, Point3D p) => false;
 
-    public override bool DropToWorld(Mobile from, Point3D p)
-    {
-      return false;
-    }
+    public override bool DropToWorld(Mobile from, Point3D p) => false;
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {

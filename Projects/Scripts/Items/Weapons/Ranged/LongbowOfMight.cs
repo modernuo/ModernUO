@@ -3,10 +3,7 @@ namespace Server.Items
   public class LongbowOfMight : ElvenCompositeLongbow
   {
     [Constructible]
-    public LongbowOfMight()
-    {
-      Attributes.WeaponDamage = 5;
-    }
+    public LongbowOfMight() => Attributes.WeaponDamage = 5;
 
     public LongbowOfMight(Serial serial) : base(serial)
     {

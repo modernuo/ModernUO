@@ -21,10 +21,7 @@ namespace Server.Engines.MLQuests
 
     public Map ForceMap{ get; set; }
 
-    public bool Contains(Mobile mob)
-    {
-      return Contains(mob.Region);
-    }
+    public bool Contains(Mobile mob) => Contains(mob.Region);
 
     public bool Contains(Region reg)
     {

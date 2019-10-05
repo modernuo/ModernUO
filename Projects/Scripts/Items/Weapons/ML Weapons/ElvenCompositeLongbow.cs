@@ -6,10 +6,7 @@ namespace Server.Items
   public class ElvenCompositeLongbow : BaseRanged
   {
     [Constructible]
-    public ElvenCompositeLongbow() : base(0x2D1E)
-    {
-      Weight = 8.0;
-    }
+    public ElvenCompositeLongbow() : base(0x2D1E) => Weight = 8.0;
 
     public ElvenCompositeLongbow(Serial serial) : base(serial)
     {

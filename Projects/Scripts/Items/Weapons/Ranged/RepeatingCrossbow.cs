@@ -6,10 +6,7 @@ namespace Server.Items
   public class RepeatingCrossbow : BaseRanged
   {
     [Constructible]
-    public RepeatingCrossbow() : base(0x26C3)
-    {
-      Weight = 6.0;
-    }
+    public RepeatingCrossbow() : base(0x26C3) => Weight = 6.0;
 
     public RepeatingCrossbow(Serial serial) : base(serial)
     {

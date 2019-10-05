@@ -102,10 +102,7 @@ namespace Server.Items
     {
       private DawnsMusicGear m_Gear;
 
-      public InternalTarget(DawnsMusicGear gear) : base(2, false, TargetFlags.None)
-      {
-        m_Gear = gear;
-      }
+      public InternalTarget(DawnsMusicGear gear) : base(2, false, TargetFlags.None) => m_Gear = gear;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

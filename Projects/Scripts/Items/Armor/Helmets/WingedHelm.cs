@@ -4,10 +4,7 @@ namespace Server.Items
   public class WingedHelm : BaseArmor
   {
     [Constructible]
-    public WingedHelm() : base(0x2B73)
-    {
-      Weight = 5.0;
-    }
+    public WingedHelm() : base(0x2B73) => Weight = 5.0;
 
     public WingedHelm(Serial serial) : base(serial)
     {

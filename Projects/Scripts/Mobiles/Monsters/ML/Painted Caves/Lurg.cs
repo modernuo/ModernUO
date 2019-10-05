@@ -55,10 +55,7 @@ namespace Server.Mobiles
       AddLoot(LootPack.UltraRich, 2);
     }
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.CrushingBlow;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.CrushingBlow;
 
     public override void Serialize(GenericWriter writer)
     {

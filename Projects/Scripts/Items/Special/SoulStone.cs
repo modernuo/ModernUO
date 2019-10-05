@@ -818,10 +818,8 @@ namespace Server.Items
 
     [Constructible]
     public SoulstoneFragment(int usesRemaining = 5, string account = null) :
-      base(account, Utility.Random(0x2AA1, 9))
-    {
+      base(account, Utility.Random(0x2AA1, 9)) =>
       m_UsesRemaining = usesRemaining;
-    }
 
     public SoulstoneFragment(Serial serial) : base(serial)
     {

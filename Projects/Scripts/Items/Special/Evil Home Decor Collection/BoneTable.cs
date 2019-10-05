@@ -32,10 +32,7 @@ namespace Server.Items
   public class BoneTableDeed : BaseAddonDeed
   {
     [Constructible]
-    public BoneTableDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public BoneTableDeed() => LootType = LootType.Blessed;
 
     public BoneTableDeed(Serial serial) : base(serial)
     {

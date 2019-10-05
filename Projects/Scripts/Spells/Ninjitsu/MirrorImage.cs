@@ -29,10 +29,7 @@ namespace Server.Spells.Ninjitsu
 
     public override bool BlockedByAnimalForm => false;
 
-    public static bool HasClone(Mobile m)
-    {
-      return m_CloneCount.ContainsKey(m);
-    }
+    public static bool HasClone(Mobile m) => m_CloneCount.ContainsKey(m);
 
     public static void AddClone(Mobile m)
     {
@@ -77,10 +74,7 @@ namespace Server.Spells.Ninjitsu
       return base.CheckCast();
     }
 
-    public override bool CheckDisturb(DisturbType type, bool firstCircle, bool resistable)
-    {
-      return false;
-    }
+    public override bool CheckDisturb(DisturbType type, bool firstCircle, bool resistable) => false;
 
     public override void OnBeginCast()
     {
@@ -179,10 +173,7 @@ namespace Server.Mobiles
     public override bool IsDispellable => false;
     public override bool Commandable => false;
 
-    public override bool IsHumanInTown()
-    {
-      return false;
-    }
+    public override bool IsHumanInTown() => false;
 
     private Item CloneItem(Item item)
     {
@@ -239,10 +230,7 @@ namespace Server.Mobiles
 {
   public class CloneAI : BaseAI
   {
-    public CloneAI(Clone m) : base(m)
-    {
-      m.CurrentSpeed = m.ActiveSpeed;
-    }
+    public CloneAI(Clone m) : base(m) => m.CurrentSpeed = m.ActiveSpeed;
 
     public override bool CanDetectHidden => false;
 

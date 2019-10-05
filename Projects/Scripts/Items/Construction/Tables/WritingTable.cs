@@ -5,10 +5,7 @@ namespace Server.Items
   public class WritingTable : Item
   {
     [Constructible]
-    public WritingTable() : base(0xB4A)
-    {
-      Weight = 1.0;
-    }
+    public WritingTable() : base(0xB4A) => Weight = 1.0;
 
     public WritingTable(Serial serial) : base(serial)
     {

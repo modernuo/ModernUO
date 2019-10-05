@@ -102,21 +102,11 @@ namespace Server.Items
     {
     }
 
-    public virtual bool OnBeforeSwing(Mobile attacker, Mobile defender)
-    {
-      // Here because you must be sure you can use the skill before calling CheckHit if the ability has a HCI bonus for example
-      return true;
-    }
+    public virtual bool OnBeforeSwing(Mobile attacker, Mobile defender) => true;
 
-    public virtual bool OnBeforeDamage(Mobile attacker, Mobile defender)
-    {
-      return true;
-    }
+    public virtual bool OnBeforeDamage(Mobile attacker, Mobile defender) => true;
 
-    public virtual bool RequiresTactics(Mobile from)
-    {
-      return true;
-    }
+    public virtual bool RequiresTactics(Mobile from) => true;
 
     public virtual double GetRequiredSkill(Mobile from)
     {
@@ -203,10 +193,7 @@ namespace Server.Items
       return false;
     }
 
-    public virtual bool CheckSkills(Mobile from)
-    {
-      return CheckWeaponSkill(from);
-    }
+    public virtual bool CheckSkills(Mobile from) => CheckWeaponSkill(from);
 
     public virtual double GetSkill(Mobile from, SkillName skillName) => from.Skills[skillName]?.Value ?? 0.0;
 
@@ -327,11 +314,9 @@ namespace Server.Items
       return CheckSkills(from) && CheckMana(from, false);
     }
 
-    public static bool IsWeaponAbility(Mobile m, WeaponAbility a)
-    {
-      return a == null || !m.Player || m.Weapon is BaseWeapon weapon &&
-             (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a);
-    }
+    public static bool IsWeaponAbility(Mobile m, WeaponAbility a) =>
+      a == null || !m.Player || m.Weapon is BaseWeapon weapon &&
+      (weapon.PrimaryAbility == a || weapon.SecondaryAbility == a);
 
     public static WeaponAbility GetCurrentAbility(Mobile m)
     {
@@ -459,10 +444,7 @@ namespace Server.Items
 
     private class WeaponAbilityContext
     {
-      public WeaponAbilityContext(Timer timer)
-      {
-        Timer = timer;
-      }
+      public WeaponAbilityContext(Timer timer) => Timer = timer;
 
       public Timer Timer{ get; }
     }

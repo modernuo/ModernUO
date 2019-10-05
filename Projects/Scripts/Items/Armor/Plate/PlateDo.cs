@@ -3,10 +3,7 @@ namespace Server.Items
   public class PlateDo : BaseArmor
   {
     [Constructible]
-    public PlateDo() : base(0x277D)
-    {
-      Weight = 10.0;
-    }
+    public PlateDo() : base(0x277D) => Weight = 10.0;
 
     public PlateDo(Serial serial) : base(serial)
     {

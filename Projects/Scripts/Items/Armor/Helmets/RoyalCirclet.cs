@@ -4,10 +4,7 @@ namespace Server.Items
   public class RoyalCirclet : BaseArmor
   {
     [Constructible]
-    public RoyalCirclet() : base(0x2B6F)
-    {
-      Weight = 2.0;
-    }
+    public RoyalCirclet() : base(0x2B6F) => Weight = 2.0;
 
     public RoyalCirclet(Serial serial) : base(serial)
     {

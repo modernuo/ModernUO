@@ -79,10 +79,7 @@ namespace Server.Ethics
       }
     }
 
-    public static Player Find(Mobile mob)
-    {
-      return Find(mob, false);
-    }
+    public static Player Find(Mobile mob) => Find(mob, false);
 
     public static Player Find(Mobile mob, bool inherit)
     {

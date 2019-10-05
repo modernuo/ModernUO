@@ -32,10 +32,7 @@ namespace Server.Mobiles
       m_SBInfos.Add(new SBAnimalTrainer());
     }
 
-    public override int GetShoeHue()
-    {
-      return 0;
-    }
+    public override int GetShoeHue() => 0;
 
     public override void InitOutfit()
     {
@@ -301,10 +298,7 @@ namespace Server.Mobiles
         BeginClaimList(from);
     }
 
-    public bool CanClaim(Mobile from, BaseCreature pet)
-    {
-      return from.Followers + pet.ControlSlots <= from.FollowersMax;
-    }
+    public bool CanClaim(Mobile from, BaseCreature pet) => from.Followers + pet.ControlSlots <= from.FollowersMax;
 
     private void DoClaim(Mobile from, BaseCreature pet)
     {
@@ -325,10 +319,7 @@ namespace Server.Mobiles
         pet.Loyalty = MaxLoyalty; // Wonderfully Happy
     }
 
-    public override bool HandlesOnSpeech(Mobile from)
-    {
-      return true;
-    }
+    public override bool HandlesOnSpeech(Mobile from) => true;
 
     public override void OnSpeech(SpeechEventArgs e)
     {
@@ -452,10 +443,7 @@ namespace Server.Mobiles
     {
       private AnimalTrainer m_Trainer;
 
-      public StableTarget(AnimalTrainer trainer) : base(12, false, TargetFlags.None)
-      {
-        m_Trainer = trainer;
-      }
+      public StableTarget(AnimalTrainer trainer) : base(12, false, TargetFlags.None) => m_Trainer = trainer;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

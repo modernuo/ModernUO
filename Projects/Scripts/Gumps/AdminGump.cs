@@ -11,7 +11,6 @@ using Server.Misc;
 using Server.Multis;
 using Server.Network;
 using Server.Prompts;
-using Server.RemoteAdmin;
 
 namespace Server.Gumps
 {
@@ -417,8 +416,7 @@ namespace Server.Gumps
             int offset = 140 + i * 20;
 
             if (m == null)
-              AddLabelCropped(12, offset, 81, 20, LabelHue,
-                AdminNetwork.IsAuth(ns) ? "(remote admin)" : "(logging in)");
+              AddLabelCropped(12, offset, 81, 20, LabelHue, "(logging in)");
             else
               AddLabelCropped(12, offset, 81, 20, GetHueFor(m), m.Name);
             AddLabelCropped(95, offset, 81, 20, LabelHue, a == null ? "(no account)" : a.Username);
@@ -1162,15 +1160,9 @@ namespace Server.Gumps
       AddHtml(x + 35, y, 240, 20, Color(text, LabelColor32));
     }
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     public void AddBlackAlpha(int x, int y, int width, int height)
     {
@@ -1178,15 +1170,9 @@ namespace Server.Gumps
       AddAlphaRegion(x, y, width, height);
     }
 
-    public int GetButtonID(int type, int index)
-    {
-      return 1 + index * 11 + type;
-    }
+    public int GetButtonID(int type, int index) => 1 + index * 11 + type;
 
-    public static string FormatTimeSpan(TimeSpan ts)
-    {
-      return $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
-    }
+    public static string FormatTimeSpan(TimeSpan ts) => $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
 
     public static string FormatByteAmount(long totalBytes)
     {
@@ -3013,20 +2999,14 @@ namespace Server.Gumps
     {
       public static readonly IComparer<KeyValuePair<IPAddress, List<Account>>> Instance = new SharedAccountComparer();
 
-      public int Compare(KeyValuePair<IPAddress, List<Account>> x, KeyValuePair<IPAddress, List<Account>> y)
-      {
-        return x.Value.Count - y.Value.Count;
-      }
+      public int Compare(KeyValuePair<IPAddress, List<Account>> x, KeyValuePair<IPAddress, List<Account>> y) => x.Value.Count - y.Value.Count;
     }
 
     private class AddCommentPrompt : Prompt
     {
       private Account m_Account;
 
-      public AddCommentPrompt(Account acct)
-      {
-        m_Account = acct;
-      }
+      public AddCommentPrompt(Account acct) => m_Account = acct;
 
       public override void OnCancel(Mobile from)
       {
@@ -3049,10 +3029,7 @@ namespace Server.Gumps
     {
       private Account m_Account;
 
-      public AddTagNamePrompt(Account acct)
-      {
-        m_Account = acct;
-      }
+      public AddTagNamePrompt(Account acct) => m_Account = acct;
 
       public override void OnCancel(Mobile from)
       {

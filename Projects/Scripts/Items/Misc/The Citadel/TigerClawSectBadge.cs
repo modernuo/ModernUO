@@ -3,10 +3,7 @@ namespace Server.Items
   public class TigerClawSectBadge : Item
   {
     [Constructible]
-    public TigerClawSectBadge() : base(0x23D)
-    {
-      LootType = LootType.Blessed;
-    }
+    public TigerClawSectBadge() : base(0x23D) => LootType = LootType.Blessed;
 
     public TigerClawSectBadge(Serial serial) : base(serial)
     {

@@ -3,10 +3,7 @@ namespace Server.Items
   public class BasinOfCrystalClearWater : Item
   {
     [Constructible]
-    public BasinOfCrystalClearWater() : base(0x1008)
-    {
-      LootType = LootType.Blessed;
-    }
+    public BasinOfCrystalClearWater() : base(0x1008) => LootType = LootType.Blessed;
 
     public BasinOfCrystalClearWater(Serial serial) : base(serial)
     {

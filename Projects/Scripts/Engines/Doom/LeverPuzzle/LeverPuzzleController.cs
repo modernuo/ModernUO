@@ -368,12 +368,10 @@ namespace Server.Engines.Doom
       }
     }
 
-    private static bool IsValidDamagable(Mobile m)
-    {
-      return m?.Deleted == false &&
-             (m.Player && m.Alive ||
-              m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet);
-    }
+    private static bool IsValidDamagable(Mobile m) =>
+      m?.Deleted == false &&
+      (m.Player && m.Alive ||
+       m is BaseCreature bc && (bc.Controlled || bc.Summoned) && !bc.IsDeadBondedPet);
 
     public static void MoveMobileOut(Mobile m)
     {
@@ -388,15 +386,9 @@ namespace Server.Engines.Doom
       }
     }
 
-    public static bool AniSafe(Mobile m)
-    {
-      return  m?.BodyMod == 0 && m.Alive && !TransformationSpellHelper.UnderTransformation(m);
-    }
+    public static bool AniSafe(Mobile m) => m?.BodyMod == 0 && m.Alive && !TransformationSpellHelper.UnderTransformation(m);
 
-    public static IEntity ZAdjustedIEFromMobile(Mobile m, int ZDelta)
-    {
-      return new Entity(Serial.Zero, new Point3D(m.X, m.Y, m.Z + ZDelta), m.Map);
-    }
+    public static IEntity ZAdjustedIEFromMobile(Mobile m, int ZDelta) => new Entity(Serial.Zero, new Point3D(m.X, m.Y, m.Z + ZDelta), m.Map);
 
     public static void DoDamage(Mobile m, int min, int max, bool poison)
     {
@@ -407,20 +399,11 @@ namespace Server.Engines.Doom
       }
     }
 
-    public static Point3D RandomPointIn(Point3D point, int range)
-    {
-      return RandomPointIn(point.X - range, point.Y - range, range * 2, range * 2, point.Z);
-    }
+    public static Point3D RandomPointIn(Point3D point, int range) => RandomPointIn(point.X - range, point.Y - range, range * 2, range * 2, point.Z);
 
-    public static Point3D RandomPointIn(Rectangle2D rect, int z)
-    {
-      return RandomPointIn(rect.X, rect.Y, rect.Height, rect.Width, z);
-    }
+    public static Point3D RandomPointIn(Rectangle2D rect, int z) => RandomPointIn(rect.X, rect.Y, rect.Height, rect.Width, z);
 
-    public static Point3D RandomPointIn(int x, int y, int x2, int y2, int z)
-    {
-      return new Point3D(Utility.Random(x, x2), Utility.Random(y, y2), z);
-    }
+    public static Point3D RandomPointIn(int x, int y, int x2, int y2, int z) => new Point3D(Utility.Random(x, x2), Utility.Random(y, y2), z);
 
     public static void PlaySounds(Point3D location, int[] sounds)
     {
@@ -503,10 +486,7 @@ namespace Server.Engines.Doom
         m_Controller = Controller;
       }
 
-      private int Rock()
-      {
-        return 0x1363 + Utility.Random(0, 11);
-      }
+      private int Rock() => 0x1363 + Utility.Random(0, 11);
 
       protected override void OnTick()
       {
@@ -571,10 +551,8 @@ namespace Server.Engines.Doom
       private Mobile m;
 
       public LampRoomKickTimer(Mobile player)
-        : base(TimeSpan.FromSeconds(.25))
-      {
+        : base(TimeSpan.FromSeconds(.25)) =>
         m = player;
-      }
 
       protected override void OnTick()
       {

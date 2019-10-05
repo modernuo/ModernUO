@@ -83,10 +83,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(4, 8, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new BrickHouseDeed();
-    }
+    public override HouseDeed GetDeed() => new BrickHouseDeed();
 
     public override void Serialize(GenericWriter writer)
     {
@@ -183,10 +180,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(5, 8, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new TowerDeed();
-    }
+    public override HouseDeed GetDeed() => new TowerDeed();
 
     public override void Serialize(GenericWriter writer)
     {
@@ -228,10 +222,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(5, 13, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new KeepDeed();
-    }
+    public override HouseDeed GetDeed() => new KeepDeed();
 
     public override void Serialize(GenericWriter writer)
     {
@@ -272,10 +263,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(5, 17, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new CastleDeed();
-    }
+    public override HouseDeed GetDeed() => new CastleDeed();
 
     public override void Serialize(GenericWriter writer)
     {
@@ -319,10 +307,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(1, 8, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new LargePatioDeed();
-    }
+    public override HouseDeed GetDeed() => new LargePatioDeed();
 
     public override void Serialize(GenericWriter writer)
     {
@@ -362,10 +347,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(1, 8, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new LargeMarbleDeed();
-    }
+    public override HouseDeed GetDeed() => new LargeMarbleDeed();
 
     public override void Serialize(GenericWriter writer)
     {
@@ -404,10 +386,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(1, 4, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new SmallTowerDeed();
-    }
+    public override HouseDeed GetDeed() => new SmallTowerDeed();
 
     public override void Serialize(GenericWriter writer)
     {
@@ -448,10 +427,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(5, 8, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new LogCabinDeed();
-    }
+    public override HouseDeed GetDeed() => new LogCabinDeed();
 
     public override void Serialize(GenericWriter writer)
     {
@@ -491,10 +467,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(4, 6, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new SandstonePatioDeed();
-    }
+    public override HouseDeed GetDeed() => new SandstonePatioDeed();
 
     public override void Serialize(GenericWriter writer)
     {
@@ -536,10 +509,7 @@ namespace Server.Multis
     public override Rectangle2D[] Area => AreaArray;
     public override Point3D BaseBanLocation => new Point3D(3, 8, 0);
 
-    public override HouseDeed GetDeed()
-    {
-      return new VillaDeed();
-    }
+    public override HouseDeed GetDeed() => new VillaDeed();
 
     public override void Serialize(GenericWriter writer)
     {

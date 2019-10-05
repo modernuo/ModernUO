@@ -11,10 +11,7 @@ namespace Server.Items
     private static HashSet<Mobile> m_AttackTable = new HashSet<Mobile>();
     private static HashSet<Mobile> m_DefenseTable = new HashSet<Mobile>();
 
-    public static bool IsUnderAttackEffect(Mobile m)
-    {
-      return m_AttackTable.Contains(m);
-    }
+    public static bool IsUnderAttackEffect(Mobile m) => m_AttackTable.Contains(m);
 
     public static bool ApplyAttack(Mobile m)
     {
@@ -34,10 +31,7 @@ namespace Server.Items
       m.SendLocalizedMessage(1062320); // Your attack chance has returned to normal.
     }
 
-    public static bool IsUnderDefenseEffect(Mobile m)
-    {
-      return m_DefenseTable.Contains(m);
-    }
+    public static bool IsUnderDefenseEffect(Mobile m) => m_DefenseTable.Contains(m);
 
     public static bool ApplyDefense(Mobile m)
     {

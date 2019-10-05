@@ -7,10 +7,7 @@ namespace Server.Items
   {
     private bool m_Picked;
 
-    public FarmableCrop(int itemID) : base(itemID)
-    {
-      Movable = false;
-    }
+    public FarmableCrop(int itemID) : base(itemID) => Movable = false;
 
     public FarmableCrop(Serial serial) : base(serial)
     {

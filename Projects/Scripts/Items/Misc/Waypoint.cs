@@ -96,10 +96,7 @@ namespace Server.Items
   {
     private WayPoint m_Point;
 
-    public NextPointTarget(WayPoint pt) : base(-1, false, TargetFlags.None)
-    {
-      m_Point = pt;
-    }
+    public NextPointTarget(WayPoint pt) : base(-1, false, TargetFlags.None) => m_Point = pt;
 
     protected override void OnTarget(Mobile from, object target)
     {
@@ -114,10 +111,7 @@ namespace Server.Items
   {
     private WayPoint m_Last;
 
-    public WayPointSeqTarget(WayPoint last) : base(-1, true, TargetFlags.None)
-    {
-      m_Last = last;
-    }
+    public WayPointSeqTarget(WayPoint last) : base(-1, true, TargetFlags.None) => m_Last = last;
 
     protected override void OnTarget(Mobile from, object targeted)
     {

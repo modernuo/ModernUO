@@ -9,10 +9,7 @@ namespace Server.Items
   public class Bedroll : Item
   {
     [Constructible]
-    public Bedroll() : base(0xA57)
-    {
-      Weight = 5.0;
-    }
+    public Bedroll() : base(0xA57) => Weight = 5.0;
 
     public Bedroll(Serial serial) : base(serial)
     {

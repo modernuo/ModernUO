@@ -271,11 +271,9 @@ namespace Server.Items
       Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
     }
 
-    public bool ValidLocation()
-    {
-      return m_Bounds.Start != Point2D.Zero && m_Bounds.End != Point2D.Zero && m_Facet != null &&
-             m_Facet != Map.Internal;
-    }
+    public bool ValidLocation() =>
+      m_Bounds.Start != Point2D.Zero && m_Bounds.End != Point2D.Zero && m_Facet != null &&
+      m_Facet != Map.Internal;
 
     private void InvalidateRegion()
     {
@@ -362,10 +360,7 @@ namespace Server.Items
       return FormatLocation(GetPlotCenter(), m_Facet, true);
     }
 
-    public string FormatPrice()
-    {
-      return m_TicketPrice == 0 ? "FREE" : $"{m_TicketPrice} gold";
-    }
+    public string FormatPrice() => m_TicketPrice == 0 ? "FREE" : $"{m_TicketPrice} gold";
 
     public override void GetProperties(ObjectPropertyList list)
     {

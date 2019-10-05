@@ -59,10 +59,7 @@ namespace Server.Engines.Quests.Collector
 
     private DateTime m_Begin;
 
-    public SitOnTheStoolObjective()
-    {
-      m_Begin = DateTime.MaxValue;
-    }
+    public SitOnTheStoolObjective() => m_Begin = DateTime.MaxValue;
 
     public override object Message => 1055093;
 

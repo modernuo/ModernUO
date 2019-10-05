@@ -3,10 +3,7 @@ namespace Server.Items
   public class NorseHelm : BaseArmor
   {
     [Constructible]
-    public NorseHelm() : base(0x140E)
-    {
-      Weight = 5.0;
-    }
+    public NorseHelm() : base(0x140E) => Weight = 5.0;
 
     public NorseHelm(Serial serial) : base(serial)
     {

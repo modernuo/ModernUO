@@ -13,15 +13,9 @@ namespace Server.Misc
       b = temp;
     }
 
-    public static double RadiansToDegrees(double angle)
-    {
-      return angle * (180.0 / Math.PI);
-    }
+    public static double RadiansToDegrees(double angle) => angle * (180.0 / Math.PI);
 
-    public static double DegreesToRadians(double angle)
-    {
-      return angle * (Math.PI / 180.0);
-    }
+    public static double DegreesToRadians(double angle) => angle * (Math.PI / 180.0);
 
     public static Point2D ArcPoint(Point3D loc, int radius, int angle)
     {

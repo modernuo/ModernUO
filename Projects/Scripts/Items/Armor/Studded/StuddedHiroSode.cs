@@ -3,10 +3,7 @@ namespace Server.Items
   public class StuddedHiroSode : BaseArmor
   {
     [Constructible]
-    public StuddedHiroSode() : base(0x277F)
-    {
-      Weight = 1.0;
-    }
+    public StuddedHiroSode() : base(0x277F) => Weight = 1.0;
 
     public StuddedHiroSode(Serial serial) : base(serial)
     {

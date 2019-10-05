@@ -721,10 +721,7 @@ namespace Server.Prompts
   {
     private BaseHouse m_House;
 
-    public RenamePrompt(BaseHouse house)
-    {
-      m_House = house;
-    }
+    public RenamePrompt(BaseHouse house) => m_House = house;
 
     public override void OnResponse(Mobile from, string text)
     {

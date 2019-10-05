@@ -60,10 +60,7 @@ namespace Server.Gumps
       set => Delta(ref m_Height, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ checkertrans {m_X} {m_Y} {m_Width} {m_Height} }}";
-    }
+    public override string Compile(NetState ns) => $"{{ checkertrans {m_X} {m_Y} {m_Width} {m_Height} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

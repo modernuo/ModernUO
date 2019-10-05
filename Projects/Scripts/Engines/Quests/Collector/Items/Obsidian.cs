@@ -199,10 +199,7 @@ namespace Server.Engines.Quests.Collector
     {
       private Obsidian m_Obsidian;
 
-      public DisassembleEntry(Obsidian obsidian) : base(6142)
-      {
-        m_Obsidian = obsidian;
-      }
+      public DisassembleEntry(Obsidian obsidian) : base(6142) => m_Obsidian = obsidian;
 
       public override void OnClick()
       {
@@ -222,10 +219,7 @@ namespace Server.Engines.Quests.Collector
     {
       private Obsidian m_Obsidian;
 
-      public InternalTarget(Obsidian obsidian) : base(-1, false, TargetFlags.None)
-      {
-        m_Obsidian = obsidian;
-      }
+      public InternalTarget(Obsidian obsidian) : base(-1, false, TargetFlags.None) => m_Obsidian = obsidian;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

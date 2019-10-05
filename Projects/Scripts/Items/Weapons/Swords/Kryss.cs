@@ -4,10 +4,7 @@ namespace Server.Items
   public class Kryss : BaseSword
   {
     [Constructible]
-    public Kryss() : base(0x1401)
-    {
-      Weight = 2.0;
-    }
+    public Kryss() : base(0x1401) => Weight = 2.0;
 
     public Kryss(Serial serial) : base(serial)
     {

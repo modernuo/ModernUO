@@ -50,10 +50,7 @@ namespace Server.Items
     {
       private ThrowingDagger m_Dagger;
 
-      public InternalTarget(ThrowingDagger dagger) : base(10, false, TargetFlags.Harmful)
-      {
-        m_Dagger = dagger;
-      }
+      public InternalTarget(ThrowingDagger dagger) : base(10, false, TargetFlags.Harmful) => m_Dagger = dagger;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

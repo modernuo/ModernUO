@@ -8,10 +8,7 @@ namespace Server.Items
     [CommandProperty(AccessLevel.GameMaster)]
     public int CookingLevel{ get; set; }
 
-    public CookableFood(int itemID, int cookingLevel) : base(itemID)
-    {
-      CookingLevel = cookingLevel;
-    }
+    public CookableFood(int itemID, int cookingLevel) : base(itemID) => CookingLevel = cookingLevel;
 
     public CookableFood(Serial serial) : base(serial)
     {
@@ -88,10 +85,7 @@ namespace Server.Items
     {
       private CookableFood m_Item;
 
-      public InternalTarget(CookableFood item) : base(1, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(CookableFood item) : base(1, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -186,10 +180,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new Ribs();
-    }
+    public override Food Cook() => new Ribs();
   }
 
 
@@ -224,10 +215,7 @@ namespace Server.Items
         Weight = -1;
     }
 
-    public override Food Cook()
-    {
-      return new LambLeg();
-    }
+    public override Food Cook() => new LambLeg();
   }
 
   // ********** RawChickenLeg **********
@@ -258,10 +246,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new ChickenLeg();
-    }
+    public override Food Cook() => new ChickenLeg();
   }
 
 
@@ -294,10 +279,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new CookedBird();
-    }
+    public override Food Cook() => new CookedBird();
   }
 
 
@@ -305,10 +287,7 @@ namespace Server.Items
   public class UnbakedPeachCobbler : CookableFood
   {
     [Constructible]
-    public UnbakedPeachCobbler() : base(0x1042, 25)
-    {
-      Weight = 1.0;
-    }
+    public UnbakedPeachCobbler() : base(0x1042, 25) => Weight = 1.0;
 
     public UnbakedPeachCobbler(Serial serial) : base(serial)
     {
@@ -330,20 +309,14 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new PeachCobbler();
-    }
+    public override Food Cook() => new PeachCobbler();
   }
 
   // ********** UnbakedFruitPie **********
   public class UnbakedFruitPie : CookableFood
   {
     [Constructible]
-    public UnbakedFruitPie() : base(0x1042, 25)
-    {
-      Weight = 1.0;
-    }
+    public UnbakedFruitPie() : base(0x1042, 25) => Weight = 1.0;
 
     public UnbakedFruitPie(Serial serial) : base(serial)
     {
@@ -365,20 +338,14 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new FruitPie();
-    }
+    public override Food Cook() => new FruitPie();
   }
 
   // ********** UnbakedMeatPie **********
   public class UnbakedMeatPie : CookableFood
   {
     [Constructible]
-    public UnbakedMeatPie() : base(0x1042, 25)
-    {
-      Weight = 1.0;
-    }
+    public UnbakedMeatPie() : base(0x1042, 25) => Weight = 1.0;
 
     public UnbakedMeatPie(Serial serial) : base(serial)
     {
@@ -400,20 +367,14 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new MeatPie();
-    }
+    public override Food Cook() => new MeatPie();
   }
 
   // ********** UnbakedPumpkinPie **********
   public class UnbakedPumpkinPie : CookableFood
   {
     [Constructible]
-    public UnbakedPumpkinPie() : base(0x1042, 25)
-    {
-      Weight = 1.0;
-    }
+    public UnbakedPumpkinPie() : base(0x1042, 25) => Weight = 1.0;
 
     public UnbakedPumpkinPie(Serial serial) : base(serial)
     {
@@ -435,20 +396,14 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new PumpkinPie();
-    }
+    public override Food Cook() => new PumpkinPie();
   }
 
   // ********** UnbakedApplePie **********
   public class UnbakedApplePie : CookableFood
   {
     [Constructible]
-    public UnbakedApplePie() : base(0x1042, 25)
-    {
-      Weight = 1.0;
-    }
+    public UnbakedApplePie() : base(0x1042, 25) => Weight = 1.0;
 
     public UnbakedApplePie(Serial serial) : base(serial)
     {
@@ -470,10 +425,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new ApplePie();
-    }
+    public override Food Cook() => new ApplePie();
   }
 
   // ********** UncookedCheesePizza **********
@@ -481,10 +433,7 @@ namespace Server.Items
   public class UncookedCheesePizza : CookableFood
   {
     [Constructible]
-    public UncookedCheesePizza() : base(0x1083, 20)
-    {
-      Weight = 1.0;
-    }
+    public UncookedCheesePizza() : base(0x1083, 20) => Weight = 1.0;
 
     public UncookedCheesePizza(Serial serial) : base(serial)
     {
@@ -512,20 +461,14 @@ namespace Server.Items
         Hue = 0;
     }
 
-    public override Food Cook()
-    {
-      return new CheesePizza();
-    }
+    public override Food Cook() => new CheesePizza();
   }
 
   // ********** UncookedSausagePizza **********
   public class UncookedSausagePizza : CookableFood
   {
     [Constructible]
-    public UncookedSausagePizza() : base(0x1083, 20)
-    {
-      Weight = 1.0;
-    }
+    public UncookedSausagePizza() : base(0x1083, 20) => Weight = 1.0;
 
     public UncookedSausagePizza(Serial serial) : base(serial)
     {
@@ -547,61 +490,14 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new SausagePizza();
-    }
+    public override Food Cook() => new SausagePizza();
   }
-
-#if false
-// ********** UncookedPizza **********
-	public class UncookedPizza : CookableFood
-	{
-		[Constructible]
-		public UncookedPizza() : base( 0x1083, 20 )
-		{
-			Weight = 1.0;
-		}
-
-		public UncookedPizza( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-
-			if ( ItemID == 0x1040 )
-				ItemID = 0x1083;
-
-			if ( Hue == 51 )
-				Hue = 0;
-		}
-
-		public override Food Cook()
-		{
-			return new Pizza();
-		}
-	}
-#endif
 
   // ********** UnbakedQuiche **********
   public class UnbakedQuiche : CookableFood
   {
     [Constructible]
-    public UnbakedQuiche() : base(0x1042, 25)
-    {
-      Weight = 1.0;
-    }
+    public UnbakedQuiche() : base(0x1042, 25) => Weight = 1.0;
 
     public UnbakedQuiche(Serial serial) : base(serial)
     {
@@ -623,10 +519,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new Quiche();
-    }
+    public override Food Cook() => new Quiche();
   }
 
   // ********** Eggs **********
@@ -666,10 +559,7 @@ namespace Server.Items
       }
     }
 
-    public override Food Cook()
-    {
-      return new FriedEggs();
-    }
+    public override Food Cook() => new FriedEggs();
   }
 
   // ********** BrightlyColoredEggs **********
@@ -702,10 +592,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new FriedEggs();
-    }
+    public override Food Cook() => new FriedEggs();
   }
 
   // ********** EasterEggs **********
@@ -738,20 +625,14 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new FriedEggs();
-    }
+    public override Food Cook() => new FriedEggs();
   }
 
   // ********** CookieMix **********
   public class CookieMix : CookableFood
   {
     [Constructible]
-    public CookieMix() : base(0x103F, 20)
-    {
-      Weight = 1.0;
-    }
+    public CookieMix() : base(0x103F, 20) => Weight = 1.0;
 
     public CookieMix(Serial serial) : base(serial)
     {
@@ -771,20 +652,14 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new Cookies();
-    }
+    public override Food Cook() => new Cookies();
   }
 
   // ********** CakeMix **********
   public class CakeMix : CookableFood
   {
     [Constructible]
-    public CakeMix() : base(0x103F, 40)
-    {
-      Weight = 1.0;
-    }
+    public CakeMix() : base(0x103F, 40) => Weight = 1.0;
 
     public CakeMix(Serial serial) : base(serial)
     {
@@ -806,10 +681,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override Food Cook()
-    {
-      return new Cake();
-    }
+    public override Food Cook() => new Cake();
   }
 
   public class RawFishSteak : CookableFood
@@ -827,10 +699,7 @@ namespace Server.Items
 
     public override double DefaultWeight => 0.1;
 
-    public override Food Cook()
-    {
-      return new FishSteak();
-    }
+    public override Food Cook() => new FishSteak();
 
     public override void Serialize(GenericWriter writer)
     {

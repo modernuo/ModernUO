@@ -8,10 +8,7 @@
   public class CreepyCake : Food
   {
     [Constructible]
-    public CreepyCake() : base(0x9e9, 1)
-    {
-      Hue = 0x3E4;
-    }
+    public CreepyCake() : base(0x9e9, 1) => Hue = 0x3E4;
 
     public CreepyCake(Serial serial)
       : base(serial)

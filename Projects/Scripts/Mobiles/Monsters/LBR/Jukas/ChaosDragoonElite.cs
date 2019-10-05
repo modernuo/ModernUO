@@ -192,25 +192,13 @@ namespace Server.Mobiles
     public override bool AlwaysMurderer => true;
     public override bool ShowFameTitle => false;
 
-    public override int GetIdleSound()
-    {
-      return 0x2CE;
-    }
+    public override int GetIdleSound() => 0x2CE;
 
-    public override int GetDeathSound()
-    {
-      return 0x2CC;
-    }
+    public override int GetDeathSound() => 0x2CC;
 
-    public override int GetHurtSound()
-    {
-      return 0x2D1;
-    }
+    public override int GetHurtSound() => 0x2D1;
 
-    public override int GetAttackSound()
-    {
-      return 0x2C8;
-    }
+    public override int GetAttackSound() => 0x2C8;
 
     public override void GenerateLoot()
     {

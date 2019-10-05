@@ -124,11 +124,9 @@ namespace Server.Items
       return 0x19B9;
     }
 
-    public override bool CanStackWith(Item dropped)
-    {
-      return dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.Hue == Hue &&
-             dropped.Name == Name && dropped.Amount + Amount <= 60000 && dropped != this;
-    }
+    public override bool CanStackWith(Item dropped) =>
+      dropped.Stackable && Stackable && dropped.GetType() == GetType() && dropped.Hue == Hue &&
+      dropped.Name == Name && dropped.Amount + Amount <= 60000 && dropped != this;
 
     public override void AddNameProperty(ObjectPropertyList list)
     {
@@ -178,10 +176,7 @@ namespace Server.Items
     {
       private BaseOre m_Ore;
 
-      public InternalTarget(BaseOre ore) : base(2, false, TargetFlags.None)
-      {
-        m_Ore = ore;
-      }
+      public InternalTarget(BaseOre ore) : base(2, false, TargetFlags.None) => m_Ore = ore;
 
       private bool IsForge(object obj)
       {
@@ -447,10 +442,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override BaseIngot GetIngot()
-    {
-      return new IronIngot();
-    }
+    public override BaseIngot GetIngot() => new IronIngot();
   }
 
   public class DullCopperOre : BaseOre
@@ -478,10 +470,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override BaseIngot GetIngot()
-    {
-      return new DullCopperIngot();
-    }
+    public override BaseIngot GetIngot() => new DullCopperIngot();
   }
 
   public class ShadowIronOre : BaseOre
@@ -509,10 +498,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override BaseIngot GetIngot()
-    {
-      return new ShadowIronIngot();
-    }
+    public override BaseIngot GetIngot() => new ShadowIronIngot();
   }
 
   public class CopperOre : BaseOre
@@ -540,10 +526,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override BaseIngot GetIngot()
-    {
-      return new CopperIngot();
-    }
+    public override BaseIngot GetIngot() => new CopperIngot();
   }
 
   public class BronzeOre : BaseOre
@@ -571,10 +554,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override BaseIngot GetIngot()
-    {
-      return new BronzeIngot();
-    }
+    public override BaseIngot GetIngot() => new BronzeIngot();
   }
 
   public class GoldOre : BaseOre
@@ -602,10 +582,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override BaseIngot GetIngot()
-    {
-      return new GoldIngot();
-    }
+    public override BaseIngot GetIngot() => new GoldIngot();
   }
 
   public class AgapiteOre : BaseOre
@@ -633,10 +610,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override BaseIngot GetIngot()
-    {
-      return new AgapiteIngot();
-    }
+    public override BaseIngot GetIngot() => new AgapiteIngot();
   }
 
   public class VeriteOre : BaseOre
@@ -664,10 +638,7 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override BaseIngot GetIngot()
-    {
-      return new VeriteIngot();
-    }
+    public override BaseIngot GetIngot() => new VeriteIngot();
   }
 
   public class ValoriteOre : BaseOre
@@ -695,9 +666,6 @@ namespace Server.Items
       int version = reader.ReadInt();
     }
 
-    public override BaseIngot GetIngot()
-    {
-      return new ValoriteIngot();
-    }
+    public override BaseIngot GetIngot() => new ValoriteIngot();
   }
 }

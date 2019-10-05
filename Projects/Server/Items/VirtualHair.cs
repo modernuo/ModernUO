@@ -77,10 +77,7 @@ namespace Server
     }
 
     // TOOD: Can we make this higher for newer clients?
-    public static uint FakeSerial(Mobile parent)
-    {
-      return 0x7FFFFFFF - 0x400 - parent.Serial * 4;
-    }
+    public static uint FakeSerial(Mobile parent) => 0x7FFFFFFF - 0x400 - parent.Serial * 4;
   }
 
   public class FacialHairInfo : BaseHairInfo
@@ -101,10 +98,7 @@ namespace Server
     }
 
     // TOOD: Can we make this higher for newer clients?
-    public static uint FakeSerial(Mobile parent)
-    {
-      return 0x7FFFFFFF - 0x400 - 1 - parent.Serial * 4;
-    }
+    public static uint FakeSerial(Mobile parent) => 0x7FFFFFFF - 0x400 - 1 - parent.Serial * 4;
   }
 
   public sealed class HairEquipUpdate : Packet

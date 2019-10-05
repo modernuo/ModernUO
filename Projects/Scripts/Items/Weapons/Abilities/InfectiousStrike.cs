@@ -17,10 +17,7 @@ namespace Server.Items
   {
     public override int BaseMana => 15;
 
-    public override bool RequiresTactics(Mobile from)
-    {
-      return false;
-    }
+    public override bool RequiresTactics(Mobile from) => false;
 
     public override void OnHit(Mobile attacker, Mobile defender, int damage)
     {

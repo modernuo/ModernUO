@@ -3,10 +3,7 @@ namespace Server.Items
   public class SilverEtchedMace : DiamondMace
   {
     [Constructible]
-    public SilverEtchedMace()
-    {
-      Slayer = SlayerName.Exorcism;
-    }
+    public SilverEtchedMace() => Slayer = SlayerName.Exorcism;
 
     public SilverEtchedMace(Serial serial) : base(serial)
     {

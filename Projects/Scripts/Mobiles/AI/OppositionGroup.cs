@@ -7,10 +7,7 @@ namespace Server
   {
     private Type[][] m_Types;
 
-    public OppositionGroup(Type[][] types)
-    {
-      m_Types = types;
-    }
+    public OppositionGroup(Type[][] types) => m_Types = types;
 
     public static OppositionGroup TerathansAndOphidians{ get; } = new OppositionGroup(new[]
     {

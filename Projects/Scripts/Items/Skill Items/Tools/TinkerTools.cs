@@ -6,16 +6,10 @@ namespace Server.Items
   public class TinkerTools : BaseTool
   {
     [Constructible]
-    public TinkerTools() : base(0x1EB8)
-    {
-      Weight = 1.0;
-    }
+    public TinkerTools() : base(0x1EB8) => Weight = 1.0;
 
     [Constructible]
-    public TinkerTools(int uses) : base(uses, 0x1EB8)
-    {
-      Weight = 1.0;
-    }
+    public TinkerTools(int uses) : base(uses, 0x1EB8) => Weight = 1.0;
 
     public TinkerTools(Serial serial) : base(serial)
     {
@@ -42,17 +36,13 @@ namespace Server.Items
   {
     [Constructible]
     public TinkersTools()
-      : base(0x1EBC)
-    {
+      : base(0x1EBC) =>
       Weight = 1.0;
-    }
 
     [Constructible]
     public TinkersTools(int uses)
-      : base(uses, 0x1EBC)
-    {
+      : base(uses, 0x1EBC) =>
       Weight = 1.0;
-    }
 
     public TinkersTools(Serial serial)
       : base(serial)

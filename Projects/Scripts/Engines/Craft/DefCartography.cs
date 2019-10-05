@@ -17,10 +17,7 @@ namespace Server.Engines.Craft
 
     public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefCartography());
 
-    public override double GetChanceAtMin(CraftItem item)
-    {
-      return 0.0; // 0%
-    }
+    public override double GetChanceAtMin(CraftItem item) => 0.0;
 
     public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
     {

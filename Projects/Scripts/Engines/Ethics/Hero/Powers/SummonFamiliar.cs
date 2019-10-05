@@ -6,15 +6,13 @@ namespace Server.Ethics.Hero
 {
   public sealed class SummonFamiliar : Power
   {
-    public SummonFamiliar()
-    {
+    public SummonFamiliar() =>
       m_Definition = new PowerDefinition(
         5,
         "Summon Familiar",
         "Trubechs Vingir",
         ""
       );
-    }
 
     public override void BeginInvoke(Player from)
     {

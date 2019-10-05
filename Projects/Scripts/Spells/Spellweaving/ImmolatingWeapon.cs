@@ -63,15 +63,9 @@ namespace Server.Spells.Spellweaving
       FinishSequence();
     }
 
-    public static bool IsImmolating(BaseWeapon weapon)
-    {
-      return m_WeaponDamageTable.ContainsKey(weapon);
-    }
+    public static bool IsImmolating(BaseWeapon weapon) => m_WeaponDamageTable.ContainsKey(weapon);
 
-    public static int GetImmolatingDamage(BaseWeapon weapon)
-    {
-      return m_WeaponDamageTable.TryGetValue(weapon, out ImmolatingWeaponEntry entry) ? entry.m_Damage : 0;
-    }
+    public static int GetImmolatingDamage(BaseWeapon weapon) => m_WeaponDamageTable.TryGetValue(weapon, out ImmolatingWeaponEntry entry) ? entry.m_Damage : 0;
 
     public static void DoEffect(BaseWeapon weapon, Mobile target)
     {

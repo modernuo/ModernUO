@@ -5,10 +5,7 @@ namespace Server.Engines.Quests.Samurai
   public class HaochisKatana : QuestItem
   {
     [Constructible]
-    public HaochisKatana() : base(0x13FF)
-    {
-      Weight = 1.0;
-    }
+    public HaochisKatana() : base(0x13FF) => Weight = 1.0;
 
     public HaochisKatana(Serial serial) : base(serial)
     {
@@ -16,12 +13,7 @@ namespace Server.Engines.Quests.Samurai
 
     public override int LabelNumber => 1063165; // Daimyo Haochi's Katana
 
-    public override bool CanDrop(PlayerMobile player)
-    {
-      return !(player.Quest is HaochisTrialsQuest);
-
-      //return !qs.IsObjectiveInProgress( typeof( FifthTrialReturnObjective ) );
-    }
+    public override bool CanDrop(PlayerMobile player) => !(player.Quest is HaochisTrialsQuest);
 
     public override void Serialize(GenericWriter writer)
     {

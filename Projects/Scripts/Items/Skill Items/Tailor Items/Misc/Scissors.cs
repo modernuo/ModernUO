@@ -11,10 +11,7 @@ namespace Server.Items
   public class Scissors : Item
   {
     [Constructible]
-    public Scissors() : base(0xF9F)
-    {
-      Weight = 1.0;
-    }
+    public Scissors() : base(0xF9F) => Weight = 1.0;
 
     public Scissors(Serial serial) : base(serial)
     {
@@ -58,10 +55,7 @@ namespace Server.Items
     {
       private Scissors m_Item;
 
-      public InternalTarget(Scissors item) : base(2, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(Scissors item) : base(2, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

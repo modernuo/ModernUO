@@ -7,10 +7,7 @@ namespace Server.Items
   {
     private Timer m_Timer;
 
-    public PlagueBeastVein(int itemID, int hue) : base(itemID, hue)
-    {
-      Cut = false;
-    }
+    public PlagueBeastVein(int itemID, int hue) : base(itemID, hue) => Cut = false;
 
     public PlagueBeastVein(Serial serial) : base(serial)
     {

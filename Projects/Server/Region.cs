@@ -117,10 +117,7 @@ namespace Server
     {
     }
 
-    public Region(string name, Map map, int priority, params Rectangle3D[] area) : this(name, map, null, area)
-    {
-      m_Priority = priority;
-    }
+    public Region(string name, Map map, int priority, params Rectangle3D[] area) : this(name, map, null, area) => m_Priority = priority;
 
     public Region(string name, Map map, Region parent, params Rectangle2D[] area) : this(name, map, parent,
       ConvertTo3D(area))
@@ -293,10 +290,7 @@ namespace Server
       return map.DefaultRegion;
     }
 
-    public static Rectangle3D ConvertTo3D(Rectangle2D rect)
-    {
-      return new Rectangle3D(new Point3D(rect.Start, MinZ), new Point3D(rect.End, MaxZ));
-    }
+    public static Rectangle3D ConvertTo3D(Rectangle2D rect) => new Rectangle3D(new Point3D(rect.Start, MinZ), new Point3D(rect.End, MaxZ));
 
     public static Rectangle3D[] ConvertTo3D(Rectangle2D[] rects)
     {
@@ -466,25 +460,13 @@ namespace Server
       return null;
     }
 
-    public bool IsPartOf<T>() where T : Region
-    {
-      return GetRegion<T>() != null;
-    }
+    public bool IsPartOf<T>() where T : Region => GetRegion<T>() != null;
 
-    public bool IsPartOf(Region region)
-    {
-      return this == region || IsChildOf(region);
-    }
+    public bool IsPartOf(Region region) => this == region || IsChildOf(region);
 
-    public bool IsPartOf(string regionName)
-    {
-      return GetRegion(regionName) != null;
-    }
+    public bool IsPartOf(string regionName) => GetRegion(regionName) != null;
 
-    public virtual bool AcceptsSpawnsFrom(Region region)
-    {
-      return AllowSpawn() && (region == this || Parent?.AcceptsSpawnsFrom(region) == true);
-    }
+    public virtual bool AcceptsSpawnsFrom(Region region) => AllowSpawn() && (region == this || Parent?.AcceptsSpawnsFrom(region) == true);
 
     public List<Mobile> GetPlayers()
     {
@@ -548,10 +530,7 @@ namespace Server
       return count;
     }
 
-    public override string ToString()
-    {
-      return m_Name ?? GetType().Name;
-    }
+    public override string ToString() => m_Name ?? GetType().Name;
 
 
     public virtual void OnRegister()
@@ -570,10 +549,7 @@ namespace Server
     {
     }
 
-    public virtual bool OnMoveInto(Mobile m, Direction d, Point3D newLocation, Point3D oldLocation)
-    {
-      return m.WalkRegion == null || AcceptsSpawnsFrom(m.WalkRegion);
-    }
+    public virtual bool OnMoveInto(Mobile m, Direction d, Point3D newLocation, Point3D oldLocation) => m.WalkRegion == null || AcceptsSpawnsFrom(m.WalkRegion);
 
     public virtual void OnEnter(Mobile m)
     {
@@ -588,15 +564,9 @@ namespace Server
       Parent?.MakeGuard(focus);
     }
 
-    public virtual Type GetResource(Type type)
-    {
-      return Parent?.GetResource(type) ?? type;
-    }
+    public virtual Type GetResource(Type type) => Parent?.GetResource(type) ?? type;
 
-    public virtual bool CanUseStuckMenu(Mobile m)
-    {
-      return Parent?.CanUseStuckMenu(m) != false;
-    }
+    public virtual bool CanUseStuckMenu(Mobile m) => Parent?.CanUseStuckMenu(m) != false;
 
     public virtual void OnAggressed(Mobile aggressor, Mobile aggressed, bool criminal)
     {
@@ -618,40 +588,19 @@ namespace Server
       Parent?.OnLocationChanged(m, oldLocation);
     }
 
-    public virtual bool OnTarget(Mobile m, Target t, object o)
-    {
-      return Parent?.OnTarget(m, t, o) != false;
-    }
+    public virtual bool OnTarget(Mobile m, Target t, object o) => Parent?.OnTarget(m, t, o) != false;
 
-    public virtual bool OnCombatantChange(Mobile m, Mobile Old, Mobile New)
-    {
-      return Parent?.OnCombatantChange(m, Old, New) != false;
-    }
+    public virtual bool OnCombatantChange(Mobile m, Mobile Old, Mobile New) => Parent?.OnCombatantChange(m, Old, New) != false;
 
-    public virtual bool AllowHousing(Mobile from, Point3D p)
-    {
-      return Parent?.AllowHousing(from, p) != false;
-    }
+    public virtual bool AllowHousing(Mobile from, Point3D p) => Parent?.AllowHousing(from, p) != false;
 
-    public virtual bool SendInaccessibleMessage(Item item, Mobile from)
-    {
-      return Parent?.SendInaccessibleMessage(item, from) == true;
-    }
+    public virtual bool SendInaccessibleMessage(Item item, Mobile from) => Parent?.SendInaccessibleMessage(item, from) == true;
 
-    public virtual bool CheckAccessibility(Item item, Mobile from)
-    {
-      return Parent?.CheckAccessibility(item, from) != false;
-    }
+    public virtual bool CheckAccessibility(Item item, Mobile from) => Parent?.CheckAccessibility(item, from) != false;
 
-    public virtual bool OnDecay(Item item)
-    {
-      return Parent?.OnDecay(item) != false;
-    }
+    public virtual bool OnDecay(Item item) => Parent?.OnDecay(item) != false;
 
-    public virtual bool AllowHarmful(Mobile from, Mobile target)
-    {
-      return Parent?.AllowHarmful(from, target) ?? Mobile.AllowHarmfulHandler?.Invoke(from, target) ?? true;
-    }
+    public virtual bool AllowHarmful(Mobile from, Mobile target) => Parent?.AllowHarmful(from, target) ?? Mobile.AllowHarmfulHandler?.Invoke(from, target) ?? true;
 
     public virtual void OnCriminalAction(Mobile m, bool message)
     {
@@ -661,11 +610,9 @@ namespace Server
         m.SendLocalizedMessage(1005040); // You've committed a criminal act!!
     }
 
-    public virtual bool AllowBeneficial(Mobile from, Mobile target)
-    {
-      return Parent?.AllowBeneficial(from, target) ??
-             Mobile.AllowBeneficialHandler?.Invoke(from, target) ?? true;
-    }
+    public virtual bool AllowBeneficial(Mobile from, Mobile target) =>
+      Parent?.AllowBeneficial(from, target) ??
+      Mobile.AllowBeneficialHandler?.Invoke(from, target) ?? true;
 
     public virtual void OnBeneficialAction(Mobile helper, Mobile target)
     {
@@ -687,60 +634,33 @@ namespace Server
       Parent?.OnSpeech(args);
     }
 
-    public virtual bool OnSkillUse(Mobile m, int Skill)
-    {
-      return Parent?.OnSkillUse(m, Skill) != false;
-    }
+    public virtual bool OnSkillUse(Mobile m, int Skill) => Parent?.OnSkillUse(m, Skill) != false;
 
-    public virtual bool OnBeginSpellCast(Mobile m, ISpell s)
-    {
-      return Parent?.OnBeginSpellCast(m, s) != false;
-    }
+    public virtual bool OnBeginSpellCast(Mobile m, ISpell s) => Parent?.OnBeginSpellCast(m, s) != false;
 
     public virtual void OnSpellCast(Mobile m, ISpell s)
     {
       Parent?.OnSpellCast(m, s);
     }
 
-    public virtual bool OnResurrect(Mobile m)
-    {
-      return Parent?.OnResurrect(m) != false;
-    }
+    public virtual bool OnResurrect(Mobile m) => Parent?.OnResurrect(m) != false;
 
-    public virtual bool OnBeforeDeath(Mobile m)
-    {
-      return Parent?.OnBeforeDeath(m) != false;
-    }
+    public virtual bool OnBeforeDeath(Mobile m) => Parent?.OnBeforeDeath(m) != false;
 
     public virtual void OnDeath(Mobile m)
     {
       Parent?.OnDeath(m);
     }
 
-    public virtual bool OnDamage(Mobile m, ref int Damage)
-    {
-      return Parent?.OnDamage(m, ref Damage) != false;
-    }
+    public virtual bool OnDamage(Mobile m, ref int Damage) => Parent?.OnDamage(m, ref Damage) != false;
 
-    public virtual bool OnHeal(Mobile m, ref int Heal)
-    {
-      return Parent?.OnHeal(m, ref Heal) != false;
-    }
+    public virtual bool OnHeal(Mobile m, ref int Heal) => Parent?.OnHeal(m, ref Heal) != false;
 
-    public virtual bool OnDoubleClick(Mobile m, object o)
-    {
-      return Parent?.OnDoubleClick(m, o) != false;
-    }
+    public virtual bool OnDoubleClick(Mobile m, object o) => Parent?.OnDoubleClick(m, o) != false;
 
-    public virtual bool OnSingleClick(Mobile m, object o)
-    {
-      return Parent?.OnSingleClick(m, o) != false;
-    }
+    public virtual bool OnSingleClick(Mobile m, object o) => Parent?.OnSingleClick(m, o) != false;
 
-    public virtual bool AllowSpawn()
-    {
-      return Parent?.AllowSpawn() != false;
-    }
+    public virtual bool AllowSpawn() => Parent?.AllowSpawn() != false;
 
     public virtual void AlterLightLevel(Mobile m, ref int global, ref int personal)
     {
@@ -891,10 +811,7 @@ namespace Server
       return null;
     }
 
-    public static bool ReadString(XmlElement xml, string attribute, ref string value)
-    {
-      return ReadString(xml, attribute, ref value, true);
-    }
+    public static bool ReadString(XmlElement xml, string attribute, ref string value) => ReadString(xml, attribute, ref value, true);
 
     public static bool ReadString(XmlElement xml, string attribute, ref string value, bool mandatory)
     {
@@ -907,10 +824,7 @@ namespace Server
       return true;
     }
 
-    public static bool ReadInt32(XmlElement xml, string attribute, ref int value)
-    {
-      return ReadInt32(xml, attribute, ref value, true);
-    }
+    public static bool ReadInt32(XmlElement xml, string attribute, ref int value) => ReadInt32(xml, attribute, ref value, true);
 
     public static bool ReadInt32(XmlElement xml, string attribute, ref int value, bool mandatory)
     {
@@ -932,10 +846,7 @@ namespace Server
       return true;
     }
 
-    public static bool ReadBoolean(XmlElement xml, string attribute, ref bool value)
-    {
-      return ReadBoolean(xml, attribute, ref value, true);
-    }
+    public static bool ReadBoolean(XmlElement xml, string attribute, ref bool value) => ReadBoolean(xml, attribute, ref value, true);
 
     public static bool ReadBoolean(XmlElement xml, string attribute, ref bool value, bool mandatory)
     {
@@ -957,10 +868,7 @@ namespace Server
       return true;
     }
 
-    public static bool ReadDateTime(XmlElement xml, string attribute, ref DateTime value)
-    {
-      return ReadDateTime(xml, attribute, ref value, true);
-    }
+    public static bool ReadDateTime(XmlElement xml, string attribute, ref DateTime value) => ReadDateTime(xml, attribute, ref value, true);
 
     public static bool ReadDateTime(XmlElement xml, string attribute, ref DateTime value, bool mandatory)
     {
@@ -982,10 +890,7 @@ namespace Server
       return true;
     }
 
-    public static bool ReadTimeSpan(XmlElement xml, string attribute, ref TimeSpan value)
-    {
-      return ReadTimeSpan(xml, attribute, ref value, true);
-    }
+    public static bool ReadTimeSpan(XmlElement xml, string attribute, ref TimeSpan value) => ReadTimeSpan(xml, attribute, ref value, true);
 
     public static bool ReadTimeSpan(XmlElement xml, string attribute, ref TimeSpan value, bool mandatory)
     {
@@ -1007,10 +912,7 @@ namespace Server
       return true;
     }
 
-    public static bool ReadEnum<T>(XmlElement xml, string attribute, ref T value) where T : struct
-    {
-      return ReadEnum(xml, attribute, ref value, true);
-    }
+    public static bool ReadEnum<T>(XmlElement xml, string attribute, ref T value) where T : struct => ReadEnum(xml, attribute, ref value, true);
 
     public static bool ReadEnum<T>(XmlElement xml, string attribute, ref T value, bool mandatory)
       where T : struct // We can't limit the where clause to Enums only
@@ -1032,10 +934,7 @@ namespace Server
       return false;
     }
 
-    public static bool ReadMap(XmlElement xml, string attribute, ref Map value)
-    {
-      return ReadMap(xml, attribute, ref value, true);
-    }
+    public static bool ReadMap(XmlElement xml, string attribute, ref Map value) => ReadMap(xml, attribute, ref value, true);
 
     public static bool ReadMap(XmlElement xml, string attribute, ref Map value, bool mandatory)
     {
@@ -1057,10 +956,7 @@ namespace Server
       return true;
     }
 
-    public static bool ReadType(XmlElement xml, string attribute, ref Type value)
-    {
-      return ReadType(xml, attribute, ref value, true);
-    }
+    public static bool ReadType(XmlElement xml, string attribute, ref Type value) => ReadType(xml, attribute, ref value, true);
 
     public static bool ReadType(XmlElement xml, string attribute, ref Type value, bool mandatory)
     {
@@ -1090,10 +986,7 @@ namespace Server
       return true;
     }
 
-    public static bool ReadPoint3D(XmlElement xml, Map map, ref Point3D value)
-    {
-      return ReadPoint3D(xml, map, ref value, true);
-    }
+    public static bool ReadPoint3D(XmlElement xml, Map map, ref Point3D value) => ReadPoint3D(xml, map, ref value, true);
 
     public static bool ReadPoint3D(XmlElement xml, Map map, ref Point3D value, bool mandatory)
     {
@@ -1114,10 +1007,7 @@ namespace Server
       return false;
     }
 
-    public static bool ReadRectangle3D(XmlElement xml, int defaultMinZ, int defaultMaxZ, ref Rectangle3D value)
-    {
-      return ReadRectangle3D(xml, defaultMinZ, defaultMaxZ, ref value, true);
-    }
+    public static bool ReadRectangle3D(XmlElement xml, int defaultMinZ, int defaultMaxZ, ref Rectangle3D value) => ReadRectangle3D(xml, defaultMinZ, defaultMaxZ, ref value, true);
 
     public static bool ReadRectangle3D(XmlElement xml, int defaultMinZ, int defaultMaxZ, ref Rectangle3D value,
       bool mandatory)

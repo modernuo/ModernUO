@@ -255,25 +255,13 @@ namespace Server.SkillHandlers
       return chance > Utility.Random(100);
     }
 
-    private static bool IsAnimal(Mobile m)
-    {
-      return !m.Player && m.Body.IsAnimal;
-    }
+    private static bool IsAnimal(Mobile m) => !m.Player && m.Body.IsAnimal;
 
-    private static bool IsMonster(Mobile m)
-    {
-      return !m.Player && m.Body.IsMonster;
-    }
+    private static bool IsMonster(Mobile m) => !m.Player && m.Body.IsMonster;
 
-    private static bool IsHumanNPC(Mobile m)
-    {
-      return !m.Player && m.Body.IsHuman;
-    }
+    private static bool IsHumanNPC(Mobile m) => !m.Player && m.Body.IsHuman;
 
-    private static bool IsPlayer(Mobile m)
-    {
-      return m.Player;
-    }
+    private static bool IsPlayer(Mobile m) => m.Player;
 
     public override void OnResponse(NetState state, RelayInfo info)
     {
@@ -294,10 +282,7 @@ namespace Server.SkillHandlers
     {
       private Mobile m_From;
 
-      public InternalSorter(Mobile from)
-      {
-        m_From = from;
-      }
+      public InternalSorter(Mobile from) => m_From = from;
 
       public int Compare(Mobile x, Mobile y)
       {

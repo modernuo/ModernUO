@@ -72,10 +72,7 @@ namespace Server.Engines.Quests.Doom
   {
     private BoneDemon m_Daemon;
 
-    public VanquishDaemonObjective(BoneDemon daemon)
-    {
-      m_Daemon = daemon;
-    }
+    public VanquishDaemonObjective(BoneDemon daemon) => m_Daemon = daemon;
 
     // Serialization
     public VanquishDaemonObjective()

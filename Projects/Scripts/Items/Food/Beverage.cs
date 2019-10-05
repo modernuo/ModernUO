@@ -37,10 +37,8 @@ namespace Server.Items
   {
     [Constructible]
     public BeverageBottle(BeverageType type)
-      : base(type)
-    {
+      : base(type) =>
       Weight = 1.0;
-    }
 
     public BeverageBottle(Serial serial)
       : base(serial)
@@ -114,10 +112,8 @@ namespace Server.Items
   {
     [Constructible]
     public Jug(BeverageType type)
-      : base(type)
-    {
+      : base(type) =>
       Weight = 1.0;
-    }
 
     public Jug(Serial serial)
       : base(serial)
@@ -154,17 +150,12 @@ namespace Server.Items
   public class CeramicMug : BaseBeverage
   {
     [Constructible]
-    public CeramicMug()
-    {
-      Weight = 1.0;
-    }
+    public CeramicMug() => Weight = 1.0;
 
     [Constructible]
     public CeramicMug(BeverageType type)
-      : base(type)
-    {
+      : base(type) =>
       Weight = 1.0;
-    }
 
     public CeramicMug(Serial serial)
       : base(serial)
@@ -202,17 +193,12 @@ namespace Server.Items
   public class PewterMug : BaseBeverage
   {
     [Constructible]
-    public PewterMug()
-    {
-      Weight = 1.0;
-    }
+    public PewterMug() => Weight = 1.0;
 
     [Constructible]
     public PewterMug(BeverageType type)
-      : base(type)
-    {
+      : base(type) =>
       Weight = 1.0;
-    }
 
     public PewterMug(Serial serial)
       : base(serial)
@@ -248,17 +234,12 @@ namespace Server.Items
   public class Goblet : BaseBeverage
   {
     [Constructible]
-    public Goblet()
-    {
-      Weight = 1.0;
-    }
+    public Goblet() => Weight = 1.0;
 
     [Constructible]
     public Goblet(BeverageType type)
-      : base(type)
-    {
+      : base(type) =>
       Weight = 1.0;
-    }
 
     public Goblet(Serial serial)
       : base(serial)
@@ -296,17 +277,12 @@ namespace Server.Items
   public class GlassMug : BaseBeverage
   {
     [Constructible]
-    public GlassMug()
-    {
-      Weight = 1.0;
-    }
+    public GlassMug() => Weight = 1.0;
 
     [Constructible]
     public GlassMug(BeverageType type)
-      : base(type)
-    {
+      : base(type) =>
       Weight = 1.0;
-    }
 
     public GlassMug(Serial serial)
       : base(serial)
@@ -399,17 +375,12 @@ namespace Server.Items
   public class Pitcher : BaseBeverage
   {
     [Constructible]
-    public Pitcher()
-    {
-      Weight = 2.0;
-    }
+    public Pitcher() => Weight = 2.0;
 
     [Constructible]
     public Pitcher(BeverageType type)
-      : base(type)
-    {
+      : base(type) =>
       Weight = 2.0;
-    }
 
     public Pitcher(Serial serial)
       : base(serial)
@@ -560,10 +531,7 @@ namespace Server.Items
     private BeverageType m_Content;
     private int m_Quantity;
 
-    public BaseBeverage()
-    {
-      ItemID = ComputeItemID();
-    }
+    public BaseBeverage() => ItemID = ComputeItemID();
 
     public BaseBeverage(BeverageType type)
     {
@@ -993,10 +961,7 @@ namespace Server.Items
       }
     }
 
-    public static bool ConsumeTotal(Container pack, BeverageType content, int quantity)
-    {
-      return ConsumeTotal(pack, typeof(BaseBeverage), content, quantity);
-    }
+    public static bool ConsumeTotal(Container pack, BeverageType content, int quantity) => ConsumeTotal(pack, typeof(BaseBeverage), content, quantity);
 
     public static bool ConsumeTotal(Container pack, Type itemType, BeverageType content, int quantity)
     {
@@ -1051,10 +1016,7 @@ namespace Server.Items
       writer.Write(m_Quantity);
     }
 
-    protected bool CheckType(string name)
-    {
-      return World.LoadingType == $"Server.Items.{name}";
-    }
+    protected bool CheckType(string name) => World.LoadingType == $"Server.Items.{name}";
 
     public override void Deserialize(GenericReader reader)
     {

@@ -19,10 +19,7 @@ namespace Server.Engines.Craft
 
     public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefAlchemy());
 
-    public override double GetChanceAtMin(CraftItem item)
-    {
-      return 0.0; // 0%
-    }
+    public override double GetChanceAtMin(CraftItem item) => 0.0;
 
     public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
     {
@@ -40,10 +37,7 @@ namespace Server.Engines.Craft
       from.PlaySound(0x242);
     }
 
-    public static bool IsPotion(Type type)
-    {
-      return typeofPotion.IsAssignableFrom(type);
-    }
+    public static bool IsPotion(Type type) => typeofPotion.IsAssignableFrom(type);
 
     public override int PlayEndingEffect(Mobile from, bool failed, bool lostMaterial, bool toolBroken, int quality,
       bool makersMark, CraftItem item)

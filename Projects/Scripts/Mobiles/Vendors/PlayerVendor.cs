@@ -114,10 +114,7 @@ namespace Server.Mobiles
       return true;
     }
 
-    public override bool IsAccessibleTo(Mobile m)
-    {
-      return true;
-    }
+    public override bool IsAccessibleTo(Mobile m) => true;
 
     public override bool CheckItemUse(Mobile from, Item item)
     {
@@ -131,12 +128,10 @@ namespace Server.Mobiles
       return false;
     }
 
-    public override bool CheckTarget(Mobile from, Target targ, object targeted)
-    {
-      return base.CheckTarget(from, targ, targeted) &&
-             (from.AccessLevel >= AccessLevel.GameMaster ||
-              targ.GetType().IsDefined(typeof(PlayerVendorTargetAttribute), false));
-    }
+    public override bool CheckTarget(Mobile from, Target targ, object targeted) =>
+      base.CheckTarget(from, targ, targeted) &&
+      (from.AccessLevel >= AccessLevel.GameMaster ||
+       targ.GetType().IsDefined(typeof(PlayerVendorTargetAttribute), false));
 
     public override void GetChildContextMenuEntries(Mobile from, List<ContextMenuEntry> list, Item item)
     {
@@ -222,10 +217,7 @@ namespace Server.Mobiles
     {
       private Item m_Item;
 
-      public BuyEntry(Item item) : base(6103)
-      {
-        m_Item = item;
-      }
+      public BuyEntry(Item item) : base(6103) => m_Item = item;
 
       public override bool NonLocalUse => true;
 
@@ -682,10 +674,7 @@ namespace Server.Mobiles
       Placeholder?.Delete();
     }
 
-    public override bool IsSnoop(Mobile from)
-    {
-      return false;
-    }
+    public override bool IsSnoop(Mobile from) => false;
 
     public override void GetProperties(ObjectPropertyList list)
     {
@@ -700,10 +689,7 @@ namespace Server.Mobiles
       return v;
     }
 
-    private VendorItem SetVendorItem(Item item, int price, string description)
-    {
-      return SetVendorItem(item, price, description, DateTime.UtcNow);
-    }
+    private VendorItem SetVendorItem(Item item, int price, string description) => SetVendorItem(item, price, description, DateTime.UtcNow);
 
     private VendorItem SetVendorItem(Item item, int price, string description, DateTime created)
     {
@@ -1107,15 +1093,9 @@ namespace Server.Mobiles
       base.GetContextMenuEntries(from, list);
     }
 
-    public override bool HandlesOnSpeech(Mobile from)
-    {
-      return from.Alive && from.GetDistanceToSqrt(this) <= 3;
-    }
+    public override bool HandlesOnSpeech(Mobile from) => from.Alive && from.GetDistanceToSqrt(this) <= 3;
 
-    public bool WasNamed(string speech)
-    {
-      return Name != null && Insensitive.StartsWith(speech, Name);
-    }
+    public bool WasNamed(string speech) => Name != null && Insensitive.StartsWith(speech, Name);
 
     public override void OnSpeech(SpeechEventArgs e)
     {
@@ -1206,19 +1186,13 @@ namespace Server.Mobiles
       }
     }
 
-    public override bool CanBeDamaged()
-    {
-      return false;
-    }
+    public override bool CanBeDamaged() => false;
 
     private class ReturnVendorEntry : ContextMenuEntry
     {
       private PlayerVendor m_Vendor;
 
-      public ReturnVendorEntry(PlayerVendor vendor) : base(6214)
-      {
-        m_Vendor = vendor;
-      }
+      public ReturnVendorEntry(PlayerVendor vendor) : base(6214) => m_Vendor = vendor;
 
       public override void OnClick()
       {
@@ -1292,10 +1266,7 @@ namespace Server.Mobiles
     [PlayerVendorTarget]
     private class PVBuyTarget : Target
     {
-      public PVBuyTarget() : base(3, false, TargetFlags.None)
-      {
-        AllowNonlocal = true;
-      }
+      public PVBuyTarget() : base(3, false, TargetFlags.None) => AllowNonlocal = true;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -1405,10 +1376,7 @@ namespace Server.Mobiles
     {
       private PlayerVendor m_Vendor;
 
-      public CollectGoldPrompt(PlayerVendor vendor)
-      {
-        m_Vendor = vendor;
-      }
+      public CollectGoldPrompt(PlayerVendor vendor) => m_Vendor = vendor;
 
       public override void OnResponse(Mobile from, string text)
       {
@@ -1444,10 +1412,7 @@ namespace Server.Mobiles
     {
       private PlayerVendor m_Vendor;
 
-      public VendorNamePrompt(PlayerVendor vendor)
-      {
-        m_Vendor = vendor;
-      }
+      public VendorNamePrompt(PlayerVendor vendor) => m_Vendor = vendor;
 
       public override void OnResponse(Mobile from, string text)
       {
@@ -1474,10 +1439,7 @@ namespace Server.Mobiles
     {
       private PlayerVendor m_Vendor;
 
-      public ShopNamePrompt(PlayerVendor vendor)
-      {
-        m_Vendor = vendor;
-      }
+      public ShopNamePrompt(PlayerVendor vendor) => m_Vendor = vendor;
 
       public override void OnResponse(Mobile from, string text)
       {

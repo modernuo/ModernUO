@@ -65,10 +65,7 @@ namespace Server.Items
     {
       private Dough m_Item;
 
-      public InternalTarget(Dough item) : base(1, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(Dough item) : base(1, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -156,10 +153,7 @@ namespace Server.Items
     {
       private SweetDough m_Item;
 
-      public InternalTarget(SweetDough item) : base(1, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(SweetDough item) : base(1, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -255,10 +249,7 @@ namespace Server.Items
     {
       private JarHoney m_Item;
 
-      public InternalTarget(JarHoney item) : base(1, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(JarHoney item) : base(1, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {
@@ -287,10 +278,7 @@ namespace Server.Items
   public class BowlFlour : Item
   {
     [Constructible]
-    public BowlFlour() : base(0xa1e)
-    {
-      Weight = 1.0;
-    }
+    public BowlFlour() : base(0xa1e) => Weight = 1.0;
 
     public BowlFlour(Serial serial) : base(serial)
     {
@@ -315,10 +303,7 @@ namespace Server.Items
   public class WoodenBowl : Item
   {
     [Constructible]
-    public WoodenBowl() : base(0x15f8)
-    {
-      Weight = 1.0;
-    }
+    public WoodenBowl() : base(0x15f8) => Weight = 1.0;
 
     public WoodenBowl(Serial serial) : base(serial)
     {
@@ -481,93 +466,11 @@ namespace Server.Items
     }
   }
 
-#if false
-// ********** SackFlourOpen **********
-	public class SackFlourOpen : Item
-	{
-		public override int LabelNumber => 1024166; // open sack of flour
-
-		[Constructible]
-		public SackFlourOpen() : base(UtilityItem.RandomChoice( 0x1046, 0x103a ))
-		{
-			Weight = 1.0;
-		}
-
-		public SackFlourOpen( Serial serial ) : base( serial )
-		{
-		}
-
-		public override void Serialize( GenericWriter writer )
-		{
-			base.Serialize( writer );
-
-			writer.Write( (int) 0 ); // version
-		}
-
-		public override void Deserialize( GenericReader reader )
-		{
-			base.Deserialize( reader );
-
-			int version = reader.ReadInt();
-		}
-
-		public override void OnDoubleClick( Mobile from )
-		{
-			if ( !Movable )
-				return;
-
-			from.Target = new InternalTarget( this );
-		}
-
-		private class InternalTarget : Target
-		{
-			private SackFlourOpen m_Item;
-
-			public InternalTarget( SackFlourOpen item ) : base( 1, false, TargetFlags.None )
-			{
-				m_Item = item;
-			}
-
-			protected override void OnTarget( Mobile from, object targeted )
-			{
-				if ( m_Item.Deleted ) return;
-
-				if ( targeted is WoodenBowl )
-				{
-					m_Item.Delete();
-					((WoodenBowl)targeted).Delete();
-
-					from.AddToBackpack( new BowlFlour() );
-				}
-				else if ( targeted is TribalBerry )
-				{
-					if ( from.Skills.Cooking.Base >= 80.0 )
-					{
-						m_Item.Delete();
-						((TribalBerry)targeted).Delete();
-
-						from.AddToBackpack( new TribalPaint() );
-
-						from.SendLocalizedMessage( 1042002 ); // You combine the berry and the flour into the tribal paint worn by the savages.
-					}
-					else
-					{
-						from.SendLocalizedMessage( 1042003 ); // You don't have the cooking skill to create the body paint.
-					}
-				}
-			}
-		}
-	}
-#endif
-
   // ********** Eggshells **********
   public class Eggshells : Item
   {
     [Constructible]
-    public Eggshells() : base(0x9b4)
-    {
-      Weight = 0.5;
-    }
+    public Eggshells() : base(0x9b4) => Weight = 0.5;
 
     public Eggshells(Serial serial) : base(serial)
     {

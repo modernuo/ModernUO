@@ -3,10 +3,7 @@ namespace Server.Items
   public class PlateHelm : BaseArmor
   {
     [Constructible]
-    public PlateHelm() : base(0x1412)
-    {
-      Weight = 5.0;
-    }
+    public PlateHelm() : base(0x1412) => Weight = 5.0;
 
     public PlateHelm(Serial serial) : base(serial)
     {

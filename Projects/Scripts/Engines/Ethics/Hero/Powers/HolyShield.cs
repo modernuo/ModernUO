@@ -4,15 +4,13 @@ namespace Server.Ethics.Hero
 {
   public sealed class HolyShield : Power
   {
-    public HolyShield()
-    {
+    public HolyShield() =>
       m_Definition = new PowerDefinition(
         20,
         "Holy Shield",
         "Erstok K'blac",
         ""
       );
-    }
 
     public override void BeginInvoke(Player from)
     {

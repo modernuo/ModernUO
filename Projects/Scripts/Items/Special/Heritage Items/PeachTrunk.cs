@@ -32,10 +32,7 @@ namespace Server.Items
   public class PeachTrunkDeed : BaseAddonDeed
   {
     [Constructible]
-    public PeachTrunkDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public PeachTrunkDeed() => LootType = LootType.Blessed;
 
     public PeachTrunkDeed(Serial serial) : base(serial)
     {

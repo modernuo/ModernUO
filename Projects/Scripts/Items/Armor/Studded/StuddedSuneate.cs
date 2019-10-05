@@ -3,10 +3,7 @@ namespace Server.Items
   public class StuddedSuneate : BaseArmor
   {
     [Constructible]
-    public StuddedSuneate() : base(0x27D2)
-    {
-      Weight = 5.0;
-    }
+    public StuddedSuneate() : base(0x27D2) => Weight = 5.0;
 
     public StuddedSuneate(Serial serial) : base(serial)
     {

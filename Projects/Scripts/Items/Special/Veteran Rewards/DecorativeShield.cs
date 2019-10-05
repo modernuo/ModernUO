@@ -11,10 +11,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public DecorativeShield(int itemID = 0x156C) : base(itemID)
-    {
-      Movable = false;
-    }
+    public DecorativeShield(int itemID = 0x156C) : base(itemID) => Movable = false;
 
     public DecorativeShield(Serial serial) : base(serial)
     {
@@ -44,12 +41,10 @@ namespace Server.Items
       }
     }
 
-    public bool CouldFit(IPoint3D p, Map map)
-    {
-      return map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) == true && (FacingSouth
-               && BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map)
-               || BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map));
-    }
+    public bool CouldFit(IPoint3D p, Map map) =>
+      map?.CanFit(p.X, p.Y, p.Z, ItemData.Height) == true && (FacingSouth
+                                                              && BaseAddon.IsWall(p.X, p.Y - 1, p.Z, map)
+                                                              || BaseAddon.IsWall(p.X - 1, p.Y, p.Z, map));
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsRewardItem

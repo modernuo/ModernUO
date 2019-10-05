@@ -40,9 +40,6 @@ namespace Server.Engines.Plants
       return null;
     }
 
-    public Item CreateResource()
-    {
-      return (Item)Activator.CreateInstance(ResourceType);
-    }
+    public Item CreateResource() => (Item)Activator.CreateInstance(ResourceType);
   }
 }

@@ -50,20 +50,14 @@ namespace Server.Mobiles
 
     public override VendorShoeType ShoeType => Utility.RandomBool() ? VendorShoeType.Shoes : VendorShoeType.Sandals;
 
-    public override bool OnBuyItems(Mobile buyer, List<BuyItemResponse> list)
-    {
-      return false;
-    }
+    public override bool OnBuyItems(Mobile buyer, List<BuyItemResponse> list) => false;
 
     public override void VendorBuy(Mobile from)
     {
       from.SendGump(new HairstylistBuyGump(from, this, m_SellList));
     }
 
-    public override int GetHairHue()
-    {
-      return Utility.RandomBrightHue();
-    }
+    public override int GetHairHue() => Utility.RandomBrightHue();
 
     public override void InitOutfit()
     {

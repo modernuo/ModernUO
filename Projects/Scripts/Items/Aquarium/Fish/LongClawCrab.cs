@@ -3,10 +3,7 @@ namespace Server.Items
   public class LongClawCrab : BaseFish
   {
     [Constructible]
-    public LongClawCrab() : base(0x3AFC)
-    {
-      Hue = 0x527;
-    }
+    public LongClawCrab() : base(0x3AFC) => Hue = 0x527;
 
     public LongClawCrab(Serial serial) : base(serial)
     {

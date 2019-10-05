@@ -3,10 +3,7 @@ namespace Server.Items
   public class BookOfNinjitsu : Spellbook
   {
     [Constructible]
-    public BookOfNinjitsu(ulong content = 0xFF) : base(content, 0x23A0)
-    {
-      Layer = Core.ML ? Layer.OneHanded : Layer.Invalid;
-    }
+    public BookOfNinjitsu(ulong content = 0xFF) : base(content, 0x23A0) => Layer = Core.ML ? Layer.OneHanded : Layer.Invalid;
 
     public BookOfNinjitsu(Serial serial) : base(serial)
     {

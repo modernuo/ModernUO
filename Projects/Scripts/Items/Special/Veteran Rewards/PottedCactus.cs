@@ -14,10 +14,7 @@ namespace Server.Items
     }
 
     [Constructible]
-    public RewardPottedCactus(int itemID) : base(itemID)
-    {
-      Weight = 5.0;
-    }
+    public RewardPottedCactus(int itemID) : base(itemID) => Weight = 5.0;
 
     public RewardPottedCactus(Serial serial) : base(serial)
     {

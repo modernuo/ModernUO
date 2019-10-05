@@ -3,10 +3,7 @@ namespace Server.Items
   public class LuckyDagger : Item
   {
     [Constructible]
-    public LuckyDagger() : base(0xF52)
-    {
-      Hue = 0x8A5;
-    }
+    public LuckyDagger() : base(0xF52) => Hue = 0x8A5;
 
     public LuckyDagger(Serial serial) : base(serial)
     {

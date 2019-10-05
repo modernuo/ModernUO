@@ -26,10 +26,7 @@ namespace Server.Multis
       m_Stages[level] = new DecayStageInfo(min, max);
     }
 
-    public static bool Decays(DecayLevel level)
-    {
-      return m_Stages.ContainsKey(level);
-    }
+    public static bool Decays(DecayLevel level) => m_Stages.ContainsKey(level);
 
     public static TimeSpan GetRandomDuration(DecayLevel level)
     {

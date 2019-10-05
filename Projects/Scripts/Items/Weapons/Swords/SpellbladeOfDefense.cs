@@ -3,10 +3,7 @@ namespace Server.Items
   public class SpellbladeOfDefense : ElvenSpellblade
   {
     [Constructible]
-    public SpellbladeOfDefense()
-    {
-      Attributes.DefendChance = 5;
-    }
+    public SpellbladeOfDefense() => Attributes.DefendChance = 5;
 
     public SpellbladeOfDefense(Serial serial) : base(serial)
     {

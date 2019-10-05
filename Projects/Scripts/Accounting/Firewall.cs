@@ -13,20 +13,20 @@ namespace Server
       string path = "firewall.cfg";
 
       if (File.Exists(path))
-        using (StreamReader ip = new StreamReader(path))
+      {
+        using StreamReader ip = new StreamReader(path);
+        string line;
+
+        while ((line = ip.ReadLine()) != null)
         {
-          string line;
+          line = line.Trim();
 
-          while ((line = ip.ReadLine()) != null)
-          {
-            line = line.Trim();
+          if (line.Length == 0)
+            continue;
 
-            if (line.Length == 0)
-              continue;
+          List.Add(ToFirewallEntry(line));
 
-            List.Add(ToFirewallEntry(line));
-
-            /*
+          /*
             object toAdd;
 
             IPAddress addr;
@@ -37,8 +37,8 @@ namespace Server
 
             m_Blocked.Add( toAdd.ToString() );
              * */
-          }
         }
+      }
     }
 
     public static List<IFirewallEntry> List{ get; }
@@ -130,11 +130,9 @@ namespace Server
     {
       string path = "firewall.cfg";
 
-      using (StreamWriter op = new StreamWriter(path))
-      {
-        for (int i = 0; i < List.Count; ++i)
-          op.WriteLine(List[i]);
-      }
+      using StreamWriter op = new StreamWriter(path);
+      for (int i = 0; i < List.Count; ++i)
+        op.WriteLine(List[i]);
     }
 
     public static bool IsBlocked(IPAddress ip)
@@ -177,20 +175,11 @@ namespace Server
     {
       private IPAddress m_Address;
 
-      public IPFirewallEntry(IPAddress address)
-      {
-        m_Address = address;
-      }
+      public IPFirewallEntry(IPAddress address) => m_Address = address;
 
-      public bool IsBlocked(IPAddress address)
-      {
-        return m_Address.Equals(address);
-      }
+      public bool IsBlocked(IPAddress address) => m_Address.Equals(address);
 
-      public override string ToString()
-      {
-        return m_Address.ToString();
-      }
+      public override string ToString() => m_Address.ToString();
 
       public override bool Equals(object obj)
       {
@@ -209,10 +198,7 @@ namespace Server
         return false;
       }
 
-      public override int GetHashCode()
-      {
-        return m_Address.GetHashCode();
-      }
+      public override int GetHashCode() => m_Address.GetHashCode();
     }
 
     public class CIDRFirewallEntry : IFirewallEntry
@@ -226,15 +212,9 @@ namespace Server
         m_CIDRLength = cidrLength;
       }
 
-      public bool IsBlocked(IPAddress address)
-      {
-        return Utility.IPMatchCIDR(m_CIDRPrefix, address, m_CIDRLength);
-      }
+      public bool IsBlocked(IPAddress address) => Utility.IPMatchCIDR(m_CIDRPrefix, address, m_CIDRLength);
 
-      public override string ToString()
-      {
-        return $"{m_CIDRPrefix}/{m_CIDRLength}";
-      }
+      public override string ToString() => $"{m_CIDRPrefix}/{m_CIDRLength}";
 
       public override bool Equals(object obj)
       {
@@ -255,10 +235,7 @@ namespace Server
         return false;
       }
 
-      public override int GetHashCode()
-      {
-        return m_CIDRPrefix.GetHashCode() ^ m_CIDRLength.GetHashCode();
-      }
+      public override int GetHashCode() => m_CIDRPrefix.GetHashCode() ^ m_CIDRLength.GetHashCode();
     }
 
     public class WildcardIPFirewallEntry : IFirewallEntry
@@ -267,10 +244,7 @@ namespace Server
 
       private bool m_Valid;
 
-      public WildcardIPFirewallEntry(string entry)
-      {
-        m_Entry = entry;
-      }
+      public WildcardIPFirewallEntry(string entry) => m_Entry = entry;
 
       public bool IsBlocked(IPAddress address)
       {
@@ -282,10 +256,7 @@ namespace Server
         return matched;
       }
 
-      public override string ToString()
-      {
-        return m_Entry;
-      }
+      public override string ToString() => m_Entry;
 
       public override bool Equals(object obj)
       {
@@ -295,10 +266,7 @@ namespace Server
         return obj is WildcardIPFirewallEntry entry && m_Entry.Equals(entry.m_Entry);
       }
 
-      public override int GetHashCode()
-      {
-        return m_Entry.GetHashCode();
-      }
+      public override int GetHashCode() => m_Entry.GetHashCode();
     }
 
     #endregion

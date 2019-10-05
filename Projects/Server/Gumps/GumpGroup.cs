@@ -27,10 +27,7 @@ namespace Server.Gumps
     private static byte[] m_LayoutName = Gump.StringToBuffer("group");
     private int m_Group;
 
-    public GumpGroup(int group)
-    {
-      m_Group = group;
-    }
+    public GumpGroup(int group) => m_Group = group;
 
     public int Group
     {
@@ -38,10 +35,7 @@ namespace Server.Gumps
       set => Delta(ref m_Group, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ group {m_Group} }}";
-    }
+    public override string Compile(NetState ns) => $"{{ group {m_Group} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

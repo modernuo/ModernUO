@@ -16,10 +16,8 @@ namespace Server.Engines.Help
 
     public ContainedMenu(Mobile from) : base(
       "You already have an open help request. We will have someone assist you as soon as possible.  What would you like to do?",
-      new[] { "Leave my old help request like it is.", "Remove my help request from the queue." })
-    {
+      new[] { "Leave my old help request like it is.", "Remove my help request from the queue." }) =>
       m_From = from;
-    }
 
     public override void OnCancel(NetState state)
     {
@@ -211,10 +209,7 @@ namespace Server.Engines.Help
         e.Mobile.SendGump(new HelpGump(e.Mobile));
     }
 
-    private static bool IsYoung(Mobile m)
-    {
-      return m is PlayerMobile mobile && mobile.Young;
-    }
+    private static bool IsYoung(Mobile m) => m is PlayerMobile mobile && mobile.Young;
 
     public static bool CheckCombat(Mobile m)
     {

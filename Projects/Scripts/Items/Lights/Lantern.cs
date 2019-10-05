@@ -59,10 +59,7 @@ namespace Server.Items
   public class LanternOfSouls : Lantern
   {
     [Constructible]
-    public LanternOfSouls()
-    {
-      Hue = 0x482;
-    }
+    public LanternOfSouls() => Hue = 0x482;
 
     public LanternOfSouls(Serial serial) : base(serial)
     {

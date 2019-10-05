@@ -2,10 +2,7 @@ namespace Server.Items
 {
   public abstract class BaseWall : Item
   {
-    public BaseWall(int itemID) : base(itemID)
-    {
-      Movable = false;
-    }
+    public BaseWall(int itemID) : base(itemID) => Movable = false;
 
     public BaseWall(Serial serial) : base(serial)
     {

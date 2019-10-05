@@ -80,10 +80,7 @@ namespace Server.Items
     {
       private Mobile m_From;
 
-      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(5.0))
-      {
-        m_From = from;
-      }
+      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(5.0)) => m_From = from;
 
       protected override void OnTick()
       {

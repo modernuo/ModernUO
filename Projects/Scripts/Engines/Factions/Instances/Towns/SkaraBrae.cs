@@ -2,8 +2,7 @@ namespace Server.Factions
 {
   public class SkaraBrae : Town
   {
-    public SkaraBrae()
-    {
+    public SkaraBrae() =>
       Definition =
         new TownDefinition(
           6,
@@ -19,6 +18,5 @@ namespace Server.Factions
           new TextDefinition(1041392, "Corrupted Faction Town Sigil of Skara Brae"),
           new Point3D(576, 2200, 0),
           new Point3D(572, 2196, 0));
-    }
   }
 }

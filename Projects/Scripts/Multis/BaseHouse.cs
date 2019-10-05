@@ -526,10 +526,7 @@ namespace Server.Multis
       Delete();
     }
 
-    public virtual HousePlacementEntry GetAosEntry()
-    {
-      return HousePlacementEntry.Find(this);
-    }
+    public virtual HousePlacementEntry GetAosEntry() => HousePlacementEntry.Find(this);
 
     public virtual int GetAosMaxSecures()
     {
@@ -626,10 +623,7 @@ namespace Server.Multis
       return PlayerVendors.Count + VendorRentalContracts.Count < GetNewVendorSystemMaxVendors();
     }
 
-    public virtual bool CanPlaceNewBarkeep()
-    {
-      return PlayerBarkeepers.Count < MaximumBarkeepCount;
-    }
+    public virtual bool CanPlaceNewBarkeep() => PlayerBarkeepers.Count < MaximumBarkeepCount;
 
     public static void IsThereVendor(Point3D location, Map map, out bool vendor, out bool rentalContract)
     {
@@ -1038,16 +1032,11 @@ namespace Server.Multis
       return list;
     }
 
-    public virtual bool CheckAosLockdowns(int need)
-    {
-      return GetAosCurLockdowns() + need <= GetAosMaxLockdowns();
-    }
+    public virtual bool CheckAosLockdowns(int need) => GetAosCurLockdowns() + need <= GetAosMaxLockdowns();
 
-    public virtual bool CheckAosStorage(int need)
-    {
-      return GetAosCurSecures(out int fromSecures, out int fromVendors, out int fromLockdowns, out int fromMovingCrate) + need <=
-             GetAosMaxSecures();
-    }
+    public virtual bool CheckAosStorage(int need) =>
+      GetAosCurSecures(out int fromSecures, out int fromVendors, out int fromLockdowns, out int fromMovingCrate) + need <=
+      GetAosMaxSecures();
 
     public static void Configure()
     {
@@ -1072,15 +1061,9 @@ namespace Server.Multis
       return v;
     }
 
-    public static bool CheckLockedDown(Item item)
-    {
-      return FindHouseAt(item)?.HasLockedDownItem(item) == true;
-    }
+    public static bool CheckLockedDown(Item item) => FindHouseAt(item)?.HasLockedDownItem(item) == true;
 
-    public static bool CheckSecured(Item item)
-    {
-      return FindHouseAt(item)?.HasSecureItem(item) == true;
-    }
+    public static bool CheckSecured(Item item) => FindHouseAt(item)?.HasSecureItem(item) == true;
 
     public static bool CheckLockedDownOrSecured(Item item)
     {
@@ -1159,11 +1142,9 @@ namespace Server.Multis
       return FindHouseAt(m.Location, m.Map, 16);
     }
 
-    public static BaseHouse FindHouseAt(Item item)
-    {
-      return item?.Deleted != false ? null :
+    public static BaseHouse FindHouseAt(Item item) =>
+      item?.Deleted != false ? null :
         FindHouseAt(item.GetWorldLocation(), item.Map, item.ItemData.Height);
-    }
 
     public static BaseHouse FindHouseAt(Point3D loc, Map map, int height)
     {
@@ -1181,15 +1162,9 @@ namespace Server.Multis
       return null;
     }
 
-    public bool IsInside(Mobile m)
-    {
-      return m?.Deleted == false && m.Map == Map && IsInside(m.Location, 16);
-    }
+    public bool IsInside(Mobile m) => m?.Deleted == false && m.Map == Map && IsInside(m.Location, 16);
 
-    public bool IsInside(Item item)
-    {
-      return item?.Deleted == false && item.Map == Map && IsInside(item.Location, item.ItemData.Height);
-    }
+    public bool IsInside(Item item) => item?.Deleted == false && item.Map == Map && IsInside(item.Location, item.ItemData.Height);
 
     public bool CheckAccessibility(Item item, Mobile from)
     {
@@ -1367,10 +1342,7 @@ namespace Server.Multis
       }
     }
 
-    public BaseDoor AddEastDoor(int x, int y, int z)
-    {
-      return AddEastDoor(true, x, y, z);
-    }
+    public BaseDoor AddEastDoor(int x, int y, int z) => AddEastDoor(true, x, y, z);
 
     public BaseDoor AddEastDoor(bool wood, int x, int y, int z)
     {
@@ -1381,10 +1353,7 @@ namespace Server.Multis
       return door;
     }
 
-    public BaseDoor AddSouthDoor(int x, int y, int z)
-    {
-      return AddSouthDoor(true, x, y, z);
-    }
+    public BaseDoor AddSouthDoor(int x, int y, int z) => AddSouthDoor(true, x, y, z);
 
     public BaseDoor AddSouthDoor(bool wood, int x, int y, int z)
     {
@@ -1395,10 +1364,7 @@ namespace Server.Multis
       return door;
     }
 
-    public BaseDoor AddEastDoor(int x, int y, int z, uint k)
-    {
-      return AddEastDoor(true, x, y, z, k);
-    }
+    public BaseDoor AddEastDoor(int x, int y, int z, uint k) => AddEastDoor(true, x, y, z, k);
 
     public BaseDoor AddEastDoor(bool wood, int x, int y, int z, uint k)
     {
@@ -1412,10 +1378,7 @@ namespace Server.Multis
       return door;
     }
 
-    public BaseDoor AddSouthDoor(int x, int y, int z, uint k)
-    {
-      return AddSouthDoor(true, x, y, z, k);
-    }
+    public BaseDoor AddSouthDoor(int x, int y, int z, uint k) => AddSouthDoor(true, x, y, z, k);
 
     public BaseDoor AddSouthDoor(bool wood, int x, int y, int z, uint k)
     {
@@ -1429,10 +1392,7 @@ namespace Server.Multis
       return door;
     }
 
-    public BaseDoor[] AddSouthDoors(int x, int y, int z, uint k)
-    {
-      return AddSouthDoors(true, x, y, z, k);
-    }
+    public BaseDoor[] AddSouthDoors(int x, int y, int z, uint k) => AddSouthDoors(true, x, y, z, k);
 
     public BaseDoor[] AddSouthDoors(bool wood, int x, int y, int z, uint k)
     {
@@ -1480,10 +1440,7 @@ namespace Server.Multis
       return value;
     }
 
-    public BaseDoor[] AddSouthDoors(int x, int y, int z)
-    {
-      return AddSouthDoors(true, x, y, z, false);
-    }
+    public BaseDoor[] AddSouthDoors(int x, int y, int z) => AddSouthDoors(true, x, y, z, false);
 
     public BaseDoor[] AddSouthDoors(bool wood, int x, int y, int z, bool inv)
     {
@@ -1594,10 +1551,7 @@ namespace Server.Multis
           SetLockdown(c, locked, checkContains);
     }
 
-    public bool LockDown(Mobile m, Item item)
-    {
-      return LockDown(m, item, true);
-    }
+    public bool LockDown(Mobile m, Item item) => LockDown(m, item, true);
 
     public bool LockDown(Mobile m, Item item, bool checkIsInside)
     {
@@ -2954,10 +2908,7 @@ namespace Server.Multis
         }
     }
 
-    public virtual HouseDeed GetDeed()
-    {
-      return null;
-    }
+    public virtual HouseDeed GetDeed() => null;
 
     public bool IsFriend(Mobile m)
     {
@@ -3010,11 +2961,9 @@ namespace Server.Multis
       return m != null && (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access?.Contains(m) == true);
     }
 
-    public bool HasLockedDownItem(Item check)
-    {
-      return LockDowns?.Contains(check) == true ||
-             check is VendorRentalContract contract && VendorRentalContracts.Contains(contract);
-    }
+    public bool HasLockedDownItem(Item check) =>
+      LockDowns?.Contains(check) == true ||
+      check is VendorRentalContract contract && VendorRentalContracts.Contains(contract);
 
     public bool HasSecureItem(Item item)
     {
@@ -3667,9 +3616,6 @@ namespace Server.Multis
       Timer.DelayCall(house.RestrictedPlacingTime, Unregister);
     }
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      return from == m_RegionOwner || AccountHandler.CheckAccount(from, m_RegionOwner);
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => from == m_RegionOwner || AccountHandler.CheckAccount(from, m_RegionOwner);
   }
 }

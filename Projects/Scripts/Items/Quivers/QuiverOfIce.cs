@@ -3,10 +3,7 @@ namespace Server.Items
   public class QuiverOfIce : ElvenQuiver
   {
     [Constructible]
-    public QuiverOfIce()
-    {
-      Hue = 0x4ED;
-    }
+    public QuiverOfIce() => Hue = 0x4ED;
 
     public QuiverOfIce(Serial serial) : base(serial)
     {

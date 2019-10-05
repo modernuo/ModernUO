@@ -175,10 +175,7 @@ namespace Server.Engines.MLQuests.Definitions
       {
       }
 
-      public override bool CheckItem(Item item)
-      {
-        return item.ItemID == 6585; // Only large pieces count
-      }
+      public override bool CheckItem(Item item) => item.ItemID == 6585;
     }
   }
 

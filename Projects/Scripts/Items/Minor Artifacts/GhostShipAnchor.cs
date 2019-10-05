@@ -3,10 +3,7 @@ namespace Server.Items
   public class GhostShipAnchor : Item
   {
     [Constructible]
-    public GhostShipAnchor() : base(0x14F7)
-    {
-      Hue = 0x47E;
-    }
+    public GhostShipAnchor() : base(0x14F7) => Hue = 0x47E;
 
     public GhostShipAnchor(Serial serial) : base(serial)
     {

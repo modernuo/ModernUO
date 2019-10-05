@@ -3,10 +3,7 @@ namespace Server.Items
   public class PlateMempo : BaseArmor
   {
     [Constructible]
-    public PlateMempo() : base(0x2779)
-    {
-      Weight = 3.0;
-    }
+    public PlateMempo() : base(0x2779) => Weight = 3.0;
 
     public PlateMempo(Serial serial) : base(serial)
     {

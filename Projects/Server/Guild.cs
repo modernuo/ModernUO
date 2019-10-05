@@ -113,9 +113,6 @@ namespace Server.Guilds
       return results;
     }
 
-    public override string ToString()
-    {
-      return $"0x{Id:X} \"{Name} [{Abbreviation}]\"";
-    }
+    public override string ToString() => $"0x{Id:X} \"{Name} [{Abbreviation}]\"";
   }
 }

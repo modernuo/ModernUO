@@ -5,10 +5,8 @@ namespace Server
   public sealed class ClarityPotion : PowerFactionItem
   {
     public ClarityPotion()
-      : base(3628)
-    {
+      : base(3628) =>
       Hue = 1154;
-    }
 
     public ClarityPotion(Serial serial)
       : base(serial)

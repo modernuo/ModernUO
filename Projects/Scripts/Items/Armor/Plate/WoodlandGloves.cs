@@ -4,10 +4,7 @@ namespace Server.Items
   public class WoodlandGloves : BaseArmor
   {
     [Constructible]
-    public WoodlandGloves() : base(0x2B6A)
-    {
-      Weight = 2.0;
-    }
+    public WoodlandGloves() : base(0x2B6A) => Weight = 2.0;
 
     public WoodlandGloves(Serial serial) : base(serial)
     {

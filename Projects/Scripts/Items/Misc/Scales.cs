@@ -5,10 +5,7 @@ namespace Server.Items
   public class Scales : Item
   {
     [Constructible]
-    public Scales() : base(0x1852)
-    {
-      Weight = 4.0;
-    }
+    public Scales() : base(0x1852) => Weight = 4.0;
 
     public Scales(Serial serial) : base(serial)
     {
@@ -38,10 +35,7 @@ namespace Server.Items
     {
       private Scales m_Item;
 
-      public InternalTarget(Scales item) : base(1, false, TargetFlags.None)
-      {
-        m_Item = item;
-      }
+      public InternalTarget(Scales item) : base(1, false, TargetFlags.None) => m_Item = item;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

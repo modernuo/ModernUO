@@ -163,10 +163,7 @@ namespace Server.Items
     {
       private ProspectorsTool m_Tool;
 
-      public InternalTarget(ProspectorsTool tool) : base(2, true, TargetFlags.None)
-      {
-        m_Tool = tool;
-      }
+      public InternalTarget(ProspectorsTool tool) : base(2, true, TargetFlags.None) => m_Tool = tool;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

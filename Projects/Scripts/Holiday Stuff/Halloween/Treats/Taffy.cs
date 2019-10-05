@@ -3,10 +3,8 @@
   public class Taffy : CandyCane
   {
     public Taffy(int amount = 1)
-      : base(0x469D)
-    {
+      : base(0x469D) =>
       Stackable = true;
-    }
 
     public Taffy(Serial serial)
       : base(serial)

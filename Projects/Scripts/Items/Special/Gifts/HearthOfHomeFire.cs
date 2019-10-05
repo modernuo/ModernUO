@@ -53,10 +53,7 @@ namespace Server.Items
     private bool m_East;
 
     [Constructible]
-    public HearthOfHomeFireDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public HearthOfHomeFireDeed() => LootType = LootType.Blessed;
 
     public HearthOfHomeFireDeed(Serial serial) : base(serial)
     {

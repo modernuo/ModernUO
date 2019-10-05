@@ -6,10 +6,7 @@ namespace Server.Items
   public class WarAxe : BaseAxe
   {
     [Constructible]
-    public WarAxe() : base(0x13B0)
-    {
-      Weight = 8.0;
-    }
+    public WarAxe() : base(0x13B0) => Weight = 8.0;
 
     public WarAxe(Serial serial) : base(serial)
     {

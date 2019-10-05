@@ -8,10 +8,7 @@
   public class PumpkinPizza : CheesePizza
   {
     [Constructible]
-    public PumpkinPizza()
-    {
-      Hue = 0xF3;
-    }
+    public PumpkinPizza() => Hue = 0xF3;
 
     public PumpkinPizza(Serial serial)
       : base(serial)

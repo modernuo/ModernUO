@@ -6,10 +6,7 @@ namespace Server.Engines.ConPVP
 {
   public class TourneyPyramid
   {
-    public TourneyPyramid()
-    {
-      Levels = new List<PyramidLevel>();
-    }
+    public TourneyPyramid() => Levels = new List<PyramidLevel>();
 
     public List<PyramidLevel> Levels{ get; set; }
 

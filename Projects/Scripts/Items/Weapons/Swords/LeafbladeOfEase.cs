@@ -3,10 +3,7 @@ namespace Server.Items
   public class LeafbladeOfEase : Leafblade
   {
     [Constructible]
-    public LeafbladeOfEase()
-    {
-      WeaponAttributes.UseBestSkill = 1;
-    }
+    public LeafbladeOfEase() => WeaponAttributes.UseBestSkill = 1;
 
     public LeafbladeOfEase(Serial serial) : base(serial)
     {

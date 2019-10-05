@@ -3,10 +3,7 @@ namespace Server.Items
   public class JeweledFiligree : Item
   {
     [Constructible]
-    public JeweledFiligree() : base(0x2F5E)
-    {
-      Weight = 1.0;
-    }
+    public JeweledFiligree() : base(0x2F5E) => Weight = 1.0;
 
     public JeweledFiligree(Serial serial) : base(serial)
     {

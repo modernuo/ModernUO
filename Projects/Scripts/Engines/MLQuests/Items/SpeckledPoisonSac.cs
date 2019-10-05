@@ -5,10 +5,7 @@ namespace Server.Items
   public class SpeckledPoisonSac : TransientItem
   {
     [Constructible]
-    public SpeckledPoisonSac() : base(0x23A, TimeSpan.FromHours(1))
-    {
-      LootType = LootType.Blessed;
-    }
+    public SpeckledPoisonSac() : base(0x23A, TimeSpan.FromHours(1)) => LootType = LootType.Blessed;
 
     public SpeckledPoisonSac(Serial serial) : base(serial)
     {

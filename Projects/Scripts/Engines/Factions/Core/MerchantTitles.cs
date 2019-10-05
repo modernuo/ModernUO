@@ -76,10 +76,7 @@ namespace Server.Factions
       return false;
     }
 
-    public static bool IsQualified(Mobile mob, MerchantTitle title)
-    {
-      return IsQualified(mob, GetInfo(title));
-    }
+    public static bool IsQualified(Mobile mob, MerchantTitle title) => IsQualified(mob, GetInfo(title));
 
     public static bool IsQualified(Mobile mob, MerchantTitleInfo info)
     {

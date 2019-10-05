@@ -68,10 +68,7 @@ namespace Server.Gumps
       set => Delta(ref m_GumpID, value);
     }
 
-    public override string Compile(NetState ns)
-    {
-      return $"{{ resizepic {m_X} {m_Y} {m_GumpID} {m_Width} {m_Height} }}";
-    }
+    public override string Compile(NetState ns) => $"{{ resizepic {m_X} {m_Y} {m_GumpID} {m_Width} {m_Height} }}";
 
     public override void AppendTo(NetState ns, IGumpWriter disp)
     {

@@ -448,25 +448,13 @@ namespace Server.Mobiles
       return true;
     }
 
-    public virtual bool IsValidBulkOrder(Item item)
-    {
-      return false;
-    }
+    public virtual bool IsValidBulkOrder(Item item) => false;
 
-    public virtual Item CreateBulkOrder(Mobile from, bool fromContextMenu)
-    {
-      return null;
-    }
+    public virtual Item CreateBulkOrder(Mobile from, bool fromContextMenu) => null;
 
-    public virtual bool SupportsBulkOrders(Mobile from)
-    {
-      return false;
-    }
+    public virtual bool SupportsBulkOrders(Mobile from) => false;
 
-    public virtual TimeSpan GetNextBulkOrder(Mobile from)
-    {
-      return TimeSpan.Zero;
-    }
+    public virtual TimeSpan GetNextBulkOrder(Mobile from) => TimeSpan.Zero;
 
     public virtual void OnSuccessfulBulkOrderReceive(Mobile from)
     {
@@ -497,10 +485,7 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual bool GetGender()
-    {
-      return Utility.RandomBool();
-    }
+    public virtual bool GetGender() => Utility.RandomBool();
 
     public virtual void InitBody()
     {
@@ -534,10 +519,7 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual int GetShoeHue()
-    {
-      return 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
-    }
+    public virtual int GetShoeHue() => 0.1 > Utility.RandomDouble() ? 0 : Utility.RandomNeutralHue();
 
     public virtual void CheckMorph()
     {
@@ -682,10 +664,7 @@ namespace Server.Mobiles
       Title = string.Join(" ", split);
     }
 
-    public virtual int GetHairHue()
-    {
-      return Race.RandomHairHue();
-    }
+    public virtual int GetHairHue() => Race.RandomHairHue();
 
     public virtual void InitOutfit()
     {
@@ -1117,11 +1096,9 @@ namespace Server.Mobiles
       }
     }
 
-    public virtual bool CheckVendorAccess(Mobile from)
-    {
-      return Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false ||
-             Region != from.Region && from.Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false;
-    }
+    public virtual bool CheckVendorAccess(Mobile from) =>
+      Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false ||
+      Region != from.Region && from.Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false;
 
     public override void Serialize(GenericWriter writer)
     {
@@ -1268,15 +1245,9 @@ namespace Server.Mobiles
       base.AddCustomContextEntries(from, list);
     }
 
-    public virtual IShopSellInfo[] GetSellInfo()
-    {
-      return m_ArmorSellInfo.ToArray();
-    }
+    public virtual IShopSellInfo[] GetSellInfo() => m_ArmorSellInfo.ToArray();
 
-    public virtual IBuyItemInfo[] GetBuyInfo()
-    {
-      return m_ArmorBuyInfo.ToArray();
-    }
+    public virtual IBuyItemInfo[] GetBuyInfo() => m_ArmorBuyInfo.ToArray();
 
     private class BulkOrderInfoEntry : ContextMenuEntry
     {
@@ -1334,10 +1305,7 @@ namespace Server.Mobiles
 
     #region Faction
 
-    public virtual int GetPriceScalar()
-    {
-      return 100 + Town.FromRegion(Region)?.Tax ?? 0;
-    }
+    public virtual int GetPriceScalar() => 100 + Town.FromRegion(Region)?.Tax ?? 0;
 
     public void UpdateBuyInfo()
     {

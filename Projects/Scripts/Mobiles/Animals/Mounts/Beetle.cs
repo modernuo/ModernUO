@@ -59,30 +59,15 @@ namespace Server.Mobiles
 
     public override FoodType FavoriteFood => FoodType.Meat;
 
-    public override int GetAngerSound()
-    {
-      return 0x21D;
-    }
+    public override int GetAngerSound() => 0x21D;
 
-    public override int GetIdleSound()
-    {
-      return 0x21D;
-    }
+    public override int GetIdleSound() => 0x21D;
 
-    public override int GetAttackSound()
-    {
-      return 0x162;
-    }
+    public override int GetAttackSound() => 0x162;
 
-    public override int GetHurtSound()
-    {
-      return 0x163;
-    }
+    public override int GetHurtSound() => 0x163;
 
-    public override int GetDeathSound()
-    {
-      return 0x21D;
-    }
+    public override int GetDeathSound() => 0x21D;
 
     public override void OnHarmfulSpell(Mobile from)
     {
@@ -122,10 +107,7 @@ namespace Server.Mobiles
       return true;
     }
 
-    public override DeathMoveResult GetInventoryMoveResultFor(Item item)
-    {
-      return DeathMoveResult.MoveToCorpse;
-    }
+    public override DeathMoveResult GetInventoryMoveResultFor(Item item) => DeathMoveResult.MoveToCorpse;
 
     public override bool IsSnoop(Mobile from)
     {
@@ -149,15 +131,9 @@ namespace Server.Mobiles
       return base.OnDragDrop(from, item);
     }
 
-    public override bool CheckNonlocalDrop(Mobile from, Item item, Item target)
-    {
-      return PackAnimal.CheckAccess(this, from);
-    }
+    public override bool CheckNonlocalDrop(Mobile from, Item item, Item target) => PackAnimal.CheckAccess(this, from);
 
-    public override bool CheckNonlocalLift(Mobile from, Item item)
-    {
-      return PackAnimal.CheckAccess(this, from);
-    }
+    public override bool CheckNonlocalLift(Mobile from, Item item) => PackAnimal.CheckAccess(this, from);
 
     public override void GetContextMenuEntries(Mobile from, List<ContextMenuEntry> list)
     {

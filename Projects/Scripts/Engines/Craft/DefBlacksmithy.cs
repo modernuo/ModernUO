@@ -34,10 +34,7 @@ namespace Server.Engines.Craft
 
     public override CraftECA ECA => CraftECA.ChanceMinusSixtyToFourtyFive;
 
-    public override double GetChanceAtMin(CraftItem item)
-    {
-      return 0.0; // 0%
-    }
+    public override double GetChanceAtMin(CraftItem item) => 0.0;
 
     public static void CheckAnvilAndForge(Mobile from, int range, out bool anvil, out bool forge)
     {
@@ -773,10 +770,7 @@ namespace Server.Engines.Craft
     {
       private Mobile m_From;
 
-      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(0.7))
-      {
-        m_From = from;
-      }
+      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(0.7)) => m_From = from;
 
       protected override void OnTick()
       {

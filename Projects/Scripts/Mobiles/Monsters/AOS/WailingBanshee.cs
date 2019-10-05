@@ -48,10 +48,7 @@ namespace Server.Mobiles
 
     public override bool BleedImmune => true;
 
-    public override WeaponAbility GetWeaponAbility()
-    {
-      return WeaponAbility.MortalStrike;
-    }
+    public override WeaponAbility GetWeaponAbility() => WeaponAbility.MortalStrike;
 
     public override void GenerateLoot()
     {

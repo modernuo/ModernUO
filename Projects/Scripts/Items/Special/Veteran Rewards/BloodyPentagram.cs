@@ -128,10 +128,7 @@ namespace Server.Items
     private bool m_IsRewardItem;
 
     [Constructible]
-    public BloodyPentagramDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public BloodyPentagramDeed() => LootType = LootType.Blessed;
 
     public BloodyPentagramDeed(Serial serial) : base(serial)
     {

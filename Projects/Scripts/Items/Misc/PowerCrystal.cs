@@ -5,10 +5,7 @@ namespace Server.Items
   public class PowerCrystal : Item
   {
     [Constructible]
-    public PowerCrystal() : base(0x1F1C)
-    {
-      Weight = 1.0;
-    }
+    public PowerCrystal() : base(0x1F1C) => Weight = 1.0;
 
     public PowerCrystal(Serial serial) : base(serial)
     {

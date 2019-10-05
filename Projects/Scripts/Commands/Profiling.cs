@@ -25,31 +25,29 @@ namespace Server.Commands
     {
       try
       {
-        using (StreamWriter sw = new StreamWriter("profiles.log", true))
-        {
-          sw.WriteLine("# Dump on {0:f}", DateTime.UtcNow);
-          sw.WriteLine("# Core profiling for " + Core.ProfileTime);
+        using StreamWriter sw = new StreamWriter("profiles.log", true);
+        sw.WriteLine("# Dump on {0:f}", DateTime.UtcNow);
+        sw.WriteLine("# Core profiling for " + Core.ProfileTime);
 
-          sw.WriteLine("# Packet send");
-          BaseProfile.WriteAll(sw, PacketSendProfile.Profiles);
-          sw.WriteLine();
+        sw.WriteLine("# Packet send");
+        BaseProfile.WriteAll(sw, PacketSendProfile.Profiles);
+        sw.WriteLine();
 
-          sw.WriteLine("# Packet receive");
-          BaseProfile.WriteAll(sw, PacketReceiveProfile.Profiles);
-          sw.WriteLine();
+        sw.WriteLine("# Packet receive");
+        BaseProfile.WriteAll(sw, PacketReceiveProfile.Profiles);
+        sw.WriteLine();
 
-          sw.WriteLine("# Timer");
-          BaseProfile.WriteAll(sw, TimerProfile.Profiles);
-          sw.WriteLine();
+        sw.WriteLine("# Timer");
+        BaseProfile.WriteAll(sw, TimerProfile.Profiles);
+        sw.WriteLine();
 
-          sw.WriteLine("# Gump response");
-          BaseProfile.WriteAll(sw, GumpProfile.Profiles);
-          sw.WriteLine();
+        sw.WriteLine("# Gump response");
+        BaseProfile.WriteAll(sw, GumpProfile.Profiles);
+        sw.WriteLine();
 
-          sw.WriteLine("# Target response");
-          BaseProfile.WriteAll(sw, TargetProfile.Profiles);
-          sw.WriteLine();
-        }
+        sw.WriteLine("# Target response");
+        BaseProfile.WriteAll(sw, TargetProfile.Profiles);
+        sw.WriteLine();
       }
       catch
       {
@@ -75,10 +73,8 @@ namespace Server.Commands
     {
       try
       {
-        using (StreamWriter sw = new StreamWriter("timerdump.log", true))
-        {
-          Timer.DumpInfo(sw);
-        }
+        using StreamWriter sw = new StreamWriter("timerdump.log", true);
+        Timer.DumpInfo(sw);
       }
       catch
       {
@@ -190,37 +186,35 @@ namespace Server.Commands
 
       try
       {
-        using (StreamWriter op = new StreamWriter("expandedItems.log", true))
+        using StreamWriter op = new StreamWriter("expandedItems.log", true);
+        string[] names =
         {
-          string[] names =
-          {
-            "Name",
-            "Items",
-            "Bounce",
-            "Holder",
-            "Blessed",
-            "TempFlag",
-            "SaveFlag",
-            "Weight",
-            "Spawner"
-          };
+          "Name",
+          "Items",
+          "Bounce",
+          "Holder",
+          "Blessed",
+          "TempFlag",
+          "SaveFlag",
+          "Weight",
+          "Spawner"
+        };
 
-          List<KeyValuePair<Type, int[]>> list = typeTable.ToList();
+        List<KeyValuePair<Type, int[]>> list = typeTable.ToList();
 
-          list.Sort(new CountsSorter());
+        list.Sort(new CountsSorter());
 
-          foreach (KeyValuePair<Type, int[]> kvp in list)
-          {
-            int[] countTable = kvp.Value;
+        foreach (KeyValuePair<Type, int[]> kvp in list)
+        {
+          int[] countTable = kvp.Value;
 
-            op.WriteLine("# {0}", kvp.Key.FullName);
+          op.WriteLine("# {0}", kvp.Key.FullName);
 
-            for (int i = 0; i < countTable.Length; ++i)
-              if (countTable[i] > 0)
-                op.WriteLine("{0}\t{1:N0}", names[i], countTable[i]);
+          for (int i = 0; i < countTable.Length; ++i)
+            if (countTable[i] > 0)
+              op.WriteLine("{0}\t{1:N0}", names[i], countTable[i]);
 
-            op.WriteLine();
-          }
+          op.WriteLine();
         }
       }
       catch
@@ -253,20 +247,18 @@ namespace Server.Commands
           table[type] = new[] { 1, item.Amount };
       }
 
-      using (StreamWriter op = new StreamWriter("internal.log"))
+      using StreamWriter op = new StreamWriter("internal.log");
+      op.WriteLine("# {0} items found", totalCount);
+      op.WriteLine("# {0} different types", table.Count);
+      op.WriteLine();
+      op.WriteLine();
+      op.WriteLine("Type\t\tCount\t\tAmount\t\tAvg. Amount");
+
+      foreach (KeyValuePair<Type, int[]> de in table)
       {
-        op.WriteLine("# {0} items found", totalCount);
-        op.WriteLine("# {0} different types", table.Count);
-        op.WriteLine();
-        op.WriteLine();
-        op.WriteLine("Type\t\tCount\t\tAmount\t\tAvg. Amount");
+        int[] parms = de.Value;
 
-        foreach (KeyValuePair<Type, int[]> de in table)
-        {
-          int[] parms = de.Value;
-
-          op.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3:F2}", de.Key.Name, parms[0], parms[1], (double)parms[1] / parms[0]);
-        }
+        op.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3:F2}", de.Key.Name, parms[0], parms[1], (double)parms[1] / parms[0]);
       }
     }
 
@@ -323,16 +315,14 @@ namespace Server.Commands
 
         list.Sort(new CountSorter());
 
-        using (StreamWriter op = new StreamWriter(opFile))
-        {
-          op.WriteLine("# Profile of world {0}", type);
-          op.WriteLine("# Generated on {0}", DateTime.UtcNow);
-          op.WriteLine();
-          op.WriteLine();
+        using StreamWriter op = new StreamWriter(opFile);
+        op.WriteLine("# Profile of world {0}", type);
+        op.WriteLine("# Generated on {0}", DateTime.UtcNow);
+        op.WriteLine();
+        op.WriteLine();
 
-          list.ForEach(kvp =>
-            op.WriteLine("{0}\t{1:F2}%\t{2}", kvp.Value, 100.0 * kvp.Value / total, kvp.Key));
-        }
+        list.ForEach(kvp =>
+          op.WriteLine("{0}\t{1:F2}%\t{2}", kvp.Value, 100.0 * kvp.Value / total, kvp.Key));
       }
       catch
       {

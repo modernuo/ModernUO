@@ -8,10 +8,7 @@ namespace Server.Items
   {
     private bool m_Locked;
 
-    public LockableContainer(int itemID) : base(itemID)
-    {
-      MaxLockLevel = 100;
-    }
+    public LockableContainer(int itemID) : base(itemID) => MaxLockLevel = 100;
 
     public LockableContainer(Serial serial) : base(serial)
     {
@@ -200,10 +197,7 @@ namespace Server.Items
       }
     }
 
-    public override bool CheckContentDisplay(Mobile from)
-    {
-      return !m_Locked && base.CheckContentDisplay(from);
-    }
+    public override bool CheckContentDisplay(Mobile from) => !m_Locked && base.CheckContentDisplay(from);
 
     public override bool TryDropItem(Mobile from, Item dropped, bool sendFullMessage)
     {

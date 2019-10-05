@@ -3,10 +3,7 @@ namespace Server.Items
   public class PlateBattleKabuto : BaseArmor
   {
     [Constructible]
-    public PlateBattleKabuto() : base(0x2785)
-    {
-      Weight = 6.0;
-    }
+    public PlateBattleKabuto() : base(0x2785) => Weight = 6.0;
 
     public PlateBattleKabuto(Serial serial) : base(serial)
     {

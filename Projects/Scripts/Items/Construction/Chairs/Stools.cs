@@ -4,10 +4,7 @@ namespace Server.Items
   public class Stool : Item
   {
     [Constructible]
-    public Stool() : base(0xA2A)
-    {
-      Weight = 10.0;
-    }
+    public Stool() : base(0xA2A) => Weight = 10.0;
 
     public Stool(Serial serial) : base(serial)
     {
@@ -35,10 +32,7 @@ namespace Server.Items
   public class FootStool : Item
   {
     [Constructible]
-    public FootStool() : base(0xB5E)
-    {
-      Weight = 6.0;
-    }
+    public FootStool() : base(0xB5E) => Weight = 6.0;
 
     public FootStool(Serial serial) : base(serial)
     {

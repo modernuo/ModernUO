@@ -5,16 +5,10 @@ namespace Server.Items
   public class SewingKit : BaseTool
   {
     [Constructible]
-    public SewingKit() : base(0xF9D)
-    {
-      Weight = 2.0;
-    }
+    public SewingKit() : base(0xF9D) => Weight = 2.0;
 
     [Constructible]
-    public SewingKit(int uses) : base(uses, 0xF9D)
-    {
-      Weight = 2.0;
-    }
+    public SewingKit(int uses) : base(uses, 0xF9D) => Weight = 2.0;
 
     public SewingKit(Serial serial) : base(serial)
     {

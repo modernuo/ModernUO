@@ -5,15 +5,9 @@ namespace Server.Regions
   {
     private static SpawnPersistence m_Instance;
 
-    private SpawnPersistence() : base(1)
-    {
-      Movable = false;
-    }
+    private SpawnPersistence() : base(1) => Movable = false;
 
-    public SpawnPersistence(Serial serial) : base(serial)
-    {
-      m_Instance = this;
-    }
+    public SpawnPersistence(Serial serial) : base(serial) => m_Instance = this;
 
     public SpawnPersistence Instance => m_Instance;
 

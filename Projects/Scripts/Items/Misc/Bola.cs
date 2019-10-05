@@ -147,10 +147,7 @@ namespace Server.Items
     {
       private Bola m_Bola;
 
-      public BolaTarget(Bola bola) : base(8, false, TargetFlags.Harmful)
-      {
-        m_Bola = bola;
-      }
+      public BolaTarget(Bola bola) : base(8, false, TargetFlags.Harmful) => m_Bola = bola;
 
       protected override void OnTarget(Mobile from, object obj)
       {

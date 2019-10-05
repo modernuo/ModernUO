@@ -24,10 +24,7 @@ namespace Server.ContextMenus
   {
     private Mobile m_Mobile;
 
-    public PaperdollEntry(Mobile m) : base(6123, 18)
-    {
-      m_Mobile = m;
-    }
+    public PaperdollEntry(Mobile m) : base(6123, 18) => m_Mobile = m;
 
     public override void OnClick()
     {

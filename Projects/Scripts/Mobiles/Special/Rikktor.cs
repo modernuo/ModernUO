@@ -124,30 +124,15 @@ namespace Server.Mobiles
       eable.Free();
     }
 
-    public override int GetAngerSound()
-    {
-      return Utility.Random(0x2CE, 2);
-    }
+    public override int GetAngerSound() => Utility.Random(0x2CE, 2);
 
-    public override int GetIdleSound()
-    {
-      return 0x2D2;
-    }
+    public override int GetIdleSound() => 0x2D2;
 
-    public override int GetAttackSound()
-    {
-      return Utility.Random(0x2C7, 5);
-    }
+    public override int GetAttackSound() => Utility.Random(0x2C7, 5);
 
-    public override int GetHurtSound()
-    {
-      return 0x2D1;
-    }
+    public override int GetHurtSound() => 0x2D1;
 
-    public override int GetDeathSound()
-    {
-      return 0x2CC;
-    }
+    public override int GetDeathSound() => 0x2CC;
 
     public override void Serialize(GenericWriter writer)
     {

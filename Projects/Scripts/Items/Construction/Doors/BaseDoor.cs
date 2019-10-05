@@ -273,10 +273,7 @@ namespace Server.Items
       }
     }
 
-    public static Point3D GetOffset(DoorFacing facing)
-    {
-      return m_Offsets[(int)facing];
-    }
+    public static Point3D GetOffset(DoorFacing facing) => m_Offsets[(int)facing];
 
     public bool CanClose()
     {
@@ -371,15 +368,9 @@ namespace Server.Items
       return freeToClose;
     }
 
-    public virtual bool IsInside(Mobile from)
-    {
-      return false;
-    }
+    public virtual bool IsInside(Mobile from) => false;
 
-    public virtual bool UseLocks()
-    {
-      return true;
-    }
+    public virtual bool UseLocks() => true;
 
     public virtual void Use(Mobile from)
     {

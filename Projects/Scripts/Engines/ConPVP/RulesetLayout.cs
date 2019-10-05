@@ -736,10 +736,7 @@ namespace Server.Engines.ConPVP
       return null;
     }
 
-    public int GetOptionIndex(string option)
-    {
-      return Array.IndexOf(Options, option);
-    }
+    public int GetOptionIndex(string option) => Array.IndexOf(Options, option);
 
     public void ComputeOffsets()
     {

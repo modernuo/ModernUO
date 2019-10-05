@@ -467,10 +467,7 @@ namespace Server.Factions
   {
     private VirtualMountItem m_Item;
 
-    public VirtualMount(VirtualMountItem item)
-    {
-      m_Item = item;
-    }
+    public VirtualMount(VirtualMountItem item) => m_Item = item;
 
     Mobile IMount.Rider
     {
@@ -495,10 +492,7 @@ namespace Server.Factions
       m_Mount = new VirtualMount(this);
     }
 
-    public VirtualMountItem(Serial serial) : base(serial)
-    {
-      m_Mount = new VirtualMount(this);
-    }
+    public VirtualMountItem(Serial serial) : base(serial) => m_Mount = new VirtualMount(this);
 
     public Mobile Rider{ get; private set; }
 

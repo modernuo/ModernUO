@@ -11,10 +11,7 @@ namespace Server.Items
 
     public override bool ValidatesDuringHit => false;
 
-    public override bool OnBeforeSwing(Mobile attacker, Mobile defender)
-    {
-      return Validate(attacker) && CheckMana(attacker, true);
-    }
+    public override bool OnBeforeSwing(Mobile attacker, Mobile defender) => Validate(attacker) && CheckMana(attacker, true);
 
     public override void OnMiss(Mobile attacker, Mobile defender)
     {

@@ -4,10 +4,7 @@ namespace Server.Items
   public class Mace : BaseBashing
   {
     [Constructible]
-    public Mace() : base(0xF5C)
-    {
-      Weight = 14.0;
-    }
+    public Mace() : base(0xF5C) => Weight = 14.0;
 
     public Mace(Serial serial) : base(serial)
     {

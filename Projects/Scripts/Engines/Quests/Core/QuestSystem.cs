@@ -393,10 +393,7 @@ namespace Server.Engines.Quests
       From.SendLocalizedMessage(1049018); // You have declined the Quest.
     }
 
-    public static bool CanOfferQuest(Mobile check, Type questType)
-    {
-      return CanOfferQuest(check, questType, out _);
-    }
+    public static bool CanOfferQuest(Mobile check, Type questType) => CanOfferQuest(check, questType, out _);
 
     public static bool CanOfferQuest(Mobile check, Type questType, out bool inRestartPeriod)
     {
@@ -635,10 +632,7 @@ namespace Server.Engines.Quests
       return (r << 16) | (g << 8) | (b << 0);
     }
 
-    public static int C16216(int c16)
-    {
-      return c16 & 0x7FFF;
-    }
+    public static int C16216(int c16) => c16 & 0x7FFF;
 
     public static int C32216(int c32)
     {
@@ -651,10 +645,7 @@ namespace Server.Engines.Quests
       return (r << 10) | (g << 5) | (b << 0);
     }
 
-    public static string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public static string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     public void AddHtmlObject(int x, int y, int width, int height, object message, int color, bool back, bool scroll)
     {

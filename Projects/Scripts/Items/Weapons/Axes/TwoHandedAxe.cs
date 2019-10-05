@@ -4,10 +4,7 @@ namespace Server.Items
   public class TwoHandedAxe : BaseAxe
   {
     [Constructible]
-    public TwoHandedAxe() : base(0x1443)
-    {
-      Weight = 8.0;
-    }
+    public TwoHandedAxe() : base(0x1443) => Weight = 8.0;
 
     public TwoHandedAxe(Serial serial) : base(serial)
     {

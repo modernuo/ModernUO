@@ -30,10 +30,7 @@ namespace Server.Commands.Generic
   {
     private static List<BaseCommandImplementor> m_Implementors;
 
-    public BaseCommandImplementor()
-    {
-      Commands = new Dictionary<string, BaseCommand>(StringComparer.OrdinalIgnoreCase);
-    }
+    public BaseCommandImplementor() => Commands = new Dictionary<string, BaseCommand>(StringComparer.OrdinalIgnoreCase);
 
     public bool SupportsConditionals{ get; set; }
 

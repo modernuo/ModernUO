@@ -3,10 +3,7 @@ namespace Server.Items
   public class DragonFlameSectBadge : Item
   {
     [Constructible]
-    public DragonFlameSectBadge() : base(0x23E)
-    {
-      LootType = LootType.Blessed;
-    }
+    public DragonFlameSectBadge() : base(0x23E) => LootType = LootType.Blessed;
 
     public DragonFlameSectBadge(Serial serial) : base(serial)
     {

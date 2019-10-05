@@ -56,10 +56,7 @@ namespace Server.Items
     {
       private BaseClothMaterial m_Material;
 
-      public PickLoomTarget(BaseClothMaterial material) : base(3, false, TargetFlags.None)
-      {
-        m_Material = material;
-      }
+      public PickLoomTarget(BaseClothMaterial material) : base(3, false, TargetFlags.None) => m_Material = material;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

@@ -138,10 +138,7 @@ namespace Server.Items
   public class GuillotineDeed : BaseAddonDeed
   {
     [Constructible]
-    public GuillotineDeed()
-    {
-      LootType = LootType.Blessed;
-    }
+    public GuillotineDeed() => LootType = LootType.Blessed;
 
     public GuillotineDeed(Serial serial) : base(serial)
     {

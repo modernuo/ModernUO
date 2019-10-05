@@ -45,10 +45,7 @@ namespace Server.SkillHandlers
       {
         private BasePoisonPotion m_Potion;
 
-        public InternalTarget(BasePoisonPotion potion) : base(2, false, TargetFlags.None)
-        {
-          m_Potion = potion;
-        }
+        public InternalTarget(BasePoisonPotion potion) : base(2, false, TargetFlags.None) => m_Potion = potion;
 
         protected override void OnTarget(Mobile from, object targeted)
         {

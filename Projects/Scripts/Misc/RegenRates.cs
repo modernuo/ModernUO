@@ -39,15 +39,9 @@ namespace Server.Misc
       m.CheckSkill(skill, n);
     }
 
-    private static bool CheckTransform(Mobile m, Type type)
-    {
-      return TransformationSpellHelper.UnderTransformation(m, type);
-    }
+    private static bool CheckTransform(Mobile m, Type type) => TransformationSpellHelper.UnderTransformation(m, type);
 
-    private static bool CheckAnimal(Mobile m, Type type)
-    {
-      return AnimalForm.UnderTransformation(m, type);
-    }
+    private static bool CheckAnimal(Mobile m, Type type) => AnimalForm.UnderTransformation(m, type);
 
     private static TimeSpan Mobile_HitsRegenRate(Mobile from)
     {

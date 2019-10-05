@@ -3,10 +3,7 @@ namespace Server.Items
   public class LeafGorget : BaseArmor
   {
     [Constructible]
-    public LeafGorget() : base(0x2FC7)
-    {
-      Weight = 2.0;
-    }
+    public LeafGorget() : base(0x2FC7) => Weight = 2.0;
 
     public LeafGorget(Serial serial) : base(serial)
     {

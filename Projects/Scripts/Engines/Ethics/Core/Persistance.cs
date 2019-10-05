@@ -15,10 +15,8 @@ namespace Server.Ethics
     }
 
     public EthicsPersistance(Serial serial)
-      : base(serial)
-    {
+      : base(serial) =>
       Instance = this;
-    }
 
     public static EthicsPersistance Instance{ get; private set; }
 

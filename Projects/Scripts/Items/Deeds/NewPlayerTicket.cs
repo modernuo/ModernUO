@@ -80,10 +80,7 @@ namespace Server.Items
     {
       private NewPlayerTicket m_Ticket;
 
-      public InternalTarget(NewPlayerTicket ticket) : base(2, false, TargetFlags.None)
-      {
-        m_Ticket = ticket;
-      }
+      public InternalTarget(NewPlayerTicket ticket) : base(2, false, TargetFlags.None) => m_Ticket = ticket;
 
       protected override void OnTarget(Mobile from, object targeted)
       {

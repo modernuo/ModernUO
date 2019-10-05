@@ -11,15 +11,9 @@ namespace Server.Items
 {
   public class BookPageInfo
   {
-    public BookPageInfo()
-    {
-      Lines = new string[0];
-    }
+    public BookPageInfo() => Lines = new string[0];
 
-    public BookPageInfo(params string[] lines)
-    {
-      Lines = lines;
-    }
+    public BookPageInfo(params string[] lines) => Lines = lines;
 
     public BookPageInfo(GenericReader reader)
     {

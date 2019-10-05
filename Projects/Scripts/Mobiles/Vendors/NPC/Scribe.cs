@@ -41,10 +41,7 @@ namespace Server.Mobiles
       AddItem(new Robe(Utility.RandomNeutralHue()));
     }
 
-    public override bool HandlesOnSpeech(Mobile from)
-    {
-      return from.Player;
-    }
+    public override bool HandlesOnSpeech(Mobile from) => from.Player;
 
     public override void OnSpeech(SpeechEventArgs e)
     {

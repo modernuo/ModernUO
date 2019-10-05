@@ -18,15 +18,9 @@ namespace Server.Engines.Craft
 
     public static CraftSystem CraftSystem => m_CraftSystem ?? (m_CraftSystem = new DefMasonry());
 
-    public override double GetChanceAtMin(CraftItem item)
-    {
-      return 0.0; // 0%
-    }
+    public override double GetChanceAtMin(CraftItem item) => 0.0;
 
-    public override bool RetainsColorFrom(CraftItem item, Type type)
-    {
-      return true;
-    }
+    public override bool RetainsColorFrom(CraftItem item, Type type) => true;
 
     public override int CanCraft(Mobile from, BaseTool tool, Type itemType)
     {
@@ -119,10 +113,7 @@ namespace Server.Engines.Craft
     {
       private Mobile m_From;
 
-      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(0.7))
-      {
-        m_From = from;
-      }
+      public InternalTimer(Mobile from) : base(TimeSpan.FromSeconds(0.7)) => m_From = from;
 
       protected override void OnTick()
       {

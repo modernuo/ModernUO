@@ -14,10 +14,7 @@ namespace Server.Engines.Quests.Doom
       typeof(VanquishDaemonObjective)
     };
 
-    public TheSummoningQuest(Victoria victoria, PlayerMobile from) : base(from)
-    {
-      Victoria = victoria;
-    }
+    public TheSummoningQuest(Victoria victoria, PlayerMobile from) : base(from) => Victoria = victoria;
 
     public TheSummoningQuest()
     {

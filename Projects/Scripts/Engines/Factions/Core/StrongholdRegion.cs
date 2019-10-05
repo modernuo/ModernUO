@@ -32,9 +32,6 @@ namespace Server.Factions
       return Faction.Find(m, true, true) != null;
     }
 
-    public override bool AllowHousing(Mobile from, Point3D p)
-    {
-      return false;
-    }
+    public override bool AllowHousing(Mobile from, Point3D p) => false;
   }
 }

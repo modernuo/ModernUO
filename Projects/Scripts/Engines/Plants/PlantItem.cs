@@ -191,10 +191,7 @@ namespace Server.Engines.Plants
       return 1026951; // dirt
     }
 
-    public int GetLocalizedContainerType()
-    {
-      return 1150435; // bowl
-    }
+    public int GetLocalizedContainerType() => 1150435;
 
     private void Update()
     {
@@ -284,11 +281,9 @@ namespace Server.Engines.Plants
       }
     }
 
-    public bool IsUsableBy(Mobile from)
-    {
-      return IsChildOf(from.Backpack) || IsChildOf(from.FindBankNoCreate()) || IsLockedDown && IsAccessibleTo(from) ||
-             RootParent is Item root && root.IsSecure && root.IsAccessibleTo(from);
-    }
+    public bool IsUsableBy(Mobile from) =>
+      IsChildOf(from.Backpack) || IsChildOf(from.FindBankNoCreate()) || IsLockedDown && IsAccessibleTo(from) ||
+      RootParent is Item root && root.IsSecure && root.IsAccessibleTo(from);
 
     public override void OnDoubleClick(Mobile from)
     {

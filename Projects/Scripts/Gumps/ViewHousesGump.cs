@@ -255,20 +255,11 @@ namespace Server.Gumps
       return house.GetType().Name;
     }
 
-    public string Right(string text)
-    {
-      return $"<div align=right>{text}</div>";
-    }
+    public string Right(string text) => $"<div align=right>{text}</div>";
 
-    public string Center(string text)
-    {
-      return $"<CENTER>{text}</CENTER>";
-    }
+    public string Center(string text) => $"<CENTER>{text}</CENTER>";
 
-    public string Color(string text, int color)
-    {
-      return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-    }
+    public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
     public void AddBlackAlpha(int x, int y, int width, int height)
     {
@@ -280,10 +271,7 @@ namespace Server.Gumps
     {
       public static readonly IComparer<BaseHouse> Instance = new HouseComparer();
 
-      public int Compare(BaseHouse x, BaseHouse y)
-      {
-        return x.BuiltOn.CompareTo(y.BuiltOn);
-      }
+      public int Compare(BaseHouse x, BaseHouse y) => x.BuiltOn.CompareTo(y.BuiltOn);
     }
   }
 }

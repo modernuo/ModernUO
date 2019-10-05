@@ -388,15 +388,9 @@ namespace Server.Commands
         //AddAlphaRegion( 10, height - 30, width - 20, 20 );
       }
 
-      public string Color(string text, int color)
-      {
-        return $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
-      }
+      public string Color(string text, int color) => $"<BASEFONT COLOR=#{color:X6}>{text}</BASEFONT>";
 
-      public string Center(string text)
-      {
-        return $"<CENTER>{text}</CENTER>";
-      }
+      public string Center(string text) => $"<CENTER>{text}</CENTER>";
     }
   }
 }

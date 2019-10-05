@@ -4,10 +4,7 @@ namespace Server.Items
   public class AssassinSpike : BaseKnife
   {
     [Constructible]
-    public AssassinSpike() : base(0x2D21)
-    {
-      Weight = 4.0;
-    }
+    public AssassinSpike() : base(0x2D21) => Weight = 4.0;
 
     public AssassinSpike(Serial serial) : base(serial)
     {

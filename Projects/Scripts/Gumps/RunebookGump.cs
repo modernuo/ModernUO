@@ -201,10 +201,7 @@ namespace Server.Gumps
       AddLabelCropped(145 + half * 160, 60, 115, 17, hue, desc);
     }
 
-    public static bool HasSpell(Mobile from, int spellID)
-    {
-      return Spellbook.Find(from, spellID)?.HasSpell(spellID) == true;
-    }
+    public static bool HasSpell(Mobile from, int spellID) => Spellbook.Find(from, spellID)?.HasSpell(spellID) == true;
 
     public override void OnResponse(NetState state, RelayInfo info)
     {
@@ -410,10 +407,7 @@ namespace Server.Gumps
     {
       private Runebook m_Book;
 
-      public InternalPrompt(Runebook book)
-      {
-        m_Book = book;
-      }
+      public InternalPrompt(Runebook book) => m_Book = book;
 
       public override void OnResponse(Mobile from, string text)
       {

@@ -426,10 +426,7 @@ namespace Server.Engines.ConPVP
         Alert(arena, sb.ToString());
     }
 
-    private int ComputeCashAward()
-    {
-      return Participants.Count * m_PlayersPerParticipant * 2500;
-    }
+    private int ComputeCashAward() => Participants.Count * m_PlayersPerParticipant * 2500;
 
     private void GiveAwards()
     {

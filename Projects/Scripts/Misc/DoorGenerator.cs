@@ -407,25 +407,13 @@ namespace Server
       return false;
     }
 
-    public static bool IsNorthFrame(int id)
-    {
-      return IsFrame(id, m_NorthFrames);
-    }
+    public static bool IsNorthFrame(int id) => IsFrame(id, m_NorthFrames);
 
-    public static bool IsSouthFrame(int id)
-    {
-      return IsFrame(id, m_SouthFrames);
-    }
+    public static bool IsSouthFrame(int id) => IsFrame(id, m_SouthFrames);
 
-    public static bool IsWestFrame(int id)
-    {
-      return IsFrame(id, m_WestFrames);
-    }
+    public static bool IsWestFrame(int id) => IsFrame(id, m_WestFrames);
 
-    public static bool IsEastFrame(int id)
-    {
-      return IsFrame(id, m_EastFrames);
-    }
+    public static bool IsEastFrame(int id) => IsFrame(id, m_EastFrames);
 
     public static bool IsEastFrame(int x, int y, int z)
     {

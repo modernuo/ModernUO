@@ -3,10 +3,7 @@ namespace Server.Items
   public class StuddedMempo : BaseArmor
   {
     [Constructible]
-    public StuddedMempo() : base(0x279D)
-    {
-      Weight = 2.0;
-    }
+    public StuddedMempo() : base(0x279D) => Weight = 2.0;
 
     public StuddedMempo(Serial serial) : base(serial)
     {

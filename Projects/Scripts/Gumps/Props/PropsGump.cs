@@ -416,10 +416,7 @@ namespace Server.Gumps
       return list;
     }
 
-    private static bool IsCustomEnum(Type type)
-    {
-      return type.IsDefined(typeofCustomEnum, false);
-    }
+    private static bool IsCustomEnum(Type type) => type.IsDefined(typeofCustomEnum, false);
 
     public static void OnValueChanged(object obj, PropertyInfo prop, Stack<StackEntry> stack)
     {
@@ -448,15 +445,9 @@ namespace Server.Gumps
       return ce.Names;
     }
 
-    private static bool HasAttribute(Type type, Type check, bool inherit)
-    {
-      return type.GetCustomAttributes(check, inherit).Length > 0;
-    }
+    private static bool HasAttribute(Type type, Type check, bool inherit) => type.GetCustomAttributes(check, inherit).Length > 0;
 
-    private static bool IsType(Type type, Type check)
-    {
-      return type == check || type.IsSubclassOf(check);
-    }
+    private static bool IsType(Type type, Type check) => type == check || type.IsSubclassOf(check);
 
     private static bool IsType(Type type, Type[] check)
     {
@@ -467,10 +458,7 @@ namespace Server.Gumps
       return false;
     }
 
-    private string ValueToString(PropertyInfo prop)
-    {
-      return ValueToString(m_Object, prop);
-    }
+    private string ValueToString(PropertyInfo prop) => ValueToString(m_Object, prop);
 
     public static string ValueToString(object obj, PropertyInfo prop)
     {
@@ -666,15 +654,9 @@ namespace Server.Gumps
     {
       private Type m_Start;
 
-      public GroupComparer(Type start)
-      {
-        m_Start = start;
-      }
+      public GroupComparer(Type start) => m_Start = start;
 
-      public int Compare(KeyValuePair<Type, List<PropertyInfo>> x, KeyValuePair<Type, List<PropertyInfo>> y)
-      {
-        return GetDistance(x.Key).CompareTo(GetDistance(y.Key));
-      }
+      public int Compare(KeyValuePair<Type, List<PropertyInfo>> x, KeyValuePair<Type, List<PropertyInfo>> y) => GetDistance(x.Key).CompareTo(GetDistance(y.Key));
 
       private int GetDistance(Type type)
       {
