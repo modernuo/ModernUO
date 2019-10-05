@@ -1741,7 +1741,7 @@ namespace Server.Network
       m_Stream.Write((short)offset);
 
       for (int i = 0; i < 8; ++i)
-        m_Stream.Write((byte)(content >> (i * 8)));
+        m_Stream.Write((byte)(content >> i * 8));
     }
   }
 

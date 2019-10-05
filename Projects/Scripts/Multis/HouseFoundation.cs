@@ -2342,7 +2342,7 @@ namespace Server.Multis
         Write((byte)(0x20 | i));
         Write((byte)size);
         Write((byte)deflatedLength);
-        Write((byte)(((size >> 4) & 0xF0) | ((deflatedLength >> 8) & 0xF)));
+        Write((byte)(size >> 4 & 0xF0 | deflatedLength >> 8 & 0xF));
         Write(m_DeflatedBuffer, 0, deflatedLength);
 
         totalLength += 4 + deflatedLength;
@@ -2378,7 +2378,7 @@ namespace Server.Multis
         Write((byte)(9 + i));
         Write((byte)size);
         Write((byte)deflatedLength);
-        Write((byte)(((size >> 4) & 0xF0) | ((deflatedLength >> 8) & 0xF)));
+        Write((byte)(size >> 4 & 0xF0 | deflatedLength >> 8 & 0xF));
         Write(m_DeflatedBuffer, 0, deflatedLength);
 
         totalLength += 4 + deflatedLength;

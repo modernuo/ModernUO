@@ -42,7 +42,7 @@ namespace Server.Engines.Quests.Doom
       {
         SummoningAltar altar = Victoria.Altar;
 
-        if (altar != null && (altar.Daemon?.Alive != true))
+        if (altar != null && altar.Daemon?.Alive != true)
           if (From.Map == Victoria.Map && From.InRange(Victoria, 8))
           {
             WaitForSummon = false;

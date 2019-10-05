@@ -442,7 +442,7 @@ namespace Server.Items
       {
         healer.SendLocalizedMessage(500955); // That being is not damaged!
       }
-      else if (!patient.Alive && (patient.Map?.CanFit(patient.Location, 16, false, false) != true))
+      else if (!patient.Alive && patient.Map?.CanFit(patient.Location, 16, false, false) != true)
       {
         healer.SendLocalizedMessage(501042); // Target cannot be resurrected at that location.
       }

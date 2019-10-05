@@ -1817,8 +1817,8 @@ namespace Server.Commands
 
         while (bin.PeekChar() >= 0)
         {
-          int index = (bin.ReadByte() << 8) | bin.ReadByte();
-          int length = (bin.ReadByte() << 8) | bin.ReadByte();
+          int index = bin.ReadByte() << 8 | bin.ReadByte();
+          int length = bin.ReadByte() << 8 | bin.ReadByte();
           string text = Encoding.UTF8.GetString(bin.ReadBytes(length)).Trim();
 
           if (text.Length == 0)

@@ -1778,14 +1778,14 @@ namespace Server.Mobiles
     {
       int v = (int)Direction;
 
-      Direction = (Direction)((((v & 0x7) + iTurnSteps) & 0x7) | (v & 0x80));
+      Direction = (Direction)((v & 0x7) + iTurnSteps & 0x7 | v & 0x80);
     }
 
     public virtual void TurnInternal(int iTurnSteps)
     {
       int v = (int)Direction;
 
-      SetDirection((Direction)((((v & 0x7) + iTurnSteps) & 0x7) | (v & 0x80)));
+      SetDirection((Direction)((v & 0x7) + iTurnSteps & 0x7 | v & 0x80));
     }
 
     public bool IsHurt() => Hits != HitsMax;
@@ -2765,7 +2765,7 @@ namespace Server.Mobiles
     {
       base.OnRegionChange(Old, New);
 
-      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && (New?.AcceptsSpawnsFrom(se.Region) != true))
+      if (Controlled && Spawner is SpawnEntry se && !se.UnlinkOnTaming && New?.AcceptsSpawnsFrom(se.Region) != true)
       {
         Spawner.Remove(this);
         Spawner = null;

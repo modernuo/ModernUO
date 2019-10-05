@@ -26,7 +26,7 @@ namespace Server.Items
       set { m_To = value; InvalidateProperties(); }
     }
 
-    public bool IsSigned => ( m_From != null && m_To != null );
+    public bool IsSigned => m_From != null && m_To != null;
 
     [Constructible]
     public CupidsArrow()

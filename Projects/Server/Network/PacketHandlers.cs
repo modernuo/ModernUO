@@ -318,7 +318,7 @@ namespace Server.Network
         }
         else
         {
-          int seed = (packetId << 24) | (r.ReadByte() << 16) | (r.ReadByte() << 8) | r.ReadByte();
+          int seed = packetId << 24 | r.ReadByte() << 16 | r.ReadByte() << 8 | r.ReadByte();
 
           if (seed == 0)
           {

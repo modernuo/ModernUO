@@ -201,7 +201,7 @@ namespace Server.Gumps
 
       if ( !Core.AOS && from.ShortTermMurders >= 5 )
       {
-        double loss = (100.0 - (4.0 + (from.ShortTermMurders / 5.0))) / 100.0; // 5 to 15% loss
+        double loss = (100.0 - (4.0 + @from.ShortTermMurders / 5.0)) / 100.0; // 5 to 15% loss
 
         if ( loss < 0.85 )
           loss = 0.85;

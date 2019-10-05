@@ -3060,7 +3060,7 @@ namespace Server
 
         int bitCount = zEnd - zStart;
 
-        m_OpenSlots &= ~(((1 << bitCount) - 1) << zStart);
+        m_OpenSlots &= ~((1 << bitCount) - 1 << zStart);
       }
 
       for (int i = 0; i < items.Count; ++i)
@@ -3088,7 +3088,7 @@ namespace Server
 
         int bitCount = zEnd - zStart;
 
-        m_OpenSlots &= ~(((1 << bitCount) - 1) << zStart);
+        m_OpenSlots &= ~((1 << bitCount) - 1 << zStart);
       }
 
       int height = ItemData.Height;
@@ -3107,7 +3107,7 @@ namespace Server
         if (i + height > 20)
           match >>= 1;
 
-        okay = ((m_OpenSlots >> i) & match) == match;
+        okay = (m_OpenSlots >> i & match) == match;
 
         if (okay)
         {

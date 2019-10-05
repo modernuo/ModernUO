@@ -337,7 +337,7 @@ namespace Server.Engines.Doom
         else
         {
           for (int i = 0; i < 16; i++) /* Count matching SET bits, ie correct codes */
-            if (((MyKey >> i) & 1) == 1 && ((TheirKey >> i) & 1) == 1)
+            if ((MyKey >> i & 1) == 1 && (TheirKey >> i & 1) == 1)
               correct++;
 
           PuzzleStatus(Statue_Msg[correct], correct > 0 ? correct.ToString() : null);

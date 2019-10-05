@@ -396,13 +396,13 @@ namespace Server.Engines.Harvest
     {
       if (toHarvest is Static staticObj && !staticObj.Movable)
       {
-        tileID = (staticObj.ItemID & 0x3FFF) | 0x4000;
+        tileID = staticObj.ItemID & 0x3FFF | 0x4000;
         map = staticObj.Map;
         loc = staticObj.GetWorldLocation();
       }
       else if (toHarvest is StaticTarget staticTarget)
       {
-        tileID = (staticTarget.ItemID & 0x3FFF) | 0x4000;
+        tileID = staticTarget.ItemID & 0x3FFF | 0x4000;
         map = from.Map;
         loc = staticTarget.Location;
       }

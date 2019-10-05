@@ -292,28 +292,28 @@ namespace Server
       int fromPlatSend = 0, fromGoldSend = 0, fromPlatRecv = 0, fromGoldRecv = 0;
       int toPlatSend = 0, toGoldSend = 0, toPlatRecv = 0, toGoldRecv = 0;
 
-      if ((From.Plat > 0) & From.Mobile.Account.WithdrawPlat(From.Plat))
+      if (From.Plat > 0 & From.Mobile.Account.WithdrawPlat(From.Plat))
       {
         fromPlatSend = From.Plat;
 
         if (To.Mobile.Account.DepositPlat(From.Plat)) toPlatRecv = fromPlatSend;
       }
 
-      if ((From.Gold > 0) & From.Mobile.Account.WithdrawGold(From.Gold))
+      if (From.Gold > 0 & From.Mobile.Account.WithdrawGold(From.Gold))
       {
         fromGoldSend = From.Gold;
 
         if (To.Mobile.Account.DepositGold(From.Gold)) toGoldRecv = fromGoldSend;
       }
 
-      if ((To.Plat > 0) & To.Mobile.Account.WithdrawPlat(To.Plat))
+      if (To.Plat > 0 & To.Mobile.Account.WithdrawPlat(To.Plat))
       {
         toPlatSend = To.Plat;
 
         if (From.Mobile.Account.DepositPlat(To.Plat)) fromPlatRecv = toPlatSend;
       }
 
-      if ((To.Gold > 0) & To.Mobile.Account.WithdrawGold(To.Gold))
+      if (To.Gold > 0 & To.Mobile.Account.WithdrawGold(To.Gold))
       {
         toGoldSend = To.Gold;
 

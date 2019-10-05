@@ -536,9 +536,9 @@ namespace Server
           int index = 0;
 
           for (int i = 0; i < count; ++i)
-            staTiles[i].Set((ushort)(m_Buffer[index++] | (m_Buffer[index++] << 8)),
+            staTiles[i].Set((ushort)(m_Buffer[index++] | m_Buffer[index++] << 8),
               m_Buffer[index++], m_Buffer[index++], (sbyte)m_Buffer[index++],
-              (short)(m_Buffer[index++] | (m_Buffer[index++] << 8)));
+              (short)(m_Buffer[index++] | m_Buffer[index++] << 8));
         }
       }
       catch
